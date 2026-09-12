@@ -1,9 +1,8 @@
 # Task 24 — Nachrichten Datenmodell
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 17. Der gemeinsame Chat bleibt pro
-> Kunde, aber Lesestände sind pro Mitglied und Nachrichten unveränderlich.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 17 · **Branch:** `feat/crm-kundenchat-intern`
+> **Aufwand:** M · **Abhängigkeiten:** Task 20 (Portalnutzer), Task 02 (Rechte)
+> **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
 - Eine Conversation je Kunde; kein Pflicht-`project_id` und keine freie Kanalverwaltung.
 - `conversation_reads` speichert pro interner/Portal-Mitgliedschaft den letzten gelesenen Zeitpunkt
@@ -13,12 +12,6 @@
   unveränderlicher Redaction-Aktivität ausblenden; kein 15-Minuten-Edit und kein normaler Soft-Delete.
 - Anhänge sind ausschließlich Links auf bereits vorhandene, portalöffentliche Dateien in
   `message_files`; Chat besitzt keine zweite Uploadablage.
-- Text bleibt Plaintext und wird vor Ausgabe escaped. Branch `feat/crm-kundenchat`.
-
-> **Branch:** `feat/crm-nachrichten-datenmodell`
-> **Aufwand:** M (rund ein Tag)
-> **Abhängigkeiten:** Task 20 (Portalnutzer), Task 02 (Rechte)
-> **Migration:** `0032_create_conversations.sql` (Planwert)
 
 ## Context
 
@@ -99,7 +92,7 @@ messages
   type text NOT NULL DEFAULT 'text'   CHECK in MESSAGE_TYPE_VALUES
   body text NOT NULL
   metadata jsonb NULL
-  sender_side text NOT NULL           CHECK in RESPONSIBLE_SIDE_VALUES
+  sender_side text NOT NULL           CHECK in MESSAGE_SENDER_SIDE_VALUES
   sender_id text NULL
   sender_display_name text NOT NULL
   created_at timestamptz NOT NULL DEFAULT now()
@@ -136,7 +129,7 @@ aus der Sitzung.
 ## Verzeichnisstruktur
 
 ```txt
-packages/db/migrations/0032_create_conversations.sql
+packages/db/migrations/<nr>_create_conversations.sql
 packages/db/src/record-configuration/crm/{conversations,messages}.ts
 packages/common/src/constants/crm/message-types.ts
 packages/common/src/constants/crm/message-limits.ts
@@ -160,7 +153,7 @@ apps/workspace/src/server/workspace/crm/services/
 
 ### CRM-24-T1 — Migration, Modelle, Konstanten
 
-- **Files:** `0032_create_conversations.sql`, zwei `pgTable`-Dateien,
+- **Files:** `<nr>_create_conversations.sql`, zwei `pgTable`-Dateien,
   `constants/crm/{message-types,message-limits}.ts` + Tests, beide DTOs
 - **Skills:** `best-practices`
 - **Inhalt:** Tabellen wie oben; Unique-Index erzwingt eine Unterhaltung je Kunde und Projekt

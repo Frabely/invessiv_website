@@ -1,10 +1,8 @@
 # Task 19 — Mail-Package
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 10. Das Package wird ausschließlich über
-> die Outbox verwendet. Providerfehler werden als fehlgeschlagener Job sichtbar und nicht still
-> verworfen. Es gibt keine freien CRM-Mails und keinen Mail-Eingang in Version 1.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 10 · **Branch:** `feat/crm-jobs-und-benachrichtigungen`
+> **Aufwand:** S · **Abhängigkeiten:** keine
+> **Migration:** keine
 
 - Systemmailtypen: Portal-Einladung, Portal-Chat-Digest und kritischer interner Job-/Securityfehler.
 - `send()` liefert typisiertes Resultat mit Provider-ID oder Fehlercode; es wirft nicht für erwartete
@@ -13,12 +11,6 @@
 - Kein Öffnungs-, Klick- oder Trackingpixel.
 - SMTP/API-Secrets bleiben server-only; Betreff, Empfänger und Body werden nicht unnötig geloggt.
 - Outbox entscheidet Retry/Dead-letter; das Package besitzt keine eigene Queue.
-- Branch `feat/crm-jobs-und-benachrichtigungen`.
-
-> **Branch:** `feat/mail-package`
-> **Aufwand:** S (rund ein halber Tag)
-> **Abhängigkeiten:** keine
-> **Migration:** keine
 
 ## Context
 

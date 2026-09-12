@@ -1,6 +1,6 @@
 # Ordner 14 — Storage-Adapter und sichere Upload-Pipeline
 
-> **Status:** offen · **Abhängigkeiten:** 01, 10 · **Aufwand:** 4–5 Tage · **Reviewziel:** 70–110 Dateien
+> **Status:** offen · **Abhängigkeiten:** 01, 10 · **Aufwand:** 4–5 Tage · **Reviewziel:** 70–100 Dateien
 
 ## Ziel und Stand nach Merge
 

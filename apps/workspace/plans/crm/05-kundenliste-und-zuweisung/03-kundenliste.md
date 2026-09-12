@@ -1,19 +1,14 @@
 # Task 03 — Kundenliste
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 05. `deleted_at` existiert nicht.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 05 · **Branch:** `feat/crm-kundenliste-und-zuweisung`
+> **Aufwand:** M · **Abhängigkeiten:** Task 01 (Schema, DTOs, Mapper), Task 02 (`requireWorkspacePermission`),
 
 - Standardliste filtert `status != archived`; archivierte Kunden sind über expliziten URL-Filter
   erreichbar.
 - Liste zeigt Owner und verpflichtenden Primärkontakt.
 - Ansichten „meine Kunden“, Status, Kategorie und Tags laufen vollständig über URL-State.
 - Count und Liste verwenden exakt dieselbe Querydefinition.
-- Branch `feat/crm-kundenliste-und-zuweisung`.
 
-> **Branch:** `feat/crm-kundenliste`
-> **Aufwand:** M (rund ein Tag)
-> **Abhängigkeiten:** Task 01 (Schema, DTOs, Mapper), Task 02 (`requireWorkspacePermission`),
 > Task 02a (geteilte Listen-Komponenten)
 > **Migration:** keine
 

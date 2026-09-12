@@ -1,8 +1,7 @@
 # Task 08 — Lead zu Kunde
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 06.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 06 · **Branch:** `feat/crm-lead-konvertierung`
+> **Aufwand:** L · **Abhängigkeiten:** Task 01 (`customer_contact_assignments`), Task 05 (Detail-Panel)
 
 - Beim neuen Kunden muss der Primärkontakt im Dialog neu eingegeben oder bestätigt werden; Leadwerte
   sind nur Vorschläge.
@@ -12,14 +11,9 @@
 - `leads.customer_id` bleibt einziger Marker; Command ist idempotent und parallele Requests erzeugen
   genau einen Kunden.
 - Activity-Historie verwendet das Cutovermodell aus Task 01a.
-- Branch `feat/crm-lead-konvertierung`.
 
-> **Branch:** `feat/crm-lead-konvertierung`
-> **Aufwand:** L (rund zwei Tage)
-> **Abhängigkeiten:** Task 01 (Tabelle `customer_contacts`), Task 05 (Detail-Panel)
-> **Ausdrücklich keine Abhängigkeit** auf die Kontakte-Oberfläche: der Konvertierungs-Dialog legt den
 > Primärkontakt selbst an und braucht dafür nur die Tabelle, nicht die Sektion im Detailpanel
-> **Migration:** `0024_link_leads_to_customers.sql` (Planwert)
+> **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
 ## Context
 
@@ -64,7 +58,7 @@ POST /api/workspace/crm/leads/[leadId]/convert
   → convertLeadToCustomer.command-handler
       Transaktion:
         1. Lead laden und sperren, Vorbedingung prüfen (customer_id ist null)
-        2. Modus "new":      customers insert + customer_contacts insert (primär)
+        2. Modus "new":      customers insert + customer_contact_assignments insert (primär)
            Modus "existing": vorhandenen Kunden laden, optional Kontakt ergänzen
         3. leads update: customer_id setzen; lead_status auf "won", falls noch nicht
         4. activities update: customer_id auf allen Zeilen dieses Leads nachtragen
@@ -90,7 +84,7 @@ Additiv: eine neue nullable Spalte und zwei Indizes. **Keine** CHECK-Constraint 
 ## Verzeichnisstruktur
 
 ```txt
-packages/db/migrations/0024_link_leads_to_customers.sql
+packages/db/migrations/<nr>_link_leads_to_customers.sql
 packages/db/src/record-configuration/leads.ts                      + customer_id
 
 apps/workspace/src/app/api/workspace/crm/leads/[leadId]/convert/route.ts
@@ -110,7 +104,7 @@ apps/workspace/src/i18n/dictionaries/workspace/leads/toolbar/{de,en}.json  + Ums
 
 ### CRM-08-T1 — Migration und Verknüpfung
 
-- **Files:** `0024_link_leads_to_customers.sql`, `record-configuration/leads.ts`
+- **Files:** `<nr>_link_leads_to_customers.sql`, `record-configuration/leads.ts`
 - **Skills:** `best-practices`
 - **Inhalt:** Spalte `customer_id`, zwei Indizes. Keine Änderung an `lead_status` oder dessen
   CHECK-Constraint

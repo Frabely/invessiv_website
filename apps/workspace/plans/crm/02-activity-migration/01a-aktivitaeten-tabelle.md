@@ -1,9 +1,8 @@
 # Task 01a — Gemeinsame Aktivitäten-Tabelle
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 02. Bereits registrierte Migrationen
-> werden niemals geändert oder als erneut ausführbar vorausgesetzt.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 02 · **Branch:** `feat/crm-activity-migration`
+> **Aufwand:** M · **Abhängigkeiten:** Task 01 (`customers` muss existieren)
+> **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
 - Expand → Dual-Write → versionierter Backfill → Verifikation → Read-Cutover.
 - Backfill verwendet stabile Quell-ID und Unique-Constraint und ist beliebig oft idempotent.
@@ -11,13 +10,7 @@
 - Die alte Tabelle bleibt mindestens ein beobachtetes Release bestehen; Cleanup/Drop ist nicht Teil
   dieses Tasks.
 - Rollback schaltet nur den Read-Pfad zurück und lässt Dual-Write aktiv.
-- Branch `feat/crm-activity-migration`; jede Phase erhält eine neue ermittelte Migrationsnummer oder
   einen separat versionierten Job.
-
-> **Branch:** `feat/crm-aktivitaeten-tabelle`
-> **Aufwand:** M (rund ein Tag)
-> **Abhängigkeiten:** Task 01 (`customers` muss existieren)
-> **Migration:** `0022_create_activities.sql` (Planwert)
 
 ## Context
 
@@ -154,7 +147,7 @@ eine Aktivität in die alte Tabelle geschrieben wurde, holt ein zweiter Lauf sie
 ## Verzeichnisstruktur
 
 ```txt
-packages/db/migrations/0022_create_activities.sql
+packages/db/migrations/<nr>_create_activities.sql
 packages/db/src/record-configuration/activities.ts
 packages/common/src/constants/activity/
   activity-types.ts   (+ .test.ts)
@@ -191,7 +184,7 @@ apps/workspace/src/server/workspace/dashboard/query-handler/get-messaging-conver
 
 ### CRM-01a-T2 — Migration 0022 und Modell
 
-- **Files:** `packages/db/migrations/0022_create_activities.sql`,
+- **Files:** `packages/db/migrations/<nr>_create_activities.sql`,
   `packages/db/src/record-configuration/activities.ts`, Barrel
 - **Skills:** `best-practices`
 - **Inhalt:** Tabelle und Kopierschritt wie oben, CHECKs über `sqlCheckIn`

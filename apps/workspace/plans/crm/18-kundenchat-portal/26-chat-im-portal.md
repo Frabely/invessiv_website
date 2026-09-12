@@ -1,22 +1,13 @@
 # Task 26 — Chat im Portal
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 17.
+> **Merge-Einheit:** Ordner 18 · **Branch:** `feat/crm-kundenchat-portal`
+> **Aufwand:** M · **Abhängigkeiten:** Task 25 (Verlaufskomponente), Task 33 (Outbox)
+> **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
-## Verbindliche Revision
-
-- Ein gemeinsamer Chat je Kunde ist für alle aktiven Firmenkontakte sichtbar; Lesestand bleibt je
-  Portalmitglied getrennt.
-- Nachrichten sind unveränderlich und nicht selbst löschbar.
-- Anhänge referenzieren nur bereits freigegebene Dateien; kein Chatupload.
-- Neue Nachrichten erzeugen je Empfänger einen deduplizierten Digest, höchstens eine E-Mail je
-  15-Minuten-Fenster. Reply-To ist Invessiv; Antworten werden nicht importiert.
-- Widerruf beziehungsweise Firmenwechsel wird bei jedem Query serverseitig geprüft.
-- Branch `feat/crm-kundenchat`.
-
-> **Branch:** `feat/crm-chat-portal`
-> **Aufwand:** M (rund ein Tag)
-> **Abhängigkeiten:** Task 25 (Verlaufskomponente), Task 19 (Mail)
-> **Migration:** `0033_add_notification_columns.sql` (Planwert)
+Ein gemeinsamer Chat je Kunde, sichtbar für alle aktiven Firmenkontakte; der Lesestand bleibt je
+Portalmitglied getrennt. Nachrichten sind unveränderlich und nicht selbst löschbar. Anhänge
+referenzieren nur bereits freigegebene Dateien. Reply-To ist Invessiv; Antworten werden nicht
+importiert. Widerruf und Firmenwechsel werden bei jedem Query serverseitig geprüft.
 
 ## Context
 
@@ -30,17 +21,20 @@ wäre ein Chat ohne Echtzeit-Aktualisierung wertlos — man müsste zufällig hi
 
 ## Entscheidungen
 
-| Bereich                          | Entscheidung                                                                                              |
-| -------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Einstieg                         | Eigener Portalbereich `/portal/nachrichten` plus Ungelesen-Kennzeichnung im Dashboard                     |
-| Komponente                       | Dieselbe `message-thread` wie im CRM, mit Portal-Texten und Portal-Gestaltung                             |
-| Benachrichtigung an den Betreuer | Mail bei einer Kundennachricht, **gebündelt**: höchstens eine Mail je 15 Minuten je Kunde                 |
-| Warum gebündelt                  | Wer drei Sätze in drei Nachrichten schreibt, soll nicht drei Mails auslösen                               |
-| Benachrichtigung an den Kunden   | Mail bei einer internen Nachricht, wenn der Kunde seit 30 Minuten nicht im Portal war. Gleiche Bündelung  |
-| Umsetzung der Bündelung          | Zeitstempel der letzten Benachrichtigung an der Unterhaltung; keine Warteschlange, kein Cron              |
-| Abmelden                         | Jede Mail enthält den Hinweis, wo sich Benachrichtigungen abschalten lassen; ein Schalter je Portalnutzer |
-| Missbrauchsschutz                | Datenbankgestütztes Limit: 30 Nachrichten je Stunde und Portalnutzer                                      |
-| Bearbeiten und Löschen           | Auch im Portal, mit denselben Regeln (eigene Nachricht, 15 Minuten)                                       |
+| Bereich                          | Entscheidung                                                                                                                                                                        |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Einstieg                         | Eigener Portalbereich `/portal/nachrichten` plus Ungelesen-Kennzeichnung im Dashboard                                                                                               |
+| Komponente                       | Dieselbe `message-thread` wie im CRM, mit Portal-Texten und Portal-Gestaltung                                                                                                       |
+| Benachrichtigung an den Betreuer | Notification sofort, Mail gebündelt: höchstens eine je **15 Minuten** je Kunde                                                                                                      |
+| Warum gebündelt                  | Wer drei Sätze in drei Nachrichten schreibt, soll nicht drei Mails auslösen                                                                                                         |
+| Benachrichtigung an den Kunden   | Mail gebündelt: höchstens eine je **12 Stunden** je Mitgliedschaft, Anker `customer_notified_at`                                                                                    |
+| Warum so lang                    | Der Kunde soll nicht getaktet werden. Zwölf Stunden bündeln einen Arbeitstag zu einer Mail                                                                                          |
+| Fenster als Konstante            | `PORTAL_DIGEST_WINDOW_HOURS` in `packages/common`; Umstellung auf 24 Stunden ist eine Zeile                                                                                         |
+| Nur wenn nicht im Portal         | Kein Mailhinweis, wenn die Mitgliedschaft in den letzten 30 Minuten aktiv war (`last_seen_at`)                                                                                      |
+| Abmelden                         | `portal_memberships.email_notifications_enabled` — beim Einladen gesetzt (Task 20), danach vom Portalmitglied und intern änderbar. Der Job filtert in der Abfrage, nicht im Versand |
+| Umsetzung der Bündelung          | Outbox-Job aus Ordner 10 mit Dedupe-Key je Empfänger und Fenster; keine Entscheidung im Request-Pfad                                                                                |
+| Missbrauchsschutz                | Datenbankgestütztes Limit: 30 Nachrichten je Stunde und Portalnutzer                                                                                                                |
+| Bearbeiten und Löschen           | Gibt es nicht. Nachrichten sind nach dem Senden unveränderlich — im Portal wie im CRM                                                                                               |
 
 ## Architektur
 
@@ -54,26 +48,26 @@ POST /api/portal/conversation/messages
   → withPortalApiAuth
   → Limit prüfen
   → Nachricht anlegen (Task 24)
-  → Benachrichtigung erwägen:
-       letzte Benachrichtigung älter als 15 Minuten?  → Mail an den Betreuer
-  → Zeitstempel der Benachrichtigung setzen
+  → Outbox-Eintrag in derselben Transaktion:
+       Notification an den Betreuer (sofort)
+       Maildigest mit Dedupe-Key je Empfänger und Zeitfenster
 ```
 
 Die Entscheidung über die Mail passiert im selben Vorgang wie das Anlegen, aber **nach** dem
 Commit — schlägt der Versand fehl, ist die Nachricht trotzdem gespeichert.
 
-## Migrationsfreie Ergänzung
+## Additive Ergänzung
 
-Die beiden Zeitstempel für die Bündelung (`internal_notified_at`, `customer_notified_at`) und der
-Abmeldeschalter (`notifications_enabled` an `customer_portal_users`) sind zusätzliche Spalten. Sie
-werden in einer kleinen Migration `0033_add_notification_columns.sql` ergänzt — additiv, mit
-Vorgabewerten, ohne bestehende Daten zu berühren.
+`internal_notified_at` an der Conversation ist die einzige Spalte, die hier neu entsteht — additiv,
+mit Vorgabewert. `customer_notified_at` und `email_notifications_enabled` liegen bereits an
+`portal_memberships` aus Task 20; die Bündelung ist damit pro Mitgliedschaft steuerbar und nicht pro
+Unterhaltung.
 
 ## Verzeichnisstruktur
 
 ```txt
-packages/db/migrations/0033_add_notification_columns.sql
-packages/db/src/record-configuration/crm/{conversations,customer-portal-users}.ts   erweitert
+packages/db/migrations/<nr>_add_conversation_notification_columns.sql
+packages/db/src/record-configuration/crm/conversations.ts   erweitert
 
 apps/workspace/src/app/[locale]/(portal)/portal/nachrichten/page.tsx + loading.tsx
 apps/workspace/src/app/api/portal/conversation/**                    Routen aus Task 24
@@ -92,18 +86,22 @@ apps/workspace/src/i18n/dictionaries/portal/emails/{de,en}.json
 
 ### CRM-26-T1 — Migration und Benachrichtigungslogik
 
-- **Files:** `0033_add_notification_columns.sql`, erweiterte Modelle,
+- **Files:** Migration, erweitertes `conversations`-Modell,
   `server/portal/services/message-notification-service.ts` + Tests
 - **Skills:** `best-practices`
 - **Inhalt:**
-  - Spalten additiv mit Vorgabewerten (`notifications_enabled` standardmäßig aktiv)
-  - Bündelung: benachrichtigen nur, wenn seit der letzten Benachrichtigung an diese Seite mehr als
-    15 Minuten vergangen sind
+  - `conversations.internal_notified_at` additiv mit Vorgabewert
+  - Interne Bündelung: Mail nur, wenn die letzte interne Benachrichtigung älter als 15 Minuten ist
+  - Kundenbündelung: Mail nur, wenn `customer_notified_at` älter als `PORTAL_DIGEST_WINDOW_HOURS`
+    (12 Stunden) ist
   - Kundenbenachrichtigung zusätzlich nur, wenn `last_seen_at` älter als 30 Minuten ist
-  - Abgeschalteten Benachrichtigungen wird nicht zugestellt
+  - `email_notifications_enabled = false` schließt die Mitgliedschaft in der **Abfrage** aus, nicht
+    erst beim Versand
 - **Akzeptanz:**
-  - Test: drei Nachrichten binnen fünf Minuten lösen genau eine Mail aus
-  - Test: nach 16 Minuten löst die nächste wieder eine aus
+  - Test: drei Kundennachrichten binnen fünf Minuten lösen genau eine interne Mail aus
+  - Test: nach 16 Minuten löst die nächste interne Nachricht wieder eine aus
+  - Test: zwei interne Nachrichten binnen zwölf Stunden lösen genau eine Kundenmail aus
+  - Test: nach Ablauf des Fensters löst die nächste wieder eine aus
   - Test: ein gerade aktiver Kunde bekommt keine Mail
   - Test: abgeschaltete Benachrichtigung verhindert den Versand
   - Test: Mailfehler verhindert das Speichern der Nachricht nicht
@@ -173,7 +171,7 @@ apps/workspace/src/i18n/dictionaries/portal/emails/{de,en}.json
 5. Ein Kunde, der gerade im Portal ist, bekommt keine Mail.
 6. Benachrichtigungen lassen sich im Portal abschalten und werden dann nicht mehr versendet.
 7. Mehr als 30 Nachrichten je Stunde werden begrenzt.
-8. Eigene Nachrichten sind binnen 15 Minuten bearbeitbar und zurückziehbar; fremde nicht.
+8. Nachrichten sind nach dem Senden unveränderlich; es gibt keinen Bearbeiten- und keinen Löschweg.
 9. Ein Portalnutzer erreicht keine fremde Unterhaltung.
 10. Auf Mobil ist das Eingabefeld über der Bildschirmtastatur erreichbar.
 11. `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm build:workspace` grün.

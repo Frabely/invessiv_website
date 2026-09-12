@@ -1,9 +1,8 @@
 # Task 30 — Filter und Suche
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 05. Suche verspricht keine
-> Tippfehlertoleranz.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 05 · **Branch:** `feat/crm-kundenliste-und-zuweisung`
+> **Aufwand:** M · **Abhängigkeiten:** Task 07 (Status und Tags), Task 10 (Projekte)
+> **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
 - Normalisierte Substring-/Präfixsuche über Nummer, Anzeigename, Firma, Ort, Person und Firmen-E-Mail.
 - `42`, `K42` und `K0042` werden vor der Query zur gleichen numerischen Kundennummer normalisiert.
@@ -11,12 +10,6 @@
 - `pg_trgm` darf ausschließlich als Indexbeschleunigung für `ILIKE`/Substring dienen; keine
   Similarity-Schwelle, kein unscharfes Ranking und keine entsprechende UI-Behauptung.
 - Filter ergänzt Owner und persönliche Ansicht; `deleted_at` spielt keine Rolle.
-- Branch `feat/crm-kundenliste-und-zuweisung`.
-
-> **Branch:** `feat/crm-filter-suche`
-> **Aufwand:** M (rund ein Tag)
-> **Abhängigkeiten:** Task 07 (Status und Tags), Task 10 (Projekte)
-> **Migration:** `0036_add_customer_search_index.sql` (Planwert)
 
 ## Context
 
@@ -66,7 +59,7 @@ vergessen werden könnte, und kein Backfill bestehender Zeilen.
 ## Verzeichnisstruktur
 
 ```txt
-packages/db/migrations/0036_add_customer_search_index.sql
+packages/db/migrations/<nr>_add_customer_search_index.sql
 packages/db/src/record-configuration/crm/customers.ts          + Trigramm-Index
 
 apps/workspace/src/common/constants/crm/list/customer-list-query-params.ts   erweitert
@@ -92,13 +85,14 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/toolbar/{de,en}.json
 
 ### CRM-30-T1 — Trigramm-Index
 
-- **Files:** `0036_add_customer_search_index.sql`, `record-configuration/crm/customers.ts`
+- **Files:** `<nr>_add_customer_search_index.sql`, `record-configuration/crm/customers.ts`
 - **Skills:** `best-practices`, `performance`
 - **Inhalt:**
   - `CREATE EXTENSION IF NOT EXISTS pg_trgm`
   - GIN-Index mit `gin_trgm_ops` auf dem zusammengesetzten Ausdruck aus Anzeigename, Firmenname,
     Ort und Kundennummer
-  - Ein zweiter Trigramm-Index auf `customer_contacts` (Anzeigename, E-Mail) für die
+  - Ein zweiter Trigramm-Index auf `people` (Anzeigename, E-Mail) plus einer auf der abweichenden Firmen-E-Mail in
+    `customer_contact_assignments` für die
     `EXISTS`-Unterabfrage
 - **Akzeptanz:**
   - Migration idempotent; kein Backfill nötig, weil der Index auf einem Ausdruck liegt

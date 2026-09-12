@@ -1,8 +1,8 @@
 # Task 29 — Aktivität und History
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 19.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 20 · **Branch:** `feat/crm-stunden-und-history`
+> **Aufwand:** M · **Abhängigkeiten:** Task 05 (Slot); inhaltlich profitiert er von allen vorherigen Tasks
+> **Migration:** keine
 
 - Timeline liest die gemeinsame `activities`-Tabelle aus Task 01a mit stabiler Cursor-Pagination.
 - Automatische Activities sind unveränderlich; manuelle Notizen dürfen nur über protokollierte
@@ -10,12 +10,6 @@
 - Credential-Reveal auditiert nur Actor, Datensatz und Aktion, nie Geheimwerte.
 - Neue CRM-Schreibpfade müssen Activity und Fachwrite atomar beziehungsweise über eine definierte
   Outboxabsicht erzeugen.
-- Branch `feat/crm-stunden-und-history`.
-
-> **Branch:** `feat/crm-aktivitaet`
-> **Aufwand:** M (rund ein Tag)
-> **Abhängigkeiten:** Task 05 (Slot); inhaltlich profitiert er von allen vorherigen Tasks
-> **Migration:** keine — `activities` existiert seit Task 01
 
 ## Context
 

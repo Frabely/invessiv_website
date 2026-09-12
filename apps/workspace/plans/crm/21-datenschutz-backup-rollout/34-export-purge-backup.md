@@ -1,6 +1,7 @@
 # Task 34 — Export, Purge, Backup und Restore
 
-> **Merge-Einheit:** Ordner 20 · **Abhängigkeiten:** alle produktiven CRM-Ordner 01–19 · **Status:** offen
+> **Merge-Einheit:** Ordner 21 · **Branch:** `feat/crm-datenschutz-backup-rollout`
+> **Abhängigkeiten:** alle produktiven CRM-Ordner 01–20 · **Status:** offen
 
 ## Context
 

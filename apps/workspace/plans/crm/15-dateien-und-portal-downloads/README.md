@@ -1,6 +1,6 @@
 # Ordner 15 — Dateiablage und Portaldownloads
 
-> **Status:** offen · **Abhängigkeiten:** 12, 14 · **Aufwand:** 4–5 Tage · **Reviewziel:** 70–120 Dateien
+> **Status:** offen · **Abhängigkeiten:** 12, 14 · **Aufwand:** 4–5 Tage · **Reviewziel:** 70–100 Dateien
 
 ## Ziel und Stand nach Merge
 

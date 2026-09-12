@@ -1,20 +1,14 @@
 # Task 07 — Status und Tags
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 05.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 05 · **Branch:** `feat/crm-kundenliste-und-zuweisung`
+> **Aufwand:** M · **Abhängigkeiten:** Task 05
+> **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
 - Kundenstatus ausschließlich `active | paused | archived`.
 - Pausiert nach 180 Tagen und archiviert nach 90 Tagen als manuelle Aufbewahrungsprüfung markieren;
   kundenindividuelle Frist überschreibt den Default.
 - Keine automatische Löschung oder Statusänderung.
 - Status-, Kategorie-, Tag- und Friständerung verwendet `version` und erzeugt eine Activity.
-- Branch `feat/crm-kundenliste-und-zuweisung`.
-
-> **Branch:** `feat/crm-status-tags`
-> **Aufwand:** M (rund ein Tag)
-> **Abhängigkeiten:** Task 05
-> **Migration:** `0025_create_customer_tags.sql` (Planwert)
 
 ## Context
 
@@ -70,7 +64,7 @@ customer_tag_assignments
 ## Verzeichnisstruktur
 
 ```txt
-packages/db/migrations/0025_create_customer_tags.sql
+packages/db/migrations/<nr>_create_customer_tags.sql
 packages/db/src/record-configuration/crm/{customer-tags,customer-tag-assignments}.ts
 packages/common/src/contracts/crm/customer-tag.dto.ts
 apps/workspace/src/common/constants/crm/badges/customer-status-badge-tones.ts
@@ -96,7 +90,7 @@ apps/workspace/src/components/workspace/crm/
 
 ### CRM-07-T1 — Migration und Modelle
 
-- **Files:** `0025_create_customer_tags.sql`, zwei `pgTable`-Dateien, Barrel-Erweiterung
+- **Files:** `<nr>_create_customer_tags.sql`, zwei `pgTable`-Dateien, Barrel-Erweiterung
 - **Skills:** `best-practices`
 - **Inhalt:** Tabellen wie oben, rein additiv
 - **Akzeptanz:** Migration idempotent; zwei Tags mit gleichem Slug in unterschiedlicher Schreibweise

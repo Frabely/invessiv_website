@@ -1,6 +1,6 @@
 # Ordner 08 — Flache Aufgaben
 
-> **Status:** offen · **Abhängigkeiten:** 04, 07 · **Aufwand:** 4–5 Tage · **Reviewziel:** 80–120 Dateien
+> **Status:** offen · **Abhängigkeiten:** 04, 07 · **Aufwand:** 4–5 Tage · **Reviewziel:** 80–100 Dateien
 
 ## Ziel und Stand nach Merge
 

@@ -1,8 +1,8 @@
 # Task 16 — Bulk Upload und Download
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 15.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 15 · **Branch:** `feat/crm-dateien-und-portal-downloads`
+> **Aufwand:** M · **Abhängigkeiten:** Task 15
+> **Migration:** keine
 
 - Mehrfachupload maximal 20 Dateien und 300 MB insgesamt.
 - ZIP-Download maximal 100 Dateien und 300 MB insgesamt; Limit vor Blob-Streaming prüfen.
@@ -11,12 +11,6 @@
 - ZIP streamt serverseitig, nutzt sichere kollisionsfreie Namen und darf interne sowie freigegebene
   Dateien nur nach vorheriger Workspace-Autorisierung enthalten.
 - Portal-ZIP filtert ausschließlich freigegebene Dateien und den aktiven Firmenkontext.
-- Branch `feat/crm-dateien-und-portal-downloads`.
-
-> **Branch:** `feat/crm-dateien-bulk`
-> **Aufwand:** M (rund ein Tag)
-> **Abhängigkeiten:** Task 15
-> **Migration:** keine
 
 ## Context
 

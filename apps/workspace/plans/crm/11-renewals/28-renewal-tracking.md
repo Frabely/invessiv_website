@@ -1,8 +1,8 @@
 # Task 28 — Renewal-Tracking
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 11.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 11 · **Branch:** `feat/crm-renewals`
+> **Aufwand:** M · **Abhängigkeiten:** Task 05 (Slot), Task 19 (Mail)
+> **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
 - Jeder Renewal hat `assignee_member_id`, initial den Kunden-Owner.
 - Typen: Domain, Hosting, SSL, Lizenz und `other` mit Pflichtbezeichnung.
@@ -11,12 +11,6 @@
 - Reminder sind über `(renewal_id, stage, due_date)` dedupliziert und werden als Outboxjob erzeugt.
 - Verlängerung verschiebt das Datum, setzt Stufen zurück und schreibt Alt/Neu in die Activity.
 - Archivierte Kunden erzeugen keine neuen Reminder.
-- Branch `feat/crm-renewals`.
-
-> **Branch:** `feat/crm-renewals`
-> **Aufwand:** M (rund ein Tag)
-> **Abhängigkeiten:** Task 05 (Slot), Task 19 (Mail)
-> **Migration:** `0034_create_customer_renewals.sql` (Planwert)
 
 ## Context
 
@@ -85,7 +79,7 @@ Cron
 ## Verzeichnisstruktur
 
 ```txt
-packages/db/migrations/0034_create_customer_renewals.sql
+packages/db/migrations/<nr>_create_customer_renewals.sql
 packages/db/src/record-configuration/crm/customer-renewals.ts
 packages/common/src/constants/crm/renewal-types.ts
 packages/common/src/contracts/crm/renewal.dto.ts
@@ -115,7 +109,7 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/renewals/{de,en}.json
 
 ### CRM-28-T1 — Migration, Modell, Typen
 
-- **Files:** `0034_*.sql`, `record-configuration/crm/customer-renewals.ts`,
+- **Files:** `<nr>_*.sql`, `record-configuration/crm/customer-renewals.ts`,
   `constants/crm/renewal-types.ts` + Test, `contracts/crm/renewal.dto.ts`
 - **Skills:** `best-practices`
 - **Inhalt:** Tabelle wie oben

@@ -1,20 +1,14 @@
 # Task 25 — Chat im CRM
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 17.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 17 · **Branch:** `feat/crm-kundenchat-intern`
+> **Aufwand:** M · **Abhängigkeiten:** Task 24
+> **Migration:** keine
 
 - CRM-Chat zeigt unveränderliche Nachrichten, datensatzbezogene Ungelesen-Zähler je internem
   Mitglied und optionale Links auf freigegebene Dateien.
 - Mitarbeiter können senden; Änderungen/Löschungen sind nicht vorgesehen. Redaction bleibt Owner-only.
 - Versand erzeugt Activity und Outboxevent. Mailproviderfehler machen den Chatwrite nicht rückgängig.
 - Keine Echtzeitverbindung; Laden beim Öffnen und Refresh nach Senden.
-- Branch `feat/crm-kundenchat`.
-
-> **Branch:** `feat/crm-chat-intern`
-> **Aufwand:** M (rund ein Tag)
-> **Abhängigkeiten:** Task 24
-> **Migration:** keine
 
 ## Context
 
@@ -133,13 +127,13 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/messages/{de,en}.json
 - **Skills:** `frontend-design`, `copywriting`, `accessibility`
 - **Inhalt:**
   - Verlauf im Detail-Panel, Lesestand wird beim Sichtbarwerden gesetzt
-  - Eigene Nachricht bearbeiten und zurückziehen über ein Kontextmenü, Bearbeiten nur binnen
-    15 Minuten sichtbar
+  - Kein Bearbeiten und kein Zurückziehen: Nachrichten sind unveränderlich. Nur der Owner kann
+    rechtswidrige Inhalte ausblenden, protokolliert über eine unveränderliche Redaction-Activity
   - Neuladen beim Zurückkehren in den Tab
   - Leerer Zustand mit Hinweis, dass der Kunde diese Nachrichten im Portal sieht
 - **Akzeptanz:**
   - Der Hinweis, dass der Kunde mitliest, ist unübersehbar — das ist kein internes Notizfeld
-  - Bearbeiten und Zurückziehen funktionieren und sind im Verlauf gekennzeichnet
+  - Es existiert kein Bearbeiten- und kein Löschweg; eine Owner-Redaction ist im Verlauf sichtbar gekennzeichnet
   - Ungelesene werden beim Öffnen als gelesen markiert
 
 ### CRM-25-T4 — Sammelbereich und Zähler
@@ -161,7 +155,7 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/messages/{de,en}.json
 ### CRM-25-T5 — Systemnachrichten verdrahten
 
 - **Files:** `update-project-phase.command-handler.ts` (Task 10),
-  `submit-submission.command-handler.ts` (Task 22), Dictionary-Keys
+  `submit-feedback-round.command-handler.ts` (Task 22), Dictionary-Keys
 - **Skills:** `best-practices`, `copywriting`
 - **Inhalt:**
   - Phasenwechsel und eingegangene Einreichung erzeugen je eine Systemnachricht
@@ -188,7 +182,7 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/messages/{de,en}.json
 1. Eine Nachricht lässt sich im Kundendetail schreiben und erscheint sofort im Verlauf.
 2. Eingabetaste sendet, Umschalt und Eingabetaste macht eine neue Zeile.
 3. Ein ungesendeter Entwurf überlebt das Neuladen.
-4. Eigene Nachrichten sind binnen 15 Minuten bearbeitbar und jederzeit zurückziehbar.
+4. Nachrichten sind nach dem Senden unveränderlich; eine Owner-Redaction bleibt als Activity nachvollziehbar.
 5. Der Verlauf zeigt Datumstrenner und fasst zusammenhängende Nachrichten zusammen.
 6. Nachrichteninhalte werden nie als HTML ausgeführt.
 7. Ein Phasenwechsel erscheint als Systemeintrag im Verlauf.

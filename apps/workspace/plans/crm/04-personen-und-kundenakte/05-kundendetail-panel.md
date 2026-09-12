@@ -1,9 +1,8 @@
 # Task 05 — Kundendetail-Panel
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 04. Alle Soft-/Hard-Delete-Tickets und
-> `deleted_at`-Filter weiter unten entfallen vollständig.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 04 · **Branch:** `feat/crm-personen-und-kundenakte`
+> **Aufwand:** M · **Abhängigkeiten:** Task 04
+> **Migration:** keine
 
 - Kundenakte bietet Bearbeiten, Archivieren und Reaktivieren; kein Papierkorb, Delete- oder
   Purge-Button.
@@ -12,12 +11,6 @@
 - Sektionen späterer Ordner werden erst gerendert, wenn ihr Feature vollständig geliefert wurde.
 - CRM-05-T4 wird „Archivieren/Reaktivieren mit Version und Activity“.
 - CRM-05-T5 entfällt; Purge wird ausschließlich in Task 34 nach allen Abhängigkeiten umgesetzt.
-- Branch `feat/crm-personen-und-kundenakte`.
-
-> **Branch:** `feat/crm-kundendetail`
-> **Aufwand:** M (rund ein Tag)
-> **Abhängigkeiten:** Task 04
-> **Migration:** keine
 
 ## Context
 

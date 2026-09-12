@@ -1,9 +1,8 @@
 # Task 10 — Projekte UI
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 07. Alle Soft-/Hard-Delete-Aktionen
-> weiter unten entfallen.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 07 · **Branch:** `feat/crm-projekte`
+> **Aufwand:** M · **Abhängigkeiten:** Task 09, Task 05 (Slot im Detail-Panel)
+> **Migration:** keine
 
 - Vollständige CRUD-Oberfläche bedeutet Anlage, Bearbeiten, Status/Phase ändern, Archivieren und
   Reaktivieren; kein Delete/Purge.
@@ -12,12 +11,6 @@
   atomar, abgeschlossene/archivierte nicht.
 - Form zeigt Betragsfelder passend zu `billing_model`; keine Finanzdaten in Portal-DTOs.
 - Jede Mutation verlangt `version` und zeigt 409-Konflikt verständlich an.
-- Branch `feat/crm-projekte`.
-
-> **Branch:** `feat/crm-projekte-ui`
-> **Aufwand:** M (rund ein Tag)
-> **Abhängigkeiten:** Task 09, Task 05 (Slot im Detail-Panel)
-> **Migration:** keine
 
 ## Context
 

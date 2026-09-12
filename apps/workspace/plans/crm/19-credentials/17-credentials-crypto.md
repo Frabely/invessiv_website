@@ -1,8 +1,8 @@
 # Task 17 — Credentials Crypto
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 18.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 19 · **Branch:** `feat/crm-credentials`
+> **Aufwand:** M · **Abhängigkeiten:** keine (kann parallel laufen)
+> **Migration:** keine
 
 - Felder ausschließlich Titel, Login-URL, Benutzername, Passwort und verschlüsselte Notiz.
 - AES-256-GCM mit zufälligem Nonce, Auth-Tag, Schlüsselversion und AAD aus Kunde, Credential-ID,
@@ -12,12 +12,6 @@
 - Keyring/Rotation ist resumierbar und idempotent; Adapter hält späteren Secret-Manager offen.
 - Kein TOTP, keine frei benannten Geheimfelder, kein Portalendpunkt und kein Klartext in Listen,
   Exports, Logs oder Activities.
-- Branch `feat/crm-credentials`.
-
-> **Branch:** `feat/crm-credential-crypto`
-> **Aufwand:** M (rund ein Tag)
-> **Abhängigkeiten:** keine (kann parallel laufen)
-> **Migration:** keine
 
 ## Context
 

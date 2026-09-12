@@ -1,8 +1,8 @@
 # Task 18 — Credentials UI
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 18.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 19 · **Branch:** `feat/crm-credentials`
+> **Aufwand:** L · **Abhängigkeiten:** Task 17 (Verschlüsselung), Task 05 (Slot), Task 02 (Permissions)
+> **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
 - Owner und Mitglieder mit globalem `credentials_access` dürfen Standard-Logins verwalten.
 - Listen liefern nur Metadaten. Reveal zeigt genau einen Datensatz; Anzeigen, Kopieren, Ändern,
@@ -10,12 +10,6 @@
 - Kein Bulk-Reveal, Export, TOTP, Portalzugriff oder freies Geheimfeld.
 - Klartext wird im UI standardmäßig maskiert, 30 Sekunden/Focusverlust entfernt und serverseitig
   mit `no-store` ausgeliefert.
-- Branch `feat/crm-credentials`.
-
-> **Branch:** `feat/crm-credentials`
-> **Aufwand:** L (rund zwei Tage)
-> **Abhängigkeiten:** Task 17 (Verschlüsselung), Task 05 (Slot), Task 02 (Permissions)
-> **Migration:** `0031_create_customer_credentials.sql` (Planwert)
 
 ## Context
 
@@ -79,7 +73,7 @@ POST   /api/workspace/crm/credentials/[credentialId]/reveal
 ## Verzeichnisstruktur
 
 ```txt
-packages/db/migrations/0031_create_customer_credentials.sql
+packages/db/migrations/<nr>_create_customer_credentials.sql
 packages/db/src/record-configuration/crm/customer-credentials.ts
 packages/common/src/constants/crm/credential-types.ts
 packages/common/src/contracts/crm/credential.dto.ts        ohne Geheimnisfeld
@@ -106,7 +100,7 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/credentials/{de,en}.json
 
 ### CRM-18-T1 — Migration, Modell, Typen
 
-- **Files:** `0031_create_customer_credentials.sql`, `record-configuration/crm/customer-credentials.ts`,
+- **Files:** `<nr>_create_customer_credentials.sql`, `record-configuration/crm/customer-credentials.ts`,
   `constants/crm/credential-types.ts` + Test, `contracts/crm/credential.dto.ts`
 - **Skills:** `best-practices`
 - **Inhalt:**

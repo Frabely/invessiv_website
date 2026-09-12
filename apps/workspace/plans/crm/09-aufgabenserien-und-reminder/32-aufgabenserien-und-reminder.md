@@ -1,6 +1,7 @@
 # Task 32 — Aufgabenserien und Reminder
 
-> **Merge-Einheit:** Ordner 09 · **Abhängigkeit:** Task 11 · **Status:** offen
+> **Merge-Einheit:** Ordner 09 · **Branch:** `feat/crm-aufgabenserien-und-reminder`
+> **Abhängigkeit:** Task 11 · **Status:** offen
 
 ## Context
 

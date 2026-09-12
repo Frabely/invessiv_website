@@ -1,20 +1,14 @@
 # Task 11a — Aufgabenübersicht über alle Kunden
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 08.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 08 · **Branch:** `feat/crm-aufgaben`
+> **Aufwand:** M · **Abhängigkeiten:** Task 11 (Aufgaben), Task 02a (geteilte Listen-Komponenten)
+> **Migration:** keine
 
 - Ansicht umfasst interne, direkte Kunden- und Projektaufgaben; Kontext wird explizit angezeigt.
 - „Meine Aufgaben“ filtert `assignee_member_id`; Kundenpflicht filtert `action_side = customer`.
 - Archivierte Kunden/Projekte sind standardmäßig ausgeblendet, nicht über `deleted_at`.
 - Sidebar-Zähler zeigt nur überfällige, offene Aufgaben des aktuellen Mitglieds.
 - Überfälligkeit erzeugt hier nur Darstellung; einmalige Notification folgt in Task 33.
-- Branch `feat/crm-aufgaben`.
-
-> **Branch:** `feat/crm-aufgabenuebersicht`
-> **Aufwand:** M (rund ein Tag)
-> **Abhängigkeiten:** Task 11 (Aufgaben), Task 02a (geteilte Listen-Komponenten)
-> **Migration:** keine
 
 ## Context
 

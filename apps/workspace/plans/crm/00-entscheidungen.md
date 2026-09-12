@@ -5,7 +5,7 @@
 >
 > **Stand:** 12. September 2026 · geprüft und entscheidungsvollständig.
 >
-> **Umfang:** 20 einzeln merge- und deploybare Einheiten, insgesamt **67–87 Personentage**
+> **Umfang:** 22 einzeln merge- und deploybare Einheiten, insgesamt **71–92 Personentage**
 > inklusive Tests, Reviewkorrekturen, Migrationen und Betriebsdokumentation.
 
 ## Ziel und Lieferprinzip
@@ -100,18 +100,33 @@ baubar, migrierbar und produktiv nutzbar bleiben. Dafür gilt je Ordner:
 - Ein gemeinsamer Chat pro Kunde; Lesestände immer pro Portalmitglied.
 - Nachrichten sind unveränderlich. Nur der Owner darf rechtswidrige Inhalte protokolliert ausblenden.
 - Chatnachrichten referenzieren nur vorhandene, explizit portalöffentliche Dateien.
-- Kunden erhalten gebündelte E-Mail-Hinweise, höchstens einmal je 15 Minuten.
+- Kunden erhalten gebündelte E-Mail-Hinweise, höchstens **einmal je 12 Stunden** je Mitgliedschaft.
+  Das Fenster liegt als Konstante `PORTAL_DIGEST_WINDOW_HOURS` in `packages/common`; die Umstellung
+  auf 24 Stunden ist eine Zeile und keine Migration.
+- Kundenmails sind abschaltbar: `portal_memberships.email_notifications_enabled`, Default true. Der
+  Wert wird bereits beim Einladen gesetzt und ist danach vom Portalmitglied selbst sowie intern
+  änderbar. Der Outbox-Job filtert darauf in der Abfrage.
+- Interne Benachrichtigungen bleiben bei einem 15-Minuten-Fenster; für die Reaktionszeit im Alltag
+  ist Schnelligkeit gewünscht, und interne Mitglieder sind keine Kunden.
 - Keine freien CRM-Mails und kein Mail-Eingang in Version 1.
 - Systemmails nutzen eine Invessiv-Reply-To-Adresse. Versand und Fehler werden gespeichert; kein
   Öffnungs- oder Klicktracking.
 
 ### Feedbackrunden
 
-- Jede Runde ist ein eigener, nach Absenden unveränderlicher Zeitstand.
+- Eine Feedbackrunde gehört immer zu genau einem Projekt; `project_id` ist Pflicht. Kommunikation
+  ohne Projektbezug läuft über den Chat.
+- Jede Runde ist ein eigener, nach Absenden unveränderlicher Zeitstand. Es gibt keinen
+  serverseitigen Entwurfsstatus.
+- Rundennummer fortlaufend je Projekt ab 1. Höchstens eine nicht abgeschlossene Runde je Projekt.
 - Status: `submitted` → `in_progress` → `completed`.
 - Interner Abschluss bedeutet vollständig umgesetzt und erneut durch den Kunden prüfbar.
-- Zwei Runden sind regulär erlaubt. Danach zeigt das Portal eine Anfrage für eine kostenpflichtige
-  Zusatzrunde. Erst interne Freigabe erzeugt die nächste Runde.
+- Das Rundenkontingent liegt als `projects.included_feedback_rounds` am Projekt, Default 2, bei
+  Anlage und danach intern änderbar. Ein größeres Projekt startet mit 3 oder 4 statt mit einem
+  Sonderpfad.
+- Ist das Kontingent erschöpft, ersetzt eine Zusatzrunden-Anfrage das Formular. Interne Freigabe
+  erhöht das Kontingent um genau 1 und wird mit Actor, Zeitpunkt und Begründung protokolliert.
+- Angebot und Abrechnung einer Zusatzrunde liegen außerhalb des CRM; das Portal nennt keinen Betrag.
 - Feedbackabschluss verändert die Projektphase niemals automatisch.
 
 ### Dateien
@@ -183,18 +198,37 @@ workspace_members
 people
   ├── preferred_locale
   └── customer_contact_assignments ── customers
-                                      ├── projects ── tasks / task_series
+                                      ├── projects ──┬── tasks / task_series
+                                      │              └── feedback_rounds
+                                      │                  └── feedback_round_requests
                                       ├── portal_memberships ── conversation_reads
                                       ├── conversations ── messages ── message_files
-                                      ├── feedback_rounds
-                                      ├── credentials
-                                      ├── renewals
+                                      ├── customer_credentials
+                                      ├── customer_renewals
+                                      ├── customer_tags
                                       └── retainers ── time_entries
 
 files ── genau ein Scope: customer | project | feedback_round
 activities ── Lead- und CRM-Historie
 outbox_jobs ── zuverlässige asynchrone Seiteneffekte
 ```
+
+### Tabellennamen (verbindlich)
+
+Kindtabellen eines Aggregats tragen den Aggregatnamen als Präfix — wie die bestehenden
+`lead_activities`, `lead_categories`, `lead_submissions` und `lead_email_contacts` in
+`packages/db/src/record-configuration/`. Verbindlich sind damit `customer_contact_assignments`,
+`customer_credentials`, `customer_renewals` und `customer_tags`.
+
+Präfixfrei bleiben eigenständige und querschnittliche Tabellen: `workspace_members`, `people`,
+`customers`, `projects`, `tasks`, `task_series`, `portal_memberships`, `portal_invitations`,
+`conversations`, `messages`, `message_files`, `conversation_reads`, `feedback_rounds`,
+`feedback_round_requests`, `retainers`, `time_entries`, `files`, `activities`, `outbox_jobs`,
+`notifications`.
+
+`portal_memberships` und `feedback_rounds` sind bewusst präfixfrei: sie ersetzen die früheren
+`customer_portal_users` und `customer_submissions` nicht nur im Namen, sondern im Modell —
+Mehrfirmen-Mitgliedschaft statt 1:1-Bindung, unveränderliche Runde statt Einreichung mit Entwurf.
 
 ## Contracts und Fehlerverhalten
 
@@ -204,6 +238,57 @@ outbox_jobs ── zuverlässige asynchrone Seiteneffekte
 - Fremde Portalressourcen antworten 404.
 - Mutationen verlangen einen Idempotenzschlüssel, wenn Wiederholung realistisch ist.
 - Keine Business-Logik in Route- oder UI-Dateien.
+
+## Wiederverwendete Muster
+
+Nichts davon wird neu erfunden. Vor jedem neuen Baustein wird hier geprüft, ob es die Sache schon
+fertig und getestet gibt — der Leads-Bereich deckt den Großteil ab.
+
+| Baustein              | Quelle                                                                                                                          |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Tabellendefinition    | `packages/db/src/record-configuration/leads.ts`                                                                                 |
+| Migrationen           | `packages/db/migrations/0020_*.sql` + `packages/db/scripts/run-migrations.ts`                                                   |
+| Enums / Const-Objekte | `packages/common/src/constants/contact/contact-lead-statuses.ts`                                                                |
+| Fehlercodes           | `packages/common/src/constants/leads/errors/lead-error-codes.ts`                                                                |
+| Kategorien-Tabelle    | `packages/db/src/record-configuration/lead-categories.ts` (wird **mitgenutzt**, nicht kopiert)                                  |
+| Activity-Service      | `apps/workspace/src/server/workspace/leads/services/lead-activity-service.ts`                                                   |
+| Schreibpfad           | `apps/workspace/src/server/workspace/leads/command-handler/update-lead.command-handler.ts` + `app/api/workspace/leads/route.ts` |
+| Ausblenden per Filter | `apps/workspace/src/server/workspace/leads/query-handler/lead-filter.query-handler.ts`                                          |
+| Listen-UI             | `apps/workspace/src/components/workspace/leads/table/**`                                                                        |
+| URL-State             | `apps/workspace/src/common/constants/leads/list/lead-list-query-params.ts`                                                      |
+| Create/Edit-Dialog    | `apps/workspace/src/components/workspace/leads/form/lead-form-dialog/**`                                                        |
+| Detail-Panel          | `apps/workspace/src/components/workspace/leads/detail/lead-detail-panel/**`                                                     |
+| Badges                | `apps/workspace/src/components/workspace/leads/shared/{lead-category-badge,lead-source-badge}/**`                               |
+| Empty-State           | `apps/workspace/src/components/workspace/leads/table/leads-empty-state/**`                                                      |
+| Upload-Route          | `apps/workspace/src/app/api/workspace/leads/import/route.ts`                                                                    |
+| Bulk-Aktionen         | `apps/workspace/src/app/api/workspace/leads/bulk/route.ts` + `components/.../table/bulk/**`                                     |
+| Seed-Skript           | `packages/db/scripts/seed-leads-fixture.ts` (Vorlage für `db:seed:crm`)                                                         |
+| Smoke-Test            | `packages/db/scripts/smoke-test.ts`                                                                                             |
+| ZIP                   | `apps/web/src/client/linkedin-post/services/linkedin-post-zip-download-service.ts`                                              |
+| HMAC / Token          | `apps/web/src/server/linkedin-post/services/usage-limit/linkedin-post-generator-usage-key-service.ts`                           |
+| DB-Rate-Limit         | `packages/db/src/linkedin-post/reserve-linkedin-post-generator-usage-limit.ts`                                                  |
+| Mail                  | `apps/web/src/server/services/mail/**`                                                                                          |
+
+Geteilte Listenbausteine wandern erst bei **tatsächlicher** Wiederverwendung nach
+`components/workspace/shared/` — nicht vorsorglich. Der Umzug ist risikoarm, solange es genau einen
+Aufrufer gibt; der Nachweis sind unveränderte, grüne Bestandstests.
+
+## Vor dem ersten echten Kunden (verbindlich)
+
+Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
+
+- **Clerk auf „Restricted"** stellen. `proxy.ts` lässt `/sign-up(.*)` öffentlich durch — offen
+  gelassen kann jeder ein Konto anlegen.
+- **Master-Key für die Zugangsdaten** zusätzlich offline im eigenen Passwortmanager sichern, **bevor**
+  der erste Datensatz entsteht. Der Plan kann Schlüssel rotieren, aber nicht verlieren: eine geleerte
+  Vercel-Env macht alle Zugangsdaten dauerhaft unlesbar.
+- **`PORTAL_DIGEST_WINDOW_HOURS`** und die Absenderadresse für Systemmails in allen
+  Deployment-Umgebungen gesetzt und in `.env.example` dokumentiert.
+- **`apps/workspace/vercel.json`** liegt am Root Directory des Vercel-Projekts — sonst läuft der
+  Outbox-Cron aus Ordner 10 nie an, und Reminder, Digests und Aufräumjobs bleiben stumm.
+- **DSGVO-Grundlagen**: Auskunfts- und Löschkonzept, Löschfristen, Datenexport. Das passiert **in**
+  diesem Plan (Ordner 21), nicht danach.
+- **Backup nachgewiesen wiederhergestellt** (Ordner 21), nicht nur eingerichtet.
 
 ## Migrationen
 
@@ -235,11 +320,13 @@ outbox_jobs ── zuverlässige asynchrone Seiteneffekte
 | 13  | offen  | `13-portal-dashboard`             | Portal-Dashboard mit Aufgaben und Projektdaten produktiv nutzbar                |  60–100 |  3–4 T. |
 | 14  | offen  | `14-storage-und-upload`           | Storage-Adapter und sichere Upload-Pipeline unsichtbar sicher deployt           |  70–100 |  4–5 T. |
 | 15  | offen  | `15-dateien-und-portal-downloads` | Datei-UI, Freigabe, Portaldownload und ZIP vollständig nutzbar                  |  70–100 |  4–5 T. |
-| 16  | offen  | `16-feedbackrunden`               | Zwei Feedbackrunden plus freigabepflichtige Zusatzrunde nutzbar                 |  70–100 |  4–5 T. |
-| 17  | offen  | `17-kundenchat`                   | Gemeinsamer Chat, Lesestände und gebündelte Mailhinweise aktiv                  |  80–100 |  4–5 T. |
-| 18  | offen  | `18-credentials`                  | Verschlüsselte Zugangsdaten und Security-Audit vollständig nutzbar              |   50–80 |  3–4 T. |
-| 19  | offen  | `19-stunden-und-history`          | Kontingente, Buchungen und konsolidierte Timeline vollständig nutzbar           |  60–100 |  3–4 T. |
-| 20  | offen  | `20-datenschutz-backup-rollout`   | Export, Owner-Purge, Backup/Restore und Produktivabnahme nachgewiesen           |  60–100 |  4–5 T. |
+| 16  | offen  | `16-feedbackrunden`               | Feedbackrunden im Kontingent plus freigabepflichtige Zusatzrunde nutzbar        |  70–100 |  4–5 T. |
+| 17  | offen  | `17-kundenchat-intern`            | Chat-Datenmodell und interne Chatseite vollständig nutzbar                      |   60–90 |  3–4 T. |
+| 18  | offen  | `18-kundenchat-portal`            | Portalchat, Kundendigest und Abmeldeschalter aktiv                              |   50–80 |  2–3 T. |
+| 19  | offen  | `19-credentials`                  | Verschlüsselte Zugangsdaten und Security-Audit vollständig nutzbar              |   50–80 |  3–4 T. |
+| 20  | offen  | `20-stunden-und-history`          | Kontingente, Buchungen und konsolidierte Timeline vollständig nutzbar           |  60–100 |  3–4 T. |
+| 21  | offen  | `21-datenschutz-backup-rollout`   | Export, Owner-Purge, Backup/Restore und Produktivabnahme nachgewiesen           |  60–100 |  4–5 T. |
+| 22  | offen  | `22-activity-cleanup`             | Dual-Write aus, `lead_activities` abgebaut, genau eine Activity-Tabelle         |   15–30 |  1–2 T. |
 
 Statuswerte: `offen` → `läuft` → `im Review` → `gemerged`. Beim Merge werden die Tabelle und der
 Status in der Ordner-README gemeinsam aktualisiert.

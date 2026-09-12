@@ -1,8 +1,8 @@
 # Task 13 — Storage-Adapter
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 14.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 14 · **Branch:** `feat/crm-storage-und-upload`
+> **Aufwand:** M · **Abhängigkeiten:** keine (kann parallel zu Phase 2 laufen)
+> **Migration:** keine
 
 - Anbieterneutraler Adapter mit `createUpload`, `finalizeUpload`, `createDownloadUrl`, `head`,
   `copy`, `delete` und `deleteMany`; Providerkenntnis ausschließlich in der Vercel-Blob-Datei.
@@ -11,12 +11,6 @@
 - Adapter kennt keine Portalberechtigung und löscht nie aufgrund einer DB-Cascade.
 - Signierte URLs sind kurzlebig; jeder Download prüft vorher die Datenbankberechtigung.
 - Vercel-Blob-Fehler liefern typisierte Resultate und hinterlassen einen reparierbaren Status.
-- Branch `feat/crm-storage-und-upload`.
-
-> **Branch:** `feat/crm-storage-adapter`
-> **Aufwand:** M (rund ein Tag)
-> **Abhängigkeiten:** keine (kann parallel zu Phase 2 laufen)
-> **Migration:** keine
 
 ## Context
 

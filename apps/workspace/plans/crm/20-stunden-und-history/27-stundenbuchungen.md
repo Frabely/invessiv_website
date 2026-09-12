@@ -1,8 +1,8 @@
 # Task 27 — Stundenbuchungen
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 19.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 20 · **Branch:** `feat/crm-stunden-und-history`
+> **Aufwand:** M · **Abhängigkeiten:** Task 21 (Portal-Dashboard), Task 05 (Slot)
+> **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
 - Kontingent gehört zum Kunden; Buchung referenziert optional ein Projekt desselben Kunden.
 - Dauer wird als positive Minuten gespeichert, Rest wird immer berechnet und nie redundant persistiert.
@@ -10,12 +10,6 @@
   kundensichtbar gekennzeichnet.
 - Korrektur/Löschung nutzt optimistic concurrency und protokolliert Alt/Neu; keine Rechnungs- oder
   Lexwarelogik.
-- Branch `feat/crm-stunden-und-history`.
-
-> **Branch:** `feat/crm-stundenkontingent`
-> **Aufwand:** M (rund ein Tag)
-> **Abhängigkeiten:** Task 21 (Portal-Dashboard), Task 05 (Slot)
-> **Migration:** `0035_create_retainers_and_time_entries.sql` (Planwert)
 
 ## Context
 
@@ -89,7 +83,7 @@ würde die Rechnung für den Kunden nicht aufgehen.
 ## Verzeichnisstruktur
 
 ```txt
-packages/db/migrations/0035_create_retainers_and_time_entries.sql
+packages/db/migrations/<nr>_create_retainers_and_time_entries.sql
 packages/db/src/record-configuration/crm/{retainers,time-entries}.ts
 packages/common/src/contracts/crm/{retainer.dto.ts,time-entry.dto.ts}
 packages/common/src/patterns/crm/format-duration.ts        Minuten → "h:mm"
@@ -120,7 +114,7 @@ apps/workspace/src/i18n/dictionaries/portal/retainer/{de,en}.json
 
 ### CRM-27-T1 — Migration, Modelle, Formatierung
 
-- **Files:** `0035_*.sql`, zwei `pgTable`-Dateien, zwei DTOs,
+- **Files:** `<nr>_*.sql`, zwei `pgTable`-Dateien, zwei DTOs,
   `patterns/crm/format-duration.ts` + Test
 - **Skills:** `best-practices`
 - **Inhalt:** Tabellen wie oben; Formatierung von Minuten nach `h:mm`, auch für negative Werte

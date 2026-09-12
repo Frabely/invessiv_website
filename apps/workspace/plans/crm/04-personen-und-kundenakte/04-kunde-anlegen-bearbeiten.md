@@ -1,9 +1,8 @@
 # Task 04 — Kunde anlegen und bearbeiten
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 04. Form-, Command- und Testspezifikation
-> verwenden die folgenden Invarianten statt abweichender Beispiele weiter unten.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 04 · **Branch:** `feat/crm-personen-und-kundenakte`
+> **Aufwand:** M · **Abhängigkeiten:** Task 03 (Liste, Route, Dictionaries)
+> **Migration:** keine
 
 - Kunde entsteht nur gemeinsam mit genau einem bestätigten Primärkontakt.
 - Primärkontakt wird als globale Person angelegt oder bewusst verknüpft; Firmen-E-Mail/-Telefon und
@@ -14,12 +13,6 @@
 - Dublettenprüfung normalisiert Name, Domain und USt-ID, warnt höchstens fünf Treffer und blockiert
   nach bewusster Bestätigung niemals.
 - Idempotenzschlüssel verhindert doppelte Anlage; Kundennummern werden nicht recycelt.
-- Branch `feat/crm-personen-und-kundenakte`.
-
-> **Branch:** `feat/crm-kunde-formular`
-> **Aufwand:** M (rund ein Tag)
-> **Abhängigkeiten:** Task 03 (Liste, Route, Dictionaries)
-> **Migration:** keine
 
 ## Context
 
@@ -97,7 +90,7 @@ POST /api/workspace/crm/customers
   → withPermission(CustomersWrite)
   → zod parse
   → createCustomer.command-handler
-      → Transaktion: customers insert (+ optional customer_contacts)
+      → Transaktion: customers insert + customer_contact_assignments insert (Primärkontakt, Pflicht)
       → activityService.createActivity(tx, { customerId, type: "created" })
   → Result-Union → HTTP (201 | 422)
 

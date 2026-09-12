@@ -1,9 +1,8 @@
 # Task 01 — Datenmodell Kunden
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 01. Dieser Block ersetzt alle
-> abweichenden Feld-, Tabellen-, Ticket- und Akzeptanzbeispiele weiter unten.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 01 · **Branch:** `feat/crm-kernschema-und-contracts`
+> **Aufwand:** M · **Abhängigkeiten:** keine
+> **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
 - Dieser Task legt `workspace_members`, `customers`, globale `people`,
   `customer_contact_assignments` und das Activity-Expand-Schema additiv an.
@@ -17,16 +16,11 @@
   höchstens einen, der atomare Command mindestens einen.
 - `CustomerSummaryDto.primaryContact*` ist nicht nullable.
 - Sequenzlücken sind gültig und werden getestet; keine Nummer wird wiederverwendet.
-- Branch ist `feat/crm-kernschema-und-contracts`; Migrationsnummern werden im Repository ermittelt.
-
-> **Branch:** `feat/crm-datenmodell-kunden`
-> **Aufwand:** M (rund ein Tag)
-> **Abhängigkeiten:** keine
-> **Migration:** `0021_create_customers.sql` (Planwert)
 
 ## Context
 
-Das Fundament des CRM: die Tabellen `customers` und `customer_contacts`, dazu die Konstanten, DTOs
+Das Fundament des CRM: die Tabellen `customers`, globale `people` und `customer_contact_assignments`, dazu die
+Konstanten, DTOs
 und der Mapper. Bewusst **ohne jede UI und ohne Route** — dieser Task legt nur Struktur an, damit die
 Folgetasks auf einem stabilen, reviewten Schema aufsetzen.
 
@@ -120,8 +114,8 @@ export interface CustomerDetailDto extends CustomerSummaryDto {
   vatId: string | null;
   notes: string | null;
   defaultHourlyRateCents: number | null;
-  churnedAt: string | null;
-  churnReason: string | null;
+  retentionReviewAfterDays: number | null;
+  version: number;
   contacts: CustomerContactAssignmentDto[];
 }
 ```
@@ -164,7 +158,7 @@ Kein Unique-Index auf dem Firmennamen — bewusst, siehe Entscheidungen.
 ## Verzeichnisstruktur
 
 ```txt
-packages/db/migrations/0021_create_customers.sql
+packages/db/migrations/<nr>_create_customers.sql
 packages/db/src/record-configuration/crm/
   customers.ts
   customer-contacts.ts
@@ -210,7 +204,7 @@ apps/workspace/src/server/workspace/crm/services/
 
 ### CRM-01-T2 — Migration 0021
 
-- **Files:** `packages/db/migrations/0021_create_customers.sql`
+- **Files:** `packages/db/migrations/<nr>_create_customers.sql`
 - **Skills:** `best-practices`
 - **Inhalt:**
   - Sequenz `customers_customer_number_seq`, dann beide `CREATE TABLE IF NOT EXISTS` wie oben,

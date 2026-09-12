@@ -1,9 +1,8 @@
 # Task 09 — Projekte Datenmodell
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 07. Dieser Block ersetzt Lebenszyklus-,
-> Lösch-, Owner- und Finanzbeispiele weiter unten.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 07 · **Branch:** `feat/crm-projekte`
+> **Aufwand:** S · **Abhängigkeiten:** Task 01
+> **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
 - Projektstatus `planned | active | paused | completed | cancelled | archived`, getrennt von Phase.
 - Phase folgt `workflow_key = standard_web_v1` mit `onboarding`, `design`, `development`, `feedback`,
@@ -14,12 +13,6 @@
 - Kein `archived_at` oder `deleted_at`; Archivierung ausschließlich über Status. Kein Purge in
   dieser Merge-Einheit.
 - `version` ist Pflicht und alle Updates verwenden optimistic concurrency.
-- Branch `feat/crm-projekte`; Migration neu nummerieren.
-
-> **Branch:** `feat/crm-projekte-datenmodell`
-> **Aufwand:** S (rund ein halber Tag)
-> **Abhängigkeiten:** Task 01
-> **Migration:** `0026_create_projects.sql` (Planwert)
 
 ## Context
 
@@ -39,7 +32,7 @@ ein Zwischenschritt ist eine eingefügte Zeile — ohne Umnummerierung bestehend
 | Phasen                  | `onboarding, design, development, feedback, launch, maintenance`                                                                      |
 | Modellierung            | `PROJECT_PHASE_SEQUENCE` als `readonly` Array; Reihenfolge im Array ist die Anzeigereihenfolge                                        |
 | Fortschritt             | `PROJECT_PHASE_SEQUENCE.indexOf(phase) / (länge - 1)` — nichts wird gespeichert, was sich ableiten lässt                              |
-| Abgeschlossene Projekte | Eigenes Feld `archived_at`, nicht als Phase — „abgeschlossen" ist orthogonal zur Phase                                                |
+| Abgeschlossene Projekte | Über `status` (`completed`, `cancelled`, `archived`), nicht über die Phase — Status und Phase sind orthogonal                         |
 | Preview-Link            | Eine URL am Projekt; das Kundendashboard verlinkt sie                                                                                 |
 | Zieltermin              | `next_step_label` plus `next_step_due_on` — genau das „Nächster Schritt: Erste Website-Version, 16.10.2026" aus dem Dashboard-Entwurf |
 | Beträge                 | `budget_cents` und `hourly_rate_cents`; ohne eigenen Satz gilt `customers.default_hourly_rate_cents`                                  |
@@ -88,15 +81,20 @@ export function getProjectPhaseProgress(phase: ProjectPhase): {
 export interface ProjectDto {
   id: string;
   customerId: string;
+  ownerMemberId: string;
   title: string;
+  status: ProjectStatus;
   phase: ProjectPhase;
+  workflowKey: WorkflowKey;
+  billingModel: BillingModel;
+  includedFeedbackRounds: number;
   previewUrl: string | null;
   nextStepLabel: string | null;
   nextStepDueOn: string | null; // ISO-Datum ohne Zeit
   startedOn: string | null;
   budgetCents: number | null;
   hourlyRateCents: number | null;
-  archivedAt: string | null;
+  version: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -108,19 +106,37 @@ export interface ProjectDto {
 projects
   id uuid PK
   customer_id uuid NOT NULL → customers.id ON DELETE CASCADE
+  owner_member_id uuid NOT NULL → workspace_members.id ON DELETE RESTRICT
   title text NOT NULL
+  status text NOT NULL DEFAULT 'planned'     CHECK in PROJECT_STATUS_VALUES
   phase text NOT NULL DEFAULT 'onboarding'   CHECK in PROJECT_PHASE_SEQUENCE
+  workflow_key text NOT NULL DEFAULT 'standard_web_v1'  CHECK in WORKFLOW_KEY_VALUES
+  billing_model text NOT NULL DEFAULT 'fixed_price'     CHECK in BILLING_MODEL_VALUES
+  included_feedback_rounds integer NOT NULL DEFAULT 2
+                                  CHECK (included_feedback_rounds BETWEEN 1 AND 20)
   preview_url text NULL
   next_step_label text NULL
   next_step_due_on date NULL
   started_on date NULL
   budget_cents integer NULL       CHECK (budget_cents >= 0)
   hourly_rate_cents integer NULL  CHECK (hourly_rate_cents >= 0)
-  archived_at timestamptz NULL
+  version integer NOT NULL DEFAULT 1
   created_at / updated_at timestamptz NOT NULL DEFAULT now()
+  UNIQUE INDEX projects_id_customer_uidx ON (id, customer_id)
   INDEX (customer_id, created_at desc)
-  INDEX (phase) WHERE archived_at IS NULL
+  INDEX (owner_member_id) WHERE status NOT IN ('completed','cancelled','archived')
+  INDEX (phase)           WHERE status NOT IN ('completed','cancelled','archived')
 ```
+
+Kein `archived_at` und kein `deleted_at`: Archivierung ist ausschließlich `status = 'archived'` und
+damit reversibel. Beträge sind immer EUR-Cent; eine Währungsspalte gibt es bewusst nicht.
+
+`projects_id_customer_uidx` ist redundant zum Primärschlüssel, aber notwendig: er ist das Ziel der
+zusammengesetzten Fremdschlüssel, mit denen `tasks` (Task 11) und `feedback_rounds` (Task 22) ihre
+denormalisierte `customer_id` gegen das Projekt absichern.
+
+`included_feedback_rounds` ist das Rundenkontingent aus `00-entscheidungen.md`. Es entsteht hier,
+weil es zum Projekt gehört; ausgewertet wird es erst in Ordner 16.
 
 Zusätzlich wird hier der Fremdschlüssel für `activities.project_id` nachgezogen (die Spalte entstand
 in Task 01a, als `projects` noch nicht existierte):
@@ -146,7 +162,7 @@ ALTER TABLE activities ADD CONSTRAINT activities_project_id_fkey
 
 ### CRM-09-T2 — Migration und Modell
 
-- **Files:** `packages/db/migrations/0026_create_projects.sql`,
+- **Files:** `packages/db/migrations/<nr>_create_projects.sql`,
   `packages/db/src/record-configuration/crm/projects.ts`, Barrel
 - **Skills:** `best-practices`
 - **Inhalt:** Tabelle wie oben, CHECK über `sqlCheckIn` mit `PROJECT_PHASE_SEQUENCE`, plus der

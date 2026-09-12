@@ -1,6 +1,6 @@
 # Ordner 10 — Jobs, Outbox und Benachrichtigungen
 
-> **Status:** offen · **Abhängigkeiten:** 03, 09 · **Aufwand:** 4–5 Tage · **Reviewziel:** 70–110 Dateien
+> **Status:** offen · **Abhängigkeiten:** 03, 09 · **Aufwand:** 4–5 Tage · **Reviewziel:** 70–100 Dateien
 
 ## Ziel und Stand nach Merge
 

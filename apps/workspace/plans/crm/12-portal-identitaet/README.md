@@ -1,6 +1,6 @@
 # Ordner 12 — Portalidentität und Mehrfirmenzugriff
 
-> **Status:** offen · **Abhängigkeiten:** 03, 04, 10 · **Aufwand:** 4–5 Tage · **Reviewziel:** 80–120 Dateien
+> **Status:** offen · **Abhängigkeiten:** 03, 04, 10 · **Aufwand:** 4–5 Tage · **Reviewziel:** 80–100 Dateien
 
 ## Ziel und Stand nach Merge
 
@@ -15,14 +15,17 @@ Portalseite mit Firmenname und Abmelden nutzbar; fachliche Dashboardmodule folge
 
 ## Identität und Einladung
 
-- Additive Migrationen und Modelle für `portal_invites` und `portal_memberships` entstehen in
+- Additive Migrationen und Modelle für `portal_invitations` und `portal_memberships` entstehen in
   diesem Ordner.
 - Clerk auf Restricted; öffentliche Selbstregistrierung führt nie zu CRM-Zugriff.
 - Einladung bindet Kunde und Personenzuordnung, speichert nur Tokenhash, Ablauf, Ersteller und Status.
 - Token sieben Tage gültig, einmal nutzbar und bei Widerruf sofort ungültig.
-- Nach erfolgreicher Clerk-Verifikation entsteht beziehungsweise ergänzt eine Portalmitgliedschaft
-  des Clerk-Kontos. E-Mail allein autorisiert niemals automatisch.
-- Eine Mitgliedschaft je Clerk-User und Kunde; dieselbe Person kann mehrere Firmen besitzen.
+- Eine Mitgliedschaft entsteht ausschließlich durch Einlösen eines Tokens in einer bestehenden
+  Clerk-Sitzung. Ohne Konto führt der Link zu Sign-up, mit Konto zu Sign-in — danach derselbe
+  Redeem-Pfad. Es gibt keinen E-Mail-Abgleich und keine Spalte auf einer E-Mail-Adresse.
+- Die zweite Firma verlangt eine eigene Einladung und eine eigene Einlösung; keine Direktanlage
+  durch Mitarbeiter und keine Auto-Einlösung.
+- Eine Mitgliedschaft je Kunde und Person; dieselbe Person kann mehrere Firmen bedienen.
 - Portalsprache pro Person; Einladungsmail nutzt diese Sprache.
 
 ## Firmenkontext und Grenzen
@@ -38,8 +41,9 @@ Portalseite mit Firmenname und Abmelden nutzbar; fachliche Dashboardmodule folge
 ## Merge-Gate
 
 - [ ] Interner Nutzer erhält nicht automatisch Portalzugriff und umgekehrt.
-- [ ] E-Mail-Kollision verbindet keine fremde Person oder Firma.
+- [ ] Keine Mitgliedschaft entsteht ohne eingelösten Token; E-Mail-Gleichheit verbindet nichts.
 - [ ] Token ist gehasht, abgelaufen/einmalig und nicht in Logs/Analytics.
+- [ ] Paralleles Einlösen desselben Tokens erzeugt genau eine Mitgliedschaft.
 - [ ] Zwei Firmen desselben Kontos sind wechselbar; manipulierte Kontextwerte liefern 404.
 - [ ] Fremdzugriffstests decken Query und Mutation ab.
 - [ ] Die minimale Portalseite ist ehrlich nutzbar; keine toten Dashboardkarten.

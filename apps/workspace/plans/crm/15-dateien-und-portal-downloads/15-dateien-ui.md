@@ -1,9 +1,8 @@
 # Task 15 — Dateien UI
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 15. Es gibt keine Bildvorschauen oder
-> Raster, weil Version 1 ausschließlich Dokumente erlaubt.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 15 · **Branch:** `feat/crm-dateien-und-portal-downloads`
+> **Aufwand:** L · **Abhängigkeiten:** Task 14
+> **Migration:** keine
 
 - Flache Listenansicht mit Kategorie, Name, Größe, Typ, Datum, Uploader, Inspectionstatus und
   Portalfreigabe.
@@ -11,12 +10,6 @@
 - Neue Dateien sind intern. Freigabe ist eigene versionierte Mutation und wird auditiert.
 - Keine Ordner, Versionen, Bilder, Bildannotation oder Dateikommentare.
 - Portalquery filtert `visible_to_customer` vor DTO-Erstellung und signiert erst danach.
-- Branch `feat/crm-dateien-und-portal-downloads`.
-
-> **Branch:** `feat/crm-dateien-ui`
-> **Aufwand:** L (rund zwei Tage)
-> **Abhängigkeiten:** Task 14
-> **Migration:** keine
 
 ## Context
 

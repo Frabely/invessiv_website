@@ -1,6 +1,7 @@
 # Task 33 — DB-Outbox, Job-Runner und Benachrichtigungen
 
-> **Merge-Einheit:** Ordner 10 · **Abhängigkeiten:** Tasks 02, 19, 32 · **Status:** offen
+> **Merge-Einheit:** Ordner 10 · **Branch:** `feat/crm-jobs-und-benachrichtigungen`
+> **Abhängigkeiten:** Tasks 02, 19, 32 · **Status:** offen
 
 ## Context
 
@@ -10,17 +11,20 @@ Seiteneffekts müssen atomar sein. Der externe Effekt ist wiederholbar und beoba
 
 ## Entscheidungen
 
-| Bereich          | Entscheidung                                                                  |
-| ---------------- | ----------------------------------------------------------------------------- |
-| Queue            | PostgreSQL-Outbox, keine zusätzliche Infrastruktur                            |
-| Claim            | atomar, konkurrierende Worker über `FOR UPDATE SKIP LOCKED` oder gleichwertig |
-| Zustände         | `pending`, `processing`, `succeeded`, `retry`, `failed`, `cancelled`          |
-| Retry            | exponentiell mit Jitter; Maximalversuche je Jobtyp                            |
-| Lease            | abgelaufene Worker-Lease macht Job erneut claimbar                            |
-| Idempotenz       | fachlich eindeutiger Key plus Unique-Constraint                               |
-| Benachrichtigung | DB-Tabelle je internem Mitglied, Glocke und datensatznaher Status             |
-| E-Mail intern    | nur permanenter kritischer Jobfehler oder Sicherheitsproblem                  |
-| Cron             | authentifizierter Vercel-Cron; Route selbst prüft Secret und Requestmethode   |
+| Bereich          | Entscheidung                                                                                           |
+| ---------------- | ------------------------------------------------------------------------------------------------------ |
+| Queue            | PostgreSQL-Outbox, keine zusätzliche Infrastruktur                                                     |
+| Claim            | atomar, konkurrierende Worker über `FOR UPDATE SKIP LOCKED` oder gleichwertig                          |
+| Zustände         | `pending`, `processing`, `succeeded`, `retry`, `failed`, `cancelled`                                   |
+| Retry            | exponentiell mit Jitter; Maximalversuche je Jobtyp                                                     |
+| Lease            | abgelaufene Worker-Lease macht Job erneut claimbar                                                     |
+| Idempotenz       | fachlich eindeutiger Key plus Unique-Constraint                                                        |
+| Benachrichtigung | DB-Tabelle je internem Mitglied, Glocke und datensatznaher Status                                      |
+| Digest intern    | höchstens eine Mail je Empfänger und 15-Minuten-Fenster                                                |
+| Digest Kunde     | höchstens eine Mail je Mitgliedschaft und `PORTAL_DIGEST_WINDOW_HOURS` (12 h)                          |
+| Opt-out Kunde    | `portal_memberships.email_notifications_enabled` wird in der Claim-Abfrage gefiltert, nicht im Versand |
+| E-Mail intern    | nur permanenter kritischer Jobfehler oder Sicherheitsproblem                                           |
+| Cron             | authentifizierter Vercel-Cron; Route selbst prüft Secret und Requestmethode                            |
 
 ## Contracts
 

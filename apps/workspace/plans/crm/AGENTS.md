@@ -7,10 +7,15 @@ Diese Datei regelt die Umsetzung des CRM-Plans unabhängig vom Zielordner. Spezi
 
 1. `00-entscheidungen.md` enthält alle Entscheidungen.
 2. `core-features.md` ist die Funktionsübersicht.
-3. Die 20 nummerierten Ordner enthalten Merge-Gates und Abnahmekriterien.
+3. Die 22 nummerierten Ordner enthalten Merge-Gates und Abnahmekriterien.
 
 Frühere Planstände mit 16 Merge-Einheiten und 34 Tasks sind vollständig ersetzt. Keine erinnerte
 Altentscheidung darf übernommen werden, wenn sie nicht in den aktuellen Dateien steht.
+
+**Ordnernummer ≠ Task-Nummer.** Die Ordnernummer (01–22) ist die Merge-Reihenfolge und kann sich beim
+Neuschnitt verschieben. Die Task-Nummer ist die Identität und bleibt: Task 08 heißt überall Task 08
+und liegt in Ordner 06. Querverweise im Plan nennen deshalb immer die **Task**-Nummer, Reihenfolge-
+und Abhängigkeitsaussagen die **Ordner**-Nummer.
 
 ## Mergebarer Master ist Pflicht
 
@@ -41,7 +46,13 @@ Altentscheidung darf übernommen werden, wenn sie nicht in den aktuellen Dateien
 ## Harte Sicherheitsgrenzen
 
 - Auth- oder DB-Fehler öffnen niemals Zugriff.
-- Portalautorisierung leitet den Kunden aus serverseitig validierter Mitgliedschaft ab.
+- Portalautorisierung leitet den Kunden aus serverseitig validierter Mitgliedschaft ab. Kein
+  Portal-Handler nimmt eine `customerId` aus der Anfrage — die Signatur muss das unmöglich machen.
+- Portal-Handler liegen unter `src/server/portal/`, nie unter `src/server/workspace/`. Kein Handler
+  wird von beiden Welten benutzt, auch nicht mit einem Parameter, der entscheidet, wer fragt.
+- `proxy.ts` lässt `/api/*` grundsätzlich durch. Portal- und Cron-Routen bringen ihre Prüfung selbst
+  mit.
+- Nie ein Abgleich über eine E-Mail-Adresse als Autorisierung — weder im Portal noch intern.
 - Sichtbarkeitsfilter stehen in der Query, nicht im Rendering; Fremdzugriff antwortet 404.
 - Zugangsdaten haben keinen Portalpfad und werden in Listen nie entschlüsselt.
 - Externer Text wird weder als HTML noch ungefiltertes Markdown gerendert.
@@ -51,20 +62,46 @@ Altentscheidung darf übernommen werden, wenn sie nicht in den aktuellen Dateien
 ## Architektur und Migration
 
 - Client-`fetch` → Route Handler → Command/Query Handler; keine Server Actions.
-- Result-Unions statt Exceptions für erwartete Fachfehler.
+- Result-Unions statt Exceptions für erwartete Fachfehler. Die Route mappt Fehlercodes auf HTTP über
+  eine nicht-exportierte Message-Map; Statuscodes aus `HttpResponseCode`, nie nackte Zahlen.
+- Endpunkte im Client über `WorkspaceApiEndpoint`, keine URL-Literale.
+- Pfade ausschließlich aus `SITE_ROUTES` und `createLocalePathname`, nie aus String-Literalen
+  zusammengebaut. Kein `` `/${locale}/pfad` `` in Route- oder Komponentencode.
 - Exportierte Typen, Konstanten und Patterns liegen vor Nutzung in `common`.
 - String-Unions als Const-Objekt plus abgeleitetem Typ, niemals `enum`.
 - DB-Zugriff über kanonische Drizzle-Modelle; Mapping in eigenen getesteten Services.
-- Texte vollständig in DE/EN-Dictionaries; Pfade aus typisierten Konstanten.
+- Texte vollständig in DE/EN-Dictionaries; keine Inline-Strings und keine
+  `locale === "de" ? … : …`-Branches. Von der Locale ableitbare Werte gehören als
+  `Record<Locale, …>` nach `packages/common/src/constants/i18n/`, nicht ins Dictionary.
+- **URL-State statt React-State** für Listen, Filter, Sortierung, Seiten, Mehrfachauswahl und
+  Panel-Selektion.
+- Private Seiten setzen `robots: noindex/nofollow/nocache` und
+  `export const dynamic = "force-dynamic"` — interner Bereich **und** alle Portal-Seiten.
+- Co-located `*.module.css`. Kein Inline-Styling, keine neuen globalen Komponentenklassen, Farben
+  nur über bestehende Theme-Tokens, Zustände über `data-*`-Attribute.
+- Migrationen additiv und idempotent: `CREATE … IF NOT EXISTS`, `--> statement-breakpoint` zwischen
+  den Statements, ein zweiter Lauf ist folgenlos.
 - Expand → Dual-Write → Backfill → Read-Cutover → Cleanup über getrennte Releases.
 - Bereits registrierte Migrationen werden nie verändert oder erneut erwartet.
 - Outbox-Eintrag und fachlicher DB-Write entstehen in derselben Transaktion.
+- Vor jedem neuen Baustein die Tabelle „Wiederverwendete Muster" in `00-entscheidungen.md` prüfen.
+- `lead_status` bleibt unangetastet — auch nicht „nur schnell" um einen Wert erweitert. Der Marker
+  für konvertierte Leads ist `leads.customer_id IS NOT NULL`.
 
 ## Definition of Done je Einheit
 
 - Alle Punkte der Ordner-README erfüllt und im PR-Testplan genannt.
 - Neue Fehlerpfade, Berechtigungen, Empty-States und Nebenläufigkeitskonflikte getestet.
 - Portalrelevante Einheit enthält Cross-Customer-Negativtests mit echten Sessions.
+- Jede neue Liste und Sektion hat einen Empty-State, der erklärt, **wofür** der Bereich gedacht ist —
+  nicht nur „keine Daten". Bei Filtern sind „noch nichts angelegt" und „keine Treffer" zwei
+  unterscheidbare Zustände.
+- Jeder Ordner, der neues Schema anlegt, erweitert `db:seed:crm` um realistische Beispieldaten (Muster:
+  `packages/db/scripts/seed-leads-fixture.ts`). Das Skript bleibt optional aufrufbar, damit
+  Empty-States weiterhin prüfbar sind.
+- Drizzle-Modell deckungsgleich zur Migration — Spaltennamen, Typen und Constraints. Das ist ein
+  ausdrücklicher Review-Punkt im PR, kein Nebenbei.
+- Kein toter Button, keine Route ins Leere, kein Verweis auf Unfertiges.
 - `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, DB-Smokes und
   `pnpm --filter @invessiv/workspace build` sind grün.
 - PR dokumentiert Security/Privacy, Monitoring, Rollback und bei UI-Änderungen Screenshots.

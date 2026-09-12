@@ -1,9 +1,8 @@
 # Task 02 — Rechtesystem
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 03. Dieser Block ersetzt Rollen-,
-> Bootstrap-, Actor- und Deploy-Beispiele weiter unten.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 03 · **Branch:** `feat/crm-mitglieder-und-auth`
+> **Aufwand:** M · **Abhängigkeiten:** Task 01 (Konstanten-Muster, `record-configuration/crm/`)
+> **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
 - Interne Rollen ausschließlich `owner | member`; kein `admin`.
 - Portalrollen werden nicht hier definiert. Portalmitglieder besitzen denselben fachlichen Umfang.
@@ -15,12 +14,6 @@
 - Vollständige Owner-UI für Einladung, Credentialfreigabe, Übergabe und Deaktivierung; keine
   dauerhafte SQL-Bedienung.
 - Deaktivierung blockiert bis zur Übergabe aller aktiven Zuständigkeiten; letzter Owner ist geschützt.
-- Branch `feat/crm-mitglieder-und-auth`; Migration zur Umsetzung neu nummerieren.
-
-> **Branch:** `feat/crm-rechtesystem`
-> **Aufwand:** M (rund ein Tag)
-> **Abhängigkeiten:** Task 01 (Konstanten-Muster, `record-configuration/crm/`)
-> **Migration:** `0023_create_workspace_members.sql` (Planwert)
 
 ## Context
 
@@ -130,7 +123,7 @@ lehnt danach mit `403 FORBIDDEN` ab. Bestehende Routen behalten ihren Wrapper.
 ## Verzeichnisstruktur
 
 ```txt
-packages/db/migrations/0023_create_workspace_members.sql
+packages/db/migrations/<nr>_create_workspace_members.sql
 packages/db/src/record-configuration/crm/workspace-members.ts
 
 packages/common/src/constants/crm/
@@ -162,7 +155,7 @@ apps/workspace/src/server/tests/auth/**
 
 ### CRM-02-T2 — Migration 0023 und Modell
 
-- **Files:** `packages/db/migrations/0023_create_workspace_members.sql`,
+- **Files:** `packages/db/migrations/<nr>_create_workspace_members.sql`,
   `packages/db/src/record-configuration/crm/workspace-members.ts`
 - **Skills:** `best-practices`
 - **Inhalt:**

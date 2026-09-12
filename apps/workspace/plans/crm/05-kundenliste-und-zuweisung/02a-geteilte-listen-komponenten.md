@@ -1,14 +1,12 @@
 # Task 02a — Geteilte Listen-Komponenten
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 05 und Branch
-> `feat/crm-kundenliste-und-zuweisung`. Der Umzug bleibt rein mechanisch: nur Bausteine mit
-> mindestens zwei tatsächlichen Nutzern werden geteilt; bestehende Lead-Tests ändern ausschließlich
-> Importpfade. Keine CRM-Fachlogik wandert in `shared`.
-
-> **Branch:** `feat/workspace-shared-list-components`
-> **Aufwand:** M (rund ein Tag)
-> **Abhängigkeiten:** keine (kann parallel zu Task 01 und 02 laufen)
+> **Merge-Einheit:** Ordner 05 · **Branch:** `feat/crm-kundenliste-und-zuweisung`
+> **Aufwand:** M · **Abhängigkeiten:** keine (kann parallel zu Task 01 und 02 laufen)
 > **Migration:** keine
+
+Der Umzug bleibt rein mechanisch: nur Bausteine mit mindestens zwei tatsächlichen Nutzern werden
+geteilt, bestehende Lead-Tests ändern ausschließlich Importpfade, und keine CRM-Fachlogik wandert
+nach `shared`.
 
 ## Context
 

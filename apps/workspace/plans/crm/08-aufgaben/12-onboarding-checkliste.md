@@ -1,9 +1,8 @@
 # Task 12 — Onboarding-Checkliste
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 08. „Checkliste“ bezeichnet nur eine
-> Aufgabenvorlage; sie erzeugt ausschließlich voneinander unabhängige flache Aufgaben.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 08 · **Branch:** `feat/crm-aufgaben`
+> **Aufwand:** S · **Abhängigkeiten:** Task 11 (Aufgaben)
+> **Migration:** keine
 
 - Jede Vorlagenzeile erzeugt ein normales Taskobjekt mit genau einem internen Bearbeiter.
 - Vorlage darf `action_side`, Sichtbarkeit, relativen Termin und Titel-Key setzen, aber keine
@@ -12,12 +11,6 @@
   werden.
 - Idempotenzschlüssel verhindert versehentliches doppeltes Anwenden derselben Vorlage auf dasselbe
   Projekt; bewusstes erneutes Anwenden benötigt eine neue Instanzbestätigung.
-- Branch `feat/crm-aufgaben`.
-
-> **Branch:** `feat/crm-onboarding-vorlagen`
-> **Aufwand:** S (rund ein halber Tag)
-> **Abhängigkeiten:** Task 11 (Aufgaben)
-> **Migration:** keine
 
 ## Context
 

@@ -1,7 +1,7 @@
 # CRM & Kundenportal — Funktionsumfang Version 1
 
 Diese Übersicht beschreibt ausschließlich den verbindlichen Stand aus `00-entscheidungen.md`.
-Details und Abnahmekriterien stehen in den 20 nummerierten Merge-Einheiten.
+Details und Abnahmekriterien stehen in den 22 nummerierten Merge-Einheiten.
 
 ## Internes CRM
 

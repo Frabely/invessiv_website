@@ -1,24 +1,12 @@
 # Task 14 — Dateien Datenmodell und Upload
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 14. Die alte allgemeine MIME-Allowlist
-> ist durch die Dokument-Allowlist und Signaturprüfung unten ersetzt.
+> **Merge-Einheit:** Ordner 14 · **Branch:** `feat/crm-storage-und-upload`
+> **Aufwand:** L · **Abhängigkeiten:** Task 13 (Storage-Adapter), Task 09 (Projekte)
+> **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
-## Verbindliche Revision
-
-- Version 1 erlaubt ausschließlich `.pdf`, `.txt`, `.docx`, `.xlsx`, `.pptx`; maximal 50 MB pro Datei.
-- Upload-Session maximal 20 Dateien/300 MB. Unvollständige Sessions dürfen nach 24 Stunden
-  bereinigt werden; erfolgreich finalisierte Dateien niemals automatisch.
-- Finalisierung prüft Extension, normalisierten MIME-Typ, Magic Bytes/Container, Größe und SHA-256.
-- `inspection_status = unscanned` und `FileInspectionAdapter` No-op; kein Malware-Scanner in v1.
-- Datei ist zunächst intern. Portalzugriff nur über `visible_to_customer` in SQL-Query.
-- In diesem Task sind nur Kunden- und Projekt-Scope erlaubt; Feedback-Scope wird in Task 22 additiv
-  mit erweiterter Exactly-one-Constraint ergänzt.
-- Branch `feat/crm-storage-und-upload`.
-
-> **Branch:** `feat/crm-dateien-upload`
-> **Aufwand:** L (rund zwei Tage)
-> **Abhängigkeiten:** Task 13 (Storage-Adapter), Task 09 (Projekte)
-> **Migration:** `0029_create_files.sql` (Planwert)
+In diesem Task sind nur Kunden- und Projekt-Scope erlaubt. Der Feedback-Scope wird in Task 22
+additiv mit erweiterter Exactly-one-Constraint ergänzt. Eine Datei ist zunächst intern; Portalzugriff
+entsteht ausschließlich über `visible_to_customer` in der SQL-Abfrage.
 
 ## Context
 
@@ -37,18 +25,25 @@ folgt in Task 15.
 
 | Bereich                   | Entscheidung                                                                                                                                                                             |
 | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Zuordnung                 | Drei nullbare Spalten mit **echtem Fremdschlüssel**: `customer_id` (immer gesetzt), `project_id`, `submission_id`                                                                        |
+| Zuordnung                 | Drei nullbare Spalten mit **echtem Fremdschlüssel**: `customer_id` (immer gesetzt), `project_id`, `feedback_round_id`                                                                    |
 | Warum kein `owner_type`   | Eine polymorphe `owner_id` ohne Fremdschlüssel lässt verwaiste Zeilen zu: das Löschen eines Projekts hinterließe Dateien mit toter Kennung, und die Datenbank könnte es nicht verhindern |
-| Genau eine Ebene          | CHECK-Constraint: `project_id` und `submission_id` nie beide gesetzt. Keins von beiden bedeutet „am Kunden"                                                                              |
+| Genau eine Ebene          | CHECK-Constraint: `project_id` und `feedback_round_id` nie beide gesetzt. Keins von beiden bedeutet „am Kunden"                                                                          |
 | Warum `customer_id` immer | Damit jede Rechte- und Portalabfrage ohne Join filtern kann. Sicherheitsprüfungen sollen nicht von einem korrekten Join abhängen                                                         |
-| Kategorie                 | `asset` (Material vom Kunden), `deliverable` (Ergebnis von uns), `submission` (aus einer Einreichung), `internal`                                                                        |
+| Kategorie                 | `asset` (Material vom Kunden), `deliverable` (Ergebnis von uns), `feedback` (aus einer Feedbackrunde), `internal`                                                                        |
 | Kundensichtbarkeit        | `visible_to_customer` boolean, Vorgabe `false`. Nur `deliverable`-Dateien werden üblicherweise freigegeben (Portal-Downloads, Task 22)                                                   |
 | Uploader                  | `uploaded_by_side` (`internal`/`customer`) plus `uploaded_by_id`                                                                                                                         |
-| Größenlimit               | 100 MB je Datei als Startwert, zentral als Konstante                                                                                                                                     |
-| MIME-Prüfung              | Allowlist; ausführbare Typen und HTML werden abgelehnt                                                                                                                                   |
-| Löschen                   | Datenbankzeile und Storage-Objekt gemeinsam. Schlägt das Storage-Löschen fehl, bleibt die Zeile stehen und wird als verwaist markiert — nie stille Inkonsistenz                          |
-| Kaskadiertes Löschen      | Beim harten Löschen von Kunde oder Projekt räumt eine **explizite Routine** die Storage-Objekte ab (Task 05, Task 10). Postgres kann keine Blobs löschen                                 |
-| Verwaiste Objekte         | Ein Upload, der nie bestätigt wird, hinterlässt ein Storage-Objekt ohne Zeile. Aufräumen über ein Wartungsskript, kein Cron im MVP                                                       |
+| Erlaubte Formate          | Ausschließlich `.pdf`, `.txt`, `.docx`, `.xlsx`, `.pptx`. Keine alten binären oder makrofähigen Office-Formate, keine Bilder, kein HTML, keine Archive                                   |
+| Größenlimit               | 50 MB je Datei, zentral als Konstante                                                                                                                                                    |
+| Session-Limit             | 20 Dateien und 300 MB je Upload-Session                                                                                                                                                  |
+| Prüfung bei Finalisierung | Extension, normalisierter MIME-Typ, Magic Bytes beziehungsweise Container, Größe und SHA-256 — alle fünf, nicht eines davon                                                              |
+| Warum Signatur            | Extension und gemeldeter MIME-Typ kommen beide vom Client. Nur die Dateisignatur sagt, was die Bytes tatsächlich sind                                                                    |
+| Inspektion                | `inspection_status` (`unscanned` \| `pending` \| `clean` \| `rejected` \| `error`) plus `FileInspectionAdapter`. Version 1 nutzt einen No-op-Adapter und speichert `unscanned`           |
+| Akzeptiertes Risiko       | Kein Malware-Scanner in Version 1. Das ist dokumentiert, nicht vergessen — die Adapter-Grenze hält den Nachrüstweg offen                                                                 |
+| Löschen                   | Storage-Objekt zuerst, DB-Zuordnung danach. Schlägt das Storage-Löschen fehl, bleibt die Zeile stehen und wird als verwaist markiert — nie stille Inkonsistenz                           |
+| Nie in einer Transaktion  | Blob-Löschungen laufen außerhalb der DB-Transaktion; sonst hängt ein Rollback von einem externen Dienst ab                                                                               |
+| Kaskadiertes Löschen      | Beim Purge von Kunde oder Projekt räumt eine **explizite, idempotente Routine** die Storage-Objekte ab (Task 34). Postgres kann keine Blobs löschen                                      |
+| Verwaiste Sessions        | Eine nie finalisierte Upload-Session darf nach 24 Stunden technisch bereinigt werden — als Outbox-Job aus Ordner 10, nicht als Handskript                                                |
+| Erfolgreiche Dateien      | Werden **nie** automatisch gelöscht, unabhängig von Alter und Kontext                                                                                                                    |
 | Versionierung             | Nicht enthalten. Gleichnamige Uploads sind eigenständige Dateien                                                                                                                         |
 
 ## Tabelle
@@ -56,28 +51,36 @@ folgt in Task 15.
 ```txt
 files
   id uuid PK
-  customer_id   uuid NOT NULL → customers.id           ON DELETE CASCADE
-  project_id    uuid NULL     → projects.id            ON DELETE CASCADE
-  submission_id uuid NULL     → customer_submissions.id ON DELETE CASCADE   ab Task 22
-  category text NOT NULL                  CHECK in ('asset','deliverable','submission','internal')
+  customer_id       uuid NOT NULL → customers.id       ON DELETE CASCADE
+  project_id        uuid NULL     → projects.id        ON DELETE CASCADE
+  feedback_round_id uuid NULL     → feedback_rounds.id ON DELETE CASCADE   FK ab Task 22
+  category text NOT NULL                  CHECK in ('asset','deliverable','feedback','internal')
   visible_to_customer boolean NOT NULL DEFAULT false
   original_filename text NOT NULL
   storage_key text NOT NULL UNIQUE
-  content_type text NOT NULL
-  size_bytes bigint NOT NULL
-  uploaded_by_side text NOT NULL          CHECK in RESPONSIBLE_SIDE_VALUES
+  content_type text NOT NULL              normalisiert, nicht der rohe Clientwert
+  size_bytes bigint NOT NULL              CHECK (size_bytes > 0 AND size_bytes <= 52428800)
+  sha256 text NOT NULL                    bei der Finalisierung berechnet
+  inspection_status text NOT NULL DEFAULT 'unscanned'  CHECK in FILE_INSPECTION_STATUS_VALUES
+  uploaded_by_side text NOT NULL          CHECK in UPLOAD_SIDE_VALUES ('internal','customer')
   uploaded_by_id text NULL
   orphaned_at timestamptz NULL            gesetzt, wenn das Storage-Objekt nicht gelöscht werden konnte
   created_at timestamptz NOT NULL DEFAULT now()
-  CHECK (project_id IS NULL OR submission_id IS NULL)
+  CONSTRAINT files_exactly_one_scope CHECK (
+    (project_id IS NOT NULL)::int + (feedback_round_id IS NOT NULL)::int <= 1
+  )
   INDEX (customer_id, created_at desc)
-  INDEX (project_id)    WHERE project_id IS NOT NULL
-  INDEX (submission_id) WHERE submission_id IS NOT NULL
-  INDEX (customer_id)   WHERE visible_to_customer
+  INDEX (project_id)        WHERE project_id IS NOT NULL
+  INDEX (feedback_round_id) WHERE feedback_round_id IS NOT NULL
+  INDEX (customer_id)       WHERE visible_to_customer
 ```
 
-`submission_id` entsteht als Spalte schon hier, der Fremdschlüssel wird in Task 22 nachgezogen —
-`customer_submissions` existiert bis dahin nicht. Dasselbe Muster wie bei `activities.project_id`
+Der Scope ist genau einer: keine Zusatzspalte gesetzt bedeutet Kundenscope, `project_id` bedeutet
+Projektscope, `feedback_round_id` bedeutet Feedbackrundenscope. Beide gleichzeitig sind verboten.
+Die Constraint wird in Task 22 **erweitert**, nie verengt — bestehende Zeilen bleiben gültig.
+
+`feedback_round_id` entsteht als Spalte schon hier, der Fremdschlüssel wird in Task 22 nachgezogen —
+`feedback_rounds` existiert bis dahin nicht. Dasselbe Muster wie bei `activities.project_id`
 (Task 01a/09).
 
 Der letzte Index bedient die Portal-Abfrage „welche Dateien darf dieser Kunde herunterladen".
@@ -87,7 +90,7 @@ Der letzte Index bedient die Portal-Abfrage „welche Dateien darf dieser Kunde 
 ```txt
 1) POST /api/workspace/crm/files/ticket
      → withPermission(FilesWrite)
-     → zod: customerId + optional projectId oder submissionId, Dateiname, MIME, Größe
+     → zod: customerId + optional projectId oder feedbackRoundId, Dateiname, MIME, Größe
      → Limits und Allowlist prüfen, Besitz prüfen
      → storage.createUploadTicket(key, ...)
      → { ticket, storageKey }
@@ -111,7 +114,7 @@ die als 1 KB angekündigt war.
 ## Verzeichnisstruktur
 
 ```txt
-packages/db/migrations/0029_create_files.sql
+packages/db/migrations/<nr>_create_files.sql
 packages/db/src/record-configuration/crm/files.ts
 packages/common/src/constants/crm/file-categories.ts
 packages/common/src/contracts/crm/file.dto.ts
@@ -134,14 +137,14 @@ apps/workspace/src/client/crm/file-upload-service.ts
 
 ### CRM-14-T1 — Migration, Modell, Konstanten
 
-- **Files:** `0029_create_files.sql`, `record-configuration/crm/files.ts`,
+- **Files:** `<nr>_create_files.sql`, `record-configuration/crm/files.ts`,
   `constants/crm/file-categories.ts` + Test, `contracts/crm/file.dto.ts`
 - **Skills:** `best-practices`
 - **Inhalt:** Tabelle wie oben; `size_bytes` als `bigint`, im DTO als `number` (Dateien unter
   9 Petabyte sind in JavaScript sicher darstellbar)
 - **Akzeptanz:**
   - Migration idempotent; doppelter `storage_key` wird abgelehnt
-  - Eine Zeile mit gleichzeitig gesetztem `project_id` und `submission_id` wird abgelehnt
+  - Eine Zeile mit gleichzeitig gesetztem `project_id` und `feedback_round_id` wird abgelehnt
   - Das Löschen eines Projekts entfernt dessen Datei-Zeilen per Cascade — **keine** Zeile mit toter
     Kennung bleibt zurück (das war mit der polymorphen Variante nicht garantierbar)
 
@@ -179,7 +182,7 @@ apps/workspace/src/client/crm/file-upload-service.ts
   `command-handler/delete-file.command-handler.ts`, zwei Routen + Tests
 - **Skills:** `best-practices`
 - **Inhalt:**
-  - `listFiles({ customerId, projectId?, submissionId?, category?, visibleToCustomerOnly? })`
+  - `listFiles({ customerId, projectId?, feedbackRoundId?, category?, visibleToCustomerOnly? })`
   - Signierte URL mit kurzer Gültigkeit (fünf Minuten), `Permission.FilesRead`
   - Löschen: erst Storage, dann Zeile. Schlägt Storage fehl, wird `orphaned_at` gesetzt und ein
     Fehler gemeldet — keine stille Inkonsistenz

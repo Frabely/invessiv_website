@@ -1,8 +1,8 @@
 # Task 21 — Portal-Dashboard
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 13.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 13 · **Branch:** `feat/crm-portal-dashboard`
+> **Aufwand:** L · **Abhängigkeiten:** Task 20 (Zugang), Task 10 (Projekte), Task 11 (Aufgaben)
+> **Migration:** keine
 
 - Projekte zeigen nur Status, Phase, nächsten Schritt, Termin und explizit freigegebenen Preview-Link;
   Budget, Stundensatz, interne Notizen und Owner fehlen vollständig.
@@ -11,12 +11,6 @@
 - Jeder aktive Kontakt der Firma darf abhaken; Actor und Zeitpunkt werden protokolliert.
 - Keine Dateien, Feedbackrunden oder Chatkarten anzeigen, bevor die jeweilige spätere Einheit
   vollständig gemerged ist.
-- Branch `feat/crm-portal-dashboard`.
-
-> **Branch:** `feat/crm-portal-dashboard`
-> **Aufwand:** L (rund zwei Tage)
-> **Abhängigkeiten:** Task 20 (Zugang), Task 10 (Projekte), Task 11 (Aufgaben)
-> **Migration:** keine
 
 ## Context
 

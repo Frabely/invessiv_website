@@ -1,9 +1,8 @@
 # Task 11 — Aufgaben
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 08. `responsible_side` wird durch
-> getrennte interne Zuständigkeit und Handlungspflicht ersetzt.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 08 · **Branch:** `feat/crm-aufgaben`
+> **Aufwand:** M · **Abhängigkeiten:** Task 10 (Projekte), Task 05 (Slot)
+> **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
 - Jede Aufgabe besitzt genau einen `assignee_member_id`, auch wenn der Kunde handeln muss.
 - `action_side = internal | customer`; `action_side = customer` erzwingt DB- und handlerseitig
@@ -14,12 +13,6 @@
 - Abschluss speichert Actor und Zeitpunkt; nur intern darf protokolliert wieder geöffnet werden.
 - Datum plus optionale Uhrzeit; Serien entstehen erst in Task 32.
 - Alle aktiven Mitglieder dürfen zuweisen; `version` verhindert stilles Überschreiben.
-- Branch `feat/crm-aufgaben`; Migration neu nummerieren.
-
-> **Branch:** `feat/crm-aufgaben`
-> **Aufwand:** M (rund ein Tag)
-> **Abhängigkeiten:** Task 10 (Projekte), Task 05 (Slot)
-> **Migration:** `0027_create_tasks.sql` (Planwert)
 
 ## Context
 
@@ -102,7 +95,7 @@ Der letzte Index bedient genau die Dashboard-Abfrage „offene Bringschuld diese
 ## Verzeichnisstruktur
 
 ```txt
-packages/db/migrations/0027_create_tasks.sql
+packages/db/migrations/<nr>_create_tasks.sql
 packages/db/src/record-configuration/crm/tasks.ts
 packages/common/src/constants/crm/responsible-sides.ts
 packages/common/src/contracts/crm/task.dto.ts
@@ -128,7 +121,7 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/tasks/{de,en}.json
 
 ### CRM-11-T1 — Migration, Modell, Konstanten
 
-- **Files:** `0027_create_tasks.sql`, `record-configuration/crm/tasks.ts`,
+- **Files:** `<nr>_create_tasks.sql`, `record-configuration/crm/tasks.ts`,
   `constants/crm/responsible-sides.ts` + Test, `contracts/crm/task.dto.ts`
 - **Skills:** `best-practices`
 - **Inhalt:** Tabelle wie oben inklusive der drei Indizes

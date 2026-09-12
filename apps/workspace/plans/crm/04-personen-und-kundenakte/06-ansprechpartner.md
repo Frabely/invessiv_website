@@ -1,9 +1,8 @@
 # Task 06 — Ansprechpartner
 
-> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 04. Eine kundengebundene
-> `customer_contacts`-Personentabelle ist durch globale Personen plus Zuordnungen ersetzt.
-
-## Verbindliche Revision
+> **Merge-Einheit:** Ordner 04 · **Branch:** `feat/crm-personen-und-kundenakte`
+> **Aufwand:** S · **Abhängigkeiten:** Task 05 (Detail-Panel und Slots)
+> **Migration:** keine
 
 - `people`: globale Identität, Name, primäre E-Mail/Telefon, `preferred_locale`, `version`.
 - `customer_contact_assignments`: Kunde, Person, Funktion/Rolle, optionale Firmen-E-Mail/-Telefon,
@@ -11,12 +10,6 @@
 - Dieselbe Person darf mehreren Firmen mit anderen Kontaktdaten und Funktionen angehören.
 - Jeder Kunde hat immer genau einen Primärkontakt. Wechsel atomar; letzte Zuordnung nur mit Ersatz.
 - Portalzugang bindet später die Zuordnungs-ID, nicht freien E-Mail-Abgleich.
-- Branch `feat/crm-personen-und-kundenakte`; Schema aus Ordner 01 wird hier vollständig nutzbar.
-
-> **Branch:** `feat/crm-ansprechpartner`
-> **Aufwand:** S (rund ein halber Tag)
-> **Abhängigkeiten:** Task 05 (Detail-Panel und Slots)
-> **Migration:** keine — `customer_contacts` existiert seit Task 01
 
 ## Context
 
