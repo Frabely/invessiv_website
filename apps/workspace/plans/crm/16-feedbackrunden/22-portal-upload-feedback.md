@@ -1,0 +1,270 @@
+# Task 22 — Portal Upload und Feedback
+
+> **Verbindliche Revision 2026:** Gehört zu Merge-Einheit 16. Eine Einreichung ist eine
+> Feedbackrunde, kein dauerhaft bearbeitbarer Entwurf.
+
+## Verbindliche Revision
+
+- Keine serverseitigen Entwürfe. Absenden erzeugt atomar eine neue Runde mit Status `submitted`.
+- Statusfolge je Runde: `submitted` → `in_progress` → `completed`; „completed“ bedeutet intern
+  vollständig umgesetzt und erneut prüfbar.
+- Runden 1 und 2 sind regulär erlaubt. Danach zeigt das Portal eine Zusatzrunden-Anfrage; interne
+  Freigabe erzeugt erst die nächste Runde.
+- Jede Runde besitzt eigene Dateireferenzen und bleibt nach Absenden unveränderlich.
+- Kundenfeedback ist Plaintext, maximal 20.000 Zeichen; keine HTML-/Markdown-Ausführung.
+- Portal lädt und schreibt immer im aktiven, serverseitig validierten Firmenkontext.
+- Branch `feat/crm-feedbackrunden`.
+
+> **Branch:** `feat/crm-portal-einreichung`
+> **Aufwand:** L (rund zwei Tage)
+> **Abhängigkeiten:** Task 21 (Dashboard), Task 14 (Dateien), Task 19 (Mail)
+> **Migration:** `0030_create_customer_submissions.sql` (Planwert)
+
+## Context
+
+Der Kern des ganzen Portals: Der Kunde lädt gebündelt Dateien hoch und schreibt sein Feedback in ein
+Freitextfeld. Beides landet als **eine Einreichung** im CRM — statt in fünf Mails mit Anhängen und
+einem Kommentar irgendwo dazwischen.
+
+Der Ablauf entspricht dem realen Review-Rhythmus: Man liefert eine Version, der Kunde sammelt seine
+Anmerkungen, reicht sie zusammen mit Material ein und setzt damit den Status. Der Status ist an
+beiden Enden sichtbar, sodass niemand nachfragen muss, ob etwas angekommen ist.
+
+## Entscheidungen
+
+| Bereich           | Entscheidung                                                                                                                                                                                                                               |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Einheit           | Eine `customer_submission` bündelt n Dateien und einen Freitext                                                                                                                                                                            |
+| Status            | `draft`, `submitted`, `in_review`, `accepted`, `changes_requested`                                                                                                                                                                         |
+| Wer setzt was     | Der Kunde setzt `draft` auf `submitted`. Alles Weitere setzt der Bearbeiter (Task 23)                                                                                                                                                      |
+| Entwurf           | Eine offene Einreichung im Status `draft` sammelt Uploads, bis der Kunde absendet. So geht bei einem Abbruch nichts verloren                                                                                                               |
+| Freitext          | Postgres `text`, Anwendungslimit 20.000 Zeichen                                                                                                                                                                                            |
+| Warum `text`      | In Postgres ist `text` praktisch unbegrenzt (1 GB) und wird bei Überlänge automatisch ausgelagert und komprimiert. Die Haupttabelle bleibt schmal. `varchar(n)` brächte keinen Vorteil, nur eine spätere Migration bei Änderung des Limits |
+| Entwurfssicherung | Der Text wird zusätzlich im `localStorage` gehalten, damit ein versehentlich geschlossener Tab nichts kostet                                                                                                                               |
+| Dateien           | Über denselben Pfad wie intern (Task 14), mit gesetztem `submission_id` und `category = submission`                                                                                                                                        |
+| Downloads         | Der Kunde sieht zusätzlich die für ihn freigegebenen Ergebnisse (`visible_to_customer`) und kann sie einzeln oder gebündelt herunterladen                                                                                                  |
+| Warum hier        | Die Portal-Datei-Maschinerie steht in diesem Task ohnehin. Ohne Downloads bleibt das Portal einseitig — Zuliefern ja, Ergebnisse holen nein, und genau letzteres ist meist der Grund, warum ein Kunde das Portal öffnet                    |
+| Freigabe          | Entscheidet ausschließlich der Bearbeiter über den Schalter aus Task 15. Es gibt keinen Weg, eine nicht freigegebene Datei über das Portal zu erreichen                                                                                    |
+| Limits im Portal  | Strenger als intern: 50 MB je Datei, 30 Dateien je Einreichung                                                                                                                                                                             |
+| Missbrauchsschutz | Datenbankgestütztes Limit: 5 Einreichungen je Stunde und Kunde                                                                                                                                                                             |
+| Nach dem Absenden | Einreichung ist schreibgeschützt; Ergänzungen erfordern eine neue Einreichung                                                                                                                                                              |
+| Benachrichtigung  | Mail an den internen Betreuer mit Zusammenfassung, ohne Anhänge                                                                                                                                                                            |
+
+## Tabelle
+
+```txt
+customer_submissions
+  id uuid PK
+  customer_id uuid NOT NULL → customers.id ON DELETE CASCADE
+  project_id  uuid NULL     → projects.id  ON DELETE CASCADE
+  portal_user_id uuid NULL  → customer_portal_users.id ON DELETE SET NULL
+  title text NULL
+  feedback_text text NULL
+  status text NOT NULL DEFAULT 'draft'    CHECK in SUBMISSION_STATUS_VALUES
+  submitted_at timestamptz NULL
+  reviewed_at timestamptz NULL
+  read_at timestamptz NULL                Ungelesen-Markierung fürs CRM
+  created_at / updated_at
+  INDEX (customer_id, created_at desc)
+  INDEX (status) WHERE status = 'submitted'
+  UNIQUE INDEX customer_submissions_open_draft_uidx
+    ON (customer_id, coalesce(project_id, '00000000-0000-0000-0000-000000000000'))
+    WHERE status = 'draft'
+```
+
+Der letzte Index erzwingt genau **einen** offenen Entwurf je Kunde und Projekt — sonst sammeln sich
+halbfertige Einreichungen an, in denen Dateien verschwinden.
+
+`project_id` läuft bewusst auf `ON DELETE CASCADE`, **nicht** auf `SET NULL`: Hätte ein Kunde einen
+Entwurf zu Projekt A und zusätzlich einen kundenweiten Entwurf, würden bei `SET NULL` beide Zeilen
+auf denselben `coalesce`-Wert fallen — der Unique-Index würde verletzt und das Löschen des Projekts
+wäre mit einem rohen Postgres-Fehler blockiert. Mit `CASCADE` verschwindet der Projekt-Entwurf
+zusammen mit dem Projekt, was auch fachlich richtig ist.
+
+Zusätzlich wird hier der Fremdschlüssel für `files.submission_id` nachgezogen (die Spalte entstand in
+Task 14, als diese Tabelle noch nicht existierte):
+
+```sql
+ALTER TABLE files ADD CONSTRAINT files_submission_id_fkey
+  FOREIGN KEY (submission_id) REFERENCES customer_submissions(id) ON DELETE CASCADE;
+```
+
+## Architektur
+
+```txt
+Portal
+  GET  /portal/dateien                        freigegebene Ergebnisse zum Download
+  GET  /api/portal/files/[fileId]/url         signierte URL, nur bei visible_to_customer
+  POST /api/portal/files/archive              ZIP der freigegebenen Dateien
+
+  GET  /portal/einreichen                     Seite mit Entwurf
+  POST /api/portal/submissions/draft          Entwurf holen oder anlegen
+  POST /api/portal/submissions/[id]/files/ticket    Upload-Ticket (Portal-Limits)
+  POST /api/portal/submissions/[id]/files/complete
+  PATCH /api/portal/submissions/[id]          Freitext speichern (Zwischenstand)
+  POST /api/portal/submissions/[id]/submit    absenden
+        → Status submitted, submitted_at
+        → activities (submission_received)
+        → Mail an den Betreuer
+        → Rate-Limit prüfen
+```
+
+Alle Portal-Endpunkte über `withPortalApiAuth`; die Kundenkennung kommt aus der Sitzung, und jeder
+Handler prüft zusätzlich, dass die Einreichung zu diesem Kunden gehört.
+
+## Verzeichnisstruktur
+
+```txt
+packages/db/migrations/0030_create_customer_submissions.sql
+packages/db/src/record-configuration/crm/customer-submissions.ts
+packages/common/src/constants/crm/submission-statuses.ts
+packages/common/src/constants/crm/portal-upload-limits.ts
+packages/common/src/contracts/crm/submission.dto.ts
+
+apps/workspace/src/app/api/portal/submissions/**
+apps/workspace/src/server/portal/
+  query-handler/get-open-submission.query-handler.ts
+  command-handler/{create-submission-draft,update-submission-feedback,submit-submission}.command-handler.ts
+  command-handler/{create-portal-file-ticket,complete-portal-file-upload}.command-handler.ts
+  services/portal-submission-rate-limit-service.ts
+  services/submission-notification-service.ts
+
+apps/workspace/src/app/[locale]/(portal)/portal/einreichen/page.tsx
+apps/workspace/src/components/portal/submission/
+  submission-form/
+  submission-drop-zone/
+  submission-file-list/
+  submission-feedback-field/
+  submission-success/
+  submission-history/
+apps/workspace/src/hooks/portal/use-feedback-draft.ts
+apps/workspace/src/i18n/dictionaries/portal/submission/{de,en}.json
+```
+
+## Tickets
+
+### CRM-22-T1 — Migration, Modell, Konstanten
+
+- **Files:** `0030_create_customer_submissions.sql`, `record-configuration/crm/customer-submissions.ts`,
+  `constants/crm/{submission-statuses,portal-upload-limits}.ts` + Tests, `contracts/crm/submission.dto.ts`
+- **Skills:** `best-practices`
+- **Inhalt:** Tabelle wie oben inklusive des Entwurfs-Unique-Index
+- **Akzeptanz:** Migration idempotent; ein zweiter Entwurf für dieselbe Kombination wird von der
+  Datenbank abgelehnt
+
+### CRM-22-T2 — Entwurf und Freitext
+
+- **Files:** `get-open-submission.query-handler.ts`, `create-submission-draft.command-handler.ts`,
+  `update-submission-feedback.command-handler.ts`, Routen + Tests
+- **Skills:** `best-practices`
+- **Inhalt:**
+  - Entwurf holen oder anlegen, mit `ON CONFLICT DO NOTHING` gegen parallele Tabs
+  - Freitext speichern mit Limit 20.000 Zeichen, serverseitig geprüft
+  - Abgesendete Einreichungen sind nicht mehr änderbar
+- **Akzeptanz:**
+  - Test: zwei parallele Anfragen erzeugen genau einen Entwurf
+  - Test: Änderung nach dem Absenden ergibt 409
+  - Test: 20.001 Zeichen werden abgelehnt, 20.000 akzeptiert
+  - Test: ein Text mit Umlauten und Emoji kommt unverändert zurück
+
+### CRM-22-T3 — Portal-Upload
+
+- **Files:** `create-portal-file-ticket.command-handler.ts`,
+  `complete-portal-file-upload.command-handler.ts`, Routen + Tests
+- **Skills:** `best-practices`
+- **Inhalt:**
+  - Nutzt die Bausteine aus Task 14, aber mit den strengeren Portal-Limits
+  - gesetztes `submission_id`, `category = submission`, `uploaded_by_side = customer`, `visible_to_customer = false`
+  - Anzahl der Dateien je Einreichung begrenzt
+- **Akzeptanz:**
+  - Test: Portal-Limit greift, auch wenn das interne Limit höher liegt
+  - Test: Upload in eine fremde Einreichung ergibt 404
+  - Test: Upload in eine abgesendete Einreichung ergibt 409
+  - Test: die 31. Datei wird abgelehnt
+
+### CRM-22-T4 — Absenden mit Limit und Benachrichtigung
+
+- **Files:** `submit-submission.command-handler.ts`, `portal-submission-rate-limit-service.ts`,
+  `submission-notification-service.ts`, Route + Tests
+- **Skills:** `best-practices`
+- **Inhalt:**
+  - Datenbankgestütztes Limit nach dem Muster aus
+    `reserve-linkedin-post-generator-usage-limit.ts` (atomar, ein Roundtrip)
+  - Leere Einreichung (weder Text noch Dateien) wird abgelehnt
+  - Mail mit Kundenname, Projekt, Anzahl Dateien und den ersten Zeilen des Feedbacks — **ohne** Anhänge
+  - Schlägt die Mail fehl, bleibt die Einreichung abgesendet; der Fehler wird protokolliert
+- **Akzeptanz:**
+  - Test: sechste Einreichung binnen einer Stunde ergibt 429 mit `Retry-After`
+  - Test: leere Einreichung ergibt 422
+  - Test: fehlgeschlagener Mailversand verhindert das Absenden nicht
+  - Test: genau eine Activity je Absendung
+
+### CRM-22-T5 — Freigegebene Dateien im Portal
+
+- **Files:** `server/portal/query-handler/list-customer-visible-files.query-handler.ts`,
+  `api/portal/files/[fileId]/url/route.ts`, `api/portal/files/archive/route.ts`,
+  `(portal)/portal/dateien/page.tsx`, `components/portal/files/**`,
+  `dictionaries/portal/files/{de,en}.json` + Tests
+- **Skills:** `best-practices`, `frontend-design`, `accessibility`, `copywriting`
+- **Inhalt:**
+  - Abfrage nimmt die Kundenkennung **ausschließlich** aus der Sitzung und erzwingt
+    `visible_to_customer = true` in der `WHERE`-Klausel — nicht im Rendering
+  - Liste nach Projekt gruppiert, mit Name, Größe, Typ und Datum; Vorschau für PDF/TXT, sonst Download
+  - Einzeldownload über kurzlebige signierte URL, dazu ein ZIP über die Grenzen aus Task 16
+  - Ohne freigegebene Dateien erscheint der Bereich **nicht** — kein leerer Kasten, kein toter Link
+    im Dashboard
+- **Akzeptanz:**
+  - Test: eine nicht freigegebene Datei ist über keinen Portal-Endpunkt erreichbar, auch nicht mit
+    geratener Kennung (404, keine Existenzbestätigung)
+  - Test: die Datei eines fremden Kunden ergibt 404
+  - Test: das Portal-Archiv enthält ausschließlich freigegebene Dateien
+  - Downloads funktionieren auf Mobil, Tastaturbedienung vollständig
+  - Alle Texte in DE und EN
+
+### CRM-22-T6 — Portal-Oberfläche für die Einreichung
+
+- **Files:** `components/portal/submission/**`, `hooks/portal/use-feedback-draft.ts`,
+  `(portal)/portal/einreichen/page.tsx`, `dictionaries/portal/submission/{de,en}.json`
+- **Skills:** `frontend-design`, `accessibility`, `copywriting`
+- **Inhalt:**
+  - Ablagezone plus Dateiauswahl-Button, Liste der bereits hochgeladenen Dateien mit Entfernen
+  - Freitextfeld mit automatischer Höhe, Zeichenzähler ab 80 Prozent, Entwurfssicherung im
+    `localStorage` (in `try/catch`, funktioniert auch in privaten Fenstern)
+  - Absenden erst möglich, wenn Text oder Dateien vorhanden sind; Sicherheitsfrage mit Zusammenfassung
+  - Erfolgsseite mit Bestätigung und dem, was als Nächstes passiert
+  - Verlauf früherer Einreichungen mit Status
+  - Tonfall durchweg erklärend: Der Kunde bedient kein Werkzeug, er reicht etwas ein
+- **Akzeptanz:**
+  - Entwurf überlebt das Neuladen der Seite
+  - Verlassen bei laufendem Upload oder ungespeichertem Text warnt
+  - Tastaturbedienung vollständig, Fortschritt über Live-Region
+  - Mobil ab 360 px bedienbar, Berührungsziele ausreichend groß
+  - Alle Texte in DE und EN
+
+## Deploy-Sicherheit
+
+1. **Live sichtbar:** neue Portalbereiche „Einreichen" und „Dateien"; im Dashboard erscheinen jetzt
+   die Schnellzugriffe „Dateien hochladen", „Feedback geben" und — sofern etwas freigegeben ist —
+   „Dateien herunterladen".
+2. **Bricht nichts:** eine neue Tabelle, neue Portal-Endpunkte. Der interne Dateibereich bleibt
+   unverändert — Einreichungsdateien nutzen denselben Speicher, sind aber über `submission_id`
+   abgegrenzt und tauchen im internen Dateibereich unter eigener Kategorie auf, nicht vermischt.
+3. **Offen:** die Bearbeitersicht auf eingegangene Einreichungen (Task 23). Solange sie fehlt, sind
+   Einreichungen nur über den Dateibereich und die Mail-Benachrichtigung sichtbar — deshalb ist die
+   Mail in **diesem** Task enthalten und nicht später: Ohne sie ginge eine Einreichung unter.
+
+## End-to-End-Akzeptanz
+
+1. Der Kunde lädt mehrere Dateien hoch und schreibt Feedback; beides bleibt beim Neuladen erhalten.
+2. Absenden setzt den Status und sperrt die Einreichung.
+3. Der Betreuer erhält eine Mail mit Zusammenfassung.
+4. Die Dateien erscheinen im CRM beim richtigen Kunden und Projekt, mit Kategorie „Einreichung".
+5. Zu große Dateien, zu viele Dateien und zu langer Text werden verständlich abgelehnt.
+6. Eine leere Einreichung lässt sich nicht absenden.
+7. Mehr als fünf Einreichungen je Stunde werden begrenzt.
+8. Kein Zugriff auf fremde Einreichungen, auch nicht mit geratener Kennung.
+9. Der Verlauf zeigt frühere Einreichungen mit Status.
+10. Freigegebene Ergebnisse lassen sich im Portal einzeln und als ZIP herunterladen; nicht
+    freigegebene sind über keinen Portal-Endpunkt erreichbar.
+11. Ohne freigegebene Dateien erscheint der Bereich „Dateien" gar nicht.
+12. `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm build:workspace` grün.
