@@ -30,6 +30,9 @@ per E-Mail gemeldet. Nach Merge werden Aufgabenreminder und Serien asynchron zuv
 
 - `notifications` pro Workspace-Mitglied mit Typ, sicherer Ressourcenreferenz, gelesen am und
   deterministischem Deduplizierungsschlüssel.
+- Digests sammeln: `pending_digest_events` hält offene Ereignisse je Empfänger, der Digest-Job fasst
+  beim Ablauf des Fensters **alle** zu einer Mail zusammen. Der Idempotenzschlüssel schützt gegen
+  doppelten Versand desselben Fensters, nicht gegen das Sammeln.
 - Glocke, Zähler und Liste mit Deep-Link über typisierte Routen.
 - Aufgabe: Zuweisung, frei gewählter Reminder und einmalige Überfälligkeit.
 - Normale Vorgänge bleiben In-App. Nur permanente kritische Job- oder Securityfehler senden eine

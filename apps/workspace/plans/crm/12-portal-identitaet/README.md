@@ -30,9 +30,12 @@ Portalseite mit Firmenname und Abmelden nutzbar; fachliche Dashboardmodule folge
 
 ## Firmenkontext und Grenzen
 
-- Aktive Mitgliedschaft in serverseitig geschützter, signierter Sitzung speichern.
-- Firmenwechsler zeigt nur aktive Mitgliedschaften und aktualisiert den Kontext serverseitig.
-- Jeder Query-Handler leitet `customerId` aus dem validierten Kontext ab.
+- **Kein Sitzungszustand.** Der aktive Kunde steht im Pfad (`/[locale]/portal/[customerId]/…`) und
+  wird bei jeder Anfrage neu gegen eine aktive Mitgliedschaft aufgelöst — dasselbe zustandslose
+  Muster wie `src/lib/auth/api.ts` im internen Bereich. Kein Cookie, keine Clerk-Metadaten.
+- Der Pfadwert ist ein Vorschlag, keine Autorisierung. Kein Treffer in `portal_memberships` ergibt 404.
+- Firmenwechsler ist eine Liste von Links, kein Endpunkt und kein Schreibvorgang.
+- Jeder Handler nimmt nur einen aufgelösten `PortalActor`, nie eine rohe `customerId`.
 - Widerruf invalidiert Zugriff sofort; bestehende Browser-Sitzung wird beim nächsten Request
   abgewiesen.
 - Vor Einladung muss eine Portalvorschau bestätigt sein, auch wenn sie in diesem Ordner noch nur
@@ -41,14 +44,18 @@ Portalseite mit Firmenname und Abmelden nutzbar; fachliche Dashboardmodule folge
 ## Merge-Gate
 
 - [ ] Interner Nutzer erhält nicht automatisch Portalzugriff und umgekehrt.
+- [ ] Facette „hat Portalzugang" ist in `CUSTOMER_LIST_FACETS` registriert und nutzbar.
 - [ ] Keine Mitgliedschaft entsteht ohne eingelösten Token; E-Mail-Gleichheit verbindet nichts.
 - [ ] Token ist gehasht, abgelaufen/einmalig und nicht in Logs/Analytics.
 - [ ] Paralleles Einlösen desselben Tokens erzeugt genau eine Mitgliedschaft.
-- [ ] Zwei Firmen desselben Kontos sind wechselbar; manipulierte Kontextwerte liefern 404.
+- [ ] Zwei Firmen desselben Kontos sind per Link wechselbar und gleichzeitig in zwei Tabs nutzbar.
+- [ ] Eine fremde oder geratene `customerId` im Pfad liefert 404 ohne Existenzbestätigung.
+- [ ] Widerruf wirkt beim nächsten Request, ohne Abmelden und ohne Cache-Leerung.
 - [ ] Fremdzugriffstests decken Query und Mutation ab.
 - [ ] Die minimale Portalseite ist ehrlich nutzbar; keine toten Dashboardkarten.
 
 ## Rollback
 
-Einladungen stoppen und Portal-Feature-Flag deaktivieren. Mitgliedschaften bleiben widerrufen oder
-gespeichert; der interne Workspace bleibt unabhängig.
+Einladungen stoppen und Portal-Feature-Flag deaktivieren. Mitgliedschaften bleiben gespeichert; weil
+es keinen Sitzungszustand gibt, endet der Zugang mit dem Flag sofort und vollständig. Der interne
+Workspace bleibt unabhängig.

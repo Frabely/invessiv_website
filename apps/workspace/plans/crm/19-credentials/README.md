@@ -11,9 +11,10 @@
 - [`18-credentials-ui.md`](./18-credentials-ui.md) — Metadatenliste, Einzel-Reveal,
   Berechtigung und Audit.
 
-Owner und ausdrücklich berechtigte Mitglieder können Standard-Logins sicher anlegen, einzeln
-anzeigen, kopieren, ändern und entfernen. Listen entschlüsseln nie; jeder sensible Zugriff ist im
-Security-Audit nachvollziehbar. Es gibt keinerlei Portaloberfläche oder Portalendpunkt.
+Jedes Mitglied kann Standard-Logins sicher anlegen, ändern und entfernen und sie maskiert sehen.
+Aufdecken und Kopieren dürfen nur der Owner und ausdrücklich freigegebene Mitglieder, immer für
+genau einen Datensatz. Listen entschlüsseln nie; jeder sensible Zugriff ist im Security-Audit
+nachvollziehbar. Es gibt keinerlei Portaloberfläche oder Portalendpunkt.
 
 ## Kryptografie und Schlüssel
 
@@ -42,7 +43,9 @@ Security-Audit nachvollziehbar. Es gibt keinerlei Portaloberfläche oder Portale
 
 - [ ] Manipulierter Ciphertext, Tag, AAD oder falscher Key schlägt sicher fehl.
 - [ ] Listen-, Activity-, Error- und Log-Ausgaben enthalten keinen Klartext.
-- [ ] Mitglied ohne globale Freigabe erhält 404/403 nach internem Standard.
+- [ ] Mitglied ohne `credentials_access` wird beim Aufdecken nach internem Standard abgewiesen,
+      kann aber anlegen und bearbeiten.
+- [ ] Owner deckt ohne gesetztes Flag auf; Entzug der Freigabe wirkt beim nächsten Request.
 - [ ] Keyrotation ist nach Abbruch fortsetzbar und idempotent.
 - [ ] Browser-Cache, Server-Cache und Analytics erhalten keine Reveal-Antwort.
 - [ ] Fehlende Offline-Sicherung blockiert dokumentiert den ersten Produktiveintrag.

@@ -120,6 +120,105 @@ export interface CustomerDetailDto extends CustomerSummaryDto {
 }
 ```
 
+## Optimistic Concurrency (verbindlich für den ganzen Plan)
+
+Rund zwanzig Command-Handler in späteren Ordnern brauchen `version` und 409. Das Muster entsteht **einmal hier** und
+wird überall benutzt — nicht je Ordner neu erfunden.
+
+Der Grund: die beiden naheliegenden Implementierungen sehen gleich aus und sind es nicht.
+
+```ts
+// FALSCH — Race-Fenster zwischen Lesen und Schreiben
+const current = await load(id);
+if (current.version !== input.version) return conflict(current);
+await update(id, input); // hier kann dazwischen geschrieben werden
+```
+
+```sql
+-- RICHTIG — atomar, ein Roundtrip, Version im WHERE
+UPDATE customers
+   SET …, version = version + 1, updated_at = now()
+ WHERE id = $1 AND version = $2
+-- 0 betroffene Zeilen → Konflikt (oder die Zeile existiert nicht)
+```
+
+Die falsche Variante schützt in fast allen Fällen und verliert im Rest still Daten. Deshalb ist sie
+nicht erlaubt, und deshalb kapselt ein Helper das `UPDATE`, damit niemand sie schreiben muss.
+
+### Contract
+
+```ts
+// packages/common/src/contracts/concurrency/versioned.ts
+/** Jede bearbeitbare Entität trägt `version`; jeder Write schickt die gelesene Version mit. */
+export interface VersionedWriteInput {
+  version: number;
+}
+
+// packages/common/src/constants/errors/concurrency-error-codes.ts
+export const ConcurrencyErrorCode = {
+  VersionConflict: "version_conflict",
+} as const;
+```
+
+```ts
+// packages/common/src/contracts/concurrency/version-conflict.dto.ts
+/** Body jeder 409-Antwort. `current` ist der frische Stand, damit die UI ihn zeigen kann,
+ *  ohne nachzuladen und ohne die Eingaben des Nutzers zu verwerfen. */
+export interface VersionConflictDto<T> {
+  code: typeof ConcurrencyErrorCode.VersionConflict;
+  currentVersion: number;
+  current: T;
+}
+```
+
+### Helper
+
+```ts
+// apps/workspace/src/server/workspace/shared/update-versioned.ts
+/**
+ * Führt genau ein atomares `UPDATE … WHERE id = $1 AND version = $2` aus.
+ * - 1 Zeile  → { ok: true, value }
+ * - 0 Zeilen → Zeile neu laden: existiert sie, ist es ein Konflikt; sonst NotFound.
+ * Erhöht `version` im selben Statement. Es gibt keinen zweiten Weg, `version` zu setzen.
+ */
+export async function updateVersioned<TRow, TDto>(args: {
+  tx: Tx;
+  table: PgTable;
+  id: string;
+  expectedVersion: number;
+  patch: Partial<TRow>;
+  toDto: (row: TRow) => TDto;
+}): Promise<
+  | { ok: true; value: TDto }
+  | { ok: false; code: "version_conflict"; conflict: VersionConflictDto<TDto> }
+  | { ok: false; code: "not_found" }
+>;
+```
+
+### Regeln
+
+- **Jede** bearbeitbare Tabelle bekommt `version integer NOT NULL DEFAULT 1`.
+- `version` wird ausschließlich im selben `UPDATE` erhöht. Kein Trigger — sonst springt sie an
+  Stellen, die den Helper nutzen, um zwei.
+- Jeder schreibende Command auf einer bearbeitbaren Entität nimmt `VersionedWriteInput` an. Eine
+  Mutation ohne Version ist ein Contract-Fehler, kein „optional".
+- Die Route mappt `version_conflict` auf `HttpResponseCode.Conflict` und gibt den
+  `VersionConflictDto` als Body zurück — überall derselbe Schlüssel, derselbe Typ.
+- Löschen und Statuswechsel sind ebenfalls Writes und tragen die Version mit. Ein Archivieren auf
+  veraltetem Stand ist derselbe Fehler wie ein Überschreiben.
+- Der Client verwirft bei 409 **nie** die Eingaben des Nutzers. Er zeigt den Konflikt mit dem Stand
+  aus `current` und lässt erneut absenden.
+
+### Akzeptanz (gilt als Vorlage für alle späteren Ordner)
+
+- Test: zwei Writes mit derselben Ausgangsversion — der erste gewinnt, der zweite bekommt 409 mit
+  `currentVersion` und vollständigem `current`.
+- Test: der 409-Fall hat **nichts** geschrieben.
+- Test: nach einem erfolgreichen Write ist die Version um genau 1 erhöht.
+- Test: unbekannte ID ergibt `not_found`, nicht `version_conflict` — die beiden sind
+  unterscheidbar, damit die UI nicht „jemand war schneller" für eine gelöschte Zeile anzeigt.
+- Test: nebenläufige Writes im DB-Integrationstest, nicht nur im Unit-Mock.
+
 ## Tabellen
 
 ```txt
@@ -250,6 +349,17 @@ apps/workspace/src/server/workspace/crm/services/
     Zeitstempel-Formatierung ab
   - Kein `any`, kein Cast ohne Type-Guard
 
+### CRM-01-T5 — Concurrency-Muster
+
+- **Files:** `packages/common/src/contracts/concurrency/{versioned,version-conflict.dto}.ts`,
+  `packages/common/src/constants/errors/concurrency-error-codes.ts`,
+  `apps/workspace/src/server/workspace/shared/update-versioned.ts` + DB-Integrationstest
+- **Skills:** `best-practices`
+- **Inhalt:** Contract, Fehlercode und Helper wie oben. Der Helper ist der **einzige** Weg, eine
+  versionierte Zeile zu aktualisieren
+- **Akzeptanz:** die fünf Punkte aus dem Abschnitt „Optimistic Concurrency", inklusive des
+  nebenläufigen DB-Tests
+
 ## Deploy-Sicherheit
 
 1. **Live sichtbar:** nichts. Keine Route, kein Menüpunkt, keine UI.
@@ -269,4 +379,7 @@ apps/workspace/src/server/workspace/crm/services/
 6. Ein Kunde mit zwei `is_primary`-Zuordnungen wird von der Datenbank abgelehnt; ein Kunde ohne
    Primärkontakt wird nur außerhalb des atomaren Create-Commands als ungültiger Zwischenzustand
    zugelassen.
-7. Die App verhält sich vor und nach dem Deploy identisch.
+7. Zwei Writes mit derselben Ausgangsversion: der erste gewinnt, der zweite bekommt 409 mit
+   `currentVersion` und `current`, und es wurde nichts geschrieben.
+8. Eine unbekannte ID ergibt `not_found` und nicht `version_conflict`.
+9. Die App verhält sich vor und nach dem Deploy identisch.

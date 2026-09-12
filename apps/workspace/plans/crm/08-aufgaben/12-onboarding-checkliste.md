@@ -49,7 +49,7 @@ export const TaskTemplateKey = {
 
 export interface TaskTemplateEntry {
   readonly titleKey: string; // Dictionary-Key, kein Text
-  readonly responsibleSide: ResponsibleSide;
+  readonly actionSide: ActionSide;
   readonly visibleToCustomer: boolean;
   readonly dueInDays: number | null;
 }
@@ -58,49 +58,49 @@ export const TASK_TEMPLATES = {
   [TaskTemplateKey.WebsiteNew]: [
     {
       titleKey: "logoAndBrand",
-      responsibleSide: ResponsibleSide.Customer,
+      actionSide: ActionSide.Customer,
       visibleToCustomer: true,
       dueInDays: 7,
     },
     {
       titleKey: "imageMaterial",
-      responsibleSide: ResponsibleSide.Customer,
+      actionSide: ActionSide.Customer,
       visibleToCustomer: true,
       dueInDays: 7,
     },
     {
       titleKey: "copyPages",
-      responsibleSide: ResponsibleSide.Customer,
+      actionSide: ActionSide.Customer,
       visibleToCustomer: true,
       dueInDays: 14,
     },
     {
       titleKey: "domainAccess",
-      responsibleSide: ResponsibleSide.Customer,
+      actionSide: ActionSide.Customer,
       visibleToCustomer: true,
       dueInDays: 7,
     },
     {
       titleKey: "legalPages",
-      responsibleSide: ResponsibleSide.Customer,
+      actionSide: ActionSide.Customer,
       visibleToCustomer: true,
       dueInDays: 14,
     },
     {
       titleKey: "hostingSetup",
-      responsibleSide: ResponsibleSide.Internal,
+      actionSide: ActionSide.Internal,
       visibleToCustomer: false,
       dueInDays: null,
     },
     {
       titleKey: "analyticsSetup",
-      responsibleSide: ResponsibleSide.Internal,
+      actionSide: ActionSide.Internal,
       visibleToCustomer: false,
       dueInDays: null,
     },
     {
       titleKey: "seoBasics",
-      responsibleSide: ResponsibleSide.Internal,
+      actionSide: ActionSide.Internal,
       visibleToCustomer: false,
       dueInDays: null,
     },

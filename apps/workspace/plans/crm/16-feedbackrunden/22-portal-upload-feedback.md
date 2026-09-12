@@ -105,16 +105,16 @@ ALTER TABLE files ADD CONSTRAINT files_feedback_round_id_fkey
 
 ```txt
 Portal
-  GET  /portal/dateien                        freigegebene Ergebnisse zum Download
-  GET  /api/portal/files/[fileId]/url         signierte URL, nur bei visible_to_customer
-  POST /api/portal/files/archive              ZIP der freigegebenen Dateien
+  GET  /portal/[customerId]/dateien                        freigegebene Ergebnisse zum Download
+  GET  /api/portal/[customerId]/files/[fileId]/url         signierte URL, nur bei visible_to_customer
+  POST /api/portal/[customerId]/files/archive              ZIP der freigegebenen Dateien
 
-  GET  /portal/projekte/[projectId]/feedback  Verlauf, Kontingent, Formular oder Anfrage
-  POST /api/portal/upload-sessions            Upload-Session ohne Rundenbezug (Task 14)
-  POST /api/portal/upload-sessions/[id]/files/ticket
-  POST /api/portal/upload-sessions/[id]/files/complete
+  GET  /portal/[customerId]/projekte/[projectId]/feedback  Verlauf, Kontingent, Formular oder Anfrage
+  POST /api/portal/[customerId]/upload-sessions            Upload-Session ohne Rundenbezug (Task 14)
+  POST /api/portal/[customerId]/upload-sessions/[id]/files/ticket
+  POST /api/portal/[customerId]/upload-sessions/[id]/files/complete
 
-  POST /api/portal/projects/[projectId]/feedback-rounds      absenden
+  POST /api/portal/[customerId]/projects/[projectId]/feedback-rounds      absenden
         Idempotenzschlüssel erforderlich
         → Kontingent und offene Runde prüfen
         → round_number = max + 1 in derselben Transaktion
@@ -122,10 +122,10 @@ Portal
         → activities + Outbox-Eintrag (Notification, gebündelte Mail)
         → Rate-Limit atomar reservieren
 
-  POST /api/portal/projects/[projectId]/feedback-round-requests   Zusatzrunde anfragen
+  POST /api/portal/[customerId]/projects/[projectId]/feedback-round-requests   Zusatzrunde anfragen
 ```
 
-Alle Portal-Endpunkte über `withPortalApiAuth`; die Kundenkennung kommt aus der Sitzung, und jeder
+Alle Portal-Endpunkte über `withPortalActor`; die Kundenkennung kommt aus der Sitzung, und jeder
 Handler prüft zusätzlich, dass das Projekt zu diesem Kunden gehört.
 
 ## Verzeichnisstruktur
@@ -139,16 +139,16 @@ packages/common/src/constants/crm/portal-upload-limits.ts
 packages/common/src/contracts/crm/feedback-round.dto.ts
 packages/common/src/constants/crm/errors/feedback-round-error-codes.ts
 
-apps/workspace/src/app/api/portal/projects/[projectId]/feedback-rounds/route.ts
-apps/workspace/src/app/api/portal/projects/[projectId]/feedback-round-requests/route.ts
-apps/workspace/src/app/api/portal/upload-sessions/**
+apps/workspace/src/app/api/portal/[customerId]/projects/[projectId]/feedback-rounds/route.ts
+apps/workspace/src/app/api/portal/[customerId]/projects/[projectId]/feedback-round-requests/route.ts
+apps/workspace/src/app/api/portal/[customerId]/upload-sessions/**
 apps/workspace/src/server/portal/
   query-handler/list-project-feedback-rounds.query-handler.ts
   command-handler/submit-feedback-round.command-handler.ts
   command-handler/request-additional-feedback-round.command-handler.ts
   services/portal-feedback-rate-limit-service.ts
 
-apps/workspace/src/app/[locale]/(portal)/portal/projekte/[projectId]/feedback/page.tsx
+apps/workspace/src/app/[locale]/(portal)/portal/[customerId]/projekte/[projectId]/feedback/page.tsx
 apps/workspace/src/components/portal/feedback/
   feedback-round-form/
   feedback-drop-zone/
@@ -232,8 +232,8 @@ apps/workspace/src/i18n/dictionaries/portal/feedback/{de,en}.json
 ### CRM-22-T5 — Freigegebene Dateien im Portal
 
 - **Files:** `server/portal/query-handler/list-customer-visible-files.query-handler.ts`,
-  `api/portal/files/[fileId]/url/route.ts`, `api/portal/files/archive/route.ts`,
-  `(portal)/portal/dateien/page.tsx`, `components/portal/files/**`,
+  `api/portal/[customerId]/files/[fileId]/url/route.ts`, `api/portal/[customerId]/files/archive/route.ts`,
+  `(portal)/portal/[customerId]/dateien/page.tsx`, `components/portal/files/**`,
   `dictionaries/portal/files/{de,en}.json` + Tests
 - **Skills:** `frontend-design`, `accessibility`, `copywriting`
 - **Inhalt:**
@@ -253,7 +253,7 @@ apps/workspace/src/i18n/dictionaries/portal/feedback/{de,en}.json
 ### CRM-22-T6 — Portal-Oberfläche
 
 - **Files:** `components/portal/feedback/**`, `hooks/portal/use-feedback-draft.ts`,
-  `(portal)/portal/projekte/[projectId]/feedback/page.tsx`,
+  `(portal)/portal/[customerId]/projekte/[projectId]/feedback/page.tsx`,
   `dictionaries/portal/feedback/{de,en}.json`
 - **Skills:** `frontend-design`, `accessibility`, `copywriting`
 - **Inhalt:**

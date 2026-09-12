@@ -1,6 +1,6 @@
 # Ordner 20 — Stundenkontingente und konsolidierte History
 
-> **Status:** offen · **Abhängigkeiten:** 02, 07, 12 · **Aufwand:** 3–4 Tage · **Reviewziel:** 60–100 Dateien
+> **Status:** offen · **Abhängigkeiten:** 02, 07, 12, 13 · **Aufwand:** 3–4 Tage · **Reviewziel:** 60–100 Dateien
 
 ## Ziel und Stand nach Merge
 

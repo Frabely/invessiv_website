@@ -5,7 +5,7 @@
 >
 > **Stand:** 12. September 2026 · geprüft und entscheidungsvollständig.
 >
-> **Umfang:** 22 einzeln merge- und deploybare Einheiten, insgesamt **71–92 Personentage**
+> **Umfang:** 22 einzeln merge- und deploybare Einheiten, insgesamt **69–91 Personentage**
 > inklusive Tests, Reviewkorrekturen, Migrationen und Betriebsdokumentation.
 
 ## Ziel und Lieferprinzip
@@ -33,9 +33,17 @@ baubar, migrierbar und produktiv nutzbar bleiben. Dafür gilt je Ordner:
 
 - Strikt Single-Tenant ohne `tenant_id` und ohne vorbereitete Mandantenabstraktion.
 - Interne Rollen: `owner` und `member`.
-- Alle internen Mitglieder sehen normale CRM-Daten.
-- Zugangsdaten benötigen für Mitglieder eine zusätzliche globale Freigabe; der Owner hat sie immer.
-- Datenexport, Purge und vollständiges Security-Audit sind Owner-only.
+- Ein `member` darf den Alltag vollständig: Kunden, Projekte, Aufgaben, Dateien, Renewals, Stunden,
+  Chat und Portalzugänge anlegen, bearbeiten und löschen.
+- Rollengebunden Owner-only sind vier Permissions: `members.manage`, `data.export`, `data.purge`
+  und `security.audit`. Sie lassen sich nicht freigeben.
+- `credentials.reveal` ist der Sonderfall: es steht in **keiner** Rollen-Baseline. Der Owner hat es
+  implizit, ein Member nur bei gesetztem `credentials_access` an seiner Mitgliedszeile. Vergeben und
+  entziehen darf ausschließlich der Owner, und der Entzug wirkt beim nächsten Request.
+- Zugangsdaten darf ein Member anlegen und ersetzen (`credentials.write`) und maskiert sehen (`credentials.read`). Nur
+  das **Aufdecken** hängt an der Freigabe.
+- Alles Übrige hat ein Member auch.
+- Es gibt kein `customers.delete`: in Version 1 existiert kein Löschbutton, nur der Owner-Purge.
 - Clerk bleibt Identitätsanbieter. MFA ist optional und wird nicht durch die App erzwungen.
 - Die Env-Allowlist dient nur zum atomaren Bootstrap des ersten Owners. Bei DB-Fehlern bleibt der
   Zugang geschlossen; es gibt keinen Allowlist-Fallback.
@@ -59,7 +67,13 @@ baubar, migrierbar und produktiv nutzbar bleiben. Dafür gilt je Ordner:
   abgeschlossene Datensätze behalten die historische Zuordnung.
 - Jedes aktive interne Mitglied darf Kunden, Projekte und Aufgaben neu zuweisen; jede Änderung wird
   mit Actor, Alt- und Neuzuweisung protokolliert.
-- Vor Deaktivierung eines Mitglieds ist die Übergabe sämtlicher aktiver Zuständigkeiten Pflicht.
+- Vor Deaktivierung eines Mitglieds ist die Übergabe sämtlicher aktiver Zuständigkeiten Pflicht. Die
+  Deaktivierung ist gesperrt, solange eine offene Zuständigkeit besteht; ein Command „Alles an den
+  Owner übergeben" macht es in einem Schritt. Der einzige aktive Owner ist geschützt.
+- Zuständigkeiten laufen über eine **exhaustive Registry** (`OwnableEntity` plus
+  `satisfies Record<OwnableEntity, OwnershipAdapter>`, Ordner 03). Eine neue besitzbare Entität in
+  Ordner 07, 08 oder 11 bricht den Typecheck, bis sie registriert ist — Vergessen ist damit ein
+  roter Build und kein stiller Datenfehler.
 
 ### Projekte und Aufgaben
 
@@ -134,8 +148,10 @@ baubar, migrierbar und produktiv nutzbar bleiben. Dafür gilt je Ordner:
 - Vercel Blob hinter einem anbieterneutralen `StorageAdapter`.
 - Erlaubt: `.pdf`, `.txt`, `.docx`, `.xlsx`, `.pptx`. Keine alten binären oder makrofähigen
   Office-Formate, Bilder, HTML oder Archive.
-- 50 MB je Datei; 20 Dateien und 300 MB je Sammelupload. Ein ZIP-Download umfasst höchstens 100
-  Dateien und 300 MB.
+- 50 MB je Datei; 20 Dateien und 300 MB je Sammelupload.
+- Die ZIP-Grenzen (`MAX_ARCHIVE_FILES`, `MAX_ARCHIVE_BYTES`) werden in Ordner 15 **gemessen**, nicht
+  geschätzt. Startwerte 100 Dateien und 300 MB gelten als unbestätigt, bis der Durchsatz des
+  Blob-Stores gegen das Zeitbudget der Function belegt ist. Passt es nicht, sinkt die Grenze.
 - Flache Ablage mit Kategorien statt Ordnerhierarchie.
 - Jede Datei gehört exakt einem Kunden-, Projekt- oder Feedbackrundenkontext.
 - Neue Dateien sind intern; Portalzugriff erst nach expliziter Freigabe in der DB-Abfrage.
@@ -181,12 +197,92 @@ baubar, migrierbar und produktiv nutzbar bleiben. Dafür gilt je Ordner:
 - Jobs haben Idempotenzschlüssel, Status, Versuchsanzahl, nächsten Versuch, Lease und letzten Fehler.
 - Workspace-Glocke mit Lesestand pro internem Mitglied. Nur dauerhaft fehlgeschlagene kritische
   Jobs und Sicherheitsprobleme erzeugen interne E-Mails.
+- **Digests sammeln, sie verwerfen nicht.** Eine Digest-Mail nennt alle Ereignisse seit dem letzten
+  Versand an diesen Empfänger („drei neue Nachrichten in zwei Projekten"), nie nur das erste. Der
+  Idempotenzschlüssel schützt gegen doppelten **Versand**, nicht gegen das Sammeln.
 - Neon bleibt im vorhandenen kostenlosen, über Vercel angebundenen Tarif.
 - Täglicher verschlüsselter DB-Dump über GitHub Actions in einen getrennten Vercel-Blob-Store.
 - Tägliche Dumps 30 Tage, monatliche 12 Monate, Dateikopien 90 Tage.
 - Getrennte Store-Tokens; gemeinsames Vercel-Kontorisiko wird als akzeptiert dokumentiert.
 - Ziel: RPO 24 Stunden, RTO 4 Stunden. Quartalsweiser isolierter Restore mit Manifest- und
   SHA-256-Prüfung.
+
+### Infrastruktur-Prämissen (verbindlich)
+
+Diese Werte tragen das gesamte asynchrone Design. Wer sie ändert, ändert die Abnahmekriterien von
+Ordner 10, 11, 16, 18 und 21 mit.
+
+**Laufende Kosten bleiben bei Vercel Pro. Kein zusätzlicher Dienst, kein Neon-Upgrade.** Das ist
+eine Randbedingung des Designs, keine Nebenbemerkung: der Cron-Takt ist so gewählt, dass er in das
+kostenlose Neon-Kontingent passt.
+
+- **Vercel-Plan: Pro** (vorhanden). Erlaubt minutengenaue Cron-Ausdrücke und mehrere Cron-Einträge.
+- **Kein Hobby-Plan.** Dort wäre nur ein Lauf pro Tag möglich; Reminder, Digests, Retry, Lease-Ablauf
+  und Purge-Schritte hätten je Schritt bis zu 24 Stunden Latenz. Der Plan ist so nicht umsetzbar.
+- **Neon Free bleibt.** 100 CU-Stunden je Projekt und Monat, Scale-to-Zero nach 5 Minuten Inaktivität
+  und nicht abschaltbar, Autoscaling bis 2 CU, 0,5 GB Storage. Wird das Kontingent überschritten, **suspendiert Neon die
+  Compute bis zum Monatswechsel** — bestehende Verbindungen brechen ab, neue
+  kommen nicht zustande. Es gibt keine Overage-Rechnung und kein Throttling, sondern einen
+  Komplettausfall. Das Cron-Budget ist damit eine Verfügbarkeitsfrage, keine Kostenfrage.
+
+### Cron-Takt (zweigeteilt, verbindlich)
+
+Jedes Aufwecken einer schlafenden Neon-Compute kostet Cold Start plus Query plus die 5 Minuten Idle
+bis zum nächsten Suspend — rund **5,5 Minuten Wachzeit je Lauf**, fast unabhängig davon, wie wenig
+der Lauf zu tun hat. Entscheidend ist die Zahl der Weckvorgänge, nicht die Arbeit. Tagsüber ist die
+Datenbank durch die interne Nutzung ohnehin wach; dort ist ein zusätzlicher Lauf praktisch gratis.
+Nachts und am Wochenende ist der Cron der einzige Kostenträger.
+
+Deshalb zwei Cron-Einträge statt einem:
+
+| Fenster                        | Intervall      | Weckvorgänge     | Wachzeit/Monat |
+| ------------------------------ | -------------- | ---------------- | -------------: |
+| Werktags, Geschäftszeit        | **15 Minuten** | 48/Tag × 22 Tage |          ~97 h |
+| Nächte, Wochenenden, Feiertage | **2 Stunden**  | 12/Tag           |          ~25 h |
+| **Summe**                      |                |                  |     **~122 h** |
+
+Bei 0,25 CU sind das rund **31 CU-Stunden** — und zwar als Obergrenze, weil die Rechnung annimmt,
+dass kein Mensch die App benutzt. Es bleiben etwa **69 CU-Stunden** für den Alltagsbetrieb, also
+grob 275 Wachstunden oder 12 Stunden je Werktag. Das ist für zwei bis fünf interne Nutzer reichlich.
+
+Zum Vergleich, warum es nicht ein flaches Intervall ist: ein Cron alle fünf Minuten unterläuft das
+Suspend dauerhaft und kostet ~182 CU-Stunden — das **1,8-fache** des gesamten Kontingents, und das
+Kontingent wäre um den 17. des Monats leer.
+
+### Was der Takt fachlich bedeutet
+
+- Interner Digest: 15-Minuten-Fenster, in der Geschäftszeit exakt getroffen.
+- Aufgabenreminder: ±15 Minuten in der Geschäftszeit, außerhalb bis zum nächsten Lauf. Ein Reminder
+  für 03:00 erscheint am Morgen — das ist gewollt und kein Mangel.
+- Kundendigest (12 h), Uploadbereinigung (24 h), Renewal-Erinnerungen (30/14/7 Tage): unberührt.
+- Überfälligkeitsmarker: rein aus Querydaten, braucht keinen Cron (Ordner 09).
+- Retry mit exponentiellem Backoff: profitiert vom Abstand, statt zu leiden.
+- Purge-Saga: 15 Minuten je Schritt in der Geschäftszeit; bei einem owner-ausgelösten Vorgang
+  irrelevant.
+
+### Betriebspflichten daraus
+
+- **Intervalle als Konstanten**, nicht als Zahlen in `vercel.json` verstreut. Eine Änderung ist ein
+  bewusster Schritt mit neuer Budgetrechnung.
+- **Monatliche Sichtprüfung** der CU-Stunden im Neon-Dashboard, dokumentiert im Runbook aus
+  Ordner 10. Schwelle: liegt der Verbrauch am 20. des Monats über 75 CU-Stunden, wird das
+  Nachtintervall gestreckt oder auf ein bezahltes Neon-Paket gewechselt — bevor die Suspendierung
+  eintritt, nicht danach.
+- **Storage im Blick behalten:** 0,5 GB ist die zweite Decke mit derselben Folge. Dokumente liegen
+  in Vercel Blob, aber `activities`, `messages` und `outbox_jobs` wachsen dauerhaft.
+- **Erledigte Outbox-Jobs werden abgeräumt** (Erfolgreiche nach 30 Tagen, dauerhaft fehlgeschlagene
+  nach 180 Tagen) — sonst wächst die Queue-Tabelle ohne Grenze in ein 0,5-GB-Limit.
+- **Eskalationspfad, falls es doch nicht reicht:** Neon Launch mit abschaltbarem Scale-to-Zero
+  kostet bei 0,25 CU dauerhaft wach rund 19 $ im Monat. Dann geht der Takt auf fünf Minuten und die
+  Zweiteilung entfällt. Das ist eine Konstantenänderung, kein Umbau.
+
+### Function-Laufzeit
+
+- Der konkrete `maxDuration`-Wert der ZIP-Route wird vor Ordner 15 gemessen und dort eingetragen.
+  Das serverseitige Zeitbudget leitet sich daraus ab und liegt darunter, damit ein Überschreiten eine
+  Meldung erzeugt und keinen Abbruch mitten im Download.
+- `maxDuration`, die beiden Cron-Intervalle und die Neon-Tarifentscheidung werden im PR der
+  jeweiligen Einheit ausdrücklich benannt.
 
 ## Datenmodell auf Domänenebene
 
@@ -278,7 +374,9 @@ Aufrufer gibt; der Nachweis sind unveränderte, grüne Bestandstests.
 Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 
 - **Clerk auf „Restricted"** stellen. `proxy.ts` lässt `/sign-up(.*)` öffentlich durch — offen
-  gelassen kann jeder ein Konto anlegen.
+  gelassen kann jeder ein Konto anlegen. Danach entstehen **alle** Konten über eine Einladung:
+  Portalkontakte über den Token-Flow aus Ordner 12, interne Mitglieder über eine Einladung im
+  Clerk-Dashboard.
 - **Master-Key für die Zugangsdaten** zusätzlich offline im eigenen Passwortmanager sichern, **bevor**
   der erste Datensatz entsteht. Der Plan kann Schlüssel rotieren, aber nicht verlieren: eine geleerte
   Vercel-Env macht alle Zugangsdaten dauerhaft unlesbar.

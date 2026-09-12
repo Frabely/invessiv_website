@@ -44,7 +44,7 @@ internen Aufgaben zurückgeben.
 
 ```ts
 // packages/common/src/constants/crm/responsible-sides.ts
-export const ResponsibleSide = {
+export const ActionSide = {
   Internal: "internal",
   Customer: "customer",
 } as const;
@@ -58,11 +58,11 @@ export interface CrmTaskDto {
   projectId: string | null;
   title: string;
   description: string | null;
-  responsibleSide: ResponsibleSide;
+  actionSide: ActionSide;
   visibleToCustomer: boolean;
   dueOn: string | null;
   doneAt: string | null;
-  doneBySide: ResponsibleSide | null;
+  doneBySide: ActionSide | null;
   /** gesetzt, wenn die Aufgabe aus einer Vorlage stammt (Task 12) — dann übersetzbar */
   titleKey: string | null;
 }

@@ -26,6 +26,8 @@ vollständig nutzbar.
 
 ## Merge-Gate
 
+- [ ] `Renewals` ist in `OwnableEntity` registriert und hat einen Adapter in der Ownership-Registry (Ordner 03);
+      Übergabe und Deaktivierungszählung erfassen die Entität, mit Test.
 - [ ] Reminder entstehen bei wiederholtem Cronlauf nur einmal.
 - [ ] Änderung des Ablaufdatums berechnet alle Stufen korrekt neu.
 - [ ] `other` ohne Bezeichnung wird abgelehnt.

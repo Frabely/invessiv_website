@@ -10,7 +10,8 @@
   Terminberechnung, Edit-Scope, Idempotenz und DST-Tests.
 
 Aufgaben können täglich, wöchentlich, monatlich oder jährlich wiederkehren und optional eine
-zeitgenaue In-App-Erinnerung besitzen. Bis der generische Runner aus Ordner 10 aktiviert wird,
+In-App-Erinnerung besitzen. Deren Auslösung folgt dem Cron-Takt aus Ordner 10, nicht der Minute.
+Bis der generische Runner dort aktiviert wird,
 erzeugt der Abschluss-Command die nächste Aufgabe synchron und idempotent; zeitbasierte Reminder
 bleiben per Feature-Flag unsichtbar.
 

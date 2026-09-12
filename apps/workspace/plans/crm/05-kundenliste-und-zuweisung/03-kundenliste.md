@@ -1,16 +1,19 @@
 # Task 03 — Kundenliste
 
 > **Merge-Einheit:** Ordner 05 · **Branch:** `feat/crm-kundenliste-und-zuweisung`
-> **Aufwand:** M · **Abhängigkeiten:** Task 01 (Schema, DTOs, Mapper), Task 02 (`requireWorkspacePermission`),
+> **Aufwand:** M · **Abhängigkeiten:** Task 04 (minimale Übersicht und Route),
+> Task 02a (geteilte Listen-Komponenten), Task 07 (Status und Tags)
+> **Migration:** keine
+
+Dieser Task **erweitert** die minimale Kundenübersicht aus Task 04 zur vollen Liste: Pagination,
+Sortierung, URL-State, Mehrfachauswahl und die geteilten Bausteine aus Task 02a. Der Query-Handler
+wird erweitert, nicht ersetzt — Signatur und DTO bleiben stabil.
 
 - Standardliste filtert `status != archived`; archivierte Kunden sind über expliziten URL-Filter
   erreichbar.
 - Liste zeigt Owner und verpflichtenden Primärkontakt.
 - Ansichten „meine Kunden“, Status, Kategorie und Tags laufen vollständig über URL-State.
 - Count und Liste verwenden exakt dieselbe Querydefinition.
-
-> Task 02a (geteilte Listen-Komponenten)
-> **Migration:** keine
 
 ## Context
 

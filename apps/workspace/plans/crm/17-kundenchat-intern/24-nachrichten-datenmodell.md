@@ -56,7 +56,7 @@ export interface MessageDto {
   type: MessageType;
   body: string; // bei system: ein Dictionary-Key mit Parametern im metadata
   metadata: Record<string, string> | null;
-  senderSide: ResponsibleSide;
+  senderSide: MessageSenderSide;
   senderDisplayName: string;
   createdAt: string;
   editedAt: string | null;
@@ -115,11 +115,11 @@ Sicherheitsprüfung soll ohne Join auskommen.
 
 ```txt
 intern                                     Portal
-GET   /api/workspace/crm/conversations/... GET  /api/portal/conversation
-POST  .../messages                         POST /api/portal/conversation/messages
-PATCH .../messages/[messageId]             PATCH /api/portal/conversation/messages/[id]
-DELETE .../messages/[messageId]            DELETE /api/portal/conversation/messages/[id]
-POST  .../read                             POST /api/portal/conversation/read
+GET   /api/workspace/crm/conversations/... GET  /api/portal/[customerId]/conversation
+POST  .../messages                         POST /api/portal/[customerId]/conversation/messages
+PATCH .../messages/[messageId]             PATCH /api/portal/[customerId]/conversation/messages/[id]
+DELETE .../messages/[messageId]            DELETE /api/portal/[customerId]/conversation/messages/[id]
+POST  .../read                             POST /api/portal/[customerId]/conversation/read
 ```
 
 Getrennte Routen und getrennte Handler für beide Welten — kein gemeinsamer Handler, der über einen
@@ -187,7 +187,6 @@ apps/workspace/src/server/workspace/crm/services/
   - Portal-Handler prüfen zusätzlich die Zugehörigkeit der Unterhaltung zur Sitzung
 - **Akzeptanz:**
   - Test: Bearbeiten/Ändern einer Nachricht ist nicht möglich
-  - Test: nach 16 Minuten ergibt Bearbeiten 409
   - Test: Systemnachricht lässt sich nicht redigieren
   - Test: leerer oder nur aus Leerzeichen bestehender Text wird abgelehnt
   - Test: nach dem Löschen ist der Inhalt in der Datenbank nicht mehr vorhanden
@@ -201,7 +200,7 @@ apps/workspace/src/server/workspace/crm/services/
   - Lesestand je Seite setzen; nie rückwärts (ein älterer Zeitstempel überschreibt keinen neueren)
   - `appendSystemMessage(customerId, key, params)` für Phasenwechsel und eingegangene Einreichungen
   - Interne Routen über `withPermission(Permission.CustomersWrite)`, Portal-Routen über
-    `withPortalApiAuth`
+    `withPortalActor`
 - **Akzeptanz:**
   - Test: Lesestand wird nicht zurückgesetzt
   - Test: Systemnachricht erscheint im Verlauf beider Seiten und erhöht keinen Ungelesen-Zähler

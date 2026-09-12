@@ -16,7 +16,7 @@ der Kundenseite, damit der Fremdzugriffs-Review nicht in einem großen PR unterg
 
 ## Portal und Benachrichtigung
 
-- Portalbereich `/portal/nachrichten` mit Ungelesen-Kennzeichnung im Dashboard; Verlaufskomponente
+- Portalbereich `/portal/[customerId]/nachrichten` mit Ungelesen-Kennzeichnung im Dashboard; Verlaufskomponente
   aus Task 25 wiederverwendet, nicht neu gebaut.
 - Kundenkennung ausschließlich aus der validierten Sitzung; kein Endpunkt nimmt sie aus der Anfrage.
 - Lesestand je Portalmitglied, nie firmenweit.
@@ -25,7 +25,8 @@ der Kundenseite, damit der Fremdzugriffs-Review nicht in einem großen PR unterg
 - Zusätzliche Bedingung: keine Kundenmail, wenn die Mitgliedschaft in den letzten 30 Minuten aktiv
   war (`last_seen_at`).
 - Interne Mails bleiben beim 15-Minuten-Fenster aus Ordner 17.
-- Die Mail verweist aufs Portal und enthält höchstens eine kurze Textvorschau, keine Anhänge.
+- Die Mail nennt alle Ereignisse des Fensters („drei neue Nachrichten"), verweist aufs Portal und
+  enthält höchstens eine kurze Textvorschau, keine Anhänge.
 - Reply-To ist das Invessiv-Postfach; Antworten werden nicht importiert.
 - Providerstatus, Versuche und permanenter Fehler bleiben sichtbar; kein Open- oder Clicktracking.
 - Datenbankgestütztes Limit: 30 Nachrichten je Stunde und Portalmitglied.
@@ -38,6 +39,7 @@ der Kundenseite, damit der Fremdzugriffs-Review nicht in einem großen PR unterg
 - [ ] Ein Firmenwechsel lädt den Verlauf neu und zeigt keine Daten der vorherigen Firma.
 - [ ] Digest-Deduplizierung hält ihr Fenster (intern 15 Minuten, Kunde 12 Stunden) auch bei
       parallelen Jobs ein.
+- [ ] Eine Digest-Mail nennt alle Ereignisse des Fensters, nicht nur das erste.
 - [ ] Eine abgeschaltete Kundenmitgliedschaft wird in der Abfrage ausgeschlossen.
 - [ ] Es gibt auch im Portal keinen Bearbeiten- und keinen Löschweg für Nachrichten.
 - [ ] Mobile Tastatur, Fokus, Screenreader-Live-Region und lange Texte sind geprüft.

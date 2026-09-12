@@ -23,29 +23,35 @@ ergänzt die Mehrfachauswahl in der Liste, Sammelaktionen darauf und vor allem d
 
 ## Entscheidungen
 
-| Bereich               | Entscheidung                                                                                                                                                                              |
-| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ZIP-Erzeugung         | Serverseitig gestreamt, nicht im Browser                                                                                                                                                  |
-| Begründung            | Im Browser müssten erst alle Dateien vollständig geladen werden — bei 500 MB Assets scheitert das am Arbeitsspeicher. Serverseitig wird jedes Objekt gelesen und sofort weitergeschrieben |
-| Bibliothek            | `fflate` im Streaming-Modus, bereits in `apps/web` in Benutzung                                                                                                                           |
-| Laufzeit              | `runtime = "nodejs"`, Antwort als Stream — kein vollständiges Puffern                                                                                                                     |
-| Obergrenze            | **100 Dateien und 300 MB** je Archiv; darüber eine verständliche Ablehnung mit Hinweis, die Auswahl zu verkleinern                                                                        |
-| Warum nicht mehr      | Die bindende Schranke ist nicht der Speicher, sondern die maximale Laufzeit einer Vercel-Function. 2 GB laufen zuverlässig in den Timeout — mitten im Download, nach minutenlangem Warten |
-| Grenzen als Konstante | Beide Werte liegen zentral in `packages/storage/src/constants/storage-limits.ts` und sind nach echten Erfahrungswerten anpassbar                                                          |
-| Zeitbudget            | Der Handler bricht kontrolliert ab, wenn die Erstellung ein gesetztes Zeitbudget überschreitet, und meldet das verständlich                                                               |
-| Namenskonflikte       | Gleichnamige Dateien im Archiv bekommen ein Zählsuffix (`logo.png`, `logo (2).png`)                                                                                                       |
-| Ordnerstruktur        | Im Archiv nach Kategorie gruppiert, damit das Entpacken sinnvoll aussieht                                                                                                                 |
-| Teilfehler            | Eine unlesbare Datei bricht das Archiv nicht ab; sie wird als `_FEHLENDE-DATEIEN.txt` im Archiv dokumentiert                                                                              |
-| Auswahlzustand        | React-Context, zurückgesetzt beim Wechsel von Kunde oder Filter (Muster: `shared/table/list-selection-provider` aus Task 02a)                                                             |
+| Bereich                         | Entscheidung                                                                                                                                                                                                                            |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ZIP-Erzeugung                   | Serverseitig gestreamt, nicht im Browser                                                                                                                                                                                                |
+| Begründung                      | Im Browser müssten erst alle Dateien vollständig geladen werden — bei 500 MB Assets scheitert das am Arbeitsspeicher. Serverseitig wird jedes Objekt gelesen und sofort weitergeschrieben                                               |
+| Bibliothek                      | `fflate` im Streaming-Modus, bereits in `apps/web` in Benutzung                                                                                                                                                                         |
+| Laufzeit                        | `runtime = "nodejs"`, Antwort als Stream — kein vollständiges Puffern                                                                                                                                                                   |
+| `maxDuration`                   | Auf der Archiv-Route **explizit gesetzt**, nicht per Default. Der Wert wird in T1 gemessen und hier eingetragen; er gehört in den PR, nicht ins Gedächtnis                                                                              |
+| Zeitbudget                      | Serverseitiges Budget = `maxDuration` minus 20 Prozent Sicherheitsmarge, zentral als Konstante. Der Handler prüft es **zwischen** Dateien                                                                                               |
+| Obergrenze                      | Aus Messung abgeleitet, nicht geschätzt: `MAX_ARCHIVE_FILES` und `MAX_ARCHIVE_BYTES` so gewählt, dass der schlechteste gemessene Durchsatz noch ins Budget passt. Startwerte 100 / 300 MB gelten als **unbestätigt**, bis T1 sie belegt |
+| Warum gemessen                  | Die bindende Schranke ist die Laufzeit, nicht der Speicher. Ohne gemessenen Blob-Lesedurchsatz ist jede Dateizahl geraten — und ein zu hoher Wert bricht mitten im Download                                                             |
+| Pre-flight ist die echte Grenze | Anzahl und Gesamtgröße werden **vor dem ersten Byte** geprüft und ergeben 422. Danach ist keine Fehlermeldung mehr möglich: der Stream hat 200 gesendet, und ein Abbruch hinterlässt beim Nutzer eine kaputte Datei ohne Hinweis        |
+| Budget im Stream                | Trotzdem vorhanden, aber nur als Notbremse gegen einen unerwartet langsamen Blob-Store. Greift es, wird das als Fehler protokolliert — es bedeutet, dass die Konstanten zu hoch sind                                                    |
+| Grenzen als Konstante           | `packages/storage/src/constants/storage-limits.ts`; Änderung erfordert eine neue Messung, keine Schätzung                                                                                                                               |
+| Namenskonflikte                 | Gleichnamige Dateien im Archiv bekommen ein Zählsuffix (`logo.png`, `logo (2).png`)                                                                                                                                                     |
+| Ordnerstruktur                  | Im Archiv nach Kategorie gruppiert, damit das Entpacken sinnvoll aussieht                                                                                                                                                               |
+| Teilfehler                      | Eine unlesbare Datei bricht das Archiv nicht ab; sie wird als `_FEHLENDE-DATEIEN.txt` im Archiv dokumentiert                                                                                                                            |
+| Auswahlzustand                  | React-Context, zurückgesetzt beim Wechsel von Kunde oder Filter (Muster: `shared/table/list-selection-provider` aus Task 02a)                                                                                                           |
 
 ## Architektur
 
 ```txt
 POST /api/workspace/crm/files/archive
   → withPermission(FilesRead)
-  → zod: fileIds[] (max 100)
+  → zod: fileIds[] (max MAX_ARCHIVE_FILES)
   → alle Zeilen laden, Zugehörigkeit zu EINEM Kunden prüfen
-  → Gesamtgröße prüfen
+  → PRE-FLIGHT vor dem ersten Byte:
+       Anzahl > MAX_ARCHIVE_FILES        → 422
+       SUM(size_bytes) > MAX_ARCHIVE_BYTES → 422
+       (danach ist keine Fehlerantwort mehr möglich)
   → ZIP-Stream öffnen
       für jede Datei: storage.get(key) → in den Stream
       Fehler je Datei: sammeln, weitermachen
@@ -89,6 +95,12 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/files/{de,en}.json   + Bulk-T
   - Test: eine fehlende Datei führt zu einem gültigen Archiv plus Hinweistextdatei
   - Der Speicherverbrauch wächst nicht mit der Gesamtgröße (im Test über die Anzahl gleichzeitig
     gehaltener Puffer nachgewiesen)
+  - **Messung vor dem Festschreiben der Grenzen:** gegen den echten Blob-Store 10, 50 und 100 Dateien
+    mit insgesamt etwa 50, 150 und 300 MB archivieren und die reine Serverzeit protokollieren.
+    Ergebnis (Durchsatz in MB/s, schlechtester Lauf) gehört in den PR
+  - Aus der Messung folgen `maxDuration`, das Zeitbudget und `MAX_ARCHIVE_FILES` /
+    `MAX_ARCHIVE_BYTES`. Passen 300 MB nicht ins Budget, wird die Grenze gesenkt — nicht das Budget
+    erhöht
 
 ### CRM-16-T2 — Archiv-Route
 
@@ -96,13 +108,19 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/files/{de,en}.json   + Bulk-T
   `command-handler/create-file-archive.command-handler.ts` + Tests
 - **Skills:** `best-practices`
 - **Inhalt:**
-  - `runtime = "nodejs"`, Antwort als Stream
-  - Grenzen prüfen, Zugehörigkeit zu einem einzigen Kunden erzwingen
+  - `runtime = "nodejs"`, `maxDuration` explizit gesetzt, Antwort als Stream
+  - Pre-flight: Anzahl und `SUM(size_bytes)` vor dem ersten gelesenen Objekt prüfen
+  - Zeitbudget zwischen den Dateien prüfen — als Notbremse, nicht als Grenze
+  - Zugehörigkeit zu einem einzigen Kunden erzwingen
   - Dateiname des Archivs: `<Firma>-<Bereich>-<Datum>.zip`, bereinigt
 - **Akzeptanz:**
-  - Tests: 401/404/403; über 100 Dateien wird abgelehnt; Dateien zweier Kunden werden abgelehnt
-  - Test: ein Archiv über der Größengrenze wird abgelehnt, bevor das erste Objekt gelesen wird
-  - Test: ein überschrittenes Zeitbudget führt zu einer verständlichen Meldung, nicht zu einem Timeout
+  - Tests: 401/404/403; über `MAX_ARCHIVE_FILES` wird abgelehnt; Dateien zweier Kunden abgelehnt
+  - Test: ein Archiv über `MAX_ARCHIVE_BYTES` wird mit 422 abgelehnt, **bevor** das erste Objekt
+    gelesen wird — die Antwort ist noch eine JSON-Fehlermeldung, kein angefangener Stream
+  - Test: ein Archiv genau an beiden Grenzen läuft vollständig durch und bleibt im Zeitbudget
+  - Test: greift die Notbremse im Stream, wird der Abbruch als Fehler protokolliert und im Monitoring
+    sichtbar — er bedeutet, dass die Konstanten zu hoch stehen
+  - `maxDuration` der Route ist gesetzt und im PR mit dem Messergebnis begründet
   - `Content-Disposition` enthält einen korrekt kodierten Dateinamen mit Umlauten
 
 ### CRM-16-T3 — Mehrfachauswahl

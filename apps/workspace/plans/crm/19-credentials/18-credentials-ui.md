@@ -4,7 +4,10 @@
 > **Aufwand:** L · **Abhängigkeiten:** Task 17 (Verschlüsselung), Task 05 (Slot), Task 02 (Permissions)
 > **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
-- Owner und Mitglieder mit globalem `credentials_access` dürfen Standard-Logins verwalten.
+- Jedes aktive Mitglied darf Standard-Logins anlegen, bearbeiten und löschen (`credentials.write`)
+  und sie maskiert sehen (`credentials.read`).
+- **Aufdecken** erfordert `credentials.reveal`: Owner implizit, ein Member nur bei gesetztem
+  `credentials_access`. Ohne die Freigabe existieren Anzeigen und Kopieren gar nicht.
 - Listen liefern nur Metadaten. Reveal zeigt genau einen Datensatz; Anzeigen, Kopieren, Ändern,
   Löschen und fehlgeschlagener Zugriff werden ohne Geheimwert auditiert.
 - Kein Bulk-Reveal, Export, TOTP, Portalzugriff oder freies Geheimfeld.
@@ -153,7 +156,8 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/credentials/{de,en}.json
   - Geheimnisfeld: Anzeigen, Kopieren, sichtbarer Countdown bis zum automatischen Verbergen
   - Verbergen beim Tab-Wechsel (`visibilitychange`)
   - Benutzername ist ohne Aufdecken kopierbar (er ist kein Geheimnis)
-  - Ohne `CredentialsReveal` sind Anzeigen und Kopieren gar nicht vorhanden — nicht nur deaktiviert
+  - Ohne `CredentialsReveal` sind Anzeigen und Kopieren gar nicht vorhanden — nicht nur deaktiviert.
+    Anlegen, Bearbeiten und Löschen bleiben für jedes Mitglied sichtbar und nutzbar
   - Ohne Hauptschlüssel: Hinweisblock, Bereich schreibgeschützt
 - **Akzeptanz:**
   - Tastaturbedienung vollständig; der aufgedeckte Wert wird über eine Live-Region angekündigt, ohne
@@ -193,7 +197,9 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/credentials/{de,en}.json
 4. Tab-Wechsel verbirgt sofort.
 5. Kopieren funktioniert ohne Anzeigen und wird ebenfalls protokolliert.
 6. Jede Aufdeckung erscheint in der Timeline — ohne den Wert.
-7. Eine Rolle ohne `CredentialsReveal` sieht die Aktionen gar nicht und wird serverseitig abgewiesen.
-8. Bearbeiten ohne neues Geheimnis lässt das bestehende unverändert.
-9. Ohne Hauptschlüssel bleibt die Anwendung lauffähig.
-10. `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm build:workspace` grün.
+7. Ein Mitglied ohne `credentials_access` sieht Anzeigen und Kopieren gar nicht und wird serverseitig
+   abgewiesen — kann aber weiterhin Zugangsdaten anlegen und bearbeiten.
+8. Ein Owner deckt auf, ohne dass an seiner Zeile ein Flag gesetzt ist.
+9. Bearbeiten ohne neues Geheimnis lässt das bestehende unverändert.
+10. Ohne Hauptschlüssel bleibt die Anwendung lauffähig.
+11. `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm build:workspace` grün.

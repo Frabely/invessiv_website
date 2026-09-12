@@ -21,44 +21,78 @@ sieht eine schlichte Bestätigungsseite — mehr nicht, aber das nachweislich si
 Ein Portalnutzer darf unter keinen Umständen Daten eines anderen Kunden sehen. Absicherung auf vier
 Ebenen:
 
-1. **Strukturell:** Portal-Handler nehmen **keine** `customerId` aus der Anfrage entgegen. Sie
-   beziehen sie aus der Sitzung. Ein manipulierter Parameter kann nichts bewirken, weil kein
-   Parameter existiert.
+1. **Strukturell:** Kein Portal-Handler bekommt eine `customerId` übergeben. Er bekommt eine **aufgelöste
+   Mitgliedschaft**. Die Signatur nimmt nur `PortalActor` an — ein Typ, der ohne
+   Datenbankprüfung nicht konstruierbar ist.
 2. **Getrennte Codepfade:** Portal-Handler liegen unter `src/server/portal/`, nie unter
    `src/server/workspace/`. Kein Handler wird von beiden Welten benutzt.
 3. **Getrennte Routen:** `(portal)`-Gruppe mit eigenem Gate. Die `(app)`-Allowlist bleibt für den
    internen Bereich unverändert scharf.
-4. **Mitgliedschaft statt Identität:** Der aktive Kunde stammt aus der signierten Sitzung und wird
-   in **jedem** Handler erneut gegen eine aktive `portal_memberships`-Zeile geprüft. Ein gültiger
-   Login allein autorisiert nichts.
+4. **Mitgliedschaft statt Identität:** Ein gültiger Login autorisiert nichts. Jede Anfrage löst die
+   Mitgliedschaft neu gegen die Datenbank auf.
+
+## Zustandslos wie der interne Bereich
+
+Es gibt **keine** eigene Portal-Sitzung: kein signiertes Cookie, kein Schreiben in Clerk-Metadaten,
+kein Session-Claim. Das Portal folgt genau dem Muster, das der interne Bereich heute schon nutzt
+(`src/lib/auth/api.ts`): pro Anfrage `auth()` für die Kennung, dann eine Autorisierungsprüfung gegen
+eine Quelle außerhalb des Requests, kein gespeicherter Zustand.
+
+Intern ist diese Quelle die Env-Allowlist (`isEmailAllowed`). Im Portal ist sie die Tabelle
+`portal_memberships`. Der Unterschied ist nur, dass eine Person mehreren Firmen angehören kann — also
+braucht es zusätzlich eine Angabe, **welche** gerade gemeint ist. Die steht im Pfad:
+
+```txt
+/[locale]/portal/[customerId]/...        Seiten
+/api/portal/[customerId]/...             Endpunkte
+```
+
+Der Wert aus dem Pfad ist ein **Vorschlag, keine Autorisierung** — dieselbe Rolle, die die E-Mail aus
+Clerk im internen Bereich hat. `requirePortalActor` nimmt Kennung und Pfadwert, sucht die aktive
+Mitgliedschaft und liefert entweder einen `PortalActor` oder `notFound()`. Ein geratener oder fremder
+Wert im Pfad ergibt 404, weil keine Mitgliedschaft existiert — nicht, weil ein Check ihn abweist.
+
+Damit gilt:
+
+- Der Firmenwechsel ist ein Link, kein Schreibvorgang. Kein Zustand kann veralten.
+- Widerruf wirkt sofort und überall, weil jede Anfrage neu auflöst — es gibt keine Sitzung, die noch
+  eine alte Mitgliedschaft behauptet.
+- Zwei Firmen in zwei Browser-Tabs funktionieren gleichzeitig und ohne Cache-Verwirrung.
+- Kein Signing-Key, keine Rotation, keine Clerk-Rate-Limits, kein Invalidierungsproblem.
+- Es passt zur Projektregel „URL-State statt React-State" und macht die Zugehörigkeit an der URL
+  ablesbar.
+
+Der Preis ist eine Mitgliedschaftsabfrage je Anfrage — genau wie der interne Bereich heute je Anfrage
+`currentUser()` aufruft. Bei zwei bis fünf internen Nutzern und wenigen Portalkontakten ist das
+irrelevant, und die Abfrage läuft auf einem partiellen Index.
 
 ## Entscheidungen
 
-| Bereich              | Entscheidung                                                                                                                                              |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Identität            | Dieselbe Clerk-Instanz. Ein Clerk-Konto ist entweder intern oder Portalnutzer — nie beides                                                                |
-| Zuordnung            | `portal_memberships` verbindet Clerk-Kennung, `people.id` und `customers.id`. Eine Person darf beliebig vielen Kunden angehören                           |
-| Kein E-Mail-Abgleich | Eine Mitgliedschaft entsteht **ausschließlich** durch Einlösen eines Tokens. Nirgends wird eine Clerk-Kennung über eine E-Mail-Adresse zugeordnet         |
-| Warum                | Ein E-Mail-Abgleich verknüpft Zugriff mit einem Wert, den ein Identitätsanbieter ändern kann und der bei mehreren Firmen mehrdeutig wird                  |
-| Einladung            | `portal_invitations` bindet genau eine `customer_contact_assignment_id`; gespeichert wird nur `token_hash`                                                |
-| Token                | Sieben Tage gültig, einmal nutzbar, widerrufbar, niemals in Logs, Mails oder Activities                                                                   |
-| Einlösung            | Kein Konto → Sign-up, vorhandenes Konto → Sign-in; anschließend derselbe Redeem-Pfad. Die Mitgliedschaft entsteht gegen die dann authentifizierte Kennung |
-| Zweite Firma         | Identisch zur ersten: erneute Einladung, erneutes Einlösen. Keine Direktanlage und keine Auto-Einlösung                                                   |
-| Warum                | Der Zugriff auf die Daten einer weiteren Firma entsteht nur durch eine Handlung der Person selbst; die Einwilligung ist damit belegt                      |
-| Rollen               | In Version 1 keine differenzierten Portalrollen. Alle Mitglieder einer Firma haben denselben fachlichen Umfang                                            |
-| Ausgeschlossen       | Interne Notizen, Audit, Zugangsdaten, Budgets und Stundensätze erreichen das Portal nie — unabhängig von der Mitgliedschaft                               |
-| Firmenwechsler       | Bestandteil dieses Tasks. Aktiver Kunde in serverseitig signierter Sitzung, bei jedem Handler gegen die Mitgliedschaft geprüft                            |
-| Registrierung        | Clerk auf **invitation-only** („Restricted"). Ohne Einladung entsteht kein Konto                                                                          |
-| Warum                | `proxy.ts:6-11` lässt `/sign-up(.*)` öffentlich durch. Ab hier ist das der Kundeneinstieg — offen gelassen könnte jeder Konten anlegen                    |
-| Widerruf             | Setzt `revoked_at`; das Gate verweigert sofort. Offene Einladungen derselben Zuordnung werden mitentwertet                                                |
-| Historie             | Widerruf löscht nichts. Nachrichten, Activities und Audit-Einträge bleiben vollständig erhalten                                                           |
-| Interne Nutzer       | Eine Adresse in `WORKSPACE_ALLOWED_EMAILS` kann nicht eingeladen werden — Prüfung beim Einladen, mit klarer Meldung                                       |
-| Portalvorschau       | Vor der **ersten** Einladung eines Kunden bestätigt ein Mitarbeiter eine Vorschau aller sichtbaren Projekte, Aufgaben, Dateien und Stunden                |
-| Portal-Route         | `/[locale]/(portal)/portal/**` — eigenes Segment, damit die Zugehörigkeit an der URL ablesbar ist                                                         |
-| Weiterleitung        | Nach dem Login entscheidet der Kontotyp das Ziel: intern zum Dashboard, Portalnutzer ins Portal                                                           |
-| Sprache              | Portalsprache aus `people.preferred_locale`, nicht aus der Locale des Einladenden                                                                         |
-| Kundenmails          | `email_notifications_enabled` wird **beim Einladen** gesetzt und auf die Mitgliedschaft übernommen; danach vom Portalmitglied und intern änderbar         |
-| Digest               | Kundenmails höchstens einmal je 12 Stunden je Mitgliedschaft, Anker `customer_notified_at`, Fenster als Konstante                                         |
+| Bereich              | Entscheidung                                                                                                                                                 |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Identität            | Dieselbe Clerk-Instanz. Ein Clerk-Konto ist entweder intern oder Portalnutzer — nie beides                                                                   |
+| Zuordnung            | `portal_memberships` verbindet Clerk-Kennung, `people.id` und `customers.id`. Eine Person darf beliebig vielen Kunden angehören                              |
+| Kein E-Mail-Abgleich | Eine Mitgliedschaft entsteht **ausschließlich** durch Einlösen eines Tokens. Nirgends wird eine Clerk-Kennung über eine E-Mail-Adresse zugeordnet            |
+| Warum                | Ein E-Mail-Abgleich verknüpft Zugriff mit einem Wert, den ein Identitätsanbieter ändern kann und der bei mehreren Firmen mehrdeutig wird                     |
+| Einladung            | `portal_invitations` bindet genau eine `customer_contact_assignment_id`; gespeichert wird nur `token_hash`                                                   |
+| Token                | Sieben Tage gültig, einmal nutzbar, widerrufbar, niemals in Logs, Mails oder Activities                                                                      |
+| Einlösung            | Kein Konto → Sign-up, vorhandenes Konto → Sign-in; anschließend derselbe Redeem-Pfad. Die Mitgliedschaft entsteht gegen die dann authentifizierte Kennung    |
+| Zweite Firma         | Identisch zur ersten: erneute Einladung, erneutes Einlösen. Keine Direktanlage und keine Auto-Einlösung                                                      |
+| Warum                | Der Zugriff auf die Daten einer weiteren Firma entsteht nur durch eine Handlung der Person selbst; die Einwilligung ist damit belegt                         |
+| Rollen               | In Version 1 keine differenzierten Portalrollen. Alle Mitglieder einer Firma haben denselben fachlichen Umfang                                               |
+| Ausgeschlossen       | Interne Notizen, Audit, Zugangsdaten, Budgets und Stundensätze erreichen das Portal nie — unabhängig von der Mitgliedschaft                                  |
+| Firmenwechsler       | Bestandteil dieses Tasks. Aktiver Kunde steht im Pfad und wird bei jeder Anfrage neu gegen eine aktive Mitgliedschaft aufgelöst — kein gespeicherter Zustand |
+| Registrierung        | Clerk auf **invitation-only** („Restricted"). Ohne Einladung entsteht kein Konto                                                                             |
+| Warum                | `proxy.ts:6-11` lässt `/sign-up(.*)` öffentlich durch. Ab hier ist das der Kundeneinstieg — offen gelassen könnte jeder Konten anlegen                       |
+| Widerruf             | Setzt `revoked_at`; das Gate verweigert sofort. Offene Einladungen derselben Zuordnung werden mitentwertet                                                   |
+| Historie             | Widerruf löscht nichts. Nachrichten, Activities und Audit-Einträge bleiben vollständig erhalten                                                              |
+| Interne Nutzer       | Eine Adresse in `WORKSPACE_ALLOWED_EMAILS` kann nicht eingeladen werden — Prüfung beim Einladen, mit klarer Meldung                                          |
+| Portalvorschau       | Vor der **ersten** Einladung eines Kunden bestätigt ein Mitarbeiter eine Vorschau aller sichtbaren Projekte, Aufgaben, Dateien und Stunden                   |
+| Portal-Route         | `/[locale]/(portal)/portal/[customerId]/**` — eigenes Segment, damit die Zugehörigkeit an der URL ablesbar ist                                               |
+| Weiterleitung        | Nach dem Login entscheidet der Kontotyp das Ziel: intern zum Dashboard, Portalnutzer ins Portal                                                              |
+| Sprache              | Portalsprache aus `people.preferred_locale`, nicht aus der Locale des Einladenden                                                                            |
+| Kundenmails          | `email_notifications_enabled` wird **beim Einladen** gesetzt und auf die Mitgliedschaft übernommen; danach vom Portalmitglied und intern änderbar            |
+| Digest               | Kundenmails höchstens einmal je 12 Stunden je Mitgliedschaft, Anker `customer_notified_at`, Fenster als Konstante                                            |
 
 ## Tabellen
 
@@ -120,27 +154,31 @@ Einlösen (Kunde)
   POST /api/portal/invitations/redeem
     → Clerk-Sitzung erforderlich; ohne Sitzung kein Redeem
     → Token hashen, Zeile laden: offen, nicht abgelaufen, nicht widerrufen
-    → portal_memberships anlegen (clerk_user_id aus der Sitzung), redeemed_at setzen
-    → aktiven Kunden in die signierte Sitzung schreiben
+    → portal_memberships anlegen (clerk_user_id aus der Clerk-Sitzung), redeemed_at setzen
     → alles in einer Transaktion; Fehler lässt die Einladung offen
+    → Redirect auf /[locale]/portal/[customerId]/ der neuen Mitgliedschaft
 
 Portal-Seitenaufruf
-  (portal)/layout.tsx → requirePortalAccess(locale)
+  (portal)/[customerId]/layout.tsx → requirePortalActor(locale, customerId)
     → kein userId: Weiterleitung zur Anmeldung
-    → aktiver Kunde aus der Sitzung, gegen aktive Mitgliedschaft geprüft
-    → keine Mitgliedschaft oder widerrufen: notFound()
-    → genau eine Mitgliedschaft: diese ist der aktive Kunde
-    → mehrere und keine Wahl in der Sitzung: Firmenauswahl, kein stiller Default
-    → liefert { membershipId, customerId, personId }
+    → Mitgliedschaft (clerk_user_id, customerId) aktiv? sonst notFound()
+    → liefert PortalActor { membershipId, customerId, personId }
+
+Einstieg ohne Kunde im Pfad
+  (portal)/portal/[customerId]/page.tsx
+    → genau eine aktive Mitgliedschaft: Redirect dorthin
+    → mehrere: Firmenauswahl, kein stiller Default
+    → keine: notFound()
 
 Firmenwechsel
-  POST /api/portal/active-customer
-    → Ziel gegen die aktiven Mitgliedschaften der Sitzung prüfen
-    → Sitzung neu signieren, clientseitige Caches verwerfen
+  Ein Link auf /[locale]/portal/[andererCustomerId]/
+    → kein Schreibvorgang, kein Zustand, keine Invalidierung
+    → das Layout löst die Zielmitgliedschaft auf oder antwortet 404
 
 Portal-API
-  withPortalApiAuth(handler)   eigener Wrapper, NICHT withWorkspaceApiAuth
-    → übergibt customerId ausschließlich aus der Sitzung an den Handler
+  withPortalActor(handler)   eigener Wrapper, NICHT withWorkspaceApiAuth
+    → löst customerId aus dem Pfad gegen die Mitgliedschaft auf
+    → übergibt dem Handler den PortalActor, nie eine rohe customerId
 ```
 
 `proxy.ts` muss die Portal-Anmeldewege und die Einlösungsroute als öffentlich kennzeichnen. Wichtig:
@@ -159,19 +197,19 @@ packages/common/src/constants/crm/errors/portal-error-codes.ts
 apps/workspace/src/proxy.ts                                  + Portal-Pfade
 apps/workspace/src/config/routes.ts                          + PORTAL
 apps/workspace/src/server/portal/
-  auth/require-portal-access.ts
-  auth/with-portal-api-auth.ts
-  auth/portal-session.ts                 signierte Sitzung, aktiver Kunde
+  auth/require-portal-actor.ts           löst Pfadwert gegen Mitgliedschaft auf
+  auth/with-portal-actor.ts              API-Wrapper, Gegenstück zu withWorkspaceApiAuth
+  auth/portal-actor.ts                   PortalActor-Typ, nur hier konstruierbar
+  query-handler/list-portal-memberships.query-handler.ts
   command-handler/redeem-portal-invitation.command-handler.ts
-  command-handler/switch-active-customer.command-handler.ts
 apps/workspace/src/app/[locale]/(portal)/
   layout.tsx
   AGENTS.md  CLAUDE.md
-  portal/page.tsx                        Platzhalter-Bestätigungsseite, ersetzt in Task 21
-  portal/firma-waehlen/page.tsx          Firmenauswahl und -wechsel
+  portal/page.tsx                        Weiche: eine Firma → Redirect, mehrere → Auswahl
+  portal/[customerId]/layout.tsx         requirePortalActor, Portal-Shell
+  portal/[customerId]/page.tsx           Platzhalter-Bestätigungsseite, ersetzt in Task 21
   einladung/[token]/page.tsx
 apps/workspace/src/app/api/portal/invitations/redeem/route.ts
-apps/workspace/src/app/api/portal/active-customer/route.ts
 apps/workspace/src/app/[locale]/(app)/  Weiche nach der Anmeldung
 
 apps/workspace/src/server/workspace/crm/
@@ -207,24 +245,30 @@ apps/workspace/src/i18n/dictionaries/portal/{shell,invitation,meta}/{de,en}.json
 
 ### CRM-20-T2 — Portal-Auth-Schicht
 
-- **Files:** `server/portal/auth/**` + Tests, `proxy.ts`, `(portal)/layout.tsx`,
+- **Files:** `server/portal/auth/**` + Tests, `proxy.ts`, `(portal)/portal/[customerId]/layout.tsx`,
   `(portal)/AGENTS.md`, `CLAUDE.md`, Root-`AGENTS.md`
 - **Inhalt:**
-  - `portal-session`: aktiver Kunde serverseitig signiert, Manipulation erkennbar
-  - `requirePortalAccess`: lädt die aktiven Mitgliedschaften der Kennung, prüft den aktiven Kunden
-    dagegen; keine Mitgliedschaft oder widerrufen ergibt `notFound()`
-  - Mehrere Mitgliedschaften ohne Wahl ergeben die Firmenauswahl — nie einen stillen Default
-  - `withPortalApiAuth`: übergibt dem Handler ausschließlich die Kundenkennung aus der Sitzung
-    - `(portal)/AGENTS.md` auf Deutsch mit den harten Regeln: keine Kundenkennung aus Anfragedaten,
-      kein E-Mail-Abgleich, keine Wiederverwendung von Workspace-Handlern, keine Zugangsdaten
+  - `PortalActor` als Branded Type: nur `requirePortalActor` und `withPortalActor` können ihn
+    erzeugen. Kein Handler kann sich einen aus einer rohen `customerId` basteln
+  - `requirePortalActor(locale, customerId)`: Kennung aus `auth()`, dann genau **eine** Abfrage auf
+    eine aktive Mitgliedschaft `(clerk_user_id, customer_id)`. Kein Treffer ergibt `notFound()`
+  - `withPortalActor`: Gegenstück zu `withWorkspaceApiAuth`, löst den Pfadwert auf und übergibt dem
+    Handler den `PortalActor`, nie eine rohe Kennung
+  - Kein Cookie, keine Clerk-Metadaten, kein Session-Claim — dasselbe zustandslose Muster wie
+    `src/lib/auth/api.ts` im internen Bereich
+  - `(portal)/AGENTS.md` auf Deutsch mit den harten Regeln: Handler nehmen nur `PortalActor`, kein
+    E-Mail-Abgleich, keine Wiederverwendung von Workspace-Handlern, keine Zugangsdaten
 - **Akzeptanz:**
   - Test: interner Nutzer erreicht das Portal nicht
   - Test: Portalnutzer erreicht den internen Bereich nicht
   - Test: widerrufene Mitgliedschaft wird sofort abgewiesen
   - Test: Der Wrapper reicht keine Kundenkennung aus der Anfrage weiter (Signatur erlaubt es nicht)
-  - Test: manipulierter aktiver Kunde in der Sitzung ergibt 404, nie Zugriff
-  - Test: aktiver Kunde ohne passende Mitgliedschaft ergibt 404, auch bei gültigem Login
-  - Test: DB-Fehler beim Laden der Mitgliedschaften verweigert Zugriff (fail-closed)
+  - Test: fremde `customerId` im Pfad ergibt 404, auch bei gültigem Login und bestehender
+    Mitgliedschaft bei einem anderen Kunden
+  - Test: geratene, nicht existierende `customerId` ergibt 404 ohne Existenzbestätigung
+  - Test: Widerruf wirkt beim **nächsten** Request, ohne Abmelden und ohne Cache-Leerung
+  - Test: DB-Fehler beim Auflösen der Mitgliedschaft verweigert Zugriff (fail-closed)
+  - Test: es existiert kein Codepfad, der einen `PortalActor` aus einer rohen `customerId` erzeugt
 
 ### CRM-20-T3 — Einladen, Vorschau und Widerrufen
 
@@ -251,16 +295,19 @@ apps/workspace/src/i18n/dictionaries/portal/{shell,invitation,meta}/{de,en}.json
 
 ### CRM-20-T4 — Einlösung, Anmelde-Weiche, Firmenwechsler
 
-- **Files:** Einlösungsseite und -route, Firmenauswahl, `active-customer`-Route,
+- **Files:** Einlösungsseite und -route, `portal/page.tsx` als Weiche, Firmenauswahl,
   Weiche nach der Anmeldung, `dictionaries/portal/{shell,invitation,meta}/{de,en}.json`
 - **Skills:** `frontend-design`, `accessibility`, `copywriting`
 - **Inhalt:**
   - Einlösung verlangt eine Clerk-Sitzung; ohne Konto führt der Link zu Sign-up, mit Konto zu
     Sign-in, danach derselbe Redeem-Pfad
-  - Mitgliedschaft, `redeemed_at` und Sitzung entstehen in einer Transaktion
+  - Mitgliedschaft und `redeemed_at` entstehen in einer Transaktion, danach Redirect auf
+    `/[locale]/portal/[customerId]/`
   - Abgelaufener, widerrufener oder schon eingelöster Token: eigene, verständliche Meldung ohne
     Hinweis darauf, ob der Token je existierte
-  - Firmenwechsler prüft das Ziel gegen die Mitgliedschaften der Sitzung und verwirft Caches
+  - Firmenwechsler ist eine Liste von Links auf `/[locale]/portal/[customerId]/` — kein Endpunkt,
+    kein Schreibvorgang; das Ziel-Layout löst selbst auf oder antwortet 404
+  - `portal/page.tsx` leitet bei genau einer Mitgliedschaft weiter, zeigt bei mehreren die Auswahl
   - Portal-Layout deutlich vom internen Bereich unterschieden, Abmelden vorhanden
   - `robots: noindex/nofollow/nocache`, `export const dynamic = "force-dynamic"`
 - **Akzeptanz:**
@@ -312,8 +359,9 @@ apps/workspace/src/i18n/dictionaries/portal/{shell,invitation,meta}/{de,en}.json
 3. Nach dem Einlösen landet die Person im Portal, nicht im internen Bereich.
 4. Der interne Bereich ist für sie nicht erreichbar (404, keine Existenzbestätigung).
 5. Ein interner Nutzer erreicht das Portal nicht und lässt sich nicht einladen.
-6. Dieselbe Person bedient nach zwei Einladungen zwei Firmen und wechselt sicher zwischen ihnen.
-7. Kunde A sieht unter keinem Sitzungszustand Daten von Kunde B.
+6. Dieselbe Person bedient nach zwei Einladungen zwei Firmen, wechselt per Link zwischen ihnen und
+   kann beide gleichzeitig in zwei Tabs offen haben.
+7. Kunde A sieht unter keiner URL Daten von Kunde B — eine fremde `customerId` im Pfad ergibt 404.
 8. Widerruf bei Firma A beendet dort den Zugang sofort und lässt Firma B unberührt.
 9. Abgelaufener und bereits eingelöster Token führen zu je eigener Meldung, nie zu Zugriff.
 10. In Logs, Activities und Mails steht kein Token-Klartext.

@@ -1,7 +1,7 @@
 # Task 30 — Filter und Suche
 
 > **Merge-Einheit:** Ordner 05 · **Branch:** `feat/crm-kundenliste-und-zuweisung`
-> **Aufwand:** M · **Abhängigkeiten:** Task 07 (Status und Tags), Task 10 (Projekte)
+> **Aufwand:** M · **Abhängigkeiten:** Task 07 (Status und Tags), Task 03 (Liste)
 > **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
 - Normalisierte Substring-/Präfixsuche über Nummer, Anzeigename, Firma, Ort, Person und Firmen-E-Mail.
@@ -16,27 +16,31 @@
 Der bewusst letzte Task: Filtern lohnt sich erst, wenn es etwas zu filtern gibt. Bei fünf Kunden ist
 eine Filterleiste Zierrat, ab fünfzig wird sie zur Notwendigkeit.
 
-Jetzt sind alle Ordnungsachsen vorhanden — Status, Tags, Kategorie, Projektphase, Ansprechpartner —
+Die in dieser Einheit vorhandenen Ordnungsachsen — Status, Tags, Kategorie, Owner, Ansprechpartner —
 und die Bausteine liegen bereit: Filterzustand in der URL, der mehrfachauswahlfähige Facettenfilter
 aus Task 02a, serverseitige Auswertung nach dem Muster von `lead-filter.query-handler.ts`.
 
 ## Entscheidungen
 
-| Bereich                 | Entscheidung                                                                                                                                                                                     |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Zustand                 | Ausschließlich in der URL. Kein React-State, kein `localStorage` für Filter                                                                                                                      |
-| Warum                   | Teilbar, neu ladbar, mit Zurück-Taste bedienbar — und serverseitig auswertbar, ohne Daten doppelt zu halten                                                                                      |
-| Wiederverwendung        | Die geteilten Toolbar-Komponenten aus Task 02a — dort wurde der Facettenfilter bereits mehrfachauswahlfähig gemacht, hier wird er nur benutzt                                                    |
-| Filter                  | Status (mehrfach), Tags (mehrfach, UND-Verknüpfung), Kategorie, Projektphase, „hat Portalzugang", „hat offene Aufgaben"                                                                          |
-| Suche                   | Über Anzeigename, Firmenname, Kundennummer, Ort und Ansprechpartnername                                                                                                                          |
-| Technik der Suche       | **`pg_trgm`** mit GIN-Index über einen zusammengesetzten Ausdruck                                                                                                                                |
-| Warum nicht `tsvector`  | Volltextsuche matcht nur ganze Wortstämme: „part" findet „Partner GmbH" **nicht**, „Mül" findet gar nichts. Genau das war als Akzeptanzkriterium versprochen und mit `tsvector` nicht erreichbar |
-| Was `pg_trgm` liefert   | Substring-Treffer mitten im Wort, tippfehlertolerant, indexgestützt — und eine Zeile Migration statt einer generierten Spalte mit Sprachkonfiguration                                            |
-| Warum nicht `ILIKE %…%` | Ohne Trigramm-Index kann Postgres das nicht indizieren; die Suche wird mit wachsender Datenmenge linear langsamer                                                                                |
-| Ansprechpartner         | Über eine `EXISTS`-Unterabfrage durchsucht, nicht in den Index gezogen — sie ändern sich unabhängig vom Kunden                                                                                   |
-| Verzögerung             | Eingabe wird 300 Millisekunden verzögert, dann wird die URL ersetzt (kein neuer Verlaufseintrag je Tastendruck)                                                                                  |
-| Zurücksetzen            | Sichtbare Schaltfläche, sobald ein Filter aktiv ist, mit Anzahl aktiver Filter                                                                                                                   |
-| Leeres Ergebnis         | Eigener Zustand mit Zurücksetzen-Angebot — klar unterschieden vom „noch keine Kunden"-Zustand                                                                                                    |
+| Bereich                  | Entscheidung                                                                                                                                                                                     |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Zustand                  | Ausschließlich in der URL. Kein React-State, kein `localStorage` für Filter                                                                                                                      |
+| Warum                    | Teilbar, neu ladbar, mit Zurück-Taste bedienbar — und serverseitig auswertbar, ohne Daten doppelt zu halten                                                                                      |
+| Wiederverwendung         | Die geteilten Toolbar-Komponenten aus Task 02a — dort wurde der Facettenfilter bereits mehrfachauswahlfähig gemacht, hier wird er nur benutzt                                                    |
+| Filter in dieser Einheit | Status (mehrfach), Tags (mehrfach, UND-Verknüpfung), Kategorie, Owner, persönliche Ansicht                                                                                                       |
+| Facetten-Registry        | Die Filterleiste liest ihre Facetten aus `CUSTOMER_LIST_FACETS`. Spätere Ordner ergänzen dort, ohne die Toolbar anzufassen                                                                       |
+| Später ergänzt           | `Projektphase` in Ordner 07 und „hat offene Aufgaben" in Ordner 08 — **nicht hier**, weil `projects` und `tasks` zu diesem Zeitpunkt nicht existieren                                            |
+| Warum nicht hier         | Ordner 07 hängt an Ordner 05. Ein Projektfilter in Ordner 05 wäre eine Zirkelabhängigkeit zwischen zwei Merge-Einheiten und in `master` nach dem Merge nicht lauffähig                           |
+| „hat Portalzugang"       | Ebenfalls später: `portal_memberships` entsteht erst in Ordner 12                                                                                                                                |
+| Suche                    | Über Anzeigename, Firmenname, Kundennummer, Ort und Ansprechpartnername                                                                                                                          |
+| Technik der Suche        | **`pg_trgm`** mit GIN-Index über einen zusammengesetzten Ausdruck                                                                                                                                |
+| Warum nicht `tsvector`   | Volltextsuche matcht nur ganze Wortstämme: „part" findet „Partner GmbH" **nicht**, „Mül" findet gar nichts. Genau das war als Akzeptanzkriterium versprochen und mit `tsvector` nicht erreichbar |
+| Was `pg_trgm` liefert    | Substring-Treffer mitten im Wort, tippfehlertolerant, indexgestützt — und eine Zeile Migration statt einer generierten Spalte mit Sprachkonfiguration                                            |
+| Warum nicht `ILIKE %…%`  | Ohne Trigramm-Index kann Postgres das nicht indizieren; die Suche wird mit wachsender Datenmenge linear langsamer                                                                                |
+| Ansprechpartner          | Über eine `EXISTS`-Unterabfrage durchsucht, nicht in den Index gezogen — sie ändern sich unabhängig vom Kunden                                                                                   |
+| Verzögerung              | Eingabe wird 300 Millisekunden verzögert, dann wird die URL ersetzt (kein neuer Verlaufseintrag je Tastendruck)                                                                                  |
+| Zurücksetzen             | Sichtbare Schaltfläche, sobald ein Filter aktiv ist, mit Anzahl aktiver Filter                                                                                                                   |
+| Leeres Ergebnis          | Eigener Zustand mit Zurücksetzen-Angebot — klar unterschieden vom „noch keine Kunden"-Zustand                                                                                                    |
 
 ## Architektur
 
@@ -47,7 +51,7 @@ Index:     GIN auf lower(coalesce(display_name,'') || ' ' || coalesce(company_na
 Abfrage:   dieser Ausdruck LIKE '%' || lower(:q) || '%'
            ODER EXISTS (Ansprechpartner dieses Kunden mit Treffer in Name oder E-Mail)
 
-/crm?status=active,onboarding&tags=wordpress&phase=development&q=müller&page=2
+/crm?status=active,paused&tags=wordpress&owner=me&q=müller&page=2
   → parseCustomerListSearchParams   erweitert
   → listCustomers                   erweitert um Filterbedingungen
 ```
@@ -63,6 +67,7 @@ packages/db/migrations/<nr>_add_customer_search_index.sql
 packages/db/src/record-configuration/crm/customers.ts          + Trigramm-Index
 
 apps/workspace/src/common/constants/crm/list/customer-list-query-params.ts   erweitert
+apps/workspace/src/common/constants/crm/list/customer-list-facets.ts          CUSTOMER_LIST_FACETS
 apps/workspace/src/server/workspace/crm/
   shared/customer-list-search-params.ts        erweitert
   query-handler/list-customers.query-handler.ts erweitert
@@ -75,8 +80,8 @@ apps/workspace/src/components/workspace/crm/toolbar/
   customer-status-filter/
   customer-tag-filter/
   customer-category-filter/
-  customer-phase-filter/
-  customer-flag-filter/
+  customer-owner-filter/
+  customer-facet-filter/            generisch, liest CUSTOMER_LIST_FACETS
   customer-active-filters/
 apps/workspace/src/i18n/dictionaries/workspace/crm/toolbar/{de,en}.json
 ```
@@ -158,8 +163,10 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/toolbar/{de,en}.json
 
 1. Die Suche findet Kunden über Anzeigename, Firma, Ort, Kundennummer und Ansprechpartner — auch
    mit Umlauten und mit Teilwörtern mitten im Wort.
-2. Filter nach Status, Tags, Kategorie, Projektphase und Kennzeichen funktionieren einzeln und
+2. Filter nach Status, Tags, Kategorie, Owner und persönlicher Ansicht funktionieren einzeln und
    kombiniert; Status und Tags erlauben Mehrfachauswahl.
+   2a. Eine später ergänzte Facette erfordert keine Änderung an der Toolbar — nachgewiesen durch eine
+   Testfacette, die nur in `CUSTOMER_LIST_FACETS` registriert wird.
 3. Zwei Tags liefern nur Kunden mit beiden.
 4. Der Filterzustand steht in der URL, ist teilbar und über die Zurück-Taste bedienbar.
 5. Aktive Filter sind als Chips sichtbar und einzeln entfernbar.

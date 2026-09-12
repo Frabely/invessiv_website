@@ -62,16 +62,16 @@ kein Verweis auf eine Seite, die es nicht gibt.
 ## Architektur
 
 ```txt
-(portal)/portal/page.tsx   Server Component
-  ├─ requirePortalAccess(locale)  → { customerId, portalUserId, role }
+(portal)/portal/[customerId]/page.tsx   Server Component
+  ├─ requirePortalActor(locale)  → { customerId, portalUserId, role }
   ├─ getPortalDashboard(customerId)      server/portal/query-handler/
   │     ├─ Kunde (Firmenname)
   │     ├─ aktive Projekte mit Phase, Preview-Link, nächstem Schritt
   │     └─ sichtbare offene Kundenaufgaben je Projekt
   └─ Rendering
 
-POST /api/portal/tasks/[taskId]/done
-  → withPortalApiAuth
+POST /api/portal/[customerId]/tasks/[taskId]/done
+  → withPortalActor
   → prüft: Aufgabe gehört zum Kunden der Sitzung UND ist sichtbar UND liegt beim Kunden
   → setzt done_at, done_by_side = customer
 ```
@@ -85,10 +85,10 @@ geratenen Kennung eine interne Aufgabe abhaken.
 apps/workspace/src/server/portal/
   query-handler/get-portal-dashboard.query-handler.ts
   command-handler/complete-customer-task.command-handler.ts
-apps/workspace/src/app/api/portal/tasks/[taskId]/done/route.ts
+apps/workspace/src/app/api/portal/[customerId]/tasks/[taskId]/done/route.ts
 
-apps/workspace/src/app/[locale]/(portal)/portal/page.tsx     ersetzt den Platzhalter
-apps/workspace/src/app/[locale]/(portal)/portal/loading.tsx
+apps/workspace/src/app/[locale]/(portal)/portal/[customerId]/page.tsx     ersetzt den Platzhalter
+apps/workspace/src/app/[locale]/(portal)/portal/[customerId]/loading.tsx
 
 apps/workspace/src/components/portal/
   AGENTS.md

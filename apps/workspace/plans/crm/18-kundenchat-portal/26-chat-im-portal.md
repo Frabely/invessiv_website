@@ -23,7 +23,7 @@ wäre ein Chat ohne Echtzeit-Aktualisierung wertlos — man müsste zufällig hi
 
 | Bereich                          | Entscheidung                                                                                                                                                                        |
 | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Einstieg                         | Eigener Portalbereich `/portal/nachrichten` plus Ungelesen-Kennzeichnung im Dashboard                                                                                               |
+| Einstieg                         | Eigener Portalbereich `/portal/[customerId]/nachrichten` plus Ungelesen-Kennzeichnung im Dashboard                                                                                  |
 | Komponente                       | Dieselbe `message-thread` wie im CRM, mit Portal-Texten und Portal-Gestaltung                                                                                                       |
 | Benachrichtigung an den Betreuer | Notification sofort, Mail gebündelt: höchstens eine je **15 Minuten** je Kunde                                                                                                      |
 | Warum gebündelt                  | Wer drei Sätze in drei Nachrichten schreibt, soll nicht drei Mails auslösen                                                                                                         |
@@ -39,13 +39,13 @@ wäre ein Chat ohne Echtzeit-Aktualisierung wertlos — man müsste zufällig hi
 ## Architektur
 
 ```txt
-/portal/nachrichten (Server Component)
-  ├─ requirePortalAccess()
+/portal/[customerId]/nachrichten (Server Component)
+  ├─ requirePortalActor()
   ├─ getPortalConversation(customerId, { limit: 50 })
   └─ <MessageThread … />   dieselbe Komponente wie im CRM
 
-POST /api/portal/conversation/messages
-  → withPortalApiAuth
+POST /api/portal/[customerId]/conversation/messages
+  → withPortalActor
   → Limit prüfen
   → Nachricht anlegen (Task 24)
   → Outbox-Eintrag in derselben Transaktion:
@@ -69,8 +69,8 @@ Unterhaltung.
 packages/db/migrations/<nr>_add_conversation_notification_columns.sql
 packages/db/src/record-configuration/crm/conversations.ts   erweitert
 
-apps/workspace/src/app/[locale]/(portal)/portal/nachrichten/page.tsx + loading.tsx
-apps/workspace/src/app/api/portal/conversation/**                    Routen aus Task 24
+apps/workspace/src/app/[locale]/(portal)/portal/[customerId]/nachrichten/page.tsx + loading.tsx
+apps/workspace/src/app/api/portal/[customerId]/conversation/**                    Routen aus Task 24
 apps/workspace/src/server/portal/services/
   portal-message-rate-limit-service.ts
   message-notification-service.ts          Bündelungslogik, beide Richtungen
@@ -98,9 +98,11 @@ apps/workspace/src/i18n/dictionaries/portal/emails/{de,en}.json
   - `email_notifications_enabled = false` schließt die Mitgliedschaft in der **Abfrage** aus, nicht
     erst beim Versand
 - **Akzeptanz:**
-  - Test: drei Kundennachrichten binnen fünf Minuten lösen genau eine interne Mail aus
+  - Test: drei Kundennachrichten binnen fünf Minuten lösen genau eine interne Mail aus, und diese
+    nennt alle drei
   - Test: nach 16 Minuten löst die nächste interne Nachricht wieder eine aus
-  - Test: zwei interne Nachrichten binnen zwölf Stunden lösen genau eine Kundenmail aus
+    - Test: zwei interne Nachrichten binnen zwölf Stunden lösen genau eine Kundenmail aus, und diese
+      nennt beide
   - Test: nach Ablauf des Fensters löst die nächste wieder eine aus
   - Test: ein gerade aktiver Kunde bekommt keine Mail
   - Test: abgeschaltete Benachrichtigung verhindert den Versand
@@ -108,10 +110,10 @@ apps/workspace/src/i18n/dictionaries/portal/emails/{de,en}.json
 
 ### CRM-26-T2 — Portal-Routen und Limit
 
-- **Files:** `api/portal/conversation/**`, `portal-message-rate-limit-service.ts` + Tests
+- **Files:** `api/portal/[customerId]/conversation/**`, `portal-message-rate-limit-service.ts` + Tests
 - **Skills:** `best-practices`
 - **Inhalt:**
-  - Routen über `withPortalApiAuth`, Kundenkennung ausschließlich aus der Sitzung
+  - Routen über `withPortalActor`, Kundenkennung ausschließlich aus der Sitzung
   - Datenbankgestütztes Limit nach bestehendem Muster, 30 Nachrichten je Stunde
 - **Akzeptanz:**
   - Test: 31. Nachricht ergibt 429 mit `Retry-After`
@@ -121,7 +123,7 @@ apps/workspace/src/i18n/dictionaries/portal/emails/{de,en}.json
 
 ### CRM-26-T3 — Portal-Oberfläche
 
-- **Files:** `(portal)/portal/nachrichten/page.tsx`, `components/portal/messages/**`,
+- **Files:** `(portal)/portal/[customerId]/nachrichten/page.tsx`, `components/portal/messages/**`,
   `dictionaries/portal/messages/{de,en}.json`
 - **Skills:** `frontend-design`, `accessibility`, `copywriting`
 - **Inhalt:**

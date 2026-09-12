@@ -71,7 +71,9 @@ Commands:
 - Wiederholung im Aufgabendialog aktivieren/deaktivieren.
 - Bei Serienaufgabe vor Änderung Auswahl „nur diese“ oder „diese und zukünftige“.
 - Keine Option für Unteraufgaben, Parent oder Hierarchie anzeigen.
-- Reminderfelder erst aktivieren, wenn der Runner aus Ordner 10 verfügbar ist.
+- Reminderfelder erst aktivieren, wenn der Runner aus Ordner 10 verfügbar ist. Die gespeicherte
+  Reminderzeit ist exakt; die Auslösung folgt dem Cron-Takt (Geschäftszeit ±15 Minuten, sonst
+  nächster Lauf). Die UI verspricht keine Minutengenauigkeit.
 
 ## Deploy-Sicherheit
 
@@ -86,4 +88,5 @@ Commands:
 2. Zwei parallele Abschlüsse erzeugen genau ein Folgeexemplar.
 3. „Nur diese“ verändert keine Serie; „diese und zukünftige“ verändert keine erledigten Aufgaben.
 4. Deaktivieren verhindert neue Exemplare, löscht aber keine Historie.
-5. Reminder erscheint nach Ordner 10 einmalig zur richtigen lokalen Zeit.
+5. Reminder erscheint nach Ordner 10 einmalig — in der Geschäftszeit auf ±15 Minuten genau,
+   außerhalb beim nächsten Lauf. Ein Reminder für 03:00 erscheint am Morgen; das ist gewollt.

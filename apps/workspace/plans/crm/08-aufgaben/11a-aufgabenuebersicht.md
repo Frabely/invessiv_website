@@ -93,7 +93,7 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/tasks/{de,en}.json   + Übers
   `shared/task-list-search-params.ts`, `task-list-query-params.ts` + Tests
 - **Skills:** `best-practices`, `performance`
 - **Inhalt:**
-  - `customerId` wird optional; neue Filter `responsibleSide`, `projectId`, `dueWithinDays`,
+  - `customerId` wird optional; neue Filter `actionSide`, `projectId`, `dueWithinDays`,
     `overdueOnly`, `open`
   - Join auf Kunde und Projekt für die Anzeigespalten, Statusfilter auf beiden Parents
   - Ungültige Filterwerte werden verworfen, nicht durchgereicht

@@ -62,6 +62,9 @@ und Abhängigkeitsaussagen die **Ordner**-Nummer.
 ## Architektur und Migration
 
 - Client-`fetch` → Route Handler → Command/Query Handler; keine Server Actions.
+- Versionierte Writes ausschließlich über `updateVersioned` (Task 01): atomares
+  `UPDATE … WHERE id = $1 AND version = $2`, niemals SELECT-dann-UPDATE. Jede 409-Antwort trägt
+  `VersionConflictDto` mit `currentVersion` und `current`.
 - Result-Unions statt Exceptions für erwartete Fachfehler. Die Route mappt Fehlercodes auf HTTP über
   eine nicht-exportierte Message-Map; Statuscodes aus `HttpResponseCode`, nie nackte Zahlen.
 - Endpunkte im Client über `WorkspaceApiEndpoint`, keine URL-Literale.

@@ -6,16 +6,22 @@
 
 **Konkrete Task-Pläne**
 
-- [`04-kunde-anlegen-bearbeiten.md`](./04-kunde-anlegen-bearbeiten.md) — atomare Kundenanlage,
-  Primärkontakt, Validierung und Concurrency.
+- [`04-kunde-anlegen-bearbeiten.md`](./04-kunde-anlegen-bearbeiten.md) — CRM-Route, minimale
+  Kundenübersicht, atomare Kundenanlage, Primärkontakt, Validierung und Concurrency.
 - [`05-kundendetail-panel.md`](./05-kundendetail-panel.md) — Kundenakte, Archivierung und
   reaktivierbarer Detailflow.
 - [`06-ansprechpartner.md`](./06-ansprechpartner.md) — globale Personen und firmenbezogene
   Zuordnungen.
 
+Hier entsteht der CRM-Bereich als sichtbare Funktion: Sidebar-Eintrag, Route `/crm`, eine schlichte
+Kundenübersicht als Einstieg, Anlegen und Bearbeiten, die Kundenakte und die Ansprechpartner.
 Interne Nutzer können Kunden mit verpflichtendem Primärkontakt anlegen, ansehen, bearbeiten,
 archivieren und reaktivieren. Personen können mehreren Firmen mit abweichenden Kontaktdaten und
-Funktionen zugeordnet werden. Die Kundenakte ist nach Merge vollständig nutzbar.
+Funktionen zugeordnet werden.
+
+Die Übersicht ist absichtlich minimal — Nummer, Name, Status, Primärkontakt, festes Limit. Pagination,
+URL-Filter und Suche folgen in Ordner 05, der an dieser Einheit hängt. Ohne diesen Einstieg wäre die
+Akte nach dem Merge nur über eine geratene URL erreichbar.
 
 ## Daten und Regeln
 
@@ -45,6 +51,9 @@ Funktionen zugeordnet werden. Die Kundenakte ist nach Merge vollständig nutzbar
 - [ ] Dublettenwarnung blockiert nicht und verlangt bewusste Bestätigung.
 - [ ] Veraltete Version überschreibt keine neuere Bearbeitung.
 - [ ] Archivierte Kunden bleiben direkt adressierbar nur für berechtigte interne Nutzer.
+- [ ] Ein bestehender Kunde ist über die Übersicht auffindbar — ohne Filter, Suche oder geratene URL.
+- [ ] Die Übersicht zeigt keine deaktivierten Platzhalter für Filter oder Suche.
+- [ ] Der Listen-Query-Handler wird in Task 03 erweitert, nicht ersetzt: Signatur und DTO bleiben.
 - [ ] Empty-, Loading-, Validierungs- und Serverfehlerzustände sind in DE/EN vorhanden.
 - [ ] A11y-Smoke deckt Create/Edit, Kontaktwechsel und Archivierung ab.
 

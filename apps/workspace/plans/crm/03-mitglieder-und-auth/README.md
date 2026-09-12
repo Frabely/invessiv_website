@@ -21,6 +21,8 @@ Owner möglich. DB- oder Clerk-Fehler öffnen niemals Zugriff.
   derselben Transaktion atomar anlegen. Danach entscheidet ausschließlich `workspace_members`.
 - Bei DB-Fehler, unbekanntem Mitglied oder deaktiviertem Mitglied fail-closed antworten.
 - Owner-only Mitgliederansicht mit Einladung, Aktivierung, Credential-Freigabe und Deaktivierung.
+- Der Einladungsdialog erklärt ausdrücklich, dass das Clerk-Konto vorher im Clerk-Dashboard
+  eingeladen werden muss — die App erzeugt kein Konto.
 - Deaktivierung blockieren, solange aktive Kunden, Projekte, Aufgaben oder Renewals zugewiesen sind;
   Übergabevorschau und Zielmitglied sind Pflicht.
 - Security-Aktivitäten ohne E-Mail-Inhalte oder Secrets protokollieren.
@@ -38,7 +40,10 @@ Owner möglich. DB- oder Clerk-Fehler öffnen niemals Zugriff.
 - [ ] Eine bereits initialisierte Installation nutzt die Allowlist nicht mehr als Zugriffsgate.
 - [ ] DB-Ausfall, Timeout und ungültige Zeile ergeben keinen Fallback-Zugang.
 - [ ] Letzter aktiver Owner kann nicht deaktiviert oder herabgestuft werden.
-- [ ] Deaktivierung mit offenen Zuständigkeiten liefert 409 und eine vollständige Vorschau.
+- [ ] Deaktivierung mit offenen Zuständigkeiten liefert 409 und eine Vorschau **je Entität**.
+- [ ] „Alles an den Owner übergeben" ist atomar und erzeugt eine Activity je Datensatz.
+- [ ] Ein probeweise ergänzter `OwnableEntity`-Wert ohne Adapter bricht den Typecheck (im PR belegt).
+- [ ] Der einzige aktive Owner ist gegen Deaktivierung und Herabsetzung geschützt.
 - [ ] Navigation erscheint nur, wenn die Mitgliederverwaltung vollständig funktioniert.
 
 ## Rollback

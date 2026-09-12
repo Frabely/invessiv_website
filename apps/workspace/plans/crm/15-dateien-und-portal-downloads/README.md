@@ -39,7 +39,10 @@ sichtbar geschaltet.
 - [ ] Upload, Liste, Freigabe, Download, ZIP und Löschanfrage funktionieren als vollständiger Flow.
 - [ ] Portal kann interne Datei weder listen noch per erratener ID signieren lassen.
 - [ ] Mehrfachupload zeigt Fortschritt und Einzelfehler, ohne erfolgreiche Dateien zurückzurollen.
-- [ ] ZIP-Limits werden vor teurer Verarbeitung geprüft.
+- [ ] ZIP-Limits werden vor dem ersten gelesenen Objekt geprüft; die Ablehnung ist eine
+      Fehlerantwort, kein angefangener Stream.
+- [ ] `maxDuration`, Zeitbudget und Archivgrenzen sind gemessen und im PR mit Zahlen begründet.
+- [ ] Ein Archiv genau an beiden Grenzen läuft vollständig durch und bleibt im Zeitbudget.
 - [ ] `unscanned` ist intern erkennbar; kein falsches Sicherheitsversprechen im Portal.
 - [ ] Responsive, Keyboard, Fokus und beide Themes sind geprüft.
 

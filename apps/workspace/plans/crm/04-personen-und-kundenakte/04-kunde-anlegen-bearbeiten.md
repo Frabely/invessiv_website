@@ -1,7 +1,7 @@
 # Task 04 — Kunde anlegen und bearbeiten
 
 > **Merge-Einheit:** Ordner 04 · **Branch:** `feat/crm-personen-und-kundenakte`
-> **Aufwand:** M · **Abhängigkeiten:** Task 03 (Liste, Route, Dictionaries)
+> **Aufwand:** M · **Abhängigkeiten:** Task 01 (Schema, Contracts), Task 02 (Rechte)
 > **Migration:** keine
 
 - Kunde entsteht nur gemeinsam mit genau einem bestätigten Primärkontakt.
@@ -16,13 +16,20 @@
 
 ## Context
 
-Die Liste aus Task 03 kann nur lesen. Dieser Task ergänzt den Schreibpfad: einen Dialog, der Anlegen
-und Bearbeiten in einer Komponente abbildet (Muster `lead-form-dialog`), dahinter Route Handler,
-zod-Schemas und Command-Handler.
+Der erste sichtbare CRM-Bereich: die CRM-Route entsteht hier, dazu eine **minimale Kundenübersicht**
+als Einstieg und der Schreibpfad — ein Dialog, der Anlegen und Bearbeiten in einer Komponente
+abbildet (Muster `lead-form-dialog`), dahinter Route Handler, zod-Schemas und Command-Handler.
 
-Ansprechpartner bleiben bewusst außen vor (Task 06) — hier geht es nur um die Stammdaten des Kunden
-selbst. Beim Anlegen wird optional ein erster Kontakt mit erfasst, damit die Liste sofort sinnvolle
-Zeilen zeigt.
+Die Übersicht bleibt bewusst schlicht: Nummer, Anzeigename, Status und Primärkontakt, Klick öffnet
+die Akte. Kein URL-State, keine Toolbar, keine geteilten Listenbausteine. Zur vollen Liste mit
+Pagination, URL-Filtern und den Komponenten aus Task 02a baut sie Task 03 in Ordner 05 aus.
+
+Das ist Absicht und kein Doppelbau: Ordner 05 hängt an dieser Einheit, also kann die volle Liste
+hier noch nicht entstehen — und ohne irgendeinen Einstieg wäre die Kundenakte nach dem Merge nicht
+erreichbar.
+
+Der Primärkontakt entsteht **im selben** Command wie der Kunde (siehe Kopfzeile); weitere
+Ansprechpartner folgen in Task 06.
 
 ## Entscheidungen
 
@@ -186,31 +193,47 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/form/{de,en}.json
   - Tastaturbedienung vollständig, Fokus kehrt nach dem Schließen auf den auslösenden Button zurück
   - `aria-invalid` und `aria-describedby` korrekt gesetzt
 
-### CRM-04-T4 — Verdrahtung in der Liste
+### CRM-04-T4 — Minimale Kundenübersicht und Verdrahtung
 
-- **Files:** `components/workspace/crm/shell/customers-page-header/**`,
-  `table/customers-table-row-actions/**`, `(app)/crm/page.tsx`
-- **Skills:** `frontend-design`, `accessibility`
-- **Inhalt:** Button „Kunde anlegen" im Header, Zeilenaktion „Bearbeiten", beide setzen nur
-  Query-Parameter; die Page lädt bei `edit` den Kunden serverseitig vor
+- **Files:** `(app)/crm/page.tsx`, `loading.tsx`,
+  `components/workspace/crm/shell/customers-page-header/**`,
+  `components/workspace/crm/list/customers-basic-list/**`,
+  `query-handler/list-customers.query-handler.ts` (erste, einfache Fassung),
+  `dictionaries/workspace/crm/list/{de,en}.json`
+- **Skills:** `frontend-design`, `accessibility`, `copywriting`
+- **Inhalt:**
+  - Sidebar-Eintrag „CRM" und Route `/crm`
+  - Schlichte Übersicht: Nummer, Anzeigename, Status, Primärkontakt; nach `created_at` absteigend,
+    festes Limit ohne Pagination. Bewusst **ohne** URL-State, Toolbar, Sortierung und Filter
+  - Klick auf eine Zeile öffnet die Akte aus Task 05; Button „Kunde anlegen" im Header, Zeilenaktion
+    „Bearbeiten" — beide setzen nur Query-Parameter, die Page lädt bei `edit` serverseitig vor
+  - Empty-State erklärt, wofür der Bereich gedacht ist, und verweist auf den Anlegen-Button
+  - Der Query-Handler wird in Task 03 erweitert, nicht ersetzt: Signatur und DTO bleiben
 - **Akzeptanz:**
-  - Neu angelegter Kunde erscheint nach `router.refresh()` in der Liste
+  - Neu angelegter Kunde erscheint nach `router.refresh()` in der Übersicht
   - Ein `edit`-Parameter mit unbekannter ID öffnet keinen Dialog und wirft keinen Fehler
-  - Der Empty-State verweist jetzt auf den Anlegen-Button
+  - Die Übersicht ist ohne Filter und Suche vollständig bedienbar — kein toter Button, kein
+    deaktiviertes Filterfeld als Platzhalter
+  - Die Akte ist über die Übersicht erreichbar, nicht nur über eine geratene URL
+  - Mobil, Dark und Light geprüft; Tastaturbedienung vollständig
 
 ## Deploy-Sicherheit
 
-1. **Live sichtbar:** Anlegen- und Bearbeiten-Button in der Kundenliste, beide voll funktionsfähig.
+1. **Live sichtbar:** Sidebar-Eintrag „CRM", eine schlichte Kundenübersicht, Anlegen und Bearbeiten,
+   dazu die Kundenakte aus Task 05 und die Ansprechpartner aus Task 06. Der Bereich ist ab hier
+   eigenständig benutzbar.
 2. **Bricht nichts:** keine Migration, keine Änderung bestehender Routen. `withPermission` wird hier
    zum ersten Mal produktiv genutzt — ausschließlich auf neuen Endpunkten.
-3. **Offen:** Ansprechpartner über den Erstkontakt hinaus (Task 06), Detailansicht (Task 05). Die
-   Zeile ist noch nicht anklickbar — es gibt nur die explizite Aktion „Bearbeiten", also keinen
-   Klick ins Leere.
+3. **Offen:** Pagination, Sortierung, URL-Filter und Suche (Task 03, Ordner 05). Abgesichert
+   dadurch, dass die Übersicht ohne sie vollständig bedienbar ist und keine deaktivierten
+   Platzhalter zeigt — kein Filterfeld, das nichts tut.
 
 ## End-to-End-Akzeptanz
 
-1. Ein Kunde lässt sich mit nur einem Namen anlegen, bekommt automatisch eine Nummer und erscheint
-   sofort in der Liste.
+1. Ein Kunde lässt sich anlegen (Name plus Primärkontakt), bekommt automatisch eine Nummer und
+   erscheint sofort in der Übersicht.
+   1a. Ein bestehender Kunde ist über die Übersicht auffindbar und anklickbar — ohne Filter, Suche
+   oder geratene URL.
 2. Derselbe Name ein zweites Mal erzeugt einen sichtbaren Hinweis auf den bestehenden Kunden — und
    lässt sich trotzdem anlegen, wenn es wirklich ein zweiter Kunde ist.
 3. Der Hinweis greift auch bei abweichender Groß- und Kleinschreibung und führenden Leerzeichen.
