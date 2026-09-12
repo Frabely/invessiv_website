@@ -16,7 +16,6 @@ import {
   ActivityType,
   type LegacyLeadActivityType,
 } from "@invessiv/common/constants/activity/activity-types";
-import type { LegacyLeadActorType } from "@invessiv/common/constants/activity/actor-types";
 import type { LeadActivityDto } from "@invessiv/common/contracts/leads/lead-activity.dto";
 import type { LeadSubmissionDto } from "@invessiv/common/contracts/leads/lead-submission.dto";
 import type { Locale } from "@/config/i18n";
@@ -130,10 +129,7 @@ function getActorLabel(
   activity: LeadActivityDto,
   content: LeadsDetailDictionary,
 ): string {
-  return (
-    activity.actorLabel ??
-    content.activity.actor[activity.actorType as LegacyLeadActorType]
-  );
+  return activity.actorLabel ?? content.activity.actor[activity.actorType];
 }
 
 function getActivityTitle(
