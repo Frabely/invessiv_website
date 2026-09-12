@@ -5,8 +5,6 @@ type ReferenceTestimonialAuthor = {
   name: string;
 };
 
-// Nur Literale + `satisfies`: ein Wert-Import aus dem Barrel würde hier einen
-// Init-Zyklus erzeugen, weil das Barrel dieses Modul selbst re-exportiert.
 export const REFERENCE_TESTIMONIAL_AUTHORS = {
   allmacher: {
     avatarKey: "allmacher",

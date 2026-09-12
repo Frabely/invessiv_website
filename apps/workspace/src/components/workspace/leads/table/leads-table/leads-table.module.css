@@ -139,8 +139,6 @@
   }
 }
 
-/* Mobil: Tabelle wird zu gestapelten Karten (siehe leads-table-row). Kein
-   horizontales Scrollen, kein fixiertes Min-Width, Kopfzeile ausgeblendet. */
 @media (max-width: 720px) {
   .shell {
     flex: 1 1 auto;

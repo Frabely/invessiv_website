@@ -29,7 +29,7 @@ es nicht weniger als einen gibt. Wechsel und Lösen laufen deshalb immer in eine
 | Primärkontakt    | **Genau einer, immer.** Höchstens einer über partiellen Unique-Index, mindestens einer über den Command; Wechsel in einer Transaktion (alten zurücksetzen, neuen setzen)                                                                         |
 | Erster Kontakt   | Wird automatisch primär                                                                                                                                                                                                                          |
 | Letzter Kontakt  | **Darf nicht gelöscht werden.** Ein Kunde ohne Kontakt ist kein gültiger Zustand — der Versuch ergibt einen eigenen Fehlercode, keine 500                                                                                                        |
-| Warum hart       | `CustomerSummaryDto.primaryContact*` ist non-nullable (Task 01). Ein kontaktloser Kunde würde jede Listenabfrage zur Laufzeit brechen, nicht nur die Anzeige verschlechtern                                                                      |
+| Warum hart       | `CustomerSummaryDto.primaryContactName` ist non-nullable (Task 01). Ein kontaktloser Kunde würde jede Listenabfrage zur Laufzeit brechen, nicht nur die Anzeige verschlechtern; die E-Mail bleibt nullable, weil Name plus Telefon gültig sind   |
 | Primär lösen     | Nur durch Ersetzen: „diesen Kontakt lösen" ist bei der letzten Zuordnung nicht anwählbar, „Primärkontakt wechseln" ersetzt ihn in derselben Transaktion                                                                                          |
 | Person löschen   | Eine Person mit aktiver Zuordnung wird nicht gelöscht (`ON DELETE RESTRICT`); erst die Zuordnungen lösen, dann die Person                                                                                                                        |
 | E-Mail           | Nicht unique — bewusst, weil ein Identitätsanbieter Adressen ändern kann und die Adresse nie autorisiert. Sie ist **kein** Dubletten-Schutz                                                                                                      |
@@ -78,6 +78,8 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/contacts/{de,en}.json
 - **Inhalt:**
   - Felder: Vorname, Nachname, E-Mail, Telefon, Funktion — alle optional, aber mindestens eines von
     Nachname oder E-Mail muss gesetzt sein
+  - Person- und Zuordnungsänderungen verwenden getrennt `personVersion` und `assignmentVersion`;
+    kein Write schützt beide Tabellen mit nur einem Versionswert
   - Anzeigename ableiten, bei leerem Ergebnis auf die E-Mail zurückfallen
   - `setPrimaryContact` in einer Transaktion: alten Primärkontakt zurücksetzen, neuen setzen
   - Erster Kontakt eines Kunden wird automatisch primär

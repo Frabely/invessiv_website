@@ -142,9 +142,6 @@
   }
 }
 
-/* Mobil: jede Zeile wird zu einer gestapelten Karte. Sekundärfelder
-   (Erstellt/Aktualisiert/Quelle) sind hier ausgeblendet und im Detail-Panel
-   sichtbar. */
 @media (max-width: 720px) {
   .row {
     display: grid;

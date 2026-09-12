@@ -1,9 +1,9 @@
 /**
- * Zentrale Stelle für client-seitige, nicht-fatale Fehler aus `try/catch`-Pfaden,
- * die den Ablauf bewusst fortsetzen (z. B. blockiertes `localStorage`/`sessionStorage`).
- * Statt den Fehler stillschweigend zu verschlucken, wird er sichtbar geloggt, damit
- * sich Probleme später debuggen lassen. Einziger Chokepoint, um später z. B. auf
- * Sentry umzustellen, ohne jede Call-Site anzufassen.
+ * Single place for client-side, non-fatal errors from `try/catch` paths that
+ * deliberately continue (e.g. blocked `localStorage`/`sessionStorage`). Instead of
+ * swallowing the error silently, it is logged visibly so problems stay debuggable
+ * later. The only chokepoint for switching to, say, Sentry without touching every
+ * call site.
  */
 export function reportClientError(scope: string, error: unknown): void {
   if (process.env.NODE_ENV === "test") {

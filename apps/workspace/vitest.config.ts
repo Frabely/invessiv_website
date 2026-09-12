@@ -1,7 +1,12 @@
 import path from "node:path";
 import { defineConfig } from "vitest/config";
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  define: {
+    "process.env.CRM_DB_INTEGRATION": JSON.stringify(
+      mode === "crm-integration" ? "true" : "false",
+    ),
+  },
   resolve: {
     alias: [
       {
@@ -52,4 +57,4 @@ export default defineConfig({
     environment: "node",
     exclude: [".claude/**", "**/node_modules/**"],
   },
-});
+}));

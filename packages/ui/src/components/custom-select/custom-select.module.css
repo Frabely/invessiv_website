@@ -28,7 +28,6 @@
   grid-template-columns: minmax(0, 1fr);
 }
 
-/* Platz für den Clear-Button links neben dem Chevron. */
 .trigger[data-clearable] {
   padding-right: 3.4rem;
 }
@@ -179,7 +178,6 @@
 }
 
 .listBox {
-  /* Position, Größe und max-height liefert floating-ui via inline style. */
   z-index: 1000;
   display: grid;
   padding: 0.3rem;

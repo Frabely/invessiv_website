@@ -1,6 +1,6 @@
 # Ordner 01 — Kernschema und Contracts
 
-> **Status:** offen · **Aufwand:** 3–4 Tage · **Reviewziel:** 50–80 Dateien · **Harte Grenze:** 200
+> **Status:** im Review · **Aufwand:** 3–4 Tage · **Reviewziel:** 50–80 Dateien · **Harte Grenze:** 200
 
 ## Ziel und Stand nach Merge
 
@@ -19,9 +19,12 @@ unverändert und kann mit altem wie neuem Schema deployt werden.
 - Nur die unmittelbar benötigten Const-Objekte für Mitglieder, Kunden, Personen und Activities samt
   exakten Duplikat-Tests erstellen. Spätere Domänen definieren ihre Contracts in ihrem eigenen
   Ordner, damit keine ungenutzten Schnittstellen vorauseilen.
-- Additive Tabellen für `workspace_members`, `customers`, `people`,
-  `customer_contact_assignments` und `activities` anlegen. Alle anderen Tabellen entstehen erst in
-  ihrer sichtbar nutzbaren Feature-Einheit.
+- Additive Tabellen für `workspace_members`, `customers`, `people` und
+  `customer_contact_assignments` anlegen. `activities` gehört zu Ordner 02, alle anderen Tabellen
+  entstehen erst in ihrer sichtbar nutzbaren Feature-Einheit.
+- `workspace_members` entsteht **vollständig hier** (inklusive `active` und `credentials_access`),
+  weil `customers.owner_member_id` ein Pflicht-Fremdschlüssel darauf ist. Ordner 03 baut darauf nur
+  die Auth- und Permission-Schicht und bekommt für diese Tabelle keine eigene Migration.
 - Fremdschlüssel, Check-Constraints und Primärkontakt-Invarianten in der DB erzwingen.
   Kundennummernsequenzen dürfen Lücken haben.
 - Bearbeitbare Kerntabellen erhalten `version`, `created_at`, `updated_at`; Geheimfelder noch nicht.
@@ -39,6 +42,8 @@ unverändert und kann mit altem wie neuem Schema deployt werden.
 - [ ] Kein CRM-Link, kein toter CTA und keine unfertige Route ist sichtbar.
 - [ ] Alle String-Unions folgen dem Const-Objekt-Pattern und besitzen Tests.
 - [ ] DB-Smoke prüft Constraints, Sequenzlücken und ungültige Cross-Customer-Bezüge.
+- [ ] Fachliche Spalten tragen keinen DB-Default; ein fehlender Wert wird abgewiesen statt still
+      gefüllt. DB-Defaults gibt es nur für `created_at`, `updated_at` und die Kundennummernsequenz.
 - [ ] Rollback entfernt keine Tabellen; Rückbau erfolgt durch Nichtnutzung des additiven Schemas.
 
 ## Teilungsregel

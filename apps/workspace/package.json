@@ -8,6 +8,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
+    "db:smoke:crm": "vitest run src/server/tests/workspace/shared/update-versioned.integration.test.ts --mode crm-integration",
     "test:e2e": "playwright test --pass-with-no-tests"
   },
   "dependencies": {

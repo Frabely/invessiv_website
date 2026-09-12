@@ -1,9 +1,8 @@
 /**
- * Herkunftsseite einer Lead-Submission. Orthogonal zum `channel` (= was wurde
- * abgeschickt): markiert, von welcher Oberfläche der Lead stammt. So sind z. B.
- * Projekt-Anfragen von der LinkedIn-Post-Seite von denen der Startseite
- * unterscheidbar, ohne den Channel zu überladen. Default für bestehende Flows
- * ist `Website`.
+ * Origin page of a lead submission. Orthogonal to `channel` (= what was submitted):
+ * marks which surface the lead came from. That keeps, for example, project requests
+ * from the LinkedIn post page distinguishable from those on the home page without
+ * overloading the channel. Default for existing flows is `Website`.
  */
 export const ContactSubmissionOrigin = {
   Website: "website",
