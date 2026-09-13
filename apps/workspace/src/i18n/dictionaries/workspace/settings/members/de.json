@@ -1,0 +1,78 @@
+{
+  "list": {
+    "heading": "Mitglieder",
+    "description": "Jede Person meldet sich mit ihrem eigenen Clerk-Konto an. Was sie darf, bestimmen ausschließlich ihre Rollen.",
+    "addButton": "Mitglied hinzufügen",
+    "currentUserBadge": "Du",
+    "ownerBadge": "Owner",
+    "inactiveRole": "{role} (inaktiv)",
+    "noRoles": "Keine weitere Rolle",
+    "actions": {
+      "editRoles": "Rollen bearbeiten",
+      "grantOwner": "Zum Owner machen",
+      "revokeOwner": "Owner-Rolle entziehen"
+    }
+  },
+  "addDialog": {
+    "title": "Mitglied hinzufügen",
+    "description": "Wähle ein Clerk-Konto, das noch nicht verknüpft ist. Neue Personen lädst du vorher im Clerk-Dashboard ein.",
+    "searchLabel": "Konto suchen",
+    "searchPlaceholder": "Name oder E-Mail",
+    "loading": "Konten werden geladen …",
+    "candidatesLabel": "Verfügbare Konten",
+    "noEmail": "Ohne primäre E-Mail – erst in Clerk ergänzen",
+    "emptyTitle": "Kein freies Konto",
+    "emptyDescription": "Alle Clerk-Konten sind bereits verknüpft. Lade die Person zuerst im Clerk-Dashboard ein und öffne diesen Dialog danach erneut.",
+    "noMatches": "Kein freies Konto passt zu deiner Suche.",
+    "rolesLabel": "Rollen",
+    "rolesHint": "Mindestens eine Rolle. Die Owner-Rolle vergibst du nach dem Hinzufügen.",
+    "submit": "Mitglied hinzufügen",
+    "submitting": "Wird hinzugefügt …",
+    "cancel": "Abbrechen",
+    "close": "Dialog schließen",
+    "validation": {
+      "accountRequired": "Wähle ein Konto aus.",
+      "roleRequired": "Wähle mindestens eine Rolle."
+    }
+  },
+  "rolesDialog": {
+    "title": "Rollen von {name}",
+    "description": "Die Änderung gilt ab der nächsten Anfrage dieser Person.",
+    "rolesLabel": "Rollen",
+    "ownerNote": "Die Owner-Rolle bleibt bestehen. Du änderst sie über „Owner-Rolle entziehen“.",
+    "previewHeading": "Diese Rechte hat {name} danach",
+    "previewEmpty": "Ohne Rolle kann sich die Person anmelden, sieht aber keinen Bereich.",
+    "conflict": "Jemand hat die Rollen gerade geändert. Deine Auswahl ist erhalten – prüfe sie und speichere erneut.",
+    "submit": "Rollen speichern",
+    "submitting": "Wird gespeichert …",
+    "cancel": "Abbrechen",
+    "close": "Dialog schließen"
+  },
+  "ownerDialog": {
+    "grantTitle": "{name} zum Owner machen?",
+    "grantDescription": "Owner haben alle Rechte, auch für Mitglieder, Rollen, Export und endgültiges Löschen.",
+    "grantSubmit": "Zum Owner machen",
+    "revokeTitle": "Owner-Rolle von {name} entziehen?",
+    "revokeDescription": "Die Person behält ihre übrigen Rollen und verliert die Owner-Rechte ab ihrer nächsten Anfrage.",
+    "revokeSubmit": "Owner-Rolle entziehen",
+    "conflict": "Jemand hat dieses Mitglied gerade geändert. Der aktuelle Stand ist geladen – bestätige erneut, wenn es dabei bleiben soll.",
+    "submitting": "Wird gespeichert …",
+    "cancel": "Abbrechen",
+    "close": "Dialog schließen"
+  },
+  "errors": {
+    "MEMBER_NOT_FOUND": "Dieses Mitglied gibt es nicht mehr. Lade die Seite neu.",
+    "VALIDATION_ERROR": "Die Angaben sind unvollständig. Prüfe Konto und Rollen.",
+    "CLERK_ACCOUNT_NOT_FOUND": "Clerk kennt dieses Konto nicht mehr. Öffne den Dialog erneut.",
+    "CLERK_ACCOUNT_INCOMPLETE": "Dieses Konto hat keine primäre E-Mail. Ergänze sie im Clerk-Dashboard.",
+    "CLERK_ACCOUNT_ALREADY_LINKED": "Dieses Konto ist bereits mit einem Mitglied verknüpft.",
+    "CLERK_UNAVAILABLE": "Clerk ist gerade nicht erreichbar. Versuche es in ein paar Minuten erneut.",
+    "ROLE_NOT_ASSIGNABLE": "Mindestens eine Rolle ist inaktiv oder existiert nicht mehr. Lade die Seite neu.",
+    "OWNER_ROLE_NOT_ASSIGNABLE": "Die Owner-Rolle vergibst du über „Zum Owner machen“.",
+    "MEMBER_WITHOUT_ROLE": "Jedes Mitglied braucht mindestens eine Rolle. Weise zuerst eine andere Rolle zu.",
+    "ALREADY_OWNER": "Diese Person ist bereits Owner.",
+    "NOT_OWNER": "Diese Person ist kein Owner mehr.",
+    "LAST_ACTIVE_OWNER": "Der Workspace braucht mindestens einen aktiven Owner. Mache zuerst eine andere Person zum Owner.",
+    "INTERNAL": "Das hat nicht geklappt. Versuche es erneut."
+  }
+}

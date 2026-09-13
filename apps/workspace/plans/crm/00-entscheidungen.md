@@ -63,7 +63,12 @@ baubar, migrierbar und produktiv nutzbar bleiben. Dafür gilt je Ordner:
   Löschbutton in Version 1.
 - Kundennummer als Sequenz, Anzeige `K0001`; stabil und eindeutig, aber nicht lückenlos.
 - Kundentyp `company | individual`; `display_name` ist Pflicht.
-- Firmenname, Domain und USt-ID sind nicht unique. Die UI warnt nur vor möglichen Dubletten.
+- **Der Anzeigename (`display_name`) ist eindeutig** — normalisiert über `lower(btrim(...))`, über alle Status
+  einschließlich `archived`, erzwungen per Unique-Index (Migration in Ordner 04). Das ist der einzige Schutz gegen
+  doppelte Kundenanlage: kein Idempotenzschlüssel, keine Ähnlichkeitssuche, keine Dublettenwarnung. Echte
+  Namensgleichheit löst der Owner über einen unterscheidenden Anzeigenamen (Entscheidung des Nutzers, 13.09.2026;
+  ersetzt die frühere Warn-statt-Verbot-Regel).
+- Firmenname, Domain und USt-ID sind nicht unique.
 - Kein Merge-Flow; seltene Dublettenbereinigung erfolgt kontrolliert über die Datenbank.
 - Personen sind globale Datensätze. `customer_contact_assignments` ordnet eine Person beliebig
   vielen Kunden zu.
@@ -78,7 +83,7 @@ baubar, migrierbar und produktiv nutzbar bleiben. Dafür gilt je Ordner:
   Deaktivierung ist gesperrt, solange eine offene Zuständigkeit besteht; ein Command „Alles an den
   Owner übergeben" macht es in einem Schritt. Der einzige aktive Owner ist geschützt.
 - Zuständigkeiten laufen über eine **exhaustive Registry** (`OwnableEntity` plus
-  `satisfies Record<OwnableEntity, OwnershipAdapter>`, Ordner 03b). Eine neue besitzbare Entität in
+  `satisfies Record<OwnableEntity, OwnershipAdapter>`, Ordner 03c). Eine neue besitzbare Entität in
   Ordner 07, 08 oder 11 bricht den Typecheck, bis sie registriert ist — Vergessen ist damit ein
   roter Build und kein stiller Datenfehler.
 
@@ -382,6 +387,12 @@ Geteilte Listenbausteine wandern erst bei **tatsächlicher** Wiederverwendung na
 `components/workspace/shared/` — nicht vorsorglich. Der Umzug ist risikoarm, solange es genau einen
 Aufrufer gibt; der Nachweis sind unveränderte, grüne Bestandstests.
 
+**Ablage geteilter UI-Bausteine (13.09.2026, mit dem Nutzer abgestimmt):** Hybrid. App-neutrale Grundbausteine (Dialog,
+Bestätigungsdialog, Seitenpanel, Detail-Sektion, Definitionsliste, Empty-State, Badge, Formularfeld) gehören
+nach `packages/ui`; URL- oder Dictionary-gebundene Teile (Pagination, Sortierung, Selection, Suche, Facettenfilter,
+Timeline) nach `components/workspace/shared/`. Der Umzug erfolgt als eigener Refactoring-Ordner 03d vor Ordner 04 und
+ersetzt die Zielentscheidung „nicht `packages/ui`" aus Task 02a.
+
 ## Vor dem ersten echten Kunden (verbindlich)
 
 Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
@@ -425,9 +436,11 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 | #   | Status    | Ordner                                | Nach dem Merge vollständig nutzbar                                              | Dateien | Aufwand |
 | --- | --------- | ------------------------------------- | ------------------------------------------------------------------------------- | ------: | ------: |
 | 01  | gemerged  | `01-kernschema-und-contracts`         | Additives Kunden-/Personen-Kernschema ist unsichtbar deployt; Leads unverändert |   50–80 |  3–4 T. |
-| 02  | im Review | `02-activity-migration`               | Bestehende Lead-Timeline arbeitet verlustfrei auf dem neuen Modell              |   40–70 |  3–4 T. |
-| 03  | im Review | `03-mitglieder-und-auth`              | Persistierte User, Permission-Katalog, Bereichs-Gates und fail-closed Auth      |  80–120 |  4–5 T. |
-| 03b | offen     | `03b-mitglieder-und-rollenverwaltung` | Mitglieder, Rollen, Owner-Flow und Übergabe vollständig verwaltbar              |  60–100 |  4–5 T. |
+| 02  | gemerged  | `02-activity-migration`               | Bestehende Lead-Timeline arbeitet verlustfrei auf dem neuen Modell              |   40–70 |  3–4 T. |
+| 03  | gemerged  | `03-mitglieder-und-auth`              | Persistierte User, Permission-Katalog, Bereichs-Gates und fail-closed Auth      |  80–120 |  4–5 T. |
+| 03b | im Review | `03b-mitglieder-und-rollenverwaltung` | Mitglieder, Rollen und Owner-Flow verwaltbar; Aktionen permissionabhängig       | 100–120 |  3–4 T. |
+| 03c | offen     | `03c-uebergabe-und-deaktivierung`     | Deaktivierung mit Zuständigkeitssperre und atomarer Übergabe                    |   40–60 |    2 T. |
+| 03d | offen     | `03d-geteilte-ui-bausteine`           | Dialog-, Panel- und Listenbausteine geteilt (`packages/ui` + workspace/shared)  |   40–60 |  2–3 T. |
 | 04  | offen     | `04-personen-und-kundenakte`          | Kunden samt Pflichtkontakt, Owner, Archiv und Detail vollständig nutzbar        |  80–100 |  4–5 T. |
 | 05  | offen     | `05-kundenliste-und-zuweisung`        | Liste, Suche, Filter, Übergabe und Aufbewahrungshinweise nutzbar                |  60–100 |  3–4 T. |
 | 06  | offen     | `06-lead-konvertierung`               | Leads können sicher neu oder zu bestehenden Kunden konvertiert werden           |   40–70 |  2–3 T. |

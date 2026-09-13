@@ -41,7 +41,7 @@ import { isOpenableUrl, openExternalUrl } from "@/lib/url/is-openable-url";
 import { LeadOutreachTriggerVariant } from "@invessiv/common/constants/leads/outreach/lead-outreach-trigger-variants";
 import { ImprovementsSection } from "./improvements-section/improvements-section";
 import { SocialProfilesSection } from "./social-profiles-section/social-profiles-section";
-import { trapDialogFocus } from "../../shared/dialog-focus-trap";
+import { trapDialogFocus } from "@/components/workspace/shared/dialog/dialog-focus-trap";
 import type { LeadCategoryOption } from "@invessiv/common/contracts/leads/lead-category-option";
 import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
 import type {

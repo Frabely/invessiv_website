@@ -5,3 +5,6 @@
 Die Legacy-Spalten werden bereits in der Ordner-03-Migration entfernt. Begründung und Abnahme:
 [`../03-mitglieder-und-auth/README.md`](../03-mitglieder-und-auth/README.md), Abschnitt „Warum die Legacy-Spalten
 sofort gehen dürfen".
+
+Nachprüfung am 13.09.2026 nach Merge von Ordner 03 (PR #6): siehe [`README.md`](./README.md), Abschnitt
+„Nachprüfung nach Merge".

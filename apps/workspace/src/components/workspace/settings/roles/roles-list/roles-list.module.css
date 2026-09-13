@@ -1,0 +1,68 @@
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sectionHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.intro {
+  min-width: 0;
+}
+
+.heading {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-heading-md);
+  font-weight: 700;
+}
+
+.description {
+  margin: 0.3rem 0 0;
+  max-width: var(--measure-compact);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.55;
+}
+
+.createButton {
+  gap: 0.5rem;
+  min-height: 44px;
+  padding-inline: 1rem;
+  border-radius: 12px;
+  font-size: var(--font-size-body-sm);
+  white-space: nowrap;
+}
+
+.buttonIcon {
+  width: 14px;
+  height: 14px;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface-1);
+  list-style: none;
+}
+
+@media (max-width: 560px) {
+  .createButton {
+    width: 100%;
+  }
+}

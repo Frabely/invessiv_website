@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import type { LeadCategoryOption } from "@invessiv/common/contracts/leads/lead-category-option";
 import type { LeadSummaryDto } from "@invessiv/common/contracts/leads/lead-summary.dto";
+import type { LeadActionPermissions } from "@/common/contracts/leads/lead-action-permissions";
 import { ButtonControl } from "@/components/shared/button/button";
 import { useLeadsTableSelection } from "@/components/workspace/leads/table/leads-table-selection-provider/leads-table-selection-context";
 import { BulkDialogKind } from "@invessiv/common/constants/leads/bulk/bulk-dialog-kinds";
@@ -19,6 +20,7 @@ import { LeadsBulkEditDialog } from "../leads-bulk-edit-dialog/leads-bulk-edit-d
 import styles from "./leads-bulk-action-bar.module.css";
 
 type LeadsBulkActionBarProps = {
+  actions: LeadActionPermissions;
   bulkContent: LeadsBulkDictionary;
   categories: LeadCategoryOption[];
   rows: LeadSummaryDto[];
@@ -36,6 +38,7 @@ function formatSelectedSummary(
 }
 
 export function LeadsBulkActionBar({
+  actions,
   bulkContent,
   categories,
   rows,
@@ -44,7 +47,10 @@ export function LeadsBulkActionBar({
   const selection = useLeadsTableSelection();
   const [openDialog, setOpenDialog] = useState<BulkDialogKind | null>(null);
 
-  if (selection.selectedCount === 0) {
+  if (
+    selection.selectedCount === 0 ||
+    (!actions.canWrite && !actions.canDelete)
+  ) {
     return null;
   }
 
@@ -82,28 +88,34 @@ export function LeadsBulkActionBar({
           >
             {bulkContent.toolbar.clear}
           </ButtonControl>
-          <ButtonControl
-            onClick={() => setOpenDialog(BulkDialogKind.Edit)}
-            type="button"
-            variant="primary"
-          >
-            {bulkContent.toolbar.edit}
-          </ButtonControl>
-          <ButtonControl
-            className={styles.archiveButton}
-            onClick={() => setOpenDialog(BulkDialogKind.Archive)}
-            type="button"
-            variant="ghost"
-          >
-            {bulkContent.toolbar.archive}
-          </ButtonControl>
-          <button
-            className={styles.deleteButton}
-            onClick={() => setOpenDialog(BulkDialogKind.Delete)}
-            type="button"
-          >
-            {bulkContent.toolbar.delete}
-          </button>
+          {actions.canWrite ? (
+            <>
+              <ButtonControl
+                onClick={() => setOpenDialog(BulkDialogKind.Edit)}
+                type="button"
+                variant="primary"
+              >
+                {bulkContent.toolbar.edit}
+              </ButtonControl>
+              <ButtonControl
+                className={styles.archiveButton}
+                onClick={() => setOpenDialog(BulkDialogKind.Archive)}
+                type="button"
+                variant="ghost"
+              >
+                {bulkContent.toolbar.archive}
+              </ButtonControl>
+            </>
+          ) : null}
+          {actions.canDelete ? (
+            <button
+              className={styles.deleteButton}
+              onClick={() => setOpenDialog(BulkDialogKind.Delete)}
+              type="button"
+            >
+              {bulkContent.toolbar.delete}
+            </button>
+          ) : null}
         </div>
       </div>
 

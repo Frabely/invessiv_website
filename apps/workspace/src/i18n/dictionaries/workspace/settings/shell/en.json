@@ -1,0 +1,9 @@
+{
+  "title": "Settings",
+  "description": "Decide who works in the workspace and what each person may do.",
+  "tabsAriaLabel": "Settings sections",
+  "tabs": {
+    "members": "Members",
+    "roles": "Roles"
+  }
+}

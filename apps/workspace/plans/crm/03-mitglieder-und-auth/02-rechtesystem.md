@@ -205,7 +205,7 @@ auth() → clerkUserId                              fehlt → 401 / Redirect Sig
 - Lead- und Outreach-Commands schreiben `{ type: user, userId }`; Seeds und Smokes `system` + `SystemActorKey.Fixture`
 - Timeline zeigt den aktuellen `users.display_name`; Legacy-Zeilen weiter ihr `actor_label`
 
-T5 (Verwaltung) und T7 (Registry, Übergabe, Deaktivierung) liegen in Ordner 03b.
+T5 (Verwaltung) liegt in Ordner 03b, T7 (Registry, Übergabe, Deaktivierung) in Ordner 03c.
 
 ## Akzeptanzkriterien
 

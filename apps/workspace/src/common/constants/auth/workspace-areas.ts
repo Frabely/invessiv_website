@@ -3,6 +3,7 @@ import { Permission } from "@invessiv/common/constants/auth/permissions";
 export const WorkspaceArea = {
   Dashboard: "dashboard",
   Leads: "leads",
+  Settings: "settings",
 } as const;
 
 export type WorkspaceArea = (typeof WorkspaceArea)[keyof typeof WorkspaceArea];
@@ -11,6 +12,7 @@ export type WorkspaceArea = (typeof WorkspaceArea)[keyof typeof WorkspaceArea];
 export const WORKSPACE_AREA_VALUES = [
   WorkspaceArea.Dashboard,
   WorkspaceArea.Leads,
+  WorkspaceArea.Settings,
 ] as const;
 
 /**
@@ -20,4 +22,5 @@ export const WORKSPACE_AREA_VALUES = [
 export const WORKSPACE_AREA_PERMISSIONS = {
   [WorkspaceArea.Dashboard]: Permission.DashboardRead,
   [WorkspaceArea.Leads]: Permission.LeadsRead,
+  [WorkspaceArea.Settings]: Permission.MembersManage,
 } as const satisfies Record<WorkspaceArea, Permission>;

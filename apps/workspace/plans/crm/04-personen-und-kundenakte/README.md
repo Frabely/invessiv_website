@@ -1,6 +1,6 @@
 # Ordner 04 — Personen und Kundenakte
 
-> **Status:** offen · **Abhängigkeiten:** 01, 03b · **Aufwand:** 4–5 Tage · **Reviewziel:** 80–100 Dateien
+> **Status:** offen · **Abhängigkeiten:** 01, 03b, 03d · **Aufwand:** 4–5 Tage · **Reviewziel:** 80–100 Dateien
 
 ## Ziel und Stand nach Merge
 
@@ -30,8 +30,10 @@ Akte nach dem Merge nur über eine geratene URL erreichbar.
 - Person: Name, primäre E-Mail/Telefon, persönliche Portalsprache und `version`.
 - Zuordnung: Kunde, Person, Funktion, abweichende Firmen-E-Mail/-Telefon und `is_primary`.
 - Pro Kunde exakt ein Primärkontakt. Create-Command legt Kunde und Zuordnung atomar an.
-- Keine Unique-Constraint auf Namen, Domain oder USt-ID; normalisierte Ähnlichkeit erzeugt nur eine
-  bestätigungspflichtige Warnung.
+- Anzeigename eindeutig über `lower(btrim(display_name))` per Unique-Index (additive Migration in dieser Einheit);
+  Konflikt ergibt 409. Keine Unique-Constraint auf Firmenname, Domain oder USt-ID; kein Idempotenzschlüssel, keine
+  Ähnlichkeitssuche (Entscheidung 13.09.2026, siehe `00-entscheidungen.md`). Die Task-Pläne 04/05 werden zu Beginn
+  der Einheit darauf angepasst.
 - Archivieren blendet standardmäßig aus; Reaktivieren setzt einen aktiven Status. Kein `deleted_at`.
 - Optimistic Concurrency: veraltete Mutationen liefern 409 mit aktuellem DTO.
 
@@ -48,7 +50,7 @@ Akte nach dem Merge nur über eine geratene URL erreichbar.
 
 - [ ] Kunde kann niemals ohne Primärkontakt committed werden.
 - [ ] Dieselbe Person kann zwei Kunden mit unterschiedlichen Firmendaten bedienen.
-- [ ] Dublettenwarnung blockiert nicht und verlangt bewusste Bestätigung.
+- [ ] Ein zweiter Kunde mit gleichem Anzeigenamen (abweichende Groß-/Kleinschreibung, Randleerzeichen) ergibt 409.
 - [ ] Veraltete Version überschreibt keine neuere Bearbeitung.
 - [ ] Archivierte Kunden bleiben direkt adressierbar nur für berechtigte interne Nutzer.
 - [ ] Ein bestehender Kunde ist über die Übersicht auffindbar — ohne Filter, Suche oder geratene URL.

@@ -20,6 +20,8 @@ import { LeadOutreachTrigger } from "../../outreach/lead-outreach-trigger/lead-o
 import styles from "./leads-table-row-actions.module.css";
 
 type LeadsTableRowActionsProps = {
+  canDelete: boolean;
+  canEdit: boolean;
   deleteContent: LeadsDeleteDictionary;
   deleteLabel: string;
   editHref: string;
@@ -36,6 +38,8 @@ function stopRowPropagation(event: MouseEvent<HTMLElement>) {
 }
 
 export function LeadsTableRowActions({
+  canDelete,
+  canEdit,
   deleteContent,
   deleteLabel,
   editHref,
@@ -55,6 +59,10 @@ export function LeadsTableRowActions({
     if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
       setIsMenuOpen(false);
     }
+  }
+
+  if (!canEdit && !canDelete && !outreachContent) {
+    return <td className={styles.cell} />;
   }
 
   return (
@@ -79,19 +87,21 @@ export function LeadsTableRowActions({
         <FontAwesomeIcon aria-hidden="true" icon={faEllipsisVertical} />
       </button>
       <div className={styles.group} data-open={isMenuOpen ? "true" : "false"}>
-        <button
-          aria-label={editLabel}
-          className={styles.button}
-          onClick={(event) => {
-            stopRowPropagation(event);
-            setIsMenuOpen(false);
-            startTransition(() => router.push(editHref));
-          }}
-          title={editLabel}
-          type="button"
-        >
-          <FontAwesomeIcon aria-hidden="true" icon={faPenToSquare} />
-        </button>
+        {canEdit ? (
+          <button
+            aria-label={editLabel}
+            className={styles.button}
+            onClick={(event) => {
+              stopRowPropagation(event);
+              setIsMenuOpen(false);
+              startTransition(() => router.push(editHref));
+            }}
+            title={editLabel}
+            type="button"
+          >
+            <FontAwesomeIcon aria-hidden="true" icon={faPenToSquare} />
+          </button>
+        ) : null}
         {outreachContent ? (
           <LeadOutreachTrigger
             content={outreachContent}
@@ -100,22 +110,25 @@ export function LeadsTableRowActions({
             variant={LeadOutreachTriggerVariant.IconOnly}
           />
         ) : null}
-        <button
-          aria-label={deleteLabel}
-          className={`${styles.button} ${styles.buttonDestructive}`}
-          onClick={(event) => {
-            stopRowPropagation(event);
-            setIsMenuOpen(false);
-            setIsDeleteDialogOpen(true);
-          }}
-          title={deleteLabel}
-          type="button"
-        >
-          <FontAwesomeIcon aria-hidden="true" icon={faTrash} />
-        </button>
+        {canDelete ? (
+          <button
+            aria-label={deleteLabel}
+            className={`${styles.button} ${styles.buttonDestructive}`}
+            onClick={(event) => {
+              stopRowPropagation(event);
+              setIsMenuOpen(false);
+              setIsDeleteDialogOpen(true);
+            }}
+            title={deleteLabel}
+            type="button"
+          >
+            <FontAwesomeIcon aria-hidden="true" icon={faTrash} />
+          </button>
+        ) : null}
       </div>
-      {isDeleteDialogOpen ? (
+      {canDelete && isDeleteDialogOpen ? (
         <LeadDeleteConfirmDialog
+          canArchive={canEdit}
           content={deleteContent}
           currentStatus={leadCurrentStatus}
           leadDisplayName={leadDisplayName}

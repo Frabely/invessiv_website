@@ -11,12 +11,13 @@ import { LeadDeleteAction } from "@invessiv/common/constants/leads/delete/lead-d
 import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
 import { ButtonControl } from "@/components/shared/button/button";
 import { FormStatus } from "@/components/shared/form/form-status/form-status";
-import { trapDialogFocus } from "../../shared/dialog-focus-trap";
+import { trapDialogFocus } from "@/components/workspace/shared/dialog/dialog-focus-trap";
 import { leadsService } from "../../form/lead-form-dialog/leads-service";
 import type { LeadsDeleteDictionary } from "@/i18n/dictionaries/workspace/leads";
 import styles from "./lead-delete-confirm-dialog.module.css";
 
 type LeadDeleteConfirmDialogProps = {
+  canArchive: boolean;
   content: LeadsDeleteDictionary;
   currentStatus: ContactLeadStatusValue;
   leadDisplayName: string;
@@ -47,6 +48,7 @@ function getErrorMessage(
 }
 
 export function LeadDeleteConfirmDialog({
+  canArchive,
   content,
   currentStatus,
   leadDisplayName,
@@ -174,7 +176,7 @@ export function LeadDeleteConfirmDialog({
           >
             {content.buttons.cancel}
           </ButtonControl>
-          {!isArchived ? (
+          {canArchive && !isArchived ? (
             <ButtonControl
               disabled={isBusy}
               onClick={handleArchive}

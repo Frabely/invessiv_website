@@ -39,7 +39,7 @@ import { outreachGenerationClientService } from "@/client/leads/outreach/lead-ou
 import { outreachProviderStatusService } from "@/client/leads/outreach/lead-outreach-provider-status-service";
 import { CHANNEL_PROFILES } from "@invessiv/common/constants/leads/outreach/lead-outreach-channel-profiles";
 import type { LeadsOutreachDictionary } from "@/i18n/dictionaries/workspace/leads";
-import { trapDialogFocus } from "../../shared/dialog-focus-trap";
+import { trapDialogFocus } from "@/components/workspace/shared/dialog/dialog-focus-trap";
 import styles from "./lead-outreach-dialog.module.css";
 
 const LeadOutreachProviderState = {

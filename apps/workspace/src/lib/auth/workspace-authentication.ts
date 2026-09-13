@@ -8,6 +8,7 @@ import type { WorkspaceAuthentication } from "@/common/contracts/auth/workspace-
 import type { BootstrapWorkspaceOwnerInput } from "@/server/workspace/auth/bootstrap-workspace-owner-types";
 import { bootstrapWorkspaceOwner } from "@/server/workspace/auth/command-handler/bootstrap-workspace-owner.command-handler";
 import { resolveWorkspaceActor } from "@/server/workspace/auth/query-handler/resolve-workspace-actor.query-handler";
+import { clerkUserProfileMappingService } from "@/server/workspace/auth/services/clerk-user-profile-mapping-service";
 import { workspaceBootstrapIdentityService } from "@/server/workspace/auth/services/workspace-bootstrap-identity-service";
 
 async function loadBootstrapInput(
@@ -18,23 +19,17 @@ async function loadBootstrapInput(
     return null;
   }
 
-  const primaryEmail = user.emailAddresses.find(
-    (entry) => entry.id === user.primaryEmailAddressId,
-  )?.emailAddress;
-  if (!primaryEmail) {
+  const profile = clerkUserProfileMappingService.mapUserToProfile(user);
+  if (!profile.primaryEmail) {
     return null;
   }
 
-  const fullName = [user.firstName, user.lastName]
-    .filter((part): part is string => Boolean(part?.trim()))
-    .join(" ");
-
   return {
     clerkUserId,
-    primaryEmail,
-    firstName: user.firstName ?? null,
-    lastName: user.lastName ?? null,
-    displayName: fullName || primaryEmail,
+    primaryEmail: profile.primaryEmail,
+    firstName: profile.firstName,
+    lastName: profile.lastName,
+    displayName: profile.displayName,
   };
 }
 

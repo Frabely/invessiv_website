@@ -1,0 +1,51 @@
+{
+  "list": {
+    "systemHeading": "Systemrollen",
+    "systemDescription": "Fest vorgegeben und nicht änderbar. Du kannst sie Mitgliedern zuweisen.",
+    "customHeading": "Eigene Rollen",
+    "customDescription": "Bündle Rechte für eure Arbeitsweise, zum Beispiel für Vertrieb oder Support.",
+    "createButton": "Rolle anlegen",
+    "permissionCountOne": "1 Recht",
+    "permissionCountOther": "{count} Rechte",
+    "memberCountZero": "Niemandem zugewiesen",
+    "memberCountOne": "1 Mitglied",
+    "memberCountOther": "{count} Mitglieder",
+    "inactiveBadge": "Inaktiv",
+    "editButton": "Rolle bearbeiten",
+    "viewButton": "Rechte ansehen",
+    "emptyTitle": "Noch keine eigene Rolle",
+    "emptyDescription": "Eigene Rollen geben Mitgliedern genau die Rechte, die sie brauchen. Lege eine an, sobald die Systemrolle „Mitglied“ zu viel oder zu wenig erlaubt."
+  },
+  "dialog": {
+    "createTitle": "Rolle anlegen",
+    "editTitle": "Rolle bearbeiten",
+    "viewTitle": "Rechte der Rolle {name}",
+    "description": "Änderungen gelten für alle zugewiesenen Mitglieder ab ihrer nächsten Anfrage.",
+    "viewDescription": "Systemrollen sind fest vorgegeben. So siehst du, was sie erlauben.",
+    "nameLabel": "Name",
+    "namePlaceholder": "z. B. Vertrieb",
+    "descriptionLabel": "Beschreibung",
+    "descriptionPlaceholder": "Wofür ist diese Rolle gedacht?",
+    "activeLabel": "Rolle ist aktiv",
+    "activeHint": "Eine inaktive Rolle bleibt zugewiesen, gewährt aber keine Rechte.",
+    "permissionsLabel": "Rechte",
+    "conflict": "Jemand hat diese Rolle gerade geändert. Deine Eingaben sind erhalten – prüfe sie und speichere erneut.",
+    "submitCreate": "Rolle anlegen",
+    "submitEdit": "Änderungen speichern",
+    "submitting": "Wird gespeichert …",
+    "cancel": "Abbrechen",
+    "done": "Schließen",
+    "close": "Dialog schließen",
+    "validation": {
+      "nameRequired": "Gib der Rolle einen Namen."
+    }
+  },
+  "errors": {
+    "ROLE_NOT_FOUND": "Diese Rolle gibt es nicht mehr. Lade die Seite neu.",
+    "VALIDATION_ERROR": "Die Angaben sind unvollständig. Prüfe Name und Rechte.",
+    "ROLE_NAME_TAKEN": "Es gibt bereits eine Rolle mit diesem Namen.",
+    "PERMISSION_NOT_DELEGABLE": "Verwaltungsrechte bleiben der Owner-Rolle vorbehalten. Entferne sie aus der Auswahl.",
+    "SYSTEM_ROLE_IMMUTABLE": "Systemrollen lassen sich nicht ändern.",
+    "INTERNAL": "Das hat nicht geklappt. Versuche es erneut."
+  }
+}

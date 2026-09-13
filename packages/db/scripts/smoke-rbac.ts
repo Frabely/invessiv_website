@@ -7,6 +7,8 @@
 import { randomUUID } from "node:crypto";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
+import { SECURITY_EVENT_TYPE_VALUES } from "@invessiv/common/constants/auth/security-event-types";
+import { SECURITY_SUBJECT_TYPE_VALUES } from "@invessiv/common/constants/auth/security-subject-types";
 import { SYSTEM_ROLE_DEFINITIONS } from "@invessiv/common/constants/auth/system-role-definitions";
 import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
 import {
@@ -399,6 +401,34 @@ async function runActorChecks(sql: Sql) {
   );
 }
 
+async function runSecurityEventConstraintChecks(sql: Sql) {
+  const rows = (await sql`
+    SELECT conname, pg_get_constraintdef(oid) AS definition
+    FROM pg_constraint
+    WHERE conrelid = 'security_events'::regclass
+      AND conname IN ('security_events_type_check', 'security_events_subject_type_check')
+  `) as { conname: string; definition: string }[];
+  const definitions = new Map(rows.map((row) => [row.conname, row.definition]));
+
+  const expectations: [string, readonly string[]][] = [
+    ["security_events_type_check", SECURITY_EVENT_TYPE_VALUES],
+    ["security_events_subject_type_check", SECURITY_SUBJECT_TYPE_VALUES],
+  ];
+
+  for (const [constraintName, expectedValues] of expectations) {
+    const definition = definitions.get(constraintName) ?? "";
+    const databaseValues = [...definition.matchAll(/'([^']+)'/g)]
+      .map((match) => match[1])
+      .sort();
+    const codeValues = [...expectedValues].sort();
+    record(
+      `${constraintName} matches the const object`,
+      JSON.stringify(databaseValues) === JSON.stringify(codeValues),
+      `database: ${databaseValues.join(", ")} | code: ${codeValues.join(", ")}`,
+    );
+  }
+}
+
 async function cleanup(sql: Sql) {
   const pattern = `${FIXTURE_PREFIX}%`;
   await sql`DELETE FROM leads WHERE display_name LIKE ${pattern}`;
@@ -451,6 +481,7 @@ async function run() {
     await runUserAndMemberChecks(sql);
     await runRoleChecks(sql);
     await runActorChecks(sql);
+    await runSecurityEventConstraintChecks(sql);
   } finally {
     await cleanup(sql);
   }

@@ -37,7 +37,7 @@ import { ButtonControl } from "@/components/shared/button/button";
 import {
   focusFirstDialogElement,
   trapDialogFocus,
-} from "../../shared/dialog-focus-trap";
+} from "@/components/workspace/shared/dialog/dialog-focus-trap";
 import { ColumnPillGroup } from "../column-pill-group/column-pill-group";
 import { DialogFooter } from "../dialog-footer/dialog-footer";
 import styles from "./import-leads-dialog.module.css";

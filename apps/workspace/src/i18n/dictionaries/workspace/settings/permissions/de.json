@@ -1,0 +1,127 @@
+{
+  "groups": {
+    "overview": "Übersicht",
+    "leads": "Leads und Outreach",
+    "customers": "Kunden",
+    "projects": "Projekte und Aufgaben",
+    "files": "Dateien",
+    "credentials": "Zugangsdaten",
+    "portal": "Kundenportal",
+    "administration": "Verwaltung"
+  },
+  "permissions": {
+    "dashboard.read": {
+      "label": "Übersicht ansehen",
+      "description": "Kennzahlen und Auswertungen im Dashboard sehen."
+    },
+    "leads.read": {
+      "label": "Leads ansehen",
+      "description": "Leads und ihren Verlauf öffnen."
+    },
+    "leads.write": {
+      "label": "Leads bearbeiten",
+      "description": "Leads anlegen, ändern und archivieren."
+    },
+    "leads.delete": {
+      "label": "Leads löschen",
+      "description": "Leads endgültig entfernen."
+    },
+    "leads.import": {
+      "label": "Leads importieren",
+      "description": "Leads aus CSV-Dateien übernehmen."
+    },
+    "outreach.generate": {
+      "label": "Outreach-Entwürfe erstellen",
+      "description": "Nachrichtenentwürfe für Leads erzeugen."
+    },
+    "members.read": {
+      "label": "Mitglieder sehen",
+      "description": "Mitglieder auflisten, etwa um eine Zuständigkeit zu wählen."
+    },
+    "customers.read": {
+      "label": "Kunden ansehen",
+      "description": "Kunden und Ansprechpartner öffnen."
+    },
+    "customers.write": {
+      "label": "Kunden bearbeiten",
+      "description": "Kunden anlegen, ändern, archivieren und übergeben."
+    },
+    "projects.read": {
+      "label": "Projekte ansehen",
+      "description": "Projekte und Aufgaben öffnen."
+    },
+    "projects.write": {
+      "label": "Projekte bearbeiten",
+      "description": "Projekte anlegen, ändern und übergeben."
+    },
+    "tasks.write": {
+      "label": "Aufgaben bearbeiten",
+      "description": "Aufgaben anlegen, ändern und zuweisen."
+    },
+    "files.read": {
+      "label": "Dateien ansehen",
+      "description": "Kundendateien öffnen und herunterladen."
+    },
+    "files.write": {
+      "label": "Dateien hochladen",
+      "description": "Dateien hochladen und für das Portal freigeben."
+    },
+    "files.delete": {
+      "label": "Dateien löschen",
+      "description": "Kundendateien entfernen."
+    },
+    "credentials.read": {
+      "label": "Zugangsdaten auflisten",
+      "description": "Einträge sehen, ohne Passwörter anzuzeigen."
+    },
+    "credentials.reveal": {
+      "label": "Passwörter anzeigen",
+      "description": "Einzelne Passwörter anzeigen und kopieren."
+    },
+    "credentials.write": {
+      "label": "Zugangsdaten bearbeiten",
+      "description": "Zugangsdaten anlegen, ändern und löschen."
+    },
+    "portal.manage": {
+      "label": "Portalzugänge verwalten",
+      "description": "Kundenkontakte ins Portal einladen und Zugänge widerrufen."
+    },
+    "roles.manage": {
+      "label": "Rollen verwalten",
+      "description": "Rollen anlegen und ändern."
+    },
+    "members.manage": {
+      "label": "Mitglieder verwalten",
+      "description": "Mitglieder hinzufügen und ihre Rollen ändern."
+    },
+    "data.export": {
+      "label": "Daten exportieren",
+      "description": "Kundendaten exportieren."
+    },
+    "data.purge": {
+      "label": "Kunden endgültig löschen",
+      "description": "Einen Kunden samt Daten unwiderruflich löschen."
+    },
+    "security.audit": {
+      "label": "Sicherheitsprotokoll lesen",
+      "description": "Änderungen an Mitgliedern und Rollen nachvollziehen."
+    }
+  },
+  "systemRoles": {
+    "workspace_owner": {
+      "label": "Owner",
+      "description": "Alle Rechte, auch für Mitglieder, Rollen, Export und endgültiges Löschen."
+    },
+    "workspace_member": {
+      "label": "Mitglied",
+      "description": "Alltagsarbeit mit Leads, Kunden, Projekten und Dateien – ohne Löschen und ohne Verwaltung."
+    },
+    "workspace_credentials_manager": {
+      "label": "Passwort-Freigabe",
+      "description": "Darf einzelne Passwörter anzeigen und kopieren."
+    }
+  },
+  "ownerOnly": "Nur Owner",
+  "ownerOnlyHint": "Dieses Recht kann keiner eigenen Rolle gegeben werden.",
+  "none": "Keine Rechte"
+}

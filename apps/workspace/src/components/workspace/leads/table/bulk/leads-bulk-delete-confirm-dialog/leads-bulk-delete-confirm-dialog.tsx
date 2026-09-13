@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { LeadSummaryDto } from "@invessiv/common/contracts/leads/lead-summary.dto";
 import { ButtonControl } from "@/components/shared/button/button";
 import { FormStatus } from "@/components/shared/form/form-status/form-status";
-import { trapDialogFocus } from "@/components/workspace/leads/shared/dialog-focus-trap";
+import { trapDialogFocus } from "@/components/workspace/shared/dialog/dialog-focus-trap";
 import type { LeadsBulkDictionary } from "@/i18n/dictionaries/workspace/leads";
 
 import { leadsBulkEditService } from "../../services/leads-bulk-edit-service";

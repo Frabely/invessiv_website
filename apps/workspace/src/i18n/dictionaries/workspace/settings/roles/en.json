@@ -1,0 +1,51 @@
+{
+  "list": {
+    "systemHeading": "System roles",
+    "systemDescription": "Predefined and unchangeable. You can assign them to members.",
+    "customHeading": "Custom roles",
+    "customDescription": "Bundle permissions for the way you work, for example sales or support.",
+    "createButton": "Create role",
+    "permissionCountOne": "1 permission",
+    "permissionCountOther": "{count} permissions",
+    "memberCountZero": "Not assigned",
+    "memberCountOne": "1 member",
+    "memberCountOther": "{count} members",
+    "inactiveBadge": "Inactive",
+    "editButton": "Edit role",
+    "viewButton": "View permissions",
+    "emptyTitle": "No custom role yet",
+    "emptyDescription": "Custom roles give members exactly the permissions they need. Create one as soon as the “Member” system role allows too much or too little."
+  },
+  "dialog": {
+    "createTitle": "Create role",
+    "editTitle": "Edit role",
+    "viewTitle": "Permissions of {name}",
+    "description": "Changes apply to every assigned member from their next request.",
+    "viewDescription": "System roles are predefined. This is what they allow.",
+    "nameLabel": "Name",
+    "namePlaceholder": "e.g. Sales",
+    "descriptionLabel": "Description",
+    "descriptionPlaceholder": "What is this role for?",
+    "activeLabel": "Role is active",
+    "activeHint": "An inactive role stays assigned but grants nothing.",
+    "permissionsLabel": "Permissions",
+    "conflict": "Someone just changed this role. Your input is kept – check it and save again.",
+    "submitCreate": "Create role",
+    "submitEdit": "Save changes",
+    "submitting": "Saving …",
+    "cancel": "Cancel",
+    "done": "Close",
+    "close": "Close dialog",
+    "validation": {
+      "nameRequired": "Give the role a name."
+    }
+  },
+  "errors": {
+    "ROLE_NOT_FOUND": "This role no longer exists. Reload the page.",
+    "VALIDATION_ERROR": "Some details are missing. Check name and permissions.",
+    "ROLE_NAME_TAKEN": "A role with this name already exists.",
+    "PERMISSION_NOT_DELEGABLE": "Administration permissions are reserved for the owner role. Remove them from the selection.",
+    "SYSTEM_ROLE_IMMUTABLE": "System roles cannot be changed.",
+    "INTERNAL": "That did not work. Try again."
+  }
+}

@@ -58,6 +58,7 @@ describe("LeadDetailPanel", () => {
   it("renders lead details and keeps close href without selected", () => {
     render(
       <LeadDetailPanel
+        canEdit
         closeHref="/de/leads?status=qualified&page=2"
         content={getLeadsDetailDictionary("de")}
         editHref={`/de/leads?status=qualified&page=2&mode=edit&edit=${leadFixture.id}`}
@@ -86,9 +87,30 @@ describe("LeadDetailPanel", () => {
     ).toBeInTheDocument();
   });
 
+  it("hides the edit action without write permission", () => {
+    const content = getLeadsDetailDictionary("de");
+
+    render(
+      <LeadDetailPanel
+        canEdit={false}
+        closeHref="/de/leads"
+        content={content}
+        editHref={`/de/leads?mode=edit&edit=${leadFixture.id}`}
+        lead={leadFixture}
+        locale="de"
+        sharedContent={getLeadsSharedDictionary("de")}
+      />,
+    );
+
+    expect(
+      screen.queryByRole("button", { name: content.actions.edit }),
+    ).not.toBeInTheDocument();
+  });
+
   it("shows localized empty labels for optional values", () => {
     render(
       <LeadDetailPanel
+        canEdit
         closeHref="/en/leads"
         content={getLeadsDetailDictionary("en")}
         editHref={`/en/leads?mode=edit&edit=${leadFixture.id}`}

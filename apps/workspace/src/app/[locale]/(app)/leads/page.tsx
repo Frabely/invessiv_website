@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { requireWorkspaceArea } from "@/lib/auth/permissions";
+import { resolveLeadActionPermissions } from "@/common/patterns/leads/resolve-lead-action-permissions";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { LeadFormDialog } from "@/components/workspace/leads/form/lead-form-dialog/lead-form-dialog";
 import { LeadsPageHeader } from "@/components/workspace/leads/shell/leads-page-header/leads-page-header";
@@ -84,7 +85,8 @@ export default async function LeadsPage({
   }
 
   // Layouts are not re-rendered on search param changes, so the page gates its own data.
-  await requireWorkspaceArea(locale, WorkspaceArea.Leads);
+  const actor = await requireWorkspaceArea(locale, WorkspaceArea.Leads);
+  const leadActions = resolveLeadActionPermissions(actor);
 
   const resolvedSearchParams = await searchParams;
   const shellContent = getLeadsShellDictionary(locale as Locale);
@@ -97,7 +99,9 @@ export default async function LeadsPage({
   const deleteContent = getLeadsDeleteDictionary(locale as Locale);
   const detailContent = getLeadsDetailDictionary(locale as Locale);
   const bulkContent = getLeadsBulkDictionary(locale as Locale);
-  const outreachContent = getLeadsOutreachDictionary(locale as Locale);
+  const outreachContent = leadActions.canGenerateOutreach
+    ? getLeadsOutreachDictionary(locale as Locale)
+    : undefined;
   const parsedFilters = parseLeadListFilters(resolvedSearchParams);
   const selectedLeadId = parseSelectedLeadId(resolvedSearchParams);
   const resolvedSort = parsedFilters.sort ?? LeadSort.CreatedDesc;
@@ -155,6 +159,7 @@ export default async function LeadsPage({
 
   const detailPanelProps = selectedLead
     ? {
+        canEdit: leadActions.canWrite,
         closeHref: detailCloseHref,
         content: detailContent,
         editHref: buildLeadDetailPanelEditHref(
@@ -183,8 +188,9 @@ export default async function LeadsPage({
     ? LeadFormDialogMode.Edit
     : LeadFormDialogMode.Create;
   const dialogOpen =
-    requestedDialogMode === LeadFormDialogMode.Create ||
-    (requestedDialogMode === LeadFormDialogMode.Edit && Boolean(editLead));
+    leadActions.canWrite &&
+    (requestedDialogMode === LeadFormDialogMode.Create ||
+      (requestedDialogMode === LeadFormDialogMode.Edit && Boolean(editLead)));
 
   return (
     <>
@@ -193,14 +199,16 @@ export default async function LeadsPage({
           <LeadsPageHeader
             addLeadHref={addLeadHref}
             basePath={basePath}
+            canCreateLead={leadActions.canWrite}
             categories={categoryOptions}
             currentQueryString={queryString}
             filtersContent={toolbarContent}
-            importContent={importContent}
+            importContent={leadActions.canImport ? importContent : undefined}
             sharedContent={sharedContent}
             shellContent={shellContent}
           />
           <LeadsTable
+            actions={leadActions}
             basePath={basePath}
             bulkContent={bulkContent}
             categories={categoryOptions}
@@ -208,7 +216,11 @@ export default async function LeadsPage({
             emptyState={
               leadList.total === 0
                 ? {
-                    actionHref: hasFilters ? basePath : addLeadHref,
+                    actionHref: hasFilters
+                      ? basePath
+                      : leadActions.canWrite
+                        ? addLeadHref
+                        : undefined,
                     actionLabel: hasFilters
                       ? paginationContent.emptyState.noResultsAction
                       : paginationContent.emptyState.noLeadsAction,

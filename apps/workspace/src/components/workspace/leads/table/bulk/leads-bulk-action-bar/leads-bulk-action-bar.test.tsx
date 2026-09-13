@@ -53,6 +53,13 @@ afterEach(() => {
   vi.clearAllMocks();
 });
 
+const ALL_LEAD_ACTIONS = {
+  canWrite: true,
+  canDelete: true,
+  canImport: true,
+  canGenerateOutreach: true,
+};
+
 function createLead(index: number): LeadSummaryDto {
   return {
     id: `lead-${index}`,
@@ -94,6 +101,7 @@ describe("LeadsBulkActionBar", () => {
       <LeadsTableSelectionProvider rowIds={rows.map((row) => row.id)}>
         <SelectionDriver leadId={rows[0].id} />
         <LeadsBulkActionBar
+          actions={ALL_LEAD_ACTIONS}
           bulkContent={bulkContent}
           categories={[]}
           rows={rows}
@@ -123,5 +131,53 @@ describe("LeadsBulkActionBar", () => {
 
     expect(screen.getByTestId("bulk-archive-dialog")).toBeInTheDocument();
     expect(dialogMocks.archiveDialog).toHaveBeenCalled();
+  });
+
+  it("hides every action the actor is not permitted to use", () => {
+    const rows = [createLead(1)];
+    const bulkContent = getLeadsBulkDictionary("en");
+
+    render(
+      <LeadsTableSelectionProvider rowIds={rows.map((row) => row.id)}>
+        <SelectionDriver leadId={rows[0].id} />
+        <LeadsBulkActionBar
+          actions={{ ...ALL_LEAD_ACTIONS, canDelete: false }}
+          bulkContent={bulkContent}
+          categories={[]}
+          rows={rows}
+          sharedContent={getLeadsSharedDictionary("en")}
+        />
+      </LeadsTableSelectionProvider>,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "select-lead" }));
+
+    expect(
+      screen.getByRole("button", { name: bulkContent.toolbar.archive }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: bulkContent.toolbar.delete }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("renders no bar when the actor can neither write nor delete", () => {
+    const rows = [createLead(1)];
+
+    render(
+      <LeadsTableSelectionProvider rowIds={rows.map((row) => row.id)}>
+        <SelectionDriver leadId={rows[0].id} />
+        <LeadsBulkActionBar
+          actions={{ ...ALL_LEAD_ACTIONS, canWrite: false, canDelete: false }}
+          bulkContent={getLeadsBulkDictionary("en")}
+          categories={[]}
+          rows={rows}
+          sharedContent={getLeadsSharedDictionary("en")}
+        />
+      </LeadsTableSelectionProvider>,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "select-lead" }));
+
+    expect(screen.queryByRole("region")).not.toBeInTheDocument();
   });
 });

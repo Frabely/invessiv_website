@@ -39,17 +39,9 @@ function renderAction(
     </>
   );
 
+  // Without a target the actor lacks the permission; a disabled button would be a dead end.
   if (!actionHref) {
-    return (
-      <button
-        aria-disabled="true"
-        className={styles.primaryAction}
-        disabled
-        type="button"
-      >
-        {commonContent}
-      </button>
-    );
+    return null;
   }
 
   return (

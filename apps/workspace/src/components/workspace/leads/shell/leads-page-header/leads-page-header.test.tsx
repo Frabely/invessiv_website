@@ -47,6 +47,7 @@ describe("LeadsPageHeader", () => {
   it("renders active filters and updates the URL for immediate filter changes", async () => {
     render(
       <LeadsPageHeader
+        canCreateLead
         addLeadHref="/de/leads?mode=create"
         basePath="/de/leads"
         categories={[
@@ -203,6 +204,7 @@ describe("LeadsPageHeader", () => {
   it("can collapse and expand the filter area", () => {
     render(
       <LeadsPageHeader
+        canCreateLead
         addLeadHref="/de/leads?mode=create"
         basePath="/de/leads"
         categories={[]}
@@ -262,6 +264,7 @@ describe("LeadsPageHeader", () => {
 
     render(
       <LeadsPageHeader
+        canCreateLead
         addLeadHref="/de/leads?mode=create"
         basePath="/de/leads"
         categories={[]}
@@ -281,6 +284,7 @@ describe("LeadsPageHeader", () => {
   function renderToolbar(currentQueryString: string) {
     return render(
       <LeadsPageHeader
+        canCreateLead
         addLeadHref="/de/leads?mode=create"
         basePath="/de/leads"
         categories={[]}
@@ -453,6 +457,7 @@ describe("LeadsPageHeader", () => {
   it("keeps reset disabled when no filters are active", () => {
     render(
       <LeadsPageHeader
+        canCreateLead
         addLeadHref="/de/leads?mode=create"
         basePath="/de/leads"
         categories={[]}
@@ -505,5 +510,28 @@ describe("LeadsPageHeader", () => {
       expect(lastPushedParams().get("sort")).toBe("created_desc");
       expect(lastPushedParams().has("date_from")).toBe(false);
     });
+  });
+});
+
+describe("LeadsPageHeader permissions", () => {
+  it("hides the add lead action without write permission", () => {
+    const shellContent = getLeadsShellDictionary("de");
+
+    render(
+      <LeadsPageHeader
+        addLeadHref="/de/leads?mode=create"
+        basePath="/de/leads"
+        canCreateLead={false}
+        categories={[]}
+        currentQueryString=""
+        filtersContent={getLeadsToolbarDictionary("de")}
+        sharedContent={getLeadsSharedDictionary("de")}
+        shellContent={shellContent}
+      />,
+    );
+
+    expect(
+      screen.queryByRole("button", { name: shellContent.addLeadButton }),
+    ).not.toBeInTheDocument();
   });
 });

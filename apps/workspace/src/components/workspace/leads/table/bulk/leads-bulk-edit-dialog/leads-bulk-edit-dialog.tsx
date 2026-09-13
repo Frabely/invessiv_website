@@ -27,7 +27,7 @@ import {
   PrimaryCtaButton,
 } from "@/components/shared/button/button";
 import { FormStatus } from "@/components/shared/form/form-status/form-status";
-import { trapDialogFocus } from "@/components/workspace/leads/shared/dialog-focus-trap";
+import { trapDialogFocus } from "@/components/workspace/shared/dialog/dialog-focus-trap";
 import { ImprovementsListEditor } from "@/components/workspace/leads/shared/improvements-list-editor/improvements-list-editor";
 import type {
   LeadsBulkDictionary,

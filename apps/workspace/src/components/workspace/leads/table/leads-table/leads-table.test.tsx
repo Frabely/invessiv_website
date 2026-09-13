@@ -27,10 +27,18 @@ afterEach(() => {
   cleanup();
 });
 
+const ALL_LEAD_ACTIONS = {
+  canWrite: true,
+  canDelete: true,
+  canImport: true,
+  canGenerateOutreach: true,
+};
+
 describe("LeadsTable", () => {
   it("keeps the empty state inside the table body", () => {
     render(
       <LeadsTable
+        actions={ALL_LEAD_ACTIONS}
         basePath="/de/leads"
         bulkContent={getLeadsBulkDictionary("de")}
         categories={[]}
@@ -86,6 +94,7 @@ describe("LeadsTable", () => {
 
     render(
       <LeadsTable
+        actions={ALL_LEAD_ACTIONS}
         basePath="/de/leads"
         bulkContent={getLeadsBulkDictionary("de")}
         categories={[]}

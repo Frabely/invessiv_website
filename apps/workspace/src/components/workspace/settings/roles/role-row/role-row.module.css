@@ -1,0 +1,89 @@
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.6rem 1.25rem;
+  padding: 0.85rem 1.1rem;
+}
+
+.row + .row {
+  border-top: 1px solid var(--color-border);
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.nameLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+}
+
+.name {
+  color: var(--color-text);
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.row[data-active="false"] .name {
+  color: var(--color-text-muted);
+}
+
+.inactiveBadge {
+  padding: 0.05rem 0.5rem;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-badge);
+  font-weight: 650;
+}
+
+.description {
+  margin: 0;
+  max-width: var(--measure-compact);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.1rem;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  white-space: nowrap;
+}
+
+.actionButton {
+  min-height: 40px;
+  padding-inline: 0.8rem;
+  border-radius: 10px;
+  font-size: var(--font-size-ui-sm);
+}
+
+@media (max-width: 720px) {
+  .row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .meta {
+    grid-column: 1;
+    flex-direction: row;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .actionButton {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+}

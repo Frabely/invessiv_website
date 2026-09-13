@@ -28,7 +28,8 @@
       "comingSoonBadge": "Coming soon",
       "items": {
         "leads": "Leads",
-        "overview": "Overview"
+        "overview": "Overview",
+        "settings": "Settings"
       }
     },
     "main": {

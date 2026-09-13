@@ -25,6 +25,7 @@ import { LeadDetailActivities } from "../lead-detail-activities/lead-detail-acti
 import styles from "./lead-detail-panel.module.css";
 
 export type LeadDetailPanelProps = {
+  canEdit: boolean;
   closeHref: string;
   content: LeadsDetailDictionary;
   editHref: string;
@@ -85,6 +86,7 @@ function getPhoneHref(phone: string | null): string | undefined {
 }
 
 export function LeadDetailPanel({
+  canEdit,
   closeHref,
   content,
   editHref,
@@ -133,15 +135,17 @@ export function LeadDetailPanel({
             />
           ) : null}
 
-          <button
-            aria-label={content.actions.edit}
-            className={styles.editIconLink}
-            onClick={() => startTransition(() => router.push(editHref))}
-            title={content.actions.edit}
-            type="button"
-          >
-            <FontAwesomeIcon aria-hidden="true" icon={faPenToSquare} />
-          </button>
+          {canEdit ? (
+            <button
+              aria-label={content.actions.edit}
+              className={styles.editIconLink}
+              onClick={() => startTransition(() => router.push(editHref))}
+              title={content.actions.edit}
+              type="button"
+            >
+              <FontAwesomeIcon aria-hidden="true" icon={faPenToSquare} />
+            </button>
+          ) : null}
 
           <button
             aria-label={content.actions.closeAriaLabel}
