@@ -86,13 +86,22 @@ async function run() {
         or(
           isNull(activities.id),
           drizzleSql`${activities.lead_id} is distinct from ${leadActivities.lead_id}`,
+          drizzleSql`${activities.customer_id} is not null`,
+          drizzleSql`${activities.project_id} is not null`,
           drizzleSql`${activities.type} is distinct from ${leadActivities.type}`,
+          drizzleSql`${activities.title} is distinct from ${leadActivities.title}`,
+          drizzleSql`${activities.body} is distinct from ${leadActivities.body}`,
+          drizzleSql`${activities.metadata} is distinct from ${leadActivities.metadata}`,
           drizzleSql`${activities.occurred_at} is distinct from ${leadActivities.occurred_at}`,
+          drizzleSql`${activities.actor_type} is distinct from ${leadActivities.actor_type}`,
+          drizzleSql`${activities.actor_id} is distinct from ${leadActivities.actor_id}`,
+          drizzleSql`${activities.actor_label} is distinct from ${leadActivities.actor_label}`,
+          drizzleSql`${activities.created_at} is distinct from ${leadActivities.created_at}`,
         ),
       )
       .limit(10);
     record(
-      "every legacy lead activity exists unchanged in activities",
+      "every legacy lead activity exists completely unchanged in activities",
       mismatchedLegacyRows.length === 0,
       mismatchedLegacyRows.map((row) => row.id).join(", "),
     );

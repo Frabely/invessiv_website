@@ -228,8 +228,8 @@ apps/workspace/src/server/workspace/dashboard/query-handler/get-messaging-conver
   - Der Lead-Mapper filtert Typen, die die Lead-Timeline nicht darstellen kann
   - `lead-activity-service.ts` wird entfernt
 - **Akzeptanz:**
-  - **Die bestehenden Dashboard- und Lead-Tests bleiben inhaltlich unverändert und grün** — das ist
-    der Regressionsnachweis für die Funnel-Kennzahlen
+  - Die bestehenden Dashboard- und Lead-Tests bleiben grün. Nur die zuvor falsche Bulk-Status-Erwartung wird bewusst
+    auf `status_change` korrigiert; das ist der Regressionsnachweis für die Funnel-Kennzahlen
   - Kein Code liest oder schreibt `leadActivities` außer dem Drizzle-Modell und der
     Übernahmeprüfung im Activity-Smoke
   - Die Lead-Detailansicht zeigt dieselbe Timeline wie vorher
@@ -250,7 +250,8 @@ apps/workspace/src/server/workspace/dashboard/query-handler/get-messaging-conver
 
 1. Migration läuft und ist wiederholbar; alle bestehenden Lead-Aktivitäten sind übernommen.
 2. Die Lead-Detailansicht zeigt unveränderte Einträge in unveränderter Reihenfolge.
-3. Die Dashboard-Kennzahlen liefern vor und nach dem Deploy dieselben Werte.
+3. Die Dashboard-Kennzahlen bleiben bis auf den bewusst korrigierten Fall stabil: Bulk-Statusänderungen erscheinen
+   jetzt im Zeitraum ihrer Statusänderung.
 4. Ein neuer Lead erzeugt seine Aktivität ausschließlich in `activities`.
 5. Eine Aktivität lässt sich mit `customerId` und `projectId` anlegen und ist darüber abfragbar.
 6. `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm build:workspace` grün.

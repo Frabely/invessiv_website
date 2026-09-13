@@ -5,7 +5,7 @@
 >
 > **Stand:** 13. September 2026 · geprüft und entscheidungsvollständig.
 >
-> **Umfang:** 23 einzeln merge- und deploybare Einheiten, insgesamt **70–92 Personentage**
+> **Umfang:** 23 einzeln merge- und deploybare Einheiten, insgesamt **72–95 Personentage**
 > inklusive Tests, Reviewkorrekturen, Migrationen und Betriebsdokumentation.
 
 ## Ziel und Lieferprinzip

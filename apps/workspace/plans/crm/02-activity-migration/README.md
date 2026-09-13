@@ -41,14 +41,12 @@ migrierte Activities ohne `origin` bleiben gültig. Der `bulk_edit`-Eintrag enth
 übrigen Felder und entfällt, wenn nur der Status
 geändert wurde. Frühere Bulk-Edit-Statusänderungen werden nicht nachgetragen.
 
-Bewusste Ausnahme vom ersten Merge-Gate-Punkt: Die Erwartung im Bulk-Edit-Test für eine reine
-Statusänderung ändert sich von `bulk_edit` auf `status_change`.
-
 ## Merge-Gate
 
-- [x] Bestehende Lead- und Dashboard-Tests bleiben inhaltlich unverändert; nur Importpfade dürfen
-      wechseln.
-- [x] Die Migration übernimmt jede Bestandszeile mit derselben ID und bricht bei Abweichung ab.
+- [x] Bestehende Lead- und Dashboard-Semantik bleibt unverändert, mit einer bewussten Korrektur: Eine reine
+      Bulk-Statusänderung wird als `status_change` statt `bulk_edit` erwartet und dadurch im Zeitraum-Funnel gezählt.
+- [x] Die Migration übernimmt jede Bestandszeile vollständig mit derselben ID; eine nachgelagerte
+      Verifikationsmigration bricht bei Abweichung eines übernommenen Feldes ab.
 - [x] Ein zweiter Migrationslauf erzeugt keine doppelten Activities.
 - [x] Kein Anwendungscode liest oder schreibt mehr `lead_activities`; Zugriff haben nur noch das
       Drizzle-Modell und die Übernahmeprüfung im Activity-Smoke.
