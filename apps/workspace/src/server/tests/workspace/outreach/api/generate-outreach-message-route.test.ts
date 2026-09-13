@@ -1,4 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { Permission } from "@invessiv/common/constants/auth/permissions";
+import {
+  authorizedWorkspaceRequest,
+  TEST_ACTOR_USER_ID,
+  unauthenticatedWorkspaceRequest,
+} from "@/server/tests/support/workspace-auth-fixtures";
 import type { NextRequest } from "next/server";
 
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
@@ -8,15 +14,13 @@ import { POST } from "@/app/api/workspace/outreach/generate/route";
 
 vi.mock("server-only", () => ({}));
 
-const { mockAuth, mockCurrentUser, mockGenerateOutreach } = vi.hoisted(() => ({
-  mockAuth: vi.fn(),
-  mockCurrentUser: vi.fn(),
+const { mockAuthenticate, mockGenerateOutreach } = vi.hoisted(() => ({
+  mockAuthenticate: vi.fn(),
   mockGenerateOutreach: vi.fn(),
 }));
 
-vi.mock("@clerk/nextjs/server", () => ({
-  auth: mockAuth,
-  currentUser: mockCurrentUser,
+vi.mock("@/lib/auth/workspace-authentication", () => ({
+  authenticateWorkspaceRequest: mockAuthenticate,
 }));
 
 vi.mock(
@@ -24,7 +28,6 @@ vi.mock(
   () => ({ generateOutreachMessage: mockGenerateOutreach }),
 );
 
-const ALLOWED_EMAIL = "owner@example.com";
 const LEAD_ID = "lead-uuid-123";
 
 function makeRequest(body: unknown): NextRequest {
@@ -44,18 +47,12 @@ function makeInvalidJsonRequest(): NextRequest {
 }
 
 function setupAuthenticatedUser(): void {
-  mockAuth.mockResolvedValue({ userId: "user_123" });
-  mockCurrentUser.mockResolvedValue({
-    primaryEmailAddressId: "email_primary",
-    emailAddresses: [{ id: "email_primary", emailAddress: ALLOWED_EMAIL }],
-  });
+  mockAuthenticate.mockResolvedValue(authorizedWorkspaceRequest());
 }
 
 describe("POST /api/workspace/outreach/generate", () => {
   beforeEach(() => {
-    vi.stubEnv("WORKSPACE_ALLOWED_EMAILS", ALLOWED_EMAIL);
-    mockAuth.mockReset();
-    mockCurrentUser.mockReset();
+    mockAuthenticate.mockReset();
     mockGenerateOutreach.mockReset();
   });
 
@@ -64,7 +61,7 @@ describe("POST /api/workspace/outreach/generate", () => {
   });
 
   it("returns 401 when the request is unauthenticated", async () => {
-    mockAuth.mockResolvedValue({ userId: null });
+    mockAuthenticate.mockResolvedValue(unauthenticatedWorkspaceRequest());
 
     const response = await POST(
       makeRequest({
@@ -95,7 +92,10 @@ describe("POST /api/workspace/outreach/generate", () => {
     const response = await POST(makeRequest(requestBody));
 
     expect(response.status).toBe(HttpResponseCode.Ok);
-    expect(mockGenerateOutreach).toHaveBeenCalledWith(requestBody);
+    expect(mockGenerateOutreach).toHaveBeenCalledWith(
+      requestBody,
+      TEST_ACTOR_USER_ID,
+    );
     const body = await response.json();
     expect(body).toMatchObject({
       ok: true,
@@ -191,5 +191,25 @@ describe("POST /api/workspace/outreach/generate", () => {
     expect(response.status).toBe(HttpResponseCode.InternalServerError);
     const body = await response.json();
     expect(body).toMatchObject({ error: OutreachErrorCode.Internal });
+  });
+});
+
+describe("POST /api/workspace/outreach/generate permissions", () => {
+  beforeEach(() => {
+    mockAuthenticate.mockReset();
+    mockGenerateOutreach.mockReset();
+  });
+
+  it("returns 403 without outreach.generate", async () => {
+    mockAuthenticate.mockResolvedValue(
+      authorizedWorkspaceRequest([Permission.LeadsRead, Permission.LeadsWrite]),
+    );
+
+    const response = await POST(
+      makeRequest({ leadId: LEAD_ID, channel: OutreachChannel.Linkedin }),
+    );
+
+    expect(response.status).toBe(HttpResponseCode.Forbidden);
+    expect(mockGenerateOutreach).not.toHaveBeenCalled();
   });
 });

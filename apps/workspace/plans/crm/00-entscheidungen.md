@@ -47,9 +47,13 @@ baubar, migrierbar und produktiv nutzbar bleiben. Dafür gilt je Ordner:
   Systemrolle `workspace_credentials_manager`; ein separates `credentials_access`-Autorisierungsflag entfällt.
 - Fehlende Permission, unvollständige Identität und DB-Fehler lehnen den Zugriff fail-closed ab.
 - Es gibt kein `customers.delete`: in Version 1 existiert kein Löschbutton, nur der Owner-Purge.
+- Permissions kommen ausschließlich über Rollen; direkte User-Permissions gibt es nicht. Bereiche kennen nur ihre
+  Permission (`WORKSPACE_AREA_PERMISSIONS`), nie eine Rolle.
 - Clerk bleibt Identitätsanbieter. MFA ist optional und wird nicht durch die App erzwungen.
-- Die Env-Allowlist dient nur zum atomaren Bootstrap des ersten Owners. Bei DB-Fehlern bleibt der
-  Zugang geschlossen; es gibt keinen Allowlist-Fallback.
+- Der erste Owner entsteht atomar über `WORKSPACE_BOOTSTRAP_CLERK_USER_ID`, nur solange kein aktiver Owner existiert.
+  Es gibt keine E-Mail-Allowlist und keinen Fallback; bei DB-Fehlern bleibt der Zugang geschlossen.
+- Sicherheitsrelevante Änderungen (Mitglieder, Rollen, Owner, später Credential-Reveal und Purge) landen in der
+  append-only Tabelle `security_events`, nicht in `activities`.
 
 ### Kunden und Personen
 
@@ -74,7 +78,7 @@ baubar, migrierbar und produktiv nutzbar bleiben. Dafür gilt je Ordner:
   Deaktivierung ist gesperrt, solange eine offene Zuständigkeit besteht; ein Command „Alles an den
   Owner übergeben" macht es in einem Schritt. Der einzige aktive Owner ist geschützt.
 - Zuständigkeiten laufen über eine **exhaustive Registry** (`OwnableEntity` plus
-  `satisfies Record<OwnableEntity, OwnershipAdapter>`, Ordner 03). Eine neue besitzbare Entität in
+  `satisfies Record<OwnableEntity, OwnershipAdapter>`, Ordner 03b). Eine neue besitzbare Entität in
   Ordner 07, 08 oder 11 bricht den Typecheck, bis sie registriert ist — Vergessen ist damit ein
   roter Build und kein stiller Datenfehler.
 
@@ -313,6 +317,7 @@ people
 
 files ── genau ein Scope: customer | project | feedback_round
 activities ── Lead- und CRM-Historie
+security_events ── append-only Sicherheitsprotokoll (Mitglieder, Rollen, Owner, Reveal, Purge)
 outbox_jobs ── zuverlässige asynchrone Seiteneffekte
 ```
 
@@ -327,7 +332,7 @@ Präfixfrei bleiben eigenständige und querschnittliche Tabellen: `users`, `work
 `role_permissions`, `workspace_member_roles`, `people`,
 `customers`, `projects`, `tasks`, `task_series`, `portal_memberships`, `portal_invitations`,
 `conversations`, `messages`, `message_files`, `conversation_reads`, `feedback_rounds`,
-`feedback_round_requests`, `retainers`, `time_entries`, `files`, `activities`, `outbox_jobs`,
+`feedback_round_requests`, `retainers`, `time_entries`, `files`, `activities`, `security_events`, `outbox_jobs`,
 `notifications`.
 
 `portal_memberships` und `feedback_rounds` sind bewusst präfixfrei: sie ersetzen die früheren
@@ -405,6 +410,9 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
   schreiben alle Pfade nur `activities`. Begründung: geringer Wert der Bestandsdaten und betrieblich
   zugesichert keine Activity-Writes zwischen Migration und Deploy. Folge: Einträge zwischen Deploy und
   einem Revert sieht die alte Version nicht — bewusst akzeptiert.
+- **Ausnahme Legacy-Spalten `workspace_members` (Ordner 03):** `clerk_user_id`, `email`, `role` und
+  `credentials_access` werden direkt entfernt. Begründung: Die Tabelle ist leer, keine App-Version liest sie, und ein
+  Preflight bricht die Migration bei vorhandenen Daten vor der ersten Änderung ab. Ordner 03a entfällt dadurch.
 - Ein Backfill erhält eine neue registrierte Migration oder einen separat versionierten Job. Eine
   bereits in `schema_migrations` gespeicherte Datei wird niemals verändert.
 - Jede Merge-Einheit bleibt kompatibel zur unmittelbar vorherigen App-Version.
@@ -418,8 +426,8 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 | --- | --------- | ------------------------------------- | ------------------------------------------------------------------------------- | ------: | ------: |
 | 01  | gemerged  | `01-kernschema-und-contracts`         | Additives Kunden-/Personen-Kernschema ist unsichtbar deployt; Leads unverändert |   50–80 |  3–4 T. |
 | 02  | im Review | `02-activity-migration`               | Bestehende Lead-Timeline arbeitet verlustfrei auf dem neuen Modell              |   40–70 |  3–4 T. |
-| 03  | offen     | `03-mitglieder-und-auth`              | Persistierte User, flexibles RBAC und fail-closed Auth sind nutzbar             |  80–120 |  5–7 T. |
-| 03a | offen     | `03a-workspace-member-legacy-cleanup` | Alte Member-Identitäts- und Rechtefelder sind sicher entfernt                   |   10–25 |    1 T. |
+| 03  | im Review | `03-mitglieder-und-auth`              | Persistierte User, Permission-Katalog, Bereichs-Gates und fail-closed Auth      |  80–120 |  4–5 T. |
+| 03b | offen     | `03b-mitglieder-und-rollenverwaltung` | Mitglieder, Rollen, Owner-Flow und Übergabe vollständig verwaltbar              |  60–100 |  4–5 T. |
 | 04  | offen     | `04-personen-und-kundenakte`          | Kunden samt Pflichtkontakt, Owner, Archiv und Detail vollständig nutzbar        |  80–100 |  4–5 T. |
 | 05  | offen     | `05-kundenliste-und-zuweisung`        | Liste, Suche, Filter, Übergabe und Aufbewahrungshinweise nutzbar                |  60–100 |  3–4 T. |
 | 06  | offen     | `06-lead-konvertierung`               | Leads können sicher neu oder zu bestehenden Kunden konvertiert werden           |   40–70 |  2–3 T. |

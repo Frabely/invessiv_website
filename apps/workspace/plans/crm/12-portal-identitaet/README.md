@@ -1,6 +1,6 @@
 # Ordner 12 — Portalidentität und Mehrfirmenzugriff
 
-> **Status:** offen · **Abhängigkeiten:** 03a, 04, 10 · **Aufwand:** 4–5 Tage · **Reviewziel:** 80–100 Dateien
+> **Status:** offen · **Abhängigkeiten:** 03b, 04, 10 · **Aufwand:** 4–5 Tage · **Reviewziel:** 80–100 Dateien
 
 ## Ziel und Stand nach Merge
 

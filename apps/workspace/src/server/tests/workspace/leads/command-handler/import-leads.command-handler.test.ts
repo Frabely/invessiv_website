@@ -104,6 +104,8 @@ beforeEach(() => {
 
 // ── Tests ──────────────────────────────────────────────────────────────────────
 
+const ACTOR_USER_ID = "user-actor-uuid";
+
 describe("importLeads", () => {
   it("returns ok:false with InvalidCsv when CSV has unclosed quotes", async () => {
     setupEmptyDb();
@@ -111,7 +113,10 @@ describe("importLeads", () => {
       await import("@/server/workspace/leads/command-handler/import-leads.command-handler");
 
     // mid-field quote triggers InvalidCsv in the parser
-    const result = await importLeads(makeFile('email;last_name\nab"c;Test'));
+    const result = await importLeads(
+      makeFile('email;last_name\nab"c;Test'),
+      ACTOR_USER_ID,
+    );
 
     expect(result.ok).toBe(false);
     if (!result.ok) {
@@ -128,7 +133,7 @@ describe("importLeads", () => {
     for (let i = 0; i < 501; i += 1) {
       lines.push(`row${i}@example.com;User${i}`);
     }
-    const result = await importLeads(makeFile(lines.join("\n")));
+    const result = await importLeads(makeFile(lines.join("\n")), ACTOR_USER_ID);
 
     expect(result.ok).toBe(false);
     if (!result.ok) {
@@ -145,7 +150,7 @@ describe("importLeads", () => {
     const { importLeads } =
       await import("@/server/workspace/leads/command-handler/import-leads.command-handler");
 
-    const result = await importLeads(makeFile(EXAMPLE_CSV));
+    const result = await importLeads(makeFile(EXAMPLE_CSV), ACTOR_USER_ID);
 
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -174,7 +179,7 @@ describe("importLeads", () => {
     const { importLeads } =
       await import("@/server/workspace/leads/command-handler/import-leads.command-handler");
 
-    const result = await importLeads(makeFile(EXAMPLE_CSV));
+    const result = await importLeads(makeFile(EXAMPLE_CSV), ACTOR_USER_ID);
 
     expect(result.ok).toBe(true);
     if (!result.ok) {
@@ -201,7 +206,7 @@ describe("importLeads", () => {
       "review@example.com;Review;pending_review",
     ].join("\n");
 
-    const result = await importLeads(makeFile(csv));
+    const result = await importLeads(makeFile(csv), ACTOR_USER_ID);
 
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -222,6 +227,7 @@ describe("importLeads", () => {
 
     const result = await importLeads(
       makeFile(["display_name", "Display Only"].join("\n")),
+      ACTOR_USER_ID,
     );
 
     expect(result.ok).toBe(true);
@@ -254,7 +260,7 @@ describe("importLeads", () => {
     const { importLeads } =
       await import("@/server/workspace/leads/command-handler/import-leads.command-handler");
 
-    const result = await importLeads(makeFile(EXAMPLE_CSV));
+    const result = await importLeads(makeFile(EXAMPLE_CSV), ACTOR_USER_ID);
 
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -282,7 +288,7 @@ describe("importLeads", () => {
       "same@example.com;Second",
     ].join("\n");
 
-    const result = await importLeads(makeFile(csv));
+    const result = await importLeads(makeFile(csv), ACTOR_USER_ID);
 
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -309,7 +315,7 @@ describe("importLeads", () => {
       "two@example.com;Second;guid-001",
     ].join("\n");
 
-    const result = await importLeads(makeFile(csv));
+    const result = await importLeads(makeFile(csv), ACTOR_USER_ID);
 
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -337,7 +343,7 @@ describe("importLeads", () => {
     const { importLeads } =
       await import("@/server/workspace/leads/command-handler/import-leads.command-handler");
 
-    const result = await importLeads(makeFile(EXAMPLE_CSV));
+    const result = await importLeads(makeFile(EXAMPLE_CSV), ACTOR_USER_ID);
 
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -362,7 +368,7 @@ describe("importLeads", () => {
       "another@example.com;Another;30",
     ].join("\n");
 
-    const result = await importLeads(makeFile(csv));
+    const result = await importLeads(makeFile(csv), ACTOR_USER_ID);
 
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -386,7 +392,7 @@ describe("importLeads", () => {
       "test@example.com;Test;00000000-0000-0000-0000-000000000099",
     ].join("\n");
 
-    const result = await importLeads(makeFile(csv));
+    const result = await importLeads(makeFile(csv), ACTOR_USER_ID);
 
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -414,7 +420,7 @@ describe("importLeads", () => {
       "test@example.com;Test;missing-category",
     ].join("\n");
 
-    const result = await importLeads(makeFile(csv));
+    const result = await importLeads(makeFile(csv), ACTOR_USER_ID);
 
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -443,7 +449,7 @@ describe("importLeads", () => {
 
     const csv = ["email;last_name", "race@example.com;User"].join("\n");
 
-    const result = await importLeads(makeFile(csv));
+    const result = await importLeads(makeFile(csv), ACTOR_USER_ID);
 
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -470,7 +476,7 @@ describe("importLeads", () => {
 
     const csv = ["company_name", "Existing GmbH"].join("\n");
 
-    const result = await importLeads(makeFile(csv));
+    const result = await importLeads(makeFile(csv), ACTOR_USER_ID);
 
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -493,7 +499,7 @@ describe("importLeads", () => {
       "\n",
     );
 
-    await importLeads(makeFile(csv));
+    await importLeads(makeFile(csv), ACTOR_USER_ID);
 
     expect(createLeadCoreInTransactionMock).toHaveBeenCalledOnce();
     const options = createLeadCoreInTransactionMock.mock.calls[0][2] as Record<
@@ -516,7 +522,7 @@ describe("importLeads", () => {
       await import("@/server/workspace/leads/command-handler/import-leads.command-handler");
 
     const csv = ["email;last_name", "test@example.com;Test"].join("\n");
-    const result = await importLeads(makeFile(csv));
+    const result = await importLeads(makeFile(csv), ACTOR_USER_ID);
 
     expect(result.ok).toBe(false);
     if (!result.ok) {
@@ -539,7 +545,7 @@ describe("importLeads", () => {
       "new@example.com;NewUser;linkedin-001",
     ].join("\n");
 
-    const result = await importLeads(makeFile(csv));
+    const result = await importLeads(makeFile(csv), ACTOR_USER_ID);
 
     expect(result.ok).toBe(true);
     if (!result.ok) return;
@@ -570,7 +576,7 @@ describe("importLeads", () => {
       "new@example.com;NewUser;guid-unique",
     ].join("\n");
 
-    const result = await importLeads(makeFile(csv));
+    const result = await importLeads(makeFile(csv), ACTOR_USER_ID);
 
     expect(result.ok).toBe(true);
     if (!result.ok) return;

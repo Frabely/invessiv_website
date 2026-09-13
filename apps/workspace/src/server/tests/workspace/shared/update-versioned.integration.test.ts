@@ -5,7 +5,11 @@ import { eq } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { findWorkspaceRoot, getDrizzleDatabaseClient } from "@invessiv/db/core";
-import { customers, workspaceMembers } from "@invessiv/db/record-configuration";
+import {
+  customers,
+  users,
+  workspaceMembers,
+} from "@invessiv/db/record-configuration";
 import { updateVersioned } from "@/server/workspace/shared/update-versioned";
 
 vi.mock("server-only", () => ({}));
@@ -23,6 +27,7 @@ function toCurrentDto(row: CustomerRow) {
 describe.skipIf(!RUN_INTEGRATION)(
   "updateVersioned PostgreSQL integration",
   () => {
+    const userId = randomUUID();
     const memberId = randomUUID();
     const customerId = randomUUID();
     let db: Database | null = null;
@@ -46,13 +51,18 @@ describe.skipIf(!RUN_INTEGRATION)(
       process.env.DATABASE_URL = databaseUrl;
       db = getDrizzleDatabaseClient();
 
+      await db.insert(users).values({
+        id: userId,
+        clerk_user_id: `${FIXTURE_PREFIX}${userId}`,
+        primary_email: `${FIXTURE_PREFIX}${userId}@example.test`,
+        display_name: `${FIXTURE_PREFIX}user`,
+        active: true,
+        version: 1,
+      });
       await db.insert(workspaceMembers).values({
         id: memberId,
-        clerk_user_id: `${FIXTURE_PREFIX}${memberId}`,
-        email: `${FIXTURE_PREFIX}${memberId}@example.test`,
-        role: "owner",
+        user_id: userId,
         active: true,
-        credentials_access: false,
         version: 1,
       });
       await db.insert(customers).values({
@@ -74,6 +84,7 @@ describe.skipIf(!RUN_INTEGRATION)(
       await db
         .delete(workspaceMembers)
         .where(eq(workspaceMembers.id, memberId));
+      await db.delete(users).where(eq(users.id, userId));
     }, 30_000);
 
     it("allows exactly one concurrent writer and returns the complete current state", async () => {

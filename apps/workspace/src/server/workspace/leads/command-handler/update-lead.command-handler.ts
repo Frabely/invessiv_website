@@ -22,6 +22,7 @@ import { getLeadById } from "@/server/workspace/leads/query-handler/get-lead-by-
 export async function updateLead(
   leadId: string,
   input: unknown,
+  actorUserId: string,
 ): Promise<UpdateLeadResult> {
   const existing = await getLeadById(leadId);
   if (!existing) {
@@ -75,7 +76,7 @@ export async function updateLead(
             next_status: data.lead_status,
             origin: StatusChangeOrigin.SingleEdit,
           } satisfies StatusChangeActivityMetadata,
-          actorType: ActorType.System,
+          actor: { type: ActorType.User, userId: actorUserId },
         });
       }
 

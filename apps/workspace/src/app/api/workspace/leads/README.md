@@ -1,20 +1,30 @@
 # Workspace Leads API
 
-JSON-API für die Workspace-Leads-UI unter `/[locale]/leads`. Server-only, Clerk-authentifiziert, allowlist-gated.
+JSON-API für die Workspace-Leads-UI unter `/[locale]/leads`. Server-only, Clerk-authentifiziert, permissionbasiert
+autorisiert.
 
 > **Quelle der Wahrheit für den Contract:** dieses Dokument. Bei Änderungen an Endpunkten, Statuscodes oder Bodies wird
 > diese Datei im selben Commit aktualisiert.
 
 ## Auth
 
-Jeder Handler ist mit `withWorkspaceApiAuth(handler)` aus `src/lib/auth/api.ts` gewrappt:
+Jeder Handler ist mit `withPermission(Permission.X, handler)` aus `src/lib/auth/api.ts` gewrappt:
 
 1. Clerk `auth()` → kein `userId` ⇒ `401 UNAUTHORIZED`.
-2. `currentUser()` → primäre E-Mail (lowercase, trim).
-3. `isEmailAllowed(email)` aus `src/lib/auth/allowlist.ts` → `false` ⇒ `404 NOT_FOUND`.
+2. `users` + aktive `workspace_members` + aktive Rollen werden je Request aus der DB aufgelöst. Kein User oder keine
+   aktive Mitgliedschaft ⇒ `404 NOT_FOUND`; DB-Fehler ⇒ `503 UNAVAILABLE` (nie Zugriff).
+3. Fehlt die verlangte Permission ⇒ `403 FORBIDDEN`.
 
-Allowlist via ENV `WORKSPACE_ALLOWED_EMAILS` (Komma-getrennt). API-Antworten sind ausschließlich JSON, niemals Redirects
-oder HTML.
+| Route                              | Permission                                               |
+| ---------------------------------- | -------------------------------------------------------- |
+| `GET /leads`, `GET /leads/[id]`    | `leads.read`                                             |
+| `POST /leads`, `PATCH /leads/[id]` | `leads.write`                                            |
+| `DELETE /leads/[id]`               | `leads.delete`                                           |
+| `POST /leads/bulk`                 | `leads.write`; Aktion `delete` zusätzlich `leads.delete` |
+| `POST /leads/import`               | `leads.import`                                           |
+
+Der Handler erhält den `WorkspaceActor`; Commands schreiben `actor.userId` als Activity-Actor. API-Antworten sind
+ausschließlich JSON, niemals Redirects oder HTML.
 
 ## Fehlerformat
 
@@ -22,14 +32,15 @@ oder HTML.
 { "error": "<MACHINE_CODE>", "message": "<human-readable>", "details": <optional> }
 ```
 
-| Status | `error`-Code          | Bedeutung                                              |
-| ------ | --------------------- | ------------------------------------------------------ |
-| 400    | `VALIDATION_ERROR`    | Zod-Validation. `details` enthält Feld-Pfade           |
-| 401    | `UNAUTHORIZED`        | Kein Clerk-User                                        |
-| 404    | `NOT_FOUND`           | Lead existiert nicht **oder** User nicht auf Allowlist |
-| 409    | `EMAIL_EXISTS`        | Duplicate Email beim Create oder Update                |
-| 409    | `COMPANY_NAME_EXISTS` | Duplicate company name beim Create oder Update         |
-| 500    | `INTERNAL`            | Unerwarteter Fehler. Stacktrace nur im Server-Log      |
+| Status | `error`-Code          | Bedeutung                                          |
+| ------ | --------------------- | -------------------------------------------------- |
+| 400    | `VALIDATION_ERROR`    | Zod-Validation. `details` enthält Feld-Pfade       |
+| 401    | `UNAUTHORIZED`        | Kein Clerk-User                                    |
+| 403    | `FORBIDDEN`           | Verlangte Permission fehlt                         |
+| 404    | `NOT_FOUND`           | Lead existiert nicht **oder** keine Mitgliedschaft |
+| 409    | `EMAIL_EXISTS`        | Duplicate Email beim Create oder Update            |
+| 409    | `COMPANY_NAME_EXISTS` | Duplicate company name beim Create oder Update     |
+| 500    | `INTERNAL`            | Unerwarteter Fehler. Stacktrace nur im Server-Log  |
 
 `message` ist auf Englisch, knapp, ohne PII. `details` enthält keine E-Mails, Telefonnummern oder Lead-Inhalte.
 
@@ -260,7 +271,7 @@ Vitest-Route-Tests unter `src/server/tests/workspace/leads/api/`:
 - `lead-id-route.test.ts` — `GET`, `PATCH`, `DELETE` für `/leads/[id]`
 - `leads-bulk-route.test.ts` — beide Bulk-Actions
 
-Auth-Helper-Tests: `src/server/tests/lib/auth/api.test.ts` (authed/unauthed/non-allowlisted Calls).
+Auth-Helper-Tests: `src/lib/auth/api.test.ts` (401/403/404/503) und `db:smoke:rbac` gegen die Dev-DB.
 
 E2E-Smoke: `e2e/workspace-leads.e2e.ts`.
 

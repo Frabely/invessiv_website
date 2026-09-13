@@ -148,7 +148,8 @@ ergänzt.
 ## Was hier nicht hingehört
 
 - DB-Zugriff oder Drizzle-Queries (gehören in `src/server/workspace/leads/**`).
-- Eigene Auth-, Allowlist- oder Permission-Logik.
+- Eigene Auth- oder Permission-Logik (Permissions prüfen ausschließlich Pages über `requireWorkspaceArea` und
+  API-Routen).
 - Marketing-, Legal- oder andere Workspace-Komponenten (diese liegen in ihren eigenen Bereichen).
 - Globale CSS-Klassen für lead-spezifische Komponenten.
 - Inline-Strings, locale-Branches, mehrere Komponenten in einer Datei.

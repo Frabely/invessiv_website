@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
+import { requireWorkspaceArea } from "@/lib/auth/permissions";
 import { AcquisitionVolumeModule } from "@/components/workspace/dashboard/acquisition-volume-module/acquisition-volume-module";
 import { DashboardGrid } from "@/components/workspace/dashboard/dashboard-grid/dashboard-grid";
 import { MessagingConversionModule } from "@/components/workspace/dashboard/messaging-conversion-module/messaging-conversion-module";
@@ -47,6 +49,9 @@ export default async function DashboardPage({
   if (!isSupportedLocale(locale)) {
     notFound();
   }
+
+  // Layouts are not re-rendered on search param changes, so the page gates its own data.
+  await requireWorkspaceArea(locale, WorkspaceArea.Dashboard);
 
   const activeLocale = locale as Locale;
   const resolvedSearchParams = await searchParams;

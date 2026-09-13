@@ -4,8 +4,9 @@ Server-authenticated JSON API for the outreach generator under `/api/workspace/o
 
 ## Auth
 
-Every route is wrapped with `withWorkspaceApiAuth(handler)` from `src/lib/auth/api.ts`. Access rules match the other
-Workspace APIs: unauthenticated requests return `401`, non-allowlisted requests return `404`.
+Every route is wrapped with `withPermission(Permission.OutreachGenerate, handler)` from `src/lib/auth/api.ts`.
+Unauthenticated requests return `401`, accounts without workspace membership `404`, a missing `outreach.generate`
+permission `403`, and an unavailable authorization lookup `503`.
 
 ## `GET /api/workspace/outreach/provider-status`
 

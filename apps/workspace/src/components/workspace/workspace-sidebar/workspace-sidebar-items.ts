@@ -1,6 +1,9 @@
+import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
+
 type WorkspaceSidebarItemKey = "leads" | "overview";
 
 export type WorkspaceSidebarItem = {
+  area: WorkspaceArea;
   iconPaths: ReadonlyArray<string>;
   iconViewBox: string;
   id: WorkspaceSidebarItemKey;
@@ -10,6 +13,7 @@ export type WorkspaceSidebarItem = {
 
 export const WORKSPACE_SIDEBAR_ITEMS: ReadonlyArray<WorkspaceSidebarItem> = [
   {
+    area: WorkspaceArea.Dashboard,
     id: "overview",
     labelKey: "overview",
     path: "/dashboard",
@@ -22,6 +26,7 @@ export const WORKSPACE_SIDEBAR_ITEMS: ReadonlyArray<WorkspaceSidebarItem> = [
     ],
   },
   {
+    area: WorkspaceArea.Leads,
     id: "leads",
     labelKey: "leads",
     path: "/leads",

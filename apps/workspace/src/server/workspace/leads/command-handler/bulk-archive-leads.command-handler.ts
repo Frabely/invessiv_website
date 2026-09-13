@@ -19,6 +19,7 @@ export type BulkArchiveLeadsInput = {
 // `where user_id = $caller` so the IDOR vector is closed under multi-tenancy.
 export async function bulkArchiveLeads(
   input: BulkArchiveLeadsInput,
+  actorUserId: string,
 ): Promise<BulkArchiveLeadsResult> {
   if (input.ids.length === 0) {
     return { ok: true, updatedCount: 0 };
@@ -60,7 +61,7 @@ export async function bulkArchiveLeads(
           next_status: ContactLeadStatus.Archived,
           origin: StatusChangeOrigin.BulkArchive,
         } satisfies StatusChangeActivityMetadata,
-        actorType: ActorType.System,
+        actor: { type: ActorType.User, userId: actorUserId },
       });
     }
 

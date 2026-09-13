@@ -1,4 +1,5 @@
 export * from "./activities";
+export * from "./auth";
 export * from "./crm";
 export * from "./lead-activities";
 export * from "./lead-call-contacts";

@@ -15,12 +15,18 @@ const mockNotFound = vi.hoisted(() =>
   }),
 );
 
+const mockRequireWorkspaceArea = vi.hoisted(() => vi.fn());
+
 vi.mock("next/navigation", () => ({
   useRouter: () => mockRouter,
   notFound: mockNotFound,
 }));
 
 vi.mock("server-only", () => ({}));
+
+vi.mock("@/lib/auth/permissions", () => ({
+  requireWorkspaceArea: mockRequireWorkspaceArea,
+}));
 
 vi.mock(
   "@/components/workspace/dashboard/acquisition-volume-module/acquisition-volume-module",
@@ -41,6 +47,8 @@ describe("DashboardPage", () => {
     mockRouter.push.mockReset();
     mockRouter.replace.mockReset();
     mockNotFound.mockClear();
+    mockRequireWorkspaceArea.mockReset();
+    mockRequireWorkspaceArea.mockResolvedValue(undefined);
   });
 
   afterEach(() => {
@@ -114,6 +122,28 @@ describe("DashboardPage", () => {
     ).rejects.toThrow("notFound called");
 
     expect(mockNotFound).toHaveBeenCalledTimes(1);
+  });
+
+  it("gates the dashboard area on every render, not only in a layout", async () => {
+    render(
+      await DashboardPage({
+        params: Promise.resolve({ locale: "de" }),
+        searchParams: Promise.resolve({ date_from: "2026-04-01" }),
+      }),
+    );
+
+    expect(mockRequireWorkspaceArea).toHaveBeenCalledWith("de", "dashboard");
+  });
+
+  it("renders nothing when the area gate rejects", async () => {
+    mockRequireWorkspaceArea.mockRejectedValue(new Error("NOT_FOUND"));
+
+    await expect(
+      DashboardPage({
+        params: Promise.resolve({ locale: "de" }),
+        searchParams: Promise.resolve({}),
+      }),
+    ).rejects.toThrow("NOT_FOUND");
   });
 
   it("returns localized, no-index metadata", async () => {

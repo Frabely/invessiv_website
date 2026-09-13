@@ -38,7 +38,7 @@ im Kundendetail sowie in einer Projektübersicht nutzbar. Portalanteile bleiben 
 
 - [ ] Facette `Projektphase` ist in `CUSTOMER_LIST_FACETS` registriert und in der Kundenliste nutzbar,
       ohne dass die Toolbar aus Ordner 05 angefasst wurde.
-- [ ] `Projects` ist in `OwnableEntity` registriert und hat einen Adapter in der Ownership-Registry (Ordner 03);
+- [ ] `Projects` ist in `OwnableEntity` registriert und hat einen Adapter in der Ownership-Registry (Ordner 03b);
       Übergabe und Deaktivierungszählung erfassen die Entität, mit Test.
 - [ ] Projekt kann nur zu existierendem, nicht archiviertem Kunden angelegt werden.
 - [ ] Status und Phase können unabhängig wechseln.

@@ -43,8 +43,8 @@ function mapActivityRowToDtos(row: LeadActivityRow): LeadActivityDto[] {
       metadata: row.metadata,
       occurredAt: row.occurred_at.toISOString(),
       actorType: row.actor_type,
-      actorId: row.actor_id,
-      actorLabel: row.actor_label,
+      actorId: row.actor_user_id ?? row.actor_id,
+      actorLabel: row.actor_display_name ?? row.actor_label,
     },
   ];
 }

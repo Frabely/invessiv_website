@@ -1,46 +1,56 @@
 import "server-only";
 
-import { auth, currentUser } from "@clerk/nextjs/server";
 import type { NextRequest } from "next/server";
 
-import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
-import type { WorkspaceAccess } from "./permissions";
-import { isEmailAllowed } from "./allowlist";
 import { AuthErrorCode } from "@invessiv/common/constants/auth/auth-error-codes";
+import type { Permission } from "@invessiv/common/constants/auth/permissions";
+import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
+import { can } from "@invessiv/common/patterns/auth/can";
+import { WorkspaceAuthStatus } from "@/common/constants/auth/workspace-auth-statuses";
+import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
+
 import { authApiError } from "./auth-api-error";
+import { authenticateWorkspaceRequest } from "./workspace-authentication";
 
 type WorkspaceApiHandler = (
   request: NextRequest,
-  access: WorkspaceAccess,
+  actor: WorkspaceActor,
 ) => Promise<Response>;
 
-export function withWorkspaceApiAuth(handler: WorkspaceApiHandler) {
+/** Resolves the actor or answers with JSON only — API routes never redirect. */
+export function withWorkspaceApiActor(handler: WorkspaceApiHandler) {
   return async (request: NextRequest): Promise<Response> => {
-    const { userId } = await auth();
+    const authentication = await authenticateWorkspaceRequest();
 
-    if (!userId) {
+    if (authentication.status === WorkspaceAuthStatus.Authorized) {
+      return handler(request, authentication.actor);
+    }
+    if (authentication.status === WorkspaceAuthStatus.Unauthenticated) {
       return authApiError(
         AuthErrorCode.Unauthorized,
         HttpResponseCode.Unauthorized,
       );
     }
-
-    const user = await currentUser();
-    const primaryEmail = user?.emailAddresses.find(
-      (entry) => entry.id === user.primaryEmailAddressId,
-    )?.emailAddress;
-
-    if (!primaryEmail) {
-      return authApiError(
-        AuthErrorCode.Unauthorized,
-        HttpResponseCode.Unauthorized,
-      );
-    }
-
-    if (!isEmailAllowed(primaryEmail)) {
+    if (authentication.status === WorkspaceAuthStatus.NotMember) {
       return authApiError(AuthErrorCode.NotFound, HttpResponseCode.NotFound);
     }
 
-    return handler(request, { userId, email: primaryEmail });
+    return authApiError(
+      AuthErrorCode.Unavailable,
+      HttpResponseCode.ServiceUnavailable,
+    );
   };
+}
+
+export function withPermission(
+  permission: Permission,
+  handler: WorkspaceApiHandler,
+) {
+  return withWorkspaceApiActor(async (request, actor) => {
+    if (!can(actor, permission)) {
+      return authApiError(AuthErrorCode.Forbidden, HttpResponseCode.Forbidden);
+    }
+
+    return handler(request, actor);
+  });
 }

@@ -1,6 +1,6 @@
 # Ordner 04 — Personen und Kundenakte
 
-> **Status:** offen · **Abhängigkeiten:** 01, 03a · **Aufwand:** 4–5 Tage · **Reviewziel:** 80–100 Dateien
+> **Status:** offen · **Abhängigkeiten:** 01, 03b · **Aufwand:** 4–5 Tage · **Reviewziel:** 80–100 Dateien
 
 ## Ziel und Stand nach Merge
 

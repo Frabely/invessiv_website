@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
+import { SystemActorKey } from "@invessiv/common/constants/activity/system-actor-keys";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import { activities } from "@invessiv/db/record-configuration";
 import { activityService } from "@/server/workspace/shared/services/activity-service";
@@ -11,11 +12,18 @@ const { transactionMock } = vi.hoisted(() => ({
 }));
 
 vi.mock("server-only", () => ({}));
-vi.mock("@invessiv/db/core", () => ({
+vi.mock("@invessiv/db/core", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@invessiv/db/core")>()),
   getDrizzleDatabaseClient: () => ({ transaction: transactionMock }),
 }));
 
 type InsertCall = { table: unknown; values: Record<string, unknown> };
+
+const USER_ACTOR = { type: ActorType.User, userId: "user-uuid-1" } as const;
+const SYSTEM_ACTOR = {
+  type: ActorType.System,
+  systemActorKey: SystemActorKey.Fixture,
+} as const;
 
 function createTransaction() {
   const calls: InsertCall[] = [];
@@ -43,7 +51,7 @@ describe("activityService", () => {
     await activityService.createActivity(tx, {
       leadId: "lead-1",
       type: ActivityType.Note,
-      actorType: ActorType.User,
+      actor: USER_ACTOR,
     });
 
     expect(calls).toHaveLength(1);
@@ -54,19 +62,39 @@ describe("activityService", () => {
     expect(calls[0].values.id).toEqual(expect.any(String));
   });
 
-  it("writes a customer-only activity without a lead reference", async () => {
+  it("persists a human actor as user reference without legacy actor fields", async () => {
+    const { tx, calls } = createTransaction();
+
+    await activityService.createActivity(tx, {
+      leadId: "lead-1",
+      type: ActivityType.StatusChange,
+      actor: USER_ACTOR,
+    });
+
+    expect(calls[0].values).toMatchObject({
+      actor_type: ActorType.User,
+      actor_user_id: "user-uuid-1",
+      system_actor_key: null,
+      actor_id: null,
+      actor_label: null,
+    });
+  });
+
+  it("persists a system actor with its key and without a user", async () => {
     const { tx, calls } = createTransaction();
 
     await activityService.createActivity(tx, {
       customerId: "customer-1",
       type: ActivityType.Created,
-      actorType: ActorType.System,
+      actor: SYSTEM_ACTOR,
     });
 
-    expect(calls).toHaveLength(1);
-    expect(calls[0]).toMatchObject({
-      table: activities,
-      values: { lead_id: null, customer_id: "customer-1" },
+    expect(calls[0].values).toMatchObject({
+      lead_id: null,
+      customer_id: "customer-1",
+      actor_type: ActorType.System,
+      actor_user_id: null,
+      system_actor_key: SystemActorKey.Fixture,
     });
   });
 
@@ -77,7 +105,7 @@ describe("activityService", () => {
       customerId: "customer-1",
       projectId: "project-1",
       type: ActivityType.FieldChange,
-      actorType: ActorType.User,
+      actor: USER_ACTOR,
     });
 
     expect(calls[0].values).toMatchObject({
@@ -92,7 +120,7 @@ describe("activityService", () => {
     await activityService.createActivity(tx, {
       leadId: "lead-1",
       type: ActivityType.Note,
-      actorType: ActorType.System,
+      actor: SYSTEM_ACTOR,
     });
 
     expect(calls[0].values.occurred_at).toBe(calls[0].values.created_at);
@@ -106,7 +134,7 @@ describe("activityService", () => {
       leadId: "lead-1",
       type: ActivityType.Note,
       occurredAt,
-      actorType: ActorType.System,
+      actor: SYSTEM_ACTOR,
     });
 
     expect(calls[0].values.occurred_at).toBe(occurredAt);
@@ -122,7 +150,7 @@ describe("activityService", () => {
     await activityService.appendActivity({
       leadId: "lead-1",
       type: ActivityType.StatusChange,
-      actorType: ActorType.System,
+      actor: USER_ACTOR,
     });
 
     expect(transactionMock).toHaveBeenCalledOnce();

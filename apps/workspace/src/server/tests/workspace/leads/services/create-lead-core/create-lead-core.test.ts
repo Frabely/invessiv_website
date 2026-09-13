@@ -103,6 +103,11 @@ function createTxMock(options?: {
 
       return {
         from: vi.fn().mockReturnValue({
+          leftJoin: vi.fn().mockReturnValue({
+            where: vi.fn().mockReturnValue({
+              orderBy: vi.fn().mockResolvedValue([]),
+            }),
+          }),
           where: vi.fn().mockReturnValue({
             orderBy: vi.fn().mockResolvedValue([]),
           }),
@@ -132,6 +137,8 @@ function createTxMock(options?: {
   return { txMock, capturedInserts };
 }
 
+const ACTOR_USER_ID = "user-actor-uuid";
+
 describe("createLeadCoreInTransaction", () => {
   it("creates a manual lead with manual defaults", async () => {
     const { txMock, capturedInserts } = createTxMock();
@@ -148,6 +155,7 @@ describe("createLeadCoreInTransaction", () => {
       {
         source: LeadSource.Manual,
         activityType: ActivityType.Note,
+        actorUserId: ACTOR_USER_ID,
       },
     );
 
@@ -174,6 +182,7 @@ describe("createLeadCoreInTransaction", () => {
       {
         source: LeadSource.Import,
         activityType: ActivityType.Import,
+        actorUserId: ACTOR_USER_ID,
         activityMetadata: {
           import_batch_id: "batch-2024-03",
           row_index: 7,
@@ -227,6 +236,7 @@ describe("createLeadCoreInTransaction", () => {
         {
           source: LeadSource.Manual,
           activityType: ActivityType.Note,
+          actorUserId: ACTOR_USER_ID,
         },
       ),
     ).rejects.toBeInstanceOf(DuplicateEmailError);
@@ -264,6 +274,7 @@ describe("createLeadCoreInTransaction", () => {
         {
           source: LeadSource.Manual,
           activityType: ActivityType.Note,
+          actorUserId: ACTOR_USER_ID,
         },
       ),
     ).rejects.toBeInstanceOf(DuplicateSocialProfileError);

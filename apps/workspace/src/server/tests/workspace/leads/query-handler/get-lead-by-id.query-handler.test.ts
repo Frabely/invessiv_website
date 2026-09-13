@@ -78,6 +78,8 @@ const activityRow = {
   actor_type: "user" as const,
   actor_id: "clerk-user-1",
   actor_label: "Moritz",
+  actor_user_id: null,
+  actor_display_name: null,
 };
 
 const submissionRow = {

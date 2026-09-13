@@ -25,6 +25,7 @@ import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact
 import { CONTACT_START_KEY } from "@invessiv/common/constants/contact/contact-start-keys";
 import { CONTACT_WORKFLOW_KEY } from "@invessiv/common/constants/contact/contact-workflow-keys";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
+import { SystemActorKey } from "@invessiv/common/constants/activity/system-actor-keys";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { LeadSocialPlatform } from "@invessiv/common/constants/leads/social/lead-social-platforms";
 import { LeadSource } from "@invessiv/common/constants/leads/sources/lead-sources";
@@ -668,6 +669,7 @@ function createActivityRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
     actor_id: string | null;
     actor_label: string | null;
     actor_type: ActorType;
+    system_actor_key: SystemActorKey;
     body: string | null;
     created_at: Date;
     id: string;
@@ -686,6 +688,7 @@ function createActivityRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
       actor_id: null,
       actor_label: "Fixture Seeder",
       actor_type: ActorType.System,
+      system_actor_key: SystemActorKey.Fixture,
       body: fixture.notes,
       created_at: noteAt,
       id: crypto.randomUUID(),
@@ -702,6 +705,7 @@ function createActivityRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
         actor_id: null,
         actor_label: "Fixture Seeder",
         actor_type: ActorType.System,
+        system_actor_key: SystemActorKey.Fixture,
         body: "Lead wurde für das Listen- und Detailtesting importiert.",
         created_at: importAt,
         id: crypto.randomUUID(),
@@ -722,6 +726,7 @@ function createActivityRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
         actor_id: null,
         actor_label: "Fixture Seeder",
         actor_type: ActorType.System,
+        system_actor_key: SystemActorKey.Fixture,
         body: `${ContactLeadStatus.New} -> ${fixture.leadStatus}`,
         created_at: statusChangeAt,
         id: crypto.randomUUID(),
@@ -742,6 +747,7 @@ function createActivityRows(fixtures: LeadFixture[], leadRows: LeadRow[]) {
         actor_id: null,
         actor_label: "Fixture Seeder",
         actor_type: ActorType.System,
+        system_actor_key: SystemActorKey.Fixture,
         body: `Eingehende ${fixture.submission.kind} mit Request ${fixture.submission.requestId}`,
         created_at: submissionAt,
         id: crypto.randomUUID(),

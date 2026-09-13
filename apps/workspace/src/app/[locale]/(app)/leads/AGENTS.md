@@ -17,7 +17,8 @@ Repo-Root `AGENTS.md`. Engere Regeln in tieferen Ordnern haben Vorrang.
 
 ## Zweck und Geltungsbereich
 
-- Allowlist-geschützte Lead-Übersicht und alle UI-Erweiterungen rund um den Lead-Lebenszyklus (Liste, Filter,
+- Permission-geschützte Lead-Übersicht (Bereich `leads`, Permission `leads.read`) und alle UI-Erweiterungen rund um den
+  Lead-Lebenszyklus (Liste, Filter,
   Detail-Panel, Lead-Forms, Bulk-Aktionen, Import/Export-UI, Outbound-Messaging-UI, spätere Sub-Views).
 - Single-Source-of-Truth für Inbound (Webform-Submissions) und Outbound (manuell, Import) im Workspace.
 - Erweiterungen werden in `plans/workspace/leads/<feature-name>.md` geplant und können neue Subordner unterhalb
@@ -25,8 +26,12 @@ Repo-Root `AGENTS.md`. Engere Regeln in tieferen Ordnern haben Vorrang.
 
 ## Mandatorische Regeln
 
-1. **Auth bleibt im Parent-Layout.** Pages und UI unter `leads/` rufen **nicht** `requireWorkspaceAccess(locale)` selbst
-   auf. Das Workspace-Layout erledigt das. Keine doppelten Allowlist-Checks, keine page-level-Auth.
+1. **Jede Page gated ihre eigenen Daten.** `page.tsx` ruft vor dem ersten Query-Handler
+   `requireWorkspaceArea(locale, WorkspaceArea.Leads)` auf. Ein Gate nur im Layout reicht nicht: Next.js rendert Layouts
+   bei Wechseln von Query-Params (Filter, Seite, `selected`) nicht neu, die Page lädt aber neu — ein entzogenes Recht
+   würde sonst nicht greifen. Das Workspace-Layout löst den Actor nur für die Shell (Sidebar) auf. UI-Komponenten rufen
+   keine Auth-Helper auf; Aktionen mit zusätzlicher Permission (Löschen, Import) prüft die API-Route über
+   `withPermission`. Es gibt keine Rollen- oder E-Mail-Prüfung.
 
 2. **Server-only Auth-Helper nicht in Client-Code importieren.** `src/lib/auth/*` ist server-only. In `"use client"`
    -Komponenten ausschließlich Clerk-Client-APIs (`useUser()`, `useAuth()`, `<UserButton>`) nutzen, falls überhaupt
@@ -86,12 +91,12 @@ Repo-Root `AGENTS.md`. Engere Regeln in tieferen Ordnern haben Vorrang.
 
 ## Routing-Konvention
 
-| Pfad-Schema                              | Zweck                                                                                                                                                  |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `/[locale]/leads`                        | Lead-Übersicht (server-rendered)                                                                                                                       |
-| `/[locale]/leads?<filters>`              | Filter-/Such-/Sort-/Pagination-State über Query-Params, SSR-friendly, deep-linkbar                                                                     |
-| `/[locale]/leads?selected=<id>`          | Detail-Side-Panel öffnet rechts (Server-Component, kein eigenes Routing-Segment)                                                                       |
-| `/[locale]/leads/<sub-view>` (zukünftig) | Eigene Routensegmente nur, wenn sie eine fachlich eigenständige Sicht abbilden (z. B. Import-Pipeline-UI). Sub-Views erben Auth aus dem Parent-Layout. |
+| Pfad-Schema                              | Zweck                                                                                                                                                    |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/[locale]/leads`                        | Lead-Übersicht (server-rendered)                                                                                                                         |
+| `/[locale]/leads?<filters>`              | Filter-/Such-/Sort-/Pagination-State über Query-Params, SSR-friendly, deep-linkbar                                                                       |
+| `/[locale]/leads?selected=<id>`          | Detail-Side-Panel öffnet rechts (Server-Component, kein eigenes Routing-Segment)                                                                         |
+| `/[locale]/leads/<sub-view>` (zukünftig) | Eigene Routensegmente nur, wenn sie eine fachlich eigenständige Sicht abbilden (z. B. Import-Pipeline-UI). Sub-Views rufen den Bereichs-Gate selbst auf. |
 
 Detail-State lebt im `selected`-Query-Param. Neue Sub-Views erfordern eine bewusste Plan-Entscheidung und keine
 Auth-Duplikation.
@@ -140,7 +145,7 @@ Komponenten konsumieren vorbereitete Inhalte und enthalten keine sprachabhängig
 ## Was hier nicht hingehört
 
 - Marketing-, Legal- oder andere Workspace-Pages.
-- Eigene Auth-, Allowlist- oder Permission-Logik.
+- Eigene Auth- oder Permission-Logik jenseits von `requireWorkspaceArea` in der Page und `withPermission` in API-Routen.
 - DB-Zugriff oder Drizzle-Queries in Pages oder UI-Komponenten.
 - Globale CSS-Klassen für lead-spezifische Komponenten.
 - Inline-Strings, locale-Branches in `.tsx`, mehrere Komponenten in einer Datei.

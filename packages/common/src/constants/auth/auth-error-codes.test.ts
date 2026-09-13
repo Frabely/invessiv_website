@@ -9,7 +9,10 @@ describe("AuthErrorCode", () => {
     expect(AUTH_ERROR_CODE_VALUES).toEqual([
       AuthErrorCode.NotFound,
       AuthErrorCode.Unauthorized,
+      AuthErrorCode.Forbidden,
+      AuthErrorCode.Unavailable,
     ]);
+    expect(AUTH_ERROR_CODE_VALUES).toEqual(Object.values(AuthErrorCode));
     expect(new Set(AUTH_ERROR_CODE_VALUES).size).toBe(
       AUTH_ERROR_CODE_VALUES.length,
     );

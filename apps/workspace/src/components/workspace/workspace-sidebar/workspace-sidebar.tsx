@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import type { Locale } from "@/config/i18n";
 import { SITE_ROUTES } from "@/config/routes";
 import type { WorkspacePageContent } from "@/i18n/dictionaries/workspace";
@@ -13,6 +14,7 @@ type WorkspaceSidebarProps = {
   isOpen: boolean;
   locale: Locale;
   onCloseAction: () => void;
+  permittedAreas: readonly WorkspaceArea[];
 };
 
 export function WorkspaceSidebar({
@@ -20,6 +22,7 @@ export function WorkspaceSidebar({
   isOpen,
   locale,
   onCloseAction,
+  permittedAreas,
 }: WorkspaceSidebarProps) {
   const sidebarContent = content.shell.sidebar;
   const headerContent = content.shell.header;
@@ -66,7 +69,9 @@ export function WorkspaceSidebar({
         </button>
         <nav aria-label={sidebarContent.navAriaLabel} className={styles.nav}>
           <ul className={styles.list}>
-            {WORKSPACE_SIDEBAR_ITEMS.map((item) => {
+            {WORKSPACE_SIDEBAR_ITEMS.filter((item) =>
+              permittedAreas.includes(item.area),
+            ).map((item) => {
               const isDisabled = item.path === null;
               const href = `/${locale}${item.path ?? SITE_ROUTES.WORKSPACE}`;
               const isActive =

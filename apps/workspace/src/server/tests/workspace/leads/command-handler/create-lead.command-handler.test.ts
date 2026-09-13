@@ -101,6 +101,11 @@ function setupSuccessfulDb(): { capturedInserts: InsertCapture[] } {
 
     return {
       from: vi.fn().mockReturnValue({
+        leftJoin: vi.fn().mockReturnValue({
+          where: vi.fn().mockReturnValue({
+            orderBy: vi.fn().mockResolvedValue([]),
+          }),
+        }),
         where: vi.fn().mockReturnValue({
           orderBy: vi.fn().mockResolvedValue([]),
         }),
@@ -129,17 +134,22 @@ function setupSuccessfulDb(): { capturedInserts: InsertCapture[] } {
   return { capturedInserts };
 }
 
+const ACTOR_USER_ID = "user-actor-uuid";
+
 describe("createLead", () => {
   it("returns ok:true with a LeadDetailDto on valid create", async () => {
     setupSuccessfulDb();
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
-    const result = await createLead({
-      displayName: "Max Mustermann",
-      last_name: "Mustermann",
-      email: "max@example.com",
-    });
+    const result = await createLead(
+      {
+        displayName: "Max Mustermann",
+        last_name: "Mustermann",
+        email: "max@example.com",
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(result).toEqual({ ok: true, lead: mockLeadDto });
   });
@@ -151,11 +161,14 @@ describe("createLead", () => {
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
-    await createLead({
-      displayName: "Max Mustermann",
-      last_name: "Mustermann",
-      email: "max@example.com",
-    });
+    await createLead(
+      {
+        displayName: "Max Mustermann",
+        last_name: "Mustermann",
+        email: "max@example.com",
+      },
+      ACTOR_USER_ID,
+    );
 
     const leadValues = capturedInserts[0].valuesArg as Record<string, unknown>;
     expect(leadValues.source).toBe("manual");
@@ -169,12 +182,15 @@ describe("createLead", () => {
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
-    await createLead({
-      displayName: "Max Mustermann",
-      last_name: "Mustermann",
-      email: "max@example.com",
-      lead_status: "qualified",
-    });
+    await createLead(
+      {
+        displayName: "Max Mustermann",
+        last_name: "Mustermann",
+        email: "max@example.com",
+        lead_status: "qualified",
+      },
+      ACTOR_USER_ID,
+    );
 
     const leadValues = capturedInserts[0].valuesArg as Record<string, unknown>;
     expect(leadValues.lead_status).toBe("qualified");
@@ -187,17 +203,21 @@ describe("createLead", () => {
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
-    await createLead({
-      displayName: "Max Mustermann",
-      last_name: "Mustermann",
-      email: "max@example.com",
-      social_profiles: [
-        {
-          platform: "linkedin",
-          profile_url: "https://linkedin.com/in/max-mustermann?utm_source=test",
-        },
-      ],
-    });
+    await createLead(
+      {
+        displayName: "Max Mustermann",
+        last_name: "Mustermann",
+        email: "max@example.com",
+        social_profiles: [
+          {
+            platform: "linkedin",
+            profile_url:
+              "https://linkedin.com/in/max-mustermann?utm_source=test",
+          },
+        ],
+      },
+      ACTOR_USER_ID,
+    );
 
     // capturedInserts[0] = leads, capturedInserts[1] = social profiles
     const socialValues = capturedInserts[1].valuesArg as Array<
@@ -222,12 +242,15 @@ describe("createLead", () => {
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
     const categoryId = "a1b2c3d4-e5f6-7890-abcd-ef1234567890";
-    await createLead({
-      displayName: "Max Mustermann",
-      last_name: "Mustermann",
-      email: "max@example.com",
-      category_id: categoryId,
-    });
+    await createLead(
+      {
+        displayName: "Max Mustermann",
+        last_name: "Mustermann",
+        email: "max@example.com",
+        category_id: categoryId,
+      },
+      ACTOR_USER_ID,
+    );
 
     const leadValues = capturedInserts[0].valuesArg as Record<string, unknown>;
     expect(leadValues.category_id).toBe(categoryId);
@@ -240,12 +263,15 @@ describe("createLead", () => {
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
-    await createLead({
-      displayName: "Max Mustermann",
-      last_name: "Mustermann",
-      email: "max@example.com",
-      improvements: ["Mehr Social Proof", "Klarere CTA"],
-    });
+    await createLead(
+      {
+        displayName: "Max Mustermann",
+        last_name: "Mustermann",
+        email: "max@example.com",
+        improvements: ["Mehr Social Proof", "Klarere CTA"],
+      },
+      ACTOR_USER_ID,
+    );
 
     const leadValues = capturedInserts[0].valuesArg as Record<string, unknown>;
     expect(leadValues.improvements).toEqual([
@@ -267,11 +293,14 @@ describe("createLead", () => {
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
-    const result = await createLead({
-      displayName: "Max Mustermann",
-      last_name: "Mustermann",
-      email: "existing@example.com",
-    });
+    const result = await createLead(
+      {
+        displayName: "Max Mustermann",
+        last_name: "Mustermann",
+        email: "existing@example.com",
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(result).toEqual({ ok: false, code: LeadErrorCode.EmailExists });
   });
@@ -281,10 +310,13 @@ describe("createLead", () => {
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
-    const result = await createLead({
-      last_name: "Mustermann",
-      email: "max@example.com",
-    } as CreateLeadRequestDto);
+    const result = await createLead(
+      {
+        last_name: "Mustermann",
+        email: "max@example.com",
+      } as CreateLeadRequestDto,
+      ACTOR_USER_ID,
+    );
 
     expect(result).toMatchObject({
       ok: false,
@@ -298,10 +330,13 @@ describe("createLead", () => {
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
-    const result = await createLead({
-      displayName: "Max Mustermann",
-      last_name: "Mustermann",
-    });
+    const result = await createLead(
+      {
+        displayName: "Max Mustermann",
+        last_name: "Mustermann",
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(result).toMatchObject({ ok: true });
   });
@@ -312,9 +347,12 @@ describe("createLead", () => {
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
-    const result = await createLead({
-      displayName: "test",
-    });
+    const result = await createLead(
+      {
+        displayName: "test",
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(result).toMatchObject({ ok: true });
     expect(capturedInserts[0].valuesArg).toMatchObject({
@@ -333,11 +371,14 @@ describe("createLead", () => {
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
-    await createLead({
-      displayName: "Max Mustermann",
-      last_name: "Mustermann",
-      email: "max@example.com",
-    });
+    await createLead(
+      {
+        displayName: "Max Mustermann",
+        last_name: "Mustermann",
+        email: "max@example.com",
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(createLeadActivityMock).toHaveBeenCalledOnce();
     expect(createLeadActivityMock).toHaveBeenCalledWith(
@@ -356,11 +397,14 @@ describe("createLead", () => {
     const { createLead } =
       await import("@/server/workspace/leads/command-handler/create-lead.command-handler");
 
-    await createLead({
-      displayName: "Max Mustermann",
-      last_name: "Mustermann",
-      email: "pii@secret.com",
-    });
+    await createLead(
+      {
+        displayName: "Max Mustermann",
+        last_name: "Mustermann",
+        email: "pii@secret.com",
+      },
+      ACTOR_USER_ID,
+    );
 
     const activityInput = createLeadActivityMock.mock.calls[0][1] as Record<
       string,

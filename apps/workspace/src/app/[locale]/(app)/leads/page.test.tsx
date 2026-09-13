@@ -15,6 +15,7 @@ const mockRouter = vi.hoisted(() => ({
   replace: vi.fn(),
 }));
 const mockRedirect = vi.hoisted(() => vi.fn());
+const mockRequireWorkspaceArea = vi.hoisted(() => vi.fn());
 const mockLeadsPageShell = vi.hoisted(() =>
   vi.fn(
     ({
@@ -55,6 +56,10 @@ vi.mock("next/navigation", () => ({
   notFound: vi.fn(() => {
     throw new Error("notFound called");
   }),
+}));
+
+vi.mock("@/lib/auth/permissions", () => ({
+  requireWorkspaceArea: mockRequireWorkspaceArea,
 }));
 
 vi.mock(
@@ -123,10 +128,30 @@ describe("LeadsPage", () => {
     mockLeadsTable.mockClear();
     mockLeadsPagination.mockClear();
     mockAddLeadDialog.mockClear();
+    mockRequireWorkspaceArea.mockReset();
+    mockRequireWorkspaceArea.mockResolvedValue(undefined);
   });
 
   afterEach(() => {
     cleanup();
+  });
+
+  it("gates the leads area before loading any data", async () => {
+    mockRequireWorkspaceArea.mockRejectedValue(new Error("NOT_FOUND"));
+
+    await expect(
+      LeadsPage({
+        params: Promise.resolve({ locale: "de" }),
+        searchParams: Promise.resolve({
+          selected: "2b3d2f33-f3d7-4f8a-8ff6-6ac5df6c9b01",
+        }),
+      }),
+    ).rejects.toThrow("NOT_FOUND");
+
+    expect(mockRequireWorkspaceArea).toHaveBeenCalledWith("de", "leads");
+    expect(mockListLeads).not.toHaveBeenCalled();
+    expect(mockGetLeadById).not.toHaveBeenCalled();
+    expect(mockGetLeadCategories).not.toHaveBeenCalled();
   });
 
   it("renders pagination even when the lead list is empty", async () => {

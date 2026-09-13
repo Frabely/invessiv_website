@@ -124,13 +124,15 @@ function setupDb(rows: LeadState[], options: { txRows?: LeadState[] } = {}) {
   return { updateCaptures, outerSelectCalls, innerSelectCalls };
 }
 
+const ACTOR_USER_ID = "user-actor-uuid";
+
 describe("bulkEditLeads", () => {
   it("returns ok:true with empty result when ids array is empty", async () => {
     vi.resetModules();
     const { bulkEditLeads } =
       await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
 
-    const result = await bulkEditLeads({ ids: [], patch: {} });
+    const result = await bulkEditLeads({ ids: [], patch: {} }, ACTOR_USER_ID);
 
     expect(result).toEqual({ ok: true, updatedCount: 0, failedLeads: [] });
   });
@@ -142,10 +144,13 @@ describe("bulkEditLeads", () => {
     const { bulkEditLeads } =
       await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
 
-    const result = await bulkEditLeads({
-      ids: ["lead-1"],
-      patch: { status: "qualified" },
-    });
+    const result = await bulkEditLeads(
+      {
+        ids: ["lead-1"],
+        patch: { status: "qualified" },
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(result).toEqual({
       ok: true,
@@ -177,10 +182,13 @@ describe("bulkEditLeads", () => {
     const { bulkEditLeads } =
       await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
 
-    await bulkEditLeads({
-      ids: ["lead-1"],
-      patch: { status: "contacted", owner: "Lisa" },
-    });
+    await bulkEditLeads(
+      {
+        ids: ["lead-1"],
+        patch: { status: "contacted", owner: "Lisa" },
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(createLeadActivityMock).toHaveBeenCalledTimes(2);
     expect(createLeadActivityMock).toHaveBeenCalledWith(
@@ -215,10 +223,13 @@ describe("bulkEditLeads", () => {
     const { bulkEditLeads } =
       await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
 
-    await bulkEditLeads({
-      ids: ["lead-1"],
-      patch: { status: "contacted", owner: "Lisa" },
-    });
+    await bulkEditLeads(
+      {
+        ids: ["lead-1"],
+        patch: { status: "contacted", owner: "Lisa" },
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(createLeadActivityMock).toHaveBeenCalledTimes(1);
     expect(createLeadActivityMock).toHaveBeenCalledWith(
@@ -236,10 +247,13 @@ describe("bulkEditLeads", () => {
     const { bulkEditLeads } =
       await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
 
-    const result = await bulkEditLeads({
-      ids: ["lead-1"],
-      patch: { notesAppend: "y".repeat(100) },
-    });
+    const result = await bulkEditLeads(
+      {
+        ids: ["lead-1"],
+        patch: { notesAppend: "y".repeat(100) },
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(updateCaptures).toHaveLength(0);
     expect(result.updatedCount).toBe(0);
@@ -265,10 +279,13 @@ describe("bulkEditLeads", () => {
     const { bulkEditLeads } =
       await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
 
-    const result = await bulkEditLeads({
-      ids: ["lead-1", "lead-2"],
-      patch: { notesAppend: "y".repeat(100) },
-    });
+    const result = await bulkEditLeads(
+      {
+        ids: ["lead-1", "lead-2"],
+        patch: { notesAppend: "y".repeat(100) },
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(updateCaptures).toHaveLength(1);
     expect(result).toEqual({
@@ -293,10 +310,13 @@ describe("bulkEditLeads", () => {
     const { bulkEditLeads } =
       await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
 
-    await bulkEditLeads({
-      ids: ["lead-1", "lead-2"],
-      patch: { notesAppend: "neu" },
-    });
+    await bulkEditLeads(
+      {
+        ids: ["lead-1", "lead-2"],
+        patch: { notesAppend: "neu" },
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(updateCaptures[0].notes).toBe("alt\nneu");
     expect(updateCaptures[1].notes).toBe("neu");
@@ -308,10 +328,13 @@ describe("bulkEditLeads", () => {
     const { bulkEditLeads } =
       await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
 
-    await bulkEditLeads({
-      ids: ["lead-1"],
-      patch: { improvementsAppend: ["b", "c"] },
-    });
+    await bulkEditLeads(
+      {
+        ids: ["lead-1"],
+        patch: { improvementsAppend: ["b", "c"] },
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(updateCaptures[0].improvements).toEqual(["a", "b", "c"]);
   });
@@ -338,10 +361,13 @@ describe("bulkEditLeads", () => {
     const { bulkEditLeads } =
       await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
 
-    const result = await bulkEditLeads({
-      ids: ["lead-1"],
-      patch: { notesAppend: "y".repeat(100) },
-    });
+    const result = await bulkEditLeads(
+      {
+        ids: ["lead-1"],
+        patch: { notesAppend: "y".repeat(100) },
+      },
+      ACTOR_USER_ID,
+    );
 
     // Proves the Tx-internal SELECT ran (race-free read).
     expect(innerSelectCalls).toHaveLength(1);
@@ -364,10 +390,13 @@ describe("bulkEditLeads", () => {
     const { bulkEditLeads } =
       await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
 
-    await bulkEditLeads({
-      ids: ["lead-1"],
-      patch: { owner: null },
-    });
+    await bulkEditLeads(
+      {
+        ids: ["lead-1"],
+        patch: { owner: null },
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(updateCaptures[0].owner).toBeNull();
   });
@@ -426,10 +455,13 @@ describe("bulkEditLeads", () => {
     const { bulkEditLeads } =
       await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
 
-    const result = await bulkEditLeads({
-      ids: ["lead-1", "lead-2"],
-      patch: { owner: "Lisa" },
-    });
+    const result = await bulkEditLeads(
+      {
+        ids: ["lead-1", "lead-2"],
+        patch: { owner: "Lisa" },
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(result.ok).toBe(true);
     expect(result.failedLeads).toEqual([

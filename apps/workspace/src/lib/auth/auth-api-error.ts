@@ -4,6 +4,8 @@ import { AuthErrorCode } from "@invessiv/common/constants/auth/auth-error-codes"
 const MESSAGES: Record<AuthErrorCode, string> = {
   [AuthErrorCode.NotFound]: "Resource not found",
   [AuthErrorCode.Unauthorized]: "Authentication required",
+  [AuthErrorCode.Forbidden]: "Permission required",
+  [AuthErrorCode.Unavailable]: "Authorization is temporarily unavailable",
 };
 
 export function authApiError(

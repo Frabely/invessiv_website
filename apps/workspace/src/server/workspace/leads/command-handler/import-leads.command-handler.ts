@@ -47,7 +47,10 @@ function makeErrorIssue(
   return { rowIndex, code, severity: LeadImportRowIssueSeverity.Error };
 }
 
-export async function importLeads(file: File): Promise<LeadImportResultDto> {
+export async function importLeads(
+  file: File,
+  actorUserId: string,
+): Promise<LeadImportResultDto> {
   const text = await file.text();
 
   let headers: string[];
@@ -247,6 +250,7 @@ export async function importLeads(file: File): Promise<LeadImportResultDto> {
             externalGuid,
             statusOverride:
               validatedValue.status ?? ContactLeadStatus.PendingReview,
+            actorUserId,
           },
         ),
       );

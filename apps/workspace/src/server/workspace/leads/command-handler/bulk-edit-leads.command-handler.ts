@@ -161,6 +161,7 @@ async function processSingleLead(
   current: LeadCurrentState,
   patch: BulkEditLeadsPatch,
   now: Date,
+  actorUserId: string,
 ): Promise<{ updated: boolean; failure?: BulkEditLeadsFailedLead }> {
   if (patch.notesAppend) {
     const combined = combineNotes(current.notes, patch.notesAppend);
@@ -199,7 +200,7 @@ async function processSingleLead(
         next_status: statusTransition.next,
         origin: StatusChangeOrigin.BulkEdit,
       } satisfies StatusChangeActivityMetadata,
-      actorType: ActorType.System,
+      actor: { type: ActorType.User, userId: actorUserId },
     });
   }
 
@@ -209,7 +210,7 @@ async function processSingleLead(
       type: ActivityType.BulkEdit,
       body: buildBulkEditActivityBody(metadata),
       metadata,
-      actorType: ActorType.System,
+      actor: { type: ActorType.User, userId: actorUserId },
     });
   }
 
@@ -218,6 +219,7 @@ async function processSingleLead(
 
 export async function bulkEditLeads(
   input: BulkEditLeadsInput,
+  actorUserId: string,
 ): Promise<BulkEditLeadsResult> {
   if (input.ids.length === 0) {
     return { ok: true, updatedCount: 0, failedLeads: [] };
@@ -279,7 +281,7 @@ export async function bulkEditLeads(
           return { updated: false } as const;
         }
 
-        return processSingleLead(tx, current, input.patch, now);
+        return processSingleLead(tx, current, input.patch, now, actorUserId);
       });
       if (result.updated) {
         updatedCount += 1;

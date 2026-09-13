@@ -194,6 +194,8 @@ const detailActivityRow = {
   actor_type: ActorType.User,
   actor_id: "clerk-user-1",
   actor_label: "Moritz",
+  actor_user_id: null,
+  actor_display_name: null,
 } satisfies LeadActivityRow;
 
 const detailSubmissionRow = {
@@ -317,6 +319,26 @@ describe("leadsMapperService.mapLeadDetailRowToDto", () => {
         actorLabel: "Moritz",
       },
     ]);
+  });
+
+  it("prefers the current user reference and display name over legacy actor fields", () => {
+    const result = leadsMapperService.mapLeadDetailRowToDto(
+      detailMainRow,
+      [],
+      [
+        {
+          ...detailActivityRow,
+          actor_user_id: "user-uuid-7",
+          actor_display_name: "Moritz Hecht",
+        },
+      ],
+      [],
+    );
+
+    expect(result.activities[0]).toMatchObject({
+      actorId: "user-uuid-7",
+      actorLabel: "Moritz Hecht",
+    });
   });
 
   it("returns empty array for activities when none", () => {

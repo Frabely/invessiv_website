@@ -9,4 +9,6 @@ export interface CreateLeadCoreOptions {
   externalGuid?: string;
   statusOverride?: ContactLeadStatus;
   ownerOverride?: string;
+  /** Signed-in `users.id` that creates the lead; recorded as activity actor, never the lead owner. */
+  actorUserId: string;
 }

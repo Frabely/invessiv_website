@@ -1,23 +1,29 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { Permission } from "@invessiv/common/constants/auth/permissions";
+import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
+import { WorkspaceAuthStatus } from "@/common/constants/auth/workspace-auth-statuses";
+import {
+  requireWorkspaceActor,
+  requireWorkspaceArea,
+  requireWorkspacePermission,
+} from "./permissions";
+import { WorkspaceAuthorizationUnavailableError } from "./workspace-authorization-unavailable-error.class";
 
 vi.mock("server-only", () => ({}));
 
-const { mockAuth, mockCurrentUser, mockRedirect, mockNotFound } = vi.hoisted(
-  () => ({
-    mockAuth: vi.fn(),
-    mockCurrentUser: vi.fn(),
-    mockRedirect: vi.fn((path: string) => {
-      throw new Error(`REDIRECT:${path}`);
-    }),
-    mockNotFound: vi.fn(() => {
-      throw new Error("NOT_FOUND");
-    }),
+const { mockAuthenticate, mockRedirect, mockNotFound } = vi.hoisted(() => ({
+  mockAuthenticate: vi.fn(),
+  mockRedirect: vi.fn((path: string) => {
+    throw new Error(`REDIRECT:${path}`);
   }),
-);
+  mockNotFound: vi.fn(() => {
+    throw new Error("NOT_FOUND");
+  }),
+}));
 
-vi.mock("@clerk/nextjs/server", () => ({
-  auth: mockAuth,
-  currentUser: mockCurrentUser,
+vi.mock("./workspace-authentication", () => ({
+  authenticateWorkspaceRequest: mockAuthenticate,
 }));
 
 vi.mock("next/navigation", () => ({
@@ -25,112 +31,120 @@ vi.mock("next/navigation", () => ({
   notFound: mockNotFound,
 }));
 
-import { requireWorkspaceAccess } from "./permissions";
-
-const ALLOWED_EMAIL = "owner@example.com";
-
-function buildClerkUser(options: {
-  primaryEmailAddressId?: string;
-  emails?: Array<{ id: string; emailAddress: string }>;
-}) {
+function authorizedWith(...permissions: Permission[]) {
   return {
-    primaryEmailAddressId: options.primaryEmailAddressId ?? "email_primary",
-    emailAddresses: options.emails ?? [],
+    status: WorkspaceAuthStatus.Authorized,
+    actor: {
+      userId: "user-uuid-1",
+      workspaceMemberId: "member-uuid-1",
+      permissions: new Set(permissions),
+    },
   };
 }
 
-describe("requireWorkspaceAccess", () => {
+describe("requireWorkspaceActor", () => {
   beforeEach(() => {
-    vi.stubEnv("WORKSPACE_ALLOWED_EMAILS", ALLOWED_EMAIL);
-    mockAuth.mockReset();
-    mockCurrentUser.mockReset();
+    mockAuthenticate.mockReset();
     mockRedirect.mockClear();
     mockNotFound.mockClear();
   });
 
-  afterEach(() => {
-    vi.unstubAllEnvs();
-  });
-
   it("redirects unauthenticated visitors to the locale-aware sign-in page", async () => {
-    mockAuth.mockResolvedValue({ userId: null });
+    mockAuthenticate.mockResolvedValue({
+      status: WorkspaceAuthStatus.Unauthenticated,
+    });
 
-    await expect(requireWorkspaceAccess("de")).rejects.toThrow(
+    await expect(requireWorkspaceActor("de")).rejects.toThrow(
       "REDIRECT:/de/sign-in?redirect_url=%2Fde",
     );
-
-    expect(mockRedirect).toHaveBeenCalledWith("/de/sign-in?redirect_url=%2Fde");
-    expect(mockCurrentUser).not.toHaveBeenCalled();
     expect(mockNotFound).not.toHaveBeenCalled();
   });
 
   it("uses the requested locale for the redirect target", async () => {
-    mockAuth.mockResolvedValue({ userId: null });
+    mockAuthenticate.mockResolvedValue({
+      status: WorkspaceAuthStatus.Unauthenticated,
+    });
 
-    await expect(requireWorkspaceAccess("en")).rejects.toThrow(
+    await expect(requireWorkspaceActor("en")).rejects.toThrow(
       "REDIRECT:/en/sign-in?redirect_url=%2Fen",
     );
   });
 
-  it("throws notFound when the authenticated user has no primary email", async () => {
-    mockAuth.mockResolvedValue({ userId: "user_123" });
-    mockCurrentUser.mockResolvedValue(
-      buildClerkUser({
-        primaryEmailAddressId: "email_primary",
-        emails: [],
-      }),
-    );
+  it("answers 404 for a signed-in account without membership", async () => {
+    mockAuthenticate.mockResolvedValue({
+      status: WorkspaceAuthStatus.NotMember,
+    });
 
-    await expect(requireWorkspaceAccess("de")).rejects.toThrow("NOT_FOUND");
-
-    expect(mockNotFound).toHaveBeenCalledTimes(1);
+    await expect(requireWorkspaceActor("de")).rejects.toThrow("NOT_FOUND");
     expect(mockRedirect).not.toHaveBeenCalled();
   });
 
-  it("throws notFound when the primary email is not on the allowlist", async () => {
-    mockAuth.mockResolvedValue({ userId: "user_123" });
-    mockCurrentUser.mockResolvedValue(
-      buildClerkUser({
-        primaryEmailAddressId: "email_primary",
-        emails: [{ id: "email_primary", emailAddress: "intruder@example.com" }],
-      }),
+  it("throws instead of rendering when authorization data is unavailable", async () => {
+    mockAuthenticate.mockResolvedValue({
+      status: WorkspaceAuthStatus.Unavailable,
+    });
+
+    await expect(requireWorkspaceActor("de")).rejects.toBeInstanceOf(
+      WorkspaceAuthorizationUnavailableError,
     );
-
-    await expect(requireWorkspaceAccess("de")).rejects.toThrow("NOT_FOUND");
-
-    expect(mockNotFound).toHaveBeenCalledTimes(1);
   });
 
-  it("returns the access record when the primary email is allowed", async () => {
-    mockAuth.mockResolvedValue({ userId: "user_123" });
-    mockCurrentUser.mockResolvedValue(
-      buildClerkUser({
-        primaryEmailAddressId: "email_primary",
-        emails: [
-          { id: "email_other", emailAddress: "secondary@example.com" },
-          { id: "email_primary", emailAddress: ALLOWED_EMAIL },
-        ],
-      }),
+  it("returns the resolved actor", async () => {
+    const authentication = authorizedWith(Permission.LeadsRead);
+    mockAuthenticate.mockResolvedValue(authentication);
+
+    await expect(requireWorkspaceActor("de")).resolves.toBe(
+      authentication.actor,
     );
+  });
+});
 
-    const access = await requireWorkspaceAccess("de");
-
-    expect(access).toEqual({ userId: "user_123", email: ALLOWED_EMAIL });
-    expect(mockRedirect).not.toHaveBeenCalled();
-    expect(mockNotFound).not.toHaveBeenCalled();
+describe("requireWorkspacePermission", () => {
+  beforeEach(() => {
+    mockAuthenticate.mockReset();
+    mockNotFound.mockClear();
   });
 
-  it("matches allowlist entries regardless of casing on the Clerk side", async () => {
-    mockAuth.mockResolvedValue({ userId: "user_123" });
-    mockCurrentUser.mockResolvedValue(
-      buildClerkUser({
-        primaryEmailAddressId: "email_primary",
-        emails: [{ id: "email_primary", emailAddress: "OWNER@Example.com" }],
-      }),
+  it("returns the actor when the permission is held", async () => {
+    mockAuthenticate.mockResolvedValue(authorizedWith(Permission.LeadsRead));
+
+    await expect(
+      requireWorkspacePermission("de", Permission.LeadsRead),
+    ).resolves.toMatchObject({ userId: "user-uuid-1" });
+  });
+
+  it("answers 404 when the permission is missing", async () => {
+    mockAuthenticate.mockResolvedValue(authorizedWith(Permission.LeadsRead));
+
+    await expect(
+      requireWorkspacePermission("de", Permission.LeadsDelete),
+    ).rejects.toThrow("NOT_FOUND");
+  });
+});
+
+describe("requireWorkspaceArea", () => {
+  beforeEach(() => {
+    mockAuthenticate.mockReset();
+    mockNotFound.mockClear();
+  });
+
+  it("opens an area through its registered permission", async () => {
+    mockAuthenticate.mockResolvedValue(
+      authorizedWith(Permission.DashboardRead),
     );
 
-    const access = await requireWorkspaceAccess("en");
+    await expect(
+      requireWorkspaceArea("de", WorkspaceArea.Dashboard),
+    ).resolves.toMatchObject({ workspaceMemberId: "member-uuid-1" });
+  });
 
-    expect(access).toEqual({ userId: "user_123", email: "OWNER@Example.com" });
+  it("hides an area whose permission is missing", async () => {
+    mockAuthenticate.mockResolvedValue(
+      authorizedWith(Permission.DashboardRead),
+    );
+
+    await expect(
+      requireWorkspaceArea("de", WorkspaceArea.Leads),
+    ).rejects.toThrow("NOT_FOUND");
   });
 });

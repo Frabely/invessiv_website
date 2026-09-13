@@ -51,6 +51,14 @@ getesteten Owner-Command.
 Backupkopien werden nicht nachträglich umgeschrieben. Sie sind streng gesperrt und verschwinden mit
 der normalen Rotation; dieser Zeitraum wird im Datenschutzprozess dokumentiert.
 
+**Personen mit Login werden anonymisiert, nicht gelöscht (Vorgabe aus Ordner 03).** `activities.actor_user_id`
+und `security_events.actor_user_id` verweisen mit `ON DELETE RESTRICT` auf `users.id`; ein User mit Historie ist
+daher nicht löschbar, und `ON DELETE SET NULL` würde die Actor-Invariante brechen. Der Purge ersetzt deshalb
+`primary_email`, `first_name`, `last_name` und `display_name` durch neutrale Platzhalter, setzt `clerk_user_id` auf
+einen nicht zuordenbaren Wert und `active = false`. Die Historie bleibt konsistent, personenbezogene Daten sind
+entfernt. Das zugehörige Clerk-Konto wird separat über die Clerk Backend API gelöscht; ein Fehler dort bleibt als
+wiederholbarer Saga-Schritt sichtbar.
+
 ## Backup-Pipeline
 
 - GitHub-OIDC oder minimaler Secretzugriff; keine Zugangsdaten in Workflowlogs.

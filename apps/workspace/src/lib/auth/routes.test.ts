@@ -6,8 +6,10 @@ import {
   signInPathFor,
   signInPathWithRedirect,
   signUpPathFor,
+  workspaceAreaPathFor,
   workspacePathFor,
 } from "./routes";
+import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import { SITE_ROUTES } from "@/config/routes";
 
 describe("auth routes", () => {
@@ -27,6 +29,13 @@ describe("auth routes", () => {
     expect(workspacePathFor("en")).toBe("/en");
     expect(dashboardPathFor("de")).toBe("/de/dashboard");
     expect(dashboardPathFor("en")).toBe("/en/dashboard");
+  });
+
+  it("builds a locale-prefixed path for every workspace area", () => {
+    expect(workspaceAreaPathFor("de", WorkspaceArea.Dashboard)).toBe(
+      "/de/dashboard",
+    );
+    expect(workspaceAreaPathFor("en", WorkspaceArea.Leads)).toBe("/en/leads");
   });
 
   it("appends an encoded redirect_url query parameter", () => {
