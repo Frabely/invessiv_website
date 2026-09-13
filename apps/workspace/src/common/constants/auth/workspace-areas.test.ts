@@ -12,6 +12,9 @@ describe("WorkspaceArea", () => {
   it("contains the exact areas without duplicates", () => {
     expect(WORKSPACE_AREA_VALUES).toEqual(["dashboard", "leads"]);
     expect(WORKSPACE_AREA_VALUES).toEqual(Object.values(WorkspaceArea));
+    expect(new Set(WORKSPACE_AREA_VALUES).size).toBe(
+      WORKSPACE_AREA_VALUES.length,
+    );
   });
 
   it("maps every area to exactly one workspace permission", () => {

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { BootstrapWorkspaceOwnerError } from "@/common/constants/auth/workspace-auth-statuses";
+import { BootstrapWorkspaceOwnerError } from "@/common/constants/auth/bootstrap-workspace-owner-errors";
 import { bootstrapWorkspaceOwner } from "@/server/workspace/auth/command-handler/bootstrap-workspace-owner.command-handler";
 
 vi.mock("server-only", () => ({}));

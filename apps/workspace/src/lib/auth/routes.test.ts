@@ -2,15 +2,14 @@ import { describe, expect, it } from "vitest";
 
 import {
   dashboardPathFor,
-  REDIRECT_URL_QUERY_PARAM,
   signInPathFor,
   signInPathWithRedirect,
   signUpPathFor,
   workspaceAreaPathFor,
   workspacePathFor,
 } from "./routes";
+import { REDIRECT_URL_QUERY_PARAM, SITE_ROUTES } from "@/config/routes";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
-import { SITE_ROUTES } from "@/config/routes";
 
 describe("auth routes", () => {
   it("exposes locale-less segments for Clerk ENV-Vars", () => {

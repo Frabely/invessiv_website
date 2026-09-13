@@ -3,8 +3,8 @@ import { PERMISSION_DEFINITIONS } from "@invessiv/common/constants/auth/permissi
 import type { Permission } from "@invessiv/common/constants/auth/permissions";
 import type { WorkspaceActorRow } from "@invessiv/common/contracts/auth/rows/workspace-actor-row";
 import { isPermission } from "@invessiv/common/patterns/auth/can";
-import { WorkspaceActorResolutionError } from "@/common/constants/auth/workspace-auth-statuses";
-import type { ResolveWorkspaceActorResult } from "@/common/contracts/auth/results/resolve-workspace-actor-result";
+import { WorkspaceActorResolutionError } from "@/common/constants/auth/workspace-actor-resolution-errors";
+import type { ResolveWorkspaceActorResult } from "@/server/workspace/auth/resolve-workspace-actor-types";
 
 // Unknown keys and permissions of another realm are dropped instead of trusted.
 function isWorkspacePermission(key: string | null): key is Permission {

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { SystemActorKey } from "@invessiv/common/constants/activity/system-actor-keys";
-import { activityActorMappingService } from "@/server/workspace/shared/services/activity-actor-mapping-service";
+import { activityActorMappingService } from "@/server/workspace/shared/services/activity-actor/activity-actor-mapping-service";
 
 describe("activityActorMappingService.mapActorToColumns", () => {
   it("maps a human actor to its user reference without a system key", () => {

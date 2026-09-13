@@ -1,11 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
-import {
-  BootstrapWorkspaceOwnerError,
-  WorkspaceActorResolutionError,
-  WorkspaceAuthStatus,
-} from "@/common/constants/auth/workspace-auth-statuses";
+import { BootstrapWorkspaceOwnerError } from "@/common/constants/auth/bootstrap-workspace-owner-errors";
+import { WorkspaceActorResolutionError } from "@/common/constants/auth/workspace-actor-resolution-errors";
+import { WorkspaceAuthStatus } from "@/common/constants/auth/workspace-auth-statuses";
 import { authenticateWorkspaceRequest } from "./workspace-authentication";
 
 vi.mock("server-only", () => ({}));

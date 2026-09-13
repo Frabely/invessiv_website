@@ -18,6 +18,7 @@ describe("AuthRealm", () => {
   it("contains exactly workspace and portal", () => {
     expect(AUTH_REALM_VALUES).toEqual(["workspace", "portal"]);
     expect(AUTH_REALM_VALUES).toEqual(Object.values(AuthRealm));
+    expect(new Set(AUTH_REALM_VALUES).size).toBe(AUTH_REALM_VALUES.length);
     expect(WORKSPACE_REALM_VALUES).toEqual([AuthRealm.Workspace]);
   });
 });

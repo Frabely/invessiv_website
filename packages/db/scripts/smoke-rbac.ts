@@ -9,7 +9,12 @@ import { randomUUID } from "node:crypto";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { SYSTEM_ROLE_DEFINITIONS } from "@invessiv/common/constants/auth/system-role-definitions";
 import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
-import { getDatabaseClient, getDatabaseUrl } from "@invessiv/db/core";
+import {
+  type ContactDatabase,
+  getDatabaseClient,
+  getDatabaseUrl,
+  getDrizzleDatabaseClient,
+} from "@invessiv/db/core";
 import {
   configureDatabaseUrlFromTarget,
   type DatabaseTarget,
@@ -78,8 +83,8 @@ async function insertRole(
   return id;
 }
 
-async function runCatalogChecks(sql: Sql) {
-  const mismatches = await findRbacCatalogMismatches(sql);
+async function runCatalogChecks(db: ContactDatabase) {
+  const mismatches = await findRbacCatalogMismatches(db);
   record(
     "permission catalog and system roles match the code",
     mismatches.length === 0,
@@ -439,9 +444,10 @@ async function run() {
   }
 
   const sql = getDatabaseClient();
+  const db = getDrizzleDatabaseClient();
 
   try {
-    await runCatalogChecks(sql);
+    await runCatalogChecks(db);
     await runUserAndMemberChecks(sql);
     await runRoleChecks(sql);
     await runActorChecks(sql);

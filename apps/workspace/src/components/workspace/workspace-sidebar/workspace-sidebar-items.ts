@@ -8,7 +8,6 @@ export type WorkspaceSidebarItem = {
   iconViewBox: string;
   id: WorkspaceSidebarItemKey;
   labelKey: WorkspaceSidebarItemKey;
-  path: string | null;
 };
 
 export const WORKSPACE_SIDEBAR_ITEMS: ReadonlyArray<WorkspaceSidebarItem> = [
@@ -16,7 +15,6 @@ export const WORKSPACE_SIDEBAR_ITEMS: ReadonlyArray<WorkspaceSidebarItem> = [
     area: WorkspaceArea.Dashboard,
     id: "overview",
     labelKey: "overview",
-    path: "/dashboard",
     iconViewBox: "0 0 24 24",
     iconPaths: [
       "M3 3h7v9H3z",
@@ -29,7 +27,6 @@ export const WORKSPACE_SIDEBAR_ITEMS: ReadonlyArray<WorkspaceSidebarItem> = [
     area: WorkspaceArea.Leads,
     id: "leads",
     labelKey: "leads",
-    path: "/leads",
     iconViewBox: "0 0 24 24",
     iconPaths: [
       "M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2",

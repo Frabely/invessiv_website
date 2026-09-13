@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import type { WorkspaceActorRow } from "@invessiv/common/contracts/auth/rows/workspace-actor-row";
-import { WorkspaceActorResolutionError } from "@/common/constants/auth/workspace-auth-statuses";
-import { workspaceActorMappingService } from "@/server/workspace/auth/services/workspace-actor-mapping-service";
+import { WorkspaceActorResolutionError } from "@/common/constants/auth/workspace-actor-resolution-errors";
+import { workspaceActorMappingService } from "@/server/workspace/auth/services/workspace-actor/workspace-actor-mapping-service";
 
 function row(overrides: Partial<WorkspaceActorRow> = {}): WorkspaceActorRow {
   return {

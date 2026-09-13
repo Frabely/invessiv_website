@@ -1,3 +1,5 @@
+import type { BootstrapWorkspaceOwnerError } from "@/common/constants/auth/bootstrap-workspace-owner-errors";
+
 export interface BootstrapWorkspaceOwnerInput {
   /** Clerk id that matched `WORKSPACE_BOOTSTRAP_CLERK_USER_ID`; the only bootstrap anchor. */
   clerkUserId: string;
@@ -7,3 +9,7 @@ export interface BootstrapWorkspaceOwnerInput {
   lastName: string | null;
   displayName: string;
 }
+
+export type BootstrapWorkspaceOwnerResult =
+  | { ok: true; userId: string; workspaceMemberId: string }
+  | { ok: false; code: BootstrapWorkspaceOwnerError };

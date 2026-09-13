@@ -11,8 +11,8 @@ import {
   workspaceMemberRoles,
   workspaceMembers,
 } from "@invessiv/db/record-configuration";
-import type { ResolveWorkspaceActorResult } from "@/common/contracts/auth/results/resolve-workspace-actor-result";
-import { workspaceActorMappingService } from "@/server/workspace/auth/services/workspace-actor-mapping-service";
+import type { ResolveWorkspaceActorResult } from "@/server/workspace/auth/resolve-workspace-actor-types";
+import { workspaceActorMappingService } from "@/server/workspace/auth/services/workspace-actor/workspace-actor-mapping-service";
 
 /**
  * Loads identity, membership and the permissions of all active workspace roles in one query.

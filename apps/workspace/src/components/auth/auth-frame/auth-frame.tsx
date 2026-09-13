@@ -8,9 +8,9 @@ import { useTheme } from "@/components/providers/theme-provider";
 import { LocaleSwitch } from "@/components/shared/locale-switch/locale-switch";
 import { ThemeSwitch } from "@/components/shared/theme-switch/theme-switch";
 import type { Locale } from "@/config/i18n";
-import { isSupportedLocale } from "@/config/i18n";
 import type { AuthContent } from "@/i18n/dictionaries/auth";
-import { REDIRECT_URL_QUERY_PARAM } from "@/lib/auth/routes";
+import { REDIRECT_URL_QUERY_PARAM, SITE_ROUTES } from "@/config/routes";
+import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import styles from "./auth-frame.module.css";
 
 type AuthFrameProps = {
@@ -18,19 +18,6 @@ type AuthFrameProps = {
   content: AuthContent["frame"];
   locale: Locale;
 };
-
-function buildLocalePath(currentPath: string, nextLocale: Locale): string {
-  const normalized = currentPath || "/";
-  if (normalized === "/") {
-    return `/${nextLocale}`;
-  }
-  const segments = normalized.split("/").filter(Boolean);
-  if (segments[0] && isSupportedLocale(segments[0])) {
-    segments[0] = nextLocale;
-    return `/${segments.join("/")}`;
-  }
-  return `/${nextLocale}${normalized}`;
-}
 
 export function localizeAuthRedirectSearch(
   currentSearch: string,
@@ -42,7 +29,7 @@ export function localizeAuthRedirectSearch(
   if (redirectUrl?.startsWith("/") && !redirectUrl.startsWith("//")) {
     searchParams.set(
       REDIRECT_URL_QUERY_PARAM,
-      buildLocalePath(redirectUrl, nextLocale),
+      createLocalePathname(redirectUrl, nextLocale),
     );
   }
 
@@ -73,7 +60,7 @@ export function AuthFrame({ children, content, locale }: AuthFrameProps) {
       return;
     }
 
-    const nextPathname = buildLocalePath(pathname ?? "/", nextLocale);
+    const nextPathname = createLocalePathname(pathname, nextLocale);
     const search =
       typeof window !== "undefined"
         ? localizeAuthRedirectSearch(window.location.search, nextLocale)
@@ -91,7 +78,7 @@ export function AuthFrame({ children, content, locale }: AuthFrameProps) {
         <a
           aria-label={content.brandHomeAriaLabel}
           className={styles.brand}
-          href={`/${locale}`}
+          href={createLocalePathname(SITE_ROUTES.WORKSPACE, locale)}
         >
           <Image
             alt={content.brandLogoAlt}

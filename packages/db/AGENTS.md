@@ -92,6 +92,10 @@ Const-Objekt — nicht zusätzlich im DDL-Text und nicht im Modell.
 
 ## Skripte
 
+- Dedizierte Constraint-Smokes dürfen Raw SQL verwenden, wenn sie absichtlich ungültige Zeilen, Trigger oder
+  Postgres-Katalogzustände prüfen. Diese Ausnahme gilt nur innerhalb des Smokes einschließlich seines eindeutig
+  markierten Fixture-Setups und -Cleanups; produktive Persistenz und rein lesende Katalogvergleiche bleiben beim
+  kanonischen Drizzle-Schema.
 - `db:migrate:*` und `db:smoke:*` laufen gegen jedes Ziel. Schreibende Skripte (`db:seed:*`,
   `db:smoke:crm`, `db:smoke:activities`, `db:smoke:rbac`) sind auf `development` und `preview` begrenzt und
   lehnen `production` ab.

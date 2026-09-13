@@ -15,9 +15,11 @@ import {
   workspaceMemberRoles,
   workspaceMembers,
 } from "@invessiv/db/record-configuration";
-import { BootstrapWorkspaceOwnerError } from "@/common/constants/auth/workspace-auth-statuses";
-import type { BootstrapWorkspaceOwnerInput } from "@/common/contracts/auth/bootstrap-workspace-owner-input";
-import type { BootstrapWorkspaceOwnerResult } from "@/common/contracts/auth/results/bootstrap-workspace-owner-result";
+import { BootstrapWorkspaceOwnerError } from "@/common/constants/auth/bootstrap-workspace-owner-errors";
+import type {
+  BootstrapWorkspaceOwnerInput,
+  BootstrapWorkspaceOwnerResult,
+} from "@/server/workspace/auth/bootstrap-workspace-owner-types";
 import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
 import { workspaceBootstrapIdentityService } from "@/server/workspace/auth/services/workspace-bootstrap-identity-service";
 

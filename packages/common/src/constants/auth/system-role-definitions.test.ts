@@ -19,6 +19,9 @@ describe("SystemRoleKey", () => {
       "workspace_credentials_manager",
     ]);
     expect(SYSTEM_ROLE_KEY_VALUES).toEqual(Object.values(SystemRoleKey));
+    expect(new Set(SYSTEM_ROLE_KEY_VALUES).size).toBe(
+      SYSTEM_ROLE_KEY_VALUES.length,
+    );
   });
 });
 

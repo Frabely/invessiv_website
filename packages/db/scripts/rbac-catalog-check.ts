@@ -2,43 +2,50 @@ import { PERMISSION_DEFINITIONS } from "@invessiv/common/constants/auth/permissi
 import { PERMISSION_VALUES } from "@invessiv/common/constants/auth/permissions";
 import { SYSTEM_ROLE_DEFINITIONS } from "@invessiv/common/constants/auth/system-role-definitions";
 import { SYSTEM_ROLE_KEY_VALUES } from "@invessiv/common/constants/auth/system-role-keys";
-import type { getDatabaseClient } from "@invessiv/db/core";
-
-type Sql = ReturnType<typeof getDatabaseClient>;
-
-type PermissionRow = {
-  key: string;
-  realm: string;
-  delegable: boolean;
-  description: string;
-};
-
-type SystemRoleRow = {
-  id: string;
-  realm: string;
-  system_key: string;
-  name: string;
-  active: boolean;
-};
-
-type RolePermissionRow = { role_id: string; permission_key: string };
+import type { ContactDatabase } from "@invessiv/db/core";
+import {
+  permissions,
+  rolePermissions,
+  roles,
+} from "@invessiv/db/record-configuration";
+import { eq } from "drizzle-orm";
 
 /**
  * Read-only comparison of the permission catalog and the system roles between code and
  * database, in both directions. Safe for every target, including production.
  */
-export async function findRbacCatalogMismatches(sql: Sql): Promise<string[]> {
+export async function findRbacCatalogMismatches(
+  db: ContactDatabase,
+): Promise<string[]> {
   const [permissionRows, systemRoleRows, rolePermissionRows] =
-    (await Promise.all([
-      sql`SELECT key, realm, delegable, description FROM permissions`,
-      sql`SELECT id, realm, system_key, name, active FROM roles WHERE is_system`,
-      sql`
-        SELECT rp.role_id, rp.permission_key
-        FROM role_permissions AS rp
-        JOIN roles AS r ON r.id = rp.role_id
-        WHERE r.is_system
-      `,
-    ])) as [PermissionRow[], SystemRoleRow[], RolePermissionRow[]];
+    await Promise.all([
+      db
+        .select({
+          key: permissions.key,
+          realm: permissions.realm,
+          delegable: permissions.delegable,
+          description: permissions.description,
+        })
+        .from(permissions),
+      db
+        .select({
+          id: roles.id,
+          realm: roles.realm,
+          system_key: roles.system_key,
+          name: roles.name,
+          active: roles.active,
+        })
+        .from(roles)
+        .where(eq(roles.is_system, true)),
+      db
+        .select({
+          role_id: rolePermissions.role_id,
+          permission_key: rolePermissions.permission_key,
+        })
+        .from(rolePermissions)
+        .innerJoin(roles, eq(roles.id, rolePermissions.role_id))
+        .where(eq(roles.is_system, true)),
+    ]);
 
   const mismatches: string[] = [];
   const permissionsByKey = new Map(permissionRows.map((row) => [row.key, row]));
@@ -97,8 +104,10 @@ export async function findRbacCatalogMismatches(sql: Sql): Promise<string[]> {
 
   const knownSystemKeys = new Set<string>(SYSTEM_ROLE_KEY_VALUES);
   for (const row of systemRoleRows) {
-    if (!knownSystemKeys.has(row.system_key)) {
-      mismatches.push(`unknown system role in database: ${row.system_key}`);
+    if (row.system_key === null || !knownSystemKeys.has(row.system_key)) {
+      mismatches.push(
+        `unknown system role in database: ${row.system_key ?? "<null>"}`,
+      );
     }
   }
 

@@ -26,10 +26,8 @@ import {
   workspaceMemberRoles,
   workspaceMembers,
 } from "@invessiv/db/record-configuration";
-import {
-  BootstrapWorkspaceOwnerError,
-  WorkspaceActorResolutionError,
-} from "@/common/constants/auth/workspace-auth-statuses";
+import { BootstrapWorkspaceOwnerError } from "@/common/constants/auth/bootstrap-workspace-owner-errors";
+import { WorkspaceActorResolutionError } from "@/common/constants/auth/workspace-actor-resolution-errors";
 import { GET, POST } from "@/app/api/workspace/leads/route";
 import { bootstrapWorkspaceOwner } from "@/server/workspace/auth/command-handler/bootstrap-workspace-owner.command-handler";
 import { resolveWorkspaceActor } from "@/server/workspace/auth/query-handler/resolve-workspace-actor.query-handler";

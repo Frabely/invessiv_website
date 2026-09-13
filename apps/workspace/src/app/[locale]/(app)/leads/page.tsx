@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { requireWorkspaceArea } from "@/lib/auth/permissions";
+import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { LeadFormDialog } from "@/components/workspace/leads/form/lead-form-dialog/lead-form-dialog";
 import { LeadsPageHeader } from "@/components/workspace/leads/shell/leads-page-header/leads-page-header";
 import { LeadsPageShell } from "@/components/workspace/leads/shell/leads-page-shell/leads-page-shell";
@@ -128,7 +129,7 @@ export default async function LeadsPage({
     ? LeadsEmptyStateVariant.Filtered
     : LeadsEmptyStateVariant.Empty;
   const categories = await getLeadCategories();
-  const basePath = `/${locale}${LEADS_BASE_PATH}`;
+  const basePath = createLocalePathname(LEADS_BASE_PATH, locale);
   const addLeadHref = buildLeadCreateHref(basePath, resolvedSearchParams);
   const selectedLead = selectedLeadId
     ? await getLeadById(selectedLeadId)

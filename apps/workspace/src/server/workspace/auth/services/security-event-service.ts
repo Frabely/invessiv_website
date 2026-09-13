@@ -1,9 +1,21 @@
 import "server-only";
 
-import type { CreateSecurityEventInput } from "@invessiv/common/contracts/auth/create-security-event-input";
+import type { SecurityEventType } from "@invessiv/common/constants/auth/security-event-types";
+import type { SecuritySubjectType } from "@invessiv/common/constants/auth/security-subject-types";
+import type { ActivityActor } from "@invessiv/common/contracts/activity/activity-actor";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import { securityEvents } from "@invessiv/db/record-configuration";
-import { activityActorMappingService } from "@/server/workspace/shared/services/activity-actor-mapping-service";
+import { activityActorMappingService } from "@/server/workspace/shared/services/activity-actor/activity-actor-mapping-service";
+
+type CreateSecurityEventInput = {
+  type: SecurityEventType;
+  actor: ActivityActor;
+  subjectType: SecuritySubjectType;
+  subjectId: string;
+  /** Must never contain secrets, tokens or unnecessary PII. */
+  metadata?: Record<string, unknown> | null;
+  occurredAt: Date;
+};
 
 /** Append-only: there is deliberately no update or delete path. */
 async function createSecurityEvent(

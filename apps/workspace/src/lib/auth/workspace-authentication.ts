@@ -2,12 +2,10 @@ import "server-only";
 
 import { auth, currentUser } from "@clerk/nextjs/server";
 
-import {
-  WorkspaceActorResolutionError,
-  WorkspaceAuthStatus,
-} from "@/common/constants/auth/workspace-auth-statuses";
-import type { BootstrapWorkspaceOwnerInput } from "@/common/contracts/auth/bootstrap-workspace-owner-input";
+import { WorkspaceActorResolutionError } from "@/common/constants/auth/workspace-actor-resolution-errors";
+import { WorkspaceAuthStatus } from "@/common/constants/auth/workspace-auth-statuses";
 import type { WorkspaceAuthentication } from "@/common/contracts/auth/workspace-authentication";
+import type { BootstrapWorkspaceOwnerInput } from "@/server/workspace/auth/bootstrap-workspace-owner-types";
 import { bootstrapWorkspaceOwner } from "@/server/workspace/auth/command-handler/bootstrap-workspace-owner.command-handler";
 import { resolveWorkspaceActor } from "@/server/workspace/auth/query-handler/resolve-workspace-actor.query-handler";
 import { workspaceBootstrapIdentityService } from "@/server/workspace/auth/services/workspace-bootstrap-identity-service";
