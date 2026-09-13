@@ -1,4 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { Permission } from "@invessiv/common/constants/auth/permissions";
+import {
+  authorizedWorkspaceRequest,
+  notMemberWorkspaceRequest,
+  TEST_ACTOR_USER_ID,
+  unauthenticatedWorkspaceRequest,
+} from "@/server/tests/support/workspace-auth-fixtures";
 import type { NextRequest } from "next/server";
 
 import { LeadImportErrorCode } from "@invessiv/common/constants/leads/import/errors/lead-import-error-codes";
@@ -6,23 +13,19 @@ import type { LeadImportReportDto } from "@invessiv/common/contracts/leads/impor
 
 vi.mock("server-only", () => ({}));
 
-const { mockAuth, mockCurrentUser, mockImportLeads } = vi.hoisted(() => ({
-  mockAuth: vi.fn(),
-  mockCurrentUser: vi.fn(),
+const { mockAuthenticate, mockImportLeads } = vi.hoisted(() => ({
+  mockAuthenticate: vi.fn(),
   mockImportLeads: vi.fn(),
 }));
 
-vi.mock("@clerk/nextjs/server", () => ({
-  auth: mockAuth,
-  currentUser: mockCurrentUser,
+vi.mock("@/lib/auth/workspace-authentication", () => ({
+  authenticateWorkspaceRequest: mockAuthenticate,
 }));
 
 vi.mock(
   "@/server/workspace/leads/command-handler/import-leads.command-handler",
   () => ({ importLeads: mockImportLeads }),
 );
-
-const ALLOWED_EMAIL = "owner@example.com";
 
 const STUB_REPORT: LeadImportReportDto = {
   totalRows: 3,
@@ -67,18 +70,12 @@ function makeRequestWithContentLength(bytes: number): NextRequest {
 }
 
 function setupAuthenticatedUser(): void {
-  mockAuth.mockResolvedValue({ userId: "user_123" });
-  mockCurrentUser.mockResolvedValue({
-    primaryEmailAddressId: "email_primary",
-    emailAddresses: [{ id: "email_primary", emailAddress: ALLOWED_EMAIL }],
-  });
+  mockAuthenticate.mockResolvedValue(authorizedWorkspaceRequest());
 }
 
 describe("POST /api/workspace/leads/import", () => {
   beforeEach(() => {
-    vi.stubEnv("WORKSPACE_ALLOWED_EMAILS", ALLOWED_EMAIL);
-    mockAuth.mockReset();
-    mockCurrentUser.mockReset();
+    mockAuthenticate.mockReset();
     mockImportLeads.mockReset();
   });
 
@@ -87,7 +84,7 @@ describe("POST /api/workspace/leads/import", () => {
   });
 
   it("returns 401 when the request is unauthenticated", async () => {
-    mockAuth.mockResolvedValue({ userId: null });
+    mockAuthenticate.mockResolvedValue(unauthenticatedWorkspaceRequest());
 
     const { POST } = await import("@/app/api/workspace/leads/import/route");
     const response = await POST(makeImportRequest());
@@ -96,14 +93,8 @@ describe("POST /api/workspace/leads/import", () => {
     expect(mockImportLeads).not.toHaveBeenCalled();
   });
 
-  it("returns 404 when the user is not on the allowlist", async () => {
-    mockAuth.mockResolvedValue({ userId: "user_999" });
-    mockCurrentUser.mockResolvedValue({
-      primaryEmailAddressId: "email_primary",
-      emailAddresses: [
-        { id: "email_primary", emailAddress: "notallowed@example.com" },
-      ],
-    });
+  it("returns 404 for an account without workspace membership", async () => {
+    mockAuthenticate.mockResolvedValue(notMemberWorkspaceRequest());
 
     const { POST } = await import("@/app/api/workspace/leads/import/route");
     const response = await POST(makeImportRequest());
@@ -274,5 +265,27 @@ describe("POST /api/workspace/leads/import", () => {
     const passedFile = mockImportLeads.mock.calls[0][0] as File;
     expect(passedFile).toBeInstanceOf(File);
     expect(passedFile.name).toBe("leads.csv");
+    expect(mockImportLeads.mock.calls[0][1]).toBe(TEST_ACTOR_USER_ID);
+  });
+});
+
+describe("POST /api/workspace/leads/import permissions", () => {
+  beforeEach(() => {
+    mockAuthenticate.mockReset();
+    mockImportLeads.mockReset();
+  });
+
+  it("returns 403 without leads.import, even with leads.write", async () => {
+    mockAuthenticate.mockResolvedValue(
+      authorizedWorkspaceRequest([Permission.LeadsRead, Permission.LeadsWrite]),
+    );
+
+    const { POST } = await import("@/app/api/workspace/leads/import/route");
+    const response = await POST(
+      makeImportRequest(makeFile("email;last_name\ntest@test.com;Test")),
+    );
+
+    expect(response.status).toBe(403);
+    expect(mockImportLeads).not.toHaveBeenCalled();
   });
 });

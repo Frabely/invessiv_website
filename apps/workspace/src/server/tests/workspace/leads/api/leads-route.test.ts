@@ -1,4 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { Permission } from "@invessiv/common/constants/auth/permissions";
+import {
+  authorizedWorkspaceRequest,
+  notMemberWorkspaceRequest,
+  TEST_ACTOR_USER_ID,
+  unauthenticatedWorkspaceRequest,
+  unavailableWorkspaceRequest,
+} from "@/server/tests/support/workspace-auth-fixtures";
 import type { NextRequest } from "next/server";
 import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
 import type { CreateLeadRequestDto } from "@invessiv/common/contracts/leads/create-lead-request.dto";
@@ -8,18 +16,14 @@ import { GET, POST } from "@/app/api/workspace/leads/route";
 
 vi.mock("server-only", () => ({}));
 
-const { mockAuth, mockCurrentUser, mockListLeads, mockCreateLead } = vi.hoisted(
-  () => ({
-    mockAuth: vi.fn(),
-    mockCurrentUser: vi.fn(),
-    mockListLeads: vi.fn(),
-    mockCreateLead: vi.fn(),
-  }),
-);
+const { mockAuthenticate, mockListLeads, mockCreateLead } = vi.hoisted(() => ({
+  mockAuthenticate: vi.fn(),
+  mockListLeads: vi.fn(),
+  mockCreateLead: vi.fn(),
+}));
 
-vi.mock("@clerk/nextjs/server", () => ({
-  auth: mockAuth,
-  currentUser: mockCurrentUser,
+vi.mock("@/lib/auth/workspace-authentication", () => ({
+  authenticateWorkspaceRequest: mockAuthenticate,
 }));
 
 vi.mock(
@@ -31,8 +35,6 @@ vi.mock(
   "@/server/workspace/leads/command-handler/create-lead.command-handler",
   () => ({ createLead: mockCreateLead }),
 );
-
-const ALLOWED_EMAIL = "owner@example.com";
 
 const STUB_LEAD: LeadDetailDto = {
   id: "lead-uuid-1",
@@ -70,18 +72,12 @@ function makeRequest(url: string, options?: RequestInit) {
 }
 
 function setupAuthenticatedUser() {
-  mockAuth.mockResolvedValue({ userId: "user_123" });
-  mockCurrentUser.mockResolvedValue({
-    primaryEmailAddressId: "email_primary",
-    emailAddresses: [{ id: "email_primary", emailAddress: ALLOWED_EMAIL }],
-  });
+  mockAuthenticate.mockResolvedValue(authorizedWorkspaceRequest());
 }
 
 describe("GET /api/workspace/leads", () => {
   beforeEach(() => {
-    vi.stubEnv("WORKSPACE_ALLOWED_EMAILS", ALLOWED_EMAIL);
-    mockAuth.mockReset();
-    mockCurrentUser.mockReset();
+    mockAuthenticate.mockReset();
     mockListLeads.mockReset();
   });
 
@@ -90,7 +86,7 @@ describe("GET /api/workspace/leads", () => {
   });
 
   it("returns 401 when the request is unauthenticated", async () => {
-    mockAuth.mockResolvedValue({ userId: null });
+    mockAuthenticate.mockResolvedValue(unauthenticatedWorkspaceRequest());
 
     const response = await GET(
       makeRequest("http://localhost/api/workspace/leads"),
@@ -166,9 +162,7 @@ describe("GET /api/workspace/leads", () => {
 
 describe("POST /api/workspace/leads", () => {
   beforeEach(() => {
-    vi.stubEnv("WORKSPACE_ALLOWED_EMAILS", ALLOWED_EMAIL);
-    mockAuth.mockReset();
-    mockCurrentUser.mockReset();
+    mockAuthenticate.mockReset();
     mockCreateLead.mockReset();
   });
 
@@ -177,7 +171,7 @@ describe("POST /api/workspace/leads", () => {
   });
 
   it("returns 401 when the request is unauthenticated", async () => {
-    mockAuth.mockResolvedValue({ userId: null });
+    mockAuthenticate.mockResolvedValue(unauthenticatedWorkspaceRequest());
 
     const response = await POST(
       makeRequest("http://localhost/api/workspace/leads", {
@@ -214,7 +208,10 @@ describe("POST /api/workspace/leads", () => {
     );
 
     expect(response.status).toBe(201);
-    expect(mockCreateLead).toHaveBeenCalledWith(requestBody);
+    expect(mockCreateLead).toHaveBeenCalledWith(
+      requestBody,
+      TEST_ACTOR_USER_ID,
+    );
     const body = await response.json();
     expect(body).toHaveProperty("lead");
     expect(body.lead).toMatchObject({
@@ -345,5 +342,66 @@ describe("POST /api/workspace/leads", () => {
     expect(response.status).toBe(500);
     const body = await response.json();
     expect(body).toMatchObject({ error: "INTERNAL" });
+  });
+});
+
+describe("/api/workspace/leads permissions", () => {
+  beforeEach(() => {
+    mockAuthenticate.mockReset();
+    mockListLeads.mockReset();
+    mockCreateLead.mockReset();
+  });
+
+  it("returns 403 for GET without leads.read", async () => {
+    mockAuthenticate.mockResolvedValue(
+      authorizedWorkspaceRequest([Permission.LeadsWrite]),
+    );
+
+    const response = await GET(
+      makeRequest("http://localhost/api/workspace/leads"),
+    );
+
+    expect(response.status).toBe(403);
+    expect(await response.json()).toMatchObject({ error: "FORBIDDEN" });
+    expect(mockListLeads).not.toHaveBeenCalled();
+  });
+
+  it("returns 403 for POST without leads.write", async () => {
+    mockAuthenticate.mockResolvedValue(
+      authorizedWorkspaceRequest([Permission.LeadsRead]),
+    );
+
+    const response = await POST(
+      makeRequest("http://localhost/api/workspace/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ displayName: "X Example", last_name: "X" }),
+      }),
+    );
+
+    expect(response.status).toBe(403);
+    expect(mockCreateLead).not.toHaveBeenCalled();
+  });
+
+  it("returns 404 for an account without workspace membership", async () => {
+    mockAuthenticate.mockResolvedValue(notMemberWorkspaceRequest());
+
+    const response = await GET(
+      makeRequest("http://localhost/api/workspace/leads"),
+    );
+
+    expect(response.status).toBe(404);
+    expect(mockListLeads).not.toHaveBeenCalled();
+  });
+
+  it("returns 503 and never reads leads when authorization is unavailable", async () => {
+    mockAuthenticate.mockResolvedValue(unavailableWorkspaceRequest());
+
+    const response = await GET(
+      makeRequest("http://localhost/api/workspace/leads"),
+    );
+
+    expect(response.status).toBe(503);
+    expect(mockListLeads).not.toHaveBeenCalled();
   });
 });

@@ -31,7 +31,7 @@ Login-/Registrierungs-Frame und darf keine geschützten Workspace-Inhalte enthal
 2. **Öffentlich, aber minimal.** Auth-Routen sind öffentlich zugänglich. Sie bekommen keinen Marketing-Header, keine
    Footer-Navigation und keine ablenkenden Landing-Sections.
 
-3. **Keine Workspace-Berechtigungen hier prüfen.** Allowlist- und Role-Checks gehören nach
+3. **Keine Workspace-Berechtigungen hier prüfen.** Permission-Checks gehören nach
    `apps/workspace/src/lib/auth/permissions.ts` und ins `workspace`-Layout. `(auth)` rendert nur den Auth-Einstieg.
 
 4. **Locale-aware Routing.** Routen liegen unter `[locale]`. Redirects und Fallback-URLs müssen locale-aware gebaut
@@ -54,7 +54,8 @@ Login-/Registrierungs-Frame und darf keine geschützten Workspace-Inhalte enthal
 9. **Server Components als Default.** Pages und Layouts bleiben Server Components, außer eine lokale Interaktion
    erzwingt `"use client"`. Clerk-Komponenten dürfen gemäß SDK-Anforderung verwendet werden.
 
-10. **Keine Secrets im Client.** `CLERK_SECRET_KEY`, Allowlist-ENV und server-only Auth-Helper niemals in Client
+10. **Keine Secrets im Client.** `CLERK_SECRET_KEY`, `WORKSPACE_BOOTSTRAP_CLERK_USER_ID` und server-only Auth-Helper
+    niemals in Client
     Components importieren. `NEXT_PUBLIC_*` nur für tatsächlich öffentliche Clerk-Client-Konfiguration verwenden.
 
 11. **Public Nav nicht nebenbei ändern.** Auth-Routen werden nicht automatisch im Marketing-Header oder Footer
@@ -104,7 +105,7 @@ apps/workspace/src/i18n/dictionaries/auth/
 ## Was hier nicht hingehört
 
 - Geschützte Workspace-Seiten oder interne Admin-Funktionen.
-- Allowlist-, Rollen- oder Permission-Logik in Pages.
+- Rollen- oder Permission-Logik in Pages.
 - Marketing-Sections, Pricing, FAQ oder Conversion-Landing-Inhalte.
 - Legal-Seiten.
 - Öffentliche API-Routen.

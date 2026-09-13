@@ -14,6 +14,7 @@ import { createLeadCoreInTransaction } from "@/server/workspace/leads/shared/cre
 
 export async function createLead(
   input: CreateLeadRequestDto,
+  actorUserId: string,
 ): Promise<CreateLeadResult> {
   const validation = createLeadValidationService.validate(input);
   if (!validation.success) {
@@ -33,6 +34,7 @@ export async function createLead(
         source: LeadSource.Manual,
         activityType: ActivityType.Note,
         statusOverride: data.lead_status,
+        actorUserId,
       }),
     );
 

@@ -2,13 +2,14 @@ import { describe, expect, it } from "vitest";
 
 import {
   dashboardPathFor,
-  REDIRECT_URL_QUERY_PARAM,
   signInPathFor,
   signInPathWithRedirect,
   signUpPathFor,
+  workspaceAreaPathFor,
   workspacePathFor,
 } from "./routes";
-import { SITE_ROUTES } from "@/config/routes";
+import { REDIRECT_URL_QUERY_PARAM, SITE_ROUTES } from "@/config/routes";
+import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 
 describe("auth routes", () => {
   it("exposes locale-less segments for Clerk ENV-Vars", () => {
@@ -27,6 +28,13 @@ describe("auth routes", () => {
     expect(workspacePathFor("en")).toBe("/en");
     expect(dashboardPathFor("de")).toBe("/de/dashboard");
     expect(dashboardPathFor("en")).toBe("/en/dashboard");
+  });
+
+  it("builds a locale-prefixed path for every workspace area", () => {
+    expect(workspaceAreaPathFor("de", WorkspaceArea.Dashboard)).toBe(
+      "/de/dashboard",
+    );
+    expect(workspaceAreaPathFor("en", WorkspaceArea.Leads)).toBe("/en/leads");
   });
 
   it("appends an encoded redirect_url query parameter", () => {

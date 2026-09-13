@@ -17,6 +17,7 @@ import {
   ACTOR_TYPE_VALUES,
   ActorType,
 } from "@invessiv/common/constants/activity/actor-types";
+import { SystemActorKey } from "@invessiv/common/constants/activity/system-actor-keys";
 import { getDatabaseClient, getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
   activities,
@@ -227,6 +228,8 @@ async function run() {
         metadata: null,
         occurred_at: occurredAt,
         actor_type: ActorType.System,
+        actor_user_id: null,
+        system_actor_key: SystemActorKey.Fixture,
         actor_id: null,
         actor_label: null,
         created_at: occurredAt,

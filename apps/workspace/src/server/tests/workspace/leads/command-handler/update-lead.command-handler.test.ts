@@ -99,6 +99,8 @@ function setupSuccessfulDb() {
   };
 }
 
+const ACTOR_USER_ID = "user-actor-uuid";
+
 describe("updateLead", () => {
   it("returns ok:true with updated LeadDetailDto on valid update", async () => {
     setupSuccessfulDb();
@@ -107,10 +109,14 @@ describe("updateLead", () => {
     const { updateLead } =
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
 
-    const result = await updateLead("lead-existing-uuid", {
-      displayName: "Max Mustermann",
-      last_name: "Mustermann",
-    });
+    const result = await updateLead(
+      "lead-existing-uuid",
+      {
+        displayName: "Max Mustermann",
+        last_name: "Mustermann",
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(result).toEqual({ ok: true, lead: mockLeadDto });
   });
@@ -124,13 +130,17 @@ describe("updateLead", () => {
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
 
     const categoryId = "a1b2c3d4-e5f6-7890-abcd-ef1234567890";
-    await updateLead("lead-existing-uuid", {
-      displayName: "Max Mustermann",
-      last_name: "Mustermann",
-      category_id: categoryId,
-      notes: "Guter Prospect",
-      improvements: ["Mehr Social Proof"],
-    });
+    await updateLead(
+      "lead-existing-uuid",
+      {
+        displayName: "Max Mustermann",
+        last_name: "Mustermann",
+        category_id: categoryId,
+        notes: "Guter Prospect",
+        improvements: ["Mehr Social Proof"],
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(updateCaptures).toHaveLength(1);
     expect(updateCaptures[0].category_id).toBe(categoryId);
@@ -146,14 +156,18 @@ describe("updateLead", () => {
     const { updateLead } =
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
 
-    await updateLead("lead-existing-uuid", {
-      displayName: "Max Mustermann",
-      company_name: null,
-      last_name: "Mustermann",
-      notes: null,
-      improvements: [],
-      social_profiles: [],
-    });
+    await updateLead(
+      "lead-existing-uuid",
+      {
+        displayName: "Max Mustermann",
+        company_name: null,
+        last_name: "Mustermann",
+        notes: null,
+        improvements: [],
+        social_profiles: [],
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(updateCaptures).toHaveLength(1);
     expect(updateCaptures[0].company_name).toBeNull();
@@ -170,7 +184,11 @@ describe("updateLead", () => {
     const { updateLead } =
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
 
-    await updateLead("lead-existing-uuid", { last_name: "Mustermann" });
+    await updateLead(
+      "lead-existing-uuid",
+      { last_name: "Mustermann" },
+      ACTOR_USER_ID,
+    );
 
     expect(updateCaptures[0].updated_at).toBeInstanceOf(Date);
   });
@@ -183,16 +201,20 @@ describe("updateLead", () => {
     const { updateLead } =
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
 
-    await updateLead("lead-existing-uuid", {
-      displayName: "Max Mustermann",
-      last_name: "Mustermann",
-      social_profiles: [
-        {
-          platform: "linkedin",
-          profile_url: "https://linkedin.com/in/max-mustermann",
-        },
-      ],
-    });
+    await updateLead(
+      "lead-existing-uuid",
+      {
+        displayName: "Max Mustermann",
+        last_name: "Mustermann",
+        social_profiles: [
+          {
+            platform: "linkedin",
+            profile_url: "https://linkedin.com/in/max-mustermann",
+          },
+        ],
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(getDeleteCount()).toBe(1);
     expect(insertCaptures).toHaveLength(1);
@@ -210,11 +232,15 @@ describe("updateLead", () => {
     const { updateLead } =
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
 
-    await updateLead("lead-existing-uuid", {
-      displayName: "Max Mustermann",
-      last_name: "Mustermann",
-      social_profiles: [],
-    });
+    await updateLead(
+      "lead-existing-uuid",
+      {
+        displayName: "Max Mustermann",
+        last_name: "Mustermann",
+        social_profiles: [],
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(getDeleteCount()).toBe(1);
     expect(insertCaptures).toHaveLength(0);
@@ -226,9 +252,13 @@ describe("updateLead", () => {
     const { updateLead } =
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
 
-    const result = await updateLead("nonexistent-uuid", {
-      last_name: "Mustermann",
-    });
+    const result = await updateLead(
+      "nonexistent-uuid",
+      {
+        last_name: "Mustermann",
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(result).toEqual({ ok: false, code: LeadErrorCode.NotFound });
   });
@@ -239,11 +269,15 @@ describe("updateLead", () => {
     const { updateLead } =
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
 
-    const result = await updateLead("lead-existing-uuid", {
-      displayName: "Max Mustermann",
-      last_name: "",
-      company_name: "",
-    });
+    const result = await updateLead(
+      "lead-existing-uuid",
+      {
+        displayName: "Max Mustermann",
+        last_name: "",
+        company_name: "",
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(result).toMatchObject({
       ok: false,
@@ -262,10 +296,14 @@ describe("updateLead", () => {
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
     getDrizzleDatabaseClientMock.mockClear();
 
-    const result = await updateLead("lead-existing-uuid", {
-      displayName: "",
-      last_name: "Mustermann",
-    });
+    const result = await updateLead(
+      "lead-existing-uuid",
+      {
+        displayName: "",
+        last_name: "Mustermann",
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(result).toMatchObject({
       ok: false,
@@ -288,10 +326,14 @@ describe("updateLead", () => {
     const { updateLead } =
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
 
-    const result = await updateLead("lead-existing-uuid", {
-      displayName: "Max Mustermann",
-      email: "existing@example.com",
-    });
+    const result = await updateLead(
+      "lead-existing-uuid",
+      {
+        displayName: "Max Mustermann",
+        email: "existing@example.com",
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(result).toEqual({ ok: false, code: LeadErrorCode.EmailExists });
   });
@@ -311,10 +353,14 @@ describe("updateLead", () => {
     const { updateLead } =
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
 
-    const result = await updateLead("lead-existing-uuid", {
-      displayName: "Max Mustermann",
-      company_name: "Existing GmbH",
-    });
+    const result = await updateLead(
+      "lead-existing-uuid",
+      {
+        displayName: "Max Mustermann",
+        company_name: "Existing GmbH",
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(result).toEqual({
       ok: false,
@@ -337,15 +383,19 @@ describe("updateLead", () => {
     const { updateLead } =
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
 
-    const result = await updateLead("lead-existing-uuid", {
-      displayName: "Max Mustermann",
-      social_profiles: [
-        {
-          platform: "linkedin",
-          profile_url: "https://linkedin.com/in/already-taken",
-        },
-      ],
-    });
+    const result = await updateLead(
+      "lead-existing-uuid",
+      {
+        displayName: "Max Mustermann",
+        social_profiles: [
+          {
+            platform: "linkedin",
+            profile_url: "https://linkedin.com/in/already-taken",
+          },
+        ],
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(result).toEqual({
       ok: false,
@@ -369,11 +419,15 @@ describe("updateLead", () => {
     const { updateLead } =
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
 
-    await updateLead("lead-existing-uuid", {
-      displayName: "Max Mustermann",
-      last_name: "Mustermann",
-      lead_status: "qualified",
-    });
+    await updateLead(
+      "lead-existing-uuid",
+      {
+        displayName: "Max Mustermann",
+        last_name: "Mustermann",
+        lead_status: "qualified",
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(createLeadActivityMock).toHaveBeenCalledOnce();
     expect(createLeadActivityMock).toHaveBeenCalledWith(
@@ -406,10 +460,14 @@ describe("updateLead", () => {
     const { updateLead } =
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
 
-    await updateLead("lead-existing-uuid", {
-      last_name: "Mustermann",
-      lead_status: "new",
-    });
+    await updateLead(
+      "lead-existing-uuid",
+      {
+        last_name: "Mustermann",
+        lead_status: "new",
+      },
+      ACTOR_USER_ID,
+    );
 
     expect(createLeadActivityMock).not.toHaveBeenCalled();
   });
@@ -424,7 +482,11 @@ describe("updateLead", () => {
     const { updateLead } =
       await import("@/server/workspace/leads/command-handler/update-lead.command-handler");
 
-    await updateLead("lead-existing-uuid", { last_name: "Mustermann" });
+    await updateLead(
+      "lead-existing-uuid",
+      { last_name: "Mustermann" },
+      ACTOR_USER_ID,
+    );
 
     expect(createLeadActivityMock).not.toHaveBeenCalled();
   });

@@ -81,6 +81,8 @@ Const-Objekt — nicht zusätzlich im DDL-Text und nicht im Modell.
   Plandokument übernehmen.
 - Additiv: keine `DROP`, kein Umbenennen, kein `NOT NULL` auf eine bestehende befüllte Spalte,
   CHECK-Constraints nur erweitern und nie verengen. Rückbau erst, wenn der letzte Leser weg ist.
+  Einzige dokumentierte Ausnahme: `0024` entfernt die leeren, von keiner App-Version gelesenen Legacy-Spalten an
+  `workspace_members` hinter einem Leerheits-Preflight (Begründung: `plans/crm/03-mitglieder-und-auth/README.md`).
 - Idempotent: `CREATE … IF NOT EXISTS`, `--> statement-breakpoint` zwischen den Statements, ein
   zweiter Lauf ist folgenlos.
 - Eine bereits in `schema_migrations` registrierte Datei wird **niemals** verändert oder umbenannt.
@@ -90,9 +92,15 @@ Const-Objekt — nicht zusätzlich im DDL-Text und nicht im Modell.
 
 ## Skripte
 
+- Dedizierte Constraint-Smokes dürfen Raw SQL verwenden, wenn sie absichtlich ungültige Zeilen, Trigger oder
+  Postgres-Katalogzustände prüfen. Diese Ausnahme gilt nur innerhalb des Smokes einschließlich seines eindeutig
+  markierten Fixture-Setups und -Cleanups; produktive Persistenz und rein lesende Katalogvergleiche bleiben beim
+  kanonischen Drizzle-Schema.
 - `db:migrate:*` und `db:smoke:*` laufen gegen jedes Ziel. Schreibende Skripte (`db:seed:*`,
-  `db:smoke:crm`, `db:smoke:activities`) sind auf `development` und `preview` begrenzt und
+  `db:smoke:crm`, `db:smoke:activities`, `db:smoke:rbac`) sind auf `development` und `preview` begrenzt und
   lehnen `production` ab.
+- `db:smoke` vergleicht zusätzlich lesend Permission-Katalog und Systemrollen mit dem Code
+  (`scripts/rbac-catalog-check.ts`) und ist damit auch für `production` das Katalog-Gate.
 - Schreibende Skripte kennzeichnen ihre Zeilen mit einem Fixture-Präfix und räumen sie wieder ab —
   auch wenn eine Prüfung fehlschlägt.
 - Seeds sind wiederholbar: jeder Lauf setzt die eigenen Zeilen zurück und legt sie neu an.

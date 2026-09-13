@@ -33,7 +33,7 @@ export function WorkspaceHeader({
   const { theme, toggleTheme } = useTheme();
   const pathname = usePathname();
   const router = useRouter();
-  const workspaceHref = `/${locale}${SITE_ROUTES.WORKSPACE}`;
+  const workspaceHref = createLocalePathname(SITE_ROUTES.WORKSPACE, locale);
   const themeSwitchCopy =
     theme === "dark"
       ? { actionLabel: headerContent.themeSwitch.actionLabel.dark }

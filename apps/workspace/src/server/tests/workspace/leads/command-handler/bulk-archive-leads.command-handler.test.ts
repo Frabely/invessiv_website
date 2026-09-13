@@ -64,13 +64,15 @@ function setupDb(rows: LeadState[]) {
   return { updateCaptures };
 }
 
+const ACTOR_USER_ID = "user-actor-uuid";
+
 describe("bulkArchiveLeads", () => {
   it("returns ok:true with empty result when ids array is empty", async () => {
     vi.resetModules();
     const { bulkArchiveLeads } =
       await import("@/server/workspace/leads/command-handler/bulk-archive-leads.command-handler");
 
-    const result = await bulkArchiveLeads({ ids: [] });
+    const result = await bulkArchiveLeads({ ids: [] }, ACTOR_USER_ID);
 
     expect(result).toEqual({ ok: true, updatedCount: 0 });
   });
@@ -85,7 +87,10 @@ describe("bulkArchiveLeads", () => {
     const { bulkArchiveLeads } =
       await import("@/server/workspace/leads/command-handler/bulk-archive-leads.command-handler");
 
-    const result = await bulkArchiveLeads({ ids: ["lead-1", "lead-2"] });
+    const result = await bulkArchiveLeads(
+      { ids: ["lead-1", "lead-2"] },
+      ACTOR_USER_ID,
+    );
 
     expect(result).toEqual({ ok: true, updatedCount: 1 });
     expect(updateCaptures).toHaveLength(1);
@@ -94,7 +99,7 @@ describe("bulkArchiveLeads", () => {
     expect(createLeadActivityMock).toHaveBeenCalledWith(
       expect.any(Object),
       expect.objectContaining({
-        actorType: ActorType.System,
+        actor: { type: ActorType.User, userId: ACTOR_USER_ID },
         leadId: "lead-1",
         type: ActivityType.StatusChange,
         metadata: {

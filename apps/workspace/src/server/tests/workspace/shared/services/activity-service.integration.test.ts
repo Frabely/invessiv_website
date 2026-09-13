@@ -6,11 +6,13 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
+import { SystemActorKey } from "@invessiv/common/constants/activity/system-actor-keys";
 import { findWorkspaceRoot, getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
   activities,
   customers,
   leads,
+  users,
   workspaceMembers,
 } from "@invessiv/db/record-configuration";
 import { activityService } from "@/server/workspace/shared/services/activity-service";
@@ -25,6 +27,7 @@ type Database = ReturnType<typeof getDrizzleDatabaseClient>;
 describe.skipIf(!RUN_INTEGRATION)(
   "activityService PostgreSQL integration",
   () => {
+    const userId = randomUUID();
     const memberId = randomUUID();
     const customerId = randomUUID();
     const leadId = randomUUID();
@@ -50,13 +53,20 @@ describe.skipIf(!RUN_INTEGRATION)(
       db = getDrizzleDatabaseClient();
       const now = new Date();
 
+      await db.insert(users).values({
+        id: userId,
+        clerk_user_id: `${FIXTURE_PREFIX}${userId}`,
+        primary_email: `${FIXTURE_PREFIX}${userId}@example.test`,
+        display_name: `${FIXTURE_PREFIX}user`,
+        active: true,
+        version: 1,
+        created_at: now,
+        updated_at: now,
+      });
       await db.insert(workspaceMembers).values({
         id: memberId,
-        clerk_user_id: `${FIXTURE_PREFIX}${memberId}`,
-        email: `${FIXTURE_PREFIX}${memberId}@example.test`,
-        role: "owner",
+        user_id: userId,
         active: true,
-        credentials_access: false,
         version: 1,
         created_at: now,
         updated_at: now,
@@ -88,9 +98,10 @@ describe.skipIf(!RUN_INTEGRATION)(
       await db
         .delete(workspaceMembers)
         .where(eq(workspaceMembers.id, memberId));
+      await db.delete(users).where(eq(users.id, userId));
     }, 30_000);
 
-    it("writes a lead event to the activities table", async () => {
+    it("writes a system lead event with its key to the activities table", async () => {
       if (!db) throw new Error("Database was not initialized.");
       const occurredAt = new Date("2026-09-12T12:00:00.000Z");
 
@@ -100,7 +111,10 @@ describe.skipIf(!RUN_INTEGRATION)(
           type: ActivityType.Note,
           title: "Integration note",
           occurredAt,
-          actorType: ActorType.System,
+          actor: {
+            type: ActorType.System,
+            systemActorKey: SystemActorKey.Fixture,
+          },
         }),
       );
 
@@ -120,11 +134,14 @@ describe.skipIf(!RUN_INTEGRATION)(
         customer_id: null,
         project_id: null,
         type: ActivityType.Note,
+        actor_type: ActorType.System,
+        actor_user_id: null,
+        system_actor_key: SystemActorKey.Fixture,
       });
       expect(rows[0].occurred_at).toEqual(occurredAt);
     });
 
-    it("writes a customer project event without a legacy lead row", async () => {
+    it("writes a human customer project event referencing the real user", async () => {
       if (!db) throw new Error("Database was not initialized.");
       const projectId = randomUUID();
 
@@ -132,8 +149,7 @@ describe.skipIf(!RUN_INTEGRATION)(
         customerId,
         projectId,
         type: ActivityType.Created,
-        actorType: ActorType.User,
-        actorId: "integration-user",
+        actor: { type: ActorType.User, userId },
       });
 
       const rows = await db
@@ -152,6 +168,11 @@ describe.skipIf(!RUN_INTEGRATION)(
         customer_id: customerId,
         project_id: projectId,
         type: ActivityType.Created,
+        actor_type: ActorType.User,
+        actor_user_id: userId,
+        system_actor_key: null,
+        actor_id: null,
+        actor_label: null,
       });
     });
   },

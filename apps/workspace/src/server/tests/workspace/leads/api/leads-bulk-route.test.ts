@@ -1,4 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { Permission } from "@invessiv/common/constants/auth/permissions";
+import {
+  authorizedWorkspaceRequest,
+  TEST_ACTOR_USER_ID,
+  unauthenticatedWorkspaceRequest,
+} from "@/server/tests/support/workspace-auth-fixtures";
 import type { NextRequest } from "next/server";
 
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
@@ -14,22 +20,19 @@ const VALID_UUID_B = "00000000-0000-4000-8000-000000000002";
 const VALID_UUID_C = "00000000-0000-4000-8000-000000000003";
 
 const {
-  mockAuth,
-  mockCurrentUser,
+  mockAuthenticate,
   mockBulkEditLeads,
   mockBulkArchiveLeads,
   mockBulkDeleteLeads,
 } = vi.hoisted(() => ({
-  mockAuth: vi.fn(),
-  mockCurrentUser: vi.fn(),
+  mockAuthenticate: vi.fn(),
   mockBulkEditLeads: vi.fn(),
   mockBulkArchiveLeads: vi.fn(),
   mockBulkDeleteLeads: vi.fn(),
 }));
 
-vi.mock("@clerk/nextjs/server", () => ({
-  auth: mockAuth,
-  currentUser: mockCurrentUser,
+vi.mock("@/lib/auth/workspace-authentication", () => ({
+  authenticateWorkspaceRequest: mockAuthenticate,
 }));
 
 vi.mock(
@@ -45,8 +48,6 @@ vi.mock(
   () => ({ bulkDeleteLeads: mockBulkDeleteLeads }),
 );
 
-const ALLOWED_EMAIL = "owner@example.com";
-
 function makeRequest(body: unknown) {
   return new Request("http://localhost/api/workspace/leads/bulk", {
     method: "POST",
@@ -56,18 +57,12 @@ function makeRequest(body: unknown) {
 }
 
 function setupAuthenticatedUser() {
-  mockAuth.mockResolvedValue({ userId: "user_123" });
-  mockCurrentUser.mockResolvedValue({
-    primaryEmailAddressId: "email_primary",
-    emailAddresses: [{ id: "email_primary", emailAddress: ALLOWED_EMAIL }],
-  });
+  mockAuthenticate.mockResolvedValue(authorizedWorkspaceRequest());
 }
 
 describe("POST /api/workspace/leads/bulk", () => {
   beforeEach(() => {
-    vi.stubEnv("WORKSPACE_ALLOWED_EMAILS", ALLOWED_EMAIL);
-    mockAuth.mockReset();
-    mockCurrentUser.mockReset();
+    mockAuthenticate.mockReset();
     mockBulkEditLeads.mockReset();
     mockBulkArchiveLeads.mockReset();
     mockBulkDeleteLeads.mockReset();
@@ -78,7 +73,7 @@ describe("POST /api/workspace/leads/bulk", () => {
   });
 
   it("returns 401 when the request is unauthenticated", async () => {
-    mockAuth.mockResolvedValue({ userId: null });
+    mockAuthenticate.mockResolvedValue(unauthenticatedWorkspaceRequest());
 
     const response = await POST(
       makeRequest({
@@ -117,10 +112,13 @@ describe("POST /api/workspace/leads/bulk", () => {
       updatedCount: 3,
       failedLeads: [],
     });
-    expect(mockBulkEditLeads).toHaveBeenCalledWith({
-      ids: [VALID_UUID_A, VALID_UUID_B, VALID_UUID_C],
-      patch: { status: ContactLeadStatus.Qualified },
-    });
+    expect(mockBulkEditLeads).toHaveBeenCalledWith(
+      {
+        ids: [VALID_UUID_A, VALID_UUID_B, VALID_UUID_C],
+        patch: { status: ContactLeadStatus.Qualified },
+      },
+      TEST_ACTOR_USER_ID,
+    );
   });
 
   it("archive: returns 200 with updatedCount", async () => {
@@ -137,9 +135,12 @@ describe("POST /api/workspace/leads/bulk", () => {
     expect(response.status).toBe(200);
     const body = await response.json();
     expect(body).toMatchObject({ ok: true, updatedCount: 2 });
-    expect(mockBulkArchiveLeads).toHaveBeenCalledWith({
-      ids: [VALID_UUID_A, VALID_UUID_B],
-    });
+    expect(mockBulkArchiveLeads).toHaveBeenCalledWith(
+      {
+        ids: [VALID_UUID_A, VALID_UUID_B],
+      },
+      TEST_ACTOR_USER_ID,
+    );
   });
 
   it("delete: returns 200 with deletedCount", async () => {
@@ -278,5 +279,47 @@ describe("POST /api/workspace/leads/bulk", () => {
         ids: [VALID_UUID_A],
       }).success,
     ).toBe(true);
+  });
+});
+
+describe("POST /api/workspace/leads/bulk permissions", () => {
+  beforeEach(() => {
+    mockAuthenticate.mockReset();
+    mockBulkEditLeads.mockReset();
+    mockBulkArchiveLeads.mockReset();
+    mockBulkDeleteLeads.mockReset();
+  });
+
+  it("returns 403 for any bulk action without leads.write", async () => {
+    mockAuthenticate.mockResolvedValue(
+      authorizedWorkspaceRequest([Permission.LeadsRead]),
+    );
+
+    const response = await POST(
+      makeRequest({
+        action: LeadBulkAction.Archive,
+        ids: [VALID_UUID_A],
+      }),
+    );
+
+    expect(response.status).toBe(403);
+    expect(mockBulkArchiveLeads).not.toHaveBeenCalled();
+  });
+
+  it("returns 403 for bulk delete without leads.delete", async () => {
+    mockAuthenticate.mockResolvedValue(
+      authorizedWorkspaceRequest([Permission.LeadsRead, Permission.LeadsWrite]),
+    );
+
+    const response = await POST(
+      makeRequest({
+        action: LeadBulkAction.Delete,
+        ids: [VALID_UUID_A],
+      }),
+    );
+
+    expect(response.status).toBe(403);
+    expect(await response.json()).toMatchObject({ error: "FORBIDDEN" });
+    expect(mockBulkDeleteLeads).not.toHaveBeenCalled();
   });
 });

@@ -18,3 +18,12 @@ export const ACTOR_TYPE_VALUES = [
   ...LEGACY_LEAD_ACTOR_TYPE_VALUES,
   ActorType.Customer,
 ] as const;
+
+/** Actor types that must reference a `users` row. */
+export const HUMAN_ACTOR_TYPE_VALUES = [
+  ActorType.User,
+  ActorType.Customer,
+] as const;
+
+/** Actor types that must carry a `system_actor_key` instead of a user. */
+export const SYSTEM_ACTOR_TYPE_VALUES = [ActorType.System] as const;

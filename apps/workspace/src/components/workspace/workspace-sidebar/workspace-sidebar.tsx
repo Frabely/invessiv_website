@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import type { Locale } from "@/config/i18n";
-import { SITE_ROUTES } from "@/config/routes";
 import type { WorkspacePageContent } from "@/i18n/dictionaries/workspace";
+import { workspaceAreaPathFor } from "@/lib/auth/routes";
 import { WORKSPACE_SIDEBAR_ITEMS } from "./workspace-sidebar-items";
 import styles from "./workspace-sidebar.module.css";
 
@@ -13,6 +14,7 @@ type WorkspaceSidebarProps = {
   isOpen: boolean;
   locale: Locale;
   onCloseAction: () => void;
+  permittedAreas: readonly WorkspaceArea[];
 };
 
 export function WorkspaceSidebar({
@@ -20,6 +22,7 @@ export function WorkspaceSidebar({
   isOpen,
   locale,
   onCloseAction,
+  permittedAreas,
 }: WorkspaceSidebarProps) {
   const sidebarContent = content.shell.sidebar;
   const headerContent = content.shell.header;
@@ -66,12 +69,12 @@ export function WorkspaceSidebar({
         </button>
         <nav aria-label={sidebarContent.navAriaLabel} className={styles.nav}>
           <ul className={styles.list}>
-            {WORKSPACE_SIDEBAR_ITEMS.map((item) => {
-              const isDisabled = item.path === null;
-              const href = `/${locale}${item.path ?? SITE_ROUTES.WORKSPACE}`;
+            {WORKSPACE_SIDEBAR_ITEMS.filter((item) =>
+              permittedAreas.includes(item.area),
+            ).map((item) => {
+              const href = workspaceAreaPathFor(locale, item.area);
               const isActive =
-                !isDisabled &&
-                (pathname === href || pathname.startsWith(`${href}/`));
+                pathname === href || pathname.startsWith(`${href}/`);
 
               const icon = (
                 <span aria-hidden="true" className={styles.linkIcon}>
@@ -92,34 +95,17 @@ export function WorkspaceSidebar({
 
               return (
                 <li className={styles.item} key={item.id}>
-                  {isDisabled ? (
-                    <a
-                      aria-disabled="true"
-                      className={styles.link}
-                      role="link"
-                      tabIndex={-1}
-                    >
-                      {icon}
-                      <span className={styles.linkLabel}>
-                        {sidebarContent.items[item.labelKey]}
-                      </span>
-                      <span aria-hidden="true" className={styles.linkBadge}>
-                        {sidebarContent.comingSoonBadge}
-                      </span>
-                    </a>
-                  ) : (
-                    <Link
-                      aria-current={isActive ? "page" : undefined}
-                      className={styles.link}
-                      data-active={isActive ? "true" : "false"}
-                      href={href}
-                    >
-                      {icon}
-                      <span className={styles.linkLabel}>
-                        {sidebarContent.items[item.labelKey]}
-                      </span>
-                    </Link>
-                  )}
+                  <Link
+                    aria-current={isActive ? "page" : undefined}
+                    className={styles.link}
+                    data-active={isActive ? "true" : "false"}
+                    href={href}
+                  >
+                    {icon}
+                    <span className={styles.linkLabel}>
+                      {sidebarContent.items[item.labelKey]}
+                    </span>
+                  </Link>
                 </li>
               );
             })}

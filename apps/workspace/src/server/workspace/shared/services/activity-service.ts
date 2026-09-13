@@ -4,6 +4,7 @@ import type { CreateActivityInput } from "@invessiv/common/contracts/activity/cr
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { activities } from "@invessiv/db/record-configuration";
+import { activityActorMappingService } from "@/server/workspace/shared/services/activity-actor/activity-actor-mapping-service";
 
 async function createActivity(
   tx: ContactDatabaseTransaction,
@@ -21,9 +22,9 @@ async function createActivity(
     body: input.body ?? null,
     metadata: input.metadata ?? null,
     occurred_at: input.occurredAt ?? now,
-    actor_type: input.actorType,
-    actor_id: input.actorId ?? null,
-    actor_label: input.actorLabel ?? null,
+    ...activityActorMappingService.mapActorToColumns(input.actor),
+    actor_id: null,
+    actor_label: null,
     created_at: now,
   });
 }

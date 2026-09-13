@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
+import { listPermittedWorkspaceAreas } from "@/common/patterns/auth/list-permitted-workspace-areas";
 import { WorkspaceShell } from "@/components/workspace/workspace-shell/workspace-shell";
 import { isSupportedLocale } from "@/config/i18n";
 import { getWorkspacePageContent } from "@/i18n/dictionaries/workspace";
-import { requireWorkspaceAccess } from "@/lib/auth/permissions";
+import { requireWorkspaceActor } from "@/lib/auth/permissions";
 
 type WorkspaceLayoutProps = {
   children: ReactNode;
@@ -27,11 +28,15 @@ export default async function WorkspaceLayout({
   }
 
   const activeLocale = locale;
-  await requireWorkspaceAccess(activeLocale);
+  const actor = await requireWorkspaceActor(activeLocale);
   const content = getWorkspacePageContent(activeLocale);
 
   return (
-    <WorkspaceShell content={content} locale={activeLocale}>
+    <WorkspaceShell
+      content={content}
+      locale={activeLocale}
+      permittedAreas={listPermittedWorkspaceAreas(actor)}
+    >
       {children}
     </WorkspaceShell>
   );

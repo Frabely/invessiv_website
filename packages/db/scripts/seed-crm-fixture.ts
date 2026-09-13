@@ -9,7 +9,7 @@
  * in `plans/crm/AGENTS.md`).
  */
 import { randomUUID } from "node:crypto";
-import { eq, inArray, like } from "drizzle-orm";
+import { inArray, like } from "drizzle-orm";
 
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
@@ -19,13 +19,18 @@ import {
   customers,
   leadCategories,
   people,
+  users,
+  workspaceMemberRoles,
   workspaceMembers,
 } from "@invessiv/db/record-configuration";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
+import { SystemActorKey } from "@invessiv/common/constants/activity/system-actor-keys";
+import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
+import { SYSTEM_ROLE_DEFINITIONS } from "@invessiv/common/constants/auth/system-role-definitions";
+import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
 import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
 import { CustomerType } from "@invessiv/common/constants/crm/customer-types";
-import { WorkspaceRole } from "@invessiv/common/constants/crm/workspace-roles";
 import { Locale } from "@invessiv/common/contracts/i18n/locale";
 import {
   configureDatabaseUrlFromTarget,
@@ -214,35 +219,70 @@ async function resetFixtureRows(tx: ContactDatabaseTransaction) {
   }
 
   await tx.delete(people).where(like(people.notes, pattern));
-  await tx
-    .delete(workspaceMembers)
-    .where(like(workspaceMembers.clerk_user_id, pattern));
-}
 
-async function ensureOwnerMember(tx: ContactDatabaseTransaction) {
-  const clerkUserId = `${FIXTURE_PREFIX}owner`;
-  const existing = await tx
-    .select({ id: workspaceMembers.id })
-    .from(workspaceMembers)
-    .where(eq(workspaceMembers.clerk_user_id, clerkUserId))
-    .limit(1);
+  const fixtureUsers = await tx
+    .select({ id: users.id })
+    .from(users)
+    .where(like(users.clerk_user_id, pattern));
 
-  if (existing.length === 1) {
-    return existing[0].id;
+  if (fixtureUsers.length === 0) {
+    return;
   }
 
-  const id = randomUUID();
-  await tx.insert(workspaceMembers).values({
-    id,
-    clerk_user_id: clerkUserId,
-    email: "fixture-owner@example.test",
-    role: WorkspaceRole.Owner,
+  const userIds = fixtureUsers.map((row) => row.id);
+  const fixtureMembers = await tx
+    .select({ id: workspaceMembers.id })
+    .from(workspaceMembers)
+    .where(inArray(workspaceMembers.user_id, userIds));
+
+  if (fixtureMembers.length > 0) {
+    const memberIds = fixtureMembers.map((row) => row.id);
+    await tx
+      .delete(workspaceMemberRoles)
+      .where(inArray(workspaceMemberRoles.workspace_member_id, memberIds));
+    await tx
+      .delete(workspaceMembers)
+      .where(inArray(workspaceMembers.id, memberIds));
+  }
+
+  await tx.delete(users).where(inArray(users.id, userIds));
+}
+
+/**
+ * The fixture member deliberately holds the member role, not the owner role: an active fixture
+ * owner would close the owner bootstrap for the developer's real Clerk account.
+ */
+async function createFixtureMember(tx: ContactDatabaseTransaction) {
+  const userId = randomUUID();
+  const memberId = randomUUID();
+
+  await tx.insert(users).values({
+    id: userId,
+    clerk_user_id: `${FIXTURE_PREFIX}member`,
+    primary_email: "fixture-member@example.test",
+    first_name: "Fixture",
+    last_name: "Mitglied",
+    display_name: "Fixture Mitglied",
     active: true,
-    credentials_access: true,
     version: 1,
   });
 
-  return id;
+  await tx.insert(workspaceMembers).values({
+    id: memberId,
+    user_id: userId,
+    active: true,
+    version: 1,
+  });
+
+  await tx.insert(workspaceMemberRoles).values({
+    workspace_member_id: memberId,
+    role_id: SYSTEM_ROLE_DEFINITIONS[SystemRoleKey.WorkspaceMember].id,
+    role_realm: AuthRealm.Workspace,
+    assigned_by_user_id: userId,
+    assigned_at: new Date(),
+  });
+
+  return memberId;
 }
 
 async function run() {
@@ -267,7 +307,7 @@ async function run() {
   await db.transaction(async (tx) => {
     await resetFixtureRows(tx);
 
-    const ownerMemberId = await ensureOwnerMember(tx);
+    const ownerMemberId = await createFixtureMember(tx);
     const categoryIds = await resolveCategoryIds(tx);
 
     const personIds = new Map<string, string>();
@@ -346,6 +386,8 @@ async function run() {
         metadata: { fixture: true },
         occurred_at: occurredAt,
         actor_type: ActorType.System,
+        actor_user_id: null,
+        system_actor_key: SystemActorKey.Fixture,
         actor_id: null,
         actor_label: "CRM fixture seeder",
         created_at: occurredAt,

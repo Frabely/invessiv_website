@@ -6,6 +6,7 @@ import {
   leads,
   leadSocialProfiles,
   leadSubmissions,
+  users,
 } from "@invessiv/db/record-configuration";
 import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
 import { leadsMapperService } from "@/server/workspace/leads/services/leads-mapper-service";
@@ -62,8 +63,11 @@ export async function getLeadById(id: string): Promise<LeadDetailDto | null> {
           actor_type: activities.actor_type,
           actor_id: activities.actor_id,
           actor_label: activities.actor_label,
+          actor_user_id: activities.actor_user_id,
+          actor_display_name: users.display_name,
         })
         .from(activities)
+        .leftJoin(users, eq(users.id, activities.actor_user_id))
         .where(eq(activities.lead_id, id))
         .orderBy(desc(activities.occurred_at), desc(activities.id)),
       db

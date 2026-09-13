@@ -1,9 +1,14 @@
-import { getDatabaseClient, getDatabaseUrl } from "@invessiv/db/core";
+import {
+  getDatabaseClient,
+  getDatabaseUrl,
+  getDrizzleDatabaseClient,
+} from "@invessiv/db/core";
 import { getTableNames } from "./contact-table-names";
 import {
   configureDatabaseUrlFromTarget,
   parseDatabaseTarget,
 } from "./database-target";
+import { findRbacCatalogMismatches } from "./rbac-catalog-check";
 
 type DatabaseSummaryRow = {
   databaseName: string;
@@ -24,6 +29,7 @@ async function run() {
   }
 
   const sql = getDatabaseClient();
+  const db = getDrizzleDatabaseClient();
   const contactTableNames = getTableNames();
   const [databaseSummaryRows, actualTableRows] = (await Promise.all([
     sql`
@@ -50,6 +56,13 @@ async function run() {
   if (missingTables.length > 0) {
     throw new Error(
       `Contact tables are missing: ${missingTables.join(", ")}. Run \`npm run db:migrate\` before \`npm run db:smoke\`.`,
+    );
+  }
+
+  const catalogMismatches = await findRbacCatalogMismatches(db);
+  if (catalogMismatches.length > 0) {
+    throw new Error(
+      `Permission catalog differs from the code: ${catalogMismatches.join("; ")}. Add a migration for the catalog change.`,
     );
   }
 

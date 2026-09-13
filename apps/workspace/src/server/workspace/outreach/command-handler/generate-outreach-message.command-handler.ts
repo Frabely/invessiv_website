@@ -12,6 +12,7 @@ import { activityService } from "@/server/workspace/shared/services/activity-ser
 
 export async function generateOutreachMessage(
   request: GenerateOutreachRequestDto,
+  actorUserId: string,
 ): Promise<GenerateOutreachResultDto> {
   const lead = await getLeadById(request.leadId);
   if (!lead) {
@@ -60,7 +61,7 @@ export async function generateOutreachMessage(
       channel: request.channel,
       ...(parsed.subject !== undefined ? { subject: parsed.subject } : {}),
     },
-    actorType: ActorType.System,
+    actor: { type: ActorType.User, userId: actorUserId },
   });
 
   return {

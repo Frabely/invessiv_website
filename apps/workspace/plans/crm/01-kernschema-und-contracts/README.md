@@ -24,10 +24,10 @@ unverändert und kann mit altem wie neuem Schema deployt werden.
   entstehen erst in ihrer sichtbar nutzbaren Feature-Einheit.
 - `workspace_members` entsteht hier in der für Ordner 01 benötigten Ausgangsform (inklusive `active` und
   `credentials_access`), weil `customers.owner_member_id` ein Pflicht-Fremdschlüssel darauf ist. Diese bereits
-  gemergte Migration bleibt unverändert. Ordner 03 erweitert das Modell additiv um `users`, flexible Rollen und
-  Rollentabellen. Weil sämtliche Ordner-01-Tabellen zu diesem Zeitpunkt leer sind, ergänzt eine neue Migration
-  `workspace_members.user_id` nach harter Leerheitsprüfung ohne Daten-Backfill. Die alten Spalten bleiben nur für die
-  Kompatibilität zur vorherigen App-Version bis zu einem separaten Cleanup erhalten.
+  gemergte Migration bleibt unverändert. Ordner 03 ergänzt `users`, Permissions und Rollen. Weil sämtliche
+  Ordner-01-Tabellen zu diesem Zeitpunkt leer sind und keine App-Version `workspace_members` liest, entfernt eine neue
+  Migration nach harter Leerheitsprüfung `clerk_user_id`, `email`, `role` und `credentials_access` und ergänzt
+  `workspace_members.user_id`.
 - Fremdschlüssel, Check-Constraints und Primärkontakt-Invarianten in der DB erzwingen.
   Kundennummernsequenzen dürfen Lücken haben.
 - Bearbeitbare Kerntabellen erhalten `version`, `created_at`, `updated_at`; Geheimfelder noch nicht.

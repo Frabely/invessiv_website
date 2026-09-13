@@ -1,4 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { Permission } from "@invessiv/common/constants/auth/permissions";
+import {
+  authorizedWorkspaceRequest,
+  unauthenticatedWorkspaceRequest,
+  unavailableWorkspaceRequest,
+} from "@/server/tests/support/workspace-auth-fixtures";
 import type { NextRequest } from "next/server";
 
 import { OutreachOpenAi } from "@invessiv/common/constants/leads/outreach/lead-outreach-openai";
@@ -7,17 +13,13 @@ import { GET } from "@/app/api/workspace/outreach/provider-status/route";
 
 vi.mock("server-only", () => ({}));
 
-const { mockAuth, mockCurrentUser } = vi.hoisted(() => ({
-  mockAuth: vi.fn(),
-  mockCurrentUser: vi.fn(),
+const { mockAuthenticate } = vi.hoisted(() => ({
+  mockAuthenticate: vi.fn(),
 }));
 
-vi.mock("@clerk/nextjs/server", () => ({
-  auth: mockAuth,
-  currentUser: mockCurrentUser,
+vi.mock("@/lib/auth/workspace-authentication", () => ({
+  authenticateWorkspaceRequest: mockAuthenticate,
 }));
-
-const ALLOWED_EMAIL = "owner@example.com";
 
 function makeRequest(): NextRequest {
   return new Request(
@@ -27,18 +29,12 @@ function makeRequest(): NextRequest {
 }
 
 function setupAuthenticatedUser(): void {
-  mockAuth.mockResolvedValue({ userId: "user_123" });
-  mockCurrentUser.mockResolvedValue({
-    primaryEmailAddressId: "email_primary",
-    emailAddresses: [{ id: "email_primary", emailAddress: ALLOWED_EMAIL }],
-  });
+  mockAuthenticate.mockResolvedValue(authorizedWorkspaceRequest());
 }
 
 describe("GET /api/workspace/outreach/provider-status", () => {
   beforeEach(() => {
-    vi.stubEnv("WORKSPACE_ALLOWED_EMAILS", ALLOWED_EMAIL);
-    mockAuth.mockReset();
-    mockCurrentUser.mockReset();
+    mockAuthenticate.mockReset();
   });
 
   afterEach(() => {
@@ -46,7 +42,7 @@ describe("GET /api/workspace/outreach/provider-status", () => {
   });
 
   it("returns 401 when the request is unauthenticated", async () => {
-    mockAuth.mockResolvedValue({ userId: null });
+    mockAuthenticate.mockResolvedValue(unauthenticatedWorkspaceRequest());
 
     const response = await GET(makeRequest());
 
@@ -114,5 +110,29 @@ describe("GET /api/workspace/outreach/provider-status", () => {
 
     const text = await response.text();
     expect(text).not.toContain("sk-secret-key");
+  });
+});
+
+describe("GET /api/workspace/outreach/provider-status permissions", () => {
+  beforeEach(() => {
+    mockAuthenticate.mockReset();
+  });
+
+  it("returns 403 without outreach.generate", async () => {
+    mockAuthenticate.mockResolvedValue(
+      authorizedWorkspaceRequest([Permission.LeadsRead]),
+    );
+
+    const response = await GET(makeRequest());
+
+    expect(response.status).toBe(HttpResponseCode.Forbidden);
+  });
+
+  it("returns 503 when authorization is unavailable", async () => {
+    mockAuthenticate.mockResolvedValue(unavailableWorkspaceRequest());
+
+    const response = await GET(makeRequest());
+
+    expect(response.status).toBe(HttpResponseCode.ServiceUnavailable);
   });
 });

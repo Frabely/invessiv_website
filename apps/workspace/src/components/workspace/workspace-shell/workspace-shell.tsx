@@ -1,6 +1,7 @@
 "use client";
 
 import { type ReactNode, useTransition } from "react";
+import type { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import type { Locale } from "@/config/i18n";
 import { WorkspaceHeader } from "@/components/workspace/workspace-header/workspace-header";
 import { WorkspaceSidebar } from "@/components/workspace/workspace-sidebar/workspace-sidebar";
@@ -14,12 +15,14 @@ type WorkspaceShellProps = {
   children?: ReactNode;
   content: WorkspacePageContent;
   locale: Locale;
+  permittedAreas: readonly WorkspaceArea[];
 };
 
 export function WorkspaceShell({
   children,
   content,
   locale,
+  permittedAreas,
 }: WorkspaceShellProps) {
   const { close, isOpen, toggle } = useWorkspaceSidebarDrawer();
   const [isPending, startTransition] = useTransition();
@@ -44,6 +47,7 @@ export function WorkspaceShell({
           isOpen={isOpen}
           locale={locale}
           onCloseAction={close}
+          permittedAreas={permittedAreas}
         />
         <main
           aria-label={content.shell.main.ariaLabel}

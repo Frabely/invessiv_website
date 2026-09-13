@@ -18,6 +18,7 @@ import {
   leads,
   leadSocialProfiles,
   leadSubmissions,
+  users,
 } from "@invessiv/db/record-configuration";
 import { activityService } from "@/server/workspace/shared/services/activity-service";
 import { leadsMapperService } from "@/server/workspace/leads/services/leads-mapper-service";
@@ -86,8 +87,11 @@ async function loadLeadDetailInTransaction(
           actor_type: activities.actor_type,
           actor_id: activities.actor_id,
           actor_label: activities.actor_label,
+          actor_user_id: activities.actor_user_id,
+          actor_display_name: users.display_name,
         })
         .from(activities)
+        .leftJoin(users, eq(users.id, activities.actor_user_id))
         .where(eq(activities.lead_id, leadId))
         .orderBy(desc(activities.occurred_at), desc(activities.id)),
       tx
@@ -175,7 +179,7 @@ export async function createLeadCoreInTransaction(
     const activityInput: CreateActivityInput = {
       leadId,
       type: options.activityType,
-      actorType: ActorType.System,
+      actor: { type: ActorType.User, userId: options.actorUserId },
       metadata: options.activityMetadata ?? null,
     };
     await activityService.createActivity(tx, activityInput);

@@ -51,11 +51,17 @@ async function seedBaseRows(sql: Sql) {
   const memberId = randomUUID();
   const personId = randomUUID();
 
+  const userId = randomUUID();
+
   await sql`
-        INSERT INTO workspace_members
-            (id, clerk_user_id, email, role, active, credentials_access, version)
-        VALUES (${memberId}, ${`${FIXTURE_PREFIX}${memberId}`},
-                ${`${FIXTURE_PREFIX}owner@example.test`}, 'owner', TRUE, FALSE, 1)
+        INSERT INTO users (id, clerk_user_id, primary_email, display_name, active, version)
+        VALUES (${userId}, ${`${FIXTURE_PREFIX}${userId}`},
+                ${`${FIXTURE_PREFIX}owner@example.test`}, ${`${FIXTURE_PREFIX}Owner`}, TRUE, 1)
+    `;
+
+  await sql`
+        INSERT INTO workspace_members (id, user_id, active, version)
+        VALUES (${memberId}, ${userId}, TRUE, 1)
     `;
 
   await sql`
@@ -311,18 +317,6 @@ async function runChecks(sql: Sql) {
             `,
   );
 
-  // Role is limited to owner | member
-  await expectRejected(
-    "unknown member role is rejected",
-    () =>
-      sql`
-                INSERT INTO workspace_members
-                    (id, clerk_user_id, email, role, active, credentials_access, version)
-                VALUES (${randomUUID()}, ${name(randomUUID())},
-                        ${name("admin@example.test")}, 'admin', TRUE, FALSE, 1)
-            `,
-  );
-
   await runMissingDefaultChecks(sql, memberId, personId, name);
   await runConcurrencyChecks(sql, memberId, name);
 }
@@ -370,19 +364,30 @@ async function runMissingDefaultChecks(
         `,
   );
 
+  // The CTE creates a fresh user, so the rejection can only come from the missing member value.
   await expectRejected(
-    "member without role is rejected",
+    "member without version is rejected",
     () => sql`
-            INSERT INTO workspace_members (id, clerk_user_id, email, active, credentials_access, version)
-            VALUES (${randomUUID()}, ${name(randomUUID())}, ${name("norole@example.test")}, TRUE, FALSE, 1)
+            WITH new_user AS (
+                INSERT INTO users (id, clerk_user_id, primary_email, display_name, active, version)
+                VALUES (${randomUUID()}, ${name(randomUUID())}, ${name("noversion@example.test")}, ${name("No version")}, TRUE, 1)
+                RETURNING id
+            )
+            INSERT INTO workspace_members (id, user_id, active)
+            SELECT ${randomUUID()}, new_user.id, TRUE FROM new_user
         `,
   );
 
   await expectRejected(
     "member without active flag is rejected",
     () => sql`
-            INSERT INTO workspace_members (id, clerk_user_id, email, role, credentials_access, version)
-            VALUES (${randomUUID()}, ${name(randomUUID())}, ${name("noactive@example.test")}, 'member', FALSE, 1)
+            WITH new_user AS (
+                INSERT INTO users (id, clerk_user_id, primary_email, display_name, active, version)
+                VALUES (${randomUUID()}, ${name(randomUUID())}, ${name("noactive@example.test")}, ${name("No active")}, TRUE, 1)
+                RETURNING id
+            )
+            INSERT INTO workspace_members (id, user_id, version)
+            SELECT ${randomUUID()}, new_user.id, 1 FROM new_user
         `,
   );
 
@@ -507,6 +512,9 @@ async function cleanup(sql: Sql) {
               WHERE display_name LIKE ${pattern}`;
   await sql`DELETE
               FROM workspace_members
+              WHERE user_id IN (SELECT id FROM users WHERE clerk_user_id LIKE ${pattern})`;
+  await sql`DELETE
+              FROM users
               WHERE clerk_user_id LIKE ${pattern}`;
 }
 

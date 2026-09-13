@@ -5,3 +5,5 @@ export const SITE_ROUTES = {
   SIGN_IN: "/sign-in",
   SIGN_UP: "/sign-up",
 } as const;
+
+export const REDIRECT_URL_QUERY_PARAM = "redirect_url";

@@ -38,7 +38,7 @@ werden bereits modelliert, aber erst mit dem Portal sichtbar.
 ## Merge-Gate
 
 - [ ] Facette „hat offene Aufgaben" ist in `CUSTOMER_LIST_FACETS` registriert und nutzbar.
-- [ ] `Tasks` ist in `OwnableEntity` registriert und hat einen Adapter in der Ownership-Registry (Ordner 03); Übergabe
+- [ ] `Tasks` ist in `OwnableEntity` registriert und hat einen Adapter in der Ownership-Registry (Ordner 03b); Übergabe
       und Deaktivierungszählung erfassen die Entität, mit Test.
 - [ ] DB verhindert widersprüchliche oder mehrere Kontexte.
 - [ ] Jede Aufgabe hat genau einen aktiven Bearbeiter.

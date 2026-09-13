@@ -1,5 +1,5 @@
 import type { ActivityType } from "@invessiv/common/constants/activity/activity-types";
-import type { ActorType } from "@invessiv/common/constants/activity/actor-types";
+import type { ActivityActor } from "@invessiv/common/contracts/activity/activity-actor";
 
 type ActivitySubject =
   | { leadId: string; customerId?: string | null }
@@ -12,7 +12,5 @@ export type CreateActivityInput = ActivitySubject & {
   body?: string | null;
   metadata?: Record<string, unknown> | null;
   occurredAt?: Date;
-  actorType: ActorType;
-  actorId?: string | null;
-  actorLabel?: string | null;
+  actor: ActivityActor;
 };

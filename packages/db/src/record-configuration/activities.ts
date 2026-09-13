@@ -11,7 +11,8 @@ import {
 
 import { ACTIVITY_TYPE_VALUES } from "@invessiv/common/constants/activity/activity-types";
 import { ACTOR_TYPE_VALUES } from "@invessiv/common/constants/activity/actor-types";
-import { sqlCheckIn } from "@invessiv/db/core";
+import { sqlActorInvariant, sqlCheckIn } from "@invessiv/db/core";
+import { users } from "@invessiv/db/record-configuration/auth/users";
 import { customers } from "@invessiv/db/record-configuration/crm/customers";
 import { leads } from "@invessiv/db/record-configuration/leads";
 
@@ -32,7 +33,13 @@ export const activities = pgTable(
     metadata: jsonb("metadata").$type<Record<string, unknown> | null>(),
     occurred_at: timestamp("occurred_at", { withTimezone: true }).notNull(),
     actor_type: text("actor_type", { enum: ACTOR_TYPE_VALUES }).notNull(),
+    actor_user_id: uuid("actor_user_id").references(() => users.id, {
+      onDelete: "restrict",
+    }),
+    system_actor_key: text("system_actor_key"),
+    /** Legacy provider id from `lead_activities`; new rows reference `actor_user_id` instead. */
     actor_id: text("actor_id"),
+    /** Legacy display label; new rows resolve the name through `actor_user_id`. */
     actor_label: text("actor_label"),
     created_at: timestamp("created_at", { withTimezone: true })
       .notNull()
@@ -55,6 +62,15 @@ export const activities = pgTable(
     check(
       "activities_actor_type_check",
       sqlCheckIn(table.actor_type, ACTOR_TYPE_VALUES),
+    ),
+    // Created NOT VALID in the migration: enforced for every new row, migrated legacy rows stay untouched.
+    check(
+      "activities_actor_check",
+      sqlActorInvariant({
+        actorType: table.actor_type,
+        actorUserId: table.actor_user_id,
+        systemActorKey: table.system_actor_key,
+      }),
     ),
     index("activities_customer_id_occurred_at_idx").on(
       table.customer_id,

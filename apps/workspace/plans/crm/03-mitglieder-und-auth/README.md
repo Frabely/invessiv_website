@@ -1,119 +1,108 @@
-# Ordner 03 — User, flexibles RBAC und fail-closed Auth
+# Ordner 03 — User, Permission-Katalog und fail-closed Auth
 
-> **Status:** offen · **Branch:** `feat/crm-users-rbac` · **Abhängigkeiten:** Ordner 01 und Ordner 02 müssen gemergt
-> sein
-> **Review-Ziel:** 80–120 geänderte Dateien; bei absehbar größerem Scope vor Implementierungsbeginn aufteilen
+> **Status:** im Review · **Branch:** `feat/crm-users-rbac` · **Abhängigkeiten:** Ordner 01 und 02 gemergt
+> **Review-Ziel:** 80–120 geänderte Dateien · **Folgeeinheit:** Ordner 03b (Mitglieder- und Rollenverwaltung)
 
-## Ziel
+## Ziel und Stand nach Merge
 
-Nach dem separaten Merge der Activity-Migration führt dieser Ordner eine persistierte Identität für alle menschlichen
-Akteure und ein flexibles, rollenbasiertes Berechtigungsmodell ein.
+Permissions sind der Kern der Autorisierung. Ein Bereich, eine Route oder ein Command kennt nur den Schlüssel der
+Permission, die er verlangt — nicht, welche Rolle sie gewährt. Ein User kennt nur, **ob** er eine Permission besitzt.
 
-- Jeder Mensch, der im Workspace oder später im Kundenportal handelt, besitzt genau einen Datensatz in `users`.
-- Interne Zugehörigkeit und fachliche Zuständigkeit bleiben in `workspace_members` modelliert.
-- CRM-Kontakte ohne Login bleiben in `people`; ein Login macht eine Person nicht automatisch zu einem CRM-Kontakt.
-- Rollen sind persistierte, unabhängig verwaltbare Bündel von Berechtigungen.
-- Bereiche und Aktionen verlangen Berechtigungen, niemals einen hart codierten Rollennamen.
-- Systemjobs sind keine User und werden in Activities separat als Systemakteure erfasst.
+- Jeder angemeldete Mensch besitzt genau einen Datensatz in `users`; Clerk authentifiziert, die DB autorisiert.
+- `workspace_members` referenziert genau einen `user` und trägt keine Identitäts- oder Rechtefelder mehr.
+- Permissions kommen **ausschließlich über Rollen**. Effektive Rechte sind die Vereinigung aller aktiven Rollen.
+- Katalog, Systemrollen und deren Rechte liegen in der DB und werden per Smoke gegen den Code geprüft.
+- Alle bestehenden Bereiche (Dashboard, Leads, Outreach) und API-Routen verlangen eine Permission.
+- Der erste Owner entsteht atomar über `WORKSPACE_BOOTSTRAP_CLERK_USER_ID`; die E-Mail-Allowlist entfällt.
+- Menschliche Activities referenzieren `users.id`; Systemschreiber tragen einen `system_actor_key`.
+- Sicherheitsrelevante Änderungen landen in der eigenen Tabelle `security_events`.
 
-## Bewusste Branch-Grenze
+Nach dem Merge nutzt ausschließlich der gebootstrappte Owner den Workspace. Weitere Mitglieder entstehen erst über
+die Verwaltung aus Ordner 03b. Das ist eine bewusste, mit dem Nutzer abgestimmte Übergangsgrenze.
 
-Die Activity-Migration aus Ordner 02 bleibt ein eigenständig mergebarer Changeset. In diesem Branch werden deshalb
-keine `users`-, Rollen- oder Membership-Tabellen ergänzt und die Actor-Struktur wird nicht vorgezogen.
+## Entscheidungen (13.09.2026, mit dem Nutzer abgestimmt)
 
-Ordner 03 startet erst auf dem gemergten Stand von Ordner 01 und 02. Die bereits gemergte Migration aus Ordner 01 wird
-nicht verändert. Da alle in Ordner 01 angelegten Tabellen noch leer sind, erfolgt die Korrektur über eine neue
-Ordner-03-Migration ohne Daten-Backfill und ohne dauerhaften Dual-Read.
+| Thema               | Entscheidung                                                                                             |
+| ------------------- | -------------------------------------------------------------------------------------------------------- |
+| Zuordnung           | Nur über Rollen; keine direkten User-Permissions                                                         |
+| Schnitt             | Split-Gate greift (≈160 Dateien): 03 = Fundament + Cutover, 03b = Verwaltung (API + UI) + Registry       |
+| Bootstrap           | `WORKSPACE_BOOTSTRAP_CLERK_USER_ID`; kein E-Mail-Abgleich, keine Allowlist, kein Fallback                |
+| Mitglied verknüpfen | (03b) Owner wählt ein noch nicht verknüpftes Clerk-Konto über die Clerk Backend API                      |
+| Audit               | Eigene append-only Tabelle `security_events`; `activities` bleibt Lead-/Kunden-Historie                  |
+| Legacy-Spalten      | `clerk_user_id`, `email`, `role`, `credentials_access` werden in 03 direkt entfernt; Ordner 03a entfällt |
+| Basisrolle          | Operativ ohne Löschen, ohne Credential-Reveal/-Write und ohne Portalverwaltung                           |
+| Absicherung         | Integrationstests gegen die Dev-DB statt Browser-E2E (kein Clerk-Test-Setup vorhanden)                   |
 
-## Zielmodell
+## Warum die Legacy-Spalten sofort gehen dürfen
 
-### Identität und fachliche Beziehungen
-
-- `users`: kanonische Identität eines Menschen mit UUID, Clerk-ID sowie Stammdaten wie Name und primärer E-Mail.
-- `workspace_members`: interne Mitgliedschaft, Status und fachliche Referenz; erhält `user_id -> users.id`.
-- `people`: fachlicher CRM-Kontakt. Die Tabelle bleibt nötig, weil Leads, Ansprechpartner oder Kontakte nicht zwingend
-  einen Login besitzen und weil CRM-Daten nicht zur Authentifizierung verwendet werden dürfen.
-- `portal_memberships` (Ordner 12): verbindet später `users`, `people` und `customers` für einen konkreten Portalzugang.
-
-E-Mail-Adressen dienen nur als Stammdaten und Anzeige, nicht als Autorisierungsanker. Autorisierung läuft über stabile
-UUID-Fremdschlüssel.
-
-### Flexibles RBAC
-
-- `permissions`: kanonischer, codebekannter Katalog atomarer Fähigkeiten.
-- `roles`: persistierte Rollen mit Realm (`workspace` oder `portal`), Name und Lebenszyklus.
-- `role_permissions`: ordnet einer Rolle Berechtigungen desselben Realms zu.
-- `workspace_member_roles`: weist internen Mitgliedern beliebig viele Workspace-Rollen zu.
-- `portal_membership_roles` (Ordner 12): weist Portalmitgliedschaften Portal-Rollen zu.
-
-Effektive Berechtigungen sind die Vereinigung aller aktiven Rollenzuweisungen. Es gibt zunächst kein explizites
-`deny`; fehlende Berechtigung bedeutet Ablehnung.
-
-### Geschützte Systemrollen
-
-- `workspace_owner`: unveränderliche Kernrolle mit allen Workspace-Berechtigungen; mindestens ein aktiver Owner muss
-  erhalten bleiben.
-- `workspace_member`: stabile Basisrolle für reguläre interne Mitglieder.
-- `workspace_credentials_manager`: gezielt zuweisbare Systemrolle für `credentials.reveal`.
-
-`is_system` schützt Name, Realm und Berechtigungsumfang einer gelieferten Rolle vor freier Bearbeitung. Die Rolle darf
-je nach Policy weiterhin zugewiesen werden. Die Owner-Rolle besitzt zusätzlich Schutz vor eigener Entfernung,
-Privilege Escalation und dem Entfernen des letzten aktiven Owners.
-
-Frei erstellte Rollen dürfen nur delegierbare Berechtigungen enthalten. Hochkritische Rechte wie Rollenverwaltung,
-Mitgliederverwaltung, Datenexport, Datenlöschung und Security-Audit bleiben nicht delegierbar und damit an die
-geschützte Owner-Rolle gebunden.
-
-## Activities und Akteure
-
-Ordner 03 ergänzt Activities additiv um eine echte User-Referenz:
-
-- menschliche Änderung: `actor_user_id -> users.id`, Actor-Typ `user`
-- Systemjob: kein Fake-User, sondern Actor-Typ `system` plus stabiler `system_actor_key`
-- bestehende Legacy-Felder bleiben während der Migration lesbar und werden erst in einem späteren Cleanup entfernt
-
-Damit wird bei einem Bulk Edit der tatsächlich angemeldete Bearbeiter persistiert, nicht der fachlich zuständige
-Lead-Owner. Ob dieser User Owner, Mitarbeiter oder Kunde ist, ergibt sich aus seinen Memberships und Rollen.
+`packages/db/AGENTS.md` verbietet `DROP` in Migrationen, bis der letzte Leser weg ist. Diese Bedingung ist erfüllt:
+Die vorherige App-Version liest `workspace_members` nirgends (nur Drizzle-Modell, Seed und Smoke), und alle
+Ordner-01-Tabellen sind leer. Eine harte Leerheitsprüfung bricht die Migration vor der ersten Änderung ab, falls doch
+Daten existieren. Damit entfallen Schattenwrites und der separate Cleanup-Ordner 03a.
 
 ## Umsetzung
 
-1. Migration mit einer harten Leerheitsprüfung für alle von Ordner 01 eingeführten Tabellen beginnen; bei einem
-   unerwarteten Datensatz ohne Änderung abbrechen.
-2. `users`, Permission-Katalog, Rollen, Rollenberechtigungen und Workspace-Zuweisungen anlegen.
-3. `workspace_members` direkt um den verpflichtenden Fremdschlüssel `user_id -> users.id` erweitern. Die ungenutzten
-   Legacy-Spalten bleiben vorerst bestehen, damit die unmittelbar vorherige App-Version mit dem Schema kompatibel ist;
-   die neue Auth liest sie nicht mehr.
-4. Den ersten User, seine Workspace-Mitgliedschaft und die Owner-Rolle beim Bootstrap atomar erzeugen.
-5. Auth-Kontext auf die persistierte `users.id` und effektive Berechtigungen umstellen.
-6. Command- und Query-Grenzen fail-closed über Berechtigungen absichern.
-7. Rollenverwaltung mit Schutzregeln und Audit-Activities bereitstellen.
-8. Activities um `actor_user_id` und Systemakteure erweitern und die Schreibpfade migrieren.
-9. Die leeren Legacy-Spalten erst nach erfolgreichem Rollout in einem kleinen Cleanup-Changeset entfernen.
+1. Migration: Leerheits-Preflight, Legacy-Spalten entfernen, `workspace_members.user_id`, `users`, `permissions`,
+   `roles`, `role_permissions`, `workspace_member_roles`, `security_events`, Seed von Katalog und Systemrollen,
+   Actor-Spalten an `activities`.
+2. Const-Objekte in `packages/common`: `Permission` samt Definitionen (Realm, delegierbar), `AuthRealm`,
+   `SystemRoleKey` samt Rechtesätzen, `SystemActorKey`, `SecurityEventType`, `SecuritySubjectType`.
+3. Actor-Auflösung, Bootstrap-Command und Gates (`requireWorkspaceActor`, `requireWorkspaceArea`,
+   `withWorkspaceApiActor`, `withPermission`).
+4. Bereichs-Registry `WORKSPACE_AREA_PERMISSIONS`: Sidebar, Bereichs-Gates der Pages und Root-Redirect lesen nur
+   diese Map.
+5. Alle bestehenden API-Routen permissionbasiert absichern; Lead- und Outreach-Commands schreiben den User als Actor.
+6. Seeds, Smokes und Integrationstests auf das Zielmodell umstellen.
 
-## Rollback- und Kompatibilitätsstrategie
+## Merge-Gate
 
-- Die Migration erweitert ausschließlich leere Ordner-01-Tabellen und bricht andernfalls vor der ersten Änderung ab.
-- Neue querschnittliche Tabellen und Activity-Spalten werden additiv angelegt.
-- Der alte Allowlist-Pfad bleibt nur für den kurzen Migrationszeitraum als explizit markierter Fallback bestehen.
-- Weil es keine zu migrierenden Mitgliederdaten gibt, existiert weder eine E-Mail-Zuordnung noch ein Identity-Backfill.
-- Die alten Spalten bleiben bis zum separaten Cleanup vorhanden. Dadurch kann die vorherige App-Version während des
-  Rollouts weiterhin gegen das erweiterte Schema betrieben werden.
+- [ ] Migration bricht bei nicht leeren Ordner-01-Tabellen vor jeder Schemaänderung ab; zweiter Lauf ist folgenlos.
+- [ ] Drizzle-Modelle sind deckungsgleich zur Migration (Spalten, Typen, Constraints).
+- [ ] Smoke: Katalog und Systemrollen-Rechte stimmen exakt mit dem Code überein (in beide Richtungen).
+- [ ] Smoke: Realm-Mischung, nicht delegierbare Permission in Custom-Rolle und fehlende Fachwerte werden abgewiesen.
+- [ ] Kein Code liest oder schreibt `WORKSPACE_ALLOWED_EMAILS`, `credentials_access` oder eine Rollenbezeichnung.
+- [ ] Fehlender User, inaktiver User, fehlende/inaktive Membership und DB-Fehler öffnen keinen Zugriff.
+- [ ] Fehlende Permission ergibt 403 (API) bzw. 404 (Seite); Rollenentzug wirkt beim nächsten Request.
+- [ ] Parallele Bootstrap-Requests erzeugen auf einer DB ohne bestehenden Owner genau einen Owner; nach dem ersten
+      aktiven Owner ist Bootstrap zu. Existiert bereits ein Owner, überspringt der Integrationstest diesen Fall sichtbar.
+- [ ] Sidebar zeigt nur Bereiche mit Permission; Seiten ohne Permission antworten 404 — auch bei reinem
+      Query-Param-Wechsel, weil jede Page selbst gated.
+- [ ] Neue Activities menschlicher Änderungen tragen `actor_user_id`; Legacy-Zeilen bleiben lesbar.
+- [ ] `.env.example` und Vercel-Umgebungen: `WORKSPACE_BOOTSTRAP_CLERK_USER_ID` gesetzt, Allowlist entfernt.
+- [ ] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, DB-Smokes und Workspace-Build grün.
+
+## Rollout-Reihenfolge
+
+1. Eigenes Konto in der Clerk-Instanz der Zielumgebung anlegen (Registrierung oder Einladung im Clerk-Dashboard) und
+   dort unter „Users" die `user_…`-ID kopieren. Die Clerk-ID ist bewusst der Anker statt einer E-Mail: Sie ist
+   unveränderlich und eindeutig, während E-Mails geändert, hinzugefügt oder bei offener Registrierung beansprucht
+   werden können.
+2. `WORKSPACE_BOOTSTRAP_CLERK_USER_ID` mit dieser ID in der Vercel-Umgebung setzen; `WORKSPACE_ALLOWED_EMAILS`
+   entfernen.
+3. In `development`/`preview` vorhandene Fixture-Zeilen aus `db:seed:crm` entfernen, sonst stoppt der Preflight.
+4. Migration anwenden und **unmittelbar danach** die App deployen (siehe Rollback).
+5. Einmal einloggen: Der erste Request bootstrappt den Owner atomar, danach ist der Bootstrap geschlossen. Die
+   Variable darf anschließend entfernt werden.
+
+## Rollback
+
+**Bewusst akzeptiertes Risiko (13.09.2026, mit dem Nutzer abgestimmt):** Nach der Migration ist ein App-Revert auf die
+Version vor Ordner 03 nicht funktionsfähig. Die neue `activities_actor_check` lehnt Activities ohne
+`actor_user_id`/`system_actor_key` ab, die die Vorversion bei jeder Lead-Änderung, jedem Import und jedem
+Outreach-Entwurf schreibt. Akzeptiert, weil der Workspace bis zum Merge ausschließlich vom Owner genutzt wird und
+zwischen Migration und Deploy keine Nutzung stattfindet.
+
+Bevorzugter Rückweg ist deshalb ein Rollforward. Ist ein Revert unvermeidbar, muss vorher
+`ALTER TABLE activities DROP CONSTRAINT activities_actor_check` ausgeführt und die Allowlist-Env wieder gesetzt werden.
+Die neuen Tabellen bleiben stehen; die entfernten, leeren Legacy-Spalten braucht die Vorversion nicht.
 
 ## Nicht Teil dieses Ordners
 
-- Portal-Einladung und `portal_memberships` (Ordner 12)
-- vollständige Credential-Verschlüsselung und Reveal-UI (Ordner 19)
-- Enterprise-IdP-/SCIM-Synchronisation
-- attributbasierte Regeln oder explizite Deny-Regeln
-- Migration bereits vorhandener Ordner-01-Produktivdaten; ein unerwarteter Bestand blockiert die Migration
-- Entfernung der Legacy-Spalten aus `workspace_members`; sie folgt als kleines Cleanup nach erfolgreichem Rollout
-
-## Verbindliches Post-03-Cleanup
-
-Die Entfernung der Übergangsfelder ist als eigene Merge-Einheit
-[`03a-workspace-member-legacy-cleanup`](../03a-workspace-member-legacy-cleanup/README.md) direkt nach diesem Ordner
-eingeplant. Ordner 04 beginnt erst nach deren Merge.
+- Mitglieder-/Rollenverwaltung, Ownership-Registry, Übergabe und Deaktivierung → Ordner 03b
+- Portalmitgliedschaften und Portal-Permissions → Ordner 12
+- Credential-Verschlüsselung und Reveal-UI → Ordner 19
+- attributbasierte Regeln, Deny-Regeln, IdP-/SCIM-Synchronisation
 
 ## Vertiefung
 
-- [`02-rechtesystem.md`](./02-rechtesystem.md) — Tabellen, Invarianten, Autorisierungsablauf und Akzeptanzkriterien
+- [`02-rechtesystem.md`](./02-rechtesystem.md) — Tabellen, Katalog, Invarianten, Autorisierungsablauf

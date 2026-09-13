@@ -1,4 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { Permission } from "@invessiv/common/constants/auth/permissions";
+import {
+  authorizedWorkspaceRequest,
+  TEST_ACTOR_USER_ID,
+  unauthenticatedWorkspaceRequest,
+} from "@/server/tests/support/workspace-auth-fixtures";
 import type { NextRequest } from "next/server";
 import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
 import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
@@ -6,23 +12,16 @@ import { DELETE, GET, PATCH } from "@/app/api/workspace/leads/[id]/route";
 
 vi.mock("server-only", () => ({}));
 
-const {
-  mockAuth,
-  mockCurrentUser,
-  mockDeleteLead,
-  mockGetLeadById,
-  mockUpdateLead,
-} = vi.hoisted(() => ({
-  mockAuth: vi.fn(),
-  mockCurrentUser: vi.fn(),
-  mockDeleteLead: vi.fn(),
-  mockGetLeadById: vi.fn(),
-  mockUpdateLead: vi.fn(),
-}));
+const { mockAuthenticate, mockDeleteLead, mockGetLeadById, mockUpdateLead } =
+  vi.hoisted(() => ({
+    mockAuthenticate: vi.fn(),
+    mockDeleteLead: vi.fn(),
+    mockGetLeadById: vi.fn(),
+    mockUpdateLead: vi.fn(),
+  }));
 
-vi.mock("@clerk/nextjs/server", () => ({
-  auth: mockAuth,
-  currentUser: mockCurrentUser,
+vi.mock("@/lib/auth/workspace-authentication", () => ({
+  authenticateWorkspaceRequest: mockAuthenticate,
 }));
 
 vi.mock(
@@ -40,7 +39,6 @@ vi.mock(
   () => ({ deleteLead: mockDeleteLead }),
 );
 
-const ALLOWED_EMAIL = "owner@example.com";
 const LEAD_ID = "lead-uuid-123";
 
 const STUB_LEAD: LeadDetailDto = {
@@ -76,18 +74,12 @@ function makeContext(id: string) {
 }
 
 function setupAuthenticatedUser() {
-  mockAuth.mockResolvedValue({ userId: "user_123" });
-  mockCurrentUser.mockResolvedValue({
-    primaryEmailAddressId: "email_primary",
-    emailAddresses: [{ id: "email_primary", emailAddress: ALLOWED_EMAIL }],
-  });
+  mockAuthenticate.mockResolvedValue(authorizedWorkspaceRequest());
 }
 
 describe("GET /api/workspace/leads/[id]", () => {
   beforeEach(() => {
-    vi.stubEnv("WORKSPACE_ALLOWED_EMAILS", ALLOWED_EMAIL);
-    mockAuth.mockReset();
-    mockCurrentUser.mockReset();
+    mockAuthenticate.mockReset();
     mockGetLeadById.mockReset();
   });
 
@@ -96,7 +88,7 @@ describe("GET /api/workspace/leads/[id]", () => {
   });
 
   it("returns 401 when the request is unauthenticated", async () => {
-    mockAuth.mockResolvedValue({ userId: null });
+    mockAuthenticate.mockResolvedValue(unauthenticatedWorkspaceRequest());
 
     const response = await GET(
       makeRequest(`http://localhost/api/workspace/leads/${LEAD_ID}`),
@@ -151,9 +143,7 @@ describe("GET /api/workspace/leads/[id]", () => {
 
 describe("PATCH /api/workspace/leads/[id]", () => {
   beforeEach(() => {
-    vi.stubEnv("WORKSPACE_ALLOWED_EMAILS", ALLOWED_EMAIL);
-    mockAuth.mockReset();
-    mockCurrentUser.mockReset();
+    mockAuthenticate.mockReset();
     mockUpdateLead.mockReset();
   });
 
@@ -162,7 +152,7 @@ describe("PATCH /api/workspace/leads/[id]", () => {
   });
 
   it("returns 401 when the request is unauthenticated", async () => {
-    mockAuth.mockResolvedValue({ userId: null });
+    mockAuthenticate.mockResolvedValue(unauthenticatedWorkspaceRequest());
 
     const response = await PATCH(
       makeRequest(`http://localhost/api/workspace/leads/${LEAD_ID}`, {
@@ -210,7 +200,11 @@ describe("PATCH /api/workspace/leads/[id]", () => {
       makeContext(LEAD_ID),
     );
 
-    expect(mockUpdateLead).toHaveBeenCalledWith(LEAD_ID, { score: 80 });
+    expect(mockUpdateLead).toHaveBeenCalledWith(
+      LEAD_ID,
+      { score: 80 },
+      TEST_ACTOR_USER_ID,
+    );
   });
 
   it("forwards nullable and empty-array update payloads", async () => {
@@ -231,12 +225,16 @@ describe("PATCH /api/workspace/leads/[id]", () => {
       makeContext(LEAD_ID),
     );
 
-    expect(mockUpdateLead).toHaveBeenCalledWith(LEAD_ID, {
-      company_name: null,
-      improvements: [],
-      notes: null,
-      social_profiles: [],
-    });
+    expect(mockUpdateLead).toHaveBeenCalledWith(
+      LEAD_ID,
+      {
+        company_name: null,
+        improvements: [],
+        notes: null,
+        social_profiles: [],
+      },
+      TEST_ACTOR_USER_ID,
+    );
   });
 
   it("returns 404 when the lead does not exist", async () => {
@@ -367,9 +365,7 @@ describe("PATCH /api/workspace/leads/[id]", () => {
 
 describe("DELETE /api/workspace/leads/[id]", () => {
   beforeEach(() => {
-    vi.stubEnv("WORKSPACE_ALLOWED_EMAILS", ALLOWED_EMAIL);
-    mockAuth.mockReset();
-    mockCurrentUser.mockReset();
+    mockAuthenticate.mockReset();
     mockDeleteLead.mockReset();
   });
 
@@ -378,7 +374,7 @@ describe("DELETE /api/workspace/leads/[id]", () => {
   });
 
   it("returns 401 when the request is unauthenticated", async () => {
-    mockAuth.mockResolvedValue({ userId: null });
+    mockAuthenticate.mockResolvedValue(unauthenticatedWorkspaceRequest());
 
     const response = await DELETE(
       makeRequest(`http://localhost/api/workspace/leads/${LEAD_ID}`, {
@@ -454,5 +450,57 @@ describe("DELETE /api/workspace/leads/[id]", () => {
     expect(response.status).toBe(500);
     const body = await response.json();
     expect(body).toMatchObject({ error: "INTERNAL" });
+  });
+});
+
+describe("/api/workspace/leads/[id] permissions", () => {
+  const url = "http://localhost/api/workspace/leads/lead-uuid-123";
+
+  beforeEach(() => {
+    mockAuthenticate.mockReset();
+    mockGetLeadById.mockReset();
+    mockUpdateLead.mockReset();
+    mockDeleteLead.mockReset();
+  });
+
+  it("returns 403 for GET without leads.read", async () => {
+    mockAuthenticate.mockResolvedValue(authorizedWorkspaceRequest([]));
+
+    const response = await GET(makeRequest(url), makeContext(LEAD_ID));
+
+    expect(response.status).toBe(403);
+    expect(mockGetLeadById).not.toHaveBeenCalled();
+  });
+
+  it("returns 403 for PATCH without leads.write", async () => {
+    mockAuthenticate.mockResolvedValue(
+      authorizedWorkspaceRequest([Permission.LeadsRead]),
+    );
+
+    const response = await PATCH(
+      makeRequest(url, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ score: 80 }),
+      }),
+      makeContext(LEAD_ID),
+    );
+
+    expect(response.status).toBe(403);
+    expect(mockUpdateLead).not.toHaveBeenCalled();
+  });
+
+  it("returns 403 for DELETE with read and write but without leads.delete", async () => {
+    mockAuthenticate.mockResolvedValue(
+      authorizedWorkspaceRequest([Permission.LeadsRead, Permission.LeadsWrite]),
+    );
+
+    const response = await DELETE(
+      makeRequest(url, { method: "DELETE" }),
+      makeContext(LEAD_ID),
+    );
+
+    expect(response.status).toBe(403);
+    expect(mockDeleteLead).not.toHaveBeenCalled();
   });
 });

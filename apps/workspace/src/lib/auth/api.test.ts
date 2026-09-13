@@ -1,160 +1,153 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { NextRequest } from "next/server";
-import { withWorkspaceApiAuth } from "./api";
+
+import { Permission } from "@invessiv/common/constants/auth/permissions";
+import { WorkspaceAuthStatus } from "@/common/constants/auth/workspace-auth-statuses";
+import { withPermission, withWorkspaceApiActor } from "./api";
 
 vi.mock("server-only", () => ({}));
 
-const { mockAuth, mockCurrentUser } = vi.hoisted(() => ({
-  mockAuth: vi.fn(),
-  mockCurrentUser: vi.fn(),
+const { mockAuthenticate } = vi.hoisted(() => ({
+  mockAuthenticate: vi.fn(),
 }));
 
-vi.mock("@clerk/nextjs/server", () => ({
-  auth: mockAuth,
-  currentUser: mockCurrentUser,
+vi.mock("./workspace-authentication", () => ({
+  authenticateWorkspaceRequest: mockAuthenticate,
 }));
 
-const ALLOWED_EMAIL = "owner@example.com";
-
-function buildClerkUser(options: {
-  primaryEmailAddressId?: string;
-  emails?: Array<{ id: string; emailAddress: string }>;
-}) {
-  return {
-    primaryEmailAddressId: options.primaryEmailAddressId ?? "email_primary",
-    emailAddresses: options.emails ?? [],
-  };
-}
+const ACTOR = {
+  userId: "user-uuid-1",
+  workspaceMemberId: "member-uuid-1",
+  permissions: new Set([Permission.LeadsRead]),
+};
 
 function makeRequest(url = "http://localhost/api/workspace/leads") {
   return new Request(url) as unknown as NextRequest;
 }
 
-describe("withWorkspaceApiAuth", () => {
+describe("withWorkspaceApiActor", () => {
   beforeEach(() => {
-    vi.stubEnv("WORKSPACE_ALLOWED_EMAILS", ALLOWED_EMAIL);
-    mockAuth.mockReset();
-    mockCurrentUser.mockReset();
-  });
-
-  afterEach(() => {
-    vi.unstubAllEnvs();
+    mockAuthenticate.mockReset();
   });
 
   it("returns 401 JSON when the request is unauthenticated", async () => {
-    mockAuth.mockResolvedValue({ userId: null });
+    mockAuthenticate.mockResolvedValue({
+      status: WorkspaceAuthStatus.Unauthenticated,
+    });
+    const inner = vi.fn();
 
-    const handler = withWorkspaceApiAuth(vi.fn());
-    const response = await handler(makeRequest());
-
-    expect(response.status).toBe(401);
-    const body = await response.json();
-    expect(body).toMatchObject({ ok: false, error: "UNAUTHORIZED" });
-    expect(mockCurrentUser).not.toHaveBeenCalled();
-  });
-
-  it("returns 401 JSON when currentUser returns null", async () => {
-    mockAuth.mockResolvedValue({ userId: "user_123" });
-    mockCurrentUser.mockResolvedValue(null);
-
-    const handler = withWorkspaceApiAuth(vi.fn());
-    const response = await handler(makeRequest());
+    const response = await withWorkspaceApiActor(inner)(makeRequest());
 
     expect(response.status).toBe(401);
-    const body = await response.json();
-    expect(body).toMatchObject({ ok: false, error: "UNAUTHORIZED" });
+    expect(await response.json()).toMatchObject({
+      ok: false,
+      error: "UNAUTHORIZED",
+    });
+    expect(inner).not.toHaveBeenCalled();
   });
 
-  it("returns 401 JSON when the user has no primary email", async () => {
-    mockAuth.mockResolvedValue({ userId: "user_123" });
-    mockCurrentUser.mockResolvedValue(
-      buildClerkUser({ primaryEmailAddressId: "email_primary", emails: [] }),
-    );
+  it("returns 404 JSON for an account without membership", async () => {
+    mockAuthenticate.mockResolvedValue({
+      status: WorkspaceAuthStatus.NotMember,
+    });
+    const inner = vi.fn();
 
-    const handler = withWorkspaceApiAuth(vi.fn());
-    const response = await handler(makeRequest());
-
-    expect(response.status).toBe(401);
-    const body = await response.json();
-    expect(body).toMatchObject({ ok: false, error: "UNAUTHORIZED" });
-  });
-
-  it("returns 404 JSON when the primary email is not on the allowlist", async () => {
-    mockAuth.mockResolvedValue({ userId: "user_123" });
-    mockCurrentUser.mockResolvedValue(
-      buildClerkUser({
-        primaryEmailAddressId: "email_primary",
-        emails: [{ id: "email_primary", emailAddress: "intruder@example.com" }],
-      }),
-    );
-
-    const handler = withWorkspaceApiAuth(vi.fn());
-    const response = await handler(makeRequest());
+    const response = await withWorkspaceApiActor(inner)(makeRequest());
 
     expect(response.status).toBe(404);
-    const body = await response.json();
-    expect(body).toMatchObject({ ok: false, error: "NOT_FOUND" });
+    expect(await response.json()).toMatchObject({ error: "NOT_FOUND" });
+    expect(inner).not.toHaveBeenCalled();
   });
 
-  it("calls the inner handler and returns its response when authenticated and allowed", async () => {
-    mockAuth.mockResolvedValue({ userId: "user_123" });
-    mockCurrentUser.mockResolvedValue(
-      buildClerkUser({
-        primaryEmailAddressId: "email_primary",
-        emails: [{ id: "email_primary", emailAddress: ALLOWED_EMAIL }],
-      }),
-    );
+  it("returns 503 JSON and never calls the handler when authorization is unavailable", async () => {
+    mockAuthenticate.mockResolvedValue({
+      status: WorkspaceAuthStatus.Unavailable,
+    });
+    const inner = vi.fn();
 
-    const innerHandler = vi
+    const response = await withWorkspaceApiActor(inner)(makeRequest());
+
+    expect(response.status).toBe(503);
+    expect(await response.json()).toMatchObject({ error: "UNAVAILABLE" });
+    expect(inner).not.toHaveBeenCalled();
+  });
+
+  it("passes the resolved actor to the handler", async () => {
+    mockAuthenticate.mockResolvedValue({
+      status: WorkspaceAuthStatus.Authorized,
+      actor: ACTOR,
+    });
+    const inner = vi
       .fn()
-      .mockResolvedValue(
-        Response.json({ ok: true, data: "leads" }, { status: 200 }),
-      );
-
+      .mockResolvedValue(Response.json({ ok: true }, { status: 200 }));
     const request = makeRequest();
-    const handler = withWorkspaceApiAuth(innerHandler);
-    const response = await handler(request);
+
+    const response = await withWorkspaceApiActor(inner)(request);
 
     expect(response.status).toBe(200);
-    const body = await response.json();
-    expect(body).toEqual({ ok: true, data: "leads" });
-    expect(innerHandler).toHaveBeenCalledWith(request, {
-      userId: "user_123",
-      email: ALLOWED_EMAIL,
+    expect(inner).toHaveBeenCalledWith(request, ACTOR);
+  });
+
+  it("answers with JSON, never with a redirect", async () => {
+    mockAuthenticate.mockResolvedValue({
+      status: WorkspaceAuthStatus.Unauthenticated,
+    });
+
+    const response = await withWorkspaceApiActor(vi.fn())(makeRequest());
+
+    expect(response.headers.get("content-type")).toContain("application/json");
+  });
+});
+
+describe("withPermission", () => {
+  beforeEach(() => {
+    mockAuthenticate.mockReset();
+    mockAuthenticate.mockResolvedValue({
+      status: WorkspaceAuthStatus.Authorized,
+      actor: ACTOR,
     });
   });
 
-  it("passes the access record with the exact email from Clerk (preserving case)", async () => {
-    mockAuth.mockResolvedValue({ userId: "user_456" });
-    mockCurrentUser.mockResolvedValue(
-      buildClerkUser({
-        primaryEmailAddressId: "email_primary",
-        emails: [{ id: "email_primary", emailAddress: "OWNER@Example.com" }],
-      }),
-    );
-
-    const innerHandler = vi
+  it("calls the handler when the actor holds the permission", async () => {
+    const inner = vi
       .fn()
       .mockResolvedValue(Response.json({ ok: true }, { status: 200 }));
 
-    await withWorkspaceApiAuth(innerHandler)(makeRequest());
+    const response = await withPermission(
+      Permission.LeadsRead,
+      inner,
+    )(makeRequest());
 
-    expect(innerHandler).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.objectContaining({
-        userId: "user_456",
-        email: "OWNER@Example.com",
-      }),
-    );
+    expect(response.status).toBe(200);
+    expect(inner).toHaveBeenCalledOnce();
   });
 
-  it("does not call redirect or notFound — returns plain JSON errors only", async () => {
-    mockAuth.mockResolvedValue({ userId: null });
+  it("returns 403 JSON and skips the handler when the permission is missing", async () => {
+    const inner = vi.fn();
 
-    const handler = withWorkspaceApiAuth(vi.fn());
-    const response = await handler(makeRequest());
+    const response = await withPermission(
+      Permission.LeadsDelete,
+      inner,
+    )(makeRequest());
 
-    expect(response).toBeInstanceOf(Response);
-    expect(response.headers.get("content-type")).toContain("application/json");
+    expect(response.status).toBe(403);
+    expect(await response.json()).toMatchObject({
+      ok: false,
+      error: "FORBIDDEN",
+    });
+    expect(inner).not.toHaveBeenCalled();
+  });
+
+  it("keeps the membership gate in front of the permission check", async () => {
+    mockAuthenticate.mockResolvedValue({
+      status: WorkspaceAuthStatus.NotMember,
+    });
+
+    const response = await withPermission(
+      Permission.LeadsRead,
+      vi.fn(),
+    )(makeRequest());
+
+    expect(response.status).toBe(404);
   });
 });

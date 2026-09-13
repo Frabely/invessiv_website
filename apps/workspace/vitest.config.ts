@@ -9,6 +9,9 @@ export default defineConfig(({ mode }) => ({
     "process.env.ACTIVITY_DB_INTEGRATION": JSON.stringify(
       mode === "activity-integration" ? "true" : "false",
     ),
+    "process.env.RBAC_DB_INTEGRATION": JSON.stringify(
+      mode === "rbac-integration" ? "true" : "false",
+    ),
   },
   resolve: {
     alias: [

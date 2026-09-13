@@ -29,15 +29,17 @@ Scope- und detailspezifische Regeln stehen in der jeweils nächstgelegenen `AGEN
 | `apps/web/common/`                               | App-shared Contracts/Constants/Defaults                                                                         |
 | `apps/workspace/`                                | App-weit: Sprachregel (Doku Deutsch, Code-Kommentare/Testnamen/Fehlermeldungen Englisch)                        |
 | `apps/workspace/src/app/[locale]/(auth)/`        | Öffentliche Clerk-Auth-Routen                                                                                   |
-| `apps/workspace/src/app/[locale]/(app)/leads/`   | Geschützter Leads-Bereich: Auth-Gate, Allowlist, noindex/dynamic                                                |
+| `apps/workspace/src/app/[locale]/(app)/leads/`   | Geschützter Leads-Bereich: Auth-Gate, Bereichs-Permission, noindex/dynamic                                      |
 | `apps/workspace/src/components/workspace/leads/` | Geschützte Workspace-Leads-UI                                                                                   |
 | `apps/workspace/src/server/`                     | Workspace Command-/Query-Handler, Services, Persistenz-Grenze                                                   |
 | `apps/workspace/src/server/workspace/crm/`       | Interner CRM-Serverpfad: Primärkontakt-Invariante, kein Löschpfad, Portaltrennung                               |
 | `apps/workspace/src/server/workspace/shared/`    | Domänenübergreifende Server-Bausteine; `updateVersioned` als einziger versionierter Schreibweg                  |
+| `apps/workspace/src/server/workspace/auth/`      | Actor-Auflösung, Owner-Bootstrap, Security-Events; fail-closed, keine Rollenprüfung in Features                 |
 | `apps/workspace/src/common/`                     | Workspace-shared Contracts/Constants                                                                            |
 | `packages/` (`common`, `db`, `ui`)               | Geteilte Pakete: Const-Objekt-Pattern, Error-Codes, DTOs, Drizzle-Schema, app-neutrale UI                       |
 | `packages/db/`                                   | DB-Paket: DB-Defaults als Ausnahme, Migration ↔ Modell deckungsgleich, Migrations- und Skriptregeln             |
 | `packages/db/src/record-configuration/crm/`      | CRM-Drizzle-Modelle: Tabellen-Präfix-Regel, Barrel, bewusst fehlende Indizes                                    |
+| `packages/db/src/record-configuration/auth/`     | Auth-Modelle: Realm-/Delegierbarkeits-Fremdschlüssel, Katalog nur per Migration, append-only Audit              |
 
 > Hinweis: Pfadangaben in dieser Datei beziehen sich auf die jeweilige App-Wurzel (`apps/<app>/src/…`) bzw. auf
 > `packages/…`.

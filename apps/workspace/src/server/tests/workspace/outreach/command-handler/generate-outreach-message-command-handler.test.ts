@@ -78,16 +78,18 @@ const BASE_REQUEST: GenerateOutreachRequestDto = {
 
 afterEach(() => vi.clearAllMocks());
 
+const ACTOR_USER_ID = "user-actor-uuid";
+
 describe("generateOutreachMessage — lead not found", () => {
   it("returns LeadNotFound when lead does not exist", async () => {
     getLeadByIdMock.mockResolvedValue(null);
-    const result = await generateOutreachMessage(BASE_REQUEST);
+    const result = await generateOutreachMessage(BASE_REQUEST, ACTOR_USER_ID);
     expect(result).toEqual({ ok: false, code: OutreachErrorCode.LeadNotFound });
   });
 
   it("does not call the AI service when the lead is not found", async () => {
     getLeadByIdMock.mockResolvedValue(null);
-    await generateOutreachMessage(BASE_REQUEST);
+    await generateOutreachMessage(BASE_REQUEST, ACTOR_USER_ID);
     expect(generateMock).not.toHaveBeenCalled();
   });
 });
@@ -96,7 +98,7 @@ describe("generateOutreachMessage — AI provider errors", () => {
   it("returns ProviderUnavailable when AI service throws PROVIDER_UNAVAILABLE", async () => {
     getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
     generateMock.mockRejectedValue(new Error("PROVIDER_UNAVAILABLE"));
-    const result = await generateOutreachMessage(BASE_REQUEST);
+    const result = await generateOutreachMessage(BASE_REQUEST, ACTOR_USER_ID);
     expect(result).toEqual({
       ok: false,
       code: OutreachErrorCode.ProviderUnavailable,
@@ -106,7 +108,7 @@ describe("generateOutreachMessage — AI provider errors", () => {
   it("returns Internal for unexpected AI errors", async () => {
     getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
     generateMock.mockRejectedValue(new Error("network timeout"));
-    const result = await generateOutreachMessage(BASE_REQUEST);
+    const result = await generateOutreachMessage(BASE_REQUEST, ACTOR_USER_ID);
     expect(result).toEqual({ ok: false, code: OutreachErrorCode.Internal });
   });
 });
@@ -116,7 +118,7 @@ describe("generateOutreachMessage — success (non-email channel)", () => {
     getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
     generateMock.mockResolvedValue("Generated outreach body");
     parseMock.mockReturnValue({ body: "Generated outreach body" });
-    const result = await generateOutreachMessage(BASE_REQUEST);
+    const result = await generateOutreachMessage(BASE_REQUEST, ACTOR_USER_ID);
     expect(result).toEqual({
       ok: true,
       channel: OutreachChannel.Linkedin,
@@ -129,7 +131,7 @@ describe("generateOutreachMessage — success (non-email channel)", () => {
     getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
     generateMock.mockResolvedValue("Generated outreach body");
     parseMock.mockReturnValue({ body: "Generated outreach body" });
-    await generateOutreachMessage(BASE_REQUEST);
+    await generateOutreachMessage(BASE_REQUEST, ACTOR_USER_ID);
     expect(appendLeadActivityMock).toHaveBeenCalledWith({
       leadId: "lead-123",
       type: ActivityType.MessageDrafted,
@@ -137,7 +139,7 @@ describe("generateOutreachMessage — success (non-email channel)", () => {
       metadata: {
         channel: OutreachChannel.Linkedin,
       },
-      actorType: ActorType.System,
+      actor: { type: ActorType.User, userId: ACTOR_USER_ID },
     });
   });
 
@@ -145,7 +147,7 @@ describe("generateOutreachMessage — success (non-email channel)", () => {
     getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
     generateMock.mockResolvedValue("body");
     parseMock.mockReturnValue({ body: "body" });
-    await generateOutreachMessage(BASE_REQUEST);
+    await generateOutreachMessage(BASE_REQUEST, ACTOR_USER_ID);
     const callArg = appendLeadActivityMock.mock.calls[0][0] as {
       metadata: Record<string, unknown>;
     };
@@ -163,7 +165,7 @@ describe("generateOutreachMessage — success (email channel)", () => {
     getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
     generateMock.mockResolvedValue("Betreff: Test Subject\n\nEmail body");
     parseMock.mockReturnValue({ subject: "Test Subject", body: "Email body" });
-    const result = await generateOutreachMessage(emailRequest);
+    const result = await generateOutreachMessage(emailRequest, ACTOR_USER_ID);
     expect(result).toMatchObject({
       ok: true,
       subject: "Test Subject",
@@ -176,7 +178,7 @@ describe("generateOutreachMessage — success (email channel)", () => {
     getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
     generateMock.mockResolvedValue("Betreff: Test Subject\n\nEmail body");
     parseMock.mockReturnValue({ subject: "Test Subject", body: "Email body" });
-    await generateOutreachMessage(emailRequest);
+    await generateOutreachMessage(emailRequest, ACTOR_USER_ID);
     expect(appendLeadActivityMock).toHaveBeenCalledWith({
       leadId: "lead-123",
       type: ActivityType.MessageDrafted,
@@ -185,7 +187,7 @@ describe("generateOutreachMessage — success (email channel)", () => {
         channel: OutreachChannel.Email,
         subject: "Test Subject",
       },
-      actorType: ActorType.System,
+      actor: { type: ActorType.User, userId: ACTOR_USER_ID },
     });
   });
 });
@@ -199,7 +201,7 @@ describe("generateOutreachMessage — skill context integration", () => {
       ...BASE_REQUEST,
       contextNote: "In English please",
     };
-    await generateOutreachMessage(request);
+    await generateOutreachMessage(request, ACTOR_USER_ID);
     expect(buildSkillPromptsMock).toHaveBeenCalledWith({
       lead: MOCK_LEAD,
       channel: OutreachChannel.Linkedin,
@@ -218,7 +220,7 @@ describe("generateOutreachMessage — generated raw text", () => {
     generateMock.mockResolvedValue("Server body");
     parseMock.mockReturnValue({ body: "Server body" });
 
-    await generateOutreachMessage(BASE_REQUEST);
+    await generateOutreachMessage(BASE_REQUEST, ACTOR_USER_ID);
 
     expect(generateMock).toHaveBeenCalledWith("system", "user");
   });
@@ -229,7 +231,7 @@ describe("generateOutreachMessage — generation failures", () => {
     getLeadByIdMock.mockResolvedValue(MOCK_LEAD);
     generateMock.mockResolvedValue(null);
 
-    const result = await generateOutreachMessage(BASE_REQUEST);
+    const result = await generateOutreachMessage(BASE_REQUEST, ACTOR_USER_ID);
 
     expect(result).toEqual({
       ok: false,
@@ -243,7 +245,7 @@ describe("generateOutreachMessage — generation failures", () => {
       new Error(OutreachErrorCode.ProviderUnavailable),
     );
 
-    const result = await generateOutreachMessage(BASE_REQUEST);
+    const result = await generateOutreachMessage(BASE_REQUEST, ACTOR_USER_ID);
 
     expect(result).toEqual({
       ok: false,

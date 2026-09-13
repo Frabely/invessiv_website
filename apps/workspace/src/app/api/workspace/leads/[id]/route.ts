@@ -2,9 +2,10 @@ import "server-only";
 
 import type { NextRequest } from "next/server";
 
+import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
-import { withWorkspaceApiAuth } from "@/lib/auth/api";
+import { withPermission } from "@/lib/auth/api";
 import { deleteLead } from "@/server/workspace/leads/command-handler/delete-lead.command-handler";
 import { updateLead } from "@/server/workspace/leads/command-handler/update-lead.command-handler";
 import { getLeadById } from "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler";
@@ -17,7 +18,7 @@ type RouteContext = { params: Promise<{ id: string }> };
 export async function GET(request: NextRequest, { params }: RouteContext) {
   const { id } = await params;
 
-  return withWorkspaceApiAuth(async () => {
+  return withPermission(Permission.LeadsRead, async () => {
     const lead = await getLeadById(id);
     if (!lead) {
       return leadApiError(LeadErrorCode.NotFound, HttpResponseCode.NotFound);
@@ -29,7 +30,7 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
 export async function PATCH(request: NextRequest, { params }: RouteContext) {
   const { id } = await params;
 
-  return withWorkspaceApiAuth(async (req) => {
+  return withPermission(Permission.LeadsWrite, async (req, actor) => {
     let body: unknown;
     try {
       body = await req.json();
@@ -42,7 +43,7 @@ export async function PATCH(request: NextRequest, { params }: RouteContext) {
 
     let result;
     try {
-      result = await updateLead(id, body);
+      result = await updateLead(id, body, actor.userId);
     } catch {
       return leadApiError(
         LeadErrorCode.Internal,
@@ -89,7 +90,7 @@ export async function PATCH(request: NextRequest, { params }: RouteContext) {
 export async function DELETE(request: NextRequest, { params }: RouteContext) {
   const { id } = await params;
 
-  return withWorkspaceApiAuth(async () => {
+  return withPermission(Permission.LeadsDelete, async () => {
     let result;
     try {
       result = await deleteLead(id);

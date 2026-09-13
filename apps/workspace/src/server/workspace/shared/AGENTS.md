@@ -24,6 +24,9 @@ dem Umzug in Ordner 02 stillgelegt und wird in Ordner 22 abgebaut.
 - `createActivity(tx, …)` schreibt in der Transaktion des fachlichen Writes, `appendActivity(…)`
   öffnet eine eigene.
 - Der Service protokolliert nichts und wirft keine Domänenfehler.
+- Der Actor ist Pflicht (`ActivityActor`): Menschen als `{ type: user, userId }` mit `users.id`, Systemschreiber als
+  `{ type: system, systemActorKey }`. `actor_id` und `actor_label` sind Legacy und werden nie mehr geschrieben; der
+  fachliche Lead- oder Kunden-Owner ist nie der Actor.
 
 ## `updateVersioned` ist der einzige Weg
 

@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
+import { listPermittedWorkspaceAreas } from "@/common/patterns/auth/list-permitted-workspace-areas";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { getWorkspaceMetaContent } from "@/i18n/dictionaries/workspace";
-import { dashboardPathFor } from "@/lib/auth/routes";
+import { requireWorkspaceActor } from "@/lib/auth/permissions";
+import { workspaceAreaPathFor } from "@/lib/auth/routes";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -33,5 +35,11 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
     notFound();
   }
 
-  redirect(dashboardPathFor(locale));
+  const actor = await requireWorkspaceActor(locale);
+  const [landingArea] = listPermittedWorkspaceAreas(actor);
+  if (!landingArea) {
+    notFound();
+  }
+
+  redirect(workspaceAreaPathFor(locale, landingArea));
 }

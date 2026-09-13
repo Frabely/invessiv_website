@@ -1,341 +1,226 @@
-# Task 02 — Persistierte User und flexibles Rechtesystem
+# Task 02 — Persistierte User und Permission-Katalog
 
 > **Merge-Einheit:** Ordner 03 · **Branch:** `feat/crm-users-rbac`
 > **Aufwand:** L · **Abhängigkeiten:** Ordner 01 und 02
-> **Migration:** Neue Nummer als höchste vorhandene Migration plus eins; gemergte Migrationen bleiben unverändert
+> **Migration:** höchste vorhandene Nummer plus eins; gemergte Migrationen bleiben unverändert
 
-## Context
+## Leitidee
 
-Der bisher geplante Zuschnitt `workspace_members.role = owner | member` plus `credentials_access` bildet nur einen
-festen Sonderfall ab. Sobald Rollen frei erstellt und mehreren Nutzern zugewiesen werden sollen, entstehen sonst
-parallele Autorisierungswege: feste Rolle, Einzel-Flag und später eine weitere Rollentabelle.
+Die Permission ist der Kern. Ein Bereich oder Command verlangt `Permission.X` und fragt nur, ob der Actor sie
+besitzt. Welche Rolle sie gewährt, ist Konfiguration. Neue Fähigkeiten entstehen durch einen neuen Katalogeintrag,
+nicht durch neue Prüfpfade.
 
-Dieser Task führt deshalb zuerst eine stabile User-Identität und anschließend ein persistiertes RBAC ein. Der
-vorherige Activity-Branch bleibt davon unabhängig mergebar.
+```ts
+can(actor, Permission.LeadsDelete); // boolean — kein Rollenname, kein Resource-Scope in Version 1
+```
 
 ## Verbindliche Entscheidungen
 
-| Bereich                | Entscheidung                                                                                           |
-| ---------------------- | ------------------------------------------------------------------------------------------------------ |
-| Menschliche Identität  | `users.id` ist die kanonische interne UUID für jeden angemeldeten Menschen.                            |
-| Externer Login         | `users.clerk_user_id` ist eindeutig; Clerk authentifiziert, die eigene DB autorisiert.                 |
-| Stammdaten             | Name und primäre E-Mail hängen an `users`; E-Mail wird niemals als Berechtigungsanker genutzt.         |
-| Interne Mitgliedschaft | `workspace_members` bleibt bestehen und referenziert genau einen `user`.                               |
-| CRM-Kontakt            | `people` bleibt getrennt, da CRM-Kontakte auch ohne Zugang existieren.                                 |
-| Portal                 | Ordner 12 verbindet später `users`, `people` und `customers` über `portal_memberships`.                |
-| Permission             | Atomare Fähigkeit aus einem codebekannten und in der DB spiegelnden Katalog.                           |
-| Rolle                  | Persistiertes, benennbares Bündel von Permissions; keine Rollenprüfung an Features.                    |
-| Zuweisung              | Ein Mitglied kann mehrere Rollen besitzen; die effektiven Rechte sind deren Vereinigung.               |
-| Realms                 | Workspace- und Portalrollen sind strikt getrennt und können nicht realmübergreifend zugewiesen werden. |
-| Ablehnung              | Kein explizites Deny in Version 1; fehlende Permission bedeutet fail-closed `403`.                     |
-| Credentials            | Kein `credentials_access`-Sonderweg; Reveal folgt ausschließlich aus `credentials.reveal`.             |
-| Jobs                   | Systemjobs erhalten keinen künstlichen User-Datensatz, sondern einen stabilen Systemakteur.            |
+| Bereich               | Entscheidung                                                                                         |
+| --------------------- | ---------------------------------------------------------------------------------------------------- |
+| Menschliche Identität | `users.id` ist die kanonische UUID; `users.clerk_user_id` eindeutig                                  |
+| Stammdaten            | Name und primäre E-Mail an `users`; E-Mail autorisiert nie                                           |
+| Membership            | `workspace_members.user_id` eindeutig und verpflichtend; keine Identitäts- oder Rechtefelder         |
+| Permission            | Atomare Fähigkeit aus dem `Permission`-Const-Objekt; Definition (Realm, delegierbar) per `satisfies` |
+| Rolle                 | Persistiertes Bündel; Zuweisung nur über Rollen, effektive Rechte = Vereinigung aktiver Rollen       |
+| Realms                | `workspace` / `portal`; zusammengesetzte Fremdschlüssel verhindern Mischung                          |
+| Delegierbarkeit       | Nicht delegierbare Permissions nur in Systemrollen — per Fremdschlüssel und CHECK in der DB          |
+| Ablehnung             | Kein Deny; fehlende Permission = 403 (API) bzw. 404 (Seite)                                          |
+| Bereiche              | `WORKSPACE_AREA_PERMISSIONS: Record<WorkspaceArea, Permission>` ist die einzige Bereichszuordnung    |
+| Bootstrap             | `WORKSPACE_BOOTSTRAP_CLERK_USER_ID`, nur solange kein aktiver Owner existiert                        |
+| Jobs                  | Kein Fake-User, sondern `actor_type = system` plus `system_actor_key`                                |
+| Audit                 | `security_events` (append-only), getrennt von `activities`                                           |
 
 ## Datenmodell
 
-### `users`
-
 ```text
 users
-  id                uuid primary key
-  clerk_user_id     text unique not null
-  primary_email     text not null
-  first_name        text null
-  last_name         text null
-  display_name      text not null
-  active            boolean not null
-  version           integer not null
-  created_at        timestamptz not null
-  updated_at        timestamptz not null
-```
+  id uuid PK · clerk_user_id text NOT NULL UNIQUE · primary_email text NOT NULL
+  first_name text · last_name text · display_name text NOT NULL · active boolean NOT NULL
+  version integer NOT NULL CHECK > 0 · created_at · updated_at
 
-`primary_email` darf aktualisiert werden, ohne Zuweisungen oder Historie zu verändern. Es gibt keinen Identity-Backfill:
-Die Ordner-01-Tabellen sind noch leer und der erste User wird erst durch den Bootstrap dieses Ordners erzeugt.
-
-### Membership und Rollen
-
-```text
-workspace_members
-  id                uuid primary key
-  user_id           uuid unique not null -> users.id
-  active            boolean not null
-  version           integer not null
-  ... fachliche Membership-Felder
+workspace_members                       (Legacy-Spalten entfernt)
+  id uuid PK · user_id uuid NOT NULL UNIQUE → users.id RESTRICT
+  active boolean NOT NULL · version integer NOT NULL · created_at · updated_at
 
 permissions
-  key               text primary key
-  realm             workspace | portal
-  delegable         boolean not null
-  description       text not null
+  key text PK · realm text CHECK · delegable boolean NOT NULL · description text NOT NULL
+  UNIQUE (key, realm, delegable)        Ziel des zusammengesetzten Fremdschlüssels
 
 roles
-  id                uuid primary key
-  realm             workspace | portal
-  system_key        text null
-  name              text not null
-  description       text null
-  is_system         boolean not null
-  active            boolean not null
-  version           integer not null
+  id uuid PK · realm text CHECK · system_key text NULL CHECK IN SystemRoleKey
+  name text NOT NULL · description text NULL · is_system boolean NOT NULL · active boolean NOT NULL
+  version · created_at · updated_at
+  CHECK (is_system = (system_key IS NOT NULL))
+  UNIQUE (system_key) · UNIQUE (realm, lower(btrim(name)))
+  UNIQUE (id, realm) · UNIQUE (id, realm, is_system)
 
 role_permissions
-  role_id           uuid -> roles.id
-  permission_key    text -> permissions.key
-  realm             workspace | portal
-  primary key (role_id, permission_key)
+  role_id uuid · realm text · role_is_system boolean · permission_key text · permission_delegable boolean
+  PK (role_id, permission_key)
+  FK (role_id, realm, role_is_system) → roles (id, realm, is_system) ON DELETE CASCADE
+  FK (permission_key, realm, permission_delegable) → permissions (key, realm, delegable) ON UPDATE CASCADE
+  CHECK (role_is_system OR permission_delegable)
 
 workspace_member_roles
-  workspace_member_id uuid -> workspace_members.id
-  role_id             uuid -> roles.id
-  assigned_by_user_id uuid -> users.id
-  assigned_at          timestamptz not null
-  primary key (workspace_member_id, role_id)
+  workspace_member_id uuid → workspace_members.id · role_id uuid · role_realm text CHECK = workspace
+  assigned_by_user_id uuid NOT NULL → users.id · assigned_at timestamptz NOT NULL
+  PK (workspace_member_id, role_id) · FK (role_id, role_realm) → roles (id, realm)
+
+security_events                         (append-only, kein version/updated_at)
+  id uuid PK · type text CHECK · actor_type text CHECK · actor_user_id uuid NULL → users.id
+  system_actor_key text NULL · subject_type text CHECK · subject_id uuid NOT NULL
+  metadata jsonb NULL · occurred_at timestamptz NOT NULL · created_at
+  Actor-Invariante wie bei activities (siehe unten)
+
+activities (additiv)
+  actor_user_id uuid NULL → users.id · system_actor_key text NULL
+  CHECK … NOT VALID: user/customer ⇒ actor_user_id gesetzt, kein Key; system ⇒ Key gesetzt, kein User
 ```
 
-Zusammengesetzte Constraints/Fremdschlüssel sichern, dass Rolle, Permission und Zuweisung denselben Realm besitzen.
-Der Schutz liegt nicht nur in TypeScript. Namen benutzerdefinierter Rollen sind innerhalb ihres Realms eindeutig.
-`system_key` ist für gelieferte Systemrollen eindeutig und bei benutzerdefinierten Rollen `null`.
+Ein DB-Trigger weist `UPDATE` und `DELETE` auf `security_events` standardmäßig ab. Migrationen und Fixture-Cleanup
+öffnen den Ausnahmeweg ausschließlich transaktionslokal über
+`set_config('invessiv.security_event_maintenance', 'on', true)`.
 
-## Permission-Katalog
+`NOT VALID` prüft jede neue und geänderte Zeile, lässt die übernommenen Legacy-Zeilen aus Ordner 02 aber unangetastet.
+Ein erneuter Kopierschritt aus `lead_activities` (Rollback-Hinweis Ordner 02) muss deshalb `system_actor_key` setzen.
 
-Der Code definiert die zulässigen Schlüssel über ein Const-Objekt. Eine idempotente Seed-/Sync-Funktion schreibt
-exakt diesen Katalog in `permissions`. Der DB-Smoke prüft in beide Richtungen: kein Code-Key fehlt und kein unbekannter
-DB-Key existiert.
+`subject_id` hat bewusst keinen Fremdschlüssel: Das Protokoll überlebt spätere Purges.
+
+## Permission-Katalog (Workspace-Realm)
+
+| Key                  | Delegierbar | Owner | Member | Credentials-Manager |
+| -------------------- | :---------: | :---: | :----: | :-----------------: |
+| `dashboard.read`     |     ja      |   ✓   |   ✓    |                     |
+| `leads.read`         |     ja      |   ✓   |   ✓    |                     |
+| `leads.write`        |     ja      |   ✓   |   ✓    |                     |
+| `leads.delete`       |     ja      |   ✓   |        |                     |
+| `leads.import`       |     ja      |   ✓   |   ✓    |                     |
+| `outreach.generate`  |     ja      |   ✓   |   ✓    |                     |
+| `members.read`       |     ja      |   ✓   |   ✓    |                     |
+| `customers.read`     |     ja      |   ✓   |   ✓    |                     |
+| `customers.write`    |     ja      |   ✓   |   ✓    |                     |
+| `projects.read`      |     ja      |   ✓   |   ✓    |                     |
+| `projects.write`     |     ja      |   ✓   |   ✓    |                     |
+| `tasks.write`        |     ja      |   ✓   |   ✓    |                     |
+| `files.read`         |     ja      |   ✓   |   ✓    |                     |
+| `files.write`        |     ja      |   ✓   |   ✓    |                     |
+| `files.delete`       |     ja      |   ✓   |        |                     |
+| `credentials.read`   |     ja      |   ✓   |   ✓    |                     |
+| `credentials.reveal` |     ja      |   ✓   |        |          ✓          |
+| `credentials.write`  |     ja      |   ✓   |        |                     |
+| `portal.manage`      |     ja      |   ✓   |        |                     |
+| `roles.manage`       |    nein     |   ✓   |        |                     |
+| `members.manage`     |    nein     |   ✓   |        |                     |
+| `data.export`        |    nein     |   ✓   |        |                     |
+| `data.purge`         |    nein     |   ✓   |        |                     |
+| `security.audit`     |    nein     |   ✓   |        |                     |
+
+- Der Owner besitzt **alle** Workspace-Permissions. Sein Rechtesatz wird aus dem Katalog abgeleitet, nicht gepflegt.
+- Portal-Permissions entstehen in Ordner 12 im Realm `portal`.
+- Eine neue Permission = neuer Const-Eintrag + Definition + Migration (Katalogzeile, Systemrollen-Zuordnung).
+  Der Smoke schlägt fehl, solange Code und DB abweichen.
+
+## Bereiche
 
 ```ts
-export const Permission = {
-  CustomersRead: "customers.read",
-  CustomersWrite: "customers.write",
-  ProjectsRead: "projects.read",
-  ProjectsWrite: "projects.write",
-  TasksWrite: "tasks.write",
-  FilesRead: "files.read",
-  FilesWrite: "files.write",
-  FilesDelete: "files.delete",
-  CredentialsRead: "credentials.read",
-  CredentialsReveal: "credentials.reveal",
-  CredentialsWrite: "credentials.write",
-  PortalAccessManage: "portal.manage",
-  RolesManage: "roles.manage",
-  MembersManage: "members.manage",
-  DataExport: "data.export",
-  DataPurge: "data.purge",
-  SecurityAudit: "security.audit",
-} as const;
+WORKSPACE_AREA_PERMISSIONS = {
+  [WorkspaceArea.Dashboard]: Permission.DashboardRead,
+  [WorkspaceArea.Leads]: Permission.LeadsRead,
+} satisfies Record<WorkspaceArea, Permission>;
 ```
 
-Features prüfen ausschließlich `Permission.X`. Eine Rolle ist Konfiguration und darf nie als Voraussetzung einer
-Route, eines Commands, eines Buttons oder eines Bereichs hart codiert werden.
+- Die Sidebar zeigt nur Bereiche, deren Permission der Actor besitzt.
+- Jede Bereichs-Page ruft vor dem ersten Datenzugriff `requireWorkspaceArea(locale, area)` auf; ohne Permission 404.
+  Ein Gate nur im Layout reicht nicht, weil Next.js Layouts bei Query-Param-Wechseln nicht neu rendert.
+- Die Workspace-Startseite leitet in den ersten erlaubten Bereich.
+- Aktionsbuttons in Bereichen (Löschen, Import) werden in Ordner 03b permissionabhängig ausgeblendet; bis dahin
+  existiert nur der Owner, der alle Rechte besitzt. Die API lehnt unabhängig davon ab.
 
-Nicht delegierbar sind zunächst:
+## API-Routen
 
-- `roles.manage`
-- `members.manage`
-- `data.export`
-- `data.purge`
-- `security.audit`
-
-Benutzerdefinierte Rollen dürfen diese Permissions nicht erhalten. Dadurch kann ein Rollenverwalter keine
-Privilege-Escalation-Kette bauen. Änderungen am nicht delegierbaren Satz sind Code- und Review-Entscheidungen.
-
-## Systemrollen
-
-Die Migration legt mindestens folgende Rollen idempotent an:
-
-| System-Key                      | Zweck                                                            | Veränderbar | Zuweisbar                        |
-| ------------------------------- | ---------------------------------------------------------------- | ----------- | -------------------------------- |
-| `workspace_owner`               | alle Workspace-Permissions, inklusive nicht delegierbarer Rechte | nein        | nur über geschützten Owner-Flow  |
-| `workspace_member`              | sichere Basis für den operativen Alltag                          | nein        | ja                               |
-| `workspace_credentials_manager` | zusätzlich `credentials.reveal`                                  | nein        | ja, nur durch berechtigten Actor |
-
-`is_system` bedeutet: Name, Realm und Permission-Satz sind unveränderlich. Es bedeutet nicht automatisch, dass die
-Rolle nicht zugewiesen werden darf. Für `workspace_owner` gelten zusätzliche Invarianten:
-
-- mindestens ein aktiver Workspace-Owner bleibt erhalten;
-- niemand kann sich selbst die letzte Owner-Zuweisung entziehen;
-- Owner-Vergabe und -Entzug laufen über einen separaten Command;
-- jede Änderung erzeugt eine Security-Activity mit tatsächlichem Actor.
+| Route                                               | Permission                                               |
+| --------------------------------------------------- | -------------------------------------------------------- |
+| `GET /api/workspace/leads`, `GET …/leads/[id]`      | `leads.read`                                             |
+| `POST /api/workspace/leads`, `PATCH …/leads/[id]`   | `leads.write`                                            |
+| `DELETE …/leads/[id]`                               | `leads.delete`                                           |
+| `POST …/leads/bulk`                                 | `leads.write`; Aktion `delete` zusätzlich `leads.delete` |
+| `POST …/leads/import`                               | `leads.import`                                           |
+| `POST …/outreach/generate`, `GET …/provider-status` | `outreach.generate`                                      |
 
 ## Autorisierungsablauf
 
 ```text
-Clerk-Session
-  -> users anhand clerk_user_id laden
-  -> aktive workspace_members-Zeile laden
-  -> aktive Rollen und deren Permissions laden
-  -> WorkspaceActor { userId, workspaceMemberId, permissions }
-  -> requireWorkspacePermission(Permission.X)
+auth() → clerkUserId                              fehlt → 401 / Redirect Sign-in
+  → users + workspace_members + aktive Rollen + Permissions
+      User fehlt, clerkUserId = Bootstrap-ID, kein aktiver Owner
+        → bootstrapWorkspaceOwner (Advisory-Lock, atomar) → erneut auflösen
+      User oder Membership fehlt oder inaktiv    → 404
+      DB-Fehler                                   → 503 / Fehlerseite, nie Zugriff
+  → WorkspaceActor { userId, workspaceMemberId, permissions: ReadonlySet<Permission> }
+  → withPermission(Permission.X) / requireWorkspaceArea(area)   fehlt → 403 / 404
 ```
 
-Die Auflösung ist fail-closed: fehlender User, inaktive Membership, DB-Fehler, unbekannte Permission oder
-realmwidrige Zuweisung ergeben keinen Zugriff. Die Env-Allowlist ist ausschließlich ein zeitlich begrenzter Bootstrap
-für den ersten Owner. Nach erfolgreicher Initialisierung öffnet sie keinen parallelen Autorisierungsweg.
+- Unbekannte Permission-Keys aus der DB werden verworfen.
+- Jeder Request löst neu auf; Rollenentzug wirkt beim nächsten Request, kein Cache über Requests hinweg.
+- Bootstrap schreibt `users`, `workspace_members`, Owner-Zuweisung (`assigned_by_user_id` = eigener User) und den
+  `security_events`-Eintrag `workspace_owner_bootstrapped` in einer Transaktion.
 
-```ts
-export function can(
-  actor: Actor,
-  permission: Permission,
-  resource?: ResourceRef,
-): boolean;
-```
+## Migration
 
-`can()` wertet nur die bereits aufgelösten effektiven Permissions und gegebenenfalls den Resource-Scope aus. Es gibt
-keinen zweiten Codepfad für Rollen, E-Mail-Allowlist oder `credentials_access`.
-
-## Migration aus dem bestehenden Schema
-
-Migration `0021` bleibt als bereits gemergte Historie unverändert. Eine neue Ordner-03-Migration nutzt dagegen die
-bestätigte Tatsache, dass alle von Ordner 01 angelegten Tabellen noch leer sind:
-
-1. Zu Beginn innerhalb derselben Transaktion `workspace_members`, `customers`, `people` und
-   `customer_contact_assignments` auf Leerheit prüfen.
-2. Sobald eine der Tabellen einen Datensatz enthält, mit einer eindeutigen Fehlermeldung abbrechen, bevor DDL
-   ausgeführt wird. Für diesen unerwarteten Fall muss zuerst ein eigener Datenmigrationsplan erstellt werden.
-3. `users`, Permission- und Rollentabellen anlegen sowie Systemrollen idempotent seeden.
-4. `workspace_members.user_id` als verpflichtenden und eindeutigen Fremdschlüssel ergänzen.
-5. Die ungenutzten Spalten `clerk_user_id`, `email`, `role` und `credentials_access` vorübergehend erhalten, damit die
-   unmittelbar vorherige App-Version während des Rollouts kompatibel bleibt. Die neue Auth darf sie nicht lesen.
-6. Neue Writes befüllen diese verpflichtenden Legacy-Spalten bis zum Cleanup mit konsistenten Schattenwerten;
-   Identität und Autorisierung folgen trotzdem ausschließlich aus `user_id` und RBAC.
-7. Drizzle-Modelle, Seeds und Constraint-Smokes im selben Changeset auf das Übergangsmodell umstellen.
-8. Anwendung auf User-ID und effektive Permissions umstellen.
-
-Damit gibt es weder Zuordnungsheuristik noch Identity-Backfill. Die alte App bleibt während des Rollouts lauffähig;
-die neue App besitzt genau einen Autorisierungsweg. Das befristete Schreiben der Legacy-Pflichtfelder ist keine zweite
-Autorisierung und wird nach erfolgreichem Rollout in einem kleinen Cleanup entfernt.
-
-## Activities
-
-`activities` erhält additiv:
-
-```text
-actor_user_id       uuid null -> users.id
-system_actor_key    text null
-```
-
-Invariante:
-
-- `actor_type = user` verlangt `actor_user_id` und verbietet `system_actor_key`;
-- `actor_type = system` verlangt `system_actor_key` und verbietet `actor_user_id`;
-- Legacy-Zeilen dürfen während der Übergangsphase weiterhin nur die alten Actor-Felder tragen.
-
-Ein Bulk Edit protokolliert den eingeloggten Bearbeiter. Der fachliche Lead- oder Kunden-Owner ist kein Ersatz für
-den Actor. Kunde, Owner und Mitarbeiter sind menschliche User; ihre jeweilige Einordnung folgt aus Membership und
-Rollen.
-
-## Mitglieder- und Rollenverwaltung
-
-Die Owner-Oberfläche deckt folgende Flows vollständig ab:
-
-- User/Mitglied anlegen und mit Clerk-ID verbinden;
-- Mitglied aktivieren/deaktivieren;
-- mehrere Rollen zuweisen und entziehen;
-- benutzerdefinierte Rollen erstellen, umbenennen, deaktivieren und mit delegierbaren Permissions bestücken;
-- effektive Permissions vor dem Speichern anzeigen;
-- alle fachlichen Zuständigkeiten vor einer Deaktivierung atomar übergeben;
-- letzten Owner schützen und aussagekräftige 409-Konflikte anzeigen.
-
-Die Clerk-Einladung selbst bleibt zunächst im Clerk-Dashboard. Die App erklärt diesen Schritt und speichert keine
-Credentials oder Einladungstokens von Clerk.
-
-## Zuständigkeits-Registry
-
-Die bestehende Idee einer exhaustiven `OWNERSHIP_REGISTRY` bleibt erhalten. Sie betrifft fachliche Zuständigkeit,
-nicht Autorisierung. Beim Ergänzen eines neuen `OwnableEntity` muss der Typecheck so lange fehlschlagen, bis ein
-Adapter für Zählung und atomare Übergabe registriert ist.
-
-Deaktivierung eines Mitglieds ist blockiert, solange aktive Zuständigkeiten bestehen. Der Konflikt nennt die Anzahl
-je Entität. Die Übergabe erzeugt pro betroffenem Datensatz eine Activity mit dem tatsächlichen User als Actor.
+1. Preflight: Existieren die Legacy-Spalten noch und enthält `workspace_members`, `customers`, `people` oder
+   `customer_contact_assignments` Zeilen, bricht die Migration mit eindeutiger Meldung ab.
+2. Legacy-Indizes und -Spalten an `workspace_members` entfernen, `user_id` ergänzen.
+3. `users`, `permissions`, `roles`, `role_permissions`, `workspace_member_roles`, `security_events` anlegen.
+4. Katalog und Systemrollen (feste UUIDs) mit `ON CONFLICT DO NOTHING` seeden.
+5. `activities.actor_user_id`, `activities.system_actor_key` und die `NOT VALID`-Invariante ergänzen.
 
 ## Tickets
 
-### CRM-03-T1 — User-Schema und leere Schema-Umstellung
+### CRM-03-T1 — User-Schema und Legacy-Entfernung
 
-- `users` und `workspace_members.user_id` modellieren
-- harte Preflight-Leerheitsprüfung vor jeder Schemaänderung implementieren
-- Legacy-Pflichtfelder ausschließlich als kompatible Schattenwerte schreiben und nie autorisierend lesen
-- Migration mit Abbruchbedingungen und DB-Smoke schreiben
-- User-Auflösung anhand Clerk-ID implementieren
-- Tests für nicht leere Ausgangstabellen, geänderte E-Mail, doppelte Clerk-ID, fehlenden User und inaktiven User
+- Preflight, Drop, `users`, `workspace_members.user_id`; Drizzle-Modelle deckungsgleich
+- Smoke: doppelte Clerk-ID, Member ohne User und doppelte Membership werden abgewiesen
 
-### CRM-03-T2 — Permission- und Rollenfundament
+### CRM-03-T2 — Katalog und Rollenfundament
 
-- Permission-Const-Objekt plus DB-Katalog
-- Rollen-, Rollenpermission- und Zuweisungstabellen mit Realm-Constraints
-- Systemrollen idempotent seeden
-- exakten Code/DB-Katalog sowie Realm-Invarianten testen
+- Const-Objekte mit Tests; Tabellen mit Realm- und Delegierbarkeits-Fremdschlüsseln; Systemrollen-Seed
+- Smoke: Katalog- und Systemrollen-Gleichheit Code↔DB, Realm-Mischung und Escalation werden abgewiesen
 
-### CRM-03-T3 — Systemrollen und Bootstrap
+### CRM-03-T3 — Bootstrap
 
-- den ersten `users`-, `workspace_members`- und Owner-Zuweisungsdatensatz atomar erzeugen
-- parallele Bootstrap-Requests idempotent behandeln
-- mindestens einen Owner garantieren
-- nach erfolgreichem Bootstrap die Env-Allowlist nicht mehr als Zugangsweg akzeptieren
+- Atomarer Owner-Bootstrap mit Advisory-Lock und `security_events`
+- Integrationstest auf isolierter DB ohne aktiven Owner: parallele Requests ergeben genau einen Owner; danach kein
+  weiterer Bootstrap
 
-### CRM-03-T4 — Fail-closed Auth-Gates
+### CRM-03-T4 — Fail-closed Gates und Bereiche
 
-- zentralen Actor mit persistierter `users.id` auflösen
-- `requireWorkspacePermission` und API-Wrapper bereitstellen
-- alle betroffenen Command-/Query-Grenzen permissionbasiert absichern
-- negative Tests für DB-Fehler, inaktive Membership, fehlende Rolle und fehlende Permission
-
-### CRM-03-T5 — Rollen- und Mitgliederverwaltung
-
-- Rollen-CRUD nur hinter `roles.manage`
-- nur delegierbare Permissions für benutzerdefinierte Rollen akzeptieren
-- Mehrfachzuweisung und effektive Vorschau implementieren
-- Owner-Schutz, optimistic locking und Security-Activities testen
+- `requireWorkspaceActor`, `requireWorkspaceArea`, `withWorkspaceApiActor`, `withPermission`, `can`
+- Bereichs-Registry, Sidebar-Filter, Bereichs-Gates in den Pages, Root-Redirect; alle Routen permissionbasiert
+- Tests: DB-Fehler, inaktiver User, inaktive Membership, fehlende Rolle, fehlende Permission, Rollenentzug
 
 ### CRM-03-T6 — Actor-Referenzen
 
-- `actor_user_id` und `system_actor_key` additiv ergänzen
-- menschliche Activity-Schreibpfade auf echte User-ID umstellen
-- Systemjobs explizit als Systemakteure schreiben
-- bestehende Activity-Lesekompatibilität und negative Actor-Invarianten testen
+- `ActivityActor`-Union statt `actorType/actorId/actorLabel` im Schreibweg
+- Lead- und Outreach-Commands schreiben `{ type: user, userId }`; Seeds und Smokes `system` + `SystemActorKey.Fixture`
+- Timeline zeigt den aktuellen `users.display_name`; Legacy-Zeilen weiter ihr `actor_label`
 
-### CRM-03-T7 — Zuständigkeit und E2E
-
-- exhaustive Ownership-Registry anbinden
-- Übergabe und Deaktivierung atomar implementieren
-- E2E: Mitglied mit Custom-Rolle darf erlaubte Aktion und erhält für andere Aktion `403`
-- E2E: Rollenentzug wirkt im nächsten Request
-- E2E: letzter Owner kann weder deaktiviert noch seiner Owner-Rolle beraubt werden
+T5 (Verwaltung) und T7 (Registry, Übergabe, Deaktivierung) liegen in Ordner 03b.
 
 ## Akzeptanzkriterien
 
 - Jeder menschliche Workspace-Actor besitzt eine persistierte `users.id`.
 - Namens- oder E-Mail-Änderungen verändern weder Rechte noch Activity-Zuordnung.
-- Ein Mitglied kann mehrere Rollen besitzen; effektive Permissions sind reproduzierbar deren Vereinigung.
-- Custom-Rollen können erstellt und Nutzern zugewiesen werden, ohne Codeänderung an den geschützten Features.
-- Features prüfen Permissions und enthalten keine `role === ...`-Verzweigung.
-- Nicht delegierbare Rechte können keiner Custom-Rolle hinzugefügt werden.
-- `credentials.reveal` wird ausschließlich über Rollen gewährt; `credentials_access` ist kein aktiver Sonderpfad mehr.
-- Workspace- und Portalrollen können nicht vermischt werden.
+- Effektive Permissions sind reproduzierbar die Vereinigung aktiver Rollen.
+- Kein Feature enthält eine Rollenprüfung; Bereiche und Routen kennen nur Permissions.
+- Nicht delegierbare Rechte können keiner Custom-Rolle zugeordnet werden — auch nicht per SQL.
+- Workspace- und Portalrollen können nicht vermischt werden — auch nicht per SQL.
 - DB-Ausfälle und unvollständige Identität lehnen Zugriff ab.
-- Activities referenzieren bei menschlichen Änderungen den tatsächlichen User; Jobs bleiben Systemakteure.
 - Die Migration bricht bei unerwarteten Ordner-01-Daten vor jeder Schemaänderung ab.
 
 ## Qualitäts-Gates
 
-- fokussierte Unit-, Integrations-, Migration- und E2E-Tests
-- DB-Smoke für Kataloggleichheit, Leerheits-Preflight, Zielmodell und Constraints
-- Suche nach direkten Rollenprüfungen und aktiv genutztem `credentials_access`
-- `pnpm -r lint`
-- `pnpm -r typecheck`
-- `pnpm -r test`
-- `pnpm --filter @invessiv/workspace build`
-
-## Post-03-Cleanup
-
-Der Cleanup ist als eigenständige Merge-Einheit
-[`03a-workspace-member-legacy-cleanup`](../03a-workspace-member-legacy-cleanup/README.md) geplant. Deren Task 02b
-enthält
-Readiness-Smoke, Drop-Migration, Abbruchbedingungen und Abnahme. Er gehört ausdrücklich nicht in den initialen
-RBAC-Cutover.
-
-## Split-Gate vor Implementierungsbeginn
-
-Wenn die belastbare Dateiliste mehr als 120 Änderungen erwarten lässt, wird Ordner 03 vor dem ersten Code-Commit in
-zwei aufeinanderfolgende Merge-Einheiten geteilt: zuerst Identität/RBAC-Fundament mit kompatiblen Reads, danach
-Management-UI und vollständiger Permission-Cutover. Die Activity-Migration aus Ordner 02 wird in keinem Fall wieder
-mit diesem Scope vermischt.
+- Unit-Tests, Integrationstests (`db:smoke:rbac`) sowie DB-Smokes `db:smoke`, `db:smoke:crm`,
+  `db:smoke:activities`, `db:smoke:rbac`
+- Repository-Suche: kein `WORKSPACE_ALLOWED_EMAILS`, kein `credentials_access`, kein `WorkspaceRole`
+- `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm --filter @invessiv/workspace build`
