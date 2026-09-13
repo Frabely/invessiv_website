@@ -43,9 +43,9 @@ nachvollziehbar. Es gibt keinerlei Portaloberfläche oder Portalendpunkt.
 
 - [ ] Manipulierter Ciphertext, Tag, AAD oder falscher Key schlägt sicher fehl.
 - [ ] Listen-, Activity-, Error- und Log-Ausgaben enthalten keinen Klartext.
-- [ ] Mitglied ohne `credentials_access` wird beim Aufdecken nach internem Standard abgewiesen,
-      kann aber anlegen und bearbeiten.
-- [ ] Owner deckt ohne gesetztes Flag auf; Entzug der Freigabe wirkt beim nächsten Request.
+- [ ] User ohne effektive Permission `credentials.reveal` wird beim Aufdecken nach internem Standard abgewiesen,
+      kann mit `credentials.write` aber weiterhin anlegen und bearbeiten.
+- [ ] Owner- und Credential-Manager-Rolle gewähren `credentials.reveal`; Rollenentzug wirkt beim nächsten Request.
 - [ ] Keyrotation ist nach Abbruch fortsetzbar und idempotent.
 - [ ] Browser-Cache, Server-Cache und Analytics erhalten keine Reveal-Antwort.
 - [ ] Fehlende Offline-Sicherung blockiert dokumentiert den ersten Produktiveintrag.

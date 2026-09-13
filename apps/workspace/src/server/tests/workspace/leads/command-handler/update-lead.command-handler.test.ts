@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
+import { StatusChangeOrigin } from "@invessiv/common/constants/activity/status-change-origins";
 import { PostgresErrorCode } from "@invessiv/db/core";
 
 const {
@@ -383,6 +384,7 @@ describe("updateLead", () => {
         metadata: {
           previous_status: "new",
           next_status: "qualified",
+          origin: StatusChangeOrigin.SingleEdit,
         },
       }),
     );

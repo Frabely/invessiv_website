@@ -4,6 +4,8 @@ import { inArray } from "drizzle-orm";
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
+import { StatusChangeOrigin } from "@invessiv/common/constants/activity/status-change-origins";
+import type { StatusChangeActivityMetadata } from "@invessiv/common/contracts/activity/status-change-activity-metadata";
 import type { BulkArchiveLeadsResult } from "@invessiv/common/contracts/leads/results/bulk-archive-leads-result";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { leads } from "@invessiv/db/record-configuration";
@@ -56,7 +58,8 @@ export async function bulkArchiveLeads(
         metadata: {
           previous_status: row.lead_status,
           next_status: ContactLeadStatus.Archived,
-        },
+          origin: StatusChangeOrigin.BulkArchive,
+        } satisfies StatusChangeActivityMetadata,
         actorType: ActorType.System,
       });
     }

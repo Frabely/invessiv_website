@@ -29,6 +29,21 @@ Bestandsdaten haben geringen Wert, und betrieblich ist zugesichert, dass zwische
 Migration und App-Deploy keine Activity-Writes stattfinden. Die Übergangsmechanik würde damit nur Code
 und Betriebsschritte hinzufügen, ohne ein reales Risiko abzudecken.
 
+## Mitgelieferter Fix: Bulk-Edit-Status im Dashboard
+
+Bulk-Edit hat Statusänderungen bisher nur als `bulk_edit`-Aktivität geschrieben. Die
+Messaging-Conversion im Dashboard zählt aber ausschließlich `status_change`; per Bulk-Edit
+kontaktierte Leads fehlten deshalb im gewählten Zeitraum. Bulk-Edit schreibt eine Statusänderung
+jetzt wie Einzel-Update und Bulk-Archivieren als `status_change` (`previous_status`/`next_status`);
+die optionale Metadaten-Herkunft `origin` unterscheidet `single_edit`, `bulk_edit` und
+`bulk_archive`, ohne den fachlichen Activity-Typ an den Bedienweg zu koppeln. Bestehende und
+migrierte Activities ohne `origin` bleiben gültig. Der `bulk_edit`-Eintrag enthält nur noch die
+übrigen Felder und entfällt, wenn nur der Status
+geändert wurde. Frühere Bulk-Edit-Statusänderungen werden nicht nachgetragen.
+
+Bewusste Ausnahme vom ersten Merge-Gate-Punkt: Die Erwartung im Bulk-Edit-Test für eine reine
+Statusänderung ändert sich von `bulk_edit` auf `status_change`.
+
 ## Merge-Gate
 
 - [x] Bestehende Lead- und Dashboard-Tests bleiben inhaltlich unverändert; nur Importpfade dürfen

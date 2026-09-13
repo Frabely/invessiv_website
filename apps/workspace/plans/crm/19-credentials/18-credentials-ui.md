@@ -6,8 +6,8 @@
 
 - Jedes aktive Mitglied darf Standard-Logins anlegen, bearbeiten und löschen (`credentials.write`)
   und sie maskiert sehen (`credentials.read`).
-- **Aufdecken** erfordert `credentials.reveal`: Owner implizit, ein Member nur bei gesetztem
-  `credentials_access`. Ohne die Freigabe existieren Anzeigen und Kopieren gar nicht.
+- **Aufdecken** erfordert die effektive Permission `credentials.reveal`. Sie kommt ausschließlich aus einer
+  zugewiesenen Rolle; ohne diese Permission existieren Anzeigen und Kopieren gar nicht.
 - Listen liefern nur Metadaten. Reveal zeigt genau einen Datensatz; Anzeigen, Kopieren, Ändern,
   Löschen und fehlgeschlagener Zugriff werden ohne Geheimwert auditiert.
 - Kein Bulk-Reveal, Export, TOTP, Portalzugriff oder freies Geheimfeld.
@@ -142,7 +142,7 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/credentials/{de,en}.json
   - Rate-Limit: maximal 20 Aufdeckungen pro Minute je Nutzer (Muster: das datenbankgestützte
     Limit aus `reserve-linkedin-post-generator-usage-limit.ts`)
 - **Akzeptanz:**
-  - Test: Rolle `member` bekommt 403, auch wenn sie die Liste sehen darf
+  - Test: User ohne `credentials.reveal` bekommt 403, auch wenn `credentials.read` die Liste erlaubt
   - Test: je Aufdeckung genau eine Activity, und diese enthält **nicht** den Wert
   - Test: Überschreiten des Limits ergibt 429 mit `Retry-After`
 
@@ -197,9 +197,10 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/credentials/{de,en}.json
 4. Tab-Wechsel verbirgt sofort.
 5. Kopieren funktioniert ohne Anzeigen und wird ebenfalls protokolliert.
 6. Jede Aufdeckung erscheint in der Timeline — ohne den Wert.
-7. Ein Mitglied ohne `credentials_access` sieht Anzeigen und Kopieren gar nicht und wird serverseitig
-   abgewiesen — kann aber weiterhin Zugangsdaten anlegen und bearbeiten.
-8. Ein Owner deckt auf, ohne dass an seiner Zeile ein Flag gesetzt ist.
+7. Ein User ohne `credentials.reveal` sieht Anzeigen und Kopieren gar nicht und wird serverseitig
+   abgewiesen — kann mit `credentials.write` aber weiterhin Zugangsdaten anlegen und bearbeiten.
+8. Ein Owner oder User mit zugewiesener Credential-Manager-Rolle darf aufdecken; Rollenentzug wirkt ab dem nächsten
+   Request.
 9. Bearbeiten ohne neues Geheimnis lässt das bestehende unverändert.
 10. Ohne Hauptschlüssel bleibt die Anwendung lauffähig.
 11. `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm build:workspace` grün.

@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
+import { StatusChangeOrigin } from "@invessiv/common/constants/activity/status-change-origins";
 
 const { getDrizzleDatabaseClientMock, createLeadActivityMock } = vi.hoisted(
   () => ({
@@ -96,6 +97,11 @@ describe("bulkArchiveLeads", () => {
         actorType: ActorType.System,
         leadId: "lead-1",
         type: ActivityType.StatusChange,
+        metadata: {
+          previous_status: "new",
+          next_status: ContactLeadStatus.Archived,
+          origin: StatusChangeOrigin.BulkArchive,
+        },
       }),
     );
   });

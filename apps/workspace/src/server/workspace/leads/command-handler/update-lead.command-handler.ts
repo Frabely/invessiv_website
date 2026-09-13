@@ -5,6 +5,8 @@ import { leads, leadSocialProfiles } from "@invessiv/db/record-configuration";
 import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
+import { StatusChangeOrigin } from "@invessiv/common/constants/activity/status-change-origins";
+import type { StatusChangeActivityMetadata } from "@invessiv/common/contracts/activity/status-change-activity-metadata";
 import type { UpdateLeadResult } from "@invessiv/common/contracts/leads/results/update-lead-result";
 import { updateLeadValidationService } from "@/server/workspace/leads/services/update-lead/update-lead-validation-service";
 import type { UpdateLeadInput } from "@/server/workspace/leads/services/update-lead/update-lead.schema";
@@ -56,14 +58,14 @@ export async function updateLead(
     setFields.improvements = data.improvements;
   if (data.lead_status !== undefined) setFields.lead_status = data.lead_status;
 
-  const isStatusChange =
-    data.lead_status !== undefined && data.lead_status !== existing.leadStatus;
-
   try {
     await db.transaction(async (tx) => {
       await tx.update(leads).set(setFields).where(eq(leads.id, leadId));
 
-      if (isStatusChange) {
+      if (
+        data.lead_status !== undefined &&
+        data.lead_status !== existing.leadStatus
+      ) {
         await activityService.createActivity(tx, {
           leadId,
           type: ActivityType.StatusChange,
@@ -71,7 +73,8 @@ export async function updateLead(
           metadata: {
             previous_status: existing.leadStatus,
             next_status: data.lead_status,
-          },
+            origin: StatusChangeOrigin.SingleEdit,
+          } satisfies StatusChangeActivityMetadata,
           actorType: ActorType.System,
         });
       }
