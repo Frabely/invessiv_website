@@ -1,66 +1,108 @@
-# Task 02 — Rechtesystem
+# Task 02 — Persistierte User und flexibles Rechtesystem
 
-> **Merge-Einheit:** Ordner 03 · **Branch:** `feat/crm-mitglieder-und-auth`
-> **Aufwand:** M · **Abhängigkeiten:** Task 01 (Konstanten-Muster, `record-configuration/crm/`)
-> **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
-
-- Interne Rollen ausschließlich `owner | member`; kein `admin`.
-- Portalrollen werden nicht hier definiert. Portalmitglieder besitzen denselben fachlichen Umfang.
-- `workspace_members` enthält `active` und `credentials_access`. Das Flag steuert ausschließlich das **Aufdecken** von
-  Klartext; Anlegen und Bearbeiten darf jedes Mitglied ohnehin.
-- Allowlist nur zum atomaren Bootstrap des ersten Owners, wenn noch kein Owner existiert. Danach
-  öffnet ausschließlich eine aktive Mitgliedszeile.
-- Jeder DB-Fehler ist fail-closed; niemals Fallback auf reine Allowlistprüfung.
-- Vollständige Owner-UI für Einladung, Credentialfreigabe, Übergabe und Deaktivierung; keine
-  dauerhafte SQL-Bedienung.
-- Das Clerk-Konto eines neuen Mitglieds entsteht im Clerk-Dashboard, nicht in der App. Die App legt
-  nur die `workspace_members`-Zeile an und erklärt den Clerk-Schritt im Dialog.
-- `member` darf den Alltag vollständig. Nicht freigebbar und damit rollengebunden Owner-only sind
-  `members.manage`, `data.export`, `data.purge` und `security.audit`.
-- `credentials.reveal` steht in keiner Rollen-Baseline. Owner hat es implizit, ein Member nur bei
-  gesetztem `credentials_access`; `can()` fragt dafür `getEffectivePermissions`.
-- Deaktivierung blockiert bis zur Übergabe aller aktiven Zuständigkeiten; letzter Owner ist geschützt.
+> **Merge-Einheit:** Ordner 03 · **Branch:** `feat/crm-users-rbac`
+> **Aufwand:** L · **Abhängigkeiten:** Ordner 01 und 02
+> **Migration:** Neue Nummer als höchste vorhandene Migration plus eins; gemergte Migrationen bleiben unverändert
 
 ## Context
 
-Heute gibt es genau eine Zugriffsregel: steht die E-Mail in `WORKSPACE_ALLOWED_EMAILS`, darf man
-alles. Das trägt nicht mehr, sobald Kunden ins Portal kommen und Zugangsdaten im System liegen.
+Der bisher geplante Zuschnitt `workspace_members.role = owner | member` plus `credentials_access` bildet nur einen
+festen Sonderfall ab. Sobald Rollen frei erstellt und mehreren Nutzern zugewiesen werden sollen, entstehen sonst
+parallele Autorisierungswege: feste Rolle, Einzel-Flag und später eine weitere Rollentabelle.
 
-Dieser Task baut das Fundament, **ohne eine einzige bestehende Prüfung zu entfernen**: Die Env-Allowlist
-bleibt aktiv und wird zum Bootstrap (wer drinsteht, ist `owner`). Neu kommt darunter eine Rollen- und
-Permission-Schicht, gegen die ab Task 03 alle neuen Features prüfen.
+Dieser Task führt deshalb zuerst eine stabile User-Identität und anschließend ein persistiertes RBAC ein. Der
+vorherige Activity-Branch bleibt davon unabhängig mergebar.
 
-Recherche-Grundlage: tenant-scoped Rollen bei system-weiten Permissions ist der etablierte Zuschnitt.
-Clerk-Custom-Roles scheiden aus — sie kosten in Production das B2B-Add-on und legen die Rechte
-außerhalb der eigenen Datenbank ab, wo sie nicht mit Kundendaten joinbar sind.
+## Verbindliche Entscheidungen
 
-## Entscheidungen
+| Bereich                | Entscheidung                                                                                           |
+| ---------------------- | ------------------------------------------------------------------------------------------------------ |
+| Menschliche Identität  | `users.id` ist die kanonische interne UUID für jeden angemeldeten Menschen.                            |
+| Externer Login         | `users.clerk_user_id` ist eindeutig; Clerk authentifiziert, die eigene DB autorisiert.                 |
+| Stammdaten             | Name und primäre E-Mail hängen an `users`; E-Mail wird niemals als Berechtigungsanker genutzt.         |
+| Interne Mitgliedschaft | `workspace_members` bleibt bestehen und referenziert genau einen `user`.                               |
+| CRM-Kontakt            | `people` bleibt getrennt, da CRM-Kontakte auch ohne Zugang existieren.                                 |
+| Portal                 | Ordner 12 verbindet später `users`, `people` und `customers` über `portal_memberships`.                |
+| Permission             | Atomare Fähigkeit aus einem codebekannten und in der DB spiegelnden Katalog.                           |
+| Rolle                  | Persistiertes, benennbares Bündel von Permissions; keine Rollenprüfung an Features.                    |
+| Zuweisung              | Ein Mitglied kann mehrere Rollen besitzen; die effektiven Rechte sind deren Vereinigung.               |
+| Realms                 | Workspace- und Portalrollen sind strikt getrennt und können nicht realmübergreifend zugewiesen werden. |
+| Ablehnung              | Kein explizites Deny in Version 1; fehlende Permission bedeutet fail-closed `403`.                     |
+| Credentials            | Kein `credentials_access`-Sonderweg; Reveal folgt ausschließlich aus `credentials.reveal`.             |
+| Jobs                   | Systemjobs erhalten keinen künstlichen User-Datensatz, sondern einen stabilen Systemakteur.            |
 
-| Bereich        | Entscheidung                                                                                                                                                                                                                                                                 |
-| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Identität      | Clerk, ausschließlich. Keine Rollen, keine Organisationen in Clerk                                                                                                                                                                                                           |
-| Rolle          | DB-Spalte, CHECK-Constraint aus Const-Objekt                                                                                                                                                                                                                                 |
-| Permission     | Const-Objekt im Code, **nicht** als DB-Zeilen — typsicher und ohne Admin-UI-Aufwand                                                                                                                                                                                          |
-| Zuordnung      | `ROLE_PERMISSIONS satisfies Record<WorkspaceRole, readonly Permission[]>` — fehlt eine Rolle, bricht der Compiler$1                                                                                                                                                          |
-| Freigabe       | `credentials.reveal` steht in keiner Rollen-Baseline. Owner hat es implizit, ein Member über `credentials_access` an seiner Zeile                                                                                                                                            |
-| Warum getrennt | Eine Permission, die pro Mitglied vergeben wird, passt nicht in eine Rollen-Map. Ohne diesen Weg wäre `credentials_access` eine Spalte, die nichts bewirkt                                                                                                                   |
-| Einstiegspunkt | Genau eine Funktion `can(actor, permission, resource?)`. Nirgends ein `if (role === "…")`                                                                                                                                                                                    |
-| Bootstrap      | Env-Allowlist ist **nur noch** Bootstrap: Wer allowlisted ist, aber keine `workspace_members`-Zeile hat, gilt als `owner` und bekommt die Zeile beim ersten Zugriff angelegt                                                                                                 |
-| Zugangsregel   | Eine vorhandene `workspace_members`-Zeile genügt — **auch ohne** Eintrag in `WORKSPACE_ALLOWED_EMAILS`                                                                                                                                                                       |
-| Warum          | Sonst bliebe die Env-Allowlist die eigentliche Zugangsregel (`lib/auth/api.ts:40`) und die Rollen-Tabelle wäre Dekoration: einen zweiten internen Nutzer aufzunehmen erforderte Env-Änderung **plus** Redeploy **plus** SQL                                                  |
-| Portal-Rollen  | Werden hier **definiert**, aber erst in Task 20 vergeben — das Portal existiert noch nicht                                                                                                                                                                                   |
-| Clerk-Konto    | Entsteht **außerhalb der App**: der Owner lädt im Clerk-Dashboard ein. Die App legt nur die `workspace_members`-Zeile an                                                                                                                                                     |
-| Warum          | Clerk steht ab Ordner 12 auf „Restricted", also kann sich niemand selbst registrieren. Ein eigener Clerk-Backend-API-Pfad wäre ein zweiter Integrationsweg mit eigenen Fehlerzuständen — für einen Vorgang, der über die Lebensdauer des Systems vielleicht dreimal passiert |
-| Konsequenz     | Die Mitgliederzeile ist ohne passendes Clerk-Konto wirkungslos, aber harmlos: sie öffnet erst, wenn sich die Person mit dieser Kennung anmeldet                                                                                                                              |
-| Deaktivierung  | Blockiert, solange das Mitglied irgendeine aktive Zuständigkeit hält. Kein „deaktivieren und Rest später aufräumen"                                                                                                                                                          |
-| Schnellweg     | Ein Command „Alle Zuständigkeiten an den Owner übergeben" erledigt die Übergabe in einem Schritt, atomar und protokolliert. Danach greift die Deaktivierung                                                                                                                  |
-| Letzter Owner  | Ist geschützt: der einzige aktive Owner lässt sich nicht deaktivieren und nicht zum Member herabsetzen                                                                                                                                                                       |
-| Registry       | Zuständigkeiten laufen über eine **exhaustive** Registry (siehe unten), nicht über eine handgepflegte Liste von Abfragen                                                                                                                                                     |
+## Datenmodell
 
-## Contract
+### `users`
+
+```text
+users
+  id                uuid primary key
+  clerk_user_id     text unique not null
+  primary_email     text not null
+  first_name        text null
+  last_name         text null
+  display_name      text not null
+  active            boolean not null
+  version           integer not null
+  created_at        timestamptz not null
+  updated_at        timestamptz not null
+```
+
+`primary_email` darf aktualisiert werden, ohne Zuweisungen oder Historie zu verändern. Es gibt keinen Identity-Backfill:
+Die Ordner-01-Tabellen sind noch leer und der erste User wird erst durch den Bootstrap dieses Ordners erzeugt.
+
+### Membership und Rollen
+
+```text
+workspace_members
+  id                uuid primary key
+  user_id           uuid unique not null -> users.id
+  active            boolean not null
+  version           integer not null
+  ... fachliche Membership-Felder
+
+permissions
+  key               text primary key
+  realm             workspace | portal
+  delegable         boolean not null
+  description       text not null
+
+roles
+  id                uuid primary key
+  realm             workspace | portal
+  system_key        text null
+  name              text not null
+  description       text null
+  is_system         boolean not null
+  active            boolean not null
+  version           integer not null
+
+role_permissions
+  role_id           uuid -> roles.id
+  permission_key    text -> permissions.key
+  realm             workspace | portal
+  primary key (role_id, permission_key)
+
+workspace_member_roles
+  workspace_member_id uuid -> workspace_members.id
+  role_id             uuid -> roles.id
+  assigned_by_user_id uuid -> users.id
+  assigned_at          timestamptz not null
+  primary key (workspace_member_id, role_id)
+```
+
+Zusammengesetzte Constraints/Fremdschlüssel sichern, dass Rolle, Permission und Zuweisung denselben Realm besitzen.
+Der Schutz liegt nicht nur in TypeScript. Namen benutzerdefinierter Rollen sind innerhalb ihres Realms eindeutig.
+`system_key` ist für gelieferte Systemrollen eindeutig und bei benutzerdefinierten Rollen `null`.
+
+## Permission-Katalog
+
+Der Code definiert die zulässigen Schlüssel über ein Const-Objekt. Eine idempotente Seed-/Sync-Funktion schreibt
+exakt diesen Katalog in `permissions`. Der DB-Smoke prüft in beide Richtungen: kein Code-Key fehlt und kein unbekannter
+DB-Key existiert.
 
 ```ts
-// packages/common/src/constants/crm/permissions.ts
 export const Permission = {
   CustomersRead: "customers.read",
   CustomersWrite: "customers.write",
@@ -70,107 +112,66 @@ export const Permission = {
   FilesRead: "files.read",
   FilesWrite: "files.write",
   FilesDelete: "files.delete",
-  CredentialsRead: "credentials.read", // maskiert sehen
-  CredentialsReveal: "credentials.reveal", // Klartext aufdecken
+  CredentialsRead: "credentials.read",
+  CredentialsReveal: "credentials.reveal",
   CredentialsWrite: "credentials.write",
   PortalAccessManage: "portal.manage",
+  RolesManage: "roles.manage",
   MembersManage: "members.manage",
   DataExport: "data.export",
   DataPurge: "data.purge",
   SecurityAudit: "security.audit",
 } as const;
-
-export type Permission = (typeof Permission)[keyof typeof Permission];
 ```
 
-```ts
-// packages/common/src/constants/crm/roles.ts
-export const WorkspaceRole = {
-  Owner: "owner",
-  Member: "member",
-} as const;
+Features prüfen ausschließlich `Permission.X`. Eine Rolle ist Konfiguration und darf nie als Voraussetzung einer
+Route, eines Commands, eines Buttons oder eines Bereichs hart codiert werden.
+
+Nicht delegierbar sind zunächst:
+
+- `roles.manage`
+- `members.manage`
+- `data.export`
+- `data.purge`
+- `security.audit`
+
+Benutzerdefinierte Rollen dürfen diese Permissions nicht erhalten. Dadurch kann ein Rollenverwalter keine
+Privilege-Escalation-Kette bauen. Änderungen am nicht delegierbaren Satz sind Code- und Review-Entscheidungen.
+
+## Systemrollen
+
+Die Migration legt mindestens folgende Rollen idempotent an:
+
+| System-Key                      | Zweck                                                            | Veränderbar | Zuweisbar                        |
+| ------------------------------- | ---------------------------------------------------------------- | ----------- | -------------------------------- |
+| `workspace_owner`               | alle Workspace-Permissions, inklusive nicht delegierbarer Rechte | nein        | nur über geschützten Owner-Flow  |
+| `workspace_member`              | sichere Basis für den operativen Alltag                          | nein        | ja                               |
+| `workspace_credentials_manager` | zusätzlich `credentials.reveal`                                  | nein        | ja, nur durch berechtigten Actor |
+
+`is_system` bedeutet: Name, Realm und Permission-Satz sind unveränderlich. Es bedeutet nicht automatisch, dass die
+Rolle nicht zugewiesen werden darf. Für `workspace_owner` gelten zusätzliche Invarianten:
+
+- mindestens ein aktiver Workspace-Owner bleibt erhalten;
+- niemand kann sich selbst die letzte Owner-Zuweisung entziehen;
+- Owner-Vergabe und -Entzug laufen über einen separaten Command;
+- jede Änderung erzeugt eine Security-Activity mit tatsächlichem Actor.
+
+## Autorisierungsablauf
+
+```text
+Clerk-Session
+  -> users anhand clerk_user_id laden
+  -> aktive workspace_members-Zeile laden
+  -> aktive Rollen und deren Permissions laden
+  -> WorkspaceActor { userId, workspaceMemberId, permissions }
+  -> requireWorkspacePermission(Permission.X)
 ```
 
-```ts
-// packages/common/src/constants/crm/role-permissions.ts
-export const ROLE_PERMISSIONS = {
-  [WorkspaceRole.Owner]: [...Object.values(Permission)],
-  [WorkspaceRole.Member]: [
-    Permission.CustomersRead,
-    Permission.CustomersWrite,
-    Permission.ProjectsRead,
-    Permission.ProjectsWrite,
-    Permission.TasksWrite,
-    Permission.FilesRead,
-    Permission.FilesWrite,
-    Permission.FilesDelete,
-    Permission.CredentialsRead, // nur maskiert
-    Permission.CredentialsWrite,
-    Permission.PortalAccessManage,
-    // CredentialsReveal steht bewusst in KEINER Rolle — siehe GRANTABLE_PERMISSIONS
-  ],
-} as const satisfies Record<WorkspaceRole, readonly Permission[]>;
-```
-
-**Member darf den Alltag, Owner behält vier Vorbehalte.** Ein Member verwaltet Kunden, Projekte,
-Aufgaben, Dateien, Renewals, Stunden, Chat und Portalzugänge vollständig. Vier Permissions hängen
-allein an der Rolle und lassen sich **nicht** freigeben:
-
-| Owner-only, nicht freigebbar | Warum                                                                        |
-| ---------------------------- | ---------------------------------------------------------------------------- |
-| `members.manage`             | Sonst könnte sich ein Member selbst zum Owner machen und die Grenze aufheben |
-| `data.export` / `data.purge` | Vollexport und Purge sind beide endgültig, in verschiedene Richtungen        |
-| `security.audit`             | Das Protokoll der Reveals darf nicht von dem gelesen werden, der es auslöst  |
-
-`credentials.write` **hat** ein Member: einen Zugang anlegen oder ersetzen ist Alltagsarbeit.
-
-Kein `customers.delete`: In Version 1 gibt es keinen Löschbutton. Der einzige Löschpfad ist der
-Owner-Command aus Task 34 hinter `data.purge`.
-
-Bei zwei bis fünf Personen kostet Misstrauen im Alltag mehr, als es einbringt — und jede Änderung
-liegt ohnehin als Activity mit Actor vor. Die Aufteilung ist nachträglich verengbar, ohne eine
-Call-Site anzufassen: sie ist eine Zeile in dieser Map.
-
-### `credentials.reveal` ist der Sonderfall
-
-`credentials.reveal` steht in **keinem** Rollen-Baseline — auch nicht beim Owner. Es ist die einzige
-Permission, die nicht allein aus der Rolle folgt, sondern zusätzlich aus der Mitgliedszeile:
+Die Auflösung ist fail-closed: fehlender User, inaktive Membership, DB-Fehler, unbekannte Permission oder
+realmwidrige Zuweisung ergeben keinen Zugriff. Die Env-Allowlist ist ausschließlich ein zeitlich begrenzter Bootstrap
+für den ersten Owner. Nach erfolgreicher Initialisierung öffnet sie keinen parallelen Autorisierungsweg.
 
 ```ts
-// packages/common/src/constants/crm/grantable-permissions.ts
-/** Permissions, die über die Rolle hinaus je Mitglied freigegeben werden können. */
-export const GRANTABLE_PERMISSIONS = [Permission.CredentialsReveal] as const;
-```
-
-```ts
-// apps/workspace/src/server/auth/effective-permissions.ts
-/**
- * Rollen-Baseline plus freigegebene Permissions. Der Owner bekommt die freigebbaren
- * Permissions implizit, ein Member nur bei gesetztem `credentials_access`.
- */
-export function getEffectivePermissions(
-  actor: WorkspaceActor,
-): ReadonlySet<Permission>;
-```
-
-Regeln dazu:
-
-- `ROLE_PERMISSIONS` enthält `CredentialsReveal` bei **keiner** Rolle. Steht es dort, ist das ein
-  Fehler — der Test prüft es.
-- Der Owner erhält alle `GRANTABLE_PERMISSIONS` implizit, ohne dass das Flag gesetzt sein muss.
-- Ein Member erhält `CredentialsReveal` genau dann, wenn `workspace_members.credentials_access`
-  gesetzt ist. Das Flag vergibt und entzieht ausschließlich der Owner (`members.manage`).
-- `can()` fragt **immer** `getEffectivePermissions`, nie `ROLE_PERMISSIONS` direkt. Es gibt keinen
-  zweiten Weg, eine Permission zu bejahen.
-- Der `WorkspaceActor` trägt `credentialsAccess` als Feld — sonst müsste `can()` die Datenbank
-  befragen und wäre keine reine Funktion mehr.
-- Entzug wirkt beim nächsten Request: der Actor wird pro Anfrage aufgelöst, es gibt keinen Cache.
-
-Ohne diesen Mechanismus stünde `credentials_access` als Spalte in der Tabelle und würde nirgends
-ausgewertet — eine Freigabe, die nichts freigibt.
-
-```ts
-// apps/workspace/src/server/auth/can.ts  — der einzige Einstiegspunkt
 export function can(
   actor: Actor,
   permission: Permission,
@@ -178,245 +179,163 @@ export function can(
 ): boolean;
 ```
 
-`can()` bejaht eine Permission ausschließlich über `getEffectivePermissions(actor)` — Rollen-Baseline
-plus freigegebene Permissions. Ein direkter Zugriff auf `ROLE_PERMISSIONS` außerhalb dieser Funktion
-ist nicht erlaubt.
+`can()` wertet nur die bereits aufgelösten effektiven Permissions und gegebenenfalls den Resource-Scope aus. Es gibt
+keinen zweiten Codepfad für Rollen, E-Mail-Allowlist oder `credentials_access`.
 
-`Actor` ist eine diskriminierte Union: `{ kind: "workspace"; userId; email; role }` oder
-`{ kind: "portal"; userId; customerId; role }`. Für Portal-Actors prüft `can()` zusätzlich, dass
-`resource.customerId === actor.customerId` — Fremdzugriff ist damit nicht nur verboten, sondern
-strukturell ausgeschlossen.
+## Migration aus dem bestehenden Schema
 
-## Architektur
+Migration `0021` bleibt als bereits gemergte Historie unverändert. Eine neue Ordner-03-Migration nutzt dagegen die
+bestätigte Tatsache, dass alle von Ordner 01 angelegten Tabellen noch leer sind:
 
-```txt
-                         resolveWorkspaceActor()   [neu, die einzige Zugangsauflösung]
-                           ├─ workspace_members-Zeile vorhanden → Actor mit dieser Rolle
-                           ├─ sonst E-Mail in der Allowlist     → Zeile als owner anlegen, Actor
-                           └─ sonst                             → null
+1. Zu Beginn innerhalb derselben Transaktion `workspace_members`, `customers`, `people` und
+   `customer_contact_assignments` auf Leerheit prüfen.
+2. Sobald eine der Tabellen einen Datensatz enthält, mit einer eindeutigen Fehlermeldung abbrechen, bevor DDL
+   ausgeführt wird. Für diesen unerwarteten Fall muss zuerst ein eigener Datenmigrationsplan erstellt werden.
+3. `users`, Permission- und Rollentabellen anlegen sowie Systemrollen idempotent seeden.
+4. `workspace_members.user_id` als verpflichtenden und eindeutigen Fremdschlüssel ergänzen.
+5. Die ungenutzten Spalten `clerk_user_id`, `email`, `role` und `credentials_access` vorübergehend erhalten, damit die
+   unmittelbar vorherige App-Version während des Rollouts kompatibel bleibt. Die neue Auth darf sie nicht lesen.
+6. Neue Writes befüllen diese verpflichtenden Legacy-Spalten bis zum Cleanup mit konsistenten Schattenwerten;
+   Identität und Autorisierung folgen trotzdem ausschließlich aus `user_id` und RBAC.
+7. Drizzle-Modelle, Seeds und Constraint-Smokes im selben Changeset auf das Übergangsmodell umstellen.
+8. Anwendung auf User-ID und effektive Permissions umstellen.
 
-Page:   (app)/layout.tsx → requireWorkspaceAccess()              [bestehend, nutzt jetzt den Actor]
-        Page/Sektion     → requireWorkspacePermission(Permission.X)  [neu]
+Damit gibt es weder Zuordnungsheuristik noch Identity-Backfill. Die alte App bleibt während des Rollouts lauffähig;
+die neue App besitzt genau einen Autorisierungsweg. Das befristete Schreiben der Legacy-Pflichtfelder ist keine zweite
+Autorisierung und wird nach erfolgreichem Rollout in einem kleinen Cleanup entfernt.
 
-API:    Route Handler    → withWorkspaceApiAuth(...)             [bestehend, nutzt jetzt den Actor]
-                         → withPermission(Permission.X, handler) [neu, wrappt den bestehenden]
+## Activities
+
+`activities` erhält additiv:
+
+```text
+actor_user_id       uuid null -> users.id
+system_actor_key    text null
 ```
 
-Die beiden bestehenden Gates prüfen die Allowlist nicht länger selbst, sondern fragen
-`resolveWorkspaceActor`. Die Allowlist darf ausschließlich den ersten Owner bootstrappen; nach
-Initialisierung ist eine aktive `workspace_members`-Zeile das alleinige Zugriffsgate.
+Invariante:
 
-`withPermission` ist eine Erweiterung, kein Ersatz: intern ruft es `withWorkspaceApiAuth` auf und
-lehnt danach mit `403 FORBIDDEN` ab. Bestehende Routen behalten ihren Wrapper.
+- `actor_type = user` verlangt `actor_user_id` und verbietet `system_actor_key`;
+- `actor_type = system` verlangt `system_actor_key` und verbietet `actor_user_id`;
+- Legacy-Zeilen dürfen während der Übergangsphase weiterhin nur die alten Actor-Felder tragen.
 
-## Verzeichnisstruktur
+Ein Bulk Edit protokolliert den eingeloggten Bearbeiter. Der fachliche Lead- oder Kunden-Owner ist kein Ersatz für
+den Actor. Kunde, Owner und Mitarbeiter sind menschliche User; ihre jeweilige Einordnung folgt aus Membership und
+Rollen.
 
-```txt
-packages/db/migrations/<nr>_create_workspace_members.sql
-packages/db/src/record-configuration/crm/workspace-members.ts
+## Mitglieder- und Rollenverwaltung
 
-packages/common/src/constants/crm/
-  permissions.ts           (+ .test.ts)
-  roles.ts                 (+ .test.ts)
-  role-permissions.ts      (+ .test.ts)
+Die Owner-Oberfläche deckt folgende Flows vollständig ab:
 
-apps/workspace/src/server/auth/
-  can.ts
-  resolve-workspace-actor.ts       Clerk-Session → Actor (inkl. Bootstrap)
-  require-workspace-permission.ts  für Pages
-  with-permission.ts               für Route Handler
-apps/workspace/src/common/contracts/auth/actor.ts
-apps/workspace/src/server/tests/auth/**
-```
+- User/Mitglied anlegen und mit Clerk-ID verbinden;
+- Mitglied aktivieren/deaktivieren;
+- mehrere Rollen zuweisen und entziehen;
+- benutzerdefinierte Rollen erstellen, umbenennen, deaktivieren und mit delegierbaren Permissions bestücken;
+- effektive Permissions vor dem Speichern anzeigen;
+- alle fachlichen Zuständigkeiten vor einer Deaktivierung atomar übergeben;
+- letzten Owner schützen und aussagekräftige 409-Konflikte anzeigen.
 
-## Zuständigkeits-Registry (verbindlich)
+Die Clerk-Einladung selbst bleibt zunächst im Clerk-Dashboard. Die App erklärt diesen Schritt und speichert keine
+Credentials oder Einladungstokens von Clerk.
 
-Das Deaktivierungs-Gate und die Owner-Übergabe müssen über den ganzen Plan hinweg **alle** Entitäten
-kennen, die ein Mitglied besitzen kann. Zum Zeitpunkt dieses Tasks ist das nur `customers`. Projekte (Ordner 07),
-Aufgaben (Ordner 08) und Renewals (Ordner 11) kommen später.
+## Zuständigkeits-Registry
 
-Eine handgepflegte Liste von Abfragen wäre genau die Stelle, an der Ordner 08 stillschweigend
-durchfällt: Die Aufgaben behalten den alten Bearbeiter, kein Test schlägt fehl, und es fällt erst
-Monate später auf. Deshalb ist die Liste ein **Typ**, nicht eine Konvention.
+Die bestehende Idee einer exhaustiven `OWNERSHIP_REGISTRY` bleibt erhalten. Sie betrifft fachliche Zuständigkeit,
+nicht Autorisierung. Beim Ergänzen eines neuen `OwnableEntity` muss der Typecheck so lange fehlschlagen, bis ein
+Adapter für Zählung und atomare Übergabe registriert ist.
 
-```ts
-// apps/workspace/src/common/constants/members/ownable-entities.ts
-export const OwnableEntity = {
-  Customers: "customers",
-  // Ordner 07 ergänzt Projects, Ordner 08 Tasks, Ordner 11 Renewals
-} as const;
-
-export type OwnableEntity = (typeof OwnableEntity)[keyof typeof OwnableEntity];
-```
-
-```ts
-// apps/workspace/src/server/workspace/members/ownership-registry.ts
-interface OwnershipAdapter {
-  /** Zählt aktive, noch nicht abgeschlossene Zuständigkeiten dieses Mitglieds. */
-  countOpen(tx: Tx, memberId: string): Promise<number>;
-  /** Überträgt genau diese Entität atomar; erzeugt je Datensatz eine Activity. */
-  reassignOpen(
-    tx: Tx,
-    fromMemberId: string,
-    toMemberId: string,
-  ): Promise<number>;
-}
-
-export const OWNERSHIP_REGISTRY = {
-  [OwnableEntity.Customers]: customerOwnershipAdapter,
-} satisfies Record<OwnableEntity, OwnershipAdapter>;
-```
-
-**Der Effekt:** Ordner 07 fügt `Projects` zum Const-Objekt hinzu — und `satisfies Record<…>` bricht
-sofort den Typecheck, bis ein Adapter registriert ist. Vergessen ist damit kein stiller Datenfehler
-mehr, sondern ein roter Build. Dasselbe für Ordner 08 und 11.
-
-Beide Verbraucher iterieren ausschließlich über die Registry:
-
-```txt
-countOpenResponsibilities(memberId)
-  → für jeden Eintrag der Registry countOpen()
-  → liefert Record<OwnableEntity, number> + Summe
-
-handOverAllToOwner(fromMemberId, actor)
-  → eine Transaktion
-  → für jeden Eintrag der Registry reassignOpen(from, ownerId)
-  → eine Activity je betroffenem Datensatz, mit Actor, Alt- und Neuzuweisung
-  → Summe = 0 danach, sonst Rollback
-
-deactivateMember(memberId)
-  → countOpenResponsibilities() > 0  →  409 mit vollständiger Vorschau je Entität
-  → letzter aktiver Owner            →  409 LastActiveOwner
-  → sonst active = false
-```
-
-Die Vorschau im 409 nennt die Zahlen je Entität („3 Kunden, 12 Aufgaben"), nicht nur eine Summe —
-sonst weiß der Nutzer nicht, wo er aufräumen soll.
+Deaktivierung eines Mitglieds ist blockiert, solange aktive Zuständigkeiten bestehen. Der Konflikt nennt die Anzahl
+je Entität. Die Übergabe erzeugt pro betroffenem Datensatz eine Activity mit dem tatsächlichen User als Actor.
 
 ## Tickets
 
-### CRM-02-T1 — Permissions, Rollen und Zuordnung
+### CRM-03-T1 — User-Schema und leere Schema-Umstellung
 
-- **Files:** `packages/common/src/constants/crm/{permissions,roles,role-permissions}.ts` + Tests
-- **Skills:** `best-practices`
-- **Inhalt:** Const-Objekte wie oben; `ROLE_PERMISSIONS` mit `satisfies` typisieren
-- **Akzeptanz:**
-  - Test prüft: jede Rolle existiert in der Map und `owner` hat alle Permissions
-  - Test prüft die rollengebundenen Vorbehalte namentlich: `member` hat `MembersManage`,
-    `DataExport`, `DataPurge` und `SecurityAudit` **nicht**
-  - Test prüft, dass `CredentialsReveal` in **keiner** Rollen-Baseline steht — auch nicht beim Owner
-  - Test `getEffectivePermissions`: Owner bekommt `CredentialsReveal` implizit; Member mit
-    `credentials_access = true` bekommt es, ohne das Flag nicht
-  - Test prüft, dass `member` `CredentialsWrite` und `PortalAccessManage` **hat** — sonst wäre die
-    Entscheidung beim nächsten Aufräumen still verengt
-  - Ein bewusst auskommentierter Rollen-Eintrag erzeugt einen Compile-Fehler (im PR als Nachweis
-    beschrieben, nicht eingecheckt)
+- `users` und `workspace_members.user_id` modellieren
+- harte Preflight-Leerheitsprüfung vor jeder Schemaänderung implementieren
+- Legacy-Pflichtfelder ausschließlich als kompatible Schattenwerte schreiben und nie autorisierend lesen
+- Migration mit Abbruchbedingungen und DB-Smoke schreiben
+- User-Auflösung anhand Clerk-ID implementieren
+- Tests für nicht leere Ausgangstabellen, geänderte E-Mail, doppelte Clerk-ID, fehlenden User und inaktiven User
 
-### CRM-02-T2 — Migration 0023 und Modell
+### CRM-03-T2 — Permission- und Rollenfundament
 
-- **Files:** `packages/db/migrations/<nr>_create_workspace_members.sql`,
-  `packages/db/src/record-configuration/crm/workspace-members.ts`
-- **Skills:** `best-practices`
-- **Inhalt:**
-  - `workspace_members`: `id uuid PK`, `clerk_user_id text UNIQUE NOT NULL`, `email text NOT NULL`,
-    `role text NOT NULL` (CHECK), `active boolean NOT NULL`,
-    `credentials_access boolean NOT NULL`, `version integer NOT NULL` (CHECK), `created_at`,
-    `updated_at`; der anlegende Schreibpfad setzt alle fachlichen Startwerte explizit
-  - Unique-Index auf `lower(email)`
-- **Akzeptanz:** Migration idempotent, `db:smoke:dev` grün
+- Permission-Const-Objekt plus DB-Katalog
+- Rollen-, Rollenpermission- und Zuweisungstabellen mit Realm-Constraints
+- Systemrollen idempotent seeden
+- exakten Code/DB-Katalog sowie Realm-Invarianten testen
 
-### CRM-02-T3 — Actor-Auflösung mit Bootstrap
+### CRM-03-T3 — Systemrollen und Bootstrap
 
-- **Files:** `apps/workspace/src/server/auth/resolve-workspace-actor.ts`,
-  `apps/workspace/src/common/contracts/auth/actor.ts`
-- **Skills:** `best-practices`
-- **Inhalt:**
-  - Clerk-Session lesen, `workspace_members`-Zeile suchen
-  - Zeile vorhanden: Actor mit dieser Rolle zurückgeben — **unabhängig davon**, ob die E-Mail in der
-    Allowlist steht. Die Zeile ist die Zugangsregel
-  - Keine Zeile, aber E-Mail in `WORKSPACE_ALLOWED_EMAILS`: Zeile mit Rolle `owner` anlegen (idempotent,
-    `ON CONFLICT DO NOTHING`) und zurückgeben
-  - Keine Zeile und nicht allowlisted: `null` — der bestehende `notFound()`-Pfad greift
-- **Akzeptanz:**
-  - Tests: allowlisted ohne Zeile wird `owner`; bestehende Zeile schlägt die Allowlist nicht um;
-    weder-noch ergibt `null`
-  - Test: eine `member`-Zeile **ohne** Allowlist-Eintrag bekommt Zugang mit Rolle `member` — damit
-    ist ein zweiter interner Nutzer ohne Deploy aufnehmbar
-  - Ohne Datenbankverbindung bleibt der Zugriff geschlossen und der Fehler observierbar
+- den ersten `users`-, `workspace_members`- und Owner-Zuweisungsdatensatz atomar erzeugen
+- parallele Bootstrap-Requests idempotent behandeln
+- mindestens einen Owner garantieren
+- nach erfolgreichem Bootstrap die Env-Allowlist nicht mehr als Zugangsweg akzeptieren
 
-### CRM-02-T4 — `can()`, Page- und API-Guard
+### CRM-03-T4 — Fail-closed Auth-Gates
 
-- **Files:** `apps/workspace/src/server/auth/{can,require-workspace-permission,with-permission}.ts`
-  - Tests
-- **Skills:** `best-practices`, `accessibility`
-- **Inhalt:**
-  - `can()` mit Portal-Resource-Prüfung wie oben
-  - `requireWorkspaceAccess` (`lib/auth/permissions.ts`) und `withWorkspaceApiAuth`
-    (`lib/auth/api.ts`) rufen statt `isEmailAllowed` jetzt `resolveWorkspaceActor` auf und geben den
-    Actor weiter. Signatur nach außen bleibt kompatibel
-  - `requireWorkspacePermission()` → `notFound()` statt `403`, konsistent zum bestehenden
-    `permissions.ts` (kein Enumeration-Leak)
-  - `withPermission()` wrappt `withWorkspaceApiAuth` und ergänzt `403 FORBIDDEN` im bestehenden
-    Error-Code-Muster (`auth-api-error.ts` erweitern)
-- **Akzeptanz:**
-  - Testmatrix Rolle × Permission vollständig
-  - Portal-Actor ohne passende `customerId` bekommt `false`, auch wenn die Rolle die Permission hätte
-  - **Bestehende Lead-Route-Tests laufen unverändert grün** — der Beleg, dass allowlisted Nutzer
-    sich exakt wie vorher verhalten
-  - Test: nicht allowlisted und ohne Zeile ergibt weiterhin `404` auf den bestehenden Lead-Routen
+- zentralen Actor mit persistierter `users.id` auflösen
+- `requireWorkspacePermission` und API-Wrapper bereitstellen
+- alle betroffenen Command-/Query-Grenzen permissionbasiert absichern
+- negative Tests für DB-Fehler, inaktive Membership, fehlende Rolle und fehlende Permission
 
-### CRM-02-T5 — Zuständigkeits-Registry, Übergabe und Deaktivierung
+### CRM-03-T5 — Rollen- und Mitgliederverwaltung
 
-- **Files:** `common/constants/members/ownable-entities.ts`,
-  `server/workspace/members/ownership-registry.ts`,
-  `server/workspace/members/adapters/customer-ownership-adapter.ts`,
-  `command-handler/{hand-over-responsibilities,deactivate-member}.command-handler.ts`,
-  `query-handler/count-open-responsibilities.query-handler.ts`, Routen + Tests
-- **Skills:** `best-practices`
-- **Inhalt:**
-  - Const-Objekt und `satisfies Record<OwnableEntity, OwnershipAdapter>` wie oben; in diesem Ordner
-    enthält die Registry genau einen Eintrag (`customers`)
-  - `countOpenResponsibilities` iteriert über die Registry und liefert Zahlen **je Entität**
-  - `handOverAllToOwner` läuft in einer Transaktion über alle Adapter, erzeugt eine Activity je
-    betroffenem Datensatz und verifiziert danach, dass die Summe 0 ist — sonst Rollback
-  - `deactivateMember` prüft zuerst die Summe, dann den Letzter-Owner-Schutz
-  - Fehlercodes `OpenResponsibilities` und `LastActiveOwner`
-- **Akzeptanz:**
-  - Test: Deaktivierung mit einer offenen Zuständigkeit ergibt 409 mit vollständiger Vorschau je
-    Entität, nicht nur einer Summe
-  - Test: nach `handOverAllToOwner` ist die Summe 0 und die Deaktivierung gelingt
-  - Test: Fehler mitten in der Übergabe rollt **alle** Teilübergaben zurück
-  - Test: der einzige aktive Owner lässt sich weder deaktivieren noch herabsetzen
-  - Test: je übergebenem Datensatz existiert genau eine Activity mit Actor, Alt- und Neuzuweisung
-  - Test: parallele Übergabe und Bearbeitung desselben Kunden ergibt 409 statt Teilzustand
-  - **Nachweis im PR:** ein probeweise zur `OwnableEntity`-Liste ergänzter Wert ohne Adapter bricht
-    den Typecheck. Das ist der eigentliche Schutz für Ordner 07, 08 und 11 — nicht eingecheckt,
-    aber im PR belegt
+- Rollen-CRUD nur hinter `roles.manage`
+- nur delegierbare Permissions für benutzerdefinierte Rollen akzeptieren
+- Mehrfachzuweisung und effektive Vorschau implementieren
+- Owner-Schutz, optimistic locking und Security-Activities testen
 
-## Deploy-Sicherheit
+### CRM-03-T6 — Actor-Referenzen
 
-1. **Live sichtbar:** vollständige Owner-Mitgliederverwaltung; noch keine Credential-/Portalbereiche.
-2. **Bricht nichts:** Die beiden bestehenden Gates bekommen eine neue Auflösung untergeschoben, die
-   für allowlisted Nutzer dasselbe Ergebnis liefert. Solange die frisch angelegte Tabelle nur die
-   Bootstrap-Zeilen enthält, ist das Verhalten identisch zu heute — abgesichert durch die
-   unveränderten Lead-Route-Tests. `withPermission` wird in diesem Task von **keiner** Route
-   benutzt, `requireWorkspacePermission` von keiner Page. Migration additiv.
-3. **Offen:** Portalmitgliedschaften und fachliche Rechte späterer Ordner. Diese bleiben über fehlende
-   Navigation und Permission-Gates unsichtbar.
+- `actor_user_id` und `system_actor_key` additiv ergänzen
+- menschliche Activity-Schreibpfade auf echte User-ID umstellen
+- Systemjobs explizit als Systemakteure schreiben
+- bestehende Activity-Lesekompatibilität und negative Actor-Invarianten testen
 
-## End-to-End-Akzeptanz
+### CRM-03-T7 — Zuständigkeit und E2E
 
-1. Migration läuft, `workspace_members` existiert.
-2. Erster Login einer allowlisted E-Mail legt genau eine Zeile mit Rolle `owner` an; der zweite Login
-   legt keine weitere an.
-3. Ein `member` ohne `credentials_access` liefert bei `can(actor, Permission.CredentialsReveal)`
-   `false`; mit gesetztem Flag `true`. Ein Owner liefert `true`, ohne dass das Flag gesetzt ist.
-   Der Entzug des Flags wirkt beim nächsten Request.
-   3a. Eine per SQL angelegte `member`-Zeile ohne Allowlist-Eintrag kann sich anmelden und den
-   Workspace betreten — ohne Env-Änderung und ohne Deploy.
-4. Ein Portal-Actor bekommt für einen fremden Kunden `false`, für den eigenen `true`.
-5. Alle bestehenden Tests bleiben grün; Verhalten der Leads-Oberfläche unverändert.
-6. Ein Mitglied mit offenen Zuständigkeiten lässt sich nicht deaktivieren; „Alles an den Owner
-   übergeben" macht es in einem Schritt möglich und protokolliert jeden Datensatz.
-7. Der einzige aktive Owner ist gegen Deaktivierung und Herabsetzung geschützt.
-8. `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm build:workspace` grün.
+- exhaustive Ownership-Registry anbinden
+- Übergabe und Deaktivierung atomar implementieren
+- E2E: Mitglied mit Custom-Rolle darf erlaubte Aktion und erhält für andere Aktion `403`
+- E2E: Rollenentzug wirkt im nächsten Request
+- E2E: letzter Owner kann weder deaktiviert noch seiner Owner-Rolle beraubt werden
+
+## Akzeptanzkriterien
+
+- Jeder menschliche Workspace-Actor besitzt eine persistierte `users.id`.
+- Namens- oder E-Mail-Änderungen verändern weder Rechte noch Activity-Zuordnung.
+- Ein Mitglied kann mehrere Rollen besitzen; effektive Permissions sind reproduzierbar deren Vereinigung.
+- Custom-Rollen können erstellt und Nutzern zugewiesen werden, ohne Codeänderung an den geschützten Features.
+- Features prüfen Permissions und enthalten keine `role === ...`-Verzweigung.
+- Nicht delegierbare Rechte können keiner Custom-Rolle hinzugefügt werden.
+- `credentials.reveal` wird ausschließlich über Rollen gewährt; `credentials_access` ist kein aktiver Sonderpfad mehr.
+- Workspace- und Portalrollen können nicht vermischt werden.
+- DB-Ausfälle und unvollständige Identität lehnen Zugriff ab.
+- Activities referenzieren bei menschlichen Änderungen den tatsächlichen User; Jobs bleiben Systemakteure.
+- Die Migration bricht bei unerwarteten Ordner-01-Daten vor jeder Schemaänderung ab.
+
+## Qualitäts-Gates
+
+- fokussierte Unit-, Integrations-, Migration- und E2E-Tests
+- DB-Smoke für Kataloggleichheit, Leerheits-Preflight, Zielmodell und Constraints
+- Suche nach direkten Rollenprüfungen und aktiv genutztem `credentials_access`
+- `pnpm -r lint`
+- `pnpm -r typecheck`
+- `pnpm -r test`
+- `pnpm --filter @invessiv/workspace build`
+
+## Post-03-Cleanup
+
+Der Cleanup ist als eigenständige Merge-Einheit
+[`03a-workspace-member-legacy-cleanup`](../03a-workspace-member-legacy-cleanup/README.md) geplant. Deren Task 02b
+enthält
+Readiness-Smoke, Drop-Migration, Abbruchbedingungen und Abnahme. Er gehört ausdrücklich nicht in den initialen
+RBAC-Cutover.
+
+## Split-Gate vor Implementierungsbeginn
+
+Wenn die belastbare Dateiliste mehr als 120 Änderungen erwarten lässt, wird Ordner 03 vor dem ersten Code-Commit in
+zwei aufeinanderfolgende Merge-Einheiten geteilt: zuerst Identität/RBAC-Fundament mit kompatiblen Reads, danach
+Management-UI und vollständiger Permission-Cutover. Die Activity-Migration aus Ordner 02 wird in keinem Fall wieder
+mit diesem Scope vermischt.

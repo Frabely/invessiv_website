@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
-import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
+import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { LeadSource } from "@invessiv/common/constants/leads/sources/lead-sources";
 import { PostgresErrorCode } from "@invessiv/db/core";
 import { DuplicateEmailError } from "@/server/workspace/leads/shared/duplicate-email-error.class";
@@ -9,9 +9,9 @@ import { DuplicateEmailError } from "@/server/workspace/leads/shared/duplicate-e
 const createLeadActivityMock = vi.fn().mockResolvedValue(undefined);
 
 vi.mock("server-only", () => ({}));
-vi.mock("@/server/workspace/leads/services/lead-activity-service", () => ({
-  leadActivityService: {
-    createLeadActivity: createLeadActivityMock,
+vi.mock("@/server/workspace/shared/services/activity-service", () => ({
+  activityService: {
+    createActivity: createLeadActivityMock,
   },
 }));
 
@@ -147,7 +147,7 @@ describe("createLeadCoreInTransaction", () => {
       },
       {
         source: LeadSource.Manual,
-        activityType: LeadActivityType.Note,
+        activityType: ActivityType.Note,
       },
     );
 
@@ -173,7 +173,7 @@ describe("createLeadCoreInTransaction", () => {
       },
       {
         source: LeadSource.Import,
-        activityType: LeadActivityType.Import,
+        activityType: ActivityType.Import,
         activityMetadata: {
           import_batch_id: "batch-2024-03",
           row_index: 7,
@@ -195,7 +195,7 @@ describe("createLeadCoreInTransaction", () => {
     expect(createLeadActivityMock).toHaveBeenCalledWith(
       txMock,
       expect.objectContaining({
-        type: LeadActivityType.Import,
+        type: ActivityType.Import,
         metadata: {
           import_batch_id: "batch-2024-03",
           row_index: 7,
@@ -226,7 +226,7 @@ describe("createLeadCoreInTransaction", () => {
         },
         {
           source: LeadSource.Manual,
-          activityType: LeadActivityType.Note,
+          activityType: ActivityType.Note,
         },
       ),
     ).rejects.toBeInstanceOf(DuplicateEmailError);
@@ -263,7 +263,7 @@ describe("createLeadCoreInTransaction", () => {
         },
         {
           source: LeadSource.Manual,
-          activityType: LeadActivityType.Note,
+          activityType: ActivityType.Note,
         },
       ),
     ).rejects.toBeInstanceOf(DuplicateSocialProfileError);

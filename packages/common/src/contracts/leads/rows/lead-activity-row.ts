@@ -1,14 +1,14 @@
-import type { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
-import type { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
+import type { ActivityType } from "@invessiv/common/constants/activity/activity-types";
+import type { ActorType } from "@invessiv/common/constants/activity/actor-types";
 
 export type LeadActivityRow = {
   id: string;
-  type: LeadActivityType;
+  type: ActivityType;
   title: string | null;
   body: string | null;
   metadata: unknown;
   occurred_at: Date;
-  actor_type: LeadActorType;
+  actor_type: ActorType;
   actor_id: string | null;
   actor_label: string | null;
 };

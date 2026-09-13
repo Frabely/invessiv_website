@@ -7,12 +7,12 @@ Diese Datei regelt die Umsetzung des CRM-Plans unabhängig vom Zielordner. Spezi
 
 1. `00-entscheidungen.md` enthält alle Entscheidungen.
 2. `core-features.md` ist die Funktionsübersicht.
-3. Die 22 nummerierten Ordner enthalten Merge-Gates und Abnahmekriterien.
+3. Die 23 geordneten Ordner enthalten Merge-Gates und Abnahmekriterien.
 
 Frühere Planstände mit 16 Merge-Einheiten und 34 Tasks sind vollständig ersetzt. Keine erinnerte
 Altentscheidung darf übernommen werden, wenn sie nicht in den aktuellen Dateien steht.
 
-**Ordnernummer ≠ Task-Nummer.** Die Ordnernummer (01–22) ist die Merge-Reihenfolge und kann sich beim
+**Ordnernummer ≠ Task-Nummer.** Die Ordnernummer (01–03, 03a, 04–22) ist die Merge-Reihenfolge und kann sich beim
 Neuschnitt verschieben. Die Task-Nummer ist die Identität und bleibt: Task 08 heißt überall Task 08
 und liegt in Ordner 06. Querverweise im Plan nennen deshalb immer die **Task**-Nummer, Reihenfolge-
 und Abhängigkeitsaussagen die **Ordner**-Nummer.
@@ -84,7 +84,8 @@ und Abhängigkeitsaussagen die **Ordner**-Nummer.
   nur über bestehende Theme-Tokens, Zustände über `data-*`-Attribute.
 - Migrationen additiv und idempotent: `CREATE … IF NOT EXISTS`, `--> statement-breakpoint` zwischen
   den Statements, ein zweiter Lauf ist folgenlos.
-- Expand → Dual-Write → Backfill → Read-Cutover → Cleanup über getrennte Releases.
+- Expand → Dual-Write → Backfill → Read-Cutover → Cleanup über getrennte Releases. Einzige
+  Ausnahme: der direkte Activity-Umzug in Ordner 02, begründet in `00-entscheidungen.md`.
 - Bereits registrierte Migrationen werden nie verändert oder erneut erwartet.
 - Outbox-Eintrag und fachlicher DB-Write entstehen in derselben Transaktion.
 - Vor jedem neuen Baustein die Tabelle „Wiederverwendete Muster" in `00-entscheidungen.md` prüfen.

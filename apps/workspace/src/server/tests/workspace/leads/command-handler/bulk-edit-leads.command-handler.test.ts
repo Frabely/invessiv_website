@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { BulkSkipReason } from "@invessiv/common/constants/leads/bulk/bulk-skip-reasons";
-import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
+import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
+import { StatusChangeOrigin } from "@invessiv/common/constants/activity/status-change-origins";
 
 const { getDrizzleDatabaseClientMock, createLeadActivityMock } = vi.hoisted(
   () => ({
@@ -15,9 +16,9 @@ vi.mock("@invessiv/db/core", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@invessiv/db/core")>()),
   getDrizzleDatabaseClient: getDrizzleDatabaseClientMock,
 }));
-vi.mock("@/server/workspace/leads/services/lead-activity-service", () => ({
-  leadActivityService: {
-    createLeadActivity: createLeadActivityMock,
+vi.mock("@/server/workspace/shared/services/activity-service", () => ({
+  activityService: {
+    createActivity: createLeadActivityMock,
   },
 }));
 
@@ -153,9 +154,76 @@ describe("bulkEditLeads", () => {
     });
     expect(updateCaptures).toHaveLength(1);
     expect(updateCaptures[0].lead_status).toBe("qualified");
+    expect(createLeadActivityMock).toHaveBeenCalledTimes(1);
     expect(createLeadActivityMock).toHaveBeenCalledWith(
       expect.any(Object),
-      expect.objectContaining({ type: LeadActivityType.BulkEdit }),
+      expect.objectContaining({
+        leadId: "lead-1",
+        type: ActivityType.StatusChange,
+        body: "new → qualified",
+        metadata: {
+          previous_status: "new",
+          next_status: "qualified",
+          origin: StatusChangeOrigin.BulkEdit,
+        },
+      }),
+    );
+  });
+
+  it("records other fields as a bulk edit next to the status change", async () => {
+    vi.resetModules();
+    createLeadActivityMock.mockClear();
+    setupDb([buildLead({ lead_status: "new", owner: null })]);
+    const { bulkEditLeads } =
+      await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
+
+    await bulkEditLeads({
+      ids: ["lead-1"],
+      patch: { status: "contacted", owner: "Lisa" },
+    });
+
+    expect(createLeadActivityMock).toHaveBeenCalledTimes(2);
+    expect(createLeadActivityMock).toHaveBeenCalledWith(
+      expect.any(Object),
+      expect.objectContaining({
+        type: ActivityType.StatusChange,
+        metadata: {
+          previous_status: "new",
+          next_status: "contacted",
+          origin: StatusChangeOrigin.BulkEdit,
+        },
+      }),
+    );
+    expect(createLeadActivityMock).toHaveBeenCalledWith(
+      expect.any(Object),
+      expect.objectContaining({
+        type: ActivityType.BulkEdit,
+        body: "Updated fields: owner",
+        metadata: expect.objectContaining({
+          changedFields: ["owner"],
+          before: { owner: null },
+          after: { owner: "Lisa" },
+        }),
+      }),
+    );
+  });
+
+  it("writes no status change when the status is already set", async () => {
+    vi.resetModules();
+    createLeadActivityMock.mockClear();
+    setupDb([buildLead({ lead_status: "contacted", owner: null })]);
+    const { bulkEditLeads } =
+      await import("@/server/workspace/leads/command-handler/bulk-edit-leads.command-handler");
+
+    await bulkEditLeads({
+      ids: ["lead-1"],
+      patch: { status: "contacted", owner: "Lisa" },
+    });
+
+    expect(createLeadActivityMock).toHaveBeenCalledTimes(1);
+    expect(createLeadActivityMock).toHaveBeenCalledWith(
+      expect.any(Object),
+      expect.objectContaining({ type: ActivityType.BulkEdit }),
     );
   });
 

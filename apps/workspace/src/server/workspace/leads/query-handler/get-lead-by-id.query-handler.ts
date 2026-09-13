@@ -1,7 +1,7 @@
 import { desc, eq } from "drizzle-orm";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
-  leadActivities,
+  activities,
   leadCategories,
   leads,
   leadSocialProfiles,
@@ -13,8 +13,8 @@ import { leadsMapperService } from "@/server/workspace/leads/services/leads-mapp
 export async function getLeadById(id: string): Promise<LeadDetailDto | null> {
   const db = getDrizzleDatabaseClient();
 
-  const [leadRows, socialProfiles, activities, submissions] = await Promise.all(
-    [
+  const [leadRows, socialProfiles, activityRows, submissions] =
+    await Promise.all([
       db
         .select({
           id: leads.id,
@@ -53,19 +53,19 @@ export async function getLeadById(id: string): Promise<LeadDetailDto | null> {
         .where(eq(leadSocialProfiles.lead_id, id)),
       db
         .select({
-          id: leadActivities.id,
-          type: leadActivities.type,
-          title: leadActivities.title,
-          body: leadActivities.body,
-          metadata: leadActivities.metadata,
-          occurred_at: leadActivities.occurred_at,
-          actor_type: leadActivities.actor_type,
-          actor_id: leadActivities.actor_id,
-          actor_label: leadActivities.actor_label,
+          id: activities.id,
+          type: activities.type,
+          title: activities.title,
+          body: activities.body,
+          metadata: activities.metadata,
+          occurred_at: activities.occurred_at,
+          actor_type: activities.actor_type,
+          actor_id: activities.actor_id,
+          actor_label: activities.actor_label,
         })
-        .from(leadActivities)
-        .where(eq(leadActivities.lead_id, id))
-        .orderBy(desc(leadActivities.occurred_at)),
+        .from(activities)
+        .where(eq(activities.lead_id, id))
+        .orderBy(desc(activities.occurred_at), desc(activities.id)),
       db
         .select({
           id: leadSubmissions.id,
@@ -79,8 +79,7 @@ export async function getLeadById(id: string): Promise<LeadDetailDto | null> {
         .from(leadSubmissions)
         .where(eq(leadSubmissions.lead_id, id))
         .orderBy(desc(leadSubmissions.created_at)),
-    ],
-  );
+    ]);
 
   const leadRow = leadRows[0];
   if (!leadRow) return null;
@@ -88,7 +87,7 @@ export async function getLeadById(id: string): Promise<LeadDetailDto | null> {
   return leadsMapperService.mapLeadDetailRowToDto(
     leadRow,
     socialProfiles,
-    activities,
+    activityRows,
     submissions,
   );
 }

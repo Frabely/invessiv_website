@@ -280,7 +280,7 @@ Validation und Filter:
 - `services/update-lead/update-lead-validation-service.ts`
 - `services/lead-filter/lead-filter.schema.ts`
 - `utils/lead-url-normalization-service.ts`
-- `services/lead-activity-service.ts`
+- `src/server/workspace/shared/services/activity-service.ts`
 
 Create-Lead-Datenfluss:
 

@@ -3,9 +3,9 @@
 > **Scope:** Planung für `apps/workspace`, `packages/db`, `packages/common`, `packages/storage`
 > und `packages/mail`.
 >
-> **Stand:** 12. September 2026 · geprüft und entscheidungsvollständig.
+> **Stand:** 13. September 2026 · geprüft und entscheidungsvollständig.
 >
-> **Umfang:** 22 einzeln merge- und deploybare Einheiten, insgesamt **69–91 Personentage**
+> **Umfang:** 23 einzeln merge- und deploybare Einheiten, insgesamt **72–95 Personentage**
 > inklusive Tests, Reviewkorrekturen, Migrationen und Betriebsdokumentation.
 
 ## Ziel und Lieferprinzip
@@ -14,7 +14,7 @@ Ein produktionsreifes, ausschließlich von Invessiv genutztes CRM für zunächst
 interne Nutzer. Es führt Kunden, globale Personen, Projekte, Aufgaben, Dokumente, Feedback,
 Portalnachrichten, Zugangsdaten, Renewals und informative Stundenkontingente zusammen.
 
-Jeder nummerierte Ordner ist ein eigenständiger PR. Nach seinem Merge muss `master` vollständig
+Jeder geordnete Ordner ist ein eigenständiger PR. Nach seinem Merge muss `master` vollständig
 baubar, migrierbar und produktiv nutzbar bleiben. Dafür gilt je Ordner:
 
 - Schemaänderungen sind mit der vorherigen App-Version kompatibel.
@@ -32,17 +32,20 @@ baubar, migrierbar und produktiv nutzbar bleiben. Dafür gilt je Ordner:
 ### Produktgrenze und Rollen
 
 - Strikt Single-Tenant ohne `tenant_id` und ohne vorbereitete Mandantenabstraktion.
-- Interne Rollen: `owner` und `member`.
-- Ein `member` darf den Alltag vollständig: Kunden, Projekte, Aufgaben, Dateien, Renewals, Stunden,
-  Chat und Portalzugänge anlegen, bearbeiten und löschen.
-- Rollengebunden Owner-only sind vier Permissions: `members.manage`, `data.export`, `data.purge`
-  und `security.audit`. Sie lassen sich nicht freigeben.
-- `credentials.reveal` ist der Sonderfall: es steht in **keiner** Rollen-Baseline. Der Owner hat es
-  implizit, ein Member nur bei gesetztem `credentials_access` an seiner Mitgliedszeile. Vergeben und
-  entziehen darf ausschließlich der Owner, und der Entzug wirkt beim nächsten Request.
-- Zugangsdaten darf ein Member anlegen und ersetzen (`credentials.write`) und maskiert sehen (`credentials.read`). Nur
-  das **Aufdecken** hängt an der Freigabe.
-- Alles Übrige hat ein Member auch.
+- Jeder angemeldete Mensch besitzt eine persistierte `users.id`; Clerk authentifiziert, die eigene DB autorisiert.
+- `workspace_members` und spätere `portal_memberships` modellieren Zugehörigkeit, nicht die globale Identität.
+- `people` bleibt das fachliche CRM-Kontaktmodell und kann mit oder ohne Login existieren.
+- Rollen sind persistierte, frei benennbare Bündel atomarer Permissions. Ein Mitglied kann mehrere Rollen besitzen;
+  seine effektiven Rechte sind deren Vereinigung.
+- Features, Commands und Bereiche verlangen Permissions und prüfen niemals einen hart codierten Rollennamen.
+- Workspace- und Portalrollen liegen in getrennten Realms und sind nicht untereinander zuweisbar.
+- Die geschützte Systemrolle `workspace_owner` besitzt alle Workspace-Rechte. Mindestens ein aktiver Owner bleibt
+  erhalten; Vergabe und Entzug laufen über einen geschützten Flow.
+- `roles.manage`, `members.manage`, `data.export`, `data.purge` und `security.audit` sind nicht delegierbar und können
+  keiner benutzerdefinierten Rolle zugewiesen werden.
+- `credentials.reveal` ist eine normale Permission. Sie liegt in der Owner-Rolle und in der gezielt zuweisbaren
+  Systemrolle `workspace_credentials_manager`; ein separates `credentials_access`-Autorisierungsflag entfällt.
+- Fehlende Permission, unvollständige Identität und DB-Fehler lehnen den Zugriff fail-closed ab.
 - Es gibt kein `customers.delete`: in Version 1 existiert kein Löschbutton, nur der Owner-Purge.
 - Clerk bleibt Identitätsanbieter. MFA ist optional und wird nicht durch die App erzwungen.
 - Die Env-Allowlist dient nur zum atomaren Bootstrap des ersten Owners. Bei DB-Fehlern bleibt der
@@ -287,9 +290,13 @@ Kontingent wäre um den 17. des Monats leer.
 ## Datenmodell auf Domänenebene
 
 ```text
+users
+  └── kanonische menschliche Identität und Stammdaten
+
 workspace_members
-  ├── owner/member, active, credentials_access
-  └── notifications / job ownership
+  ├── user_id, active
+  ├── workspace_member_roles ── roles ── role_permissions ── permissions
+  └── fachliche Zuständigkeiten / notifications / job ownership
 
 people
   ├── preferred_locale
@@ -316,7 +323,8 @@ Kindtabellen eines Aggregats tragen den Aggregatnamen als Präfix — wie die be
 `packages/db/src/record-configuration/`. Verbindlich sind damit `customer_contact_assignments`,
 `customer_credentials`, `customer_renewals` und `customer_tags`.
 
-Präfixfrei bleiben eigenständige und querschnittliche Tabellen: `workspace_members`, `people`,
+Präfixfrei bleiben eigenständige und querschnittliche Tabellen: `users`, `workspace_members`, `permissions`, `roles`,
+`role_permissions`, `workspace_member_roles`, `people`,
 `customers`, `projects`, `tasks`, `task_series`, `portal_memberships`, `portal_invitations`,
 `conversations`, `messages`, `message_files`, `conversation_reads`, `feedback_rounds`,
 `feedback_round_requests`, `retainers`, `time_entries`, `files`, `activities`, `outbox_jobs`,
@@ -347,7 +355,7 @@ fertig und getestet gibt — der Leads-Bereich deckt den Großteil ab.
 | Enums / Const-Objekte | `packages/common/src/constants/contact/contact-lead-statuses.ts`                                                                |
 | Fehlercodes           | `packages/common/src/constants/leads/errors/lead-error-codes.ts`                                                                |
 | Kategorien-Tabelle    | `packages/db/src/record-configuration/lead-categories.ts` (wird **mitgenutzt**, nicht kopiert)                                  |
-| Activity-Service      | `apps/workspace/src/server/workspace/leads/services/lead-activity-service.ts`                                                   |
+| Activity-Service      | `apps/workspace/src/server/workspace/shared/services/activity-service.ts`                                                       |
 | Schreibpfad           | `apps/workspace/src/server/workspace/leads/command-handler/update-lead.command-handler.ts` + `app/api/workspace/leads/route.ts` |
 | Ausblenden per Filter | `apps/workspace/src/server/workspace/leads/query-handler/lead-filter.query-handler.ts`                                          |
 | Listen-UI             | `apps/workspace/src/components/workspace/leads/table/**`                                                                        |
@@ -391,7 +399,12 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 ## Migrationen
 
 - Nummer zur Umsetzung als höchste vorhandene Nummer plus eins bestimmen.
-- Activity-Umzug als Expand → Dual-Write → Backfill → Read-Cutover → späterer Cleanup.
+- Standardablauf für Datenumzüge: Expand → Dual-Write → Backfill → Read-Cutover → späterer Cleanup.
+- **Ausnahme Activity-Umzug (Ordner 02):** direkter Umzug. Die Migration legt `activities` an,
+  übernimmt `lead_activities` mit derselben ID und bricht bei Abweichung ab; ab dem Deploy lesen und
+  schreiben alle Pfade nur `activities`. Begründung: geringer Wert der Bestandsdaten und betrieblich
+  zugesichert keine Activity-Writes zwischen Migration und Deploy. Folge: Einträge zwischen Deploy und
+  einem Revert sieht die alte Version nicht — bewusst akzeptiert.
 - Ein Backfill erhält eine neue registrierte Migration oder einen separat versionierten Job. Eine
   bereits in `schema_migrations` gespeicherte Datei wird niemals verändert.
 - Jede Merge-Einheit bleibt kompatibel zur unmittelbar vorherigen App-Version.
@@ -401,30 +414,31 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 
 ## Merge-Einheiten
 
-| #   | Status    | Ordner                            | Nach dem Merge vollständig nutzbar                                              | Dateien | Aufwand |
-| --- | --------- | --------------------------------- | ------------------------------------------------------------------------------- | ------: | ------: |
-| 01  | im Review | `01-kernschema-und-contracts`     | Additives Kunden-/Personen-Kernschema ist unsichtbar deployt; Leads unverändert |   50–80 |  3–4 T. |
-| 02  | offen     | `02-activity-migration`           | Bestehende Lead-Timeline arbeitet verlustfrei auf dem neuen Modell              |   40–70 |  3–4 T. |
-| 03  | offen     | `03-mitglieder-und-auth`          | Owner kann Mitglieder sicher verwalten; Auth ist fail-closed                    |   50–80 |  3–4 T. |
-| 04  | offen     | `04-personen-und-kundenakte`      | Kunden samt Pflichtkontakt, Owner, Archiv und Detail vollständig nutzbar        |  80–100 |  4–5 T. |
-| 05  | offen     | `05-kundenliste-und-zuweisung`    | Liste, Suche, Filter, Übergabe und Aufbewahrungshinweise nutzbar                |  60–100 |  3–4 T. |
-| 06  | offen     | `06-lead-konvertierung`           | Leads können sicher neu oder zu bestehenden Kunden konvertiert werden           |   40–70 |  2–3 T. |
-| 07  | offen     | `07-projekte`                     | Projektanlage, Status, Workflow und Owner-Zuweisung vollständig nutzbar         |  60–100 |  3–4 T. |
-| 08  | offen     | `08-aufgaben`                     | Flache Aufgaben, Kundenpflicht und globale Übersicht nutzbar                    |  80–100 |  4–5 T. |
-| 09  | offen     | `09-aufgabenserien-und-reminder`  | Wiederholungen, Fälligkeit und Überfälligkeit zuverlässig aktiv                 |   50–90 |  3–4 T. |
-| 10  | offen     | `10-jobs-und-benachrichtigungen`  | Outbox-Runner, Glocke, Retry und kritische Fehlerbenachrichtigung aktiv         |  70–100 |  4–5 T. |
-| 11  | offen     | `11-renewals`                     | Renewal-Verwaltung und 30/14/7-Erinnerungen vollständig nutzbar                 |   40–70 |  2–3 T. |
-| 12  | offen     | `12-portal-identitaet`            | Einladung, Widerruf und Mehrfirmenwechsel sicher nutzbar                        |  80–100 |  4–5 T. |
-| 13  | offen     | `13-portal-dashboard`             | Portal-Dashboard mit Aufgaben und Projektdaten produktiv nutzbar                |  60–100 |  3–4 T. |
-| 14  | offen     | `14-storage-und-upload`           | Storage-Adapter und sichere Upload-Pipeline unsichtbar sicher deployt           |  70–100 |  4–5 T. |
-| 15  | offen     | `15-dateien-und-portal-downloads` | Datei-UI, Freigabe, Portaldownload und ZIP vollständig nutzbar                  |  70–100 |  4–5 T. |
-| 16  | offen     | `16-feedbackrunden`               | Feedbackrunden im Kontingent plus freigabepflichtige Zusatzrunde nutzbar        |  70–100 |  4–5 T. |
-| 17  | offen     | `17-kundenchat-intern`            | Chat-Datenmodell und interne Chatseite vollständig nutzbar                      |   60–90 |  3–4 T. |
-| 18  | offen     | `18-kundenchat-portal`            | Portalchat, Kundendigest und Abmeldeschalter aktiv                              |   50–80 |  2–3 T. |
-| 19  | offen     | `19-credentials`                  | Verschlüsselte Zugangsdaten und Security-Audit vollständig nutzbar              |   50–80 |  3–4 T. |
-| 20  | offen     | `20-stunden-und-history`          | Kontingente, Buchungen und konsolidierte Timeline vollständig nutzbar           |  60–100 |  3–4 T. |
-| 21  | offen     | `21-datenschutz-backup-rollout`   | Export, Owner-Purge, Backup/Restore und Produktivabnahme nachgewiesen           |  60–100 |  4–5 T. |
-| 22  | offen     | `22-activity-cleanup`             | Dual-Write aus, `lead_activities` abgebaut, genau eine Activity-Tabelle         |   15–30 |  1–2 T. |
+| #   | Status    | Ordner                                | Nach dem Merge vollständig nutzbar                                              | Dateien | Aufwand |
+| --- | --------- | ------------------------------------- | ------------------------------------------------------------------------------- | ------: | ------: |
+| 01  | gemerged  | `01-kernschema-und-contracts`         | Additives Kunden-/Personen-Kernschema ist unsichtbar deployt; Leads unverändert |   50–80 |  3–4 T. |
+| 02  | im Review | `02-activity-migration`               | Bestehende Lead-Timeline arbeitet verlustfrei auf dem neuen Modell              |   40–70 |  3–4 T. |
+| 03  | offen     | `03-mitglieder-und-auth`              | Persistierte User, flexibles RBAC und fail-closed Auth sind nutzbar             |  80–120 |  5–7 T. |
+| 03a | offen     | `03a-workspace-member-legacy-cleanup` | Alte Member-Identitäts- und Rechtefelder sind sicher entfernt                   |   10–25 |    1 T. |
+| 04  | offen     | `04-personen-und-kundenakte`          | Kunden samt Pflichtkontakt, Owner, Archiv und Detail vollständig nutzbar        |  80–100 |  4–5 T. |
+| 05  | offen     | `05-kundenliste-und-zuweisung`        | Liste, Suche, Filter, Übergabe und Aufbewahrungshinweise nutzbar                |  60–100 |  3–4 T. |
+| 06  | offen     | `06-lead-konvertierung`               | Leads können sicher neu oder zu bestehenden Kunden konvertiert werden           |   40–70 |  2–3 T. |
+| 07  | offen     | `07-projekte`                         | Projektanlage, Status, Workflow und Owner-Zuweisung vollständig nutzbar         |  60–100 |  3–4 T. |
+| 08  | offen     | `08-aufgaben`                         | Flache Aufgaben, Kundenpflicht und globale Übersicht nutzbar                    |  80–100 |  4–5 T. |
+| 09  | offen     | `09-aufgabenserien-und-reminder`      | Wiederholungen, Fälligkeit und Überfälligkeit zuverlässig aktiv                 |   50–90 |  3–4 T. |
+| 10  | offen     | `10-jobs-und-benachrichtigungen`      | Outbox-Runner, Glocke, Retry und kritische Fehlerbenachrichtigung aktiv         |  70–100 |  4–5 T. |
+| 11  | offen     | `11-renewals`                         | Renewal-Verwaltung und 30/14/7-Erinnerungen vollständig nutzbar                 |   40–70 |  2–3 T. |
+| 12  | offen     | `12-portal-identitaet`                | Einladung, Widerruf und Mehrfirmenwechsel sicher nutzbar                        |  80–100 |  4–5 T. |
+| 13  | offen     | `13-portal-dashboard`                 | Portal-Dashboard mit Aufgaben und Projektdaten produktiv nutzbar                |  60–100 |  3–4 T. |
+| 14  | offen     | `14-storage-und-upload`               | Storage-Adapter und sichere Upload-Pipeline unsichtbar sicher deployt           |  70–100 |  4–5 T. |
+| 15  | offen     | `15-dateien-und-portal-downloads`     | Datei-UI, Freigabe, Portaldownload und ZIP vollständig nutzbar                  |  70–100 |  4–5 T. |
+| 16  | offen     | `16-feedbackrunden`                   | Feedbackrunden im Kontingent plus freigabepflichtige Zusatzrunde nutzbar        |  70–100 |  4–5 T. |
+| 17  | offen     | `17-kundenchat-intern`                | Chat-Datenmodell und interne Chatseite vollständig nutzbar                      |   60–90 |  3–4 T. |
+| 18  | offen     | `18-kundenchat-portal`                | Portalchat, Kundendigest und Abmeldeschalter aktiv                              |   50–80 |  2–3 T. |
+| 19  | offen     | `19-credentials`                      | Verschlüsselte Zugangsdaten und Security-Audit vollständig nutzbar              |   50–80 |  3–4 T. |
+| 20  | offen     | `20-stunden-und-history`              | Kontingente, Buchungen und konsolidierte Timeline vollständig nutzbar           |  60–100 |  3–4 T. |
+| 21  | offen     | `21-datenschutz-backup-rollout`       | Export, Owner-Purge, Backup/Restore und Produktivabnahme nachgewiesen           |  60–100 |  4–5 T. |
+| 22  | offen     | `22-activity-cleanup`                 | `lead_activities` abgebaut, genau eine Activity-Tabelle                         |    5–15 |    1 T. |
 
 Statuswerte: `offen` → `läuft` → `im Review` → `gemerged`. Beim Merge werden die Tabelle und der
 Status in der Ordner-README gemeinsam aktualisiert.
@@ -440,7 +454,8 @@ mergebarer Ordner. Zusammenlegen allein zum Erreichen des Zielkorridors ist nich
 - Freies CRM-Mailmodul, Mail-Eingang, Trackingpixel.
 - Dateiordner, Versionen, Bilder, Bildannotation, Kommentare pro Datei.
 - Malware-Scanner, TOTP oder Credential-Freigabe im Portal.
-- Frei konfigurierbare Rollen, Workflows oder Aufgabenhierarchien.
+- Frei konfigurierbare Workflows oder Aufgabenhierarchien.
+- Attributbasierte Regeln, explizite Deny-Regeln und Enterprise-IdP-/SCIM-Synchronisation.
 
 Der frühere detaillierte Plan für freies CRM-Mail-Senden bleibt unter
 `zurueckgestellt/31-mail-senden.md` erhalten. Er ist keine Version-1-Merge-Einheit und darf erst
@@ -452,4 +467,4 @@ nach einer neuen Scope-Entscheidung umgesetzt werden.
 - Vor Merge: `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, relevante DB-Smokes und
   `pnpm --filter @invessiv/workspace build`.
 - Bei Web-App-Änderungen zusätzlich `pnpm --filter @invessiv/web build`.
-- Portalgrenzen, Credential-Reveal, Purge, Activity-Backfill und Restore benötigen negative Tests.
+- Portalgrenzen, Credential-Reveal, Purge, Activity-Übernahme und Restore benötigen negative Tests.

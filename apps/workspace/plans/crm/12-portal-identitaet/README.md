@@ -1,6 +1,6 @@
 # Ordner 12 — Portalidentität und Mehrfirmenzugriff
 
-> **Status:** offen · **Abhängigkeiten:** 03, 04, 10 · **Aufwand:** 4–5 Tage · **Reviewziel:** 80–100 Dateien
+> **Status:** offen · **Abhängigkeiten:** 03a, 04, 10 · **Aufwand:** 4–5 Tage · **Reviewziel:** 80–100 Dateien
 
 ## Ziel und Stand nach Merge
 
@@ -17,6 +17,8 @@ Portalseite mit Firmenname und Abmelden nutzbar; fachliche Dashboardmodule folge
 
 - Additive Migrationen und Modelle für `portal_invitations` und `portal_memberships` entstehen in
   diesem Ordner.
+- `portal_memberships` referenziert die in Ordner 03 eingeführte `users.id`; dieselbe menschliche Identität kann
+  interne und Portalmitgliedschaften besitzen, ohne deren Berechtigungs-Realms zu vermischen.
 - Clerk auf Restricted; öffentliche Selbstregistrierung führt nie zu CRM-Zugriff.
 - Einladung bindet Kunde und Personenzuordnung, speichert nur Tokenhash, Ablauf, Ersteller und Status.
 - Token sieben Tage gültig, einmal nutzbar und bei Widerruf sofort ungültig.
@@ -26,6 +28,8 @@ Portalseite mit Firmenname und Abmelden nutzbar; fachliche Dashboardmodule folge
 - Die zweite Firma verlangt eine eigene Einladung und eine eigene Einlösung; keine Direktanlage
   durch Mitarbeiter und keine Auto-Einlösung.
 - Eine Mitgliedschaft je Kunde und Person; dieselbe Person kann mehrere Firmen bedienen.
+- Portalrollen verwenden das RBAC-Fundament aus Ordner 03. Rollen werden je Portalmitgliedschaft zugewiesen und
+  enthalten ausschließlich Portal-Permissions.
 - Portalsprache pro Person; Einladungsmail nutzt diese Sprache.
 
 ## Firmenkontext und Grenzen
@@ -43,7 +47,8 @@ Portalseite mit Firmenname und Abmelden nutzbar; fachliche Dashboardmodule folge
 
 ## Merge-Gate
 
-- [ ] Interner Nutzer erhält nicht automatisch Portalzugriff und umgekehrt.
+- [ ] Eine interne Mitgliedschaft gewährt nicht automatisch Portalzugriff und umgekehrt, auch wenn beide dieselbe
+      `users.id` referenzieren.
 - [ ] Facette „hat Portalzugang" ist in `CUSTOMER_LIST_FACETS` registriert und nutzbar.
 - [ ] Keine Mitgliedschaft entsteht ohne eingelösten Token; E-Mail-Gleichheit verbindet nichts.
 - [ ] Token ist gehasht, abgelaufen/einmalig und nicht in Logs/Analytics.

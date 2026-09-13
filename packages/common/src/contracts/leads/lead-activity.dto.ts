@@ -1,14 +1,14 @@
-import type { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
-import type { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
+import type { LegacyLeadActivityType } from "@invessiv/common/constants/activity/activity-types";
+import type { LegacyLeadActorType } from "@invessiv/common/constants/activity/actor-types";
 
 export interface LeadActivityDto {
   id: string;
-  type: LeadActivityType;
+  type: LegacyLeadActivityType;
   title: string | null;
   body: string | null;
   metadata: unknown;
   occurredAt: string;
-  actorType: LeadActorType;
+  actorType: LegacyLeadActorType;
   actorId: string | null;
   actorLabel: string | null;
 }

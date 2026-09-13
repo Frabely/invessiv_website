@@ -1,8 +1,9 @@
 import "server-only";
 import { eq } from "drizzle-orm";
 
-import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
-import { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
+import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
+import { ActorType } from "@invessiv/common/constants/activity/actor-types";
+import { StatusChangeOrigin } from "@invessiv/common/constants/activity/status-change-origins";
 import { BulkEditFieldKey } from "@invessiv/common/constants/leads/bulk/bulk-edit-field-keys";
 import { BulkSkipReason } from "@invessiv/common/constants/leads/bulk/bulk-skip-reasons";
 import { LeadFieldLimits } from "@invessiv/common/constants/leads/forms/lead-field-limits";
@@ -19,12 +20,13 @@ import type {
   BulkEditLeadsFailedLead,
   BulkEditLeadsResult,
 } from "@invessiv/common/contracts/leads/results/bulk-edit-leads-result";
+import type { StatusChangeActivityMetadata } from "@invessiv/common/contracts/activity/status-change-activity-metadata";
 import {
   type ContactDatabaseTransaction,
   getDrizzleDatabaseClient,
 } from "@invessiv/db/core";
 import { leads } from "@invessiv/db/record-configuration";
-import { leadActivityService } from "@/server/workspace/leads/services/lead-activity-service";
+import { activityService } from "@/server/workspace/shared/services/activity-service";
 
 const BULK_EDIT_ACTIVITY_FIELD_LABELS: Record<string, string> = {
   [BulkEditFieldKey.Status]: "status",
@@ -60,6 +62,11 @@ function combineNotes(existing: string | null, append: string): string {
   return existing && existing.length > 0 ? `${existing}\n${append}` : append;
 }
 
+type StatusTransition = {
+  previous: LeadCurrentState["lead_status"];
+  next: NonNullable<BulkEditLeadsPatch["status"]>;
+};
+
 function buildUpdateSet(
   current: LeadCurrentState,
   patch: BulkEditLeadsPatch,
@@ -67,21 +74,21 @@ function buildUpdateSet(
 ): {
   setClause: LeadUpdateSetClause;
   metadata: BulkEditActivityMetadata;
+  statusTransition: StatusTransition | null;
   changed: boolean;
 } {
   const setClause: LeadUpdateSetClause = { updated_at: now };
   const changedFields: string[] = [];
   const before: Record<string, unknown> = {};
   const after: Record<string, unknown> = {};
+  let statusTransition: StatusTransition | null = null;
   let notesAppendedChars: number | undefined;
   let improvementsAddedCount: number | undefined;
 
   if (hasOwn(patch, "status") && patch.status !== undefined) {
     if (current.lead_status !== patch.status) {
       setClause.lead_status = patch.status;
-      changedFields.push(BulkEditFieldKey.Status);
-      before.status = current.lead_status;
-      after.status = patch.status;
+      statusTransition = { previous: current.lead_status, next: patch.status };
     }
   }
 
@@ -144,7 +151,8 @@ function buildUpdateSet(
         ? { improvementsAddedCount }
         : {}),
     },
-    changed: changedFields.length > 0,
+    statusTransition,
+    changed: changedFields.length > 0 || statusTransition !== null,
   };
 }
 
@@ -168,19 +176,42 @@ async function processSingleLead(
     }
   }
 
-  const { setClause, metadata, changed } = buildUpdateSet(current, patch, now);
+  const { setClause, metadata, statusTransition, changed } = buildUpdateSet(
+    current,
+    patch,
+    now,
+  );
   if (!changed) {
     return { updated: false };
   }
 
   await tx.update(leads).set(setClause).where(eq(leads.id, current.id));
-  await leadActivityService.createLeadActivity(tx, {
-    leadId: current.id,
-    type: LeadActivityType.BulkEdit,
-    body: buildBulkEditActivityBody(metadata),
-    metadata,
-    actorType: LeadActorType.System,
-  });
+
+  // Status changes are recorded as status_change like in the single-lead update, because the
+  // dashboard funnel counts only that activity type.
+  if (statusTransition) {
+    await activityService.createActivity(tx, {
+      leadId: current.id,
+      type: ActivityType.StatusChange,
+      body: `${statusTransition.previous} → ${statusTransition.next}`,
+      metadata: {
+        previous_status: statusTransition.previous,
+        next_status: statusTransition.next,
+        origin: StatusChangeOrigin.BulkEdit,
+      } satisfies StatusChangeActivityMetadata,
+      actorType: ActorType.System,
+    });
+  }
+
+  if (metadata.changedFields.length > 0) {
+    await activityService.createActivity(tx, {
+      leadId: current.id,
+      type: ActivityType.BulkEdit,
+      body: buildBulkEditActivityBody(metadata),
+      metadata,
+      actorType: ActorType.System,
+    });
+  }
 
   return { updated: true };
 }

@@ -2,7 +2,7 @@ import "server-only";
 
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { LeadSource } from "@invessiv/common/constants/leads/sources/lead-sources";
-import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
+import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
 import type { CreateLeadRequestDto } from "@invessiv/common/contracts/leads/create-lead-request.dto";
 import type { CreateLeadResult } from "@invessiv/common/contracts/leads/results/create-lead-result";
@@ -31,7 +31,7 @@ export async function createLead(
     const lead = await db.transaction((tx) =>
       createLeadCoreInTransaction(tx, data, {
         source: LeadSource.Manual,
-        activityType: LeadActivityType.Note,
+        activityType: ActivityType.Note,
         statusOverride: data.lead_status,
       }),
     );

@@ -2,13 +2,13 @@ import "server-only";
 import type { GenerateOutreachRequestDto } from "@invessiv/common/contracts/leads/outreach/generate-outreach-request.dto";
 import type { GenerateOutreachResultDto } from "@invessiv/common/contracts/leads/outreach/generate-outreach-result.dto";
 import { OutreachErrorCode } from "@invessiv/common/constants/leads/outreach/lead-outreach-error-codes";
-import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
-import { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
+import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
+import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { getLeadById } from "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler";
 import { outreachAiService } from "@/server/workspace/outreach/services/outreach-ai-service";
 import { outreachSkillContextService } from "@/server/workspace/outreach/services/outreach-skill-context-service";
 import { outreachMessageParser } from "@/server/workspace/outreach/services/outreach-message-parser";
-import { leadActivityService } from "@/server/workspace/leads/services/lead-activity-service";
+import { activityService } from "@/server/workspace/shared/services/activity-service";
 
 export async function generateOutreachMessage(
   request: GenerateOutreachRequestDto,
@@ -52,15 +52,15 @@ export async function generateOutreachMessage(
 
   const parsed = outreachMessageParser.parse(request.channel, rawText);
 
-  await leadActivityService.appendLeadActivity({
+  await activityService.appendActivity({
     leadId: request.leadId,
-    type: LeadActivityType.MessageDrafted,
+    type: ActivityType.MessageDrafted,
     body: parsed.body,
     metadata: {
       channel: request.channel,
       ...(parsed.subject !== undefined ? { subject: parsed.subject } : {}),
     },
-    actorType: LeadActorType.System,
+    actorType: ActorType.System,
   });
 
   return {

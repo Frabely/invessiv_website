@@ -4,13 +4,12 @@
 > **Aufwand:** M · **Abhängigkeiten:** Task 01 (`customers` muss existieren)
 > **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
-- Expand → Dual-Write → versionierter Backfill → Verifikation → Read-Cutover.
-- Backfill verwendet stabile Quell-ID und Unique-Constraint und ist beliebig oft idempotent.
-- Cutover nur nach Count-, ID-, Typ- und Zeitstempelvergleich ohne Abweichung.
-- Die alte Tabelle bleibt mindestens ein beobachtetes Release bestehen; Cleanup/Drop ist nicht Teil
-  dieses Tasks.
-- Rollback schaltet nur den Read-Pfad zurück und lässt Dual-Write aktiv.
-  einen separat versionierten Job.
+- Direkter Umzug: Die Migration legt `activities` an und übernimmt den Bestand mit derselben ID.
+- Die Übernahme ist über `ON CONFLICT (id) DO NOTHING` wiederholbar und bricht bei fehlender oder
+  abweichender Zeile ab.
+- Ab dem Deploy lesen und schreiben alle Pfade nur noch `activities`; kein Dual-Write, kein Backfill-Job.
+- Die alte Tabelle bleibt ungenutzt stehen; Cleanup/Drop ist nicht Teil dieses Tasks.
+- Rollback ist ein Revert des App-Deploys (siehe README).
 
 ## Context
 
@@ -42,8 +41,10 @@ vorsichtig geschnitten: kein neues Verhalten, keine neue Spalte mit Bedeutung, n
 | Typen                 | Ein gemeinsames Const-Objekt, das die sechs bestehenden Lead-Typen **wortgleich** enthält, damit migrierte Zeilen die CHECK-Constraint bestehen  |
 | Akteur                | `actor_type` um `customer` erweitert (Portalnutzer ab Task 21)                                                                                   |
 | Service               | `activityService` mit `appendActivity` und `createActivity(tx, …)`, Vorlage `lead-activity-service.ts`. Ab hier schreibt niemand mehr direkt     |
-| Alte Tabelle          | `lead_activities` bleibt nach diesem Task **stehen** und wird nicht mehr gelesen. Entfernt wird sie in einem eigenen Aufräum-Task                |
-| Warum                 | Projektregel: kein `DROP` im selben Task, der die Tabelle noch liest. Das erhält den Rollback-Pfad über einen Deploy hinweg                      |
+| Kein Dual-Write       | Bewusste Abweichung vom Standardablauf: geringer Wert der Bestandsdaten, keine Activity-Writes zwischen Migration und Deploy zugesichert         |
+| Alte Tabelle          | `lead_activities` bleibt nach diesem Task **stehen**, wird aber weder gelesen noch beschrieben. Entfernt wird sie in Ordner 22                   |
+| Warum                 | Die Migration läuft vor dem Deploy; die noch laufende alte App-Version liest die Tabelle bis dahin. Ein `DROP` im selben Task wäre nicht additiv |
+| Timeline-Typen        | Der Lead-Mapper reicht nur Typen durch, die die Lead-Timeline darstellen kann (`LEGACY_LEAD_*_VALUES`). Task 02a hebt den Filter auf             |
 | Timeline-UI           | Nicht hier. Sie wandert in Task 02a nach `components/workspace/shared/` und wird in Task 29 mit Kundendaten befüllt                              |
 
 ## Contract
@@ -110,7 +111,7 @@ activities
   title text NULL
   body text NULL
   metadata jsonb NULL
-  occurred_at timestamptz NOT NULL DEFAULT now()
+  occurred_at timestamptz NOT NULL      kein Default, der Schreibpfad setzt den Zeitpunkt
   actor_type text NOT NULL              CHECK in ACTOR_TYPE_VALUES
   actor_id text NULL
   actor_label text NULL
@@ -140,9 +141,10 @@ FROM lead_activities
 ON CONFLICT (id) DO NOTHING;
 ```
 
-Rein additiv: neue Tabelle, `lead_activities` bleibt unverändert bestehen. Der Kopierschritt ist
-durch `ON CONFLICT DO NOTHING` beliebig oft wiederholbar — falls zwischen Migration und Deploy noch
-eine Aktivität in die alte Tabelle geschrieben wurde, holt ein zweiter Lauf sie nach.
+Rein additiv: neue Tabelle, `lead_activities` bleibt bestehen. Der Kopierschritt ist durch
+`ON CONFLICT DO NOTHING` beliebig oft wiederholbar. Ein anschließender `DO`-Block bricht die
+Migration ab, wenn eine Bestandszeile fehlt oder in `lead_id`, Typ oder Zeitstempel abweicht. Vor dem
+zugehörigen App-Deploy werden keine Activity-Writes zugelassen.
 
 ## Verzeichnisstruktur
 
@@ -153,8 +155,13 @@ packages/common/src/constants/activity/
   activity-types.ts   (+ .test.ts)
   actor-types.ts      (+ .test.ts)
 packages/common/src/contracts/activity/activity.dto.ts
+packages/common/src/contracts/activity/create-activity-input.ts
+packages/common/src/contracts/activity/rows/activity-row.ts
+packages/common/src/patterns/activity/legacy-lead-activity.ts       (+ Test)
 
-apps/workspace/src/server/shared/services/activity-service.ts       (+ Test)
+packages/db/scripts/smoke-activity-migration.ts
+
+apps/workspace/src/server/workspace/shared/services/activity-service.ts       (+ Test)
 
 umzustellen:
 apps/workspace/src/server/workspace/leads/services/lead-activity-service.ts       entfällt
@@ -178,9 +185,10 @@ apps/workspace/src/server/workspace/dashboard/query-handler/get-messaging-conver
   - Gemeinsame Const-Objekte; die sechs bestehenden Lead-Typen behalten **exakt** ihre Strings
   - Die bisherigen Dateien unter `constants/leads/activity/` werden entfernt, ihre Importe umgestellt
 - **Akzeptanz:**
-  - Test belegt, dass jeder Wert aus dem alten `LEAD_ACTIVITY_TYPE_VALUES` im neuen Array enthalten
+  - Test belegt, dass jeder Wert aus `LEGACY_LEAD_ACTIVITY_TYPE_VALUES` im neuen Array enthalten
     ist — sonst würde die Migration an der CHECK-Constraint scheitern
   - Keine Duplikate, `_VALUES` deckungsgleich zu `Object.values()`
+  - Der Activity-Smoke vergleicht die CHECK-Werte der Datenbank mit den Const-Objekten
 
 ### CRM-01a-T2 — Migration 0022 und Modell
 
@@ -190,12 +198,14 @@ apps/workspace/src/server/workspace/dashboard/query-handler/get-messaging-conver
 - **Inhalt:** Tabelle und Kopierschritt wie oben, CHECKs über `sqlCheckIn`
 - **Akzeptanz:**
   - Migration idempotent; zweiter Lauf kopiert keine Zeile doppelt
-  - Zeilenzahl in `activities` mit `lead_id IS NOT NULL` entspricht exakt der von `lead_activities`
+  - Jede Zeile aus `lead_activities` existiert in `activities` mit gleicher ID, `lead_id`, Typ und
+    Zeitstempel
   - Eine Zeile ohne `lead_id` und ohne `customer_id` wird abgewiesen
+  - Fehlende Fachwerte (`id`, `type`, `occurred_at`, `actor_type`) werden abgewiesen
 
 ### CRM-01a-T3 — Activity-Service
 
-- **Files:** `apps/workspace/src/server/shared/services/activity-service.ts` + Test
+- **Files:** `apps/workspace/src/server/workspace/shared/services/activity-service.ts` + Test
 - **Skills:** `best-practices`
 - **Inhalt:**
   - `appendActivity(input)` und `createActivity(tx, input)`, Struktur 1:1 wie
@@ -213,12 +223,15 @@ apps/workspace/src/server/workspace/dashboard/query-handler/get-messaging-conver
 - **Inhalt:**
   - Fünf Schreiber auf `activityService` umstellen (`leadId` gesetzt, `customerId` null)
   - `get-lead-by-id` liest `activities` über `lead_id`
-  - `get-messaging-conversion` liest `activities` statt `lead_activities`; Bedingungen unverändert
+  - `get-messaging-conversion` liest `activities` statt `lead_activities`; Bedingungen unverändert,
+    zusätzlich nur Zeilen mit `lead_id`
+  - Der Lead-Mapper filtert Typen, die die Lead-Timeline nicht darstellen kann
   - `lead-activity-service.ts` wird entfernt
 - **Akzeptanz:**
-  - **Die bestehenden Dashboard- und Lead-Tests bleiben inhaltlich unverändert und grün** — das ist
-    der Regressionsnachweis für die Funnel-Kennzahlen
-  - Kein Codepfad verweist mehr auf `leadActivities`
+  - Die bestehenden Dashboard- und Lead-Tests bleiben grün. Nur die zuvor falsche Bulk-Status-Erwartung wird bewusst
+    auf `status_change` korrigiert; das ist der Regressionsnachweis für die Funnel-Kennzahlen
+  - Kein Code liest oder schreibt `leadActivities` außer dem Drizzle-Modell und der
+    Übernahmeprüfung im Activity-Smoke
   - Die Lead-Detailansicht zeigt dieselbe Timeline wie vorher
 
 ## Deploy-Sicherheit
@@ -228,7 +241,8 @@ apps/workspace/src/server/workspace/dashboard/query-handler/get-messaging-conver
 2. **Bricht nichts:** Migration additiv, `lead_activities` bleibt unangetastet stehen. Das größte
    Risiko sind die Funnel-Kennzahlen im Dashboard; abgesichert dadurch, dass deren Tests
    unverändert bleiben müssen. Geht doch etwas schief, ist der Rückweg ein Revert des Codes — die
-   alte Tabelle ist noch vollständig da.
+   alte Tabelle ist noch vollständig da. Einträge aus der Zeit zwischen Deploy und Revert sieht die
+   alte Version nicht; das ist bewusst akzeptiert.
 3. **Offen:** Das Entfernen von `lead_activities`. Eigener Aufräum-Task, sobald ein Deploy-Zyklus
    ohne Auffälligkeiten gelaufen ist.
 
@@ -236,7 +250,8 @@ apps/workspace/src/server/workspace/dashboard/query-handler/get-messaging-conver
 
 1. Migration läuft und ist wiederholbar; alle bestehenden Lead-Aktivitäten sind übernommen.
 2. Die Lead-Detailansicht zeigt unveränderte Einträge in unveränderter Reihenfolge.
-3. Die Dashboard-Kennzahlen liefern vor und nach dem Deploy dieselben Werte.
-4. Ein neuer Lead erzeugt seine Aktivität in `activities`, nicht mehr in `lead_activities`.
+3. Die Dashboard-Kennzahlen bleiben bis auf den bewusst korrigierten Fall stabil: Bulk-Statusänderungen erscheinen
+   jetzt im Zeitraum ihrer Statusänderung.
+4. Ein neuer Lead erzeugt seine Aktivität ausschließlich in `activities`.
 5. Eine Aktivität lässt sich mit `customerId` und `projectId` anlegen und ist darüber abfragbar.
 6. `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm build:workspace` grün.

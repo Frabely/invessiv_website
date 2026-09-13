@@ -4,8 +4,8 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { CONTACT_REQUEST_KIND } from "@invessiv/common/constants/contact/contact-request-kind";
-import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
-import { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
+import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
+import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import type { LeadActivityDto } from "@invessiv/common/contracts/leads/lead-activity.dto";
 import type { LeadSubmissionDto } from "@invessiv/common/contracts/leads/lead-submission.dto";
 import {
@@ -16,19 +16,19 @@ import { LeadDetailActivities } from "./lead-detail-activities";
 
 const baseActivity: LeadActivityDto = {
   id: "act-1",
-  type: LeadActivityType.Note,
+  type: ActivityType.Note,
   title: "Erstkontakt notiert",
   body: "Lead hat heute zurückgerufen.",
   metadata: null,
   occurredAt: "2026-04-12T10:30:00.000Z",
-  actorType: LeadActorType.User,
+  actorType: ActorType.User,
   actorId: "user_123",
   actorLabel: "Moritz",
 };
 
 const statusChangeActivity: LeadActivityDto = {
   id: "act-2",
-  type: LeadActivityType.StatusChange,
+  type: ActivityType.StatusChange,
   title: null,
   body: null,
   metadata: {
@@ -36,7 +36,7 @@ const statusChangeActivity: LeadActivityDto = {
     next_status: "qualified",
   },
   occurredAt: "2026-04-13T10:30:00.000Z",
-  actorType: LeadActorType.System,
+  actorType: ActorType.System,
   actorId: null,
   actorLabel: null,
 };
@@ -49,7 +49,7 @@ const invalidStatusChangeActivity: LeadActivityDto = {
 
 const bulkEditActivity: LeadActivityDto = {
   id: "act-4",
-  type: LeadActivityType.BulkEdit,
+  type: ActivityType.BulkEdit,
   title: null,
   body: "Updated fields: status, owner",
   metadata: {
@@ -58,7 +58,7 @@ const bulkEditActivity: LeadActivityDto = {
     after: {},
   },
   occurredAt: "2026-04-14T10:30:00.000Z",
-  actorType: LeadActorType.System,
+  actorType: ActorType.System,
   actorId: null,
   actorLabel: null,
 };

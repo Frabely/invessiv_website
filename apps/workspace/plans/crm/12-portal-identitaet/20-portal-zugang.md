@@ -9,8 +9,9 @@
 ## Context
 
 Der sicherheitskritischste Task des gesamten Plans: Ab hier betreten fremde Personen die Anwendung.
-Bisher galt eine einzige Regel — E-Mail in der Allowlist oder kein Zutritt. Jetzt existieren zwei
-Zugangswelten in derselben Anwendung und derselben Clerk-Instanz.
+Vor Ordner 03 galt eine einzige Regel — E-Mail in der Allowlist oder kein Zutritt. Mit dem
+persistierten User- und RBAC-Fundament existieren nun zwei getrennte Zugangs-Realms in derselben Anwendung und
+derselben Clerk-Instanz.
 
 Dieser Task baut **nur den Zugang**: Einladung, Einlösung, Mitgliedschaft, Gate, Firmenwechsler,
 Widerruf. Die Portalinhalte folgen in Task 21. Nach diesem Task kann sich ein Kunde anmelden und
@@ -26,8 +27,8 @@ Ebenen:
    Datenbankprüfung nicht konstruierbar ist.
 2. **Getrennte Codepfade:** Portal-Handler liegen unter `src/server/portal/`, nie unter
    `src/server/workspace/`. Kein Handler wird von beiden Welten benutzt.
-3. **Getrennte Routen:** `(portal)`-Gruppe mit eigenem Gate. Die `(app)`-Allowlist bleibt für den
-   internen Bereich unverändert scharf.
+3. **Getrennte Routen:** `(portal)`-Gruppe mit eigenem Gate. Der interne Bereich verwendet weiterhin sein eigenes
+   Workspace-Membership- und Permission-Gate.
 4. **Mitgliedschaft statt Identität:** Ein gültiger Login autorisiert nichts. Jede Anfrage löst die
    Mitgliedschaft neu gegen die Datenbank auf.
 
@@ -38,8 +39,9 @@ kein Session-Claim. Das Portal folgt genau dem Muster, das der interne Bereich h
 (`src/lib/auth/api.ts`): pro Anfrage `auth()` für die Kennung, dann eine Autorisierungsprüfung gegen
 eine Quelle außerhalb des Requests, kein gespeicherter Zustand.
 
-Intern ist diese Quelle die Env-Allowlist (`isEmailAllowed`). Im Portal ist sie die Tabelle
-`portal_memberships`. Der Unterschied ist nur, dass eine Person mehreren Firmen angehören kann — also
+Intern ist diese Quelle nach Ordner 03 die aktive Workspace-Mitgliedschaft mit ihren Rollen. Im Portal ist sie die
+Tabelle `portal_memberships` mit Portalrollen. Der Unterschied ist, dass eine Person mehreren Firmen angehören kann —
+also
 braucht es zusätzlich eine Angabe, **welche** gerade gemeint ist. Die steht im Pfad:
 
 ```txt
@@ -47,8 +49,8 @@ braucht es zusätzlich eine Angabe, **welche** gerade gemeint ist. Die steht im 
 /api/portal/[customerId]/...             Endpunkte
 ```
 
-Der Wert aus dem Pfad ist ein **Vorschlag, keine Autorisierung** — dieselbe Rolle, die die E-Mail aus
-Clerk im internen Bereich hat. `requirePortalActor` nimmt Kennung und Pfadwert, sucht die aktive
+Der Wert aus dem Pfad ist ein **Vorschlag, keine Autorisierung** — dieselbe Rolle, die früher die E-Mail im internen
+Allowlist-Gate hatte. `requirePortalActor` nimmt User-Identität und Pfadwert, sucht die aktive
 Mitgliedschaft und liefert entweder einen `PortalActor` oder `notFound()`. Ein geratener oder fremder
 Wert im Pfad ergibt 404, weil keine Mitgliedschaft existiert — nicht, weil ein Check ihn abweist.
 
@@ -68,31 +70,31 @@ irrelevant, und die Abfrage läuft auf einem partiellen Index.
 
 ## Entscheidungen
 
-| Bereich              | Entscheidung                                                                                                                                                 |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Identität            | Dieselbe Clerk-Instanz. Ein Clerk-Konto ist entweder intern oder Portalnutzer — nie beides                                                                   |
-| Zuordnung            | `portal_memberships` verbindet Clerk-Kennung, `people.id` und `customers.id`. Eine Person darf beliebig vielen Kunden angehören                              |
-| Kein E-Mail-Abgleich | Eine Mitgliedschaft entsteht **ausschließlich** durch Einlösen eines Tokens. Nirgends wird eine Clerk-Kennung über eine E-Mail-Adresse zugeordnet            |
-| Warum                | Ein E-Mail-Abgleich verknüpft Zugriff mit einem Wert, den ein Identitätsanbieter ändern kann und der bei mehreren Firmen mehrdeutig wird                     |
-| Einladung            | `portal_invitations` bindet genau eine `customer_contact_assignment_id`; gespeichert wird nur `token_hash`                                                   |
-| Token                | Sieben Tage gültig, einmal nutzbar, widerrufbar, niemals in Logs, Mails oder Activities                                                                      |
-| Einlösung            | Kein Konto → Sign-up, vorhandenes Konto → Sign-in; anschließend derselbe Redeem-Pfad. Die Mitgliedschaft entsteht gegen die dann authentifizierte Kennung    |
-| Zweite Firma         | Identisch zur ersten: erneute Einladung, erneutes Einlösen. Keine Direktanlage und keine Auto-Einlösung                                                      |
-| Warum                | Der Zugriff auf die Daten einer weiteren Firma entsteht nur durch eine Handlung der Person selbst; die Einwilligung ist damit belegt                         |
-| Rollen               | In Version 1 keine differenzierten Portalrollen. Alle Mitglieder einer Firma haben denselben fachlichen Umfang                                               |
-| Ausgeschlossen       | Interne Notizen, Audit, Zugangsdaten, Budgets und Stundensätze erreichen das Portal nie — unabhängig von der Mitgliedschaft                                  |
-| Firmenwechsler       | Bestandteil dieses Tasks. Aktiver Kunde steht im Pfad und wird bei jeder Anfrage neu gegen eine aktive Mitgliedschaft aufgelöst — kein gespeicherter Zustand |
-| Registrierung        | Clerk auf **invitation-only** („Restricted"). Ohne Einladung entsteht kein Konto                                                                             |
-| Warum                | `proxy.ts:6-11` lässt `/sign-up(.*)` öffentlich durch. Ab hier ist das der Kundeneinstieg — offen gelassen könnte jeder Konten anlegen                       |
-| Widerruf             | Setzt `revoked_at`; das Gate verweigert sofort. Offene Einladungen derselben Zuordnung werden mitentwertet                                                   |
-| Historie             | Widerruf löscht nichts. Nachrichten, Activities und Audit-Einträge bleiben vollständig erhalten                                                              |
-| Interne Nutzer       | Eine Adresse in `WORKSPACE_ALLOWED_EMAILS` kann nicht eingeladen werden — Prüfung beim Einladen, mit klarer Meldung                                          |
-| Portalvorschau       | Vor der **ersten** Einladung eines Kunden bestätigt ein Mitarbeiter eine Vorschau aller sichtbaren Projekte, Aufgaben, Dateien und Stunden                   |
-| Portal-Route         | `/[locale]/(portal)/portal/[customerId]/**` — eigenes Segment, damit die Zugehörigkeit an der URL ablesbar ist                                               |
-| Weiterleitung        | Nach dem Login entscheidet der Kontotyp das Ziel: intern zum Dashboard, Portalnutzer ins Portal                                                              |
-| Sprache              | Portalsprache aus `people.preferred_locale`, nicht aus der Locale des Einladenden                                                                            |
-| Kundenmails          | `email_notifications_enabled` wird **beim Einladen** gesetzt und auf die Mitgliedschaft übernommen; danach vom Portalmitglied und intern änderbar            |
-| Digest               | Kundenmails höchstens einmal je 12 Stunden je Mitgliedschaft, Anker `customer_notified_at`, Fenster als Konstante                                            |
+| Bereich              | Entscheidung                                                                                                                                                    |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Identität            | Dieselbe Clerk-Instanz und derselbe `users`-Datensatz. Ein User darf interne und Portalmitgliedschaften besitzen; diese gewähren einander keine Rechte          |
+| Zuordnung            | `portal_memberships` verbindet `users.id`, `people.id` und `customers.id`. Eine Person darf beliebig vielen Kunden angehören                                    |
+| Kein E-Mail-Abgleich | Eine Mitgliedschaft entsteht **ausschließlich** durch Einlösen eines Tokens. Nirgends wird eine Clerk-Kennung über eine E-Mail-Adresse zugeordnet               |
+| Warum                | Ein E-Mail-Abgleich verknüpft Zugriff mit einem Wert, den ein Identitätsanbieter ändern kann und der bei mehreren Firmen mehrdeutig wird                        |
+| Einladung            | `portal_invitations` bindet genau eine `customer_contact_assignment_id`; gespeichert wird nur `token_hash`                                                      |
+| Token                | Sieben Tage gültig, einmal nutzbar, widerrufbar, niemals in Logs, Mails oder Activities                                                                         |
+| Einlösung            | Kein Konto → Sign-up, vorhandenes Konto → Sign-in; anschließend derselbe Redeem-Pfad. Die Mitgliedschaft entsteht gegen die dann authentifizierte Kennung       |
+| Zweite Firma         | Identisch zur ersten: erneute Einladung, erneutes Einlösen. Keine Direktanlage und keine Auto-Einlösung                                                         |
+| Warum                | Der Zugriff auf die Daten einer weiteren Firma entsteht nur durch eine Handlung der Person selbst; die Einwilligung ist damit belegt                            |
+| Rollen               | Portalrollen nutzen das RBAC aus Ordner 03, sind frei konfigurierbar und werden je Portalmitgliedschaft zugewiesen; Workspace-Rollen sind strikt ausgeschlossen |
+| Ausgeschlossen       | Interne Notizen, Audit, Zugangsdaten, Budgets und Stundensätze erreichen das Portal nie — unabhängig von der Mitgliedschaft                                     |
+| Firmenwechsler       | Bestandteil dieses Tasks. Aktiver Kunde steht im Pfad und wird bei jeder Anfrage neu gegen eine aktive Mitgliedschaft aufgelöst — kein gespeicherter Zustand    |
+| Registrierung        | Clerk auf **invitation-only** („Restricted"). Ohne Einladung entsteht kein Konto                                                                                |
+| Warum                | `proxy.ts:6-11` lässt `/sign-up(.*)` öffentlich durch. Ab hier ist das der Kundeneinstieg — offen gelassen könnte jeder Konten anlegen                          |
+| Widerruf             | Setzt `revoked_at`; das Gate verweigert sofort. Offene Einladungen derselben Zuordnung werden mitentwertet                                                      |
+| Historie             | Widerruf löscht nichts. Nachrichten, Activities und Audit-Einträge bleiben vollständig erhalten                                                                 |
+| Interne Nutzer       | Dürfen zusätzlich eingeladen werden; eine interne Membership allein gewährt nie Portalzugriff und eine Portalrolle nie Workspace-Zugriff                        |
+| Portalvorschau       | Vor der **ersten** Einladung eines Kunden bestätigt ein Mitarbeiter eine Vorschau aller sichtbaren Projekte, Aufgaben, Dateien und Stunden                      |
+| Portal-Route         | `/[locale]/(portal)/portal/[customerId]/**` — eigenes Segment, damit die Zugehörigkeit an der URL ablesbar ist                                                  |
+| Weiterleitung        | Nach dem Login entscheidet der Kontotyp das Ziel: intern zum Dashboard, Portalnutzer ins Portal                                                                 |
+| Sprache              | Portalsprache aus `people.preferred_locale`, nicht aus der Locale des Einladenden                                                                               |
+| Kundenmails          | `email_notifications_enabled` wird **beim Einladen** gesetzt und auf die Mitgliedschaft übernommen; danach vom Portalmitglied und intern änderbar               |
+| Digest               | Kundenmails höchstens einmal je 12 Stunden je Mitgliedschaft, Anker `customer_notified_at`, Fenster als Konstante                                               |
 
 ## Tabellen
 
@@ -101,7 +103,7 @@ portal_memberships
   id uuid PK
   customer_id uuid NOT NULL   → customers.id ON DELETE CASCADE
   person_id uuid NOT NULL     → people.id ON DELETE RESTRICT
-  clerk_user_id text NOT NULL
+  user_id uuid NOT NULL       → users.id ON DELETE RESTRICT
   activated_at timestamptz NOT NULL
   revoked_at timestamptz NULL
   last_seen_at timestamptz NULL
@@ -110,8 +112,16 @@ portal_memberships
   version integer NOT NULL DEFAULT 1
   created_at / updated_at
   UNIQUE INDEX portal_memberships_customer_person_uidx ON (customer_id, person_id)
-  INDEX (clerk_user_id) WHERE revoked_at IS NULL
+  INDEX (user_id) WHERE revoked_at IS NULL
   INDEX (customer_id)   WHERE revoked_at IS NULL
+
+portal_membership_roles
+  portal_membership_id uuid NOT NULL → portal_memberships.id ON DELETE CASCADE
+  role_id uuid NOT NULL              → roles.id ON DELETE RESTRICT
+  assigned_by_user_id uuid NOT NULL  → users.id ON DELETE RESTRICT
+  assigned_at timestamptz NOT NULL
+  PRIMARY KEY (portal_membership_id, role_id)
+  Constraint: role.realm = portal
 
 portal_invitations
   id uuid PK
@@ -128,9 +138,9 @@ portal_invitations
   INDEX (expires_at) WHERE redeemed_at IS NULL AND revoked_at IS NULL
 ```
 
-`clerk_user_id` ist bewusst **nicht** unique: dieselbe Kennung trägt eine Zeile je Firma. Eindeutig
-ist das Paar Kunde/Person. Es gibt keine Spalte und keinen Index auf einer E-Mail-Adresse — die
-Adresse lebt an `people` beziehungsweise an der Zuordnung und hat mit Autorisierung nichts zu tun.
+`user_id` ist bewusst **nicht** unique: derselbe User trägt eine Zeile je Firma. Eindeutig ist das Paar
+Kunde/Person. Es gibt keine Spalte und keinen Index auf einer E-Mail-Adresse — die Adresse lebt als Stammdatum an
+`users` und als fachliche Kontaktinformation an `people`; sie hat mit Autorisierung nichts zu tun.
 
 Der partielle Unique-Index auf `portal_invitations` erlaubt genau eine offene Einladung je
 Zuordnung. Erneutes Einladen entwertet die alte und legt eine neue an, statt zwei gültige Tokens
@@ -142,7 +152,7 @@ nebeneinander entstehen zu lassen.
 Einladen (intern)
   POST /api/workspace/crm/customers/[id]/portal-invitations
     → withPermission(PortalAccessManage)
-    → prüfen: Zuordnung gehört zu diesem Kunden, Adresse nicht in der internen Allowlist,
+    → prüfen: Zuordnung gehört zu diesem Kunden,
               keine aktive Mitgliedschaft für dieses Paar, Portalvorschau bestätigt
     → offene Einladung derselben Zuordnung entwerten
     → Token erzeugen, nur token_hash speichern
@@ -154,15 +164,17 @@ Einlösen (Kunde)
   POST /api/portal/invitations/redeem
     → Clerk-Sitzung erforderlich; ohne Sitzung kein Redeem
     → Token hashen, Zeile laden: offen, nicht abgelaufen, nicht widerrufen
-    → portal_memberships anlegen (clerk_user_id aus der Clerk-Sitzung), redeemed_at setzen
+    → User über `users.clerk_user_id` auflösen oder kontrolliert anlegen
+    → portal_memberships und initiale Portalrolle anlegen, redeemed_at setzen
     → alles in einer Transaktion; Fehler lässt die Einladung offen
     → Redirect auf /[locale]/portal/[customerId]/ der neuen Mitgliedschaft
 
 Portal-Seitenaufruf
   (portal)/[customerId]/layout.tsx → requirePortalActor(locale, customerId)
     → kein userId: Weiterleitung zur Anmeldung
-    → Mitgliedschaft (clerk_user_id, customerId) aktiv? sonst notFound()
-    → liefert PortalActor { membershipId, customerId, personId }
+    → User anhand Clerk-ID und aktive Mitgliedschaft (user_id, customerId) laden, sonst notFound()
+    → Portalrollen auflösen
+    → liefert PortalActor { userId, membershipId, customerId, personId, permissions }
 
 Einstieg ohne Kunde im Pfad
   (portal)/portal/[customerId]/page.tsx
@@ -190,6 +202,7 @@ immer selbst mit.
 ```txt
 packages/db/migrations/<nr>_create_portal_memberships.sql
 packages/db/src/record-configuration/crm/portal-memberships.ts
+packages/db/src/record-configuration/crm/portal-membership-roles.ts
 packages/db/src/record-configuration/crm/portal-invitations.ts
 packages/common/src/contracts/crm/portal-membership.dto.ts
 packages/common/src/constants/crm/errors/portal-error-codes.ts
@@ -239,7 +252,7 @@ apps/workspace/src/i18n/dictionaries/portal/{shell,invitation,meta}/{de,en}.json
 - **Akzeptanz:**
   - Migration idempotent; Drizzle-Modell deckungsgleich zu Spalten, Typen und Constraints
   - Dasselbe Paar Kunde/Person lässt sich nicht zweimal anlegen
-  - Dieselbe Clerk-Kennung lässt sich bei mehreren Kunden anlegen
+  - Dieselbe `users.id` lässt sich über getrennte Mitgliedschaften mehreren Kunden zuordnen
   - Zwei offene Einladungen zur selben Zuordnung sind auf DB-Ebene unmöglich
   - Es existiert keine Spalte und kein Index auf einer E-Mail-Adresse
 
@@ -250,8 +263,8 @@ apps/workspace/src/i18n/dictionaries/portal/{shell,invitation,meta}/{de,en}.json
 - **Inhalt:**
   - `PortalActor` als Branded Type: nur `requirePortalActor` und `withPortalActor` können ihn
     erzeugen. Kein Handler kann sich einen aus einer rohen `customerId` basteln
-  - `requirePortalActor(locale, customerId)`: Kennung aus `auth()`, dann genau **eine** Abfrage auf
-    eine aktive Mitgliedschaft `(clerk_user_id, customer_id)`. Kein Treffer ergibt `notFound()`
+  - `requirePortalActor(locale, customerId)`: Clerk-Kennung aus `auth()`, kanonischen User auflösen und dann genau
+    **eine** aktive Mitgliedschaft `(user_id, customer_id)` samt Portalrollen laden. Kein Treffer ergibt `notFound()`
   - `withPortalActor`: Gegenstück zu `withWorkspaceApiAuth`, löst den Pfadwert auf und übergibt dem
     Handler den `PortalActor`, nie eine rohe Kennung
   - Kein Cookie, keine Clerk-Metadaten, kein Session-Claim — dasselbe zustandslose Muster wie
@@ -259,8 +272,9 @@ apps/workspace/src/i18n/dictionaries/portal/{shell,invitation,meta}/{de,en}.json
   - `(portal)/AGENTS.md` auf Deutsch mit den harten Regeln: Handler nehmen nur `PortalActor`, kein
     E-Mail-Abgleich, keine Wiederverwendung von Workspace-Handlern, keine Zugangsdaten
 - **Akzeptanz:**
-  - Test: interner Nutzer erreicht das Portal nicht
-  - Test: Portalnutzer erreicht den internen Bereich nicht
+  - Test: User mit ausschließlich interner Membership erreicht das Portal nicht
+  - Test: User mit ausschließlich Portalmitgliedschaft erreicht den internen Bereich nicht
+  - Test: User mit beiden Memberships erhält pro Route ausschließlich die Permissions des jeweiligen Realms
   - Test: widerrufene Mitgliedschaft wird sofort abgewiesen
   - Test: Der Wrapper reicht keine Kundenkennung aus der Anfrage weiter (Signatur erlaubt es nicht)
   - Test: fremde `customerId` im Pfad ergibt 404, auch bei gültigem Login und bestehender
@@ -274,7 +288,7 @@ apps/workspace/src/i18n/dictionaries/portal/{shell,invitation,meta}/{de,en}.json
 
 - **Files:** zwei Command-Handler, ein Query-Handler, zwei Routen, Vorschau-Dialog + Tests
 - **Inhalt:**
-  - Einladen prüft: Zuordnung gehört zum Kunden, Adresse nicht intern, keine aktive Mitgliedschaft
+  - Einladen prüft: Zuordnung gehört zum Kunden, keine aktive Mitgliedschaft
     für dieses Paar, Kunde existiert, Portalvorschau für diesen Kunden bestätigt
   - Eine Person mit Zugang bei einem **anderen** Kunden wird normal eingeladen — das ist der
     vorgesehene Mehrfirmenfall und kein Fehler
@@ -285,7 +299,7 @@ apps/workspace/src/i18n/dictionaries/portal/{shell,invitation,meta}/{de,en}.json
   - Widerrufen setzt `revoked_at` an der Mitgliedschaft und entwertet offene Einladungen derselben
     Zuordnung
 - **Akzeptanz:**
-  - Tests: interne Adresse wird mit eigener Fehlermeldung abgelehnt
+  - Test: bestehender interner User kann eine unabhängige Portalmitgliedschaft erhalten
   - Test: zweite Einladung bei bestehender aktiver Mitgliedschaft ergibt 409
   - Test: Einladung einer Person, die bei einem anderen Kunden aktiv ist, gelingt
   - Test: Einladen ohne bestätigte Portalvorschau wird abgelehnt

@@ -15,9 +15,9 @@ vi.mock("@invessiv/db/core", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@invessiv/db/core")>()),
   getDrizzleDatabaseClient: getDrizzleDatabaseClientMock,
 }));
-vi.mock("@/server/workspace/leads/services/lead-activity-service", () => ({
-  leadActivityService: {
-    createLeadActivity: createLeadActivityMock,
+vi.mock("@/server/workspace/shared/services/activity-service", () => ({
+  activityService: {
+    createActivity: createLeadActivityMock,
   },
 }));
 

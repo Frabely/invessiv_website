@@ -14,12 +14,15 @@ import { eq, inArray, like } from "drizzle-orm";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
+  activities,
   customerContactAssignments,
   customers,
   leadCategories,
   people,
   workspaceMembers,
 } from "@invessiv/db/record-configuration";
+import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
+import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
 import { CustomerType } from "@invessiv/common/constants/crm/customer-types";
 import { WorkspaceRole } from "@invessiv/common/constants/crm/workspace-roles";
@@ -328,6 +331,25 @@ async function run() {
           version: 1,
         })),
       ),
+    );
+
+    const occurredAt = new Date();
+    await tx.insert(activities).values(
+      CUSTOMERS.map((customer) => ({
+        id: randomUUID(),
+        lead_id: null,
+        customer_id: customerIds.get(customer.key) as string,
+        project_id: null,
+        type: ActivityType.Created,
+        title: "Fixture customer created",
+        body: null,
+        metadata: { fixture: true },
+        occurred_at: occurredAt,
+        actor_type: ActorType.System,
+        actor_id: null,
+        actor_label: "CRM fixture seeder",
+        created_at: occurredAt,
+      })),
     );
   });
 

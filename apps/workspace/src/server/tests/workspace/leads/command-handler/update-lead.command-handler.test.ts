@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
+import { StatusChangeOrigin } from "@invessiv/common/constants/activity/status-change-origins";
 import { PostgresErrorCode } from "@invessiv/db/core";
 
 const {
@@ -21,9 +22,9 @@ vi.mock(
   "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler",
   () => ({ getLeadById: getLeadByIdMock }),
 );
-vi.mock("@/server/workspace/leads/services/lead-activity-service", () => ({
-  leadActivityService: {
-    createLeadActivity: createLeadActivityMock,
+vi.mock("@/server/workspace/shared/services/activity-service", () => ({
+  activityService: {
+    createActivity: createLeadActivityMock,
   },
 }));
 
@@ -383,6 +384,7 @@ describe("updateLead", () => {
         metadata: {
           previous_status: "new",
           next_status: "qualified",
+          origin: StatusChangeOrigin.SingleEdit,
         },
       }),
     );

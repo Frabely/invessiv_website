@@ -221,7 +221,7 @@ Der User hat **1 Kunden** und steht aktuell in der **Lead-Akquise-Phase**: Leads
 - `apps/workspace/src/components/workspace/leads/shared/lead-status-badge/` — in Funnel-Cards + Hot Leads
 - `apps/workspace/src/components/workspace/leads/shared/lead-source-badge/` — in Source-Performance + Hot Leads
 - Bestehende Query-Handler-Patterns aus `apps/workspace/src/server/workspace/leads/query-handler/list-leads.query-handler.ts`
-- Activity-Type-Konstanten aus `packages/common/src/constants/leads/activity/lead-activity-types.ts`
+- Activity-Type-Konstanten aus `packages/common/src/constants/activity/activity-types.ts`
 
 ## Verifizierung (Definition of Done für jeden Task)
 

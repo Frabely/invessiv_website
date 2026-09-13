@@ -2,8 +2,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { GenerateOutreachRequestDto } from "@invessiv/common/contracts/leads/outreach/generate-outreach-request.dto";
 import { OutreachChannel } from "@invessiv/common/constants/leads/outreach/lead-outreach-channels";
 import { OutreachErrorCode } from "@invessiv/common/constants/leads/outreach/lead-outreach-error-codes";
-import { LeadActivityType } from "@invessiv/common/constants/leads/activity/lead-activity-types";
-import { LeadActorType } from "@invessiv/common/constants/leads/activity/lead-actor-types";
+import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
+import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { generateOutreachMessage } from "@/server/workspace/outreach/command-handler/generate-outreach-message.command-handler";
 
 const {
@@ -41,9 +41,9 @@ vi.mock("@/server/workspace/outreach/services/outreach-ai-service", () => ({
 vi.mock("@/server/workspace/outreach/services/outreach-message-parser", () => ({
   outreachMessageParser: { parse: parseMock },
 }));
-vi.mock("@/server/workspace/leads/services/lead-activity-service", () => ({
-  leadActivityService: {
-    appendLeadActivity: appendLeadActivityMock,
+vi.mock("@/server/workspace/shared/services/activity-service", () => ({
+  activityService: {
+    appendActivity: appendLeadActivityMock,
   },
 }));
 
@@ -132,12 +132,12 @@ describe("generateOutreachMessage — success (non-email channel)", () => {
     await generateOutreachMessage(BASE_REQUEST);
     expect(appendLeadActivityMock).toHaveBeenCalledWith({
       leadId: "lead-123",
-      type: LeadActivityType.MessageDrafted,
+      type: ActivityType.MessageDrafted,
       body: "Generated outreach body",
       metadata: {
         channel: OutreachChannel.Linkedin,
       },
-      actorType: LeadActorType.System,
+      actorType: ActorType.System,
     });
   });
 
@@ -179,13 +179,13 @@ describe("generateOutreachMessage — success (email channel)", () => {
     await generateOutreachMessage(emailRequest);
     expect(appendLeadActivityMock).toHaveBeenCalledWith({
       leadId: "lead-123",
-      type: LeadActivityType.MessageDrafted,
+      type: ActivityType.MessageDrafted,
       body: "Email body",
       metadata: {
         channel: OutreachChannel.Email,
         subject: "Test Subject",
       },
-      actorType: LeadActorType.System,
+      actorType: ActorType.System,
     });
   });
 });
