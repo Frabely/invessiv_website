@@ -18,3 +18,6 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
    keine Business-Logik, keine Drizzle-Aufrufe.
 4. **Privat:** `robots: { index: false, follow: false, nocache: true }` und `export const dynamic = "force-dynamic"`.
 5. i18n ausschließlich über `src/i18n/dictionaries/workspace/settings/`.
+6. **Systemrollen nur für Verwaltungsdarstellung.** Settings-Code darf `SystemRoleKey` verwenden, um Owner-Aktionen,
+   Rollenlabels und die Standardrolle auszuwählen. Autorisierung erfolgt weiterhin ausschließlich über
+   `requireWorkspaceArea` und Actor-Permissions, niemals über einen Rollen-Key.

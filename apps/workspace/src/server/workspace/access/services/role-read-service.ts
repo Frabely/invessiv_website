@@ -16,37 +16,35 @@ async function load(
   executor: AccessDatabaseExecutor,
   roleId?: string,
 ): Promise<RoleDto[]> {
-  const [rows, countRows] = await Promise.all([
-    executor
-      .select({
-        id: roles.id,
-        name: roles.name,
-        system_key: roles.system_key,
-        description: roles.description,
-        is_system: roles.is_system,
-        active: roles.active,
-        version: roles.version,
-        created_at: roles.created_at,
-        updated_at: roles.updated_at,
-        permission_key: rolePermissions.permission_key,
-      })
-      .from(roles)
-      .leftJoin(rolePermissions, eq(rolePermissions.role_id, roles.id))
-      .where(
-        and(
-          eq(roles.realm, AuthRealm.Workspace),
-          roleId ? eq(roles.id, roleId) : undefined,
-        ),
+  const rows = await executor
+    .select({
+      id: roles.id,
+      name: roles.name,
+      system_key: roles.system_key,
+      description: roles.description,
+      is_system: roles.is_system,
+      active: roles.active,
+      version: roles.version,
+      created_at: roles.created_at,
+      updated_at: roles.updated_at,
+      permission_key: rolePermissions.permission_key,
+    })
+    .from(roles)
+    .leftJoin(rolePermissions, eq(rolePermissions.role_id, roles.id))
+    .where(
+      and(
+        eq(roles.realm, AuthRealm.Workspace),
+        roleId ? eq(roles.id, roleId) : undefined,
       ),
-    executor
-      .select({
-        role_id: workspaceMemberRoles.role_id,
-        assigned_member_count: sql<number>`count(*)::int`,
-      })
-      .from(workspaceMemberRoles)
-      .where(roleId ? eq(workspaceMemberRoles.role_id, roleId) : undefined)
-      .groupBy(workspaceMemberRoles.role_id),
-  ]);
+    );
+  const countRows = await executor
+    .select({
+      role_id: workspaceMemberRoles.role_id,
+      assigned_member_count: sql<number>`count(*)::int`,
+    })
+    .from(workspaceMemberRoles)
+    .where(roleId ? eq(workspaceMemberRoles.role_id, roleId) : undefined)
+    .groupBy(workspaceMemberRoles.role_id);
 
   return roleMappingService.mapRowsToRoles(rows, countRows);
 }

@@ -190,7 +190,7 @@ describe("members routes", () => {
       ),
     );
     expect(ok.status).toBe(200);
-    expect(mocks.listCandidates).toHaveBeenCalledWith("anna");
+    expect(mocks.listCandidates).toHaveBeenCalledWith({ query: " anna " });
 
     mocks.listCandidates.mockResolvedValueOnce({
       ok: false,
@@ -204,17 +204,25 @@ describe("members routes", () => {
       ),
     );
     expect(outage.status).toBe(503);
-    expect(mocks.listCandidates).toHaveBeenLastCalledWith(null);
+    expect(mocks.listCandidates).toHaveBeenLastCalledWith({ query: "" });
   });
 
-  it("POST clerk-candidates rejects malformed and overlong search bodies", async () => {
+  it("POST clerk-candidates rejects malformed JSON and maps handler validation errors", async () => {
     const malformed = await getCandidates(
       request("http://localhost/api/workspace/members/clerk-candidates", {
         method: "POST",
         body: "{",
       }),
     );
-    const overlong = await getCandidates(
+    expect(malformed.status).toBe(400);
+    expect(mocks.listCandidates).not.toHaveBeenCalled();
+
+    mocks.listCandidates.mockResolvedValueOnce({
+      ok: false,
+      code: WorkspaceMemberErrorCode.ValidationError,
+      errors: [],
+    });
+    const invalid = await getCandidates(
       jsonRequest(
         "http://localhost/api/workspace/members/clerk-candidates",
         "POST",
@@ -222,9 +230,10 @@ describe("members routes", () => {
       ),
     );
 
-    expect(malformed.status).toBe(400);
-    expect(overlong.status).toBe(400);
-    expect(mocks.listCandidates).not.toHaveBeenCalled();
+    expect(invalid.status).toBe(400);
+    expect(mocks.listCandidates).toHaveBeenCalledWith({
+      query: "a".repeat(101),
+    });
   });
 
   it("PUT roles returns the version conflict body with the current member", async () => {

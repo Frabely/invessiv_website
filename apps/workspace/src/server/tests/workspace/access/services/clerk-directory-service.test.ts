@@ -86,10 +86,14 @@ describe("clerkDirectoryService", () => {
   it("lists the newest candidates and passes a search only when one is given", async () => {
     mocks.getUserList.mockResolvedValue({
       data: [clerkUser("user_anna", "anna@example.test", "Anna")],
+      totalCount: 1,
     });
 
-    const unfiltered = await clerkDirectoryService.listCandidateProfiles(null);
-    await clerkDirectoryService.listCandidateProfiles("anna");
+    const unfiltered = await clerkDirectoryService.listCandidateProfiles(
+      null,
+      new Set(),
+    );
+    await clerkDirectoryService.listCandidateProfiles("anna", new Set());
 
     expect(unfiltered).toMatchObject({
       ok: true,
@@ -97,19 +101,51 @@ describe("clerkDirectoryService", () => {
     });
     expect(mocks.getUserList).toHaveBeenNthCalledWith(1, {
       limit: 100,
+      offset: 0,
       orderBy: "-created_at",
     });
     expect(mocks.getUserList).toHaveBeenNthCalledWith(2, {
       limit: 100,
+      offset: 0,
       orderBy: "-created_at",
       query: "anna",
+    });
+  });
+
+  it("continues past linked accounts until it has found an available candidate", async () => {
+    const linkedUsers = Array.from({ length: 100 }, (_, index) =>
+      clerkUser(`user_${index}`, `${index}@example.test`, `User ${index}`),
+    );
+    const linkedIds = new Set(linkedUsers.map((user) => user.id));
+    mocks.getUserList
+      .mockResolvedValueOnce({ data: linkedUsers, totalCount: 101 })
+      .mockResolvedValueOnce({
+        data: [clerkUser("user_available", "free@example.test", "Free")],
+        totalCount: 101,
+      });
+
+    const result = await clerkDirectoryService.listCandidateProfiles(
+      null,
+      linkedIds,
+    );
+
+    expect(mocks.getUserList).toHaveBeenNthCalledWith(2, {
+      limit: 100,
+      offset: 100,
+      orderBy: "-created_at",
+    });
+    expect(result).toMatchObject({
+      ok: true,
+      profiles: [{ clerkUserId: "user_available" }],
     });
   });
 
   it("answers a failing candidate search as unavailable", async () => {
     mocks.getUserList.mockRejectedValue(new Error("rate limited"));
 
-    expect(await clerkDirectoryService.listCandidateProfiles("anna")).toEqual({
+    expect(
+      await clerkDirectoryService.listCandidateProfiles("anna", new Set()),
+    ).toEqual({
       ok: false,
       code: WorkspaceMemberErrorCode.ClerkUnavailable,
     });

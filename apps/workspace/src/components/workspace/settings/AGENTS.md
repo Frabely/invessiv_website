@@ -25,6 +25,9 @@ Jede Komponente lebt in `<group>/<component-name>/<component-name>.tsx` mit eige
 
 - **Keine Rollenlogik im Client.** Komponenten erhalten fertige Flags (`canManageRoles`, `isOwner`, `isCurrentActor`)
   und DTOs als Props. Die Autorisierung bleibt in Page (`requireWorkspaceArea`) und API (`withPermission`).
+- **`SystemRoleKey` ist für Darstellung und Auswahl zulässig.** Reine Settings-Patterns und Komponenten dürfen damit
+  Owner-Rollen aus normalen Rollen-Pickern ausblenden, Systemrollen beschriften und die Standardrolle vorbelegen.
+  Daraus darf keine Zugriffsentscheidung entstehen; dafür gelten ausschließlich die übergebenen Flags und Permissions.
 - **Tab-State in der URL** (`?tab=members|roles`); Dialog-Open-State darf lokal sein, weil er nicht teilbar sein muss.
 - **Mutationen über `src/client/access/access-api-service.ts`**, danach `router.refresh()`. Keine Server Actions.
 - **409 behält Eingaben.** Ein Versionskonflikt zeigt den aktuellen Stand und lässt den Nutzer erneut absenden.

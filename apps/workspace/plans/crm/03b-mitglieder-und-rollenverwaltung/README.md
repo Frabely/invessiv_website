@@ -42,7 +42,11 @@ Permissionabhängige Lead-Aktionen bleiben in 03b, weil ab diesem Merge Mitglied
 - [x] Rollenentzug wirkt beim nächsten Request.
 - [x] Letzter aktiver Owner kann seiner Owner-Rolle nicht beraubt werden (409 mit Begründung). Der Unit-Test deckt
       Abweisung und Schreibreihenfolge ab; der DB-Integrationstest weist ohne Vorbedingung nach, dass konkurrierende
-      Änderungen an Owner-Zuweisungen durch `SELECT … FOR UPDATE` serialisiert werden.
+      Änderungen an Owner-Zuweisungen durch `SELECT … FOR UPDATE` serialisiert werden. **Bewusste Testabweichung vom
+      ursprünglichen T8:** Ein echter Handler-zu-DB-Test für „letzter Owner → 409“ würde
+      in der geteilten Dev-DB voraussetzen, alle fremden aktiven Owner zu verändern. Deshalb bleiben die 409-Abweisung
+      im Handler-Unit-Test, das HTTP-Mapping im Route-Test und die Nebenläufigkeitsgarantie im DB-Integrationstest
+      getrennt. Risiko: Das Zusammenspiel dieser drei Ebenen wird nicht in einem einzigen Test ausgeführt.
 - [x] Custom-Rolle mit nicht delegierbarer Permission wird abgewiesen (422), auch bei manipuliertem Request.
 - [x] Rollen- und Mitgliedsänderungen sind versioniert (`updateVersioned`, 409 mit aktuellem Stand).
 - [x] Jede Änderung erzeugt genau einen `security_events`-Eintrag mit tatsächlichem Actor und ohne PII in Metadaten.

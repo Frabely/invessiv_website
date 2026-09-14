@@ -23,7 +23,7 @@ ein sichtbarer Löschbutton wäre sonst ein toter Button.
 | Rollen-Tab         | Nur sichtbar und ladbar mit `roles.manage`; beide Permissions sind nicht delegierbar, praktisch also nur Owner                                                                                                                                                                                                    |
 | Serverordner       | `src/server/workspace/access/` für Mitglieder, Rollen und Owner-Flow; Owner-Invariante als Service in `server/workspace/auth/`                                                                                                                                                                                    |
 | Lesen              | Settings-Page lädt serverseitig über Query-Handler; `GET /roles` bleibt als API-Contract. `GET /members` (`members.read`) liefert nur aktive Mitglieder als `WorkspaceMemberOptionDto` (ID, Anzeigename) — ohne E-Mail, Rollen und Owner-Status, weil `members.read` in der Basisrolle steckt (Review 14.09.2026) |
-| Clerk-Kandidaten   | `clerkClient().users.getUserList` (max. 100, optionale Suche aus einem POST-Body), abzüglich aller Clerk-IDs mit `users`-Zeile                                                                                                                                                                                    |
+| Clerk-Kandidaten   | Höchstens 100 freie Konten, optionale Suche aus einem POST-Body; `getUserList` paginiert über bereits verknüpfte Konten hinweg, statt nur die ersten 100 Clerk-Konten zu filtern                                                                                                                                  |
 | Anlegen            | Server lädt das Clerk-Konto per ID neu (`getUser`) — Name/E-Mail kommen nie aus dem Request                                                                                                                                                                                                                       |
 | Stammdaten-Sync    | Nach der Antwort des Mitglieder-Tabs per `after()`: geänderte Clerk-Stammdaten per `updateVersioned` in `users`, sichtbar ab dem nächsten Aufruf; Clerk- und DB-Fehler werden ohne PII geloggt und blockieren nichts; mehr als 500 Mitglieder in Batches (Review 14.09.2026)                                      |
 | Rollen zuweisen    | `PUT …/roles` ersetzt die Nicht-Owner-Rollen; danach muss mindestens eine Rolle (inkl. Owner) bleiben                                                                                                                                                                                                             |
@@ -193,8 +193,10 @@ apps/workspace/src/
 ### CRM-03b-T8 — Integrationstests gegen die Dev-DB
 
 - Datei `access-management.integration.test.ts` (Modus `rbac-integration`): Custom-Rolle 200/403, Rollenentzug beim
-  nächsten Request, letzter Owner 409, nicht delegierbar 422 bei manipuliertem Request, veraltete Version 409, genau ein
-  Security-Event mit tatsächlichem Actor.
+  nächsten Request, nicht delegierbar 422 bei manipuliertem Request, veraltete Version 409, genau ein Security-Event
+  mit tatsächlichem Actor und Serialisierung konkurrierender Owner-Änderungen. **Bewusste Abweichung vom ursprünglichen
+  T8:** „letzter Owner → 409“ bleibt im Handler-Unit-Test plus Route-Test, weil ein echter End-to-End-DB-Test in der
+  geteilten Dev-DB alle fremden aktiven Owner beeinflussen müsste; Risiko und Begründung stehen in der Ordner-README.
 
 ## Nicht Teil dieses Tasks
 

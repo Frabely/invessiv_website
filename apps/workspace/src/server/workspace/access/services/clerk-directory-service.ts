@@ -52,18 +52,34 @@ async function findProfile(
 
 async function listCandidateProfiles(
   query: string | null,
+  excludedClerkUserIds: ReadonlySet<string>,
 ): Promise<ClerkProfileListResult> {
   try {
     const client = await clerkClient();
-    const page = await client.users.getUserList({
-      limit: CANDIDATE_LIMIT,
-      orderBy: "-created_at",
-      ...(query ? { query } : {}),
-    });
-    return {
-      ok: true,
-      profiles: page.data.map(clerkUserProfileMappingService.mapUserToProfile),
-    };
+    const profiles: ClerkUserProfile[] = [];
+    let offset = 0;
+
+    while (profiles.length < CANDIDATE_LIMIT) {
+      const page = await client.users.getUserList({
+        limit: CANDIDATE_LIMIT,
+        offset,
+        orderBy: "-created_at",
+        ...(query ? { query } : {}),
+      });
+      const availableProfiles = page.data
+        .map(clerkUserProfileMappingService.mapUserToProfile)
+        .filter((profile) => !excludedClerkUserIds.has(profile.clerkUserId));
+      profiles.push(
+        ...availableProfiles.slice(0, CANDIDATE_LIMIT - profiles.length),
+      );
+      offset += page.data.length;
+
+      if (page.data.length === 0 || offset >= page.totalCount) {
+        break;
+      }
+    }
+
+    return { ok: true, profiles };
   } catch (error: unknown) {
     logFailure("listCandidateProfiles", error);
     return { ok: false, code: WorkspaceMemberErrorCode.ClerkUnavailable };

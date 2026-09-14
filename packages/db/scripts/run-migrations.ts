@@ -1,7 +1,12 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { getDatabaseClient, getDatabaseUrl } from "@invessiv/db/core";
+import { sql } from "drizzle-orm";
+import {
+  getDatabaseClient,
+  getDatabaseUrl,
+  getDrizzleDatabaseClient,
+} from "@invessiv/db/core";
 import {
   configureDatabaseUrlFromTarget,
   parseDatabaseTarget,
@@ -56,19 +61,21 @@ function splitMigrationStatements(contents: string) {
 }
 
 async function applyMigration(filename: string) {
-  const sql = getDatabaseClient();
+  const db = getDrizzleDatabaseClient();
   const migrationPath = path.join(getMigrationsDirectory(), filename);
   const contents = await fs.readFile(migrationPath, "utf8");
   const statements = splitMigrationStatements(contents);
 
-  for (const statement of statements) {
-    await sql.query(statement);
-  }
+  await db.transaction(async (tx) => {
+    for (const statement of statements) {
+      await tx.execute(sql.raw(statement));
+    }
 
-  await sql`
-    INSERT INTO schema_migrations (filename)
-    VALUES (${filename})
-  `;
+    await tx.execute(sql`
+      INSERT INTO schema_migrations (filename)
+      VALUES (${filename})
+    `);
+  });
 
   console.log(`Applied migration: ${filename}`);
 }

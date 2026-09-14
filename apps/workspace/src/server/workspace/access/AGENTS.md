@@ -21,6 +21,9 @@ Command- und Query-Handler für Mitglieder, Rollen und den Owner-Flow. Die Actor
 - **Owner nur über den Owner-Flow.** `replaceWorkspaceMemberRoles` ignoriert die Owner-Zuweisung nicht still, sondern
   lehnt eine Owner-Rolle im Request mit eigenem Fehlercode ab. Vergabe und Entzug laufen ausschließlich über
   `grantWorkspaceOwner`/`revokeWorkspaceOwner`.
+- **Systemrollen-Erkennung ist Fachlogik.** Dieser Verwaltungsordner darf `SystemRoleKey` auswerten, um den separaten
+  Owner-Flow, Systemrollen-Schutz und Mapping-Flags umzusetzen. Zugriff wird hieraus nie abgeleitet; Autorisierung
+  erfolgt ausschließlich an der Route über Permissions.
 - **Letzter aktiver Owner.** Die Zählung aktiver Owner liegt ausschließlich in
   `server/workspace/auth/services/workspace-owner-invariant-service.ts` und läuft in derselben Transaktion nach
   `SELECT … FOR UPDATE` auf die Owner-Zuweisungen. Kein Handler zählt Owner selbst.
