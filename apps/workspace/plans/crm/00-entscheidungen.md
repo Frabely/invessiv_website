@@ -418,7 +418,9 @@ Aufrufer gibt; der Nachweis sind unveränderte, grüne Bestandstests.
 Bestätigungsdialog, Seitenpanel, Detail-Sektion, Definitionsliste, Empty-State, Badge, Formularfeld) gehören
 nach `packages/ui`; URL- oder Dictionary-gebundene Teile (Pagination, Sortierung, Selection, Suche, Facettenfilter,
 Timeline) nach `components/workspace/shared/`. Der Umzug erfolgt als eigener Refactoring-Ordner 03d vor Ordner 04 und
-ersetzt die Zielentscheidung „nicht `packages/ui`" aus Task 02a.
+ersetzt die Zielentscheidung „nicht `packages/ui`" aus Task 02a. **Ergänzt 14.09.2026 (mit dem Nutzer abgestimmt):**
+Button und Formularbausteine ziehen aus beiden Apps ebenfalls nach `packages/ui`; Task 02e (Ordner 03d) übernimmt auch
+den Listenumzug aus Task 02a und liefert alles in kleinen Review-Schritten mit je höchstens zwei Bausteinen.
 
 ## Vor dem ersten echten Kunden (verbindlich)
 
@@ -467,7 +469,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 | 03  | gemerged  | `03-mitglieder-und-auth`                 | Persistierte User, Permission-Katalog, Bereichs-Gates und fail-closed Auth      |  80–120 |  4–5 T. |
 | 03b | im Review | `03b-mitglieder-und-rollenverwaltung`    | Mitglieder, Rollen und Owner-Flow verwaltbar; Aktionen permissionabhängig       | 100–120 |  3–4 T. |
 | 03c | offen     | `03c-uebergabe-und-deaktivierung`        | Deaktivierung mit Zuständigkeitssperre und atomarer Übergabe                    |   40–60 |    2 T. |
-| 03d | offen     | `03d-geteilte-ui-bausteine`              | Dialog-, Panel- und Listenbausteine geteilt (`packages/ui` + workspace/shared)  |   40–60 |  2–3 T. |
+| 03d | offen     | `03d-geteilte-ui-bausteine`              | Dialog-, Panel- und Listenbausteine geteilt (`packages/ui` + workspace/shared)  | 170–195 |  4–5 T. |
 | 04  | offen     | `04-personen-und-kundenakte`             | Kunden samt Pflichtkontakt, Owner, Archiv und Detail vollständig nutzbar        |  80–100 |  4–5 T. |
 | 05  | offen     | `05-kundenliste-und-zuweisung`           | Liste, Suche, Filter, Übergabe und Aufbewahrungshinweise nutzbar                |  60–100 |  3–4 T. |
 | 06  | offen     | `06-lead-konvertierung`                  | Leads können sicher neu oder zu bestehenden Kunden konvertiert werden           |   40–70 |  2–3 T. |

@@ -6,8 +6,8 @@
 
 **Konkrete Task-Pläne**
 
-- [`02a-geteilte-listen-komponenten.md`](./02a-geteilte-listen-komponenten.md) — risikoarmer
-  UI-Umzug ohne Verhaltensänderung.
+- [`02a-geteilte-listen-komponenten.md`](./02a-geteilte-listen-komponenten.md) — nur noch Referenz; der Umzug ist in
+  Task 02e (Ordner 03d) aufgegangen und nicht Teil dieses Ordners.
 - [`03-kundenliste.md`](./03-kundenliste.md) — Ausbau der Übersicht aus Ordner 04 zur vollen Liste: Pagination,
   Sortierung und URL-State.
 - [`07-status-und-tags.md`](./07-status-und-tags.md) — Status, Kategorien, Tags und Audit.
@@ -19,8 +19,8 @@ vollständig.
 
 ## Änderungen
 
-- Geteilte Listenbausteine nur bei tatsächlicher Wiederverwendung aus Leads nach `shared` ziehen;
-  bestehende Lead-Tests bleiben dabei inhaltlich unverändert.
+- Die Kundenliste nutzt die in Ordner 03d geteilten Listenbausteine aus `components/workspace/shared/` und
+  `packages/ui`; Mehrfachauswahl im Facettenfilter wird hier erstmals aktiviert (`selectionMode: "multiple"`).
 - Filter: Status, Owner, Kategorie, Tags sowie „meine Kunden" und „archiviert". **Kein Projekt- oder
   Aufgabenfilter** — `projects` und `tasks` existieren hier noch nicht, und Ordner 07 hängt an dieser
   Einheit; ein solcher Filter wäre eine Zirkelabhängigkeit zwischen zwei Merge-Einheiten.

@@ -9,7 +9,10 @@ Mitglieder können deaktiviert und reaktiviert werden. Solange ein Mitglied offe
 Deaktivierung gesperrt; eine Übergabe — einzeln an ein aktives Mitglied oder „Alles an mich übergeben" — löst die Sperre
 in einem Schritt. Entstanden durch den Neuschnitt von Ordner 03b am 13.09.2026.
 
-Der detaillierte Task-Plan (Task 02d) wird zu Beginn der Einheit geschrieben.
+**Konkreter Task-Plan**
+
+- [`02d-uebergabe-und-deaktivierung.md`](./02d-uebergabe-und-deaktivierung.md) — Contracts, Ownership-Registry,
+  Aktivierung/Deaktivierung, atomare Übergabe, API, Settings-UI und Tests.
 
 ## Umfang
 
@@ -18,8 +21,9 @@ Der detaillierte Task-Plan (Task 02d) wird zu Beginn der Einheit geschrieben.
   Entität in Ordner 07, 08 oder 11 bricht den Typecheck, bis sie registriert ist.
 - Offene Kunden sind `active` und `paused`; archivierte Kunden behalten die historische Zuordnung.
 - `PATCH /api/workspace/members/[id]` (aktiv, Version) und `POST …/members/[id]/handover` (`members.manage`).
-- Übergabe als ein atomares `UPDATE … SET owner_member_id, version = version + 1` je Adapter, dazu je betroffener
-  Entität eine Activity mit Alt- und Neuzuweisung.
+- Übergabe aller offenen Zuständigkeiten in einer Transaktion. Jede betroffene versionierte Entität wird ausschließlich
+  über `updateVersioned` geändert; schlägt eine Änderung fehl, wird die gesamte Übergabe zurückgerollt. Dazu entsteht
+  je betroffener Entität eine Activity mit Alt- und Neuzuweisung.
 - Security-Events `workspace_member_deactivated`, `workspace_member_activated`,
   `workspace_responsibilities_handed_over` (Migration erweitert die CHECK-Constraint).
 - UI: Aktivieren/Deaktivieren und Übergabedialog in der Mitgliederliste aus 03b.

@@ -1,26 +1,30 @@
 # Ordner 03d — Geteilte UI-Bausteine
 
 > **Status:** offen · **Branch:** `chore/crm-geteilte-ui-bausteine` · **Abhängigkeiten:** Ordner 03b, 03c gemerged
-> **Aufwand:** 2–3 Tage · **Reviewziel:** 40–60 Dateien
+> **Aufwand:** 4–5 Tage · **Reviewziel:** 170–195 Dateien in 25 Review-Schritten (bewusst über dem Split-Gate)
 
 ## Ziel und Stand nach Merge
 
-Reines Refactoring ohne Verhaltensänderung, bevor Ordner 04 die Kundenakte baut. Wiederverwendbare Bausteine aus Leads
-und Settings liegen an genau einer Stelle; Leads und Settings nutzen sie bereits. Ordner 04 baut Liste, Dialoge und
-Detail-Panel direkt darauf auf.
+Reines Refactoring ohne Verhaltensänderung, bevor Ordner 04 die Kundenakte baut. Wiederverwendbare Bausteine aus Leads,
+Settings und der Web-App liegen an genau einer Stelle; alle bisherigen Nutzer verwenden sie bereits. Ordner 04 baut
+Liste, Dialoge und Detail-Panel direkt darauf auf.
 
-Der detaillierte Task-Plan wird zu Beginn der Einheit geschrieben. Er ersetzt die Zielentscheidung „nicht
-`packages/ui`" aus Task 02a (Ordner 05).
+**Konkreter Task-Plan**
+
+- [`02e-geteilte-ui-bausteine.md`](./02e-geteilte-ui-bausteine.md) — Ist-Analyse, Dialog-Umstellung, Teststrategie,
+  25 Review-Schritte mit je höchstens zwei Bausteinen, Umfangskontrolle.
+
+Task 02e ersetzt die Zielentscheidung „nicht `packages/ui`" aus Task 02a und übernimmt dessen Listenumzug (Phase D).
 
 ## Entscheidung (13.09.2026, mit dem Nutzer abgestimmt): Hybrid
 
-| Ziel                           | Bausteine                                                                                                                                                  |
-| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `packages/ui` (app-neutral)    | Dialog-Hülle mit Fokusfalle und Fokus-Rückgabe, Bestätigungsdialog, Seitenpanel/Drawer, Detail-Sektion, Definitionsliste, Empty-State, Badge, Formularfeld |
-| `components/workspace/shared/` | URL-/Dictionary-gebundene Teile: Pagination, Sortier-Header, Selection-Provider, Suchfeld, Facettenfilter, Activity-Timeline                               |
+| Ziel                           | Bausteine                                                                                                                                                                                                     |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/ui` (app-neutral)    | Dialog-Hülle, Bestätigungsdialog, Seitenpanel/Drawer, Detail-Sektion, Definitionsliste, Empty-State, Badge, Formularfeld samt Label/Pflichtmarker/Status/Aktionen, Button (Button und Formular ab 14.09.2026) |
+| `components/workspace/shared/` | URL-/Dictionary-/Link-gebundene Teile: Listen-Empty-State, Pagination, Sortier-Header, Selection-Provider, Suchfeld, Facettenfilter, Activity-Timeline                                                        |
 
-`packages/ui`-Bausteine kennen keine Dictionaries, Routen, Analytics oder Fachdomänen; Texte, Links und Callbacks kommen
-als Props (`packages/AGENTS.md`, Abschnitt `packages/ui`).
+`packages/ui`-Bausteine kennen keine Dictionaries, Routen, Analytics, Fachdomänen und kein `next/*`; Texte, Links und
+Callbacks kommen als Props (`packages/AGENTS.md`, Abschnitt `packages/ui`).
 
 ## Entscheidung (13.09.2026, mit dem Nutzer abgestimmt): Natives `<dialog>` statt eigener Fokusfalle
 
@@ -37,24 +41,43 @@ Handarbeit aus `components/workspace/shared/dialog/dialog-focus-trap.ts` und `cr
 
 Folgen und Umsetzungshinweise:
 
-- Alle Dialoge in Leads (sieben Nutzer der Fokusfalle) und Settings wechseln in dieser Einheit auf die neue Hülle;
-  `dialog-focus-trap.ts` wird danach gelöscht.
-- Die Hülle öffnet per `showModal()` im Effekt und schließt per `close()` im Cleanup; `open` bleibt als Prop steuerbar.
-- jsdom implementiert `showModal()`/`close()` nicht. Die Tests in `packages/ui` stellen dafür einen kleinen, zentralen
-  Test-Setup-Mock bereit, statt ihn in jedem Test zu wiederholen.
+- Alle Dialoge in Leads (sieben Nutzer der Fokusfalle) und Settings (vier, nach 03c sechs Nutzer von `WorkspaceDialog`)
+  wechseln in dieser Einheit auf die neue Hülle; `dialog-focus-trap.ts` wird danach gelöscht.
+- Die Hülle öffnet per `showModal()` und schließt per `close()` im Layout-Effekt-Cleanup, damit die Fokus-Rückgabe auch
+  beim Unmount greift; `open` bleibt als Prop steuerbar.
+- Initialer Fokus bleibt wie heute im ersten Body-Element, nicht im Schließen-Button (siehe Task-Plan).
+- `CustomSelect` rendert im Dialog in das `<dialog>`-Element, weil `document.body` außerhalb inert ist.
+- jsdom implementiert `showModal()`/`close()` nicht. `packages/ui` stellt dafür einen zentralen Test-Setup-Mock bereit,
+  den auch die Vitest-Configs beider Apps registrieren.
 - Tab darf aus dem Dialog in die Browser-Oberfläche springen; das ist das gewollte, barrierefreie Verhalten des
   Top-Layers und kein Fokus-Leck.
 
+## Entscheidung (14.09.2026, mit dem Nutzer abgestimmt): Zuschnitt und Reichweite
+
+- **Ein Ordner, ein PR.** Die Schätzung von 170–195 Dateien liegt über dem Split-Gate von 120 und unter der harten
+  Grenze von 200. Der Großteil sind Importpfad-Diffs. Checkpoint nach Phase C: über 160 Dateien → Rücksprache, ob
+  Phase D (Listenbausteine) als Ordner 03e ausgegliedert wird.
+- **Kleine Review-Schritte.** Jeder Schritt zieht höchstens zwei Bausteine um, ist für sich grün und wird einzeln
+  reviewt.
+- **Beide Apps.** Button und Formularbausteine ziehen aus `apps/web` und `apps/workspace` nach `packages/ui`; beide
+  App-Kopien werden gelöscht. Abweichungen zwischen den Kopien werden über app-seitige Tokens beziehungsweise
+  Opt-in-Props aufgelöst, nicht durch Angleichen von Optik oder Verhalten.
+
 ## Merge-Gate
 
-- [ ] Bestehende Lead- und Settings-Tests bleiben inhaltlich unverändert grün; angepasst werden nur Importpfade.
-- [ ] Kein Baustein in `packages/ui` importiert App-Code, Dictionaries oder `next/navigation`.
+- [ ] Bestehende Lead-, Settings- und Web-Tests bleiben inhaltlich unverändert grün; angepasst werden nur Importpfade.
+      Ausnahme sind ausschließlich die im Task-Plan benannten Tests der ersetzten Fokusfallen-Mechanik.
+- [ ] Kein Baustein in `packages/ui` importiert App-Code, Dictionaries oder `next/*`.
 - [ ] Jede interaktive `packages/ui`-Komponente hat jsdom-Tests für Tastatur, Fokus und Escape.
-- [ ] Keine doppelte Dialog-/Panel-Implementierung mehr in Leads oder Settings.
+- [ ] Keine doppelte Dialog-, Panel-, Button- oder Formularfeld-Implementierung mehr in Leads, Settings oder Web.
 - [ ] Alle Dialoge nutzen das native `<dialog>` mit `showModal()`; `dialog-focus-trap.ts` und `createPortal` für
-      Dialoge sind entfernt. Tests belegen Escape, Fokus-Rückgabe und die Sperre bei laufendem Request.
-- [ ] Mobil, Dark und Light visuell unverändert.
-- [ ] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test` und Workspace-Build grün.
+      Dialoge sind entfernt. Tests belegen Escape, Fokus-Rückgabe (Schließen und Unmount) und die Sperre bei laufendem
+      Request.
+- [ ] `CustomSelect` ist innerhalb eines Dialogs bedienbar (Portal-Root).
+- [ ] Mobil, Dark und Light visuell unverändert — Workspace und Web.
+- [ ] Conversion-Smoke Web (Kontaktformular, LinkedIn-Generator): Fehler-, Lade- und Erfolgszustand, keine toten CTAs.
+- [ ] Dateizahl ≤ 200 und im PR genannt.
+- [ ] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, Workspace-Build und Web-Build grün.
 
 ## Rollback
 

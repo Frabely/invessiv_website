@@ -32,6 +32,10 @@ existiert getrennt, damit der Umzug isoliert reviewbar ist und nicht in einem Fe
 > **Ersetzt (13.09.2026):** Ziel und Zeitpunkt des Umzugs sind durch Ordner 03d neu entschieden — Hybrid aus
 > `packages/ui` (app-neutrale Grundbausteine) und `components/workspace/shared/` (URL-/Dictionary-gebundene Teile), vor
 > Ordner 04. Siehe `../03d-geteilte-ui-bausteine/README.md`. Die Zeilen „Ziel" und „Warum nicht ui" gelten nicht mehr.
+>
+> **Aufgegangen in Task 02e (14.09.2026):** Der gesamte Umzug dieses Tasks wird in Ordner 03d umgesetzt —
+> T1–T3 als `CRM-03d-T14` und `T18`–`T23`, T4 als `CRM-03d-T0`. Ordner 05 enthält diesen Umzug nicht mehr; die Datei
+> bleibt als Begründung und Referenz der Mehrfachauswahl-Anforderung aus Task 30 erhalten.
 
 | Bereich             | Entscheidung                                                                                                          |
 | ------------------- | --------------------------------------------------------------------------------------------------------------------- |
