@@ -1,7 +1,7 @@
 # CRM & Kundenportal — Funktionsumfang Version 1
 
 Diese Übersicht beschreibt ausschließlich den verbindlichen Stand aus `00-entscheidungen.md`.
-Details und Abnahmekriterien stehen in den 23 geordneten Merge-Einheiten.
+Details und Abnahmekriterien stehen in den 26 geordneten Merge-Einheiten.
 
 ## Internes CRM
 
@@ -30,6 +30,7 @@ Details und Abnahmekriterien stehen in den 23 geordneten Merge-Einheiten.
 ## Betrieb und Sicherheit
 
 - Fail-closed-Autorisierung, zwei interne Rollen und zusätzliche Credential-Freigabe.
+- Zugriffsbereiche: Rollen in der UI an einzelne Kunden oder Projekte binden; der Workspace-Owner sieht immer alles.
 - Optimistische Nebenläufigkeitskontrolle für bearbeitbare Kerndaten.
 - Transaktionale Outbox und idempotenter Job-Runner.
 - Vercel-Blob-Adapter, Upload-Sessions, Inhaltsprüfung und vorbereiteter Inspection-Adapter.

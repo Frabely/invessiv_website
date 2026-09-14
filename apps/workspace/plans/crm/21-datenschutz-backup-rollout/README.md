@@ -27,8 +27,10 @@ Freigabe für alle einzeln geprüften Kunden möglich.
 ## Purge ohne CRM-Button
 
 - Owner startet einen internen Command mit Kundennummer und erneuter Bestätigung.
-- Vorschau nennt Portalzugriffe, Projekte, Aufgaben, Nachrichten, Feedback, Dateien, Credentials,
-  Renewals, Stunden und Activities.
+- Vorschau nennt Portalzugriffe, interne Zugriffsbereiche (`workspace_member_scoped_roles`), Projekte, Aufgaben,
+  Nachrichten, Feedback, Dateien, Credentials, Renewals, Stunden und Activities.
+- Interne Zugriffsbereiche des Kunden werden vor Kunde und Projekten gelöscht (`RESTRICT`) und je Zeile als
+  `workspace_member_access_scope_revoked` protokolliert.
 - Saga setzt `purge_pending`, widerruft Portalzugriffe, friert Writes ein, erstellt Manifest und
   löscht alle Primär-Blobs idempotent. Erst danach löscht eine DB-Transaktion die Fachzeilen.
 - Teilfehler bleiben als Job sichtbar und erneut ausführbar; DB-Zuordnung wird nie vor Blob-Erfolg
