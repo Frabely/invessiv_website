@@ -35,6 +35,9 @@ Details und Abnahmekriterien stehen in den 23 geordneten Merge-Einheiten.
 - Vercel-Blob-Adapter, Upload-Sessions, Inhaltsprüfung und vorbereiteter Inspection-Adapter.
 - Tägliche verschlüsselte DB-Sicherung, Dateikopie und quartalsweiser Restore-Test.
 - Reversibles Archiv und nichtöffentlicher Owner-Purge mit Storage-Bereinigung.
+- Der Zugangsstatus „Keine Berechtigung“ bietet zum Produktivrollout optional einen sicheren
+  Kontaktweg zum zuständigen Administrator; ohne konfiguriertes Ziel bleibt die passive,
+  handlungsfreie Statusmeldung erhalten.
 
 ## Nicht Teil von Version 1
 

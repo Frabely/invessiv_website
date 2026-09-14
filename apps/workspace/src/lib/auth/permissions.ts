@@ -10,6 +10,7 @@ import {
   type WorkspaceArea,
 } from "@/common/constants/auth/workspace-areas";
 import { WorkspaceAuthStatus } from "@/common/constants/auth/workspace-auth-statuses";
+import type { WorkspaceAuthentication } from "@/common/contracts/auth/workspace-authentication";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import type { Locale } from "@/config/i18n";
 
@@ -20,10 +21,14 @@ import { WorkspaceAuthorizationUnavailableError } from "./workspace-authorizatio
 // Layout and page of one render share the lookup; the next request resolves again.
 const authenticateForRender = cache(authenticateWorkspaceRequest);
 
+export async function getWorkspaceAuthenticationForRender(): Promise<WorkspaceAuthentication> {
+  return authenticateForRender();
+}
+
 export async function requireWorkspaceActor(
   locale: Locale,
 ): Promise<WorkspaceActor> {
-  const authentication = await authenticateForRender();
+  const authentication = await getWorkspaceAuthenticationForRender();
 
   if (authentication.status === WorkspaceAuthStatus.Authorized) {
     return authentication.actor;

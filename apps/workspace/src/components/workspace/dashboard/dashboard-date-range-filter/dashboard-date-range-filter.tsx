@@ -13,6 +13,7 @@ type DashboardDateRangeFilterProps = {
   currentQueryString: string;
   fromValue: string;
   labels: DateRangeFilterLabels;
+  referenceDateValue: string;
   toValue: string;
 };
 
@@ -21,6 +22,7 @@ export function DashboardDateRangeFilter({
   currentQueryString,
   fromValue,
   labels,
+  referenceDateValue,
   toValue,
 }: DashboardDateRangeFilterProps) {
   const router = useRouter();
@@ -51,6 +53,8 @@ export function DashboardDateRangeFilter({
       key={`${defaultPreset}:${fromValue}:${toValue}`}
       labels={labels}
       onRangeChangeAction={commitRange}
+      referenceDateValue={referenceDateValue}
+      selectId="dashboard-date-range-preset"
       toValue={toValue}
     />
   );

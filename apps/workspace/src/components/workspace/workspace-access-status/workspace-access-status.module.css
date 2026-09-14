@@ -1,0 +1,236 @@
+.wrapper {
+  display: grid;
+  width: min(100%, 46rem);
+  min-height: calc(100dvh - var(--workspace-header-height) - 4.8rem);
+  margin-inline: auto;
+  place-items: center;
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  padding: clamp(1.5rem, 4vw, 2.75rem);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-border) 78%, transparent);
+  border-radius: 1.5rem;
+  background: color-mix(in srgb, var(--color-surface-1) 88%, transparent);
+  box-shadow: 0 1.5rem 4rem color-mix(in srgb, var(--color-bg) 62%, transparent);
+  backdrop-filter: blur(18px);
+}
+
+.card::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  content: "";
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--color-cta) 76%, transparent),
+    transparent
+  );
+}
+
+.iconHalo {
+  display: grid;
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid color-mix(in srgb, var(--color-cta) 36%, transparent);
+  border-radius: 1rem;
+  color: var(--color-cta);
+  background: color-mix(in srgb, var(--color-cta) 11%, transparent);
+  place-items: center;
+}
+
+.iconHalo svg {
+  width: 1rem;
+}
+
+.copy h1 {
+  max-width: 17ch;
+  margin: 0.35rem 0 0.85rem;
+  font-size: clamp(2rem, 6vw, 3.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+}
+
+.status,
+.eyebrow,
+.description,
+.footer p {
+  margin: 0;
+}
+
+.status {
+  display: inline-flex;
+  padding: 0.38rem 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--color-cta) 28%, transparent);
+  border-radius: 999px;
+  color: var(--color-cta);
+  background: color-mix(in srgb, var(--color-cta) 8%, transparent);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.eyebrow {
+  margin-top: 1.25rem;
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.description {
+  max-width: 60ch;
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.progress {
+  display: grid;
+  gap: 0;
+  margin: 2rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.progressItem {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 0.85rem;
+  padding-bottom: 1.35rem;
+}
+
+.progressItem:last-child {
+  padding-bottom: 0;
+}
+
+.progressItem:not(:last-child)::after {
+  position: absolute;
+  top: 2rem;
+  bottom: 0;
+  left: calc(1rem - 1px);
+  width: 2px;
+  content: "";
+  background: color-mix(in srgb, var(--color-border) 72%, transparent);
+}
+
+.progressIcon {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  background: var(--color-surface-1);
+  place-items: center;
+}
+
+.progressIcon svg {
+  width: 0.72rem;
+}
+
+.progressItem[data-state="complete"] .progressIcon {
+  border-color: color-mix(in srgb, var(--color-success) 42%, transparent);
+  color: var(--color-success);
+  background: color-mix(
+    in srgb,
+    var(--color-success) 10%,
+    var(--color-surface-1)
+  );
+}
+
+.progressItem strong,
+.progressItem small {
+  display: block;
+}
+
+.progressItem strong {
+  margin-top: 0.08rem;
+  font-size: 0.93rem;
+}
+
+.progressItem small {
+  margin-top: 0.25rem;
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+}
+
+.footer p {
+  max-width: 47ch;
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.retryLink {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+  padding: 0.55rem 0.8rem;
+  border-radius: 0.7rem;
+  color: var(--color-text);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+  background: color-mix(in srgb, var(--color-border) 42%, transparent);
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+
+.retryLink:hover {
+  background: color-mix(in srgb, var(--color-border) 68%, transparent);
+  transform: translateY(-1px);
+}
+
+.retryLink:focus-visible {
+  outline: 2px solid var(--color-cta);
+  outline-offset: 3px;
+}
+
+.retryLink svg {
+  width: 0.75rem;
+}
+
+@media (max-width: 600px) {
+  .wrapper {
+    align-items: start;
+    min-height: auto;
+  }
+
+  .card {
+    border-radius: 1.2rem;
+  }
+
+  .footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .retryLink {
+    transition: none;
+  }
+}

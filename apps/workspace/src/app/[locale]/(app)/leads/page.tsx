@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
+import { DateRangePreset } from "@/common/constants/date-range/date-range-presets";
+import { getDateRangeForPreset } from "@/common/patterns/date-range/date-range-preset-range";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { requireWorkspaceArea } from "@/lib/auth/permissions";
 import { resolveLeadActionPermissions } from "@/common/patterns/leads/resolve-lead-action-permissions";
@@ -135,6 +137,8 @@ export default async function LeadsPage({
   const categories = await getLeadCategories();
   const basePath = createLocalePathname(LEADS_BASE_PATH, locale);
   const addLeadHref = buildLeadCreateHref(basePath, resolvedSearchParams);
+  const referenceDateValue =
+    getDateRangeForPreset(DateRangePreset.Today).to ?? "";
   const selectedLead = selectedLeadId
     ? await getLeadById(selectedLeadId)
     : null;
@@ -204,6 +208,7 @@ export default async function LeadsPage({
             currentQueryString={queryString}
             filtersContent={toolbarContent}
             importContent={leadActions.canImport ? importContent : undefined}
+            referenceDateValue={referenceDateValue}
             sharedContent={sharedContent}
             shellContent={shellContent}
           />

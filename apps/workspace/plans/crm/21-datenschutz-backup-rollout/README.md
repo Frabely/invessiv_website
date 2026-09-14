@@ -48,6 +48,11 @@ Freigabe für alle einzeln geprüften Kunden möglich.
 ## Produktivabnahme
 
 - Clerk Restricted, Redirects, erlaubte Domains und DE/EN-Mails prüfen.
+- Der Status „Keine Berechtigung“ erhält einen optionalen Kontaktweg zum zuständigen Administrator.
+  Das Ziel wird serverseitig bestimmt; persönliche Admin-Kontaktdaten werden nicht ungefragt
+  offengelegt. Ist kein sicheres Ziel konfiguriert, bleibt die bestehende Statusmeldung ohne toten
+  CTA sichtbar. Ein absendender Flow braucht DE/EN-Erfolgs- und Fehlerzustände, Rate-Limit und
+  PII-arme Protokollierung.
 - Portalvorschau ist vor jeder ersten Firmeneinladung verpflichtend.
 - Direkter Rollout an alle Kunden ist erlaubt, aber immer einzeln nach bestätigter Vorschau.
 - Security-, Privacy-, A11y- und Mobile-Smoke über Kunde → Projekt → Aufgabe → Portal → Datei →
@@ -61,6 +66,8 @@ Freigabe für alle einzeln geprüften Kunden möglich.
 - [ ] Unterbrochener Purge ist sicher fortsetzbar.
 - [ ] Isolierter Restore erfüllt RPO/RTO und Hashprüfung; Ergebnis ist protokolliert.
 - [ ] Backup-/Restore-Secrets erscheinen nicht in Logs oder PR-Artefakten.
+- [ ] Der optionale Admin-Kontaktweg ist mit und ohne konfiguriertes Ziel geprüft; er legt keine
+      persönlichen Kontaktdaten offen und erzeugt keinen toten CTA.
 - [ ] Vollständige Repo-Gates und Workspace-Build sind grün.
 - [ ] PR enthält finalen Risiko-, Rollback-, Security- und Betriebsabschnitt.
 

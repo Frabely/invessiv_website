@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useState } from "react";
 import { CustomSelect } from "@invessiv/ui";
 import {
   type DateRangeDefaultPreset,
@@ -18,6 +18,8 @@ type DateRangeFilterProps = {
   fromValue: string;
   labels: DateRangeFilterLabels;
   onRangeChangeAction: (change: DateRangeChange) => void;
+  referenceDateValue: string;
+  selectId: string;
   toValue: string;
 };
 
@@ -25,9 +27,15 @@ function resolvePreset(
   fromValue: string,
   toValue: string,
   defaultPreset: DateRangeDefaultPreset,
+  referenceDateValue: string,
 ): DateRangePresetValue {
   if (!fromValue && !toValue) {
     return defaultPreset;
+  }
+
+  const referenceDate = new Date(`${referenceDateValue}T00:00:00.000Z`);
+  if (Number.isNaN(referenceDate.getTime())) {
+    return DateRangePreset.Custom;
   }
 
   for (const preset of [
@@ -36,7 +44,7 @@ function resolvePreset(
     DateRangePreset.Last30Days,
     DateRangePreset.Last90Days,
   ]) {
-    const range = getDateRangeForPreset(preset);
+    const range = getDateRangeForPreset(preset, referenceDate);
     if (range.from === fromValue && range.to === toValue) {
       return preset;
     }
@@ -51,11 +59,12 @@ export function DateRangeFilter({
   fromValue,
   labels,
   onRangeChangeAction,
+  referenceDateValue,
+  selectId,
   toValue,
 }: DateRangeFilterProps) {
-  const presetSelectId = useId();
   const [preset, setPreset] = useState<DateRangePresetValue>(() =>
-    resolvePreset(fromValue, toValue, defaultPreset),
+    resolvePreset(fromValue, toValue, defaultPreset, referenceDateValue),
   );
   const [customFrom, setCustomFrom] = useState(fromValue);
   const [customTo, setCustomTo] = useState(toValue);
@@ -103,7 +112,7 @@ export function DateRangeFilter({
       <div className={styles.field}>
         <CustomSelect<DateRangePresetValue>
           ariaLabel={labels.preset}
-          id={presetSelectId}
+          id={selectId}
           onChange={selectPreset}
           options={presetOptions}
           value={preset}

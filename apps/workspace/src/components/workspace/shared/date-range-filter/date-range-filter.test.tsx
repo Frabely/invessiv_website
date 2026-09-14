@@ -42,13 +42,38 @@ describe("DateRangeFilter", () => {
         fromValue=""
         labels={labels}
         onRangeChangeAction={() => undefined}
+        referenceDateValue="2026-05-21"
+        selectId="test-date-range-preset"
         toValue=""
       />,
     );
     expect(
       screen.getByRole("button", { name: labels.preset }),
     ).toHaveTextContent(labels.options.last7Days);
+    expect(screen.getByRole("button", { name: labels.preset })).toHaveAttribute(
+      "id",
+      "test-date-range-preset",
+    );
     expect(screen.queryByLabelText(labels.from)).not.toBeInTheDocument();
+  });
+
+  it("derives the initial preset from serialized values instead of client time", () => {
+    vi.setSystemTime(new Date("2030-01-01T12:00:00Z"));
+
+    render(
+      <DateRangeFilter
+        fromValue="2026-05-15"
+        labels={labels}
+        onRangeChangeAction={() => undefined}
+        referenceDateValue="2026-05-21"
+        selectId="stable-date-range-preset"
+        toValue="2026-05-21"
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", { name: labels.preset }),
+    ).toHaveTextContent(labels.options.last7Days);
   });
 
   it("honors an All default", () => {
@@ -58,6 +83,8 @@ describe("DateRangeFilter", () => {
         fromValue=""
         labels={labels}
         onRangeChangeAction={() => undefined}
+        referenceDateValue="2026-05-21"
+        selectId="test-date-range-preset"
         toValue=""
       />,
     );
@@ -79,6 +106,8 @@ describe("DateRangeFilter", () => {
         fromValue=""
         labels={labels}
         onRangeChangeAction={onChange}
+        referenceDateValue="2026-05-21"
+        selectId="test-date-range-preset"
         toValue=""
       />,
     );
@@ -97,6 +126,8 @@ describe("DateRangeFilter", () => {
         fromValue="2026-05-15"
         labels={labels}
         onRangeChangeAction={onChange}
+        referenceDateValue="2026-05-21"
+        selectId="test-date-range-preset"
         toValue="2026-05-21"
       />,
     );
@@ -115,6 +146,8 @@ describe("DateRangeFilter", () => {
         fromValue="2026-05-15"
         labels={labels}
         onRangeChangeAction={onChange}
+        referenceDateValue="2026-05-21"
+        selectId="test-date-range-preset"
         toValue="2026-05-21"
       />,
     );

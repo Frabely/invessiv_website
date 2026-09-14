@@ -71,6 +71,7 @@ describe("LeadsPageHeader", () => {
         ]}
         currentQueryString="status=qualified&source=manual&category=cat-1&search=acme&score_min=70&date_from=2024-01-01&date_to=2024-01-31&page=2&sort=created_desc"
         filtersContent={getLeadsToolbarDictionary("de")}
+        referenceDateValue="2026-05-21"
         sharedContent={getLeadsSharedDictionary("de")}
         shellContent={getLeadsShellDictionary("de")}
       />,
@@ -210,6 +211,7 @@ describe("LeadsPageHeader", () => {
         categories={[]}
         currentQueryString=""
         filtersContent={getLeadsToolbarDictionary("de")}
+        referenceDateValue="2026-05-21"
         sharedContent={getLeadsSharedDictionary("de")}
         shellContent={getLeadsShellDictionary("de")}
       />,
@@ -270,6 +272,7 @@ describe("LeadsPageHeader", () => {
         categories={[]}
         currentQueryString=""
         filtersContent={getLeadsToolbarDictionary("de")}
+        referenceDateValue="2026-05-21"
         sharedContent={getLeadsSharedDictionary("de")}
         shellContent={getLeadsShellDictionary("de")}
       />,
@@ -290,6 +293,7 @@ describe("LeadsPageHeader", () => {
         categories={[]}
         currentQueryString={currentQueryString}
         filtersContent={getLeadsToolbarDictionary("de")}
+        referenceDateValue="2026-05-21"
         sharedContent={getLeadsSharedDictionary("de")}
         shellContent={getLeadsShellDictionary("de")}
       />,
@@ -463,6 +467,7 @@ describe("LeadsPageHeader", () => {
         categories={[]}
         currentQueryString=""
         filtersContent={getLeadsToolbarDictionary("de")}
+        referenceDateValue="2026-05-21"
         sharedContent={getLeadsSharedDictionary("de")}
         shellContent={getLeadsShellDictionary("de")}
       />,
@@ -525,6 +530,7 @@ describe("LeadsPageHeader permissions", () => {
         categories={[]}
         currentQueryString=""
         filtersContent={getLeadsToolbarDictionary("de")}
+        referenceDateValue="2026-05-21"
         sharedContent={getLeadsSharedDictionary("de")}
         shellContent={shellContent}
       />,

@@ -48,6 +48,7 @@ type LeadsPageHeaderProps = {
   currentQueryString: string;
   filtersContent: LeadsToolbarDictionary;
   importContent?: LeadsImportDictionary;
+  referenceDateValue: string;
   sharedContent: LeadsSharedDictionary;
   shellContent: LeadsShellDictionary;
 };
@@ -106,6 +107,7 @@ export function LeadsPageHeader({
   currentQueryString,
   filtersContent,
   importContent,
+  referenceDateValue,
   sharedContent,
   shellContent,
 }: LeadsPageHeaderProps) {
@@ -297,6 +299,8 @@ export function LeadsPageHeader({
                 [LeadListQueryParam.DateTo]: to,
               })
             }
+            referenceDateValue={referenceDateValue}
+            selectId="leads-date-range-preset"
             toValue={currentDateTo}
           />
         </div>

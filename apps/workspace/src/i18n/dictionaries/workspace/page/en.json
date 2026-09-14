@@ -1,4 +1,40 @@
 {
+  "access": {
+    "pendingApproval": {
+      "status": "Approval pending",
+      "eyebrow": "Account created successfully",
+      "title": "Your account is ready",
+      "description": "Registration is complete. An administrator will approve your access. You do not need to do anything else.",
+      "progressLabel": "Your access status",
+      "accountStep": {
+        "title": "Account created",
+        "description": "You have signed in to Invessiv successfully."
+      },
+      "accessStep": {
+        "title": "Administrator approval",
+        "description": "Once your access is approved, the areas intended for you will become available."
+      },
+      "note": "You can close this page. We will check your access automatically the next time you return.",
+      "retryLabel": "Check access again"
+    },
+    "noPermission": {
+      "status": "No permission",
+      "eyebrow": "Account recognized",
+      "title": "No area is currently available to you",
+      "description": "Your account exists in the system, but it currently has no permission for a workspace area.",
+      "progressLabel": "Your access status",
+      "accountStep": {
+        "title": "Account active",
+        "description": "Your account and membership were recognized."
+      },
+      "accessStep": {
+        "title": "No active permission",
+        "description": "An administrator can grant access to the appropriate area."
+      },
+      "note": "You do not need to set anything up again. Once your permissions change, simply check your access again.",
+      "retryLabel": "Check access again"
+    }
+  },
   "shell": {
     "skipLinkLabel": "Skip to workspace content",
     "header": {
