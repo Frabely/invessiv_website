@@ -8,7 +8,7 @@
 ## Umsetzungsfortschritt
 
 - [x] **T1:** Konstanten, Contracts und additive Security-Event-Migration
-- [ ] **T2:** Exhaustive Zuständigkeitsprüfung und Customer-Counter
+- [x] **T2:** Exhaustive Zuständigkeitsprüfung und Customer-Counter
 - [ ] **T3:** Aktivieren und Deaktivieren mit allen Invarianten
 - [ ] **T4:** Route und Client-Service
 - [ ] **T5:** Settings-UI mit DE/EN und Dialogtests
