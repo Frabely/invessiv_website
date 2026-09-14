@@ -7,6 +7,9 @@
 
 ## Ziel
 
+**Umsetzungsstand:** Teilweise erledigt: `ConfirmDialog` und der Single-Delete-Dialog sind umgestellt. Die übrigen sechs
+Lead-Dialoge nutzen noch Fokusfalle und/oder `createPortal`.
+
 Alle sieben Lead-Dialoge nutzen `Dialog` beziehungsweise `ConfirmDialog`. Danach gibt es keine eigene Overlay-, Portal-
 oder Fokuslogik mehr; `dialog-focus-trap.ts` ist gelöscht.
 

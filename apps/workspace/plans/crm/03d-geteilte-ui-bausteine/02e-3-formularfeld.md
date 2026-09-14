@@ -7,6 +7,8 @@
 
 ## Ziel
 
+**Umsetzungsstand:** Erledigt im Workspace; `apps/web` bleibt bis Task 39 unverändert.
+
 Die Workspace-Varianten von `FormRequiredMarker`, `FormFieldLabel` und `FormField` liegen in `packages/ui`; alle
 Workspace-Nutzer importieren sie aus der öffentlichen Package-API. Die drei Bausteine hängen direkt voneinander ab und
 werden deshalb gemeinsam reviewt. `apps/web` bleibt vollständig unangetastet und wird erst in Ordner 23 technisch und

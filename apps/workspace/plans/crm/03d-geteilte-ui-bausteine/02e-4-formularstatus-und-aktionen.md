@@ -7,6 +7,8 @@
 
 ## Ziel
 
+**Umsetzungsstand:** Erledigt im Workspace; `apps/web` bleibt bis Task 39 unverändert.
+
 Die Workspace-Varianten der letzten Formularbausteine liegen in `packages/ui`. Danach enthält
 `apps/workspace/src/components/shared/form/` keine produktiven Bausteine mehr. Die Web-Kopien und alle Web-Nutzer
 bleiben bis Ordner 23 vollständig unangetastet.

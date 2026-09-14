@@ -8,6 +8,9 @@
 
 ## Ziel
 
+**Umsetzungsstand:** Teilweise erledigt: `ListSelectionProvider` und `ListSelectAllCheckbox` liegen im Shared-Scope.
+`SortableHeader` und `ListPagination` fehlen noch.
+
 Sortier-Header, Pagination und Selection liegen unter `components/workspace/shared/table/` und sind ohne Lead-Bezug
 nutzbar. Die Lead-Liste verhält sich identisch.
 

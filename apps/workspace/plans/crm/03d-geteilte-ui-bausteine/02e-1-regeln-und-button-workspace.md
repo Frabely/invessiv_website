@@ -7,6 +7,8 @@
 
 ## Ziel
 
+**Umsetzungsstand:** Erledigt im Workspace; `apps/web` bleibt bis Task 39 unverändert.
+
 Die Regeln für `packages/ui` und `components/workspace/shared/` stehen vor dem ersten Codeschritt. Der Button liegt
 danach in `packages/ui`; der Workspace nutzt ihn. Die Web-Kopie bleibt bis Ordner 23 unverändert bestehen.
 

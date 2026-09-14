@@ -7,6 +7,9 @@
 
 ## Ziel
 
+**Umsetzungsstand:** Teilweise erledigt: `Dialog` und die Settings-Nutzer sind umgestellt; zentraler jsdom-Setup und die
+vorgesehenen Dialog-Tests fehlen noch.
+
 Die Dialog-Hülle auf Basis des nativen `<dialog>` liegt in `packages/ui` samt Test-Setup; alle Settings-Dialoge nutzen
 sie, und `CustomSelect` ist innerhalb eines Dialogs bedienbar. Die Lead-Dialoge behalten bis Task 02e-6 ihre
 Fokusfalle — `dialog-focus-trap.ts` bleibt deshalb in diesem Task bestehen.

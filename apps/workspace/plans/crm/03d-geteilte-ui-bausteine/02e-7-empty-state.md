@@ -7,6 +7,9 @@
 
 ## Ziel
 
+**Umsetzungsstand:** Teilweise erledigt: `EmptyState`, `ListEmptyState` und die Settings-Nutzer sind umgestellt; Tests
+und die geplante generische Workspace-Konstante fehlen noch.
+
 Ein Empty-State in `packages/ui`, ein link-gebundener Listen-Empty-State in `components/workspace/shared/table/`.
 Leads und Settings nutzen beide statt eigenem Markup. Erster Baustein unter `components/workspace/shared/table/` — die
 Regeln dafür stehen seit Task 02e-1.

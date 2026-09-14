@@ -4,11 +4,28 @@
 > **Aufwand:** 4–5 Tage · **Reviewziel:** 145–165 Dateien in 9 Tasks mit je ≤ 30 Dateien, hart 50 (bewusst über dem
 > Split-Gate)
 
-## Ziel und Stand nach Merge
+## Ziel und aktueller Umsetzungsstand
 
 Reines Refactoring ohne Verhaltensänderung, bevor Ordner 04 die Kundenakte baut. Wiederverwendbare Bausteine aus Leads
 und Settings liegen an genau einer Stelle; alle bisherigen Workspace-Nutzer verwenden sie bereits. Ordner 04 baut
 Liste, Dialoge und Detail-Panel direkt darauf auf. Die Web-App bleibt in diesem Ordner vollständig unangetastet.
+
+**Bestandsaufnahme vom 14.09.2026:** Der Ordner ist noch nicht fertig und bleibt deshalb im Status `läuft`. Bereits
+zentralisiert sind Button, Formularfeld samt Label/Pflichtmarker/Status/Aktionen, `Dialog`, `ConfirmDialog`,
+`EmptyState`, `ListEmptyState`, `Badge` sowie Auswahl-Provider und Select-All-Checkbox. Die Web-App bleibt unverändert;
+ihre technische Migration und visuelle Anpassung erfolgt erst in Task 39 nach Abschluss des gesamten CRM-Umbaus.
+
+| Task   | Stand     | Verbleibende Arbeit                                                                                                                                                                |
+| ------ | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 02e-1  | erledigt  | Keine offene Workspace-Arbeit.                                                                                                                                                     |
+| 02e-3  | erledigt  | Keine offene Workspace-Arbeit.                                                                                                                                                     |
+| 02e-4  | erledigt  | Keine offene Workspace-Arbeit.                                                                                                                                                     |
+| 02e-5  | teilweise | Zentralen jsdom-Dialog-Test-Setup gemäß Plan ergänzen und Dialog-Tests nachziehen.                                                                                                 |
+| 02e-6  | teilweise | Sechs Lead-Dialoge (Formular, Import, Outreach, Bulk-Edit, Bulk-Archiv, Bulk-Löschen) auf `Dialog`/`ConfirmDialog` umstellen; Fokusfalle und `createPortal` vollständig entfernen. |
+| 02e-7  | teilweise | Empty-State-Tests und die geplante generische Workspace-Konstante abschließen.                                                                                                     |
+| 02e-8  | teilweise | `DefinitionList`, `DetailSection`, `SidePanel` und die Umstellung des Lead-Detail-Panels fehlen.                                                                                   |
+| 02e-9  | teilweise | `SortableHeader` und `ListPagination` fehlen noch im Shared-Scope; T20 ist erledigt.                                                                                               |
+| 02e-10 | offen     | Suchfeld, Facettenfilter, Timeline sowie der Abschlussnachweis fehlen.                                                                                                             |
 
 **Konkreter Task-Plan**
 
