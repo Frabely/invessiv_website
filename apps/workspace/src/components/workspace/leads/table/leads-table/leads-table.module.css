@@ -89,7 +89,8 @@
 
 .selectHeader {
   width: 44px;
-  padding-right: 0.2rem;
+  text-align: center;
+  padding-inline: 0.2rem;
 }
 
 .header {

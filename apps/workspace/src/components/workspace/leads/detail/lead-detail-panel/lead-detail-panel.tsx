@@ -251,11 +251,10 @@ export function LeadDetailPanel({
         </DefinitionList>
       </DetailSection>
 
-      <section className={styles.section} aria-labelledby="lead-social-title">
-        <h3 className={styles.sectionTitle} id="lead-social-title">
-          {content.sections.socialProfiles}
-        </h3>
-
+      <DetailSection
+        id="lead-social-title"
+        title={content.sections.socialProfiles}
+      >
         <LeadSocialProfiles
           emptyLabel={content.empty.socialProfiles}
           labels={sharedContent.socialIconLabel}
@@ -263,26 +262,18 @@ export function LeadDetailPanel({
           profiles={lead.socialProfiles}
           websiteUrl={lead.websiteUrl}
         />
-      </section>
+      </DetailSection>
 
-      <section className={styles.section} aria-labelledby="lead-notes-title">
-        <h3 className={styles.sectionTitle} id="lead-notes-title">
-          {content.sections.notes}
-        </h3>
-
+      <DetailSection id="lead-notes-title" title={content.sections.notes}>
         <p className={lead.notes ? styles.bodyText : styles.emptyText}>
           {lead.notes || content.empty.notes}
         </p>
-      </section>
+      </DetailSection>
 
-      <section
-        className={styles.section}
-        aria-labelledby="lead-improvements-title"
+      <DetailSection
+        id="lead-improvements-title"
+        title={content.sections.improvements}
       >
-        <h3 className={styles.sectionTitle} id="lead-improvements-title">
-          {content.sections.improvements}
-        </h3>
-
         {lead.improvements && lead.improvements.length > 0 ? (
           <ul className={styles.improvementList}>
             {lead.improvements.map((item) => (
@@ -294,19 +285,17 @@ export function LeadDetailPanel({
         ) : (
           <p className={styles.emptyText}>{content.empty.improvements}</p>
         )}
-      </section>
+      </DetailSection>
 
-      <section className={styles.section} aria-labelledby="lead-activity-title">
-        <div className={styles.sectionHeader}>
-          <h3 className={styles.sectionTitle} id="lead-activity-title">
-            {content.sections.activity}
-          </h3>
-
+      <DetailSection
+        actions={
           <button className={styles.disabledButton} disabled type="button">
             {content.actions.viewFullProfile}
           </button>
-        </div>
-
+        }
+        id="lead-activity-title"
+        title={content.sections.activity}
+      >
         <ActivityTimeline
           activities={lead.activities}
           content={content}
@@ -314,7 +303,7 @@ export function LeadDetailPanel({
           sharedContent={sharedContent}
           submissions={lead.submissions}
         />
-      </section>
+      </DetailSection>
     </SidePanel>
   );
 }

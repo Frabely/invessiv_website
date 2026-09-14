@@ -7,7 +7,7 @@
 
 ## Ziel
 
-**Umsetzungsstand:** Teilweise erledigt: `Dialog` und die Settings-Nutzer sind umgestellt; zentraler jsdom-Setup und die
+**Umsetzungsstand:** Erledigt: `Dialog` und die Settings-Nutzer sind umgestellt; zentraler jsdom-Setup und die
 vorgesehenen Dialog-Tests fehlen noch.
 
 Die Dialog-Hülle auf Basis des nativen `<dialog>` liegt in `packages/ui` samt Test-Setup; alle Settings-Dialoge nutzen

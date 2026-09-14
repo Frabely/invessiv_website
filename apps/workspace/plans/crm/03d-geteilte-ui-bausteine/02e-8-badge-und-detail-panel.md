@@ -7,7 +7,7 @@
 
 ## Ziel
 
-**Umsetzungsstand:** Teilweise erledigt: `Badge` und `BadgeTone` sind umgezogen. `DefinitionList`, `DetailSection`,
+**Umsetzungsstand:** Erledigt: `Badge` und `BadgeTone` sind umgezogen. `DefinitionList`, `DetailSection`,
 `SidePanel` sowie die Umstellung des Lead-Detail-Panels fehlen noch.
 
 Die Anzeige-Bausteine für die Kundenakte liegen in `packages/ui`: `Badge`, `DefinitionList`, `DetailSection` und

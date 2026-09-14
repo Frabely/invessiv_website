@@ -19,19 +19,30 @@ import {
 import type { LeadActivityDto } from "@invessiv/common/contracts/leads/lead-activity.dto";
 import type { LeadSubmissionDto } from "@invessiv/common/contracts/leads/lead-submission.dto";
 import type { Locale } from "@/config/i18n";
-import type {
-  LeadsDetailDictionary,
-  LeadsSharedDictionary,
-} from "@/i18n/dictionaries/workspace/leads";
-import { LeadStatusBadge } from "@/components/workspace/leads/shared";
 import styles from "./activity-timeline.module.css";
+
+type ActivityTimelineContent = {
+  activity: {
+    actor: Record<string, string>;
+    types: Record<string, string>;
+    channels: Record<string, string>;
+    empty: string;
+    statusChange: { fallbackBody: string; separator: string };
+    bulkEdit: { fallbackBody: string };
+    submission: { fallbackTitle: string };
+  };
+};
+
+type ActivityTimelineSharedContent = {
+  status: Record<string, string>;
+};
 
 type ActivityTimelineProps = {
   activities: LeadActivityDto[];
   submissions: LeadSubmissionDto[];
   locale: Locale;
-  content: LeadsDetailDictionary;
-  sharedContent: LeadsSharedDictionary;
+  content: ActivityTimelineContent;
+  sharedContent: ActivityTimelineSharedContent;
 };
 
 type TimelineEntry =
@@ -127,21 +138,21 @@ function formatActivityTimestamp(locale: Locale, timestamp: string): string {
 
 function getActorLabel(
   activity: LeadActivityDto,
-  content: LeadsDetailDictionary,
+  content: ActivityTimelineContent,
 ): string {
   return activity.actorLabel ?? content.activity.actor[activity.actorType];
 }
 
 function getActivityTitle(
   activity: LeadActivityDto,
-  content: LeadsDetailDictionary,
+  content: ActivityTimelineContent,
 ): string {
   return activity.title ?? content.activity.types[activity.type];
 }
 
 function getSubmissionChannelLabel(
   submission: LeadSubmissionDto,
-  content: LeadsDetailDictionary,
+  content: ActivityTimelineContent,
 ): string {
   return (
     content.activity.channels[submission.channel as ContactRequestKind] ??
@@ -151,8 +162,8 @@ function getSubmissionChannelLabel(
 
 function renderStatusChange(
   activity: LeadActivityDto,
-  content: LeadsDetailDictionary,
-  sharedContent: LeadsSharedDictionary,
+  content: ActivityTimelineContent,
+  sharedContent: ActivityTimelineSharedContent,
 ) {
   const metadata = getStatusChangeMetadata(activity.metadata);
 
@@ -166,24 +177,22 @@ function renderStatusChange(
 
   return (
     <div className={styles.statusChange}>
-      <LeadStatusBadge
-        label={sharedContent.status[metadata.previous_status]}
-        status={metadata.previous_status}
-      />
+      <span className={styles.statusBadge}>
+        {sharedContent.status[metadata.previous_status]}
+      </span>
       <span className={styles.statusSeparator} aria-hidden="true">
         {content.activity.statusChange.separator}
       </span>
-      <LeadStatusBadge
-        label={sharedContent.status[metadata.next_status]}
-        status={metadata.next_status}
-      />
+      <span className={styles.statusBadge}>
+        {sharedContent.status[metadata.next_status]}
+      </span>
     </div>
   );
 }
 
 function renderBulkEdit(
   activity: LeadActivityDto,
-  content: LeadsDetailDictionary,
+  content: ActivityTimelineContent,
 ) {
   return (
     <p className={styles.bodyText}>
@@ -194,8 +203,8 @@ function renderBulkEdit(
 
 function renderActivityEntry(
   activity: LeadActivityDto,
-  content: LeadsDetailDictionary,
-  sharedContent: LeadsSharedDictionary,
+  content: ActivityTimelineContent,
+  sharedContent: ActivityTimelineSharedContent,
   locale: Locale,
 ) {
   const icon = ACTIVITY_TYPE_ICON[activity.type];
@@ -234,7 +243,7 @@ function renderActivityEntry(
 
 function renderSubmissionEntry(
   submission: LeadSubmissionDto,
-  content: LeadsDetailDictionary,
+  content: ActivityTimelineContent,
   locale: Locale,
 ) {
   const channelLabel = getSubmissionChannelLabel(submission, content);

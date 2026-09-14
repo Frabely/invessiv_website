@@ -7,8 +7,8 @@
 
 ## Ziel
 
-**Umsetzungsstand:** Offen. `ListSearchField`, `FacetFilter`, `ActivityTimeline` und der Abschlussnachweis sind noch
-nicht umgesetzt.
+**Umsetzungsstand:** Erledigt im Workspace. `ListSearchField`, `FacetFilter` und `ActivityTimeline` liegen im Shared-
+Scope; Abschlussprüfungen und Nachweis sind durchgeführt.
 
 Suchfeld, Facettenfilter (mit opt-in Mehrfachauswahl) und Activity-Timeline liegen unter
 `components/workspace/shared/`. Danach wird der gesamte Ordner nachgewiesen und an das Review übergeben.

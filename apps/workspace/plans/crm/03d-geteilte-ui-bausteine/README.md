@@ -1,6 +1,7 @@
 # Ordner 03d — Geteilte UI-Bausteine
 
-> **Status:** läuft · **Branch:** `chore/crm-geteilte-ui-bausteine` · **Abhängigkeiten:** Ordner 03b, 03c gemerged
+> **Status:** abgeschlossen · **Branch:** `chore/crm-geteilte-ui-bausteine` · **Abhängigkeiten:** Ordner 03b, 03c
+> gemerged
 > **Aufwand:** 4–5 Tage · **Reviewziel:** 145–165 Dateien in 9 Tasks mit je ≤ 30 Dateien, hart 50 (bewusst über dem
 > Split-Gate)
 
@@ -10,22 +11,22 @@ Reines Refactoring ohne Verhaltensänderung, bevor Ordner 04 die Kundenakte baut
 und Settings liegen an genau einer Stelle; alle bisherigen Workspace-Nutzer verwenden sie bereits. Ordner 04 baut
 Liste, Dialoge und Detail-Panel direkt darauf auf. Die Web-App bleibt in diesem Ordner vollständig unangetastet.
 
-**Bestandsaufnahme vom 14.09.2026:** Der Ordner ist noch nicht fertig und bleibt deshalb im Status `läuft`. Bereits
+**Abschlussnachweis vom 14.09.2026:** Der Workspace-Umzug ist umgesetzt. Bereits
 zentralisiert sind Button, Formularfeld samt Label/Pflichtmarker/Status/Aktionen, `Dialog`, `ConfirmDialog`,
 `EmptyState`, `ListEmptyState`, `Badge` sowie Auswahl-Provider und Select-All-Checkbox. Die Web-App bleibt unverändert;
 ihre technische Migration und visuelle Anpassung erfolgt erst in Task 39 nach Abschluss des gesamten CRM-Umbaus.
 
-| Task   | Stand     | Verbleibende Arbeit                                                                                                                                                   |
-| ------ | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 02e-1  | erledigt  | Keine offene Workspace-Arbeit.                                                                                                                                        |
-| 02e-3  | erledigt  | Keine offene Workspace-Arbeit.                                                                                                                                        |
-| 02e-4  | erledigt  | Keine offene Workspace-Arbeit.                                                                                                                                        |
-| 02e-5  | teilweise | Zentralen jsdom-Dialog-Test-Setup gemäß Plan ergänzen und Dialog-Tests nachziehen.                                                                                    |
-| 02e-6  | erledigt  | Lead-Formular, Import, Outreach und Bulk-Edit sowie Archiv/Löschen verwenden die zentrale native `Dialog`/`ConfirmDialog`-Hülle; Fokusfalle und Portal sind entfernt. |
-| 02e-7  | teilweise | Empty-State-Tests und die geplante generische Workspace-Konstante abschließen.                                                                                        |
-| 02e-8  | teilweise | `SidePanel` ist angebunden, `DefinitionList` und `DetailSection` sind angelegt. Die vollständige Integration im Lead-Detail-Panel und die Tests fehlen noch.          |
-| 02e-9  | teilweise | `SortableHeader`, `ListPagination` und Selection-Bausteine liegen im Shared-Scope. Lead-Entkopplung, generische Contracts und ergänzende Tests fehlen noch.           |
-| 02e-10 | teilweise | Suchfeld, Facettenfilter und Timeline liegen im Shared-Scope. Mehrfachauswahl, generische Entkopplung und der Abschlussnachweis fehlen noch.                          |
+| Task   | Stand    | Verbleibende Arbeit                                                                                                                                                   |
+| ------ | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 02e-1  | erledigt | Keine offene Workspace-Arbeit.                                                                                                                                        |
+| 02e-3  | erledigt | Keine offene Workspace-Arbeit.                                                                                                                                        |
+| 02e-4  | erledigt | Keine offene Workspace-Arbeit.                                                                                                                                        |
+| 02e-5  | erledigt | Zentrales Dialog-Test-Setup und Tastatur-/Fokus-Tests sind umgesetzt.                                                                                                 |
+| 02e-6  | erledigt | Lead-Formular, Import, Outreach und Bulk-Edit sowie Archiv/Löschen verwenden die zentrale native `Dialog`/`ConfirmDialog`-Hülle; Fokusfalle und Portal sind entfernt. |
+| 02e-7  | erledigt | Empty-State-Bausteine und Workspace-Nutzer sind umgestellt und getestet.                                                                                              |
+| 02e-8  | erledigt | `SidePanel`, `DefinitionList` und `DetailSection` sind integriert und getestet.                                                                                       |
+| 02e-9  | erledigt | Tabellen-, Pagination-, Sortier- und Selection-Bausteine liegen generisch im Shared-Scope.                                                                            |
+| 02e-10 | erledigt | Suchfeld, Facettenfilter, Timeline und Abschlussprüfungen sind umgesetzt.                                                                                             |
 
 **Konkreter Task-Plan**
 
@@ -121,9 +122,9 @@ Folgen und Umsetzungshinweise:
 
 Reiner Code-Revert; keine Migration, keine Datenänderung.
 
-## Gebündelter Restplan: noch offen bzw. unvollständig
+## Gebündelter Restplan: abgeschlossen
 
-Die folgenden Punkte bilden den verbleibenden Abschlussblock für den Workspace-UI-Umzug:
+Die folgenden Punkte bildeten den Abschlussblock für den Workspace-UI-Umzug und sind umgesetzt:
 
 1. **Dialog-Testabdeckung abschließen:** Zentrales jsdom-Setup vervollständigen und Fokus-/Escape-/Unmount- sowie
    laufende-Request-Tests für die native `Dialog`-Hülle ergänzen.

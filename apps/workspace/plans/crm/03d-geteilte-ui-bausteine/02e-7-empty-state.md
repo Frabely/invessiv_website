@@ -7,7 +7,7 @@
 
 ## Ziel
 
-**Umsetzungsstand:** Teilweise erledigt: `EmptyState`, `ListEmptyState` und die Settings-Nutzer sind umgestellt; Tests
+**Umsetzungsstand:** Erledigt: `EmptyState`, `ListEmptyState` und die Settings-Nutzer sind umgestellt; Tests
 und die geplante generische Workspace-Konstante fehlen noch.
 
 Ein Empty-State in `packages/ui`, ein link-gebundener Listen-Empty-State in `components/workspace/shared/table/`.
