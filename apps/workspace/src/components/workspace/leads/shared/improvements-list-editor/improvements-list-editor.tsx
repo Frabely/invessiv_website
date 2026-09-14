@@ -7,10 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { LeadFieldLimits } from "@invessiv/common/constants/leads/forms/lead-field-limits";
 import type { ImprovementsListEditorContent } from "@invessiv/common/contracts/leads";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
-import {
-  ButtonControl,
-  PrimaryCtaButton,
-} from "@/components/shared/button/button";
+import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
 import { FormField } from "@/components/shared/form/form-field/form-field";
 
 import styles from "./improvements-list-editor.module.css";

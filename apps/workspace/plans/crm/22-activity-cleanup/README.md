@@ -13,8 +13,9 @@ Ordner 02 hat die Lead-Historie direkt auf `activities` umgezogen: Die Migration
 absichtlich stehen geblieben. Diese Einheit schließt das ab: nach ihr existiert genau eine
 Activity-Tabelle.
 
-Sie ist die einzige destruktive Einheit des gesamten Plans und liegt deshalb am Ende, nach der
-Produktivabnahme in Ordner 21.
+Sie ist die einzige destruktive Einheit des gesamten Plans und liegt deshalb am Ende aller datenverändernden
+CRM-Einheiten, nach der Produktivabnahme in Ordner 21. Danach folgt nur noch der rein visuelle Web-Abschluss in
+Ordner 23.
 
 ## Voraussetzungen (verbindlich, vor Beginn geprüft)
 

@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/role-assignment-option.dto";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import { selectAssignableRoles } from "@/common/patterns/access/role-selection";
-import { PrimaryCtaButton } from "@/components/shared/button/button";
+import { PrimaryCtaButton } from "@invessiv/ui";
 import type {
   SettingsMembersDictionary,
   SettingsPermissionsDictionary,

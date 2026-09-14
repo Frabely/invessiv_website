@@ -12,10 +12,7 @@ import { accessApiService } from "@/client/access/access-api-service";
 import { DialogMessageRole } from "@/common/constants/ui/dialog-message-roles";
 import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
 import { WorkspaceDialogSize } from "@/common/constants/ui/workspace-dialog-sizes";
-import {
-  ButtonControl,
-  PrimaryCtaButton,
-} from "@/components/shared/button/button";
+import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
 import { WorkspaceDialog } from "@/components/workspace/shared/dialog/workspace-dialog/workspace-dialog";
 import type { SettingsMembersDictionary } from "@/i18n/dictionaries/workspace/settings";
 import { formatMessage } from "@/lib/i18n/format-message";

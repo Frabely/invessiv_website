@@ -1,7 +1,8 @@
 # Ordner 03d — Geteilte UI-Bausteine
 
-> **Status:** offen · **Branch:** `chore/crm-geteilte-ui-bausteine` · **Abhängigkeiten:** Ordner 03b, 03c gemerged
-> **Aufwand:** 4–5 Tage · **Reviewziel:** 170–195 Dateien in 25 Review-Schritten (bewusst über dem Split-Gate)
+> **Status:** läuft · **Branch:** `chore/crm-geteilte-ui-bausteine` · **Abhängigkeiten:** Ordner 03b, 03c gemerged
+> **Aufwand:** 4–5 Tage · **Reviewziel:** 170–195 Dateien in 10 Tasks mit je ≤ 30 Dateien, hart 50 (bewusst über dem
+> Split-Gate)
 
 ## Ziel und Stand nach Merge
 
@@ -11,8 +12,18 @@ Liste, Dialoge und Detail-Panel direkt darauf auf.
 
 **Konkreter Task-Plan**
 
-- [`02e-geteilte-ui-bausteine.md`](./02e-geteilte-ui-bausteine.md) — Ist-Analyse, Dialog-Umstellung, Teststrategie,
-  25 Review-Schritte mit je höchstens zwei Bausteinen, Umfangskontrolle.
+- [`02e-geteilte-ui-bausteine.md`](./02e-geteilte-ui-bausteine.md) — Übersicht: Ist-Analyse, Entscheidungen,
+  Dialog-Umstellung, Teststrategie, Zielbild, Umfangskontrolle.
+- [`02e-1-regeln-und-button-workspace.md`](./02e-1-regeln-und-button-workspace.md) — T0, T1 · ~31 Dateien
+- [`02e-2-button-web.md`](./02e-2-button-web.md) — T2 · ~22 Dateien
+- [`02e-3-formularfeld.md`](./02e-3-formularfeld.md) — T3, T4 · ~23 Dateien
+- [`02e-4-formularstatus-und-aktionen.md`](./02e-4-formularstatus-und-aktionen.md) — T5 · ~15 Dateien
+- [`02e-5-dialog-und-settings.md`](./02e-5-dialog-und-settings.md) — T6, T7 · ~22 Dateien
+- [`02e-6-lead-dialoge.md`](./02e-6-lead-dialoge.md) — T8–T13 · ~23 Dateien
+- [`02e-7-empty-state.md`](./02e-7-empty-state.md) — T14 · ~17 Dateien
+- [`02e-8-badge-und-detail-panel.md`](./02e-8-badge-und-detail-panel.md) — T15–T17 · ~28 Dateien
+- [`02e-9-tabellenbausteine.md`](./02e-9-tabellenbausteine.md) — T18–T20 · ~17–20 Dateien
+- [`02e-10-toolbar-timeline-und-abschluss.md`](./02e-10-toolbar-timeline-und-abschluss.md) — T21–T24 · ~18 Dateien
 
 Task 02e ersetzt die Zielentscheidung „nicht `packages/ui`" aus Task 02a und übernimmt dessen Listenumzug (Phase D).
 
@@ -41,7 +52,8 @@ Handarbeit aus `components/workspace/shared/dialog/dialog-focus-trap.ts` und `cr
 
 Folgen und Umsetzungshinweise:
 
-- Alle Dialoge in Leads (sieben Nutzer der Fokusfalle) und Settings (vier, nach 03c sechs Nutzer von `WorkspaceDialog`)
+- Alle Dialoge in Leads (sieben Nutzer der Fokusfalle) und Settings (fünf Nutzer von `WorkspaceDialog`, Stand
+  14.09.2026)
   wechseln in dieser Einheit auf die neue Hülle; `dialog-focus-trap.ts` wird danach gelöscht.
 - Die Hülle öffnet per `showModal()` und schließt per `close()` im Layout-Effekt-Cleanup, damit die Fokus-Rückgabe auch
   beim Unmount greift; `open` bleibt als Prop steuerbar.
@@ -59,9 +71,17 @@ Folgen und Umsetzungshinweise:
   Phase D (Listenbausteine) als Ordner 03e ausgegliedert wird.
 - **Kleine Review-Schritte.** Jeder Schritt zieht höchstens zwei Bausteine um, ist für sich grün und wird einzeln
   reviewt.
+- **Tasks mit begrenztem Changeset (Neuschnitt 14.09.2026, mit dem Nutzer abgestimmt).** Die 25 Tickets sind in zehn
+  Task-Dateien (02e-1 bis 02e-10) gebündelt. Jeder Task ist ein eigenes Changeset mit Ziel 20–30 Dateien; ab
+  voraussichtlich 35 wird gestoppt und mit dem Nutzer neu geteilt, 50 Dateien werden nie überschritten. Ticket-IDs
+  `CRM-03d-T0` bis `T24` bleiben unverändert.
 - **Beide Apps.** Button und Formularbausteine ziehen aus `apps/web` und `apps/workspace` nach `packages/ui`; beide
   App-Kopien werden gelöscht. Abweichungen zwischen den Kopien werden über app-seitige Tokens beziehungsweise
   Opt-in-Props aufgelöst, nicht durch Angleichen von Optik oder Verhalten.
+- **Web-UI erst nach dem gesamten CRM-Umbau.** Tasks 02e-2 bis 02e-4 stellen die Web-App technisch und optisch
+  unverändert auf die geteilten Bausteine um. Eine bewusste visuelle Weiterentwicklung aller betroffenen
+  Web-Oberflächen erfolgt erst als letzte CRM-Merge-Einheit in Ordner 23 (Task 39) und ist zusätzlich in
+  `apps/web/plans/Todo.md` verankert.
 
 ## Merge-Gate
 
@@ -76,7 +96,7 @@ Folgen und Umsetzungshinweise:
 - [ ] `CustomSelect` ist innerhalb eines Dialogs bedienbar (Portal-Root).
 - [ ] Mobil, Dark und Light visuell unverändert — Workspace und Web.
 - [ ] Conversion-Smoke Web (Kontaktformular, LinkedIn-Generator): Fehler-, Lade- und Erfolgszustand, keine toten CTAs.
-- [ ] Dateizahl ≤ 200 und im PR genannt.
+- [ ] Dateizahl ≤ 200 und im PR genannt; jedes Task-Changeset ≤ 50 Dateien (Ziel ≤ 30), Zahl je Task im PR.
 - [ ] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, Workspace-Build und Web-Build grün.
 
 ## Rollback

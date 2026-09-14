@@ -33,7 +33,7 @@ import {
   getLeadImportRowIssueMessage,
 } from "@/client/leads/import/import-leads-error-message";
 import { importLeadsService } from "@/client/leads/import/import-leads-service";
-import { ButtonControl } from "@/components/shared/button/button";
+import { ButtonControl } from "@invessiv/ui";
 import {
   focusFirstDialogElement,
   trapDialogFocus,

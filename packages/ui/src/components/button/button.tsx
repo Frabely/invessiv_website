@@ -1,9 +1,10 @@
-import Link from "next/link";
 import {
-  forwardRef,
   type AnchorHTMLAttributes,
   type ButtonHTMLAttributes,
+  type ComponentType,
+  forwardRef,
   type ReactNode,
+  type Ref,
 } from "react";
 import styles from "./button.module.css";
 
@@ -15,10 +16,20 @@ type ButtonBaseProps = {
   variant?: ButtonVariant;
 };
 
+type ButtonLinkComponentProps = Omit<
+  AnchorHTMLAttributes<HTMLAnchorElement>,
+  "children" | "className"
+> & {
+  children: ReactNode;
+  className?: string;
+  href: string;
+  ref?: Ref<HTMLAnchorElement>;
+};
+
 type ButtonLinkProps = ButtonBaseProps &
   Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "children" | "className"> & {
     href: string;
-    useNextLink?: boolean;
+    linkComponent?: ComponentType<ButtonLinkComponentProps>;
   };
 
 type ButtonControlProps = ButtonBaseProps &
@@ -34,7 +45,7 @@ export const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
       children,
       className,
       href,
-      useNextLink = false,
+      linkComponent: LinkComponent,
       variant = "primary",
       ...props
     },
@@ -42,11 +53,16 @@ export const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
   ) {
     const buttonClassName = getButtonClassName(variant, className);
 
-    if (useNextLink) {
+    if (LinkComponent) {
       return (
-        <Link {...props} className={buttonClassName} href={href} ref={ref}>
+        <LinkComponent
+          {...props}
+          className={buttonClassName}
+          href={href}
+          ref={ref}
+        >
           {children}
-        </Link>
+        </LinkComponent>
       );
     }
 

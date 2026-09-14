@@ -5,7 +5,7 @@ import { useState } from "react";
 import type { LeadCategoryOption } from "@invessiv/common/contracts/leads/lead-category-option";
 import type { LeadSummaryDto } from "@invessiv/common/contracts/leads/lead-summary.dto";
 import type { LeadActionPermissions } from "@/common/contracts/leads/lead-action-permissions";
-import { ButtonControl } from "@/components/shared/button/button";
+import { ButtonControl } from "@invessiv/ui";
 import { useLeadsTableSelection } from "@/components/workspace/leads/table/leads-table-selection-provider/leads-table-selection-context";
 import { BulkDialogKind } from "@invessiv/common/constants/leads/bulk/bulk-dialog-kinds";
 import type {

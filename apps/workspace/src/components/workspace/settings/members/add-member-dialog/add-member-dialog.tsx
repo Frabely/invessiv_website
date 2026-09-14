@@ -11,10 +11,7 @@ import { accessApiService } from "@/client/access/access-api-service";
 import { AccessFieldLimits } from "@/common/constants/access/access-field-limits";
 import { WorkspaceDialogSize } from "@/common/constants/ui/workspace-dialog-sizes";
 import { selectDefaultRoleIds } from "@/common/patterns/access/role-selection";
-import {
-  ButtonControl,
-  PrimaryCtaButton,
-} from "@/components/shared/button/button";
+import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
 import { WorkspaceDialog } from "@/components/workspace/shared/dialog/workspace-dialog/workspace-dialog";
 import type {
   SettingsMembersDictionary,

@@ -19,10 +19,7 @@ import {
   type LeadSocialPlatform,
 } from "@invessiv/common/constants/leads/social/lead-social-platforms";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
-import {
-  ButtonControl,
-  PrimaryCtaButton,
-} from "@/components/shared/button/button";
+import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
 import { FormField } from "@/components/shared/form/form-field/form-field";
 import { isOpenableUrl, openExternalUrl } from "@/lib/url/is-openable-url";
 import type { LeadFormValues } from "@invessiv/common/contracts/leads/forms/lead-form-values";

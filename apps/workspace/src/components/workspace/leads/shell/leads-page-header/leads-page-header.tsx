@@ -26,10 +26,7 @@ import type {
   LeadsToolbarDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
-import {
-  ButtonControl,
-  PrimaryCtaButton,
-} from "@/components/shared/button/button";
+import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
 import { ImportLeadsDialog } from "@/components/workspace/leads/import/import-leads-dialog/import-leads-dialog";
 import { buildLeadHref } from "@/components/workspace/leads/table/lead-table-utils";
 import { LeadCategoryFilter } from "@/components/workspace/leads/toolbar/lead-category-filter/lead-category-filter";

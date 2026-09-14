@@ -1,48 +1,71 @@
-# Task 02e — Geteilte UI-Bausteine
+# Task 02e — Geteilte UI-Bausteine (Übersicht)
 
 > **Merge-Einheit:** Ordner 03d · **Branch:** `chore/crm-geteilte-ui-bausteine`
 > **Aufwand:** L (4–5 Tage) · **Abhängigkeiten:** Task 02c (Ordner 03b) und Task 02d (Ordner 03c) gemerged
-> **Migration:** keine · **Reviewziel:** 170–195 Dateien in 25 kleinen Review-Schritten (siehe „Umfangskontrolle")
+> **Migration:** keine · **Zuschnitt:** 10 Tasks (02e-1 bis 02e-10) mit je höchstens ~30 Dateien, harte Grenze 50
+
+Diese Datei hält die übergreifenden Entscheidungen, die Dialog-Umstellung, die Teststrategie und das Zielbild. Die
+umzusetzenden Tickets stehen in den Task-Dateien (siehe „Tasks").
 
 ## Kontext
 
-Stand 14.09.2026: Ordner 03b ist gemerged, Ordner 03c befindet sich im Review. Dieser Plan setzt voraus, dass 03c beim
-Start gemerged ist, und behandelt dessen neuen Lifecycle-Dialog als bestehenden Nutzer der
-Dialog-Hülle.
+Stand 14.09.2026: Ordner 03b und 03c sind gemerged. Der Lifecycle-Dialog aus 03c (`member-status-dialog`) ist
+bestehender Nutzer der Dialog-Hülle.
 
 Ordner 04 baut Kundenliste, Create/Edit-Dialog und Kundenakte. Heute existiert jeder Baustein dafür mehrfach oder nur
 im Leads-Bereich:
 
-| Baustein            | Ist-Zustand (Repository, 14.09.2026)                                                                                                                                                                                                                                                                                               |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Dialog-Hülle        | `components/workspace/shared/dialog/workspace-dialog` (4 Settings-Nutzer, nach 03c 5) plus **sieben** Lead-Dialoge mit eigener Overlay-, Portal- und Fokuslogik über `dialog-focus-trap.ts`: Lead-Formular (1050 Zeilen), Import (538), Outreach (452), Bulk-Edit (608), Lead löschen (202), Bulk-Archiv (183), Bulk-Löschen (187) |
-| Button              | `components/shared/button/button.tsx` in `apps/web` **und** `apps/workspace` — TSX identisch, CSS weicht ab (Schriftfamilie per Token vs. Literal, Disabled-Opacity nur im Web); 17 Web- und 19 Workspace-Nutzer                                                                                                                   |
-| Formularbausteine   | `components/shared/form/*` in beiden Apps — `FormFieldLabel`, `FormStatus`, `FormActions` identisch; `FormField` im Web weiter (`FormFieldKind.Custom`, `labelSuffix`); `FormRequiredMarker` im Web `aria-hidden`, im Workspace nicht                                                                                              |
-| Empty-State         | `leads/table/leads-empty-state` (mit `next/link`), in Settings als Inline-Markup in `roles-list` und `add-member-dialog`                                                                                                                                                                                                           |
-| Badge               | `components/workspace/shared/lead-badge` — generische Tones, aber lead-benannt; Tones in `packages/common/src/constants/leads/badges/lead-badge-tones.ts`                                                                                                                                                                          |
-| Detail-Panel        | `leads/detail/lead-detail-panel` — `<aside>` im Seiten-Slot, lokale `DetailField`-Komponente als Definitionsliste, Sektionen als Inline-Markup; kein Escape, keine Fokussteuerung                                                                                                                                                  |
-| Listenbausteine     | ausschließlich unter `leads/table/**` und `leads/toolbar/**`; Facettenfilter nur Single-Select                                                                                                                                                                                                                                     |
-| Timeline            | `leads/detail/lead-detail-activities` (298 Zeilen, lead-gebunden)                                                                                                                                                                                                                                                                  |
-| `packages/ui` heute | `CheckboxControl`, `CustomSelect` (Floating-UI mit `FloatingPortal` nach `document.body`); keine Vitest-Config, Tests setzen jsdom per Dateikommentar                                                                                                                                                                              |
+| Baustein            | Ist-Zustand (Repository, 14.09.2026)                                                                                                                                                                                                                                                                                   |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Dialog-Hülle        | `components/workspace/shared/dialog/workspace-dialog` (5 Settings-Nutzer) plus **sieben** Lead-Dialoge mit eigener Overlay-, Portal- und Fokuslogik über `dialog-focus-trap.ts`: Lead-Formular (1050 Zeilen), Import (538), Outreach (452), Bulk-Edit (608), Lead löschen (202), Bulk-Archiv (183), Bulk-Löschen (187) |
+| Button              | `components/shared/button/button.tsx` in `apps/web` **und** `apps/workspace` — TSX identisch, CSS weicht ab (Schriftfamilie per Token vs. Literal, Disabled-Opacity nur im Web); 17 Web- und 20 Workspace-Nutzer                                                                                                       |
+| Formularbausteine   | `components/shared/form/*` in beiden Apps — `FormFieldLabel`, `FormStatus`, `FormActions` identisch; `FormField` im Web weiter (`FormFieldKind.Custom`, `labelSuffix`); `FormRequiredMarker` im Web `aria-hidden`, im Workspace nicht                                                                                  |
+| Empty-State         | `leads/table/leads-empty-state` (mit `next/link`), in Settings als Inline-Markup in `roles-list` und `add-member-dialog`                                                                                                                                                                                               |
+| Badge               | `components/workspace/shared/lead-badge` — generische Tones, aber lead-benannt; Tones in `packages/common/src/constants/leads/badges/lead-badge-tones.ts`                                                                                                                                                              |
+| Detail-Panel        | `leads/detail/lead-detail-panel` — `<aside>` im Seiten-Slot, lokale `DetailField`-Komponente als Definitionsliste, Sektionen als Inline-Markup; kein Escape, keine Fokussteuerung                                                                                                                                      |
+| Listenbausteine     | ausschließlich unter `leads/table/**` und `leads/toolbar/**`; Facettenfilter nur Single-Select                                                                                                                                                                                                                         |
+| Timeline            | `leads/detail/lead-detail-activities` (298 Zeilen, lead-gebunden)                                                                                                                                                                                                                                                      |
+| `packages/ui` heute | `CheckboxControl`, `CustomSelect` (Floating-UI mit `FloatingPortal` nach `document.body`); keine Vitest-Config, Tests setzen jsdom per Dateikommentar                                                                                                                                                                  |
 
 Dieser Task führt die Bausteine an genau einer Stelle zusammen, ohne Verhalten oder Optik zu ändern. Einzige bewusste
 technische Umstellung ist das native `<dialog>` (Entscheidung vom 13.09.2026 in der Ordner-README).
 
 ## Entscheidungen
 
-| Bereich              | Entscheidung                                                                                                                                                                                                                                                                                                                                                       |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Zuschnitt            | **Ein Ordner, ein PR** (mit dem Nutzer abgestimmt am 14.09.2026), aber in **25 Review-Schritten** mit je höchstens zwei umgezogenen Bausteinen. Jeder Schritt ist für sich grün (lint, typecheck, betroffene Tests) und wird vom Nutzer einzeln reviewt und committet, bevor der nächste beginnt.                                                                  |
-| Split-Gate           | Die Schätzung liegt über dem Split-Gate von 120 und unter der harten Grenze von 200. Die Überschreitung ist bewusst: Der Großteil sind reine Importpfad-Diffs. Checkpoints stehen unter „Umfangskontrolle".                                                                                                                                                        |
-| Apps                 | **Beide Apps stellen um** (mit dem Nutzer abgestimmt am 14.09.2026). Button und Formularbausteine liegen danach nur noch in `packages/ui`; die Kopien in `apps/web` und `apps/workspace` werden gelöscht.                                                                                                                                                          |
-| Ablage               | Hybrid wie am 13.09.2026 entschieden. `packages/ui`: Button, Formularfeld samt Label/Marker/Status/Actions, Dialog, Bestätigungsdialog, Seitenpanel, Detail-Sektion, Definitionsliste, Empty-State, Badge. `components/workspace/shared/`: Link-gebundener Listen-Empty-State, Sortier-Header, Pagination, Selection, Suchfeld, Facettenfilter, Activity-Timeline. |
-| `packages/ui`-Grenze | Keine Importe aus `next/*`, App-Code, Dictionaries, Analytics oder Fachdomänen. Texte, Links, Icons und Callbacks kommen als Props. Links werden über eine `linkComponent`-Prop injiziert, nie importiert.                                                                                                                                                         |
-| Verhalten            | Reines Refactoring. Leads, Settings und Web-Formulare verhalten sich identisch. Neue Fähigkeiten (Mehrfachauswahl im Facettenfilter, Escape/Fokus im Seitenpanel, Portal-Root für `CustomSelect`) sind opt-in und werden in diesem Ordner von niemandem aktiviert.                                                                                                 |
-| Optik                | Mobil, Dark und Light bleiben pixelnah unverändert. Abweichungen zwischen den App-Kopien werden über app-seitig definierte Tokens aufgelöst, nicht durch Angleichen der Optik.                                                                                                                                                                                     |
-| Dialog               | Natives `<dialog>` mit `showModal()`/`close()`; `dialog-focus-trap.ts` und alle `createPortal`-Dialoge entfallen (Details unten).                                                                                                                                                                                                                                  |
-| Konstanten           | `WorkspaceDialogSize` wird zu `DialogSize` in `packages/common/src/constants/ui/`; `LeadBadgeTone` wird zu `BadgeTone` am selben Ort. Const-Objekt plus abgeleiteter Typ, Tests ziehen mit.                                                                                                                                                                        |
-| Tests                | Bestandstests ändern nur Importpfade — **mit einer benannten Ausnahme**: Tests, die die ersetzte Eigenbau-Mechanik prüfen (siehe „Teststrategie"), werden auf das native Verhalten umgeschrieben. Die Abweichung steht im PR.                                                                                                                                      |
-| Doku                 | Regeländerungen landen im selben Review-Schritt wie der Code, der sie auslöst — nicht gesammelt am Ende.                                                                                                                                                                                                                                                           |
+| Bereich              | Entscheidung                                                                                                                                                                                                                                                                                                                                                             |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Zuschnitt            | **Ein Ordner, ein PR** (mit dem Nutzer abgestimmt am 14.09.2026). Die 25 Tickets `CRM-03d-T0` bis `T24` sind in **10 Tasks** gebündelt (Neuschnitt 14.09.2026, mit dem Nutzer abgestimmt). Jeder Task ist ein eigenes Changeset mit **Ziel 20–30 Dateien, harte Grenze 50**, für sich grün und wird vom Nutzer einzeln reviewt und committet, bevor der nächste beginnt. |
+| Split-Gate           | Der Gesamt-PR liegt mit 170–195 Dateien über dem Split-Gate von 120 und unter der harten Grenze von 200. Die Überschreitung ist bewusst: Der Großteil sind reine Importpfad-Diffs, und das Review läuft je Task-Changeset. Checkpoints stehen unter „Umfangskontrolle".                                                                                                  |
+| Apps                 | **Beide Apps stellen um** (mit dem Nutzer abgestimmt am 14.09.2026). Button und Formularbausteine liegen danach nur noch in `packages/ui`; die Kopien in `apps/web` und `apps/workspace` werden gelöscht.                                                                                                                                                                |
+| Ablage               | Hybrid wie am 13.09.2026 entschieden. `packages/ui`: Button, Formularfeld samt Label/Marker/Status/Actions, Dialog, Bestätigungsdialog, Seitenpanel, Detail-Sektion, Definitionsliste, Empty-State, Badge. `components/workspace/shared/`: Link-gebundener Listen-Empty-State, Sortier-Header, Pagination, Selection, Suchfeld, Facettenfilter, Activity-Timeline.       |
+| `packages/ui`-Grenze | Keine Importe aus `next/*`, App-Code, Dictionaries, Analytics oder Fachdomänen. Texte, Links, Icons und Callbacks kommen als Props. Links werden über eine `linkComponent`-Prop injiziert, nie importiert.                                                                                                                                                               |
+| Verhalten            | Reines Refactoring. Leads, Settings und Web-Formulare verhalten sich identisch. Neue Fähigkeiten (Mehrfachauswahl im Facettenfilter, Escape/Fokus im Seitenpanel, Portal-Root für `CustomSelect`) sind opt-in und werden in diesem Ordner von niemandem aktiviert.                                                                                                       |
+| Optik                | Mobil, Dark und Light bleiben pixelnah unverändert. Abweichungen zwischen den App-Kopien werden über app-seitig definierte Tokens aufgelöst, nicht durch Angleichen der Optik.                                                                                                                                                                                           |
+| Dialog               | Natives `<dialog>` mit `showModal()`/`close()`; `dialog-focus-trap.ts` und alle `createPortal`-Dialoge entfallen (Details unten).                                                                                                                                                                                                                                        |
+| Konstanten           | `WorkspaceDialogSize` wird zu `DialogSize` in `packages/common/src/constants/ui/`; `LeadBadgeTone` wird zu `BadgeTone` am selben Ort. Const-Objekt plus abgeleiteter Typ, Tests ziehen mit.                                                                                                                                                                              |
+| Tests                | Bestandstests ändern nur Importpfade — **mit einer benannten Ausnahme**: Tests, die die ersetzte Eigenbau-Mechanik prüfen (siehe „Teststrategie"), werden auf das native Verhalten umgeschrieben. Die Abweichung steht im PR.                                                                                                                                            |
+| Doku                 | Regeländerungen landen im selben Task wie der Code, der sie auslöst — nicht gesammelt am Ende.                                                                                                                                                                                                                                                                           |
+
+## Tasks
+
+Die Reihenfolge ist verbindlich, weil spätere Tasks auf früheren aufbauen. Die Dateizahlen sind aus dem Repository
+(14.09.2026) gezählt; Umbenennungen zählen einfach.
+
+| Task                                                 | Tickets | Inhalt                                                        | Changeset | Aufwand |
+| ---------------------------------------------------- | ------- | ------------------------------------------------------------- | --------: | ------- |
+| [02e-1](./02e-1-regeln-und-button-workspace.md)      | T0, T1  | Status, Regeldateien; Button nach `packages/ui`, Workspace    |       ~31 | M       |
+| [02e-2](./02e-2-button-web.md)                       | T2      | Web auf geteilten Button, Web-Kopie löschen                   |       ~22 | S       |
+| [02e-3](./02e-3-formularfeld.md)                     | T3, T4  | `FormRequiredMarker`, `FormFieldLabel`, `FormField`           |       ~23 | S       |
+| [02e-4](./02e-4-formularstatus-und-aktionen.md)      | T5      | `FormStatus`, `FormActions`                                   |       ~15 | S       |
+| [02e-5](./02e-5-dialog-und-settings.md)              | T6, T7  | Natives `Dialog`, Test-Setup, Settings-Dialoge, Portal-Root   |       ~22 | M       |
+| [02e-6](./02e-6-lead-dialoge.md)                     | T8–T13  | `ConfirmDialog`, alle sieben Lead-Dialoge, Fokusfalle löschen |       ~23 | M       |
+| [02e-7](./02e-7-empty-state.md)                      | T14     | `EmptyState`, `ListEmptyState`, Settings-Empty-States         |       ~17 | S       |
+| [02e-8](./02e-8-badge-und-detail-panel.md)           | T15–T17 | `Badge`, `DefinitionList`, `DetailSection`, `SidePanel`       |       ~28 | M       |
+| [02e-9](./02e-9-tabellenbausteine.md)                | T18–T20 | Sortier-Header, Pagination, Selection                         |    ~17–20 | S       |
+| [02e-10](./02e-10-toolbar-timeline-und-abschluss.md) | T21–T24 | Suchfeld, Facettenfilter, Timeline, Nachweis und Übergabe     |       ~18 | M       |
+
+Jeder Task endet mit `pnpm -r lint`, `pnpm -r typecheck` und den betroffenen Test-Suites grün. Task 02e-10 zusätzlich
+mit allen Qualitäts-Gates.
 
 ## Dialog-Umstellung im Detail
 
@@ -99,15 +122,15 @@ Lead-Löschdialog).
   Importpfade.
 - **Benannte Ausnahme, weil sie die ersetzte Mechanik testen:**
   - `workspace-dialog.test.tsx` → wird zu `packages/ui/.../dialog.test.tsx`; der Tab-Wrap-Test entfällt zugunsten
-    „Dialog ist modal geöffnet (`open`) und Escape per `cancel`".
+    „Dialog ist modal geöffnet (`open`) und Escape per `cancel`" (Task 02e-5).
   - `lead-form-dialog.test.tsx` → „wraps focus from the last focusable element back to the close button" wird durch
     einen Test für den initialen Fokus ersetzt; der Overlay-Klick-Test adressiert das `<dialog>` statt
-    `dialog.parentElement`; Escape wird als `cancel`-Event ausgelöst.
-  - `import-leads-dialog.test.tsx` → Escape als `cancel`-Event.
+    `dialog.parentElement`; Escape wird als `cancel`-Event ausgelöst (Task 02e-6).
+  - `import-leads-dialog.test.tsx` → Escape als `cancel`-Event (Task 02e-6).
 - **Neu in `packages/ui`:** Jede interaktive Komponente hat jsdom-Tests für Tastatur, Fokus und Escape; der Dialog
   zusätzlich für `busy`-Sperre, Fokus-Rückgabe beim Schließen und beim Unmount sowie den Portal-Root.
-- **Visuell:** Jeder Review-Schritt mit Optikbezug enthält Vorher/Nachher-Screenshots (Mobil 390 px, Desktop; Dark und
-  Light) der betroffenen Oberfläche.
+- **Visuell:** Jeder Task mit Optikbezug enthält Vorher/Nachher-Screenshots (Mobil 390 px, Desktop; Dark und Light) der
+  betroffenen Oberfläche.
 
 ## Verzeichnisstruktur (Zielbild)
 
@@ -163,234 +186,35 @@ entfällt:
 aus `@invessiv/ui`. Fachliche Badges (`LeadStatusBadge`, `LeadSourceBadge`, `LeadCategoryBadge`), `LeadScoreBar`,
 `LeadSocialProfiles` und `leads-table-row` bleiben im Leads-Bereich.
 
-## Tickets (Review-Schritte)
-
-Jeder Schritt: höchstens zwei umgezogene Bausteine, eigene Akzeptanz, danach `pnpm -r lint`, `pnpm -r typecheck` und
-die betroffenen Test-Suites grün. Die Reihenfolge ist verbindlich, weil spätere Schritte auf früheren aufbauen.
-
-### Phase 0 — Start
-
-#### CRM-03d-T0 — Status und Regeldateien
-
-- Status `läuft` in Ordner-README und Tabelle `00-entscheidungen.md`.
-- `components/workspace/shared/AGENTS.md` (+ `CLAUDE.md` mit `@AGENTS.md`): keine Dictionary-Importe, keine
-  Domänenannahmen, Texte als Props, jeder Baustein aus mindestens zwei Bereichen nutzbar, Link-Bindung ist hier erlaubt.
-- `packages/AGENTS.md`, Abschnitt `packages/ui`: kein `next/*`, `linkComponent`-Muster, Test-Setup-Pflicht für Dialoge.
-- Root-`AGENTS.md`: Index um `apps/workspace/src/components/workspace/shared/` ergänzen.
-- **Akzeptanz:** Die Regeln sind vor dem ersten Codeschritt dokumentiert; Index vollständig.
-
-### Phase A — Button und Formular (beide Apps)
-
-#### CRM-03d-T1 — Button nach `packages/ui`, Workspace umstellen
-
-- `ButtonControl`, `ButtonLink`, `PrimaryCtaButton`, `PrimaryCtaLink` nach `packages/ui/src/components/button/`.
-- `ButtonLink` ersetzt `useNextLink` durch `linkComponent` (Komponente mit Anchor-Props und `href`); ohne Prop rendert
-  es `<a>`.
-- CSS nutzt `var(--font-family-base)` sowie neue Tokens `--button-disabled-opacity` und `--button-disabled-filter`.
-  `apps/workspace/src/app/globals.css` definiert `--font-family-base` mit dem heutigen Literal und die Disabled-Tokens
-  neutral (`1`/`none`).
-- 19 Workspace-Nutzer umstellen, Workspace-Kopie löschen. Die Web-Kopie bleibt bis T2 bestehen.
-- **Akzeptanz:** zusammengeführter Button-Test in `packages/ui` grün; Workspace-Buttons visuell unverändert inklusive
-  Disabled-Zustand.
-
-#### CRM-03d-T2 — Web auf den geteilten Button umstellen
-
-- 17 Web-Nutzer umstellen; `references-closing-cta` übergibt `linkComponent={Link}`.
-- `apps/web/src/app/globals.css` definiert `--button-disabled-opacity: 0.5` und `--button-disabled-filter: saturate(0.7)`.
-- Web-Kopie löschen.
-- **Akzeptanz:** Conversion-Gate: Kontaktformular und LinkedIn-Generator (Submit, Disabled-Zustand, CTA-Ziele) manuell
-  geprüft; kein toter CTA; Web visuell unverändert.
-
-#### CRM-03d-T3 — `FormRequiredMarker` und `FormFieldLabel`
-
-- Beide Bausteine nach `packages/ui/src/components/form/`.
-- Der Marker erhält `decorative?: boolean` (`true` → `aria-hidden`). Das Web übergibt `decorative` über das Label; der
-  Workspace behält den Standard, damit Accessible Names wie „Anzeigename \*" in Bestandstests gleich bleiben.
-- Die fachliche Angleichung (Marker immer dekorativ, Pflicht über `required`/`aria-required`) als Follow-up in
-  `plans/Todo.md` eintragen.
-- Nutzer beider Apps umstellen (Web: `contact-consent-field`, `project-scope-field`), App-Kopien löschen.
-- **Akzeptanz:** Accessible Names in beiden Apps unverändert (Bestandstests Import-only grün).
-
-#### CRM-03d-T4 — `FormField`
-
-- Die Web-Variante (`FormFieldKind.Custom`, `labelSuffix`, `labelRow`-Styles) ist die Basis; für den Workspace ist das
-  eine rein additive Obermenge.
-- Web-Test (Obermenge) und Workspace-Test in `packages/ui` zusammenführen.
-- Nutzer umstellen (Web 3, Workspace 6), App-Kopien löschen.
-- **Akzeptanz:** Lead-Formular, Bulk-Edit, Rollen-Dialog, Kontaktformular und Generator-Formular visuell und in den
-  Tests unverändert.
-
-#### CRM-03d-T5 — `FormStatus` und `FormActions`
-
-- Beide Dateien sind in den Apps identisch; Umzug nach `packages/ui`, Nutzer umstellen, Kopien löschen.
-- **Akzeptanz:** Status-Live-Region und Aktionsleiste unverändert; Conversion-Smoke Kontaktformular (Fehler-, Lade- und
-  Erfolgszustand).
-
-### Phase B — Dialog
-
-#### CRM-03d-T6 — `Dialog` nach `packages/ui`, Settings umstellen
-
-- `Dialog` mit nativem `<dialog>` gemäß „Dialog-Umstellung im Detail"; `DialogSize` nach `packages/common`.
-- `packages/ui/vitest.config.ts`, `dialog-test-setup.ts` und `setupFiles` in beiden App-Configs.
-- Alle Nutzer von `WorkspaceDialog` umstellen (heute: Mitglied hinzufügen, Rollen zuweisen, Owner-Wechsel,
-  Rollen-Dialog; nach 03c zusätzlich Status- und Übergabedialog). `workspace-dialog/**` löschen.
-- `components/workspace/settings/AGENTS.md`: Regel „Dialog-Hülle aus `components/workspace/shared/dialog/`" auf
-  `@invessiv/ui` ändern.
-- **Akzeptanz:** Dialog-Tests für Escape, `busy`-Sperre, Hintergrundklick, initialen Fokus, Fokus-Rückgabe (Schließen
-  und Unmount); Settings-Dialogtests Import-only grün; Settings-Dialoge visuell unverändert.
-
-#### CRM-03d-T7 — Portal-Root für `CustomSelect`
-
-- `Dialog` stellt sein Element über `DialogPortalRootContext` bereit; `CustomSelect` übergibt es an `FloatingPortal`
-  (`root`). Außerhalb eines Dialogs bleibt `document.body`.
-- **Akzeptanz:** jsdom-Test: `CustomSelect` im `Dialog` rendert die Liste innerhalb des `<dialog>`; manueller
-  Browser-Check mit temporärem Test-Harness (nicht committet), dass die Liste im Top-Layer klickbar ist. Bestehende
-  `CustomSelect`-Nutzer außerhalb von Dialogen unverändert.
-
-#### CRM-03d-T8 — `ConfirmDialog` und Lead-Löschdialog
-
-- `ConfirmDialog` auf Basis von `Dialog` inklusive `secondaryAction`-Slot.
-- `lead-delete-confirm-dialog` nutzt ihn; eigene Overlay-, Portal- und Fokuslogik entfällt, lead-spezifische Texte und
-  Mutationen bleiben.
-- **Akzeptanz:** Archivieren, Löschen, Fehler- und Busy-Zustand wie bisher; neue ConfirmDialog-Tests.
-
-#### CRM-03d-T9 — Bulk-Archiv- und Bulk-Löschbestätigung
-
-- Beide Dialoge auf `ConfirmDialog` umstellen; die doppelten CSS-Module schrumpfen auf den fachlichen Rest.
-- **Akzeptanz:** Bulk-Action-Bar-Tests Import-only grün; Optik unverändert.
-
-#### CRM-03d-T10 — Bulk-Edit-Dialog
-
-- `leads-bulk-edit-dialog` auf `Dialog` umstellen.
-- **Akzeptanz:** `leads-bulk-edit-dialog.test.tsx` Import-only grün.
-
-#### CRM-03d-T11 — Outreach-Dialog
-
-- `lead-outreach-dialog` auf `Dialog` umstellen; eigener `portalRoot` entfällt.
-- **Akzeptanz:** `lead-outreach-dialog.test.tsx` grün (Fokus im Kontextfeld bleibt über `initialFocusRef`).
-
-#### CRM-03d-T12 — Import-Dialog
-
-- `import-leads-dialog` auf `Dialog` umstellen (Hintergrundklick bleibt aktiv); `import/dialog-footer` bleibt fachlich.
-- **Akzeptanz:** `import-leads-dialog.test.tsx` grün, Escape als `cancel` (benannte Ausnahme).
-
-#### CRM-03d-T13 — Lead-Formular-Dialog und Abbau der Fokusfalle
-
-- `lead-form-dialog` auf `Dialog` umstellen (`closeOnBackdropClick={false}`, Fokus auf das erste verfügbare Feld über
-  `initialFocusRef`).
-- `dialog-focus-trap.ts` löschen; Suche belegt: kein `createPortal` und kein `aria-modal`-Eigenbau mehr in Dialogen.
-  Die mobile Sidebar ist kein Dialog-Baustein und bleibt unberührt.
-- **Akzeptanz:** `lead-form-dialog.test.tsx` grün mit den benannten Ausnahmen; Tastatur-Smoke im Browser (Öffnen,
-  Tab-Reihenfolge, Escape, Fokus-Rückgabe auf den Auslöser).
-
-### Phase C — Anzeige-Bausteine
-
-#### CRM-03d-T14 — `EmptyState` und `ListEmptyState`
-
-- `EmptyState` in `packages/ui` (Icon, Titel, Beschreibung, Aktions-Slot, `variant` über `data-*`).
-- `components/workspace/shared/table/list-empty-state` bindet die Link-Aktion an `next/link` und ersetzt
-  `leads-empty-state`; das Const-Objekt `LeadsEmptyStateVariant` wird zu einer generischen Variante (Umbenennung samt
-  Test).
-- `roles-list` und `add-member-dialog` nutzen `EmptyState` statt Inline-Markup.
-- **Akzeptanz:** Leads „nichts angelegt"/„keine Treffer" und beide Settings-Empty-States visuell unverändert; ohne
-  `actionHref` wird keine Aktion gerendert (kein toter Button).
-
-#### CRM-03d-T15 — `Badge`
-
-- `Badge` in `packages/ui` übernimmt `lead-badge` (Styles und Tones 1:1); `BadgeTone` nach `packages/common`.
-- `LeadStatusBadge`, `LeadSourceBadge`, `LeadCategoryBadge` rendern `Badge`; `kind` und `categoryKey` bleiben als
-  durchgereichte `data-*`-Attribute erhalten, falls Selektoren oder Tests sie nutzen (im Schritt per Suche prüfen).
-  `lead-badge/**` und der Barrel-Eintrag entfallen.
-- **Akzeptanz:** `lead-badge.test.tsx` und `lead-status-badge.test.tsx` grün (Import-only oder nach `packages/ui`
-  verschoben); alle Tones in Dark/Light unverändert.
-
-#### CRM-03d-T16 — `DefinitionList` und `DetailSection`
-
-- `DefinitionList` (`items` oder Kinder mit Label/Wert) und `DetailSection` (Überschrift mit `id`, Aktions-Slot,
-  Inhalt) in `packages/ui`.
-- `lead-detail-panel` ersetzt die lokale `DetailField`-Komponente und das Sektions-Markup.
-- **Akzeptanz:** `lead-detail-panel.test.tsx` Import-only grün; `aria-labelledby` der Sektionen unverändert;
-  Screenshot-Vergleich des Panels.
-
-#### CRM-03d-T17 — `SidePanel`
-
-- `SidePanel` in `packages/ui`: `<aside>` mit Kopf (Eyebrow, Titel, Aktions-Slot, Schließen-Button), Inhalt und
-  responsivem Verhalten des heutigen Lead-Panels.
-- Opt-in-Props `closeOnEscape` und `focusOnOpen` (Fokus beim Öffnen ins Panel, beim Schließen zurück); Leads aktiviert
-  sie nicht, Ordner 04 schon.
-- `lead-detail-panel` nutzt `SidePanel` als Hülle; die URL-gesteuerte Schließ-Navigation bleibt im Lead-Code.
-- **Akzeptanz:** SidePanel-Tests für die Opt-in-Props; Lead-Panel-Verhalten und -Optik unverändert (Desktop, ≤ 1024 px,
-  ≤ 520 px).
-
-### Phase D — Listenbausteine nach `components/workspace/shared/` (ersetzt Task 02a)
-
-#### CRM-03d-T18 — `SortableHeader`
-
-- `leads/table/sortable-header` → `shared/table/sortable-header`; Beschriftungen als Props.
-- **Akzeptanz:** Sortierung in `leads-table.test.tsx` Import-only grün.
-
-#### CRM-03d-T19 — `ListPagination`
-
-- `leads-pagination` (+ `utils`, Test) → `shared/table/list-pagination`.
-- **Akzeptanz:** Pagination-Test Import-only grün.
-
-#### CRM-03d-T20 — `ListSelectionProvider` und `ListSelectAllCheckbox`
-
-- Provider samt Context und Select-All-Checkbox → `shared/table/`.
-- **Akzeptanz:** Selection-Provider-Test Import-only grün; Selection leert sich weiter bei Filter-, Sortier- und
-  Seitenwechsel.
-
-#### CRM-03d-T21 — `ListSearchField`
-
-- `lead-search-field` → `shared/toolbar/list-search-field`; Verzögerung und Beschriftungen als Props.
-- **Akzeptanz:** Suche in der Lead-Liste verhält sich identisch (Verzögerung, Löschen, URL-State).
-
-#### CRM-03d-T22 — `FacetFilter` mit Mehrfachauswahl
-
-- `lead-facet-filter` → `shared/toolbar/facet-filter`; `activeValues: readonly string[]`,
-  `selectionMode: "single" | "multiple"` als Const-Objekt in `apps/workspace/src/common/constants/`.
-- Leads nutzt `single` und übergibt null oder einen Wert.
-- **Akzeptanz:** Lead-Filter unverändert; neuer Komponententest für `multiple` (zwei wählen, einen entfernen, alle
-  leeren, `aria-pressed`, Live-Region).
-
-#### CRM-03d-T23 — `ActivityTimeline`
-
-- `lead-detail-activities` → `shared/activity/activity-timeline`; Einträge, Typ-Symbole, Beschriftungen und
-  Datumsformatierung als Props; Metadaten über übergebene Type-Wächter.
-- `lead-detail-panel` übergibt seine bisherigen Texte und Symbole.
-- **Akzeptanz:** `lead-detail-activities.test.tsx` Import-only grün; unbekannter Aktivitätstyp ergibt eine
-  verständliche Zeile.
-
-### Phase E — Abschluss
-
-#### CRM-03d-T24 — Nachweis und Übergabe
-
-- `components/workspace/leads/AGENTS.md`: Subfolder-Tabelle und Regel 15 („Reuse") auf die geteilten Orte verweisen.
-- Suchen belegen: kein Import aus gelöschten Pfaden, kein `next/*` in `packages/ui`, kein `createPortal` in Dialogen.
-- Visueller Gesamtcheck Mobil/Dark/Light: Leads (Liste, Panel, alle sieben Dialoge), Settings (Listen, alle Dialoge),
-  Web (Startseite, Kontaktformular, LinkedIn-Generator, Referenzen-CTA).
-- A11y-Smoke: Tastatur, Fokus-Reihenfolge und Kontrast für Dialoge, Panel, Kontaktformular.
-- Status `im Review` in README und Tabelle; PR mit Testplan, Screenshots, benannten Testausnahmen, Dateizahl und
-  Rollback.
-- **Akzeptanz:** `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm --filter @invessiv/workspace build` und
-  `pnpm --filter @invessiv/web build` grün.
-
 ## Umfangskontrolle
 
-| Phase | Schritte | Geschätzte Dateien (Umbenennungen zählen einfach) |
-| ----- | -------- | ------------------------------------------------: |
-| 0     | T0       |                                                ~5 |
-| A     | T1–T5    |                                             80–85 |
-| B     | T6–T13   |                                             40–45 |
-| C     | T14–T17  |                                             25–30 |
-| D     | T18–T23  |                                             30–35 |
-| E     | T24      |                                               3–5 |
-|       |          |                               **170–195 (≤ 200)** |
+### Je Task
 
-- Gemessen wird nach jedem Schritt mit `git diff --stat master...HEAD`.
-- **Checkpoint nach Phase C:** Liegt der Stand über 160 Dateien, wird vor Phase D gestoppt und mit dem Nutzer
-  entschieden, ob Phase D als eigener Ordner 03e ausgegliedert wird. Phase D ist bewusst so geschnitten, dass sie ohne
-  Änderung an A–C abtrennbar ist.
+- **Messung:** Beim Start eines Tasks den Basis-Commit notieren. Vor der Übergabe
+  `git diff --stat -M <Basis-Commit>` plus neue, noch ungetrackte Dateien aus `git status --short` zählen.
+- **Ziel 20–30 Dateien.** Zeichnet sich während der Umsetzung mehr als 35 ab, wird gestoppt und mit dem Nutzer
+  entschieden, ob der Task an einer Ticketgrenze geteilt wird.
+- **50 Dateien werden in keinem Task überschritten.**
+- Die Dateilisten in den Task-Dateien sind die erwartete Grundlage. Weicht das Changeset ab (zusätzliche Nutzer,
+  Barrels, Tests), wird die Abweichung in der Übergabe genannt.
+
+### Gesamt-PR
+
+| Phase | Tasks         | Summe je Task (ohne Überschneidung) | Geschätzt im PR (Umbenennungen einfach) |
+| ----- | ------------- | ----------------------------------: | --------------------------------------: |
+| 0 + A | 02e-1 – 02e-4 |                                 ~91 |                                   75–85 |
+| B     | 02e-5, 02e-6  |                                 ~45 |                                   35–45 |
+| C     | 02e-7, 02e-8  |                                 ~45 |                                   35–40 |
+| D + E | 02e-9, 02e-10 |                              ~35–38 |                                   30–35 |
+|       |               |                                     |                     **175–195 (≤ 200)** |
+
+Die Summe je Task liegt höher als der PR, weil dieselben Dateien (etwa `packages/ui/src/index.ts`, Lead-Dialoge,
+`lead-detail-panel`, `leads-table`) in mehreren Tasks geändert werden und im PR nur einmal zählen.
+
+- Gemessen wird nach jedem Task zusätzlich mit `git diff --stat master...HEAD`.
+- **Checkpoint nach Task 02e-8:** Liegt der PR über 160 Dateien, wird vor Task 02e-9 gestoppt und mit dem Nutzer
+  entschieden, ob Task 02e-9 und 02e-10 als eigener Ordner 03e ausgegliedert werden. Beide Tasks sind bewusst so
+  geschnitten, dass sie ohne Änderung an früheren Tasks abtrennbar sind.
 - Die harte Grenze von 200 Dateien wird in keinem Fall überschritten.
 
 ## Deploy-Sicherheit
@@ -398,14 +222,20 @@ die betroffenen Test-Suites grün. Die Reihenfolge ist verbindlich, weil später
 1. **Live sichtbar:** nichts. Web, Leads und Settings sehen gleich aus und verhalten sich gleich.
 2. **Bricht nichts:** Gelöschte Altpfade lassen den Typecheck bei jedem übersehenen Import scheitern. Unveränderte
    Bestandstests belegen die Verhaltensgleichheit, benannte Ausnahmen belegen das native Dialogverhalten.
-3. **Browser-Voraussetzung:** `<dialog>`/`showModal()` und `::backdrop`-Vererbung von Custom Properties sind in allen
-   aktuellen Evergreen-Browsern verfügbar. Die Umstellung wird in T6 und T13 in Chromium, Firefox und WebKit
-   (Playwright) manuell geprüft.
-4. **Offen:** nichts. Mehrfachauswahl, Portal-Root und Panel-Opt-ins sind vorhanden, aber erst ab Ordner 04/05 aktiv.
+3. **Zwischenstände:** Jeder Task hinterlässt einen grünen, deploybaren Stand. Bis Task 02e-6 existieren alte
+   Lead-Dialoge mit Fokusfalle und neue `Dialog`-Nutzer nebeneinander; das ist gewollt und verhaltensgleich.
+4. **Browser-Voraussetzung:** `<dialog>`/`showModal()` und `::backdrop`-Vererbung von Custom Properties sind in allen
+   aktuellen Evergreen-Browsern verfügbar. Die Umstellung wird in Task 02e-5 (T6) und 02e-6 (T13) in Chromium, Firefox
+   und WebKit (Playwright) manuell geprüft.
+5. **Offen im CRM-Ordner:** nichts. Mehrfachauswahl, Portal-Root und Panel-Opt-ins sind vorhanden, aber erst ab Ordner
+   04/05 aktiv. Die Web-Gestaltung folgt erst nach dem gesamten CRM-Umbau in Ordner 23 und blockiert Merge oder
+   Rollback von Ordner 03d nicht.
 
 ## Nicht Teil dieses Tasks
 
-- Visuelles Redesign oder Angleichung der Button-Optik zwischen Web und Workspace.
+- Visuelle Anpassungen der Web-App an die verschobenen Button- und Formularbausteine. Sie sind in Ordner 23, Task 39,
+  vollständig erfasst und werden erst nach dem gesamten CRM-Umbau als eigenständiger Web-PR umgesetzt; eine
+  Angleichung an die Workspace-Optik ist dabei ausdrücklich nicht das Ziel.
 - Fachliche A11y-Änderung des Pflichtmarkers (Follow-up aus T3).
 - Mobile Workspace-Sidebar (`workspace-sidebar`) auf `<dialog>` umstellen.
 - Lead-spezifische Bausteine (`LeadScoreBar`, `LeadSocialProfiles`, `improvements-list-editor`, `leads-table-row`)
@@ -415,5 +245,5 @@ die betroffenen Test-Suites grün. Die Reihenfolge ist verbindlich, weil später
 
 ## Rollback
 
-Reiner Code-Revert; keine Migration, keine Datenänderung. Weil jeder Review-Schritt einzeln grün ist, kann im Review
-auch gezielt ab einem Schritt zurückgerollt werden (etwa die Phase-D-Commits), ohne frühere Schritte anzufassen.
+Reiner Code-Revert; keine Migration, keine Datenänderung. Weil jeder Task einzeln grün ist, kann im Review auch gezielt
+ab einem Task zurückgerollt werden (etwa die Commits aus 02e-9 und 02e-10), ohne frühere Tasks anzufassen.

@@ -12,10 +12,7 @@ import {
   selectAssignableRoles,
   selectOwnerRoleIds,
 } from "@/common/patterns/access/role-selection";
-import {
-  ButtonControl,
-  PrimaryCtaButton,
-} from "@/components/shared/button/button";
+import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
 import { WorkspaceDialog } from "@/components/workspace/shared/dialog/workspace-dialog/workspace-dialog";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import type {

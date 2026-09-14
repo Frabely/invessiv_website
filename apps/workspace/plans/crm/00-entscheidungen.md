@@ -1,11 +1,11 @@
 # CRM & Kundenportal — verbindliche Entscheidungen
 
-> **Scope:** Planung für `apps/workspace`, `packages/db`, `packages/common`, `packages/storage`
-> und `packages/mail`.
+> **Scope:** Planung für `apps/workspace`, den abschließenden UI-Nachlauf in `apps/web`, `packages/db`,
+> `packages/common`, `packages/storage` und `packages/mail`.
 >
 > **Stand:** 13. September 2026 · geprüft und entscheidungsvollständig.
 >
-> **Umfang:** 26 einzeln merge- und deploybare Einheiten, insgesamt **80–105 Personentage**
+> **Umfang:** 27 einzeln merge- und deploybare Einheiten, insgesamt **82–108 Personentage**
 > inklusive Tests, Reviewkorrekturen, Migrationen und Betriebsdokumentation.
 
 ## Ziel und Lieferprinzip
@@ -424,7 +424,11 @@ nach `packages/ui`; URL- oder Dictionary-gebundene Teile (Pagination, Sortierung
 Timeline) nach `components/workspace/shared/`. Der Umzug erfolgt als eigener Refactoring-Ordner 03d vor Ordner 04 und
 ersetzt die Zielentscheidung „nicht `packages/ui`" aus Task 02a. **Ergänzt 14.09.2026 (mit dem Nutzer abgestimmt):**
 Button und Formularbausteine ziehen aus beiden Apps ebenfalls nach `packages/ui`; Task 02e (Ordner 03d) übernimmt auch
-den Listenumzug aus Task 02a und liefert alles in kleinen Review-Schritten mit je höchstens zwei Bausteinen.
+den Listenumzug aus Task 02a und liefert alles in kleinen Review-Schritten mit je höchstens zwei Bausteinen. Die
+Schritte sind in zehn Umsetzungstasks (02e-1 bis 02e-10) gebündelt, jeder als eigenes Changeset mit Ziel 20–30 und
+höchstens 50 Dateien. Die bewusste visuelle Anpassung der Web-App an alle dabei nach `packages/ui` verschobenen
+Button- und Formularbausteine erfolgt nicht in Ordner 03d, sondern erst nach dem vollständigen CRM-Umbau als letzte
+Merge-Einheit 23 (Task 39) in einem eigenständigen Web-PR.
 
 ## Vor dem ersten echten Kunden (verbindlich)
 
@@ -473,7 +477,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 | 03  | gemerged | `03-mitglieder-und-auth`                 | Persistierte User, Permission-Katalog, Bereichs-Gates und fail-closed Auth      |  80–120 |  4–5 T. |
 | 03b | gemerged | `03b-mitglieder-und-rollenverwaltung`    | Mitglieder, Rollen und Owner-Flow verwaltbar; Aktionen permissionabhängig       | 100–120 |  3–4 T. |
 | 03c | gemerged | `03c-uebergabe-und-deaktivierung`        | Mitglieder-Lifecycle mit Owner- und Zuständigkeitssperre                        |   30–50 |  1–2 T. |
-| 03d | offen    | `03d-geteilte-ui-bausteine`              | Dialog-, Panel- und Listenbausteine geteilt (`packages/ui` + workspace/shared)  | 170–195 |  4–5 T. |
+| 03d | läuft    | `03d-geteilte-ui-bausteine`              | Dialog-, Panel- und Listenbausteine geteilt (`packages/ui` + workspace/shared)  | 170–195 |  4–5 T. |
 | 04  | offen    | `04-personen-und-kundenakte`             | Kunden samt Pflichtkontakt, Owner, Archiv und Detail vollständig nutzbar        |  80–100 |  4–5 T. |
 | 05  | offen    | `05-kundenliste-und-zuweisung`           | Liste, Suche, Filter, Übergabe und Aufbewahrungshinweise nutzbar                |  60–100 |  3–4 T. |
 | 06  | offen    | `06-lead-konvertierung`                  | Leads können sicher neu oder zu bestehenden Kunden konvertiert werden           |   40–70 |  2–3 T. |
@@ -496,6 +500,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 | 20  | offen    | `20-stunden-und-history`                 | Kontingente, Buchungen und konsolidierte Timeline vollständig nutzbar           |  60–100 |  3–4 T. |
 | 21  | offen    | `21-datenschutz-backup-rollout`          | Export, Owner-Purge, Backup/Restore und Produktivabnahme nachgewiesen           |  60–100 |  4–5 T. |
 | 22  | offen    | `22-activity-cleanup`                    | `lead_activities` abgebaut, genau eine Activity-Tabelle                         |    5–15 |    1 T. |
+| 23  | offen    | `23-web-ui-abschluss`                    | Geteilte Buttons und Formulare sind auf der Website bewusst weiterentwickelt    |   25–40 |  2–3 T. |
 
 Statuswerte: `offen` → `läuft` → `im Review` → `gemerged`. Beim Merge werden die Tabelle und der
 Status in der Ordner-README gemeinsam aktualisiert.

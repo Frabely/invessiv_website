@@ -1,7 +1,7 @@
 # CRM & Kundenportal — Funktionsumfang Version 1
 
 Diese Übersicht beschreibt ausschließlich den verbindlichen Stand aus `00-entscheidungen.md`.
-Details und Abnahmekriterien stehen in den 26 geordneten Merge-Einheiten.
+Details und Abnahmekriterien stehen in den 27 geordneten Merge-Einheiten.
 
 ## Internes CRM
 
@@ -47,3 +47,9 @@ Lexware-Import, Mandantenbetrieb, CSV-Kundenimport oder frei konfigurierbarer Wo
 
 Der frühere Detailplan für freies Mail-Senden bleibt als ausdrücklich zurückgestellte Option unter
 `zurueckgestellt/31-mail-senden.md` erhalten.
+
+## Abschluss nach dem CRM-Umbau
+
+- Nach allen fachlichen CRM-, Portal-, Rollout- und Cleanup-Einheiten folgt als letzter Ordner 23 ein eigenständiger
+  Web-PR. Er entwickelt die Darstellung aller im Umbau nach `packages/ui` verschobenen Button- und Formularbausteine
+  für die Invessiv-Website weiter, ohne die Workspace-Optik oder CRM-Funktionalität zu verändern.

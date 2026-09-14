@@ -9,15 +9,11 @@ import {
 } from "@invessiv/common/constants/auth/permissions";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
-import { CheckboxControl } from "@invessiv/ui";
+import { ButtonControl, CheckboxControl, PrimaryCtaButton } from "@invessiv/ui";
 import { accessApiService } from "@/client/access/access-api-service";
 import { AccessFieldLimits } from "@/common/constants/access/access-field-limits";
 import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
 import { WorkspaceDialogSize } from "@/common/constants/ui/workspace-dialog-sizes";
-import {
-  ButtonControl,
-  PrimaryCtaButton,
-} from "@/components/shared/button/button";
 import { FormField } from "@/components/shared/form/form-field/form-field";
 import { WorkspaceDialog } from "@/components/workspace/shared/dialog/workspace-dialog/workspace-dialog";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";

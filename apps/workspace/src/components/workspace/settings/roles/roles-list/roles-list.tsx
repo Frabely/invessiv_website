@@ -5,7 +5,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
-import { PrimaryCtaButton } from "@/components/shared/button/button";
+import { PrimaryCtaButton } from "@invessiv/ui";
 import type {
   SettingsPermissionsDictionary,
   SettingsRolesDictionary,

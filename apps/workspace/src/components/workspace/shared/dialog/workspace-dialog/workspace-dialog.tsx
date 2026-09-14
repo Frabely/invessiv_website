@@ -12,7 +12,7 @@ import { createPortal } from "react-dom";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { WorkspaceDialogSize } from "@/common/constants/ui/workspace-dialog-sizes";
-import { ButtonControl } from "@/components/shared/button/button";
+import { ButtonControl } from "@invessiv/ui";
 import {
   focusFirstDialogElement,
   getFocusableElements,

@@ -7,7 +7,7 @@ Diese Datei regelt die Umsetzung des CRM-Plans unabhängig vom Zielordner. Spezi
 
 1. `00-entscheidungen.md` enthält alle Entscheidungen.
 2. `core-features.md` ist die Funktionsübersicht.
-3. Die 26 geordneten Ordner enthalten Merge-Gates und Abnahmekriterien.
+3. Die 27 geordneten Ordner enthalten Merge-Gates und Abnahmekriterien.
 
 Frühere Planstände mit 16 Merge-Einheiten und 34 Tasks sind vollständig ersetzt. Keine erinnerte
 Altentscheidung darf übernommen werden, wenn sie nicht in den aktuellen Dateien steht.

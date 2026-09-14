@@ -1,7 +1,7 @@
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import { faUserCheck, faUserSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ButtonControl } from "@/components/shared/button/button";
+import { ButtonControl } from "@invessiv/ui";
 import type {
   SettingsMembersDictionary,
   SettingsPermissionsDictionary,

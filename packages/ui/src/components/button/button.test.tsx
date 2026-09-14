@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { render, screen } from "@testing-library/react";
+import { forwardRef } from "react";
 import { describe, expect, it } from "vitest";
 import {
   ButtonControl,
@@ -39,7 +40,7 @@ describe("shared button", () => {
           Leistungen ansehen
         </ButtonLink>
         <ButtonControl type="button" variant="ghost">
-          Zurueck
+          Zurück
         </ButtonControl>
       </>,
     );
@@ -50,11 +51,36 @@ describe("shared button", () => {
     expect(
       screen.getByRole("link", { name: "Leistungen ansehen" }).className,
     ).toContain("ghost");
-    expect(screen.getByRole("button", { name: "Zurueck" }).className).toContain(
+    expect(screen.getByRole("button", { name: "Zurück" }).className).toContain(
       "button",
     );
-    expect(screen.getByRole("button", { name: "Zurueck" }).className).toContain(
+    expect(screen.getByRole("button", { name: "Zurück" }).className).toContain(
       "ghost",
     );
+  });
+
+  it("uses an injected link component without losing anchor props or refs", () => {
+    const TestLink = forwardRef<HTMLAnchorElement, React.ComponentProps<"a">>(
+      function TestLink(props, ref) {
+        return <a {...props} data-link-component="test" ref={ref} />;
+      },
+    );
+    const ref = { current: null as HTMLAnchorElement | null };
+
+    render(
+      <ButtonLink
+        aria-label="Projekt öffnen"
+        href="/de/projects/1"
+        linkComponent={TestLink}
+        ref={ref}
+      >
+        Projekt
+      </ButtonLink>,
+    );
+
+    const link = screen.getByRole("link", { name: "Projekt öffnen" });
+    expect(link.getAttribute("data-link-component")).toBe("test");
+    expect(link.getAttribute("href")).toBe("/de/projects/1");
+    expect(ref.current).toBe(link);
   });
 });

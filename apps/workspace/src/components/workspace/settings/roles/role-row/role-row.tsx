@@ -1,5 +1,5 @@
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
-import { ButtonControl } from "@/components/shared/button/button";
+import { ButtonControl } from "@invessiv/ui";
 import type {
   SettingsPermissionsDictionary,
   SettingsRolesDictionary,
@@ -75,7 +75,6 @@ export function RoleRow({
       <ButtonControl
         aria-label={`${actionLabel}: ${label}`}
         className={styles.actionButton}
-        data-read-only={role.isSystem ? "true" : "false"}
         onClick={onOpenAction}
         type="button"
         variant="ghost"

@@ -31,6 +31,7 @@ Scope- und detailspezifische Regeln stehen in der jeweils nächstgelegenen `AGEN
 | `apps/workspace/src/app/[locale]/(auth)/`           | Öffentliche Clerk-Auth-Routen                                                                                   |
 | `apps/workspace/src/app/[locale]/(app)/leads/`      | Geschützter Leads-Bereich: Auth-Gate, Bereichs-Permission, noindex/dynamic                                      |
 | `apps/workspace/src/components/workspace/leads/`    | Geschützte Workspace-Leads-UI                                                                                   |
+| `apps/workspace/src/components/workspace/shared/`   | Domänenneutrale Workspace-UI mit erlaubter Link-Bindung; Texte und Fachannahmen bleiben bei den Nutzern         |
 | `apps/workspace/src/app/[locale]/(app)/settings/`   | Geschützter Settings-Bereich: Area-Gate `members.manage`, Rollen-Tab nur mit `roles.manage`, noindex/dynamic    |
 | `apps/workspace/src/components/workspace/settings/` | Mitglieder- und Rollenverwaltungs-UI: gruppierte Subfolder, keine Rollenlogik im Client                         |
 | `apps/workspace/src/server/workspace/access/`       | Mitglieder, Rollen, Owner-Flow: Clerk-ID statt E-Mail, Security-Events je Änderung, letzter Owner geschützt     |

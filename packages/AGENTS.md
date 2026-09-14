@@ -55,6 +55,8 @@ Komponenten in `packages/ui` müssen:
 
 - app-neutral benannt und gestaltet sein
 - keine App-Routen, Dictionaries, Analytics-Events oder Feature-Domänen importieren
+- kein `next/*` importieren; frameworkgebundene Links werden bei Bedarf über eine `linkComponent`-Prop injiziert,
+  ohne Prop wird ein natives `<a>` gerendert
 - Styling co-located als CSS Module halten
 - Theme-Tokens nutzen, die in konsumierenden Apps bereitgestellt werden
 - als Client Component markiert werden, wenn sie Hooks, Events oder Browser-State nutzen
@@ -75,3 +77,5 @@ Jedes Package exportiert öffentliche API über `src/index.ts` und `package.json
 - `packages/ui`: interaktive Komponenten mit jsdom-Tests für zentrale Interaktionen absichern, sobald Verhalten über
   reine
   Darstellung hinausgeht.
+- Native Dialoge aus `packages/ui` verwenden in jsdom das zentrale Test-Setup des Packages. Konsumierende Apps
+  registrieren dieses Setup in ihrer Vitest-Konfiguration, statt `showModal()` oder `close()` lokal zu mocken.

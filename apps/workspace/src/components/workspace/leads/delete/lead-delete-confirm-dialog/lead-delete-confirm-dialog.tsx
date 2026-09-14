@@ -9,7 +9,7 @@ import type { ContactLeadStatus as ContactLeadStatusValue } from "@invessiv/comm
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
 import { LeadDeleteAction } from "@invessiv/common/constants/leads/delete/lead-delete-actions";
 import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
-import { ButtonControl } from "@/components/shared/button/button";
+import { ButtonControl } from "@invessiv/ui";
 import { FormStatus } from "@/components/shared/form/form-status/form-status";
 import { trapDialogFocus } from "@/components/workspace/shared/dialog/dialog-focus-trap";
 import { leadsService } from "../../form/lead-form-dialog/leads-service";

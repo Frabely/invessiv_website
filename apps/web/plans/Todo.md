@@ -2,6 +2,20 @@
 
 ## Offen
 
+### Nachgelagerte Web-UI-Anpassung für geteilte Button- und Formularbausteine
+
+- Erst nach Abschluss des gesamten CRM-Umbaus einschließlich Ordner 22 als letzte Merge-Einheit 23 und eigenständigen
+  Web-PR umsetzen; nicht in einem vorherigen Workspace-/Shared-UI-Task mitbauen.
+- Betrifft alle nach `packages/ui` verschobenen Web-Bausteine: `ButtonControl`, `ButtonLink`, `PrimaryCtaButton`,
+  `PrimaryCtaLink`, `FormRequiredMarker`, `FormFieldLabel`, `FormField`, `FormStatus` und `FormActions`.
+- Alle produktiven Nutzer auf Startseite, Landingpage, LinkedIn-Post-Generator, Referenzen, Site-Header, Success-Page
+  und in den Web-Formularen erneut inventarisieren. `ContactConsentField` als app-lokalen Nutzer mitprüfen.
+- Die Web-App erhält eine eigenständige Invessiv-Ausprägung über Web-Tokens, co-locatete Styles und erforderliche
+  Opt-in-Props; keine Angleichung an die Workspace-Optik und keine Marketingabhängigkeiten in `packages/ui`.
+- Conversion-Verhalten, CTA-Ziele, Tracking, Validierung, Fokus und alle Formularzustände erhalten; Dark/Light und
+  Mobile/Tablet/Desktop mit Vorher-/Nachher-Screenshots prüfen.
+- Verbindlicher Detailplan: `../../workspace/plans/crm/23-web-ui-abschluss/39-web-ui-anpassung.md`.
+
 ### Gemeinsame Checkbox-Komponente für Website-Formulare
 
 - Für `apps/web` die app-neutrale Checkbox-Komponente aus `packages/ui` verwenden.

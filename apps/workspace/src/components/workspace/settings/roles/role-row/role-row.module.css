@@ -75,14 +75,6 @@
   font-size: var(--font-size-ui-sm);
 }
 
-.actionButton[data-read-only="true"] {
-  cursor: default;
-}
-
-.actionButton[data-read-only="true"]:hover {
-  transform: none;
-}
-
 @media (max-width: 720px) {
   .row {
     grid-template-columns: 1fr auto;
