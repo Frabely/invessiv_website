@@ -10,6 +10,11 @@
   border-top: 1px solid var(--color-border);
 }
 
+.row[data-active="false"] .avatar {
+  filter: saturate(0.45);
+  opacity: 0.72;
+}
+
 .avatar {
   display: inline-flex;
   align-items: center;
@@ -45,12 +50,25 @@
 }
 
 .selfBadge,
-.ownerBadge {
+.ownerBadge,
+.statusBadge {
   padding: 0.05rem 0.5rem;
   border-radius: 999px;
   font-size: var(--font-size-badge);
   font-weight: 650;
   line-height: 1.5;
+}
+
+.statusBadge {
+  border: 1px solid color-mix(in srgb, var(--color-cta) 38%, transparent);
+  background: color-mix(in srgb, var(--color-cta) 12%, transparent);
+  color: var(--color-text);
+}
+
+.statusBadge[data-active="false"] {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
 }
 
 .selfBadge {
@@ -126,6 +144,11 @@
   padding-inline: 0.8rem;
   border-radius: 10px;
   font-size: var(--font-size-ui-sm);
+}
+
+.actionIcon {
+  width: 0.9rem;
+  margin-right: 0.4rem;
 }
 
 @media (max-width: 960px) {

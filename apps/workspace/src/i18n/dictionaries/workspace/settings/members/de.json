@@ -5,13 +5,17 @@
     "addButton": "Mitglied hinzufügen",
     "currentUserBadge": "Du",
     "ownerBadge": "Owner",
+    "activeBadge": "Aktiv",
+    "inactiveBadge": "Deaktiviert",
     "inactiveRole": "{role} (inaktiv)",
     "noRoles": "Keine weitere Rolle",
     "noActiveRole": "Keine wirksame Rolle – sieht keinen Bereich",
     "actions": {
       "editRoles": "Rollen bearbeiten",
       "grantOwner": "Zum Owner machen",
-      "revokeOwner": "Owner-Rolle entziehen"
+      "revokeOwner": "Owner-Rolle entziehen",
+      "activate": "Aktivieren",
+      "deactivate": "Deaktivieren"
     }
   },
   "addDialog": {
@@ -65,6 +69,22 @@
     "cancel": "Abbrechen",
     "close": "Dialog schließen"
   },
+  "statusDialog": {
+    "activateTitle": "{name} aktivieren?",
+    "activateDescription": "Die Person kann den Workspace ab ihrer nächsten Anfrage wieder entsprechend ihrer Rollen nutzen.",
+    "activateSubmit": "Mitglied aktivieren",
+    "deactivateTitle": "{name} deaktivieren?",
+    "deactivateDescription": "Die Person verliert den Workspace-Zugang ab ihrer nächsten Anfrage. Rollen und bisherige Zuordnungen bleiben erhalten.",
+    "deactivateSubmit": "Mitglied deaktivieren",
+    "conflict": "Jemand hat dieses Mitglied gerade geändert. Der aktuelle Stand ist geladen – bestätige erneut, wenn es dabei bleiben soll.",
+    "alreadyActivated": "{name} ist bereits aktiv. Hier ist nichts mehr zu tun.",
+    "alreadyDeactivated": "{name} ist bereits deaktiviert. Hier ist nichts mehr zu tun.",
+    "responsibilities": "Offene Kundenzuständigkeiten: {count}. Weise sie zuerst einem anderen Owner zu.",
+    "done": "Schließen",
+    "submitting": "Wird gespeichert …",
+    "cancel": "Abbrechen",
+    "close": "Dialog schließen"
+  },
   "errors": {
     "MEMBER_NOT_FOUND": "Dieses Mitglied gibt es nicht mehr. Lade die Seite neu.",
     "VALIDATION_ERROR": "Die Angaben sind unvollständig. Prüfe Konto und Rollen.",
@@ -79,6 +99,11 @@
     "NOT_OWNER": "Diese Person ist kein Owner mehr.",
     "LAST_ACTIVE_OWNER": "Der Workspace braucht mindestens einen aktiven Owner. Mache zuerst eine andere Person zum Owner.",
     "SELF_OWNER_REVOCATION": "Du kannst dir die Owner-Rolle nicht selbst entziehen. Das kann nur ein anderer Owner.",
+    "MEMBER_ALREADY_ACTIVE": "Dieses Mitglied ist bereits aktiv. Lade die Seite neu.",
+    "MEMBER_ALREADY_INACTIVE": "Dieses Mitglied ist bereits deaktiviert. Lade die Seite neu.",
+    "SELF_DEACTIVATION": "Du kannst deinen eigenen Zugang nicht deaktivieren. Das kann nur ein anderer Owner.",
+    "MEMBER_HAS_OPEN_RESPONSIBILITIES": "Dieses Mitglied hat noch offene Kundenzuständigkeiten und kann deshalb nicht deaktiviert werden.",
+    "MEMBER_INACTIVE": "Deaktivierte Mitglieder können kein Owner werden. Aktiviere das Mitglied zuerst.",
     "INTERNAL": "Das hat nicht geklappt. Versuche es erneut."
   }
 }

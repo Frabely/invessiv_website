@@ -1,11 +1,11 @@
 import type { z } from "zod";
 import { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
+import type { OwnershipResponsibilityCountsDto } from "@invessiv/common/contracts/auth/ownership-responsibility-counts.dto";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import type { VersionConflictDto } from "@invessiv/common/contracts/concurrency/version-conflict.dto";
 
-/** Shared by granting and revoking the owner role; each path returns only its own codes. */
-export type ChangeWorkspaceOwnerResult =
+export type UpdateWorkspaceMemberStatusResult =
   | { ok: true; member: WorkspaceMemberDto }
   | {
       ok: false;
@@ -14,14 +14,17 @@ export type ChangeWorkspaceOwnerResult =
     }
   | {
       ok: false;
+      code: typeof WorkspaceMemberErrorCode.MemberHasOpenResponsibilities;
+      responsibilityCounts: OwnershipResponsibilityCountsDto;
+    }
+  | {
+      ok: false;
       code:
         | typeof WorkspaceMemberErrorCode.MemberNotFound
-        | typeof WorkspaceMemberErrorCode.AlreadyOwner
-        | typeof WorkspaceMemberErrorCode.MemberInactive
-        | typeof WorkspaceMemberErrorCode.NotOwner
-        | typeof WorkspaceMemberErrorCode.LastActiveOwner
-        | typeof WorkspaceMemberErrorCode.SelfOwnerRevocation
-        | typeof WorkspaceMemberErrorCode.MemberWithoutRole;
+        | typeof WorkspaceMemberErrorCode.MemberAlreadyActive
+        | typeof WorkspaceMemberErrorCode.MemberAlreadyInactive
+        | typeof WorkspaceMemberErrorCode.SelfDeactivation
+        | typeof WorkspaceMemberErrorCode.LastActiveOwner;
     }
   | {
       ok: false;

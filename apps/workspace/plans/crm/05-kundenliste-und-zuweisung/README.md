@@ -8,6 +8,8 @@
 
 - [`02a-geteilte-listen-komponenten.md`](./02a-geteilte-listen-komponenten.md) — nur noch Referenz; der Umzug ist in
   Task 02e (Ordner 03d) aufgegangen und nicht Teil dieses Ordners.
+- [`02f-zustaendigkeitsuebergabe.md`](./02f-zustaendigkeitsuebergabe.md) — exhaustive Ownership-Adapter,
+  Mitgliedsübergabe und Customer-Owner-Wechsel nach der Kundenakte.
 - [`03-kundenliste.md`](./03-kundenliste.md) — Ausbau der Übersicht aus Ordner 04 zur vollen Liste: Pagination,
   Sortierung und URL-State.
 - [`07-status-und-tags.md`](./07-status-und-tags.md) — Status, Kategorien, Tags und Audit.

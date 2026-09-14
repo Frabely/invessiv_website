@@ -4,6 +4,7 @@ import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys"
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
 import { SettingsTab } from "@/common/constants/access/settings-tabs";
 import {
+  workspaceMemberEndpoint,
   workspaceMemberOwnerEndpoint,
   workspaceMemberRolesEndpoint,
   workspaceRoleEndpoint,
@@ -95,6 +96,9 @@ describe("settings tab", () => {
 
 describe("access api endpoints", () => {
   it("builds encoded member and role paths from endpoint constants", () => {
+    expect(workspaceMemberEndpoint("../leads")).toBe(
+      "/api/workspace/members/..%2Fleads",
+    );
     expect(workspaceMemberRolesEndpoint("member-1")).toBe(
       "/api/workspace/members/member-1/roles",
     );

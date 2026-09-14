@@ -67,6 +67,10 @@ export const accessSchemas = {
   changeWorkspaceOwner: z.object({
     version: versionSchema,
   }),
+  updateWorkspaceMemberStatus: z.object({
+    active: z.boolean(),
+    version: versionSchema,
+  }),
   createRole: z.object({
     name: roleNameSchema,
     description: roleDescriptionSchema,

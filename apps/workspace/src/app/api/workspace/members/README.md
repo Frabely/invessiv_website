@@ -16,6 +16,7 @@ Mitgliedschaft `404 NOT_FOUND`, DB-Fehler bei der Auflösung `503 UNAVAILABLE`, 
 | -------------------------------------- | ---------------- |
 | `GET /members`                         | `members.read`   |
 | `POST /members`                        | `members.manage` |
+| `PATCH /members/[id]`                  | `members.manage` |
 | `POST /members/clerk-candidates`       | `members.manage` |
 | `PUT /members/[id]/roles`              | `members.manage` |
 | `POST /members/[id]/owner`, `DELETE …` | `members.manage` |
@@ -35,21 +36,25 @@ Mitgliedschaft `404 NOT_FOUND`, DB-Fehler bei der Auflösung `503 UNAVAILABLE`, 
 Ausnahme **409 Versionskonflikt**: Der Body ist ein `VersionConflictDto`
 (`{ "code": "version_conflict", "currentVersion": n, "current": WorkspaceMemberDto }`).
 
-| Status | `error`                        | Bedeutung                                                              |
-| ------ | ------------------------------ | ---------------------------------------------------------------------- |
-| 400    | `VALIDATION_ERROR`             | Body kein JSON oder Schemafehler; `details` enthält Feldpfade          |
-| 404    | `MEMBER_NOT_FOUND`             | Mitglied existiert nicht oder ID ist keine UUID                        |
-| 404    | `CLERK_ACCOUNT_NOT_FOUND`      | Clerk kennt die ID nicht                                               |
-| 409    | `CLERK_ACCOUNT_ALREADY_LINKED` | Die Clerk-ID gehört bereits zu einem User                              |
-| 409    | `ALREADY_OWNER` / `NOT_OWNER`  | Owner-Flow passt nicht zum aktuellen Stand                             |
-| 409    | `LAST_ACTIVE_OWNER`            | Der letzte aktive Owner kann die Owner-Rolle nicht verlieren           |
-| 409    | `SELF_OWNER_REVOCATION`        | Niemand entzieht sich selbst die Owner-Rolle                           |
-| 422    | `CLERK_ACCOUNT_INCOMPLETE`     | Clerk-Konto ohne primäre E-Mail                                        |
-| 422    | `ROLE_NOT_ASSIGNABLE`          | Rolle unbekannt, fremder Realm oder inaktiv und nicht schon zugewiesen |
-| 422    | `OWNER_ROLE_NOT_ASSIGNABLE`    | Owner-Rolle über `/roles` statt über den Owner-Flow                    |
-| 422    | `MEMBER_WITHOUT_ROLE`          | Danach bliebe keine Rolle übrig                                        |
-| 503    | `CLERK_UNAVAILABLE`            | Clerk Backend API nicht erreichbar                                     |
-| 500    | `INTERNAL`                     | Unerwarteter Fehler                                                    |
+| Status | `error`                                             | Bedeutung                                                              |
+| ------ | --------------------------------------------------- | ---------------------------------------------------------------------- |
+| 400    | `VALIDATION_ERROR`                                  | Body kein JSON oder Schemafehler; `details` enthält Feldpfade          |
+| 404    | `MEMBER_NOT_FOUND`                                  | Mitglied existiert nicht oder ID ist keine UUID                        |
+| 404    | `CLERK_ACCOUNT_NOT_FOUND`                           | Clerk kennt die ID nicht                                               |
+| 409    | `CLERK_ACCOUNT_ALREADY_LINKED`                      | Die Clerk-ID gehört bereits zu einem User                              |
+| 409    | `ALREADY_OWNER` / `NOT_OWNER`                       | Owner-Flow passt nicht zum aktuellen Stand                             |
+| 409    | `LAST_ACTIVE_OWNER`                                 | Der letzte aktive Owner kann die Owner-Rolle nicht verlieren           |
+| 409    | `SELF_OWNER_REVOCATION`                             | Niemand entzieht sich selbst die Owner-Rolle                           |
+| 409    | `MEMBER_ALREADY_ACTIVE` / `MEMBER_ALREADY_INACTIVE` | Der gewünschte Status ist bereits gespeichert                          |
+| 409    | `SELF_DEACTIVATION`                                 | Niemand deaktiviert den eigenen Zugang                                 |
+| 409    | `MEMBER_HAS_OPEN_RESPONSIBILITIES`                  | Offene Zuständigkeiten verhindern die Deaktivierung                    |
+| 409    | `MEMBER_INACTIVE`                                   | Deaktivierte Mitglieder können nicht Owner werden                      |
+| 422    | `CLERK_ACCOUNT_INCOMPLETE`                          | Clerk-Konto ohne primäre E-Mail                                        |
+| 422    | `ROLE_NOT_ASSIGNABLE`                               | Rolle unbekannt, fremder Realm oder inaktiv und nicht schon zugewiesen |
+| 422    | `OWNER_ROLE_NOT_ASSIGNABLE`                         | Owner-Rolle über `/roles` statt über den Owner-Flow                    |
+| 422    | `MEMBER_WITHOUT_ROLE`                               | Danach bliebe keine Rolle übrig                                        |
+| 503    | `CLERK_UNAVAILABLE`                                 | Clerk Backend API nicht erreichbar                                     |
+| 500    | `INTERNAL`                                          | Unerwarteter Fehler                                                    |
 
 ---
 
@@ -80,6 +85,14 @@ Die Suche steht bewusst im Body, damit Namen und E-Mail-Adressen nicht in URLs o
 Erfolg: `200 { "candidates": ClerkCandidateDto[] }` — höchstens 100 Clerk-Konten ohne `users`-Zeile. Der Server
 paginiert dafür über bereits verknüpfte Konten hinweg; 100 neuere, belegte Konten verdecken keine älteren freien.
 
+## `PATCH /api/workspace/members/[id]`
+
+Body `UpdateWorkspaceMemberStatusRequestDto`: `{ "active": boolean, "version": n }`. Erfolg:
+`200 { "member": WorkspaceMemberDto }` plus genau ein Security-Event `workspace_member_activated` oder
+`workspace_member_deactivated`. Selbstdeaktivierung und die Deaktivierung des letzten aktiven Owners werden
+abgewiesen. Bei offenen Zuständigkeiten enthält `details.responsibilityCounts` die vollständigen Anzahlen je
+`OwnableEntity`; es findet kein Teil-Write statt.
+
 ## `PUT /api/workspace/members/[id]/roles`
 
 Body `ReplaceWorkspaceMemberRolesRequestDto`: `{ "roleIds": ["<uuid>"], "version": n }` — vollständiger Satz der
@@ -88,4 +101,6 @@ Nicht-Owner-Rollen. Erfolg `200 { "member" }`; ohne tatsächliche Änderung kein
 ## `POST` / `DELETE /api/workspace/members/[id]/owner`
 
 Body `ChangeWorkspaceOwnerRequestDto`: `{ "version": n }`. `POST` vergibt, `DELETE` entzieht die Owner-Rolle. Erfolg
-`200 { "member" }` plus Security-Event `workspace_owner_granted` bzw. `workspace_owner_revoked`.
+`200 { "member" }` plus Security-Event `workspace_owner_granted` bzw. `workspace_owner_revoked`. `POST` weist
+deaktivierte Mitglieder mit `MEMBER_INACTIVE` ab, weil ein inaktiver Owner keinen Zugriff hat und nicht als aktiver
+Owner zählt; `DELETE` bleibt für inaktive Owner möglich.

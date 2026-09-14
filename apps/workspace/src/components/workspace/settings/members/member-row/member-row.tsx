@@ -1,4 +1,6 @@
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
+import { faUserCheck, faUserSlash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ButtonControl } from "@/components/shared/button/button";
 import type {
   SettingsMembersDictionary,
@@ -14,6 +16,7 @@ type MemberRowProps = {
   member: WorkspaceMemberDto;
   onEditRolesAction: () => void;
   onToggleOwnerAction: () => void;
+  onToggleStatusAction: () => void;
   permissionsContent: SettingsPermissionsDictionary;
 };
 
@@ -32,14 +35,16 @@ export function MemberRow({
   member,
   onEditRolesAction,
   onToggleOwnerAction,
+  onToggleStatusAction,
   permissionsContent,
 }: MemberRowProps) {
   const ownerActionLabel = member.isOwner
     ? content.list.actions.revokeOwner
     : content.list.actions.grantOwner;
+  const canChangeOwner = member.isOwner || member.active;
 
   return (
-    <li className={styles.row}>
+    <li className={styles.row} data-active={member.active ? "true" : "false"}>
       <span aria-hidden="true" className={styles.avatar}>
         {getInitials(member.displayName)}
       </span>
@@ -54,6 +59,14 @@ export function MemberRow({
           {member.isOwner ? (
             <span className={styles.ownerBadge}>{content.list.ownerBadge}</span>
           ) : null}
+          <span
+            className={styles.statusBadge}
+            data-active={member.active ? "true" : "false"}
+          >
+            {member.active
+              ? content.list.activeBadge
+              : content.list.inactiveBadge}
+          </span>
         </p>
         <p className={styles.email}>{member.primaryEmail}</p>
         {member.hasActiveRole ? null : (
@@ -91,15 +104,35 @@ export function MemberRow({
           {content.list.actions.editRoles}
         </ButtonControl>
         {isCurrentActor ? null : (
-          <ButtonControl
-            aria-label={`${ownerActionLabel}: ${member.displayName}`}
-            className={styles.actionButton}
-            onClick={onToggleOwnerAction}
-            type="button"
-            variant="ghost"
-          >
-            {ownerActionLabel}
-          </ButtonControl>
+          <>
+            {canChangeOwner ? (
+              <ButtonControl
+                aria-label={`${ownerActionLabel}: ${member.displayName}`}
+                className={styles.actionButton}
+                onClick={onToggleOwnerAction}
+                type="button"
+                variant="ghost"
+              >
+                {ownerActionLabel}
+              </ButtonControl>
+            ) : null}
+            <ButtonControl
+              aria-label={`${member.active ? content.list.actions.deactivate : content.list.actions.activate}: ${member.displayName}`}
+              className={styles.actionButton}
+              onClick={onToggleStatusAction}
+              type="button"
+              variant="ghost"
+            >
+              <FontAwesomeIcon
+                aria-hidden="true"
+                className={styles.actionIcon}
+                icon={member.active ? faUserSlash : faUserCheck}
+              />
+              {member.active
+                ? content.list.actions.deactivate
+                : content.list.actions.activate}
+            </ButtonControl>
+          </>
         )}
       </div>
     </li>

@@ -105,11 +105,15 @@ Umsetzung in Ordner 07a–07c (Task 36–38), nach Projekten und vor Aufgaben.
 - Jedes aktive interne Mitglied darf Kunden, Projekte und Aufgaben neu zuweisen; jede Änderung wird
   mit Actor, Alt- und Neuzuweisung protokolliert. Ab Ordner 07b gilt zusätzlich: Der Zuweisende braucht das
   Schreibrecht am Datensatz, der neue Zuständige das in der Registry deklarierte Recht (Abschnitt „Zugriffsbereiche“).
-- Vor Deaktivierung eines Mitglieds ist die Übergabe sämtlicher aktiver Zuständigkeiten Pflicht. Die
-  Deaktivierung ist gesperrt, solange eine offene Zuständigkeit besteht; ein Command „Alles an den
-  Owner übergeben" macht es in einem Schritt. Der einzige aktive Owner ist geschützt.
-- Zuständigkeiten laufen über eine **exhaustive Registry** (`OwnableEntity` plus
-  `satisfies Record<OwnableEntity, OwnershipAdapter>`, Ordner 03c). Eine neue besitzbare Entität in
+- Vor Deaktivierung eines Mitglieds ist die Übergabe sämtlicher aktiver Zuständigkeiten Pflicht. Ordner 03c führt die
+  exhaustive Prüfung ein und sperrt die Deaktivierung, solange eine offene Zuständigkeit besteht. Die eigentliche
+  Übergabe folgt nach der Kundenakte als Task 02f in Ordner 05. Der einzige aktive Owner ist geschützt.
+  Jeder Schreibpfad, der eine Zuständigkeit setzt, sperrt die Membership des neuen Zuständigen (`FOR SHARE`) und prüft
+  `active`; die Deaktivierung sperrt dieselbe Zeile vor der Zählung (Task 02d, „Bekannte Grenze“). Deaktivierte
+  Mitglieder werden nicht Owner.
+- Zuständigkeiten laufen über eine **exhaustive Registry** (`OwnableEntity` plus zunächst
+  `satisfies Record<OwnableEntity, ResponsibilityCounter>` in Ordner 03c). Task 02f erweitert denselben Vertrag in
+  Ordner 05 zu `satisfies Record<OwnableEntity, OwnershipAdapter>`. Eine neue besitzbare Entität in
   Ordner 07, 08 oder 11 bricht den Typecheck, bis sie registriert ist — Vergessen ist damit ein
   roter Build und kein stiller Datenfehler.
 
@@ -467,8 +471,8 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 | 01  | gemerged  | `01-kernschema-und-contracts`            | Additives Kunden-/Personen-Kernschema ist unsichtbar deployt; Leads unverändert |   50–80 |  3–4 T. |
 | 02  | gemerged  | `02-activity-migration`                  | Bestehende Lead-Timeline arbeitet verlustfrei auf dem neuen Modell              |   40–70 |  3–4 T. |
 | 03  | gemerged  | `03-mitglieder-und-auth`                 | Persistierte User, Permission-Katalog, Bereichs-Gates und fail-closed Auth      |  80–120 |  4–5 T. |
-| 03b | im Review | `03b-mitglieder-und-rollenverwaltung`    | Mitglieder, Rollen und Owner-Flow verwaltbar; Aktionen permissionabhängig       | 100–120 |  3–4 T. |
-| 03c | offen     | `03c-uebergabe-und-deaktivierung`        | Deaktivierung mit Zuständigkeitssperre und atomarer Übergabe                    |   40–60 |    2 T. |
+| 03b | gemerged  | `03b-mitglieder-und-rollenverwaltung`    | Mitglieder, Rollen und Owner-Flow verwaltbar; Aktionen permissionabhängig       | 100–120 |  3–4 T. |
+| 03c | im Review | `03c-uebergabe-und-deaktivierung`        | Mitglieder-Lifecycle mit Owner- und Zuständigkeitssperre                        |   30–50 |  1–2 T. |
 | 03d | offen     | `03d-geteilte-ui-bausteine`              | Dialog-, Panel- und Listenbausteine geteilt (`packages/ui` + workspace/shared)  | 170–195 |  4–5 T. |
 | 04  | offen     | `04-personen-und-kundenakte`             | Kunden samt Pflichtkontakt, Owner, Archiv und Detail vollständig nutzbar        |  80–100 |  4–5 T. |
 | 05  | offen     | `05-kundenliste-und-zuweisung`           | Liste, Suche, Filter, Übergabe und Aufbewahrungshinweise nutzbar                |  60–100 |  3–4 T. |

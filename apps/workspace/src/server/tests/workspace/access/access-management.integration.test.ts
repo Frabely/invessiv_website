@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { config as loadDotenv } from "dotenv";
-import { and, eq, inArray, like, sql } from "drizzle-orm";
+import { and, asc, eq, inArray, like, sql } from "drizzle-orm";
 import type { NextRequest } from "next/server";
 import {
   afterAll,
@@ -23,6 +23,11 @@ import { SecurityEventType } from "@invessiv/common/constants/auth/security-even
 import { SYSTEM_ROLE_DEFINITIONS } from "@invessiv/common/constants/auth/system-role-definitions";
 import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
+import { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
+import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
+import { CustomerType } from "@invessiv/common/constants/crm/customer-types";
+import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
+import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import type { CreateRoleRequestDto } from "@invessiv/common/contracts/auth/create-role-request.dto";
 import {
   findWorkspaceRoot,
@@ -30,6 +35,7 @@ import {
   PostgresErrorCode,
 } from "@invessiv/db/core";
 import {
+  customers,
   roles,
   securityEvents,
   users,
@@ -41,6 +47,7 @@ import { GET, POST } from "@/app/api/workspace/leads/route";
 import { addWorkspaceMember } from "@/server/workspace/access/command-handler/add-workspace-member.command-handler";
 import { createRole } from "@/server/workspace/access/command-handler/create-role.command-handler";
 import { replaceWorkspaceMemberRoles } from "@/server/workspace/access/command-handler/replace-workspace-member-roles.command-handler";
+import { updateWorkspaceMemberStatus } from "@/server/workspace/access/command-handler/update-workspace-member-status.command-handler";
 import { roleAssignmentService } from "@/server/workspace/access/services/role-assignment-service";
 import { workspaceOwnerInvariantService } from "@/server/workspace/auth/services/workspace-owner-invariant-service";
 
@@ -234,6 +241,9 @@ describe.skipIf(!RUN_INTEGRATION)(
         });
         if (memberIds.length > 0) {
           await db
+            .delete(customers)
+            .where(inArray(customers.owner_member_id, memberIds));
+          await db
             .delete(workspaceMemberRoles)
             .where(
               inArray(workspaceMemberRoles.workspace_member_id, memberIds),
@@ -286,10 +296,11 @@ describe.skipIf(!RUN_INTEGRATION)(
         perPage: 25,
       });
 
-      expect((await GET(leadsRequest())).status).toBe(200);
+      expect((await GET(leadsRequest())).status).toBe(HttpResponseCode.Ok);
       expect(
-        (await POST(leadsRequest({ method: "POST", body: "{}" }))).status,
-      ).toBe(403);
+        (await POST(leadsRequest({ method: HttpMethod.Post, body: "{}" })))
+          .status,
+      ).toBe(HttpResponseCode.Forbidden);
       expect(mockCreateLead).not.toHaveBeenCalled();
 
       const replaced = await replaceWorkspaceMemberRoles(
@@ -298,7 +309,9 @@ describe.skipIf(!RUN_INTEGRATION)(
         owner.actor,
       );
       expect(replaced.ok).toBe(true);
-      expect((await GET(leadsRequest())).status).toBe(403);
+      expect((await GET(leadsRequest())).status).toBe(
+        HttpResponseCode.Forbidden,
+      );
 
       const events = await db
         .select({ actorUserId: securityEvents.actor_user_id })
@@ -434,6 +447,131 @@ describe.skipIf(!RUN_INTEGRATION)(
       }
 
       expect(concurrentWriteWasBlocked).toBe(true);
+    }, 60_000);
+
+    it("blocks lifecycle changes on open customers and writes one PII-free event per successful status change", async () => {
+      const actorOwner = await createOwner();
+      const target = await createOwner();
+      const statuses = [
+        CustomerStatus.Active,
+        CustomerStatus.Paused,
+        CustomerStatus.Archived,
+      ] as const;
+      await db.insert(customers).values(
+        statuses.map((status) => ({
+          id: randomUUID(),
+          customer_type: CustomerType.Company,
+          display_name: `${FIXTURE_PREFIX}customer:${status}`,
+          status,
+          owner_member_id: target.memberId,
+          version: 1,
+        })),
+      );
+
+      const blocked = await updateWorkspaceMemberStatus(
+        target.memberId,
+        { active: false, version: 1 },
+        actorOwner.actor,
+      );
+      expect(blocked).toEqual({
+        ok: false,
+        code: WorkspaceMemberErrorCode.MemberHasOpenResponsibilities,
+        responsibilityCounts: { customer: 2 },
+      });
+
+      await db
+        .delete(customers)
+        .where(
+          and(
+            eq(customers.owner_member_id, target.memberId),
+            inArray(customers.status, [
+              CustomerStatus.Active,
+              CustomerStatus.Paused,
+            ]),
+          ),
+        );
+
+      const deactivated = await updateWorkspaceMemberStatus(
+        target.memberId,
+        { active: false, version: 1 },
+        actorOwner.actor,
+      );
+      expect(deactivated.ok).toBe(true);
+      if (!deactivated.ok) throw new Error("Expected member deactivation");
+      expect(deactivated.member).toMatchObject({ active: false, version: 2 });
+
+      const activated = await updateWorkspaceMemberStatus(
+        target.memberId,
+        { active: true, version: 2 },
+        actorOwner.actor,
+      );
+      expect(activated.ok).toBe(true);
+
+      const events = await db
+        .select({
+          type: securityEvents.type,
+          actorUserId: securityEvents.actor_user_id,
+          metadata: securityEvents.metadata,
+        })
+        .from(securityEvents)
+        .where(
+          and(
+            eq(securityEvents.subject_id, target.memberId),
+            inArray(securityEvents.type, [
+              SecurityEventType.WorkspaceMemberDeactivated,
+              SecurityEventType.WorkspaceMemberActivated,
+            ]),
+          ),
+        )
+        .orderBy(asc(securityEvents.occurred_at));
+      expect(events).toEqual([
+        {
+          type: SecurityEventType.WorkspaceMemberDeactivated,
+          actorUserId: actorOwner.userId,
+          metadata: null,
+        },
+        {
+          type: SecurityEventType.WorkspaceMemberActivated,
+          actorUserId: actorOwner.userId,
+          metadata: null,
+        },
+      ]);
+    }, 60_000);
+
+    it("serializes member deactivation behind the shared owner lock", async () => {
+      const actorOwner = await createOwner();
+      const target = await createOwner();
+      let releaseLock: () => void = () => undefined;
+      let reportLocked: () => void = () => undefined;
+      const holdLock = new Promise<void>((resolve) => {
+        releaseLock = resolve;
+      });
+      const locked = new Promise<void>((resolve) => {
+        reportLocked = resolve;
+      });
+      const lockingTransaction = db.transaction(async (tx) => {
+        await workspaceOwnerInvariantService.lockOwnerAssignmentsAndFindActiveOwners(
+          tx,
+        );
+        reportLocked();
+        await holdLock;
+      });
+
+      await locked;
+      let settled = false;
+      const deactivation = updateWorkspaceMemberStatus(
+        target.memberId,
+        { active: false, version: 1 },
+        actorOwner.actor,
+      ).finally(() => {
+        settled = true;
+      });
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      expect(settled).toBe(false);
+
+      releaseLock();
+      await lockingTransaction;
+      expect((await deactivation).ok).toBe(true);
     }, 60_000);
 
     it("serializes role deactivation against role assignment validation", async () => {

@@ -6,8 +6,8 @@
 
 ## Kontext
 
-Stand 14.09.2026: Ordner 03b ist gemerged, Ordner 03c ist geplant, aber noch nicht umgesetzt. Dieser Plan setzt
-voraus, dass 03c beim Start gemerged ist, und behandelt dessen zwei neue Dialoge als bestehende Nutzer der
+Stand 14.09.2026: Ordner 03b ist gemerged, Ordner 03c befindet sich im Review. Dieser Plan setzt voraus, dass 03c beim
+Start gemerged ist, und behandelt dessen neuen Lifecycle-Dialog als bestehenden Nutzer der
 Dialog-Hülle.
 
 Ordner 04 baut Kundenliste, Create/Edit-Dialog und Kundenakte. Heute existiert jeder Baustein dafür mehrfach oder nur
@@ -15,7 +15,7 @@ im Leads-Bereich:
 
 | Baustein            | Ist-Zustand (Repository, 14.09.2026)                                                                                                                                                                                                                                                                                               |
 | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Dialog-Hülle        | `components/workspace/shared/dialog/workspace-dialog` (4 Settings-Nutzer, nach 03c 6) plus **sieben** Lead-Dialoge mit eigener Overlay-, Portal- und Fokuslogik über `dialog-focus-trap.ts`: Lead-Formular (1050 Zeilen), Import (538), Outreach (452), Bulk-Edit (608), Lead löschen (202), Bulk-Archiv (183), Bulk-Löschen (187) |
+| Dialog-Hülle        | `components/workspace/shared/dialog/workspace-dialog` (4 Settings-Nutzer, nach 03c 5) plus **sieben** Lead-Dialoge mit eigener Overlay-, Portal- und Fokuslogik über `dialog-focus-trap.ts`: Lead-Formular (1050 Zeilen), Import (538), Outreach (452), Bulk-Edit (608), Lead löschen (202), Bulk-Archiv (183), Bulk-Löschen (187) |
 | Button              | `components/shared/button/button.tsx` in `apps/web` **und** `apps/workspace` — TSX identisch, CSS weicht ab (Schriftfamilie per Token vs. Literal, Disabled-Opacity nur im Web); 17 Web- und 19 Workspace-Nutzer                                                                                                                   |
 | Formularbausteine   | `components/shared/form/*` in beiden Apps — `FormFieldLabel`, `FormStatus`, `FormActions` identisch; `FormField` im Web weiter (`FormFieldKind.Custom`, `labelSuffix`); `FormRequiredMarker` im Web `aria-hidden`, im Workspace nicht                                                                                              |
 | Empty-State         | `leads/table/leads-empty-state` (mit `next/link`), in Settings als Inline-Markup in `roles-list` und `add-member-dialog`                                                                                                                                                                                                           |

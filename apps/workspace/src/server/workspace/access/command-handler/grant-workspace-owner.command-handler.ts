@@ -44,6 +44,10 @@ export async function grantWorkspaceOwner(
     if (current.isOwner) {
       return { ok: false, code: WorkspaceMemberErrorCode.AlreadyOwner };
     }
+    // An inactive owner has no access and would only fake a backup owner.
+    if (!current.active) {
+      return { ok: false, code: WorkspaceMemberErrorCode.MemberInactive };
+    }
 
     const bump = await workspaceMemberVersionService.bump(
       tx,

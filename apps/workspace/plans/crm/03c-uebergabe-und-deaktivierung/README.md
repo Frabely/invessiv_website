@@ -1,51 +1,54 @@
-# Ordner 03c — Übergabe und Deaktivierung
+# Ordner 03c — Aktivierung und Deaktivierung
 
-> **Status:** offen · **Branch:** `feat/crm-uebergabe-und-deaktivierung` · **Abhängigkeit:** Ordner 03b gemerged
-> **Aufwand:** 2 Tage · **Reviewziel:** 40–60 Dateien
+> **Status:** im Review · **Branch:** `feat/crm-uebergabe-und-deaktivierung` · **Abhängigkeit:** Ordner 03b gemerged
+> **Aufwand:** 1–2 Tage · **Reviewziel:** 30–50 Dateien
 
 ## Ziel und Stand nach Merge
 
-Mitglieder können deaktiviert und reaktiviert werden. Solange ein Mitglied offene Zuständigkeiten besitzt, ist die
-Deaktivierung gesperrt; eine Übergabe — einzeln an ein aktives Mitglied oder „Alles an mich übergeben" — löst die Sperre
-in einem Schritt. Entstanden durch den Neuschnitt von Ordner 03b am 13.09.2026.
+Mitglieder können deaktiviert und reaktiviert werden. Selbstdeaktivierung, die Deaktivierung des letzten aktiven
+Owners und verwaiste offene Zuständigkeiten sind ausgeschlossen. Die eigentliche Übergabe folgt erst nach der
+Kundenakte in Ordner 05, weil sie dort erstmals vollständig über die Kunden-UI überprüfbar ist.
 
 **Konkreter Task-Plan**
 
-- [`02d-uebergabe-und-deaktivierung.md`](./02d-uebergabe-und-deaktivierung.md) — Contracts, Ownership-Registry,
-  Aktivierung/Deaktivierung, atomare Übergabe, API, Settings-UI und Tests.
+- [`02d-uebergabe-und-deaktivierung.md`](./02d-uebergabe-und-deaktivierung.md) — Contracts, exhaustive
+  Zuständigkeitsprüfung, Aktivierung/Deaktivierung, API, Settings-UI und Tests.
 
 ## Umfang
 
-- Exhaustive Ownership-Registry: `OwnableEntity` in `packages/common` plus
-  `satisfies Record<OwnableEntity, OwnershipAdapter>` serverseitig. Erste Entität: `customer`. Eine neue besitzbare
-  Entität in Ordner 07, 08 oder 11 bricht den Typecheck, bis sie registriert ist.
+- Exhaustive Counter-Registry: `OwnableEntity` in `packages/common` plus
+  `satisfies Record<OwnableEntity, ResponsibilityCounter>` serverseitig. Erste Entität: `customer`.
 - Offene Kunden sind `active` und `paused`; archivierte Kunden behalten die historische Zuordnung.
-- `PATCH /api/workspace/members/[id]` (aktiv, Version) und `POST …/members/[id]/handover` (`members.manage`).
-- Übergabe aller offenen Zuständigkeiten in einer Transaktion. Jede betroffene versionierte Entität wird ausschließlich
-  über `updateVersioned` geändert; schlägt eine Änderung fehl, wird die gesamte Übergabe zurückgerollt. Dazu entsteht
-  je betroffener Entität eine Activity mit Alt- und Neuzuweisung.
-- Security-Events `workspace_member_deactivated`, `workspace_member_activated`,
-  `workspace_responsibilities_handed_over` (Migration erweitert die CHECK-Constraint).
-- UI: Aktivieren/Deaktivieren und Übergabedialog in der Mitgliederliste aus 03b.
-- **Owner-Invariante aus 03b gilt weiter:** Über UI und API ist kein Zustand ohne aktiven Owner erreichbar; ein
-  inaktiver Owner (inaktives Mitglied oder inaktiver User) zählt nicht. Die Deaktivierung sperrt deshalb dieselben
-  Owner-Zuweisungen über `workspaceOwnerInvariantService.lockOwnerAssignmentsAndFindActiveOwners` wie der Owner-Entzug.
-  Ohne diesen gemeinsamen Lock könnten „A entzieht B die Owner-Rolle“ und „B deaktiviert A“ parallel beide gelingen und
-  keinen aktiven Owner hinterlassen.
+- `PATCH /api/workspace/members/[id]` mit Aktivzustand und Version, geschützt durch `members.manage`.
+- Security-Events `workspace_member_deactivated` und `workspace_member_activated`.
+- UI: Status, Aktivieren/Deaktivieren und verständliche Zuständigkeitssperre in der Mitgliederliste aus 03b.
+- **Owner-Invariante aus 03b gilt weiter:** Über UI und API ist kein Zustand ohne aktiven Owner erreichbar. Die
+  Deaktivierung nutzt denselben Owner-Lock wie der Owner-Entzug.
+
+## Bewusster Folgeschnitt
+
+Die vollständige Übergabe wurde nach
+[
+`../05-kundenliste-und-zuweisung/02f-zustaendigkeitsuebergabe.md`](../05-kundenliste-und-zuweisung/02f-zustaendigkeitsuebergabe.md)
+verschoben. 03c bleibt trotzdem sicher: Solange offene Zuständigkeiten existieren, ist die Deaktivierung blockiert.
+Es gibt keinen Übergabe-Button, bevor der zugehörige Kundenflow implementiert und testbar ist.
+
+Die Zuständigkeitszählung läuft noch ohne Sperre gegen parallele Zuweisungen. Das ist heute folgenlos, weil noch kein
+Schreibpfad Kunden zuweist; Stelle, Risiko und nächster Schritt stehen im Task-Plan unter „Bekannte Grenze:
+Zuständigkeitszählung ohne Sperre“.
 
 ## Merge-Gate
 
-- [ ] Deaktivierung wirkt beim nächsten Request.
-- [ ] Letzter aktiver Owner kann nicht deaktiviert werden (409 mit Begründung); niemand deaktiviert sich selbst.
-- [ ] Parallele Deaktivierung und Owner-Entzug hinterlassen nie null aktive Owner (gemeinsamer Lock, Integrationstest).
-- [ ] Deaktivierung ist gesperrt, solange Zuständigkeiten bestehen; Konflikt nennt Anzahl je Entität.
-- [ ] Übergabe ist atomar; parallele Übergabe und Bearbeitung ergibt 409 statt Teilzustand.
-- [ ] Eine `OwnableEntity` ohne Adapter bricht den Typecheck (Typtest).
-- [ ] Genau ein `security_events`-Eintrag je Änderung; Activities je übergebener Entität.
-- [ ] DE/EN vollständig; A11y-Smoke für Deaktivierungs- und Übergabedialog.
-- [ ] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, DB-Smokes, Integrationstests und Workspace-Build grün.
+- [x] Deaktivierung wirkt beim nächsten Request; Reaktivierung stellt den Zugang wieder her.
+- [x] Letzter aktiver Owner kann nicht deaktiviert werden; niemand deaktiviert sich selbst.
+- [x] Parallele Deaktivierung und Owner-Entzug hinterlassen nie null aktive Owner.
+- [x] Deaktivierung ist gesperrt, solange offene Zuständigkeiten bestehen; der Konflikt nennt die Anzahl je Entität.
+- [x] Eine `OwnableEntity` ohne Counter bricht den Typecheck.
+- [x] Genau ein `security_events`-Eintrag je erfolgreicher Aktivierung oder Deaktivierung.
+- [x] DE/EN vollständig; A11y-Smoke für den Lifecycle-Dialog.
+- [x] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, DB-Smokes, Integrationstests und Workspace-Build grün.
 
 ## Rollback
 
 App-Revert auf Ordner 03b. Deaktivierte Mitglieder bleiben deaktiviert und werden von der Auth weiter abgewiesen;
-eine Reaktivierung ist dann nur per Datenbank möglich.
+eine Reaktivierung ist dann nur kontrolliert per Datenbank möglich.

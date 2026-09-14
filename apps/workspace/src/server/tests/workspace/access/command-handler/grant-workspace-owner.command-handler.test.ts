@@ -119,6 +119,20 @@ describe("grantWorkspaceOwner", () => {
     expect(mocks.createEvent).not.toHaveBeenCalled();
   });
 
+  it("refuses a deactivated member before bumping the version", async () => {
+    mocks.findById.mockResolvedValue({ ...MEMBER, active: false });
+
+    expect(await grantWorkspaceOwner(MEMBER_ID, { version: 3 }, actor)).toEqual(
+      {
+        ok: false,
+        code: WorkspaceMemberErrorCode.MemberInactive,
+      },
+    );
+    expect(mocks.bump).not.toHaveBeenCalled();
+    expect(mocks.insert).not.toHaveBeenCalled();
+    expect(mocks.createEvent).not.toHaveBeenCalled();
+  });
+
   it("passes a version conflict through without assigning the owner role", async () => {
     const conflict = {
       ok: false,

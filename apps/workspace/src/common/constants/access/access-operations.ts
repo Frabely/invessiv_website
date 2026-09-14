@@ -2,6 +2,7 @@
 export const AccessOperation = {
   ListMembers: "members.list",
   AddMember: "members.add",
+  UpdateMemberStatus: "members.status.update",
   ListClerkCandidates: "members.clerk_candidates",
   ReplaceMemberRoles: "members.roles.replace",
   GrantOwner: "members.owner.grant",
@@ -18,6 +19,7 @@ export type AccessOperation =
 export const ACCESS_OPERATION_VALUES = [
   AccessOperation.ListMembers,
   AccessOperation.AddMember,
+  AccessOperation.UpdateMemberStatus,
   AccessOperation.ListClerkCandidates,
   AccessOperation.ReplaceMemberRoles,
   AccessOperation.GrantOwner,
