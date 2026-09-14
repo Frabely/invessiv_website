@@ -1,6 +1,6 @@
 # Ordner 03c — Aktivierung und Deaktivierung
 
-> **Status:** im Review · **Branch:** `feat/crm-uebergabe-und-deaktivierung` · **Abhängigkeit:** Ordner 03b gemerged
+> **Status:** gemerged · **Branch:** `feat/crm-uebergabe-und-deaktivierung` · **Abhängigkeit:** Ordner 03b gemerged
 > **Aufwand:** 1–2 Tage · **Reviewziel:** 30–50 Dateien
 
 ## Ziel und Stand nach Merge
