@@ -10,7 +10,7 @@ import {
   FormFieldKind,
   type FormFieldKind as FormFieldKindType,
 } from "@invessiv/common/constants/form/form-field-kinds";
-import { FormFieldLabel } from "@/components/shared/form/form-field-label/form-field-label";
+import { FormFieldLabel } from "../form-field-label/form-field-label";
 import styles from "./form-field.module.css";
 
 type FieldOption = {
@@ -54,9 +54,7 @@ type TextareaFieldProps = BaseFormFieldProps & {
 };
 
 export type FormFieldProps =
-  | SelectFieldProps
-  | TextFieldProps
-  | TextareaFieldProps;
+  SelectFieldProps | TextFieldProps | TextareaFieldProps;
 
 export function FormField(props: FormFieldProps) {
   const {

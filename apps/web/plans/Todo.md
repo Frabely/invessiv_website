@@ -6,7 +6,9 @@
 
 - Erst nach Abschluss des gesamten CRM-Umbaus einschließlich Ordner 22 als letzte Merge-Einheit 23 und eigenständigen
   Web-PR umsetzen; nicht in einem vorherigen Workspace-/Shared-UI-Task mitbauen.
-- Betrifft alle nach `packages/ui` verschobenen Web-Bausteine: `ButtonControl`, `ButtonLink`, `PrimaryCtaButton`,
+- Technische Migration und visuelle Anpassung gemeinsam umsetzen; Ordner 03d lässt Web-Kopien und Web-Nutzer
+  unangetastet.
+- Betrifft alle in `packages/ui` zentralisierten Bausteine: `ButtonControl`, `ButtonLink`, `PrimaryCtaButton`,
   `PrimaryCtaLink`, `FormRequiredMarker`, `FormFieldLabel`, `FormField`, `FormStatus` und `FormActions`.
 - Alle produktiven Nutzer auf Startseite, Landingpage, LinkedIn-Post-Generator, Referenzen, Site-Header, Success-Page
   und in den Web-Formularen erneut inventarisieren. `ContactConsentField` als app-lokalen Nutzer mitprüfen.

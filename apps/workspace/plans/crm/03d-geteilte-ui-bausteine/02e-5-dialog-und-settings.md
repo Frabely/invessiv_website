@@ -3,7 +3,7 @@
 > **Teil von:** [Task 02e](./02e-geteilte-ui-bausteine.md) · **Merge-Einheit:** Ordner 03d · **Branch:**
 > `chore/crm-geteilte-ui-bausteine`
 > **Tickets:** CRM-03d-T6, CRM-03d-T7 · **Abhängigkeiten:** Task 02e-4
-> **Changeset:** ~22 Dateien (Ziel ≤ 30, Stopp > 35, hart 50) · **Aufwand:** M
+> **Changeset:** ~20 Dateien (Ziel ≤ 30, Stopp > 35, hart 50) · **Aufwand:** M
 
 ## Ziel
 
@@ -17,7 +17,7 @@ Test-Setup: [Task 02e, „Dialog-Umstellung im Detail"](./02e-geteilte-ui-bauste
 ## CRM-03d-T6 — `Dialog` nach `packages/ui`, Settings umstellen
 
 - `Dialog` mit nativem `<dialog>` gemäß „Dialog-Umstellung im Detail"; `DialogSize` nach `packages/common`.
-- `packages/ui/vitest.config.ts`, `dialog-test-setup.ts` und `setupFiles` in beiden App-Configs.
+- `packages/ui/vitest.config.ts`, `dialog-test-setup.ts` und `setupFiles` in der Workspace-Testconfig.
 - Alle Nutzer von `WorkspaceDialog` umstellen (Stand Repository: Mitglied hinzufügen, Rollen zuweisen,
   Mitgliedsstatus/Übergabe, Owner-Wechsel, Rollen-Dialog). `workspace-dialog/**` löschen.
 - `components/workspace/settings/AGENTS.md`: Regel „Dialog-Hülle aus `components/workspace/shared/dialog/`" auf
@@ -44,17 +44,17 @@ Test-Setup: [Task 02e, „Dialog-Umstellung im Detail"](./02e-geteilte-ui-bauste
 | Workspace-Konstantentest  | `apps/workspace/src/common/constants/ui/ui-constants.test.ts` (Dialoggrößen-Block entfernt)                                                                                                           |      1 |
 | `packages/ui` Dialog (T6) | `components/dialog/dialog/{dialog.tsx,dialog.module.css,dialog.test.tsx}` (verschoben aus `workspace-dialog`), `src/testing/dialog-test-setup.ts`, `vitest.config.ts`, `package.json`, `src/index.ts` |      7 |
 | `packages/ui` Portal (T7) | `components/dialog/dialog-portal-root-context.ts`, `components/custom-select/{custom-select.tsx,custom-select.test.tsx}`                                                                              |      3 |
-| App-Test-Configs          | `apps/workspace/vitest.config.ts`, `apps/web/vitest.config.ts`                                                                                                                                        |      2 |
+| App-Test-Config           | `apps/workspace/vitest.config.ts`                                                                                                                                                                     |      1 |
 | Nutzer Settings           | `members/{add-member-dialog,member-roles-dialog,member-status-dialog,owner-change-dialog}`, `roles/role-form-dialog` (je `.tsx`)                                                                      |      5 |
 | Settings-Regeln           | `components/workspace/settings/AGENTS.md`                                                                                                                                                             |      1 |
-|                           |                                                                                                                                                                                                       | **21** |
+|                           |                                                                                                                                                                                                       | **20** |
 
-`packages/ui/package.json` nur, falls für jsdom-Tests Dev-Dependencies oder ein Test-Export fehlen; sonst 20. Puffer bis
-~22 für einen zusätzlich nötigen Dialog-CSS-Nachzug in einem Settings-Modul.
+`packages/ui/package.json` nur, falls für jsdom-Tests Dev-Dependencies oder ein Test-Export fehlen; sonst 19. Puffer bis
+~20 für einen zusätzlich nötigen Dialog-CSS-Nachzug in einem Settings-Modul.
 
 ## Abschluss
 
-- `pnpm -r lint`, `pnpm -r typecheck`, Tests `packages/common`, `packages/ui`, `apps/workspace` und `apps/web` grün.
+- `pnpm -r lint`, `pnpm -r typecheck`, Tests `packages/common`, `packages/ui` und `apps/workspace` grün.
 - Screenshots aller fünf Settings-Dialoge (Mobil/Desktop, Dark/Light); Tastatur-Smoke (Öffnen, Escape,
   Fokus-Rückgabe).
 - Changeset gemessen und in der Übergabe genannt.

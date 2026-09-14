@@ -1,23 +1,24 @@
 # Task 39 — Web-UI-Anpassung nach dem CRM-Umbau
 
 > **Merge-Einheit:** Ordner 23 · **Branch:** `feat/web-shared-ui-polish`
-> **Aufwand:** M (2–3 Tage) · **Abhängigkeiten:** alle CRM-Ordner 01 bis 22 gemerged
+> **Aufwand:** M (3–4 Tage) · **Abhängigkeiten:** alle CRM-Ordner 01 bis 22 gemerged
 > **Migration:** keine · **Changeset:** vor Beginn anhand der tatsächlichen Web-Nutzer neu schneiden
 
 ## Abgrenzung
 
-Dieser Task wird **erst am Ende des gesamten CRM-Umbaus** umgesetzt. Die früheren Einheiten zentralisieren die
-Bausteine ohne visuelle Veränderung. Erst nach fachlicher Umsetzung, Produktivrollout, Backup-Nachweis und
-Activity-Cleanup folgt dieser eigenständige Web-Branch und PR.
+Dieser Task wird **erst am Ende des gesamten CRM-Umbaus** umgesetzt. Ordner 03d zentralisiert ausschließlich die
+Workspace-Varianten; bestehende Web-Kopien und Web-Nutzer bleiben dort unangetastet. Erst nach fachlicher Umsetzung,
+Produktivrollout, Backup-Nachweis und Activity-Cleanup folgen technische Web-Migration und visuelle Anpassung gemeinsam
+in diesem eigenständigen Web-Branch und PR.
 
 Ziel ist keine Angleichung der Website an die Workspace-Optik. `packages/ui` bleibt app-neutral; die Website erhält
 eine eigenständige, zur Invessiv-Marke und zu ihren Conversion-Flows passende Ausprägung über Web-seitige Tokens,
 co-locatete Wrapper-Styles und klar begründete Opt-in-Props.
 
-## Betroffene verschobene Bausteine
+## Zu migrierende Bausteine
 
-Der Abschluss umfasst ausnahmslos alle Komponenten, die im CRM-Ordner 03d aus den Apps nach `packages/ui` verschoben
-werden und Nutzer in `apps/web` besitzen:
+Der Abschluss umfasst ausnahmslos alle Web-Kopien der Komponenten, deren Workspace-Varianten in CRM-Ordner 03d nach
+`packages/ui` verschoben wurden:
 
 - `ButtonControl`, `ButtonLink`, `PrimaryCtaButton`, `PrimaryCtaLink`
 - `FormRequiredMarker`, `FormFieldLabel`, `FormField`
@@ -37,14 +38,15 @@ CRM-Umbaus produktiv in `apps/web` verwendet werden; die Nutzerliste wird deshal
 
 ## Vorgehen
 
-1. Nach Merge von Ordner 22 alle produktiven Web-Nutzer der oben genannten Exporte erneut inventarisieren und das
-   Changeset in kleine, reviewbare Schritte schneiden.
+1. Nach Merge von Ordner 22 alle Web-Kopien und produktiven Web-Nutzer erneut inventarisieren und das Changeset in
+   kleine, reviewbare Schritte schneiden.
 2. Vor der Umsetzung Ist-Screenshots für Mobile, Tablet und Desktop sowie Dark und Light erstellen.
 3. Eine Web-spezifische visuelle Richtung für Buttons, Felder, Statusmeldungen und Aktionsleisten festlegen. Bestehende
    Theme-Tokens zuerst verwenden; neue Tokens zentral in der Web-App definieren.
-4. App-neutrale Unterschiede als Props oder Tokens modellieren. Keine Marketingannahmen, Dictionaries, Routen oder
-   Analytics in `packages/ui` verschieben.
-5. Alle betroffenen Oberflächen gemeinsam prüfen, damit derselbe Baustein nicht je Seite widersprüchlich gestaltet
+4. Fehlende app-neutrale Fähigkeiten der Web-Varianten als Props oder Tokens in `packages/ui` ergänzen. Keine
+   Marketingannahmen, Dictionaries, Routen oder Analytics in das Package verschieben.
+5. Alle Web-Nutzer auf `@invessiv/ui` umstellen und die Web-Kopien erst danach löschen.
+6. Alle betroffenen Oberflächen gemeinsam prüfen, damit derselbe Baustein nicht je Seite widersprüchlich gestaltet
    wird.
 
 ## Unveränderliche Grenzen
@@ -59,7 +61,7 @@ CRM-Umbaus produktiv in `apps/web` verwendet werden; die Nutzerliste wird deshal
 
 ## Akzeptanz
 
-- Alle produktiven Web-Nutzer der neun verschobenen Exporte sind inventarisiert und visuell geprüft.
+- Alle produktiven Web-Nutzer der neun Exporte importieren aus `@invessiv/ui`; die bisherigen Web-Kopien sind gelöscht.
 - Buttons, Formularfelder, Statusmeldungen und Aktionsleisten bilden in Dark und Light ein konsistentes, bewusstes
   Web-System, ohne die Workspace-Darstellung zu verändern.
 - Mobile 360/390 px, Tablet und Desktop sind mit Vorher-/Nachher-Screenshots dokumentiert.
@@ -72,11 +74,12 @@ CRM-Umbaus produktiv in `apps/web` verwendet werden; die Nutzerliste wird deshal
 ## Deploy-Sicherheit
 
 1. **Live sichtbar:** ausschließlich die bewusst angepasste Web-Darstellung.
-2. **Bricht nichts:** Package-APIs sind seit Ordner 03d produktiv im Einsatz; der Task ändert nur Web-Tokens,
-   Web-Wrapper und ausdrücklich benötigte app-neutrale Opt-ins.
+2. **Bricht nichts:** Package-APIs sind seit Ordner 03d im Workspace produktiv im Einsatz. Die Web-Migration bewahrt
+   CTA-Ziele, Tracking und Formularverhalten; Web-spezifische Unterschiede werden über Tokens, Wrapper und ausdrücklich
+   benötigte app-neutrale Opt-ins abgebildet.
 3. **Offen:** nichts. Nach Merge dieses Tasks ist der gesamte CRM-Plan einschließlich Web-Nachlauf abgeschlossen.
 
 ## Rollback
 
-Reiner Code-Revert des eigenständigen Web-PRs. Die Zentralisierung aus Ordner 03d und alle CRM-Einheiten bleiben
-bestehen; ein Rollback stellt nur die vorherigen Web-Tokens und Web-spezifischen Styles wieder her.
+Reiner Code-Revert des eigenständigen Web-PRs. Die Workspace-Zentralisierung aus Ordner 03d und alle CRM-Einheiten
+bleiben bestehen; ein Rollback stellt die Web-Kopien, bisherigen Importpfade, Tokens und Styles wieder her.

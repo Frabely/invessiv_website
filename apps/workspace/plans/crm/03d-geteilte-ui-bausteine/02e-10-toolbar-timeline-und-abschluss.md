@@ -35,13 +35,12 @@ Suchfeld, Facettenfilter (mit opt-in Mehrfachauswahl) und Activity-Timeline lieg
 
 - `components/workspace/leads/AGENTS.md`: Subfolder-Tabelle und Regel 15 („Reuse") auf die geteilten Orte verweisen.
 - Suchen belegen: kein Import aus gelöschten Pfaden, kein `next/*` in `packages/ui`, kein `createPortal` in Dialogen.
-- Visueller Gesamtcheck Mobil/Dark/Light: Leads (Liste, Panel, alle sieben Dialoge), Settings (Listen, alle Dialoge),
-  Web (Startseite, Kontaktformular, LinkedIn-Generator, Referenzen-CTA).
-- A11y-Smoke: Tastatur, Fokus-Reihenfolge und Kontrast für Dialoge, Panel, Kontaktformular.
+- Visueller Gesamtcheck Mobil/Dark/Light: Leads (Liste, Panel, alle sieben Dialoge) und Settings (Listen, alle Dialoge).
+- A11y-Smoke: Tastatur, Fokus-Reihenfolge und Kontrast für Dialoge und Panel.
 - Status `im Review` in README und Tabelle; PR mit Testplan, Screenshots, benannten Testausnahmen, Dateizahl je Task
   und gesamt sowie Rollback.
-- **Akzeptanz:** `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm --filter @invessiv/workspace build` und
-  `pnpm --filter @invessiv/web build` grün.
+- **Akzeptanz:** `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test` und
+  `pnpm --filter @invessiv/workspace build` grün.
 
 ## Changeset
 

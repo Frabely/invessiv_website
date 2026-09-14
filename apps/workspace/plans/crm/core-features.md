@@ -51,5 +51,5 @@ Der frühere Detailplan für freies Mail-Senden bleibt als ausdrücklich zurück
 ## Abschluss nach dem CRM-Umbau
 
 - Nach allen fachlichen CRM-, Portal-, Rollout- und Cleanup-Einheiten folgt als letzter Ordner 23 ein eigenständiger
-  Web-PR. Er entwickelt die Darstellung aller im Umbau nach `packages/ui` verschobenen Button- und Formularbausteine
-  für die Invessiv-Website weiter, ohne die Workspace-Optik oder CRM-Funktionalität zu verändern.
+  Web-PR. Er stellt die Website technisch auf alle in Ordner 03d zentralisierten Button- und Formularbausteine um und
+  entwickelt deren Web-Darstellung weiter, ohne die Workspace-Optik oder CRM-Funktionalität zu verändern.

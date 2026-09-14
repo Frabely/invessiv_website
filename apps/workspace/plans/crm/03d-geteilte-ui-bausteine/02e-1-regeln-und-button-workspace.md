@@ -8,7 +8,7 @@
 ## Ziel
 
 Die Regeln für `packages/ui` und `components/workspace/shared/` stehen vor dem ersten Codeschritt. Der Button liegt
-danach in `packages/ui`; der Workspace nutzt ihn, die Web-Kopie bleibt bis Task 02e-2 bestehen.
+danach in `packages/ui`; der Workspace nutzt ihn. Die Web-Kopie bleibt bis Ordner 23 unverändert bestehen.
 
 ## CRM-03d-T0 — Status und Regeldateien
 
@@ -27,7 +27,7 @@ danach in `packages/ui`; der Workspace nutzt ihn, die Web-Kopie bleibt bis Task 
 - CSS nutzt `var(--font-family-base)` sowie neue Tokens `--button-disabled-opacity` und `--button-disabled-filter`.
   `apps/workspace/src/app/globals.css` definiert `--font-family-base` mit dem heutigen Literal und die Disabled-Tokens
   neutral (`1`/`none`).
-- 20 Workspace-Nutzer umstellen, Workspace-Kopie löschen. Die Web-Kopie bleibt bis Task 02e-2 bestehen.
+- 20 Workspace-Nutzer umstellen, Workspace-Kopie löschen. Die Web-Kopie bleibt bis Ordner 23 bestehen.
 - **Akzeptanz:** zusammengeführter Button-Test in `packages/ui` grün; Workspace-Buttons visuell unverändert inklusive
   Disabled-Zustand.
 

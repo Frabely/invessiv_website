@@ -1,6 +1,6 @@
 "use client";
 
-import { FormRequiredMarker } from "@/components/shared/form/form-required-marker/form-required-marker";
+import { FormRequiredMarker } from "../form-required-marker/form-required-marker";
 
 type FormFieldLabelProps = {
   className?: string;
