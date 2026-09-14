@@ -1,26 +1,25 @@
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import type { LeadBadgeKind } from "@invessiv/common/constants/leads/badges/lead-badge-kinds";
-import type { LeadBadgeTone } from "@invessiv/common/constants/leads/badges/lead-badge-tones";
-import styles from "./lead-badge.module.css";
+import type { BadgeTone } from "@invessiv/common/constants/ui/badge-tones";
+import styles from "./badge.module.css";
 
-type LeadBadgeProps = {
+export type BadgeProps = {
+  categoryKey?: string;
   className?: string;
   icon: IconDefinition;
-  categoryKey?: string;
-  kind?: LeadBadgeKind;
+  kind?: string;
   label: string;
-  tone: LeadBadgeTone;
+  tone: BadgeTone;
 };
 
-export function LeadBadge({
+export function Badge({
+  categoryKey,
   className,
   icon,
-  categoryKey,
   kind,
   label,
   tone,
-}: LeadBadgeProps) {
+}: BadgeProps) {
   const rootClassName = className ? `${styles.root} ${className}` : styles.root;
 
   return (

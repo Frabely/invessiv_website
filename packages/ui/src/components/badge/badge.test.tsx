@@ -5,16 +5,16 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { faLayerGroup } from "@fortawesome/free-solid-svg-icons";
-import { LeadBadge } from "./lead-badge";
+import { Badge } from "./badge";
 
 afterEach(() => {
   cleanup();
 });
 
-describe("LeadBadge", () => {
+describe("Badge", () => {
   it("renders the icon, label, and tone marker", () => {
     render(
-      <LeadBadge
+      <Badge
         categoryKey="coaches"
         icon={faLayerGroup}
         kind="category"

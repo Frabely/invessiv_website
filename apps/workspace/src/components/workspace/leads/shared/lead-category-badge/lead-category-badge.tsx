@@ -12,12 +12,11 @@ import {
   faUserTie,
 } from "@fortawesome/free-solid-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
-import { LeadBadgeKind } from "@invessiv/common/constants/leads/badges/lead-badge-kinds";
+import { Badge } from "@invessiv/ui";
 import {
-  LeadBadgeTone,
-  type LeadBadgeTone as LeadBadgeToneValue,
-} from "@invessiv/common/constants/leads/badges/lead-badge-tones";
-import { LeadBadge } from "../../../shared/lead-badge/lead-badge";
+  BadgeTone,
+  type BadgeTone as BadgeToneValue,
+} from "@invessiv/common/constants/ui/badge-tones";
 
 type LeadCategoryBadgeProps = {
   className?: string;
@@ -27,47 +26,47 @@ type LeadCategoryBadgeProps = {
 
 const CATEGORY_CONFIG: Record<
   string,
-  { icon: IconDefinition; tone: LeadBadgeToneValue }
+  { icon: IconDefinition; tone: BadgeToneValue }
 > = {
   coaches: {
     icon: faChalkboardUser,
-    tone: LeadBadgeTone.Primary,
+    tone: BadgeTone.Primary,
   },
   consultants: {
     icon: faUserTie,
-    tone: LeadBadgeTone.Danger,
+    tone: BadgeTone.Danger,
   },
   craftspeople: {
     icon: faHammer,
-    tone: LeadBadgeTone.Warning,
+    tone: BadgeTone.Warning,
   },
   "local-service-providers": {
     icon: faLocationDot,
-    tone: LeadBadgeTone.Success,
+    tone: BadgeTone.Success,
   },
   "small-b2b-providers": {
     icon: faBriefcase,
-    tone: LeadBadgeTone.Purple,
+    tone: BadgeTone.Purple,
   },
   photographers: {
     icon: faCamera,
-    tone: LeadBadgeTone.Info,
+    tone: BadgeTone.Info,
   },
   lawyers: {
     icon: faScaleBalanced,
-    tone: LeadBadgeTone.Indigo,
+    tone: BadgeTone.Indigo,
   },
   "tax-advisors": {
     icon: faCalculator,
-    tone: LeadBadgeTone.Teal,
+    tone: BadgeTone.Teal,
   },
   appraisers: {
     icon: faMagnifyingGlassChart,
-    tone: LeadBadgeTone.Lime,
+    tone: BadgeTone.Lime,
   },
   other: {
     icon: faCircleQuestion,
-    tone: LeadBadgeTone.Orange,
+    tone: BadgeTone.Orange,
   },
 };
 
@@ -78,14 +77,14 @@ export function LeadCategoryBadge({
 }: LeadCategoryBadgeProps) {
   const config = categoryKey ? CATEGORY_CONFIG[categoryKey] : undefined;
   const icon = config?.icon ?? faLayerGroup;
-  const tone = config?.tone ?? LeadBadgeTone.Neutral;
+  const tone = config?.tone ?? BadgeTone.Neutral;
 
   return (
-    <LeadBadge
+    <Badge
       className={className}
       categoryKey={categoryKey}
       icon={icon}
-      kind={LeadBadgeKind.Category}
+      kind="category"
       label={label}
       tone={tone}
     />

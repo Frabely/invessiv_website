@@ -6,14 +6,6 @@ import {
   LEAD_DETAIL_ENTRY_KIND_VALUES,
   LeadDetailEntryKind,
 } from "@invessiv/common/constants/leads/activity/lead-detail-entry-kinds";
-import {
-  LEAD_BADGE_KIND_VALUES,
-  LeadBadgeKind,
-} from "@invessiv/common/constants/leads/badges/lead-badge-kinds";
-import {
-  LEAD_BADGE_TONE_VALUES,
-  LeadBadgeTone,
-} from "@invessiv/common/constants/leads/badges/lead-badge-tones";
 import { CONTACT_LEAD_STATUS_ALL } from "@invessiv/common/constants/contact/contact-lead-statuses";
 import {
   LEAD_LIST_MAX_PAGE_SIZE,
@@ -89,44 +81,6 @@ describe("LeadDetailEntryKind", () => {
     ]);
     expect(new Set(LEAD_DETAIL_ENTRY_KIND_VALUES).size).toBe(
       LEAD_DETAIL_ENTRY_KIND_VALUES.length,
-    );
-  });
-});
-
-describe("LeadBadgeTone", () => {
-  it("contains the expected badge tones without duplicates", () => {
-    expect(LEAD_BADGE_TONE_VALUES).toEqual([
-      LeadBadgeTone.Danger,
-      LeadBadgeTone.Indigo,
-      LeadBadgeTone.Info,
-      LeadBadgeTone.Neutral,
-      LeadBadgeTone.Primary,
-      LeadBadgeTone.Purple,
-      LeadBadgeTone.Success,
-      LeadBadgeTone.Orange,
-      LeadBadgeTone.Warning,
-      LeadBadgeTone.Teal,
-      LeadBadgeTone.Lime,
-      LeadBadgeTone.Fuchsia,
-      LeadBadgeTone.Coral,
-      LeadBadgeTone.Pink,
-      LeadBadgeTone.Magenta,
-    ]);
-    expect(new Set(LEAD_BADGE_TONE_VALUES).size).toBe(
-      LEAD_BADGE_TONE_VALUES.length,
-    );
-  });
-});
-
-describe("LeadBadgeKind", () => {
-  it("contains the expected badge kinds without duplicates", () => {
-    expect(LEAD_BADGE_KIND_VALUES).toEqual([
-      LeadBadgeKind.Category,
-      LeadBadgeKind.Source,
-      LeadBadgeKind.Status,
-    ]);
-    expect(new Set(LEAD_BADGE_KIND_VALUES).size).toBe(
-      LEAD_BADGE_KIND_VALUES.length,
     );
   });
 });

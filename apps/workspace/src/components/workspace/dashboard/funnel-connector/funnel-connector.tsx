@@ -1,4 +1,4 @@
-import type { LeadBadgeTone as LeadBadgeToneValue } from "@invessiv/common/constants/leads/badges/lead-badge-tones";
+import type { BadgeTone as BadgeToneValue } from "@invessiv/common/constants/ui/badge-tones";
 import type { Locale } from "@invessiv/common";
 import { formatIntegerCount } from "@/lib/workspace/dashboard/format-integer";
 import styles from "./funnel-connector.module.css";
@@ -8,10 +8,10 @@ type FunnelConnectorProps = {
   index: number;
   locale: Locale;
   nextCount: number;
-  nextStageTone: LeadBadgeToneValue;
+  nextStageTone: BadgeToneValue;
   percentLabel: string;
   previousCount: number;
-  previousStageTone: LeadBadgeToneValue;
+  previousStageTone: BadgeToneValue;
   ratioLabel?: string;
   showAreaFade?: boolean;
 };

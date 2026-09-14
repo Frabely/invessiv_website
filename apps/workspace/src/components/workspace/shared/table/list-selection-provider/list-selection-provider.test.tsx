@@ -11,8 +11,8 @@ import {
 } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
-import { useLeadsTableSelection } from "./leads-table-selection-context";
-import { LeadsTableSelectionProvider } from "./leads-table-selection-provider";
+import { useListSelection } from "./list-selection-context";
+import { ListSelectionProvider } from "./list-selection-provider";
 
 function SelectionHarness() {
   const {
@@ -23,7 +23,7 @@ function SelectionHarness() {
     someSelected,
     toggleAll,
     toggleRow,
-  } = useLeadsTableSelection();
+  } = useListSelection();
 
   return (
     <div>
@@ -49,12 +49,12 @@ function SelectionHarness() {
 
 function renderProvider(rowIds: string[], selectionResetKey?: string) {
   return render(
-    <LeadsTableSelectionProvider
+    <ListSelectionProvider
       rowIds={rowIds}
       selectionResetKey={selectionResetKey}
     >
       <SelectionHarness />
-    </LeadsTableSelectionProvider>,
+    </ListSelectionProvider>,
   );
 }
 
@@ -62,7 +62,7 @@ afterEach(() => {
   cleanup();
 });
 
-describe("LeadsTableSelectionProvider", () => {
+describe("ListSelectionProvider", () => {
   it("drops selected ids that are no longer present in the current row ids", async () => {
     const { rerender } = renderProvider(["lead-1", "lead-2"]);
 
@@ -74,9 +74,9 @@ describe("LeadsTableSelectionProvider", () => {
     );
 
     rerender(
-      <LeadsTableSelectionProvider rowIds={["lead-2"]}>
+      <ListSelectionProvider rowIds={["lead-2"]}>
         <SelectionHarness />
-      </LeadsTableSelectionProvider>,
+      </ListSelectionProvider>,
     );
 
     await waitFor(() => {
@@ -94,12 +94,12 @@ describe("LeadsTableSelectionProvider", () => {
     expect(screen.getByTestId("selected-count")).toHaveTextContent("1");
 
     rerender(
-      <LeadsTableSelectionProvider
+      <ListSelectionProvider
         rowIds={["lead-1", "lead-2"]}
         selectionResetKey="next"
       >
         <SelectionHarness />
-      </LeadsTableSelectionProvider>,
+      </ListSelectionProvider>,
     );
 
     await waitFor(() => {

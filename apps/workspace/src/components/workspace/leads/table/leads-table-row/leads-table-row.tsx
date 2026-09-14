@@ -25,7 +25,7 @@ import {
 import { formatRelativeTime } from "@/lib/format-relative-time";
 import { buildLeadHref, formatLeadCreatedAt } from "../lead-table-utils";
 import { LeadsTableRowActions } from "../leads-table-row-actions/leads-table-row-actions";
-import { useLeadsTableSelection } from "../leads-table-selection-provider/leads-table-selection-context";
+import { useListSelection } from "@/components/workspace/shared/table/list-selection-provider/list-selection-context";
 import styles from "./leads-table-row.module.css";
 
 type LeadsTableRowProps = {
@@ -88,7 +88,7 @@ export function LeadsTableRow({
 }: LeadsTableRowProps) {
   const router = useRouter();
   const startTransition = useNavigationContext();
-  const { isSelected, toggleRow } = useLeadsTableSelection();
+  const { isSelected, toggleRow } = useListSelection();
   const href = buildLeadHref(basePath, currentQueryString, {
     [LeadListQueryParam.Selected]: lead.id,
   });

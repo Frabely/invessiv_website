@@ -11,8 +11,8 @@ import {
   getLeadsSharedDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 
-import { useLeadsTableSelection } from "../../leads-table-selection-provider/leads-table-selection-context";
-import { LeadsTableSelectionProvider } from "../../leads-table-selection-provider/leads-table-selection-provider";
+import { useListSelection } from "@/components/workspace/shared/table/list-selection-provider/list-selection-context";
+import { ListSelectionProvider } from "@/components/workspace/shared/table/list-selection-provider/list-selection-provider";
 import { LeadsBulkActionBar } from "./leads-bulk-action-bar";
 
 const dialogMocks = vi.hoisted(() => ({
@@ -82,7 +82,7 @@ function createLead(index: number): LeadSummaryDto {
 }
 
 function SelectionDriver({ leadId }: { leadId: string }) {
-  const { toggleRow } = useLeadsTableSelection();
+  const { toggleRow } = useListSelection();
 
   return (
     <button onClick={() => toggleRow(leadId)} type="button">
@@ -98,7 +98,7 @@ describe("LeadsBulkActionBar", () => {
     const sharedContent = getLeadsSharedDictionary("en");
 
     render(
-      <LeadsTableSelectionProvider rowIds={rows.map((row) => row.id)}>
+      <ListSelectionProvider rowIds={rows.map((row) => row.id)}>
         <SelectionDriver leadId={rows[0].id} />
         <LeadsBulkActionBar
           actions={ALL_LEAD_ACTIONS}
@@ -107,7 +107,7 @@ describe("LeadsBulkActionBar", () => {
           rows={rows}
           sharedContent={sharedContent}
         />
-      </LeadsTableSelectionProvider>,
+      </ListSelectionProvider>,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "select-lead" }));
@@ -138,7 +138,7 @@ describe("LeadsBulkActionBar", () => {
     const bulkContent = getLeadsBulkDictionary("en");
 
     render(
-      <LeadsTableSelectionProvider rowIds={rows.map((row) => row.id)}>
+      <ListSelectionProvider rowIds={rows.map((row) => row.id)}>
         <SelectionDriver leadId={rows[0].id} />
         <LeadsBulkActionBar
           actions={{ ...ALL_LEAD_ACTIONS, canDelete: false }}
@@ -147,7 +147,7 @@ describe("LeadsBulkActionBar", () => {
           rows={rows}
           sharedContent={getLeadsSharedDictionary("en")}
         />
-      </LeadsTableSelectionProvider>,
+      </ListSelectionProvider>,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "select-lead" }));
@@ -164,7 +164,7 @@ describe("LeadsBulkActionBar", () => {
     const rows = [createLead(1)];
 
     render(
-      <LeadsTableSelectionProvider rowIds={rows.map((row) => row.id)}>
+      <ListSelectionProvider rowIds={rows.map((row) => row.id)}>
         <SelectionDriver leadId={rows[0].id} />
         <LeadsBulkActionBar
           actions={{ ...ALL_LEAD_ACTIONS, canWrite: false, canDelete: false }}
@@ -173,7 +173,7 @@ describe("LeadsBulkActionBar", () => {
           rows={rows}
           sharedContent={getLeadsSharedDictionary("en")}
         />
-      </LeadsTableSelectionProvider>,
+      </ListSelectionProvider>,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "select-lead" }));

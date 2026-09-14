@@ -10,10 +10,8 @@ import type {
   LeadsSharedDictionary,
   LeadsToolbarDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
-import {
-  LeadBadge,
-  LeadSourceBadge,
-} from "@/components/workspace/leads/shared";
+import { Badge } from "@invessiv/ui";
+import { LeadSourceBadge } from "@/components/workspace/leads/shared";
 import { LeadFacetFilter } from "../lead-facet-filter/lead-facet-filter";
 
 type LeadSourceFilterProps = {
@@ -45,7 +43,7 @@ export function LeadSourceFilter({
       activeValue={activeSource}
       allOption={{
         chip: (
-          <LeadBadge
+          <Badge
             icon={faLayerGroup}
             kind="source"
             label={content.filters.allSources}

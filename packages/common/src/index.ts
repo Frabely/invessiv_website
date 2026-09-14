@@ -1,7 +1,6 @@
 export * from "./constants/http";
 export * from "./constants/generator";
 export * from "./constants/leads/activity";
-export * from "./constants/leads/badges";
 export * from "./constants/leads/delete";
 export * from "./constants/leads/errors";
 export * from "./constants/leads/forms";

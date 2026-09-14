@@ -10,19 +10,17 @@ import {
   ContactLeadStatus,
 } from "@invessiv/common/constants/contact/contact-lead-statuses";
 import {
-  LEAD_BADGE_TONE_VALUES,
-  LeadBadgeTone,
-  type LeadBadgeTone as LeadBadgeToneValue,
-} from "@invessiv/common/constants/leads/badges/lead-badge-tones";
+  BADGE_TONE_VALUES,
+  BadgeTone,
+  type BadgeTone as BadgeToneValue,
+} from "@invessiv/common/constants/ui/badge-tones";
 import { LeadStatusBadge } from "./lead-status-badge";
 
 afterEach(() => {
   cleanup();
 });
 
-const VALID_TONES: ReadonlySet<LeadBadgeToneValue> = new Set(
-  LEAD_BADGE_TONE_VALUES,
-);
+const VALID_TONES: ReadonlySet<BadgeToneValue> = new Set(BADGE_TONE_VALUES);
 
 describe("LeadStatusBadge", () => {
   it("renders the responded status with a valid tone and icon", () => {
@@ -40,8 +38,8 @@ describe("LeadStatusBadge", () => {
     expect(badge).not.toBeNull();
     const tone = badge?.getAttribute("data-tone");
     expect(tone).not.toBeNull();
-    expect(VALID_TONES.has(tone as LeadBadgeToneValue)).toBe(true);
-    expect(tone).toBe(LeadBadgeTone.Pink);
+    expect(VALID_TONES.has(tone as BadgeToneValue)).toBe(true);
+    expect(tone).toBe(BadgeTone.Pink);
     expect(badge?.querySelector("svg")).toBeInTheDocument();
   });
 
@@ -59,7 +57,7 @@ describe("LeadStatusBadge", () => {
         tone,
         `expected a tone mapping for status "${status}"`,
       ).not.toBeNull();
-      expect(VALID_TONES.has(tone as LeadBadgeTone)).toBe(true);
+      expect(VALID_TONES.has(tone as BadgeToneValue)).toBe(true);
       cleanup();
     }
   });

@@ -5,10 +5,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { LeadSource } from "@invessiv/common/constants/leads/sources/lead-sources";
-import { LeadBadgeKind } from "@invessiv/common/constants/leads/badges/lead-badge-kinds";
-import type { LeadBadgeTone as LeadBadgeToneValue } from "@invessiv/common/constants/leads/badges/lead-badge-tones";
-import { LeadBadgeTone } from "@invessiv/common/constants/leads/badges/lead-badge-tones";
-import { LeadBadge } from "../../../shared/lead-badge/lead-badge";
+import { Badge } from "@invessiv/ui";
+import type { BadgeTone as BadgeToneValue } from "@invessiv/common/constants/ui/badge-tones";
+import { BadgeTone } from "@invessiv/common/constants/ui/badge-tones";
 
 type LeadSourceBadgeProps = {
   className?: string;
@@ -18,19 +17,19 @@ type LeadSourceBadgeProps = {
 
 const SOURCE_CONFIG: Record<
   LeadSource,
-  { icon: IconDefinition; tone: LeadBadgeToneValue }
+  { icon: IconDefinition; tone: BadgeToneValue }
 > = {
   [LeadSource.Webform]: {
     icon: faGlobe,
-    tone: LeadBadgeTone.Primary,
+    tone: BadgeTone.Primary,
   },
   [LeadSource.Manual]: {
     icon: faPen,
-    tone: LeadBadgeTone.Warning,
+    tone: BadgeTone.Warning,
   },
   [LeadSource.Import]: {
     icon: faFileImport,
-    tone: LeadBadgeTone.Success,
+    tone: BadgeTone.Success,
   },
 };
 
@@ -42,10 +41,10 @@ export function LeadSourceBadge({
   const { icon, tone } = SOURCE_CONFIG[source];
 
   return (
-    <LeadBadge
+    <Badge
       className={className}
       icon={icon}
-      kind={LeadBadgeKind.Source}
+      kind="source"
       label={label}
       tone={tone}
     />

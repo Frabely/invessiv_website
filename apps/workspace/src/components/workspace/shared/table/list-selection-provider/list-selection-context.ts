@@ -2,7 +2,7 @@
 
 import { createContext, useContext } from "react";
 
-export type LeadsTableSelectionContextValue = {
+export type ListSelectionContextValue = {
   allSelected: boolean;
   clearSelection: () => void;
   isSelected: (id: string) => boolean;
@@ -14,15 +14,15 @@ export type LeadsTableSelectionContextValue = {
   toggleRow: (id: string) => void;
 };
 
-export const LeadsTableSelectionContext =
-  createContext<LeadsTableSelectionContextValue | null>(null);
+export const ListSelectionContext =
+  createContext<ListSelectionContextValue | null>(null);
 
-export function useLeadsTableSelection() {
-  const context = useContext(LeadsTableSelectionContext);
+export function useListSelection() {
+  const context = useContext(ListSelectionContext);
 
   if (context == null) {
     throw new Error(
-      "useLeadsTableSelection must be used within LeadsTableSelectionProvider",
+      "useListSelection must be used within ListSelectionProvider",
     );
   }
 

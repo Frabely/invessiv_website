@@ -14,8 +14,8 @@ import type {
 } from "@/i18n/dictionaries/workspace/leads";
 import { LeadsBulkActionBar } from "../bulk/leads-bulk-action-bar/leads-bulk-action-bar";
 import { ListEmptyState } from "@/components/workspace/shared/table/list-empty-state/list-empty-state";
-import { LeadsTableSelectAllCheckbox } from "../leads-table-select-all-checkbox/leads-table-select-all-checkbox";
-import { LeadsTableSelectionProvider } from "../leads-table-selection-provider/leads-table-selection-provider";
+import { ListSelectAllCheckbox } from "@/components/workspace/shared/table/list-select-all-checkbox/list-select-all-checkbox";
+import { ListSelectionProvider } from "@/components/workspace/shared/table/list-selection-provider/list-selection-provider";
 import { LeadsTableRow } from "../leads-table-row/leads-table-row";
 import { SortableHeader } from "../sortable-header/sortable-header";
 import { LeadsTableSpinner } from "./leads-table-spinner/leads-table-spinner";
@@ -71,7 +71,7 @@ export function LeadsTable({
 
   return (
     <section className={styles.shell} aria-label={tableContent.columns.lead}>
-      <LeadsTableSelectionProvider
+      <ListSelectionProvider
         rowIds={rowIds}
         selectionResetKey={selectionResetKey}
       >
@@ -95,7 +95,7 @@ export function LeadsTable({
                 <tr>
                   <th className={styles.selectHeader} scope="col">
                     {actions.canWrite || actions.canDelete ? (
-                      <LeadsTableSelectAllCheckbox
+                      <ListSelectAllCheckbox
                         ariaLabel={tableContent.selection.selectAll}
                       />
                     ) : null}
@@ -204,7 +204,7 @@ export function LeadsTable({
           rows={rows}
           sharedContent={sharedContent}
         />
-      </LeadsTableSelectionProvider>
+      </ListSelectionProvider>
     </section>
   );
 }

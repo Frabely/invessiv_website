@@ -9,4 +9,5 @@ export * from "./components/form/form-status/form-status";
 export * from "./components/dialog/dialog/dialog";
 export * from "./components/dialog/confirm-dialog/confirm-dialog";
 export * from "./components/empty-state/empty-state";
+export * from "./components/badge/badge";
 export { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";

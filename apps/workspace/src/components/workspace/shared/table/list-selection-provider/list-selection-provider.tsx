@@ -1,33 +1,33 @@
 "use client";
 
 import { type ReactNode, useState } from "react";
-import { LeadsTableSelectionContext } from "./leads-table-selection-context";
+import { ListSelectionContext } from "./list-selection-context";
 
-type LeadsTableSelectionProviderProps = {
+type ListSelectionProviderProps = {
   children: ReactNode;
   rowIds: string[];
   selectionResetKey?: string;
 };
 
-export function LeadsTableSelectionProvider({
+export function ListSelectionProvider({
   children,
   rowIds,
   selectionResetKey,
-}: LeadsTableSelectionProviderProps) {
+}: ListSelectionProviderProps) {
   return (
-    <LeadsTableSelectionProviderInner
+    <ListSelectionProviderInner
       key={selectionResetKey ?? "__default__"}
       rowIds={rowIds}
     >
       {children}
-    </LeadsTableSelectionProviderInner>
+    </ListSelectionProviderInner>
   );
 }
 
-function LeadsTableSelectionProviderInner({
+function ListSelectionProviderInner({
   children,
   rowIds,
-}: Omit<LeadsTableSelectionProviderProps, "selectionResetKey">) {
+}: Omit<ListSelectionProviderProps, "selectionResetKey">) {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const rowIdSet = new Set(rowIds);
   const normalizedSelectedIds = selectedIds.filter((id) => rowIdSet.has(id));
@@ -65,7 +65,7 @@ function LeadsTableSelectionProviderInner({
   }
 
   return (
-    <LeadsTableSelectionContext.Provider
+    <ListSelectionContext.Provider
       value={{
         allSelected,
         clearSelection,
@@ -79,6 +79,6 @@ function LeadsTableSelectionProviderInner({
       }}
     >
       {children}
-    </LeadsTableSelectionContext.Provider>
+    </ListSelectionContext.Provider>
   );
 }

@@ -24,9 +24,9 @@ vi.mock("next/navigation", () => ({
 }));
 
 vi.mock(
-  "../leads-table-selection-provider/leads-table-selection-context",
+  "@/components/workspace/shared/table/list-selection-provider/list-selection-context",
   () => ({
-    useLeadsTableSelection: () => ({
+    useListSelection: () => ({
       isSelected: () => false,
       toggleRow: toggleRowMock,
     }),

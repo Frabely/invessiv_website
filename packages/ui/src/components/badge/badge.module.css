@@ -11,7 +11,6 @@
     var(--color-text) 88%,
     var(--badge-accent) 12%
   );
-
   display: inline-flex;
   align-items: center;
   gap: 0.48rem;

@@ -2,17 +2,17 @@
 
 import { useEffect, useRef } from "react";
 import { CheckboxControl } from "@invessiv/ui";
-import { useLeadsTableSelection } from "../leads-table-selection-provider/leads-table-selection-context";
+import { useListSelection } from "../list-selection-provider/list-selection-context";
 
-type LeadsTableSelectAllCheckboxProps = {
+type ListSelectAllCheckboxProps = {
   ariaLabel: string;
 };
 
-export function LeadsTableSelectAllCheckbox({
+export function ListSelectAllCheckbox({
   ariaLabel,
-}: LeadsTableSelectAllCheckboxProps) {
+}: ListSelectAllCheckboxProps) {
   const checkboxRef = useRef<HTMLInputElement>(null);
-  const { allSelected, someSelected, toggleAll } = useLeadsTableSelection();
+  const { allSelected, someSelected, toggleAll } = useListSelection();
 
   useEffect(() => {
     if (checkboxRef.current) {

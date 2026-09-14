@@ -4,31 +4,30 @@ import {
   type ContactLeadStatus as ContactLeadStatusValue,
 } from "@invessiv/common/constants/contact/contact-lead-statuses";
 import {
-  LeadBadgeTone,
-  type LeadBadgeTone as LeadBadgeToneValue,
-} from "@invessiv/common/constants/leads/badges/lead-badge-tones";
+  BadgeTone,
+  type BadgeTone as BadgeToneValue,
+} from "@invessiv/common/constants/ui/badge-tones";
 
 type LeadStatusBadgeStatus =
-  | ContactLeadStatusValue
-  | typeof CONTACT_LEAD_STATUS_ALL;
+  ContactLeadStatusValue | typeof CONTACT_LEAD_STATUS_ALL;
 
 export const LEAD_STATUS_BADGE_TONES = {
-  [CONTACT_LEAD_STATUS_ALL]: LeadBadgeTone.Neutral,
-  [ContactLeadStatus.New]: LeadBadgeTone.Info,
-  [ContactLeadStatus.PendingReview]: LeadBadgeTone.Warning,
-  [ContactLeadStatus.Contacted]: LeadBadgeTone.Primary,
-  [ContactLeadStatus.ConnectionRequested]: LeadBadgeTone.Magenta,
-  [ContactLeadStatus.Connected]: LeadBadgeTone.Teal,
-  [ContactLeadStatus.FollowUp]: LeadBadgeTone.Lime,
-  [ContactLeadStatus.NotReached]: LeadBadgeTone.Coral,
-  [ContactLeadStatus.Reminder]: LeadBadgeTone.Fuchsia,
-  [ContactLeadStatus.Responded]: LeadBadgeTone.Pink,
-  [ContactLeadStatus.SettingCall]: LeadBadgeTone.Indigo,
-  [ContactLeadStatus.ClosingCall]: LeadBadgeTone.Teal,
-  [ContactLeadStatus.Qualified]: LeadBadgeTone.Orange,
-  [ContactLeadStatus.Proposal]: LeadBadgeTone.Purple,
-  [ContactLeadStatus.OnHold]: LeadBadgeTone.Neutral,
-  [ContactLeadStatus.Won]: LeadBadgeTone.Success,
-  [ContactLeadStatus.Lost]: LeadBadgeTone.Danger,
-  [ContactLeadStatus.Archived]: LeadBadgeTone.Neutral,
-} as const satisfies Record<LeadStatusBadgeStatus, LeadBadgeToneValue>;
+  [CONTACT_LEAD_STATUS_ALL]: BadgeTone.Neutral,
+  [ContactLeadStatus.New]: BadgeTone.Info,
+  [ContactLeadStatus.PendingReview]: BadgeTone.Warning,
+  [ContactLeadStatus.Contacted]: BadgeTone.Primary,
+  [ContactLeadStatus.ConnectionRequested]: BadgeTone.Magenta,
+  [ContactLeadStatus.Connected]: BadgeTone.Teal,
+  [ContactLeadStatus.FollowUp]: BadgeTone.Lime,
+  [ContactLeadStatus.NotReached]: BadgeTone.Coral,
+  [ContactLeadStatus.Reminder]: BadgeTone.Fuchsia,
+  [ContactLeadStatus.Responded]: BadgeTone.Pink,
+  [ContactLeadStatus.SettingCall]: BadgeTone.Indigo,
+  [ContactLeadStatus.ClosingCall]: BadgeTone.Teal,
+  [ContactLeadStatus.Qualified]: BadgeTone.Orange,
+  [ContactLeadStatus.Proposal]: BadgeTone.Purple,
+  [ContactLeadStatus.OnHold]: BadgeTone.Neutral,
+  [ContactLeadStatus.Won]: BadgeTone.Success,
+  [ContactLeadStatus.Lost]: BadgeTone.Danger,
+  [ContactLeadStatus.Archived]: BadgeTone.Neutral,
+} as const satisfies Record<LeadStatusBadgeStatus, BadgeToneValue>;

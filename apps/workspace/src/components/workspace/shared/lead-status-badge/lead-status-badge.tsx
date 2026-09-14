@@ -24,13 +24,11 @@ import {
   ContactLeadStatus,
   type ContactLeadStatus as ContactLeadStatusValue,
 } from "@invessiv/common/constants/contact/contact-lead-statuses";
-import { LeadBadgeKind } from "@invessiv/common/constants/leads/badges/lead-badge-kinds";
+import { Badge } from "@invessiv/ui";
 import { LEAD_STATUS_BADGE_TONES } from "@/common/constants/leads/badges/lead-status-badge-tones";
-import { LeadBadge } from "../lead-badge/lead-badge";
 
 type LeadStatusBadgeStatus =
-  | ContactLeadStatusValue
-  | typeof CONTACT_LEAD_STATUS_ALL;
+  ContactLeadStatusValue | typeof CONTACT_LEAD_STATUS_ALL;
 
 type LeadStatusBadgeProps = {
   className?: string;
@@ -65,10 +63,10 @@ export function LeadStatusBadge({
   status,
 }: LeadStatusBadgeProps) {
   return (
-    <LeadBadge
+    <Badge
       className={className}
       icon={STATUS_ICONS[status]}
-      kind={LeadBadgeKind.Status}
+      kind="status"
       label={label}
       tone={LEAD_STATUS_BADGE_TONES[status]}
     />

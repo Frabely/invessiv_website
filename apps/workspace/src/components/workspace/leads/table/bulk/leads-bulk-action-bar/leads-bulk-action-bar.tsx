@@ -6,7 +6,7 @@ import type { LeadCategoryOption } from "@invessiv/common/contracts/leads/lead-c
 import type { LeadSummaryDto } from "@invessiv/common/contracts/leads/lead-summary.dto";
 import type { LeadActionPermissions } from "@/common/contracts/leads/lead-action-permissions";
 import { ButtonControl } from "@invessiv/ui";
-import { useLeadsTableSelection } from "@/components/workspace/leads/table/leads-table-selection-provider/leads-table-selection-context";
+import { useListSelection } from "@/components/workspace/shared/table/list-selection-provider/list-selection-context";
 import { BulkDialogKind } from "@invessiv/common/constants/leads/bulk/bulk-dialog-kinds";
 import type {
   LeadsBulkDictionary,
@@ -44,7 +44,7 @@ export function LeadsBulkActionBar({
   rows,
   sharedContent,
 }: LeadsBulkActionBarProps) {
-  const selection = useLeadsTableSelection();
+  const selection = useListSelection();
   const [openDialog, setOpenDialog] = useState<BulkDialogKind | null>(null);
 
   if (
