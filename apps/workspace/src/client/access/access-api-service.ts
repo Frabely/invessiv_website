@@ -11,6 +11,7 @@ import type { AddWorkspaceMemberRequestDto } from "@invessiv/common/contracts/au
 import type { ChangeWorkspaceOwnerRequestDto } from "@invessiv/common/contracts/auth/change-workspace-owner-request.dto";
 import type { ClerkCandidateDto } from "@invessiv/common/contracts/auth/clerk-candidate.dto";
 import type { CreateRoleRequestDto } from "@invessiv/common/contracts/auth/create-role-request.dto";
+import type { ListClerkCandidatesRequestDto } from "@invessiv/common/contracts/auth/list-clerk-candidates-request.dto";
 import type { ReplaceWorkspaceMemberRolesRequestDto } from "@invessiv/common/contracts/auth/replace-workspace-member-roles-request.dto";
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
 import type { UpdateRoleRequestDto } from "@invessiv/common/contracts/auth/update-role-request.dto";
@@ -22,7 +23,6 @@ import type {
   RoleMutationClientResult,
 } from "@/common/contracts/access/access-client-results";
 import {
-  clerkCandidatesEndpoint,
   workspaceMemberOwnerEndpoint,
   workspaceMemberRolesEndpoint,
   workspaceRoleEndpoint,
@@ -135,9 +135,13 @@ async function mutateRole(
 }
 
 async function listClerkCandidates(
-  query: string,
+  request: ListClerkCandidatesRequestDto,
 ): Promise<ClerkCandidatesClientResult> {
-  const response = await send(clerkCandidatesEndpoint(query), "GET");
+  const response = await send(
+    WorkspaceApiEndpoint.MembersClerkCandidates,
+    "POST",
+    request,
+  );
   if (!response) {
     return { ok: false, code: WorkspaceMemberErrorCode.Internal };
   }

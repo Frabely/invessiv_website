@@ -15,7 +15,6 @@ import {
 
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { RoleErrorCode } from "@invessiv/common/constants/auth/errors/role-error-codes";
-import { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
 import {
   Permission,
   PERMISSION_VALUES,
@@ -38,7 +37,6 @@ import { GET, POST } from "@/app/api/workspace/leads/route";
 import { addWorkspaceMember } from "@/server/workspace/access/command-handler/add-workspace-member.command-handler";
 import { createRole } from "@/server/workspace/access/command-handler/create-role.command-handler";
 import { replaceWorkspaceMemberRoles } from "@/server/workspace/access/command-handler/replace-workspace-member-roles.command-handler";
-import { revokeWorkspaceOwner } from "@/server/workspace/access/command-handler/revoke-workspace-owner.command-handler";
 import { workspaceOwnerInvariantService } from "@/server/workspace/auth/services/workspace-owner-invariant-service";
 
 vi.mock("server-only", () => ({}));
@@ -80,8 +78,34 @@ vi.mock("@/server/workspace/access/services/clerk-directory-service", () => ({
 
 const RUN_INTEGRATION = process.env.RBAC_DB_INTEGRATION === "true";
 const FIXTURE_PREFIX = "integration:access:";
+const LOCK_NOT_AVAILABLE_CODE = "55P03";
 
 type Database = ReturnType<typeof getDrizzleDatabaseClient>;
+
+function hasErrorCode(error: unknown, expectedCode: string): boolean {
+  const visited = new WeakSet<object>();
+  const pending: unknown[] = [error];
+  while (pending.length > 0) {
+    const current = pending.pop();
+    if (
+      typeof current !== "object" ||
+      current === null ||
+      visited.has(current)
+    ) {
+      continue;
+    }
+    visited.add(current);
+    if ((current as { code?: unknown }).code === expectedCode) {
+      return true;
+    }
+    for (const key of ["cause", "originalError", "originalCause"] as const) {
+      if (key in current) {
+        pending.push((current as Record<string, unknown>)[key]);
+      }
+    }
+  }
+  return false;
+}
 
 describe.skipIf(!RUN_INTEGRATION)(
   "access management PostgreSQL integration",
@@ -341,33 +365,53 @@ describe.skipIf(!RUN_INTEGRATION)(
       expect(stored).toEqual([]);
     }, 30_000);
 
-    it("keeps exactly one owner when the last two owners revoke each other in parallel", async (context) => {
-      const existingOwners =
-        await workspaceOwnerInvariantService.findActiveOwnerMemberIds(db);
-      if (existingOwners.length > 0) {
-        context.skip();
-        return;
+    it("serializes concurrent writes to every owner assignment", async () => {
+      const owner = await createOwner();
+      let releaseLock: () => void = () => undefined;
+      let reportLocked: () => void = () => undefined;
+      const holdLock = new Promise<void>((resolve) => {
+        releaseLock = resolve;
+      });
+      const locked = new Promise<void>((resolve) => {
+        reportLocked = resolve;
+      });
+
+      const lockingTransaction = db.transaction(async (tx) => {
+        await workspaceOwnerInvariantService.lockOwnerAssignmentsAndFindActiveOwners(
+          tx,
+        );
+        reportLocked();
+        await holdLock;
+      });
+
+      await locked;
+      let concurrentWriteWasBlocked = false;
+      try {
+        await db.transaction(async (tx) => {
+          await tx.execute(sql`set local lock_timeout = '250ms'`);
+          await tx
+            .delete(workspaceMemberRoles)
+            .where(
+              and(
+                eq(workspaceMemberRoles.workspace_member_id, owner.memberId),
+                eq(
+                  workspaceMemberRoles.role_id,
+                  workspaceOwnerInvariantService.ownerRoleId,
+                ),
+              ),
+            );
+        });
+      } catch (error: unknown) {
+        concurrentWriteWasBlocked = hasErrorCode(
+          error,
+          LOCK_NOT_AVAILABLE_CODE,
+        );
+      } finally {
+        releaseLock();
+        await lockingTransaction;
       }
 
-      const first = await createOwner();
-      const second = await createOwner();
-
-      const results = await Promise.all([
-        revokeWorkspaceOwner(first.memberId, { version: 1 }, second.actor),
-        revokeWorkspaceOwner(second.memberId, { version: 1 }, first.actor),
-      ]);
-
-      expect(results.filter((result) => result.ok)).toHaveLength(1);
-      expect(
-        results.filter(
-          (result) =>
-            !result.ok &&
-            result.code === WorkspaceMemberErrorCode.LastActiveOwner,
-        ),
-      ).toHaveLength(1);
-      expect(
-        await workspaceOwnerInvariantService.findActiveOwnerMemberIds(db),
-      ).toHaveLength(1);
+      expect(concurrentWriteWasBlocked).toBe(true);
     }, 60_000);
   },
 );

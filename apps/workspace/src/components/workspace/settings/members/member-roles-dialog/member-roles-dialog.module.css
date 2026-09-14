@@ -56,6 +56,40 @@
   color: var(--color-text);
 }
 
+.conflictMessage {
+  margin: 0;
+}
+
+.currentState {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.65rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 28%, transparent);
+}
+
+.currentStateHeading {
+  margin: 0;
+  font-size: var(--font-size-label-md);
+}
+
+.currentRoles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.currentRoles li {
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-surface-2) 75%, transparent);
+}
+
 .error {
   border: 1px solid color-mix(in srgb, var(--color-danger) 45%, transparent);
   background: color-mix(in srgb, var(--color-danger) 10%, transparent);

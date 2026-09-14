@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { ClerkCandidateDto } from "@invessiv/common/contracts/auth/clerk-candidate.dto";
-import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
+import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/role-assignment-option.dto";
 import { accessApiService } from "@/client/access/access-api-service";
 import { WorkspaceDialogSize } from "@/common/constants/ui/workspace-dialog-sizes";
 import { selectDefaultRoleIds } from "@/common/patterns/access/role-selection";
@@ -26,7 +26,7 @@ type AddMemberDialogProps = {
   content: SettingsMembersDictionary;
   onCloseAction: () => void;
   permissionsContent: SettingsPermissionsDictionary;
-  roles: RoleDto[];
+  roles: RoleAssignmentOptionDto[];
 };
 
 const SEARCH_DEBOUNCE_MS = 300;
@@ -65,7 +65,7 @@ export function AddMemberDialog({
     const timer = window.setTimeout(
       async () => {
         setIsLoading(true);
-        const result = await accessApiService.listClerkCandidates(query);
+        const result = await accessApiService.listClerkCandidates({ query });
         if (cancelled) {
           return;
         }

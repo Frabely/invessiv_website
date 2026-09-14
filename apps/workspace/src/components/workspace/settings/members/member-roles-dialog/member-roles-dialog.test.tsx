@@ -7,6 +7,7 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -123,7 +124,18 @@ describe("MemberRolesDialog", () => {
       .mockResolvedValueOnce({
         ok: false,
         code: ConcurrencyErrorCode.VersionConflict,
-        current: { ...MEMBER, version: 5 },
+        current: {
+          ...MEMBER,
+          roles: [
+            {
+              id: "role-sales",
+              name: "Vertrieb",
+              systemKey: null,
+              active: true,
+            },
+          ],
+          version: 5,
+        },
       })
       .mockResolvedValueOnce({ ok: true, member: { ...MEMBER, version: 6 } });
     const onClose = renderDialog();
@@ -137,6 +149,11 @@ describe("MemberRolesDialog", () => {
       await screen.findByText(content.rolesDialog.conflict),
     ).toBeInTheDocument();
     expect(screen.getByRole("checkbox", { name: /Vertrieb/ })).toBeChecked();
+    const conflict = screen.getByRole("alert");
+    expect(
+      within(conflict).getByText(content.rolesDialog.conflictCurrentHeading),
+    ).toBeInTheDocument();
+    expect(within(conflict).getByText("Vertrieb")).toBeInTheDocument();
 
     fireEvent.click(
       screen.getByRole("button", { name: content.rolesDialog.submit }),

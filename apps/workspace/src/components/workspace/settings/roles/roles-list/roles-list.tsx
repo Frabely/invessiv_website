@@ -10,7 +10,6 @@ import type {
   SettingsPermissionsDictionary,
   SettingsRolesDictionary,
 } from "@/i18n/dictionaries/workspace/settings";
-import { SettingsEmptyState } from "../../shared/settings-empty-state/settings-empty-state";
 import { RoleFormDialog } from "../role-form-dialog/role-form-dialog";
 import { RoleRow } from "../role-row/role-row";
 import styles from "./roles-list.module.css";
@@ -80,11 +79,13 @@ export function RolesList({
             ))}
           </ul>
         ) : (
-          <SettingsEmptyState
-            action={createButton}
-            description={content.list.emptyDescription}
-            title={content.list.emptyTitle}
-          />
+          <div className={styles.emptyPanel}>
+            <h3 className={styles.emptyTitle}>{content.list.emptyTitle}</h3>
+            <p className={styles.emptyDescription}>
+              {content.list.emptyDescription}
+            </p>
+            <div className={styles.emptyAction}>{createButton}</div>
+          </div>
         )}
       </section>
 

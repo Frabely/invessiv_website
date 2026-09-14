@@ -5,7 +5,7 @@ import { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
-import { GET as getCandidates } from "@/app/api/workspace/members/clerk-candidates/route";
+import { POST as getCandidates } from "@/app/api/workspace/members/clerk-candidates/route";
 import {
   DELETE as revokeOwner,
   POST as grantOwner,
@@ -170,11 +170,13 @@ describe("members routes", () => {
     expect((await response.json()).error).toBe(code);
   });
 
-  it("GET clerk-candidates passes a trimmed query and maps a Clerk outage to 503", async () => {
+  it("POST clerk-candidates reads a trimmed body without putting PII in the URL", async () => {
     mocks.listCandidates.mockResolvedValueOnce({ ok: true, candidates: [] });
     const ok = await getCandidates(
-      request(
-        "http://localhost/api/workspace/members/clerk-candidates?query=%20anna%20",
+      jsonRequest(
+        "http://localhost/api/workspace/members/clerk-candidates",
+        "POST",
+        { query: " anna " },
       ),
     );
     expect(ok.status).toBe(200);
@@ -185,10 +187,34 @@ describe("members routes", () => {
       code: WorkspaceMemberErrorCode.ClerkUnavailable,
     });
     const outage = await getCandidates(
-      request("http://localhost/api/workspace/members/clerk-candidates"),
+      jsonRequest(
+        "http://localhost/api/workspace/members/clerk-candidates",
+        "POST",
+        { query: "" },
+      ),
     );
     expect(outage.status).toBe(503);
     expect(mocks.listCandidates).toHaveBeenLastCalledWith(null);
+  });
+
+  it("POST clerk-candidates rejects malformed and overlong search bodies", async () => {
+    const malformed = await getCandidates(
+      request("http://localhost/api/workspace/members/clerk-candidates", {
+        method: "POST",
+        body: "{",
+      }),
+    );
+    const overlong = await getCandidates(
+      jsonRequest(
+        "http://localhost/api/workspace/members/clerk-candidates",
+        "POST",
+        { query: "a".repeat(101) },
+      ),
+    );
+
+    expect(malformed.status).toBe(400);
+    expect(overlong.status).toBe(400);
+    expect(mocks.listCandidates).not.toHaveBeenCalled();
   });
 
   it("PUT roles returns the version conflict body with the current member", async () => {

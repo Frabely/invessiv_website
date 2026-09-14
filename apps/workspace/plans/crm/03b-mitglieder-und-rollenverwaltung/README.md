@@ -40,9 +40,9 @@ Permissionabhängige Lead-Aktionen bleiben in 03b, weil ab diesem Merge Mitglied
 
 - [x] Mitglied mit Custom-Rolle darf die erlaubte Aktion (200) und erhält für eine andere 403.
 - [x] Rollenentzug wirkt beim nächsten Request.
-- [x] Letzter aktiver Owner kann seiner Owner-Rolle nicht beraubt werden (409 mit Begründung), auch bei parallelen
-      Entzügen. Unit-Test deckt Reihenfolge und Abweisung ab; der parallele DB-Fall läuft nur auf einer DB ohne
-      bestehenden Owner und wird auf der Dev-DB sichtbar übersprungen.
+- [x] Letzter aktiver Owner kann seiner Owner-Rolle nicht beraubt werden (409 mit Begründung). Der Unit-Test deckt
+      Abweisung und Schreibreihenfolge ab; der DB-Integrationstest weist ohne Vorbedingung nach, dass konkurrierende
+      Änderungen an Owner-Zuweisungen durch `SELECT … FOR UPDATE` serialisiert werden.
 - [x] Custom-Rolle mit nicht delegierbarer Permission wird abgewiesen (422), auch bei manipuliertem Request.
 - [x] Rollen- und Mitgliedsänderungen sind versioniert (`updateVersioned`, 409 mit aktuellem Stand).
 - [x] Jede Änderung erzeugt genau einen `security_events`-Eintrag mit tatsächlichem Actor und ohne PII in Metadaten.
@@ -58,13 +58,13 @@ Permissionabhängige Lead-Aktionen bleiben in 03b, weil ab diesem Merge Mitglied
 
 | Nachweis                                                                    | Ergebnis                                               |
 | --------------------------------------------------------------------------- | ------------------------------------------------------ |
-| `pnpm -r lint` / `pnpm -r typecheck` / `pnpm -r test`                       | grün (Workspace 866, Web 518, Common 124)              |
+| `pnpm -r lint` / `pnpm -r typecheck` / `pnpm -r test`                       | grün (Workspace 878, Web 518, Common 124)              |
 | `pnpm --filter @invessiv/workspace build`                                   | grün, Route `/[locale]/settings` und API-Routen gebaut |
 | Migration `0025` auf Dev-DB; `db:smoke:dev` / `crm` / `activities` / `rbac` | ok / 33 / 13 / 43 Checks ok                            |
-| `access-management.integration.test.ts` (`--mode rbac-integration`)         | 3 ok, 1 übersprungen (Owner existiert)                 |
+| `access-management.integration.test.ts` (`--mode rbac-integration`)         | 4 ok, einschließlich Owner-Lock                        |
 | Bestehende Integrationstests RBAC / `updateVersioned`                       | 7 ok + 1 übersprungen / 2 ok                           |
 
-**Review-Umfang:** 193 geänderte Dateien und damit über dem Reviewziel von 100–120, unter der harten Grenze von 200.
+**Review-Umfang:** 200 geänderte Dateien und damit über dem Reviewziel von 100–120, an der harten Grenze von 200.
 Rund 15 davon sind Plan- und Statusdokumentation (Neuschnitt 03b/03c/03d, Status 01–03, Entscheidung zum
 Kundennamen), rund 20 die permissionabhängigen Lead-Aktionen samt Tests.
 

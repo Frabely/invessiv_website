@@ -4,6 +4,11 @@ import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys"
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
 import { SettingsTab } from "@/common/constants/access/settings-tabs";
 import {
+  workspaceMemberOwnerEndpoint,
+  workspaceMemberRolesEndpoint,
+  workspaceRoleEndpoint,
+} from "@/common/patterns/access/access-api-endpoints";
+import {
   selectAssignableRoles,
   selectDefaultRoleIds,
   selectOwnerRoleIds,
@@ -12,6 +17,12 @@ import {
   buildSettingsTabHref,
   resolveSettingsTab,
 } from "@/common/patterns/access/settings-tab";
+import { getSettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
+import { formatMessage } from "@/lib/i18n/format-message";
+import {
+  resolveRoleDescription,
+  resolveRoleLabel,
+} from "@/lib/workspace/access/role-label";
 
 function role(overrides: Partial<RoleDto>): RoleDto {
   return {
@@ -78,6 +89,45 @@ describe("settings tab", () => {
     );
     expect(buildSettingsTabHref("/de/settings", SettingsTab.Roles)).toBe(
       "/de/settings?tab=roles",
+    );
+  });
+});
+
+describe("access api endpoints", () => {
+  it("builds encoded member and role paths from endpoint constants", () => {
+    expect(workspaceMemberRolesEndpoint("member-1")).toBe(
+      "/api/workspace/members/member-1/roles",
+    );
+    expect(workspaceMemberOwnerEndpoint("member-1")).toBe(
+      "/api/workspace/members/member-1/owner",
+    );
+    expect(workspaceRoleEndpoint("../leads")).toBe(
+      "/api/workspace/roles/..%2Fleads",
+    );
+  });
+});
+
+describe("settings labels", () => {
+  const content = getSettingsPermissionsDictionary("de");
+
+  it("translates system roles and keeps custom names", () => {
+    expect(
+      resolveRoleLabel(
+        { name: "Workspace owner", systemKey: SystemRoleKey.WorkspaceOwner },
+        content,
+      ),
+    ).toBe("Owner");
+    expect(
+      resolveRoleLabel({ name: "Vertrieb", systemKey: null }, content),
+    ).toBe("Vertrieb");
+    expect(
+      resolveRoleDescription({ description: null, systemKey: null }, content),
+    ).toBeNull();
+  });
+
+  it("fills known message placeholders and leaves unknown ones visible", () => {
+    expect(formatMessage("{count} von {total}", { count: 2 })).toBe(
+      "2 von {total}",
     );
   });
 });

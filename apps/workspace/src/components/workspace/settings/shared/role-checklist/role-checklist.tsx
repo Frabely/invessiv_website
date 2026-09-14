@@ -2,7 +2,7 @@
 
 import { useId } from "react";
 
-import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
+import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/role-assignment-option.dto";
 import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import { formatMessage } from "@/lib/i18n/format-message";
 import {
@@ -18,7 +18,7 @@ type RoleChecklistProps = {
   legend: string;
   onToggleAction: (roleId: string) => void;
   permissionsContent: SettingsPermissionsDictionary;
-  roles: readonly RoleDto[];
+  roles: readonly RoleAssignmentOptionDto[];
   selectedRoleIds: readonly string[];
 };
 

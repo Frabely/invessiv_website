@@ -14,12 +14,3 @@ export function workspaceMemberOwnerEndpoint(memberId: string): string {
 export function workspaceRoleEndpoint(roleId: string): string {
   return `${WorkspaceApiEndpoint.Roles}/${encodeURIComponent(roleId)}`;
 }
-
-export function clerkCandidatesEndpoint(query: string): string {
-  const trimmed = query.trim();
-  if (!trimmed) {
-    return WorkspaceApiEndpoint.MembersClerkCandidates;
-  }
-  const params = new URLSearchParams({ query: trimmed });
-  return `${WorkspaceApiEndpoint.MembersClerkCandidates}?${params.toString()}`;
-}

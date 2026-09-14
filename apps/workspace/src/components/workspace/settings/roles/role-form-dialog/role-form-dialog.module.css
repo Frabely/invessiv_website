@@ -76,6 +76,37 @@
   background: color-mix(in srgb, var(--color-danger) 10%, transparent);
 }
 
+.conflictMessage,
+.currentStateSummary {
+  margin: 0;
+}
+
+.currentState {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin-top: 0.65rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 28%, transparent);
+}
+
+.currentStateHeading {
+  margin: 0;
+  font-size: var(--font-size-label-md);
+}
+
+.currentStateSummary {
+  color: var(--color-text-muted);
+}
+
+.currentStateDescription {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  font-style: italic;
+}
+
 @media (max-width: 720px) {
   .fields {
     grid-template-columns: 1fr;

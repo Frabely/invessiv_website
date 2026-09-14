@@ -24,6 +24,7 @@ import {
 import { requireWorkspaceArea } from "@/lib/auth/permissions";
 import { workspaceAreaPathFor } from "@/lib/auth/routes";
 import { syncWorkspaceMemberProfiles } from "@/server/workspace/access/command-handler/sync-workspace-member-profiles.command-handler";
+import { listRoleAssignmentOptions } from "@/server/workspace/access/query-handler/list-role-assignment-options.query-handler";
 import { listRoles } from "@/server/workspace/access/query-handler/list-roles.query-handler";
 import { listWorkspaceMembers } from "@/server/workspace/access/query-handler/list-workspace-members.query-handler";
 
@@ -69,14 +70,14 @@ export default async function SettingsPage({
   );
   const permissionsContent = getSettingsPermissionsDictionary(activeLocale);
 
-  if (activeTab === SettingsTab.Members) {
+  const membersTabData = async () => {
     await syncWorkspaceMemberProfiles();
-  }
-  // The member tab needs the role catalog as well: to pick roles and to preview their permissions.
-  const [members, roles] = await Promise.all([
-    activeTab === SettingsTab.Members ? listWorkspaceMembers() : [],
-    listRoles(),
-  ]);
+    return Promise.all([listWorkspaceMembers(), listRoleAssignmentOptions()]);
+  };
+  const [members, assignmentRoles, managedRoles] =
+    activeTab === SettingsTab.Members
+      ? [...(await membersTabData()), []]
+      : [[], [], await listRoles()];
 
   return (
     <WorkspacePageShell pageId="settings">
@@ -90,7 +91,7 @@ export default async function SettingsPage({
         <RolesList
           content={getSettingsRolesDictionary(activeLocale)}
           permissionsContent={permissionsContent}
-          roles={roles}
+          roles={managedRoles}
         />
       ) : (
         <MembersList
@@ -98,7 +99,7 @@ export default async function SettingsPage({
           currentMemberId={actor.workspaceMemberId}
           members={members}
           permissionsContent={permissionsContent}
-          roles={roles}
+          roles={assignmentRoles}
         />
       )}
     </WorkspacePageShell>

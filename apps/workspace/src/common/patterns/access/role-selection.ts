@@ -1,14 +1,14 @@
 import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
-import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
+import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/role-assignment-option.dto";
 
 /**
  * Roles offered in a role picker: active non-owner roles plus inactive ones the member still holds,
  * mirroring what `PUT …/roles` accepts. The owner role has its own flow.
  */
 export function selectAssignableRoles(
-  roles: readonly RoleDto[],
+  roles: readonly RoleAssignmentOptionDto[],
   currentRoleIds: readonly string[],
-): RoleDto[] {
+): RoleAssignmentOptionDto[] {
   return roles.filter(
     (role) =>
       role.systemKey !== SystemRoleKey.WorkspaceOwner &&
@@ -16,14 +16,18 @@ export function selectAssignableRoles(
   );
 }
 
-export function selectOwnerRoleIds(roles: readonly RoleDto[]): string[] {
+export function selectOwnerRoleIds(
+  roles: readonly RoleAssignmentOptionDto[],
+): string[] {
   return roles
     .filter((role) => role.systemKey === SystemRoleKey.WorkspaceOwner)
     .map((role) => role.id);
 }
 
 /** A new member starts with the everyday member role when it is available. */
-export function selectDefaultRoleIds(roles: readonly RoleDto[]): string[] {
+export function selectDefaultRoleIds(
+  roles: readonly RoleAssignmentOptionDto[],
+): string[] {
   return roles
     .filter(
       (role) => role.active && role.systemKey === SystemRoleKey.WorkspaceMember,

@@ -12,6 +12,7 @@ const mocks = vi.hoisted(() => ({
   requireWorkspaceArea: vi.fn(),
   syncProfiles: vi.fn(),
   listMembers: vi.fn(),
+  listAssignmentRoles: vi.fn(),
   listRoles: vi.fn(),
 }));
 
@@ -23,6 +24,10 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/lib/auth/permissions", () => ({
   requireWorkspaceArea: mocks.requireWorkspaceArea,
 }));
+vi.mock(
+  "@/server/workspace/access/query-handler/list-role-assignment-options.query-handler",
+  () => ({ listRoleAssignmentOptions: mocks.listAssignmentRoles }),
+);
 vi.mock(
   "@/server/workspace/access/command-handler/sync-workspace-member-profiles.command-handler",
   () => ({ syncWorkspaceMemberProfiles: mocks.syncProfiles }),
@@ -54,6 +59,7 @@ describe("SettingsPage", () => {
   beforeEach(() => {
     Object.values(mocks).forEach((mock) => mock.mockReset());
     mocks.listMembers.mockResolvedValue([]);
+    mocks.listAssignmentRoles.mockResolvedValue([]);
     mocks.listRoles.mockResolvedValue([]);
   });
 
@@ -76,6 +82,8 @@ describe("SettingsPage", () => {
     render(await renderPage());
 
     expect(mocks.syncProfiles).toHaveBeenCalled();
+    expect(mocks.listAssignmentRoles).toHaveBeenCalled();
+    expect(mocks.listRoles).not.toHaveBeenCalled();
     expect(screen.getByTestId("members-list")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Rollen" })).toBeInTheDocument();
   });
@@ -92,6 +100,7 @@ describe("SettingsPage", () => {
     expect(
       screen.queryByRole("link", { name: "Rollen" }),
     ).not.toBeInTheDocument();
+    expect(mocks.listRoles).not.toHaveBeenCalled();
   });
 
   it("opens the roles tab with roles.manage without syncing member profiles", async () => {
@@ -102,5 +111,7 @@ describe("SettingsPage", () => {
     expect(screen.getByTestId("roles-list")).toBeInTheDocument();
     expect(mocks.syncProfiles).not.toHaveBeenCalled();
     expect(mocks.listMembers).not.toHaveBeenCalled();
+    expect(mocks.listAssignmentRoles).not.toHaveBeenCalled();
+    expect(mocks.listRoles).toHaveBeenCalled();
   });
 });

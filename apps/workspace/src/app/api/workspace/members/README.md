@@ -16,7 +16,7 @@ Mitgliedschaft `404 NOT_FOUND`, DB-Fehler bei der Auflösung `503 UNAVAILABLE`, 
 | -------------------------------------- | ---------------- |
 | `GET /members`                         | `members.read`   |
 | `POST /members`                        | `members.manage` |
-| `GET /members/clerk-candidates`        | `members.manage` |
+| `POST /members/clerk-candidates`       | `members.manage` |
 | `PUT /members/[id]/roles`              | `members.manage` |
 | `POST /members/[id]/owner`, `DELETE …` | `members.manage` |
 
@@ -71,10 +71,11 @@ Body `AddWorkspaceMemberRequestDto`:
 Name und E-Mail lädt der Server per Clerk-ID nach; zusätzliche Felder im Body werden verworfen. Erfolg:
 `201 { "member": WorkspaceMemberDto }`, dazu ein Security-Event `workspace_member_added`.
 
-## `GET /api/workspace/members/clerk-candidates?query=`
+## `POST /api/workspace/members/clerk-candidates`
 
-`200 { "candidates": ClerkCandidateDto[] }` — höchstens 100 Clerk-Konten ohne `users`-Zeile; `query` (optional,
-max. 100 Zeichen) wird an die Clerk-Suche durchgereicht.
+Body `ListClerkCandidatesRequestDto`: `{ "query": "…" }`. `query` darf leer und höchstens 100 Zeichen lang sein.
+Die Suche steht bewusst im Body, damit Namen und E-Mail-Adressen nicht in URLs oder URL-Logs gelangen.
+Erfolg: `200 { "candidates": ClerkCandidateDto[] }` — höchstens 100 Clerk-Konten ohne `users`-Zeile.
 
 ## `PUT /api/workspace/members/[id]/roles`
 

@@ -3,6 +3,21 @@ import { describe, expect, it } from "vitest";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { accessSchemas } from "@/server/workspace/access/services/access-schemas";
 
+describe("accessSchemas.listClerkCandidates", () => {
+  it("trims a body search and rejects values that could evade the URL privacy boundary", () => {
+    expect(
+      accessSchemas.listClerkCandidates.parse({ query: " anna@example.test " }),
+    ).toEqual({ query: "anna@example.test" });
+    expect(
+      accessSchemas.listClerkCandidates.safeParse({ query: "a".repeat(101) })
+        .success,
+    ).toBe(false);
+    expect(
+      accessSchemas.listClerkCandidates.safeParse({ query: null }).success,
+    ).toBe(false);
+  });
+});
+
 const ROLE_ID = "0b0f1d8e-6a7c-4a44-9c3e-2f3f8f2b7a10";
 
 describe("accessSchemas.createRole", () => {

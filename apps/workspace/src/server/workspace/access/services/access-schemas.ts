@@ -42,8 +42,13 @@ const roleDescriptionSchema = z
   .nullable()
   .transform((value) => (value ? value : null));
 
+const clerkCandidateQuerySchema = z.string().trim().max(100);
+
 export const accessSchemas = {
   entityId: z.uuid(),
+  listClerkCandidates: z.object({
+    query: clerkCandidateQuerySchema,
+  }),
   addWorkspaceMember: z.object({
     clerkUserId: z.string().trim().min(1).max(CLERK_USER_ID_MAX_LENGTH),
     roleIds: roleIdsSchema,

@@ -4,7 +4,7 @@ import { useId, useState } from "react";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
+import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/role-assignment-option.dto";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import { selectAssignableRoles } from "@/common/patterns/access/role-selection";
 import { PrimaryCtaButton } from "@/components/shared/button/button";
@@ -23,7 +23,7 @@ type MembersListProps = {
   currentMemberId: string;
   members: WorkspaceMemberDto[];
   permissionsContent: SettingsPermissionsDictionary;
-  roles: RoleDto[];
+  roles: RoleAssignmentOptionDto[];
 };
 
 export function MembersList({

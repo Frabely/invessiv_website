@@ -3,7 +3,7 @@
 import { type SubmitEvent, useId, useState } from "react";
 
 import type { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
-import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
+import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/role-assignment-option.dto";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import { unionRolePermissions } from "@invessiv/common/patterns/auth/union-role-permissions";
 import { accessApiService } from "@/client/access/access-api-service";
@@ -23,6 +23,7 @@ import type {
   SettingsPermissionsDictionary,
 } from "@/i18n/dictionaries/workspace/settings";
 import { formatMessage } from "@/lib/i18n/format-message";
+import { resolveRoleLabel } from "@/lib/workspace/access/role-label";
 import { PermissionSummary } from "../../shared/permission-summary/permission-summary";
 import { RoleChecklist } from "../../shared/role-checklist/role-checklist";
 import styles from "./member-roles-dialog.module.css";
@@ -32,7 +33,7 @@ type MemberRolesDialogProps = {
   member: WorkspaceMemberDto;
   onCloseAction: () => void;
   permissionsContent: SettingsPermissionsDictionary;
-  roles: RoleDto[];
+  roles: RoleAssignmentOptionDto[];
 };
 
 function toggleId(ids: readonly string[], id: string): string[] {
@@ -143,9 +144,28 @@ export function MemberRolesDialog({
         </div>
 
         {mutation.hasConflict ? (
-          <p className={styles.conflict} role="alert">
-            {text.conflict}
-          </p>
+          <section className={styles.conflict} role="alert">
+            <p className={styles.conflictMessage}>{text.conflict}</p>
+            <div className={styles.currentState}>
+              <h3 className={styles.currentStateHeading}>
+                {text.conflictCurrentHeading}
+              </h3>
+              <ul className={styles.currentRoles}>
+                {mutation.current.isOwner ? (
+                  <li>{content.list.ownerBadge}</li>
+                ) : null}
+                {mutation.current.roles.map((role) => (
+                  <li key={role.id}>
+                    {resolveRoleLabel(role, permissionsContent)}
+                  </li>
+                ))}
+                {!mutation.current.isOwner &&
+                mutation.current.roles.length === 0 ? (
+                  <li>{content.list.noRoles}</li>
+                ) : null}
+              </ul>
+            </div>
+          </section>
         ) : null}
         {mutation.errorCode ? (
           <p className={styles.error} role="alert">

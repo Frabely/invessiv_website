@@ -28,6 +28,7 @@ import {
   resolveRoleLabel,
 } from "@/lib/workspace/access/role-label";
 import { PermissionPicker } from "../../shared/permission-picker/permission-picker";
+import { PermissionSummary } from "../../shared/permission-summary/permission-summary";
 import styles from "./role-form-dialog.module.css";
 
 type RoleFormDialogProps = {
@@ -230,9 +231,33 @@ export function RoleFormDialog({
         />
 
         {mutation.hasConflict ? (
-          <p className={styles.message} data-tone="conflict" role="alert">
-            {text.conflict}
-          </p>
+          <section className={styles.message} data-tone="conflict" role="alert">
+            <p className={styles.conflictMessage}>{text.conflict}</p>
+            {mutation.current ? (
+              <div className={styles.currentState}>
+                <h3 className={styles.currentStateHeading}>
+                  {text.conflictCurrentHeading}
+                </h3>
+                <p className={styles.currentStateSummary}>
+                  {formatMessage(text.conflictCurrentSummary, {
+                    name: mutation.current.name,
+                    status: mutation.current.active
+                      ? text.statusActive
+                      : text.statusInactive,
+                  })}
+                </p>
+                <p className={styles.currentStateDescription}>
+                  {mutation.current.description ??
+                    text.conflictCurrentNoDescription}
+                </p>
+                <PermissionSummary
+                  content={permissionsContent}
+                  emptyLabel={text.conflictCurrentNoPermissions}
+                  permissions={mutation.current.permissions}
+                />
+              </div>
+            ) : null}
+          </section>
         ) : null}
         {mutation.errorCode ? (
           <p className={styles.message} data-tone="error" role="alert">

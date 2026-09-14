@@ -7,12 +7,14 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { RoleErrorCode } from "@invessiv/common/constants/auth/errors/role-error-codes";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
+import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
 import {
   getSettingsPermissionsDictionary,
@@ -38,6 +40,20 @@ vi.mock("@/client/access/access-api-service", () => ({
 
 const content = getSettingsRolesDictionary("de");
 const permissionsContent = getSettingsPermissionsDictionary("de");
+
+const CUSTOM_ROLE: RoleDto = {
+  id: "role-sales",
+  name: "Vertrieb",
+  systemKey: null,
+  active: true,
+  description: null,
+  isSystem: false,
+  permissions: [Permission.LeadsRead],
+  assignedMemberCount: 1,
+  version: 2,
+  createdAt: "2026-09-13T10:00:00.000Z",
+  updatedAt: "2026-09-13T10:00:00.000Z",
+};
 
 describe("RoleFormDialog", () => {
   beforeEach(() => {
@@ -128,6 +144,49 @@ describe("RoleFormDialog", () => {
       await screen.findByText(content.errors.ROLE_NAME_TAKEN),
     ).toBeInTheDocument();
     expect(onClose).not.toHaveBeenCalled();
+  });
+
+  it("shows the current server state on conflict while preserving the input", async () => {
+    mocks.updateRole.mockResolvedValue({
+      ok: false,
+      code: ConcurrencyErrorCode.VersionConflict,
+      current: {
+        ...CUSTOM_ROLE,
+        name: "Vertrieb aktuell",
+        description: "Aktueller Stand vom Server",
+        active: false,
+        permissions: [Permission.LeadsWrite],
+        version: 3,
+      },
+    });
+    render(
+      <RoleFormDialog
+        content={content}
+        onCloseAction={vi.fn()}
+        permissionsContent={permissionsContent}
+        role={CUSTOM_ROLE}
+      />,
+    );
+
+    fireEvent.change(screen.getByLabelText(/Name/), {
+      target: { value: "Mein Entwurf" },
+    });
+    fireEvent.click(
+      screen.getByRole("button", { name: content.dialog.submitEdit }),
+    );
+
+    expect(
+      await screen.findByText(content.dialog.conflictCurrentHeading),
+    ).toBeInTheDocument();
+    const conflict = screen.getByRole("alert");
+    expect(
+      within(conflict).getByText("Vertrieb aktuell · Inaktiv"),
+    ).toBeInTheDocument();
+    expect(
+      within(conflict).getByText("Aktueller Stand vom Server"),
+    ).toBeInTheDocument();
+    expect(within(conflict).getByText("Leads bearbeiten")).toBeInTheDocument();
+    expect(screen.getByLabelText(/Name/)).toHaveValue("Mein Entwurf");
   });
 
   it("opens system roles read-only", () => {

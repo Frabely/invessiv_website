@@ -79,9 +79,26 @@ describe("accessApiService", () => {
   it("reports a network failure as internal error", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("offline")));
 
-    expect(await accessApiService.listClerkCandidates("anna")).toEqual({
+    expect(
+      await accessApiService.listClerkCandidates({ query: "anna" }),
+    ).toEqual({
       ok: false,
       code: WorkspaceMemberErrorCode.Internal,
     });
+  });
+
+  it("sends Clerk search input in a POST body instead of the URL", async () => {
+    const fetchMock = stubFetch(200, { candidates: [] });
+
+    await accessApiService.listClerkCandidates({ query: "anna@example.test" });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/workspace/members/clerk-candidates",
+      expect.objectContaining({
+        method: "POST",
+        body: JSON.stringify({ query: "anna@example.test" }),
+      }),
+    );
+    expect(fetchMock.mock.calls[0]?.[0]).not.toContain("anna@example.test");
   });
 });
