@@ -56,18 +56,6 @@
   outline-offset: 1px;
 }
 
-.checkbox {
-  flex: 0 0 auto;
-  width: 1rem;
-  height: 1rem;
-  margin: 0.2rem 0 0;
-  accent-color: var(--color-cta);
-}
-
-.checkbox:disabled {
-  cursor: not-allowed;
-}
-
 .text {
   display: flex;
   flex-direction: column;
@@ -76,8 +64,9 @@
   cursor: pointer;
 }
 
-.item[data-locked="true"] .text {
-  cursor: not-allowed;
+.item[data-locked="true"] .text,
+.item[data-read-only="true"] .text {
+  cursor: default;
 }
 
 .label {
@@ -90,8 +79,13 @@
   font-weight: 600;
 }
 
-.item[data-locked="true"] .label {
-  color: var(--color-text-muted);
+.item[data-locked="true"] .label,
+.item[data-read-only="true"] .label {
+  color: color-mix(
+    in srgb,
+    var(--color-text-muted) 82%,
+    var(--color-border) 18%
+  );
 }
 
 .lockBadge {
@@ -108,4 +102,13 @@
   color: var(--color-text-muted);
   font-size: var(--font-size-ui-xs);
   line-height: 1.45;
+}
+
+.item[data-locked="true"] .description,
+.item[data-read-only="true"] .description {
+  color: color-mix(
+    in srgb,
+    var(--color-text-muted) 70%,
+    var(--color-border) 30%
+  );
 }

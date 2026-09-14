@@ -54,14 +54,6 @@
   outline-offset: 1px;
 }
 
-.checkbox {
-  flex: 0 0 auto;
-  width: 1rem;
-  height: 1rem;
-  margin: 0.2rem 0 0;
-  accent-color: var(--color-cta);
-}
-
 .text {
   display: flex;
   flex-direction: column;

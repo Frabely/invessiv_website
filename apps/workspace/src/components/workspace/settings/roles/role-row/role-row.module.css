@@ -35,7 +35,8 @@
   color: var(--color-text-muted);
 }
 
-.inactiveBadge {
+.inactiveBadge,
+.readOnlyBadge {
   padding: 0.05rem 0.5rem;
   border: 1px dashed var(--color-border-strong);
   border-radius: 999px;
@@ -44,9 +45,13 @@
   font-weight: 650;
 }
 
+.readOnlyBadge {
+  border-style: solid;
+}
+
 .description {
   margin: 0;
-  max-width: var(--measure-compact);
+  width: 100%;
   color: var(--color-text-muted);
   font-size: var(--font-size-ui-sm);
   line-height: 1.5;
@@ -68,6 +73,14 @@
   padding-inline: 0.8rem;
   border-radius: 10px;
   font-size: var(--font-size-ui-sm);
+}
+
+.actionButton[data-read-only="true"] {
+  cursor: default;
+}
+
+.actionButton[data-read-only="true"]:hover {
+  transform: none;
 }
 
 @media (max-width: 720px) {

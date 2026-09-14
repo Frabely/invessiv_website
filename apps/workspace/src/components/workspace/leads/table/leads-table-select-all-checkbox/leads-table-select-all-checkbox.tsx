@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { CheckboxControl } from "@invessiv/ui";
 import { useLeadsTableSelection } from "../leads-table-selection-provider/leads-table-selection-context";
-import styles from "./leads-table-select-all-checkbox.module.css";
 
 type LeadsTableSelectAllCheckboxProps = {
   ariaLabel: string;
@@ -21,16 +21,11 @@ export function LeadsTableSelectAllCheckbox({
   }, [allSelected, someSelected]);
 
   return (
-    <label className={styles.root}>
-      <input
-        aria-label={ariaLabel}
-        checked={allSelected}
-        className={styles.input}
-        onChange={toggleAll}
-        ref={checkboxRef}
-        type="checkbox"
-      />
-      <span aria-hidden="true" className={styles.box} />
-    </label>
+    <CheckboxControl
+      aria-label={ariaLabel}
+      checked={allSelected}
+      onChange={toggleAll}
+      ref={checkboxRef}
+    />
   );
 }

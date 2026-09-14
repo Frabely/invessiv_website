@@ -4,6 +4,7 @@ import { useId } from "react";
 
 import { PERMISSION_DEFINITIONS } from "@invessiv/common/constants/auth/permission-definitions";
 import type { Permission } from "@invessiv/common/constants/auth/permissions";
+import { CheckboxControl } from "@invessiv/ui";
 import {
   PERMISSION_GROUP_PERMISSIONS,
   PERMISSION_GROUP_VALUES,
@@ -58,16 +59,15 @@ export function PermissionPicker({
                     <li
                       className={styles.item}
                       data-locked={locked ? "true" : "false"}
+                      data-read-only={readOnly ? "true" : "false"}
                       key={permission}
                     >
-                      <input
+                      <CheckboxControl
                         aria-describedby={descriptionId}
                         checked={selected.includes(permission)}
-                        className={styles.checkbox}
                         disabled={readOnly || locked}
                         id={inputId}
                         onChange={() => onToggleAction?.(permission)}
-                        type="checkbox"
                       />
                       <label className={styles.text} htmlFor={inputId}>
                         <span className={styles.label}>

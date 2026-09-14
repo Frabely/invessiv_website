@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useState } from "react";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -20,13 +20,14 @@ type RolesListProps = {
   roles: RoleDto[];
 };
 
+const CUSTOM_ROLES_HEADING_ID = "settings-custom-roles-heading";
+const SYSTEM_ROLES_HEADING_ID = "settings-system-roles-heading";
+
 export function RolesList({
   content,
   permissionsContent,
   roles,
 }: RolesListProps) {
-  const systemHeadingId = useId();
-  const customHeadingId = useId();
   const [openRole, setOpenRole] = useState<RoleDto | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const systemRoles = roles.filter((role) => role.isSystem);
@@ -54,10 +55,13 @@ export function RolesList({
 
   return (
     <div className={styles.stack}>
-      <section aria-labelledby={customHeadingId} className={styles.section}>
+      <section
+        aria-labelledby={CUSTOM_ROLES_HEADING_ID}
+        className={styles.section}
+      >
         <div className={styles.sectionHeader}>
           <div className={styles.intro}>
-            <h2 className={styles.heading} id={customHeadingId}>
+            <h2 className={styles.heading} id={CUSTOM_ROLES_HEADING_ID}>
               {content.list.customHeading}
             </h2>
             <p className={styles.description}>
@@ -89,9 +93,12 @@ export function RolesList({
         )}
       </section>
 
-      <section aria-labelledby={systemHeadingId} className={styles.section}>
+      <section
+        aria-labelledby={SYSTEM_ROLES_HEADING_ID}
+        className={styles.section}
+      >
         <div className={styles.intro}>
-          <h2 className={styles.heading} id={systemHeadingId}>
+          <h2 className={styles.heading} id={SYSTEM_ROLES_HEADING_ID}>
             {content.list.systemHeading}
           </h2>
           <p className={styles.description}>{content.list.systemDescription}</p>

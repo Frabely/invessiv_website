@@ -2,6 +2,7 @@
 
 import { type KeyboardEvent, type MouseEvent } from "react";
 import { useRouter } from "next/navigation";
+import { CheckboxControl } from "@invessiv/ui";
 import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
 import type { Locale } from "@/config/i18n";
 import type { LeadActionPermissions } from "@/common/contracts/leads/lead-action-permissions";
@@ -147,17 +148,12 @@ export function LeadsTableRow({
     >
       <td className={styles.checkboxCell}>
         {actions.canWrite || actions.canDelete ? (
-          <label className={styles.checkbox}>
-            <input
-              aria-label={`${tableContent.selection.row}: ${displayName}`}
-              checked={selected}
-              className={styles.checkboxInput}
-              onChange={() => toggleRow(lead.id)}
-              onClick={handleCheckboxClick}
-              type="checkbox"
-            />
-            <span aria-hidden="true" className={styles.checkboxBox} />
-          </label>
+          <CheckboxControl
+            aria-label={`${tableContent.selection.row}: ${displayName}`}
+            checked={selected}
+            onChange={() => toggleRow(lead.id)}
+            onClick={handleCheckboxClick}
+          />
         ) : null}
       </td>
 

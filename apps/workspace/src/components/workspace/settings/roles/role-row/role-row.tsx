@@ -47,6 +47,11 @@ export function RoleRow({
       <div className={styles.identity}>
         <p className={styles.nameLine}>
           <span className={styles.name}>{label}</span>
+          {role.isSystem ? (
+            <span className={styles.readOnlyBadge}>
+              {content.list.readOnlyBadge}
+            </span>
+          ) : null}
           {role.active ? null : (
             <span className={styles.inactiveBadge}>
               {content.list.inactiveBadge}
@@ -70,6 +75,7 @@ export function RoleRow({
       <ButtonControl
         aria-label={`${actionLabel}: ${label}`}
         className={styles.actionButton}
+        data-read-only={role.isSystem ? "true" : "false"}
         onClick={onOpenAction}
         type="button"
         variant="ghost"

@@ -216,6 +216,8 @@ describe("RoleFormDialog", () => {
     const leadsRead = screen.getByRole("checkbox", { name: /^Leads ansehen/ });
     expect(leadsRead).toBeChecked();
     expect(leadsRead).toBeDisabled();
+    expect(screen.getByText(content.dialog.readOnlyLabel)).toBeInTheDocument();
+    expect(screen.getByText("Leads ansehen")).toBeVisible();
     expect(
       screen.queryByRole("button", { name: content.dialog.submitEdit }),
     ).toBeNull();

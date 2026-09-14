@@ -9,6 +9,7 @@ import {
 } from "@invessiv/common/constants/auth/permissions";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
+import { CheckboxControl } from "@invessiv/ui";
 import { accessApiService } from "@/client/access/access-api-service";
 import { AccessFieldLimits } from "@/common/constants/access/access-field-limits";
 import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
@@ -119,9 +120,12 @@ export function RoleFormDialog({
         title={formatMessage(text.viewTitle, { name: label })}
       >
         <div className={styles.form}>
-          {roleDescription ? (
-            <p className={styles.roleDescription}>{roleDescription}</p>
-          ) : null}
+          <div className={styles.readOnlyIntro}>
+            <span className={styles.readOnlyBadge}>{text.readOnlyLabel}</span>
+            {roleDescription ? (
+              <p className={styles.roleDescription}>{roleDescription}</p>
+            ) : null}
+          </div>
           <PermissionPicker
             content={permissionsContent}
             legend={text.permissionsLabel}
@@ -172,7 +176,10 @@ export function RoleFormDialog({
         noValidate
         onSubmit={handleSubmit}
       >
-        <div className={styles.fields}>
+        <div
+          className={styles.topFields}
+          data-has-status={role ? "true" : "false"}
+        >
           <FormField
             errorMessage={nameError}
             inputProps={{
@@ -187,38 +194,35 @@ export function RoleFormDialog({
             label={text.nameLabel}
             required
           />
-          <FormField
-            kind={FormFieldKind.Textarea}
-            label={text.descriptionLabel}
-            textareaProps={{
-              maxLength: AccessFieldLimits.RoleDescriptionMaxLength,
-              name: "role-description",
-              onChange: (event) => setDescription(event.target.value),
-              placeholder: text.descriptionPlaceholder,
-              rows: 2,
-              value: description,
-            }}
-          />
+          {role ? (
+            <div className={styles.statusField}>
+              <span className={styles.fieldLabel}>{text.statusLabel}</span>
+              <label className={styles.toggle} htmlFor={activeId}>
+                <CheckboxControl
+                  checked={active}
+                  id={activeId}
+                  onChange={(event) => setActive(event.target.checked)}
+                />
+                <span className={styles.toggleLabel}>
+                  {active ? text.statusActive : text.statusInactive}
+                </span>
+              </label>
+            </div>
+          ) : null}
         </div>
 
-        {role ? (
-          <div className={styles.toggle}>
-            <input
-              aria-describedby={`${activeId}-hint`}
-              checked={active}
-              className={styles.checkbox}
-              id={activeId}
-              onChange={(event) => setActive(event.target.checked)}
-              type="checkbox"
-            />
-            <label className={styles.toggleText} htmlFor={activeId}>
-              <span className={styles.toggleLabel}>{text.activeLabel}</span>
-              <span className={styles.toggleHint} id={`${activeId}-hint`}>
-                {text.activeHint}
-              </span>
-            </label>
-          </div>
-        ) : null}
+        <FormField
+          kind={FormFieldKind.Textarea}
+          label={text.descriptionLabel}
+          textareaProps={{
+            maxLength: AccessFieldLimits.RoleDescriptionMaxLength,
+            name: "role-description",
+            onChange: (event) => setDescription(event.target.value),
+            placeholder: text.descriptionPlaceholder,
+            rows: 2,
+            value: description,
+          }}
+        />
 
         <PermissionPicker
           content={permissionsContent}
