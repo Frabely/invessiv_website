@@ -13,6 +13,7 @@ import {
   workspaceMemberRoles,
   workspaceMembers,
 } from "@invessiv/db/record-configuration";
+import { AuthConstraintName } from "@invessiv/db/record-configuration/auth/auth-constraint-names";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessSchemas } from "@/server/workspace/access/services/access-schemas";
 import { clerkDirectoryService } from "@/server/workspace/access/services/clerk-directory-service";
@@ -21,11 +22,9 @@ import { workspaceMemberReadService } from "@/server/workspace/access/services/w
 import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
 import { postgresErrorService } from "@/server/workspace/shared/services/postgres-error-service";
 
-const USERS_CLERK_USER_ID_UNIQUE_CONSTRAINT = "users_clerk_user_id_uidx";
-const MEMBER_ROLE_FOREIGN_KEY_CONSTRAINT = "workspace_member_roles_role_fkey";
-const USER_MASTER_DATA_CHECK_CONSTRAINTS = [
-  "users_primary_email_check",
-  "users_display_name_check",
+const USER_MASTER_DATA_CHECK_CONSTRAINTS: readonly string[] = [
+  AuthConstraintName.UsersPrimaryEmailCheck,
+  AuthConstraintName.UsersDisplayNameCheck,
 ];
 
 /**
@@ -41,7 +40,7 @@ function mapKnownViolation(error: unknown): AddWorkspaceMemberResult | null {
   // Two owners added the same account at once; the unique index decided.
   if (
     violation.code === PostgresErrorCode.UniqueViolation &&
-    violation.constraint === USERS_CLERK_USER_ID_UNIQUE_CONSTRAINT
+    violation.constraint === AuthConstraintName.UsersClerkUserIdUnique
   ) {
     return {
       ok: false,
@@ -51,7 +50,8 @@ function mapKnownViolation(error: unknown): AddWorkspaceMemberResult | null {
   // A role vanished or changed realm between the assignability check and the insert.
   if (
     violation.code === PostgresErrorCode.ForeignKeyViolation &&
-    violation.constraint === MEMBER_ROLE_FOREIGN_KEY_CONSTRAINT
+    violation.constraint ===
+      AuthConstraintName.WorkspaceMemberRolesRoleForeignKey
   ) {
     return { ok: false, code: WorkspaceMemberErrorCode.RoleNotAssignable };
   }

@@ -16,6 +16,7 @@ export type UpdateRoleResult =
       code:
         | typeof RoleErrorCode.RoleNotFound
         | typeof RoleErrorCode.RoleNameTaken
+        | typeof RoleErrorCode.RoleNameReserved
         | typeof RoleErrorCode.PermissionNotDelegable
         | typeof RoleErrorCode.SystemRoleImmutable;
     }

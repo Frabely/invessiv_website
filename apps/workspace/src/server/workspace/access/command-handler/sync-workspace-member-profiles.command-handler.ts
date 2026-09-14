@@ -4,14 +4,12 @@ import { eq } from "drizzle-orm";
 
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { users, workspaceMembers } from "@invessiv/db/record-configuration";
+import { AccessOperation } from "@/common/constants/access/access-operations";
+import { logAccessFailure } from "@/lib/workspace/access/log-access-failure";
 import { clerkDirectoryService } from "@/server/workspace/access/services/clerk-directory-service";
 import { updateVersioned } from "@/server/workspace/shared/update-versioned";
 
-/**
- * Refreshes names and emails of all members from Clerk before the member list renders. A Clerk
- * outage only skips the refresh; a lost version race is retried on the next render.
- */
-export async function syncWorkspaceMemberProfiles(): Promise<void> {
+async function refreshProfiles(): Promise<void> {
   const db = getDrizzleDatabaseClient();
   const linkedUsers = await db
     .select({
@@ -76,4 +74,19 @@ export async function syncWorkspaceMemberProfiles(): Promise<void> {
       });
     }
   });
+}
+
+/**
+ * Refreshes names and emails of all members from Clerk after the member list was sent, so the
+ * next render shows them. A Clerk outage only skips the refresh; a lost version race is retried
+ * on the next render.
+ */
+export async function syncWorkspaceMemberProfiles(): Promise<void> {
+  try {
+    await refreshProfiles();
+  } catch (error: unknown) {
+    // Nothing awaits this after the response; an unhandled rejection would log driver messages
+    // that can contain row data such as email addresses.
+    logAccessFailure(AccessOperation.SyncMemberProfiles, error);
+  }
 }

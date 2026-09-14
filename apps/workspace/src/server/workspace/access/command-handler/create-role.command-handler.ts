@@ -10,13 +10,13 @@ import type { CreateRoleRequestDto } from "@invessiv/common/contracts/auth/creat
 import type { CreateRoleResult } from "@invessiv/common/contracts/auth/results/create-role-result";
 import { getDrizzleDatabaseClient, PostgresErrorCode } from "@invessiv/db/core";
 import { rolePermissions, roles } from "@invessiv/db/record-configuration";
+import { AuthConstraintName } from "@invessiv/db/record-configuration/auth/auth-constraint-names";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessSchemas } from "@/server/workspace/access/services/access-schemas";
+import { reservedRoleNameService } from "@/server/workspace/access/services/reserved-role-name-service";
 import { roleReadService } from "@/server/workspace/access/services/role-read-service";
 import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
 import { postgresErrorService } from "@/server/workspace/shared/services/postgres-error-service";
-
-const ROLES_REALM_NAME_UNIQUE_CONSTRAINT = "roles_realm_name_uidx";
 
 export async function createRole(
   input: CreateRoleRequestDto,
@@ -32,6 +32,10 @@ export async function createRole(
   }
 
   const { name, description, permissions } = validation.data;
+  // System roles appear under their translated label, so a custom role must not look like one.
+  if (reservedRoleNameService.isReserved(name)) {
+    return { ok: false, code: RoleErrorCode.RoleNameReserved };
+  }
   // Delegability comes from the catalog in code, never from the request.
   if (
     permissions.some(
@@ -96,7 +100,7 @@ export async function createRole(
       postgresErrorService.getViolatedConstraint(
         error,
         PostgresErrorCode.UniqueViolation,
-      ) === ROLES_REALM_NAME_UNIQUE_CONSTRAINT
+      ) === AuthConstraintName.RolesRealmNameUnique
     ) {
       return { ok: false, code: RoleErrorCode.RoleNameTaken };
     }

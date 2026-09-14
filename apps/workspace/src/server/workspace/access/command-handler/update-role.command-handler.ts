@@ -13,14 +13,14 @@ import type { UpdateRoleResult } from "@invessiv/common/contracts/auth/results/u
 import type { UpdateRoleRequestDto } from "@invessiv/common/contracts/auth/update-role-request.dto";
 import { getDrizzleDatabaseClient, PostgresErrorCode } from "@invessiv/db/core";
 import { rolePermissions, roles } from "@invessiv/db/record-configuration";
+import { AuthConstraintName } from "@invessiv/db/record-configuration/auth/auth-constraint-names";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessSchemas } from "@/server/workspace/access/services/access-schemas";
+import { reservedRoleNameService } from "@/server/workspace/access/services/reserved-role-name-service";
 import { roleReadService } from "@/server/workspace/access/services/role-read-service";
 import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
 import { updateVersioned } from "@/server/workspace/shared/update-versioned";
 import { postgresErrorService } from "@/server/workspace/shared/services/postgres-error-service";
-
-const ROLES_REALM_NAME_UNIQUE_CONSTRAINT = "roles_realm_name_uidx";
 
 export async function updateRole(
   roleId: string,
@@ -59,6 +59,10 @@ export async function updateRole(
       }
       if (current.isSystem) {
         return { ok: false, code: RoleErrorCode.SystemRoleImmutable };
+      }
+      // An unchanged legacy name stays editable; only a new name must not look like a system role.
+      if (name !== current.name && reservedRoleNameService.isReserved(name)) {
+        return { ok: false, code: RoleErrorCode.RoleNameReserved };
       }
 
       const addedPermissions = permissions.filter(
@@ -149,7 +153,7 @@ export async function updateRole(
       postgresErrorService.getViolatedConstraint(
         error,
         PostgresErrorCode.UniqueViolation,
-      ) === ROLES_REALM_NAME_UNIQUE_CONSTRAINT
+      ) === AuthConstraintName.RolesRealmNameUnique
     ) {
       return { ok: false, code: RoleErrorCode.RoleNameTaken };
     }

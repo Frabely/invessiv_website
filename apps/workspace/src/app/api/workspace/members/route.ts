@@ -12,14 +12,14 @@ import { handleMemberMutation } from "@/lib/workspace/access/access-mutation-rou
 import { logAccessFailure } from "@/lib/workspace/access/log-access-failure";
 import { memberApiError } from "@/lib/workspace/access/member-api-error";
 import { addWorkspaceMember } from "@/server/workspace/access/command-handler/add-workspace-member.command-handler";
-import { listWorkspaceMembers } from "@/server/workspace/access/query-handler/list-workspace-members.query-handler";
+import { listWorkspaceMemberOptions } from "@/server/workspace/access/query-handler/list-workspace-member-options.query-handler";
 
 export const runtime = "nodejs";
 
 export async function GET(request: NextRequest) {
   return withPermission(Permission.MembersRead, async () => {
     try {
-      const members = await listWorkspaceMembers();
+      const members = await listWorkspaceMemberOptions();
       return Response.json({ members }, { status: HttpResponseCode.Ok });
     } catch (error: unknown) {
       logAccessFailure(AccessOperation.ListMembers, error);

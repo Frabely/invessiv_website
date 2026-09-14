@@ -55,8 +55,9 @@ Ausnahme **409 Versionskonflikt**: Der Body ist ein `VersionConflictDto`
 
 ## `GET /api/workspace/members`
 
-`200 { "members": WorkspaceMemberDto[] }` — sortiert nach Anzeigename. `roles` enthält keine Owner-Rolle; dafür steht
-`isOwner`.
+`200 { "members": WorkspaceMemberOptionDto[] }` — nur aktive Mitglieder aktiver User, sortiert nach Anzeigename, mit
+`id` und `displayName`. Bewusst ohne E-Mail, Rollen und Owner-Status: `members.read` steckt in der Basisrolle. Die
+Verwaltungsansicht lädt das vollständige `WorkspaceMemberDto` serverseitig in der Settings-Page.
 
 ## `POST /api/workspace/members`
 

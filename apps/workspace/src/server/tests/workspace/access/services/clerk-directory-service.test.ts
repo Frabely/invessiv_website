@@ -130,4 +130,31 @@ describe("clerkDirectoryService", () => {
       limit: 500,
     });
   });
+
+  it("loads more than 500 members in consecutive batches instead of dropping the rest", async () => {
+    const ids = Array.from({ length: 501 }, (_, index) => `user_${index}`);
+    mocks.getUserList
+      .mockResolvedValueOnce({
+        data: [clerkUser("user_0", "first@example.test", "First")],
+      })
+      .mockResolvedValueOnce({
+        data: [clerkUser("user_500", "last@example.test", "Last")],
+      });
+
+    const result = await clerkDirectoryService.listProfilesByIds(ids);
+
+    expect(mocks.getUserList).toHaveBeenCalledTimes(2);
+    expect(mocks.getUserList).toHaveBeenNthCalledWith(1, {
+      userId: ids.slice(0, 500),
+      limit: 500,
+    });
+    expect(mocks.getUserList).toHaveBeenNthCalledWith(2, {
+      userId: ["user_500"],
+      limit: 500,
+    });
+    expect(result).toMatchObject({
+      ok: true,
+      profiles: [{ clerkUserId: "user_0" }, { clerkUserId: "user_500" }],
+    });
+  });
 });

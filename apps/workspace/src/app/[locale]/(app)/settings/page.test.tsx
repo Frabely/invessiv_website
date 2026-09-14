@@ -9,6 +9,7 @@ import { workspaceActorWith } from "@/server/tests/support/workspace-auth-fixtur
 import SettingsPage from "./page";
 
 const mocks = vi.hoisted(() => ({
+  after: vi.fn(),
   requireWorkspaceArea: vi.fn(),
   syncProfiles: vi.fn(),
   listMembers: vi.fn(),
@@ -21,6 +22,7 @@ vi.mock("next/navigation", () => ({
     throw new Error("notFound called");
   }),
 }));
+vi.mock("next/server", () => ({ after: mocks.after }));
 vi.mock("@/lib/auth/permissions", () => ({
   requireWorkspaceArea: mocks.requireWorkspaceArea,
 }));
@@ -73,15 +75,16 @@ describe("SettingsPage", () => {
     await expect(renderPage()).rejects.toThrow("NOT_FOUND");
     expect(mocks.requireWorkspaceArea).toHaveBeenCalledWith("de", "settings");
     expect(mocks.listMembers).not.toHaveBeenCalled();
-    expect(mocks.syncProfiles).not.toHaveBeenCalled();
+    expect(mocks.after).not.toHaveBeenCalled();
   });
 
-  it("syncs profiles and shows the members tab by default", async () => {
+  it("schedules the profile sync after the response and shows the members tab by default", async () => {
     mocks.requireWorkspaceArea.mockResolvedValue(workspaceActorWith());
 
     render(await renderPage());
 
-    expect(mocks.syncProfiles).toHaveBeenCalled();
+    expect(mocks.after).toHaveBeenCalledWith(mocks.syncProfiles);
+    expect(mocks.syncProfiles).not.toHaveBeenCalled();
     expect(mocks.listAssignmentRoles).toHaveBeenCalled();
     expect(mocks.listRoles).not.toHaveBeenCalled();
     expect(screen.getByTestId("members-list")).toBeInTheDocument();

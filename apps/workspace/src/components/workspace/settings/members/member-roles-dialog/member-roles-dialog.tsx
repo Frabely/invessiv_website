@@ -58,7 +58,11 @@ export function MemberRolesDialog({
     WorkspaceMemberErrorCode
   >(member, onCloseAction);
 
-  const choices = selectAssignableRoles(roles, initialRoleIds);
+  // After a conflict the fresh state may hold roles the member did not have when the dialog opened.
+  const choices = selectAssignableRoles(roles, [
+    ...initialRoleIds,
+    ...mutation.current.roles.map((role) => role.id),
+  ]);
   const previewRoleIds = mutation.current.isOwner
     ? [...selectedRoleIds, ...selectOwnerRoleIds(roles)]
     : selectedRoleIds;

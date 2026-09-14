@@ -5,6 +5,7 @@ const STATUS: Record<RoleErrorCode, HttpResponseCode> = {
   [RoleErrorCode.RoleNotFound]: HttpResponseCode.NotFound,
   [RoleErrorCode.ValidationError]: HttpResponseCode.BadRequest,
   [RoleErrorCode.RoleNameTaken]: HttpResponseCode.Conflict,
+  [RoleErrorCode.RoleNameReserved]: HttpResponseCode.Conflict,
   [RoleErrorCode.PermissionNotDelegable]: HttpResponseCode.UnprocessableContent,
   [RoleErrorCode.SystemRoleImmutable]: HttpResponseCode.UnprocessableContent,
   [RoleErrorCode.Internal]: HttpResponseCode.InternalServerError,
@@ -14,6 +15,7 @@ const MESSAGES: Record<RoleErrorCode, string> = {
   [RoleErrorCode.RoleNotFound]: "Role not found",
   [RoleErrorCode.ValidationError]: "Validation failed",
   [RoleErrorCode.RoleNameTaken]: "A role with this name already exists",
+  [RoleErrorCode.RoleNameReserved]: "This name is reserved for a system role",
   [RoleErrorCode.PermissionNotDelegable]:
     "Custom roles cannot hold non-delegable permissions",
   [RoleErrorCode.SystemRoleImmutable]: "System roles cannot be changed",

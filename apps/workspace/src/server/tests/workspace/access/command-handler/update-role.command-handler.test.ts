@@ -156,6 +156,37 @@ describe("updateRole", () => {
     expect(mocks.createEvent).not.toHaveBeenCalled();
   });
 
+  it("rejects renaming a custom role to a system role name", async () => {
+    const result = await updateRole(
+      ROLE_ID,
+      { ...UNCHANGED_INPUT, name: " MITGLIED " },
+      actor,
+    );
+
+    expect(result).toEqual({
+      ok: false,
+      code: RoleErrorCode.RoleNameReserved,
+    });
+    expect(mocks.updateVersioned).not.toHaveBeenCalled();
+  });
+
+  it("keeps an existing legacy name editable when only other fields change", async () => {
+    const legacy: RoleDto = { ...CURRENT, name: "Owner" };
+    mocks.findById
+      .mockResolvedValueOnce(legacy)
+      .mockResolvedValueOnce({ ...legacy, active: false, version: 5 });
+    mocks.updateVersioned.mockResolvedValue({ ok: true, value: 5 });
+
+    const result = await updateRole(
+      ROLE_ID,
+      { ...UNCHANGED_INPUT, name: "Owner", active: false },
+      actor,
+    );
+
+    expect(result.ok).toBe(true);
+    expect(mocks.updateVersioned).toHaveBeenCalledTimes(1);
+  });
+
   it("bumps the version first, then applies the permission diff and records the changed fields", async () => {
     const updated: RoleDto = {
       ...CURRENT,

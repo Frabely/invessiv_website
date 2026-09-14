@@ -17,6 +17,7 @@ import {
   getDatabaseUrl,
   getDrizzleDatabaseClient,
 } from "@invessiv/db/core";
+import { AUTH_CONSTRAINT_NAME_VALUES } from "@invessiv/db/record-configuration/auth/auth-constraint-names";
 import {
   configureDatabaseUrlFromTarget,
   type DatabaseTarget,
@@ -429,6 +430,25 @@ async function runSecurityEventConstraintChecks(sql: Sql) {
   }
 }
 
+// The workspace maps these names to domain errors; a renamed index would silently turn a 409 into a 500.
+async function runConstraintNameChecks(sql: Sql) {
+  const names = [...AUTH_CONSTRAINT_NAME_VALUES];
+  const rows = (await sql`
+    SELECT conname AS name
+    FROM pg_constraint
+    WHERE conname = ANY (${names})
+    UNION
+    SELECT indexname AS name
+    FROM pg_indexes
+    WHERE indexname = ANY (${names})
+  `) as { name: string }[];
+  const existing = new Set(rows.map((row) => row.name));
+
+  for (const name of names) {
+    record(`constraint ${name} exists`, existing.has(name));
+  }
+}
+
 async function cleanup(sql: Sql) {
   const pattern = `${FIXTURE_PREFIX}%`;
   await sql`DELETE FROM leads WHERE display_name LIKE ${pattern}`;
@@ -482,6 +502,7 @@ async function run() {
     await runRoleChecks(sql);
     await runActorChecks(sql);
     await runSecurityEventConstraintChecks(sql);
+    await runConstraintNameChecks(sql);
   } finally {
     await cleanup(sql);
   }

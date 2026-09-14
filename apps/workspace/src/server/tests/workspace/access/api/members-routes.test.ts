@@ -5,6 +5,7 @@ import { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
+import type { WorkspaceMemberOptionDto } from "@invessiv/common/contracts/auth/workspace-member-option.dto";
 import { POST as getCandidates } from "@/app/api/workspace/members/clerk-candidates/route";
 import {
   DELETE as revokeOwner,
@@ -34,8 +35,8 @@ vi.mock("@/lib/auth/workspace-authentication", () => ({
   authenticateWorkspaceRequest: mocks.authenticate,
 }));
 vi.mock(
-  "@/server/workspace/access/query-handler/list-workspace-members.query-handler",
-  () => ({ listWorkspaceMembers: mocks.listMembers }),
+  "@/server/workspace/access/query-handler/list-workspace-member-options.query-handler",
+  () => ({ listWorkspaceMemberOptions: mocks.listMembers }),
 );
 vi.mock(
   "@/server/workspace/access/command-handler/add-workspace-member.command-handler",
@@ -69,6 +70,11 @@ const MEMBER: WorkspaceMemberDto = {
   roles: [],
   version: 2,
   createdAt: "2026-09-13T10:00:00.000Z",
+};
+
+const MEMBER_OPTION: WorkspaceMemberOptionDto = {
+  id: "member-1",
+  displayName: "Anna Beispiel",
 };
 
 function request(url: string, init?: RequestInit): NextRequest {
@@ -106,7 +112,7 @@ describe("members routes", () => {
     expect(mocks.listMembers).not.toHaveBeenCalled();
   });
 
-  it("GET requires members.read and returns the member list", async () => {
+  it("GET requires members.read and returns only the slim member options", async () => {
     mocks.authenticate.mockResolvedValueOnce(
       authorizedWorkspaceRequest(MANAGER_WITHOUT_READ),
     );
@@ -114,12 +120,15 @@ describe("members routes", () => {
       (await GET(request("http://localhost/api/workspace/members"))).status,
     ).toBe(403);
 
-    mocks.listMembers.mockResolvedValue([MEMBER]);
+    mocks.authenticate.mockResolvedValueOnce(
+      authorizedWorkspaceRequest([Permission.MembersRead]),
+    );
+    mocks.listMembers.mockResolvedValue([MEMBER_OPTION]);
     const response = await GET(
       request("http://localhost/api/workspace/members"),
     );
     expect(response.status).toBe(200);
-    expect(await response.json()).toEqual({ members: [MEMBER] });
+    expect(await response.json()).toEqual({ members: [MEMBER_OPTION] });
   });
 
   it("POST requires members.manage", async () => {

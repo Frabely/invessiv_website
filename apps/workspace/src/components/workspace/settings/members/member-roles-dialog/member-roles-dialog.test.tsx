@@ -71,6 +71,12 @@ const ROLES = [
     name: "Vertrieb",
     permissions: [Permission.LeadsWrite],
   }),
+  role({
+    id: "role-archived",
+    name: "Archiv",
+    active: false,
+    permissions: [Permission.LeadsDelete],
+  }),
 ];
 
 const MEMBER: WorkspaceMemberDto = {
@@ -118,6 +124,37 @@ describe("MemberRolesDialog", () => {
     fireEvent.click(screen.getByRole("checkbox", { name: /Vertrieb/ }));
 
     expect(screen.getByText("Leads bearbeiten")).toBeInTheDocument();
+  });
+
+  it("offers an inactive role the fresh state holds after a conflict, so it is not removed unseen", async () => {
+    mocks.replaceMemberRoles.mockResolvedValue({
+      ok: false,
+      code: ConcurrencyErrorCode.VersionConflict,
+      current: {
+        ...MEMBER,
+        roles: [
+          ...MEMBER.roles,
+          {
+            id: "role-archived",
+            name: "Archiv",
+            systemKey: null,
+            active: false,
+          },
+        ],
+        version: 5,
+      },
+    });
+    renderDialog();
+
+    expect(screen.queryByRole("checkbox", { name: /Archiv/ })).toBeNull();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: content.rolesDialog.submit }),
+    );
+
+    expect(
+      await screen.findByRole("checkbox", { name: /Archiv/ }),
+    ).not.toBeChecked();
   });
 
   it("keeps the selection on a version conflict and retries with the current version", async () => {

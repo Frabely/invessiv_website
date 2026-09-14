@@ -7,6 +7,7 @@ import type {
   ClerkProfileListResult,
   ClerkProfileLookupResult,
 } from "@/server/workspace/access/access-types";
+import type { ClerkUserProfile } from "@/server/workspace/auth/clerk-user-profile-types";
 import { clerkUserProfileMappingService } from "@/server/workspace/auth/services/clerk-user-profile-mapping-service";
 
 const CANDIDATE_LIMIT = 100;
@@ -77,14 +78,21 @@ async function listProfilesByIds(
 
   try {
     const client = await clerkClient();
-    const page = await client.users.getUserList({
-      userId: clerkUserIds.slice(0, PROFILE_BATCH_LIMIT),
-      limit: PROFILE_BATCH_LIMIT,
-    });
-    return {
-      ok: true,
-      profiles: page.data.map(clerkUserProfileMappingService.mapUserToProfile),
-    };
+    const profiles: ClerkUserProfile[] = [];
+    for (
+      let start = 0;
+      start < clerkUserIds.length;
+      start += PROFILE_BATCH_LIMIT
+    ) {
+      const page = await client.users.getUserList({
+        userId: clerkUserIds.slice(start, start + PROFILE_BATCH_LIMIT),
+        limit: PROFILE_BATCH_LIMIT,
+      });
+      profiles.push(
+        ...page.data.map(clerkUserProfileMappingService.mapUserToProfile),
+      );
+    }
+    return { ok: true, profiles };
   } catch (error: unknown) {
     logFailure("listProfilesByIds", error);
     return { ok: false, code: WorkspaceMemberErrorCode.ClerkUnavailable };

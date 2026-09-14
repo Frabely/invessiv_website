@@ -88,6 +88,16 @@ describe("createRole", () => {
     expect(mocks.getDatabase).not.toHaveBeenCalled();
   });
 
+  it.each(["Owner", " mitglied ", "Workspace owner"])(
+    "rejects the system role name %j before opening a transaction",
+    async (name) => {
+      expect(
+        await createRole({ name, description: null, permissions: [] }, actor),
+      ).toEqual({ ok: false, code: RoleErrorCode.RoleNameReserved });
+      expect(mocks.getDatabase).not.toHaveBeenCalled();
+    },
+  );
+
   it("rejects a non-delegable permission with its own code and writes nothing", async () => {
     const result = await createRole(
       {

@@ -180,4 +180,26 @@ describe("syncWorkspaceMemberProfiles", () => {
 
     await expect(syncWorkspaceMemberProfiles()).resolves.toBeUndefined();
   });
+
+  it("logs a database failure without row data and never rejects after the response", async () => {
+    const consoleError = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
+    mocks.linkedUsers.mockRejectedValue(
+      new Error(
+        "new row violates check constraint, failing row contains anna@example.test",
+      ),
+    );
+
+    await expect(syncWorkspaceMemberProfiles()).resolves.toBeUndefined();
+
+    expect(consoleError).toHaveBeenCalledWith(
+      "[workspace-access] request failed",
+      expect.objectContaining({ operation: "members.profiles.sync" }),
+    );
+    expect(JSON.stringify(consoleError.mock.calls)).not.toContain(
+      "anna@example.test",
+    );
+    consoleError.mockRestore();
+  });
 });

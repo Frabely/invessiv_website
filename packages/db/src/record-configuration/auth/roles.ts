@@ -13,6 +13,7 @@ import {
 import { AUTH_REALM_VALUES } from "@invessiv/common/constants/auth/auth-realms";
 import { SYSTEM_ROLE_KEY_VALUES } from "@invessiv/common/constants/auth/system-role-keys";
 import { sqlCheckIn } from "@invessiv/db/core";
+import { AuthConstraintName } from "@invessiv/db/record-configuration/auth/auth-constraint-names";
 
 /**
  * A role is configuration: a named bundle of permissions. No feature ever checks a role.
@@ -49,7 +50,7 @@ export const roles = pgTable(
     check("roles_name_check", sql`btrim(${table.name}) <> ''`),
     check("roles_version_check", sql`${table.version} > 0`),
     uniqueIndex("roles_system_key_uidx").on(table.system_key),
-    uniqueIndex("roles_realm_name_uidx").on(
+    uniqueIndex(AuthConstraintName.RolesRealmNameUnique).on(
       table.realm,
       sql`lower(btrim(${table.name}))`,
     ),

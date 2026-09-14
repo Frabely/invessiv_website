@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { after } from "next/server";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { can } from "@invessiv/common/patterns/auth/can";
@@ -70,8 +71,9 @@ export default async function SettingsPage({
   );
   const permissionsContent = getSettingsPermissionsDictionary(activeLocale);
 
-  const membersTabData = async () => {
-    await syncWorkspaceMemberProfiles();
+  const membersTabData = () => {
+    // Clerk is asked after the response, so a slow directory never delays the list.
+    after(syncWorkspaceMemberProfiles);
     return Promise.all([listWorkspaceMembers(), listRoleAssignmentOptions()]);
   };
   const [members, assignmentRoles, managedRoles] =

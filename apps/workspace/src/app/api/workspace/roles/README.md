@@ -10,6 +10,7 @@ JSON-API der Rollenverwaltung im Settings-Bereich. Auth-Verhalten und Fehlerform
 | 400    | `VALIDATION_ERROR`         | Body kein JSON oder Schemafehler; `details` enthält Feldpfade                  |
 | 404    | `ROLE_NOT_FOUND`           | Rolle existiert nicht, gehört nicht zum Workspace-Realm oder ID ist keine UUID |
 | 409    | `ROLE_NAME_TAKEN`          | Name existiert im Realm bereits (Groß-/Kleinschreibung, Randleerzeichen egal)  |
+| 409    | `ROLE_NAME_RESERVED`       | Name einer Systemrolle (DB-Name oder übersetztes Label einer Sprache)          |
 | 409    | `version_conflict`         | Body `VersionConflictDto` mit `current: RoleDto`                               |
 | 422    | `PERMISSION_NOT_DELEGABLE` | Nicht delegierbare Permission; die Delegierbarkeit kommt aus dem Code-Katalog  |
 | 422    | `SYSTEM_ROLE_IMMUTABLE`    | Systemrollen sind unveränderlich                                               |

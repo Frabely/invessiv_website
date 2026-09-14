@@ -123,3 +123,28 @@ solange kein realer Spam ankommt.
 2. Fallback definieren, wenn der Store nicht erreichbar ist: durchlassen und Fehler loggen — der Rate-Limit darf das
    Kontaktformular nie blockieren.
 3. Gate: bestehende Tests zu `contact-rate-limit-service` auf den asynchronen Store anpassen.
+
+---
+
+## 7. Rollen-Validierungsgrenzen doppelt gepflegt
+
+**Datum:** 2026-09-14 **Bereich:**
+
+- `apps/workspace/src/server/workspace/access/services/access-schemas.ts` — `ROLE_NAME_MAX_LENGTH` (80),
+  `ROLE_DESCRIPTION_MAX_LENGTH` (280)
+- `apps/workspace/src/components/workspace/settings/roles/role-form-dialog/role-form-dialog.tsx` — dieselben Werte als
+  lokale Konstanten für `maxLength`
+
+**Regel-Referenz:** Root-`AGENTS.md` → Architektur-Prinzipien, „Export entscheidet über den Ort von
+Typen/Konstanten/Patterns"; Review 03b (Punkt 10), mit dem Nutzer am 14.09.2026 bewusst verschoben.
+
+**Risiko:** Gering. Ändert jemand nur eine Seite, kappt das Formular anders als der Server prüft: Entweder schneidet
+die UI zu früh ab, oder der Server antwortet 400, obwohl das Formular die Eingabe zugelassen hat. Ein Sicherheitsrisiko
+besteht nicht, der Server bleibt maßgeblich.
+
+**Next-Step:**
+
+1. `RoleFieldLimit` als Const-Objekt unter `apps/workspace/src/common/constants/access/role-field-limits.ts` anlegen,
+   mit Konstantentest.
+2. Schema und Rollen-Dialog darauf umstellen, lokale Konstanten entfernen.
+3. Spätestens mitnehmen, wenn der Rollen-Dialog in Ordner 03d auf die geteilten Formularbausteine umzieht.
