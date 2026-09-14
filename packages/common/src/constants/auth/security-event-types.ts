@@ -4,6 +4,9 @@ export const SecurityEventType = {
   WorkspaceMemberRolesChanged: "workspace_member_roles_changed",
   WorkspaceOwnerGranted: "workspace_owner_granted",
   WorkspaceOwnerRevoked: "workspace_owner_revoked",
+  WorkspaceMemberDeactivated: "workspace_member_deactivated",
+  WorkspaceMemberActivated: "workspace_member_activated",
+  WorkspaceResponsibilitiesHandedOver: "workspace_responsibilities_handed_over",
   RoleCreated: "role_created",
   RoleUpdated: "role_updated",
 } as const;
@@ -17,6 +20,9 @@ export const SECURITY_EVENT_TYPE_VALUES = [
   SecurityEventType.WorkspaceMemberRolesChanged,
   SecurityEventType.WorkspaceOwnerGranted,
   SecurityEventType.WorkspaceOwnerRevoked,
+  SecurityEventType.WorkspaceMemberDeactivated,
+  SecurityEventType.WorkspaceMemberActivated,
+  SecurityEventType.WorkspaceResponsibilitiesHandedOver,
   SecurityEventType.RoleCreated,
   SecurityEventType.RoleUpdated,
 ] as const;

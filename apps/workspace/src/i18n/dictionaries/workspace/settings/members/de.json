@@ -79,6 +79,10 @@
     "NOT_OWNER": "Diese Person ist kein Owner mehr.",
     "LAST_ACTIVE_OWNER": "Der Workspace braucht mindestens einen aktiven Owner. Mache zuerst eine andere Person zum Owner.",
     "SELF_OWNER_REVOCATION": "Du kannst dir die Owner-Rolle nicht selbst entziehen. Das kann nur ein anderer Owner.",
+    "MEMBER_ALREADY_ACTIVE": "Dieses Mitglied ist bereits aktiv. Lade die Seite neu.",
+    "MEMBER_ALREADY_INACTIVE": "Dieses Mitglied ist bereits deaktiviert. Lade die Seite neu.",
+    "SELF_DEACTIVATION": "Du kannst deinen eigenen Zugang nicht deaktivieren. Das kann nur ein anderer Owner.",
+    "MEMBER_HAS_OPEN_RESPONSIBILITIES": "Dieses Mitglied hat noch offene Kundenzuständigkeiten und kann deshalb nicht deaktiviert werden.",
     "INTERNAL": "Das hat nicht geklappt. Versuche es erneut."
   }
 }

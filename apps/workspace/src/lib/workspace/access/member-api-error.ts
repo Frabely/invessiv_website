@@ -21,6 +21,11 @@ const STATUS: Record<WorkspaceMemberErrorCode, HttpResponseCode> = {
   [WorkspaceMemberErrorCode.NotOwner]: HttpResponseCode.Conflict,
   [WorkspaceMemberErrorCode.LastActiveOwner]: HttpResponseCode.Conflict,
   [WorkspaceMemberErrorCode.SelfOwnerRevocation]: HttpResponseCode.Conflict,
+  [WorkspaceMemberErrorCode.MemberAlreadyActive]: HttpResponseCode.Conflict,
+  [WorkspaceMemberErrorCode.MemberAlreadyInactive]: HttpResponseCode.Conflict,
+  [WorkspaceMemberErrorCode.SelfDeactivation]: HttpResponseCode.Conflict,
+  [WorkspaceMemberErrorCode.MemberHasOpenResponsibilities]:
+    HttpResponseCode.Conflict,
   [WorkspaceMemberErrorCode.Internal]: HttpResponseCode.InternalServerError,
 };
 
@@ -46,6 +51,13 @@ const MESSAGES: Record<WorkspaceMemberErrorCode, string> = {
     "The last active owner cannot lose the owner role",
   [WorkspaceMemberErrorCode.SelfOwnerRevocation]:
     "Owners cannot revoke their own owner role",
+  [WorkspaceMemberErrorCode.MemberAlreadyActive]: "Member is already active",
+  [WorkspaceMemberErrorCode.MemberAlreadyInactive]:
+    "Member is already inactive",
+  [WorkspaceMemberErrorCode.SelfDeactivation]:
+    "Members cannot deactivate themselves",
+  [WorkspaceMemberErrorCode.MemberHasOpenResponsibilities]:
+    "Open responsibilities must be handed over before deactivation",
   [WorkspaceMemberErrorCode.Internal]: "Unexpected server error",
 };
 

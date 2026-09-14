@@ -79,6 +79,10 @@
     "NOT_OWNER": "This person is no longer an owner.",
     "LAST_ACTIVE_OWNER": "The workspace needs at least one active owner. Make someone else an owner first.",
     "SELF_OWNER_REVOCATION": "You cannot remove your own owner role. Only another owner can do that.",
+    "MEMBER_ALREADY_ACTIVE": "This member is already active. Reload the page.",
+    "MEMBER_ALREADY_INACTIVE": "This member is already deactivated. Reload the page.",
+    "SELF_DEACTIVATION": "You cannot deactivate your own access. Only another owner can do that.",
+    "MEMBER_HAS_OPEN_RESPONSIBILITIES": "This member still has open customer responsibilities and therefore cannot be deactivated.",
     "INTERNAL": "That did not work. Try again."
   }
 }

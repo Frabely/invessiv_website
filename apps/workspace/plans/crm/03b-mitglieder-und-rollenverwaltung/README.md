@@ -1,6 +1,6 @@
 # Ordner 03b — Mitglieder- und Rollenverwaltung
 
-> **Status:** im Review · **Branch:** `feat/crm-mitglieder-und-rollenverwaltung` · **Abhängigkeit:** Ordner 03 gemerged
+> **Status:** gemerged · **Branch:** `feat/crm-mitglieder-und-rollenverwaltung` · **Abhängigkeit:** Ordner 03 gemerged
 > **Aufwand:** 3–4 Tage · **Reviewziel:** 100–120 Dateien · **Folgeeinheit:** Ordner 03c (Übergabe und Deaktivierung)
 
 ## Ziel und Stand nach Merge

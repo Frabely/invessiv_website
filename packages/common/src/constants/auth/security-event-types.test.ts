@@ -17,6 +17,9 @@ describe("SecurityEventType", () => {
       "workspace_member_roles_changed",
       "workspace_owner_granted",
       "workspace_owner_revoked",
+      "workspace_member_deactivated",
+      "workspace_member_activated",
+      "workspace_responsibilities_handed_over",
       "role_created",
       "role_updated",
     ]);
