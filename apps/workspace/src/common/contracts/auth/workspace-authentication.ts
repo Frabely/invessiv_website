@@ -5,4 +5,5 @@ export type WorkspaceAuthentication =
   | { status: typeof WorkspaceAuthStatus.Authorized; actor: WorkspaceActor }
   | { status: typeof WorkspaceAuthStatus.Unauthenticated }
   | { status: typeof WorkspaceAuthStatus.NotMember }
+  | { status: typeof WorkspaceAuthStatus.Inactive }
   | { status: typeof WorkspaceAuthStatus.Unavailable };

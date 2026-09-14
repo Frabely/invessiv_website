@@ -79,6 +79,15 @@ describe("requireWorkspaceActor", () => {
     expect(mockRedirect).not.toHaveBeenCalled();
   });
 
+  it("redirects an inactive account to its explanatory access status", async () => {
+    mockAuthenticate.mockResolvedValue({
+      status: WorkspaceAuthStatus.Inactive,
+    });
+
+    await expect(requireWorkspaceActor("de")).rejects.toThrow("REDIRECT:/de");
+    expect(mockNotFound).not.toHaveBeenCalled();
+  });
+
   it("throws instead of rendering when authorization data is unavailable", async () => {
     mockAuthenticate.mockResolvedValue({
       status: WorkspaceAuthStatus.Unavailable,

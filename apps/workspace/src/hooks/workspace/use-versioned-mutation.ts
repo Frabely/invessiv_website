@@ -20,13 +20,21 @@ type VersionedMutationOutcome<TEntity, TCode extends string> =
  */
 export function useVersionedMutation<TEntity, TCode extends string>(
   initial: TEntity,
-  onSuccessAction: () => void,
+  onCloseAction: () => void,
 ) {
   const router = useRouter();
   const [current, setCurrent] = useState(initial);
   const [errorCode, setErrorCode] = useState<TCode | null>(null);
   const [hasConflict, setHasConflict] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  function close() {
+    // A failed write can make the data behind the dialog stale even when the dialog is dismissed.
+    if (hasConflict || errorCode) {
+      router.refresh();
+    }
+    onCloseAction();
+  }
 
   async function submit(
     mutate: (
@@ -40,7 +48,7 @@ export function useVersionedMutation<TEntity, TCode extends string>(
     const outcome = await mutate(current);
     if (outcome.ok) {
       router.refresh();
-      onSuccessAction();
+      onCloseAction();
       return;
     }
 
@@ -53,5 +61,5 @@ export function useVersionedMutation<TEntity, TCode extends string>(
     setErrorCode(outcome.code);
   }
 
-  return { current, errorCode, hasConflict, isSubmitting, submit };
+  return { close, current, errorCode, hasConflict, isSubmitting, submit };
 }

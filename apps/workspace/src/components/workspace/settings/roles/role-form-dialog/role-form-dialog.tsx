@@ -143,7 +143,7 @@ export function RoleFormDialog({
         <>
           <ButtonControl
             disabled={mutation.isSubmitting}
-            onClick={onCloseAction}
+            onClick={mutation.close}
             type="button"
             variant="ghost"
           >
@@ -162,7 +162,7 @@ export function RoleFormDialog({
           </PrimaryCtaButton>
         </>
       }
-      onCloseAction={onCloseAction}
+      onCloseAction={mutation.close}
       size={WorkspaceDialogSize.Wide}
       title={role ? text.editTitle : text.createTitle}
     >

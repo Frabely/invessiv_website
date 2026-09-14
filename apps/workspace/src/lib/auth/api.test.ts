@@ -59,6 +59,19 @@ describe("withWorkspaceApiActor", () => {
     expect(inner).not.toHaveBeenCalled();
   });
 
+  it("returns 403 JSON for an inactive account", async () => {
+    mockAuthenticate.mockResolvedValue({
+      status: WorkspaceAuthStatus.Inactive,
+    });
+    const inner = vi.fn();
+
+    const response = await withWorkspaceApiActor(inner)(makeRequest());
+
+    expect(response.status).toBe(403);
+    expect(await response.json()).toMatchObject({ error: "FORBIDDEN" });
+    expect(inner).not.toHaveBeenCalled();
+  });
+
   it("returns 503 JSON and never calls the handler when authorization is unavailable", async () => {
     mockAuthenticate.mockResolvedValue({
       status: WorkspaceAuthStatus.Unavailable,

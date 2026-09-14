@@ -91,6 +91,24 @@ describe("WorkspacePage", () => {
     expect(screen.getByText("Keine Berechtigung")).toBeInTheDocument();
   });
 
+  it("shows deactivation feedback for an inactive account", async () => {
+    mockAuthenticateWorkspaceRequest.mockResolvedValue({
+      status: WorkspaceAuthStatus.Inactive,
+    });
+
+    render(await WorkspacePage({ params: Promise.resolve({ locale: "de" }) }));
+
+    expect(
+      screen.getByRole("heading", {
+        level: 1,
+        name: "Dein Workspace-Zugang ist deaktiviert",
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText(/Du musst nichts weiter tun/),
+    ).not.toBeInTheDocument();
+  });
+
   it("redirects a permitted member to the first accessible area", async () => {
     mockAuthenticateWorkspaceRequest.mockResolvedValue({
       status: WorkspaceAuthStatus.Authorized,

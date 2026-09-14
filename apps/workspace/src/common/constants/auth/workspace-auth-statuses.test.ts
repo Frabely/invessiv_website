@@ -11,6 +11,7 @@ describe("workspace auth constants", () => {
       "authorized",
       "unauthenticated",
       "not_member",
+      "inactive",
       "unavailable",
     ]);
     expect(WORKSPACE_AUTH_STATUS_VALUES).toEqual(

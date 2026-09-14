@@ -41,6 +41,7 @@ import { GET, POST } from "@/app/api/workspace/leads/route";
 import { addWorkspaceMember } from "@/server/workspace/access/command-handler/add-workspace-member.command-handler";
 import { createRole } from "@/server/workspace/access/command-handler/create-role.command-handler";
 import { replaceWorkspaceMemberRoles } from "@/server/workspace/access/command-handler/replace-workspace-member-roles.command-handler";
+import { roleAssignmentService } from "@/server/workspace/access/services/role-assignment-service";
 import { workspaceOwnerInvariantService } from "@/server/workspace/auth/services/workspace-owner-invariant-service";
 
 vi.mock("server-only", () => ({}));
@@ -430,6 +431,51 @@ describe.skipIf(!RUN_INTEGRATION)(
       } finally {
         releaseLock();
         await lockingTransaction;
+      }
+
+      expect(concurrentWriteWasBlocked).toBe(true);
+    }, 60_000);
+
+    it("serializes role deactivation against role assignment validation", async () => {
+      const owner = await createOwner();
+      const role = await createCustomRole(owner.actor, [Permission.LeadsRead]);
+      let releaseLock: () => void = () => undefined;
+      let reportLocked: () => void = () => undefined;
+      const holdLock = new Promise<void>((resolve) => {
+        releaseLock = resolve;
+      });
+      const locked = new Promise<void>((resolve) => {
+        reportLocked = resolve;
+      });
+
+      const assignmentValidation = db.transaction(async (tx) => {
+        const result = await roleAssignmentService.checkAssignable(tx, {
+          roleIds: [role.id],
+          currentRoleIds: [],
+        });
+        expect(result).toEqual({ ok: true });
+        reportLocked();
+        await holdLock;
+      });
+
+      await locked;
+      let concurrentWriteWasBlocked = false;
+      try {
+        await db.transaction(async (tx) => {
+          await tx.execute(sql`set local lock_timeout = '250ms'`);
+          await tx
+            .update(roles)
+            .set({ active: false })
+            .where(eq(roles.id, role.id));
+        });
+      } catch (error: unknown) {
+        concurrentWriteWasBlocked = hasErrorCode(
+          error,
+          PostgresErrorCode.LockNotAvailable,
+        );
+      } finally {
+        releaseLock();
+        await assignmentValidation;
       }
 
       expect(concurrentWriteWasBlocked).toBe(true);

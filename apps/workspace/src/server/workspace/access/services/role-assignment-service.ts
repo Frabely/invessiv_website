@@ -31,7 +31,8 @@ async function checkAssignable(
       active: roles.active,
     })
     .from(roles)
-    .where(inArray(roles.id, [...args.roleIds]));
+    .where(inArray(roles.id, [...args.roleIds]))
+    .for("update");
 
   if (rows.some((row) => row.system_key === SystemRoleKey.WorkspaceOwner)) {
     return { ok: false, code: WorkspaceMemberErrorCode.OwnerRoleNotAssignable };

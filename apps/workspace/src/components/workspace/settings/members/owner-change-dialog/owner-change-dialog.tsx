@@ -1,7 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
 import { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import { accessApiService } from "@/client/access/access-api-service";
@@ -28,7 +26,6 @@ export function OwnerChangeDialog({
   member,
   onCloseAction,
 }: OwnerChangeDialogProps) {
-  const router = useRouter();
   const text = content.ownerDialog;
   const mutation = useVersionedMutation<
     WorkspaceMemberDto,
@@ -43,14 +40,6 @@ export function OwnerChangeDialog({
       (grants
         ? WorkspaceMemberErrorCode.AlreadyOwner
         : WorkspaceMemberErrorCode.NotOwner);
-
-  function handleClose() {
-    // After a failed attempt the member list behind the dialog is stale.
-    if (mutation.hasConflict || mutation.errorCode) {
-      router.refresh();
-    }
-    onCloseAction();
-  }
 
   async function handleConfirm() {
     await mutation.submit((current) =>
@@ -82,14 +71,14 @@ export function OwnerChangeDialog({
       description={grants ? text.grantDescription : text.revokeDescription}
       footer={
         alreadyDone ? (
-          <PrimaryCtaButton onClick={handleClose} type="button">
+          <PrimaryCtaButton onClick={mutation.close} type="button">
             {text.done}
           </PrimaryCtaButton>
         ) : (
           <>
             <ButtonControl
               disabled={mutation.isSubmitting}
-              onClick={handleClose}
+              onClick={mutation.close}
               type="button"
               variant="ghost"
             >
@@ -109,7 +98,7 @@ export function OwnerChangeDialog({
           </>
         )
       }
-      onCloseAction={handleClose}
+      onCloseAction={mutation.close}
       size={WorkspaceDialogSize.Narrow}
       title={formatMessage(grants ? text.grantTitle : text.revokeTitle, {
         name,

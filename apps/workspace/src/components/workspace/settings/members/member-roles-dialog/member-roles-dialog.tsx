@@ -87,7 +87,7 @@ export function MemberRolesDialog({
         <>
           <ButtonControl
             disabled={mutation.isSubmitting}
-            onClick={onCloseAction}
+            onClick={mutation.close}
             type="button"
             variant="ghost"
           >
@@ -102,7 +102,7 @@ export function MemberRolesDialog({
           </PrimaryCtaButton>
         </>
       }
-      onCloseAction={onCloseAction}
+      onCloseAction={mutation.close}
       size={WorkspaceDialogSize.Wide}
       title={formatMessage(text.title, { name: member.displayName })}
     >

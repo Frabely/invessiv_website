@@ -72,6 +72,19 @@ describe("WorkspaceLayout", () => {
     ).rejects.toThrow("REDIRECT:/de");
   });
 
+  it("redirects an inactive member to the access status", async () => {
+    mockGetAuthentication.mockResolvedValue({
+      status: WorkspaceAuthStatus.Inactive,
+    });
+
+    await expect(
+      WorkspaceLayout({
+        children: <p>Protected content</p>,
+        params: Promise.resolve({ locale: "en" }),
+      }),
+    ).rejects.toThrow("REDIRECT:/en");
+  });
+
   it("redirects a member without any accessible area to the permission status", async () => {
     mockGetAuthentication.mockResolvedValue(authorizedWith());
 

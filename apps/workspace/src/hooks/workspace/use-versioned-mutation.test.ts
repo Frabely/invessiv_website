@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { act, renderHook } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { useVersionedMutation } from "./use-versioned-mutation";
@@ -15,6 +15,10 @@ vi.mock("next/navigation", () => ({
 type Entity = { id: string; version: number };
 
 describe("useVersionedMutation", () => {
+  beforeEach(() => {
+    refresh.mockReset();
+  });
+
   it("refreshes and calls the success action after a successful write", async () => {
     const onSuccess = vi.fn();
     const { result } = renderHook(() =>
@@ -55,5 +59,42 @@ describe("useVersionedMutation", () => {
     expect(mutate).toHaveBeenLastCalledWith({ id: "a", version: 4 });
     expect(result.current.hasConflict).toBe(false);
     expect(result.current.errorCode).toBe("NOT_FOUND");
+  });
+
+  it("refreshes stale background data when a conflicted dialog is closed", async () => {
+    const onClose = vi.fn();
+    const { result } = renderHook(() =>
+      useVersionedMutation<Entity, "NOT_FOUND">(
+        { id: "a", version: 1 },
+        onClose,
+      ),
+    );
+
+    await act(() =>
+      result.current.submit(async () => ({
+        ok: false,
+        code: ConcurrencyErrorCode.VersionConflict,
+        current: { id: "a", version: 2 },
+      })),
+    );
+    act(() => result.current.close());
+
+    expect(refresh).toHaveBeenCalledOnce();
+    expect(onClose).toHaveBeenCalledOnce();
+  });
+
+  it("does not refresh an untouched dialog when it is closed", () => {
+    const onClose = vi.fn();
+    const { result } = renderHook(() =>
+      useVersionedMutation<Entity, "NOT_FOUND">(
+        { id: "a", version: 1 },
+        onClose,
+      ),
+    );
+
+    act(() => result.current.close());
+
+    expect(refresh).not.toHaveBeenCalled();
+    expect(onClose).toHaveBeenCalledOnce();
   });
 });

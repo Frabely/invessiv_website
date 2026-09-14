@@ -28,13 +28,14 @@ function row(id: string, overrides: Partial<RoleRow> = {}): RoleRow {
 }
 
 function executorReturning(rows: RoleRow[]) {
+  const forLock = vi.fn(() => Promise.resolve(rows));
   const select = vi.fn(() => ({
-    from: () => ({ where: () => Promise.resolve(rows) }),
+    from: () => ({ where: () => ({ for: forLock }) }),
   }));
   const executor = { select } as unknown as Parameters<
     typeof roleAssignmentService.checkAssignable
   >[0];
-  return { executor, select };
+  return { executor, forLock, select };
 }
 
 describe("roleAssignmentService.checkAssignable", () => {
@@ -51,7 +52,7 @@ describe("roleAssignmentService.checkAssignable", () => {
   });
 
   it("accepts active workspace roles", async () => {
-    const { executor } = executorReturning([row(ROLE_A), row(ROLE_B)]);
+    const { executor, forLock } = executorReturning([row(ROLE_A), row(ROLE_B)]);
 
     expect(
       await roleAssignmentService.checkAssignable(executor, {
@@ -59,6 +60,7 @@ describe("roleAssignmentService.checkAssignable", () => {
         currentRoleIds: [],
       }),
     ).toEqual({ ok: true });
+    expect(forLock).toHaveBeenCalledWith("update");
   });
 
   it("rejects the owner role with its own code", async () => {

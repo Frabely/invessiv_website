@@ -11,6 +11,13 @@ import { resolveWorkspaceActor } from "@/server/workspace/auth/query-handler/res
 import { clerkUserProfileMappingService } from "@/server/workspace/auth/services/clerk-user-profile-mapping-service";
 import { workspaceBootstrapIdentityService } from "@/server/workspace/auth/services/workspace-bootstrap-identity-service";
 
+function isInactiveResolution(code: WorkspaceActorResolutionError): boolean {
+  return (
+    code === WorkspaceActorResolutionError.UserInactive ||
+    code === WorkspaceActorResolutionError.MembershipInactive
+  );
+}
+
 async function loadBootstrapInput(
   clerkUserId: string,
 ): Promise<BootstrapWorkspaceOwnerInput | null> {
@@ -52,6 +59,10 @@ export async function authenticateWorkspaceRequest(): Promise<WorkspaceAuthentic
       };
     }
 
+    if (isInactiveResolution(resolution.code)) {
+      return { status: WorkspaceAuthStatus.Inactive };
+    }
+
     if (
       resolution.code !== WorkspaceActorResolutionError.UserMissing ||
       !workspaceBootstrapIdentityService.matches(clerkUserId)
@@ -68,9 +79,14 @@ export async function authenticateWorkspaceRequest(): Promise<WorkspaceAuthentic
     await bootstrapWorkspaceOwner(bootstrapInput);
     const retry = await resolveWorkspaceActor(clerkUserId);
 
-    return retry.ok
-      ? { status: WorkspaceAuthStatus.Authorized, actor: retry.actor }
-      : { status: WorkspaceAuthStatus.NotMember };
+    if (retry.ok) {
+      return { status: WorkspaceAuthStatus.Authorized, actor: retry.actor };
+    }
+    return {
+      status: isInactiveResolution(retry.code)
+        ? WorkspaceAuthStatus.Inactive
+        : WorkspaceAuthStatus.NotMember,
+    };
   } catch (error: unknown) {
     console.error("[workspace-auth] authorization lookup failed", {
       errorName: error instanceof Error ? error.name : typeof error,

@@ -66,6 +66,17 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
       </WorkspaceShell>
     );
   }
+  if (authentication.status === WorkspaceAuthStatus.Inactive) {
+    return (
+      <WorkspaceShell content={content} locale={locale} permittedAreas={[]}>
+        <WorkspaceAccessStatus
+          content={content.access.inactive}
+          retryHref={workspacePathFor(locale)}
+          variant="restricted"
+        />
+      </WorkspaceShell>
+    );
+  }
 
   const [landingArea] = listPermittedWorkspaceAreas(authentication.actor);
   if (!landingArea) {

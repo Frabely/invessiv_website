@@ -84,20 +84,32 @@ describe("authenticateWorkspaceRequest", () => {
 
   it.each([
     WorkspaceActorResolutionError.UserInactive,
-    WorkspaceActorResolutionError.MembershipMissing,
     WorkspaceActorResolutionError.MembershipInactive,
   ])(
-    "denies membership for %s without attempting a bootstrap",
+    "reports inactive access for %s without attempting a bootstrap",
     async (code) => {
       mockAuth.mockResolvedValue({ userId: BOOTSTRAP_CLERK_ID });
       mockResolve.mockResolvedValue({ ok: false, code });
 
       await expect(authenticateWorkspaceRequest()).resolves.toEqual({
-        status: WorkspaceAuthStatus.NotMember,
+        status: WorkspaceAuthStatus.Inactive,
       });
       expect(mockBootstrap).not.toHaveBeenCalled();
     },
   );
+
+  it("keeps a missing membership in the pending approval state", async () => {
+    mockAuth.mockResolvedValue({ userId: BOOTSTRAP_CLERK_ID });
+    mockResolve.mockResolvedValue({
+      ok: false,
+      code: WorkspaceActorResolutionError.MembershipMissing,
+    });
+
+    await expect(authenticateWorkspaceRequest()).resolves.toEqual({
+      status: WorkspaceAuthStatus.NotMember,
+    });
+    expect(mockBootstrap).not.toHaveBeenCalled();
+  });
 
   it("denies an unknown account that is not the bootstrap identity", async () => {
     mockAuth.mockResolvedValue({ userId: "user_intruder" });
@@ -209,6 +221,28 @@ describe("authenticateWorkspaceRequest", () => {
 
     await expect(authenticateWorkspaceRequest()).resolves.toEqual({
       status: WorkspaceAuthStatus.NotMember,
+    });
+  });
+
+  it("preserves an inactive result after a concurrent bootstrap attempt", async () => {
+    mockAuth.mockResolvedValue({ userId: BOOTSTRAP_CLERK_ID });
+    mockResolve
+      .mockResolvedValueOnce({
+        ok: false,
+        code: WorkspaceActorResolutionError.UserMissing,
+      })
+      .mockResolvedValueOnce({
+        ok: false,
+        code: WorkspaceActorResolutionError.MembershipInactive,
+      });
+    mockCurrentUser.mockResolvedValue(clerkProfile());
+    mockBootstrap.mockResolvedValue({
+      ok: false,
+      code: BootstrapWorkspaceOwnerError.AlreadyInitialized,
+    });
+
+    await expect(authenticateWorkspaceRequest()).resolves.toEqual({
+      status: WorkspaceAuthStatus.Inactive,
     });
   });
 

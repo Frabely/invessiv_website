@@ -39,6 +39,9 @@ export async function requireWorkspaceActor(
   if (authentication.status === WorkspaceAuthStatus.NotMember) {
     notFound();
   }
+  if (authentication.status === WorkspaceAuthStatus.Inactive) {
+    redirect(workspacePathFor(locale));
+  }
 
   throw new WorkspaceAuthorizationUnavailableError();
 }

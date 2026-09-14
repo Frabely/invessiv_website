@@ -36,7 +36,10 @@ export default async function WorkspaceLayout({
   if (authentication.status === WorkspaceAuthStatus.Unauthenticated) {
     redirect(signInPathWithRedirect(activeLocale, workspacePath));
   }
-  if (authentication.status === WorkspaceAuthStatus.NotMember) {
+  if (
+    authentication.status === WorkspaceAuthStatus.NotMember ||
+    authentication.status === WorkspaceAuthStatus.Inactive
+  ) {
     redirect(workspacePath);
   }
   if (authentication.status === WorkspaceAuthStatus.Unavailable) {
