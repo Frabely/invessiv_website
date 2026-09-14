@@ -77,7 +77,8 @@ Name und E-Mail lädt der Server per Clerk-ID nach; zusätzliche Felder im Body 
 
 Body `ListClerkCandidatesRequestDto`: `{ "query": "…" }`. `query` darf leer und höchstens 100 Zeichen lang sein.
 Die Suche steht bewusst im Body, damit Namen und E-Mail-Adressen nicht in URLs oder URL-Logs gelangen.
-Erfolg: `200 { "candidates": ClerkCandidateDto[] }` — höchstens 100 Clerk-Konten ohne `users`-Zeile.
+Erfolg: `200 { "candidates": ClerkCandidateDto[] }` — höchstens 100 Clerk-Konten ohne `users`-Zeile. Der Server
+paginiert dafür über bereits verknüpfte Konten hinweg; 100 neuere, belegte Konten verdecken keine älteren freien.
 
 ## `PUT /api/workspace/members/[id]/roles`
 
