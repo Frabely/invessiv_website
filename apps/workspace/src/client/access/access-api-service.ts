@@ -7,6 +7,10 @@ import {
   WorkspaceMemberErrorCode,
 } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
+import { HttpHeaderName } from "@invessiv/common/constants/http/http-header-names";
+import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
+import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
+import { MediaType } from "@invessiv/common/constants/http/media-types";
 import type { AddWorkspaceMemberRequestDto } from "@invessiv/common/contracts/auth/add-workspace-member-request.dto";
 import type { ChangeWorkspaceOwnerRequestDto } from "@invessiv/common/contracts/auth/change-workspace-owner-request.dto";
 import type { ClerkCandidateDto } from "@invessiv/common/contracts/auth/clerk-candidate.dto";
@@ -30,15 +34,13 @@ import {
 
 type ApiResponse = { ok: boolean; status: number; payload: unknown };
 
-const CONFLICT_STATUS = 409;
-
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
 async function send(
   url: string,
-  method: string,
+  method: HttpMethod,
   body?: unknown,
 ): Promise<ApiResponse | null> {
   try {
@@ -47,7 +49,7 @@ async function send(
       ...(body !== undefined
         ? {
             body: JSON.stringify(body),
-            headers: { "Content-Type": "application/json" },
+            headers: { [HttpHeaderName.ContentType]: MediaType.Json },
           }
         : {}),
     });
@@ -69,7 +71,7 @@ function readErrorCode<TCode extends string>(
 
 function readConflict<TCurrent>(response: ApiResponse): TCurrent | null {
   if (
-    response.status === CONFLICT_STATUS &&
+    response.status === HttpResponseCode.Conflict &&
     isRecord(response.payload) &&
     response.payload.code === ConcurrencyErrorCode.VersionConflict &&
     isRecord(response.payload.current)
@@ -81,7 +83,7 @@ function readConflict<TCurrent>(response: ApiResponse): TCurrent | null {
 
 async function mutateMember(
   url: string,
-  method: string,
+  method: HttpMethod,
   body: unknown,
 ): Promise<MemberMutationClientResult> {
   const response = await send(url, method, body);
@@ -110,7 +112,7 @@ async function mutateMember(
 
 async function mutateRole(
   url: string,
-  method: string,
+  method: HttpMethod,
   body: unknown,
 ): Promise<RoleMutationClientResult> {
   const response = await send(url, method, body);
@@ -139,7 +141,7 @@ async function listClerkCandidates(
 ): Promise<ClerkCandidatesClientResult> {
   const response = await send(
     WorkspaceApiEndpoint.MembersClerkCandidates,
-    "POST",
+    HttpMethod.Post,
     request,
   );
   if (!response) {
@@ -167,18 +169,31 @@ async function listClerkCandidates(
 
 export const accessApiService = {
   addMember: (request: AddWorkspaceMemberRequestDto) =>
-    mutateMember(WorkspaceApiEndpoint.Members, "POST", request),
+    mutateMember(WorkspaceApiEndpoint.Members, HttpMethod.Post, request),
   replaceMemberRoles: (
     memberId: string,
     request: ReplaceWorkspaceMemberRolesRequestDto,
-  ) => mutateMember(workspaceMemberRolesEndpoint(memberId), "PUT", request),
+  ) =>
+    mutateMember(
+      workspaceMemberRolesEndpoint(memberId),
+      HttpMethod.Put,
+      request,
+    ),
   grantOwner: (memberId: string, request: ChangeWorkspaceOwnerRequestDto) =>
-    mutateMember(workspaceMemberOwnerEndpoint(memberId), "POST", request),
+    mutateMember(
+      workspaceMemberOwnerEndpoint(memberId),
+      HttpMethod.Post,
+      request,
+    ),
   revokeOwner: (memberId: string, request: ChangeWorkspaceOwnerRequestDto) =>
-    mutateMember(workspaceMemberOwnerEndpoint(memberId), "DELETE", request),
+    mutateMember(
+      workspaceMemberOwnerEndpoint(memberId),
+      HttpMethod.Delete,
+      request,
+    ),
   createRole: (request: CreateRoleRequestDto) =>
-    mutateRole(WorkspaceApiEndpoint.Roles, "POST", request),
+    mutateRole(WorkspaceApiEndpoint.Roles, HttpMethod.Post, request),
   updateRole: (roleId: string, request: UpdateRoleRequestDto) =>
-    mutateRole(workspaceRoleEndpoint(roleId), "PATCH", request),
+    mutateRole(workspaceRoleEndpoint(roleId), HttpMethod.Patch, request),
   listClerkCandidates,
 } as const;

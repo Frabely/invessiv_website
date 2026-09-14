@@ -5,6 +5,7 @@
  * prove them. Every row carries a fixture prefix and is removed at the end — even if a check fails.
  */
 import { randomUUID } from "node:crypto";
+import { getTableConfig } from "drizzle-orm/pg-core";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { SECURITY_EVENT_TYPE_VALUES } from "@invessiv/common/constants/auth/security-event-types";
@@ -17,7 +18,21 @@ import {
   getDatabaseUrl,
   getDrizzleDatabaseClient,
 } from "@invessiv/db/core";
-import { AUTH_CONSTRAINT_NAME_VALUES } from "@invessiv/db/record-configuration/auth/auth-constraint-names";
+import { PERMISSIONS_CONSTRAINT_NAME_VALUES } from "@invessiv/db/constraint-names/auth/permissions-constraint-names";
+import { ROLE_PERMISSIONS_CONSTRAINT_NAME_VALUES } from "@invessiv/db/constraint-names/auth/role-permissions-constraint-names";
+import { ROLES_CONSTRAINT_NAME_VALUES } from "@invessiv/db/constraint-names/auth/roles-constraint-names";
+import {
+  SECURITY_EVENTS_CONSTRAINT_NAME_VALUES,
+  SecurityEventsConstraintName,
+} from "@invessiv/db/constraint-names/auth/security-events-constraint-names";
+import { USERS_CONSTRAINT_NAME_VALUES } from "@invessiv/db/constraint-names/auth/users-constraint-names";
+import { WORKSPACE_MEMBER_ROLES_CONSTRAINT_NAME_VALUES } from "@invessiv/db/constraint-names/auth/workspace-member-roles-constraint-names";
+import { securityEvents } from "@invessiv/db/record-configuration";
+import {
+  findMissingConstraintNames,
+  hasSameValues,
+  readCheckConstraintValues,
+} from "./constraint-catalog";
 import {
   configureDatabaseUrlFromTarget,
   type DatabaseTarget,
@@ -403,49 +418,45 @@ async function runActorChecks(sql: Sql) {
 }
 
 async function runSecurityEventConstraintChecks(sql: Sql) {
-  const rows = (await sql`
-    SELECT conname, pg_get_constraintdef(oid) AS definition
-    FROM pg_constraint
-    WHERE conrelid = 'security_events'::regclass
-      AND conname IN ('security_events_type_check', 'security_events_subject_type_check')
-  `) as { conname: string; definition: string }[];
-  const definitions = new Map(rows.map((row) => [row.conname, row.definition]));
-
-  const expectations: [string, readonly string[]][] = [
-    ["security_events_type_check", SECURITY_EVENT_TYPE_VALUES],
-    ["security_events_subject_type_check", SECURITY_SUBJECT_TYPE_VALUES],
+  const checkValues = await readCheckConstraintValues(
+    sql,
+    getTableConfig(securityEvents).name,
+  );
+  const expectations: [SecurityEventsConstraintName, readonly string[]][] = [
+    [SecurityEventsConstraintName.TypeCheck, SECURITY_EVENT_TYPE_VALUES],
+    [
+      SecurityEventsConstraintName.SubjectTypeCheck,
+      SECURITY_SUBJECT_TYPE_VALUES,
+    ],
   ];
 
   for (const [constraintName, expectedValues] of expectations) {
-    const definition = definitions.get(constraintName) ?? "";
-    const databaseValues = [...definition.matchAll(/'([^']+)'/g)]
-      .map((match) => match[1])
-      .sort();
-    const codeValues = [...expectedValues].sort();
+    const databaseValues = checkValues.get(constraintName) ?? [];
     record(
       `${constraintName} matches the const object`,
-      JSON.stringify(databaseValues) === JSON.stringify(codeValues),
-      `database: ${databaseValues.join(", ")} | code: ${codeValues.join(", ")}`,
+      hasSameValues(databaseValues, expectedValues),
+      `database: ${databaseValues.join(", ")} | code: ${[...expectedValues].sort().join(", ")}`,
     );
   }
 }
 
-// The workspace maps these names to domain errors; a renamed index would silently turn a 409 into a 500.
-async function runConstraintNameChecks(sql: Sql) {
-  const names = [...AUTH_CONSTRAINT_NAME_VALUES];
-  const rows = (await sql`
-    SELECT conname AS name
-    FROM pg_constraint
-    WHERE conname = ANY (${names})
-    UNION
-    SELECT indexname AS name
-    FROM pg_indexes
-    WHERE indexname = ANY (${names})
-  `) as { name: string }[];
-  const existing = new Set(rows.map((row) => row.name));
+const AUTH_CONSTRAINT_NAMES = [
+  ...USERS_CONSTRAINT_NAME_VALUES,
+  ...ROLES_CONSTRAINT_NAME_VALUES,
+  ...PERMISSIONS_CONSTRAINT_NAME_VALUES,
+  ...ROLE_PERMISSIONS_CONSTRAINT_NAME_VALUES,
+  ...WORKSPACE_MEMBER_ROLES_CONSTRAINT_NAME_VALUES,
+  ...SECURITY_EVENTS_CONSTRAINT_NAME_VALUES,
+];
 
-  for (const name of names) {
-    record(`constraint ${name} exists`, existing.has(name));
+// Models, error mapping and smokes share these names; a renamed index would silently turn a 409 into a 500.
+async function runConstraintNameChecks(sql: Sql) {
+  const missing = new Set(
+    await findMissingConstraintNames(sql, AUTH_CONSTRAINT_NAMES),
+  );
+
+  for (const name of AUTH_CONSTRAINT_NAMES) {
+    record(`constraint ${name} exists`, !missing.has(name));
   }
 }
 

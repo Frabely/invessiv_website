@@ -13,7 +13,8 @@ import {
   workspaceMemberRoles,
   workspaceMembers,
 } from "@invessiv/db/record-configuration";
-import { AuthConstraintName } from "@invessiv/db/record-configuration/auth/auth-constraint-names";
+import { UsersConstraintName } from "@invessiv/db/constraint-names/auth/users-constraint-names";
+import { WorkspaceMemberRolesConstraintName } from "@invessiv/db/constraint-names/auth/workspace-member-roles-constraint-names";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessSchemas } from "@/server/workspace/access/services/access-schemas";
 import { clerkDirectoryService } from "@/server/workspace/access/services/clerk-directory-service";
@@ -23,8 +24,8 @@ import { securityEventService } from "@/server/workspace/auth/services/security-
 import { postgresErrorService } from "@/server/workspace/shared/services/postgres-error-service";
 
 const USER_MASTER_DATA_CHECK_CONSTRAINTS: readonly string[] = [
-  AuthConstraintName.UsersPrimaryEmailCheck,
-  AuthConstraintName.UsersDisplayNameCheck,
+  UsersConstraintName.PrimaryEmailCheck,
+  UsersConstraintName.DisplayNameCheck,
 ];
 
 /**
@@ -40,7 +41,7 @@ function mapKnownViolation(error: unknown): AddWorkspaceMemberResult | null {
   // Two owners added the same account at once; the unique index decided.
   if (
     violation.code === PostgresErrorCode.UniqueViolation &&
-    violation.constraint === AuthConstraintName.UsersClerkUserIdUnique
+    violation.constraint === UsersConstraintName.ClerkUserIdUnique
   ) {
     return {
       ok: false,
@@ -50,8 +51,7 @@ function mapKnownViolation(error: unknown): AddWorkspaceMemberResult | null {
   // A role vanished or changed realm between the assignability check and the insert.
   if (
     violation.code === PostgresErrorCode.ForeignKeyViolation &&
-    violation.constraint ===
-      AuthConstraintName.WorkspaceMemberRolesRoleForeignKey
+    violation.constraint === WorkspaceMemberRolesConstraintName.RoleForeignKey
   ) {
     return { ok: false, code: WorkspaceMemberErrorCode.RoleNotAssignable };
   }

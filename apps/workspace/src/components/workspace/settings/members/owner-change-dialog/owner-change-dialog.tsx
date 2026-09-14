@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import { accessApiService } from "@/client/access/access-api-service";
+import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
 import { WorkspaceDialogSize } from "@/common/constants/ui/workspace-dialog-sizes";
 import {
   ButtonControl,
@@ -69,10 +70,10 @@ export function OwnerChangeDialog({
         ? content.errors[mutation.errorCode]
         : null;
   const tone = alreadyDone
-    ? "info"
+    ? DialogMessageTone.Info
     : mutation.hasConflict
-      ? "conflict"
-      : "error";
+      ? DialogMessageTone.Conflict
+      : DialogMessageTone.Error;
 
   return (
     <WorkspaceDialog

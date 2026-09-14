@@ -10,7 +10,7 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
-import { AuthConstraintName } from "@invessiv/db/record-configuration/auth/auth-constraint-names";
+import { UsersConstraintName } from "@invessiv/db/constraint-names/auth/users-constraint-names";
 
 /**
  * Canonical identity of every signed-in human. Clerk authenticates, this table plus
@@ -36,15 +36,15 @@ export const users = pgTable(
   },
   (table) => [
     check(
-      "users_clerk_user_id_check",
+      UsersConstraintName.ClerkUserIdCheck,
       sql`btrim(${table.clerk_user_id}) <> ''`,
     ),
     check(
-      AuthConstraintName.UsersPrimaryEmailCheck,
+      UsersConstraintName.PrimaryEmailCheck,
       sql`btrim(${table.primary_email}) <> ''`,
     ),
     check(
-      AuthConstraintName.UsersDisplayNameCheck,
+      UsersConstraintName.DisplayNameCheck,
       sql`btrim
           (
           ${table.display_name}
@@ -52,9 +52,11 @@ export const users = pgTable(
           <>
           ''`,
     ),
-    check("users_version_check", sql`${table.version} > 0`),
-    uniqueIndex(AuthConstraintName.UsersClerkUserIdUnique).on(
-      table.clerk_user_id,
+    check(
+      UsersConstraintName.VersionCheck,
+      sql`${table.version}
+      > 0`,
     ),
+    uniqueIndex(UsersConstraintName.ClerkUserIdUnique).on(table.clerk_user_id),
   ],
 );

@@ -6,6 +6,8 @@ import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { SecurityEventType } from "@invessiv/common/constants/auth/security-event-types";
 import { SecuritySubjectType } from "@invessiv/common/constants/auth/security-subject-types";
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
+import { RolePermissionsConstraintName } from "@invessiv/db/constraint-names/auth/role-permissions-constraint-names";
+import { RolesConstraintName } from "@invessiv/db/constraint-names/auth/roles-constraint-names";
 import { PostgresErrorCode } from "@invessiv/db/core";
 import { rolePermissions, roles } from "@invessiv/db/record-configuration";
 import { createRole } from "@/server/workspace/access/command-handler/create-role.command-handler";
@@ -169,7 +171,7 @@ describe("createRole", () => {
   it("answers a duplicate name with its own code", async () => {
     failTransactionWith({
       code: PostgresErrorCode.UniqueViolation,
-      constraint: "roles_realm_name_uidx",
+      constraint: RolesConstraintName.RealmNameUnique,
     });
 
     expect(
@@ -183,7 +185,7 @@ describe("createRole", () => {
   it("rethrows other database failures so the route logs them", async () => {
     failTransactionWith({
       code: PostgresErrorCode.ForeignKeyViolation,
-      constraint: "role_permissions_permission_fkey",
+      constraint: RolePermissionsConstraintName.PermissionForeignKey,
     });
 
     await expect(

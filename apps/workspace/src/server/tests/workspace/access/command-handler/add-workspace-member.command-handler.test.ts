@@ -4,6 +4,8 @@ import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
 import { SecurityEventType } from "@invessiv/common/constants/auth/security-event-types";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
+import { UsersConstraintName } from "@invessiv/db/constraint-names/auth/users-constraint-names";
+import { WorkspaceMemberRolesConstraintName } from "@invessiv/db/constraint-names/auth/workspace-member-roles-constraint-names";
 import { PostgresErrorCode } from "@invessiv/db/core";
 import {
   users,
@@ -166,17 +168,17 @@ describe("addWorkspaceMember", () => {
   it.each([
     [
       PostgresErrorCode.UniqueViolation,
-      "users_clerk_user_id_uidx",
+      UsersConstraintName.ClerkUserIdUnique,
       WorkspaceMemberErrorCode.ClerkAccountAlreadyLinked,
     ],
     [
       PostgresErrorCode.ForeignKeyViolation,
-      "workspace_member_roles_role_fkey",
+      WorkspaceMemberRolesConstraintName.RoleForeignKey,
       WorkspaceMemberErrorCode.RoleNotAssignable,
     ],
     [
       PostgresErrorCode.CheckViolation,
-      "users_primary_email_check",
+      UsersConstraintName.PrimaryEmailCheck,
       WorkspaceMemberErrorCode.ClerkAccountIncomplete,
     ],
   ])("maps %s on %s to %s", async (code, constraint, expected) => {

@@ -10,6 +10,8 @@ import {
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
 import { accessApiService } from "@/client/access/access-api-service";
+import { AccessFieldLimits } from "@/common/constants/access/access-field-limits";
+import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
 import { WorkspaceDialogSize } from "@/common/constants/ui/workspace-dialog-sizes";
 import {
   ButtonControl,
@@ -38,9 +40,6 @@ type RoleFormDialogProps = {
   /** Null creates a new custom role; a system role opens read-only. */
   role: RoleDto | null;
 };
-
-const ROLE_NAME_MAX_LENGTH = 80;
-const ROLE_DESCRIPTION_MAX_LENGTH = 280;
 
 export function RoleFormDialog({
   content,
@@ -178,7 +177,7 @@ export function RoleFormDialog({
             errorMessage={nameError}
             inputProps={{
               autoComplete: "off",
-              maxLength: ROLE_NAME_MAX_LENGTH,
+              maxLength: AccessFieldLimits.RoleNameMaxLength,
               name: "role-name",
               onChange: (event) => setName(event.target.value),
               placeholder: text.namePlaceholder,
@@ -192,7 +191,7 @@ export function RoleFormDialog({
             kind={FormFieldKind.Textarea}
             label={text.descriptionLabel}
             textareaProps={{
-              maxLength: ROLE_DESCRIPTION_MAX_LENGTH,
+              maxLength: AccessFieldLimits.RoleDescriptionMaxLength,
               name: "role-description",
               onChange: (event) => setDescription(event.target.value),
               placeholder: text.descriptionPlaceholder,
@@ -231,7 +230,11 @@ export function RoleFormDialog({
         />
 
         {mutation.hasConflict ? (
-          <section className={styles.message} data-tone="conflict" role="alert">
+          <section
+            className={styles.message}
+            data-tone={DialogMessageTone.Conflict}
+            role="alert"
+          >
             <p className={styles.conflictMessage}>{text.conflict}</p>
             {mutation.current ? (
               <div className={styles.currentState}>
@@ -260,7 +263,11 @@ export function RoleFormDialog({
           </section>
         ) : null}
         {mutation.errorCode ? (
-          <p className={styles.message} data-tone="error" role="alert">
+          <p
+            className={styles.message}
+            data-tone={DialogMessageTone.Error}
+            role="alert"
+          >
             {content.errors[mutation.errorCode]}
           </p>
         ) : null}

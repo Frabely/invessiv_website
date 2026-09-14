@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { LeadSource } from "@invessiv/common/constants/leads/sources/lead-sources";
+import { LeadSocialProfilesConstraintName } from "@invessiv/db/constraint-names/lead-social-profiles-constraint-names";
 import { PostgresErrorCode } from "@invessiv/db/core";
 import { DuplicateEmailError } from "@/server/workspace/leads/shared/duplicate-email-error.class";
 
@@ -246,7 +247,8 @@ describe("createLeadCoreInTransaction", () => {
     const duplicateError = Object.assign(new Error("duplicate key value"), {
       cause: {
         code: PostgresErrorCode.UniqueViolation,
-        constraint: "lead_social_profiles_platform_normalized_url_uidx",
+        constraint:
+          LeadSocialProfilesConstraintName.PlatformNormalizedUrlUnique,
       },
     });
     const { txMock } = createTxMock({

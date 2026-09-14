@@ -130,6 +130,26 @@ Service-/Handler-Datei bleiben, solange sie nur dort genutzt werden.
   `packages/common/src/contracts/<domain>/` oder ein klar serverseitiger Persistenz-/Result-Input aus `src/server/**`.
 - Wenn ein Handler noch mit `unknown` arbeitet, ist das ein Architektur-Debt und keine neue Normalform.
 
+## HTTP-Konstanten (verbindlich)
+
+HTTP-Methoden, Header-Namen, Media-Types und Statuscodes kommen ausschließlich aus
+`@invessiv/common/constants/http/`:
+
+| Const-Objekt       | Datei                    | Beispiel                              |
+| ------------------ | ------------------------ | ------------------------------------- |
+| `HttpMethod`       | `http-methods.ts`        | `HttpMethod.Post` statt `"POST"`      |
+| `HttpHeaderName`   | `http-header-names.ts`   | `HttpHeaderName.ContentType`          |
+| `MediaType`        | `media-types.ts`         | `MediaType.Json`                      |
+| `HttpResponseCode` | `http-response-codes.ts` | `HttpResponseCode.Conflict` statt 409 |
+
+- **Neuanlage:** Jeder neue Handler, jede neue Route, jeder neue Client-Service und jeder neue Test nutzt diese
+  Konstanten von Anfang an. String- oder Zahl-Literale wie `"POST"`, `"Content-Type"`, `"application/json"` oder `409`
+  sind ein Review-Befund.
+- **Fehlender Wert:** Wird eine Methode, ein Header oder ein Media-Type gebraucht, der noch fehlt, wird er im
+  jeweiligen Const-Objekt samt Test ergänzt — nie lokal in der nutzenden Datei definiert.
+- **Bestand:** Nutzt eine Datei noch Literale, wird sie beim nächsten fachlichen Ändern im selben Change mit
+  umgestellt. Ein vorsorglicher Komplettumbau aller Altdateien ist nicht nötig.
+
 ## Error-Code & Message-Konvention
 
 - Error-Codes kommen immer aus dem zugehörigen `*ErrorCode`-Const-Objekt in `packages/common/src/constants/<domain>/`.

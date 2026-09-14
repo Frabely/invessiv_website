@@ -8,6 +8,7 @@ import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys"
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
 import type { UpdateRoleRequestDto } from "@invessiv/common/contracts/auth/update-role-request.dto";
+import { RolesConstraintName } from "@invessiv/db/constraint-names/auth/roles-constraint-names";
 import { PostgresErrorCode } from "@invessiv/db/core";
 import { rolePermissions, roles } from "@invessiv/db/record-configuration";
 import { updateRole } from "@/server/workspace/access/command-handler/update-role.command-handler";
@@ -170,23 +171,6 @@ describe("updateRole", () => {
     expect(mocks.updateVersioned).not.toHaveBeenCalled();
   });
 
-  it("keeps an existing legacy name editable when only other fields change", async () => {
-    const legacy: RoleDto = { ...CURRENT, name: "Owner" };
-    mocks.findById
-      .mockResolvedValueOnce(legacy)
-      .mockResolvedValueOnce({ ...legacy, active: false, version: 5 });
-    mocks.updateVersioned.mockResolvedValue({ ok: true, value: 5 });
-
-    const result = await updateRole(
-      ROLE_ID,
-      { ...UNCHANGED_INPUT, name: "Owner", active: false },
-      actor,
-    );
-
-    expect(result.ok).toBe(true);
-    expect(mocks.updateVersioned).toHaveBeenCalledTimes(1);
-  });
-
   it("bumps the version first, then applies the permission diff and records the changed fields", async () => {
     const updated: RoleDto = {
       ...CURRENT,
@@ -308,7 +292,7 @@ describe("updateRole", () => {
   it("answers a duplicate name with its own code", async () => {
     failTransactionWith({
       code: PostgresErrorCode.UniqueViolation,
-      constraint: "roles_realm_name_uidx",
+      constraint: RolesConstraintName.RealmNameUnique,
     });
 
     expect(

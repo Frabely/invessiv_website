@@ -13,7 +13,7 @@ import type { UpdateRoleResult } from "@invessiv/common/contracts/auth/results/u
 import type { UpdateRoleRequestDto } from "@invessiv/common/contracts/auth/update-role-request.dto";
 import { getDrizzleDatabaseClient, PostgresErrorCode } from "@invessiv/db/core";
 import { rolePermissions, roles } from "@invessiv/db/record-configuration";
-import { AuthConstraintName } from "@invessiv/db/record-configuration/auth/auth-constraint-names";
+import { RolesConstraintName } from "@invessiv/db/constraint-names/auth/roles-constraint-names";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessSchemas } from "@/server/workspace/access/services/access-schemas";
 import { reservedRoleNameService } from "@/server/workspace/access/services/reserved-role-name-service";
@@ -60,8 +60,7 @@ export async function updateRole(
       if (current.isSystem) {
         return { ok: false, code: RoleErrorCode.SystemRoleImmutable };
       }
-      // An unchanged legacy name stays editable; only a new name must not look like a system role.
-      if (name !== current.name && reservedRoleNameService.isReserved(name)) {
+      if (reservedRoleNameService.isReserved(name)) {
         return { ok: false, code: RoleErrorCode.RoleNameReserved };
       }
 
@@ -153,7 +152,7 @@ export async function updateRole(
       postgresErrorService.getViolatedConstraint(
         error,
         PostgresErrorCode.UniqueViolation,
-      ) === AuthConstraintName.RolesRealmNameUnique
+      ) === RolesConstraintName.RealmNameUnique
     ) {
       return { ok: false, code: RoleErrorCode.RoleNameTaken };
     }

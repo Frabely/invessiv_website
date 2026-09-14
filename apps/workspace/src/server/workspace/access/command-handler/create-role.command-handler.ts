@@ -10,7 +10,7 @@ import type { CreateRoleRequestDto } from "@invessiv/common/contracts/auth/creat
 import type { CreateRoleResult } from "@invessiv/common/contracts/auth/results/create-role-result";
 import { getDrizzleDatabaseClient, PostgresErrorCode } from "@invessiv/db/core";
 import { rolePermissions, roles } from "@invessiv/db/record-configuration";
-import { AuthConstraintName } from "@invessiv/db/record-configuration/auth/auth-constraint-names";
+import { RolesConstraintName } from "@invessiv/db/constraint-names/auth/roles-constraint-names";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessSchemas } from "@/server/workspace/access/services/access-schemas";
 import { reservedRoleNameService } from "@/server/workspace/access/services/reserved-role-name-service";
@@ -100,7 +100,7 @@ export async function createRole(
       postgresErrorService.getViolatedConstraint(
         error,
         PostgresErrorCode.UniqueViolation,
-      ) === AuthConstraintName.RolesRealmNameUnique
+      ) === RolesConstraintName.RealmNameUnique
     ) {
       return { ok: false, code: RoleErrorCode.RoleNameTaken };
     }

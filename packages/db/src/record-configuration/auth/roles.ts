@@ -13,7 +13,7 @@ import {
 import { AUTH_REALM_VALUES } from "@invessiv/common/constants/auth/auth-realms";
 import { SYSTEM_ROLE_KEY_VALUES } from "@invessiv/common/constants/auth/system-role-keys";
 import { sqlCheckIn } from "@invessiv/db/core";
-import { AuthConstraintName } from "@invessiv/db/record-configuration/auth/auth-constraint-names";
+import { RolesConstraintName } from "@invessiv/db/constraint-names/auth/roles-constraint-names";
 
 /**
  * A role is configuration: a named bundle of permissions. No feature ever checks a role.
@@ -38,24 +38,39 @@ export const roles = pgTable(
       .defaultNow(),
   },
   (table) => [
-    check("roles_realm_check", sqlCheckIn(table.realm, AUTH_REALM_VALUES)),
     check(
-      "roles_system_key_check",
+      RolesConstraintName.RealmCheck,
+      sqlCheckIn(table.realm, AUTH_REALM_VALUES),
+    ),
+    check(
+      RolesConstraintName.SystemKeyCheck,
       sqlCheckIn(table.system_key, SYSTEM_ROLE_KEY_VALUES),
     ),
     check(
-      "roles_system_key_consistency_check",
+      RolesConstraintName.SystemKeyConsistencyCheck,
       sql`${table.is_system} = (${table.system_key} is not null)`,
     ),
-    check("roles_name_check", sql`btrim(${table.name}) <> ''`),
-    check("roles_version_check", sql`${table.version} > 0`),
-    uniqueIndex("roles_system_key_uidx").on(table.system_key),
-    uniqueIndex(AuthConstraintName.RolesRealmNameUnique).on(
+    check(
+      RolesConstraintName.NameCheck,
+      sql`btrim
+      (
+      ${table.name}
+      )
+      <>
+      ''`,
+    ),
+    check(
+      RolesConstraintName.VersionCheck,
+      sql`${table.version}
+      > 0`,
+    ),
+    uniqueIndex(RolesConstraintName.SystemKeyUnique).on(table.system_key),
+    uniqueIndex(RolesConstraintName.RealmNameUnique).on(
       table.realm,
       sql`lower(btrim(${table.name}))`,
     ),
-    uniqueIndex("roles_id_realm_uidx").on(table.id, table.realm),
-    uniqueIndex("roles_id_realm_is_system_uidx").on(
+    uniqueIndex(RolesConstraintName.IdRealmUnique).on(table.id, table.realm),
+    uniqueIndex(RolesConstraintName.IdRealmIsSystemUnique).on(
       table.id,
       table.realm,
       table.is_system,

@@ -3,6 +3,7 @@ import "server-only";
 import { clerkClient } from "@clerk/nextjs/server";
 
 import { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
+import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import type {
   ClerkProfileListResult,
   ClerkProfileLookupResult,
@@ -19,7 +20,7 @@ function isNotFound(error: unknown): boolean {
     typeof error === "object" &&
     error !== null &&
     "status" in error &&
-    (error as { status?: unknown }).status === 404
+    (error as { status?: unknown }).status === HttpResponseCode.NotFound
   );
 }
 

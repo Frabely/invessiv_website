@@ -32,10 +32,10 @@ Command- und Query-Handler für Mitglieder, Rollen und den Owner-Flow. Die Actor
   Sprache ist damit automatisch abgedeckt.
 - **`GET /members` bleibt schmal.** `members.read` steckt in der Basisrolle; die Route liefert nur
   `WorkspaceMemberOptionDto`. Das vollständige `WorkspaceMemberDto` verlässt den Server nur über die Settings-Page.
-- **Constraint-Namen** für die Fehlerabbildung kommen aus `AuthConstraintName`
-  (`@invessiv/db/record-configuration/auth/auth-constraint-names`), nie als String-Literal im Handler. Die Datei steht
-  bewusst nicht im Barrel `record-configuration`, weil dessen Exporte als Tabellen ausgewertet werden
-  (`scripts/contact-table-names.ts`).
+- **Constraint-Namen** für die Fehlerabbildung kommen aus den Const-Objekten unter `@invessiv/db/constraint-names/**`
+  (z. B. `UsersConstraintName`, `RolesConstraintName`), nie als String-Literal im Handler oder Test.
+- **Formulargrenzen** (Rollenname, Beschreibung, Clerk-ID, Suchlänge, Rollenanzahl) stehen in `AccessFieldLimits`;
+  Schema und Settings-Formulare lesen denselben Wert.
 - **Delegierbarkeit doppelt.** Der Command weist nicht delegierbare Permissions mit eigenem Fehlercode ab; die
   DB-Constraint bleibt die zweite Linie. Die Delegierbarkeit kommt immer aus `PERMISSION_DEFINITIONS`, nie aus dem
   Request.

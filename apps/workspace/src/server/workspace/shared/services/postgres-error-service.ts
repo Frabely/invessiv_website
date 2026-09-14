@@ -1,14 +1,18 @@
-import {
-  POSTGRES_ERROR_CODE_VALUES,
-  type PostgresErrorCode,
-} from "@invessiv/db/core";
+import { PostgresErrorCode } from "@invessiv/db/core";
 import type { PostgresViolation } from "@/server/workspace/shared/postgres-error-types";
 
 // Drivers and Drizzle wrap the Postgres error under different keys.
 const WRAPPED_ERROR_KEYS = ["cause", "originalError", "originalCause"] as const;
 
+// Only these codes name a violated constraint; other known codes such as a lock timeout are no violation.
+const VIOLATION_CODES: readonly PostgresErrorCode[] = [
+  PostgresErrorCode.ForeignKeyViolation,
+  PostgresErrorCode.UniqueViolation,
+  PostgresErrorCode.CheckViolation,
+];
+
 function isKnownCode(value: unknown): value is PostgresErrorCode {
-  return POSTGRES_ERROR_CODE_VALUES.some((code) => code === value);
+  return VIOLATION_CODES.some((code) => code === value);
 }
 
 /** The first constraint violation in the error chain, or undefined for any other failure. */

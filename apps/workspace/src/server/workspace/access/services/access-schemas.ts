@@ -3,11 +3,7 @@ import { z } from "zod";
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { PERMISSION_DEFINITIONS } from "@invessiv/common/constants/auth/permission-definitions";
 import { PERMISSION_VALUES } from "@invessiv/common/constants/auth/permissions";
-
-const ROLE_NAME_MAX_LENGTH = 80;
-const ROLE_DESCRIPTION_MAX_LENGTH = 280;
-const CLERK_USER_ID_MAX_LENGTH = 191;
-const MAX_ROLE_IDS = 50;
+import { AccessFieldLimits } from "@/common/constants/access/access-field-limits";
 
 function hasNoDuplicates(values: readonly string[]): boolean {
   return new Set(values).size === values.length;
@@ -17,7 +13,7 @@ const versionSchema = z.int().positive();
 
 const roleIdsSchema = z
   .array(z.uuid())
-  .max(MAX_ROLE_IDS)
+  .max(AccessFieldLimits.AssignedRoleIdsMax)
   .refine(hasNoDuplicates, { message: "Role ids must be unique" });
 
 // Delegability is deliberately not checked here: the handlers answer it with its own error code.
@@ -33,16 +29,23 @@ const workspacePermissionsSchema = z
     { message: "Only workspace permissions can be assigned" },
   );
 
-const roleNameSchema = z.string().trim().min(1).max(ROLE_NAME_MAX_LENGTH);
+const roleNameSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(AccessFieldLimits.RoleNameMaxLength);
 
 const roleDescriptionSchema = z
   .string()
   .trim()
-  .max(ROLE_DESCRIPTION_MAX_LENGTH)
+  .max(AccessFieldLimits.RoleDescriptionMaxLength)
   .nullable()
   .transform((value) => (value ? value : null));
 
-const clerkCandidateQuerySchema = z.string().trim().max(100);
+const clerkCandidateQuerySchema = z
+  .string()
+  .trim()
+  .max(AccessFieldLimits.ClerkCandidateQueryMaxLength);
 
 export const accessSchemas = {
   entityId: z.uuid(),
@@ -50,7 +53,11 @@ export const accessSchemas = {
     query: clerkCandidateQuerySchema,
   }),
   addWorkspaceMember: z.object({
-    clerkUserId: z.string().trim().min(1).max(CLERK_USER_ID_MAX_LENGTH),
+    clerkUserId: z
+      .string()
+      .trim()
+      .min(1)
+      .max(AccessFieldLimits.ClerkUserIdMaxLength),
     roleIds: roleIdsSchema,
   }),
   replaceWorkspaceMemberRoles: z.object({

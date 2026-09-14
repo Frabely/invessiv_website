@@ -10,6 +10,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { LEAD_SOCIAL_PLATFORMS_VALUES } from "@invessiv/common/constants/leads/social/lead-social-platforms";
+import { LeadSocialProfilesConstraintName } from "@invessiv/db/constraint-names/lead-social-profiles-constraint-names";
 import { sqlCheckIn } from "@invessiv/db/core";
 import { leads } from "@invessiv/db/record-configuration/leads";
 
@@ -34,21 +35,20 @@ export const leadSocialProfiles = pgTable(
   },
   (table) => [
     check(
-      "lead_social_profiles_platform_check",
+      LeadSocialProfilesConstraintName.PlatformCheck,
       sqlCheckIn(table.platform, LEAD_SOCIAL_PLATFORMS_VALUES),
     ),
     check(
-      "lead_social_profiles_profile_url_check",
+      LeadSocialProfilesConstraintName.ProfileUrlCheck,
       sql`btrim(${table.profile_url}) <> ''`,
     ),
     check(
-      "lead_social_profiles_normalized_url_check",
+      LeadSocialProfilesConstraintName.NormalizedUrlCheck,
       sql`btrim(${table.normalized_url}) <> ''`,
     ),
-    index("lead_social_profiles_lead_id_idx").on(table.lead_id),
-    uniqueIndex("lead_social_profiles_platform_normalized_url_uidx").on(
-      table.platform,
-      table.normalized_url,
-    ),
+    index(LeadSocialProfilesConstraintName.LeadIdIndex).on(table.lead_id),
+    uniqueIndex(
+      LeadSocialProfilesConstraintName.PlatformNormalizedUrlUnique,
+    ).on(table.platform, table.normalized_url),
   ],
 );

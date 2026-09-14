@@ -24,7 +24,11 @@ import { SYSTEM_ROLE_DEFINITIONS } from "@invessiv/common/constants/auth/system-
 import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { CreateRoleRequestDto } from "@invessiv/common/contracts/auth/create-role-request.dto";
-import { findWorkspaceRoot, getDrizzleDatabaseClient } from "@invessiv/db/core";
+import {
+  findWorkspaceRoot,
+  getDrizzleDatabaseClient,
+  PostgresErrorCode,
+} from "@invessiv/db/core";
 import {
   roles,
   securityEvents,
@@ -78,7 +82,6 @@ vi.mock("@/server/workspace/access/services/clerk-directory-service", () => ({
 
 const RUN_INTEGRATION = process.env.RBAC_DB_INTEGRATION === "true";
 const FIXTURE_PREFIX = "integration:access:";
-const LOCK_NOT_AVAILABLE_CODE = "55P03";
 
 type Database = ReturnType<typeof getDrizzleDatabaseClient>;
 
@@ -422,7 +425,7 @@ describe.skipIf(!RUN_INTEGRATION)(
       } catch (error: unknown) {
         concurrentWriteWasBlocked = hasErrorCode(
           error,
-          LOCK_NOT_AVAILABLE_CODE,
+          PostgresErrorCode.LockNotAvailable,
         );
       } finally {
         releaseLock();

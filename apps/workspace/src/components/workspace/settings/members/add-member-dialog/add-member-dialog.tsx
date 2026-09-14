@@ -8,6 +8,7 @@ import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurre
 import type { ClerkCandidateDto } from "@invessiv/common/contracts/auth/clerk-candidate.dto";
 import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/role-assignment-option.dto";
 import { accessApiService } from "@/client/access/access-api-service";
+import { AccessFieldLimits } from "@/common/constants/access/access-field-limits";
 import { WorkspaceDialogSize } from "@/common/constants/ui/workspace-dialog-sizes";
 import { selectDefaultRoleIds } from "@/common/patterns/access/role-selection";
 import {
@@ -181,6 +182,7 @@ export function AddMemberDialog({
             autoComplete="off"
             className={styles.searchInput}
             id={searchId}
+            maxLength={AccessFieldLimits.ClerkCandidateQueryMaxLength}
             onChange={(event) => setQuery(event.target.value)}
             placeholder={text.searchPlaceholder}
             type="search"

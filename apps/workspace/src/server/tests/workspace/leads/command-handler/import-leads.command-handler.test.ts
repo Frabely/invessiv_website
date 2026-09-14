@@ -4,6 +4,7 @@ import { LeadImportErrorCode } from "@invessiv/common/constants/leads/import/err
 import { LeadImportRowIssueCode } from "@invessiv/common/constants/leads/import/issues/lead-import-row-issue-codes";
 import { LeadImportRowIssueSeverity } from "@invessiv/common/constants/leads/import/issues/lead-import-row-issue-severities";
 import type { LeadImportReportDto } from "@invessiv/common/contracts/leads/import/lead-import-report.dto";
+import { LeadsConstraintName } from "@invessiv/db/constraint-names/leads-constraint-names";
 import { PostgresErrorCode } from "@invessiv/db/core";
 
 // ── Mocks (hoisted so vi.mock can reference them) ─────────────────────────────
@@ -564,7 +565,7 @@ describe("importLeads", () => {
       Object.assign(new Error("duplicate key value"), {
         cause: {
           code: PostgresErrorCode.UniqueViolation,
-          constraint: "leads_external_guid_uidx",
+          constraint: LeadsConstraintName.ExternalGuidUnique,
         },
       }),
     );

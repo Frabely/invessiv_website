@@ -1,6 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
 import { StatusChangeOrigin } from "@invessiv/common/constants/activity/status-change-origins";
+import { LeadSocialProfilesConstraintName } from "@invessiv/db/constraint-names/lead-social-profiles-constraint-names";
+import { LeadsConstraintName } from "@invessiv/db/constraint-names/leads-constraint-names";
 import { PostgresErrorCode } from "@invessiv/db/core";
 
 const {
@@ -343,7 +345,7 @@ describe("updateLead", () => {
     const duplicateError = Object.assign(new Error("duplicate key value"), {
       cause: {
         code: PostgresErrorCode.UniqueViolation,
-        constraint: "leads_company_name_lower_uidx",
+        constraint: LeadsConstraintName.CompanyNameLowerUnique,
       },
     });
     getLeadByIdMock.mockResolvedValueOnce(mockLeadDto);
@@ -373,7 +375,8 @@ describe("updateLead", () => {
     const duplicateError = Object.assign(new Error("duplicate key value"), {
       cause: {
         code: PostgresErrorCode.UniqueViolation,
-        constraint: "lead_social_profiles_platform_normalized_url_uidx",
+        constraint:
+          LeadSocialProfilesConstraintName.PlatformNormalizedUrlUnique,
       },
     });
     getLeadByIdMock.mockResolvedValueOnce(mockLeadDto);
