@@ -20,6 +20,7 @@ export const WorkspaceMemberErrorCode = {
   MemberAlreadyInactive: "MEMBER_ALREADY_INACTIVE",
   SelfDeactivation: "SELF_DEACTIVATION",
   MemberHasOpenResponsibilities: "MEMBER_HAS_OPEN_RESPONSIBILITIES",
+  MemberInactive: "MEMBER_INACTIVE",
   Internal: "INTERNAL",
 } as const;
 
@@ -44,5 +45,6 @@ export const WORKSPACE_MEMBER_ERROR_CODE_VALUES = [
   WorkspaceMemberErrorCode.MemberAlreadyInactive,
   WorkspaceMemberErrorCode.SelfDeactivation,
   WorkspaceMemberErrorCode.MemberHasOpenResponsibilities,
+  WorkspaceMemberErrorCode.MemberInactive,
   WorkspaceMemberErrorCode.Internal,
 ] as const;

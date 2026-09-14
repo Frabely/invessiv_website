@@ -12,6 +12,7 @@ import type { ChangeWorkspaceOwnerResult } from "@invessiv/common/contracts/auth
 import type { CreateRoleResult } from "@invessiv/common/contracts/auth/results/create-role-result";
 import type { ReplaceWorkspaceMemberRolesResult } from "@invessiv/common/contracts/auth/results/replace-workspace-member-roles-result";
 import type { UpdateRoleResult } from "@invessiv/common/contracts/auth/results/update-role-result";
+import type { UpdateWorkspaceMemberStatusResult } from "@invessiv/common/contracts/auth/results/update-workspace-member-status-result";
 import type { AccessOperation } from "@/common/constants/access/access-operations";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { withPermission } from "@/lib/auth/api";
@@ -27,12 +28,18 @@ type AccessMutationOutcome =
       code: typeof ConcurrencyErrorCode.VersionConflict;
       conflict: unknown;
     }
-  | { ok: false; code: string; errors?: unknown };
+  | {
+      ok: false;
+      code: string;
+      errors?: unknown;
+      responsibilityCounts?: unknown;
+    };
 
 type MemberMutationResult =
   | AddWorkspaceMemberResult
   | ReplaceWorkspaceMemberRolesResult
-  | ChangeWorkspaceOwnerResult;
+  | ChangeWorkspaceOwnerResult
+  | UpdateWorkspaceMemberStatusResult;
 
 type RoleMutationResult = CreateRoleResult | UpdateRoleResult;
 
@@ -83,10 +90,14 @@ function handleAccessMutation<
         status: HttpResponseCode.Conflict,
       });
     }
-    return options.errorResponse(
-      outcome.code as TCode,
-      "errors" in outcome ? outcome.errors : undefined,
-    );
+    const details =
+      "errors" in outcome && outcome.errors !== undefined
+        ? outcome.errors
+        : "responsibilityCounts" in outcome &&
+            outcome.responsibilityCounts !== undefined
+          ? { responsibilityCounts: outcome.responsibilityCounts }
+          : undefined;
+    return options.errorResponse(outcome.code as TCode, details);
   })(request);
 }
 

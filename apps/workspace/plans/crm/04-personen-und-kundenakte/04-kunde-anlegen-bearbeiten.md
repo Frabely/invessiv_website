@@ -7,7 +7,9 @@
 - Kunde entsteht nur gemeinsam mit genau einem bestätigten Primärkontakt.
 - Primärkontakt wird als globale Person angelegt oder bewusst verknüpft; Firmen-E-Mail/-Telefon und
   Funktion gehören zur Zuordnung.
-- `ownerMemberId` ist Pflicht und initial das aktuelle Mitglied.
+- `ownerMemberId` ist Pflicht und initial das aktuelle Mitglied. Der Command sperrt die Membership des Owners in
+  derselben Transaktion (`FOR SHARE`) und prüft `active`, damit keine parallele Deaktivierung einen verwaisten Kunden
+  hinterlässt (Task 02d, Abschnitt „Bekannte Grenze: Zuständigkeitszählung ohne Sperre“).
 - Status nur `active | paused | archived`; kein `deleted_at`-Filter.
 - Create/Update verwenden `version`; veralteter Write liefert 409 samt aktuellem DTO.
 - Dublettenprüfung normalisiert Name, Domain und USt-ID, warnt höchstens fünf Treffer und blockiert

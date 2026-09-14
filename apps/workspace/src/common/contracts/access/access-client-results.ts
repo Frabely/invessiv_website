@@ -4,6 +4,7 @@ import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurre
 import type { ClerkCandidateDto } from "@invessiv/common/contracts/auth/clerk-candidate.dto";
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
+import type { OwnershipResponsibilityCountsDto } from "@invessiv/common/contracts/auth/ownership-responsibility-counts.dto";
 
 /** A 409 carries the fresh state so the dialog can show it without dropping the input. */
 export type MemberMutationClientResult =
@@ -14,6 +15,19 @@ export type MemberMutationClientResult =
       current: WorkspaceMemberDto;
     }
   | { ok: false; code: WorkspaceMemberErrorCode };
+
+export type MemberStatusMutationClientResult =
+  | { ok: true; member: WorkspaceMemberDto }
+  | {
+      ok: false;
+      code: typeof ConcurrencyErrorCode.VersionConflict;
+      current: WorkspaceMemberDto;
+    }
+  | {
+      ok: false;
+      code: WorkspaceMemberErrorCode;
+      responsibilityCounts?: OwnershipResponsibilityCountsDto;
+    };
 
 export type RoleMutationClientResult =
   | { ok: true; role: RoleDto }

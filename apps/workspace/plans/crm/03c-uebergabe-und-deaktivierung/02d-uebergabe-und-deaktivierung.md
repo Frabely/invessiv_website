@@ -9,10 +9,10 @@
 
 - [x] **T1:** Konstanten, Contracts und additive Security-Event-Migration
 - [x] **T2:** Exhaustive Zuständigkeitsprüfung und Customer-Counter
-- [ ] **T3:** Aktivieren und Deaktivieren mit allen Invarianten
-- [ ] **T4:** Route und Client-Service
-- [ ] **T5:** Settings-UI mit DE/EN und Dialogtests
-- [ ] **T6:** DB-Integration, vollständige Qualitäts-Gates und Review-Dokumentation
+- [x] **T3:** Aktivieren und Deaktivieren mit allen Invarianten
+- [x] **T4:** Route und Client-Service
+- [x] **T5:** Settings-UI mit DE/EN und Dialogtests
+- [x] **T6:** DB-Integration, vollständige Qualitäts-Gates und Review-Dokumentation
 
 Die Liste wird nach jedem abgeschlossenen, getesteten Review-Schnitt aktualisiert. Ein Haken bedeutet, dass der
 zugehörige Code und seine fokussierten Tests vorliegen; die übergreifende Abnahme bleibt bis T6 offen.
@@ -51,6 +51,7 @@ bleibt diese Sperre bestehen; Ordner 05 ergänzt den einzelnen Customer-Owner-We
 | Vorregistrierter Event | Migration 0026 enthält zusätzlich `workspace_responsibilities_handed_over`, weil sie bereits in der Development-DB registriert wurde. 03c schreibt diesen Typ nicht; Task 02f aktiviert ihn ohne erneute Schemaänderung. |
 | UI                     | Die Mitgliederliste erhält Status und Aktivieren-/Deaktivieren-Aktion. Bei Zuständigkeiten zeigt sie ausschließlich die sichere Sperre, keinen toten Übergabe-CTA.                                                       |
 | Versionenkonflikt      | Ein 409 behält den Dialogzustand, zeigt den aktuellen Member-Stand und verlangt einen bewussten erneuten Versuch.                                                                                                        |
+| Owner-Vergabe          | Deaktivierte Mitglieder werden nicht Owner (`409 MEMBER_INACTIVE`); die Zeile bietet dafür keine Aktion. Ein inaktiver Owner hätte keinen Zugriff und würde nur einen Backup-Owner vortäuschen. Entzug bleibt möglich.   |
 
 ## Öffentlicher Contract
 
@@ -77,7 +78,7 @@ Fachfehler:
 - `409 MEMBER_ALREADY_ACTIVE` oder `MEMBER_ALREADY_INACTIVE`
 - `409 SELF_DEACTIVATION`
 - `409 LAST_ACTIVE_OWNER`
-- `409 MEMBER_HAS_OPEN_RESPONSIBILITIES` mit `responsibilityCounts`
+- `409 MEMBER_HAS_OPEN_RESPONSIBILITIES` mit `details.responsibilityCounts`
 
 ## Zuständigkeitsprüfung
 
@@ -127,6 +128,7 @@ nicht entfernt und die bereits registrierte Migration 0026 wird nicht nachträgl
 - Jede fremde Mitgliederzeile zeigt den Zustand „Aktiv“ oder „Deaktiviert“.
 - Abhängig vom Zustand steht „Deaktivieren“ oder „Aktivieren“ zur Verfügung.
 - Die eigene Zeile bietet keine Deaktivierungsaktion.
+- Deaktivierte Mitglieder bieten kein „Zum Owner machen“; „Owner entziehen“ bleibt für inaktive Owner sichtbar.
 - Der Deaktivierungsdialog erklärt, dass der Zugriff ab dem nächsten Request endet.
 - Bei offenen Zuständigkeiten bleibt der Dialog geöffnet und zeigt die Anzahl je vorhandener Entität.
 - Es erscheint noch kein Übergabe-Button; der Fehlerzustand erklärt, dass offene Kunden zuerst einem anderen Owner
@@ -217,6 +219,42 @@ apps/workspace/src/
 - Event-Anzahl und PII-freie Metadaten verifizieren.
 - **Akzeptanz:** `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, DB-Smokes, Integrationstests und
   `pnpm --filter @invessiv/workspace build` grün; Screenshots und Testplan im PR.
+
+## Abschlussnachweis vom 14.09.2026
+
+- Paketweise Ausführung des Root-Gates: Lint, Typecheck und Tests in `common`, `db`, `ui`, `web` und `workspace`
+  grün. Das Web-Lint enthält nur die bereits bekannte `no-img-element`-Warnung in einem bestehenden Test.
+- Workspace: 159 Testdateien grün, vier DB-Suites im normalen Lauf erwartungsgemäß übersprungen; 1004 Tests grün.
+- PostgreSQL: Access-Integration mit acht Fällen grün, einschließlich Owner-Lock, Customer-Statusfilter,
+  Versionsschreibweg und exakt einem PII-freien Event je erfolgreichem Statuswechsel.
+- Weitere DB-Smokes: CRM 2/2, Activities 2/2 und RBAC 7/7 grün; ein bestehender RBAC-Test bleibt bewusst übersprungen.
+- Produktions-Build der Workspace-App grün; die neue dynamische Route `/api/workspace/members/[id]` ist enthalten.
+- UI-Smoke: Lifecycle-Dialog, Statusdarstellung, Eigenzeilenschutz, Versionskonflikt und Zuständigkeitssperre sind durch
+  Komponenten- und Shared-Dialogtests abgedeckt. Dark/Light und der responsive Umbruch verwenden ausschließlich
+  bestehende Tokens und Breakpoints. Ein PR-Screenshot wird als Review-Artefakt angehängt und nicht im Produktcode
+  committed.
+
+## Bekannte Grenze: Zuständigkeitszählung ohne Sperre
+
+Bewusst verschoben aus dem Review vom 14.09.2026.
+
+- **Stelle:** Schritt 6 in
+  `src/server/workspace/access/command-handler/update-workspace-member-status.command-handler.ts` und
+  `src/server/workspace/access/services/responsibilities/customer-responsibility-counter.ts`.
+- **Regelbezug:** „Vor Deaktivierung eines Mitglieds ist die Übergabe sämtlicher aktiver Zuständigkeiten Pflicht“
+  (`00-entscheidungen.md`).
+- **Befund:** Der Counter zählt offene Kunden ohne Sperre. Weist eine parallele Transaktion dem Zielmitglied zwischen
+  Zählung und Commit der Deaktivierung einen Kunden zu, entsteht ein deaktiviertes Mitglied mit offener Zuständigkeit.
+- **Risiko heute:** keines. Vor Ordner 04 setzt kein Schreibpfad `customers.owner_member_id`.
+- **Relevant ab:** dem ersten Schreibpfad auf eine Zuständigkeit — Kundenanlage (Task 04, Ordner 04), Lead-Konvertierung
+  (Task 08, Ordner 06), Owner-Wechsel und Übergabe (Task 02f, Ordner 05) sowie jede spätere `OwnableEntity`.
+- **Nächster Schritt**, im selben Ordner wie der erste solche Schreibpfad:
+  1. Die Deaktivierung sperrt vor der Zählung die Membership-Zeile des Ziels mit `SELECT … FOR UPDATE`.
+  2. Jeder Schreibpfad, der eine Zuständigkeit setzt, sperrt in derselben Transaktion die Membership-Zeile des neuen
+     Zuständigen mit `SELECT … FOR SHARE` und prüft dort `active`. Der Fremdschlüssel allein genügt nicht: Postgres
+     nimmt dafür nur `FOR KEY SHARE`, das weder mit `FOR UPDATE` noch mit dem Versions-Update kollidiert.
+  3. Beide Sperren als gemeinsamen Baustein unter `server/workspace/access/` kapseln und mit einem DB-Integrationstest
+     für parallele Zuweisung und Deaktivierung absichern.
 
 ## Nicht Teil dieses Tasks
 

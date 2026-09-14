@@ -29,6 +29,7 @@ const OWNER: WorkspaceMemberDto = {
 
 function renderRow(isCurrentActor: boolean) {
   const onToggleOwnerAction = vi.fn();
+  const onToggleStatusAction = vi.fn();
   render(
     <ul>
       <MemberRow
@@ -37,11 +38,12 @@ function renderRow(isCurrentActor: boolean) {
         member={OWNER}
         onEditRolesAction={vi.fn()}
         onToggleOwnerAction={onToggleOwnerAction}
+        onToggleStatusAction={onToggleStatusAction}
         permissionsContent={permissionsContent}
       />
     </ul>,
   );
-  return { onToggleOwnerAction };
+  return { onToggleOwnerAction, onToggleStatusAction };
 }
 
 const revokeButtonName = `${content.list.actions.revokeOwner}: ${OWNER.displayName}`;
@@ -72,6 +74,7 @@ describe("MemberRow", () => {
           member={{ ...OWNER, isOwner: false, hasActiveRole: false }}
           onEditRolesAction={vi.fn()}
           onToggleOwnerAction={vi.fn()}
+          onToggleStatusAction={vi.fn()}
           permissionsContent={permissionsContent}
         />
       </ul>,
@@ -86,6 +89,7 @@ describe("MemberRow", () => {
           member={OWNER}
           onEditRolesAction={vi.fn()}
           onToggleOwnerAction={vi.fn()}
+          onToggleStatusAction={vi.fn()}
           permissionsContent={permissionsContent}
         />
       </ul>,
@@ -101,5 +105,64 @@ describe("MemberRow", () => {
     fireEvent.click(screen.getByRole("button", { name: revokeButtonName }));
 
     expect(onToggleOwnerAction).toHaveBeenCalledTimes(1);
+  });
+
+  it("offers no grant owner action for a deactivated member but keeps revoke and activate", () => {
+    const inactive = { ...OWNER, active: false };
+    const { rerender } = render(
+      <ul>
+        <MemberRow
+          content={content}
+          isCurrentActor={false}
+          member={{ ...inactive, isOwner: false }}
+          onEditRolesAction={vi.fn()}
+          onToggleOwnerAction={vi.fn()}
+          onToggleStatusAction={vi.fn()}
+          permissionsContent={permissionsContent}
+        />
+      </ul>,
+    );
+    expect(
+      screen.queryByRole("button", {
+        name: `${content.list.actions.grantOwner}: ${OWNER.displayName}`,
+      }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", {
+        name: `${content.list.actions.activate}: ${OWNER.displayName}`,
+      }),
+    ).toBeInTheDocument();
+
+    rerender(
+      <ul>
+        <MemberRow
+          content={content}
+          isCurrentActor={false}
+          member={inactive}
+          onEditRolesAction={vi.fn()}
+          onToggleOwnerAction={vi.fn()}
+          onToggleStatusAction={vi.fn()}
+          permissionsContent={permissionsContent}
+        />
+      </ul>,
+    );
+    expect(
+      screen.getByRole("button", { name: revokeButtonName }),
+    ).toBeInTheDocument();
+  });
+
+  it("shows status and offers lifecycle actions only for another member", () => {
+    const { onToggleStatusAction } = renderRow(false);
+    const deactivateName = `${content.list.actions.deactivate}: ${OWNER.displayName}`;
+
+    expect(screen.getByText(content.list.activeBadge)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: deactivateName }));
+    expect(onToggleStatusAction).toHaveBeenCalledTimes(1);
+
+    cleanup();
+    renderRow(true);
+    expect(
+      screen.queryByRole("button", { name: deactivateName }),
+    ).not.toBeInTheDocument();
   });
 });

@@ -17,6 +17,7 @@ export type ChangeWorkspaceOwnerResult =
       code:
         | typeof WorkspaceMemberErrorCode.MemberNotFound
         | typeof WorkspaceMemberErrorCode.AlreadyOwner
+        | typeof WorkspaceMemberErrorCode.MemberInactive
         | typeof WorkspaceMemberErrorCode.NotOwner
         | typeof WorkspaceMemberErrorCode.LastActiveOwner
         | typeof WorkspaceMemberErrorCode.SelfOwnerRevocation

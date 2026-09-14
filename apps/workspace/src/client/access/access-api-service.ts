@@ -19,14 +19,18 @@ import type { ListClerkCandidatesRequestDto } from "@invessiv/common/contracts/a
 import type { ReplaceWorkspaceMemberRolesRequestDto } from "@invessiv/common/contracts/auth/replace-workspace-member-roles-request.dto";
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
 import type { UpdateRoleRequestDto } from "@invessiv/common/contracts/auth/update-role-request.dto";
+import type { UpdateWorkspaceMemberStatusRequestDto } from "@invessiv/common/contracts/auth/update-workspace-member-status-request.dto";
+import { OwnableEntity } from "@invessiv/common/constants/crm/ownable-entities";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
 import type {
   ClerkCandidatesClientResult,
   MemberMutationClientResult,
+  MemberStatusMutationClientResult,
   RoleMutationClientResult,
 } from "@/common/contracts/access/access-client-results";
 import {
+  workspaceMemberEndpoint,
   workspaceMemberOwnerEndpoint,
   workspaceMemberRolesEndpoint,
   workspaceRoleEndpoint,
@@ -110,6 +114,50 @@ async function mutateMember(
   };
 }
 
+function readResponsibilityCounts(payload: unknown) {
+  if (!isRecord(payload) || !isRecord(payload.details)) {
+    return undefined;
+  }
+  const counts = payload.details.responsibilityCounts;
+  const customerCount = isRecord(counts)
+    ? counts[OwnableEntity.Customer]
+    : undefined;
+  if (typeof customerCount !== "number") {
+    return undefined;
+  }
+  return { [OwnableEntity.Customer]: customerCount };
+}
+
+async function updateMemberStatus(
+  memberId: string,
+  request: UpdateWorkspaceMemberStatusRequestDto,
+): Promise<MemberStatusMutationClientResult> {
+  const response = await send(
+    workspaceMemberEndpoint(memberId),
+    HttpMethod.Patch,
+    request,
+  );
+  if (!response) {
+    return { ok: false, code: WorkspaceMemberErrorCode.Internal };
+  }
+  if (response.ok && isRecord(response.payload) && response.payload.member) {
+    return { ok: true, member: response.payload.member as WorkspaceMemberDto };
+  }
+  const current = readConflict<WorkspaceMemberDto>(response);
+  if (current) {
+    return { ok: false, code: ConcurrencyErrorCode.VersionConflict, current };
+  }
+  return {
+    ok: false,
+    code: readErrorCode(
+      response.payload,
+      WORKSPACE_MEMBER_ERROR_CODE_VALUES,
+      WorkspaceMemberErrorCode.Internal,
+    ),
+    responsibilityCounts: readResponsibilityCounts(response.payload),
+  };
+}
+
 async function mutateRole(
   url: string,
   method: HttpMethod,
@@ -170,6 +218,7 @@ async function listClerkCandidates(
 export const accessApiService = {
   addMember: (request: AddWorkspaceMemberRequestDto) =>
     mutateMember(WorkspaceApiEndpoint.Members, HttpMethod.Post, request),
+  updateMemberStatus,
   replaceMemberRoles: (
     memberId: string,
     request: ReplaceWorkspaceMemberRolesRequestDto,

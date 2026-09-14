@@ -4,15 +4,22 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
+import { OwnableEntity } from "@invessiv/common/constants/crm/ownable-entities";
+import { HttpHeaderName } from "@invessiv/common/constants/http/http-header-names";
+import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
+import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
+import { MediaType } from "@invessiv/common/constants/http/media-types";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import type { WorkspaceMemberOptionDto } from "@invessiv/common/contracts/auth/workspace-member-option.dto";
 import { POST as getCandidates } from "@/app/api/workspace/members/clerk-candidates/route";
+import { PATCH as updateStatus } from "@/app/api/workspace/members/[id]/route";
 import {
   DELETE as revokeOwner,
   POST as grantOwner,
 } from "@/app/api/workspace/members/[id]/owner/route";
 import { PUT as replaceRoles } from "@/app/api/workspace/members/[id]/roles/route";
 import { GET, POST } from "@/app/api/workspace/members/route";
+import { AccessOperation } from "@/common/constants/access/access-operations";
 import {
   authorizedWorkspaceRequest,
   notMemberWorkspaceRequest,
@@ -29,6 +36,7 @@ const mocks = vi.hoisted(() => ({
   replaceRoles: vi.fn(),
   grantOwner: vi.fn(),
   revokeOwner: vi.fn(),
+  updateStatus: vi.fn(),
 }));
 
 vi.mock("@/lib/auth/workspace-authentication", () => ({
@@ -58,6 +66,10 @@ vi.mock(
   "@/server/workspace/access/command-handler/revoke-workspace-owner.command-handler",
   () => ({ revokeWorkspaceOwner: mocks.revokeOwner }),
 );
+vi.mock(
+  "@/server/workspace/access/command-handler/update-workspace-member-status.command-handler",
+  () => ({ updateWorkspaceMemberStatus: mocks.updateStatus }),
+);
 
 const MEMBER: WorkspaceMemberDto = {
   id: "member-1",
@@ -81,11 +93,15 @@ function request(url: string, init?: RequestInit): NextRequest {
   return new Request(url, init) as unknown as NextRequest;
 }
 
-function jsonRequest(url: string, method: string, body: unknown): NextRequest {
+function jsonRequest(
+  url: string,
+  method: HttpMethod,
+  body: unknown,
+): NextRequest {
   return request(url, {
     method,
     body: JSON.stringify(body),
-    headers: { "Content-Type": "application/json" },
+    headers: { [HttpHeaderName.ContentType]: MediaType.Json },
   });
 }
 
@@ -103,12 +119,12 @@ describe("members routes", () => {
     mocks.authenticate.mockResolvedValueOnce(unauthenticatedWorkspaceRequest());
     expect(
       (await GET(request("http://localhost/api/workspace/members"))).status,
-    ).toBe(401);
+    ).toBe(HttpResponseCode.Unauthorized);
 
     mocks.authenticate.mockResolvedValueOnce(notMemberWorkspaceRequest());
     expect(
       (await GET(request("http://localhost/api/workspace/members"))).status,
-    ).toBe(404);
+    ).toBe(HttpResponseCode.NotFound);
     expect(mocks.listMembers).not.toHaveBeenCalled();
   });
 
@@ -118,7 +134,7 @@ describe("members routes", () => {
     );
     expect(
       (await GET(request("http://localhost/api/workspace/members"))).status,
-    ).toBe(403);
+    ).toBe(HttpResponseCode.Forbidden);
 
     mocks.authenticate.mockResolvedValueOnce(
       authorizedWorkspaceRequest([Permission.MembersRead]),
@@ -127,7 +143,7 @@ describe("members routes", () => {
     const response = await GET(
       request("http://localhost/api/workspace/members"),
     );
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(HttpResponseCode.Ok);
     expect(await response.json()).toEqual({ members: [MEMBER_OPTION] });
   });
 
@@ -137,43 +153,60 @@ describe("members routes", () => {
     );
 
     const response = await POST(
-      jsonRequest("http://localhost/api/workspace/members", "POST", {}),
+      jsonRequest(
+        "http://localhost/api/workspace/members",
+        HttpMethod.Post,
+        {},
+      ),
     );
 
-    expect(response.status).toBe(403);
+    expect(response.status).toBe(HttpResponseCode.Forbidden);
     expect(mocks.addMember).not.toHaveBeenCalled();
   });
 
   it("POST answers 400 for a malformed body and 201 for a created member", async () => {
     const malformed = await POST(
       request("http://localhost/api/workspace/members", {
-        method: "POST",
+        method: HttpMethod.Post,
         body: "{",
       }),
     );
-    expect(malformed.status).toBe(400);
+    expect(malformed.status).toBe(HttpResponseCode.BadRequest);
 
     mocks.addMember.mockResolvedValue({ ok: true, member: MEMBER });
     const created = await POST(
-      jsonRequest("http://localhost/api/workspace/members", "POST", {
+      jsonRequest("http://localhost/api/workspace/members", HttpMethod.Post, {
         clerkUserId: "user_abc",
         roleIds: [],
       }),
     );
-    expect(created.status).toBe(201);
+    expect(created.status).toBe(HttpResponseCode.Created);
     expect(await created.json()).toEqual({ member: MEMBER });
   });
 
   it.each([
-    [WorkspaceMemberErrorCode.ClerkAccountAlreadyLinked, 409],
-    [WorkspaceMemberErrorCode.ClerkAccountNotFound, 404],
-    [WorkspaceMemberErrorCode.OwnerRoleNotAssignable, 422],
-    [WorkspaceMemberErrorCode.ClerkUnavailable, 503],
+    [
+      WorkspaceMemberErrorCode.ClerkAccountAlreadyLinked,
+      HttpResponseCode.Conflict,
+    ],
+    [WorkspaceMemberErrorCode.ClerkAccountNotFound, HttpResponseCode.NotFound],
+    [
+      WorkspaceMemberErrorCode.OwnerRoleNotAssignable,
+      HttpResponseCode.UnprocessableContent,
+    ],
+    [
+      WorkspaceMemberErrorCode.ClerkUnavailable,
+      HttpResponseCode.ServiceUnavailable,
+    ],
   ])("POST maps %s to %i", async (code, status) => {
     mocks.addMember.mockResolvedValue({ ok: false, code });
 
     const response = await POST(
-      jsonRequest("http://localhost/api/workspace/members", "POST", {}),
+      jsonRequest(
+        "http://localhost/api/workspace/members",
+        HttpMethod.Post,
+        {},
+      ),
     );
 
     expect(response.status).toBe(status);
@@ -185,11 +218,11 @@ describe("members routes", () => {
     const ok = await getCandidates(
       jsonRequest(
         "http://localhost/api/workspace/members/clerk-candidates",
-        "POST",
+        HttpMethod.Post,
         { query: " anna " },
       ),
     );
-    expect(ok.status).toBe(200);
+    expect(ok.status).toBe(HttpResponseCode.Ok);
     expect(mocks.listCandidates).toHaveBeenCalledWith({ query: " anna " });
 
     mocks.listCandidates.mockResolvedValueOnce({
@@ -199,22 +232,22 @@ describe("members routes", () => {
     const outage = await getCandidates(
       jsonRequest(
         "http://localhost/api/workspace/members/clerk-candidates",
-        "POST",
+        HttpMethod.Post,
         { query: "" },
       ),
     );
-    expect(outage.status).toBe(503);
+    expect(outage.status).toBe(HttpResponseCode.ServiceUnavailable);
     expect(mocks.listCandidates).toHaveBeenLastCalledWith({ query: "" });
   });
 
   it("POST clerk-candidates rejects malformed JSON and maps handler validation errors", async () => {
     const malformed = await getCandidates(
       request("http://localhost/api/workspace/members/clerk-candidates", {
-        method: "POST",
+        method: HttpMethod.Post,
         body: "{",
       }),
     );
-    expect(malformed.status).toBe(400);
+    expect(malformed.status).toBe(HttpResponseCode.BadRequest);
     expect(mocks.listCandidates).not.toHaveBeenCalled();
 
     mocks.listCandidates.mockResolvedValueOnce({
@@ -225,12 +258,12 @@ describe("members routes", () => {
     const invalid = await getCandidates(
       jsonRequest(
         "http://localhost/api/workspace/members/clerk-candidates",
-        "POST",
+        HttpMethod.Post,
         { query: "a".repeat(101) },
       ),
     );
 
-    expect(invalid.status).toBe(400);
+    expect(invalid.status).toBe(HttpResponseCode.BadRequest);
     expect(mocks.listCandidates).toHaveBeenCalledWith({
       query: "a".repeat(101),
     });
@@ -251,7 +284,7 @@ describe("members routes", () => {
     const response = await replaceRoles(
       jsonRequest(
         "http://localhost/api/workspace/members/member-1/roles",
-        "PUT",
+        HttpMethod.Put,
         {
           roleIds: [],
           version: 1,
@@ -260,7 +293,7 @@ describe("members routes", () => {
       context,
     );
 
-    expect(response.status).toBe(409);
+    expect(response.status).toBe(HttpResponseCode.Conflict);
     expect(await response.json()).toEqual(conflict);
     expect(mocks.replaceRoles).toHaveBeenCalledWith(
       MEMBER.id,
@@ -274,14 +307,14 @@ describe("members routes", () => {
     const granted = await grantOwner(
       jsonRequest(
         "http://localhost/api/workspace/members/member-1/owner",
-        "POST",
+        HttpMethod.Post,
         {
           version: 2,
         },
       ),
       context,
     );
-    expect(granted.status).toBe(200);
+    expect(granted.status).toBe(HttpResponseCode.Ok);
 
     mocks.revokeOwner.mockResolvedValue({
       ok: false,
@@ -290,17 +323,152 @@ describe("members routes", () => {
     const revoked = await revokeOwner(
       jsonRequest(
         "http://localhost/api/workspace/members/member-1/owner",
-        "DELETE",
+        HttpMethod.Delete,
         {
           version: 2,
         },
       ),
       context,
     );
-    expect(revoked.status).toBe(409);
+    expect(revoked.status).toBe(HttpResponseCode.Conflict);
     expect((await revoked.json()).error).toBe(
       WorkspaceMemberErrorCode.LastActiveOwner,
     );
+  });
+
+  it("PATCH status requires members.manage and returns the updated member", async () => {
+    mocks.authenticate.mockResolvedValueOnce(
+      authorizedWorkspaceRequest([Permission.MembersRead]),
+    );
+    const forbidden = await updateStatus(
+      jsonRequest(
+        "http://localhost/api/workspace/members/member-1",
+        HttpMethod.Patch,
+        { active: false, version: 2 },
+      ),
+      context,
+    );
+    expect(forbidden.status).toBe(HttpResponseCode.Forbidden);
+    expect(mocks.updateStatus).not.toHaveBeenCalled();
+
+    mocks.authenticate.mockResolvedValueOnce(authorizedWorkspaceRequest());
+    mocks.updateStatus.mockResolvedValueOnce({
+      ok: true,
+      member: { ...MEMBER, active: false, version: 3 },
+    });
+    const success = await updateStatus(
+      jsonRequest(
+        "http://localhost/api/workspace/members/member-1",
+        HttpMethod.Patch,
+        { active: false, version: 2 },
+      ),
+      context,
+    );
+    expect(success.status).toBe(HttpResponseCode.Ok);
+    expect(await success.json()).toEqual({
+      member: { ...MEMBER, active: false, version: 3 },
+    });
+  });
+
+  it("PATCH status preserves authentication fallbacks and rejects malformed JSON", async () => {
+    mocks.authenticate.mockResolvedValueOnce(unauthenticatedWorkspaceRequest());
+    const unauthenticated = await updateStatus(
+      jsonRequest(
+        "http://localhost/api/workspace/members/member-1",
+        HttpMethod.Patch,
+        { active: false, version: 2 },
+      ),
+      context,
+    );
+    expect(unauthenticated.status).toBe(HttpResponseCode.Unauthorized);
+
+    mocks.authenticate.mockResolvedValueOnce(notMemberWorkspaceRequest());
+    const notMember = await updateStatus(
+      jsonRequest(
+        "http://localhost/api/workspace/members/member-1",
+        HttpMethod.Patch,
+        { active: false, version: 2 },
+      ),
+      context,
+    );
+    expect(notMember.status).toBe(HttpResponseCode.NotFound);
+
+    mocks.authenticate.mockResolvedValueOnce(authorizedWorkspaceRequest());
+    const malformed = await updateStatus(
+      request("http://localhost/api/workspace/members/member-1", {
+        method: HttpMethod.Patch,
+        body: "{",
+      }),
+      context,
+    );
+    expect(malformed.status).toBe(HttpResponseCode.BadRequest);
+    expect(mocks.updateStatus).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    WorkspaceMemberErrorCode.MemberNotFound,
+    WorkspaceMemberErrorCode.MemberAlreadyActive,
+    WorkspaceMemberErrorCode.MemberAlreadyInactive,
+    WorkspaceMemberErrorCode.SelfDeactivation,
+    WorkspaceMemberErrorCode.LastActiveOwner,
+  ])("PATCH status maps %s through the member error contract", async (code) => {
+    mocks.updateStatus.mockResolvedValueOnce({ ok: false, code });
+    const response = await updateStatus(
+      jsonRequest(
+        "http://localhost/api/workspace/members/member-1",
+        HttpMethod.Patch,
+        { active: false, version: 2 },
+      ),
+      context,
+    );
+    expect(response.status).toBe(
+      code === WorkspaceMemberErrorCode.MemberNotFound
+        ? HttpResponseCode.NotFound
+        : HttpResponseCode.Conflict,
+    );
+    expect((await response.json()).error).toBe(code);
+  });
+
+  it("PATCH status exposes responsibility counts and version conflicts", async () => {
+    mocks.updateStatus.mockResolvedValueOnce({
+      ok: false,
+      code: WorkspaceMemberErrorCode.MemberHasOpenResponsibilities,
+      responsibilityCounts: { [OwnableEntity.Customer]: 2 },
+    });
+    const blocked = await updateStatus(
+      jsonRequest(
+        "http://localhost/api/workspace/members/member-1",
+        HttpMethod.Patch,
+        { active: false, version: 2 },
+      ),
+      context,
+    );
+    expect(blocked.status).toBe(HttpResponseCode.Conflict);
+    expect(await blocked.json()).toMatchObject({
+      error: WorkspaceMemberErrorCode.MemberHasOpenResponsibilities,
+      details: { responsibilityCounts: { [OwnableEntity.Customer]: 2 } },
+    });
+
+    const conflict = {
+      code: ConcurrencyErrorCode.VersionConflict,
+      currentVersion: 3,
+      current: MEMBER,
+    };
+    mocks.updateStatus.mockResolvedValueOnce({
+      ok: false,
+      code: ConcurrencyErrorCode.VersionConflict,
+      conflict,
+    });
+    const stale = await updateStatus(
+      jsonRequest(
+        "http://localhost/api/workspace/members/member-1",
+        HttpMethod.Patch,
+        { active: false, version: 1 },
+      ),
+      context,
+    );
+    expect(stale.status).toBe(HttpResponseCode.Conflict);
+    expect(await stale.json()).toEqual(conflict);
   });
 
   it("answers 500 without leaking details and logs operation and constraint when a handler throws", async () => {
@@ -319,18 +487,18 @@ describe("members routes", () => {
     const response = await replaceRoles(
       jsonRequest(
         "http://localhost/api/workspace/members/member-1/roles",
-        "PUT",
+        HttpMethod.Put,
         {},
       ),
       context,
     );
 
-    expect(response.status).toBe(500);
+    expect(response.status).toBe(HttpResponseCode.InternalServerError);
     expect(JSON.stringify(await response.json())).not.toContain("exploded");
     expect(consoleError).toHaveBeenCalledWith(
       "[workspace-access] request failed",
       {
-        operation: "members.roles.replace",
+        operation: AccessOperation.ReplaceMemberRoles,
         errorName: "Error",
         postgresCode: "23503",
         constraint: "workspace_member_roles_assigned_by_user_id_fkey",

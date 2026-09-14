@@ -26,6 +26,7 @@ const STATUS: Record<WorkspaceMemberErrorCode, HttpResponseCode> = {
   [WorkspaceMemberErrorCode.SelfDeactivation]: HttpResponseCode.Conflict,
   [WorkspaceMemberErrorCode.MemberHasOpenResponsibilities]:
     HttpResponseCode.Conflict,
+  [WorkspaceMemberErrorCode.MemberInactive]: HttpResponseCode.Conflict,
   [WorkspaceMemberErrorCode.Internal]: HttpResponseCode.InternalServerError,
 };
 
@@ -58,6 +59,8 @@ const MESSAGES: Record<WorkspaceMemberErrorCode, string> = {
     "Members cannot deactivate themselves",
   [WorkspaceMemberErrorCode.MemberHasOpenResponsibilities]:
     "Open responsibilities must be handed over before deactivation",
+  [WorkspaceMemberErrorCode.MemberInactive]:
+    "Deactivated members cannot become owners",
   [WorkspaceMemberErrorCode.Internal]: "Unexpected server error",
 };
 

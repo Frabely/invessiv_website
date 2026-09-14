@@ -7,13 +7,13 @@ import { responsibilityCounterService } from "@/server/workspace/access/services
 vi.mock("server-only", () => ({}));
 
 const mocks = vi.hoisted(() => ({
-  countOpenCustomerResponsibilities: vi.fn(),
+  countOpen: vi.fn(),
 }));
 
 vi.mock(
   "@/server/workspace/access/services/responsibilities/customer-responsibility-counter",
   () => ({
-    countOpenCustomerResponsibilities: mocks.countOpenCustomerResponsibilities,
+    customerResponsibilityCounterService: { countOpen: mocks.countOpen },
   }),
 );
 
@@ -24,7 +24,7 @@ describe("responsibilityCounterService", () => {
 
   it("returns a complete count keyed by every ownable entity", async () => {
     const executor = {} as AccessDatabaseExecutor;
-    mocks.countOpenCustomerResponsibilities.mockResolvedValue(2);
+    mocks.countOpen.mockResolvedValue(2);
 
     await expect(
       responsibilityCounterService.countOpenByMemberId(
@@ -33,7 +33,7 @@ describe("responsibilityCounterService", () => {
       ),
     ).resolves.toEqual({ [OwnableEntity.Customer]: 2 });
 
-    expect(mocks.countOpenCustomerResponsibilities).toHaveBeenCalledWith(
+    expect(mocks.countOpen).toHaveBeenCalledWith(
       executor,
       "00000000-0000-4000-8000-000000000001",
     );

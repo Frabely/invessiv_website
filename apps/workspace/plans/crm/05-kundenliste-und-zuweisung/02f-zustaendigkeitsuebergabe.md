@@ -18,18 +18,19 @@ Projekte, Aufgaben und Renewals erweitern die Registry später in ihren jeweilig
 
 ## Entscheidungen
 
-| Bereich        | Entscheidung                                                                                                                                                       |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Autorisierung  | Mitgliedsübergabe nutzt `members.manage`; Customer-Owner-Wechsel nutzt die in Ordner 04 eingeführte Schreibpermission.                                             |
-| Zielmitglied   | Das Ziel braucht eine aktive Membership und einen aktiven User-Datensatz und muss sich von der Quelle unterscheiden.                                               |
-| Offene Kunden  | Nur `active` und `paused` werden übertragen; archivierte Kunden behalten ihre historische Zuordnung.                                                               |
-| Registry       | Der Counter-Vertrag aus Task 02d wird um Laden und versionierten Transfer erweitert und bleibt mit `satisfies Record<OwnableEntity, OwnershipAdapter>` exhaustive. |
-| Writes         | Jede betroffene versionierte Entität wird ausschließlich über `updateVersioned` geändert. Alle Writes laufen in einer gemeinsamen Transaktion.                     |
-| Concurrency    | Der Adapter lädt IDs und Versionen vor dem Transfer. Ein paralleler Edit erzeugt 409 und rollt die vollständige Übergabe zurück.                                   |
-| Activities     | Je übergebener Entität entsteht eine `field_change`-Activity mit Feld sowie alter und neuer Member-ID; keine Namen oder E-Mails in Metadaten.                      |
-| Security-Event | Eine vollständige Mitgliedsübergabe erzeugt genau ein `workspace_responsibilities_handed_over`-Event mit Ziel-ID und Counts.                                       |
-| UI             | Die Mitgliederverwaltung erhält „Zuständigkeiten übergeben“ und „Alles an mich“; die Kundenakte erhält den einzelnen Owner-Wechsel.                                |
-| Trennung       | Eine Übergabe deaktiviert das Quellmitglied nicht automatisch. Die Deaktivierung bleibt eine zweite bewusste Aktion.                                               |
+| Bereich        | Entscheidung                                                                                                                                                                               |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Autorisierung  | Mitgliedsübergabe nutzt `members.manage`; Customer-Owner-Wechsel nutzt die in Ordner 04 eingeführte Schreibpermission.                                                                     |
+| Zielmitglied   | Das Ziel braucht eine aktive Membership und einen aktiven User-Datensatz und muss sich von der Quelle unterscheiden.                                                                       |
+| Offene Kunden  | Nur `active` und `paused` werden übertragen; archivierte Kunden behalten ihre historische Zuordnung.                                                                                       |
+| Registry       | Der Counter-Vertrag aus Task 02d wird um Laden und versionierten Transfer erweitert und bleibt mit `satisfies Record<OwnableEntity, OwnershipAdapter>` exhaustive.                         |
+| Writes         | Jede betroffene versionierte Entität wird ausschließlich über `updateVersioned` geändert. Alle Writes laufen in einer gemeinsamen Transaktion.                                             |
+| Concurrency    | Der Adapter lädt IDs und Versionen vor dem Transfer. Ein paralleler Edit erzeugt 409 und rollt die vollständige Übergabe zurück.                                                           |
+| Deaktivierung  | Übergabe und Owner-Wechsel sperren die Membership des Ziels (`FOR SHARE`) und prüfen `active`; die Deaktivierung sperrt dieselbe Zeile vor der Zählung. Siehe Task 02d, „Bekannte Grenze“. |
+| Activities     | Je übergebener Entität entsteht eine `field_change`-Activity mit Feld sowie alter und neuer Member-ID; keine Namen oder E-Mails in Metadaten.                                              |
+| Security-Event | Eine vollständige Mitgliedsübergabe erzeugt genau ein `workspace_responsibilities_handed_over`-Event mit Ziel-ID und Counts.                                                               |
+| UI             | Die Mitgliederverwaltung erhält „Zuständigkeiten übergeben“ und „Alles an mich“; die Kundenakte erhält den einzelnen Owner-Wechsel.                                                        |
+| Trennung       | Eine Übergabe deaktiviert das Quellmitglied nicht automatisch. Die Deaktivierung bleibt eine zweite bewusste Aktion.                                                                       |
 
 ## Contracts und Endpunkte
 

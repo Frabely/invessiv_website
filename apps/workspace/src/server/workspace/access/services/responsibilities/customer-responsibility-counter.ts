@@ -6,7 +6,7 @@ import { CUSTOMER_ACTIVE_STATUS_VALUES } from "@invessiv/common/constants/crm/cu
 import { customers } from "@invessiv/db/record-configuration";
 import type { AccessDatabaseExecutor } from "@/server/workspace/access/access-types";
 
-export async function countOpenCustomerResponsibilities(
+async function countOpen(
   executor: AccessDatabaseExecutor,
   memberId: string,
 ): Promise<number> {
@@ -22,3 +22,7 @@ export async function countOpenCustomerResponsibilities(
 
   return row?.count ?? 0;
 }
+
+export const customerResponsibilityCounterService = {
+  countOpen,
+} as const;

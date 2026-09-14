@@ -1,6 +1,6 @@
 # Ordner 03c — Aktivierung und Deaktivierung
 
-> **Status:** läuft · **Branch:** `feat/crm-uebergabe-und-deaktivierung` · **Abhängigkeit:** Ordner 03b gemerged
+> **Status:** im Review · **Branch:** `feat/crm-uebergabe-und-deaktivierung` · **Abhängigkeit:** Ordner 03b gemerged
 > **Aufwand:** 1–2 Tage · **Reviewziel:** 30–50 Dateien
 
 ## Ziel und Stand nach Merge
@@ -33,16 +33,20 @@ Die vollständige Übergabe wurde nach
 verschoben. 03c bleibt trotzdem sicher: Solange offene Zuständigkeiten existieren, ist die Deaktivierung blockiert.
 Es gibt keinen Übergabe-Button, bevor der zugehörige Kundenflow implementiert und testbar ist.
 
+Die Zuständigkeitszählung läuft noch ohne Sperre gegen parallele Zuweisungen. Das ist heute folgenlos, weil noch kein
+Schreibpfad Kunden zuweist; Stelle, Risiko und nächster Schritt stehen im Task-Plan unter „Bekannte Grenze:
+Zuständigkeitszählung ohne Sperre“.
+
 ## Merge-Gate
 
-- [ ] Deaktivierung wirkt beim nächsten Request; Reaktivierung stellt den Zugang wieder her.
-- [ ] Letzter aktiver Owner kann nicht deaktiviert werden; niemand deaktiviert sich selbst.
-- [ ] Parallele Deaktivierung und Owner-Entzug hinterlassen nie null aktive Owner.
-- [ ] Deaktivierung ist gesperrt, solange offene Zuständigkeiten bestehen; der Konflikt nennt die Anzahl je Entität.
-- [ ] Eine `OwnableEntity` ohne Counter bricht den Typecheck.
-- [ ] Genau ein `security_events`-Eintrag je erfolgreicher Aktivierung oder Deaktivierung.
-- [ ] DE/EN vollständig; A11y-Smoke für den Lifecycle-Dialog.
-- [ ] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, DB-Smokes, Integrationstests und Workspace-Build grün.
+- [x] Deaktivierung wirkt beim nächsten Request; Reaktivierung stellt den Zugang wieder her.
+- [x] Letzter aktiver Owner kann nicht deaktiviert werden; niemand deaktiviert sich selbst.
+- [x] Parallele Deaktivierung und Owner-Entzug hinterlassen nie null aktive Owner.
+- [x] Deaktivierung ist gesperrt, solange offene Zuständigkeiten bestehen; der Konflikt nennt die Anzahl je Entität.
+- [x] Eine `OwnableEntity` ohne Counter bricht den Typecheck.
+- [x] Genau ein `security_events`-Eintrag je erfolgreicher Aktivierung oder Deaktivierung.
+- [x] DE/EN vollständig; A11y-Smoke für den Lifecycle-Dialog.
+- [x] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, DB-Smokes, Integrationstests und Workspace-Build grün.
 
 ## Rollback
 

@@ -16,6 +16,7 @@ import { AddMemberDialog } from "../add-member-dialog/add-member-dialog";
 import { MemberRolesDialog } from "../member-roles-dialog/member-roles-dialog";
 import { MemberRow } from "../member-row/member-row";
 import { OwnerChangeDialog } from "../owner-change-dialog/owner-change-dialog";
+import { MemberStatusDialog } from "../member-status-dialog/member-status-dialog";
 import styles from "./members-list.module.css";
 
 type MembersListProps = {
@@ -39,6 +40,9 @@ export function MembersList({
     null,
   );
   const [ownerMember, setOwnerMember] = useState<WorkspaceMemberDto | null>(
+    null,
+  );
+  const [statusMember, setStatusMember] = useState<WorkspaceMemberDto | null>(
     null,
   );
 
@@ -74,6 +78,7 @@ export function MembersList({
             member={member}
             onEditRolesAction={() => setRolesMember(member)}
             onToggleOwnerAction={() => setOwnerMember(member)}
+            onToggleStatusAction={() => setStatusMember(member)}
             permissionsContent={permissionsContent}
           />
         ))}
@@ -101,6 +106,13 @@ export function MembersList({
           content={content}
           member={ownerMember}
           onCloseAction={() => setOwnerMember(null)}
+        />
+      ) : null}
+      {statusMember ? (
+        <MemberStatusDialog
+          content={content}
+          member={statusMember}
+          onCloseAction={() => setStatusMember(null)}
         />
       ) : null}
     </section>

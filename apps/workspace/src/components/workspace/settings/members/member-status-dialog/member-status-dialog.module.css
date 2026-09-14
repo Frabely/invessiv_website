@@ -1,0 +1,20 @@
+.message {
+  margin: 0;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--color-danger) 42%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+.message[data-tone="conflict"] {
+  border-color: color-mix(in srgb, var(--color-accent-warm) 42%, transparent);
+  background: color-mix(in srgb, var(--color-accent-warm) 10%, transparent);
+}
+
+.message[data-tone="info"] {
+  border-color: color-mix(in srgb, var(--color-text) 18%, transparent);
+  background: color-mix(in srgb, var(--color-text) 5%, transparent);
+}

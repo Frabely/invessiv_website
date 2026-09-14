@@ -5,13 +5,17 @@
     "addButton": "Add member",
     "currentUserBadge": "You",
     "ownerBadge": "Owner",
+    "activeBadge": "Active",
+    "inactiveBadge": "Deactivated",
     "inactiveRole": "{role} (inactive)",
     "noRoles": "No other role",
     "noActiveRole": "No effective role – sees no section",
     "actions": {
       "editRoles": "Edit roles",
       "grantOwner": "Make owner",
-      "revokeOwner": "Remove owner role"
+      "revokeOwner": "Remove owner role",
+      "activate": "Activate",
+      "deactivate": "Deactivate"
     }
   },
   "addDialog": {
@@ -65,6 +69,22 @@
     "cancel": "Cancel",
     "close": "Close dialog"
   },
+  "statusDialog": {
+    "activateTitle": "Activate {name}?",
+    "activateDescription": "The person can use the workspace according to their roles again from their next request.",
+    "activateSubmit": "Activate member",
+    "deactivateTitle": "Deactivate {name}?",
+    "deactivateDescription": "The person loses workspace access from their next request. Roles and existing assignments are kept.",
+    "deactivateSubmit": "Deactivate member",
+    "conflict": "Someone just changed this member. The current state is loaded – confirm again if you still want this.",
+    "alreadyActivated": "{name} is already active. Nothing left to do.",
+    "alreadyDeactivated": "{name} is already deactivated. Nothing left to do.",
+    "responsibilities": "Open customer responsibilities: {count}. Assign them to another owner first.",
+    "done": "Close",
+    "submitting": "Saving …",
+    "cancel": "Cancel",
+    "close": "Close dialog"
+  },
   "errors": {
     "MEMBER_NOT_FOUND": "This member no longer exists. Reload the page.",
     "VALIDATION_ERROR": "Some details are missing. Check account and roles.",
@@ -83,6 +103,7 @@
     "MEMBER_ALREADY_INACTIVE": "This member is already deactivated. Reload the page.",
     "SELF_DEACTIVATION": "You cannot deactivate your own access. Only another owner can do that.",
     "MEMBER_HAS_OPEN_RESPONSIBILITIES": "This member still has open customer responsibilities and therefore cannot be deactivated.",
+    "MEMBER_INACTIVE": "Deactivated members cannot become owners. Activate the member first.",
     "INTERNAL": "That did not work. Try again."
   }
 }

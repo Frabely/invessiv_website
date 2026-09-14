@@ -4,7 +4,7 @@ import { PgDialect } from "drizzle-orm/pg-core";
 
 import { CUSTOMER_ACTIVE_STATUS_VALUES } from "@invessiv/common/constants/crm/customer-statuses";
 import type { AccessDatabaseExecutor } from "@/server/workspace/access/access-types";
-import { countOpenCustomerResponsibilities } from "@/server/workspace/access/services/responsibilities/customer-responsibility-counter";
+import { customerResponsibilityCounterService } from "@/server/workspace/access/services/responsibilities/customer-responsibility-counter";
 
 vi.mock("server-only", () => ({}));
 
@@ -27,7 +27,7 @@ function createExecutor(rows: { count: number }[]) {
   };
 }
 
-describe("countOpenCustomerResponsibilities", () => {
+describe("customerResponsibilityCounterService", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -37,7 +37,7 @@ describe("countOpenCustomerResponsibilities", () => {
     const memberId = "00000000-0000-4000-8000-000000000001";
 
     await expect(
-      countOpenCustomerResponsibilities(executor, memberId),
+      customerResponsibilityCounterService.countOpen(executor, memberId),
     ).resolves.toBe(3);
 
     expect(select).toHaveBeenCalledOnce();
@@ -57,7 +57,7 @@ describe("countOpenCustomerResponsibilities", () => {
     const { executor } = createExecutor([]);
 
     await expect(
-      countOpenCustomerResponsibilities(
+      customerResponsibilityCounterService.countOpen(
         executor,
         "00000000-0000-4000-8000-000000000001",
       ),

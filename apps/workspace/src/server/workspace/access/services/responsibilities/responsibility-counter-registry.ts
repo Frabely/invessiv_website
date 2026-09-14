@@ -7,7 +7,7 @@ import {
 } from "@invessiv/common/constants/crm/ownable-entities";
 import type { OwnershipResponsibilityCountsDto } from "@invessiv/common/contracts/auth/ownership-responsibility-counts.dto";
 import type { AccessDatabaseExecutor } from "@/server/workspace/access/access-types";
-import { countOpenCustomerResponsibilities } from "@/server/workspace/access/services/responsibilities/customer-responsibility-counter";
+import { customerResponsibilityCounterService } from "@/server/workspace/access/services/responsibilities/customer-responsibility-counter";
 
 type ResponsibilityCounter = (
   executor: AccessDatabaseExecutor,
@@ -15,7 +15,7 @@ type ResponsibilityCounter = (
 ) => Promise<number>;
 
 const RESPONSIBILITY_COUNTERS = {
-  [OwnableEntity.Customer]: countOpenCustomerResponsibilities,
+  [OwnableEntity.Customer]: customerResponsibilityCounterService.countOpen,
 } satisfies Record<OwnableEntityValue, ResponsibilityCounter>;
 
 async function countOpenByMemberId(

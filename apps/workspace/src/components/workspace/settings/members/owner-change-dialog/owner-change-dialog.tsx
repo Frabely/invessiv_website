@@ -3,6 +3,7 @@
 import { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import { accessApiService } from "@/client/access/access-api-service";
+import { DialogMessageRole } from "@/common/constants/ui/dialog-message-roles";
 import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
 import { WorkspaceDialogSize } from "@/common/constants/ui/workspace-dialog-sizes";
 import {
@@ -108,7 +109,9 @@ export function OwnerChangeDialog({
         <p
           className={styles.message}
           data-tone={tone}
-          role={alreadyDone ? "status" : "alert"}
+          role={
+            alreadyDone ? DialogMessageRole.Status : DialogMessageRole.Alert
+          }
         >
           {message}
         </p>
