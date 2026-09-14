@@ -57,6 +57,10 @@
   box-sizing: border-box;
 }
 
+.inner[data-has-navigation="false"] {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
 .leftCluster {
   display: inline-flex;
   align-items: center;

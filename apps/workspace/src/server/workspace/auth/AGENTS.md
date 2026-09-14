@@ -16,8 +16,13 @@ Hier wird aus einer Clerk-Kennung ein `WorkspaceActor` mit effektiven Permission
 
 - **Fail closed.** Fehlender User, inaktiver User, fehlende oder inaktive Membership, unbekannte Permission-Keys und
   realmfremde Permissions ergeben keinen Zugriff. Ein DB-Fehler wird nie in „erlaubt" übersetzt.
-- **Keine Rollenprüfung außerhalb dieses Ordners.** Features prüfen ausschließlich `can(actor, Permission.X)`.
-  Die einzige erlaubte Stelle mit einem Rollenbezug ist die Owner-Invariante (Bootstrap, später Owner-Flow in 03b).
+- **Keine Rollenprüfung für Autorisierung außerhalb dieses Ordners.** Features prüfen Zugriff ausschließlich über
+  `can(actor, Permission.X)`. Die Zugangsverwaltung unter `server/workspace/access/` und reine Auswahl-/Darstellungs-
+  Patterns unter `src/common/patterns/access/` beziehungsweise `components/workspace/settings/` dürfen
+  `SystemRoleKey` auswerten, um Owner-Zuweisungen in den separaten Owner-Flow zu lenken, Systemrollen zu beschriften
+  oder die Standardrolle vorzubelegen. Diese Auswertung darf niemals selbst Zugriff gewähren. Aktive Owner werden
+  ausschließlich in `services/workspace-owner-invariant-service.ts` ermittelt (Bootstrap und Owner-Flow aus
+  `server/workspace/access/`).
 - **Kein E-Mail-Abgleich.** Zuordnung ausschließlich über `users.clerk_user_id`. E-Mail-Adressen sind Stammdaten.
 - **Seiten-Gates gehören in `page.tsx`.** Layouts rendern bei Query-Param-Wechseln nicht neu; ein Gate nur im Layout
   lässt nach einem Rechteentzug weiter Daten laden. Layouts dürfen den Actor zusätzlich für die Shell auflösen.

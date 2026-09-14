@@ -1,4 +1,57 @@
 {
+  "access": {
+    "pendingApproval": {
+      "status": "Freischaltung ausstehend",
+      "eyebrow": "Account erfolgreich erstellt",
+      "title": "Dein Account ist bereit",
+      "description": "Die Registrierung ist abgeschlossen. Ein Administrator schaltet deinen Zugang frei. Du musst nichts weiter tun.",
+      "progressLabel": "Status deines Zugangs",
+      "accountStep": {
+        "title": "Account angelegt",
+        "description": "Deine Anmeldung bei Invessiv war erfolgreich."
+      },
+      "accessStep": {
+        "title": "Freischaltung durch Administrator",
+        "description": "Sobald dein Zugang freigegeben ist, stehen dir die vorgesehenen Bereiche zur Verfügung."
+      },
+      "note": "Du kannst diese Seite schließen. Beim nächsten Besuch prüfen wir deinen Zugang automatisch.",
+      "retryLabel": "Zugang erneut prüfen"
+    },
+    "inactive": {
+      "status": "Zugang deaktiviert",
+      "eyebrow": "Account erkannt",
+      "title": "Dein Workspace-Zugang ist deaktiviert",
+      "description": "Dein Account ist weiterhin im System angelegt, kann aktuell aber nicht auf den Workspace zugreifen.",
+      "progressLabel": "Status deines Zugangs",
+      "accountStep": {
+        "title": "Account vorhanden",
+        "description": "Du musst keinen neuen Account anlegen."
+      },
+      "accessStep": {
+        "title": "Zugang deaktiviert",
+        "description": "Ein Administrator kann deinen Workspace-Zugang wieder aktivieren."
+      },
+      "note": "Falls du weiterhin Zugriff benötigst, wende dich an deinen Administrator. Danach kannst du den Zugang hier erneut prüfen.",
+      "retryLabel": "Zugang erneut prüfen"
+    },
+    "noPermission": {
+      "status": "Keine Berechtigung",
+      "eyebrow": "Account erkannt",
+      "title": "Aktuell ist kein Bereich für dich freigeschaltet",
+      "description": "Dein Account ist im System angelegt, hat derzeit aber keine Berechtigung für einen Workspace-Bereich.",
+      "progressLabel": "Status deines Zugangs",
+      "accountStep": {
+        "title": "Account aktiv",
+        "description": "Dein Account und deine Mitgliedschaft wurden erkannt."
+      },
+      "accessStep": {
+        "title": "Keine aktive Berechtigung",
+        "description": "Ein Administrator kann dir den passenden Bereich freischalten."
+      },
+      "note": "Du musst nichts neu einrichten. Sobald deine Rechte angepasst wurden, reicht es, den Zugang erneut zu prüfen.",
+      "retryLabel": "Zugang erneut prüfen"
+    }
+  },
   "shell": {
     "skipLinkLabel": "Direkt zum Workspace-Inhalt",
     "header": {
@@ -28,7 +81,8 @@
       "comingSoonBadge": "Bald verfügbar",
       "items": {
         "leads": "Leads",
-        "overview": "Übersicht"
+        "overview": "Übersicht",
+        "settings": "Einstellungen"
       }
     },
     "main": {

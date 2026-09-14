@@ -27,8 +27,10 @@ Freigabe für alle einzeln geprüften Kunden möglich.
 ## Purge ohne CRM-Button
 
 - Owner startet einen internen Command mit Kundennummer und erneuter Bestätigung.
-- Vorschau nennt Portalzugriffe, Projekte, Aufgaben, Nachrichten, Feedback, Dateien, Credentials,
-  Renewals, Stunden und Activities.
+- Vorschau nennt Portalzugriffe, interne Zugriffsbereiche (`workspace_member_scoped_roles`), Projekte, Aufgaben,
+  Nachrichten, Feedback, Dateien, Credentials, Renewals, Stunden und Activities.
+- Interne Zugriffsbereiche des Kunden werden vor Kunde und Projekten gelöscht (`RESTRICT`) und je Zeile als
+  `workspace_member_access_scope_revoked` protokolliert.
 - Saga setzt `purge_pending`, widerruft Portalzugriffe, friert Writes ein, erstellt Manifest und
   löscht alle Primär-Blobs idempotent. Erst danach löscht eine DB-Transaktion die Fachzeilen.
 - Teilfehler bleiben als Job sichtbar und erneut ausführbar; DB-Zuordnung wird nie vor Blob-Erfolg
@@ -48,6 +50,11 @@ Freigabe für alle einzeln geprüften Kunden möglich.
 ## Produktivabnahme
 
 - Clerk Restricted, Redirects, erlaubte Domains und DE/EN-Mails prüfen.
+- Der Status „Keine Berechtigung“ erhält einen optionalen Kontaktweg zum zuständigen Administrator.
+  Das Ziel wird serverseitig bestimmt; persönliche Admin-Kontaktdaten werden nicht ungefragt
+  offengelegt. Ist kein sicheres Ziel konfiguriert, bleibt die bestehende Statusmeldung ohne toten
+  CTA sichtbar. Ein absendender Flow braucht DE/EN-Erfolgs- und Fehlerzustände, Rate-Limit und
+  PII-arme Protokollierung.
 - Portalvorschau ist vor jeder ersten Firmeneinladung verpflichtend.
 - Direkter Rollout an alle Kunden ist erlaubt, aber immer einzeln nach bestätigter Vorschau.
 - Security-, Privacy-, A11y- und Mobile-Smoke über Kunde → Projekt → Aufgabe → Portal → Datei →
@@ -61,6 +68,8 @@ Freigabe für alle einzeln geprüften Kunden möglich.
 - [ ] Unterbrochener Purge ist sicher fortsetzbar.
 - [ ] Isolierter Restore erfüllt RPO/RTO und Hashprüfung; Ergebnis ist protokolliert.
 - [ ] Backup-/Restore-Secrets erscheinen nicht in Logs oder PR-Artefakten.
+- [ ] Der optionale Admin-Kontaktweg ist mit und ohne konfiguriertes Ziel geprüft; er legt keine
+      persönlichen Kontaktdaten offen und erzeugt keinen toten CTA.
 - [ ] Vollständige Repo-Gates und Workspace-Build sind grün.
 - [ ] PR enthält finalen Risiko-, Rollback-, Security- und Betriebsabschnitt.
 

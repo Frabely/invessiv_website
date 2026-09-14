@@ -2,8 +2,10 @@
 
 import { type KeyboardEvent, type MouseEvent } from "react";
 import { useRouter } from "next/navigation";
+import { CheckboxControl } from "@invessiv/ui";
 import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
 import type { Locale } from "@/config/i18n";
+import type { LeadActionPermissions } from "@/common/contracts/leads/lead-action-permissions";
 import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import type { LeadSummaryDto } from "@invessiv/common/contracts/leads/lead-summary.dto";
 import type {
@@ -27,6 +29,7 @@ import { useLeadsTableSelection } from "../leads-table-selection-provider/leads-
 import styles from "./leads-table-row.module.css";
 
 type LeadsTableRowProps = {
+  actions: LeadActionPermissions;
   basePath: string;
   currentQueryString: string;
   currentSearchParams: Record<string, string | string[] | undefined>;
@@ -72,6 +75,7 @@ function isInteractiveDescendant(
 }
 
 export function LeadsTableRow({
+  actions,
   basePath,
   currentQueryString,
   currentSearchParams,
@@ -143,17 +147,14 @@ export function LeadsTableRow({
       role="link"
     >
       <td className={styles.checkboxCell}>
-        <label className={styles.checkbox}>
-          <input
+        {actions.canWrite || actions.canDelete ? (
+          <CheckboxControl
             aria-label={`${tableContent.selection.row}: ${displayName}`}
             checked={selected}
-            className={styles.checkboxInput}
             onChange={() => toggleRow(lead.id)}
             onClick={handleCheckboxClick}
-            type="checkbox"
           />
-          <span aria-hidden="true" className={styles.checkboxBox} />
-        </label>
+        ) : null}
       </td>
 
       <td className={styles.leadCell}>
@@ -212,6 +213,8 @@ export function LeadsTableRow({
       </td>
 
       <LeadsTableRowActions
+        canDelete={actions.canDelete}
+        canEdit={actions.canWrite}
         deleteContent={deleteContent}
         deleteLabel={tableContent.actions.delete}
         editHref={editHref}

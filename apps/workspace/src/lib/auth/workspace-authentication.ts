@@ -8,7 +8,15 @@ import type { WorkspaceAuthentication } from "@/common/contracts/auth/workspace-
 import type { BootstrapWorkspaceOwnerInput } from "@/server/workspace/auth/bootstrap-workspace-owner-types";
 import { bootstrapWorkspaceOwner } from "@/server/workspace/auth/command-handler/bootstrap-workspace-owner.command-handler";
 import { resolveWorkspaceActor } from "@/server/workspace/auth/query-handler/resolve-workspace-actor.query-handler";
+import { clerkUserProfileMappingService } from "@/server/workspace/auth/services/clerk-user-profile-mapping-service";
 import { workspaceBootstrapIdentityService } from "@/server/workspace/auth/services/workspace-bootstrap-identity-service";
+
+function isInactiveResolution(code: WorkspaceActorResolutionError): boolean {
+  return (
+    code === WorkspaceActorResolutionError.UserInactive ||
+    code === WorkspaceActorResolutionError.MembershipInactive
+  );
+}
 
 async function loadBootstrapInput(
   clerkUserId: string,
@@ -18,23 +26,17 @@ async function loadBootstrapInput(
     return null;
   }
 
-  const primaryEmail = user.emailAddresses.find(
-    (entry) => entry.id === user.primaryEmailAddressId,
-  )?.emailAddress;
-  if (!primaryEmail) {
+  const profile = clerkUserProfileMappingService.mapUserToProfile(user);
+  if (!profile.primaryEmail) {
     return null;
   }
 
-  const fullName = [user.firstName, user.lastName]
-    .filter((part): part is string => Boolean(part?.trim()))
-    .join(" ");
-
   return {
     clerkUserId,
-    primaryEmail,
-    firstName: user.firstName ?? null,
-    lastName: user.lastName ?? null,
-    displayName: fullName || primaryEmail,
+    primaryEmail: profile.primaryEmail,
+    firstName: profile.firstName,
+    lastName: profile.lastName,
+    displayName: profile.displayName,
   };
 }
 
@@ -57,6 +59,10 @@ export async function authenticateWorkspaceRequest(): Promise<WorkspaceAuthentic
       };
     }
 
+    if (isInactiveResolution(resolution.code)) {
+      return { status: WorkspaceAuthStatus.Inactive };
+    }
+
     if (
       resolution.code !== WorkspaceActorResolutionError.UserMissing ||
       !workspaceBootstrapIdentityService.matches(clerkUserId)
@@ -73,9 +79,14 @@ export async function authenticateWorkspaceRequest(): Promise<WorkspaceAuthentic
     await bootstrapWorkspaceOwner(bootstrapInput);
     const retry = await resolveWorkspaceActor(clerkUserId);
 
-    return retry.ok
-      ? { status: WorkspaceAuthStatus.Authorized, actor: retry.actor }
-      : { status: WorkspaceAuthStatus.NotMember };
+    if (retry.ok) {
+      return { status: WorkspaceAuthStatus.Authorized, actor: retry.actor };
+    }
+    return {
+      status: isInactiveResolution(retry.code)
+        ? WorkspaceAuthStatus.Inactive
+        : WorkspaceAuthStatus.NotMember,
+    };
   } catch (error: unknown) {
     console.error("[workspace-auth] authorization lookup failed", {
       errorName: error instanceof Error ? error.name : typeof error,

@@ -43,10 +43,12 @@ import styles from "./leads-page-header.module.css";
 type LeadsPageHeaderProps = {
   addLeadHref: string;
   basePath: string;
+  canCreateLead: boolean;
   categories: LeadCategoryOption[];
   currentQueryString: string;
   filtersContent: LeadsToolbarDictionary;
   importContent?: LeadsImportDictionary;
+  referenceDateValue: string;
   sharedContent: LeadsSharedDictionary;
   shellContent: LeadsShellDictionary;
 };
@@ -100,10 +102,12 @@ function getServerFilterPanelDefaultSnapshot(): boolean {
 export function LeadsPageHeader({
   addLeadHref,
   basePath,
+  canCreateLead,
   categories,
   currentQueryString,
   filtersContent,
   importContent,
+  referenceDateValue,
   sharedContent,
   shellContent,
 }: LeadsPageHeaderProps) {
@@ -237,20 +241,22 @@ export function LeadsPageHeader({
 
         <div className={styles.actions}>
           {importContent && <ImportLeadsDialog content={importContent} />}
-          <PrimaryCtaButton
-            aria-label={shellContent.addLeadButton}
-            className={styles.addButton}
-            onClick={() =>
-              startNavigationTransition(() =>
-                router.push(addLeadHref, { scroll: false }),
-              )
-            }
-          >
-            <span aria-hidden="true" className={styles.buttonIcon}>
-              <FontAwesomeIcon icon={faPlus} />
-            </span>
-            <span className={styles.label}>{shellContent.addLeadButton}</span>
-          </PrimaryCtaButton>
+          {canCreateLead ? (
+            <PrimaryCtaButton
+              aria-label={shellContent.addLeadButton}
+              className={styles.addButton}
+              onClick={() =>
+                startNavigationTransition(() =>
+                  router.push(addLeadHref, { scroll: false }),
+                )
+              }
+            >
+              <span aria-hidden="true" className={styles.buttonIcon}>
+                <FontAwesomeIcon icon={faPlus} />
+              </span>
+              <span className={styles.label}>{shellContent.addLeadButton}</span>
+            </PrimaryCtaButton>
+          ) : null}
         </div>
       </header>
 
@@ -293,6 +299,8 @@ export function LeadsPageHeader({
                 [LeadListQueryParam.DateTo]: to,
               })
             }
+            referenceDateValue={referenceDateValue}
+            selectId="leads-date-range-preset"
             toValue={currentDateTo}
           />
         </div>

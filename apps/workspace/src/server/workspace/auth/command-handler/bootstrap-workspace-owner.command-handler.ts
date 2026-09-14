@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, eq, sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
@@ -10,7 +10,6 @@ import { SYSTEM_ROLE_DEFINITIONS } from "@invessiv/common/constants/auth/system-
 import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
-  roles,
   users,
   workspaceMemberRoles,
   workspaceMembers,
@@ -22,6 +21,7 @@ import type {
 } from "@/server/workspace/auth/bootstrap-workspace-owner-types";
 import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
 import { workspaceBootstrapIdentityService } from "@/server/workspace/auth/services/workspace-bootstrap-identity-service";
+import { workspaceOwnerInvariantService } from "@/server/workspace/auth/services/workspace-owner-invariant-service";
 
 const BOOTSTRAP_LOCK_NAME = "workspace_owner_bootstrap";
 
@@ -59,27 +59,10 @@ export async function bootstrapWorkspaceOwner(
       };
     }
 
-    // The owner invariant is the one place where auth may look at a role instead of a permission.
-    const activeOwner = await tx
-      .select({ memberId: workspaceMemberRoles.workspace_member_id })
-      .from(workspaceMemberRoles)
-      .innerJoin(roles, eq(roles.id, workspaceMemberRoles.role_id))
-      .innerJoin(
-        workspaceMembers,
-        eq(workspaceMembers.id, workspaceMemberRoles.workspace_member_id),
-      )
-      .innerJoin(users, eq(users.id, workspaceMembers.user_id))
-      .where(
-        and(
-          eq(roles.system_key, SystemRoleKey.WorkspaceOwner),
-          eq(roles.active, true),
-          eq(workspaceMembers.active, true),
-          eq(users.active, true),
-        ),
-      )
-      .limit(1);
+    const activeOwnerMemberIds =
+      await workspaceOwnerInvariantService.findActiveOwnerMemberIds(tx);
 
-    if (activeOwner.length > 0) {
+    if (activeOwnerMemberIds.length > 0) {
       return {
         ok: false,
         code: BootstrapWorkspaceOwnerError.AlreadyInitialized,

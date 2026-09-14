@@ -8,6 +8,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { AUTH_REALM_VALUES } from "@invessiv/common/constants/auth/auth-realms";
+import { PermissionsConstraintName } from "@invessiv/db/constraint-names/auth/permissions-constraint-names";
 import { sqlCheckIn } from "@invessiv/db/core";
 
 /**
@@ -25,14 +26,14 @@ export const permissions = pgTable(
   },
   (table) => [
     check(
-      "permissions_realm_check",
+      PermissionsConstraintName.RealmCheck,
       sqlCheckIn(table.realm, AUTH_REALM_VALUES),
     ),
     check(
-      "permissions_description_check",
+      PermissionsConstraintName.DescriptionCheck,
       sql`btrim(${table.description}) <> ''`,
     ),
-    uniqueIndex("permissions_key_realm_delegable_uidx").on(
+    uniqueIndex(PermissionsConstraintName.KeyRealmDelegableUnique).on(
       table.key,
       table.realm,
       table.delegable,

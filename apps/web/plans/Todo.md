@@ -2,6 +2,17 @@
 
 ## Offen
 
+### Gemeinsame Checkbox-Komponente für Website-Formulare
+
+- Für `apps/web` die app-neutrale Checkbox-Komponente aus `packages/ui` verwenden.
+- Die Komponente soll neben dem gefüllten Auswahlzustand optional einen zentrierten Haken darstellen können. Die
+  Darstellung wird über eine typisierte Variante gesteuert und bleibt in Dark und Light Theme zugänglich.
+- Vorhandene Checkboxen in den Website-Formularen erfassen und anschließend schrittweise auf die gemeinsame Komponente
+  umstellen. Validierung, Fokuszustand, Tastaturbedienung sowie Disabled- und Read-only-Darstellung müssen erhalten
+  bleiben.
+- Als eigenständigen UI-Refactor mit Komponenten-Tests und einem Smoke-Test der betroffenen Formulare umsetzen; nicht
+  im aktuellen Workspace-Task mitbauen.
+
 ### Projektanfrage-Stack entfernen (Teil 2)
 
 Das Projektanfrage-Formular ist im Frontend bereits weg (`project-request-form/` wurde mit dem Formular-Rework

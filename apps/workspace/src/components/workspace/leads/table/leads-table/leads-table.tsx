@@ -1,4 +1,5 @@
 import type { Locale } from "@/config/i18n";
+import type { LeadActionPermissions } from "@/common/contracts/leads/lead-action-permissions";
 import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import { LeadsEmptyStateVariant } from "@invessiv/common/constants/leads/list/lead-empty-state-variants";
 import { LeadSort } from "@invessiv/common/constants/leads/list/lead-sort";
@@ -22,6 +23,7 @@ import { LEADS_TABLE_COLUMN_COUNT } from "./leads-table.constants";
 import styles from "./leads-table.module.css";
 
 type LeadsTableProps = {
+  actions: LeadActionPermissions;
   basePath: string;
   bulkContent: LeadsBulkDictionary;
   categories: LeadCategoryOption[];
@@ -49,6 +51,7 @@ function getActiveSort(queryString: string): string | undefined {
 }
 
 export function LeadsTable({
+  actions,
   basePath,
   bulkContent,
   categories,
@@ -91,9 +94,11 @@ export function LeadsTable({
               <thead>
                 <tr>
                   <th className={styles.selectHeader} scope="col">
-                    <LeadsTableSelectAllCheckbox
-                      ariaLabel={tableContent.selection.selectAll}
-                    />
+                    {actions.canWrite || actions.canDelete ? (
+                      <LeadsTableSelectAllCheckbox
+                        ariaLabel={tableContent.selection.selectAll}
+                      />
+                    ) : null}
                   </th>
                   <SortableHeader
                     activeSort={activeSort}
@@ -159,6 +164,7 @@ export function LeadsTable({
                 {rows.length > 0 ? (
                   rows.map((lead) => (
                     <LeadsTableRow
+                      actions={actions}
                       basePath={basePath}
                       currentQueryString={queryString}
                       currentSearchParams={currentSearchParams}
@@ -192,6 +198,7 @@ export function LeadsTable({
           </div>
         </div>
         <LeadsBulkActionBar
+          actions={actions}
           bulkContent={bulkContent}
           categories={categories}
           rows={rows}

@@ -34,6 +34,9 @@ export function withWorkspaceApiActor(handler: WorkspaceApiHandler) {
     if (authentication.status === WorkspaceAuthStatus.NotMember) {
       return authApiError(AuthErrorCode.NotFound, HttpResponseCode.NotFound);
     }
+    if (authentication.status === WorkspaceAuthStatus.Inactive) {
+      return authApiError(AuthErrorCode.Forbidden, HttpResponseCode.Forbidden);
+    }
 
     return authApiError(
       AuthErrorCode.Unavailable,

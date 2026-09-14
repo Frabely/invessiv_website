@@ -108,3 +108,42 @@ Das in `src/common/constants/leads/` etablierte Muster (`const Foo = { Bar: "bar
 - Später eine echte Vollprofil-Ansicht bzw. Zielaktion definieren und den Button dann mit konkreter Funktion oder klarer
   Navigation ersetzen.
 - Bis dahin keine halbfertige Detail-Ansicht bauen, sondern den offenen Umfang explizit dokumentiert lassen.
+
+## HTTP-Konstanten projektweit durchziehen
+
+Seit Ordner 03b gibt es in `packages/common/src/constants/http/` neben `HttpResponseCode` auch `HttpMethod`,
+`HttpHeaderName` und `MediaType`. Neuer Code nutzt sie verbindlich (`apps/workspace/src/server/AGENTS.md`, Abschnitt
+„HTTP-Konstanten“). Der Bestand arbeitet noch mit String- und Zahl-Literalen. Ziel ist ein einmaliger, eigenständiger
+Refactor über beide Apps, damit die Konstanten nicht nur existieren, sondern überall genutzt werden.
+
+- **Konstanten ergänzen, bevor umgestellt wird:** Weitere tatsächlich genutzte Werte als Const-Eintrag samt Test
+  aufnehmen, z. B. `HttpHeaderName.ContentLength`, `.RetryAfter`, `.Location`, `.XForwardedFor`, `.XRealIp`.
+  `request.headers.get()` ist nicht case-sensitiv; die Schreibweise im Const-Objekt einheitlich festlegen.
+- **Client-Services** (`fetch`-Aufrufe) auf `HttpMethod`, `HttpHeaderName.ContentType`, `MediaType.Json` und
+  `HttpResponseCode` umstellen, u. a.:
+  - `apps/workspace/src/components/workspace/leads/form/lead-form-dialog/leads-service.ts`
+  - `apps/workspace/src/components/workspace/leads/table/services/leads-bulk-edit-service.ts`
+  - `apps/workspace/src/client/leads/outreach/lead-outreach-generation-service.ts`,
+    `lead-outreach-provider-status-service.ts`
+  - `apps/web/src/client/contact/services/contact-form-service.ts`,
+    `apps/web/src/client/linkedin-post/services/linkedin-post-generator-service.ts`
+- **Routen und Server-Dateien** (Header-Lesen, Statuscodes, externe Requests), u. a.:
+  - `apps/web/src/app/api/public/contact/route.ts`, `apps/web/src/app/api/public/generator/linkedin-post/route.ts`
+  - `apps/web/src/server/services/mail/providers/resend-provider.ts`
+  - `apps/web/src/server/linkedin-post/handlers/generate-linkedin-post.command-handler.ts`,
+    `apps/web/src/server/linkedin-post/services/usage-limit/linkedin-post-generator-usage-key-service.ts`
+  - `packages/common/src/constants/leads/import/service/import-leads-service.constants.ts`
+- **Tests mitziehen:** Route- und Service-Tests beider Apps, die `method: "POST"`, `"Content-Type"`,
+  `"application/json"` oder Statuscodes wie `toBe(409)` als Literal verwenden, auf die Konstanten umstellen (betrifft
+  u. a. `leads-route.test.ts`, `lead-id-route.test.ts`, `contact/route.test.ts`, `members-routes.test.ts`,
+  `roles-routes.test.ts`, `leads-service.test.ts`, `contact-form-service.test.ts`).
+- **Vollständigkeit prüfen:** Vor dem Abschluss per Suche sicherstellen, dass keine Literale übrig sind, z. B.
+  `grep -rnE '"(GET|POST|PUT|PATCH|DELETE)"|"Content-Type"|"application/json"|toBe\((2|4|5)[0-9]{2}\)|status: [0-9]{3}'`
+  über `apps/*/src` und `packages/*/src`.
+- **Regel verankern:** Den Abschnitt „HTTP-Konstanten“ nach dem Refactor zusätzlich in `apps/web/src/server/AGENTS.md`
+  bzw. die Root-`AGENTS.md` heben, damit er für beide Apps gilt; optional eine ESLint-Regel (`no-restricted-syntax` auf
+  die Literale) ergänzen, damit Neuzugänge automatisch auffallen.
+- **Gate:** `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test` sowie beide App-Builds grün. Reiner Refactor ohne
+  Verhaltensänderung.
+- Nicht als Teil laufender Feature-Tasks umsetzen; bis dahin gilt die Bestandsregel (beim fachlichen Ändern einer Datei
+  im selben Change mit umstellen).

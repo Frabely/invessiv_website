@@ -1,0 +1,127 @@
+{
+  "groups": {
+    "overview": "Overview",
+    "leads": "Leads and outreach",
+    "customers": "Customers",
+    "projects": "Projects and tasks",
+    "files": "Files",
+    "credentials": "Credentials",
+    "portal": "Customer portal",
+    "administration": "Administration"
+  },
+  "permissions": {
+    "dashboard.read": {
+      "label": "View dashboard",
+      "description": "See figures and reports on the dashboard."
+    },
+    "leads.read": {
+      "label": "View leads",
+      "description": "Open leads and their history."
+    },
+    "leads.write": {
+      "label": "Edit leads",
+      "description": "Create, change and archive leads."
+    },
+    "leads.delete": {
+      "label": "Delete leads",
+      "description": "Remove leads permanently."
+    },
+    "leads.import": {
+      "label": "Import leads",
+      "description": "Bring in leads from CSV files."
+    },
+    "outreach.generate": {
+      "label": "Draft outreach",
+      "description": "Generate message drafts for leads."
+    },
+    "members.read": {
+      "label": "See members",
+      "description": "List members, for example to pick who is responsible."
+    },
+    "customers.read": {
+      "label": "View customers",
+      "description": "Open customers and their contacts."
+    },
+    "customers.write": {
+      "label": "Edit customers",
+      "description": "Create, change, archive and hand over customers."
+    },
+    "projects.read": {
+      "label": "View projects",
+      "description": "Open projects and tasks."
+    },
+    "projects.write": {
+      "label": "Edit projects",
+      "description": "Create, change and hand over projects."
+    },
+    "tasks.write": {
+      "label": "Edit tasks",
+      "description": "Create, change and assign tasks."
+    },
+    "files.read": {
+      "label": "View files",
+      "description": "Open and download customer files."
+    },
+    "files.write": {
+      "label": "Upload files",
+      "description": "Upload files and share them in the portal."
+    },
+    "files.delete": {
+      "label": "Delete files",
+      "description": "Remove customer files."
+    },
+    "credentials.read": {
+      "label": "List credentials",
+      "description": "See entries without revealing passwords."
+    },
+    "credentials.reveal": {
+      "label": "Reveal passwords",
+      "description": "Show and copy a single password."
+    },
+    "credentials.write": {
+      "label": "Edit credentials",
+      "description": "Create, change and delete credentials."
+    },
+    "portal.manage": {
+      "label": "Manage portal access",
+      "description": "Invite customer contacts to the portal and revoke access."
+    },
+    "roles.manage": {
+      "label": "Manage roles",
+      "description": "Create and change roles."
+    },
+    "members.manage": {
+      "label": "Manage members",
+      "description": "Add members and change their roles."
+    },
+    "data.export": {
+      "label": "Export data",
+      "description": "Export customer data."
+    },
+    "data.purge": {
+      "label": "Permanently delete customers",
+      "description": "Delete a customer and all its data irreversibly."
+    },
+    "security.audit": {
+      "label": "Read security log",
+      "description": "Trace changes to members and roles."
+    }
+  },
+  "systemRoles": {
+    "workspace_owner": {
+      "label": "Owner",
+      "description": "Every permission, including members, roles, export and permanent deletion."
+    },
+    "workspace_member": {
+      "label": "Member",
+      "description": "Everyday work with leads, customers, projects and files – without deleting and without administration."
+    },
+    "workspace_credentials_manager": {
+      "label": "Password access",
+      "description": "May show and copy a single password."
+    }
+  },
+  "ownerOnly": "Owner only",
+  "ownerOnlyHint": "This permission cannot be given to a custom role.",
+  "none": "No permissions"
+}

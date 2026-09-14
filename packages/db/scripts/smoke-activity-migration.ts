@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { getTableConfig } from "drizzle-orm/pg-core";
 import {
   and,
   desc,
@@ -25,6 +26,7 @@ import {
   leads,
 } from "@invessiv/db/record-configuration";
 
+import { hasSameValues, readCheckConstraintValues } from "./constraint-catalog";
 import {
   configureDatabaseUrlFromTarget,
   type DatabaseTarget,
@@ -35,17 +37,6 @@ const ALLOWED_TARGETS: DatabaseTarget[] = ["development", "preview"];
 const FIXTURE_PREFIX = "fixture:activity-migration:";
 
 type Check = { name: string; ok: boolean; detail?: string };
-type ConstraintRow = { conname: string; definition: string };
-
-function extractCheckValues(definition: string | undefined): string[] {
-  return [...(definition ?? "").matchAll(/'([^']+)'/g)]
-    .map((match) => match[1])
-    .sort();
-}
-
-function hasSameValues(actual: string[], expected: readonly string[]): boolean {
-  return actual.join(",") === [...expected].sort().join(",");
-}
 
 async function run() {
   const target = parseDatabaseTarget(process.argv);
@@ -107,21 +98,13 @@ async function run() {
       mismatchedLegacyRows.map((row) => row.id).join(", "),
     );
 
-    const constraintRows = (await sql`
-            SELECT conname, pg_get_constraintdef(oid) AS definition
-            FROM pg_constraint
-            WHERE conrelid = 'activities'::regclass
-        AND contype = 'c'
-        `) as ConstraintRow[];
-    const definitionByName = new Map(
-      constraintRows.map((row) => [row.conname, row.definition]),
+    const checkValues = await readCheckConstraintValues(
+      sql,
+      getTableConfig(activities).name,
     );
-    const typeValues = extractCheckValues(
-      definitionByName.get("activities_type_check"),
-    );
-    const actorTypeValues = extractCheckValues(
-      definitionByName.get("activities_actor_type_check"),
-    );
+    const typeValues = checkValues.get("activities_type_check") ?? [];
+    const actorTypeValues =
+      checkValues.get("activities_actor_type_check") ?? [];
     record(
       "type CHECK matches ACTIVITY_TYPE_VALUES",
       hasSameValues(typeValues, ACTIVITY_TYPE_VALUES),

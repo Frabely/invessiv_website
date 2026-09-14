@@ -71,6 +71,13 @@ Spaltennamen, Typen, Defaults, `NOT NULL` und Constraints stimmen 1:1 zwischen S
 Abweichung fällt sonst erst auf, wenn ein Query gegen ein Feld läuft, das anders heißt oder anders
 nullable ist als angenommen.
 
+**Constraint- und Indexnamen** stehen je Tabelle als Const-Objekt unter `src/constraint-names/**` (bisher: alle
+Auth-Tabellen, `leads`, `lead_social_profiles`). Modell, Fehlerabbildung in den Apps, Tests und Smokes lesen denselben
+Wert; ein Constraint-Name als String-Literal außerhalb dieser Dateien und der SQL-Migrationen ist ein Review-Befund.
+`db:smoke:rbac` prüft, dass jeder Auth-Name in der Datenbank existiert. Die Dateien liegen bewusst nicht unter
+`record-configuration`, weil `scripts/contact-table-names.ts` jeden Export des dortigen Barrels als Tabelle auswertet.
+Weitere Tabellen ziehen beim nächsten Anfassen nach.
+
 CHECK-Constraints für String-Unions entstehen über `sqlCheckIn` aus `@invessiv/db/core` mit den
 `_VALUES`-Arrays aus `packages/common/src/constants/**`. String-Literale erscheinen genau einmal, im
 Const-Objekt — nicht zusätzlich im DDL-Text und nicht im Modell.

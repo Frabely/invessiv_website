@@ -47,6 +47,7 @@ describe("LeadsPageHeader", () => {
   it("renders active filters and updates the URL for immediate filter changes", async () => {
     render(
       <LeadsPageHeader
+        canCreateLead
         addLeadHref="/de/leads?mode=create"
         basePath="/de/leads"
         categories={[
@@ -70,6 +71,7 @@ describe("LeadsPageHeader", () => {
         ]}
         currentQueryString="status=qualified&source=manual&category=cat-1&search=acme&score_min=70&date_from=2024-01-01&date_to=2024-01-31&page=2&sort=created_desc"
         filtersContent={getLeadsToolbarDictionary("de")}
+        referenceDateValue="2026-05-21"
         sharedContent={getLeadsSharedDictionary("de")}
         shellContent={getLeadsShellDictionary("de")}
       />,
@@ -203,11 +205,13 @@ describe("LeadsPageHeader", () => {
   it("can collapse and expand the filter area", () => {
     render(
       <LeadsPageHeader
+        canCreateLead
         addLeadHref="/de/leads?mode=create"
         basePath="/de/leads"
         categories={[]}
         currentQueryString=""
         filtersContent={getLeadsToolbarDictionary("de")}
+        referenceDateValue="2026-05-21"
         sharedContent={getLeadsSharedDictionary("de")}
         shellContent={getLeadsShellDictionary("de")}
       />,
@@ -262,11 +266,13 @@ describe("LeadsPageHeader", () => {
 
     render(
       <LeadsPageHeader
+        canCreateLead
         addLeadHref="/de/leads?mode=create"
         basePath="/de/leads"
         categories={[]}
         currentQueryString=""
         filtersContent={getLeadsToolbarDictionary("de")}
+        referenceDateValue="2026-05-21"
         sharedContent={getLeadsSharedDictionary("de")}
         shellContent={getLeadsShellDictionary("de")}
       />,
@@ -281,11 +287,13 @@ describe("LeadsPageHeader", () => {
   function renderToolbar(currentQueryString: string) {
     return render(
       <LeadsPageHeader
+        canCreateLead
         addLeadHref="/de/leads?mode=create"
         basePath="/de/leads"
         categories={[]}
         currentQueryString={currentQueryString}
         filtersContent={getLeadsToolbarDictionary("de")}
+        referenceDateValue="2026-05-21"
         sharedContent={getLeadsSharedDictionary("de")}
         shellContent={getLeadsShellDictionary("de")}
       />,
@@ -453,11 +461,13 @@ describe("LeadsPageHeader", () => {
   it("keeps reset disabled when no filters are active", () => {
     render(
       <LeadsPageHeader
+        canCreateLead
         addLeadHref="/de/leads?mode=create"
         basePath="/de/leads"
         categories={[]}
         currentQueryString=""
         filtersContent={getLeadsToolbarDictionary("de")}
+        referenceDateValue="2026-05-21"
         sharedContent={getLeadsSharedDictionary("de")}
         shellContent={getLeadsShellDictionary("de")}
       />,
@@ -505,5 +515,29 @@ describe("LeadsPageHeader", () => {
       expect(lastPushedParams().get("sort")).toBe("created_desc");
       expect(lastPushedParams().has("date_from")).toBe(false);
     });
+  });
+});
+
+describe("LeadsPageHeader permissions", () => {
+  it("hides the add lead action without write permission", () => {
+    const shellContent = getLeadsShellDictionary("de");
+
+    render(
+      <LeadsPageHeader
+        addLeadHref="/de/leads?mode=create"
+        basePath="/de/leads"
+        canCreateLead={false}
+        categories={[]}
+        currentQueryString=""
+        filtersContent={getLeadsToolbarDictionary("de")}
+        referenceDateValue="2026-05-21"
+        sharedContent={getLeadsSharedDictionary("de")}
+        shellContent={shellContent}
+      />,
+    );
+
+    expect(
+      screen.queryByRole("button", { name: shellContent.addLeadButton }),
+    ).not.toBeInTheDocument();
   });
 });

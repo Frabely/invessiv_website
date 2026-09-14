@@ -26,10 +26,14 @@ export function WorkspaceShell({
 }: WorkspaceShellProps) {
   const { close, isOpen, toggle } = useWorkspaceSidebarDrawer();
   const [isPending, startTransition] = useTransition();
+  const hasNavigation = permittedAreas.length > 0;
 
   return (
     <NavigationContext value={startTransition}>
-      <div className={styles.shell}>
+      <div
+        className={styles.shell}
+        data-has-navigation={hasNavigation ? "true" : "false"}
+      >
         <NavigationProgress isPending={isPending} />
         <div aria-hidden="true" className={styles.background}>
           <div className={styles.blobOrange} />
@@ -38,17 +42,20 @@ export function WorkspaceShell({
         </div>
         <WorkspaceHeader
           content={content}
+          hasNavigation={hasNavigation}
           isMobileMenuOpen={isOpen}
           locale={locale}
           onMobileMenuToggleAction={toggle}
         />
-        <WorkspaceSidebar
-          content={content}
-          isOpen={isOpen}
-          locale={locale}
-          onCloseAction={close}
-          permittedAreas={permittedAreas}
-        />
+        {hasNavigation ? (
+          <WorkspaceSidebar
+            content={content}
+            isOpen={isOpen}
+            locale={locale}
+            onCloseAction={close}
+            permittedAreas={permittedAreas}
+          />
+        ) : null}
         <main
           aria-label={content.shell.main.ariaLabel}
           className={styles.main}

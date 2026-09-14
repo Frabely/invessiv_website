@@ -5,6 +5,7 @@ import { cleanup, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
+import { workspaceActorWith } from "@/server/tests/support/workspace-auth-fixtures";
 import LeadsPage from "./page";
 
 const mockListLeads = vi.hoisted(() => vi.fn());
@@ -129,7 +130,7 @@ describe("LeadsPage", () => {
     mockLeadsPagination.mockClear();
     mockAddLeadDialog.mockClear();
     mockRequireWorkspaceArea.mockReset();
-    mockRequireWorkspaceArea.mockResolvedValue(undefined);
+    mockRequireWorkspaceArea.mockResolvedValue(workspaceActorWith());
   });
 
   afterEach(() => {

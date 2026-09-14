@@ -172,13 +172,6 @@
   cursor: pointer;
 }
 
-.applyCheckbox input[type="checkbox"] {
-  width: 1.15rem;
-  height: 1.15rem;
-  accent-color: #6094ff;
-  cursor: pointer;
-}
-
 .fieldControl {
   display: flex;
   flex-direction: column;

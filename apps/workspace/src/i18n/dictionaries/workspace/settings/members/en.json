@@ -1,0 +1,84 @@
+{
+  "list": {
+    "heading": "Members",
+    "description": "Everyone signs in with their own Clerk account. What they may do is decided by their roles alone.",
+    "addButton": "Add member",
+    "currentUserBadge": "You",
+    "ownerBadge": "Owner",
+    "inactiveRole": "{role} (inactive)",
+    "noRoles": "No other role",
+    "noActiveRole": "No effective role – sees no section",
+    "actions": {
+      "editRoles": "Edit roles",
+      "grantOwner": "Make owner",
+      "revokeOwner": "Remove owner role"
+    }
+  },
+  "addDialog": {
+    "title": "Add member",
+    "description": "Pick a Clerk account that is not linked yet. Invite new people in the Clerk dashboard first.",
+    "searchLabel": "Search accounts",
+    "searchPlaceholder": "Name or email",
+    "loading": "Loading accounts …",
+    "candidatesLabel": "Available accounts",
+    "noEmail": "No primary email – add one in Clerk first",
+    "emptyTitle": "No free account",
+    "emptyDescription": "Every Clerk account is already linked. Invite the person in the Clerk dashboard, then open this dialog again.",
+    "noMatches": "No free account matches your search.",
+    "rolesLabel": "Roles",
+    "rolesHint": "At least one role. You grant the owner role after adding the member.",
+    "submit": "Add member",
+    "submitting": "Adding …",
+    "cancel": "Cancel",
+    "close": "Close dialog",
+    "validation": {
+      "accountRequired": "Pick an account.",
+      "roleRequired": "Pick at least one role."
+    }
+  },
+  "rolesDialog": {
+    "title": "Roles of {name}",
+    "description": "The change applies from this person's next request.",
+    "rolesLabel": "Roles",
+    "ownerNote": "The owner role stays. You change it with “Remove owner role”.",
+    "previewHeading": "Permissions {name} will have",
+    "previewEmpty": "Without a role the person can sign in but sees no section.",
+    "conflict": "Someone just changed these roles. Your selection is kept – compare it with the current state before saving again.",
+    "conflictCurrentHeading": "Currently saved",
+    "submit": "Save roles",
+    "submitting": "Saving …",
+    "cancel": "Cancel",
+    "close": "Close dialog"
+  },
+  "ownerDialog": {
+    "grantTitle": "Make {name} an owner?",
+    "grantDescription": "Owners have every permission, including members, roles, export and permanent deletion.",
+    "grantSubmit": "Make owner",
+    "revokeTitle": "Remove the owner role from {name}?",
+    "revokeDescription": "The person keeps their other roles and loses owner permissions from their next request.",
+    "revokeSubmit": "Remove owner role",
+    "conflict": "Someone just changed this member. The current state is loaded – confirm again if you still want this.",
+    "alreadyGranted": "{name} is already an owner. Nothing left to do.",
+    "alreadyRevoked": "{name} is no longer an owner. Nothing left to do.",
+    "done": "Close",
+    "submitting": "Saving …",
+    "cancel": "Cancel",
+    "close": "Close dialog"
+  },
+  "errors": {
+    "MEMBER_NOT_FOUND": "This member no longer exists. Reload the page.",
+    "VALIDATION_ERROR": "Some details are missing. Check account and roles.",
+    "CLERK_ACCOUNT_NOT_FOUND": "Clerk no longer knows this account. Open the dialog again.",
+    "CLERK_ACCOUNT_INCOMPLETE": "This account has no primary email. Add one in the Clerk dashboard.",
+    "CLERK_ACCOUNT_ALREADY_LINKED": "This account is already linked to a member.",
+    "CLERK_UNAVAILABLE": "Clerk is not reachable right now. Try again in a few minutes.",
+    "ROLE_NOT_ASSIGNABLE": "At least one role is inactive or no longer exists. Reload the page.",
+    "OWNER_ROLE_NOT_ASSIGNABLE": "Grant the owner role with “Make owner”.",
+    "MEMBER_WITHOUT_ROLE": "Every member needs at least one role. Assign another role first.",
+    "ALREADY_OWNER": "This person is already an owner.",
+    "NOT_OWNER": "This person is no longer an owner.",
+    "LAST_ACTIVE_OWNER": "The workspace needs at least one active owner. Make someone else an owner first.",
+    "SELF_OWNER_REVOCATION": "You cannot remove your own owner role. Only another owner can do that.",
+    "INTERNAL": "That did not work. Try again."
+  }
+}

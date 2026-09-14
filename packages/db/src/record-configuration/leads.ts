@@ -13,6 +13,7 @@ import {
 import { CONTACT_LEAD_STATUS_VALUES } from "@invessiv/common/constants/contact/contact-lead-statuses";
 import { LeadFieldLimits } from "@invessiv/common/constants/leads/forms/lead-field-limits";
 import { LEAD_SOURCES_VALUES } from "@invessiv/common/constants/leads/sources/lead-sources";
+import { LeadsConstraintName } from "@invessiv/db/constraint-names/leads-constraint-names";
 import { sqlCheckIn } from "@invessiv/db/core";
 import { leadCategories } from "@invessiv/db/record-configuration/lead-categories";
 
@@ -48,7 +49,7 @@ export const leads = pgTable(
   },
   (table) => [
     check(
-      "leads_score_check",
+      LeadsConstraintName.ScoreCheck,
       sql`${table.score}
         is null or (
         ${table.score}
@@ -60,30 +61,33 @@ export const leads = pgTable(
         ${LeadFieldLimits.ScoreMax}
         )`,
     ),
-    check("leads_source_check", sqlCheckIn(table.source, LEAD_SOURCES_VALUES)),
     check(
-      "leads_lead_status_check",
+      LeadsConstraintName.SourceCheck,
+      sqlCheckIn(table.source, LEAD_SOURCES_VALUES),
+    ),
+    check(
+      LeadsConstraintName.LeadStatusCheck,
       sqlCheckIn(table.lead_status, CONTACT_LEAD_STATUS_VALUES),
     ),
-    uniqueIndex("leads_email_lower_uidx").on(sql`lower(btrim(
+    uniqueIndex(LeadsConstraintName.EmailLowerUnique).on(sql`lower(btrim(
           ${table.email}
           )
           )`).where(sql`${table.email}
           is not null`),
-    uniqueIndex("leads_company_name_lower_uidx").on(sql`lower(btrim(
+    uniqueIndex(LeadsConstraintName.CompanyNameLowerUnique).on(sql`lower(btrim(
           ${table.company_name}
           )
           )`).where(sql`${table.company_name}
           is not null`),
-    index("leads_source_created_at_idx").on(
+    index(LeadsConstraintName.SourceCreatedAtIndex).on(
       table.source,
       table.created_at.desc(),
     ),
-    index("leads_category_created_at_idx").on(
+    index(LeadsConstraintName.CategoryCreatedAtIndex).on(
       table.category_id,
       table.created_at.desc(),
     ),
-    uniqueIndex("leads_external_guid_uidx")
+    uniqueIndex(LeadsConstraintName.ExternalGuidUnique)
       .on(table.external_guid)
       .where(sql`${table.external_guid} is not null`),
   ],

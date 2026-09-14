@@ -21,7 +21,11 @@ dadurch ihren eigenen, konzentrierten Review statt im großen PR mitzulaufen.
 
 - Additive Migrationen und Modelle für `conversations`, `messages`, `conversation_reads` und
   `message_files` entstehen in diesem Ordner.
-- Genau eine Conversation pro Kunde; `project_id` wird nicht vorsorglich angelegt.
+- Genau eine kundenweite Conversation pro Kunde. `conversations.project_id` ist nullable vorhanden (Task 24);
+  projektbezogene Unterhaltungen docken später ohne Migration an. Die frühere Aussage „`project_id` wird nicht
+  vorsorglich angelegt“ ist damit ersetzt (Klärung 14.09.2026).
+- Chat-Permissions (`chat.read`, `chat.write`) entstehen hier als bindbar (`scopable`). Die kundenweite Conversation
+  verlangt das Recht am Kunden oder workspace-weit; eine Projektbindung allein öffnet sie nicht.
 - Nachrichten speichern Actor-Typ/-ID, Plaintext, Zeitpunkt und optionale Ausblendung durch Owner.
 - Nachrichten sind nach Senden unveränderlich; Korrekturen erfolgen als neue Nachricht. Es gibt
   keinen Bearbeiten- und keinen normalen Löschweg.

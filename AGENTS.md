@@ -19,27 +19,30 @@ Scope- und detailspezifische Regeln stehen in der jeweils nächstgelegenen `AGEN
 
 ## Index der scope-spezifischen Dateien
 
-| Scope                                            | Worum es geht                                                                                                   |
-| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
-| `apps/web/src/app/[locale]/(marketing)/`         | Marketing-Routen, route-spezifische Positionierung, SEO, i18n, interne Service-Verlinkung                       |
-| `apps/web/src/components/`                       | UI-Komponenten: Ordnerstruktur, `*.module.css`, Client/Server-Schnitt                                           |
-| `apps/web/src/client/`                           | Clientseitige Services                                                                                          |
-| `apps/<app>/src/lib/`, `apps/<app>/src/hooks/`   | Logik/Hooks: exportierte Typen/Konstanten/Patterns nach `common`; rein lokale (nicht exportiert) dürfen bleiben |
-| `apps/web/src/server/` (+ `linkedin-post/`)      | Server-Handler, Service-Objekte, DB-Grenze                                                                      |
-| `apps/web/common/`                               | App-shared Contracts/Constants/Defaults                                                                         |
-| `apps/workspace/`                                | App-weit: Sprachregel (Doku Deutsch, Code-Kommentare/Testnamen/Fehlermeldungen Englisch)                        |
-| `apps/workspace/src/app/[locale]/(auth)/`        | Öffentliche Clerk-Auth-Routen                                                                                   |
-| `apps/workspace/src/app/[locale]/(app)/leads/`   | Geschützter Leads-Bereich: Auth-Gate, Bereichs-Permission, noindex/dynamic                                      |
-| `apps/workspace/src/components/workspace/leads/` | Geschützte Workspace-Leads-UI                                                                                   |
-| `apps/workspace/src/server/`                     | Workspace Command-/Query-Handler, Services, Persistenz-Grenze                                                   |
-| `apps/workspace/src/server/workspace/crm/`       | Interner CRM-Serverpfad: Primärkontakt-Invariante, kein Löschpfad, Portaltrennung                               |
-| `apps/workspace/src/server/workspace/shared/`    | Domänenübergreifende Server-Bausteine; `updateVersioned` als einziger versionierter Schreibweg                  |
-| `apps/workspace/src/server/workspace/auth/`      | Actor-Auflösung, Owner-Bootstrap, Security-Events; fail-closed, keine Rollenprüfung in Features                 |
-| `apps/workspace/src/common/`                     | Workspace-shared Contracts/Constants                                                                            |
-| `packages/` (`common`, `db`, `ui`)               | Geteilte Pakete: Const-Objekt-Pattern, Error-Codes, DTOs, Drizzle-Schema, app-neutrale UI                       |
-| `packages/db/`                                   | DB-Paket: DB-Defaults als Ausnahme, Migration ↔ Modell deckungsgleich, Migrations- und Skriptregeln             |
-| `packages/db/src/record-configuration/crm/`      | CRM-Drizzle-Modelle: Tabellen-Präfix-Regel, Barrel, bewusst fehlende Indizes                                    |
-| `packages/db/src/record-configuration/auth/`     | Auth-Modelle: Realm-/Delegierbarkeits-Fremdschlüssel, Katalog nur per Migration, append-only Audit              |
+| Scope                                               | Worum es geht                                                                                                   |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `apps/web/src/app/[locale]/(marketing)/`            | Marketing-Routen, route-spezifische Positionierung, SEO, i18n, interne Service-Verlinkung                       |
+| `apps/web/src/components/`                          | UI-Komponenten: Ordnerstruktur, `*.module.css`, Client/Server-Schnitt                                           |
+| `apps/web/src/client/`                              | Clientseitige Services                                                                                          |
+| `apps/<app>/src/lib/`, `apps/<app>/src/hooks/`      | Logik/Hooks: exportierte Typen/Konstanten/Patterns nach `common`; rein lokale (nicht exportiert) dürfen bleiben |
+| `apps/web/src/server/` (+ `linkedin-post/`)         | Server-Handler, Service-Objekte, DB-Grenze                                                                      |
+| `apps/web/common/`                                  | App-shared Contracts/Constants/Defaults                                                                         |
+| `apps/workspace/`                                   | App-weit: Sprachregel (Doku Deutsch, Code-Kommentare/Testnamen/Fehlermeldungen Englisch)                        |
+| `apps/workspace/src/app/[locale]/(auth)/`           | Öffentliche Clerk-Auth-Routen                                                                                   |
+| `apps/workspace/src/app/[locale]/(app)/leads/`      | Geschützter Leads-Bereich: Auth-Gate, Bereichs-Permission, noindex/dynamic                                      |
+| `apps/workspace/src/components/workspace/leads/`    | Geschützte Workspace-Leads-UI                                                                                   |
+| `apps/workspace/src/app/[locale]/(app)/settings/`   | Geschützter Settings-Bereich: Area-Gate `members.manage`, Rollen-Tab nur mit `roles.manage`, noindex/dynamic    |
+| `apps/workspace/src/components/workspace/settings/` | Mitglieder- und Rollenverwaltungs-UI: gruppierte Subfolder, keine Rollenlogik im Client                         |
+| `apps/workspace/src/server/workspace/access/`       | Mitglieder, Rollen, Owner-Flow: Clerk-ID statt E-Mail, Security-Events je Änderung, letzter Owner geschützt     |
+| `apps/workspace/src/server/`                        | Workspace Command-/Query-Handler, Services, Persistenz-Grenze                                                   |
+| `apps/workspace/src/server/workspace/crm/`          | Interner CRM-Serverpfad: Primärkontakt-Invariante, kein Löschpfad, Portaltrennung                               |
+| `apps/workspace/src/server/workspace/shared/`       | Domänenübergreifende Server-Bausteine; `updateVersioned` als einziger versionierter Schreibweg                  |
+| `apps/workspace/src/server/workspace/auth/`         | Actor-Auflösung, Owner-Bootstrap, Security-Events; fail-closed, keine Rollenprüfung in Features                 |
+| `apps/workspace/src/common/`                        | Workspace-shared Contracts/Constants                                                                            |
+| `packages/` (`common`, `db`, `ui`)                  | Geteilte Pakete: Const-Objekt-Pattern, Error-Codes, DTOs, Drizzle-Schema, app-neutrale UI                       |
+| `packages/db/`                                      | DB-Paket: DB-Defaults als Ausnahme, Migration ↔ Modell deckungsgleich, Migrations- und Skriptregeln             |
+| `packages/db/src/record-configuration/crm/`         | CRM-Drizzle-Modelle: Tabellen-Präfix-Regel, Barrel, bewusst fehlende Indizes                                    |
+| `packages/db/src/record-configuration/auth/`        | Auth-Modelle: Realm-/Delegierbarkeits-Fremdschlüssel, Katalog nur per Migration, append-only Audit              |
 
 > Hinweis: Pfadangaben in dieser Datei beziehen sich auf die jeweilige App-Wurzel (`apps/<app>/src/…`) bzw. auf
 > `packages/…`.
@@ -111,10 +114,12 @@ Detailregeln stehen in den scope-spezifischen Dateien (siehe Index). Global gilt
 - Lange/monolithische Dateien frühzeitig in kleine, klar abgegrenzte Einheiten aufsplitten.
 - **Export entscheidet über den Ort von Typen/Konstanten/Patterns.** Ein Typ, eine Konstante, eine Objekt-Map oder ein
   Pattern darf lokal in der eigenen Datei (Komponente, `lib/`, `hooks/`, `client/`, `server/`) stehen, **solange er nur
-  dort genutzt und nicht exportiert wird** (z. B. der eigene `XxxProps`-Type einer Komponente, ein rein lokaler
-  Helfer-Type oder eine datei-interne Map). **Sobald ein `export` nötig wird (Nutzung in einer anderen Datei), wird der
-  Baustein vorher nach `common` verschoben** — kein `export` von Typen/Konstanten/Patterns aus Komponenten- oder
-  Logik-Dateien. Ziel ist `packages/common` (app-übergreifend) bzw. `apps/<app>/common` (app-spezifisch):
+  dort genutzt und nicht exportiert wird** (z. B. ein rein lokaler Helfer-Type oder eine datei-interne Map).
+  **Komponentenspezifische `*Props`-Typen sind die Ausnahme:** Sie dürfen als Teil der öffentlichen Komponenten-API in
+  der zugehörigen Komponentendatei definiert und exportiert werden, auch wenn eine andere Komponente sie importiert.
+  Für alle anderen Bausteine gilt: **Sobald ein `export` nötig wird (Nutzung in einer anderen Datei), wird der Baustein
+  vorher nach `common` verschoben** — kein `export` von Typen/Konstanten/Patterns aus Komponenten- oder Logik-Dateien.
+  Ziel ist `packages/common` (app-übergreifend) bzw. `apps/<app>/common` (app-spezifisch):
   `contracts/` für Typen/DTOs/Shapes, `constants/` für String-Unions/Werte/Maps, `defaults/` für Defaults,
   `patterns/` für seiteneffektfreie Helfer. String-Unions/Enums ausschließlich per **Const-Objekt + abgeleitetem Type**
   (kein `enum`). Details & Beispiele: `apps/web/src/components/AGENTS.md`, `packages/common/AGENTS.md`.

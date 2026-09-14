@@ -12,6 +12,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { AUTH_REALM_VALUES } from "@invessiv/common/constants/auth/auth-realms";
+import { RolePermissionsConstraintName } from "@invessiv/db/constraint-names/auth/role-permissions-constraint-names";
 import { sqlCheckIn } from "@invessiv/db/core";
 import { permissions } from "@invessiv/db/record-configuration/auth/permissions";
 import { roles } from "@invessiv/db/record-configuration/auth/roles";
@@ -35,16 +36,16 @@ export const rolePermissions = pgTable(
   },
   (table) => [
     primaryKey({
-      name: "role_permissions_pkey",
+      name: RolePermissionsConstraintName.PrimaryKey,
       columns: [table.role_id, table.permission_key],
     }),
     foreignKey({
-      name: "role_permissions_role_fkey",
+      name: RolePermissionsConstraintName.RoleForeignKey,
       columns: [table.role_id, table.realm, table.role_is_system],
       foreignColumns: [roles.id, roles.realm, roles.is_system],
     }).onDelete("cascade"),
     foreignKey({
-      name: "role_permissions_permission_fkey",
+      name: RolePermissionsConstraintName.PermissionForeignKey,
       columns: [table.permission_key, table.realm, table.permission_delegable],
       foreignColumns: [
         permissions.key,
@@ -53,13 +54,15 @@ export const rolePermissions = pgTable(
       ],
     }).onUpdate("cascade"),
     check(
-      "role_permissions_realm_check",
+      RolePermissionsConstraintName.RealmCheck,
       sqlCheckIn(table.realm, AUTH_REALM_VALUES),
     ),
     check(
-      "role_permissions_delegation_check",
+      RolePermissionsConstraintName.DelegationCheck,
       sql`${table.role_is_system} or ${table.permission_delegable}`,
     ),
-    index("role_permissions_permission_key_idx").on(table.permission_key),
+    index(RolePermissionsConstraintName.PermissionKeyIndex).on(
+      table.permission_key,
+    ),
   ],
 );

@@ -1,6 +1,6 @@
 # Ordner 01 — Kernschema und Contracts
 
-> **Status:** im Review · **Aufwand:** 3–4 Tage · **Reviewziel:** 50–80 Dateien · **Harte Grenze:** 200
+> **Status:** gemerged (PR #5) · **Aufwand:** 3–4 Tage · **Reviewziel:** 50–80 Dateien · **Harte Grenze:** 200
 
 ## Ziel und Stand nach Merge
 

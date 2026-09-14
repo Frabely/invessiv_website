@@ -11,6 +11,7 @@ import {
 import { ACTOR_TYPE_VALUES } from "@invessiv/common/constants/activity/actor-types";
 import { SECURITY_EVENT_TYPE_VALUES } from "@invessiv/common/constants/auth/security-event-types";
 import { SECURITY_SUBJECT_TYPE_VALUES } from "@invessiv/common/constants/auth/security-subject-types";
+import { SecurityEventsConstraintName } from "@invessiv/db/constraint-names/auth/security-events-constraint-names";
 import { sqlActorInvariant, sqlCheckIn } from "@invessiv/db/core";
 import { users } from "@invessiv/db/record-configuration/auth/users";
 
@@ -41,30 +42,32 @@ export const securityEvents = pgTable(
   },
   (table) => [
     check(
-      "security_events_type_check",
+      SecurityEventsConstraintName.TypeCheck,
       sqlCheckIn(table.type, SECURITY_EVENT_TYPE_VALUES),
     ),
     check(
-      "security_events_actor_type_check",
+      SecurityEventsConstraintName.ActorTypeCheck,
       sqlCheckIn(table.actor_type, ACTOR_TYPE_VALUES),
     ),
     check(
-      "security_events_subject_type_check",
+      SecurityEventsConstraintName.SubjectTypeCheck,
       sqlCheckIn(table.subject_type, SECURITY_SUBJECT_TYPE_VALUES),
     ),
     check(
-      "security_events_actor_check",
+      SecurityEventsConstraintName.ActorCheck,
       sqlActorInvariant({
         actorType: table.actor_type,
         actorUserId: table.actor_user_id,
         systemActorKey: table.system_actor_key,
       }),
     ),
-    index("security_events_subject_occurred_at_idx").on(
+    index(SecurityEventsConstraintName.SubjectOccurredAtIndex).on(
       table.subject_type,
       table.subject_id,
       table.occurred_at.desc(),
     ),
-    index("security_events_occurred_at_idx").on(table.occurred_at.desc()),
+    index(SecurityEventsConstraintName.OccurredAtIndex).on(
+      table.occurred_at.desc(),
+    ),
   ],
 );

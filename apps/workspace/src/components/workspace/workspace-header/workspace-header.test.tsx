@@ -55,6 +55,7 @@ describe("WorkspaceHeader", () => {
     render(
       <WorkspaceHeader
         content={getWorkspacePageContent("de")}
+        hasNavigation
         isMobileMenuOpen={false}
         locale="de"
         onMobileMenuToggleAction={vi.fn()}
@@ -84,6 +85,7 @@ describe("WorkspaceHeader", () => {
     render(
       <WorkspaceHeader
         content={getWorkspacePageContent("de")}
+        hasNavigation
         isMobileMenuOpen={false}
         locale="de"
         onMobileMenuToggleAction={vi.fn()}
@@ -109,6 +111,7 @@ describe("WorkspaceHeader", () => {
     render(
       <WorkspaceHeader
         content={getWorkspacePageContent("de")}
+        hasNavigation
         isMobileMenuOpen={false}
         locale="de"
         onMobileMenuToggleAction={onMobileMenuToggle}
@@ -122,5 +125,25 @@ describe("WorkspaceHeader", () => {
 
     expect(toggleTheme).toHaveBeenCalledTimes(1);
     expect(onMobileMenuToggle).toHaveBeenCalledTimes(1);
+  });
+
+  it("hides the navigation trigger when no area is available", () => {
+    const { container } = render(
+      <WorkspaceHeader
+        content={getWorkspacePageContent("de")}
+        hasNavigation={false}
+        isMobileMenuOpen={false}
+        locale="de"
+        onMobileMenuToggleAction={vi.fn()}
+      />,
+    );
+
+    expect(
+      screen.queryByRole("button", { name: "Navigation öffnen" }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("searchbox")).not.toBeInTheDocument();
+    expect(
+      container.querySelector('[data-has-navigation="false"]'),
+    ).toBeInTheDocument();
   });
 });

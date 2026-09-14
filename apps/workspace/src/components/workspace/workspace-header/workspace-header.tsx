@@ -17,6 +17,7 @@ import styles from "./workspace-header.module.css";
 
 type WorkspaceHeaderProps = {
   content: WorkspacePageContent;
+  hasNavigation: boolean;
   isMobileMenuOpen: boolean;
   locale: Locale;
   onMobileMenuToggleAction: () => void;
@@ -24,6 +25,7 @@ type WorkspaceHeaderProps = {
 
 export function WorkspaceHeader({
   content,
+  hasNavigation,
   isMobileMenuOpen,
   locale,
   onMobileMenuToggleAction,
@@ -62,26 +64,31 @@ export function WorkspaceHeader({
 
   return (
     <header className={styles.header}>
-      <div className={styles.inner}>
+      <div
+        className={styles.inner}
+        data-has-navigation={hasNavigation ? "true" : "false"}
+      >
         <div className={styles.leftCluster}>
-          <button
-            aria-expanded={isMobileMenuOpen}
-            aria-label={
-              isMobileMenuOpen
-                ? headerContent.mobileMenuCloseLabel
-                : headerContent.mobileMenuOpenLabel
-            }
-            className={styles.menuButton}
-            data-open={isMobileMenuOpen ? "true" : "false"}
-            onClick={onMobileMenuToggleAction}
-            type="button"
-          >
-            <span aria-hidden="true" className={styles.menuIcon}>
-              <span className={styles.menuIconLine} />
-              <span className={styles.menuIconLine} />
-              <span className={styles.menuIconLine} />
-            </span>
-          </button>
+          {hasNavigation ? (
+            <button
+              aria-expanded={isMobileMenuOpen}
+              aria-label={
+                isMobileMenuOpen
+                  ? headerContent.mobileMenuCloseLabel
+                  : headerContent.mobileMenuOpenLabel
+              }
+              className={styles.menuButton}
+              data-open={isMobileMenuOpen ? "true" : "false"}
+              onClick={onMobileMenuToggleAction}
+              type="button"
+            >
+              <span aria-hidden="true" className={styles.menuIcon}>
+                <span className={styles.menuIconLine} />
+                <span className={styles.menuIconLine} />
+                <span className={styles.menuIconLine} />
+              </span>
+            </button>
+          ) : null}
 
           <a
             aria-label={headerContent.brandHomeAriaLabel}
@@ -103,9 +110,11 @@ export function WorkspaceHeader({
           </a>
         </div>
 
-        <div className={styles.searchSlot}>
-          <WorkspaceSearch content={headerContent.search} />
-        </div>
+        {hasNavigation ? (
+          <div className={styles.searchSlot}>
+            <WorkspaceSearch content={headerContent.search} />
+          </div>
+        ) : null}
 
         <div
           className={styles.actions}

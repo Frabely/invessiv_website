@@ -10,6 +10,11 @@ Die Permission ist der Kern. Ein Bereich oder Command verlangt `Permission.X` un
 besitzt. Welche Rolle sie gewährt, ist Konfiguration. Neue Fähigkeiten entstehen durch einen neuen Katalogeintrag,
 nicht durch neue Prüfpfade.
 
+> **Nachtrag 14.09.2026:** Rollen werden ab Ordner 07a–07c zusätzlich an Kunden oder Projekte gebunden zuweisbar
+> (Task 36–38, `00-entscheidungen.md` Abschnitt „Zugriffsbereiche“). `can` bleibt für workspace-weite Prüfungen
+> bestehen; CRM-Daten prüfen dann über `canOn`/`accessScope`. Der Kommentar „kein Resource-Scope“ unten beschreibt den
+> Stand von Ordner 03.
+
 ```ts
 can(actor, Permission.LeadsDelete); // boolean — kein Rollenname, kein Resource-Scope in Version 1
 ```
@@ -205,7 +210,7 @@ auth() → clerkUserId                              fehlt → 401 / Redirect Sig
 - Lead- und Outreach-Commands schreiben `{ type: user, userId }`; Seeds und Smokes `system` + `SystemActorKey.Fixture`
 - Timeline zeigt den aktuellen `users.display_name`; Legacy-Zeilen weiter ihr `actor_label`
 
-T5 (Verwaltung) und T7 (Registry, Übergabe, Deaktivierung) liegen in Ordner 03b.
+T5 (Verwaltung) liegt in Ordner 03b, T7 (Registry, Übergabe, Deaktivierung) in Ordner 03c.
 
 ## Akzeptanzkriterien
 

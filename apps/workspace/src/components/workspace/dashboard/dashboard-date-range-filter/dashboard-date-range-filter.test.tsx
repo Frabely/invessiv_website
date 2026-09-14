@@ -46,6 +46,7 @@ describe("DashboardDateRangeFilter", () => {
         currentQueryString={query}
         fromValue="2026-05-15"
         labels={labels}
+        referenceDateValue="2026-05-21"
         toValue="2026-05-21"
       />,
     );
@@ -76,6 +77,7 @@ describe("DashboardDateRangeFilter", () => {
         currentQueryString="range=all&foo=bar"
         fromValue=""
         labels={labels}
+        referenceDateValue="2026-05-21"
         toValue=""
       />,
     );

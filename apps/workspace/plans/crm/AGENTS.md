@@ -7,12 +7,13 @@ Diese Datei regelt die Umsetzung des CRM-Plans unabhängig vom Zielordner. Spezi
 
 1. `00-entscheidungen.md` enthält alle Entscheidungen.
 2. `core-features.md` ist die Funktionsübersicht.
-3. Die 23 geordneten Ordner enthalten Merge-Gates und Abnahmekriterien.
+3. Die 26 geordneten Ordner enthalten Merge-Gates und Abnahmekriterien.
 
 Frühere Planstände mit 16 Merge-Einheiten und 34 Tasks sind vollständig ersetzt. Keine erinnerte
 Altentscheidung darf übernommen werden, wenn sie nicht in den aktuellen Dateien steht.
 
-**Ordnernummer ≠ Task-Nummer.** Die Ordnernummer (01–03, 03b, 04–22) ist die Merge-Reihenfolge und kann sich beim
+**Ordnernummer ≠ Task-Nummer.** Die Ordnernummer (01–03, 03b–03d, 04–07, 07a–07c, 08–22) ist die Merge-Reihenfolge und
+kann sich beim
 Neuschnitt verschieben. Die Task-Nummer ist die Identität und bleibt: Task 08 heißt überall Task 08
 und liegt in Ordner 06. Querverweise im Plan nennen deshalb immer die **Task**-Nummer, Reihenfolge-
 und Abhängigkeitsaussagen die **Ordner**-Nummer.
@@ -54,6 +55,10 @@ und Abhängigkeitsaussagen die **Ordner**-Nummer.
   mit.
 - Nie ein Abgleich über eine E-Mail-Adresse als Autorisierung — weder im Portal noch intern.
 - Sichtbarkeitsfilter stehen in der Query, nicht im Rendering; Fremdzugriff antwortet 404.
+- **Zugriffsbereiche (ab Ordner 07b):** Jede CRM-Query filtert über `accessScope`/`crmAccessCondition`, jeder
+  CRM-Schreibpfad prüft `canOn`, jeder CRM-Endpunkt steht in `CRM_ENDPOINT_ACCESS_RULES`. Jede neue CRM-Permission
+  wird bei Einführung als `scopable` oder workspace-weit eingeordnet; jede neue besitzbare Entität deklariert
+  `requiredPermission`. Jede CRM-Einheit enthält Negativtests für fremden Kunden und fremdes Projekt.
 - Zugangsdaten haben keinen Portalpfad und werden in Listen nie entschlüsselt.
 - Externer Text wird weder als HTML noch ungefiltertes Markdown gerendert.
 - Blob-Löschung erfolgt vor dem endgültigen Entfernen der DB-Zuordnung und ist wiederholbar.

@@ -1,0 +1,144 @@
+.row {
+  display: grid;
+  grid-template-columns: auto minmax(12rem, 1.1fr) minmax(10rem, 1.3fr) auto;
+  align-items: center;
+  gap: 0.75rem 1.1rem;
+  padding: 0.9rem 1.1rem;
+}
+
+.row + .row {
+  border-top: 1px solid var(--color-border);
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-cta) 18%, var(--color-surface-2));
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 700;
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.nameLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+}
+
+.name {
+  color: var(--color-text);
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.selfBadge,
+.ownerBadge {
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  font-size: var(--font-size-badge);
+  font-weight: 650;
+  line-height: 1.5;
+}
+
+.selfBadge {
+  border: 1px solid var(--color-border-strong);
+  color: var(--color-text-muted);
+}
+
+.ownerBadge {
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 45%, transparent);
+  background: color-mix(in srgb, var(--color-accent-warm) 14%, transparent);
+  color: var(--color-accent-warm);
+}
+
+.email {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  overflow-wrap: anywhere;
+}
+
+.noActiveRole {
+  align-self: flex-start;
+  margin: 0.2rem 0 0;
+  padding: 0.1rem 0.5rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 45%, transparent);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--color-accent-warm) 10%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-xs);
+}
+
+.roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.roleChip {
+  padding: 0.2rem 0.55rem;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-xs);
+}
+
+.roleChip[data-active="false"] {
+  border-color: var(--color-border-strong);
+  border-style: dashed;
+  background: transparent;
+  color: var(--color-text-muted);
+}
+
+.noRoles {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.4rem;
+}
+
+.actionButton {
+  min-height: 40px;
+  padding-inline: 0.8rem;
+  border-radius: 10px;
+  font-size: var(--font-size-ui-sm);
+}
+
+@media (max-width: 960px) {
+  .row {
+    grid-template-columns: auto 1fr;
+  }
+
+  .roles,
+  .actions {
+    grid-column: 2;
+  }
+
+  .actions {
+    justify-content: flex-start;
+  }
+}

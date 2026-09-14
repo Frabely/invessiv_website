@@ -13,6 +13,12 @@ describe("SecurityEventType", () => {
   it("contains the exact values without duplicates", () => {
     expect(SECURITY_EVENT_TYPE_VALUES).toEqual([
       "workspace_owner_bootstrapped",
+      "workspace_member_added",
+      "workspace_member_roles_changed",
+      "workspace_owner_granted",
+      "workspace_owner_revoked",
+      "role_created",
+      "role_updated",
     ]);
     expect(SECURITY_EVENT_TYPE_VALUES).toEqual(
       Object.values(SecurityEventType),
@@ -25,7 +31,7 @@ describe("SecurityEventType", () => {
 
 describe("SecuritySubjectType", () => {
   it("contains the exact values without duplicates", () => {
-    expect(SECURITY_SUBJECT_TYPE_VALUES).toEqual(["workspace_member"]);
+    expect(SECURITY_SUBJECT_TYPE_VALUES).toEqual(["workspace_member", "role"]);
     expect(SECURITY_SUBJECT_TYPE_VALUES).toEqual(
       Object.values(SecuritySubjectType),
     );

@@ -1,0 +1,9 @@
+{
+  "title": "Einstellungen",
+  "description": "Lege fest, wer im Workspace arbeitet und was jede Person darf.",
+  "tabsAriaLabel": "Einstellungsbereiche",
+  "tabs": {
+    "members": "Mitglieder",
+    "roles": "Rollen"
+  }
+}

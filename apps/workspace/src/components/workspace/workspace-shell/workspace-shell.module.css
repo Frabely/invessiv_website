@@ -123,7 +123,7 @@
 }
 
 @media (min-width: 1024px) {
-  .shell {
+  .shell[data-has-navigation="true"] {
     grid-template-columns: 64px minmax(0, 1fr);
   }
 
@@ -131,8 +131,25 @@
     grid-column: 1 / -1;
   }
 
-  .main {
+  .shell[data-has-navigation="true"] .main {
     grid-column: 2;
+  }
+}
+
+@media (min-width: 761px) {
+  .shell {
+    grid-template-rows: auto minmax(0, 1fr);
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .main {
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    scrollbar-gutter: stable;
   }
 }
 

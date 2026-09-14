@@ -1,6 +1,6 @@
 # Ordner 02 — Verlustfreie Activity-Migration
 
-> **Status:** im Review · **Abhängigkeit:** Ordner 01 · **Aufwand:** 2–3 Tage · **Reviewziel:** 40–70 Dateien
+> **Status:** gemerged · **Abhängigkeit:** Ordner 01 · **Aufwand:** 2–3 Tage · **Reviewziel:** 40–70 Dateien
 
 ## Ziel und Stand nach Merge
 

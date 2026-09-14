@@ -22,12 +22,13 @@ import type { BulkEditLeadsPatch } from "@invessiv/common/contracts/leads/bulk-e
 import type { ImprovementsListEditorContent } from "@invessiv/common/contracts/leads";
 import type { LeadCategoryOption } from "@invessiv/common/contracts/leads/lead-category-option";
 import type { BulkEditLeadsFailedLead } from "@invessiv/common/contracts/leads/results/bulk-edit-leads-result";
+import { CheckboxControl } from "@invessiv/ui";
 import {
   ButtonControl,
   PrimaryCtaButton,
 } from "@/components/shared/button/button";
 import { FormStatus } from "@/components/shared/form/form-status/form-status";
-import { trapDialogFocus } from "@/components/workspace/leads/shared/dialog-focus-trap";
+import { trapDialogFocus } from "@/components/workspace/shared/dialog/dialog-focus-trap";
 import { ImprovementsListEditor } from "@/components/workspace/leads/shared/improvements-list-editor/improvements-list-editor";
 import type {
   LeadsBulkDictionary,
@@ -344,11 +345,10 @@ export function LeadsBulkEditDialog({
         <div className={styles.body}>
           <section className={styles.fieldRow}>
             <label className={styles.applyCheckbox}>
-              <input
+              <CheckboxControl
                 checked={applyState[BulkEditField.Status]}
                 disabled={isPending}
                 onChange={() => toggleApply(BulkEditField.Status)}
-                type="checkbox"
               />
               <span>{bulkContent.editDialog.applyLabel}</span>
             </label>
@@ -375,11 +375,10 @@ export function LeadsBulkEditDialog({
 
           <section className={styles.fieldRow}>
             <label className={styles.applyCheckbox}>
-              <input
+              <CheckboxControl
                 checked={applyState[BulkEditField.Category]}
                 disabled={isPending}
                 onChange={() => toggleApply(BulkEditField.Category)}
-                type="checkbox"
               />
               <span>{bulkContent.editDialog.applyLabel}</span>
             </label>
@@ -407,11 +406,10 @@ export function LeadsBulkEditDialog({
 
           <section className={styles.fieldRow}>
             <label className={styles.applyCheckbox}>
-              <input
+              <CheckboxControl
                 checked={applyState[BulkEditField.Score]}
                 disabled={isPending}
                 onChange={() => toggleApply(BulkEditField.Score)}
-                type="checkbox"
               />
               <span>{bulkContent.editDialog.applyLabel}</span>
             </label>
@@ -446,11 +444,10 @@ export function LeadsBulkEditDialog({
 
           <section className={styles.fieldRow}>
             <label className={styles.applyCheckbox}>
-              <input
+              <CheckboxControl
                 checked={applyState[BulkEditField.Owner]}
                 disabled={isPending}
                 onChange={() => toggleApply(BulkEditField.Owner)}
-                type="checkbox"
               />
               <span>{bulkContent.editDialog.applyLabel}</span>
             </label>
@@ -475,11 +472,10 @@ export function LeadsBulkEditDialog({
 
           <section className={styles.fieldRow}>
             <label className={styles.applyCheckbox}>
-              <input
+              <CheckboxControl
                 checked={applyState[BulkEditField.NotesAppend]}
                 disabled={isPending}
                 onChange={() => toggleApply(BulkEditField.NotesAppend)}
-                type="checkbox"
               />
               <span>{bulkContent.editDialog.applyLabel}</span>
             </label>
@@ -514,11 +510,10 @@ export function LeadsBulkEditDialog({
 
           <section className={styles.fieldRow}>
             <label className={styles.applyCheckbox}>
-              <input
+              <CheckboxControl
                 checked={applyState[BulkEditField.ImprovementsAppend]}
                 disabled={isPending}
                 onChange={() => toggleApply(BulkEditField.ImprovementsAppend)}
-                type="checkbox"
               />
               <span>{bulkContent.editDialog.applyLabel}</span>
             </label>

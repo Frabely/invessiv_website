@@ -11,6 +11,7 @@ import {
 
 import { WORKSPACE_REALM_VALUES } from "@invessiv/common/constants/auth/auth-realms";
 import { sqlCheckIn } from "@invessiv/db/core";
+import { WorkspaceMemberRolesConstraintName } from "@invessiv/db/constraint-names/auth/workspace-member-roles-constraint-names";
 import { roles } from "@invessiv/db/record-configuration/auth/roles";
 import { users } from "@invessiv/db/record-configuration/auth/users";
 import { workspaceMembers } from "@invessiv/db/record-configuration/crm/workspace-members";
@@ -34,18 +35,18 @@ export const workspaceMemberRoles = pgTable(
   },
   (table) => [
     primaryKey({
-      name: "workspace_member_roles_pkey",
+      name: WorkspaceMemberRolesConstraintName.PrimaryKey,
       columns: [table.workspace_member_id, table.role_id],
     }),
     foreignKey({
-      name: "workspace_member_roles_role_fkey",
+      name: WorkspaceMemberRolesConstraintName.RoleForeignKey,
       columns: [table.role_id, table.role_realm],
       foreignColumns: [roles.id, roles.realm],
     }).onDelete("restrict"),
     check(
-      "workspace_member_roles_role_realm_check",
+      WorkspaceMemberRolesConstraintName.RoleRealmCheck,
       sqlCheckIn(table.role_realm, WORKSPACE_REALM_VALUES),
     ),
-    index("workspace_member_roles_role_id_idx").on(table.role_id),
+    index(WorkspaceMemberRolesConstraintName.RoleIdIndex).on(table.role_id),
   ],
 );

@@ -10,6 +10,8 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
+import { UsersConstraintName } from "@invessiv/db/constraint-names/auth/users-constraint-names";
+
 /**
  * Canonical identity of every signed-in human. Clerk authenticates, this table plus
  * memberships and roles authorize. `primary_email` is master data only and never authorizes.
@@ -34,15 +36,27 @@ export const users = pgTable(
   },
   (table) => [
     check(
-      "users_clerk_user_id_check",
+      UsersConstraintName.ClerkUserIdCheck,
       sql`btrim(${table.clerk_user_id}) <> ''`,
     ),
     check(
-      "users_primary_email_check",
+      UsersConstraintName.PrimaryEmailCheck,
       sql`btrim(${table.primary_email}) <> ''`,
     ),
-    check("users_display_name_check", sql`btrim(${table.display_name}) <> ''`),
-    check("users_version_check", sql`${table.version} > 0`),
-    uniqueIndex("users_clerk_user_id_uidx").on(table.clerk_user_id),
+    check(
+      UsersConstraintName.DisplayNameCheck,
+      sql`btrim
+          (
+          ${table.display_name}
+          )
+          <>
+          ''`,
+    ),
+    check(
+      UsersConstraintName.VersionCheck,
+      sql`${table.version}
+      > 0`,
+    ),
+    uniqueIndex(UsersConstraintName.ClerkUserIdUnique).on(table.clerk_user_id),
   ],
 );

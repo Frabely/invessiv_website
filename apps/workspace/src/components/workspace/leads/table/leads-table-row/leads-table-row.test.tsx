@@ -56,6 +56,13 @@ beforeEach(() => {
   pushMock.mockReset();
 });
 
+const ALL_LEAD_ACTIONS = {
+  canWrite: true,
+  canDelete: true,
+  canImport: true,
+  canGenerateOutreach: true,
+};
+
 describe("LeadsTableRow", () => {
   it("builds the edit action link with mode=edit", () => {
     const lead: LeadSummaryDto = {
@@ -85,6 +92,7 @@ describe("LeadsTableRow", () => {
       <table>
         <tbody>
           <LeadsTableRow
+            actions={ALL_LEAD_ACTIONS}
             basePath="/de/leads"
             currentQueryString="status=qualified&selected=lead-999"
             currentSearchParams={{
@@ -148,6 +156,7 @@ describe("LeadsTableRow", () => {
       <table>
         <tbody>
           <LeadsTableRow
+            actions={ALL_LEAD_ACTIONS}
             basePath="/de/leads"
             currentQueryString="status=qualified"
             currentSearchParams={{
@@ -201,6 +210,7 @@ describe("LeadsTableRow", () => {
       <table>
         <tbody>
           <LeadsTableRow
+            actions={ALL_LEAD_ACTIONS}
             basePath="/de/leads"
             currentQueryString="status=qualified"
             currentSearchParams={{ status: "qualified" }}

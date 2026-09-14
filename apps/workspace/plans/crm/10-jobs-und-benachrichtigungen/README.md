@@ -44,6 +44,8 @@ per E-Mail gemeldet. Nach Merge werden Aufgabenreminder und Serien asynchron zuv
 - [ ] Doppelter Cronlauf und abgelaufene Lease erzeugen keine doppelten Effekte.
 - [ ] Poison Job blockiert keine anderen Jobs.
 - [ ] Notification-Deep-Link wird vor Ausgabe erneut autorisiert.
+- [ ] Empfänger kunden- oder projektbezogener Notifications und Digests werden beim Erzeugen **und** beim Versand über
+      `canOn` gefiltert (Zugriffsbereiche, Task 36–38); ein entzogener Zugriff erzeugt keine weitere Meldung.
 - [ ] Glocke funktioniert mit Keyboard, Fokus und beiden Themes.
 - [ ] Ausfall von Mailprovider oder Runner macht die App nicht unbenutzbar.
 - [ ] `vercel.json`, Secret-Namen, Retry und manueller Replay sind dokumentiert.

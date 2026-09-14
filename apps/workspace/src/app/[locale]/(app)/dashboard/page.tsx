@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
+import { DateRangePreset } from "@/common/constants/date-range/date-range-presets";
+import { getDateRangeForPreset } from "@/common/patterns/date-range/date-range-preset-range";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { requireWorkspaceArea } from "@/lib/auth/permissions";
 import { AcquisitionVolumeModule } from "@/components/workspace/dashboard/acquisition-volume-module/acquisition-volume-module";
@@ -63,6 +65,8 @@ export default async function DashboardPage({
   const basePath = dashboardPathFor(activeLocale);
   const currentQueryString =
     serializeDashboardSearchParams(resolvedSearchParams);
+  const referenceDateValue =
+    getDateRangeForPreset(DateRangePreset.Today).to ?? "";
 
   return (
     <WorkspacePageShell pageId="dashboard">
@@ -74,6 +78,7 @@ export default async function DashboardPage({
             currentQueryString={currentQueryString}
             fromValue={rangeSelection.fromInputValue}
             labels={rangeFilterContent}
+            referenceDateValue={referenceDateValue}
             toValue={rangeSelection.toInputValue}
           />
         }

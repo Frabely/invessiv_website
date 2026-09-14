@@ -29,6 +29,10 @@ existiert getrennt, damit der Umzug isoliert reviewbar ist und nicht in einem Fe
 
 ## Entscheidungen
 
+> **Ersetzt (13.09.2026):** Ziel und Zeitpunkt des Umzugs sind durch Ordner 03d neu entschieden — Hybrid aus
+> `packages/ui` (app-neutrale Grundbausteine) und `components/workspace/shared/` (URL-/Dictionary-gebundene Teile), vor
+> Ordner 04. Siehe `../03d-geteilte-ui-bausteine/README.md`. Die Zeilen „Ziel" und „Warum nicht ui" gelten nicht mehr.
+
 | Bereich             | Entscheidung                                                                                                          |
 | ------------------- | --------------------------------------------------------------------------------------------------------------------- |
 | Ziel                | `apps/workspace/src/components/workspace/shared/` — app-intern geteilt, **nicht** `packages/ui`                       |

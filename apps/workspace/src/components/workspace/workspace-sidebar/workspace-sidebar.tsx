@@ -2,11 +2,19 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
+import {
+  faChartColumn,
+  faGear,
+  faUsers,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
+import { WorkspaceSidebarItemKey } from "@/common/constants/navigation/workspace-sidebar-item-keys";
+import { WORKSPACE_SIDEBAR_ITEMS } from "@/common/constants/navigation/workspace-sidebar-items";
 import type { Locale } from "@/config/i18n";
 import type { WorkspacePageContent } from "@/i18n/dictionaries/workspace";
 import { workspaceAreaPathFor } from "@/lib/auth/routes";
-import { WORKSPACE_SIDEBAR_ITEMS } from "./workspace-sidebar-items";
 import styles from "./workspace-sidebar.module.css";
 
 type WorkspaceSidebarProps = {
@@ -16,6 +24,12 @@ type WorkspaceSidebarProps = {
   onCloseAction: () => void;
   permittedAreas: readonly WorkspaceArea[];
 };
+
+const SIDEBAR_ICONS = {
+  [WorkspaceSidebarItemKey.Overview]: faChartColumn,
+  [WorkspaceSidebarItemKey.Leads]: faUsers,
+  [WorkspaceSidebarItemKey.Settings]: faGear,
+} satisfies Record<WorkspaceSidebarItemKey, IconDefinition>;
 
 export function WorkspaceSidebar({
   content,
@@ -78,18 +92,7 @@ export function WorkspaceSidebar({
 
               const icon = (
                 <span aria-hidden="true" className={styles.linkIcon}>
-                  <svg
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.7}
-                    viewBox={item.iconViewBox}
-                  >
-                    {item.iconPaths.map((d) => (
-                      <path d={d} key={d} />
-                    ))}
-                  </svg>
+                  <FontAwesomeIcon icon={SIDEBAR_ICONS[item.id]} />
                 </span>
               );
 

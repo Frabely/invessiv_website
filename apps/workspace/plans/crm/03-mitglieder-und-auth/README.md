@@ -1,6 +1,6 @@
 # Ordner 03 — User, Permission-Katalog und fail-closed Auth
 
-> **Status:** im Review · **Branch:** `feat/crm-users-rbac` · **Abhängigkeiten:** Ordner 01 und 02 gemergt
+> **Status:** gemerged (PR #6) · **Branch:** `feat/crm-users-rbac` · **Abhängigkeiten:** Ordner 01 und 02 gemergt
 > **Review-Ziel:** 80–120 geänderte Dateien · **Folgeeinheit:** Ordner 03b (Mitglieder- und Rollenverwaltung)
 
 ## Ziel und Stand nach Merge
@@ -56,20 +56,37 @@ Daten existieren. Damit entfallen Schattenwrites und der separate Cleanup-Ordner
 
 ## Merge-Gate
 
-- [ ] Migration bricht bei nicht leeren Ordner-01-Tabellen vor jeder Schemaänderung ab; zweiter Lauf ist folgenlos.
-- [ ] Drizzle-Modelle sind deckungsgleich zur Migration (Spalten, Typen, Constraints).
-- [ ] Smoke: Katalog und Systemrollen-Rechte stimmen exakt mit dem Code überein (in beide Richtungen).
-- [ ] Smoke: Realm-Mischung, nicht delegierbare Permission in Custom-Rolle und fehlende Fachwerte werden abgewiesen.
-- [ ] Kein Code liest oder schreibt `WORKSPACE_ALLOWED_EMAILS`, `credentials_access` oder eine Rollenbezeichnung.
-- [ ] Fehlender User, inaktiver User, fehlende/inaktive Membership und DB-Fehler öffnen keinen Zugriff.
-- [ ] Fehlende Permission ergibt 403 (API) bzw. 404 (Seite); Rollenentzug wirkt beim nächsten Request.
-- [ ] Parallele Bootstrap-Requests erzeugen auf einer DB ohne bestehenden Owner genau einen Owner; nach dem ersten
+- [x] Migration bricht bei nicht leeren Ordner-01-Tabellen vor jeder Schemaänderung ab; zweiter Lauf ist folgenlos.
+- [x] Drizzle-Modelle sind deckungsgleich zur Migration (Spalten, Typen, Constraints).
+- [x] Smoke: Katalog und Systemrollen-Rechte stimmen exakt mit dem Code überein (in beide Richtungen).
+- [x] Smoke: Realm-Mischung, nicht delegierbare Permission in Custom-Rolle und fehlende Fachwerte werden abgewiesen.
+- [x] Kein Code liest oder schreibt `WORKSPACE_ALLOWED_EMAILS`, `credentials_access` oder eine Rollenbezeichnung.
+- [x] Fehlender User, inaktiver User, fehlende/inaktive Membership und DB-Fehler öffnen keinen Zugriff.
+- [x] Fehlende Permission ergibt 403 (API) bzw. 404 (Seite); Rollenentzug wirkt beim nächsten Request.
+- [x] Parallele Bootstrap-Requests erzeugen auf einer DB ohne bestehenden Owner genau einen Owner; nach dem ersten
       aktiven Owner ist Bootstrap zu. Existiert bereits ein Owner, überspringt der Integrationstest diesen Fall sichtbar.
-- [ ] Sidebar zeigt nur Bereiche mit Permission; Seiten ohne Permission antworten 404 — auch bei reinem
+- [x] Sidebar zeigt nur Bereiche mit Permission; Seiten ohne Permission antworten 404 — auch bei reinem
       Query-Param-Wechsel, weil jede Page selbst gated.
-- [ ] Neue Activities menschlicher Änderungen tragen `actor_user_id`; Legacy-Zeilen bleiben lesbar.
+- [x] Neue Activities menschlicher Änderungen tragen `actor_user_id`; Legacy-Zeilen bleiben lesbar.
 - [ ] `.env.example` und Vercel-Umgebungen: `WORKSPACE_BOOTSTRAP_CLERK_USER_ID` gesetzt, Allowlist entfernt.
-- [ ] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, DB-Smokes und Workspace-Build grün.
+      `.env.example` erfüllt; Vercel-Umgebungen sind aus dem Repository nicht prüfbar und manuell zu bestätigen.
+- [x] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, DB-Smokes und Workspace-Build grün.
+
+### Nachprüfung nach Merge (13.09.2026)
+
+Auf `master` nach PR #6 erneut ausgeführt:
+
+| Nachweis                                                                                         | Ergebnis                                   |
+| ------------------------------------------------------------------------------------------------ | ------------------------------------------ |
+| `pnpm -r lint` / `pnpm -r typecheck` / `pnpm -r test`                                            | grün (Workspace: 783 Tests, 12 DB-skipped) |
+| `pnpm --filter @invessiv/workspace build`                                                        | grün                                       |
+| `db:smoke:dev` / `db:smoke:crm` / `db:smoke:activities` / `db:smoke:rbac` gegen Dev-DB           | ok / 33 / 13 / 41 Checks ok                |
+| `vitest run --mode rbac-integration` (`workspace-authorization.integration.test.ts`)             | 8/8 ok                                     |
+| `vitest run --mode crm-integration` / `--mode activity-integration`                              | 2/2 ok / 2/2 ok                            |
+| Repository-Suche: kein `WORKSPACE_ALLOWED_EMAILS`, `credentials_access`, `WorkspaceRole` im Code | erfüllt                                    |
+
+Offen bleibt allein die manuelle Bestätigung der Vercel-Umgebungsvariablen. Der Legacy-Cleanup aus Ordner 03a ist
+damit nachweislich abgeschlossen.
 
 ## Rollout-Reihenfolge
 
@@ -98,7 +115,7 @@ Die neuen Tabellen bleiben stehen; die entfernten, leeren Legacy-Spalten braucht
 
 ## Nicht Teil dieses Ordners
 
-- Mitglieder-/Rollenverwaltung, Ownership-Registry, Übergabe und Deaktivierung → Ordner 03b
+- Mitglieder-/Rollenverwaltung → Ordner 03b; Ownership-Registry, Übergabe und Deaktivierung → Ordner 03c
 - Portalmitgliedschaften und Portal-Permissions → Ordner 12
 - Credential-Verschlüsselung und Reveal-UI → Ordner 19
 - attributbasierte Regeln, Deny-Regeln, IdP-/SCIM-Synchronisation

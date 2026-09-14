@@ -1,6 +1,6 @@
 # Ordner 08 — Flache Aufgaben
 
-> **Status:** offen · **Abhängigkeiten:** 04, 07 · **Aufwand:** 4–5 Tage · **Reviewziel:** 80–100 Dateien
+> **Status:** offen · **Abhängigkeiten:** 04, 07, 07c · **Aufwand:** 4–5 Tage · **Reviewziel:** 80–100 Dateien
 
 ## Ziel und Stand nach Merge
 
@@ -38,7 +38,7 @@ werden bereits modelliert, aber erst mit dem Portal sichtbar.
 ## Merge-Gate
 
 - [ ] Facette „hat offene Aufgaben" ist in `CUSTOMER_LIST_FACETS` registriert und nutzbar.
-- [ ] `Tasks` ist in `OwnableEntity` registriert und hat einen Adapter in der Ownership-Registry (Ordner 03b); Übergabe
+- [ ] `Tasks` ist in `OwnableEntity` registriert und hat einen Adapter in der Ownership-Registry (Ordner 03c); Übergabe
       und Deaktivierungszählung erfassen die Entität, mit Test.
 - [ ] DB verhindert widersprüchliche oder mehrere Kontexte.
 - [ ] Jede Aufgabe hat genau einen aktiven Bearbeiter.
@@ -46,6 +46,11 @@ werden bereits modelliert, aber erst mit dem Portal sichtbar.
 - [ ] Wiederöffnen und Zuweisungswechsel erzeugen nachvollziehbare Activities.
 - [ ] Listenfilter und Counts sind identisch; überfällige Aufgaben stehen deterministisch zuerst.
 - [ ] Portalabfragen oder Portal-UI werden noch nicht aktiviert.
+- [ ] Zugriffsbereiche (Task 36–38): `tasks.read` entsteht bindbar; alle Aufgaben-Endpunkte stehen in
+      `CRM_ENDPOINT_ACCESS_RULES`; globale Übersicht, Sidebar-Zähler und Counts filtern über `accessScope`; der
+      Tasks-Adapter deklariert `requiredPermission`.
+- [ ] E2E: Mitglied mit Rolle „Nur Aufgaben“ auf Kunde 1 / Projekt 2 sieht dort Aufgaben, aber keine Projektdetails
+      und nichts von Projekt 1.
 
 ## Rollback
 
