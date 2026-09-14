@@ -1,21 +1,12 @@
 "use client";
 
-import { createContext, type TransitionStartFunction, useContext } from "react";
+import {
+  TableTransitionContext,
+  useTableTransition,
+} from "./use-table-transition";
 
-export type LeadsTableTransition = {
-  isPending: boolean;
-  startTransition: TransitionStartFunction;
-};
+export const LeadsTableTransitionContext = TableTransitionContext;
 
-const DEFAULT_LEADS_TABLE_TRANSITION: LeadsTableTransition = {
-  isPending: false,
-  startTransition: (callback) => callback(),
-};
-
-export const LeadsTableTransitionContext = createContext<LeadsTableTransition>(
-  DEFAULT_LEADS_TABLE_TRANSITION,
-);
-
-export function useLeadsTableTransition(): LeadsTableTransition {
-  return useContext(LeadsTableTransitionContext);
+export function useLeadsTableTransition() {
+  return useTableTransition();
 }

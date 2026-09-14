@@ -8,8 +8,7 @@ import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
-import type { LeadsPaginationDictionary } from "@/i18n/dictionaries/workspace/leads";
-import { useLeadsTableTransition } from "@/hooks/workspace/use-leads-table-transition";
+import { useTableTransition } from "@/hooks/workspace/use-table-transition";
 import {
   buildPaginationHref,
   getPaginationItems,
@@ -17,13 +16,25 @@ import {
 import { PaginationItemKind } from "@invessiv/common/constants/leads/list/lead-pagination-item-kinds";
 import styles from "./list-pagination.module.css";
 
-type LeadsPaginationProps = {
+export type ListPaginationContent = {
+  pagination: {
+    ariaLabel: string;
+    showing: string;
+    page: string;
+    first: string;
+    previous: string;
+    next: string;
+    last: string;
+  };
+};
+
+type ListPaginationProps = {
   basePath: string;
   currentPage: number;
   perPage: number;
   queryString: string;
   total: number;
-  content: LeadsPaginationDictionary;
+  content: ListPaginationContent;
 };
 
 function formatSummary(
@@ -65,9 +76,9 @@ export function ListPagination({
   perPage,
   queryString,
   total,
-}: LeadsPaginationProps) {
+}: ListPaginationProps) {
   const router = useRouter();
-  const { startTransition, isPending } = useLeadsTableTransition();
+  const { startTransition, isPending } = useTableTransition();
   const isLoading = isPending;
   const isEmpty = total === 0;
   const totalPages = isEmpty ? 1 : Math.max(1, Math.ceil(total / perPage));

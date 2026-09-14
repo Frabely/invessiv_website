@@ -7,9 +7,9 @@
 
 ## Ziel
 
-**Umsetzungsstand:** Teilweise erledigt: `ConfirmDialog`, Single-Delete, Bulk-Archiv und Bulk-Löschen sind umgestellt.
-Die übrigen vier
-Lead-Dialoge nutzen noch Fokusfalle und/oder `createPortal`.
+**Umsetzungsstand:** Erledigt im Workspace: `ConfirmDialog`, Single-Delete, Bulk-Archiv, Bulk-Löschen, Formular,
+Import, Outreach und Bulk-Edit verwenden die zentrale native `Dialog`-Hülle. Fokusfalle und `createPortal` sind
+entfernt.
 
 Alle sieben Lead-Dialoge nutzen `Dialog` beziehungsweise `ConfirmDialog`. Danach gibt es keine eigene Overlay-, Portal-
 oder Fokuslogik mehr; `dialog-focus-trap.ts` ist gelöscht.

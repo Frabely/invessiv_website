@@ -5,7 +5,7 @@ import { faPenToSquare, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { Locale } from "@/config/i18n";
 import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
-import { SidePanel } from "@invessiv/ui";
+import { DefinitionList, DetailSection, SidePanel } from "@invessiv/ui";
 import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
 import type {
   LeadsDetailDictionary,
@@ -171,12 +171,8 @@ export function LeadDetailPanel({
         />
       </div>
 
-      <section className={styles.section} aria-labelledby="lead-contact-title">
-        <h3 className={styles.sectionTitle} id="lead-contact-title">
-          {content.sections.contact}
-        </h3>
-
-        <dl className={styles.fieldGrid}>
+      <DetailSection id="lead-contact-title" title={content.sections.contact}>
+        <DefinitionList>
           <DetailField label={content.fields.email}>
             {lead.email ? (
               <a className={styles.textLink} href={`mailto:${lead.email}`}>
@@ -223,22 +219,20 @@ export function LeadDetailPanel({
               <span className={styles.emptyText}>{content.empty.owner}</span>
             )}
           </DetailField>
-        </dl>
-      </section>
+        </DefinitionList>
+      </DetailSection>
 
-      <section className={styles.section} aria-labelledby="lead-category-title">
-        <div className={styles.sectionHeader}>
-          <h3 className={styles.sectionTitle} id="lead-category-title">
-            {content.sections.category}
-          </h3>
-
+      <DetailSection
+        actions={
           <LeadCategoryBadge
             categoryKey={lead.category?.labelKey}
             label={categoryLabel}
           />
-        </div>
-
-        <dl className={styles.fieldGrid}>
+        }
+        id="lead-category-title"
+        title={content.sections.category}
+      >
+        <DefinitionList>
           <DetailField label={content.fields.score}>
             <LeadScoreBar
               ariaLabel={sharedContent.score.ariaLabel}
@@ -254,8 +248,8 @@ export function LeadDetailPanel({
               {updatedAt}
             </DetailField>
           </div>
-        </dl>
-      </section>
+        </DefinitionList>
+      </DetailSection>
 
       <section className={styles.section} aria-labelledby="lead-social-title">
         <h3 className={styles.sectionTitle} id="lead-social-title">

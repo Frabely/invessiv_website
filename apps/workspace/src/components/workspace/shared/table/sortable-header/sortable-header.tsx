@@ -1,8 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useLeadsTableTransition } from "@/hooks/workspace/use-leads-table-transition";
-import { buildLeadHref } from "@/components/workspace/leads/table/lead-table-utils";
+import { useTableTransition } from "@/hooks/workspace/use-table-transition";
 import styles from "./sortable-header.module.css";
 
 type SortableHeaderProps = {
@@ -21,7 +20,10 @@ function getSortHref(
   queryString: string,
   sort: string,
 ): string {
-  return buildLeadHref(basePath, queryString, { sort });
+  const params = new URLSearchParams(queryString);
+  params.set("sort", sort);
+  const nextQuery = params.toString();
+  return nextQuery ? `${basePath}?${nextQuery}` : basePath;
 }
 
 export function SortableHeader({
@@ -35,7 +37,7 @@ export function SortableHeader({
   sortDesc,
 }: SortableHeaderProps) {
   const router = useRouter();
-  const { isPending, startTransition } = useLeadsTableTransition();
+  const { isPending, startTransition } = useTableTransition();
   const isLoading = isPending;
   const targetSort = activeSort === sortAsc ? sortDesc : sortAsc;
   const href = getSortHref(basePath, queryString, targetSort);

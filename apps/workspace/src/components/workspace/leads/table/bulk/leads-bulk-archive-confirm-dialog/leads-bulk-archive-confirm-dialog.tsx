@@ -71,7 +71,26 @@ export function LeadsBulkArchiveConfirmDialog({
       busy={isPending}
       closeLabel={bulkContent.archiveConfirm.closeAriaLabel}
       description={message}
-      footer={null}
+      footer={
+        <>
+          <ButtonControl
+            disabled={isPending}
+            onClick={onCloseAction}
+            type="button"
+            variant="ghost"
+          >
+            {bulkContent.archiveConfirm.cancel}
+          </ButtonControl>
+          <button
+            className={styles.confirmButton}
+            disabled={isPending}
+            onClick={handleConfirm}
+            type="button"
+          >
+            {bulkContent.archiveConfirm.confirm}
+          </button>
+        </>
+      }
       onCloseAction={onCloseAction}
       size={DialogSize.Narrow}
       title={bulkContent.archiveConfirm.title}
@@ -94,25 +113,6 @@ export function LeadsBulkArchiveConfirmDialog({
           </li>
         ))}
       </ul>
-
-      <footer className={styles.footer}>
-        <ButtonControl
-          disabled={isPending}
-          onClick={onCloseAction}
-          type="button"
-          variant="ghost"
-        >
-          {bulkContent.archiveConfirm.cancel}
-        </ButtonControl>
-        <button
-          className={styles.confirmButton}
-          disabled={isPending}
-          onClick={handleConfirm}
-          type="button"
-        >
-          {bulkContent.archiveConfirm.confirm}
-        </button>
-      </footer>
     </Dialog>
   );
 }

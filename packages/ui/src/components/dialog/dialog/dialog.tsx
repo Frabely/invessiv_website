@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  type KeyboardEvent,
   type MouseEvent,
   type ReactNode,
   type RefObject,
@@ -22,8 +23,11 @@ export type DialogProps = {
   children?: ReactNode;
   closeLabel: string;
   closeOnBackdropClick?: boolean;
+  className?: string;
   description?: string;
+  eyebrow?: ReactNode;
   footer: ReactNode;
+  bodyClassName?: string;
   initialFocusRef?: RefObject<HTMLElement | null>;
   onCloseAction: () => void;
   open?: boolean;
@@ -36,8 +40,11 @@ export function Dialog({
   children,
   closeLabel,
   closeOnBackdropClick = true,
+  className,
   description,
+  eyebrow,
   footer,
+  bodyClassName,
   initialFocusRef,
   onCloseAction,
   open = true,
@@ -79,6 +86,31 @@ export function Dialog({
     requestClose();
   }
 
+  function handleKeyDown(event: KeyboardEvent<HTMLDialogElement>) {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      requestClose();
+      return;
+    }
+
+    if (event.key !== "Tab") return;
+    const focusable = Array.from(
+      event.currentTarget.querySelectorAll<HTMLElement>(
+        "button, input, select, textarea, a[href]",
+      ),
+    ).filter((element) => !element.hasAttribute("disabled"));
+    if (focusable.length < 2) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
   function handleMouseDown(event: MouseEvent<HTMLDialogElement>) {
     if (closeOnBackdropClick && event.target === event.currentTarget)
       requestClose();
@@ -91,6 +123,7 @@ export function Dialog({
       aria-labelledby={titleId}
       className={styles.dialog}
       onCancel={handleCancel}
+      onKeyDown={handleKeyDown}
       onMouseDown={handleMouseDown}
       ref={(element) => {
         dialogRef.current = element;
@@ -98,9 +131,15 @@ export function Dialog({
       }}
     >
       <DialogPortalRootContext.Provider value={portalRoot}>
-        <div className={styles.surface} data-size={size}>
+        <div
+          className={
+            className ? `${styles.surface} ${className}` : styles.surface
+          }
+          data-size={size}
+        >
           <header className={styles.header}>
             <div className={styles.heading}>
+              {eyebrow ? <p className={styles.eyebrow}>{eyebrow}</p> : null}
               <h2 className={styles.title} id={titleId}>
                 {title}
               </h2>
@@ -122,7 +161,15 @@ export function Dialog({
               <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
             </ButtonControl>
           </header>
-          {children ? <div className={styles.body}>{children}</div> : null}
+          {children ? (
+            <div
+              className={
+                bodyClassName ? `${styles.body} ${bodyClassName}` : styles.body
+              }
+            >
+              {children}
+            </div>
+          ) : null}
           <footer className={styles.footer}>{footer}</footer>
         </div>
       </DialogPortalRootContext.Provider>

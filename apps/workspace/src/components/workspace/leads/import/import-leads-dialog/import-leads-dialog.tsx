@@ -3,20 +3,14 @@
 import {
   type ChangeEvent,
   type DragEvent,
-  type KeyboardEvent,
-  type MouseEvent,
   useCallback,
-  useEffect,
   useId,
   useRef,
   useState,
 } from "react";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowUpFromBracket,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 import {
   LEAD_IMPORT_COLUMN_KEY_VALUES,
   LeadImportColumnKey,
@@ -33,18 +27,13 @@ import {
   getLeadImportRowIssueMessage,
 } from "@/client/leads/import/import-leads-error-message";
 import { importLeadsService } from "@/client/leads/import/import-leads-service";
-import { ButtonControl } from "@invessiv/ui";
+import { ButtonControl, Dialog } from "@invessiv/ui";
+import { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";
 import { ColumnPillGroup } from "../column-pill-group/column-pill-group";
 import { DialogFooter } from "../dialog-footer/dialog-footer";
 import styles from "./import-leads-dialog.module.css";
 
 const MAX_FILE_BYTES = 2 * 1024 * 1024;
-
-function focusFirstDialogElement(container: HTMLElement | null): void {
-  container
-    ?.querySelector<HTMLElement>("button, input, select, textarea")
-    ?.focus();
-}
 
 type Props = {
   content: LeadsImportDictionary;
@@ -107,7 +96,6 @@ export function ImportLeadsDialog({ content }: Props) {
   const [file, setFile] = useState<File | null>(null);
   const [fileSizeError, setFileSizeError] = useState<string | null>(null);
   const [isDropActive, setIsDropActive] = useState(false);
-  const dialogRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragCounterRef = useRef(0);
 
@@ -127,28 +115,8 @@ export function ImportLeadsDialog({ content }: Props) {
     setOpen(false);
   }, []);
 
-  useEffect(() => {
-    if (!open) return;
-    window.requestAnimationFrame(() => {
-      focusFirstDialogElement(dialogRef.current);
-    });
-  }, [open]);
-
   function handleTriggerClick() {
     setOpen(true);
-  }
-
-  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    if (event.key === "Escape") {
-      event.preventDefault();
-      closeDialog();
-    }
-  }
-
-  function handleOverlayClick(event: MouseEvent<HTMLDivElement>) {
-    if (event.target === event.currentTarget) {
-      closeDialog();
-    }
   }
 
   async function handleSelectedFile(selected: File | null | undefined) {
@@ -254,289 +222,256 @@ export function ImportLeadsDialog({ content }: Props) {
       </ButtonControl>
 
       {open && (
-        <div
-          className={styles.overlay}
-          onClick={handleOverlayClick}
-          role="presentation"
+        <Dialog
+          closeLabel={content.dialog.close}
+          description={content.dialog.description}
+          footer={null}
+          onCloseAction={closeDialog}
+          open={open}
+          size={DialogSize.Wide}
+          title={content.dialog.title}
         >
-          <div
-            aria-describedby={content.dialog.aria.descriptionId}
-            aria-labelledby={content.dialog.aria.titleId}
-            aria-modal="true"
-            className={styles.dialog}
-            onKeyDown={handleKeyDown}
-            ref={dialogRef}
-            role="dialog"
-          >
-            <header className={styles.header}>
-              <div className={styles.heading}>
-                <h2 className={styles.title} id={content.dialog.aria.titleId}>
-                  {content.dialog.title}
-                </h2>
-                <p
-                  className={styles.description}
-                  id={content.dialog.aria.descriptionId}
+          <div className={styles.body}>
+            <input
+              accept=".csv,text/csv,application/vnd.ms-excel"
+              className={styles.fileInput}
+              id={fileInputId}
+              onChange={handleFileChange}
+              ref={fileInputRef}
+              type="file"
+            />
+
+            {phase.tag === LeadImportDialogPhaseTag.Picking && (
+              <div className={styles.pickingPhase}>
+                <div
+                  className={`${styles.dropzone} ${isDropActive ? styles.dropzoneActive : ""}`}
+                  aria-describedby={`${content.dialog.aria.dropzoneLabelId} ${content.dialog.aria.dropzoneHintId}`}
+                  aria-labelledby={content.dialog.aria.dropzoneLabelId}
+                  role="group"
+                  onDragEnter={handleDropZoneDragEnter}
+                  onDragLeave={handleDropZoneDragLeave}
+                  onDragOver={handleDropZoneDragOver}
+                  onDrop={handleDropZoneDrop}
                 >
-                  {content.dialog.description}
-                </p>
+                  <label
+                    className={styles.dropzoneLabelWrapper}
+                    id={content.dialog.aria.dropzoneLabelId}
+                    htmlFor={fileInputId}
+                  >
+                    <span aria-hidden="true" className={styles.dropzoneIcon}>
+                      <FontAwesomeIcon icon={faArrowUpFromBracket} />
+                    </span>
+                    <span className={styles.dropzoneLabel}>
+                      {content.dialog.dropzoneLabel}
+                    </span>
+                    <span
+                      className={styles.dropzoneHint}
+                      id={content.dialog.aria.dropzoneHintId}
+                    >
+                      {content.dialog.dropzoneHint}
+                    </span>
+                  </label>
+                </div>
+
+                {fileSizeError && (
+                  <p className={styles.inlineError} role="alert">
+                    {fileSizeError}
+                  </p>
+                )}
               </div>
-              <button
-                aria-label={content.dialog.close}
-                className={styles.closeButton}
-                onClick={closeDialog}
-                type="button"
-              >
-                <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
-              </button>
-            </header>
+            )}
 
-            <div className={styles.body}>
-              <input
-                accept=".csv,text/csv,application/vnd.ms-excel"
-                className={styles.fileInput}
-                id={fileInputId}
-                onChange={handleFileChange}
-                ref={fileInputRef}
-                type="file"
-              />
-
-              {phase.tag === LeadImportDialogPhaseTag.Picking && (
-                <div className={styles.pickingPhase}>
-                  <div
-                    className={`${styles.dropzone} ${isDropActive ? styles.dropzoneActive : ""}`}
-                    aria-describedby={`${content.dialog.aria.dropzoneLabelId} ${content.dialog.aria.dropzoneHintId}`}
-                    aria-labelledby={content.dialog.aria.dropzoneLabelId}
-                    role="group"
-                    onDragEnter={handleDropZoneDragEnter}
-                    onDragLeave={handleDropZoneDragLeave}
-                    onDragOver={handleDropZoneDragOver}
-                    onDrop={handleDropZoneDrop}
+            {phase.tag === LeadImportDialogPhaseTag.Previewing && (
+              <div className={styles.previewingPhase}>
+                <div className={styles.fileInfo}>
+                  <span className={styles.fileName}>{file?.name}</span>
+                  <button
+                    className={styles.changeFileButton}
+                    onClick={handleRetry}
+                    type="button"
                   >
-                    <label
-                      className={styles.dropzoneLabelWrapper}
-                      id={content.dialog.aria.dropzoneLabelId}
-                      htmlFor={fileInputId}
-                    >
-                      <span aria-hidden="true" className={styles.dropzoneIcon}>
-                        <FontAwesomeIcon icon={faArrowUpFromBracket} />
-                      </span>
-                      <span className={styles.dropzoneLabel}>
-                        {content.dialog.dropzoneLabel}
-                      </span>
-                      <span
-                        className={styles.dropzoneHint}
-                        id={content.dialog.aria.dropzoneHintId}
-                      >
-                        {content.dialog.dropzoneHint}
-                      </span>
-                    </label>
-                  </div>
-
-                  {fileSizeError && (
-                    <p className={styles.inlineError} role="alert">
-                      {fileSizeError}
-                    </p>
-                  )}
+                    {content.dialog.changeFile}
+                  </button>
                 </div>
-              )}
 
-              {phase.tag === LeadImportDialogPhaseTag.Previewing && (
-                <div className={styles.previewingPhase}>
-                  <div className={styles.fileInfo}>
-                    <span className={styles.fileName}>{file?.name}</span>
-                    <button
-                      className={styles.changeFileButton}
-                      onClick={handleRetry}
-                      type="button"
-                    >
-                      {content.dialog.changeFile}
-                    </button>
+                {!phase.preview.hasRequiredColumns && (
+                  <div className={styles.warningBanner} role="alert">
+                    <strong>{content.preview.missingRequiredTitle}:</strong>{" "}
+                    {content.preview.missingRequiredHint}
                   </div>
+                )}
 
-                  {!phase.preview.hasRequiredColumns && (
-                    <div className={styles.warningBanner} role="alert">
-                      <strong>{content.preview.missingRequiredTitle}:</strong>{" "}
-                      {content.preview.missingRequiredHint}
-                    </div>
-                  )}
+                <ColumnPillGroup
+                  columns={phase.preview.recognized}
+                  classNames={{
+                    group: styles.columnGroup,
+                    label: styles.columnGroupLabel,
+                    pills: styles.columnPills,
+                    pill: styles.columnPillRecognized,
+                  }}
+                  label={content.preview.recognizedColumns}
+                />
+                <ColumnPillGroup
+                  columns={phase.preview.ignored}
+                  classNames={{
+                    group: styles.columnGroup,
+                    label: styles.columnGroupLabel,
+                    pills: styles.columnPills,
+                    pill: styles.columnPillIgnored,
+                  }}
+                  label={content.preview.ignoredColumns}
+                />
 
-                  <ColumnPillGroup
-                    columns={phase.preview.recognized}
-                    classNames={{
-                      group: styles.columnGroup,
-                      label: styles.columnGroupLabel,
-                      pills: styles.columnPills,
-                      pill: styles.columnPillRecognized,
-                    }}
-                    label={content.preview.recognizedColumns}
-                  />
-                  <ColumnPillGroup
-                    columns={phase.preview.ignored}
-                    classNames={{
-                      group: styles.columnGroup,
-                      label: styles.columnGroupLabel,
-                      pills: styles.columnPills,
-                      pill: styles.columnPillIgnored,
-                    }}
-                    label={content.preview.ignoredColumns}
-                  />
+                <DialogFooter
+                  className={styles.previewFooter}
+                  actions={[
+                    {
+                      label: content.dialog.cancel,
+                      onClick: closeDialog,
+                      className: styles.cancelButton,
+                    },
+                    {
+                      label: content.dialog.submit,
+                      onClick: handleSubmit,
+                      className: styles.submitButton,
+                      disabled: !phase.preview.hasRequiredColumns,
+                    },
+                  ]}
+                />
+              </div>
+            )}
 
-                  <DialogFooter
-                    className={styles.previewFooter}
-                    actions={[
-                      {
-                        label: content.dialog.cancel,
-                        onClick: closeDialog,
-                        className: styles.cancelButton,
-                      },
-                      {
-                        label: content.dialog.submit,
-                        onClick: handleSubmit,
-                        className: styles.submitButton,
-                        disabled: !phase.preview.hasRequiredColumns,
-                      },
-                    ]}
-                  />
+            {phase.tag === LeadImportDialogPhaseTag.Submitting && (
+              <div className={styles.submittingPhase}>
+                <div
+                  aria-live="polite"
+                  className={styles.spinner}
+                  role="status"
+                >
+                  <span aria-hidden="true" className={styles.spinnerIcon} />
+                  <span className={styles.spinnerLabel}>
+                    {content.dialog.submitting}
+                  </span>
                 </div>
-              )}
+              </div>
+            )}
 
-              {phase.tag === LeadImportDialogPhaseTag.Submitting && (
-                <div className={styles.submittingPhase}>
-                  <div
-                    aria-live="polite"
-                    className={styles.spinner}
-                    role="status"
-                  >
-                    <span aria-hidden="true" className={styles.spinnerIcon} />
-                    <span className={styles.spinnerLabel}>
-                      {content.dialog.submitting}
+            {phase.tag === LeadImportDialogPhaseTag.Result && (
+              <div className={styles.resultPhase}>
+                <h3 className={styles.resultTitle}>{content.summary.title}</h3>
+
+                <div className={styles.counters}>
+                  <div className={styles.counter}>
+                    <span className={styles.counterValue}>
+                      {phase.report.importedCount}
+                    </span>
+                    <span className={styles.counterLabel}>
+                      {content.summary.imported}
+                    </span>
+                  </div>
+                  <div className={styles.counter}>
+                    <span className={styles.counterValue}>
+                      {phase.report.skippedCount}
+                    </span>
+                    <span className={styles.counterLabel}>
+                      {content.summary.skipped}
+                    </span>
+                  </div>
+                  <div className={styles.counter}>
+                    <span className={styles.counterValue}>
+                      {phase.report.errorCount}
+                    </span>
+                    <span className={styles.counterLabel}>
+                      {content.summary.errors}
+                    </span>
+                  </div>
+                  <div className={styles.counter}>
+                    <span className={styles.counterValue}>
+                      {phase.report.warningCount}
+                    </span>
+                    <span className={styles.counterLabel}>
+                      {content.summary.warnings}
                     </span>
                   </div>
                 </div>
-              )}
 
-              {phase.tag === LeadImportDialogPhaseTag.Result && (
-                <div className={styles.resultPhase}>
-                  <h3 className={styles.resultTitle}>
-                    {content.summary.title}
-                  </h3>
+                <ColumnPillGroup
+                  columns={phase.report.ignoredColumns}
+                  classNames={{
+                    group: styles.columnGroup,
+                    label: styles.columnGroupLabel,
+                    pills: styles.columnPills,
+                    pill: styles.columnPillIgnored,
+                  }}
+                  label={content.summary.ignoredColumns}
+                />
 
-                  <div className={styles.counters}>
-                    <div className={styles.counter}>
-                      <span className={styles.counterValue}>
-                        {phase.report.importedCount}
-                      </span>
-                      <span className={styles.counterLabel}>
-                        {content.summary.imported}
-                      </span>
-                    </div>
-                    <div className={styles.counter}>
-                      <span className={styles.counterValue}>
-                        {phase.report.skippedCount}
-                      </span>
-                      <span className={styles.counterLabel}>
-                        {content.summary.skipped}
-                      </span>
-                    </div>
-                    <div className={styles.counter}>
-                      <span className={styles.counterValue}>
-                        {phase.report.errorCount}
-                      </span>
-                      <span className={styles.counterLabel}>
-                        {content.summary.errors}
-                      </span>
-                    </div>
-                    <div className={styles.counter}>
-                      <span className={styles.counterValue}>
-                        {phase.report.warningCount}
-                      </span>
-                      <span className={styles.counterLabel}>
-                        {content.summary.warnings}
-                      </span>
-                    </div>
-                  </div>
-
-                  <ColumnPillGroup
-                    columns={phase.report.ignoredColumns}
-                    classNames={{
-                      group: styles.columnGroup,
-                      label: styles.columnGroupLabel,
-                      pills: styles.columnPills,
-                      pill: styles.columnPillIgnored,
-                    }}
-                    label={content.summary.ignoredColumns}
-                  />
-
-                  {phase.report.rowIssues.length > 0 && (
-                    <details className={styles.rowIssuesDetails}>
-                      <summary className={styles.rowIssuesSummary}>
-                        {content.summary.rowIssues} (
-                        {phase.report.rowIssues.length})
-                      </summary>
-                      <ul className={styles.rowIssuesList}>
-                        {phase.report.rowIssues.map((issue, idx) => (
-                          <li
-                            className={`${styles.rowIssueItem} ${getSeverityClass(issue.severity)}`}
-                            key={idx}
-                          >
-                            <span className={styles.rowIssueRow}>
-                              {content.summary.rowPrefix} {issue.rowIndex}
+                {phase.report.rowIssues.length > 0 && (
+                  <details className={styles.rowIssuesDetails}>
+                    <summary className={styles.rowIssuesSummary}>
+                      {content.summary.rowIssues} (
+                      {phase.report.rowIssues.length})
+                    </summary>
+                    <ul className={styles.rowIssuesList}>
+                      {phase.report.rowIssues.map((issue, idx) => (
+                        <li
+                          className={`${styles.rowIssueItem} ${getSeverityClass(issue.severity)}`}
+                          key={idx}
+                        >
+                          <span className={styles.rowIssueRow}>
+                            {content.summary.rowPrefix} {issue.rowIndex}
+                          </span>
+                          {issue.column && (
+                            <span className={styles.rowIssueColumn}>
+                              {content.summary.columnPrefix}: {issue.column}
                             </span>
-                            {issue.column && (
-                              <span className={styles.rowIssueColumn}>
-                                {content.summary.columnPrefix}: {issue.column}
-                              </span>
-                            )}
-                            <span className={styles.rowIssueMessage}>
-                              {getLeadImportRowIssueMessage(
-                                issue.code,
-                                content,
-                              )}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    </details>
-                  )}
+                          )}
+                          <span className={styles.rowIssueMessage}>
+                            {getLeadImportRowIssueMessage(issue.code, content)}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                )}
 
-                  <DialogFooter
-                    className={styles.resultFooter}
-                    actions={[
-                      {
-                        label: content.dialog.close,
-                        onClick: closeDialog,
-                        className: styles.submitButton,
-                      },
-                    ]}
-                  />
-                </div>
-              )}
+                <DialogFooter
+                  className={styles.resultFooter}
+                  actions={[
+                    {
+                      label: content.dialog.close,
+                      onClick: closeDialog,
+                      className: styles.submitButton,
+                    },
+                  ]}
+                />
+              </div>
+            )}
 
-              {phase.tag === LeadImportDialogPhaseTag.Error && (
-                <div className={styles.errorPhase}>
-                  <p className={styles.errorMessage} role="alert">
-                    {phase.message}
-                  </p>
-                  <DialogFooter
-                    className={styles.errorFooter}
-                    actions={[
-                      {
-                        label: content.dialog.close,
-                        onClick: closeDialog,
-                        className: styles.cancelButton,
-                      },
-                      {
-                        label: content.dialog.chooseFile,
-                        onClick: handleRetry,
-                        className: styles.submitButton,
-                      },
-                    ]}
-                  />
-                </div>
-              )}
-            </div>
+            {phase.tag === LeadImportDialogPhaseTag.Error && (
+              <div className={styles.errorPhase}>
+                <p className={styles.errorMessage} role="alert">
+                  {phase.message}
+                </p>
+                <DialogFooter
+                  className={styles.errorFooter}
+                  actions={[
+                    {
+                      label: content.dialog.close,
+                      onClick: closeDialog,
+                      className: styles.cancelButton,
+                    },
+                    {
+                      label: content.dialog.chooseFile,
+                      onClick: handleRetry,
+                      className: styles.submitButton,
+                    },
+                  ]}
+                />
+              </div>
+            )}
           </div>
-        </div>
+        </Dialog>
       )}
     </>
   );

@@ -1,20 +1,8 @@
 "use client";
 
-import {
-  useEffect,
-  useId,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  faCopy,
-  faWandMagicSparkles,
-  faXmark,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCopy, faWandMagicSparkles } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   OUTREACH_CHANNEL_VALUES,
@@ -37,6 +25,8 @@ import { copyTextToClipboard } from "@/client/leads/outreach/lead-outreach-clipb
 import { outreachGenerationClientService } from "@/client/leads/outreach/lead-outreach-generation-service";
 import { outreachProviderStatusService } from "@/client/leads/outreach/lead-outreach-provider-status-service";
 import { CHANNEL_PROFILES } from "@invessiv/common/constants/leads/outreach/lead-outreach-channel-profiles";
+import { Dialog } from "@invessiv/ui";
+import { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";
 import type { LeadsOutreachDictionary } from "@/i18n/dictionaries/workspace/leads";
 import styles from "./lead-outreach-dialog.module.css";
 
@@ -56,11 +46,6 @@ type LeadOutreachDialogProps = {
   onCloseAction: () => void;
   refreshToken: number;
 };
-
-const OutreachDialogId = {
-  Description: "lead-outreach-dialog-description",
-  Title: "lead-outreach-dialog-title",
-} as const;
 
 function formatCounter(
   content: LeadsOutreachDictionary,
@@ -119,7 +104,6 @@ export function LeadOutreachDialog({
 }: LeadOutreachDialogProps) {
   const router = useRouter();
   const contextTextareaRef = useRef<HTMLTextAreaElement>(null);
-  const [isMounted, setIsMounted] = useState(false);
   const contextId = useId();
   const channelGroupId = useId();
   const resultSubjectId = useId();
@@ -159,22 +143,6 @@ export function LeadOutreachDialog({
   );
 
   useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  useLayoutEffect(() => {
-    if (!isMounted) {
-      return;
-    }
-
-    contextTextareaRef.current?.focus();
-  }, [isMounted]);
-
-  useEffect(() => {
-    if (!isMounted) {
-      return;
-    }
-
     setProviderState(LeadOutreachProviderState.Checking);
     setOpenAiModel(null);
 
@@ -194,7 +162,7 @@ export function LeadOutreachDialog({
     return () => {
       cancelled = true;
     };
-  }, [isMounted, refreshToken]);
+  }, [refreshToken]);
 
   async function handleGenerate() {
     setErrorMessage(null);
@@ -242,201 +210,167 @@ export function LeadOutreachDialog({
     }
   }
 
-  if (!isMounted) {
-    return null;
-  }
-
-  return createPortal(
-    <div className={styles.overlay}>
-      <div
-        aria-describedby={OutreachDialogId.Description}
-        aria-labelledby={OutreachDialogId.Title}
-        aria-modal="true"
-        className={styles.dialog}
-        role="dialog"
-      >
-        <header className={styles.header}>
-          <div className={styles.heading}>
-            <p className={styles.eyebrow}>{content.dialog.eyebrow}</p>
-            <h2 className={styles.title} id={OutreachDialogId.Title}>
-              {content.dialog.title}
-            </h2>
-            <p className={styles.description} id={OutreachDialogId.Description}>
-              {content.dialog.description}
-            </p>
+  return (
+    <Dialog
+      bodyClassName={styles.body}
+      className={styles.dialog}
+      closeLabel={content.dialog.closeAriaLabel}
+      description={content.dialog.description}
+      eyebrow={content.dialog.eyebrow}
+      footer={null}
+      initialFocusRef={contextTextareaRef}
+      onCloseAction={onCloseAction}
+      size={DialogSize.Wide}
+      title={content.dialog.title}
+    >
+      <>
+        <section className={styles.controls} aria-label={content.dialog.title}>
+          <div className={styles.leadCard}>
+            <span className={styles.leadCardLabel}>{content.status.ready}</span>
+            <strong>{leadDisplayName}</strong>
           </div>
 
+          <span
+            className={styles.providerBadge}
+            data-state={providerState}
+            aria-live="polite"
+          >
+            <span aria-hidden="true" className={styles.providerDot} />
+            {getProviderBadgeLabel(content, providerState, openAiModel)}
+          </span>
+
+          <div className={styles.field}>
+            <span className={styles.label} id={channelGroupId}>
+              {content.channel.label}
+            </span>
+            <div
+              className={styles.segmented}
+              aria-labelledby={channelGroupId}
+              role="group"
+            >
+              {channelOptions.map((channel) => (
+                <button
+                  aria-pressed={selectedChannel === channel.value}
+                  className={styles.segment}
+                  data-active={
+                    selectedChannel === channel.value ? "true" : "false"
+                  }
+                  key={channel.value}
+                  onClick={() => setSelectedChannel(channel.value)}
+                  type="button"
+                >
+                  {channel.label}
+                </button>
+              ))}
+            </div>
+            <span className={styles.helpText}>{channelHint}</span>
+          </div>
+
+          <label className={styles.field} htmlFor={contextId}>
+            <span className={styles.label}>{content.contextNote.label}</span>
+            <textarea
+              className={styles.textarea}
+              id={contextId}
+              maxLength={OUTREACH_CONTEXT_NOTE_MAX_LEN}
+              onChange={(event) =>
+                setContextNoteLength(event.currentTarget.value.length)
+              }
+              placeholder={content.contextNote.placeholder}
+              ref={contextTextareaRef}
+              rows={OUTREACH_CONTEXT_NOTE_ROWS}
+            />
+            <span className={styles.counter}>{counterText}</span>
+          </label>
+
+          {errorMessage ? (
+            <p className={styles.error} role="alert">
+              {errorMessage}
+            </p>
+          ) : null}
+
           <button
-            aria-label={content.dialog.closeAriaLabel}
-            className={styles.closeButton}
-            onClick={onCloseAction}
-            title={content.dialog.closeAriaLabel}
+            className={styles.generateButton}
+            disabled={isGenerating}
+            onClick={handleGenerate}
             type="button"
           >
-            <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
+            <FontAwesomeIcon aria-hidden="true" icon={faWandMagicSparkles} />
+            {isGenerating ? content.status.generating : generateLabel}
           </button>
-        </header>
+        </section>
 
-        <div className={styles.body}>
-          <section
-            className={styles.controls}
-            aria-label={content.dialog.title}
-          >
-            <div className={styles.leadCard}>
-              <span className={styles.leadCardLabel}>
-                {content.status.ready}
-              </span>
-              <strong>{leadDisplayName}</strong>
-            </div>
-
-            <span
-              className={styles.providerBadge}
-              data-state={providerState}
-              aria-live="polite"
-            >
-              <span aria-hidden="true" className={styles.providerDot} />
-              {getProviderBadgeLabel(content, providerState, openAiModel)}
-            </span>
-
-            <div className={styles.field}>
-              <span className={styles.label} id={channelGroupId}>
-                {content.channel.label}
-              </span>
-              <div
-                className={styles.segmented}
-                aria-labelledby={channelGroupId}
-                role="group"
-              >
-                {channelOptions.map((channel) => (
-                  <button
-                    aria-pressed={selectedChannel === channel.value}
-                    className={styles.segment}
-                    data-active={
-                      selectedChannel === channel.value ? "true" : "false"
-                    }
-                    key={channel.value}
-                    onClick={() => setSelectedChannel(channel.value)}
-                    type="button"
-                  >
-                    {channel.label}
-                  </button>
-                ))}
-              </div>
-              <span className={styles.helpText}>{channelHint}</span>
-            </div>
-
-            <label className={styles.field} htmlFor={contextId}>
-              <span className={styles.label}>{content.contextNote.label}</span>
-              <textarea
-                className={styles.textarea}
-                id={contextId}
-                maxLength={OUTREACH_CONTEXT_NOTE_MAX_LEN}
-                onChange={(event) =>
-                  setContextNoteLength(event.currentTarget.value.length)
-                }
-                placeholder={content.contextNote.placeholder}
-                ref={contextTextareaRef}
-                rows={OUTREACH_CONTEXT_NOTE_ROWS}
-              />
-              <span className={styles.counter}>{counterText}</span>
-            </label>
-
-            {errorMessage ? (
-              <p className={styles.error} role="alert">
-                {errorMessage}
-              </p>
-            ) : null}
-
-            <button
-              className={styles.generateButton}
-              disabled={isGenerating}
-              onClick={handleGenerate}
-              type="button"
-            >
-              <FontAwesomeIcon aria-hidden="true" icon={faWandMagicSparkles} />
-              {isGenerating ? content.status.generating : generateLabel}
-            </button>
-          </section>
-
-          <section className={styles.resultPanel} aria-live="polite">
-            {hasResult ? (
-              <>
-                {shouldRenderSubjectField ? (
-                  <div className={styles.resultField}>
-                    <div className={styles.resultHeader}>
-                      <label htmlFor={resultSubjectId}>
-                        {content.result.subjectLabel}
-                      </label>
-                      <button
-                        className={styles.copyButton}
-                        disabled={!subject}
-                        onClick={() =>
-                          handleCopy(OutreachCopyTarget.Subject, subject)
-                        }
-                        type="button"
-                      >
-                        <FontAwesomeIcon aria-hidden="true" icon={faCopy} />
-                        {copiedTarget === OutreachCopyTarget.Subject
-                          ? content.buttons.copied
-                          : content.buttons.copy}
-                      </button>
-                    </div>
-                    <input
-                      className={styles.resultInput}
-                      id={resultSubjectId}
-                      onChange={(event) =>
-                        setSubject(event.currentTarget.value)
-                      }
-                      placeholder={content.result.subjectPlaceholder}
-                      value={subject}
-                    />
-                  </div>
-                ) : null}
-
+        <section className={styles.resultPanel} aria-live="polite">
+          {hasResult ? (
+            <>
+              {shouldRenderSubjectField ? (
                 <div className={styles.resultField}>
                   <div className={styles.resultHeader}>
-                    <label htmlFor={resultBodyId}>
-                      {content.result.bodyLabel}
+                    <label htmlFor={resultSubjectId}>
+                      {content.result.subjectLabel}
                     </label>
                     <button
                       className={styles.copyButton}
-                      disabled={!body}
-                      onClick={() => handleCopy(OutreachCopyTarget.Body, body)}
+                      disabled={!subject}
+                      onClick={() =>
+                        handleCopy(OutreachCopyTarget.Subject, subject)
+                      }
                       type="button"
                     >
                       <FontAwesomeIcon aria-hidden="true" icon={faCopy} />
-                      {copiedTarget === OutreachCopyTarget.Body
+                      {copiedTarget === OutreachCopyTarget.Subject
                         ? content.buttons.copied
                         : content.buttons.copy}
                     </button>
                   </div>
-                  <textarea
-                    className={styles.resultTextarea}
-                    id={resultBodyId}
-                    onChange={(event) => setBody(event.currentTarget.value)}
-                    placeholder={content.result.bodyPlaceholder}
-                    rows={
-                      selectedChannelRequiresSubject
-                        ? OUTREACH_RESULT_TEXTAREA_ROWS.Email
-                        : OUTREACH_RESULT_TEXTAREA_ROWS.Default
-                    }
-                    value={body}
+                  <input
+                    className={styles.resultInput}
+                    id={resultSubjectId}
+                    onChange={(event) => setSubject(event.currentTarget.value)}
+                    placeholder={content.result.subjectPlaceholder}
+                    value={subject}
                   />
                 </div>
-              </>
-            ) : (
-              <div className={styles.emptyState}>
-                <FontAwesomeIcon
-                  aria-hidden="true"
-                  icon={faWandMagicSparkles}
+              ) : null}
+
+              <div className={styles.resultField}>
+                <div className={styles.resultHeader}>
+                  <label htmlFor={resultBodyId}>
+                    {content.result.bodyLabel}
+                  </label>
+                  <button
+                    className={styles.copyButton}
+                    disabled={!body}
+                    onClick={() => handleCopy(OutreachCopyTarget.Body, body)}
+                    type="button"
+                  >
+                    <FontAwesomeIcon aria-hidden="true" icon={faCopy} />
+                    {copiedTarget === OutreachCopyTarget.Body
+                      ? content.buttons.copied
+                      : content.buttons.copy}
+                  </button>
+                </div>
+                <textarea
+                  className={styles.resultTextarea}
+                  id={resultBodyId}
+                  onChange={(event) => setBody(event.currentTarget.value)}
+                  placeholder={content.result.bodyPlaceholder}
+                  rows={
+                    selectedChannelRequiresSubject
+                      ? OUTREACH_RESULT_TEXTAREA_ROWS.Email
+                      : OUTREACH_RESULT_TEXTAREA_ROWS.Default
+                  }
+                  value={body}
                 />
-                <p>{content.result.emptyState}</p>
               </div>
-            )}
-          </section>
-        </div>
-      </div>
-    </div>,
-    document.body,
+            </>
+          ) : (
+            <div className={styles.emptyState}>
+              <FontAwesomeIcon aria-hidden="true" icon={faWandMagicSparkles} />
+              <p>{content.result.emptyState}</p>
+            </div>
+          )}
+        </section>
+      </>
+    </Dialog>
   );
 }

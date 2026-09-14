@@ -1,9 +1,7 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import {
   CONTACT_LEAD_STATUS_VALUES,
@@ -24,6 +22,7 @@ import type { BulkEditLeadsFailedLead } from "@invessiv/common/contracts/leads/r
 import {
   ButtonControl,
   CheckboxControl,
+  Dialog,
   FormStatus,
   PrimaryCtaButton,
 } from "@invessiv/ui";
@@ -35,6 +34,7 @@ import type {
 
 import { leadsBulkEditService } from "../../services/leads-bulk-edit-service";
 
+import { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";
 import styles from "./leads-bulk-edit-dialog.module.css";
 import type { BulkEditField as BulkEditFieldKind } from "@invessiv/common/constants/leads/bulk/bulk-edit-fields";
 import { BulkEditField } from "@invessiv/common/constants/leads/bulk/bulk-edit-fields";
@@ -47,11 +47,6 @@ type LeadsBulkEditDialogProps = {
   selectedIds: string[];
   sharedContent: LeadsSharedDictionary;
 };
-
-const DialogId = {
-  Title: "leads-bulk-edit-dialog-title",
-  Description: "leads-bulk-edit-dialog-description",
-} as const;
 
 const STATUS_OPTIONS_EXCLUDING_ARCHIVED = CONTACT_LEAD_STATUS_VALUES.filter(
   (status) => status !== ContactLeadStatus.Archived,
@@ -112,7 +107,6 @@ export function LeadsBulkEditDialog({
   sharedContent,
 }: LeadsBulkEditDialogProps) {
   const router = useRouter();
-  const dialogRef = useRef<HTMLDivElement>(null);
 
   const [applyState, setApplyState] = useState<ApplyState>(INITIAL_APPLY_STATE);
   const [statusValue, setStatusValue] = useState<ContactLeadStatusValue>(
@@ -134,17 +128,6 @@ export function LeadsBulkEditDialog({
   const [failedLeads, setFailedLeads] = useState<BulkEditLeadsFailedLead[]>([]);
   const [updatedCount, setUpdatedCount] = useState<number | null>(null);
   const [resultBannerShown, setResultBannerShown] = useState(false);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
-
-  useLayoutEffect(() => {
-    window.requestAnimationFrame(() => {
-      closeButtonRef.current?.focus();
-    });
-  }, []);
-
-  if (typeof document === "undefined") {
-    return null;
-  }
 
   function toggleApply(field: BulkEditFieldKind) {
     setErrorMessage(null);
@@ -277,320 +260,292 @@ export function LeadsBulkEditDialog({
     resultBannerShown && updatedCount !== null && updatedCount === 0;
 
   return (
-    <div className={styles.overlay} role="presentation">
-      <div
-        aria-describedby={DialogId.Description}
-        aria-labelledby={DialogId.Title}
-        aria-modal="true"
-        className={styles.dialog}
-        ref={dialogRef}
-        role="dialog"
-      >
-        <header className={styles.header}>
-          <div className={styles.heading}>
-            <p className={styles.kicker}>{bulkContent.editDialog.kicker}</p>
-            <h2 className={styles.title} id={DialogId.Title}>
-              {titleLabel}
-            </h2>
-            <p className={styles.description} id={DialogId.Description}>
-              {bulkContent.editDialog.description}
-            </p>
-          </div>
-          <ButtonControl
-            aria-label={bulkContent.editDialog.closeAriaLabel}
-            className={styles.closeButton}
-            disabled={isPending}
-            onClick={onCloseAction}
-            ref={closeButtonRef}
-            title={bulkContent.editDialog.closeAriaLabel}
+    <Dialog
+      busy={isPending}
+      closeLabel={bulkContent.editDialog.closeAriaLabel}
+      description={bulkContent.editDialog.description}
+      eyebrow={bulkContent.editDialog.kicker}
+      footer={
+        resultBannerShown ? (
+          <PrimaryCtaButton
+            onClick={handleCloseAfterPartialSuccess}
             type="button"
-            variant="ghost"
           >
-            <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
-          </ButtonControl>
-        </header>
-
-        <FormStatus className={styles.statusBanner} message={statusMessage} />
-
-        {showSuccessBanner ? (
-          <p className={styles.successBanner} role="status">
-            {bulkContent.editDialog.result.successBanner
-              .replace("{updated}", String(updatedCount))
-              .replace("{total}", String(totalCount))}
-          </p>
-        ) : null}
-        {showFailureOnlyBanner ? (
-          <p className={styles.errorBanner} role="alert">
-            {bulkContent.editDialog.result.failureBannerOnly}
-          </p>
-        ) : null}
-
-        {errorMessage ? (
-          <p className={styles.errorBanner} role="alert">
-            {errorMessage}
-          </p>
-        ) : null}
-
-        <div className={styles.body}>
-          <section className={styles.fieldRow}>
-            <label className={styles.applyCheckbox}>
-              <CheckboxControl
-                checked={applyState[BulkEditField.Status]}
-                disabled={isPending}
-                onChange={() => toggleApply(BulkEditField.Status)}
-              />
-              <span>{bulkContent.editDialog.applyLabel}</span>
-            </label>
-            <div className={styles.fieldControl}>
-              <span className={styles.fieldLabel}>
-                {bulkContent.editDialog.fields.status.label}
-              </span>
-              <select
-                className={styles.input}
-                disabled={!applyState[BulkEditField.Status] || isPending}
-                onChange={(event) =>
-                  setStatusValue(event.target.value as ContactLeadStatusValue)
-                }
-                value={statusValue}
-              >
-                {STATUS_OPTIONS_EXCLUDING_ARCHIVED.map((status) => (
-                  <option key={status} value={status}>
-                    {statusLabel[status]}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </section>
-
-          <section className={styles.fieldRow}>
-            <label className={styles.applyCheckbox}>
-              <CheckboxControl
-                checked={applyState[BulkEditField.Category]}
-                disabled={isPending}
-                onChange={() => toggleApply(BulkEditField.Category)}
-              />
-              <span>{bulkContent.editDialog.applyLabel}</span>
-            </label>
-            <div className={styles.fieldControl}>
-              <span className={styles.fieldLabel}>
-                {bulkContent.editDialog.fields.category.label}
-              </span>
-              <select
-                className={styles.input}
-                disabled={!applyState[BulkEditField.Category] || isPending}
-                onChange={(event) => setCategoryValue(event.target.value)}
-                value={categoryValue}
-              >
-                <option value="">
-                  {bulkContent.editDialog.fields.category.noneOption}
-                </option>
-                {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </section>
-
-          <section className={styles.fieldRow}>
-            <label className={styles.applyCheckbox}>
-              <CheckboxControl
-                checked={applyState[BulkEditField.Score]}
-                disabled={isPending}
-                onChange={() => toggleApply(BulkEditField.Score)}
-              />
-              <span>{bulkContent.editDialog.applyLabel}</span>
-            </label>
-            <div className={styles.fieldControl}>
-              <span className={styles.fieldLabel}>
-                {bulkContent.editDialog.fields.score.label}
-              </span>
-              <input
-                className={styles.input}
-                disabled={!applyState[BulkEditField.Score] || isPending}
-                inputMode="numeric"
-                max={LeadFieldLimits.ScoreMax}
-                min={LeadFieldLimits.ScoreMin}
-                onChange={(event) => {
-                  setScoreValue(event.target.value);
-                  setScoreError(null);
-                }}
-                placeholder={bulkContent.editDialog.fields.score.placeholder}
-                type="number"
-                value={scoreValue}
-              />
-              <small className={styles.hint}>
-                {bulkContent.editDialog.fields.score.clearHint}
-              </small>
-              {scoreError ? (
-                <small className={styles.error} role="alert">
-                  {scoreError}
-                </small>
-              ) : null}
-            </div>
-          </section>
-
-          <section className={styles.fieldRow}>
-            <label className={styles.applyCheckbox}>
-              <CheckboxControl
-                checked={applyState[BulkEditField.Owner]}
-                disabled={isPending}
-                onChange={() => toggleApply(BulkEditField.Owner)}
-              />
-              <span>{bulkContent.editDialog.applyLabel}</span>
-            </label>
-            <div className={styles.fieldControl}>
-              <span className={styles.fieldLabel}>
-                {bulkContent.editDialog.fields.owner.label}
-              </span>
-              <input
-                className={styles.input}
-                disabled={!applyState[BulkEditField.Owner] || isPending}
-                maxLength={LeadFieldLimits.OwnerMaxLength}
-                onChange={(event) => setOwnerValue(event.target.value)}
-                placeholder={bulkContent.editDialog.fields.owner.placeholder}
-                type="text"
-                value={ownerValue}
-              />
-              <small className={styles.hint}>
-                {bulkContent.editDialog.fields.owner.clearHint}
-              </small>
-            </div>
-          </section>
-
-          <section className={styles.fieldRow}>
-            <label className={styles.applyCheckbox}>
-              <CheckboxControl
-                checked={applyState[BulkEditField.NotesAppend]}
-                disabled={isPending}
-                onChange={() => toggleApply(BulkEditField.NotesAppend)}
-              />
-              <span>{bulkContent.editDialog.applyLabel}</span>
-            </label>
-            <div className={styles.fieldControl}>
-              <span className={styles.fieldLabel}>
-                {bulkContent.editDialog.fields.notesAppend.label}
-              </span>
-              <textarea
-                className={styles.textarea}
-                disabled={!applyState[BulkEditField.NotesAppend] || isPending}
-                maxLength={LeadFieldLimits.NotesMaxLength}
-                onChange={(event) => {
-                  setNotesAppendValue(event.target.value);
-                  setNotesAppendError(null);
-                }}
-                placeholder={
-                  bulkContent.editDialog.fields.notesAppend.placeholder
-                }
-                rows={4}
-                value={notesAppendValue}
-              />
-              <small className={styles.hint}>
-                {bulkContent.editDialog.fields.notesAppend.hint}
-              </small>
-              {notesAppendError ? (
-                <small className={styles.error} role="alert">
-                  {notesAppendError}
-                </small>
-              ) : null}
-            </div>
-          </section>
-
-          <section className={styles.fieldRow}>
-            <label className={styles.applyCheckbox}>
-              <CheckboxControl
-                checked={applyState[BulkEditField.ImprovementsAppend]}
-                disabled={isPending}
-                onChange={() => toggleApply(BulkEditField.ImprovementsAppend)}
-              />
-              <span>{bulkContent.editDialog.applyLabel}</span>
-            </label>
-            <div className={styles.fieldControl}>
-              <span className={styles.fieldLabel}>
-                {bulkContent.editDialog.fields.improvementsAppend.label}
-              </span>
-              <div
-                aria-disabled={
-                  !applyState[BulkEditField.ImprovementsAppend] || isPending
-                }
-                className={
-                  !applyState[BulkEditField.ImprovementsAppend]
-                    ? styles.disabledArea
-                    : undefined
-                }
-              >
-                <ImprovementsListEditor
-                  content={improvementsEditorContent}
-                  draftInputName="bulk_improvement_draft"
-                  maxEntries={BulkEditLimits.MaxImprovementsPerRequest}
-                  maxLengthPerEntry={LeadFieldLimits.ImprovementMaxLength}
-                  onChangeAction={(next) => {
-                    setImprovementsAppend(next);
-                    setImprovementsAppendError(null);
-                  }}
-                  value={improvementsAppend}
-                />
-              </div>
-              <small className={styles.hint}>
-                {bulkContent.editDialog.fields.improvementsAppend.hint}
-              </small>
-              {improvementsAppendError ? (
-                <small className={styles.error} role="alert">
-                  {improvementsAppendError}
-                </small>
-              ) : null}
-            </div>
-          </section>
-
-          {failedLeads.length > 0 ? (
-            <section className={styles.skipSection}>
-              <h3 className={styles.skipHeader}>
-                {bulkContent.editDialog.result.skippedHeader}
-              </h3>
-              <ul className={styles.skipList}>
-                {failedLeads.map((failed) => (
-                  <li className={styles.skipItem} key={failed.id}>
-                    <strong>{failed.displayName}</strong>
-                    <span>
-                      {getSkipReasonLabel(bulkContent, failed.reason)}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ) : null}
-        </div>
-
-        <footer className={styles.footer}>
-          {resultBannerShown ? (
+            {bulkContent.editDialog.result.close}
+          </PrimaryCtaButton>
+        ) : (
+          <>
+            <ButtonControl
+              disabled={isPending}
+              onClick={onCloseAction}
+              type="button"
+              variant="ghost"
+            >
+              {bulkContent.editDialog.cancel}
+            </ButtonControl>
             <PrimaryCtaButton
-              onClick={handleCloseAfterPartialSuccess}
+              disabled={submitDisabled}
+              onClick={handleSubmit}
               type="button"
             >
-              {bulkContent.editDialog.result.close}
+              {saveLabel}
             </PrimaryCtaButton>
-          ) : (
-            <>
-              <ButtonControl
-                disabled={isPending}
-                onClick={onCloseAction}
-                type="button"
-                variant="ghost"
-              >
-                {bulkContent.editDialog.cancel}
-              </ButtonControl>
-              <PrimaryCtaButton
-                disabled={submitDisabled}
-                onClick={handleSubmit}
-                type="button"
-              >
-                {saveLabel}
-              </PrimaryCtaButton>
-            </>
-          )}
-        </footer>
+          </>
+        )
+      }
+      onCloseAction={onCloseAction}
+      size={DialogSize.Wide}
+      title={titleLabel}
+    >
+      <FormStatus className={styles.statusBanner} message={statusMessage} />
+
+      {showSuccessBanner ? (
+        <p className={styles.successBanner} role="status">
+          {bulkContent.editDialog.result.successBanner
+            .replace("{updated}", String(updatedCount))
+            .replace("{total}", String(totalCount))}
+        </p>
+      ) : null}
+      {showFailureOnlyBanner ? (
+        <p className={styles.errorBanner} role="alert">
+          {bulkContent.editDialog.result.failureBannerOnly}
+        </p>
+      ) : null}
+
+      {errorMessage ? (
+        <p className={styles.errorBanner} role="alert">
+          {errorMessage}
+        </p>
+      ) : null}
+
+      <div className={styles.body}>
+        <section className={styles.fieldRow}>
+          <label className={styles.applyCheckbox}>
+            <CheckboxControl
+              checked={applyState[BulkEditField.Status]}
+              disabled={isPending}
+              onChange={() => toggleApply(BulkEditField.Status)}
+            />
+            <span>{bulkContent.editDialog.applyLabel}</span>
+          </label>
+          <div className={styles.fieldControl}>
+            <span className={styles.fieldLabel}>
+              {bulkContent.editDialog.fields.status.label}
+            </span>
+            <select
+              className={styles.input}
+              disabled={!applyState[BulkEditField.Status] || isPending}
+              onChange={(event) =>
+                setStatusValue(event.target.value as ContactLeadStatusValue)
+              }
+              value={statusValue}
+            >
+              {STATUS_OPTIONS_EXCLUDING_ARCHIVED.map((status) => (
+                <option key={status} value={status}>
+                  {statusLabel[status]}
+                </option>
+              ))}
+            </select>
+          </div>
+        </section>
+
+        <section className={styles.fieldRow}>
+          <label className={styles.applyCheckbox}>
+            <CheckboxControl
+              checked={applyState[BulkEditField.Category]}
+              disabled={isPending}
+              onChange={() => toggleApply(BulkEditField.Category)}
+            />
+            <span>{bulkContent.editDialog.applyLabel}</span>
+          </label>
+          <div className={styles.fieldControl}>
+            <span className={styles.fieldLabel}>
+              {bulkContent.editDialog.fields.category.label}
+            </span>
+            <select
+              className={styles.input}
+              disabled={!applyState[BulkEditField.Category] || isPending}
+              onChange={(event) => setCategoryValue(event.target.value)}
+              value={categoryValue}
+            >
+              <option value="">
+                {bulkContent.editDialog.fields.category.noneOption}
+              </option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </section>
+
+        <section className={styles.fieldRow}>
+          <label className={styles.applyCheckbox}>
+            <CheckboxControl
+              checked={applyState[BulkEditField.Score]}
+              disabled={isPending}
+              onChange={() => toggleApply(BulkEditField.Score)}
+            />
+            <span>{bulkContent.editDialog.applyLabel}</span>
+          </label>
+          <div className={styles.fieldControl}>
+            <span className={styles.fieldLabel}>
+              {bulkContent.editDialog.fields.score.label}
+            </span>
+            <input
+              className={styles.input}
+              disabled={!applyState[BulkEditField.Score] || isPending}
+              inputMode="numeric"
+              max={LeadFieldLimits.ScoreMax}
+              min={LeadFieldLimits.ScoreMin}
+              onChange={(event) => {
+                setScoreValue(event.target.value);
+                setScoreError(null);
+              }}
+              placeholder={bulkContent.editDialog.fields.score.placeholder}
+              type="number"
+              value={scoreValue}
+            />
+            <small className={styles.hint}>
+              {bulkContent.editDialog.fields.score.clearHint}
+            </small>
+            {scoreError ? (
+              <small className={styles.error} role="alert">
+                {scoreError}
+              </small>
+            ) : null}
+          </div>
+        </section>
+
+        <section className={styles.fieldRow}>
+          <label className={styles.applyCheckbox}>
+            <CheckboxControl
+              checked={applyState[BulkEditField.Owner]}
+              disabled={isPending}
+              onChange={() => toggleApply(BulkEditField.Owner)}
+            />
+            <span>{bulkContent.editDialog.applyLabel}</span>
+          </label>
+          <div className={styles.fieldControl}>
+            <span className={styles.fieldLabel}>
+              {bulkContent.editDialog.fields.owner.label}
+            </span>
+            <input
+              className={styles.input}
+              disabled={!applyState[BulkEditField.Owner] || isPending}
+              maxLength={LeadFieldLimits.OwnerMaxLength}
+              onChange={(event) => setOwnerValue(event.target.value)}
+              placeholder={bulkContent.editDialog.fields.owner.placeholder}
+              type="text"
+              value={ownerValue}
+            />
+            <small className={styles.hint}>
+              {bulkContent.editDialog.fields.owner.clearHint}
+            </small>
+          </div>
+        </section>
+
+        <section className={styles.fieldRow}>
+          <label className={styles.applyCheckbox}>
+            <CheckboxControl
+              checked={applyState[BulkEditField.NotesAppend]}
+              disabled={isPending}
+              onChange={() => toggleApply(BulkEditField.NotesAppend)}
+            />
+            <span>{bulkContent.editDialog.applyLabel}</span>
+          </label>
+          <div className={styles.fieldControl}>
+            <span className={styles.fieldLabel}>
+              {bulkContent.editDialog.fields.notesAppend.label}
+            </span>
+            <textarea
+              className={styles.textarea}
+              disabled={!applyState[BulkEditField.NotesAppend] || isPending}
+              maxLength={LeadFieldLimits.NotesMaxLength}
+              onChange={(event) => {
+                setNotesAppendValue(event.target.value);
+                setNotesAppendError(null);
+              }}
+              placeholder={
+                bulkContent.editDialog.fields.notesAppend.placeholder
+              }
+              rows={4}
+              value={notesAppendValue}
+            />
+            <small className={styles.hint}>
+              {bulkContent.editDialog.fields.notesAppend.hint}
+            </small>
+            {notesAppendError ? (
+              <small className={styles.error} role="alert">
+                {notesAppendError}
+              </small>
+            ) : null}
+          </div>
+        </section>
+
+        <section className={styles.fieldRow}>
+          <label className={styles.applyCheckbox}>
+            <CheckboxControl
+              checked={applyState[BulkEditField.ImprovementsAppend]}
+              disabled={isPending}
+              onChange={() => toggleApply(BulkEditField.ImprovementsAppend)}
+            />
+            <span>{bulkContent.editDialog.applyLabel}</span>
+          </label>
+          <div className={styles.fieldControl}>
+            <span className={styles.fieldLabel}>
+              {bulkContent.editDialog.fields.improvementsAppend.label}
+            </span>
+            <div
+              aria-disabled={
+                !applyState[BulkEditField.ImprovementsAppend] || isPending
+              }
+              className={
+                !applyState[BulkEditField.ImprovementsAppend]
+                  ? styles.disabledArea
+                  : undefined
+              }
+            >
+              <ImprovementsListEditor
+                content={improvementsEditorContent}
+                draftInputName="bulk_improvement_draft"
+                maxEntries={BulkEditLimits.MaxImprovementsPerRequest}
+                maxLengthPerEntry={LeadFieldLimits.ImprovementMaxLength}
+                onChangeAction={(next) => {
+                  setImprovementsAppend(next);
+                  setImprovementsAppendError(null);
+                }}
+                value={improvementsAppend}
+              />
+            </div>
+            <small className={styles.hint}>
+              {bulkContent.editDialog.fields.improvementsAppend.hint}
+            </small>
+            {improvementsAppendError ? (
+              <small className={styles.error} role="alert">
+                {improvementsAppendError}
+              </small>
+            ) : null}
+          </div>
+        </section>
+
+        {failedLeads.length > 0 ? (
+          <section className={styles.skipSection}>
+            <h3 className={styles.skipHeader}>
+              {bulkContent.editDialog.result.skippedHeader}
+            </h3>
+            <ul className={styles.skipList}>
+              {failedLeads.map((failed) => (
+                <li className={styles.skipItem} key={failed.id}>
+                  <strong>{failed.displayName}</strong>
+                  <span>{getSkipReasonLabel(bulkContent, failed.reason)}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
       </div>
-    </div>
+    </Dialog>
   );
 }

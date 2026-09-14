@@ -1,12 +1,10 @@
 "use client";
 
 import {
-  type KeyboardEvent,
   type ReactNode,
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -30,11 +28,13 @@ import { CONTACT_EMAIL_PATTERN } from "@invessiv/common/patterns/contact/contact
 import { isValidContactPhone } from "@invessiv/common/patterns/contact/contact-phone";
 import {
   ButtonControl,
+  Dialog,
   FormActions,
   FormField,
   FormStatus,
   PrimaryCtaButton,
 } from "@invessiv/ui";
+import { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";
 import { LeadOutreachTrigger } from "@/components/workspace/leads/outreach/lead-outreach-trigger/lead-outreach-trigger";
 import { leadMapperService } from "@/client/leads/mappers/lead-mapper-service";
 import { isOpenableUrl, openExternalUrl } from "@/lib/url/is-openable-url";
@@ -259,7 +259,6 @@ export function LeadFormDialog({
   const startTransition = useNavigationContext();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const dialogRef = useRef<HTMLDivElement>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const isEditMode = mode === LeadFormDialogMode.Edit;
   const { dialogDescription, dialogTitle, savingLabel, submitLabel } =
@@ -449,25 +448,10 @@ export function LeadFormDialog({
     return <span className={`${styles.fieldState} ${tone}`}>{stateText}</span>;
   }
 
-  function focusFirstAvailableField() {
-    const container = dialogRef.current;
-    if (!container) {
-      return;
-    }
-
-    const firstInput = container.querySelector<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >("input, select, textarea");
-    firstInput?.focus();
-  }
-
   useEffect(() => {
     if (open) {
       reset(initialValues);
       clearErrors();
-      window.requestAnimationFrame(() => {
-        focusFirstAvailableField();
-      });
       return;
     }
 
@@ -497,30 +481,6 @@ export function LeadFormDialog({
     clearErrors();
     setStatusMessage(null);
     startTransition(() => router.replace(buildHref(), { scroll: false }));
-  }
-
-  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    if (event.key === "Escape") {
-      event.preventDefault();
-      closeDialog();
-      return;
-    }
-    if (event.key !== "Tab") return;
-    const focusable = Array.from(
-      event.currentTarget.querySelectorAll<HTMLElement>(
-        "button, input, select, textarea, a[href]",
-      ),
-    ).filter((element) => !element.hasAttribute("disabled"));
-    if (focusable.length === 0) return;
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault();
-      first.focus();
-    }
   }
 
   function resetValidationMessages() {
@@ -636,434 +596,397 @@ export function LeadFormDialog({
   const canOpenWebsiteUrl = isOpenableUrl(websiteUrlValue);
 
   return (
-    <div
-      aria-hidden={!open ? "true" : undefined}
-      className={styles.overlay}
-      role="presentation"
+    <Dialog
+      busy={isSubmitting}
+      closeLabel={content.buttons.closeAriaLabel}
+      description={dialogDescription}
+      eyebrow={content.sections.identity}
+      footer={
+        <FormActions
+          buttons={
+            <>
+              <ButtonControl
+                aria-label={content.buttons.cancel}
+                className={styles.footerIconButton}
+                onClick={closeDialog}
+                title={content.buttons.cancel}
+                type="button"
+                variant="ghost"
+              >
+                <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
+                <span className={styles.footerButtonLabel}>
+                  {content.buttons.cancel}
+                </span>
+              </ButtonControl>
+              {isEditMode && initialLead && outreachContent ? (
+                <LeadOutreachTrigger
+                  className={styles.footerOutreachButton}
+                  content={outreachContent}
+                  lead={initialLead}
+                  variant={LeadOutreachTriggerVariant.IconText}
+                />
+              ) : null}
+              <PrimaryCtaButton
+                aria-label={isSubmitting ? savingLabel : submitLabel}
+                className={styles.footerIconButton}
+                disabled={isSubmitting}
+                form="lead-form-dialog-form"
+                title={isSubmitting ? savingLabel : submitLabel}
+                type="submit"
+              >
+                <FontAwesomeIcon aria-hidden="true" icon={faCheck} />
+                <span className={styles.footerButtonLabel}>
+                  {isSubmitting ? savingLabel : submitLabel}
+                </span>
+              </PrimaryCtaButton>
+            </>
+          }
+          requiredHint={content.help.requiredHint}
+        />
+      }
+      onCloseAction={closeDialog}
+      open={open}
+      size={DialogSize.Wide}
+      title={dialogTitle}
     >
-      <div
-        aria-describedby={LeadFormDialogId.Description}
-        aria-labelledby={LeadFormDialogId.Dialog}
-        aria-modal="true"
-        className={styles.dialog}
-        onKeyDown={handleKeyDown}
-        ref={dialogRef}
-        role="dialog"
+      <FormStatus className={styles.statusBanner} message={statusMessage} />
+      {rootErrorMessage ? (
+        <p className={styles.statusBanner} role="alert">
+          {rootErrorMessage}
+        </p>
+      ) : null}
+
+      <form
+        className={styles.form}
+        id="lead-form-dialog-form"
+        noValidate
+        onSubmit={onSubmit}
       >
-        <header className={styles.header}>
-          <div className={styles.heading}>
-            <p className={styles.kicker}>{content.sections.identity}</p>
-            <h2 className={styles.title} id={LeadFormDialogId.Dialog}>
-              {dialogTitle}
-            </h2>
-            <p className={styles.description} id={LeadFormDialogId.Description}>
-              {dialogDescription}
-            </p>
+        <section
+          className={styles.section}
+          aria-labelledby={LeadFormDialogId.ContactSection}
+        >
+          <div className={styles.sectionHeader}>
+            <h3
+              className={styles.sectionTitle}
+              id={LeadFormDialogId.ContactSection}
+            >
+              {content.sections.identity}
+            </h3>
           </div>
 
-          <ButtonControl
-            aria-label={content.buttons.closeAriaLabel}
-            className={styles.closeButton}
-            onClick={closeDialog}
-            title={content.buttons.closeAriaLabel}
-            type="button"
-            variant="ghost"
-          >
-            <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
-          </ButtonControl>
-        </header>
-
-        <FormStatus className={styles.statusBanner} message={statusMessage} />
-        {rootErrorMessage ? (
-          <p className={styles.statusBanner} role="alert">
-            {rootErrorMessage}
-          </p>
-        ) : null}
-
-        <form className={styles.form} noValidate onSubmit={onSubmit}>
-          <section
-            className={styles.section}
-            aria-labelledby={LeadFormDialogId.ContactSection}
-          >
-            <div className={styles.sectionHeader}>
-              <h3
-                className={styles.sectionTitle}
-                id={LeadFormDialogId.ContactSection}
-              >
-                {content.sections.identity}
-              </h3>
-            </div>
-
-            <div className={styles.grid}>
-              <FormField
-                className={styles.field}
-                controlClassName={styles.input}
-                errorMessage={errors.displayName?.message}
-                hint={getFieldEditState(
-                  currentValues.displayName,
-                  initialValues.displayName,
-                  {
-                    required: true,
-                  },
-                )}
-                inputProps={{
-                  ...register(LeadFormDialogField.DisplayName, {
-                    onChange: () => {
-                      clearErrors(LeadFormDialogField.DisplayName);
-                      resetValidationMessages();
-                    },
-                    onBlur: validateDisplayNameField,
-                  }),
-                  autoComplete: "organization",
-                  placeholder: content.placeholders.displayName,
-                }}
-                kind={FormFieldKind.Text}
-                label={content.fields.displayName}
-                required
-              />
-
-              <FormField
-                className={styles.field}
-                controlClassName={styles.input}
-                errorMessage={errors.first_name?.message}
-                hint={getFieldEditState(
-                  currentValues.first_name,
-                  initialValues.first_name,
-                )}
-                inputProps={{
-                  ...register(LeadFormDialogField.FirstName, {
-                    onChange: () => {
-                      clearErrors(LeadFormDialogField.FirstName);
-                      resetValidationMessages();
-                    },
-                  }),
-                  autoComplete: "given-name",
-                  placeholder: content.placeholders.firstName,
-                }}
-                kind={FormFieldKind.Text}
-                label={content.fields.firstName}
-              />
-
-              <FormField
-                className={styles.field}
-                controlClassName={styles.input}
-                errorMessage={errors.last_name?.message}
-                hint={getFieldEditState(
-                  currentValues.last_name,
-                  initialValues.last_name,
-                )}
-                inputProps={{
-                  ...register(LeadFormDialogField.LastName, {
-                    onChange: () => {
-                      clearErrors(LeadFormDialogField.LastName);
-                      resetValidationMessages();
-                    },
-                  }),
-                  autoComplete: "family-name",
-                  placeholder: content.placeholders.lastName,
-                }}
-                kind={FormFieldKind.Text}
-                label={content.fields.lastName}
-              />
-
-              <FormField
-                className={styles.field}
-                controlClassName={styles.input}
-                errorMessage={errors.company_name?.message}
-                hint={getFieldEditState(
-                  currentValues.company_name,
-                  initialValues.company_name,
-                )}
-                inputProps={{
-                  ...register(LeadFormDialogField.CompanyName, {
-                    onChange: () => {
-                      clearErrors(LeadFormDialogField.CompanyName);
-                      resetValidationMessages();
-                    },
-                  }),
-                  autoComplete: "organization",
-                  placeholder: content.placeholders.companyName,
-                }}
-                kind={FormFieldKind.Text}
-                label={content.fields.companyName}
-              />
-
-              <FormField
-                className={styles.field}
-                controlClassName={styles.input}
-                errorMessage={errors.email?.message}
-                hint={getFieldEditState(
-                  currentValues.email,
-                  initialValues.email,
-                )}
-                inputProps={{
-                  ...register(LeadFormDialogField.Email, {
-                    onChange: () => {
-                      clearErrors(LeadFormDialogField.Email);
-                      resetValidationMessages();
-                    },
-                    onBlur: validateEmailField,
-                  }),
-                  autoComplete: "email",
-                  placeholder: content.placeholders.email,
-                }}
-                kind={FormFieldKind.Email}
-                label={content.fields.email}
-              />
-            </div>
-          </section>
-
-          <section
-            className={styles.section}
-            aria-labelledby={LeadFormDialogId.DetailsSection}
-          >
-            <div className={styles.sectionHeader}>
-              <h3
-                className={styles.sectionTitle}
-                id={LeadFormDialogId.DetailsSection}
-              >
-                {content.sections.details}
-              </h3>
-            </div>
-
-            <div className={styles.grid}>
-              <FormField
-                className={styles.field}
-                controlClassName={styles.input}
-                errorMessage={errors.phone?.message}
-                hint={getFieldEditState(
-                  currentValues.phone,
-                  initialValues.phone,
-                )}
-                inputProps={{
-                  ...register(LeadFormDialogField.Phone, {
-                    onChange: () => {
-                      clearErrors(LeadFormDialogField.Phone);
-                      resetValidationMessages();
-                    },
-                    onBlur: validatePhoneField,
-                  }),
-                  autoComplete: "tel",
-                  placeholder: content.placeholders.phone,
-                }}
-                kind={FormFieldKind.Tel}
-                label={content.fields.phone}
-              />
-
-              <FormField
-                className={styles.field}
-                controlClassName={styles.input}
-                inputSuffix={
-                  <ButtonControl
-                    aria-label={sharedContent.socialIconLabel.website}
-                    className={styles.iconActionButton}
-                    disabled={!canOpenWebsiteUrl}
-                    onClick={() => openExternalUrl(websiteUrlValue)}
-                    title={sharedContent.socialIconLabel.website}
-                    type="button"
-                    variant="ghost"
-                  >
-                    <FontAwesomeIcon aria-hidden="true" icon={faGlobe} />
-                  </ButtonControl>
-                }
-                errorMessage={errors.website_url?.message}
-                hint={getFieldEditState(
-                  currentValues.website_url,
-                  initialValues.website_url,
-                )}
-                inputProps={{
-                  ...register(LeadFormDialogField.WebsiteUrl, {
-                    onChange: () => {
-                      clearErrors(LeadFormDialogField.WebsiteUrl);
-                      resetValidationMessages();
-                    },
-                    onBlur: validateWebsiteField,
-                  }),
-                  autoComplete: "url",
-                  placeholder: content.placeholders.websiteUrl,
-                }}
-                kind={FormFieldKind.Url}
-                label={content.fields.websiteUrl}
-              />
-
-              <FormField
-                className={styles.field}
-                controlClassName={styles.input}
-                errorMessage={errors.category_id?.message}
-                hint={getFieldEditState(
-                  currentValues.category_id,
-                  initialValues.category_id,
-                )}
-                kind={FormFieldKind.Select}
-                label={content.fields.category}
-                options={[
-                  { label: content.placeholders.category, value: "" },
-                  ...categories.map((category) => ({
-                    label: category.label,
-                    value: category.id,
-                  })),
-                ]}
-                selectProps={{
-                  ...register(LeadFormDialogField.CategoryId, {
-                    onChange: () => {
-                      clearErrors(LeadFormDialogField.CategoryId);
-                      resetValidationMessages();
-                    },
-                  }),
-                }}
-              />
-
-              <FormField
-                className={styles.field}
-                controlClassName={styles.input}
-                errorMessage={errors.score?.message}
-                hint={getFieldEditState(
-                  currentValues.score,
-                  initialValues.score,
-                )}
-                inputProps={{
-                  ...register(LeadFormDialogField.Score, {
-                    onChange: () => {
-                      clearErrors(LeadFormDialogField.Score);
-                      resetValidationMessages();
-                    },
-                    onBlur: validateScoreField,
-                  }),
-                  inputMode: "numeric",
-                  placeholder: content.placeholders.score,
-                }}
-                kind={FormFieldKind.Number}
-                label={content.fields.score}
-              />
-
-              <FormField
-                className={styles.field}
-                controlClassName={styles.input}
-                errorMessage={errors.owner?.message}
-                hint={getFieldEditState(
-                  currentValues.owner,
-                  initialValues.owner,
-                )}
-                inputProps={{
-                  ...register(LeadFormDialogField.Owner, {
-                    onChange: () => {
-                      clearErrors(LeadFormDialogField.Owner);
-                      resetValidationMessages();
-                    },
-                  }),
-                  autoComplete: "organization-title",
-                  placeholder: content.placeholders.owner,
-                }}
-                kind={FormFieldKind.Text}
-                label={content.fields.owner}
-              />
-
-              <FormField
-                className={styles.field}
-                controlClassName={styles.input}
-                errorMessage={errors.lead_status?.message}
-                kind={FormFieldKind.Select}
-                label={content.fields.status}
-                options={CONTACT_LEAD_STATUS_VALUES.map((status) => ({
-                  label: sharedContent.status[status],
-                  value: status,
-                }))}
-                selectProps={{
-                  ...register(LeadFormDialogField.LeadStatus, {
-                    onChange: () => {
-                      clearErrors(LeadFormDialogField.LeadStatus);
-                      resetValidationMessages();
-                    },
-                  }),
-                }}
-              />
-            </div>
-          </section>
-
-          <section className={styles.section}>
+          <div className={styles.grid}>
             <FormField
               className={styles.field}
-              controlClassName={styles.textarea}
-              errorMessage={errors.notes?.message}
-              hint={getFieldEditState(currentValues.notes, initialValues.notes)}
-              textareaProps={{
-                ...register(LeadFormDialogField.Notes, {
+              controlClassName={styles.input}
+              errorMessage={errors.displayName?.message}
+              hint={getFieldEditState(
+                currentValues.displayName,
+                initialValues.displayName,
+                {
+                  required: true,
+                },
+              )}
+              inputProps={{
+                ...register(LeadFormDialogField.DisplayName, {
                   onChange: () => {
-                    clearErrors(LeadFormDialogField.Notes);
+                    clearErrors(LeadFormDialogField.DisplayName);
+                    resetValidationMessages();
+                  },
+                  onBlur: validateDisplayNameField,
+                }),
+                autoComplete: "organization",
+                placeholder: content.placeholders.displayName,
+              }}
+              kind={FormFieldKind.Text}
+              label={content.fields.displayName}
+              required
+            />
+
+            <FormField
+              className={styles.field}
+              controlClassName={styles.input}
+              errorMessage={errors.first_name?.message}
+              hint={getFieldEditState(
+                currentValues.first_name,
+                initialValues.first_name,
+              )}
+              inputProps={{
+                ...register(LeadFormDialogField.FirstName, {
+                  onChange: () => {
+                    clearErrors(LeadFormDialogField.FirstName);
                     resetValidationMessages();
                   },
                 }),
-                placeholder: content.placeholders.notes,
-                rows: 4,
+                autoComplete: "given-name",
+                placeholder: content.placeholders.firstName,
               }}
-              kind={FormFieldKind.Textarea}
-              label={content.fields.notes}
+              kind={FormFieldKind.Text}
+              label={content.fields.firstName}
             />
-          </section>
 
-          <ImprovementsSection
-            clearErrorsAction={clearErrors}
-            content={content}
-            control={control}
-            initialItemCount={initialImprovementsCount}
-            isEditMode={isEditMode}
-            onInteractionAction={resetValidationMessages}
-          />
+            <FormField
+              className={styles.field}
+              controlClassName={styles.input}
+              errorMessage={errors.last_name?.message}
+              hint={getFieldEditState(
+                currentValues.last_name,
+                initialValues.last_name,
+              )}
+              inputProps={{
+                ...register(LeadFormDialogField.LastName, {
+                  onChange: () => {
+                    clearErrors(LeadFormDialogField.LastName);
+                    resetValidationMessages();
+                  },
+                }),
+                autoComplete: "family-name",
+                placeholder: content.placeholders.lastName,
+              }}
+              kind={FormFieldKind.Text}
+              label={content.fields.lastName}
+            />
 
-          <SocialProfilesSection
-            clearErrorsAction={clearErrors}
-            content={content}
-            control={control}
-            initialItemCount={initialSocialProfilesCount}
-            isEditMode={isEditMode}
-            onInteractionAction={resetValidationMessages}
-            sharedContent={sharedContent}
-          />
+            <FormField
+              className={styles.field}
+              controlClassName={styles.input}
+              errorMessage={errors.company_name?.message}
+              hint={getFieldEditState(
+                currentValues.company_name,
+                initialValues.company_name,
+              )}
+              inputProps={{
+                ...register(LeadFormDialogField.CompanyName, {
+                  onChange: () => {
+                    clearErrors(LeadFormDialogField.CompanyName);
+                    resetValidationMessages();
+                  },
+                }),
+                autoComplete: "organization",
+                placeholder: content.placeholders.companyName,
+              }}
+              kind={FormFieldKind.Text}
+              label={content.fields.companyName}
+            />
 
-          <footer className={styles.footer}>
-            <FormActions
-              buttons={
-                <>
-                  <ButtonControl
-                    aria-label={content.buttons.cancel}
-                    className={styles.footerIconButton}
-                    onClick={closeDialog}
-                    title={content.buttons.cancel}
-                    type="button"
-                    variant="ghost"
-                  >
-                    <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
-                    <span className={styles.footerButtonLabel}>
-                      {content.buttons.cancel}
-                    </span>
-                  </ButtonControl>
-                  {isEditMode && initialLead && outreachContent ? (
-                    <LeadOutreachTrigger
-                      className={styles.footerOutreachButton}
-                      content={outreachContent}
-                      lead={initialLead}
-                      variant={LeadOutreachTriggerVariant.IconText}
-                    />
-                  ) : null}
-                  <PrimaryCtaButton
-                    aria-label={isSubmitting ? savingLabel : submitLabel}
-                    className={styles.footerIconButton}
-                    disabled={isSubmitting}
-                    title={isSubmitting ? savingLabel : submitLabel}
-                    type="submit"
-                  >
-                    <FontAwesomeIcon aria-hidden="true" icon={faCheck} />
-                    <span className={styles.footerButtonLabel}>
-                      {isSubmitting ? savingLabel : submitLabel}
-                    </span>
-                  </PrimaryCtaButton>
-                </>
+            <FormField
+              className={styles.field}
+              controlClassName={styles.input}
+              errorMessage={errors.email?.message}
+              hint={getFieldEditState(currentValues.email, initialValues.email)}
+              inputProps={{
+                ...register(LeadFormDialogField.Email, {
+                  onChange: () => {
+                    clearErrors(LeadFormDialogField.Email);
+                    resetValidationMessages();
+                  },
+                  onBlur: validateEmailField,
+                }),
+                autoComplete: "email",
+                placeholder: content.placeholders.email,
+              }}
+              kind={FormFieldKind.Email}
+              label={content.fields.email}
+            />
+          </div>
+        </section>
+
+        <section
+          className={styles.section}
+          aria-labelledby={LeadFormDialogId.DetailsSection}
+        >
+          <div className={styles.sectionHeader}>
+            <h3
+              className={styles.sectionTitle}
+              id={LeadFormDialogId.DetailsSection}
+            >
+              {content.sections.details}
+            </h3>
+          </div>
+
+          <div className={styles.grid}>
+            <FormField
+              className={styles.field}
+              controlClassName={styles.input}
+              errorMessage={errors.phone?.message}
+              hint={getFieldEditState(currentValues.phone, initialValues.phone)}
+              inputProps={{
+                ...register(LeadFormDialogField.Phone, {
+                  onChange: () => {
+                    clearErrors(LeadFormDialogField.Phone);
+                    resetValidationMessages();
+                  },
+                  onBlur: validatePhoneField,
+                }),
+                autoComplete: "tel",
+                placeholder: content.placeholders.phone,
+              }}
+              kind={FormFieldKind.Tel}
+              label={content.fields.phone}
+            />
+
+            <FormField
+              className={styles.field}
+              controlClassName={styles.input}
+              inputSuffix={
+                <ButtonControl
+                  aria-label={sharedContent.socialIconLabel.website}
+                  className={styles.iconActionButton}
+                  disabled={!canOpenWebsiteUrl}
+                  onClick={() => openExternalUrl(websiteUrlValue)}
+                  title={sharedContent.socialIconLabel.website}
+                  type="button"
+                  variant="ghost"
+                >
+                  <FontAwesomeIcon aria-hidden="true" icon={faGlobe} />
+                </ButtonControl>
               }
-              requiredHint={content.help.requiredHint}
+              errorMessage={errors.website_url?.message}
+              hint={getFieldEditState(
+                currentValues.website_url,
+                initialValues.website_url,
+              )}
+              inputProps={{
+                ...register(LeadFormDialogField.WebsiteUrl, {
+                  onChange: () => {
+                    clearErrors(LeadFormDialogField.WebsiteUrl);
+                    resetValidationMessages();
+                  },
+                  onBlur: validateWebsiteField,
+                }),
+                autoComplete: "url",
+                placeholder: content.placeholders.websiteUrl,
+              }}
+              kind={FormFieldKind.Url}
+              label={content.fields.websiteUrl}
             />
-          </footer>
-        </form>
-      </div>
-    </div>
+
+            <FormField
+              className={styles.field}
+              controlClassName={styles.input}
+              errorMessage={errors.category_id?.message}
+              hint={getFieldEditState(
+                currentValues.category_id,
+                initialValues.category_id,
+              )}
+              kind={FormFieldKind.Select}
+              label={content.fields.category}
+              options={[
+                { label: content.placeholders.category, value: "" },
+                ...categories.map((category) => ({
+                  label: category.label,
+                  value: category.id,
+                })),
+              ]}
+              selectProps={{
+                ...register(LeadFormDialogField.CategoryId, {
+                  onChange: () => {
+                    clearErrors(LeadFormDialogField.CategoryId);
+                    resetValidationMessages();
+                  },
+                }),
+              }}
+            />
+
+            <FormField
+              className={styles.field}
+              controlClassName={styles.input}
+              errorMessage={errors.score?.message}
+              hint={getFieldEditState(currentValues.score, initialValues.score)}
+              inputProps={{
+                ...register(LeadFormDialogField.Score, {
+                  onChange: () => {
+                    clearErrors(LeadFormDialogField.Score);
+                    resetValidationMessages();
+                  },
+                  onBlur: validateScoreField,
+                }),
+                inputMode: "numeric",
+                placeholder: content.placeholders.score,
+              }}
+              kind={FormFieldKind.Number}
+              label={content.fields.score}
+            />
+
+            <FormField
+              className={styles.field}
+              controlClassName={styles.input}
+              errorMessage={errors.owner?.message}
+              hint={getFieldEditState(currentValues.owner, initialValues.owner)}
+              inputProps={{
+                ...register(LeadFormDialogField.Owner, {
+                  onChange: () => {
+                    clearErrors(LeadFormDialogField.Owner);
+                    resetValidationMessages();
+                  },
+                }),
+                autoComplete: "organization-title",
+                placeholder: content.placeholders.owner,
+              }}
+              kind={FormFieldKind.Text}
+              label={content.fields.owner}
+            />
+
+            <FormField
+              className={styles.field}
+              controlClassName={styles.input}
+              errorMessage={errors.lead_status?.message}
+              kind={FormFieldKind.Select}
+              label={content.fields.status}
+              options={CONTACT_LEAD_STATUS_VALUES.map((status) => ({
+                label: sharedContent.status[status],
+                value: status,
+              }))}
+              selectProps={{
+                ...register(LeadFormDialogField.LeadStatus, {
+                  onChange: () => {
+                    clearErrors(LeadFormDialogField.LeadStatus);
+                    resetValidationMessages();
+                  },
+                }),
+              }}
+            />
+          </div>
+        </section>
+
+        <FormField
+          className={styles.field}
+          controlClassName={styles.textarea}
+          errorMessage={errors.notes?.message}
+          hint={getFieldEditState(currentValues.notes, initialValues.notes)}
+          textareaProps={{
+            ...register(LeadFormDialogField.Notes, {
+              onChange: () => {
+                clearErrors(LeadFormDialogField.Notes);
+                resetValidationMessages();
+              },
+            }),
+            placeholder: content.placeholders.notes,
+            rows: 4,
+          }}
+          kind={FormFieldKind.Textarea}
+          label={content.fields.notes}
+        />
+
+        <ImprovementsSection
+          clearErrorsAction={clearErrors}
+          content={content}
+          control={control}
+          initialItemCount={initialImprovementsCount}
+          isEditMode={isEditMode}
+          onInteractionAction={resetValidationMessages}
+        />
+
+        <SocialProfilesSection
+          clearErrorsAction={clearErrors}
+          content={content}
+          control={control}
+          initialItemCount={initialSocialProfilesCount}
+          isEditMode={isEditMode}
+          onInteractionAction={resetValidationMessages}
+          sharedContent={sharedContent}
+        />
+      </form>
+    </Dialog>
   );
 }

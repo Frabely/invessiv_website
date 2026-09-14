@@ -1,4 +1,3 @@
-import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import { PaginationItemKind } from "@invessiv/common/constants/leads/list/lead-pagination-item-kinds";
 
 export type PaginationItemPage = {
@@ -26,7 +25,7 @@ export function buildPaginationHref(
   page: number,
 ): string {
   const params = new URLSearchParams(queryString);
-  params.set(LeadListQueryParam.Page, String(page));
+  params.set("page", String(page));
 
   const nextQuery = params.toString();
   return nextQuery ? `${basePath}?${nextQuery}` : basePath;

@@ -15,27 +15,24 @@ zentralisiert sind Button, Formularfeld samt Label/Pflichtmarker/Status/Aktionen
 `EmptyState`, `ListEmptyState`, `Badge` sowie Auswahl-Provider und Select-All-Checkbox. Die Web-App bleibt unverändert;
 ihre technische Migration und visuelle Anpassung erfolgt erst in Task 39 nach Abschluss des gesamten CRM-Umbaus.
 
-| Task   | Stand     | Verbleibende Arbeit                                                                                                                                                                                  |
-| ------ | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 02e-1  | erledigt  | Keine offene Workspace-Arbeit.                                                                                                                                                                       |
-| 02e-3  | erledigt  | Keine offene Workspace-Arbeit.                                                                                                                                                                       |
-| 02e-4  | erledigt  | Keine offene Workspace-Arbeit.                                                                                                                                                                       |
-| 02e-5  | teilweise | Zentralen jsdom-Dialog-Test-Setup gemäß Plan ergänzen und Dialog-Tests nachziehen.                                                                                                                   |
-| 02e-6  | teilweise | Vier Lead-Dialoge (Formular, Import, Outreach, Bulk-Edit) auf `Dialog`/`ConfirmDialog` umstellen; Fokusfalle und `createPortal` vollständig entfernen. Bulk-Archiv und Bulk-Löschen sind umgestellt. |
-| 02e-7  | teilweise | Empty-State-Tests und die geplante generische Workspace-Konstante abschließen.                                                                                                                       |
-| 02e-8  | teilweise | `DefinitionList`, `DetailSection`, `SidePanel` und die Umstellung des Lead-Detail-Panels fehlen.                                                                                                     |
-| 02e-9  | teilweise | `SortableHeader` und `ListPagination` fehlen noch im Shared-Scope; T20 ist erledigt.                                                                                                                 |
-| 02e-10 | offen     | Suchfeld, Facettenfilter, Timeline sowie der Abschlussnachweis fehlen.                                                                                                                               |
+| Task   | Stand     | Verbleibende Arbeit                                                                                                                                                   |
+| ------ | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 02e-1  | erledigt  | Keine offene Workspace-Arbeit.                                                                                                                                        |
+| 02e-3  | erledigt  | Keine offene Workspace-Arbeit.                                                                                                                                        |
+| 02e-4  | erledigt  | Keine offene Workspace-Arbeit.                                                                                                                                        |
+| 02e-5  | teilweise | Zentralen jsdom-Dialog-Test-Setup gemäß Plan ergänzen und Dialog-Tests nachziehen.                                                                                    |
+| 02e-6  | erledigt  | Lead-Formular, Import, Outreach und Bulk-Edit sowie Archiv/Löschen verwenden die zentrale native `Dialog`/`ConfirmDialog`-Hülle; Fokusfalle und Portal sind entfernt. |
+| 02e-7  | teilweise | Empty-State-Tests und die geplante generische Workspace-Konstante abschließen.                                                                                        |
+| 02e-8  | teilweise | `SidePanel` ist angebunden, `DefinitionList` und `DetailSection` sind angelegt. Die vollständige Integration im Lead-Detail-Panel und die Tests fehlen noch.          |
+| 02e-9  | teilweise | `SortableHeader`, `ListPagination` und Selection-Bausteine liegen im Shared-Scope. Lead-Entkopplung, generische Contracts und ergänzende Tests fehlen noch.           |
+| 02e-10 | teilweise | Suchfeld, Facettenfilter und Timeline liegen im Shared-Scope. Mehrfachauswahl, generische Entkopplung und der Abschlussnachweis fehlen noch.                          |
 
 **Konkreter Task-Plan**
 
 **Nachtrag zum Umsetzungsstand:** Seit der letzten Bestandsaufnahme liegen auch Sortier-Header, Pagination, Suchfeld,
 Facettenfilter und Activity-Timeline an den vorgesehenen Shared-Pfaden. Das Lead-Detail-Panel ist mit `SidePanel`
 verknüpft; `DefinitionList` und `DetailSection` sind als app-neutrale Bausteine angelegt. Offen bleiben deren
-vollständige
-Entkopplung und Tests, native Dialog-Tests sowie der Abschlussnachweis inklusive Mehrfachauswahl im Facettenfilter. Der
-Outreach-Dialog verwendet für die korrekte Layer-Reihenfolge vorübergehend wieder ein Body-Portal; die endgültige native
-`Dialog`-Umstellung bleibt als offener Teil von Task 02e-6 dokumentiert.
+vollständige Entkopplung und Tests sowie der Abschlussnachweis inklusive Mehrfachauswahl im Facettenfilter.
 
 - [`02e-geteilte-ui-bausteine.md`](./02e-geteilte-ui-bausteine.md) — Übersicht: Ist-Analyse, Entscheidungen,
   Dialog-Umstellung, Teststrategie, Zielbild, Umfangskontrolle.
@@ -128,9 +125,8 @@ Reiner Code-Revert; keine Migration, keine Datenänderung.
 
 Die folgenden Punkte bilden den verbleibenden Abschlussblock für den Workspace-UI-Umzug:
 
-1. **Dialoge vollständig zentralisieren:** Formular-, Import-, Outreach- und Bulk-Edit-Dialoge auf die native zentrale
-   `Dialog`-Hülle umstellen, den temporären Body-Portal-Workaround im Outreach-Dialog entfernen sowie zentrales jsdom-
-   Setup und Fokus-/Escape-/Unmount-Tests ergänzen.
+1. **Dialog-Testabdeckung abschließen:** Zentrales jsdom-Setup vervollständigen und Fokus-/Escape-/Unmount- sowie
+   laufende-Request-Tests für die native `Dialog`-Hülle ergänzen.
 2. **Bausteine fachlich entkoppeln:** `SortableHeader`, `ListPagination` und `ActivityTimeline` von Lead-Typen,
    Dictionaries und URL-Helfern lösen; Props/Contracts korrekt im Shared-/Common-Bereich verankern; `FacetFilter` um
    Mehrfachauswahl und generische Optionen erweitern.

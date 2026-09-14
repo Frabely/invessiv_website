@@ -71,7 +71,26 @@ export function LeadsBulkDeleteConfirmDialog({
       busy={isPending}
       closeLabel={bulkContent.deleteConfirm.closeAriaLabel}
       description={message}
-      footer={null}
+      footer={
+        <>
+          <ButtonControl
+            disabled={isPending}
+            onClick={onCloseAction}
+            type="button"
+            variant="ghost"
+          >
+            {bulkContent.deleteConfirm.cancel}
+          </ButtonControl>
+          <button
+            className={styles.confirmButton}
+            disabled={isPending}
+            onClick={handleConfirm}
+            type="button"
+          >
+            {bulkContent.deleteConfirm.confirm}
+          </button>
+        </>
+      }
       onCloseAction={onCloseAction}
       size={DialogSize.Narrow}
       title={bulkContent.deleteConfirm.title}
@@ -98,25 +117,6 @@ export function LeadsBulkDeleteConfirmDialog({
           </li>
         ))}
       </ul>
-
-      <footer className={styles.footer}>
-        <ButtonControl
-          disabled={isPending}
-          onClick={onCloseAction}
-          type="button"
-          variant="ghost"
-        >
-          {bulkContent.deleteConfirm.cancel}
-        </ButtonControl>
-        <button
-          className={styles.confirmButton}
-          disabled={isPending}
-          onClick={handleConfirm}
-          type="button"
-        >
-          {bulkContent.deleteConfirm.confirm}
-        </button>
-      </footer>
     </Dialog>
   );
 }

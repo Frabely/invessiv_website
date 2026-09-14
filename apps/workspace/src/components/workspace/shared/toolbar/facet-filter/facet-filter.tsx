@@ -2,16 +2,20 @@
 
 import { type ReactNode } from "react";
 import { CustomSelect } from "@invessiv/ui";
-import { LEAD_FILTER_ALL_VALUE } from "@/common/constants/leads/list/lead-filter-all-value";
 import styles from "./facet-filter.module.css";
 
+const ALL_OPTION_VALUE = "__all__";
+
 type FacetFilterProps = {
-  activeValue: string | undefined;
+  activeValue?: string;
+  activeValues?: readonly string[];
   allOption: { chip: ReactNode; selectLabel: string };
   ariaLabel: string;
   clearLabel: string;
   label: string;
   onChangeAction: (value: string | undefined) => void;
+  onValuesChangeAction?: (values: readonly string[]) => void;
+  multiple?: boolean;
   options: ReadonlyArray<{
     value: string;
     chip: ReactNode;
@@ -22,15 +26,34 @@ type FacetFilterProps = {
 
 export function FacetFilter({
   activeValue,
+  activeValues = [],
   allOption,
   ariaLabel,
   clearLabel,
   label,
   onChangeAction,
+  onValuesChangeAction,
   options,
   selectId,
+  multiple = false,
 }: FacetFilterProps) {
-  const isAllActive = !activeValue;
+  const selectedValues = multiple
+    ? activeValues
+    : activeValue
+      ? [activeValue]
+      : [];
+  const isAllActive = selectedValues.length === 0;
+
+  function toggleValue(value: string) {
+    if (!multiple || !onValuesChangeAction) {
+      onChangeAction(value);
+      return;
+    }
+    const next = selectedValues.includes(value)
+      ? selectedValues.filter((entry) => entry !== value)
+      : [...selectedValues, value];
+    onValuesChangeAction(next);
+  }
 
   return (
     <div className={styles.group}>
@@ -41,14 +64,18 @@ export function FacetFilter({
           aria-pressed={isAllActive}
           className={styles.badgeButton}
           data-active={isAllActive ? "true" : "false"}
-          onClick={() => onChangeAction(undefined)}
+          onClick={() =>
+            multiple && onValuesChangeAction
+              ? onValuesChangeAction([])
+              : onChangeAction(undefined)
+          }
           type="button"
         >
           {allOption.chip}
         </button>
 
         {options.map((option) => {
-          const isActive = activeValue === option.value;
+          const isActive = selectedValues.includes(option.value);
 
           return (
             <button
@@ -56,7 +83,7 @@ export function FacetFilter({
               className={styles.badgeButton}
               data-active={isActive ? "true" : "false"}
               key={option.value}
-              onClick={() => onChangeAction(option.value)}
+              onClick={() => toggleValue(option.value)}
               type="button"
             >
               {option.chip}
@@ -71,17 +98,30 @@ export function FacetFilter({
           clearLabel={clearLabel}
           id={selectId}
           onChange={(next) =>
-            onChangeAction(next === LEAD_FILTER_ALL_VALUE ? undefined : next)
+            next === ALL_OPTION_VALUE
+              ? multiple && onValuesChangeAction
+                ? onValuesChangeAction([])
+                : onChangeAction(undefined)
+              : multiple && onValuesChangeAction
+                ? onValuesChangeAction([next])
+                : onChangeAction(next)
           }
-          onClear={activeValue ? () => onChangeAction(undefined) : undefined}
+          onClear={
+            isAllActive
+              ? undefined
+              : () =>
+                  multiple && onValuesChangeAction
+                    ? onValuesChangeAction([])
+                    : onChangeAction(undefined)
+          }
           options={[
-            { value: LEAD_FILTER_ALL_VALUE, label: allOption.selectLabel },
+            { value: ALL_OPTION_VALUE, label: allOption.selectLabel },
             ...options.map((option) => ({
               value: option.value,
               label: option.selectLabel,
             })),
           ]}
-          value={activeValue ?? LEAD_FILTER_ALL_VALUE}
+          value={selectedValues[0] ?? ALL_OPTION_VALUE}
         />
       </div>
     </div>
