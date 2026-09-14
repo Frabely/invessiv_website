@@ -15,6 +15,7 @@ export const WorkspaceMemberErrorCode = {
   AlreadyOwner: "ALREADY_OWNER",
   NotOwner: "NOT_OWNER",
   LastActiveOwner: "LAST_ACTIVE_OWNER",
+  SelfOwnerRevocation: "SELF_OWNER_REVOCATION",
   Internal: "INTERNAL",
 } as const;
 
@@ -34,5 +35,6 @@ export const WORKSPACE_MEMBER_ERROR_CODE_VALUES = [
   WorkspaceMemberErrorCode.AlreadyOwner,
   WorkspaceMemberErrorCode.NotOwner,
   WorkspaceMemberErrorCode.LastActiveOwner,
+  WorkspaceMemberErrorCode.SelfOwnerRevocation,
   WorkspaceMemberErrorCode.Internal,
 ] as const;

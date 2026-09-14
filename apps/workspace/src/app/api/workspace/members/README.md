@@ -43,6 +43,7 @@ Ausnahme **409 Versionskonflikt**: Der Body ist ein `VersionConflictDto`
 | 409    | `CLERK_ACCOUNT_ALREADY_LINKED` | Die Clerk-ID gehört bereits zu einem User                              |
 | 409    | `ALREADY_OWNER` / `NOT_OWNER`  | Owner-Flow passt nicht zum aktuellen Stand                             |
 | 409    | `LAST_ACTIVE_OWNER`            | Der letzte aktive Owner kann die Owner-Rolle nicht verlieren           |
+| 409    | `SELF_OWNER_REVOCATION`        | Niemand entzieht sich selbst die Owner-Rolle                           |
 | 422    | `CLERK_ACCOUNT_INCOMPLETE`     | Clerk-Konto ohne primäre E-Mail                                        |
 | 422    | `ROLE_NOT_ASSIGNABLE`          | Rolle unbekannt, fremder Realm oder inaktiv und nicht schon zugewiesen |
 | 422    | `OWNER_ROLE_NOT_ASSIGNABLE`    | Owner-Rolle über `/roles` statt über den Owner-Flow                    |

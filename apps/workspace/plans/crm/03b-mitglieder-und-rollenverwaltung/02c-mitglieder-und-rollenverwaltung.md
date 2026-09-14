@@ -44,7 +44,7 @@ ein sichtbarer Löschbutton wäre sonst ein toter Button.
 | `POST /api/workspace/members/clerk-candidates` | `members.manage` | 200    | 400 Validierung · 503 Clerk nicht erreichbar                                                                     |
 | `PUT /api/workspace/members/[id]/roles`        | `members.manage` | 200    | 404 · 409 Version · 422 Owner-Rolle/inaktive/unbekannte Rolle/keine Rolle                                        |
 | `POST /api/workspace/members/[id]/owner`       | `members.manage` | 200    | 404 · 409 Version · 409 bereits Owner                                                                            |
-| `DELETE /api/workspace/members/[id]/owner`     | `members.manage` | 200    | 404 · 409 Version · 409 letzter aktiver Owner · 409 kein Owner                                                   |
+| `DELETE /api/workspace/members/[id]/owner`     | `members.manage` | 200    | 404 · 409 Version · 409 letzter aktiver Owner · 409 kein Owner · 409 eigene Owner-Rolle                          |
 | `GET /api/workspace/roles`                     | `roles.manage`   | 200    | —                                                                                                                |
 | `POST /api/workspace/roles`                    | `roles.manage`   | 201    | 400 Validierung · 409 Name vergeben · 422 nicht delegierbare Permission                                          |
 | `PATCH /api/workspace/roles/[id]`              | `roles.manage`   | 200    | 404 · 409 Version · 409 Name vergeben · 422 Systemrolle · 422 nicht delegierbar                                  |
@@ -58,10 +58,25 @@ Body-Formen stehen in `src/app/api/workspace/members/README.md` bzw. `…/roles/
 - Mindestens ein aktiver Owner: Entzug sperrt alle Owner-Zuweisungen mit `SELECT … FOR UPDATE` in derselben
   Transaktion, zählt aktive Owner (aktive Rolle, aktives Mitglied, aktiver User) und lehnt ab, wenn danach keiner
   bleibt.
-- Niemand entzieht sich selbst die letzte Owner-Zuweisung (folgt aus der vorherigen Regel).
+- Niemand entzieht sich selbst die Owner-Rolle (`SELF_OWNER_REVOCATION`, 409) — auch dann nicht, wenn weitere Owner
+  existieren. Die Owner-Rolle verliert man nur durch einen anderen Owner; die UI bietet die Aktion in der eigenen Zeile
+  nicht an. Damit kann sich kein Owner aussperren, und mindestens ein aktiver Owner mit allen Rechten bleibt bestehen.
+  Verschärft nach Review (14.09.2026, mit dem Nutzer abgestimmt).
+- Zusammen gilt: Über UI und API ist kein Zustand ohne aktiven Owner erreichbar; ein inaktiver Owner zählt nicht. Ein
+  fest geschützter Hauptowner ist bewusst nicht vorgesehen, damit die Owner-Rolle ohne Datenbankeingriff an eine andere
+  Person übergehen kann. Jeder spätere Pfad, der Owner inaktiv machen kann (Ordner 03c), nutzt denselben Owner-Lock.
+- Der Owner-Dialog behält nach einem Versionskonflikt die beim Öffnen gewählte Richtung. Ist das Ziel inzwischen
+  erreicht, meldet er „bereits erledigt“ statt die Gegenrichtung zur Bestätigung anzubieten.
 - Der Owner-Entzug verlangt mindestens eine weitere Rolle (`MEMBER_WITHOUT_ROLE`), damit ein Mitglied nicht still
   alle Rechte verliert. Ergänzt während der Umsetzung.
+- „Mindestens eine Rolle“ meint eine **Zuweisung**, unabhängig vom Aktiv-Flag der Rolle (Entscheidung 14.09.2026, mit
+  dem Nutzer abgestimmt). Ein Mitglied, dessen Rollen alle inaktiv sind, ist erlaubt: Es kann sich anmelden, sieht aber
+  keinen Bereich. Das entsteht etwa, wenn ein Owner eine Rolle deaktiviert. Die Mitgliederliste markiert den Zustand
+  sichtbar („Keine wirksame Rolle“) über `WorkspaceMemberDto.hasActiveRole`; das Deaktivieren einer Rolle bleibt
+  unabhängig von ihren Mitgliedern möglich.
 - Clerk-Kandidaten: nur Konten ohne `users`-Zeile; die Bindung erfolgt über die gewählte Clerk-ID, nie über E-Mail.
+  Gilt nur, solange ausschließlich Mitglieder eine `users`-Zeile haben; die Umstellung auf „ohne
+  `workspace_members`-Zeile“ ist in Ordner 12 vorgemerkt.
 - Nicht delegierbare Permissions werden im Command mit eigenem Fehlercode abgewiesen; die DB-Constraint
   `role_permissions_delegation_check` bleibt die zweite Linie gegen manipulierte Requests.
 - Jede Mitgliedsänderung (Rollen, Owner) erhöht `workspace_members.version` über `updateVersioned`; jede Rollenänderung

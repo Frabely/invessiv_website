@@ -65,6 +65,7 @@ const MEMBER: WorkspaceMemberDto = {
   primaryEmail: "anna@example.test",
   active: true,
   isOwner: false,
+  hasActiveRole: true,
   roles: [],
   version: 2,
   createdAt: "2026-09-13T10:00:00.000Z",

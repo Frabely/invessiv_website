@@ -7,6 +7,7 @@
     "ownerBadge": "Owner",
     "inactiveRole": "{role} (inaktiv)",
     "noRoles": "Keine weitere Rolle",
+    "noActiveRole": "Keine wirksame Rolle – sieht keinen Bereich",
     "actions": {
       "editRoles": "Rollen bearbeiten",
       "grantOwner": "Zum Owner machen",
@@ -57,6 +58,9 @@
     "revokeDescription": "Die Person behält ihre übrigen Rollen und verliert die Owner-Rechte ab ihrer nächsten Anfrage.",
     "revokeSubmit": "Owner-Rolle entziehen",
     "conflict": "Jemand hat dieses Mitglied gerade geändert. Der aktuelle Stand ist geladen – bestätige erneut, wenn es dabei bleiben soll.",
+    "alreadyGranted": "{name} ist bereits Owner. Hier ist nichts mehr zu tun.",
+    "alreadyRevoked": "{name} ist bereits kein Owner mehr. Hier ist nichts mehr zu tun.",
+    "done": "Schließen",
     "submitting": "Wird gespeichert …",
     "cancel": "Abbrechen",
     "close": "Dialog schließen"
@@ -74,6 +78,7 @@
     "ALREADY_OWNER": "Diese Person ist bereits Owner.",
     "NOT_OWNER": "Diese Person ist kein Owner mehr.",
     "LAST_ACTIVE_OWNER": "Der Workspace braucht mindestens einen aktiven Owner. Mache zuerst eine andere Person zum Owner.",
+    "SELF_OWNER_REVOCATION": "Du kannst dir die Owner-Rolle nicht selbst entziehen. Das kann nur ein anderer Owner.",
     "INTERNAL": "Das hat nicht geklappt. Versuche es erneut."
   }
 }

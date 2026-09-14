@@ -19,6 +19,12 @@ export interface WorkspaceMemberDto extends VersionedDto {
    */
   isOwner: boolean;
   /**
+   * True while at least one assigned role, the owner role included, is active. A member whose
+   * roles are all inactive may still sign in but sees no area; the list flags that state
+   * instead of forbidding it. Display only, never authorizes.
+   */
+  hasActiveRole: boolean;
+  /**
    * Assigned roles without the owner role, ordered system roles first, then by name. Inactive
    * roles are included and flagged, because they are still assigned.
    */

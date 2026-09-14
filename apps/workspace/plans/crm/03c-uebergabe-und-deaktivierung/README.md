@@ -23,11 +23,17 @@ Der detaillierte Task-Plan (Task 02d) wird zu Beginn der Einheit geschrieben.
 - Security-Events `workspace_member_deactivated`, `workspace_member_activated`,
   `workspace_responsibilities_handed_over` (Migration erweitert die CHECK-Constraint).
 - UI: Aktivieren/Deaktivieren und Übergabedialog in der Mitgliederliste aus 03b.
+- **Owner-Invariante aus 03b gilt weiter:** Über UI und API ist kein Zustand ohne aktiven Owner erreichbar; ein
+  inaktiver Owner (inaktives Mitglied oder inaktiver User) zählt nicht. Die Deaktivierung sperrt deshalb dieselben
+  Owner-Zuweisungen über `workspaceOwnerInvariantService.lockOwnerAssignmentsAndFindActiveOwners` wie der Owner-Entzug.
+  Ohne diesen gemeinsamen Lock könnten „A entzieht B die Owner-Rolle“ und „B deaktiviert A“ parallel beide gelingen und
+  keinen aktiven Owner hinterlassen.
 
 ## Merge-Gate
 
 - [ ] Deaktivierung wirkt beim nächsten Request.
 - [ ] Letzter aktiver Owner kann nicht deaktiviert werden (409 mit Begründung); niemand deaktiviert sich selbst.
+- [ ] Parallele Deaktivierung und Owner-Entzug hinterlassen nie null aktive Owner (gemeinsamer Lock, Integrationstest).
 - [ ] Deaktivierung ist gesperrt, solange Zuständigkeiten bestehen; Konflikt nennt Anzahl je Entität.
 - [ ] Übergabe ist atomar; parallele Übergabe und Bearbeitung ergibt 409 statt Teilzustand.
 - [ ] Eine `OwnableEntity` ohne Adapter bricht den Typecheck (Typtest).

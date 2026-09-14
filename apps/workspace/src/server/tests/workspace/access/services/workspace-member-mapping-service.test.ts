@@ -35,6 +35,7 @@ describe("workspaceMemberMappingService.mapRowsToMembers", () => {
         primaryEmail: "owner@example.test",
         active: true,
         isOwner: false,
+        hasActiveRole: false,
         roles: [],
         version: 4,
         createdAt: "2026-09-13T10:00:00.000Z",
@@ -58,9 +59,29 @@ describe("workspaceMemberMappingService.mapRowsToMembers", () => {
     ]);
 
     expect(member.isOwner).toBe(true);
+    expect(member.hasActiveRole).toBe(true);
     expect(member.roles).toEqual([
       { id: "custom-role", name: "Sales", systemKey: null, active: false },
     ]);
+  });
+
+  it("flags a member whose assigned roles are all inactive", () => {
+    const [member] = workspaceMemberMappingService.mapRowsToMembers([
+      row({ role_id: "sales", role_name: "Sales", role_active: false }),
+      row({ role_id: "support", role_name: "Support", role_active: false }),
+    ]);
+
+    expect(member.roles).toHaveLength(2);
+    expect(member.hasActiveRole).toBe(false);
+  });
+
+  it("counts a member as having an active role as soon as one role is active", () => {
+    const [member] = workspaceMemberMappingService.mapRowsToMembers([
+      row({ role_id: "sales", role_name: "Sales", role_active: false }),
+      row({ role_id: "support", role_name: "Support", role_active: true }),
+    ]);
+
+    expect(member.hasActiveRole).toBe(true);
   });
 
   it("groups rows per member and keeps the query order of members", () => {

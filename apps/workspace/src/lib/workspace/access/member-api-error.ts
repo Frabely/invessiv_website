@@ -20,6 +20,7 @@ const STATUS: Record<WorkspaceMemberErrorCode, HttpResponseCode> = {
   [WorkspaceMemberErrorCode.AlreadyOwner]: HttpResponseCode.Conflict,
   [WorkspaceMemberErrorCode.NotOwner]: HttpResponseCode.Conflict,
   [WorkspaceMemberErrorCode.LastActiveOwner]: HttpResponseCode.Conflict,
+  [WorkspaceMemberErrorCode.SelfOwnerRevocation]: HttpResponseCode.Conflict,
   [WorkspaceMemberErrorCode.Internal]: HttpResponseCode.InternalServerError,
 };
 
@@ -43,6 +44,8 @@ const MESSAGES: Record<WorkspaceMemberErrorCode, string> = {
   [WorkspaceMemberErrorCode.NotOwner]: "Member is not an owner",
   [WorkspaceMemberErrorCode.LastActiveOwner]:
     "The last active owner cannot lose the owner role",
+  [WorkspaceMemberErrorCode.SelfOwnerRevocation]:
+    "Owners cannot revoke their own owner role",
   [WorkspaceMemberErrorCode.Internal]: "Unexpected server error",
 };
 

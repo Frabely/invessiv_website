@@ -39,6 +39,7 @@ const MEMBER: WorkspaceMemberDto = {
   primaryEmail: "anna@example.test",
   active: true,
   isOwner: false,
+  hasActiveRole: true,
   roles: [],
   version: 2,
   createdAt: "2026-09-13T10:00:00.000Z",
@@ -74,15 +75,84 @@ describe("OwnerChangeDialog", () => {
     expect(mocks.refresh).toHaveBeenCalled();
   });
 
-  it("uses the fresh state after a conflict before retrying", async () => {
+  it("keeps the revoke intent after a conflict and retries with the fresh version", async () => {
+    const owner = { ...MEMBER, isOwner: true };
+    mocks.revokeOwner
+      .mockResolvedValueOnce({
+        ok: false,
+        code: ConcurrencyErrorCode.VersionConflict,
+        current: { ...owner, version: 5 },
+      })
+      .mockResolvedValueOnce({ ok: true, member: { ...MEMBER, version: 6 } });
+    render(
+      <OwnerChangeDialog
+        content={content}
+        member={owner}
+        onCloseAction={vi.fn()}
+      />,
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: content.ownerDialog.revokeSubmit }),
+    );
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      content.ownerDialog.conflict,
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: content.ownerDialog.revokeSubmit }),
+    );
+    await waitFor(() =>
+      expect(mocks.revokeOwner).toHaveBeenLastCalledWith(MEMBER.id, {
+        version: 5,
+      }),
+    );
+    expect(mocks.grantOwner).not.toHaveBeenCalled();
+  });
+
+  it("reports an owner role someone else already revoked instead of offering to grant it", async () => {
+    const owner = { ...MEMBER, isOwner: true };
+    mocks.revokeOwner.mockResolvedValue({
+      ok: false,
+      code: ConcurrencyErrorCode.VersionConflict,
+      current: { ...MEMBER, isOwner: false, version: 5 },
+    });
+    const onClose = vi.fn();
+    render(
+      <OwnerChangeDialog
+        content={content}
+        member={owner}
+        onCloseAction={onClose}
+      />,
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: content.ownerDialog.revokeSubmit }),
+    );
+
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      content.ownerDialog.alreadyRevoked.replace("{name}", MEMBER.displayName),
+    );
+    expect(
+      screen.queryByRole("button", { name: content.ownerDialog.grantSubmit }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: content.ownerDialog.revokeSubmit }),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: content.ownerDialog.done }),
+    );
+    expect(onClose).toHaveBeenCalled();
+    expect(mocks.refresh).toHaveBeenCalled();
+    expect(mocks.grantOwner).not.toHaveBeenCalled();
+  });
+
+  it("treats an already granted owner role as done", async () => {
     mocks.grantOwner.mockResolvedValue({
       ok: false,
       code: ConcurrencyErrorCode.VersionConflict,
       current: { ...MEMBER, isOwner: true, version: 5 },
-    });
-    mocks.revokeOwner.mockResolvedValue({
-      ok: true,
-      member: { ...MEMBER, version: 6 },
     });
     render(
       <OwnerChangeDialog
@@ -95,15 +165,10 @@ describe("OwnerChangeDialog", () => {
     fireEvent.click(
       screen.getByRole("button", { name: content.ownerDialog.grantSubmit }),
     );
-    expect(await screen.findByRole("alert")).toHaveTextContent(
-      content.ownerDialog.conflict,
-    );
 
-    fireEvent.click(
-      screen.getByRole("button", { name: content.ownerDialog.revokeSubmit }),
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      content.ownerDialog.alreadyGranted.replace("{name}", MEMBER.displayName),
     );
-    await waitFor(() =>
-      expect(mocks.revokeOwner).toHaveBeenCalledWith(MEMBER.id, { version: 5 }),
-    );
+    expect(mocks.revokeOwner).not.toHaveBeenCalled();
   });
 });

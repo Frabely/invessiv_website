@@ -20,6 +20,7 @@ function mapRowsToMembers(
         primaryEmail: row.primary_email,
         active: row.member_active,
         isOwner: false,
+        hasActiveRole: false,
         roles: [],
         version: row.member_version,
         createdAt: row.member_created_at.toISOString(),
@@ -29,6 +30,9 @@ function mapRowsToMembers(
 
     if (row.role_id === null || row.role_name === null) {
       continue;
+    }
+    if (row.role_active === true) {
+      member.hasActiveRole = true;
     }
     if (row.role_system_key === SystemRoleKey.WorkspaceOwner) {
       member.isOwner = true;

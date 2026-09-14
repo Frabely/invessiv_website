@@ -24,6 +24,8 @@ Command- und Query-Handler für Mitglieder, Rollen und den Owner-Flow. Die Actor
 - **Letzter aktiver Owner.** Die Zählung aktiver Owner liegt ausschließlich in
   `server/workspace/auth/services/workspace-owner-invariant-service.ts` und läuft in derselben Transaktion nach
   `SELECT … FOR UPDATE` auf die Owner-Zuweisungen. Kein Handler zählt Owner selbst.
+- **Kein Selbst-Entzug.** `revokeWorkspaceOwner` lehnt ab, wenn Actor und Ziel dasselbe Mitglied sind
+  (`SELF_OWNER_REVOCATION`), unabhängig von weiteren Ownern. Die Owner-Rolle verliert man nur durch einen anderen Owner.
 - **Systemrollen sind unveränderlich.** Name, Beschreibung, Aktiv-Flag und Rechtesatz ändern sich nur per Migration.
 - **Delegierbarkeit doppelt.** Der Command weist nicht delegierbare Permissions mit eigenem Fehlercode ab; die
   DB-Constraint bleibt die zweite Linie. Die Delegierbarkeit kommt immer aus `PERMISSION_DEFINITIONS`, nie aus dem

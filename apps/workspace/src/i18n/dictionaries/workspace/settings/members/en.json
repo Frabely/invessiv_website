@@ -7,6 +7,7 @@
     "ownerBadge": "Owner",
     "inactiveRole": "{role} (inactive)",
     "noRoles": "No other role",
+    "noActiveRole": "No effective role – sees no section",
     "actions": {
       "editRoles": "Edit roles",
       "grantOwner": "Make owner",
@@ -57,6 +58,9 @@
     "revokeDescription": "The person keeps their other roles and loses owner permissions from their next request.",
     "revokeSubmit": "Remove owner role",
     "conflict": "Someone just changed this member. The current state is loaded – confirm again if you still want this.",
+    "alreadyGranted": "{name} is already an owner. Nothing left to do.",
+    "alreadyRevoked": "{name} is no longer an owner. Nothing left to do.",
+    "done": "Close",
     "submitting": "Saving …",
     "cancel": "Cancel",
     "close": "Close dialog"
@@ -74,6 +78,7 @@
     "ALREADY_OWNER": "This person is already an owner.",
     "NOT_OWNER": "This person is no longer an owner.",
     "LAST_ACTIVE_OWNER": "The workspace needs at least one active owner. Make someone else an owner first.",
+    "SELF_OWNER_REVOCATION": "You cannot remove your own owner role. Only another owner can do that.",
     "INTERNAL": "That did not work. Try again."
   }
 }

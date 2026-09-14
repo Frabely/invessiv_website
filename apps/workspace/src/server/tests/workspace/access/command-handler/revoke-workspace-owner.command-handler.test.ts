@@ -51,6 +51,7 @@ const OWNER: WorkspaceMemberDto = {
   primaryEmail: "anna@example.test",
   active: true,
   isOwner: true,
+  hasActiveRole: true,
   roles: [{ id: "role-member", name: "Member", systemKey: null, active: true }],
   version: 3,
   createdAt: "2026-09-13T10:00:00.000Z",
@@ -81,6 +82,25 @@ describe("revokeWorkspaceOwner", () => {
     expect(mocks.bump).not.toHaveBeenCalled();
     expect(mocks.deleteWhere).not.toHaveBeenCalled();
     expect(mocks.createEvent).not.toHaveBeenCalled();
+  });
+
+  it("lets another owner revoke an inactive owner, who never counted as an active owner", async () => {
+    mocks.lockOwners.mockResolvedValue(["other-active-owner"]);
+    mocks.findById
+      .mockResolvedValueOnce({ ...OWNER, active: false })
+      .mockResolvedValueOnce({
+        ...OWNER,
+        active: false,
+        isOwner: false,
+        hasActiveRole: true,
+        version: 4,
+      });
+    mocks.bump.mockResolvedValue({ ok: true });
+
+    const result = await revokeWorkspaceOwner(MEMBER_ID, { version: 3 }, actor);
+
+    expect(result.ok).toBe(true);
+    expect(mocks.deleteWhere).toHaveBeenCalledTimes(1);
   });
 
   it("refuses to leave a member without any role", async () => {
@@ -129,6 +149,21 @@ describe("revokeWorkspaceOwner", () => {
       actor: { userId: actor.userId },
       subjectId: MEMBER_ID,
     });
+  });
+
+  it("refuses to revoke the actor's own owner role even when other owners exist", async () => {
+    const result = await revokeWorkspaceOwner(
+      MEMBER_ID,
+      { version: 3 },
+      { ...actor, workspaceMemberId: MEMBER_ID },
+    );
+
+    expect(result).toEqual({
+      ok: false,
+      code: WorkspaceMemberErrorCode.SelfOwnerRevocation,
+    });
+    expect(mocks.getDatabase).not.toHaveBeenCalled();
+    expect(mocks.lockOwners).not.toHaveBeenCalled();
   });
 
   it("answers an unknown id with not found without opening a transaction", async () => {

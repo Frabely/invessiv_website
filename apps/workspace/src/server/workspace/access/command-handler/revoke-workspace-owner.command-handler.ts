@@ -35,6 +35,11 @@ export async function revokeWorkspaceOwner(
     };
   }
 
+  // Only another owner can take the owner role away, so no owner can lock themselves out.
+  if (memberId === actor.workspaceMemberId) {
+    return { ok: false, code: WorkspaceMemberErrorCode.SelfOwnerRevocation };
+  }
+
   const db = getDrizzleDatabaseClient();
 
   return db.transaction(async (tx): Promise<ChangeWorkspaceOwnerResult> => {

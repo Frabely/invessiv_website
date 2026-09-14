@@ -112,7 +112,10 @@ describe.skipIf(!RUN_INTEGRATION)(
   () => {
     let db: Database;
 
-    async function createOwner() {
+    async function createOwner({
+      memberActive = true,
+      userActive = true,
+    }: { memberActive?: boolean; userActive?: boolean } = {}) {
       const userId = randomUUID();
       const memberId = randomUUID();
       const now = new Date();
@@ -121,13 +124,13 @@ describe.skipIf(!RUN_INTEGRATION)(
         clerk_user_id: `${FIXTURE_PREFIX}${userId}`,
         primary_email: `${FIXTURE_PREFIX}${userId}@example.test`,
         display_name: `${FIXTURE_PREFIX}owner`,
-        active: true,
+        active: userActive,
         version: 1,
       });
       await db.insert(workspaceMembers).values({
         id: memberId,
         user_id: userId,
-        active: true,
+        active: memberActive,
         version: 1,
       });
       await db.insert(workspaceMemberRoles).values(
@@ -363,6 +366,21 @@ describe.skipIf(!RUN_INTEGRATION)(
         .from(roles)
         .where(eq(roles.name, name));
       expect(stored).toEqual([]);
+    }, 30_000);
+
+    it("counts an owner only while membership and user are both active", async () => {
+      const activeOwner = await createOwner();
+      const inactiveMemberOwner = await createOwner({ memberActive: false });
+      const inactiveUserOwner = await createOwner({ userActive: false });
+
+      // Other owners may exist in the shared dev database, so only inclusion is asserted.
+      const activeOwnerIds = await db.transaction((tx) =>
+        workspaceOwnerInvariantService.findActiveOwnerMemberIds(tx),
+      );
+
+      expect(activeOwnerIds).toContain(activeOwner.memberId);
+      expect(activeOwnerIds).not.toContain(inactiveMemberOwner.memberId);
+      expect(activeOwnerIds).not.toContain(inactiveUserOwner.memberId);
     }, 30_000);
 
     it("serializes concurrent writes to every owner assignment", async () => {

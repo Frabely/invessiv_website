@@ -19,6 +19,7 @@ export type ChangeWorkspaceOwnerResult =
         | typeof WorkspaceMemberErrorCode.AlreadyOwner
         | typeof WorkspaceMemberErrorCode.NotOwner
         | typeof WorkspaceMemberErrorCode.LastActiveOwner
+        | typeof WorkspaceMemberErrorCode.SelfOwnerRevocation
         | typeof WorkspaceMemberErrorCode.MemberWithoutRole;
     }
   | {

@@ -31,6 +31,14 @@ Portalseite mit Firmenname und Abmelden nutzbar; fachliche Dashboardmodule folge
 - Portalrollen verwenden das RBAC-Fundament aus Ordner 03. Rollen werden je Portalmitgliedschaft zugewiesen und
   enthalten ausschließlich Portal-Permissions.
 - Portalsprache pro Person; Einladungsmail nutzt diese Sprache.
+- **Vorgemerkt aus Review 03b (14.09.2026, mit dem Nutzer abgestimmt):** Die Mitgliederverwaltung aus 03b behandelt
+  heute jedes Clerk-Konto mit `users`-Zeile als „bereits verknüpft“ — die Kandidatenliste blendet es aus, und
+  `addWorkspaceMember` legt immer eine neue `users`-Zeile an (sonst `CLERK_ACCOUNT_ALREADY_LINKED`). Das stimmt nur,
+  solange ausschließlich Mitglieder eine `users`-Zeile haben. Ab diesem Ordner besitzen auch Portal-Kontakte eine.
+  Deshalb hier: Kandidat ist ein Clerk-Konto ohne `workspace_members`-Zeile; das Anlegen verwendet eine vorhandene
+  `users`-Zeile wieder (Stammdaten weiter aus Clerk); Konten mit Portalmitgliedschaft werden in der Kandidatenliste
+  sichtbar gekennzeichnet, damit kein Kundenkontakt versehentlich internes Mitglied wird; Fehlercode und Text für
+  „bereits verknüpft“ meinen danach „bereits Mitglied“.
 
 ## Firmenkontext und Grenzen
 
@@ -49,6 +57,8 @@ Portalseite mit Firmenname und Abmelden nutzbar; fachliche Dashboardmodule folge
 
 - [ ] Eine interne Mitgliedschaft gewährt nicht automatisch Portalzugriff und umgekehrt, auch wenn beide dieselbe
       `users.id` referenzieren.
+- [ ] Ein Clerk-Konto mit Portalmitgliedschaft kann als internes Mitglied angelegt werden und ist in der
+      Kandidatenliste gekennzeichnet; ein bestehendes Mitglied erscheint dort nicht.
 - [ ] Facette „hat Portalzugang" ist in `CUSTOMER_LIST_FACETS` registriert und nutzbar.
 - [ ] Keine Mitgliedschaft entsteht ohne eingelösten Token; E-Mail-Gleichheit verbindet nichts.
 - [ ] Token ist gehasht, abgelaufen/einmalig und nicht in Logs/Analytics.

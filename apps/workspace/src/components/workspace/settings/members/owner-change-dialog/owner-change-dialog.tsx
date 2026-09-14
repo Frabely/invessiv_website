@@ -1,6 +1,8 @@
 "use client";
 
-import type { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
+import { useRouter } from "next/navigation";
+
+import { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import { accessApiService } from "@/client/access/access-api-service";
 import { WorkspaceDialogSize } from "@/common/constants/ui/workspace-dialog-sizes";
@@ -25,14 +27,29 @@ export function OwnerChangeDialog({
   member,
   onCloseAction,
 }: OwnerChangeDialogProps) {
+  const router = useRouter();
   const text = content.ownerDialog;
   const mutation = useVersionedMutation<
     WorkspaceMemberDto,
     WorkspaceMemberErrorCode
   >(member, onCloseAction);
-  // After a conflict the fresh state decides the direction, so a stale click never flips it back.
-  const grants = !mutation.current.isOwner;
+  // The intent is fixed when the dialog opens: a conflict must never turn a revoke into a grant.
+  const grants = !member.isOwner;
   const name = member.displayName;
+  const alreadyDone =
+    (mutation.hasConflict && mutation.current.isOwner === grants) ||
+    mutation.errorCode ===
+      (grants
+        ? WorkspaceMemberErrorCode.AlreadyOwner
+        : WorkspaceMemberErrorCode.NotOwner);
+
+  function handleClose() {
+    // After a failed attempt the member list behind the dialog is stale.
+    if (mutation.hasConflict || mutation.errorCode) {
+      router.refresh();
+    }
+    onCloseAction();
+  }
 
   async function handleConfirm() {
     await mutation.submit((current) =>
@@ -42,11 +59,20 @@ export function OwnerChangeDialog({
     );
   }
 
-  const message = mutation.hasConflict
-    ? text.conflict
-    : mutation.errorCode
-      ? content.errors[mutation.errorCode]
-      : null;
+  const message = alreadyDone
+    ? formatMessage(grants ? text.alreadyGranted : text.alreadyRevoked, {
+        name,
+      })
+    : mutation.hasConflict
+      ? text.conflict
+      : mutation.errorCode
+        ? content.errors[mutation.errorCode]
+        : null;
+  const tone = alreadyDone
+    ? "info"
+    : mutation.hasConflict
+      ? "conflict"
+      : "error";
 
   return (
     <WorkspaceDialog
@@ -54,29 +80,35 @@ export function OwnerChangeDialog({
       closeLabel={text.close}
       description={grants ? text.grantDescription : text.revokeDescription}
       footer={
-        <>
-          <ButtonControl
-            disabled={mutation.isSubmitting}
-            onClick={onCloseAction}
-            type="button"
-            variant="ghost"
-          >
-            {text.cancel}
-          </ButtonControl>
-          <PrimaryCtaButton
-            disabled={mutation.isSubmitting}
-            onClick={handleConfirm}
-            type="button"
-          >
-            {mutation.isSubmitting
-              ? text.submitting
-              : grants
-                ? text.grantSubmit
-                : text.revokeSubmit}
+        alreadyDone ? (
+          <PrimaryCtaButton onClick={handleClose} type="button">
+            {text.done}
           </PrimaryCtaButton>
-        </>
+        ) : (
+          <>
+            <ButtonControl
+              disabled={mutation.isSubmitting}
+              onClick={handleClose}
+              type="button"
+              variant="ghost"
+            >
+              {text.cancel}
+            </ButtonControl>
+            <PrimaryCtaButton
+              disabled={mutation.isSubmitting}
+              onClick={handleConfirm}
+              type="button"
+            >
+              {mutation.isSubmitting
+                ? text.submitting
+                : grants
+                  ? text.grantSubmit
+                  : text.revokeSubmit}
+            </PrimaryCtaButton>
+          </>
+        )
       }
-      onCloseAction={onCloseAction}
+      onCloseAction={handleClose}
       size={WorkspaceDialogSize.Narrow}
       title={formatMessage(grants ? text.grantTitle : text.revokeTitle, {
         name,
@@ -85,8 +117,8 @@ export function OwnerChangeDialog({
       {message ? (
         <p
           className={styles.message}
-          data-tone={mutation.hasConflict ? "conflict" : "error"}
-          role="alert"
+          data-tone={tone}
+          role={alreadyDone ? "status" : "alert"}
         >
           {message}
         </p>

@@ -56,6 +56,9 @@ export function MemberRow({
           ) : null}
         </p>
         <p className={styles.email}>{member.primaryEmail}</p>
+        {member.hasActiveRole ? null : (
+          <p className={styles.noActiveRole}>{content.list.noActiveRole}</p>
+        )}
       </div>
       <ul aria-label={content.rolesDialog.rolesLabel} className={styles.roles}>
         {member.roles.length > 0 ? (
@@ -87,15 +90,17 @@ export function MemberRow({
         >
           {content.list.actions.editRoles}
         </ButtonControl>
-        <ButtonControl
-          aria-label={`${ownerActionLabel}: ${member.displayName}`}
-          className={styles.actionButton}
-          onClick={onToggleOwnerAction}
-          type="button"
-          variant="ghost"
-        >
-          {ownerActionLabel}
-        </ButtonControl>
+        {isCurrentActor ? null : (
+          <ButtonControl
+            aria-label={`${ownerActionLabel}: ${member.displayName}`}
+            className={styles.actionButton}
+            onClick={onToggleOwnerAction}
+            type="button"
+            variant="ghost"
+          >
+            {ownerActionLabel}
+          </ButtonControl>
+        )}
       </div>
     </li>
   );

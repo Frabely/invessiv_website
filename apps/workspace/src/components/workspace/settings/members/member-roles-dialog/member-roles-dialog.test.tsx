@@ -80,6 +80,7 @@ const MEMBER: WorkspaceMemberDto = {
   primaryEmail: "anna@example.test",
   active: true,
   isOwner: false,
+  hasActiveRole: true,
   roles: [{ id: "role-reader", name: "Leser", systemKey: null, active: true }],
   version: 2,
   createdAt: "2026-09-13T10:00:00.000Z",

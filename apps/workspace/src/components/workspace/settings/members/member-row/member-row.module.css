@@ -72,6 +72,18 @@
   overflow-wrap: anywhere;
 }
 
+.noActiveRole {
+  align-self: flex-start;
+  margin: 0.2rem 0 0;
+  padding: 0.1rem 0.5rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 45%, transparent);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--color-accent-warm) 10%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-xs);
+}
+
 .roles {
   display: flex;
   flex-wrap: wrap;
