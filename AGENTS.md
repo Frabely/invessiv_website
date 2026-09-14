@@ -114,10 +114,12 @@ Detailregeln stehen in den scope-spezifischen Dateien (siehe Index). Global gilt
 - Lange/monolithische Dateien frühzeitig in kleine, klar abgegrenzte Einheiten aufsplitten.
 - **Export entscheidet über den Ort von Typen/Konstanten/Patterns.** Ein Typ, eine Konstante, eine Objekt-Map oder ein
   Pattern darf lokal in der eigenen Datei (Komponente, `lib/`, `hooks/`, `client/`, `server/`) stehen, **solange er nur
-  dort genutzt und nicht exportiert wird** (z. B. der eigene `XxxProps`-Type einer Komponente, ein rein lokaler
-  Helfer-Type oder eine datei-interne Map). **Sobald ein `export` nötig wird (Nutzung in einer anderen Datei), wird der
-  Baustein vorher nach `common` verschoben** — kein `export` von Typen/Konstanten/Patterns aus Komponenten- oder
-  Logik-Dateien. Ziel ist `packages/common` (app-übergreifend) bzw. `apps/<app>/common` (app-spezifisch):
+  dort genutzt und nicht exportiert wird** (z. B. ein rein lokaler Helfer-Type oder eine datei-interne Map).
+  **Komponentenspezifische `*Props`-Typen sind die Ausnahme:** Sie dürfen als Teil der öffentlichen Komponenten-API in
+  der zugehörigen Komponentendatei definiert und exportiert werden, auch wenn eine andere Komponente sie importiert.
+  Für alle anderen Bausteine gilt: **Sobald ein `export` nötig wird (Nutzung in einer anderen Datei), wird der Baustein
+  vorher nach `common` verschoben** — kein `export` von Typen/Konstanten/Patterns aus Komponenten- oder Logik-Dateien.
+  Ziel ist `packages/common` (app-übergreifend) bzw. `apps/<app>/common` (app-spezifisch):
   `contracts/` für Typen/DTOs/Shapes, `constants/` für String-Unions/Werte/Maps, `defaults/` für Defaults,
   `patterns/` für seiteneffektfreie Helfer. String-Unions/Enums ausschließlich per **Const-Objekt + abgeleitetem Type**
   (kein `enum`). Details & Beispiele: `apps/web/src/components/AGENTS.md`, `packages/common/AGENTS.md`.
