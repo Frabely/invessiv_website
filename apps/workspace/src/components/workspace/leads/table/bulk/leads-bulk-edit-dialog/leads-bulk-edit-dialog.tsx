@@ -22,8 +22,12 @@ import type { BulkEditLeadsPatch } from "@invessiv/common/contracts/leads/bulk-e
 import type { ImprovementsListEditorContent } from "@invessiv/common/contracts/leads";
 import type { LeadCategoryOption } from "@invessiv/common/contracts/leads/lead-category-option";
 import type { BulkEditLeadsFailedLead } from "@invessiv/common/contracts/leads/results/bulk-edit-leads-result";
-import { ButtonControl, CheckboxControl, PrimaryCtaButton } from "@invessiv/ui";
-import { FormStatus } from "@/components/shared/form/form-status/form-status";
+import {
+  ButtonControl,
+  CheckboxControl,
+  FormStatus,
+  PrimaryCtaButton,
+} from "@invessiv/ui";
 import { trapDialogFocus } from "@/components/workspace/shared/dialog/dialog-focus-trap";
 import { ImprovementsListEditor } from "@/components/workspace/leads/shared/improvements-list-editor/improvements-list-editor";
 import type {

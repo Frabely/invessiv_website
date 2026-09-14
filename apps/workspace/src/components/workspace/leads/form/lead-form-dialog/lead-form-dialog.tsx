@@ -28,10 +28,14 @@ import { LeadValidationMessageCode } from "@invessiv/common/constants/leads/form
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import { CONTACT_EMAIL_PATTERN } from "@invessiv/common/patterns/contact/contact-email";
 import { isValidContactPhone } from "@invessiv/common/patterns/contact/contact-phone";
-import { ButtonControl, FormField, PrimaryCtaButton } from "@invessiv/ui";
+import {
+  ButtonControl,
+  FormActions,
+  FormField,
+  FormStatus,
+  PrimaryCtaButton,
+} from "@invessiv/ui";
 import { LeadOutreachTrigger } from "@/components/workspace/leads/outreach/lead-outreach-trigger/lead-outreach-trigger";
-import { FormActions } from "@/components/shared/form/form-actions/form-actions";
-import { FormStatus } from "@/components/shared/form/form-status/form-status";
 import { leadMapperService } from "@/client/leads/mappers/lead-mapper-service";
 import { isOpenableUrl, openExternalUrl } from "@/lib/url/is-openable-url";
 import { LeadOutreachTriggerVariant } from "@invessiv/common/constants/leads/outreach/lead-outreach-trigger-variants";

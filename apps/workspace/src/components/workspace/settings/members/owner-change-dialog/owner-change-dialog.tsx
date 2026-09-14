@@ -5,9 +5,12 @@ import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspa
 import { accessApiService } from "@/client/access/access-api-service";
 import { DialogMessageRole } from "@/common/constants/ui/dialog-message-roles";
 import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
-import { WorkspaceDialogSize } from "@/common/constants/ui/workspace-dialog-sizes";
-import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
-import { WorkspaceDialog } from "@/components/workspace/shared/dialog/workspace-dialog/workspace-dialog";
+import {
+  ButtonControl,
+  Dialog,
+  DialogSize,
+  PrimaryCtaButton,
+} from "@invessiv/ui";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import type { SettingsMembersDictionary } from "@/i18n/dictionaries/workspace/settings";
 import { formatMessage } from "@/lib/i18n/format-message";
@@ -63,7 +66,7 @@ export function OwnerChangeDialog({
       : DialogMessageTone.Error;
 
   return (
-    <WorkspaceDialog
+    <Dialog
       busy={mutation.isSubmitting}
       closeLabel={text.close}
       description={grants ? text.grantDescription : text.revokeDescription}
@@ -97,7 +100,7 @@ export function OwnerChangeDialog({
         )
       }
       onCloseAction={mutation.close}
-      size={WorkspaceDialogSize.Narrow}
+      size={DialogSize.Narrow}
       title={formatMessage(grants ? text.grantTitle : text.revokeTitle, {
         name,
       })}
@@ -113,6 +116,6 @@ export function OwnerChangeDialog({
           {message}
         </p>
       ) : null}
-    </WorkspaceDialog>
+    </Dialog>
   );
 }

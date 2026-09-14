@@ -13,7 +13,7 @@ import type {
   LeadsTableDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 import { LeadsBulkActionBar } from "../bulk/leads-bulk-action-bar/leads-bulk-action-bar";
-import { LeadsEmptyState } from "../leads-empty-state/leads-empty-state";
+import { ListEmptyState } from "@/components/workspace/shared/table/list-empty-state/list-empty-state";
 import { LeadsTableSelectAllCheckbox } from "../leads-table-select-all-checkbox/leads-table-select-all-checkbox";
 import { LeadsTableSelectionProvider } from "../leads-table-selection-provider/leads-table-selection-provider";
 import { LeadsTableRow } from "../leads-table-row/leads-table-row";
@@ -183,7 +183,7 @@ export function LeadsTable({
                       className={styles.emptyStateCell}
                       colSpan={LEADS_TABLE_COLUMN_COUNT}
                     >
-                      <LeadsEmptyState
+                      <ListEmptyState
                         actionHref={emptyState.actionHref}
                         actionLabel={emptyState.actionLabel}
                         description={emptyState.description}

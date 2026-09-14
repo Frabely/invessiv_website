@@ -1,17 +1,12 @@
 "use client";
 
-import { type KeyboardEvent, useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { ContactLeadStatus as ContactLeadStatusValue } from "@invessiv/common/constants/contact/contact-lead-statuses";
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
 import { LeadDeleteAction } from "@invessiv/common/constants/leads/delete/lead-delete-actions";
 import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
-import { ButtonControl } from "@invessiv/ui";
-import { FormStatus } from "@/components/shared/form/form-status/form-status";
-import { trapDialogFocus } from "@/components/workspace/shared/dialog/dialog-focus-trap";
+import { ButtonControl, ConfirmDialog, FormStatus } from "@invessiv/ui";
 import { leadsService } from "../../form/lead-form-dialog/leads-service";
 import type { LeadsDeleteDictionary } from "@/i18n/dictionaries/workspace/leads";
 import styles from "./lead-delete-confirm-dialog.module.css";
@@ -25,11 +20,6 @@ type LeadDeleteConfirmDialogProps = {
   onCloseAction: () => void;
   onSuccessAction?: () => void;
 };
-
-const DialogId = {
-  Description: "lead-delete-dialog-description",
-  Title: "lead-delete-dialog-title",
-} as const;
 
 type PendingAction = LeadDeleteAction | null;
 
@@ -57,31 +47,9 @@ export function LeadDeleteConfirmDialog({
   onSuccessAction,
 }: LeadDeleteConfirmDialogProps) {
   const router = useRouter();
-  const dialogRef = useRef<HTMLDivElement>(null);
   const [pending, setPending] = useState<PendingAction>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const isArchived = currentStatus === ContactLeadStatus.Archived;
-
-  useEffect(() => {
-    window.requestAnimationFrame(() => {
-      const container = dialogRef.current;
-      if (!container) {
-        return;
-      }
-      const firstButton = container.querySelector<HTMLButtonElement>(
-        "button[type='button']",
-      );
-      firstButton?.focus();
-    });
-  }, []);
-
-  if (typeof document === "undefined") {
-    return null;
-  }
-
-  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    trapDialogFocus(event, event.currentTarget, onCloseAction);
-  }
 
   async function handleArchive() {
     setPending(LeadDeleteAction.Archive);
@@ -125,78 +93,37 @@ export function LeadDeleteConfirmDialog({
         ? content.status.deleting
         : null;
 
-  return createPortal(
-    <div className={styles.overlay} role="presentation">
-      <div
-        aria-describedby={DialogId.Description}
-        aria-labelledby={DialogId.Title}
-        aria-modal="true"
-        className={styles.dialog}
-        onKeyDown={handleKeyDown}
-        ref={dialogRef}
-        role="dialog"
-      >
-        <header className={styles.header}>
-          <div className={styles.heading}>
-            <p className={styles.kicker}>{content.dialog.kicker}</p>
-            <h2 className={styles.title} id={DialogId.Title}>
-              {content.dialog.title}
-            </h2>
-            <p className={styles.description} id={DialogId.Description}>
-              {description}
-            </p>
-          </div>
-
+  return (
+    <ConfirmDialog
+      busy={isBusy}
+      cancelLabel={content.buttons.cancel}
+      closeLabel={content.dialog.closeAriaLabel}
+      confirmLabel={content.buttons.confirmDelete}
+      description={description}
+      onCancelAction={onCloseAction}
+      onConfirmAction={handleDelete}
+      secondaryAction={
+        canArchive && !isArchived ? (
           <ButtonControl
-            aria-label={content.dialog.closeAriaLabel}
-            className={styles.closeButton}
             disabled={isBusy}
-            onClick={onCloseAction}
-            title={content.dialog.closeAriaLabel}
+            onClick={handleArchive}
             type="button"
             variant="ghost"
           >
-            <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
+            {content.buttons.archive}
           </ButtonControl>
-        </header>
-
-        <FormStatus className={styles.statusBanner} message={statusMessage} />
-        {errorMessage ? (
-          <p className={styles.errorBanner} role="alert">
-            {errorMessage}
-          </p>
-        ) : null}
-
-        <footer className={styles.footer}>
-          <ButtonControl
-            disabled={isBusy}
-            onClick={onCloseAction}
-            type="button"
-            variant="ghost"
-          >
-            {content.buttons.cancel}
-          </ButtonControl>
-          {canArchive && !isArchived ? (
-            <ButtonControl
-              disabled={isBusy}
-              onClick={handleArchive}
-              type="button"
-              variant="ghost"
-            >
-              {content.buttons.archive}
-            </ButtonControl>
-          ) : null}
-          <button
-            className={styles.confirmDeleteButton}
-            disabled={isBusy}
-            onClick={handleDelete}
-            type="button"
-          >
-            {content.buttons.confirmDelete}
-          </button>
-        </footer>
-      </div>
-    </div>,
-    document.body,
+        ) : undefined
+      }
+      title={content.dialog.title}
+      tone="danger"
+    >
+      <p className={styles.kicker}>{content.dialog.kicker}</p>
+      <FormStatus className={styles.statusBanner} message={statusMessage} />
+      {errorMessage ? (
+        <p className={styles.errorBanner} role="alert">
+          {errorMessage}
+        </p>
+      ) : null}
+    </ConfirmDialog>
   );
 }

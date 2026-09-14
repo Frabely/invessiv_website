@@ -11,9 +11,12 @@ import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspa
 import { accessApiService } from "@/client/access/access-api-service";
 import { DialogMessageRole } from "@/common/constants/ui/dialog-message-roles";
 import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
-import { WorkspaceDialogSize } from "@/common/constants/ui/workspace-dialog-sizes";
-import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
-import { WorkspaceDialog } from "@/components/workspace/shared/dialog/workspace-dialog/workspace-dialog";
+import {
+  ButtonControl,
+  Dialog,
+  DialogSize,
+  PrimaryCtaButton,
+} from "@invessiv/ui";
 import type { SettingsMembersDictionary } from "@/i18n/dictionaries/workspace/settings";
 import { formatMessage } from "@/lib/i18n/format-message";
 import styles from "./member-status-dialog.module.css";
@@ -99,7 +102,7 @@ export function MemberStatusDialog({
       : DialogMessageTone.Error;
 
   return (
-    <WorkspaceDialog
+    <Dialog
       busy={isSubmitting}
       closeLabel={text.close}
       description={
@@ -135,7 +138,7 @@ export function MemberStatusDialog({
         )
       }
       onCloseAction={close}
-      size={WorkspaceDialogSize.Narrow}
+      size={DialogSize.Narrow}
       title={formatMessage(
         desiredActive ? text.activateTitle : text.deactivateTitle,
         { name: member.displayName },
@@ -152,6 +155,6 @@ export function MemberStatusDialog({
           {message}
         </p>
       ) : null}
-    </WorkspaceDialog>
+    </Dialog>
   );
 }

@@ -7,8 +7,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import type { LeadSummaryDto } from "@invessiv/common/contracts/leads/lead-summary.dto";
-import { ButtonControl } from "@invessiv/ui";
-import { FormStatus } from "@/components/shared/form/form-status/form-status";
+import { ButtonControl, FormStatus } from "@invessiv/ui";
 import { trapDialogFocus } from "@/components/workspace/shared/dialog/dialog-focus-trap";
 import type { LeadsBulkDictionary } from "@/i18n/dictionaries/workspace/leads";
 

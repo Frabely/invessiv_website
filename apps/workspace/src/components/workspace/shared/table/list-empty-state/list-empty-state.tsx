@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { LeadsEmptyStateVariant } from "@invessiv/common/constants/leads/list/lead-empty-state-variants";
-import styles from "./leads-empty-state.module.css";
+import styles from "./list-empty-state.module.css";
 
-type LeadsEmptyStateProps = {
+type ListEmptyStateProps = {
   actionHref?: string;
   actionLabel: string;
   description: string;
@@ -51,13 +51,13 @@ function renderAction(
   );
 }
 
-export function LeadsEmptyState({
+export function ListEmptyState({
   actionHref,
   actionLabel,
   description,
   title,
   variant,
-}: LeadsEmptyStateProps) {
+}: ListEmptyStateProps) {
   return (
     <section className={styles.shell}>
       <div className={styles.panel} data-variant={variant}>

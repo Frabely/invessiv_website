@@ -1,10 +1,16 @@
 "use client";
 
-import { type KeyboardEvent, useEffect, useRef, useState } from "react";
 import {
-  FloatingPortal,
+  type KeyboardEvent,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import {
   autoUpdate,
   flip,
+  FloatingPortal,
   offset,
   shift,
   size,
@@ -23,6 +29,7 @@ import type {
   CustomSelectOption,
 } from "@invessiv/common/contracts/ui/custom-select-option";
 import styles from "./custom-select.module.css";
+import { DialogPortalRootContext } from "../dialog/dialog-portal-root-context";
 
 type SingleSelectProps<TValue extends string> = {
   multiple?: false;
@@ -73,6 +80,7 @@ export function CustomSelect<TValue extends string = string>(
     onClear,
   } = props;
   const [isOpen, setIsOpen] = useState(false);
+  const dialogPortalRoot = useContext(DialogPortalRootContext);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -202,7 +210,7 @@ export function CustomSelect<TValue extends string = string>(
         {clearButton}
 
         {isOpen ? (
-          <FloatingPortal>
+          <FloatingPortal root={dialogPortalRoot ?? undefined}>
             <div
               {...getFloatingProps()}
               className={styles.listBox}
@@ -345,7 +353,7 @@ export function CustomSelect<TValue extends string = string>(
       {clearButton}
 
       {isOpen ? (
-        <FloatingPortal>
+        <FloatingPortal root={dialogPortalRoot ?? undefined}>
           <div
             {...getFloatingProps()}
             className={styles.listBox}

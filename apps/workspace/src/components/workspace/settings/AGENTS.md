@@ -33,7 +33,7 @@ Jede Komponente lebt in `<group>/<component-name>/<component-name>.tsx` mit eige
 - **409 behält Eingaben.** Ein Versionskonflikt zeigt den aktuellen Stand und lässt den Nutzer erneut absenden.
 - **Nicht delegierbare Permissions** erscheinen im Rollen-Dialog sichtbar gesperrt mit Erklärung, nicht versteckt.
 - **Systemrollen** zeigen ihr Label aus dem Dictionary über den `systemKey`, nie `roles.name` aus der DB.
-- **Dialog-Hülle** aus `components/workspace/shared/dialog/` wiederverwenden; keine eigene Overlay-/Fokuslogik.
+- **Dialog-Hülle** aus `@invessiv/ui` wiederverwenden; keine eigene Overlay-/Fokuslogik.
 - i18n ausschließlich aus `src/i18n/dictionaries/workspace/settings/`; DE und EN parallel.
 - Keine PII in Logs oder URLs; E-Mail-Adressen erscheinen nur als Anzeige in der Liste.
 - Interaktive Komponenten (Dialoge) bekommen co-located Tests.

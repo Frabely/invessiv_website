@@ -1,0 +1,30 @@
+.confirmButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid color-mix(in srgb, var(--color-cta) 70%, transparent);
+  border-radius: 10px;
+  background: var(--color-cta);
+  color: var(--color-on-cta);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.confirmButton[data-tone="danger"] {
+  border-color: rgba(217, 45, 32, 0.6);
+  background: rgba(217, 45, 32, 0.9);
+  color: #fff;
+}
+
+.confirmButton:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.confirmButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}

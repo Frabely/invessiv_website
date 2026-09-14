@@ -12,14 +12,14 @@ import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
 import {
   ButtonControl,
   CheckboxControl,
+  Dialog,
+  DialogSize,
   FormField,
   PrimaryCtaButton,
 } from "@invessiv/ui";
 import { accessApiService } from "@/client/access/access-api-service";
 import { AccessFieldLimits } from "@/common/constants/access/access-field-limits";
 import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
-import { WorkspaceDialogSize } from "@/common/constants/ui/workspace-dialog-sizes";
-import { WorkspaceDialog } from "@/components/workspace/shared/dialog/workspace-dialog/workspace-dialog";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import type {
   SettingsPermissionsDictionary,
@@ -107,7 +107,7 @@ export function RoleFormDialog({
     const label = resolveRoleLabel(role, permissionsContent);
     const roleDescription = resolveRoleDescription(role, permissionsContent);
     return (
-      <WorkspaceDialog
+      <Dialog
         closeLabel={text.close}
         description={text.viewDescription}
         footer={
@@ -116,7 +116,7 @@ export function RoleFormDialog({
           </ButtonControl>
         }
         onCloseAction={onCloseAction}
-        size={WorkspaceDialogSize.Wide}
+        size={DialogSize.Wide}
         title={formatMessage(text.viewTitle, { name: label })}
       >
         <div className={styles.form}>
@@ -134,12 +134,12 @@ export function RoleFormDialog({
             selected={role.permissions}
           />
         </div>
-      </WorkspaceDialog>
+      </Dialog>
     );
   }
 
   return (
-    <WorkspaceDialog
+    <Dialog
       busy={mutation.isSubmitting}
       closeLabel={text.close}
       description={text.description}
@@ -167,7 +167,7 @@ export function RoleFormDialog({
         </>
       }
       onCloseAction={mutation.close}
-      size={WorkspaceDialogSize.Wide}
+      size={DialogSize.Wide}
       title={role ? text.editTitle : text.createTitle}
     >
       <form
@@ -276,6 +276,6 @@ export function RoleFormDialog({
           </p>
         ) : null}
       </form>
-    </WorkspaceDialog>
+    </Dialog>
   );
 }

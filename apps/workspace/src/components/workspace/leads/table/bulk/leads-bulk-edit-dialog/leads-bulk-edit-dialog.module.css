@@ -4,9 +4,9 @@
   z-index: 70;
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  padding: calc(var(--workspace-header-height, 60px) + 2.25rem)
-    clamp(0.75rem, 2vw, 2rem) 1.25rem;
+  align-items: center;
+  padding: calc(var(--workspace-header-height, 60px) + 1rem)
+    clamp(0.75rem, 2vw, 2rem) 1rem;
   overflow: hidden;
   background: rgba(12, 10, 9, 0.72);
   backdrop-filter: blur(8px);

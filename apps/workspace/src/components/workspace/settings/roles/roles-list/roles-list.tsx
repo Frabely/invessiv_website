@@ -5,7 +5,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
-import { PrimaryCtaButton } from "@invessiv/ui";
+import { EmptyState, PrimaryCtaButton } from "@invessiv/ui";
 import type {
   SettingsPermissionsDictionary,
   SettingsRolesDictionary,
@@ -83,13 +83,13 @@ export function RolesList({
             ))}
           </ul>
         ) : (
-          <div className={styles.emptyPanel}>
-            <h3 className={styles.emptyTitle}>{content.list.emptyTitle}</h3>
-            <p className={styles.emptyDescription}>
-              {content.list.emptyDescription}
-            </p>
-            <div className={styles.emptyAction}>{createButton}</div>
-          </div>
+          <EmptyState
+            action={createButton}
+            alignment="start"
+            description={content.list.emptyDescription}
+            icon={<FontAwesomeIcon icon={faPlus} />}
+            title={content.list.emptyTitle}
+          />
         )}
       </section>
 

@@ -7,13 +7,16 @@ import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/ro
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import { unionRolePermissions } from "@invessiv/common/patterns/auth/union-role-permissions";
 import { accessApiService } from "@/client/access/access-api-service";
-import { WorkspaceDialogSize } from "@/common/constants/ui/workspace-dialog-sizes";
 import {
   selectAssignableRoles,
   selectOwnerRoleIds,
 } from "@/common/patterns/access/role-selection";
-import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
-import { WorkspaceDialog } from "@/components/workspace/shared/dialog/workspace-dialog/workspace-dialog";
+import {
+  ButtonControl,
+  Dialog,
+  DialogSize,
+  PrimaryCtaButton,
+} from "@invessiv/ui";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import type {
   SettingsMembersDictionary,
@@ -76,7 +79,7 @@ export function MemberRolesDialog({
   }
 
   return (
-    <WorkspaceDialog
+    <Dialog
       busy={mutation.isSubmitting}
       closeLabel={text.close}
       description={text.description}
@@ -100,7 +103,7 @@ export function MemberRolesDialog({
         </>
       }
       onCloseAction={mutation.close}
-      size={WorkspaceDialogSize.Wide}
+      size={DialogSize.Wide}
       title={formatMessage(text.title, { name: member.displayName })}
     >
       <form
@@ -174,6 +177,6 @@ export function MemberRolesDialog({
           </p>
         ) : null}
       </form>
-    </WorkspaceDialog>
+    </Dialog>
   );
 }

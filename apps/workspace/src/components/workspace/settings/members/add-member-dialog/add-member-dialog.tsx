@@ -9,10 +9,14 @@ import type { ClerkCandidateDto } from "@invessiv/common/contracts/auth/clerk-ca
 import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/role-assignment-option.dto";
 import { accessApiService } from "@/client/access/access-api-service";
 import { AccessFieldLimits } from "@/common/constants/access/access-field-limits";
-import { WorkspaceDialogSize } from "@/common/constants/ui/workspace-dialog-sizes";
 import { selectDefaultRoleIds } from "@/common/patterns/access/role-selection";
-import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
-import { WorkspaceDialog } from "@/components/workspace/shared/dialog/workspace-dialog/workspace-dialog";
+import {
+  ButtonControl,
+  Dialog,
+  DialogSize,
+  EmptyState,
+  PrimaryCtaButton,
+} from "@invessiv/ui";
 import type {
   SettingsMembersDictionary,
   SettingsPermissionsDictionary,
@@ -134,15 +138,16 @@ export function AddMemberDialog({
       return <p className={styles.muted}>{text.noMatches}</p>;
     }
     return (
-      <div className={styles.empty}>
-        <p className={styles.emptyTitle}>{text.emptyTitle}</p>
-        <p className={styles.muted}>{text.emptyDescription}</p>
-      </div>
+      <EmptyState
+        description={text.emptyDescription}
+        icon={<span aria-hidden="true">+</span>}
+        title={text.emptyTitle}
+      />
     );
   }
 
   return (
-    <WorkspaceDialog
+    <Dialog
       busy={isSubmitting}
       closeLabel={text.close}
       description={text.description}
@@ -162,7 +167,7 @@ export function AddMemberDialog({
         </>
       }
       onCloseAction={onCloseAction}
-      size={WorkspaceDialogSize.Narrow}
+      size={DialogSize.Narrow}
       title={text.title}
     >
       <form
@@ -255,6 +260,6 @@ export function AddMemberDialog({
           </p>
         ) : null}
       </form>
-    </WorkspaceDialog>
+    </Dialog>
   );
 }
