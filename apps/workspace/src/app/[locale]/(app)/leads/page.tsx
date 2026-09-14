@@ -10,7 +10,7 @@ import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { LeadFormDialog } from "@/components/workspace/leads/form/lead-form-dialog/lead-form-dialog";
 import { LeadsPageHeader } from "@/components/workspace/leads/shell/leads-page-header/leads-page-header";
 import { LeadsPageShell } from "@/components/workspace/leads/shell/leads-page-shell/leads-page-shell";
-import { LeadsPagination } from "@/components/workspace/leads/table/leads-pagination/leads-pagination";
+import { ListPagination } from "@/components/workspace/shared/table/list-pagination/list-pagination";
 import { LeadsTable } from "@/components/workspace/leads/table/leads-table/leads-table";
 import { LeadsTableTransitionProvider } from "@/components/workspace/leads/table/leads-table-transition-provider/leads-table-transition-provider";
 import type { LeadCategoryOption } from "@invessiv/common/contracts/leads/lead-category-option";
@@ -248,7 +248,7 @@ export default async function LeadsPage({
             sharedContent={sharedContent}
             tableContent={tableContent}
           />
-          <LeadsPagination
+          <ListPagination
             basePath={basePath}
             content={paginationContent}
             currentPage={currentPage}

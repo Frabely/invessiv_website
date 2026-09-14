@@ -3,9 +3,9 @@
 import { type ReactNode } from "react";
 import { CustomSelect } from "@invessiv/ui";
 import { LEAD_FILTER_ALL_VALUE } from "@/common/constants/leads/list/lead-filter-all-value";
-import styles from "./lead-facet-filter.module.css";
+import styles from "./facet-filter.module.css";
 
-type LeadFacetFilterProps = {
+type FacetFilterProps = {
   activeValue: string | undefined;
   allOption: { chip: ReactNode; selectLabel: string };
   ariaLabel: string;
@@ -20,7 +20,7 @@ type LeadFacetFilterProps = {
   selectId: string;
 };
 
-export function LeadFacetFilter({
+export function FacetFilter({
   activeValue,
   allOption,
   ariaLabel,
@@ -29,7 +29,7 @@ export function LeadFacetFilter({
   onChangeAction,
   options,
   selectId,
-}: LeadFacetFilterProps) {
+}: FacetFilterProps) {
   const isAllActive = !activeValue;
 
   return (

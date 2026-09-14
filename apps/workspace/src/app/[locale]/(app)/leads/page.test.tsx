@@ -78,9 +78,9 @@ vi.mock(
 );
 
 vi.mock(
-  "@/components/workspace/leads/table/leads-pagination/leads-pagination",
+  "@/components/workspace/shared/table/list-pagination/list-pagination",
   () => ({
-    LeadsPagination: mockLeadsPagination,
+    ListPagination: mockLeadsPagination,
   }),
 );
 

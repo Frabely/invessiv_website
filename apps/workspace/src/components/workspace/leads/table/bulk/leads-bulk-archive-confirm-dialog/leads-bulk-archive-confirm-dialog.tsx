@@ -1,14 +1,11 @@
 "use client";
 
-import { type KeyboardEvent, useEffect, useId, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import type { LeadSummaryDto } from "@invessiv/common/contracts/leads/lead-summary.dto";
-import { ButtonControl, FormStatus } from "@invessiv/ui";
-import { trapDialogFocus } from "@/components/workspace/shared/dialog/dialog-focus-trap";
+import { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";
+import { ButtonControl, Dialog, FormStatus } from "@invessiv/ui";
 import type { LeadsBulkDictionary } from "@/i18n/dictionaries/workspace/leads";
 
 import { leadsBulkEditService } from "../../services/leads-bulk-edit-service";
@@ -39,34 +36,10 @@ export function LeadsBulkArchiveConfirmDialog({
   selectedLeads,
 }: LeadsBulkArchiveConfirmDialogProps) {
   const router = useRouter();
-  const dialogRef = useRef<HTMLDivElement>(null);
-  const titleId = useId();
-  const descriptionId = useId();
   const statusId = useId();
   const errorId = useId();
   const [isPending, setIsPending] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  useEffect(() => {
-    window.requestAnimationFrame(() => {
-      const container = dialogRef.current;
-      container
-        ?.querySelector<HTMLButtonElement>("button[type='button']")
-        ?.focus();
-    });
-  }, []);
-
-  if (typeof document === "undefined") {
-    return null;
-  }
-
-  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    if (isPending) {
-      if (event.key === "Escape") event.preventDefault();
-      return;
-    }
-    trapDialogFocus(event, event.currentTarget, onCloseAction);
-  }
 
   async function handleConfirm() {
     setErrorMessage(null);
@@ -92,91 +65,54 @@ export function LeadsBulkArchiveConfirmDialog({
   const statusMessage = isPending
     ? bulkContent.archiveConfirm.status.archiving
     : null;
-  const describedBy = [
-    descriptionId,
-    statusMessage ? statusId : null,
-    errorMessage ? errorId : null,
-  ]
-    .filter(Boolean)
-    .join(" ");
+  return (
+    <Dialog
+      aria-busy={isPending}
+      busy={isPending}
+      closeLabel={bulkContent.archiveConfirm.closeAriaLabel}
+      description={message}
+      footer={null}
+      onCloseAction={onCloseAction}
+      size={DialogSize.Narrow}
+      title={bulkContent.archiveConfirm.title}
+    >
+      {statusMessage ? (
+        <div id={statusId}>
+          <FormStatus className={styles.statusBanner} message={statusMessage} />
+        </div>
+      ) : null}
+      {errorMessage ? (
+        <p className={styles.errorBanner} id={errorId} role="alert">
+          {errorMessage}
+        </p>
+      ) : null}
 
-  return createPortal(
-    <div className={styles.overlay} role="presentation">
-      <div
-        aria-busy={isPending}
-        aria-describedby={describedBy || undefined}
-        aria-labelledby={titleId}
-        aria-modal="true"
-        className={styles.dialog}
-        onKeyDown={handleKeyDown}
-        ref={dialogRef}
-        role="dialog"
-      >
-        <header className={styles.header}>
-          <div className={styles.heading}>
-            <p className={styles.kicker}>{bulkContent.archiveConfirm.kicker}</p>
-            <h2 className={styles.title} id={titleId}>
-              {bulkContent.archiveConfirm.title}
-            </h2>
-            <p className={styles.description} id={descriptionId}>
-              {message}
-            </p>
-          </div>
-          <ButtonControl
-            aria-label={bulkContent.archiveConfirm.closeAriaLabel}
-            className={styles.closeButton}
-            disabled={isPending}
-            onClick={onCloseAction}
-            title={bulkContent.archiveConfirm.closeAriaLabel}
-            type="button"
-            variant="ghost"
-          >
-            <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
-          </ButtonControl>
-        </header>
+      <ul className={styles.leadList}>
+        {selectedLeads.map((lead) => (
+          <li className={styles.leadItem} key={lead.id}>
+            <strong>{lead.displayName}</strong>
+          </li>
+        ))}
+      </ul>
 
-        {statusMessage ? (
-          <div id={statusId}>
-            <FormStatus
-              className={styles.statusBanner}
-              message={statusMessage}
-            />
-          </div>
-        ) : null}
-        {errorMessage ? (
-          <p className={styles.errorBanner} id={errorId} role="alert">
-            {errorMessage}
-          </p>
-        ) : null}
-
-        <ul className={styles.leadList}>
-          {selectedLeads.map((lead) => (
-            <li className={styles.leadItem} key={lead.id}>
-              <strong>{lead.displayName}</strong>
-            </li>
-          ))}
-        </ul>
-
-        <footer className={styles.footer}>
-          <ButtonControl
-            disabled={isPending}
-            onClick={onCloseAction}
-            type="button"
-            variant="ghost"
-          >
-            {bulkContent.archiveConfirm.cancel}
-          </ButtonControl>
-          <button
-            className={styles.confirmButton}
-            disabled={isPending}
-            onClick={handleConfirm}
-            type="button"
-          >
-            {bulkContent.archiveConfirm.confirm}
-          </button>
-        </footer>
-      </div>
-    </div>,
-    document.body,
+      <footer className={styles.footer}>
+        <ButtonControl
+          disabled={isPending}
+          onClick={onCloseAction}
+          type="button"
+          variant="ghost"
+        >
+          {bulkContent.archiveConfirm.cancel}
+        </ButtonControl>
+        <button
+          className={styles.confirmButton}
+          disabled={isPending}
+          onClick={handleConfirm}
+          type="button"
+        >
+          {bulkContent.archiveConfirm.confirm}
+        </button>
+      </footer>
+    </Dialog>
   );
 }

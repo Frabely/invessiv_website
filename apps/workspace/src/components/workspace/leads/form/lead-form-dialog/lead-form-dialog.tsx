@@ -41,7 +41,6 @@ import { isOpenableUrl, openExternalUrl } from "@/lib/url/is-openable-url";
 import { LeadOutreachTriggerVariant } from "@invessiv/common/constants/leads/outreach/lead-outreach-trigger-variants";
 import { ImprovementsSection } from "./improvements-section/improvements-section";
 import { SocialProfilesSection } from "./social-profiles-section/social-profiles-section";
-import { trapDialogFocus } from "@/components/workspace/shared/dialog/dialog-focus-trap";
 import type { LeadCategoryOption } from "@invessiv/common/contracts/leads/lead-category-option";
 import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
 import type {
@@ -501,7 +500,27 @@ export function LeadFormDialog({
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    trapDialogFocus(event, event.currentTarget, closeDialog);
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeDialog();
+      return;
+    }
+    if (event.key !== "Tab") return;
+    const focusable = Array.from(
+      event.currentTarget.querySelectorAll<HTMLElement>(
+        "button, input, select, textarea, a[href]",
+      ),
+    ).filter((element) => !element.hasAttribute("disabled"));
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
   }
 
   function resetValidationMessages() {

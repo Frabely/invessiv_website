@@ -24,9 +24,9 @@ import type {
   LeadsSharedDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 import { LeadStatusBadge } from "@/components/workspace/leads/shared";
-import styles from "./lead-detail-activities.module.css";
+import styles from "./activity-timeline.module.css";
 
-type LeadDetailActivitiesProps = {
+type ActivityTimelineProps = {
   activities: LeadActivityDto[];
   submissions: LeadSubmissionDto[];
   locale: Locale;
@@ -266,13 +266,13 @@ function renderSubmissionEntry(
   );
 }
 
-export function LeadDetailActivities({
+export function ActivityTimeline({
   activities,
   submissions,
   locale,
   content,
   sharedContent,
-}: LeadDetailActivitiesProps) {
+}: ActivityTimelineProps) {
   const timeline = buildTimeline(activities, submissions);
 
   if (timeline.length === 0) {

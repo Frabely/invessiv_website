@@ -32,7 +32,7 @@ import { buildLeadHref } from "@/components/workspace/leads/table/lead-table-uti
 import { LeadCategoryFilter } from "@/components/workspace/leads/toolbar/lead-category-filter/lead-category-filter";
 import { LeadProfileFilter } from "@/components/workspace/leads/toolbar/lead-profile-filter/lead-profile-filter";
 import { LeadScoreFilter } from "@/components/workspace/leads/toolbar/lead-score-filter/lead-score-filter";
-import { LeadSearchField } from "@/components/workspace/leads/toolbar/lead-search-field/lead-search-field";
+import { ListSearchField } from "@/components/workspace/shared/toolbar/list-search-field/list-search-field";
 import { LeadSourceFilter } from "@/components/workspace/leads/toolbar/lead-source-filter/lead-source-filter";
 import { LeadStatusFilter } from "@/components/workspace/leads/toolbar/lead-status-filter/lead-status-filter";
 import styles from "./leads-page-header.module.css";
@@ -263,7 +263,7 @@ export function LeadsPageHeader({
         className={styles.panel}
       >
         <div className={styles.primaryFilters}>
-          <LeadSearchField
+          <ListSearchField
             currentValue={currentSearch}
             label={filtersContent.search.label}
             onCommitAction={commitSearch}

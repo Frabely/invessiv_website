@@ -12,7 +12,7 @@ import type {
 } from "@/i18n/dictionaries/workspace/leads";
 import { Badge } from "@invessiv/ui";
 import { LeadSourceBadge } from "@/components/workspace/leads/shared";
-import { LeadFacetFilter } from "../lead-facet-filter/lead-facet-filter";
+import { FacetFilter } from "@/components/workspace/shared/toolbar/facet-filter/facet-filter";
 
 type LeadSourceFilterProps = {
   activeSource: string | undefined;
@@ -39,7 +39,7 @@ export function LeadSourceFilter({
   sharedContent,
 }: LeadSourceFilterProps) {
   return (
-    <LeadFacetFilter
+    <FacetFilter
       activeValue={activeSource}
       allOption={{
         chip: (

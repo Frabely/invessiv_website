@@ -7,7 +7,7 @@ import type {
   LeadsToolbarDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
 import { LeadStatusBadge } from "@/components/workspace/leads/shared";
-import { LeadFacetFilter } from "../lead-facet-filter/lead-facet-filter";
+import { FacetFilter } from "@/components/workspace/shared/toolbar/facet-filter/facet-filter";
 
 type LeadStatusFilterProps = {
   activeStatus: string | undefined;
@@ -28,7 +28,7 @@ export function LeadStatusFilter({
       : undefined;
 
   return (
-    <LeadFacetFilter
+    <FacetFilter
       activeValue={activeValue}
       allOption={{
         chip: <LeadStatusBadge label={content.tabs.all} status="all" />,

@@ -4,7 +4,7 @@ import { LeadFilterSelectId } from "@/common/constants/leads/list/lead-filter-se
 import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-option";
 import type { LeadsToolbarDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { LeadCategoryBadge } from "@/components/workspace/leads/shared";
-import { LeadFacetFilter } from "../lead-facet-filter/lead-facet-filter";
+import { FacetFilter } from "@/components/workspace/shared/toolbar/facet-filter/facet-filter";
 
 type LeadCategoryFilterProps = {
   activeCategory: string | undefined;
@@ -20,7 +20,7 @@ export function LeadCategoryFilter({
   onChangeAction,
 }: LeadCategoryFilterProps) {
   return (
-    <LeadFacetFilter
+    <FacetFilter
       activeValue={activeCategory}
       allOption={{
         chip: <LeadCategoryBadge label={content.filters.allCategories} />,

@@ -48,19 +48,25 @@ technische Umstellung ist das native `<dialog>` (Entscheidung vom 13.09.2026 in 
 
 ## Tasks
 
+**Aktueller Nachtrag:** Die Shared-Pfade für Badge, Detail-Grundbausteine, Tabellenmechanik, Suche, Facettenfilter und
+Timeline sind inzwischen angelegt und die Workspace-Imports zeigen darauf. Die verbleibenden Arbeiten sind die
+vollständige
+app-neutrale Entkopplung, Mehrfachauswahl, native Dialog-Testabdeckung, Detail-Panel-Komposition und der
+Abschlussnachweis.
+
 ## Tatsächlicher Umsetzungsstand (14.09.2026)
 
 Der Ordner ist noch nicht reviewbereit. Der aktuelle Codebestand wurde gegen die Task-Ziele abgeglichen:
 
-| Task                | Stand                                                                                                  |
-| ------------------- | ------------------------------------------------------------------------------------------------------ |
-| 02e-1, 02e-3, 02e-4 | Erledigt im Workspace.                                                                                 |
-| 02e-5               | `Dialog` und Settings-Nutzer umgestellt; Test-Setup und Dialog-Tests offen.                            |
-| 02e-6               | `ConfirmDialog` und Single-Delete umgestellt; sechs Lead-Dialoge noch mit Eigenbau-Overlay/Fokusfalle. |
-| 02e-7               | Komponenten und Nutzer umgestellt; Tests und generische Workspace-Konstante offen.                     |
-| 02e-8               | Nur `Badge`/`BadgeTone` erledigt.                                                                      |
-| 02e-9               | Nur Selection-Provider und Select-All-Checkbox erledigt.                                               |
-| 02e-10              | Offen.                                                                                                 |
+| Task                | Stand                                                                                                                            |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| 02e-1, 02e-3, 02e-4 | Erledigt im Workspace.                                                                                                           |
+| 02e-5               | `Dialog` und Settings-Nutzer umgestellt; Test-Setup und Dialog-Tests offen.                                                      |
+| 02e-6               | `ConfirmDialog`, Single-Delete, Bulk-Archiv und Bulk-Löschen umgestellt; vier Lead-Dialoge noch mit Eigenbau-Overlay/Fokusfalle. |
+| 02e-7               | Komponenten und Nutzer umgestellt; Tests und generische Workspace-Konstante offen.                                               |
+| 02e-8               | Nur `Badge`/`BadgeTone` erledigt.                                                                                                |
+| 02e-9               | Nur Selection-Provider und Select-All-Checkbox erledigt.                                                                         |
+| 02e-10              | Offen.                                                                                                                           |
 
 `apps/web` wird in keinem dieser Restschritte verändert. Der verbindliche Web-Nachlauf bleibt Task 39 in Ordner 23 nach
 dem gesamten CRM-Umbau.

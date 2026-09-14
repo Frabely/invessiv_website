@@ -1,7 +1,6 @@
 "use client";
 
-import { type KeyboardEvent, useLayoutEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { useLayoutEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -28,7 +27,6 @@ import {
   FormStatus,
   PrimaryCtaButton,
 } from "@invessiv/ui";
-import { trapDialogFocus } from "@/components/workspace/shared/dialog/dialog-focus-trap";
 import { ImprovementsListEditor } from "@/components/workspace/leads/shared/improvements-list-editor/improvements-list-editor";
 import type {
   LeadsBulkDictionary,
@@ -146,14 +144,6 @@ export function LeadsBulkEditDialog({
 
   if (typeof document === "undefined") {
     return null;
-  }
-
-  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    if (isPending && event.key === "Escape") {
-      event.preventDefault();
-      return;
-    }
-    trapDialogFocus(event, event.currentTarget, onCloseAction);
   }
 
   function toggleApply(field: BulkEditFieldKind) {
@@ -286,14 +276,13 @@ export function LeadsBulkEditDialog({
   const showFailureOnlyBanner =
     resultBannerShown && updatedCount !== null && updatedCount === 0;
 
-  return createPortal(
+  return (
     <div className={styles.overlay} role="presentation">
       <div
         aria-describedby={DialogId.Description}
         aria-labelledby={DialogId.Title}
         aria-modal="true"
         className={styles.dialog}
-        onKeyDown={handleKeyDown}
         ref={dialogRef}
         role="dialog"
       >
@@ -602,7 +591,6 @@ export function LeadsBulkEditDialog({
           )}
         </footer>
       </div>
-    </div>,
-    document.body,
+    </div>
   );
 }

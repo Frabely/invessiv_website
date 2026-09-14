@@ -17,7 +17,7 @@ import { ListEmptyState } from "@/components/workspace/shared/table/list-empty-s
 import { ListSelectAllCheckbox } from "@/components/workspace/shared/table/list-select-all-checkbox/list-select-all-checkbox";
 import { ListSelectionProvider } from "@/components/workspace/shared/table/list-selection-provider/list-selection-provider";
 import { LeadsTableRow } from "../leads-table-row/leads-table-row";
-import { SortableHeader } from "../sortable-header/sortable-header";
+import { SortableHeader } from "@/components/workspace/shared/table/sortable-header/sortable-header";
 import { LeadsTableSpinner } from "./leads-table-spinner/leads-table-spinner";
 import { LEADS_TABLE_COLUMN_COUNT } from "./leads-table.constants";
 import styles from "./leads-table.module.css";

@@ -13,9 +13,9 @@ import { useLeadsTableTransition } from "@/hooks/workspace/use-leads-table-trans
 import {
   buildPaginationHref,
   getPaginationItems,
-} from "./leads-pagination.utils";
+} from "./list-pagination.utils";
 import { PaginationItemKind } from "@invessiv/common/constants/leads/list/lead-pagination-item-kinds";
-import styles from "./leads-pagination.module.css";
+import styles from "./list-pagination.module.css";
 
 type LeadsPaginationProps = {
   basePath: string;
@@ -58,7 +58,7 @@ function getNavIcon(variant: NavIconVariant) {
   }
 }
 
-export function LeadsPagination({
+export function ListPagination({
   basePath,
   currentPage,
   content,

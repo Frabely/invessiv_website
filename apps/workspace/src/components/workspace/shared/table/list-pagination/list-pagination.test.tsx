@@ -4,11 +4,11 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { getLeadsPaginationDictionary } from "@/i18n/dictionaries/workspace/leads";
-import { LeadsPagination } from "./leads-pagination";
+import { ListPagination } from "./list-pagination";
 import {
   buildPaginationHref,
   getPaginationItems,
-} from "./leads-pagination.utils";
+} from "./list-pagination.utils";
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn() }),
@@ -21,7 +21,7 @@ afterEach(() => {
 describe("LeadsPagination", () => {
   it("renders a disabled pagination shell for empty result sets", () => {
     render(
-      <LeadsPagination
+      <ListPagination
         basePath="/de/leads"
         content={getLeadsPaginationDictionary("de")}
         currentPage={1}
@@ -44,7 +44,7 @@ describe("LeadsPagination", () => {
 
   it("keeps navigation active when results exist", () => {
     render(
-      <LeadsPagination
+      <ListPagination
         basePath="/de/leads"
         content={getLeadsPaginationDictionary("de")}
         currentPage={2}

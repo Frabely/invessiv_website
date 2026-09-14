@@ -5,6 +5,7 @@ import { faPenToSquare, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { Locale } from "@/config/i18n";
 import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
+import { SidePanel } from "@invessiv/ui";
 import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
 import type {
   LeadsDetailDictionary,
@@ -21,7 +22,7 @@ import {
 import { formatLeadCreatedAt } from "@/components/workspace/leads/table/lead-table-utils";
 import { LeadOutreachTriggerVariant } from "@invessiv/common/constants/leads/outreach/lead-outreach-trigger-variants";
 import { LeadOutreachTrigger } from "../../outreach/lead-outreach-trigger/lead-outreach-trigger";
-import { LeadDetailActivities } from "../lead-detail-activities/lead-detail-activities";
+import { ActivityTimeline } from "@/components/workspace/shared/activity/activity-timeline/activity-timeline";
 import styles from "./lead-detail-panel.module.css";
 
 export type LeadDetailPanelProps = {
@@ -109,7 +110,7 @@ export function LeadDetailPanel({
   const websiteHref = getExternalWebsiteHref(lead.websiteUrl);
 
   return (
-    <aside className={styles.panel} aria-labelledby="lead-detail-title">
+    <SidePanel className={styles.panel}>
       <header className={styles.header}>
         <div className={styles.heading}>
           <p className={styles.eyebrow}>{content.sections.contact}</p>
@@ -312,7 +313,7 @@ export function LeadDetailPanel({
           </button>
         </div>
 
-        <LeadDetailActivities
+        <ActivityTimeline
           activities={lead.activities}
           content={content}
           locale={locale}
@@ -320,6 +321,6 @@ export function LeadDetailPanel({
           submissions={lead.submissions}
         />
       </section>
-    </aside>
+    </SidePanel>
   );
 }

@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
-import styles from "./lead-search-field.module.css";
+import styles from "./list-search-field.module.css";
 
-type LeadSearchFieldProps = {
+type ListSearchFieldProps = {
   currentValue: string;
   label: string;
   onCommitAction: (value: string | undefined) => void;
@@ -14,12 +14,12 @@ type LeadSearchFieldProps = {
 
 const SEARCH_DEBOUNCE_MS = 250;
 
-export function LeadSearchField({
+export function ListSearchField({
   currentValue,
   label,
   onCommitAction,
   placeholder,
-}: LeadSearchFieldProps) {
+}: ListSearchFieldProps) {
   const [searchValue, setSearchValue] = useState(currentValue);
 
   useEffect(() => {

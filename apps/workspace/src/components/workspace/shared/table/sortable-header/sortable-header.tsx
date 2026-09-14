@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useLeadsTableTransition } from "@/hooks/workspace/use-leads-table-transition";
-import { buildLeadHref } from "../lead-table-utils";
+import { buildLeadHref } from "@/components/workspace/leads/table/lead-table-utils";
 import styles from "./sortable-header.module.css";
 
 type SortableHeaderProps = {

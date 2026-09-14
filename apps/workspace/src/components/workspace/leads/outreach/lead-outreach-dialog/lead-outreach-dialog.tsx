@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  type KeyboardEvent,
   useEffect,
   useId,
   useLayoutEffect,
@@ -39,7 +38,6 @@ import { outreachGenerationClientService } from "@/client/leads/outreach/lead-ou
 import { outreachProviderStatusService } from "@/client/leads/outreach/lead-outreach-provider-status-service";
 import { CHANNEL_PROFILES } from "@invessiv/common/constants/leads/outreach/lead-outreach-channel-profiles";
 import type { LeadsOutreachDictionary } from "@/i18n/dictionaries/workspace/leads";
-import { trapDialogFocus } from "@/components/workspace/shared/dialog/dialog-focus-trap";
 import styles from "./lead-outreach-dialog.module.css";
 
 const LeadOutreachProviderState = {
@@ -198,12 +196,6 @@ export function LeadOutreachDialog({
     };
   }, [isMounted, refreshToken]);
 
-  const portalRoot = isMounted ? document.body : null;
-
-  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    trapDialogFocus(event, event.currentTarget, onCloseAction);
-  }
-
   async function handleGenerate() {
     setErrorMessage(null);
     setCopiedTarget(null);
@@ -250,14 +242,17 @@ export function LeadOutreachDialog({
     }
   }
 
-  const dialog = (
+  if (!isMounted) {
+    return null;
+  }
+
+  return createPortal(
     <div className={styles.overlay}>
       <div
         aria-describedby={OutreachDialogId.Description}
         aria-labelledby={OutreachDialogId.Title}
         aria-modal="true"
         className={styles.dialog}
-        onKeyDown={handleKeyDown}
         role="dialog"
       >
         <header className={styles.header}>
@@ -441,12 +436,7 @@ export function LeadOutreachDialog({
           </section>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
-
-  if (!portalRoot) {
-    return null;
-  }
-
-  return createPortal(dialog, portalRoot);
 }

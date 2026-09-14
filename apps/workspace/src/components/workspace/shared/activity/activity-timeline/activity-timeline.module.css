@@ -5,6 +5,7 @@
   line-height: 1.5;
 }
 
+/* Shared activity timeline styles. */
 .timeline {
   position: relative;
   display: flex;

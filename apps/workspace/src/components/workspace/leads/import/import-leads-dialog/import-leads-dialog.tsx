@@ -34,15 +34,17 @@ import {
 } from "@/client/leads/import/import-leads-error-message";
 import { importLeadsService } from "@/client/leads/import/import-leads-service";
 import { ButtonControl } from "@invessiv/ui";
-import {
-  focusFirstDialogElement,
-  trapDialogFocus,
-} from "@/components/workspace/shared/dialog/dialog-focus-trap";
 import { ColumnPillGroup } from "../column-pill-group/column-pill-group";
 import { DialogFooter } from "../dialog-footer/dialog-footer";
 import styles from "./import-leads-dialog.module.css";
 
 const MAX_FILE_BYTES = 2 * 1024 * 1024;
+
+function focusFirstDialogElement(container: HTMLElement | null): void {
+  container
+    ?.querySelector<HTMLElement>("button, input, select, textarea")
+    ?.focus();
+}
 
 type Props = {
   content: LeadsImportDictionary;
@@ -136,6 +138,13 @@ export function ImportLeadsDialog({ content }: Props) {
     setOpen(true);
   }
 
+  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeDialog();
+    }
+  }
+
   function handleOverlayClick(event: MouseEvent<HTMLDivElement>) {
     if (event.target === event.currentTarget) {
       closeDialog();
@@ -170,10 +179,6 @@ export function ImportLeadsDialog({ content }: Props) {
         message: content.errors.generic,
       });
     }
-  }
-
-  function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    trapDialogFocus(event, dialogRef.current, closeDialog);
   }
 
   async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {

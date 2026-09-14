@@ -12,7 +12,7 @@ import {
   getLeadsDetailDictionary,
   getLeadsSharedDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
-import { LeadDetailActivities } from "./lead-detail-activities";
+import { ActivityTimeline } from "./activity-timeline";
 
 const baseActivity: LeadActivityDto = {
   id: "act-1",
@@ -83,7 +83,7 @@ function renderActivities(
   const locale = overrides.locale ?? "de";
 
   return render(
-    <LeadDetailActivities
+    <ActivityTimeline
       activities={overrides.activities ?? []}
       submissions={overrides.submissions ?? []}
       content={getLeadsDetailDictionary(locale)}
