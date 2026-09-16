@@ -147,6 +147,17 @@ describe("CustomerFormDialog", () => {
     expect(input(/^Firmenname/)).toBeInTheDocument();
   });
 
+  it("uses the custom select for the customer category", () => {
+    renderDialog();
+
+    expect(
+      screen.getByRole("button", { name: content.fields.category }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("combobox", { name: content.fields.category }),
+    ).not.toBeInTheDocument();
+  });
+
   it("moves between form sections with the arrow keys", () => {
     renderDialog();
 

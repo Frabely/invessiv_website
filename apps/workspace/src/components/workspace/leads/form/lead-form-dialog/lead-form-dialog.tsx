@@ -4,6 +4,7 @@ import {
   type ReactNode,
   useCallback,
   useEffect,
+  useId,
   useMemo,
   useState,
 } from "react";
@@ -27,6 +28,7 @@ import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds"
 import { formValidationService } from "@invessiv/common/patterns/validation/form-validation-service";
 import {
   ButtonControl,
+  CustomSelect,
   Dialog,
   FormActions,
   FormField,
@@ -258,6 +260,8 @@ export function LeadFormDialog({
   const startTransition = useNavigationContext();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const categorySelectId = useId();
+  const statusSelectId = useId();
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const isEditMode = mode === LeadFormDialogMode.Edit;
   const { dialogDescription, dialogTitle, savingLabel, submitLabel } =
@@ -281,6 +285,7 @@ export function LeadFormDialog({
     register,
     reset,
     setError,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<LeadFormValues>({
     defaultValues: initialValues,
@@ -855,29 +860,35 @@ export function LeadFormDialog({
 
             <FormField
               className={styles.field}
-              controlClassName={styles.input}
               errorMessage={errors.category_id?.message}
               hint={getFieldEditState(
                 currentValues.category_id,
                 initialValues.category_id,
               )}
-              kind={FormFieldKind.Select}
+              kind={FormFieldKind.Custom}
               label={content.fields.category}
-              options={[
-                { label: content.placeholders.category, value: "" },
-                ...categories.map((category) => ({
-                  label: category.label,
-                  value: category.id,
-                })),
-              ]}
-              selectProps={{
-                ...register(LeadFormDialogField.CategoryId, {
-                  onChange: () => {
+              renderControl={({ describedBy, invalid }) => (
+                <CustomSelect
+                  describedBy={describedBy}
+                  id={categorySelectId}
+                  invalid={invalid}
+                  onChange={(next) => {
+                    setValue(LeadFormDialogField.CategoryId, next, {
+                      shouldDirty: true,
+                    });
                     clearErrors(LeadFormDialogField.CategoryId);
                     resetValidationMessages();
-                  },
-                }),
-              }}
+                  }}
+                  options={[
+                    { label: content.placeholders.category, value: "" },
+                    ...categories.map((category) => ({
+                      label: category.label,
+                      value: category.id,
+                    })),
+                  ]}
+                  value={currentValues.category_id ?? ""}
+                />
+              )}
             />
 
             <FormField
@@ -921,22 +932,28 @@ export function LeadFormDialog({
 
             <FormField
               className={styles.field}
-              controlClassName={styles.input}
               errorMessage={errors.lead_status?.message}
-              kind={FormFieldKind.Select}
+              kind={FormFieldKind.Custom}
               label={content.fields.status}
-              options={CONTACT_LEAD_STATUS_VALUES.map((status) => ({
-                label: sharedContent.status[status],
-                value: status,
-              }))}
-              selectProps={{
-                ...register(LeadFormDialogField.LeadStatus, {
-                  onChange: () => {
+              renderControl={({ describedBy, invalid }) => (
+                <CustomSelect
+                  describedBy={describedBy}
+                  id={statusSelectId}
+                  invalid={invalid}
+                  onChange={(next) => {
+                    setValue(LeadFormDialogField.LeadStatus, next, {
+                      shouldDirty: true,
+                    });
                     clearErrors(LeadFormDialogField.LeadStatus);
                     resetValidationMessages();
-                  },
-                }),
-              }}
+                  }}
+                  options={CONTACT_LEAD_STATUS_VALUES.map((status) => ({
+                    label: sharedContent.status[status],
+                    value: status,
+                  }))}
+                  value={currentValues.lead_status ?? ContactLeadStatus.New}
+                />
+              )}
             />
           </div>
         </section>

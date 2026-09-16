@@ -4,20 +4,15 @@ import type {
   InputHTMLAttributes,
   ReactNode,
   Ref,
-  SelectHTMLAttributes,
   TextareaHTMLAttributes,
 } from "react";
+import type { FormFieldControlBindings } from "@invessiv/common/contracts/ui/form-field-control-bindings";
 import {
   FormFieldKind,
   type FormFieldKind as FormFieldKindType,
 } from "@invessiv/common/constants/form/form-field-kinds";
 import { FormFieldLabel } from "../form-field-label/form-field-label";
 import styles from "./form-field.module.css";
-
-type FieldOption = {
-  label: string;
-  value: string;
-};
 
 type BaseFormFieldProps = {
   className?: string;
@@ -31,17 +26,11 @@ type BaseFormFieldProps = {
   required?: boolean;
 };
 
-type SelectFieldProps = BaseFormFieldProps & {
-  kind: typeof FormFieldKind.Select;
-  options: FieldOption[];
-  selectProps?: SelectHTMLAttributes<HTMLSelectElement> & {
-    "data-empty"?: string;
-  };
-};
-
 type TextInputKind = Exclude<
   FormFieldKindType,
-  typeof FormFieldKind.Select | typeof FormFieldKind.Textarea
+  | typeof FormFieldKind.Custom
+  | typeof FormFieldKind.Select
+  | typeof FormFieldKind.Textarea
 >;
 
 type TextFieldProps = BaseFormFieldProps & {
@@ -57,8 +46,14 @@ type TextareaFieldProps = BaseFormFieldProps & {
   textareaProps?: TextareaHTMLAttributes<HTMLTextAreaElement>;
 };
 
+/** Escape hatch for controls FormField can't render natively, e.g. `CustomSelect`. */
+type CustomFieldProps = BaseFormFieldProps & {
+  kind: typeof FormFieldKind.Custom;
+  renderControl: (bindings: FormFieldControlBindings) => ReactNode;
+};
+
 export type FormFieldProps =
-  SelectFieldProps | TextFieldProps | TextareaFieldProps;
+  TextFieldProps | TextareaFieldProps | CustomFieldProps;
 
 export function FormField(props: FormFieldProps) {
   const {
@@ -94,16 +89,11 @@ export function FormField(props: FormFieldProps) {
               resolvedHintId,
             )
           : null}
-        {props.kind === FormFieldKind.Select
-          ? renderSelect(
-              props,
-              controlClassName,
-              resolvedErrorId,
-              resolvedHintId,
-            )
+        {props.kind === FormFieldKind.Custom
+          ? renderCustom(props, resolvedErrorId, resolvedHintId)
           : null}
         {props.kind !== FormFieldKind.Textarea &&
-        props.kind !== FormFieldKind.Select
+        props.kind !== FormFieldKind.Custom
           ? renderInput(
               props,
               controlClassName,
@@ -139,12 +129,8 @@ function getFieldBaseId(props: FormFieldProps): string {
     );
   }
 
-  if (props.kind === FormFieldKind.Select) {
-    return (
-      props.selectProps?.id ??
-      props.selectProps?.name ??
-      slugifyFieldLabel(props.label, props.kind)
-    );
+  if (props.kind === FormFieldKind.Custom) {
+    return slugifyFieldLabel(props.label, props.kind);
   }
 
   return (
@@ -250,38 +236,17 @@ function renderTextarea(
   );
 }
 
-function renderSelect(
-  props: SelectFieldProps,
-  controlClassName?: string,
+function renderCustom(
+  props: CustomFieldProps,
   errorMessageId?: string,
   hintId?: string,
 ) {
-  const describedBy = [
-    props.selectProps?.["aria-describedby"],
-    hintId,
-    props.errorMessage ? errorMessageId : undefined,
-  ]
-    .filter(Boolean)
-    .join(" ");
-  const className = [props.selectProps?.className, controlClassName]
+  const describedBy = [hintId, props.errorMessage ? errorMessageId : undefined]
     .filter(Boolean)
     .join(" ");
 
-  return (
-    <select
-      {...props.selectProps}
-      aria-describedby={describedBy || undefined}
-      aria-invalid={
-        props.selectProps?.["aria-invalid"] ??
-        (props.errorMessage ? "true" : undefined)
-      }
-      className={className || undefined}
-    >
-      {props.options.map((option) => (
-        <option key={`${option.value}-${option.label}`} value={option.value}>
-          {option.label}
-        </option>
-      ))}
-    </select>
-  );
+  return props.renderControl({
+    describedBy: describedBy || undefined,
+    invalid: Boolean(props.errorMessage),
+  });
 }

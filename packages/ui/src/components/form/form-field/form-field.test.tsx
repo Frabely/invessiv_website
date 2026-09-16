@@ -8,7 +8,7 @@ import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds"
 import { FormField } from "./form-field";
 
 describe("FormField", () => {
-  it("renders input, select, textarea, and number controls with shared accessibility wiring", () => {
+  it("renders input, number, and textarea controls with shared accessibility wiring", () => {
     render(
       <div>
         <FormField
@@ -26,17 +26,6 @@ describe("FormField", () => {
           label="Score"
           inputProps={{
             placeholder: "0 to 100",
-          }}
-        />
-        <FormField
-          kind={FormFieldKind.Select}
-          label="Category"
-          options={[
-            { label: "Choose", value: "" },
-            { label: "Coaches", value: "coaches" },
-          ]}
-          selectProps={{
-            "data-empty": "true",
           }}
         />
         <FormField
@@ -62,15 +51,43 @@ describe("FormField", () => {
       expect.stringContaining("error"),
     );
     expect(screen.getByLabelText(/Score/)).toHaveAttribute("type", "number");
-    expect(screen.getByLabelText(/Category/)).toHaveAttribute(
-      "data-empty",
-      "true",
-    );
     expect(screen.getByLabelText(/Notes/)).toHaveAttribute(
       "placeholder",
       "Write something",
     );
     expect(screen.getByText("Required")).toBeInTheDocument();
     expect(screen.getByText("Hint text")).toBeInTheDocument();
+  });
+
+  it("wires label, hint, and error accessibility onto a custom control", () => {
+    render(
+      <FormField
+        errorMessage="Choose a category"
+        hint="Used for reporting"
+        kind={FormFieldKind.Custom}
+        label="Assigned category"
+        renderControl={({ describedBy, invalid }) => (
+          <button
+            aria-describedby={describedBy}
+            data-invalid={invalid || undefined}
+            type="button"
+          >
+            Open category picker
+          </button>
+        )}
+      />,
+    );
+
+    const control = screen.getByLabelText(/Assigned category/);
+    expect(control).toHaveAttribute("data-invalid", "true");
+    expect(control).toHaveAttribute(
+      "aria-describedby",
+      expect.stringContaining("hint"),
+    );
+    expect(control).toHaveAttribute(
+      "aria-describedby",
+      expect.stringContaining("error"),
+    );
+    expect(screen.getByText("Choose a category")).toBeInTheDocument();
   });
 });

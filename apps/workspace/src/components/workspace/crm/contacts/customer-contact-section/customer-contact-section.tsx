@@ -328,23 +328,25 @@ export function CustomerContactSection({
               kind={FormFieldKind.Text}
               label={content.fields.roleLabel}
             />
-            <div className={styles.selectField}>
-              <span className={styles.fieldLabel}>
-                {content.fields.preferredLocale}
-              </span>
-              <CustomSelect<Locale>
-                ariaLabel={content.fields.preferredLocale}
-                id={localeSelectId}
-                onChange={(next) =>
-                  onContactFieldChangeAction("contactPreferredLocale", next)
-                }
-                options={SUPPORTED_LOCALES.map((entry) => ({
-                  label: content.locales[entry],
-                  value: entry,
-                }))}
-                value={values.contactPreferredLocale}
-              />
-            </div>
+            <FormField
+              kind={FormFieldKind.Custom}
+              label={content.fields.preferredLocale}
+              renderControl={({ describedBy, invalid }) => (
+                <CustomSelect<Locale>
+                  describedBy={describedBy}
+                  id={localeSelectId}
+                  invalid={invalid}
+                  onChange={(next) =>
+                    onContactFieldChangeAction("contactPreferredLocale", next)
+                  }
+                  options={SUPPORTED_LOCALES.map((entry) => ({
+                    label: content.locales[entry],
+                    value: entry,
+                  }))}
+                  value={values.contactPreferredLocale}
+                />
+              )}
+            />
           </div>
         ) : null}
         {editorOpen ? (

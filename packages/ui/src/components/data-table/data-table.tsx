@@ -135,10 +135,23 @@ export function DataTableBody({ className, ...props }: DataTableBodyProps) {
   return <tbody {...props} className={getClassName(styles.body, className)} />;
 }
 
-export type DataTableRowProps = HTMLAttributes<HTMLTableRowElement>;
+export type DataTableRowProps = HTMLAttributes<HTMLTableRowElement> & {
+  /** Enables the shared mobile card shell; consumers define their cell layout. */
+  mobileCard?: boolean;
+};
 
-export function DataTableRow({ className, ...props }: DataTableRowProps) {
-  return <tr {...props} className={getClassName(styles.row, className)} />;
+export function DataTableRow({
+  className,
+  mobileCard = false,
+  ...props
+}: DataTableRowProps) {
+  return (
+    <tr
+      {...props}
+      className={getClassName(styles.row, className)}
+      data-mobile-card={mobileCard || undefined}
+    />
+  );
 }
 
 export type DataTableHeaderCellProps =

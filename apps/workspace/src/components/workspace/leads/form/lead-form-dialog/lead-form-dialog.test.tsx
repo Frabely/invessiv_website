@@ -31,6 +31,11 @@ vi.mock("next/navigation", () => ({
     new URLSearchParams(`${LeadListQueryParam.Mode}=create&status=qualified`),
 }));
 
+function selectPlatform(trigger: HTMLElement, optionName: string) {
+  fireEvent.click(trigger);
+  fireEvent.click(screen.getByRole("option", { name: optionName }));
+}
+
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
@@ -343,9 +348,7 @@ describe("LeadFormDialog", () => {
       expect(platformSelect).toHaveFocus();
     });
 
-    fireEvent.change(platformSelect, {
-      target: { value: "instagram" },
-    });
+    selectPlatform(platformSelect, "Instagram");
     fireEvent.change(profileUrlInput, {
       target: { value: "https://instagram.com/invessiv" },
     });
@@ -408,9 +411,7 @@ describe("LeadFormDialog", () => {
 
     const platformSelect = await screen.findByLabelText("Plattform");
     const profileUrlInput = screen.getByLabelText("Profil-URL");
-    fireEvent.change(platformSelect, {
-      target: { value: "linkedin" },
-    });
+    selectPlatform(platformSelect, "LinkedIn");
 
     const profileButton = screen.getByRole("button", {
       name: "LinkedIn-Profil öffnen",
@@ -495,9 +496,7 @@ describe("LeadFormDialog", () => {
     expect(await screen.findByText("Stärkerer CTA")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Profil hinzufügen" }));
-    fireEvent.change(screen.getByLabelText("Plattform"), {
-      target: { value: "linkedin" },
-    });
+    selectPlatform(screen.getByLabelText("Plattform"), "LinkedIn");
     fireEvent.change(screen.getByLabelText("Profil-URL"), {
       target: { value: "https://linkedin.com/in/anna-meyer" },
     });
@@ -654,9 +653,7 @@ describe("LeadFormDialog", () => {
     fireEvent.click(screen.getAllByRole("button", { name: "Hinzufügen" })[0]);
 
     fireEvent.click(screen.getByRole("button", { name: "Profil hinzufügen" }));
-    fireEvent.change(screen.getByLabelText("Plattform"), {
-      target: { value: "linkedin" },
-    });
+    selectPlatform(screen.getByLabelText("Plattform"), "LinkedIn");
     fireEvent.change(screen.getByLabelText("Profil-URL"), {
       target: { value: "https://linkedin.com/in/anna-meyer" },
     });

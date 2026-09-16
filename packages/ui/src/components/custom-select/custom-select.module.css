@@ -51,6 +51,15 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-danger) 18%, transparent);
 }
 
+.trigger:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.trigger:disabled:hover {
+  border-color: color-mix(in srgb, var(--color-border-strong) 56%, transparent);
+}
+
 .leading {
   display: inline-flex;
 }

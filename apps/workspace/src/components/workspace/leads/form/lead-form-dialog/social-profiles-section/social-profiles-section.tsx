@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import {
   type Control,
   useFieldArray,
@@ -19,7 +19,12 @@ import {
   type LeadSocialPlatform,
 } from "@invessiv/common/constants/leads/social/lead-social-platforms";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
-import { ButtonControl, FormField, PrimaryCtaButton } from "@invessiv/ui";
+import {
+  ButtonControl,
+  CustomSelect,
+  FormField,
+  PrimaryCtaButton,
+} from "@invessiv/ui";
 import { isOpenableUrl, openExternalUrl } from "@/lib/url/is-openable-url";
 import type { LeadFormValues } from "@invessiv/common/contracts/leads/forms/lead-form-values";
 import type {
@@ -80,6 +85,7 @@ export function SocialProfilesSection({
     control,
     name: SocialProfilesSectionField.SocialProfiles,
   });
+  const platformSelectId = useId();
   const editorRef = useRef<HTMLDivElement>(null);
   const [editorOpen, setEditorOpen] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
@@ -100,15 +106,13 @@ export function SocialProfilesSection({
     }
 
     const animationFrameId = window.requestAnimationFrame(() => {
-      editorRef.current
-        ?.querySelector<HTMLSelectElement>("[name='social_platform_draft']")
-        ?.focus();
+      document.getElementById(platformSelectId)?.focus();
     });
 
     return () => {
       window.cancelAnimationFrame(animationFrameId);
     };
-  }, [editorOpen]);
+  }, [editorOpen, platformSelectId]);
 
   function resetEditor() {
     setEditorOpen(false);
@@ -269,31 +273,32 @@ export function SocialProfilesSection({
           <div className={styles.socialEditorRow}>
             <FormField
               className={styles.field}
-              controlClassName={styles.input}
               errorMessage={platformDraftError ?? undefined}
-              kind={FormFieldKind.Select}
+              kind={FormFieldKind.Custom}
               label={content.fields.platform}
-              options={[
-                {
-                  label: content.placeholders.platform,
-                  value: "",
-                },
-                ...LEAD_SOCIAL_PLATFORMS_VALUES.map((platform) => ({
-                  label: sharedContent.platform[platform],
-                  value: platform,
-                })),
-              ]}
-              selectProps={{
-                name: "social_platform_draft",
-                onChange: (event) => {
-                  setPlatformDraft(
-                    event.currentTarget.value as LeadSocialPlatform | "",
-                  );
-                  setPlatformDraftError(null);
-                  onInteractionAction();
-                },
-                value: platformDraft,
-              }}
+              renderControl={({ describedBy, invalid }) => (
+                <CustomSelect
+                  describedBy={describedBy}
+                  id={platformSelectId}
+                  invalid={invalid}
+                  onChange={(next) => {
+                    setPlatformDraft(next);
+                    setPlatformDraftError(null);
+                    onInteractionAction();
+                  }}
+                  options={[
+                    {
+                      label: content.placeholders.platform,
+                      value: "",
+                    },
+                    ...LEAD_SOCIAL_PLATFORMS_VALUES.map((platform) => ({
+                      label: sharedContent.platform[platform],
+                      value: platform,
+                    })),
+                  ]}
+                  value={platformDraft}
+                />
+              )}
             />
 
             <FormField

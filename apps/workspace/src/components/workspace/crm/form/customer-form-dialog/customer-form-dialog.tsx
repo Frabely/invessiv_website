@@ -18,6 +18,7 @@ import type { CustomerContactWriteDto } from "@invessiv/common/contracts/crm/cus
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 import {
   ButtonControl,
+  CustomSelect,
   Dialog,
   DialogSize,
   FormField,
@@ -108,6 +109,7 @@ export function CustomerFormDialog({
   const router = useRouter();
   const formId = useId();
   const tabsId = useId();
+  const categorySelectId = useId();
   const customerHeadingId = useId();
   const addressHeadingId = useId();
   const detailsHeadingId = useId();
@@ -318,6 +320,7 @@ export function CustomerFormDialog({
 
   return (
     <Dialog
+      bodyClassName={styles.dialogBody}
       busy={mutation.isSubmitting}
       closeLabel={content.buttons.close}
       description={
@@ -433,20 +436,24 @@ export function CustomerFormDialog({
                 placeholder: content.placeholders.companyName,
               })}
               <FormField
-                kind={FormFieldKind.Select}
+                kind={FormFieldKind.Custom}
                 label={content.fields.category}
-                options={[
-                  { label: content.placeholders.category, value: "" },
-                  ...categories.map((category) => ({
-                    label: category.label,
-                    value: category.id,
-                  })),
-                ]}
-                selectProps={{
-                  name: "customer-category",
-                  onChange: (event) => update("categoryId", event.target.value),
-                  value: values.categoryId,
-                }}
+                renderControl={({ describedBy, invalid }) => (
+                  <CustomSelect
+                    describedBy={describedBy}
+                    id={categorySelectId}
+                    invalid={invalid}
+                    onChange={(next) => update("categoryId", next)}
+                    options={[
+                      { label: content.placeholders.category, value: "" },
+                      ...categories.map((category) => ({
+                        label: category.label,
+                        value: category.id,
+                      })),
+                    ]}
+                    value={values.categoryId}
+                  />
+                )}
               />
             </div>
           </section>

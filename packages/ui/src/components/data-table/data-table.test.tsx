@@ -48,6 +48,20 @@ describe("DataTable", () => {
       screen.getByRole("cell", { name: "Nordlicht Coaching" }),
     ).toBeInTheDocument();
   });
+
+  it("marks a row for the shared mobile card shell", () => {
+    render(
+      <DataTable>
+        <DataTableBody>
+          <DataTableRow mobileCard>
+            <DataTableCell>Nordlicht Coaching</DataTableCell>
+          </DataTableRow>
+        </DataTableBody>
+      </DataTable>,
+    );
+
+    expect(screen.getByRole("row")).toHaveAttribute("data-mobile-card", "true");
+  });
 });
 
 describe("DataTableLayout", () => {

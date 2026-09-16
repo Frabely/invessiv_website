@@ -2,7 +2,7 @@
 
 import { type KeyboardEvent, type MouseEvent } from "react";
 import { useRouter } from "next/navigation";
-import { CheckboxControl } from "@invessiv/ui";
+import { CheckboxControl, DataTableRow } from "@invessiv/ui";
 import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
 import type { Locale } from "@/config/i18n";
 import type { LeadActionPermissions } from "@/common/contracts/leads/lead-action-permissions";
@@ -137,12 +137,13 @@ export function LeadsTableRow({
   }
 
   return (
-    <tr
+    <DataTableRow
       aria-label={`${tableContent.row.open}: ${displayName}`}
       className={styles.row}
       data-selected={selected ? "true" : "false"}
       onClick={handleRowClick}
       onKeyDown={handleRowKeyDown}
+      mobileCard
       tabIndex={0}
       role="link"
     >
@@ -225,6 +226,6 @@ export function LeadsTableRow({
         menuLabel={tableContent.actions.label}
         outreachContent={outreachContent}
       />
-    </tr>
+    </DataTableRow>
   );
 }

@@ -122,6 +122,27 @@
     clip: rect(0 0 0 0);
   }
 
+  .frame[data-responsive-mode="cards"] .row[data-mobile-card] {
+    display: grid;
+    gap: 0.35rem 0.45rem;
+    align-items: center;
+    margin-bottom: 0.35rem;
+    padding: 0.55rem 0.6rem;
+    border: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--color-surface-1) 82%, transparent);
+  }
+
+  .frame[data-responsive-mode="cards"] .row[data-mobile-card]:last-child {
+    margin-bottom: 0;
+  }
+
+  .frame[data-responsive-mode="cards"] .row[data-mobile-card] > td,
+  .frame[data-responsive-mode="cards"] .row[data-mobile-card] > .rowHeaderCell {
+    padding: 0;
+    border-bottom: none;
+  }
+
   .frame[data-responsive-mode="scroll"] .scroll {
     overflow-x: auto;
   }

@@ -91,11 +91,10 @@ export function CustomersBasicList({
       ariaLabel={content.caption}
       caption={content.caption}
       columns={columns}
-      responsiveMode="scroll"
       tableClassName={styles.table}
     >
       {customers.map((customer) => (
-        <DataTableRow className={styles.row} key={customer.id}>
+        <DataTableRow className={styles.row} key={customer.id} mobileCard>
           <DataTableCell className={styles.numberCell}>
             <span className={styles.number}>
               {formatCustomerNumber(customer.customerNumber)}

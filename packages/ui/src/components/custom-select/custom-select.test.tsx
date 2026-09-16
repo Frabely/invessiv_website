@@ -91,4 +91,25 @@ describe("CustomSelect single-select keyboard interaction", () => {
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
     expect(trigger).toHaveFocus();
   });
+
+  it("does not open when disabled", () => {
+    const onChange = vi.fn();
+    render(
+      <CustomSelect
+        ariaLabel="Time range"
+        disabled
+        id="time-range"
+        onChange={onChange}
+        options={options}
+        value="today"
+      />,
+    );
+
+    const trigger = screen.getByRole("button", { name: "Time range" });
+    expect(trigger).toBeDisabled();
+
+    fireEvent.click(trigger);
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalled();
+  });
 });

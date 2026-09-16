@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -22,6 +22,7 @@ import type { BulkEditLeadsFailedLead } from "@invessiv/common/contracts/leads/r
 import {
   ButtonControl,
   CheckboxControl,
+  CustomSelect,
   Dialog,
   FormStatus,
   PrimaryCtaButton,
@@ -107,6 +108,8 @@ export function LeadsBulkEditDialog({
   sharedContent,
 }: LeadsBulkEditDialogProps) {
   const router = useRouter();
+  const statusSelectId = useId();
+  const categorySelectId = useId();
 
   const [applyState, setApplyState] = useState<ApplyState>(INITIAL_APPLY_STATE);
   const [statusValue, setStatusValue] = useState<ContactLeadStatusValue>(
@@ -332,20 +335,16 @@ export function LeadsBulkEditDialog({
             <span className={styles.fieldLabel}>
               {bulkContent.editDialog.fields.status.label}
             </span>
-            <select
-              className={styles.input}
+            <CustomSelect
               disabled={!applyState[BulkEditField.Status] || isPending}
-              onChange={(event) =>
-                setStatusValue(event.target.value as ContactLeadStatusValue)
-              }
+              id={statusSelectId}
+              onChange={setStatusValue}
+              options={STATUS_OPTIONS_EXCLUDING_ARCHIVED.map((status) => ({
+                label: statusLabel[status],
+                value: status,
+              }))}
               value={statusValue}
-            >
-              {STATUS_OPTIONS_EXCLUDING_ARCHIVED.map((status) => (
-                <option key={status} value={status}>
-                  {statusLabel[status]}
-                </option>
-              ))}
-            </select>
+            />
           </div>
         </section>
 
@@ -362,21 +361,22 @@ export function LeadsBulkEditDialog({
             <span className={styles.fieldLabel}>
               {bulkContent.editDialog.fields.category.label}
             </span>
-            <select
-              className={styles.input}
+            <CustomSelect
               disabled={!applyState[BulkEditField.Category] || isPending}
-              onChange={(event) => setCategoryValue(event.target.value)}
+              id={categorySelectId}
+              onChange={setCategoryValue}
+              options={[
+                {
+                  label: bulkContent.editDialog.fields.category.noneOption,
+                  value: "",
+                },
+                ...categories.map((category) => ({
+                  label: category.label,
+                  value: category.id,
+                })),
+              ]}
               value={categoryValue}
-            >
-              <option value="">
-                {bulkContent.editDialog.fields.category.noneOption}
-              </option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.label}
-                </option>
-              ))}
-            </select>
+            />
           </div>
         </section>
 

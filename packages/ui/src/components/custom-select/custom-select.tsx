@@ -36,6 +36,7 @@ type SingleSelectProps<TValue extends string> = {
   ariaLabel?: string;
   clearLabel?: string;
   describedBy?: string;
+  disabled?: boolean;
   id: string;
   invalid?: boolean;
   onClear?: () => void;
@@ -49,6 +50,7 @@ type MultiSelectProps<TValue extends string> = {
   ariaLabel?: string;
   clearLabel?: string;
   describedBy?: string;
+  disabled?: boolean;
   id: string;
   invalid?: boolean;
   onClear?: () => void;
@@ -75,6 +77,7 @@ export function CustomSelect<TValue extends string = string>(
     ariaLabel,
     clearLabel,
     describedBy,
+    disabled = false,
     id,
     invalid = false,
     onClear,
@@ -146,6 +149,7 @@ export function CustomSelect<TValue extends string = string>(
       <button
         aria-label={clearLabel}
         className={styles.clearButton}
+        disabled={disabled}
         onClick={(event) => {
           event.stopPropagation();
           onClear();
@@ -175,6 +179,7 @@ export function CustomSelect<TValue extends string = string>(
           className={styles.trigger}
           data-clearable={clearButton ? true : undefined}
           data-invalid={invalid || undefined}
+          disabled={disabled}
           id={id}
           ref={setTriggerRef}
           type="button"
@@ -329,6 +334,7 @@ export function CustomSelect<TValue extends string = string>(
         data-clearable={clearButton ? true : undefined}
         data-has-leading={hasSelectedLeading || undefined}
         data-invalid={invalid || undefined}
+        disabled={disabled}
         id={id}
         onKeyDown={handleSingleTriggerKeyDown}
         ref={setTriggerRef}
