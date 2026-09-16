@@ -6,8 +6,12 @@
 
 - Anbieterneutraler Adapter mit `createUpload`, `finalizeUpload`, `createDownloadUrl`, `head`,
   `copy`, `delete` und `deleteMany`; Providerkenntnis ausschließlich in der Vercel-Blob-Datei.
-- Upload wird für PDF/TXT/DOCX/XLSX/PPTX angeboten; keine Bilder, Archive, HTML, Makro- oder alten
-  binären Office-Formate.
+- Upload wird für PDF/TXT/DOCX/XLSX/PPTX angeboten; keine Archive, HTML, Makro- oder alten binären
+  Office-Formate.
+- **Ergänzt durch Ordner 15a (Task 43):** Bild- und Videotypen kommen dort mit eigenen Limits und
+  Signaturen hinzu. Die Validierung wird deshalb schon hier so gebaut, dass die erlaubte Menge aus
+  `UPLOAD_LIMIT_BY_KIND` stammt und nicht aus einer einzelnen Erweiterungsliste mit einem globalen
+  Größenlimit. `.svg` bleibt dauerhaft ausgeschlossen.
 - Adapter kennt keine Portalberechtigung und löscht nie aufgrund einer DB-Cascade.
 - Signierte URLs sind kurzlebig; jeder Download prüft vorher die Datenbankberechtigung.
 - Vercel-Blob-Fehler liefern typisierte Resultate und hinterlassen einen reparierbaren Status.

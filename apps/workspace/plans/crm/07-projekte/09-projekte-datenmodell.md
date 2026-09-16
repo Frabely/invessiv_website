@@ -132,8 +132,13 @@ Kein `archived_at` und kein `deleted_at`: Archivierung ist ausschließlich `stat
 damit reversibel. Beträge sind immer EUR-Cent; eine Währungsspalte gibt es bewusst nicht.
 
 `projects_id_customer_uidx` ist redundant zum Primärschlüssel, aber notwendig: er ist das Ziel der
-zusammengesetzten Fremdschlüssel, mit denen `tasks` (Task 11) und `feedback_rounds` (Task 22) ihre
-denormalisierte `customer_id` gegen das Projekt absichern.
+zusammengesetzten Fremdschlüssel, mit denen `tasks` (Task 11), `feedback_rounds` (Task 22),
+`customer_packages` (Task 40) und `onboarding_submissions` (Task 44) ihre denormalisierte
+`customer_id` gegen das Projekt absichern.
+
+`budget_cents` bleibt der **Planwert** des Projekts. Der tatsächlich gebuchte Projektwert entsteht in
+Ordner 07d aus den Positionen mit `project_id` und wird in Task 42 daneben angezeigt — beide Zahlen
+sind beschriftet und werden nie vermischt.
 
 `included_feedback_rounds` ist das Rundenkontingent aus `00-entscheidungen.md`. Es entsteht hier,
 weil es zum Projekt gehört; ausgewertet wird es erst in Ordner 16.

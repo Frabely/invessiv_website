@@ -9,6 +9,10 @@
   Hierarchie, Parent-ID oder Checklistenpunkte.
 - Projekt-Owner ist Standardbearbeiter; vor Anwendung kann ein anderer aktiver Bearbeiter gewählt
   werden.
+- Die Vorlage bleibt das Mahnwesen und wird **nicht** durch den Onboarding-Bogen ersetzt. Ordner 15b
+  liefert den Inhalt, Ordner 15c (Task 46) hakt beim Absenden genau die Aufgaben ab, die
+  `ONBOARDING_TASK_COMPLETION` benennt. Jeder hier vergebene `title_key` ist damit Teil eines
+  getesteten Vertrags — Umbenennen bricht den Test, nicht still die Verzahnung.
 - Idempotenzschlüssel verhindert versehentliches doppeltes Anwenden derselben Vorlage auf dasselbe
   Projekt; bewusstes erneutes Anwenden benötigt eine neue Instanzbestätigung.
 

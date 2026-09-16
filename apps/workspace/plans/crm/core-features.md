@@ -11,6 +11,14 @@ Details und Abnahmekriterien stehen in den 27 geordneten Merge-Einheiten.
   archivierte Kunden.
 - Lead-Konvertierung mit erneut bestätigtem Primärkontakt und optionalen Zusatzkontakten.
 - Mehrere Projekte je Kunde mit Lebenszyklus, Workflow-Version, Owner und internen EUR-Planwerten.
+- Gebuchte Leistungspakete je Kunde und Projekt: einmalig oder wiederkehrend, aus einem versionierten
+  Katalog abgeleitet und danach kundenindividuell editierbar, mit ehrlicher Preishistorie.
+- Stand je Position (angefragt, angeboten, beauftragt, berechnet, bezahlt, abgelehnt) mit Liegedauer
+  und einem „Was ansteht"-Block in der Kundenakte; berechnet und bezahlt sind manuelle Vermerke.
+- Kundenwert und Projektwert (einmalig, monatlich, jährlich) plus offene Pipeline in Liste,
+  Kundenakte und Projektkarte.
+- Stundensatz als buchbares Paket je Kunde, beim Zubuchen individuell anpassbar und mit derselben
+  Preishistorie wie jede andere Position; Angebote, Rechnungen und Zahlungen bleiben in Lexware.
 - Flache Aufgaben mit einem Bearbeiter, Kontext, Handlungspflicht, Fälligkeit, Wiederholung und
   globaler Übersicht.
 - Workspace-Glocke für Zuweisungen, Fälligkeiten, Portalereignisse, Renewals und Jobfehler.
@@ -22,6 +30,10 @@ Details und Abnahmekriterien stehen in den 27 geordneten Merge-Einheiten.
 
 - Explizite Clerk-Einladung; ein Konto kann mehrere Kundenfirmen sicher wechseln.
 - Dashboard mit freigegebenen Projektdaten, Aufgaben, Dokumenten und Stunden.
+- Strukturierter Onboarding-Bogen: Texte direkt ins Feld, Assets am zugehörigen Feld, Zwischenstand
+  serverseitig gesichert, Absenden erledigt die zugehörigen Kundenaufgaben.
+- Upload von Bildern, Logos und kurzen Videos ohne Feedbackrunde; große Videos über einen Medienlink.
+- Onboarding-Termin beim zuständigen Mitarbeiter über dessen Buchungslink, erst nach aktivem Klick geladen.
 - Gemeinsamer Kundenchat mit Lesestand je Kontakt und gebündelten E-Mail-Hinweisen.
 - Zwei reguläre Feedbackrunden je Projekt; weitere Runde nur nach Anfrage und Freigabe.
 - Upload erlaubter Dokumente und Download nur explizit freigegebener Dateien.
@@ -44,6 +56,8 @@ Details und Abnahmekriterien stehen in den 27 geordneten Merge-Einheiten.
 
 Kein CRM-Mailclient, Mail-Eingang, Malware-Scanner, Dateiversionssystem, Rechnungssystem,
 Lexware-Import, Mandantenbetrieb, CSV-Kundenimport oder frei konfigurierbarer Workflow-Editor.
+Ebenso kein Angebotsobjekt im CRM, keine Rabatt-Regel-Engine, keine Pflegeoberfläche für Paketkatalog
+oder Onboarding-Fragen und keine eigene Terminverwaltung.
 
 Der frühere Detailplan für freies Mail-Senden bleibt als ausdrücklich zurückgestellte Option unter
 `zurueckgestellt/31-mail-senden.md` erhalten.

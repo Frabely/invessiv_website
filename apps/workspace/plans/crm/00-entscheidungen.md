@@ -3,16 +3,17 @@
 > **Scope:** Planung für `apps/workspace`, den abschließenden UI-Nachlauf in `apps/web`, `packages/db`,
 > `packages/common`, `packages/storage` und `packages/mail`.
 >
-> **Stand:** 13. September 2026 · geprüft und entscheidungsvollständig.
+> **Stand:** 16. September 2026 · geprüft und entscheidungsvollständig.
 >
-> **Umfang:** 27 einzeln merge- und deploybare Einheiten, insgesamt **83–109 Personentage**
+> **Umfang:** 31 einzeln merge- und deploybare Einheiten, insgesamt **95–125 Personentage**
 > inklusive Tests, Reviewkorrekturen, Migrationen und Betriebsdokumentation.
 
 ## Ziel und Lieferprinzip
 
 Ein produktionsreifes, ausschließlich von Invessiv genutztes CRM für zunächst zwei bis fünf
-interne Nutzer. Es führt Kunden, globale Personen, Projekte, Aufgaben, Dokumente, Feedback,
-Portalnachrichten, Zugangsdaten, Renewals und informative Stundenkontingente zusammen.
+interne Nutzer. Es führt Kunden, globale Personen, Projekte, gebuchte Leistungspakete, Aufgaben,
+Onboarding-Bögen, Dokumente, Feedback, Portalnachrichten, Zugangsdaten, Renewals und informative
+Stundenkontingente zusammen.
 
 Jeder geordnete Ordner ist ein eigenständiger PR. Nach seinem Merge muss `master` vollständig
 baubar, migrierbar und produktiv nutzbar bleiben. Dafür gilt je Ordner:
@@ -117,6 +118,64 @@ Umsetzung in Ordner 07a–07c (Task 36–38), nach Projekten und vor Aufgaben.
   Ordner 07, 08 oder 11 bricht den Typecheck, bis sie registriert ist — Vergessen ist damit ein
   roter Build und kein stiller Datenfehler.
 
+### Pakete und Kundenvolumen (Entscheidung des Nutzers, 16.09.2026)
+
+Umsetzung in Ordner 07d (Task 40–42), nach den Zugriffsbereichen und vor den Aufgaben.
+
+- **Lexware bleibt führend für Angebot, Rechnung und Zahlung.** Das CRM bildet kein Angebot ab und
+  kopiert keine Angebotstexte. Es hält die gebuchten Bausteine, ihre Konditionen und optional die
+  Lexware-Angebotsnummer als Freitext (`offer_reference`).
+- Der **Paketkatalog** liegt als versioniertes Const-Objekt in `packages/common`, nicht in der
+  Datenbank: je Paket ein aufsteigendes Array von Versionen mit `validFrom`, Preisen und
+  Leistungspunkten als Dictionary-Keys. Eine Preisänderung ist eine neue Version im Code, keine
+  Migration und kein Pflege-UI. Eine Katalogtabelle bleibt additiv nachrüstbar.
+- Eine gebuchte Position ist ein **Snapshot**: Bezeichnung, Leistungspunkte und Preise werden beim
+  Buchen in die Kundenzeile kopiert und sind danach je Kunde frei editierbar. Eine spätere
+  Katalogänderung berührt gebuchte Zeilen nie.
+- **Vorgeschlagen wird nach Preisart getrennt:** wiederkehrende Positionen und der Stundensatz zum
+  **Konditionsanker** des Kunden (`customers.customer_since`, ersatzweise das Anlagedatum),
+  einmalige Positionen zur **aktuellen** Katalogversion. Ein laufender Vertrag genießt
+  Bestandsschutz, eine neue Einmalleistung wird zur aktuellen Preisliste verkauft. Der Wechsel ist in
+  beide Richtungen ein sichtbarer, bewusster Klick.
+- Positionen tragen `pricing_mode`: `one_time`, `recurring` (`monthly | quarterly | yearly`) oder
+  `rate`. Sie sind kundenweit oder an ein Projekt gebunden; eine zusammengesetzte Constraint erzwingt,
+  dass das Projekt demselben Kunden gehört.
+- **Menge und Stückpreis sind getrennt** (`quantity`, `unit_cents`); der Gesamtbetrag wird berechnet,
+  nie gespeichert. „2 Sektionen zu je 200 €" und „eine Sektion zu 400 €" bleiben damit
+  unterscheidbar. Mehr Stück zu einem späteren Preis sind eine **neue** Position, keine
+  Mengenerhöhung der bestehenden Zeile.
+- **Der Stundensatz ist ein Katalogpaket** mit `pricing_mode = 'rate'`: buchen, beim Buchen
+  individuell ändern, später über denselben Ersetzungsweg wechseln. Keine eigene Historientabelle und
+  kein zweiter Mechanismus. Eine `rate`-Position zählt in keiner Wertsumme; je Kunde ist höchstens
+  eine aktiv (partieller Unique-Index).
+- **Zwei getrennte Achsen je Position:** `status` (`active | ended | cancelled`) sagt, ob die Position
+  läuft; `stage` (`requested | offered | ordered | invoiced | paid | declined`) sagt, wo das Geschäft
+  steht. Eine Spalte für beides wäre sofort unbrauchbar, weil ein Wartungsvertrag gleichzeitig aktiv
+  und berechnet ist.
+- **Umsatz zählt ab `ordered`.** `requested` und `offered` laufen getrennt als `pipelineCents`,
+  `declined` zählt nirgends. Sonst steigt der Kundenwert, sobald jemand etwas anfragt.
+- **`invoiced` und `paid` sind manuelle Vermerke und nicht führend** — Lexware bleibt die Wahrheit,
+  die UI beschriftet das sichtbar. Sie sind genau das Feld, das eine spätere Lexware-Anbindung
+  automatisch füllen würde. Bei wiederkehrenden Positionen sind sie **verboten**: monatliche
+  Abrechnung bräuchte Zeilen je Periode, und das wäre ein Abrechnungssystem. `rate`-Positionen haben
+  gar keinen Stand.
+- Kein Zustandsautomat: Jeder Standwechsel ist erlaubt und wird mit Zeitpunkt protokolliert
+  (`stage_changed_on`), damit „Angebot liegt seit 18 Tagen" beantwortbar ist.
+- **Preisänderungen überschreiben nie.** Die laufende Position wird beendet, eine Nachfolgeposition
+  mit `replaces_package_id` beginnt am Stichtag. Fehlbuchungen werden auf `cancelled` gesetzt; es
+  gibt keinen Löschpfad.
+- Ein Kombipreis ist ein **eigenes Paket** im Katalog, keine Rabattregel. Zusätzlich ist der Preis
+  jeder gebuchten Position frei editierbar; eine Abweichung vom Katalog wird protokolliert.
+- `customers.default_hourly_rate_cents` bleibt als aktueller Wert bestehen und wird beim Buchen oder
+  Wechseln der `rate`-Position in derselben Transaktion mitgeschrieben. Der Ausbau der Spalte gehört
+  in einen späteren Cleanup.
+- Kundenwert und Projektwert werden **immer berechnet**, nie gespeichert, und erscheinen in
+  Kundenliste, Kundenakte und Projektkarte aus einer gemeinsamen Funktion.
+- `packages.read` und `packages.write` sind workspace-weit und **nicht bindbar** (`scopable = false`).
+  Ohne `packages.read` liefert der Server weder Tab noch Wertfelder; nichts wird clientseitig versteckt.
+- **Kein Portalzugriff auf Beträge.** Erweiterungswünsche laufen über den Chat (Ordner 17/18). Eine
+  Lexware-Anbindung ist ausdrücklich nach Version 1 möglich und ändert dieses Modell nicht.
+
 ### Projekte und Aufgaben
 
 - Projektstatus: `planned`, `active`, `paused`, `completed`, `cancelled`, `archived`.
@@ -168,6 +227,43 @@ Umsetzung in Ordner 07a–07c (Task 36–38), nach Projekten und vor Aufgaben.
 - Systemmails nutzen eine Invessiv-Reply-To-Adresse. Versand und Fehler werden gespeichert; kein
   Öffnungs- oder Klicktracking.
 
+### Onboarding und Medien (Entscheidung des Nutzers, 16.09.2026)
+
+Umsetzung in Ordner 15a–15c (Task 43–47), nach der Datei-UI und **vor** den Feedbackrunden.
+
+- **Medienarten und Limits.** Bilder (`.png`, `.jpg`, `.jpeg`, `.webp`, `.heic`) und Video (`.mp4`,
+  `.mov`) sind erlaubt; `.svg`, Archive, HTML und makrofähige Office-Formate bleiben ausgeschlossen.
+  Limits liegen als `UPLOAD_LIMIT_BY_KIND` in `packages/common`: Dokument 50 MB, Bild 25 MB, Video
+  200 MB. HEIC wird angenommen, aber nicht im Browser vorgeschaut. Das ersetzt die frühere Regel
+  „keine Bilder" aus Ordner 14.
+- **Große Videos laufen über einen Medienlink** (`customer_asset_links`, nur `https`). Der Server
+  ruft eine solche URL niemals ab — kein Thumbnail, kein Metadatenabruf, keine Vorschau.
+- **Rundenfreier Portal-Upload.** Der Kunde lädt Assets ohne Feedbackrunde hoch; Kontingent und
+  Runden bleiben unberührt. Feedbackrunden (Ordner 16) binden die Upload-Session danach nur noch an
+  die Runde, statt einen zweiten Pfad zu bauen.
+- **Eigene Uploads sieht der Kunde.** Die Portalabfrage prüft
+  `visible_to_customer = true OR uploaded_by_side = 'customer'`. Für interne Uploads gilt die
+  Freigabepflicht unverändert.
+- **Der Onboarding-Bogen ist ein strukturiertes Formular**, kein Dateiabwurf: Texte werden ins Feld
+  geschrieben, Assets hängen am zugehörigen Feld. Der Fragenkatalog liegt als typisierte Konstante im
+  Code (drei Vorlagen), Fragen tragen Dictionary-Keys. Kein Formularbaukasten in Version 1 —
+  entscheidend ist, dass eine im Backoffice getippte Frage keine zweite Sprachfassung hätte.
+- **Antworten sind relationale Zeilen** (`field_key` plus Wert), kein `jsonb` und kein Array.
+  Mehrfachauswahl sind mehrere Zeilen.
+- **Der Entwurf liegt serverseitig.** Das weicht bewusst von der `localStorage`-Regel der
+  Feedbackrunden ab: eine Runde entsteht in einem Zug, ein Bogen mit 25 Feldern über Tage, an
+  mehreren Geräten und oft zu zweit. Genau ein Entwurf je Projekt und Vorlage.
+- Ein abgesendeter Bogen ist unveränderlich. Erneutes Öffnen ist ein interner, protokollierter
+  Vorgang mit Begründung — anders als eine Feedbackrunde ist der Bogen Arbeitsgrundlage, kein
+  kundenseitiger Zeitstand.
+- **Der Bogen ersetzt keine Aufgabe.** Das Absenden erledigt genau die Kundenaufgaben, die eine
+  typisierte Zuordnung im Code benennt; Aufgaben mit eigenem Titel werden nie automatisch abgehakt.
+- **Onboarding-Termin** über einen Buchungslink am Mitarbeiter (`workspace_members.booking_url`).
+  Der Kunde sieht den Link des Projekt-Owners, ersatzweise des Kunden-Owners. Das Widget lädt erst
+  nach einem ausdrücklichen Klick, nie beim Seitenaufruf. Eine eigene Terminverwaltung ist nicht Teil
+  von Version 1. „Onboarding abgeschlossen" ist kein neues Feld: es gilt, sobald die Projektphase
+  über `onboarding` hinaus ist.
+
 ### Feedbackrunden
 
 - Eine Feedbackrunde gehört immer zu genau einem Projekt; `project_id` ist Pflicht. Kommunikation
@@ -188,8 +284,9 @@ Umsetzung in Ordner 07a–07c (Task 36–38), nach Projekten und vor Aufgaben.
 ### Dateien
 
 - Vercel Blob hinter einem anbieterneutralen `StorageAdapter`.
-- Erlaubt: `.pdf`, `.txt`, `.docx`, `.xlsx`, `.pptx`. Keine alten binären oder makrofähigen
-  Office-Formate, Bilder, HTML oder Archive.
+- Erlaubt in Ordner 14: `.pdf`, `.txt`, `.docx`, `.xlsx`, `.pptx`. Keine alten binären oder
+  makrofähigen Office-Formate, HTML oder Archive. **Ordner 15a ergänzt Bild- und Videotypen mit
+  eigenen Limits** (Abschnitt „Onboarding und Medien"); `.svg` bleibt dauerhaft ausgeschlossen.
 - 50 MB je Datei; 20 Dateien und 300 MB je Sammelupload.
 - Die ZIP-Grenzen (`MAX_ARCHIVE_FILES`, `MAX_ARCHIVE_BYTES`) werden in Ordner 15 **gemessen**, nicht
   geschätzt. Startwerte 100 Dateien und 300 MB gelten als unbestätigt, bis der Durchsatz des
@@ -342,14 +439,22 @@ people
   ├── preferred_locale
   └── customer_contact_assignments ── customers
                                       ├── projects ──┬── tasks / task_series
-                                      │              └── feedback_rounds
-                                      │                  └── feedback_round_requests
+                                      │              ├── feedback_rounds
+                                      │              │   └── feedback_round_requests
+                                      │              └── onboarding_submissions      (Ordner 15b)
+                                      │                  ├── onboarding_answers
+                                      │                  └── onboarding_answer_files ── files
                                       ├── portal_memberships ── conversation_reads
                                       ├── conversations ── messages ── message_files
                                       ├── customer_credentials
                                       ├── customer_renewals
                                       ├── customer_tags
+                                      ├── customer_packages ── customer_package_items (Ordner 07d)
+                                      │   └── pricing_mode one_time | recurring | rate
+                                      ├── customer_asset_links                       (Ordner 15a)
                                       └── retainers ── time_entries
+
+service_packages ── versionierter Katalog als Const-Objekt im Code, keine Tabelle
 
 files ── genau ein Scope: customer | project | feedback_round
 activities ── Lead- und CRM-Historie
@@ -362,14 +467,19 @@ outbox_jobs ── zuverlässige asynchrone Seiteneffekte
 Kindtabellen eines Aggregats tragen den Aggregatnamen als Präfix — wie die bestehenden
 `lead_activities`, `lead_categories`, `lead_submissions` und `lead_email_contacts` in
 `packages/db/src/record-configuration/`. Verbindlich sind damit `customer_contact_assignments`,
-`customer_credentials`, `customer_renewals` und `customer_tags`.
+`customer_credentials`, `customer_renewals`, `customer_tags`, `customer_packages`,
+`customer_package_items` und `customer_asset_links`.
 
 Präfixfrei bleiben eigenständige und querschnittliche Tabellen: `users`, `workspace_members`, `permissions`, `roles`,
 `role_permissions`, `workspace_member_roles`, `workspace_member_scoped_roles`, `people`,
 `customers`, `projects`, `tasks`, `task_series`, `portal_memberships`, `portal_invitations`,
 `conversations`, `messages`, `message_files`, `conversation_reads`, `feedback_rounds`,
-`feedback_round_requests`, `retainers`, `time_entries`, `files`, `activities`, `security_events`, `outbox_jobs`,
+`feedback_round_requests`, `onboarding_submissions`, `onboarding_answers`, `onboarding_answer_files`,
+`retainers`, `time_entries`, `files`, `activities`, `security_events`, `outbox_jobs`,
 `notifications`.
+
+`onboarding_submissions` ist präfixfrei, weil der Bogen am Projekt hängt und kein Kindobjekt des
+Kunden ist; seine eigenen Kindtabellen tragen das Präfix `onboarding_`.
 
 `portal_memberships` und `feedback_rounds` sind bewusst präfixfrei: sie ersetzen die früheren
 `customer_portal_users` und `customer_submissions` nicht nur im Namen, sondern im Modell —
@@ -478,13 +588,14 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 | 03b | gemerged | `03b-mitglieder-und-rollenverwaltung`    | Mitglieder, Rollen und Owner-Flow verwaltbar; Aktionen permissionabhängig       | 100–120 |  3–4 T. |
 | 03c | gemerged | `03c-uebergabe-und-deaktivierung`        | Mitglieder-Lifecycle mit Owner- und Zuständigkeitssperre                        |   30–50 |  1–2 T. |
 | 03d | läuft    | `03d-geteilte-ui-bausteine`              | Dialog-, Panel- und Listenbausteine geteilt (`packages/ui` + workspace/shared)  | 145–165 |  4–5 T. |
-| 04  | offen    | `04-personen-und-kundenakte`             | Kunden samt Pflichtkontakt, Owner, Archiv und Detail vollständig nutzbar        |  80–100 |  4–5 T. |
+| 04  | läuft    | `04-personen-und-kundenakte`             | Kunden samt Pflichtkontakt, Owner, Archiv und Detail vollständig nutzbar        |  80–100 |  4–5 T. |
 | 05  | offen    | `05-kundenliste-und-zuweisung`           | Liste, Suche, Filter, Übergabe und Aufbewahrungshinweise nutzbar                |  60–100 |  3–4 T. |
 | 06  | offen    | `06-lead-konvertierung`                  | Leads können sicher neu oder zu bestehenden Kunden konvertiert werden           |   40–70 |  2–3 T. |
 | 07  | offen    | `07-projekte`                            | Projektanlage, Status, Workflow und Owner-Zuweisung vollständig nutzbar         |  60–100 |  3–4 T. |
 | 07a | offen    | `07a-zugriffsbereiche-fundament`         | Gebundene Rollen in DB, Actor und API unsichtbar und wirkungslos deployt        |   60–90 |    3 T. |
 | 07b | offen    | `07b-zugriffsfilter-kunden-und-projekte` | Alle Kunden- und Projektpfade filtern über `accessScope`; Negativtests          |  60–100 |  3–4 T. |
 | 07c | offen    | `07c-zugriffsverwaltung-ui`              | Zugriffe je Kunde/Projekt in Settings und Kundenakte konfigurierbar             |   50–80 |  2–3 T. |
+| 07d | offen    | `07d-pakete-und-kundenvolumen`           | Gebuchte Pakete, Preishistorie, Kunden- und Projektwert vollständig nutzbar     |  90–120 |  4–5 T. |
 | 08  | offen    | `08-aufgaben`                            | Flache Aufgaben, Kundenpflicht und globale Übersicht nutzbar                    |  80–100 |  4–5 T. |
 | 09  | offen    | `09-aufgabenserien-und-reminder`         | Wiederholungen, Fälligkeit und Überfälligkeit zuverlässig aktiv                 |   50–90 |  3–4 T. |
 | 10  | offen    | `10-jobs-und-benachrichtigungen`         | Outbox-Runner, Glocke, Retry und kritische Fehlerbenachrichtigung aktiv         |  70–100 |  4–5 T. |
@@ -493,6 +604,9 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 | 13  | offen    | `13-portal-dashboard`                    | Portal-Dashboard mit Aufgaben und Projektdaten produktiv nutzbar                |  60–100 |  3–4 T. |
 | 14  | offen    | `14-storage-und-upload`                  | Storage-Adapter und sichere Upload-Pipeline unsichtbar sicher deployt           |  70–100 |  4–5 T. |
 | 15  | offen    | `15-dateien-und-portal-downloads`        | Datei-UI, Freigabe, Portaldownload und ZIP vollständig nutzbar                  |  70–100 |  4–5 T. |
+| 15a | offen    | `15a-medien-und-portal-upload`           | Bilder/Video mit Limits je Art, Medienlink und rundenfreier Portal-Upload       |   60–80 |  2–3 T. |
+| 15b | offen    | `15b-onboarding-bogen`                   | Strukturierter Onboarding-Bogen im Portal, intern vollständig lesbar            | 100–120 |  4–5 T. |
+| 15c | offen    | `15c-onboarding-abschluss`               | Bogen erledigt Kundenaufgaben; Terminbuchung beim zuständigen Mitarbeiter       |   50–70 |  2–3 T. |
 | 16  | offen    | `16-feedbackrunden`                      | Feedbackrunden im Kontingent plus freigabepflichtige Zusatzrunde nutzbar        |  70–100 |  4–5 T. |
 | 17  | offen    | `17-kundenchat-intern`                   | Chat-Datenmodell und interne Chatseite vollständig nutzbar                      |   60–90 |  3–4 T. |
 | 18  | offen    | `18-kundenchat-portal`                   | Portalchat, Kundendigest und Abmeldeschalter aktiv                              |   50–80 |  2–3 T. |
@@ -512,9 +626,16 @@ mergebarer Ordner. Zusammenlegen allein zum Erreichen des Zielkorridors ist nich
 ## Bewusst nicht enthalten
 
 - Mandantenfähigkeit, CSV-Kundenimport, Kundenzusammenführung.
-- Rechnungen, Zahlungen, Lexware oder rechtsverbindliche Zeiterfassung.
+- Rechnungen, Zahlungen, Lexware oder rechtsverbindliche Zeiterfassung. Auch das **Angebot selbst**
+  bleibt in Lexware: kein Angebotsobjekt im CRM, keine Mahnstufe, keine Teilzahlung, keine Steuer-
+  oder Summenrechnung. Der manuelle Vermerk „berechnet/bezahlt" am Paket ist ausdrücklich kein
+  Zahlungsabgleich. Eine Lexware-Schnittstelle ist nach Version 1 möglich.
+- Rabatt-Regel-Engine für Paketkombinationen. Ein Kombipreis ist ein eigenes Paket im Katalog.
+- Pflegeoberfläche für Paketkatalog oder Onboarding-Fragen. Beide sind Const-Objekte im Code.
+- Eigene Terminverwaltung mit Verfügbarkeiten, Absagen und Kalendersynchronisation.
 - Freies CRM-Mailmodul, Mail-Eingang, Trackingpixel.
-- Dateiordner, Versionen, Bilder, Bildannotation, Kommentare pro Datei.
+- Dateiordner, Dateiversionen, Bildannotation, Kommentare pro Datei, serverseitige Bild- oder
+  Videokonvertierung. Bilder und Video als Upload sind seit Ordner 15a enthalten.
 - Malware-Scanner, TOTP oder Credential-Freigabe im Portal.
 - Frei konfigurierbare Workflows oder Aufgabenhierarchien.
 - Attributbasierte Regeln, explizite Deny-Regeln und Enterprise-IdP-/SCIM-Synchronisation. Die Zugriffsbereiche aus

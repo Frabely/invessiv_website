@@ -9,6 +9,9 @@
 - Archivierte Kunden bleiben intern adressierbar und sind nur in Listen standardmäßig ausgeblendet.
 - Unbekannte ID liefert 404; `archived` gilt nicht als unbekannt.
 - Sektionen späterer Ordner werden erst gerendert, wenn ihr Feature vollständig geliefert wurde.
+- Die Akte wird so aufgebaut, dass spätere Ordner eigene **Tabs** ergänzen können (Ordner 07d:
+  „Pakete"). Der aktive Tab gehört in den URL-State, nicht in React-State — auch wenn es hier
+  zunächst nur einen gibt.
 - CRM-05-T4 wird „Archivieren/Reaktivieren mit Version und Activity“.
 - CRM-05-T5 entfällt; Purge wird ausschließlich in Task 34 nach allen Abhängigkeiten umgesetzt.
 

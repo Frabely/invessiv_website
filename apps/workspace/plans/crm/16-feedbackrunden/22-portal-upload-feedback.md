@@ -17,32 +17,33 @@ Zeitstand — kein Dokument, das nachträglich wächst.
 
 ## Entscheidungen
 
-| Bereich                | Entscheidung                                                                                                                                 |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| Einheit                | Eine `feedback_round` bündelt n Dateien und einen Freitext                                                                                   |
-| Scope                  | `project_id` ist **Pflicht**. Eine Runde gehört immer zu genau einem Projekt                                                                 |
-| Warum                  | Feedback bezieht sich auf eine Lieferung, und eine Lieferung gehört zu einem Projekt. Kommunikation ohne Projektbezug läuft über den Chat    |
-| Rundennummer           | Fortlaufend je Projekt ab 1, lückenlos, serverseitig vergeben                                                                                |
-| Kontingent             | `projects.included_feedback_rounds`, Default 2, bei Projektanlage und danach intern änderbar                                                 |
-| Warum kein fester Wert | Zwei Runden sind der Normalfall, kein Naturgesetz. Ein größeres Projekt startet mit 3 oder 4, ohne Migration und ohne Sonderpfad             |
-| Einreichen erlaubt     | Solange `round_number <= included_feedback_rounds` und keine Runde des Projekts offen ist                                                    |
-| Darüber                | Das Formular wird durch eine Zusatzrunden-Anfrage ersetzt. Interne Freigabe erhöht das Kontingent um genau 1, mit protokollierter Begründung |
-| Preis                  | Angebot und Abrechnung der Zusatzrunde liegen außerhalb des CRM. Das Portal nennt keinen Betrag                                              |
-| Status                 | `submitted` → `in_progress` → `completed`. Der Kunde setzt nur `submitted`, alles Weitere intern (Task 23)                                   |
-| Kein Entwurf           | Es gibt keinen serverseitigen Entwurfsstatus. Eine Runde entsteht erst beim Absenden und ist danach unveränderlich                           |
-| Warum                  | Ein Entwurf mit eigener Zeile und Unique-Index war die Quelle halbfertiger Einreichungen, in denen Dateien verschwanden                      |
-| Zwischenspeicher       | Der Freitext liegt bis zum Absenden im `localStorage` des Browsers — in `try/catch`, ohne Serverzeile und ohne Datei                         |
-| Uploads vor Absenden   | Dateien laufen über eine Upload-Session aus Task 14 ohne Rundenbezug. Erst das Absenden verknüpft sie atomar mit der neuen Runde             |
-| Verwaiste Sessions     | Nicht abgesendete Upload-Sessions werden nach 24 Stunden über den Cleanup-Job aus Ordner 14 entfernt                                         |
-| Freitext               | Postgres `text`, Anwendungslimit 20.000 Zeichen, serverseitig geprüft                                                                        |
-| Warum `text`           | In Postgres praktisch unbegrenzt und bei Überlänge automatisch ausgelagert; `varchar(n)` brächte nur eine spätere Migration                  |
-| Externer Text          | Ausschließlich als Text gerendert. Kein HTML, kein Markdown, auch nicht in Mails und Benachrichtigungen                                      |
-| Dateien                | Über denselben Pfad wie intern (Task 14), mit `feedback_round_id` und `category = feedback`                                                  |
-| Limits im Portal       | Strenger als intern: 50 MB je Datei, 20 Dateien und 300 MB je Runde                                                                          |
-| Missbrauchsschutz      | Datenbankgestütztes Limit: 5 Absendungen je Stunde und Kunde                                                                                 |
-| Leere Runde            | Weder Text noch Dateien wird abgelehnt                                                                                                       |
-| Benachrichtigung       | Outbox-Eintrag in derselben Transaktion: Notification an den Projekt-Owner plus gebündelte Mail. Keine Anhänge, kein Volltext                |
-| Projektphase           | Wird durch Absenden und Abschluss **nie** automatisch verändert                                                                              |
+| Bereich                | Entscheidung                                                                                                                                                           |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Einheit                | Eine `feedback_round` bündelt n Dateien und einen Freitext                                                                                                             |
+| Scope                  | `project_id` ist **Pflicht**. Eine Runde gehört immer zu genau einem Projekt                                                                                           |
+| Warum                  | Feedback bezieht sich auf eine Lieferung, und eine Lieferung gehört zu einem Projekt. Kommunikation ohne Projektbezug läuft über den Chat                              |
+| Rundennummer           | Fortlaufend je Projekt ab 1, lückenlos, serverseitig vergeben                                                                                                          |
+| Kontingent             | `projects.included_feedback_rounds`, Default 2, bei Projektanlage und danach intern änderbar                                                                           |
+| Warum kein fester Wert | Zwei Runden sind der Normalfall, kein Naturgesetz. Ein größeres Projekt startet mit 3 oder 4, ohne Migration und ohne Sonderpfad                                       |
+| Einreichen erlaubt     | Solange `round_number <= included_feedback_rounds` und keine Runde des Projekts offen ist                                                                              |
+| Darüber                | Das Formular wird durch eine Zusatzrunden-Anfrage ersetzt. Interne Freigabe erhöht das Kontingent um genau 1, mit protokollierter Begründung                           |
+| Preis                  | Angebot und Abrechnung der Zusatzrunde liegen außerhalb des CRM. Das Portal nennt keinen Betrag                                                                        |
+| Status                 | `submitted` → `in_progress` → `completed`. Der Kunde setzt nur `submitted`, alles Weitere intern (Task 23)                                                             |
+| Kein Entwurf           | Es gibt keinen serverseitigen Entwurfsstatus. Eine Runde entsteht erst beim Absenden und ist danach unveränderlich                                                     |
+| Warum                  | Ein Entwurf mit eigener Zeile und Unique-Index war die Quelle halbfertiger Einreichungen, in denen Dateien verschwanden                                                |
+| Zwischenspeicher       | Der Freitext liegt bis zum Absenden im `localStorage` des Browsers — in `try/catch`, ohne Serverzeile und ohne Datei                                                   |
+| Uploads vor Absenden   | Dateien laufen über eine Upload-Session aus Task 14 ohne Rundenbezug. Erst das Absenden verknüpft sie atomar mit der neuen Runde                                       |
+| Woher der Pfad kommt   | Der rundenfreie Portal-Upload entsteht bereits in **Ordner 15a (Task 43)**. Diese Einheit baut keinen zweiten Pfad, sondern bindet die vorhandene Session an die Runde |
+| Verwaiste Sessions     | Nicht abgesendete Upload-Sessions werden nach 24 Stunden über den Cleanup-Job aus Ordner 14 entfernt                                                                   |
+| Freitext               | Postgres `text`, Anwendungslimit 20.000 Zeichen, serverseitig geprüft                                                                                                  |
+| Warum `text`           | In Postgres praktisch unbegrenzt und bei Überlänge automatisch ausgelagert; `varchar(n)` brächte nur eine spätere Migration                                            |
+| Externer Text          | Ausschließlich als Text gerendert. Kein HTML, kein Markdown, auch nicht in Mails und Benachrichtigungen                                                                |
+| Dateien                | Über denselben Pfad wie intern (Task 14), mit `feedback_round_id` und `category = feedback`                                                                            |
+| Limits im Portal       | Strenger als intern: 50 MB je Datei, 20 Dateien und 300 MB je Runde                                                                                                    |
+| Missbrauchsschutz      | Datenbankgestütztes Limit: 5 Absendungen je Stunde und Kunde                                                                                                           |
+| Leere Runde            | Weder Text noch Dateien wird abgelehnt                                                                                                                                 |
+| Benachrichtigung       | Outbox-Eintrag in derselben Transaktion: Notification an den Projekt-Owner plus gebündelte Mail. Keine Anhänge, kein Volltext                                          |
+| Projektphase           | Wird durch Absenden und Abschluss **nie** automatisch verändert                                                                                                        |
 
 ## Tabellen
 
