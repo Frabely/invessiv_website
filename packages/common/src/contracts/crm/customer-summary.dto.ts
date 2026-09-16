@@ -26,6 +26,8 @@ export interface CustomerSummaryDto {
    * owner handover all open projects, tasks and renewals move along atomically.
    */
   ownerMemberId: string;
+  /** Display name of the responsible workspace member; it never grants access. */
+  ownerDisplayName: string;
   /** Shared vocabulary with the leads area (`lead_categories`), so a conversion keeps it. */
   categoryId: string | null;
   /** Denormalized from the address so lists can show a location without a join. */
@@ -41,6 +43,6 @@ export interface CustomerSummaryDto {
   primaryContactEmail: string | null;
   /** ISO string, never a `Date` — the mapper converts at the boundary. */
   createdAt: string;
-  /** ISO string. Bumped by `updateVersioned` together with `version`. */
+  /** ISO string. Bumped by every versioned customer update. */
   updatedAt: string;
 }

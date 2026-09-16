@@ -80,14 +80,17 @@ describe("customerWriteMappingService", () => {
     });
   });
 
-  it("never patches status, owner or version on update", () => {
+  it("patches status but never owner or version on update", () => {
     const patch = customerWriteMappingService.mapUpdateCustomerApiToDb({
       ...FULL_INPUT,
+      status: "active",
       version: 4,
     });
 
-    expect(patch).toMatchObject({ display_name: "Nordlicht Coaching" });
-    expect(patch).not.toHaveProperty("status");
+    expect(patch).toMatchObject({
+      display_name: "Nordlicht Coaching",
+      status: "active",
+    });
     expect(patch).not.toHaveProperty("owner_member_id");
     expect(patch).not.toHaveProperty("version");
   });

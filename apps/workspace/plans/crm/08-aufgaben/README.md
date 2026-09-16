@@ -19,6 +19,8 @@ werden bereits modelliert, aber erst mit dem Portal sichtbar.
 
 - Additive Aufgabenmigration, Drizzle-Modell, Contracts und Indizes entstehen in diesem Ordner.
 - Pflicht: Titel, interner Bearbeiter, `action_side`, Status und `version`.
+- Der Standardbearbeiter ist im Projektkontext der Projekt-Owner, sonst der Kunden-Owner. Er kann bei Anlage und später
+  einzeln geändert werden; ein Owner-Wechsel am Kunden oder Projekt überschreibt ihn nicht.
 - Genau ein Kontext: intern ohne Kunde/Projekt, direkt Kunde oder Projekt samt konsistentem Kunde.
 - Optional: Beschreibung, Fälligkeitsdatum und Uhrzeit. Noch keine Serienfelder in diesem Ordner.
 - `action_side = customer` setzt und erzwingt `visible_to_customer = true`.
@@ -37,7 +39,8 @@ werden bereits modelliert, aber erst mit dem Portal sichtbar.
 
 ## Merge-Gate
 
-- [ ] Facette „hat offene Aufgaben" ist in `CUSTOMER_LIST_FACETS` registriert und nutzbar.
+- [ ] Die Kundenlisten-Query kann „hat offene Aufgaben“ effizient als Grundlage für die spätere Facette in Ordner 22a
+      liefern; eine vorgezogene Filter-UI entsteht nicht.
 - [ ] `Tasks` ist in `OwnableEntity` registriert und hat einen Adapter in der Ownership-Registry (Ordner 03c); Übergabe
       und Deaktivierungszählung erfassen die Entität, mit Test.
 - [ ] DB verhindert widersprüchliche oder mehrere Kontexte.

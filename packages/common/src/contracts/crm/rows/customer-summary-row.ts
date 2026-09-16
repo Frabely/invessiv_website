@@ -8,6 +8,7 @@ export type CustomerSummaryRow = {
   company_name: string | null;
   status: CustomerStatus;
   owner_member_id: string;
+  owner_display_name: string;
   category_id: string | null;
   city: string | null;
   created_at: Date;

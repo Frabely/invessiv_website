@@ -6,8 +6,8 @@
 ## Ziel und Stand nach Merge
 
 Mitglieder können deaktiviert und reaktiviert werden. Selbstdeaktivierung, die Deaktivierung des letzten aktiven
-Owners und verwaiste offene Zuständigkeiten sind ausgeschlossen. Die eigentliche Übergabe folgt erst nach der
-Kundenakte in Ordner 05, weil sie dort erstmals vollständig über die Kunden-UI überprüfbar ist.
+Owners und verwaiste offene Zuständigkeiten sind ausgeschlossen. Die eigentliche Übergabe folgt erst nach dem
+vollständigen CRM-Modell in Ordner 22a, damit alle Zuständigkeiten gemeinsam überprüfbar sind.
 
 **Konkreter Task-Plan**
 
@@ -27,11 +27,10 @@ Kundenakte in Ordner 05, weil sie dort erstmals vollständig über die Kunden-UI
 
 ## Bewusster Folgeschnitt
 
-Die vollständige Übergabe wurde nach
-[
-`../05-kundenliste-und-zuweisung/02f-zustaendigkeitsuebergabe.md`](../05-kundenliste-und-zuweisung/02f-zustaendigkeitsuebergabe.md)
-verschoben. 03c bleibt trotzdem sicher: Solange offene Zuständigkeiten existieren, ist die Deaktivierung blockiert.
-Es gibt keinen Übergabe-Button, bevor der zugehörige Kundenflow implementiert und testbar ist.
+Die einzelne Kundenzuweisung folgt in [Ordner 06a](../06a-kundenzustaendigkeit/README.md), die vollständige Übergabe in
+[Ordner 22a](../22a-kundenorganisation-und-uebergabe/README.md). 03c bleibt trotzdem sicher: Solange offene
+Zuständigkeiten existieren, ist die Deaktivierung blockiert. Es gibt keinen Übergabe-Button, bevor alle zugehörigen
+Domänen implementiert und gemeinsam testbar sind.
 
 Die Zuständigkeitszählung läuft noch ohne Sperre gegen parallele Zuweisungen. Das ist heute folgenlos, weil noch kein
 Schreibpfad Kunden zuweist; Stelle, Risiko und nächster Schritt stehen im Task-Plan unter „Bekannte Grenze:

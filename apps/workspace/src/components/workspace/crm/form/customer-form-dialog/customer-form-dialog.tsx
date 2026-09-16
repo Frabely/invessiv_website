@@ -12,6 +12,7 @@ import {
 import { useRouter } from "next/navigation";
 import { CustomerErrorCode } from "@invessiv/common/constants/crm/errors/customer-error-codes";
 import { CustomerFieldLimits } from "@invessiv/common/constants/crm/forms/customer-field-limits";
+import { CUSTOMER_STATUS_VALUES } from "@invessiv/common/constants/crm/customer-statuses";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import type { CustomerDetailDto } from "@invessiv/common/contracts/crm/customer-detail.dto";
 import type { CustomerContactWriteDto } from "@invessiv/common/contracts/crm/customer-contact-write.dto";
@@ -57,7 +58,7 @@ type CustomerFormDialogProps = {
 
 type TextFieldKey = Exclude<
   keyof CustomerFormValues,
-  "categoryId" | "contactPreferredLocale" | "notes"
+  "categoryId" | "contactPreferredLocale" | "notes" | "status"
 >;
 
 const NOTES_COUNTER_THRESHOLD = 0.8;
@@ -82,6 +83,7 @@ const CUSTOMER_TAB_FIELDS = [
   "displayName",
   "companyName",
   "categoryId",
+  "status",
 ] as const;
 const CONTACT_TAB_FIELDS = [
   "contactFirstName",
@@ -465,6 +467,25 @@ export function CustomerFormDialog({
                   />
                 )}
               />
+              {customer ? (
+                <FormField
+                  kind={FormFieldKind.Custom}
+                  label={content.fields.status}
+                  renderControl={({ describedBy, id, invalid }) => (
+                    <CustomSelect
+                      describedBy={describedBy}
+                      id={id}
+                      invalid={invalid}
+                      onChange={(next) => update("status", next)}
+                      options={CUSTOMER_STATUS_VALUES.map((status) => ({
+                        label: content.status[status],
+                        value: status,
+                      }))}
+                      value={values.status}
+                    />
+                  )}
+                />
+              ) : null}
             </div>
           </section>
         </div>

@@ -59,7 +59,8 @@ Portalseite mit Firmenname und Abmelden nutzbar; fachliche Dashboardmodule folge
       `users.id` referenzieren.
 - [ ] Ein Clerk-Konto mit Portalmitgliedschaft kann als internes Mitglied angelegt werden und ist in der
       Kandidatenliste gekennzeichnet; ein bestehendes Mitglied erscheint dort nicht.
-- [ ] Facette „hat Portalzugang" ist in `CUSTOMER_LIST_FACETS` registriert und nutzbar.
+- [ ] Die Kundenlisten-Query kann „hat Portalzugang“ effizient als Grundlage für die spätere Facette in Ordner 22a
+      liefern; eine vorgezogene Filter-UI entsteht nicht.
 - [ ] Keine Mitgliedschaft entsteht ohne eingelösten Token; E-Mail-Gleichheit verbindet nichts.
 - [ ] Token ist gehasht, abgelaufen/einmalig und nicht in Logs/Analytics.
 - [ ] Paralleles Einlösen desselben Tokens erzeugt genau eine Mitgliedschaft.

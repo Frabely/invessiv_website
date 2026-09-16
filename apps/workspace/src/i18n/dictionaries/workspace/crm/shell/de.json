@@ -1,5 +1,6 @@
 {
   "title": "Kunden",
   "description": "Alle aktiven und pausierten Kunden mit Kundennummer und Hauptansprechpartner.",
-  "createCustomer": "Kunde anlegen"
+  "createCustomer": "Kunde anlegen",
+  "includeArchived": "Archivierte einblenden"
 }

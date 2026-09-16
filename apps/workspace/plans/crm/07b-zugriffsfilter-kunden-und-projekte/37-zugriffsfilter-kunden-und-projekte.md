@@ -67,10 +67,10 @@ CRM_ENDPOINT_ACCESS_RULES = {
 ## Nachzurüstende Pfade (Checkliste zu Beginn gegen den Code abgleichen)
 
 - [ ] Kundenübersicht und Kundenliste, Count, Pagination, Sortierung, Suche (Task 03, 30)
-- [ ] `CUSTOMER_LIST_FACETS` inklusive Projektphase (Task 30, 09)
+- [ ] Kunden- und Projektqueries liefern die Grundlage für die spätere Facette `Projektphase` (Ordner 22a)
 - [ ] Kundenakte: Kopf, Stammdaten, Kategorie/Tags/Status, Archiv/Reaktivieren, Activities (Task 04, 05, 07)
 - [ ] Ansprechpartner: Liste, Anlage, Bearbeitung, Primärwechsel, Personensuche (Task 06)
-- [ ] Owner-Wechsel mit Vorschau und atomarer Übernahme (Ordner 05)
+- [ ] Owner-Wechsel mit Vorschau und atomarer Übernahme (Ordner 22a)
 - [ ] Lead-Konvertierung neu/bestehend inklusive Kundenauswahl (Task 08)
 - [ ] Projekte: Liste, Karten in der Akte, Detail, Anlage, Bearbeitung, Status, Phase, Owner (Task 09, 10)
 - [ ] Ownership-Registry, Deaktivierungszählung, Übergabe (Task 02d)

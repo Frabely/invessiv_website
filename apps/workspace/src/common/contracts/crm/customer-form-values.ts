@@ -1,3 +1,4 @@
+import type { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 import type { CustomerFormValidationCode } from "@/common/constants/crm/forms/customer-form-validation-codes";
 
@@ -10,6 +11,7 @@ export type CustomerFormValues = {
   companyName: string;
   /** Empty string selects "no category". */
   categoryId: string;
+  status: CustomerStatus;
   street: string;
   postalCode: string;
   city: string;

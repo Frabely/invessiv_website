@@ -14,12 +14,22 @@ import { customerApiError } from "@/lib/workspace/crm/customer-api-error";
 import { logCrmFailure } from "@/lib/workspace/crm/log-crm-failure";
 import { createCustomer } from "@/server/workspace/crm/command-handler/create-customer.command-handler";
 import { listCustomers } from "@/server/workspace/crm/query-handler/list-customers.query-handler";
+import { parseCustomerListFilters } from "@/server/workspace/crm/shared/customer-list-search-params";
 
 export const runtime = "nodejs";
 
-export const GET = withPermission(Permission.CustomersRead, async () => {
+export const GET = withPermission(Permission.CustomersRead, async (request) => {
   try {
-    const result = await listCustomers();
+    const params: Record<string, string | string[]> = {};
+    new URL(request.url).searchParams.forEach((value, key) => {
+      const current = params[key];
+      params[key] = current
+        ? Array.isArray(current)
+          ? [...current, value]
+          : [current, value]
+        : value;
+    });
+    const result = await listCustomers(parseCustomerListFilters(params));
     return Response.json(result, { status: HttpResponseCode.Ok });
   } catch (error: unknown) {
     logCrmFailure(CrmOperation.ListCustomers, error);

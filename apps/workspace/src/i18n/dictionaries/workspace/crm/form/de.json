@@ -24,6 +24,7 @@
     "displayName": "Anzeigename",
     "companyName": "Firmenname",
     "category": "Kategorie",
+    "status": "Status",
     "street": "Straße und Hausnummer",
     "postalCode": "PLZ",
     "city": "Ort",
@@ -66,6 +67,11 @@
   "locales": {
     "de": "Deutsch",
     "en": "Englisch"
+  },
+  "status": {
+    "active": "Aktiv",
+    "paused": "Pausiert",
+    "archived": "Archiviert"
   },
   "validation": {
     "displayNameRequired": "Gib einen Anzeigenamen ein.",

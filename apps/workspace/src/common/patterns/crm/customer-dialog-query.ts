@@ -26,20 +26,41 @@ export function readCustomerDialogRequest(
   return null;
 }
 
-export function buildCustomerCreateHref(basePath: string): string {
-  const params = new URLSearchParams({
-    [CustomerListQueryParam.Mode]: CustomerFormDialogMode.Create,
-  });
-  return `${basePath}?${params.toString()}`;
+function listParams(queryString = ""): URLSearchParams {
+  const params = new URLSearchParams(queryString);
+  params.delete(CustomerListQueryParam.Mode);
+  params.delete(CustomerListQueryParam.Edit);
+  return params;
+}
+
+function buildHref(basePath: string, params: URLSearchParams): string {
+  const query = params.toString();
+  return query ? `${basePath}?${query}` : basePath;
+}
+
+export function buildCustomerCreateHref(
+  basePath: string,
+  queryString = "",
+): string {
+  const params = listParams(queryString);
+  params.set(CustomerListQueryParam.Mode, CustomerFormDialogMode.Create);
+  return buildHref(basePath, params);
 }
 
 export function buildCustomerEditHref(
   basePath: string,
   customerId: string,
+  queryString = "",
 ): string {
-  const params = new URLSearchParams({
-    [CustomerListQueryParam.Mode]: CustomerFormDialogMode.Edit,
-    [CustomerListQueryParam.Edit]: customerId,
-  });
-  return `${basePath}?${params.toString()}`;
+  const params = listParams(queryString);
+  params.set(CustomerListQueryParam.Mode, CustomerFormDialogMode.Edit);
+  params.set(CustomerListQueryParam.Edit, customerId);
+  return buildHref(basePath, params);
+}
+
+export function buildCustomerDialogCloseHref(
+  basePath: string,
+  queryString = "",
+): string {
+  return buildHref(basePath, listParams(queryString));
 }

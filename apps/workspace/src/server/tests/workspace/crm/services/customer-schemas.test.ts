@@ -103,15 +103,21 @@ describe("customerSchemas.update", () => {
 
     expect(customerSchemas.update.safeParse(fields).success).toBe(false);
     expect(
-      customerSchemas.update.safeParse({ ...fields, version: 0 }).success,
+      customerSchemas.update.safeParse({
+        ...fields,
+        status: "active",
+        version: 0,
+      }).success,
     ).toBe(false);
 
     const result = customerSchemas.update.parse({
       ...fields,
       primaryContact,
+      status: "paused",
       version: 2,
     });
     expect(result.version).toBe(2);
+    expect(result.status).toBe("paused");
     expect(result).not.toHaveProperty("primaryContact");
   });
 });

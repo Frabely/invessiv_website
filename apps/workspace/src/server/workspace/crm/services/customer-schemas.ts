@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { CustomerFieldLimits } from "@invessiv/common/constants/crm/forms/customer-field-limits";
+import { CUSTOMER_STATUS_VALUES } from "@invessiv/common/constants/crm/customer-statuses";
 import { SUPPORTED_LOCALES } from "@invessiv/common/contracts/i18n/locale";
 import { formValidationService } from "@invessiv/common/patterns/validation/form-validation-service";
 import { formValidationSchemas } from "@invessiv/common/patterns/validation/form-validation-schemas";
@@ -98,6 +99,7 @@ export const customerSchemas = {
   }),
   createContact: primaryContactSchema,
   update: writeFieldsSchema.extend({
+    status: z.enum(CUSTOMER_STATUS_VALUES),
     version: z.int().positive(),
     contacts: z
       .array(contactWriteSchema)

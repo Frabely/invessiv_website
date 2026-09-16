@@ -12,6 +12,7 @@ vi.mock("server-only", () => ({}));
 const mocks = vi.hoisted(() => ({
   database: { name: "database" },
   findDetail: vi.fn(),
+  countSummaries: vi.fn(),
   listSummaries: vi.fn(),
 }));
 
@@ -22,6 +23,7 @@ vi.mock("@invessiv/db/core", async (importOriginal) => ({
 vi.mock("@/server/workspace/crm/services/customer-read-service", () => ({
   customerReadService: {
     findDetailById: mocks.findDetail,
+    countSummaries: mocks.countSummaries,
     listSummaries: mocks.listSummaries,
   },
 }));
@@ -29,6 +31,7 @@ vi.mock("@/server/workspace/crm/services/customer-read-service", () => ({
 describe("customer query handlers", () => {
   beforeEach(() => {
     mocks.findDetail.mockReset();
+    mocks.countSummaries.mockReset();
     mocks.listSummaries.mockReset();
   });
 
@@ -51,10 +54,21 @@ describe("customer query handlers", () => {
     );
   });
 
-  it("lists the overview with a fixed limit inside a result object", async () => {
+  it("lists a clamped page with count metadata", async () => {
+    mocks.countSummaries.mockResolvedValue(26);
     mocks.listSummaries.mockResolvedValue([]);
 
-    await expect(listCustomers()).resolves.toEqual({ rows: [] });
-    expect(mocks.listSummaries).toHaveBeenCalledWith(mocks.database, 100);
+    await expect(
+      listCustomers({
+        includeArchived: false,
+        page: 9,
+        sort: "updated_desc",
+      }),
+    ).resolves.toEqual({ page: 2, perPage: 25, rows: [], total: 26 });
+    expect(mocks.listSummaries).toHaveBeenCalledWith(
+      mocks.database,
+      { includeArchived: false, page: 2, sort: "updated_desc" },
+      25,
+    );
   });
 });

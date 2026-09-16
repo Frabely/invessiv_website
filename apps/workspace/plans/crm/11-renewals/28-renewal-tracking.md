@@ -4,7 +4,8 @@
 > **Aufwand:** M · **Abhängigkeiten:** Task 05 (Slot), Task 19 (Mail)
 > **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
-- Jeder Renewal hat `assignee_member_id`, initial den Kunden-Owner.
+- Jeder Renewal hat `assignee_member_id`, initial den Kunden-Owner und danach unabhängig änderbar. Ein einzelner
+  Kunden-Owner-Wechsel überschreibt bestehende Renewals nicht.
 - Typen: Domain, Hosting, SSL, Lizenz und `other` mit Pflichtbezeichnung.
 - Reminder ausschließlich In-App bei 30, 14 und 7 Tagen sowie einmal bei Überfälligkeit; keine
   tägliche Sammelmail.

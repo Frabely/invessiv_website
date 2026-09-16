@@ -176,10 +176,25 @@ describe("CRM customer routes", () => {
       const request = new Request(COLLECTION_URL) as unknown as NextRequest;
       expect((await GET(request)).status).toBe(HttpResponseCode.Forbidden);
 
-      mocks.listCustomers.mockResolvedValue({ rows: [] });
+      mocks.listCustomers.mockResolvedValue({
+        page: 1,
+        perPage: 25,
+        rows: [],
+        total: 0,
+      });
       const response = await GET(request);
       expect(response.status).toBe(HttpResponseCode.Ok);
-      await expect(response.json()).resolves.toEqual({ rows: [] });
+      await expect(response.json()).resolves.toEqual({
+        page: 1,
+        perPage: 25,
+        rows: [],
+        total: 0,
+      });
+      expect(mocks.listCustomers).toHaveBeenCalledWith({
+        includeArchived: false,
+        page: 1,
+        sort: "updated_desc",
+      });
     });
   });
 
@@ -211,6 +226,7 @@ describe("CRM customer routes", () => {
       expect(mocks.updateCustomer).toHaveBeenCalledWith(
         TEST_CUSTOMER_ID,
         UPDATE_REQUEST,
+        "user-actor-uuid",
       );
     });
 

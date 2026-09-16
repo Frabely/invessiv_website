@@ -10,11 +10,10 @@ import type {
   ValidatedPrimaryContactInput,
   ValidatedUpdateCustomerInput,
 } from "@/server/workspace/crm/crm-types";
+import type { CustomerWriteFieldsDto } from "@invessiv/common/contracts/crm/customer-write-fields.dto";
 import type { VersionedPatch } from "@/server/workspace/shared/update-versioned-types";
 
-type CustomerWriteFields = Omit<ValidatedUpdateCustomerInput, "version">;
-
-function mapWriteFields(fields: CustomerWriteFields) {
+function mapWriteFields(fields: CustomerWriteFieldsDto) {
   return {
     display_name: fields.displayName,
     company_name: fields.companyName,
@@ -48,7 +47,7 @@ function mapCreateCustomerApiToDb(
 function mapUpdateCustomerApiToDb(
   input: ValidatedUpdateCustomerInput,
 ): VersionedPatch<typeof customers> {
-  return mapWriteFields(input);
+  return { ...mapWriteFields(input), status: input.status };
 }
 
 function mapContactApiToPersonDb(

@@ -2,7 +2,7 @@
 
 import "@testing-library/jest-dom/vitest";
 import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { getCrmListDictionary } from "@/i18n/dictionaries/workspace/crm";
 import {
@@ -13,6 +13,10 @@ import { CustomersBasicList } from "./customers-basic-list";
 
 const content = getCrmListDictionary("de");
 
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }),
+}));
+
 describe("CustomersBasicList", () => {
   afterEach(() => {
     cleanup();
@@ -22,9 +26,12 @@ describe("CustomersBasicList", () => {
     render(
       <CustomersBasicList
         basePath="/de/crm"
+        canWrite
         content={content}
         createHref="/de/crm?mode=create"
         customers={[customerDetailFixture({ status: "paused" })]}
+        locale="de"
+        queryString=""
       />,
     );
 
@@ -32,7 +39,10 @@ describe("CustomersBasicList", () => {
     expect(
       screen.getByRole("rowheader", { name: /Nordlicht Coaching/ }),
     ).toBeInTheDocument();
-    expect(screen.getByText(content.status.paused)).toBeInTheDocument();
+    expect(screen.getAllByText(content.status.paused).length).toBeGreaterThan(
+      0,
+    );
+    expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
     expect(screen.getByText("Anna Berger")).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: "Nordlicht Coaching bearbeiten" }),
@@ -42,10 +52,13 @@ describe("CustomersBasicList", () => {
   it("renders no edit action without write access", () => {
     render(
       <CustomersBasicList
-        basePath={null}
+        basePath="/de/crm"
+        canWrite={false}
         content={content}
         createHref={null}
         customers={[customerDetailFixture()]}
+        locale="de"
+        queryString=""
       />,
     );
 
@@ -56,9 +69,12 @@ describe("CustomersBasicList", () => {
     render(
       <CustomersBasicList
         basePath="/de/crm"
+        canWrite
         content={content}
         createHref="/de/crm?mode=create"
         customers={[]}
+        locale="de"
+        queryString=""
       />,
     );
 

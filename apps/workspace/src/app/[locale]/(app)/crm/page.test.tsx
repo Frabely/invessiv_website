@@ -50,8 +50,8 @@ vi.mock(
 vi.mock(
   "@/components/workspace/crm/list/customers-basic-list/customers-basic-list",
   () => ({
-    CustomersBasicList: ({ basePath }: { basePath: string | null }) => (
-      <div data-base-path={basePath ?? ""} data-testid="list" />
+    CustomersBasicList: ({ canWrite }: { canWrite: boolean }) => (
+      <div data-can-write={String(canWrite)} data-testid="list" />
     ),
   }),
 );
@@ -62,6 +62,10 @@ vi.mock(
       <div data-customer={customer?.id ?? "new"} data-testid="dialog" />
     ),
   }),
+);
+vi.mock(
+  "@/components/workspace/shared/table/list-pagination/list-pagination",
+  () => ({ ListPagination: () => <div data-testid="pagination" /> }),
 );
 
 async function renderPage(searchParams: Record<string, string> = {}) {
@@ -77,7 +81,12 @@ describe("CrmPage", () => {
   beforeEach(() => {
     Object.values(mocks).forEach((mock) => mock.mockReset());
     mocks.requireWorkspaceArea.mockResolvedValue(workspaceActorWith());
-    mocks.listCustomers.mockResolvedValue({ rows: [] });
+    mocks.listCustomers.mockResolvedValue({
+      page: 1,
+      perPage: 25,
+      rows: [],
+      total: 0,
+    });
     mocks.listCategories.mockResolvedValue([]);
     mocks.getCustomerById.mockResolvedValue(null);
   });
@@ -102,8 +111,8 @@ describe("CrmPage", () => {
       "/de/crm?mode=create",
     );
     expect(screen.getByTestId("list")).toHaveAttribute(
-      "data-base-path",
-      "/de/crm",
+      "data-can-write",
+      "true",
     );
     expect(screen.queryByTestId("dialog")).not.toBeInTheDocument();
   });
@@ -119,7 +128,10 @@ describe("CrmPage", () => {
       "data-create-href",
       "",
     );
-    expect(screen.getByTestId("list")).toHaveAttribute("data-base-path", "");
+    expect(screen.getByTestId("list")).toHaveAttribute(
+      "data-can-write",
+      "false",
+    );
     expect(screen.queryByTestId("dialog")).not.toBeInTheDocument();
   });
 

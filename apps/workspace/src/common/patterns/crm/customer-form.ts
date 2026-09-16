@@ -1,3 +1,4 @@
+import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
 import type { CreateCustomerRequestDto } from "@invessiv/common/contracts/crm/create-customer-request.dto";
 import type { CustomerDetailDto } from "@invessiv/common/contracts/crm/customer-detail.dto";
 import type { CustomerContactWriteDto } from "@invessiv/common/contracts/crm/customer-contact-write.dto";
@@ -29,6 +30,7 @@ export function createCustomerFormValues(
     displayName: customer?.displayName ?? "",
     companyName: customer?.companyName ?? "",
     categoryId: customer?.categoryId ?? "",
+    status: customer?.status ?? CustomerStatus.Active,
     street: customer?.street ?? "",
     postalCode: customer?.postalCode ?? "",
     city: customer?.city ?? "",
@@ -136,6 +138,7 @@ export function toUpdateCustomerRequest(
 ): UpdateCustomerRequestDto {
   return {
     ...toWriteFields(values),
+    status: values.status,
     version,
     ...(contacts ? { contacts } : {}),
   };

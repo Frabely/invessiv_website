@@ -1,6 +1,6 @@
 # Ordner 17 — Kundenchat, Datenmodell und interne Seite
 
-> **Status:** offen · **Abhängigkeiten:** 10, 12 · **Aufwand:** 3–4 Tage · **Reviewziel:** 60–90 Dateien
+> **Status:** offen · **Abhängigkeiten:** 06a, 10, 12 · **Aufwand:** 3–4 Tage · **Reviewziel:** 60–90 Dateien
 
 ## Ziel und Stand nach Merge
 
@@ -24,6 +24,8 @@ dadurch ihren eigenen, konzentrierten Review statt im großen PR mitzulaufen.
 - Genau eine kundenweite Conversation pro Kunde. `conversations.project_id` ist nullable vorhanden (Task 24);
   projektbezogene Unterhaltungen docken später ohne Migration an. Die frühere Aussage „`project_id` wird nicht
   vorsorglich angelegt“ ist damit ersetzt (Klärung 14.09.2026).
+- Jede Conversation hat einen internen Verantwortlichen, initial den Kunden-Owner. Er kann unabhängig geändert werden;
+  Zuständigkeit gewährt keinen Zugriff und ersetzt weder `chat.read` noch `chat.write`.
 - Chat-Permissions (`chat.read`, `chat.write`) entstehen hier als bindbar (`scopable`). Die kundenweite Conversation
   verlangt das Recht am Kunden oder workspace-weit; eine Projektbindung allein öffnet sie nicht.
 - Nachrichten speichern Actor-Typ/-ID, Plaintext, Zeitpunkt und optionale Ausblendung durch Owner.
@@ -49,6 +51,8 @@ dadurch ihren eigenen, konzentrierten Review statt im großen PR mitzulaufen.
 ## Merge-Gate
 
 - [ ] Mehrere interne Mitglieder haben unabhängige Lesestände.
+- [ ] Chatverantwortung ist sichtbar, auf aktive berechtigte Mitglieder änderbar und als Activity protokolliert.
+- [ ] `Conversations` ist in `OwnableEntity` und der Responsibility-Registry registriert.
 - [ ] Fremder Kunde erhält bei Conversation, Message und Datei 404.
 - [ ] Nachricht ist gegen XSS sicher und kann nicht geändert oder normal gelöscht werden.
 - [ ] Ein Dateiverweis auf eine nicht portalöffentliche Datei wird abgelehnt.

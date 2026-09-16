@@ -15,6 +15,7 @@ export function customerDetailFixture(
     companyName: "Nordlicht Coaching GmbH",
     status: "active",
     ownerMemberId: "member-actor-uuid",
+    ownerDisplayName: "Moritz Beispiel",
     categoryId: null,
     city: "Köln",
     primaryContactName: "Anna Berger",
@@ -78,6 +79,7 @@ export function updateCustomerRequestFixture(
     vatId: request.vatId,
     notes: request.notes,
     defaultHourlyRateCents: request.defaultHourlyRateCents,
+    status: "active",
     version: 1,
     ...overrides,
   };

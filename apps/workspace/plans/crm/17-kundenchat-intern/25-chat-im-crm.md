@@ -35,6 +35,7 @@ Datumstrenner, gleiche Sendezustände, gleiche Tastaturbedienung.
 | Links                 | Erkannt und klickbar, aber **als Text gerendert**. Kein HTML, kein Markdown — der Inhalt kommt von außen                                                             |
 | Systemnachrichten     | Mittig, zurückhaltend, ohne Sprechblase                                                                                                                              |
 | Lesestand             | Wird gesetzt, sobald die Unterhaltung sichtbar ist                                                                                                                   |
+| Verantwortung         | Kunden-Owner als Standard; danach unabhängig über ein aktives Mitglied mit wirksamem `chat.read` änderbar                                                            |
 
 ## Architektur
 
@@ -147,10 +148,12 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/messages/{de,en}.json
   - Liste mit Firma, Vorschau der letzten Nachricht, Zeit und Ungelesen-Kennzeichnung
   - Auswahl über URL-Parameter
   - Sidebar-Zähler im `(app)`-Layout
+  - Verantwortlichen anzeigen, filtern und über einen versionierten Write ändern; jede Änderung erzeugt eine Activity
 - **Akzeptanz:**
   - Keine N+1-Abfrage für Vorschau und Zähler
   - Schlägt die Zählerabfrage fehl, entfällt der Zähler, die Seite bleibt intakt
   - Mobil ab 360 px bedienbar
+  - Inaktive oder am Datensatz unberechtigte Mitglieder können nicht als Verantwortliche gespeichert werden
 
 ### CRM-25-T5 — Systemnachrichten verdrahten
 

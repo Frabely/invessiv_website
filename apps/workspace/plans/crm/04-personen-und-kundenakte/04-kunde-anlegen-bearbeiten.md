@@ -17,8 +17,8 @@
 - `ownerMemberId` ist Pflicht und initial das aktuelle Mitglied. Der Command sperrt die Membership des Owners in
   derselben Transaktion (`FOR SHARE`) und prüft `active`; die Deaktivierung sperrt dieselbe Zeile vor der Zählung
   (`FOR UPDATE`). Damit ist die „Bekannte Grenze“ aus Task 02d geschlossen.
-- Status nur `active | paused | archived`; kein `deleted_at`-Filter. Neue Kunden sind `active`. Statuswechsel sind
-  nicht Teil dieses Formulars — Archivieren und Reaktivieren liefert Task 05 mit eigener Activity.
+- Status nur `active | paused | archived`; kein `deleted_at`-Filter. Neue Kunden sind `active`. Bei bestehenden
+  Kunden ist der Status Teil der Stammdaten; ein tatsächlicher Wechsel erzeugt die in Task 05 ergänzte Activity.
 - Update verwendet `version` über `updateVersioned`; ein veralteter Write liefert 409 samt aktuellem
   `CustomerDetailDto`. Create hat keine Version.
 - Anzeigename eindeutig über `lower(btrim(display_name))` in allen Status. Konflikt ergibt 409
@@ -209,7 +209,8 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/{meta,shell,list,form}/{de,en
 2. **Bricht nichts:** eine additive Migration (Unique-Index, `IF NOT EXISTS`), keine Änderung bestehender Routen.
    Vor Ordner 04 schreibt kein Pfad Kunden außer dem Seed, dessen Namen eindeutig sind. Die Deaktivierung sperrt
    zusätzlich die Membership-Zeile — ohne Änderung ihres Verhaltens.
-3. **Offen:** Pagination, Sortierung, URL-Filter und Suche (Task 03, Ordner 05); Akte (Task 05); weitere
+3. **Offen:** Pagination und Sortierung (Task 03, Ordner 05); Suche und Facettenfilter (Ordner 22a); Akte (Task 05);
+   weitere
    Ansprechpartner und Personensuche (Task 06).
 
 ## End-to-End-Akzeptanz

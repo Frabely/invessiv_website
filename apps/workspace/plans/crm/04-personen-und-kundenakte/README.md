@@ -19,8 +19,8 @@ Interne Nutzer können Kunden mit verpflichtendem Primärkontakt anlegen, ansehe
 archivieren und reaktivieren. Personen können mehreren Firmen mit abweichenden Kontaktdaten und
 Funktionen zugeordnet werden.
 
-Die Übersicht ist absichtlich minimal — Nummer, Name, Status, Primärkontakt, festes Limit. Pagination,
-URL-Filter und Suche folgen in Ordner 05, der an dieser Einheit hängt. Ohne diesen Einstieg wäre die
+Die Übersicht ist absichtlich minimal — Nummer, Name, Status, Primärkontakt, festes Limit. Pagination und
+Sortierung folgen in Ordner 05; Suche und Facettenfilter bewusst erst in Ordner 22a. Ohne diesen Einstieg wäre die
 Akte nach dem Merge nur über eine geratene URL erreichbar.
 
 ## Daten und Regeln

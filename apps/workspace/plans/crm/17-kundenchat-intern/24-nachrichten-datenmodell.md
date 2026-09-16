@@ -5,6 +5,8 @@
 > **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
 - Eine Conversation je Kunde; kein Pflicht-`project_id` und keine freie Kanalverwaltung.
+- Jede Conversation besitzt `owner_member_id`, initial den Kunden-Owner, sowie eine `version` für unabhängige
+  versionierte Neuzuweisung.
 - `conversation_reads` speichert pro interner/Portal-Mitgliedschaft den letzten gelesenen Zeitpunkt
   beziehungsweise Message-Cursor. `customer_read_at` und `internal_read_at` an Conversation
   entfallen.
@@ -70,6 +72,12 @@ export interface ConversationDto {
   lastMessageAt: string | null;
   lastMessagePreview: string | null;
 }
+
+export interface InternalConversationDto extends ConversationDto {
+  ownerMemberId: string;
+  ownerDisplayName: string;
+  version: number;
+}
 ```
 
 ## Tabellen
@@ -79,9 +87,12 @@ conversations
   id uuid PK
   customer_id uuid NOT NULL → customers.id ON DELETE CASCADE
   project_id  uuid NULL     → projects.id  ON DELETE CASCADE
+  owner_member_id uuid NOT NULL → workspace_members.id
+  version integer NOT NULL DEFAULT 1
   internal_read_at timestamptz NULL
   last_message_at  timestamptz NULL
   created_at / updated_at
+  INDEX (owner_member_id, customer_id)
   UNIQUE INDEX conversations_customer_uidx
     ON (customer_id, coalesce(project_id, '00000000-0000-0000-0000-000000000000'))
 
@@ -156,7 +167,8 @@ apps/workspace/src/server/workspace/crm/services/
 - **Files:** `<nr>_create_conversations.sql`, zwei `pgTable`-Dateien,
   `constants/crm/{message-types,message-limits}.ts` + Tests, beide DTOs
 - **Skills:** `best-practices`
-- **Inhalt:** Tabellen wie oben; Unique-Index erzwingt eine Unterhaltung je Kunde und Projekt
+- **Inhalt:** Tabellen wie oben; Unique-Index erzwingt eine Unterhaltung je Kunde und Projekt; `Conversations` wird in
+  `OwnableEntity` und der Responsibility-Registry registriert
 - **Akzeptanz:** Migration idempotent; eine zweite Unterhaltung für denselben Kunden wird abgelehnt
 
 ### CRM-24-T2 — Unterhaltung holen und Ungelesen-Zählung

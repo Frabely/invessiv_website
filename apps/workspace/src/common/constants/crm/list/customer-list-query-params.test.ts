@@ -7,7 +7,13 @@ import {
 
 describe("CustomerListQueryParam", () => {
   it("contains the exact params without duplicates", () => {
-    expect(CUSTOMER_LIST_QUERY_PARAM_VALUES).toEqual(["mode", "edit"]);
+    expect(CUSTOMER_LIST_QUERY_PARAM_VALUES).toEqual([
+      "page",
+      "sort",
+      "archived",
+      "mode",
+      "edit",
+    ]);
     expect(CUSTOMER_LIST_QUERY_PARAM_VALUES).toEqual(
       Object.values(CustomerListQueryParam),
     );

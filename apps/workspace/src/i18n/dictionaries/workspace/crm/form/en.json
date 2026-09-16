@@ -24,6 +24,7 @@
     "displayName": "Display name",
     "companyName": "Company name",
     "category": "Category",
+    "status": "Status",
     "street": "Street and number",
     "postalCode": "Postal code",
     "city": "City",
@@ -66,6 +67,11 @@
   "locales": {
     "de": "German",
     "en": "English"
+  },
+  "status": {
+    "active": "Active",
+    "paused": "Paused",
+    "archived": "Archived"
   },
   "validation": {
     "displayNameRequired": "Enter a display name.",

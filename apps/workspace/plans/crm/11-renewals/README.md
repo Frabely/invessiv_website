@@ -18,11 +18,12 @@ vollständig nutzbar.
 - Additive Renewal-Migration, Drizzle-Modell und gemeinsame Contracts entstehen in diesem Ordner.
 - Pflicht: Kunde, Typ, Bezeichnung bei `other`, Ablaufdatum, Bearbeiter, Reminderstatus und `version`.
 - Bearbeiter übernimmt den Kunden-Owner und kann danach geändert werden.
+- Ein späterer Kunden-Owner-Wechsel überschreibt den Renewal-Bearbeiter nicht.
 - Erinnerungen bei 30, 14 und 7 Tagen sowie einmal bei Überfälligkeit; Deduplizierung pro Eintrag,
   Stufe und Datum.
 - „Verlängert“ verschiebt das Datum bewusst, setzt Reminderstufen zurück und protokolliert Alt/Neu.
 - Kein automatisches Verlängern und keine normale Reminder-Mail.
-- Kunden-Owner-Wechsel übernimmt offene Renewals atomar.
+- Die explizite globale Mitgliedsübergabe aus Ordner 22a übernimmt offene Renewals atomar.
 
 ## Merge-Gate
 

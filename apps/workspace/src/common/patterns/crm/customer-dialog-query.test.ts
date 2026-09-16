@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   buildCustomerCreateHref,
+  buildCustomerDialogCloseHref,
   buildCustomerEditHref,
   readCustomerDialogRequest,
 } from "@/common/patterns/crm/customer-dialog-query";
@@ -35,6 +36,19 @@ describe("customer dialog hrefs", () => {
     expect(buildCustomerCreateHref("/de/crm")).toBe("/de/crm?mode=create");
     expect(buildCustomerEditHref("/de/crm", CUSTOMER_ID)).toBe(
       `/de/crm?mode=edit&edit=${CUSTOMER_ID}`,
+    );
+  });
+
+  it("preserves list state and removes dialog state", () => {
+    const query = "page=2&sort=name_asc&mode=edit&edit=old";
+    expect(buildCustomerCreateHref("/de/crm", query)).toBe(
+      "/de/crm?page=2&sort=name_asc&mode=create",
+    );
+    expect(buildCustomerEditHref("/de/crm", CUSTOMER_ID, query)).toBe(
+      `/de/crm?page=2&sort=name_asc&mode=edit&edit=${CUSTOMER_ID}`,
+    );
+    expect(buildCustomerDialogCloseHref("/de/crm", query)).toBe(
+      "/de/crm?page=2&sort=name_asc",
     );
   });
 });

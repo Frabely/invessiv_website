@@ -60,6 +60,7 @@ function toSummary(
     companyName: row.company_name,
     status: row.status,
     ownerMemberId: row.owner_member_id,
+    ownerDisplayName: row.owner_display_name,
     categoryId: row.category_id,
     city: row.city,
     primaryContactName: primary.display_name,

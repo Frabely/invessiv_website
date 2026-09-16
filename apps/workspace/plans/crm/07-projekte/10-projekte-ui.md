@@ -7,7 +7,8 @@
 - Vollständige CRUD-Oberfläche bedeutet Anlage, Bearbeiten, Status/Phase ändern, Archivieren und
   Reaktivieren; kein Delete/Purge.
 - Projekt hat genau einen Owner; jedes aktive Mitglied darf protokolliert neu zuweisen.
-- Create übernimmt Kunden-Owner. Späterer Kunden-Owner-Wechsel übernimmt alle offenen Projekte
+- Create übernimmt den Kunden-Owner. Ein späterer Kunden-Owner-Wechsel lässt bestehende Projekte unverändert;
+  die vollständige Mitgliedsübergabe in Ordner 22a übernimmt offene Projekte
   atomar, abgeschlossene/archivierte nicht.
 - Form zeigt Betragsfelder passend zu `billing_model`; keine Finanzdaten in Portal-DTOs.
 - Jede Mutation verlangt `version` und zeigt 409-Konflikt verständlich an.

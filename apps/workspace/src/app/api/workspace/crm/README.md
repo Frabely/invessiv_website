@@ -44,8 +44,14 @@ Ausnahme **409 Versionskonflikt**: Der Body ist ein `VersionConflictDto`
 
 ## `GET /api/workspace/crm/customers`
 
-`200 { "rows": CustomerSummaryDto[] }` — nicht archivierte Kunden, neueste zuerst, festes Limit von 100. Pagination,
-Sortierung und Filter ergänzt Task 03 additiv.
+Query-Parameter:
+
+- `page`: positive Ganzzahl, Standard `1`; Seiten außerhalb des Bereichs werden auf die letzte Seite geklemmt.
+- `sort`: `number_asc | number_desc | name_asc | name_desc | status_asc | status_desc | updated_asc | updated_desc`.
+- `archived`: nur `true` blendet archivierte Kunden zusätzlich ein; ohne Parameter bleiben sie ausgeblendet.
+
+Erfolg: `200 { "page": number, "perPage": 25, "total": number, "rows": CustomerSummaryDto[] }`.
+Count und Liste verwenden dieselbe Archivbedingung; die Sortierung besitzt immer die Kunden-ID als stabilen Tie-Breaker.
 
 ## `POST /api/workspace/crm/customers`
 
@@ -88,9 +94,10 @@ Erfolg: `201 { "customer": CustomerDetailDto }`.
 
 ## `PATCH /api/workspace/crm/customers/[id]`
 
-Body `UpdateCustomerRequestDto` — alle Kundenfelder wie beim Anlegen, ohne `primaryContact`, dazu `version`. Der Body
-ersetzt jedes Feld. `contacts` ist optional; wenn vorhanden, enthält es den vollständigen gewünschten Stand aller
-Ansprechpartner inklusive ihrer getrennten Personen- und Zuordnungsversionen. Kunde und Kontakte werden gemeinsam
-transaktional gespeichert.
+Body `UpdateCustomerRequestDto` — alle Kundenfelder wie beim Anlegen, ohne `primaryContact`, dazu `status` und
+`version`. Der Body ersetzt jedes Feld. Erlaubte Statuswerte sind `active | paused | archived`. `contacts` ist
+optional; wenn vorhanden, enthält es den vollständigen gewünschten Stand aller Ansprechpartner inklusive ihrer
+getrennten Personen- und Zuordnungsversionen. Kunde, Status und Kontakte werden gemeinsam transaktional gespeichert.
+Ein tatsächlicher Statuswechsel erzeugt eine `status_change`-Activity; derselbe Status erzeugt keine Activity.
 
 Erfolg: `200 { "customer": CustomerDetailDto }`. Veraltete `version`: `409 VersionConflictDto`.

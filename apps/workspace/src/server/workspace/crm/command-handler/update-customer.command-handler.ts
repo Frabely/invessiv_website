@@ -1,5 +1,7 @@
 import "server-only";
 
+import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
+import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { CustomerErrorCode } from "@invessiv/common/constants/crm/errors/customer-error-codes";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { UpdateCustomerRequestDto } from "@invessiv/common/contracts/crm/update-customer-request.dto";
@@ -13,11 +15,13 @@ import { customerConstraintViolationService } from "@/server/workspace/crm/servi
 import { customerReadService } from "@/server/workspace/crm/services/customer-read-service";
 import { customerSchemas } from "@/server/workspace/crm/services/customer-schemas";
 import { customerWriteMappingService } from "@/server/workspace/crm/services/customer-write-mapping-service";
+import { activityService } from "@/server/workspace/shared/services/activity-service";
 import { updateVersioned } from "@/server/workspace/shared/update-versioned";
 
 export async function updateCustomer(
   customerId: string,
   input: UpdateCustomerRequestDto,
+  actorUserId: string,
 ): Promise<UpdateCustomerResult> {
   if (!customerSchemas.entityId.safeParse(customerId).success) {
     return { ok: false, code: CustomerErrorCode.CustomerNotFound };
@@ -35,6 +39,13 @@ export async function updateCustomer(
   const db = getDrizzleDatabaseClient();
   try {
     return await db.transaction(async (tx): Promise<UpdateCustomerResult> => {
+      const previousStatus = await customerReadService.findStatusById(
+        tx,
+        customerId,
+      );
+      if (!previousStatus) {
+        return { ok: false, code: CustomerErrorCode.CustomerNotFound };
+      }
       if (
         data.categoryId &&
         !(await customerCategoryService.isActive(tx, data.categoryId))
@@ -69,6 +80,18 @@ export async function updateCustomer(
           customerId,
           data.contacts,
         );
+      if (previousStatus !== data.status) {
+        await activityService.createActivity(tx, {
+          customerId,
+          type: ActivityType.StatusChange,
+          body: `${previousStatus} → ${data.status}`,
+          metadata: {
+            previous_status: previousStatus,
+            next_status: data.status,
+          },
+          actor: { type: ActorType.User, userId: actorUserId },
+        });
+      }
       const customer = await customerReadService.findDetailById(tx, customerId);
       if (!customer)
         return { ok: false, code: CustomerErrorCode.CustomerNotFound };

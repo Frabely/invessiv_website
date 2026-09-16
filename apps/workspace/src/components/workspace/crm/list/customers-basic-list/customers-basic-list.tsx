@@ -1,42 +1,42 @@
 import Link from "next/link";
-import {
-  faAddressBook,
-  faEllipsisVertical,
-  faPenToSquare,
-  faPlus,
-} from "@fortawesome/free-solid-svg-icons";
+import { faAddressBook, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { CustomerSort } from "@invessiv/common/constants/crm/list/customer-sort";
 import type { CustomerSummaryDto } from "@invessiv/common/contracts/crm/customer-summary.dto";
-import { formatCustomerNumber } from "@invessiv/common/patterns/crm/format-customer-number";
-import {
-  DataTableCell,
-  DataTableHeaderCell,
-  DataTableLayout,
-  DataTableRow,
-  EmptyState,
-  PrimaryCtaLink,
-  TableRowActions,
-} from "@invessiv/ui";
-import { buildCustomerEditHref } from "@/common/patterns/crm/customer-dialog-query";
+import { DataTableLayout, EmptyState, PrimaryCtaLink } from "@invessiv/ui";
+import { CustomerListQueryParam } from "@/common/constants/crm/list/customer-list-query-params";
+import { SortableHeader } from "@/components/workspace/shared/table/sortable-header/sortable-header";
+import type { Locale } from "@/config/i18n";
 import type { CrmListDictionary } from "@/i18n/dictionaries/workspace/crm";
-import { formatMessage } from "@/lib/i18n/format-message";
-import { CustomerStatusBadge } from "../customer-status-badge/customer-status-badge";
+import { CustomerTableRow } from "../customer-table-row/customer-table-row";
 import styles from "./customers-basic-list.module.css";
 
 type CustomersBasicListProps = {
   content: CrmListDictionary;
-  /** Null without `customers.write`: no create or edit actions are rendered. */
-  basePath: string | null;
+  basePath: string;
+  canWrite: boolean;
   createHref: string | null;
   customers: CustomerSummaryDto[];
+  locale: Locale;
+  queryString: string;
 };
+
+function getActiveSort(queryString: string): string | undefined {
+  return (
+    new URLSearchParams(queryString).get(CustomerListQueryParam.Sort) ??
+    CustomerSort.UpdatedDesc
+  );
+}
 
 export function CustomersBasicList({
   basePath,
+  canWrite,
   content,
   createHref,
   customers,
+  locale,
+  queryString,
 }: CustomersBasicListProps) {
   if (customers.length === 0) {
     return (
@@ -64,26 +64,85 @@ export function CustomersBasicList({
     );
   }
 
+  const activeSort = getActiveSort(queryString);
   const columns = [
-    { header: content.columns.number, id: "number", width: 104 },
-    { header: content.columns.customer, id: "customer" },
-    { header: content.columns.status, id: "status", width: 136 },
+    {
+      header: (
+        <SortableHeader
+          activeSort={activeSort}
+          ascLabel={content.sort.numberAsc}
+          basePath={basePath}
+          descLabel={content.sort.numberDesc}
+          label={content.columns.number}
+          queryString={queryString}
+          sortAsc={CustomerSort.NumberAsc}
+          sortDesc={CustomerSort.NumberDesc}
+        />
+      ),
+      id: "number",
+      width: 110,
+    },
+    {
+      header: (
+        <SortableHeader
+          activeSort={activeSort}
+          ascLabel={content.sort.nameAsc}
+          basePath={basePath}
+          descLabel={content.sort.nameDesc}
+          label={content.columns.customer}
+          queryString={queryString}
+          sortAsc={CustomerSort.NameAsc}
+          sortDesc={CustomerSort.NameDesc}
+        />
+      ),
+      id: "customer",
+      width: 280,
+    },
+    {
+      header: (
+        <SortableHeader
+          activeSort={activeSort}
+          ascLabel={content.sort.statusAsc}
+          basePath={basePath}
+          descLabel={content.sort.statusDesc}
+          label={content.columns.status}
+          queryString={queryString}
+          sortAsc={CustomerSort.StatusAsc}
+          sortDesc={CustomerSort.StatusDesc}
+        />
+      ),
+      id: "status",
+      width: 180,
+    },
+    { header: content.columns.owner, id: "owner", width: 180 },
     {
       header: content.columns.primaryContact,
       id: "primary-contact",
       width: 224,
     },
-    ...(basePath
-      ? [
-          {
-            header: content.columns.actions,
-            id: "actions",
-            isPinned: true,
-            isVisuallyHidden: true,
-            width: 128,
-          },
-        ]
-      : []),
+    {
+      header: (
+        <SortableHeader
+          activeSort={activeSort}
+          ascLabel={content.sort.updatedAsc}
+          basePath={basePath}
+          descLabel={content.sort.updatedDesc}
+          label={content.columns.updated}
+          queryString={queryString}
+          sortAsc={CustomerSort.UpdatedAsc}
+          sortDesc={CustomerSort.UpdatedDesc}
+        />
+      ),
+      id: "updated",
+      width: 150,
+    },
+    {
+      header: content.columns.actions,
+      id: "actions",
+      isPinned: true,
+      isVisuallyHidden: true,
+      width: 80,
+    },
   ];
 
   return (
@@ -94,60 +153,15 @@ export function CustomersBasicList({
       tableClassName={styles.table}
     >
       {customers.map((customer) => (
-        <DataTableRow className={styles.row} key={customer.id} mobileCard>
-          <DataTableCell className={styles.numberCell}>
-            <span className={styles.number}>
-              {formatCustomerNumber(customer.customerNumber)}
-            </span>
-          </DataTableCell>
-          <DataTableHeaderCell className={styles.customerCell} scope="row">
-            <span className={styles.name}>{customer.displayName}</span>
-            <span className={styles.meta}>
-              {[customer.companyName, customer.city].filter(Boolean).join(", ")}
-            </span>
-          </DataTableHeaderCell>
-          <DataTableCell className={styles.statusCell}>
-            <CustomerStatusBadge
-              label={content.status[customer.status]}
-              status={customer.status}
-            />
-          </DataTableCell>
-          <DataTableCell className={styles.contactCell}>
-            <span className={styles.contactName}>
-              {customer.primaryContactName}
-            </span>
-            {customer.primaryContactEmail ? (
-              <span className={styles.meta}>
-                {customer.primaryContactEmail}
-              </span>
-            ) : null}
-          </DataTableCell>
-          {basePath ? (
-            <TableRowActions
-              className={styles.actionsCell}
-              isPinned
-              menuIcon={
-                <FontAwesomeIcon aria-hidden="true" icon={faEllipsisVertical} />
-              }
-              menuLabel={content.columns.actions}
-            >
-              <Link
-                aria-label={formatMessage(content.editActionAriaLabel, {
-                  name: customer.displayName,
-                })}
-                href={buildCustomerEditHref(basePath, customer.id)}
-                scroll={false}
-                title={content.editAction}
-              >
-                <FontAwesomeIcon
-                  aria-hidden="true"
-                  className={styles.icon}
-                  icon={faPenToSquare}
-                />
-              </Link>
-            </TableRowActions>
-          ) : null}
-        </DataTableRow>
+        <CustomerTableRow
+          basePath={basePath}
+          canWrite={canWrite}
+          content={content}
+          customer={customer}
+          key={customer.id}
+          locale={locale}
+          queryString={queryString}
+        />
       ))}
     </DataTableLayout>
   );

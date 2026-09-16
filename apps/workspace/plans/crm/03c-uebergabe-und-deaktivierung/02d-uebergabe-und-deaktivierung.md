@@ -26,14 +26,13 @@ Zuständigkeiten werden verhindert.
 
 Die erste besitzbare Entität ist `customer`, deren Tabelle seit Ordner 01 besteht. Vor Ordner 04 gibt es jedoch noch
 keinen produktiven Kundenflow und damit keinen sinnvoll prüfbaren Übergabe-Dialog. 03c implementiert deshalb nur die
-sicherheitsrelevante, exhaustive **Zuständigkeitsprüfung**. Die eigentliche Übergabe sowie der Customer-Owner-Wechsel
-folgen nach der Kundenakte in
-[
-`../05-kundenliste-und-zuweisung/02f-zustaendigkeitsuebergabe.md`](../05-kundenliste-und-zuweisung/02f-zustaendigkeitsuebergabe.md).
+sicherheitsrelevante, exhaustive **Zuständigkeitsprüfung**. Der einzelne Customer-Owner-Wechsel folgt in
+[Ordner 06a](../06a-kundenzustaendigkeit/08a-kundenverantwortung.md), die domänenübergreifende Übergabe in
+[Ordner 22a](../22a-kundenorganisation-und-uebergabe/02f-zustaendigkeitsuebergabe.md).
 
 Dieser Zwischenstand bleibt sicher: Ein Mitglied mit offenen Kunden kann nicht deaktiviert werden. Nach Ordner 04
-bleibt diese Sperre bestehen; Ordner 05 ergänzt den einzelnen Customer-Owner-Wechsel und die komfortable vollständige
-Übergabe gemeinsam.
+bleibt diese Sperre bestehen; Ordner 06a ergänzt die einzelne Kundenzuweisung, Ordner 22a später die komfortable
+vollständige Übergabe aller dann vorhandenen Zuständigkeiten.
 
 ## Entscheidungen
 
@@ -46,7 +45,7 @@ bleibt diese Sperre bestehen; Ordner 05 ergänzt den einzelnen Customer-Owner-We
 | Owner-Schutz           | Vor jeder Deaktivierung werden über `workspaceOwnerInvariantService.lockOwnerAssignmentsAndFindActiveOwners` dieselben Owner-Zuweisungen wie beim Owner-Entzug gesperrt.                                                 |
 | Offene Zuständigkeit   | Bei Kunden gelten ausschließlich `active` und `paused` als offen. Archivierte Kunden behalten den historischen Owner und blockieren die Deaktivierung nicht.                                                             |
 | Zuständigkeitssperre   | Besitzt das Ziel offene Zuständigkeiten, antwortet der Command mit 409 und einer nach `OwnableEntity` vollständigen Anzahl. Es findet kein Teil-Write statt.                                                             |
-| Registry-Schnitt       | 03c führt eine exhaustive Counter-Registry ein. Ordner 05 erweitert denselben Adapter-Vertrag um die versionierte Übergabe; es entsteht keine parallele zweite Registry.                                                 |
+| Registry-Schnitt       | 03c führt eine exhaustive Counter-Registry ein. Ordner 22a erweitert denselben Adapter-Vertrag um die versionierte Übergabe; es entsteht keine parallele zweite Registry.                                                |
 | Security-Events        | Genau ein Event pro erfolgreicher Aktivierung oder Deaktivierung. Metadaten bleiben leer; Actor und Ziel stehen in den typisierten Event-Spalten.                                                                        |
 | Vorregistrierter Event | Migration 0026 enthält zusätzlich `workspace_responsibilities_handed_over`, weil sie bereits in der Development-DB registriert wurde. 03c schreibt diesen Typ nicht; Task 02f aktiviert ihn ohne erneute Schemaänderung. |
 | UI                     | Die Mitgliederliste erhält Status und Aktivieren-/Deaktivieren-Aktion. Bei Zuständigkeiten zeigt sie ausschließlich die sichere Sperre, keinen toten Übergabe-CTA.                                                       |
@@ -95,8 +94,9 @@ Der Customer-Counter:
 - gibt nur die Anzahl zurück und lädt keine Kundenstammdaten oder PII;
 - wird innerhalb derselben Transaktion wie die Deaktivierung ausgeführt.
 
-Task 02f erweitert den Adapter nach Ordner 04 um das Laden versionierter Zuständigkeiten und den Transfer über
-`updateVersioned`. Die Registry und der `OwnableEntity`-Contract bleiben dabei bestehen.
+Task 02f erweitert den Adapter in Ordner 22a um das Laden versionierter Zuständigkeiten und den Transfer über
+`updateVersioned`. Die Registry und der `OwnableEntity`-Contract bleiben dabei bestehen; jede neue besitzbare Domäne
+erweitert zuvor den Counter exhaustiv.
 
 ## Ablauf der Deaktivierung
 
@@ -249,7 +249,8 @@ Kundenanlage und Deaktivierung nutzen sie.
   Zählung und Commit der Deaktivierung einen Kunden zu, entsteht ein deaktiviertes Mitglied mit offener Zuständigkeit.
 - **Risiko heute:** keines. Vor Ordner 04 setzt kein Schreibpfad `customers.owner_member_id`.
 - **Relevant ab:** dem ersten Schreibpfad auf eine Zuständigkeit — Kundenanlage (Task 04, Ordner 04), Lead-Konvertierung
-  (Task 08, Ordner 06), Owner-Wechsel und Übergabe (Task 02f, Ordner 05) sowie jede spätere `OwnableEntity`.
+  (Task 08, Ordner 06), Customer-Owner-Wechsel (Task 08a, Ordner 06a), Übergabe (Task 02f, Ordner 22a) sowie jede
+  spätere `OwnableEntity`.
 - **Nächster Schritt**, im selben Ordner wie der erste solche Schreibpfad:
   1. Die Deaktivierung sperrt vor der Zählung die Membership-Zeile des Ziels mit `SELECT … FOR UPDATE`.
   2. Jeder Schreibpfad, der eine Zuständigkeit setzt, sperrt in derselben Transaktion die Membership-Zeile des neuen
@@ -260,10 +261,11 @@ Kundenanlage und Deaktivierung nutzen sie.
 
 ## Nicht Teil dieses Tasks
 
-- Zuständigkeiten übergeben und Customer-Owner wechseln — Task 02f in Ordner 05 nach der Kundenakte.
+- Customer-Owner einzeln wechseln — Task 08a in Ordner 06a.
+- Alle Zuständigkeiten eines Mitglieds übergeben — Task 02f in Ordner 22a nach dem vollständigen CRM-Ausbau.
 - Dialoge und weitere UI-Bausteine nach `packages/ui` verschieben — Ordner 03d.
 - Kundenanlage und Kundenakte — Ordner 04.
-- Projekte, Aufgaben und Renewals registrieren — bei ihrer Einführung in Ordner 07, 08 und 11.
+- Projekte, Aufgaben, Renewals und Conversations registrieren — bei ihrer Einführung in Ordner 07, 08, 11 und 17.
 - Automatische Deaktivierung nach einer späteren Übergabe — beide Aktionen bleiben getrennt.
 - Security-Audit-Ansicht — spätere CRM-Einheit.
 

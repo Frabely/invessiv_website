@@ -300,6 +300,29 @@ describe("CustomerFormDialog", () => {
     });
   });
 
+  it("changes the status only when the complete customer form is saved", async () => {
+    const customer = customerDetailFixture({ status: "active", version: 2 });
+    mocks.updateCustomer.mockResolvedValue({
+      ok: true,
+      customer: customerDetailFixture({ status: "archived", version: 3 }),
+    });
+    renderDialog(customer);
+
+    fireEvent.click(screen.getByLabelText(content.fields.status));
+    fireEvent.click(
+      screen.getByRole("option", { name: content.status.archived }),
+    );
+
+    expect(mocks.updateCustomer).not.toHaveBeenCalled();
+    submit(content.buttons.submitEdit);
+
+    await waitFor(() => expect(mocks.updateCustomer).toHaveBeenCalled());
+    expect(mocks.updateCustomer.mock.calls[0][1]).toMatchObject({
+      status: "archived",
+      version: 2,
+    });
+  });
+
   it("keeps a secondary contact locally until the customer form is saved", async () => {
     const customer = customerDetailFixture({ version: 2 });
     mocks.updateCustomer.mockResolvedValue({ ok: true, customer });

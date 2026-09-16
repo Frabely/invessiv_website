@@ -21,7 +21,7 @@ type RouteContext = { params: Promise<{ id: string }> };
 export async function PATCH(request: NextRequest, { params }: RouteContext) {
   const { id } = await params;
 
-  return withPermission(Permission.CustomersWrite, async (req) => {
+  return withPermission(Permission.CustomersWrite, async (req, actor) => {
     const parsed = await readJsonBody(req);
     if (!parsed.ok) {
       return customerApiError(CustomerErrorCode.ValidationError, {
@@ -35,6 +35,7 @@ export async function PATCH(request: NextRequest, { params }: RouteContext) {
       result = await updateCustomer(
         id,
         parsed.body as UpdateCustomerRequestDto,
+        actor.userId,
       );
     } catch (error: unknown) {
       logCrmFailure(CrmOperation.UpdateCustomer, error);

@@ -6,6 +6,7 @@ import type { UpdateCustomerRequestDto } from "@invessiv/common/contracts/crm/up
 import { CustomersConstraintName } from "@invessiv/db/constraint-names/crm/customers-constraint-names";
 import { PostgresErrorCode } from "@invessiv/db/core";
 import { customers } from "@invessiv/db/record-configuration";
+import { TEST_ACTOR_USER_ID } from "@/server/tests/support/workspace-auth-fixtures";
 import { updateCustomer } from "@/server/workspace/crm/command-handler/update-customer.command-handler";
 import {
   customerDetailFixture,
@@ -21,6 +22,8 @@ const mocks = vi.hoisted(() => ({
   updateVersioned: vi.fn(),
   isActiveCategory: vi.fn(),
   findDetail: vi.fn(),
+  findStatus: vi.fn(),
+  createActivity: vi.fn(),
 }));
 
 vi.mock("@invessiv/db/core", async (importOriginal) => ({
@@ -34,7 +37,13 @@ vi.mock("@/server/workspace/crm/services/customer-category-service", () => ({
   customerCategoryService: { isActive: mocks.isActiveCategory },
 }));
 vi.mock("@/server/workspace/crm/services/customer-read-service", () => ({
-  customerReadService: { findDetailById: mocks.findDetail },
+  customerReadService: {
+    findDetailById: mocks.findDetail,
+    findStatusById: mocks.findStatus,
+  },
+}));
+vi.mock("@/server/workspace/shared/services/activity-service", () => ({
+  activityService: { createActivity: mocks.createActivity },
 }));
 
 const tx = {};
@@ -53,10 +62,13 @@ describe("updateCustomer", () => {
       value: TEST_CUSTOMER_ID,
     });
     mocks.findDetail.mockResolvedValue(customerDetailFixture({ version: 4 }));
+    mocks.findStatus.mockResolvedValue("active");
   });
 
   it("answers not found for a malformed id without touching the database", async () => {
-    await expect(updateCustomer("customer-1", REQUEST)).resolves.toEqual({
+    await expect(
+      updateCustomer("customer-1", REQUEST, TEST_ACTOR_USER_ID),
+    ).resolves.toEqual({
       ok: false,
       code: CustomerErrorCode.CustomerNotFound,
     });
@@ -70,6 +82,7 @@ describe("updateCustomer", () => {
     const result = await updateCustomer(
       TEST_CUSTOMER_ID,
       withoutVersion as UpdateCustomerRequestDto,
+      TEST_ACTOR_USER_ID,
     );
 
     expect(result).toMatchObject({
@@ -80,10 +93,14 @@ describe("updateCustomer", () => {
   });
 
   it("writes through updateVersioned and returns the fresh detail", async () => {
-    const result = await updateCustomer(TEST_CUSTOMER_ID, {
-      ...REQUEST,
-      displayName: "Nordlicht Coaching Köln",
-    });
+    const result = await updateCustomer(
+      TEST_CUSTOMER_ID,
+      {
+        ...REQUEST,
+        displayName: "Nordlicht Coaching Köln",
+      },
+      TEST_ACTOR_USER_ID,
+    );
 
     expect(result).toEqual({
       ok: true,
@@ -95,10 +112,13 @@ describe("updateCustomer", () => {
       table: customers,
       id: TEST_CUSTOMER_ID,
       expectedVersion: 3,
-      patch: { display_name: "Nordlicht Coaching Köln" },
+      patch: {
+        display_name: "Nordlicht Coaching Köln",
+        status: "active",
+      },
     });
-    expect(args.patch).not.toHaveProperty("status");
     expect(args.patch).not.toHaveProperty("owner_member_id");
+    expect(mocks.createActivity).not.toHaveBeenCalled();
   });
 
   it("tells a missing customer apart from a version conflict", async () => {
@@ -107,7 +127,9 @@ describe("updateCustomer", () => {
       code: ConcurrencyErrorCode.NotFound,
     });
 
-    await expect(updateCustomer(TEST_CUSTOMER_ID, REQUEST)).resolves.toEqual({
+    await expect(
+      updateCustomer(TEST_CUSTOMER_ID, REQUEST, TEST_ACTOR_USER_ID),
+    ).resolves.toEqual({
       ok: false,
       code: CustomerErrorCode.CustomerNotFound,
     });
@@ -127,7 +149,9 @@ describe("updateCustomer", () => {
     });
     mocks.findDetail.mockResolvedValue(current);
 
-    await expect(updateCustomer(TEST_CUSTOMER_ID, REQUEST)).resolves.toEqual({
+    await expect(
+      updateCustomer(TEST_CUSTOMER_ID, REQUEST, TEST_ACTOR_USER_ID),
+    ).resolves.toEqual({
       ok: false,
       code: ConcurrencyErrorCode.VersionConflict,
       conflict: {
@@ -141,10 +165,14 @@ describe("updateCustomer", () => {
   it("rejects an inactive category before writing", async () => {
     mocks.isActiveCategory.mockResolvedValue(false);
 
-    const result = await updateCustomer(TEST_CUSTOMER_ID, {
-      ...REQUEST,
-      categoryId: TEST_CATEGORY_ID,
-    });
+    const result = await updateCustomer(
+      TEST_CUSTOMER_ID,
+      {
+        ...REQUEST,
+        categoryId: TEST_CATEGORY_ID,
+      },
+      TEST_ACTOR_USER_ID,
+    );
 
     expect(result).toMatchObject({
       ok: false,
@@ -159,9 +187,32 @@ describe("updateCustomer", () => {
       constraint: CustomersConstraintName.DisplayNameLowerUnique,
     });
 
-    await expect(updateCustomer(TEST_CUSTOMER_ID, REQUEST)).resolves.toEqual({
+    await expect(
+      updateCustomer(TEST_CUSTOMER_ID, REQUEST, TEST_ACTOR_USER_ID),
+    ).resolves.toEqual({
       ok: false,
       code: CustomerErrorCode.DisplayNameTaken,
     });
+  });
+
+  it("records a status change inside the customer update", async () => {
+    await updateCustomer(
+      TEST_CUSTOMER_ID,
+      { ...REQUEST, status: "paused" },
+      TEST_ACTOR_USER_ID,
+    );
+
+    expect(mocks.createActivity).toHaveBeenCalledWith(
+      tx,
+      expect.objectContaining({
+        customerId: TEST_CUSTOMER_ID,
+        type: "status_change",
+        metadata: {
+          previous_status: "active",
+          next_status: "paused",
+        },
+        actor: { type: "user", userId: TEST_ACTOR_USER_ID },
+      }),
+    );
   });
 });

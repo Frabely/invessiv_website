@@ -4,8 +4,34 @@
     "number": "No.",
     "customer": "Customer",
     "status": "Status",
+    "owner": "Owner",
     "primaryContact": "Primary contact",
+    "updated": "Updated",
     "actions": "Actions"
+  },
+  "sort": {
+    "numberAsc": "Sort by customer number ascending",
+    "numberDesc": "Sort by customer number descending",
+    "nameAsc": "Sort by name ascending",
+    "nameDesc": "Sort by name descending",
+    "statusAsc": "Sort by status ascending",
+    "statusDesc": "Sort by status descending",
+    "updatedAsc": "Oldest update first",
+    "updatedDesc": "Newest update first"
+  },
+  "pagination": {
+    "ariaLabel": "Customer list pagination",
+    "showing": "{from}–{to} of {total} customers",
+    "page": "Page {page}",
+    "first": "First",
+    "previous": "Previous",
+    "next": "Next",
+    "last": "Last"
+  },
+  "relativeTime": {
+    "justNow": "just now",
+    "hoursAgo": "{count}h ago",
+    "daysAgo": "{count}d ago"
   },
   "status": {
     "active": "Active",

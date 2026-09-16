@@ -1,0 +1,90 @@
+.numberCell {
+  white-space: nowrap;
+}
+
+.number {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 6px;
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+.customerCell,
+.contactCell {
+  min-width: 0;
+}
+
+.customerCell {
+  font-weight: inherit;
+}
+
+.name,
+.contactName {
+  display: block;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 400;
+  overflow-wrap: anywhere;
+}
+
+.statusCell,
+.ownerCell,
+.updatedCell {
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+@media (max-width: 720px) {
+  .row {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "customer customer actions"
+      "number status status"
+      "owner owner updated"
+      "contact contact contact";
+  }
+
+  .numberCell {
+    grid-area: number;
+  }
+
+  .customerCell {
+    grid-area: customer;
+  }
+
+  .statusCell {
+    grid-area: status;
+    justify-self: end;
+  }
+
+  .ownerCell {
+    grid-area: owner;
+  }
+
+  .contactCell {
+    grid-area: contact;
+  }
+
+  .updatedCell {
+    grid-area: updated;
+    justify-self: end;
+  }
+
+  .actionsCell {
+    grid-area: actions;
+    justify-self: end;
+  }
+}

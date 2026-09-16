@@ -7,12 +7,14 @@ import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import { CustomerFormDialogMode } from "@/common/constants/crm/forms/customer-form-dialog-modes";
 import {
   buildCustomerCreateHref,
+  buildCustomerDialogCloseHref,
   readCustomerDialogRequest,
 } from "@/common/patterns/crm/customer-dialog-query";
 import { CustomerFormDialog } from "@/components/workspace/crm/form/customer-form-dialog/customer-form-dialog";
 import { CustomersBasicList } from "@/components/workspace/crm/list/customers-basic-list/customers-basic-list";
 import { CustomersPageHeader } from "@/components/workspace/crm/shell/customers-page-header/customers-page-header";
 import { WorkspacePageShell } from "@/components/workspace/workspace-page-shell/workspace-page-shell";
+import { ListPagination } from "@/components/workspace/shared/table/list-pagination/list-pagination";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import {
   getCrmFormDictionary,
@@ -24,9 +26,14 @@ import { getLeadsSharedDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { requireWorkspaceArea } from "@/lib/auth/permissions";
 import { workspaceAreaPathFor } from "@/lib/auth/routes";
 import { resolveCustomerCategoryOptions } from "@/lib/workspace/crm/customer-category-options";
+import {
+  buildCustomerListHref,
+  buildCustomerListQueryString,
+} from "@/lib/workspace/crm/customer-list-query-string";
 import { getCustomerById } from "@/server/workspace/crm/query-handler/get-customer-by-id.query-handler";
 import { listActiveCustomerCategories } from "@/server/workspace/crm/query-handler/list-active-customer-categories.query-handler";
 import { listCustomers } from "@/server/workspace/crm/query-handler/list-customers.query-handler";
+import { parseCustomerListFilters } from "@/server/workspace/crm/shared/customer-list-search-params";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -60,19 +67,31 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
   // Layouts are not re-rendered on search param changes, so the page gates its own data.
   const actor = await requireWorkspaceArea(locale, WorkspaceArea.Crm);
   const activeLocale: Locale = locale;
+  const resolvedSearchParams = await searchParams;
+  const requestedFilters = parseCustomerListFilters(resolvedSearchParams);
   const basePath = workspaceAreaPathFor(activeLocale, WorkspaceArea.Crm);
   const canWrite = can(actor, Permission.CustomersWrite);
-  const createHref = canWrite ? buildCustomerCreateHref(basePath) : null;
   const dialogRequest = canWrite
-    ? readCustomerDialogRequest(await searchParams)
+    ? readCustomerDialogRequest(resolvedSearchParams)
     : null;
 
-  const [{ rows }, editCustomer] = await Promise.all([
-    listCustomers(),
+  const [customerList, editCustomer] = await Promise.all([
+    listCustomers(requestedFilters),
     dialogRequest?.mode === CustomerFormDialogMode.Edit
       ? getCustomerById(dialogRequest.customerId)
       : null,
   ]);
+  const filters = { ...requestedFilters, page: customerList.page };
+  const queryString = buildCustomerListQueryString(filters);
+  const createHref = canWrite
+    ? buildCustomerCreateHref(basePath, queryString)
+    : null;
+  const closeHref = buildCustomerDialogCloseHref(basePath, queryString);
+  const archivedToggleHref = buildCustomerListHref(basePath, {
+    ...filters,
+    includeArchived: !filters.includeArchived,
+    page: 1,
+  });
   // An unknown edit id opens nothing; it is not an error.
   const showDialog =
     dialogRequest?.mode === CustomerFormDialogMode.Create ||
@@ -82,14 +101,27 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
   return (
     <WorkspacePageShell pageId="crm">
       <CustomersPageHeader
+        archivedToggleHref={archivedToggleHref}
         content={getCrmShellDictionary(activeLocale)}
         createHref={createHref}
+        includeArchived={filters.includeArchived}
       />
       <CustomersBasicList
-        basePath={canWrite ? basePath : null}
+        basePath={basePath}
+        canWrite={canWrite}
         content={getCrmListDictionary(activeLocale)}
         createHref={createHref}
-        customers={rows}
+        customers={customerList.rows}
+        locale={activeLocale}
+        queryString={queryString}
+      />
+      <ListPagination
+        basePath={basePath}
+        content={getCrmListDictionary(activeLocale)}
+        currentPage={customerList.page}
+        perPage={customerList.perPage}
+        queryString={queryString}
+        total={customerList.total}
       />
       {showDialog ? (
         <CustomerFormDialog
@@ -97,7 +129,7 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
             categories,
             getLeadsSharedDictionary(activeLocale),
           )}
-          closeHref={basePath}
+          closeHref={closeHref}
           content={getCrmFormDictionary(activeLocale)}
           customer={editCustomer}
           key={editCustomer?.id ?? CustomerFormDialogMode.Create}

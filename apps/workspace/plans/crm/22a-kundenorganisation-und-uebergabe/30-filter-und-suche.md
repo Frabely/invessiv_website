@@ -1,7 +1,7 @@
 # Task 30 — Filter und Suche
 
-> **Merge-Einheit:** Ordner 05 · **Branch:** `feat/crm-kundenliste-und-zuweisung`
-> **Aufwand:** M · **Abhängigkeiten:** Task 07 (Status und Tags), Task 03 (Liste)
+> **Merge-Einheit:** Ordner 22a · **Branch:** `feat/crm-kundenorganisation-und-uebergabe`
+> **Aufwand:** M · **Abhängigkeiten:** Task 07 (Tags), Task 03 (Liste), Ordner 07–20
 > **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
 - Normalisierte Substring-/Präfixsuche über Nummer, Anzeigename, Firma, Ort, Person und Firmen-E-Mail.
@@ -9,14 +9,16 @@
 - Groß-/Kleinschreibung sowie Rand-/Mehrfachleerzeichen sind tolerant; Schreibfehler nicht.
 - `pg_trgm` darf ausschließlich als Indexbeschleunigung für `ILIKE`/Substring dienen; keine
   Similarity-Schwelle, kein unscharfes Ranking und keine entsprechende UI-Behauptung.
-- Filter ergänzt Owner und persönliche Ansicht; `deleted_at` spielt keine Rolle.
+- Filter ergänzt Owner, persönliche Ansicht, Projektphase, offene Aufgaben, fällige Renewals,
+  Portalzugang und offene interne Chatantworten; `deleted_at` spielt keine Rolle.
 
 ## Context
 
 Der bewusst letzte Task: Filtern lohnt sich erst, wenn es etwas zu filtern gibt. Bei fünf Kunden ist
 eine Filterleiste Zierrat, ab fünfzig wird sie zur Notwendigkeit.
 
-Die in dieser Einheit vorhandenen Ordnungsachsen — Status, Tags, Kategorie, Owner, Ansprechpartner —
+Die zu diesem Zeitpunkt vorhandenen Ordnungsachsen — Status, Tags, Kategorie, Owner,
+Ansprechpartner, Projekte, Aufgaben, Renewals, Portal und Kommunikation —
 und die Bausteine liegen bereit: Filterzustand in der URL, der mehrfachauswahlfähige Facettenfilter
 aus Task 02a, serverseitige Auswertung nach dem Muster von `lead-filter.query-handler.ts`.
 
@@ -27,15 +29,13 @@ aus Task 02a, serverseitige Auswertung nach dem Muster von `lead-filter.query-ha
 | Zustand                  | Ausschließlich in der URL. Kein React-State, kein `localStorage` für Filter                                                                                                                      |
 | Warum                    | Teilbar, neu ladbar, mit Zurück-Taste bedienbar — und serverseitig auswertbar, ohne Daten doppelt zu halten                                                                                      |
 | Wiederverwendung         | Die geteilten Toolbar-Komponenten aus Task 02a — dort wurde der Facettenfilter bereits mehrfachauswahlfähig gemacht, hier wird er nur benutzt                                                    |
-| Filter in dieser Einheit | Status (mehrfach), Tags (mehrfach, UND-Verknüpfung), Kategorie, Owner, persönliche Ansicht                                                                                                       |
-| Facetten-Registry        | Die Filterleiste liest ihre Facetten aus `CUSTOMER_LIST_FACETS`. Spätere Ordner ergänzen dort, ohne die Toolbar anzufassen                                                                       |
-| Später ergänzt           | `Projektphase` in Ordner 07 und „hat offene Aufgaben" in Ordner 08 — **nicht hier**, weil `projects` und `tasks` zu diesem Zeitpunkt nicht existieren                                            |
-| Warum nicht hier         | Ordner 07 hängt an Ordner 05. Ein Projektfilter in Ordner 05 wäre eine Zirkelabhängigkeit zwischen zwei Merge-Einheiten und in `master` nach dem Merge nicht lauffähig                           |
-| „hat Portalzugang"       | Ebenfalls später: `portal_memberships` entsteht erst in Ordner 12                                                                                                                                |
+| Filter in dieser Einheit | Status und Tags (mehrfach), Kategorie, Owner, persönliche Ansicht, Projektphase, offene Aufgaben, fällige Renewals, Portalzugang, offene interne Chatantwort und Aufbewahrungsprüfung            |
+| Facetten-Registry        | Die Filterleiste liest ihre vollständigen Achsen aus `CUSTOMER_LIST_FACETS`; die Toolbar bleibt von den Fachqueries entkoppelt                                                                   |
+| Zeitpunkt                | Bewusst nach Ordner 22: Projekte, Aufgaben, Renewals, Portal und Kommunikation liefern dann ihre endgültigen Filterachsen                                                                        |
 | Suche                    | Über Anzeigename, Firmenname, Kundennummer, Ort und Ansprechpartnername                                                                                                                          |
 | Technik der Suche        | **`pg_trgm`** mit GIN-Index über einen zusammengesetzten Ausdruck                                                                                                                                |
 | Warum nicht `tsvector`   | Volltextsuche matcht nur ganze Wortstämme: „part" findet „Partner GmbH" **nicht**, „Mül" findet gar nichts. Genau das war als Akzeptanzkriterium versprochen und mit `tsvector` nicht erreichbar |
-| Was `pg_trgm` liefert    | Substring-Treffer mitten im Wort, tippfehlertolerant, indexgestützt — und eine Zeile Migration statt einer generierten Spalte mit Sprachkonfiguration                                            |
+| Was `pg_trgm` liefert    | Indexgestützte Substring-Treffer mitten im Wort; bewusst keine Tippfehlertoleranz und kein unscharfes Ranking                                                                                    |
 | Warum nicht `ILIKE %…%`  | Ohne Trigramm-Index kann Postgres das nicht indizieren; die Suche wird mit wachsender Datenmenge linear langsamer                                                                                |
 | Ansprechpartner          | Über eine `EXISTS`-Unterabfrage durchsucht, nicht in den Index gezogen — sie ändern sich unabhängig vom Kunden                                                                                   |
 | Verzögerung              | Eingabe wird 300 Millisekunden verzögert, dann wird die URL ersetzt (kein neuer Verlaufseintrag je Tastendruck)                                                                                  |

@@ -1,18 +1,23 @@
 # Task 03 — Kundenliste
 
-> **Merge-Einheit:** Ordner 05 · **Branch:** `feat/crm-kundenliste-und-zuweisung`
+> **Merge-Einheit:** Ordner 05 · **Branch:** `feat/crm-kundenliste-status`
 > **Aufwand:** M · **Abhängigkeiten:** Task 04 (minimale Übersicht und Route),
-> Task 02a (geteilte Listen-Komponenten), Task 07 (Status und Tags)
+> Task 02a (geteilte Listen-Komponenten), Task 07 (Status)
 > **Migration:** keine
 
+> **Umgesetzt (16.09.2026):** Pagination, Count, URL-Sortierung, Archivfilter, Owner,
+> Hauptansprechpartner und letzte Änderung sind Bestandteil von
+> `feat/crm-kundenliste-status`. Allgemeine Suche, Facettenfilter und Tags folgen bewusst in
+> Ordner 22a.
+
 Dieser Task **erweitert** die minimale Kundenübersicht aus Task 04 zur vollen Liste: Pagination,
-Sortierung, URL-State, Mehrfachauswahl und die geteilten Bausteine aus Task 02a. Der Query-Handler
+Sortierung, URL-State und die geteilten Bausteine aus Task 02a. Der Query-Handler
 wird erweitert, nicht ersetzt — Signatur und DTO bleiben stabil.
 
 - Standardliste filtert `status != archived`; archivierte Kunden sind über expliziten URL-Filter
   erreichbar.
 - Liste zeigt Owner und verpflichtenden Primärkontakt.
-- Ansichten „meine Kunden“, Status, Kategorie und Tags laufen vollständig über URL-State.
+- Seite, Sortierung und „Archivierte einblenden“ laufen vollständig über URL-State.
 - Count und Liste verwenden exakt dieselbe Querydefinition.
 - Ordner 07d (Task 42) ergänzt zwei Wertspalten und eine zusätzliche Sortierung. Der Query-Handler
   wird deshalb so geschnitten, dass eine optionale Aggregatspalte ohne Signaturbruch andockt — und
@@ -39,7 +44,7 @@ wird entsprechend sorgfältig gestaltet.
 | Spalten         | Nummer, Name, Status, Ort, Primärkontakt, Letzte Änderung                                                                                       |
 | Namensspalte    | Zeigt `display_name`; bei `customer_type = individual` zusätzlich ein dezenter Hinweis, bei `company` die abweichende Firmierung als Zweitzeile |
 | Nummernspalte   | Anzeige über `formatCustomerNumber` (`K0001`), **sortiert wird auf der Zahl** — sonst stünde `K10000` vor `K2`                                  |
-| Archivierte     | Standardansicht blendet `status = archived` aus; ein expliziter Statusfilter macht archivierte Kunden sichtbar                                  |
+| Archivierte     | Standardansicht blendet `status = archived` aus; die Checkbox „Archivierte einblenden“ ergänzt sie zur aktuellen Liste                          |
 | Bausteine       | Tabelle, Pagination, Sortier-Header und leerer Zustand kommen aus `components/workspace/shared/` (Task 02a) — nichts wird kopiert               |
 | Seitengröße     | 25, identisch zu den Leads                                                                                                                      |
 | Filter          | **Nicht** in diesem Task (Task 30)                                                                                                              |
@@ -125,7 +130,7 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/{meta,shell,table,pagination,
 - **Akzeptanz:**
   - Tests: leere Datenbank ergibt `{ items: [], total: 0 }`; Seite 99 bei 3 Kunden wird auf die
     letzte gültige Seite geklemmt; Sortierung wirkt
-  - Test: ein archivierter Kunde erscheint nur bei explizitem Archiv-Filter
+  - Test: ein archivierter Kunde erscheint nur bei aktivierter Checkbox „Archivierte einblenden“
   - Test: Sortierung nach Nummer ordnet K2 vor K10 (numerisch, nicht alphabetisch)
   - Genau zwei Datenbankabfragen pro Seitenaufruf (Liste + Count)
 

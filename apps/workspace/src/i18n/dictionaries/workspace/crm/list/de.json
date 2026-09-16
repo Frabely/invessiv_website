@@ -4,8 +4,34 @@
     "number": "Nr.",
     "customer": "Kunde",
     "status": "Status",
+    "owner": "Zuständig",
     "primaryContact": "Hauptansprechpartner",
+    "updated": "Geändert",
     "actions": "Aktionen"
+  },
+  "sort": {
+    "numberAsc": "Kundennummer aufsteigend sortieren",
+    "numberDesc": "Kundennummer absteigend sortieren",
+    "nameAsc": "Name aufsteigend sortieren",
+    "nameDesc": "Name absteigend sortieren",
+    "statusAsc": "Status aufsteigend sortieren",
+    "statusDesc": "Status absteigend sortieren",
+    "updatedAsc": "Älteste Änderung zuerst",
+    "updatedDesc": "Neueste Änderung zuerst"
+  },
+  "pagination": {
+    "ariaLabel": "Seitennavigation der Kundenliste",
+    "showing": "{from}–{to} von {total} Kunden",
+    "page": "Seite {page}",
+    "first": "Erste",
+    "previous": "Zurück",
+    "next": "Weiter",
+    "last": "Letzte"
+  },
+  "relativeTime": {
+    "justNow": "gerade eben",
+    "hoursAgo": "vor {count} Std.",
+    "daysAgo": "vor {count} T."
   },
   "status": {
     "active": "Aktiv",

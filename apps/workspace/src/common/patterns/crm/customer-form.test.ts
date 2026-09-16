@@ -15,6 +15,7 @@ const CUSTOMER: CustomerDetailDto = {
   companyName: "Nordlicht Coaching GmbH",
   status: "active",
   ownerMemberId: "member-1",
+  ownerDisplayName: "Moritz Beispiel",
   categoryId: null,
   city: "Köln",
   primaryContactName: "Anna Berger",
@@ -39,6 +40,7 @@ describe("createCustomerFormValues", () => {
 
     expect(values.displayName).toBe("");
     expect(values.contactPreferredLocale).toBe("en");
+    expect(values.status).toBe("active");
   });
 
   it("prefills an existing customer including the euro amount", () => {
@@ -48,6 +50,7 @@ describe("createCustomerFormValues", () => {
     expect(values.companyName).toBe("Nordlicht Coaching GmbH");
     expect(values.city).toBe("Köln");
     expect(values.hourlyRate).toBe("95,50");
+    expect(values.status).toBe("active");
   });
 });
 
@@ -134,6 +137,7 @@ describe("request mapping", () => {
     );
 
     expect(request.companyName).toBe("Nordlicht Coaching GmbH");
+    expect(request.status).toBe("active");
     expect(request.version).toBe(3);
     expect(request).not.toHaveProperty("primaryContact");
   });

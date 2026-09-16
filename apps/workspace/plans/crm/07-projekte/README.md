@@ -1,6 +1,6 @@
 # Ordner 07 — Projekte
 
-> **Status:** offen · **Abhängigkeiten:** 04, 05 · **Aufwand:** 3–4 Tage · **Reviewziel:** 60–100 Dateien
+> **Status:** offen · **Abhängigkeiten:** 04, 05, 06a · **Aufwand:** 3–4 Tage · **Reviewziel:** 60–100 Dateien
 
 ## Ziel und Stand nach Merge
 
@@ -22,7 +22,8 @@ im Kundendetail sowie in einer Projektübersicht nutzbar. Portalanteile bleiben 
 - Optional: Beschreibung, nächster Schritt, Termin, Preview-URL, Budget-Cents und Stundensatz-Cents.
 - Abrechnungsart validiert relevante Betragsfelder; Währung ist implizit EUR.
 - Owner übernimmt initial den Kunden-Owner, kann danach durch jedes aktive Mitglied geändert werden.
-- Kunden-Owner-Wechsel aus Ordner 05 übernimmt nur offene Projekte.
+- Ein späterer Kunden-Owner-Wechsel überschreibt den Projekt-Owner nicht. Die explizite globale Übergabe aus Ordner
+  22a übernimmt offene Projekte nur bei einer vollständigen Mitgliedsübergabe.
 - Feste Phasenfolge aus `standard_web_v1`; unbekannter Workflow oder Phase wird abgelehnt.
 - Kein Soft-Delete/Purge in der UI. Archiv ist der reversible Endzustand.
 - `version` verhindert stilles Überschreiben.
@@ -36,8 +37,8 @@ im Kundendetail sowie in einer Projektübersicht nutzbar. Portalanteile bleiben 
 
 ## Merge-Gate
 
-- [ ] Facette `Projektphase` ist in `CUSTOMER_LIST_FACETS` registriert und in der Kundenliste nutzbar,
-      ohne dass die Toolbar aus Ordner 05 angefasst wurde.
+- [ ] Die Kundenlisten-Query kann die Projektphase effizient als Grundlage für die spätere Facette in Ordner 22a
+      liefern; eine vorgezogene Filter-UI entsteht nicht.
 - [ ] `Projects` ist in `OwnableEntity` registriert und hat einen Adapter in der Ownership-Registry (Ordner 03c);
       Übergabe und Deaktivierungszählung erfassen die Entität, mit Test.
 - [ ] Projekt kann nur zu existierendem, nicht archiviertem Kunden angelegt werden.
