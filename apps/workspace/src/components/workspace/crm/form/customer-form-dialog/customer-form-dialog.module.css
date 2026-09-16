@@ -114,6 +114,41 @@
   line-height: 1.5;
 }
 
+.contactList {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contactListItem {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 0.75rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  background: var(--color-surface-1);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+}
+
+.contactMeta {
+  color: var(--color-text-muted);
+}
+
+.contactActions,
+.contactEditorActions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.contactActions {
+  margin-left: auto;
+}
+
 .grid,
 .addressGrid {
   display: grid;

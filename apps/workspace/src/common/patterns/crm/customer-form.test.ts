@@ -11,7 +11,6 @@ import {
 const CUSTOMER: CustomerDetailDto = {
   id: "customer-1",
   customerNumber: 7,
-  customerType: "company",
   displayName: "Nordlicht Coaching",
   companyName: "Nordlicht Coaching GmbH",
   status: "active",
@@ -35,10 +34,9 @@ const CUSTOMER: CustomerDetailDto = {
 };
 
 describe("createCustomerFormValues", () => {
-  it("starts an empty company form in the current language", () => {
+  it("starts an empty form in the current language", () => {
     const values = createCustomerFormValues(null, "en");
 
-    expect(values.customerType).toBe("company");
     expect(values.displayName).toBe("");
     expect(values.contactPreferredLocale).toBe("en");
   });
@@ -127,16 +125,13 @@ describe("request mapping", () => {
     });
   });
 
-  it("drops the company name for individuals and sends the version on update", () => {
+  it("sends the version on update", () => {
     const request = toUpdateCustomerRequest(
-      {
-        ...createCustomerFormValues(CUSTOMER, "de"),
-        customerType: "individual",
-      },
+      createCustomerFormValues(CUSTOMER, "de"),
       3,
     );
 
-    expect(request.companyName).toBeNull();
+    expect(request.companyName).toBe("Nordlicht Coaching GmbH");
     expect(request.version).toBe(3);
     expect(request).not.toHaveProperty("primaryContact");
   });

@@ -104,13 +104,7 @@ export function CustomersBasicList({
           <DataTableHeaderCell className={styles.customerCell} scope="row">
             <span className={styles.name}>{customer.displayName}</span>
             <span className={styles.meta}>
-              {[
-                customer.companyName ??
-                  content.customerType[customer.customerType],
-                customer.city,
-              ]
-                .filter(Boolean)
-                .join(", ")}
+              {[customer.companyName, customer.city].filter(Boolean).join(", ")}
             </span>
           </DataTableHeaderCell>
           <DataTableCell className={styles.statusCell}>

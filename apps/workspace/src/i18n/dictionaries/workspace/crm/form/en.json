@@ -7,19 +7,16 @@
     "create": "The customer and their primary contact are saved together. The customer number is assigned automatically.",
     "edit": "Change the master data of {number}. The primary contact stays as it is."
   },
-  "customerType": {
-    "legend": "Customer type",
-    "company": "Company",
-    "individual": "Individual"
-  },
   "sections": {
     "customer": "Customer",
     "address": "Address",
     "details": "More details",
-    "contact": "Primary contact"
+    "contact": "Primary contact",
+    "additionalContact": "Contacts"
   },
   "sectionHints": {
-    "contact": "Saved as a new person and shown in the customer list."
+    "contact": "Saved as a new person and shown in the customer list.",
+    "additionalContact": "Further contacts are assigned to this customer. The primary contact remains unchanged."
   },
   "fields": {
     "displayName": "Display name",
@@ -93,8 +90,19 @@
     "submitCreate": "Add customer",
     "submitEdit": "Save changes",
     "submitting": "Saving …",
+    "addContact": "Add contact",
+    "submittingContact": "Adding contact …",
+    "edit": "Edit",
+    "remove": "Remove",
+    "confirmContact": "Apply contact",
+    "confirmRemoveContact": "Remove contact",
     "cancel": "Cancel",
     "close": "Close"
   },
-  "requiredHint": "Fields marked * are required."
+  "requiredHint": "Fields marked * are required.",
+  "contact": {
+    "primary": "Primary contact",
+    "removeTitle": "Remove contact?",
+    "removeDescription": "The contact will be removed when you save the customer changes."
+  }
 }

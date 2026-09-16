@@ -7,19 +7,16 @@
     "create": "Kunde und Hauptansprechpartner werden zusammen gespeichert. Die Kundennummer vergibt das System.",
     "edit": "Stammdaten von {number} ändern. Der Hauptansprechpartner bleibt unverändert."
   },
-  "customerType": {
-    "legend": "Kundentyp",
-    "company": "Firma",
-    "individual": "Privatperson"
-  },
   "sections": {
     "customer": "Kunde",
     "address": "Anschrift",
     "details": "Weitere Angaben",
-    "contact": "Hauptansprechpartner"
+    "contact": "Hauptansprechpartner",
+    "additionalContact": "Ansprechpartner"
   },
   "sectionHints": {
-    "contact": "Wird als neue Person gespeichert und in der Kundenliste angezeigt."
+    "contact": "Wird als neue Person gespeichert und in der Kundenliste angezeigt.",
+    "additionalContact": "Weitere Ansprechpartner werden diesem Kunden zugeordnet. Der Hauptansprechpartner bleibt erhalten."
   },
   "fields": {
     "displayName": "Anzeigename",
@@ -93,8 +90,19 @@
     "submitCreate": "Kunde anlegen",
     "submitEdit": "Änderungen speichern",
     "submitting": "Wird gespeichert …",
+    "addContact": "Ansprechpartner hinzufügen",
+    "submittingContact": "Ansprechpartner wird hinzugefügt …",
+    "edit": "Bearbeiten",
+    "remove": "Entfernen",
+    "confirmContact": "Ansprechpartner übernehmen",
+    "confirmRemoveContact": "Ansprechpartner entfernen",
     "cancel": "Abbrechen",
     "close": "Schließen"
   },
-  "requiredHint": "Felder mit * sind Pflicht."
+  "requiredHint": "Felder mit * sind Pflicht.",
+  "contact": {
+    "primary": "Hauptansprechpartner",
+    "removeTitle": "Ansprechpartner entfernen?",
+    "removeDescription": "Der Ansprechpartner wird beim Speichern der Kundenänderungen entfernt."
+  }
 }

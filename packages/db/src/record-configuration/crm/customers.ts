@@ -11,7 +11,6 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { CUSTOMER_STATUS_VALUES } from "@invessiv/common/constants/crm/customer-statuses";
-import { CUSTOMER_TYPE_VALUES } from "@invessiv/common/constants/crm/customer-types";
 import { CustomersConstraintName } from "@invessiv/db/constraint-names/crm/customers-constraint-names";
 import { sqlCheckIn } from "@invessiv/db/core";
 import { leadCategories } from "@invessiv/db/record-configuration/lead-categories";
@@ -28,9 +27,6 @@ export const customers = pgTable(
     id: uuid("id").primaryKey(),
     customer_number: integer("customer_number").notNull().default(sql`nextval
             ('customers_customer_number_seq')`),
-    customer_type: text("customer_type", {
-      enum: CUSTOMER_TYPE_VALUES,
-    }).notNull(),
     display_name: text("display_name").notNull(),
     company_name: text("company_name"),
     status: text("status", { enum: CUSTOMER_STATUS_VALUES }).notNull(),
@@ -66,10 +62,6 @@ export const customers = pgTable(
             )
             <>
             ''`,
-    ),
-    check(
-      CustomersConstraintName.CustomerTypeCheck,
-      sqlCheckIn(table.customer_type, CUSTOMER_TYPE_VALUES),
     ),
     check(
       CustomersConstraintName.StatusCheck,

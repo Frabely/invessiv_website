@@ -12,10 +12,6 @@
     "paused": "Pausiert",
     "archived": "Archiviert"
   },
-  "customerType": {
-    "company": "Firma",
-    "individual": "Privatperson"
-  },
   "editAction": "Bearbeiten",
   "editActionAriaLabel": "{name} bearbeiten",
   "empty": {

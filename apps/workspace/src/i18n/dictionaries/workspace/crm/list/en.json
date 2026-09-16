@@ -12,10 +12,6 @@
     "paused": "Paused",
     "archived": "Archived"
   },
-  "customerType": {
-    "company": "Company",
-    "individual": "Individual"
-  },
   "editAction": "Edit",
   "editActionAriaLabel": "Edit {name}",
   "empty": {

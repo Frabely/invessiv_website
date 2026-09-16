@@ -16,4 +16,9 @@ describe("formValidationService", () => {
       formValidationService.isValidHttpUrl("mailto:name@example.com"),
     ).toBe(false);
   });
+
+  it("accepts contact phone numbers", () => {
+    expect(formValidationService.isValidPhone("+49 221 1234567")).toBe(true);
+    expect(formValidationService.isValidPhone("call me")).toBe(false);
+  });
 });

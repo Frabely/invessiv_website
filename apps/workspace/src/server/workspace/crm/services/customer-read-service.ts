@@ -17,7 +17,6 @@ import { customersMapperService } from "@/server/workspace/crm/services/customer
 const SUMMARY_COLUMNS = {
   id: customers.id,
   customer_number: customers.customer_number,
-  customer_type: customers.customer_type,
   display_name: customers.display_name,
   company_name: customers.company_name,
   status: customers.status,

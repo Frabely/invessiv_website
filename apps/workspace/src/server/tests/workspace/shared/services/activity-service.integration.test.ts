@@ -73,7 +73,6 @@ describe.skipIf(!RUN_INTEGRATION)(
       });
       await db.insert(customers).values({
         id: customerId,
-        customer_type: "company",
         display_name: `${FIXTURE_PREFIX}customer`,
         status: "active",
         owner_member_id: memberId,

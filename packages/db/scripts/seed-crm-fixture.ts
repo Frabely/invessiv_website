@@ -30,7 +30,6 @@ import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { SYSTEM_ROLE_DEFINITIONS } from "@invessiv/common/constants/auth/system-role-definitions";
 import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
 import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
-import { CustomerType } from "@invessiv/common/constants/crm/customer-types";
 import { Locale } from "@invessiv/common/contracts/i18n/locale";
 import {
   configureDatabaseUrlFromTarget,
@@ -53,7 +52,6 @@ type PersonFixture = {
 
 type CustomerFixture = {
   key: string;
-  customerType: (typeof CustomerType)[keyof typeof CustomerType];
   displayName: string;
   companyName: string | null;
   status: (typeof CustomerStatus)[keyof typeof CustomerStatus];
@@ -111,7 +109,6 @@ const PEOPLE: PersonFixture[] = [
 const CUSTOMERS: CustomerFixture[] = [
   {
     key: "nordlicht",
-    customerType: CustomerType.Company,
     displayName: "Nordlicht Coaching",
     companyName: "Nordlicht Coaching GmbH",
     status: CustomerStatus.Active,
@@ -134,7 +131,6 @@ const CUSTOMERS: CustomerFixture[] = [
   },
   {
     key: "kluge-bau",
-    customerType: CustomerType.Company,
     displayName: "Kluge Bau",
     companyName: "Kluge Bau GmbH",
     status: CustomerStatus.Active,
@@ -151,7 +147,6 @@ const CUSTOMERS: CustomerFixture[] = [
   },
   {
     key: "vogt-consulting",
-    customerType: CustomerType.Company,
     displayName: "Vogt Consulting",
     companyName: "Vogt Consulting",
     status: CustomerStatus.Paused,
@@ -167,7 +162,6 @@ const CUSTOMERS: CustomerFixture[] = [
   },
   {
     key: "dario-lentz",
-    customerType: CustomerType.Individual,
     displayName: "Dario Lentz",
     companyName: null,
     status: CustomerStatus.Archived,
@@ -336,7 +330,6 @@ async function run() {
         customerIds.set(customer.key, id);
         return {
           id,
-          customer_type: customer.customerType,
           display_name: customer.displayName,
           company_name: customer.companyName,
           status: customer.status,

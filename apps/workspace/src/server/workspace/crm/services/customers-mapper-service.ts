@@ -56,7 +56,6 @@ function toSummary(
   return {
     id: row.id,
     customerNumber: row.customer_number,
-    customerType: row.customer_type,
     displayName: row.display_name,
     companyName: row.company_name,
     status: row.status,

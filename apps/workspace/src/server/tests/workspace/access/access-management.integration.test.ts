@@ -25,7 +25,6 @@ import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys"
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
 import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
-import { CustomerType } from "@invessiv/common/constants/crm/customer-types";
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import type { CreateRoleRequestDto } from "@invessiv/common/contracts/auth/create-role-request.dto";
@@ -460,7 +459,6 @@ describe.skipIf(!RUN_INTEGRATION)(
       await db.insert(customers).values(
         statuses.map((status) => ({
           id: randomUUID(),
-          customer_type: CustomerType.Company,
           display_name: `${FIXTURE_PREFIX}customer:${status}`,
           status,
           owner_member_id: target.memberId,

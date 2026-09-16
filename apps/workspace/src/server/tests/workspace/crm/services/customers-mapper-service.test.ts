@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
-import { CustomerType } from "@invessiv/common/constants/crm/customer-types";
 import { Locale } from "@invessiv/common/contracts/i18n/locale";
 import type { CustomerContactAssignmentRow } from "@invessiv/common/contracts/crm/rows/customer-contact-assignment-row";
 import type { CustomerDetailRow } from "@invessiv/common/contracts/crm/rows/customer-detail-row";
@@ -14,7 +13,6 @@ const UPDATED = new Date("2026-04-02T08:30:00.000Z");
 const summaryRow = {
   id: "customer-1",
   customer_number: 42,
-  customer_type: CustomerType.Company,
   display_name: "Müller GmbH",
   company_name: "Müller GmbH",
   status: CustomerStatus.Active,
@@ -82,7 +80,6 @@ describe("customersMapperService.toSummary", () => {
     expect(result).toEqual({
       id: "customer-1",
       customerNumber: 42,
-      customerType: "company",
       displayName: "Müller GmbH",
       companyName: "Müller GmbH",
       status: "active",
@@ -166,7 +163,6 @@ describe("customersMapperService.toSummary", () => {
   it("maps an individual customer without a company name", () => {
     const individual = {
       ...summaryRow,
-      customer_type: CustomerType.Individual,
       company_name: null,
       display_name: "Anna Müller",
     } satisfies CustomerSummaryRow;
@@ -175,7 +171,6 @@ describe("customersMapperService.toSummary", () => {
       primaryContact,
     ]);
 
-    expect(result.customerType).toBe("individual");
     expect(result.companyName).toBeNull();
   });
 });

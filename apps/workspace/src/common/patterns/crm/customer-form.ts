@@ -1,10 +1,9 @@
-import { CustomerType } from "@invessiv/common/constants/crm/customer-types";
 import type { CreateCustomerRequestDto } from "@invessiv/common/contracts/crm/create-customer-request.dto";
 import type { CustomerDetailDto } from "@invessiv/common/contracts/crm/customer-detail.dto";
+import type { CustomerContactWriteDto } from "@invessiv/common/contracts/crm/customer-contact-write.dto";
 import type { CustomerWriteFieldsDto } from "@invessiv/common/contracts/crm/customer-write-fields.dto";
 import type { UpdateCustomerRequestDto } from "@invessiv/common/contracts/crm/update-customer-request.dto";
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
-import { isValidContactPhone } from "@invessiv/common/patterns/contact/contact-phone";
 import { formValidationService } from "@invessiv/common/patterns/validation/form-validation-service";
 import { CustomerFormDialogMode } from "@/common/constants/crm/forms/customer-form-dialog-modes";
 import { CustomerFormValidationCode } from "@/common/constants/crm/forms/customer-form-validation-codes";
@@ -27,7 +26,6 @@ export function createCustomerFormValues(
   locale: Locale,
 ): CustomerFormValues {
   return {
-    customerType: customer?.customerType ?? CustomerType.Company,
     displayName: customer?.displayName ?? "",
     companyName: customer?.companyName ?? "",
     categoryId: customer?.categoryId ?? "",
@@ -72,19 +70,27 @@ export function validateCustomerForm(
   }
 
   if (mode === CustomerFormDialogMode.Create) {
-    const email = values.contactEmail.trim();
-    const phone = values.contactPhone.trim();
-    if (!values.contactLastName.trim() && !email) {
-      errors.contactLastName = CustomerFormValidationCode.ContactRequired;
-    }
-    if (email && !formValidationService.isValidEmail(email)) {
-      errors.contactEmail = CustomerFormValidationCode.EmailInvalid;
-    }
-    if (phone && !isValidContactPhone(phone)) {
-      errors.contactPhone = CustomerFormValidationCode.PhoneInvalid;
-    }
+    Object.assign(errors, validateCustomerContact(values));
   }
 
+  return errors;
+}
+
+export function validateCustomerContact(
+  values: CustomerFormValues,
+): CustomerFormErrors {
+  const errors: CustomerFormErrors = {};
+  const email = values.contactEmail.trim();
+  const phone = values.contactPhone.trim();
+  if (!values.contactLastName.trim() && !email) {
+    errors.contactLastName = CustomerFormValidationCode.ContactRequired;
+  }
+  if (email && !formValidationService.isValidEmail(email)) {
+    errors.contactEmail = CustomerFormValidationCode.EmailInvalid;
+  }
+  if (phone && !formValidationService.isValidPhone(phone)) {
+    errors.contactPhone = CustomerFormValidationCode.PhoneInvalid;
+  }
   return errors;
 }
 
@@ -92,12 +98,8 @@ function toWriteFields(values: CustomerFormValues): CustomerWriteFieldsDto {
   const hourlyRate = parseEuroAmountToCents(values.hourlyRate);
 
   return {
-    customerType: values.customerType,
     displayName: values.displayName.trim(),
-    companyName:
-      values.customerType === CustomerType.Individual
-        ? null
-        : orNull(values.companyName),
+    companyName: orNull(values.companyName),
     categoryId: orNull(values.categoryId),
     street: orNull(values.street),
     postalCode: orNull(values.postalCode),
@@ -129,6 +131,26 @@ export function toCreateCustomerRequest(
 export function toUpdateCustomerRequest(
   values: CustomerFormValues,
   version: number,
+  contacts?: CustomerContactWriteDto[],
 ): UpdateCustomerRequestDto {
-  return { ...toWriteFields(values), version };
+  return {
+    ...toWriteFields(values),
+    version,
+    ...(contacts ? { contacts } : {}),
+  };
+}
+
+export function toCustomerContactWrite(
+  values: CustomerFormValues,
+  isPrimary: boolean,
+): CustomerContactWriteDto {
+  return {
+    firstName: orNull(values.contactFirstName),
+    lastName: orNull(values.contactLastName),
+    email: orNull(values.contactEmail),
+    phone: orNull(values.contactPhone),
+    roleLabel: orNull(values.contactRoleLabel),
+    preferredLocale: values.contactPreferredLocale,
+    isPrimary,
+  };
 }

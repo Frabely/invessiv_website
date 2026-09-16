@@ -30,7 +30,6 @@ describe("customerWriteMappingService", () => {
       ),
     ).toEqual({
       id: "customer-1",
-      customer_type: "company",
       display_name: "Nordlicht Coaching",
       company_name: "Nordlicht Coaching GmbH",
       category_id: TEST_CATEGORY_ID,
@@ -51,7 +50,6 @@ describe("customerWriteMappingService", () => {
 
   it("keeps nullable fields null", () => {
     const input = customerSchemas.create.parse({
-      customerType: "individual",
       displayName: "Dario Lentz",
       primaryContact: { email: "dario@example.test", preferredLocale: "en" },
     });
@@ -66,7 +64,7 @@ describe("customerWriteMappingService", () => {
       default_hourly_rate_cents: null,
     });
     expect(
-      customerWriteMappingService.mapPrimaryContactApiToPersonDb(
+      customerWriteMappingService.mapContactApiToPersonDb(
         "p",
         input.primaryContact,
       ),
@@ -92,7 +90,7 @@ describe("customerWriteMappingService", () => {
 
   it("maps the primary contact to a new person with a derived display name", () => {
     expect(
-      customerWriteMappingService.mapPrimaryContactApiToPersonDb(
+      customerWriteMappingService.mapContactApiToPersonDb(
         "person-1",
         FULL_INPUT.primaryContact,
       ),
@@ -111,11 +109,12 @@ describe("customerWriteMappingService", () => {
 
   it("keeps the role on a primary assignment without business details", () => {
     expect(
-      customerWriteMappingService.mapPrimaryContactApiToAssignmentDb(
+      customerWriteMappingService.mapContactApiToAssignmentDb(
         "assignment-1",
         "customer-1",
         "person-1",
         FULL_INPUT.primaryContact,
+        true,
       ),
     ).toEqual({
       id: "assignment-1",

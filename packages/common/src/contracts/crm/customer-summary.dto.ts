@@ -1,5 +1,4 @@
 import type { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
-import type { CustomerType } from "@invessiv/common/constants/crm/customer-types";
 
 /**
  * `primaryContactName` is deliberately not nullable: every customer has exactly one
@@ -14,13 +13,10 @@ export interface CustomerSummaryDto {
    * with `formatCustomerNumber` only in the view. Gaps are valid and never backfilled.
    */
   customerNumber: number;
-  /** Decides whether `companyName` can be present at all. */
-  customerType: CustomerType;
   /** The name shown everywhere. Mandatory for both customer types. */
   displayName: string;
   /**
-   * Null for `individual` customers, who have no company. Not unique even among
-   * companies: two genuine "Mueller GmbH" in different cities are a valid state.
+   * Not unique: two genuine "Mueller GmbH" in different cities are a valid state.
    */
   companyName: string | null;
   /** Lifecycle state. `archived` hides the customer from lists but is reversible. */

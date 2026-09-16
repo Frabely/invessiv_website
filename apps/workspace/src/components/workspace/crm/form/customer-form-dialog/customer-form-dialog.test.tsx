@@ -102,13 +102,10 @@ describe("CustomerFormDialog", () => {
     ).toBeInTheDocument();
   });
 
-  it("hides the company name for individuals", () => {
+  it("always offers an optional company name", () => {
     renderDialog();
+
     expect(input(/^Firmenname/)).toBeInTheDocument();
-
-    fireEvent.click(screen.getByRole("radio", { name: /Privatperson/ }));
-
-    expect(screen.queryByLabelText(/^Firmenname/)).not.toBeInTheDocument();
   });
 
   it("creates the customer, refreshes and closes the dialog", async () => {
@@ -170,7 +167,7 @@ describe("CustomerFormDialog", () => {
     );
   });
 
-  it("prefills the edit form without contact fields and keeps input on a conflict", async () => {
+  it("prefills the edit form, offers contacts and keeps input on a conflict", async () => {
     const customer = customerDetailFixture({ version: 2 });
     mocks.updateCustomer
       .mockResolvedValueOnce({
@@ -185,7 +182,9 @@ describe("CustomerFormDialog", () => {
     renderDialog(customer);
 
     expect(input(/^Anzeigename/)).toHaveValue("Nordlicht Coaching");
-    expect(screen.queryByLabelText(/^Nachname/)).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Ansprechpartner hinzufügen/ }),
+    ).toBeInTheDocument();
 
     fireEvent.change(input(/^Ort/), { target: { value: "Bonn" } });
     submit(content.buttons.submitEdit);
@@ -205,6 +204,27 @@ describe("CustomerFormDialog", () => {
     expect(mocks.updateCustomer.mock.calls[1][1]).toMatchObject({
       city: "Bonn",
       version: 3,
+    });
+  });
+
+  it("keeps a secondary contact locally until the customer form is saved", async () => {
+    const customer = customerDetailFixture({ version: 2 });
+    mocks.updateCustomer.mockResolvedValue({ ok: true, customer });
+    renderDialog(customer);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /Ansprechpartner hinzufügen/ }),
+    );
+    fireEvent.change(input(/^Nachname/), { target: { value: "Kluge" } });
+    fireEvent.click(
+      screen.getByRole("button", { name: content.buttons.confirmContact }),
+    );
+    submit(content.buttons.submitEdit);
+    await waitFor(() => expect(mocks.updateCustomer).toHaveBeenCalled());
+    expect(mocks.updateCustomer.mock.calls[0][1]).toMatchObject({
+      contacts: [
+        expect.objectContaining({ lastName: "Kluge", preferredLocale: "de" }),
+      ],
     });
   });
 });

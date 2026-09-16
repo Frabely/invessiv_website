@@ -24,7 +24,6 @@ import {
 import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import { LeadValidationMessageCode } from "@invessiv/common/constants/leads/forms/lead-form-validation";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
-import { isValidContactPhone } from "@invessiv/common/patterns/contact/contact-phone";
 import { formValidationService } from "@invessiv/common/patterns/validation/form-validation-service";
 import {
   ButtonControl,
@@ -353,7 +352,7 @@ export function LeadFormDialog({
       return;
     }
 
-    if (!isValidContactPhone(phoneValue)) {
+    if (!formValidationService.isValidPhone(phoneValue)) {
       setError(LeadFormDialogField.Phone, {
         message: content.validation.phoneInvalid,
         type: "manual",

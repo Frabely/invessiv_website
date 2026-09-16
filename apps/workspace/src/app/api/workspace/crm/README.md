@@ -12,11 +12,12 @@ Jeder Handler ist mit `withPermission(Permission.X, handler)` gewrappt: ohne Ses
 Mitgliedschaft `404 NOT_FOUND`, deaktiviertes Mitglied `403 FORBIDDEN`, DB-Fehler bei der Auflösung
 `503 UNAVAILABLE`, fehlende Permission `403 FORBIDDEN`.
 
-| Route                       | Permission        |
-| --------------------------- | ----------------- |
-| `GET /crm/customers`        | `customers.read`  |
-| `POST /crm/customers`       | `customers.write` |
-| `PATCH /crm/customers/[id]` | `customers.write` |
+| Route                               | Permission        |
+| ----------------------------------- | ----------------- |
+| `GET /crm/customers`                | `customers.read`  |
+| `POST /crm/customers`               | `customers.write` |
+| `PATCH /crm/customers/[id]`         | `customers.write` |
+| `POST /crm/customers/[id]/contacts` | `customers.write` |
 
 ## Fehlerformat
 
@@ -53,7 +54,6 @@ Body `CreateCustomerRequestDto`:
 
 ```json
 {
-  "customerType": "company",
   "displayName": "Nordlicht Coaching",
   "companyName": "Nordlicht Coaching GmbH",
   "categoryId": null,
@@ -76,7 +76,7 @@ Body `CreateCustomerRequestDto`:
 }
 ```
 
-- Leere Strings werden zu `null`; bei `customerType = individual` wird `companyName` verworfen.
+- Leere Strings werden zu `null`.
 - Primärkontakt braucht `lastName` oder `email`; er wird immer als neue Person angelegt.
 - Status ist immer `active`, Owner das anlegende Mitglied. Zusätzliche Felder im Body werden verworfen.
 - Kunde, Person, Primärzuordnung und die Activity `created` entstehen in einer Transaktion.
@@ -89,3 +89,13 @@ Body `UpdateCustomerRequestDto` — alle Kundenfelder wie beim Anlegen, ohne `pr
 ersetzt jedes Feld; Kontakte ändern sich hier nicht.
 
 Erfolg: `200 { "customer": CustomerDetailDto }`. Veraltete `version`: `409 VersionConflictDto`.
+
+## `POST /api/workspace/crm/customers/[id]/contacts`
+
+Body `CreateCustomerContactRequestDto`: die Kontaktfelder `firstName`, `lastName`, `email`, `phone`, `roleLabel`
+und `preferredLocale`. `lastName` oder `email` ist erforderlich.
+
+Der Endpunkt legt immer eine neue, **sekundäre** Zuordnung an. Dadurch kann er den atomar beim Kunden angelegten
+Hauptansprechpartner nicht verdrängen; jeder Kunde behält mindestens einen Hauptansprechpartner.
+
+Erfolg: `201 { "customer": CustomerDetailDto }`.

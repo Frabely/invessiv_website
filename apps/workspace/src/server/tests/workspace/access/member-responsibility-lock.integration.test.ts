@@ -110,7 +110,6 @@ describe.skipIf(!RUN_INTEGRATION)(
         await releaseAssignment.promise;
         await tx.insert(customers).values({
           id: randomUUID(),
-          customer_type: "company",
           display_name: `${FIXTURE_PREFIX}${randomUUID()}`,
           status: "active",
           owner_member_id: memberId,

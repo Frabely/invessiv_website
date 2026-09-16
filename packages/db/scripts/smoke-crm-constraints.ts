@@ -80,16 +80,15 @@ async function insertCustomer(
     displayName: string;
     companyName?: string | null;
     status?: string;
-    customerType?: string;
     version?: number;
   },
 ) {
   const id = randomUUID();
   await sql`
-        INSERT INTO customers (id, display_name, company_name, status, customer_type,
+    INSERT INTO customers (id, display_name, company_name, status,
                                owner_member_id, version)
         VALUES (${id}, ${args.displayName}, ${args.companyName ?? null},
-                ${args.status ?? "active"}, ${args.customerType ?? "company"},
+                ${args.status ?? "active"},
                 ${args.ownerMemberId}, ${args.version ?? 1})
     `;
   return id;
@@ -113,14 +112,6 @@ async function runChecks(sql: Sql) {
       ownerMemberId: memberId,
       displayName: name("Invalid status"),
       status: "onboarding",
-    }),
-  );
-
-  await expectRejected("unknown customer type is rejected", () =>
-    insertCustomer(sql, {
-      ownerMemberId: memberId,
-      displayName: name("Invalid type"),
-      customerType: "foundation",
     }),
   );
 
@@ -167,16 +158,13 @@ async function runChecks(sql: Sql) {
       }),
   );
 
-  // Individual customer without a company name
-  await expectAccepted(
-    "individual customer without a company name is valid",
-    () =>
-      insertCustomer(sql, {
-        ownerMemberId: memberId,
-        displayName: name("Individual"),
-        companyName: null,
-        customerType: "individual",
-      }),
+  // A customer without a company name is valid.
+  await expectAccepted("customer without a company name is valid", () =>
+    insertCustomer(sql, {
+      ownerMemberId: memberId,
+      displayName: name("Individual"),
+      companyName: null,
+    }),
   );
 
   // Sequence: ascending, gaps valid, no reuse
@@ -345,24 +333,16 @@ async function runMissingDefaultChecks(
   await expectRejected(
     "customer without status is rejected",
     () => sql`
-            INSERT INTO customers (id, display_name, customer_type, owner_member_id, version)
-            VALUES (${randomUUID()}, ${name("No status")}, 'company', ${memberId}, 1)
-        `,
-  );
-
-  await expectRejected(
-    "customer without customer_type is rejected",
-    () => sql`
-            INSERT INTO customers (id, display_name, status, owner_member_id, version)
-            VALUES (${randomUUID()}, ${name("No type")}, 'active', ${memberId}, 1)
+      INSERT INTO customers (id, display_name, owner_member_id, version)
+      VALUES (${randomUUID()}, ${name("No status")}, ${memberId}, 1)
         `,
   );
 
   await expectRejected(
     "customer without version is rejected",
     () => sql`
-            INSERT INTO customers (id, display_name, status, customer_type, owner_member_id)
-            VALUES (${randomUUID()}, ${name("No version")}, 'active', 'company', ${memberId})
+      INSERT INTO customers (id, display_name, status, owner_member_id)
+      VALUES (${randomUUID()}, ${name("No version")}, 'active', ${memberId})
         `,
   );
 

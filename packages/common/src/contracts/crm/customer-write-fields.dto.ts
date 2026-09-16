@@ -1,19 +1,15 @@
-import type { CustomerType } from "@invessiv/common/constants/crm/customer-types";
-
 /**
  * Customer fields shared by create and update. Status and owner are deliberately absent:
  * a new customer is `active` and owned by its creator, and both change only through their
  * own commands (archive/reactivate, owner handover).
  */
 export interface CustomerWriteFieldsDto {
-  /** Decides whether `companyName` is kept; the server drops it for `individual`. */
-  customerType: CustomerType;
   /**
    * Trimmed before storing. Unique across all statuses after lowercasing — a taken name
    * answers `CUSTOMER_DISPLAY_NAME_TAKEN` instead of creating a second record.
    */
   displayName: string;
-  /** Null or empty for individuals and for companies without a separate legal name. */
+  /** Null when no separate legal name is needed. */
   companyName: string | null;
   /** Id of an active `lead_categories` row. An unknown or inactive id is a validation error. */
   categoryId: string | null;

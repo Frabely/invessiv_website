@@ -1,4 +1,3 @@
-import type { CustomerType } from "@invessiv/common/constants/crm/customer-types";
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 import type { CustomerFormValidationCode } from "@/common/constants/crm/forms/customer-form-validation-codes";
 
@@ -7,7 +6,6 @@ import type { CustomerFormValidationCode } from "@/common/constants/crm/forms/cu
  * mapping trims and converts, so the user's input is never rewritten while typing.
  */
 export type CustomerFormValues = {
-  customerType: CustomerType;
   displayName: string;
   companyName: string;
   /** Empty string selects "no category". */

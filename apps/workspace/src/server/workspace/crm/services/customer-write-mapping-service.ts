@@ -16,7 +16,6 @@ type CustomerWriteFields = Omit<ValidatedUpdateCustomerInput, "version">;
 
 function mapWriteFields(fields: CustomerWriteFields) {
   return {
-    customer_type: fields.customerType,
     display_name: fields.displayName,
     company_name: fields.companyName,
     category_id: fields.categoryId,
@@ -52,7 +51,7 @@ function mapUpdateCustomerApiToDb(
   return mapWriteFields(input);
 }
 
-function mapPrimaryContactApiToPersonDb(
+function mapContactApiToPersonDb(
   personId: string,
   contact: ValidatedPrimaryContactInput,
 ): typeof people.$inferInsert {
@@ -69,11 +68,12 @@ function mapPrimaryContactApiToPersonDb(
   };
 }
 
-function mapPrimaryContactApiToAssignmentDb(
+function mapContactApiToAssignmentDb(
   assignmentId: string,
   customerId: string,
   personId: string,
   contact: ValidatedPrimaryContactInput,
+  isPrimary: boolean,
 ): typeof customerContactAssignments.$inferInsert {
   return {
     id: assignmentId,
@@ -82,7 +82,7 @@ function mapPrimaryContactApiToAssignmentDb(
     role_label: contact.roleLabel,
     business_email: null,
     business_phone: null,
-    is_primary: true,
+    is_primary: isPrimary,
     version: 1,
   };
 }
@@ -90,6 +90,6 @@ function mapPrimaryContactApiToAssignmentDb(
 export const customerWriteMappingService = {
   mapCreateCustomerApiToDb,
   mapUpdateCustomerApiToDb,
-  mapPrimaryContactApiToPersonDb,
-  mapPrimaryContactApiToAssignmentDb,
+  mapContactApiToPersonDb,
+  mapContactApiToAssignmentDb,
 } as const;

@@ -11,7 +11,6 @@ export function customerDetailFixture(
   return {
     id: TEST_CUSTOMER_ID,
     customerNumber: 7,
-    customerType: "company",
     displayName: "Nordlicht Coaching",
     companyName: "Nordlicht Coaching GmbH",
     status: "active",
@@ -40,7 +39,6 @@ export function createCustomerRequestFixture(
   overrides: Partial<CreateCustomerRequestDto> = {},
 ): CreateCustomerRequestDto {
   return {
-    customerType: "company",
     displayName: "Nordlicht Coaching",
     companyName: "Nordlicht Coaching GmbH",
     categoryId: null,
@@ -69,7 +67,6 @@ export function updateCustomerRequestFixture(
 ): UpdateCustomerRequestDto {
   const request = createCustomerRequestFixture();
   return {
-    customerType: request.customerType,
     displayName: request.displayName,
     companyName: request.companyName,
     categoryId: request.categoryId,

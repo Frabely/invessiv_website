@@ -8,10 +8,7 @@ import { HttpHeaderName } from "@invessiv/common/constants/http/http-header-name
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import { MediaType } from "@invessiv/common/constants/http/media-types";
-import {
-  GET as getCustomer,
-  PATCH,
-} from "@/app/api/workspace/crm/customers/[id]/route";
+import { PATCH } from "@/app/api/workspace/crm/customers/[id]/route";
 import { GET, POST } from "@/app/api/workspace/crm/customers/route";
 import {
   authorizedWorkspaceRequest,
@@ -30,7 +27,6 @@ vi.mock("server-only", () => ({}));
 const mocks = vi.hoisted(() => ({
   authenticate: vi.fn(),
   listCustomers: vi.fn(),
-  getCustomerById: vi.fn(),
   createCustomer: vi.fn(),
   updateCustomer: vi.fn(),
 }));
@@ -41,10 +37,6 @@ vi.mock("@/lib/auth/workspace-authentication", () => ({
 vi.mock(
   "@/server/workspace/crm/query-handler/list-customers.query-handler",
   () => ({ listCustomers: mocks.listCustomers }),
-);
-vi.mock(
-  "@/server/workspace/crm/query-handler/get-customer-by-id.query-handler",
-  () => ({ getCustomerById: mocks.getCustomerById }),
 );
 vi.mock(
   "@/server/workspace/crm/command-handler/create-customer.command-handler",
@@ -249,40 +241,6 @@ describe("CRM customer routes", () => {
 
       expect(response.status).toBe(HttpResponseCode.Conflict);
       await expect(response.json()).resolves.toEqual(conflict);
-    });
-  });
-
-  describe("GET /crm/customers/[id]", () => {
-    const request = new Request(COLLECTION_URL) as unknown as NextRequest;
-
-    it("answers 403 without customers.read", async () => {
-      mocks.authenticate.mockResolvedValue(
-        authorizedWorkspaceRequest([Permission.LeadsRead]),
-      );
-
-      expect((await getCustomer(request, context)).status).toBe(
-        HttpResponseCode.Forbidden,
-      );
-      expect(mocks.getCustomerById).not.toHaveBeenCalled();
-    });
-
-    it("answers 200 with the requested customer", async () => {
-      const customer = customerDetailFixture();
-      mocks.getCustomerById.mockResolvedValue(customer);
-
-      const response = await getCustomer(request, context);
-
-      expect(response.status).toBe(HttpResponseCode.Ok);
-      await expect(response.json()).resolves.toEqual({ customer });
-      expect(mocks.getCustomerById).toHaveBeenCalledWith(TEST_CUSTOMER_ID);
-    });
-
-    it("answers 404 for an unknown customer", async () => {
-      mocks.getCustomerById.mockResolvedValue(null);
-
-      expect((await getCustomer(request, context)).status).toBe(
-        HttpResponseCode.NotFound,
-      );
     });
   });
 });

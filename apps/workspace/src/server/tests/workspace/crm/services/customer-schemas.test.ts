@@ -19,7 +19,6 @@ describe("customerSchemas.create", () => {
 
   it("accepts omitted optional fields as null", () => {
     const result = customerSchemas.create.parse({
-      customerType: "individual",
       displayName: "Dario Lentz",
       primaryContact: {
         lastName: "Lentz",
@@ -34,16 +33,6 @@ describe("customerSchemas.create", () => {
       defaultHourlyRateCents: null,
       primaryContact: { firstName: null, email: null, roleLabel: null },
     });
-  });
-
-  it("drops the company name of an individual", () => {
-    const result = customerSchemas.create.parse({
-      ...createCustomerRequestFixture(),
-      customerType: "individual",
-      companyName: "Stale GmbH",
-    });
-
-    expect(result.companyName).toBeNull();
   });
 
   it("strips status and owner from the body", () => {

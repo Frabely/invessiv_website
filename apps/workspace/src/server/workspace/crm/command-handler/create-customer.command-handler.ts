@@ -73,7 +73,7 @@ export async function createCustomer(
       await tx
         .insert(people)
         .values(
-          customerWriteMappingService.mapPrimaryContactApiToPersonDb(
+          customerWriteMappingService.mapContactApiToPersonDb(
             personId,
             data.primaryContact,
           ),
@@ -90,11 +90,12 @@ export async function createCustomer(
       await tx
         .insert(customerContactAssignments)
         .values(
-          customerWriteMappingService.mapPrimaryContactApiToAssignmentDb(
+          customerWriteMappingService.mapContactApiToAssignmentDb(
             crypto.randomUUID(),
             customerId,
             personId,
             data.primaryContact,
+            true,
           ),
         );
       await activityService.createActivity(tx, {

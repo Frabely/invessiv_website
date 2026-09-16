@@ -1,12 +1,8 @@
 import { z } from "zod";
 
-import {
-  CUSTOMER_TYPE_VALUES,
-  CustomerType,
-} from "@invessiv/common/constants/crm/customer-types";
 import { CustomerFieldLimits } from "@invessiv/common/constants/crm/forms/customer-field-limits";
 import { SUPPORTED_LOCALES } from "@invessiv/common/contracts/i18n/locale";
-import { isValidContactPhone } from "@invessiv/common/patterns/contact/contact-phone";
+import { formValidationService } from "@invessiv/common/patterns/validation/form-validation-service";
 import { formValidationSchemas } from "@invessiv/common/patterns/validation/form-validation-schemas";
 
 function optionalText(maxLength: number) {
@@ -23,7 +19,7 @@ const optionalEmail = optionalText(CustomerFieldLimits.EmailMaxLength).pipe(
 );
 
 const optionalPhone = optionalText(CustomerFieldLimits.PhoneMaxLength).refine(
-  (value) => value === null || isValidContactPhone(value),
+  (value) => value === null || formValidationService.isValidPhone(value),
   { message: "Invalid phone number" },
 );
 
@@ -45,8 +41,29 @@ const primaryContactSchema = z
     path: ["lastName"],
   });
 
+const contactWriteSchema = primaryContactSchema
+  .extend({
+    assignmentVersion: z.int().positive().optional(),
+    id: z.uuid().optional(),
+    isPrimary: z.boolean(),
+    personId: z.uuid().optional(),
+    personVersion: z.int().positive().optional(),
+  })
+  .superRefine((contact, context) => {
+    const isExisting = Boolean(contact.id);
+    if (
+      isExisting !== Boolean(contact.personId) ||
+      isExisting !== Boolean(contact.assignmentVersion) ||
+      isExisting !== Boolean(contact.personVersion)
+    ) {
+      context.addIssue({
+        code: "custom",
+        message: "Incomplete contact version",
+      });
+    }
+  });
+
 const writeFieldsSchema = z.object({
-  customerType: z.enum(CUSTOMER_TYPE_VALUES),
   displayName: z
     .string()
     .trim()
@@ -72,21 +89,27 @@ const writeFieldsSchema = z.object({
     .transform((value) => value ?? null),
 });
 
-// An individual has no company, so a stale company name from a type switch is dropped.
-function dropCompanyNameForIndividuals<
-  T extends { customerType: CustomerType; companyName: string | null },
->(fields: T): T {
-  return fields.customerType === CustomerType.Individual
-    ? { ...fields, companyName: null }
-    : fields;
-}
-
 export const customerSchemas = {
   entityId: z.uuid(),
-  create: writeFieldsSchema
-    .extend({ primaryContact: primaryContactSchema })
-    .transform(dropCompanyNameForIndividuals),
-  update: writeFieldsSchema
-    .extend({ version: z.int().positive() })
-    .transform(dropCompanyNameForIndividuals),
+  create: writeFieldsSchema.extend({ primaryContact: primaryContactSchema }),
+  createContact: primaryContactSchema,
+  update: writeFieldsSchema.extend({
+    version: z.int().positive(),
+    contacts: z
+      .array(contactWriteSchema)
+      .min(1)
+      .optional()
+      .superRefine((contacts, context) => {
+        if (
+          !contacts ||
+          contacts.filter((contact) => contact.isPrimary).length === 1
+        ) {
+          return;
+        }
+        context.addIssue({
+          code: "custom",
+          message: "Exactly one primary contact is required",
+        });
+      }),
+  }),
 } as const;
