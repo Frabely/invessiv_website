@@ -1,0 +1,145 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+  padding: 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: color-mix(
+    in srgb,
+    var(--color-surface-2) 70%,
+    var(--color-surface-1) 30%
+  );
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.title {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-heading-sm);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.hint,
+.meta {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+.list {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 0.75rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  background: var(--color-surface-1);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+}
+
+.contactMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.primaryIndicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.55rem;
+  height: 1.55rem;
+  border: 1px solid color-mix(in srgb, var(--color-cta) 46%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-cta) 14%, transparent);
+  color: var(--color-cta);
+}
+
+.actions,
+.editorActions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.actions {
+  margin-left: auto;
+}
+
+.actions :global(button) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 2rem;
+  min-width: 2rem;
+  height: 2rem;
+  min-height: 2rem;
+  padding: 0;
+  border-radius: 6px;
+}
+
+.actions :global(button:hover:not(:disabled)),
+.actions :global(button:focus-visible:not(:disabled)) {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-cta) 14%, transparent);
+}
+
+.actions :global(button:last-child:hover:not(:disabled)),
+.actions :global(button:last-child:focus-visible:not(:disabled)) {
+  color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 14%, transparent);
+}
+
+.actions :global(button:last-child:not(:disabled)) {
+  color: var(--color-danger);
+}
+
+.actions :global(button:last-child:disabled) {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.25rem 0.9rem;
+}
+
+.selectField {
+  display: grid;
+  gap: 0.48rem;
+}
+
+.fieldLabel {
+  color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
+  font-size: var(--font-size-label-md);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

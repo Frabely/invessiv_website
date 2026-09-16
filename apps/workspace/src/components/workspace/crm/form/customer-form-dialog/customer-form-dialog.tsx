@@ -14,14 +14,10 @@ import { CustomerFieldLimits } from "@invessiv/common/constants/crm/forms/custom
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import type { CustomerDetailDto } from "@invessiv/common/contracts/crm/customer-detail.dto";
 import type { CustomerContactWriteDto } from "@invessiv/common/contracts/crm/customer-contact-write.dto";
-import {
-  type Locale,
-  SUPPORTED_LOCALES,
-} from "@invessiv/common/contracts/i18n/locale";
+import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 import { formatCustomerNumber } from "@invessiv/common/patterns/crm/format-customer-number";
 import {
   ButtonControl,
-  ConfirmDialog,
   Dialog,
   DialogSize,
   FormField,
@@ -40,12 +36,12 @@ import {
   toCreateCustomerRequest,
   toCustomerContactWrite,
   toUpdateCustomerRequest,
-  validateCustomerContact,
   validateCustomerForm,
 } from "@/common/patterns/crm/customer-form";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import type { CrmFormDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@/lib/i18n/format-message";
+import { CustomerContactSection } from "../../contacts/customer-contact-section/customer-contact-section";
 import styles from "./customer-form-dialog.module.css";
 
 type CustomerFormDialogProps = {
@@ -76,7 +72,6 @@ export function CustomerFormDialog({
   const router = useRouter();
   const formId = useId();
   const customerHeadingId = useId();
-  const contactHeadingId = useId();
   const addressHeadingId = useId();
   const detailsHeadingId = useId();
   const formRef = useRef<HTMLFormElement>(null);
@@ -104,13 +99,6 @@ export function CustomerFormDialog({
         isPrimary: contact.isPrimary,
       })) ?? [],
   );
-  const [contactEditorOpen, setContactEditorOpen] = useState(!customer);
-  const [editingContactIndex, setEditingContactIndex] = useState<number | null>(
-    null,
-  );
-  const [removingContactIndex, setRemovingContactIndex] = useState<
-    number | null
-  >(null);
   const mutation = useVersionedMutation<
     CustomerDetailDto | null,
     CustomerErrorCode
@@ -175,88 +163,6 @@ export function CustomerFormDialog({
                 : [toCustomerContactWrite(values, true)],
             ),
           ),
-    );
-  }
-
-  function confirmContactDraft() {
-    const contactErrors = validateCustomerContact(values);
-    setErrors((current) => ({ ...current, ...contactErrors }));
-    if (Object.keys(contactErrors).length > 0) {
-      return;
-    }
-    const next = toCustomerContactWrite(values, contacts.length === 0);
-    setContacts((current) =>
-      editingContactIndex === null
-        ? [...current, next]
-        : current.map((contact, index) =>
-            index === editingContactIndex
-              ? {
-                  ...next,
-                  id: contact.id,
-                  personId: contact.personId,
-                  assignmentVersion: contact.assignmentVersion,
-                  personVersion: contact.personVersion,
-                  isPrimary: contact.isPrimary,
-                }
-              : contact,
-          ),
-    );
-    setValues((current) => ({
-      ...current,
-      contactFirstName: "",
-      contactLastName: "",
-      contactEmail: "",
-      contactPhone: "",
-      contactRoleLabel: "",
-    }));
-    setContactEditorOpen(false);
-    setEditingContactIndex(null);
-  }
-
-  function beginContactEdit(index: number) {
-    const contact = contacts[index];
-    if (!contact) return;
-    setValues((current) => ({
-      ...current,
-      contactFirstName: contact.firstName ?? "",
-      contactLastName: contact.lastName ?? "",
-      contactEmail: contact.email ?? "",
-      contactPhone: contact.phone ?? "",
-      contactRoleLabel: contact.roleLabel ?? "",
-      contactPreferredLocale: contact.preferredLocale,
-    }));
-    setEditingContactIndex(index);
-    setContactEditorOpen(true);
-  }
-
-  function beginContactAdd() {
-    setValues((current) => ({
-      ...current,
-      contactFirstName: "",
-      contactLastName: "",
-      contactEmail: "",
-      contactPhone: "",
-      contactRoleLabel: "",
-      contactPreferredLocale: locale,
-    }));
-    setEditingContactIndex(null);
-    setContactEditorOpen(true);
-  }
-
-  function removeContact() {
-    if (removingContactIndex === null) return;
-    setContacts((current) =>
-      current.filter((_, index) => index !== removingContactIndex),
-    );
-    setRemovingContactIndex(null);
-  }
-
-  function makePrimaryContact(index: number) {
-    setContacts((current) =>
-      current.map((contact, contactIndex) => ({
-        ...contact,
-        isPrimary: contactIndex === index,
-      })),
     );
   }
 
@@ -407,160 +313,17 @@ export function CustomerFormDialog({
           </div>
         </section>
 
-        <section
-          aria-labelledby={contactHeadingId}
-          className={styles.section}
-          data-variant="grouped"
-        >
-          <div className={styles.sectionIntro}>
-            <h3 className={styles.sectionTitle} id={contactHeadingId}>
-              {customer
-                ? content.sections.additionalContact
-                : content.sections.contact}
-            </h3>
-            <p className={styles.sectionHint}>
-              {customer
-                ? content.sectionHints.additionalContact
-                : content.sectionHints.contact}
-            </p>
-          </div>
-          {contacts.length > 0 ? (
-            <ul className={styles.contactList}>
-              {contacts.map((contact, index) => (
-                <li
-                  className={styles.contactListItem}
-                  key={contact.id ?? `new-contact-${index}`}
-                >
-                  <span>
-                    {[contact.firstName, contact.lastName]
-                      .filter(Boolean)
-                      .join(" ") || contact.email}
-                  </span>
-                  <span className={styles.contactMeta}>
-                    {[
-                      contact.roleLabel,
-                      contact.isPrimary ? content.contact.primary : null,
-                    ]
-                      .filter(Boolean)
-                      .join(" · ")}
-                  </span>
-                  <div className={styles.contactActions}>
-                    <ButtonControl
-                      onClick={() => beginContactEdit(index)}
-                      type="button"
-                      variant="ghost"
-                    >
-                      {content.buttons.edit}
-                    </ButtonControl>
-                    {!contact.isPrimary ? (
-                      <ButtonControl
-                        onClick={() => makePrimaryContact(index)}
-                        type="button"
-                        variant="ghost"
-                      >
-                        {content.buttons.makePrimary}
-                      </ButtonControl>
-                    ) : null}
-                    <ButtonControl
-                      disabled={contact.isPrimary}
-                      onClick={() => setRemovingContactIndex(index)}
-                      type="button"
-                      variant="ghost"
-                    >
-                      {content.buttons.remove}
-                    </ButtonControl>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          ) : null}
-          {contactEditorOpen ? (
-            <div className={styles.grid}>
-              {renderTextField("contactFirstName", {
-                autoComplete: "given-name",
-                label: content.fields.firstName,
-                maxLength: CustomerFieldLimits.PersonNameMaxLength,
-                name: "contact-first-name",
-                placeholder: content.placeholders.firstName,
-              })}
-              {renderTextField("contactLastName", {
-                autoComplete: "family-name",
-                label: content.fields.lastName,
-                maxLength: CustomerFieldLimits.PersonNameMaxLength,
-                name: "contact-last-name",
-                placeholder: content.placeholders.lastName,
-              })}
-              {renderTextField("contactEmail", {
-                autoComplete: "email",
-                inputMode: "email",
-                kind: FormFieldKind.Email,
-                label: content.fields.email,
-                maxLength: CustomerFieldLimits.EmailMaxLength,
-                name: "contact-email",
-                placeholder: content.placeholders.email,
-              })}
-              {renderTextField("contactPhone", {
-                autoComplete: "tel",
-                inputMode: "tel",
-                kind: FormFieldKind.Tel,
-                label: content.fields.phone,
-                maxLength: CustomerFieldLimits.PhoneMaxLength,
-                name: "contact-phone",
-                placeholder: content.placeholders.phone,
-              })}
-              {renderTextField("contactRoleLabel", {
-                autoComplete: "organization-title",
-                label: content.fields.roleLabel,
-                maxLength: CustomerFieldLimits.RoleLabelMaxLength,
-                name: "contact-role",
-                placeholder: content.placeholders.roleLabel,
-              })}
-              <FormField
-                kind={FormFieldKind.Select}
-                label={content.fields.preferredLocale}
-                options={SUPPORTED_LOCALES.map((entry) => ({
-                  label: content.locales[entry],
-                  value: entry,
-                }))}
-                selectProps={{
-                  name: "contact-locale",
-                  onChange: (event) =>
-                    update(
-                      "contactPreferredLocale",
-                      event.target.value as Locale,
-                    ),
-                  value: values.contactPreferredLocale,
-                }}
-              />
-            </div>
-          ) : null}
-          {contactEditorOpen ? (
-            <div className={styles.contactEditorActions}>
-              <ButtonControl
-                onClick={() => setContactEditorOpen(false)}
-                type="button"
-                variant="ghost"
-              >
-                {content.buttons.cancel}
-              </ButtonControl>
-              <ButtonControl
-                onClick={confirmContactDraft}
-                type="button"
-                variant="ghost"
-              >
-                {content.buttons.confirmContact}
-              </ButtonControl>
-            </div>
-          ) : (
-            <ButtonControl
-              onClick={beginContactAdd}
-              type="button"
-              variant="ghost"
-            >
-              + {content.buttons.addContact}
-            </ButtonControl>
-          )}
-        </section>
+        <CustomerContactSection
+          content={content}
+          contacts={contacts}
+          customerExists={Boolean(customer)}
+          errors={errors}
+          locale={locale}
+          onContactFieldChange={update}
+          onContactsChange={setContacts}
+          onErrorsChange={setErrors}
+          values={values}
+        />
         <section
           aria-labelledby={addressHeadingId}
           className={styles.section}
@@ -682,18 +445,6 @@ export function CustomerFormDialog({
           </p>
         ) : null}
       </form>
-      {removingContactIndex !== null ? (
-        <ConfirmDialog
-          cancelLabel={content.buttons.cancel}
-          closeLabel={content.buttons.close}
-          confirmLabel={content.buttons.confirmRemoveContact}
-          description={content.contact.removeDescription}
-          onCancelAction={() => setRemovingContactIndex(null)}
-          onConfirmAction={removeContact}
-          title={content.contact.removeTitle}
-          tone="danger"
-        />
-      ) : null}
     </Dialog>
   );
 }

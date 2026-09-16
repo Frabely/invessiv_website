@@ -3,10 +3,10 @@
 import "@testing-library/jest-dom/vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { TableRowActions } from "./table-row-actions";
+import { TableRowActions } from "@invessiv/ui";
 
 describe("TableRowActions", () => {
-  it("exposes a labelled action menu and toggles its expanded state", () => {
+  it("exposes a labelled action group and toggles its expanded state", () => {
     render(
       <table>
         <tbody>
@@ -26,6 +26,8 @@ describe("TableRowActions", () => {
 
     const trigger = screen.getByRole("button", { name: "Actions" });
     expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(trigger).not.toHaveAttribute("aria-haspopup");
+    expect(trigger).toHaveAttribute("aria-controls");
 
     fireEvent.click(trigger);
 

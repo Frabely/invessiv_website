@@ -4,6 +4,7 @@ import {
   type FocusEvent,
   type MouseEvent,
   type ReactNode,
+  useId,
   useState,
 } from "react";
 import styles from "./table-row-actions.module.css";
@@ -29,6 +30,7 @@ export function TableRowActions({
   menuLabel,
 }: TableRowActionsProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const actionGroupId = useId();
 
   function handleCellBlur(event: FocusEvent<HTMLTableCellElement>) {
     if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
@@ -46,7 +48,7 @@ export function TableRowActions({
     >
       <button
         aria-expanded={isMenuOpen}
-        aria-haspopup="menu"
+        aria-controls={actionGroupId}
         aria-label={menuLabel}
         className={styles.menuTrigger}
         onClick={() => setIsMenuOpen((current) => !current)}
@@ -55,7 +57,11 @@ export function TableRowActions({
       >
         {menuIcon}
       </button>
-      <div className={styles.group} data-open={isMenuOpen ? "true" : "false"}>
+      <div
+        className={styles.group}
+        data-open={isMenuOpen ? "true" : "false"}
+        id={actionGroupId}
+      >
         {children}
       </div>
     </td>

@@ -86,16 +86,8 @@ Erfolg: `201 { "customer": CustomerDetailDto }`.
 ## `PATCH /api/workspace/crm/customers/[id]`
 
 Body `UpdateCustomerRequestDto` — alle Kundenfelder wie beim Anlegen, ohne `primaryContact`, dazu `version`. Der Body
-ersetzt jedes Feld; Kontakte ändern sich hier nicht.
+ersetzt jedes Feld. `contacts` ist optional; wenn vorhanden, enthält es den vollständigen gewünschten Stand aller
+Ansprechpartner inklusive ihrer getrennten Personen- und Zuordnungsversionen. Kunde und Kontakte werden gemeinsam
+transaktional gespeichert.
 
 Erfolg: `200 { "customer": CustomerDetailDto }`. Veraltete `version`: `409 VersionConflictDto`.
-
-## `POST /api/workspace/crm/customers/[id]/contacts`
-
-Body `CreateCustomerContactRequestDto`: die Kontaktfelder `firstName`, `lastName`, `email`, `phone`, `roleLabel`
-und `preferredLocale`. `lastName` oder `email` ist erforderlich.
-
-Der Endpunkt legt immer eine neue, **sekundäre** Zuordnung an. Dadurch kann er den atomar beim Kunden angelegten
-Hauptansprechpartner nicht verdrängen; jeder Kunde behält mindestens einen Hauptansprechpartner.
-
-Erfolg: `201 { "customer": CustomerDetailDto }`.
