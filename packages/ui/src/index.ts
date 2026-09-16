@@ -11,6 +11,7 @@ export * from "./components/dialog/confirm-dialog/confirm-dialog";
 export * from "./components/empty-state/empty-state";
 export * from "./components/badge/badge";
 export * from "./components/data-table/data-table";
+export * from "./components/data-table/data-table-loading-overlay";
 export * from "./components/detail/definition-list/definition-list";
 export * from "./components/detail/detail-section/detail-section";
 export * from "./components/side-panel/side-panel";

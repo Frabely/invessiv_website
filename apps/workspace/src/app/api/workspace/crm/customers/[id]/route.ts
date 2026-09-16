@@ -13,10 +13,29 @@ import { readJsonBody } from "@/lib/http/read-json-body";
 import { customerApiError } from "@/lib/workspace/crm/customer-api-error";
 import { logCrmFailure } from "@/lib/workspace/crm/log-crm-failure";
 import { updateCustomer } from "@/server/workspace/crm/command-handler/update-customer.command-handler";
+import { getCustomerById } from "@/server/workspace/crm/query-handler/get-customer-by-id.query-handler";
 
 export const runtime = "nodejs";
 
 type RouteContext = { params: Promise<{ id: string }> };
+
+export async function GET(request: NextRequest, { params }: RouteContext) {
+  const { id } = await params;
+
+  return withPermission(Permission.CustomersRead, async () => {
+    try {
+      const customer = await getCustomerById(id);
+      if (!customer) {
+        return customerApiError(CustomerErrorCode.CustomerNotFound);
+      }
+
+      return Response.json({ customer }, { status: HttpResponseCode.Ok });
+    } catch (error: unknown) {
+      logCrmFailure(CrmOperation.GetCustomer, error);
+      return customerApiError(CustomerErrorCode.Internal);
+    }
+  })(request);
+}
 
 export async function PATCH(request: NextRequest, { params }: RouteContext) {
   const { id } = await params;

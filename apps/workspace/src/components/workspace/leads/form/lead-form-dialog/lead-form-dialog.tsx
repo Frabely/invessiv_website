@@ -24,8 +24,8 @@ import {
 import { LeadListQueryParam } from "@/common/constants/leads/list/lead-list-query-params";
 import { LeadValidationMessageCode } from "@invessiv/common/constants/leads/forms/lead-form-validation";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
-import { CONTACT_EMAIL_PATTERN } from "@invessiv/common/patterns/contact/contact-email";
 import { isValidContactPhone } from "@invessiv/common/patterns/contact/contact-phone";
+import { formValidationService } from "@invessiv/common/patterns/validation/form-validation-service";
 import {
   ButtonControl,
   Dialog,
@@ -306,7 +306,7 @@ export function LeadFormDialog({
       return;
     }
 
-    if (!CONTACT_EMAIL_PATTERN.test(emailValue)) {
+    if (!formValidationService.isValidEmail(emailValue)) {
       setError(LeadFormDialogField.Email, {
         message: content.validation.emailInvalid,
         type: "manual",
@@ -373,22 +373,15 @@ export function LeadFormDialog({
       return;
     }
 
-    try {
-      const parsedUrl = new URL(websiteValue);
-      if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
-        setError(LeadFormDialogField.WebsiteUrl, {
-          message: content.validation.urlInvalid,
-          type: "manual",
-        });
-        return;
-      }
-      clearErrors(LeadFormDialogField.WebsiteUrl);
-    } catch {
+    if (!formValidationService.isValidHttpUrl(websiteValue)) {
       setError(LeadFormDialogField.WebsiteUrl, {
         message: content.validation.urlInvalid,
         type: "manual",
       });
+      return;
     }
+
+    clearErrors(LeadFormDialogField.WebsiteUrl);
   }, [clearErrors, content.validation.urlInvalid, getValues, setError]);
 
   const validateScoreField = useCallback(() => {

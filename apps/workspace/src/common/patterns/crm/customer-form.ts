@@ -4,8 +4,8 @@ import type { CustomerDetailDto } from "@invessiv/common/contracts/crm/customer-
 import type { CustomerWriteFieldsDto } from "@invessiv/common/contracts/crm/customer-write-fields.dto";
 import type { UpdateCustomerRequestDto } from "@invessiv/common/contracts/crm/update-customer-request.dto";
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
-import { CONTACT_EMAIL_PATTERN } from "@invessiv/common/patterns/contact/contact-email";
 import { isValidContactPhone } from "@invessiv/common/patterns/contact/contact-phone";
+import { formValidationService } from "@invessiv/common/patterns/validation/form-validation-service";
 import { CustomerFormDialogMode } from "@/common/constants/crm/forms/customer-form-dialog-modes";
 import { CustomerFormValidationCode } from "@/common/constants/crm/forms/customer-form-validation-codes";
 import type {
@@ -20,15 +20,6 @@ import {
 function orNull(value: string): string | null {
   const trimmed = value.trim();
   return trimmed ? trimmed : null;
-}
-
-function isHttpUrl(value: string): boolean {
-  try {
-    const url = new URL(value);
-    return url.protocol === "http:" || url.protocol === "https:";
-  } catch {
-    return false;
-  }
 }
 
 export function createCustomerFormValues(
@@ -70,7 +61,10 @@ export function validateCustomerForm(
   if (!values.displayName.trim()) {
     errors.displayName = CustomerFormValidationCode.DisplayNameRequired;
   }
-  if (values.websiteUrl.trim() && !isHttpUrl(values.websiteUrl.trim())) {
+  if (
+    values.websiteUrl.trim() &&
+    !formValidationService.isValidHttpUrl(values.websiteUrl)
+  ) {
     errors.websiteUrl = CustomerFormValidationCode.UrlInvalid;
   }
   if (!parseEuroAmountToCents(values.hourlyRate).ok) {
@@ -83,7 +77,7 @@ export function validateCustomerForm(
     if (!values.contactLastName.trim() && !email) {
       errors.contactLastName = CustomerFormValidationCode.ContactRequired;
     }
-    if (email && !CONTACT_EMAIL_PATTERN.test(email)) {
+    if (email && !formValidationService.isValidEmail(email)) {
       errors.contactEmail = CustomerFormValidationCode.EmailInvalid;
     }
     if (phone && !isValidContactPhone(phone)) {

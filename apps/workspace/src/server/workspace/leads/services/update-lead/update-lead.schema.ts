@@ -4,6 +4,7 @@ import { LeadFieldLimits } from "@invessiv/common/constants/leads/forms/lead-fie
 import { LeadValidationMessageCode } from "@invessiv/common/constants/leads/forms/lead-form-validation";
 import { leadSchema } from "@/server/workspace/leads/shared/lead-schema";
 import { isValidContactPhone } from "@invessiv/common/patterns/contact/contact-phone";
+import { formValidationSchemas } from "@invessiv/common/patterns/validation/form-validation-schemas";
 
 const nullableTrimmedString = (max: number) =>
   z.string().trim().min(1).max(max).nullable().optional();
@@ -19,7 +20,7 @@ export const updateLeadSchema = z.object({
   first_name: nullableTrimmedString(LeadFieldLimits.NameMaxLength),
   last_name: nullableTrimmedString(LeadFieldLimits.NameMaxLength),
   company_name: nullableTrimmedString(LeadFieldLimits.NameMaxLength),
-  email: z.string().trim().pipe(z.email()).nullable().optional(),
+  email: formValidationSchemas.email.nullable().optional(),
   phone: z
     .string()
     .trim()
@@ -28,8 +29,8 @@ export const updateLeadSchema = z.object({
     })
     .nullable()
     .optional(),
-  website_url: z.string().trim().pipe(z.url()).nullable().optional(),
-  category_id: z.string().trim().pipe(z.uuid()).nullable().optional(),
+  website_url: formValidationSchemas.url.nullable().optional(),
+  category_id: formValidationSchemas.uuid.nullable().optional(),
   score: z
     .number()
     .int()

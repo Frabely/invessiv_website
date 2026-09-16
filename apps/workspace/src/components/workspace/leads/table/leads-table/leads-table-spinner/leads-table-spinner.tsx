@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { DataTableLoadingOverlay } from "@invessiv/ui";
 import { useLeadsTableTransition } from "@/hooks/workspace/use-leads-table-transition";
-import styles from "./leads-table-spinner.module.css";
 
 type LeadsTableSpinnerProps = {
   ariaLabel: string;
@@ -29,15 +29,5 @@ export function LeadsTableSpinner({
 
   if (!isVisible) return null;
 
-  return (
-    <div
-      aria-label={ariaLabel}
-      aria-live="polite"
-      className={styles.overlay}
-      role="status"
-    >
-      <span aria-hidden="true" className={styles.spinner} />
-      <span className={styles.srOnly}>{ariaLabel}</span>
-    </div>
-  );
+  return <DataTableLoadingOverlay ariaLabel={ariaLabel} />;
 }

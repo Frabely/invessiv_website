@@ -14,11 +14,6 @@ export const CustomerErrorCode = {
 export type CustomerErrorCode =
   (typeof CustomerErrorCode)[keyof typeof CustomerErrorCode];
 
-export const CUSTOMER_ERROR_CODE_VALUES = [
-  CustomerErrorCode.CustomerNotFound,
-  CustomerErrorCode.ContactNotFound,
-  CustomerErrorCode.DisplayNameTaken,
-  CustomerErrorCode.OwnerInactive,
-  CustomerErrorCode.ValidationError,
-  CustomerErrorCode.Internal,
-] as const;
+export const CUSTOMER_ERROR_CODE_VALUES = Object.values(
+  CustomerErrorCode,
+) as readonly CustomerErrorCode[];

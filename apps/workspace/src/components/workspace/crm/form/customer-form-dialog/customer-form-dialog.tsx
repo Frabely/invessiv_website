@@ -1,6 +1,13 @@
 "use client";
 
-import { type SubmitEvent, useEffect, useId, useRef, useState } from "react";
+import {
+  type Ref,
+  type SubmitEvent,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from "react";
 import { useRouter } from "next/navigation";
 import { faBuilding, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -81,6 +88,7 @@ export function CustomerFormDialog({
   const addressHeadingId = useId();
   const detailsHeadingId = useId();
   const formRef = useRef<HTMLFormElement>(null);
+  const displayNameInputRef = useRef<HTMLInputElement>(null);
   const typeInputRef = useRef<HTMLInputElement>(null);
   const mode = customer
     ? CustomerFormDialogMode.Edit
@@ -97,11 +105,7 @@ export function CustomerFormDialog({
 
   useEffect(() => {
     if (isNameTaken) {
-      formRef.current
-        ?.querySelector<HTMLInputElement>(
-          `input[name="${DISPLAY_NAME_INPUT_NAME}"]`,
-        )
-        ?.focus();
+      displayNameInputRef.current?.focus();
     }
   }, [isNameTaken]);
 
@@ -165,6 +169,7 @@ export function CustomerFormDialog({
       className?: string;
       hint?: string;
       inputMode?: "decimal" | "email" | "tel" | "url";
+      inputRef?: Ref<HTMLInputElement>;
       kind?:
         | typeof FormFieldKind.Text
         | typeof FormFieldKind.Email
@@ -188,6 +193,7 @@ export function CustomerFormDialog({
         className={options.className}
         errorMessage={errorMessage}
         hint={options.hint}
+        inputRef={options.inputRef}
         inputProps={{
           autoComplete: options.autoComplete ?? "off",
           inputMode: options.inputMode,
@@ -299,6 +305,7 @@ export function CustomerFormDialog({
             {renderTextField("displayName", {
               className: styles.fullWidth,
               hint: content.hints.displayName,
+              inputRef: displayNameInputRef,
               label: content.fields.displayName,
               maxLength: CustomerFieldLimits.DisplayNameMaxLength,
               name: DISPLAY_NAME_INPUT_NAME,

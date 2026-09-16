@@ -7,6 +7,7 @@ import type { UpdateCustomerResult } from "@invessiv/common/contracts/crm/result
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { customers } from "@invessiv/db/record-configuration";
 import { customerCategoryService } from "@/server/workspace/crm/services/customer-category-service";
+import { customerCategoryValidationService } from "@/server/workspace/crm/services/customer-category-validation-service";
 import { customerConstraintViolationService } from "@/server/workspace/crm/services/customer-constraint-violation-service";
 import { customerReadService } from "@/server/workspace/crm/services/customer-read-service";
 import { customerSchemas } from "@/server/workspace/crm/services/customer-schemas";
@@ -43,12 +44,9 @@ export async function updateCustomer(
           ok: false,
           code: CustomerErrorCode.ValidationError,
           errors: [
-            {
-              code: "custom",
-              input: data.categoryId,
-              message: "Unknown or inactive category",
-              path: ["categoryId"],
-            },
+            customerCategoryValidationService.createUnknownOrInactiveCategoryIssue(
+              data.categoryId,
+            ),
           ],
         };
       }

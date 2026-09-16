@@ -7,6 +7,7 @@ import {
 import { CustomerFieldLimits } from "@invessiv/common/constants/crm/forms/customer-field-limits";
 import { SUPPORTED_LOCALES } from "@invessiv/common/contracts/i18n/locale";
 import { isValidContactPhone } from "@invessiv/common/patterns/contact/contact-phone";
+import { formValidationSchemas } from "@invessiv/common/patterns/validation/form-validation-schemas";
 
 function optionalText(maxLength: number) {
   return z
@@ -18,7 +19,7 @@ function optionalText(maxLength: number) {
 }
 
 const optionalEmail = optionalText(CustomerFieldLimits.EmailMaxLength).pipe(
-  z.email().nullable(),
+  formValidationSchemas.email.nullable(),
 );
 
 const optionalPhone = optionalText(CustomerFieldLimits.PhoneMaxLength).refine(
@@ -28,7 +29,7 @@ const optionalPhone = optionalText(CustomerFieldLimits.PhoneMaxLength).refine(
 
 const optionalWebsiteUrl = optionalText(
   CustomerFieldLimits.WebsiteUrlMaxLength,
-).pipe(z.url({ protocol: /^https?$/ }).nullable());
+).pipe(formValidationSchemas.httpUrl.nullable());
 
 const primaryContactSchema = z
   .object({

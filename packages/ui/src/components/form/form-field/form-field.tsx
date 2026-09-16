@@ -3,6 +3,7 @@
 import type {
   InputHTMLAttributes,
   ReactNode,
+  Ref,
   SelectHTMLAttributes,
   TextareaHTMLAttributes,
 } from "react";
@@ -44,7 +45,10 @@ type TextInputKind = Exclude<
 >;
 
 type TextFieldProps = BaseFormFieldProps & {
-  inputProps?: InputHTMLAttributes<HTMLInputElement>;
+  inputRef?: Ref<HTMLInputElement>;
+  inputProps?: InputHTMLAttributes<HTMLInputElement> & {
+    ref?: Ref<HTMLInputElement>;
+  };
   kind: TextInputKind;
 };
 
@@ -189,6 +193,10 @@ function renderInput(
           (props.errorMessage ? "true" : undefined)
         }
         className={className || undefined}
+        ref={(element) => {
+          assignInputRef(props.inputProps?.ref, element);
+          assignInputRef(props.inputRef, element);
+        }}
         type={props.kind}
       />
       {inputSuffix ? (
@@ -196,6 +204,20 @@ function renderInput(
       ) : null}
     </span>
   );
+}
+
+function assignInputRef(
+  ref: Ref<HTMLInputElement> | undefined,
+  element: HTMLInputElement | null,
+) {
+  if (typeof ref === "function") {
+    ref(element);
+    return;
+  }
+
+  if (ref) {
+    ref.current = element;
+  }
 }
 
 function renderTextarea(
