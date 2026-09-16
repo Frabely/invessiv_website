@@ -45,6 +45,9 @@ describe("CustomersBasicList", () => {
     expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
     expect(screen.getByText("Anna Berger")).toBeInTheDocument();
     expect(
+      screen.getByRole("button", { name: content.columns.actions }),
+    ).toHaveAttribute("aria-controls", `customer-${TEST_CUSTOMER_ID}-actions`);
+    expect(
       screen.getByRole("link", { name: "Nordlicht Coaching bearbeiten" }),
     ).toHaveAttribute("href", `/de/crm?mode=edit&edit=${TEST_CUSTOMER_ID}`);
   });

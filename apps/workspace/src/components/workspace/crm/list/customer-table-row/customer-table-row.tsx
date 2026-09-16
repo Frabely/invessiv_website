@@ -79,6 +79,7 @@ export function CustomerTableRow({
       </DataTableCell>
       {canWrite ? (
         <TableRowActions
+          actionGroupId={`customer-${customer.id}-actions`}
           className={styles.actionsCell}
           isPinned
           menuIcon={

@@ -10,6 +10,7 @@ import {
 import styles from "./table-row-actions.module.css";
 
 export type TableRowActionsProps = {
+  actionGroupId?: string;
   children: ReactNode;
   className?: string;
   isPinned?: boolean;
@@ -23,6 +24,7 @@ function stopRowPropagation(event: MouseEvent<HTMLElement>) {
 
 /** A responsive action group for a table row: inline on desktop, collapsed on mobile. */
 export function TableRowActions({
+  actionGroupId,
   children,
   className,
   isPinned,
@@ -30,7 +32,8 @@ export function TableRowActions({
   menuLabel,
 }: TableRowActionsProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const actionGroupId = useId();
+  const generatedActionGroupId = useId();
+  const resolvedActionGroupId = actionGroupId ?? generatedActionGroupId;
 
   function handleCellBlur(event: FocusEvent<HTMLTableCellElement>) {
     if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
@@ -48,7 +51,7 @@ export function TableRowActions({
     >
       <button
         aria-expanded={isMenuOpen}
-        aria-controls={actionGroupId}
+        aria-controls={resolvedActionGroupId}
         aria-label={menuLabel}
         className={styles.menuTrigger}
         onClick={() => setIsMenuOpen((current) => !current)}
@@ -60,7 +63,7 @@ export function TableRowActions({
       <div
         className={styles.group}
         data-open={isMenuOpen ? "true" : "false"}
-        id={actionGroupId}
+        id={resolvedActionGroupId}
       >
         {children}
       </div>
