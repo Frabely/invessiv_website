@@ -11,7 +11,7 @@ describe("CustomerFormValidationCode", () => {
   it("contains the exact codes without duplicates", () => {
     expect(CUSTOMER_FORM_VALIDATION_CODE_VALUES).toEqual([
       "displayNameRequired",
-      "contactRequired",
+      "contactLastNameRequired",
       "emailInvalid",
       "phoneInvalid",
       "urlInvalid",

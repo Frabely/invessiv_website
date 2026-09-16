@@ -51,7 +51,11 @@ describe("customerWriteMappingService", () => {
   it("keeps nullable fields null", () => {
     const input = customerSchemas.create.parse({
       displayName: "Dario Lentz",
-      primaryContact: { email: "dario@example.test", preferredLocale: "en" },
+      primaryContact: {
+        lastName: "Lentz",
+        email: "dario@example.test",
+        preferredLocale: "en",
+      },
     });
 
     expect(
@@ -69,9 +73,9 @@ describe("customerWriteMappingService", () => {
         input.primaryContact,
       ),
     ).toMatchObject({
-      display_name: "dario@example.test",
+      display_name: "Lentz",
       first_name: null,
-      last_name: null,
+      last_name: "Lentz",
       primary_phone: null,
     });
   });
