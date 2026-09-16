@@ -11,14 +11,11 @@ export interface CustomerDetailDto extends CustomerSummaryDto, VersionedDto {
   street: string | null;
   /** Part of the billing address. Not validated against a country format. */
   postalCode: string | null;
-  /** ISO country code. `city` is duplicated into the summary, this is not. */
+  /** Free text as entered, not a code. `city` is duplicated into the summary, this is not. */
   country: string | null;
-  /**
-   * The customer's own site. Stored as entered, not normalized — the duplicate warning
-   * in Task 04 normalizes the domain for comparison instead.
-   */
+  /** The customer's own site. Stored as entered, not normalized, and not unique. */
   websiteUrl: string | null;
-  /** Not unique: the UI only warns about possible duplicates, it never blocks. */
+  /** Not unique: only the normalized display name guards against duplicates. */
   vatId: string | null;
   /** Internal free text. Never reaches the portal. */
   notes: string | null;

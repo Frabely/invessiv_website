@@ -57,7 +57,7 @@ export function SortableHeader({
   );
 
   return (
-    <th className={styles.sortableHeader} scope="col">
+    <>
       {isLoading ? (
         <span
           aria-label={`${label}: ${nextSortLabel}`}
@@ -77,6 +77,6 @@ export function SortableHeader({
           {directionIndicator}
         </button>
       )}
-    </th>
+    </>
   );
 }

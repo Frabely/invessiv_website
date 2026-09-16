@@ -17,6 +17,13 @@ describe("CUSTOMER_ERROR_CODE_VALUES", () => {
     );
   });
 
+  it("guards duplicates by display name and the owner by its membership", () => {
+    expect(CustomerErrorCode.DisplayNameTaken).toBe(
+      "CUSTOMER_DISPLAY_NAME_TAKEN",
+    );
+    expect(CustomerErrorCode.OwnerInactive).toBe("CUSTOMER_OWNER_INACTIVE");
+  });
+
   it("deliberately has no error code for duplicate company names", () => {
     expect(Object.keys(CustomerErrorCode)).not.toContain("CompanyNameExists");
     expect(CUSTOMER_ERROR_CODE_VALUES).not.toContain(

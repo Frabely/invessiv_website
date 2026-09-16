@@ -30,6 +30,8 @@ type ButtonLinkProps = ButtonBaseProps &
   Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "children" | "className"> & {
     href: string;
     linkComponent?: ComponentType<ButtonLinkComponentProps>;
+    /** Additional props for an injected framework-specific link component. */
+    linkComponentProps?: Record<string, unknown>;
   };
 
 type ButtonControlProps = ButtonBaseProps &
@@ -46,6 +48,7 @@ export const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
       className,
       href,
       linkComponent: LinkComponent,
+      linkComponentProps,
       variant = "primary",
       ...props
     },
@@ -54,15 +57,20 @@ export const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
     const buttonClassName = getButtonClassName(variant, className);
 
     if (LinkComponent) {
+      const LinkComponentWithExtraProps = LinkComponent as ComponentType<
+        ButtonLinkComponentProps & Record<string, unknown>
+      >;
+
       return (
-        <LinkComponent
+        <LinkComponentWithExtraProps
           {...props}
+          {...linkComponentProps}
           className={buttonClassName}
           href={href}
           ref={ref}
         >
           {children}
-        </LinkComponent>
+        </LinkComponentWithExtraProps>
       );
     }
 

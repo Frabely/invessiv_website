@@ -236,7 +236,9 @@ apps/workspace/src/
 
 ## Bekannte Grenze: Zuständigkeitszählung ohne Sperre
 
-Bewusst verschoben aus dem Review vom 14.09.2026.
+Bewusst verschoben aus dem Review vom 14.09.2026. **Geschlossen in Ordner 04 (Task 04):**
+`src/server/workspace/access/services/responsibilities/member-responsibility-lock-service.ts` kapselt beide Sperren;
+Kundenanlage und Deaktivierung nutzen sie.
 
 - **Stelle:** Schritt 6 in
   `src/server/workspace/access/command-handler/update-workspace-member-status.command-handler.ts` und

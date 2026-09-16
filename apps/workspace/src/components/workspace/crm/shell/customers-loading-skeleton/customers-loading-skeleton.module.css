@@ -1,0 +1,59 @@
+.shell {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2vw, 1.5rem);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.frame {
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface-1);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+}
+
+.row + .row {
+  border-top: 1px solid var(--color-border);
+}
+
+.title {
+  width: 9rem;
+  height: 1.6rem;
+}
+
+.line {
+  width: min(22rem, 80%);
+  height: 0.9rem;
+}
+
+.number {
+  width: 3.6rem;
+  height: 1.4rem;
+}
+
+.name {
+  flex: 1;
+  max-width: 16rem;
+  height: 1rem;
+}
+
+.badge {
+  width: 4.5rem;
+  height: 1.3rem;
+  margin-left: auto;
+  border-radius: 999px;
+}

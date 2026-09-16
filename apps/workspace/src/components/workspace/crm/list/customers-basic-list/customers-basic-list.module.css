@@ -1,0 +1,57 @@
+.table {
+  min-width: 48rem;
+  table-layout: fixed;
+}
+
+.numberCell {
+  width: 1%;
+  white-space: nowrap;
+}
+
+/* The customer number is what people say on the phone, so it reads like a file tab. */
+.number {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 6px;
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+.customerCell,
+.contactCell {
+  min-width: 0;
+}
+
+.name,
+.contactName {
+  display: block;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.customerCell {
+  font-weight: inherit;
+}
+
+.meta {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 400;
+  overflow-wrap: anywhere;
+}
+
+.statusCell {
+  white-space: nowrap;
+}
+
+.icon {
+  width: 13px;
+  height: 13px;
+}

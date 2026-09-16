@@ -12,6 +12,7 @@ describe("WorkspaceSidebarItemKey", () => {
     expect(WORKSPACE_SIDEBAR_ITEM_KEY_VALUES).toEqual([
       "overview",
       "leads",
+      "crm",
       "settings",
     ]);
     expect([...WORKSPACE_SIDEBAR_ITEM_KEY_VALUES]).toEqual(

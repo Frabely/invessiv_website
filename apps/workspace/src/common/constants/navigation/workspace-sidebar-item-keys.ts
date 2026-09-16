@@ -2,6 +2,7 @@
 export const WorkspaceSidebarItemKey = {
   Overview: "overview",
   Leads: "leads",
+  Crm: "crm",
   Settings: "settings",
 } as const;
 
@@ -11,5 +12,6 @@ export type WorkspaceSidebarItemKey =
 export const WORKSPACE_SIDEBAR_ITEM_KEY_VALUES = [
   WorkspaceSidebarItemKey.Overview,
   WorkspaceSidebarItemKey.Leads,
+  WorkspaceSidebarItemKey.Crm,
   WorkspaceSidebarItemKey.Settings,
 ] as const;

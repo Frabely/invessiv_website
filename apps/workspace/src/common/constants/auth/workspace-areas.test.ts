@@ -10,7 +10,12 @@ import {
 
 describe("WorkspaceArea", () => {
   it("contains the exact areas without duplicates", () => {
-    expect(WORKSPACE_AREA_VALUES).toEqual(["dashboard", "leads", "settings"]);
+    expect(WORKSPACE_AREA_VALUES).toEqual([
+      "dashboard",
+      "leads",
+      "crm",
+      "settings",
+    ]);
     expect(WORKSPACE_AREA_VALUES).toEqual(Object.values(WorkspaceArea));
     expect(new Set(WORKSPACE_AREA_VALUES).size).toBe(
       WORKSPACE_AREA_VALUES.length,

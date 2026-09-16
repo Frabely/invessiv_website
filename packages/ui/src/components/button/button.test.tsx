@@ -72,6 +72,7 @@ describe("shared button", () => {
         aria-label="Projekt öffnen"
         href="/de/projects/1"
         linkComponent={TestLink}
+        linkComponentProps={{ "data-scroll-disabled": "true" }}
         ref={ref}
       >
         Projekt
@@ -80,6 +81,7 @@ describe("shared button", () => {
 
     const link = screen.getByRole("link", { name: "Projekt öffnen" });
     expect(link.getAttribute("data-link-component")).toBe("test");
+    expect(link.getAttribute("data-scroll-disabled")).toBe("true");
     expect(link.getAttribute("href")).toBe("/de/projects/1");
     expect(ref.current).toBe(link);
   });

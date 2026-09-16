@@ -1,0 +1,26 @@
+{
+  "caption": "Kunden, zuletzt angelegte zuerst",
+  "columns": {
+    "number": "Nr.",
+    "customer": "Kunde",
+    "status": "Status",
+    "primaryContact": "Hauptansprechpartner",
+    "actions": "Aktionen"
+  },
+  "status": {
+    "active": "Aktiv",
+    "paused": "Pausiert",
+    "archived": "Archiviert"
+  },
+  "customerType": {
+    "company": "Firma",
+    "individual": "Privatperson"
+  },
+  "editAction": "Bearbeiten",
+  "editActionAriaLabel": "{name} bearbeiten",
+  "empty": {
+    "title": "Noch keine Kunden",
+    "description": "Hier stehen alle Firmen und Privatpersonen, für die du arbeitest – mit Kundennummer, Status und Hauptansprechpartner. Leg einen Kunden an, sobald aus einem Kontakt ein Auftrag wird.",
+    "action": "Ersten Kunden anlegen"
+  }
+}

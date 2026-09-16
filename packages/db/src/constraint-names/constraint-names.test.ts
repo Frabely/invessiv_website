@@ -25,6 +25,10 @@ import {
   WorkspaceMemberRolesConstraintName,
 } from "./auth/workspace-member-roles-constraint-names";
 import {
+  CUSTOMERS_CONSTRAINT_NAME_VALUES,
+  CustomersConstraintName,
+} from "./crm/customers-constraint-names";
+import {
   LEAD_SOCIAL_PROFILES_CONSTRAINT_NAME_VALUES,
   LeadSocialProfilesConstraintName,
 } from "./lead-social-profiles-constraint-names";
@@ -66,6 +70,12 @@ const GROUPS: [string, string, Record<string, string>, readonly string[]][] = [
     "lead_social_profiles_",
     LeadSocialProfilesConstraintName,
     LEAD_SOCIAL_PROFILES_CONSTRAINT_NAME_VALUES,
+  ],
+  [
+    "customers",
+    "customers_",
+    CustomersConstraintName,
+    CUSTOMERS_CONSTRAINT_NAME_VALUES,
   ],
 ];
 

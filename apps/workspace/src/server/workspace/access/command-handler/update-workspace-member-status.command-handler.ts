@@ -9,6 +9,7 @@ import type { UpdateWorkspaceMemberStatusResult } from "@invessiv/common/contrac
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessSchemas } from "@/server/workspace/access/services/access-schemas";
+import { memberResponsibilityLockService } from "@/server/workspace/access/services/responsibilities/member-responsibility-lock-service";
 import { responsibilityCounterService } from "@/server/workspace/access/services/responsibilities/responsibility-counter-registry";
 import { workspaceMemberReadService } from "@/server/workspace/access/services/workspace-member-read-service";
 import { workspaceMemberVersionService } from "@/server/workspace/access/services/workspace-member-version-service";
@@ -68,6 +69,11 @@ export async function updateWorkspaceMemberStatus(
       }
 
       if (!desiredActive) {
+        // A parallel assignment holds FOR SHARE on this row; waiting here makes the count see it.
+        await memberResponsibilityLockService.lockMemberForDeactivation(
+          tx,
+          memberId,
+        );
         const responsibilityCounts =
           await responsibilityCounterService.countOpenByMemberId(tx, memberId);
         if (Object.values(responsibilityCounts).some((count) => count > 0)) {

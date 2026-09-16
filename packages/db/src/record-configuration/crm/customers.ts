@@ -12,13 +12,15 @@ import {
 
 import { CUSTOMER_STATUS_VALUES } from "@invessiv/common/constants/crm/customer-statuses";
 import { CUSTOMER_TYPE_VALUES } from "@invessiv/common/constants/crm/customer-types";
+import { CustomersConstraintName } from "@invessiv/db/constraint-names/crm/customers-constraint-names";
 import { sqlCheckIn } from "@invessiv/db/core";
 import { leadCategories } from "@invessiv/db/record-configuration/lead-categories";
 import { workspaceMembers } from "@invessiv/db/record-configuration/crm/workspace-members";
 
 /**
- * Deliberately no unique index on `company_name`: two genuine "Mueller GmbH" in
- * different cities are a valid state. Task 04 warns about duplicates but never blocks.
+ * The normalized display name is unique across all statuses — the only guard against
+ * creating the same customer twice. Deliberately no unique index on `company_name`:
+ * two genuine "Mueller GmbH" in different cities are a valid state.
  */
 export const customers = pgTable(
   "customers",
@@ -57,7 +59,7 @@ export const customers = pgTable(
   },
   (table) => [
     check(
-      "customers_display_name_check",
+      CustomersConstraintName.DisplayNameCheck,
       sql`btrim
             (
             ${table.display_name}
@@ -66,15 +68,15 @@ export const customers = pgTable(
             ''`,
     ),
     check(
-      "customers_customer_type_check",
+      CustomersConstraintName.CustomerTypeCheck,
       sqlCheckIn(table.customer_type, CUSTOMER_TYPE_VALUES),
     ),
     check(
-      "customers_status_check",
+      CustomersConstraintName.StatusCheck,
       sqlCheckIn(table.status, CUSTOMER_STATUS_VALUES),
     ),
     check(
-      "customers_default_hourly_rate_cents_check",
+      CustomersConstraintName.DefaultHourlyRateCentsCheck,
       sql`${table.default_hourly_rate_cents}
             is null or
             ${table.default_hourly_rate_cents}
@@ -82,7 +84,7 @@ export const customers = pgTable(
             0`,
     ),
     check(
-      "customers_retention_review_after_days_check",
+      CustomersConstraintName.RetentionReviewAfterDaysCheck,
       sql`${table.retention_review_after_days}
             is null or
             ${table.retention_review_after_days}
@@ -90,20 +92,28 @@ export const customers = pgTable(
             0`,
     ),
     check(
-      "customers_version_check",
+      CustomersConstraintName.VersionCheck,
       sql`${table.version}
         > 0`,
     ),
-    uniqueIndex("customers_customer_number_uidx").on(table.customer_number),
-    uniqueIndex("customers_id_customer_number_uidx").on(
+    uniqueIndex(CustomersConstraintName.CustomerNumberUnique).on(
+      table.customer_number,
+    ),
+    uniqueIndex(CustomersConstraintName.IdCustomerNumberUnique).on(
       table.id,
       table.customer_number,
     ),
-    index("customers_status_created_at_idx").on(
+    uniqueIndex(CustomersConstraintName.DisplayNameLowerUnique).on(
+      sql`lower(btrim(
+          ${table.display_name}
+          )
+          )`,
+    ),
+    index(CustomersConstraintName.StatusCreatedAtIndex).on(
       table.status,
       table.created_at.desc(),
     ),
-    index("customers_category_id_idx").on(table.category_id),
-    index("customers_owner_member_id_idx").on(table.owner_member_id),
+    index(CustomersConstraintName.CategoryIdIndex).on(table.category_id),
+    index(CustomersConstraintName.OwnerMemberIdIndex).on(table.owner_member_id),
   ],
 );

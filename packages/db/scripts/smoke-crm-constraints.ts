@@ -146,6 +146,16 @@ async function runChecks(sql: Sql) {
     }),
   );
 
+  // The normalized display name is the duplicate guard (decision of 13.09.2026)
+  await expectRejected(
+    "a display name differing only in case and surrounding whitespace is rejected",
+    () =>
+      insertCustomer(sql, {
+        ownerMemberId: memberId,
+        displayName: `  ${name("Customer A").toUpperCase()} `,
+      }),
+  );
+
   // Duplicate company names are a product decision, not an error
   await expectAccepted(
     "two customers with an identical company name are allowed",

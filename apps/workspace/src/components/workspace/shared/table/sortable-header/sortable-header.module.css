@@ -1,8 +1,4 @@
 /* Shared table sort-header styles. */
-.sortableHeader {
-  padding: 0;
-}
-
 .sortLink {
   display: inline-flex;
   align-items: center;

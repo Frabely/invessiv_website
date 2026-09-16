@@ -1,0 +1,210 @@
+// @vitest-environment jsdom
+
+import "@testing-library/jest-dom/vitest";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { CustomerErrorCode } from "@invessiv/common/constants/crm/errors/customer-error-codes";
+import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
+import { getCrmFormDictionary } from "@/i18n/dictionaries/workspace/crm";
+import { customerDetailFixture } from "@/server/tests/workspace/crm/support/crm-fixtures";
+import { CustomerFormDialog } from "./customer-form-dialog";
+
+const mocks = vi.hoisted(() => ({
+  refresh: vi.fn(),
+  replace: vi.fn(),
+  createCustomer: vi.fn(),
+  updateCustomer: vi.fn(),
+}));
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: mocks.refresh, replace: mocks.replace }),
+}));
+vi.mock("@/client/crm/customers-api-service", () => ({
+  customersApiService: {
+    createCustomer: mocks.createCustomer,
+    updateCustomer: mocks.updateCustomer,
+  },
+}));
+
+const content = getCrmFormDictionary("de");
+const CATEGORIES = [{ id: "category-1", label: "Coaches" }];
+
+function renderDialog(
+  customer = null as ReturnType<typeof customerDetailFixture> | null,
+) {
+  return render(
+    <CustomerFormDialog
+      categories={CATEGORIES}
+      closeHref="/de/crm"
+      content={content}
+      customer={customer}
+      locale="de"
+    />,
+  );
+}
+
+function input(label: RegExp) {
+  return screen.getByLabelText(label) as HTMLInputElement;
+}
+
+function submit(name: string) {
+  fireEvent.click(screen.getByRole("button", { name }));
+}
+
+describe("CustomerFormDialog", () => {
+  beforeEach(() => {
+    Object.values(mocks).forEach((mock) => mock.mockReset());
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
+
+  it("shows field errors for an empty form without calling the API", async () => {
+    renderDialog();
+
+    submit(content.buttons.submitCreate);
+
+    expect(
+      await screen.findByText(content.validation.displayNameRequired),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(content.validation.contactRequired),
+    ).toBeInTheDocument();
+    expect(input(/^Anzeigename/)).toHaveAttribute("aria-invalid", "true");
+    expect(input(/^Anzeigename/).getAttribute("aria-describedby")).toContain(
+      "customer-display-name-error",
+    );
+    expect(mocks.createCustomer).not.toHaveBeenCalled();
+  });
+
+  it("reports an invalid website and hourly rate", async () => {
+    renderDialog();
+    fireEvent.change(input(/^Anzeigename/), { target: { value: "Kluge Bau" } });
+    fireEvent.change(input(/^Nachname/), { target: { value: "Kluge" } });
+    fireEvent.change(input(/^Website/), { target: { value: "kluge.example" } });
+    fireEvent.change(input(/^Stundensatz/), { target: { value: "12,345" } });
+
+    submit(content.buttons.submitCreate);
+
+    expect(
+      await screen.findByText(content.validation.urlInvalid),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(content.validation.hourlyRateInvalid),
+    ).toBeInTheDocument();
+  });
+
+  it("hides the company name for individuals", () => {
+    renderDialog();
+    expect(input(/^Firmenname/)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("radio", { name: /Privatperson/ }));
+
+    expect(screen.queryByLabelText(/^Firmenname/)).not.toBeInTheDocument();
+  });
+
+  it("creates the customer, refreshes and closes the dialog", async () => {
+    mocks.createCustomer.mockResolvedValue({
+      ok: true,
+      customer: customerDetailFixture(),
+    });
+    renderDialog();
+    fireEvent.change(input(/^Anzeigename/), {
+      target: { value: " Kluge Bau " },
+    });
+    fireEvent.change(input(/^Nachname/), { target: { value: "Kluge" } });
+    fireEvent.change(input(/^Stundensatz/), { target: { value: "80,50" } });
+
+    submit(content.buttons.submitCreate);
+
+    await waitFor(() => expect(mocks.replace).toHaveBeenCalled());
+    expect(mocks.createCustomer).toHaveBeenCalledTimes(1);
+    expect(mocks.createCustomer.mock.calls[0][0]).toMatchObject({
+      displayName: "Kluge Bau",
+      defaultHourlyRateCents: 8050,
+      primaryContact: { lastName: "Kluge", preferredLocale: "de" },
+    });
+    expect(mocks.refresh).toHaveBeenCalled();
+    expect(mocks.replace).toHaveBeenCalledWith("/de/crm", { scroll: false });
+  });
+
+  it("explains a taken display name at the field", async () => {
+    mocks.createCustomer.mockResolvedValue({
+      ok: false,
+      code: CustomerErrorCode.DisplayNameTaken,
+    });
+    renderDialog();
+    fireEvent.change(input(/^Anzeigename/), { target: { value: "Kluge Bau" } });
+    fireEvent.change(input(/^Nachname/), { target: { value: "Kluge" } });
+
+    submit(content.buttons.submitCreate);
+
+    expect(
+      await screen.findByText(content.validation.displayNameTaken),
+    ).toBeInTheDocument();
+    expect(input(/^Anzeigename/)).toHaveAttribute("aria-invalid", "true");
+    expect(mocks.replace).not.toHaveBeenCalled();
+  });
+
+  it("shows a server failure as status line", async () => {
+    mocks.createCustomer.mockResolvedValue({
+      ok: false,
+      code: CustomerErrorCode.Internal,
+    });
+    renderDialog();
+    fireEvent.change(input(/^Anzeigename/), { target: { value: "Kluge Bau" } });
+    fireEvent.change(input(/^Nachname/), { target: { value: "Kluge" } });
+
+    submit(content.buttons.submitCreate);
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      content.errors.INTERNAL,
+    );
+  });
+
+  it("prefills the edit form without contact fields and keeps input on a conflict", async () => {
+    const customer = customerDetailFixture({ version: 2 });
+    mocks.updateCustomer
+      .mockResolvedValueOnce({
+        ok: false,
+        code: ConcurrencyErrorCode.VersionConflict,
+        current: customerDetailFixture({
+          displayName: "Nordlicht GmbH",
+          version: 3,
+        }),
+      })
+      .mockResolvedValueOnce({ ok: true, customer });
+    renderDialog(customer);
+
+    expect(input(/^Anzeigename/)).toHaveValue("Nordlicht Coaching");
+    expect(screen.queryByLabelText(/^Nachname/)).not.toBeInTheDocument();
+
+    fireEvent.change(input(/^Ort/), { target: { value: "Bonn" } });
+    submit(content.buttons.submitEdit);
+
+    expect(
+      await screen.findByText(content.conflict.message),
+    ).toBeInTheDocument();
+    expect(input(/^Ort/)).toHaveValue("Bonn");
+    expect(mocks.updateCustomer.mock.calls[0][1]).toMatchObject({
+      city: "Bonn",
+      version: 2,
+    });
+
+    submit(content.buttons.submitEdit);
+
+    await waitFor(() => expect(mocks.updateCustomer).toHaveBeenCalledTimes(2));
+    expect(mocks.updateCustomer.mock.calls[1][1]).toMatchObject({
+      city: "Bonn",
+      version: 3,
+    });
+  });
+});

@@ -18,6 +18,11 @@ describe("WORKSPACE_SIDEBAR_ITEMS", () => {
         labelKey: WorkspaceSidebarItemKey.Leads,
       },
       {
+        area: WorkspaceArea.Crm,
+        id: WorkspaceSidebarItemKey.Crm,
+        labelKey: WorkspaceSidebarItemKey.Crm,
+      },
+      {
         area: WorkspaceArea.Settings,
         id: WorkspaceSidebarItemKey.Settings,
         labelKey: WorkspaceSidebarItemKey.Settings,

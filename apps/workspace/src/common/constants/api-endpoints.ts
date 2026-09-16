@@ -1,4 +1,5 @@
 export const WorkspaceApiEndpoint = {
+  CrmCustomers: "/api/workspace/crm/customers",
   Leads: "/api/workspace/leads",
   LeadsBulk: "/api/workspace/leads/bulk",
   LeadsImport: "/api/workspace/leads/import",

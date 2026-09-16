@@ -5,6 +5,7 @@ import { LeadsEmptyStateVariant } from "@invessiv/common/constants/leads/list/le
 import { LeadSort } from "@invessiv/common/constants/leads/list/lead-sort";
 import type { LeadCategoryOption } from "@invessiv/common/contracts/leads/lead-category-option";
 import type { LeadSummaryDto } from "@invessiv/common/contracts/leads/lead-summary.dto";
+import { DataTableLayout } from "@invessiv/ui";
 import type {
   LeadsBulkDictionary,
   LeadsDeleteDictionary,
@@ -68,6 +69,112 @@ export function LeadsTable({
 }: LeadsTableProps) {
   const activeSort = getActiveSort(queryString);
   const rowIds = rows.map((row) => row.id);
+  const columns = [
+    {
+      header:
+        actions.canWrite || actions.canDelete ? (
+          <ListSelectAllCheckbox ariaLabel={tableContent.selection.selectAll} />
+        ) : null,
+      headerClassName: styles.selectHeader,
+      id: "selection",
+      width: 52,
+    },
+    {
+      header: (
+        <SortableHeader
+          activeSort={activeSort}
+          ascLabel={tableContent.sort.nameAsc}
+          basePath={basePath}
+          descLabel={tableContent.sort.nameDesc}
+          label={tableContent.columns.lead}
+          queryString={queryString}
+          sortAsc={LeadSort.NameAsc}
+          sortDesc={LeadSort.NameDesc}
+        />
+      ),
+      id: "lead",
+      width: 300,
+    },
+    {
+      header: tableContent.columns.category,
+      headerClassName: styles.header,
+      id: "category",
+      width: 220,
+    },
+    {
+      header: tableContent.columns.stage,
+      headerClassName: styles.header,
+      id: "stage",
+      width: 220,
+    },
+    {
+      header: (
+        <SortableHeader
+          activeSort={activeSort}
+          ascLabel={tableContent.sort.scoreAsc}
+          basePath={basePath}
+          descLabel={tableContent.sort.scoreDesc}
+          label={tableContent.columns.score}
+          queryString={queryString}
+          sortAsc={LeadSort.ScoreAsc}
+          sortDesc={LeadSort.ScoreDesc}
+        />
+      ),
+      id: "score",
+      width: 160,
+    },
+    {
+      header: tableContent.columns.social,
+      headerClassName: styles.header,
+      id: "social",
+      width: 180,
+    },
+    {
+      header: (
+        <SortableHeader
+          activeSort={activeSort}
+          ascLabel={tableContent.sort.createdAsc}
+          basePath={basePath}
+          descLabel={tableContent.sort.createdDesc}
+          label={tableContent.columns.created}
+          queryString={queryString}
+          sortAsc={LeadSort.CreatedAsc}
+          sortDesc={LeadSort.CreatedDesc}
+        />
+      ),
+      id: "created",
+      width: 150,
+    },
+    {
+      header: (
+        <SortableHeader
+          activeSort={activeSort}
+          ascLabel={tableContent.sort.updatedAsc}
+          basePath={basePath}
+          descLabel={tableContent.sort.updatedDesc}
+          label={tableContent.columns.updated}
+          queryString={queryString}
+          sortAsc={LeadSort.UpdatedAsc}
+          sortDesc={LeadSort.UpdatedDesc}
+        />
+      ),
+      id: "updated",
+      width: 150,
+    },
+    {
+      header: tableContent.columns.source,
+      headerClassName: styles.header,
+      id: "source",
+      width: 205,
+    },
+    {
+      header: tableContent.actions.label,
+      id: "actions",
+      isPinned: true,
+      isVisuallyHidden: true,
+      width: 128,
+    },
+  ];
 
   return (
     <section className={styles.shell} aria-label={tableContent.columns.lead}>
@@ -75,128 +182,48 @@ export function LeadsTable({
         rowIds={rowIds}
         selectionResetKey={selectionResetKey}
       >
-        <div className={styles.tableFrame}>
-          <LeadsTableSpinner ariaLabel={tableContent.loadingLabel} />
-          <div className={styles.tableScroll}>
-            <table className={styles.table}>
-              <colgroup>
-                <col className={styles.selectColumn} />
-                <col className={styles.leadColumn} />
-                <col className={styles.categoryColumn} />
-                <col className={styles.stageColumn} />
-                <col className={styles.scoreColumn} />
-                <col className={styles.socialColumn} />
-                <col className={styles.dateColumn} />
-                <col className={styles.dateColumn} />
-                <col className={styles.sourceColumn} />
-                <col className={styles.actionsColumn} />
-              </colgroup>
-              <thead>
-                <tr>
-                  <th className={styles.selectHeader} scope="col">
-                    {actions.canWrite || actions.canDelete ? (
-                      <ListSelectAllCheckbox
-                        ariaLabel={tableContent.selection.selectAll}
-                      />
-                    ) : null}
-                  </th>
-                  <SortableHeader
-                    activeSort={activeSort}
-                    ascLabel={tableContent.sort.nameAsc}
-                    basePath={basePath}
-                    descLabel={tableContent.sort.nameDesc}
-                    label={tableContent.columns.lead}
-                    queryString={queryString}
-                    sortAsc={LeadSort.NameAsc}
-                    sortDesc={LeadSort.NameDesc}
-                  />
-                  <th className={styles.header} scope="col">
-                    {tableContent.columns.category}
-                  </th>
-                  <th className={styles.header} scope="col">
-                    {tableContent.columns.stage}
-                  </th>
-
-                  <SortableHeader
-                    activeSort={activeSort}
-                    ascLabel={tableContent.sort.scoreAsc}
-                    basePath={basePath}
-                    descLabel={tableContent.sort.scoreDesc}
-                    label={tableContent.columns.score}
-                    queryString={queryString}
-                    sortAsc={LeadSort.ScoreAsc}
-                    sortDesc={LeadSort.ScoreDesc}
-                  />
-                  <th className={styles.header} scope="col">
-                    {tableContent.columns.social}
-                  </th>
-                  <SortableHeader
-                    activeSort={activeSort}
-                    ascLabel={tableContent.sort.createdAsc}
-                    basePath={basePath}
-                    descLabel={tableContent.sort.createdDesc}
-                    label={tableContent.columns.created}
-                    queryString={queryString}
-                    sortAsc={LeadSort.CreatedAsc}
-                    sortDesc={LeadSort.CreatedDesc}
-                  />
-                  <SortableHeader
-                    activeSort={activeSort}
-                    ascLabel={tableContent.sort.updatedAsc}
-                    basePath={basePath}
-                    descLabel={tableContent.sort.updatedDesc}
-                    label={tableContent.columns.updated}
-                    queryString={queryString}
-                    sortAsc={LeadSort.UpdatedAsc}
-                    sortDesc={LeadSort.UpdatedDesc}
-                  />
-                  <th className={styles.header} scope="col">
-                    {tableContent.columns.source}
-                  </th>
-                  <th className={styles.actionsHeader} scope="col">
-                    <span className={styles.visuallyHidden}>
-                      {tableContent.actions.label}
-                    </span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.length > 0 ? (
-                  rows.map((lead) => (
-                    <LeadsTableRow
-                      actions={actions}
-                      basePath={basePath}
-                      currentQueryString={queryString}
-                      currentSearchParams={currentSearchParams}
-                      deleteContent={deleteContent}
-                      key={lead.id}
-                      lead={lead}
-                      locale={locale}
-                      outreachContent={outreachContent}
-                      sharedContent={sharedContent}
-                      tableContent={tableContent}
-                    />
-                  ))
-                ) : emptyState ? (
-                  <tr className={styles.emptyStateRow}>
-                    <td
-                      className={styles.emptyStateCell}
-                      colSpan={LEADS_TABLE_COLUMN_COUNT}
-                    >
-                      <ListEmptyState
-                        actionHref={emptyState.actionHref}
-                        actionLabel={emptyState.actionLabel}
-                        description={emptyState.description}
-                        title={emptyState.title}
-                        variant={emptyState.variant}
-                      />
-                    </td>
-                  </tr>
-                ) : null}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <DataTableLayout
+          ariaLabel={tableContent.columns.lead}
+          caption={tableContent.columns.lead}
+          columns={columns}
+          frameClassName={styles.tableFrame}
+          overlay={<LeadsTableSpinner ariaLabel={tableContent.loadingLabel} />}
+          scrollClassName={styles.tableScroll}
+          tableClassName={styles.table}
+        >
+          {rows.length > 0 ? (
+            rows.map((lead) => (
+              <LeadsTableRow
+                actions={actions}
+                basePath={basePath}
+                currentQueryString={queryString}
+                currentSearchParams={currentSearchParams}
+                deleteContent={deleteContent}
+                key={lead.id}
+                lead={lead}
+                locale={locale}
+                outreachContent={outreachContent}
+                sharedContent={sharedContent}
+                tableContent={tableContent}
+              />
+            ))
+          ) : emptyState ? (
+            <tr className={styles.emptyStateRow}>
+              <td
+                className={styles.emptyStateCell}
+                colSpan={LEADS_TABLE_COLUMN_COUNT}
+              >
+                <ListEmptyState
+                  actionHref={emptyState.actionHref}
+                  actionLabel={emptyState.actionLabel}
+                  description={emptyState.description}
+                  title={emptyState.title}
+                  variant={emptyState.variant}
+                />
+              </td>
+            </tr>
+          ) : null}
+        </DataTableLayout>
         <LeadsBulkActionBar
           actions={actions}
           bulkContent={bulkContent}

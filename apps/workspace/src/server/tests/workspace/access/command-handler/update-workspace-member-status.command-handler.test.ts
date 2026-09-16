@@ -12,6 +12,7 @@ vi.mock("server-only", () => ({}));
 const mocks = vi.hoisted(() => ({
   getDatabase: vi.fn(),
   lockOwners: vi.fn(),
+  lockMember: vi.fn(),
   findById: vi.fn(),
   countResponsibilities: vi.fn(),
   updateStatus: vi.fn(),
@@ -27,6 +28,14 @@ vi.mock(
   () => ({
     workspaceOwnerInvariantService: {
       lockOwnerAssignmentsAndFindActiveOwners: mocks.lockOwners,
+    },
+  }),
+);
+vi.mock(
+  "@/server/workspace/access/services/responsibilities/member-responsibility-lock-service",
+  () => ({
+    memberResponsibilityLockService: {
+      lockMemberForDeactivation: mocks.lockMember,
     },
   }),
 );
@@ -164,6 +173,9 @@ describe("updateWorkspaceMemberStatus", () => {
         return MEMBER;
       })
       .mockResolvedValueOnce({ ...MEMBER, active: false, version: 4 });
+    mocks.lockMember.mockImplementation(async () => {
+      calls.push("lock-member");
+    });
     mocks.countResponsibilities.mockImplementation(async () => {
       calls.push("count");
       return { [OwnableEntity.Customer]: 0 };
@@ -186,7 +198,15 @@ describe("updateWorkspaceMemberStatus", () => {
       ok: true,
       member: { ...MEMBER, active: false, version: 4 },
     });
-    expect(calls).toEqual(["lock", "read", "count", "write", "event"]);
+    expect(calls).toEqual([
+      "lock",
+      "read",
+      "lock-member",
+      "count",
+      "write",
+      "event",
+    ]);
+    expect(mocks.lockMember).toHaveBeenCalledWith({}, MEMBER_ID);
     expect(mocks.createEvent).toHaveBeenCalledTimes(1);
     expect(mocks.createEvent.mock.calls[0][1]).toMatchObject({
       type: SecurityEventType.WorkspaceMemberDeactivated,
@@ -207,6 +227,7 @@ describe("updateWorkspaceMemberStatus", () => {
 
     expect(result.ok).toBe(true);
     expect(mocks.lockOwners).not.toHaveBeenCalled();
+    expect(mocks.lockMember).not.toHaveBeenCalled();
     expect(mocks.countResponsibilities).not.toHaveBeenCalled();
     expect(mocks.createEvent.mock.calls[0][1]).toMatchObject({
       type: SecurityEventType.WorkspaceMemberActivated,

@@ -80,6 +80,7 @@
       "navAriaLabel": "Workspace navigation",
       "comingSoonBadge": "Coming soon",
       "items": {
+        "crm": "CRM",
         "leads": "Leads",
         "overview": "Overview",
         "settings": "Settings"

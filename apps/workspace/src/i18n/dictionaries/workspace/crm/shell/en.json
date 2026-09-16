@@ -1,0 +1,5 @@
+{
+  "title": "Customers",
+  "description": "Every active and paused customer with customer number and primary contact.",
+  "createCustomer": "Add customer"
+}

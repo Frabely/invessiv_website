@@ -1,0 +1,100 @@
+{
+  "title": {
+    "create": "Kunde anlegen",
+    "edit": "Kunde bearbeiten"
+  },
+  "description": {
+    "create": "Kunde und Hauptansprechpartner werden zusammen gespeichert. Die Kundennummer vergibt das System.",
+    "edit": "Stammdaten von {number} ändern. Der Hauptansprechpartner bleibt unverändert."
+  },
+  "customerType": {
+    "legend": "Kundentyp",
+    "company": "Firma",
+    "individual": "Privatperson"
+  },
+  "sections": {
+    "customer": "Kunde",
+    "address": "Anschrift",
+    "details": "Weitere Angaben",
+    "contact": "Hauptansprechpartner"
+  },
+  "sectionHints": {
+    "contact": "Wird als neue Person gespeichert und in der Kundenliste angezeigt."
+  },
+  "fields": {
+    "displayName": "Anzeigename",
+    "companyName": "Firmenname",
+    "category": "Kategorie",
+    "street": "Straße und Hausnummer",
+    "postalCode": "PLZ",
+    "city": "Ort",
+    "country": "Land",
+    "websiteUrl": "Website",
+    "vatId": "USt-IdNr.",
+    "hourlyRate": "Stundensatz",
+    "notes": "Notizen",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "roleLabel": "Funktion",
+    "preferredLocale": "Sprache für Portal und E-Mails"
+  },
+  "placeholders": {
+    "displayName": "z. B. Nordlicht Coaching",
+    "companyName": "z. B. Nordlicht Coaching GmbH",
+    "category": "Keine Kategorie",
+    "street": "Ehrenstraße 12",
+    "postalCode": "50672",
+    "city": "Köln",
+    "country": "Deutschland",
+    "websiteUrl": "https://",
+    "vatId": "DE123456789",
+    "hourlyRate": "95",
+    "notes": "Nur für dein Team sichtbar",
+    "firstName": "Anna",
+    "lastName": "Berger",
+    "email": "anna@firma.de",
+    "phone": "+49 221 1234567",
+    "roleLabel": "z. B. Geschäftsführung"
+  },
+  "hints": {
+    "displayName": "So erscheint der Kunde überall. Jeder Anzeigename ist nur einmal vergeben.",
+    "hourlyRate": "In Euro. Gilt als Vorgabe für neue Projekte.",
+    "notesCounter": "{count} von {max} Zeichen"
+  },
+  "currencySymbol": "€",
+  "locales": {
+    "de": "Deutsch",
+    "en": "Englisch"
+  },
+  "validation": {
+    "displayNameRequired": "Gib einen Anzeigenamen ein.",
+    "displayNameTaken": "Diesen Anzeigenamen hat schon ein Kunde. Ergänze ihn, zum Beispiel um den Ort.",
+    "contactRequired": "Gib einen Nachnamen oder eine E-Mail-Adresse ein.",
+    "emailInvalid": "Gib eine gültige E-Mail-Adresse ein, zum Beispiel name@firma.de.",
+    "phoneInvalid": "Gib eine gültige Telefonnummer ein.",
+    "urlInvalid": "Gib die vollständige Adresse mit https:// ein.",
+    "hourlyRateInvalid": "Gib einen Betrag wie 95 oder 95,50 ein."
+  },
+  "errors": {
+    "CUSTOMER_NOT_FOUND": "Diesen Kunden gibt es nicht mehr. Schließ den Dialog, um die Liste zu aktualisieren.",
+    "CONTACT_NOT_FOUND": "Den Ansprechpartner gibt es nicht mehr. Schließ den Dialog, um die Liste zu aktualisieren.",
+    "CUSTOMER_DISPLAY_NAME_TAKEN": "Diesen Anzeigenamen hat schon ein Kunde.",
+    "CUSTOMER_OWNER_INACTIVE": "Dein Zugang wurde gerade deaktiviert. Der Kunde wurde nicht angelegt.",
+    "VALIDATION_ERROR": "Einige Angaben passen nicht. Prüf die Felder und speichere erneut.",
+    "INTERNAL": "Speichern hat nicht geklappt. Versuch es gleich noch einmal."
+  },
+  "conflict": {
+    "message": "Jemand hat diesen Kunden gerade geändert. Deine Eingaben sind noch da – wenn du erneut speicherst, ersetzen sie den neuen Stand.",
+    "currentName": "Aktueller Anzeigename: {name}"
+  },
+  "buttons": {
+    "submitCreate": "Kunde anlegen",
+    "submitEdit": "Änderungen speichern",
+    "submitting": "Wird gespeichert …",
+    "cancel": "Abbrechen",
+    "close": "Schließen"
+  },
+  "requiredHint": "Felder mit * sind Pflicht."
+}

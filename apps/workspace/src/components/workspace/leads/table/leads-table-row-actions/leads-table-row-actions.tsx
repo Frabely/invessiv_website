@@ -1,6 +1,6 @@
 "use client";
 
-import { type FocusEvent, type MouseEvent, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   faEllipsisVertical,
@@ -10,7 +10,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
 import { LeadOutreachTriggerVariant } from "@invessiv/common/constants/leads/outreach/lead-outreach-trigger-variants";
-import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
+import { TableRowActions } from "@invessiv/ui";
 import type {
   LeadsDeleteDictionary,
   LeadsOutreachDictionary,
@@ -33,10 +33,6 @@ type LeadsTableRowActionsProps = {
   outreachContent?: LeadsOutreachDictionary;
 };
 
-function stopRowPropagation(event: MouseEvent<HTMLElement>) {
-  event.stopPropagation();
-}
-
 export function LeadsTableRowActions({
   canDelete,
   canEdit,
@@ -51,51 +47,26 @@ export function LeadsTableRowActions({
   outreachContent,
 }: LeadsTableRowActionsProps) {
   const router = useRouter();
-  const startTransition = useNavigationContext();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  function handleCellBlur(event: FocusEvent<HTMLTableCellElement>) {
-    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-      setIsMenuOpen(false);
-    }
-  }
 
   if (!canEdit && !canDelete && !outreachContent) {
     return <td className={styles.cell} />;
   }
 
   return (
-    <td
-      className={styles.cell}
-      onBlur={handleCellBlur}
-      onClick={stopRowPropagation}
-      onMouseDown={stopRowPropagation}
-    >
-      <button
-        aria-expanded={isMenuOpen}
-        aria-haspopup="menu"
-        aria-label={menuLabel}
-        className={styles.menuTrigger}
-        onClick={(event) => {
-          stopRowPropagation(event);
-          setIsMenuOpen((current) => !current);
-        }}
-        title={menuLabel}
-        type="button"
+    <>
+      <TableRowActions
+        className={styles.cell}
+        isPinned
+        menuIcon={
+          <FontAwesomeIcon aria-hidden="true" icon={faEllipsisVertical} />
+        }
+        menuLabel={menuLabel}
       >
-        <FontAwesomeIcon aria-hidden="true" icon={faEllipsisVertical} />
-      </button>
-      <div className={styles.group} data-open={isMenuOpen ? "true" : "false"}>
         {canEdit ? (
           <button
             aria-label={editLabel}
-            className={styles.button}
-            onClick={(event) => {
-              stopRowPropagation(event);
-              setIsMenuOpen(false);
-              startTransition(() => router.push(editHref));
-            }}
+            onClick={() => router.push(editHref)}
             title={editLabel}
             type="button"
           >
@@ -106,26 +77,21 @@ export function LeadsTableRowActions({
           <LeadOutreachTrigger
             content={outreachContent}
             lead={{ displayName: leadDisplayName, id: leadId }}
-            onClickCaptureAction={stopRowPropagation}
             variant={LeadOutreachTriggerVariant.IconOnly}
           />
         ) : null}
         {canDelete ? (
           <button
             aria-label={deleteLabel}
-            className={`${styles.button} ${styles.buttonDestructive}`}
-            onClick={(event) => {
-              stopRowPropagation(event);
-              setIsMenuOpen(false);
-              setIsDeleteDialogOpen(true);
-            }}
+            data-tone="danger"
+            onClick={() => setIsDeleteDialogOpen(true)}
             title={deleteLabel}
             type="button"
           >
             <FontAwesomeIcon aria-hidden="true" icon={faTrash} />
           </button>
         ) : null}
-      </div>
+      </TableRowActions>
       {canDelete && isDeleteDialogOpen ? (
         <LeadDeleteConfirmDialog
           canArchive={canEdit}
@@ -136,6 +102,6 @@ export function LeadsTableRowActions({
           onCloseAction={() => setIsDeleteDialogOpen(false)}
         />
       ) : null}
-    </td>
+    </>
   );
 }

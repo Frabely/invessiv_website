@@ -1,0 +1,100 @@
+{
+  "title": {
+    "create": "Add customer",
+    "edit": "Edit customer"
+  },
+  "description": {
+    "create": "The customer and their primary contact are saved together. The customer number is assigned automatically.",
+    "edit": "Change the master data of {number}. The primary contact stays as it is."
+  },
+  "customerType": {
+    "legend": "Customer type",
+    "company": "Company",
+    "individual": "Individual"
+  },
+  "sections": {
+    "customer": "Customer",
+    "address": "Address",
+    "details": "More details",
+    "contact": "Primary contact"
+  },
+  "sectionHints": {
+    "contact": "Saved as a new person and shown in the customer list."
+  },
+  "fields": {
+    "displayName": "Display name",
+    "companyName": "Company name",
+    "category": "Category",
+    "street": "Street and number",
+    "postalCode": "Postal code",
+    "city": "City",
+    "country": "Country",
+    "websiteUrl": "Website",
+    "vatId": "VAT ID",
+    "hourlyRate": "Hourly rate",
+    "notes": "Notes",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "email": "Email",
+    "phone": "Phone",
+    "roleLabel": "Role",
+    "preferredLocale": "Language for portal and emails"
+  },
+  "placeholders": {
+    "displayName": "e.g. Nordlicht Coaching",
+    "companyName": "e.g. Nordlicht Coaching GmbH",
+    "category": "No category",
+    "street": "Ehrenstraße 12",
+    "postalCode": "50672",
+    "city": "Cologne",
+    "country": "Germany",
+    "websiteUrl": "https://",
+    "vatId": "DE123456789",
+    "hourlyRate": "95",
+    "notes": "Only visible to your team",
+    "firstName": "Anna",
+    "lastName": "Berger",
+    "email": "anna@company.com",
+    "phone": "+49 221 1234567",
+    "roleLabel": "e.g. Managing director"
+  },
+  "hints": {
+    "displayName": "This is how the customer appears everywhere. Each display name can only be used once.",
+    "hourlyRate": "In euros. Used as the default for new projects.",
+    "notesCounter": "{count} of {max} characters"
+  },
+  "currencySymbol": "€",
+  "locales": {
+    "de": "German",
+    "en": "English"
+  },
+  "validation": {
+    "displayNameRequired": "Enter a display name.",
+    "displayNameTaken": "Another customer already uses this display name. Add something to it, such as the city.",
+    "contactRequired": "Enter a last name or an email address.",
+    "emailInvalid": "Enter a valid email address, such as name@company.com.",
+    "phoneInvalid": "Enter a valid phone number.",
+    "urlInvalid": "Enter the full address including https://.",
+    "hourlyRateInvalid": "Enter an amount like 95 or 95.50."
+  },
+  "errors": {
+    "CUSTOMER_NOT_FOUND": "This customer no longer exists. Close the dialog to refresh the list.",
+    "CONTACT_NOT_FOUND": "This contact no longer exists. Close the dialog to refresh the list.",
+    "CUSTOMER_DISPLAY_NAME_TAKEN": "Another customer already uses this display name.",
+    "CUSTOMER_OWNER_INACTIVE": "Your access was just deactivated. The customer was not added.",
+    "VALIDATION_ERROR": "Some details don't fit. Check the fields and save again.",
+    "INTERNAL": "Saving didn't work. Try again in a moment."
+  },
+  "conflict": {
+    "message": "Someone just changed this customer. Your input is still here – saving again replaces the newer version.",
+    "currentName": "Current display name: {name}"
+  },
+  "buttons": {
+    "submitCreate": "Add customer",
+    "submitEdit": "Save changes",
+    "submitting": "Saving …",
+    "cancel": "Cancel",
+    "close": "Close"
+  },
+  "requiredHint": "Fields marked * are required."
+}

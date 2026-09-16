@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
+  faAddressBook,
   faChartColumn,
   faGear,
   faUsers,
@@ -28,6 +29,7 @@ type WorkspaceSidebarProps = {
 const SIDEBAR_ICONS = {
   [WorkspaceSidebarItemKey.Overview]: faChartColumn,
   [WorkspaceSidebarItemKey.Leads]: faUsers,
+  [WorkspaceSidebarItemKey.Crm]: faAddressBook,
   [WorkspaceSidebarItemKey.Settings]: faGear,
 } satisfies Record<WorkspaceSidebarItemKey, IconDefinition>;
 

@@ -6,6 +6,7 @@ import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 const WORKSPACE_AREA_ROUTES: Record<WorkspaceArea, string> = {
   [WorkspaceArea.Dashboard]: SITE_ROUTES.DASHBOARD,
   [WorkspaceArea.Leads]: SITE_ROUTES.LEADS,
+  [WorkspaceArea.Crm]: SITE_ROUTES.CRM,
   [WorkspaceArea.Settings]: SITE_ROUTES.SETTINGS,
 };
 

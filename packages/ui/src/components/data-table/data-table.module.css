@@ -1,0 +1,128 @@
+.frame {
+  position: relative;
+  display: flex;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-border) 74%, transparent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--color-surface-1) 72%, transparent);
+  box-shadow:
+    0 20px 52px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.02);
+}
+
+.scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+}
+
+.caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.headerCell {
+  position: sticky;
+  top: 0;
+  z-index: 11;
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--color-border) 72%, transparent);
+  background: color-mix(in srgb, var(--color-surface-1) 72%, transparent);
+  backdrop-filter: blur(8px);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 700;
+  text-align: left;
+}
+
+.rowHeaderCell {
+  padding: 0.85rem 1.1rem;
+  vertical-align: middle;
+  text-align: left;
+}
+
+.headerCell[data-pinned="true"] {
+  right: 0;
+  z-index: 12;
+  text-align: center;
+  background: color-mix(in srgb, var(--color-surface-1) 92%, transparent);
+  box-shadow: -1px 0 0 color-mix(in srgb, var(--color-border) 38%, transparent);
+}
+
+.row + .row {
+  border-top: 1px solid var(--color-border);
+}
+
+.cell,
+.row > .headerCell {
+  padding: 0.85rem 1.1rem;
+  vertical-align: middle;
+  text-align: left;
+}
+
+[data-theme="light"] .frame {
+  box-shadow:
+    0 20px 42px rgba(28, 41, 67, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+@media (max-width: 720px) {
+  .frame {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .scroll {
+    overflow-y: auto;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    padding-block: 0.35rem;
+  }
+
+  .frame[data-responsive-mode="cards"] .table,
+  .frame[data-responsive-mode="cards"] .body {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    table-layout: auto;
+  }
+
+  .frame[data-responsive-mode="cards"] .header {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .frame[data-responsive-mode="scroll"] .scroll {
+    overflow-x: auto;
+  }
+}
