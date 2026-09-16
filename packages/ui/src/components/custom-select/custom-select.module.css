@@ -14,7 +14,11 @@
   border: 1px solid
     color-mix(in srgb, var(--color-border-strong) 56%, transparent);
   border-radius: 10px;
-  background: color-mix(in srgb, var(--color-bg) 85%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--color-surface-2) 64%,
+    var(--color-surface-1) 36%
+  );
   color: var(--color-text);
   font: inherit;
   cursor: pointer;

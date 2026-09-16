@@ -14,6 +14,12 @@ function optionalText(maxLength: number) {
     .transform((value) => value || null);
 }
 
+const requiredContactLastName = z
+  .string()
+  .trim()
+  .min(1)
+  .max(CustomerFieldLimits.PersonNameMaxLength);
+
 const optionalEmail = optionalText(CustomerFieldLimits.EmailMaxLength).pipe(
   formValidationSchemas.email.nullable(),
 );
@@ -27,19 +33,14 @@ const optionalWebsiteUrl = optionalText(
   CustomerFieldLimits.WebsiteUrlMaxLength,
 ).pipe(formValidationSchemas.httpUrl.nullable());
 
-const primaryContactSchema = z
-  .object({
-    firstName: optionalText(CustomerFieldLimits.PersonNameMaxLength),
-    lastName: optionalText(CustomerFieldLimits.PersonNameMaxLength),
-    email: optionalEmail,
-    phone: optionalPhone,
-    roleLabel: optionalText(CustomerFieldLimits.RoleLabelMaxLength),
-    preferredLocale: z.enum(SUPPORTED_LOCALES),
-  })
-  .refine((contact) => contact.lastName !== null || contact.email !== null, {
-    message: "Last name or email is required",
-    path: ["lastName"],
-  });
+const primaryContactSchema = z.object({
+  firstName: optionalText(CustomerFieldLimits.PersonNameMaxLength),
+  lastName: requiredContactLastName,
+  email: optionalEmail,
+  phone: optionalPhone,
+  roleLabel: optionalText(CustomerFieldLimits.RoleLabelMaxLength),
+  preferredLocale: z.enum(SUPPORTED_LOCALES),
+});
 
 const contactWriteSchema = primaryContactSchema
   .extend({

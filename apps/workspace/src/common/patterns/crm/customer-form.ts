@@ -83,8 +83,8 @@ export function validateCustomerContact(
   const errors: CustomerFormErrors = {};
   const email = values.contactEmail.trim();
   const phone = values.contactPhone.trim();
-  if (!values.contactLastName.trim() && !email) {
-    errors.contactLastName = CustomerFormValidationCode.ContactRequired;
+  if (!values.contactLastName.trim()) {
+    errors.contactLastName = CustomerFormValidationCode.ContactLastNameRequired;
   }
   if (email && !formValidationService.isValidEmail(email)) {
     errors.contactEmail = CustomerFormValidationCode.EmailInvalid;

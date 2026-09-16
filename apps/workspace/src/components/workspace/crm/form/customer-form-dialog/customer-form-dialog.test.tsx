@@ -83,6 +83,10 @@ function submit(name: string) {
   fireEvent.click(screen.getByRole("button", { name }));
 }
 
+function selectTab(name: string) {
+  fireEvent.click(screen.getByRole("tab", { name }));
+}
+
 describe("CustomerFormDialog", () => {
   beforeEach(() => {
     Object.values(mocks).forEach((mock) => mock.mockReset());
@@ -101,8 +105,12 @@ describe("CustomerFormDialog", () => {
       await screen.findByText(content.validation.displayNameRequired),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(content.validation.contactRequired),
-    ).toBeInTheDocument();
+      screen.getByRole("tab", { name: content.sections.contact }),
+    ).toHaveAttribute("data-invalid", "true");
+    selectTab(content.sections.contact);
+    expect(
+      screen.getByText(content.validation.contactLastNameRequired),
+    ).toBeVisible();
     expect(input(/^Anzeigename/)).toHaveAttribute("aria-invalid", "true");
     expect(input(/^Anzeigename/).getAttribute("aria-describedby")).toContain(
       "customer-display-name-error",
@@ -114,11 +122,17 @@ describe("CustomerFormDialog", () => {
     renderDialog();
     fireEvent.change(input(/^Anzeigename/), { target: { value: "Kluge Bau" } });
     fireEvent.change(input(/^Nachname/), { target: { value: "Kluge" } });
+    fireEvent.change(input(/^E-Mail/), {
+      target: { value: "kontakt@kluge.example" },
+    });
     fireEvent.change(input(/^Website/), { target: { value: "kluge.example" } });
     fireEvent.change(input(/^Stundensatz/), { target: { value: "12,345" } });
 
     submit(content.buttons.submitCreate);
 
+    expect(
+      screen.getByRole("tab", { name: content.sections.details }),
+    ).toHaveAttribute("aria-selected", "true");
     expect(
       await screen.findByText(content.validation.urlInvalid),
     ).toBeInTheDocument();
@@ -133,6 +147,19 @@ describe("CustomerFormDialog", () => {
     expect(input(/^Firmenname/)).toBeInTheDocument();
   });
 
+  it("moves between form sections with the arrow keys", () => {
+    renderDialog();
+
+    const customerTab = screen.getByRole("tab", {
+      name: content.sections.customer,
+    });
+    fireEvent.keyDown(customerTab, { key: "ArrowRight" });
+
+    expect(
+      screen.getByRole("tab", { name: content.sections.contact }),
+    ).toHaveAttribute("aria-selected", "true");
+  });
+
   it("creates the customer, refreshes and closes the dialog", async () => {
     mocks.createCustomer.mockResolvedValue({
       ok: true,
@@ -143,6 +170,9 @@ describe("CustomerFormDialog", () => {
       target: { value: " Kluge Bau " },
     });
     fireEvent.change(input(/^Nachname/), { target: { value: "Kluge" } });
+    fireEvent.change(input(/^E-Mail/), {
+      target: { value: "kontakt@kluge.example" },
+    });
     fireEvent.change(input(/^Stundensatz/), { target: { value: "80,50" } });
 
     submit(content.buttons.submitCreate);
@@ -166,6 +196,9 @@ describe("CustomerFormDialog", () => {
     renderDialog();
     fireEvent.change(input(/^Anzeigename/), { target: { value: "Kluge Bau" } });
     fireEvent.change(input(/^Nachname/), { target: { value: "Kluge" } });
+    fireEvent.change(input(/^E-Mail/), {
+      target: { value: "kontakt@kluge.example" },
+    });
 
     submit(content.buttons.submitCreate);
 
@@ -184,6 +217,9 @@ describe("CustomerFormDialog", () => {
     renderDialog();
     fireEvent.change(input(/^Anzeigename/), { target: { value: "Kluge Bau" } });
     fireEvent.change(input(/^Nachname/), { target: { value: "Kluge" } });
+    fireEvent.change(input(/^E-Mail/), {
+      target: { value: "kontakt@kluge.example" },
+    });
 
     submit(content.buttons.submitCreate);
 
@@ -207,10 +243,12 @@ describe("CustomerFormDialog", () => {
     renderDialog(customer);
 
     expect(input(/^Anzeigename/)).toHaveValue("Nordlicht Coaching");
+    selectTab(content.sections.additionalContact);
     expect(
       screen.getByRole("button", { name: /Ansprechpartner hinzufügen/ }),
     ).toBeInTheDocument();
 
+    selectTab(content.sections.address);
     fireEvent.change(input(/^Ort/), { target: { value: "Bonn" } });
     submit(content.buttons.submitEdit);
 
@@ -237,10 +275,14 @@ describe("CustomerFormDialog", () => {
     mocks.updateCustomer.mockResolvedValue({ ok: true, customer });
     renderDialog(customer);
 
+    selectTab(content.sections.additionalContact);
     fireEvent.click(
       screen.getByRole("button", { name: /Ansprechpartner hinzufügen/ }),
     );
     fireEvent.change(input(/^Nachname/), { target: { value: "Kluge" } });
+    fireEvent.change(input(/^E-Mail/), {
+      target: { value: "kontakt@kluge.example" },
+    });
     fireEvent.click(
       screen.getByRole("button", { name: content.buttons.confirmContact }),
     );
@@ -270,6 +312,7 @@ describe("CustomerFormDialog", () => {
     mocks.updateCustomer.mockResolvedValue({ ok: true, customer });
     renderDialog(customer);
 
+    selectTab(content.sections.additionalContact);
     fireEvent.click(
       screen.getByRole("button", { name: content.buttons.makePrimary }),
     );
@@ -298,6 +341,7 @@ describe("CustomerFormDialog", () => {
     mocks.updateCustomer.mockResolvedValue({ ok: true, customer });
     renderDialog(customer);
 
+    selectTab(content.sections.additionalContact);
     fireEvent.click(screen.getByRole("button", { name: content.buttons.edit }));
     fireEvent.change(input(/^Nachname/), { target: { value: "Neu" } });
     fireEvent.click(

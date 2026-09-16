@@ -52,7 +52,7 @@ describe("createCustomerFormValues", () => {
 });
 
 describe("validateCustomerForm", () => {
-  it("requires a display name and an identifiable contact on create", () => {
+  it("requires a display name and contact last name on create", () => {
     const errors = validateCustomerForm(
       createCustomerFormValues(null, "de"),
       "create",
@@ -60,18 +60,20 @@ describe("validateCustomerForm", () => {
 
     expect(errors).toEqual({
       displayName: "displayNameRequired",
-      contactLastName: "contactRequired",
+      contactLastName: "contactLastNameRequired",
     });
   });
 
-  it("accepts an email instead of a last name", () => {
+  it("requires a last name even when an email is set", () => {
     const values = {
       ...createCustomerFormValues(null, "de"),
       displayName: "Kluge Bau",
       contactEmail: "office@kluge.example",
     };
 
-    expect(validateCustomerForm(values, "create")).toEqual({});
+    expect(validateCustomerForm(values, "create")).toEqual({
+      contactLastName: "contactLastNameRequired",
+    });
   });
 
   it("reports invalid formats", () => {

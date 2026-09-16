@@ -4,6 +4,55 @@
   gap: 1.1rem;
 }
 
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+  overflow-x: auto;
+  padding: 0.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-surface-2);
+}
+
+.tab {
+  flex: 1 0 max-content;
+  min-height: 2.5rem;
+  padding-inline: 0.8rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: var(--font-size-ui-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tab[aria-selected="true"] {
+  background: var(--color-surface-1);
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--color-shadow) 18%, transparent);
+  color: var(--color-text);
+}
+
+.tab[data-invalid="true"] {
+  color: var(--color-danger);
+}
+
+.tabErrorDot {
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-left: 0.4rem;
+  border-radius: 999px;
+  background: var(--color-danger);
+  vertical-align: middle;
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
 .typeSwitch {
   display: flex;
   flex-direction: column;
@@ -152,22 +201,30 @@
 .grid,
 .addressGrid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 0.25rem 0.9rem;
 }
 
 .addressGrid {
-  grid-template-columns: minmax(7rem, 0.4fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .fullWidth {
   grid-column: 1 / -1;
 }
 
-.requiredHint {
+.footerRequiredHint {
   margin: 0;
-  color: var(--color-text-muted);
+  margin-right: auto;
+  color: var(--color-cta);
   font-size: var(--font-size-ui-xs);
+  font-weight: 700;
+}
+
+.footerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
 }
 
 .message {
@@ -208,6 +265,10 @@
 
   .segments {
     width: 100%;
+  }
+
+  .footerRequiredHint {
+    flex-basis: 100%;
   }
 }
 

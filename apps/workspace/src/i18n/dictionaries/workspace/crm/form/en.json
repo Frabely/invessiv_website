@@ -4,8 +4,7 @@
     "edit": "Edit customer"
   },
   "description": {
-    "create": "The customer and their primary contact are saved together. The customer number is assigned automatically.",
-    "edit": "Change the master data and contacts of {number}."
+    "edit": "Change the master data and contacts of {name}."
   },
   "sections": {
     "customer": "Customer",
@@ -13,6 +12,9 @@
     "details": "More details",
     "contact": "Primary contact",
     "additionalContact": "Contacts"
+  },
+  "tabs": {
+    "label": "Customer form sections"
   },
   "sectionHints": {
     "contact": "Saved as a new person and shown in the customer list.",
@@ -68,7 +70,7 @@
   "validation": {
     "displayNameRequired": "Enter a display name.",
     "displayNameTaken": "Another customer already uses this display name. Add something to it, such as the city.",
-    "contactRequired": "Enter a last name or an email address.",
+    "contactLastNameRequired": "Enter a last name.",
     "emailInvalid": "Enter a valid email address, such as name@company.com.",
     "phoneInvalid": "Enter a valid phone number.",
     "urlInvalid": "Enter the full address including https://.",

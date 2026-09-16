@@ -46,9 +46,12 @@ type CustomerContactSectionProps = {
   customerExists: boolean;
   errors: CustomerFormErrors;
   locale: Locale;
-  onContactFieldChange: (key: ContactField, value: string | Locale) => void;
-  onErrorsChange: Dispatch<SetStateAction<CustomerFormErrors>>;
-  onContactsChange: Dispatch<SetStateAction<CustomerContactWriteDto[]>>;
+  onContactFieldChangeAction: (
+    key: ContactField,
+    value: string | Locale,
+  ) => void;
+  onErrorsChangeAction: Dispatch<SetStateAction<CustomerFormErrors>>;
+  onContactsChangeAction: Dispatch<SetStateAction<CustomerContactWriteDto[]>>;
   values: CustomerFormValues;
 };
 
@@ -58,9 +61,9 @@ export function CustomerContactSection({
   customerExists,
   errors,
   locale,
-  onContactFieldChange,
-  onContactsChange,
-  onErrorsChange,
+  onContactFieldChangeAction,
+  onContactsChangeAction,
+  onErrorsChangeAction,
   values,
 }: CustomerContactSectionProps) {
   const headingId = useId();
@@ -76,7 +79,7 @@ export function CustomerContactSection({
 
   function replaceDraft(next: Partial<CustomerFormValues>) {
     (Object.entries(next) as [ContactField, string | Locale][]).forEach(
-      ([key, value]) => onContactFieldChange(key, value),
+      ([key, value]) => onContactFieldChangeAction(key, value),
     );
   }
 
@@ -114,10 +117,10 @@ export function CustomerContactSection({
 
   function confirmDraft() {
     const nextErrors = validateCustomerContact(values);
-    onErrorsChange((current) => ({ ...current, ...nextErrors }));
+    onErrorsChangeAction((current) => ({ ...current, ...nextErrors }));
     if (Object.keys(nextErrors).length > 0) return;
     const next = toCustomerContactWrite(values, contacts.length === 0);
-    onContactsChange((current) =>
+    onContactsChangeAction((current) =>
       editingIndex === null
         ? [...current, next]
         : current.map((contact, index) =>
@@ -139,7 +142,7 @@ export function CustomerContactSection({
   }
 
   function makePrimary(index: number) {
-    onContactsChange((current) =>
+    onContactsChangeAction((current) =>
       current.map((contact, contactIndex) => ({
         ...contact,
         isPrimary: contactIndex === index,
@@ -149,7 +152,7 @@ export function CustomerContactSection({
 
   function removeContact() {
     if (removingIndex === null) return;
-    onContactsChange((current) =>
+    onContactsChangeAction((current) =>
       current.filter((_, index) => index !== removingIndex),
     );
     setRemovingIndex(null);
@@ -245,7 +248,10 @@ export function CustomerContactSection({
                 maxLength: CustomerFieldLimits.PersonNameMaxLength,
                 name: "contact-first-name",
                 onChange: (event) =>
-                  onContactFieldChange("contactFirstName", event.target.value),
+                  onContactFieldChangeAction(
+                    "contactFirstName",
+                    event.target.value,
+                  ),
                 placeholder: content.placeholders.firstName,
                 value: values.contactFirstName,
               }}
@@ -259,12 +265,16 @@ export function CustomerContactSection({
                 maxLength: CustomerFieldLimits.PersonNameMaxLength,
                 name: "contact-last-name",
                 onChange: (event) =>
-                  onContactFieldChange("contactLastName", event.target.value),
+                  onContactFieldChangeAction(
+                    "contactLastName",
+                    event.target.value,
+                  ),
                 placeholder: content.placeholders.lastName,
                 value: values.contactLastName,
               }}
               kind={FormFieldKind.Text}
               label={content.fields.lastName}
+              required
             />
             <FormField
               errorMessage={errorFor("contactEmail")}
@@ -274,7 +284,10 @@ export function CustomerContactSection({
                 maxLength: CustomerFieldLimits.EmailMaxLength,
                 name: "contact-email",
                 onChange: (event) =>
-                  onContactFieldChange("contactEmail", event.target.value),
+                  onContactFieldChangeAction(
+                    "contactEmail",
+                    event.target.value,
+                  ),
                 placeholder: content.placeholders.email,
                 value: values.contactEmail,
               }}
@@ -289,7 +302,10 @@ export function CustomerContactSection({
                 maxLength: CustomerFieldLimits.PhoneMaxLength,
                 name: "contact-phone",
                 onChange: (event) =>
-                  onContactFieldChange("contactPhone", event.target.value),
+                  onContactFieldChangeAction(
+                    "contactPhone",
+                    event.target.value,
+                  ),
                 placeholder: content.placeholders.phone,
                 value: values.contactPhone,
               }}
@@ -302,7 +318,10 @@ export function CustomerContactSection({
                 maxLength: CustomerFieldLimits.RoleLabelMaxLength,
                 name: "contact-role",
                 onChange: (event) =>
-                  onContactFieldChange("contactRoleLabel", event.target.value),
+                  onContactFieldChangeAction(
+                    "contactRoleLabel",
+                    event.target.value,
+                  ),
                 placeholder: content.placeholders.roleLabel,
                 value: values.contactRoleLabel,
               }}
@@ -317,7 +336,7 @@ export function CustomerContactSection({
                 ariaLabel={content.fields.preferredLocale}
                 id={localeSelectId}
                 onChange={(next) =>
-                  onContactFieldChange("contactPreferredLocale", next)
+                  onContactFieldChangeAction("contactPreferredLocale", next)
                 }
                 options={SUPPORTED_LOCALES.map((entry) => ({
                   label: content.locales[entry],

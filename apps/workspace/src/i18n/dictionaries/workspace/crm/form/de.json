@@ -4,8 +4,7 @@
     "edit": "Kunde bearbeiten"
   },
   "description": {
-    "create": "Kunde und Hauptansprechpartner werden zusammen gespeichert. Die Kundennummer vergibt das System.",
-    "edit": "Stammdaten und Ansprechpartner von {number} ändern."
+    "edit": "Stammdaten und Ansprechpartner von {name} ändern."
   },
   "sections": {
     "customer": "Kunde",
@@ -13,6 +12,9 @@
     "details": "Weitere Angaben",
     "contact": "Hauptansprechpartner",
     "additionalContact": "Ansprechpartner"
+  },
+  "tabs": {
+    "label": "Bereiche im Kundenformular"
   },
   "sectionHints": {
     "contact": "Wird als neue Person gespeichert und in der Kundenliste angezeigt.",
@@ -68,7 +70,7 @@
   "validation": {
     "displayNameRequired": "Gib einen Anzeigenamen ein.",
     "displayNameTaken": "Diesen Anzeigenamen hat schon ein Kunde. Ergänze ihn, zum Beispiel um den Ort.",
-    "contactRequired": "Gib einen Nachnamen oder eine E-Mail-Adresse ein.",
+    "contactLastNameRequired": "Gib einen Nachnamen ein.",
     "emailInvalid": "Gib eine gültige E-Mail-Adresse ein, zum Beispiel name@firma.de.",
     "phoneInvalid": "Gib eine gültige Telefonnummer ein.",
     "urlInvalid": "Gib die vollständige Adresse mit https:// ein.",

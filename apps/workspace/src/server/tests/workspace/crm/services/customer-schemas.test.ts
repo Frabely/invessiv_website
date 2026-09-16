@@ -17,7 +17,7 @@ describe("customerSchemas.create", () => {
     expect(result.city).toBeNull();
   });
 
-  it("accepts omitted optional fields as null", () => {
+  it("accepts omitted optional customer fields as null", () => {
     const result = customerSchemas.create.parse({
       displayName: "Dario Lentz",
       primaryContact: {
@@ -46,7 +46,7 @@ describe("customerSchemas.create", () => {
     expect(result).not.toHaveProperty("ownerMemberId");
   });
 
-  it("requires a last name or an email on the primary contact", () => {
+  it("requires a last name on the primary contact", () => {
     const result = customerSchemas.create.safeParse({
       ...createCustomerRequestFixture(),
       primaryContact: {

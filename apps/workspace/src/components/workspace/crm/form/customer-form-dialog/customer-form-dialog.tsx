@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  type KeyboardEvent,
   type Ref,
   type SubmitEvent,
   useEffect,
@@ -15,7 +16,6 @@ import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds"
 import type { CustomerDetailDto } from "@invessiv/common/contracts/crm/customer-detail.dto";
 import type { CustomerContactWriteDto } from "@invessiv/common/contracts/crm/customer-contact-write.dto";
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
-import { formatCustomerNumber } from "@invessiv/common/patterns/crm/format-customer-number";
 import {
   ButtonControl,
   Dialog,
@@ -61,6 +61,42 @@ type TextFieldKey = Exclude<
 
 const NOTES_COUNTER_THRESHOLD = 0.8;
 const DISPLAY_NAME_INPUT_NAME = "customer-display-name";
+const CustomerFormTab = {
+  Customer: "customer",
+  Contacts: "contacts",
+  Address: "address",
+  Details: "details",
+} as const;
+
+type CustomerFormTab = (typeof CustomerFormTab)[keyof typeof CustomerFormTab];
+
+const CUSTOMER_FORM_TABS = [
+  CustomerFormTab.Customer,
+  CustomerFormTab.Contacts,
+  CustomerFormTab.Address,
+  CustomerFormTab.Details,
+] as const;
+
+const CUSTOMER_TAB_FIELDS = [
+  "displayName",
+  "companyName",
+  "categoryId",
+] as const;
+const CONTACT_TAB_FIELDS = [
+  "contactFirstName",
+  "contactLastName",
+  "contactEmail",
+  "contactPhone",
+  "contactRoleLabel",
+  "contactPreferredLocale",
+] as const;
+const ADDRESS_TAB_FIELDS = ["street", "postalCode", "city", "country"] as const;
+const DETAILS_TAB_FIELDS = [
+  "websiteUrl",
+  "vatId",
+  "hourlyRate",
+  "notes",
+] as const;
 
 export function CustomerFormDialog({
   categories,
@@ -71,6 +107,7 @@ export function CustomerFormDialog({
 }: CustomerFormDialogProps) {
   const router = useRouter();
   const formId = useId();
+  const tabsId = useId();
   const customerHeadingId = useId();
   const addressHeadingId = useId();
   const detailsHeadingId = useId();
@@ -83,6 +120,9 @@ export function CustomerFormDialog({
     createCustomerFormValues(customer, locale),
   );
   const [errors, setErrors] = useState<CustomerFormErrors>({});
+  const [activeTab, setActiveTab] = useState<CustomerFormTab>(
+    CustomerFormTab.Customer,
+  );
   const [contacts, setContacts] = useState<CustomerContactWriteDto[]>(
     () =>
       customer?.contacts.map((contact) => ({
@@ -117,17 +157,11 @@ export function CustomerFormDialog({
   ) {
     setValues((current) => ({ ...current, [key]: value }));
     setErrors((current) => {
-      if (
-        !current[key] &&
-        !(key === "contactEmail" && current.contactLastName)
-      ) {
+      if (!current[key]) {
         return current;
       }
       const next = { ...current };
       delete next[key];
-      if (key === "contactEmail") {
-        delete next.contactLastName;
-      }
       return next;
     });
   }
@@ -141,6 +175,8 @@ export function CustomerFormDialog({
     const nextErrors = validateCustomerForm(values, mode, contacts.length > 0);
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) {
+      const invalidTab = findFirstInvalidTab(nextErrors);
+      setActiveTab(invalidTab);
       requestAnimationFrame(() =>
         formRef.current
           ?.querySelector<HTMLElement>('[aria-invalid="true"]')
@@ -169,6 +205,60 @@ export function CustomerFormDialog({
   function errorFor(key: keyof CustomerFormValues): string | undefined {
     const code = errors[key];
     return code ? content.validation[code] : undefined;
+  }
+
+  function hasTabError(tab: CustomerFormTab) {
+    const fields =
+      tab === CustomerFormTab.Customer
+        ? CUSTOMER_TAB_FIELDS
+        : tab === CustomerFormTab.Contacts
+          ? CONTACT_TAB_FIELDS
+          : tab === CustomerFormTab.Address
+            ? ADDRESS_TAB_FIELDS
+            : DETAILS_TAB_FIELDS;
+    return fields.some((field) => Boolean(errors[field]));
+  }
+
+  function findFirstInvalidTab(
+    nextErrors: CustomerFormErrors,
+  ): CustomerFormTab {
+    const tabs = [
+      [CustomerFormTab.Customer, CUSTOMER_TAB_FIELDS],
+      [CustomerFormTab.Contacts, CONTACT_TAB_FIELDS],
+      [CustomerFormTab.Address, ADDRESS_TAB_FIELDS],
+      [CustomerFormTab.Details, DETAILS_TAB_FIELDS],
+    ] as const;
+    return (
+      tabs.find(([, fields]) =>
+        fields.some((field) => Boolean(nextErrors[field])),
+      )?.[0] ?? CustomerFormTab.Customer
+    );
+  }
+
+  function handleTabKeyDown(
+    event: KeyboardEvent<HTMLButtonElement>,
+    currentTab: CustomerFormTab,
+  ) {
+    const currentIndex = CUSTOMER_FORM_TABS.indexOf(currentTab);
+    const nextIndex =
+      event.key === "ArrowRight"
+        ? (currentIndex + 1) % CUSTOMER_FORM_TABS.length
+        : event.key === "ArrowLeft"
+          ? (currentIndex - 1 + CUSTOMER_FORM_TABS.length) %
+            CUSTOMER_FORM_TABS.length
+          : event.key === "Home"
+            ? 0
+            : event.key === "End"
+              ? CUSTOMER_FORM_TABS.length - 1
+              : null;
+    if (nextIndex === null) return;
+
+    event.preventDefault();
+    const nextTab = CUSTOMER_FORM_TABS[nextIndex];
+    setActiveTab(nextTab);
+    requestAnimationFrame(() =>
+      document.getElementById(`${tabsId}-${nextTab}-tab`)?.focus(),
+    );
   }
 
   function renderTextField(
@@ -233,31 +323,34 @@ export function CustomerFormDialog({
       description={
         customer
           ? formatMessage(content.description.edit, {
-              number: formatCustomerNumber(customer.customerNumber),
+              name: customer.displayName,
             })
-          : content.description.create
+          : undefined
       }
       footer={
         <>
-          <ButtonControl
-            disabled={mutation.isSubmitting}
-            onClick={mutation.close}
-            type="button"
-            variant="ghost"
-          >
-            {content.buttons.cancel}
-          </ButtonControl>
-          <PrimaryCtaButton
-            disabled={mutation.isSubmitting}
-            form={formId}
-            type="submit"
-          >
-            {mutation.isSubmitting
-              ? content.buttons.submitting
-              : customer
-                ? content.buttons.submitEdit
-                : content.buttons.submitCreate}
-          </PrimaryCtaButton>
+          <p className={styles.footerRequiredHint}>{content.requiredHint}</p>
+          <div className={styles.footerActions}>
+            <ButtonControl
+              disabled={mutation.isSubmitting}
+              onClick={mutation.close}
+              type="button"
+              variant="ghost"
+            >
+              {content.buttons.cancel}
+            </ButtonControl>
+            <PrimaryCtaButton
+              disabled={mutation.isSubmitting}
+              form={formId}
+              type="submit"
+            >
+              {mutation.isSubmitting
+                ? content.buttons.submitting
+                : customer
+                  ? content.buttons.submitEdit
+                  : content.buttons.submitCreate}
+            </PrimaryCtaButton>
+          </div>
         </>
       }
       initialFocusRef={displayNameInputRef}
@@ -272,154 +365,222 @@ export function CustomerFormDialog({
         onSubmit={handleSubmit}
         ref={formRef}
       >
-        <section aria-labelledby={customerHeadingId} className={styles.section}>
-          <h3 className={styles.sectionTitle} id={customerHeadingId}>
-            {content.sections.customer}
-          </h3>
-          <div className={styles.grid}>
-            {renderTextField("displayName", {
-              className: styles.fullWidth,
-              hint: content.hints.displayName,
-              inputRef: displayNameInputRef,
-              label: content.fields.displayName,
-              maxLength: CustomerFieldLimits.DisplayNameMaxLength,
-              name: DISPLAY_NAME_INPUT_NAME,
-              placeholder: content.placeholders.displayName,
-              required: true,
-            })}
-            {renderTextField("companyName", {
-              autoComplete: "organization",
-              label: content.fields.companyName,
-              maxLength: CustomerFieldLimits.CompanyNameMaxLength,
-              name: "customer-company-name",
-              placeholder: content.placeholders.companyName,
-            })}
-            <FormField
-              kind={FormFieldKind.Select}
-              label={content.fields.category}
-              options={[
-                { label: content.placeholders.category, value: "" },
-                ...categories.map((category) => ({
-                  label: category.label,
-                  value: category.id,
-                })),
-              ]}
-              selectProps={{
-                name: "customer-category",
-                onChange: (event) => update("categoryId", event.target.value),
-                value: values.categoryId,
-              }}
-            />
-          </div>
-        </section>
-
-        <CustomerContactSection
-          content={content}
-          contacts={contacts}
-          customerExists={Boolean(customer)}
-          errors={errors}
-          locale={locale}
-          onContactFieldChange={update}
-          onContactsChange={setContacts}
-          onErrorsChange={setErrors}
-          values={values}
-        />
-        <section
-          aria-labelledby={addressHeadingId}
-          className={styles.section}
-          data-variant="grouped"
+        <div
+          aria-label={content.tabs.label}
+          className={styles.tabs}
+          role="tablist"
         >
-          <h3 className={styles.sectionTitle} id={addressHeadingId}>
-            {content.sections.address}
-          </h3>
-          <div className={styles.addressGrid}>
-            {renderTextField("street", {
-              autoComplete: "street-address",
-              className: styles.fullWidth,
-              label: content.fields.street,
-              maxLength: CustomerFieldLimits.StreetMaxLength,
-              name: "customer-street",
-              placeholder: content.placeholders.street,
-            })}
-            {renderTextField("postalCode", {
-              autoComplete: "postal-code",
-              label: content.fields.postalCode,
-              maxLength: CustomerFieldLimits.PostalCodeMaxLength,
-              name: "customer-postal-code",
-              placeholder: content.placeholders.postalCode,
-            })}
-            {renderTextField("city", {
-              autoComplete: "address-level2",
-              label: content.fields.city,
-              maxLength: CustomerFieldLimits.CityMaxLength,
-              name: "customer-city",
-              placeholder: content.placeholders.city,
-            })}
-            {renderTextField("country", {
-              autoComplete: "country-name",
-              className: styles.fullWidth,
-              label: content.fields.country,
-              maxLength: CustomerFieldLimits.CountryMaxLength,
-              name: "customer-country",
-              placeholder: content.placeholders.country,
-            })}
-          </div>
-        </section>
+          {[
+            { tab: CustomerFormTab.Customer, label: content.sections.customer },
+            {
+              tab: CustomerFormTab.Contacts,
+              label: customer
+                ? content.sections.additionalContact
+                : content.sections.contact,
+            },
+            { tab: CustomerFormTab.Address, label: content.sections.address },
+            { tab: CustomerFormTab.Details, label: content.sections.details },
+          ].map(({ tab, label }) => (
+            <button
+              aria-controls={`${tabsId}-${tab}-panel`}
+              aria-selected={activeTab === tab}
+              className={styles.tab}
+              data-invalid={hasTabError(tab) || undefined}
+              id={`${tabsId}-${tab}-tab`}
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              onKeyDown={(event) => handleTabKeyDown(event, tab)}
+              role="tab"
+              tabIndex={activeTab === tab ? 0 : -1}
+              type="button"
+            >
+              {label}
+              {hasTabError(tab) ? (
+                <span aria-hidden="true" className={styles.tabErrorDot} />
+              ) : null}
+            </button>
+          ))}
+        </div>
+        <div
+          aria-labelledby={`${tabsId}-${CustomerFormTab.Customer}-tab`}
+          hidden={activeTab !== CustomerFormTab.Customer}
+          id={`${tabsId}-${CustomerFormTab.Customer}-panel`}
+          role="tabpanel"
+        >
+          <section
+            aria-labelledby={customerHeadingId}
+            className={styles.section}
+          >
+            <h3 className={styles.sectionTitle} id={customerHeadingId}>
+              {content.sections.customer}
+            </h3>
+            <div className={styles.grid}>
+              {renderTextField("displayName", {
+                className: styles.fullWidth,
+                hint: content.hints.displayName,
+                inputRef: displayNameInputRef,
+                label: content.fields.displayName,
+                maxLength: CustomerFieldLimits.DisplayNameMaxLength,
+                name: DISPLAY_NAME_INPUT_NAME,
+                placeholder: content.placeholders.displayName,
+                required: true,
+              })}
+              {renderTextField("companyName", {
+                autoComplete: "organization",
+                label: content.fields.companyName,
+                maxLength: CustomerFieldLimits.CompanyNameMaxLength,
+                name: "customer-company-name",
+                placeholder: content.placeholders.companyName,
+              })}
+              <FormField
+                kind={FormFieldKind.Select}
+                label={content.fields.category}
+                options={[
+                  { label: content.placeholders.category, value: "" },
+                  ...categories.map((category) => ({
+                    label: category.label,
+                    value: category.id,
+                  })),
+                ]}
+                selectProps={{
+                  name: "customer-category",
+                  onChange: (event) => update("categoryId", event.target.value),
+                  value: values.categoryId,
+                }}
+              />
+            </div>
+          </section>
+        </div>
 
-        <section aria-labelledby={detailsHeadingId} className={styles.section}>
-          <h3 className={styles.sectionTitle} id={detailsHeadingId}>
-            {content.sections.details}
-          </h3>
-          <div className={styles.grid}>
-            {renderTextField("websiteUrl", {
-              autoComplete: "url",
-              inputMode: "url",
-              kind: FormFieldKind.Url,
-              label: content.fields.websiteUrl,
-              maxLength: CustomerFieldLimits.WebsiteUrlMaxLength,
-              name: "customer-website",
-              placeholder: content.placeholders.websiteUrl,
-            })}
-            {renderTextField("vatId", {
-              label: content.fields.vatId,
-              maxLength: CustomerFieldLimits.VatIdMaxLength,
-              name: "customer-vat-id",
-              placeholder: content.placeholders.vatId,
-            })}
-            {renderTextField("hourlyRate", {
-              hint: content.hints.hourlyRate,
-              inputMode: "decimal",
-              label: content.fields.hourlyRate,
-              maxLength: 12,
-              name: "customer-hourly-rate",
-              placeholder: content.placeholders.hourlyRate,
-              suffix: content.currencySymbol,
-            })}
-            <FormField
-              className={styles.fullWidth}
-              hint={
-                values.notes.length >= notesThreshold
-                  ? formatMessage(content.hints.notesCounter, {
-                      count: values.notes.length,
-                      max: CustomerFieldLimits.NotesMaxLength,
-                    })
-                  : undefined
-              }
-              kind={FormFieldKind.Textarea}
-              label={content.fields.notes}
-              textareaProps={{
-                maxLength: CustomerFieldLimits.NotesMaxLength,
-                name: "customer-notes",
-                onChange: (event) => update("notes", event.target.value),
-                placeholder: content.placeholders.notes,
-                rows: 3,
-                value: values.notes,
-              }}
-            />
-          </div>
-        </section>
+        <div
+          aria-labelledby={`${tabsId}-${CustomerFormTab.Contacts}-tab`}
+          hidden={activeTab !== CustomerFormTab.Contacts}
+          id={`${tabsId}-${CustomerFormTab.Contacts}-panel`}
+          role="tabpanel"
+        >
+          <CustomerContactSection
+            content={content}
+            contacts={contacts}
+            customerExists={Boolean(customer)}
+            errors={errors}
+            locale={locale}
+            onContactFieldChangeAction={update}
+            onContactsChangeAction={setContacts}
+            onErrorsChangeAction={setErrors}
+            values={values}
+          />
+        </div>
+        <div
+          aria-labelledby={`${tabsId}-${CustomerFormTab.Address}-tab`}
+          hidden={activeTab !== CustomerFormTab.Address}
+          id={`${tabsId}-${CustomerFormTab.Address}-panel`}
+          role="tabpanel"
+        >
+          <section
+            aria-labelledby={addressHeadingId}
+            className={styles.section}
+            data-variant="grouped"
+          >
+            <h3 className={styles.sectionTitle} id={addressHeadingId}>
+              {content.sections.address}
+            </h3>
+            <div className={styles.addressGrid}>
+              {renderTextField("street", {
+                autoComplete: "street-address",
+                className: styles.fullWidth,
+                label: content.fields.street,
+                maxLength: CustomerFieldLimits.StreetMaxLength,
+                name: "customer-street",
+                placeholder: content.placeholders.street,
+              })}
+              {renderTextField("postalCode", {
+                autoComplete: "postal-code",
+                label: content.fields.postalCode,
+                maxLength: CustomerFieldLimits.PostalCodeMaxLength,
+                name: "customer-postal-code",
+                placeholder: content.placeholders.postalCode,
+              })}
+              {renderTextField("city", {
+                autoComplete: "address-level2",
+                label: content.fields.city,
+                maxLength: CustomerFieldLimits.CityMaxLength,
+                name: "customer-city",
+                placeholder: content.placeholders.city,
+              })}
+              {renderTextField("country", {
+                autoComplete: "country-name",
+                className: styles.fullWidth,
+                label: content.fields.country,
+                maxLength: CustomerFieldLimits.CountryMaxLength,
+                name: "customer-country",
+                placeholder: content.placeholders.country,
+              })}
+            </div>
+          </section>
+        </div>
 
-        <p className={styles.requiredHint}>{content.requiredHint}</p>
+        <div
+          aria-labelledby={`${tabsId}-${CustomerFormTab.Details}-tab`}
+          hidden={activeTab !== CustomerFormTab.Details}
+          id={`${tabsId}-${CustomerFormTab.Details}-panel`}
+          role="tabpanel"
+        >
+          <section
+            aria-labelledby={detailsHeadingId}
+            className={styles.section}
+          >
+            <h3 className={styles.sectionTitle} id={detailsHeadingId}>
+              {content.sections.details}
+            </h3>
+            <div className={styles.grid}>
+              {renderTextField("websiteUrl", {
+                autoComplete: "url",
+                inputMode: "url",
+                kind: FormFieldKind.Url,
+                label: content.fields.websiteUrl,
+                maxLength: CustomerFieldLimits.WebsiteUrlMaxLength,
+                name: "customer-website",
+                placeholder: content.placeholders.websiteUrl,
+              })}
+              {renderTextField("vatId", {
+                label: content.fields.vatId,
+                maxLength: CustomerFieldLimits.VatIdMaxLength,
+                name: "customer-vat-id",
+                placeholder: content.placeholders.vatId,
+              })}
+              {renderTextField("hourlyRate", {
+                hint: content.hints.hourlyRate,
+                inputMode: "decimal",
+                label: content.fields.hourlyRate,
+                maxLength: 12,
+                name: "customer-hourly-rate",
+                placeholder: content.placeholders.hourlyRate,
+                suffix: content.currencySymbol,
+              })}
+              <FormField
+                className={styles.fullWidth}
+                hint={
+                  values.notes.length >= notesThreshold
+                    ? formatMessage(content.hints.notesCounter, {
+                        count: values.notes.length,
+                        max: CustomerFieldLimits.NotesMaxLength,
+                      })
+                    : undefined
+                }
+                kind={FormFieldKind.Textarea}
+                label={content.fields.notes}
+                textareaProps={{
+                  maxLength: CustomerFieldLimits.NotesMaxLength,
+                  name: "customer-notes",
+                  onChange: (event) => update("notes", event.target.value),
+                  placeholder: content.placeholders.notes,
+                  rows: 3,
+                  value: values.notes,
+                }}
+              />
+            </div>
+          </section>
+        </div>
 
         {mutation.hasConflict && mutation.current ? (
           <section

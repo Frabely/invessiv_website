@@ -7,7 +7,7 @@ import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 export interface CustomerPrimaryContactInputDto {
   /** Optional; combined with `lastName` into the person's display name. */
   firstName: string | null;
-  /** Either this or `email` is required, so the contact is always identifiable. */
+  /** Required for new writes; nullable in the contract to represent historical records. */
   lastName: string | null;
   /** Stored as the person's own address. Never used for authorization. */
   email: string | null;
