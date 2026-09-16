@@ -40,32 +40,29 @@ es nicht weniger als einen gibt. Wechsel und Lösen laufen deshalb immer in eine
 ## Architektur
 
 ```txt
-POST   /api/workspace/crm/customers/[id]/contacts        Permission CustomersWrite
-PATCH  /api/workspace/crm/contacts/[contactId]
-DELETE /api/workspace/crm/contacts/[contactId]
-PUT    /api/workspace/crm/contacts/[contactId]/primary   setzt primär, Transaktion
+POST  /api/workspace/crm/customers       legt Kunde und Ansprechpartner gemeinsam an
+PATCH /api/workspace/crm/customers/[id]  ersetzt Kunde und vollständigen Ansprechpartnerstand
 ```
 
-Alle vier über `withPermission(Permission.CustomersWrite)`. Nach jeder Mutation `router.refresh()`.
+Beide Routen laufen über `withPermission(Permission.CustomersWrite)`. Im Kundenformular werden neue und geänderte
+Ansprechpartner zunächst nur lokal übernommen. Erst das Speichern des gesamten Kundenformulars persistiert Kunde,
+Personen und Zuordnungen gemeinsam in einer Transaktion. Es gibt für diesen Flow keinen separaten
+Ansprechpartner-Endpunkt.
 
 ## Verzeichnisstruktur
 
 ```txt
-apps/workspace/src/app/api/workspace/crm/customers/[id]/contacts/route.ts
-apps/workspace/src/app/api/workspace/crm/contacts/[contactId]/route.ts
-apps/workspace/src/app/api/workspace/crm/contacts/[contactId]/primary/route.ts
+apps/workspace/src/app/api/workspace/crm/customers/route.ts
+apps/workspace/src/app/api/workspace/crm/customers/[id]/route.ts
 
 apps/workspace/src/server/workspace/crm/
-  command-handler/{create,update,delete}-customer-contact.command-handler.ts
-  command-handler/set-primary-contact.command-handler.ts
-  services/customer-contact.schema.ts
-  shared/customer-contact-display-name.ts
+  command-handler/create-customer.command-handler.ts
+  command-handler/update-customer.command-handler.ts
+  services/customer-contact-write-service.ts
+  services/customer-schemas.ts
 
 apps/workspace/src/components/workspace/crm/contacts/
-  customer-contacts-section/
-  customer-contact-card/
-  customer-contact-form-dialog/
-apps/workspace/src/i18n/dictionaries/workspace/crm/contacts/{de,en}.json
+  customer-contact-section/
 ```
 
 ## Tickets
@@ -76,8 +73,7 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/contacts/{de,en}.json
   `shared/customer-contact-display-name.ts` + Tests
 - **Skills:** `best-practices`
 - **Inhalt:**
-  - Felder: Vorname, Nachname, E-Mail, Telefon, Funktion — alle optional, aber mindestens eines von
-    Nachname oder E-Mail muss gesetzt sein
+  - Felder: Vorname, Nachname, E-Mail, Telefon, Funktion; Nachname ist Pflicht, E-Mail ist optional
   - Person- und Zuordnungsänderungen verwenden getrennt `personVersion` und `assignmentVersion`;
     kein Write schützt beide Tabellen mit nur einem Versionswert
   - Anzeigename ableiten, bei leerem Ergebnis auf die E-Mail zurückfallen
@@ -98,16 +94,16 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/contacts/{de,en}.json
 
 ### CRM-06-T2 — Route Handler
 
-- **Files:** die vier Routen oben + Tests, `api-endpoints.ts`, `api/workspace/crm/README.md`
+- **Files:** die beiden Kundenrouten oben + Tests, `api-endpoints.ts`, `api/workspace/crm/README.md`
 - **Skills:** `best-practices`
 - **Inhalt:** `withPermission` innen aufgerufen wegen `params`; Fehlercodes `ContactNotFound`,
   `CustomerNotFound`, `ValidationError`
-- **Akzeptanz:** Tests für 401/404/403/201/204/422; Kontakt eines fremden Kunden lässt sich nicht
-  über eine geratene ID bearbeiten (der Handler prüft die Zugehörigkeit)
+- **Akzeptanz:** Tests für 401/404/403/200/201/422; Zuordnungen eines fremden Kunden lassen sich nicht über eine
+  manipulierte Kontakt-ID ändern (der Command prüft die Zugehörigkeit)
 
 ### CRM-06-T3 — Sektion und Dialog
 
-- **Files:** `components/workspace/crm/contacts/**`, `dictionaries/workspace/crm/contacts/{de,en}.json`
+- **Files:** `components/workspace/crm/contacts/**`, Kundenformular und CRM-Dictionaries
 - **Skills:** `frontend-design`, `accessibility`, `copywriting`
 - **Inhalt:**
   - Kontaktkarten mit Name, Funktion, klickbarer Mail und Telefonnummer, Primär-Markierung als Badge
@@ -115,7 +111,8 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/contacts/{de,en}.json
   - Bei genau einer Zuordnung ist „Lösen" deaktiviert, mit erklärendem Hinweis statt Fehlermeldung
   - Der Zuordnungsdialog sucht zuerst in bestehenden Personen und bietet Treffer zur Auswahl, bevor
     eine neue Person entsteht
-  - Dialog für Anlegen und Bearbeiten in einer Komponente
+  - Editor für Anlegen und Bearbeiten innerhalb des Kundenformulars; „Übernehmen“ ändert nur den lokalen Formularstand
+  - Persistenz ausschließlich über den abschließenden Submit des gesamten Kundenformulars
   - Kein leerer Zustand — ein Kunde hat immer mindestens den Primärkontakt aus der Anlage (Task 04).
     Die Sektion zeigt stattdessen den Primärkontakt zuerst und darunter die weiteren Zuordnungen
 - **Akzeptanz:**

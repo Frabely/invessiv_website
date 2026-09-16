@@ -273,13 +273,14 @@ export function SocialProfilesSection({
           <div className={styles.socialEditorRow}>
             <FormField
               className={styles.field}
+              controlId={platformSelectId}
               errorMessage={platformDraftError ?? undefined}
               kind={FormFieldKind.Custom}
               label={content.fields.platform}
-              renderControl={({ describedBy, invalid }) => (
+              renderControl={({ describedBy, id, invalid }) => (
                 <CustomSelect
                   describedBy={describedBy}
-                  id={platformSelectId}
+                  id={id}
                   invalid={invalid}
                   onChange={(next) => {
                     setPlatformDraft(next);

@@ -1,10 +1,11 @@
 "use client";
 
-import type {
-  InputHTMLAttributes,
-  ReactNode,
-  Ref,
-  TextareaHTMLAttributes,
+import {
+  type InputHTMLAttributes,
+  type ReactNode,
+  type Ref,
+  type TextareaHTMLAttributes,
+  useId,
 } from "react";
 import type { FormFieldControlBindings } from "@invessiv/common/contracts/ui/form-field-control-bindings";
 import {
@@ -48,6 +49,7 @@ type TextareaFieldProps = BaseFormFieldProps & {
 
 /** Escape hatch for controls FormField can't render natively, e.g. `CustomSelect`. */
 type CustomFieldProps = BaseFormFieldProps & {
+  controlId?: string;
   kind: typeof FormFieldKind.Custom;
   renderControl: (bindings: FormFieldControlBindings) => ReactNode;
 };
@@ -56,6 +58,7 @@ export type FormFieldProps =
   TextFieldProps | TextareaFieldProps | CustomFieldProps;
 
 export function FormField(props: FormFieldProps) {
+  const generatedControlId = useId();
   const {
     className,
     controlClassName,
@@ -68,7 +71,8 @@ export function FormField(props: FormFieldProps) {
     required = false,
   } = props;
 
-  const fieldBaseId = getFieldBaseId(props);
+  const controlId = getControlId(props, generatedControlId);
+  const fieldBaseId = controlId;
   const resolvedErrorId = errorMessageId ?? `${fieldBaseId}-error`;
   const resolvedHintId = hintId ?? (hint ? `${fieldBaseId}-hint` : undefined);
   const rootClassName = className
@@ -76,33 +80,35 @@ export function FormField(props: FormFieldProps) {
     : styles.field;
 
   return (
-    <label className={rootClassName}>
-      <span className={styles.label}>
+    <div className={rootClassName}>
+      <label className={styles.label} htmlFor={controlId}>
         <FormFieldLabel label={label} required={required} />
-      </span>
-      <span className={styles.control}>
+      </label>
+      <div className={styles.control}>
         {props.kind === FormFieldKind.Textarea
           ? renderTextarea(
               props,
+              controlId,
               controlClassName,
               resolvedErrorId,
               resolvedHintId,
             )
           : null}
         {props.kind === FormFieldKind.Custom
-          ? renderCustom(props, resolvedErrorId, resolvedHintId)
+          ? renderCustom(props, controlId, resolvedErrorId, resolvedHintId)
           : null}
         {props.kind !== FormFieldKind.Textarea &&
         props.kind !== FormFieldKind.Custom
           ? renderInput(
               props,
+              controlId,
               controlClassName,
               resolvedErrorId,
               resolvedHintId,
               inputSuffix,
             )
           : null}
-      </span>
+      </div>
       {hint ? (
         <small className={styles.hint} id={resolvedHintId}>
           {hint}
@@ -116,43 +122,30 @@ export function FormField(props: FormFieldProps) {
       >
         {errorMessage ?? "\u00A0"}
       </small>
-    </label>
+    </div>
   );
 }
 
-function getFieldBaseId(props: FormFieldProps): string {
+function getControlId(
+  props: FormFieldProps,
+  generatedControlId: string,
+): string {
   if (props.kind === FormFieldKind.Textarea) {
     return (
-      props.textareaProps?.id ??
-      props.textareaProps?.name ??
-      slugifyFieldLabel(props.label, props.kind)
+      props.textareaProps?.id ?? props.textareaProps?.name ?? generatedControlId
     );
   }
 
   if (props.kind === FormFieldKind.Custom) {
-    return slugifyFieldLabel(props.label, props.kind);
+    return props.controlId ?? generatedControlId;
   }
 
-  return (
-    props.inputProps?.id ??
-    props.inputProps?.name ??
-    slugifyFieldLabel(props.label, props.kind)
-  );
-}
-
-function slugifyFieldLabel(label: string, kind: string): string {
-  const normalizedLabel = label
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[^\w\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-");
-
-  return normalizedLabel ? `${normalizedLabel}-${kind}` : kind;
+  return props.inputProps?.id ?? props.inputProps?.name ?? generatedControlId;
 }
 
 function renderInput(
   props: TextFieldProps,
+  controlId: string,
   controlClassName?: string,
   errorMessageId?: string,
   hintId?: string,
@@ -179,6 +172,7 @@ function renderInput(
           (props.errorMessage ? "true" : undefined)
         }
         className={className || undefined}
+        id={controlId}
         ref={(element) => {
           assignInputRef(props.inputProps?.ref, element);
           assignInputRef(props.inputRef, element);
@@ -208,6 +202,7 @@ function assignInputRef(
 
 function renderTextarea(
   props: TextareaFieldProps,
+  controlId: string,
   controlClassName?: string,
   errorMessageId?: string,
   hintId?: string,
@@ -232,12 +227,14 @@ function renderTextarea(
         (props.errorMessage ? "true" : undefined)
       }
       className={className || undefined}
+      id={controlId}
     />
   );
 }
 
 function renderCustom(
   props: CustomFieldProps,
+  controlId: string,
   errorMessageId?: string,
   hintId?: string,
 ) {
@@ -247,6 +244,7 @@ function renderCustom(
 
   return props.renderControl({
     describedBy: describedBy || undefined,
+    id: controlId,
     invalid: Boolean(props.errorMessage),
   });
 }

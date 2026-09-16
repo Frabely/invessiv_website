@@ -35,8 +35,8 @@ import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-
 import {
   createCustomerFormValues,
   toCreateCustomerRequest,
-  toCustomerContactWrite,
   toUpdateCustomerRequest,
+  validateCustomerContact,
   validateCustomerForm,
 } from "@/common/patterns/crm/customer-form";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
@@ -109,7 +109,7 @@ export function CustomerFormDialog({
   const router = useRouter();
   const formId = useId();
   const tabsId = useId();
-  const categorySelectId = useId();
+  const contactConfirmButtonId = useId();
   const customerHeadingId = useId();
   const addressHeadingId = useId();
   const detailsHeadingId = useId();
@@ -125,6 +125,7 @@ export function CustomerFormDialog({
   const [activeTab, setActiveTab] = useState<CustomerFormTab>(
     CustomerFormTab.Customer,
   );
+  const [contactEditorOpen, setContactEditorOpen] = useState(!customer);
   const [contacts, setContacts] = useState<CustomerContactWriteDto[]>(
     () =>
       customer?.contacts.map((contact) => ({
@@ -174,15 +175,29 @@ export function CustomerFormDialog({
       return;
     }
 
-    const nextErrors = validateCustomerForm(values, mode, contacts.length > 0);
+    const nextErrors = {
+      ...validateCustomerForm(values, mode, contacts.length > 0),
+      ...(contactEditorOpen ? validateCustomerContact(values) : {}),
+    };
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) {
       const invalidTab = findFirstInvalidTab(nextErrors);
       setActiveTab(invalidTab);
+      if (invalidTab === CustomerFormTab.Contacts) {
+        setContactEditorOpen(true);
+      }
       requestAnimationFrame(() =>
         formRef.current
           ?.querySelector<HTMLElement>('[aria-invalid="true"]')
           ?.focus(),
+      );
+      return;
+    }
+
+    if (contactEditorOpen) {
+      setActiveTab(CustomerFormTab.Contacts);
+      requestAnimationFrame(() =>
+        document.getElementById(contactConfirmButtonId)?.focus(),
       );
       return;
     }
@@ -194,12 +209,7 @@ export function CustomerFormDialog({
             toUpdateCustomerRequest(values, current.version, contacts),
           )
         : customersApiService.createCustomer(
-            toCreateCustomerRequest(
-              values,
-              contacts.length > 0
-                ? contacts
-                : [toCustomerContactWrite(values, true)],
-            ),
+            toCreateCustomerRequest(values, contacts),
           ),
     );
   }
@@ -438,10 +448,10 @@ export function CustomerFormDialog({
               <FormField
                 kind={FormFieldKind.Custom}
                 label={content.fields.category}
-                renderControl={({ describedBy, invalid }) => (
+                renderControl={({ describedBy, id, invalid }) => (
                   <CustomSelect
                     describedBy={describedBy}
-                    id={categorySelectId}
+                    id={id}
                     invalid={invalid}
                     onChange={(next) => update("categoryId", next)}
                     options={[
@@ -466,13 +476,16 @@ export function CustomerFormDialog({
           role="tabpanel"
         >
           <CustomerContactSection
+            confirmButtonId={contactConfirmButtonId}
             content={content}
             contacts={contacts}
             customerExists={Boolean(customer)}
+            editorOpen={contactEditorOpen}
             errors={errors}
             locale={locale}
             onContactFieldChangeAction={update}
             onContactsChangeAction={setContacts}
+            onEditorOpenChangeAction={setContactEditorOpen}
             onErrorsChangeAction={setErrors}
             values={values}
           />

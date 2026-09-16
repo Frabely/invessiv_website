@@ -4,7 +4,6 @@ import {
   type ReactNode,
   useCallback,
   useEffect,
-  useId,
   useMemo,
   useState,
 } from "react";
@@ -260,8 +259,6 @@ export function LeadFormDialog({
   const startTransition = useNavigationContext();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const categorySelectId = useId();
-  const statusSelectId = useId();
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const isEditMode = mode === LeadFormDialogMode.Edit;
   const { dialogDescription, dialogTitle, savingLabel, submitLabel } =
@@ -867,10 +864,10 @@ export function LeadFormDialog({
               )}
               kind={FormFieldKind.Custom}
               label={content.fields.category}
-              renderControl={({ describedBy, invalid }) => (
+              renderControl={({ describedBy, id, invalid }) => (
                 <CustomSelect
                   describedBy={describedBy}
-                  id={categorySelectId}
+                  id={id}
                   invalid={invalid}
                   onChange={(next) => {
                     setValue(LeadFormDialogField.CategoryId, next, {
@@ -935,10 +932,10 @@ export function LeadFormDialog({
               errorMessage={errors.lead_status?.message}
               kind={FormFieldKind.Custom}
               label={content.fields.status}
-              renderControl={({ describedBy, invalid }) => (
+              renderControl={({ describedBy, id, invalid }) => (
                 <CustomSelect
                   describedBy={describedBy}
-                  id={statusSelectId}
+                  id={id}
                   invalid={invalid}
                   onChange={(next) => {
                     setValue(LeadFormDialogField.LeadStatus, next, {

@@ -7,6 +7,7 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -85,6 +86,21 @@ function submit(name: string) {
 
 function selectTab(name: string) {
   fireEvent.click(screen.getByRole("tab", { name }));
+}
+
+function confirmContactDraft() {
+  const confirmButton = screen.queryByRole("button", {
+    name: content.buttons.confirmContact,
+  });
+  if (!confirmButton) {
+    const contactTab =
+      screen.queryByRole("tab", { name: content.sections.contact }) ??
+      screen.getByRole("tab", { name: content.sections.additionalContact });
+    fireEvent.click(contactTab);
+  }
+  fireEvent.click(
+    screen.getByRole("button", { name: content.buttons.confirmContact }),
+  );
 }
 
 describe("CustomerFormDialog", () => {
@@ -186,6 +202,7 @@ describe("CustomerFormDialog", () => {
     });
     fireEvent.change(input(/^Stundensatz/), { target: { value: "80,50" } });
 
+    confirmContactDraft();
     submit(content.buttons.submitCreate);
 
     await waitFor(() => expect(mocks.replace).toHaveBeenCalled());
@@ -211,6 +228,7 @@ describe("CustomerFormDialog", () => {
       target: { value: "kontakt@kluge.example" },
     });
 
+    confirmContactDraft();
     submit(content.buttons.submitCreate);
 
     expect(
@@ -232,6 +250,7 @@ describe("CustomerFormDialog", () => {
       target: { value: "kontakt@kluge.example" },
     });
 
+    confirmContactDraft();
     submit(content.buttons.submitCreate);
 
     expect(await screen.findByRole("alert")).toHaveTextContent(
@@ -297,12 +316,66 @@ describe("CustomerFormDialog", () => {
     fireEvent.click(
       screen.getByRole("button", { name: content.buttons.confirmContact }),
     );
+    expect(mocks.updateCustomer).not.toHaveBeenCalled();
     submit(content.buttons.submitEdit);
     await waitFor(() => expect(mocks.updateCustomer).toHaveBeenCalled());
     expect(mocks.updateCustomer.mock.calls[0][1]).toMatchObject({
       contacts: [
         expect.objectContaining({ lastName: "Kluge", preferredLocale: "de" }),
       ],
+    });
+  });
+
+  it("requires an open contact draft to be accepted before saving the customer", async () => {
+    const customer = customerDetailFixture({ version: 2 });
+    renderDialog(customer);
+
+    selectTab(content.sections.additionalContact);
+    fireEvent.click(
+      screen.getByRole("button", { name: /Ansprechpartner hinzufügen/ }),
+    );
+    fireEvent.change(input(/^Nachname/), { target: { value: "Kluge" } });
+
+    submit(content.buttons.submitEdit);
+
+    expect(mocks.updateCustomer).not.toHaveBeenCalled();
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: content.buttons.confirmContact }),
+      ).toHaveFocus(),
+    );
+  });
+
+  it("discards a cancelled contact draft before saving the customer", async () => {
+    const customer = customerDetailFixture({
+      contacts: [customerContactFixture()],
+      version: 2,
+    });
+    mocks.updateCustomer.mockResolvedValue({ ok: true, customer });
+    renderDialog(customer);
+
+    selectTab(content.sections.additionalContact);
+    fireEvent.click(
+      screen.getByRole("button", { name: /Ansprechpartner hinzufügen/ }),
+    );
+    fireEvent.change(input(/^Nachname/), { target: { value: "Verworfen" } });
+    const contactSection = screen.getByRole("region", {
+      name: content.sections.additionalContact,
+    });
+    fireEvent.click(
+      within(contactSection).getByRole("button", {
+        name: content.buttons.cancel,
+      }),
+    );
+
+    submit(content.buttons.submitEdit);
+
+    await waitFor(() => expect(mocks.updateCustomer).toHaveBeenCalled());
+    expect(mocks.updateCustomer.mock.calls[0][1]).toMatchObject({
+      contacts: [expect.objectContaining({ lastName: "Berger" })],
+    });
+    expect(mocks.updateCustomer.mock.calls[0][1]).not.toMatchObject({
+      contacts: [expect.objectContaining({ lastName: "Verworfen" })],
     });
   });
 

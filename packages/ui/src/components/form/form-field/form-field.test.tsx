@@ -66,10 +66,11 @@ describe("FormField", () => {
         hint="Used for reporting"
         kind={FormFieldKind.Custom}
         label="Assigned category"
-        renderControl={({ describedBy, invalid }) => (
+        renderControl={({ describedBy, id, invalid }) => (
           <button
             aria-describedby={describedBy}
             data-invalid={invalid || undefined}
+            id={id}
             type="button"
           >
             Open category picker
@@ -79,6 +80,9 @@ describe("FormField", () => {
     );
 
     const control = screen.getByLabelText(/Assigned category/);
+    const label = screen.getByText("Assigned category").closest("label");
+    expect(label).toHaveAttribute("for", control.id);
+    expect(label?.parentElement?.tagName).toBe("DIV");
     expect(control).toHaveAttribute("data-invalid", "true");
     expect(control).toHaveAttribute(
       "aria-describedby",

@@ -750,7 +750,9 @@ describe("LeadFormDialog", () => {
     );
 
     const companyInput = screen.getByRole("textbox", { name: /Unternehmen/ });
-    const companyField = companyInput.closest("label");
+    const companyField = document.querySelector(
+      `label[for="${companyInput.id}"]`,
+    )?.parentElement;
     expect(companyField).not.toBeNull();
     expect(companyField).toHaveTextContent(content.help.fieldStateUnchanged);
 
@@ -785,7 +787,9 @@ describe("LeadFormDialog", () => {
     );
 
     const emailInput = screen.getByPlaceholderText("name@firma.de");
-    const emailField = emailInput.closest("label");
+    const emailField = document.querySelector(
+      `label[for="${emailInput.id}"]`,
+    )?.parentElement;
     expect(emailField).not.toBeNull();
     expect(emailField).toHaveTextContent(content.help.fieldStateUnchanged);
 

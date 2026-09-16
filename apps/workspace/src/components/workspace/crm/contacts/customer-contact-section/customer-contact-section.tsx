@@ -41,9 +41,11 @@ type ContactField =
   | "contactPreferredLocale";
 
 type CustomerContactSectionProps = {
+  confirmButtonId: string;
   content: CrmFormDictionary;
   contacts: CustomerContactWriteDto[];
   customerExists: boolean;
+  editorOpen: boolean;
   errors: CustomerFormErrors;
   locale: Locale;
   onContactFieldChangeAction: (
@@ -52,23 +54,25 @@ type CustomerContactSectionProps = {
   ) => void;
   onErrorsChangeAction: Dispatch<SetStateAction<CustomerFormErrors>>;
   onContactsChangeAction: Dispatch<SetStateAction<CustomerContactWriteDto[]>>;
+  onEditorOpenChangeAction: (open: boolean) => void;
   values: CustomerFormValues;
 };
 
 export function CustomerContactSection({
+  confirmButtonId,
   content,
   contacts,
   customerExists,
+  editorOpen,
   errors,
   locale,
   onContactFieldChangeAction,
   onContactsChangeAction,
+  onEditorOpenChangeAction,
   onErrorsChangeAction,
   values,
 }: CustomerContactSectionProps) {
   const headingId = useId();
-  const localeSelectId = useId();
-  const [editorOpen, setEditorOpen] = useState(!customerExists);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [removingIndex, setRemovingIndex] = useState<number | null>(null);
 
@@ -97,7 +101,7 @@ export function CustomerContactSection({
   function beginAdd() {
     clearDraft();
     setEditingIndex(null);
-    setEditorOpen(true);
+    onEditorOpenChangeAction(true);
   }
 
   function beginEdit(index: number) {
@@ -112,7 +116,7 @@ export function CustomerContactSection({
       contactPreferredLocale: contact.preferredLocale,
     });
     setEditingIndex(index);
-    setEditorOpen(true);
+    onEditorOpenChangeAction(true);
   }
 
   function confirmDraft() {
@@ -137,8 +141,14 @@ export function CustomerContactSection({
           ),
     );
     clearDraft();
-    setEditorOpen(false);
+    onEditorOpenChangeAction(false);
     setEditingIndex(null);
+  }
+
+  function cancelDraft() {
+    clearDraft();
+    setEditingIndex(null);
+    onEditorOpenChangeAction(false);
   }
 
   function makePrimary(index: number) {
@@ -331,10 +341,10 @@ export function CustomerContactSection({
             <FormField
               kind={FormFieldKind.Custom}
               label={content.fields.preferredLocale}
-              renderControl={({ describedBy, invalid }) => (
+              renderControl={({ describedBy, id, invalid }) => (
                 <CustomSelect<Locale>
                   describedBy={describedBy}
-                  id={localeSelectId}
+                  id={id}
                   invalid={invalid}
                   onChange={(next) =>
                     onContactFieldChangeAction("contactPreferredLocale", next)
@@ -351,14 +361,14 @@ export function CustomerContactSection({
         ) : null}
         {editorOpen ? (
           <div className={styles.editorActions}>
-            <ButtonControl
-              onClick={() => setEditorOpen(false)}
-              type="button"
-              variant="ghost"
-            >
+            <ButtonControl onClick={cancelDraft} type="button" variant="ghost">
               {content.buttons.cancel}
             </ButtonControl>
-            <PrimaryCtaButton onClick={confirmDraft} type="button">
+            <PrimaryCtaButton
+              id={confirmButtonId}
+              onClick={confirmDraft}
+              type="button"
+            >
               {content.buttons.confirmContact}
             </PrimaryCtaButton>
           </div>

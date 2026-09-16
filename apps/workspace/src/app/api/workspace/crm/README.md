@@ -12,12 +12,11 @@ Jeder Handler ist mit `withPermission(Permission.X, handler)` gewrappt: ohne Ses
 Mitgliedschaft `404 NOT_FOUND`, deaktiviertes Mitglied `403 FORBIDDEN`, DB-Fehler bei der Auflösung
 `503 UNAVAILABLE`, fehlende Permission `403 FORBIDDEN`.
 
-| Route                               | Permission        |
-| ----------------------------------- | ----------------- |
-| `GET /crm/customers`                | `customers.read`  |
-| `POST /crm/customers`               | `customers.write` |
-| `PATCH /crm/customers/[id]`         | `customers.write` |
-| `POST /crm/customers/[id]/contacts` | `customers.write` |
+| Route                       | Permission        |
+| --------------------------- | ----------------- |
+| `GET /crm/customers`        | `customers.read`  |
+| `POST /crm/customers`       | `customers.write` |
+| `PATCH /crm/customers/[id]` | `customers.write` |
 
 ## Fehlerformat
 
@@ -77,9 +76,13 @@ Body `CreateCustomerRequestDto`:
 ```
 
 - Leere Strings werden zu `null`.
-- Primärkontakt braucht `lastName` oder `email`; er wird immer als neue Person angelegt.
+- Der Primärkontakt braucht `lastName`; `email` ist optional. Er wird immer als neue Person angelegt.
 - Status ist immer `active`, Owner das anlegende Mitglied. Zusätzliche Felder im Body werden verworfen.
 - Kunde, Person, Primärzuordnung und die Activity `created` entstehen in einer Transaktion.
+
+Weitere im Formular übernommene Ansprechpartner werden optional als `additionalContacts` im selben Request gesendet.
+Es gibt bewusst keinen separaten Ansprechpartner-Endpunkt: Erst das Speichern des gesamten Kundenformulars persistiert
+Kunde und Ansprechpartner gemeinsam.
 
 Erfolg: `201 { "customer": CustomerDetailDto }`.
 

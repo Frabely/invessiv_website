@@ -48,7 +48,7 @@ erreichbar.
 | Fehlerbehandlung | Handler liefern Result-Unions, werfen nicht. Route mappt Code auf HTTP über eine nicht-exportierte Status- und Message-Map            |
 | Duplikate        | **Verbot statt Warnung** (Entscheidung 13.09.2026): Unique-Index auf den normalisierten Anzeigenamen, 409 als Feldfehler              |
 | Warum            | Der Anzeigename ist der einzige Schutz gegen doppelte Anlage. Echte Namensgleichheit löst der Owner über einen unterscheidenden Namen |
-| Pflichtfelder    | Anzeigename und Primärkontakt (Nachname oder E-Mail). Alles andere optional — ein Kunde entsteht oft mit lückenhaften Daten           |
+| Pflichtfelder    | Anzeigename und Nachname des Primärkontakts. Alles andere optional — ein Kunde entsteht oft mit lückenhaften Daten                    |
 | Kundentyp        | Umschalter Firma / Privatperson. Bei „Firma" ist das Feld Firmenname sichtbar; bei „Privatperson" wird er verworfen                   |
 | Kundennummer     | Wird von der Datenbank vergeben, ist im Formular **nicht** editierbar und erscheint erst nach dem Anlegen                             |
 | Kategorie        | Auswahl aus `lead_categories` (aktive Einträge, nach `sort_order`), optional; unbekannte oder inaktive Kategorie ergibt 422           |
@@ -143,9 +143,9 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/{meta,shell,list,form}/{de,en
 
 - **Inhalt:**
   - zod-Schemas; Trim vor Validierung, leere Strings werden zu `null`
-  - Bei `customerType = individual` wird `companyName` verworfen, nicht gespeichert
-  - Primärkontakt: Vorname, Nachname, E-Mail, Telefon, Funktion, Portalsprache; Nachname oder E-Mail Pflicht;
-    Anzeigename aus Vor- und Nachname, Rückfall auf die E-Mail
+  - `companyName` ist unabhängig vom Kundentyp optional
+  - Primärkontakt: Vorname, Nachname, E-Mail, Telefon, Funktion, Portalsprache; Nachname ist Pflicht, E-Mail optional;
+    Anzeigename aus Vor- und Nachname
   - Transaktion inklusive Activity-Eintrag über `activityService.createActivity` — **kein** direkter Insert
   - Unique-Verletzung am Anzeigenamen wird zu `CUSTOMER_DISPLAY_NAME_TAKEN`
   - Sperrbaustein für Zuweisung (`FOR SHARE`) und Deaktivierung (`FOR UPDATE`) unter `server/workspace/access/`
