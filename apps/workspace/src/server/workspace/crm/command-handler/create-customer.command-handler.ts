@@ -68,13 +68,12 @@ export async function createCustomer(
       }
 
       const customerId = crypto.randomUUID();
-      const personId = crypto.randomUUID();
-
+      const primaryPersonId = crypto.randomUUID();
       await tx
         .insert(people)
         .values(
           customerWriteMappingService.mapContactApiToPersonDb(
-            personId,
+            primaryPersonId,
             data.primaryContact,
           ),
         );
@@ -93,11 +92,33 @@ export async function createCustomer(
           customerWriteMappingService.mapContactApiToAssignmentDb(
             crypto.randomUUID(),
             customerId,
-            personId,
+            primaryPersonId,
             data.primaryContact,
             true,
           ),
         );
+      for (const contact of data.additionalContacts ?? []) {
+        const personId = crypto.randomUUID();
+        await tx
+          .insert(people)
+          .values(
+            customerWriteMappingService.mapContactApiToPersonDb(
+              personId,
+              contact,
+            ),
+          );
+        await tx
+          .insert(customerContactAssignments)
+          .values(
+            customerWriteMappingService.mapContactApiToAssignmentDb(
+              crypto.randomUUID(),
+              customerId,
+              personId,
+              contact,
+              false,
+            ),
+          );
+      }
       await activityService.createActivity(tx, {
         customerId,
         type: ActivityType.Created,

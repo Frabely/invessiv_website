@@ -53,6 +53,7 @@ export function createCustomerFormValues(
 export function validateCustomerForm(
   values: CustomerFormValues,
   mode: CustomerFormDialogMode,
+  hasContactDrafts = false,
 ): CustomerFormErrors {
   const errors: CustomerFormErrors = {};
 
@@ -69,7 +70,7 @@ export function validateCustomerForm(
     errors.hourlyRate = CustomerFormValidationCode.HourlyRateInvalid;
   }
 
-  if (mode === CustomerFormDialogMode.Create) {
+  if (mode === CustomerFormDialogMode.Create && !hasContactDrafts) {
     Object.assign(errors, validateCustomerContact(values));
   }
 
@@ -114,17 +115,17 @@ function toWriteFields(values: CustomerFormValues): CustomerWriteFieldsDto {
 
 export function toCreateCustomerRequest(
   values: CustomerFormValues,
+  contacts: CustomerContactWriteDto[] = [],
 ): CreateCustomerRequestDto {
+  const drafts =
+    contacts.length > 0 ? contacts : [toCustomerContactWrite(values, true)];
+  const primary = drafts.find((contact) => contact.isPrimary) ?? drafts[0]!;
   return {
     ...toWriteFields(values),
-    primaryContact: {
-      firstName: orNull(values.contactFirstName),
-      lastName: orNull(values.contactLastName),
-      email: orNull(values.contactEmail),
-      phone: orNull(values.contactPhone),
-      roleLabel: orNull(values.contactRoleLabel),
-      preferredLocale: values.contactPreferredLocale,
-    },
+    primaryContact: primary,
+    ...(drafts.length > 1
+      ? { additionalContacts: drafts.filter((contact) => contact !== primary) }
+      : {}),
   };
 }
 

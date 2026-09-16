@@ -91,7 +91,10 @@ const writeFieldsSchema = z.object({
 
 export const customerSchemas = {
   entityId: z.uuid(),
-  create: writeFieldsSchema.extend({ primaryContact: primaryContactSchema }),
+  create: writeFieldsSchema.extend({
+    primaryContact: primaryContactSchema,
+    additionalContacts: z.array(primaryContactSchema).optional(),
+  }),
   createContact: primaryContactSchema,
   update: writeFieldsSchema.extend({
     version: z.int().positive(),

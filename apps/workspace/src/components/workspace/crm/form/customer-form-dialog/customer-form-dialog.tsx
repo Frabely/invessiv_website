@@ -150,7 +150,7 @@ export function CustomerFormDialog({
       return;
     }
 
-    const nextErrors = validateCustomerForm(values, mode);
+    const nextErrors = validateCustomerForm(values, mode, contacts.length > 0);
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) {
       requestAnimationFrame(() =>
@@ -167,7 +167,14 @@ export function CustomerFormDialog({
             current.id,
             toUpdateCustomerRequest(values, current.version, contacts),
           )
-        : customersApiService.createCustomer(toCreateCustomerRequest(values)),
+        : customersApiService.createCustomer(
+            toCreateCustomerRequest(
+              values,
+              contacts.length > 0
+                ? contacts
+                : [toCustomerContactWrite(values, true)],
+            ),
+          ),
     );
   }
 
@@ -189,6 +196,7 @@ export function CustomerFormDialog({
                   personId: contact.personId,
                   assignmentVersion: contact.assignmentVersion,
                   personVersion: contact.personVersion,
+                  isPrimary: contact.isPrimary,
                 }
               : contact,
           ),
@@ -241,6 +249,15 @@ export function CustomerFormDialog({
       current.filter((_, index) => index !== removingContactIndex),
     );
     setRemovingContactIndex(null);
+  }
+
+  function makePrimaryContact(index: number) {
+    setContacts((current) =>
+      current.map((contact, contactIndex) => ({
+        ...contact,
+        isPrimary: contactIndex === index,
+      })),
+    );
   }
 
   function errorFor(key: keyof CustomerFormValues): string | undefined {
@@ -407,10 +424,13 @@ export function CustomerFormDialog({
                 : content.sectionHints.contact}
             </p>
           </div>
-          {customer ? (
+          {contacts.length > 0 ? (
             <ul className={styles.contactList}>
               {contacts.map((contact, index) => (
-                <li className={styles.contactListItem} key={contact.id}>
+                <li
+                  className={styles.contactListItem}
+                  key={contact.id ?? `new-contact-${index}`}
+                >
                   <span>
                     {[contact.firstName, contact.lastName]
                       .filter(Boolean)
@@ -432,6 +452,15 @@ export function CustomerFormDialog({
                     >
                       {content.buttons.edit}
                     </ButtonControl>
+                    {!contact.isPrimary ? (
+                      <ButtonControl
+                        onClick={() => makePrimaryContact(index)}
+                        type="button"
+                        variant="ghost"
+                      >
+                        {content.buttons.makePrimary}
+                      </ButtonControl>
+                    ) : null}
                     <ButtonControl
                       disabled={contact.isPrimary}
                       onClick={() => setRemovingContactIndex(index)}
@@ -445,7 +474,7 @@ export function CustomerFormDialog({
               ))}
             </ul>
           ) : null}
-          {!customer || contactEditorOpen ? (
+          {contactEditorOpen ? (
             <div className={styles.grid}>
               {renderTextField("contactFirstName", {
                 autoComplete: "given-name",
@@ -505,34 +534,32 @@ export function CustomerFormDialog({
               />
             </div>
           ) : null}
-          {customer ? (
-            contactEditorOpen ? (
-              <div className={styles.contactEditorActions}>
-                <ButtonControl
-                  onClick={() => setContactEditorOpen(false)}
-                  type="button"
-                  variant="ghost"
-                >
-                  {content.buttons.cancel}
-                </ButtonControl>
-                <ButtonControl
-                  onClick={confirmContactDraft}
-                  type="button"
-                  variant="ghost"
-                >
-                  {content.buttons.confirmContact}
-                </ButtonControl>
-              </div>
-            ) : (
+          {contactEditorOpen ? (
+            <div className={styles.contactEditorActions}>
               <ButtonControl
-                onClick={beginContactAdd}
+                onClick={() => setContactEditorOpen(false)}
                 type="button"
                 variant="ghost"
               >
-                + {content.buttons.addContact}
+                {content.buttons.cancel}
               </ButtonControl>
-            )
-          ) : null}
+              <ButtonControl
+                onClick={confirmContactDraft}
+                type="button"
+                variant="ghost"
+              >
+                {content.buttons.confirmContact}
+              </ButtonControl>
+            </div>
+          ) : (
+            <ButtonControl
+              onClick={beginContactAdd}
+              type="button"
+              variant="ghost"
+            >
+              + {content.buttons.addContact}
+            </ButtonControl>
+          )}
         </section>
         <section
           aria-labelledby={addressHeadingId}

@@ -5,7 +5,7 @@
   },
   "description": {
     "create": "The customer and their primary contact are saved together. The customer number is assigned automatically.",
-    "edit": "Change the master data of {number}. The primary contact stays as it is."
+    "edit": "Change the master data and contacts of {number}."
   },
   "sections": {
     "customer": "Customer",
@@ -16,7 +16,7 @@
   },
   "sectionHints": {
     "contact": "Saved as a new person and shown in the customer list.",
-    "additionalContact": "Further contacts are assigned to this customer. The primary contact remains unchanged."
+    "additionalContact": "Further contacts are assigned to this customer. You can make one of them the primary contact."
   },
   "fields": {
     "displayName": "Display name",
@@ -93,6 +93,7 @@
     "addContact": "Add contact",
     "submittingContact": "Adding contact …",
     "edit": "Edit",
+    "makePrimary": "Make primary contact",
     "remove": "Remove",
     "confirmContact": "Apply contact",
     "confirmRemoveContact": "Remove contact",

@@ -5,7 +5,7 @@
   },
   "description": {
     "create": "Kunde und Hauptansprechpartner werden zusammen gespeichert. Die Kundennummer vergibt das System.",
-    "edit": "Stammdaten von {number} ändern. Der Hauptansprechpartner bleibt unverändert."
+    "edit": "Stammdaten und Ansprechpartner von {number} ändern."
   },
   "sections": {
     "customer": "Kunde",
@@ -16,7 +16,7 @@
   },
   "sectionHints": {
     "contact": "Wird als neue Person gespeichert und in der Kundenliste angezeigt.",
-    "additionalContact": "Weitere Ansprechpartner werden diesem Kunden zugeordnet. Der Hauptansprechpartner bleibt erhalten."
+    "additionalContact": "Weitere Ansprechpartner werden diesem Kunden zugeordnet. Du kannst einen davon als Hauptansprechpartner festlegen."
   },
   "fields": {
     "displayName": "Anzeigename",
@@ -93,6 +93,7 @@
     "addContact": "Ansprechpartner hinzufügen",
     "submittingContact": "Ansprechpartner wird hinzugefügt …",
     "edit": "Bearbeiten",
+    "makePrimary": "Als Hauptansprechpartner festlegen",
     "remove": "Entfernen",
     "confirmContact": "Ansprechpartner übernehmen",
     "confirmRemoveContact": "Ansprechpartner entfernen",

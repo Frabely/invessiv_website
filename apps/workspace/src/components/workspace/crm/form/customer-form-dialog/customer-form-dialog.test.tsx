@@ -12,6 +12,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { CustomerErrorCode } from "@invessiv/common/constants/crm/errors/customer-error-codes";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
+import type { CustomerContactAssignmentDto } from "@invessiv/common/contracts/crm/customer-contact.dto";
 import { getCrmFormDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { customerDetailFixture } from "@/server/tests/workspace/crm/support/crm-fixtures";
 import { CustomerFormDialog } from "./customer-form-dialog";
@@ -35,6 +36,30 @@ vi.mock("@/client/crm/customers-api-service", () => ({
 
 const content = getCrmFormDictionary("de");
 const CATEGORIES = [{ id: "category-1", label: "Coaches" }];
+
+function customerContactFixture(
+  overrides: Partial<CustomerContactAssignmentDto> = {},
+): CustomerContactAssignmentDto {
+  return {
+    id: "11111111-1111-4111-8111-111111111111",
+    personId: "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+    displayName: "Anna Berger",
+    firstName: "Anna",
+    lastName: "Berger",
+    primaryEmail: "anna@nordlicht.example",
+    primaryPhone: null,
+    businessEmail: null,
+    businessPhone: null,
+    roleLabel: "Geschäftsführung",
+    isPrimary: true,
+    preferredLocale: "de",
+    assignmentVersion: 1,
+    personVersion: 1,
+    createdAt: "2026-09-14T10:00:00.000Z",
+    updatedAt: "2026-09-14T10:00:00.000Z",
+    ...overrides,
+  };
+}
 
 function renderDialog(
   customer = null as ReturnType<typeof customerDetailFixture> | null,
@@ -225,6 +250,64 @@ describe("CustomerFormDialog", () => {
       contacts: [
         expect.objectContaining({ lastName: "Kluge", preferredLocale: "de" }),
       ],
+    });
+  });
+
+  it("lets a secondary contact become the primary contact", async () => {
+    const customer = customerDetailFixture({
+      contacts: [
+        customerContactFixture(),
+        customerContactFixture({
+          id: "22222222-2222-4222-8222-222222222222",
+          personId: "33333333-3333-4333-8333-333333333333",
+          firstName: "Mara",
+          lastName: "Kluge",
+          displayName: "Mara Kluge",
+          isPrimary: false,
+        }),
+      ],
+    });
+    mocks.updateCustomer.mockResolvedValue({ ok: true, customer });
+    renderDialog(customer);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: content.buttons.makePrimary }),
+    );
+    submit(content.buttons.submitEdit);
+
+    await waitFor(() => expect(mocks.updateCustomer).toHaveBeenCalled());
+    expect(mocks.updateCustomer.mock.calls[0][1]).toMatchObject({
+      contacts: [
+        expect.objectContaining({
+          id: customer.contacts[0]?.id,
+          isPrimary: false,
+        }),
+        expect.objectContaining({
+          id: customer.contacts[1]?.id,
+          isPrimary: true,
+        }),
+      ],
+    });
+  });
+
+  it("preserves the primary designation while editing that contact", async () => {
+    const customer = customerDetailFixture({
+      version: 2,
+      contacts: [customerContactFixture()],
+    });
+    mocks.updateCustomer.mockResolvedValue({ ok: true, customer });
+    renderDialog(customer);
+
+    fireEvent.click(screen.getByRole("button", { name: content.buttons.edit }));
+    fireEvent.change(input(/^Nachname/), { target: { value: "Neu" } });
+    fireEvent.click(
+      screen.getByRole("button", { name: content.buttons.confirmContact }),
+    );
+    submit(content.buttons.submitEdit);
+
+    await waitFor(() => expect(mocks.updateCustomer).toHaveBeenCalled());
+    expect(mocks.updateCustomer.mock.calls[0][1]).toMatchObject({
+      contacts: [expect.objectContaining({ isPrimary: true, lastName: "Neu" })],
     });
   });
 });
