@@ -1,21 +1,26 @@
 # Ordner 06b — Mitarbeiter-Cockpit
 
-> **Status:** offen · **Abhängigkeiten:** 04, 05, 06 · **Aufwand:** 2–3 Tage · **Reviewziel:** 35–60 Dateien
+> **Status:** läuft · **Abhängigkeiten:** 04, 05, 06 · **Aufwand:** 2–3 Tage · **Reviewziel:** 35–60 Dateien
 
 ## Ziel und Stand nach Merge
 
-**Konkreter Task-Plan**
+**Konkreter Task-Plan (aktualisiert)**
 
-- [`08b-mitarbeiter-cockpit.md`](./08b-mitarbeiter-cockpit.md) — mitgliedsbezogene Listenübersicht aus
-  zugewiesenen Kunden und offenen strukturierten Projektanfragen.
-- [`08c-kunden-cockpit-dialog.md`](./08c-kunden-cockpit-dialog.md) — dieselbe Übersicht als
-  Einzelkunden-Ansicht in einem Fullsize-Dialog, aufrufbar aus Kundenliste, Kundenformular und
-  Lead-Liste.
+- [`08b-mitarbeiter-cockpit.md`](./08b-mitarbeiter-cockpit.md) — späterer Dashboard-Umschalter mit
+  Kundenansicht für eigene zugewiesene Kunden.
+- [`08c-kunden-cockpit-dialog.md`](./08c-kunden-cockpit-dialog.md) — kompakte read-only Kundenansicht
+  im Dialog, erreichbar aus Kundenliste und Kundenformular.
 
-Jedes aktive Mitglied sieht auf einen Blick, für welche Kunden es zuständig ist und wo eine strukturierte
-Projektanfrage noch keine Folgeaktion hat (Task 08b). Zusätzlich kann jeder Kunde einzeln als
-Fullsize-Dialog geöffnet werden — aus der Kundenliste (Tabellen-Action), aus dem Kundenformular (Button)
-und aus der Lead-Liste, sobald der Lead konvertiert ist (Task 08c).
+Die Kundenansicht zeigt keinen Anfragen- oder Lead-Bereich. Sie öffnet sich per Tabellen-Action oder im
+Kundenformular, ohne die Liste zu verlassen oder ungespeicherte Formulareingaben zu verwerfen.
+
+Der aktuelle Stand zeigt ausschließlich Kundenkopf, Status, Zuständigkeit und Primärkontakt. Projekte,
+Aufgaben, Chat, Feature-Wünsche, Renewals, Aktivitäten, Herkunfts-Leads und Owner-Wechsel folgen erst
+mit ihren jeweiligen CRM-Tasks am selben DTO- und Darstellungspfad.
+
+Der spätere Dashboard-Umschalter verlangt `dashboard.read` und `customers.read`, bietet nur eigene
+zugewiesene Kunden an und hält Ansicht, Auswahl und gewählten Kunden im URL-State. Ein Select verwendet
+dieselbe Query und dieselbe Kundenansicht; es entsteht keine zweite Detaildarstellung.
 
 **Der Dialog ist die interne Mitarbeitersicht auf genau diesen Kunden — nicht die Kundenportal-Ansicht.**
 Er zeigt, was der aufrufende Mitarbeiter laut seinen eigenen Permissions zu diesem Kunden sehen darf.
@@ -39,12 +44,9 @@ diese eine Funktion. Es entsteht **keine** zweite, dialogspezifische Berechnung.
 
 ## Fachliche Grenzen
 
-- Keine neue Tabelle und keine Migration: `customers.owner_member_id` und `lead_project_requests`
-  existieren bereits.
+- Keine neue Tabelle, Migration oder API-Route.
 - Kein Dealvolumen und keine Pipeline-Werte — die entstehen erst mit dem Paketmodell in Ordner 07d (Task 42a).
-- Keine Leads als eigener Dateninhalt. Die Lead-Liste erhält lediglich einen Sprung-Button zum bereits
-  konvertierten Kunden; die Lead-Verwaltung und ihr Rechtemodell bleiben unverändert beim Workspace-Owner
-  und werden in dieser Einheit nicht erweitert.
+- Keine Leads, Website-Submissions oder Anfragen als eigener Dateninhalt.
 - Reine Leseansicht: Änderungen an Kunde oder Anfrage laufen weiterhin über die bestehenden Handler.
 - Der Einzelkunden-Dialog (Task 08c) ist keine neue Fachlogik, sondern eine zweite Darstellung derselben
   Aggregationsfunktion aus Task 08b.

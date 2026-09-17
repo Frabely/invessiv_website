@@ -642,7 +642,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 | 04  | gemerged  | `04-personen-und-kundenakte`             | Kunden samt Pflichtkontakt, Owner, Archiv und Detail vollständig nutzbar        |  80–100 |  4–5 T. |
 | 05  | im Review | `05-kundenliste-und-zuweisung`           | Paginierte Kundenliste mit Statusbadge und Statuspflege im Kundenformular       |   40–70 |  2–3 T. |
 | 06  | im Review | `06-lead-konvertierung`                  | Leads können sicher direkt als neue CRM-Kunden angelegt werden                  |   40–70 |  2–3 T. |
-| 06b | offen     | `06b-mitarbeiter-cockpit`                | „Meine Kunden"-Liste plus Kunden-Cockpit-Dialog aus Kundenliste/-formular/Leads |   35–60 |  2–3 T. |
+| 06b | läuft     | `06b-mitarbeiter-cockpit`                | Kundenansicht aus Kundenliste und -formular, Dashboard-Detailpfad vorbereitet   |   35–60 |  2–3 T. |
 | 07  | offen     | `07-projekte`                            | Projektanlage, Status, Workflow und Owner-Zuweisung vollständig nutzbar         |  60–100 |  3–4 T. |
 | 07a | offen     | `07a-zugriffsbereiche-fundament`         | Gebundene Rollen in DB, Actor und API unsichtbar und wirkungslos deployt        |   60–90 |    3 T. |
 | 07b | offen     | `07b-zugriffsfilter-kunden-und-projekte` | Alle Kunden- und Projektpfade filtern über `accessScope`; Negativtests          |  60–100 |  3–4 T. |

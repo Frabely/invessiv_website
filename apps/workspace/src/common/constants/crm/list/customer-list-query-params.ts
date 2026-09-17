@@ -5,6 +5,7 @@ export const CustomerListQueryParam = {
   Archived: "archived",
   Mode: "mode",
   Edit: "edit",
+  Cockpit: "cockpit",
   Search: "search",
 } as const;
 
@@ -17,5 +18,6 @@ export const CUSTOMER_LIST_QUERY_PARAM_VALUES = [
   CustomerListQueryParam.Archived,
   CustomerListQueryParam.Mode,
   CustomerListQueryParam.Edit,
+  CustomerListQueryParam.Cockpit,
   CustomerListQueryParam.Search,
 ] as const;

@@ -113,7 +113,8 @@
     "confirmContact": "Apply contact",
     "confirmRemoveContact": "Remove contact",
     "cancel": "Cancel",
-    "close": "Close"
+    "close": "Close",
+    "openCockpit": "Open customer overview"
   },
   "requiredHint": "Fields marked * are required.",
   "sourceLeads": {

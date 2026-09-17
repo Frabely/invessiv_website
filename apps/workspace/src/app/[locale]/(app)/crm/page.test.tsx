@@ -16,6 +16,7 @@ const mocks = vi.hoisted(() => ({
   requireWorkspaceArea: vi.fn(),
   listCustomers: vi.fn(),
   getCustomerById: vi.fn(),
+  getCustomerCockpitById: vi.fn(),
   listCategories: vi.fn(),
 }));
 
@@ -36,8 +37,16 @@ vi.mock(
   () => ({ getCustomerById: mocks.getCustomerById }),
 );
 vi.mock(
+  "@/server/workspace/crm/query-handler/get-customer-cockpit-by-id.query-handler",
+  () => ({ getCustomerCockpitById: mocks.getCustomerCockpitById }),
+);
+vi.mock(
   "@/server/workspace/crm/query-handler/list-active-customer-categories.query-handler",
   () => ({ listActiveCustomerCategories: mocks.listCategories }),
+);
+vi.mock(
+  "@/components/workspace/crm/detail/customer-cockpit-dialog/customer-cockpit-dialog",
+  () => ({ CustomerCockpitDialog: () => <div data-testid="cockpit" /> }),
 );
 vi.mock(
   "@/components/workspace/crm/shell/customers-page-header/customers-page-header",
@@ -90,6 +99,7 @@ describe("CrmPage", () => {
     });
     mocks.listCategories.mockResolvedValue([]);
     mocks.getCustomerById.mockResolvedValue(null);
+    mocks.getCustomerCockpitById.mockResolvedValue(null);
   });
 
   afterEach(() => {
@@ -134,6 +144,18 @@ describe("CrmPage", () => {
       "false",
     );
     expect(screen.queryByTestId("dialog")).not.toBeInTheDocument();
+  });
+
+  it("opens the read-only cockpit without customers.write", async () => {
+    mocks.requireWorkspaceArea.mockResolvedValue(
+      workspaceActorWith([Permission.CustomersRead]),
+    );
+    mocks.getCustomerCockpitById.mockResolvedValue({ id: TEST_CUSTOMER_ID });
+
+    await renderPage({ cockpit: TEST_CUSTOMER_ID });
+
+    expect(screen.getByTestId("cockpit")).toBeInTheDocument();
+    expect(mocks.getCustomerCockpitById).toHaveBeenCalledWith(TEST_CUSTOMER_ID);
   });
 
   it("opens the create dialog", async () => {

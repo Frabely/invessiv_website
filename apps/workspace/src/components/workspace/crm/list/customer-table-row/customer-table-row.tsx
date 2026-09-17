@@ -1,6 +1,7 @@
 import Link from "next/link";
 import {
   faEllipsisVertical,
+  faEye,
   faPenToSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,7 +18,11 @@ import type { Locale } from "@/config/i18n";
 import type { CrmListDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatRelativeTime } from "@/lib/format-relative-time";
 import { formatMessage } from "@/lib/i18n/format-message";
-import { buildCustomerEditHref } from "@/common/patterns/crm/customer-dialog-query";
+import {
+  buildCustomerCockpitHref,
+  buildCustomerEditHref,
+} from "@/common/patterns/crm/customer-dialog-query";
+import { getCrmCockpitDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { CustomerStatusBadge } from "../customer-status-badge/customer-status-badge";
 import styles from "./customer-table-row.module.css";
 
@@ -43,6 +48,7 @@ export function CustomerTableRow({
     customer.updatedAt,
     content.relativeTime,
   );
+  const cockpit = getCrmCockpitDictionary(locale);
 
   return (
     <DataTableRow className={styles.row} mobileCard>
@@ -77,7 +83,7 @@ export function CustomerTableRow({
       <DataTableCell className={styles.updatedCell} title={customer.updatedAt}>
         {updated}
       </DataTableCell>
-      {canWrite ? (
+      {
         <TableRowActions
           actionGroupId={`customer-${customer.id}-actions`}
           className={styles.actionsCell}
@@ -88,19 +94,29 @@ export function CustomerTableRow({
           menuLabel={content.columns.actions}
         >
           <Link
-            aria-label={formatMessage(content.editActionAriaLabel, {
+            aria-label={formatMessage(cockpit.openActionAriaLabel, {
               name: customer.displayName,
             })}
-            href={buildCustomerEditHref(basePath, customer.id, queryString)}
+            href={buildCustomerCockpitHref(basePath, customer.id, queryString)}
             scroll={false}
-            title={content.editAction}
+            title={cockpit.openAction}
           >
-            <FontAwesomeIcon aria-hidden="true" icon={faPenToSquare} />
+            <FontAwesomeIcon aria-hidden="true" icon={faEye} />
           </Link>
+          {canWrite ? (
+            <Link
+              aria-label={formatMessage(content.editActionAriaLabel, {
+                name: customer.displayName,
+              })}
+              href={buildCustomerEditHref(basePath, customer.id, queryString)}
+              scroll={false}
+              title={content.editAction}
+            >
+              <FontAwesomeIcon aria-hidden="true" icon={faPenToSquare} />
+            </Link>
+          ) : null}
         </TableRowActions>
-      ) : (
-        <DataTableCell className={styles.actionsCell} />
-      )}
+      }
     </DataTableRow>
   );
 }

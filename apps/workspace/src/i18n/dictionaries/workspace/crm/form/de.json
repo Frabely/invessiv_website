@@ -113,7 +113,8 @@
     "confirmContact": "Ansprechpartner übernehmen",
     "confirmRemoveContact": "Ansprechpartner entfernen",
     "cancel": "Abbrechen",
-    "close": "Schließen"
+    "close": "Schließen",
+    "openCockpit": "Kundenansicht öffnen"
   },
   "requiredHint": "Felder mit * sind Pflicht.",
   "sourceLeads": {
