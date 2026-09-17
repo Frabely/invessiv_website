@@ -91,3 +91,14 @@ Der frühere Detailplan für freies Mail-Senden bleibt als ausdrücklich zurück
   aufgenommen, wenn dadurch Verantwortlichkeiten nicht vermischt werden.
 - Die Umstellung erfolgt inkrementell mit aktualisierten Imports und Tests; kein Big-Bang-Refactoring und keine
   Verhaltensänderung allein durch die strukturelle Konsolidierung.
+- **Kundenliste-Suche ohne Eingabefeld.** Server (`customerReadService.getListCondition`), Query-String
+  (`buildCustomerListQueryString`) und Client-Service (`customersApiService.searchCustomers`) unterstützen bereits
+  einen `search`-Parameter inklusive ILIKE-Escaping und sind vollständig getestet. Es fehlt lediglich das
+  Sucheingabefeld in der Kundenliste-UI (`customers-basic-list.tsx`) — bewusst als unsichtbares Fundament belassen,
+  bis eine UI dafür gebraucht wird.
+- **`GET /api/workspace/crm/customers/[id]` wird beim Öffnen des Kundenformulars nicht aufgerufen.**
+  `CustomerFormDialog` erhält `customer: CustomerDetailDto | null` weiterhin als Prop von der aufrufenden Stelle (z. B.
+  der bereits geladenen Zeile aus der Kundenliste) und liest nicht selbst über
+  `customersApiService.getCustomer` nach. Route und Client-Methode existieren bereits und sind vorgesehen für den
+  Kunden-Cockpit-Dialog (Task 08c, `06b-mitarbeiter-cockpit`) — dort werden sie zum ersten Mal tatsächlich
+  aufgerufen. Bis dahin bleiben sie ungenutzte, aber fertige Grundlage.
