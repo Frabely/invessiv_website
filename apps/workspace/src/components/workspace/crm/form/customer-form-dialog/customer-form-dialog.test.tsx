@@ -250,7 +250,7 @@ describe("CustomerFormDialog", () => {
     expect(mocks.replace).toHaveBeenCalledWith("/de/crm", { scroll: false });
   });
 
-  it("converts a prefilled lead and navigates to the customer edit dialog", async () => {
+  it("converts a prefilled lead and closes the form on the CRM overview", async () => {
     const customer = customerDetailFixture();
     mocks.convertLead.mockResolvedValue({ ok: true, customer });
     render(
@@ -282,9 +282,9 @@ describe("CustomerFormDialog", () => {
         }),
       }),
     );
-    expect(mocks.push).toHaveBeenCalledWith(
-      `/de/crm?mode=edit&edit=${customer.id}`,
-    );
+    expect(mocks.replace).toHaveBeenCalledWith("/de/crm", { scroll: false });
+    expect(mocks.push).not.toHaveBeenCalled();
+    expect(mocks.refresh).toHaveBeenCalled();
   });
 
   it("explains a taken display name at the field", async () => {

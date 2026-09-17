@@ -44,7 +44,6 @@ import {
   validateCustomerForm,
 } from "@/common/patterns/crm/customer-form";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
-import { buildCustomerEditHref } from "@/common/patterns/crm/customer-dialog-query";
 import { buildLeadDetailHref } from "@/common/patterns/leads/lead-detail-query";
 import type { CrmFormDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@/lib/i18n/format-message";
@@ -59,7 +58,7 @@ type CustomerFormDialogProps = {
   /** Null creates a customer; an existing one opens the edit mode without contact fields. */
   customer: CustomerDetailDto | null;
   locale: Locale;
-  /** CRM overview path used for the post-conversion edit redirect. */
+  /** CRM overview path used after a successful lead conversion. */
   crmBasePath?: string;
   /** Leads overview path used by source-lead backlinks in edit mode. */
   leadsBasePath?: string;
@@ -232,7 +231,7 @@ export function CustomerFormDialog({
         toCreateCustomerRequest(values, contacts),
       );
       if (result.ok) {
-        router.push(buildCustomerEditHref(crmBasePath, result.customer.id));
+        router.replace(crmBasePath, { scroll: false });
         router.refresh();
         return;
       }
