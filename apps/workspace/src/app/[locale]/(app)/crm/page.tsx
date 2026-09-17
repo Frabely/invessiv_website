@@ -6,9 +6,9 @@ import { can } from "@invessiv/common/patterns/auth/can";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import { CustomerFormDialogMode } from "@/common/constants/crm/forms/customer-form-dialog-modes";
 import {
-  buildCustomerCreateHref,
   buildCustomerCockpitCloseHref,
   buildCustomerCockpitHref,
+  buildCustomerCreateHref,
   buildCustomerDialogCloseHref,
   readCustomerCockpitId,
   readCustomerDialogRequest,
@@ -22,8 +22,8 @@ import { WorkspacePageShell } from "@/components/workspace/workspace-page-shell/
 import { ListPagination } from "@/components/workspace/shared/table/list-pagination/list-pagination";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import {
-  getCrmFormDictionary,
   getCrmCockpitDictionary,
+  getCrmFormDictionary,
   getCrmListDictionary,
   getCrmMetaDictionary,
   getCrmShellDictionary,
@@ -40,6 +40,7 @@ import { getCustomerById } from "@/server/workspace/crm/query-handler/get-custom
 import { getCustomerCockpitById } from "@/server/workspace/crm/query-handler/get-customer-cockpit-by-id.query-handler";
 import { listActiveCustomerCategories } from "@/server/workspace/crm/query-handler/list-active-customer-categories.query-handler";
 import { listCustomers } from "@/server/workspace/crm/query-handler/list-customers.query-handler";
+import { listProjectsByCustomer } from "@/server/workspace/crm/query-handler/list-projects-by-customer.query-handler";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -91,6 +92,10 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
       : null,
     cockpitCustomerId ? getCustomerCockpitById(cockpitCustomerId) : null,
   ]);
+  const cockpitProjects =
+    cockpitCustomer && can(actor, Permission.ProjectsRead)
+      ? await listProjectsByCustomer(cockpitCustomer.id)
+      : null;
   const filters = { ...requestedFilters, page: customerList.page };
   const queryString = buildCustomerListQueryString(filters);
   const createHref = canWrite
@@ -172,6 +177,8 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
           closeHref={cockpitCloseHref}
           content={getCrmCockpitDictionary(activeLocale)}
           customer={cockpitCustomer}
+          canWriteProjects={can(actor, Permission.ProjectsWrite)}
+          projects={cockpitProjects}
         />
       ) : null}
     </WorkspacePageShell>

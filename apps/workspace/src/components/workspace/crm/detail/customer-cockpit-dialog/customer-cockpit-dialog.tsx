@@ -6,18 +6,23 @@ import { useRouter } from "next/navigation";
 import { ButtonControl, Dialog, DialogSize } from "@invessiv/ui";
 import { CustomerCockpitView } from "@/components/workspace/crm/detail/customer-cockpit-view/customer-cockpit-view";
 import type { CustomerCockpitDto } from "@invessiv/common/contracts/crm/customer-cockpit.dto";
+import type { ProjectDto } from "@invessiv/common/contracts/crm/project.dto";
 import type { CrmCockpitDictionary } from "@/i18n/dictionaries/workspace/crm";
 
 type CustomerCockpitDialogProps = {
   closeHref: string;
   content: CrmCockpitDictionary;
   customer: CustomerCockpitDto;
+  canWriteProjects?: boolean;
+  projects?: ProjectDto[] | null;
 };
 
 export function CustomerCockpitDialog({
   closeHref,
   content,
   customer,
+  canWriteProjects,
+  projects,
 }: CustomerCockpitDialogProps) {
   const router = useRouter();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -29,7 +34,7 @@ export function CustomerCockpitDialog({
   return (
     <Dialog
       closeLabel={content.close}
-      description={content.description}
+      description={undefined}
       footer={
         <ButtonControl
           onClick={close}
@@ -42,10 +47,15 @@ export function CustomerCockpitDialog({
       }
       initialFocusRef={closeButtonRef}
       onCloseAction={close}
-      size={DialogSize.Wide}
-      title={content.title}
+      size={DialogSize.Full}
+      title={customer.displayName}
     >
-      <CustomerCockpitView content={content} customer={customer} />
+      <CustomerCockpitView
+        canWriteProjects={canWriteProjects}
+        content={content}
+        customer={customer}
+        projects={projects}
+      />
     </Dialog>
   );
 }

@@ -5,7 +5,8 @@
   "sections": {
     "status": "Status",
     "owner": "Zuständig",
-    "primaryContact": "Hauptansprechpartner"
+    "primaryContact": "Hauptansprechpartner",
+    "projects": "Projekte"
   },
   "status": {
     "active": "Aktiv",
@@ -14,5 +15,47 @@
   },
   "noEmail": "Keine E-Mail-Adresse hinterlegt.",
   "openAction": "Kundenansicht öffnen",
-  "openActionAriaLabel": "Kundenansicht für {name} öffnen"
+  "openActionAriaLabel": "Kundenansicht für {name} öffnen",
+  "projects": {
+    "create": "Projekt anlegen",
+    "edit": "Projekt bearbeiten",
+    "save": "Projekt speichern",
+    "saveError": "Das Projekt konnte nicht gespeichert werden. Bitte versuche es erneut.",
+    "cancel": "Abbrechen",
+    "title": "Projektname",
+    "statusLabel": "Status",
+    "processSteps": "Prozessschritte",
+    "processStepsHint": "Ein Schritt pro Zeile. Die Reihenfolge bestimmt die Prozessskala.",
+    "currentProcessStep": "Aktueller Prozessschritt",
+    "addProcessStep": "Schritt hinzufügen",
+    "removeProcessStep": "Schritt entfernen",
+    "processStepPlaceholder": "z. B. Feedback 3",
+    "formTitleCreate": "Neues Projekt anlegen",
+    "formTitleEdit": "Projekt bearbeiten",
+    "formDescription": "Lege Status und Prozessschritte fest. Beides kann später angepasst werden.",
+    "empty": "Für diesen Kunden sind noch keine Projekte angelegt.",
+    "phase": "Phase",
+    "comingSoon": "Leistungen, Aufgaben und Chat folgen in diesem Projekt.",
+    "areas": {
+      "services": "Leistungen",
+      "tasks": "Todos & Aufgaben",
+      "chat": "Projektchat"
+    },
+    "status": {
+      "planned": "Geplant",
+      "active": "Aktiv",
+      "paused": "Pausiert",
+      "completed": "Abgeschlossen",
+      "cancelled": "Abgebrochen",
+      "archived": "Archiviert"
+    },
+    "phases": {
+      "onboarding": "Onboarding",
+      "design": "Design",
+      "development": "Entwicklung",
+      "feedback": "Feedback",
+      "launch": "Launch",
+      "maintenance": "Wartung"
+    }
+  }
 }

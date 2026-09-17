@@ -5,10 +5,53 @@
   "sections": {
     "status": "Status",
     "owner": "Owner",
-    "primaryContact": "Primary contact"
+    "primaryContact": "Primary contact",
+    "projects": "Projects"
   },
   "status": { "active": "Active", "paused": "Paused", "archived": "Archived" },
   "noEmail": "No email address saved.",
   "openAction": "Open customer overview",
-  "openActionAriaLabel": "Open customer overview for {name}"
+  "openActionAriaLabel": "Open customer overview for {name}",
+  "projects": {
+    "create": "Create project",
+    "edit": "Edit project",
+    "save": "Save project",
+    "saveError": "The project could not be saved. Please try again.",
+    "cancel": "Cancel",
+    "title": "Project name",
+    "statusLabel": "Status",
+    "processSteps": "Process steps",
+    "processStepsHint": "One step per line. The order determines the process scale.",
+    "currentProcessStep": "Current process step",
+    "addProcessStep": "Add step",
+    "removeProcessStep": "Remove step",
+    "processStepPlaceholder": "e.g. Feedback 3",
+    "formTitleCreate": "Create project",
+    "formTitleEdit": "Edit project",
+    "formDescription": "Set the status and process steps. Both can be adjusted later.",
+    "empty": "No projects have been created for this customer yet.",
+    "phase": "Phase",
+    "comingSoon": "Services, tasks and chat will follow in this project.",
+    "areas": {
+      "services": "Services",
+      "tasks": "Todos & tasks",
+      "chat": "Project chat"
+    },
+    "status": {
+      "planned": "Planned",
+      "active": "Active",
+      "paused": "Paused",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "archived": "Archived"
+    },
+    "phases": {
+      "onboarding": "Onboarding",
+      "design": "Design",
+      "development": "Development",
+      "feedback": "Feedback",
+      "launch": "Launch",
+      "maintenance": "Maintenance"
+    }
+  }
 }
