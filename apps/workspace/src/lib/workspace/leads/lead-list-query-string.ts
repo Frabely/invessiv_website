@@ -15,6 +15,7 @@ const LEAD_LIST_CLOSE_QUERY_PARAMS = [
   LeadListQueryParam.Search,
   LeadListQueryParam.DateFrom,
   LeadListQueryParam.DateTo,
+  LeadListQueryParam.IncludeConverted,
   LeadListQueryParam.Page,
   LeadListQueryParam.Sort,
   LeadListQueryParam.ScoreMin,
@@ -53,6 +54,10 @@ export function buildLeadListQueryString(
     params.set(LeadListQueryParam.DateTo, filters.date_to);
   }
 
+  if (filters.includeConverted) {
+    params.set(LeadListQueryParam.IncludeConverted, "true");
+  }
+
   if (filters.score_min !== undefined) {
     params.set(LeadListQueryParam.ScoreMin, String(filters.score_min));
   }
@@ -87,6 +92,7 @@ export function buildLeadListCloseHref(
   for (const [key, value] of Object.entries(searchParams)) {
     if (
       key === LeadListQueryParam.Selected ||
+      key === LeadListQueryParam.Convert ||
       key === LeadListQueryParam.Mode ||
       key === LeadListQueryParam.TargetLeadId ||
       !supportedParams.has(key) ||
@@ -116,6 +122,7 @@ function withoutDialogParams(searchParams: SearchParamsInput): URLSearchParams {
     if (
       key === LeadListQueryParam.Mode ||
       key === LeadListQueryParam.TargetLeadId ||
+      key === LeadListQueryParam.Convert ||
       value === undefined
     ) {
       continue;
@@ -145,6 +152,26 @@ export function buildLeadCreateHref(
 ): string {
   const params = withoutDialogParams(searchParams);
   params.set(LeadListQueryParam.Mode, LeadFormDialogMode.Create);
+  return buildHref(basePath, params);
+}
+
+export function buildLeadConversionHref(
+  basePath: string,
+  leadId: string,
+  searchParams: SearchParamsInput,
+): string {
+  const params = withoutDialogParams(searchParams);
+  params.set(LeadListQueryParam.Selected, leadId);
+  params.set(LeadListQueryParam.Convert, leadId);
+  return buildHref(basePath, params);
+}
+
+export function buildLeadConversionCloseHref(
+  basePath: string,
+  searchParams: SearchParamsInput,
+): string {
+  const params = withoutDialogParams(searchParams);
+  params.delete(LeadListQueryParam.Convert);
   return buildHref(basePath, params);
 }
 

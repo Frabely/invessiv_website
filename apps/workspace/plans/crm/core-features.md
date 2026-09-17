@@ -9,7 +9,7 @@ Details und Abnahmekriterien stehen in den 35 aktiven geordneten Merge-Einheiten
   Tags, Owner und Aktivitätsverlauf.
 - Kundenliste mit URL-Filtern, normalisierter Suche und Ansichten für aktive, pausierte und
   archivierte Kunden.
-- Lead-Konvertierung mit erneut bestätigtem Primärkontakt und optionalen Zusatzkontakten.
+- Direkte Lead-Konvertierung über den vorhandenen Kundendialog mit bestätigtem Primärkontakt.
 - Sichtbare und versioniert änderbare Kundenverantwortung; Projekte, Aufgaben, Renewals und Chat haben danach jeweils
   eine eigene, unabhängig änderbare Zuständigkeit.
 - Mehrere Projekte je Kunde mit Lebenszyklus, Workflow-Version, Owner und internen EUR-Planwerten.

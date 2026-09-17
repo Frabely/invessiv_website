@@ -5,6 +5,7 @@ import type { CustomerContactWriteDto } from "@invessiv/common/contracts/crm/cus
 import type { CustomerWriteFieldsDto } from "@invessiv/common/contracts/crm/customer-write-fields.dto";
 import type { UpdateCustomerRequestDto } from "@invessiv/common/contracts/crm/update-customer-request.dto";
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
+import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
 import { formValidationService } from "@invessiv/common/patterns/validation/form-validation-service";
 import { CustomerFormDialogMode } from "@/common/constants/crm/forms/customer-form-dialog-modes";
 import { CustomerFormValidationCode } from "@/common/constants/crm/forms/customer-form-validation-codes";
@@ -25,27 +26,28 @@ function orNull(value: string): string | null {
 export function createCustomerFormValues(
   customer: CustomerDetailDto | null,
   locale: Locale,
+  sourceLead?: LeadDetailDto,
 ): CustomerFormValues {
   return {
-    displayName: customer?.displayName ?? "",
-    companyName: customer?.companyName ?? "",
-    categoryId: customer?.categoryId ?? "",
+    displayName: customer?.displayName ?? sourceLead?.displayName ?? "",
+    companyName: customer?.companyName ?? sourceLead?.companyName ?? "",
+    categoryId: customer?.categoryId ?? sourceLead?.category?.id ?? "",
     status: customer?.status ?? CustomerStatus.Active,
     street: customer?.street ?? "",
     postalCode: customer?.postalCode ?? "",
     city: customer?.city ?? "",
     country: customer?.country ?? "",
-    websiteUrl: customer?.websiteUrl ?? "",
+    websiteUrl: customer?.websiteUrl ?? sourceLead?.websiteUrl ?? "",
     vatId: customer?.vatId ?? "",
     hourlyRate: formatCentsAsEuroInput(
       customer?.defaultHourlyRateCents ?? null,
       locale,
     ),
-    notes: customer?.notes ?? "",
-    contactFirstName: "",
-    contactLastName: "",
-    contactEmail: "",
-    contactPhone: "",
+    notes: customer?.notes ?? sourceLead?.notes ?? "",
+    contactFirstName: sourceLead?.firstName ?? "",
+    contactLastName: sourceLead?.lastName ?? "",
+    contactEmail: sourceLead?.email ?? "",
+    contactPhone: sourceLead?.phone ?? "",
     contactRoleLabel: "",
     contactPreferredLocale: locale,
   };

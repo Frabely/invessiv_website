@@ -8,6 +8,7 @@ import { customerSchemas } from "@/server/workspace/crm/services/customer-schema
 /** Archived customers stay addressable; an unknown or malformed id is `null`, never a throw. */
 export async function getCustomerById(
   customerId: string,
+  includeSourceLeads = false,
 ): Promise<CustomerDetailDto | null> {
   if (!customerSchemas.entityId.safeParse(customerId).success) {
     return null;
@@ -16,5 +17,6 @@ export async function getCustomerById(
   return customerReadService.findDetailById(
     getDrizzleDatabaseClient(),
     customerId,
+    includeSourceLeads,
   );
 }

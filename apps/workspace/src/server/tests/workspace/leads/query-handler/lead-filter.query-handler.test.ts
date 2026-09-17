@@ -22,6 +22,21 @@ function toOrderSQL(orderBy: SQL): string {
 }
 
 describe("buildLeadFilter", () => {
+  describe("converted lead visibility", () => {
+    it("excludes converted leads by default", () => {
+      const { sql } = toSQLFull(buildLeadFilter({}).where);
+      expect(sql).toContain("customer_id");
+      expect(sql.toLowerCase()).toContain("is null");
+    });
+
+    it("does not apply the conversion predicate when explicitly included", () => {
+      const { sql } = toSQLFull(
+        buildLeadFilter({ includeConverted: true }).where,
+      );
+      expect(sql).not.toContain("customer_id");
+    });
+  });
+
   describe("archived exclusion (default behaviour)", () => {
     it("excludes archived leads when no status filter is given", () => {
       const { sql, params } = toSQLFull(buildLeadFilter({}).where);

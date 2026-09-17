@@ -92,6 +92,7 @@ function mapLeadDetailRowToDto(
   submissionRows: LeadSubmissionRow[],
 ): LeadDetailDto {
   return {
+    customerId: mainRow.customer_id,
     id: mainRow.id,
     displayName: mainRow.display_name,
     firstName: mainRow.first_name,

@@ -37,6 +37,7 @@ vi.mock(
 );
 
 const STUB_LEAD: LeadDetailDto = {
+  customerId: null,
   id: "lead-uuid-1",
   displayName: "Max Mustermann",
   firstName: "Max",
@@ -61,6 +62,7 @@ const STUB_LEAD: LeadDetailDto = {
 };
 
 const STUB_LIST_RESULT: ListLeadsResult = {
+  hiddenConvertedCount: 0,
   rows: [],
   total: 0,
   page: 1,

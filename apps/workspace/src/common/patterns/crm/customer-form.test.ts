@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { CustomerDetailDto } from "@invessiv/common/contracts/crm/customer-detail.dto";
+import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
 import {
   createCustomerFormValues,
   toCreateCustomerRequest,
@@ -32,6 +33,32 @@ const CUSTOMER: CustomerDetailDto = {
   retentionReviewAfterDays: null,
   version: 3,
   contacts: [],
+  sourceLeads: [],
+};
+
+const SOURCE_LEAD: LeadDetailDto = {
+  customerId: null,
+  id: "lead-1",
+  displayName: "Nordlicht Anfrage",
+  firstName: "Anna",
+  lastName: "Berger",
+  companyName: "Nordlicht GmbH",
+  email: "anna@nordlicht.example",
+  phone: "+49 221 1234567",
+  websiteUrl: "https://nordlicht.example",
+  score: 90,
+  source: "manual",
+  leadStatus: "qualified",
+  owner: null,
+  notes: "Pilotprojekt besprochen",
+  improvements: null,
+  externalGuid: null,
+  createdAt: "2026-09-14T10:00:00.000Z",
+  updatedAt: "2026-09-14T10:00:00.000Z",
+  category: { id: "category-1", slug: "coaches", labelKey: "coaches" },
+  socialProfiles: [],
+  activities: [],
+  submissions: [],
 };
 
 describe("createCustomerFormValues", () => {
@@ -51,6 +78,24 @@ describe("createCustomerFormValues", () => {
     expect(values.city).toBe("Köln");
     expect(values.hourlyRate).toBe("95,50");
     expect(values.status).toBe("active");
+  });
+
+  it("prefills the customer and primary contact from a lead", () => {
+    const values = createCustomerFormValues(null, "de", SOURCE_LEAD);
+
+    expect(values).toMatchObject({
+      displayName: "Nordlicht Anfrage",
+      companyName: "Nordlicht GmbH",
+      categoryId: "category-1",
+      websiteUrl: "https://nordlicht.example",
+      notes: "Pilotprojekt besprochen",
+      contactFirstName: "Anna",
+      contactLastName: "Berger",
+      contactEmail: "anna@nordlicht.example",
+      contactPhone: "+49 221 1234567",
+      contactPreferredLocale: "de",
+      status: "active",
+    });
   });
 });
 

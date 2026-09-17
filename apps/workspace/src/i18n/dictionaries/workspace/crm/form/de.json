@@ -1,7 +1,8 @@
 {
   "title": {
     "create": "Kunde anlegen",
-    "edit": "Kunde bearbeiten"
+    "edit": "Kunde bearbeiten",
+    "convert": "Lead als CRM-Kunden anlegen"
   },
   "description": {
     "edit": "Stammdaten und Ansprechpartner von {name} ändern."
@@ -88,7 +89,12 @@
     "CUSTOMER_DISPLAY_NAME_TAKEN": "Diesen Anzeigenamen hat schon ein Kunde.",
     "CUSTOMER_OWNER_INACTIVE": "Dein Zugang wurde gerade deaktiviert. Der Kunde wurde nicht angelegt.",
     "VALIDATION_ERROR": "Einige Angaben passen nicht. Prüf die Felder und speichere erneut.",
-    "INTERNAL": "Speichern hat nicht geklappt. Versuch es gleich noch einmal."
+    "INTERNAL": "Speichern hat nicht geklappt. Versuch es gleich noch einmal.",
+    "LEAD_CONVERSION_DISPLAY_NAME_TAKEN": "Diesen Anzeigenamen hat schon ein Kunde. Ergänze ihn, zum Beispiel um den Ort.",
+    "LEAD_CONVERSION_INTERNAL": "Die Konvertierung hat nicht geklappt. Versuch es gleich noch einmal.",
+    "LEAD_CONVERSION_LEAD_NOT_FOUND": "Diesen Lead gibt es nicht mehr.",
+    "LEAD_CONVERSION_OWNER_INACTIVE": "Dein Zugang wurde gerade deaktiviert. Der Kunde wurde nicht angelegt.",
+    "LEAD_CONVERSION_VALIDATION_ERROR": "Einige Angaben passen nicht. Prüf die Felder und speichere erneut."
   },
   "conflict": {
     "message": "Jemand hat diesen Kunden gerade geändert. Deine Eingaben sind noch da – wenn du erneut speicherst, ersetzen sie den neuen Stand.",
@@ -97,6 +103,7 @@
   "buttons": {
     "submitCreate": "Kunde anlegen",
     "submitEdit": "Änderungen speichern",
+    "submitConversion": "CRM-Kunden anlegen",
     "submitting": "Wird gespeichert …",
     "addContact": "Ansprechpartner hinzufügen",
     "submittingContact": "Ansprechpartner wird hinzugefügt …",
@@ -109,6 +116,9 @@
     "close": "Schließen"
   },
   "requiredHint": "Felder mit * sind Pflicht.",
+  "sourceLeads": {
+    "title": "Ursprungs-Lead"
+  },
   "contact": {
     "primary": "Hauptansprechpartner",
     "removeTitle": "Ansprechpartner entfernen?",

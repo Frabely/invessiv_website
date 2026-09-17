@@ -26,10 +26,13 @@ import { ActivityTimeline } from "@/components/workspace/shared/activity/activit
 import styles from "./lead-detail-panel.module.css";
 
 export type LeadDetailPanelProps = {
+  canConvert?: boolean;
   canEdit: boolean;
   closeHref: string;
   content: LeadsDetailDictionary;
   editHref: string;
+  conversionHref?: string;
+  customerHref?: string;
   lead: LeadDetailDto;
   locale: Locale;
   outreachContent?: LeadsOutreachDictionary;
@@ -87,10 +90,13 @@ function getPhoneHref(phone: string | null): string | undefined {
 }
 
 export function LeadDetailPanel({
+  canConvert = false,
   canEdit,
   closeHref,
   content,
   editHref,
+  conversionHref = "",
+  customerHref,
   lead,
   locale,
   outreachContent,
@@ -170,6 +176,30 @@ export function LeadDetailPanel({
           source={lead.source}
         />
       </div>
+
+      {customerHref ? (
+        <section className={styles.conversionCard} data-state="converted">
+          <p>{content.conversion.converted}</p>
+          <button
+            className={styles.conversionButton}
+            onClick={() => startTransition(() => router.push(customerHref))}
+            type="button"
+          >
+            {content.actions.openCustomer}
+          </button>
+        </section>
+      ) : canConvert ? (
+        <section className={styles.conversionCard} data-state="available">
+          <p>{content.conversion.available}</p>
+          <button
+            className={styles.conversionButton}
+            onClick={() => startTransition(() => router.push(conversionHref))}
+            type="button"
+          >
+            {content.actions.convert}
+          </button>
+        </section>
+      ) : null}
 
       <DetailSection id="lead-contact-title" title={content.sections.contact}>
         <DefinitionList>

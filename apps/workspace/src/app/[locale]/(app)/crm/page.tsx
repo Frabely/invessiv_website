@@ -70,7 +70,9 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
   const resolvedSearchParams = await searchParams;
   const requestedFilters = parseCustomerListFilters(resolvedSearchParams);
   const basePath = workspaceAreaPathFor(activeLocale, WorkspaceArea.Crm);
+  const leadsBasePath = workspaceAreaPathFor(activeLocale, WorkspaceArea.Leads);
   const canWrite = can(actor, Permission.CustomersWrite);
+  const canReadLeads = can(actor, Permission.LeadsRead);
   const dialogRequest = canWrite
     ? readCustomerDialogRequest(resolvedSearchParams)
     : null;
@@ -78,7 +80,7 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
   const [customerList, editCustomer] = await Promise.all([
     listCustomers(requestedFilters),
     dialogRequest?.mode === CustomerFormDialogMode.Edit
-      ? getCustomerById(dialogRequest.customerId)
+      ? getCustomerById(dialogRequest.customerId, canReadLeads)
       : null,
   ]);
   const filters = { ...requestedFilters, page: customerList.page };
@@ -136,6 +138,7 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
           customer={editCustomer}
           key={editCustomer?.id ?? CustomerFormDialogMode.Create}
           locale={activeLocale}
+          leadsBasePath={canReadLeads ? leadsBasePath : undefined}
         />
       ) : null}
     </WorkspacePageShell>

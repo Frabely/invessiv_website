@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { config as loadDotenv } from "dotenv";
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray, like } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
@@ -53,6 +53,39 @@ describe.skipIf(!RUN_INTEGRATION)(
       db = getDrizzleDatabaseClient();
       const now = new Date();
 
+      const staleUsers = await db
+        .select({ id: users.id })
+        .from(users)
+        .where(like(users.clerk_user_id, `${FIXTURE_PREFIX}%`));
+      const staleCustomers = await db
+        .select({ id: customers.id })
+        .from(customers)
+        .where(like(customers.display_name, `${FIXTURE_PREFIX}%`));
+      const staleUserIds = staleUsers.map((entry) => entry.id);
+      if (staleUsers.length > 0) {
+        await db
+          .delete(activities)
+          .where(inArray(activities.actor_user_id, staleUserIds));
+      }
+      if (staleCustomers.length > 0) {
+        const staleCustomerIds = staleCustomers.map((entry) => entry.id);
+        await db
+          .delete(activities)
+          .where(inArray(activities.customer_id, staleCustomerIds));
+        await db
+          .delete(customers)
+          .where(inArray(customers.id, staleCustomerIds));
+      }
+      await db
+        .delete(leads)
+        .where(like(leads.display_name, `${FIXTURE_PREFIX}%`));
+      if (staleUserIds.length > 0) {
+        await db
+          .delete(workspaceMembers)
+          .where(inArray(workspaceMembers.user_id, staleUserIds));
+        await db.delete(users).where(inArray(users.id, staleUserIds));
+      }
+
       await db.insert(users).values({
         id: userId,
         clerk_user_id: `${FIXTURE_PREFIX}${userId}`,
@@ -92,6 +125,7 @@ describe.skipIf(!RUN_INTEGRATION)(
 
     afterAll(async () => {
       if (!db) return;
+      await db.delete(activities).where(eq(activities.actor_user_id, userId));
       await db.delete(leads).where(eq(leads.id, leadId));
       await db.delete(customers).where(eq(customers.id, customerId));
       await db

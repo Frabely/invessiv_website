@@ -16,6 +16,7 @@ vi.mock("next/navigation", () => ({
 }));
 
 const leadFixture: LeadDetailDto = {
+  customerId: null,
   id: "2b3d2f33-f3d7-4f8a-8ff6-6ac5df6c9b01",
   displayName: "Anna Meyer",
   firstName: "Anna",
@@ -104,6 +105,48 @@ describe("LeadDetailPanel", () => {
 
     expect(
       screen.queryByRole("button", { name: content.actions.edit }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("shows conversion or customer navigation according to the lead link", () => {
+    const content = getLeadsDetailDictionary("de");
+    const { rerender } = render(
+      <LeadDetailPanel
+        canConvert
+        canEdit
+        closeHref="/de/leads"
+        content={content}
+        conversionHref={`/de/leads?selected=${leadFixture.id}&convert=${leadFixture.id}`}
+        editHref={`/de/leads?mode=edit&edit=${leadFixture.id}`}
+        lead={leadFixture}
+        locale="de"
+        sharedContent={getLeadsSharedDictionary("de")}
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", { name: content.actions.convert }),
+    ).toBeInTheDocument();
+
+    rerender(
+      <LeadDetailPanel
+        canConvert={false}
+        canEdit
+        closeHref="/de/leads"
+        content={content}
+        conversionHref=""
+        customerHref="/de/crm?mode=edit&edit=customer-1"
+        editHref={`/de/leads?mode=edit&edit=${leadFixture.id}`}
+        lead={{ ...leadFixture, customerId: "customer-1" }}
+        locale="de"
+        sharedContent={getLeadsSharedDictionary("de")}
+      />,
+    );
+    expect(
+      screen.getByRole("button", { name: content.actions.openCustomer }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: content.actions.convert }),
     ).not.toBeInTheDocument();
   });
 

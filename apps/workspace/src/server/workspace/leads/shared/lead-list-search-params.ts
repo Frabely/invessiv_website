@@ -117,6 +117,16 @@ export function parseEditLeadId(
   return edit && isUuid(edit) ? edit : undefined;
 }
 
+export function parseConvertLeadId(
+  searchParams: SearchParamsInput,
+): string | undefined {
+  const convert = getTrimmedSearchParam(
+    searchParams,
+    LeadListQueryParam.Convert,
+  );
+  return convert && isUuid(convert) ? convert : undefined;
+}
+
 export function parseLeadListFilters(
   searchParams: SearchParamsInput,
 ): LeadFilterInput {
@@ -133,8 +143,15 @@ export function parseLeadListFilters(
   );
   const dateTo = getTrimmedSearchParam(searchParams, LeadListQueryParam.DateTo);
   const sort = getTrimmedSearchParam(searchParams, LeadListQueryParam.Sort);
+  const includeConverted =
+    getSingleSearchParam(searchParams, LeadListQueryParam.IncludeConverted) ===
+    "true";
 
   const filters: LeadFilterInput = {};
+
+  if (includeConverted) {
+    filters.includeConverted = true;
+  }
 
   if (
     status &&
@@ -208,6 +225,7 @@ export function hasActiveLeadFilters(filters: LeadFilterInput): boolean {
     filters.date_from ||
     filters.date_to ||
     filters.score_min !== undefined ||
+    filters.includeConverted ||
     (filters.profile_include && filters.profile_include.length > 0) ||
     (filters.profile_exclude && filters.profile_exclude.length > 0),
   );

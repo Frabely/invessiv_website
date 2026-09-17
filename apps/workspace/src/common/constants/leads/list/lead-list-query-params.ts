@@ -1,7 +1,9 @@
 export const LeadListQueryParam = {
   Category: "category",
+  Convert: "convert",
   DateFrom: "date_from",
   DateTo: "date_to",
+  IncludeConverted: "include_converted",
   Mode: "mode",
   TargetLeadId: "edit",
   Page: "page",
@@ -20,8 +22,10 @@ export type LeadListQueryParam =
 
 export const LEAD_LIST_QUERY_PARAM_VALUES = [
   LeadListQueryParam.Category,
+  LeadListQueryParam.Convert,
   LeadListQueryParam.DateFrom,
   LeadListQueryParam.DateTo,
+  LeadListQueryParam.IncludeConverted,
   LeadListQueryParam.Mode,
   LeadListQueryParam.TargetLeadId,
   LeadListQueryParam.Page,

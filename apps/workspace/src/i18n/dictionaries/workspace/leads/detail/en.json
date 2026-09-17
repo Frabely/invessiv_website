@@ -21,8 +21,14 @@
   },
   "actions": {
     "closeAriaLabel": "Close detail panel",
+    "convert": "Create CRM customer",
     "edit": "Edit lead",
+    "openCustomer": "Open CRM customer",
     "viewFullProfile": "Full profile planned"
+  },
+  "conversion": {
+    "available": "Review the master data and primary contact in the existing customer dialog.",
+    "converted": "This lead is linked to a CRM customer."
   },
   "empty": {
     "phone": "No phone number",

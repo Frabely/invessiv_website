@@ -1,4 +1,4 @@
-import { count, eq, inArray } from "drizzle-orm";
+import { and, count, eq, inArray, isNotNull } from "drizzle-orm";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
   leadCategories,
@@ -18,8 +18,18 @@ export async function listLeads(
   const { where, orderBy, limit, offset, page, perPage } =
     buildLeadFilter(filter);
 
-  const [countRows, rows] = await Promise.all([
+  const convertedFilter = filter.includeConverted
+    ? undefined
+    : buildLeadFilter({ ...filter, includeConverted: true }).where;
+
+  const [countRows, hiddenConvertedRows, rows] = await Promise.all([
     db.select({ count: count() }).from(leads).where(where),
+    filter.includeConverted
+      ? Promise.resolve([{ count: 0 }])
+      : db
+          .select({ count: count() })
+          .from(leads)
+          .where(and(convertedFilter, isNotNull(leads.customer_id))),
     db
       .select({
         id: leads.id,
@@ -75,6 +85,7 @@ export async function listLeads(
   }
 
   return {
+    hiddenConvertedCount: Number(hiddenConvertedRows[0]?.count ?? 0),
     rows: rows.map((row) =>
       leadsMapperService.mapLeadRowToSummaryDto(
         row,

@@ -84,9 +84,15 @@ function mockDb(
   countValue: number,
   rows: unknown[],
   socialRows: unknown[] = [],
+  hiddenConvertedCount = 0,
 ) {
   let callIndex = 0;
-  const responses = [[{ count: countValue }], rows, socialRows];
+  const responses = [
+    [{ count: countValue }],
+    [{ count: hiddenConvertedCount }],
+    rows,
+    socialRows,
+  ];
   getDrizzleDatabaseClientMock.mockReturnValue({
     select: vi.fn().mockImplementation(() => {
       return drizzleChain(responses[callIndex++] ?? []);
@@ -107,6 +113,18 @@ describe("listLeads", () => {
       total: expect.any(Number),
       page: expect.any(Number),
       perPage: expect.any(Number),
+      hiddenConvertedCount: expect.any(Number),
+    });
+  });
+
+  it("returns the number of converted leads hidden by the default view", async () => {
+    vi.resetModules();
+    mockDb(0, [], [], 3);
+    const { listLeads } =
+      await import("@/server/workspace/leads/query-handler/list-leads.query-handler");
+
+    await expect(listLeads({})).resolves.toMatchObject({
+      hiddenConvertedCount: 3,
     });
   });
 

@@ -55,6 +55,9 @@
     "collapseFilters": "Filterbereich einklappen",
     "expandFilters": "Filterbereich ausklappen",
     "reset": "Filter zurücksetzen",
-    "clear": "Zurücksetzen"
-  }
+    "clear": "Zurücksetzen",
+    "showConverted": "Konvertierte einblenden",
+    "hideConverted": "Konvertierte ausblenden"
+  },
+  "convertedHidden": "{count} konvertierte Leads ausgeblendet"
 }

@@ -17,6 +17,7 @@ export const leadFilterSchema = z.object({
   search: z.string().trim().optional(),
   date_from: z.string().optional(),
   date_to: z.string().optional(),
+  includeConverted: z.boolean().optional(),
   page: z.number().int().min(1).optional(),
   sort: z.enum(LEAD_SORT_VALUES).optional(),
   profile_include: z.array(z.enum(LEAD_PROFILE_TYPE_VALUES)).optional(),

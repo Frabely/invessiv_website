@@ -29,6 +29,7 @@ import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
 import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
 import { ImportLeadsDialog } from "@/components/workspace/leads/import/import-leads-dialog/import-leads-dialog";
 import { buildLeadHref } from "@/components/workspace/leads/table/lead-table-utils";
+import { formatMessage } from "@/lib/i18n/format-message";
 import { LeadCategoryFilter } from "@/components/workspace/leads/toolbar/lead-category-filter/lead-category-filter";
 import { LeadProfileFilter } from "@/components/workspace/leads/toolbar/lead-profile-filter/lead-profile-filter";
 import { LeadScoreFilter } from "@/components/workspace/leads/toolbar/lead-score-filter/lead-score-filter";
@@ -44,6 +45,7 @@ type LeadsPageHeaderProps = {
   categories: LeadCategoryOption[];
   currentQueryString: string;
   filtersContent: LeadsToolbarDictionary;
+  hiddenConvertedCount?: number;
   importContent?: LeadsImportDictionary;
   referenceDateValue: string;
   sharedContent: LeadsSharedDictionary;
@@ -103,6 +105,7 @@ export function LeadsPageHeader({
   categories,
   currentQueryString,
   filtersContent,
+  hiddenConvertedCount = 0,
   importContent,
   referenceDateValue,
   sharedContent,
@@ -126,6 +129,8 @@ export function LeadsPageHeader({
     getQueryValue(searchParams, LeadListQueryParam.DateTo) ?? "";
   const currentScore =
     getQueryValue(searchParams, LeadListQueryParam.ScoreMin) ?? "";
+  const includeConverted =
+    getQueryValue(searchParams, LeadListQueryParam.IncludeConverted) === "true";
   const profileSelection = readProfileFilterSelection(
     getQueryValue(searchParams, LeadListQueryParam.ProfileInclude),
     getQueryValue(searchParams, LeadListQueryParam.ProfileExclude),
@@ -147,6 +152,7 @@ export function LeadsPageHeader({
     Boolean(currentDateFrom) ||
     Boolean(currentDateTo) ||
     Boolean(currentScore) ||
+    includeConverted ||
     hasProfileFilters;
 
   function commitFilter(overrides: Record<string, string | undefined>) {
@@ -166,6 +172,7 @@ export function LeadsPageHeader({
       [LeadListQueryParam.Category]: undefined,
       [LeadListQueryParam.DateFrom]: undefined,
       [LeadListQueryParam.DateTo]: undefined,
+      [LeadListQueryParam.IncludeConverted]: undefined,
       [LeadListQueryParam.ProfileInclude]: undefined,
       [LeadListQueryParam.ProfileExclude]: undefined,
       [LeadListQueryParam.ScoreMin]: undefined,
@@ -192,6 +199,33 @@ export function LeadsPageHeader({
       <header className={styles.bar}>
         <h1 className="sr-only">{shellContent.title}</h1>
         <div className={styles.utility}>
+          {hiddenConvertedCount > 0 || includeConverted ? (
+            <ButtonControl
+              className={styles.convertedButton}
+              onClick={() =>
+                commitFilter({
+                  [LeadListQueryParam.IncludeConverted]: includeConverted
+                    ? undefined
+                    : "true",
+                })
+              }
+              type="button"
+              variant="ghost"
+            >
+              <span className={styles.convertedButtonLabel}>
+                {includeConverted
+                  ? filtersContent.actions.hideConverted
+                  : filtersContent.actions.showConverted}
+              </span>
+              {!includeConverted && hiddenConvertedCount > 0 ? (
+                <span className={styles.convertedCount}>
+                  {formatMessage(filtersContent.convertedHidden, {
+                    count: hiddenConvertedCount,
+                  })}
+                </span>
+              ) : null}
+            </ButtonControl>
+          ) : null}
           <ButtonControl
             aria-label={filtersContent.actions.reset}
             className={styles.secondaryButton}

@@ -18,6 +18,7 @@ export async function getLeadById(id: string): Promise<LeadDetailDto | null> {
     await Promise.all([
       db
         .select({
+          customer_id: leads.customer_id,
           id: leads.id,
           display_name: leads.display_name,
           first_name: leads.first_name,

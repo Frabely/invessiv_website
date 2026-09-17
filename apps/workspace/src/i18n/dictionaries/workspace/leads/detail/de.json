@@ -21,8 +21,14 @@
   },
   "actions": {
     "closeAriaLabel": "Detail-Panel schließen",
+    "convert": "Als CRM-Kunden anlegen",
     "edit": "Lead bearbeiten",
+    "openCustomer": "CRM-Kunden öffnen",
     "viewFullProfile": "Vollprofil geplant"
+  },
+  "conversion": {
+    "available": "Übernimm die Stammdaten und den Hauptansprechpartner in den vorhandenen Kundendialog.",
+    "converted": "Dieser Lead ist mit einem CRM-Kunden verknüpft."
   },
   "empty": {
     "phone": "Keine Telefonnummer",

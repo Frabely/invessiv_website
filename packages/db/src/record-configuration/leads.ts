@@ -16,6 +16,7 @@ import { LEAD_SOURCES_VALUES } from "@invessiv/common/constants/leads/sources/le
 import { LeadsConstraintName } from "@invessiv/db/constraint-names/leads-constraint-names";
 import { sqlCheckIn } from "@invessiv/db/core";
 import { leadCategories } from "@invessiv/db/record-configuration/lead-categories";
+import { customers } from "@invessiv/db/record-configuration/crm/customers";
 
 export const leads = pgTable(
   "leads",
@@ -28,6 +29,9 @@ export const leads = pgTable(
     email: text("email"),
     phone: text("phone"),
     website_url: text("website_url"),
+    customer_id: uuid("customer_id").references(() => customers.id, {
+      onDelete: "set null",
+    }),
     category_id: uuid("category_id").references(() => leadCategories.id, {
       onDelete: "set null",
     }),
@@ -87,6 +91,7 @@ export const leads = pgTable(
       table.category_id,
       table.created_at.desc(),
     ),
+    index(LeadsConstraintName.CustomerIdIndex).on(table.customer_id),
     uniqueIndex(LeadsConstraintName.ExternalGuidUnique)
       .on(table.external_guid)
       .where(sql`${table.external_guid} is not null`),

@@ -42,6 +42,7 @@ vi.mock(
 const LEAD_ID = "lead-uuid-123";
 
 const STUB_LEAD: LeadDetailDto = {
+  customerId: null,
   id: LEAD_ID,
   displayName: "Max Mustermann",
   firstName: "Max",

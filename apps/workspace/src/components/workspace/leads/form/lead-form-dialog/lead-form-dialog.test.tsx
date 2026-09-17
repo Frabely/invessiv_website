@@ -47,6 +47,7 @@ beforeEach(() => {
 
 describe("LeadFormDialog", () => {
   const EDIT_LEAD: LeadDetailDto = {
+    customerId: null,
     id: "lead-edit-123",
     displayName: "Anna Meyer",
     firstName: "Anna",

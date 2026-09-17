@@ -51,6 +51,7 @@ describe("customer query handlers", () => {
     expect(mocks.findDetail).toHaveBeenCalledWith(
       mocks.database,
       TEST_CUSTOMER_ID,
+      false,
     );
   });
 

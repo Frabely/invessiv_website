@@ -3,6 +3,7 @@ import type { LeadSource } from "@invessiv/common/constants/leads/sources/lead-s
 import type { LeadCategoryRow } from "./lead-category-row";
 
 export type LeadDetailMainRow = {
+  customer_id: string | null;
   id: string;
   display_name: string;
   first_name: string | null;

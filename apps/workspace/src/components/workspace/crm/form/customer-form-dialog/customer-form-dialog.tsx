@@ -11,12 +11,14 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { CustomerErrorCode } from "@invessiv/common/constants/crm/errors/customer-error-codes";
+import { LeadConversionErrorCode } from "@invessiv/common/constants/crm/errors/lead-conversion-error-codes";
 import { CustomerFieldLimits } from "@invessiv/common/constants/crm/forms/customer-field-limits";
 import { CUSTOMER_STATUS_VALUES } from "@invessiv/common/constants/crm/customer-statuses";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import type { CustomerDetailDto } from "@invessiv/common/contracts/crm/customer-detail.dto";
 import type { CustomerContactWriteDto } from "@invessiv/common/contracts/crm/customer-contact-write.dto";
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
+import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
 import {
   ButtonControl,
   CustomSelect,
@@ -26,6 +28,7 @@ import {
   PrimaryCtaButton,
 } from "@invessiv/ui";
 import { customersApiService } from "@/client/crm/customers-api-service";
+import { leadConversionApiService } from "@/client/crm/lead-conversion-api-service";
 import { CustomerFormDialogMode } from "@/common/constants/crm/forms/customer-form-dialog-modes";
 import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
 import type {
@@ -41,6 +44,8 @@ import {
   validateCustomerForm,
 } from "@/common/patterns/crm/customer-form";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
+import { buildCustomerEditHref } from "@/common/patterns/crm/customer-dialog-query";
+import { buildLeadDetailHref } from "@/common/patterns/leads/lead-detail-query";
 import type { CrmFormDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@/lib/i18n/format-message";
 import { CustomerContactSection } from "../../contacts/customer-contact-section/customer-contact-section";
@@ -54,6 +59,12 @@ type CustomerFormDialogProps = {
   /** Null creates a customer; an existing one opens the edit mode without contact fields. */
   customer: CustomerDetailDto | null;
   locale: Locale;
+  /** CRM overview path used for the post-conversion edit redirect. */
+  crmBasePath?: string;
+  /** Leads overview path used by source-lead backlinks in edit mode. */
+  leadsBasePath?: string;
+  /** Present only when the create dialog converts this lead. */
+  sourceLead?: LeadDetailDto;
 };
 
 type TextFieldKey = Exclude<
@@ -107,6 +118,9 @@ export function CustomerFormDialog({
   content,
   customer,
   locale,
+  crmBasePath,
+  leadsBasePath,
+  sourceLead,
 }: CustomerFormDialogProps) {
   const router = useRouter();
   const formId = useId();
@@ -121,8 +135,11 @@ export function CustomerFormDialog({
     ? CustomerFormDialogMode.Edit
     : CustomerFormDialogMode.Create;
   const [values, setValues] = useState(() =>
-    createCustomerFormValues(customer, locale),
+    createCustomerFormValues(customer, locale, sourceLead),
   );
+  const [conversionError, setConversionError] =
+    useState<LeadConversionErrorCode | null>(null);
+  const [conversionSubmitting, setConversionSubmitting] = useState(false);
   const [errors, setErrors] = useState<CustomerFormErrors>({});
   const [activeTab, setActiveTab] = useState<CustomerFormTab>(
     CustomerFormTab.Customer,
@@ -148,7 +165,10 @@ export function CustomerFormDialog({
     CustomerDetailDto | null,
     CustomerErrorCode
   >(customer, () => router.replace(closeHref, { scroll: false }));
-  const isNameTaken = mutation.errorCode === CustomerErrorCode.DisplayNameTaken;
+  const isNameTaken =
+    mutation.errorCode === CustomerErrorCode.DisplayNameTaken ||
+    conversionError === LeadConversionErrorCode.DisplayNameTaken;
+  const isSubmitting = mutation.isSubmitting || conversionSubmitting;
 
   useEffect(() => {
     if (isNameTaken) {
@@ -173,7 +193,7 @@ export function CustomerFormDialog({
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (mutation.isSubmitting) {
+    if (isSubmitting) {
       return;
     }
 
@@ -201,6 +221,23 @@ export function CustomerFormDialog({
       requestAnimationFrame(() =>
         document.getElementById(contactConfirmButtonId)?.focus(),
       );
+      return;
+    }
+
+    if (sourceLead && crmBasePath) {
+      setConversionSubmitting(true);
+      setConversionError(null);
+      const result = await leadConversionApiService.convertLead(
+        sourceLead.id,
+        toCreateCustomerRequest(values, contacts),
+      );
+      if (result.ok) {
+        router.push(buildCustomerEditHref(crmBasePath, result.customer.id));
+        router.refresh();
+        return;
+      }
+      setConversionSubmitting(false);
+      setConversionError(result.code);
       return;
     }
 
@@ -327,13 +364,14 @@ export function CustomerFormDialog({
   const notesThreshold = Math.floor(
     CustomerFieldLimits.NotesMaxLength * NOTES_COUNTER_THRESHOLD,
   );
-  const statusErrorCode =
-    mutation.errorCode && !isNameTaken ? mutation.errorCode : null;
+  const statusErrorCode = !isNameTaken
+    ? (conversionError ?? mutation.errorCode)
+    : null;
 
   return (
     <Dialog
       bodyClassName={styles.dialogBody}
-      busy={mutation.isSubmitting}
+      busy={isSubmitting}
       closeLabel={content.buttons.close}
       description={
         customer
@@ -347,7 +385,7 @@ export function CustomerFormDialog({
           <p className={styles.footerRequiredHint}>{content.requiredHint}</p>
           <div className={styles.footerActions}>
             <ButtonControl
-              disabled={mutation.isSubmitting}
+              disabled={isSubmitting}
               onClick={mutation.close}
               type="button"
               variant="ghost"
@@ -355,15 +393,17 @@ export function CustomerFormDialog({
               {content.buttons.cancel}
             </ButtonControl>
             <PrimaryCtaButton
-              disabled={mutation.isSubmitting}
+              disabled={isSubmitting}
               form={formId}
               type="submit"
             >
-              {mutation.isSubmitting
+              {isSubmitting
                 ? content.buttons.submitting
                 : customer
                   ? content.buttons.submitEdit
-                  : content.buttons.submitCreate}
+                  : sourceLead
+                    ? content.buttons.submitConversion
+                    : content.buttons.submitCreate}
             </PrimaryCtaButton>
           </div>
         </>
@@ -371,7 +411,13 @@ export function CustomerFormDialog({
       initialFocusRef={displayNameInputRef}
       onCloseAction={mutation.close}
       size={DialogSize.Wide}
-      title={customer ? content.title.edit : content.title.create}
+      title={
+        customer
+          ? content.title.edit
+          : sourceLead
+            ? content.title.convert
+            : content.title.create
+      }
     >
       <form
         className={styles.form}
@@ -380,6 +426,19 @@ export function CustomerFormDialog({
         onSubmit={handleSubmit}
         ref={formRef}
       >
+        {customer && leadsBasePath && customer.sourceLeads.length > 0 ? (
+          <aside className={styles.sourceLeads}>
+            <strong>{content.sourceLeads.title}</strong>
+            {customer.sourceLeads.map((lead) => (
+              <a
+                href={buildLeadDetailHref(leadsBasePath, lead.id)}
+                key={lead.id}
+              >
+                {lead.displayName}
+              </a>
+            ))}
+          </aside>
+        ) : null}
         <div
           aria-label={content.tabs.label}
           className={styles.tabs}

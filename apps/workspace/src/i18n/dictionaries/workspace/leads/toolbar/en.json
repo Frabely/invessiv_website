@@ -55,6 +55,9 @@
     "collapseFilters": "Collapse filters",
     "expandFilters": "Expand filters",
     "reset": "Reset filters",
-    "clear": "Clear"
-  }
+    "clear": "Clear",
+    "showConverted": "Show converted",
+    "hideConverted": "Hide converted"
+  },
+  "convertedHidden": "{count} converted leads hidden"
 }

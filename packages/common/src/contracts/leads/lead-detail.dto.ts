@@ -6,6 +6,8 @@ import type { LeadActivityDto } from "./lead-activity.dto";
 import type { LeadSubmissionDto } from "./lead-submission.dto";
 
 export interface LeadDetailDto {
+  /** Linked CRM customer after conversion, otherwise null. */
+  customerId: string | null;
   id: string;
   displayName: string;
   firstName: string | null;

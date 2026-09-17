@@ -7,6 +7,7 @@ export const LeadsConstraintName = {
   CompanyNameLowerUnique: "leads_company_name_lower_uidx",
   SourceCreatedAtIndex: "leads_source_created_at_idx",
   CategoryCreatedAtIndex: "leads_category_created_at_idx",
+  CustomerIdIndex: "leads_customer_id_idx",
   ExternalGuidUnique: "leads_external_guid_uidx",
 } as const;
 
@@ -21,5 +22,6 @@ export const LEADS_CONSTRAINT_NAME_VALUES = [
   LeadsConstraintName.CompanyNameLowerUnique,
   LeadsConstraintName.SourceCreatedAtIndex,
   LeadsConstraintName.CategoryCreatedAtIndex,
+  LeadsConstraintName.CustomerIdIndex,
   LeadsConstraintName.ExternalGuidUnique,
 ] as const;

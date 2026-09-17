@@ -155,6 +155,7 @@ const DETAIL_NOW = new Date("2024-03-01T12:00:00Z");
 const DETAIL_LATER = new Date("2024-03-02T08:00:00Z");
 
 const detailMainRow = {
+  customer_id: null,
   id: "lead-uuid-1",
   display_name: "Anna Beispiel",
   first_name: "Anna",

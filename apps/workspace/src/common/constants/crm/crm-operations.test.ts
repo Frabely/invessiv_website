@@ -8,6 +8,7 @@ import {
 describe("CrmOperation", () => {
   it("contains the exact operations without duplicates", () => {
     expect(CRM_OPERATION_VALUES).toEqual([
+      "leads.convert",
       "customers.list",
       "customers.create",
       "customers.update",

@@ -14,6 +14,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { CustomerErrorCode } from "@invessiv/common/constants/crm/errors/customer-error-codes";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { CustomerContactAssignmentDto } from "@invessiv/common/contracts/crm/customer-contact.dto";
+import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
 import { getCrmFormDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { customerDetailFixture } from "@/server/tests/workspace/crm/support/crm-fixtures";
 import { CustomerFormDialog } from "./customer-form-dialog";
@@ -21,12 +22,21 @@ import { CustomerFormDialog } from "./customer-form-dialog";
 const mocks = vi.hoisted(() => ({
   refresh: vi.fn(),
   replace: vi.fn(),
+  push: vi.fn(),
+  convertLead: vi.fn(),
   createCustomer: vi.fn(),
   updateCustomer: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ refresh: mocks.refresh, replace: mocks.replace }),
+  useRouter: () => ({
+    refresh: mocks.refresh,
+    replace: mocks.replace,
+    push: mocks.push,
+  }),
+}));
+vi.mock("@/client/crm/lead-conversion-api-service", () => ({
+  leadConversionApiService: { convertLead: mocks.convertLead },
 }));
 vi.mock("@/client/crm/customers-api-service", () => ({
   customersApiService: {
@@ -37,6 +47,30 @@ vi.mock("@/client/crm/customers-api-service", () => ({
 
 const content = getCrmFormDictionary("de");
 const CATEGORIES = [{ id: "category-1", label: "Coaches" }];
+const SOURCE_LEAD: LeadDetailDto = {
+  customerId: null,
+  id: "lead-1",
+  displayName: "Nordlicht Anfrage",
+  firstName: "Anna",
+  lastName: "Berger",
+  companyName: "Nordlicht GmbH",
+  email: "anna@nordlicht.example",
+  phone: "+49 221 1234567",
+  websiteUrl: "https://nordlicht.example",
+  score: 90,
+  source: "manual",
+  leadStatus: "qualified",
+  owner: null,
+  notes: "Pilotprojekt besprochen",
+  improvements: null,
+  externalGuid: null,
+  createdAt: "2026-09-14T10:00:00.000Z",
+  updatedAt: "2026-09-14T10:00:00.000Z",
+  category: { id: "category-1", slug: "coaches", labelKey: "coaches" },
+  socialProfiles: [],
+  activities: [],
+  submissions: [],
+};
 
 function customerContactFixture(
   overrides: Partial<CustomerContactAssignmentDto> = {},
@@ -214,6 +248,43 @@ describe("CustomerFormDialog", () => {
     });
     expect(mocks.refresh).toHaveBeenCalled();
     expect(mocks.replace).toHaveBeenCalledWith("/de/crm", { scroll: false });
+  });
+
+  it("converts a prefilled lead and navigates to the customer edit dialog", async () => {
+    const customer = customerDetailFixture();
+    mocks.convertLead.mockResolvedValue({ ok: true, customer });
+    render(
+      <CustomerFormDialog
+        categories={CATEGORIES}
+        closeHref="/de/leads?selected=lead-1"
+        content={content}
+        crmBasePath="/de/crm"
+        customer={null}
+        locale="de"
+        sourceLead={SOURCE_LEAD}
+      />,
+    );
+
+    expect(input(/^Anzeigename/)).toHaveValue("Nordlicht Anfrage");
+    selectTab(content.sections.contact);
+    expect(input(/^Nachname/)).toHaveValue("Berger");
+    confirmContactDraft();
+    submit(content.buttons.submitConversion);
+
+    await waitFor(() => expect(mocks.convertLead).toHaveBeenCalledTimes(1));
+    expect(mocks.convertLead).toHaveBeenCalledWith(
+      "lead-1",
+      expect.objectContaining({
+        displayName: "Nordlicht Anfrage",
+        primaryContact: expect.objectContaining({
+          lastName: "Berger",
+          preferredLocale: "de",
+        }),
+      }),
+    );
+    expect(mocks.push).toHaveBeenCalledWith(
+      `/de/crm?mode=edit&edit=${customer.id}`,
+    );
   });
 
   it("explains a taken display name at the field", async () => {

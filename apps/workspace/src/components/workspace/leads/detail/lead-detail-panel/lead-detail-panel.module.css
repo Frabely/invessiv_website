@@ -83,6 +83,41 @@
   flex: 0 0 auto;
 }
 
+.conversionCard {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0.85rem 0;
+  padding: 0.9rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-cta) 38%, var(--color-border));
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-cta) 8%, var(--color-surface-1));
+}
+
+.conversionCard p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.5;
+}
+
+.conversionButton {
+  min-height: 44px;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--color-cta);
+  border-radius: 10px;
+  background: var(--color-cta);
+  color: var(--color-on-cta);
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.conversionButton:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
 .editIconLink {
   display: inline-flex;
   align-items: center;

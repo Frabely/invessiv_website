@@ -24,7 +24,7 @@ export const activities = pgTable(
       onDelete: "cascade",
     }),
     customer_id: uuid("customer_id").references(() => customers.id, {
-      onDelete: "cascade",
+      onDelete: "set null",
     }),
     project_id: uuid("project_id"),
     type: text("type", { enum: ACTIVITY_TYPE_VALUES }).notNull(),
@@ -53,6 +53,11 @@ export const activities = pgTable(
         ${table.customer_id}
         is
         not
+      null
+      or
+      ${table.project_id}
+      is
+      not
         null`,
     ),
     check(

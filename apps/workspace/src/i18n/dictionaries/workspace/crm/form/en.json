@@ -1,7 +1,8 @@
 {
   "title": {
     "create": "Add customer",
-    "edit": "Edit customer"
+    "edit": "Edit customer",
+    "convert": "Create CRM customer from lead"
   },
   "description": {
     "edit": "Change the master data and contacts of {name}."
@@ -88,7 +89,12 @@
     "CUSTOMER_DISPLAY_NAME_TAKEN": "Another customer already uses this display name.",
     "CUSTOMER_OWNER_INACTIVE": "Your access was just deactivated. The customer was not added.",
     "VALIDATION_ERROR": "Some details don't fit. Check the fields and save again.",
-    "INTERNAL": "Saving didn't work. Try again in a moment."
+    "INTERNAL": "Saving didn't work. Try again in a moment.",
+    "LEAD_CONVERSION_DISPLAY_NAME_TAKEN": "Another customer already uses this display name. Add a distinguishing detail such as the location.",
+    "LEAD_CONVERSION_INTERNAL": "The conversion didn't work. Try again in a moment.",
+    "LEAD_CONVERSION_LEAD_NOT_FOUND": "This lead no longer exists.",
+    "LEAD_CONVERSION_OWNER_INACTIVE": "Your access was just deactivated. The customer was not added.",
+    "LEAD_CONVERSION_VALIDATION_ERROR": "Some details don't fit. Check the fields and save again."
   },
   "conflict": {
     "message": "Someone just changed this customer. Your input is still here – saving again replaces the newer version.",
@@ -97,6 +103,7 @@
   "buttons": {
     "submitCreate": "Add customer",
     "submitEdit": "Save changes",
+    "submitConversion": "Create CRM customer",
     "submitting": "Saving …",
     "addContact": "Add contact",
     "submittingContact": "Adding contact …",
@@ -109,6 +116,9 @@
     "close": "Close"
   },
   "requiredHint": "Fields marked * are required.",
+  "sourceLeads": {
+    "title": "Source lead"
+  },
   "contact": {
     "primary": "Primary contact",
     "removeTitle": "Remove contact?",

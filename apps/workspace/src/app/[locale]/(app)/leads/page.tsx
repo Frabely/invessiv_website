@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
+import { Permission } from "@invessiv/common/constants/auth/permissions";
+import { can } from "@invessiv/common/patterns/auth/can";
 import { DateRangePreset } from "@/common/constants/date-range/date-range-presets";
 import { getDateRangeForPreset } from "@/common/patterns/date-range/date-range-preset-range";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
@@ -8,6 +10,7 @@ import { requireWorkspaceArea } from "@/lib/auth/permissions";
 import { resolveLeadActionPermissions } from "@/common/patterns/leads/resolve-lead-action-permissions";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
 import { LeadFormDialog } from "@/components/workspace/leads/form/lead-form-dialog/lead-form-dialog";
+import { CustomerFormDialog } from "@/components/workspace/crm/form/customer-form-dialog/customer-form-dialog";
 import { LeadsPageHeader } from "@/components/workspace/leads/shell/leads-page-header/leads-page-header";
 import { LeadsPageShell } from "@/components/workspace/leads/shell/leads-page-shell/leads-page-shell";
 import { ListPagination } from "@/components/workspace/shared/table/list-pagination/list-pagination";
@@ -35,11 +38,14 @@ import {
   getLeadsTableDictionary,
   getLeadsToolbarDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
+import { getCrmFormDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { getLeadCategories } from "@/server/workspace/leads/query-handler/list-lead-categories.query-handler";
 import { getLeadById } from "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler";
 import { listLeads } from "@/server/workspace/leads/query-handler/list-leads.query-handler";
 import { LEADS_BASE_PATH } from "./page-constants";
 import {
+  buildLeadConversionCloseHref,
+  buildLeadConversionHref,
   buildLeadCreateHref,
   buildLeadDetailPanelEditHref,
   buildLeadDialogCloseHref,
@@ -49,10 +55,13 @@ import {
 } from "@/lib/workspace/leads/lead-list-query-string";
 import {
   hasActiveLeadFilters,
+  parseConvertLeadId,
   parseEditLeadId,
   parseLeadListFilters,
   parseSelectedLeadId,
 } from "@/server/workspace/leads/shared/lead-list-search-params";
+import { workspaceAreaPathFor } from "@/lib/auth/routes";
+import { buildCustomerEditHref } from "@/common/patterns/crm/customer-dialog-query";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -89,6 +98,11 @@ export default async function LeadsPage({
   // Layouts are not re-rendered on search param changes, so the page gates its own data.
   const actor = await requireWorkspaceArea(locale, WorkspaceArea.Leads);
   const leadActions = resolveLeadActionPermissions(actor);
+  const canReadCustomers = can(actor, Permission.CustomersRead);
+  const canConvertLeads =
+    leadActions.canWrite &&
+    canReadCustomers &&
+    can(actor, Permission.CustomersWrite);
 
   const resolvedSearchParams = await searchParams;
   const shellContent = getLeadsShellDictionary(locale as Locale);
@@ -136,6 +150,7 @@ export default async function LeadsPage({
     : LeadsEmptyStateVariant.Empty;
   const categories = await getLeadCategories();
   const basePath = createLocalePathname(LEADS_BASE_PATH, locale);
+  const crmBasePath = workspaceAreaPathFor(locale as Locale, WorkspaceArea.Crm);
   const addLeadHref = buildLeadCreateHref(basePath, resolvedSearchParams);
   const referenceDateValue =
     getDateRangeForPreset(DateRangePreset.Today).to ?? "";
@@ -143,6 +158,7 @@ export default async function LeadsPage({
     ? await getLeadById(selectedLeadId)
     : null;
   const editLeadId = parseEditLeadId(resolvedSearchParams);
+  const convertLeadId = parseConvertLeadId(resolvedSearchParams);
   const editLead = editLeadId ? await getLeadById(editLeadId) : null;
   const detailCloseHref = buildLeadListCloseHref(
     basePath,
@@ -164,6 +180,7 @@ export default async function LeadsPage({
   const detailPanelProps = selectedLead
     ? {
         canEdit: leadActions.canWrite,
+        canConvert: canConvertLeads && !selectedLead.customerId,
         closeHref: detailCloseHref,
         content: detailContent,
         editHref: buildLeadDetailPanelEditHref(
@@ -171,6 +188,15 @@ export default async function LeadsPage({
           selectedLead.id,
           resolvedSearchParams,
         ),
+        conversionHref: buildLeadConversionHref(
+          basePath,
+          selectedLead.id,
+          resolvedSearchParams,
+        ),
+        customerHref:
+          selectedLead.customerId && canReadCustomers
+            ? buildCustomerEditHref(crmBasePath, selectedLead.customerId)
+            : undefined,
         lead: selectedLead,
         locale: locale as Locale,
         outreachContent,
@@ -195,6 +221,11 @@ export default async function LeadsPage({
     leadActions.canWrite &&
     (requestedDialogMode === LeadFormDialogMode.Create ||
       (requestedDialogMode === LeadFormDialogMode.Edit && Boolean(editLead)));
+  const conversionDialogOpen =
+    canConvertLeads &&
+    Boolean(selectedLead) &&
+    !selectedLead?.customerId &&
+    convertLeadId === selectedLead?.id;
 
   return (
     <>
@@ -207,6 +238,7 @@ export default async function LeadsPage({
             categories={categoryOptions}
             currentQueryString={queryString}
             filtersContent={toolbarContent}
+            hiddenConvertedCount={leadList.hiddenConvertedCount}
             importContent={leadActions.canImport ? importContent : undefined}
             referenceDateValue={referenceDateValue}
             sharedContent={sharedContent}
@@ -268,6 +300,21 @@ export default async function LeadsPage({
         outreachContent={outreachContent}
         sharedContent={sharedContent}
       />
+      {conversionDialogOpen && selectedLead ? (
+        <CustomerFormDialog
+          categories={categoryOptions}
+          closeHref={buildLeadConversionCloseHref(
+            basePath,
+            resolvedSearchParams,
+          )}
+          content={getCrmFormDictionary(locale as Locale)}
+          crmBasePath={crmBasePath}
+          customer={null}
+          key={`convert-${selectedLead.id}`}
+          locale={locale as Locale}
+          sourceLead={selectedLead}
+        />
+      ) : null}
     </>
   );
 }

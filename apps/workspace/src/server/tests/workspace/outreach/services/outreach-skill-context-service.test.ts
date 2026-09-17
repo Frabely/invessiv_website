@@ -32,6 +32,7 @@ const makeLead = (overrides: Partial<LeadDetailDto> = {}): LeadDetailDto => ({
   activities: [],
   submissions: [],
   ...overrides,
+  customerId: overrides.customerId ?? null,
 });
 
 describe("outreachSkillContextService", () => {

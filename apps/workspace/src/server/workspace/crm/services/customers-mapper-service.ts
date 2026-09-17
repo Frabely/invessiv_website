@@ -1,6 +1,7 @@
 import type { CustomerContactAssignmentDto } from "@invessiv/common/contracts/crm/customer-contact.dto";
 import type { CustomerDetailDto } from "@invessiv/common/contracts/crm/customer-detail.dto";
 import type { CustomerSummaryDto } from "@invessiv/common/contracts/crm/customer-summary.dto";
+import type { CustomerSourceLeadDto } from "@invessiv/common/contracts/crm/customer-source-lead.dto";
 import type { CustomerContactAssignmentRow } from "@invessiv/common/contracts/crm/rows/customer-contact-assignment-row";
 import type { CustomerDetailRow } from "@invessiv/common/contracts/crm/rows/customer-detail-row";
 import type { CustomerSummaryRow } from "@invessiv/common/contracts/crm/rows/customer-summary-row";
@@ -73,9 +74,11 @@ function toSummary(
 function toDetail(
   row: CustomerDetailRow,
   contacts: CustomerContactAssignmentRow[],
+  sourceLeads: CustomerSourceLeadDto[] = [],
 ): CustomerDetailDto {
   return {
     ...toSummary(row, contacts),
+    sourceLeads,
     street: row.street,
     postalCode: row.postal_code,
     country: row.country,

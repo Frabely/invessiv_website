@@ -7,6 +7,7 @@ import {
   exists,
   gte,
   ilike,
+  isNull,
   lt,
   ne,
   notExists,
@@ -46,6 +47,10 @@ export function buildLeadFilter(filter: LeadFilterInput): LeadFilterResult {
     conditions.push(eq(leads.lead_status, filter.status));
   } else {
     conditions.push(ne(leads.lead_status, ContactLeadStatus.Archived));
+  }
+
+  if (!filter.includeConverted) {
+    conditions.push(isNull(leads.customer_id));
   }
 
   if (filter.source) {

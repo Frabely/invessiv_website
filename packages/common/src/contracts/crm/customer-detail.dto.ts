@@ -1,12 +1,15 @@
 import type { VersionedDto } from "@invessiv/common/contracts/concurrency/versioned";
 import type { CustomerContactAssignmentDto } from "@invessiv/common/contracts/crm/customer-contact.dto";
 import type { CustomerSummaryDto } from "@invessiv/common/contracts/crm/customer-summary.dto";
+import type { CustomerSourceLeadDto } from "@invessiv/common/contracts/crm/customer-source-lead.dto";
 
 /**
  * The full customer record. Everything the summary omits because a list does not need
  * it — plus `version`, because only the detail view writes.
  */
 export interface CustomerDetailDto extends CustomerSummaryDto, VersionedDto {
+  /** Leads that were converted into this customer. */
+  sourceLeads: CustomerSourceLeadDto[];
   /** Part of the single billing address kept as columns on the customer. */
   street: string | null;
   /** Part of the billing address. Not validated against a country format. */

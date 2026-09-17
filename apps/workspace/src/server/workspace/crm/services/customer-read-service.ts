@@ -6,10 +6,12 @@ import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses
 import { CustomerSort } from "@invessiv/common/constants/crm/list/customer-sort";
 import type { CustomerDetailDto } from "@invessiv/common/contracts/crm/customer-detail.dto";
 import type { CustomerSummaryDto } from "@invessiv/common/contracts/crm/customer-summary.dto";
+import type { CustomerSourceLeadDto } from "@invessiv/common/contracts/crm/customer-source-lead.dto";
 import type { CustomerContactAssignmentRow } from "@invessiv/common/contracts/crm/rows/customer-contact-assignment-row";
 import {
   customerContactAssignments,
   customers,
+  leads,
   people,
   users,
   workspaceMembers,
@@ -144,6 +146,7 @@ async function listSummaries(
 async function findDetailById(
   executor: CrmDatabaseExecutor,
   customerId: string,
+  includeSourceLeads = false,
 ): Promise<CustomerDetailDto | null> {
   const [row] = await executor
     .select(DETAIL_COLUMNS)
@@ -170,7 +173,15 @@ async function findDetailById(
       asc(customerContactAssignments.created_at),
     );
 
-  return customersMapperService.toDetail(row, contacts);
+  const sourceLeads: CustomerSourceLeadDto[] = includeSourceLeads
+    ? await executor
+        .select({ id: leads.id, displayName: leads.display_name })
+        .from(leads)
+        .where(eq(leads.customer_id, customerId))
+        .orderBy(asc(leads.created_at))
+    : [];
+
+  return customersMapperService.toDetail(row, contacts, sourceLeads);
 }
 
 async function findStatusById(
