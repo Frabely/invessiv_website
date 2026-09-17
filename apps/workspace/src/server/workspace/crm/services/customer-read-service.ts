@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, asc, count, desc, eq, ne } from "drizzle-orm";
+import { and, asc, count, desc, eq, ilike, ne, or, sql } from "drizzle-orm";
 
 import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
 import { CustomerSort } from "@invessiv/common/constants/crm/list/customer-sort";
@@ -17,6 +17,7 @@ import {
   workspaceMembers,
 } from "@invessiv/db/record-configuration";
 import type { CustomerListFilters } from "@/common/contracts/crm/customer-list-filters";
+import { escapeLikePattern } from "@/common/patterns/crm/sql-like-escape";
 import type { CrmDatabaseExecutor } from "@/server/workspace/crm/crm-types";
 import { customersMapperService } from "@/server/workspace/crm/services/customers-mapper-service";
 
@@ -66,10 +67,25 @@ const CONTACT_COLUMNS = {
   updated_at: customerContactAssignments.updated_at,
 };
 
-function getListCondition(includeArchived: boolean) {
-  return includeArchived
-    ? undefined
-    : ne(customers.status, CustomerStatus.Archived);
+function getListCondition(filters: CustomerListFilters) {
+  const searchTerm = filters.search
+    ? `%${escapeLikePattern(filters.search)}%`
+    : null;
+  return and(
+    filters.includeArchived
+      ? undefined
+      : ne(customers.status, CustomerStatus.Archived),
+    searchTerm
+      ? or(
+          ilike(customers.display_name, searchTerm),
+          ilike(customers.company_name, searchTerm),
+          ilike(customers.city, searchTerm),
+          sql`${customers.customer_number}
+              ::text ilike
+              ${searchTerm}`,
+        )
+      : undefined,
+  );
 }
 
 function getListOrder(sort: CustomerSort) {
@@ -95,12 +111,12 @@ function getListOrder(sort: CustomerSort) {
 
 async function countSummaries(
   executor: CrmDatabaseExecutor,
-  includeArchived: boolean,
+  filters: CustomerListFilters,
 ): Promise<number> {
   const [row] = await executor
     .select({ total: count() })
     .from(customers)
-    .where(getListCondition(includeArchived));
+    .where(getListCondition(filters));
 
   return row?.total ?? 0;
 }
@@ -128,7 +144,7 @@ async function listSummaries(
       ),
     )
     .leftJoin(people, eq(people.id, customerContactAssignments.person_id))
-    .where(getListCondition(filters.includeArchived))
+    .where(getListCondition(filters))
     .orderBy(...getListOrder(filters.sort))
     .offset((filters.page - 1) * limit)
     .limit(limit);

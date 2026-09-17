@@ -7,6 +7,7 @@ describe("parseCustomerListFilters", () => {
     expect(parseCustomerListFilters({})).toEqual({
       includeArchived: false,
       page: 1,
+      search: "",
       sort: "updated_desc",
     });
   });
@@ -17,8 +18,14 @@ describe("parseCustomerListFilters", () => {
         page: "3",
         sort: "number_asc",
         archived: "true",
+        search: "  Nordlicht  ",
       }),
-    ).toEqual({ includeArchived: true, page: 3, sort: "number_asc" });
+    ).toEqual({
+      includeArchived: true,
+      page: 3,
+      search: "Nordlicht",
+      sort: "number_asc",
+    });
   });
 
   it("rejects repeated and invalid params", () => {
@@ -28,6 +35,11 @@ describe("parseCustomerListFilters", () => {
         sort: ["name_asc", "name_desc"],
         archived: ["true", "true"],
       }),
-    ).toEqual({ includeArchived: false, page: 1, sort: "updated_desc" });
+    ).toEqual({
+      includeArchived: false,
+      page: 1,
+      search: "",
+      sort: "updated_desc",
+    });
   });
 });

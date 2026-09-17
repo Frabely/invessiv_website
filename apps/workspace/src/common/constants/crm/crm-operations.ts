@@ -3,6 +3,7 @@ export const CrmOperation = {
   ConvertLead: "leads.convert",
   ListCustomers: "customers.list",
   CreateCustomer: "customers.create",
+  GetCustomer: "customers.get",
   UpdateCustomer: "customers.update",
 } as const;
 
@@ -12,5 +13,6 @@ export const CRM_OPERATION_VALUES = [
   CrmOperation.ConvertLead,
   CrmOperation.ListCustomers,
   CrmOperation.CreateCustomer,
+  CrmOperation.GetCustomer,
   CrmOperation.UpdateCustomer,
 ] as const;

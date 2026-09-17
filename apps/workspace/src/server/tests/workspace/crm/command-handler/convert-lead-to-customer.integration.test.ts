@@ -18,6 +18,7 @@ import {
 } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { convertLeadToCustomer } from "@/server/workspace/crm/command-handler/convert-lead-to-customer.command-handler";
+import { customerService } from "@/server/workspace/crm/services/customer/customer-service";
 import { createCustomerRequestFixture } from "@/server/tests/workspace/crm/support/crm-fixtures";
 import { leadService } from "@/server/workspace/leads/services/lead/lead-service";
 
@@ -200,6 +201,14 @@ describe.skipIf(!RUN_INTEGRATION)(
           (entry) => entry.type === ActivityType.ConvertedFromLead,
         ),
       ).toHaveLength(1);
+
+      const searchResult = await customerService.search({
+        includeArchived: false,
+        page: 1,
+        search: "integration:lead-conversion:parallel",
+        sort: "updated_desc",
+      });
+      expect(searchResult.rows.map(({ id }) => id)).toContain(first.customerId);
 
       await expect(leadService.delete([parallelLeadId])).resolves.toEqual([
         parallelLeadId,

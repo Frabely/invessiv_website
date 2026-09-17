@@ -24,6 +24,8 @@ const mocks = vi.hoisted(() => ({
   findDetail: vi.fn(),
   findStatus: vi.fn(),
   createActivity: vi.fn(),
+  synchronizeContacts: vi.fn(),
+  isContactWriteConflict: vi.fn(),
 }));
 
 vi.mock("@invessiv/db/core", async (importOriginal) => ({
@@ -45,6 +47,15 @@ vi.mock("@/server/workspace/crm/services/customer-read-service", () => ({
 vi.mock("@/server/workspace/shared/services/activity-service", () => ({
   activityService: { createActivity: mocks.createActivity },
 }));
+vi.mock(
+  "@/server/workspace/crm/services/customer-contact/customer-contact-service",
+  () => ({
+    customerContactService: {
+      synchronizeCustomerContacts: mocks.synchronizeContacts,
+      isContactWriteConflict: mocks.isContactWriteConflict,
+    },
+  }),
+);
 
 const tx = {};
 const REQUEST = updateCustomerRequestFixture({ version: 3 });
@@ -63,6 +74,8 @@ describe("updateCustomer", () => {
     });
     mocks.findDetail.mockResolvedValue(customerDetailFixture({ version: 4 }));
     mocks.findStatus.mockResolvedValue("active");
+    mocks.synchronizeContacts.mockResolvedValue(undefined);
+    mocks.isContactWriteConflict.mockReturnValue(false);
   });
 
   it("answers not found for a malformed id without touching the database", async () => {
@@ -193,6 +206,101 @@ describe("updateCustomer", () => {
       ok: false,
       code: CustomerErrorCode.DisplayNameTaken,
     });
+  });
+
+  it("synchronizes contacts in the same transaction when contacts are supplied", async () => {
+    const contacts = [
+      {
+        isPrimary: true,
+        firstName: "Anna",
+        lastName: "Berger",
+        email: "anna@nordlicht.example",
+        phone: null,
+        roleLabel: "Geschäftsführung",
+        preferredLocale: "de" as const,
+      },
+    ];
+
+    await updateCustomer(
+      TEST_CUSTOMER_ID,
+      { ...REQUEST, contacts },
+      TEST_ACTOR_USER_ID,
+    );
+
+    expect(mocks.synchronizeContacts).toHaveBeenCalledWith(
+      tx,
+      TEST_CUSTOMER_ID,
+      contacts,
+    );
+  });
+
+  it("does not touch contacts when none are supplied", async () => {
+    await updateCustomer(TEST_CUSTOMER_ID, REQUEST, TEST_ACTOR_USER_ID);
+
+    expect(mocks.synchronizeContacts).not.toHaveBeenCalled();
+  });
+
+  it("maps a contact write conflict to a version conflict with the fresh detail", async () => {
+    const current = customerDetailFixture({ version: 6 });
+    mocks.synchronizeContacts.mockRejectedValue(new Error("stale contact"));
+    mocks.isContactWriteConflict.mockReturnValue(true);
+    mocks.findDetail.mockResolvedValue(current);
+
+    await expect(
+      updateCustomer(
+        TEST_CUSTOMER_ID,
+        {
+          ...REQUEST,
+          contacts: [
+            {
+              isPrimary: true,
+              firstName: "Anna",
+              lastName: "Berger",
+              email: null,
+              phone: null,
+              roleLabel: null,
+              preferredLocale: "de" as const,
+            },
+          ],
+        },
+        TEST_ACTOR_USER_ID,
+      ),
+    ).resolves.toEqual({
+      ok: false,
+      code: ConcurrencyErrorCode.VersionConflict,
+      conflict: {
+        code: ConcurrencyErrorCode.VersionConflict,
+        currentVersion: 6,
+        current,
+      },
+    });
+    expect(mocks.createActivity).not.toHaveBeenCalled();
+  });
+
+  it("rethrows an error that is not a recognized contact write conflict", async () => {
+    mocks.synchronizeContacts.mockRejectedValue(new Error("connection lost"));
+    mocks.isContactWriteConflict.mockReturnValue(false);
+
+    await expect(
+      updateCustomer(
+        TEST_CUSTOMER_ID,
+        {
+          ...REQUEST,
+          contacts: [
+            {
+              isPrimary: true,
+              firstName: "Anna",
+              lastName: "Berger",
+              email: null,
+              phone: null,
+              roleLabel: null,
+              preferredLocale: "de" as const,
+            },
+          ],
+        },
+        TEST_ACTOR_USER_ID,
+      ),
+    ).rejects.toThrow("connection lost");
   });
 
   it("records a status change inside the customer update", async () => {

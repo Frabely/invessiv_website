@@ -234,7 +234,7 @@ function isContactWriteConflict(error: unknown) {
   return error instanceof CustomerContactWriteConflictError;
 }
 
-export const customerContactWriteService = {
+export const customerContactService = {
   synchronizeCustomerContacts,
   isContactWriteConflict,
 } as const;

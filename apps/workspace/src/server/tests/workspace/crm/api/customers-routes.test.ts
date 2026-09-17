@@ -8,7 +8,10 @@ import { HttpHeaderName } from "@invessiv/common/constants/http/http-header-name
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import { MediaType } from "@invessiv/common/constants/http/media-types";
-import { PATCH } from "@/app/api/workspace/crm/customers/[id]/route";
+import {
+  GET as GET_CUSTOMER,
+  PATCH,
+} from "@/app/api/workspace/crm/customers/[id]/route";
 import { GET, POST } from "@/app/api/workspace/crm/customers/route";
 import {
   authorizedWorkspaceRequest,
@@ -28,6 +31,7 @@ const mocks = vi.hoisted(() => ({
   authenticate: vi.fn(),
   listCustomers: vi.fn(),
   createCustomer: vi.fn(),
+  getCustomer: vi.fn(),
   updateCustomer: vi.fn(),
 }));
 
@@ -45,6 +49,10 @@ vi.mock(
 vi.mock(
   "@/server/workspace/crm/command-handler/update-customer.command-handler",
   () => ({ updateCustomer: mocks.updateCustomer }),
+);
+vi.mock(
+  "@/server/workspace/crm/query-handler/get-customer-by-id.query-handler",
+  () => ({ getCustomerById: mocks.getCustomer }),
 );
 
 const COLLECTION_URL = "http://localhost/api/workspace/crm/customers";
@@ -195,8 +203,53 @@ describe("CRM customer routes", () => {
       expect(mocks.listCustomers).toHaveBeenCalledWith({
         includeArchived: false,
         page: 1,
+        search: "",
         sort: "updated_desc",
       });
+    });
+
+    it("passes a normalized search term to the customer service", async () => {
+      mocks.listCustomers.mockResolvedValue({
+        hasCustomers: true,
+        page: 1,
+        perPage: 25,
+        rows: [],
+        total: 0,
+      });
+      const request = new Request(
+        `${COLLECTION_URL}?search=%20Nordlicht%20`,
+      ) as unknown as NextRequest;
+
+      expect((await GET(request)).status).toBe(HttpResponseCode.Ok);
+      expect(mocks.listCustomers).toHaveBeenCalledWith(
+        expect.objectContaining({ search: "Nordlicht" }),
+      );
+    });
+  });
+
+  describe("GET /crm/customers/[id]", () => {
+    const request = new Request(
+      `${COLLECTION_URL}/${TEST_CUSTOMER_ID}`,
+    ) as unknown as NextRequest;
+
+    it("answers 200 with the customer", async () => {
+      mocks.getCustomer.mockResolvedValue(customerDetailFixture());
+
+      const response = await GET_CUSTOMER(request, context);
+
+      expect(response.status).toBe(HttpResponseCode.Ok);
+      await expect(response.json()).resolves.toEqual({
+        customer: customerDetailFixture(),
+      });
+      expect(mocks.getCustomer).toHaveBeenCalledWith(TEST_CUSTOMER_ID);
+    });
+
+    it("answers 404 for an unknown customer", async () => {
+      mocks.getCustomer.mockResolvedValue(null);
+
+      expect((await GET_CUSTOMER(request, context)).status).toBe(
+        HttpResponseCode.NotFound,
+      );
     });
   });
 

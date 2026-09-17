@@ -10,9 +10,16 @@ import { MediaType } from "@invessiv/common/constants/http/media-types";
 import type { CreateCustomerRequestDto } from "@invessiv/common/contracts/crm/create-customer-request.dto";
 import type { CustomerDetailDto } from "@invessiv/common/contracts/crm/customer-detail.dto";
 import type { UpdateCustomerRequestDto } from "@invessiv/common/contracts/crm/update-customer-request.dto";
+import type { ListCustomersResult } from "@invessiv/common/contracts/crm/results/list-customers-result";
 import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
-import type { CustomerMutationClientResult } from "@/common/contracts/crm/customer-client-results";
+import type {
+  CustomerMutationClientResult,
+  CustomerReadClientResult,
+  CustomerSearchClientResult,
+} from "@/common/contracts/crm/customer-client-results";
+import type { CustomerListFilters } from "@/common/contracts/crm/customer-list-filters";
 import { crmCustomerEndpoint } from "@/common/patterns/crm/crm-api-endpoints";
+import { buildCustomerListQueryString } from "@/lib/workspace/crm/customer-list-query-string";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -23,6 +30,25 @@ function isCustomerDetail(value: unknown): value is CustomerDetailDto {
     isRecord(value) &&
     typeof value.id === "string" &&
     typeof value.version === "number"
+  );
+}
+
+function isCustomerListResult(value: unknown): value is ListCustomersResult {
+  return (
+    isRecord(value) &&
+    typeof value.hasCustomers === "boolean" &&
+    typeof value.page === "number" &&
+    typeof value.perPage === "number" &&
+    Array.isArray(value.rows) &&
+    typeof value.total === "number"
+  );
+}
+
+function readErrorCode(payload: unknown): CustomerErrorCode {
+  const error = isRecord(payload) ? payload.error : undefined;
+  return (
+    CUSTOMER_ERROR_CODE_VALUES.find((code) => code === error) ??
+    CustomerErrorCode.Internal
   );
 }
 
@@ -61,13 +87,7 @@ async function mutate(
     };
   }
 
-  const error = isRecord(payload) ? payload.error : undefined;
-  return {
-    ok: false,
-    code:
-      CUSTOMER_ERROR_CODE_VALUES.find((code) => code === error) ??
-      CustomerErrorCode.Internal,
-  };
+  return { ok: false, code: readErrorCode(payload) };
 }
 
 function createCustomer(
@@ -83,7 +103,49 @@ function updateCustomer(
   return mutate(crmCustomerEndpoint(customerId), HttpMethod.Patch, request);
 }
 
+async function getCustomer(
+  customerId: string,
+): Promise<CustomerReadClientResult> {
+  try {
+    const response = await fetch(crmCustomerEndpoint(customerId), {
+      method: HttpMethod.Get,
+    });
+    const payload = (await response.json().catch(() => null)) as unknown;
+    if (
+      response.ok &&
+      isRecord(payload) &&
+      isCustomerDetail(payload.customer)
+    ) {
+      return { ok: true, customer: payload.customer };
+    }
+    return { ok: false, code: readErrorCode(payload) };
+  } catch {
+    return { ok: false, code: CustomerErrorCode.Internal };
+  }
+}
+
+async function searchCustomers(
+  filters: CustomerListFilters,
+): Promise<CustomerSearchClientResult> {
+  const query = buildCustomerListQueryString(filters);
+  const endpoint = query
+    ? `${WorkspaceApiEndpoint.CrmCustomers}?${query}`
+    : WorkspaceApiEndpoint.CrmCustomers;
+  try {
+    const response = await fetch(endpoint, { method: HttpMethod.Get });
+    const payload = (await response.json().catch(() => null)) as unknown;
+    if (response.ok && isCustomerListResult(payload)) {
+      return { ok: true, result: payload };
+    }
+    return { ok: false, code: readErrorCode(payload) };
+  } catch {
+    return { ok: false, code: CustomerErrorCode.Internal };
+  }
+}
+
 export const customersApiService = {
   createCustomer,
+  getCustomer,
+  searchCustomers,
   updateCustomer,
 } as const;

@@ -13,6 +13,7 @@ describe("CustomerListQueryParam", () => {
       "archived",
       "mode",
       "edit",
+      "search",
     ]);
     expect(CUSTOMER_LIST_QUERY_PARAM_VALUES).toEqual(
       Object.values(CustomerListQueryParam),

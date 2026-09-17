@@ -11,6 +11,7 @@ describe("CrmOperation", () => {
       "leads.convert",
       "customers.list",
       "customers.create",
+      "customers.get",
       "customers.update",
     ]);
     expect(CRM_OPERATION_VALUES).toEqual(Object.values(CrmOperation));

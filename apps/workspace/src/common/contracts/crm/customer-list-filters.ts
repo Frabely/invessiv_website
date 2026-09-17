@@ -3,5 +3,6 @@ import type { CustomerSort } from "@invessiv/common/constants/crm/list/customer-
 export type CustomerListFilters = {
   includeArchived: boolean;
   page: number;
+  search: string;
   sort: CustomerSort;
 };

@@ -10,6 +10,7 @@ describe("customer list query string", () => {
     const filters = {
       includeArchived: false,
       page: 1,
+      search: "",
       sort: "updated_desc",
     } as const;
     expect(buildCustomerListQueryString(filters)).toBe("");
@@ -20,10 +21,11 @@ describe("customer list query string", () => {
     const filters = {
       includeArchived: true,
       page: 2,
+      search: "Nordlicht GmbH",
       sort: "name_asc",
     } as const;
     expect(buildCustomerListQueryString(filters)).toBe(
-      "page=2&sort=name_asc&archived=true",
+      "page=2&sort=name_asc&archived=true&search=Nordlicht+GmbH",
     );
   });
 });

@@ -63,6 +63,7 @@ describe("customer query handlers", () => {
       listCustomers({
         includeArchived: false,
         page: 9,
+        search: "Nordlicht",
         sort: "updated_desc",
       }),
     ).resolves.toEqual({
@@ -74,7 +75,12 @@ describe("customer query handlers", () => {
     });
     expect(mocks.listSummaries).toHaveBeenCalledWith(
       mocks.database,
-      { includeArchived: false, page: 2, sort: "updated_desc" },
+      {
+        includeArchived: false,
+        page: 2,
+        search: "Nordlicht",
+        sort: "updated_desc",
+      },
       25,
     );
   });
@@ -87,13 +93,15 @@ describe("customer query handlers", () => {
       listCustomers({
         includeArchived: false,
         page: 1,
+        search: "",
         sort: "updated_desc",
       }),
     ).resolves.toMatchObject({ hasCustomers: true, rows: [], total: 0 });
-    expect(mocks.countSummaries).toHaveBeenNthCalledWith(
-      2,
-      mocks.database,
-      true,
-    );
+    expect(mocks.countSummaries).toHaveBeenNthCalledWith(2, mocks.database, {
+      includeArchived: true,
+      page: 1,
+      search: "",
+      sort: "updated_desc",
+    });
   });
 });

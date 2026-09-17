@@ -20,11 +20,13 @@ export function parseCustomerListFilters(
   searchParams: SearchParamsInput,
 ): CustomerListFilters {
   const requestedSort = readSingle(searchParams[CustomerListQueryParam.Sort]);
+  const search = readSingle(searchParams[CustomerListQueryParam.Search]);
 
   return {
     includeArchived:
       readSingle(searchParams[CustomerListQueryParam.Archived]) === "true",
     page: readPage(readSingle(searchParams[CustomerListQueryParam.Page])),
+    search: search?.trim() ?? "",
     sort:
       CUSTOMER_SORT_VALUES.find((value) => value === requestedSort) ??
       CustomerSort.UpdatedDesc,

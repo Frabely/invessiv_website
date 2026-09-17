@@ -75,6 +75,44 @@ describe("customersApiService", () => {
     );
   });
 
+  it("gets a customer by id", async () => {
+    const fetchMock = respondWith(HttpResponseCode.Ok, {
+      customer: customerDetailFixture(),
+    });
+
+    await expect(
+      customersApiService.getCustomer(TEST_CUSTOMER_ID),
+    ).resolves.toEqual({ ok: true, customer: customerDetailFixture() });
+    expect(fetchMock).toHaveBeenCalledWith(
+      `/api/workspace/crm/customers/${TEST_CUSTOMER_ID}`,
+      { method: HttpMethod.Get },
+    );
+  });
+
+  it("searches customers through the collection endpoint", async () => {
+    const result = {
+      hasCustomers: true,
+      page: 1,
+      perPage: 25,
+      rows: [],
+      total: 0,
+    };
+    const fetchMock = respondWith(HttpResponseCode.Ok, result);
+
+    await expect(
+      customersApiService.searchCustomers({
+        includeArchived: false,
+        page: 1,
+        search: "Nordlicht GmbH",
+        sort: "updated_desc",
+      }),
+    ).resolves.toEqual({ ok: true, result });
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/workspace/crm/customers?search=Nordlicht+GmbH",
+      { method: HttpMethod.Get },
+    );
+  });
+
   it("falls back to internal for unknown payloads and network failures", async () => {
     respondWith(HttpResponseCode.InternalServerError, { error: "SOMETHING" });
     await expect(

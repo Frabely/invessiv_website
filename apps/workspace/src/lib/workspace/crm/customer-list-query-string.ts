@@ -16,6 +16,9 @@ export function buildCustomerListQueryString(
   if (filters.includeArchived) {
     params.set(CustomerListQueryParam.Archived, "true");
   }
+  if (filters.search) {
+    params.set(CustomerListQueryParam.Search, filters.search);
+  }
 
   return params.toString();
 }
