@@ -19,7 +19,7 @@ wird erweitert, nicht ersetzt — Signatur und DTO bleiben stabil.
 - Liste zeigt Owner und verpflichtenden Primärkontakt.
 - Seite, Sortierung und „Archivierte einblenden“ laufen vollständig über URL-State.
 - Count und Liste verwenden exakt dieselbe Querydefinition.
-- Ordner 07d (Task 42) ergänzt zwei Wertspalten und eine zusätzliche Sortierung. Der Query-Handler
+- Task 42 in Ordner 07 ergänzt zwei Wertspalten und eine zusätzliche Sortierung. Der Query-Handler
   wird deshalb so geschnitten, dass eine optionale Aggregatspalte ohne Signaturbruch andockt — und
   die Sortierschlüssel liegen als Konstante, nicht als Literale in der Komponente.
 
