@@ -1,7 +1,7 @@
 # CRM & Kundenportal — Funktionsumfang Version 1
 
 Diese Übersicht beschreibt ausschließlich den verbindlichen Stand aus `00-entscheidungen.md`.
-Details und Abnahmekriterien stehen in den 36 aktiven geordneten Merge-Einheiten.
+Details und Abnahmekriterien stehen in den aktiven geordneten Merge-Einheiten.
 
 ## Internes CRM
 
@@ -19,14 +19,14 @@ Details und Abnahmekriterien stehen in den 36 aktiven geordneten Merge-Einheiten
   gemeinsame Aggregationsfunktion für Liste und Dialog, keine doppelte Berechnung. Interne Mitarbeitersicht mit
   eigener Permission-Prüfung je Sektion (z. B. Preise), ausdrücklich keine Vorschau auf das spätere Kundenportal.
 - Mehrere Projekte je Kunde mit Lebenszyklus, Workflow-Version, Owner und internen EUR-Planwerten.
-- Gebuchte Leistungspakete je Kunde und Projekt: einmalig oder wiederkehrend, aus einem versionierten
-  Katalog abgeleitet und danach kundenindividuell editierbar, mit ehrlicher Preishistorie.
-- Stand je Position (angefragt, angeboten, beauftragt, berechnet, bezahlt, abgelehnt) mit Liegedauer
-  und einem „Was ansteht"-Block in der Kundenakte; berechnet und bezahlt sind manuelle Vermerke.
-- Kundenwert und Projektwert (einmalig, monatlich, jährlich) plus offene Pipeline in Liste,
-  Kundenakte und Projektkarte.
-- Stundensatz als buchbares Paket je Kunde, beim Zubuchen individuell anpassbar und mit derselben
-  Preishistorie wie jede andere Position; Angebote, Rechnungen und Zahlungen bleiben in Lexware.
+- Projektleistungen als einzige Leistungsheimat: individuell je Projekt, aus pflegbaren globalen
+  Templates als unveränderlicher Snapshot abgeleitet und vor dem Speichern anpassbar.
+- Globaler Leistungstemplatekatalog mit Preisen, Preisarten, Intervallen und Archivstatus; archivierte
+  Templates bleiben als Herkunftsnachweis erhalten und können nicht neu zugewiesen werden.
+- Kundenwert und Projektwert (einmalig, monatlich, jährlich) ausschließlich aus Projektleistungen in
+  Liste, Kundenakte, Projektkarte und bestehendem Cockpit; `rate` zählt nicht als Umsatz.
+- Stundensatz als Projektleistung mit individueller Snapshot-Preisgestaltung; Angebote, Rechnungen
+  und Zahlungen bleiben in Lexware.
 - Flache Aufgaben mit einem Bearbeiter, Kontext, Handlungspflicht, Fälligkeit, Wiederholung und
   globaler Übersicht.
 - Workspace-Glocke für Zuweisungen, Fälligkeiten, Portalereignisse, Renewals und Jobfehler.
@@ -65,8 +65,8 @@ Details und Abnahmekriterien stehen in den 36 aktiven geordneten Merge-Einheiten
 
 Kein CRM-Mailclient, Mail-Eingang, Malware-Scanner, Dateiversionssystem, Rechnungssystem,
 Lexware-Import, Mandantenbetrieb, CSV-Kundenimport oder frei konfigurierbarer Workflow-Editor.
-Ebenso kein Angebotsobjekt im CRM, keine Rabatt-Regel-Engine, keine Pflegeoberfläche für Paketkatalog
-oder Onboarding-Fragen und keine eigene Terminverwaltung.
+Ebenso kein Angebotsobjekt im CRM, keine Rabatt-Regel-Engine, keine eigene Terminverwaltung und im
+ersten Ausbau kein Copy-Flow aus bestehenden Projektleistungen oder frei erstellte Leistung ohne Template.
 
 Der frühere Detailplan für freies Mail-Senden bleibt als ausdrücklich zurückgestellte Option unter
 `zurueckgestellt/31-mail-senden.md` erhalten.

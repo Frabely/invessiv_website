@@ -1,6 +1,7 @@
 # Ordner 07 — Projekte
 
-> **Status:** offen · **Abhängigkeiten:** 04, 05, 06 · **Aufwand:** 3–4 Tage · **Reviewziel:** 60–100 Dateien
+> **Status:** offen · **Abhängigkeiten:** 04, 05, 06, 07c · **Aufwand:** 7–10 Tage · **Reviewziel:** 50–100 Dateien je
+> Merge-Einheit
 
 ## Ziel und Stand nach Merge
 
@@ -9,7 +10,18 @@
 - [`09-projekte-datenmodell.md`](./09-projekte-datenmodell.md) — Migration, Workflow,
   Lebenszyklus und Abrechnungsart.
 - [`10-projekte-ui.md`](./10-projekte-ui.md) — Commands, Routes, Liste, Detail und Dialoge.
+- [`40-leistungstemplatekatalog.md`](./40-leistungstemplatekatalog.md) — pflegbarer,
+  versionierter Templatekatalog als CRM-Stammdaten.
+- [`41-projektleistungszuweisung-und-rechte.md`](./41-projektleistungszuweisung-und-rechte.md) —
+  Rechte und Snapshot-Zuweisung an Projekte.
+- [`42-projektwerte-in-akte-und-listen.md`](./42-projektwerte-in-akte-und-listen.md) —
+  ausschließlich aus Projektleistungen berechnete Werte.
+- [`42a-cockpit-projektwerte.md`](./42a-cockpit-projektwerte.md) — Erweiterung der bestehenden
+  Cockpit-Ansicht, keine zweite Kundendarstellung.
 
+Task 09 bleibt ein reines Projekt-Datenmodell. Task 10 liefert danach die Projekt-UI mit sichtbar
+gekennzeichneten, nicht interaktiven „Coming soon“-Bereichen für Leistungen, Aufgaben und Chat.
+Nach dem Zugriffsbereichsfundament folgen Templatekatalog, Projektleistungszuweisung und Werte.
 Interne Nutzer können mehrere Projekte je Kunde vollständig anlegen, bearbeiten, pausieren,
 abschließen, abbrechen und archivieren. Projektstatus, Workflow-Phase und Owner sind getrennt und
 im Kundendetail sowie in einer Projektübersicht nutzbar. Portalanteile bleiben noch unsichtbar.
@@ -29,10 +41,17 @@ im Kundendetail sowie in einer Projektübersicht nutzbar. Portalanteile bleiben 
 - Feste Phasenfolge aus `standard_web_v1`; unbekannter Workflow oder Phase wird abgelehnt.
 - Kein Soft-Delete/Purge in der UI. Archiv ist der reversible Endzustand.
 - `version` verhindert stilles Überschreiben.
+- Leistungen gehören ausschließlich zu Projekten. Jede Projektleistung ist ein vollständiger,
+  individuell editierbarer Snapshot ihres optionalen Quelltemplates; Änderungen am Template wirken
+  nie rückwirkend.
+- Der globale Katalog enthält Templates, keine kundenweiten Leistungspositionen. Archivierte Templates bleiben als
+  Herkunftsnachweis erhalten, sind aber nicht neu auswählbar.
 
 ## UI und Contracts
 
 - Projektkarten und Projektliste zeigen Status, Phase, Owner, nächsten Schritt und Termin.
+- Task 10 zeigt zusätzlich die drei künftigen Bereiche „Leistungen“, „Aufgaben“ und „Chat“ als
+  klar beschriftete, nicht interaktive Coming-soon-Slots; es gibt keinen CTA und keine leere Route.
 - Create/Edit-Dialog blendet Budget oder Stundensatz passend zur Abrechnungsart ein.
 - Phasenwechsel ist eine eigene protokollierte Mutation.
 - PortalDTO enthält bereits nur grundsätzlich freigabefähige Felder, wird aber noch nicht geroutet.
@@ -49,6 +68,11 @@ im Kundendetail sowie in einer Projektübersicht nutzbar. Portalanteile bleiben 
 - [ ] Interne Finanzwerte fehlen vollständig in PortalDTOs.
 - [ ] Projektlisten haben deterministische Pagination, Empty- und Fehlerzustände.
 - [ ] Kein Portal-Link ist sichtbar.
+- [ ] Globale `services.read`/`services.write` sind workspace-weit; bindbare
+      `project_services.read`/`project_services.write` vererben vom Kunden auf dessen Projekte,
+      aber nie in umgekehrter Richtung oder auf fremde Projekte.
+- [ ] Projektwerte verwenden ausschließlich Projektleistungen; kundenweite Pakete und
+      `customer_packages` entstehen nicht.
 
 ## Rollback
 

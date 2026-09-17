@@ -9,9 +9,8 @@
 - Archivierte Kunden bleiben intern adressierbar und sind nur in Listen standardmäßig ausgeblendet.
 - Unbekannte ID liefert 404; `archived` gilt nicht als unbekannt.
 - Sektionen späterer Ordner werden erst gerendert, wenn ihr Feature vollständig geliefert wurde.
-- Die Akte wird so aufgebaut, dass spätere Ordner eigene **Tabs** ergänzen können (Ordner 07d:
-  „Pakete"). Der aktive Tab gehört in den URL-State, nicht in React-State — auch wenn es hier
-  zunächst nur einen gibt.
+- Die Akte wird so aufgebaut, dass spätere Ordner eigene **Sektionen** ergänzen können (Ordner 07:
+  Projektwerte). Ein späterer selektierbarer Bereich gehört in den URL-State, nicht in React-State.
 - CRM-05-T4 wird „Archivieren/Reaktivieren mit Version und Activity“.
 - CRM-05-T5 entfällt; Purge wird ausschließlich in Task 34 nach allen Abhängigkeiten umgesetzt.
 
@@ -19,7 +18,7 @@
 
 Der Ort, an dem ab jetzt fast alles zusammenläuft: Ansprechpartner, Tags, Projekte, Aufgaben,
 Dateien, Zugangsdaten, Chat und Timeline hängen sich in dieses Panel. Deshalb entsteht es früh und
-bewusst als **Gerüst mit leeren Slots** — dieser Task füllt nur den Stammdaten-Block und das Löschen.
+bewusst als **Gerüst mit späteren Sektionen** — dieser Task füllt nur den Stammdaten-Block und das Löschen.
 
 Wie bei den Leads gibt es **kein eigenes Route-Segment** für das Detail. Die Auswahl läuft über den
 Query-Parameter `selected`, damit der Zustand teilbar und neu ladbar bleibt und die Liste im

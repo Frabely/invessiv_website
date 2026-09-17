@@ -18,6 +18,7 @@ const mocks = vi.hoisted(() => ({
   getCustomerById: vi.fn(),
   getCustomerCockpitById: vi.fn(),
   listCategories: vi.fn(),
+  listProjectsByCustomer: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -43,6 +44,10 @@ vi.mock(
 vi.mock(
   "@/server/workspace/crm/query-handler/list-active-customer-categories.query-handler",
   () => ({ listActiveCustomerCategories: mocks.listCategories }),
+);
+vi.mock(
+  "@/server/workspace/crm/query-handler/list-projects-by-customer.query-handler",
+  () => ({ listProjectsByCustomer: mocks.listProjectsByCustomer }),
 );
 vi.mock(
   "@/components/workspace/crm/detail/customer-cockpit-dialog/customer-cockpit-dialog",
@@ -98,6 +103,7 @@ describe("CrmPage", () => {
       total: 0,
     });
     mocks.listCategories.mockResolvedValue([]);
+    mocks.listProjectsByCustomer.mockResolvedValue([]);
     mocks.getCustomerById.mockResolvedValue(null);
     mocks.getCustomerCockpitById.mockResolvedValue(null);
   });

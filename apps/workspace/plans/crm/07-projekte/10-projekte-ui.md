@@ -14,6 +14,12 @@
 - Form zeigt Betragsfelder passend zu `billing_model`; keine Finanzdaten in Portal-DTOs.
 - Jede Mutation verlangt `version` und zeigt 409-Konflikt verständlich an.
 
+## Vorgriff auf spätere Bereiche
+
+Die Projektkarte rendert bereits drei klar als „Coming soon“ gekennzeichnete Bereiche: Leistungen,
+Aufgaben und Chat. Sie sind rein informativ, nicht fokussierbar und enthalten weder Button noch Link.
+Damit bleibt die Projektstruktur früh sichtbar, ohne einen unvollständigen Flow zu suggerieren.
+
 ## Context
 
 Die Projekte-Sektion im Kundendetail: Liste der Projekte, Anlegen und Bearbeiten, Phasenwechsel und
@@ -128,8 +134,8 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/projects/{de,en}.json
 1. **Live sichtbar:** neue Sektion „Projekte" im Kundendetail mit vollem CRUD und Phasenleiste.
 2. **Bricht nichts:** keine Migration. `packages/ui` wird nur erweitert — die bestehende
    `custom-select`-Komponente bleibt unberührt, der Barrel wächst.
-3. **Offen:** Aufgaben (Task 11) und Dateien (Task 15) hängen später an Projekten. Ihre Slots werden
-   noch nicht gerendert, die Projektkarte zeigt also keine leeren Bereiche.
+3. **Offen:** Leistungen (Task 41), Aufgaben (Task 11) und Chat (Task 17) hängen später an Projekten.
+   Ihre sichtbaren Coming-soon-Slots sind nicht interaktiv; Dateien folgen separat in Task 15.
 
 ## End-to-End-Akzeptanz
 
@@ -140,5 +146,6 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/projects/{de,en}.json
    hervorgehoben.
 5. Archivierte Projekte sind eingeklappt und über die Anzahl auffindbar.
 6. Die Phasenleiste ist ohne Farbwahrnehmung und per Tastatur nutzbar.
-7. Alle Texte in DE und EN.
-8. `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm build:workspace` grün.
+7. Leistungen, Aufgaben und Chat sind sichtbar als „Coming soon“ markiert und nicht interaktiv.
+8. Alle Texte in DE und EN.
+9. `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm build:workspace` grün.

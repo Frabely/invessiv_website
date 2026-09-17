@@ -5,13 +5,13 @@
 >
 > **Stand:** 16. September 2026 · geprüft und entscheidungsvollständig.
 >
-> **Umfang:** 36 einzeln merge- und deploybare Einheiten, insgesamt **107–142 Personentage**
+> **Umfang:** 35 einzeln merge- und deploybare Einheiten, insgesamt **107–142 Personentage**
 > inklusive Tests, Reviewkorrekturen, Migrationen und Betriebsdokumentation.
 
 ## Ziel und Lieferprinzip
 
 Ein produktionsreifes, ausschließlich von Invessiv genutztes CRM für zunächst zwei bis fünf
-interne Nutzer. Es führt Kunden, globale Personen, Projekte, gebuchte Leistungspakete, Aufgaben,
+interne Nutzer. Es führt Kunden, globale Personen, Projekte, individuelle Projektleistungen, Aufgaben,
 Onboarding-Bögen, Dokumente, Feedback, Portalnachrichten, Zugangsdaten, Renewals und informative
 Stundenkontingente zusammen.
 
@@ -143,7 +143,7 @@ Projekte erweitern die Ansicht erst nach Aufbau der Projektdomäne in Ordner 07.
   Darstellungspfad. Es gibt keine zweite Kunden-Detaildarstellung.
 - **Der Kunden-Cockpit-Dialog (Task 08c) ist die interne Mitarbeitersicht, nicht die Kundenportal-Sicht.**
   Er zeigt permission-abhängig, was der aufrufende Mitarbeiter zu diesem Kunden sehen darf — inklusive
-  Daten, die das spätere Kundenportal (Ordner 12/13) dem Kunden bewusst nie zeigt, etwa Preise (`07d`:
+  Daten, die das spätere Kundenportal (Ordner 12/13) dem Kunden bewusst nie zeigt, etwa Preise (Task 42:
   „Kein Portalzugriff auf Beträge") oder den internen Pipeline-/Prozessstand einer Anfrage
   (angefragt/angeboten/beauftragt). Zwei Mitglieder mit unterschiedlichen Permissions sehen für denselben
   Kunden unterschiedliche Sektionen; jede Sektion prüft ihre Permission unabhängig und fehlt vollständig,
@@ -153,63 +153,34 @@ Projekte erweitern die Ansicht erst nach Aufbau der Projektdomäne in Ordner 07.
   bleibt die Trennung strikt: Der Cockpit-Handler liegt unter `src/server/workspace/**` und wird nie von
   einem Portal-Handler wiederverwendet (Abschnitt „Harte Sicherheitsgrenzen" in `AGENTS.md`).
 
-### Pakete und Kundenvolumen (Entscheidung des Nutzers, 16.09.2026)
+### Projektleistungen und Templatekatalog (Entscheidung des Nutzers, 17.09.2026)
 
-Umsetzung in Ordner 07d (Task 40–42), nach den Zugriffsbereichen und vor den Aufgaben.
+Umsetzung als Tasks 40–42a innerhalb von Ordner 07: Task 09 bleibt ein reines Datenmodell, Task 10
+liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung und Werte, vor Aufgaben.
 
-- **Lexware bleibt führend für Angebot, Rechnung und Zahlung.** Das CRM bildet kein Angebot ab und
-  kopiert keine Angebotstexte. Es hält die gebuchten Bausteine, ihre Konditionen und optional die
-  Lexware-Angebotsnummer als Freitext (`offer_reference`).
-- Der **Paketkatalog** liegt als versioniertes Const-Objekt in `packages/common`, nicht in der
-  Datenbank: je Paket ein aufsteigendes Array von Versionen mit `validFrom`, Preisen und
-  Leistungspunkten als Dictionary-Keys. Eine Preisänderung ist eine neue Version im Code, keine
-  Migration und kein Pflege-UI. Eine Katalogtabelle bleibt additiv nachrüstbar.
-- Eine gebuchte Position ist ein **Snapshot**: Bezeichnung, Leistungspunkte und Preise werden beim
-  Buchen in die Kundenzeile kopiert und sind danach je Kunde frei editierbar. Eine spätere
-  Katalogänderung berührt gebuchte Zeilen nie.
-- **Vorgeschlagen wird nach Preisart getrennt:** wiederkehrende Positionen und der Stundensatz zum
-  **Konditionsanker** des Kunden (`customers.customer_since`, ersatzweise das Anlagedatum),
-  einmalige Positionen zur **aktuellen** Katalogversion. Ein laufender Vertrag genießt
-  Bestandsschutz, eine neue Einmalleistung wird zur aktuellen Preisliste verkauft. Der Wechsel ist in
-  beide Richtungen ein sichtbarer, bewusster Klick.
-- Positionen tragen `pricing_mode`: `one_time`, `recurring` (`monthly | quarterly | yearly`) oder
-  `rate`. Sie sind kundenweit oder an ein Projekt gebunden; eine zusammengesetzte Constraint erzwingt,
-  dass das Projekt demselben Kunden gehört.
-- **Menge und Stückpreis sind getrennt** (`quantity`, `unit_cents`); der Gesamtbetrag wird berechnet,
-  nie gespeichert. „2 Sektionen zu je 200 €" und „eine Sektion zu 400 €" bleiben damit
-  unterscheidbar. Mehr Stück zu einem späteren Preis sind eine **neue** Position, keine
-  Mengenerhöhung der bestehenden Zeile.
-- **Der Stundensatz ist ein Katalogpaket** mit `pricing_mode = 'rate'`: buchen, beim Buchen
-  individuell ändern, später über denselben Ersetzungsweg wechseln. Keine eigene Historientabelle und
-  kein zweiter Mechanismus. Eine `rate`-Position zählt in keiner Wertsumme; je Kunde ist höchstens
-  eine aktiv (partieller Unique-Index).
-- **Zwei getrennte Achsen je Position:** `status` (`active | ended | cancelled`) sagt, ob die Position
-  läuft; `stage` (`requested | offered | ordered | invoiced | paid | declined`) sagt, wo das Geschäft
-  steht. Eine Spalte für beides wäre sofort unbrauchbar, weil ein Wartungsvertrag gleichzeitig aktiv
-  und berechnet ist.
-- **Umsatz zählt ab `ordered`.** `requested` und `offered` laufen getrennt als `pipelineCents`,
-  `declined` zählt nirgends. Sonst steigt der Kundenwert, sobald jemand etwas anfragt.
-- **`invoiced` und `paid` sind manuelle Vermerke und nicht führend** — Lexware bleibt die Wahrheit,
-  die UI beschriftet das sichtbar. Sie sind genau das Feld, das eine spätere Lexware-Anbindung
-  automatisch füllen würde. Bei wiederkehrenden Positionen sind sie **verboten**: monatliche
-  Abrechnung bräuchte Zeilen je Periode, und das wäre ein Abrechnungssystem. `rate`-Positionen haben
-  gar keinen Stand.
-- Kein Zustandsautomat: Jeder Standwechsel ist erlaubt und wird mit Zeitpunkt protokolliert
-  (`stage_changed_on`), damit „Angebot liegt seit 18 Tagen" beantwortbar ist.
-- **Preisänderungen überschreiben nie.** Die laufende Position wird beendet, eine Nachfolgeposition
-  mit `replaces_package_id` beginnt am Stichtag. Fehlbuchungen werden auf `cancelled` gesetzt; es
-  gibt keinen Löschpfad.
-- Ein Kombipreis ist ein **eigenes Paket** im Katalog, keine Rabattregel. Zusätzlich ist der Preis
-  jeder gebuchten Position frei editierbar; eine Abweichung vom Katalog wird protokolliert.
-- `customers.default_hourly_rate_cents` bleibt als aktueller Wert bestehen und wird beim Buchen oder
-  Wechseln der `rate`-Position in derselben Transaktion mitgeschrieben. Der Ausbau der Spalte gehört
-  in einen späteren Cleanup.
-- Kundenwert und Projektwert werden **immer berechnet**, nie gespeichert, und erscheinen in
-  Kundenliste, Kundenakte und Projektkarte aus einer gemeinsamen Funktion.
-- `packages.read` und `packages.write` sind workspace-weit und **nicht bindbar** (`scopable = false`).
-  Ohne `packages.read` liefert der Server weder Tab noch Wertfelder; nichts wird clientseitig versteckt.
-- **Kein Portalzugriff auf Beträge.** Erweiterungswünsche laufen über den Chat (Ordner 17/18). Eine
-  Lexware-Anbindung ist ausdrücklich nach Version 1 möglich und ändert dieses Modell nicht.
+- **Lexware bleibt führend für Angebote, Rechnungen und Zahlungen.** Das CRM enthält keine
+  Rechnungs- oder Zahlungslogik; Preise bleiben intern und sind nicht portalöffentlich.
+- `service_templates` ist ein DB-basierter, versionierter und pflegbarer globaler Katalog mit Titel,
+  Beschreibung, Preis in EUR-Cent, Preisart (`one_time`, `recurring`, `rate`), optionalem Intervall
+  sowie Aktiv-/Archivstatus. Starttemplates sind Landingpage, Unterseite, zusätzliche Section,
+  Wartung, SEO, Wartung + SEO und Stundensatz. Kombipakete sind eigene Templates.
+- **Projektleistungen sind die einzige fachliche Heimat von Leistungen.** Jede gehört verpflichtend
+  zu genau einem Projekt; der Kunde wird darüber abgeleitet. Kundenweite Positionen und
+  `customer_packages` existieren nicht.
+- Eine Projektleistung speichert einen vollständigen Template-Snapshot (Titel, Beschreibung, Preis,
+  Preisart, Intervall) und optional die Quell-Template-ID als Herkunftsnachweis. Templateänderungen
+  und Archivierungen wirken nie rückwirkend auf Snapshots.
+- Bei der Zuweisung wird nur ein aktives Template ausgewählt. Titel, Beschreibung und Preis können
+  vor dem Speichern individuell angepasst werden. Das spätere Kopieren vorhandener Leistungen eines
+  Kunden erzeugt ebenfalls einen neuen Snapshot, gehört aber nicht zum ersten Ausbau.
+- `services.read` und `services.write` steuern den workspace-weiten Katalog und sind nicht bindbar.
+  `project_services.read` und `project_services.write` sind bindbar: Kundenbindung vererbt auf alle
+  Kundenprojekte; Projektbindung gilt nur für dieses Projekt.
+- Projekt- und Kundenwerte werden ausschließlich aus Projektleistungen berechnet, nie gespeichert.
+  `rate` ist ein Konditionswert und zählt nicht in die Umsatzsumme. Task 42a erweitert die bestehende
+  Cockpit-View; eine zweite Kundenansicht entsteht nicht.
+- Die Projekt-UI zeigt Leistungen, Aufgaben und Chat bis zu deren jeweiliger Lieferung als sichtbare,
+  nicht interaktive „Coming soon“-Slots ohne CTA.
 
 ### Projekte und Aufgaben
 
@@ -486,12 +457,11 @@ people
                                       ├── customer_credentials
                                       ├── customer_renewals
                                       ├── customer_tags
-                                      ├── customer_packages ── customer_package_items (Ordner 07d)
-                                      │   └── pricing_mode one_time | recurring | rate
                                       ├── customer_asset_links                       (Ordner 15a)
                                       └── retainers ── time_entries
 
-service_packages ── versionierter Katalog als Const-Objekt im Code, keine Tabelle
+service_templates ── pflegbarer globaler Katalog
+projects ── project_services (vollständige Template-Snapshots, Ordner 07)
 
 files ── genau ein Scope: customer | project | feedback_round
 activities ── Lead- und CRM-Historie
@@ -504,8 +474,7 @@ outbox_jobs ── zuverlässige asynchrone Seiteneffekte
 Kindtabellen eines Aggregats tragen den Aggregatnamen als Präfix — wie die bestehenden
 `lead_activities`, `lead_categories`, `lead_submissions` und `lead_email_contacts` in
 `packages/db/src/record-configuration/`. Verbindlich sind damit `customer_contact_assignments`,
-`customer_credentials`, `customer_renewals`, `customer_tags`, `customer_packages`,
-`customer_package_items` und `customer_asset_links`.
+`customer_credentials`, `customer_renewals`, `customer_tags` und `customer_asset_links`.
 
 Präfixfrei bleiben eigenständige und querschnittliche Tabellen: `users`, `workspace_members`, `permissions`, `roles`,
 `role_permissions`, `workspace_member_roles`, `workspace_member_scoped_roles`, `people`,
@@ -513,7 +482,7 @@ Präfixfrei bleiben eigenständige und querschnittliche Tabellen: `users`, `work
 `conversations`, `messages`, `message_files`, `conversation_reads`, `feedback_rounds`,
 `feedback_round_requests`, `onboarding_submissions`, `onboarding_answers`, `onboarding_answer_files`,
 `retainers`, `time_entries`, `files`, `activities`, `security_events`, `outbox_jobs`,
-`notifications`.
+`notifications`, `service_templates`, `project_services`.
 
 `onboarding_submissions` ist präfixfrei, weil der Bogen am Projekt hängt und kein Kindobjekt des
 Kunden ist; seine eigenen Kindtabellen tragen das Präfix `onboarding_`.
@@ -629,11 +598,10 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 | 05  | im Review | `05-kundenliste-und-zuweisung`           | Paginierte Kundenliste mit Statusbadge und Statuspflege im Kundenformular       |   40–70 |  2–3 T. |
 | 06  | im Review | `06-lead-konvertierung`                  | Leads können sicher direkt als neue CRM-Kunden angelegt werden                  |   40–70 |  2–3 T. |
 | 06b | läuft     | `06b-mitarbeiter-cockpit`                | Kundenansicht aus Kundenliste und -formular, Dashboard-Detailpfad vorbereitet   |   35–60 |  2–3 T. |
-| 07  | offen     | `07-projekte`                            | Projektanlage, Status, Workflow und Owner-Zuweisung vollständig nutzbar         |  60–100 |  3–4 T. |
+| 07  | offen     | `07-projekte`                            | Projekte, Templatekatalog, Projektleistungen und berechnete Werte nutzbar       |  50–100 | 7–10 T. |
 | 07a | offen     | `07a-zugriffsbereiche-fundament`         | Gebundene Rollen in DB, Actor und API unsichtbar und wirkungslos deployt        |   60–90 |    3 T. |
 | 07b | offen     | `07b-zugriffsfilter-kunden-und-projekte` | Alle Kunden- und Projektpfade filtern über `accessScope`; Negativtests          |  60–100 |  3–4 T. |
 | 07c | offen     | `07c-zugriffsverwaltung-ui`              | Zugriffe je Kunde/Projekt in Settings und Kundenakte konfigurierbar             |   50–80 |  2–3 T. |
-| 07d | offen     | `07d-pakete-und-kundenvolumen`           | Gebuchte Pakete, Preishistorie, Kunden- und Projektwert vollständig nutzbar     |  90–125 |  4–5 T. |
 | 08  | offen     | `08-aufgaben`                            | Flache Aufgaben, Kundenpflicht und globale Übersicht nutzbar                    |  80–100 |  4–5 T. |
 | 09  | offen     | `09-aufgabenserien-und-reminder`         | Wiederholungen, Fälligkeit und Überfälligkeit zuverlässig aktiv                 |   50–90 |  3–4 T. |
 | 10  | offen     | `10-jobs-und-benachrichtigungen`         | Outbox-Runner, Glocke, Retry und kritische Fehlerbenachrichtigung aktiv         |  70–100 |  4–5 T. |
@@ -668,10 +636,10 @@ mergebarer Ordner. Zusammenlegen allein zum Erreichen des Zielkorridors ist nich
 - Mandantenfähigkeit, CSV-Kundenimport, Kundenzusammenführung.
 - Rechnungen, Zahlungen, Lexware oder rechtsverbindliche Zeiterfassung. Auch das **Angebot selbst**
   bleibt in Lexware: kein Angebotsobjekt im CRM, keine Mahnstufe, keine Teilzahlung, keine Steuer-
-  oder Summenrechnung. Der manuelle Vermerk „berechnet/bezahlt" am Paket ist ausdrücklich kein
-  Zahlungsabgleich. Eine Lexware-Schnittstelle ist nach Version 1 möglich.
-- Rabatt-Regel-Engine für Paketkombinationen. Ein Kombipreis ist ein eigenes Paket im Katalog.
-- Pflegeoberfläche für Paketkatalog oder Onboarding-Fragen. Beide sind Const-Objekte im Code.
+  oder Summenrechnung. Eine Lexware-Schnittstelle ist nach Version 1 möglich.
+- Rabatt-Regel-Engine für Leistungskombinationen. Wartung + SEO bleibt ein eigenes Template.
+- Pflegeoberfläche für Onboarding-Fragen; sie bleiben Const-Objekte im Code. Der
+  Leistungstemplatekatalog ist dagegen bewusst pflegbar.
 - Eigene Terminverwaltung mit Verfügbarkeiten, Absagen und Kalendersynchronisation.
 - Freies CRM-Mailmodul, Mail-Eingang, Trackingpixel.
 - Dateiordner, Dateiversionen, Bildannotation, Kommentare pro Datei, serverseitige Bild- oder

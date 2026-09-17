@@ -1,0 +1,15 @@
+export const ProjectsConstraintName = {
+  TitleCheck: "projects_title_check",
+  StatusCheck: "projects_status_check",
+  PhaseCheck: "projects_phase_check",
+  ProcessStepsCheck: "projects_process_steps_check",
+  WorkflowCheck: "projects_workflow_check",
+  BillingModelCheck: "projects_billing_model_check",
+  FeedbackRoundsCheck: "projects_feedback_rounds_check",
+  BudgetCheck: "projects_budget_cents_check",
+  HourlyRateCheck: "projects_hourly_rate_cents_check",
+  VersionCheck: "projects_version_check",
+  IdCustomerUnique: "projects_id_customer_uidx",
+  CustomerCreatedAtIndex: "projects_customer_created_at_idx",
+  OpenOwnerIndex: "projects_open_owner_idx",
+} as const;
