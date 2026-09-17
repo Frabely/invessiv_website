@@ -14,7 +14,7 @@ import {
 } from "@/server/tests/support/workspace-auth-fixtures";
 import {
   createCustomerRequestFixture,
-  customerDetailFixture,
+  TEST_CUSTOMER_ID,
 } from "@/server/tests/workspace/crm/support/crm-fixtures";
 
 vi.mock("server-only", () => ({}));
@@ -28,8 +28,9 @@ vi.mock(
   () => ({ convertLeadToCustomer: mocks.convert }),
 );
 
-const URL = "http://localhost/api/workspace/crm/leads/lead-1/convert";
-const context = { params: Promise.resolve({ leadId: "lead-1" }) };
+const LEAD_ID = "11111111-1111-4111-8111-111111111111";
+const URL = `http://localhost/api/workspace/crm/leads/${LEAD_ID}/convert`;
+const context = { params: Promise.resolve({ leadId: LEAD_ID }) };
 
 function request(body = JSON.stringify(createCustomerRequestFixture())) {
   return new Request(URL, {
@@ -73,15 +74,32 @@ describe("POST /crm/leads/[leadId]/convert", () => {
     );
   });
 
-  it("answers 201 with the customer", async () => {
+  it("answers 404 for an invalid lead id without calling the command", async () => {
+    const invalidContext = { params: Promise.resolve({ leadId: "invalid" }) };
+
+    expect((await POST(request(), invalidContext)).status).toBe(
+      HttpResponseCode.NotFound,
+    );
+    expect(mocks.convert).not.toHaveBeenCalled();
+  });
+
+  it("answers 422 for an invalid body without calling the command", async () => {
+    expect(
+      (await POST(request(JSON.stringify({ displayName: "" })), context))
+        .status,
+    ).toBe(HttpResponseCode.UnprocessableContent);
+    expect(mocks.convert).not.toHaveBeenCalled();
+  });
+
+  it("answers 201 with the customer id", async () => {
     mocks.convert.mockResolvedValue({
       ok: true,
-      customer: customerDetailFixture(),
+      customerId: TEST_CUSTOMER_ID,
     });
     const response = await POST(request(), context);
     expect(response.status).toBe(HttpResponseCode.Created);
     await expect(response.json()).resolves.toEqual({
-      customer: customerDetailFixture(),
+      customerId: TEST_CUSTOMER_ID,
     });
   });
 

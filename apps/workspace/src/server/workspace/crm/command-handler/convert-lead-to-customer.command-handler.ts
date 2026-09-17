@@ -4,25 +4,16 @@ import { eq } from "drizzle-orm";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { ContactLeadStatus } from "@invessiv/common/constants/contact/contact-lead-statuses";
+import { CustomerErrorCode } from "@invessiv/common/constants/crm/errors/customer-error-codes";
 import { LeadConversionErrorCode } from "@invessiv/common/constants/crm/errors/lead-conversion-error-codes";
 import type { ConvertLeadToCustomerRequestDto } from "@invessiv/common/contracts/crm/convert-lead-to-customer-request.dto";
 import type { ConvertLeadToCustomerResultDto } from "@invessiv/common/contracts/crm/convert-lead-to-customer-result.dto";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
-import {
-  activities,
-  customerContactAssignments,
-  customers,
-  leads,
-  people,
-} from "@invessiv/db/record-configuration";
+import { activities, leads } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
-import { memberResponsibilityLockService } from "@/server/workspace/access/services/responsibilities/member-responsibility-lock-service";
-import { customerCategoryService } from "@/server/workspace/crm/services/customer-category-service";
-import { customerCategoryValidationService } from "@/server/workspace/crm/services/customer-category-validation-service";
 import { customerConstraintViolationService } from "@/server/workspace/crm/services/customer-constraint-violation-service";
-import { customerReadService } from "@/server/workspace/crm/services/customer-read-service";
+import { customerService } from "@/server/workspace/crm/services/customer/customer-service";
 import { customerSchemas } from "@/server/workspace/crm/services/customer-schemas";
-import { customerWriteMappingService } from "@/server/workspace/crm/services/customer-write-mapping-service";
 import { activityService } from "@/server/workspace/shared/services/activity-service";
 
 /**
@@ -61,93 +52,24 @@ export async function convertLeadToCustomer(
         }
 
         if (lead.customerId) {
-          const customer = await customerReadService.findDetailById(
-            tx,
-            lead.customerId,
-            true,
-          );
-          if (!customer) {
-            throw new Error("Converted lead references a missing customer");
-          }
-          return { ok: true, customer };
+          return { ok: true, customerId: lead.customerId };
         }
 
-        const ownerIsActive =
-          await memberResponsibilityLockService.lockActiveMemberForAssignment(
-            tx,
-            actor.workspaceMemberId,
-          );
-        if (!ownerIsActive) {
-          return { ok: false, code: LeadConversionErrorCode.OwnerInactive };
-        }
-
-        if (
-          data.categoryId &&
-          !(await customerCategoryService.isActive(tx, data.categoryId))
-        ) {
+        const creation = await customerService.create(tx, data, actor);
+        if (!creation.ok) {
           return {
             ok: false,
-            code: LeadConversionErrorCode.ValidationError,
-            errors: [
-              customerCategoryValidationService.createUnknownOrInactiveCategoryIssue(
-                data.categoryId,
-              ),
-            ],
+            code:
+              creation.code === CustomerErrorCode.OwnerInactive
+                ? LeadConversionErrorCode.OwnerInactive
+                : LeadConversionErrorCode.ValidationError,
+            ...(creation.code === CustomerErrorCode.ValidationError
+              ? { errors: creation.errors }
+              : {}),
           };
         }
 
-        const customerId = crypto.randomUUID();
-        const personId = crypto.randomUUID();
-        await tx
-          .insert(people)
-          .values(
-            customerWriteMappingService.mapContactApiToPersonDb(
-              personId,
-              data.primaryContact,
-            ),
-          );
-        await tx
-          .insert(customers)
-          .values(
-            customerWriteMappingService.mapCreateCustomerApiToDb(
-              customerId,
-              data,
-              actor.workspaceMemberId,
-            ),
-          );
-        await tx
-          .insert(customerContactAssignments)
-          .values(
-            customerWriteMappingService.mapContactApiToAssignmentDb(
-              crypto.randomUUID(),
-              customerId,
-              personId,
-              data.primaryContact,
-              true,
-            ),
-          );
-        for (const contact of data.additionalContacts ?? []) {
-          const additionalPersonId = crypto.randomUUID();
-          await tx
-            .insert(people)
-            .values(
-              customerWriteMappingService.mapContactApiToPersonDb(
-                additionalPersonId,
-                contact,
-              ),
-            );
-          await tx
-            .insert(customerContactAssignments)
-            .values(
-              customerWriteMappingService.mapContactApiToAssignmentDb(
-                crypto.randomUUID(),
-                customerId,
-                additionalPersonId,
-                contact,
-                false,
-              ),
-            );
-        }
+        const { customerId } = creation;
 
         await tx
           .update(leads)
@@ -168,15 +90,7 @@ export async function convertLeadToCustomer(
           actor: { type: ActorType.User, userId: actor.userId },
         });
 
-        const customer = await customerReadService.findDetailById(
-          tx,
-          customerId,
-          true,
-        );
-        if (!customer) {
-          throw new Error("Customer is missing after converting the lead");
-        }
-        return { ok: true, customer };
+        return { ok: true, customerId };
       },
     );
   } catch (error: unknown) {

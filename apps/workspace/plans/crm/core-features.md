@@ -12,6 +12,12 @@ Details und Abnahmekriterien stehen in den 35 aktiven geordneten Merge-Einheiten
 - Direkte Lead-Konvertierung über den vorhandenen Kundendialog mit bestätigtem Primärkontakt.
 - Sichtbare und versioniert änderbare Kundenverantwortung; Projekte, Aufgaben, Renewals und Chat haben danach jeweils
   eine eigene, unabhängig änderbare Zuständigkeit.
+- Konsolidierte „Meine Kunden"-Übersicht je Mitarbeiter (Zuständigkeit, offene strukturierte Projektanfragen, später
+  Kundenwert und Pipeline) — ausdrücklich ohne Lead-Daten.
+- Dieselbe Übersicht zusätzlich als Kunden-Cockpit-Dialog für genau einen Kunden, aufrufbar aus Kundenliste
+  (Tabellen-Action), Kundenformular (Button) und Lead-Liste (Sprung-Action bei bereits konvertiertem Lead) — eine
+  gemeinsame Aggregationsfunktion für Liste und Dialog, keine doppelte Berechnung. Interne Mitarbeitersicht mit
+  eigener Permission-Prüfung je Sektion (z. B. Preise), ausdrücklich keine Vorschau auf das spätere Kundenportal.
 - Mehrere Projekte je Kunde mit Lebenszyklus, Workflow-Version, Owner und internen EUR-Planwerten.
 - Gebuchte Leistungspakete je Kunde und Projekt: einmalig oder wiederkehrend, aus einem versionierten
   Katalog abgeleitet und danach kundenindividuell editierbar, mit ehrlicher Preishistorie.
@@ -70,3 +76,18 @@ Der frühere Detailplan für freies Mail-Senden bleibt als ausdrücklich zurück
 - Nach allen fachlichen CRM-, Portal-, Rollout- und Cleanup-Einheiten folgt als letzter Ordner 23 ein eigenständiger
   Web-PR. Er stellt die Website technisch auf alle in Ordner 03d zentralisierten Button- und Formularbausteine um und
   entwickelt deren Web-Darstellung weiter, ohne die Workspace-Optik oder CRM-Funktionalität zu verändern.
+
+## Architektur-Nacharbeit nach dem CRM-Umbau
+
+- Die serverseitigen Fachoperationen werden schrittweise nach Aggregaten gebündelt: beispielsweise `leadService`,
+  `customerService`, `contactService` und weitere fachlich passende Kontext-Services. Die öffentlichen Methoden
+  heißen nach ihrer Operation (`create`, `read`, `update`, `delete`) statt nach einzelnen Use-Case-Service-Dateien.
+- Im Lead-zu-Kunde-Branch wurden bewusst nur `leadService.delete` und `customerService.create` auf dieses Muster
+  umgestellt. Die übrigen bestehenden Lead- und CRM-Services bleiben unverändert, bis ihr jeweiliger fachlicher
+  Bereich ohnehin bearbeitet wird.
+- Als Nacharbeit sind insbesondere Kundenlesen, Kundenkontakte, Kategorien, Constraint-Auswertung, Lead-Anlage,
+  Lead-Aktualisierung, Filterung, Mapping und Import auf sinnvolle Aggregate beziehungsweise klar abgegrenzte
+  Kontext-Services zu prüfen. Validierung, Schemas und reine Mapper werden nur dann in einen Aggregate-Service
+  aufgenommen, wenn dadurch Verantwortlichkeiten nicht vermischt werden.
+- Die Umstellung erfolgt inkrementell mit aktualisierten Imports und Tests; kein Big-Bang-Refactoring und keine
+  Verhaltensänderung allein durch die strukturelle Konsolidierung.

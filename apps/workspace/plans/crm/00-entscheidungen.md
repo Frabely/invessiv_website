@@ -5,7 +5,7 @@
 >
 > **Stand:** 16. September 2026 · geprüft und entscheidungsvollständig.
 >
-> **Umfang:** 35 einzeln merge- und deploybare Einheiten, insgesamt **105–139 Personentage**
+> **Umfang:** 36 einzeln merge- und deploybare Einheiten, insgesamt **107–142 Personentage**
 > inklusive Tests, Reviewkorrekturen, Migrationen und Betriebsdokumentation.
 
 ## Ziel und Lieferprinzip
@@ -125,6 +125,44 @@ Umsetzung in Ordner 07a–07c (Task 36–38), nach Projekten und vor Aufgaben.
   Ordner 22a zu `satisfies Record<OwnableEntity, OwnershipAdapter>`. Eine neue besitzbare Entität in
   Ordner 07, 08, 11 oder 17 bricht den Typecheck, bis sie registriert ist — Vergessen ist damit ein
   roter Build und kein stiller Datenfehler.
+
+### Mitarbeiter-Cockpit (Entscheidung des Nutzers, 17.09.2026)
+
+Umsetzung in Ordner 06b (Task 08b, Task 08c), nach der Kundenzuständigkeit und vor den Projekten. Eine
+weitere Ergänzung folgt als Task 42a in Ordner 07d, sobald Pakete und Kundenvolumen existieren.
+
+- Ziel ist eine **konsolidierte „Meine Kunden"-Übersicht** je internem Mitglied, statt Zuständigkeit,
+  Dealvolumen und offene Anfragen nur einzeln in Kundenliste, Kundenakte und Dashboard-Widgets
+  aufzufinden.
+- **Welle 1 (Ordner 06b, Task 08b):** zeigt die dem Mitglied zugewiesenen Kunden (`customers.owner_member_id`) und deren
+  offene **strukturierte Projektanfragen**
+  (`lead_project_requests` ohne Folgeaktion) als Liste. Keine neue Tabelle, keine Migration.
+- **Welle 1b (Ordner 06b, Task 08c):** dieselbe Datenquelle zusätzlich als **Kunden-Cockpit-Dialog**
+  für genau einen Kunden — ein Fullsize-Dialog, aufrufbar über eine Tabellen-Action in der Kundenliste,
+  einen zusätzlichen Button im Kundenformular und eine Sprung-Action in der Lead-Liste bei bereits
+  konvertierten Leads. Liste (08b) und Dialog (08c) rufen dieselbe Aggregationsfunktion auf; es gibt
+  ausdrücklich **keine zweite Implementierung** der Zähl- oder Wertlogik.
+- **Welle 2 (Ordner 07d, Task 42a):** ergänzt Liste und Dialog gemeinsam um Kundenwert, Projektwert und
+  Pipeline-Positionen im Stand `requested`/`offered` je Mitglied — abgeleitet aus derselben Funktion
+  wie in Kundenliste, Kundenakte und Projektkarte (Task 42), keine zweite Berechnung.
+- **Ausdrücklich nicht Teil des Cockpits:** Leads als eigener Dateninhalt. Die Lead-Verwaltung bleibt
+  unverändert beim Workspace-Owner; ihr Rechtemodell prüft heute im Wesentlichen nur globale
+  Sichtbarkeit und wird in diesem Zug nicht erweitert. Der Sprung-Button aus der Lead-Liste ändert
+  keine Lead-Daten und keine Lead-Rechte — er öffnet nur den Dialog des bereits verknüpften Kunden.
+- Aufgaben- (Ordner 08) und Renewal-Widgets (Ordner 11) docken sich wie bisher geplant an dieselbe
+  Aggregationsfunktion an, sobald sie existieren, und erscheinen dadurch automatisch in Liste **und**
+  Dialog; die Reihenfolge dieser beiden Ordner ändert sich nicht.
+- **Der Kunden-Cockpit-Dialog (Task 08c) ist die interne Mitarbeitersicht, nicht die Kundenportal-Sicht.**
+  Er zeigt permission-abhängig, was der aufrufende Mitarbeiter zu diesem Kunden sehen darf — inklusive
+  Daten, die das spätere Kundenportal (Ordner 12/13) dem Kunden bewusst nie zeigt, etwa Preise (`07d`:
+  „Kein Portalzugriff auf Beträge") oder den internen Pipeline-/Prozessstand einer Anfrage
+  (angefragt/angeboten/beauftragt). Zwei Mitglieder mit unterschiedlichen Permissions sehen für denselben
+  Kunden unterschiedliche Sektionen; jede Sektion prüft ihre Permission unabhängig und fehlt vollständig,
+  statt leer angezeigt zu werden.
+- Geteilte UI-Bausteine (Karte, Badge, Liste, Empty-State aus Ordner 03d) dürfen für den Dialog
+  wiederverwendet werden — das betrifft ausschließlich das Layout, nicht den Dateninhalt. Serverseitig
+  bleibt die Trennung strikt: Der Cockpit-Handler liegt unter `src/server/workspace/**` und wird nie von
+  einem Portal-Handler wiederverwendet (Abschnitt „Harte Sicherheitsgrenzen" in `AGENTS.md`).
 
 ### Pakete und Kundenvolumen (Entscheidung des Nutzers, 16.09.2026)
 
@@ -602,11 +640,12 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 | 05  | im Review | `05-kundenliste-und-zuweisung`           | Paginierte Kundenliste mit Statusbadge und Statuspflege im Kundenformular       |   40–70 |  2–3 T. |
 | 06  | im Review | `06-lead-konvertierung`                  | Leads können sicher direkt als neue CRM-Kunden angelegt werden                  |   40–70 |  2–3 T. |
 | 06a | offen     | `06a-kundenzustaendigkeit`               | Kundenverantwortung ist auswählbar, sichtbar und versioniert änderbar           |   25–45 |  1–2 T. |
+| 06b | offen     | `06b-mitarbeiter-cockpit`                | „Meine Kunden"-Liste plus Kunden-Cockpit-Dialog aus Kundenliste/-formular/Leads |   35–60 |  2–3 T. |
 | 07  | offen     | `07-projekte`                            | Projektanlage, Status, Workflow und Owner-Zuweisung vollständig nutzbar         |  60–100 |  3–4 T. |
 | 07a | offen     | `07a-zugriffsbereiche-fundament`         | Gebundene Rollen in DB, Actor und API unsichtbar und wirkungslos deployt        |   60–90 |    3 T. |
 | 07b | offen     | `07b-zugriffsfilter-kunden-und-projekte` | Alle Kunden- und Projektpfade filtern über `accessScope`; Negativtests          |  60–100 |  3–4 T. |
 | 07c | offen     | `07c-zugriffsverwaltung-ui`              | Zugriffe je Kunde/Projekt in Settings und Kundenakte konfigurierbar             |   50–80 |  2–3 T. |
-| 07d | offen     | `07d-pakete-und-kundenvolumen`           | Gebuchte Pakete, Preishistorie, Kunden- und Projektwert vollständig nutzbar     |  90–120 |  4–5 T. |
+| 07d | offen     | `07d-pakete-und-kundenvolumen`           | Gebuchte Pakete, Preishistorie, Kunden- und Projektwert vollständig nutzbar     |  90–125 |  4–5 T. |
 | 08  | offen     | `08-aufgaben`                            | Flache Aufgaben, Kundenpflicht und globale Übersicht nutzbar                    |  80–100 |  4–5 T. |
 | 09  | offen     | `09-aufgabenserien-und-reminder`         | Wiederholungen, Fälligkeit und Überfälligkeit zuverlässig aktiv                 |   50–90 |  3–4 T. |
 | 10  | offen     | `10-jobs-und-benachrichtigungen`         | Outbox-Runner, Glocke, Retry und kritische Fehlerbenachrichtigung aktiv         |  70–100 |  4–5 T. |

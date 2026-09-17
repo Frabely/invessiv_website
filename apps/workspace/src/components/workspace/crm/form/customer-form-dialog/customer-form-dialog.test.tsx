@@ -18,6 +18,7 @@ import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail
 import { getCrmFormDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { customerDetailFixture } from "@/server/tests/workspace/crm/support/crm-fixtures";
 import { CustomerFormDialog } from "./customer-form-dialog";
+import { toLeadCustomerConversionSource } from "@/common/patterns/crm/lead-customer-conversion-source";
 
 const mocks = vi.hoisted(() => ({
   refresh: vi.fn(),
@@ -252,7 +253,7 @@ describe("CustomerFormDialog", () => {
 
   it("converts a prefilled lead and closes the form on the CRM overview", async () => {
     const customer = customerDetailFixture();
-    mocks.convertLead.mockResolvedValue({ ok: true, customer });
+    mocks.convertLead.mockResolvedValue({ ok: true, customerId: customer.id });
     render(
       <CustomerFormDialog
         categories={CATEGORIES}
@@ -261,7 +262,7 @@ describe("CustomerFormDialog", () => {
         crmBasePath="/de/crm"
         customer={null}
         locale="de"
-        sourceLead={SOURCE_LEAD}
+        conversionSource={toLeadCustomerConversionSource(SOURCE_LEAD)}
       />,
     );
 

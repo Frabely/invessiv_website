@@ -1,11 +1,9 @@
 import "server-only";
-import { inArray } from "drizzle-orm";
 
 import type { BulkDeleteLeadsResult } from "@invessiv/common/contracts/leads/results/bulk-delete-leads-result";
-import { getDrizzleDatabaseClient } from "@invessiv/db/core";
-import { leads } from "@invessiv/db/record-configuration";
+import { leadService } from "@/server/workspace/leads/services/lead/lead-service";
 
-export type BulkDeleteLeadsInput = {
+type BulkDeleteLeadsInput = {
   ids: string[];
 };
 
@@ -18,12 +16,7 @@ export async function bulkDeleteLeads(
     return { ok: true, deletedCount: 0 };
   }
 
-  const db = getDrizzleDatabaseClient();
+  const deletedIds = await leadService.delete(input.ids);
 
-  const deleted = await db
-    .delete(leads)
-    .where(inArray(leads.id, input.ids))
-    .returning({ id: leads.id });
-
-  return { ok: true, deletedCount: deleted.length };
+  return { ok: true, deletedCount: deletedIds.length };
 }

@@ -6,19 +6,11 @@ import { CustomerErrorCode } from "@invessiv/common/constants/crm/errors/custome
 import type { CreateCustomerRequestDto } from "@invessiv/common/contracts/crm/create-customer-request.dto";
 import type { CreateCustomerResult } from "@invessiv/common/contracts/crm/results/create-customer-result";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
-import {
-  customerContactAssignments,
-  customers,
-  people,
-} from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
-import { memberResponsibilityLockService } from "@/server/workspace/access/services/responsibilities/member-responsibility-lock-service";
-import { customerCategoryService } from "@/server/workspace/crm/services/customer-category-service";
-import { customerCategoryValidationService } from "@/server/workspace/crm/services/customer-category-validation-service";
 import { customerConstraintViolationService } from "@/server/workspace/crm/services/customer-constraint-violation-service";
+import { customerService } from "@/server/workspace/crm/services/customer/customer-service";
 import { customerReadService } from "@/server/workspace/crm/services/customer-read-service";
 import { customerSchemas } from "@/server/workspace/crm/services/customer-schemas";
-import { customerWriteMappingService } from "@/server/workspace/crm/services/customer-write-mapping-service";
 import { activityService } from "@/server/workspace/shared/services/activity-service";
 
 /**
@@ -43,82 +35,12 @@ export async function createCustomer(
 
   try {
     return await db.transaction(async (tx): Promise<CreateCustomerResult> => {
-      const ownerIsActive =
-        await memberResponsibilityLockService.lockActiveMemberForAssignment(
-          tx,
-          actor.workspaceMemberId,
-        );
-      if (!ownerIsActive) {
-        return { ok: false, code: CustomerErrorCode.OwnerInactive };
+      const creation = await customerService.create(tx, data, actor);
+      if (!creation.ok) {
+        return creation;
       }
 
-      if (
-        data.categoryId &&
-        !(await customerCategoryService.isActive(tx, data.categoryId))
-      ) {
-        return {
-          ok: false,
-          code: CustomerErrorCode.ValidationError,
-          errors: [
-            customerCategoryValidationService.createUnknownOrInactiveCategoryIssue(
-              data.categoryId,
-            ),
-          ],
-        };
-      }
-
-      const customerId = crypto.randomUUID();
-      const primaryPersonId = crypto.randomUUID();
-      await tx
-        .insert(people)
-        .values(
-          customerWriteMappingService.mapContactApiToPersonDb(
-            primaryPersonId,
-            data.primaryContact,
-          ),
-        );
-      await tx
-        .insert(customers)
-        .values(
-          customerWriteMappingService.mapCreateCustomerApiToDb(
-            customerId,
-            data,
-            actor.workspaceMemberId,
-          ),
-        );
-      await tx
-        .insert(customerContactAssignments)
-        .values(
-          customerWriteMappingService.mapContactApiToAssignmentDb(
-            crypto.randomUUID(),
-            customerId,
-            primaryPersonId,
-            data.primaryContact,
-            true,
-          ),
-        );
-      for (const contact of data.additionalContacts ?? []) {
-        const personId = crypto.randomUUID();
-        await tx
-          .insert(people)
-          .values(
-            customerWriteMappingService.mapContactApiToPersonDb(
-              personId,
-              contact,
-            ),
-          );
-        await tx
-          .insert(customerContactAssignments)
-          .values(
-            customerWriteMappingService.mapContactApiToAssignmentDb(
-              crypto.randomUUID(),
-              customerId,
-              personId,
-              contact,
-              false,
-            ),
-          );
-      }
+      const { customerId } = creation;
       await activityService.createActivity(tx, {
         customerId,
         type: ActivityType.Created,

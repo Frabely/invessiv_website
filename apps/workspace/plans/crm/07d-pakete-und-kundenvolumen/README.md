@@ -1,6 +1,6 @@
 # Ordner 07d — Pakete und Kundenvolumen
 
-> **Status:** offen · **Abhängigkeiten:** 04, 05, 07, 07b · **Aufwand:** 4–5 Tage · **Reviewziel:** 90–120 Dateien
+> **Status:** offen · **Abhängigkeiten:** 04, 05, 06b, 07, 07b · **Aufwand:** 4–5 Tage · **Reviewziel:** 90–125 Dateien
 
 ## Ziel und Stand nach Merge
 
@@ -12,6 +12,9 @@
   Beenden, Preiswechsel, Permission `packages.*`, Routen und Activities.
 - [`42-kundenwert-in-akte-und-listen.md`](./42-kundenwert-in-akte-und-listen.md) — Tab in der
   Kundenakte, Wertanzeige in Kundenliste und Projektkarte.
+- [`42a-mitarbeiter-cockpit-dealvolumen.md`](./42a-mitarbeiter-cockpit-dealvolumen.md) — ergänzt die
+  Mitarbeiter-Cockpit-Liste **und** den Kunden-Cockpit-Dialog aus Ordner 06b um Kundenwert, Projektwert
+  und Pipeline, über dieselbe geteilte Aggregationsfunktion.
 
 Nach dem Merge ist je Kunde nachvollziehbar, **was er gebucht hat, zu welchem Inhalt und zu welchem
 Preis** — einmalig wie laufend, projektbezogen wie kundenweit. Kundenwert und Projektwert sind in
@@ -67,6 +70,9 @@ Historie bleibt damit ehrlich.
 - [ ] Angefragte und angebotene Positionen erhöhen den Kundenwert nicht, sondern die Pipeline.
 - [ ] `invoiced`/`paid` an einer wiederkehrenden Position wird abgelehnt — DB und Handler.
 - [ ] „Was ansteht" nennt offene Angebote mit Liegedauer und filtert die Liste per Klick.
+- [ ] Die Mitarbeiter-Cockpit-Liste **und** der Kunden-Cockpit-Dialog aus Ordner 06b zeigen Kundenwert und
+      Pipeline identisch zur Kundenakte; ohne `packages.read` bleiben die Wertspalten an beiden Stellen
+      serverseitig weg.
 - [ ] Zweite aktive `rate`-Position je Kunde wird abgelehnt; `rate` zählt in keiner Wertsumme.
 - [ ] Aktive `rate`-Position und `customers.default_hourly_rate_cents` sind nach jedem Schreibpfad
       deckungsgleich (DB-Smoke).

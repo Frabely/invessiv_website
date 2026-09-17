@@ -62,6 +62,7 @@ import {
 } from "@/server/workspace/leads/shared/lead-list-search-params";
 import { workspaceAreaPathFor } from "@/lib/auth/routes";
 import { buildCustomerEditHref } from "@/common/patterns/crm/customer-dialog-query";
+import { toLeadCustomerConversionSource } from "@/common/patterns/crm/lead-customer-conversion-source";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -308,11 +309,11 @@ export default async function LeadsPage({
             resolvedSearchParams,
           )}
           content={getCrmFormDictionary(locale as Locale)}
+          conversionSource={toLeadCustomerConversionSource(selectedLead)}
           crmBasePath={crmBasePath}
           customer={null}
           key={`convert-${selectedLead.id}`}
           locale={locale as Locale}
-          sourceLead={selectedLead}
         />
       ) : null}
     </>

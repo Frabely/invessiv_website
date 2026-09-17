@@ -8,6 +8,7 @@ import {
   toUpdateCustomerRequest,
   validateCustomerForm,
 } from "@/common/patterns/crm/customer-form";
+import { toLeadCustomerConversionSource } from "@/common/patterns/crm/lead-customer-conversion-source";
 
 const CUSTOMER: CustomerDetailDto = {
   id: "customer-1",
@@ -81,7 +82,11 @@ describe("createCustomerFormValues", () => {
   });
 
   it("prefills the customer and primary contact from a lead", () => {
-    const values = createCustomerFormValues(null, "de", SOURCE_LEAD);
+    const values = createCustomerFormValues(
+      null,
+      "de",
+      toLeadCustomerConversionSource(SOURCE_LEAD),
+    );
 
     expect(values).toMatchObject({
       displayName: "Nordlicht Anfrage",

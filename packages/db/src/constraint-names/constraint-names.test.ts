@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  ACTIVITIES_CONSTRAINT_NAME_VALUES,
+  ActivitiesConstraintName,
+} from "./activities-constraint-names";
+import {
   PERMISSIONS_CONSTRAINT_NAME_VALUES,
   PermissionsConstraintName,
 } from "./auth/permissions-constraint-names";
@@ -38,6 +42,12 @@ import {
 } from "./leads-constraint-names";
 
 const GROUPS: [string, string, Record<string, string>, readonly string[]][] = [
+  [
+    "activities",
+    "activities_",
+    ActivitiesConstraintName,
+    ACTIVITIES_CONSTRAINT_NAME_VALUES,
+  ],
   ["users", "users_", UsersConstraintName, USERS_CONSTRAINT_NAME_VALUES],
   ["roles", "roles_", RolesConstraintName, ROLES_CONSTRAINT_NAME_VALUES],
   [

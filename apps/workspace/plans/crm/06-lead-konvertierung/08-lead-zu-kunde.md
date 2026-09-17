@@ -14,16 +14,17 @@ Telefon, aktuelle Sprache und Status `active`. Alle Felder bleiben editierbar; f
 Pflichtangaben müssen vor dem Absenden ergänzt werden. Weitere Leadkontakte, Submissions und
 Social-Profile werden nicht übernommen.
 
-Nach Erfolg öffnet die App `/crm?mode=edit&edit=<customerId>`. Lead und Kunde zeigen anschließend
-einen gegenseitigen Link.
+Nach Erfolg schließt die App den Dialog und zeigt die CRM-Übersicht ohne geöffnetes Kundenformular.
+Lead und Kunde zeigen anschließend einen gegenseitigen Link.
 
 ## Persistenz und Idempotenz
 
-Die Migrationen ergänzen `leads.customer_id` mit `ON DELETE SET NULL` und Index. Der Fremdschlüssel
-`activities.customer_id` wird auf `ON DELETE SET NULL` umgestellt, damit die mit einem Lead
-verbundene Akquise-Historie bei einem späteren Kunden-Purge erhalten werden kann. Der vorhandene
-Activity-Subject-Check wird dabei auf den bereits modellierten Projektbezug erweitert, sodass eine
-Projektaktivität nach dem Entfernen ihres Kundenbezugs gültig bleibt.
+Die Migration ergänzt `leads.customer_id` mit `ON DELETE SET NULL` und Index. Die Fremdschlüssel
+`activities.customer_id` und `activities.lead_id` verwenden ebenfalls `ON DELETE SET NULL`, sodass
+das Löschen eines Leads oder Kunden nie das jeweils andere Objekt entfernt. Beim Löschen eines
+konvertierten Leads trennt der `leadService` dessen Kundenaktivitäten vom Lead; reine
+Lead-Aktivitäten werden entfernt. Der vorhandene Activity-Subject-Check berücksichtigt außerdem
+den bereits modellierten Projektbezug.
 
 `POST /api/workspace/crm/leads/[leadId]/convert` prüft `customers.write` und `leads.write` und
 führt eine Transaktion aus:
@@ -31,7 +32,7 @@ führt eine Transaktion aus:
 1. Lead mit `FOR UPDATE` sperren.
 2. Bei bereits gesetzter `customer_id` denselben Kunden idempotent zurückgeben.
 3. Kunde, Person und Primärkontakt mit den bestätigten Dialogwerten anlegen.
-4. `leads.customer_id` setzen und den Lead bei Bedarf auf `won` setzen.
+4. `leads.customer_id` setzen und den Lead automatisch auf `won` setzen.
 5. Bisherige Lead-Aktivitäten zusätzlich mit `customer_id` verbinden.
 6. Eine gemeinsame Aktivität `converted_from_lead` mit Lead- und Kundenbezug schreiben.
 

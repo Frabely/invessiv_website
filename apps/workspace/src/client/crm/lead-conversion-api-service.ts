@@ -7,15 +7,10 @@ import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import { MediaType } from "@invessiv/common/constants/http/media-types";
 import type { ConvertLeadToCustomerRequestDto } from "@invessiv/common/contracts/crm/convert-lead-to-customer-request.dto";
 import type { ConvertLeadToCustomerResultDto } from "@invessiv/common/contracts/crm/convert-lead-to-customer-result.dto";
-import type { CustomerDetailDto } from "@invessiv/common/contracts/crm/customer-detail.dto";
 import { crmLeadConversionEndpoint } from "@/common/patterns/crm/crm-api-endpoints";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
-}
-
-function isCustomer(value: unknown): value is CustomerDetailDto {
-  return isRecord(value) && typeof value.id === "string";
 }
 
 async function convertLead(
@@ -29,8 +24,12 @@ async function convertLead(
       headers: { [HttpHeaderName.ContentType]: MediaType.Json },
     });
     const payload = (await response.json().catch(() => null)) as unknown;
-    if (response.ok && isRecord(payload) && isCustomer(payload.customer)) {
-      return { ok: true, customer: payload.customer };
+    if (
+      response.ok &&
+      isRecord(payload) &&
+      typeof payload.customerId === "string"
+    ) {
+      return { ok: true, customerId: payload.customerId };
     }
     const code = isRecord(payload) ? payload.error : undefined;
     return {

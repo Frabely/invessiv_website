@@ -7,13 +7,13 @@ Diese Datei regelt die Umsetzung des CRM-Plans unabhängig vom Zielordner. Spezi
 
 1. `00-entscheidungen.md` enthält alle Entscheidungen.
 2. `core-features.md` ist die Funktionsübersicht.
-3. Die 35 aktiven geordneten Ordner enthalten Merge-Gates und Abnahmekriterien; der aufgelöste Ordner 03a zählt nicht
+3. Die 36 aktiven geordneten Ordner enthalten Merge-Gates und Abnahmekriterien; der aufgelöste Ordner 03a zählt nicht
    als eigene Merge-Einheit.
 
 Frühere Planstände mit 16 Merge-Einheiten und 34 Tasks sind vollständig ersetzt. Keine erinnerte
 Altentscheidung darf übernommen werden, wenn sie nicht in den aktuellen Dateien steht.
 
-**Ordnernummer ≠ Task-Nummer.** Die Ordnernummer (01–03, 03b–03d, 04–06, 06a, 07, 07a–07d, 08–15, 15a–15c,
+**Ordnernummer ≠ Task-Nummer.** Die Ordnernummer (01–03, 03b–03d, 04–06, 06a, 06b, 07, 07a–07d, 08–15, 15a–15c,
 16–22, 22a, 23) ist die
 Merge-Reihenfolge und kann sich beim
 Neuschnitt verschieben. Die Task-Nummer ist die Identität und bleibt: Task 08 heißt überall Task 08
@@ -96,8 +96,9 @@ und Abhängigkeitsaussagen die **Ordner**-Nummer.
 - Bereits registrierte Migrationen werden nie verändert oder erneut erwartet.
 - Outbox-Eintrag und fachlicher DB-Write entstehen in derselben Transaktion.
 - Vor jedem neuen Baustein die Tabelle „Wiederverwendete Muster" in `00-entscheidungen.md` prüfen.
-- `lead_status` bleibt unangetastet — auch nicht „nur schnell" um einen Wert erweitert. Der Marker
-  für konvertierte Leads ist `leads.customer_id IS NOT NULL`.
+- `lead_status` bleibt außerhalb der Lead-Konvertierung unangetastet. Task 08 setzt einen erfolgreich konvertierten
+  Lead automatisch auf `won`; der technische Marker für konvertierte Leads bleibt trotzdem ausschließlich
+  `leads.customer_id IS NOT NULL`.
 
 ## Definition of Done je Einheit
 

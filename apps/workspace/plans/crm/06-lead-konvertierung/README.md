@@ -12,8 +12,8 @@ Der verbindliche Taskplan steht in [`08-lead-zu-kunde.md`](./08-lead-zu-kunde.md
 
 ## Regeln
 
-- `leads.customer_id` ist der einzige Konvertierungsmarker; der bestehende Status wird bei Bedarf
-  auf `won` gesetzt.
+- `leads.customer_id` ist der einzige Konvertierungsmarker; nach erfolgreicher Konvertierung wird der bestehende
+  Lead-Status automatisch auf `won` gesetzt.
 - Es gibt weder `customer_type` noch einen Modus für bestehende Kunden, eine Personensuche oder
   einen separaten Konvertierungsdialog.
 - Der bestehende Kundendialog wird im Lead-Bereich geöffnet und mit Lead-Stammdaten sowie dem
@@ -21,6 +21,7 @@ Der verbindliche Taskplan steht in [`08-lead-zu-kunde.md`](./08-lead-zu-kunde.md
 - Weitere Kontakte, Submissions und Social-Profile bleiben am Lead und werden nicht übernommen.
 - Konvertierte Leads sind standardmäßig ausgeblendet und explizit einblendbar.
 - Lead und Kunde verlinken nach der Konvertierung gegenseitig aufeinander.
+- Nach erfolgreicher Konvertierung schließt der Dialog und zeigt die CRM-Übersicht ohne geöffnetes Kundenformular.
 
 ## Merge-Gate
 

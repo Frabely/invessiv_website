@@ -1,12 +1,11 @@
 import type { LeadConversionErrorCode } from "@invessiv/common/constants/crm/errors/lead-conversion-error-codes";
-import type { CustomerDetailDto } from "@invessiv/common/contracts/crm/customer-detail.dto";
 
 export type ConvertLeadToCustomerResultDto =
   | {
       /** Marks a successful conversion or idempotent retry. */
       ok: true;
-      /** The created or previously linked customer. */
-      customer: CustomerDetailDto;
+      /** Identifier of the created or previously linked customer. */
+      customerId: string;
     }
   | {
       /** Marks an expected conversion failure. */

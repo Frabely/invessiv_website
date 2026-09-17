@@ -5,8 +5,8 @@ import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { AuthErrorCode } from "@invessiv/common/constants/auth/auth-error-codes";
 import { LeadConversionErrorCode } from "@invessiv/common/constants/crm/errors/lead-conversion-error-codes";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
-import type { ConvertLeadToCustomerRequestDto } from "@invessiv/common/contracts/crm/convert-lead-to-customer-request.dto";
 import { can } from "@invessiv/common/patterns/auth/can";
+import { formValidationSchemas } from "@invessiv/common/patterns/validation/form-validation-schemas";
 import { CrmOperation } from "@/common/constants/crm/crm-operations";
 import { withPermission } from "@/lib/auth/api";
 import { authApiError } from "@/lib/auth/auth-api-error";
@@ -14,6 +14,7 @@ import { readJsonBody } from "@/lib/http/read-json-body";
 import { leadConversionApiError } from "@/lib/workspace/crm/lead-conversion-api-error";
 import { logCrmFailure } from "@/lib/workspace/crm/log-crm-failure";
 import { convertLeadToCustomer } from "@/server/workspace/crm/command-handler/convert-lead-to-customer.command-handler";
+import { customerSchemas } from "@/server/workspace/crm/services/customer-schemas";
 
 export const runtime = "nodejs";
 
@@ -27,6 +28,10 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
       return authApiError(AuthErrorCode.Forbidden, HttpResponseCode.Forbidden);
     }
 
+    if (!formValidationSchemas.uuid.safeParse(leadId).success) {
+      return leadConversionApiError(LeadConversionErrorCode.LeadNotFound);
+    }
+
     const parsed = await readJsonBody(req);
     if (!parsed.ok) {
       return leadConversionApiError(LeadConversionErrorCode.ValidationError, {
@@ -34,10 +39,17 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
       });
     }
 
+    const validation = customerSchemas.create.safeParse(parsed.body);
+    if (!validation.success) {
+      return leadConversionApiError(LeadConversionErrorCode.ValidationError, {
+        details: validation.error.issues,
+      });
+    }
+
     try {
       const result = await convertLeadToCustomer(
         leadId,
-        parsed.body as ConvertLeadToCustomerRequestDto,
+        validation.data,
         actor,
       );
       if (!result.ok) {
@@ -46,7 +58,7 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
         });
       }
       return Response.json(
-        { customer: result.customer },
+        { customerId: result.customerId },
         { status: HttpResponseCode.Created },
       );
     } catch (error: unknown) {

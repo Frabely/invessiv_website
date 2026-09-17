@@ -1,54 +1,32 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { LeadErrorCode } from "@invessiv/common/constants/leads/errors/lead-error-codes";
-
-const { getDrizzleDatabaseClientMock } = vi.hoisted(() => ({
-  getDrizzleDatabaseClientMock: vi.fn(),
-}));
+import { deleteLead } from "@/server/workspace/leads/command-handler/delete-lead.command-handler";
 
 vi.mock("server-only", () => ({}));
-vi.mock("@invessiv/db/core", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@invessiv/db/core")>()),
-  getDrizzleDatabaseClient: getDrizzleDatabaseClientMock,
+
+const mocks = vi.hoisted(() => ({ delete: vi.fn() }));
+vi.mock("@/server/workspace/leads/services/lead/lead-service", () => ({
+  leadService: { delete: mocks.delete },
 }));
 
-function setupDb(returningRows: ReadonlyArray<{ id: string }>) {
-  let whereCalled = false;
-  getDrizzleDatabaseClientMock.mockReturnValue({
-    delete: vi.fn().mockImplementation(() => ({
-      where: vi.fn().mockImplementation(() => {
-        whereCalled = true;
-        return {
-          returning: vi.fn().mockResolvedValue(returningRows),
-        };
-      }),
-    })),
-  });
-  return {
-    wasWhereCalled: () => whereCalled,
-  };
-}
-
 describe("deleteLead", () => {
+  beforeEach(() => mocks.delete.mockReset());
+
   it("returns ok:true when a lead is deleted", async () => {
-    vi.resetModules();
-    const probe = setupDb([{ id: "lead-existing-uuid" }]);
-    const { deleteLead } =
-      await import("@/server/workspace/leads/command-handler/delete-lead.command-handler");
+    mocks.delete.mockResolvedValue(["lead-existing-uuid"]);
 
-    const result = await deleteLead("lead-existing-uuid");
-
-    expect(result).toEqual({ ok: true });
-    expect(probe.wasWhereCalled()).toBe(true);
+    await expect(deleteLead("lead-existing-uuid")).resolves.toEqual({
+      ok: true,
+    });
+    expect(mocks.delete).toHaveBeenCalledWith(["lead-existing-uuid"]);
   });
 
   it("returns NOT_FOUND when no row was deleted", async () => {
-    vi.resetModules();
-    setupDb([]);
-    const { deleteLead } =
-      await import("@/server/workspace/leads/command-handler/delete-lead.command-handler");
+    mocks.delete.mockResolvedValue([]);
 
-    const result = await deleteLead("missing-uuid");
-
-    expect(result).toEqual({ ok: false, code: LeadErrorCode.NotFound });
+    await expect(deleteLead("missing-uuid")).resolves.toEqual({
+      ok: false,
+      code: LeadErrorCode.NotFound,
+    });
   });
 });

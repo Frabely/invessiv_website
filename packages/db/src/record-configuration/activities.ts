@@ -11,6 +11,7 @@ import {
 
 import { ACTIVITY_TYPE_VALUES } from "@invessiv/common/constants/activity/activity-types";
 import { ACTOR_TYPE_VALUES } from "@invessiv/common/constants/activity/actor-types";
+import { ActivitiesConstraintName } from "@invessiv/db/constraint-names/activities-constraint-names";
 import { sqlActorInvariant, sqlCheckIn } from "@invessiv/db/core";
 import { users } from "@invessiv/db/record-configuration/auth/users";
 import { customers } from "@invessiv/db/record-configuration/crm/customers";
@@ -21,7 +22,7 @@ export const activities = pgTable(
   {
     id: uuid("id").primaryKey(),
     lead_id: uuid("lead_id").references(() => leads.id, {
-      onDelete: "cascade",
+      onDelete: "set null",
     }),
     customer_id: uuid("customer_id").references(() => customers.id, {
       onDelete: "set null",
@@ -47,54 +48,58 @@ export const activities = pgTable(
   },
   (table) => [
     check(
-      "activities_subject_check",
+      ActivitiesConstraintName.SubjectCheck,
       sql`${table.lead_id}
-        is not null or
+        is not null
+        or
         ${table.customer_id}
         is
         not
-      null
-      or
-      ${table.project_id}
-      is
-      not
+        null
+        or
+        ${table.project_id}
+        is
+        not
         null`,
     ),
     check(
-      "activities_type_check",
+      ActivitiesConstraintName.TypeCheck,
       sqlCheckIn(table.type, ACTIVITY_TYPE_VALUES),
     ),
     check(
-      "activities_actor_type_check",
+      ActivitiesConstraintName.ActorTypeCheck,
       sqlCheckIn(table.actor_type, ACTOR_TYPE_VALUES),
     ),
     // Created NOT VALID in the migration: enforced for every new row, migrated legacy rows stay untouched.
     check(
-      "activities_actor_check",
+      ActivitiesConstraintName.ActorCheck,
       sqlActorInvariant({
         actorType: table.actor_type,
         actorUserId: table.actor_user_id,
         systemActorKey: table.system_actor_key,
       }),
     ),
-    index("activities_customer_id_occurred_at_idx").on(
+    index(ActivitiesConstraintName.CustomerOccurredAtIndex).on(
       table.customer_id,
       table.occurred_at.desc(),
       table.id.desc(),
     ).where(sql`${table.customer_id}
-          is not null`),
-    index("activities_lead_id_occurred_at_idx").on(
+      is not null`),
+    index(ActivitiesConstraintName.LeadOccurredAtIndex).on(
       table.lead_id,
       table.occurred_at.desc(),
       table.id.desc(),
     ).where(sql`${table.lead_id}
-          is not null`),
-    index("activities_project_id_occurred_at_idx").on(
+      is not null`),
+    index(ActivitiesConstraintName.ProjectOccurredAtIndex).on(
       table.project_id,
       table.occurred_at.desc(),
       table.id.desc(),
     ).where(sql`${table.project_id}
-          is not null`),
-    index("activities_type_occurred_at_idx").on(table.type, table.occurred_at),
+      is not null`),
+    index(ActivitiesConstraintName.TypeOccurredAtIndex).on(
+      table.type,
+      table.occurred_at,
+    ),
   ],
 );

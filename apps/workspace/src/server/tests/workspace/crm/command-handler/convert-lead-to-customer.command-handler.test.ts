@@ -13,7 +13,6 @@ import {
 import { convertLeadToCustomer } from "@/server/workspace/crm/command-handler/convert-lead-to-customer.command-handler";
 import {
   createCustomerRequestFixture,
-  customerDetailFixture,
   TEST_CUSTOMER_ID,
 } from "@/server/tests/workspace/crm/support/crm-fixtures";
 import { workspaceActorWith } from "@/server/tests/support/workspace-auth-fixtures";
@@ -22,7 +21,6 @@ vi.mock("server-only", () => ({}));
 
 const mocks = vi.hoisted(() => ({
   createActivity: vi.fn(),
-  findDetail: vi.fn(),
   getDatabase: vi.fn(),
   insertValues: vi.fn(),
   isActiveCategory: vi.fn(),
@@ -44,9 +42,6 @@ vi.mock(
 );
 vi.mock("@/server/workspace/crm/services/customer-category-service", () => ({
   customerCategoryService: { isActive: mocks.isActiveCategory },
-}));
-vi.mock("@/server/workspace/crm/services/customer-read-service", () => ({
-  customerReadService: { findDetailById: mocks.findDetail },
 }));
 vi.mock("@/server/workspace/shared/services/activity-service", () => ({
   activityService: { createActivity: mocks.createActivity },
@@ -87,12 +82,6 @@ describe("convertLeadToCustomer", () => {
     mocks.isActiveCategory.mockResolvedValue(true);
     mocks.insertValues.mockResolvedValue(undefined);
     mocks.updateSet.mockResolvedValue(undefined);
-    mocks.findDetail.mockResolvedValue(
-      customerDetailFixture({
-        id: TEST_CUSTOMER_ID,
-        sourceLeads: [{ id: "lead-1", displayName: "Nordlicht" }],
-      }),
-    );
   });
 
   it("creates customer, person and primary contact and links history atomically", async () => {
@@ -117,6 +106,7 @@ describe("convertLeadToCustomer", () => {
       customer_id: expect.any(String),
     });
     const customerId = mocks.updateSet.mock.calls[0]?.[1].customer_id;
+    expect(result).toEqual({ ok: true, customerId });
     expect(mocks.createActivity).toHaveBeenCalledWith(tx, {
       leadId: "lead-1",
       customerId,
@@ -136,10 +126,7 @@ describe("convertLeadToCustomer", () => {
 
     expect(result).toEqual({
       ok: true,
-      customer: customerDetailFixture({
-        id: TEST_CUSTOMER_ID,
-        sourceLeads: [{ id: "lead-1", displayName: "Nordlicht" }],
-      }),
+      customerId: TEST_CUSTOMER_ID,
     });
     expect(mocks.insertValues).not.toHaveBeenCalled();
     expect(mocks.updateSet).not.toHaveBeenCalled();

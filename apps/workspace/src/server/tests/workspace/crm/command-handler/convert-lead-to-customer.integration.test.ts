@@ -19,6 +19,7 @@ import {
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { convertLeadToCustomer } from "@/server/workspace/crm/command-handler/convert-lead-to-customer.command-handler";
 import { createCustomerRequestFixture } from "@/server/tests/workspace/crm/support/crm-fixtures";
+import { leadService } from "@/server/workspace/leads/services/lead/lead-service";
 
 vi.mock("server-only", () => ({}));
 
@@ -42,6 +43,7 @@ describe.skipIf(!RUN_INTEGRATION)(
       permissions: new Set(),
     };
     let db: Database | null = null;
+    let convertedCustomerId: string | null = null;
 
     beforeAll(async () => {
       const workspaceRoot = findWorkspaceRoot(process.cwd());
@@ -115,6 +117,14 @@ describe.skipIf(!RUN_INTEGRATION)(
 
     afterAll(async () => {
       if (!db) return;
+      if (convertedCustomerId) {
+        await db
+          .delete(activities)
+          .where(eq(activities.customer_id, convertedCustomerId));
+      }
+      await db
+        .delete(activities)
+        .where(inArray(activities.lead_id, [parallelLeadId, rollbackLeadId]));
       await db
         .delete(leads)
         .where(inArray(leads.id, [parallelLeadId, rollbackLeadId]));
@@ -163,18 +173,19 @@ describe.skipIf(!RUN_INTEGRATION)(
       expect(first.ok).toBe(true);
       expect(second.ok).toBe(true);
       if (!first.ok || !second.ok) throw new Error("Conversion failed.");
-      expect(second.customer.id).toBe(first.customer.id);
+      convertedCustomerId = first.customerId;
+      expect(second.customerId).toBe(first.customerId);
 
       const retry = await convertLeadToCustomer(parallelLeadId, request, actor);
       expect(retry.ok).toBe(true);
       if (!retry.ok) throw new Error("Retry failed.");
-      expect(retry.customer.id).toBe(first.customer.id);
+      expect(retry.customerId).toBe(first.customerId);
 
       const [lead] = await db
         .select({ customerId: leads.customer_id, status: leads.lead_status })
         .from(leads)
         .where(eq(leads.id, parallelLeadId));
-      expect(lead).toEqual({ customerId: first.customer.id, status: "won" });
+      expect(lead).toEqual({ customerId: first.customerId, status: "won" });
 
       const history = await db
         .select({ customerId: activities.customer_id, type: activities.type })
@@ -182,13 +193,38 @@ describe.skipIf(!RUN_INTEGRATION)(
         .where(eq(activities.lead_id, parallelLeadId));
       expect(history).toHaveLength(2);
       expect(
-        history.every((entry) => entry.customerId === first.customer.id),
+        history.every((entry) => entry.customerId === first.customerId),
       ).toBe(true);
       expect(
         history.filter(
           (entry) => entry.type === ActivityType.ConvertedFromLead,
         ),
       ).toHaveLength(1);
+
+      await expect(leadService.delete([parallelLeadId])).resolves.toEqual([
+        parallelLeadId,
+      ]);
+
+      const [remainingCustomer] = await db
+        .select({ id: customers.id })
+        .from(customers)
+        .where(eq(customers.id, first.customerId));
+      expect(remainingCustomer).toEqual({ id: first.customerId });
+
+      const detachedHistory = await db
+        .select({
+          customerId: activities.customer_id,
+          leadId: activities.lead_id,
+        })
+        .from(activities)
+        .where(eq(activities.customer_id, first.customerId));
+      expect(detachedHistory).toHaveLength(2);
+      expect(
+        detachedHistory.every(
+          (entry) =>
+            entry.customerId === first.customerId && entry.leadId === null,
+        ),
+      ).toBe(true);
     }, 30_000);
 
     it("rolls back the person when the customer display name conflicts", async () => {

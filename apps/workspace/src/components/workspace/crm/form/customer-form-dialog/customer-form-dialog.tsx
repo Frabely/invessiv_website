@@ -18,7 +18,6 @@ import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds"
 import type { CustomerDetailDto } from "@invessiv/common/contracts/crm/customer-detail.dto";
 import type { CustomerContactWriteDto } from "@invessiv/common/contracts/crm/customer-contact-write.dto";
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
-import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
 import {
   ButtonControl,
   CustomSelect,
@@ -28,13 +27,13 @@ import {
   PrimaryCtaButton,
 } from "@invessiv/ui";
 import { customersApiService } from "@/client/crm/customers-api-service";
-import { leadConversionApiService } from "@/client/crm/lead-conversion-api-service";
 import { CustomerFormDialogMode } from "@/common/constants/crm/forms/customer-form-dialog-modes";
 import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
 import type {
   CustomerFormErrors,
   CustomerFormValues,
 } from "@/common/contracts/crm/customer-form-values";
+import type { LeadCustomerConversionSource } from "@/common/contracts/crm/lead-customer-conversion-source";
 import type { LeadCategoryOption } from "@/common/contracts/leads/lead-category-option";
 import {
   createCustomerFormValues,
@@ -44,6 +43,7 @@ import {
   validateCustomerForm,
 } from "@/common/patterns/crm/customer-form";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
+import { useLeadCustomerConversion } from "@/hooks/workspace/use-lead-customer-conversion";
 import { buildLeadDetailHref } from "@/common/patterns/leads/lead-detail-query";
 import type { CrmFormDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@/lib/i18n/format-message";
@@ -62,8 +62,8 @@ type CustomerFormDialogProps = {
   crmBasePath?: string;
   /** Leads overview path used by source-lead backlinks in edit mode. */
   leadsBasePath?: string;
-  /** Present only when the create dialog converts this lead. */
-  sourceLead?: LeadDetailDto;
+  /** Present only when the create dialog converts a lead. */
+  conversionSource?: LeadCustomerConversionSource;
 };
 
 type TextFieldKey = Exclude<
@@ -115,11 +115,11 @@ export function CustomerFormDialog({
   categories,
   closeHref,
   content,
+  conversionSource,
   customer,
   locale,
   crmBasePath,
   leadsBasePath,
-  sourceLead,
 }: CustomerFormDialogProps) {
   const router = useRouter();
   const formId = useId();
@@ -134,11 +134,8 @@ export function CustomerFormDialog({
     ? CustomerFormDialogMode.Edit
     : CustomerFormDialogMode.Create;
   const [values, setValues] = useState(() =>
-    createCustomerFormValues(customer, locale, sourceLead),
+    createCustomerFormValues(customer, locale, conversionSource),
   );
-  const [conversionError, setConversionError] =
-    useState<LeadConversionErrorCode | null>(null);
-  const [conversionSubmitting, setConversionSubmitting] = useState(false);
   const [errors, setErrors] = useState<CustomerFormErrors>({});
   const [activeTab, setActiveTab] = useState<CustomerFormTab>(
     CustomerFormTab.Customer,
@@ -164,10 +161,14 @@ export function CustomerFormDialog({
     CustomerDetailDto | null,
     CustomerErrorCode
   >(customer, () => router.replace(closeHref, { scroll: false }));
+  const conversion = useLeadCustomerConversion({
+    crmBasePath,
+    leadId: conversionSource?.id,
+  });
   const isNameTaken =
     mutation.errorCode === CustomerErrorCode.DisplayNameTaken ||
-    conversionError === LeadConversionErrorCode.DisplayNameTaken;
-  const isSubmitting = mutation.isSubmitting || conversionSubmitting;
+    conversion.errorCode === LeadConversionErrorCode.DisplayNameTaken;
+  const isSubmitting = mutation.isSubmitting || conversion.isSubmitting;
 
   useEffect(() => {
     if (isNameTaken) {
@@ -223,20 +224,8 @@ export function CustomerFormDialog({
       return;
     }
 
-    if (sourceLead && crmBasePath) {
-      setConversionSubmitting(true);
-      setConversionError(null);
-      const result = await leadConversionApiService.convertLead(
-        sourceLead.id,
-        toCreateCustomerRequest(values, contacts),
-      );
-      if (result.ok) {
-        router.replace(crmBasePath, { scroll: false });
-        router.refresh();
-        return;
-      }
-      setConversionSubmitting(false);
-      setConversionError(result.code);
+    if (conversionSource && crmBasePath) {
+      await conversion.submit(toCreateCustomerRequest(values, contacts));
       return;
     }
 
@@ -364,7 +353,7 @@ export function CustomerFormDialog({
     CustomerFieldLimits.NotesMaxLength * NOTES_COUNTER_THRESHOLD,
   );
   const statusErrorCode = !isNameTaken
-    ? (conversionError ?? mutation.errorCode)
+    ? (conversion.errorCode ?? mutation.errorCode)
     : null;
 
   return (
@@ -400,7 +389,7 @@ export function CustomerFormDialog({
                 ? content.buttons.submitting
                 : customer
                   ? content.buttons.submitEdit
-                  : sourceLead
+                  : conversionSource
                     ? content.buttons.submitConversion
                     : content.buttons.submitCreate}
             </PrimaryCtaButton>
@@ -413,7 +402,7 @@ export function CustomerFormDialog({
       title={
         customer
           ? content.title.edit
-          : sourceLead
+          : conversionSource
             ? content.title.convert
             : content.title.create
       }

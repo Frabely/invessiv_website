@@ -7,5 +7,5 @@ export function crmCustomerEndpoint(customerId: string): string {
 }
 
 export function crmLeadConversionEndpoint(leadId: string): string {
-  return `${WorkspaceApiEndpoint.CrmLeadConversions}/${leadId}/${LEAD_CONVERSION_ACTION}`;
+  return `${WorkspaceApiEndpoint.CrmLeadConversions}/${encodeURIComponent(leadId)}/${LEAD_CONVERSION_ACTION}`;
 }
