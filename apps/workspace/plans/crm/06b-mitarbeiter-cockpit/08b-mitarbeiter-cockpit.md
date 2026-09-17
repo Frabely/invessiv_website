@@ -1,7 +1,7 @@
 # Task 08b — Mitarbeiter-Cockpit (Welle 1)
 
 > **Merge-Einheit:** Ordner 06b · **Branch:** `feat/crm-mitarbeiter-cockpit`
-> **Aufwand:** S–M · **Abhängigkeiten:** Task 08a
+> **Aufwand:** S–M · **Abhängigkeiten:** Task 04, Task 05, Task 08
 > **Migration:** keine
 
 ## Ziel

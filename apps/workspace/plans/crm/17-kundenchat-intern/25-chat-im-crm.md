@@ -35,7 +35,7 @@ Datumstrenner, gleiche Sendezustände, gleiche Tastaturbedienung.
 | Links                 | Erkannt und klickbar, aber **als Text gerendert**. Kein HTML, kein Markdown — der Inhalt kommt von außen                                                             |
 | Systemnachrichten     | Mittig, zurückhaltend, ohne Sprechblase                                                                                                                              |
 | Lesestand             | Wird gesetzt, sobald die Unterhaltung sichtbar ist                                                                                                                   |
-| Verantwortung         | Kunden-Owner als Standard; danach unabhängig über ein aktives Mitglied mit wirksamem `chat.read` änderbar                                                            |
+| Verantwortung         | Bei der Kundenanlage gesetzter technischer Kunden-Owner als Standard; danach unabhängig über ein aktives Mitglied mit wirksamem `chat.read` änderbar                 |
 
 ## Architektur
 

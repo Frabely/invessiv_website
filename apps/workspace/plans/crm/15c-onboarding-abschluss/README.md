@@ -35,7 +35,9 @@ Mitarbeiter buchen.
 - [ ] Fortschritt im Dashboard und im Formular stammen aus derselben Funktion.
 - [ ] Ohne konfigurierten Buchungslink erscheint keine tote Karte, sondern ein Kontakthinweis.
 - [ ] Kein Drittanbieter-Skript wird geladen, bevor der Kunde die Karte aktiv öffnet (Netzwerktest).
-- [ ] Der Kunde sieht den Link des Projekt-Owners, ersatzweise des Kunden-Owners (Test mit zwei Mitarbeitern).
+- [ ] Der Kunde sieht den Link des Projekt-Owners, ersatzweise des bei der Kundenanlage vorhandenen technischen
+      Kunden-Owners (Test mit zwei Mitarbeitern). Ein späterer Customer-Owner-Wechsel in Ordner 20a verändert diesen
+      Fallback nur für künftige Auflösungen, nicht den Projekt-Owner.
 - [ ] Mitglied ohne `members.manage` kann nur den eigenen Buchungslink ändern.
 
 ## Rollback

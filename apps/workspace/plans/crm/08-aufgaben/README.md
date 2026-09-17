@@ -19,8 +19,9 @@ werden bereits modelliert, aber erst mit dem Portal sichtbar.
 
 - Additive Aufgabenmigration, Drizzle-Modell, Contracts und Indizes entstehen in diesem Ordner.
 - Pflicht: Titel, interner Bearbeiter, `action_side`, Status und `version`.
-- Der Standardbearbeiter ist im Projektkontext der Projekt-Owner, sonst der Kunden-Owner. Er kann bei Anlage und später
-  einzeln geändert werden; ein Owner-Wechsel am Kunden oder Projekt überschreibt ihn nicht.
+- Der Standardbearbeiter ist im Projektkontext der Projekt-Owner, sonst der bei der Kundenanlage vorhandene technische
+  Kunden-Owner. Er kann bei Anlage und später einzeln geändert werden; ein späterer Owner-Wechsel am Kunden oder
+  Projekt überschreibt ihn nicht.
 - Genau ein Kontext: intern ohne Kunde/Projekt, direkt Kunde oder Projekt samt konsistentem Kunde.
 - Optional: Beschreibung, Fälligkeitsdatum und Uhrzeit. Noch keine Serienfelder in diesem Ordner.
 - `action_side = customer` setzt und erzwingt `visible_to_customer = true`.

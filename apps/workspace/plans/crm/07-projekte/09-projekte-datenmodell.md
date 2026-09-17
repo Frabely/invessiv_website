@@ -7,8 +7,8 @@
 - Projektstatus `planned | active | paused | completed | cancelled | archived`, getrennt von Phase.
 - Phase folgt `workflow_key = standard_web_v1` mit `onboarding`, `design`, `development`, `feedback`,
   `launch`, `maintenance`.
-- `owner_member_id` ist Pflicht und initial der Kunden-Owner. Ein späterer Kunden-Owner-Wechsel ändert bestehende
-  Projekte nicht.
+- `owner_member_id` ist Pflicht und initial der bei der Kundenanlage vorhandene technische Kunden-Owner. Ein späterer
+  Kunden-Owner-Wechsel in Ordner 20a ändert bestehende Projekte nicht.
 - `billing_model` ist Pflicht: `fixed_price | hourly | retainer | internal`; Währung nur EUR.
 - Budget/Stundensatz bleiben intern und fehlen aus jedem Portalcontract.
 - Kein `archived_at` oder `deleted_at`; Archivierung ausschließlich über Status. Kein Purge in

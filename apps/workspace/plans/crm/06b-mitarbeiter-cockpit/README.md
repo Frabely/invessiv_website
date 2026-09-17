@@ -1,6 +1,6 @@
 # Ordner 06b — Mitarbeiter-Cockpit
 
-> **Status:** offen · **Abhängigkeiten:** 04, 05, 06, 06a · **Aufwand:** 2–3 Tage · **Reviewziel:** 35–60 Dateien
+> **Status:** offen · **Abhängigkeiten:** 04, 05, 06 · **Aufwand:** 2–3 Tage · **Reviewziel:** 35–60 Dateien
 
 ## Ziel und Stand nach Merge
 
@@ -25,7 +25,8 @@ sichtbar, sobald die jeweilige Permission vorliegt — auch wenn der spätere Ku
 diese Felder dem Kunden bewusst nie zeigt (`07d`: „Kein Portalzugriff auf Beträge"). Layout-Bausteine
 dürfen wiederverwendet werden, der Dateninhalt aber nicht.
 
-Diese Einheit liegt bewusst vor den Projekten, Aufgaben und dem Kundenchat: Sie macht Zuständigkeit und
+Diese Einheit liegt bewusst vor den Projekten, Aufgaben und dem Kundenchat: Sie macht die bereits bei der Anlage als
+technischen Default gesetzte Zuständigkeit und
 offene Anfragen sichtbar, bevor weitere, aufwändigere Funktionen entstehen, die diese Sichtbarkeit erst
 richtig nötig machen. Dealvolumen-, Aufgaben-, Renewal- und Chat-Widgets ergänzen dieselbe Ansicht später
 in Ordner 07d, 08, 11 und 17, ohne dass diese Einheit erneut angefasst wird — sowohl in der Listenübersicht (Task 08b)

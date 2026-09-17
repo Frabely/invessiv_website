@@ -5,8 +5,9 @@
 > **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
 - Eine Conversation je Kunde; kein Pflicht-`project_id` und keine freie Kanalverwaltung.
-- Jede Conversation besitzt `owner_member_id`, initial den Kunden-Owner, sowie eine `version` für unabhängige
-  versionierte Neuzuweisung.
+- Jede Conversation besitzt `owner_member_id`, initial den bei der Kundenanlage vorhandenen technischen Kunden-Owner,
+  sowie eine `version` für unabhängige versionierte Neuzuweisung. Ein späterer Customer-Owner-Wechsel in Ordner 20a
+  verändert bestehende Conversations nicht.
 - `conversation_reads` speichert pro interner/Portal-Mitgliedschaft den letzten gelesenen Zeitpunkt
   beziehungsweise Message-Cursor. `customer_read_at` und `internal_read_at` an Conversation
   entfallen.

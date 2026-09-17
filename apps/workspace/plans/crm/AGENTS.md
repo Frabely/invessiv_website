@@ -13,8 +13,8 @@ Diese Datei regelt die Umsetzung des CRM-Plans unabhängig vom Zielordner. Spezi
 Frühere Planstände mit 16 Merge-Einheiten und 34 Tasks sind vollständig ersetzt. Keine erinnerte
 Altentscheidung darf übernommen werden, wenn sie nicht in den aktuellen Dateien steht.
 
-**Ordnernummer ≠ Task-Nummer.** Die Ordnernummer (01–03, 03b–03d, 04–06, 06a, 06b, 07, 07a–07d, 08–15, 15a–15c,
-16–22, 22a, 23) ist die
+**Ordnernummer ≠ Task-Nummer.** Die Ordnernummer (01–03, 03b–03d, 04–06, 06b, 07, 07a–07d, 08–20, 20a, 21–22,
+22a, 23) ist die
 Merge-Reihenfolge und kann sich beim
 Neuschnitt verschieben. Die Task-Nummer ist die Identität und bleibt: Task 08 heißt überall Task 08
 und liegt in Ordner 06. Querverweise im Plan nennen deshalb immer die **Task**-Nummer, Reihenfolge-

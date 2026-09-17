@@ -27,7 +27,7 @@ vollständigen CRM-Modell in Ordner 22a, damit alle Zuständigkeiten gemeinsam �
 
 ## Bewusster Folgeschnitt
 
-Die einzelne Kundenzuweisung folgt in [Ordner 06a](../06a-kundenzustaendigkeit/README.md), die vollständige Übergabe in
+Die einzelne Kundenzuweisung folgt in [Ordner 20a](../20a-kundenzustaendigkeit/README.md), die vollständige Übergabe in
 [Ordner 22a](../22a-kundenorganisation-und-uebergabe/README.md). 03c bleibt trotzdem sicher: Solange offene
 Zuständigkeiten existieren, ist die Deaktivierung blockiert. Es gibt keinen Übergabe-Button, bevor alle zugehörigen
 Domänen implementiert und gemeinsam testbar sind.

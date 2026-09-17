@@ -26,12 +26,12 @@ Zuständigkeiten werden verhindert.
 
 Die erste besitzbare Entität ist `customer`, deren Tabelle seit Ordner 01 besteht. Vor Ordner 04 gibt es jedoch noch
 keinen produktiven Kundenflow und damit keinen sinnvoll prüfbaren Übergabe-Dialog. 03c implementiert deshalb nur die
-sicherheitsrelevante, exhaustive **Zuständigkeitsprüfung**. Der einzelne Customer-Owner-Wechsel folgt in
-[Ordner 06a](../06a-kundenzustaendigkeit/08a-kundenverantwortung.md), die domänenübergreifende Übergabe in
+sicherheitsrelevante, exhaustive **Zuständigkeitsprüfung**. Der einzelne Customer-Owner-Wechsel folgt erst im
+[Ordner 20a](../20a-kundenzustaendigkeit/08a-kundenverantwortung.md), die domänenübergreifende Übergabe in
 [Ordner 22a](../22a-kundenorganisation-und-uebergabe/02f-zustaendigkeitsuebergabe.md).
 
 Dieser Zwischenstand bleibt sicher: Ein Mitglied mit offenen Kunden kann nicht deaktiviert werden. Nach Ordner 04
-bleibt diese Sperre bestehen; Ordner 06a ergänzt die einzelne Kundenzuweisung, Ordner 22a später die komfortable
+bleibt diese Sperre bestehen; Ordner 20a ergänzt die einzelne Kundenzuweisung, Ordner 22a später die komfortable
 vollständige Übergabe aller dann vorhandenen Zuständigkeiten.
 
 ## Entscheidungen
@@ -249,7 +249,7 @@ Kundenanlage und Deaktivierung nutzen sie.
   Zählung und Commit der Deaktivierung einen Kunden zu, entsteht ein deaktiviertes Mitglied mit offener Zuständigkeit.
 - **Risiko heute:** keines. Vor Ordner 04 setzt kein Schreibpfad `customers.owner_member_id`.
 - **Relevant ab:** dem ersten Schreibpfad auf eine Zuständigkeit — Kundenanlage (Task 04, Ordner 04), Lead-Konvertierung
-  (Task 08, Ordner 06), Customer-Owner-Wechsel (Task 08a, Ordner 06a), Übergabe (Task 02f, Ordner 22a) sowie jede
+  (Task 08, Ordner 06), Customer-Owner-Wechsel (Task 08a, Ordner 20a), Übergabe (Task 02f, Ordner 22a) sowie jede
   spätere `OwnableEntity`.
 - **Nächster Schritt**, im selben Ordner wie der erste solche Schreibpfad:
   1. Die Deaktivierung sperrt vor der Zählung die Membership-Zeile des Ziels mit `SELECT … FOR UPDATE`.
@@ -261,7 +261,7 @@ Kundenanlage und Deaktivierung nutzen sie.
 
 ## Nicht Teil dieses Tasks
 
-- Customer-Owner einzeln wechseln — Task 08a in Ordner 06a.
+- Customer-Owner einzeln wechseln — Task 08a in Ordner 20a.
 - Alle Zuständigkeiten eines Mitglieds übergeben — Task 02f in Ordner 22a nach dem vollständigen CRM-Ausbau.
 - Dialoge und weitere UI-Bausteine nach `packages/ui` verschieben — Ordner 03d.
 - Kundenanlage und Kundenakte — Ordner 04.

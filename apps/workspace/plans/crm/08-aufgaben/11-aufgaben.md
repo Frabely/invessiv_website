@@ -33,7 +33,7 @@ internen Aufgaben zurückgeben.
 | Sichtbarkeit         | `visible_to_customer` boolean, **unabhängig** von der Verantwortung — eine interne Aufgabe kann sichtbar sein („Wir bauen die Startseite"), eine Kundenaufgabe unsichtbar |
 | Voreinstellung       | `action_side = customer` setzt `visible_to_customer` standardmäßig auf true; der Handler validiert die Sichtbarkeit                                                       |
 | Zuordnung            | Entweder an einen Kunden oder an ein Projekt. `project_id` nullable, `customer_id` immer gesetzt                                                                          |
-| Standardbearbeiter   | Im Projektkontext der Projekt-Owner, sonst der Kunden-Owner; danach unabhängig änderbar                                                                                   |
+| Standardbearbeiter   | Im Projektkontext der Projekt-Owner, sonst der bei der Kundenanlage vorhandene technische Kunden-Owner; danach unabhängig änderbar                                        |
 | Sicherheitsregel     | Portal-Query filtert in der `WHERE`-Klausel, nicht im Rendering                                                                                                           |
 | Erledigt             | `done_at` als Zeitstempel, nicht als Boolean — so ist erkennbar, wann abgehakt wurde                                                                                      |
 | Wer hakt ab          | `done_by_side` (`internal`/`customer`) wird mitgeschrieben                                                                                                                |

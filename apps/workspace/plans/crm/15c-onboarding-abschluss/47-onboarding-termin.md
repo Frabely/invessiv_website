@@ -5,7 +5,8 @@
 > **Migration:** ja — additive Spalte `workspace_members.booking_url`
 
 - Buchungslink ist eine Eigenschaft des Mitarbeiters, nicht des Kunden.
-- Der Kunde sieht den Link des Projekt-Owners, ersatzweise des Kunden-Owners.
+- Der Kunde sieht den Link des Projekt-Owners, ersatzweise des bei der Kundenanlage vorhandenen technischen
+  Kunden-Owners.
 - Das externe Widget lädt erst nach einem ausdrücklichen Klick, nie beim Seitenaufruf.
 - Ohne konfigurierten Link erscheint ein Kontakthinweis statt einer toten Karte.
 - Keine eigene Terminverwaltung in Version 1.
@@ -23,22 +24,22 @@ Datenmodell nichts.
 
 ## Entscheidungen
 
-| Bereich                 | Entscheidung                                                                                                                                    |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Ort des Links           | `workspace_members.booking_url`, nullable, nur `https`                                                                                          |
-| Pflege                  | Jedes Mitglied pflegt den eigenen Link im Profil; fremde Links nur mit `members.manage`                                                         |
-| Auflösung               | Projekt-Owner → Kunden-Owner → kein Link                                                                                                        |
-| Warum diese Reihenfolge | Das Gespräch führt, wer das Projekt macht. Der Kunden-Owner ist der Rückfall, wenn das Projekt keinen abweichenden Owner hat                    |
-| Deaktiviertes Mitglied  | Ein Link eines inaktiven Mitglieds wird nie ausgeliefert; die Auflösung fällt weiter                                                            |
-| Anzeige                 | Karte im Portal-Dashboard, sichtbar sobald der Bogen abgesendet ist und die Projektphase noch `onboarding` ist                                  |
-| Abgeschlossen           | Kein neues Feld: Der Termin gilt als erledigt, sobald die Projektphase über `onboarding` hinaus ist. Die Karte verschwindet dann                |
-| Einbettung              | Widget im Portal, aber **Klick-zum-Laden**: zuerst Erklärtext und Schaltfläche, erst danach wird das Skript nachgeladen                         |
-| Warum zwei Schritte     | Ein beim Seitenaufruf geladenes Fremdskript überträgt Daten ohne Zutun des Kunden und widerspricht der Regel, externe Skripte nur lazy zu laden |
-| Datenschutzhinweis      | Die Karte nennt Anbieter und Zweck vor dem Laden, in beiden Sprachen                                                                            |
-| Kein Link hinterlegt    | Statt der Karte ein Hinweis mit Verweis auf den Chat beziehungsweise die hinterlegte Kontaktmöglichkeit                                         |
-| Validierung             | `https`, maximal 2048 Zeichen; keine serverseitige Erreichbarkeitsprüfung der URL                                                               |
-| Protokoll               | Änderung des eigenen oder eines fremden Buchungslinks erzeugt einen `security_events`-Eintrag, wenn sie fremd ist                               |
-| Rückfallweg             | Feature-Flag `portalBookingCardEnabled`, serverseitig, Standard aus bis der Flow vollständig ist                                                |
+| Bereich                 | Entscheidung                                                                                                                                                          |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ort des Links           | `workspace_members.booking_url`, nullable, nur `https`                                                                                                                |
+| Pflege                  | Jedes Mitglied pflegt den eigenen Link im Profil; fremde Links nur mit `members.manage`                                                                               |
+| Auflösung               | Projekt-Owner → technischer Kunden-Owner → kein Link                                                                                                                  |
+| Warum diese Reihenfolge | Das Gespräch führt, wer das Projekt macht. Der bei der Kundenanlage gesetzte technische Kunden-Owner ist der Rückfall, wenn das Projekt keinen abweichenden Owner hat |
+| Deaktiviertes Mitglied  | Ein Link eines inaktiven Mitglieds wird nie ausgeliefert; die Auflösung fällt weiter                                                                                  |
+| Anzeige                 | Karte im Portal-Dashboard, sichtbar sobald der Bogen abgesendet ist und die Projektphase noch `onboarding` ist                                                        |
+| Abgeschlossen           | Kein neues Feld: Der Termin gilt als erledigt, sobald die Projektphase über `onboarding` hinaus ist. Die Karte verschwindet dann                                      |
+| Einbettung              | Widget im Portal, aber **Klick-zum-Laden**: zuerst Erklärtext und Schaltfläche, erst danach wird das Skript nachgeladen                                               |
+| Warum zwei Schritte     | Ein beim Seitenaufruf geladenes Fremdskript überträgt Daten ohne Zutun des Kunden und widerspricht der Regel, externe Skripte nur lazy zu laden                       |
+| Datenschutzhinweis      | Die Karte nennt Anbieter und Zweck vor dem Laden, in beiden Sprachen                                                                                                  |
+| Kein Link hinterlegt    | Statt der Karte ein Hinweis mit Verweis auf den Chat beziehungsweise die hinterlegte Kontaktmöglichkeit                                                               |
+| Validierung             | `https`, maximal 2048 Zeichen; keine serverseitige Erreichbarkeitsprüfung der URL                                                                                     |
+| Protokoll               | Änderung des eigenen oder eines fremden Buchungslinks erzeugt einen `security_events`-Eintrag, wenn sie fremd ist                                                     |
+| Rückfallweg             | Feature-Flag `portalBookingCardEnabled`, serverseitig, Standard aus bis der Flow vollständig ist                                                                      |
 
 ## Contract
 
@@ -66,7 +67,7 @@ workspace_members
 getPortalDashboard (erweitert)
   └─ resolveOnboardingBooking(projectId)
        ├─ Projekt-Owner aktiv und booking_url gesetzt?   → dessen Link
-       ├─ sonst Kunden-Owner aktiv und gesetzt?          → dessen Link
+       ├─ sonst technischer Kunden-Owner aktiv und gesetzt? → dessen Link
        └─ sonst null                                     → Kontakthinweis
 
 Settings → Profil

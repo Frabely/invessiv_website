@@ -1,6 +1,6 @@
 # Ordner 07 — Projekte
 
-> **Status:** offen · **Abhängigkeiten:** 04, 05, 06a · **Aufwand:** 3–4 Tage · **Reviewziel:** 60–100 Dateien
+> **Status:** offen · **Abhängigkeiten:** 04, 05, 06 · **Aufwand:** 3–4 Tage · **Reviewziel:** 60–100 Dateien
 
 ## Ziel und Stand nach Merge
 
@@ -21,8 +21,10 @@ im Kundendetail sowie in einer Projektübersicht nutzbar. Portalanteile bleiben 
 - Pflicht: Kunde, Titel, Status, Phase, `workflow_key`, Owner, Abrechnungsart und `version`.
 - Optional: Beschreibung, nächster Schritt, Termin, Preview-URL, Budget-Cents und Stundensatz-Cents.
 - Abrechnungsart validiert relevante Betragsfelder; Währung ist implizit EUR.
-- Owner übernimmt initial den Kunden-Owner, kann danach durch jedes aktive Mitglied geändert werden.
-- Ein späterer Kunden-Owner-Wechsel überschreibt den Projekt-Owner nicht. Die explizite globale Übergabe aus Ordner
+- Owner übernimmt initial den bei der Kundenanlage vorhandenen technischen Kunden-Owner, kann danach durch jedes aktive
+  Mitglied geändert werden.
+- Ein späterer Kunden-Owner-Wechsel in Ordner 20a überschreibt den Projekt-Owner nicht. Die explizite globale Übergabe
+  aus Ordner
   22a übernimmt offene Projekte nur bei einer vollständigen Mitgliedsübergabe.
 - Feste Phasenfolge aus `standard_web_v1`; unbekannter Workflow oder Phase wird abgelehnt.
 - Kein Soft-Delete/Purge in der UI. Archiv ist der reversible Endzustand.

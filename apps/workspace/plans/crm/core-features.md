@@ -1,7 +1,7 @@
 # CRM & Kundenportal — Funktionsumfang Version 1
 
 Diese Übersicht beschreibt ausschließlich den verbindlichen Stand aus `00-entscheidungen.md`.
-Details und Abnahmekriterien stehen in den 35 aktiven geordneten Merge-Einheiten.
+Details und Abnahmekriterien stehen in den 36 aktiven geordneten Merge-Einheiten.
 
 ## Internes CRM
 
@@ -10,8 +10,8 @@ Details und Abnahmekriterien stehen in den 35 aktiven geordneten Merge-Einheiten
 - Kundenliste mit URL-Filtern, normalisierter Suche und Ansichten für aktive, pausierte und
   archivierte Kunden.
 - Direkte Lead-Konvertierung über den vorhandenen Kundendialog mit bestätigtem Primärkontakt.
-- Sichtbare und versioniert änderbare Kundenverantwortung; Projekte, Aufgaben, Renewals und Chat haben danach jeweils
-  eine eigene, unabhängig änderbare Zuständigkeit.
+- Nach dem vollständigen Kundenkontext sichtbare und versioniert änderbare Kundenverantwortung; Projekte, Aufgaben,
+  Renewals und Chat behalten jeweils eine eigene, unabhängig änderbare Zuständigkeit.
 - Konsolidierte „Meine Kunden"-Übersicht je Mitarbeiter (Zuständigkeit, offene strukturierte Projektanfragen, später
   Kundenwert und Pipeline) — ausdrücklich ohne Lead-Daten.
 - Dieselbe Übersicht zusätzlich als Kunden-Cockpit-Dialog für genau einen Kunden, aufrufbar aus Kundenliste

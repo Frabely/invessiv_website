@@ -101,9 +101,12 @@ Umsetzung in Ordner 07a–07c (Task 36–38), nach Projekten und vor Aufgaben.
 - Funktion, Rolle sowie abweichende geschäftliche E-Mail und Telefonnummer liegen an der Zuordnung.
 - Jeder Kunde benötigt bei Anlage genau einen Primärkontakt. Kunde und Zuordnung entstehen atomar.
 - Jeder Kunde besitzt genau einen internen Owner.
-- Die Kundenzuständigkeit wird in Ordner 06a vor den Projekten vollständig bedienbar. Anlage und Lead-Konvertierung
-  verwenden das aktuelle Mitglied als Standard, erlauben aber die bewusste Auswahl eines anderen aktiven,
-  berechtigten Mitglieds.
+- Bis Ordner 20a ist `customers.owner_member_id` ein technischer Default: Kundenanlage und Lead-Konvertierung setzen
+  ausschließlich das aktuelle aktive Mitglied. Es gibt bis dahin weder eine Owner-Auswahl noch einen einzelnen
+  Customer-Owner-Wechsel.
+- Die Kundenzuständigkeit wird erst in Ordner 20a nach dem vollständigen Kundenkontext bedienbar. Direkte Anlage und
+  Lead-Konvertierung erlauben dann die bewusste Auswahl eines anderen aktiven Mitglieds mit wirksamem Kunden-Zugriff
+  über `accessScope` und `canOn`; eine Übergangsprüfung für die Zeit vor Ordner 07b gibt es nicht.
 - Ein einzelner Kunden-Owner-Wechsel ändert nur den Kunden. Bestehende Projekt-, Aufgaben-, Renewal- und
   Chat-Zuweisungen bleiben bewusst unverändert; so werden individuelle Verantwortungen nicht still überschrieben.
 - Neue Projekte, kunden- oder projektbezogene Aufgaben, Renewals und Kundenchats übernehmen den jeweils fachlich
@@ -128,7 +131,7 @@ Umsetzung in Ordner 07a–07c (Task 36–38), nach Projekten und vor Aufgaben.
 
 ### Mitarbeiter-Cockpit (Entscheidung des Nutzers, 17.09.2026)
 
-Umsetzung in Ordner 06b (Task 08b, Task 08c), nach der Kundenzuständigkeit und vor den Projekten. Eine
+Umsetzung in Ordner 06b (Task 08b, Task 08c), nach der Lead-Konvertierung und vor den Projekten. Eine
 weitere Ergänzung folgt als Task 42a in Ordner 07d, sobald Pakete und Kundenvolumen existieren.
 
 - Ziel ist eine **konsolidierte „Meine Kunden"-Übersicht** je internem Mitglied, statt Zuständigkeit,
@@ -639,7 +642,6 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 | 04  | gemerged  | `04-personen-und-kundenakte`             | Kunden samt Pflichtkontakt, Owner, Archiv und Detail vollständig nutzbar        |  80–100 |  4–5 T. |
 | 05  | im Review | `05-kundenliste-und-zuweisung`           | Paginierte Kundenliste mit Statusbadge und Statuspflege im Kundenformular       |   40–70 |  2–3 T. |
 | 06  | im Review | `06-lead-konvertierung`                  | Leads können sicher direkt als neue CRM-Kunden angelegt werden                  |   40–70 |  2–3 T. |
-| 06a | offen     | `06a-kundenzustaendigkeit`               | Kundenverantwortung ist auswählbar, sichtbar und versioniert änderbar           |   25–45 |  1–2 T. |
 | 06b | offen     | `06b-mitarbeiter-cockpit`                | „Meine Kunden"-Liste plus Kunden-Cockpit-Dialog aus Kundenliste/-formular/Leads |   35–60 |  2–3 T. |
 | 07  | offen     | `07-projekte`                            | Projektanlage, Status, Workflow und Owner-Zuweisung vollständig nutzbar         |  60–100 |  3–4 T. |
 | 07a | offen     | `07a-zugriffsbereiche-fundament`         | Gebundene Rollen in DB, Actor und API unsichtbar und wirkungslos deployt        |   60–90 |    3 T. |
@@ -662,6 +664,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 | 18  | offen     | `18-kundenchat-portal`                   | Portalchat, Kundendigest und Abmeldeschalter aktiv                              |   50–80 |  2–3 T. |
 | 19  | offen     | `19-credentials`                         | Verschlüsselte Zugangsdaten und Security-Audit vollständig nutzbar              |   50–80 |  3–4 T. |
 | 20  | offen     | `20-stunden-und-history`                 | Kontingente, Buchungen und konsolidierte Timeline vollständig nutzbar           |  60–100 |  3–4 T. |
+| 20a | offen     | `20a-kundenzustaendigkeit`               | Kundenverantwortung ist auswählbar, sichtbar und versioniert änderbar           |   25–45 |  1–2 T. |
 | 21  | offen     | `21-datenschutz-backup-rollout`          | Export, Owner-Purge, Backup/Restore und Produktivabnahme nachgewiesen           |  60–100 |  4–5 T. |
 | 22  | offen     | `22-activity-cleanup`                    | `lead_activities` abgebaut, genau eine Activity-Tabelle                         |    5–15 |    1 T. |
 | 22a | offen     | `22a-kundenorganisation-und-uebergabe`   | Suche, Filter, Tags und globale Zuständigkeitsübergabe vollständig nutzbar      |  70–110 |  4–6 T. |

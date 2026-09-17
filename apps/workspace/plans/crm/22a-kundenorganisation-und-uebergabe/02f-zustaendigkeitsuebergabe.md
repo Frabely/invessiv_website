@@ -12,7 +12,7 @@ domänenübergreifenden Flow:
 
 - alle offenen Zuständigkeiten eines Mitglieds an ein anderes aktives Mitglied übergeben.
 
-Der einzelne Customer-Owner-Wechsel ist bereits seit Ordner 06a verfügbar und überschreibt keine Kindentitäten. Bei
+Der einzelne Customer-Owner-Wechsel ist bereits seit Ordner 20a verfügbar und überschreibt keine Kindentitäten. Bei
 Umsetzung in Ordner 22a sind alle bis dahin besitzbaren Kunden-, Projekt-, Aufgaben-, Renewal- und Chat-Entitäten in
 der exhaustiven Ownership-Registry registriert. Jede Domäne hat zuvor ihre individuelle Zuweisung und ihren
 Registry-Eintrag geliefert.
@@ -86,7 +86,7 @@ Fachfehler: ungültiger Body, Quelle/Ziel fehlt, Ziel inaktiv, Quelle gleich Zie
 ## Nicht Teil dieses Tasks
 
 - Mitglieder aktivieren oder deaktivieren — Task 02d in Ordner 03c.
-- Kunden-Owner einzeln ändern — Task 08a in Ordner 06a.
+- Kunden-Owner einzeln ändern — Task 08a in Ordner 20a.
 - Projekte, Aufgaben, Renewals oder Conversations vor ihrer jeweiligen Einführung registrieren.
 - Automatische Deaktivierung nach erfolgreicher Übergabe.
 - Historische Owner-Zuordnung archivierter Datensätze verändern.
