@@ -55,7 +55,7 @@ describe("customer query handlers", () => {
   });
 
   it("lists a clamped page with count metadata", async () => {
-    mocks.countSummaries.mockResolvedValue(26);
+    mocks.countSummaries.mockResolvedValueOnce(26);
     mocks.listSummaries.mockResolvedValue([]);
 
     await expect(
@@ -64,11 +64,35 @@ describe("customer query handlers", () => {
         page: 9,
         sort: "updated_desc",
       }),
-    ).resolves.toEqual({ page: 2, perPage: 25, rows: [], total: 26 });
+    ).resolves.toEqual({
+      hasCustomers: true,
+      page: 2,
+      perPage: 25,
+      rows: [],
+      total: 26,
+    });
     expect(mocks.listSummaries).toHaveBeenCalledWith(
       mocks.database,
       { includeArchived: false, page: 2, sort: "updated_desc" },
       25,
+    );
+  });
+
+  it("distinguishes archived customers from an entirely empty workspace", async () => {
+    mocks.countSummaries.mockResolvedValueOnce(0).mockResolvedValueOnce(4);
+    mocks.listSummaries.mockResolvedValue([]);
+
+    await expect(
+      listCustomers({
+        includeArchived: false,
+        page: 1,
+        sort: "updated_desc",
+      }),
+    ).resolves.toMatchObject({ hasCustomers: true, rows: [], total: 0 });
+    expect(mocks.countSummaries).toHaveBeenNthCalledWith(
+      2,
+      mocks.database,
+      true,
     );
   });
 });

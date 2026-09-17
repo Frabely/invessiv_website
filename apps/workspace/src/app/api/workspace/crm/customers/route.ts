@@ -14,7 +14,7 @@ import { customerApiError } from "@/lib/workspace/crm/customer-api-error";
 import { logCrmFailure } from "@/lib/workspace/crm/log-crm-failure";
 import { createCustomer } from "@/server/workspace/crm/command-handler/create-customer.command-handler";
 import { listCustomers } from "@/server/workspace/crm/query-handler/list-customers.query-handler";
-import { parseCustomerListFilters } from "@/server/workspace/crm/shared/customer-list-search-params";
+import { parseCustomerListFilters } from "@/common/patterns/crm/customer-list-search-params";
 
 export const runtime = "nodejs";
 

@@ -44,5 +44,10 @@
     "title": "No customers yet",
     "description": "This is where every company and individual you work for lives – with customer number, status and primary contact. Add a customer as soon as a contact turns into a project.",
     "action": "Add your first customer"
+  },
+  "noResults": {
+    "title": "No active customers",
+    "description": "All existing customers are archived. Show archived customers to bring them back into the list.",
+    "action": "Show archived customers"
   }
 }

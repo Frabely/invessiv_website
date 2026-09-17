@@ -5,7 +5,7 @@ import type { CustomerContactAssignmentRow } from "@invessiv/common/contracts/cr
 import type { CustomerDetailRow } from "@invessiv/common/contracts/crm/rows/customer-detail-row";
 import type { CustomerSummaryRow } from "@invessiv/common/contracts/crm/rows/customer-summary-row";
 import { customersMapperService } from "@/server/workspace/crm/services/customers-mapper-service";
-import { MissingPrimaryContactError } from "@/server/workspace/crm/shared/missing-primary-contact-error.class";
+import { MissingPrimaryContactError } from "@/server/workspace/crm/services/missing-primary-contact-error.class";
 
 const CREATED = new Date("2026-03-01T12:00:00.000Z");
 const UPDATED = new Date("2026-04-02T08:30:00.000Z");

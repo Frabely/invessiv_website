@@ -1,5 +1,9 @@
 import Link from "next/link";
-import { faAddressBook, faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAddressBook,
+  faFilterCircleXmark,
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { CustomerSort } from "@invessiv/common/constants/crm/list/customer-sort";
@@ -18,6 +22,8 @@ type CustomersBasicListProps = {
   canWrite: boolean;
   createHref: string | null;
   customers: CustomerSummaryDto[];
+  filteredEmptyHref: string;
+  hasCustomers: boolean;
   locale: Locale;
   queryString: string;
 };
@@ -35,10 +41,37 @@ export function CustomersBasicList({
   content,
   createHref,
   customers,
+  filteredEmptyHref,
+  hasCustomers,
   locale,
   queryString,
 }: CustomersBasicListProps) {
   if (customers.length === 0) {
+    if (hasCustomers) {
+      return (
+        <EmptyState
+          action={
+            <PrimaryCtaLink
+              href={filteredEmptyHref}
+              linkComponent={Link}
+              linkComponentProps={{ scroll: false }}
+            >
+              <FontAwesomeIcon
+                aria-hidden="true"
+                className={styles.icon}
+                icon={faFilterCircleXmark}
+              />
+              {content.noResults.action}
+            </PrimaryCtaLink>
+          }
+          description={content.noResults.description}
+          icon={<FontAwesomeIcon icon={faFilterCircleXmark} />}
+          title={content.noResults.title}
+          variant="filtered"
+        />
+      );
+    }
+
     return (
       <EmptyState
         action={

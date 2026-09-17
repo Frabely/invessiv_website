@@ -177,6 +177,7 @@ describe("CRM customer routes", () => {
       expect((await GET(request)).status).toBe(HttpResponseCode.Forbidden);
 
       mocks.listCustomers.mockResolvedValue({
+        hasCustomers: false,
         page: 1,
         perPage: 25,
         rows: [],
@@ -185,6 +186,7 @@ describe("CRM customer routes", () => {
       const response = await GET(request);
       expect(response.status).toBe(HttpResponseCode.Ok);
       await expect(response.json()).resolves.toEqual({
+        hasCustomers: false,
         page: 1,
         perPage: 25,
         rows: [],

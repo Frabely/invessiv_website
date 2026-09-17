@@ -5,6 +5,8 @@ import type { CustomerSummaryDto } from "@invessiv/common/contracts/crm/customer
  * the shape callers already destructure.
  */
 export type ListCustomersResult = {
+  /** Whether at least one customer exists before applying list filters. */
+  hasCustomers: boolean;
   /** Current page after clamping an out-of-range request. */
   page: number;
   /** Fixed number of customer rows requested per page. */

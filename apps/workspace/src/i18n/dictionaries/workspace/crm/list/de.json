@@ -44,5 +44,10 @@
     "title": "Noch keine Kunden",
     "description": "Hier stehen alle Firmen und Privatpersonen, für die du arbeitest – mit Kundennummer, Status und Hauptansprechpartner. Leg einen Kunden an, sobald aus einem Kontakt ein Auftrag wird.",
     "action": "Ersten Kunden anlegen"
+  },
+  "noResults": {
+    "title": "Keine aktiven Kunden",
+    "description": "Alle vorhandenen Kunden sind archiviert. Blende archivierte Kunden ein, um sie wieder in der Liste zu sehen.",
+    "action": "Archivierte Kunden anzeigen"
   }
 }

@@ -82,6 +82,7 @@ describe("CrmPage", () => {
     Object.values(mocks).forEach((mock) => mock.mockReset());
     mocks.requireWorkspaceArea.mockResolvedValue(workspaceActorWith());
     mocks.listCustomers.mockResolvedValue({
+      hasCustomers: false,
       page: 1,
       perPage: 25,
       rows: [],

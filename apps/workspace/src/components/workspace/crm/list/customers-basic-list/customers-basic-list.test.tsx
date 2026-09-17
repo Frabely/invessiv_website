@@ -30,6 +30,8 @@ describe("CustomersBasicList", () => {
         content={content}
         createHref="/de/crm?mode=create"
         customers={[customerDetailFixture({ status: "paused" })]}
+        filteredEmptyHref="/de/crm?archived=true"
+        hasCustomers
         locale="de"
         queryString=""
       />,
@@ -60,6 +62,8 @@ describe("CustomersBasicList", () => {
         content={content}
         createHref={null}
         customers={[customerDetailFixture()]}
+        filteredEmptyHref="/de/crm?archived=true"
+        hasCustomers
         locale="de"
         queryString=""
       />,
@@ -76,6 +80,8 @@ describe("CustomersBasicList", () => {
         content={content}
         createHref="/de/crm?mode=create"
         customers={[]}
+        filteredEmptyHref="/de/crm?archived=true"
+        hasCustomers={false}
         locale="de"
         queryString=""
       />,
@@ -85,5 +91,29 @@ describe("CustomersBasicList", () => {
     expect(
       screen.getByRole("link", { name: content.empty.action }),
     ).toHaveAttribute("href", "/de/crm?mode=create");
+  });
+
+  it("offers archived customers instead of creation for a filtered empty list", () => {
+    render(
+      <CustomersBasicList
+        basePath="/de/crm"
+        canWrite
+        content={content}
+        createHref="/de/crm?mode=create"
+        customers={[]}
+        filteredEmptyHref="/de/crm?archived=true"
+        hasCustomers
+        locale="de"
+        queryString=""
+      />,
+    );
+
+    expect(screen.getByText(content.noResults.description)).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: content.noResults.action }),
+    ).toHaveAttribute("href", "/de/crm?archived=true");
+    expect(
+      screen.queryByRole("link", { name: content.empty.action }),
+    ).not.toBeInTheDocument();
   });
 });

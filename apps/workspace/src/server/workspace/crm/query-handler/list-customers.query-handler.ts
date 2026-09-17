@@ -5,7 +5,7 @@ import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import type { CustomerListFilters } from "@/common/contracts/crm/customer-list-filters";
 import { customerReadService } from "@/server/workspace/crm/services/customer-read-service";
 
-export const CUSTOMER_LIST_PAGE_SIZE = 25;
+const CUSTOMER_LIST_PAGE_SIZE = 25;
 
 export async function listCustomers(
   filters: CustomerListFilters,
@@ -15,6 +15,10 @@ export async function listCustomers(
     db,
     filters.includeArchived,
   );
+  const hasCustomers =
+    total > 0 ||
+    (!filters.includeArchived &&
+      (await customerReadService.countSummaries(db, true)) > 0);
   const totalPages = Math.max(1, Math.ceil(total / CUSTOMER_LIST_PAGE_SIZE));
   const page = total > 0 ? Math.min(filters.page, totalPages) : 1;
   const rows = await customerReadService.listSummaries(
@@ -23,5 +27,11 @@ export async function listCustomers(
     CUSTOMER_LIST_PAGE_SIZE,
   );
 
-  return { page, perPage: CUSTOMER_LIST_PAGE_SIZE, rows, total };
+  return {
+    hasCustomers,
+    page,
+    perPage: CUSTOMER_LIST_PAGE_SIZE,
+    rows,
+    total,
+  };
 }

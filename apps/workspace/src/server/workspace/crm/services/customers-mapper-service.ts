@@ -4,7 +4,7 @@ import type { CustomerSummaryDto } from "@invessiv/common/contracts/crm/customer
 import type { CustomerContactAssignmentRow } from "@invessiv/common/contracts/crm/rows/customer-contact-assignment-row";
 import type { CustomerDetailRow } from "@invessiv/common/contracts/crm/rows/customer-detail-row";
 import type { CustomerSummaryRow } from "@invessiv/common/contracts/crm/rows/customer-summary-row";
-import { MissingPrimaryContactError } from "@/server/workspace/crm/shared/missing-primary-contact-error.class";
+import { MissingPrimaryContactError } from "@/server/workspace/crm/services/missing-primary-contact-error.class";
 
 function toContact(
   row: CustomerContactAssignmentRow,

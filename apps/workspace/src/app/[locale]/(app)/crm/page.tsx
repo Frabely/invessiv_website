@@ -10,6 +10,7 @@ import {
   buildCustomerDialogCloseHref,
   readCustomerDialogRequest,
 } from "@/common/patterns/crm/customer-dialog-query";
+import { parseCustomerListFilters } from "@/common/patterns/crm/customer-list-search-params";
 import { CustomerFormDialog } from "@/components/workspace/crm/form/customer-form-dialog/customer-form-dialog";
 import { CustomersBasicList } from "@/components/workspace/crm/list/customers-basic-list/customers-basic-list";
 import { CustomersPageHeader } from "@/components/workspace/crm/shell/customers-page-header/customers-page-header";
@@ -33,7 +34,6 @@ import {
 import { getCustomerById } from "@/server/workspace/crm/query-handler/get-customer-by-id.query-handler";
 import { listActiveCustomerCategories } from "@/server/workspace/crm/query-handler/list-active-customer-categories.query-handler";
 import { listCustomers } from "@/server/workspace/crm/query-handler/list-customers.query-handler";
-import { parseCustomerListFilters } from "@/server/workspace/crm/shared/customer-list-search-params";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -112,6 +112,8 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
         content={getCrmListDictionary(activeLocale)}
         createHref={createHref}
         customers={customerList.rows}
+        filteredEmptyHref={archivedToggleHref}
+        hasCustomers={customerList.hasCustomers}
         locale={activeLocale}
         queryString={queryString}
       />
