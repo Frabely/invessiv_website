@@ -1,7 +1,8 @@
-.body {
+.view {
   display: grid;
   gap: 1rem;
 }
+
 .hero {
   display: flex;
   flex-wrap: wrap;
@@ -10,6 +11,7 @@
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--color-border);
 }
+
 .number {
   padding: 0.18rem 0.5rem;
   border: 1px solid var(--color-border-strong);
@@ -21,16 +23,19 @@
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.04em;
 }
+
 .customerName {
   margin: 0;
   color: var(--color-text);
   font-size: var(--font-size-heading-md);
 }
+
 .grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.75rem;
 }
+
 .section {
   display: grid;
   gap: 0.35rem;
@@ -43,10 +48,12 @@
     var(--color-surface-1)
   );
 }
+
 .section h3,
 .section p {
   margin: 0;
 }
+
 .section h3 {
   color: var(--color-text-muted);
   font-size: var(--font-size-ui-xs);
@@ -54,26 +61,32 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
+
 .section p,
 .section a {
   color: var(--color-text);
   font-size: var(--font-size-body-sm);
   overflow-wrap: anywhere;
 }
+
 .section a {
   color: var(--color-cta);
   text-underline-offset: 0.2em;
 }
+
 .contact {
   grid-column: 1 / -1;
 }
+
 .empty {
   color: var(--color-text-muted) !important;
 }
+
 @media (max-width: 640px) {
   .grid {
     grid-template-columns: minmax(0, 1fr);
   }
+
   .contact {
     grid-column: auto;
   }
