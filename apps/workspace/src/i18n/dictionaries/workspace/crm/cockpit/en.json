@@ -1,0 +1,14 @@
+{
+  "title": "Customer overview",
+  "description": "A compact overview of this CRM customer.",
+  "close": "Close",
+  "sections": {
+    "status": "Status",
+    "owner": "Owner",
+    "primaryContact": "Primary contact"
+  },
+  "status": { "active": "Active", "paused": "Paused", "archived": "Archived" },
+  "noEmail": "No email address saved.",
+  "openAction": "Open customer overview",
+  "openActionAriaLabel": "Open customer overview for {name}"
+}

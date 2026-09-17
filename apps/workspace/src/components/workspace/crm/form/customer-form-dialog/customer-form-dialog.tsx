@@ -9,6 +9,7 @@ import {
   useRef,
   useState,
 } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CustomerErrorCode } from "@invessiv/common/constants/crm/errors/customer-error-codes";
 import { LeadConversionErrorCode } from "@invessiv/common/constants/crm/errors/lead-conversion-error-codes";
@@ -20,6 +21,7 @@ import type { CustomerContactWriteDto } from "@invessiv/common/contracts/crm/cus
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 import {
   ButtonControl,
+  ButtonLink,
   CustomSelect,
   Dialog,
   DialogSize,
@@ -64,6 +66,7 @@ type CustomerFormDialogProps = {
   leadsBasePath?: string;
   /** Present only when the create dialog converts a lead. */
   conversionSource?: LeadCustomerConversionSource;
+  cockpitHref?: string;
 };
 
 type TextFieldKey = Exclude<
@@ -120,6 +123,7 @@ export function CustomerFormDialog({
   locale,
   crmBasePath,
   leadsBasePath,
+  cockpitHref,
 }: CustomerFormDialogProps) {
   const router = useRouter();
   const formId = useId();
@@ -372,6 +376,16 @@ export function CustomerFormDialog({
         <>
           <p className={styles.footerRequiredHint}>{content.requiredHint}</p>
           <div className={styles.footerActions}>
+            {cockpitHref ? (
+              <ButtonLink
+                href={cockpitHref}
+                linkComponent={Link}
+                linkComponentProps={{ scroll: false }}
+                variant="ghost"
+              >
+                {content.buttons.openCockpit}
+              </ButtonLink>
+            ) : null}
             <ButtonControl
               disabled={isSubmitting}
               onClick={mutation.close}

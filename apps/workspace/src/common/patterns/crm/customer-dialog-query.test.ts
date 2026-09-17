@@ -2,9 +2,12 @@ import { describe, expect, it } from "vitest";
 
 import {
   buildCustomerCreateHref,
+  buildCustomerCockpitCloseHref,
+  buildCustomerCockpitHref,
   buildCustomerDialogCloseHref,
   buildCustomerEditHref,
   readCustomerDialogRequest,
+  readCustomerCockpitId,
 } from "@/common/patterns/crm/customer-dialog-query";
 
 const CUSTOMER_ID = "0b8a5f7e-3f2d-4c1b-9a8e-7d6c5b4a3f21";
@@ -50,5 +53,21 @@ describe("customer dialog hrefs", () => {
     expect(buildCustomerDialogCloseHref("/de/crm", query)).toBe(
       "/de/crm?page=2&sort=name_asc",
     );
+  });
+});
+
+describe("customer cockpit hrefs", () => {
+  it("preserves an open edit dialog and removes only the cockpit id on close", () => {
+    const query = `page=2&mode=edit&edit=${CUSTOMER_ID}`;
+    expect(buildCustomerCockpitHref("/de/crm", CUSTOMER_ID, query)).toBe(
+      `/de/crm?${query}&cockpit=${CUSTOMER_ID}`,
+    );
+    expect(
+      buildCustomerCockpitCloseHref(
+        "/de/crm",
+        `${query}&cockpit=${CUSTOMER_ID}`,
+      ),
+    ).toBe(`/de/crm?${query}`);
+    expect(readCustomerCockpitId({ cockpit: CUSTOMER_ID })).toBe(CUSTOMER_ID);
   });
 });

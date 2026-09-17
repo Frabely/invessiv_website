@@ -54,7 +54,7 @@ describe("CustomersBasicList", () => {
     ).toHaveAttribute("href", `/de/crm?mode=edit&edit=${TEST_CUSTOMER_ID}`);
   });
 
-  it("renders no edit action without write access", () => {
+  it("keeps the cockpit action but hides editing without write access", () => {
     render(
       <CustomersBasicList
         basePath="/de/crm"
@@ -69,7 +69,14 @@ describe("CustomersBasicList", () => {
       />,
     );
 
-    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("link", {
+        name: "Kundenansicht für Nordlicht Coaching öffnen",
+      }),
+    ).toHaveAttribute("href", `/de/crm?cockpit=${TEST_CUSTOMER_ID}`);
+    expect(
+      screen.queryByRole("link", { name: "Nordlicht Coaching bearbeiten" }),
+    ).not.toBeInTheDocument();
   });
 
   it("explains the area in the empty state and offers creation", () => {

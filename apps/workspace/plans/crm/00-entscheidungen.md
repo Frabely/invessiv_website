@@ -131,30 +131,16 @@ Umsetzung in Ordner 07a–07c (Task 36–38), nach Projekten und vor Aufgaben.
 
 ### Mitarbeiter-Cockpit (Entscheidung des Nutzers, 17.09.2026)
 
-Umsetzung in Ordner 06b (Task 08b, Task 08c), nach der Lead-Konvertierung und vor den Projekten. Eine
-weitere Ergänzung folgt als Task 42a in Ordner 07d, sobald Pakete und Kundenvolumen existieren.
+Umsetzung in Ordner 06b als kompakte interne Kundenansicht. Der Dashboard-Ausbau ist bewusst vertagt;
+Projekte erweitern die Ansicht erst nach Aufbau der Projektdomäne in Ordner 07.
 
-- Ziel ist eine **konsolidierte „Meine Kunden"-Übersicht** je internem Mitglied, statt Zuständigkeit,
-  Dealvolumen und offene Anfragen nur einzeln in Kundenliste, Kundenakte und Dashboard-Widgets
-  aufzufinden.
-- **Welle 1 (Ordner 06b, Task 08b):** zeigt die dem Mitglied zugewiesenen Kunden (`customers.owner_member_id`) und deren
-  offene **strukturierte Projektanfragen**
-  (`lead_project_requests` ohne Folgeaktion) als Liste. Keine neue Tabelle, keine Migration.
-- **Welle 1b (Ordner 06b, Task 08c):** dieselbe Datenquelle zusätzlich als **Kunden-Cockpit-Dialog**
-  für genau einen Kunden — ein Fullsize-Dialog, aufrufbar über eine Tabellen-Action in der Kundenliste,
-  einen zusätzlichen Button im Kundenformular und eine Sprung-Action in der Lead-Liste bei bereits
-  konvertierten Leads. Liste (08b) und Dialog (08c) rufen dieselbe Aggregationsfunktion auf; es gibt
-  ausdrücklich **keine zweite Implementierung** der Zähl- oder Wertlogik.
-- **Welle 2 (Ordner 07d, Task 42a):** ergänzt Liste und Dialog gemeinsam um Kundenwert, Projektwert und
-  Pipeline-Positionen im Stand `requested`/`offered` je Mitglied — abgeleitet aus derselben Funktion
-  wie in Kundenliste, Kundenakte und Projektkarte (Task 42), keine zweite Berechnung.
-- **Ausdrücklich nicht Teil des Cockpits:** Leads als eigener Dateninhalt. Die Lead-Verwaltung bleibt
-  unverändert beim Workspace-Owner; ihr Rechtemodell prüft heute im Wesentlichen nur globale
-  Sichtbarkeit und wird in diesem Zug nicht erweitert. Der Sprung-Button aus der Lead-Liste ändert
-  keine Lead-Daten und keine Lead-Rechte — er öffnet nur den Dialog des bereits verknüpften Kunden.
-- Aufgaben- (Ordner 08) und Renewal-Widgets (Ordner 11) docken sich wie bisher geplant an dieselbe
-  Aggregationsfunktion an, sobald sie existieren, und erscheinen dadurch automatisch in Liste **und**
-  Dialog; die Reihenfolge dieser beiden Ordner ändert sich nicht.
+- Task 08c liefert den Dialog für Kundenkopf, Status, Zuständigkeit und Primärkontakt. Er ist aus der
+  Kundenliste und dem bestehenden Kundenformular erreichbar und verwendet ausschließlich customers-read.
+- Website-Lead-Submissions, Leads, Anfragen und ein Lead-Einstieg gehören nicht zum CRM-Cockpit.
+- Dashboard-Ansicht und Kundenauswahl sind vertagt. Sie werden später mit dashboard-read und customers-read,
+  ausschließlich für eigene zugewiesene Kunden und vollständig URL-gesteuert umgesetzt.
+- Projekte, Aufgaben, Renewals und Chat ergänzen nach ihren jeweiligen Domänen-Tasks denselben DTO- und
+  Darstellungspfad. Es gibt keine zweite Kunden-Detaildarstellung.
 - **Der Kunden-Cockpit-Dialog (Task 08c) ist die interne Mitarbeitersicht, nicht die Kundenportal-Sicht.**
   Er zeigt permission-abhängig, was der aufrufende Mitarbeiter zu diesem Kunden sehen darf — inklusive
   Daten, die das spätere Kundenportal (Ordner 12/13) dem Kunden bewusst nie zeigt, etwa Preise (`07d`:
@@ -642,7 +628,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 | 04  | gemerged  | `04-personen-und-kundenakte`             | Kunden samt Pflichtkontakt, Owner, Archiv und Detail vollständig nutzbar        |  80–100 |  4–5 T. |
 | 05  | im Review | `05-kundenliste-und-zuweisung`           | Paginierte Kundenliste mit Statusbadge und Statuspflege im Kundenformular       |   40–70 |  2–3 T. |
 | 06  | im Review | `06-lead-konvertierung`                  | Leads können sicher direkt als neue CRM-Kunden angelegt werden                  |   40–70 |  2–3 T. |
-| 06b | offen     | `06b-mitarbeiter-cockpit`                | „Meine Kunden"-Liste plus Kunden-Cockpit-Dialog aus Kundenliste/-formular/Leads |   35–60 |  2–3 T. |
+| 06b | läuft     | `06b-mitarbeiter-cockpit`                | Kundenansicht aus Kundenliste und -formular, Dashboard-Detailpfad vorbereitet   |   35–60 |  2–3 T. |
 | 07  | offen     | `07-projekte`                            | Projektanlage, Status, Workflow und Owner-Zuweisung vollständig nutzbar         |  60–100 |  3–4 T. |
 | 07a | offen     | `07a-zugriffsbereiche-fundament`         | Gebundene Rollen in DB, Actor und API unsichtbar und wirkungslos deployt        |   60–90 |    3 T. |
 | 07b | offen     | `07b-zugriffsfilter-kunden-und-projekte` | Alle Kunden- und Projektpfade filtern über `accessScope`; Negativtests          |  60–100 |  3–4 T. |

@@ -47,12 +47,19 @@ describe("CustomerTableRow", () => {
     );
   });
 
-  it("does not render an edit action without write permission", () => {
+  it("keeps the cockpit action but hides editing without write permission", () => {
     renderRow(false);
 
-    expect(screen.queryByRole("link")).not.toBeInTheDocument();
     expect(
-      screen.queryByRole("button", { name: content.columns.actions }),
+      screen.getByRole("link", {
+        name: "Kundenansicht für Nordlicht Coaching öffnen",
+      }),
+    ).toHaveAttribute(
+      "href",
+      `/de/crm?page=2&sort=name_asc&cockpit=${TEST_CUSTOMER_ID}`,
+    );
+    expect(
+      screen.queryByRole("link", { name: "Nordlicht Coaching bearbeiten" }),
     ).not.toBeInTheDocument();
   });
 });

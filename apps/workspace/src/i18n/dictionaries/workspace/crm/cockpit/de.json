@@ -1,0 +1,18 @@
+{
+  "title": "Kundenansicht",
+  "description": "Kompakter Überblick zu diesem CRM-Kunden.",
+  "close": "Schließen",
+  "sections": {
+    "status": "Status",
+    "owner": "Zuständig",
+    "primaryContact": "Hauptansprechpartner"
+  },
+  "status": {
+    "active": "Aktiv",
+    "paused": "Pausiert",
+    "archived": "Archiviert"
+  },
+  "noEmail": "Keine E-Mail-Adresse hinterlegt.",
+  "openAction": "Kundenansicht öffnen",
+  "openActionAriaLabel": "Kundenansicht für {name} öffnen"
+}

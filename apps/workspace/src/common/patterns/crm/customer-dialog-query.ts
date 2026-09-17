@@ -30,6 +30,7 @@ function listParams(queryString = ""): URLSearchParams {
   const params = new URLSearchParams(queryString);
   params.delete(CustomerListQueryParam.Mode);
   params.delete(CustomerListQueryParam.Edit);
+  params.delete(CustomerListQueryParam.Cockpit);
   return params;
 }
 
@@ -63,4 +64,29 @@ export function buildCustomerDialogCloseHref(
   queryString = "",
 ): string {
   return buildHref(basePath, listParams(queryString));
+}
+
+export function readCustomerCockpitId(
+  searchParams: SearchParamsInput,
+): string | null {
+  return readSingle(searchParams[CustomerListQueryParam.Cockpit]);
+}
+
+export function buildCustomerCockpitHref(
+  basePath: string,
+  customerId: string,
+  queryString = "",
+): string {
+  const params = new URLSearchParams(queryString);
+  params.set(CustomerListQueryParam.Cockpit, customerId);
+  return buildHref(basePath, params);
+}
+
+export function buildCustomerCockpitCloseHref(
+  basePath: string,
+  queryString = "",
+): string {
+  const params = new URLSearchParams(queryString);
+  params.delete(CustomerListQueryParam.Cockpit);
+  return buildHref(basePath, params);
 }

@@ -7,11 +7,15 @@ import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import { CustomerFormDialogMode } from "@/common/constants/crm/forms/customer-form-dialog-modes";
 import {
   buildCustomerCreateHref,
+  buildCustomerCockpitCloseHref,
+  buildCustomerCockpitHref,
   buildCustomerDialogCloseHref,
+  readCustomerCockpitId,
   readCustomerDialogRequest,
 } from "@/common/patterns/crm/customer-dialog-query";
 import { parseCustomerListFilters } from "@/common/patterns/crm/customer-list-search-params";
 import { CustomerFormDialog } from "@/components/workspace/crm/form/customer-form-dialog/customer-form-dialog";
+import { CustomerCockpitDialog } from "@/components/workspace/crm/detail/customer-cockpit-dialog/customer-cockpit-dialog";
 import { CustomersBasicList } from "@/components/workspace/crm/list/customers-basic-list/customers-basic-list";
 import { CustomersPageHeader } from "@/components/workspace/crm/shell/customers-page-header/customers-page-header";
 import { WorkspacePageShell } from "@/components/workspace/workspace-page-shell/workspace-page-shell";
@@ -19,6 +23,7 @@ import { ListPagination } from "@/components/workspace/shared/table/list-paginat
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import {
   getCrmFormDictionary,
+  getCrmCockpitDictionary,
   getCrmListDictionary,
   getCrmMetaDictionary,
   getCrmShellDictionary,
@@ -32,6 +37,7 @@ import {
   buildCustomerListQueryString,
 } from "@/lib/workspace/crm/customer-list-query-string";
 import { getCustomerById } from "@/server/workspace/crm/query-handler/get-customer-by-id.query-handler";
+import { getCustomerCockpitById } from "@/server/workspace/crm/query-handler/get-customer-cockpit-by-id.query-handler";
 import { listActiveCustomerCategories } from "@/server/workspace/crm/query-handler/list-active-customer-categories.query-handler";
 import { listCustomers } from "@/server/workspace/crm/query-handler/list-customers.query-handler";
 
@@ -76,12 +82,14 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
   const dialogRequest = canWrite
     ? readCustomerDialogRequest(resolvedSearchParams)
     : null;
+  const cockpitCustomerId = readCustomerCockpitId(resolvedSearchParams);
 
-  const [customerList, editCustomer] = await Promise.all([
+  const [customerList, editCustomer, cockpitCustomer] = await Promise.all([
     listCustomers(requestedFilters),
     dialogRequest?.mode === CustomerFormDialogMode.Edit
       ? getCustomerById(dialogRequest.customerId, canReadLeads)
       : null,
+    cockpitCustomerId ? getCustomerCockpitById(cockpitCustomerId) : null,
   ]);
   const filters = { ...requestedFilters, page: customerList.page };
   const queryString = buildCustomerListQueryString(filters);
@@ -89,6 +97,15 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
     ? buildCustomerCreateHref(basePath, queryString)
     : null;
   const closeHref = buildCustomerDialogCloseHref(basePath, queryString);
+  const dialogQueryString = new URLSearchParams(queryString);
+  if (dialogRequest?.mode === CustomerFormDialogMode.Edit && editCustomer) {
+    dialogQueryString.set("mode", CustomerFormDialogMode.Edit);
+    dialogQueryString.set("edit", editCustomer.id);
+  }
+  const cockpitCloseHref = buildCustomerCockpitCloseHref(
+    basePath,
+    dialogQueryString.toString(),
+  );
   const archivedToggleHref = buildCustomerListHref(basePath, {
     ...filters,
     includeArchived: !filters.includeArchived,
@@ -139,6 +156,22 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
           key={editCustomer?.id ?? CustomerFormDialogMode.Create}
           locale={activeLocale}
           leadsBasePath={canReadLeads ? leadsBasePath : undefined}
+          cockpitHref={
+            editCustomer
+              ? buildCustomerCockpitHref(
+                  basePath,
+                  editCustomer.id,
+                  dialogQueryString.toString(),
+                )
+              : undefined
+          }
+        />
+      ) : null}
+      {cockpitCustomer ? (
+        <CustomerCockpitDialog
+          closeHref={cockpitCloseHref}
+          content={getCrmCockpitDictionary(activeLocale)}
+          customer={cockpitCustomer}
         />
       ) : null}
     </WorkspacePageShell>
