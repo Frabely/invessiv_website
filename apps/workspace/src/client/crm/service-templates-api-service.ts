@@ -2,7 +2,6 @@ import {
   SERVICE_TEMPLATE_ERROR_CODE_VALUES,
   ServiceTemplateErrorCode,
 } from "@invessiv/common/constants/crm/errors/service-template-error-codes";
-import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import type { CreateServiceTemplateRequestDto } from "@invessiv/common/contracts/crm/create-service-template-request.dto";
 import type { ServiceTemplateDto } from "@invessiv/common/contracts/crm/service-template.dto";
@@ -12,6 +11,9 @@ import { versionedJsonMutationService } from "@/client/shared/versioned-json-mut
 import type { ServiceTemplateMutationClientResult } from "@/common/contracts/crm/service-template-client-results";
 import { crmServiceTemplateEndpoint } from "@/common/patterns/crm/crm-api-endpoints";
 
+/** Envelope key both the server response and the client result DTO use for a service template. */
+const SERVICE_TEMPLATE_RESULT_KEY = "serviceTemplate";
+
 function isServiceTemplate(value: unknown): value is ServiceTemplateDto {
   return (
     versionedJsonMutationService.isRecord(value) &&
@@ -20,12 +22,13 @@ function isServiceTemplate(value: unknown): value is ServiceTemplateDto {
   );
 }
 
-async function mutate(
+function mutate(
   url: string,
   method: HttpMethod,
   body: unknown,
 ): Promise<ServiceTemplateMutationClientResult> {
-  const result = await versionedJsonMutationService.mutate(
+  return versionedJsonMutationService.mutateNamed(
+    SERVICE_TEMPLATE_RESULT_KEY,
     url,
     method,
     body,
@@ -38,17 +41,6 @@ async function mutate(
     SERVICE_TEMPLATE_ERROR_CODE_VALUES,
     ServiceTemplateErrorCode.Internal,
   );
-  if (result.ok) {
-    return { ok: true, serviceTemplate: result.value };
-  }
-  if (result.code === ConcurrencyErrorCode.VersionConflict) {
-    return {
-      ok: false,
-      code: ConcurrencyErrorCode.VersionConflict,
-      current: result.current,
-    };
-  }
-  return result;
 }
 
 function createServiceTemplate(

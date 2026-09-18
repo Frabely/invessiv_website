@@ -126,6 +126,9 @@ Detailregeln stehen in den scope-spezifischen Dateien (siehe Index). Global gilt
   `contracts/` für Typen/DTOs/Shapes, `constants/` für String-Unions/Werte/Maps, `defaults/` für Defaults,
   `patterns/` für seiteneffektfreie Helfer. String-Unions/Enums ausschließlich per **Const-Objekt + abgeleitetem Type**
   (kein `enum`). Details & Beispiele: `apps/web/src/components/AGENTS.md`, `packages/common/AGENTS.md`.
+- **Keine Logik-Duplikate.** Taucht dieselbe Funktion, derselbe Unwrap-/Mapping-Block oder dieselbe bedingte
+  Darstellung in einer zweiten Datei praktisch unverändert auf, wird sie in einen gemeinsamen, benannten Helfer
+  extrahiert statt kopiert — unabhängig davon, ob der Baustein exportiert wird oder lokal bleibt.
 - **Error-Codes** als Const-Objekt in `…/constants/<domain>/`, Message-Texte nur in co-located `*-error.ts` der
   Nutzungsschicht. **URL-Pfade** ausschließlich aus typisierten Konstanten (`SITE_ROUTES` in `src/config/routes.ts`) /
   Pfad-Helfern zusammenbauen, nie aus mehreren String-Literalen. Lokalisierte Pfade laufen über

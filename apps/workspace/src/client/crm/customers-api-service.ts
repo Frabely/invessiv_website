@@ -2,7 +2,6 @@ import {
   CUSTOMER_ERROR_CODE_VALUES,
   CustomerErrorCode,
 } from "@invessiv/common/constants/crm/errors/customer-error-codes";
-import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import type { CreateCustomerRequestDto } from "@invessiv/common/contracts/crm/create-customer-request.dto";
 import type { CustomerDetailDto } from "@invessiv/common/contracts/crm/customer-detail.dto";
@@ -18,6 +17,11 @@ import type {
 import type { CustomerListFilters } from "@/common/contracts/crm/customer-list-filters";
 import { crmCustomerEndpoint } from "@/common/patterns/crm/crm-api-endpoints";
 import { buildCustomerListQueryString } from "@/lib/workspace/crm/customer-list-query-string";
+
+/** Envelope key both the server response and the client result DTOs use for a single customer. */
+const CUSTOMER_RESULT_KEY = "customer";
+/** Envelope key for a paginated customer collection response. */
+const CUSTOMER_SEARCH_RESULT_KEY = "result";
 
 function isCustomerDetail(value: unknown): value is CustomerDetailDto {
   return (
@@ -38,12 +42,13 @@ function isCustomerListResult(value: unknown): value is ListCustomersResult {
   );
 }
 
-async function mutate(
+function mutate(
   url: string,
   method: HttpMethod,
   body: unknown,
 ): Promise<CustomerMutationClientResult> {
-  const result = await versionedJsonMutationService.mutate(
+  return versionedJsonMutationService.mutateNamed(
+    CUSTOMER_RESULT_KEY,
     url,
     method,
     body,
@@ -56,17 +61,6 @@ async function mutate(
     CUSTOMER_ERROR_CODE_VALUES,
     CustomerErrorCode.Internal,
   );
-  if (result.ok) {
-    return { ok: true, customer: result.value };
-  }
-  if (result.code === ConcurrencyErrorCode.VersionConflict) {
-    return {
-      ok: false,
-      code: ConcurrencyErrorCode.VersionConflict,
-      current: result.current,
-    };
-  }
-  return result;
 }
 
 function createCustomer(
@@ -82,58 +76,34 @@ function updateCustomer(
   return mutate(crmCustomerEndpoint(customerId), HttpMethod.Patch, request);
 }
 
-async function getCustomer(
-  customerId: string,
-): Promise<CustomerReadClientResult> {
-  try {
-    const response = await fetch(crmCustomerEndpoint(customerId), {
-      method: HttpMethod.Get,
-    });
-    const payload = (await response.json().catch(() => null)) as unknown;
-    if (
-      response.ok &&
+function getCustomer(customerId: string): Promise<CustomerReadClientResult> {
+  return versionedJsonMutationService.readNamed(
+    CUSTOMER_RESULT_KEY,
+    crmCustomerEndpoint(customerId),
+    (payload) =>
       versionedJsonMutationService.isRecord(payload) &&
       isCustomerDetail(payload.customer)
-    ) {
-      return { ok: true, customer: payload.customer };
-    }
-    return {
-      ok: false,
-      code: versionedJsonMutationService.readErrorCode(
-        payload,
-        CUSTOMER_ERROR_CODE_VALUES,
-        CustomerErrorCode.Internal,
-      ),
-    };
-  } catch {
-    return { ok: false, code: CustomerErrorCode.Internal };
-  }
+        ? payload.customer
+        : null,
+    CUSTOMER_ERROR_CODE_VALUES,
+    CustomerErrorCode.Internal,
+  );
 }
 
-async function searchCustomers(
+function searchCustomers(
   filters: CustomerListFilters,
 ): Promise<CustomerSearchClientResult> {
   const query = buildCustomerListQueryString(filters);
   const endpoint = query
     ? `${WorkspaceApiEndpoint.CrmCustomers}?${query}`
     : WorkspaceApiEndpoint.CrmCustomers;
-  try {
-    const response = await fetch(endpoint, { method: HttpMethod.Get });
-    const payload = (await response.json().catch(() => null)) as unknown;
-    if (response.ok && isCustomerListResult(payload)) {
-      return { ok: true, result: payload };
-    }
-    return {
-      ok: false,
-      code: versionedJsonMutationService.readErrorCode(
-        payload,
-        CUSTOMER_ERROR_CODE_VALUES,
-        CustomerErrorCode.Internal,
-      ),
-    };
-  } catch {
-    return { ok: false, code: CustomerErrorCode.Internal };
-  }
+  return versionedJsonMutationService.readNamed(
+    CUSTOMER_SEARCH_RESULT_KEY,
+    endpoint,
+    (payload) => (isCustomerListResult(payload) ? payload : null),
+    CUSTOMER_ERROR_CODE_VALUES,
+    CustomerErrorCode.Internal,
+  );
 }
 
 export const customersApiService = {

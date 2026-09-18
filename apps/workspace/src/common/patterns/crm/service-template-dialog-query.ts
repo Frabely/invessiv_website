@@ -1,25 +1,25 @@
 import { ServiceTemplateFormDialogMode } from "@/common/constants/crm/forms/service-template-form-dialog-modes";
 import { ServiceTemplateListQueryParam } from "@/common/constants/crm/list/service-template-list-query-params";
 import type { ServiceTemplateDialogRequest } from "@/common/contracts/crm/service-template-dialog-request";
-
-type SearchParamsInput = Record<string, string | string[] | undefined>;
-
-function readSingle(value: string | string[] | undefined): string | null {
-  return typeof value === "string" && value.trim() ? value.trim() : null;
-}
+import {
+  buildDialogHref as buildHref,
+  type DialogSearchParamsInput as SearchParamsInput,
+  readDialogSearchParam as readSingle,
+} from "@/common/patterns/crm/dialog-query-primitives";
 
 /** Only the two supported shapes open a dialog; anything else leaves the list alone. */
 export function readServiceTemplateDialogRequest(
   searchParams: SearchParamsInput,
 ): ServiceTemplateDialogRequest | null {
-  const mode = readSingle(searchParams[ServiceTemplateListQueryParam.Mode]);
+  const mode = readSingle(searchParams, ServiceTemplateListQueryParam.Mode);
 
   if (mode === ServiceTemplateFormDialogMode.Create) {
     return { mode: ServiceTemplateFormDialogMode.Create };
   }
 
   const serviceTemplateId = readSingle(
-    searchParams[ServiceTemplateListQueryParam.Edit],
+    searchParams,
+    ServiceTemplateListQueryParam.Edit,
   );
   if (mode === ServiceTemplateFormDialogMode.Edit && serviceTemplateId) {
     return { mode: ServiceTemplateFormDialogMode.Edit, serviceTemplateId };
@@ -32,7 +32,7 @@ export function readServiceTemplateIncludeArchived(
   searchParams: SearchParamsInput,
 ): boolean {
   return (
-    readSingle(searchParams[ServiceTemplateListQueryParam.IncludeArchived]) ===
+    readSingle(searchParams, ServiceTemplateListQueryParam.IncludeArchived) ===
     "true"
   );
 }
@@ -49,11 +49,6 @@ function listParams(
     params.set(ServiceTemplateListQueryParam.IncludeArchived, "true");
   }
   return params;
-}
-
-function buildHref(basePath: string, params: URLSearchParams): string {
-  const query = params.toString();
-  return query ? `${basePath}?${query}` : basePath;
 }
 
 export function buildServiceTemplateListHref(
@@ -89,9 +84,10 @@ export function buildServiceTemplateEditHref(
   return buildHref(basePath, params);
 }
 
+/** Closing keeps the same list state as toggling archived would; kept as its own name for call-site clarity. */
 export function buildServiceTemplateDialogCloseHref(
   basePath: string,
   includeArchived: boolean,
 ): string {
-  return buildHref(basePath, listParams("", includeArchived));
+  return buildServiceTemplateListHref(basePath, includeArchived);
 }

@@ -19,6 +19,7 @@ import {
   PrimaryCtaButton,
 } from "@invessiv/ui";
 import { serviceTemplatesApiService } from "@/client/crm/service-templates-api-service";
+import { ServiceTemplateFormValidationCode } from "@/common/constants/crm/forms/service-template-form-validation-codes";
 import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
 import type {
   ServiceTemplateFormErrors,
@@ -42,6 +43,13 @@ type ServiceTemplateFormDialogProps = {
   /** Null creates a template; an existing one opens edit mode with the status field shown. */
   serviceTemplate: ServiceTemplateDto | null;
 };
+
+function fieldError(
+  code: ServiceTemplateFormValidationCode | undefined,
+  content: CrmServicesDictionary,
+): string | undefined {
+  return code ? content.form.validation[code] : undefined;
+}
 
 export function ServiceTemplateFormDialog({
   closeHref,
@@ -148,9 +156,7 @@ export function ServiceTemplateFormDialog({
         <div className={styles.grid}>
           <FormField
             className={styles.fullWidth}
-            errorMessage={
-              errors.title ? content.form.validation[errors.title] : undefined
-            }
+            errorMessage={fieldError(errors.title, content)}
             inputRef={titleInputRef}
             inputProps={{
               maxLength: ServiceTemplateFieldLimits.TitleMaxLength,
@@ -177,11 +183,7 @@ export function ServiceTemplateFormDialog({
             }}
           />
           <FormField
-            errorMessage={
-              errors.priceInput
-                ? content.form.validation[errors.priceInput]
-                : undefined
-            }
+            errorMessage={fieldError(errors.priceInput, content)}
             inputProps={{
               inputMode: "decimal",
               name: "service-template-price",
@@ -249,7 +251,9 @@ export function ServiceTemplateFormDialog({
                       value: BillingInterval.Yearly,
                     },
                   ]}
-                  value={values.recurringInterval ?? BillingInterval.Monthly}
+                  // Non-null by construction: the pricing-mode switch above sets a default the
+                  // moment this select becomes visible, so there is exactly one place deciding it.
+                  value={values.recurringInterval as BillingInterval}
                 />
               )}
             />

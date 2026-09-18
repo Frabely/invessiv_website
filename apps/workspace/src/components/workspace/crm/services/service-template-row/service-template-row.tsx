@@ -23,15 +23,29 @@ type ServiceTemplateRowProps = {
   serviceTemplate: ServiceTemplateDto;
 };
 
+const currencyFormatters = new Map<Locale, Intl.NumberFormat>();
+
+/** Formatter construction is comparatively expensive; one instance per locale is reused across all rows. */
+function getCurrencyFormatter(locale: Locale): Intl.NumberFormat {
+  let formatter = currencyFormatters.get(locale);
+  if (!formatter) {
+    formatter = new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency: "EUR",
+    });
+    currencyFormatters.set(locale, formatter);
+  }
+  return formatter;
+}
+
 function formatPrice(
   serviceTemplate: ServiceTemplateDto,
   locale: Locale,
   content: CrmServicesDictionary,
 ): string {
-  const amount = new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency: "EUR",
-  }).format(serviceTemplate.priceCents / 100);
+  const amount = getCurrencyFormatter(locale).format(
+    serviceTemplate.priceCents / 100,
+  );
 
   if (serviceTemplate.pricingMode === ServicePricingMode.Rate) {
     return `${amount} / ${content.list.pricingMode.rate}`;
