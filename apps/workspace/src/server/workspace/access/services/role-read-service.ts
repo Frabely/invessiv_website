@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
@@ -8,6 +8,7 @@ import {
   rolePermissions,
   roles,
   workspaceMemberRoles,
+  workspaceMemberScopedRoles,
 } from "@invessiv/db/record-configuration";
 import type { AccessDatabaseExecutor } from "@/server/workspace/access/access-types";
 import { roleMappingService } from "@/server/workspace/access/services/role-mapping-service";
@@ -24,6 +25,7 @@ async function load(
       description: roles.description,
       is_system: roles.is_system,
       active: roles.active,
+      scope_assignable: roles.scope_assignable,
       version: roles.version,
       created_at: roles.created_at,
       updated_at: roles.updated_at,
@@ -37,14 +39,31 @@ async function load(
         roleId ? eq(roles.id, roleId) : undefined,
       ),
     );
-  const countRows = await executor
+  const workspaceAssignmentRows = await executor
     .select({
       role_id: workspaceMemberRoles.role_id,
-      assigned_member_count: sql<number>`count(*)::int`,
+      workspace_member_id: workspaceMemberRoles.workspace_member_id,
     })
     .from(workspaceMemberRoles)
-    .where(roleId ? eq(workspaceMemberRoles.role_id, roleId) : undefined)
-    .groupBy(workspaceMemberRoles.role_id);
+    .where(roleId ? eq(workspaceMemberRoles.role_id, roleId) : undefined);
+  const scopedAssignmentRows = await executor
+    .select({
+      role_id: workspaceMemberScopedRoles.role_id,
+      workspace_member_id: workspaceMemberScopedRoles.workspace_member_id,
+    })
+    .from(workspaceMemberScopedRoles)
+    .where(roleId ? eq(workspaceMemberScopedRoles.role_id, roleId) : undefined);
+
+  const memberIdsByRole = new Map<string, Set<string>>();
+  for (const row of [...workspaceAssignmentRows, ...scopedAssignmentRows]) {
+    const memberIds = memberIdsByRole.get(row.role_id) ?? new Set<string>();
+    memberIds.add(row.workspace_member_id);
+    memberIdsByRole.set(row.role_id, memberIds);
+  }
+  const countRows = [...memberIdsByRole].map(([role_id, memberIds]) => ({
+    role_id,
+    assigned_member_count: memberIds.size,
+  }));
 
   return roleMappingService.mapRowsToRoles(rows, countRows);
 }

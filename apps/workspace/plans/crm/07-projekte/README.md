@@ -10,6 +10,12 @@
 - [`09-projekte-datenmodell.md`](./09-projekte-datenmodell.md) — Migration, Workflow,
   Lebenszyklus und Abrechnungsart.
 - [`10-projekte-ui.md`](./10-projekte-ui.md) — Commands, Routes, Liste, Detail und Dialoge.
+- [`36-zugriffsbereiche-fundament.md`](./36-zugriffsbereiche-fundament.md)
+  — Grundlage für gebundene Rollen, Actor-Auflösung und die späteren Datenzugriffe.
+- [`37-zugriffsfilter-kunden-und-projekte.md`](./37-zugriffsfilter-kunden-und-projekte.md)
+  — Durchsetzung der Zugriffsbereiche auf bestehenden CRM-Pfaden.
+- [`38-zugriffsverwaltung-ui.md`](./38-zugriffsverwaltung-ui.md)
+  — Verwaltung gebundener Rollen in Settings und Kundenakte.
 - [`40-leistungstemplatekatalog.md`](./40-leistungstemplatekatalog.md) — pflegbarer,
   versionierter Templatekatalog als CRM-Stammdaten.
 - [`41-projektleistungszuweisung-und-rechte.md`](./41-projektleistungszuweisung-und-rechte.md) —
@@ -21,7 +27,9 @@
 
 Task 09 bleibt ein reines Projekt-Datenmodell. Task 10 liefert danach die Projekt-UI mit sichtbar
 gekennzeichneten, nicht interaktiven „Coming soon“-Bereichen für Leistungen, Aufgaben und Chat.
-Nach dem Zugriffsbereichsfundament folgen Templatekatalog, Projektleistungszuweisung und Werte.
+Danach folgen als erste Voraussetzung dieses Projektblocks die Zugriffsbereiche: Task 36 (Fundament),
+Task 37 (Durchsetzung) und Task 38 (Verwaltung). Erst dann folgen Templatekatalog,
+Projektleistungszuweisung und Werte.
 Interne Nutzer können mehrere Projekte je Kunde vollständig anlegen, bearbeiten, pausieren,
 abschließen, abbrechen und archivieren. Projektstatus, Workflow-Phase und Owner sind getrennt und
 im Kundendetail sowie in einer Projektübersicht nutzbar. Portalanteile bleiben noch unsichtbar.

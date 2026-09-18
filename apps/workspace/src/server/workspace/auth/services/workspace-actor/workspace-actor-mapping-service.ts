@@ -2,6 +2,7 @@ import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { PERMISSION_DEFINITIONS } from "@invessiv/common/constants/auth/permission-definitions";
 import type { Permission } from "@invessiv/common/constants/auth/permissions";
 import type { WorkspaceActorRow } from "@invessiv/common/contracts/auth/rows/workspace-actor-row";
+import type { WorkspaceActorScopedRoleRow } from "@invessiv/common/contracts/auth/rows/workspace-actor-scoped-role-row";
 import { isPermission } from "@invessiv/common/patterns/auth/can";
 import { WorkspaceActorResolutionError } from "@/common/constants/auth/workspace-actor-resolution-errors";
 import type { ResolveWorkspaceActorResult } from "@/server/workspace/auth/resolve-workspace-actor-types";
@@ -17,6 +18,7 @@ function isWorkspacePermission(key: string | null): key is Permission {
 
 function mapRowsToResolution(
   rows: WorkspaceActorRow[],
+  scopedRows: WorkspaceActorScopedRoleRow[] = [],
 ): ResolveWorkspaceActorResult {
   const [first] = rows;
 
@@ -39,6 +41,32 @@ function mapRowsToResolution(
     };
   }
 
+  const customerPermissions = new Map<string, Set<Permission>>();
+  const projectPermissions = new Map<
+    string,
+    { customerId: string; permissions: Set<Permission> }
+  >();
+  for (const row of scopedRows) {
+    if (
+      !row.permission_scope_assignable ||
+      !isWorkspacePermission(row.permission_key)
+    )
+      continue;
+    if (row.project_id === null) {
+      const permissions = customerPermissions.get(row.customer_id) ?? new Set();
+      permissions.add(row.permission_key);
+      customerPermissions.set(row.customer_id, permissions);
+      continue;
+    }
+    const scope = projectPermissions.get(row.project_id) ?? {
+      customerId: row.customer_id,
+      permissions: new Set<Permission>(),
+    };
+    if (scope.customerId !== row.customer_id) continue;
+    scope.permissions.add(row.permission_key);
+    projectPermissions.set(row.project_id, scope);
+  }
+
   return {
     ok: true,
     actor: {
@@ -47,6 +75,8 @@ function mapRowsToResolution(
       permissions: new Set(
         rows.map((row) => row.permission_key).filter(isWorkspacePermission),
       ),
+      customerPermissions,
+      projectPermissions,
     },
   };
 }

@@ -7,6 +7,9 @@ const STATUS: Record<RoleErrorCode, HttpResponseCode> = {
   [RoleErrorCode.RoleNameTaken]: HttpResponseCode.Conflict,
   [RoleErrorCode.RoleNameReserved]: HttpResponseCode.Conflict,
   [RoleErrorCode.PermissionNotDelegable]: HttpResponseCode.UnprocessableContent,
+  [RoleErrorCode.PermissionNotScopeAssignable]:
+    HttpResponseCode.UnprocessableContent,
+  [RoleErrorCode.ScopeAssignmentsExist]: HttpResponseCode.Conflict,
   [RoleErrorCode.SystemRoleImmutable]: HttpResponseCode.UnprocessableContent,
   [RoleErrorCode.Internal]: HttpResponseCode.InternalServerError,
 };
@@ -18,6 +21,10 @@ const MESSAGES: Record<RoleErrorCode, string> = {
   [RoleErrorCode.RoleNameReserved]: "This name is reserved for a system role",
   [RoleErrorCode.PermissionNotDelegable]:
     "Custom roles cannot hold non-delegable permissions",
+  [RoleErrorCode.PermissionNotScopeAssignable]:
+    "A scoped role may only hold scope-assignable permissions",
+  [RoleErrorCode.ScopeAssignmentsExist]:
+    "This role still has scoped assignments",
   [RoleErrorCode.SystemRoleImmutable]: "System roles cannot be changed",
   [RoleErrorCode.Internal]: "Unexpected server error",
 };

@@ -12,7 +12,11 @@ import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurre
 import type { UpdateRoleResult } from "@invessiv/common/contracts/auth/results/update-role-result";
 import type { UpdateRoleRequestDto } from "@invessiv/common/contracts/auth/update-role-request.dto";
 import { getDrizzleDatabaseClient, PostgresErrorCode } from "@invessiv/db/core";
-import { rolePermissions, roles } from "@invessiv/db/record-configuration";
+import {
+  rolePermissions,
+  roles,
+  workspaceMemberScopedRoles,
+} from "@invessiv/db/record-configuration";
 import { RolesConstraintName } from "@invessiv/db/constraint-names/auth/roles-constraint-names";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessSchemas } from "@/server/workspace/access/services/access-schemas";
@@ -40,13 +44,28 @@ export async function updateRole(
     };
   }
 
-  const { name, description, active, permissions, version } = validation.data;
+  const {
+    name,
+    description,
+    active,
+    permissions,
+    version,
+    scopeAssignable = false,
+  } = validation.data;
   if (
     permissions.some(
       (permission) => !PERMISSION_DEFINITIONS[permission].delegable,
     )
   ) {
     return { ok: false, code: RoleErrorCode.PermissionNotDelegable };
+  }
+  if (
+    scopeAssignable &&
+    permissions.some(
+      (permission) => !PERMISSION_DEFINITIONS[permission].scopeAssignable,
+    )
+  ) {
+    return { ok: false, code: RoleErrorCode.PermissionNotScopeAssignable };
   }
 
   const db = getDrizzleDatabaseClient();
@@ -59,6 +78,15 @@ export async function updateRole(
       }
       if (current.isSystem) {
         return { ok: false, code: RoleErrorCode.SystemRoleImmutable };
+      }
+      if (!scopeAssignable && current.scopeAssignable) {
+        const [assignment] = await tx
+          .select({ id: workspaceMemberScopedRoles.id })
+          .from(workspaceMemberScopedRoles)
+          .where(eq(workspaceMemberScopedRoles.role_id, roleId))
+          .limit(1);
+        if (assignment)
+          return { ok: false, code: RoleErrorCode.ScopeAssignmentsExist };
       }
       if (reservedRoleNameService.isReserved(name)) {
         return { ok: false, code: RoleErrorCode.RoleNameReserved };
@@ -74,6 +102,9 @@ export async function updateRole(
         ...(name !== current.name ? ["name"] : []),
         ...(description !== current.description ? ["description"] : []),
         ...(active !== current.active ? ["active"] : []),
+        ...(scopeAssignable !== current.scopeAssignable
+          ? ["scopeAssignable"]
+          : []),
         ...(addedPermissions.length > 0 || removedPermissions.length > 0
           ? ["permissions"]
           : []),
@@ -87,7 +118,7 @@ export async function updateRole(
         table: roles,
         id: roleId,
         expectedVersion: version,
-        patch: { name, description, active },
+        patch: { name, description, active, scope_assignable: scopeAssignable },
         toDto: (row) => row.version,
       });
       if (!bump.ok) {
@@ -127,6 +158,9 @@ export async function updateRole(
             role_is_system: false,
             permission_key: permission,
             permission_delegable: PERMISSION_DEFINITIONS[permission].delegable,
+            role_scope_assignable: scopeAssignable,
+            permission_scope_assignable:
+              PERMISSION_DEFINITIONS[permission].scopeAssignable,
           })),
         );
       }

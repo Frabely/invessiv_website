@@ -20,6 +20,7 @@ const mocks = vi.hoisted(() => ({
   createEvent: vi.fn(),
   insert: vi.fn(),
   delete: vi.fn(),
+  select: vi.fn(),
 }));
 
 vi.mock("@invessiv/db/core", async (importOriginal) => ({
@@ -68,6 +69,9 @@ describe("replaceWorkspaceMemberRoles", () => {
   beforeEach(() => {
     Object.values(mocks).forEach((mock) => mock.mockReset());
     const tx = {
+      select: () => ({
+        from: () => ({ where: () => ({ limit: () => mocks.select() }) }),
+      }),
       insert: (table: unknown) => ({
         values: (values: unknown) => mocks.insert(table, values),
       }),
@@ -80,6 +84,7 @@ describe("replaceWorkspaceMemberRoles", () => {
     mocks.findById.mockResolvedValue(MEMBER);
     mocks.checkAssignable.mockResolvedValue({ ok: true });
     mocks.bump.mockResolvedValue({ ok: true });
+    mocks.select.mockResolvedValue([]);
   });
 
   it("answers a malformed id with not found without opening a transaction", async () => {

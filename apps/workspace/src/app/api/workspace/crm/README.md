@@ -1,5 +1,11 @@
 # Workspace CRM API
 
+## Zugriffsbereiche
+
+`GET /api/workspace/crm/customers/[id]/access-scopes` liefert
+`200 { "accessScopes": WorkspaceMemberAccessScopeDto[] }` für Nutzer mit `members.manage`.
+Unbekannte oder ungültige Kunden-IDs antworten mit `404`.
+
 JSON-API des internen CRM-Bereichs. Server-only, Clerk-authentifiziert, permissionbasiert autorisiert. Fachliche
 Grundlage: `plans/crm/04-personen-und-kundenakte/04-kunde-anlegen-bearbeiten.md`.
 

@@ -28,8 +28,10 @@ export const rolePermissions = pgTable(
     role_id: uuid("role_id").notNull(),
     realm: text("realm", { enum: AUTH_REALM_VALUES }).notNull(),
     role_is_system: boolean("role_is_system").notNull(),
+    role_scope_assignable: boolean("role_scope_assignable"),
     permission_key: text("permission_key").notNull(),
     permission_delegable: boolean("permission_delegable").notNull(),
+    permission_scope_assignable: boolean("permission_scope_assignable"),
     created_at: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -53,6 +55,24 @@ export const rolePermissions = pgTable(
         permissions.delegable,
       ],
     }).onUpdate("cascade"),
+    foreignKey({
+      name: RolePermissionsConstraintName.ScopeRoleForeignKey,
+      columns: [table.role_id, table.realm, table.role_scope_assignable],
+      foreignColumns: [roles.id, roles.realm, roles.scope_assignable],
+    }).onUpdate("cascade"),
+    foreignKey({
+      name: RolePermissionsConstraintName.ScopePermissionForeignKey,
+      columns: [
+        table.permission_key,
+        table.realm,
+        table.permission_scope_assignable,
+      ],
+      foreignColumns: [
+        permissions.key,
+        permissions.realm,
+        permissions.scope_assignable,
+      ],
+    }).onUpdate("cascade"),
     check(
       RolePermissionsConstraintName.RealmCheck,
       sqlCheckIn(table.realm, AUTH_REALM_VALUES),
@@ -60,6 +80,13 @@ export const rolePermissions = pgTable(
     check(
       RolePermissionsConstraintName.DelegationCheck,
       sql`${table.role_is_system} or ${table.permission_delegable}`,
+    ),
+    check(
+      RolePermissionsConstraintName.ScopeAssignableCheck,
+      sql`not
+        ${table.role_scope_assignable}
+        or
+        ${table.permission_scope_assignable}`,
     ),
     index(RolePermissionsConstraintName.PermissionKeyIndex).on(
       table.permission_key,

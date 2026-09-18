@@ -10,6 +10,7 @@ import {
   users,
   workspaceMemberRoles,
   workspaceMembers,
+  workspaceMemberScopedRoles,
 } from "@invessiv/db/record-configuration";
 import type { ResolveWorkspaceActorResult } from "@/server/workspace/auth/resolve-workspace-actor-types";
 import { workspaceActorMappingService } from "@/server/workspace/auth/services/workspace-actor/workspace-actor-mapping-service";
@@ -54,5 +55,41 @@ export async function resolveWorkspaceActor(
     )
     .where(eq(users.clerk_user_id, clerkUserId));
 
-  return workspaceActorMappingService.mapRowsToResolution(rows);
+  const resolution = workspaceActorMappingService.mapRowsToResolution(rows);
+  if (!resolution.ok) return resolution;
+
+  const scopedRows = await db
+    .select({
+      workspace_member_id: workspaceMemberScopedRoles.workspace_member_id,
+      customer_id: workspaceMemberScopedRoles.customer_id,
+      project_id: workspaceMemberScopedRoles.project_id,
+      permission_key: rolePermissions.permission_key,
+      permission_scope_assignable: rolePermissions.permission_scope_assignable,
+    })
+    .from(workspaceMemberScopedRoles)
+    .innerJoin(
+      roles,
+      and(
+        eq(roles.id, workspaceMemberScopedRoles.role_id),
+        eq(roles.realm, AuthRealm.Workspace),
+        eq(roles.active, true),
+        eq(roles.scope_assignable, true),
+      ),
+    )
+    .innerJoin(
+      rolePermissions,
+      and(
+        eq(rolePermissions.role_id, roles.id),
+        eq(rolePermissions.realm, AuthRealm.Workspace),
+        eq(rolePermissions.permission_scope_assignable, true),
+      ),
+    )
+    .where(
+      eq(
+        workspaceMemberScopedRoles.workspace_member_id,
+        resolution.actor.workspaceMemberId,
+      ),
+    );
+
+  return workspaceActorMappingService.mapRowsToResolution(rows, scopedRows);
 }

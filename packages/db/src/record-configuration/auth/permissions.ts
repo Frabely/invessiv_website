@@ -22,6 +22,7 @@ export const permissions = pgTable(
     key: text("key").primaryKey(),
     realm: text("realm", { enum: AUTH_REALM_VALUES }).notNull(),
     delegable: boolean("delegable").notNull(),
+    scope_assignable: boolean("scope_assignable"),
     description: text("description").notNull(),
   },
   (table) => [
@@ -37,6 +38,11 @@ export const permissions = pgTable(
       table.key,
       table.realm,
       table.delegable,
+    ),
+    uniqueIndex(PermissionsConstraintName.KeyRealmScopeAssignableUnique).on(
+      table.key,
+      table.realm,
+      table.scope_assignable,
     ),
   ],
 );

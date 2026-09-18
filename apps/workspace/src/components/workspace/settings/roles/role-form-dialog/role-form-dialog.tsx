@@ -92,6 +92,7 @@ export function RoleFormDialog({
             name,
             description: normalizedDescription,
             active,
+            scopeAssignable: current.scopeAssignable ?? false,
             permissions,
             version: current.version,
           })
@@ -99,6 +100,7 @@ export function RoleFormDialog({
             name,
             description: normalizedDescription,
             permissions,
+            scopeAssignable: false,
           }),
     );
   }

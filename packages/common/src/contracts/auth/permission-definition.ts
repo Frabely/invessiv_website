@@ -8,6 +8,8 @@ export interface PermissionDefinition {
    * which prevents a role manager from building a privilege-escalation chain.
    */
   delegable: boolean;
+  /** Whether a role holding this permission may be assigned to a customer or project scope. */
+  scopeAssignable: boolean;
   /** Developer-facing explanation mirrored into `permissions.description`; never shown in the UI. */
   description: string;
 }

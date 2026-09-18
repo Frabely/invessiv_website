@@ -1,13 +1,14 @@
 # Ordner 07a — Zugriffsbereiche: Fundament
 
-> **Status:** offen · **Branch:** `feat/crm-zugriffsbereiche-fundament` · **Abhängigkeiten:** 03c, 07
+> **Status:** läuft · **Branch:** `feat/crm-zugriffsbereiche-fundament` · **Abhängigkeiten:** 03c, 07
 > **Aufwand:** 3 Tage · **Reviewziel:** 60–90 Dateien · **Folgeeinheiten:** 07b (Filter), 07c (Verwaltungs-UI)
 
 ## Ziel und Stand nach Merge
 
 **Konkreter Task-Plan**
 
-- [`36-zugriffsbereiche-fundament.md`](./36-zugriffsbereiche-fundament.md) — Katalog-Merkmal `scopable`,
+- [`../07-projekte/36-zugriffsbereiche-fundament.md`](../07-projekte/36-zugriffsbereiche-fundament.md) — Katalog-Merkmal
+  `scopable`,
   bindbare Rollen, Tabelle `workspace_member_scoped_roles`, Actor-Auflösung, Prüf-Patterns, Commands und API.
 
 Rollen lassen sich zusätzlich **an einen Kunden oder ein Projekt gebunden** zuweisen („Rolle X auf Kunde Y“, „Rolle X

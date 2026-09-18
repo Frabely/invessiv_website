@@ -10,7 +10,10 @@ import { SecuritySubjectType } from "@invessiv/common/constants/auth/security-su
 import type { ReplaceWorkspaceMemberRolesRequestDto } from "@invessiv/common/contracts/auth/replace-workspace-member-roles-request.dto";
 import type { ReplaceWorkspaceMemberRolesResult } from "@invessiv/common/contracts/auth/results/replace-workspace-member-roles-result";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
-import { workspaceMemberRoles } from "@invessiv/db/record-configuration";
+import {
+  workspaceMemberRoles,
+  workspaceMemberScopedRoles,
+} from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessSchemas } from "@/server/workspace/access/services/access-schemas";
 import { roleAssignmentService } from "@/server/workspace/access/services/role-assignment-service";
@@ -56,7 +59,17 @@ export async function replaceWorkspaceMemberRoles(
         return assignability;
       }
       if (roleIds.length === 0 && !current.isOwner) {
-        return { ok: false, code: WorkspaceMemberErrorCode.MemberWithoutRole };
+        const [scopedRole] = await tx
+          .select({ id: workspaceMemberScopedRoles.id })
+          .from(workspaceMemberScopedRoles)
+          .where(eq(workspaceMemberScopedRoles.workspace_member_id, memberId))
+          .limit(1);
+        if (!scopedRole) {
+          return {
+            ok: false,
+            code: WorkspaceMemberErrorCode.MemberWithoutRole,
+          };
+        }
       }
 
       const addedRoleIds = roleIds.filter(

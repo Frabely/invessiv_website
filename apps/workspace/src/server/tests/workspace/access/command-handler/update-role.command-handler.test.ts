@@ -47,6 +47,7 @@ const CURRENT: RoleDto = {
   name: "Vertrieb",
   systemKey: null,
   active: true,
+  scopeAssignable: false,
   description: null,
   isSystem: false,
   permissions: [Permission.LeadsRead, Permission.LeadsWrite],
@@ -60,6 +61,7 @@ const UNCHANGED_INPUT: UpdateRoleRequestDto = {
   name: CURRENT.name,
   description: CURRENT.description,
   active: CURRENT.active,
+  scopeAssignable: CURRENT.scopeAssignable,
   permissions: CURRENT.permissions,
   version: CURRENT.version,
 };
@@ -203,6 +205,7 @@ describe("updateRole", () => {
         name: "Vertrieb Nord",
         description: null,
         active: false,
+        scopeAssignable: false,
         permissions: [Permission.LeadsRead, Permission.LeadsImport],
         version: 4,
       },
@@ -215,7 +218,12 @@ describe("updateRole", () => {
         table: roles,
         id: ROLE_ID,
         expectedVersion: 4,
-        patch: { name: "Vertrieb Nord", description: null, active: false },
+        patch: {
+          name: "Vertrieb Nord",
+          description: null,
+          active: false,
+          scope_assignable: false,
+        },
       }),
     );
     expect(mocks.delete).toHaveBeenCalledWith(rolePermissions);
@@ -226,6 +234,8 @@ describe("updateRole", () => {
         role_is_system: false,
         permission_key: Permission.LeadsImport,
         permission_delegable: true,
+        role_scope_assignable: false,
+        permission_scope_assignable: false,
       },
     ]);
     expect(mocks.createEvent.mock.calls[0][1]).toMatchObject({

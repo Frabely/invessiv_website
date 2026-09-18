@@ -8,6 +8,7 @@ export type RolePermissionRow = {
   description: string | null;
   is_system: boolean;
   active: boolean;
+  scope_assignable?: boolean | null;
   version: number;
   created_at: Date;
   updated_at: Date;

@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { config as loadDotenv } from "dotenv";
-import { and, asc, eq, inArray, like, sql } from "drizzle-orm";
+import { asc, eq, inArray, like, sql } from "drizzle-orm";
 import type { NextRequest } from "next/server";
 import {
   afterAll,
@@ -158,6 +158,8 @@ describe.skipIf(!RUN_INTEGRATION)(
         userId,
         workspaceMemberId: memberId,
         permissions: new Set(PERMISSION_VALUES),
+        customerPermissions: new Map(),
+        projectPermissions: new Map(),
       };
       return { userId, memberId, actor };
     }

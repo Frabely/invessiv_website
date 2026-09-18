@@ -71,6 +71,8 @@ describe("workspaceActorMappingService.mapRowsToResolution", () => {
         userId: "user-uuid-1",
         workspaceMemberId: "member-uuid-1",
         permissions: new Set([Permission.LeadsRead, Permission.LeadsWrite]),
+        customerPermissions: new Map(),
+        projectPermissions: new Map(),
       },
     });
   });
