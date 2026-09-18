@@ -13,6 +13,9 @@ describe("CrmOperation", () => {
       "customers.create",
       "customers.get",
       "customers.update",
+      "service-templates.list",
+      "service-templates.create",
+      "service-templates.update",
     ]);
     expect(CRM_OPERATION_VALUES).toEqual(Object.values(CrmOperation));
     expect(new Set(CRM_OPERATION_VALUES).size).toBe(

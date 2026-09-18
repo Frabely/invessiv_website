@@ -27,6 +27,8 @@ export const SYSTEM_ROLE_DEFINITIONS = {
       Permission.CustomersWrite,
       Permission.ProjectsRead,
       Permission.ProjectsWrite,
+      Permission.ServicesRead,
+      Permission.ServicesWrite,
       Permission.TasksWrite,
       Permission.FilesRead,
       Permission.FilesWrite,

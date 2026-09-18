@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
@@ -20,17 +21,19 @@ import { CustomersBasicList } from "@/components/workspace/crm/list/customers-ba
 import { CustomersPageHeader } from "@/components/workspace/crm/shell/customers-page-header/customers-page-header";
 import { WorkspacePageShell } from "@/components/workspace/workspace-page-shell/workspace-page-shell";
 import { ListPagination } from "@/components/workspace/shared/table/list-pagination/list-pagination";
+import { ButtonLink } from "@invessiv/ui";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import {
   getCrmCockpitDictionary,
   getCrmFormDictionary,
   getCrmListDictionary,
   getCrmMetaDictionary,
+  getCrmServicesDictionary,
   getCrmShellDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
 import { getLeadsSharedDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { requireWorkspaceArea } from "@/lib/auth/permissions";
-import { workspaceAreaPathFor } from "@/lib/auth/routes";
+import { crmServicesPathFor, workspaceAreaPathFor } from "@/lib/auth/routes";
 import { resolveCustomerCategoryOptions } from "@/lib/workspace/crm/customer-category-options";
 import {
   buildCustomerListHref,
@@ -80,6 +83,7 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
   const leadsBasePath = workspaceAreaPathFor(activeLocale, WorkspaceArea.Leads);
   const canWrite = can(actor, Permission.CustomersWrite);
   const canReadLeads = can(actor, Permission.LeadsRead);
+  const canReadServices = can(actor, Permission.ServicesRead);
   const dialogRequest = canWrite
     ? readCustomerDialogRequest(resolvedSearchParams)
     : null;
@@ -124,6 +128,15 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
 
   return (
     <WorkspacePageShell pageId="crm">
+      {canReadServices ? (
+        <ButtonLink
+          href={crmServicesPathFor(activeLocale)}
+          linkComponent={Link}
+          variant="ghost"
+        >
+          {getCrmServicesDictionary(activeLocale).shell.title}
+        </ButtonLink>
+      ) : null}
       <CustomersPageHeader
         archivedToggleHref={archivedToggleHref}
         content={getCrmShellDictionary(activeLocale)}

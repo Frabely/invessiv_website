@@ -19,6 +19,7 @@ import {
   customers,
   leadCategories,
   people,
+  serviceTemplates,
   users,
   workspaceMemberRoles,
   workspaceMembers,
@@ -30,6 +31,9 @@ import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { SYSTEM_ROLE_DEFINITIONS } from "@invessiv/common/constants/auth/system-role-definitions";
 import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
 import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
+import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
+import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
+import { ServiceTemplateStatus } from "@invessiv/common/constants/crm/service-template-statuses";
 import { Locale } from "@invessiv/common/contracts/i18n/locale";
 import {
   configureDatabaseUrlFromTarget,
@@ -177,6 +181,42 @@ const CUSTOMERS: CustomerFixture[] = [
   },
 ];
 
+const SERVICE_TEMPLATE_FIXTURES = [
+  {
+    id: "9c8f1a10-1b1a-4a10-8e10-00000000f001",
+    title: "Conversion-Workshop",
+    description:
+      "Gemeinsame Priorisierung von Zielgruppe, Angebot und nächstem Conversion-Schritt.",
+    price_cents: 45000,
+    pricing_mode: ServicePricingMode.OneTime,
+    recurring_interval: null,
+    status: ServiceTemplateStatus.Active,
+    version: 1,
+  },
+  {
+    id: "9c8f1a10-1b1a-4a10-8e10-00000000f002",
+    title: "Contentpflege",
+    description:
+      "Monatliche Pflege bestehender Inhalte inklusive kleiner Text- und Bildänderungen.",
+    price_cents: 25000,
+    pricing_mode: ServicePricingMode.Recurring,
+    recurring_interval: BillingInterval.Monthly,
+    status: ServiceTemplateStatus.Active,
+    version: 1,
+  },
+  {
+    id: "9c8f1a10-1b1a-4a10-8e10-00000000f003",
+    title: "Legacy-Supportpaket",
+    description:
+      "Archiviertes Beispiel für einen nicht mehr angebotenen Supportumfang.",
+    price_cents: 15000,
+    pricing_mode: ServicePricingMode.Rate,
+    recurring_interval: null,
+    status: ServiceTemplateStatus.Archived,
+    version: 1,
+  },
+] as const;
+
 async function resolveCategoryIds(tx: ContactDatabaseTransaction) {
   const slugs = CUSTOMERS.map((customer) => customer.categorySlug).filter(
     (slug): slug is string => slug !== null,
@@ -196,6 +236,13 @@ async function resolveCategoryIds(tx: ContactDatabaseTransaction) {
 
 async function resetFixtureRows(tx: ContactDatabaseTransaction) {
   const pattern = `${FIXTURE_PREFIX}%`;
+
+  await tx.delete(serviceTemplates).where(
+    inArray(
+      serviceTemplates.id,
+      SERVICE_TEMPLATE_FIXTURES.map((serviceTemplate) => serviceTemplate.id),
+    ),
+  );
 
   const fixtureCustomers = await tx
     .select({ id: customers.id })
@@ -301,6 +348,8 @@ async function run() {
   await db.transaction(async (tx) => {
     await resetFixtureRows(tx);
 
+    await tx.insert(serviceTemplates).values([...SERVICE_TEMPLATE_FIXTURES]);
+
     const ownerMemberId = await createFixtureMember(tx);
     const categoryIds = await resolveCategoryIds(tx);
 
@@ -394,7 +443,7 @@ async function run() {
   );
 
   console.log(
-    `Seeded ${CUSTOMERS.length} customers, ${PEOPLE.length} people and ${contactCount} contact assignments.`,
+    `Seeded ${CUSTOMERS.length} customers, ${PEOPLE.length} people, ${SERVICE_TEMPLATE_FIXTURES.length} service templates and ${contactCount} contact assignments.`,
   );
   console.log(`Fixture prefix: ${FIXTURE_PREFIX}`);
 }

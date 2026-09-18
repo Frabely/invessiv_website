@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "title": "Service catalog | Invessiv",
+    "description": "Maintainable, versioned catalog of recurring service templates."
+  },
+  "shell": {
+    "title": "Service catalog",
+    "description": "Global templates for project services. Changes never affect services already assigned.",
+    "createAction": "Add template",
+    "includeArchived": "Show archived",
+    "backToCustomers": "Back to customers"
+  },
+  "list": {
+    "caption": "Service templates",
+    "columns": {
+      "title": "Title",
+      "price": "Price",
+      "pricingMode": "Pricing",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "pricingMode": {
+      "one_time": "One-off",
+      "recurring": "Recurring",
+      "rate": "Hourly rate"
+    },
+    "interval": {
+      "monthly": "monthly",
+      "yearly": "yearly"
+    },
+    "status": {
+      "active": "Active",
+      "archived": "Archived"
+    },
+    "empty": {
+      "title": "No template yet",
+      "description": "Add the first service template so it can be assigned to a project later.",
+      "action": "Add template"
+    },
+    "noResults": {
+      "title": "No active templates",
+      "description": "Every template is archived. Show archived to see them.",
+      "action": "Show archived"
+    },
+    "edit": "Edit",
+    "archive": "Archive",
+    "activate": "Reactivate"
+  },
+  "form": {
+    "title": {
+      "create": "Add template",
+      "edit": "Edit template"
+    },
+    "description": {
+      "edit": "Changes to \"{name}\""
+    },
+    "sections": {
+      "template": "Template"
+    },
+    "fields": {
+      "title": "Title",
+      "description": "Description",
+      "priceCents": "Price",
+      "pricingMode": "Pricing",
+      "recurringInterval": "Interval",
+      "status": "Status"
+    },
+    "placeholders": {
+      "title": "e.g. Landing page",
+      "description": "Briefly describe the scope"
+    },
+    "currencySymbol": "€",
+    "buttons": {
+      "close": "Close",
+      "cancel": "Cancel",
+      "submitCreate": "Create",
+      "submitEdit": "Save",
+      "submitting": "Saving…"
+    },
+    "requiredHint": "* Required field",
+    "conflict": {
+      "message": "The template changed in the meantime.",
+      "currentTitle": "Current title: {name}"
+    },
+    "validation": {
+      "TITLE_REQUIRED": "Title is required",
+      "PRICE_INVALID": "Please enter a valid price"
+    },
+    "errors": {
+      "SERVICE_TEMPLATE_NOT_FOUND": "Template not found.",
+      "VALIDATION_ERROR": "Could not save the input.",
+      "INTERNAL": "Unexpected error. Please try again."
+    }
+  }
+}

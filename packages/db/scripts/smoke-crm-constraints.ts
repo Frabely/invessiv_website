@@ -316,7 +316,116 @@ async function runChecks(sql: Sql) {
   );
 
   await runMissingDefaultChecks(sql, memberId, personId, name);
+  await runServiceTemplateChecks(sql, name);
   await runConcurrencyChecks(sql, memberId, name);
+}
+
+async function runServiceTemplateChecks(
+  sql: Sql,
+  name: (suffix: string) => string,
+) {
+  const insertTemplate = (args: {
+    title?: string;
+    description?: string;
+    priceCents?: number;
+    pricingMode?: string;
+    recurringInterval?: string | null;
+    status?: string;
+    version?: number;
+  }) => sql`
+    INSERT INTO service_templates (
+      id, title, description, price_cents, pricing_mode, recurring_interval, status, version
+    )
+    VALUES (
+      ${randomUUID()}, ${args.title ?? name("Service")}, ${args.description ?? ""},
+      ${args.priceCents ?? 10000}, ${args.pricingMode ?? "one_time"},
+      ${args.recurringInterval ?? null}, ${args.status ?? "active"}, ${args.version ?? 1}
+    )
+  `;
+
+  await expectAccepted("valid recurring service template is accepted", () =>
+    insertTemplate({
+      pricingMode: "recurring",
+      recurringInterval: "monthly",
+    }),
+  );
+  await expectRejected(
+    "service template without a title is rejected",
+    () =>
+      sql`
+      INSERT INTO service_templates (
+        id, description, price_cents, pricing_mode, recurring_interval, status, version
+      )
+      VALUES (${randomUUID()}, '', 10000, 'one_time', NULL, 'active', 1)
+    `,
+  );
+  await expectRejected(
+    "service template without a description is rejected",
+    () =>
+      sql`
+      INSERT INTO service_templates (
+        id, title, price_cents, pricing_mode, recurring_interval, status, version
+      )
+      VALUES (${randomUUID()}, ${name("No description")}, 10000, 'one_time', NULL, 'active', 1)
+    `,
+  );
+  await expectRejected(
+    "service template without a price is rejected",
+    () =>
+      sql`
+      INSERT INTO service_templates (
+        id, title, description, pricing_mode, recurring_interval, status, version
+      )
+      VALUES (${randomUUID()}, ${name("No price")}, '', 'one_time', NULL, 'active', 1)
+    `,
+  );
+  await expectRejected(
+    "service template without a pricing mode is rejected",
+    () =>
+      sql`
+      INSERT INTO service_templates (
+        id, title, description, price_cents, recurring_interval, status, version
+      )
+      VALUES (${randomUUID()}, ${name("No pricing mode")}, '', 10000, NULL, 'active', 1)
+    `,
+  );
+  await expectRejected("blank service template title is rejected", () =>
+    insertTemplate({ title: "   " }),
+  );
+  await expectRejected("negative service template price is rejected", () =>
+    insertTemplate({ priceCents: -1 }),
+  );
+  await expectRejected("unknown service pricing mode is rejected", () =>
+    insertTemplate({ pricingMode: "usage_based" }),
+  );
+  await expectRejected(
+    "recurring service template without interval is rejected",
+    () => insertTemplate({ pricingMode: "recurring" }),
+  );
+  await expectRejected(
+    "one-time service template with interval is rejected",
+    () => insertTemplate({ recurringInterval: "monthly" }),
+  );
+  await expectRejected(
+    "service template without status is rejected",
+    () =>
+      sql`
+      INSERT INTO service_templates (
+        id, title, description, price_cents, pricing_mode, recurring_interval, version
+      )
+      VALUES (${randomUUID()}, ${name("No status")}, '', 10000, 'one_time', NULL, 1)
+    `,
+  );
+  await expectRejected(
+    "service template without version is rejected",
+    () =>
+      sql`
+      INSERT INTO service_templates (
+        id, title, description, price_cents, pricing_mode, recurring_interval, status
+      )
+      VALUES (${randomUUID()}, ${name("No version")}, '', 10000, 'one_time', NULL, 'active')
+    `,
+  );
 }
 
 /**
@@ -488,6 +597,9 @@ async function runConcurrencyChecks(
 
 async function cleanup(sql: Sql) {
   const pattern = `${FIXTURE_PREFIX}%`;
+  await sql`DELETE
+              FROM service_templates
+              WHERE title LIKE ${pattern}`;
   await sql`
         DELETE
         FROM customer_contact_assignments

@@ -65,6 +65,16 @@ export const PERMISSION_DEFINITIONS = {
     delegable: true,
     description: "Create, edit and reassign projects.",
   },
+  [Permission.ServicesRead]: {
+    realm: AuthRealm.Workspace,
+    delegable: true,
+    description: "View the service template catalog.",
+  },
+  [Permission.ServicesWrite]: {
+    realm: AuthRealm.Workspace,
+    delegable: true,
+    description: "Create, edit and archive service templates.",
+  },
   [Permission.TasksWrite]: {
     realm: AuthRealm.Workspace,
     delegable: true,

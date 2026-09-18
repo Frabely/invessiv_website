@@ -18,3 +18,7 @@ export function crmProjectEndpoint(projectId: string): string {
 export function crmLeadConversionEndpoint(leadId: string): string {
   return `${WorkspaceApiEndpoint.CrmLeadConversions}/${encodeURIComponent(leadId)}/${LEAD_CONVERSION_ACTION}`;
 }
+
+export function crmServiceTemplateEndpoint(serviceTemplateId: string): string {
+  return `${WorkspaceApiEndpoint.CrmServiceTemplates}/${encodeURIComponent(serviceTemplateId)}`;
+}

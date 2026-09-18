@@ -4,6 +4,7 @@
     "leads": "Leads und Outreach",
     "customers": "Kunden",
     "projects": "Projekte und Aufgaben",
+    "services": "Leistungskatalog",
     "files": "Dateien",
     "credentials": "Zugangsdaten",
     "portal": "Kundenportal",
@@ -53,6 +54,14 @@
     "projects.write": {
       "label": "Projekte bearbeiten",
       "description": "Projekte anlegen, ändern und übergeben."
+    },
+    "services.read": {
+      "label": "Leistungskatalog ansehen",
+      "description": "Pflegbare Leistungstemplates öffnen."
+    },
+    "services.write": {
+      "label": "Leistungskatalog bearbeiten",
+      "description": "Leistungstemplates anlegen, ändern und archivieren."
     },
     "tasks.write": {
       "label": "Aufgaben bearbeiten",

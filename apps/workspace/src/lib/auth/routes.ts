@@ -33,6 +33,10 @@ export function dashboardPathFor(locale: Locale): string {
   return createLocalePathname(SITE_ROUTES.DASHBOARD, locale);
 }
 
+export function crmServicesPathFor(locale: Locale): string {
+  return createLocalePathname(SITE_ROUTES.CRM_SERVICES, locale);
+}
+
 export function signInPathWithRedirect(
   locale: Locale,
   redirectUrl: string,
