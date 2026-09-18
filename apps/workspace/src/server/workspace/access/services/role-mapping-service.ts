@@ -59,6 +59,7 @@ function mapRowsToRoles(
         name: row.name,
         systemKey: row.system_key,
         active: row.active,
+        scopeAssignable: row.scope_assignable === true,
         description: row.description,
         isSystem: row.is_system,
         permissions: PERMISSION_VALUES.filter((permission) =>

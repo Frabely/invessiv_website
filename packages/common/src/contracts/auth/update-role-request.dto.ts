@@ -3,6 +3,8 @@ import type { VersionedWriteInput } from "@invessiv/common/contracts/concurrency
 
 /** Body of `PATCH /api/workspace/roles/[id]`. Rejected for system roles. */
 export interface UpdateRoleRequestDto extends VersionedWriteInput {
+  /** Enables or disables grants limited to one customer or project. */
+  scopeAssignable?: boolean;
   /** Unique per realm, compared case-insensitively and without surrounding spaces. */
   name: string;
   /** Optional explanation; empty input is stored as null. */

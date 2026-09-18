@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
+import { AccessScopeType } from "@invessiv/common/constants/auth/access-scope-types";
 import { PERMISSION_DEFINITIONS } from "@invessiv/common/constants/auth/permission-definitions";
 import { PERMISSION_VALUES } from "@invessiv/common/constants/auth/permissions";
 import { AccessFieldLimits } from "@/common/constants/access/access-field-limits";
@@ -10,6 +11,14 @@ function hasNoDuplicates(values: readonly string[]): boolean {
 }
 
 const versionSchema = z.int().positive();
+const accessScopeSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal(AccessScopeType.Customer), customerId: z.uuid() }),
+  z.object({
+    type: z.literal(AccessScopeType.Project),
+    customerId: z.uuid(),
+    projectId: z.uuid(),
+  }),
+]);
 
 const roleIdsSchema = z
   .array(z.uuid())
@@ -72,15 +81,23 @@ export const accessSchemas = {
     version: versionSchema,
   }),
   createRole: z.object({
+    scopeAssignable: z.boolean().optional(),
     name: roleNameSchema,
     description: roleDescriptionSchema,
     permissions: workspacePermissionsSchema,
   }),
   updateRole: z.object({
+    scopeAssignable: z.boolean().optional(),
     name: roleNameSchema,
     description: roleDescriptionSchema,
     active: z.boolean(),
     permissions: workspacePermissionsSchema,
     version: versionSchema,
   }),
+  grantAccessScope: z.object({
+    roleId: z.uuid(),
+    scope: accessScopeSchema,
+    version: versionSchema,
+  }),
+  revokeAccessScope: z.object({ version: versionSchema }),
 } as const;

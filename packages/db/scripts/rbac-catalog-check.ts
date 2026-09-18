@@ -24,6 +24,7 @@ export async function findRbacCatalogMismatches(
           key: permissions.key,
           realm: permissions.realm,
           delegable: permissions.delegable,
+          scope_assignable: permissions.scope_assignable,
           description: permissions.description,
         })
         .from(permissions),
@@ -60,6 +61,7 @@ export async function findRbacCatalogMismatches(
     if (
       row.realm !== definition.realm ||
       row.delegable !== definition.delegable ||
+      row.scope_assignable !== definition.scopeAssignable ||
       row.description !== definition.description
     ) {
       mismatches.push(`permission differs from code: ${permission}`);

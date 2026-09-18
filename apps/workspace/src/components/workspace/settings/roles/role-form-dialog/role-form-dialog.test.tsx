@@ -115,6 +115,7 @@ describe("RoleFormDialog", () => {
       name: "Vertrieb",
       description: null,
       permissions: [Permission.LeadsRead, Permission.LeadsWrite],
+      scopeAssignable: false,
     });
   });
 

@@ -4,3 +4,4 @@ export * from "./roles";
 export * from "./security-events";
 export * from "./users";
 export * from "./workspace-member-roles";
+export * from "./workspace-member-scoped-roles";

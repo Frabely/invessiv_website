@@ -7,7 +7,8 @@
 
 **Konkreter Task-Plan**
 
-- [`38-zugriffsverwaltung-ui.md`](./38-zugriffsverwaltung-ui.md) — Zugriffs-Dialog in Settings, Abschnitt „Zugriff“
+- [`../07-projekte/38-zugriffsverwaltung-ui.md`](../07-projekte/38-zugriffsverwaltung-ui.md) — Zugriffs-Dialog in
+  Settings, Abschnitt „Zugriff“
   in der Kundenakte, bindbare Rollen im Rollen-Dialog, Markierung „Zuständig ohne Zugriff“, NOT-NULL-Cleanup.
 
 Der Owner konfiguriert in der App, wer bei welchem Kunden oder Projekt was darf: „Rolle X auf Kunde Y“ oder „Rolle X

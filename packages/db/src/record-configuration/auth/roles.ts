@@ -29,6 +29,7 @@ export const roles = pgTable(
     description: text("description"),
     is_system: boolean("is_system").notNull(),
     active: boolean("active").notNull(),
+    scope_assignable: boolean("scope_assignable"),
     version: integer("version").notNull(),
     created_at: timestamp("created_at", { withTimezone: true })
       .notNull()
@@ -64,6 +65,14 @@ export const roles = pgTable(
       sql`${table.version}
       > 0`,
     ),
+    check(
+      RolesConstraintName.SystemScopeAssignableCheck,
+      sql`not (
+          ${table.is_system}
+          and
+          ${table.scope_assignable}
+          )`,
+    ),
     uniqueIndex(RolesConstraintName.SystemKeyUnique).on(table.system_key),
     uniqueIndex(RolesConstraintName.RealmNameUnique).on(
       table.realm,
@@ -74,6 +83,11 @@ export const roles = pgTable(
       table.id,
       table.realm,
       table.is_system,
+    ),
+    uniqueIndex(RolesConstraintName.IdRealmScopeAssignableUnique).on(
+      table.id,
+      table.realm,
+      table.scope_assignable,
     ),
   ],
 );

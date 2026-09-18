@@ -18,6 +18,9 @@ export type UpdateRoleResult =
         | typeof RoleErrorCode.RoleNameTaken
         | typeof RoleErrorCode.RoleNameReserved
         | typeof RoleErrorCode.PermissionNotDelegable
+        | typeof RoleErrorCode.PermissionNotScopeAssignable
+        | typeof RoleErrorCode.ScopeAssignmentsExist
+        | typeof RoleErrorCode.WorkspaceAssignmentsExist
         | typeof RoleErrorCode.SystemRoleImmutable;
     }
   | {

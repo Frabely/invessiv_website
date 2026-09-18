@@ -1,5 +1,14 @@
 # Workspace Members API
 
+## Zugriffsbereiche
+
+`GET /api/workspace/members/[id]/access-scopes` liefert die bestehenden Zuweisungen.
+`POST` erwartet `{ "roleId": "<uuid>", "scope": { "type": "customer", "customerId": "<uuid>" }, "version": n }`
+oder einen Project-Scope mit `projectId` und liefert `201 { "accessScope", "member" }`.
+`DELETE /api/workspace/members/[id]/access-scopes/[scopeId]` erwartet `{ "version": n }` und liefert `200 { "member" }`.
+Alle drei Endpunkte verlangen `members.manage`; der Entzug der letzten wirksamen Rolle eines Nicht-Owners antwortet
+mit `422 MEMBER_WITHOUT_ROLE`.
+
 JSON-API der Mitgliederverwaltung im Settings-Bereich. Server-only, Clerk-authentifiziert, permissionbasiert
 autorisiert. Fachliche Grundlage:
 `plans/crm/03b-mitglieder-und-rollenverwaltung/02c-mitglieder-und-rollenverwaltung.md`.

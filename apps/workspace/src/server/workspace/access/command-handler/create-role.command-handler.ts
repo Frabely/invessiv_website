@@ -31,7 +31,12 @@ export async function createRole(
     };
   }
 
-  const { name, description, permissions } = validation.data;
+  const {
+    name,
+    description,
+    permissions,
+    scopeAssignable = false,
+  } = validation.data;
   // System roles appear under their translated label, so a custom role must not look like one.
   if (reservedRoleNameService.isReserved(name)) {
     return { ok: false, code: RoleErrorCode.RoleNameReserved };
@@ -43,6 +48,14 @@ export async function createRole(
     )
   ) {
     return { ok: false, code: RoleErrorCode.PermissionNotDelegable };
+  }
+  if (
+    scopeAssignable &&
+    permissions.some(
+      (permission) => !PERMISSION_DEFINITIONS[permission].scopeAssignable,
+    )
+  ) {
+    return { ok: false, code: RoleErrorCode.PermissionNotScopeAssignable };
   }
 
   const db = getDrizzleDatabaseClient();
@@ -60,6 +73,7 @@ export async function createRole(
         description,
         is_system: false,
         active: true,
+        scope_assignable: scopeAssignable,
         version: 1,
         created_at: now,
         updated_at: now,
@@ -73,6 +87,9 @@ export async function createRole(
             role_is_system: false,
             permission_key: permission,
             permission_delegable: PERMISSION_DEFINITIONS[permission].delegable,
+            role_scope_assignable: scopeAssignable,
+            permission_scope_assignable:
+              PERMISSION_DEFINITIONS[permission].scopeAssignable,
           })),
         );
       }

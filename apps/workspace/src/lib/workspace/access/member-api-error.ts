@@ -17,6 +17,13 @@ const STATUS: Record<WorkspaceMemberErrorCode, HttpResponseCode> = {
     HttpResponseCode.UnprocessableContent,
   [WorkspaceMemberErrorCode.MemberWithoutRole]:
     HttpResponseCode.UnprocessableContent,
+  [WorkspaceMemberErrorCode.AccessScopeAlreadyGranted]:
+    HttpResponseCode.Conflict,
+  [WorkspaceMemberErrorCode.AccessScopeNotAssignable]:
+    HttpResponseCode.UnprocessableContent,
+  [WorkspaceMemberErrorCode.AccessScopeProjectCustomerMismatch]:
+    HttpResponseCode.UnprocessableContent,
+  [WorkspaceMemberErrorCode.AccessScopeNotFound]: HttpResponseCode.NotFound,
   [WorkspaceMemberErrorCode.AlreadyOwner]: HttpResponseCode.Conflict,
   [WorkspaceMemberErrorCode.NotOwner]: HttpResponseCode.Conflict,
   [WorkspaceMemberErrorCode.LastActiveOwner]: HttpResponseCode.Conflict,
@@ -46,6 +53,13 @@ const MESSAGES: Record<WorkspaceMemberErrorCode, string> = {
     "The owner role is changed through the owner flow only",
   [WorkspaceMemberErrorCode.MemberWithoutRole]:
     "A member needs at least one role",
+  [WorkspaceMemberErrorCode.AccessScopeAlreadyGranted]:
+    "This role is already granted for the scope",
+  [WorkspaceMemberErrorCode.AccessScopeNotAssignable]:
+    "This role cannot be assigned to a scope",
+  [WorkspaceMemberErrorCode.AccessScopeProjectCustomerMismatch]:
+    "The project does not belong to this customer",
+  [WorkspaceMemberErrorCode.AccessScopeNotFound]: "Access scope not found",
   [WorkspaceMemberErrorCode.AlreadyOwner]: "Member is already an owner",
   [WorkspaceMemberErrorCode.NotOwner]: "Member is not an owner",
   [WorkspaceMemberErrorCode.LastActiveOwner]:

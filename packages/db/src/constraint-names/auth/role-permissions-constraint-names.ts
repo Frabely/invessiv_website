@@ -6,6 +6,9 @@ export const RolePermissionsConstraintName = {
   RealmCheck: "role_permissions_realm_check",
   DelegationCheck: "role_permissions_delegation_check",
   PermissionKeyIndex: "role_permissions_permission_key_idx",
+  ScopeAssignableCheck: "role_permissions_scope_assignable_check",
+  ScopeRoleForeignKey: "role_permissions_scope_role_foreign_key",
+  ScopePermissionForeignKey: "role_permissions_scope_permission_foreign_key",
 } as const;
 
 export type RolePermissionsConstraintName =
@@ -18,4 +21,7 @@ export const ROLE_PERMISSIONS_CONSTRAINT_NAME_VALUES = [
   RolePermissionsConstraintName.RealmCheck,
   RolePermissionsConstraintName.DelegationCheck,
   RolePermissionsConstraintName.PermissionKeyIndex,
+  RolePermissionsConstraintName.ScopeAssignableCheck,
+  RolePermissionsConstraintName.ScopeRoleForeignKey,
+  RolePermissionsConstraintName.ScopePermissionForeignKey,
 ] as const;

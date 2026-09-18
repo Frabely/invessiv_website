@@ -14,5 +14,6 @@ export type CreateRoleResult =
       code:
         | typeof RoleErrorCode.RoleNameTaken
         | typeof RoleErrorCode.RoleNameReserved
-        | typeof RoleErrorCode.PermissionNotDelegable;
+        | typeof RoleErrorCode.PermissionNotDelegable
+        | typeof RoleErrorCode.PermissionNotScopeAssignable;
     };

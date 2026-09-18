@@ -86,6 +86,10 @@ Const-Objekt — nicht zusätzlich im DDL-Text und nicht im Modell.
 
 - Nummer beim Schreiben im Repository ermitteln: höchste bestehende plus eins. Nie aus einem
   Plandokument übernehmen.
+- **SQL-Formatierung:** Einfache Spaltendefinitionen stehen jeweils vollständig in einer Zeile bis zum Komma, z. B.
+  `title TEXT NOT NULL,`. Dasselbe gilt für einfache Constraints und Statements. Nur komplexe Ausdrücke,
+  mehrspaltige Foreign Keys, lange `CHECK`-Bedingungen, `INSERT`-Listen und `SELECT`-Blöcke werden sinnvoll
+  mehrzeilig eingerückt. Vertikal aufgeteilte Einzelwörter wie `title\nTEXT\nNOT\nNULL` sind nicht erlaubt.
 - Additiv: keine `DROP`, kein Umbenennen, kein `NOT NULL` auf eine bestehende befüllte Spalte,
   CHECK-Constraints nur erweitern und nie verengen. Rückbau erst, wenn der letzte Leser weg ist.
   Einzige dokumentierte Ausnahme: `0024` entfernt die leeren, von keiner App-Version gelesenen Legacy-Spalten an

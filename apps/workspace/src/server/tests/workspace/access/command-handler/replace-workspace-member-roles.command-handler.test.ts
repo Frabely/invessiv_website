@@ -20,6 +20,7 @@ const mocks = vi.hoisted(() => ({
   createEvent: vi.fn(),
   insert: vi.fn(),
   delete: vi.fn(),
+  hasActiveScopedRole: vi.fn(),
 }));
 
 vi.mock("@invessiv/db/core", async (importOriginal) => ({
@@ -33,6 +34,14 @@ vi.mock(
 vi.mock("@/server/workspace/access/services/role-assignment-service", () => ({
   roleAssignmentService: { checkAssignable: mocks.checkAssignable },
 }));
+vi.mock(
+  "@/server/workspace/access/services/member-active-access-service",
+  () => ({
+    memberActiveAccessService: {
+      hasActiveScopedRole: mocks.hasActiveScopedRole,
+    },
+  }),
+);
 vi.mock(
   "@/server/workspace/access/services/workspace-member-version-service",
   () => ({ workspaceMemberVersionService: { bump: mocks.bump } }),
@@ -80,6 +89,7 @@ describe("replaceWorkspaceMemberRoles", () => {
     mocks.findById.mockResolvedValue(MEMBER);
     mocks.checkAssignable.mockResolvedValue({ ok: true });
     mocks.bump.mockResolvedValue({ ok: true });
+    mocks.hasActiveScopedRole.mockResolvedValue(false);
   });
 
   it("answers a malformed id with not found without opening a transaction", async () => {
@@ -126,6 +136,22 @@ describe("replaceWorkspaceMemberRoles", () => {
       ),
     ).toEqual({ ok: false, code: WorkspaceMemberErrorCode.MemberWithoutRole });
     expect(mocks.bump).not.toHaveBeenCalled();
+  });
+
+  it("lets a member drop every role while an active scoped role remains", async () => {
+    mocks.hasActiveScopedRole.mockResolvedValue(true);
+
+    const result = await replaceWorkspaceMemberRoles(
+      MEMBER_ID,
+      { roleIds: [], version: 2 },
+      actor,
+    );
+
+    expect(result.ok).toBe(true);
+    expect(mocks.hasActiveScopedRole).toHaveBeenCalledWith(
+      expect.anything(),
+      MEMBER_ID,
+    );
   });
 
   it("lets an owner drop every other role because the owner role remains", async () => {

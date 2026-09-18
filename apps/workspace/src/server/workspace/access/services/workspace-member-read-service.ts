@@ -9,6 +9,7 @@ import {
   users,
   workspaceMemberRoles,
   workspaceMembers,
+  workspaceMemberScopedRoles,
 } from "@invessiv/db/record-configuration";
 import type { AccessDatabaseExecutor } from "@/server/workspace/access/access-types";
 import { workspaceMemberMappingService } from "@/server/workspace/access/services/workspace-member-mapping-service";
@@ -47,7 +48,29 @@ async function load(
     .where(memberId ? eq(workspaceMembers.id, memberId) : undefined)
     .orderBy(asc(users.display_name), asc(workspaceMembers.id));
 
-  return workspaceMemberMappingService.mapRowsToMembers(rows);
+  const scopedRows = await executor
+    .select({
+      workspace_member_id: workspaceMemberScopedRoles.workspace_member_id,
+    })
+    .from(workspaceMemberScopedRoles)
+    .innerJoin(
+      roles,
+      and(
+        eq(roles.id, workspaceMemberScopedRoles.role_id),
+        eq(roles.realm, AuthRealm.Workspace),
+        eq(roles.active, true),
+      ),
+    )
+    .where(
+      memberId
+        ? eq(workspaceMemberScopedRoles.workspace_member_id, memberId)
+        : undefined,
+    );
+
+  return workspaceMemberMappingService.mapRowsToMembers(
+    rows,
+    new Set(scopedRows.map((row) => row.workspace_member_id)),
+  );
 }
 
 async function list(

@@ -7,6 +7,7 @@ import { roleMappingService } from "@/server/workspace/access/services/role-mapp
 /** Keeps the row order of the query, so the caller decides how members are sorted. */
 function mapRowsToMembers(
   rows: readonly WorkspaceMemberRoleRow[],
+  memberIdsWithActiveScopedRoles: ReadonlySet<string> = new Set(),
 ): WorkspaceMemberDto[] {
   const members = new Map<string, WorkspaceMemberDto>();
 
@@ -20,7 +21,7 @@ function mapRowsToMembers(
         primaryEmail: row.primary_email,
         active: row.member_active,
         isOwner: false,
-        hasActiveRole: false,
+        hasActiveRole: memberIdsWithActiveScopedRoles.has(row.member_id),
         roles: [],
         version: row.member_version,
         createdAt: row.member_created_at.toISOString(),

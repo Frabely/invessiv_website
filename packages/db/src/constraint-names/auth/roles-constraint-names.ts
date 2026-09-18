@@ -9,6 +9,8 @@ export const RolesConstraintName = {
   RealmNameUnique: "roles_realm_name_uidx",
   IdRealmUnique: "roles_id_realm_uidx",
   IdRealmIsSystemUnique: "roles_id_realm_is_system_uidx",
+  IdRealmScopeAssignableUnique: "roles_id_realm_scope_assignable_unique",
+  SystemScopeAssignableCheck: "roles_system_scope_assignable_check",
 } as const;
 
 export type RolesConstraintName =
@@ -24,4 +26,6 @@ export const ROLES_CONSTRAINT_NAME_VALUES = [
   RolesConstraintName.RealmNameUnique,
   RolesConstraintName.IdRealmUnique,
   RolesConstraintName.IdRealmIsSystemUnique,
+  RolesConstraintName.IdRealmScopeAssignableUnique,
+  RolesConstraintName.SystemScopeAssignableCheck,
 ] as const;

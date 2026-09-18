@@ -10,7 +10,12 @@ import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
 import type { UpdateRoleRequestDto } from "@invessiv/common/contracts/auth/update-role-request.dto";
 import { RolesConstraintName } from "@invessiv/db/constraint-names/auth/roles-constraint-names";
 import { PostgresErrorCode } from "@invessiv/db/core";
-import { rolePermissions, roles } from "@invessiv/db/record-configuration";
+import {
+  rolePermissions,
+  roles,
+  workspaceMemberRoles,
+  workspaceMemberScopedRoles,
+} from "@invessiv/db/record-configuration";
 import { updateRole } from "@/server/workspace/access/command-handler/update-role.command-handler";
 import { workspaceActorWith } from "@/server/tests/support/workspace-auth-fixtures";
 
@@ -23,6 +28,7 @@ const mocks = vi.hoisted(() => ({
   createEvent: vi.fn(),
   insert: vi.fn(),
   delete: vi.fn(),
+  select: vi.fn(),
 }));
 
 vi.mock("@invessiv/db/core", async (importOriginal) => ({
@@ -47,6 +53,7 @@ const CURRENT: RoleDto = {
   name: "Vertrieb",
   systemKey: null,
   active: true,
+  scopeAssignable: false,
   description: null,
   isSystem: false,
   permissions: [Permission.LeadsRead, Permission.LeadsWrite],
@@ -60,6 +67,7 @@ const UNCHANGED_INPUT: UpdateRoleRequestDto = {
   name: CURRENT.name,
   description: CURRENT.description,
   active: CURRENT.active,
+  scopeAssignable: CURRENT.scopeAssignable,
   permissions: CURRENT.permissions,
   version: CURRENT.version,
 };
@@ -79,12 +87,21 @@ describe("updateRole", () => {
         values: (values: unknown) => mocks.insert(table, values),
       }),
       delete: (table: unknown) => ({ where: () => mocks.delete(table) }),
+      select: () => ({
+        from: (table: unknown) => ({
+          where: () => ({
+            for: () => mocks.select(table),
+            limit: () => mocks.select(table),
+          }),
+        }),
+      }),
     };
     mocks.getDatabase.mockReturnValue({
       transaction: (callback: (value: unknown) => Promise<unknown>) =>
         callback(tx),
     });
     mocks.findById.mockResolvedValue(CURRENT);
+    mocks.select.mockResolvedValue([]);
   });
 
   it("answers a malformed id with not found without opening a transaction", async () => {
@@ -157,6 +174,65 @@ describe("updateRole", () => {
     expect(mocks.createEvent).not.toHaveBeenCalled();
   });
 
+  it("keeps the current scope assignability when the request omits it", async () => {
+    mocks.findById.mockResolvedValue({
+      ...CURRENT,
+      scopeAssignable: true,
+      permissions: [Permission.CustomersRead],
+    });
+    mocks.updateVersioned.mockResolvedValue({ ok: true, value: 5 });
+    const input: UpdateRoleRequestDto = { ...UNCHANGED_INPUT };
+    delete input.scopeAssignable;
+
+    const result = await updateRole(
+      ROLE_ID,
+      { ...input, name: "Neu", permissions: [Permission.CustomersRead] },
+      actor,
+    );
+
+    expect(result.ok).toBe(true);
+    expect(mocks.updateVersioned.mock.calls[0][0].patch).toMatchObject({
+      scope_assignable: true,
+    });
+  });
+
+  it("refuses to drop scope assignability while scoped assignments exist", async () => {
+    mocks.findById.mockResolvedValue({ ...CURRENT, scopeAssignable: true });
+    mocks.select.mockImplementation((table: unknown) =>
+      Promise.resolve(
+        table === workspaceMemberScopedRoles ? [{ id: "x" }] : [],
+      ),
+    );
+
+    expect(
+      await updateRole(
+        ROLE_ID,
+        { ...UNCHANGED_INPUT, scopeAssignable: false },
+        actor,
+      ),
+    ).toEqual({ ok: false, code: RoleErrorCode.ScopeAssignmentsExist });
+    expect(mocks.updateVersioned).not.toHaveBeenCalled();
+  });
+
+  it("refuses to become scope-assignable while workspace-wide assignments exist", async () => {
+    mocks.select.mockImplementation((table: unknown) =>
+      Promise.resolve(table === workspaceMemberRoles ? [{ id: "x" }] : []),
+    );
+
+    expect(
+      await updateRole(
+        ROLE_ID,
+        {
+          ...UNCHANGED_INPUT,
+          scopeAssignable: true,
+          permissions: [Permission.CustomersRead],
+        },
+        actor,
+      ),
+    ).toEqual({ ok: false, code: RoleErrorCode.WorkspaceAssignmentsExist });
+    expect(mocks.updateVersioned).not.toHaveBeenCalled();
+  });
+
   it("rejects renaming a custom role to a system role name", async () => {
     const result = await updateRole(
       ROLE_ID,
@@ -203,6 +279,7 @@ describe("updateRole", () => {
         name: "Vertrieb Nord",
         description: null,
         active: false,
+        scopeAssignable: false,
         permissions: [Permission.LeadsRead, Permission.LeadsImport],
         version: 4,
       },
@@ -215,7 +292,12 @@ describe("updateRole", () => {
         table: roles,
         id: ROLE_ID,
         expectedVersion: 4,
-        patch: { name: "Vertrieb Nord", description: null, active: false },
+        patch: {
+          name: "Vertrieb Nord",
+          description: null,
+          active: false,
+          scope_assignable: false,
+        },
       }),
     );
     expect(mocks.delete).toHaveBeenCalledWith(rolePermissions);
@@ -226,6 +308,8 @@ describe("updateRole", () => {
         role_is_system: false,
         permission_key: Permission.LeadsImport,
         permission_delegable: true,
+        role_scope_assignable: false,
+        permission_scope_assignable: false,
       },
     ]);
     expect(mocks.createEvent.mock.calls[0][1]).toMatchObject({

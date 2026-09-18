@@ -46,6 +46,7 @@ describe("roleMappingService.mapRowsToRoles", () => {
         name: "Sales",
         systemKey: null,
         active: true,
+        scopeAssignable: false,
         description: "Sales team",
         isSystem: false,
         permissions: [Permission.LeadsRead, Permission.LeadsWrite],

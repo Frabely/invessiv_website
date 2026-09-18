@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { config as loadDotenv } from "dotenv";
-import { and, count, eq, inArray } from "drizzle-orm";
+import { count, eq, inArray } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
@@ -42,6 +42,8 @@ describe.skipIf(!RUN_INTEGRATION)(
       userId,
       workspaceMemberId: memberId,
       permissions: new Set(),
+      customerPermissions: new Map(),
+      projectPermissions: new Map(),
     };
     let db: Database | null = null;
     let convertedCustomerId: string | null = null;

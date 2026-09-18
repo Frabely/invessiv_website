@@ -9,6 +9,8 @@ export const SecurityEventType = {
   WorkspaceResponsibilitiesHandedOver: "workspace_responsibilities_handed_over",
   RoleCreated: "role_created",
   RoleUpdated: "role_updated",
+  WorkspaceMemberAccessScopeGranted: "workspace_member_access_scope_granted",
+  WorkspaceMemberAccessScopeRevoked: "workspace_member_access_scope_revoked",
 } as const;
 
 export type SecurityEventType =
@@ -25,4 +27,6 @@ export const SECURITY_EVENT_TYPE_VALUES = [
   SecurityEventType.WorkspaceResponsibilitiesHandedOver,
   SecurityEventType.RoleCreated,
   SecurityEventType.RoleUpdated,
+  SecurityEventType.WorkspaceMemberAccessScopeGranted,
+  SecurityEventType.WorkspaceMemberAccessScopeRevoked,
 ] as const;

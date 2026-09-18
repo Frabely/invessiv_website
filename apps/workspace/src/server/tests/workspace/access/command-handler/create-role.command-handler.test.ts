@@ -144,6 +144,8 @@ describe("createRole", () => {
         role_is_system: false,
         permission_key: permission,
         permission_delegable: true,
+        role_scope_assignable: false,
+        permission_scope_assignable: false,
       })),
     ]);
     expect(mocks.createEvent).toHaveBeenCalledTimes(1);

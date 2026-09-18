@@ -22,6 +22,8 @@ describe("SecurityEventType", () => {
       "workspace_responsibilities_handed_over",
       "role_created",
       "role_updated",
+      "workspace_member_access_scope_granted",
+      "workspace_member_access_scope_revoked",
     ]);
     expect(SECURITY_EVENT_TYPE_VALUES).toEqual(
       Object.values(SecurityEventType),

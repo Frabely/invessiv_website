@@ -15,6 +15,8 @@ export function workspaceActorWith(
     userId: TEST_ACTOR_USER_ID,
     workspaceMemberId: "member-actor-uuid",
     permissions: new Set(permissions),
+    customerPermissions: new Map(),
+    projectPermissions: new Map(),
   };
 }
 

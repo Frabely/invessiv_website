@@ -7,7 +7,8 @@
 
 **Konkreter Task-Plan**
 
-- [`37-zugriffsfilter-kunden-und-projekte.md`](./37-zugriffsfilter-kunden-und-projekte.md) — alle Pfade aus 04–07 und
+- [`../07-projekte/37-zugriffsfilter-kunden-und-projekte.md`](../07-projekte/37-zugriffsfilter-kunden-und-projekte.md) —
+  alle Pfade aus 04–07 und
   03c über `accessScope`/`canOn`, Bereichs-Gate, Zuständigkeitsprüfung, exhaustive Endpunkt-Registry.
 
 Jeder bestehende CRM-Lese- und Schreibpfad respektiert gebundene Rechte. Ein Mitglied mit Rolle auf Kunde 1 sieht
