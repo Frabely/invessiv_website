@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
@@ -16,7 +16,9 @@ import type { ResolveWorkspaceActorResult } from "@/server/workspace/auth/resolv
 import { workspaceActorMappingService } from "@/server/workspace/auth/services/workspace-actor/workspace-actor-mapping-service";
 
 /**
- * Loads identity, membership and the permissions of all active workspace roles in one query.
+ * Loads identity, membership and the permissions of all active workspace roles, plus the scoped
+ * roles in a parallel query. The scoped query resolves the member by subquery so it never waits
+ * for the first one.
  * Throws on database errors; the gates translate that into a closed door.
  */
 export async function resolveWorkspaceActor(
@@ -24,7 +26,7 @@ export async function resolveWorkspaceActor(
 ): Promise<ResolveWorkspaceActorResult> {
   const db = getDrizzleDatabaseClient();
 
-  const rows = await db
+  const rowsQuery = db
     .select({
       user_id: users.id,
       user_active: users.active,
@@ -55,10 +57,7 @@ export async function resolveWorkspaceActor(
     )
     .where(eq(users.clerk_user_id, clerkUserId));
 
-  const resolution = workspaceActorMappingService.mapRowsToResolution(rows);
-  if (!resolution.ok) return resolution;
-
-  const scopedRows = await db
+  const scopedRowsQuery = db
     .select({
       workspace_member_id: workspaceMemberScopedRoles.workspace_member_id,
       customer_id: workspaceMemberScopedRoles.customer_id,
@@ -85,11 +84,17 @@ export async function resolveWorkspaceActor(
       ),
     )
     .where(
-      eq(
+      inArray(
         workspaceMemberScopedRoles.workspace_member_id,
-        resolution.actor.workspaceMemberId,
+        db
+          .select({ id: workspaceMembers.id })
+          .from(workspaceMembers)
+          .innerJoin(users, eq(users.id, workspaceMembers.user_id))
+          .where(eq(users.clerk_user_id, clerkUserId)),
       ),
     );
+
+  const [rows, scopedRows] = await Promise.all([rowsQuery, scopedRowsQuery]);
 
   return workspaceActorMappingService.mapRowsToResolution(rows, scopedRows);
 }

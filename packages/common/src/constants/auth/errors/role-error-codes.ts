@@ -10,6 +10,7 @@ export const RoleErrorCode = {
   PermissionNotDelegable: "PERMISSION_NOT_DELEGABLE",
   PermissionNotScopeAssignable: "ROLE_PERMISSION_NOT_SCOPE_ASSIGNABLE",
   ScopeAssignmentsExist: "ROLE_SCOPE_ASSIGNMENTS_EXIST",
+  WorkspaceAssignmentsExist: "ROLE_WORKSPACE_ASSIGNMENTS_EXIST",
   SystemRoleImmutable: "SYSTEM_ROLE_IMMUTABLE",
   Internal: "INTERNAL",
 } as const;
@@ -24,6 +25,7 @@ export const ROLE_ERROR_CODE_VALUES = [
   RoleErrorCode.PermissionNotDelegable,
   RoleErrorCode.PermissionNotScopeAssignable,
   RoleErrorCode.ScopeAssignmentsExist,
+  RoleErrorCode.WorkspaceAssignmentsExist,
   RoleErrorCode.SystemRoleImmutable,
   RoleErrorCode.Internal,
 ] as const;

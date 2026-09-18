@@ -10,12 +10,21 @@ export async function listRoleAssignmentOptions(): Promise<
 > {
   const roles = await roleReadService.list(getDrizzleDatabaseClient());
   return roles.map(
-    ({ id, name, systemKey, active, description, permissions }) => ({
+    ({
       id,
       name,
       systemKey,
       active,
       description,
+      scopeAssignable,
+      permissions,
+    }) => ({
+      id,
+      name,
+      systemKey,
+      active,
+      description,
+      scopeAssignable: scopeAssignable === true,
       permissions,
     }),
   );

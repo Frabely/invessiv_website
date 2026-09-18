@@ -3,7 +3,8 @@ import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/ro
 
 /**
  * Roles offered in a role picker: active non-owner roles plus inactive ones the member still holds,
- * mirroring what `PUT …/roles` accepts. The owner role has its own flow.
+ * mirroring what `PUT …/roles` accepts. Scope-assignable roles are only offered when already held.
+ * The owner role has its own flow.
  */
 export function selectAssignableRoles(
   roles: readonly RoleAssignmentOptionDto[],
@@ -12,7 +13,8 @@ export function selectAssignableRoles(
   return roles.filter(
     (role) =>
       role.systemKey !== SystemRoleKey.WorkspaceOwner &&
-      (role.active || currentRoleIds.includes(role.id)),
+      (role.active || currentRoleIds.includes(role.id)) &&
+      (!role.scopeAssignable || currentRoleIds.includes(role.id)),
   );
 }
 

@@ -14,6 +14,8 @@ import type {
 /**
  * A role is assignable when it exists in the workspace realm and is active. An inactive role that
  * the member already holds may stay, so saving an unrelated change never forces its removal.
+ * A scope-assignable role is meant for customer/project scopes only; assigning it workspace-wide
+ * would grant its permissions on every customer, so only an already held one may stay.
  */
 async function checkAssignable(
   executor: AccessDatabaseExecutor,
@@ -29,6 +31,7 @@ async function checkAssignable(
       realm: roles.realm,
       system_key: roles.system_key,
       active: roles.active,
+      scope_assignable: roles.scope_assignable,
     })
     .from(roles)
     .where(inArray(roles.id, [...args.roleIds]))
@@ -44,7 +47,8 @@ async function checkAssignable(
     rows.every(
       (row) =>
         row.realm === AuthRealm.Workspace &&
-        (row.active || current.has(row.id)),
+        (row.active || current.has(row.id)) &&
+        (!row.scope_assignable || current.has(row.id)),
     );
 
   return allAssignable

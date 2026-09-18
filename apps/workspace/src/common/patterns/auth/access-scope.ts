@@ -9,6 +9,8 @@ export type AccessScope =
       kind: typeof AccessScopeKind.Limited;
       customerIds: ReadonlySet<string>;
       projectIds: ReadonlySet<string>;
+      /** Customers reachable only through a project binding; visible as a container, never as a customer-wide grant. */
+      projectCustomerIds: ReadonlySet<string>;
     };
 
 export function canAnywhere(
@@ -36,12 +38,18 @@ export function accessScope(
       permissions.has(permission) ? [customerId] : [],
     ),
   );
-  const projectIds = new Set(
-    [...actor.projectPermissions].flatMap(([projectId, scope]) =>
-      scope.permissions.has(permission) && !customerIds.has(scope.customerId)
-        ? [projectId]
-        : [],
-    ),
+  const projectBindings = [...actor.projectPermissions].filter(
+    ([, scope]) =>
+      scope.permissions.has(permission) && !customerIds.has(scope.customerId),
   );
-  return { kind: AccessScopeKind.Limited, customerIds, projectIds };
+  const projectIds = new Set(projectBindings.map(([projectId]) => projectId));
+  const projectCustomerIds = new Set(
+    projectBindings.map(([, scope]) => scope.customerId),
+  );
+  return {
+    kind: AccessScopeKind.Limited,
+    customerIds,
+    projectIds,
+    projectCustomerIds,
+  };
 }

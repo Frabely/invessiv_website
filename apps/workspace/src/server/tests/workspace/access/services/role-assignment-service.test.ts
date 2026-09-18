@@ -12,6 +12,7 @@ type RoleRow = {
   realm: AuthRealm;
   system_key: SystemRoleKey | null;
   active: boolean;
+  scope_assignable: boolean | null;
 };
 
 const ROLE_A = "1a1a1a1a-1a1a-4a1a-8a1a-1a1a1a1a1a1a";
@@ -23,6 +24,7 @@ function row(id: string, overrides: Partial<RoleRow> = {}): RoleRow {
     realm: AuthRealm.Workspace,
     system_key: null,
     active: true,
+    scope_assignable: false,
     ...overrides,
   };
 }
@@ -61,6 +63,32 @@ describe("roleAssignmentService.checkAssignable", () => {
       }),
     ).toEqual({ ok: true });
     expect(forLock).toHaveBeenCalledWith("update");
+  });
+
+  it("rejects a scope-assignable role that the member does not hold yet", async () => {
+    const { executor } = executorReturning([
+      row(ROLE_A, { scope_assignable: true }),
+    ]);
+
+    expect(
+      await roleAssignmentService.checkAssignable(executor, {
+        roleIds: [ROLE_A],
+        currentRoleIds: [],
+      }),
+    ).toEqual({ ok: false, code: WorkspaceMemberErrorCode.RoleNotAssignable });
+  });
+
+  it("keeps an already held scope-assignable role", async () => {
+    const { executor } = executorReturning([
+      row(ROLE_A, { scope_assignable: true }),
+    ]);
+
+    expect(
+      await roleAssignmentService.checkAssignable(executor, {
+        roleIds: [ROLE_A],
+        currentRoleIds: [ROLE_A],
+      }),
+    ).toEqual({ ok: true });
   });
 
   it("rejects the owner role with its own code", async () => {

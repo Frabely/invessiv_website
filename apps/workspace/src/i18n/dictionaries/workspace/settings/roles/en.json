@@ -55,6 +55,7 @@
     "PERMISSION_NOT_DELEGABLE": "Administration permissions are reserved for the owner role. Remove them from the selection.",
     "ROLE_PERMISSION_NOT_SCOPE_ASSIGNABLE": "A scope-assignable role may only contain scope-assignable permissions.",
     "ROLE_SCOPE_ASSIGNMENTS_EXIST": "This role still has scoped assignments and cannot be reset.",
+    "ROLE_WORKSPACE_ASSIGNMENTS_EXIST": "This role is still assigned workspace-wide and cannot become scope-assignable. Remove it from the members first.",
     "SYSTEM_ROLE_IMMUTABLE": "System roles cannot be changed.",
     "INTERNAL": "That did not work. Try again."
   }

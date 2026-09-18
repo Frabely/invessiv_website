@@ -55,6 +55,7 @@
     "PERMISSION_NOT_DELEGABLE": "Verwaltungsrechte bleiben der Owner-Rolle vorbehalten. Entferne sie aus der Auswahl.",
     "ROLE_PERMISSION_NOT_SCOPE_ASSIGNABLE": "Eine bindbare Rolle darf nur bindbare Rechte enthalten.",
     "ROLE_SCOPE_ASSIGNMENTS_EXIST": "Diese Rolle ist noch als Zugriffsbereich vergeben und kann deshalb nicht zurückgesetzt werden.",
+    "ROLE_WORKSPACE_ASSIGNMENTS_EXIST": "Diese Rolle ist noch workspace-weit vergeben und kann deshalb nicht auf Zugriffsbereiche beschränkt werden. Entferne sie zuerst bei den Mitgliedern.",
     "SYSTEM_ROLE_IMMUTABLE": "Systemrollen lassen sich nicht ändern.",
     "INTERNAL": "Das hat nicht geklappt. Versuche es erneut."
   }

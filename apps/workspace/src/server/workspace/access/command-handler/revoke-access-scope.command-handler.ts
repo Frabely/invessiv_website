@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, eq, ne } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
 import { SecurityEventType } from "@invessiv/common/constants/auth/security-event-types";
@@ -11,12 +11,10 @@ import {
   type ContactDatabaseTransaction,
   getDrizzleDatabaseClient,
 } from "@invessiv/db/core";
-import {
-  workspaceMemberRoles,
-  workspaceMemberScopedRoles,
-} from "@invessiv/db/record-configuration";
+import { workspaceMemberScopedRoles } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { AccessScopeCommandErrorMessage } from "@/server/workspace/access/constants/access-scope-command-errors";
+import { memberActiveAccessService } from "@/server/workspace/access/services/member-active-access-service";
 import { accessSchemas } from "@/server/workspace/access/services/access-schemas";
 import { workspaceMemberReadService } from "@/server/workspace/access/services/workspace-member-read-service";
 import { workspaceMemberVersionService } from "@/server/workspace/access/services/workspace-member-version-service";
@@ -41,30 +39,17 @@ async function findMemberAccessScope(
   return scope ?? null;
 }
 
-async function hasRemainingMemberAccess(
+async function hasRemainingActiveAccess(
   tx: ContactDatabaseTransaction,
   memberId: string,
   scopeId: string,
 ): Promise<boolean> {
-  const [[remainingScoped], [workspaceRole]] = await Promise.all([
-    tx
-      .select({ id: workspaceMemberScopedRoles.id })
-      .from(workspaceMemberScopedRoles)
-      .where(
-        and(
-          eq(workspaceMemberScopedRoles.workspace_member_id, memberId),
-          ne(workspaceMemberScopedRoles.id, scopeId),
-        ),
-      )
-      .limit(1),
-    tx
-      .select({ id: workspaceMemberRoles.role_id })
-      .from(workspaceMemberRoles)
-      .where(eq(workspaceMemberRoles.workspace_member_id, memberId))
-      .limit(1),
+  const [hasScopedRole, hasWorkspaceRole] = await Promise.all([
+    memberActiveAccessService.hasActiveScopedRole(tx, memberId, scopeId),
+    memberActiveAccessService.hasActiveWorkspaceRole(tx, memberId),
   ]);
 
-  return Boolean(remainingScoped || workspaceRole);
+  return hasScopedRole || hasWorkspaceRole;
 }
 
 export async function revokeAccessScope(
@@ -105,7 +90,7 @@ export async function revokeAccessScope(
     }
     if (
       !member.isOwner &&
-      !(await hasRemainingMemberAccess(tx, memberId, scopeId))
+      !(await hasRemainingActiveAccess(tx, memberId, scopeId))
     ) {
       return {
         ok: false,

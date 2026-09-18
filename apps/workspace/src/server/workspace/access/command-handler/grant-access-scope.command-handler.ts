@@ -30,6 +30,7 @@ import { workspaceMemberVersionService } from "@/server/workspace/access/service
 import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
 import { postgresErrorService } from "@/server/workspace/shared/services/postgres-error-service";
 
+/** The share lock keeps a concurrent role update from dropping scope assignability mid-grant. */
 async function hasScopeAssignableRole(
   tx: ContactDatabaseTransaction,
   roleId: string,
@@ -45,7 +46,8 @@ async function hasScopeAssignableRole(
         eq(roles.scope_assignable, true),
       ),
     )
-    .limit(1);
+    .limit(1)
+    .for("share");
 
   return Boolean(role);
 }

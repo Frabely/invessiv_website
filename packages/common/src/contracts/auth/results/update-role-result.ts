@@ -20,6 +20,7 @@ export type UpdateRoleResult =
         | typeof RoleErrorCode.PermissionNotDelegable
         | typeof RoleErrorCode.PermissionNotScopeAssignable
         | typeof RoleErrorCode.ScopeAssignmentsExist
+        | typeof RoleErrorCode.WorkspaceAssignmentsExist
         | typeof RoleErrorCode.SystemRoleImmutable;
     }
   | {
