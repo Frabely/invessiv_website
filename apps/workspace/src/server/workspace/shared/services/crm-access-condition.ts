@@ -1,15 +1,9 @@
 import "server-only";
 
 import { inArray, or, type SQL } from "drizzle-orm";
-import type { AnyColumn } from "drizzle-orm/column";
 import { AccessScopeKind } from "@invessiv/common/constants/auth/access-scope-types";
 import type { AccessScope } from "@/common/patterns/auth/access-scope";
-
-/** Columns needed to apply a resolved CRM access scope directly in the query. */
-export type CrmAccessColumns = {
-  customerId: AnyColumn;
-  projectId?: AnyColumn;
-};
+import type { CrmAccessColumns } from "@/server/workspace/shared/services/crm-access-condition-types";
 
 /**
  * Returns no condition for workspace-wide permission and a deny-all condition for an empty scope.

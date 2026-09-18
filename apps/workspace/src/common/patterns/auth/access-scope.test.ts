@@ -4,6 +4,7 @@ import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { AccessScopeKind } from "@invessiv/common/constants/auth/access-scope-types";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessScope } from "@/common/patterns/auth/access-scope";
+import { canOn } from "@/common/patterns/auth/can-on";
 
 function actorWith(
   overrides: Pick<WorkspaceActor, "customerPermissions" | "projectPermissions">,
@@ -66,5 +67,35 @@ describe("accessScope", () => {
       projectIds: new Set(),
       projectCustomerIds: new Set(),
     });
+  });
+});
+
+describe("canOn", () => {
+  it("allows a project permission only for its bound project and customer", () => {
+    const actor = actorWith({
+      customerPermissions: new Map(),
+      projectPermissions: new Map([
+        [
+          "project-1",
+          {
+            customerId: "customer-1",
+            permissions: new Set([Permission.ProjectsRead]),
+          },
+        ],
+      ]),
+    });
+
+    expect(
+      canOn(actor, Permission.ProjectsRead, {
+        customerId: "customer-1",
+        projectId: "project-1",
+      }),
+    ).toBe(true);
+    expect(
+      canOn(actor, Permission.ProjectsRead, {
+        customerId: "customer-2",
+        projectId: "project-1",
+      }),
+    ).toBe(false);
   });
 });
