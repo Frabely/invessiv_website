@@ -8,6 +8,7 @@ describe("WorkspaceApiEndpoint", () => {
       CrmCustomers: "/api/workspace/crm/customers",
       CrmLeadConversions: "/api/workspace/crm/leads",
       CrmProjects: "/api/workspace/crm/projects",
+      CrmServiceTemplates: "/api/workspace/crm/service-templates",
       Leads: "/api/workspace/leads",
       LeadsBulk: "/api/workspace/leads/bulk",
       LeadsImport: "/api/workspace/leads/import",

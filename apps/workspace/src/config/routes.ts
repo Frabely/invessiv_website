@@ -3,6 +3,7 @@ export const SITE_ROUTES = {
   DASHBOARD: "/dashboard",
   LEADS: "/leads",
   CRM: "/crm",
+  CRM_SERVICES: "/crm/services",
   SETTINGS: "/settings",
   SIGN_IN: "/sign-in",
   SIGN_UP: "/sign-up",

@@ -1,30 +1,21 @@
 import { CustomerFormDialogMode } from "@/common/constants/crm/forms/customer-form-dialog-modes";
 import { CustomerListQueryParam } from "@/common/constants/crm/list/customer-list-query-params";
 import type { CustomerDialogRequest } from "@/common/contracts/crm/customer-dialog-request";
-
-type SearchParamsInput = Record<string, string | string[] | undefined>;
-
-function readSingle(value: string | string[] | undefined): string | null {
-  return typeof value === "string" && value.trim() ? value.trim() : null;
-}
+import {
+  buildDialogHref as buildHref,
+  createDialogRequestReader,
+  type DialogSearchParamsInput as SearchParamsInput,
+  readDialogSearchParam as readSingle,
+} from "@/common/patterns/crm/dialog-query-primitives";
 
 /** Only the two supported shapes open a dialog; anything else leaves the overview alone. */
-export function readCustomerDialogRequest(
+export const readCustomerDialogRequest: (
   searchParams: SearchParamsInput,
-): CustomerDialogRequest | null {
-  const mode = readSingle(searchParams[CustomerListQueryParam.Mode]);
-
-  if (mode === CustomerFormDialogMode.Create) {
-    return { mode: CustomerFormDialogMode.Create };
-  }
-
-  const customerId = readSingle(searchParams[CustomerListQueryParam.Edit]);
-  if (mode === CustomerFormDialogMode.Edit && customerId) {
-    return { mode: CustomerFormDialogMode.Edit, customerId };
-  }
-
-  return null;
-}
+) => CustomerDialogRequest | null = createDialogRequestReader(
+  CustomerListQueryParam,
+  CustomerFormDialogMode,
+  "customerId",
+);
 
 function listParams(queryString = ""): URLSearchParams {
   const params = new URLSearchParams(queryString);
@@ -32,11 +23,6 @@ function listParams(queryString = ""): URLSearchParams {
   params.delete(CustomerListQueryParam.Edit);
   params.delete(CustomerListQueryParam.Cockpit);
   return params;
-}
-
-function buildHref(basePath: string, params: URLSearchParams): string {
-  const query = params.toString();
-  return query ? `${basePath}?${query}` : basePath;
 }
 
 export function buildCustomerCreateHref(
@@ -69,7 +55,7 @@ export function buildCustomerDialogCloseHref(
 export function readCustomerCockpitId(
   searchParams: SearchParamsInput,
 ): string | null {
-  return readSingle(searchParams[CustomerListQueryParam.Cockpit]);
+  return readSingle(searchParams, CustomerListQueryParam.Cockpit);
 }
 
 export function buildCustomerCockpitHref(

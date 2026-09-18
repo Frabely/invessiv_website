@@ -598,7 +598,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 | 05  | im Review | `05-kundenliste-und-zuweisung`           | Paginierte Kundenliste mit Statusbadge und Statuspflege im Kundenformular       |   40–70 |  2–3 T. |
 | 06  | im Review | `06-lead-konvertierung`                  | Leads können sicher direkt als neue CRM-Kunden angelegt werden                  |   40–70 |  2–3 T. |
 | 06b | läuft     | `06b-mitarbeiter-cockpit`                | Kundenansicht aus Kundenliste und -formular, Dashboard-Detailpfad vorbereitet   |   35–60 |  2–3 T. |
-| 07  | offen     | `07-projekte`                            | Projekte, Templatekatalog, Projektleistungen und berechnete Werte nutzbar       |  50–100 | 7–10 T. |
+| 07  | läuft     | `07-projekte`                            | Projekte, Templatekatalog, Projektleistungen und berechnete Werte nutzbar       |  50–100 | 7–10 T. |
 | 07a | offen     | `07a-zugriffsbereiche-fundament`         | Gebundene Rollen in DB, Actor und API unsichtbar und wirkungslos deployt        |   60–90 |    3 T. |
 | 07b | offen     | `07b-zugriffsfilter-kunden-und-projekte` | Alle Kunden- und Projektpfade filtern über `accessScope`; Negativtests          |  60–100 |  3–4 T. |
 | 07c | offen     | `07c-zugriffsverwaltung-ui`              | Zugriffe je Kunde/Projekt in Settings und Kundenakte konfigurierbar             |   50–80 |  2–3 T. |
@@ -652,6 +652,12 @@ mergebarer Ordner. Zusammenlegen allein zum Erreichen des Zielkorridors ist nich
 Der frühere detaillierte Plan für freies CRM-Mail-Senden bleibt unter
 `zurueckgestellt/31-mail-senden.md` erhalten. Er ist keine Version-1-Merge-Einheit und darf erst
 nach einer neuen Scope-Entscheidung umgesetzt werden.
+
+Die Kopplung „Write-Permission setzt zugehöriges Read voraus" für Custom-Rollen ist als
+`zurueckgestellt/48-rbac-permission-praerequisiten.md` dokumentiert. Niedrigste Priorität,
+analog zu Task 31 erst nach den aktiven Merge-Einheiten. Der Leads-Bereich ist darin bewusst
+ausgeklammert und braucht vorher eine eigene, saubere Überarbeitung seines Rechtemodells —
+ebenfalls ganz am Ende des Plans, nicht vorgezogen.
 
 ## Qualitäts-Gates
 

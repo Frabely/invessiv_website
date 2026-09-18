@@ -4,6 +4,7 @@
     "leads": "Leads and outreach",
     "customers": "Customers",
     "projects": "Projects and tasks",
+    "services": "Service catalog",
     "files": "Files",
     "credentials": "Credentials",
     "portal": "Customer portal",
@@ -53,6 +54,14 @@
     "projects.write": {
       "label": "Edit projects",
       "description": "Create, change and hand over projects."
+    },
+    "services.read": {
+      "label": "View service catalog",
+      "description": "Open the maintainable service templates."
+    },
+    "services.write": {
+      "label": "Edit service catalog",
+      "description": "Create, change and archive service templates."
     },
     "tasks.write": {
       "label": "Edit tasks",

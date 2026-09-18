@@ -5,6 +5,7 @@ export const PermissionGroup = {
   Leads: "leads",
   Customers: "customers",
   Projects: "projects",
+  Services: "services",
   Files: "files",
   Credentials: "credentials",
   Portal: "portal",
@@ -19,6 +20,7 @@ export const PERMISSION_GROUP_VALUES = [
   PermissionGroup.Leads,
   PermissionGroup.Customers,
   PermissionGroup.Projects,
+  PermissionGroup.Services,
   PermissionGroup.Files,
   PermissionGroup.Credentials,
   PermissionGroup.Portal,
@@ -43,6 +45,10 @@ export const PERMISSION_GROUP_PERMISSIONS = {
     Permission.ProjectsRead,
     Permission.ProjectsWrite,
     Permission.TasksWrite,
+  ],
+  [PermissionGroup.Services]: [
+    Permission.ServicesRead,
+    Permission.ServicesWrite,
   ],
   [PermissionGroup.Files]: [
     Permission.FilesRead,

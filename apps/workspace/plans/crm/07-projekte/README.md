@@ -1,6 +1,6 @@
 # Ordner 07 — Projekte
 
-> **Status:** offen · **Abhängigkeiten:** 04, 05, 06, 07c · **Aufwand:** 7–10 Tage · **Reviewziel:** 50–100 Dateien je
+> **Status:** läuft · **Abhängigkeiten:** 04, 05, 06, 07c · **Aufwand:** 7–10 Tage · **Reviewziel:** 50–100 Dateien je
 > Merge-Einheit
 
 ## Ziel und Stand nach Merge
