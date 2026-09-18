@@ -18,7 +18,7 @@ const baseFieldsSchema = z.object({
     .string()
     .trim()
     .max(ServiceTemplateFieldLimits.DescriptionMaxLength),
-  priceCents: z.int().min(0),
+  priceCents: z.int().min(0).max(ServiceTemplateFieldLimits.PriceCentsMax),
   pricingMode: z.enum(SERVICE_PRICING_MODE_VALUES),
   recurringInterval: z
     .enum(BILLING_INTERVAL_VALUES)

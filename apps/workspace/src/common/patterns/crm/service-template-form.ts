@@ -1,3 +1,4 @@
+import { ServiceTemplateFieldLimits } from "@invessiv/common/constants/crm/forms/service-template-field-limits";
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { ServiceTemplateStatus } from "@invessiv/common/constants/crm/service-template-statuses";
 import type { CreateServiceTemplateRequestDto } from "@invessiv/common/contracts/crm/create-service-template-request.dto";
@@ -40,6 +41,17 @@ export function validateServiceTemplateForm(
   const price = parseEuroAmountToCents(values.priceInput);
   if (!price.ok || price.cents === null) {
     errors.priceInput = ServiceTemplateFormValidationCode.PriceInvalid;
+  } else if (price.cents > ServiceTemplateFieldLimits.PriceCentsMax) {
+    errors.priceInput = ServiceTemplateFormValidationCode.PriceOutOfRange;
+  }
+  // Mirrors the server's refineIntervalConsistency / DB CHECK, so a programmatic caller that
+  // skips the dialog's auto-sync still gets a field-level error instead of a generic 422.
+  if (
+    values.pricingMode === ServicePricingMode.Recurring &&
+    !values.recurringInterval
+  ) {
+    errors.recurringInterval =
+      ServiceTemplateFormValidationCode.RecurringIntervalRequired;
   }
   return errors;
 }

@@ -84,7 +84,9 @@
     },
     "validation": {
       "TITLE_REQUIRED": "Titel ist erforderlich",
-      "PRICE_INVALID": "Bitte einen gültigen Preis angeben"
+      "PRICE_INVALID": "Bitte einen gültigen Preis angeben",
+      "PRICE_OUT_OF_RANGE": "Preis ist zu groß, bitte einen kleineren Betrag angeben",
+      "RECURRING_INTERVAL_REQUIRED": "Bitte ein Intervall wählen"
     },
     "errors": {
       "SERVICE_TEMPLATE_NOT_FOUND": "Template wurde nicht gefunden.",

@@ -22,15 +22,16 @@ export async function listServiceTemplates(options: {
     )
     .orderBy(desc(serviceTemplates.created_at));
 
-  const hasServiceTemplates =
-    options.includeArchived || rows.length > 0
-      ? rows.length > 0
-      : (
-          await db
-            .select({ id: serviceTemplates.id })
-            .from(serviceTemplates)
-            .limit(1)
-        ).length > 0;
+  // rows already answers it, except the one case where an active-only query came back empty:
+  // that could mean a truly empty catalog or one with only archived rows, so it re-checks unfiltered.
+  let hasServiceTemplates = rows.length > 0;
+  if (!hasServiceTemplates && !options.includeArchived) {
+    const anyRow = await db
+      .select({ id: serviceTemplates.id })
+      .from(serviceTemplates)
+      .limit(1);
+    hasServiceTemplates = anyRow.length > 0;
+  }
 
   return {
     hasServiceTemplates,

@@ -11,6 +11,7 @@ import {
 import { buildServiceTemplateEditHref } from "@/common/patterns/crm/service-template-dialog-query";
 import type { Locale } from "@/config/i18n";
 import type { CrmServicesDictionary } from "@/i18n/dictionaries/workspace/crm";
+import { createNumberFormatterCache } from "@/lib/workspace/intl-number-formatter-cache";
 import { ServiceTemplateStatusBadge } from "../service-template-status-badge/service-template-status-badge";
 import styles from "./service-template-row.module.css";
 
@@ -23,20 +24,10 @@ type ServiceTemplateRowProps = {
   serviceTemplate: ServiceTemplateDto;
 };
 
-const currencyFormatters = new Map<Locale, Intl.NumberFormat>();
-
-/** Formatter construction is comparatively expensive; one instance per locale is reused across all rows. */
-function getCurrencyFormatter(locale: Locale): Intl.NumberFormat {
-  let formatter = currencyFormatters.get(locale);
-  if (!formatter) {
-    formatter = new Intl.NumberFormat(locale, {
-      style: "currency",
-      currency: "EUR",
-    });
-    currencyFormatters.set(locale, formatter);
-  }
-  return formatter;
-}
+const getCurrencyFormatter = createNumberFormatterCache({
+  style: "currency",
+  currency: "EUR",
+});
 
 function formatPrice(
   serviceTemplate: ServiceTemplateDto,

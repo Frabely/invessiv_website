@@ -3,27 +3,19 @@ import { CustomerListQueryParam } from "@/common/constants/crm/list/customer-lis
 import type { CustomerDialogRequest } from "@/common/contracts/crm/customer-dialog-request";
 import {
   buildDialogHref as buildHref,
+  createDialogRequestReader,
   type DialogSearchParamsInput as SearchParamsInput,
   readDialogSearchParam as readSingle,
 } from "@/common/patterns/crm/dialog-query-primitives";
 
 /** Only the two supported shapes open a dialog; anything else leaves the overview alone. */
-export function readCustomerDialogRequest(
+export const readCustomerDialogRequest: (
   searchParams: SearchParamsInput,
-): CustomerDialogRequest | null {
-  const mode = readSingle(searchParams, CustomerListQueryParam.Mode);
-
-  if (mode === CustomerFormDialogMode.Create) {
-    return { mode: CustomerFormDialogMode.Create };
-  }
-
-  const customerId = readSingle(searchParams, CustomerListQueryParam.Edit);
-  if (mode === CustomerFormDialogMode.Edit && customerId) {
-    return { mode: CustomerFormDialogMode.Edit, customerId };
-  }
-
-  return null;
-}
+) => CustomerDialogRequest | null = createDialogRequestReader(
+  CustomerListQueryParam,
+  CustomerFormDialogMode,
+  "customerId",
+);
 
 function listParams(queryString = ""): URLSearchParams {
   const params = new URLSearchParams(queryString);

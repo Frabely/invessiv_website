@@ -13,5 +13,8 @@ export type ServiceTemplateFormValues = {
 };
 
 export type ServiceTemplateFormErrors = Partial<
-  Record<"title" | "priceInput", ServiceTemplateFormValidationCode>
+  Record<
+    "title" | "priceInput" | "recurringInterval",
+    ServiceTemplateFormValidationCode
+  >
 >;

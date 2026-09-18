@@ -231,6 +231,7 @@ export function ServiceTemplateFormDialog({
           />
           {values.pricingMode === ServicePricingMode.Recurring ? (
             <FormField
+              errorMessage={fieldError(errors.recurringInterval, content)}
               kind={FormFieldKind.Custom}
               label={content.form.fields.recurringInterval}
               renderControl={({ describedBy, id, invalid }) => (

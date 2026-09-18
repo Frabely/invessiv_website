@@ -3,30 +3,19 @@ import { ServiceTemplateListQueryParam } from "@/common/constants/crm/list/servi
 import type { ServiceTemplateDialogRequest } from "@/common/contracts/crm/service-template-dialog-request";
 import {
   buildDialogHref as buildHref,
+  createDialogRequestReader,
   type DialogSearchParamsInput as SearchParamsInput,
   readDialogSearchParam as readSingle,
 } from "@/common/patterns/crm/dialog-query-primitives";
 
 /** Only the two supported shapes open a dialog; anything else leaves the list alone. */
-export function readServiceTemplateDialogRequest(
+export const readServiceTemplateDialogRequest: (
   searchParams: SearchParamsInput,
-): ServiceTemplateDialogRequest | null {
-  const mode = readSingle(searchParams, ServiceTemplateListQueryParam.Mode);
-
-  if (mode === ServiceTemplateFormDialogMode.Create) {
-    return { mode: ServiceTemplateFormDialogMode.Create };
-  }
-
-  const serviceTemplateId = readSingle(
-    searchParams,
-    ServiceTemplateListQueryParam.Edit,
-  );
-  if (mode === ServiceTemplateFormDialogMode.Edit && serviceTemplateId) {
-    return { mode: ServiceTemplateFormDialogMode.Edit, serviceTemplateId };
-  }
-
-  return null;
-}
+) => ServiceTemplateDialogRequest | null = createDialogRequestReader(
+  ServiceTemplateListQueryParam,
+  ServiceTemplateFormDialogMode,
+  "serviceTemplateId",
+);
 
 export function readServiceTemplateIncludeArchived(
   searchParams: SearchParamsInput,
