@@ -7,8 +7,8 @@ type CustomerCockpitRow = {
   customerNumber: number;
   displayName: string;
   status: CustomerCockpitDto["status"];
-  ownerDisplayName: string;
-  primaryContactName: string;
+  ownerDisplayName: string | null;
+  primaryContactName: string | null;
   primaryContactEmail: string | null;
 };
 

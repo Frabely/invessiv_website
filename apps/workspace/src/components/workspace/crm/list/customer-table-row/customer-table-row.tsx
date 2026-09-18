@@ -16,13 +16,13 @@ import {
 } from "@invessiv/ui";
 import type { Locale } from "@/config/i18n";
 import type { CrmListDictionary } from "@/i18n/dictionaries/workspace/crm";
+import { getCrmCockpitDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatRelativeTime } from "@/lib/format-relative-time";
 import { formatMessage } from "@/lib/i18n/format-message";
 import {
   buildCustomerCockpitHref,
   buildCustomerEditHref,
 } from "@/common/patterns/crm/customer-dialog-query";
-import { getCrmCockpitDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { CustomerStatusBadge } from "../customer-status-badge/customer-status-badge";
 import styles from "./customer-table-row.module.css";
 
@@ -70,12 +70,14 @@ export function CustomerTableRow({
         />
       </DataTableCell>
       <DataTableCell className={styles.ownerCell}>
-        {customer.ownerDisplayName}
+        {customer.ownerDisplayName ?? null}
       </DataTableCell>
       <DataTableCell className={styles.contactCell}>
-        <span className={styles.contactName}>
-          {customer.primaryContactName}
-        </span>
+        {customer.primaryContactName ? (
+          <span className={styles.contactName}>
+            {customer.primaryContactName}
+          </span>
+        ) : null}
         {customer.primaryContactEmail ? (
           <span className={styles.meta}>{customer.primaryContactEmail}</span>
         ) : null}

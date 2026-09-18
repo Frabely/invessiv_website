@@ -21,24 +21,18 @@ export interface CustomerSummaryDto {
   companyName: string | null;
   /** Lifecycle state. `archived` hides the customer from lists but is reversible. */
   status: CustomerStatus;
-  /**
-   * The internal member responsible. Mandatory — a customer is never unowned. On an
-   * owner handover all open projects, tasks and renewals move along atomically.
-   */
-  ownerMemberId: string;
-  /** Display name of the responsible workspace member; it never grants access. */
-  ownerDisplayName: string;
+  /** Null for a project-only binding; the customer itself always has an owner. */
+  ownerMemberId: string | null;
+  /** Hidden for a project-only binding so the customer header reveals no ownership data. */
+  ownerDisplayName: string | null;
   /** Shared vocabulary with the leads area (`lead_categories`), so a conversion keeps it. */
   categoryId: string | null;
   /** Denormalized from the address so lists can show a location without a join. */
   city: string | null;
+  /** Hidden for a project-only binding; every fully readable customer has one primary contact. */
+  primaryContactName: string | null;
   /**
-   * Display name of the primary contact. Non-nullable by contract — see the note above.
-   */
-  primaryContactName: string;
-  /**
-   * Business address of the primary contact, falling back to the personal one. Null
-   * when neither exists; never used for authorization.
+   * Hidden for a project-only binding; otherwise the business address wins over the personal one.
    */
   primaryContactEmail: string | null;
   /** ISO string, never a `Date` — the mapper converts at the boundary. */

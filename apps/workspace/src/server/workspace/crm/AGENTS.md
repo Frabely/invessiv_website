@@ -53,3 +53,7 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 - Mehrschrittige Writes laufen in einer Transaktion. Kunde und Primärkontakt entstehen gemeinsam
   oder gar nicht.
 - Sichtbarkeitsfilter gehören in die `WHERE`-Klausel, nie ins Rendering.
+- **Zugriffsbereiche:** Jede CRM-Query erhält den `WorkspaceActor` und grenzt ihre Daten über
+  `accessScope` und `crmAccessCondition` in der `WHERE`-Klausel ein. Jeder ressourcenbezogene
+  Command prüft `canOn`; fremde Kunden und Projekte verhalten sich wie nicht vorhanden (404),
+  nicht wie ein Berechtigungsfehler.

@@ -71,6 +71,24 @@ function toSummary(
   };
 }
 
+function toRestrictedSummary(row: CustomerSummaryRow): CustomerSummaryDto {
+  return {
+    id: row.id,
+    customerNumber: row.customer_number,
+    displayName: row.display_name,
+    companyName: row.company_name,
+    status: row.status,
+    ownerMemberId: null,
+    ownerDisplayName: null,
+    categoryId: null,
+    city: row.city,
+    primaryContactName: null,
+    primaryContactEmail: null,
+    createdAt: row.created_at.toISOString(),
+    updatedAt: row.updated_at.toISOString(),
+  };
+}
+
 function toDetail(
   row: CustomerDetailRow,
   contacts: CustomerContactAssignmentRow[],
@@ -94,6 +112,7 @@ function toDetail(
 
 export const customersMapperService = {
   toSummary,
+  toRestrictedSummary,
   toDetail,
   toContact,
 } as const;

@@ -1,7 +1,8 @@
 import "server-only";
 
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray, or } from "drizzle-orm";
 
+import { AccessScopeKind } from "@invessiv/common/constants/auth/access-scope-types";
 import type { CustomerCockpitDto } from "@invessiv/common/contracts/crm/customer-cockpit.dto";
 import {
   customerContactAssignments,
@@ -11,11 +12,18 @@ import {
   workspaceMembers,
 } from "@invessiv/db/record-configuration";
 import type { CrmDatabaseExecutor } from "@/server/workspace/crm/crm-types";
+import {
+  type AccessScope,
+  canReadCustomerInScope,
+} from "@/common/patterns/auth/access-scope";
+import { crmAccessCondition } from "@/server/workspace/shared/services/crm-access-condition";
 import { customerCockpitMappingService } from "./customer-cockpit-mapping-service";
 
 async function findById(
   executor: CrmDatabaseExecutor,
   customerId: string,
+  scope: AccessScope,
+  baseCustomerIds: ReadonlySet<string>,
 ): Promise<CustomerCockpitDto | null> {
   const [row] = await executor
     .select({
@@ -42,16 +50,34 @@ async function findById(
       ),
     )
     .innerJoin(people, eq(people.id, customerContactAssignments.person_id))
-    .where(eq(customers.id, customerId))
+    .where(
+      and(
+        eq(customers.id, customerId),
+        scope.kind === AccessScopeKind.All
+          ? undefined
+          : or(
+              crmAccessCondition.forScope(scope, { customerId: customers.id }),
+              inArray(customers.id, [...baseCustomerIds]),
+            ),
+      ),
+    )
     .limit(1);
 
   if (!row) return null;
 
-  return customerCockpitMappingService.toDto({
+  const customer = customerCockpitMappingService.toDto({
     ...row,
     primaryContactEmail:
       row.primaryContactEmail ?? row.personalPrimaryContactEmail,
   });
+  return canReadCustomerInScope(scope, customerId)
+    ? customer
+    : {
+        ...customer,
+        ownerDisplayName: null,
+        primaryContactName: null,
+        primaryContactEmail: null,
+      };
 }
 
 export const customerCockpitReadService = { findById } as const;

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { can } from "@invessiv/common/patterns/auth/can";
+import { canAnywhere } from "@/common/patterns/auth/access-scope";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import { CustomerFormDialogMode } from "@/common/constants/crm/forms/customer-form-dialog-modes";
 import {
@@ -81,7 +82,7 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
   const requestedFilters = parseCustomerListFilters(resolvedSearchParams);
   const basePath = workspaceAreaPathFor(activeLocale, WorkspaceArea.Crm);
   const leadsBasePath = workspaceAreaPathFor(activeLocale, WorkspaceArea.Leads);
-  const canWrite = can(actor, Permission.CustomersWrite);
+  const canWrite = canAnywhere(actor, Permission.CustomersWrite);
   const canReadLeads = can(actor, Permission.LeadsRead);
   const canReadServices = can(actor, Permission.ServicesRead);
   const dialogRequest = canWrite
@@ -90,15 +91,15 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
   const cockpitCustomerId = readCustomerCockpitId(resolvedSearchParams);
 
   const [customerList, editCustomer, cockpitCustomer] = await Promise.all([
-    listCustomers(requestedFilters),
+    listCustomers(requestedFilters, actor),
     dialogRequest?.mode === CustomerFormDialogMode.Edit
-      ? getCustomerById(dialogRequest.customerId, canReadLeads)
+      ? getCustomerById(dialogRequest.customerId, actor, canReadLeads)
       : null,
-    cockpitCustomerId ? getCustomerCockpitById(cockpitCustomerId) : null,
+    cockpitCustomerId ? getCustomerCockpitById(cockpitCustomerId, actor) : null,
   ]);
   const cockpitProjects =
-    cockpitCustomer && can(actor, Permission.ProjectsRead)
-      ? await listProjectsByCustomer(cockpitCustomer.id)
+    cockpitCustomer && canAnywhere(actor, Permission.ProjectsRead)
+      ? await listProjectsByCustomer(cockpitCustomer.id, actor)
       : null;
   const filters = { ...requestedFilters, page: customerList.page };
   const queryString = buildCustomerListQueryString(filters);
@@ -190,7 +191,7 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
           closeHref={cockpitCloseHref}
           content={getCrmCockpitDictionary(activeLocale)}
           customer={cockpitCustomer}
-          canWriteProjects={can(actor, Permission.ProjectsWrite)}
+          canWriteProjects={canAnywhere(actor, Permission.ProjectsWrite)}
           projects={cockpitProjects}
         />
       ) : null}

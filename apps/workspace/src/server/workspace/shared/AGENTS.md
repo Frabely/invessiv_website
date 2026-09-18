@@ -51,3 +51,9 @@ Die Datenbank-Garantie dahinter (gleichzeitige Writes ergeben genau einen Gewinn
 `packages/db/scripts/smoke-crm-constraints.ts` abgesichert. Zusätzlich führt
 `update-versioned.integration.test.ts` den echten Helper gegen PostgreSQL aus; der schnelle
 Unit-Test deckt seine Verzweigungen isoliert ab.
+
+## CRM-Zugriffsfilter
+
+`crmAccessCondition.forScope` ist der einzige Query-Builder für gebundene CRM-Rechte. Er wird
+vor dem Laden oder Mapping der Daten direkt in die `WHERE`-Klausel eingebunden. Ein leerer Scope
+ergibt eine deny-all-Bedingung; Rendering und Mapper dürfen Sichtbarkeit nie nachträglich filtern.

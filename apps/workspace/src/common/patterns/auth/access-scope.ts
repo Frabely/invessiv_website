@@ -53,3 +53,26 @@ export function accessScope(
     projectCustomerIds,
   };
 }
+
+/** Returns customer ids that may be shown as headers because any scoped role reaches them. */
+export function customerBaseVisibilityIds(
+  actor: WorkspaceActor,
+): ReadonlySet<string> {
+  return new Set([
+    ...actor.customerPermissions.keys(),
+    ...[...actor.projectPermissions.values()].map(
+      ({ customerId }) => customerId,
+    ),
+  ]);
+}
+
+export function canReadCustomerInScope(
+  scope: AccessScope,
+  customerId: string,
+): boolean {
+  return (
+    scope.kind === AccessScopeKind.All ||
+    scope.customerIds.has(customerId) ||
+    scope.projectCustomerIds.has(customerId)
+  );
+}

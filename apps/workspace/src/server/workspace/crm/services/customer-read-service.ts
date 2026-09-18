@@ -1,6 +1,17 @@
 import "server-only";
 
-import { and, asc, count, desc, eq, ilike, ne, or, sql } from "drizzle-orm";
+import {
+  and,
+  asc,
+  count,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  ne,
+  or,
+  sql,
+} from "drizzle-orm";
 
 import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
 import { CustomerSort } from "@invessiv/common/constants/crm/list/customer-sort";
@@ -17,9 +28,15 @@ import {
   workspaceMembers,
 } from "@invessiv/db/record-configuration";
 import type { CustomerListFilters } from "@/common/contracts/crm/customer-list-filters";
+import { AccessScopeKind } from "@invessiv/common/constants/auth/access-scope-types";
+import {
+  type AccessScope,
+  canReadCustomerInScope,
+} from "@/common/patterns/auth/access-scope";
 import { escapeLikePattern } from "@/common/patterns/crm/sql-like-escape";
 import type { CrmDatabaseExecutor } from "@/server/workspace/crm/crm-types";
 import { customersMapperService } from "@/server/workspace/crm/services/customers-mapper-service";
+import { crmAccessCondition } from "@/server/workspace/shared/services/crm-access-condition";
 
 const SUMMARY_COLUMNS = {
   id: customers.id,
@@ -67,11 +84,29 @@ const CONTACT_COLUMNS = {
   updated_at: customerContactAssignments.updated_at,
 };
 
-function getListCondition(filters: CustomerListFilters) {
+function getScopedCustomerCondition(
+  scope: AccessScope,
+  baseCustomerIds: ReadonlySet<string>,
+) {
+  const readableCondition = crmAccessCondition.forScope(scope, {
+    customerId: customers.id,
+  });
+  if (scope.kind === AccessScopeKind.All) return undefined;
+  return baseCustomerIds.size > 0
+    ? or(readableCondition, inArray(customers.id, [...baseCustomerIds]))
+    : readableCondition;
+}
+
+function getListCondition(
+  filters: CustomerListFilters,
+  scope?: AccessScope,
+  baseCustomerIds: ReadonlySet<string> = new Set(),
+) {
   const searchTerm = filters.search
     ? `%${escapeLikePattern(filters.search)}%`
     : null;
   return and(
+    scope ? getScopedCustomerCondition(scope, baseCustomerIds) : undefined,
     filters.includeArchived
       ? undefined
       : ne(customers.status, CustomerStatus.Archived),
@@ -112,11 +147,13 @@ function getListOrder(sort: CustomerSort) {
 async function countSummaries(
   executor: CrmDatabaseExecutor,
   filters: CustomerListFilters,
+  scope?: AccessScope,
+  baseCustomerIds?: ReadonlySet<string>,
 ): Promise<number> {
   const [row] = await executor
     .select({ total: count() })
     .from(customers)
-    .where(getListCondition(filters));
+    .where(getListCondition(filters, scope, baseCustomerIds));
 
   return row?.total ?? 0;
 }
@@ -125,6 +162,8 @@ async function listSummaries(
   executor: CrmDatabaseExecutor,
   filters: CustomerListFilters,
   limit: number,
+  scope?: AccessScope,
+  baseCustomerIds?: ReadonlySet<string>,
 ): Promise<CustomerSummaryDto[]> {
   // Left join on purpose: a customer without a primary contact must surface as the mapper's
   // invariant error instead of silently disappearing from the list.
@@ -144,7 +183,7 @@ async function listSummaries(
       ),
     )
     .leftJoin(people, eq(people.id, customerContactAssignments.person_id))
-    .where(getListCondition(filters))
+    .where(getListCondition(filters, scope, baseCustomerIds))
     .orderBy(...getListOrder(filters.sort))
     .offset((filters.page - 1) * limit)
     .limit(limit);
@@ -152,10 +191,12 @@ async function listSummaries(
   // Drizzle types every left-joined column as nullable; a present assignment id means the
   // whole joined row exists.
   return rows.map(({ customer, contact }) =>
-    customersMapperService.toSummary(
-      customer,
-      contact?.id ? [contact as CustomerContactAssignmentRow] : [],
-    ),
+    scope && !canReadCustomerInScope(scope, customer.id)
+      ? customersMapperService.toRestrictedSummary(customer)
+      : customersMapperService.toSummary(
+          customer,
+          contact?.id ? [contact as CustomerContactAssignmentRow] : [],
+        ),
   );
 }
 
@@ -163,6 +204,7 @@ async function findDetailById(
   executor: CrmDatabaseExecutor,
   customerId: string,
   includeSourceLeads = false,
+  scope?: AccessScope,
 ): Promise<CustomerDetailDto | null> {
   const [row] = await executor
     .select(DETAIL_COLUMNS)
@@ -172,7 +214,14 @@ async function findDetailById(
       eq(workspaceMembers.id, customers.owner_member_id),
     )
     .innerJoin(users, eq(users.id, workspaceMembers.user_id))
-    .where(eq(customers.id, customerId))
+    .where(
+      and(
+        eq(customers.id, customerId),
+        scope
+          ? crmAccessCondition.forScope(scope, { customerId: customers.id })
+          : undefined,
+      ),
+    )
     .limit(1);
 
   if (!row) {

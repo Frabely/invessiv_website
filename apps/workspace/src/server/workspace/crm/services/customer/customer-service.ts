@@ -19,6 +19,12 @@ import {
   people,
 } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
+import {
+  accessScope,
+  customerBaseVisibilityIds,
+} from "@/common/patterns/auth/access-scope";
+import { canOn } from "@/common/patterns/auth/can-on";
+import { Permission } from "@invessiv/common/constants/auth/permissions";
 import type { CustomerListFilters } from "@/common/contracts/crm/customer-list-filters";
 import { memberResponsibilityLockService } from "@/server/workspace/access/services/responsibilities/member-responsibility-lock-service";
 import { customerCategoryService } from "@/server/workspace/crm/services/customer-category-service";
@@ -130,7 +136,7 @@ async function createCustomer(
 async function updateCustomer(
   customerId: string,
   input: UpdateCustomerRequestDto,
-  actorUserId: string,
+  actor: WorkspaceActor,
 ): Promise<UpdateCustomerResult> {
   if (!customerSchemas.entityId.safeParse(customerId).success) {
     return { ok: false, code: CustomerErrorCode.CustomerNotFound };
@@ -145,6 +151,12 @@ async function updateCustomer(
   }
 
   const data = validation.data;
+  if (
+    !canOn(actor, Permission.CustomersRead, { customerId }) ||
+    !canOn(actor, Permission.CustomersWrite, { customerId })
+  ) {
+    return { ok: false, code: CustomerErrorCode.CustomerNotFound };
+  }
   const db = getDrizzleDatabaseClient();
   try {
     return await db.transaction(async (tx): Promise<UpdateCustomerResult> => {
@@ -196,7 +208,7 @@ async function updateCustomer(
             previous_status: previousStatus,
             next_status: data.status,
           },
-          actor: { type: ActorType.User, userId: actorUserId },
+          actor: { type: ActorType.User, userId: actor.userId },
         });
       }
       const customer = await customerReadService.findDetailById(tx, customerId);
@@ -218,6 +230,7 @@ async function updateCustomer(
 
 async function getCustomer(
   customerId: string,
+  actor: WorkspaceActor,
   includeSourceLeads = false,
 ): Promise<CustomerDetailDto | null> {
   if (!customerSchemas.entityId.safeParse(customerId).success) {
@@ -228,27 +241,43 @@ async function getCustomer(
     getDrizzleDatabaseClient(),
     customerId,
     includeSourceLeads,
+    accessScope(actor, Permission.CustomersRead),
   );
 }
 
 async function searchCustomers(
   filters: CustomerListFilters,
+  actor: WorkspaceActor,
 ): Promise<ListCustomersResult> {
   const db = getDrizzleDatabaseClient();
-  const total = await customerReadService.countSummaries(db, filters);
+  const scope = accessScope(actor, Permission.CustomersRead);
+  const baseCustomerIds = customerBaseVisibilityIds(actor);
+  const total = await customerReadService.countSummaries(
+    db,
+    filters,
+    scope,
+    baseCustomerIds,
+  );
   const hasCustomers =
     total > 0 ||
-    (await customerReadService.countSummaries(db, {
-      ...filters,
-      includeArchived: true,
-      search: "",
-    })) > 0;
+    (await customerReadService.countSummaries(
+      db,
+      {
+        ...filters,
+        includeArchived: true,
+        search: "",
+      },
+      scope,
+      baseCustomerIds,
+    )) > 0;
   const totalPages = Math.max(1, Math.ceil(total / CUSTOMER_LIST_PAGE_SIZE));
   const page = total > 0 ? Math.min(filters.page, totalPages) : 1;
   const rows = await customerReadService.listSummaries(
     db,
     { ...filters, page },
     CUSTOMER_LIST_PAGE_SIZE,
+    scope,
+    baseCustomerIds,
   );
 
   return {

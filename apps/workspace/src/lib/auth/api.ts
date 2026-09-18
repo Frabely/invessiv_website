@@ -7,7 +7,12 @@ import type { Permission } from "@invessiv/common/constants/auth/permissions";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import { can } from "@invessiv/common/patterns/auth/can";
 import { WorkspaceAuthStatus } from "@/common/constants/auth/workspace-auth-statuses";
+import {
+  CRM_ENDPOINT_ACCESS_RULES,
+  type CrmEndpointAccessRule,
+} from "@/common/constants/auth/crm-endpoint-access-rules";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
+import { canAnywhere } from "@/common/patterns/auth/access-scope";
 
 import { authApiError } from "./auth-api-error";
 import { authenticateWorkspaceRequest } from "./workspace-authentication";
@@ -51,6 +56,24 @@ export function withPermission(
 ) {
   return withWorkspaceApiActor(async (request, actor) => {
     if (!can(actor, permission)) {
+      return authApiError(AuthErrorCode.Forbidden, HttpResponseCode.Forbidden);
+    }
+
+    return handler(request, actor);
+  });
+}
+
+/**
+ * Admits a CRM request when the permission exists globally or through a customer/project binding.
+ * The concrete query or command still narrows that broad admission to its addressed resource.
+ */
+export function withCrmPermission(
+  accessRule: CrmEndpointAccessRule,
+  handler: WorkspaceApiHandler,
+) {
+  return withWorkspaceApiActor(async (request, actor) => {
+    const { permission } = CRM_ENDPOINT_ACCESS_RULES[accessRule];
+    if (!canAnywhere(actor, permission)) {
       return authApiError(AuthErrorCode.Forbidden, HttpResponseCode.Forbidden);
     }
 

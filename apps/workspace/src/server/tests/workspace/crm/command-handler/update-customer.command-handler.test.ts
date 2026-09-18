@@ -6,7 +6,7 @@ import type { UpdateCustomerRequestDto } from "@invessiv/common/contracts/crm/up
 import { CustomersConstraintName } from "@invessiv/db/constraint-names/crm/customers-constraint-names";
 import { PostgresErrorCode } from "@invessiv/db/core";
 import { customers } from "@invessiv/db/record-configuration";
-import { TEST_ACTOR_USER_ID } from "@/server/tests/support/workspace-auth-fixtures";
+import { workspaceActorWith } from "@/server/tests/support/workspace-auth-fixtures";
 import { updateCustomer } from "@/server/workspace/crm/command-handler/update-customer.command-handler";
 import {
   customerDetailFixture,
@@ -59,6 +59,7 @@ vi.mock(
 
 const tx = {};
 const REQUEST = updateCustomerRequestFixture({ version: 3 });
+const actor = workspaceActorWith();
 
 describe("updateCustomer", () => {
   beforeEach(() => {
@@ -79,12 +80,12 @@ describe("updateCustomer", () => {
   });
 
   it("answers not found for a malformed id without touching the database", async () => {
-    await expect(
-      updateCustomer("customer-1", REQUEST, TEST_ACTOR_USER_ID),
-    ).resolves.toEqual({
-      ok: false,
-      code: CustomerErrorCode.CustomerNotFound,
-    });
+    await expect(updateCustomer("customer-1", REQUEST, actor)).resolves.toEqual(
+      {
+        ok: false,
+        code: CustomerErrorCode.CustomerNotFound,
+      },
+    );
     expect(mocks.getDatabase).not.toHaveBeenCalled();
   });
 
@@ -95,7 +96,7 @@ describe("updateCustomer", () => {
     const result = await updateCustomer(
       TEST_CUSTOMER_ID,
       withoutVersion as UpdateCustomerRequestDto,
-      TEST_ACTOR_USER_ID,
+      actor,
     );
 
     expect(result).toMatchObject({
@@ -112,7 +113,7 @@ describe("updateCustomer", () => {
         ...REQUEST,
         displayName: "Nordlicht Coaching Köln",
       },
-      TEST_ACTOR_USER_ID,
+      actor,
     );
 
     expect(result).toEqual({
@@ -141,7 +142,7 @@ describe("updateCustomer", () => {
     });
 
     await expect(
-      updateCustomer(TEST_CUSTOMER_ID, REQUEST, TEST_ACTOR_USER_ID),
+      updateCustomer(TEST_CUSTOMER_ID, REQUEST, actor),
     ).resolves.toEqual({
       ok: false,
       code: CustomerErrorCode.CustomerNotFound,
@@ -163,7 +164,7 @@ describe("updateCustomer", () => {
     mocks.findDetail.mockResolvedValue(current);
 
     await expect(
-      updateCustomer(TEST_CUSTOMER_ID, REQUEST, TEST_ACTOR_USER_ID),
+      updateCustomer(TEST_CUSTOMER_ID, REQUEST, actor),
     ).resolves.toEqual({
       ok: false,
       code: ConcurrencyErrorCode.VersionConflict,
@@ -184,7 +185,7 @@ describe("updateCustomer", () => {
         ...REQUEST,
         categoryId: TEST_CATEGORY_ID,
       },
-      TEST_ACTOR_USER_ID,
+      actor,
     );
 
     expect(result).toMatchObject({
@@ -201,7 +202,7 @@ describe("updateCustomer", () => {
     });
 
     await expect(
-      updateCustomer(TEST_CUSTOMER_ID, REQUEST, TEST_ACTOR_USER_ID),
+      updateCustomer(TEST_CUSTOMER_ID, REQUEST, actor),
     ).resolves.toEqual({
       ok: false,
       code: CustomerErrorCode.DisplayNameTaken,
@@ -221,11 +222,7 @@ describe("updateCustomer", () => {
       },
     ];
 
-    await updateCustomer(
-      TEST_CUSTOMER_ID,
-      { ...REQUEST, contacts },
-      TEST_ACTOR_USER_ID,
-    );
+    await updateCustomer(TEST_CUSTOMER_ID, { ...REQUEST, contacts }, actor);
 
     expect(mocks.synchronizeContacts).toHaveBeenCalledWith(
       tx,
@@ -235,7 +232,7 @@ describe("updateCustomer", () => {
   });
 
   it("does not touch contacts when none are supplied", async () => {
-    await updateCustomer(TEST_CUSTOMER_ID, REQUEST, TEST_ACTOR_USER_ID);
+    await updateCustomer(TEST_CUSTOMER_ID, REQUEST, actor);
 
     expect(mocks.synchronizeContacts).not.toHaveBeenCalled();
   });
@@ -263,7 +260,7 @@ describe("updateCustomer", () => {
             },
           ],
         },
-        TEST_ACTOR_USER_ID,
+        actor,
       ),
     ).resolves.toEqual({
       ok: false,
@@ -298,7 +295,7 @@ describe("updateCustomer", () => {
             },
           ],
         },
-        TEST_ACTOR_USER_ID,
+        actor,
       ),
     ).rejects.toThrow("connection lost");
   });
@@ -307,7 +304,7 @@ describe("updateCustomer", () => {
     await updateCustomer(
       TEST_CUSTOMER_ID,
       { ...REQUEST, status: "paused" },
-      TEST_ACTOR_USER_ID,
+      actor,
     );
 
     expect(mocks.createActivity).toHaveBeenCalledWith(
@@ -319,7 +316,7 @@ describe("updateCustomer", () => {
           previous_status: "active",
           next_status: "paused",
         },
-        actor: { type: "user", userId: TEST_ACTOR_USER_ID },
+        actor: { type: "user", userId: actor.userId },
       }),
     );
   });

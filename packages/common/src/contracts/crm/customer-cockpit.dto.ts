@@ -10,10 +10,10 @@ export interface CustomerCockpitDto {
   displayName: string;
   /** Current customer lifecycle state. */
   status: CustomerStatus;
-  /** Display name of the workspace member currently responsible for the customer. */
-  ownerDisplayName: string;
-  /** Name of the exactly one primary customer contact. */
-  primaryContactName: string;
-  /** Preferred email address of the primary contact, when one exists. */
+  /** Hidden for a project-only binding. */
+  ownerDisplayName: string | null;
+  /** Hidden for a project-only binding. */
+  primaryContactName: string | null;
+  /** Hidden for a project-only binding, otherwise the primary contact's preferred email. */
   primaryContactEmail: string | null;
 }

@@ -200,12 +200,15 @@ describe("CRM customer routes", () => {
         rows: [],
         total: 0,
       });
-      expect(mocks.listCustomers).toHaveBeenCalledWith({
-        includeArchived: false,
-        page: 1,
-        search: "",
-        sort: "updated_desc",
-      });
+      expect(mocks.listCustomers).toHaveBeenCalledWith(
+        {
+          includeArchived: false,
+          page: 1,
+          search: "",
+          sort: "updated_desc",
+        },
+        expect.anything(),
+      );
     });
 
     it("passes a normalized search term to the customer service", async () => {
@@ -223,6 +226,7 @@ describe("CRM customer routes", () => {
       expect((await GET(request)).status).toBe(HttpResponseCode.Ok);
       expect(mocks.listCustomers).toHaveBeenCalledWith(
         expect.objectContaining({ search: "Nordlicht" }),
+        expect.anything(),
       );
     });
   });
@@ -241,7 +245,10 @@ describe("CRM customer routes", () => {
       await expect(response.json()).resolves.toEqual({
         customer: customerDetailFixture(),
       });
-      expect(mocks.getCustomer).toHaveBeenCalledWith(TEST_CUSTOMER_ID);
+      expect(mocks.getCustomer).toHaveBeenCalledWith(
+        TEST_CUSTOMER_ID,
+        expect.anything(),
+      );
     });
 
     it("answers 404 for an unknown customer", async () => {
@@ -281,7 +288,7 @@ describe("CRM customer routes", () => {
       expect(mocks.updateCustomer).toHaveBeenCalledWith(
         TEST_CUSTOMER_ID,
         UPDATE_REQUEST,
-        "user-actor-uuid",
+        expect.anything(),
       );
     });
 

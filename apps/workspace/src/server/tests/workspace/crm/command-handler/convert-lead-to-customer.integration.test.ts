@@ -204,12 +204,15 @@ describe.skipIf(!RUN_INTEGRATION)(
         ),
       ).toHaveLength(1);
 
-      const searchResult = await customerService.search({
-        includeArchived: false,
-        page: 1,
-        search: "integration:lead-conversion:parallel",
-        sort: "updated_desc",
-      });
+      const searchResult = await customerService.search(
+        {
+          includeArchived: false,
+          page: 1,
+          search: "integration:lead-conversion:parallel",
+          sort: "updated_desc",
+        },
+        actor,
+      );
       expect(searchResult.rows.map(({ id }) => id)).toContain(first.customerId);
 
       await expect(leadService.delete([parallelLeadId])).resolves.toEqual([

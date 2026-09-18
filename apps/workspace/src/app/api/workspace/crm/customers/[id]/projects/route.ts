@@ -3,7 +3,9 @@ import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { ProjectErrorCode } from "@invessiv/common/constants/crm/errors/project-error-codes";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import type { CreateProjectRequestDto } from "@invessiv/common/contracts/crm/create-project-request.dto";
-import { withPermission } from "@/lib/auth/api";
+import { withCrmPermission } from "@/lib/auth/api";
+import { canOn } from "@/common/patterns/auth/can-on";
+import { CrmEndpointAccessRule } from "@/common/constants/auth/crm-endpoint-access-rules";
 import { readJsonBody } from "@/lib/http/read-json-body";
 import { projectApiError } from "@/lib/workspace/crm/project-api-error";
 import { createProject } from "@/server/workspace/crm/command-handler/create-project.command-handler";
@@ -14,26 +16,40 @@ type RouteContext = { params: Promise<{ id: string }> };
 
 export async function GET(request: NextRequest, { params }: RouteContext) {
   const { id } = await params;
-  return withPermission(Permission.ProjectsRead, async () =>
-    Response.json({ projects: await listProjectsByCustomer(id) }),
+  return withCrmPermission(
+    CrmEndpointAccessRule.CustomerProjects,
+    async (_, actor) => {
+      const projects = await listProjectsByCustomer(id, actor);
+      if (
+        projects.length === 0 &&
+        !canOn(actor, Permission.ProjectsRead, { customerId: id })
+      ) {
+        return projectApiError(ProjectErrorCode.NotFound);
+      }
+
+      return Response.json({ projects });
+    },
   )(request);
 }
 
 export async function POST(request: NextRequest, { params }: RouteContext) {
   const { id } = await params;
-  return withPermission(Permission.ProjectsWrite, async (authorizedRequest) => {
-    const parsed = await readJsonBody(authorizedRequest);
-    if (!parsed.ok) {
-      return projectApiError(ProjectErrorCode.ValidationError, {
-        status: HttpResponseCode.BadRequest,
-      });
-    }
-    const project = await createProject(
-      id,
-      parsed.body as CreateProjectRequestDto,
-    );
-    return project
-      ? Response.json({ project }, { status: HttpResponseCode.Created })
-      : projectApiError(ProjectErrorCode.ValidationError);
-  })(request);
+  return withCrmPermission(
+    CrmEndpointAccessRule.ProjectCreate,
+    async (authorizedRequest, actor) => {
+      const parsed = await readJsonBody(authorizedRequest);
+      if (!parsed.ok) {
+        return projectApiError(ProjectErrorCode.ValidationError, {
+          status: HttpResponseCode.BadRequest,
+        });
+      }
+      const project = await createProject(
+        id,
+        parsed.body as CreateProjectRequestDto,
+        actor,
+      );
+      if (typeof project === "string") return projectApiError(project);
+      return Response.json({ project }, { status: HttpResponseCode.Created });
+    },
+  )(request);
 }

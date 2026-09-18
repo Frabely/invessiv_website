@@ -8,7 +8,8 @@ import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-
 import type { CreateCustomerRequestDto } from "@invessiv/common/contracts/crm/create-customer-request.dto";
 import type { CreateCustomerResult } from "@invessiv/common/contracts/crm/results/create-customer-result";
 import { CrmOperation } from "@/common/constants/crm/crm-operations";
-import { withPermission } from "@/lib/auth/api";
+import { CrmEndpointAccessRule } from "@/common/constants/auth/crm-endpoint-access-rules";
+import { withCrmPermission, withPermission } from "@/lib/auth/api";
 import { readJsonBody } from "@/lib/http/read-json-body";
 import { customerApiError } from "@/lib/workspace/crm/customer-api-error";
 import { logCrmFailure } from "@/lib/workspace/crm/log-crm-failure";
@@ -18,24 +19,30 @@ import { parseCustomerListFilters } from "@/common/patterns/crm/customer-list-se
 
 export const runtime = "nodejs";
 
-export const GET = withPermission(Permission.CustomersRead, async (request) => {
-  try {
-    const params: Record<string, string | string[]> = {};
-    new URL(request.url).searchParams.forEach((value, key) => {
-      const current = params[key];
-      params[key] = current
-        ? Array.isArray(current)
-          ? [...current, value]
-          : [current, value]
-        : value;
-    });
-    const result = await listCustomers(parseCustomerListFilters(params));
-    return Response.json(result, { status: HttpResponseCode.Ok });
-  } catch (error: unknown) {
-    logCrmFailure(CrmOperation.ListCustomers, error);
-    return customerApiError(CustomerErrorCode.Internal);
-  }
-});
+export const GET = withCrmPermission(
+  CrmEndpointAccessRule.Customers,
+  async (request, actor) => {
+    try {
+      const params: Record<string, string | string[]> = {};
+      new URL(request.url).searchParams.forEach((value, key) => {
+        const current = params[key];
+        params[key] = current
+          ? Array.isArray(current)
+            ? [...current, value]
+            : [current, value]
+          : value;
+      });
+      const result = await listCustomers(
+        parseCustomerListFilters(params),
+        actor,
+      );
+      return Response.json(result, { status: HttpResponseCode.Ok });
+    } catch (error: unknown) {
+      logCrmFailure(CrmOperation.ListCustomers, error);
+      return customerApiError(CustomerErrorCode.Internal);
+    }
+  },
+);
 
 export const POST = withPermission(
   Permission.CustomersWrite,

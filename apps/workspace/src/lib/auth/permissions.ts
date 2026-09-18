@@ -3,11 +3,12 @@ import "server-only";
 import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
 
-import type { Permission } from "@invessiv/common/constants/auth/permissions";
+import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { can } from "@invessiv/common/patterns/auth/can";
+import { canAnywhere } from "@/common/patterns/auth/access-scope";
 import {
   WORKSPACE_AREA_PERMISSIONS,
-  type WorkspaceArea,
+  WorkspaceArea,
 } from "@/common/constants/auth/workspace-areas";
 import { WorkspaceAuthStatus } from "@/common/constants/auth/workspace-auth-statuses";
 import type { WorkspaceAuthentication } from "@/common/contracts/auth/workspace-authentication";
@@ -64,5 +65,16 @@ export async function requireWorkspaceArea(
   locale: Locale,
   area: WorkspaceArea,
 ): Promise<WorkspaceActor> {
-  return requireWorkspacePermission(locale, WORKSPACE_AREA_PERMISSIONS[area]);
+  const actor = await requireWorkspaceActor(locale);
+  const permitted =
+    area === WorkspaceArea.Crm
+      ? canAnywhere(actor, Permission.CustomersRead) ||
+        canAnywhere(actor, Permission.ProjectsRead)
+      : can(actor, WORKSPACE_AREA_PERMISSIONS[area]);
+
+  if (!permitted) {
+    notFound();
+  }
+
+  return actor;
 }

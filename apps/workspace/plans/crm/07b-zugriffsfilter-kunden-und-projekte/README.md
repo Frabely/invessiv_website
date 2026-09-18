@@ -1,6 +1,7 @@
 # Ordner 07b — Zugriffsbereiche: Filter für Kunden und Projekte
 
-> **Status:** offen · **Branch:** `feat/crm-zugriffsfilter-kunden-und-projekte` · **Abhängigkeit:** Ordner 07a gemerged
+> **Status:** im Review · **Branch:** `feat/crm-zugriffsfilter-kunden-und-projekte` · **Abhängigkeit:** Ordner 07a
+> gemerged
 > **Aufwand:** 3–4 Tage · **Reviewziel:** 60–100 Dateien · **Folgeeinheit:** 07c (Verwaltungs-UI)
 
 ## Ziel und Stand nach Merge

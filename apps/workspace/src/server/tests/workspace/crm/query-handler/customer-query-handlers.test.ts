@@ -6,6 +6,7 @@ import {
   customerDetailFixture,
   TEST_CUSTOMER_ID,
 } from "@/server/tests/workspace/crm/support/crm-fixtures";
+import { workspaceActorWith } from "@/server/tests/support/workspace-auth-fixtures";
 
 vi.mock("server-only", () => ({}));
 
@@ -15,6 +16,7 @@ const mocks = vi.hoisted(() => ({
   countSummaries: vi.fn(),
   listSummaries: vi.fn(),
 }));
+const actor = workspaceActorWith();
 
 vi.mock("@invessiv/db/core", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@invessiv/db/core")>()),
@@ -36,22 +38,23 @@ describe("customer query handlers", () => {
   });
 
   it("returns null for a malformed id without reading", async () => {
-    await expect(getCustomerById("not-a-uuid")).resolves.toBeNull();
+    await expect(getCustomerById("not-a-uuid", actor)).resolves.toBeNull();
     expect(mocks.findDetail).not.toHaveBeenCalled();
   });
 
   it("returns the detail or null for an unknown id", async () => {
     mocks.findDetail.mockResolvedValueOnce(customerDetailFixture());
-    await expect(getCustomerById(TEST_CUSTOMER_ID)).resolves.toEqual(
+    await expect(getCustomerById(TEST_CUSTOMER_ID, actor)).resolves.toEqual(
       customerDetailFixture(),
     );
 
     mocks.findDetail.mockResolvedValueOnce(null);
-    await expect(getCustomerById(TEST_CUSTOMER_ID)).resolves.toBeNull();
+    await expect(getCustomerById(TEST_CUSTOMER_ID, actor)).resolves.toBeNull();
     expect(mocks.findDetail).toHaveBeenCalledWith(
       mocks.database,
       TEST_CUSTOMER_ID,
       false,
+      expect.anything(),
     );
   });
 
@@ -60,12 +63,15 @@ describe("customer query handlers", () => {
     mocks.listSummaries.mockResolvedValue([]);
 
     await expect(
-      listCustomers({
-        includeArchived: false,
-        page: 9,
-        search: "Nordlicht",
-        sort: "updated_desc",
-      }),
+      listCustomers(
+        {
+          includeArchived: false,
+          page: 9,
+          search: "Nordlicht",
+          sort: "updated_desc",
+        },
+        actor,
+      ),
     ).resolves.toEqual({
       hasCustomers: true,
       page: 2,
@@ -82,6 +88,8 @@ describe("customer query handlers", () => {
         sort: "updated_desc",
       },
       25,
+      expect.anything(),
+      expect.anything(),
     );
   });
 
@@ -90,18 +98,27 @@ describe("customer query handlers", () => {
     mocks.listSummaries.mockResolvedValue([]);
 
     await expect(
-      listCustomers({
-        includeArchived: false,
+      listCustomers(
+        {
+          includeArchived: false,
+          page: 1,
+          search: "",
+          sort: "updated_desc",
+        },
+        actor,
+      ),
+    ).resolves.toMatchObject({ hasCustomers: true, rows: [], total: 0 });
+    expect(mocks.countSummaries).toHaveBeenNthCalledWith(
+      2,
+      mocks.database,
+      {
+        includeArchived: true,
         page: 1,
         search: "",
         sort: "updated_desc",
-      }),
-    ).resolves.toMatchObject({ hasCustomers: true, rows: [], total: 0 });
-    expect(mocks.countSummaries).toHaveBeenNthCalledWith(2, mocks.database, {
-      includeArchived: true,
-      page: 1,
-      search: "",
-      sort: "updated_desc",
-    });
+      },
+      expect.anything(),
+      expect.anything(),
+    );
   });
 });

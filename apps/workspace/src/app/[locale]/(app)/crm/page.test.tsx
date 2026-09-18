@@ -161,7 +161,10 @@ describe("CrmPage", () => {
     await renderPage({ cockpit: TEST_CUSTOMER_ID });
 
     expect(screen.getByTestId("cockpit")).toBeInTheDocument();
-    expect(mocks.getCustomerCockpitById).toHaveBeenCalledWith(TEST_CUSTOMER_ID);
+    expect(mocks.getCustomerCockpitById).toHaveBeenCalledWith(
+      TEST_CUSTOMER_ID,
+      expect.anything(),
+    );
   });
 
   it("opens the create dialog", async () => {
