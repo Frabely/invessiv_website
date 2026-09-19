@@ -75,6 +75,37 @@ zutrifft, wird die Projektliste analog zu Punkt 4 als schmaler Lookup unter `acc
 `customerId`) statt den CRM-Filter aufzuweichen. **Diese Entscheidung wird beim Umsetzen
 belegt, nicht geraten.**
 
+## Umsetzungsstand
+
+**Umgesetzt.** Abweichungen und Befunde beim Bauen:
+
+- **Projekt-Lookup war nötig.** Punkt 5 ist belegt: `listProjectsByCustomer` filtert über
+  `accessScope(actor, Permission.ProjectsRead)`; ein Verwalter ohne `projects.read` bekäme dort nichts. Der schmale
+  Lookup unter `access/` ist deshalb gebaut (`GET …/access/customers/[id]/projects`).
+- **Suche als `GET …?search=`**, nicht als POST. Die Clerk-Suche läuft nur wegen E-Mail-Adressen als POST; die
+  CRM-Kundensuche übergibt `search` per Query. Der Lookup folgt der CRM-Konvention.
+- **`hasActiveRole` war schon richtig, der Zähler nicht vorhanden.** Der Mapper bekommt jetzt die gebundenen Zeilen
+  samt Rollenstatus statt eines `Set` und leitet Zähler **und** aktive Rolle daraus ab. Der Zähler zählt auch
+  Zuweisungen inaktiver Rollen (der Dialog listet sie), `hasActiveRole` nur aktive.
+- **Endpunkt-Konstante und Pfad-Helfer sind schon hier entstanden** (`WorkspaceApiEndpoint.AccessCustomers`,
+  `accessCustomerProjectsEndpoint`), weil die Routen sie brauchen. Task 03 nutzt sie nur noch.
+- **Die bestehenden `GET`-Listen liefern jetzt `AccessScopeEntryDto`** statt des schlanken DTO. Sie hatten noch
+  keinen Konsumenten.
+- **Gegen die Entwicklungsdatenbank belegt:** `access-scope-read.integration.test.ts` (10 Tests: Joins, Sortierung,
+  Zähler, Lookup) läuft grün. Er ist Teil von `db:smoke:access`, gesperrt hinter `RBAC_DB_INTEGRATION`, und räumt
+  seine Fixture-Zeilen wieder ab (nach dem Lauf geprüft: keine Reste).
+- **Projekt-Lookup ohne Limit und ohne Existenzprüfung, mit Absicht.** Ein Limit würde Projekte im Baum still
+  abschneiden; ein Kunde hat realistisch wenige. Eine unbekannte Kunden-Id liefert eine leere Liste statt 404, weil
+  der CRM-Pfad keinen Löschpfad hat und die Id vom Picker selbst stammt.
+- **Nummernsuche listet den exakten Treffer zuerst.** Die Suche bleibt ein Teilstring-Treffer (`"12"` findet auch 112),
+  aber bei rein numerischer Eingabe steht die Kundennummer mit genau diesem Wert vorn. Sonst fällt sie bei 25
+  Treffern in Namensreihenfolge aus dem Ergebnis; der Integrationstest belegt das mit einem Köder-Kunden. Der Helfer
+  `parseExactCustomerNumber` ignoriert Werte außerhalb des Integer-Bereichs, statt die Abfrage scheitern zu lassen.
+- **Offen, nicht Teil dieses Tasks:** Der Lookup filtert nicht nach Kundenstatus — archivierte Kunden erscheinen im
+  Picker. Ob das gewollt ist, entscheidet Task 05, wo die Anzeige entsteht.
+- **`"K0012"` findet nichts**, nur `"12"` — wie die CRM-Kundenliste. Eine gemeinsame Normalisierung wäre eine Änderung
+  an beiden Stellen.
+
 ## Sicherheit
 
 - Kein Handler nimmt eine `customerId` aus der Anfrage, um daraus Rechte abzuleiten — die Lookups sind rein

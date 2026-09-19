@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
 import type { WorkspaceMemberRoleRow } from "@invessiv/common/contracts/auth/rows/workspace-member-role-row";
+import type { WorkspaceMemberScopedRoleRow } from "@invessiv/common/contracts/auth/rows/workspace-member-scoped-role-row";
 import { workspaceMemberMappingService } from "@/server/workspace/access/services/workspace-member-mapping-service";
 
 const CREATED_AT = new Date("2026-09-13T10:00:00.000Z");
@@ -36,6 +37,7 @@ describe("workspaceMemberMappingService.mapRowsToMembers", () => {
         active: true,
         isOwner: false,
         hasActiveRole: false,
+        accessScopeCount: 0,
         roles: [],
         version: 4,
         createdAt: "2026-09-13T10:00:00.000Z",
@@ -112,5 +114,66 @@ describe("workspaceMemberMappingService.mapRowsToMembers", () => {
       "system-member",
       "custom-z",
     ]);
+  });
+
+  describe("scoped grants", () => {
+    function scoped(
+      overrides: Partial<WorkspaceMemberScopedRoleRow> = {},
+    ): WorkspaceMemberScopedRoleRow {
+      return {
+        workspace_member_id: "member-1",
+        role_active: true,
+        ...overrides,
+      };
+    }
+
+    it("counts every scoped grant of the member, inactive roles included", () => {
+      const [member] = workspaceMemberMappingService.mapRowsToMembers(
+        [row({})],
+        [scoped(), scoped(), scoped({ role_active: false })],
+      );
+
+      expect(member.accessScopeCount).toBe(3);
+    });
+
+    it("counts grants per member without mixing them up", () => {
+      const members = workspaceMemberMappingService.mapRowsToMembers(
+        [row({ member_id: "member-1" }), row({ member_id: "member-2" })],
+        [
+          scoped({ workspace_member_id: "member-1" }),
+          scoped({ workspace_member_id: "member-1" }),
+          scoped({ workspace_member_id: "member-2" }),
+        ],
+      );
+
+      expect(members.map((member) => member.accessScopeCount)).toEqual([2, 1]);
+    });
+
+    it("gives a member with only an active scoped role an active role", () => {
+      const [member] = workspaceMemberMappingService.mapRowsToMembers(
+        [row({})],
+        [scoped()],
+      );
+
+      expect(member.hasActiveRole).toBe(true);
+    });
+
+    it("keeps a member without an active role when every scoped role is inactive", () => {
+      const [member] = workspaceMemberMappingService.mapRowsToMembers(
+        [row({})],
+        [scoped({ role_active: false })],
+      );
+
+      expect(member.hasActiveRole).toBe(false);
+      expect(member.accessScopeCount).toBe(1);
+    });
+
+    it("reports zero grants when none are passed", () => {
+      const [member] = workspaceMemberMappingService.mapRowsToMembers([
+        row({}),
+      ]);
+
+      expect(member.accessScopeCount).toBe(0);
+    });
   });
 });

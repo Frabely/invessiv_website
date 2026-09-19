@@ -22,8 +22,10 @@ Neue Methoden am bestehenden Service-Objekt:
 
 Dazu:
 
-- `WorkspaceApiEndpoint` um den Lookup-Pfad aus Task 02 ergänzen. Keine URL-Literale, keine
-  zusammengesetzten Strings — Pfade laufen über die vorhandenen Helfer.
+- **Bereits aus Task 02 vorhanden:** `WorkspaceApiEndpoint.AccessCustomers` und
+  `accessCustomerProjectsEndpoint(customerId)`. Hier nur nutzen. Die Suche läuft als `GET …?search=`.
+  Zusätzlich fehlt noch ein Lookup für die Projekte im Service: `listAccessCustomerProjects(customerId)`.
+  Keine URL-Literale, keine zusammengesetzten Strings — Pfade laufen über die vorhandenen Helfer.
 - HTTP-Methoden, Header, Media-Types und Statuscodes ausschließlich aus
   `@invessiv/common/constants/http/` (`HttpMethod.Delete`, `HttpResponseCode.Conflict`, …).
 - 409 trägt `VersionConflictDto` und wird unverändert an `useVersionedMutation` durchgereicht.

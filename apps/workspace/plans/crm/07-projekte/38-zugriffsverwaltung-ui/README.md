@@ -113,6 +113,52 @@ Kunden: lesen, schreiben · Projekte: lesen · Aufgaben: schreiben
 Reihenfolge der Umsetzung: 01 und 02 parallel, dann 03, dann 04 (unabhängig einschiebbar), dann 05, dann
 06 und 07, dann 08, dann 09, zuletzt 10.
 
+## Umfang je Task
+
+Geschätzt anhand gemessener Vergleichsbausteine im Repo, nicht frei gegriffen: `member-roles-dialog`
+(182/103/207 Zeilen für tsx/css/test), `role-form-dialog` (283/131/226), `customer-contact-section`
+(395/133), `custom-select` (412/274/115), `data-table` (187/149/101), `access-api-service.ts` (248),
+Migration `0032` (196), `smoke-rbac.ts` (539).
+
+| Task                      | Neu | Geändert | ~Zeilen | Womit vergleichbar                                                  |
+| ------------------------- | --: | -------: | ------: | ------------------------------------------------------------------- |
+| 01 Baum-Komponente        |   4 |        1 |    ~530 | zwischen `data-table` und `custom-select`                           |
+| 02 Server-Zuarbeit        |  12 |        5 |    ~850 | DTO + Read-Service + 2 Lookups + 4 Testdateien                      |
+| 03 Client-Service         |   1 |        2 |    ~300 | +110 Zeilen im Service, ~180 Test                                   |
+| 04 Rollen-Dialog          |   1 |        8 |    ~290 | Erweiterung an zwei bestehenden Komponenten                         |
+| 05 Zugriffs-Baum          |  10 |        2 |  ~1.350 | größer als `customer-contact-section` + `role-form-dialog` zusammen |
+| 06 Settings-Dialog        |   3 |        8 |    ~640 | ≈ `member-roles-dialog` plus Listen-Anpassungen                     |
+| 07 Kundenakte             |   5 |        4 |    ~700 | ≈ `customer-contact-section` plus Tests                             |
+| 08 Zuständig ohne Zugriff |   6 |        9 |    ~700 | verteilt über Server, Badge, drei Einbauorte                        |
+| 09 Migration und Fixtures |   1 |        5 |    ~380 | Migration ~60, Smoke +180, Seed +120                                |
+| 10 Abnahme                |   3 |        1 |    ~350 | zwei E2E-Szenarien plus Fixtures                                    |
+| **Summe**                 |  46 |       45 |  ~6.100 | **91 Dateien**                                                      |
+
+Task 11 ist nicht eingerechnet (verschoben).
+
+**91 Dateien liegen im Korridor 50–100 aus `plans/crm/AGENTS.md`, aber am oberen Rand.** Ab 120 verlangt die
+Regel einen Neuschnitt vor Beginn. Zwei Tasks tragen das Risiko:
+
+- **Task 05 ist der Ausreißer.** ~1.350 Zeilen sind unangenehm zu reviewen. Falls er beim Bauen wächst, ist
+  die Naht 05a (Baumaufbau, Zeilenarten, Vererbungshelfer, Mutationen, ~800) gegen 05b (Kundensuche,
+  Lazy-Loading, Rechtevorschau, Leerzustände, ~550). Erst entscheiden, wenn 05a steht — vorher künstlich zu
+  teilen erzeugt eine Halbkomponente.
+- **Task 08 ist die unsicherste Schätzung.** `OwnershipAdapter.requiredPermission` und `scopeOf` existieren
+  heute nicht; je nach Umbautiefe der Registry werden daraus 700 oder 1.100 Zeilen. Das ist der Task, der
+  zuerst aus 07c herausfällt, wenn der PR zu groß wird — das Badge ist nützlich, aber kein Blocker für die
+  Verwaltung selbst.
+
+**Ist-Stand:**
+
+| Task | Geschätzt               | Tatsächlich                                     | Abweichung                                                                                           |
+| ---- | ----------------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| 01   | 5 Dateien, ~530 Zeilen  | 6 Dateien, 483 Zeilen                           | trifft                                                                                               |
+| 02   | 17 Dateien, ~850 Zeilen | 51 Dateien (20 neu, 31 geändert), ~1.450 Zeilen | **Fixtures unterschätzt:** 10 Test-Fixtures brauchen das neue Pflichtfeld; dazu ein Integrationstest |
+
+Die Schätzmethode trägt bei Neubau (Task 01), unterschätzt aber **Streuwirkung**: Ein neues Pflichtfeld an einem
+weit genutzten DTO kostet je Fixture eine Zeile, aber eine Datei im Review. Für Tasks, die bestehende DTOs
+erweitern (03, 06, 08), die Fixture-Zahl vorab mit `grep` ermitteln, statt sie mitzuschätzen.
+
 ## Merge-Gate
 
 Übernommen aus [`../../07c-zugriffsverwaltung-ui/README.md`](../../07c-zugriffsverwaltung-ui/README.md) und um

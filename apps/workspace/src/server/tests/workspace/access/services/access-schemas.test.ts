@@ -18,6 +18,26 @@ describe("accessSchemas.listClerkCandidates", () => {
   });
 });
 
+describe("accessSchemas.listAccessCustomers", () => {
+  it("trims the search and treats a missing one as the first page", () => {
+    expect(
+      accessSchemas.listAccessCustomers.parse({ search: "  Nordlicht " }),
+    ).toEqual({ search: "Nordlicht" });
+    expect(accessSchemas.listAccessCustomers.parse({})).toEqual({ search: "" });
+  });
+
+  it("rejects a search longer than the lookup limit", () => {
+    expect(
+      accessSchemas.listAccessCustomers.safeParse({ search: "a".repeat(100) })
+        .success,
+    ).toBe(true);
+    expect(
+      accessSchemas.listAccessCustomers.safeParse({ search: "a".repeat(101) })
+        .success,
+    ).toBe(false);
+  });
+});
+
 const ROLE_ID = "0b0f1d8e-6a7c-4a44-9c3e-2f3f8f2b7a10";
 
 describe("accessSchemas.createRole", () => {

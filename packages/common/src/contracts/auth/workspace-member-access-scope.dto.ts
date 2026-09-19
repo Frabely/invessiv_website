@@ -4,6 +4,11 @@ import type { AccessScopeDto } from "@invessiv/common/contracts/auth/access-scop
 export interface WorkspaceMemberAccessScopeDto {
   /** Stable scoped-role assignment id. */
   id: string;
+  /**
+   * `workspace_members.id` of the holder, not `users.id`. Lets a list per customer say who holds
+   * each grant without a second lookup.
+   */
+  workspaceMemberId: string;
   /** Assigned role id. */
   roleId: string;
   /** Customer or project boundary. */

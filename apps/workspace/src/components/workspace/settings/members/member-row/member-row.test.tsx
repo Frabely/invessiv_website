@@ -22,6 +22,7 @@ const OWNER: WorkspaceMemberDto = {
   active: true,
   isOwner: true,
   hasActiveRole: true,
+  accessScopeCount: 0,
   roles: [],
   version: 2,
   createdAt: "2026-09-13T10:00:00.000Z",

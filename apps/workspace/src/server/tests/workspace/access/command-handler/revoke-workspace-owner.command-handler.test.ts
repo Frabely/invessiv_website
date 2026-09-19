@@ -52,6 +52,7 @@ const OWNER: WorkspaceMemberDto = {
   active: true,
   isOwner: true,
   hasActiveRole: true,
+  accessScopeCount: 0,
   roles: [{ id: "role-member", name: "Member", systemKey: null, active: true }],
   version: 3,
   createdAt: "2026-09-13T10:00:00.000Z",
@@ -93,6 +94,7 @@ describe("revokeWorkspaceOwner", () => {
         active: false,
         isOwner: false,
         hasActiveRole: true,
+        accessScopeCount: 0,
         version: 4,
       });
     mocks.bump.mockResolvedValue({ ok: true });

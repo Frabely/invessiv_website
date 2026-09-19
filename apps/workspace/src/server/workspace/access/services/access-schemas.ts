@@ -56,8 +56,15 @@ const clerkCandidateQuerySchema = z
   .trim()
   .max(AccessFieldLimits.ClerkCandidateQueryMaxLength);
 
+const accessLookupSearchSchema = z
+  .string()
+  .trim()
+  .max(AccessFieldLimits.AccessLookupQueryMaxLength)
+  .default("");
+
 export const accessSchemas = {
   entityId: z.uuid(),
+  listAccessCustomers: z.object({ search: accessLookupSearchSchema }),
   listClerkCandidates: z.object({
     query: clerkCandidateQuerySchema,
   }),

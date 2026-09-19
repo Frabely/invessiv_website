@@ -4,6 +4,7 @@ import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys"
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
 import { SettingsTab } from "@/common/constants/access/settings-tabs";
 import {
+  accessCustomerProjectsEndpoint,
   workspaceMemberEndpoint,
   workspaceMemberOwnerEndpoint,
   workspaceMemberRolesEndpoint,
@@ -107,6 +108,9 @@ describe("access api endpoints", () => {
     );
     expect(workspaceRoleEndpoint("../leads")).toBe(
       "/api/workspace/roles/..%2Fleads",
+    );
+    expect(accessCustomerProjectsEndpoint("../leads")).toBe(
+      "/api/workspace/access/customers/..%2Fleads/projects",
     );
   });
 });

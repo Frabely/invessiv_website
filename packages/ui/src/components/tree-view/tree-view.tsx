@@ -7,9 +7,6 @@ import type {
 } from "@invessiv/common/contracts/ui/tree-node";
 import styles from "./tree-view.module.css";
 
-// The component renders nested lists with disclosure buttons, not an ARIA `tree`. Rows carry
-// several controls, and a real tree would force cell navigation onto them.
-
 type SharedProps = Pick<
   TreeViewProps,
   | "collapseLabelTemplate"
@@ -117,6 +114,11 @@ function TreeItem({
   );
 }
 
+/**
+ * Controlled disclosure tree. Renders nested lists with disclosure buttons, not an ARIA `tree`:
+ * rows carry several controls, and a real tree would force cell navigation onto them. Expansion
+ * and children come from the consumer; row content comes from `renderRowActions`.
+ */
 export function TreeView({
   ariaLabel,
   collapseLabelTemplate,

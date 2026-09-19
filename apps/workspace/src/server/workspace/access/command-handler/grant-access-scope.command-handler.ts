@@ -188,6 +188,7 @@ export async function grantAccessScope(
         ok: true,
         accessScope: accessScopeMappingService.mapRow({
           id,
+          workspace_member_id: memberId,
           role_id: roleId,
           customer_id: scope.customerId,
           project_id: projectId,
