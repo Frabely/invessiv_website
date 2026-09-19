@@ -1,0 +1,144 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Indentation follows nesting instead of the level attribute, so any depth stays readable. */
+.list .list {
+  padding-left: 12px;
+  border-left: 1px solid
+    color-mix(in srgb, var(--color-border) 60%, transparent);
+  margin-left: 13px;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 8px 4px;
+  border-radius: 6px;
+  color: var(--color-text);
+}
+
+.row:hover {
+  background: color-mix(in srgb, var(--color-surface-2) 55%, transparent);
+}
+
+.toggle {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.toggle:hover {
+  border-color: color-mix(in srgb, var(--color-border) 74%, transparent);
+  color: var(--color-text);
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.toggleIcon {
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 6px solid currentColor;
+  transition: transform 120ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toggleIcon {
+    transition: none;
+  }
+}
+
+.toggle[aria-expanded="true"] .toggleIcon {
+  transform: rotate(90deg);
+}
+
+.toggleSpacer {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+}
+
+.labels {
+  display: flex;
+  flex: 1 1 12rem;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+  min-width: 0;
+}
+
+.label {
+  font-size: var(--font-size-body-sm);
+  overflow-wrap: anywhere;
+}
+
+.secondaryLabel {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  overflow-wrap: anywhere;
+}
+
+/* Mobile first: the actions sit under the label and move beside it once there is room. */
+.actions {
+  display: flex;
+  flex: 1 1 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  padding-left: 36px;
+}
+
+.loading {
+  margin: 0;
+  padding: 2px 4px 6px 40px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (min-width: 640px) {
+  .list .list {
+    padding-left: 20px;
+  }
+
+  .actions {
+    flex: 0 1 auto;
+    justify-content: flex-end;
+    padding-left: 0;
+  }
+}
