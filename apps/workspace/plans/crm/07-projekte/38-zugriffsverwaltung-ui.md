@@ -3,6 +3,10 @@
 > **Merge-Einheit:** Ordner 07c · **Branch:** `feat/crm-zugriffsverwaltung-ui`
 > **Aufwand:** M · **Abhängigkeiten:** Task 36 (API), Task 37 (Filter), Task 02c (Settings-UI), Task 05 (Kundenakte)
 > **Migration:** eine Cleanup-Migration (`NOT NULL` der Merkmalspalten aus Task 36); Nummer im Repository ermitteln
+>
+> **Feinplanung der UI:** [`38-zugriffsverwaltung-ui/`](./38-zugriffsverwaltung-ui/README.md) — dort sind die
+> Tickets T1–T6 durch elf umsetzbare Tasks ersetzt. Die Entscheidungstabelle und der Abschnitt „Nicht Teil
+> dieses Tasks" hier bleiben gültig.
 
 ## Kontext
 
