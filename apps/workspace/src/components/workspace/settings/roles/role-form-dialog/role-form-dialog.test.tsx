@@ -119,6 +119,62 @@ describe("RoleFormDialog", () => {
     });
   });
 
+  it("locks non-scopable permissions visibly without removing a selection", () => {
+    render(
+      <RoleFormDialog
+        content={content}
+        onCloseAction={vi.fn()}
+        permissionsContent={permissionsContent}
+        role={CUSTOM_ROLE}
+      />,
+    );
+
+    fireEvent.click(
+      screen.getByRole("checkbox", { name: content.dialog.scopeLabel }),
+    );
+
+    expect(
+      screen.getByRole("checkbox", { name: /^Leads ansehen/ }),
+    ).toBeChecked();
+    expect(
+      screen.getByRole("checkbox", { name: /^Leads ansehen/ }),
+    ).toBeDisabled();
+    expect(
+      screen.getByText(content.dialog.scopeSelectionWarning),
+    ).toBeVisible();
+    expect(
+      screen.getAllByText(permissionsContent.workspaceOnly).length,
+    ).toBeGreaterThan(0);
+  });
+
+  it("submits the scope-assignable switch", async () => {
+    mocks.createRole.mockResolvedValue({ ok: true, role: { id: "role-1" } });
+    render(
+      <RoleFormDialog
+        content={content}
+        onCloseAction={vi.fn()}
+        permissionsContent={permissionsContent}
+        role={null}
+      />,
+    );
+    fireEvent.change(screen.getByLabelText(/Name/), {
+      target: { value: "Kundenbetreuung" },
+    });
+    fireEvent.click(
+      screen.getByRole("checkbox", { name: content.dialog.scopeLabel }),
+    );
+    fireEvent.click(screen.getByRole("checkbox", { name: /^Kunden ansehen/ }));
+    fireEvent.click(
+      screen.getByRole("button", { name: content.dialog.submitCreate }),
+    );
+
+    await waitFor(() =>
+      expect(mocks.createRole).toHaveBeenCalledWith(
+        expect.objectContaining({ scopeAssignable: true }),
+      ),
+    );
+  });
+
   it("shows a taken name as error and keeps the dialog open", async () => {
     mocks.createRole.mockResolvedValue({
       ok: false,
@@ -222,5 +278,34 @@ describe("RoleFormDialog", () => {
     expect(
       screen.queryByRole("button", { name: content.dialog.submitEdit }),
     ).toBeNull();
+    expect(
+      screen.queryByRole("checkbox", { name: content.dialog.scopeLabel }),
+    ).toBeNull();
+  });
+
+  it("explains why scope assignment cannot be disabled while assignments exist", async () => {
+    mocks.updateRole.mockResolvedValue({
+      ok: false,
+      code: RoleErrorCode.ScopeAssignmentsExist,
+    });
+    render(
+      <RoleFormDialog
+        content={content}
+        onCloseAction={vi.fn()}
+        permissionsContent={permissionsContent}
+        role={{ ...CUSTOM_ROLE, scopeAssignable: true }}
+      />,
+    );
+
+    fireEvent.click(
+      screen.getByRole("checkbox", { name: content.dialog.scopeLabel }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: content.dialog.submitEdit }),
+    );
+
+    expect(
+      await screen.findByText(content.errors.ROLE_SCOPE_ASSIGNMENTS_EXIST),
+    ).toBeVisible();
   });
 });

@@ -73,6 +73,45 @@
   font-weight: 600;
 }
 
+.scopeField {
+  padding: 0.85rem;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-surface-2) 58%, transparent);
+}
+
+.scopeToggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  cursor: pointer;
+}
+
+.scopeToggle:has(input:focus-visible) {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+.scopeText {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.scopeHint {
+  max-width: var(--measure-compact);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+.scopeWarning {
+  margin: -0.45rem 0 0;
+  color: var(--color-danger);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.45;
+}
+
 .message {
   margin: 0;
   padding: 0.65rem 0.8rem;

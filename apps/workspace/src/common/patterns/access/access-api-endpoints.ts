@@ -32,6 +32,15 @@ export function accessCustomerProjectsEndpoint(customerId: string): string {
   return `${WorkspaceApiEndpoint.AccessCustomers}/${encodeURIComponent(customerId)}/${ACCESS_CUSTOMER_PROJECTS_PATH_SEGMENT}`;
 }
 
+export function accessCustomersEndpoint(search: string): string {
+  const query = new URLSearchParams({ search });
+  return `${WorkspaceApiEndpoint.AccessCustomers}?${query.toString()}`;
+}
+
+export function crmCustomerAccessScopesEndpoint(customerId: string): string {
+  return `${WorkspaceApiEndpoint.CrmCustomers}/${encodeURIComponent(customerId)}/${ACCESS_SCOPES_PATH_SEGMENT}`;
+}
+
 export function workspaceRoleEndpoint(roleId: string): string {
   return `${WorkspaceApiEndpoint.Roles}/${encodeURIComponent(roleId)}`;
 }

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 
 type VersionedMutationOutcome<TEntity, TCode extends string> =
-  | { ok: true }
+  | { ok: true; current?: TEntity }
   | {
       ok: false;
       code: typeof ConcurrencyErrorCode.VersionConflict;
@@ -47,6 +47,9 @@ export function useVersionedMutation<TEntity, TCode extends string>(
 
     const outcome = await mutate(current);
     if (outcome.ok) {
+      if (outcome.current !== undefined) {
+        setCurrent(outcome.current);
+      }
       router.refresh();
       onCloseAction();
       return;

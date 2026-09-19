@@ -4,6 +4,10 @@ import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurre
 import type { ClerkCandidateDto } from "@invessiv/common/contracts/auth/clerk-candidate.dto";
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
+import type { WorkspaceMemberAccessScopeDto } from "@invessiv/common/contracts/auth/workspace-member-access-scope.dto";
+import type { AccessScopeEntryDto } from "@invessiv/common/contracts/auth/access-scope-entry.dto";
+import type { AccessCustomerOptionDto } from "@invessiv/common/contracts/auth/access-customer-option.dto";
+import type { AccessProjectOptionDto } from "@invessiv/common/contracts/auth/access-project-option.dto";
 import type { OwnershipResponsibilityCountsDto } from "@invessiv/common/contracts/auth/ownership-responsibility-counts.dto";
 
 /** A 409 carries the fresh state so the dialog can show it without dropping the input. */
@@ -40,4 +44,29 @@ export type RoleMutationClientResult =
 
 export type ClerkCandidatesClientResult =
   | { ok: true; candidates: ClerkCandidateDto[] }
+  | { ok: false; code: WorkspaceMemberErrorCode };
+
+export type AccessScopeMutationClientResult =
+  | {
+      ok: true;
+      member: WorkspaceMemberDto;
+      accessScope?: WorkspaceMemberAccessScopeDto;
+    }
+  | {
+      ok: false;
+      code: typeof ConcurrencyErrorCode.VersionConflict;
+      current: WorkspaceMemberDto;
+    }
+  | { ok: false; code: WorkspaceMemberErrorCode };
+
+export type AccessScopeListClientResult =
+  | { ok: true; accessScopes: AccessScopeEntryDto[] }
+  | { ok: false; code: WorkspaceMemberErrorCode };
+
+export type AccessCustomerListClientResult =
+  | { ok: true; customers: AccessCustomerOptionDto[] }
+  | { ok: false; code: WorkspaceMemberErrorCode };
+
+export type AccessProjectListClientResult =
+  | { ok: true; projects: AccessProjectOptionDto[] }
   | { ok: false; code: WorkspaceMemberErrorCode };

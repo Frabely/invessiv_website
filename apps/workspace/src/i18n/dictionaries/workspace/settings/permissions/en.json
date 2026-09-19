@@ -132,5 +132,7 @@
   },
   "ownerOnly": "Owner only",
   "ownerOnlyHint": "This permission cannot be given to a custom role.",
+  "workspaceOnly": "Workspace-wide only",
+  "workspaceOnlyHint": "This permission does not apply to individual customers or projects.",
   "none": "No permissions"
 }

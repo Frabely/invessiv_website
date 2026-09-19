@@ -1,7 +1,7 @@
 # Zugriffsverwaltung-UI — Feinplanung zu Task 38
 
 > **Gehört zu:** [`../38-zugriffsverwaltung-ui.md`](../38-zugriffsverwaltung-ui.md) · **Merge-Einheit:** Ordner 07c
-> **Branch:** `feat/crm-zugriffsverwaltung-ui` · **Status:** offen
+> **Branch:** `feat/crm-zugriffsverwaltung-ui` · **Status:** läuft
 
 Task 38 beschreibt die Zugriffsverwaltung in sechs groben Tickets. Dieser Ordner schneidet dieselbe Einheit in
 umsetzbare Tasks und hält die UI-Entscheidungen fest, die dort offen geblieben sind. Er ersetzt die Tickets

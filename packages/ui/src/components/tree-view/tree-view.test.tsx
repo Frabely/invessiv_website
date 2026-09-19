@@ -136,6 +136,17 @@ describe("TreeView", () => {
     expect(screen.queryByText("Loading children")).not.toBeInTheDocument();
   });
 
+  it("uses a block container for arbitrary row actions", () => {
+    renderTree({
+      renderRowActions: () => <div data-testid="row-actions">Action</div>,
+    });
+
+    expect(screen.getByTestId("row-actions").parentElement).toHaveProperty(
+      "tagName",
+      "DIV",
+    );
+  });
+
   it("passes every node with its depth to renderRowActions", () => {
     const renderRowActions = vi.fn(() => null);
 

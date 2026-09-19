@@ -94,9 +94,9 @@ function TreeItem({
             <span className={styles.secondaryLabel}>{node.secondaryLabel}</span>
           )}
         </span>
-        <span className={styles.actions}>
+        <div className={styles.actions}>
           {shared.renderRowActions(node, level)}
-        </span>
+        </div>
       </div>
       {shared.loadingIds.includes(node.id) ? (
         <p className={styles.loading}>{shared.loadingLabel}</p>

@@ -3,6 +3,7 @@
 import { type SubmitEvent, useId, useState } from "react";
 
 import type { RoleErrorCode } from "@invessiv/common/constants/auth/errors/role-error-codes";
+import { PERMISSION_DEFINITIONS } from "@invessiv/common/constants/auth/permission-definitions";
 import {
   type Permission,
   PERMISSION_VALUES,
@@ -50,11 +51,15 @@ export function RoleFormDialog({
 }: RoleFormDialogProps) {
   const formId = useId();
   const activeId = useId();
+  const scopeAssignableId = useId();
   const text = content.dialog;
   const readOnly = role?.isSystem ?? false;
   const [name, setName] = useState(role?.name ?? "");
   const [description, setDescription] = useState(role?.description ?? "");
   const [active, setActive] = useState(role?.active ?? true);
+  const [scopeAssignable, setScopeAssignable] = useState(
+    role?.scopeAssignable ?? false,
+  );
   const [permissions, setPermissions] = useState<Permission[]>(
     role?.permissions ?? [],
   );
@@ -92,7 +97,7 @@ export function RoleFormDialog({
             name,
             description: normalizedDescription,
             active,
-            scopeAssignable: current.scopeAssignable ?? false,
+            scopeAssignable,
             permissions,
             version: current.version,
           })
@@ -100,7 +105,7 @@ export function RoleFormDialog({
             name,
             description: normalizedDescription,
             permissions,
-            scopeAssignable: false,
+            scopeAssignable,
           }),
     );
   }
@@ -226,14 +231,39 @@ export function RoleFormDialog({
           }}
         />
 
+        <div className={styles.scopeField}>
+          <label className={styles.scopeToggle} htmlFor={scopeAssignableId}>
+            <CheckboxControl
+              aria-label={text.scopeLabel}
+              checked={scopeAssignable}
+              id={scopeAssignableId}
+              onChange={(event) => setScopeAssignable(event.target.checked)}
+            />
+            <span className={styles.scopeText}>
+              <span className={styles.toggleLabel}>{text.scopeLabel}</span>
+              <span className={styles.scopeHint}>{text.scopeHint}</span>
+            </span>
+          </label>
+        </div>
+
         <PermissionPicker
           content={permissionsContent}
           legend={text.permissionsLabel}
           lockNonDelegable
+          lockNonScopeAssignable={scopeAssignable}
           onToggleAction={togglePermission}
           readOnly={false}
           selected={permissions}
         />
+
+        {scopeAssignable &&
+        permissions.some(
+          (permission) => !PERMISSION_DEFINITIONS[permission].scopeAssignable,
+        ) ? (
+          <p className={styles.scopeWarning} role="alert">
+            {text.scopeSelectionWarning}
+          </p>
+        ) : null}
 
         {mutation.hasConflict ? (
           <section
