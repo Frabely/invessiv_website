@@ -42,7 +42,8 @@ Komponententests; sie belegen Bausteine, nicht den Ablauf.
 - Mobil: Baumzeilen brechen um, Aktionen laufen nicht über.
 - Dark und Light gleichwertig.
 - DE und EN vollständig, keine Encoding-Artefakte, keine ASCII-Umschreibungen.
-- Kein toter Button, keine Route ins Leere.
+- Kein toter Button, keine Route ins Leere. Der Hinweis für inaktive Zuständige bleibt bis Ordner 24 bewusst
+  beobachtend; er darf keinen nicht funktionierenden CTA enthalten.
 
 ## Gates
 
@@ -50,7 +51,8 @@ Komponententests; sie belegen Bausteine, nicht den Ablauf.
 pnpm -r lint
 pnpm -r typecheck
 pnpm -r test
-pnpm db:smoke:rbac
+pnpm --filter @invessiv/db db:smoke:rbac
+pnpm --filter @invessiv/workspace db:smoke:access
 pnpm --filter @invessiv/workspace build
 ```
 

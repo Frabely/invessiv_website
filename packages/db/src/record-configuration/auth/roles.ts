@@ -29,7 +29,7 @@ export const roles = pgTable(
     description: text("description"),
     is_system: boolean("is_system").notNull(),
     active: boolean("active").notNull(),
-    scope_assignable: boolean("scope_assignable"),
+    scope_assignable: boolean("scope_assignable").notNull(),
     version: integer("version").notNull(),
     created_at: timestamp("created_at", { withTimezone: true })
       .notNull()

@@ -19,10 +19,14 @@ import {
   customers,
   leadCategories,
   people,
+  projects,
+  rolePermissions,
+  roles,
   serviceTemplates,
   users,
   workspaceMemberRoles,
   workspaceMembers,
+  workspaceMemberScopedRoles,
 } from "@invessiv/db/record-configuration";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
@@ -30,10 +34,15 @@ import { SystemActorKey } from "@invessiv/common/constants/activity/system-actor
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { SYSTEM_ROLE_DEFINITIONS } from "@invessiv/common/constants/auth/system-role-definitions";
 import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
+import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
 import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { ServiceTemplateStatus } from "@invessiv/common/constants/crm/service-template-statuses";
+import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
+import { ProjectPhase } from "@invessiv/common/constants/crm/project-phases";
+import { ProjectBillingModel } from "@invessiv/common/constants/crm/project-billing-models";
+import { ProjectWorkflowKey } from "@invessiv/common/constants/crm/project-workflows";
 import { Locale } from "@invessiv/common/contracts/i18n/locale";
 import {
   configureDatabaseUrlFromTarget,
@@ -43,6 +52,11 @@ import {
 
 const FIXTURE_PREFIX = "fixture:crm:";
 const ALLOWED_SEED_TARGETS: DatabaseTarget[] = ["development", "preview"];
+
+const ACCESS_ROLE_NAMES = {
+  CustomerManager: `${FIXTURE_PREFIX}Customer manager`,
+  ProjectReader: `${FIXTURE_PREFIX}Project reader`,
+} as const;
 
 type PersonFixture = {
   key: string;
@@ -250,12 +264,14 @@ async function resetFixtureRows(tx: ContactDatabaseTransaction) {
     .where(like(customers.notes, pattern));
 
   if (fixtureCustomers.length > 0) {
-    await tx.delete(customerContactAssignments).where(
-      inArray(
-        customerContactAssignments.customer_id,
-        fixtureCustomers.map((row) => row.id),
-      ),
-    );
+    const customerIds = fixtureCustomers.map((row) => row.id);
+    await tx
+      .delete(workspaceMemberScopedRoles)
+      .where(inArray(workspaceMemberScopedRoles.customer_id, customerIds));
+    await tx.delete(projects).where(inArray(projects.customer_id, customerIds));
+    await tx
+      .delete(customerContactAssignments)
+      .where(inArray(customerContactAssignments.customer_id, customerIds));
     await tx.delete(customers).where(like(customers.notes, pattern));
   }
 
@@ -286,6 +302,10 @@ async function resetFixtureRows(tx: ContactDatabaseTransaction) {
       .where(inArray(workspaceMembers.id, memberIds));
   }
 
+  await tx
+    .delete(roles)
+    .where(inArray(roles.name, Object.values(ACCESS_ROLE_NAMES)));
+
   await tx.delete(users).where(inArray(users.id, userIds));
 }
 
@@ -293,17 +313,20 @@ async function resetFixtureRows(tx: ContactDatabaseTransaction) {
  * The fixture member deliberately holds the member role, not the owner role: an active fixture
  * owner would close the owner bootstrap for the developer's real Clerk account.
  */
-async function createFixtureMember(tx: ContactDatabaseTransaction) {
+async function createFixtureMember(
+  tx: ContactDatabaseTransaction,
+  key: string,
+) {
   const userId = randomUUID();
   const memberId = randomUUID();
 
   await tx.insert(users).values({
     id: userId,
-    clerk_user_id: `${FIXTURE_PREFIX}member`,
-    primary_email: "fixture-member@example.test",
+    clerk_user_id: `${FIXTURE_PREFIX}${key}`,
+    primary_email: `fixture-${key}@example.test`,
     first_name: "Fixture",
     last_name: "Mitglied",
-    display_name: "Fixture Mitglied",
+    display_name: `Fixture ${key}`,
     active: true,
     version: 1,
   });
@@ -323,7 +346,7 @@ async function createFixtureMember(tx: ContactDatabaseTransaction) {
     assigned_at: new Date(),
   });
 
-  return memberId;
+  return { memberId, userId };
 }
 
 async function run() {
@@ -350,7 +373,9 @@ async function run() {
 
     await tx.insert(serviceTemplates).values([...SERVICE_TEMPLATE_FIXTURES]);
 
-    const ownerMemberId = await createFixtureMember(tx);
+    const owner = await createFixtureMember(tx, "owner");
+    const customerMember = await createFixtureMember(tx, "customer-member");
+    const projectMember = await createFixtureMember(tx, "project-member");
     const categoryIds = await resolveCategoryIds(tx);
 
     const personIds = new Map<string, string>();
@@ -382,7 +407,7 @@ async function run() {
           display_name: customer.displayName,
           company_name: customer.companyName,
           status: customer.status,
-          owner_member_id: ownerMemberId,
+          owner_member_id: owner.memberId,
           category_id: customer.categorySlug
             ? (categoryIds.get(customer.categorySlug) ?? null)
             : null,
@@ -414,6 +439,100 @@ async function run() {
         })),
       ),
     );
+
+    const customerManagerRoleId = randomUUID();
+    const projectReaderRoleId = randomUUID();
+    await tx.insert(roles).values([
+      {
+        id: customerManagerRoleId,
+        realm: AuthRealm.Workspace,
+        system_key: null,
+        name: ACCESS_ROLE_NAMES.CustomerManager,
+        description: "Fixture role for customer-scoped access.",
+        is_system: false,
+        active: true,
+        scope_assignable: true,
+        version: 1,
+      },
+      {
+        id: projectReaderRoleId,
+        realm: AuthRealm.Workspace,
+        system_key: null,
+        name: ACCESS_ROLE_NAMES.ProjectReader,
+        description: "Fixture role for project-scoped access.",
+        is_system: false,
+        active: true,
+        scope_assignable: true,
+        version: 1,
+      },
+    ]);
+    await tx.insert(rolePermissions).values([
+      {
+        role_id: customerManagerRoleId,
+        realm: AuthRealm.Workspace,
+        role_is_system: false,
+        role_scope_assignable: true,
+        permission_key: Permission.CustomersRead,
+        permission_delegable: true,
+        permission_scope_assignable: true,
+      },
+      {
+        role_id: projectReaderRoleId,
+        realm: AuthRealm.Workspace,
+        role_is_system: false,
+        role_scope_assignable: true,
+        permission_key: Permission.ProjectsRead,
+        permission_delegable: true,
+        permission_scope_assignable: true,
+      },
+    ]);
+
+    const nordlichtId = customerIds.get("nordlicht") as string;
+    const projectId = randomUUID();
+    await tx.insert(projects).values({
+      id: projectId,
+      customer_id: nordlichtId,
+      owner_member_id: owner.memberId,
+      title: "Website-Relaunch",
+      status: ProjectStatus.Active,
+      phase: ProjectPhase.Development,
+      process_steps: [ProjectPhase.Onboarding, ProjectPhase.Development],
+      current_process_step: ProjectPhase.Development,
+      workflow_key: ProjectWorkflowKey.StandardWebV1,
+      billing_model: ProjectBillingModel.FixedPrice,
+      included_feedback_rounds: 2,
+      preview_url: null,
+      next_step_label: null,
+      next_step_due_on: null,
+      started_on: null,
+      budget_cents: null,
+      hourly_rate_cents: null,
+      version: 1,
+    });
+    await tx.insert(workspaceMemberScopedRoles).values([
+      {
+        id: randomUUID(),
+        workspace_member_id: customerMember.memberId,
+        role_id: customerManagerRoleId,
+        role_realm: AuthRealm.Workspace,
+        role_scope_assignable: true,
+        customer_id: nordlichtId,
+        project_id: null,
+        assigned_by_user_id: owner.userId,
+        assigned_at: new Date(),
+      },
+      {
+        id: randomUUID(),
+        workspace_member_id: projectMember.memberId,
+        role_id: projectReaderRoleId,
+        role_realm: AuthRealm.Workspace,
+        role_scope_assignable: true,
+        customer_id: nordlichtId,
+        project_id: projectId,
+        assigned_by_user_id: owner.userId,
+        assigned_at: new Date(),
+      },
+    ]);
 
     const occurredAt = new Date();
     await tx.insert(activities).values(

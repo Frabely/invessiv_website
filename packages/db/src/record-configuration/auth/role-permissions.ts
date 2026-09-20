@@ -28,10 +28,12 @@ export const rolePermissions = pgTable(
     role_id: uuid("role_id").notNull(),
     realm: text("realm", { enum: AUTH_REALM_VALUES }).notNull(),
     role_is_system: boolean("role_is_system").notNull(),
-    role_scope_assignable: boolean("role_scope_assignable"),
+    role_scope_assignable: boolean("role_scope_assignable").notNull(),
     permission_key: text("permission_key").notNull(),
     permission_delegable: boolean("permission_delegable").notNull(),
-    permission_scope_assignable: boolean("permission_scope_assignable"),
+    permission_scope_assignable: boolean(
+      "permission_scope_assignable",
+    ).notNull(),
     created_at: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
