@@ -22,7 +22,7 @@ export const permissions = pgTable(
     key: text("key").primaryKey(),
     realm: text("realm", { enum: AUTH_REALM_VALUES }).notNull(),
     delegable: boolean("delegable").notNull(),
-    scope_assignable: boolean("scope_assignable"),
+    scope_assignable: boolean("scope_assignable").notNull(),
     description: text("description").notNull(),
   },
   (table) => [

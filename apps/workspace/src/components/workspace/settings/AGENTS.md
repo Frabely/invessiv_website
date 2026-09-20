@@ -37,3 +37,5 @@ Jede Komponente lebt in `<group>/<component-name>/<component-name>.tsx` mit eige
 - i18n ausschließlich aus `src/i18n/dictionaries/workspace/settings/`; DE und EN parallel.
 - Keine PII in Logs oder URLs; E-Mail-Adressen erscheinen nur als Anzeige in der Liste.
 - Interaktive Komponenten (Dialoge) bekommen co-located Tests.
+- Im Zugriffsbaum ist jeder direkte Haken eine sofortige Mutation. Vererbte Haken sind reine Darstellung und nie eine
+  Zugriffsentscheidung; die Wurzelzeile „Alle Kunden“ bleibt lesend.

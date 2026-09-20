@@ -1,6 +1,7 @@
-.form {
-  display: flex;
-  flex-direction: column;
+.shell,
+.form,
+.customerPanel {
+  display: grid;
   gap: 1rem;
 }
 
@@ -17,11 +18,18 @@
   gap: 0.6rem;
 }
 
-.note {
+.note,
+.immediateNote {
   margin: 0;
   color: var(--color-text-muted);
   font-size: var(--font-size-ui-sm);
   line-height: 1.5;
+}
+
+.immediateNote {
+  padding: 0.65rem 0.8rem;
+  border-left: 3px solid var(--color-cta);
+  background: color-mix(in srgb, var(--color-cta) 8%, transparent);
 }
 
 .preview {

@@ -55,6 +55,9 @@ export function RoleFormDialog({
   const [name, setName] = useState(role?.name ?? "");
   const [description, setDescription] = useState(role?.description ?? "");
   const [active, setActive] = useState(role?.active ?? true);
+  const [scopeAssignable, setScopeAssignable] = useState<boolean | null>(
+    role?.scopeAssignable ?? null,
+  );
   const [permissions, setPermissions] = useState<Permission[]>(
     role?.permissions ?? [],
   );
@@ -81,7 +84,7 @@ export function RoleFormDialog({
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     setShowValidation(true);
-    if (!name.trim()) {
+    if (!name.trim() || scopeAssignable === null) {
       return;
     }
 
@@ -92,7 +95,6 @@ export function RoleFormDialog({
             name,
             description: normalizedDescription,
             active,
-            scopeAssignable: current.scopeAssignable ?? false,
             permissions,
             version: current.version,
           })
@@ -100,7 +102,7 @@ export function RoleFormDialog({
             name,
             description: normalizedDescription,
             permissions,
-            scopeAssignable: false,
+            scopeAssignable,
           }),
     );
   }
@@ -123,6 +125,8 @@ export function RoleFormDialog({
       >
         <div className={styles.form}>
           <div className={styles.readOnlyIntro}>
+            <span className={styles.typeBadge}>{text.systemRoleType}</span>
+            <span className={styles.typeBadge}>{text.globalType}</span>
             <span className={styles.readOnlyBadge}>{text.readOnlyLabel}</span>
             {roleDescription ? (
               <p className={styles.roleDescription}>{roleDescription}</p>
@@ -140,6 +144,53 @@ export function RoleFormDialog({
     );
   }
 
+  if (!role && scopeAssignable === null) {
+    return (
+      <Dialog
+        closeLabel={text.close}
+        description={text.typeSelectionDescription}
+        footer={
+          <ButtonControl onClick={onCloseAction} type="button" variant="ghost">
+            {text.cancel}
+          </ButtonControl>
+        }
+        onCloseAction={onCloseAction}
+        size={DialogSize.Wide}
+        title={text.typeSelectionTitle}
+      >
+        <div className={styles.typeGrid}>
+          <button
+            className={styles.typeCard}
+            onClick={() => {
+              setPermissions([]);
+              setScopeAssignable(false);
+            }}
+            type="button"
+          >
+            <span className={styles.typeCardTag}>{text.globalType}</span>
+            <strong>{text.globalRoleTitle}</strong>
+            <span>{text.globalRoleDescription}</span>
+          </button>
+          <button
+            className={styles.typeCard}
+            onClick={() => {
+              setPermissions([]);
+              setScopeAssignable(true);
+            }}
+            type="button"
+          >
+            <span className={styles.typeCardTag}>{text.customerRoleType}</span>
+            <strong>{text.customerRoleTitle}</strong>
+            <span>{text.customerRoleDescription}</span>
+          </button>
+        </div>
+      </Dialog>
+    );
+  }
+
+  const selectedScopeAssignable =
+    scopeAssignable ?? role?.scopeAssignable ?? false;
+
   return (
     <Dialog
       busy={mutation.isSubmitting}
@@ -147,6 +198,16 @@ export function RoleFormDialog({
       description={text.description}
       footer={
         <>
+          {!role ? (
+            <ButtonControl
+              disabled={mutation.isSubmitting}
+              onClick={() => setScopeAssignable(null)}
+              type="button"
+              variant="ghost"
+            >
+              {text.backToTypeSelection}
+            </ButtonControl>
+          ) : null}
           <ButtonControl
             disabled={mutation.isSubmitting}
             onClick={mutation.close}
@@ -213,6 +274,13 @@ export function RoleFormDialog({
           ) : null}
         </div>
 
+        <div className={styles.roleTypeLine}>
+          <span className={styles.fieldLabel}>{text.roleTypeLabel}</span>
+          <span className={styles.typeBadge}>
+            {selectedScopeAssignable ? text.customerRoleType : text.globalType}
+          </span>
+        </div>
+
         <FormField
           kind={FormFieldKind.Textarea}
           label={text.descriptionLabel}
@@ -230,6 +298,7 @@ export function RoleFormDialog({
           content={permissionsContent}
           legend={text.permissionsLabel}
           lockNonDelegable
+          onlyScopeAssignable={selectedScopeAssignable}
           onToggleAction={togglePermission}
           readOnly={false}
           selected={permissions}

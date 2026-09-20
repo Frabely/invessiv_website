@@ -17,4 +17,5 @@ export * from "./components/detail/detail-section/detail-section";
 export * from "./components/side-panel/side-panel";
 export * from "./components/skeleton/skeleton";
 export * from "./components/table-row-actions/table-row-actions";
+export * from "./components/tree-view/tree-view";
 export { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";

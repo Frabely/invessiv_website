@@ -107,6 +107,7 @@ describe.skipIf(!RUN_INTEGRATION)(
         description: null,
         is_system: false,
         active: options.active ?? true,
+        scope_assignable: false,
         version: 1,
       });
       if (permissions.length > 0) {
@@ -115,8 +116,11 @@ describe.skipIf(!RUN_INTEGRATION)(
             role_id: id,
             realm: AuthRealm.Workspace,
             role_is_system: false,
+            role_scope_assignable: false,
             permission_key: permission,
             permission_delegable: PERMISSION_DEFINITIONS[permission].delegable,
+            permission_scope_assignable:
+              PERMISSION_DEFINITIONS[permission].scopeAssignable,
           })),
         );
       }

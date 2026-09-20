@@ -31,12 +31,7 @@ export async function createRole(
     };
   }
 
-  const {
-    name,
-    description,
-    permissions,
-    scopeAssignable = false,
-  } = validation.data;
+  const { name, description, permissions, scopeAssignable } = validation.data;
   // System roles appear under their translated label, so a custom role must not look like one.
   if (reservedRoleNameService.isReserved(name)) {
     return { ok: false, code: RoleErrorCode.RoleNameReserved };

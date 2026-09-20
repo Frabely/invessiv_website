@@ -18,12 +18,7 @@ import {
   getDrizzleDatabaseClient,
   PostgresErrorCode,
 } from "@invessiv/db/core";
-import {
-  rolePermissions,
-  roles,
-  workspaceMemberRoles,
-  workspaceMemberScopedRoles,
-} from "@invessiv/db/record-configuration";
+import { rolePermissions, roles } from "@invessiv/db/record-configuration";
 import { RolesConstraintName } from "@invessiv/db/constraint-names/auth/roles-constraint-names";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessSchemas } from "@/server/workspace/access/services/access-schemas";
@@ -32,11 +27,6 @@ import { roleReadService } from "@/server/workspace/access/services/role-read-se
 import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
 import { updateVersioned } from "@/server/workspace/shared/update-versioned";
 import { postgresErrorService } from "@/server/workspace/shared/services/postgres-error-service";
-
-type ScopeAssignabilityViolation =
-  | typeof RoleErrorCode.PermissionNotScopeAssignable
-  | typeof RoleErrorCode.ScopeAssignmentsExist
-  | typeof RoleErrorCode.WorkspaceAssignmentsExist;
 
 type RoleChange = {
   name: string;
@@ -59,73 +49,6 @@ async function lockRole(
     .for("update");
 }
 
-async function hasScopedAssignments(
-  tx: ContactDatabaseTransaction,
-  roleId: string,
-): Promise<boolean> {
-  const [assignment] = await tx
-    .select({ id: workspaceMemberScopedRoles.id })
-    .from(workspaceMemberScopedRoles)
-    .where(eq(workspaceMemberScopedRoles.role_id, roleId))
-    .limit(1);
-
-  return Boolean(assignment);
-}
-
-async function hasWorkspaceAssignments(
-  tx: ContactDatabaseTransaction,
-  roleId: string,
-): Promise<boolean> {
-  const [assignment] = await tx
-    .select({ id: workspaceMemberRoles.role_id })
-    .from(workspaceMemberRoles)
-    .where(eq(workspaceMemberRoles.role_id, roleId))
-    .limit(1);
-
-  return Boolean(assignment);
-}
-
-/**
- * A scope-assignable role may only hold scope-assignable permissions, and it can switch mode only
- * while it has no assignments of the other kind.
- */
-async function findScopeAssignabilityViolation(
-  tx: ContactDatabaseTransaction,
-  args: {
-    roleId: string;
-    wasScopeAssignable: boolean;
-    scopeAssignable: boolean;
-    permissions: readonly Permission[];
-  },
-): Promise<ScopeAssignabilityViolation | null> {
-  const { roleId, wasScopeAssignable, scopeAssignable, permissions } = args;
-
-  if (
-    scopeAssignable &&
-    permissions.some(
-      (permission) => !PERMISSION_DEFINITIONS[permission].scopeAssignable,
-    )
-  ) {
-    return RoleErrorCode.PermissionNotScopeAssignable;
-  }
-  if (
-    !scopeAssignable &&
-    wasScopeAssignable &&
-    (await hasScopedAssignments(tx, roleId))
-  ) {
-    return RoleErrorCode.ScopeAssignmentsExist;
-  }
-  if (
-    scopeAssignable &&
-    !wasScopeAssignable &&
-    (await hasWorkspaceAssignments(tx, roleId))
-  ) {
-    return RoleErrorCode.WorkspaceAssignmentsExist;
-  }
-
-  return null;
-}
-
 function diffRole(current: RoleDto, next: RoleChange) {
   const addedPermissions = next.permissions.filter(
     (permission) => !current.permissions.includes(permission),
@@ -137,9 +60,6 @@ function diffRole(current: RoleDto, next: RoleChange) {
     ...(next.name !== current.name ? ["name"] : []),
     ...(next.description !== current.description ? ["description"] : []),
     ...(next.active !== current.active ? ["active"] : []),
-    ...(next.scopeAssignable !== current.scopeAssignable
-      ? ["scopeAssignable"]
-      : []),
     ...(addedPermissions.length > 0 || removedPermissions.length > 0
       ? ["permissions"]
       : []),
@@ -213,7 +133,7 @@ async function resolveFailedVersionBump(
 async function updateRoleInTransaction(
   tx: ContactDatabaseTransaction,
   roleId: string,
-  change: Omit<RoleChange, "scopeAssignable"> & { scopeAssignable?: boolean },
+  change: Omit<RoleChange, "scopeAssignable">,
   actor: WorkspaceActor,
 ): Promise<UpdateRoleResult> {
   await lockRole(tx, roleId);
@@ -228,16 +148,15 @@ async function updateRoleInTransaction(
 
   const next: RoleChange = {
     ...change,
-    scopeAssignable: change.scopeAssignable ?? current.scopeAssignable === true,
+    scopeAssignable: current.scopeAssignable,
   };
-  const violation = await findScopeAssignabilityViolation(tx, {
-    roleId,
-    wasScopeAssignable: current.scopeAssignable === true,
-    scopeAssignable: next.scopeAssignable,
-    permissions: next.permissions,
-  });
-  if (violation) {
-    return { ok: false, code: violation };
+  if (
+    next.scopeAssignable &&
+    next.permissions.some(
+      (permission) => !PERMISSION_DEFINITIONS[permission].scopeAssignable,
+    )
+  ) {
+    return { ok: false, code: RoleErrorCode.PermissionNotScopeAssignable };
   }
   if (reservedRoleNameService.isReserved(next.name)) {
     return { ok: false, code: RoleErrorCode.RoleNameReserved };
@@ -260,7 +179,6 @@ async function updateRoleInTransaction(
       name: next.name,
       description: next.description,
       active: next.active,
-      scope_assignable: next.scopeAssignable,
     },
     toDto: (row) => row.version,
   });

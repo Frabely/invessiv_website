@@ -65,6 +65,10 @@ App-spezifische Varianten, Labels, Option-Icons oder Fachlogik bleiben beim kons
 Props
 an die UI-Komponente übergeben.
 
+Strukturkomponenten, deren Zeilen wechselnde Bedienelemente tragen (z. B. `TreeView`), nehmen diesen Inhalt über eine
+Render-Prop entgegen statt über eigene Varianten. So bleibt die Komponente frei von Fachbegriffen, und eine zweite
+Nutzung erzwingt keine Erweiterung im Paket.
+
 ## Paket-Exports
 
 Jedes Package exportiert öffentliche API über `src/index.ts` und `package.json` `exports`. Apps importieren aus

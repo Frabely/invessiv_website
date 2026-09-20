@@ -18,6 +18,26 @@ describe("accessSchemas.listClerkCandidates", () => {
   });
 });
 
+describe("accessSchemas.listAccessCustomers", () => {
+  it("trims the search and treats a missing one as the first page", () => {
+    expect(
+      accessSchemas.listAccessCustomers.parse({ search: "  Nordlicht " }),
+    ).toEqual({ search: "Nordlicht" });
+    expect(accessSchemas.listAccessCustomers.parse({})).toEqual({ search: "" });
+  });
+
+  it("rejects a search longer than the lookup limit", () => {
+    expect(
+      accessSchemas.listAccessCustomers.safeParse({ search: "a".repeat(100) })
+        .success,
+    ).toBe(true);
+    expect(
+      accessSchemas.listAccessCustomers.safeParse({ search: "a".repeat(101) })
+        .success,
+    ).toBe(false);
+  });
+});
+
 const ROLE_ID = "0b0f1d8e-6a7c-4a44-9c3e-2f3f8f2b7a10";
 
 describe("accessSchemas.createRole", () => {
@@ -26,12 +46,14 @@ describe("accessSchemas.createRole", () => {
       name: "  Sales  ",
       description: "   ",
       permissions: [Permission.LeadsRead],
+      scopeAssignable: false,
     });
 
     expect(result.success && result.data).toEqual({
       name: "Sales",
       description: null,
       permissions: [Permission.LeadsRead],
+      scopeAssignable: false,
     });
   });
 
@@ -41,6 +63,7 @@ describe("accessSchemas.createRole", () => {
         name: " ",
         description: null,
         permissions: [],
+        scopeAssignable: false,
       }).success,
     ).toBe(false);
     expect(
@@ -48,6 +71,7 @@ describe("accessSchemas.createRole", () => {
         name: "Sales",
         description: null,
         permissions: [Permission.LeadsRead, Permission.LeadsRead],
+        scopeAssignable: false,
       }).success,
     ).toBe(false);
     expect(
@@ -55,6 +79,17 @@ describe("accessSchemas.createRole", () => {
         name: "Sales",
         description: null,
         permissions: ["leads.teleport"],
+        scopeAssignable: false,
+      }).success,
+    ).toBe(false);
+  });
+
+  it("requires an explicit role type", () => {
+    expect(
+      accessSchemas.createRole.safeParse({
+        name: "Sales",
+        description: null,
+        permissions: [],
       }).success,
     ).toBe(false);
   });
@@ -65,8 +100,36 @@ describe("accessSchemas.createRole", () => {
         name: "Escalation",
         description: null,
         permissions: [Permission.MembersManage],
+        scopeAssignable: false,
       }).success,
     ).toBe(true);
+  });
+});
+
+describe("accessSchemas.updateRole", () => {
+  it("accepts the editable fields without the immutable role type", () => {
+    expect(
+      accessSchemas.updateRole.safeParse({
+        name: "Sales",
+        description: null,
+        active: true,
+        permissions: [Permission.LeadsRead],
+        version: 1,
+      }).success,
+    ).toBe(true);
+  });
+
+  it("rejects a request that still carries scopeAssignable, since the type is immutable", () => {
+    expect(
+      accessSchemas.updateRole.safeParse({
+        name: "Sales",
+        description: null,
+        active: true,
+        permissions: [Permission.LeadsRead],
+        version: 1,
+        scopeAssignable: true,
+      }).success,
+    ).toBe(false);
   });
 });
 

@@ -1,9 +1,46 @@
 .row {
   display: grid;
-  grid-template-columns: auto minmax(12rem, 1.1fr) minmax(10rem, 1.3fr) auto;
+  grid-template-columns: auto minmax(12rem, 1.1fr) minmax(10rem, 1.3fr) minmax(
+      9rem,
+      auto
+    ) auto;
   align-items: center;
   gap: 0.75rem 1.1rem;
   padding: 0.9rem 1.1rem;
+}
+
+.accessCount {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.accessSummary {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.responsibilityIssue {
+  width: fit-content;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-cta);
+  font: inherit;
+  font-size: var(--font-size-ui-xs);
+  font-weight: 700;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.responsibilityIssue:focus-visible {
+  border-radius: 3px;
+  outline: 2px solid var(--color-cta);
+  outline-offset: 3px;
 }
 
 .row + .row {
@@ -157,6 +194,7 @@
   }
 
   .roles,
+  .accessCount,
   .actions {
     grid-column: 2;
   }

@@ -11,8 +11,8 @@
     "db:smoke:crm": "vitest run src/server/tests/workspace/shared/update-versioned.integration.test.ts src/server/tests/workspace/access/member-responsibility-lock.integration.test.ts src/server/tests/workspace/crm/command-handler/convert-lead-to-customer.integration.test.ts --mode crm-integration",
     "db:smoke:activities": "vitest run src/server/tests/workspace/shared/services/activity-service.integration.test.ts --mode activity-integration",
     "db:smoke:rbac": "vitest run src/server/tests/workspace/auth/workspace-authorization.integration.test.ts --mode rbac-integration",
-    "db:smoke:access": "vitest run src/server/tests/workspace/access/access-management.integration.test.ts --mode rbac-integration",
-    "test:e2e": "playwright test --pass-with-no-tests"
+    "db:smoke:access": "vitest run src/server/tests/workspace/access/access-management.integration.test.ts src/server/tests/workspace/access/access-scope-read.integration.test.ts --mode rbac-integration",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@clerk/localizations": "^4.5.6",

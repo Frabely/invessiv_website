@@ -16,6 +16,10 @@
   "noEmail": "Keine E-Mail-Adresse hinterlegt.",
   "openAction": "Kundenansicht öffnen",
   "openActionAriaLabel": "Kundenansicht für {name} öffnen",
+  "ownerAccess": {
+    "observation": "Zuständig, aber ohne Zugriff",
+    "grantAccess": "Zugriff geben"
+  },
   "projects": {
     "create": "Projekt anlegen",
     "edit": "Projekt bearbeiten",
@@ -35,6 +39,7 @@
     "formDescription": "Lege Status und Prozessschritte fest. Beides kann später angepasst werden.",
     "empty": "Für diesen Kunden sind noch keine Projekte angelegt.",
     "phase": "Phase",
+    "owner": "Zuständig",
     "comingSoon": "Leistungen, Aufgaben und Chat folgen in diesem Projekt.",
     "areas": {
       "services": "Leistungen",

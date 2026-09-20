@@ -26,7 +26,6 @@ describe("CustomersBasicList", () => {
     render(
       <CustomersBasicList
         basePath="/de/crm"
-        canWrite
         content={content}
         createHref="/de/crm?mode=create"
         customers={[customerDetailFixture({ status: "paused" })]}
@@ -34,6 +33,7 @@ describe("CustomersBasicList", () => {
         hasCustomers
         locale="de"
         queryString=""
+        writableCustomerIds={new Set([TEST_CUSTOMER_ID])}
       />,
     );
 
@@ -58,7 +58,6 @@ describe("CustomersBasicList", () => {
     render(
       <CustomersBasicList
         basePath="/de/crm"
-        canWrite={false}
         content={content}
         createHref={null}
         customers={[customerDetailFixture()]}
@@ -66,6 +65,7 @@ describe("CustomersBasicList", () => {
         hasCustomers
         locale="de"
         queryString=""
+        writableCustomerIds={new Set()}
       />,
     );
 
@@ -79,11 +79,40 @@ describe("CustomersBasicList", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("only offers editing for the rows the member may actually write to", () => {
+    const otherCustomerId = "1c9b6a8f-4e3e-4d2c-8b9f-8e7d6c5b4a32";
+    render(
+      <CustomersBasicList
+        basePath="/de/crm"
+        content={content}
+        createHref={null}
+        customers={[
+          customerDetailFixture(),
+          customerDetailFixture({
+            id: otherCustomerId,
+            displayName: "Südwind Consulting",
+          }),
+        ]}
+        filteredEmptyHref="/de/crm?archived=true"
+        hasCustomers
+        locale="de"
+        queryString=""
+        writableCustomerIds={new Set([TEST_CUSTOMER_ID])}
+      />,
+    );
+
+    expect(
+      screen.getByRole("link", { name: "Nordlicht Coaching bearbeiten" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: "Südwind Consulting bearbeiten" }),
+    ).not.toBeInTheDocument();
+  });
+
   it("explains the area in the empty state and offers creation", () => {
     render(
       <CustomersBasicList
         basePath="/de/crm"
-        canWrite
         content={content}
         createHref="/de/crm?mode=create"
         customers={[]}
@@ -91,6 +120,7 @@ describe("CustomersBasicList", () => {
         hasCustomers={false}
         locale="de"
         queryString=""
+        writableCustomerIds={new Set()}
       />,
     );
 
@@ -104,7 +134,6 @@ describe("CustomersBasicList", () => {
     render(
       <CustomersBasicList
         basePath="/de/crm"
-        canWrite
         content={content}
         createHref="/de/crm?mode=create"
         customers={[]}
@@ -112,6 +141,7 @@ describe("CustomersBasicList", () => {
         hasCustomers
         locale="de"
         queryString=""
+        writableCustomerIds={new Set()}
       />,
     );
 

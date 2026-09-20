@@ -9,12 +9,15 @@ import rolesDe from "./roles/de.json";
 import rolesEn from "./roles/en.json";
 import shellDe from "./shell/de.json";
 import shellEn from "./shell/en.json";
+import accessDe from "./access/de.json";
+import accessEn from "./access/en.json";
 
 export type SettingsMetaDictionary = typeof metaDe;
 export type SettingsShellDictionary = typeof shellDe;
 export type SettingsMembersDictionary = typeof membersDe;
 export type SettingsRolesDictionary = typeof rolesDe;
 export type SettingsPermissionsDictionary = typeof permissionsDe;
+export type SettingsAccessDictionary = typeof accessDe;
 
 const SETTINGS_META: Record<Locale, SettingsMetaDictionary> = {
   de: metaDe,
@@ -39,6 +42,11 @@ const SETTINGS_ROLES: Record<Locale, SettingsRolesDictionary> = {
 const SETTINGS_PERMISSIONS: Record<Locale, SettingsPermissionsDictionary> = {
   de: permissionsDe,
   en: permissionsEn,
+};
+
+const SETTINGS_ACCESS: Record<Locale, SettingsAccessDictionary> = {
+  de: accessDe,
+  en: accessEn,
 };
 
 export function getSettingsMetaDictionary(
@@ -69,4 +77,10 @@ export function getSettingsPermissionsDictionary(
   locale: Locale,
 ): SettingsPermissionsDictionary {
   return SETTINGS_PERMISSIONS[locale];
+}
+
+export function getSettingsAccessDictionary(
+  locale: Locale,
+): SettingsAccessDictionary {
+  return SETTINGS_ACCESS[locale];
 }

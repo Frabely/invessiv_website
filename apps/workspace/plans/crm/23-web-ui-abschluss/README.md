@@ -8,7 +8,8 @@
 **Konkreter Task-Plan**
 
 - [`39-web-ui-anpassung.md`](./39-web-ui-anpassung.md) — die Website auf alle in Ordner 03d zentralisierten Button- und
-  Formularbausteine umstellen, bewusst gestalten und den Gesamtplan abschließen.
+  Formularbausteine umstellen und bewusst gestalten. Der Gesamtplan endet anschließend mit der fachlichen
+  Zuständigkeitszugriff-Absicherung in Ordner 24.
 
 Diese Einheit beginnt erst, wenn der gesamte fachliche CRM-, Portal-, Rollout- und Cleanup-Umbau abgeschlossen ist.
 Sie verändert keine CRM-Funktion, kein Schema und keine Workspace-Optik. Ihr eigener Web-PR migriert die bestehenden

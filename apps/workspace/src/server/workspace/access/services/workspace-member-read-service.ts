@@ -51,6 +51,7 @@ async function load(
   const scopedRows = await executor
     .select({
       workspace_member_id: workspaceMemberScopedRoles.workspace_member_id,
+      role_active: roles.active,
     })
     .from(workspaceMemberScopedRoles)
     .innerJoin(
@@ -58,7 +59,6 @@ async function load(
       and(
         eq(roles.id, workspaceMemberScopedRoles.role_id),
         eq(roles.realm, AuthRealm.Workspace),
-        eq(roles.active, true),
       ),
     )
     .where(
@@ -67,10 +67,7 @@ async function load(
         : undefined,
     );
 
-  return workspaceMemberMappingService.mapRowsToMembers(
-    rows,
-    new Set(scopedRows.map((row) => row.workspace_member_id)),
-  );
+  return workspaceMemberMappingService.mapRowsToMembers(rows, scopedRows);
 }
 
 async function list(

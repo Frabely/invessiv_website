@@ -36,7 +36,7 @@
 }
 
 .inactiveBadge,
-.readOnlyBadge {
+.typeBadge {
   padding: 0.05rem 0.5rem;
   border: 1px dashed var(--color-border-strong);
   border-radius: 999px;
@@ -45,8 +45,11 @@
   font-weight: 650;
 }
 
-.readOnlyBadge {
+.typeBadge {
   border-style: solid;
+  border-color: color-mix(in srgb, var(--color-cta) 50%, var(--color-border));
+  background: color-mix(in srgb, var(--color-cta) 8%, transparent);
+  color: var(--color-text);
 }
 
 .description {

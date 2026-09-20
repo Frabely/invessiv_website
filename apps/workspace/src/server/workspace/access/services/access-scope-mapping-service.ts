@@ -5,6 +5,7 @@ import type { WorkspaceMemberAccessScopeDto } from "@invessiv/common/contracts/a
 
 function mapRow(row: {
   id: string;
+  workspace_member_id: string;
   role_id: string;
   customer_id: string;
   project_id: string | null;
@@ -13,6 +14,7 @@ function mapRow(row: {
 }): WorkspaceMemberAccessScopeDto {
   return {
     id: row.id,
+    workspaceMemberId: row.workspace_member_id,
     roleId: row.role_id,
     scope:
       row.project_id === null

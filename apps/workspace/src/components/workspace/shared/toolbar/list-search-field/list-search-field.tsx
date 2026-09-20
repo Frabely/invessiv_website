@@ -33,7 +33,8 @@ export function ListSearchField({
 
     const timeout = window.setTimeout(() => {
       const trimmed = searchValue.trim();
-      onCommitAction(trimmed ? trimmed : undefined);
+      const committedValue = trimmed ? trimmed : undefined;
+      onCommitAction(committedValue);
     }, SEARCH_DEBOUNCE_MS);
 
     return () => {

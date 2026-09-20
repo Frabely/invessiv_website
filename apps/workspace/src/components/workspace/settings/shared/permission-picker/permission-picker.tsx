@@ -17,6 +17,10 @@ type PermissionPickerProps = {
   legend: string;
   /** Custom roles cannot hold non-delegable permissions; they stay visible but locked. */
   lockNonDelegable: boolean;
+  /** Scoped roles can only hold permissions the server catalog marks as scope-assignable. */
+  lockNonScopeAssignable?: boolean;
+  /** Customer roles only offer permissions that can be bound to a customer or project. */
+  onlyScopeAssignable?: boolean;
   onToggleAction?: (permission: Permission) => void;
   readOnly: boolean;
   selected: readonly Permission[];
@@ -26,6 +30,8 @@ export function PermissionPicker({
   content,
   legend,
   lockNonDelegable,
+  lockNonScopeAssignable = false,
+  onlyScopeAssignable = false,
   onToggleAction,
   readOnly,
   selected,
@@ -37,6 +43,12 @@ export function PermissionPicker({
       <legend className={styles.legend}>{legend}</legend>
       <div className={styles.groups}>
         {PERMISSION_GROUP_VALUES.map((group) => {
+          const groupPermissions = PERMISSION_GROUP_PERMISSIONS[group].filter(
+            (permission) =>
+              !onlyScopeAssignable ||
+              PERMISSION_DEFINITIONS[permission].scopeAssignable,
+          );
+          if (groupPermissions.length === 0) return null;
           const groupTitleId = `${baseId}-${group}`;
           return (
             <section
@@ -48,10 +60,14 @@ export function PermissionPicker({
                 {content.groups[group]}
               </h3>
               <ul className={styles.items}>
-                {PERMISSION_GROUP_PERMISSIONS[group].map((permission) => {
-                  const locked =
+                {groupPermissions.map((permission) => {
+                  const lockedByDelegation =
                     lockNonDelegable &&
                     !PERMISSION_DEFINITIONS[permission].delegable;
+                  const lockedByScope =
+                    lockNonScopeAssignable &&
+                    !PERMISSION_DEFINITIONS[permission].scopeAssignable;
+                  const locked = lockedByDelegation || lockedByScope;
                   const text = content.permissions[permission];
                   const inputId = `${baseId}-${permission}`;
                   const descriptionId = `${inputId}-description`;
@@ -74,13 +90,19 @@ export function PermissionPicker({
                           {text.label}
                           {locked ? (
                             <span className={styles.lockBadge}>
-                              {content.ownerOnly}
+                              {lockedByDelegation
+                                ? content.ownerOnly
+                                : content.workspaceOnly}
                             </span>
                           ) : null}
                         </span>
                         <span className={styles.description} id={descriptionId}>
                           {locked
-                            ? `${text.description} ${content.ownerOnlyHint}`
+                            ? `${text.description} ${
+                                lockedByDelegation
+                                  ? content.ownerOnlyHint
+                                  : content.workspaceOnlyHint
+                              }`
                             : text.description}
                         </span>
                       </label>

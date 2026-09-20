@@ -1,6 +1,6 @@
 # Ordner 07c — Zugriffsbereiche: Verwaltung in der UI
 
-> **Status:** offen · **Branch:** `feat/crm-zugriffsverwaltung-ui` · **Abhängigkeit:** Ordner 07b gemerged
+> **Status:** läuft · **Branch:** `feat/crm-zugriffsverwaltung-ui` · **Abhängigkeit:** Ordner 07b gemerged
 > **Aufwand:** 2–3 Tage · **Reviewziel:** 50–80 Dateien · **Folgeeinheit:** Ordner 08 (Aufgaben)
 
 ## Ziel und Stand nach Merge

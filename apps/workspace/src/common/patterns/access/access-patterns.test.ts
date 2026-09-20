@@ -4,6 +4,11 @@ import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys"
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
 import { SettingsTab } from "@/common/constants/access/settings-tabs";
 import {
+  accessCustomerProjectsEndpoint,
+  accessCustomersEndpoint,
+  crmCustomerAccessScopesEndpoint,
+  workspaceMemberAccessScopeEndpoint,
+  workspaceMemberAccessScopesEndpoint,
   workspaceMemberEndpoint,
   workspaceMemberOwnerEndpoint,
   workspaceMemberRolesEndpoint,
@@ -31,6 +36,7 @@ function role(overrides: Partial<RoleDto>): RoleDto {
     name: "Role",
     systemKey: null,
     active: true,
+    scopeAssignable: false,
     description: null,
     isSystem: false,
     permissions: [],
@@ -107,6 +113,21 @@ describe("access api endpoints", () => {
     );
     expect(workspaceRoleEndpoint("../leads")).toBe(
       "/api/workspace/roles/..%2Fleads",
+    );
+    expect(accessCustomerProjectsEndpoint("../leads")).toBe(
+      "/api/workspace/access/customers/..%2Fleads/projects",
+    );
+    expect(accessCustomersEndpoint("Nord & Süd")).toBe(
+      "/api/workspace/access/customers?search=Nord+%26+S%C3%BCd",
+    );
+    expect(workspaceMemberAccessScopesEndpoint("member/1")).toBe(
+      "/api/workspace/members/member%2F1/access-scopes",
+    );
+    expect(workspaceMemberAccessScopeEndpoint("member/1", "scope/1")).toBe(
+      "/api/workspace/members/member%2F1/access-scopes/scope%2F1",
+    );
+    expect(crmCustomerAccessScopesEndpoint("customer/1")).toBe(
+      "/api/workspace/crm/customers/customer%2F1/access-scopes",
     );
   });
 });

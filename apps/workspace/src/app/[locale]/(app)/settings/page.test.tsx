@@ -14,7 +14,9 @@ const mocks = vi.hoisted(() => ({
   syncProfiles: vi.fn(),
   listMembers: vi.fn(),
   listAssignmentRoles: vi.fn(),
+  listMemberAccessScopesForMembers: vi.fn(),
   listRoles: vi.fn(),
+  evaluateResponsibilityAccess: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -39,8 +41,22 @@ vi.mock(
   () => ({ listWorkspaceMembers: mocks.listMembers }),
 );
 vi.mock(
+  "@/server/workspace/access/query-handler/list-member-access-scopes.query-handler",
+  () => ({
+    listMemberAccessScopesForMembers: mocks.listMemberAccessScopesForMembers,
+  }),
+);
+vi.mock(
   "@/server/workspace/access/query-handler/list-roles.query-handler",
   () => ({ listRoles: mocks.listRoles }),
+);
+vi.mock(
+  "@/server/workspace/shared/services/responsibility-access-service",
+  () => ({
+    responsibilityAccessService: {
+      evaluate: mocks.evaluateResponsibilityAccess,
+    },
+  }),
 );
 vi.mock(
   "@/components/workspace/settings/members/members-list/members-list",
@@ -61,8 +77,14 @@ describe("SettingsPage", () => {
   beforeEach(() => {
     Object.values(mocks).forEach((mock) => mock.mockReset());
     mocks.listMembers.mockResolvedValue([]);
+    mocks.listMemberAccessScopesForMembers.mockResolvedValue({});
     mocks.listAssignmentRoles.mockResolvedValue([]);
     mocks.listRoles.mockResolvedValue([]);
+    mocks.evaluateResponsibilityAccess.mockResolvedValue({
+      countByMemberId: {},
+      inaccessibleEntityIds: new Set(),
+      targets: [],
+    });
   });
 
   afterEach(() => {

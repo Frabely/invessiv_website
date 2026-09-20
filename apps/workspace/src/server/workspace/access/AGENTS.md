@@ -35,6 +35,17 @@ Command- und Query-Handler für Mitglieder, Rollen und den Owner-Flow. Die Actor
   Sprache ist damit automatisch abgedeckt.
 - **`GET /members` bleibt schmal.** `members.read` steckt in der Basisrolle; die Route liefert nur
   `WorkspaceMemberOptionDto`. Das vollständige `WorkspaceMemberDto` verlässt den Server nur über die Settings-Page.
+- **Kunden- und Projekt-Lookup der Zugriffsverwaltung ist bewusst nicht scope-gefiltert.** `listAccessCustomers` und
+  `listAccessCustomerProjects` (`api/workspace/access/customers/…`) stehen hinter `members.manage` allein, denn wer
+  Zugriffe vergibt, muss jeden Kunden benennen können — auch ohne `customers.read`. Damit das ungefährlich bleibt:
+  Die Handler haben **keinen Actor-Parameter**, der Read-Service wählt nur Kennung, Nummer und Bezeichnung, und der
+  Mapper kopiert Felder einzeln statt die Zeile zu spreaden. Die Endpunkte liegen **nie** unter `crm/`, damit sie nicht
+  in `CRM_ENDPOINT_ACCESS_RULES` geraten und den CRM-Filter aus Task 37 nicht aufweichen. Ein neues Feld im Lookup
+  braucht eine eigene Begründung im PR.
+- **Listen von Zugriffen tragen Anzeigedaten.** `listByMember` und `listByCustomer` liefern `AccessScopeEntryDto`
+  (Mitglied, Rolle, Kunde, Projekt) in fester Reihenfolge: Kunde, Kundenebene vor Projektebene, Person, Rolle, Id. Das
+  schlanke `WorkspaceMemberAccessScopeDto` bleibt Ergebnis des Grant-Commands; die Zeilen-zu-DTO-Abbildung der
+  Scope-Union steht genau einmal in `access-scope-mapping-service.ts`.
 - **Constraint-Namen** für die Fehlerabbildung kommen aus den Const-Objekten unter `@invessiv/db/constraint-names/**`
   (z. B. `UsersConstraintName`, `RolesConstraintName`), nie als String-Literal im Handler oder Test.
 - **Formulargrenzen** (Rollenname, Beschreibung, Clerk-ID, Suchlänge, Rollenanzahl) stehen in `AccessFieldLimits`;

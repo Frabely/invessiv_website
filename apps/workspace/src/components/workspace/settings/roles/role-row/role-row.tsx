@@ -48,10 +48,15 @@ export function RoleRow({
         <p className={styles.nameLine}>
           <span className={styles.name}>{label}</span>
           {role.isSystem ? (
-            <span className={styles.readOnlyBadge}>
-              {content.list.readOnlyBadge}
+            <span className={styles.typeBadge}>
+              {content.list.systemRoleType}
             </span>
           ) : null}
+          <span className={styles.typeBadge}>
+            {role.scopeAssignable
+              ? content.list.customerRoleType
+              : content.list.globalType}
+          </span>
           {role.active ? null : (
             <span className={styles.inactiveBadge}>
               {content.list.inactiveBadge}

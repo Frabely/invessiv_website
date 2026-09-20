@@ -9,8 +9,6 @@ const STATUS: Record<RoleErrorCode, HttpResponseCode> = {
   [RoleErrorCode.PermissionNotDelegable]: HttpResponseCode.UnprocessableContent,
   [RoleErrorCode.PermissionNotScopeAssignable]:
     HttpResponseCode.UnprocessableContent,
-  [RoleErrorCode.ScopeAssignmentsExist]: HttpResponseCode.Conflict,
-  [RoleErrorCode.WorkspaceAssignmentsExist]: HttpResponseCode.Conflict,
   [RoleErrorCode.SystemRoleImmutable]: HttpResponseCode.UnprocessableContent,
   [RoleErrorCode.Internal]: HttpResponseCode.InternalServerError,
 };
@@ -24,10 +22,6 @@ const MESSAGES: Record<RoleErrorCode, string> = {
     "Custom roles cannot hold non-delegable permissions",
   [RoleErrorCode.PermissionNotScopeAssignable]:
     "A scoped role may only hold scope-assignable permissions",
-  [RoleErrorCode.ScopeAssignmentsExist]:
-    "This role still has scoped assignments",
-  [RoleErrorCode.WorkspaceAssignmentsExist]:
-    "This role still has workspace-wide assignments",
   [RoleErrorCode.SystemRoleImmutable]: "System roles cannot be changed",
   [RoleErrorCode.Internal]: "Unexpected server error",
 };

@@ -1,0 +1,62 @@
+.row {
+  display: grid;
+  grid-template-columns: minmax(9rem, 1fr) minmax(8rem, 1fr) auto;
+  align-items: center;
+  gap: 0.55rem 0.8rem;
+  padding: 0.65rem 0;
+}
+
+.row + .row {
+  border-top: 1px solid var(--color-border);
+}
+
+.member {
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 650;
+}
+
+.role {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+}
+
+.role[data-active="false"] {
+  font-style: italic;
+}
+
+.message {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-xs);
+  line-height: 1.45;
+}
+
+.message[data-tone="conflict"] {
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 40%, transparent);
+  background: color-mix(in srgb, var(--color-accent-warm) 10%, transparent);
+}
+
+.message[data-tone="error"] {
+  border: 1px solid color-mix(in srgb, var(--color-danger) 42%, transparent);
+  background: color-mix(in srgb, var(--color-danger) 9%, transparent);
+}
+
+@media (max-width: 620px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .role {
+    grid-column: 1;
+  }
+
+  .row > :global(button) {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+}

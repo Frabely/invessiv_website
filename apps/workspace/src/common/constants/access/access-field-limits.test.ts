@@ -10,6 +10,8 @@ describe("AccessFieldLimits", () => {
       ClerkUserIdMaxLength: 191,
       ClerkCandidateQueryMaxLength: 100,
       AssignedRoleIdsMax: 50,
+      AccessLookupQueryMaxLength: 100,
+      AccessLookupResultLimit: 25,
     });
   });
 });

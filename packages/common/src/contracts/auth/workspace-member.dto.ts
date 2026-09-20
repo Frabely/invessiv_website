@@ -25,6 +25,11 @@ export interface WorkspaceMemberDto extends VersionedDto {
    */
   hasActiveRole: boolean;
   /**
+   * Number of role grants bound to a customer or project, counting grants whose role is inactive
+   * because the access dialog lists them too. Display only, never authorizes.
+   */
+  accessScopeCount: number;
+  /**
    * Assigned roles without the owner role, ordered system roles first, then by name. Inactive
    * roles are included and flagged, because they are still assigned.
    */

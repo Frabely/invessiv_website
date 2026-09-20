@@ -7,6 +7,14 @@ import { OwnableEntity } from "@invessiv/common/constants/crm/ownable-entities";
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import { accessApiService } from "@/client/access/access-api-service";
+import { AccessScopeType } from "@invessiv/common/constants/auth/access-scope-types";
+import {
+  accessCustomerProjectsEndpoint,
+  accessCustomersEndpoint,
+  crmCustomerAccessScopesEndpoint,
+  workspaceMemberAccessScopeEndpoint,
+  workspaceMemberAccessScopesEndpoint,
+} from "@/common/patterns/access/access-api-endpoints";
 
 function stubFetch(status: number, payload: unknown) {
   const fetchMock = vi
@@ -77,6 +85,7 @@ describe("accessApiService", () => {
         name: "Sales",
         description: null,
         permissions: [],
+        scopeAssignable: false,
       }),
     ).toEqual({ ok: false, code: RoleErrorCode.Internal });
   });
@@ -130,5 +139,103 @@ describe("accessApiService", () => {
         body: JSON.stringify({ active: false, version: 3 }),
       }),
     );
+  });
+
+  it("sends the versioned payload and returns the granted scope", async () => {
+    const accessScope = {
+      id: "scope-1",
+      roleId: "role-1",
+      scope: { type: AccessScopeType.Customer, customerId: "customer-1" },
+    };
+    const member = { id: "member-1", version: 4 };
+    const fetchMock = stubFetch(HttpResponseCode.Created, {
+      accessScope,
+      member,
+    });
+
+    await expect(
+      accessApiService.grantAccessScope("member-1", {
+        roleId: "role-1",
+        scope: accessScope.scope,
+        version: 3,
+      }),
+    ).resolves.toEqual({ ok: true, accessScope, member });
+    expect(fetchMock).toHaveBeenCalledWith(
+      workspaceMemberAccessScopesEndpoint("member-1"),
+      expect.objectContaining({
+        method: HttpMethod.Post,
+        body: JSON.stringify({
+          roleId: "role-1",
+          scope: accessScope.scope,
+          version: 3,
+        }),
+      }),
+    );
+  });
+
+  it("maps an access-scope conflict without losing current", async () => {
+    const current = { id: "member-1", version: 8 };
+    stubFetch(HttpResponseCode.Conflict, {
+      code: ConcurrencyErrorCode.VersionConflict,
+      currentVersion: 8,
+      current,
+    });
+
+    await expect(
+      accessApiService.revokeAccessScope("member-1", "scope-1", {
+        version: 7,
+      }),
+    ).resolves.toEqual({
+      ok: false,
+      code: ConcurrencyErrorCode.VersionConflict,
+      current,
+    });
+  });
+
+  it("surfaces every access-scope error code unchanged", async () => {
+    const codes = [
+      WorkspaceMemberErrorCode.AccessScopeAlreadyGranted,
+      WorkspaceMemberErrorCode.AccessScopeNotAssignable,
+      WorkspaceMemberErrorCode.AccessScopeProjectCustomerMismatch,
+      WorkspaceMemberErrorCode.AccessScopeNotFound,
+      WorkspaceMemberErrorCode.MemberWithoutRole,
+    ];
+    for (const code of codes) {
+      stubFetch(HttpResponseCode.UnprocessableContent, { error: code });
+      await expect(
+        accessApiService.grantAccessScope("member-1", {
+          roleId: "role-1",
+          scope: {
+            type: AccessScopeType.Customer,
+            customerId: "customer-1",
+          },
+          version: 1,
+        }),
+      ).resolves.toEqual({ ok: false, code });
+    }
+  });
+
+  it("builds every access path through the endpoint helpers", async () => {
+    const fetchMock = stubFetch(HttpResponseCode.Ok, {
+      accessScopes: [],
+      customers: [],
+      projects: [],
+    });
+
+    await accessApiService.listMemberAccessScopes("member/1");
+    await accessApiService.listCustomerAccessScopes("customer/1");
+    await accessApiService.listAccessCustomers("Nord & Süd");
+    await accessApiService.listAccessCustomerProjects("customer/1");
+    await accessApiService.revokeAccessScope("member/1", "scope/1", {
+      version: 2,
+    });
+
+    expect(fetchMock.mock.calls.map(([url]) => url)).toEqual([
+      workspaceMemberAccessScopesEndpoint("member/1"),
+      crmCustomerAccessScopesEndpoint("customer/1"),
+      accessCustomersEndpoint("Nord & Süd"),
+      accessCustomerProjectsEndpoint("customer/1"),
+      workspaceMemberAccessScopeEndpoint("member/1", "scope/1"),
+    ]);
   });
 });

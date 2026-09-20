@@ -11,13 +11,16 @@ import { resolveRoleLabel } from "@/lib/workspace/access/role-label";
 import styles from "./member-row.module.css";
 
 type MemberRowProps = {
+  canManageAccess: boolean;
   content: SettingsMembersDictionary;
   isCurrentActor: boolean;
   member: WorkspaceMemberDto;
-  onEditRolesAction: () => void;
+  onManageRolesAction: () => void;
+  onOpenAccessIssueAction: () => void;
   onToggleOwnerAction: () => void;
   onToggleStatusAction: () => void;
   permissionsContent: SettingsPermissionsDictionary;
+  responsibilityWithoutAccessCount?: number;
 };
 
 function getInitials(displayName: string): string {
@@ -30,13 +33,16 @@ function getInitials(displayName: string): string {
 }
 
 export function MemberRow({
+  canManageAccess,
   content,
   isCurrentActor,
   member,
-  onEditRolesAction,
+  onManageRolesAction,
+  onOpenAccessIssueAction,
   onToggleOwnerAction,
   onToggleStatusAction,
   permissionsContent,
+  responsibilityWithoutAccessCount = 0,
 }: MemberRowProps) {
   const ownerActionLabel = member.isOwner
     ? content.list.actions.revokeOwner
@@ -93,15 +99,43 @@ export function MemberRow({
           <li className={styles.noRoles}>{content.list.noRoles}</li>
         )}
       </ul>
+      {canManageAccess ? (
+        <div className={styles.accessSummary}>
+          <p className={styles.accessCount}>
+            {member.accessScopeCount === 0
+              ? content.list.accessCountZero
+              : formatMessage(
+                  member.accessScopeCount === 1
+                    ? content.list.accessCountOne
+                    : content.list.accessCountOther,
+                  { count: member.accessScopeCount },
+                )}
+          </p>
+          {responsibilityWithoutAccessCount > 0 ? (
+            <button
+              className={styles.responsibilityIssue}
+              onClick={onOpenAccessIssueAction}
+              type="button"
+            >
+              {formatMessage(
+                responsibilityWithoutAccessCount === 1
+                  ? content.list.responsibilityWithoutAccessOne
+                  : content.list.responsibilityWithoutAccessOther,
+                { count: responsibilityWithoutAccessCount },
+              )}
+            </button>
+          ) : null}
+        </div>
+      ) : null}
       <div className={styles.actions}>
         <ButtonControl
-          aria-label={`${content.list.actions.editRoles}: ${member.displayName}`}
+          aria-label={`${content.list.actions.manageRoles}: ${member.displayName}`}
           className={styles.actionButton}
-          onClick={onEditRolesAction}
+          onClick={onManageRolesAction}
           type="button"
           variant="ghost"
         >
-          {content.list.actions.editRoles}
+          {content.list.actions.manageRoles}
         </ButtonControl>
         {isCurrentActor ? null : (
           <>

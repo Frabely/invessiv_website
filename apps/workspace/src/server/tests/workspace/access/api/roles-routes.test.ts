@@ -42,6 +42,7 @@ const ROLE: RoleDto = {
   name: "Sales",
   systemKey: null,
   active: true,
+  scopeAssignable: false,
   description: null,
   isSystem: false,
   permissions: [Permission.LeadsRead],

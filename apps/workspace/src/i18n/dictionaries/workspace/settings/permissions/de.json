@@ -132,5 +132,7 @@
   },
   "ownerOnly": "Nur Owner",
   "ownerOnlyHint": "Dieses Recht kann keiner eigenen Rolle gegeben werden.",
+  "workspaceOnly": "Nur workspace-weit",
+  "workspaceOnlyHint": "Dieses Recht gilt nicht für einzelne Kunden oder Projekte.",
   "none": "Keine Rechte"
 }

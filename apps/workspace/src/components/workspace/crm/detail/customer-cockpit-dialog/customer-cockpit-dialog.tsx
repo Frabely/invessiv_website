@@ -7,22 +7,50 @@ import { ButtonControl, Dialog, DialogSize } from "@invessiv/ui";
 import { CustomerCockpitView } from "@/components/workspace/crm/detail/customer-cockpit-view/customer-cockpit-view";
 import type { CustomerCockpitDto } from "@invessiv/common/contracts/crm/customer-cockpit.dto";
 import type { ProjectDto } from "@invessiv/common/contracts/crm/project.dto";
-import type { CrmCockpitDictionary } from "@/i18n/dictionaries/workspace/crm";
+import type { AccessScopeEntryDto } from "@invessiv/common/contracts/auth/access-scope-entry.dto";
+import type { AccessProjectOptionDto } from "@invessiv/common/contracts/auth/access-project-option.dto";
+import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/role-assignment-option.dto";
+import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
+import type {
+  CrmAccessDictionary,
+  CrmCockpitDictionary,
+} from "@/i18n/dictionaries/workspace/crm";
+import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 
 type CustomerCockpitDialogProps = {
+  accessContent?: CrmAccessDictionary;
+  accessMembers?: readonly WorkspaceMemberDto[];
+  accessProjects?: readonly AccessProjectOptionDto[];
+  accessRoles?: readonly RoleAssignmentOptionDto[];
+  accessScopes?: readonly AccessScopeEntryDto[];
   closeHref: string;
   content: CrmCockpitDictionary;
   customer: CustomerCockpitDto;
+  customerOwnerHasAccess?: boolean;
+  customerOwnerMemberId?: string;
   canWriteProjects?: boolean;
   projects?: ProjectDto[] | null;
+  permissionsContent?: SettingsPermissionsDictionary;
+  projectOwnerHasAccess?: Readonly<Record<string, boolean>>;
+  rolesHref?: string;
 };
 
 export function CustomerCockpitDialog({
+  accessContent,
+  accessMembers,
+  accessProjects,
+  accessRoles,
+  accessScopes,
   closeHref,
   content,
   customer,
+  customerOwnerHasAccess,
+  customerOwnerMemberId,
   canWriteProjects,
   projects,
+  permissionsContent,
+  projectOwnerHasAccess,
+  rolesHref,
 }: CustomerCockpitDialogProps) {
   const router = useRouter();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -51,10 +79,20 @@ export function CustomerCockpitDialog({
       title={customer.displayName}
     >
       <CustomerCockpitView
+        accessContent={accessContent}
+        accessMembers={accessMembers}
+        accessProjects={accessProjects}
+        accessRoles={accessRoles}
+        accessScopes={accessScopes}
         canWriteProjects={canWriteProjects}
         content={content}
         customer={customer}
+        customerOwnerHasAccess={customerOwnerHasAccess}
+        customerOwnerMemberId={customerOwnerMemberId}
         projects={projects}
+        permissionsContent={permissionsContent}
+        projectOwnerHasAccess={projectOwnerHasAccess}
+        rolesHref={rolesHref}
       />
     </Dialog>
   );

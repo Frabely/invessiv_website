@@ -82,9 +82,9 @@ selben Deploy.
 
 1. **Live sichtbar:** nichts. Für Nutzer ändert sich an keiner Stelle etwas.
 2. **Bricht nichts:** Der Drop entfernt eine Tabelle, für die Schritt 1 den fehlenden Leser belegt hat.
-3. **Offen:** Die fachliche und datenverändernde CRM-Umsetzung ist abgeschlossen. Danach folgt nur noch der rein
-   visuelle Web-Abschluss aus Ordner 23; erst nach dessen Merge ist der Gesamtplan abgeschlossen und `AGENTS.md` unter
-   `plans/crm/` kann entfernt werden.
+3. **Offen:** Die fachliche und datenverändernde CRM-Umsetzung ist abgeschlossen. Danach folgen der rein visuelle
+   Web-Abschluss aus Ordner 23 und die Zuständigkeitszugriff-Absicherung aus Ordner 24; erst nach deren Merges ist der
+   Gesamtplan abgeschlossen und `AGENTS.md` unter `plans/crm/` kann entfernt werden.
 
 ## End-to-End-Akzeptanz
 

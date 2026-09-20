@@ -5,8 +5,8 @@ import type { RoleSummaryDto } from "@invessiv/common/contracts/auth/role-summar
 export interface RoleAssignmentOptionDto extends RoleSummaryDto {
   /** Optional explanation shown beside custom roles; system-role copy comes from the dictionary. */
   description: string | null;
-  /** Scope-assignable roles are granted per customer or project and cannot be assigned workspace-wide. */
-  scopeAssignable?: boolean;
+  /** False identifies a global role; true identifies a customer/project role. */
+  scopeAssignable: boolean;
   /** Effective permission keys used only for the assignment preview. */
   permissions: Permission[];
 }
