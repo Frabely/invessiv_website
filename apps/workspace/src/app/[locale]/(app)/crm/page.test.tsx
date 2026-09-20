@@ -19,6 +19,11 @@ const mocks = vi.hoisted(() => ({
   getCustomerCockpitById: vi.fn(),
   listCategories: vi.fn(),
   listProjectsByCustomer: vi.fn(),
+  listCustomerAccessScopes: vi.fn(),
+  listAccessCustomerProjects: vi.fn(),
+  listWorkspaceMembers: vi.fn(),
+  listRoleAssignmentOptions: vi.fn(),
+  evaluateResponsibilityAccess: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -50,6 +55,30 @@ vi.mock(
   () => ({ listProjectsByCustomer: mocks.listProjectsByCustomer }),
 );
 vi.mock(
+  "@/server/workspace/access/query-handler/list-customer-access-scopes.query-handler",
+  () => ({ listCustomerAccessScopes: mocks.listCustomerAccessScopes }),
+);
+vi.mock(
+  "@/server/workspace/access/query-handler/list-access-customer-projects.query-handler",
+  () => ({ listAccessCustomerProjects: mocks.listAccessCustomerProjects }),
+);
+vi.mock(
+  "@/server/workspace/access/query-handler/list-workspace-members.query-handler",
+  () => ({ listWorkspaceMembers: mocks.listWorkspaceMembers }),
+);
+vi.mock(
+  "@/server/workspace/access/query-handler/list-role-assignment-options.query-handler",
+  () => ({ listRoleAssignmentOptions: mocks.listRoleAssignmentOptions }),
+);
+vi.mock(
+  "@/server/workspace/shared/services/responsibility-access-service",
+  () => ({
+    responsibilityAccessService: {
+      evaluate: mocks.evaluateResponsibilityAccess,
+    },
+  }),
+);
+vi.mock(
   "@/components/workspace/crm/detail/customer-cockpit-dialog/customer-cockpit-dialog",
   () => ({ CustomerCockpitDialog: () => <div data-testid="cockpit" /> }),
 );
@@ -64,8 +93,15 @@ vi.mock(
 vi.mock(
   "@/components/workspace/crm/list/customers-basic-list/customers-basic-list",
   () => ({
-    CustomersBasicList: ({ canWrite }: { canWrite: boolean }) => (
-      <div data-can-write={String(canWrite)} data-testid="list" />
+    CustomersBasicList: ({
+      writableCustomerIds,
+    }: {
+      writableCustomerIds: ReadonlySet<string>;
+    }) => (
+      <div
+        data-testid="list"
+        data-writable-customer-ids={[...writableCustomerIds].join(",")}
+      />
     ),
   }),
 );
@@ -96,14 +132,23 @@ describe("CrmPage", () => {
     Object.values(mocks).forEach((mock) => mock.mockReset());
     mocks.requireWorkspaceArea.mockResolvedValue(workspaceActorWith());
     mocks.listCustomers.mockResolvedValue({
-      hasCustomers: false,
+      hasCustomers: true,
       page: 1,
       perPage: 25,
-      rows: [],
-      total: 0,
+      rows: [customerDetailFixture()],
+      total: 1,
     });
     mocks.listCategories.mockResolvedValue([]);
     mocks.listProjectsByCustomer.mockResolvedValue([]);
+    mocks.listCustomerAccessScopes.mockResolvedValue([]);
+    mocks.listAccessCustomerProjects.mockResolvedValue([]);
+    mocks.listWorkspaceMembers.mockResolvedValue([]);
+    mocks.listRoleAssignmentOptions.mockResolvedValue([]);
+    mocks.evaluateResponsibilityAccess.mockResolvedValue({
+      countByMemberId: {},
+      inaccessibleEntityIds: new Set(),
+      targets: [],
+    });
     mocks.getCustomerById.mockResolvedValue(null);
     mocks.getCustomerCockpitById.mockResolvedValue(null);
   });
@@ -128,8 +173,8 @@ describe("CrmPage", () => {
       "/de/crm?mode=create",
     );
     expect(screen.getByTestId("list")).toHaveAttribute(
-      "data-can-write",
-      "true",
+      "data-writable-customer-ids",
+      TEST_CUSTOMER_ID,
     );
     expect(screen.queryByTestId("dialog")).not.toBeInTheDocument();
   });
@@ -146,10 +191,32 @@ describe("CrmPage", () => {
       "",
     );
     expect(screen.getByTestId("list")).toHaveAttribute(
-      "data-can-write",
-      "false",
+      "data-writable-customer-ids",
+      "",
     );
     expect(screen.queryByTestId("dialog")).not.toBeInTheDocument();
+  });
+
+  it("keeps a customer reached only through a project grant out of the writable set", async () => {
+    mocks.requireWorkspaceArea.mockResolvedValue({
+      ...workspaceActorWith([Permission.CustomersRead]),
+      projectPermissions: new Map([
+        [
+          "project-1",
+          {
+            customerId: TEST_CUSTOMER_ID,
+            permissions: new Set([Permission.CustomersWrite]),
+          },
+        ],
+      ]),
+    });
+
+    await renderPage();
+
+    expect(screen.getByTestId("list")).toHaveAttribute(
+      "data-writable-customer-ids",
+      "",
+    );
   });
 
   it("opens the read-only cockpit without customers.write", async () => {
@@ -189,5 +256,16 @@ describe("CrmPage", () => {
     await renderPage({ mode: "edit", edit: "unknown" });
     expect(screen.queryByTestId("dialog")).not.toBeInTheDocument();
     expect(mocks.listCategories).toHaveBeenCalledTimes(1);
+  });
+
+  it("opens nothing for an edit request on a customer the member cannot write to", async () => {
+    mocks.requireWorkspaceArea.mockResolvedValue(
+      workspaceActorWith([Permission.CustomersRead]),
+    );
+
+    await renderPage({ mode: "edit", edit: TEST_CUSTOMER_ID });
+
+    expect(screen.queryByTestId("dialog")).not.toBeInTheDocument();
+    expect(mocks.getCustomerById).not.toHaveBeenCalled();
   });
 });

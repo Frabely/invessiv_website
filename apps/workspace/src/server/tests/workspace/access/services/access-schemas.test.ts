@@ -46,12 +46,14 @@ describe("accessSchemas.createRole", () => {
       name: "  Sales  ",
       description: "   ",
       permissions: [Permission.LeadsRead],
+      scopeAssignable: false,
     });
 
     expect(result.success && result.data).toEqual({
       name: "Sales",
       description: null,
       permissions: [Permission.LeadsRead],
+      scopeAssignable: false,
     });
   });
 
@@ -61,6 +63,7 @@ describe("accessSchemas.createRole", () => {
         name: " ",
         description: null,
         permissions: [],
+        scopeAssignable: false,
       }).success,
     ).toBe(false);
     expect(
@@ -68,6 +71,7 @@ describe("accessSchemas.createRole", () => {
         name: "Sales",
         description: null,
         permissions: [Permission.LeadsRead, Permission.LeadsRead],
+        scopeAssignable: false,
       }).success,
     ).toBe(false);
     expect(
@@ -75,6 +79,17 @@ describe("accessSchemas.createRole", () => {
         name: "Sales",
         description: null,
         permissions: ["leads.teleport"],
+        scopeAssignable: false,
+      }).success,
+    ).toBe(false);
+  });
+
+  it("requires an explicit role type", () => {
+    expect(
+      accessSchemas.createRole.safeParse({
+        name: "Sales",
+        description: null,
+        permissions: [],
       }).success,
     ).toBe(false);
   });
@@ -85,8 +100,36 @@ describe("accessSchemas.createRole", () => {
         name: "Escalation",
         description: null,
         permissions: [Permission.MembersManage],
+        scopeAssignable: false,
       }).success,
     ).toBe(true);
+  });
+});
+
+describe("accessSchemas.updateRole", () => {
+  it("accepts the editable fields without the immutable role type", () => {
+    expect(
+      accessSchemas.updateRole.safeParse({
+        name: "Sales",
+        description: null,
+        active: true,
+        permissions: [Permission.LeadsRead],
+        version: 1,
+      }).success,
+    ).toBe(true);
+  });
+
+  it("rejects a request that still carries scopeAssignable, since the type is immutable", () => {
+    expect(
+      accessSchemas.updateRole.safeParse({
+        name: "Sales",
+        description: null,
+        active: true,
+        permissions: [Permission.LeadsRead],
+        version: 1,
+        scopeAssignable: true,
+      }).success,
+    ).toBe(false);
   });
 });
 

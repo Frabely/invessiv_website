@@ -1,0 +1,122 @@
+.section {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1rem, 2vw, 1.4rem);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-2);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.header h3,
+.group h4,
+.description,
+.eyebrow,
+.emptyGroup,
+.emptyMembers,
+.inheritedHint,
+.immediateNote {
+  margin: 0;
+}
+
+.header h3 {
+  color: var(--color-text);
+  font-size: var(--font-size-heading-sm);
+}
+
+.eyebrow {
+  margin-bottom: 0.18rem;
+  color: var(--color-cta);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.description,
+.emptyGroup,
+.emptyMembers,
+.inheritedHint,
+.immediateNote {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+.description {
+  margin-top: 0.3rem;
+  max-width: var(--measure-compact);
+}
+
+.groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
+  gap: 0.75rem;
+}
+
+.group {
+  display: grid;
+  align-content: start;
+  gap: 0.45rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--color-border);
+  border-top: 3px solid var(--color-cta);
+  background: var(--color-surface-1);
+}
+
+.group h4 {
+  color: var(--color-text);
+  font-size: var(--font-size-label-md);
+}
+
+.assignments {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.emptyGroup {
+  padding: 0.55rem 0;
+  font-style: italic;
+}
+
+.inheritedHint {
+  padding-top: 0.55rem;
+  border-top: 1px dashed var(--color-border-strong);
+}
+
+.emptyMembers {
+  padding: 0.7rem 0.8rem;
+  border: 1px dashed var(--color-border-strong);
+}
+
+.dialogBody {
+  display: grid;
+  gap: 1rem;
+}
+
+.memberField {
+  display: grid;
+  gap: 0.4rem;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 650;
+}
+
+.immediateNote {
+  padding: 0.65rem 0.8rem;
+  border-left: 3px solid var(--color-cta);
+  background: color-mix(in srgb, var(--color-cta) 8%, transparent);
+}
+
+@media (max-width: 620px) {
+  .header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

@@ -40,6 +40,7 @@ const STORED_ROLE: RoleDto = {
   name: "Vertrieb",
   systemKey: null,
   active: true,
+  scopeAssignable: false,
   description: null,
   isSystem: false,
   permissions: [Permission.LeadsRead, Permission.LeadsWrite],
@@ -79,7 +80,12 @@ describe("createRole", () => {
 
   it("rejects a blank name before opening a transaction", async () => {
     const result = await createRole(
-      { name: "   ", description: null, permissions: [] },
+      {
+        name: "   ",
+        description: null,
+        permissions: [],
+        scopeAssignable: false,
+      },
       actor,
     );
 
@@ -94,7 +100,10 @@ describe("createRole", () => {
     "rejects the system role name %j before opening a transaction",
     async (name) => {
       expect(
-        await createRole({ name, description: null, permissions: [] }, actor),
+        await createRole(
+          { name, description: null, permissions: [], scopeAssignable: false },
+          actor,
+        ),
       ).toEqual({ ok: false, code: RoleErrorCode.RoleNameReserved });
       expect(mocks.getDatabase).not.toHaveBeenCalled();
     },
@@ -106,6 +115,7 @@ describe("createRole", () => {
         name: "Vertrieb",
         description: null,
         permissions: [Permission.LeadsRead, Permission.MembersManage],
+        scopeAssignable: false,
       },
       actor,
     );
@@ -117,12 +127,31 @@ describe("createRole", () => {
     expect(mocks.getDatabase).not.toHaveBeenCalled();
   });
 
+  it("rejects a customer role that requests a workspace-only permission and writes nothing", async () => {
+    const result = await createRole(
+      {
+        name: "Kundenbetreuung",
+        description: null,
+        permissions: [Permission.LeadsRead],
+        scopeAssignable: true,
+      },
+      actor,
+    );
+
+    expect(result).toEqual({
+      ok: false,
+      code: RoleErrorCode.PermissionNotScopeAssignable,
+    });
+    expect(mocks.getDatabase).not.toHaveBeenCalled();
+  });
+
   it("stores a trimmed custom role with catalog delegability and exactly one event", async () => {
     const result = await createRole(
       {
         name: "  Vertrieb ",
         description: "",
         permissions: [Permission.LeadsRead, Permission.LeadsWrite],
+        scopeAssignable: false,
       },
       actor,
     );
@@ -161,7 +190,12 @@ describe("createRole", () => {
 
   it("creates a role without permissions and skips the permission insert", async () => {
     await createRole(
-      { name: "Leer", description: null, permissions: [] },
+      {
+        name: "Leer",
+        description: null,
+        permissions: [],
+        scopeAssignable: false,
+      },
       actor,
     );
 
@@ -178,7 +212,12 @@ describe("createRole", () => {
 
     expect(
       await createRole(
-        { name: "Vertrieb", description: null, permissions: [] },
+        {
+          name: "Vertrieb",
+          description: null,
+          permissions: [],
+          scopeAssignable: false,
+        },
         actor,
       ),
     ).toEqual({ ok: false, code: RoleErrorCode.RoleNameTaken });
@@ -196,6 +235,7 @@ describe("createRole", () => {
           name: "Vertrieb",
           description: null,
           permissions: [Permission.LeadsRead],
+          scopeAssignable: false,
         },
         actor,
       ),

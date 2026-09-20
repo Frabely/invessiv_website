@@ -11,6 +11,8 @@ import cockpitDe from "./cockpit/de.json";
 import cockpitEn from "./cockpit/en.json";
 import servicesDe from "./services/de.json";
 import servicesEn from "./services/en.json";
+import accessDe from "./access/de.json";
+import accessEn from "./access/en.json";
 
 export type CrmMetaDictionary = typeof metaDe;
 export type CrmShellDictionary = typeof shellDe;
@@ -18,6 +20,7 @@ export type CrmListDictionary = typeof listDe;
 export type CrmFormDictionary = typeof formDe;
 export type CrmCockpitDictionary = typeof cockpitDe;
 export type CrmServicesDictionary = typeof servicesDe;
+export type CrmAccessDictionary = typeof accessDe;
 
 const CRM_META: Record<Locale, CrmMetaDictionary> = {
   de: metaDe,
@@ -46,6 +49,10 @@ const CRM_SERVICES: Record<Locale, CrmServicesDictionary> = {
   de: servicesDe,
   en: servicesEn,
 };
+const CRM_ACCESS: Record<Locale, CrmAccessDictionary> = {
+  de: accessDe,
+  en: accessEn,
+};
 
 export function getCrmMetaDictionary(locale: Locale): CrmMetaDictionary {
   return CRM_META[locale];
@@ -70,4 +77,8 @@ export function getCrmServicesDictionary(
   locale: Locale,
 ): CrmServicesDictionary {
   return CRM_SERVICES[locale];
+}
+
+export function getCrmAccessDictionary(locale: Locale): CrmAccessDictionary {
+  return CRM_ACCESS[locale];
 }

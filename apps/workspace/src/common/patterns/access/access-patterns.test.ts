@@ -36,6 +36,7 @@ function role(overrides: Partial<RoleDto>): RoleDto {
     name: "Role",
     systemKey: null,
     active: true,
+    scopeAssignable: false,
     description: null,
     isSystem: false,
     permissions: [],

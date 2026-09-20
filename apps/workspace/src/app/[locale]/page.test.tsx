@@ -77,6 +77,8 @@ describe("WorkspacePage", () => {
         userId: "user-id",
         workspaceMemberId: "member-id",
         permissions: new Set(),
+        customerPermissions: new Map(),
+        projectPermissions: new Map(),
       },
     });
 
@@ -116,12 +118,33 @@ describe("WorkspacePage", () => {
         userId: "user-id",
         workspaceMemberId: "member-id",
         permissions: new Set([Permission.LeadsRead]),
+        customerPermissions: new Map(),
+        projectPermissions: new Map(),
       },
     });
 
     await expect(
       WorkspacePage({ params: Promise.resolve({ locale: "en" }) }),
     ).rejects.toThrow("redirect:/en/leads");
+  });
+
+  it("redirects a member with only customer-scoped access to CRM", async () => {
+    mockAuthenticateWorkspaceRequest.mockResolvedValue({
+      status: WorkspaceAuthStatus.Authorized,
+      actor: {
+        userId: "user-id",
+        workspaceMemberId: "member-id",
+        permissions: new Set(),
+        customerPermissions: new Map([
+          ["customer-1", new Set([Permission.CustomersRead])],
+        ]),
+        projectPermissions: new Map(),
+      },
+    });
+
+    await expect(
+      WorkspacePage({ params: Promise.resolve({ locale: "de" }) }),
+    ).rejects.toThrow("redirect:/de/crm");
   });
 
   it("fails closed when authorization data is unavailable", async () => {

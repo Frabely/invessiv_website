@@ -12,6 +12,10 @@
   "noEmail": "No email address saved.",
   "openAction": "Open customer overview",
   "openActionAriaLabel": "Open customer overview for {name}",
+  "ownerAccess": {
+    "observation": "Responsible, but without access",
+    "grantAccess": "Grant access"
+  },
   "projects": {
     "create": "Create project",
     "edit": "Edit project",
@@ -31,6 +35,7 @@
     "formDescription": "Set the status and process steps. Both can be adjusted later.",
     "empty": "No projects have been created for this customer yet.",
     "phase": "Phase",
+    "owner": "Owner",
     "comingSoon": "Services, tasks and chat will follow in this project.",
     "areas": {
       "services": "Services",

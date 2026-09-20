@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ProjectDto } from "@invessiv/common/contracts/crm/project.dto";
+import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import { ProjectBillingModel } from "@invessiv/common/constants/crm/project-billing-models";
 import {
   PROJECT_PHASE_SEQUENCE,
@@ -17,6 +18,7 @@ import {
 } from "@invessiv/ui";
 import { projectsApiService } from "@/client/crm/projects-api-service";
 import type { CrmCockpitDictionary } from "@/i18n/dictionaries/workspace/crm";
+import { OwnerWithoutAccessBadge } from "@/components/workspace/crm/shared/owner-without-access-badge/owner-without-access-badge";
 import styles from "./customer-projects-section.module.css";
 
 type CustomerProjectsSectionProps = {
@@ -24,6 +26,9 @@ type CustomerProjectsSectionProps = {
   customerId: string;
   canWrite: boolean;
   projects: readonly ProjectDto[];
+  accessMembers?: readonly WorkspaceMemberDto[];
+  ownerHasAccess?: Readonly<Record<string, boolean>>;
+  onGrantAccessAction?: (memberId: string) => void;
 };
 
 /** Project context rendered inside the existing customer cockpit, not as a second detail view. */
@@ -32,6 +37,9 @@ export function CustomerProjectsSection({
   customerId,
   canWrite,
   projects,
+  accessMembers,
+  ownerHasAccess,
+  onGrantAccessAction,
 }: CustomerProjectsSectionProps) {
   const router = useRouter();
   const [editorOpen, setEditorOpen] = useState(false);
@@ -58,6 +66,9 @@ export function CustomerProjectsSection({
     projects[0] ??
     null;
   const currentStepRef = useRef<HTMLLIElement>(null);
+  const activeOwner = accessMembers?.find(
+    (member) => member.id === activeProject?.ownerMemberId,
+  );
 
   useEffect(() => {
     currentStepRef.current?.scrollIntoView({
@@ -199,6 +210,25 @@ export function CustomerProjectsSection({
                   </p>
                   <h2>{activeProject.title}</h2>
                 </div>
+                {activeOwner ? (
+                  <div className={styles.ownerBlock}>
+                    <span>{content.projects.owner}</span>
+                    <strong>{activeOwner.displayName}</strong>
+                    {activeProject &&
+                    ownerHasAccess?.[activeProject.id] === false &&
+                    onGrantAccessAction ? (
+                      <OwnerWithoutAccessBadge
+                        content={content.ownerAccess}
+                        onGrantAccessAction={
+                          activeOwner.active
+                            ? () =>
+                                onGrantAccessAction(activeProject.ownerMemberId)
+                            : undefined
+                        }
+                      />
+                    ) : null}
+                  </div>
+                ) : null}
               </div>
               <ol
                 aria-label={content.projects.phase}

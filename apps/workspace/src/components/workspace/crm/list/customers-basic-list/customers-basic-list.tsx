@@ -19,13 +19,14 @@ import styles from "./customers-basic-list.module.css";
 type CustomersBasicListProps = {
   content: CrmListDictionary;
   basePath: string;
-  canWrite: boolean;
   createHref: string | null;
   customers: CustomerSummaryDto[];
   filteredEmptyHref: string;
   hasCustomers: boolean;
   locale: Locale;
   queryString: string;
+  /** A customer reached only through a project-scoped grant is not itself writable. */
+  writableCustomerIds: ReadonlySet<string>;
 };
 
 function getActiveSort(queryString: string): string | undefined {
@@ -37,7 +38,6 @@ function getActiveSort(queryString: string): string | undefined {
 
 export function CustomersBasicList({
   basePath,
-  canWrite,
   content,
   createHref,
   customers,
@@ -45,6 +45,7 @@ export function CustomersBasicList({
   hasCustomers,
   locale,
   queryString,
+  writableCustomerIds,
 }: CustomersBasicListProps) {
   if (customers.length === 0) {
     if (hasCustomers) {
@@ -188,7 +189,7 @@ export function CustomersBasicList({
       {customers.map((customer) => (
         <CustomerTableRow
           basePath={basePath}
-          canWrite={canWrite}
+          canWrite={writableCustomerIds.has(customer.id)}
           content={content}
           customer={customer}
           key={customer.id}

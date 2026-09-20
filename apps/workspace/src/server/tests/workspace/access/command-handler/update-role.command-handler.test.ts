@@ -10,12 +10,7 @@ import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
 import type { UpdateRoleRequestDto } from "@invessiv/common/contracts/auth/update-role-request.dto";
 import { RolesConstraintName } from "@invessiv/db/constraint-names/auth/roles-constraint-names";
 import { PostgresErrorCode } from "@invessiv/db/core";
-import {
-  rolePermissions,
-  roles,
-  workspaceMemberRoles,
-  workspaceMemberScopedRoles,
-} from "@invessiv/db/record-configuration";
+import { rolePermissions, roles } from "@invessiv/db/record-configuration";
 import { updateRole } from "@/server/workspace/access/command-handler/update-role.command-handler";
 import { workspaceActorWith } from "@/server/tests/support/workspace-auth-fixtures";
 
@@ -67,7 +62,6 @@ const UNCHANGED_INPUT: UpdateRoleRequestDto = {
   name: CURRENT.name,
   description: CURRENT.description,
   active: CURRENT.active,
-  scopeAssignable: CURRENT.scopeAssignable,
   permissions: CURRENT.permissions,
   version: CURRENT.version,
 };
@@ -174,62 +168,23 @@ describe("updateRole", () => {
     expect(mocks.createEvent).not.toHaveBeenCalled();
   });
 
-  it("keeps the current scope assignability when the request omits it", async () => {
+  it("rejects a customer role update that adds a workspace-only permission", async () => {
     mocks.findById.mockResolvedValue({
       ...CURRENT,
       scopeAssignable: true,
       permissions: [Permission.CustomersRead],
     });
-    mocks.updateVersioned.mockResolvedValue({ ok: true, value: 5 });
-    const input: UpdateRoleRequestDto = { ...UNCHANGED_INPUT };
-    delete input.scopeAssignable;
-
-    const result = await updateRole(
-      ROLE_ID,
-      { ...input, name: "Neu", permissions: [Permission.CustomersRead] },
-      actor,
-    );
-
-    expect(result.ok).toBe(true);
-    expect(mocks.updateVersioned.mock.calls[0][0].patch).toMatchObject({
-      scope_assignable: true,
-    });
-  });
-
-  it("refuses to drop scope assignability while scoped assignments exist", async () => {
-    mocks.findById.mockResolvedValue({ ...CURRENT, scopeAssignable: true });
-    mocks.select.mockImplementation((table: unknown) =>
-      Promise.resolve(
-        table === workspaceMemberScopedRoles ? [{ id: "x" }] : [],
-      ),
-    );
-
-    expect(
-      await updateRole(
-        ROLE_ID,
-        { ...UNCHANGED_INPUT, scopeAssignable: false },
-        actor,
-      ),
-    ).toEqual({ ok: false, code: RoleErrorCode.ScopeAssignmentsExist });
-    expect(mocks.updateVersioned).not.toHaveBeenCalled();
-  });
-
-  it("refuses to become scope-assignable while workspace-wide assignments exist", async () => {
-    mocks.select.mockImplementation((table: unknown) =>
-      Promise.resolve(table === workspaceMemberRoles ? [{ id: "x" }] : []),
-    );
 
     expect(
       await updateRole(
         ROLE_ID,
         {
           ...UNCHANGED_INPUT,
-          scopeAssignable: true,
-          permissions: [Permission.CustomersRead],
+          permissions: [Permission.CustomersRead, Permission.LeadsRead],
         },
         actor,
       ),
-    ).toEqual({ ok: false, code: RoleErrorCode.WorkspaceAssignmentsExist });
+    ).toEqual({ ok: false, code: RoleErrorCode.PermissionNotScopeAssignable });
     expect(mocks.updateVersioned).not.toHaveBeenCalled();
   });
 
@@ -279,7 +234,6 @@ describe("updateRole", () => {
         name: "Vertrieb Nord",
         description: null,
         active: false,
-        scopeAssignable: false,
         permissions: [Permission.LeadsRead, Permission.LeadsImport],
         version: 4,
       },
@@ -296,7 +250,6 @@ describe("updateRole", () => {
           name: "Vertrieb Nord",
           description: null,
           active: false,
-          scope_assignable: false,
         },
       }),
     );

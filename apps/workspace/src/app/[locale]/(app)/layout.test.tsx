@@ -48,6 +48,8 @@ function authorizedWith(...permissions: Permission[]) {
       userId: "user-id",
       workspaceMemberId: "member-id",
       permissions: new Set(permissions),
+      customerPermissions: new Map(),
+      projectPermissions: new Map(),
     },
   };
 }
@@ -110,6 +112,23 @@ describe("WorkspaceLayout", () => {
 
     expect(screen.getByText("Protected content")).toBeInTheDocument();
     expect(screen.getByRole("main")).toHaveAttribute("data-areas", "leads");
+  });
+
+  it("renders CRM navigation for a member with only scoped customer access", async () => {
+    const authentication = authorizedWith();
+    authentication.actor.customerPermissions = new Map([
+      ["customer-1", new Set([Permission.CustomersRead])],
+    ]);
+    mockGetAuthentication.mockResolvedValue(authentication);
+
+    render(
+      await WorkspaceLayout({
+        children: <p>Scoped CRM content</p>,
+        params: Promise.resolve({ locale: "de" }),
+      }),
+    );
+
+    expect(screen.getByRole("main")).toHaveAttribute("data-areas", "crm");
   });
 
   it("keeps unauthenticated visitors in the sign-in flow", async () => {

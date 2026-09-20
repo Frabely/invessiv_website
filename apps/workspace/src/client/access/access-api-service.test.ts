@@ -85,6 +85,7 @@ describe("accessApiService", () => {
         name: "Sales",
         description: null,
         permissions: [],
+        scopeAssignable: false,
       }),
     ).toEqual({ ok: false, code: RoleErrorCode.Internal });
   });

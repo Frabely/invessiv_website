@@ -314,6 +314,29 @@ describe.skipIf(!RUN_INTEGRATION)(
       ).toBe(true);
     });
 
+    it("lists grants for exactly the requested members in a single batched query", async () => {
+      const entries = await accessScopeReadService.listByMembers(db, [
+        memberAnna,
+        memberBen,
+      ]);
+
+      expect(entries.map((entry) => entry.id).sort()).toEqual(
+        [
+          grants.annaAlpha,
+          grants.annaAlphaSite,
+          grants.annaBeta,
+          grants.benAlpha,
+        ].sort(),
+      );
+      expect(
+        entries.every((entry) => entry.workspaceMemberId !== memberCleo),
+      ).toBe(true);
+    });
+
+    it("returns nothing for an empty member list", async () => {
+      expect(await accessScopeReadService.listByMembers(db, [])).toEqual([]);
+    });
+
     it("counts every grant of a member on the member list", async () => {
       const anna = await workspaceMemberReadService.findById(db, memberAnna);
 

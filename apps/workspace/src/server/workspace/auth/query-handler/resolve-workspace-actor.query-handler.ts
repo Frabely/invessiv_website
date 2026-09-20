@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq, inArray, type SQL } from "drizzle-orm";
 
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
@@ -14,6 +14,38 @@ import {
 } from "@invessiv/db/record-configuration";
 import type { ResolveWorkspaceActorResult } from "@/server/workspace/auth/resolve-workspace-actor-types";
 import { workspaceActorMappingService } from "@/server/workspace/auth/services/workspace-actor/workspace-actor-mapping-service";
+
+function listScopedRoleRows(memberCondition: SQL) {
+  const db = getDrizzleDatabaseClient();
+
+  return db
+    .select({
+      workspace_member_id: workspaceMemberScopedRoles.workspace_member_id,
+      customer_id: workspaceMemberScopedRoles.customer_id,
+      project_id: workspaceMemberScopedRoles.project_id,
+      permission_key: rolePermissions.permission_key,
+      permission_scope_assignable: rolePermissions.permission_scope_assignable,
+    })
+    .from(workspaceMemberScopedRoles)
+    .innerJoin(
+      roles,
+      and(
+        eq(roles.id, workspaceMemberScopedRoles.role_id),
+        eq(roles.realm, AuthRealm.Workspace),
+        eq(roles.active, true),
+        eq(roles.scope_assignable, true),
+      ),
+    )
+    .innerJoin(
+      rolePermissions,
+      and(
+        eq(rolePermissions.role_id, roles.id),
+        eq(rolePermissions.realm, AuthRealm.Workspace),
+        eq(rolePermissions.permission_scope_assignable, true),
+      ),
+    )
+    .where(memberCondition);
+}
 
 /**
  * Loads identity, membership and the permissions of all active workspace roles, plus the scoped
@@ -57,44 +89,93 @@ export async function resolveWorkspaceActor(
     )
     .where(eq(users.clerk_user_id, clerkUserId));
 
-  const scopedRowsQuery = db
-    .select({
-      workspace_member_id: workspaceMemberScopedRoles.workspace_member_id,
-      customer_id: workspaceMemberScopedRoles.customer_id,
-      project_id: workspaceMemberScopedRoles.project_id,
-      permission_key: rolePermissions.permission_key,
-      permission_scope_assignable: rolePermissions.permission_scope_assignable,
-    })
-    .from(workspaceMemberScopedRoles)
-    .innerJoin(
-      roles,
-      and(
-        eq(roles.id, workspaceMemberScopedRoles.role_id),
-        eq(roles.realm, AuthRealm.Workspace),
-        eq(roles.active, true),
-        eq(roles.scope_assignable, true),
-      ),
-    )
-    .innerJoin(
-      rolePermissions,
-      and(
-        eq(rolePermissions.role_id, roles.id),
-        eq(rolePermissions.realm, AuthRealm.Workspace),
-        eq(rolePermissions.permission_scope_assignable, true),
-      ),
-    )
-    .where(
-      inArray(
-        workspaceMemberScopedRoles.workspace_member_id,
-        db
-          .select({ id: workspaceMembers.id })
-          .from(workspaceMembers)
-          .innerJoin(users, eq(users.id, workspaceMembers.user_id))
-          .where(eq(users.clerk_user_id, clerkUserId)),
-      ),
-    );
+  const scopedRowsQuery = listScopedRoleRows(
+    inArray(
+      workspaceMemberScopedRoles.workspace_member_id,
+      db
+        .select({ id: workspaceMembers.id })
+        .from(workspaceMembers)
+        .innerJoin(users, eq(users.id, workspaceMembers.user_id))
+        .where(eq(users.clerk_user_id, clerkUserId)),
+    ),
+  );
 
   const [rows, scopedRows] = await Promise.all([rowsQuery, scopedRowsQuery]);
 
   return workspaceActorMappingService.mapRowsToResolution(rows, scopedRows);
+}
+
+/**
+ * Server-only lookup for evaluating the effective access of many responsible members at once
+ * (e.g. every distinct customer/project owner) without one round-trip pair per member. Reuses
+ * the same row shapes and the same mapping service as `resolveWorkspaceActor`, so the resolution
+ * logic itself lives in exactly one place.
+ */
+export async function resolveWorkspaceActorsByMemberIds(
+  memberIds: readonly string[],
+): Promise<Map<string, ResolveWorkspaceActorResult>> {
+  if (memberIds.length === 0) {
+    return new Map();
+  }
+  const db = getDrizzleDatabaseClient();
+
+  const rowsQuery = db
+    .select({
+      workspace_member_id: workspaceMembers.id,
+      user_id: users.id,
+      user_active: users.active,
+      member_active: workspaceMembers.active,
+      permission_key: rolePermissions.permission_key,
+    })
+    .from(workspaceMembers)
+    .innerJoin(users, eq(users.id, workspaceMembers.user_id))
+    .leftJoin(
+      workspaceMemberRoles,
+      eq(workspaceMemberRoles.workspace_member_id, workspaceMembers.id),
+    )
+    .leftJoin(
+      roles,
+      and(
+        eq(roles.id, workspaceMemberRoles.role_id),
+        eq(roles.realm, AuthRealm.Workspace),
+        eq(roles.active, true),
+      ),
+    )
+    .leftJoin(
+      rolePermissions,
+      and(
+        eq(rolePermissions.role_id, roles.id),
+        eq(rolePermissions.realm, AuthRealm.Workspace),
+      ),
+    )
+    .where(inArray(workspaceMembers.id, memberIds));
+
+  const scopedRowsQuery = listScopedRoleRows(
+    inArray(workspaceMemberScopedRoles.workspace_member_id, memberIds),
+  );
+
+  const [rows, scopedRows] = await Promise.all([rowsQuery, scopedRowsQuery]);
+
+  const rowsByMember = new Map<string, typeof rows>();
+  for (const row of rows) {
+    const list = rowsByMember.get(row.workspace_member_id) ?? [];
+    list.push(row);
+    rowsByMember.set(row.workspace_member_id, list);
+  }
+  const scopedRowsByMember = new Map<string, typeof scopedRows>();
+  for (const row of scopedRows) {
+    const list = scopedRowsByMember.get(row.workspace_member_id) ?? [];
+    list.push(row);
+    scopedRowsByMember.set(row.workspace_member_id, list);
+  }
+
+  return new Map(
+    memberIds.map((memberId) => [
+      memberId,
+      workspaceActorMappingService.mapRowsToResolution(
+        rowsByMember.get(memberId) ?? [],
+        scopedRowsByMember.get(memberId) ?? [],
+      ),
+    ]),
+  );
 }

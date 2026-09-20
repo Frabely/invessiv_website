@@ -3,7 +3,6 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 
 import { AccessScopeType } from "@invessiv/common/constants/auth/access-scope-types";
-import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
 import type { AccessCustomerOptionDto } from "@invessiv/common/contracts/auth/access-customer-option.dto";
 import type { AccessProjectOptionDto } from "@invessiv/common/contracts/auth/access-project-option.dto";
 import type { AccessScopeDto } from "@invessiv/common/contracts/auth/access-scope.dto";
@@ -11,6 +10,7 @@ import type { AccessScopeEntryDto } from "@invessiv/common/contracts/auth/access
 import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/role-assignment-option.dto";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import type { TreeNode } from "@invessiv/common/contracts/ui/tree-node";
+import { roleAppliesToScopeType } from "@invessiv/common/patterns/auth/role-applies-to-scope-type";
 import { unionRolePermissions } from "@invessiv/common/patterns/auth/union-role-permissions";
 import { formatCustomerNumber } from "@invessiv/common/patterns/crm/format-customer-number";
 import { ButtonControl, TreeView } from "@invessiv/ui";
@@ -30,7 +30,7 @@ import { formatMessage } from "@/lib/i18n/format-message";
 import { PermissionSummary } from "../permission-summary/permission-summary";
 import {
   AccessScopeRow,
-  type AccessScopeRowRole,
+  type AccessScopeRowProps,
 } from "../access-scope-row/access-scope-row";
 import styles from "./access-scope-tree.module.css";
 
@@ -45,7 +45,7 @@ type TouchedTarget =
 
 type RowData = {
   scope: AccessScopeDto | null;
-  roles: AccessScopeRowRole[];
+  roles: AccessScopeRowProps["roles"];
 };
 
 export type AccessScopeTreeProps = {
@@ -54,12 +54,11 @@ export type AccessScopeTreeProps = {
   fixedCustomer?: AccessCustomerOptionDto;
   initialAccessScopes: readonly AccessScopeEntryDto[];
   member: WorkspaceMemberDto;
+  onOpenGlobalRolesAction?: () => void;
   permissionsContent: SettingsPermissionsDictionary;
   roles: readonly RoleAssignmentOptionDto[];
   rolesHref: string;
 };
-
-const ROOT_NODE_ID = "access-root";
 
 function customerNodeId(customerId: string) {
   return `customer:${customerId}`;
@@ -81,6 +80,7 @@ export function AccessScopeTree({
   fixedCustomer,
   initialAccessScopes,
   member,
+  onOpenGlobalRolesAction,
   permissionsContent,
   roles,
   rolesHref,
@@ -110,11 +110,19 @@ export function AccessScopeTree({
   const offeredRoles = useMemo(() => {
     const heldIds = new Set(accessScopes.map((entry) => entry.roleId));
     return roles.filter(
-      (role) =>
-        role.systemKey !== SystemRoleKey.WorkspaceOwner &&
-        (role.active || heldIds.has(role.id)),
+      (role) => role.scopeAssignable && (role.active || heldIds.has(role.id)),
     );
   }, [accessScopes, roles]);
+
+  // A role built purely from customer-entity permissions (e.g. "manage customers") has nothing
+  // to grant on a single project and would sit there as inert, confusing dead weight.
+  const offeredProjectRoles = useMemo(
+    () =>
+      offeredRoles.filter((role) =>
+        roleAppliesToScopeType(role.permissions, AccessScopeType.Project),
+      ),
+    [offeredRoles],
+  );
 
   const customers = useMemo(
     () =>
@@ -128,8 +136,8 @@ export function AccessScopeTree({
     async (value: string | undefined) => {
       const requestId = ++searchRequestId.current;
       const query = value ?? "";
-      setSearch(query);
       if (!query) {
+        setSearch("");
         setIsSearching(false);
         setSearchError(false);
         setSearchResults(fixedCustomer ? [fixedCustomer] : []);
@@ -142,6 +150,7 @@ export function AccessScopeTree({
       if (requestId !== searchRequestId.current) {
         return;
       }
+      setSearch(query);
       setIsSearching(false);
       if (result.ok) {
         setSearchResults(result.customers);
@@ -268,21 +277,6 @@ export function AccessScopeTree({
   }
 
   const rows = new Map<string, RowData>();
-  const workspaceRoleIds = new Set(member.roles.map((role) => role.id));
-  const workspaceRoles = roles.filter((role) => workspaceRoleIds.has(role.id));
-  rows.set(ROOT_NODE_ID, {
-    scope: null,
-    roles: workspaceRoles.map((role) => ({
-      role,
-      checked: true,
-      direct: true,
-      disabled: true,
-      inherited: false,
-      pending: false,
-      removeDirectDisabled: true,
-    })),
-  });
-
   const customerNodes: TreeNode[] = customers.map((customer) => {
     const customerScope: AccessScopeDto = {
       type: AccessScopeType.Customer,
@@ -299,8 +293,7 @@ export function AccessScopeTree({
           role,
           checked: direct,
           direct,
-          disabled:
-            !canManageAccess || reloadError || role.scopeAssignable !== true,
+          disabled: !canManageAccess || reloadError,
           inherited: false,
           pending: pendingKeys.includes(scopeKey(customerScope, role.id)),
           removeDirectDisabled: true,
@@ -336,7 +329,7 @@ export function AccessScopeTree({
       const id = projectNodeId(project.id);
       rows.set(id, {
         scope: projectScope,
-        roles: offeredRoles.map((role) => {
+        roles: offeredProjectRoles.map((role) => {
           const inherited = isRoleInheritedFromCustomer(
             accessScopes,
             customer.id,
@@ -349,11 +342,7 @@ export function AccessScopeTree({
             role,
             checked: inherited || direct,
             direct,
-            disabled:
-              !canManageAccess ||
-              reloadError ||
-              inherited ||
-              role.scopeAssignable !== true,
+            disabled: !canManageAccess || reloadError || inherited,
             inherited,
             pending: pendingKeys.includes(scopeKey(projectScope, role.id)),
             removeDirectDisabled: !canManageAccess || reloadError,
@@ -378,16 +367,7 @@ export function AccessScopeTree({
     };
   });
 
-  const nodes: TreeNode[] = [
-    {
-      id: ROOT_NODE_ID,
-      label: accessContent.allCustomers,
-      secondaryLabel: accessContent.workspaceWide,
-      hasChildren: false,
-      children: [],
-    },
-    ...customerNodes,
-  ];
+  const nodes: TreeNode[] = customerNodes;
 
   const previewRoleIds = touched
     ? [
@@ -413,6 +393,27 @@ export function AccessScopeTree({
 
   return (
     <div className={styles.root}>
+      <div className={styles.globalHint}>
+        <p>{accessContent.globalRolesHint}</p>
+        {onOpenGlobalRolesAction ? (
+          <ButtonControl
+            onClick={onOpenGlobalRolesAction}
+            type="button"
+            variant="ghost"
+          >
+            {accessContent.openGlobalRoles}
+          </ButtonControl>
+        ) : null}
+      </div>
+      {offeredRoles.length === 0 ? (
+        <section className={styles.empty}>
+          <h3>{accessContent.noCustomerRolesTitle}</h3>
+          <p>{accessContent.noCustomerRolesDescription}</p>
+          <a className={styles.catalogLink} href={rolesHref}>
+            {accessContent.openRoleCatalog}
+          </a>
+        </section>
+      ) : null}
       {!fixedCustomer ? (
         <ListSearchField
           currentValue={search}
@@ -439,73 +440,91 @@ export function AccessScopeTree({
         </div>
       ) : null}
 
-      <div className={styles.treeFrame}>
-        <TreeView
-          ariaLabel={accessContent.treeLabel}
-          collapseLabelTemplate={accessContent.collapse}
-          expandLabelTemplate={accessContent.expand}
-          expandedIds={expandedIds}
-          loadingIds={loadingIds}
-          loadingLabel={accessContent.projectsLoading}
-          nodes={nodes}
-          onToggleAction={(nodeId, expanded) => {
-            const customer = customers.find(
-              (entry) => customerNodeId(entry.id) === nodeId,
-            );
-            if (customer) {
-              toggleCustomer(customer.id, expanded);
-            }
-          }}
-          renderRowActions={(node) => {
-            const row = rows.get(node.id);
-            if (!row) {
-              return null;
-            }
-            return (
-              <div
-                className={styles.rowActions}
-                onFocus={() => {
-                  if (!row.scope) return;
-                  setTouched(
-                    row.scope.type === AccessScopeType.Customer
-                      ? {
-                          type: row.scope.type,
-                          customerId: row.scope.customerId,
-                          label: node.label,
-                        }
-                      : {
-                          type: row.scope.type,
-                          customerId: row.scope.customerId,
-                          projectId: row.scope.projectId,
-                          label: node.label,
-                        },
-                  );
-                }}
-              >
-                <AccessScopeRow
-                  accessContent={accessContent}
-                  onToggleAction={(roleId, checked) => {
-                    if (row.scope) void toggleScope(row.scope, roleId, checked);
-                  }}
-                  onRemoveDirectAction={(roleId) => {
-                    if (row.scope) void toggleScope(row.scope, roleId, false);
-                  }}
-                  permissionsContent={permissionsContent}
-                  readOnly={row.scope === null}
-                  roles={row.roles}
-                  scopeLabel={node.label}
+      {offeredRoles.length > 0 ? (
+        <div className={styles.contentGrid}>
+          <div className={styles.treeFrame}>
+            <TreeView
+              ariaLabel={accessContent.treeLabel}
+              collapseLabelTemplate={accessContent.collapse}
+              expandLabelTemplate={accessContent.expand}
+              expandedIds={expandedIds}
+              loadingIds={loadingIds}
+              loadingLabel={accessContent.projectsLoading}
+              nodes={nodes}
+              onToggleAction={(nodeId, expanded) => {
+                const customer = customers.find(
+                  (entry) => customerNodeId(entry.id) === nodeId,
+                );
+                if (customer) {
+                  toggleCustomer(customer.id, expanded);
+                }
+              }}
+              renderRowActions={(node) => {
+                const row = rows.get(node.id);
+                if (!row) {
+                  return null;
+                }
+                return (
+                  <div
+                    className={styles.rowActions}
+                    onFocus={() => {
+                      if (!row.scope) return;
+                      setTouched(
+                        row.scope.type === AccessScopeType.Customer
+                          ? {
+                              type: row.scope.type,
+                              customerId: row.scope.customerId,
+                              label: node.label,
+                            }
+                          : {
+                              type: row.scope.type,
+                              customerId: row.scope.customerId,
+                              projectId: row.scope.projectId,
+                              label: node.label,
+                            },
+                      );
+                    }}
+                  >
+                    <AccessScopeRow
+                      accessContent={accessContent}
+                      onToggleAction={(roleId, checked) => {
+                        if (row.scope)
+                          void toggleScope(row.scope, roleId, checked);
+                      }}
+                      onRemoveDirectAction={(roleId) => {
+                        if (row.scope)
+                          void toggleScope(row.scope, roleId, false);
+                      }}
+                      permissionsContent={permissionsContent}
+                      roles={row.roles}
+                      scopeLabel={node.label}
+                    />
+                  </div>
+                );
+              }}
+            />
+          </div>
+
+          <section aria-live="polite" className={styles.preview}>
+            {touched ? (
+              <>
+                <h3>
+                  {formatMessage(accessContent.previewHeading, {
+                    target: touched.label,
+                  })}
+                </h3>
+                <PermissionSummary
+                  content={permissionsContent}
+                  emptyLabel={accessContent.previewEmpty}
+                  permissions={previewPermissions}
                 />
-                {row.scope === null ? (
-                  <p className={styles.rootHint}>
-                    {accessContent.rolesTabHint}{" "}
-                    <a href={rolesHref}>{accessContent.rolesTabLink}</a>
-                  </p>
-                ) : null}
-              </div>
-            );
-          }}
-        />
-      </div>
+              </>
+            ) : (
+              <p>{accessContent.previewPrompt}</p>
+            )}
+          </section>
+        </div>
+      ) : null}
 
       {projectErrorIds.map((customerId) => {
         const customer = customers.find((entry) => entry.id === customerId);
@@ -586,25 +605,6 @@ export function AccessScopeTree({
           ] ?? accessContent.errors.INTERNAL}
         </p>
       ) : null}
-
-      <section aria-live="polite" className={styles.preview}>
-        {touched ? (
-          <>
-            <h3>
-              {formatMessage(accessContent.previewHeading, {
-                target: touched.label,
-              })}
-            </h3>
-            <PermissionSummary
-              content={permissionsContent}
-              emptyLabel={accessContent.previewEmpty}
-              permissions={previewPermissions}
-            />
-          </>
-        ) : (
-          <p>{accessContent.previewPrompt}</p>
-        )}
-      </section>
     </div>
   );
 }

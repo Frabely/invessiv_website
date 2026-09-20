@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { AccessScopeType } from "@invessiv/common/constants/auth/access-scope-types";
 import {
   AUTH_REALM_VALUES,
   AuthRealm,
@@ -63,5 +64,26 @@ describe("Permission", () => {
 
   it("derives the workspace permissions from the definitions", () => {
     expect(WORKSPACE_PERMISSION_VALUES).toEqual(PERMISSION_VALUES);
+  });
+
+  it("only lists assignable scope types when the permission is scope-assignable", () => {
+    for (const permission of PERMISSION_VALUES) {
+      const definition = PERMISSION_DEFINITIONS[permission];
+      if (!definition.scopeAssignable) {
+        expect(definition.assignableScopeTypes).toEqual([]);
+      } else {
+        expect(definition.assignableScopeTypes.length).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it("never offers a project scope without also offering it at customer scope", () => {
+    for (const permission of PERMISSION_VALUES) {
+      const scopeTypes =
+        PERMISSION_DEFINITIONS[permission].assignableScopeTypes;
+      if (scopeTypes.includes(AccessScopeType.Project)) {
+        expect(scopeTypes).toContain(AccessScopeType.Customer);
+      }
+    }
   });
 });

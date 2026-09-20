@@ -43,6 +43,7 @@ const MEMBER_ROLE: RoleDto = {
   name: "Workspace member",
   systemKey: SystemRoleKey.WorkspaceMember,
   active: true,
+  scopeAssignable: false,
   description: null,
   isSystem: true,
   permissions: [],

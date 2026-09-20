@@ -4,8 +4,11 @@ import { notFound } from "next/navigation";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { can } from "@invessiv/common/patterns/auth/can";
+import { canOn } from "@/common/patterns/auth/can-on";
 import { canAnywhere } from "@/common/patterns/auth/access-scope";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
+import { SettingsTab } from "@/common/constants/access/settings-tabs";
+import { buildSettingsTabHref } from "@/common/patterns/access/settings-tab";
 import { CustomerFormDialogMode } from "@/common/constants/crm/forms/customer-form-dialog-modes";
 import {
   buildCustomerCockpitCloseHref,
@@ -25,6 +28,7 @@ import { ListPagination } from "@/components/workspace/shared/table/list-paginat
 import { ButtonLink } from "@invessiv/ui";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import {
+  getCrmAccessDictionary,
   getCrmCockpitDictionary,
   getCrmFormDictionary,
   getCrmListDictionary,
@@ -32,6 +36,7 @@ import {
   getCrmServicesDictionary,
   getCrmShellDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
+import { getSettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import { getLeadsSharedDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { requireWorkspaceArea } from "@/lib/auth/permissions";
 import { crmServicesPathFor, workspaceAreaPathFor } from "@/lib/auth/routes";
@@ -45,6 +50,11 @@ import { getCustomerCockpitById } from "@/server/workspace/crm/query-handler/get
 import { listActiveCustomerCategories } from "@/server/workspace/crm/query-handler/list-active-customer-categories.query-handler";
 import { listCustomers } from "@/server/workspace/crm/query-handler/list-customers.query-handler";
 import { listProjectsByCustomer } from "@/server/workspace/crm/query-handler/list-projects-by-customer.query-handler";
+import { listCustomerAccessScopes } from "@/server/workspace/access/query-handler/list-customer-access-scopes.query-handler";
+import { listAccessCustomerProjects } from "@/server/workspace/access/query-handler/list-access-customer-projects.query-handler";
+import { listRoleAssignmentOptions } from "@/server/workspace/access/query-handler/list-role-assignment-options.query-handler";
+import { listWorkspaceMembers } from "@/server/workspace/access/query-handler/list-workspace-members.query-handler";
+import { responsibilityAccessService } from "@/server/workspace/shared/services/responsibility-access-service";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -85,22 +95,57 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
   const canWrite = canAnywhere(actor, Permission.CustomersWrite);
   const canReadLeads = can(actor, Permission.LeadsRead);
   const canReadServices = can(actor, Permission.ServicesRead);
+  const canManageAccess = can(actor, Permission.MembersManage);
   const dialogRequest = canWrite
     ? readCustomerDialogRequest(resolvedSearchParams)
     : null;
   const cockpitCustomerId = readCustomerCockpitId(resolvedSearchParams);
 
+  const editCustomerId =
+    dialogRequest?.mode === CustomerFormDialogMode.Edit
+      ? dialogRequest.customerId
+      : null;
+  // A customer reached only through a project-scoped grant is not writable itself, so the
+  // edit dialog stays closed for it exactly like for an unknown id — no error, just no dialog.
+  const canEditDialogCustomer =
+    editCustomerId !== null &&
+    canOn(actor, Permission.CustomersWrite, { customerId: editCustomerId });
+
   const [customerList, editCustomer, cockpitCustomer] = await Promise.all([
     listCustomers(requestedFilters, actor),
-    dialogRequest?.mode === CustomerFormDialogMode.Edit
-      ? getCustomerById(dialogRequest.customerId, actor, canReadLeads)
+    editCustomerId && canEditDialogCustomer
+      ? getCustomerById(editCustomerId, actor, canReadLeads)
       : null,
     cockpitCustomerId ? getCustomerCockpitById(cockpitCustomerId, actor) : null,
   ]);
+  const writableCustomerIds = new Set(
+    customerList.rows
+      .filter((row) =>
+        canOn(actor, Permission.CustomersWrite, { customerId: row.id }),
+      )
+      .map((row) => row.id),
+  );
   const cockpitProjects =
     cockpitCustomer && canAnywhere(actor, Permission.ProjectsRead)
       ? await listProjectsByCustomer(cockpitCustomer.id, actor)
       : null;
+  const customerAccessData =
+    cockpitCustomer && canManageAccess
+      ? await Promise.all([
+          listCustomerAccessScopes(cockpitCustomer.id),
+          listAccessCustomerProjects(cockpitCustomer.id),
+          listWorkspaceMembers(),
+          listRoleAssignmentOptions(),
+          responsibilityAccessService.evaluate({
+            customerId: cockpitCustomer.id,
+            projectIds: cockpitProjects?.map((project) => project.id),
+          }),
+        ])
+      : null;
+  const rolesHref = buildSettingsTabHref(
+    workspaceAreaPathFor(activeLocale, WorkspaceArea.Settings),
+    SettingsTab.Roles,
+  );
   const filters = { ...requestedFilters, page: customerList.page };
   const queryString = buildCustomerListQueryString(filters);
   const createHref = canWrite
@@ -146,7 +191,6 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
       />
       <CustomersBasicList
         basePath={basePath}
-        canWrite={canWrite}
         content={getCrmListDictionary(activeLocale)}
         createHref={createHref}
         customers={customerList.rows}
@@ -154,6 +198,7 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
         hasCustomers={customerList.hasCustomers}
         locale={activeLocale}
         queryString={queryString}
+        writableCustomerIds={writableCustomerIds}
       />
       <ListPagination
         basePath={basePath}
@@ -188,11 +233,50 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
       ) : null}
       {cockpitCustomer ? (
         <CustomerCockpitDialog
+          accessContent={
+            customerAccessData
+              ? getCrmAccessDictionary(activeLocale)
+              : undefined
+          }
+          accessMembers={customerAccessData?.[2]}
+          accessProjects={customerAccessData?.[1]}
+          accessRoles={customerAccessData?.[3]}
+          accessScopes={customerAccessData?.[0]}
+          customerOwnerMemberId={
+            customerAccessData?.[4].targets.find(
+              (target) => target.entityId === `customer:${cockpitCustomer.id}`,
+            )?.ownerMemberId
+          }
+          customerOwnerHasAccess={
+            customerAccessData
+              ? !customerAccessData[4].inaccessibleEntityIds.has(
+                  `customer:${cockpitCustomer.id}`,
+                )
+              : undefined
+          }
           closeHref={cockpitCloseHref}
           content={getCrmCockpitDictionary(activeLocale)}
           customer={cockpitCustomer}
           canWriteProjects={canAnywhere(actor, Permission.ProjectsWrite)}
           projects={cockpitProjects}
+          projectOwnerHasAccess={
+            customerAccessData && cockpitProjects
+              ? Object.fromEntries(
+                  cockpitProjects.map((project) => [
+                    project.id,
+                    !customerAccessData[4].inaccessibleEntityIds.has(
+                      `project:${project.id}`,
+                    ),
+                  ]),
+                )
+              : undefined
+          }
+          permissionsContent={
+            customerAccessData
+              ? getSettingsPermissionsDictionary(activeLocale)
+              : undefined
+          }
+          rolesHref={customerAccessData ? rolesHref : undefined}
         />
       ) : null}
     </WorkspacePageShell>

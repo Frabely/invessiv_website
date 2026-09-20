@@ -19,6 +19,8 @@ type PermissionPickerProps = {
   lockNonDelegable: boolean;
   /** Scoped roles can only hold permissions the server catalog marks as scope-assignable. */
   lockNonScopeAssignable?: boolean;
+  /** Customer roles only offer permissions that can be bound to a customer or project. */
+  onlyScopeAssignable?: boolean;
   onToggleAction?: (permission: Permission) => void;
   readOnly: boolean;
   selected: readonly Permission[];
@@ -29,6 +31,7 @@ export function PermissionPicker({
   legend,
   lockNonDelegable,
   lockNonScopeAssignable = false,
+  onlyScopeAssignable = false,
   onToggleAction,
   readOnly,
   selected,
@@ -40,6 +43,12 @@ export function PermissionPicker({
       <legend className={styles.legend}>{legend}</legend>
       <div className={styles.groups}>
         {PERMISSION_GROUP_VALUES.map((group) => {
+          const groupPermissions = PERMISSION_GROUP_PERMISSIONS[group].filter(
+            (permission) =>
+              !onlyScopeAssignable ||
+              PERMISSION_DEFINITIONS[permission].scopeAssignable,
+          );
+          if (groupPermissions.length === 0) return null;
           const groupTitleId = `${baseId}-${group}`;
           return (
             <section
@@ -51,7 +60,7 @@ export function PermissionPicker({
                 {content.groups[group]}
               </h3>
               <ul className={styles.items}>
-                {PERMISSION_GROUP_PERMISSIONS[group].map((permission) => {
+                {groupPermissions.map((permission) => {
                   const lockedByDelegation =
                     lockNonDelegable &&
                     !PERMISSION_DEFINITIONS[permission].delegable;

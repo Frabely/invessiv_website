@@ -29,25 +29,35 @@ const OWNER: WorkspaceMemberDto = {
 };
 
 function renderRow(isCurrentActor: boolean) {
+  const onManageRolesAction = vi.fn();
+  const onOpenAccessIssueAction = vi.fn();
   const onToggleOwnerAction = vi.fn();
   const onToggleStatusAction = vi.fn();
   render(
     <ul>
       <MemberRow
+        canManageAccess
         content={content}
         isCurrentActor={isCurrentActor}
         member={OWNER}
-        onEditRolesAction={vi.fn()}
+        onManageRolesAction={onManageRolesAction}
+        onOpenAccessIssueAction={onOpenAccessIssueAction}
         onToggleOwnerAction={onToggleOwnerAction}
         onToggleStatusAction={onToggleStatusAction}
         permissionsContent={permissionsContent}
       />
     </ul>,
   );
-  return { onToggleOwnerAction, onToggleStatusAction };
+  return {
+    onManageRolesAction,
+    onOpenAccessIssueAction,
+    onToggleOwnerAction,
+    onToggleStatusAction,
+  };
 }
 
 const revokeButtonName = `${content.list.actions.revokeOwner}: ${OWNER.displayName}`;
+const manageRolesButtonName = `${content.list.actions.manageRoles}: ${OWNER.displayName}`;
 
 describe("MemberRow", () => {
   afterEach(() => cleanup());
@@ -59,21 +69,31 @@ describe("MemberRow", () => {
       screen.queryByRole("button", { name: revokeButtonName }),
     ).not.toBeInTheDocument();
     expect(
-      screen.getByRole("button", {
-        name: `${content.list.actions.editRoles}: ${OWNER.displayName}`,
-      }),
+      screen.getByRole("button", { name: manageRolesButtonName }),
     ).toBeInTheDocument();
     expect(screen.getByText(content.list.currentUserBadge)).toBeInTheDocument();
+  });
+
+  it("opens role management from its single action button", () => {
+    const { onManageRolesAction } = renderRow(false);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: manageRolesButtonName }),
+    );
+
+    expect(onManageRolesAction).toHaveBeenCalledTimes(1);
   });
 
   it("flags a member without any active role and stays quiet otherwise", () => {
     const { rerender } = render(
       <ul>
         <MemberRow
+          canManageAccess
           content={content}
           isCurrentActor={false}
           member={{ ...OWNER, isOwner: false, hasActiveRole: false }}
-          onEditRolesAction={vi.fn()}
+          onManageRolesAction={vi.fn()}
+          onOpenAccessIssueAction={vi.fn()}
           onToggleOwnerAction={vi.fn()}
           onToggleStatusAction={vi.fn()}
           permissionsContent={permissionsContent}
@@ -85,10 +105,12 @@ describe("MemberRow", () => {
     rerender(
       <ul>
         <MemberRow
+          canManageAccess
           content={content}
           isCurrentActor={false}
           member={OWNER}
-          onEditRolesAction={vi.fn()}
+          onManageRolesAction={vi.fn()}
+          onOpenAccessIssueAction={vi.fn()}
           onToggleOwnerAction={vi.fn()}
           onToggleStatusAction={vi.fn()}
           permissionsContent={permissionsContent}
@@ -113,10 +135,12 @@ describe("MemberRow", () => {
     const { rerender } = render(
       <ul>
         <MemberRow
+          canManageAccess
           content={content}
           isCurrentActor={false}
           member={{ ...inactive, isOwner: false }}
-          onEditRolesAction={vi.fn()}
+          onManageRolesAction={vi.fn()}
+          onOpenAccessIssueAction={vi.fn()}
           onToggleOwnerAction={vi.fn()}
           onToggleStatusAction={vi.fn()}
           permissionsContent={permissionsContent}
@@ -137,10 +161,12 @@ describe("MemberRow", () => {
     rerender(
       <ul>
         <MemberRow
+          canManageAccess
           content={content}
           isCurrentActor={false}
           member={inactive}
-          onEditRolesAction={vi.fn()}
+          onManageRolesAction={vi.fn()}
+          onOpenAccessIssueAction={vi.fn()}
           onToggleOwnerAction={vi.fn()}
           onToggleStatusAction={vi.fn()}
           permissionsContent={permissionsContent}
@@ -165,5 +191,71 @@ describe("MemberRow", () => {
     expect(
       screen.queryByRole("button", { name: deactivateName }),
     ).not.toBeInTheDocument();
+  });
+
+  it("shows the scoped access count only when access can be managed", () => {
+    const { rerender } = render(
+      <ul>
+        <MemberRow
+          canManageAccess
+          content={content}
+          isCurrentActor={false}
+          member={{ ...OWNER, accessScopeCount: 2 }}
+          onManageRolesAction={vi.fn()}
+          onOpenAccessIssueAction={vi.fn()}
+          onToggleOwnerAction={vi.fn()}
+          onToggleStatusAction={vi.fn()}
+          permissionsContent={permissionsContent}
+        />
+      </ul>,
+    );
+
+    expect(screen.getByText("2 gebundene Zugriffe")).toBeVisible();
+
+    rerender(
+      <ul>
+        <MemberRow
+          canManageAccess={false}
+          content={content}
+          isCurrentActor={false}
+          member={{ ...OWNER, accessScopeCount: 2 }}
+          onManageRolesAction={vi.fn()}
+          onOpenAccessIssueAction={vi.fn()}
+          onToggleOwnerAction={vi.fn()}
+          onToggleStatusAction={vi.fn()}
+          permissionsContent={permissionsContent}
+        />
+      </ul>,
+    );
+
+    expect(screen.queryByText("2 gebundene Zugriffe")).toBeNull();
+  });
+
+  it("opens the customer/project tab from the responsibility-without-access counter", () => {
+    const onOpenAccessIssueAction = vi.fn();
+    render(
+      <ul>
+        <MemberRow
+          canManageAccess
+          content={content}
+          isCurrentActor={false}
+          member={OWNER}
+          onManageRolesAction={vi.fn()}
+          onOpenAccessIssueAction={onOpenAccessIssueAction}
+          onToggleOwnerAction={vi.fn()}
+          onToggleStatusAction={vi.fn()}
+          permissionsContent={permissionsContent}
+          responsibilityWithoutAccessCount={2}
+        />
+      </ul>,
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Für 2 Datensätze zuständig, aber ohne Zugriff",
+      }),
+    );
+
+    expect(onOpenAccessIssueAction).toHaveBeenCalledTimes(1);
   });
 });

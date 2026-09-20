@@ -10,7 +10,10 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 ## Zweck
 
 Hier wird aus einer Clerk-Kennung ein `WorkspaceActor` mit effektiven Permissions. Die Gates in `src/lib/auth/**`
-(`requireWorkspaceActor`, `requireWorkspaceArea`, `withWorkspaceApiActor`, `withPermission`) sind die einzigen Aufrufer.
+(`requireWorkspaceActor`, `requireWorkspaceArea`, `withWorkspaceApiActor`, `withPermission`) sind die regulären
+Aufrufer. Die serverinterne Verantwortlichkeitsprüfung darf einen Actor zusätzlich über die unveränderliche
+`workspace_members.id` auflösen, um `canOn` für den zuständigen Nutzer auszuwerten. Sie muss dafür denselben Resolver
+verwenden und darf keine eigene Rollen- oder Permission-Logik aufbauen.
 
 ## Verbindlich
 

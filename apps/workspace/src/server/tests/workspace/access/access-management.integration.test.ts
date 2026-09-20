@@ -173,6 +173,7 @@ describe.skipIf(!RUN_INTEGRATION)(
           name: `${FIXTURE_PREFIX}${randomUUID()}`,
           description: null,
           permissions,
+          scopeAssignable: false,
         },
         actor,
       );
@@ -370,6 +371,7 @@ describe.skipIf(!RUN_INTEGRATION)(
           name,
           description: null,
           permissions: [Permission.MembersManage],
+          scopeAssignable: false,
           delegable: true,
         } as CreateRoleRequestDto,
         owner.actor,

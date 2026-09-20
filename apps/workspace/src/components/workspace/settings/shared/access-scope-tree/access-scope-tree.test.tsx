@@ -12,6 +12,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { AccessScopeType } from "@invessiv/common/constants/auth/access-scope-types";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
+import { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
 import type { AccessScopeEntryDto } from "@invessiv/common/contracts/auth/access-scope-entry.dto";
 import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/role-assignment-option.dto";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
@@ -71,7 +72,7 @@ const ROLES: RoleAssignmentOptionDto[] = [
     active: true,
     description: null,
     scopeAssignable: true,
-    permissions: [Permission.CustomersRead],
+    permissions: [Permission.CustomersRead, Permission.ProjectsRead],
   },
   {
     id: "role-project",
@@ -90,6 +91,15 @@ const ROLES: RoleAssignmentOptionDto[] = [
     description: null,
     scopeAssignable: false,
     permissions: [Permission.LeadsRead],
+  },
+  {
+    id: "role-customer-only",
+    name: "Kundenverwaltung",
+    systemKey: null,
+    active: true,
+    description: null,
+    scopeAssignable: true,
+    permissions: [Permission.CustomersRead, Permission.CustomersWrite],
   },
 ];
 
@@ -188,11 +198,26 @@ describe("AccessScopeTree", () => {
     expect(screen.getByText(accessContent.inherited)).toBeVisible();
   });
 
-  it("lists a non-scope-assignable role as disabled and explains why", () => {
+  it("offers only scope-assignable roles, not workspace-only ones", () => {
     renderTree();
-    const workspaceOnly = screen.getByRole("checkbox", { name: /Vertrieb/ });
-    expect(workspaceOnly).toBeDisabled();
-    expect(screen.getByText(accessContent.notAssignable)).toBeVisible();
+    expect(screen.queryByRole("checkbox", { name: /Vertrieb/ })).toBeNull();
+  });
+
+  it("offers a customer-only role at the customer row but not at the project row", async () => {
+    renderTree();
+
+    expect(
+      screen.getByRole("checkbox", { name: /Kundenverwaltung/ }),
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: /Nordlicht GmbH aufklappen/ }),
+    );
+    await screen.findAllByRole("checkbox", { name: /Projektarbeit/ });
+
+    expect(
+      screen.getAllByRole("checkbox", { name: /Kundenverwaltung/ }),
+    ).toHaveLength(1);
   });
 
   it("limits fixed-customer mode to the selected customer", () => {
@@ -240,6 +265,22 @@ describe("AccessScopeTree", () => {
       accessScope: CUSTOMER_SCOPE,
     });
     await waitFor(() => expect(customerRole).toBeChecked());
+  });
+
+  it("explains the next steps when the last assignment cannot be removed", async () => {
+    mocks.revoke.mockResolvedValue({
+      ok: false,
+      code: WorkspaceMemberErrorCode.MemberWithoutRole,
+    });
+    renderTree([CUSTOMER_SCOPE]);
+
+    fireEvent.click(screen.getByRole("checkbox", { name: /Kundenbetreuung/ }));
+
+    expect(
+      await screen.findByText(
+        accessContent.errors[WorkspaceMemberErrorCode.MemberWithoutRole],
+      ),
+    ).toBeVisible();
   });
 
   it("adopts a version conflict and keeps the remaining rows", async () => {
@@ -449,6 +490,117 @@ describe("AccessScopeTree", () => {
     });
     expect(await screen.findByText(accessContent.noResultsTitle)).toBeVisible();
     expect(screen.queryByText(accessContent.emptyTitle)).toBeNull();
+  });
+
+  it("shows a role-catalog empty state and hides the tree when no customer role exists", () => {
+    render(
+      <AccessScopeTree
+        accessContent={accessContent}
+        canManageAccess
+        initialAccessScopes={[]}
+        member={MEMBER}
+        permissionsContent={permissionsContent}
+        roles={[]}
+        rolesHref="/de/settings?tab=roles"
+      />,
+    );
+
+    expect(screen.getByText(accessContent.noCustomerRolesTitle)).toBeVisible();
+    expect(
+      screen.getByRole("link", { name: accessContent.openRoleCatalog }),
+    ).toHaveAttribute("href", "/de/settings?tab=roles");
+    expect(
+      screen.queryByRole("list", { name: accessContent.treeLabel }),
+    ).toBeNull();
+  });
+
+  it("opens the global roles tab from the hint action", () => {
+    const onOpenGlobalRolesAction = vi.fn();
+    render(
+      <AccessScopeTree
+        accessContent={accessContent}
+        canManageAccess
+        initialAccessScopes={[]}
+        member={MEMBER}
+        onOpenGlobalRolesAction={onOpenGlobalRolesAction}
+        permissionsContent={permissionsContent}
+        roles={ROLES}
+        rolesHref="/de/settings?tab=roles"
+      />,
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: accessContent.openGlobalRoles }),
+    );
+
+    expect(onOpenGlobalRolesAction).toHaveBeenCalledTimes(1);
+  });
+
+  it("includes a member's global-role permissions in the effective-permissions preview", async () => {
+    const globalRole: RoleAssignmentOptionDto = {
+      id: "role-global-sales",
+      name: "Vertrieb",
+      systemKey: null,
+      active: true,
+      description: null,
+      scopeAssignable: false,
+      permissions: [Permission.LeadsWrite],
+    };
+    render(
+      <AccessScopeTree
+        accessContent={accessContent}
+        canManageAccess
+        fixedCustomer={CUSTOMER}
+        initialAccessScopes={[]}
+        member={{
+          ...MEMBER,
+          roles: [
+            {
+              id: globalRole.id,
+              name: globalRole.name,
+              systemKey: null,
+              active: true,
+            },
+          ],
+        }}
+        permissionsContent={permissionsContent}
+        roles={[...ROLES, globalRole]}
+        rolesHref="/de/settings?tab=roles"
+      />,
+    );
+
+    fireEvent.focus(screen.getByRole("checkbox", { name: /Kundenbetreuung/ }));
+
+    expect(await screen.findByText("Leads bearbeiten")).toBeVisible();
+  });
+
+  it("shows the role-catalog empty state when every passed-in role is workspace-only", () => {
+    const globalOnlyRole: RoleAssignmentOptionDto = {
+      id: "role-global-only",
+      name: "Vertrieb",
+      systemKey: null,
+      active: true,
+      description: null,
+      scopeAssignable: false,
+      permissions: [Permission.LeadsRead],
+    };
+    render(
+      <AccessScopeTree
+        accessContent={accessContent}
+        canManageAccess
+        initialAccessScopes={[]}
+        member={MEMBER}
+        permissionsContent={permissionsContent}
+        roles={[globalOnlyRole]}
+        rolesHref="/de/settings?tab=roles"
+      />,
+    );
+
+    expect(screen.getByText(accessContent.noCustomerRolesTitle)).toBeVisible();
+    expect(screen.queryByRole("searchbox")).toBeInTheDocument();
+    expect(
+      screen.queryByRole("list", { name: accessContent.treeLabel }),
+    ).toBeNull();
   });
 
   it("places search, expand and role checkboxes in reading order", () => {

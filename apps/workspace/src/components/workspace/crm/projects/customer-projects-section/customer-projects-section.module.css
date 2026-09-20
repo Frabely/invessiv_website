@@ -209,6 +209,23 @@
   letter-spacing: -0.03em;
 }
 
+.ownerBlock {
+  display: grid;
+  justify-items: end;
+  gap: 0.25rem;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  text-align: right;
+}
+
+.ownerBlock > span {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 .eyebrow {
   margin: 0;
   color: var(--color-cta);
@@ -366,5 +383,15 @@
 
   .areaPreview {
     grid-template-columns: 1fr;
+  }
+
+  .projectHeader {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .ownerBlock {
+    justify-items: start;
+    text-align: left;
   }
 }

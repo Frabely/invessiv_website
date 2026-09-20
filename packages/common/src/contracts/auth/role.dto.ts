@@ -4,8 +4,8 @@ import type { RoleSummaryDto } from "@invessiv/common/contracts/auth/role-summar
 
 /** A workspace role with its permission set, as edited in the roles tab. */
 export interface RoleDto extends RoleSummaryDto, VersionedDto {
-  /** Whether this role may be granted for one customer or project. */
-  scopeAssignable?: boolean;
+  /** False identifies a global role; true identifies a customer/project role. */
+  scopeAssignable: boolean;
   /** Optional free text for custom roles. System roles carry no editable description. */
   description: string | null;
   /** System roles are immutable; only their assignment to members can change. */

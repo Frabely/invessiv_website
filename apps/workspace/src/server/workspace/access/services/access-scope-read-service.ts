@@ -1,6 +1,6 @@
 import "server-only";
 
-import { asc, eq, isNotNull, type SQL } from "drizzle-orm";
+import { asc, eq, inArray, isNotNull, type SQL } from "drizzle-orm";
 import type { AccessScopeEntryDto } from "@invessiv/common/contracts/auth/access-scope-entry.dto";
 import {
   customers,
@@ -77,6 +77,20 @@ async function listByMember(
   );
 }
 
+/** Batched sibling of `listByMember` for a list of members, e.g. a whole members page. */
+async function listByMembers(
+  executor: AccessDatabaseExecutor,
+  memberIds: readonly string[],
+): Promise<AccessScopeEntryDto[]> {
+  if (memberIds.length === 0) {
+    return [];
+  }
+  return load(
+    executor,
+    inArray(workspaceMemberScopedRoles.workspace_member_id, memberIds),
+  );
+}
+
 async function listByCustomer(
   executor: AccessDatabaseExecutor,
   customerId: string,
@@ -84,4 +98,8 @@ async function listByCustomer(
   return load(executor, eq(workspaceMemberScopedRoles.customer_id, customerId));
 }
 
-export const accessScopeReadService = { listByCustomer, listByMember } as const;
+export const accessScopeReadService = {
+  listByCustomer,
+  listByMember,
+  listByMembers,
+} as const;

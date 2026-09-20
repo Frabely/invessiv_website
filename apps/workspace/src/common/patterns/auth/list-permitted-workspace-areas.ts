@@ -1,15 +1,20 @@
-import type { PermissionHolder } from "@invessiv/common/contracts/auth/permission-holder";
+import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { can } from "@invessiv/common/patterns/auth/can";
+import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
+import { canAnywhere } from "@/common/patterns/auth/access-scope";
 import {
   WORKSPACE_AREA_PERMISSIONS,
   WORKSPACE_AREA_VALUES,
-  type WorkspaceArea,
+  WorkspaceArea,
 } from "@/common/constants/auth/workspace-areas";
 
 export function listPermittedWorkspaceAreas(
-  holder: PermissionHolder,
+  actor: WorkspaceActor,
 ): WorkspaceArea[] {
   return WORKSPACE_AREA_VALUES.filter((area) =>
-    can(holder, WORKSPACE_AREA_PERMISSIONS[area]),
+    area === WorkspaceArea.Crm
+      ? canAnywhere(actor, Permission.CustomersRead) ||
+        canAnywhere(actor, Permission.ProjectsRead)
+      : can(actor, WORKSPACE_AREA_PERMISSIONS[area]),
   );
 }

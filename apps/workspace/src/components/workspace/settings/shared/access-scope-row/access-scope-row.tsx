@@ -10,23 +10,20 @@ import { formatMessage } from "@/lib/i18n/format-message";
 import { resolveRoleLabel } from "@/lib/workspace/access/role-label";
 import styles from "./access-scope-row.module.css";
 
-export type AccessScopeRowRole = {
-  role: RoleAssignmentOptionDto;
-  checked: boolean;
-  direct: boolean;
-  disabled: boolean;
-  inherited: boolean;
-  pending: boolean;
-  removeDirectDisabled: boolean;
-};
-
 export type AccessScopeRowProps = {
   accessContent: SettingsAccessDictionary;
   onToggleAction: (roleId: string, checked: boolean) => void;
   onRemoveDirectAction: (roleId: string) => void;
   permissionsContent: SettingsPermissionsDictionary;
-  readOnly?: boolean;
-  roles: readonly AccessScopeRowRole[];
+  roles: readonly {
+    role: RoleAssignmentOptionDto;
+    checked: boolean;
+    direct: boolean;
+    disabled: boolean;
+    inherited: boolean;
+    pending: boolean;
+    removeDirectDisabled: boolean;
+  }[];
   scopeLabel: string;
 };
 
@@ -35,7 +32,6 @@ export function AccessScopeRow({
   onRemoveDirectAction,
   onToggleAction,
   permissionsContent,
-  readOnly = false,
   roles,
   scopeLabel,
 }: AccessScopeRowProps) {
@@ -52,22 +48,17 @@ export function AccessScopeRow({
           removeDirectDisabled,
         }) => {
           const label = resolveRoleLabel(role, permissionsContent);
-          const scopeLocked = role.scopeAssignable !== true;
           const hint =
             inherited && direct
               ? accessContent.directAndInherited
               : inherited
                 ? accessContent.inherited
-                : scopeLocked && !readOnly
-                  ? accessContent.notAssignable
-                  : readOnly
-                    ? accessContent.readOnly
-                    : null;
+                : null;
           return (
             <div
               className={styles.roleGroup}
               data-checked={checked ? "true" : "false"}
-              data-locked={disabled || readOnly ? "true" : "false"}
+              data-locked={disabled ? "true" : "false"}
               key={role.id}
             >
               <label className={styles.role}>
@@ -77,7 +68,7 @@ export function AccessScopeRow({
                     scope: scopeLabel,
                   })}
                   checked={checked}
-                  disabled={disabled || readOnly || pending}
+                  disabled={disabled || pending}
                   onChange={(event) =>
                     onToggleAction(role.id, event.target.checked)
                   }
@@ -93,7 +84,7 @@ export function AccessScopeRow({
                   {hint ? <span className={styles.hint}>{hint}</span> : null}
                 </span>
               </label>
-              {direct && inherited && !readOnly ? (
+              {direct && inherited ? (
                 <ButtonControl
                   aria-label={formatMessage(accessContent.removeDirectLabel, {
                     role: label,

@@ -1,7 +1,57 @@
-.form {
-  display: flex;
-  flex-direction: column;
+.shell,
+.form,
+.customerPanel {
+  display: grid;
   gap: 1rem;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--color-surface-2) 62%, transparent);
+}
+
+.tab {
+  display: inline-flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 42px;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: var(--font-size-ui-sm);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tab[aria-selected="true"] {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface-1);
+  color: var(--color-text);
+  box-shadow: 0 4px 14px
+    color-mix(in srgb, var(--color-shadow) 24%, transparent);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.unsaved {
+  padding: 0.08rem 0.42rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 55%, transparent);
+  border-radius: 999px;
+  color: var(--color-accent-warm);
+  font-size: var(--font-size-badge);
 }
 
 .columns {
@@ -17,11 +67,18 @@
   gap: 0.6rem;
 }
 
-.note {
+.note,
+.immediateNote {
   margin: 0;
   color: var(--color-text-muted);
   font-size: var(--font-size-ui-sm);
   line-height: 1.5;
+}
+
+.immediateNote {
+  padding: 0.65rem 0.8rem;
+  border-left: 3px solid var(--color-cta);
+  background: color-mix(in srgb, var(--color-cta) 8%, transparent);
 }
 
 .preview {
@@ -99,5 +156,9 @@
 @media (max-width: 720px) {
   .columns {
     grid-template-columns: 1fr;
+  }
+
+  .tabs {
+    flex-direction: column;
   }
 }

@@ -88,19 +88,20 @@ export const accessSchemas = {
     version: versionSchema,
   }),
   createRole: z.object({
-    scopeAssignable: z.boolean().optional(),
+    scopeAssignable: z.boolean(),
     name: roleNameSchema,
     description: roleDescriptionSchema,
     permissions: workspacePermissionsSchema,
   }),
-  updateRole: z.object({
-    scopeAssignable: z.boolean().optional(),
-    name: roleNameSchema,
-    description: roleDescriptionSchema,
-    active: z.boolean(),
-    permissions: workspacePermissionsSchema,
-    version: versionSchema,
-  }),
+  updateRole: z
+    .object({
+      name: roleNameSchema,
+      description: roleDescriptionSchema,
+      active: z.boolean(),
+      permissions: workspacePermissionsSchema,
+      version: versionSchema,
+    })
+    .strict(),
   grantAccessScope: z.object({
     roleId: z.uuid(),
     scope: accessScopeSchema,

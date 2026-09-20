@@ -41,11 +41,12 @@ vi.mock("@/client/access/access-api-service", () => ({
 const content = getSettingsRolesDictionary("de");
 const permissionsContent = getSettingsPermissionsDictionary("de");
 
-const CUSTOM_ROLE: RoleDto = {
+const CUSTOM_GLOBAL_ROLE: RoleDto = {
   id: "role-sales",
   name: "Vertrieb",
   systemKey: null,
   active: true,
+  scopeAssignable: false,
   description: null,
   isSystem: false,
   permissions: [Permission.LeadsRead],
@@ -55,6 +56,30 @@ const CUSTOM_ROLE: RoleDto = {
   updatedAt: "2026-09-13T10:00:00.000Z",
 };
 
+const CUSTOM_CUSTOMER_ROLE: RoleDto = {
+  ...CUSTOM_GLOBAL_ROLE,
+  id: "role-customer-care",
+  name: "Kundenbetreuung",
+  scopeAssignable: true,
+  permissions: [Permission.CustomersRead],
+};
+
+function chooseGlobalType() {
+  fireEvent.click(
+    screen.getByRole("button", {
+      name: new RegExp(content.dialog.globalRoleTitle),
+    }),
+  );
+}
+
+function chooseCustomerType() {
+  fireEvent.click(
+    screen.getByRole("button", {
+      name: new RegExp(content.dialog.customerRoleTitle),
+    }),
+  );
+}
+
 describe("RoleFormDialog", () => {
   beforeEach(() => {
     Object.values(mocks).forEach((mock) => mock.mockReset());
@@ -62,6 +87,51 @@ describe("RoleFormDialog", () => {
 
   afterEach(() => {
     cleanup();
+  });
+
+  it("opens on a type selection before offering the form", () => {
+    render(
+      <RoleFormDialog
+        content={content}
+        onCloseAction={vi.fn()}
+        permissionsContent={permissionsContent}
+        role={null}
+      />,
+    );
+
+    expect(screen.getByText(content.dialog.typeSelectionTitle)).toBeVisible();
+    expect(
+      screen.queryByRole("button", { name: content.dialog.submitCreate }),
+    ).toBeNull();
+
+    chooseGlobalType();
+
+    expect(
+      screen.getByRole("heading", { name: content.dialog.createTitle }),
+    ).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: content.dialog.submitCreate }),
+    ).toBeInTheDocument();
+  });
+
+  it("returns to the type selection from the form without closing the dialog", () => {
+    const onClose = vi.fn();
+    render(
+      <RoleFormDialog
+        content={content}
+        onCloseAction={onClose}
+        permissionsContent={permissionsContent}
+        role={null}
+      />,
+    );
+
+    chooseGlobalType();
+    fireEvent.click(
+      screen.getByRole("button", { name: content.dialog.backToTypeSelection }),
+    );
+
+    expect(screen.getByText(content.dialog.typeSelectionTitle)).toBeVisible();
+    expect(onClose).not.toHaveBeenCalled();
   });
 
   it("requires a name and locks non-delegable permissions", () => {
@@ -73,6 +143,7 @@ describe("RoleFormDialog", () => {
         role={null}
       />,
     );
+    chooseGlobalType();
 
     fireEvent.click(
       screen.getByRole("button", { name: content.dialog.submitCreate }),
@@ -87,7 +158,7 @@ describe("RoleFormDialog", () => {
     expect(mocks.createRole).not.toHaveBeenCalled();
   });
 
-  it("creates a custom role with the chosen permissions", async () => {
+  it("creates a global role with the chosen permissions", async () => {
     mocks.createRole.mockResolvedValue({ ok: true, role: { id: "role-1" } });
     const onClose = vi.fn();
     render(
@@ -98,6 +169,7 @@ describe("RoleFormDialog", () => {
         role={null}
       />,
     );
+    chooseGlobalType();
 
     fireEvent.change(screen.getByLabelText(/Name/), {
       target: { value: "Vertrieb" },
@@ -119,35 +191,7 @@ describe("RoleFormDialog", () => {
     });
   });
 
-  it("locks non-scopable permissions visibly without removing a selection", () => {
-    render(
-      <RoleFormDialog
-        content={content}
-        onCloseAction={vi.fn()}
-        permissionsContent={permissionsContent}
-        role={CUSTOM_ROLE}
-      />,
-    );
-
-    fireEvent.click(
-      screen.getByRole("checkbox", { name: content.dialog.scopeLabel }),
-    );
-
-    expect(
-      screen.getByRole("checkbox", { name: /^Leads ansehen/ }),
-    ).toBeChecked();
-    expect(
-      screen.getByRole("checkbox", { name: /^Leads ansehen/ }),
-    ).toBeDisabled();
-    expect(
-      screen.getByText(content.dialog.scopeSelectionWarning),
-    ).toBeVisible();
-    expect(
-      screen.getAllByText(permissionsContent.workspaceOnly).length,
-    ).toBeGreaterThan(0);
-  });
-
-  it("submits the scope-assignable switch", async () => {
+  it("offers only scope-assignable permissions for a customer role and submits its type", async () => {
     mocks.createRole.mockResolvedValue({ ok: true, role: { id: "role-1" } });
     render(
       <RoleFormDialog
@@ -157,12 +201,18 @@ describe("RoleFormDialog", () => {
         role={null}
       />,
     );
+    chooseCustomerType();
+
+    expect(
+      screen.queryByRole("checkbox", { name: /^Leads ansehen/ }),
+    ).toBeNull();
+    expect(
+      screen.getByRole("checkbox", { name: /^Kunden ansehen/ }),
+    ).toBeInTheDocument();
+
     fireEvent.change(screen.getByLabelText(/Name/), {
       target: { value: "Kundenbetreuung" },
     });
-    fireEvent.click(
-      screen.getByRole("checkbox", { name: content.dialog.scopeLabel }),
-    );
     fireEvent.click(screen.getByRole("checkbox", { name: /^Kunden ansehen/ }));
     fireEvent.click(
       screen.getByRole("button", { name: content.dialog.submitCreate }),
@@ -189,6 +239,7 @@ describe("RoleFormDialog", () => {
         role={null}
       />,
     );
+    chooseGlobalType();
 
     fireEvent.change(screen.getByLabelText(/Name/), {
       target: { value: "Vertrieb" },
@@ -208,7 +259,7 @@ describe("RoleFormDialog", () => {
       ok: false,
       code: ConcurrencyErrorCode.VersionConflict,
       current: {
-        ...CUSTOM_ROLE,
+        ...CUSTOM_GLOBAL_ROLE,
         name: "Vertrieb aktuell",
         description: "Aktueller Stand vom Server",
         active: false,
@@ -221,7 +272,7 @@ describe("RoleFormDialog", () => {
         content={content}
         onCloseAction={vi.fn()}
         permissionsContent={permissionsContent}
-        role={CUSTOM_ROLE}
+        role={CUSTOM_GLOBAL_ROLE}
       />,
     );
 
@@ -246,12 +297,39 @@ describe("RoleFormDialog", () => {
     expect(screen.getByLabelText(/Name/)).toHaveValue("Mein Entwurf");
   });
 
-  it("opens system roles read-only", () => {
+  it("shows the saved role type as a fixed badge and offers no way to change it", () => {
+    render(
+      <RoleFormDialog
+        content={content}
+        onCloseAction={vi.fn()}
+        permissionsContent={permissionsContent}
+        role={CUSTOM_CUSTOMER_ROLE}
+      />,
+    );
+
+    expect(
+      screen.getByText(content.dialog.customerRoleType),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", {
+        name: content.dialog.backToTypeSelection,
+      }),
+    ).toBeNull();
+    expect(
+      screen.getByRole("checkbox", { name: /^Kunden ansehen/ }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("checkbox", { name: /^Leads ansehen/ }),
+    ).toBeNull();
+  });
+
+  it("opens system roles read-only with their global type badge", () => {
     const systemRole: RoleDto = {
       id: "role-member",
       name: "Workspace member",
       systemKey: SystemRoleKey.WorkspaceMember,
       active: true,
+      scopeAssignable: false,
       description: null,
       isSystem: true,
       permissions: [Permission.LeadsRead],
@@ -273,39 +351,11 @@ describe("RoleFormDialog", () => {
     const leadsRead = screen.getByRole("checkbox", { name: /^Leads ansehen/ });
     expect(leadsRead).toBeChecked();
     expect(leadsRead).toBeDisabled();
+    expect(screen.getByText(content.dialog.systemRoleType)).toBeInTheDocument();
+    expect(screen.getByText(content.dialog.globalType)).toBeInTheDocument();
     expect(screen.getByText(content.dialog.readOnlyLabel)).toBeInTheDocument();
-    expect(screen.getByText("Leads ansehen")).toBeVisible();
     expect(
       screen.queryByRole("button", { name: content.dialog.submitEdit }),
     ).toBeNull();
-    expect(
-      screen.queryByRole("checkbox", { name: content.dialog.scopeLabel }),
-    ).toBeNull();
-  });
-
-  it("explains why scope assignment cannot be disabled while assignments exist", async () => {
-    mocks.updateRole.mockResolvedValue({
-      ok: false,
-      code: RoleErrorCode.ScopeAssignmentsExist,
-    });
-    render(
-      <RoleFormDialog
-        content={content}
-        onCloseAction={vi.fn()}
-        permissionsContent={permissionsContent}
-        role={{ ...CUSTOM_ROLE, scopeAssignable: true }}
-      />,
-    );
-
-    fireEvent.click(
-      screen.getByRole("checkbox", { name: content.dialog.scopeLabel }),
-    );
-    fireEvent.click(
-      screen.getByRole("button", { name: content.dialog.submitEdit }),
-    );
-
-    expect(
-      await screen.findByText(content.errors.ROLE_SCOPE_ASSIGNMENTS_EXIST),
-    ).toBeVisible();
   });
 });
