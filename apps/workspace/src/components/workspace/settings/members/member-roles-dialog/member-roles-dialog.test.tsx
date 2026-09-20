@@ -29,6 +29,7 @@ const mocks = vi.hoisted(() => ({
   replaceMemberRoles: vi.fn(),
   replaceAccessScopes: vi.fn(),
   listAccessCustomers: vi.fn(),
+  listAccessCustomerOptions: vi.fn(),
   listAccessCustomerProjects: vi.fn(),
   listMemberAccessScopes: vi.fn(),
   grantAccessScope: vi.fn(),
@@ -44,6 +45,7 @@ vi.mock("@/client/access/access-api-service", () => ({
     replaceMemberRoleAssignments: mocks.replaceMemberRoles,
     replaceAccessScopes: mocks.replaceAccessScopes,
     listAccessCustomers: mocks.listAccessCustomers,
+    listAccessCustomerOptions: mocks.listAccessCustomerOptions,
     listAccessCustomerProjects: mocks.listAccessCustomerProjects,
     listMemberAccessScopes: mocks.listMemberAccessScopes,
     grantAccessScope: mocks.grantAccessScope,
@@ -141,6 +143,10 @@ describe("MemberRolesDialog", () => {
     mocks.listMemberAccessScopes.mockResolvedValue({
       ok: true,
       accessScopes: [],
+    });
+    mocks.listAccessCustomerOptions.mockResolvedValue({
+      ok: true,
+      customers: [],
     });
   });
 

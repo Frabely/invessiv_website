@@ -6,6 +6,7 @@ describe("WorkspaceApiEndpoint", () => {
   it("exposes the exact workspace api endpoints", () => {
     expect(WorkspaceApiEndpoint).toEqual({
       AccessCustomers: "/api/workspace/access/customers",
+      AccessCustomerOptions: "/api/workspace/access/customers/options",
       CrmCustomers: "/api/workspace/crm/customers",
       CrmLeadConversions: "/api/workspace/crm/leads",
       CrmProjects: "/api/workspace/crm/projects",
