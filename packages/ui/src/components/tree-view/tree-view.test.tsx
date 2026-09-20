@@ -38,7 +38,7 @@ function renderTree(props: Partial<Parameters<typeof TreeView>[0]> = {}) {
       loadingLabel="Loading children"
       nodes={[parent]}
       onToggleAction={onToggleAction}
-      renderRowActions={() => null}
+      renderRowContent={() => null}
       {...props}
     />,
   );
@@ -67,7 +67,7 @@ describe("TreeView", () => {
         loadingLabel="Loading children"
         nodes={[parent]}
         onToggleAction={vi.fn()}
-        renderRowActions={() => null}
+        renderRowContent={() => null}
       />,
     );
 
@@ -107,6 +107,26 @@ describe("TreeView", () => {
     expect(onToggleAction).toHaveBeenCalledWith("parent", true);
   });
 
+  it("selects a row when its non-interactive area is clicked", () => {
+    const onSelectAction = vi.fn();
+    renderTree({ onSelectAction });
+
+    fireEvent.click(screen.getByText("Subtitle"));
+
+    expect(onSelectAction).toHaveBeenCalledWith("parent");
+  });
+
+  it("keeps disclosure clicks separate from row selection", () => {
+    const onSelectAction = vi.fn();
+    renderTree({ onSelectAction });
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Expand: First level" }),
+    );
+
+    expect(onSelectAction).not.toHaveBeenCalled();
+  });
+
   it("stays controlled: a toggle alone does not open the node", () => {
     renderTree();
 
@@ -138,7 +158,7 @@ describe("TreeView", () => {
 
   it("uses a block container for arbitrary row actions", () => {
     renderTree({
-      renderRowActions: () => <div data-testid="row-actions">Action</div>,
+      renderRowContent: () => <div data-testid="row-actions">Action</div>,
     });
 
     expect(screen.getByTestId("row-actions").parentElement).toHaveProperty(
@@ -147,13 +167,13 @@ describe("TreeView", () => {
     );
   });
 
-  it("passes every node with its depth to renderRowActions", () => {
-    const renderRowActions = vi.fn(() => null);
+  it("passes every node with its depth to renderRowContent", () => {
+    const renderRowContent = vi.fn(() => null);
 
-    renderTree({ expandedIds: ["parent"], renderRowActions });
+    renderTree({ expandedIds: ["parent"], renderRowContent });
 
-    expect(renderRowActions).toHaveBeenCalledWith(parent, 0);
-    expect(renderRowActions).toHaveBeenCalledWith(child, 1);
+    expect(renderRowContent).toHaveBeenCalledWith(parent, 0);
+    expect(renderRowContent).toHaveBeenCalledWith(child, 1);
   });
 
   it("renders the empty state instead of the list when there is no node", () => {

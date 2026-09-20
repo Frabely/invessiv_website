@@ -42,6 +42,7 @@ import type {
   RoleMutationClientResult,
 } from "@/common/contracts/access/access-client-results";
 import {
+  accessCustomerOptionsEndpoint,
   accessCustomerProjectsEndpoint,
   accessCustomersEndpoint,
   crmCustomerAccessScopesEndpoint,
@@ -371,6 +372,15 @@ export const accessApiService = {
   ): Promise<AccessCustomerListClientResult> {
     const customers = await readCollection<AccessCustomerOptionDto>(
       accessCustomersEndpoint(query),
+      "customers",
+    );
+    return customers
+      ? { ok: true, customers }
+      : { ok: false, code: WorkspaceMemberErrorCode.Internal };
+  },
+  async listAccessCustomerOptions(): Promise<AccessCustomerListClientResult> {
+    const customers = await readCollection<AccessCustomerOptionDto>(
+      accessCustomerOptionsEndpoint(),
       "customers",
     );
     return customers

@@ -1,5 +1,10 @@
 {
   "treeLabel": "Zugriffe nach Kunden und Projekten",
+  "customerSelectLabel": "Kunde auswählen",
+  "customerSelectPlaceholder": "Kunden auswählen",
+  "customerOptionsLoading": "Kunden werden geladen …",
+  "customerOptionsError": "Die Kundenauswahl konnte nicht geladen werden. Lade den Dialog erneut.",
+  "customerSelectionPrompt": "Wähle einen Kunden aus, um dessen Bereiche und Rollen zu bearbeiten.",
   "searchLabel": "Kunde suchen",
   "searchPlaceholder": "Name oder Kundennummer",
   "searchLoading": "Kunden werden gesucht …",

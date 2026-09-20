@@ -35,6 +35,15 @@
   background: color-mix(in srgb, var(--color-surface-2) 55%, transparent);
 }
 
+.row[data-selected="true"] {
+  background: color-mix(in srgb, var(--color-cta) 12%, var(--color-surface-2));
+  box-shadow: inset 3px 0 0 var(--color-cta);
+}
+
+.row[data-selectable="true"] {
+  cursor: pointer;
+}
+
 .toggle {
   display: inline-flex;
   flex: 0 0 auto;
@@ -97,6 +106,24 @@
 .label {
   font-size: var(--font-size-body-sm);
   overflow-wrap: anywhere;
+}
+
+.labelButton {
+  padding: 2px 0;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--font-size-body-sm);
+  text-align: left;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.labelButton:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
 }
 
 .secondaryLabel {

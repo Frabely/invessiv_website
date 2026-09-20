@@ -44,6 +44,10 @@ export function accessCustomersEndpoint(search: string): string {
   return `${WorkspaceApiEndpoint.AccessCustomers}?${query.toString()}`;
 }
 
+export function accessCustomerOptionsEndpoint(): string {
+  return WorkspaceApiEndpoint.AccessCustomerOptions;
+}
+
 export function crmCustomerAccessScopesEndpoint(customerId: string): string {
   return `${WorkspaceApiEndpoint.CrmCustomers}/${encodeURIComponent(customerId)}/${ACCESS_SCOPES_PATH_SEGMENT}`;
 }

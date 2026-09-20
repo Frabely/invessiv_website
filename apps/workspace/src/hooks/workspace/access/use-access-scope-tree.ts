@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { AccessScopeType } from "@invessiv/common/constants/auth/access-scope-types";
 import type { AccessCustomerOptionDto } from "@invessiv/common/contracts/auth/access-customer-option.dto";
@@ -16,7 +16,6 @@ import type { AccessScopeTreeTarget } from "@/common/contracts/access/access-sco
 import {
   accessScopeAssignmentKey,
   haveSameAccessScopeAssignments,
-  mergeAccessCustomers,
 } from "@/common/patterns/access/access-scope-tree";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 
@@ -38,12 +37,14 @@ export function useAccessScopeTree({
   >(() => initialAccessScopes.map(({ roleId, scope }) => ({ roleId, scope })));
   const [assignments, setAssignments] =
     useState<AccessScopeAssignmentDto[]>(initialAssignments);
-  const [search, setSearch] = useState("");
-  const [searchResults, setSearchResults] = useState<AccessCustomerOptionDto[]>(
-    fixedCustomer ? [fixedCustomer] : [],
+  const [customerOptions, setCustomerOptions] = useState<
+    AccessCustomerOptionDto[]
+  >(fixedCustomer ? [fixedCustomer] : []);
+  const [customerOptionsError, setCustomerOptionsError] = useState(false);
+  const [hasResolvedCustomerOptions, setHasResolvedCustomerOptions] = useState(
+    Boolean(fixedCustomer),
   );
-  const [isSearching, setIsSearching] = useState(false);
-  const [searchError, setSearchError] = useState(false);
+  const [selectedCustomerId, setSelectedCustomerId] = useState("");
   const [expandedIds, setExpandedIds] = useState<string[]>([]);
   const [loadingIds, setLoadingIds] = useState<string[]>([]);
   const [projectsByCustomer, setProjectsByCustomer] = useState<
@@ -52,8 +53,32 @@ export function useAccessScopeTree({
   const [projectErrorIds, setProjectErrorIds] = useState<string[]>([]);
   const [scopeReloadError, setScopeReloadError] = useState(false);
   const [touched, setTouched] = useState<AccessScopeTreeTarget | null>(null);
-  const searchRequestId = useRef(0);
   const projectLoads = useRef(new Set<string>());
+
+  useEffect(() => {
+    if (fixedCustomer) return;
+    let active = true;
+    void accessApiService
+      .listAccessCustomerOptions()
+      .then((result) => {
+        if (!active) return;
+        setHasResolvedCustomerOptions(true);
+        if (result.ok) {
+          setCustomerOptions(result.customers);
+          setCustomerOptionsError(false);
+        } else {
+          setCustomerOptionsError(true);
+        }
+      })
+      .catch(() => {
+        if (!active) return;
+        setHasResolvedCustomerOptions(true);
+        setCustomerOptionsError(true);
+      });
+    return () => {
+      active = false;
+    };
+  }, [fixedCustomer]);
 
   async function reloadScopesAfterConflict() {
     const result = await accessApiService.listMemberAccessScopes(member.id);
@@ -77,6 +102,8 @@ export function useAccessScopeTree({
     assignments,
     initialAssignments,
   );
+  const isLoadingCustomerOptions =
+    !fixedCustomer && !hasResolvedCustomerOptions && !customerOptionsError;
 
   const offeredRoles = useMemo(() => {
     const heldIds = new Set(initialAssignments.map(({ roleId }) => roleId));
@@ -91,40 +118,14 @@ export function useAccessScopeTree({
       ),
     [offeredRoles],
   );
-  const customers = useMemo(
+  const selectedCustomer = useMemo(
     () =>
-      fixedCustomer
-        ? [fixedCustomer]
-        : mergeAccessCustomers(initialAccessScopes, searchResults),
-    [fixedCustomer, initialAccessScopes, searchResults],
+      fixedCustomer ??
+      customerOptions.find((customer) => customer.id === selectedCustomerId) ??
+      null,
+    [customerOptions, fixedCustomer, selectedCustomerId],
   );
-
-  const commitSearch = useCallback(
-    async (value: string | undefined) => {
-      const requestId = ++searchRequestId.current;
-      const query = value ?? "";
-      if (!query) {
-        setSearch("");
-        setIsSearching(false);
-        setSearchError(false);
-        setSearchResults(fixedCustomer ? [fixedCustomer] : []);
-        return;
-      }
-      setIsSearching(true);
-      setSearchError(false);
-      setSearchResults([]);
-      const result = await accessApiService.listAccessCustomers(query);
-      if (requestId !== searchRequestId.current) return;
-      setSearch(query);
-      setIsSearching(false);
-      if (result.ok) {
-        setSearchResults(result.customers);
-        return;
-      }
-      setSearchError(true);
-    },
-    [fixedCustomer],
-  );
+  const customers = selectedCustomer ? [selectedCustomer] : [];
 
   function toggleScope(
     scope: AccessScopeDto,
@@ -187,21 +188,14 @@ export function useAccessScopeTree({
     if (expanded) void loadCustomerProjects(customerId);
   }
 
-  function resetSearch() {
-    searchRequestId.current += 1;
-    setSearch("");
-    setIsSearching(false);
-    setSearchError(false);
-    setSearchResults([]);
-  }
-
   return {
     assignments,
-    commitSearch,
+    customerOptions,
+    customerOptionsError,
     customers,
     expandedIds,
     isDirty,
-    isSearching,
+    isLoadingCustomerOptions,
     loadingIds,
     loadCustomerProjects,
     mutation,
@@ -209,10 +203,9 @@ export function useAccessScopeTree({
     offeredRoles,
     projectErrorIds,
     projectsByCustomer,
-    resetSearch,
-    search,
-    searchError,
-    searchResults,
+    selectedCustomerId,
+    selectedCustomer,
+    setSelectedCustomerId,
     scopeReloadError,
     setTouched,
     submit,

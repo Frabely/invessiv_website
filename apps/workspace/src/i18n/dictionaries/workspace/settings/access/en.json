@@ -1,5 +1,10 @@
 {
   "treeLabel": "Access by customer and project",
+  "customerSelectLabel": "Select customer",
+  "customerSelectPlaceholder": "Select a customer",
+  "customerOptionsLoading": "Loading customers …",
+  "customerOptionsError": "The customer list could not be loaded. Reopen the dialog.",
+  "customerSelectionPrompt": "Select a customer to manage its areas and roles.",
   "searchLabel": "Search customers",
   "searchPlaceholder": "Name or customer number",
   "searchLoading": "Searching customers …",
