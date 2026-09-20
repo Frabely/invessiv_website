@@ -118,6 +118,9 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
       : null,
     cockpitCustomerId ? getCustomerCockpitById(cockpitCustomerId, actor) : null,
   ]);
+  if (cockpitCustomerId && !cockpitCustomer) {
+    notFound();
+  }
   const writableCustomerIds = new Set(
     customerList.rows
       .filter((row) =>

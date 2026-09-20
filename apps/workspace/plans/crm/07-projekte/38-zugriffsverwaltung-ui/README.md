@@ -101,7 +101,7 @@ Kunden: lesen, schreiben · Projekte: lesen · Aufgaben: schreiben
 | [`01-baum-komponente.md`](./01-baum-komponente.md)                 | Generische `TreeView` in `packages/ui`         | —            |
 | [`02-server-zuarbeit.md`](./02-server-zuarbeit.md)                 | DTO-Anreicherung, Zähler, Kunden-Lookup        | —            |
 | [`03-client-service.md`](./03-client-service.md)                   | Access-Scope-Methoden im `accessApiService`    | 02           |
-| [`04-rollen-dialog-schalter.md`](./04-rollen-dialog-schalter.md)   | Schalter `scopeAssignable` im Rollen-Dialog    | —            |
+| [`04-rollen-dialog-schalter.md`](./04-rollen-dialog-schalter.md)   | Rollentyp-Auswahl beim Anlegen                 | —            |
 | [`05-zugriffs-baum.md`](./05-zugriffs-baum.md)                     | Fachlicher Zugriffs-Baum                       | 01, 02, 03   |
 | [`06-settings-dialog.md`](./06-settings-dialog.md)                 | Dialog „Zugriffe" je Mitglied, Mitgliederliste | 05           |
 | [`07-kundenakte-abschnitt.md`](./07-kundenakte-abschnitt.md)       | Abschnitt „Zugriff" in der Kundenakte          | 05           |

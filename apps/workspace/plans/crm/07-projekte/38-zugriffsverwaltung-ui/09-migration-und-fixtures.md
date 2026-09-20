@@ -62,7 +62,10 @@ Der Seed bleibt optional aufrufbar und wiederholbar, damit die Leerzustände wei
 
 - `pnpm db:migrate:*` gegen `development`, zweiter Lauf folgenlos.
 - Preflight-Abbruch mit künstlich erzeugter `NULL`-Zeile nachweisen.
-- `pnpm db:smoke:rbac` grün.
+- `pnpm --filter @invessiv/db db:smoke:rbac` gegen Development grün.
+- `pnpm --filter @invessiv/db db:smoke:rbac:preview` gegen Preview grün.
+- `pnpm --filter @invessiv/db db:smoke:rbac:prod` kann als expliziter Produktions-Smoke ausgeführt werden;
+  es werden ausschließlich eindeutig markierte Fixture-Zeilen geschrieben und im `finally` wieder entfernt.
 
 ## Akzeptanz
 

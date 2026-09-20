@@ -21,12 +21,13 @@ Komponententests; sie belegen Bausteine, nicht den Ablauf.
 
 1. Owner setzt „Projekte lesen" auf Kunde 1 / Projekt 2.
 2. Mitglied B sieht den Kopf von Kunde 1 und nur Projekt 2 — keine Ansprechpartner, kein Projekt 1.
-3. Zugriff auf Projekt 1 über direkte URL antwortet 404, nicht 403.
+3. Die Projektliste des Kunden enthält Projekt 2, aber nicht Projekt 1. Ein eigener lesender
+   Einzelprojekt-Endpunkt existiert bewusst nicht; Projekte werden im Kunden-Cockpit dargestellt.
 
 ### Negativtests (Pflicht je CRM-Einheit)
 
 - Fremder Kunde: Seite und API antworten 404.
-- Fremdes Projekt: Seite und API antworten 404.
+- Fremdes Projekt: erscheint weder im Kunden-Cockpit noch in der Projektlisten-API.
 - Schreibversuch auf einem sichtbaren Datensatz ohne Schreibrecht: 403.
 
 ## A11y-Smoke
@@ -53,6 +54,7 @@ pnpm -r typecheck
 pnpm -r test
 pnpm --filter @invessiv/db db:smoke:rbac
 pnpm --filter @invessiv/workspace db:smoke:access
+pnpm --filter @invessiv/workspace test:e2e
 pnpm --filter @invessiv/workspace build
 ```
 

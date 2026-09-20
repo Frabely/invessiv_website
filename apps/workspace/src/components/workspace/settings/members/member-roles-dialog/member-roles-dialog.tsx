@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  type KeyboardEvent,
-  type SubmitEvent,
-  useId,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { type SubmitEvent, useId, useMemo, useState } from "react";
 
 import type { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
 import type { AccessScopeEntryDto } from "@invessiv/common/contracts/auth/access-scope-entry.dto";
@@ -37,6 +30,7 @@ import { resolveRoleLabel } from "@/lib/workspace/access/role-label";
 import { AccessScopeTree } from "../../shared/access-scope-tree/access-scope-tree";
 import { PermissionSummary } from "../../shared/permission-summary/permission-summary";
 import { RoleChecklist } from "../../shared/role-checklist/role-checklist";
+import { MemberRolesTabs } from "../member-roles-tabs/member-roles-tabs";
 import styles from "./member-roles-dialog.module.css";
 
 type MemberRolesDialogProps = {
@@ -78,8 +72,6 @@ export function MemberRolesDialog({
   const globalPanelId = useId();
   const customerTabId = useId();
   const customerPanelId = useId();
-  const globalTabRef = useRef<HTMLButtonElement>(null);
-  const customerTabRef = useRef<HTMLButtonElement>(null);
   const text = content.rolesDialog;
   const globalRoles = useMemo(
     () => roles.filter((role) => !role.scopeAssignable),
@@ -134,28 +126,6 @@ export function MemberRolesDialog({
     setActiveTab(tab);
   }
 
-  function handleTabKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
-    const tabs = canManageAccess
-      ? [MemberRolesTab.Global, MemberRolesTab.Customer]
-      : [MemberRolesTab.Global];
-    const currentIndex = tabs.indexOf(activeTab);
-    let nextIndex: number | null = null;
-    if (event.key === "ArrowRight")
-      nextIndex = (currentIndex + 1) % tabs.length;
-    if (event.key === "ArrowLeft")
-      nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
-    if (event.key === "Home") nextIndex = 0;
-    if (event.key === "End") nextIndex = tabs.length - 1;
-    if (nextIndex === null) return;
-    event.preventDefault();
-    const next = tabs[nextIndex] ?? MemberRolesTab.Global;
-    selectTab(next);
-    (next === MemberRolesTab.Global
-      ? globalTabRef.current
-      : customerTabRef.current
-    )?.focus();
-  }
-
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     await mutation.submit((current) =>
@@ -202,45 +172,17 @@ export function MemberRolesDialog({
         title={formatMessage(text.title, { name: member.displayName })}
       >
         <div className={styles.shell}>
-          <div
-            aria-label={text.tabsLabel}
-            className={styles.tabs}
-            role="tablist"
-          >
-            <button
-              aria-controls={globalPanelId}
-              aria-selected={activeTab === MemberRolesTab.Global}
-              className={styles.tab}
-              id={globalTabId}
-              onClick={() => selectTab(MemberRolesTab.Global)}
-              onKeyDown={handleTabKeyDown}
-              ref={globalTabRef}
-              role="tab"
-              tabIndex={activeTab === MemberRolesTab.Global ? 0 : -1}
-              type="button"
-            >
-              {text.globalTab}
-              {isDirty ? (
-                <span className={styles.unsaved}>{text.unsaved}</span>
-              ) : null}
-            </button>
-            {canManageAccess ? (
-              <button
-                aria-controls={customerPanelId}
-                aria-selected={activeTab === MemberRolesTab.Customer}
-                className={styles.tab}
-                id={customerTabId}
-                onClick={() => selectTab(MemberRolesTab.Customer)}
-                onKeyDown={handleTabKeyDown}
-                ref={customerTabRef}
-                role="tab"
-                tabIndex={activeTab === MemberRolesTab.Customer ? 0 : -1}
-                type="button"
-              >
-                {text.customerTab}
-              </button>
-            ) : null}
-          </div>
+          <MemberRolesTabs
+            activeTab={activeTab}
+            canManageAccess={canManageAccess}
+            customerPanelId={customerPanelId}
+            customerTabId={customerTabId}
+            globalPanelId={globalPanelId}
+            globalTabId={globalTabId}
+            isDirty={isDirty}
+            onSelectAction={selectTab}
+            text={text}
+          />
 
           <div
             aria-labelledby={globalTabId}

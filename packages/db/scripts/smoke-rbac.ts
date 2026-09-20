@@ -41,7 +41,11 @@ import {
 import { findRbacCatalogMismatches } from "./rbac-catalog-check";
 
 const FIXTURE_PREFIX = "smoke:rbac:";
-const ALLOWED_TARGETS: DatabaseTarget[] = ["development", "preview"];
+const ALLOWED_TARGETS: DatabaseTarget[] = [
+  "development",
+  "preview",
+  "production",
+];
 
 type Sql = ReturnType<typeof getDatabaseClient>;
 
@@ -446,6 +450,39 @@ async function runSecurityEventConstraintChecks(sql: Sql) {
   }
 }
 
+async function runScopeAssignableNullabilityChecks(sql: Sql) {
+  const expected = [
+    "permissions.scope_assignable",
+    "roles.scope_assignable",
+    "role_permissions.role_scope_assignable",
+    "role_permissions.permission_scope_assignable",
+  ];
+  const columns = (await sql`
+    SELECT table_name, column_name, is_nullable
+    FROM information_schema.columns
+    WHERE table_schema = current_schema()
+      AND (table_name, column_name) IN (
+                                        ('permissions', 'scope_assignable'),
+                                        ('roles', 'scope_assignable'),
+                                        ('role_permissions', 'role_scope_assignable'),
+                                        ('role_permissions', 'permission_scope_assignable')
+      )
+  `) as {
+    table_name: string;
+    column_name: string;
+    is_nullable: "YES" | "NO";
+  }[];
+  const notNullColumns = new Set(
+    columns
+      .filter((column) => column.is_nullable === "NO")
+      .map((column) => `${column.table_name}.${column.column_name}`),
+  );
+
+  for (const column of expected) {
+    record(`${column} is NOT NULL`, notNullColumns.has(column));
+  }
+}
+
 const AUTH_CONSTRAINT_NAMES = [
   ...USERS_CONSTRAINT_NAME_VALUES,
   ...ROLES_CONSTRAINT_NAME_VALUES,
@@ -519,6 +556,7 @@ async function run() {
     await runRoleChecks(sql);
     await runActorChecks(sql);
     await runSecurityEventConstraintChecks(sql);
+    await runScopeAssignableNullabilityChecks(sql);
     await runConstraintNameChecks(sql);
   } finally {
     await cleanup(sql);

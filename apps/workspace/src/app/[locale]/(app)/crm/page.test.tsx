@@ -234,6 +234,20 @@ describe("CrmPage", () => {
     );
   });
 
+  it("returns not found for an inaccessible cockpit customer", async () => {
+    mocks.requireWorkspaceArea.mockResolvedValue(
+      workspaceActorWith([Permission.CustomersRead]),
+    );
+    mocks.getCustomerCockpitById.mockResolvedValue(null);
+
+    await expect(
+      CrmPage({
+        params: Promise.resolve({ locale: "de" }),
+        searchParams: Promise.resolve({ cockpit: TEST_CUSTOMER_ID }),
+      }),
+    ).rejects.toThrow("notFound called");
+  });
+
   it("opens the create dialog", async () => {
     await renderPage({ mode: "create" });
 

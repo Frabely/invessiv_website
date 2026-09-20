@@ -109,7 +109,8 @@ Const-Objekt — nicht zusätzlich im DDL-Text und nicht im Modell.
   kanonischen Drizzle-Schema.
 - `db:migrate:*` und `db:smoke:*` laufen gegen jedes Ziel. Schreibende Skripte (`db:seed:*`,
   `db:smoke:crm`, `db:smoke:activities`, `db:smoke:rbac`) sind auf `development` und `preview` begrenzt und
-  lehnen `production` ab.
+  lehnen `production` ab. **Ausnahme:** `db:smoke:rbac:prod` ist als expliziter Produktions-Smoke zulässig,
+  verwendet ausschließlich das Fixture-Präfix `smoke:rbac:` und räumt es in `finally` wieder auf.
 - `db:smoke` vergleicht zusätzlich lesend Permission-Katalog und Systemrollen mit dem Code
   (`scripts/rbac-catalog-check.ts`) und ist damit auch für `production` das Katalog-Gate.
 - Schreibende Skripte kennzeichnen ihre Zeilen mit einem Fixture-Präfix und räumen sie wieder ab —

@@ -7,101 +7,62 @@
 ## Ergebnis
 
 Die Kernfunktion zum Vergeben und Anzeigen gebundener Zugriffe ist weitgehend vorhanden. Vor einem Merge bleiben
-aber ein funktionaler Rollen-Dialog-Fehler, fehlende End-to-End-Nachweise, eine parallele Ownership-Registry und
-mehrere Wartbarkeitsverstöße. Der sichere Owner-Wechsel beziehungsweise die Übergabe ohne Zugriff ist bewusst nach
+der Lauf der echten End-to-End-Sessions, die reale Datenbankabnahme und eine bewusst bis Ordner 24 bestehende
+parallele Ownership-Registry. Der sichere Owner-Wechsel beziehungsweise die Übergabe ohne Zugriff ist bewusst nach
 Ordner 24 verschoben und deshalb kein Befund für Ordner 07c.
 
-## P1 — Bearbeiten kann den Rollentyp nicht ändern
+## P1 — Die Zugriffs-E2E-Suite braucht noch echte Sessions und Fixture-IDs
 
-`RoleFormDialog` hält `scopeAssignable` im State, zeigt beim Bearbeiten aber nur ein Badge. Der Wert wird beim
-`updateRole`-Request nicht mitgesendet. Eine bestehende Rolle kann daher entgegen Task 04 nicht zwischen
-workspace-weit und kunden-/projektbindbar umgestellt werden; die serverseitigen Konfliktprüfungen für vorhandene
-Zuweisungen sind aus der Oberfläche nicht erreichbar.
+Die Playwright-Suite deckt Kunden- und Projektbindung sowie 404-/403-Negativpfade ab; `test:e2e` erlaubt keine
+fehlenden Testdateien mehr. Ohne konfigurierte Clerk-`storageState`-Dateien und isolierte Fixture-IDs werden die
+Szenarien jedoch bewusst übersprungen. Der Code-Nachweis ist damit vorhanden, der Lauf mit echten Sessions steht aus.
 
-- `apps/workspace/src/components/workspace/settings/roles/role-form-dialog/role-form-dialog.tsx:94`
-- `apps/workspace/src/components/workspace/settings/roles/role-form-dialog/role-form-dialog.tsx:279`
-- `apps/workspace/plans/crm/07-projekte/38-zugriffsverwaltung-ui/04-rollen-dialog-schalter.md`
-
-**Empfehlung:** Den Rollentyp beim Bearbeiten als bestätigte, bedienbare Auswahl anbieten, `scopeAssignable` in den
-Update-DTO/-Command aufnehmen und die bestehenden 422-Konflikte für gebundene beziehungsweise globale Zuweisungen
-als UI-Fehler abbilden. Unit- und API-Tests für beide Richtungen ergänzen.
-
-## P1 — Die verpflichtenden Zugriffs-E2E-Szenarien existieren nicht
-
-Unter `apps/workspace/e2e/` liegen keine Tests. Der vorhandene `test:e2e`-Befehl darf deshalb erfolgreich ohne Tests
-enden. Damit sind die zwei Leitfälle (Kundenbindung, Projektbindung) sowie die vorgeschriebenen 404-/403-Negativpfade
-mit echten Sessions nicht belegt.
-
-- `apps/workspace/package.json:15`
+- `apps/workspace/e2e/access-scopes.e2e.ts`
+- `apps/workspace/e2e/README.md`
 - `apps/workspace/plans/crm/07-projekte/38-zugriffsverwaltung-ui/10-abnahme.md`
 
-**Empfehlung:** Playwright-Fixtures mit Owner, kunden- und projektgebundenem Mitglied ergänzen und mindestens die in
-Task 10 beschriebenen Seiten- und API-Fälle ausführen. `--pass-with-no-tests` für den produktiven Abnahme-Befehl
-entfernen oder durch einen Test-Existenz-Check absichern.
+**Vor Merge:** Zwei echte Session-Dateien und die vier dokumentierten IDs aus dem isolierten E2E-Fixture setzen und
+`pnpm --filter @invessiv/workspace test:e2e` ohne Skips ausführen.
 
 ## P2 — Zwei konkurrierende Ownership-Registries
 
 Die bestehende Registry zählt Zuständigkeiten unter `access/services/responsibilities/`. Zusätzlich führt der neue
-`responsibilityAccessService` eine eigene `OWNERSHIP_ADAPTERS`-Liste mit eigenen Entity-Keys und Scope-Mapping.
-Neue besitzbare Entitäten müssen dadurch an mehr als einer Stelle ergänzt werden; Abweichungen werden nicht vom
-Typecheck verhindert.
+`responsibilityAccessService` eine eigene `OWNERSHIP_ADAPTERS`-Liste mit eigenen Entity-Keys, Ladern,
+`requiredPermission` und Scope-Mapping. Es ist keine wortgleiche Funktionsduplikation: Die erste Liste zählt,
+die zweite bewertet den Zugriff. Dupliziert ist aber die fachliche Registrierung derselben Besitzentitäten und
+ihrer Datenquelle. Neue Entitäten müssten deshalb in beiden Listen gepflegt werden; eine fehlende oder abweichende
+Registrierung wird vom Typecheck nicht erkannt und kann Zähler und Zugriffsabsicherung auseinanderlaufen lassen.
 
 - `apps/workspace/src/server/workspace/access/services/responsibilities/responsibility-counter-registry.ts:17`
 - `apps/workspace/src/server/workspace/shared/services/responsibility-access-service.ts:29`
 
 **Empfehlung:** Wie für Ordner 24 geplant zu einer kanonischen, erschöpfenden `OwnershipAdapter`-Registry mit Counter,
 `requiredPermission`, `scopeOf`, Loader und künftigem Transfer zusammenführen. Bis dahin keine dritte Adapterliste
-anlegen.
-
-## P2 — Neue Client-Komponenten sind zu groß und vermischen Verantwortlichkeiten
-
-Der neue Zugriffsbaum bündelt Suche, Debounce, Remote-Lookups, Baumaufbau, Lazy-Loading, Mutation, Konflikt-Recovery,
-Rechtevorschau und Rendering in einer 610-Zeilen-Komponente. Der Rollen-Dialog bündelt zusätzlich globale Rollen,
-Tab-Navigation, Discard-Dialog und Zugriffsbaum in rund 414 Zeilen. Das verletzt die Regel, monolithische Dateien
-frühzeitig nach Verantwortung zu teilen und erschwert gezielte Tests.
-
-- `apps/workspace/src/components/workspace/settings/shared/access-scope-tree/access-scope-tree.tsx:77`
-- `apps/workspace/src/components/workspace/settings/members/member-roles-dialog/member-roles-dialog.tsx:63`
-
-**Empfehlung:** `useAccessScopeTree` für Lookup-, Expand- und Mutationszustand extrahieren; Tree-Builder und
-Permission-Preview als reine, getestete Patterns behalten bzw. ergänzen. Den Rollen-Dialog in Tab-Panel-Komponenten
-und einen kleinen Dialog-Controller teilen. Die Page bleibt Orchestrierung, fachliche Zugriffsentscheidungen bleiben
-serverseitig.
-
-## P2 — Komponentenstruktur und Tests nicht durchgängig regelkonform
-
-`CustomerAccessAssignmentRow` liegt direkt neben `CustomerAccessSection` statt in einem eigenen Komponentenordner.
-`OwnerWithoutAccessBadge` hat einen Ordner und CSS, aber keinen co-located Interaktionstest. Die scoped CRM-Regel
-fordert beides pro Komponente.
-
-- `apps/workspace/src/components/workspace/crm/detail/customer-access-section/customer-access-assignment-row.tsx`
-- `apps/workspace/src/components/workspace/crm/shared/owner-without-access-badge/owner-without-access-badge.tsx`
-- `apps/workspace/src/components/workspace/crm/AGENTS.md`
-
-**Empfehlung:** Beide Komponenten in eigene Ordner verschieben; für den Badge den CTA, den rein beobachtenden Zustand
-und die Tastaturauslösung testen.
+anlegen. Das ist kein kurzfristiger Copy/Paste-Fix, weil die Zähler-Registry bislang nur Kunden kennt, die neue
+Access-Registry bereits Kunden und Projekte modelliert.
 
 ## P2 — Der DB-Cleanup braucht echte Datenbanknachweise
 
 Migration 0033 und die Drizzle-Modelle sind im Arbeitsstand ergänzt. Vor dem Merge muss sie auf einer realen
 Development-Datenbank laufen: einmal erfolgreich und einmal mit absichtlich gesetztem `NULL`, damit die Preflight-
-Meldung belegt ist. Der RBAC-Smoke muss nach der Migration die neuen `NOT NULL`-Constraints und die Scope-Integrität
-explizit prüfen.
+Meldung belegt ist. Der RBAC-Smoke prüft die vier `NOT NULL`-Constraints nun explizit und kann über getrennte Befehle
+gegen Development, Preview und Produktion laufen. Der tatsächliche Lauf ist kein Bestandteil dieses Code-Reviews.
 
 - `packages/db/migrations/0033_require_scope_assignable_flags.sql`
 - `packages/db/scripts/smoke-rbac.ts`
 - `apps/workspace/plans/crm/07-projekte/38-zugriffsverwaltung-ui/09-migration-und-fixtures.md`
 
-## P3 — Abnahme-Dokumentation nennt nicht den passenden Scope-Smoke
+## Im Review umgesetzt
 
-Task 10 nennt nur `db:smoke:rbac`. Die neue Scope-Read- und Verwaltungsintegration liegt jedoch im separaten
-Workspace-Script `db:smoke:access`; ohne diesen Befehl wird der neue Pfad nicht als Gate geprüft.
-
-- `apps/workspace/plans/crm/07-projekte/38-zugriffsverwaltung-ui/10-abnahme.md`
-- `apps/workspace/package.json:14`
-
-**Empfehlung:** `pnpm --filter @invessiv/workspace db:smoke:access` als verpflichtendes Gate ergänzen und für die
-DB-Constraint-Smokes zusätzlich `pnpm --filter @invessiv/db db:smoke:rbac` aufnehmen.
+- Der Rollentyp ist nach dem Anlegen bewusst unveränderlich; Task 04 beschreibt jetzt die tatsächliche Semantik.
+- `useAccessScopeTree` kapselt Lookup, Lazy-Loading, Mutationen und Konflikt-Recovery; die UI-Komponente baut und
+  rendert den Baum.
+- Die Rollen-Tabs mit Tastaturnavigation sind als getestete Komponente ausgelagert.
+- `CustomerAccessAssignmentRow` liegt im eigenen Komponentenordner; `OwnerWithoutAccessBadge` besitzt einen
+  co-located Test für Beobachtungs- und Aktionszustand.
+- `db:smoke:access` und `test:e2e` stehen in den Abnahme-Gates.
+- Ein fremder oder unbekannter Cockpit-Kunde liefert nun auf der Seite 404 statt einer leeren 200-Antwort; ein
+  Regressionstest sichert den Negativpfad ab.
 
 ## Positiv geprüft
 
