@@ -53,6 +53,26 @@ async function searchCustomers(
   return rows.map(accessLookupMappingService.mapCustomerRow);
 }
 
+/** Complete, stable option list used by the bounded customer picker in role assignment. */
+async function listCustomerOptions(
+  executor: AccessDatabaseExecutor,
+): Promise<AccessCustomerOptionDto[]> {
+  const rows = await executor
+    .select({
+      id: customers.id,
+      customer_number: customers.customer_number,
+      display_name: customers.display_name,
+    })
+    .from(customers)
+    .orderBy(
+      asc(customers.customer_number),
+      asc(customers.display_name),
+      asc(customers.id),
+    );
+
+  return rows.map(accessLookupMappingService.mapCustomerRow);
+}
+
 /** All projects of one customer, not capped: a cap would silently drop projects from the tree. */
 async function listProjectsOfCustomer(
   executor: AccessDatabaseExecutor,
@@ -72,6 +92,7 @@ async function listProjectsOfCustomer(
 }
 
 export const accessLookupReadService = {
+  listCustomerOptions,
   listProjectsOfCustomer,
   searchCustomers,
 } as const;

@@ -173,6 +173,34 @@ describe("accessApiService", () => {
     );
   });
 
+  it("replaces all access scopes with one versioned PUT request", async () => {
+    const member = { id: "member-1", version: 4 };
+    const assignments = [
+      {
+        roleId: "role-1",
+        scope: {
+          type: AccessScopeType.Customer,
+          customerId: "customer-1",
+        } as const,
+      },
+    ];
+    const fetchMock = stubFetch(HttpResponseCode.Ok, { member });
+
+    await expect(
+      accessApiService.replaceAccessScopes("member-1", {
+        assignments,
+        version: 3,
+      }),
+    ).resolves.toEqual({ ok: true, member });
+    expect(fetchMock).toHaveBeenCalledWith(
+      workspaceMemberAccessScopesEndpoint("member-1"),
+      expect.objectContaining({
+        method: HttpMethod.Put,
+        body: JSON.stringify({ assignments, version: 3 }),
+      }),
+    );
+  });
+
   it("maps an access-scope conflict without losing current", async () => {
     const current = { id: "member-1", version: 8 };
     stubFetch(HttpResponseCode.Conflict, {

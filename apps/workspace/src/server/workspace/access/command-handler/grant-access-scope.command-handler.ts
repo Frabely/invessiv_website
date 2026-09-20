@@ -1,6 +1,5 @@
 import "server-only";
 
-import { and, eq } from "drizzle-orm";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
@@ -9,77 +8,18 @@ import { SecuritySubjectType } from "@invessiv/common/constants/auth/security-su
 import { AccessScopeType } from "@invessiv/common/constants/auth/access-scope-types";
 import type { GrantAccessScopeRequestDto } from "@invessiv/common/contracts/auth/grant-access-scope-request.dto";
 import type { GrantAccessScopeResult } from "@invessiv/common/contracts/auth/results/grant-access-scope-result";
-import {
-  type ContactDatabaseTransaction,
-  getDrizzleDatabaseClient,
-  PostgresErrorCode,
-} from "@invessiv/db/core";
-import {
-  customers,
-  projects,
-  roles,
-  workspaceMemberScopedRoles,
-} from "@invessiv/db/record-configuration";
+import { getDrizzleDatabaseClient, PostgresErrorCode } from "@invessiv/db/core";
+import { workspaceMemberScopedRoles } from "@invessiv/db/record-configuration";
 import { WorkspaceMemberScopedRolesConstraintName } from "@invessiv/db/constraint-names/auth/workspace-member-scoped-roles-constraint-names";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { AccessScopeCommandErrorMessage } from "@/server/workspace/access/constants/access-scope-command-errors";
 import { accessSchemas } from "@/server/workspace/access/services/access-schemas";
 import { accessScopeMappingService } from "@/server/workspace/access/services/access-scope-mapping-service";
+import { accessScopeAssignmentService } from "@/server/workspace/access/services/access-scope-assignment-service";
 import { workspaceMemberReadService } from "@/server/workspace/access/services/workspace-member-read-service";
 import { workspaceMemberVersionService } from "@/server/workspace/access/services/workspace-member-version-service";
 import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
 import { postgresErrorService } from "@/server/workspace/shared/services/postgres-error-service";
-
-/** The share lock keeps a concurrent role update from dropping scope assignability mid-grant. */
-async function hasScopeAssignableRole(
-  tx: ContactDatabaseTransaction,
-  roleId: string,
-): Promise<boolean> {
-  const [role] = await tx
-    .select({ id: roles.id })
-    .from(roles)
-    .where(
-      and(
-        eq(roles.id, roleId),
-        eq(roles.realm, AuthRealm.Workspace),
-        eq(roles.active, true),
-        eq(roles.scope_assignable, true),
-      ),
-    )
-    .limit(1)
-    .for("share");
-
-  return Boolean(role);
-}
-
-async function customerExists(
-  tx: ContactDatabaseTransaction,
-  customerId: string,
-): Promise<boolean> {
-  const [customer] = await tx
-    .select({ id: customers.id })
-    .from(customers)
-    .where(eq(customers.id, customerId))
-    .limit(1);
-
-  return Boolean(customer);
-}
-
-async function projectBelongsToCustomer(
-  tx: ContactDatabaseTransaction,
-  projectId: string,
-  customerId: string,
-): Promise<boolean> {
-  const [project] = await tx
-    .select({ id: projects.id })
-    .from(projects)
-    .where(
-      and(eq(projects.id, projectId), eq(projects.customer_id, customerId)),
-    )
-    .limit(1);
-
-  return Boolean(project);
-}
 
 export async function grantAccessScope(
   memberId: string,
@@ -115,34 +55,14 @@ export async function grantAccessScope(
         };
       }
 
-      const [isRoleAssignable, hasCustomer] = await Promise.all([
-        hasScopeAssignableRole(tx, roleId),
-        customerExists(tx, scope.customerId),
-      ]);
-      if (!isRoleAssignable) {
-        return {
-          ok: false,
-          code: WorkspaceMemberErrorCode.AccessScopeNotAssignable,
-        };
-      }
-      if (!hasCustomer) {
-        return {
-          ok: false,
-          code: WorkspaceMemberErrorCode.AccessScopeNotFound,
-        };
-      }
+      const assignmentError = await accessScopeAssignmentService.validate(tx, {
+        roleId,
+        scope,
+      });
+      if (assignmentError) return { ok: false, code: assignmentError };
 
       const projectId =
         scope.type === AccessScopeType.Project ? scope.projectId : null;
-      if (
-        projectId &&
-        !(await projectBelongsToCustomer(tx, projectId, scope.customerId))
-      ) {
-        return {
-          ok: false,
-          code: WorkspaceMemberErrorCode.AccessScopeProjectCustomerMismatch,
-        };
-      }
 
       const bump = await workspaceMemberVersionService.bump(
         tx,

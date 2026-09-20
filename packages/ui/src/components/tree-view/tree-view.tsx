@@ -1,6 +1,6 @@
 "use client";
 
-import { useId } from "react";
+import { type MouseEvent, useId } from "react";
 import type {
   TreeNode,
   TreeViewProps,
@@ -14,7 +14,9 @@ type SharedProps = Pick<
   | "expandedIds"
   | "loadingLabel"
   | "onToggleAction"
-  | "renderRowActions"
+  | "renderRowContent"
+  | "onSelectAction"
+  | "selectedNodeId"
 > & {
   idPrefix: string;
   loadingIds: readonly string[];
@@ -64,9 +66,22 @@ function TreeItem({
   const childListId = `${shared.idPrefix}-${node.id}`;
   const showsChildren = expanded && node.children.length > 0;
 
+  function selectRow(event: MouseEvent<HTMLDivElement>) {
+    if (!shared.onSelectAction) return;
+    const target = event.target as HTMLElement;
+    if (target.closest("button, input, label, a, select, textarea")) return;
+    shared.onSelectAction(node.id);
+  }
+
   return (
     <li className={styles.item}>
-      <div className={styles.row} data-level={level}>
+      <div
+        className={styles.row}
+        data-level={level}
+        data-selected={shared.selectedNodeId === node.id || undefined}
+        data-selectable={Boolean(shared.onSelectAction) || undefined}
+        onClick={selectRow}
+      >
         {node.hasChildren ? (
           <button
             aria-controls={showsChildren ? childListId : undefined}
@@ -89,13 +104,24 @@ function TreeItem({
           <span aria-hidden="true" className={styles.toggleSpacer} />
         )}
         <span className={styles.labels}>
-          <span className={styles.label}>{node.label}</span>
+          {shared.onSelectAction ? (
+            <button
+              aria-pressed={shared.selectedNodeId === node.id}
+              className={styles.labelButton}
+              onClick={() => shared.onSelectAction?.(node.id)}
+              type="button"
+            >
+              {node.label}
+            </button>
+          ) : (
+            <span className={styles.label}>{node.label}</span>
+          )}
           {node.secondaryLabel === null ? null : (
             <span className={styles.secondaryLabel}>{node.secondaryLabel}</span>
           )}
         </span>
         <div className={styles.actions}>
-          {shared.renderRowActions(node, level)}
+          {shared.renderRowContent?.(node, level)}
         </div>
       </div>
       {shared.loadingIds.includes(node.id) ? (
@@ -117,7 +143,7 @@ function TreeItem({
 /**
  * Controlled disclosure tree. Renders nested lists with disclosure buttons, not an ARIA `tree`:
  * rows carry several controls, and a real tree would force cell navigation onto them. Expansion
- * and children come from the consumer; row content comes from `renderRowActions`.
+ * and children come from the consumer; optional row content stays app-neutral.
  */
 export function TreeView({
   ariaLabel,
@@ -129,7 +155,9 @@ export function TreeView({
   loadingLabel,
   nodes,
   onToggleAction,
-  renderRowActions,
+  onSelectAction,
+  renderRowContent,
+  selectedNodeId,
 }: TreeViewProps) {
   const idPrefix = useId();
 
@@ -150,7 +178,9 @@ export function TreeView({
         loadingIds,
         loadingLabel,
         onToggleAction,
-        renderRowActions,
+        onSelectAction,
+        renderRowContent,
+        selectedNodeId,
       }}
     />
   );

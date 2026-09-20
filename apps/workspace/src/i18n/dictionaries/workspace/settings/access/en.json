@@ -1,11 +1,14 @@
 {
   "treeLabel": "Access by customer and project",
+  "customerSelectLabel": "Select customer",
+  "customerSelectPlaceholder": "Select a customer",
+  "customerOptionsLoading": "Loading customers …",
+  "customerOptionsError": "The customer list could not be loaded. Reopen the dialog.",
+  "customerSelectionPrompt": "Select a customer to manage its areas and roles.",
   "searchLabel": "Search customers",
   "searchPlaceholder": "Name or customer number",
   "searchLoading": "Searching customers …",
   "wholeCustomer": "Whole customer",
-  "globalRolesHint": "Global roles also apply here and are granted in the Global roles tab. Project permissions only take effect for the member if they can also see the customer they belong to.",
-  "openGlobalRoles": "Switch to global roles",
   "noCustomerRolesTitle": "No customer role created yet",
   "noCustomerRolesDescription": "Create a customer/project role in the role catalog to grant access here.",
   "openRoleCatalog": "Open role catalog",
@@ -28,8 +31,6 @@
   "projectsError": "Projects for {customer} could not be loaded.",
   "retryProjects": "Load projects again",
   "retryProjectsLabel": "Load projects for {customer} again",
-  "reloadError": "The current state could not be loaded after the conflict. Reload it before changing more access.",
-  "retryReload": "Load current state",
   "previewHeading": "Effective permissions for {target}",
   "previewEmpty": "No active permissions apply to this selection.",
   "previewPrompt": "Choose a customer or project to see the effective permissions.",
@@ -43,5 +44,5 @@
     "ACCESS_SCOPE_NOT_FOUND": "This assignment no longer exists. The current state has been reloaded.",
     "INTERNAL": "That did not work. Try again."
   },
-  "conflict": "Someone just changed access. The current state was adopted; your other selections are preserved."
+  "conflict": "Someone just changed access. Your selection is preserved – review it and save again."
 }

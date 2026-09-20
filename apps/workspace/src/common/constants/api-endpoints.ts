@@ -1,5 +1,6 @@
 export const WorkspaceApiEndpoint = {
   AccessCustomers: "/api/workspace/access/customers",
+  AccessCustomerOptions: "/api/workspace/access/customers/options",
   CrmCustomers: "/api/workspace/crm/customers",
   CrmLeadConversions: "/api/workspace/crm/leads",
   CrmProjects: "/api/workspace/crm/projects",

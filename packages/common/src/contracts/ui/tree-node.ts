@@ -25,6 +25,10 @@ export type TreeViewProps = {
   nodes: readonly TreeNode[];
   /** Reports the state the node should take. Whether it happens is the consumer's decision. */
   onToggleAction: (nodeId: string, expanded: boolean) => void;
-  /** Trailing content of a row. `level` starts at 0. */
-  renderRowActions: (node: TreeNode, level: number) => ReactNode;
+  /** Optional app-neutral content or metadata placed after a row label. `level` starts at 0. */
+  renderRowContent?: (node: TreeNode, level: number) => ReactNode;
+  /** Makes the label an independent selection control without coupling the tree to a domain. */
+  onSelectAction?: (nodeId: string) => void;
+  /** The currently selected node, rendered as a visual state only. */
+  selectedNodeId?: string | null;
 };

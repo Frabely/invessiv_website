@@ -13,7 +13,8 @@ type MemberRolesTabsProps = {
   customerTabId: string;
   globalPanelId: string;
   globalTabId: string;
-  isDirty: boolean;
+  customerIsDirty: boolean;
+  globalIsDirty: boolean;
   onSelectAction: (tab: MemberRolesTab) => void;
   text: SettingsMembersDictionary["rolesDialog"];
 };
@@ -25,7 +26,8 @@ export function MemberRolesTabs({
   customerTabId,
   globalPanelId,
   globalTabId,
-  isDirty,
+  customerIsDirty,
+  globalIsDirty,
   onSelectAction,
   text,
 }: MemberRolesTabsProps) {
@@ -69,7 +71,7 @@ export function MemberRolesTabs({
         type="button"
       >
         {text.globalTab}
-        {isDirty ? (
+        {globalIsDirty ? (
           <span className={styles.unsaved}>{text.unsaved}</span>
         ) : null}
       </button>
@@ -87,6 +89,9 @@ export function MemberRolesTabs({
           type="button"
         >
           {text.customerTab}
+          {customerIsDirty ? (
+            <span className={styles.unsaved}>{text.unsaved}</span>
+          ) : null}
         </button>
       ) : null}
     </div>

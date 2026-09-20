@@ -7,4 +7,5 @@ export const AccessFieldLimits = {
   AssignedRoleIdsMax: 50,
   AccessLookupQueryMaxLength: 100,
   AccessLookupResultLimit: 25,
+  AccessScopeAssignmentsMax: 500,
 } as const;

@@ -13,6 +13,7 @@ import type { CreateRoleResult } from "@invessiv/common/contracts/auth/results/c
 import type { ReplaceWorkspaceMemberRolesResult } from "@invessiv/common/contracts/auth/results/replace-workspace-member-roles-result";
 import type { UpdateRoleResult } from "@invessiv/common/contracts/auth/results/update-role-result";
 import type { UpdateWorkspaceMemberStatusResult } from "@invessiv/common/contracts/auth/results/update-workspace-member-status-result";
+import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import type { AccessOperation } from "@/common/constants/access/access-operations";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { withPermission } from "@/lib/auth/api";
@@ -39,7 +40,14 @@ type MemberMutationResult =
   | AddWorkspaceMemberResult
   | ReplaceWorkspaceMemberRolesResult
   | ChangeWorkspaceOwnerResult
-  | UpdateWorkspaceMemberStatusResult;
+  | UpdateWorkspaceMemberStatusResult
+  | { ok: true; member: WorkspaceMemberDto }
+  | { ok: false; code: WorkspaceMemberErrorCode; errors?: unknown }
+  | {
+      ok: false;
+      code: typeof ConcurrencyErrorCode.VersionConflict;
+      conflict: unknown;
+    };
 
 type RoleMutationResult = CreateRoleResult | UpdateRoleResult;
 

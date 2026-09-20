@@ -4,12 +4,19 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AccessScopeType } from "@invessiv/common/constants/auth/access-scope-types";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
+import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
+import { HttpHeaderName } from "@invessiv/common/constants/http/http-header-names";
+import { MediaType } from "@invessiv/common/constants/http/media-types";
+import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { AccessCustomerOptionDto } from "@invessiv/common/contracts/auth/access-customer-option.dto";
 import type { AccessProjectOptionDto } from "@invessiv/common/contracts/auth/access-project-option.dto";
 import type { AccessScopeEntryDto } from "@invessiv/common/contracts/auth/access-scope-entry.dto";
 import { GET as listAccessCustomersRoute } from "@/app/api/workspace/access/customers/route";
 import { GET as listAccessProjectsRoute } from "@/app/api/workspace/access/customers/[id]/projects/route";
-import { GET as listMemberScopesRoute } from "@/app/api/workspace/members/[id]/access-scopes/route";
+import {
+  GET as listMemberScopesRoute,
+  PUT as replaceMemberScopesRoute,
+} from "@/app/api/workspace/members/[id]/access-scopes/route";
 import {
   authorizedWorkspaceRequest,
   notMemberWorkspaceRequest,
@@ -23,6 +30,7 @@ const mocks = vi.hoisted(() => ({
   listAccessCustomers: vi.fn(),
   listAccessCustomerProjects: vi.fn(),
   listMemberAccessScopes: vi.fn(),
+  replaceAccessScopes: vi.fn(),
   findMember: vi.fn(),
   getDatabase: vi.fn(),
 }));
@@ -41,6 +49,10 @@ vi.mock(
 vi.mock(
   "@/server/workspace/access/query-handler/list-member-access-scopes.query-handler",
   () => ({ listMemberAccessScopes: mocks.listMemberAccessScopes }),
+);
+vi.mock(
+  "@/server/workspace/access/command-handler/replace-access-scopes.command-handler",
+  () => ({ replaceAccessScopes: mocks.replaceAccessScopes }),
 );
 vi.mock(
   "@/server/workspace/access/services/workspace-member-read-service",
@@ -87,6 +99,14 @@ const ENTRY: AccessScopeEntryDto = {
 
 function request(url: string): NextRequest {
   return new Request(url) as unknown as NextRequest;
+}
+
+function jsonRequest(url: string, body: unknown): NextRequest {
+  return new Request(url, {
+    method: HttpMethod.Put,
+    body: JSON.stringify(body),
+    headers: { [HttpHeaderName.ContentType]: MediaType.Json },
+  }) as unknown as NextRequest;
 }
 
 function customersUrl(search?: string): string {
@@ -246,6 +266,43 @@ describe("access lookup routes", () => {
       expect(await response.json()).toEqual({ accessScopes: [ENTRY] });
       expect(mocks.listMemberAccessScopes).toHaveBeenCalledExactlyOnceWith(
         MEMBER_ID,
+      );
+    });
+  });
+
+  describe("PUT member access scopes", () => {
+    it("replaces the complete assignment set and preserves version conflicts", async () => {
+      const payload = { assignments: [], version: 2 };
+      const current = {
+        id: MEMBER_ID,
+        version: 3,
+        roles: [],
+      };
+      const conflict = {
+        code: ConcurrencyErrorCode.VersionConflict,
+        currentVersion: 3,
+        current,
+      };
+      mocks.replaceAccessScopes.mockResolvedValue({
+        ok: false,
+        code: ConcurrencyErrorCode.VersionConflict,
+        conflict,
+      });
+
+      const response = await replaceMemberScopesRoute(
+        jsonRequest(
+          `http://localhost/api/workspace/members/${MEMBER_ID}/access-scopes`,
+          payload,
+        ),
+        projectsContext(MEMBER_ID),
+      );
+
+      expect(response.status).toBe(HttpResponseCode.Conflict);
+      expect(await response.json()).toEqual(conflict);
+      expect(mocks.replaceAccessScopes).toHaveBeenCalledWith(
+        MEMBER_ID,
+        payload,
+        expect.objectContaining({ userId: expect.any(String) }),
       );
     });
   });

@@ -50,6 +50,7 @@ export function CustomerAccessSection({
 }: CustomerAccessSectionProps) {
   const headingId = useId();
   const memberSelectId = useId();
+  const accessFormId = useId();
   const eligibleMembers = members.filter(
     (member) => member.active && !member.isOwner,
   );
@@ -60,6 +61,9 @@ export function CustomerAccessSection({
   const [selectedMemberId, setSelectedMemberId] = useState(
     requestedMember?.id ?? eligibleMembers[0]?.id ?? "",
   );
+  const [accessIsDirty, setAccessIsDirty] = useState(false);
+  const [accessIsSubmitting, setAccessIsSubmitting] = useState(false);
+  const [confirmDiscard, setConfirmDiscard] = useState(false);
   const triggerRef = useRef<HTMLElement | null>(null);
   const selectedMember =
     eligibleMembers.find((member) => member.id === selectedMemberId) ??
@@ -95,9 +99,20 @@ export function CustomerAccessSection({
   }
 
   function closeDialog() {
+    setAccessIsDirty(false);
+    setAccessIsSubmitting(false);
+    setConfirmDiscard(false);
     setDialogOpen(false);
     if (requestedMemberId) onRequestedDialogCloseAction?.();
     queueMicrotask(() => triggerRef.current?.focus());
+  }
+
+  function requestCloseDialog() {
+    if (accessIsDirty) {
+      setConfirmDiscard(true);
+      return;
+    }
+    closeDialog();
   }
 
   function renderAssignments(
@@ -180,15 +195,32 @@ export function CustomerAccessSection({
 
       {dialogOpen && selectedMember ? (
         <Dialog
+          busy={accessIsSubmitting}
           closeLabel={content.dialog.close}
           description={content.dialog.description}
           eyebrow={`${formatCustomerNumber(customer.customerNumber)} · ${customer.displayName}`}
           footer={
-            <ButtonControl onClick={closeDialog} type="button" variant="ghost">
-              {content.dialog.done}
-            </ButtonControl>
+            <>
+              <ButtonControl
+                disabled={accessIsSubmitting}
+                onClick={requestCloseDialog}
+                type="button"
+                variant="ghost"
+              >
+                {content.dialog.cancel}
+              </ButtonControl>
+              <PrimaryCtaButton
+                disabled={accessIsSubmitting || !accessIsDirty}
+                form={accessFormId}
+                type="submit"
+              >
+                {accessIsSubmitting
+                  ? content.dialog.submitting
+                  : content.dialog.submit}
+              </PrimaryCtaButton>
+            </>
           }
-          onCloseAction={closeDialog}
+          onCloseAction={requestCloseDialog}
           size={DialogSize.Wide}
           title={content.dialog.title}
         >
@@ -197,6 +229,7 @@ export function CustomerAccessSection({
               <span>{content.dialog.memberLabel}</span>
               <CustomSelect
                 ariaLabel={content.dialog.memberLabel}
+                disabled={accessIsDirty || accessIsSubmitting}
                 id={memberSelectId}
                 onChange={setSelectedMemberId}
                 options={eligibleMembers.map((member) => ({
@@ -206,25 +239,49 @@ export function CustomerAccessSection({
                 value={selectedMember.id}
               />
             </label>
-            <p className={styles.immediateNote}>
-              {content.dialog.immediateNote}
-            </p>
             <AccessScopeTree
               accessContent={content.tree}
               canManageAccess
               fixedCustomer={customer}
+              formId={accessFormId}
               initialAccessScopes={accessScopes.filter(
                 (assignment) =>
                   assignment.workspaceMemberId === selectedMember.id,
               )}
               key={selectedMember.id}
               member={selectedMember}
+              onDirtyChangeAction={setAccessIsDirty}
+              onSavedAction={closeDialog}
+              onSubmittingChangeAction={setAccessIsSubmitting}
               permissionsContent={permissionsContent}
               roles={roles}
               rolesHref={rolesHref}
             />
           </div>
         </Dialog>
+      ) : null}
+      {confirmDiscard ? (
+        <Dialog
+          closeLabel={content.dialog.keepEditing}
+          description={content.dialog.discardDescription}
+          footer={
+            <>
+              <ButtonControl
+                onClick={() => setConfirmDiscard(false)}
+                type="button"
+                variant="ghost"
+              >
+                {content.dialog.keepEditing}
+              </ButtonControl>
+              <PrimaryCtaButton onClick={closeDialog} type="button">
+                {content.dialog.discard}
+              </PrimaryCtaButton>
+            </>
+          }
+          onCloseAction={() => setConfirmDiscard(false)}
+          size={DialogSize.Narrow}
+          title={content.dialog.discardTitle}
+        />
       ) : null}
     </section>
   );

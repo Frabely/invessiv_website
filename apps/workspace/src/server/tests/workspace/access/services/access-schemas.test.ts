@@ -39,6 +39,7 @@ describe("accessSchemas.listAccessCustomers", () => {
 });
 
 const ROLE_ID = "0b0f1d8e-6a7c-4a44-9c3e-2f3f8f2b7a10";
+const CUSTOMER_ID = "1c1f1d8e-6a7c-4a44-9c3e-2f3f8f2b7a11";
 
 describe("accessSchemas.createRole", () => {
   it("trims the name and stores an empty description as null", () => {
@@ -157,6 +158,28 @@ describe("accessSchemas.replaceWorkspaceMemberRoles", () => {
       accessSchemas.replaceWorkspaceMemberRoles.safeParse({
         roleIds: [],
         version: 0,
+      }).success,
+    ).toBe(false);
+  });
+});
+
+describe("accessSchemas.replaceAccessScopes", () => {
+  it("accepts a unique access-scope assignment set and rejects duplicates", () => {
+    const assignment = {
+      roleId: ROLE_ID,
+      scope: { type: "customer", customerId: CUSTOMER_ID },
+    };
+
+    expect(
+      accessSchemas.replaceAccessScopes.safeParse({
+        assignments: [assignment],
+        version: 2,
+      }).success,
+    ).toBe(true);
+    expect(
+      accessSchemas.replaceAccessScopes.safeParse({
+        assignments: [assignment, assignment],
+        version: 2,
       }).success,
     ).toBe(false);
   });

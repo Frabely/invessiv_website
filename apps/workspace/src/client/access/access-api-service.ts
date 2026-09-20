@@ -15,6 +15,8 @@ import type { AddWorkspaceMemberRequestDto } from "@invessiv/common/contracts/au
 import type { ChangeWorkspaceOwnerRequestDto } from "@invessiv/common/contracts/auth/change-workspace-owner-request.dto";
 import type { GrantAccessScopeRequestDto } from "@invessiv/common/contracts/auth/grant-access-scope-request.dto";
 import type { RevokeAccessScopeRequestDto } from "@invessiv/common/contracts/auth/revoke-access-scope-request.dto";
+import type { ReplaceAccessScopesRequestDto } from "@invessiv/common/contracts/auth/replace-access-scopes-request.dto";
+import type { ReplaceMemberRoleAssignmentsRequestDto } from "@invessiv/common/contracts/auth/replace-member-role-assignments-request.dto";
 import type { WorkspaceMemberAccessScopeDto } from "@invessiv/common/contracts/auth/workspace-member-access-scope.dto";
 import type { AccessScopeEntryDto } from "@invessiv/common/contracts/auth/access-scope-entry.dto";
 import type { AccessCustomerOptionDto } from "@invessiv/common/contracts/auth/access-customer-option.dto";
@@ -40,6 +42,7 @@ import type {
   RoleMutationClientResult,
 } from "@/common/contracts/access/access-client-results";
 import {
+  accessCustomerOptionsEndpoint,
   accessCustomerProjectsEndpoint,
   accessCustomersEndpoint,
   crmCustomerAccessScopesEndpoint,
@@ -47,6 +50,7 @@ import {
   workspaceMemberAccessScopesEndpoint,
   workspaceMemberEndpoint,
   workspaceMemberOwnerEndpoint,
+  workspaceMemberRoleAssignmentsEndpoint,
   workspaceMemberRolesEndpoint,
   workspaceRoleEndpoint,
 } from "@/common/patterns/access/access-api-endpoints";
@@ -290,6 +294,15 @@ export const accessApiService = {
       HttpMethod.Put,
       request,
     ),
+  replaceMemberRoleAssignments: (
+    memberId: string,
+    request: ReplaceMemberRoleAssignmentsRequestDto,
+  ) =>
+    mutateMember(
+      workspaceMemberRoleAssignmentsEndpoint(memberId),
+      HttpMethod.Put,
+      request,
+    ),
   grantOwner: (memberId: string, request: ChangeWorkspaceOwnerRequestDto) =>
     mutateMember(
       workspaceMemberOwnerEndpoint(memberId),
@@ -324,6 +337,15 @@ export const accessApiService = {
       HttpMethod.Post,
       request,
     ),
+  replaceAccessScopes: (
+    memberId: string,
+    request: ReplaceAccessScopesRequestDto,
+  ) =>
+    mutateMember(
+      workspaceMemberAccessScopesEndpoint(memberId),
+      HttpMethod.Put,
+      request,
+    ),
   revokeAccessScope: (
     memberId: string,
     scopeId: string,
@@ -350,6 +372,15 @@ export const accessApiService = {
   ): Promise<AccessCustomerListClientResult> {
     const customers = await readCollection<AccessCustomerOptionDto>(
       accessCustomersEndpoint(query),
+      "customers",
+    );
+    return customers
+      ? { ok: true, customers }
+      : { ok: false, code: WorkspaceMemberErrorCode.Internal };
+  },
+  async listAccessCustomerOptions(): Promise<AccessCustomerListClientResult> {
+    const customers = await readCollection<AccessCustomerOptionDto>(
+      accessCustomerOptionsEndpoint(),
       "customers",
     );
     return customers

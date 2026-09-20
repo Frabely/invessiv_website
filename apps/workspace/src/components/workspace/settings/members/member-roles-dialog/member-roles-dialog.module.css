@@ -5,6 +5,25 @@
   gap: 1rem;
 }
 
+.sharedFeedback {
+  margin: 0;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--color-danger) 45%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+.sharedFeedback p {
+  margin: 0;
+}
+
+.sharedFeedback p + p {
+  margin-top: 0.45rem;
+}
+
 .columns {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
@@ -18,18 +37,11 @@
   gap: 0.6rem;
 }
 
-.note,
-.immediateNote {
+.note {
   margin: 0;
   color: var(--color-text-muted);
   font-size: var(--font-size-ui-sm);
   line-height: 1.5;
-}
-
-.immediateNote {
-  padding: 0.65rem 0.8rem;
-  border-left: 3px solid var(--color-cta);
-  background: color-mix(in srgb, var(--color-cta) 8%, transparent);
 }
 
 .preview {
