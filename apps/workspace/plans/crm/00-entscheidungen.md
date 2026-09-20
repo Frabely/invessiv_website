@@ -623,6 +623,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 | 22  | offen     | `22-activity-cleanup`                    | `lead_activities` abgebaut, genau eine Activity-Tabelle                         |    5–15 |    1 T. |
 | 22a | offen     | `22a-kundenorganisation-und-uebergabe`   | Suche, Filter, Tags und globale Zuständigkeitsübergabe vollständig nutzbar      |  70–110 |  4–6 T. |
 | 23  | offen     | `23-web-ui-abschluss`                    | Website nutzt geteilte Buttons/Formulare in bewusster Web-Ausprägung            |   35–55 |  3–4 T. |
+| 24  | offen     | `24-zustaendigkeitszugriff-absicherung`  | Owner-Wechsel und Übergaben verhindern Zuständigkeiten ohne wirksamen Zugriff   |   40–70 |  2–3 T. |
 
 Statuswerte: `offen` → `läuft` → `im Review` → `gemerged`. Beim Merge werden die Tabelle und der
 Status in der Ordner-README gemeinsam aktualisiert.

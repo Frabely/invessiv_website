@@ -47,12 +47,12 @@ Zwei Achsen, keine dritte:
 Teilbereiche wie Chat, Aufgaben oder Leistungsbuchung sind damit **Rollen**, keine eigene Dimension in der
 Oberfläche. Die vier Leitfälle lösen sich so auf:
 
-| Fall                               | Umsetzung                                                    |
-| ---------------------------------- | ------------------------------------------------------------ |
-| Betreut 1–n Kunden                 | je eine Zuweisung am Kunden                                  |
-| Zwei Kunden, je nur ein Projekt    | je eine Zuweisung am Projekt                                 |
-| Nur Chats, über alle Kunden        | workspace-weite Rolle — siehe `11-rolle-fuer-alle-kunden.md` |
-| Chats und Aufgaben bei zwei Kunden | zwei Rollen je Kunde, oder eine kombinierte Rolle            |
+| Fall                               | Umsetzung                                         |
+| ---------------------------------- | ------------------------------------------------- |
+| Betreut 1–n Kunden                 | je eine Zuweisung am Kunden                       |
+| Zwei Kunden, je nur ein Projekt    | je eine Zuweisung am Projekt                      |
+| Nur Chats, über alle Kunden        | eigene workspace-weite Rolle                      |
+| Chats und Aufgaben bei zwei Kunden | zwei Rollen je Kunde, oder eine kombinierte Rolle |
 
 `chat.*` und `tasks.read` stehen noch nicht im Permission-Katalog (Ordner 08 und 17). Die UI bleibt deshalb
 durchgehend katalogbasiert und wächst additiv mit, ohne Codeänderung.
@@ -88,27 +88,26 @@ Kunden: lesen, schreiben · Projekte: lesen · Aufgaben: schreiben
    gesperrt, mit Hinweis „über Kunde vererbt". Das ist reine Darstellung — die Entscheidung trifft der Server.
 3. **Gesperrt statt versteckt.** Nicht bindbare Rollen erscheinen sichtbar gesperrt mit Erklärung (Regel aus
    `components/workspace/settings/AGENTS.md`).
-4. **Die Wurzelzeile ist lesend.** „Alle Kunden" zeigt die workspace-weiten Rollen des Mitglieds und verweist
-   auf den Rollen-Tab. Begründung und der Weg zur schreibbaren Variante: `11-rolle-fuer-alle-kunden.md`.
+4. **Die Wurzelzeile ist lesend.** „Alle Kunden“ zeigt die workspace-weiten Rollen des Mitglieds und verweist
+   auf den Rollen-Tab. Rollen über alle Kunden werden dort als eigene workspace-weite Rollen gepflegt.
 5. **Kunden mit Zuweisung sind immer sichtbar**, Kunden ohne Zuweisung nur über die Suche.
 6. **Projekte werden beim Aufklappen nachgeladen**, nicht vorab.
 7. **Zwei unterscheidbare Leerzustände:** „noch keine Zuweisung" und „keine Treffer".
 
 ## Tasks
 
-| Nr.                                                                | Inhalt                                          | Hängt ab von |
-| ------------------------------------------------------------------ | ----------------------------------------------- | ------------ |
-| [`01-baum-komponente.md`](./01-baum-komponente.md)                 | Generische `TreeView` in `packages/ui`          | —            |
-| [`02-server-zuarbeit.md`](./02-server-zuarbeit.md)                 | DTO-Anreicherung, Zähler, Kunden-Lookup         | —            |
-| [`03-client-service.md`](./03-client-service.md)                   | Access-Scope-Methoden im `accessApiService`     | 02           |
-| [`04-rollen-dialog-schalter.md`](./04-rollen-dialog-schalter.md)   | Schalter `scopeAssignable` im Rollen-Dialog     | —            |
-| [`05-zugriffs-baum.md`](./05-zugriffs-baum.md)                     | Fachlicher Zugriffs-Baum                        | 01, 02, 03   |
-| [`06-settings-dialog.md`](./06-settings-dialog.md)                 | Dialog „Zugriffe" je Mitglied, Mitgliederliste  | 05           |
-| [`07-kundenakte-abschnitt.md`](./07-kundenakte-abschnitt.md)       | Abschnitt „Zugriff" in der Kundenakte           | 05           |
-| [`08-zustaendig-ohne-zugriff.md`](./08-zustaendig-ohne-zugriff.md) | Serversignal und Badge                          | 02, 06, 07   |
-| [`09-migration-und-fixtures.md`](./09-migration-und-fixtures.md)   | Migration `0033`, Smokes, Seeds                 | —            |
-| [`10-abnahme.md`](./10-abnahme.md)                                 | E2E, A11y, DE/EN, Gates                         | alle         |
-| [`11-rolle-fuer-alle-kunden.md`](./11-rolle-fuer-alle-kunden.md)   | **Bewusst verschoben** — Rolle über alle Kunden | —            |
+| Nr.                                                                | Inhalt                                         | Hängt ab von |
+| ------------------------------------------------------------------ | ---------------------------------------------- | ------------ |
+| [`01-baum-komponente.md`](./01-baum-komponente.md)                 | Generische `TreeView` in `packages/ui`         | —            |
+| [`02-server-zuarbeit.md`](./02-server-zuarbeit.md)                 | DTO-Anreicherung, Zähler, Kunden-Lookup        | —            |
+| [`03-client-service.md`](./03-client-service.md)                   | Access-Scope-Methoden im `accessApiService`    | 02           |
+| [`04-rollen-dialog-schalter.md`](./04-rollen-dialog-schalter.md)   | Schalter `scopeAssignable` im Rollen-Dialog    | —            |
+| [`05-zugriffs-baum.md`](./05-zugriffs-baum.md)                     | Fachlicher Zugriffs-Baum                       | 01, 02, 03   |
+| [`06-settings-dialog.md`](./06-settings-dialog.md)                 | Dialog „Zugriffe" je Mitglied, Mitgliederliste | 05           |
+| [`07-kundenakte-abschnitt.md`](./07-kundenakte-abschnitt.md)       | Abschnitt „Zugriff" in der Kundenakte          | 05           |
+| [`08-zustaendig-ohne-zugriff.md`](./08-zustaendig-ohne-zugriff.md) | Serversignal und Badge                         | 02, 06, 07   |
+| [`09-migration-und-fixtures.md`](./09-migration-und-fixtures.md)   | Migration `0033`, Smokes, Seeds                | —            |
+| [`10-abnahme.md`](./10-abnahme.md)                                 | E2E, A11y, DE/EN, Gates                        | alle         |
 
 Reihenfolge der Umsetzung: 01 und 02 parallel, dann 03, dann 04 (unabhängig einschiebbar), dann 05, dann
 06 und 07, dann 08, dann 09, zuletzt 10.
@@ -133,8 +132,6 @@ Migration `0032` (196), `smoke-rbac.ts` (539).
 | 09 Migration und Fixtures |   1 |        5 |    ~380 | Migration ~60, Smoke +180, Seed +120                                |
 | 10 Abnahme                |   3 |        1 |    ~350 | zwei E2E-Szenarien plus Fixtures                                    |
 | **Summe**                 |  46 |       45 |  ~6.100 | **91 Dateien**                                                      |
-
-Task 11 ist nicht eingerechnet (verschoben).
 
 **91 Dateien liegen im Korridor 50–100 aus `plans/crm/AGENTS.md`, aber am oberen Rand.** Ab 120 verlangt die
 Regel einen Neuschnitt vor Beginn. Zwei Tasks tragen das Risiko:
@@ -178,12 +175,6 @@ die Punkte dieser Feinplanung ergänzt.
 - [ ] DE/EN vollständig, Mobil, Dark und Light geprüft.
 - [ ] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, DB-Smokes und
       `pnpm --filter @invessiv/workspace build` grün.
-
-## Bewusst verschoben
-
-`11-rolle-fuer-alle-kunden.md` — eine bindbare Rolle kann heute nicht workspace-weit vergeben werden. Bis zu
-etwa 20 Kunden ist das Zuweisen je Kunde zumutbar; darüber wird es zur Reibung. Der Baum wird so gebaut, dass
-die Wurzelzeile später ohne Umbau schreibbar wird.
 
 ## Regeln, die beim Umsetzen in `AGENTS.md` nachgezogen werden
 

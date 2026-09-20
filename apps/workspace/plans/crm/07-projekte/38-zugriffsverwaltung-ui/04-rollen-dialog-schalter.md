@@ -25,8 +25,8 @@ frei wählbar, beim Bearbeiten ebenfalls — der Server lehnt das Zurücksetzen 
 selbst ab. Systemrollen-Ansicht bleibt read-only (bestehender Early Return).
 
 Der Hinweistext sagt, was der Schalter bewirkt, nicht wie er heißt: eine bindbare Rolle wird je Kunde oder
-Projekt vergeben und erscheint dafür nicht mehr in der workspace-weiten Rollenauswahl. Das ist die heutige
-Entweder-oder-Semantik; siehe `11-rolle-fuer-alle-kunden.md`.
+Projekt vergeben und erscheint dafür nicht mehr in der workspace-weiten Rollenauswahl. Für Rechte über alle Kunden
+wird stattdessen eine eigene workspace-weite Rolle verwendet.
 
 ### Sperrlogik im `PermissionPicker`
 

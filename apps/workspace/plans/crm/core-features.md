@@ -73,9 +73,10 @@ Der frühere Detailplan für freies Mail-Senden bleibt als ausdrücklich zurück
 
 ## Abschluss nach dem CRM-Umbau
 
-- Nach allen fachlichen CRM-, Portal-, Rollout- und Cleanup-Einheiten folgt als letzter Ordner 23 ein eigenständiger
-  Web-PR. Er stellt die Website technisch auf alle in Ordner 03d zentralisierten Button- und Formularbausteine um und
-  entwickelt deren Web-Darstellung weiter, ohne die Workspace-Optik oder CRM-Funktionalität zu verändern.
+- Nach den fachlichen CRM-, Portal-, Rollout- und Cleanup-Einheiten folgt Ordner 23 als eigenständiger Web-PR. Er
+  stellt die Website technisch auf alle in Ordner 03d zentralisierten Button- und Formularbausteine um und entwickelt
+  deren Web-Darstellung weiter, ohne die Workspace-Optik oder CRM-Funktionalität zu verändern. Den Gesamtplan schließt
+  anschließend Ordner 24 mit der Zuständigkeitszugriff-Absicherung ab.
 
 ## Architektur-Nacharbeit nach dem CRM-Umbau
 

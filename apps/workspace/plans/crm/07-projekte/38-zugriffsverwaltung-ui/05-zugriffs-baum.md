@@ -33,9 +33,8 @@ Er ist **nicht** app-neutral und gehört deshalb nicht nach `packages/ui` — di
 | Kunde         | Kundennummer + Anzeigename, Haken je bindbarer Rolle | schreibend; aufklappbar zu den Projekten                    |
 | Projekt       | Projekttitel, Haken je bindbarer Rolle               | schreibend; vom Kunden geerbte Haken sind gesperrt angehakt |
 
-Die Wurzelzeile ist bewusst lesend — sie erklärt, woher Rechte kommen, die nicht im Baum vergeben wurden.
-Der Weg zur schreibbaren Variante steht in `11-rolle-fuer-alle-kunden.md`; der Aufbau muss ihn ohne Umbau
-zulassen.
+Die Wurzelzeile ist bewusst lesend — sie erklärt, woher workspace-weite Rechte kommen, die nicht im Baum vergeben
+werden. Eine Rolle für alle Kunden wird als eigene workspace-weite Rolle im Rollen-Tab gepflegt.
 
 ### Vererbung
 

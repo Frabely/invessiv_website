@@ -14,12 +14,12 @@ Der Zustand wird deshalb sichtbar gemacht — und zwar dort, wo man ihn beheben 
 
 ### Serverseitig
 
-- `OwnershipAdapter` erhält `requiredPermission` und `scopeOf(entityId)` (aus Task 37 vorgesehen, im Code
-  nicht vorhanden).
-- Neuer Fehlercode `HANDOVER_TARGET_WITHOUT_ACCESS`: Eine Übergabe an ein Mitglied ohne Zugriff antwortet
-  422, statt still eine unwirksame Zuständigkeit zu schreiben.
-- Die Verantwortlichkeits-Registry (`services/responsibilities/`) wertet zusätzlich aus, ob der zuständige
-  Actor auf dem Datensatz `canOn(requiredPermission)` erfüllt. Prüfung pro Request, kein Cache.
+- Die Verantwortlichkeitsauswertung erkennt pro Request, ob der zuständige Actor die erforderliche Permission am
+  Datensatz über `canOn` erfüllt. Sie erzeugt keinen Cache und blockiert bestehende Zuständigkeiten nicht.
+- **Bewusst verschoben nach Ordner 24:** Die kanonische Ownership-Registry mit `requiredPermission` und `scopeOf`,
+  die Absicherung eines Owner-Wechsels beziehungsweise einer Übergabe mit
+  `HANDOVER_TARGET_WITHOUT_ACCESS` und HTTP 422 sowie deren atomare Tests. Ein passender Schreibpfad existiert in
+  dieser Einheit noch nicht; eine parallele Übergabe-API wäre Architektur-Duplikation.
 
 ### In der Oberfläche
 
@@ -31,8 +31,8 @@ Der Zustand wird deshalb sichtbar gemacht — und zwar dort, wo man ihn beheben 
 
 Baustein `crm/shared/owner-without-access-badge/`, weil er in Kundenakte und Projekt gebraucht wird.
 
-Jeder Hinweis führt zu einer Handlung — Zugriff geben oder Zuständigkeit übergeben. Kein Hinweis ohne Ziel (Regel aus
-`plans/crm/AGENTS.md`: kein toter Button, kein Verweis ins Leere).
+Für aktive Zuständige führt der Hinweis direkt in den Zugriffs-Dialog. Für inaktive Zuständige bleibt er eine reine
+Beobachtung, bis Ordner 24 die sichere Übergabe bereitstellt; es gibt keinen toten CTA.
 
 ## Abgrenzung
 
@@ -40,14 +40,13 @@ Der Badge behauptet nichts über Absicht. Es kann gewollt sein, dass jemand zust
 sehen — etwa bei rein fachlicher Verantwortung. Der Text formuliert deshalb eine Beobachtung, keine Warnung,
 und bietet beide Auswege an.
 
-## Tests
+## Tests dieser Einheit
 
-- a handover to a member without access answers 422 with `HANDOVER_TARGET_WITHOUT_ACCESS`
 - the badge appears when the responsible member lacks the required permission on that record
 - granting access removes the badge on the next render
 - the member list counter matches the number of badged records
 
 ## Akzeptanz
 
-- Der Zustand ist an allen drei Orten sichtbar und an jedem Ort behebbar.
-- Eine unwirksame Zuständigkeit kann nicht mehr neu entstehen.
+- Der Zustand ist an allen drei Orten sichtbar.
+- Aktive Zuständige können direkt Zugriff erhalten; die Übergabe-Absicherung folgt vollständig in Ordner 24.

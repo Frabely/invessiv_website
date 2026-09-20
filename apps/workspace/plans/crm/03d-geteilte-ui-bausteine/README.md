@@ -100,8 +100,8 @@ Folgen und Umsetzungshinweise:
 - **Nur Workspace.** Ordner 03d verschiebt die Workspace-Bausteine nach `packages/ui` und stellt ausschließlich
   Workspace-Nutzer um. Bestehende Kopien und Nutzer in `apps/web` bleiben unverändert.
 - **Web erst nach dem gesamten CRM-Umbau.** Technische Migration und visuelle Weiterentwicklung aller betroffenen
-  Web-Oberflächen erfolgen gemeinsam als letzte CRM-Merge-Einheit in Ordner 23 (Task 39) und sind zusätzlich in
-  `apps/web/plans/Todo.md` verankert.
+  Web-Oberflächen erfolgen gemeinsam in Ordner 23 (Task 39) und sind zusätzlich in `apps/web/plans/Todo.md`
+  verankert. Die fachliche Zuständigkeitszugriff-Absicherung folgt danach als letzter CRM-Ordner 24.
 
 ## Merge-Gate
 
