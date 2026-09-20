@@ -5,6 +5,7 @@ import { AccessScopeType } from "@invessiv/common/constants/auth/access-scope-ty
 import { PERMISSION_DEFINITIONS } from "@invessiv/common/constants/auth/permission-definitions";
 import { PERMISSION_VALUES } from "@invessiv/common/constants/auth/permissions";
 import { AccessFieldLimits } from "@/common/constants/access/access-field-limits";
+import { accessScopeAssignmentKey } from "@/common/patterns/access/access-scope-tree";
 
 function hasNoDuplicates(values: readonly string[]): boolean {
   return new Set(values).size === values.length;
@@ -19,6 +20,11 @@ const accessScopeSchema = z.discriminatedUnion("type", [
     projectId: z.uuid(),
   }),
 ]);
+
+const accessScopeAssignmentSchema = z.object({
+  roleId: z.uuid(),
+  scope: accessScopeSchema,
+});
 
 const roleIdsSchema = z
   .array(z.uuid())
@@ -80,6 +86,18 @@ export const accessSchemas = {
     roleIds: roleIdsSchema,
     version: versionSchema,
   }),
+  replaceMemberRoleAssignments: z.object({
+    roleIds: roleIdsSchema,
+    accessScopeAssignments: z
+      .array(accessScopeAssignmentSchema)
+      .max(AccessFieldLimits.AccessScopeAssignmentsMax)
+      .refine(
+        (assignments) =>
+          hasNoDuplicates(assignments.map(accessScopeAssignmentKey)),
+        { message: "Access scope assignments must be unique" },
+      ),
+    version: versionSchema,
+  }),
   changeWorkspaceOwner: z.object({
     version: versionSchema,
   }),
@@ -105,6 +123,17 @@ export const accessSchemas = {
   grantAccessScope: z.object({
     roleId: z.uuid(),
     scope: accessScopeSchema,
+    version: versionSchema,
+  }),
+  replaceAccessScopes: z.object({
+    assignments: z
+      .array(accessScopeAssignmentSchema)
+      .max(AccessFieldLimits.AccessScopeAssignmentsMax)
+      .refine(
+        (assignments) =>
+          hasNoDuplicates(assignments.map(accessScopeAssignmentKey)),
+        { message: "Access scope assignments must be unique" },
+      ),
     version: versionSchema,
   }),
   revokeAccessScope: z.object({ version: versionSchema }),

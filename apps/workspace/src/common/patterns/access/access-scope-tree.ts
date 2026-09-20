@@ -1,13 +1,14 @@
 import { AccessScopeType } from "@invessiv/common/constants/auth/access-scope-types";
 import type { AccessCustomerOptionDto } from "@invessiv/common/contracts/auth/access-customer-option.dto";
 import type { AccessScopeDto } from "@invessiv/common/contracts/auth/access-scope.dto";
+import type { AccessScopeAssignmentDto } from "@invessiv/common/contracts/auth/access-scope-assignment.dto";
 import type { AccessScopeEntryDto } from "@invessiv/common/contracts/auth/access-scope-entry.dto";
 
 export function findDirectScopeAssignment(
-  accessScopes: readonly AccessScopeEntryDto[],
+  accessScopes: readonly AccessScopeAssignmentDto[],
   roleId: string,
   scope: AccessScopeDto,
-): AccessScopeEntryDto | undefined {
+): AccessScopeAssignmentDto | undefined {
   return accessScopes.find((entry) => {
     if (entry.roleId !== roleId || entry.scope.type !== scope.type) {
       return false;
@@ -24,7 +25,7 @@ export function findDirectScopeAssignment(
 }
 
 export function isRoleInheritedFromCustomer(
-  accessScopes: readonly AccessScopeEntryDto[],
+  accessScopes: readonly AccessScopeAssignmentDto[],
   customerId: string,
   roleId: string,
 ): boolean {
@@ -33,6 +34,25 @@ export function isRoleInheritedFromCustomer(
       entry.roleId === roleId &&
       entry.scope.type === AccessScopeType.Customer &&
       entry.scope.customerId === customerId,
+  );
+}
+
+export function accessScopeAssignmentKey(
+  assignment: AccessScopeAssignmentDto,
+): string {
+  return assignment.scope.type === AccessScopeType.Customer
+    ? `${assignment.roleId}:customer:${assignment.scope.customerId}`
+    : `${assignment.roleId}:project:${assignment.scope.projectId}`;
+}
+
+export function haveSameAccessScopeAssignments(
+  left: readonly AccessScopeAssignmentDto[],
+  right: readonly AccessScopeAssignmentDto[],
+): boolean {
+  if (left.length !== right.length) return false;
+  const rightKeys = new Set(right.map(accessScopeAssignmentKey));
+  return left.every((assignment) =>
+    rightKeys.has(accessScopeAssignmentKey(assignment)),
   );
 }
 

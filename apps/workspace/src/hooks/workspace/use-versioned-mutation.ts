@@ -21,6 +21,9 @@ type VersionedMutationOutcome<TEntity, TCode extends string> =
 export function useVersionedMutation<TEntity, TCode extends string>(
   initial: TEntity,
   onCloseAction: () => void,
+  options?: {
+    onConflictAction?: (current: TEntity) => Promise<void> | void;
+  },
 ) {
   const router = useRouter();
   const [current, setCurrent] = useState(initial);
@@ -58,6 +61,7 @@ export function useVersionedMutation<TEntity, TCode extends string>(
     setIsSubmitting(false);
     if ("current" in outcome) {
       setCurrent(outcome.current);
+      await options?.onConflictAction?.(outcome.current);
       setHasConflict(true);
       return;
     }

@@ -61,6 +61,29 @@ describe("useVersionedMutation", () => {
     expect(result.current.errorCode).toBe("NOT_FOUND");
   });
 
+  it("finishes conflict recovery before allowing a retry", async () => {
+    const onConflict = vi.fn().mockResolvedValue(undefined);
+    const { result } = renderHook(() =>
+      useVersionedMutation<Entity, "NOT_FOUND">(
+        { id: "a", version: 1 },
+        vi.fn(),
+        { onConflictAction: onConflict },
+      ),
+    );
+
+    await act(() =>
+      result.current.submit(async () => ({
+        ok: false,
+        code: ConcurrencyErrorCode.VersionConflict,
+        current: { id: "a", version: 2 },
+      })),
+    );
+
+    expect(onConflict).toHaveBeenCalledOnce();
+    expect(onConflict).toHaveBeenCalledWith({ id: "a", version: 2 });
+    expect(result.current.hasConflict).toBe(true);
+  });
+
   it("refreshes stale background data when a conflicted dialog is closed", async () => {
     const onClose = vi.fn();
     const { result } = renderHook(() =>

@@ -22,7 +22,7 @@ const mocks = vi.hoisted(() => ({
   refresh: vi.fn(),
   revoke: vi.fn(),
   listProjects: vi.fn(),
-  listScopes: vi.fn(),
+  replace: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -33,7 +33,7 @@ vi.mock("@/client/access/access-api-service", () => ({
     grantAccessScope: vi.fn(),
     listAccessCustomers: vi.fn(),
     listAccessCustomerProjects: mocks.listProjects,
-    listMemberAccessScopes: mocks.listScopes,
+    replaceAccessScopes: mocks.replace,
     revokeAccessScope: mocks.revoke,
   },
 }));
@@ -107,10 +107,6 @@ describe("CustomerAccessSection", () => {
   beforeEach(() => {
     Object.values(mocks).forEach((mock) => mock.mockReset());
     mocks.listProjects.mockResolvedValue({ ok: true, projects });
-    mocks.listScopes.mockResolvedValue({
-      ok: true,
-      accessScopes: [assignment],
-    });
   });
 
   afterEach(cleanup);
@@ -141,6 +137,33 @@ describe("CustomerAccessSection", () => {
     expect(screen.getByRole("dialog")).toBeVisible();
     expect(screen.queryByLabelText(content.tree.searchLabel)).toBeNull();
     expect(screen.getAllByText("K0007 · Nordlicht GmbH")).toHaveLength(2);
+  });
+
+  it("stages changes in the give-access dialog until Save is pressed", async () => {
+    mocks.replace.mockResolvedValue({
+      ok: true,
+      current: { ...member, accessScopeCount: 0, version: 3 },
+    });
+    renderSection();
+    fireEvent.click(
+      screen.getByRole("button", { name: content.section.giveAccess }),
+    );
+
+    const save = screen.getByRole("button", { name: content.dialog.submit });
+    expect(save).toBeDisabled();
+
+    fireEvent.click(screen.getByRole("checkbox", { name: /Kundenbetreuung/ }));
+
+    expect(mocks.replace).not.toHaveBeenCalled();
+    expect(save).not.toBeDisabled();
+    fireEvent.click(save);
+
+    await waitFor(() =>
+      expect(mocks.replace).toHaveBeenCalledWith(member.id, {
+        assignments: [],
+        version: member.version,
+      }),
+    );
   });
 
   it("removes an assignment and refreshes the customer section", async () => {

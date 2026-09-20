@@ -19,8 +19,7 @@
 .eyebrow,
 .emptyGroup,
 .emptyMembers,
-.inheritedHint,
-.immediateNote {
+.inheritedHint {
   margin: 0;
 }
 
@@ -41,8 +40,7 @@
 .description,
 .emptyGroup,
 .emptyMembers,
-.inheritedHint,
-.immediateNote {
+.inheritedHint {
   color: var(--color-text-muted);
   font-size: var(--font-size-ui-sm);
   line-height: 1.5;
@@ -106,12 +104,6 @@
   color: var(--color-text);
   font-size: var(--font-size-ui-sm);
   font-weight: 650;
-}
-
-.immediateNote {
-  padding: 0.65rem 0.8rem;
-  border-left: 3px solid var(--color-cta);
-  background: color-mix(in srgb, var(--color-cta) 8%, transparent);
 }
 
 @media (max-width: 620px) {

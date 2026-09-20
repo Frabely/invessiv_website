@@ -1,8 +1,11 @@
 "use client";
 
+import { type SubmitEvent, useEffect, useId } from "react";
+
 import { AccessScopeType } from "@invessiv/common/constants/auth/access-scope-types";
 import type { AccessCustomerOptionDto } from "@invessiv/common/contracts/auth/access-customer-option.dto";
 import type { AccessScopeDto } from "@invessiv/common/contracts/auth/access-scope.dto";
+import type { AccessScopeAssignmentDto } from "@invessiv/common/contracts/auth/access-scope-assignment.dto";
 import type { AccessScopeEntryDto } from "@invessiv/common/contracts/auth/access-scope-entry.dto";
 import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/role-assignment-option.dto";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
@@ -37,9 +40,18 @@ export type AccessScopeTreeProps = {
   accessContent: SettingsAccessDictionary;
   canManageAccess: boolean;
   fixedCustomer?: AccessCustomerOptionDto;
+  formId?: string;
+  isExternallySubmitting?: boolean;
   initialAccessScopes: readonly AccessScopeEntryDto[];
   member: WorkspaceMemberDto;
-  onOpenGlobalRolesAction?: () => void;
+  previewGlobalRoleIds?: readonly string[];
+  onDirtyChangeAction?: (isDirty: boolean) => void;
+  onAssignmentsChangeAction?: (
+    assignments: readonly AccessScopeAssignmentDto[],
+  ) => void;
+  onSavedAction?: () => void;
+  onSubmitAction?: () => void;
+  onSubmittingChangeAction?: (isSubmitting: boolean) => void;
   permissionsContent: SettingsPermissionsDictionary;
   roles: readonly RoleAssignmentOptionDto[];
   rolesHref: string;
@@ -57,19 +69,27 @@ export function AccessScopeTree({
   accessContent,
   canManageAccess,
   fixedCustomer,
+  formId,
+  isExternallySubmitting = false,
   initialAccessScopes,
   member,
-  onOpenGlobalRolesAction,
+  previewGlobalRoleIds,
+  onDirtyChangeAction,
+  onAssignmentsChangeAction,
+  onSavedAction,
+  onSubmitAction,
+  onSubmittingChangeAction,
   permissionsContent,
   roles,
   rolesHref,
 }: AccessScopeTreeProps) {
+  const generatedFormId = useId();
   const {
-    accessScopes,
+    assignments,
     commitSearch,
     customers,
     expandedIds,
-    isPending,
+    isDirty,
     isSearching,
     loadingIds,
     loadCustomerProjects,
@@ -78,14 +98,13 @@ export function AccessScopeTree({
     offeredRoles,
     projectErrorIds,
     projectsByCustomer,
-    reloadError,
-    reloadScopes,
     resetSearch,
     search,
     searchError,
     searchResults,
-    setReloadError,
+    scopeReloadError,
     setTouched,
+    submit,
     toggleCustomer,
     toggleScope,
     touched,
@@ -93,9 +112,32 @@ export function AccessScopeTree({
     fixedCustomer,
     initialAccessScopes,
     member,
+    onSavedAction: onSavedAction ?? (() => undefined),
     roles,
   });
 
+  useEffect(() => {
+    onDirtyChangeAction?.(isDirty);
+  }, [isDirty, onDirtyChangeAction]);
+
+  useEffect(() => {
+    onAssignmentsChangeAction?.(assignments);
+  }, [assignments, onAssignmentsChangeAction]);
+
+  useEffect(() => {
+    onSubmittingChangeAction?.(mutation.isSubmitting);
+  }, [mutation.isSubmitting, onSubmittingChangeAction]);
+
+  function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (onSubmitAction) {
+      onSubmitAction();
+      return;
+    }
+    void submit();
+  }
+
+  const isSubmitting = mutation.isSubmitting || isExternallySubmitting;
   const rows = new Map<string, RowData>();
   const customerNodes: TreeNode[] = customers.map((customer) => {
     const customerScope: AccessScopeDto = {
@@ -107,22 +149,22 @@ export function AccessScopeTree({
       scope: customerScope,
       roles: offeredRoles.map((role) => {
         const direct = Boolean(
-          findDirectScopeAssignment(accessScopes, role.id, customerScope),
+          findDirectScopeAssignment(assignments, role.id, customerScope),
         );
         return {
           role,
           checked: direct,
           direct,
-          disabled: !canManageAccess || reloadError,
+          disabled: !canManageAccess || isSubmitting || scopeReloadError,
           inherited: false,
-          pending: isPending(customerScope, role.id),
+          pending: false,
           removeDirectDisabled: true,
         };
       }),
     });
     const knownProjects =
       projectsByCustomer[customer.id] ??
-      accessScopes
+      initialAccessScopes
         .filter(
           (entry) =>
             entry.scope.type === AccessScopeType.Project &&
@@ -151,21 +193,23 @@ export function AccessScopeTree({
         scope: projectScope,
         roles: offeredProjectRoles.map((role) => {
           const inherited = isRoleInheritedFromCustomer(
-            accessScopes,
+            assignments,
             customer.id,
             role.id,
           );
           const direct = Boolean(
-            findDirectScopeAssignment(accessScopes, role.id, projectScope),
+            findDirectScopeAssignment(assignments, role.id, projectScope),
           );
           return {
             role,
             checked: inherited || direct,
             direct,
-            disabled: !canManageAccess || reloadError || inherited,
+            disabled:
+              !canManageAccess || isSubmitting || scopeReloadError || inherited,
             inherited,
-            pending: isPending(projectScope, role.id),
-            removeDirectDisabled: !canManageAccess || reloadError,
+            pending: false,
+            removeDirectDisabled:
+              !canManageAccess || isSubmitting || scopeReloadError,
           };
         }),
       });
@@ -191,8 +235,8 @@ export function AccessScopeTree({
 
   const previewRoleIds = touched
     ? [
-        ...member.roles.map((role) => role.id),
-        ...accessScopes
+        ...(previewGlobalRoleIds ?? member.roles.map((role) => role.id)),
+        ...assignments
           .filter(
             (entry) =>
               entry.scope.customerId === touched.customerId &&
@@ -212,19 +256,11 @@ export function AccessScopeTree({
     searchResults.length === 0;
 
   return (
-    <div className={styles.root}>
-      <div className={styles.globalHint}>
-        <p>{accessContent.globalRolesHint}</p>
-        {onOpenGlobalRolesAction ? (
-          <ButtonControl
-            onClick={onOpenGlobalRolesAction}
-            type="button"
-            variant="ghost"
-          >
-            {accessContent.openGlobalRoles}
-          </ButtonControl>
-        ) : null}
-      </div>
+    <form
+      className={styles.root}
+      id={formId ?? generatedFormId}
+      onSubmit={handleSubmit}
+    >
       {offeredRoles.length === 0 ? (
         <section className={styles.empty}>
           <h3>{accessContent.noCustomerRolesTitle}</h3>
@@ -373,7 +409,7 @@ export function AccessScopeTree({
         );
       })}
 
-      {accessScopes.length === 0 && !search ? (
+      {assignments.length === 0 && !search ? (
         <section className={styles.empty}>
           <h3>{accessContent.emptyTitle}</h3>
           <p>{accessContent.emptyDescription}</p>
@@ -389,24 +425,10 @@ export function AccessScopeTree({
         </section>
       ) : null}
 
-      {mutation.hasConflict && !reloadError ? (
+      {mutation.hasConflict ? (
         <p className={styles.conflict} role="alert">
           {accessContent.conflict}
         </p>
-      ) : null}
-      {reloadError ? (
-        <div className={styles.inlineError} role="alert">
-          <p>{accessContent.reloadError}</p>
-          <ButtonControl
-            onClick={() => {
-              void reloadScopes().then((loaded) => setReloadError(!loaded));
-            }}
-            type="button"
-            variant="ghost"
-          >
-            {accessContent.retryReload}
-          </ButtonControl>
-        </div>
       ) : null}
       {mutation.errorCode ? (
         <p className={styles.error} role="alert">
@@ -415,6 +437,11 @@ export function AccessScopeTree({
           ] ?? accessContent.errors.INTERNAL}
         </p>
       ) : null}
-    </div>
+      {scopeReloadError ? (
+        <p className={styles.error} role="alert">
+          {accessContent.errors.INTERNAL}
+        </p>
+      ) : null}
+    </form>
   );
 }

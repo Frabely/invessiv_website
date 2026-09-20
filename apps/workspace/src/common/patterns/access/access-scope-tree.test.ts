@@ -4,6 +4,7 @@ import { AccessScopeType } from "@invessiv/common/constants/auth/access-scope-ty
 import type { AccessScopeEntryDto } from "@invessiv/common/contracts/auth/access-scope-entry.dto";
 import {
   findDirectScopeAssignment,
+  haveSameAccessScopeAssignments,
   isRoleInheritedFromCustomer,
   mergeAccessCustomers,
 } from "./access-scope-tree";
@@ -62,5 +63,30 @@ describe("access scope tree patterns", () => {
         ],
       ).map((customer) => customer.id),
     ).toEqual(["customer-1", "customer-2"]);
+  });
+
+  it("compares assignment sets independently of their order", () => {
+    const projectScope = {
+      roleId: "role-project",
+      scope: {
+        type: AccessScopeType.Project,
+        customerId: "customer-1",
+        projectId: "project-1",
+      } as const,
+    };
+    const customerScope = {
+      roleId: CUSTOMER_SCOPE.roleId,
+      scope: CUSTOMER_SCOPE.scope,
+    };
+
+    expect(
+      haveSameAccessScopeAssignments(
+        [customerScope, projectScope],
+        [projectScope, customerScope],
+      ),
+    ).toBe(true);
+    expect(
+      haveSameAccessScopeAssignments([customerScope], [projectScope]),
+    ).toBe(false);
   });
 });

@@ -27,6 +27,7 @@ import { MemberRolesDialog } from "./member-roles-dialog";
 const mocks = vi.hoisted(() => ({
   refresh: vi.fn(),
   replaceMemberRoles: vi.fn(),
+  replaceAccessScopes: vi.fn(),
   listAccessCustomers: vi.fn(),
   listAccessCustomerProjects: vi.fn(),
   listMemberAccessScopes: vi.fn(),
@@ -40,6 +41,8 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/client/access/access-api-service", () => ({
   accessApiService: {
     replaceMemberRoles: mocks.replaceMemberRoles,
+    replaceMemberRoleAssignments: mocks.replaceMemberRoles,
+    replaceAccessScopes: mocks.replaceAccessScopes,
     listAccessCustomers: mocks.listAccessCustomers,
     listAccessCustomerProjects: mocks.listAccessCustomerProjects,
     listMemberAccessScopes: mocks.listMemberAccessScopes,
@@ -135,6 +138,10 @@ function renderDialog(
 describe("MemberRolesDialog", () => {
   beforeEach(() => {
     Object.values(mocks).forEach((mock) => mock.mockReset());
+    mocks.listMemberAccessScopes.mockResolvedValue({
+      ok: true,
+      accessScopes: [],
+    });
   });
 
   afterEach(() => {
@@ -174,6 +181,7 @@ describe("MemberRolesDialog", () => {
     await waitFor(() => expect(onClose).toHaveBeenCalled());
     expect(mocks.replaceMemberRoles).toHaveBeenCalledWith("member-1", {
       roleIds: ["role-reader", "role-sales"],
+      accessScopeAssignments: [],
       version: 2,
     });
   });
@@ -253,6 +261,7 @@ describe("MemberRolesDialog", () => {
     await waitFor(() => expect(onClose).toHaveBeenCalled());
     expect(mocks.replaceMemberRoles).toHaveBeenLastCalledWith("member-1", {
       roleIds: ["role-reader", "role-sales"],
+      accessScopeAssignments: [],
       version: 5,
     });
     expect(mocks.refresh).toHaveBeenCalled();
@@ -305,6 +314,7 @@ describe("MemberRolesDialog", () => {
     await waitFor(() =>
       expect(mocks.replaceMemberRoles).toHaveBeenLastCalledWith("member-1", {
         roleIds: ["role-reader", "role-sales"],
+        accessScopeAssignments: [],
         version: 5,
       }),
     );
@@ -324,7 +334,9 @@ describe("MemberRolesDialog", () => {
 
     expect(customerTab).toHaveFocus();
     expect(customerTab).toHaveAttribute("aria-selected", "true");
-    expect(screen.getByText(content.rolesDialog.immediateNote)).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: content.rolesDialog.submit }),
+    ).toBeDisabled();
 
     fireEvent.keyDown(customerTab, { key: "Home" });
 
@@ -348,18 +360,28 @@ describe("MemberRolesDialog", () => {
     ).toHaveAttribute("aria-selected", "true");
   });
 
-  it("opens directly on the customer tab when requested, with a Done footer", () => {
+  it("keeps both drafts while switching tabs", () => {
+    renderDialog();
+    fireEvent.click(screen.getByRole("checkbox", { name: /Vertrieb/ }));
+
+    fireEvent.click(
+      screen.getByRole("tab", { name: content.rolesDialog.customerTab }),
+    );
+
+    expect(
+      screen.getByRole("tab", { name: content.rolesDialog.customerTab }),
+    ).toHaveAttribute("aria-selected", "true");
+  });
+
+  it("opens directly on the customer tab with a disabled Save action", () => {
     renderDialog({ initialTab: MemberRolesTab.Customer });
 
     expect(
       screen.getByRole("tab", { name: content.rolesDialog.customerTab }),
     ).toHaveAttribute("aria-selected", "true");
     expect(
-      screen.getByRole("button", { name: content.rolesDialog.done }),
-    ).toBeVisible();
-    expect(
-      screen.queryByRole("button", { name: content.rolesDialog.submit }),
-    ).toBeNull();
+      screen.getByRole("button", { name: content.rolesDialog.submit }),
+    ).toBeDisabled();
   });
 
   it("asks for confirmation before discarding an unsaved global draft on close", () => {

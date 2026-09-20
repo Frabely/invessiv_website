@@ -4,6 +4,7 @@ import { type SubmitEvent, useId, useMemo, useState } from "react";
 
 import type { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
 import type { AccessScopeEntryDto } from "@invessiv/common/contracts/auth/access-scope-entry.dto";
+import type { AccessScopeAssignmentDto } from "@invessiv/common/contracts/auth/access-scope-assignment.dto";
 import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/role-assignment-option.dto";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import { unionRolePermissions } from "@invessiv/common/patterns/auth/union-role-permissions";
@@ -67,6 +68,7 @@ export function MemberRolesDialog({
   rolesHref,
 }: MemberRolesDialogProps) {
   const formId = useId();
+  const accessFormId = useId();
   const previewHeadingId = useId();
   const globalTabId = useId();
   const globalPanelId = useId();
@@ -91,11 +93,36 @@ export function MemberRolesDialog({
     canManageAccess ? initialTab : MemberRolesTab.Global,
   );
   const [confirmDiscard, setConfirmDiscard] = useState(false);
+  const [accessScopeAssignments, setAccessScopeAssignments] = useState<
+    readonly AccessScopeAssignmentDto[]
+  >(() => initialAccessScopes.map(({ roleId, scope }) => ({ roleId, scope })));
+  const [scopeEntries, setScopeEntries] = useState(initialAccessScopes);
+  const [scopeTreeVersion, setScopeTreeVersion] = useState(0);
+  const [scopeReloadError, setScopeReloadError] = useState(false);
+  const [accessIsDirty, setAccessIsDirty] = useState(false);
+  const [accessIsSubmitting, setAccessIsSubmitting] = useState(false);
+
+  async function reloadScopesAfterConflict() {
+    const result = await accessApiService.listMemberAccessScopes(member.id);
+    if (!result.ok) {
+      setScopeReloadError(true);
+      return;
+    }
+    setScopeEntries(result.accessScopes);
+    setAccessScopeAssignments(
+      result.accessScopes.map(({ roleId, scope }) => ({ roleId, scope })),
+    );
+    setAccessIsDirty(false);
+    setScopeReloadError(false);
+    setScopeTreeVersion((current) => current + 1);
+  }
+
   const mutation = useVersionedMutation<
     WorkspaceMemberDto,
     WorkspaceMemberErrorCode
-  >(member, onCloseAction);
-  const isDirty = !hasSameIds(selectedRoleIds, initialGlobalRoleIds);
+  >(member, onCloseAction, { onConflictAction: reloadScopesAfterConflict });
+  const globalIsDirty = !hasSameIds(selectedRoleIds, initialGlobalRoleIds);
+  const isDirty = globalIsDirty || accessIsDirty;
   const choices = selectAssignableRoles(globalRoles, [
     ...initialGlobalRoleIds,
     ...mutation.current.roles.map((role) => role.id),
@@ -126,46 +153,52 @@ export function MemberRolesDialog({
     setActiveTab(tab);
   }
 
-  async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function submitAll() {
     await mutation.submit((current) =>
-      accessApiService.replaceMemberRoles(member.id, {
+      accessApiService.replaceMemberRoleAssignments(member.id, {
         roleIds: [...selectedRoleIds, ...preservedLegacyRoleIds],
+        accessScopeAssignments: [...accessScopeAssignments],
         version: current.version,
       }),
     );
   }
 
+  function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void submitAll();
+  }
+
   return (
     <>
       <Dialog
-        busy={mutation.isSubmitting}
+        busy={mutation.isSubmitting || accessIsSubmitting}
         closeLabel={text.close}
         description={text.description}
         footer={
-          activeTab === MemberRolesTab.Global ? (
-            <>
-              <ButtonControl
-                disabled={mutation.isSubmitting}
-                onClick={requestClose}
-                type="button"
-                variant="ghost"
-              >
-                {text.cancel}
-              </ButtonControl>
-              <PrimaryCtaButton
-                disabled={mutation.isSubmitting || !isDirty}
-                form={formId}
-                type="submit"
-              >
-                {mutation.isSubmitting ? text.submitting : text.submit}
-              </PrimaryCtaButton>
-            </>
-          ) : (
-            <ButtonControl onClick={requestClose} type="button" variant="ghost">
-              {text.done}
+          <>
+            <ButtonControl
+              disabled={mutation.isSubmitting || accessIsSubmitting}
+              onClick={requestClose}
+              type="button"
+              variant="ghost"
+            >
+              {text.cancel}
             </ButtonControl>
-          )
+            <PrimaryCtaButton
+              disabled={
+                mutation.isSubmitting ||
+                accessIsSubmitting ||
+                !isDirty ||
+                scopeReloadError
+              }
+              form={activeTab === MemberRolesTab.Global ? formId : accessFormId}
+              type="submit"
+            >
+              {mutation.isSubmitting || accessIsSubmitting
+                ? text.submitting
+                : text.submit}
+            </PrimaryCtaButton>
+          </>
         }
         onCloseAction={requestClose}
         size={DialogSize.Wide}
@@ -179,10 +212,43 @@ export function MemberRolesDialog({
             customerTabId={customerTabId}
             globalPanelId={globalPanelId}
             globalTabId={globalTabId}
-            isDirty={isDirty}
+            customerIsDirty={accessIsDirty}
+            globalIsDirty={globalIsDirty}
             onSelectAction={selectTab}
             text={text}
           />
+          {mutation.hasConflict || mutation.errorCode || scopeReloadError ? (
+            <section className={styles.sharedFeedback} role="alert">
+              {mutation.hasConflict ? (
+                <>
+                  <p>{text.conflict}</p>
+                  <div className={styles.currentState}>
+                    <h3 className={styles.currentStateHeading}>
+                      {text.conflictCurrentHeading}
+                    </h3>
+                    <ul className={styles.currentRoles}>
+                      {mutation.current.isOwner ? (
+                        <li>{content.list.ownerBadge}</li>
+                      ) : null}
+                      {mutation.current.roles.map((role) => (
+                        <li key={role.id}>
+                          {resolveRoleLabel(role, permissionsContent)}
+                        </li>
+                      ))}
+                      {!mutation.current.isOwner &&
+                      mutation.current.roles.length === 0 ? (
+                        <li>{content.list.noRoles}</li>
+                      ) : null}
+                    </ul>
+                  </div>
+                </>
+              ) : null}
+              {mutation.errorCode ? (
+                <p>{content.errors[mutation.errorCode]}</p>
+              ) : null}
+              {scopeReloadError ? <p>{accessContent.errors.INTERNAL}</p> : null}
+            </section>
+          ) : null}
 
           <div
             aria-labelledby={globalTabId}
@@ -231,36 +297,6 @@ export function MemberRolesDialog({
                   />
                 </section>
               </div>
-
-              {mutation.hasConflict ? (
-                <section className={styles.conflict} role="alert">
-                  <p className={styles.conflictMessage}>{text.conflict}</p>
-                  <div className={styles.currentState}>
-                    <h3 className={styles.currentStateHeading}>
-                      {text.conflictCurrentHeading}
-                    </h3>
-                    <ul className={styles.currentRoles}>
-                      {mutation.current.isOwner ? (
-                        <li>{content.list.ownerBadge}</li>
-                      ) : null}
-                      {mutation.current.roles.map((role) => (
-                        <li key={role.id}>
-                          {resolveRoleLabel(role, permissionsContent)}
-                        </li>
-                      ))}
-                      {!mutation.current.isOwner &&
-                      mutation.current.roles.length === 0 ? (
-                        <li>{content.list.noRoles}</li>
-                      ) : null}
-                    </ul>
-                  </div>
-                </section>
-              ) : null}
-              {mutation.errorCode ? (
-                <p className={styles.error} role="alert">
-                  {content.errors[mutation.errorCode]}
-                </p>
-              ) : null}
             </form>
           </div>
 
@@ -273,16 +309,28 @@ export function MemberRolesDialog({
               tabIndex={0}
             >
               <div className={styles.customerPanel}>
-                <p className={styles.immediateNote}>{text.immediateNote}</p>
                 <AccessScopeTree
                   accessContent={accessContent}
                   canManageAccess
-                  initialAccessScopes={initialAccessScopes}
-                  member={member}
-                  onOpenGlobalRolesAction={() =>
-                    selectTab(MemberRolesTab.Global)
+                  formId={accessFormId}
+                  initialAccessScopes={scopeEntries}
+                  isExternallySubmitting={
+                    mutation.isSubmitting || scopeReloadError
                   }
+                  key={scopeTreeVersion}
+                  member={member}
+                  onAssignmentsChangeAction={setAccessScopeAssignments}
+                  onDirtyChangeAction={setAccessIsDirty}
+                  onSavedAction={onCloseAction}
+                  onSubmitAction={() => {
+                    void submitAll();
+                  }}
+                  onSubmittingChangeAction={setAccessIsSubmitting}
                   permissionsContent={permissionsContent}
+                  previewGlobalRoleIds={[
+                    ...selectedRoleIds,
+                    ...preservedLegacyRoleIds,
+                  ]}
                   roles={roles}
                   rolesHref={rolesHref}
                 />

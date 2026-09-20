@@ -23,7 +23,8 @@ describe("MemberRolesTabs", () => {
         customerTabId="customer-tab"
         globalPanelId="global-panel"
         globalTabId="global-tab"
-        isDirty={false}
+        customerIsDirty={false}
+        globalIsDirty={false}
         onSelectAction={onSelect}
         text={text}
       />,
@@ -46,7 +47,8 @@ describe("MemberRolesTabs", () => {
         customerTabId="customer-tab"
         globalPanelId="global-panel"
         globalTabId="global-tab"
-        isDirty
+        customerIsDirty={false}
+        globalIsDirty
         onSelectAction={vi.fn()}
         text={text}
       />,

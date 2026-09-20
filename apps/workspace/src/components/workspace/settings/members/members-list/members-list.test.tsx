@@ -102,7 +102,7 @@ describe("MembersList role management dialog", () => {
       screen.getByRole("tab", { name: content.rolesDialog.customerTab }),
     ).toHaveAttribute("aria-selected", "true");
     expect(
-      screen.getByRole("button", { name: content.rolesDialog.done }),
-    ).toBeVisible();
+      screen.getByRole("button", { name: content.rolesDialog.submit }),
+    ).toBeDisabled();
   });
 });

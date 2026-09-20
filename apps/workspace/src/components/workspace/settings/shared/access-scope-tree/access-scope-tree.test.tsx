@@ -23,12 +23,11 @@ import {
 import { AccessScopeTree } from "./access-scope-tree";
 
 const mocks = vi.hoisted(() => ({
-  grant: vi.fn(),
   listCustomers: vi.fn(),
+  listMemberAccessScopes: vi.fn(),
   listProjects: vi.fn(),
-  listScopes: vi.fn(),
+  replace: vi.fn(),
   refresh: vi.fn(),
-  revoke: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -36,11 +35,10 @@ vi.mock("next/navigation", () => ({
 }));
 vi.mock("@/client/access/access-api-service", () => ({
   accessApiService: {
-    grantAccessScope: mocks.grant,
     listAccessCustomers: mocks.listCustomers,
+    listMemberAccessScopes: mocks.listMemberAccessScopes,
     listAccessCustomerProjects: mocks.listProjects,
-    listMemberAccessScopes: mocks.listScopes,
-    revokeAccessScope: mocks.revoke,
+    replaceAccessScopes: mocks.replace,
   },
 }));
 
@@ -162,6 +160,7 @@ function renderTree(
       permissionsContent={permissionsContent}
       roles={ROLES}
       rolesHref="/de/settings?tab=roles"
+      formId="access-form"
     />,
   );
 }
@@ -175,9 +174,9 @@ describe("AccessScopeTree", () => {
         { id: "project-1", customerId: CUSTOMER.id, title: "Website-Relaunch" },
       ],
     });
-    mocks.listScopes.mockResolvedValue({
+    mocks.listMemberAccessScopes.mockResolvedValue({
       ok: true,
-      accessScopes: [CUSTOMER_SCOPE, PROJECT_SCOPE],
+      accessScopes: [],
     });
   });
 
@@ -237,11 +236,11 @@ describe("AccessScopeTree", () => {
     expect(screen.queryByText("K0008 · Südwind GmbH")).toBeNull();
   });
 
-  it("grants exactly one scope while the other row remains interactive", async () => {
-    let resolveGrant: ((value: unknown) => void) | undefined;
-    mocks.grant.mockReturnValue(
+  it("stages changes and replaces all assignments only when the form is submitted", async () => {
+    let resolveReplace: ((value: unknown) => void) | undefined;
+    mocks.replace.mockReturnValue(
       new Promise((resolve) => {
-        resolveGrant = resolve;
+        resolveReplace = resolve;
       }),
     );
     renderTree([], CUSTOMER);
@@ -251,30 +250,37 @@ describe("AccessScopeTree", () => {
     const projectRole = screen.getByRole("checkbox", { name: /Projektarbeit/ });
     fireEvent.click(customerRole);
 
-    await waitFor(() => expect(customerRole).toBeDisabled());
+    expect(customerRole).toBeChecked();
     expect(projectRole).not.toBeDisabled();
-    expect(mocks.grant).toHaveBeenCalledTimes(1);
-    expect(mocks.grant).toHaveBeenCalledWith(MEMBER.id, {
-      roleId: "role-customer",
-      scope: { type: AccessScopeType.Customer, customerId: CUSTOMER.id },
+    expect(mocks.replace).not.toHaveBeenCalled();
+
+    fireEvent.submit(document.getElementById("access-form")!);
+
+    expect(mocks.replace).toHaveBeenCalledWith(MEMBER.id, {
+      assignments: [
+        {
+          roleId: "role-customer",
+          scope: { type: AccessScopeType.Customer, customerId: CUSTOMER.id },
+        },
+      ],
       version: MEMBER.version,
     });
-    resolveGrant?.({
+    await waitFor(() => expect(customerRole).toBeDisabled());
+    resolveReplace?.({
       ok: true,
-      member: { ...MEMBER, version: 4 },
-      accessScope: CUSTOMER_SCOPE,
+      current: { ...MEMBER, version: 4 },
     });
-    await waitFor(() => expect(customerRole).toBeChecked());
   });
 
   it("explains the next steps when the last assignment cannot be removed", async () => {
-    mocks.revoke.mockResolvedValue({
+    mocks.replace.mockResolvedValue({
       ok: false,
       code: WorkspaceMemberErrorCode.MemberWithoutRole,
     });
     renderTree([CUSTOMER_SCOPE]);
 
     fireEvent.click(screen.getByRole("checkbox", { name: /Kundenbetreuung/ }));
+    fireEvent.submit(document.getElementById("access-form")!);
 
     expect(
       await screen.findByText(
@@ -284,7 +290,7 @@ describe("AccessScopeTree", () => {
   });
 
   it("adopts a version conflict and keeps the remaining rows", async () => {
-    mocks.revoke.mockResolvedValue({
+    mocks.replace.mockResolvedValue({
       ok: false,
       code: "VERSION_CONFLICT",
       current: { ...MEMBER, version: 4 },
@@ -293,33 +299,36 @@ describe("AccessScopeTree", () => {
     fireEvent.click(
       screen.getAllByRole("checkbox", { name: /Kundenbetreuung/ })[0]!,
     );
+    fireEvent.submit(document.getElementById("access-form")!);
 
     expect(await screen.findByText(accessContent.conflict)).toBeVisible();
-    expect(mocks.listScopes).toHaveBeenCalledWith(MEMBER.id);
+    expect(
+      screen.getAllByRole("checkbox", { name: /Kundenbetreuung/ })[0],
+    ).not.toBeChecked();
     expect(
       screen.getByRole("checkbox", { name: /Projektarbeit/ }),
     ).toBeVisible();
   });
 
-  it("blocks further changes when conflict state cannot be reloaded", async () => {
-    mocks.revoke.mockResolvedValue({
-      ok: false,
-      code: "VERSION_CONFLICT",
-      current: { ...MEMBER, version: 4 },
-    });
-    mocks.listScopes.mockResolvedValue({ ok: false, code: "INTERNAL" });
+  it("keeps the draft after a conflict and retries with the current version", async () => {
+    mocks.replace
+      .mockResolvedValueOnce({
+        ok: false,
+        code: "VERSION_CONFLICT",
+        current: { ...MEMBER, version: 4 },
+      })
+      .mockResolvedValueOnce({ ok: true, current: { ...MEMBER, version: 5 } });
     renderTree();
     fireEvent.click(
       screen.getAllByRole("checkbox", { name: /Kundenbetreuung/ })[0]!,
     );
+    fireEvent.submit(document.getElementById("access-form")!);
 
-    expect(await screen.findByText(accessContent.reloadError)).toBeVisible();
-    expect(
-      screen.getByRole("button", { name: accessContent.retryReload }),
-    ).toBeVisible();
-    expect(
-      screen.getAllByRole("checkbox", { name: /Projektarbeit/ })[0],
-    ).toBeDisabled();
+    expect(await screen.findByText(accessContent.conflict)).toBeVisible();
+    fireEvent.submit(document.getElementById("access-form")!);
+    await waitFor(() => expect(mocks.replace).toHaveBeenCalledTimes(2));
+    expect(mocks.replace.mock.calls[0]?.[1]).toMatchObject({ version: 3 });
+    expect(mocks.replace.mock.calls[1]?.[1]).toMatchObject({ version: 4 });
   });
 
   it("keeps only the latest search response", async () => {
@@ -419,9 +428,9 @@ describe("AccessScopeTree", () => {
   });
 
   it("can remove a direct project grant while the role remains inherited", async () => {
-    mocks.revoke.mockResolvedValue({
+    mocks.replace.mockResolvedValue({
       ok: true,
-      member: { ...MEMBER, version: 4 },
+      current: { ...MEMBER, version: 4 },
     });
     renderTree([CUSTOMER_SCOPE, DIRECT_AND_INHERITED_SCOPE]);
     fireEvent.click(
@@ -433,11 +442,6 @@ describe("AccessScopeTree", () => {
       }),
     );
 
-    expect(mocks.revoke).toHaveBeenCalledWith(
-      MEMBER.id,
-      DIRECT_AND_INHERITED_SCOPE.id,
-      { version: MEMBER.version },
-    );
     await waitFor(() =>
       expect(
         screen.queryByRole("button", {
@@ -448,6 +452,16 @@ describe("AccessScopeTree", () => {
     expect(
       screen.getAllByRole("checkbox", { name: /Kundenbetreuung/ })[1],
     ).toBeChecked();
+    expect(mocks.replace).not.toHaveBeenCalled();
+
+    fireEvent.submit(document.getElementById("access-form")!);
+
+    expect(mocks.replace).toHaveBeenCalledWith(MEMBER.id, {
+      assignments: [
+        { roleId: CUSTOMER_SCOPE.roleId, scope: CUSTOMER_SCOPE.scope },
+      ],
+      version: MEMBER.version,
+    });
   });
 
   it("keeps assigned customers visible during a search with no results", async () => {
@@ -512,28 +526,6 @@ describe("AccessScopeTree", () => {
     expect(
       screen.queryByRole("list", { name: accessContent.treeLabel }),
     ).toBeNull();
-  });
-
-  it("opens the global roles tab from the hint action", () => {
-    const onOpenGlobalRolesAction = vi.fn();
-    render(
-      <AccessScopeTree
-        accessContent={accessContent}
-        canManageAccess
-        initialAccessScopes={[]}
-        member={MEMBER}
-        onOpenGlobalRolesAction={onOpenGlobalRolesAction}
-        permissionsContent={permissionsContent}
-        roles={ROLES}
-        rolesHref="/de/settings?tab=roles"
-      />,
-    );
-
-    fireEvent.click(
-      screen.getByRole("button", { name: accessContent.openGlobalRoles }),
-    );
-
-    expect(onOpenGlobalRolesAction).toHaveBeenCalledTimes(1);
   });
 
   it("includes a member's global-role permissions in the effective-permissions preview", async () => {

@@ -4,8 +4,6 @@
   "searchPlaceholder": "Name oder Kundennummer",
   "searchLoading": "Kunden werden gesucht …",
   "wholeCustomer": "Ganzer Kunde",
-  "globalRolesHint": "Globale Rollen gelten hier zusätzlich und werden im Tab Globale Rollen vergeben. Projektrechte wirken für das Mitglied nur, wenn es den zugehörigen Kunden auch sehen darf.",
-  "openGlobalRoles": "Zu globalen Rollen wechseln",
   "noCustomerRolesTitle": "Noch keine Kundenrolle angelegt",
   "noCustomerRolesDescription": "Lege im Rollen-Katalog eine Kunden-/Projektrolle an, um hier Zugriffe vergeben zu können.",
   "openRoleCatalog": "Zum Rollen-Katalog",
@@ -28,8 +26,6 @@
   "projectsError": "Die Projekte von {customer} konnten nicht geladen werden.",
   "retryProjects": "Projekte erneut laden",
   "retryProjectsLabel": "Projekte für {customer} erneut laden",
-  "reloadError": "Der aktuelle Stand konnte nach dem Konflikt nicht geladen werden. Lade ihn erneut, bevor du weitere Zugriffe änderst.",
-  "retryReload": "Aktuellen Stand laden",
   "previewHeading": "Effektive Rechte bei {target}",
   "previewEmpty": "Für diese Auswahl gelten keine aktiven Rechte.",
   "previewPrompt": "Wähle einen Kunden oder ein Projekt, um die effektiven Rechte zu sehen.",
@@ -43,5 +39,5 @@
     "ACCESS_SCOPE_NOT_FOUND": "Diese Zuweisung gibt es nicht mehr. Der aktuelle Stand wurde neu geladen.",
     "INTERNAL": "Das hat nicht geklappt. Versuche es erneut."
   },
-  "conflict": "Jemand hat die Zugriffe gerade geändert. Der aktuelle Stand wurde übernommen; deine übrige Auswahl bleibt erhalten."
+  "conflict": "Jemand hat die Zugriffe gerade geändert. Deine Auswahl ist erhalten – prüfe sie und speichere erneut."
 }

@@ -1,15 +1,15 @@
 import "server-only";
 
 import { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
-import type { ReplaceWorkspaceMemberRolesRequestDto } from "@invessiv/common/contracts/auth/replace-workspace-member-roles-request.dto";
+import type { ReplaceAccessScopesRequestDto } from "@invessiv/common/contracts/auth/replace-access-scopes-request.dto";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessSchemas } from "@/server/workspace/access/services/access-schemas";
 import { memberRoleAssignmentService } from "@/server/workspace/access/services/member-role-assignment-service";
 
-/** Replaces only workspace-wide roles while preserving scoped roles. */
-export async function replaceWorkspaceMemberRoles(
+/** Replaces only scoped roles while preserving the member's workspace-wide roles. */
+export async function replaceAccessScopes(
   memberId: string,
-  input: ReplaceWorkspaceMemberRolesRequestDto,
+  input: ReplaceAccessScopesRequestDto,
   actor: WorkspaceActor,
 ) {
   if (!accessSchemas.entityId.safeParse(memberId).success) {
@@ -18,7 +18,7 @@ export async function replaceWorkspaceMemberRoles(
       code: WorkspaceMemberErrorCode.MemberNotFound,
     };
   }
-  const validation = accessSchemas.replaceWorkspaceMemberRoles.safeParse(input);
+  const validation = accessSchemas.replaceAccessScopes.safeParse(input);
   if (!validation.success) {
     return {
       ok: false as const,
@@ -26,5 +26,12 @@ export async function replaceWorkspaceMemberRoles(
       errors: validation.error.issues,
     };
   }
-  return memberRoleAssignmentService.replace(memberId, validation.data, actor);
+  return memberRoleAssignmentService.replace(
+    memberId,
+    {
+      accessScopeAssignments: validation.data.assignments,
+      version: validation.data.version,
+    },
+    actor,
+  );
 }
