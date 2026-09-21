@@ -77,6 +77,7 @@ export async function updateProjectLineItem(
         price_cents: data.priceCents,
         pricing_mode: data.pricingMode,
         recurring_interval: data.recurringInterval,
+        status: data.status,
       },
       toDto: projectLineItemsMapperService.toDto,
     }),

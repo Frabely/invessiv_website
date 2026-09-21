@@ -4,6 +4,7 @@ import type { ProjectLineItemDto } from "@invessiv/common/contracts/crm/project-
 import type { LineItemTemplateDto } from "@invessiv/common/contracts/crm/line-item-template.dto";
 import type { UpdateProjectLineItemRequestDto } from "@invessiv/common/contracts/crm/update-project-line-item-request.dto";
 import { ProjectLineItemFormValidationCode } from "@/common/constants/crm/forms/project-line-item-form-validation-codes";
+import { ProjectLineItemStatus } from "@invessiv/common/constants/crm/project-line-item-statuses";
 import type {
   ProjectLineItemFormErrors,
   ProjectLineItemFormValues,
@@ -21,6 +22,7 @@ export function createProjectLineItemFormValues(
   return {
     ...createLineItemFieldsFormValues(projectLineItem, locale),
     sourceLineItemTemplateId: projectLineItem?.sourceLineItemTemplateId ?? null,
+    status: projectLineItem?.status ?? ProjectLineItemStatus.Planned,
   };
 }
 
@@ -35,6 +37,7 @@ export function applyLineItemTemplateToFormValues(
   return {
     ...createLineItemFieldsFormValues(template, locale),
     sourceLineItemTemplateId: template.id,
+    status: ProjectLineItemStatus.Planned,
   };
 }
 
@@ -60,6 +63,7 @@ export function toCreateProjectLineItemRequest(
   return {
     ...toLineItemFieldsRequestFields(values),
     sourceLineItemTemplateId: values.sourceLineItemTemplateId ?? "",
+    status: values.status,
   };
 }
 
@@ -67,5 +71,9 @@ export function toUpdateProjectLineItemRequest(
   values: ProjectLineItemFormValues,
   version: number,
 ): UpdateProjectLineItemRequestDto {
-  return { ...toLineItemFieldsRequestFields(values), version };
+  return {
+    ...toLineItemFieldsRequestFields(values),
+    status: values.status,
+    version,
+  };
 }

@@ -5,6 +5,11 @@
     "count": "{count} items",
     "countOne": "1 item"
   },
+  "values": {
+    "oneTime": "One-time payment",
+    "monthly": "Recurring revenue / month",
+    "yearly": "Confirmed yearly"
+  },
   "list": {
     "ariaLabel": "Services of this project",
     "edit": "Edit",
@@ -19,6 +24,13 @@
       "monthly": "per month",
       "yearly": "per year",
       "rate": "per hour"
+    },
+    "status": {
+      "requested": "Requested",
+      "approved": "Approved",
+      "planned": "Planned",
+      "confirmed": "Confirmed",
+      "rejected": "Rejected"
     },
     "templateRemoved": "Template deleted"
   },
@@ -46,7 +58,8 @@
       "description": "Description",
       "priceCents": "Price",
       "pricingMode": "Pricing",
-      "recurringInterval": "Interval"
+      "recurringInterval": "Interval",
+      "status": "Status"
     },
     "placeholders": {
       "sourceLineItemTemplateId": "Choose a template",

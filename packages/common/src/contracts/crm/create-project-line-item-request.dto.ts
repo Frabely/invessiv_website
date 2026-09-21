@@ -1,5 +1,6 @@
 import type { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 import type { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
+import type { ProjectLineItemStatus } from "@invessiv/common/constants/crm/project-line-item-statuses";
 
 /**
  * The first build assigns from the catalog only: `sourceLineItemTemplateId` must name an active
@@ -14,4 +15,5 @@ export interface CreateProjectLineItemRequestDto {
   pricingMode: ServicePricingMode;
   /** Required exactly when `pricingMode` is `recurring`; must stay null otherwise. */
   recurringInterval: BillingInterval | null;
+  status?: ProjectLineItemStatus;
 }

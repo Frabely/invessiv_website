@@ -155,6 +155,16 @@ export function CustomersBasicList({
       width: 224,
     },
     {
+      header: content.columns.oneTimePayment,
+      id: "one-time-payment",
+      width: 144,
+    },
+    {
+      header: content.columns.recurringRevenue,
+      id: "recurring-revenue",
+      width: 144,
+    },
+    {
       header: (
         <SortableHeader
           activeSort={activeSort}

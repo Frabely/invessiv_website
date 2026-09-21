@@ -1,5 +1,6 @@
 import type { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 import type { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
+import type { ProjectLineItemStatus } from "@invessiv/common/constants/crm/project-line-item-statuses";
 
 /**
  * A service that belongs to exactly one project. Title, description, price, pricing mode and
@@ -20,6 +21,8 @@ export interface ProjectLineItemDto {
   pricingMode: ServicePricingMode;
   /** Set only when `pricingMode` is `recurring`, otherwise always null. */
   recurringInterval: BillingInterval | null;
+  /** Commercial lifecycle. Only `confirmed` items contribute to project and customer values. */
+  status?: ProjectLineItemStatus;
   /** Optimistic-concurrency counter; every update request must echo the value it read. */
   version: number;
   createdAt: string;

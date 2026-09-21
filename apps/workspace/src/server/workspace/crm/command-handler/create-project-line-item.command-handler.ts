@@ -9,9 +9,9 @@ import type { CreateProjectLineItemRequestDto } from "@invessiv/common/contracts
 import type { CreateProjectLineItemResult } from "@invessiv/common/contracts/crm/results/create-project-line-item-result";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
+  lineItemTemplates,
   projectLineItems,
   projects,
-  lineItemTemplates,
 } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { canOn } from "@/common/patterns/auth/can-on";
@@ -87,6 +87,7 @@ export async function createProjectLineItem(
       price_cents: data.priceCents,
       pricing_mode: data.pricingMode,
       recurring_interval: data.recurringInterval,
+      status: data.status,
       version: 1,
     })
     .returning();

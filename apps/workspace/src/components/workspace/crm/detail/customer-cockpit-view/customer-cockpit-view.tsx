@@ -19,6 +19,7 @@ import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspac
 import type { ProjectLineItemsViewModel } from "@/common/contracts/crm/project-line-items-view-model";
 import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
 import type { Locale } from "@/config/i18n";
+import { formatEuroCents } from "@/lib/workspace/crm/format-service-price";
 import styles from "./customer-cockpit-view.module.css";
 
 type CustomerCockpitViewProps = {
@@ -87,6 +88,16 @@ export function CustomerCockpitView({
           {formatCustomerNumber(customer.customerNumber)}
         </span>
         <h2 className={styles.customerName}>{customer.displayName}</h2>
+        {projectLineItems && projectLineItemsContent ? (
+          <p className={styles.number}>
+            {projectLineItems.customerValue.oneTimeCents > 0
+              ? `${projectLineItemsContent.values.oneTime}: ${formatEuroCents(projectLineItems.customerValue.oneTimeCents, locale)}`
+              : null}
+            {projectLineItems.customerValue.monthlyCents > 0
+              ? ` · ${projectLineItemsContent.values.monthly}: ${formatEuroCents(projectLineItems.customerValue.monthlyCents, locale)}`
+              : null}
+          </p>
+        ) : null}
       </header>
       <div className={styles.grid}>
         <section className={styles.section}>

@@ -31,10 +31,10 @@ import {
   getCrmAccessDictionary,
   getCrmCockpitDictionary,
   getCrmFormDictionary,
+  getCrmLineItemTemplatesDictionary,
   getCrmListDictionary,
   getCrmMetaDictionary,
   getCrmProjectLineItemsDictionary,
-  getCrmLineItemTemplatesDictionary,
   getCrmShellDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
 import { getSettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
@@ -55,6 +55,8 @@ import { listActiveCustomerCategories } from "@/server/workspace/crm/query-handl
 import { listCustomers } from "@/server/workspace/crm/query-handler/list-customers.query-handler";
 import { listCockpitProjectsByCustomer } from "@/server/workspace/crm/query-handler/list-projects-by-customer.query-handler";
 import { buildProjectLineItemsViewModel } from "@/lib/workspace/crm/project-line-items-view-model";
+import { calculateProjectLineItemValue } from "@/common/patterns/crm/project-line-item-value";
+import { listProjectLineItemsByCustomer } from "@/server/workspace/crm/query-handler/list-project-line-items-by-customer.query-handler";
 import { listCustomerAccessScopes } from "@/server/workspace/access/query-handler/list-customer-access-scopes.query-handler";
 import { listAccessCustomerProjects } from "@/server/workspace/access/query-handler/list-access-customer-projects.query-handler";
 import { listRoleAssignmentOptions } from "@/server/workspace/access/query-handler/list-role-assignment-options.query-handler";
@@ -126,6 +128,30 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
   if (cockpitCustomerId && !cockpitCustomer) {
     notFound();
   }
+  const customerListWithValues = {
+    ...customerList,
+    rows: await Promise.all(
+      customerList.rows.map(async (customer) => {
+        const canReadProjectLineItems =
+          can(actor, Permission.ProjectLineItemsRead) ||
+          actor.customerPermissions
+            .get(customer.id)
+            ?.has(Permission.ProjectLineItemsRead) ||
+          [...actor.projectPermissions.values()].some(
+            (scope) =>
+              scope.customerId === customer.id &&
+              scope.permissions.has(Permission.ProjectLineItemsRead),
+          );
+        if (!canReadProjectLineItems) return customer;
+        return {
+          ...customer,
+          projectLineItemValue: calculateProjectLineItemValue(
+            await listProjectLineItemsByCustomer(customer.id, actor),
+          ),
+        };
+      }),
+    ),
+  };
   const writableCustomerIds = new Set(
     customerList.rows
       .filter((row) =>
@@ -211,7 +237,7 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
         basePath={basePath}
         content={getCrmListDictionary(activeLocale)}
         createHref={createHref}
-        customers={customerList.rows}
+        customers={customerListWithValues.rows}
         filteredEmptyHref={archivedToggleHref}
         hasCustomers={customerList.hasCustomers}
         locale={activeLocale}

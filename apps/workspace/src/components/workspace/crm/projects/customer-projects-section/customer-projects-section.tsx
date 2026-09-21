@@ -322,6 +322,12 @@ export function CustomerProjectsSection({
                     (service) => service.projectId === activeProject.id,
                   )}
                   templates={projectLineItems.assignableTemplates}
+                  value={
+                    projectLineItems.valuesByProjectId[activeProject.id] ?? {
+                      oneTimeCents: 0,
+                      monthlyCents: 0,
+                    }
+                  }
                 />
               ) : null}
               <div className={styles.areaPreview}>

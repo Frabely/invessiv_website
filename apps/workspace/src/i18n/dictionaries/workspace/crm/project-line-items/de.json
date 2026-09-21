@@ -5,6 +5,11 @@
     "count": "{count} Positionen",
     "countOne": "1 Position"
   },
+  "values": {
+    "oneTime": "Einmalzahlung",
+    "monthly": "Laufende Einnahmen / Monat",
+    "yearly": "Bestätigt jährlich"
+  },
   "list": {
     "ariaLabel": "Leistungen dieses Projekts",
     "edit": "Bearbeiten",
@@ -19,6 +24,13 @@
       "monthly": "pro Monat",
       "yearly": "pro Jahr",
       "rate": "pro Stunde"
+    },
+    "status": {
+      "requested": "Angefragt",
+      "approved": "Genehmigt",
+      "planned": "Geplant",
+      "confirmed": "Bestätigt",
+      "rejected": "Abgelehnt"
     },
     "templateRemoved": "Vorlage gelöscht"
   },
@@ -46,7 +58,8 @@
       "description": "Beschreibung",
       "priceCents": "Preis",
       "pricingMode": "Preisart",
-      "recurringInterval": "Intervall"
+      "recurringInterval": "Intervall",
+      "status": "Status"
     },
     "placeholders": {
       "sourceLineItemTemplateId": "Vorlage wählen",

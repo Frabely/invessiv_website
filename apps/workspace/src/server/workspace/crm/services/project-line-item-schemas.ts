@@ -6,6 +6,7 @@ import {
   SERVICE_PRICING_MODE_VALUES,
   ServicePricingMode,
 } from "@invessiv/common/constants/crm/service-pricing-modes";
+import { PROJECT_LINE_ITEM_STATUS_VALUES } from "@invessiv/common/constants/crm/project-line-item-statuses";
 
 const snapshotFieldsSchema = z.object({
   title: z
@@ -23,6 +24,7 @@ const snapshotFieldsSchema = z.object({
     .enum(BILLING_INTERVAL_VALUES)
     .nullish()
     .transform((value) => value ?? null),
+  status: z.enum(PROJECT_LINE_ITEM_STATUS_VALUES).default("planned"),
 });
 
 /** A recurring service must carry an interval; every other pricing mode must not. */

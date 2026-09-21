@@ -16,6 +16,7 @@ import {
 } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { ProjectLineItemsConstraintName } from "@invessiv/db/constraint-names/crm/project-line-items-constraint-names";
 import { sqlCheckIn } from "@invessiv/db/core";
+import { PROJECT_LINE_ITEM_STATUS_VALUES } from "@invessiv/common/constants/crm/project-line-item-statuses";
 import { projects } from "./projects";
 import { lineItemTemplates } from "./line-item-templates";
 
@@ -44,6 +45,7 @@ export const projectLineItems = pgTable(
     recurring_interval: text("recurring_interval", {
       enum: BILLING_INTERVAL_VALUES,
     }),
+    status: text("status", { enum: PROJECT_LINE_ITEM_STATUS_VALUES }),
     version: integer("version").notNull(),
     created_at: timestamp("created_at", { withTimezone: true })
       .notNull()
@@ -76,6 +78,10 @@ export const projectLineItems = pgTable(
     check(
       ProjectLineItemsConstraintName.VersionCheck,
       sql`${table.version} > 0`,
+    ),
+    check(
+      "project_line_items_status_check",
+      sqlCheckIn(table.status, PROJECT_LINE_ITEM_STATUS_VALUES),
     ),
     index(ProjectLineItemsConstraintName.ProjectCreatedAtIndex).on(
       table.project_id,

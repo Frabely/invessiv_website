@@ -4,8 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
+import { ProjectLineItemStatus } from "@invessiv/common/constants/crm/project-line-item-statuses";
 import type { ProjectLineItemDto } from "@invessiv/common/contracts/crm/project-line-item.dto";
 import type { LineItemTemplateDto } from "@invessiv/common/contracts/crm/line-item-template.dto";
+import type { ProjectLineItemValue } from "@/common/contracts/crm/project-line-item-value";
 import { ButtonLink, PrimaryCtaButton } from "@invessiv/ui";
 import type { Locale } from "@/config/i18n";
 import type { CrmProjectLineItemsDictionary } from "@/i18n/dictionaries/workspace/crm";
@@ -22,6 +24,7 @@ export type ProjectLineItemsSectionProps = {
   projectId: string;
   services: readonly ProjectLineItemDto[];
   templates: readonly LineItemTemplateDto[];
+  value?: ProjectLineItemValue;
 };
 
 /** How often the amount is due, as a phrase that reads under the price rather than beside it. */
@@ -53,6 +56,7 @@ export function ProjectLineItemsSection({
   projectId,
   services,
   templates,
+  value = { oneTimeCents: 0, monthlyCents: 0 },
 }: ProjectLineItemsSectionProps) {
   const [editing, setEditing] = useState<ProjectLineItemDto | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -72,6 +76,13 @@ export function ProjectLineItemsSection({
               {content.list.templateRemoved}
             </span>
           ) : null}
+          <span className={styles.origin}>
+            {
+              content.list.status[
+                service.status ?? ProjectLineItemStatus.Confirmed
+              ]
+            }
+          </span>
         </span>
         <span className={styles.amount}>
           {formatEuroCents(service.priceCents, locale)}
@@ -103,6 +114,16 @@ export function ProjectLineItemsSection({
           ) : null}
         </div>
       </header>
+      {value.oneTimeCents > 0 || value.monthlyCents > 0 ? (
+        <p className={styles.count}>
+          {value.oneTimeCents > 0
+            ? `${content.values.oneTime}: ${formatEuroCents(value.oneTimeCents, locale)}`
+            : null}
+          {value.monthlyCents > 0
+            ? ` · ${content.values.monthly}: ${formatEuroCents(value.monthlyCents, locale)}`
+            : null}
+        </p>
+      ) : null}
 
       {services.length === 0 ? (
         <div className={styles.empty}>

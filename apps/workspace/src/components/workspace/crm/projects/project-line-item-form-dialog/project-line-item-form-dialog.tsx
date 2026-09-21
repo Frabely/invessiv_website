@@ -4,6 +4,10 @@ import { type SubmitEvent, useId, useRef, useState } from "react";
 import Link from "next/link";
 
 import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
+import {
+  PROJECT_LINE_ITEM_STATUS_VALUES,
+  ProjectLineItemStatus,
+} from "@invessiv/common/constants/crm/project-line-item-statuses";
 import type { ProjectLineItemErrorCode } from "@invessiv/common/constants/crm/errors/project-line-item-error-codes";
 import { ProjectLineItemFieldLimits } from "@invessiv/common/constants/crm/forms/project-line-item-field-limits";
 import {
@@ -278,6 +282,25 @@ export function ProjectLineItemFormDialog({
               kind={FormFieldKind.Text}
               label={content.form.fields.title}
               required
+            />
+            <FormField
+              kind={FormFieldKind.Custom}
+              label={content.form.fields.status}
+              renderControl={({ describedBy, id, invalid }) => (
+                <CustomSelect
+                  describedBy={describedBy}
+                  id={id}
+                  invalid={invalid}
+                  onChange={(next) =>
+                    update("status", next as ProjectLineItemStatus)
+                  }
+                  options={PROJECT_LINE_ITEM_STATUS_VALUES.map((status) => ({
+                    label: content.list.status[status],
+                    value: status,
+                  }))}
+                  value={values.status ?? ProjectLineItemStatus.Planned}
+                />
+              )}
             />
             <FormField
               className={styles.fullWidth}
