@@ -25,6 +25,7 @@ const mocks = vi.hoisted(() => ({
   listRoleAssignmentOptions: vi.fn(),
   evaluateResponsibilityAccess: vi.fn(),
   buildProjectLineItemsViewModel: vi.fn(),
+  listProjectLineItemsByCustomer: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -85,6 +86,12 @@ vi.mock("@/lib/workspace/crm/project-line-items-view-model", () => ({
   buildProjectLineItemsViewModel: mocks.buildProjectLineItemsViewModel,
 }));
 vi.mock(
+  "@/server/workspace/crm/query-handler/list-project-line-items-by-customer.query-handler",
+  () => ({
+    listProjectLineItemsByCustomer: mocks.listProjectLineItemsByCustomer,
+  }),
+);
+vi.mock(
   "@/components/workspace/crm/detail/customer-cockpit-dialog/customer-cockpit-dialog",
   () => ({ CustomerCockpitDialog: () => <div data-testid="cockpit" /> }),
 );
@@ -142,6 +149,7 @@ describe("CrmPage", () => {
     });
     mocks.listCategories.mockResolvedValue([]);
     mocks.listCockpitProjectsByCustomer.mockResolvedValue([]);
+    mocks.listProjectLineItemsByCustomer.mockResolvedValue([]);
     mocks.listCustomerAccessScopes.mockResolvedValue([]);
     mocks.listAccessCustomerProjects.mockResolvedValue([]);
     mocks.listWorkspaceMembers.mockResolvedValue([]);

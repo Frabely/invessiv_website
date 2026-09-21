@@ -1,8 +1,8 @@
+import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 import { ProjectLineItemStatus } from "@invessiv/common/constants/crm/project-line-item-statuses";
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import type { ProjectLineItemDto } from "@invessiv/common/contracts/crm/project-line-item.dto";
-import type { ProjectLineItemValue } from "@/common/contracts/crm/project-line-item-value";
-import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
+import type { ProjectLineItemValue } from "@invessiv/common/contracts/crm/project-line-item-value";
 
 export function calculateProjectLineItemValue(
   items: readonly ProjectLineItemDto[],
@@ -13,10 +13,11 @@ export function calculateProjectLineItemValue(
       if (item.pricingMode === ServicePricingMode.OneTime) {
         value.oneTimeCents += item.priceCents;
       }
-      if (item.pricingMode === ServicePricingMode.Recurring) {
-        if (item.recurringInterval === BillingInterval.Monthly) {
-          value.monthlyCents += item.priceCents;
-        }
+      if (
+        item.pricingMode === ServicePricingMode.Recurring &&
+        item.recurringInterval === BillingInterval.Monthly
+      ) {
+        value.monthlyCents += item.priceCents;
       }
       return value;
     },

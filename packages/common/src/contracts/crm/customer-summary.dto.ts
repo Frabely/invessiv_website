@@ -1,5 +1,5 @@
 import type { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
-import type { ProjectLineItemValue } from "@/common/contracts/crm/project-line-item-value";
+import type { ProjectLineItemValue } from "@invessiv/common/contracts/crm/project-line-item-value";
 
 /**
  * `primaryContactName` is deliberately not nullable: every customer has exactly one

@@ -7,7 +7,7 @@ import { ServicePricingMode } from "@invessiv/common/constants/crm/service-prici
 import { ProjectLineItemStatus } from "@invessiv/common/constants/crm/project-line-item-statuses";
 import type { ProjectLineItemDto } from "@invessiv/common/contracts/crm/project-line-item.dto";
 import type { LineItemTemplateDto } from "@invessiv/common/contracts/crm/line-item-template.dto";
-import type { ProjectLineItemValue } from "@/common/contracts/crm/project-line-item-value";
+import type { ProjectLineItemValue } from "@invessiv/common/contracts/crm/project-line-item-value";
 import { ButtonLink, PrimaryCtaButton } from "@invessiv/ui";
 import type { Locale } from "@/config/i18n";
 import type { CrmProjectLineItemsDictionary } from "@/i18n/dictionaries/workspace/crm";

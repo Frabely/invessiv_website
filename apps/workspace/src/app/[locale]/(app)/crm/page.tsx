@@ -54,7 +54,7 @@ import { listActiveCustomerCategories } from "@/server/workspace/crm/query-handl
 import { listCustomers } from "@/server/workspace/crm/query-handler/list-customers.query-handler";
 import { listCockpitProjectsByCustomer } from "@/server/workspace/crm/query-handler/list-projects-by-customer.query-handler";
 import { buildProjectLineItemsViewModel } from "@/lib/workspace/crm/project-line-items-view-model";
-import { calculateProjectLineItemValue } from "@/common/patterns/crm/project-line-item-value";
+import { calculateProjectLineItemValue } from "@invessiv/common/patterns/crm/project-line-item-value";
 import { listProjectLineItemsByCustomer } from "@/server/workspace/crm/query-handler/list-project-line-items-by-customer.query-handler";
 import { listCustomerAccessScopes } from "@/server/workspace/access/query-handler/list-customer-access-scopes.query-handler";
 import { listAccessCustomerProjects } from "@/server/workspace/access/query-handler/list-access-customer-projects.query-handler";

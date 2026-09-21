@@ -8,7 +8,7 @@ import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.d
 import { canOn } from "@/common/patterns/auth/can-on";
 import { listProjectLineItemsByCustomer } from "@/server/workspace/crm/query-handler/list-project-line-items-by-customer.query-handler";
 import { listLineItemTemplates } from "@/server/workspace/crm/query-handler/list-line-item-templates.query-handler";
-import { calculateProjectLineItemValue } from "@/common/patterns/crm/project-line-item-value";
+import { calculateProjectLineItemValue } from "@invessiv/common/patterns/crm/project-line-item-value";
 
 /**
  * Collects the services of a customer's projects together with the per-project rights, so the

@@ -1,6 +1,6 @@
 import type { ProjectLineItemDto } from "@invessiv/common/contracts/crm/project-line-item.dto";
 import type { LineItemTemplateDto } from "@invessiv/common/contracts/crm/line-item-template.dto";
-import type { ProjectLineItemValue } from "@/common/contracts/crm/project-line-item-value";
+import type { ProjectLineItemValue } from "@invessiv/common/contracts/crm/project-line-item-value";
 
 /**
  * Everything the cockpit needs to render services for the projects of one customer. The page
