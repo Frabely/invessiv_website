@@ -609,7 +609,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 | 07a | läuft     | `07a-zugriffsbereiche-fundament`         | Gebundene Rollen in DB, Actor und API unsichtbar und wirkungslos deployt        |   60–90 |    3 T. |
 | 07b | im Review | `07b-zugriffsfilter-kunden-und-projekte` | Alle Kunden- und Projektpfade filtern über `accessScope`; Negativtests          |  60–100 |  3–4 T. |
 | 07c | offen     | `07c-zugriffsverwaltung-ui`              | Zugriffe je Kunde/Projekt in Settings und Kundenakte konfigurierbar             |   50–80 |  2–3 T. |
-| 08  | offen     | `08-aufgaben`                            | Projektaufgaben im Cockpit, globale Übersicht und Dashboard-Block nutzbar       | 120–180 |  4–5 T. |
+| 08  | läuft     | `08-aufgaben`                            | Projektaufgaben im Cockpit, globale Übersicht und Dashboard-Block nutzbar       | 120–180 |  4–5 T. |
 | 09  | offen     | `09-aufgabenserien-und-reminder`         | Wiederholungen, Fälligkeit und Überfälligkeit zuverlässig aktiv                 |   50–90 |  3–4 T. |
 | 10  | offen     | `10-jobs-und-benachrichtigungen`         | Outbox-Runner, Glocke, Retry und kritische Fehlerbenachrichtigung aktiv         |  70–100 |  4–5 T. |
 | 11  | offen     | `11-renewals`                            | Renewal-Verwaltung und 30/14/7-Erinnerungen vollständig nutzbar                 |   40–70 |  2–3 T. |

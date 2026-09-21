@@ -117,10 +117,10 @@ apps/workspace/src/common/patterns/crm/crm-api-endpoints.ts        crmProjectTas
 apps/workspace/src/common/constants/auth/crm-endpoint-access-rules.ts
 apps/workspace/src/common/constants/crm/crm-operations.ts (+ Test)
 apps/workspace/src/app/api/workspace/crm/README.md                 Abschnitt „Aufgaben“
-apps/workspace/src/common/patterns/crm/task-due-state.ts (+ Test)  overdue | due_soon | none aus dueOn, status, heute (Europe/Berlin)
+apps/workspace/src/lib/workspace/crm/task-due-state-service.ts (+ Test)  overdue | due_soon | none aus dueOn, status, heute (Europe/Berlin)
 ```
 
-`task-due-state.ts` ist die einzige Definition von „überfällig“/„bald fällig“ und wird von Cockpit, Tabelle und
+`task-due-state-service.ts` ist die einzige Definition von „überfällig“/„bald fällig“ und wird von Cockpit, Tabelle und
 Dashboard genutzt; die SQL-Filter in Task 11a-1 spiegeln sie und werden gegen dieselben Fälle getestet.
 
 ## Tickets

@@ -1,0 +1,206 @@
+{
+  "section": {
+    "title": "Aufgaben",
+    "addAction": "Aufgabe anlegen",
+    "count": "{count} offen",
+    "countNone": "Nichts offen",
+    "ariaLabel": "Offene Aufgaben dieses Projekts",
+    "closedAriaLabel": "Abgeschlossene Aufgaben dieses Projekts",
+    "showClosed": "{count} abgeschlossene anzeigen",
+    "showClosedOne": "1 abgeschlossene anzeigen",
+    "hideClosed": "Abgeschlossene ausblenden"
+  },
+  "quickCreate": {
+    "label": "Neue Aufgabe",
+    "placeholder": "Aufgabe eintippen, Enter legt sie an",
+    "hint": "Fälligkeit, Bearbeiter und „Kunde ist dran“ stellst du danach über die Aufgabe ein.",
+    "error": "Die Aufgabe konnte nicht angelegt werden. Bitte versuche es erneut."
+  },
+  "empty": {
+    "title": "Noch keine Aufgaben",
+    "description": "Hier steht, was im Projekt zu tun ist und was der Kunde beisteuern muss. Tippe eine Zeile und drücke Enter, dann ist die erste Aufgabe angelegt."
+  },
+  "emptyReadOnly": {
+    "title": "Noch keine Aufgaben",
+    "description": "Sobald jemand mit Schreibrecht eine Aufgabe anlegt, erscheint sie hier."
+  },
+  "row": {
+    "editNamed": "Aufgabe „{name}“ bearbeiten",
+    "statusLabel": "Status von „{name}“",
+    "assignee": "Bearbeiter: {name}"
+  },
+  "status": {
+    "open": "Offen",
+    "in_progress": "In Arbeit",
+    "done": "Erledigt",
+    "cancelled": "Verworfen"
+  },
+  "actionSide": {
+    "internal": "Wir sind dran",
+    "customer": "Kunde ist dran"
+  },
+  "visibility": {
+    "visible": "Für Kunde sichtbar",
+    "hidden": "Nur intern"
+  },
+  "due": {
+    "overdue": "Seit {count} Tagen überfällig",
+    "overdueOne": "Seit 1 Tag überfällig",
+    "today": "Heute fällig",
+    "tomorrow": "Morgen fällig",
+    "soon": "Fällig in {count} Tagen",
+    "on": "Fällig am {date}",
+    "none": "Ohne Fälligkeit"
+  },
+  "announce": {
+    "created": "Aufgabe „{name}“ angelegt.",
+    "statusChanged": "„{name}“ ist jetzt {status}.",
+    "statusFailed": "Der Status von „{name}“ konnte nicht geändert werden."
+  },
+  "form": {
+    "title": {
+      "create": "Aufgabe anlegen",
+      "edit": "Aufgabe bearbeiten"
+    },
+    "description": {
+      "create": "Lege fest, wer dran ist und ob der Kunde die Aufgabe sieht.",
+      "edit": "Änderungen an „{name}“ gelten nur für diese Aufgabe."
+    },
+    "fields": {
+      "title": "Titel",
+      "description": "Beschreibung",
+      "actionSide": "Wer ist dran?",
+      "visibleToCustomer": "Für den Kunden sichtbar",
+      "assigneeMemberId": "Bearbeiter",
+      "dueOn": "Fällig am"
+    },
+    "placeholders": {
+      "title": "z. B. Logo und Farbwelt klären",
+      "description": "Was genau ist zu tun?",
+      "assigneeMemberId": "Projekt-Owner"
+    },
+    "hints": {
+      "visibleForced": "Solange der Kunde dran ist, sieht er die Aufgabe immer.",
+      "assigneeDefault": "Ohne Auswahl übernimmt der Projekt-Owner."
+    },
+    "assigneeInactive": "{name} (inaktiv)",
+    "buttons": {
+      "close": "Schließen",
+      "cancel": "Abbrechen",
+      "submitCreate": "Aufgabe anlegen",
+      "submitEdit": "Speichern",
+      "submitting": "Wird gespeichert …"
+    },
+    "requiredHint": "* Pflichtfeld",
+    "conflict": {
+      "message": "Die Aufgabe wurde in der Zwischenzeit geändert.",
+      "currentTitle": "Aktueller Stand: {name}"
+    },
+    "validation": {
+      "TITLE_REQUIRED": "Titel ist erforderlich",
+      "DUE_ON_INVALID": "Gib ein gültiges Datum ein"
+    },
+    "errors": {
+      "TASK_NOT_FOUND": "Die Aufgabe wurde nicht gefunden.",
+      "PROJECT_NOT_FOUND": "Das Projekt wurde nicht gefunden.",
+      "ASSIGNEE_NOT_ACTIVE": "Dieses Mitglied ist nicht aktiv und kann keine Aufgaben übernehmen.",
+      "VALIDATION_ERROR": "Die Eingabe konnte nicht gespeichert werden.",
+      "INTERNAL": "Unerwarteter Fehler. Bitte versuche es erneut."
+    }
+  },
+  "overview": {
+    "meta": {
+      "title": "Aufgaben | Invessiv",
+      "description": "Alle Aufgaben über alle Projekte: was überfällig ist, was diese Woche ansteht und worauf der Kunde noch wartet."
+    },
+    "shell": {
+      "title": "Aufgaben",
+      "description": "Alle Aufgaben über alle Projekte. Ändere den Status direkt hier, ohne die Kundenakte zu öffnen.",
+      "backToCustomers": "Zurück zu den Kunden"
+    },
+    "toolbar": {
+      "ariaLabel": "Aufgaben filtern",
+      "clear": "Auswahl aufheben",
+      "reset": "Filter zurücksetzen",
+      "closedProjects": "Auch abgeschlossene Projekte",
+      "search": {
+        "label": "Suche",
+        "placeholder": "Aufgabe suchen"
+      },
+      "status": {
+        "label": "Status",
+        "ariaLabel": "Nach Status filtern",
+        "options": {
+          "active": "Offen & in Arbeit",
+          "open": "Offen",
+          "in_progress": "In Arbeit",
+          "done": "Erledigt",
+          "cancelled": "Verworfen",
+          "all": "Alle"
+        }
+      },
+      "side": {
+        "label": "Wer ist dran?",
+        "ariaLabel": "Nach Zuständigkeit filtern",
+        "all": "Alle"
+      },
+      "assignee": {
+        "label": "Bearbeiter",
+        "ariaLabel": "Nach Bearbeiter filtern",
+        "all": "Alle",
+        "me": "Meine"
+      },
+      "period": {
+        "label": "Fälligkeit",
+        "ariaLabel": "Nach Fälligkeit filtern",
+        "options": {
+          "all": "Alle",
+          "overdue": "Überfällig",
+          "today": "Heute",
+          "week": "Nächste 7 Tage",
+          "due_soon": "Bald fällig"
+        }
+      }
+    },
+    "filteredBy": {
+      "customer": "Nur Aufgaben eines Kunden",
+      "project": "Nur Aufgaben eines Projekts",
+      "remove": "Einschränkung aufheben"
+    },
+    "caption": "Aufgaben über alle Projekte",
+    "columns": {
+      "due": "Fällig",
+      "task": "Aufgabe",
+      "status": "Status",
+      "side": "Wer ist dran?",
+      "assignee": "Bearbeiter",
+      "customer": "Kunde und Projekt"
+    },
+    "openCustomerNamed": "Kundenakte von „{name}“ öffnen",
+    "noAssignee": "–",
+    "pagination": {
+      "ariaLabel": "Seiten der Aufgabenübersicht",
+      "showing": "{from}–{to} von {total} Aufgaben",
+      "page": "Seite {page}",
+      "first": "Erste",
+      "previous": "Zurück",
+      "next": "Weiter",
+      "last": "Letzte"
+    },
+    "empty": {
+      "title": "Noch keine offenen Aufgaben",
+      "description": "Hier laufen die Aufgaben aller Projekte zusammen. Lege sie im Projekt eines Kunden an, dann siehst du sie hier nach Fälligkeit sortiert.",
+      "action": "Zu den Kunden"
+    },
+    "noResults": {
+      "title": "Keine Aufgaben gefunden",
+      "description": "Mit diesen Filtern gibt es keine Treffer. Lockere einen Filter oder setze alle zurück.",
+      "action": "Filter zurücksetzen"
+    },
+    "nothingOverdue": {
+      "title": "Nichts überfällig",
+      "description": "Alle Aufgaben liegen im Plan.",
+      "action": "Alle offenen Aufgaben zeigen"
+    }
+  }
+}

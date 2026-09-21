@@ -43,8 +43,9 @@ function daysBetween(earlierDate: string, laterDate: string): number {
 }
 
 /**
- * The single definition of "overdue" and "due soon" for cockpit, table and dashboard. Only tasks
- * that still demand action can be either; the SQL filters of the list queries mirror it.
+ * The single definition of "overdue" and "due soon". Only tasks that still demand action can be
+ * either; the SQL filters of the list queries mirror it, so anything that shows or filters by
+ * due state has to go through here.
  */
 function dueState(
   task: { status: TaskStatus; dueOn: string | null },
@@ -63,6 +64,7 @@ function dueState(
 }
 
 export const taskDueStateService = {
+  isStillOpen,
   businessToday,
   addDays,
   daysBetween,

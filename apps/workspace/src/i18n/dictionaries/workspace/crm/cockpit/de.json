@@ -40,10 +40,9 @@
     "empty": "Für diesen Kunden sind noch keine Projekte angelegt.",
     "phase": "Phase",
     "owner": "Zuständig",
-    "comingSoon": "Leistungen, Aufgaben und Chat folgen in diesem Projekt.",
+    "comingSoon": "Der Chat folgt in diesem Projekt.",
     "areas": {
       "services": "Leistungen",
-      "tasks": "Todos & Aufgaben",
       "chat": "Projektchat"
     },
     "status": {

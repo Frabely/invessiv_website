@@ -1,6 +1,6 @@
 # Ordner 08 — Projektaufgaben
 
-> **Status:** offen · **Abhängigkeiten:** 07, 07a–07c · **Aufwand:** 4–5 Tage · **Reviewziel:** 6 Changesets à 20–40
+> **Status:** läuft · **Abhängigkeiten:** 07, 07a–07c · **Aufwand:** 4–5 Tage · **Reviewziel:** 6 Changesets à 20–40
 > Dateien · **Neu geplant:** 21.09.2026 (mit dem Nutzer abgestimmt)
 
 ## Ziel und Stand nach Merge

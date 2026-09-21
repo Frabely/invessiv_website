@@ -14,9 +14,11 @@ import type {
   CrmAccessDictionary,
   CrmCockpitDictionary,
   CrmProjectLineItemsDictionary,
+  CrmTasksDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
 import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import type { ProjectLineItemsViewModel } from "@/common/contracts/crm/project-line-items-view-model";
+import type { TasksViewModel } from "@/common/contracts/crm/tasks-view-model";
 import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
 import type { Locale } from "@/config/i18n";
 
@@ -39,6 +41,8 @@ type CustomerCockpitDialogProps = {
   projectLineItems?: ProjectLineItemsViewModel;
   projectLineItemsContent?: CrmProjectLineItemsDictionary;
   rolesHref?: string;
+  tasks?: TasksViewModel;
+  tasksContent?: CrmTasksDictionary;
 };
 
 export function CustomerCockpitDialog({
@@ -60,6 +64,8 @@ export function CustomerCockpitDialog({
   projectLineItems,
   projectLineItemsContent,
   rolesHref,
+  tasks,
+  tasksContent,
 }: CustomerCockpitDialogProps) {
   const router = useRouter();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -105,6 +111,8 @@ export function CustomerCockpitDialog({
         projectLineItems={projectLineItems}
         projectLineItemsContent={projectLineItemsContent}
         rolesHref={rolesHref}
+        tasks={tasks}
+        tasksContent={tasksContent}
       />
     </Dialog>
   );

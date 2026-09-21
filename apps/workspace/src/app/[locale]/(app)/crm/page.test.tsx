@@ -25,6 +25,7 @@ const mocks = vi.hoisted(() => ({
   listRoleAssignmentOptions: vi.fn(),
   evaluateResponsibilityAccess: vi.fn(),
   buildProjectLineItemsViewModel: vi.fn(),
+  buildTasksViewModel: vi.fn(),
   listProjectLineItemsByCustomer: vi.fn(),
 }));
 
@@ -84,6 +85,9 @@ vi.mock(
 );
 vi.mock("@/lib/workspace/crm/project-line-items-view-model", () => ({
   buildProjectLineItemsViewModel: mocks.buildProjectLineItemsViewModel,
+}));
+vi.mock("@/lib/workspace/crm/tasks-view-model", () => ({
+  buildTasksViewModel: mocks.buildTasksViewModel,
 }));
 vi.mock(
   "@/server/workspace/crm/query-handler/list-project-line-items-by-customer.query-handler",
@@ -259,6 +263,26 @@ describe("CrmPage", () => {
     expect(mocks.buildProjectLineItemsViewModel).toHaveBeenCalledWith(
       expect.objectContaining({ projects: [] }),
     );
+  });
+
+  it("builds the task view model from the cockpit projects and the actor", async () => {
+    const actor = workspaceActorWith([Permission.TasksRead]);
+    mocks.requireWorkspaceArea.mockResolvedValue(actor);
+    mocks.getCustomerCockpitById.mockResolvedValue({ id: TEST_CUSTOMER_ID });
+
+    await renderPage({ cockpit: TEST_CUSTOMER_ID });
+
+    expect(mocks.buildTasksViewModel).toHaveBeenCalledWith({
+      actor,
+      customerId: TEST_CUSTOMER_ID,
+      projects: [],
+    });
+  });
+
+  it("does not build task data without an open cockpit", async () => {
+    await renderPage();
+
+    expect(mocks.buildTasksViewModel).not.toHaveBeenCalled();
   });
 
   it("returns not found for an inaccessible cockpit customer", async () => {

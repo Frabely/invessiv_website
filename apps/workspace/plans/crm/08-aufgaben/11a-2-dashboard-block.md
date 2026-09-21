@@ -15,7 +15,7 @@ Glocke aus Ordner 10 der tägliche Einstieg.
 | ------- | -------------------------------------------------------------------------------------------------------------------- |
 | Umfang  | Nur Aufgaben mit `assignee_member_id = aktuelles Mitglied`, Status `open`/`in_progress`, überfällig oder bald fällig |
 | Menge   | Max. 10 Einträge, überfällige zuerst; Link „Alle anzeigen“ auf `/crm/tasks` mit passenden Filtern                    |
-| Zeile   | Titel, Kunde · Projekt, Fälligkeitstext aus `task-due-state.ts`, Badge „Kunde dran“ falls zutreffend                 |
+| Zeile   | Titel, Kunde · Projekt, Fälligkeitstext aus `task-due-state-service.ts`, Badge „Kunde dran“ falls zutreffend         |
 | Leer    | Block entfällt vollständig, kein leerer Kasten                                                                       |
 | Fehler  | Schlägt die Abfrage fehl, entfällt der Block; das Dashboard bleibt intakt (Fehler wird geloggt, ohne PII)            |
 | Rechte  | Nur mit `tasks.read`; Sichtbarkeit zusätzlich über `accessScope`                                                     |

@@ -19,13 +19,16 @@ import {
 } from "@invessiv/ui";
 import { projectsApiService } from "@/client/crm/projects-api-service";
 import type { ProjectLineItemsViewModel } from "@/common/contracts/crm/project-line-items-view-model";
+import type { TasksViewModel } from "@/common/contracts/crm/tasks-view-model";
 import type { Locale } from "@/config/i18n";
 import type {
   CrmCockpitDictionary,
   CrmProjectLineItemsDictionary,
+  CrmTasksDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
 import { OwnerWithoutAccessBadge } from "@/components/workspace/crm/shared/owner-without-access-badge/owner-without-access-badge";
 import { ProjectLineItemsSection } from "@/components/workspace/crm/projects/project-line-items-section/project-line-items-section";
+import { ProjectTasksSection } from "@/components/workspace/crm/tasks/project-tasks-section/project-tasks-section";
 import styles from "./customer-projects-section.module.css";
 
 type CustomerProjectsSectionProps = {
@@ -40,6 +43,9 @@ type CustomerProjectsSectionProps = {
   /** Absent when the actor may not read project line items anywhere; the area is then not shown. */
   projectLineItems?: ProjectLineItemsViewModel;
   projectLineItemsContent?: CrmProjectLineItemsDictionary;
+  /** Absent when the actor may not read tasks anywhere; the area is then not shown. */
+  tasks?: TasksViewModel;
+  tasksContent?: CrmTasksDictionary;
 };
 
 /** Project context rendered inside the existing customer cockpit, not as a second detail view. */
@@ -54,6 +60,8 @@ export function CustomerProjectsSection({
   onGrantAccessAction,
   projectLineItems,
   projectLineItemsContent,
+  tasks,
+  tasksContent,
 }: CustomerProjectsSectionProps) {
   const router = useRouter();
   const [editorOpen, setEditorOpen] = useState(false);
@@ -315,7 +323,7 @@ export function CustomerProjectsSection({
                   )}
                   catalogHref={projectLineItems.catalogHref}
                   content={projectLineItemsContent}
-                  key={activeProject.id}
+                  key={`line-items-${activeProject.id}`}
                   locale={locale}
                   projectId={activeProject.id}
                   services={projectLineItems.services.filter(
@@ -330,11 +338,23 @@ export function CustomerProjectsSection({
                   }
                 />
               ) : null}
+              {tasks &&
+              tasksContent &&
+              tasks.readableProjectIds.includes(activeProject.id) ? (
+                <ProjectTasksSection
+                  canWrite={tasks.writableProjectIds.includes(activeProject.id)}
+                  content={tasksContent}
+                  key={`tasks-${activeProject.id}`}
+                  locale={locale}
+                  members={tasks.members}
+                  projectId={activeProject.id}
+                  tasks={tasks.tasks.filter(
+                    (task) => task.projectId === activeProject.id,
+                  )}
+                  today={tasks.today}
+                />
+              ) : null}
               <div className={styles.areaPreview}>
-                <section>
-                  <h3>{content.projects.areas.tasks}</h3>
-                  <p>{content.projects.comingSoon}</p>
-                </section>
                 <section>
                   <h3>{content.projects.areas.chat}</h3>
                   <p>{content.projects.comingSoon}</p>

@@ -1,0 +1,19 @@
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.label[data-state="overdue"] {
+  color: var(--color-danger);
+  font-weight: 700;
+}
+
+.label[data-state="due_soon"] {
+  color: var(--color-text);
+  font-weight: 600;
+}

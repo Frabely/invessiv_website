@@ -35,12 +35,14 @@ import {
   getCrmMetaDictionary,
   getCrmProjectLineItemsDictionary,
   getCrmShellDictionary,
+  getCrmTasksDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
 import { getSettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import { getLeadsSharedDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { requireWorkspaceArea } from "@/lib/auth/permissions";
 import {
   crmLineItemTemplatesPathFor,
+  crmTasksPathFor,
   workspaceAreaPathFor,
 } from "@/lib/auth/routes";
 import { resolveCustomerCategoryOptions } from "@/lib/workspace/crm/customer-category-options";
@@ -54,6 +56,7 @@ import { listActiveCustomerCategories } from "@/server/workspace/crm/query-handl
 import { listCustomers } from "@/server/workspace/crm/query-handler/list-customers.query-handler";
 import { listCockpitProjectsByCustomer } from "@/server/workspace/crm/query-handler/list-projects-by-customer.query-handler";
 import { buildProjectLineItemsViewModel } from "@/lib/workspace/crm/project-line-items-view-model";
+import { buildTasksViewModel } from "@/lib/workspace/crm/tasks-view-model";
 import { calculateProjectLineItemValue } from "@invessiv/common/patterns/crm/project-line-item-value";
 import { listProjectLineItemsByCustomer } from "@/server/workspace/crm/query-handler/list-project-line-items-by-customer.query-handler";
 import { listCustomerAccessScopes } from "@/server/workspace/access/query-handler/list-customer-access-scopes.query-handler";
@@ -102,6 +105,7 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
   const canReadLeads = can(actor, Permission.LeadsRead);
   const canReadLineItemTemplates = can(actor, Permission.LineItemTemplatesRead);
   const canManageAccess = can(actor, Permission.MembersManage);
+  const canOpenTasks = canAnywhere(actor, Permission.TasksRead);
   const dialogRequest = canWrite
     ? readCustomerDialogRequest(resolvedSearchParams)
     : null;
@@ -172,6 +176,14 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
           projects: cockpitProjects,
         })
       : null;
+  const tasksViewModel =
+    cockpitCustomer && cockpitProjects
+      ? await buildTasksViewModel({
+          actor,
+          customerId: cockpitCustomer.id,
+          projects: cockpitProjects,
+        })
+      : null;
   const customerAccessData =
     cockpitCustomer && canManageAccess
       ? await Promise.all([
@@ -217,6 +229,15 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
 
   return (
     <WorkspacePageShell pageId="crm">
+      {canOpenTasks ? (
+        <ButtonLink
+          href={crmTasksPathFor(activeLocale)}
+          linkComponent={Link}
+          variant="ghost"
+        >
+          {getCrmTasksDictionary(activeLocale).overview.shell.title}
+        </ButtonLink>
+      ) : null}
       {canReadLineItemTemplates ? (
         <ButtonLink
           href={crmLineItemTemplatesPathFor(activeLocale)}
@@ -318,6 +339,10 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
               : undefined
           }
           rolesHref={customerAccessData ? rolesHref : undefined}
+          tasks={tasksViewModel ?? undefined}
+          tasksContent={
+            tasksViewModel ? getCrmTasksDictionary(activeLocale) : undefined
+          }
         />
       ) : null}
     </WorkspacePageShell>

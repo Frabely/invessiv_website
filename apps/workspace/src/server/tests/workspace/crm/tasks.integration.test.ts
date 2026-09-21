@@ -28,6 +28,10 @@ import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { changeTaskStatus } from "@/server/workspace/crm/command-handler/change-task-status.command-handler";
 import { createTask } from "@/server/workspace/crm/command-handler/create-task.command-handler";
 import { updateTask } from "@/server/workspace/crm/command-handler/update-task.command-handler";
+import { TaskListPeriod } from "@/common/constants/crm/list/task-list-periods";
+import { TaskListStatusFilter } from "@/common/constants/crm/list/task-list-status-filters";
+import { DEFAULT_TASK_LIST_FILTERS } from "@/common/defaults/crm/task-list-default-filters";
+import { listTasks } from "@/server/workspace/crm/query-handler/list-tasks.query-handler";
 import { listCustomerTasks } from "@/server/workspace/crm/query-handler/list-customer-tasks.query-handler";
 import { listProjectTasks } from "@/server/workspace/crm/query-handler/list-project-tasks.query-handler";
 
@@ -549,5 +553,189 @@ describe.skipIf(!RUN_INTEGRATION)("tasks PostgreSQL integration", () => {
         ),
       );
     expect(row).toEqual({ status: TaskStatus.Open, version: 1 });
+  });
+
+  describe("task overview", () => {
+    const TODAY = "2026-09-21";
+    const reader = () =>
+      actor({ permissions: new Set([Permission.TasksRead]) });
+    let overviewCustomer: string;
+    let openProject: string;
+    let archivedProject: string;
+
+    beforeAll(async () => {
+      overviewCustomer = await createCustomer("overview");
+      openProject = await createProject(overviewCustomer, "overview open");
+      archivedProject = await createProject(
+        overviewCustomer,
+        "overview archived",
+      );
+      await db
+        .update(projects)
+        .set({ status: ProjectStatus.Archived })
+        .where(eq(projects.id, archivedProject));
+
+      const make = async (
+        project: string,
+        title: string,
+        dueOn: string | null,
+      ) => {
+        const result = await createTask(
+          project,
+          taskInput({ title: `${FIXTURE_PREFIX}${title}`, dueOn }),
+          writer(),
+        );
+        if (!result.ok) throw new Error("fixture task was rejected");
+        return result.task;
+      };
+      await make(openProject, "overdue one", "2026-09-10");
+      await make(openProject, "due today", TODAY);
+      await make(openProject, "due next week", "2026-09-27");
+      await make(openProject, "far away", "2026-12-24");
+      await make(openProject, "undated", null);
+      const finished = await make(openProject, "finished", "2026-09-01");
+      await changeTaskStatus(
+        finished.id,
+        { status: TaskStatus.Done, version: finished.version },
+        writer(),
+      );
+      await make(archivedProject, "in archived project", "2026-09-05");
+    }, 60_000);
+
+    it("lists tasks with customer and project names and a count that matches the rows", async () => {
+      const result = await listTasks(
+        { ...DEFAULT_TASK_LIST_FILTERS, customerId: overviewCustomer },
+        reader(),
+        TODAY,
+      );
+
+      expect(result.total).toBe(5);
+      expect(result.rows).toHaveLength(5);
+      expect(result.rows[0]).toMatchObject({
+        customerId: overviewCustomer,
+        customerDisplayName: `${FIXTURE_PREFIX}customer:overview`,
+        projectTitle: `${FIXTURE_PREFIX}overview open`,
+      });
+      // Soonest due first, undated last, the archived project's and the finished task stay out.
+      expect(
+        result.rows.map((row) => row.task.title.replace(FIXTURE_PREFIX, "")),
+      ).toEqual([
+        "overdue one",
+        "due today",
+        "due next week",
+        "far away",
+        "undated",
+      ]);
+    });
+
+    it("applies the period filters with the caller's business day", async () => {
+      const titles = async (period: TaskListPeriod) =>
+        (
+          await listTasks(
+            {
+              ...DEFAULT_TASK_LIST_FILTERS,
+              customerId: overviewCustomer,
+              period,
+            },
+            reader(),
+            TODAY,
+          )
+        ).rows.map((row) => row.task.title.replace(FIXTURE_PREFIX, ""));
+
+      expect(await titles(TaskListPeriod.Overdue)).toEqual(["overdue one"]);
+      expect(await titles(TaskListPeriod.Today)).toEqual(["due today"]);
+      expect(await titles(TaskListPeriod.Week)).toEqual([
+        "due today",
+        "due next week",
+      ]);
+      expect(await titles(TaskListPeriod.DueSoon)).toEqual([
+        "overdue one",
+        "due today",
+        "due next week",
+      ]);
+    });
+
+    it("shows closed tasks and archived projects only when asked", async () => {
+      const result = await listTasks(
+        {
+          ...DEFAULT_TASK_LIST_FILTERS,
+          customerId: overviewCustomer,
+          includeClosedProjects: true,
+          status: TaskListStatusFilter.All,
+        },
+        reader(),
+        TODAY,
+      );
+
+      expect(result.total).toBe(7);
+    });
+
+    it("searches titles, treating wildcards as plain text", async () => {
+      const found = await listTasks(
+        {
+          ...DEFAULT_TASK_LIST_FILTERS,
+          customerId: overviewCustomer,
+          search: "TODAY",
+        },
+        reader(),
+        TODAY,
+      );
+      const wildcard = await listTasks(
+        {
+          ...DEFAULT_TASK_LIST_FILTERS,
+          customerId: overviewCustomer,
+          search: "%",
+        },
+        reader(),
+        TODAY,
+      );
+
+      expect(found.rows.map((row) => row.task.title)).toEqual([
+        `${FIXTURE_PREFIX}due today`,
+      ]);
+      expect(wildcard.total).toBe(0);
+    });
+
+    it("keeps a filter from reaching beyond the access scope", async () => {
+      const foreignReader = customerBoundActor(
+        customerAlpha,
+        Permission.TasksRead,
+      );
+
+      const result = await listTasks(
+        { ...DEFAULT_TASK_LIST_FILTERS, customerId: overviewCustomer },
+        foreignReader,
+        TODAY,
+      );
+
+      expect(result).toMatchObject({ rows: [], total: 0 });
+      expect(
+        await listTasks(DEFAULT_TASK_LIST_FILTERS, actor(), TODAY),
+      ).toMatchObject({ rows: [], total: 0 });
+    });
+
+    it("resolves the assignee shortcut to the acting member", async () => {
+      const mine = await listTasks(
+        {
+          ...DEFAULT_TASK_LIST_FILTERS,
+          assignee: "me",
+          customerId: overviewCustomer,
+        },
+        reader(),
+        TODAY,
+      );
+      const someoneElse = await listTasks(
+        {
+          ...DEFAULT_TASK_LIST_FILTERS,
+          assignee: inactiveMemberId,
+          customerId: overviewCustomer,
+        },
+        reader(),
+        TODAY,
+      );
+
+      expect(mine.total).toBe(5);
+      expect(someoneElse.total).toBe(0);
+    });
   });
 });

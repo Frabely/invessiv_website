@@ -47,7 +47,7 @@ URL-Parsing nach dem Muster der Kundenliste (`common/constants/crm/list/`).
 - `listTasks(filters, actor)`: ein Select mit Join auf `projects`, `customers`, `workspace_members`; Sichtbarkeit über
   `crmAccessCondition.forScope(accessScope(actor, Permission.TasksRead), …)` mit `projects.customer_id` und
   `projects.id`. Ein Count mit denselben Bedingungen. Keine N+1.
-- Zeitraumfilter spiegeln `task-due-state.ts` (Europe/Berlin „heute“ serverseitig einmal bestimmt).
+- Zeitraumfilter spiegeln `task-due-state-service.ts` (Europe/Berlin „heute“ serverseitig einmal bestimmt).
 
 ## Tickets
 

@@ -14,9 +14,11 @@ import type {
   CrmAccessDictionary,
   CrmCockpitDictionary,
   CrmProjectLineItemsDictionary,
+  CrmTasksDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
 import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import type { ProjectLineItemsViewModel } from "@/common/contracts/crm/project-line-items-view-model";
+import type { TasksViewModel } from "@/common/contracts/crm/tasks-view-model";
 import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
 import type { Locale } from "@/config/i18n";
 import { formatEuroCents } from "@/lib/workspace/crm/format-service-price";
@@ -40,6 +42,8 @@ type CustomerCockpitViewProps = {
   projectLineItems?: ProjectLineItemsViewModel;
   projectLineItemsContent?: CrmProjectLineItemsDictionary;
   rolesHref?: string;
+  tasks?: TasksViewModel;
+  tasksContent?: CrmTasksDictionary;
 };
 
 /** The shared customer detail content for the CRM dialog and future dashboard view. */
@@ -61,6 +65,8 @@ export function CustomerCockpitView({
   projectLineItems,
   projectLineItemsContent,
   rolesHref,
+  tasks,
+  tasksContent,
 }: CustomerCockpitViewProps) {
   const [requestedAccessMemberId, setRequestedAccessMemberId] = useState<
     string | null
@@ -144,6 +150,8 @@ export function CustomerCockpitView({
           projectLineItems={projectLineItems}
           projectLineItemsContent={projectLineItemsContent}
           projects={projects}
+          tasks={tasks}
+          tasksContent={tasksContent}
         />
       ) : null}
       {accessContent &&

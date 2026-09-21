@@ -24,7 +24,7 @@ geändert. Man sieht auf einen Blick, wer dran ist, was überfällig ist und was
 | Element        | Verhalten                                                                                                          |
 | -------------- | ------------------------------------------------------------------------------------------------------------------ |
 | Zeile          | Status-Auswahl, Titel, Fälligkeit, Badge „Wir dran“/„Kunde dran“, Bearbeiter, Sichtbarkeitssymbol                  |
-| Überfällig     | Symbol plus Text („seit 3 Tagen überfällig“), nicht nur Farbe; Ableitung über `task-due-state.ts`                  |
+| Überfällig     | Symbol plus Text („seit 3 Tagen überfällig“), nicht nur Farbe; Ableitung über `task-due-state-service.ts`          |
 | Sichtbarkeit   | Beschriftetes Symbol „Für Kunde sichtbar“; unsichtbare Aufgaben ohne Symbol. Tooltip allein reicht nicht           |
 | Schnellanlage  | Titel eintippen, Enter legt an: Seite `internal`, unsichtbar, Bearbeiter = Projekt-Owner, ohne Datum               |
 | Dialog         | Alle Felder; Wechsel auf „Kunde dran“ setzt „Für Kunde sichtbar“ automatisch und sperrt den Schalter mit Erklärung |

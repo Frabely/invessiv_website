@@ -43,3 +43,19 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   Summe — Projektwerte entstehen in Task 42.
 - Leerer Zustand erklärt den Zweck des Bereichs und unterscheidet Schreib- von Leserecht. Ist der Katalog ohne aktives
   Template, führt der Weg sichtbar dorthin statt in einen leeren Dialog.
+
+## Aufgaben (ab Task 11-3)
+
+- Komponenten liegen unter `tasks/`; die Projektsektion (`project-tasks-section`) und die globale Übersicht
+  (`tasks/overview/**`) teilen sich Zeile, Statusauswahl, Handlungsseiten-Badge und Fälligkeitslabel.
+- Die Sektion ersetzt den bisherigen „Coming soon“-Slot für Aufgaben und wird **nur** gerendert, wenn die Page das
+  Projekt in `readableProjectIds` übergibt. Anlegen, Bearbeiten und Statuswechsel gibt es nur für Projekte in
+  `writableProjectIds`; ohne Recht fehlen die Aktionen, sie sind nicht deaktiviert.
+- Ein Statuswechsel läuft ausschließlich über `useTaskStatusChange` (Hook): sofort sichtbar, nach Bestätigung per
+  Live-Region angekündigt, bei Fehler zurückgesetzt und mit Meldung versehen. Kein zweiter Weg in Komponenten.
+- Überfällig und „bald fällig“ werden nie in der Komponente berechnet, sondern über `taskDueStateService`; der Text
+  nennt die Dauer, das Symbol ist zusätzlich — nie Farbe allein.
+- Mitgliedernamen kommen nur, wenn die Page sie übergibt (`members`, Recht `members.read`). Ohne Namen entfällt die
+  Bearbeiter-Angabe bzw. die Bearbeiter-Auswahl.
+- Server-Komponenten übergeben Client-Komponenten nur serialisierbare Daten (keine Funktionen); Links entstehen im
+  Client aus Basispfaden über die Patterns in `common/patterns/crm/`.
