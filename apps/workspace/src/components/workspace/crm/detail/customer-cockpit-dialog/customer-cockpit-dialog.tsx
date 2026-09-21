@@ -14,8 +14,11 @@ import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspa
 import type {
   CrmAccessDictionary,
   CrmCockpitDictionary,
+  CrmProjectLineItemsDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
 import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
+import type { ProjectLineItemsViewModel } from "@/common/contracts/crm/project-line-items-view-model";
+import type { Locale } from "@/config/i18n";
 
 type CustomerCockpitDialogProps = {
   accessContent?: CrmAccessDictionary;
@@ -28,10 +31,13 @@ type CustomerCockpitDialogProps = {
   customer: CustomerCockpitDto;
   customerOwnerHasAccess?: boolean;
   customerOwnerMemberId?: string;
+  locale: Locale;
   canWriteProjects?: boolean;
   projects?: ProjectDto[] | null;
   permissionsContent?: SettingsPermissionsDictionary;
   projectOwnerHasAccess?: Readonly<Record<string, boolean>>;
+  projectLineItems?: ProjectLineItemsViewModel;
+  projectLineItemsContent?: CrmProjectLineItemsDictionary;
   rolesHref?: string;
 };
 
@@ -46,10 +52,13 @@ export function CustomerCockpitDialog({
   customer,
   customerOwnerHasAccess,
   customerOwnerMemberId,
+  locale,
   canWriteProjects,
   projects,
   permissionsContent,
   projectOwnerHasAccess,
+  projectLineItems,
+  projectLineItemsContent,
   rolesHref,
 }: CustomerCockpitDialogProps) {
   const router = useRouter();
@@ -89,9 +98,12 @@ export function CustomerCockpitDialog({
         customer={customer}
         customerOwnerHasAccess={customerOwnerHasAccess}
         customerOwnerMemberId={customerOwnerMemberId}
+        locale={locale}
         projects={projects}
         permissionsContent={permissionsContent}
         projectOwnerHasAccess={projectOwnerHasAccess}
+        projectLineItems={projectLineItems}
+        projectLineItemsContent={projectLineItemsContent}
         rolesHref={rolesHref}
       />
     </Dialog>

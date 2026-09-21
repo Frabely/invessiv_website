@@ -160,7 +160,7 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
 
 - **Lexware bleibt führend für Angebote, Rechnungen und Zahlungen.** Das CRM enthält keine
   Rechnungs- oder Zahlungslogik; Preise bleiben intern und sind nicht portalöffentlich.
-- `service_templates` ist ein DB-basierter, versionierter und pflegbarer globaler Katalog mit Titel,
+- `line_item_templates` ist ein DB-basierter, versionierter und pflegbarer globaler Katalog mit Titel,
   Beschreibung, Preis in EUR-Cent, Preisart (`one_time`, `recurring`, `rate`), optionalem Intervall
   sowie Aktiv-/Archivstatus. Starttemplates sind Landingpage, Unterseite, zusätzliche Section,
   Wartung, SEO, Wartung + SEO und Stundensatz. Kombipakete sind eigene Templates.
@@ -173,8 +173,8 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
 - Bei der Zuweisung wird nur ein aktives Template ausgewählt. Titel, Beschreibung und Preis können
   vor dem Speichern individuell angepasst werden. Das spätere Kopieren vorhandener Leistungen eines
   Kunden erzeugt ebenfalls einen neuen Snapshot, gehört aber nicht zum ersten Ausbau.
-- `services.read` und `services.write` steuern den workspace-weiten Katalog und sind nicht bindbar.
-  `project_services.read` und `project_services.write` sind bindbar: Kundenbindung vererbt auf alle
+- `line_item_templates.read` und `line_item_templates.write` steuern den workspace-weiten Katalog und sind nicht bindbar.
+  `project_line_items.read` und `project_line_items.write` sind bindbar: Kundenbindung vererbt auf alle
   Kundenprojekte; Projektbindung gilt nur für dieses Projekt.
 - Projekt- und Kundenwerte werden ausschließlich aus Projektleistungen berechnet, nie gespeichert.
   `rate` ist ein Konditionswert und zählt nicht in die Umsatzsumme. Task 42a erweitert die bestehende
@@ -460,8 +460,8 @@ people
                                       ├── customer_asset_links                       (Ordner 15a)
                                       └── retainers ── time_entries
 
-service_templates ── pflegbarer globaler Katalog
-projects ── project_services (vollständige Template-Snapshots, Ordner 07)
+line_item_templates ── pflegbarer globaler Katalog
+projects ── project_line_items (vollständige Template-Snapshots, Ordner 07)
 
 files ── genau ein Scope: customer | project | feedback_round
 activities ── Lead- und CRM-Historie
@@ -482,7 +482,7 @@ Präfixfrei bleiben eigenständige und querschnittliche Tabellen: `users`, `work
 `conversations`, `messages`, `message_files`, `conversation_reads`, `feedback_rounds`,
 `feedback_round_requests`, `onboarding_submissions`, `onboarding_answers`, `onboarding_answer_files`,
 `retainers`, `time_entries`, `files`, `activities`, `security_events`, `outbox_jobs`,
-`notifications`, `service_templates`, `project_services`.
+`notifications`, `line_item_templates`, `project_line_items`.
 
 `onboarding_submissions` ist präfixfrei, weil der Bogen am Projekt hängt und kein Kindobjekt des
 Kunden ist; seine eigenen Kindtabellen tragen das Präfix `onboarding_`.

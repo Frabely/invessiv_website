@@ -6,7 +6,7 @@
 
 ## Ziel
 
-Globale `service_templates` sind workspace-weite CRM-Stammdaten und ausschließlich ein
+Globale `line_item_templates` sind workspace-weite CRM-Stammdaten und ausschließlich ein
 Ausgangspunkt für spätere Projektleistungen. Ein Template enthält Titel, Leistungsbeschreibung,
 Preis in EUR-Cent, Preisart, optionales Intervall, Aktiv-/Archivstatus und `version`. Änderungen
 am Katalog verändern niemals bereits gespeicherte Projektleistungen.
@@ -17,14 +17,14 @@ Stundensatz. Kombipakete bleiben eigene Templates, keine Rabattregel.
 ## Datenmodell
 
 ```txt
-service_templates
+line_item_templates
   id uuid PK
   title text NOT NULL CHECK (btrim(title) <> '')
   description text NOT NULL DEFAULT ''
   price_cents integer NOT NULL CHECK (price_cents >= 0)
   pricing_mode text NOT NULL CHECK in SERVICE_PRICING_MODE_VALUES
   recurring_interval text NULL CHECK in BILLING_INTERVAL_VALUES
-  status text NOT NULL DEFAULT 'active' CHECK in SERVICE_TEMPLATE_STATUS_VALUES
+  status text NOT NULL DEFAULT 'active' CHECK in LINE_ITEM_TEMPLATE_STATUS_VALUES
   version integer NOT NULL DEFAULT 1 CHECK (version > 0)
   created_at / updated_at timestamptz NOT NULL DEFAULT now()
 
@@ -32,7 +32,7 @@ service_templates
 ```
 
 `ServicePricingMode` ist ein Const-Objekt mit `one_time`, `recurring` und `rate`; ein Intervall ist
-nur für `recurring` gültig. `ServiceTemplateStatus` enthält `active` und `archived`. Das kanonische
+nur für `recurring` gültig. `LineItemTemplateStatus` enthält `active` und `archived`. Das kanonische
 Drizzle-Modell liegt als einzelne Tabelle unter `packages/db/src/record-configuration/crm/`.
 
 Die Migration seedet die Starttemplates idempotent und erweitert `db:seed:crm` um realistische
@@ -40,11 +40,11 @@ Stammdaten. Eine Archivierung löscht keine Zeile und lässt optionale Herkunfts
 
 ## Rechte und Oberfläche
 
-- `services.read` erlaubt die Katalogansicht; `services.write` erlaubt Anlegen, Bearbeiten und
+- `line_item_templates.read` erlaubt die Katalogansicht; `line_item_templates.write` erlaubt Anlegen, Bearbeiten und
   Archivieren. Beide Rechte sind workspace-weit und nicht bindbar.
 - Die CRM-Unterseite ist von Mitglieder- und Rolleneinstellungen getrennt, noindex und
   force-dynamic. Sie erhält vollständige Listen-, Leer-, Fehler- und Archivzustände in DE und EN.
-- Ohne `services.write` gibt es keine Schreibaktionen. Archivierte Templates sind sichtbar
+- Ohne `line_item_templates.write` gibt es keine Schreibaktionen. Archivierte Templates sind sichtbar
   gekennzeichnet, aber nicht in Auswahl-Listen für neue Projektleistungen verfügbar.
 - Mutationen laufen über Client → API-Route → Command-Handler, verwenden `updateVersioned` und
   liefern Versionskonflikte nachvollziehbar zurück.

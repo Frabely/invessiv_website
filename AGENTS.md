@@ -37,7 +37,8 @@ Scope- und detailspezifische Regeln stehen in der jeweils nächstgelegenen `AGEN
 | `apps/workspace/src/app/[locale]/(app)/settings/`   | Geschützter Settings-Bereich: Area-Gate `members.manage`, Rollen-Tab nur mit `roles.manage`, noindex/dynamic    |
 | `apps/workspace/src/components/workspace/settings/` | Mitglieder- und Rollenverwaltungs-UI: gruppierte Subfolder, keine Rollenlogik im Client                         |
 | `apps/workspace/src/server/workspace/access/`       | Mitglieder, Rollen, Owner-Flow: Clerk-ID statt E-Mail, Security-Events je Änderung, letzter Owner geschützt     |
-| `apps/workspace/src/server/`                        | Workspace Command-/Query-Handler, Services, Persistenz-Grenze                                                   |
+| `apps/workspace/src/server/`                        | Workspace Command-/Query-Handler, Services, Persistenz-Grenze; Handler vs. Service (Benennung & Schnitt)        |
+| `apps/workspace/src/client/`                        | Client-Services als API-Schnittstelle: nehmen DTOs entgegen und rufen die API auf                               |
 | `apps/workspace/src/server/workspace/crm/`          | Interner CRM-Serverpfad: Primärkontakt-Invariante, kein Löschpfad, Portaltrennung                               |
 | `apps/workspace/src/server/workspace/shared/`       | Domänenübergreifende Server-Bausteine; `updateVersioned` als einziger versionierter Schreibweg                  |
 | `apps/workspace/src/server/workspace/auth/`         | Actor-Auflösung, Owner-Bootstrap, Security-Events; fail-closed, keine Rollenprüfung in Features                 |

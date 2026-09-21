@@ -44,11 +44,13 @@ export const PERMISSION_GROUP_PERMISSIONS = {
   [PermissionGroup.Projects]: [
     Permission.ProjectsRead,
     Permission.ProjectsWrite,
+    Permission.ProjectLineItemsRead,
+    Permission.ProjectLineItemsWrite,
     Permission.TasksWrite,
   ],
   [PermissionGroup.Services]: [
-    Permission.ServicesRead,
-    Permission.ServicesWrite,
+    Permission.LineItemTemplatesRead,
+    Permission.LineItemTemplatesWrite,
   ],
   [PermissionGroup.Files]: [
     Permission.FilesRead,

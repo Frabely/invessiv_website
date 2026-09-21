@@ -1,0 +1,95 @@
+{
+  "section": {
+    "title": "Leistungen",
+    "assignAction": "Leistung zuweisen",
+    "count": "{count} Positionen",
+    "countOne": "1 Position"
+  },
+  "list": {
+    "ariaLabel": "Leistungen dieses Projekts",
+    "edit": "Bearbeiten",
+    "editNamed": "Leistung „{name}“ bearbeiten",
+    "pricingMode": {
+      "one_time": "Einmalig",
+      "recurring": "Wiederkehrend",
+      "rate": "Stundensatz"
+    },
+    "cadence": {
+      "one_time": "einmalig",
+      "monthly": "pro Monat",
+      "yearly": "pro Jahr",
+      "rate": "pro Stunde"
+    },
+    "templateRemoved": "Vorlage gelöscht"
+  },
+  "empty": {
+    "title": "Noch keine Leistung zugewiesen",
+    "description": "Hier steht, was dieses Projekt umfasst und was es kostet. Weise eine Leistung aus dem Katalog zu – Preis und Beschreibung werden als Kopie gespeichert und ändern sich später nicht mehr mit dem Katalog.",
+    "action": "Leistung zuweisen"
+  },
+  "emptyReadOnly": {
+    "title": "Noch keine Leistung zugewiesen",
+    "description": "Sobald jemand mit Schreibrecht eine Leistung zuweist, erscheint sie hier."
+  },
+  "form": {
+    "title": {
+      "create": "Leistung zuweisen",
+      "edit": "Leistung bearbeiten"
+    },
+    "description": {
+      "create": "Die Vorlage füllt die Felder vor. Was du hier änderst, gilt nur für dieses Projekt.",
+      "edit": "Änderungen an „{name}“ gelten nur für dieses Projekt."
+    },
+    "fields": {
+      "sourceLineItemTemplateId": "Vorlage",
+      "title": "Titel",
+      "description": "Beschreibung",
+      "priceCents": "Preis",
+      "pricingMode": "Preisart",
+      "recurringInterval": "Intervall"
+    },
+    "placeholders": {
+      "sourceLineItemTemplateId": "Vorlage wählen",
+      "title": "z. B. Landingpage",
+      "description": "Leistungsumfang für dieses Projekt beschreiben"
+    },
+    "origin": "Aus Vorlage „{name}“",
+    "originRemoved": "Die ursprüngliche Vorlage wurde gelöscht. Die gespeicherten Werte bleiben unverändert.",
+    "currencySymbol": "€",
+    "interval": {
+      "monthly": "monatlich",
+      "yearly": "jährlich"
+    },
+    "buttons": {
+      "close": "Schließen",
+      "cancel": "Abbrechen",
+      "submitCreate": "Zuweisen",
+      "submitEdit": "Speichern",
+      "submitting": "Wird gespeichert …"
+    },
+    "requiredHint": "* Pflichtfeld",
+    "noTemplates": {
+      "title": "Keine aktive Vorlage im Katalog",
+      "description": "Leistungen entstehen aus dem Leistungskatalog. Lege dort zuerst eine aktive Vorlage an.",
+      "action": "Leistungskatalog öffnen"
+    },
+    "conflict": {
+      "message": "Die Leistung wurde zwischenzeitlich geändert.",
+      "currentTitle": "Aktueller Stand: {name}"
+    },
+    "validation": {
+      "TEMPLATE_REQUIRED": "Bitte eine Vorlage wählen",
+      "TITLE_REQUIRED": "Titel ist erforderlich",
+      "PRICE_INVALID": "Bitte einen gültigen Preis angeben",
+      "PRICE_OUT_OF_RANGE": "Preis ist zu groß, bitte einen kleineren Betrag angeben",
+      "RECURRING_INTERVAL_REQUIRED": "Bitte ein Intervall wählen"
+    },
+    "errors": {
+      "PROJECT_LINE_ITEM_NOT_FOUND": "Die Leistung wurde nicht gefunden.",
+      "PROJECT_NOT_FOUND": "Das Projekt wurde nicht gefunden.",
+      "LINE_ITEM_TEMPLATE_NOT_ASSIGNABLE": "Diese Vorlage ist archiviert und kann nicht zugewiesen werden.",
+      "VALIDATION_ERROR": "Eingabe konnte nicht gespeichert werden.",
+      "INTERNAL": "Unerwarteter Fehler. Bitte erneut versuchen."
+    }
+  }
+}

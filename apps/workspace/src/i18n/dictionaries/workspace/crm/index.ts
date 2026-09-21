@@ -9,8 +9,10 @@ import shellDe from "./shell/de.json";
 import shellEn from "./shell/en.json";
 import cockpitDe from "./cockpit/de.json";
 import cockpitEn from "./cockpit/en.json";
-import servicesDe from "./services/de.json";
-import servicesEn from "./services/en.json";
+import projectLineItemsDe from "./project-line-items/de.json";
+import projectLineItemsEn from "./project-line-items/en.json";
+import lineItemTemplatesDe from "./line-item-templates/de.json";
+import lineItemTemplatesEn from "./line-item-templates/en.json";
 import accessDe from "./access/de.json";
 import accessEn from "./access/en.json";
 
@@ -19,7 +21,8 @@ export type CrmShellDictionary = typeof shellDe;
 export type CrmListDictionary = typeof listDe;
 export type CrmFormDictionary = typeof formDe;
 export type CrmCockpitDictionary = typeof cockpitDe;
-export type CrmServicesDictionary = typeof servicesDe;
+export type CrmProjectLineItemsDictionary = typeof projectLineItemsDe;
+export type CrmLineItemTemplatesDictionary = typeof lineItemTemplatesDe;
 export type CrmAccessDictionary = typeof accessDe;
 
 const CRM_META: Record<Locale, CrmMetaDictionary> = {
@@ -45,10 +48,15 @@ const CRM_COCKPIT: Record<Locale, CrmCockpitDictionary> = {
   de: cockpitDe,
   en: cockpitEn,
 };
-const CRM_SERVICES: Record<Locale, CrmServicesDictionary> = {
-  de: servicesDe,
-  en: servicesEn,
+const CRM_PROJECT_LINE_ITEMS: Record<Locale, CrmProjectLineItemsDictionary> = {
+  de: projectLineItemsDe,
+  en: projectLineItemsEn,
 };
+const CRM_LINE_ITEM_TEMPLATES: Record<Locale, CrmLineItemTemplatesDictionary> =
+  {
+    de: lineItemTemplatesDe,
+    en: lineItemTemplatesEn,
+  };
 const CRM_ACCESS: Record<Locale, CrmAccessDictionary> = {
   de: accessDe,
   en: accessEn,
@@ -73,12 +81,18 @@ export function getCrmCockpitDictionary(locale: Locale): CrmCockpitDictionary {
   return CRM_COCKPIT[locale];
 }
 
-export function getCrmServicesDictionary(
+export function getCrmLineItemTemplatesDictionary(
   locale: Locale,
-): CrmServicesDictionary {
-  return CRM_SERVICES[locale];
+): CrmLineItemTemplatesDictionary {
+  return CRM_LINE_ITEM_TEMPLATES[locale];
 }
 
 export function getCrmAccessDictionary(locale: Locale): CrmAccessDictionary {
   return CRM_ACCESS[locale];
+}
+
+export function getCrmProjectLineItemsDictionary(
+  locale: Locale,
+): CrmProjectLineItemsDictionary {
+  return CRM_PROJECT_LINE_ITEMS[locale];
 }

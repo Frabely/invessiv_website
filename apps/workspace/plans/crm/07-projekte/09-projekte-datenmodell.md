@@ -134,11 +134,11 @@ damit reversibel. Beträge sind immer EUR-Cent; eine Währungsspalte gibt es bew
 
 `projects_id_customer_uidx` ist redundant zum Primärschlüssel, aber notwendig: er ist das Ziel der
 zusammengesetzten Fremdschlüssel, mit denen `tasks` (Task 11), `feedback_rounds` (Task 22),
-`project_services` (Task 41) und `onboarding_submissions` (Task 44) ihre denormalisierte
+`project_line_items` (Task 41) und `onboarding_submissions` (Task 44) ihre denormalisierte
 `customer_id` gegen das Projekt absichern.
 
 `budget_cents` bleibt der **Planwert** des Projekts. Der tatsächliche Projektwert entsteht später
-in diesem Ordner ausschließlich aus `project_services` und wird in Task 42 daneben angezeigt — beide Zahlen
+in diesem Ordner ausschließlich aus `project_line_items` und wird in Task 42 daneben angezeigt — beide Zahlen
 sind beschriftet und werden nie vermischt.
 
 `included_feedback_rounds` ist das Rundenkontingent aus `00-entscheidungen.md`. Es entsteht hier,

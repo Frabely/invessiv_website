@@ -76,8 +76,8 @@ im Kundendetail sowie in einer Projektübersicht nutzbar. Portalanteile bleiben 
 - [ ] Interne Finanzwerte fehlen vollständig in PortalDTOs.
 - [ ] Projektlisten haben deterministische Pagination, Empty- und Fehlerzustände.
 - [ ] Kein Portal-Link ist sichtbar.
-- [ ] Globale `services.read`/`services.write` sind workspace-weit; bindbare
-      `project_services.read`/`project_services.write` vererben vom Kunden auf dessen Projekte,
+- [x] Globale `line_item_templates.read`/`line_item_templates.write` sind workspace-weit; bindbare
+      `project_line_items.read`/`project_line_items.write` vererben vom Kunden auf dessen Projekte,
       aber nie in umgekehrter Richtung oder auf fremde Projekte.
 - [ ] Projektwerte verwenden ausschließlich Projektleistungen; kundenweite Pakete und
       `customer_packages` entstehen nicht.

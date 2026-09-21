@@ -95,19 +95,33 @@ export const PERMISSION_DEFINITIONS = {
     assignableScopeTypes: CUSTOMER_AND_PROJECT,
     description: "Create, edit and reassign projects.",
   },
-  [Permission.ServicesRead]: {
+  [Permission.ProjectLineItemsRead]: {
     realm: AuthRealm.Workspace,
     delegable: true,
-    scopeAssignable: false,
-    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
-    description: "View the service template catalog.",
+    scopeAssignable: true,
+    assignableScopeTypes: CUSTOMER_AND_PROJECT,
+    description: "View the services assigned to a project.",
   },
-  [Permission.ServicesWrite]: {
+  [Permission.ProjectLineItemsWrite]: {
+    realm: AuthRealm.Workspace,
+    delegable: true,
+    scopeAssignable: true,
+    assignableScopeTypes: CUSTOMER_AND_PROJECT,
+    description: "Assign and edit the services of a project.",
+  },
+  [Permission.LineItemTemplatesRead]: {
     realm: AuthRealm.Workspace,
     delegable: true,
     scopeAssignable: false,
     assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
-    description: "Create, edit and archive service templates.",
+    description: "View the line item template catalog.",
+  },
+  [Permission.LineItemTemplatesWrite]: {
+    realm: AuthRealm.Workspace,
+    delegable: true,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description: "Create, edit and archive line item templates.",
   },
   [Permission.TasksWrite]: {
     realm: AuthRealm.Workspace,

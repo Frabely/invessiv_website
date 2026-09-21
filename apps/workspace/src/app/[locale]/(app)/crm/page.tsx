@@ -33,13 +33,17 @@ import {
   getCrmFormDictionary,
   getCrmListDictionary,
   getCrmMetaDictionary,
-  getCrmServicesDictionary,
+  getCrmProjectLineItemsDictionary,
+  getCrmLineItemTemplatesDictionary,
   getCrmShellDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
 import { getSettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import { getLeadsSharedDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { requireWorkspaceArea } from "@/lib/auth/permissions";
-import { crmServicesPathFor, workspaceAreaPathFor } from "@/lib/auth/routes";
+import {
+  crmLineItemTemplatesPathFor,
+  workspaceAreaPathFor,
+} from "@/lib/auth/routes";
 import { resolveCustomerCategoryOptions } from "@/lib/workspace/crm/customer-category-options";
 import {
   buildCustomerListHref,
@@ -49,7 +53,8 @@ import { getCustomerById } from "@/server/workspace/crm/query-handler/get-custom
 import { getCustomerCockpitById } from "@/server/workspace/crm/query-handler/get-customer-cockpit-by-id.query-handler";
 import { listActiveCustomerCategories } from "@/server/workspace/crm/query-handler/list-active-customer-categories.query-handler";
 import { listCustomers } from "@/server/workspace/crm/query-handler/list-customers.query-handler";
-import { listProjectsByCustomer } from "@/server/workspace/crm/query-handler/list-projects-by-customer.query-handler";
+import { listCockpitProjectsByCustomer } from "@/server/workspace/crm/query-handler/list-projects-by-customer.query-handler";
+import { buildProjectLineItemsViewModel } from "@/lib/workspace/crm/project-line-items-view-model";
 import { listCustomerAccessScopes } from "@/server/workspace/access/query-handler/list-customer-access-scopes.query-handler";
 import { listAccessCustomerProjects } from "@/server/workspace/access/query-handler/list-access-customer-projects.query-handler";
 import { listRoleAssignmentOptions } from "@/server/workspace/access/query-handler/list-role-assignment-options.query-handler";
@@ -94,7 +99,7 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
   const leadsBasePath = workspaceAreaPathFor(activeLocale, WorkspaceArea.Leads);
   const canWrite = canAnywhere(actor, Permission.CustomersWrite);
   const canReadLeads = can(actor, Permission.LeadsRead);
-  const canReadServices = can(actor, Permission.ServicesRead);
+  const canReadLineItemTemplates = can(actor, Permission.LineItemTemplatesRead);
   const canManageAccess = can(actor, Permission.MembersManage);
   const dialogRequest = canWrite
     ? readCustomerDialogRequest(resolvedSearchParams)
@@ -128,9 +133,19 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
       )
       .map((row) => row.id),
   );
-  const cockpitProjects =
-    cockpitCustomer && canAnywhere(actor, Permission.ProjectsRead)
-      ? await listProjectsByCustomer(cockpitCustomer.id, actor)
+  const cockpitProjects = cockpitCustomer
+    ? await listCockpitProjectsByCustomer(cockpitCustomer.id, actor)
+    : null;
+  const projectLineItemsViewModel =
+    cockpitCustomer && cockpitProjects
+      ? await buildProjectLineItemsViewModel({
+          actor,
+          catalogHref: canReadLineItemTemplates
+            ? crmLineItemTemplatesPathFor(activeLocale)
+            : null,
+          customerId: cockpitCustomer.id,
+          projects: cockpitProjects,
+        })
       : null;
   const customerAccessData =
     cockpitCustomer && canManageAccess
@@ -177,13 +192,13 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
 
   return (
     <WorkspacePageShell pageId="crm">
-      {canReadServices ? (
+      {canReadLineItemTemplates ? (
         <ButtonLink
-          href={crmServicesPathFor(activeLocale)}
+          href={crmLineItemTemplatesPathFor(activeLocale)}
           linkComponent={Link}
           variant="ghost"
         >
-          {getCrmServicesDictionary(activeLocale).shell.title}
+          {getCrmLineItemTemplatesDictionary(activeLocale).shell.title}
         </ButtonLink>
       ) : null}
       <CustomersPageHeader
@@ -261,6 +276,13 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
           content={getCrmCockpitDictionary(activeLocale)}
           customer={cockpitCustomer}
           canWriteProjects={canAnywhere(actor, Permission.ProjectsWrite)}
+          locale={activeLocale}
+          projectLineItems={projectLineItemsViewModel ?? undefined}
+          projectLineItemsContent={
+            projectLineItemsViewModel
+              ? getCrmProjectLineItemsDictionary(activeLocale)
+              : undefined
+          }
           projects={cockpitProjects}
           projectOwnerHasAccess={
             customerAccessData && cockpitProjects

@@ -17,18 +17,28 @@ import {
   PrimaryCtaButton,
 } from "@invessiv/ui";
 import { projectsApiService } from "@/client/crm/projects-api-service";
-import type { CrmCockpitDictionary } from "@/i18n/dictionaries/workspace/crm";
+import type { ProjectLineItemsViewModel } from "@/common/contracts/crm/project-line-items-view-model";
+import type { Locale } from "@/config/i18n";
+import type {
+  CrmCockpitDictionary,
+  CrmProjectLineItemsDictionary,
+} from "@/i18n/dictionaries/workspace/crm";
 import { OwnerWithoutAccessBadge } from "@/components/workspace/crm/shared/owner-without-access-badge/owner-without-access-badge";
+import { ProjectLineItemsSection } from "@/components/workspace/crm/projects/project-line-items-section/project-line-items-section";
 import styles from "./customer-projects-section.module.css";
 
 type CustomerProjectsSectionProps = {
   content: CrmCockpitDictionary;
   customerId: string;
   canWrite: boolean;
+  locale: Locale;
   projects: readonly ProjectDto[];
   accessMembers?: readonly WorkspaceMemberDto[];
   ownerHasAccess?: Readonly<Record<string, boolean>>;
   onGrantAccessAction?: (memberId: string) => void;
+  /** Absent when the actor may not read project line items anywhere; the area is then not shown. */
+  projectLineItems?: ProjectLineItemsViewModel;
+  projectLineItemsContent?: CrmProjectLineItemsDictionary;
 };
 
 /** Project context rendered inside the existing customer cockpit, not as a second detail view. */
@@ -36,10 +46,13 @@ export function CustomerProjectsSection({
   content,
   customerId,
   canWrite,
+  locale,
   projects,
   accessMembers,
   ownerHasAccess,
   onGrantAccessAction,
+  projectLineItems,
+  projectLineItemsContent,
 }: CustomerProjectsSectionProps) {
   const router = useRouter();
   const [editorOpen, setEditorOpen] = useState(false);
@@ -278,13 +291,27 @@ export function CustomerProjectsSection({
                   );
                 })}
               </ol>
+              {projectLineItems &&
+              projectLineItemsContent &&
+              projectLineItems.readableProjectIds.includes(activeProject.id) ? (
+                <ProjectLineItemsSection
+                  canWrite={projectLineItems.writableProjectIds.includes(
+                    activeProject.id,
+                  )}
+                  catalogHref={projectLineItems.catalogHref}
+                  content={projectLineItemsContent}
+                  key={activeProject.id}
+                  locale={locale}
+                  projectId={activeProject.id}
+                  services={projectLineItems.services.filter(
+                    (service) => service.projectId === activeProject.id,
+                  )}
+                  templates={projectLineItems.assignableTemplates}
+                />
+              ) : null}
               <div className={styles.areaPreview}>
                 <section>
                   <h3>{content.projects.areas.tasks}</h3>
-                  <p>{content.projects.comingSoon}</p>
-                </section>
-                <section>
-                  <h3>{content.projects.areas.services}</h3>
                   <p>{content.projects.comingSoon}</p>
                 </section>
                 <section>

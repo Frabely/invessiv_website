@@ -14,7 +14,8 @@ export function listPermittedWorkspaceAreas(
   return WORKSPACE_AREA_VALUES.filter((area) =>
     area === WorkspaceArea.Crm
       ? canAnywhere(actor, Permission.CustomersRead) ||
-        canAnywhere(actor, Permission.ProjectsRead)
+        canAnywhere(actor, Permission.ProjectsRead) ||
+        canAnywhere(actor, Permission.ProjectLineItemsRead)
       : can(actor, WORKSPACE_AREA_PERMISSIONS[area]),
   );
 }

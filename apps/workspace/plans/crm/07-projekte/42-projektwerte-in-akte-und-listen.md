@@ -6,7 +6,7 @@
 
 ## Ziel
 
-Projekt- und Kundenwerte werden ausschließlich aus `project_services` berechnet, nie gespeichert.
+Projekt- und Kundenwerte werden ausschließlich aus `project_line_items` berechnet, nie gespeichert.
 Kundenwerte sind die Summe ihrer Projekte; kundenweite Pakete, `customer_packages` und eine
 zweite Berechnungsquelle entfallen. `projects.budget_cents` bleibt als klar beschrifteter Planwert
 neben dem gebuchten Projektwert bestehen.
@@ -17,7 +17,7 @@ wiederkehrende EUR-Cent-Werte. `rate` ist ein Konditionswert und zählt in keine
 ## Darstellung und Rechte
 
 - Kundenakte, Kundenliste und Projektkarte verwenden denselben Query-/Mapping-Pfad.
-- Wertfelder werden nur mit `project_services.read` geliefert. Ohne Recht existieren sie nicht im
+- Wertfelder werden nur mit `project_line_items.read` geliefert. Ohne Recht existieren sie nicht im
   DTO und werden nicht clientseitig ausgeblendet.
 - Die UI beschreibt wiederkehrende Werte mit ihrem Intervall; leere Projekte erhalten keinen
   irreführenden Nullwert-Block.

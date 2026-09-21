@@ -20,8 +20,8 @@ Rollen-Editor (`role-form-dialog.tsx`, `permission-picker.tsx`) lässt sich jede
 unabhängig toggeln; `create-role.command-handler.ts`/`update-role.command-handler.ts`
 validieren nur `delegable`, keine Read/Write-Konsistenz.
 
-Ein Workspace-Owner kann also im Rollen-Editor eine Custom-Rolle mit z. B. `services.write`
-ohne `services.read` anlegen. Folge: `GET`-Endpunkte verweigern dann (403/404), `POST`/`PATCH`
+Ein Workspace-Owner kann also im Rollen-Editor eine Custom-Rolle mit z. B. `line_item_templates.write`
+ohne `line_item_templates.read` anlegen. Folge: `GET`-Endpunkte verweigern dann (403/404), `POST`/`PATCH`
 funktionieren weiter und liefern das geschriebene DTO in der Response zurück (der
 Command-Handler prüft beim Antworten kein Read-Recht) — ein Rolleninhaber kann schreiben und
 sieht im Moment des Schreibens Daten, kann sie danach aber nicht mehr listen oder laden. Task 41
@@ -44,7 +44,7 @@ erlaubt die Zuweisung nur bei Schreibrecht."
 ```txt
 CustomersWrite      → CustomersRead
 ProjectsWrite        → ProjectsRead
-ServicesWrite         → ServicesRead
+LineItemTemplatesWrite         → LineItemTemplatesRead
 TasksWrite            → ProjectsRead   (keine eigene TasksRead-Permission)
 FilesWrite            → FilesRead
 FilesDelete           → FilesRead
@@ -88,9 +88,9 @@ apps/workspace/src/components/workspace/settings/shared/permission-picker/permis
     der bestehenden `delegable`-Prüfung ergänzen, die bei gewählter Write-Permission ohne
     zugehöriges Read den neuen Fehlercode zurückgibt
 - **Akzeptanz:**
-  - Test: Rolle mit `services.write` ohne `services.read` wird mit
+  - Test: Rolle mit `line_item_templates.write` ohne `line_item_templates.read` wird mit
     `PermissionRequiresRead` abgelehnt (create und update)
-  - Test: Rolle mit `services.write` **und** `services.read` wird angenommen
+  - Test: Rolle mit `line_item_templates.write` **und** `line_item_templates.read` wird angenommen
   - Test: Permissions ohne Eintrag in `PERMISSION_PREREQUISITES` bleiben unabhängig wählbar
 
 ### CRM-48-T2 — UI-Komfort im Rollen-Editor
@@ -102,8 +102,8 @@ apps/workspace/src/components/workspace/settings/shared/permission-picker/permis
   - `permission-picker.tsx` sperrt die Read-Checkbox optisch (analog `lockNonDelegable`,
     eigener Hinweistext), solange eine abhängige Write-Permission gewählt ist
 - **Akzeptanz:**
-  - Aktivieren von `services.write` hakt `services.read` sichtbar mit an
-  - `services.read` lässt sich nicht einzeln abwählen, solange `services.write` aktiv ist
+  - Aktivieren von `line_item_templates.write` hakt `line_item_templates.read` sichtbar mit an
+  - `line_item_templates.read` lässt sich nicht einzeln abwählen, solange `line_item_templates.write` aktiv ist
   - Nicht gekoppelte Permissions bleiben unverändert frei wähl-/abwählbar
 
 ## End-to-End-Akzeptanz

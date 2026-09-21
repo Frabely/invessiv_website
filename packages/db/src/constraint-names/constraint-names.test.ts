@@ -33,9 +33,9 @@ import {
   CustomersConstraintName,
 } from "./crm/customers-constraint-names";
 import {
-  SERVICE_TEMPLATES_CONSTRAINT_NAME_VALUES,
-  ServiceTemplatesConstraintName,
-} from "./crm/service-templates-constraint-names";
+  LINE_ITEM_TEMPLATES_CONSTRAINT_NAME_VALUES,
+  LineItemTemplatesConstraintName,
+} from "./crm/line-item-templates-constraint-names";
 import {
   LEAD_SOCIAL_PROFILES_CONSTRAINT_NAME_VALUES,
   LeadSocialProfilesConstraintName,
@@ -92,10 +92,10 @@ const GROUPS: [string, string, Record<string, string>, readonly string[]][] = [
     CUSTOMERS_CONSTRAINT_NAME_VALUES,
   ],
   [
-    "service_templates",
-    "service_templates_",
-    ServiceTemplatesConstraintName,
-    SERVICE_TEMPLATES_CONSTRAINT_NAME_VALUES,
+    "line_item_templates",
+    "line_item_templates_",
+    LineItemTemplatesConstraintName,
+    LINE_ITEM_TEMPLATES_CONSTRAINT_NAME_VALUES,
   ],
 ];
 

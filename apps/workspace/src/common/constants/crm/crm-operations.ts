@@ -5,9 +5,12 @@ export const CrmOperation = {
   CreateCustomer: "customers.create",
   GetCustomer: "customers.get",
   UpdateCustomer: "customers.update",
-  ListServiceTemplates: "service-templates.list",
-  CreateServiceTemplate: "service-templates.create",
-  UpdateServiceTemplate: "service-templates.update",
+  ListProjectLineItems: "project-line-items.list",
+  CreateProjectLineItem: "project-line-items.create",
+  UpdateProjectLineItem: "project-line-items.update",
+  ListLineItemTemplates: "line-item-templates.list",
+  CreateLineItemTemplate: "line-item-templates.create",
+  UpdateLineItemTemplate: "line-item-templates.update",
 } as const;
 
 export type CrmOperation = (typeof CrmOperation)[keyof typeof CrmOperation];
@@ -18,7 +21,10 @@ export const CRM_OPERATION_VALUES = [
   CrmOperation.CreateCustomer,
   CrmOperation.GetCustomer,
   CrmOperation.UpdateCustomer,
-  CrmOperation.ListServiceTemplates,
-  CrmOperation.CreateServiceTemplate,
-  CrmOperation.UpdateServiceTemplate,
+  CrmOperation.ListProjectLineItems,
+  CrmOperation.CreateProjectLineItem,
+  CrmOperation.UpdateProjectLineItem,
+  CrmOperation.ListLineItemTemplates,
+  CrmOperation.CreateLineItemTemplate,
+  CrmOperation.UpdateLineItemTemplate,
 ] as const;

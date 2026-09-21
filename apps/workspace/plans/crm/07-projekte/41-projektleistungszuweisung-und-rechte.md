@@ -14,10 +14,10 @@ das spätere Kopieren einer Leistung desselben Kunden ist ein separater Flow.
 ## Datenmodell
 
 ```txt
-project_services
+project_line_items
   id uuid PK
   project_id uuid NOT NULL → projects.id ON DELETE CASCADE
-  source_service_template_id uuid NULL → service_templates.id ON DELETE SET NULL
+  source_line_item_template_id uuid NULL → line_item_templates.id ON DELETE SET NULL
   title text NOT NULL CHECK (btrim(title) <> '')
   description text NOT NULL DEFAULT ''
   price_cents integer NOT NULL CHECK (price_cents >= 0)
@@ -37,7 +37,7 @@ anderen Projekten.
 
 ## Zugriffsbereiche und UI
 
-- `project_services.read` und `project_services.write` sind bindbar (`scopable = true`). Eine
+- `project_line_items.read` und `project_line_items.write` sind bindbar (`scopable = true`). Eine
   Kundenbindung vererbt auf alle Projekte dieses Kunden; eine Projektbindung erlaubt nur dieses
   Projekt und niemals weitere Kunden- oder Projektdaten.
 - Querys filtern über `accessScope`; jeder Schreibpfad prüft `canOn`. Fremdzugriff ist 404,
@@ -49,10 +49,10 @@ anderen Projekten.
 
 ## Akzeptanz
 
-- [ ] Ein Snapshot-Test beweist, dass eine spätere Templateänderung die gespeicherte
+- [x] Ein Snapshot-Test beweist, dass eine spätere Templateänderung die gespeicherte
       Projektleistung nicht verändert.
-- [ ] Kunde-gebundenes Recht gilt für alle zugehörigen Projekte; Projektbindung nicht für andere
+- [x] Kunde-gebundenes Recht gilt für alle zugehörigen Projekte; Projektbindung nicht für andere
       Projekte. Beide Negativfälle sind integriert getestet.
-- [ ] Template-Auswahl, individuelle Anpassung, Validierungs- und Versionskonfliktzustände sind in
+- [x] Template-Auswahl, individuelle Anpassung, Validierungs- und Versionskonfliktzustände sind in
       DE und EN vorhanden.
-- [ ] Jede Position ist genau einem Projekt zugeordnet; ein kundenweiter Schreibweg existiert nicht.
+- [x] Jede Position ist genau einem Projekt zugeordnet; ein kundenweiter Schreibweg existiert nicht.

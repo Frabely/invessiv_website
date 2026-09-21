@@ -55,13 +55,21 @@
       "label": "Edit projects",
       "description": "Create, change and hand over projects."
     },
-    "services.read": {
-      "label": "View service catalog",
-      "description": "Open the maintainable service templates."
+    "project_line_items.read": {
+      "label": "View project line items",
+      "description": "See the services of a project and their prices."
     },
-    "services.write": {
+    "project_line_items.write": {
+      "label": "Edit project line items",
+      "description": "Assign catalog services and adjust them for this project."
+    },
+    "line_item_templates.read": {
+      "label": "View service catalog",
+      "description": "Open the maintainable line item templates."
+    },
+    "line_item_templates.write": {
       "label": "Edit service catalog",
-      "description": "Create, change and archive service templates."
+      "description": "Create, change and archive line item templates."
     },
     "tasks.write": {
       "label": "Edit tasks",

@@ -33,8 +33,8 @@ export function dashboardPathFor(locale: Locale): string {
   return createLocalePathname(SITE_ROUTES.DASHBOARD, locale);
 }
 
-export function crmServicesPathFor(locale: Locale): string {
-  return createLocalePathname(SITE_ROUTES.CRM_SERVICES, locale);
+export function crmLineItemTemplatesPathFor(locale: Locale): string {
+  return createLocalePathname(SITE_ROUTES.CRM_LINE_ITEM_TEMPLATES, locale);
 }
 
 export function signInPathWithRedirect(

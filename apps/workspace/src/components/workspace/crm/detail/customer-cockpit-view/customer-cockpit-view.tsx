@@ -14,8 +14,11 @@ import { formatCustomerNumber } from "@invessiv/common/patterns/crm/format-custo
 import type {
   CrmAccessDictionary,
   CrmCockpitDictionary,
+  CrmProjectLineItemsDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
 import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
+import type { ProjectLineItemsViewModel } from "@/common/contracts/crm/project-line-items-view-model";
+import type { Locale } from "@/config/i18n";
 import styles from "./customer-cockpit-view.module.css";
 
 type CustomerCockpitViewProps = {
@@ -28,10 +31,13 @@ type CustomerCockpitViewProps = {
   customer: CustomerCockpitDto;
   customerOwnerHasAccess?: boolean;
   customerOwnerMemberId?: string;
+  locale: Locale;
   canWriteProjects?: boolean;
   projects?: ProjectDto[] | null;
   permissionsContent?: SettingsPermissionsDictionary;
   projectOwnerHasAccess?: Readonly<Record<string, boolean>>;
+  projectLineItems?: ProjectLineItemsViewModel;
+  projectLineItemsContent?: CrmProjectLineItemsDictionary;
   rolesHref?: string;
 };
 
@@ -46,10 +52,13 @@ export function CustomerCockpitView({
   customer,
   customerOwnerHasAccess,
   customerOwnerMemberId,
+  locale,
   canWriteProjects = false,
   projects = null,
   permissionsContent,
   projectOwnerHasAccess,
+  projectLineItems,
+  projectLineItemsContent,
   rolesHref,
 }: CustomerCockpitViewProps) {
   const [requestedAccessMemberId, setRequestedAccessMemberId] = useState<
@@ -118,8 +127,11 @@ export function CustomerCockpitView({
           canWrite={canWriteProjects}
           content={content}
           customerId={customer.id}
+          locale={locale}
           onGrantAccessAction={setRequestedAccessMemberId}
           ownerHasAccess={projectOwnerHasAccess}
+          projectLineItems={projectLineItems}
+          projectLineItemsContent={projectLineItemsContent}
           projects={projects}
         />
       ) : null}

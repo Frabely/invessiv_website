@@ -67,4 +67,20 @@ describe("listPermittedWorkspaceAreas", () => {
 
     expect(listPermittedWorkspaceAreas(holder)).toEqual([WorkspaceArea.Crm]);
   });
+
+  it("opens CRM for a member with only a project-line-items-scoped role", () => {
+    const holder = actorWith([], {
+      projectPermissions: new Map([
+        [
+          "project-1",
+          {
+            customerId: "customer-1",
+            permissions: new Set([Permission.ProjectLineItemsRead]),
+          },
+        ],
+      ]),
+    });
+
+    expect(listPermittedWorkspaceAreas(holder)).toEqual([WorkspaceArea.Crm]);
+  });
 });

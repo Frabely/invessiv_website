@@ -18,12 +18,13 @@ const mocks = vi.hoisted(() => ({
   getCustomerById: vi.fn(),
   getCustomerCockpitById: vi.fn(),
   listCategories: vi.fn(),
-  listProjectsByCustomer: vi.fn(),
+  listCockpitProjectsByCustomer: vi.fn(),
   listCustomerAccessScopes: vi.fn(),
   listAccessCustomerProjects: vi.fn(),
   listWorkspaceMembers: vi.fn(),
   listRoleAssignmentOptions: vi.fn(),
   evaluateResponsibilityAccess: vi.fn(),
+  buildProjectLineItemsViewModel: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -52,7 +53,9 @@ vi.mock(
 );
 vi.mock(
   "@/server/workspace/crm/query-handler/list-projects-by-customer.query-handler",
-  () => ({ listProjectsByCustomer: mocks.listProjectsByCustomer }),
+  () => ({
+    listCockpitProjectsByCustomer: mocks.listCockpitProjectsByCustomer,
+  }),
 );
 vi.mock(
   "@/server/workspace/access/query-handler/list-customer-access-scopes.query-handler",
@@ -78,6 +81,9 @@ vi.mock(
     },
   }),
 );
+vi.mock("@/lib/workspace/crm/project-line-items-view-model", () => ({
+  buildProjectLineItemsViewModel: mocks.buildProjectLineItemsViewModel,
+}));
 vi.mock(
   "@/components/workspace/crm/detail/customer-cockpit-dialog/customer-cockpit-dialog",
   () => ({ CustomerCockpitDialog: () => <div data-testid="cockpit" /> }),
@@ -139,7 +145,7 @@ describe("CrmPage", () => {
       total: 1,
     });
     mocks.listCategories.mockResolvedValue([]);
-    mocks.listProjectsByCustomer.mockResolvedValue([]);
+    mocks.listCockpitProjectsByCustomer.mockResolvedValue([]);
     mocks.listCustomerAccessScopes.mockResolvedValue([]);
     mocks.listAccessCustomerProjects.mockResolvedValue([]);
     mocks.listWorkspaceMembers.mockResolvedValue([]);
@@ -231,6 +237,23 @@ describe("CrmPage", () => {
     expect(mocks.getCustomerCockpitById).toHaveBeenCalledWith(
       TEST_CUSTOMER_ID,
       expect.anything(),
+    );
+  });
+
+  it("loads projects through project-line-items.read without projects.read", async () => {
+    mocks.requireWorkspaceArea.mockResolvedValue(
+      workspaceActorWith([Permission.ProjectLineItemsRead]),
+    );
+    mocks.getCustomerCockpitById.mockResolvedValue({ id: TEST_CUSTOMER_ID });
+
+    await renderPage({ cockpit: TEST_CUSTOMER_ID });
+
+    expect(mocks.listCockpitProjectsByCustomer).toHaveBeenCalledWith(
+      TEST_CUSTOMER_ID,
+      expect.anything(),
+    );
+    expect(mocks.buildProjectLineItemsViewModel).toHaveBeenCalledWith(
+      expect.objectContaining({ projects: [] }),
     );
   });
 
