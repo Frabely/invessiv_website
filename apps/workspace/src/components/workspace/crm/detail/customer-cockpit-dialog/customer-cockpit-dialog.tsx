@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { ButtonControl, Dialog, DialogSize } from "@invessiv/ui";
 import { CustomerCockpitView } from "@/components/workspace/crm/detail/customer-cockpit-view/customer-cockpit-view";
 import type { CustomerCockpitDto } from "@invessiv/common/contracts/crm/customer-cockpit.dto";
-import type { ProjectDto } from "@invessiv/common/contracts/crm/project.dto";
 import type { AccessScopeEntryDto } from "@invessiv/common/contracts/auth/access-scope-entry.dto";
 import type { AccessProjectOptionDto } from "@invessiv/common/contracts/auth/access-project-option.dto";
 import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/role-assignment-option.dto";
@@ -18,6 +17,7 @@ import type {
 } from "@/i18n/dictionaries/workspace/crm";
 import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import type { ProjectLineItemsViewModel } from "@/common/contracts/crm/project-line-items-view-model";
+import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
 import type { Locale } from "@/config/i18n";
 
 type CustomerCockpitDialogProps = {
@@ -33,7 +33,7 @@ type CustomerCockpitDialogProps = {
   customerOwnerMemberId?: string;
   locale: Locale;
   canWriteProjects?: boolean;
-  projects?: ProjectDto[] | null;
+  projects?: CockpitProjectDto[] | null;
   permissionsContent?: SettingsPermissionsDictionary;
   projectOwnerHasAccess?: Readonly<Record<string, boolean>>;
   projectLineItems?: ProjectLineItemsViewModel;

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { ProjectDto } from "@invessiv/common/contracts/crm/project.dto";
+import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import { ProjectBillingModel } from "@invessiv/common/constants/crm/project-billing-models";
 import {
@@ -32,7 +33,7 @@ type CustomerProjectsSectionProps = {
   customerId: string;
   canWrite: boolean;
   locale: Locale;
-  projects: readonly ProjectDto[];
+  projects: readonly CockpitProjectDto[];
   accessMembers?: readonly WorkspaceMemberDto[];
   ownerHasAccess?: Readonly<Record<string, boolean>>;
   onGrantAccessAction?: (memberId: string) => void;
@@ -78,9 +79,10 @@ export function CustomerProjectsSection({
     projects.find((project) => project.id === selectedProjectId) ??
     projects[0] ??
     null;
+  const activeProjectDetails = activeProject?.project ?? null;
   const currentStepRef = useRef<HTMLLIElement>(null);
   const activeOwner = accessMembers?.find(
-    (member) => member.id === activeProject?.ownerMemberId,
+    (member) => member.id === activeProjectDetails?.ownerMemberId,
   );
 
   useEffect(() => {
@@ -89,7 +91,7 @@ export function CustomerProjectsSection({
       block: "nearest",
       inline: "center",
     });
-  }, [activeProject?.id, activeProject?.currentProcessStep]);
+  }, [activeProjectDetails?.id, activeProjectDetails?.currentProcessStep]);
 
   function openEditor(project: ProjectDto | null, nextCurrentStep?: string) {
     setEditing(project);
@@ -194,13 +196,17 @@ export function CustomerProjectsSection({
                     type="button"
                   >
                     <span>{project.title}</span>
-                    <small>{content.projects.status[project.status]}</small>
+                    {project.project ? (
+                      <small>
+                        {content.projects.status[project.project.status]}
+                      </small>
+                    ) : null}
                   </button>
-                  {canWrite ? (
+                  {canWrite && project.project ? (
                     <ButtonControl
                       aria-label={content.projects.edit}
                       className={styles.projectEdit}
-                      onClick={() => openEditor(project)}
+                      onClick={() => openEditor(project.project)}
                       title={content.projects.edit}
                       type="button"
                       variant="ghost"
@@ -218,16 +224,18 @@ export function CustomerProjectsSection({
             <>
               <div className={styles.projectHeader}>
                 <div>
-                  <p className={styles.eyebrow}>
-                    {content.projects.status[activeProject.status]}
-                  </p>
+                  {activeProjectDetails ? (
+                    <p className={styles.eyebrow}>
+                      {content.projects.status[activeProjectDetails.status]}
+                    </p>
+                  ) : null}
                   <h2>{activeProject.title}</h2>
                 </div>
                 {activeOwner ? (
                   <div className={styles.ownerBlock}>
                     <span>{content.projects.owner}</span>
                     <strong>{activeOwner.displayName}</strong>
-                    {activeProject &&
+                    {activeProjectDetails &&
                     ownerHasAccess?.[activeProject.id] === false &&
                     onGrantAccessAction ? (
                       <OwnerWithoutAccessBadge
@@ -235,7 +243,9 @@ export function CustomerProjectsSection({
                         onGrantAccessAction={
                           activeOwner.active
                             ? () =>
-                                onGrantAccessAction(activeProject.ownerMemberId)
+                                onGrantAccessAction(
+                                  activeProjectDetails.ownerMemberId,
+                                )
                             : undefined
                         }
                       />
@@ -243,54 +253,59 @@ export function CustomerProjectsSection({
                   </div>
                 ) : null}
               </div>
-              <ol
-                aria-label={content.projects.phase}
-                className={styles.phaseScale}
-              >
-                {activeProject.processSteps.map((item, index) => {
-                  const currentIndex = activeProject.processSteps.indexOf(
-                    activeProject.currentProcessStep,
-                  );
-                  const state =
-                    index < currentIndex
-                      ? "complete"
-                      : index === currentIndex
-                        ? "current"
-                        : "upcoming";
-                  return (
-                    <li
-                      data-state={state}
-                      key={`${item}-${index}`}
-                      ref={state === "current" ? currentStepRef : undefined}
-                    >
-                      {canWrite ? (
-                        <button
-                          aria-current={
-                            state === "current" ? "step" : undefined
-                          }
-                          className={styles.phaseButton}
-                          onClick={() => openEditor(activeProject, item)}
-                          type="button"
-                        >
-                          <span
-                            aria-hidden="true"
-                            className={styles.phaseDot}
-                          />
-                          <span>{item}</span>
-                        </button>
-                      ) : (
-                        <>
-                          <span
-                            aria-hidden="true"
-                            className={styles.phaseDot}
-                          />
-                          <span>{item}</span>
-                        </>
-                      )}
-                    </li>
-                  );
-                })}
-              </ol>
+              {activeProjectDetails ? (
+                <ol
+                  aria-label={content.projects.phase}
+                  className={styles.phaseScale}
+                >
+                  {activeProjectDetails.processSteps.map((item, index) => {
+                    const currentIndex =
+                      activeProjectDetails.processSteps.indexOf(
+                        activeProjectDetails.currentProcessStep,
+                      );
+                    const state =
+                      index < currentIndex
+                        ? "complete"
+                        : index === currentIndex
+                          ? "current"
+                          : "upcoming";
+                    return (
+                      <li
+                        data-state={state}
+                        key={`${item}-${index}`}
+                        ref={state === "current" ? currentStepRef : undefined}
+                      >
+                        {canWrite ? (
+                          <button
+                            aria-current={
+                              state === "current" ? "step" : undefined
+                            }
+                            className={styles.phaseButton}
+                            onClick={() =>
+                              openEditor(activeProjectDetails, item)
+                            }
+                            type="button"
+                          >
+                            <span
+                              aria-hidden="true"
+                              className={styles.phaseDot}
+                            />
+                            <span>{item}</span>
+                          </button>
+                        ) : (
+                          <>
+                            <span
+                              aria-hidden="true"
+                              className={styles.phaseDot}
+                            />
+                            <span>{item}</span>
+                          </>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ol>
+              ) : null}
               {projectLineItems &&
               projectLineItemsContent &&
               projectLineItems.readableProjectIds.includes(activeProject.id) ? (

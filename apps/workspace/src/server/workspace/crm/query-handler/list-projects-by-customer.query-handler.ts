@@ -10,6 +10,7 @@ import { projectMappingService } from "@/server/workspace/crm/services/project-m
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessScope, canAnywhere } from "@/common/patterns/auth/access-scope";
 import { crmAccessCondition } from "@/server/workspace/shared/services/crm-access-condition";
+import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
 
 export async function listProjectsByCustomer(
   customerId: string,
@@ -43,7 +44,7 @@ export async function listProjectsByCustomer(
 export async function listCockpitProjectsByCustomer(
   customerId: string,
   actor: WorkspaceActor,
-): Promise<ProjectDto[]> {
+): Promise<CockpitProjectDto[]> {
   const [projectRows, projectLineItemRows] = await Promise.all([
     canAnywhere(actor, Permission.ProjectsRead)
       ? listProjectsByCustomer(customerId, actor)
@@ -57,12 +58,20 @@ export async function listCockpitProjectsByCustomer(
       : [],
   ]);
 
-  return [
-    ...new Map(
-      [...projectRows, ...projectLineItemRows].map((project) => [
-        project.id,
-        project,
-      ]),
-    ).values(),
-  ];
+  const projectsById = new Map<string, CockpitProjectDto>(
+    projectRows.map((project) => [
+      project.id,
+      { id: project.id, title: project.title, project },
+    ]),
+  );
+  for (const project of projectLineItemRows) {
+    if (!projectsById.has(project.id)) {
+      projectsById.set(project.id, {
+        id: project.id,
+        title: project.title,
+        project: null,
+      });
+    }
+  }
+  return [...projectsById.values()];
 }

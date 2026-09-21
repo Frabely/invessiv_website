@@ -79,7 +79,7 @@ describe("buildProjectLineItemsViewModel", () => {
       ]),
       catalogHref: null,
       customerId: CUSTOMER_ID,
-      projects: [project],
+      projects: [{ id: project.id, title: project.title, project }],
     });
 
     expect(mocks.listLineItemTemplates).not.toHaveBeenCalled();
@@ -95,7 +95,7 @@ describe("buildProjectLineItemsViewModel", () => {
       ]),
       catalogHref: "/de/crm/line-item-templates",
       customerId: CUSTOMER_ID,
-      projects: [project],
+      projects: [{ id: project.id, title: project.title, project }],
     });
 
     expect(mocks.listLineItemTemplates).toHaveBeenCalledWith({

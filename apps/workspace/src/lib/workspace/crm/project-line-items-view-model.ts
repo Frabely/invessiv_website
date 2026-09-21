@@ -2,9 +2,9 @@ import "server-only";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { can } from "@invessiv/common/patterns/auth/can";
-import type { ProjectDto } from "@invessiv/common/contracts/crm/project.dto";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import type { ProjectLineItemsViewModel } from "@/common/contracts/crm/project-line-items-view-model";
+import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
 import { canOn } from "@/common/patterns/auth/can-on";
 import { listProjectLineItemsByCustomer } from "@/server/workspace/crm/query-handler/list-project-line-items-by-customer.query-handler";
 import { listLineItemTemplates } from "@/server/workspace/crm/query-handler/list-line-item-templates.query-handler";
@@ -18,7 +18,7 @@ export async function buildProjectLineItemsViewModel(options: {
   actor: WorkspaceActor;
   catalogHref: string | null;
   customerId: string;
-  projects: readonly ProjectDto[];
+  projects: readonly CockpitProjectDto[];
 }): Promise<ProjectLineItemsViewModel | null> {
   const { actor, catalogHref, customerId, projects } = options;
   const readableProjectIds = projects
