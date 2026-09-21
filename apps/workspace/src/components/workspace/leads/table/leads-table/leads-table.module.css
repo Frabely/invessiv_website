@@ -32,22 +32,8 @@
   padding-bottom: 1.1rem;
 }
 
-@media (max-width: 1024px) {
-  .tableFrame {
-    height: clamp(24rem, 62dvh, 38rem);
-    max-height: calc(100dvh - 18rem);
-  }
-}
-
 @media (max-width: 720px) {
-  .shell {
-    flex: 1 1 auto;
-    display: flex;
-    min-height: 0;
-    overflow: hidden;
-  }
-
-  .tableFrame {
+  .shell .tableFrame {
     height: 100%;
     max-height: none;
   }

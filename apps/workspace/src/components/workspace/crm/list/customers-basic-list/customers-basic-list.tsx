@@ -8,7 +8,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { CustomerSort } from "@invessiv/common/constants/crm/list/customer-sort";
 import type { CustomerSummaryDto } from "@invessiv/common/contracts/crm/customer-summary.dto";
-import { DataTableLayout, EmptyState, PrimaryCtaLink } from "@invessiv/ui";
+import type { ListCustomersResult } from "@invessiv/common/contracts/crm/results/list-customers-result";
+import {
+  DataTableLayout,
+  EmptyState,
+  type ListPaginationProps,
+  PrimaryCtaLink,
+} from "@invessiv/ui";
 import { CustomerListQueryParam } from "@/common/constants/crm/list/customer-list-query-params";
 import { SortableHeader } from "@/components/workspace/shared/table/sortable-header/sortable-header";
 import type { Locale } from "@/config/i18n";
@@ -20,9 +26,8 @@ type CustomersBasicListProps = {
   content: CrmListDictionary;
   basePath: string;
   createHref: string | null;
-  customers: CustomerSummaryDto[];
+  customerList: ListCustomersResult;
   filteredEmptyHref: string;
-  hasCustomers: boolean;
   locale: Locale;
   queryString: string;
   /** A customer reached only through a project-scoped grant is not itself writable. */
@@ -40,15 +45,15 @@ export function CustomersBasicList({
   basePath,
   content,
   createHref,
-  customers,
+  customerList,
   filteredEmptyHref,
-  hasCustomers,
   locale,
   queryString,
   writableCustomerIds,
 }: CustomersBasicListProps) {
+  const customers: CustomerSummaryDto[] = customerList.rows;
   if (customers.length === 0) {
-    if (hasCustomers) {
+    if (customerList.hasCustomers) {
       return (
         <EmptyState
           action={
@@ -99,6 +104,14 @@ export function CustomersBasicList({
   }
 
   const activeSort = getActiveSort(queryString);
+  const pagination: ListPaginationProps = {
+    basePath,
+    content: content.pagination,
+    currentPage: customerList.page,
+    perPage: customerList.perPage,
+    queryString,
+    total: customerList.total,
+  };
   const columns = [
     {
       header: (
@@ -194,6 +207,7 @@ export function CustomersBasicList({
       ariaLabel={content.caption}
       caption={content.caption}
       columns={columns}
+      pagination={pagination}
       tableClassName={styles.table}
     >
       {customers.map((customer) => (

@@ -83,15 +83,31 @@ export function CustomerTableRow({
           <span className={styles.meta}>{customer.primaryContactEmail}</span>
         ) : null}
       </DataTableCell>
-      <DataTableCell className={styles.contactCell}>
-        {customer.projectLineItemValue
-          ? formatEuroCents(customer.projectLineItemValue.oneTimeCents, locale)
-          : null}
+      <DataTableCell className={styles.oneTimeCell}>
+        {customer.projectLineItemValue ? (
+          <>
+            <span className={styles.mobileLabel}>
+              {content.columns.oneTimePayment}
+            </span>
+            {formatEuroCents(
+              customer.projectLineItemValue.oneTimeCents,
+              locale,
+            )}
+          </>
+        ) : null}
       </DataTableCell>
-      <DataTableCell className={styles.contactCell}>
-        {customer.projectLineItemValue
-          ? formatEuroCents(customer.projectLineItemValue.monthlyCents, locale)
-          : null}
+      <DataTableCell className={styles.monthlyCell}>
+        {customer.projectLineItemValue ? (
+          <>
+            <span className={styles.mobileLabel}>
+              {content.columns.recurringRevenue}
+            </span>
+            {formatEuroCents(
+              customer.projectLineItemValue.monthlyCents,
+              locale,
+            )}
+          </>
+        ) : null}
       </DataTableCell>
       <DataTableCell className={styles.updatedCell} title={customer.updatedAt}>
         {updated}

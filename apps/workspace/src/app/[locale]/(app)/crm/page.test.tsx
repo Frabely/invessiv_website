@@ -119,10 +119,6 @@ vi.mock(
     ),
   }),
 );
-vi.mock(
-  "@/components/workspace/shared/table/list-pagination/list-pagination",
-  () => ({ ListPagination: () => <div data-testid="pagination" /> }),
-);
 
 async function renderPage(searchParams: Record<string, string> = {}) {
   render(

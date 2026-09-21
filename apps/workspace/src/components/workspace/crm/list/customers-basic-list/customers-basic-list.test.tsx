@@ -5,6 +5,7 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { getCrmListDictionary } from "@/i18n/dictionaries/workspace/crm";
+import type { ListCustomersResult } from "@invessiv/common/contracts/crm/results/list-customers-result";
 import {
   customerDetailFixture,
   TEST_CUSTOMER_ID,
@@ -12,6 +13,13 @@ import {
 import { CustomersBasicList } from "./customers-basic-list";
 
 const content = getCrmListDictionary("de");
+
+function createCustomerList(
+  rows: ListCustomersResult["rows"],
+  hasCustomers = rows.length > 0,
+): ListCustomersResult {
+  return { hasCustomers, page: 1, perPage: 25, rows, total: rows.length };
+}
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }),
@@ -28,9 +36,10 @@ describe("CustomersBasicList", () => {
         basePath="/de/crm"
         content={content}
         createHref="/de/crm?mode=create"
-        customers={[customerDetailFixture({ status: "paused" })]}
+        customerList={createCustomerList([
+          customerDetailFixture({ status: "paused" }),
+        ])}
         filteredEmptyHref="/de/crm?archived=true"
-        hasCustomers
         locale="de"
         queryString=""
         writableCustomerIds={new Set([TEST_CUSTOMER_ID])}
@@ -60,9 +69,8 @@ describe("CustomersBasicList", () => {
         basePath="/de/crm"
         content={content}
         createHref={null}
-        customers={[customerDetailFixture()]}
+        customerList={createCustomerList([customerDetailFixture()])}
         filteredEmptyHref="/de/crm?archived=true"
-        hasCustomers
         locale="de"
         queryString=""
         writableCustomerIds={new Set()}
@@ -86,15 +94,14 @@ describe("CustomersBasicList", () => {
         basePath="/de/crm"
         content={content}
         createHref={null}
-        customers={[
+        customerList={createCustomerList([
           customerDetailFixture(),
           customerDetailFixture({
             id: otherCustomerId,
             displayName: "Südwind Consulting",
           }),
-        ]}
+        ])}
         filteredEmptyHref="/de/crm?archived=true"
-        hasCustomers
         locale="de"
         queryString=""
         writableCustomerIds={new Set([TEST_CUSTOMER_ID])}
@@ -115,9 +122,8 @@ describe("CustomersBasicList", () => {
         basePath="/de/crm"
         content={content}
         createHref="/de/crm?mode=create"
-        customers={[]}
+        customerList={createCustomerList([], false)}
         filteredEmptyHref="/de/crm?archived=true"
-        hasCustomers={false}
         locale="de"
         queryString=""
         writableCustomerIds={new Set()}
@@ -136,9 +142,8 @@ describe("CustomersBasicList", () => {
         basePath="/de/crm"
         content={content}
         createHref="/de/crm?mode=create"
-        customers={[]}
+        customerList={createCustomerList([], true)}
         filteredEmptyHref="/de/crm?archived=true"
-        hasCustomers
         locale="de"
         queryString=""
         writableCustomerIds={new Set()}

@@ -6,6 +6,7 @@ import { LineItemTemplateStatus } from "@invessiv/common/constants/crm/line-item
 import type { ProjectLineItemDto } from "@invessiv/common/contracts/crm/project-line-item.dto";
 import type { LineItemTemplateDto } from "@invessiv/common/contracts/crm/line-item-template.dto";
 import { ProjectLineItemFormValidationCode } from "@/common/constants/crm/forms/project-line-item-form-validation-codes";
+import { ProjectLineItemStatus } from "@invessiv/common/constants/crm/project-line-item-statuses";
 import { LineItemFieldsFormValidationCode } from "@/common/constants/crm/forms/line-item-fields-form-validation-codes";
 import type { ProjectLineItemFormValues } from "@/common/contracts/crm/project-line-item-form-values";
 import {
@@ -40,6 +41,7 @@ const PROJECT_LINE_ITEM: ProjectLineItemDto = {
   priceCents: 7500,
   pricingMode: ServicePricingMode.Recurring,
   recurringInterval: BillingInterval.Monthly,
+  status: ProjectLineItemStatus.Planned,
   version: 4,
   createdAt: "2026-01-01T00:00:00.000Z",
   updatedAt: "2026-01-01T00:00:00.000Z",
@@ -55,6 +57,7 @@ function values(
     priceInput: "2000",
     pricingMode: ServicePricingMode.OneTime,
     recurringInterval: null,
+    status: ProjectLineItemStatus.Planned,
     ...overrides,
   };
 }
@@ -68,6 +71,7 @@ describe("createProjectLineItemFormValues", () => {
       priceInput: "",
       pricingMode: ServicePricingMode.OneTime,
       recurringInterval: null,
+      status: ProjectLineItemStatus.Planned,
     });
   });
 
@@ -89,6 +93,7 @@ describe("applyLineItemTemplateToFormValues", () => {
       priceInput: "100",
       pricingMode: ServicePricingMode.Recurring,
       recurringInterval: BillingInterval.Monthly,
+      status: ProjectLineItemStatus.Planned,
     });
   });
 });
@@ -173,6 +178,7 @@ describe("toCreateProjectLineItemRequest", () => {
       priceCents: 199950,
       pricingMode: ServicePricingMode.OneTime,
       recurringInterval: null,
+      status: ProjectLineItemStatus.Planned,
     });
   });
 

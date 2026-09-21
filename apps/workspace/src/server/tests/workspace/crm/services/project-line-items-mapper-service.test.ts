@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
+import { ProjectLineItemStatus } from "@invessiv/common/constants/crm/project-line-item-statuses";
 import type { ProjectLineItemRow } from "@invessiv/common/contracts/crm/rows/project-line-item-row";
 import { projectLineItemsMapperService } from "@/server/workspace/crm/services/project-line-items-mapper-service";
 
@@ -33,6 +34,7 @@ describe("projectLineItemsMapperService.toDto", () => {
       priceCents: 200000,
       pricingMode: ServicePricingMode.OneTime,
       recurringInterval: null,
+      status: ProjectLineItemStatus.Confirmed,
       version: 1,
       createdAt: "2026-01-02T10:00:00.000Z",
       updatedAt: "2026-01-03T11:30:00.000Z",

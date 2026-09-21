@@ -24,7 +24,6 @@ import { CustomerCockpitDialog } from "@/components/workspace/crm/detail/custome
 import { CustomersBasicList } from "@/components/workspace/crm/list/customers-basic-list/customers-basic-list";
 import { CustomersPageHeader } from "@/components/workspace/crm/shell/customers-page-header/customers-page-header";
 import { WorkspacePageShell } from "@/components/workspace/workspace-page-shell/workspace-page-shell";
-import { ListPagination } from "@/components/workspace/shared/table/list-pagination/list-pagination";
 import { ButtonLink } from "@invessiv/ui";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import {
@@ -237,20 +236,11 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
         basePath={basePath}
         content={getCrmListDictionary(activeLocale)}
         createHref={createHref}
-        customers={customerListWithValues.rows}
+        customerList={customerListWithValues}
         filteredEmptyHref={archivedToggleHref}
-        hasCustomers={customerList.hasCustomers}
         locale={activeLocale}
         queryString={queryString}
         writableCustomerIds={writableCustomerIds}
-      />
-      <ListPagination
-        basePath={basePath}
-        content={getCrmListDictionary(activeLocale)}
-        currentPage={customerList.page}
-        perPage={customerList.perPage}
-        queryString={queryString}
-        total={customerList.total}
       />
       {showDialog ? (
         <CustomerFormDialog
