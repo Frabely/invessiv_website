@@ -3,6 +3,11 @@
 > **Merge-Einheit:** Ordner 09 · **Branch:** `feat/crm-aufgabenserien-und-reminder`
 > **Abhängigkeit:** Task 11 · **Status:** offen
 
+> **Hinweis Neuplanung Ordner 08 (21.09.2026):** Aufgaben gehören nur noch zu Projekten, haben die Status
+> `open | in_progress | done | cancelled` und eine Fälligkeit **nur als Datum** (`due_on`). Task 11 ist in die
+> Tasks 11-1 bis 11-3 aufgeteilt (`08-aufgaben/README.md`). Uhrzeit-Angaben in diesem Plan sind vor der Umsetzung
+> an dieses Modell anzupassen; eine Erinnerungsuhrzeit bräuchte eine eigene Entscheidung.
+
 ## Context
 
 Wiederkehrende Wartungs- und Verwaltungsaufgaben sollen nicht kopiert werden. Jede Ausführung bleibt

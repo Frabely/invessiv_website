@@ -1,8 +1,11 @@
 # Task 12 — Onboarding-Checkliste
 
-> **Merge-Einheit:** Ordner 08 · **Branch:** `feat/crm-aufgaben`
-> **Aufwand:** S · **Abhängigkeiten:** Task 11 (Aufgaben)
-> **Migration:** keine
+> **Status:** zurückgestellt (Neuplanung Ordner 08, 21.09.2026) · **Abhängigkeiten:** Ordner 08 (Task 11-1 bis 11-3)
+
+> **Achtung — veralteter Stand.** Dieser Plan setzt das frühere Aufgabenmodell voraus (Kunden-/interne Aufgaben,
+> `done_at`/`done_by_side`, `title_key`). Seit der Neuplanung gibt es nur Projektaufgaben mit Status
+> `open | in_progress | done | cancelled` (siehe `08-aufgaben/README.md`). Vor einer Umsetzung wird er auf dieses
+> Modell neu zugeschnitten und als eigener Ordner eingeplant; die Verzahnung mit Ordner 15c wird dabei mit geklärt.
 
 - Jede Vorlagenzeile erzeugt ein normales Taskobjekt mit genau einem internen Bearbeiter.
 - Vorlage darf `action_side`, Sichtbarkeit, relativen Termin und Titel-Key setzen, aber keine
