@@ -46,6 +46,7 @@ export const PERMISSION_GROUP_PERMISSIONS = {
     Permission.ProjectsWrite,
     Permission.ProjectLineItemsRead,
     Permission.ProjectLineItemsWrite,
+    Permission.TasksRead,
     Permission.TasksWrite,
   ],
   [PermissionGroup.Services]: [

@@ -6,7 +6,8 @@
 
 ## Ziel
 
-Die Tabelle `tasks`, ihre Konstanten und die Permissions `tasks.read`/`tasks.write` existieren. Kein Handler und keine
+Die Tabelle `tasks`, ihre Konstanten und die neue Permission `tasks.read` existieren; `tasks.write` gibt es bereits seit
+Migration 0024 (bindbar, in den Systemrollen) und bleibt unverändert. Kein Handler und keine
 UI nutzt sie; der Task ist ein unsichtbares Fundament und einzeln mergebar.
 
 ## Konstanten
@@ -70,10 +71,10 @@ tasks
 
 | Key           | Realm       | Bindbar | Beschreibung (Katalog, Englisch)             |
 | ------------- | ----------- | ------- | -------------------------------------------- |
-| `tasks.read`  | `workspace` | ja      | View the tasks of a project.                 |
-| `tasks.write` | `workspace` | ja      | Create, edit and change the status of tasks. |
+| `tasks.read`  | `workspace` | ja      | View the tasks of a project. (neu)           |
+| `tasks.write` | `workspace` | ja      | Create, edit and reassign tasks. (vorhanden) |
 
-Die Migration legt beide an und vergibt sie an die beiden Systemrollen — Muster: letzter Block von
+Die Migration legt `tasks.read` an und vergibt sie an die beiden Systemrollen — Muster: letzter Block von
 `packages/db/migrations/0035_create_project_line_items.sql`.
 
 ## Dateien

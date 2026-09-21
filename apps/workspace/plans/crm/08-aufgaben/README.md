@@ -30,20 +30,20 @@ entschieden. 11a-2 und 11b können parallel zu 11a-1 laufen, sobald ihre Abhäng
 
 ## Entscheidungen
 
-| Bereich      | Entscheidung                                                                                                                                                                                     |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Kontext      | Genau ein Projekt. Keine Kundenspalte: der Kunde folgt aus dem Projekt (wie bei `project_line_items`). Keine internen Aufgaben ohne Projekt, keine Aufgaben direkt am Kunden                     |
-| Flach        | Kein Parent, keine Unteraufgaben, keine Checklisten, keine Handsortierung (`sort_order`)                                                                                                         |
-| Status       | `open`, `in_progress`, `done`, `cancelled`. `cancelled` ersetzt Löschen; es gibt keinen Löschpfad. Eine Aufgabe verschwindet nur mit ihrem Projekt (`ON DELETE CASCADE`)                         |
-| Wer ist dran | `action_side`: `internal` (wir) oder `customer`. „Warten auf Kunde“ ist `action_side = customer` bei offenem Status, kein eigener Status                                                         |
-| Bearbeiter   | Immer genau ein aktives internes Mitglied (`assignee_member_id`). Standard: Projekt-Owner; bei Anlage und später änderbar. Ein Owner-Wechsel am Projekt überschreibt ihn nicht                   |
-| Warum        | Auch bei Kundenaufgaben muss intern jemand nachhaken. Der Kunde sieht später nur „Wir“ oder „Sie“, nie den Mitarbeiternamen                                                                      |
-| Sichtbarkeit | `visible_to_customer`, Standard **aus**. `action_side = customer` erzwingt `true` (DB-CHECK und Handler), sonst könnte der Kunde nie handeln. Bis zum Portal (Ordner 13) ohne Wirkung nach außen |
-| Fälligkeit   | Nur Datum (`due_on`), Geschäftszeitzone Europe/Berlin. Keine Uhrzeit                                                                                                                             |
-| Überfällig   | `due_on < heute (Europe/Berlin)` und Status `open` oder `in_progress`. „Bald fällig“: `due_on` heute bis heute + 7 Tage                                                                          |
-| Abschluss    | `completed_at` + `completed_by_member_id`, gesetzt genau bei `done` (DB-CHECK). Wiederöffnen (`done` → `open`/`in_progress`) ist intern erlaubt und wird als Activity protokolliert              |
-| Nachvollzug  | Anlage, Status-, Bearbeiter-, Seiten- und Sichtbarkeitswechsel schreiben je eine Activity mit `customer_id` und `project_id`                                                                     |
-| Rechte       | `tasks.read`, `tasks.write`, beide bindbar (`scope_assignable = true`) wie `project_line_items.*`. Kundenbindung gilt für alle Projekte des Kunden, Projektbindung nur für dieses Projekt        |
+| Bereich      | Entscheidung                                                                                                                                                                                                             |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Kontext      | Genau ein Projekt. Keine Kundenspalte: der Kunde folgt aus dem Projekt (wie bei `project_line_items`). Keine internen Aufgaben ohne Projekt, keine Aufgaben direkt am Kunden                                             |
+| Flach        | Kein Parent, keine Unteraufgaben, keine Checklisten, keine Handsortierung (`sort_order`)                                                                                                                                 |
+| Status       | `open`, `in_progress`, `done`, `cancelled`. `cancelled` ersetzt Löschen; es gibt keinen Löschpfad. Eine Aufgabe verschwindet nur mit ihrem Projekt (`ON DELETE CASCADE`)                                                 |
+| Wer ist dran | `action_side`: `internal` (wir) oder `customer`. „Warten auf Kunde“ ist `action_side = customer` bei offenem Status, kein eigener Status                                                                                 |
+| Bearbeiter   | Immer genau ein aktives internes Mitglied (`assignee_member_id`). Standard: Projekt-Owner; bei Anlage und später änderbar. Ein Owner-Wechsel am Projekt überschreibt ihn nicht                                           |
+| Warum        | Auch bei Kundenaufgaben muss intern jemand nachhaken. Der Kunde sieht später nur „Wir“ oder „Sie“, nie den Mitarbeiternamen                                                                                              |
+| Sichtbarkeit | `visible_to_customer`, Standard **aus**. `action_side = customer` erzwingt `true` (DB-CHECK und Handler), sonst könnte der Kunde nie handeln. Bis zum Portal (Ordner 13) ohne Wirkung nach außen                         |
+| Fälligkeit   | Nur Datum (`due_on`), Geschäftszeitzone Europe/Berlin. Keine Uhrzeit                                                                                                                                                     |
+| Überfällig   | `due_on < heute (Europe/Berlin)` und Status `open` oder `in_progress`. „Bald fällig“: `due_on` heute bis heute + 7 Tage                                                                                                  |
+| Abschluss    | `completed_at` + `completed_by_member_id`, gesetzt genau bei `done` (DB-CHECK). Wiederöffnen (`done` → `open`/`in_progress`) ist intern erlaubt und wird als Activity protokolliert                                      |
+| Nachvollzug  | Anlage, Status-, Bearbeiter-, Seiten- und Sichtbarkeitswechsel schreiben je eine Activity mit `customer_id` und `project_id`                                                                                             |
+| Rechte       | `tasks.read` (neu) und `tasks.write` (seit 0024 vorhanden), beide bindbar (`scope_assignable = true`) wie `project_line_items.*`. Kundenbindung gilt für alle Projekte des Kunden, Projektbindung nur für dieses Projekt |
 
 ## Bewusst nicht in Ordner 08
 

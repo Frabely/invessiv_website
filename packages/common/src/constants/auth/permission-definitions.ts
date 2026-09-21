@@ -123,6 +123,13 @@ export const PERMISSION_DEFINITIONS = {
     assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
     description: "Create, edit and archive line item templates.",
   },
+  [Permission.TasksRead]: {
+    realm: AuthRealm.Workspace,
+    delegable: true,
+    scopeAssignable: true,
+    assignableScopeTypes: CUSTOMER_AND_PROJECT,
+    description: "View the tasks of a project.",
+  },
   [Permission.TasksWrite]: {
     realm: AuthRealm.Workspace,
     delegable: true,

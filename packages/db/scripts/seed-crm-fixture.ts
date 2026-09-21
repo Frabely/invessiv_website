@@ -18,12 +18,13 @@ import {
   customerContactAssignments,
   customers,
   leadCategories,
+  lineItemTemplates,
   people,
   projectLineItems,
   projects,
   rolePermissions,
   roles,
-  lineItemTemplates,
+  tasks,
   users,
   workspaceMemberRoles,
   workspaceMembers,
@@ -41,6 +42,8 @@ import { BillingInterval } from "@invessiv/common/constants/crm/billing-interval
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { LineItemTemplateStatus } from "@invessiv/common/constants/crm/line-item-template-statuses";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
+import { TaskActionSide } from "@invessiv/common/constants/crm/task-action-sides";
+import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import { ProjectPhase } from "@invessiv/common/constants/crm/project-phases";
 import { ProjectBillingModel } from "@invessiv/common/constants/crm/project-billing-models";
 import { ProjectWorkflowKey } from "@invessiv/common/constants/crm/project-workflows";
@@ -247,6 +250,13 @@ async function resolveCategoryIds(tx: ContactDatabaseTransaction) {
     .where(inArray(leadCategories.slug, slugs));
 
   return new Map(rows.map((row) => [row.slug, row.id]));
+}
+
+/** A calendar date `days` from today, as `YYYY-MM-DD` (negative = in the past). */
+function dateOffsetFromToday(days: number): string {
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  return date.toISOString().slice(0, 10);
 }
 
 async function resetFixtureRows(tx: ContactDatabaseTransaction) {
@@ -538,6 +548,75 @@ async function run() {
         pricing_mode: ServicePricingMode.Recurring,
         recurring_interval: BillingInterval.Monthly,
         version: 1,
+      },
+    ]);
+    // Covers every status and both sides, plus overdue, due soon and undated, so lists and
+    // dashboards have realistic input; visibility is on for everything the customer must act on.
+    const seededAt = new Date();
+    const taskBase = {
+      project_id: projectId,
+      description: "",
+      assignee_member_id: owner.memberId,
+      completed_at: null,
+      completed_by_member_id: null,
+      version: 1,
+    };
+    await tx.insert(tasks).values([
+      {
+        ...taskBase,
+        id: randomUUID(),
+        title: "Zugangsdaten zum Hosting bereitstellen",
+        status: TaskStatus.Open,
+        action_side: TaskActionSide.Customer,
+        visible_to_customer: true,
+        due_on: dateOffsetFromToday(-3),
+      },
+      {
+        ...taskBase,
+        id: randomUUID(),
+        title: "Texte für die Unterseiten freigeben",
+        status: TaskStatus.Open,
+        action_side: TaskActionSide.Customer,
+        visible_to_customer: true,
+        due_on: dateOffsetFromToday(4),
+      },
+      {
+        ...taskBase,
+        id: randomUUID(),
+        title: "Startseite umsetzen",
+        status: TaskStatus.InProgress,
+        action_side: TaskActionSide.Internal,
+        visible_to_customer: true,
+        due_on: dateOffsetFromToday(2),
+      },
+      {
+        ...taskBase,
+        id: randomUUID(),
+        title: "Analytics einrichten",
+        status: TaskStatus.Open,
+        action_side: TaskActionSide.Internal,
+        visible_to_customer: false,
+        due_on: null,
+      },
+      {
+        ...taskBase,
+        id: randomUUID(),
+        title: "Logo und Farbwelt klären",
+        status: TaskStatus.Done,
+        action_side: TaskActionSide.Customer,
+        visible_to_customer: true,
+        due_on: dateOffsetFromToday(-10),
+        completed_at: seededAt,
+        completed_by_member_id: owner.memberId,
+      },
+      {
+        ...taskBase,
+        id: randomUUID(),
+        title: "Blog-Bereich vorbereiten",
+        status: TaskStatus.Cancelled,
+        action_side: TaskActionSide.Internal,
+        visible_to_customer: false,
+        due_on: null,
       },
     ]);
     await tx.insert(workspaceMemberScopedRoles).values([
