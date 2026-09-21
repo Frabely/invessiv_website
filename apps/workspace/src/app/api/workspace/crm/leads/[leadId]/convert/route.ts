@@ -8,7 +8,8 @@ import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-
 import { can } from "@invessiv/common/patterns/auth/can";
 import { formValidationSchemas } from "@invessiv/common/patterns/validation/form-validation-schemas";
 import { CrmOperation } from "@/common/constants/crm/crm-operations";
-import { withPermission } from "@/lib/auth/api";
+import { CrmEndpointAccessRule } from "@/common/constants/auth/crm-endpoint-access-rules";
+import { withCrmPermission } from "@/lib/auth/api";
 import { authApiError } from "@/lib/auth/auth-api-error";
 import { readJsonBody } from "@/lib/http/read-json-body";
 import { leadConversionApiError } from "@/lib/workspace/crm/lead-conversion-api-error";
@@ -23,47 +24,53 @@ type RouteContext = { params: Promise<{ leadId: string }> };
 export async function POST(request: NextRequest, { params }: RouteContext) {
   const { leadId } = await params;
 
-  return withPermission(Permission.CustomersWrite, async (req, actor) => {
-    if (!can(actor, Permission.LeadsWrite)) {
-      return authApiError(AuthErrorCode.Forbidden, HttpResponseCode.Forbidden);
-    }
+  return withCrmPermission(
+    CrmEndpointAccessRule.LeadConversion,
+    async (req, actor) => {
+      if (!can(actor, Permission.LeadsWrite)) {
+        return authApiError(
+          AuthErrorCode.Forbidden,
+          HttpResponseCode.Forbidden,
+        );
+      }
 
-    if (!formValidationSchemas.uuid.safeParse(leadId).success) {
-      return leadConversionApiError(LeadConversionErrorCode.LeadNotFound);
-    }
+      if (!formValidationSchemas.uuid.safeParse(leadId).success) {
+        return leadConversionApiError(LeadConversionErrorCode.LeadNotFound);
+      }
 
-    const parsed = await readJsonBody(req);
-    if (!parsed.ok) {
-      return leadConversionApiError(LeadConversionErrorCode.ValidationError, {
-        status: HttpResponseCode.BadRequest,
-      });
-    }
-
-    const validation = customerSchemas.create.safeParse(parsed.body);
-    if (!validation.success) {
-      return leadConversionApiError(LeadConversionErrorCode.ValidationError, {
-        details: validation.error.issues,
-      });
-    }
-
-    try {
-      const result = await convertLeadToCustomer(
-        leadId,
-        validation.data,
-        actor,
-      );
-      if (!result.ok) {
-        return leadConversionApiError(result.code, {
-          details: result.errors,
+      const parsed = await readJsonBody(req);
+      if (!parsed.ok) {
+        return leadConversionApiError(LeadConversionErrorCode.ValidationError, {
+          status: HttpResponseCode.BadRequest,
         });
       }
-      return Response.json(
-        { customerId: result.customerId },
-        { status: HttpResponseCode.Created },
-      );
-    } catch (error: unknown) {
-      logCrmFailure(CrmOperation.ConvertLead, error);
-      return leadConversionApiError(LeadConversionErrorCode.Internal);
-    }
-  })(request);
+
+      const validation = customerSchemas.create.safeParse(parsed.body);
+      if (!validation.success) {
+        return leadConversionApiError(LeadConversionErrorCode.ValidationError, {
+          details: validation.error.issues,
+        });
+      }
+
+      try {
+        const result = await convertLeadToCustomer(
+          leadId,
+          validation.data,
+          actor,
+        );
+        if (!result.ok) {
+          return leadConversionApiError(result.code, {
+            details: result.errors,
+          });
+        }
+        return Response.json(
+          { customerId: result.customerId },
+          { status: HttpResponseCode.Created },
+        );
+      } catch (error: unknown) {
+        logCrmFailure(CrmOperation.ConvertLead, error);
+        return leadConversionApiError(LeadConversionErrorCode.Internal);
+      }
+    },
+  )(request);
 }

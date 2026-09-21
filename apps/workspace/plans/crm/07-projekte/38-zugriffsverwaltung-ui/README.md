@@ -166,7 +166,9 @@ die Punkte dieser Feinplanung ergänzt.
       und nur Projekt 2, keine Ansprechpartner.
 - [ ] Nicht bindbare Rollen erscheinen im Baum sichtbar gesperrt mit Erklärung, nicht versteckt.
 - [ ] Eine Rolle am Kunden erscheint bei allen Projekten gesperrt angehakt.
-- [ ] 409 behält Eingaben und zeigt den aktuellen Stand; Entzug wirkt beim nächsten Request des Mitglieds.
+- [ ] Die konfliktfeste Entwurfsübernahme bei 409 folgt bewusst erst mit
+      [`Task 41`](../../../24-zustaendigkeitszugriff-absicherung/41-zugriffsbereich-konflikte.md) am Ende des
+      CRM-Plans; Entzüge wirken weiterhin beim nächsten Request des Mitglieds.
 - [ ] Empty-States erklären, wofür Zugriffe gedacht sind; „noch keine Zuweisung" und „keine Treffer" sind
       unterscheidbar.
 - [ ] `TreeView` ist app-neutral: keine Fachbegriffe, keine Dictionaries, kein `next/*`.
@@ -178,8 +180,8 @@ die Punkte dieser Feinplanung ergänzt.
 
 ## Regeln, die beim Umsetzen in `AGENTS.md` nachgezogen werden
 
-| Datei                                          | Ergänzung                                                                                                     |
-| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `src/components/workspace/settings/AGENTS.md`  | Ein Haken ist eine Mutation; vererbte Haken sind Darstellung; Wurzelzeile ist lesend                          |
-| `packages/AGENTS.md` (Abschnitt `packages/ui`) | `TreeView` als app-neutraler Baustein mit Render-Prop für Zeilen-Controls                                     |
-| `src/server/workspace/access/AGENTS.md`        | Kunden-Lookup der Zugriffsverwaltung ist bewusst nicht scope-gefiltert und liefert nur Nummer und Anzeigename |
+| Datei                                          | Ergänzung                                                                                                                    |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `src/components/workspace/settings/AGENTS.md`  | Zugriffszuweisungen werden als versionierter Gesamtsatz gespeichert; vererbte Haken sind Darstellung; Wurzelzeile ist lesend |
+| `packages/AGENTS.md` (Abschnitt `packages/ui`) | `TreeView` als app-neutraler Baustein mit Render-Prop für Zeilen-Controls                                                    |
+| `src/server/workspace/access/AGENTS.md`        | Kunden-Lookup der Zugriffsverwaltung ist bewusst nicht scope-gefiltert und liefert nur Nummer und Anzeigename                |

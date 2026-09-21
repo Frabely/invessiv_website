@@ -26,7 +26,9 @@ Hülle nach dem Muster von `member-roles-dialog`:
 - Kein Footer mit „Speichern" — jede Änderung wirkt sofort. Der Footer trägt nur „Fertig".
   Das ist der bewusste Unterschied zum Rollen-Dialog und muss in der Microcopy stehen, damit niemand ein
   Speichern erwartet.
-- `useVersionedMutation` je Mutation; 409 behält den Zustand und zeigt den aktuellen Stand.
+- Die Zugriffszuweisungen werden als versionierter Gesamtsatz gespeichert. Die konfliktfeste
+  Entwurfsübernahme bei 409 folgt erst mit
+  [`Task 41`](../../../24-zustaendigkeitszugriff-absicherung/41-zugriffsbereich-konflikte.md).
 - Fokus-Rückgabe auf den auslösenden Button beim Schließen.
 
 ### `MEMBER_WITHOUT_ROLE`
@@ -52,8 +54,7 @@ nicht im Layout. `canManageAccess` wird daraus abgeleitet und als Prop durchgere
 ## Tests
 
 - opens the dialog from the member row and returns focus to the trigger on close
-- grants and revokes a scope without a save step
-- a version conflict shows the current state and keeps the dialog open
+- saves the edited assignment set from the dialog
 - removing the last assignment explains `MEMBER_WITHOUT_ROLE` and offers the next step
 - the counter matches the number of listed assignments
 - without `members.manage` the action and the counter are absent, not disabled

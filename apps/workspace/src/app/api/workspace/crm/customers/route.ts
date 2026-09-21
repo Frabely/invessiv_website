@@ -2,14 +2,13 @@ import "server-only";
 
 import type { NextRequest } from "next/server";
 
-import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { CustomerErrorCode } from "@invessiv/common/constants/crm/errors/customer-error-codes";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import type { CreateCustomerRequestDto } from "@invessiv/common/contracts/crm/create-customer-request.dto";
 import type { CreateCustomerResult } from "@invessiv/common/contracts/crm/results/create-customer-result";
 import { CrmOperation } from "@/common/constants/crm/crm-operations";
 import { CrmEndpointAccessRule } from "@/common/constants/auth/crm-endpoint-access-rules";
-import { withCrmPermission, withPermission } from "@/lib/auth/api";
+import { withCrmPermission } from "@/lib/auth/api";
 import { readJsonBody } from "@/lib/http/read-json-body";
 import { customerApiError } from "@/lib/workspace/crm/customer-api-error";
 import { logCrmFailure } from "@/lib/workspace/crm/log-crm-failure";
@@ -44,8 +43,8 @@ export const GET = withCrmPermission(
   },
 );
 
-export const POST = withPermission(
-  Permission.CustomersWrite,
+export const POST = withCrmPermission(
+  CrmEndpointAccessRule.CustomerCreate,
   async (request: NextRequest, actor) => {
     const parsed = await readJsonBody(request);
     if (!parsed.ok) {

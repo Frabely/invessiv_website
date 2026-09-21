@@ -13,7 +13,8 @@
 Nach Task 37 sind gebundene Rechte vollständig durchgesetzt, aber nur per API anlegbar. Dieser Task macht sie für den
 Owner in der App konfigurierbar — ohne Codeänderung für neue Konstellationen. Er folgt den Regeln aus
 `src/components/workspace/settings/AGENTS.md`: keine Rollenlogik im Client, Mutationen über
-`access-api-service.ts`, Dialog-Hülle aus `shared`, 409 behält Eingaben.
+`access-api-service.ts` und Dialog-Hülle aus `shared`. Die konfliktfeste Entwurfsübernahme bei 409 ist bewusst in
+Task 41 am Ende des CRM-Plans verschoben.
 
 ## Entscheidungen
 
@@ -57,7 +58,8 @@ apps/workspace/src/
 
 ### CRM-07c-T2 — Settings-Dialog „Zugriffe“
 
-- Liste, Hinzufügen, Entfernen, Vorschau, 409-Konflikt mit aktuellem Stand; Zähler in der Mitgliederliste.
+- Liste, Hinzufügen, Entfernen, Vorschau und Zähler in der Mitgliederliste. Die konfliktfeste Behandlung eines
+  parallelen 409-Konflikts folgt erst in Task 41.
 - **Akzeptanz:** Entfernen der letzten Zuweisung zeigt `MEMBER_WITHOUT_ROLE` verständlich; Fokus-Rückgabe nach
   Schließen.
 

@@ -64,16 +64,20 @@ export function withPermission(
 }
 
 /**
- * Admits a CRM request when the permission exists globally or through a customer/project binding.
- * The concrete query or command still narrows that broad admission to its addressed resource.
+ * Admits a CRM request according to its central access rule. Resource-scoped routes still narrow
+ * this broad admission to the addressed customer or project in their query or command.
  */
 export function withCrmPermission(
   accessRule: CrmEndpointAccessRule,
   handler: WorkspaceApiHandler,
 ) {
   return withWorkspaceApiActor(async (request, actor) => {
-    const { permission } = CRM_ENDPOINT_ACCESS_RULES[accessRule];
-    if (!canAnywhere(actor, permission)) {
+    const rule = CRM_ENDPOINT_ACCESS_RULES[accessRule];
+    const permitted =
+      rule.scope === "workspace"
+        ? can(actor, rule.permission)
+        : canAnywhere(actor, rule.permission);
+    if (!permitted) {
       return authApiError(AuthErrorCode.Forbidden, HttpResponseCode.Forbidden);
     }
 

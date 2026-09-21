@@ -7,6 +7,7 @@ import { Permission } from "@invessiv/common/constants/auth/permissions";
  */
 export const CrmEndpointAccessRule = {
   CustomerAccessScopes: "customer_access_scopes",
+  CustomerCreate: "customer_create",
   CustomerDetail: "customer_detail",
   CustomerUpdate: "customer_update",
   CustomerProjects: "customer_projects",
@@ -18,6 +19,7 @@ export const CrmEndpointAccessRule = {
   ProjectLineItems: "project_line_items",
   ProjectLineItemCreate: "project_line_item_create",
   LineItemTemplateDetail: "line_item_template_detail",
+  LineItemTemplateCreate: "line_item_template_create",
   LineItemTemplates: "line_item_templates",
 } as const;
 
@@ -27,6 +29,10 @@ export type CrmEndpointAccessRule =
 export const CRM_ENDPOINT_ACCESS_RULES = {
   [CrmEndpointAccessRule.CustomerAccessScopes]: {
     permission: Permission.MembersManage,
+    scope: "workspace",
+  },
+  [CrmEndpointAccessRule.CustomerCreate]: {
+    permission: Permission.CustomersWrite,
     scope: "workspace",
   },
   [CrmEndpointAccessRule.CustomerDetail]: {
@@ -70,6 +76,10 @@ export const CRM_ENDPOINT_ACCESS_RULES = {
     scope: "project",
   },
   [CrmEndpointAccessRule.LineItemTemplateDetail]: {
+    permission: Permission.LineItemTemplatesWrite,
+    scope: "workspace",
+  },
+  [CrmEndpointAccessRule.LineItemTemplateCreate]: {
     permission: Permission.LineItemTemplatesWrite,
     scope: "workspace",
   },

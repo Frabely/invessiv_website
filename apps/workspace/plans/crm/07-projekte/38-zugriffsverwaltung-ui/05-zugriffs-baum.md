@@ -54,10 +54,10 @@ Vererbungslogik verstreut in der Komponente**.
 
 ### Mutationen
 
-Ein Haken ist eine Mutation. Setzen ruft `grantAccessScope`, Entfernen ruft `revokeAccessScope`, beides über
-`useVersionedMutation` gegen die Mitgliedsversion. Während einer laufenden Mutation ist genau diese Checkbox
-gesperrt, nicht der ganze Baum. Bei 409 wird der aktuelle Stand übernommen und angezeigt, die übrigen
-Eingaben bleiben.
+Die Zuweisungen werden bewusst als versionierter Gesamtsatz gespeichert. Die aktuelle Implementierung übergibt ihn
+über `replaceAccessScopes`; ein eigener Speichern-Schritt ist damit Teil des beschlossenen Bedienmodells. Die
+konfliktfeste Entwurfsübernahme bei 409 folgt erst mit
+[`Task 41`](../../../24-zustaendigkeitszugriff-absicherung/41-zugriffsbereich-konflikte.md) am Ende des CRM-Plans.
 
 ### Kundensuche
 
@@ -96,8 +96,7 @@ Die beiden Zustände sind unterscheidbar (Pflicht aus `plans/crm/AGENTS.md`).
 
 - an inherited role is checked and disabled on every project row of that customer
 - a non-scope-assignable role is listed, disabled and explained
-- checking a box grants exactly one scope and leaves the other rows interactive
-- a version conflict adopts the current state and keeps the remaining rows
+- saves the edited assignment set with the current member version
 - customers with an existing grant stay visible while a search is active
 - empty search and no results are two distinguishable states
 - keyboard: search field, expand button and checkboxes are reachable in reading order
@@ -110,5 +109,5 @@ Die beiden Zustände sind unterscheidbar (Pflicht aus `plans/crm/AGENTS.md`).
 
 ## Regelergänzung
 
-`src/components/workspace/settings/AGENTS.md`: Ein Haken ist eine Mutation; vererbte Haken sind Darstellung
-und nie Zugriffsentscheidung; die Wurzelzeile „Alle Kunden" ist lesend.
+`src/components/workspace/settings/AGENTS.md`: Zugriffszuweisungen werden als versionierter Gesamtsatz gespeichert;
+vererbte Haken sind Darstellung und nie Zugriffsentscheidung; die Wurzelzeile „Alle Kunden" ist lesend.

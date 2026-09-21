@@ -33,7 +33,9 @@ auf Projekt Z“, mit Vorschau der effektiven Rechte. Ab hier ist die Funktion v
 - [ ] E2E: Owner gibt Mitglied „Projekte lesen“ auf Kunde 1 / Projekt 2 → Mitglied sieht Kopf von Kunde 1 und nur
       Projekt 2, keine Ansprechpartner.
 - [ ] Nicht bindbare Rollen erscheinen im Zugriffs-Picker sichtbar gesperrt mit Erklärung, nicht versteckt.
-- [ ] 409 behält Eingaben und zeigt den aktuellen Stand; Entzug wirkt beim nächsten Request des Mitglieds.
+- [ ] Die konfliktfeste Entwurfsübernahme bei 409 folgt bewusst erst mit
+      [`Task 41`](../24-zustaendigkeitszugriff-absicherung/41-zugriffsbereich-konflikte.md) am Ende des CRM-Plans;
+      Entzüge wirken weiterhin beim nächsten Request des Mitglieds.
 - [ ] Empty-States erklären, wofür Zugriffe gedacht sind; „noch keine Zuweisung“ und „keine Treffer“ unterscheidbar.
 - [ ] Cleanup-Migration bricht mit eindeutiger Meldung ab, falls noch `NULL`-Zeilen existieren.
 - [ ] DE/EN vollständig; A11y-Smoke (Tastatur, Fokusfalle, Fokus-Rückgabe), Mobil, Dark und Light.
