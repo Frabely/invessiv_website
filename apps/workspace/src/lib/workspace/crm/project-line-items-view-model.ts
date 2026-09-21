@@ -1,6 +1,7 @@
 import "server-only";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
+import { can } from "@invessiv/common/patterns/auth/can";
 import type { ProjectDto } from "@invessiv/common/contracts/crm/project.dto";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import type { ProjectLineItemsViewModel } from "@/common/contracts/crm/project-line-items-view-model";
@@ -39,10 +40,12 @@ export async function buildProjectLineItemsViewModel(options: {
     )
     .map((project) => project.id);
 
-  // The picker only ever offers active templates, so the archived ones are never loaded here.
+  // The picker only ever offers active templates, and only catalog readers may receive them.
+  // A project-scoped write grant must not disclose the workspace-wide catalog.
   const [services, catalog] = await Promise.all([
     listProjectLineItemsByCustomer(customerId, actor),
-    writableProjectIds.length > 0
+    writableProjectIds.length > 0 &&
+    can(actor, Permission.LineItemTemplatesRead)
       ? listLineItemTemplates({ includeArchived: false })
       : null,
   ]);
