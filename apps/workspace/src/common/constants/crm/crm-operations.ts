@@ -11,6 +11,10 @@ export const CrmOperation = {
   ListLineItemTemplates: "line-item-templates.list",
   CreateLineItemTemplate: "line-item-templates.create",
   UpdateLineItemTemplate: "line-item-templates.update",
+  ListTasks: "tasks.list",
+  CreateTask: "tasks.create",
+  UpdateTask: "tasks.update",
+  ChangeTaskStatus: "tasks.change-status",
 } as const;
 
 export type CrmOperation = (typeof CrmOperation)[keyof typeof CrmOperation];
@@ -27,4 +31,8 @@ export const CRM_OPERATION_VALUES = [
   CrmOperation.ListLineItemTemplates,
   CrmOperation.CreateLineItemTemplate,
   CrmOperation.UpdateLineItemTemplate,
+  CrmOperation.ListTasks,
+  CrmOperation.CreateTask,
+  CrmOperation.UpdateTask,
+  CrmOperation.ChangeTaskStatus,
 ] as const;

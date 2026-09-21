@@ -21,6 +21,10 @@ export const CrmEndpointAccessRule = {
   LineItemTemplateDetail: "line_item_template_detail",
   LineItemTemplateCreate: "line_item_template_create",
   LineItemTemplates: "line_item_templates",
+  Tasks: "tasks",
+  TaskCreate: "task_create",
+  TaskDetail: "task_detail",
+  TaskStatusChange: "task_status_change",
 } as const;
 
 export type CrmEndpointAccessRule =
@@ -86,6 +90,22 @@ export const CRM_ENDPOINT_ACCESS_RULES = {
   [CrmEndpointAccessRule.LineItemTemplates]: {
     permission: Permission.LineItemTemplatesRead,
     scope: "workspace",
+  },
+  [CrmEndpointAccessRule.Tasks]: {
+    permission: Permission.TasksRead,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.TaskCreate]: {
+    permission: Permission.TasksWrite,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.TaskDetail]: {
+    permission: Permission.TasksWrite,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.TaskStatusChange]: {
+    permission: Permission.TasksWrite,
+    scope: "project",
   },
 } as const satisfies Record<
   CrmEndpointAccessRule,
