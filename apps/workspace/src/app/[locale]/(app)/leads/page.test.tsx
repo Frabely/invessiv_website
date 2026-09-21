@@ -45,9 +45,6 @@ const mockLeadsTable = vi.hoisted(() =>
     </div>
   )),
 );
-const mockLeadsPagination = vi.hoisted(() =>
-  vi.fn(() => <div data-testid="leads-pagination" />),
-);
 const mockAddLeadDialog = vi.hoisted(() =>
   vi.fn(() => <div data-testid="lead-form-dialog" />),
 );
@@ -74,13 +71,6 @@ vi.mock(
   "@/components/workspace/leads/shell/leads-page-shell/leads-page-shell",
   () => ({
     LeadsPageShell: mockLeadsPageShell,
-  }),
-);
-
-vi.mock(
-  "@/components/workspace/shared/table/list-pagination/list-pagination",
-  () => ({
-    ListPagination: mockLeadsPagination,
   }),
 );
 
@@ -127,7 +117,6 @@ describe("LeadsPage", () => {
     mockLeadsPageShell.mockClear();
     mockLeadsPageHeader.mockClear();
     mockLeadsTable.mockClear();
-    mockLeadsPagination.mockClear();
     mockAddLeadDialog.mockClear();
     mockRequireWorkspaceArea.mockReset();
     mockRequireWorkspaceArea.mockResolvedValue(workspaceActorWith());
@@ -171,7 +160,6 @@ describe("LeadsPage", () => {
       }),
     );
 
-    expect(screen.getByTestId("leads-pagination")).toBeInTheDocument();
     expect(screen.getByTestId("empty-state")).toHaveTextContent(
       "Noch keine Leads",
     );
@@ -185,8 +173,10 @@ describe("LeadsPage", () => {
       expect.objectContaining({ open: false }),
       undefined,
     );
-    expect(mockLeadsPagination).toHaveBeenCalledWith(
-      expect.objectContaining({ total: 0, currentPage: 1 }),
+    expect(mockLeadsTable).toHaveBeenCalledWith(
+      expect.objectContaining({
+        leadList: expect.objectContaining({ total: 0, page: 1 }),
+      }),
       undefined,
     );
   });

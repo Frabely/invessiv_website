@@ -1,6 +1,9 @@
 .frame {
   position: relative;
   display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  height: min(100%, 38rem, calc(100dvh - 18rem));
   min-height: 0;
   width: 100%;
   overflow: hidden;
@@ -17,7 +20,18 @@
   min-height: 0;
   width: 100%;
   overflow: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-x pan-y;
   scrollbar-width: thin;
+}
+
+.pagination {
+  position: relative;
+  z-index: 13;
+  flex: 0 0 auto;
+  width: 100%;
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+  background: color-mix(in srgb, var(--color-surface-1) 92%, transparent);
 }
 
 .table {
@@ -94,6 +108,7 @@
 
 @media (max-width: 720px) {
   .frame {
+    height: min(100%, calc(100dvh - 18rem));
     border: none;
     background: transparent;
     box-shadow: none;
@@ -102,8 +117,16 @@
   .scroll {
     overflow-y: auto;
     overflow-x: hidden;
-    overscroll-behavior: contain;
     padding-block: 0.35rem;
+    touch-action: pan-y;
+  }
+
+  .pagination {
+    position: sticky;
+    bottom: 0;
+    border-top-color: color-mix(in srgb, var(--color-border) 56%, transparent);
+    background: color-mix(in srgb, var(--color-bg) 94%, transparent);
+    backdrop-filter: blur(12px);
   }
 
   .frame[data-responsive-mode="cards"] .table,
@@ -145,5 +168,6 @@
 
   .frame[data-responsive-mode="scroll"] .scroll {
     overflow-x: auto;
+    touch-action: pan-x pan-y;
   }
 }

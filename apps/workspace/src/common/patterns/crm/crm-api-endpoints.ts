@@ -2,6 +2,7 @@ import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
 
 const LEAD_CONVERSION_ACTION = "convert";
 const PROJECTS_PATH = "projects";
+const LINE_ITEMS_PATH = "line-items";
 
 export function crmCustomerEndpoint(customerId: string): string {
   return `${WorkspaceApiEndpoint.CrmCustomers}/${encodeURIComponent(customerId)}`;
@@ -19,6 +20,16 @@ export function crmLeadConversionEndpoint(leadId: string): string {
   return `${WorkspaceApiEndpoint.CrmLeadConversions}/${encodeURIComponent(leadId)}/${LEAD_CONVERSION_ACTION}`;
 }
 
-export function crmServiceTemplateEndpoint(serviceTemplateId: string): string {
-  return `${WorkspaceApiEndpoint.CrmServiceTemplates}/${encodeURIComponent(serviceTemplateId)}`;
+export function crmLineItemTemplateEndpoint(
+  lineItemTemplateId: string,
+): string {
+  return `${WorkspaceApiEndpoint.CrmLineItemTemplates}/${encodeURIComponent(lineItemTemplateId)}`;
+}
+
+export function crmProjectLineItemsEndpoint(projectId: string): string {
+  return `${crmProjectEndpoint(projectId)}/${LINE_ITEMS_PATH}`;
+}
+
+export function crmProjectLineItemEndpoint(projectLineItemId: string): string {
+  return `${WorkspaceApiEndpoint.CrmProjectLineItems}/${encodeURIComponent(projectLineItemId)}`;
 }

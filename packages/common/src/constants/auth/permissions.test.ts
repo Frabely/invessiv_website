@@ -30,9 +30,10 @@ describe("Permission", () => {
     expect(new Set(PERMISSION_VALUES).size).toBe(PERMISSION_VALUES.length);
   });
 
+  // One dot, snake_case on both sides: `project_line_items.read` is one area, not two dots.
   it("uses dotted lowercase keys", () => {
     for (const permission of PERMISSION_VALUES) {
-      expect(permission).toMatch(/^[a-z]+\.[a-z]+$/);
+      expect(permission).toMatch(/^[a-z]+(?:_[a-z]+)*\.[a-z]+(?:_[a-z]+)*$/);
     }
   });
 

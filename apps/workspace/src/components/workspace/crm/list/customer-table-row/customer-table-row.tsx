@@ -18,6 +18,7 @@ import type { Locale } from "@/config/i18n";
 import type { CrmListDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { getCrmCockpitDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatRelativeTime } from "@/lib/format-relative-time";
+import { formatEuroCents } from "@/lib/workspace/crm/format-service-price";
 import { formatMessage } from "@/lib/i18n/format-message";
 import {
   buildCustomerCockpitHref,
@@ -80,6 +81,32 @@ export function CustomerTableRow({
         ) : null}
         {customer.primaryContactEmail ? (
           <span className={styles.meta}>{customer.primaryContactEmail}</span>
+        ) : null}
+      </DataTableCell>
+      <DataTableCell className={styles.oneTimeCell}>
+        {customer.projectLineItemValue ? (
+          <>
+            <span className={styles.mobileLabel}>
+              {content.columns.oneTimePayment}
+            </span>
+            {formatEuroCents(
+              customer.projectLineItemValue.oneTimeCents,
+              locale,
+            )}
+          </>
+        ) : null}
+      </DataTableCell>
+      <DataTableCell className={styles.monthlyCell}>
+        {customer.projectLineItemValue ? (
+          <>
+            <span className={styles.mobileLabel}>
+              {content.columns.recurringRevenue}
+            </span>
+            {formatEuroCents(
+              customer.projectLineItemValue.monthlyCents,
+              locale,
+            )}
+          </>
         ) : null}
       </DataTableCell>
       <DataTableCell className={styles.updatedCell} title={customer.updatedAt}>

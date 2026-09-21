@@ -27,3 +27,8 @@ besitzt. Er schließt damit die Lücke, die der Hinweis „Zuständig ohne Zugri
 
 Die Owner-Wechsel- und Übergabeaktionen können ausgeblendet werden. Bestehende Zuständigkeiten und die reine
 Beobachtungsanzeige aus Ordner 07c bleiben unverändert; neue Schreibwege bleiben serverseitig abgesichert.
+
+## Nacharbeit aus Ordner 07c
+
+- [`41-zugriffsbereich-konflikte.md`](./41-zugriffsbereich-konflikte.md) ergänzt als letzter CRM-Schritt die
+  konfliktfeste Entwurfsübernahme für das bewusst batchweise gespeicherte Zugriffsmanagement.

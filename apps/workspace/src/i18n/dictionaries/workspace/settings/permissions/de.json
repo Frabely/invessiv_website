@@ -55,11 +55,19 @@
       "label": "Projekte bearbeiten",
       "description": "Projekte anlegen, ändern und übergeben."
     },
-    "services.read": {
+    "project_line_items.read": {
+      "label": "Projektleistungen ansehen",
+      "description": "Die Leistungen eines Projekts und ihre Preise sehen."
+    },
+    "project_line_items.write": {
+      "label": "Projektleistungen bearbeiten",
+      "description": "Leistungen aus dem Katalog zuweisen und für dieses Projekt anpassen."
+    },
+    "line_item_templates.read": {
       "label": "Leistungskatalog ansehen",
       "description": "Pflegbare Leistungstemplates öffnen."
     },
-    "services.write": {
+    "line_item_templates.write": {
       "label": "Leistungskatalog bearbeiten",
       "description": "Leistungstemplates anlegen, ändern und archivieren."
     },

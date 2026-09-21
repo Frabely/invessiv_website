@@ -160,7 +160,7 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
 
 - **Lexware bleibt führend für Angebote, Rechnungen und Zahlungen.** Das CRM enthält keine
   Rechnungs- oder Zahlungslogik; Preise bleiben intern und sind nicht portalöffentlich.
-- `service_templates` ist ein DB-basierter, versionierter und pflegbarer globaler Katalog mit Titel,
+- `line_item_templates` ist ein DB-basierter, versionierter und pflegbarer globaler Katalog mit Titel,
   Beschreibung, Preis in EUR-Cent, Preisart (`one_time`, `recurring`, `rate`), optionalem Intervall
   sowie Aktiv-/Archivstatus. Starttemplates sind Landingpage, Unterseite, zusätzliche Section,
   Wartung, SEO, Wartung + SEO und Stundensatz. Kombipakete sind eigene Templates.
@@ -173,8 +173,8 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
 - Bei der Zuweisung wird nur ein aktives Template ausgewählt. Titel, Beschreibung und Preis können
   vor dem Speichern individuell angepasst werden. Das spätere Kopieren vorhandener Leistungen eines
   Kunden erzeugt ebenfalls einen neuen Snapshot, gehört aber nicht zum ersten Ausbau.
-- `services.read` und `services.write` steuern den workspace-weiten Katalog und sind nicht bindbar.
-  `project_services.read` und `project_services.write` sind bindbar: Kundenbindung vererbt auf alle
+- `line_item_templates.read` und `line_item_templates.write` steuern den workspace-weiten Katalog und sind nicht bindbar.
+  `project_line_items.read` und `project_line_items.write` sind bindbar: Kundenbindung vererbt auf alle
   Kundenprojekte; Projektbindung gilt nur für dieses Projekt.
 - Projekt- und Kundenwerte werden ausschließlich aus Projektleistungen berechnet, nie gespeichert.
   `rate` ist ein Konditionswert und zählt nicht in die Umsatzsumme. Task 42a erweitert die bestehende
@@ -190,21 +190,28 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
 - Zusätzlich `workflow_key = standard_web_v1`, damit weitere Abläufe später additiv entstehen.
 - Ein Projekt hat genau einen Owner und übernimmt bei Anlage den Kunden-Owner.
 - Abrechnungsart: `fixed_price`, `hourly`, `retainer`, `internal`; ausschließlich EUR.
-- Budget und Stundensatz sind niemals portalöffentlich.
+- Budget und Stundensatz sind niemals portalöffentlich. **Aufgaben neu geplant am 21.09.2026 (mit dem Nutzer abgestimmt,
+  Details in `08-aufgaben/README.md`):**
+
 - Aufgaben sind flache Einzelobjekte ohne Parent, Unteraufgaben, Checklisten oder Handsortierung.
-- Jede Aufgabe hat genau einen internen Bearbeiter.
-- Kontext ist genau einer aus intern, Kunde oder Projekt. Bei Projektkontext erzwingt eine
-  zusammengesetzte Constraint die Übereinstimmung von Projekt und Kunde.
+- Eine Aufgabe gehört zu genau einem Projekt; der Kunde folgt aus dem Projekt, es gibt keine Kundenspalte. Keine
+  internen Aufgaben ohne Projekt und keine Aufgaben direkt am Kunden.
+- Status: `open`, `in_progress`, `done`, `cancelled`. `cancelled` ersetzt Löschen; es gibt keinen Löschpfad.
+- Jede Aufgabe hat genau einen aktiven internen Bearbeiter; Standard ist der Projekt-Owner.
 - `action_side` (`internal | customer`) bestimmt, wer als Nächstes handeln muss. Der interne
-  Bearbeiter bleibt auch bei Kundenaufgaben verantwortlich.
-- `visible_to_customer` bleibt getrennt; `action_side = customer` erzwingt Sichtbarkeit.
-- Jeder aktive Portal-Kontakt der Firma darf eine Kundenaufgabe erledigen. Nutzer und Zeitpunkt
-  werden protokolliert. Nur intern darf wieder geöffnet werden.
+  Bearbeiter bleibt auch bei Kundenaufgaben verantwortlich. Der Kunde sieht später nur „Wir“/„Sie“.
+- `visible_to_customer` ist standardmäßig aus; `action_side = customer` erzwingt Sichtbarkeit.
+- `done` speichert Zeitpunkt und Mitglied; intern darf jederzeit wieder geöffnet werden, jede Änderung ist eine
+  Activity.
+- Jeder aktive Portal-Kontakt der Firma darf später eine Kundenaufgabe erledigen; Nutzer und Zeitpunkt
+  werden protokolliert (Ordner 13). Vom Kunden gestellte Aufgaben ergänzen dort additiv die Herkunft.
 - Wiederholung: täglich, wöchentlich, monatlich oder jährlich. Jede Wiederholung erzeugt ein neues,
   flaches Aufgabenobjekt; der Rhythmus bleibt am ursprünglichen Termin verankert.
 - Serienänderungen gelten wahlweise nur aktuell oder für zukünftige Exemplare.
-- Fälligkeit als Datum mit optionaler Uhrzeit; Speicherung in UTC, Geschäftszeitzone Europe/Berlin.
-- Überfälligkeit erzeugt einmalig eine In-App-Meldung und bleibt sichtbar markiert.
+- Fälligkeit nur als Datum (`due_on`), Geschäftszeitzone Europe/Berlin; keine Uhrzeit.
+- Überfälligkeit bleibt sichtbar markiert; bis zur Glocke aus Ordner 10 zeigt das Dashboard eigene überfällige und
+  bald fällige Aufgaben. Die einmalige In-App-Meldung folgt mit Ordner 10.
+- Aufgaben-Vorlagen (Task 12) sind zurückgestellt (`zurueckgestellt/12-onboarding-checkliste.md`).
 
 ### Portal und Kommunikation
 
@@ -460,8 +467,8 @@ people
                                       ├── customer_asset_links                       (Ordner 15a)
                                       └── retainers ── time_entries
 
-service_templates ── pflegbarer globaler Katalog
-projects ── project_services (vollständige Template-Snapshots, Ordner 07)
+line_item_templates ── pflegbarer globaler Katalog
+projects ── project_line_items (vollständige Template-Snapshots, Ordner 07)
 
 files ── genau ein Scope: customer | project | feedback_round
 activities ── Lead- und CRM-Historie
@@ -482,7 +489,7 @@ Präfixfrei bleiben eigenständige und querschnittliche Tabellen: `users`, `work
 `conversations`, `messages`, `message_files`, `conversation_reads`, `feedback_rounds`,
 `feedback_round_requests`, `onboarding_submissions`, `onboarding_answers`, `onboarding_answer_files`,
 `retainers`, `time_entries`, `files`, `activities`, `security_events`, `outbox_jobs`,
-`notifications`, `service_templates`, `project_services`.
+`notifications`, `line_item_templates`, `project_line_items`.
 
 `onboarding_submissions` ist präfixfrei, weil der Bogen am Projekt hängt und kein Kindobjekt des
 Kunden ist; seine eigenen Kindtabellen tragen das Präfix `onboarding_`.
@@ -602,7 +609,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 | 07a | läuft     | `07a-zugriffsbereiche-fundament`         | Gebundene Rollen in DB, Actor und API unsichtbar und wirkungslos deployt        |   60–90 |    3 T. |
 | 07b | im Review | `07b-zugriffsfilter-kunden-und-projekte` | Alle Kunden- und Projektpfade filtern über `accessScope`; Negativtests          |  60–100 |  3–4 T. |
 | 07c | offen     | `07c-zugriffsverwaltung-ui`              | Zugriffe je Kunde/Projekt in Settings und Kundenakte konfigurierbar             |   50–80 |  2–3 T. |
-| 08  | offen     | `08-aufgaben`                            | Flache Aufgaben, Kundenpflicht und globale Übersicht nutzbar                    |  80–100 |  4–5 T. |
+| 08  | offen     | `08-aufgaben`                            | Projektaufgaben im Cockpit, globale Übersicht und Dashboard-Block nutzbar       | 120–180 |  4–5 T. |
 | 09  | offen     | `09-aufgabenserien-und-reminder`         | Wiederholungen, Fälligkeit und Überfälligkeit zuverlässig aktiv                 |   50–90 |  3–4 T. |
 | 10  | offen     | `10-jobs-und-benachrichtigungen`         | Outbox-Runner, Glocke, Retry und kritische Fehlerbenachrichtigung aktiv         |  70–100 |  4–5 T. |
 | 11  | offen     | `11-renewals`                            | Renewal-Verwaltung und 30/14/7-Erinnerungen vollständig nutzbar                 |   40–70 |  2–3 T. |

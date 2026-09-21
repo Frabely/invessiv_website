@@ -2,6 +2,9 @@
 
 > **Status:** offen · **Abhängigkeiten:** 12, 13, 14, 15, 15a · **Aufwand:** 4–5 Tage · **Reviewziel:** 100–120 Dateien
 
+> **Hinweis Neuplanung Ordner 08 (21.09.2026):** Die hier genannte Vorlage aus Task 12 ist zurückgestellt; die
+> Aufgaben aus Ordner 08 sind Projektaufgaben mit vier Status.
+
 ## Ziel und Stand nach Merge
 
 **Konkreter Task-Plan**

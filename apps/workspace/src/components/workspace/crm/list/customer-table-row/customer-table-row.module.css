@@ -16,8 +16,14 @@
 }
 
 .customerCell,
-.contactCell {
+.contactCell,
+.oneTimeCell,
+.monthlyCell {
   min-width: 0;
+}
+
+.mobileLabel {
+  display: none;
 }
 
 .customerCell {
@@ -54,7 +60,9 @@
       "customer customer actions"
       "number status status"
       "owner owner updated"
-      "contact contact contact";
+      "contact contact contact"
+      "one-time one-time one-time"
+      "monthly monthly monthly";
   }
 
   .numberCell {
@@ -76,6 +84,21 @@
 
   .contactCell {
     grid-area: contact;
+  }
+
+  .oneTimeCell {
+    grid-area: one-time;
+  }
+
+  .monthlyCell {
+    grid-area: monthly;
+  }
+
+  .mobileLabel {
+    display: block;
+    margin-bottom: 0.15rem;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-ui-sm);
   }
 
   .updatedCell {

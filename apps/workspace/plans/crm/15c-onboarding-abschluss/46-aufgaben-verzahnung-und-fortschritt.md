@@ -4,6 +4,11 @@
 > **Aufwand:** S · **Abhängigkeiten:** Task 11 (Aufgaben), Task 12 (Vorlagen), Task 21 (Dashboard), Task 44/45 (Bogen)
 > **Migration:** keine
 
+> **Hinweis Neuplanung Ordner 08 (21.09.2026):** Dieser Task setzt Task 12 (Vorlagen mit `title_key`) und
+> `done_by_side` voraus. Task 12 ist zurückgestellt (`zurueckgestellt/12-onboarding-checkliste.md`), das
+> Aufgabenmodell nutzt `status`/`completed_at`. Die Verzahnung wird zusammen mit dem Neuzuschnitt der Vorlagen
+> geplant; bis dahin ist dieser Task nicht umsetzbar.
+
 - Eine Zuordnung im Code verbindet Bogenabschnitte mit den `title_key` der Aufgaben-Vorlage.
 - Absenden erledigt genau diese Aufgaben in derselben Transaktion.
 - Das Portal-Dashboard zeigt den Bogen als ersten Punkt der Bringschuld, mit Fortschritt.

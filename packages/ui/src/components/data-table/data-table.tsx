@@ -5,6 +5,7 @@ import type {
   TdHTMLAttributes,
   ThHTMLAttributes,
 } from "react";
+import { ListPagination, type ListPaginationProps } from "./list-pagination";
 import styles from "./data-table.module.css";
 
 function getClassName(baseClassName: string, className?: string) {
@@ -53,6 +54,8 @@ export type DataTableLayoutProps = {
     isVisuallyHidden?: boolean;
     width?: number;
   }>;
+  /** Pagination metadata. The layout renders the controls inside the table frame. */
+  pagination?: ListPaginationProps;
   frameClassName?: string;
   overlay?: ReactNode;
   responsiveMode?: "cards" | "scroll";
@@ -60,12 +63,15 @@ export type DataTableLayoutProps = {
   tableClassName?: string;
 };
 
+export type { ListPaginationProps } from "./list-pagination";
+
 /** Renders the shared table frame, scroll area, column layout, and header. */
 export function DataTableLayout({
   ariaLabel,
   caption,
   children,
   columns,
+  pagination,
   frameClassName,
   overlay,
   responsiveMode,
@@ -106,6 +112,11 @@ export function DataTableLayout({
           <DataTableBody>{children}</DataTableBody>
         </DataTable>
       </DataTableScroll>
+      {pagination ? (
+        <div className={styles.pagination}>
+          <ListPagination {...pagination} />
+        </div>
+      ) : null}
     </DataTableFrame>
   );
 }

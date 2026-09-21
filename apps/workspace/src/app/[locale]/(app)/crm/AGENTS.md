@@ -16,7 +16,7 @@ die Kundenakte. Pläne: `apps/workspace/plans/crm/04-personen-und-kundenakte/` u
 
 1. **Jede Page gated ihre eigenen Daten.** Die CRM-Startseite ruft vor dem ersten Query-Handler
    `requireWorkspaceArea(locale, WorkspaceArea.Crm)` auf. Eine fachlich eigenständige CRM-Subroute verwendet vor
-   ihrem ersten Query-Handler stattdessen ihre eigene Read-Permission (zum Beispiel `services.read`), damit sie
+   ihrem ersten Query-Handler stattdessen ihre eigene Read-Permission (zum Beispiel `line_item_templates.read`), damit sie
    nicht unbeabsichtigt `customers.read` voraussetzt. Layouts rendern bei Query-Param-Wechseln nicht neu.
 2. **Schreibaktionen nur mit `customers.write`.** Die Page reicht nur dann Anlegen-/Bearbeiten-Ziele an die
    Komponenten; ohne Recht werden die Aktionen nicht gerendert (kein deaktivierter Button). Die API prüft zusätzlich

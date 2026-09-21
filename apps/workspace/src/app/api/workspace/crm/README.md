@@ -107,3 +107,66 @@ getrennten Personen- und Zuordnungsversionen. Kunde, Status und Kontakte werden 
 Ein tatsächlicher Statuswechsel erzeugt eine `status_change`-Activity; derselbe Status erzeugt keine Activity.
 
 Erfolg: `200 { "customer": CustomerDetailDto }`. Veraltete `version`: `409 VersionConflictDto`.
+
+---
+
+## Projektleistungen
+
+Eine Projektleistung gehört zu genau **einem** Projekt; ihr Kunde wird ausschließlich über dieses Projekt abgeleitet.
+Es gibt keinen kundenweiten Schreibweg und keinen Löschpfad. Titel, Beschreibung, Preis, Preisart und Intervall sind
+ein vollständiger Snapshot; `sourceLineItemTemplateId` ist reiner Herkunftsnachweis und wird nie mitgeschrieben.
+
+Beide Rechte sind **bindbar**: eine Kundenbindung vererbt auf alle Projekte dieses Kunden, eine Projektbindung gilt
+nur für dieses eine Projekt. Fremdzugriff antwortet `404`, fehlendes Recht auf Endpunktebene `403`.
+
+| Route                                       | Permission                 |
+| ------------------------------------------- | -------------------------- |
+| `GET /crm/projects/[projectId]/line-items`  | `project_line_items.read`  |
+| `POST /crm/projects/[projectId]/line-items` | `project_line_items.write` |
+| `PATCH /crm/project-line-items/[id]`        | `project_line_items.write` |
+
+### `GET /api/workspace/crm/projects/[projectId]/line-items`
+
+Erfolg: `200 { "projectLineItems": ProjectLineItemDto[] }`, älteste Position zuerst.
+Ein lesbares Projekt ohne Leistungen antwortet `200` mit leerer Liste; ein Projekt außerhalb des Zugriffsbereichs
+antwortet `404 PROJECT_NOT_FOUND` — beide Fälle bleiben unterscheidbar.
+
+### `POST /api/workspace/crm/projects/[projectId]/line-items`
+
+Body `CreateProjectLineItemRequestDto`:
+
+```json
+{
+  "sourceLineItemTemplateId": "9c8f1a10-1b1a-4a10-8e10-000000000001",
+  "title": "Landingpage",
+  "description": "Einseitige Website inklusive Konzept und Umsetzung.",
+  "priceCents": 180000,
+  "pricingMode": "one_time",
+  "recurringInterval": null
+}
+```
+
+- `sourceLineItemTemplateId` ist Pflicht und muss ein **aktives** Template benennen; archivierte oder unbekannte
+  Templates antworten `422 LINE_ITEM_TEMPLATE_NOT_ASSIGNABLE`.
+- Die übrigen Felder sind der Snapshot. Sie werden aus dem Template vorbelegt, dürfen aber abweichen — gespeichert
+  wird ausschließlich, was im Request steht.
+- `recurringInterval` ist genau dann gesetzt, wenn `pricingMode` `recurring` ist.
+
+Erfolg: `201 { "projectLineItem": ProjectLineItemDto }` mit `version: 1`.
+
+### `PATCH /api/workspace/crm/project-line-items/[id]`
+
+Body `UpdateProjectLineItemRequestDto` — dieselben Snapshot-Felder plus `version`, ohne `sourceLineItemTemplateId`.
+Der Body ersetzt jedes Snapshot-Feld; Projekt und Herkunft bleiben unverändert.
+
+Erfolg: `200 { "projectLineItem": ProjectLineItemDto }`. Veraltete `version`: `409 VersionConflictDto`.
+
+| Status | `error`                             | Bedeutung                                                         |
+| ------ | ----------------------------------- | ----------------------------------------------------------------- |
+| 400    | `VALIDATION_ERROR`                  | Body ist kein JSON                                                |
+| 422    | `VALIDATION_ERROR`                  | Schemafehler; `details` mit Feldpfad                              |
+| 422    | `LINE_ITEM_TEMPLATE_NOT_ASSIGNABLE` | Vorlage ist archiviert oder unbekannt                             |
+| 404    | `PROJECT_NOT_FOUND`                 | Projekt existiert nicht oder liegt außerhalb des Zugriffsbereichs |
+| 404    | `PROJECT_LINE_ITEM_NOT_FOUND`       | Leistung existiert nicht oder gehört zu einem fremden Projekt     |
+| 409    | `version_conflict`                  | Veraltete `version`; Body trägt `currentVersion` und `current`    |
+| 500    | `INTERNAL`                          | Unerwarteter Fehler; geloggt ohne Body                            |

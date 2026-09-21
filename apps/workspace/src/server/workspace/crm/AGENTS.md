@@ -31,6 +31,15 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   kundenspezifischen Zuordnung nicht vermischen.
 - **Kein Löschpfad für Kunden.** Archivierung ist ausschließlich `status = 'archived'` und
   reversibel. Der einzige echte Löschweg ist der Owner-Purge aus Task 34.
+- **Eine Projektleistung gehört zu genau einem Projekt.** `project_line_items` hat bewusst keine Kundenspalte:
+  der Kunde wird über das Projekt abgeleitet. Kein Handler nimmt eine `customerId` für diesen Pfad entgegen, und es
+  gibt weder kundenweite Positionen noch eine Tabelle `customer_packages`.
+- **Eine Projektleistung ist ein vollständiger Snapshot.** Titel, Beschreibung, Preis, Preisart und Intervall werden
+  beim Zuweisen kopiert. `source_line_item_template_id` ist ausschließlich Herkunftsnachweis, wird nie mitgeschrieben
+  und wird beim Löschen des Templates auf null gesetzt. Es gibt keine Synchronisation in beide Richtungen.
+- **Zuweisen geht nur aus einem aktiven Template.** Archivierte oder unbekannte Templates werden im Command
+  abgewiesen, nicht erst in der UI ausgeblendet.
+- **Kein Löschpfad für Projektleistungen.** Eine Position verschwindet nur mit ihrem Projekt (`ON DELETE CASCADE`).
 - Kundennummern haben Lücken. Das ist gültig; keine Nummer wird wiederverwendet, und es gibt keine
   Logik, die Lücken „reparieren" will.
 

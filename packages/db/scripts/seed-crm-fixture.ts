@@ -19,10 +19,11 @@ import {
   customers,
   leadCategories,
   people,
+  projectLineItems,
   projects,
   rolePermissions,
   roles,
-  serviceTemplates,
+  lineItemTemplates,
   users,
   workspaceMemberRoles,
   workspaceMembers,
@@ -38,7 +39,7 @@ import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
 import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
-import { ServiceTemplateStatus } from "@invessiv/common/constants/crm/service-template-statuses";
+import { LineItemTemplateStatus } from "@invessiv/common/constants/crm/line-item-template-statuses";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import { ProjectPhase } from "@invessiv/common/constants/crm/project-phases";
 import { ProjectBillingModel } from "@invessiv/common/constants/crm/project-billing-models";
@@ -195,7 +196,7 @@ const CUSTOMERS: CustomerFixture[] = [
   },
 ];
 
-const SERVICE_TEMPLATE_FIXTURES = [
+const LINE_ITEM_TEMPLATE_FIXTURES = [
   {
     id: "9c8f1a10-1b1a-4a10-8e10-00000000f001",
     title: "Conversion-Workshop",
@@ -204,7 +205,7 @@ const SERVICE_TEMPLATE_FIXTURES = [
     price_cents: 45000,
     pricing_mode: ServicePricingMode.OneTime,
     recurring_interval: null,
-    status: ServiceTemplateStatus.Active,
+    status: LineItemTemplateStatus.Active,
     version: 1,
   },
   {
@@ -215,7 +216,7 @@ const SERVICE_TEMPLATE_FIXTURES = [
     price_cents: 25000,
     pricing_mode: ServicePricingMode.Recurring,
     recurring_interval: BillingInterval.Monthly,
-    status: ServiceTemplateStatus.Active,
+    status: LineItemTemplateStatus.Active,
     version: 1,
   },
   {
@@ -226,7 +227,7 @@ const SERVICE_TEMPLATE_FIXTURES = [
     price_cents: 15000,
     pricing_mode: ServicePricingMode.Rate,
     recurring_interval: null,
-    status: ServiceTemplateStatus.Archived,
+    status: LineItemTemplateStatus.Archived,
     version: 1,
   },
 ] as const;
@@ -251,10 +252,12 @@ async function resolveCategoryIds(tx: ContactDatabaseTransaction) {
 async function resetFixtureRows(tx: ContactDatabaseTransaction) {
   const pattern = `${FIXTURE_PREFIX}%`;
 
-  await tx.delete(serviceTemplates).where(
+  await tx.delete(lineItemTemplates).where(
     inArray(
-      serviceTemplates.id,
-      SERVICE_TEMPLATE_FIXTURES.map((serviceTemplate) => serviceTemplate.id),
+      lineItemTemplates.id,
+      LINE_ITEM_TEMPLATE_FIXTURES.map(
+        (lineItemTemplate) => lineItemTemplate.id,
+      ),
     ),
   );
 
@@ -371,7 +374,7 @@ async function run() {
   await db.transaction(async (tx) => {
     await resetFixtureRows(tx);
 
-    await tx.insert(serviceTemplates).values([...SERVICE_TEMPLATE_FIXTURES]);
+    await tx.insert(lineItemTemplates).values([...LINE_ITEM_TEMPLATE_FIXTURES]);
 
     const owner = await createFixtureMember(tx, "owner");
     const customerMember = await createFixtureMember(tx, "customer-member");
@@ -509,6 +512,34 @@ async function run() {
       hourly_rate_cents: null,
       version: 1,
     });
+    // Snapshots, not references: the workshop price is deliberately below its template price to
+    // show that a project keeps what was agreed even after the catalog moves on.
+    await tx.insert(projectLineItems).values([
+      {
+        id: randomUUID(),
+        project_id: projectId,
+        source_line_item_template_id: LINE_ITEM_TEMPLATE_FIXTURES[0].id,
+        title: "Conversion-Workshop",
+        description:
+          "Halbtägiger Workshop zu Zielgruppe, Angebot und nächstem Conversion-Schritt.",
+        price_cents: 39000,
+        pricing_mode: ServicePricingMode.OneTime,
+        recurring_interval: null,
+        version: 1,
+      },
+      {
+        id: randomUUID(),
+        project_id: projectId,
+        source_line_item_template_id: LINE_ITEM_TEMPLATE_FIXTURES[1].id,
+        title: "Contentpflege",
+        description:
+          "Monatliche Pflege bestehender Inhalte inklusive kleiner Text- und Bildänderungen.",
+        price_cents: 25000,
+        pricing_mode: ServicePricingMode.Recurring,
+        recurring_interval: BillingInterval.Monthly,
+        version: 1,
+      },
+    ]);
     await tx.insert(workspaceMemberScopedRoles).values([
       {
         id: randomUUID(),
@@ -562,7 +593,7 @@ async function run() {
   );
 
   console.log(
-    `Seeded ${CUSTOMERS.length} customers, ${PEOPLE.length} people, ${SERVICE_TEMPLATE_FIXTURES.length} service templates and ${contactCount} contact assignments.`,
+    `Seeded ${CUSTOMERS.length} customers, ${PEOPLE.length} people, ${LINE_ITEM_TEMPLATE_FIXTURES.length} line item templates and ${contactCount} contact assignments.`,
   );
   console.log(`Fixture prefix: ${FIXTURE_PREFIX}`);
 }

@@ -94,7 +94,7 @@ async function mutate<TValue, TErrorCode extends string>(
 
 /**
  * Same as `mutate`, but wraps the success value under `key` instead of `value` — the shape every
- * DTO-specific client result (`{ customer }`, `{ serviceTemplate }`, …) actually needs. Callers no
+ * DTO-specific client result (`{ customer }`, `{ lineItemTemplate }`, …) actually needs. Callers no
  * longer hand-roll the ok/conflict/error unwrap themselves.
  */
 async function mutateNamed<

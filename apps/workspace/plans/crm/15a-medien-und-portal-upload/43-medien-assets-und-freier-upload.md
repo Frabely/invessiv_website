@@ -15,7 +15,7 @@
 Der Onboarding-Bogen aus Ordner 15b lebt von Logo, Bildern und gelegentlich einem Video. Bis hierher
 erlaubt der Upload nur `.pdf`, `.txt`, `.docx`, `.xlsx`, `.pptx` — und der einzige Portalpfad für
 Dateien ist das Absenden einer Feedbackrunde. Beides zusammen macht Onboarding über das Portal
-unmöglich, obwohl die Aufgaben-Vorlage aus Task 12 wörtlich „Logo und Bildmaterial" verlangt.
+unmöglich, obwohl die (zurückgestellte) Aufgaben-Vorlage aus Task 12 wörtlich „Logo und Bildmaterial" verlangt.
 
 Dieser Task schließt beides: Medienarten mit eigenen Limits und ein Portal-Upload, der für sich
 steht. Er ist bewusst klein gehalten und liefert keine Onboarding-Fachlogik.

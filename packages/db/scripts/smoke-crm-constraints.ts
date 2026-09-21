@@ -316,11 +316,169 @@ async function runChecks(sql: Sql) {
   );
 
   await runMissingDefaultChecks(sql, memberId, personId, name);
-  await runServiceTemplateChecks(sql, name);
+  await runLineItemTemplateChecks(sql, name);
+  await runProjectLineItemChecks(sql, memberId, name);
   await runConcurrencyChecks(sql, memberId, name);
 }
 
-async function runServiceTemplateChecks(
+/**
+ * A project line item belongs to exactly one project and carries no customer column, so the
+ * project is the only path to its customer. The template reference is provenance: it may be
+ * null and must never cascade the row away.
+ */
+async function runProjectLineItemChecks(
+  sql: Sql,
+  memberId: string,
+  name: (suffix: string) => string,
+) {
+  const customerId = await insertCustomer(sql, {
+    ownerMemberId: memberId,
+    displayName: name("Project line item customer"),
+  });
+  const projectId = randomUUID();
+  await sql`
+    INSERT INTO projects (id, customer_id, owner_member_id, title, status, phase, process_steps,
+                          current_process_step, workflow_key, billing_model,
+                          included_feedback_rounds, version)
+    VALUES (${projectId}, ${customerId}, ${memberId}, ${name("Project")}, 'active', 'onboarding',
+            ARRAY ['onboarding'], 'onboarding', 'standard_web_v1', 'fixed_price', 2, 1)
+  `;
+  const templateId = randomUUID();
+  await sql`
+    INSERT INTO line_item_templates (id, title, description, price_cents, pricing_mode,
+                                   recurring_interval, status, version)
+    VALUES (${templateId}, ${name("Origin template")}, '', 10000, 'one_time', NULL, 'active', 1)
+  `;
+
+  const insertService = (args: {
+    projectId?: string;
+    templateId?: string | null;
+    title?: string;
+    priceCents?: number;
+    pricingMode?: string;
+    recurringInterval?: string | null;
+    version?: number;
+  }) => sql`
+    INSERT INTO project_line_items (
+      id, project_id, source_line_item_template_id, title, description, price_cents,
+      pricing_mode, recurring_interval, version
+    )
+    VALUES (
+      ${randomUUID()}, ${args.projectId ?? projectId},
+      ${args.templateId === undefined ? templateId : args.templateId},
+      ${args.title ?? name("Service")}, '', ${args.priceCents ?? 10000},
+      ${args.pricingMode ?? "one_time"}, ${args.recurringInterval ?? null}, ${args.version ?? 1}
+    )
+  `;
+
+  await expectAccepted("valid project line item is accepted", () =>
+    insertService({}),
+  );
+  await expectAccepted(
+    "project line item without an origin template is accepted",
+    () => insertService({ templateId: null }),
+  );
+  await expectAccepted(
+    "recurring project line item with interval is accepted",
+    () =>
+      insertService({ pricingMode: "recurring", recurringInterval: "monthly" }),
+  );
+  await expectRejected("project line item without a project is rejected", () =>
+    insertService({ projectId: randomUUID() }),
+  );
+  await expectRejected(
+    "project line item with an unknown template is rejected",
+    () => insertService({ templateId: randomUUID() }),
+  );
+  await expectRejected("blank project line item title is rejected", () =>
+    insertService({ title: "   " }),
+  );
+  await expectRejected("negative project line item price is rejected", () =>
+    insertService({ priceCents: -1 }),
+  );
+  await expectRejected(
+    "unknown project line item pricing mode is rejected",
+    () => insertService({ pricingMode: "usage_based" }),
+  );
+  await expectRejected(
+    "recurring project line item without interval is rejected",
+    () => insertService({ pricingMode: "recurring" }),
+  );
+  await expectRejected(
+    "one-time project line item with interval is rejected",
+    () => insertService({ recurringInterval: "monthly" }),
+  );
+  await expectRejected("project line item version = 0 is rejected", () =>
+    insertService({ version: 0 }),
+  );
+  await expectRejected(
+    "project line item without a title is rejected",
+    () =>
+      sql`
+      INSERT INTO project_line_items (id, project_id, description, price_cents, pricing_mode,
+                                    recurring_interval, version)
+      VALUES (${randomUUID()}, ${projectId}, '', 10000, 'one_time', NULL, 1)
+    `,
+  );
+  await expectRejected(
+    "project line item without a version is rejected",
+    () =>
+      sql`
+      INSERT INTO project_line_items (id, project_id, title, description, price_cents,
+                                    pricing_mode, recurring_interval)
+      VALUES (${randomUUID()}, ${projectId}, ${name("No version")}, '', 10000, 'one_time', NULL)
+    `,
+  );
+
+  // Archiving the template must keep the snapshot and its provenance untouched.
+  await sql`UPDATE line_item_templates
+            SET status  = 'archived',
+                version = 2
+            WHERE id = ${templateId}`;
+  const survivingRows = (await sql`
+    SELECT COUNT(*) ::int AS count
+    FROM project_line_items
+    WHERE source_line_item_template_id = ${templateId}
+  `) as { count: number }[];
+  record(
+    "archiving a template keeps its project line items and their origin",
+    survivingRows[0].count > 0,
+    `remaining: ${survivingRows[0].count}`,
+  );
+
+  // Deleting the template must null the provenance, never remove the agreed position.
+  await sql`DELETE
+            FROM line_item_templates
+            WHERE id = ${templateId}`;
+  const orphanedRows = (await sql`
+    SELECT COUNT(*) ::int AS count
+    FROM project_line_items
+    WHERE project_id = ${projectId}
+      AND source_line_item_template_id IS NULL
+  `) as { count: number }[];
+  record(
+    "deleting a template keeps its project line items with a null origin",
+    orphanedRows[0].count >= 3,
+    `null origins: ${orphanedRows[0].count}`,
+  );
+
+  // ON DELETE CASCADE: a project takes its services with it.
+  await sql`DELETE
+            FROM projects
+            WHERE id = ${projectId}`;
+  const cascadedRows = (await sql`
+    SELECT COUNT(*) ::int AS count
+    FROM project_line_items
+    WHERE project_id = ${projectId}
+  `) as { count: number }[];
+  record(
+    "deleting a project removes its services",
+    cascadedRows[0].count === 0,
+    `remaining: ${cascadedRows[0].count}`,
+  );
+}
+
+async function runLineItemTemplateChecks(
   sql: Sql,
   name: (suffix: string) => string,
 ) {
@@ -333,7 +491,7 @@ async function runServiceTemplateChecks(
     status?: string;
     version?: number;
   }) => sql`
-    INSERT INTO service_templates (
+    INSERT INTO line_item_templates (
       id, title, description, price_cents, pricing_mode, recurring_interval, status, version
     )
     VALUES (
@@ -343,84 +501,84 @@ async function runServiceTemplateChecks(
     )
   `;
 
-  await expectAccepted("valid recurring service template is accepted", () =>
+  await expectAccepted("valid recurring line item template is accepted", () =>
     insertTemplate({
       pricingMode: "recurring",
       recurringInterval: "monthly",
     }),
   );
   await expectRejected(
-    "service template without a title is rejected",
+    "line item template without a title is rejected",
     () =>
       sql`
-      INSERT INTO service_templates (
+      INSERT INTO line_item_templates (
         id, description, price_cents, pricing_mode, recurring_interval, status, version
       )
       VALUES (${randomUUID()}, '', 10000, 'one_time', NULL, 'active', 1)
     `,
   );
   await expectRejected(
-    "service template without a description is rejected",
+    "line item template without a description is rejected",
     () =>
       sql`
-      INSERT INTO service_templates (
+      INSERT INTO line_item_templates (
         id, title, price_cents, pricing_mode, recurring_interval, status, version
       )
       VALUES (${randomUUID()}, ${name("No description")}, 10000, 'one_time', NULL, 'active', 1)
     `,
   );
   await expectRejected(
-    "service template without a price is rejected",
+    "line item template without a price is rejected",
     () =>
       sql`
-      INSERT INTO service_templates (
+      INSERT INTO line_item_templates (
         id, title, description, pricing_mode, recurring_interval, status, version
       )
       VALUES (${randomUUID()}, ${name("No price")}, '', 'one_time', NULL, 'active', 1)
     `,
   );
   await expectRejected(
-    "service template without a pricing mode is rejected",
+    "line item template without a pricing mode is rejected",
     () =>
       sql`
-      INSERT INTO service_templates (
+      INSERT INTO line_item_templates (
         id, title, description, price_cents, recurring_interval, status, version
       )
       VALUES (${randomUUID()}, ${name("No pricing mode")}, '', 10000, NULL, 'active', 1)
     `,
   );
-  await expectRejected("blank service template title is rejected", () =>
+  await expectRejected("blank line item template title is rejected", () =>
     insertTemplate({ title: "   " }),
   );
-  await expectRejected("negative service template price is rejected", () =>
+  await expectRejected("negative line item template price is rejected", () =>
     insertTemplate({ priceCents: -1 }),
   );
   await expectRejected("unknown service pricing mode is rejected", () =>
     insertTemplate({ pricingMode: "usage_based" }),
   );
   await expectRejected(
-    "recurring service template without interval is rejected",
+    "recurring line item template without interval is rejected",
     () => insertTemplate({ pricingMode: "recurring" }),
   );
   await expectRejected(
-    "one-time service template with interval is rejected",
+    "one-time line item template with interval is rejected",
     () => insertTemplate({ recurringInterval: "monthly" }),
   );
   await expectRejected(
-    "service template without status is rejected",
+    "line item template without status is rejected",
     () =>
       sql`
-      INSERT INTO service_templates (
+      INSERT INTO line_item_templates (
         id, title, description, price_cents, pricing_mode, recurring_interval, version
       )
       VALUES (${randomUUID()}, ${name("No status")}, '', 10000, 'one_time', NULL, 1)
     `,
   );
   await expectRejected(
-    "service template without version is rejected",
+    "line item template without version is rejected",
     () =>
       sql`
-      INSERT INTO service_templates (
+      INSERT INTO line_item_templates (
         id, title, description, price_cents, pricing_mode, recurring_interval, status
       )
       VALUES (${randomUUID()}, ${name("No version")}, '', 10000, 'one_time', NULL, 'active')
@@ -597,8 +755,12 @@ async function runConcurrencyChecks(
 
 async function cleanup(sql: Sql) {
   const pattern = `${FIXTURE_PREFIX}%`;
+  // Projects take their services with them; the customer delete below then takes the projects.
   await sql`DELETE
-              FROM service_templates
+              FROM projects
+              WHERE customer_id IN (SELECT id FROM customers WHERE display_name LIKE ${pattern})`;
+  await sql`DELETE
+              FROM line_item_templates
               WHERE title LIKE ${pattern}`;
   await sql`
         DELETE

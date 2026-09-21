@@ -18,12 +18,14 @@ const mocks = vi.hoisted(() => ({
   getCustomerById: vi.fn(),
   getCustomerCockpitById: vi.fn(),
   listCategories: vi.fn(),
-  listProjectsByCustomer: vi.fn(),
+  listCockpitProjectsByCustomer: vi.fn(),
   listCustomerAccessScopes: vi.fn(),
   listAccessCustomerProjects: vi.fn(),
   listWorkspaceMembers: vi.fn(),
   listRoleAssignmentOptions: vi.fn(),
   evaluateResponsibilityAccess: vi.fn(),
+  buildProjectLineItemsViewModel: vi.fn(),
+  listProjectLineItemsByCustomer: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -52,7 +54,9 @@ vi.mock(
 );
 vi.mock(
   "@/server/workspace/crm/query-handler/list-projects-by-customer.query-handler",
-  () => ({ listProjectsByCustomer: mocks.listProjectsByCustomer }),
+  () => ({
+    listCockpitProjectsByCustomer: mocks.listCockpitProjectsByCustomer,
+  }),
 );
 vi.mock(
   "@/server/workspace/access/query-handler/list-customer-access-scopes.query-handler",
@@ -76,6 +80,15 @@ vi.mock(
     responsibilityAccessService: {
       evaluate: mocks.evaluateResponsibilityAccess,
     },
+  }),
+);
+vi.mock("@/lib/workspace/crm/project-line-items-view-model", () => ({
+  buildProjectLineItemsViewModel: mocks.buildProjectLineItemsViewModel,
+}));
+vi.mock(
+  "@/server/workspace/crm/query-handler/list-project-line-items-by-customer.query-handler",
+  () => ({
+    listProjectLineItemsByCustomer: mocks.listProjectLineItemsByCustomer,
   }),
 );
 vi.mock(
@@ -113,10 +126,6 @@ vi.mock(
     ),
   }),
 );
-vi.mock(
-  "@/components/workspace/shared/table/list-pagination/list-pagination",
-  () => ({ ListPagination: () => <div data-testid="pagination" /> }),
-);
 
 async function renderPage(searchParams: Record<string, string> = {}) {
   render(
@@ -139,7 +148,8 @@ describe("CrmPage", () => {
       total: 1,
     });
     mocks.listCategories.mockResolvedValue([]);
-    mocks.listProjectsByCustomer.mockResolvedValue([]);
+    mocks.listCockpitProjectsByCustomer.mockResolvedValue([]);
+    mocks.listProjectLineItemsByCustomer.mockResolvedValue([]);
     mocks.listCustomerAccessScopes.mockResolvedValue([]);
     mocks.listAccessCustomerProjects.mockResolvedValue([]);
     mocks.listWorkspaceMembers.mockResolvedValue([]);
@@ -231,6 +241,23 @@ describe("CrmPage", () => {
     expect(mocks.getCustomerCockpitById).toHaveBeenCalledWith(
       TEST_CUSTOMER_ID,
       expect.anything(),
+    );
+  });
+
+  it("loads projects through project-line-items.read without projects.read", async () => {
+    mocks.requireWorkspaceArea.mockResolvedValue(
+      workspaceActorWith([Permission.ProjectLineItemsRead]),
+    );
+    mocks.getCustomerCockpitById.mockResolvedValue({ id: TEST_CUSTOMER_ID });
+
+    await renderPage({ cockpit: TEST_CUSTOMER_ID });
+
+    expect(mocks.listCockpitProjectsByCustomer).toHaveBeenCalledWith(
+      TEST_CUSTOMER_ID,
+      expect.anything(),
+    );
+    expect(mocks.buildProjectLineItemsViewModel).toHaveBeenCalledWith(
+      expect.objectContaining({ projects: [] }),
     );
   });
 

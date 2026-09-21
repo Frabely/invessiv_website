@@ -1,0 +1,100 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  padding: 0.55rem 0.7rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.25rem 0.9rem;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+/* Provenance in edit mode: the template that started this snapshot, not a control. */
+.origin {
+  grid-column: 1 / -1;
+  margin: 0 0 0.5rem;
+  padding: 0.5rem 0.7rem;
+  border-left: 2px solid var(--color-border-strong);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+}
+
+.footerRequiredHint {
+  margin: 0;
+  margin-right: auto;
+  color: var(--color-cta);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 700;
+}
+
+.footerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-left: auto;
+}
+
+.message {
+  margin: 0;
+  padding: 0.65rem 0.8rem;
+  border-radius: 10px;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+.message[data-tone="conflict"] {
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 40%, transparent);
+  background: color-mix(in srgb, var(--color-accent-warm) 10%, transparent);
+}
+
+.message[data-tone="error"] {
+  border: 1px solid color-mix(in srgb, var(--color-danger) 45%, transparent);
+  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
+}
+
+.messageText,
+.messageDetail {
+  margin: 0;
+}
+
+.messageDetail {
+  margin-top: 0.35rem;
+  color: var(--color-text-muted);
+}
+
+.noTemplates {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.55rem 0.7rem 0.9rem;
+}
+
+.noTemplatesTitle {
+  margin: 0;
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.noTemplatesText {
+  max-width: 55ch;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+}
+
+@media (max-width: 640px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .footerRequiredHint {
+    flex-basis: 100%;
+  }
+}

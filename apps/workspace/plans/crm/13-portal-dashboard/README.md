@@ -2,6 +2,9 @@
 
 > **Status:** offen · **Abhängigkeiten:** 07, 08, 12 · **Aufwand:** 3–4 Tage · **Reviewziel:** 60–100 Dateien
 
+> **Hinweis Neuplanung Ordner 08 (21.09.2026):** Aufgaben sind nur noch Projektaufgaben mit vier Status; Details und
+> offene Anpassungen stehen im Kopf von `21-portal-dashboard.md`.
+
 ## Ziel und Stand nach Merge
 
 **Konkreter Task-Plan**

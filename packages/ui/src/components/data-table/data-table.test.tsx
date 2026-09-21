@@ -98,4 +98,45 @@ describe("DataTableLayout", () => {
       screen.getByRole("columnheader", { name: "Actions" }),
     ).toBeInTheDocument();
   });
+
+  it("keeps pagination in the table frame outside the scroll area", () => {
+    render(
+      <DataTableLayout
+        ariaLabel="Customers"
+        caption="Customers"
+        columns={[{ id: "name", header: "Name" }]}
+        pagination={{
+          basePath: "/customers",
+          content: {
+            ariaLabel: "Customer pages",
+            first: "First",
+            last: "Last",
+            next: "Next",
+            page: "Page {page}",
+            previous: "Previous",
+            showing: "Showing {from} to {to} of {total}",
+          },
+          currentPage: 1,
+          perPage: 25,
+          queryString: "",
+          total: 50,
+        }}
+      >
+        <tr>
+          <td>Nordlicht Coaching</td>
+        </tr>
+      </DataTableLayout>,
+    );
+
+    const pagination = screen.getByRole("navigation", {
+      name: "Customer pages",
+    });
+    const scrollArea = screen.getByRole("table").parentElement;
+
+    expect(pagination.parentElement).not.toBe(scrollArea);
+    expect(screen.getByRole("link", { name: "Next" })).toHaveAttribute(
+      "href",
+      "/customers?page=2",
+    );
+  });
 });

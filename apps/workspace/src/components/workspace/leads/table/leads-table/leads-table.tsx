@@ -5,7 +5,8 @@ import { LeadsEmptyStateVariant } from "@invessiv/common/constants/leads/list/le
 import { LeadSort } from "@invessiv/common/constants/leads/list/lead-sort";
 import type { LeadCategoryOption } from "@invessiv/common/contracts/leads/lead-category-option";
 import type { LeadSummaryDto } from "@invessiv/common/contracts/leads/lead-summary.dto";
-import { DataTableLayout } from "@invessiv/ui";
+import type { ListLeadsResult } from "@invessiv/common/contracts/leads/results/list-leads-result";
+import { DataTableLayout, type ListPaginationProps } from "@invessiv/ui";
 import type {
   LeadsBulkDictionary,
   LeadsDeleteDictionary,
@@ -13,6 +14,7 @@ import type {
   LeadsSharedDictionary,
   LeadsTableDictionary,
 } from "@/i18n/dictionaries/workspace/leads";
+import { getLeadsPaginationDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { LeadsBulkActionBar } from "../bulk/leads-bulk-action-bar/leads-bulk-action-bar";
 import { ListEmptyState } from "@/components/workspace/shared/table/list-empty-state/list-empty-state";
 import { ListSelectAllCheckbox } from "@/components/workspace/shared/table/list-select-all-checkbox/list-select-all-checkbox";
@@ -33,7 +35,7 @@ type LeadsTableProps = {
   currentSearchParams: Record<string, string | string[] | undefined>;
   outreachContent?: LeadsOutreachDictionary;
   queryString: string;
-  rows: LeadSummaryDto[];
+  leadList: ListLeadsResult;
   selectionResetKey?: string;
   emptyState?: {
     actionHref?: string;
@@ -61,14 +63,23 @@ export function LeadsTable({
   currentSearchParams,
   outreachContent,
   queryString,
-  rows,
+  leadList,
   selectionResetKey,
   emptyState,
   sharedContent,
   tableContent,
 }: LeadsTableProps) {
+  const rows: LeadSummaryDto[] = leadList.rows;
   const activeSort = getActiveSort(queryString);
   const rowIds = rows.map((row) => row.id);
+  const pagination: ListPaginationProps = {
+    basePath,
+    content: getLeadsPaginationDictionary(locale).pagination,
+    currentPage: leadList.page,
+    perPage: leadList.perPage,
+    queryString,
+    total: leadList.total,
+  };
   const columns = [
     {
       header:
@@ -187,6 +198,7 @@ export function LeadsTable({
           caption={tableContent.columns.lead}
           columns={columns}
           frameClassName={styles.tableFrame}
+          pagination={pagination}
           overlay={<LeadsTableSpinner ariaLabel={tableContent.loadingLabel} />}
           scrollClassName={styles.tableScroll}
           tableClassName={styles.table}

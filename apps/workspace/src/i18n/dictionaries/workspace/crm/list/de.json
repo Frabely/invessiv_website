@@ -6,6 +6,8 @@
     "status": "Status",
     "owner": "Zuständig",
     "primaryContact": "Hauptansprechpartner",
+    "oneTimePayment": "Einmalzahlung",
+    "recurringRevenue": "Laufend / Monat",
     "updated": "Geändert",
     "actions": "Aktionen"
   },

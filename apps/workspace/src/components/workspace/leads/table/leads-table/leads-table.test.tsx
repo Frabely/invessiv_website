@@ -53,7 +53,13 @@ describe("LeadsTable", () => {
         outreachContent={getLeadsOutreachDictionary("de")}
         queryString="search=abc"
         currentSearchParams={{ search: "abc" }}
-        rows={[]}
+        leadList={{
+          hiddenConvertedCount: 0,
+          page: 1,
+          perPage: 20,
+          rows: [],
+          total: 0,
+        }}
         sharedContent={getLeadsSharedDictionary("de")}
         tableContent={getLeadsTableDictionary("de")}
       />,
@@ -103,7 +109,13 @@ describe("LeadsTable", () => {
         outreachContent={getLeadsOutreachDictionary("de")}
         queryString=""
         currentSearchParams={{}}
-        rows={rows}
+        leadList={{
+          hiddenConvertedCount: 0,
+          page: 1,
+          perPage: 20,
+          rows,
+          total: 1,
+        }}
         sharedContent={getLeadsSharedDictionary("de")}
         tableContent={getLeadsTableDictionary("de")}
       />,

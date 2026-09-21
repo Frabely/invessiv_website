@@ -38,6 +38,8 @@ function authorizedWith(...permissions: Permission[]) {
       userId: "user-uuid-1",
       workspaceMemberId: "member-uuid-1",
       permissions: new Set(permissions),
+      customerPermissions: new Map(),
+      projectPermissions: new Map(),
     },
   };
 }
@@ -155,5 +157,15 @@ describe("requireWorkspaceArea", () => {
     await expect(
       requireWorkspaceArea("de", WorkspaceArea.Leads),
     ).rejects.toThrow("NOT_FOUND");
+  });
+
+  it("opens CRM through project-line-items.read", async () => {
+    mockAuthenticate.mockResolvedValue(
+      authorizedWith(Permission.ProjectLineItemsRead),
+    );
+
+    await expect(
+      requireWorkspaceArea("de", WorkspaceArea.Crm),
+    ).resolves.toMatchObject({ workspaceMemberId: "member-uuid-1" });
   });
 });

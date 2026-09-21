@@ -27,8 +27,8 @@ Details und Abnahmekriterien stehen in den aktiven geordneten Merge-Einheiten.
   Liste, Kundenakte, Projektkarte und bestehendem Cockpit; `rate` zählt nicht als Umsatz.
 - Stundensatz als Projektleistung mit individueller Snapshot-Preisgestaltung; Angebote, Rechnungen
   und Zahlungen bleiben in Lexware.
-- Flache Aufgaben mit einem Bearbeiter, Kontext, Handlungspflicht, Fälligkeit, Wiederholung und
-  globaler Übersicht.
+- Flache Projektaufgaben mit Status, internem Bearbeiter, Handlungsseite (wir/Kunde), Sichtbarkeit für den Kunden,
+  Fälligkeitsdatum, Wiederholung, globaler Übersicht und Dashboard-Block.
 - Workspace-Glocke für Zuweisungen, Fälligkeiten, Portalereignisse, Renewals und Jobfehler.
 - Explizite atomare Gesamtübergabe aller offenen Zuständigkeiten eines Mitglieds nach dem vollständigen CRM-Ausbau.
 - Renewals für Domain, Hosting, SSL, Lizenz und sonstige Laufzeiten.

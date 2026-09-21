@@ -1,0 +1,140 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+
+import Link from "next/link";
+import { Permission } from "@invessiv/common/constants/auth/permissions";
+import { can } from "@invessiv/common/patterns/auth/can";
+import { ButtonLink } from "@invessiv/ui";
+import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
+import { LineItemTemplateFormDialogMode } from "@/common/constants/crm/forms/line-item-template-form-dialog-modes";
+import {
+  buildLineItemTemplateCreateHref,
+  buildLineItemTemplateDialogCloseHref,
+  buildLineItemTemplateListHref,
+  readLineItemTemplateDialogRequest,
+  readLineItemTemplateIncludeArchived,
+} from "@/common/patterns/crm/line-item-template-dialog-query";
+import { LineItemTemplateFormDialog } from "@/components/workspace/crm/line-item-templates/line-item-template-form-dialog/line-item-template-form-dialog";
+import { LineItemTemplatesList } from "@/components/workspace/crm/line-item-templates/line-item-templates-list/line-item-templates-list";
+import { LineItemTemplatesPageHeader } from "@/components/workspace/crm/line-item-templates/line-item-templates-page-header/line-item-templates-page-header";
+import { WorkspacePageShell } from "@/components/workspace/workspace-page-shell/workspace-page-shell";
+import { isSupportedLocale, type Locale } from "@/config/i18n";
+import {
+  crmLineItemTemplatesPathFor,
+  workspaceAreaPathFor,
+} from "@/lib/auth/routes";
+import { getCrmLineItemTemplatesDictionary } from "@/i18n/dictionaries/workspace/crm";
+import { requireWorkspacePermission } from "@/lib/auth/permissions";
+import { listLineItemTemplates } from "@/server/workspace/crm/query-handler/list-line-item-templates.query-handler";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+type LineItemTemplatesPageProps = {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export async function generateMetadata({
+  params,
+}: LineItemTemplatesPageProps): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isSupportedLocale(locale)) {
+    return {};
+  }
+  const meta = getCrmLineItemTemplatesDictionary(locale).meta;
+  return {
+    title: meta.title,
+    description: meta.description,
+    robots: { index: false, follow: false, nocache: true },
+  };
+}
+
+export default async function LineItemTemplatesPage({
+  params,
+  searchParams,
+}: LineItemTemplatesPageProps) {
+  const { locale } = await params;
+  if (!isSupportedLocale(locale)) {
+    notFound();
+  }
+
+  // The layout is not re-rendered on search param changes, so the page gates its own data.
+  const actor = await requireWorkspacePermission(
+    locale,
+    Permission.LineItemTemplatesRead,
+  );
+  const activeLocale: Locale = locale;
+  const resolvedSearchParams = await searchParams;
+  const includeArchived =
+    readLineItemTemplateIncludeArchived(resolvedSearchParams);
+  const basePath = crmLineItemTemplatesPathFor(activeLocale);
+  const canWrite = can(actor, Permission.LineItemTemplatesWrite);
+  const dialogRequest = canWrite
+    ? readLineItemTemplateDialogRequest(resolvedSearchParams)
+    : null;
+
+  const list = await listLineItemTemplates({ includeArchived });
+  const editLineItemTemplate =
+    dialogRequest?.mode === LineItemTemplateFormDialogMode.Edit
+      ? (list.rows.find((row) => row.id === dialogRequest.lineItemTemplateId) ??
+        null)
+      : null;
+  // An unknown edit id opens nothing; it is not an error.
+  const showDialog =
+    dialogRequest?.mode === LineItemTemplateFormDialogMode.Create ||
+    editLineItemTemplate !== null;
+
+  const content = getCrmLineItemTemplatesDictionary(activeLocale);
+  const createHref = canWrite
+    ? buildLineItemTemplateCreateHref(basePath, includeArchived)
+    : null;
+  const closeHref = buildLineItemTemplateDialogCloseHref(
+    basePath,
+    includeArchived,
+  );
+  const toggleArchivedHref = buildLineItemTemplateListHref(
+    basePath,
+    !includeArchived,
+  );
+
+  return (
+    <WorkspacePageShell pageId="crm-services">
+      <ButtonLink
+        href={workspaceAreaPathFor(activeLocale, WorkspaceArea.Crm)}
+        linkComponent={Link}
+        variant="ghost"
+      >
+        {content.shell.backToCustomers}
+      </ButtonLink>
+      <LineItemTemplatesPageHeader
+        archivedToggleHref={toggleArchivedHref}
+        content={content}
+        createHref={createHref}
+        includeArchived={includeArchived}
+      />
+      <LineItemTemplatesList
+        basePath={basePath}
+        canWrite={canWrite}
+        content={content}
+        createHref={createHref}
+        hasLineItemTemplates={list.hasLineItemTemplates}
+        includeArchived={includeArchived}
+        locale={activeLocale}
+        lineItemTemplates={list.rows}
+        toggleArchivedHref={toggleArchivedHref}
+      />
+      {showDialog ? (
+        <LineItemTemplateFormDialog
+          closeHref={closeHref}
+          content={content}
+          key={
+            editLineItemTemplate?.id ?? LineItemTemplateFormDialogMode.Create
+          }
+          locale={activeLocale}
+          lineItemTemplate={editLineItemTemplate}
+        />
+      ) : null}
+    </WorkspacePageShell>
+  );
+}

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import type { CustomerCockpitDto } from "@invessiv/common/contracts/crm/customer-cockpit.dto";
-import type { ProjectDto } from "@invessiv/common/contracts/crm/project.dto";
 import type { AccessScopeEntryDto } from "@invessiv/common/contracts/auth/access-scope-entry.dto";
 import type { AccessProjectOptionDto } from "@invessiv/common/contracts/auth/access-project-option.dto";
 import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/role-assignment-option.dto";
@@ -14,8 +13,13 @@ import { formatCustomerNumber } from "@invessiv/common/patterns/crm/format-custo
 import type {
   CrmAccessDictionary,
   CrmCockpitDictionary,
+  CrmProjectLineItemsDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
 import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
+import type { ProjectLineItemsViewModel } from "@/common/contracts/crm/project-line-items-view-model";
+import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
+import type { Locale } from "@/config/i18n";
+import { formatEuroCents } from "@/lib/workspace/crm/format-service-price";
 import styles from "./customer-cockpit-view.module.css";
 
 type CustomerCockpitViewProps = {
@@ -28,10 +32,13 @@ type CustomerCockpitViewProps = {
   customer: CustomerCockpitDto;
   customerOwnerHasAccess?: boolean;
   customerOwnerMemberId?: string;
+  locale: Locale;
   canWriteProjects?: boolean;
-  projects?: ProjectDto[] | null;
+  projects?: CockpitProjectDto[] | null;
   permissionsContent?: SettingsPermissionsDictionary;
   projectOwnerHasAccess?: Readonly<Record<string, boolean>>;
+  projectLineItems?: ProjectLineItemsViewModel;
+  projectLineItemsContent?: CrmProjectLineItemsDictionary;
   rolesHref?: string;
 };
 
@@ -46,10 +53,13 @@ export function CustomerCockpitView({
   customer,
   customerOwnerHasAccess,
   customerOwnerMemberId,
+  locale,
   canWriteProjects = false,
   projects = null,
   permissionsContent,
   projectOwnerHasAccess,
+  projectLineItems,
+  projectLineItemsContent,
   rolesHref,
 }: CustomerCockpitViewProps) {
   const [requestedAccessMemberId, setRequestedAccessMemberId] = useState<
@@ -78,6 +88,16 @@ export function CustomerCockpitView({
           {formatCustomerNumber(customer.customerNumber)}
         </span>
         <h2 className={styles.customerName}>{customer.displayName}</h2>
+        {projectLineItems && projectLineItemsContent ? (
+          <p className={styles.number}>
+            {projectLineItems.customerValue.oneTimeCents > 0
+              ? `${projectLineItemsContent.values.oneTime}: ${formatEuroCents(projectLineItems.customerValue.oneTimeCents, locale)}`
+              : null}
+            {projectLineItems.customerValue.monthlyCents > 0
+              ? ` · ${projectLineItemsContent.values.monthly}: ${formatEuroCents(projectLineItems.customerValue.monthlyCents, locale)}`
+              : null}
+          </p>
+        ) : null}
       </header>
       <div className={styles.grid}>
         <section className={styles.section}>
@@ -118,8 +138,11 @@ export function CustomerCockpitView({
           canWrite={canWriteProjects}
           content={content}
           customerId={customer.id}
+          locale={locale}
           onGrantAccessAction={setRequestedAccessMemberId}
           ownerHasAccess={projectOwnerHasAccess}
+          projectLineItems={projectLineItems}
+          projectLineItemsContent={projectLineItemsContent}
           projects={projects}
         />
       ) : null}

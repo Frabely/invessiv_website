@@ -2,6 +2,9 @@
 
 > **Status:** offen · **Abhängigkeiten:** 08, 13, 15b · **Aufwand:** 2–3 Tage · **Reviewziel:** 50–70 Dateien
 
+> **Hinweis Neuplanung Ordner 08 (21.09.2026):** Hängt an den zurückgestellten Aufgaben-Vorlagen (Task 12); siehe
+> Kopf von `46-aufgaben-verzahnung-und-fortschritt.md`.
+
 ## Ziel und Stand nach Merge
 
 **Konkreter Task-Plan**

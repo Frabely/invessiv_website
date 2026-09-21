@@ -6,6 +6,8 @@
     "status": "Status",
     "owner": "Owner",
     "primaryContact": "Primary contact",
+    "oneTimePayment": "One-time payment",
+    "recurringRevenue": "Recurring / month",
     "updated": "Updated",
     "actions": "Actions"
   },

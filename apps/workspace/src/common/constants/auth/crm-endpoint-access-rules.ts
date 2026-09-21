@@ -7,6 +7,7 @@ import { Permission } from "@invessiv/common/constants/auth/permissions";
  */
 export const CrmEndpointAccessRule = {
   CustomerAccessScopes: "customer_access_scopes",
+  CustomerCreate: "customer_create",
   CustomerDetail: "customer_detail",
   CustomerUpdate: "customer_update",
   CustomerProjects: "customer_projects",
@@ -14,8 +15,12 @@ export const CrmEndpointAccessRule = {
   LeadConversion: "lead_conversion",
   ProjectDetail: "project_detail",
   ProjectCreate: "project_create",
-  ServiceTemplateDetail: "service_template_detail",
-  ServiceTemplates: "service_templates",
+  ProjectLineItemDetail: "project_line_item_detail",
+  ProjectLineItems: "project_line_items",
+  ProjectLineItemCreate: "project_line_item_create",
+  LineItemTemplateDetail: "line_item_template_detail",
+  LineItemTemplateCreate: "line_item_template_create",
+  LineItemTemplates: "line_item_templates",
 } as const;
 
 export type CrmEndpointAccessRule =
@@ -24,6 +29,10 @@ export type CrmEndpointAccessRule =
 export const CRM_ENDPOINT_ACCESS_RULES = {
   [CrmEndpointAccessRule.CustomerAccessScopes]: {
     permission: Permission.MembersManage,
+    scope: "workspace",
+  },
+  [CrmEndpointAccessRule.CustomerCreate]: {
+    permission: Permission.CustomersWrite,
     scope: "workspace",
   },
   [CrmEndpointAccessRule.CustomerDetail]: {
@@ -54,12 +63,28 @@ export const CRM_ENDPOINT_ACCESS_RULES = {
     permission: Permission.ProjectsWrite,
     scope: "customer",
   },
-  [CrmEndpointAccessRule.ServiceTemplateDetail]: {
-    permission: Permission.ServicesWrite,
+  [CrmEndpointAccessRule.ProjectLineItemDetail]: {
+    permission: Permission.ProjectLineItemsWrite,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.ProjectLineItems]: {
+    permission: Permission.ProjectLineItemsRead,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.ProjectLineItemCreate]: {
+    permission: Permission.ProjectLineItemsWrite,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.LineItemTemplateDetail]: {
+    permission: Permission.LineItemTemplatesWrite,
     scope: "workspace",
   },
-  [CrmEndpointAccessRule.ServiceTemplates]: {
-    permission: Permission.ServicesRead,
+  [CrmEndpointAccessRule.LineItemTemplateCreate]: {
+    permission: Permission.LineItemTemplatesWrite,
+    scope: "workspace",
+  },
+  [CrmEndpointAccessRule.LineItemTemplates]: {
+    permission: Permission.LineItemTemplatesRead,
     scope: "workspace",
   },
 } as const satisfies Record<

@@ -4,6 +4,14 @@
 > **Aufwand:** L · **Abhängigkeiten:** Task 20 (Zugang), Task 10 (Projekte), Task 11 (Aufgaben)
 > **Migration:** keine
 
+> **Hinweis Neuplanung Ordner 08 (21.09.2026):** Das Aufgabenmodell hat sich geändert. Statt `done_at` /
+> `done_by_side` gibt es `status` (`open | in_progress | done | cancelled`) mit `completed_at` und
+> `completed_by_member_id`; ein Abschluss durch den Kunden braucht hier additiv eine Portal-Herkunft (z. B.
+> `completed_by_portal_user_id`) und die Herkunft vom Kunden gestellter Aufgaben (`created_by_side`).
+> `listTasks({ scope: "customer" })` existiert nicht; die Portal-Query entsteht hier neu unter `src/server/portal/`
+> und filtert `visible_to_customer = true` im `WHERE`. Der Kunde sieht Status und „Wir“/„Sie“, keinen
+> Mitarbeiternamen. Vor der Umsetzung neu zuschneiden.
+
 - Projekte zeigen nur Status, Phase, nächsten Schritt, Termin und explizit freigegebenen Preview-Link;
   Budget, Stundensatz, interne Notizen und Owner fehlen vollständig.
 - Bringschuld queryt `action_side = customer AND visible_to_customer = true` und filtert den

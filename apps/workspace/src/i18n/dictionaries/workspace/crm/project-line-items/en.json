@@ -1,0 +1,108 @@
+{
+  "section": {
+    "title": "Services",
+    "assignAction": "Assign service",
+    "count": "{count} items",
+    "countOne": "1 item"
+  },
+  "values": {
+    "oneTime": "One-time payment",
+    "monthly": "Recurring revenue / month",
+    "yearly": "Confirmed yearly"
+  },
+  "list": {
+    "ariaLabel": "Services of this project",
+    "edit": "Edit",
+    "editNamed": "Edit service “{name}”",
+    "pricingMode": {
+      "one_time": "One-off",
+      "recurring": "Recurring",
+      "rate": "Hourly rate"
+    },
+    "cadence": {
+      "one_time": "one-off",
+      "monthly": "per month",
+      "yearly": "per year",
+      "rate": "per hour"
+    },
+    "status": {
+      "requested": "Requested",
+      "approved": "Approved",
+      "planned": "Planned",
+      "confirmed": "Confirmed",
+      "rejected": "Rejected"
+    },
+    "templateRemoved": "Template deleted"
+  },
+  "empty": {
+    "title": "No service assigned yet",
+    "description": "This is what the project covers and what it costs. Assign a service from the catalog – price and description are stored as a copy and no longer follow the catalog.",
+    "action": "Assign service"
+  },
+  "emptyReadOnly": {
+    "title": "No service assigned yet",
+    "description": "Services appear here as soon as someone with write access assigns one."
+  },
+  "form": {
+    "title": {
+      "create": "Assign service",
+      "edit": "Edit service"
+    },
+    "description": {
+      "create": "The template pre-fills the fields. Whatever you change here applies to this project only.",
+      "edit": "Changes to “{name}” apply to this project only."
+    },
+    "fields": {
+      "sourceLineItemTemplateId": "Template",
+      "title": "Title",
+      "description": "Description",
+      "priceCents": "Price",
+      "pricingMode": "Pricing",
+      "recurringInterval": "Interval",
+      "status": "Status"
+    },
+    "placeholders": {
+      "sourceLineItemTemplateId": "Choose a template",
+      "title": "e.g. Landing page",
+      "description": "Describe the scope for this project"
+    },
+    "origin": "From template “{name}”",
+    "originRemoved": "The original template was deleted. The stored values stay untouched.",
+    "currencySymbol": "€",
+    "interval": {
+      "monthly": "monthly",
+      "yearly": "yearly"
+    },
+    "buttons": {
+      "close": "Close",
+      "cancel": "Cancel",
+      "submitCreate": "Assign",
+      "submitEdit": "Save",
+      "submitting": "Saving …"
+    },
+    "requiredHint": "* Required field",
+    "noTemplates": {
+      "title": "No active template in the catalog",
+      "description": "Services start from the service catalog. Create an active template there first.",
+      "action": "Open service catalog"
+    },
+    "conflict": {
+      "message": "The service changed in the meantime.",
+      "currentTitle": "Current state: {name}"
+    },
+    "validation": {
+      "TEMPLATE_REQUIRED": "Choose a template",
+      "TITLE_REQUIRED": "Title is required",
+      "PRICE_INVALID": "Enter a valid price",
+      "PRICE_OUT_OF_RANGE": "Price is too large, enter a smaller amount",
+      "RECURRING_INTERVAL_REQUIRED": "Choose an interval"
+    },
+    "errors": {
+      "PROJECT_LINE_ITEM_NOT_FOUND": "The service was not found.",
+      "PROJECT_NOT_FOUND": "The project was not found.",
+      "LINE_ITEM_TEMPLATE_NOT_ASSIGNABLE": "This template is archived and cannot be assigned.",
+      "VALIDATION_ERROR": "The input could not be saved.",
+      "INTERNAL": "Unexpected error. Please try again."
+    }
+  }
+}

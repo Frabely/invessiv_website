@@ -27,6 +27,7 @@ describe("CustomerCockpitView", () => {
     render(
       <CustomerCockpitView
         content={content}
+        locale="en"
         customer={customer}
         projects={[]}
       />,
@@ -62,6 +63,7 @@ describe("CustomerCockpitView", () => {
       content,
       customer,
       customerOwnerMemberId: member.id,
+      locale: "de" as const,
       permissionsContent: getSettingsPermissionsDictionary("de"),
       projects: [],
       rolesHref: "/de/settings?tab=roles",

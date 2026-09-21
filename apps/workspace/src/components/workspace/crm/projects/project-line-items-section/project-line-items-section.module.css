@@ -1,0 +1,167 @@
+.services {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1.1rem 1.25rem 1.25rem;
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-cta);
+  background: var(--color-surface-2);
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.head h3 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-heading-sm);
+}
+
+.headMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.count {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.ledger {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item + .item {
+  border-top: 1px solid var(--color-border);
+}
+
+/*
+ * Two columns: what it is on the left, what it costs on the right. The amount column is what
+ * gets scanned, so it keeps tabular figures and never wraps.
+ */
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.15rem 1.25rem;
+  width: 100%;
+  padding: 0.75rem 0.5rem;
+  border: 0;
+  border-left: 2px solid transparent;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+button.row {
+  cursor: pointer;
+}
+
+button.row:hover,
+button.row:focus-visible {
+  border-left-color: var(--color-cta);
+  background: var(--color-surface-1);
+}
+
+button.row:focus-visible {
+  outline: 2px solid var(--color-cta);
+  outline-offset: -2px;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.amount {
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.description {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.cadence {
+  align-self: start;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.origin {
+  padding: 0.1rem 0.4rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 99px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.empty {
+  display: grid;
+  justify-items: start;
+  gap: 0.4rem;
+  padding: 0.5rem 0 0.25rem;
+}
+
+.emptyTitle {
+  margin: 0;
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.emptyText {
+  max-width: 60ch;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+}
+
+@media (max-width: 640px) {
+  .head {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .headMeta {
+    justify-content: space-between;
+  }
+
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .amount,
+  .cadence {
+    text-align: left;
+  }
+
+  .cadence {
+    order: 1;
+  }
+}

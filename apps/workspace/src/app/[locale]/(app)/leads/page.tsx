@@ -13,7 +13,6 @@ import { LeadFormDialog } from "@/components/workspace/leads/form/lead-form-dial
 import { CustomerFormDialog } from "@/components/workspace/crm/form/customer-form-dialog/customer-form-dialog";
 import { LeadsPageHeader } from "@/components/workspace/leads/shell/leads-page-header/leads-page-header";
 import { LeadsPageShell } from "@/components/workspace/leads/shell/leads-page-shell/leads-page-shell";
-import { ListPagination } from "@/components/workspace/shared/table/list-pagination/list-pagination";
 import { LeadsTable } from "@/components/workspace/leads/table/leads-table/leads-table";
 import { LeadsTableTransitionProvider } from "@/components/workspace/leads/table/leads-table-transition-provider/leads-table-transition-provider";
 import type { LeadCategoryOption } from "@invessiv/common/contracts/leads/lead-category-option";
@@ -276,18 +275,10 @@ export default async function LeadsPage({
             outreachContent={outreachContent}
             queryString={queryString}
             currentSearchParams={resolvedSearchParams}
-            rows={leadList.rows}
+            leadList={leadList}
             selectionResetKey={queryString}
             sharedContent={sharedContent}
             tableContent={tableContent}
-          />
-          <ListPagination
-            basePath={basePath}
-            content={paginationContent}
-            currentPage={currentPage}
-            perPage={leadList.perPage}
-            queryString={queryString}
-            total={leadList.total}
           />
         </LeadsTableTransitionProvider>
       </LeadsPageShell>

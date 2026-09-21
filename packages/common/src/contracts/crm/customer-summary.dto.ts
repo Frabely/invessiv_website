@@ -1,4 +1,5 @@
 import type { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
+import type { ProjectLineItemValue } from "@invessiv/common/contracts/crm/project-line-item-value";
 
 /**
  * `primaryContactName` is deliberately not nullable: every customer has exactly one
@@ -39,4 +40,6 @@ export interface CustomerSummaryDto {
   createdAt: string;
   /** ISO string. Bumped by every versioned customer update. */
   updatedAt: string;
+  /** Absent unless the actor may read project line items for this customer. */
+  projectLineItemValue?: ProjectLineItemValue;
 }

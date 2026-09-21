@@ -34,6 +34,18 @@ Für Contact-bezogenen Code gilt die Trennung:
 - `persist-*.ts` für Datenbank-Persistenzfunktionen verwenden.
 - `*-record.ts` und `*-persist-input.ts` für gemeinsame serverseitige Persistenz-Contracts verwenden.
 
+## Handler vs. Service (Benennung & Schnitt)
+
+- Ein Command-/Query-Handler ist nach seinem Anwendungsfall benannt (`updateProject`, `createCustomer`) und trägt
+  **kein** `Service` im Namen. Datei: `<verb>-<entity>.command-handler.ts` bzw. `….query-handler.ts`.
+- Ein **Service** ist das Bindeglied zwischen mehreren Handlern: Er entsteht erst, wenn dieselbe Logik in einem zweiten
+  Handler gebraucht wird. Dann wandert die Logik in ein Service-Objekt (z. B. `projectService` mit `updateProject`), und
+  beide Handler rufen es auf — statt dass ein Handler den anderen aufruft oder die Logik kopiert wird.
+- Solange es nur einen Aufrufer gibt, bleibt die Logik im Handler; kein vorsorglicher Service „für später“.
+- Abgrenzung: `Service` als **Fachbegriff** ist davon unberührt. `LineItemTemplate` (Leistungskatalog) ist eine Entität
+  und heißt korrekt so. Die einem Projekt zugewiesene Teilleistung heißt `ProjectLineItem` (Tabelle
+  `project_line_items`), nicht `ProjectService` — der Name `…Service` ist für Bindeglied-Services reserviert.
+
 ## Mapping-Services — Tests (Pflicht)
 
 Jeder Mapping-Service bekommt eine eigene Testdatei. Die Datei liegt unter
