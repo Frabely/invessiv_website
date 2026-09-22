@@ -13,6 +13,8 @@ Zwischenständen erweitert zu werden.
 ## Enthaltene Pläne
 
 - [`30-filter-und-suche.md`](./30-filter-und-suche.md) — Suche, Facettenfilter und persönliche Ansichten.
+- [`30a-listenkopf-und-filterpanel-abstrahieren.md`](./30a-listenkopf-und-filterpanel-abstrahieren.md) — Listenkopf
+  mit Filterpanel als domänenneutraler Baustein für Leads, Aufgaben und Kundenliste.
 - [`07-tags.md`](./07-tags.md) — normalisierte Kundentags samt Zuweisung und Listenanzeige.
 - [`02f-zustaendigkeitsuebergabe.md`](./02f-zustaendigkeitsuebergabe.md) — atomare Übergabe aller zu diesem Zeitpunkt
   vorhandenen offenen Zuständigkeiten.

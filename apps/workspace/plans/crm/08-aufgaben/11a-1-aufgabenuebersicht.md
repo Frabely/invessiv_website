@@ -9,6 +9,11 @@
 Eine Tabelle unter `/crm/tasks` zeigt alle lesbaren Aufgaben über alle Kunden und Projekte. Sie beantwortet „was ist
 überfällig“, „was ist diese Woche fällig“ und „worauf warten wir beim Kunden“, ohne jeden Kunden einzeln zu öffnen.
 
+> **Nacharbeit:** Der Filterkopf der Übersicht (Badge-Facetten, Filterpanel, Zurücksetzen) ist bewusst parallel zum
+> Leads-Kopf gebaut, damit Leads unangetastet blieb. Die Zusammenführung steht in
+> [
+> `30a-listenkopf-und-filterpanel-abstrahieren.md`](../22a-kundenorganisation-und-uebergabe/30a-listenkopf-und-filterpanel-abstrahieren.md).
+
 ## Entscheidungen
 
 | Bereich         | Entscheidung                                                                                                                            |

@@ -1,0 +1,24 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  max-width: var(--measure-lead);
+  padding-top: var(--workspace-app-header-hover-buffer, 0.35rem);
+  padding-bottom: clamp(0.75rem, 1.4vw, 1rem);
+}
+
+.title {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-section-subtitle);
+  font-weight: 720;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+
+.description {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.55;
+}

@@ -14,7 +14,10 @@
     "label": "Neue Aufgabe",
     "placeholder": "Aufgabe eintippen, Enter legt sie an",
     "hint": "Fälligkeit, Bearbeiter und „Kunde ist dran“ stellst du danach über die Aufgabe ein.",
-    "error": "Die Aufgabe konnte nicht angelegt werden. Bitte versuche es erneut."
+    "error": "Die Aufgabe konnte nicht angelegt werden. Bitte versuche es erneut.",
+    "validation": {
+      "titleRequired": "Gib einen Aufgabentitel ein."
+    }
   },
   "empty": {
     "title": "Noch keine Aufgaben",
@@ -121,7 +124,6 @@
     "toolbar": {
       "ariaLabel": "Aufgaben filtern",
       "clear": "Auswahl aufheben",
-      "reset": "Filter zurücksetzen",
       "closedProjects": "Auch abgeschlossene Projekte",
       "search": {
         "label": "Suche",
@@ -150,6 +152,16 @@
         "all": "Alle",
         "me": "Meine"
       },
+      "customer": {
+        "label": "Kunde",
+        "ariaLabel": "Nach Kunde filtern",
+        "all": "Alle"
+      },
+      "project": {
+        "label": "Projekt",
+        "ariaLabel": "Nach Projekt filtern",
+        "all": "Alle"
+      },
       "period": {
         "label": "Fälligkeit",
         "ariaLabel": "Nach Fälligkeit filtern",
@@ -160,12 +172,12 @@
           "week": "Nächste 7 Tage",
           "due_soon": "Bald fällig"
         }
+      },
+      "actions": {
+        "reset": "Filter zurücksetzen",
+        "expandFilters": "Filter einblenden",
+        "collapseFilters": "Filter ausblenden"
       }
-    },
-    "filteredBy": {
-      "customer": "Nur Aufgaben eines Kunden",
-      "project": "Nur Aufgaben eines Projekts",
-      "remove": "Einschränkung aufheben"
     },
     "caption": "Aufgaben über alle Projekte",
     "columns": {
@@ -174,7 +186,9 @@
       "status": "Status",
       "side": "Wer ist dran?",
       "assignee": "Bearbeiter",
-      "customer": "Kunde und Projekt"
+      "customer": "Kunde",
+      "project": "Projekt",
+      "visibility": "Sichtbarkeit"
     },
     "openCustomerNamed": "Kundenakte von „{name}“ öffnen",
     "noAssignee": "–",

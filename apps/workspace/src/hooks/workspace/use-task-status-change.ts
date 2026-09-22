@@ -72,7 +72,8 @@ export function useTaskStatusChange(content: CrmTasksDictionary) {
     }
 
     setPicked((current) => {
-      const { [task.id]: _reverted, ...rest } = current;
+      const rest = { ...current };
+      delete rest[task.id];
       return rest;
     });
     setAnnouncement(

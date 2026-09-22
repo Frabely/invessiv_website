@@ -1,0 +1,60 @@
+.dueCell {
+  white-space: nowrap;
+}
+
+.taskCell {
+  min-width: 0;
+  font-weight: inherit;
+}
+
+.title {
+  display: block;
+  color: var(--color-text);
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.visibility {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.2rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 400;
+}
+
+.contextCell {
+  min-width: 0;
+}
+
+.customer {
+  display: block;
+  color: var(--color-text);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-decoration-color: var(--color-border-strong);
+  text-underline-offset: 3px;
+}
+
+.customer:hover {
+  text-decoration-color: var(--color-cta);
+}
+
+.customer:focus-visible {
+  outline: 2px solid var(--color-cta);
+  outline-offset: 2px;
+}
+
+.project {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  overflow-wrap: anywhere;
+}
+
+.row[data-pending="true"] {
+  opacity: 0.65;
+}

@@ -1,0 +1,100 @@
+.row {
+  display: grid;
+  grid-template-columns: 9.5rem minmax(0, 1fr);
+  align-items: start;
+  gap: 0.35rem 1rem;
+  padding: 0.75rem 0.5rem;
+  border-left: 2px solid transparent;
+}
+
+.row[data-due="overdue"] {
+  border-left-color: var(--color-danger);
+}
+
+.row[data-pending="true"] {
+  opacity: 0.65;
+}
+
+.status {
+  min-width: 0;
+}
+
+.statusText {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+}
+
+.body {
+  display: grid;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.title {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-weight: 600;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+button.title {
+  justify-self: start;
+  cursor: pointer;
+}
+
+button.title:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+button.title:focus-visible {
+  outline: 2px solid var(--color-cta);
+  outline-offset: 2px;
+}
+
+/* Closed tasks stay readable but step back, so the open ones carry the list. */
+.row[data-status="done"] .title,
+.row[data-status="cancelled"] .title {
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.row[data-status="cancelled"] .title {
+  text-decoration: line-through;
+}
+
+.description {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.85rem;
+}
+
+.visibility,
+.assignee {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+@media (max-width: 640px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

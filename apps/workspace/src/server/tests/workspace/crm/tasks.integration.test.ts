@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { config as loadDotenv } from "dotenv";
-import { eq, inArray, like } from "drizzle-orm";
+import { and, eq, inArray, like } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
@@ -20,6 +20,7 @@ import {
   activities,
   customers,
   projects,
+  tasks,
   users,
   workspaceMembers,
 } from "@invessiv/db/record-configuration";
