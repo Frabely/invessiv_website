@@ -233,10 +233,9 @@ export function TaskFormDialog({
               name: "task-due-on",
               onChange: (event) =>
                 update(TaskFormField.DueOn, event.target.value),
-              type: "date",
               value: values.dueOn,
             }}
-            kind={FormFieldKind.Text}
+            kind={FormFieldKind.Date}
             label={content.form.fields.dueOn}
           />
           {members.length > 0 ? (

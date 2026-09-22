@@ -93,6 +93,7 @@
     "alreadyActivated": "{name} is already active. Nothing left to do.",
     "alreadyDeactivated": "{name} is already deactivated. Nothing left to do.",
     "responsibilities": "Open customer responsibilities: {count}. Assign them to another owner first.",
+    "openTasks": "Open tasks: {count}. Assign them to another assignee first.",
     "done": "Close",
     "submitting": "Saving …",
     "cancel": "Cancel",

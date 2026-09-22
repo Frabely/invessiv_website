@@ -113,7 +113,10 @@ describe("MemberStatusDialog", () => {
     mocks.updateStatus.mockResolvedValue({
       ok: false,
       code: WorkspaceMemberErrorCode.MemberHasOpenResponsibilities,
-      responsibilityCounts: { [OwnableEntity.Customer]: 2 },
+      responsibilityCounts: {
+        [OwnableEntity.Customer]: 2,
+        [OwnableEntity.Task]: 0,
+      },
     });
     render(
       <MemberStatusDialog
@@ -130,6 +133,35 @@ describe("MemberStatusDialog", () => {
 
     expect(await screen.findByRole("alert")).toHaveTextContent("2");
     expect(submit).toBeDisabled();
+    expect(screen.queryByText(/Offene Aufgaben/)).not.toBeInTheDocument();
     expect(screen.queryByText(/übergeben/i)).not.toBeInTheDocument();
+  });
+
+  it("names open tasks and disables the retry", async () => {
+    mocks.updateStatus.mockResolvedValue({
+      ok: false,
+      code: WorkspaceMemberErrorCode.MemberHasOpenResponsibilities,
+      responsibilityCounts: {
+        [OwnableEntity.Customer]: 0,
+        [OwnableEntity.Task]: 3,
+      },
+    });
+    render(
+      <MemberStatusDialog
+        content={content}
+        member={MEMBER}
+        onCloseAction={vi.fn()}
+      />,
+    );
+
+    const submit = screen.getByRole("button", {
+      name: content.statusDialog.deactivateSubmit,
+    });
+    fireEvent.click(submit);
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Offene Aufgaben: 3",
+    );
+    expect(submit).toBeDisabled();
   });
 });

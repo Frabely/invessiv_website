@@ -1,5 +1,6 @@
 export const FormFieldKind = {
   Custom: "custom",
+  Date: "date",
   Email: "email",
   Number: "number",
   Select: "select",
@@ -13,6 +14,7 @@ export type FormFieldKind = (typeof FormFieldKind)[keyof typeof FormFieldKind];
 
 export const FORM_FIELD_KIND_VALUES = [
   FormFieldKind.Custom,
+  FormFieldKind.Date,
   FormFieldKind.Email,
   FormFieldKind.Number,
   FormFieldKind.Select,

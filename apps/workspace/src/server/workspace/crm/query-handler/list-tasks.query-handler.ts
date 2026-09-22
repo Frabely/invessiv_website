@@ -9,8 +9,7 @@ import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import type { TaskListFilters } from "@/common/contracts/crm/task-list-filters";
 import type { TaskListResult } from "@/common/contracts/crm/task-list-result";
 import { taskListConditionsService } from "@/server/workspace/crm/services/task-list-conditions-service";
-import { taskListOrderService } from "@/server/workspace/crm/services/task-list-order";
-import { tasksMapperService } from "@/server/workspace/crm/services/tasks-mapper-service";
+import { taskListRowsService } from "@/server/workspace/crm/services/task-list-rows-service";
 
 /**
  * Every task the actor may read, across customers and projects, narrowed by the filters. Two
@@ -27,20 +26,10 @@ export async function listTasks(
   const where = taskListConditionsService.build(filters, actor, today);
 
   const [rows, [totals]] = await Promise.all([
-    db
-      .select({
-        task: tasks,
-        customerId: projects.customer_id,
-        customerDisplayName: customers.display_name,
-        projectTitle: projects.title,
-      })
-      .from(tasks)
-      .innerJoin(projects, eq(projects.id, tasks.project_id))
-      .innerJoin(customers, eq(customers.id, projects.customer_id))
-      .where(where)
-      .orderBy(...taskListOrderService.orderBy())
-      .limit(TASK_LIST_PAGE_SIZE)
-      .offset((filters.page - 1) * TASK_LIST_PAGE_SIZE),
+    taskListRowsService.select(db, where, {
+      limit: TASK_LIST_PAGE_SIZE,
+      offset: (filters.page - 1) * TASK_LIST_PAGE_SIZE,
+    }),
     db
       .select({ total: count() })
       .from(tasks)
@@ -52,12 +41,7 @@ export async function listTasks(
   return {
     page: filters.page,
     perPage: TASK_LIST_PAGE_SIZE,
-    rows: rows.map((row) => ({
-      task: tasksMapperService.toDto(row.task),
-      customerId: row.customerId,
-      customerDisplayName: row.customerDisplayName,
-      projectTitle: row.projectTitle,
-    })),
+    rows,
     total: totals?.total ?? 0,
   };
 }

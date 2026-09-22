@@ -3,7 +3,7 @@ import "server-only";
 import { and, eq, inArray } from "drizzle-orm";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
-import { customers, projects } from "@invessiv/db/record-configuration";
+import { customers, projects, tasks } from "@invessiv/db/record-configuration";
 import { canOn, type PermissionTarget } from "@/common/patterns/auth/can-on";
 import { resolveWorkspaceActorsByMemberIds } from "@/server/workspace/auth/query-handler/resolve-workspace-actor.query-handler";
 
@@ -71,6 +71,34 @@ const OWNERSHIP_ADAPTERS = [
         entityId: `project:${row.id}`,
         ownerMemberId: row.ownerMemberId,
         target: { customerId: row.customerId, projectId: row.id },
+      }));
+    },
+  },
+  {
+    requiredPermission: Permission.TasksWrite,
+    async load({ customerId, memberIds, projectIds }) {
+      const rows = await db
+        .select({
+          customerId: projects.customer_id,
+          id: tasks.id,
+          ownerMemberId: tasks.assignee_member_id,
+          projectId: tasks.project_id,
+        })
+        .from(tasks)
+        .innerJoin(projects, eq(tasks.project_id, projects.id))
+        .where(
+          and(
+            customerId ? eq(projects.customer_id, customerId) : undefined,
+            projectIds ? inArray(tasks.project_id, projectIds) : undefined,
+            memberIds
+              ? inArray(tasks.assignee_member_id, memberIds)
+              : undefined,
+          ),
+        );
+      return rows.map((row) => ({
+        entityId: `task:${row.id}`,
+        ownerMemberId: row.ownerMemberId,
+        target: { customerId: row.customerId, projectId: row.projectId },
       }));
     },
   },

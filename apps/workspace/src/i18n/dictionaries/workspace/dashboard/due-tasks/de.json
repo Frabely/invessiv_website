@@ -1,0 +1,11 @@
+{
+  "title": "Deine fälligen Aufgaben",
+  "viewAll": "Alle anzeigen",
+  "viewAllLabel": "Alle eigenen fälligen Aufgaben in der Aufgabenübersicht öffnen",
+  "groups": {
+    "overdue": "Überfällig",
+    "dueSoon": "In den nächsten 7 Tagen"
+  },
+  "groupCountLabel": "{count} Aufgaben",
+  "context": "{customer} · {project}"
+}

@@ -185,13 +185,18 @@ function readResponsibilityCounts(payload: unknown) {
     return undefined;
   }
   const counts = payload.details.responsibilityCounts;
-  const customerCount = isRecord(counts)
-    ? counts[OwnableEntity.Customer]
-    : undefined;
-  if (typeof customerCount !== "number") {
+  if (!isRecord(counts)) {
     return undefined;
   }
-  return { [OwnableEntity.Customer]: customerCount };
+  const customerCount = counts[OwnableEntity.Customer];
+  const taskCount = counts[OwnableEntity.Task];
+  if (typeof customerCount !== "number" || typeof taskCount !== "number") {
+    return undefined;
+  }
+  return {
+    [OwnableEntity.Customer]: customerCount,
+    [OwnableEntity.Task]: taskCount,
+  };
 }
 
 async function updateMemberStatus(

@@ -105,9 +105,10 @@ describe("TaskFormDialog", () => {
     fireEvent.change(screen.getByRole("textbox", { name: /Title/ }), {
       target: { value: "  Clarify logo  " },
     });
-    fireEvent.change(screen.getByLabelText(content.form.fields.dueOn), {
-      target: { value: "2026-10-01" },
-    });
+    const dueField = screen.getByLabelText(content.form.fields.dueOn);
+    // A due day is picked from a calendar, never typed as free text.
+    expect(dueField).toHaveAttribute("type", "date");
+    fireEvent.change(dueField, { target: { value: "2026-10-01" } });
     submit();
 
     await waitFor(() => expect(mocks.createTask).toHaveBeenCalledTimes(1));

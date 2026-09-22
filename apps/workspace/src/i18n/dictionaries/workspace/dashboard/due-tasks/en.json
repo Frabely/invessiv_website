@@ -1,0 +1,11 @@
+{
+  "title": "Your due tasks",
+  "viewAll": "View all",
+  "viewAllLabel": "Open all your due tasks in the task overview",
+  "groups": {
+    "overdue": "Overdue",
+    "dueSoon": "Next 7 days"
+  },
+  "groupCountLabel": "{count} tasks",
+  "context": "{customer} · {project}"
+}

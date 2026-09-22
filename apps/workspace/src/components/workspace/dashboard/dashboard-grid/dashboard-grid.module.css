@@ -13,6 +13,11 @@
   grid-column: span 12 / span 12;
 }
 
+/* A module that decides at render time to show nothing must not leave an empty cell plus gap. */
+.slot:empty {
+  display: none;
+}
+
 .slot > * {
   flex: 1 1 auto;
   min-width: 0;

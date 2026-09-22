@@ -119,7 +119,12 @@ describe("accessApiService", () => {
   it("sends a status PATCH and preserves exhaustive responsibility counts", async () => {
     const fetchMock = stubFetch(HttpResponseCode.Conflict, {
       error: WorkspaceMemberErrorCode.MemberHasOpenResponsibilities,
-      details: { responsibilityCounts: { [OwnableEntity.Customer]: 2 } },
+      details: {
+        responsibilityCounts: {
+          [OwnableEntity.Customer]: 2,
+          [OwnableEntity.Task]: 3,
+        },
+      },
     });
 
     const result = await accessApiService.updateMemberStatus("member-1", {
@@ -130,7 +135,10 @@ describe("accessApiService", () => {
     expect(result).toEqual({
       ok: false,
       code: WorkspaceMemberErrorCode.MemberHasOpenResponsibilities,
-      responsibilityCounts: { [OwnableEntity.Customer]: 2 },
+      responsibilityCounts: {
+        [OwnableEntity.Customer]: 2,
+        [OwnableEntity.Task]: 3,
+      },
     });
     expect(fetchMock).toHaveBeenCalledWith(
       "/api/workspace/members/member-1",

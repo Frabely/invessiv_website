@@ -89,6 +89,7 @@ describe("updateWorkspaceMemberStatus", () => {
     mocks.lockOwners.mockResolvedValue(["another-owner"]);
     mocks.countResponsibilities.mockResolvedValue({
       [OwnableEntity.Customer]: 0,
+      [OwnableEntity.Task]: 0,
     });
     mocks.updateStatus.mockResolvedValue({ ok: true });
   });
@@ -129,6 +130,7 @@ describe("updateWorkspaceMemberStatus", () => {
     mocks.findById.mockResolvedValue(MEMBER);
     mocks.countResponsibilities.mockResolvedValue({
       [OwnableEntity.Customer]: 2,
+      [OwnableEntity.Task]: 0,
     });
 
     const result = await updateWorkspaceMemberStatus(
@@ -140,7 +142,10 @@ describe("updateWorkspaceMemberStatus", () => {
     expect(result).toEqual({
       ok: false,
       code: WorkspaceMemberErrorCode.MemberHasOpenResponsibilities,
-      responsibilityCounts: { [OwnableEntity.Customer]: 2 },
+      responsibilityCounts: {
+        [OwnableEntity.Customer]: 2,
+        [OwnableEntity.Task]: 0,
+      },
     });
     expect(mocks.updateStatus).not.toHaveBeenCalled();
     expect(mocks.createEvent).not.toHaveBeenCalled();
@@ -179,7 +184,10 @@ describe("updateWorkspaceMemberStatus", () => {
     });
     mocks.countResponsibilities.mockImplementation(async () => {
       calls.push("count");
-      return { [OwnableEntity.Customer]: 0 };
+      return {
+        [OwnableEntity.Customer]: 0,
+        [OwnableEntity.Task]: 0,
+      };
     });
     mocks.updateStatus.mockImplementation(async () => {
       calls.push("write");

@@ -70,7 +70,7 @@ entschieden. 11a-2 und 11b können parallel zu 11a-1 laufen, sobald ihre Abhäng
       „bald fällig“ (eine gemeinsame Pattern-Funktion, getestet).
 - [ ] Status-, Bearbeiter-, Seiten- und Sichtbarkeitswechsel erzeugen nachvollziehbare Activities.
 - [ ] Portalabfragen und Portal-UI werden nicht aktiviert.
-- [ ] `OwnableEntity.Task` ist registriert; Deaktivierung zählt offene Aufgaben mit (Task 11b).
+- [x] `OwnableEntity.Task` ist registriert; Deaktivierung zählt offene Aufgaben mit (Task 11b).
 - [ ] Alle Texte DE und EN; Dark und Light; mobil ab 360 px ohne horizontales Scrollen der Seite.
 
 ## Rollback

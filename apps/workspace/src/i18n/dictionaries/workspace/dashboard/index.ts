@@ -11,6 +11,8 @@ import acquisitionVolumeDe from "./acquisition-volume/de.json";
 import acquisitionVolumeEn from "./acquisition-volume/en.json";
 import messagingDe from "./messaging/de.json";
 import messagingEn from "./messaging/en.json";
+import dueTasksDe from "./due-tasks/de.json";
+import dueTasksEn from "./due-tasks/en.json";
 
 export type DashboardMetaDictionary = typeof metaDe;
 export type DashboardHeaderDictionary = typeof headerDe;
@@ -18,6 +20,7 @@ export type DashboardRangeFilterDictionary = typeof rangeFilterDe;
 export type DashboardModulesDictionary = typeof modulesDe;
 export type DashboardAcquisitionVolumeDictionary = typeof acquisitionVolumeDe;
 export type DashboardMessagingDictionary = typeof messagingDe;
+export type DashboardDueTasksDictionary = typeof dueTasksDe;
 
 const DASHBOARD_META: Record<Locale, DashboardMetaDictionary> = {
   de: metaDe,
@@ -50,6 +53,11 @@ const DASHBOARD_ACQUISITION_VOLUME: Record<
 const DASHBOARD_MESSAGING: Record<Locale, DashboardMessagingDictionary> = {
   de: messagingDe,
   en: messagingEn,
+};
+
+const DASHBOARD_DUE_TASKS: Record<Locale, DashboardDueTasksDictionary> = {
+  de: dueTasksDe,
+  en: dueTasksEn,
 };
 
 export function getDashboardMetaDictionary(
@@ -86,4 +94,10 @@ export function getDashboardMessagingDictionary(
   locale: Locale,
 ): DashboardMessagingDictionary {
   return DASHBOARD_MESSAGING[locale];
+}
+
+export function getDashboardDueTasksDictionary(
+  locale: Locale,
+): DashboardDueTasksDictionary {
+  return DASHBOARD_DUE_TASKS[locale];
 }

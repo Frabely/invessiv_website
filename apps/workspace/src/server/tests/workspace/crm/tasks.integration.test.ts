@@ -33,6 +33,7 @@ import { TaskListPeriod } from "@/common/constants/crm/list/task-list-periods";
 import { TaskListStatusFilter } from "@/common/constants/crm/list/task-list-status-filters";
 import { DEFAULT_TASK_LIST_FILTERS } from "@/common/defaults/crm/task-list-default-filters";
 import { listTasks } from "@/server/workspace/crm/query-handler/list-tasks.query-handler";
+import { listMyDueTasks } from "@/server/workspace/crm/query-handler/list-my-due-tasks.query-handler";
 import { listCustomerTasks } from "@/server/workspace/crm/query-handler/list-customer-tasks.query-handler";
 import { listProjectTasks } from "@/server/workspace/crm/query-handler/list-project-tasks.query-handler";
 
@@ -737,6 +738,35 @@ describe.skipIf(!RUN_INTEGRATION)("tasks PostgreSQL integration", () => {
 
       expect(mine.total).toBe(5);
       expect(someoneElse.total).toBe(0);
+    });
+
+    it("lists only the actor's own overdue and soon-due tasks for the dashboard, overdue first", async () => {
+      const mine = await listMyDueTasks(reader(), TODAY);
+      const ours = mine
+        .filter((row) => row.customerId === overviewCustomer)
+        .map((row) => row.task.title.replace(FIXTURE_PREFIX, ""));
+
+      const overdueFlags = mine.map((row) => (row.task.dueOn ?? "") < TODAY);
+
+      expect(mine.length).toBeLessThanOrEqual(10);
+      expect(overdueFlags).toEqual([...overdueFlags].sort().reverse());
+      expect(
+        mine.every((row) => (row.task.dueOn ?? "9999") <= "2026-09-28"),
+      ).toBe(true);
+      expect(ours).not.toContain("far away");
+      expect(ours).not.toContain("undated");
+      expect(ours).not.toContain("finished");
+      expect(
+        mine.every((row) => row.task.assigneeMemberId === ownerMemberId),
+      ).toBe(true);
+      expect(
+        await listMyDueTasks(
+          { ...reader(), workspaceMemberId: inactiveMemberId },
+          TODAY,
+        ),
+      ).not.toContainEqual(
+        expect.objectContaining({ customerId: overviewCustomer }),
+      );
     });
   });
 });
