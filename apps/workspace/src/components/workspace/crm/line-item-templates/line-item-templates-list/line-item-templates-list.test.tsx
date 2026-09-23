@@ -17,10 +17,15 @@ describe("LineItemTemplatesList", () => {
         canWrite
         content={content}
         createHref="/en/crm/line-item-templates?mode=create"
-        hasLineItemTemplates={false}
-        includeArchived={false}
+        list={{
+          hasLineItemTemplates: false,
+          page: 1,
+          perPage: 25,
+          rows: [],
+          total: 0,
+        }}
         locale="en"
-        lineItemTemplates={[]}
+        queryString=""
         toggleArchivedHref="/en/crm/line-item-templates?includeArchived=true"
       />,
     );

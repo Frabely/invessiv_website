@@ -24,13 +24,15 @@ describe("WorkspaceSidebarItemKey", () => {
   });
 
   it("has a label in every page dictionary", () => {
+    // The dictionary also carries labels for CRM sub-navigation items (e.g. "customers",
+    // "tasks") that are not top-level sidebar entries and so are not part of this key set.
     for (const items of [
       pageDe.shell.sidebar.items,
       pageEn.shell.sidebar.items,
     ]) {
-      expect(Object.keys(items).sort()).toEqual(
-        [...WORKSPACE_SIDEBAR_ITEM_KEY_VALUES].sort(),
-      );
+      for (const key of WORKSPACE_SIDEBAR_ITEM_KEY_VALUES) {
+        expect(items).toHaveProperty(key);
+      }
     }
   });
 });

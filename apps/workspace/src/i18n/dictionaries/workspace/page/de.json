@@ -78,9 +78,13 @@
     },
     "sidebar": {
       "navAriaLabel": "Workspace-Navigation",
+      "crmSubNavigationLabel": "CRM-Unterbereiche",
       "comingSoonBadge": "Bald verfügbar",
       "items": {
         "crm": "CRM",
+        "customers": "Kunden",
+        "tasks": "Aufgaben",
+        "lineItemTemplates": "Leistungskatalog",
         "leads": "Leads",
         "overview": "Übersicht",
         "settings": "Einstellungen"

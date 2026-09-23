@@ -1,0 +1,104 @@
+.tasks {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1.1rem 1.25rem 1.25rem;
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-cta);
+  background: var(--color-surface-2);
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.head h3 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-heading-sm);
+}
+
+.headMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.count {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.list > li + li {
+  border-top: 1px solid var(--color-border);
+}
+
+.closed {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.toggle {
+  justify-self: start;
+  padding: 0.25rem 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--font-size-ui-sm);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.toggle:hover {
+  color: var(--color-text);
+}
+
+.toggle:focus-visible {
+  outline: 2px solid var(--color-cta);
+  outline-offset: 2px;
+}
+
+.empty {
+  display: grid;
+  justify-items: start;
+  gap: 0.4rem;
+  padding: 0.5rem 0 0.25rem;
+}
+
+.emptyTitle {
+  margin: 0;
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.emptyText {
+  max-width: 60ch;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+}
+
+@media (max-width: 640px) {
+  .head {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .headMeta {
+    justify-content: space-between;
+  }
+}

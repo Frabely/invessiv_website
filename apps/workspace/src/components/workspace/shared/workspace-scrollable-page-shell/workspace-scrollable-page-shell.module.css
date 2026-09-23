@@ -1,0 +1,19 @@
+.shell {
+  height: calc(
+    100dvh - var(--workspace-header-height, 68px) -
+      var(--workspace-main-padding-block-start, 1.5rem) -
+      var(--workspace-main-padding-block-end, 1.5rem)
+  );
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 1024px) {
+  .shell {
+    height: calc(
+      100dvh - var(--workspace-header-height, 64px) -
+        var(--workspace-main-padding-block-start, 1.15rem) -
+        var(--workspace-main-padding-block-end, 1.15rem)
+    );
+  }
+}

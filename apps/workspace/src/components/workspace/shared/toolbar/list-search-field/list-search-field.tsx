@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import styles from "./list-search-field.module.css";
@@ -21,6 +21,13 @@ export function ListSearchField({
   placeholder,
 }: ListSearchFieldProps) {
   const [searchValue, setSearchValue] = useState(currentValue);
+  // Callers pass a function that is new on every render. Keeping it out of the effect's
+  // dependencies stops each parent render from restarting the debounce timer.
+  const commitRef = useRef(onCommitAction);
+
+  useEffect(() => {
+    commitRef.current = onCommitAction;
+  }, [onCommitAction]);
 
   useEffect(() => {
     setSearchValue(currentValue);
@@ -34,13 +41,13 @@ export function ListSearchField({
     const timeout = window.setTimeout(() => {
       const trimmed = searchValue.trim();
       const committedValue = trimmed ? trimmed : undefined;
-      onCommitAction(committedValue);
+      commitRef.current(committedValue);
     }, SEARCH_DEBOUNCE_MS);
 
     return () => {
       window.clearTimeout(timeout);
     };
-  }, [currentValue, onCommitAction, searchValue]);
+  }, [currentValue, searchValue]);
 
   return (
     <label className={styles.searchField}>

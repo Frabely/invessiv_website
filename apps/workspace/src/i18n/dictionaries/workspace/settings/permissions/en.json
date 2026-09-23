@@ -71,6 +71,10 @@
       "label": "Edit service catalog",
       "description": "Create, change and archive line item templates."
     },
+    "tasks.read": {
+      "label": "View tasks",
+      "description": "See the tasks of a project."
+    },
     "tasks.write": {
       "label": "Edit tasks",
       "description": "Create, change and assign tasks."

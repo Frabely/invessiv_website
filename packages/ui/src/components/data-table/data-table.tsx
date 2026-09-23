@@ -13,11 +13,13 @@ function getClassName(baseClassName: string, className?: string) {
 }
 
 export type DataTableFrameProps = HTMLAttributes<HTMLDivElement> & {
+  fillAvailableHeight?: boolean;
   responsiveMode?: "cards" | "scroll";
 };
 
 export function DataTableFrame({
   className,
+  fillAvailableHeight = false,
   responsiveMode = "cards",
   ...props
 }: DataTableFrameProps) {
@@ -25,6 +27,7 @@ export function DataTableFrame({
     <div
       {...props}
       className={getClassName(styles.frame, className)}
+      data-fill-available-height={fillAvailableHeight || undefined}
       data-responsive-mode={responsiveMode}
     />
   );
@@ -57,6 +60,8 @@ export type DataTableLayoutProps = {
   /** Pagination metadata. The layout renders the controls inside the table frame. */
   pagination?: ListPaginationProps;
   frameClassName?: string;
+  /** Fills the height provided by a surrounding scrollable table area. */
+  fillAvailableHeight?: boolean;
   overlay?: ReactNode;
   responsiveMode?: "cards" | "scroll";
   scrollClassName?: string;
@@ -73,13 +78,18 @@ export function DataTableLayout({
   columns,
   pagination,
   frameClassName,
+  fillAvailableHeight,
   overlay,
   responsiveMode,
   scrollClassName,
   tableClassName,
 }: DataTableLayoutProps) {
   return (
-    <DataTableFrame className={frameClassName} responsiveMode={responsiveMode}>
+    <DataTableFrame
+      className={frameClassName}
+      fillAvailableHeight={fillAvailableHeight}
+      responsiveMode={responsiveMode}
+    >
       {overlay}
       <DataTableScroll className={scrollClassName}>
         <DataTable aria-label={ariaLabel} className={tableClassName}>
@@ -151,6 +161,15 @@ export type DataTableRowProps = HTMLAttributes<HTMLTableRowElement> & {
   mobileCard?: boolean;
 };
 
+type DataTableMobileCardSlot =
+  | "actions"
+  | "detail"
+  | "primary"
+  | "secondary"
+  | "selection"
+  | "supportingPrimary"
+  | "supportingSecondary";
+
 export function DataTableRow({
   className,
   mobileCard = false,
@@ -168,11 +187,13 @@ export function DataTableRow({
 export type DataTableHeaderCellProps =
   ThHTMLAttributes<HTMLTableCellElement> & {
     isPinned?: boolean;
+    mobileCardSlot?: DataTableMobileCardSlot;
   };
 
 export function DataTableHeaderCell({
   className,
   isPinned,
+  mobileCardSlot,
   scope,
   ...props
 }: DataTableHeaderCellProps) {
@@ -186,13 +207,26 @@ export function DataTableHeaderCell({
         className,
       )}
       data-pinned={isPinned ? "true" : undefined}
+      data-mobile-card-slot={mobileCardSlot}
       scope={scope}
     />
   );
 }
 
-export type DataTableCellProps = TdHTMLAttributes<HTMLTableCellElement>;
+export type DataTableCellProps = TdHTMLAttributes<HTMLTableCellElement> & {
+  mobileCardSlot?: DataTableMobileCardSlot;
+};
 
-export function DataTableCell({ className, ...props }: DataTableCellProps) {
-  return <td {...props} className={getClassName(styles.cell, className)} />;
+export function DataTableCell({
+  className,
+  mobileCardSlot,
+  ...props
+}: DataTableCellProps) {
+  return (
+    <td
+      {...props}
+      className={getClassName(styles.cell, className)}
+      data-mobile-card-slot={mobileCardSlot}
+    />
+  );
 }

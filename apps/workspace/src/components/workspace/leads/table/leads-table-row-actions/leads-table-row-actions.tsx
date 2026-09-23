@@ -30,6 +30,7 @@ type LeadsTableRowActionsProps = {
   leadDisplayName: string;
   leadId: string;
   menuLabel: string;
+  mobileCardSlot?: "actions";
   outreachContent?: LeadsOutreachDictionary;
 };
 
@@ -44,13 +45,16 @@ export function LeadsTableRowActions({
   leadDisplayName,
   leadId,
   menuLabel,
+  mobileCardSlot,
   outreachContent,
 }: LeadsTableRowActionsProps) {
   const router = useRouter();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   if (!canEdit && !canDelete && !outreachContent) {
-    return <td className={styles.cell} />;
+    return (
+      <td className={styles.cell} data-mobile-card-slot={mobileCardSlot} />
+    );
   }
 
   return (
@@ -62,6 +66,7 @@ export function LeadsTableRowActions({
           <FontAwesomeIcon aria-hidden="true" icon={faEllipsisVertical} />
         }
         menuLabel={menuLabel}
+        mobileCardSlot={mobileCardSlot}
       >
         {canEdit ? (
           <button

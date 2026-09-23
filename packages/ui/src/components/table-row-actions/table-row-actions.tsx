@@ -14,6 +14,7 @@ export type TableRowActionsProps = {
   children: ReactNode;
   className?: string;
   isPinned?: boolean;
+  mobileCardSlot?: "actions";
   menuIcon: ReactNode;
   menuLabel: string;
 };
@@ -28,6 +29,7 @@ export function TableRowActions({
   children,
   className,
   isPinned,
+  mobileCardSlot,
   menuIcon,
   menuLabel,
 }: TableRowActionsProps) {
@@ -44,6 +46,7 @@ export function TableRowActions({
   return (
     <td
       className={className ? `${styles.cell} ${className}` : styles.cell}
+      data-mobile-card-slot={mobileCardSlot}
       data-pinned={isPinned ? "true" : undefined}
       onBlur={handleCellBlur}
       onClick={stopRowPropagation}

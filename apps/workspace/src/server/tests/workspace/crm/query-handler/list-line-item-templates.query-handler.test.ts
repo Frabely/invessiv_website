@@ -1,85 +1,119 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { LineItemTemplateStatus } from "@invessiv/common/constants/crm/line-item-template-statuses";
 import { listLineItemTemplates } from "@/server/workspace/crm/query-handler/list-line-item-templates.query-handler";
 
 vi.mock("server-only", () => ({}));
 
 const mocks = vi.hoisted(() => ({
-  database: { select: vi.fn() },
-  toDto: vi.fn(),
+  database: { marker: "db" },
+  countRows: vi.fn(),
+  listRows: vi.fn(),
 }));
 
 vi.mock("@invessiv/db/core", () => ({
   getDrizzleDatabaseClient: () => mocks.database,
 }));
 vi.mock(
-  "@/server/workspace/crm/services/line-item-templates-mapper-service",
+  "@/server/workspace/crm/services/line-item-template-read-service",
   () => ({
-    lineItemTemplatesMapperService: { toDto: mocks.toDto },
+    lineItemTemplateReadService: {
+      countRows: mocks.countRows,
+      listRows: mocks.listRows,
+    },
   }),
 );
 
-function mockList(rows: unknown[], allRows?: unknown[]) {
-  mocks.database.select
-    .mockReturnValueOnce({
-      from: () => ({
-        where: () => ({ orderBy: () => Promise.resolve(rows) }),
-      }),
-    })
-    .mockReturnValueOnce({
-      from: () => ({ limit: () => Promise.resolve(allRows ?? []) }),
-    });
-}
-
 describe("listLineItemTemplates", () => {
   beforeEach(() => {
-    mocks.database.select.mockReset();
-    mocks.toDto.mockReset();
+    mocks.countRows.mockReset();
+    mocks.listRows.mockReset();
   });
 
-  it("returns active templates without an existence lookup", async () => {
-    const row = { id: "template-active" };
-    const dto = { id: "template-active", version: 1 };
-    mockList([row]);
-    mocks.toDto.mockReturnValue(dto);
+  it("returns the first page of active templates without an archived existence lookup", async () => {
+    mocks.countRows.mockResolvedValueOnce(1);
+    mocks.listRows.mockResolvedValueOnce([{ id: "template-active" }]);
 
     await expect(
-      listLineItemTemplates({ includeArchived: false }),
-    ).resolves.toEqual({ hasLineItemTemplates: true, rows: [dto] });
-    expect(mocks.database.select).toHaveBeenCalledTimes(1);
-    expect(mocks.toDto.mock.calls[0]?.[0]).toEqual(row);
+      listLineItemTemplates({ includeArchived: false, page: 1 }),
+    ).resolves.toEqual({
+      hasLineItemTemplates: true,
+      page: 1,
+      perPage: 25,
+      rows: [{ id: "template-active" }],
+      total: 1,
+    });
+    expect(mocks.countRows).toHaveBeenCalledTimes(1);
+    expect(mocks.countRows).toHaveBeenCalledWith(mocks.database, false);
+    expect(mocks.listRows).toHaveBeenCalledWith(mocks.database, false, {
+      limit: 25,
+      offset: 0,
+    });
   });
 
   it("distinguishes an archived-only catalog from an empty catalog", async () => {
-    mockList([], [{ id: "template-archived" }]);
+    mocks.countRows.mockResolvedValueOnce(0).mockResolvedValueOnce(1);
+    mocks.listRows.mockResolvedValueOnce([]);
 
     await expect(
-      listLineItemTemplates({ includeArchived: false }),
-    ).resolves.toEqual({ hasLineItemTemplates: true, rows: [] });
-    expect(mocks.database.select).toHaveBeenCalledTimes(2);
+      listLineItemTemplates({ includeArchived: false, page: 1 }),
+    ).resolves.toEqual({
+      hasLineItemTemplates: true,
+      page: 1,
+      perPage: 25,
+      rows: [],
+      total: 0,
+    });
+    expect(mocks.countRows).toHaveBeenCalledTimes(2);
+    expect(mocks.countRows).toHaveBeenNthCalledWith(2, mocks.database, true);
   });
 
   it("reports an entirely empty catalog as empty", async () => {
-    mockList([], []);
+    mocks.countRows.mockResolvedValueOnce(0).mockResolvedValueOnce(0);
+    mocks.listRows.mockResolvedValueOnce([]);
 
     await expect(
-      listLineItemTemplates({ includeArchived: false }),
-    ).resolves.toEqual({ hasLineItemTemplates: false, rows: [] });
+      listLineItemTemplates({ includeArchived: false, page: 1 }),
+    ).resolves.toEqual({
+      hasLineItemTemplates: false,
+      page: 1,
+      perPage: 25,
+      rows: [],
+      total: 0,
+    });
   });
 
-  it("uses the returned rows as the existence signal when archived templates are included", async () => {
-    const row = {
-      id: "template-archived",
-      status: LineItemTemplateStatus.Archived,
-    };
-    const dto = { id: "template-archived", version: 2 };
-    mockList([row]);
-    mocks.toDto.mockReturnValue(dto);
+  it("skips the archived existence lookup when archived rows are already included", async () => {
+    mocks.countRows.mockResolvedValueOnce(1);
+    mocks.listRows.mockResolvedValueOnce([{ id: "template-archived" }]);
 
     await expect(
-      listLineItemTemplates({ includeArchived: true }),
-    ).resolves.toEqual({ hasLineItemTemplates: true, rows: [dto] });
-    expect(mocks.database.select).toHaveBeenCalledTimes(1);
+      listLineItemTemplates({ includeArchived: true, page: 1 }),
+    ).resolves.toEqual({
+      hasLineItemTemplates: true,
+      page: 1,
+      perPage: 25,
+      rows: [{ id: "template-archived" }],
+      total: 1,
+    });
+    expect(mocks.countRows).toHaveBeenCalledTimes(1);
+  });
+
+  it("clamps an out-of-range page to the last page", async () => {
+    mocks.countRows.mockResolvedValueOnce(30);
+    mocks.listRows.mockResolvedValueOnce([{ id: "template-30" }]);
+
+    await expect(
+      listLineItemTemplates({ includeArchived: false, page: 9 }),
+    ).resolves.toEqual({
+      hasLineItemTemplates: true,
+      page: 2,
+      perPage: 25,
+      rows: [{ id: "template-30" }],
+      total: 30,
+    });
+    expect(mocks.listRows).toHaveBeenCalledWith(mocks.database, false, {
+      limit: 25,
+      offset: 25,
+    });
   });
 });

@@ -1,6 +1,13 @@
 import { notFound, redirect } from "next/navigation";
 import type { ReactNode } from "react";
+import { Permission } from "@invessiv/common/constants/auth/permissions";
+import { can } from "@invessiv/common/patterns/auth/can";
 import { WorkspaceAuthStatus } from "@/common/constants/auth/workspace-auth-statuses";
+import {
+  WORKSPACE_AREA_VALUES,
+  WorkspaceArea,
+} from "@/common/constants/auth/workspace-areas";
+import { canAnywhere } from "@/common/patterns/auth/access-scope";
 import { listPermittedWorkspaceAreas } from "@/common/patterns/auth/list-permitted-workspace-areas";
 import { WorkspaceShell } from "@/components/workspace/workspace-shell/workspace-shell";
 import { isSupportedLocale } from "@/config/i18n";
@@ -47,8 +54,24 @@ export default async function WorkspaceLayout({
   }
 
   const permittedAreas = listPermittedWorkspaceAreas(authentication.actor);
-  // A member without any area belongs on the explanatory entry screen; individual denied areas stay hidden in pages.
-  if (permittedAreas.length === 0) {
+  const canOpenCrmCustomers = permittedAreas.includes(WorkspaceArea.Crm);
+  const canOpenCrmTasks = canAnywhere(
+    authentication.actor,
+    Permission.TasksRead,
+  );
+  const canReadCrmLineItemTemplates = can(
+    authentication.actor,
+    Permission.LineItemTemplatesRead,
+  );
+  const hasCrmNavigation =
+    canOpenCrmCustomers || canOpenCrmTasks || canReadCrmLineItemTemplates;
+  const navigationAreas = WORKSPACE_AREA_VALUES.filter(
+    (area) =>
+      permittedAreas.includes(area) ||
+      (area === WorkspaceArea.Crm && hasCrmNavigation),
+  );
+  // A member without a navigable area belongs on the explanatory entry screen; denied entries stay hidden.
+  if (navigationAreas.length === 0) {
     redirect(workspacePath);
   }
 
@@ -57,8 +80,11 @@ export default async function WorkspaceLayout({
   return (
     <WorkspaceShell
       content={content}
+      canOpenCrmCustomers={canOpenCrmCustomers}
+      canOpenCrmTasks={canOpenCrmTasks}
+      canReadCrmLineItemTemplates={canReadCrmLineItemTemplates}
       locale={activeLocale}
-      permittedAreas={permittedAreas}
+      permittedAreas={navigationAreas}
     >
       {children}
     </WorkspaceShell>

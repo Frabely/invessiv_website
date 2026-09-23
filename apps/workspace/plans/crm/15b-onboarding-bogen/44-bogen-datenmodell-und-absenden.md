@@ -39,7 +39,7 @@ Entwurf entsteht und was beim Absenden passiert. Das Formular selbst folgt in Ta
 | Warum Abweichung          | Für Feedbackrunden gilt `localStorage`, weil eine Runde in einem Zug entsteht. Ein Bogen mit 25 Feldern entsteht über Tage, an mehreren Geräten und oft zu zweit. Ein verlorener Entwurf heißt hier nicht „nochmal tippen", sondern „wird nicht noch einmal ausgefüllt" |
 | Speichern                 | Feldweise über `PUT …/answers/[fieldKey]`, entprellt. Kein Gesamt-Submit für Zwischenstände                                                                                                                                                                             |
 | Gleichzeitiges Arbeiten   | Letzter Schreibvorgang je Feld gewinnt; der Bogen zeigt „zuletzt bearbeitet von …". Kein Feldsperren                                                                                                                                                                    |
-| Absenden                  | Transaktion: Status, Zeitstempel, absendendes Portalmitglied, Activity, Outbox-Benachrichtigung                                                                                                                                                                         |
+| Absenden                  | Transaktion: Status, Zeitstempel, absendendes Portalmitglied und Activity; die Outbox-Benachrichtigung wird in Ordner 20c ergänzt                                                                                                                                       |
 | Pflichtfelder             | Serverseitig geprüft; die Antwort nennt die fehlenden `field_key`, damit das Formular direkt hinspringen kann                                                                                                                                                           |
 | Unveränderlich            | Nach dem Absenden lehnt jeder Portal-Schreibpfad ab                                                                                                                                                                                                                     |
 | Erneut öffnen             | Intern möglich, protokolliert, mit Begründung. Anders als eine Feedbackrunde ist der Bogen kein kundenseitiger Zeitstand, sondern Arbeitsgrundlage                                                                                                                      |
@@ -210,7 +210,7 @@ submitOnboarding(actor, submissionId)
   ├─ Bogen gehoert zum Kunden der Session                sonst 404
   ├─ Status ist draft                                    sonst 409
   ├─ Pflichtfelder vollstaendig                          sonst 422 mit missingFieldKeys
-  └─ Transaktion: Status, Zeitstempel, Mitglied, Activity, Outbox-Benachrichtigung
+  └─ Transaktion: Status, Zeitstempel, Mitglied und Activity; Benachrichtigung folgt in Ordner 20c
 ```
 
 ## Verzeichnisstruktur

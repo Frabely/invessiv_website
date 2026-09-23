@@ -7,6 +7,8 @@ import {
   faAddressBook,
   faChartColumn,
   faGear,
+  faLayerGroup,
+  faListCheck,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,10 +17,17 @@ import { WorkspaceSidebarItemKey } from "@/common/constants/navigation/workspace
 import { WORKSPACE_SIDEBAR_ITEMS } from "@/common/constants/navigation/workspace-sidebar-items";
 import type { Locale } from "@/config/i18n";
 import type { WorkspacePageContent } from "@/i18n/dictionaries/workspace";
-import { workspaceAreaPathFor } from "@/lib/auth/routes";
+import {
+  crmLineItemTemplatesPathFor,
+  crmTasksPathFor,
+  workspaceAreaPathFor,
+} from "@/lib/auth/routes";
 import styles from "./workspace-sidebar.module.css";
 
 type WorkspaceSidebarProps = {
+  canOpenCrmCustomers: boolean;
+  canOpenCrmTasks: boolean;
+  canReadCrmLineItemTemplates: boolean;
   content: WorkspacePageContent;
   isOpen: boolean;
   locale: Locale;
@@ -34,6 +43,9 @@ const SIDEBAR_ICONS = {
 } satisfies Record<WorkspaceSidebarItemKey, IconDefinition>;
 
 export function WorkspaceSidebar({
+  canOpenCrmCustomers,
+  canOpenCrmTasks,
+  canReadCrmLineItemTemplates,
   content,
   isOpen,
   locale,
@@ -91,6 +103,10 @@ export function WorkspaceSidebar({
               const href = workspaceAreaPathFor(locale, item.area);
               const isActive =
                 pathname === href || pathname.startsWith(`${href}/`);
+              const isCrm = item.id === WorkspaceSidebarItemKey.Crm;
+              const crmTasksHref = crmTasksPathFor(locale);
+              const crmLineItemTemplatesHref =
+                crmLineItemTemplatesPathFor(locale);
 
               const icon = (
                 <span aria-hidden="true" className={styles.linkIcon}>
@@ -99,18 +115,100 @@ export function WorkspaceSidebar({
               );
 
               return (
-                <li className={styles.item} key={item.id}>
-                  <Link
-                    aria-current={isActive ? "page" : undefined}
-                    className={styles.link}
-                    data-active={isActive ? "true" : "false"}
-                    href={href}
-                  >
-                    {icon}
-                    <span className={styles.linkLabel}>
-                      {sidebarContent.items[item.labelKey]}
-                    </span>
-                  </Link>
+                <li
+                  className={styles.item}
+                  data-crm={isCrm ? "true" : undefined}
+                  key={item.id}
+                >
+                  {isCrm ? (
+                    <div
+                      className={`${styles.link} ${styles.crmGroupLabel}`}
+                      data-active={isActive ? "true" : "false"}
+                    >
+                      {icon}
+                      <span className={styles.linkLabel}>
+                        {sidebarContent.items[item.labelKey]}
+                      </span>
+                    </div>
+                  ) : (
+                    <Link
+                      aria-current={isActive ? "page" : undefined}
+                      className={styles.link}
+                      data-active={isActive ? "true" : "false"}
+                      href={href}
+                      onClick={onCloseAction}
+                    >
+                      {icon}
+                      <span className={styles.linkLabel}>
+                        {sidebarContent.items[item.labelKey]}
+                      </span>
+                    </Link>
+                  )}
+                  {isCrm ? (
+                    <ul
+                      aria-label={sidebarContent.crmSubNavigationLabel}
+                      className={styles.crmChildren}
+                    >
+                      {canOpenCrmCustomers ? (
+                        <li>
+                          <Link
+                            aria-current={
+                              pathname === href ? "page" : undefined
+                            }
+                            className={styles.crmChildLink}
+                            data-active={pathname === href ? "true" : "false"}
+                            href={href}
+                            onClick={onCloseAction}
+                          >
+                            <FontAwesomeIcon icon={faUsers} />
+                            <span>{sidebarContent.items.customers}</span>
+                          </Link>
+                        </li>
+                      ) : null}
+                      {canOpenCrmTasks ? (
+                        <li>
+                          <Link
+                            aria-current={
+                              pathname === crmTasksHref ? "page" : undefined
+                            }
+                            className={styles.crmChildLink}
+                            data-active={
+                              pathname === crmTasksHref ? "true" : "false"
+                            }
+                            href={crmTasksHref}
+                            onClick={onCloseAction}
+                          >
+                            <FontAwesomeIcon icon={faListCheck} />
+                            <span>{sidebarContent.items.tasks}</span>
+                          </Link>
+                        </li>
+                      ) : null}
+                      {canReadCrmLineItemTemplates ? (
+                        <li>
+                          <Link
+                            aria-current={
+                              pathname === crmLineItemTemplatesHref
+                                ? "page"
+                                : undefined
+                            }
+                            className={styles.crmChildLink}
+                            data-active={
+                              pathname === crmLineItemTemplatesHref
+                                ? "true"
+                                : "false"
+                            }
+                            href={crmLineItemTemplatesHref}
+                            onClick={onCloseAction}
+                          >
+                            <FontAwesomeIcon icon={faLayerGroup} />
+                            <span>
+                              {sidebarContent.items.lineItemTemplates}
+                            </span>
+                          </Link>
+                        </li>
+                      ) : null}
+                    </ul>
+                  ) : null}
                 </li>
               );
             })}

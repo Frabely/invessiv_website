@@ -42,8 +42,8 @@ steht. Er ist bewusst klein gehalten und liefert keine Onboarding-Fachlogik.
 | Warum Abweichung  | „Neue Dateien sind intern" schützt interne Entwürfe. Auf die selbst geschickte Datei trifft der Schutz nicht zu und irritiert nur                                                         |
 | Löschen im Portal | Nur Löschanfrage, wie in Ordner 14 entschieden — auch für eigene Uploads                                                                                                                  |
 | Interne Ansicht   | Dateien erscheinen in der Liste aus Ordner 15 mit Vorschau für Bilder und Medienart-Filter                                                                                                |
-| Speicherbetrieb   | Monatliche Sichtprüfung des Blob-Volumens im Runbook aus Ordner 10, analog zur Neon-Sichtprüfung                                                                                          |
-| Benachrichtigung  | Ein Kundenupload erzeugt eine interne Benachrichtigung über die Outbox aus Ordner 10, gebündelt im 15-Minuten-Fenster                                                                     |
+| Speicherbetrieb   | Monatliche Sichtprüfung des Blob-Volumens wird im Runbook aus Ordner 20c ergänzt, analog zur Neon-Sichtprüfung                                                                            |
+| Benachrichtigung  | Der Kundenupload bleibt ohne Benachrichtigung nutzbar; die gebündelte interne Outbox-Benachrichtigung wird in Ordner 20c ergänzt                                                          |
 
 ## Contract
 

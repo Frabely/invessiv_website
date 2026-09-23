@@ -318,6 +318,7 @@ async function runChecks(sql: Sql) {
   await runMissingDefaultChecks(sql, memberId, personId, name);
   await runLineItemTemplateChecks(sql, name);
   await runProjectLineItemChecks(sql, memberId, name);
+  await runTaskChecks(sql, memberId, name);
   await runConcurrencyChecks(sql, memberId, name);
 }
 
@@ -476,6 +477,165 @@ async function runProjectLineItemChecks(
     cascadedRows[0].count === 0,
     `remaining: ${cascadedRows[0].count}`,
   );
+}
+
+/**
+ * A task belongs to exactly one project and carries no customer column. Postgres itself refuses a
+ * customer-side task that is invisible to the customer and any mismatch between the `done` status
+ * and the completion data.
+ */
+async function runTaskChecks(
+  sql: Sql,
+  memberId: string,
+  name: (suffix: string) => string,
+) {
+  const customerId = await insertCustomer(sql, {
+    ownerMemberId: memberId,
+    displayName: name("Task customer"),
+  });
+  const projectId = randomUUID();
+  await sql`
+    INSERT INTO projects (id, customer_id, owner_member_id, title, status, phase, process_steps,
+                          current_process_step, workflow_key, billing_model,
+                          included_feedback_rounds, version)
+    VALUES (${projectId}, ${customerId}, ${memberId}, ${name("Task project")}, 'active', 'onboarding',
+            ARRAY['onboarding'], 'onboarding', 'standard_web_v1', 'fixed_price', 2, 1)
+  `;
+
+  const insertTask = (args: {
+    projectId?: string;
+    title?: string;
+    status?: string;
+    actionSide?: string;
+    visibleToCustomer?: boolean;
+    assigneeMemberId?: string;
+    dueOn?: string | null;
+    completedAt?: Date | null;
+    completedByMemberId?: string | null;
+    version?: number;
+  }) => sql`
+    INSERT INTO tasks (id, project_id, title, description, status, action_side, visible_to_customer,
+                       assignee_member_id, due_on, completed_at, completed_by_member_id, version)
+    VALUES (${randomUUID()}, ${args.projectId ?? projectId}, ${args.title ?? name("Task")}, '',
+            ${args.status ?? "open"}, ${args.actionSide ?? "internal"},
+            ${args.visibleToCustomer ?? false}, ${args.assigneeMemberId ?? memberId},
+            ${args.dueOn ?? null}, ${args.completedAt ?? null}, ${args.completedByMemberId ?? null},
+            ${args.version ?? 1})
+  `;
+
+  await expectAccepted("valid open task is accepted", () => insertTask({}));
+  await expectAccepted("valid done task with completion data is accepted", () =>
+    insertTask({
+      status: "done",
+      completedAt: new Date(),
+      completedByMemberId: memberId,
+    }),
+  );
+  await expectAccepted("visible customer-side task is accepted", () =>
+    insertTask({ actionSide: "customer", visibleToCustomer: true }),
+  );
+  await expectAccepted("task without a due date is accepted", () =>
+    insertTask({ dueOn: null }),
+  );
+  await expectRejected("task without a project is rejected", () =>
+    insertTask({ projectId: randomUUID() }),
+  );
+  await expectRejected("task with an unknown assignee is rejected", () =>
+    insertTask({ assigneeMemberId: randomUUID() }),
+  );
+  await expectRejected("blank task title is rejected", () =>
+    insertTask({ title: "   " }),
+  );
+  await expectRejected("unknown task status is rejected", () =>
+    insertTask({ status: "blocked" }),
+  );
+  await expectRejected("unknown task action side is rejected", () =>
+    insertTask({ actionSide: "partner" }),
+  );
+  await expectRejected("invisible customer-side task is rejected", () =>
+    insertTask({ actionSide: "customer", visibleToCustomer: false }),
+  );
+  await expectRejected("done task without completion data is rejected", () =>
+    insertTask({ status: "done" }),
+  );
+  await expectRejected("open task with completion data is rejected", () =>
+    insertTask({
+      status: "open",
+      completedAt: new Date(),
+      completedByMemberId: memberId,
+    }),
+  );
+  await expectRejected(
+    "done task with only a completion time is rejected",
+    () => insertTask({ status: "done", completedAt: new Date() }),
+  );
+  await expectRejected("task version = 0 is rejected", () =>
+    insertTask({ version: 0 }),
+  );
+  await expectRejected(
+    "task without a title is rejected",
+    () =>
+      sql`
+            INSERT INTO tasks (id, project_id, description, status, action_side, visible_to_customer,
+                               assignee_member_id, version)
+            VALUES (${randomUUID()}, ${projectId}, '', 'open', 'internal', FALSE, ${memberId}, 1)
+          `,
+  );
+  await expectRejected(
+    "task without a status is rejected",
+    () =>
+      sql`
+            INSERT INTO tasks (id, project_id, title, description, action_side, visible_to_customer,
+                               assignee_member_id, version)
+            VALUES (${randomUUID()}, ${projectId}, ${name("No status")}, '', 'internal', FALSE, ${memberId}, 1)
+          `,
+  );
+  await expectRejected(
+    "task without an action side is rejected",
+    () =>
+      sql`
+            INSERT INTO tasks (id, project_id, title, description, status, visible_to_customer,
+                               assignee_member_id, version)
+            VALUES (${randomUUID()}, ${projectId}, ${name("No side")}, '', 'open', FALSE, ${memberId}, 1)
+          `,
+  );
+  await expectRejected(
+    "task without a visibility flag is rejected",
+    () =>
+      sql`
+            INSERT INTO tasks (id, project_id, title, description, status, action_side,
+                               assignee_member_id, version)
+            VALUES (${randomUUID()}, ${projectId}, ${name("No flag")}, '', 'open', 'internal', ${memberId}, 1)
+          `,
+  );
+  await expectRejected(
+    "task without an assignee is rejected",
+    () =>
+      sql`
+            INSERT INTO tasks (id, project_id, title, description, status, action_side,
+                               visible_to_customer, version)
+            VALUES (${randomUUID()}, ${projectId}, ${name("No assignee")}, '', 'open', 'internal', FALSE, 1)
+          `,
+  );
+  await expectRejected(
+    "task without a version is rejected",
+    () =>
+      sql`
+            INSERT INTO tasks (id, project_id, title, description, status, action_side,
+                               visible_to_customer, assignee_member_id)
+            VALUES (${randomUUID()}, ${projectId}, ${name("No version")}, '', 'open', 'internal', FALSE, ${memberId})
+          `,
+  );
+
+  await sql`DELETE
+            FROM projects
+            WHERE id = ${projectId}`;
+  const orphans = (await sql`
+    SELECT COUNT(*) ::int AS count
+    FROM tasks
+    WHERE project_id = ${projectId}
+  `) as { count: number }[];
+  record("deleting a project removes its tasks", orphans[0]?.count === 0);
 }
 
 async function runLineItemTemplateChecks(

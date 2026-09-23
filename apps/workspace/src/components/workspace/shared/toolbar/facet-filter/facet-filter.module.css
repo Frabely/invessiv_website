@@ -78,3 +78,12 @@
     display: block;
   }
 }
+
+/* Select-only facets: the value list is unbounded, so no chip row at any width. */
+.group[data-display="select"] .chipRow {
+  display: none;
+}
+
+.group[data-display="select"] .selectSlot {
+  display: block;
+}

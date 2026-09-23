@@ -64,7 +64,7 @@ apps/workspace/src/server/workspace/crm/
   query-handler/list-feedback-rounds.query-handler.ts
   query-handler/count-open-feedback-rounds.query-handler.ts
   command-handler/{update-feedback-round-status,mark-feedback-round-read}.command-handler.ts
-  services/feedback-round-notification-service.ts
+  services/feedback-round-notification-service.ts          wird erst in Ordner 20c ergänzt
 
 apps/workspace/src/components/workspace/crm/feedback-rounds/
   feedback-rounds-inbox/
@@ -94,7 +94,7 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/feedback-rounds/{de,en}.json
 ### CRM-23-T2 — Status setzen und Rückmeldung
 
 - **Files:** `update-feedback-round-status.command-handler.ts`, `mark-feedback-round-read.command-handler.ts`,
-  `feedback-round-notification-service.ts`, beide Routen + Tests
+  beide Routen + Tests; `feedback-round-notification-service.ts` folgt in Ordner 20c
 - **Skills:** `best-practices`
 - **Inhalt:**
   - Erlaubte Übergänge als Const-Objekt, ungültige werden abgelehnt
@@ -106,7 +106,7 @@ apps/workspace/src/i18n/dictionaries/workspace/crm/feedback-rounds/{de,en}.json
   - Test: veraltete `version` ergibt 409 mit aktuellem Stand statt eines Überschreibens
   - Test: `read_at` wird nur beim ersten Mal gesetzt
   - Test: genau eine Activity je Statuswechsel
-  - Test: Benachrichtigung entsteht als Outbox-Eintrag in derselben Transaktion
+  - Test: Fachwrite und Activity werden atomar geschrieben; Outbox-Benachrichtigung folgt in Ordner 20c
   - Test: Fehler beim Zustellen verhindert den Statuswechsel nicht
   - Test: Abschluss verändert die Projektphase nicht
 

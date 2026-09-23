@@ -16,6 +16,8 @@ const mockNotFound = vi.hoisted(() =>
 );
 
 const mockRequireWorkspaceArea = vi.hoisted(() => vi.fn());
+const mockDueTasksModule = vi.hoisted(() => vi.fn());
+const ACTOR = { workspaceMemberId: "member-actor-uuid" };
 
 vi.mock("next/navigation", () => ({
   useRouter: () => mockRouter,
@@ -42,13 +44,24 @@ vi.mock(
   }),
 );
 
+vi.mock(
+  "@/components/workspace/dashboard/due-tasks-module/due-tasks-module",
+  () => ({
+    DueTasksModule: mockDueTasksModule,
+  }),
+);
+
 describe("DashboardPage", () => {
   beforeEach(() => {
     mockRouter.push.mockReset();
     mockRouter.replace.mockReset();
     mockNotFound.mockClear();
     mockRequireWorkspaceArea.mockReset();
-    mockRequireWorkspaceArea.mockResolvedValue(undefined);
+    mockRequireWorkspaceArea.mockResolvedValue(ACTOR);
+    mockDueTasksModule.mockReset();
+    mockDueTasksModule.mockImplementation(() => (
+      <h2>Deine fälligen Aufgaben</h2>
+    ));
   });
 
   afterEach(() => {
@@ -110,6 +123,44 @@ describe("DashboardPage", () => {
     expect(screen.getByLabelText("To")).toHaveValue("2026-04-30");
     expect(
       screen.getByRole("heading", { level: 1, name: "Overview" }),
+    ).toBeInTheDocument();
+  });
+
+  it("puts the due tasks block first and hands it the gated actor", async () => {
+    const { container } = render(
+      await DashboardPage({
+        params: Promise.resolve({ locale: "de" }),
+        searchParams: Promise.resolve({}),
+      }),
+    );
+
+    const widgets = container.querySelectorAll("[data-widget]");
+    expect(widgets[0]).toHaveAttribute("data-widget", "dueTasks");
+    expect(widgets[0]).toHaveTextContent("Deine fälligen Aufgaben");
+    expect(mockDueTasksModule.mock.calls[0]?.[0]).toMatchObject({
+      actor: ACTOR,
+      locale: "de",
+    });
+  });
+
+  it("keeps the rest of the dashboard when the due tasks block renders nothing", async () => {
+    mockDueTasksModule.mockImplementation(() => null);
+
+    const { container } = render(
+      await DashboardPage({
+        params: Promise.resolve({ locale: "de" }),
+        searchParams: Promise.resolve({}),
+      }),
+    );
+
+    expect(
+      container.querySelector('[data-widget="dueTasks"]'),
+    ).toBeEmptyDOMElement();
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Nachrichten" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Akquise-Volumen" }),
     ).toBeInTheDocument();
   });
 

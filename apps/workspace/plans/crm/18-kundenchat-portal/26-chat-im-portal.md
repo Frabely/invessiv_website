@@ -1,7 +1,7 @@
 # Task 26 — Chat im Portal
 
 > **Merge-Einheit:** Ordner 18 · **Branch:** `feat/crm-kundenchat-portal`
-> **Aufwand:** M · **Abhängigkeiten:** Task 25 (Verlaufskomponente), Task 33 (Outbox)
+> **Aufwand:** M · **Abhängigkeiten:** Task 25 (Verlaufskomponente); Outbox-Aktivierung folgt in Ordner 20c
 > **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
 Ein gemeinsamer Chat je Kunde, sichtbar für alle aktiven Firmenkontakte; der Lesestand bleibt je
@@ -25,14 +25,14 @@ wäre ein Chat ohne Echtzeit-Aktualisierung wertlos — man müsste zufällig hi
 | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Einstieg                         | Eigener Portalbereich `/portal/[customerId]/nachrichten` plus Ungelesen-Kennzeichnung im Dashboard                                                                                  |
 | Komponente                       | Dieselbe `message-thread` wie im CRM, mit Portal-Texten und Portal-Gestaltung                                                                                                       |
-| Benachrichtigung an den Betreuer | Notification sofort, Mail gebündelt: höchstens eine je **15 Minuten** je Kunde                                                                                                      |
+| Benachrichtigung an den Betreuer | Notification und gebündelte Mail werden in Ordner 20c aktiviert                                                                                                                     |
 | Warum gebündelt                  | Wer drei Sätze in drei Nachrichten schreibt, soll nicht drei Mails auslösen                                                                                                         |
 | Benachrichtigung an den Kunden   | Mail gebündelt: höchstens eine je **12 Stunden** je Mitgliedschaft, Anker `customer_notified_at`                                                                                    |
 | Warum so lang                    | Der Kunde soll nicht getaktet werden. Zwölf Stunden bündeln einen Arbeitstag zu einer Mail                                                                                          |
 | Fenster als Konstante            | `PORTAL_DIGEST_WINDOW_HOURS` in `packages/common`; Umstellung auf 24 Stunden ist eine Zeile                                                                                         |
 | Nur wenn nicht im Portal         | Kein Mailhinweis, wenn die Mitgliedschaft in den letzten 30 Minuten aktiv war (`last_seen_at`)                                                                                      |
 | Abmelden                         | `portal_memberships.email_notifications_enabled` — beim Einladen gesetzt (Task 20), danach vom Portalmitglied und intern änderbar. Der Job filtert in der Abfrage, nicht im Versand |
-| Umsetzung der Bündelung          | Outbox-Job aus Ordner 10 mit Dedupe-Key je Empfänger und Fenster; keine Entscheidung im Request-Pfad                                                                                |
+| Umsetzung der Bündelung          | Outbox-Job aus Ordner 20c mit Dedupe-Key je Empfänger und Fenster; keine Entscheidung im Request-Pfad                                                                               |
 | Missbrauchsschutz                | Datenbankgestütztes Limit: 30 Nachrichten je Stunde und Portalnutzer                                                                                                                |
 | Bearbeiten und Löschen           | Gibt es nicht. Nachrichten sind nach dem Senden unveränderlich — im Portal wie im CRM                                                                                               |
 
@@ -48,9 +48,7 @@ POST /api/portal/[customerId]/conversation/messages
   → withPortalActor
   → Limit prüfen
   → Nachricht anlegen (Task 24)
-  → Outbox-Eintrag in derselben Transaktion:
-       Notification an den Betreuer (sofort)
-       Maildigest mit Dedupe-Key je Empfänger und Zeitfenster
+  → Activity; Notification und Maildigest werden in Ordner 20c ergänzt
 ```
 
 Die Entscheidung über die Mail passiert im selben Vorgang wie das Anlegen, aber **nach** dem

@@ -7,7 +7,7 @@ import type { ProjectLineItemsViewModel } from "@/common/contracts/crm/project-l
 import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
 import { canOn } from "@/common/patterns/auth/can-on";
 import { listProjectLineItemsByCustomer } from "@/server/workspace/crm/query-handler/list-project-line-items-by-customer.query-handler";
-import { listLineItemTemplates } from "@/server/workspace/crm/query-handler/list-line-item-templates.query-handler";
+import { listAssignableLineItemTemplates } from "@/server/workspace/crm/query-handler/list-assignable-line-item-templates.query-handler";
 import { calculateProjectLineItemValue } from "@invessiv/common/patterns/crm/project-line-item-value";
 
 /**
@@ -43,12 +43,12 @@ export async function buildProjectLineItemsViewModel(options: {
 
   // The picker only ever offers active templates, and only catalog readers may receive them.
   // A project-scoped write grant must not disclose the workspace-wide catalog.
-  const [services, catalog] = await Promise.all([
+  const [services, assignableTemplates] = await Promise.all([
     listProjectLineItemsByCustomer(customerId, actor),
     writableProjectIds.length > 0 &&
     can(actor, Permission.LineItemTemplatesRead)
-      ? listLineItemTemplates({ includeArchived: false })
-      : null,
+      ? listAssignableLineItemTemplates()
+      : Promise.resolve([]),
   ]);
   const valuesByProjectId = Object.fromEntries(
     readableProjectIds.map((projectId) => [
@@ -63,7 +63,7 @@ export async function buildProjectLineItemsViewModel(options: {
     services,
     readableProjectIds,
     writableProjectIds,
-    assignableTemplates: catalog?.rows ?? [],
+    assignableTemplates,
     catalogHref,
     customerValue: calculateProjectLineItemValue(services),
     valuesByProjectId,

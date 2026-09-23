@@ -36,10 +36,9 @@
     "empty": "No projects have been created for this customer yet.",
     "phase": "Phase",
     "owner": "Owner",
-    "comingSoon": "Services, tasks and chat will follow in this project.",
+    "comingSoon": "Chat will follow in this project.",
     "areas": {
       "services": "Services",
-      "tasks": "Todos & tasks",
       "chat": "Project chat"
     },
     "status": {

@@ -170,3 +170,80 @@ Erfolg: `200 { "projectLineItem": ProjectLineItemDto }`. Veraltete `version`: `4
 | 404    | `PROJECT_LINE_ITEM_NOT_FOUND`       | Leistung existiert nicht oder gehört zu einem fremden Projekt     |
 | 409    | `version_conflict`                  | Veraltete `version`; Body trägt `currentVersion` und `current`    |
 | 500    | `INTERNAL`                          | Unerwarteter Fehler; geloggt ohne Body                            |
+
+---
+
+## Aufgaben
+
+Eine Aufgabe gehört zu genau **einem** Projekt; ihr Kunde wird ausschließlich über dieses Projekt abgeleitet. Es
+gibt keinen Löschpfad — `cancelled` ersetzt das Löschen. Bearbeiter ist immer ein **aktives** internes Mitglied, auch
+wenn der Kunde handeln muss (`actionSide = customer`). Eine Kundenaufgabe ist immer für den Kunden sichtbar; ein
+Request mit `actionSide = customer` und `visibleToCustomer = false` wird abgewiesen, nicht stillschweigend korrigiert.
+
+Beide Rechte sind **bindbar**: eine Kundenbindung vererbt auf alle Projekte dieses Kunden, eine Projektbindung gilt
+nur für dieses eine Projekt. Fremdzugriff antwortet `404`, fehlendes Recht auf Endpunktebene `403`.
+
+| Route                                  | Permission    |
+| -------------------------------------- | ------------- |
+| `GET /crm/projects/[projectId]/tasks`  | `tasks.read`  |
+| `POST /crm/projects/[projectId]/tasks` | `tasks.write` |
+| `PATCH /crm/tasks/[id]`                | `tasks.write` |
+| `PATCH /crm/tasks/[id]/status`         | `tasks.write` |
+
+### `GET /api/workspace/crm/projects/[projectId]/tasks`
+
+Erfolg: `200 { "tasks": TaskDto[] }`. Reihenfolge: offene Aufgaben (`open`, `in_progress`) zuerst, darin die früheste
+Fälligkeit zuerst (überfällige stehen damit oben), Aufgaben ohne Datum zuletzt; danach `done` und `cancelled`, zuletzt
+Geändertes zuerst. Ein lesbares Projekt ohne Aufgaben antwortet `200` mit leerer Liste; ein Projekt außerhalb des
+Zugriffsbereichs antwortet `404 PROJECT_NOT_FOUND` — beide Fälle bleiben unterscheidbar.
+
+### `POST /api/workspace/crm/projects/[projectId]/tasks`
+
+Body `CreateTaskRequestDto`:
+
+```json
+{
+  "title": "Zugangsdaten zum Hosting bereitstellen",
+  "description": "",
+  "actionSide": "customer",
+  "visibleToCustomer": true,
+  "assigneeMemberId": null,
+  "dueOn": "2026-10-01"
+}
+```
+
+- `assigneeMemberId: null` weist den Projekt-Owner zu; jedes andere Mitglied muss aktiv sein
+  (`422 ASSIGNEE_NOT_ACTIVE`).
+- `dueOn` ist ein Kalendertag `YYYY-MM-DD` in der Geschäftszeitzone (Europe/Berlin) oder `null`.
+- Die neue Aufgabe ist immer `open`; der Status wird nicht im Body gesetzt.
+
+Erfolg: `201 { "task": TaskDto }` mit `version: 1`. Die Anlage schreibt eine `created`-Activity am Kunden und Projekt.
+
+### `PATCH /api/workspace/crm/tasks/[id]`
+
+Body `UpdateTaskRequestDto` — dieselben Felder, `assigneeMemberId` verpflichtend, plus `version`. Der Body ersetzt jedes
+Feld; Projekt und Status bleiben unverändert. Ein Bearbeiter, der sich nicht ändert, wird nicht erneut auf „aktiv“
+geprüft. Ein Wechsel von Bearbeiter, Handlungsseite oder Sichtbarkeit schreibt je eine `field_change`-Activity
+(Metadaten: Feld, alt, neu — nie Titel oder Beschreibung); eine reine Textänderung schreibt keine.
+
+Erfolg: `200 { "task": TaskDto }`. Veraltete `version`: `409 VersionConflictDto`.
+
+### `PATCH /api/workspace/crm/tasks/[id]/status`
+
+Body `ChangeTaskStatusRequestDto`: `{ "status": "open" | "in_progress" | "done" | "cancelled", "version": number }`.
+Jeder Status darf auf jeden folgen, auch das Wiederöffnen. `done` setzt `completedAt` und `completedByMemberId`, jeder
+andere Status löscht beide. Ein Wechsel schreibt eine `status_change`-Activity. Fordert der Request den Status, den
+die Aufgabe schon hat, ändert sich nichts (keine Versionserhöhung, keine Activity) und der aktuelle Stand wird
+zurückgegeben.
+
+Erfolg: `200 { "task": TaskDto }`. Veraltete `version`: `409 VersionConflictDto`.
+
+| Status | `error`               | Bedeutung                                                         |
+| ------ | --------------------- | ----------------------------------------------------------------- |
+| 400    | `VALIDATION_ERROR`    | Body ist kein JSON                                                |
+| 422    | `VALIDATION_ERROR`    | Schemafehler; `details` mit Feldpfad                              |
+| 422    | `ASSIGNEE_NOT_ACTIVE` | Bearbeiter ist kein aktives Mitglied                              |
+| 404    | `PROJECT_NOT_FOUND`   | Projekt existiert nicht oder liegt außerhalb des Zugriffsbereichs |
+| 404    | `TASK_NOT_FOUND`      | Aufgabe existiert nicht oder gehört zu einem fremden Projekt      |
+| 409    | `version_conflict`    | Veraltete `version`; Body trägt `currentVersion` und `current`    |
+| 500    | `INTERNAL`            | Unerwarteter Fehler; geloggt ohne Body                            |

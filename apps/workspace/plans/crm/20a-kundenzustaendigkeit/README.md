@@ -15,7 +15,8 @@ Lead-Konvertierung gesetzte Actor lediglich der technische Default. Jetzt kann e
 wirksamem Kunden-Zugriff bewusst ausgewählt und die Verantwortung später einzeln und versioniert geändert werden.
 
 Die Einheit liegt bewusst nach Projekten, Zugriffsbereichen, Portal, Dateien, Onboarding, Feedback, Chat,
-Zugangsdaten sowie Stunden und History. Die Kundenakte kann damit den vollständigen Kontext erklären, ohne beim
+Zugangsdaten sowie Stunden und History. Damit ist das Mitarbeiter-Dashboard für Projekte vor den nachgelagerten
+Aufgabenserien, Jobs und Renewals vollständig. Die Kundenakte kann den vorhandenen Kontext erklären, ohne beim
 einzelnen Wechsel still Projekt-, Portal-, Aufgaben-, Renewal- oder Chat-Zuweisungen zu übertragen.
 
 ## Fachliche Grenzen

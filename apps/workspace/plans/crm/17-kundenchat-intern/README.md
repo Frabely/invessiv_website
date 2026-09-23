@@ -1,6 +1,6 @@
 # Ordner 17 — Kundenchat, Datenmodell und interne Seite
 
-> **Status:** offen · **Abhängigkeiten:** 10, 12 · **Aufwand:** 3–4 Tage · **Reviewziel:** 60–90 Dateien
+> **Status:** offen · **Abhängigkeiten:** 12 · **Aufwand:** 3–4 Tage · **Reviewziel:** 60–90 Dateien
 
 ## Ziel und Stand nach Merge
 
@@ -45,8 +45,8 @@ dadurch ihren eigenen, konzentrierten Review statt im großen PR mitzulaufen.
 
 - Eine Kundennachricht existiert in diesem Ordner noch nicht — benachrichtigt wird deshalb nur bei
   Zuweisung und internem Schreiben.
-- Notification sofort, Mail höchstens eine je Empfänger/Kunde/15-Minuten-Fenster über die Outbox
-  aus Ordner 10.
+- Die sofortige Notification und die gebündelte Mail werden erst mit der Outbox in Ordner 20c aktiviert;
+  Chat-Schreiben, Lesestände und Zuständigkeiten bleiben bis dahin vollständig nutzbar.
 - Der Kundendigest und der Abmeldeschalter gehören zu Ordner 18.
 
 ## Merge-Gate
@@ -64,5 +64,5 @@ dadurch ihren eigenen, konzentrierten Review statt im großen PR mitzulaufen.
 
 ## Rollback
 
-Chatmodule im CRM ausblenden und interne Digestjobs stoppen. Vorhandene Nachrichten bleiben
+Chatmodule im CRM ausblenden; spätere interne Digestjobs stoppen. Vorhandene Nachrichten bleiben
 gespeichert; Portal, Dateien und andere Systemmails funktionieren weiter.

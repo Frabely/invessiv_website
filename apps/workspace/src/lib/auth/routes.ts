@@ -37,6 +37,10 @@ export function crmLineItemTemplatesPathFor(locale: Locale): string {
   return createLocalePathname(SITE_ROUTES.CRM_LINE_ITEM_TEMPLATES, locale);
 }
 
+export function crmTasksPathFor(locale: Locale): string {
+  return createLocalePathname(SITE_ROUTES.CRM_TASKS, locale);
+}
+
 export function signInPathWithRedirect(
   locale: Locale,
   redirectUrl: string,

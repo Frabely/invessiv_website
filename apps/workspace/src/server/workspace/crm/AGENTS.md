@@ -66,3 +66,15 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   `accessScope` und `crmAccessCondition` in der `WHERE`-Klausel ein. Jeder ressourcenbezogene
   Command prüft `canOn`; fremde Kunden und Projekte verhalten sich wie nicht vorhanden (404),
   nicht wie ein Berechtigungsfehler.
+
+## Aufgaben (ab Task 11-2)
+
+- **Eine Aufgabe gehört zu genau einem Projekt.** `tasks` hat bewusst keine Kundenspalte; der Kunde folgt aus dem
+  Projekt. Es gibt keinen Löschpfad, `cancelled` ersetzt ihn.
+- **Abschlussdaten schreibt nur `changeTaskStatus`** (`done` setzt Zeitpunkt und Mitglied, jeder andere Status löscht
+  beide). `updateTask` fasst Status und Abschlussdaten nie an.
+- **Kundenaufgabe heißt sichtbar.** Handler und DB-CHECK verlangen `visible_to_customer`, sobald `action_side` =
+  `customer`; ein Widerspruch wird abgewiesen, nicht korrigiert.
+- **Activities enthalten nie Titel oder Beschreibung**, nur Ids und die geänderten Werte (`task-activity-service`).
+- **Alle Listen nutzen `taskListOrderService`, alle Filter `taskListConditionsService`.** Die Filter sind das
+  SQL-Gegenstück zu `taskDueStateService`; der Zugriffsbereich steht zuerst und wird von keinem Filter erweitert.

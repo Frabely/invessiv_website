@@ -7,7 +7,7 @@ import {
 
 describe("OwnableEntity", () => {
   it("contains the exact values of the const object", () => {
-    expect(OWNABLE_ENTITY_VALUES).toEqual(["customer"]);
+    expect(OWNABLE_ENTITY_VALUES).toEqual(["customer", "task"]);
     expect(OWNABLE_ENTITY_VALUES).toEqual(Object.values(OwnableEntity));
   });
 

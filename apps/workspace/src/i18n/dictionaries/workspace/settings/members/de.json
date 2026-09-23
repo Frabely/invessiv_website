@@ -93,6 +93,7 @@
     "alreadyActivated": "{name} ist bereits aktiv. Hier ist nichts mehr zu tun.",
     "alreadyDeactivated": "{name} ist bereits deaktiviert. Hier ist nichts mehr zu tun.",
     "responsibilities": "Offene Kundenzuständigkeiten: {count}. Weise sie zuerst einem anderen Owner zu.",
+    "openTasks": "Offene Aufgaben: {count}. Weise sie zuerst einem anderen Bearbeiter zu.",
     "done": "Schließen",
     "submitting": "Wird gespeichert …",
     "cancel": "Abbrechen",

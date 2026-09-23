@@ -209,8 +209,8 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
   flaches Aufgabenobjekt; der Rhythmus bleibt am ursprünglichen Termin verankert.
 - Serienänderungen gelten wahlweise nur aktuell oder für zukünftige Exemplare.
 - Fälligkeit nur als Datum (`due_on`), Geschäftszeitzone Europe/Berlin; keine Uhrzeit.
-- Überfälligkeit bleibt sichtbar markiert; bis zur Glocke aus Ordner 10 zeigt das Dashboard eigene überfällige und
-  bald fällige Aufgaben. Die einmalige In-App-Meldung folgt mit Ordner 10.
+- Überfälligkeit bleibt sichtbar markiert; bis zur Glocke aus Ordner 20c zeigt das Dashboard eigene überfällige und
+  bald fällige Aufgaben. Die einmalige In-App-Meldung folgt mit Ordner 20c.
 - Aufgaben-Vorlagen (Task 12) sind zurückgestellt (`zurueckgestellt/12-onboarding-checkliste.md`).
 
 ### Portal und Kommunikation
@@ -364,7 +364,7 @@ Umsetzung in Ordner 15a–15c (Task 43–47), nach der Datei-UI und **vor** den 
 ### Infrastruktur-Prämissen (verbindlich)
 
 Diese Werte tragen das gesamte asynchrone Design. Wer sie ändert, ändert die Abnahmekriterien von
-Ordner 10, 11, 16, 18 und 21 mit.
+Ordner 20c, 20d, 16, 18 und 21 mit.
 
 **Laufende Kosten bleiben bei Vercel Pro. Kein zusätzlicher Dienst, kein Neon-Upgrade.** Das ist
 eine Randbedingung des Designs, keine Nebenbemerkung: der Cron-Takt ist so gewählt, dass er in das
@@ -409,7 +409,7 @@ Kontingent wäre um den 17. des Monats leer.
 - Aufgabenreminder: ±15 Minuten in der Geschäftszeit, außerhalb bis zum nächsten Lauf. Ein Reminder
   für 03:00 erscheint am Morgen — das ist gewollt und kein Mangel.
 - Kundendigest (12 h), Uploadbereinigung (24 h), Renewal-Erinnerungen (30/14/7 Tage): unberührt.
-- Überfälligkeitsmarker: rein aus Querydaten, braucht keinen Cron (Ordner 09).
+- Überfälligkeitsmarker: rein aus Querydaten, braucht keinen Cron (Ordner 20b).
 - Retry mit exponentiellem Backoff: profitiert vom Abstand, statt zu leiden.
 - Purge-Saga: 15 Minuten je Schritt in der Geschäftszeit; bei einem owner-ausgelösten Vorgang
   irrelevant.
@@ -419,7 +419,7 @@ Kontingent wäre um den 17. des Monats leer.
 - **Intervalle als Konstanten**, nicht als Zahlen in `vercel.json` verstreut. Eine Änderung ist ein
   bewusster Schritt mit neuer Budgetrechnung.
 - **Monatliche Sichtprüfung** der CU-Stunden im Neon-Dashboard, dokumentiert im Runbook aus
-  Ordner 10. Schwelle: liegt der Verbrauch am 20. des Monats über 75 CU-Stunden, wird das
+  Ordner 20c. Schwelle: liegt der Verbrauch am 20. des Monats über 75 CU-Stunden, wird das
   Nachtintervall gestreckt oder auf ein bezahltes Neon-Paket gewechselt — bevor die Suspendierung
   eintritt, nicht danach.
 - **Storage im Blick behalten:** 0,5 GB ist die zweite Decke mit derselben Folge. Dokumente liegen
@@ -567,7 +567,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 - **`PORTAL_DIGEST_WINDOW_HOURS`** und die Absenderadresse für Systemmails in allen
   Deployment-Umgebungen gesetzt und in `.env.example` dokumentiert.
 - **`apps/workspace/vercel.json`** liegt am Root Directory des Vercel-Projekts — sonst läuft der
-  Outbox-Cron aus Ordner 10 nie an, und Reminder, Digests und Aufräumjobs bleiben stumm.
+  Outbox-Cron aus Ordner 20c nie an, und Reminder, Digests und Aufräumjobs bleiben stumm.
 - **DSGVO-Grundlagen**: Auskunfts- und Löschkonzept, Löschfristen, Datenexport. Das passiert **in**
   diesem Plan (Ordner 21), nicht danach.
 - **Backup nachgewiesen wiederhergestellt** (Ordner 21), nicht nur eingerichtet.
@@ -609,10 +609,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 | 07a | läuft     | `07a-zugriffsbereiche-fundament`         | Gebundene Rollen in DB, Actor und API unsichtbar und wirkungslos deployt        |   60–90 |    3 T. |
 | 07b | im Review | `07b-zugriffsfilter-kunden-und-projekte` | Alle Kunden- und Projektpfade filtern über `accessScope`; Negativtests          |  60–100 |  3–4 T. |
 | 07c | offen     | `07c-zugriffsverwaltung-ui`              | Zugriffe je Kunde/Projekt in Settings und Kundenakte konfigurierbar             |   50–80 |  2–3 T. |
-| 08  | offen     | `08-aufgaben`                            | Projektaufgaben im Cockpit, globale Übersicht und Dashboard-Block nutzbar       | 120–180 |  4–5 T. |
-| 09  | offen     | `09-aufgabenserien-und-reminder`         | Wiederholungen, Fälligkeit und Überfälligkeit zuverlässig aktiv                 |   50–90 |  3–4 T. |
-| 10  | offen     | `10-jobs-und-benachrichtigungen`         | Outbox-Runner, Glocke, Retry und kritische Fehlerbenachrichtigung aktiv         |  70–100 |  4–5 T. |
-| 11  | offen     | `11-renewals`                            | Renewal-Verwaltung und 30/14/7-Erinnerungen vollständig nutzbar                 |   40–70 |  2–3 T. |
+| 08  | läuft     | `08-aufgaben`                            | Projektaufgaben im Cockpit, globale Übersicht und Dashboard-Block nutzbar       | 120–180 |  4–5 T. |
 | 12  | offen     | `12-portal-identitaet`                   | Einladung, Widerruf und Mehrfirmenwechsel sicher nutzbar                        |  80–100 |  4–5 T. |
 | 13  | offen     | `13-portal-dashboard`                    | Portal-Dashboard mit Aufgaben und Projektdaten produktiv nutzbar                |  60–100 |  3–4 T. |
 | 14  | offen     | `14-storage-und-upload`                  | Storage-Adapter und sichere Upload-Pipeline unsichtbar sicher deployt           |  70–100 |  4–5 T. |
@@ -626,6 +623,9 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 | 19  | offen     | `19-credentials`                         | Verschlüsselte Zugangsdaten und Security-Audit vollständig nutzbar              |   50–80 |  3–4 T. |
 | 20  | offen     | `20-stunden-und-history`                 | Kontingente, Buchungen und konsolidierte Timeline vollständig nutzbar           |  60–100 |  3–4 T. |
 | 20a | offen     | `20a-kundenzustaendigkeit`               | Kundenverantwortung ist auswählbar, sichtbar und versioniert änderbar           |   25–45 |  1–2 T. |
+| 20b | offen     | `20b-aufgabenserien-und-reminder`        | Wiederholungen, Fälligkeit und Überfälligkeit zuverlässig aktiv                 |   50–90 |  3–4 T. |
+| 20c | offen     | `20c-jobs-und-benachrichtigungen`        | Outbox-Runner, Glocke, Retry und kritische Fehlerbenachrichtigung aktiv         |  70–100 |  4–5 T. |
+| 20d | offen     | `20d-renewals`                           | Renewal-Verwaltung und 30/14/7-Erinnerungen vollständig nutzbar                 |   40–70 |  2–3 T. |
 | 21  | offen     | `21-datenschutz-backup-rollout`          | Export, Owner-Purge, Backup/Restore und Produktivabnahme nachgewiesen           |  60–100 |  4–5 T. |
 | 22  | offen     | `22-activity-cleanup`                    | `lead_activities` abgebaut, genau eine Activity-Tabelle                         |    5–15 |    1 T. |
 | 22a | offen     | `22a-kundenorganisation-und-uebergabe`   | Suche, Filter, Tags und globale Zuständigkeitsübergabe vollständig nutzbar      |  70–110 |  4–6 T. |

@@ -434,7 +434,10 @@ describe("members routes", () => {
     mocks.updateStatus.mockResolvedValueOnce({
       ok: false,
       code: WorkspaceMemberErrorCode.MemberHasOpenResponsibilities,
-      responsibilityCounts: { [OwnableEntity.Customer]: 2 },
+      responsibilityCounts: {
+        [OwnableEntity.Customer]: 2,
+        [OwnableEntity.Task]: 0,
+      },
     });
     const blocked = await updateStatus(
       jsonRequest(
@@ -447,7 +450,12 @@ describe("members routes", () => {
     expect(blocked.status).toBe(HttpResponseCode.Conflict);
     expect(await blocked.json()).toMatchObject({
       error: WorkspaceMemberErrorCode.MemberHasOpenResponsibilities,
-      details: { responsibilityCounts: { [OwnableEntity.Customer]: 2 } },
+      details: {
+        responsibilityCounts: {
+          [OwnableEntity.Customer]: 2,
+          [OwnableEntity.Task]: 0,
+        },
+      },
     });
 
     const conflict = {

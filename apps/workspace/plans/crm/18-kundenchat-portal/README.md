@@ -6,10 +6,10 @@
 
 **Konkreter Task-Plan**
 
-- [`26-chat-im-portal.md`](./26-chat-im-portal.md) — Portalchat, Kundendigest und Abmeldeschalter.
+- [`26-chat-im-portal.md`](./26-chat-im-portal.md) — Portalchat und Abmeldeschalter; Kundendigest folgt in Ordner 20c.
 
-Der Kunde kann aus dem Portal heraus schreiben und den Verlauf lesen. Beide Seiten werden
-benachrichtigt. Nach diesem Merge ist der Chat bidirektional vollständig nutzbar.
+Der Kunde kann aus dem Portal heraus schreiben und den Verlauf lesen. Nach diesem Merge ist der Chat
+bidirektional vollständig nutzbar; Benachrichtigungen und Digests werden in Ordner 20c aktiviert.
 
 Diese Einheit ist die **Portalgrenze** des Chats und deshalb bewusst klein: sie enthält nichts außer
 der Kundenseite, damit der Fremdzugriffs-Review nicht in einem großen PR untergeht.
@@ -20,15 +20,8 @@ der Kundenseite, damit der Fremdzugriffs-Review nicht in einem großen PR unterg
   aus Task 25 wiederverwendet, nicht neu gebaut.
 - Kundenkennung ausschließlich aus der validierten Sitzung; kein Endpunkt nimmt sie aus der Anfrage.
 - Lesestand je Portalmitglied, nie firmenweit.
-- Kundenmails höchstens eine je Mitgliedschaft und `PORTAL_DIGEST_WINDOW_HOURS` (12 Stunden), und
-  nur bei `email_notifications_enabled` — gefiltert in der Abfrage, nicht erst beim Versand.
-- Zusätzliche Bedingung: keine Kundenmail, wenn die Mitgliedschaft in den letzten 30 Minuten aktiv
-  war (`last_seen_at`).
-- Interne Mails bleiben beim 15-Minuten-Fenster aus Ordner 17.
-- Die Mail nennt alle Ereignisse des Fensters („drei neue Nachrichten"), verweist aufs Portal und
-  enthält höchstens eine kurze Textvorschau, keine Anhänge.
-- Reply-To ist das Invessiv-Postfach; Antworten werden nicht importiert.
-- Providerstatus, Versuche und permanenter Fehler bleiben sichtbar; kein Open- oder Clicktracking.
+- Die für Digests erforderlichen Präferenzen und Lesestände werden bereits gespeichert. Versand, Deduplizierung,
+  Providerstatus und interne Hinweise werden gemeinsam in Ordner 20c aktiviert.
 - Datenbankgestütztes Limit: 30 Nachrichten je Stunde und Portalmitglied.
 
 ## Merge-Gate
@@ -37,15 +30,12 @@ der Kundenseite, damit der Fremdzugriffs-Review nicht in einem großen PR unterg
 - [ ] Widerrufenes Mitglied kann Verlauf und Deep-Link sofort nicht mehr laden.
 - [ ] Kunde A sieht unter keinem Sitzungszustand die Unterhaltung von Kunde B (404).
 - [ ] Ein Firmenwechsel lädt den Verlauf neu und zeigt keine Daten der vorherigen Firma.
-- [ ] Digest-Deduplizierung hält ihr Fenster (intern 15 Minuten, Kunde 12 Stunden) auch bei
-      parallelen Jobs ein.
-- [ ] Eine Digest-Mail nennt alle Ereignisse des Fensters, nicht nur das erste.
-- [ ] Eine abgeschaltete Kundenmitgliedschaft wird in der Abfrage ausgeschlossen.
+- [ ] Nachrichten bleiben auch ohne aktivierte Benachrichtigungen vollständig les- und schreibbar.
 - [ ] Es gibt auch im Portal keinen Bearbeiten- und keinen Löschweg für Nachrichten.
 - [ ] Mobile Tastatur, Fokus, Screenreader-Live-Region und lange Texte sind geprüft.
 - [ ] Alle Texte in DE und EN, Portalsprache aus `people.preferred_locale`.
 
 ## Rollback
 
-Portalchat per Flag ausblenden und Kundendigestjobs stoppen. Der interne Chat aus Ordner 17 bleibt
+Portalchat per Flag ausblenden; die späteren Kundendigestjobs stoppen. Der interne Chat aus Ordner 17 bleibt
 vollständig nutzbar; vorhandene Nachrichten bleiben gespeichert.

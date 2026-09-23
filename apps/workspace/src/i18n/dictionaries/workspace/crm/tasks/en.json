@@ -1,0 +1,221 @@
+{
+  "section": {
+    "title": "Tasks",
+    "addAction": "Add task",
+    "count": "{count} open",
+    "countNone": "Nothing open",
+    "ariaLabel": "Open tasks of this project",
+    "closedAriaLabel": "Closed tasks of this project",
+    "showClosed": "Show {count} closed",
+    "showClosedOne": "Show 1 closed",
+    "hideClosed": "Hide closed"
+  },
+  "quickCreate": {
+    "label": "New task",
+    "placeholder": "Type a task, press Enter to add it",
+    "hint": "Set the due date, assignee and “Customer to act” afterwards on the task itself.",
+    "error": "The task could not be created. Please try again.",
+    "validation": {
+      "titleRequired": "Enter a task title."
+    }
+  },
+  "empty": {
+    "title": "No tasks yet",
+    "description": "This is where you see what has to happen in the project and what the customer has to contribute. Type a line and press Enter to add the first task."
+  },
+  "emptyReadOnly": {
+    "title": "No tasks yet",
+    "description": "Tasks appear here as soon as someone with write access adds one."
+  },
+  "row": {
+    "editNamed": "Edit task “{name}”",
+    "statusLabel": "Status of “{name}”",
+    "statusSelectLabel": "Status of “{name}”: {status}",
+    "assignee": "Assignee: {name}"
+  },
+  "status": {
+    "open": "Open",
+    "in_progress": "In progress",
+    "done": "Done",
+    "cancelled": "Dropped"
+  },
+  "actionSide": {
+    "internal": "Our turn",
+    "customer": "Customer to act"
+  },
+  "visibility": {
+    "visible": "Visible to customer",
+    "hidden": "Internal only"
+  },
+  "due": {
+    "overdue": "Overdue for {count} days",
+    "overdueOne": "Overdue for 1 day",
+    "today": "Due today",
+    "tomorrow": "Due tomorrow",
+    "soon": "Due in {count} days",
+    "on": "Due {date}",
+    "none": "No due date"
+  },
+  "announce": {
+    "created": "Task “{name}” added.",
+    "statusChanged": "“{name}” is now {status}.",
+    "statusFailed": "The status of “{name}” could not be changed."
+  },
+  "form": {
+    "title": {
+      "create": "Add task",
+      "edit": "Edit task"
+    },
+    "description": {
+      "create": "Decide who is up next and whether the customer sees the task.",
+      "edit": "Changes to “{name}” apply to this task only."
+    },
+    "fields": {
+      "title": "Title",
+      "description": "Description",
+      "actionSide": "Who is up next?",
+      "visibleToCustomer": "Visible to the customer",
+      "assigneeMemberId": "Assignee",
+      "dueOn": "Due on"
+    },
+    "placeholders": {
+      "title": "e.g. Clarify logo and colors",
+      "description": "What exactly has to be done?",
+      "assigneeMemberId": "Project owner"
+    },
+    "hints": {
+      "visibleForced": "While the customer is up next, they always see the task.",
+      "assigneeDefault": "Without a choice the project owner takes it."
+    },
+    "assigneeInactive": "{name} (inactive)",
+    "buttons": {
+      "close": "Close",
+      "cancel": "Cancel",
+      "submitCreate": "Add task",
+      "submitEdit": "Save",
+      "submitting": "Saving …"
+    },
+    "requiredHint": "* Required field",
+    "conflict": {
+      "message": "The task changed in the meantime.",
+      "currentTitle": "Current state: {name}"
+    },
+    "validation": {
+      "TITLE_REQUIRED": "Title is required",
+      "DUE_ON_INVALID": "Enter a valid date"
+    },
+    "errors": {
+      "TASK_NOT_FOUND": "The task was not found.",
+      "PROJECT_NOT_FOUND": "The project was not found.",
+      "ASSIGNEE_NOT_ACTIVE": "This member is not active and cannot take tasks.",
+      "VALIDATION_ERROR": "The input could not be saved.",
+      "INTERNAL": "Unexpected error. Please try again."
+    }
+  },
+  "overview": {
+    "meta": {
+      "title": "Tasks | Invessiv",
+      "description": "Every task across all projects: what is overdue, what is due this week and what the customer still owes."
+    },
+    "shell": {
+      "title": "Tasks",
+      "description": "Every task across all projects. Change the status right here, without opening the customer file.",
+      "backToCustomers": "Back to customers"
+    },
+    "toolbar": {
+      "ariaLabel": "Filter tasks",
+      "clear": "Clear selection",
+      "closedProjects": "Include completed projects",
+      "search": {
+        "label": "Search",
+        "placeholder": "Search tasks"
+      },
+      "status": {
+        "label": "Status",
+        "ariaLabel": "Filter by status",
+        "options": {
+          "active": "Open & in progress",
+          "open": "Open",
+          "in_progress": "In progress",
+          "done": "Done",
+          "cancelled": "Dropped",
+          "all": "All"
+        }
+      },
+      "side": {
+        "label": "Who is up next?",
+        "ariaLabel": "Filter by who is up next",
+        "all": "All"
+      },
+      "assignee": {
+        "label": "Assignee",
+        "ariaLabel": "Filter by assignee",
+        "all": "All",
+        "me": "Mine"
+      },
+      "customer": {
+        "label": "Customer",
+        "ariaLabel": "Filter by customer",
+        "all": "All"
+      },
+      "project": {
+        "label": "Project",
+        "ariaLabel": "Filter by project",
+        "all": "All"
+      },
+      "period": {
+        "label": "Due",
+        "ariaLabel": "Filter by due date",
+        "options": {
+          "all": "All",
+          "overdue": "Overdue",
+          "today": "Today",
+          "week": "Next 7 days",
+          "due_soon": "Due soon"
+        }
+      },
+      "actions": {
+        "reset": "Reset filters",
+        "expandFilters": "Show filters",
+        "collapseFilters": "Hide filters"
+      }
+    },
+    "caption": "Tasks across all projects",
+    "columns": {
+      "due": "Due",
+      "task": "Task",
+      "status": "Status",
+      "side": "Who is up next?",
+      "assignee": "Assignee",
+      "customer": "Customer",
+      "project": "Project",
+      "visibility": "Visibility"
+    },
+    "openCustomerNamed": "Open the customer file of “{name}”",
+    "noAssignee": "–",
+    "pagination": {
+      "ariaLabel": "Task overview pagination",
+      "showing": "{from}–{to} of {total} tasks",
+      "page": "Page {page}",
+      "first": "First",
+      "previous": "Previous",
+      "next": "Next",
+      "last": "Last"
+    },
+    "empty": {
+      "title": "No open tasks yet",
+      "description": "Tasks of every project come together here. Add them in a customer's project and you see them here, sorted by due date.",
+      "action": "Go to customers"
+    },
+    "noResults": {
+      "title": "No tasks found",
+      "description": "These filters match nothing. Loosen one or reset them all.",
+      "action": "Reset filters"
+    },
+    "nothingOverdue": {
+      "title": "Nothing overdue",
+      "description": "Every task is on track.",
+      "action": "Show all open tasks"
+    }
+  }
+}

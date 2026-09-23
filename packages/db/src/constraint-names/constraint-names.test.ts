@@ -37,6 +37,10 @@ import {
   LineItemTemplatesConstraintName,
 } from "./crm/line-item-templates-constraint-names";
 import {
+  TASKS_CONSTRAINT_NAME_VALUES,
+  TasksConstraintName,
+} from "./crm/tasks-constraint-names";
+import {
   LEAD_SOCIAL_PROFILES_CONSTRAINT_NAME_VALUES,
   LeadSocialProfilesConstraintName,
 } from "./lead-social-profiles-constraint-names";
@@ -97,6 +101,7 @@ const GROUPS: [string, string, Record<string, string>, readonly string[]][] = [
     LineItemTemplatesConstraintName,
     LINE_ITEM_TEMPLATES_CONSTRAINT_NAME_VALUES,
   ],
+  ["tasks", "tasks_", TasksConstraintName, TASKS_CONSTRAINT_NAME_VALUES],
 ];
 
 describe("constraint name constants", () => {

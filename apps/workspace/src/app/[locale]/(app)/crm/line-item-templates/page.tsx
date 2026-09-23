@@ -1,30 +1,28 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import Link from "next/link";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { can } from "@invessiv/common/patterns/auth/can";
-import { ButtonLink } from "@invessiv/ui";
-import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import { LineItemTemplateFormDialogMode } from "@/common/constants/crm/forms/line-item-template-form-dialog-modes";
 import {
   buildLineItemTemplateCreateHref,
   buildLineItemTemplateDialogCloseHref,
-  buildLineItemTemplateListHref,
   readLineItemTemplateDialogRequest,
-  readLineItemTemplateIncludeArchived,
 } from "@/common/patterns/crm/line-item-template-dialog-query";
+import { parseLineItemTemplateListFilters } from "@/common/patterns/crm/line-item-template-list-search-params";
+import {
+  buildLineItemTemplateListHref,
+  buildLineItemTemplateListQueryString,
+} from "@/lib/workspace/crm/line-item-template-list-query-string";
 import { LineItemTemplateFormDialog } from "@/components/workspace/crm/line-item-templates/line-item-template-form-dialog/line-item-template-form-dialog";
 import { LineItemTemplatesList } from "@/components/workspace/crm/line-item-templates/line-item-templates-list/line-item-templates-list";
 import { LineItemTemplatesPageHeader } from "@/components/workspace/crm/line-item-templates/line-item-templates-page-header/line-item-templates-page-header";
-import { WorkspacePageShell } from "@/components/workspace/workspace-page-shell/workspace-page-shell";
+import { WorkspaceScrollablePageShell } from "@/components/workspace/shared/workspace-scrollable-page-shell/workspace-scrollable-page-shell";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
-import {
-  crmLineItemTemplatesPathFor,
-  workspaceAreaPathFor,
-} from "@/lib/auth/routes";
+import { crmLineItemTemplatesPathFor } from "@/lib/auth/routes";
 import { getCrmLineItemTemplatesDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { requireWorkspacePermission } from "@/lib/auth/permissions";
+import { getLineItemTemplateById } from "@/server/workspace/crm/query-handler/get-line-item-template-by-id.query-handler";
 import { listLineItemTemplates } from "@/server/workspace/crm/query-handler/list-line-item-templates.query-handler";
 
 export const dynamic = "force-dynamic";
@@ -66,62 +64,59 @@ export default async function LineItemTemplatesPage({
   );
   const activeLocale: Locale = locale;
   const resolvedSearchParams = await searchParams;
-  const includeArchived =
-    readLineItemTemplateIncludeArchived(resolvedSearchParams);
+  const requestedFilters =
+    parseLineItemTemplateListFilters(resolvedSearchParams);
   const basePath = crmLineItemTemplatesPathFor(activeLocale);
   const canWrite = can(actor, Permission.LineItemTemplatesWrite);
   const dialogRequest = canWrite
     ? readLineItemTemplateDialogRequest(resolvedSearchParams)
     : null;
 
-  const list = await listLineItemTemplates({ includeArchived });
-  const editLineItemTemplate =
+  const list = await listLineItemTemplates(requestedFilters);
+  const editLineItemTemplateId =
     dialogRequest?.mode === LineItemTemplateFormDialogMode.Edit
-      ? (list.rows.find((row) => row.id === dialogRequest.lineItemTemplateId) ??
-        null)
+      ? dialogRequest.lineItemTemplateId
       : null;
+  // The target row may sit on a different page than the one currently requested (e.g. a
+  // bookmarked edit link), so a miss on this page falls back to a direct lookup by id.
+  const editLineItemTemplate = editLineItemTemplateId
+    ? (list.rows.find((row) => row.id === editLineItemTemplateId) ??
+      (await getLineItemTemplateById(editLineItemTemplateId)))
+    : null;
   // An unknown edit id opens nothing; it is not an error.
   const showDialog =
     dialogRequest?.mode === LineItemTemplateFormDialogMode.Create ||
     editLineItemTemplate !== null;
 
   const content = getCrmLineItemTemplatesDictionary(activeLocale);
+  const filters = { ...requestedFilters, page: list.page };
+  const queryString = buildLineItemTemplateListQueryString(filters);
   const createHref = canWrite
-    ? buildLineItemTemplateCreateHref(basePath, includeArchived)
+    ? buildLineItemTemplateCreateHref(basePath, queryString)
     : null;
-  const closeHref = buildLineItemTemplateDialogCloseHref(
-    basePath,
-    includeArchived,
-  );
-  const toggleArchivedHref = buildLineItemTemplateListHref(
-    basePath,
-    !includeArchived,
-  );
+  const closeHref = buildLineItemTemplateDialogCloseHref(basePath, queryString);
+  const toggleArchivedHref = buildLineItemTemplateListHref(basePath, {
+    ...filters,
+    includeArchived: !filters.includeArchived,
+    page: 1,
+  });
 
   return (
-    <WorkspacePageShell pageId="crm-services">
-      <ButtonLink
-        href={workspaceAreaPathFor(activeLocale, WorkspaceArea.Crm)}
-        linkComponent={Link}
-        variant="ghost"
-      >
-        {content.shell.backToCustomers}
-      </ButtonLink>
+    <WorkspaceScrollablePageShell pageId="crm-services">
       <LineItemTemplatesPageHeader
         archivedToggleHref={toggleArchivedHref}
         content={content}
         createHref={createHref}
-        includeArchived={includeArchived}
+        includeArchived={filters.includeArchived}
       />
       <LineItemTemplatesList
         basePath={basePath}
         canWrite={canWrite}
         content={content}
         createHref={createHref}
-        hasLineItemTemplates={list.hasLineItemTemplates}
-        includeArchived={includeArchived}
+        list={list}
         locale={activeLocale}
-        lineItemTemplates={list.rows}
+        queryString={queryString}
         toggleArchivedHref={toggleArchivedHref}
       />
       {showDialog ? (
@@ -135,6 +130,6 @@ export default async function LineItemTemplatesPage({
           lineItemTemplate={editLineItemTemplate}
         />
       ) : null}
-    </WorkspacePageShell>
+    </WorkspaceScrollablePageShell>
   );
 }

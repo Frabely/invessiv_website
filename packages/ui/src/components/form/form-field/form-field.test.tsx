@@ -29,6 +29,11 @@ describe("FormField", () => {
           }}
         />
         <FormField
+          kind={FormFieldKind.Date}
+          label="Due on"
+          inputProps={{ name: "due-on" }}
+        />
+        <FormField
           kind={FormFieldKind.Textarea}
           label="Notes"
           textareaProps={{
@@ -51,6 +56,7 @@ describe("FormField", () => {
       expect.stringContaining("error"),
     );
     expect(screen.getByLabelText(/Score/)).toHaveAttribute("type", "number");
+    expect(screen.getByLabelText(/Due on/)).toHaveAttribute("type", "date");
     expect(screen.getByLabelText(/Notes/)).toHaveAttribute(
       "placeholder",
       "Write something",

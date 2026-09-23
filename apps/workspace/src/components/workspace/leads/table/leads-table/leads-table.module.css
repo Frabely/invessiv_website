@@ -1,11 +1,3 @@
-.shell {
-  flex: 1 1 auto;
-  display: flex;
-  min-height: 0;
-  width: 100%;
-  overflow: hidden;
-}
-
 .table {
   width: max(100%, 1765px);
   min-width: 1765px;
@@ -30,11 +22,4 @@
 .emptyStateCell {
   padding-top: 1.1rem;
   padding-bottom: 1.1rem;
-}
-
-@media (max-width: 720px) {
-  .shell .tableFrame {
-    height: 100%;
-    max-height: none;
-  }
 }

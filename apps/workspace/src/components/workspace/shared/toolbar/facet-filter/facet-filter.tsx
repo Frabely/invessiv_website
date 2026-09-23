@@ -2,11 +2,14 @@
 
 import { type ReactNode } from "react";
 import { CustomSelect } from "@invessiv/ui";
+import { FacetFilterDisplay } from "@/common/constants/ui/facet-filter-displays";
 import styles from "./facet-filter.module.css";
 
 const ALL_OPTION_VALUE = "__all__";
 
 type FacetFilterProps = {
+  /** Chips (default) or a select only; see `FacetFilterDisplay`. */
+  display?: FacetFilterDisplay;
   activeValue?: string;
   activeValues?: readonly string[];
   allOption: { chip: ReactNode; selectLabel: string };
@@ -30,6 +33,7 @@ export function FacetFilter({
   allOption,
   ariaLabel,
   clearLabel,
+  display = FacetFilterDisplay.Chips,
   label,
   onChangeAction,
   onValuesChangeAction,
@@ -56,7 +60,7 @@ export function FacetFilter({
   }
 
   return (
-    <div className={styles.group}>
+    <div className={styles.group} data-display={display}>
       <span className={styles.fieldLabel}>{label}</span>
 
       <div aria-label={ariaLabel} className={styles.chipRow} role="toolbar">

@@ -5,7 +5,6 @@ import {
   buildDialogHref as buildHref,
   createDialogRequestReader,
   type DialogSearchParamsInput as SearchParamsInput,
-  readDialogSearchParam as readSingle,
 } from "@/common/patterns/crm/dialog-query-primitives";
 
 /** Only the two supported shapes open a dialog; anything else leaves the list alone. */
@@ -17,41 +16,18 @@ export const readLineItemTemplateDialogRequest: (
   "lineItemTemplateId",
 );
 
-export function readLineItemTemplateIncludeArchived(
-  searchParams: SearchParamsInput,
-): boolean {
-  return (
-    readSingle(searchParams, LineItemTemplateListQueryParam.IncludeArchived) ===
-    "true"
-  );
-}
-
-function listParams(
-  queryString: string,
-  includeArchived: boolean,
-): URLSearchParams {
+function listParams(queryString = ""): URLSearchParams {
   const params = new URLSearchParams(queryString);
   params.delete(LineItemTemplateListQueryParam.Mode);
   params.delete(LineItemTemplateListQueryParam.Edit);
-  params.delete(LineItemTemplateListQueryParam.IncludeArchived);
-  if (includeArchived) {
-    params.set(LineItemTemplateListQueryParam.IncludeArchived, "true");
-  }
   return params;
-}
-
-export function buildLineItemTemplateListHref(
-  basePath: string,
-  includeArchived: boolean,
-): string {
-  return buildHref(basePath, listParams("", includeArchived));
 }
 
 export function buildLineItemTemplateCreateHref(
   basePath: string,
-  includeArchived: boolean,
+  queryString = "",
 ): string {
-  const params = listParams("", includeArchived);
+  const params = listParams(queryString);
   params.set(
     LineItemTemplateListQueryParam.Mode,
     LineItemTemplateFormDialogMode.Create,
@@ -62,9 +38,9 @@ export function buildLineItemTemplateCreateHref(
 export function buildLineItemTemplateEditHref(
   basePath: string,
   lineItemTemplateId: string,
-  includeArchived: boolean,
+  queryString = "",
 ): string {
-  const params = listParams("", includeArchived);
+  const params = listParams(queryString);
   params.set(
     LineItemTemplateListQueryParam.Mode,
     LineItemTemplateFormDialogMode.Edit,
@@ -73,10 +49,10 @@ export function buildLineItemTemplateEditHref(
   return buildHref(basePath, params);
 }
 
-/** Closing keeps the same list state as toggling archived would; kept as its own name for call-site clarity. */
+/** Closing keeps the same list state the page was in; kept as its own name for call-site clarity. */
 export function buildLineItemTemplateDialogCloseHref(
   basePath: string,
-  includeArchived: boolean,
+  queryString = "",
 ): string {
-  return buildLineItemTemplateListHref(basePath, includeArchived);
+  return buildHref(basePath, listParams(queryString));
 }

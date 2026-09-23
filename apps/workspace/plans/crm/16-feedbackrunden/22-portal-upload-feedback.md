@@ -2,7 +2,7 @@
 
 > **Merge-Einheit:** Ordner 16 · **Branch:** `feat/crm-feedbackrunden`
 > **Aufwand:** L · **Abhängigkeiten:** Task 21 (Dashboard), Task 14 (Dateien),
-> Task 33 (Outbox/Benachrichtigungen)
+> Outbox/Benachrichtigungen werden in Ordner 20c nachgezogen
 > **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
 ## Context
@@ -34,7 +34,7 @@ Zeitstand — kein Dokument, das nachträglich wächst.
 | Zwischenspeicher       | Der Freitext liegt bis zum Absenden im `localStorage` des Browsers — in `try/catch`, ohne Serverzeile und ohne Datei                                                   |
 | Uploads vor Absenden   | Dateien laufen über eine Upload-Session aus Task 14 ohne Rundenbezug. Erst das Absenden verknüpft sie atomar mit der neuen Runde                                       |
 | Woher der Pfad kommt   | Der rundenfreie Portal-Upload entsteht bereits in **Ordner 15a (Task 43)**. Diese Einheit baut keinen zweiten Pfad, sondern bindet die vorhandene Session an die Runde |
-| Verwaiste Sessions     | Nicht abgesendete Upload-Sessions werden nach 24 Stunden über den Cleanup-Job aus Ordner 14 entfernt                                                                   |
+| Verwaiste Sessions     | Nicht abgesendete Upload-Sessions bleiben bis zum Cleanup-Job aus Ordner 20c nachvollziehbar und reparierbar                                                           |
 | Freitext               | Postgres `text`, Anwendungslimit 20.000 Zeichen, serverseitig geprüft                                                                                                  |
 | Warum `text`           | In Postgres praktisch unbegrenzt und bei Überlänge automatisch ausgelagert; `varchar(n)` brächte nur eine spätere Migration                                            |
 | Externer Text          | Ausschließlich als Text gerendert. Kein HTML, kein Markdown, auch nicht in Mails und Benachrichtigungen                                                                |
@@ -42,7 +42,7 @@ Zeitstand — kein Dokument, das nachträglich wächst.
 | Limits im Portal       | Strenger als intern: 50 MB je Datei, 20 Dateien und 300 MB je Runde                                                                                                    |
 | Missbrauchsschutz      | Datenbankgestütztes Limit: 5 Absendungen je Stunde und Kunde                                                                                                           |
 | Leere Runde            | Weder Text noch Dateien wird abgelehnt                                                                                                                                 |
-| Benachrichtigung       | Outbox-Eintrag in derselben Transaktion: Notification an den Projekt-Owner plus gebündelte Mail. Keine Anhänge, kein Volltext                                          |
+| Benachrichtigung       | Fachwrite erzeugt zunächst nur die Activity; Notification und gebündelte Mail werden in Ordner 20c ergänzt                                                             |
 | Projektphase           | Wird durch Absenden und Abschluss **nie** automatisch verändert                                                                                                        |
 
 ## Tabellen
@@ -120,7 +120,7 @@ Portal
         → Kontingent und offene Runde prüfen
         → round_number = max + 1 in derselben Transaktion
         → Upload-Session-Dateien an die Runde binden
-        → activities + Outbox-Eintrag (Notification, gebündelte Mail)
+        → Activity; Notification und gebündelte Mail folgen in Ordner 20c
         → Rate-Limit atomar reservieren
 
   POST /api/portal/[customerId]/projects/[projectId]/feedback-round-requests   Zusatzrunde anfragen
@@ -186,7 +186,7 @@ apps/workspace/src/i18n/dictionaries/portal/feedback/{de,en}.json
   `portal-feedback-rate-limit-service.ts`, Route + Tests
 - **Inhalt:**
   - Eine Transaktion: Kontingent prüfen, `round_number = max + 1`, Runde anlegen,
-    Upload-Session-Dateien binden, Activity und Outbox-Eintrag schreiben
+    Upload-Session-Dateien binden und Activity schreiben; Outbox-Eintrag folgt in Ordner 20c
   - Idempotenzschlüssel erforderlich; Wiederholung liefert dieselbe Runde statt einer zweiten
   - Datenbankgestütztes Limit nach dem Muster aus
     `reserve-linkedin-post-generator-usage-limit.ts` (atomar, ein Roundtrip)
@@ -200,7 +200,7 @@ apps/workspace/src/i18n/dictionaries/portal/feedback/{de,en}.json
   - Test: leere Runde ergibt 422; 20.001 Zeichen abgelehnt, 20.000 akzeptiert
   - Test: Umlaute und Emoji kommen unverändert zurück
   - Test: Fehler beim Binden der Dateien rollt die Runde vollständig zurück
-  - Test: Fachwrite und Outbox-Eintrag existieren gemeinsam oder gar nicht
+  - Test: Fachwrite und Activity existieren gemeinsam oder gar nicht; Outbox-Integration folgt in Ordner 20c
 
 ### CRM-22-T3 — Portal-Upload ohne Rundenbezug
 

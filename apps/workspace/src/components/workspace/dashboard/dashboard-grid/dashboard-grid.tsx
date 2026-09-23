@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import styles from "./dashboard-grid.module.css";
 
 const DashboardModuleKey = {
+  DueTasks: "dueTasks",
   AcquisitionVolume: "acquisitionVolume",
   Messaging: "messaging",
   SourcePerformance: "sourcePerformance",
@@ -29,6 +30,10 @@ type ModuleLayout = {
 };
 
 const MODULE_LAYOUT: ReadonlyArray<ModuleLayout> = [
+  {
+    key: DashboardModuleKey.DueTasks,
+    span: { mobile: 12, tablet: 12, desktop: 12 },
+  },
   {
     key: DashboardModuleKey.Messaging,
     span: { mobile: 12, tablet: 12, desktop: 12 },

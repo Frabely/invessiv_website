@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
@@ -23,18 +22,17 @@ import { CustomerFormDialog } from "@/components/workspace/crm/form/customer-for
 import { CustomerCockpitDialog } from "@/components/workspace/crm/detail/customer-cockpit-dialog/customer-cockpit-dialog";
 import { CustomersBasicList } from "@/components/workspace/crm/list/customers-basic-list/customers-basic-list";
 import { CustomersPageHeader } from "@/components/workspace/crm/shell/customers-page-header/customers-page-header";
-import { WorkspacePageShell } from "@/components/workspace/workspace-page-shell/workspace-page-shell";
-import { ButtonLink } from "@invessiv/ui";
+import { WorkspaceScrollablePageShell } from "@/components/workspace/shared/workspace-scrollable-page-shell/workspace-scrollable-page-shell";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import {
   getCrmAccessDictionary,
   getCrmCockpitDictionary,
   getCrmFormDictionary,
-  getCrmLineItemTemplatesDictionary,
   getCrmListDictionary,
   getCrmMetaDictionary,
   getCrmProjectLineItemsDictionary,
   getCrmShellDictionary,
+  getCrmTasksDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
 import { getSettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import { getLeadsSharedDictionary } from "@/i18n/dictionaries/workspace/leads";
@@ -54,6 +52,7 @@ import { listActiveCustomerCategories } from "@/server/workspace/crm/query-handl
 import { listCustomers } from "@/server/workspace/crm/query-handler/list-customers.query-handler";
 import { listCockpitProjectsByCustomer } from "@/server/workspace/crm/query-handler/list-projects-by-customer.query-handler";
 import { buildProjectLineItemsViewModel } from "@/lib/workspace/crm/project-line-items-view-model";
+import { buildTasksViewModel } from "@/lib/workspace/crm/tasks-view-model";
 import { calculateProjectLineItemValue } from "@invessiv/common/patterns/crm/project-line-item-value";
 import { listProjectLineItemsByCustomer } from "@/server/workspace/crm/query-handler/list-project-line-items-by-customer.query-handler";
 import { listCustomerAccessScopes } from "@/server/workspace/access/query-handler/list-customer-access-scopes.query-handler";
@@ -172,6 +171,14 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
           projects: cockpitProjects,
         })
       : null;
+  const tasksViewModel =
+    cockpitCustomer && cockpitProjects
+      ? await buildTasksViewModel({
+          actor,
+          customerId: cockpitCustomer.id,
+          projects: cockpitProjects,
+        })
+      : null;
   const customerAccessData =
     cockpitCustomer && canManageAccess
       ? await Promise.all([
@@ -216,16 +223,7 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
   const categories = showDialog ? await listActiveCustomerCategories() : [];
 
   return (
-    <WorkspacePageShell pageId="crm">
-      {canReadLineItemTemplates ? (
-        <ButtonLink
-          href={crmLineItemTemplatesPathFor(activeLocale)}
-          linkComponent={Link}
-          variant="ghost"
-        >
-          {getCrmLineItemTemplatesDictionary(activeLocale).shell.title}
-        </ButtonLink>
-      ) : null}
+    <WorkspaceScrollablePageShell pageId="crm">
       <CustomersPageHeader
         archivedToggleHref={archivedToggleHref}
         content={getCrmShellDictionary(activeLocale)}
@@ -318,8 +316,12 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
               : undefined
           }
           rolesHref={customerAccessData ? rolesHref : undefined}
+          tasks={tasksViewModel ?? undefined}
+          tasksContent={
+            tasksViewModel ? getCrmTasksDictionary(activeLocale) : undefined
+          }
         />
       ) : null}
-    </WorkspacePageShell>
+    </WorkspaceScrollablePageShell>
   );
 }

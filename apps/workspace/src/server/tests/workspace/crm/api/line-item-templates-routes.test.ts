@@ -108,7 +108,10 @@ describe("CRM line item template routes", () => {
     it("returns the list result on success", async () => {
       mocks.listLineItemTemplates.mockResolvedValue({
         hasLineItemTemplates: true,
+        page: 1,
+        perPage: 25,
         rows: [templateFixture],
+        total: 1,
       });
 
       const response = await GET(
@@ -118,7 +121,35 @@ describe("CRM line item template routes", () => {
       expect(response.status).toBe(HttpResponseCode.Ok);
       expect(await response.json()).toEqual({
         hasLineItemTemplates: true,
+        page: 1,
+        perPage: 25,
         rows: [templateFixture],
+        total: 1,
+      });
+      expect(mocks.listLineItemTemplates).toHaveBeenCalledWith({
+        includeArchived: false,
+        page: 1,
+      });
+    });
+
+    it("forwards page and archived filters from the query string", async () => {
+      mocks.listLineItemTemplates.mockResolvedValue({
+        hasLineItemTemplates: true,
+        page: 2,
+        perPage: 25,
+        rows: [],
+        total: 30,
+      });
+
+      await GET(
+        new Request(
+          `${COLLECTION_URL}?page=2&includeArchived=true`,
+        ) as unknown as NextRequest,
+      );
+
+      expect(mocks.listLineItemTemplates).toHaveBeenCalledWith({
+        includeArchived: true,
+        page: 2,
       });
     });
   });

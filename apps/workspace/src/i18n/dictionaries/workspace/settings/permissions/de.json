@@ -71,6 +71,10 @@
       "label": "Leistungskatalog bearbeiten",
       "description": "Leistungstemplates anlegen, ändern und archivieren."
     },
+    "tasks.read": {
+      "label": "Aufgaben ansehen",
+      "description": "Die Aufgaben eines Projekts einsehen."
+    },
     "tasks.write": {
       "label": "Aufgaben bearbeiten",
       "description": "Aufgaben anlegen, ändern und zuweisen."

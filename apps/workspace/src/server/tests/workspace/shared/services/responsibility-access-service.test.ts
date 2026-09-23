@@ -70,6 +70,20 @@ describe("responsibilityAccessService", () => {
           ownerMemberId: "member-2",
         },
       ],
+      [
+        {
+          id: "task-1",
+          customerId: "customer-1",
+          ownerMemberId: "member-1",
+          projectId: "project-1",
+        },
+        {
+          id: "task-2",
+          customerId: "customer-2",
+          ownerMemberId: "member-2",
+          projectId: "project-2",
+        },
+      ],
     ];
     let queryIndex = 0;
     mocks.getDrizzleDatabaseClient.mockReturnValue({
@@ -111,12 +125,14 @@ describe("responsibilityAccessService", () => {
     const result = await responsibilityAccessService.evaluate();
 
     expect(result.countByMemberId).toEqual({
-      "member-1": 1,
-      "member-2": 1,
+      "member-1": 2,
+      "member-2": 2,
     });
     expect([...result.inaccessibleEntityIds]).toEqual([
       "customer:customer-2",
       "project:project-1",
+      "task:task-1",
+      "task:task-2",
     ]);
   });
 

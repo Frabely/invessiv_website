@@ -1,4 +1,5 @@
-import { z } from "zod";
+import { isIsoCalendarDate } from "@invessiv/common/patterns/validation/is-iso-calendar-date";
+import { isUuid } from "@invessiv/common/patterns/validation/is-uuid";
 import {
   CONTACT_LEAD_STATUS_ALL,
   CONTACT_LEAD_STATUS_VALUES,
@@ -83,18 +84,6 @@ function parseProfileTypeList(
   return result.length > 0 ? result : undefined;
 }
 
-function isValidDateString(value: string): boolean {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-    return false;
-  }
-
-  return !Number.isNaN(new Date(`${value}T00:00:00.000Z`).getTime());
-}
-
-export function isUuid(value: string): boolean {
-  return z.uuid().safeParse(value).success;
-}
-
 export function parseSelectedLeadId(
   searchParams: SearchParamsInput,
 ): string | undefined {
@@ -173,11 +162,11 @@ export function parseLeadListFilters(
     filters.search = search;
   }
 
-  if (dateFrom && isValidDateString(dateFrom)) {
+  if (dateFrom && isIsoCalendarDate(dateFrom)) {
     filters.date_from = dateFrom;
   }
 
-  if (dateTo && isValidDateString(dateTo)) {
+  if (dateTo && isIsoCalendarDate(dateTo)) {
     filters.date_to = dateTo;
   }
 

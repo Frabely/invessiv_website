@@ -81,15 +81,32 @@ export function MemberStatusDialog({
     setResponsibilityCounts(result.responsibilityCounts ?? null);
   }
 
-  const responsibilityCount =
+  const customerResponsibilityCount =
     responsibilityCounts?.[OwnableEntity.Customer] ?? 0;
+  const taskResponsibilityCount =
+    responsibilityCounts?.[OwnableEntity.Task] ?? 0;
+  const hasOpenResponsibilities =
+    customerResponsibilityCount > 0 || taskResponsibilityCount > 0;
   const message = alreadyDone
     ? formatMessage(
         desiredActive ? text.alreadyActivated : text.alreadyDeactivated,
         { name: member.displayName },
       )
-    : responsibilityCount > 0
-      ? formatMessage(text.responsibilities, { count: responsibilityCount })
+    : hasOpenResponsibilities
+      ? [
+          customerResponsibilityCount > 0
+            ? formatMessage(text.responsibilities, {
+                count: customerResponsibilityCount,
+              })
+            : null,
+          taskResponsibilityCount > 0
+            ? formatMessage(text.openTasks, {
+                count: taskResponsibilityCount,
+              })
+            : null,
+        ]
+          .filter((entry): entry is string => entry !== null)
+          .join(" ")
       : hasConflict
         ? text.conflict
         : errorCode
@@ -124,7 +141,7 @@ export function MemberStatusDialog({
               {text.cancel}
             </ButtonControl>
             <PrimaryCtaButton
-              disabled={isSubmitting || responsibilityCount > 0}
+              disabled={isSubmitting || hasOpenResponsibilities}
               onClick={confirm}
               type="button"
             >

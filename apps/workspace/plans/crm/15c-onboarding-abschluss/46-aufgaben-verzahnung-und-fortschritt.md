@@ -69,7 +69,7 @@ submitOnboarding (Task 44, erweitert)
        │       AND action_side = 'customer'
        │       AND status <> 'done'
        ├─ eine Activity mit Anzahl der erledigten Aufgaben
-       └─ Outbox: interne Benachrichtigung
+       └─ interne Benachrichtigung wird in Ordner 20c nachgezogen
 
 getPortalDashboard (Task 21, erweitert)
   └─ offener oder abgesendeter Bogen je aktivem Projekt + Fortschritt
