@@ -1,6 +1,12 @@
 # Ordner 15a — Medien-Assets und freier Portal-Upload
 
-> **Status:** offen · **Abhängigkeiten:** 12, 13, 14, 15 · **Aufwand:** 2–3 Tage · **Reviewziel:** 60–80 Dateien
+> **Status:** offen · **Abhängigkeiten:** 12b, 13, 14, 15 · **Aufwand:** 2–3 Tage · **Reviewziel:** 60–80 Dateien
+
+> **Portal-Fundament (Neuzuschnitt 23.09.2026):** Seiten über `requirePortalActor(locale, customerId)`, Endpunkte über
+> `withPortalActor`, jede Portal-Query über `portalAccessCondition`, jede Portal-Mutation über `portalCanOn` (alles
+> aus Task 49). Eigene Portal-Permissions dieses Ordners, in `portal_standard` ergänzt: `portal.assets.write` (Assets hochladen, Medienlinks anlegen); Lesen über `portal.files.read` aus Ordner 15.
+> Navigation: „Medien“ (`/portal/[customerId]/assets`) in `PORTAL_NAV_ITEMS` mit `requiredPermission`. Negativtests zusätzlich für fehlende
+> Portal-Permission.
 
 ## Ziel und Stand nach Merge
 
@@ -52,5 +58,5 @@ Runde, statt einen zweiten Pfad zu bauen.
 
 ## Rollback
 
-`UPLOAD_LIMIT_BY_KIND` auf die Dokumenttypen zurücksetzen und die Portalseite aus der Navigation
-nehmen. Bereits hochgeladene Dateien bleiben lesbar; der Feedbackrunden-Pfad ist unberührt.
+`UPLOAD_LIMIT_BY_KIND` auf die Dokumenttypen zurücksetzen und `portal.assets.write` aus `portal_standard`
+und eigenen Portalrollen nehmen; der Navigationseintrag verschwindet damit. Bereits hochgeladene Dateien bleiben lesbar; der Feedbackrunden-Pfad ist unberührt.

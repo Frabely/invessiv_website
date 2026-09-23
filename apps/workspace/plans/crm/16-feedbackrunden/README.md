@@ -1,6 +1,12 @@
 # Ordner 16 — Feedbackrunden
 
-> **Status:** offen · **Abhängigkeiten:** 07, 12, 13, 15 · **Aufwand:** 4–5 Tage · **Reviewziel:** 70–100 Dateien
+> **Status:** offen · **Abhängigkeiten:** 07, 12b, 13, 15 · **Aufwand:** 4–5 Tage · **Reviewziel:** 70–100 Dateien
+
+> **Portal-Fundament (Neuzuschnitt 23.09.2026):** Seiten über `requirePortalActor(locale, customerId)`, Endpunkte über
+> `withPortalActor`, jede Portal-Query über `portalAccessCondition`, jede Portal-Mutation über `portalCanOn` (alles
+> aus Task 49). Eigene Portal-Permissions dieses Ordners, in `portal_standard` ergänzt: `portal.feedback.read`, `portal.feedback.submit` (Runde absenden, Zusatzrunde anfragen).
+> Navigation: kein eigener Eintrag; Einstieg über die Projektkarte (`/portal/[customerId]/projects/[projectId]/feedback`) in `PORTAL_NAV_ITEMS` mit `requiredPermission`. Negativtests zusätzlich für fehlende
+> Portal-Permission.
 
 ## Ziel und Stand nach Merge
 
@@ -53,5 +59,5 @@ Merge beidseitig vollständig.
 
 ## Rollback
 
-Feedbackmodule per Flag ausblenden. Bereits eingereichte Runden bleiben intern lesbar; Dateien und
+`portal.feedback.*` aus `portal_standard` und eigenen Portalrollen nehmen; Einstieg und Endpunkte verschwinden. Bereits eingereichte Runden bleiben intern lesbar; Dateien und
 Projektstatus bleiben unverändert.

@@ -1,6 +1,12 @@
 # Ordner 15 — Dateiablage und Portaldownloads
 
-> **Status:** offen · **Abhängigkeiten:** 12, 14 · **Aufwand:** 4–5 Tage · **Reviewziel:** 70–100 Dateien
+> **Status:** offen · **Abhängigkeiten:** 12b, 14 · **Aufwand:** 4–5 Tage · **Reviewziel:** 70–100 Dateien
+
+> **Portal-Fundament (Neuzuschnitt 23.09.2026):** Seiten über `requirePortalActor(locale, customerId)`, Endpunkte über
+> `withPortalActor`, jede Portal-Query über `portalAccessCondition`, jede Portal-Mutation über `portalCanOn` (alles
+> aus Task 49). Eigene Portal-Permissions dieses Ordners, in `portal_standard` ergänzt: `portal.files.read` (freigegebene Dateien, Download), `portal.files.write` (Upload, Löschanfrage).
+> Navigation: „Dateien“ (`/portal/[customerId]/files`) in `PORTAL_NAV_ITEMS` mit `requiredPermission`. Negativtests zusätzlich für fehlende
+> Portal-Permission.
 
 ## Ziel und Stand nach Merge
 
@@ -48,5 +54,5 @@ sichtbar geschaltet.
 
 ## Rollback
 
-Dateimodule und Portalupload per Flag ausblenden. Cleanup und sichere Storage-Pipeline aus Ordner 14
+`portal.files.read`/`portal.files.write` aus `portal_standard` und eigenen Portalrollen nehmen; Navigationseintrag und Endpunkte verschwinden. Cleanup und sichere Storage-Pipeline aus Ordner 14
 bleiben aktiv; vorhandene Dateien bleiben erhalten.

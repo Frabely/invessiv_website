@@ -1,6 +1,12 @@
 # Ordner 15b — Onboarding-Bogen
 
-> **Status:** offen · **Abhängigkeiten:** 12, 13, 14, 15, 15a · **Aufwand:** 4–5 Tage · **Reviewziel:** 100–120 Dateien
+> **Status:** offen · **Abhängigkeiten:** 12b, 13, 14, 15, 15a · **Aufwand:** 4–5 Tage · **Reviewziel:** 100–120 Dateien
+
+> **Portal-Fundament (Neuzuschnitt 23.09.2026):** Seiten über `requirePortalActor(locale, customerId)`, Endpunkte über
+> `withPortalActor`, jede Portal-Query über `portalAccessCondition`, jede Portal-Mutation über `portalCanOn` (alles
+> aus Task 49). Eigene Portal-Permissions dieses Ordners, in `portal_standard` ergänzt: `portal.onboarding.read`, `portal.onboarding.submit` — firmenweites Modul, verlangt nach Einführung des Projektbezugs eine firmenweite Rolle.
+> Navigation: „Onboarding“ (`/portal/[customerId]/onboarding`) in `PORTAL_NAV_ITEMS` mit `requiredPermission`. Negativtests zusätzlich für fehlende
+> Portal-Permission.
 
 > **Hinweis Neuplanung Ordner 08 (21.09.2026):** Die hier genannte Vorlage aus Task 12 ist zurückgestellt; die
 > Aufgaben aus Ordner 08 sind Projektaufgaben mit vier Status.
@@ -49,5 +55,5 @@ Aufgaben ab — folgt in Ordner 15c, damit diese Einheit auf Formular und Daten 
 
 ## Rollback
 
-Portalseite aus der Navigation nehmen und die Vorlage nicht mehr zuweisen. Tabellen sind additiv;
+`portal.onboarding.*` aus `portal_standard` und eigenen Portalrollen nehmen und die Vorlage nicht mehr zuweisen. Tabellen sind additiv;
 bereits abgesendete Bögen bleiben intern lesbar.

@@ -1,6 +1,12 @@
 # Ordner 20 — Stundenkontingente und konsolidierte History
 
-> **Status:** offen · **Abhängigkeiten:** 02, 07, 12, 13 · **Aufwand:** 3–4 Tage · **Reviewziel:** 60–100 Dateien
+> **Status:** offen · **Abhängigkeiten:** 02, 07, 12b, 13 · **Aufwand:** 3–4 Tage · **Reviewziel:** 60–100 Dateien
+
+> **Portal-Fundament (Neuzuschnitt 23.09.2026):** Seiten über `requirePortalActor(locale, customerId)`, Endpunkte über
+> `withPortalActor`, jede Portal-Query über `portalAccessCondition`, jede Portal-Mutation über `portalCanOn` (alles
+> aus Task 49). Eigene Portal-Permissions dieses Ordners, in `portal_standard` ergänzt: `portal.hours.read` (Kontingent und Buchungen).
+> Navigation: Dashboard-Karte „Stundenkontingent“, kein eigener Navigationseintrag in `PORTAL_NAV_ITEMS` mit `requiredPermission`. Negativtests zusätzlich für fehlende
+> Portal-Permission.
 
 ## Ziel und Stand nach Merge
 
@@ -46,5 +52,5 @@ konsolidierte Timeline aller bisher implementierten CRM-Ereignisse.
 
 ## Rollback
 
-Stunden- und Timeline-Module per Flag ausblenden. Daten bleiben erhalten; bestehende CRM-Funktionen
+Timeline-Module per Flag ausblenden; `portal.hours.read` aus `portal_standard` und eigenen Portalrollen nehmen. Daten bleiben erhalten; bestehende CRM-Funktionen
 arbeiten unabhängig.

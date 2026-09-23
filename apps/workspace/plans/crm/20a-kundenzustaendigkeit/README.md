@@ -1,6 +1,6 @@
 # Ordner 20a — Kundenzuständigkeit
 
-> **Status:** offen · **Abhängigkeiten:** 07, 07a–07c, 12–15c, 16–20 · **Aufwand:** 1–2 Tage · **Reviewziel:** 25–45
+> **Status:** offen · **Abhängigkeiten:** 07, 07a–07c, 12a–15c, 16–20 · **Aufwand:** 1–2 Tage · **Reviewziel:** 25–45
 > Dateien
 
 ## Ziel und Stand nach Merge

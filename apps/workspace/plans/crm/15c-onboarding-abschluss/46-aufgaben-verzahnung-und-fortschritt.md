@@ -31,7 +31,7 @@ Dieser Task schließt die Lücke und macht den Bogen im Dashboard sichtbar.
 | Umbenannte Aufgaben | Eine Aufgabe ohne `title_key` (eigener Titel, Task 12) wird nie automatisch abgehakt                                                 |
 | Bereits erledigt    | Wird nicht erneut geschrieben; die Historie behält den ursprünglichen Zeitpunkt                                                      |
 | Interne Aufgaben    | Bleiben unberührt — der Bogen erledigt ausschließlich Aufgaben mit `action_side = customer`                                          |
-| Herkunft            | `done_by_side = customer`, Actor ist das absendende Portalmitglied                                                                   |
+| Herkunft            | `completed_by_portal_membership_id` des absendenden Portalmitglieds (Task 21)                                                        |
 | Timeline            | Ein Activity-Eintrag „Bogen abgesendet, 4 Aufgaben erledigt" statt fünf Einzeleinträgen                                              |
 | Transaktion         | Abhaken passiert im selben Command wie das Absenden; schlägt eines fehl, ist nichts passiert                                         |
 | Dashboard           | Eigene Karte oberhalb der Bringschuld: Titel, Fortschritt, „Weiter ausfüllen" oder „Ansehen"                                         |

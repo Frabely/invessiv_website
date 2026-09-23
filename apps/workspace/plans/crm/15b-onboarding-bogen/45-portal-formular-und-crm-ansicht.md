@@ -46,7 +46,7 @@ Auf der internen Seite geht es um genau eine Tätigkeit: Antworten lesen und in 
 
 ```txt
 (portal)/portal/[customerId]/onboarding/[submissionId]/page.tsx     Server Component
-  ├─ requirePortalActor(locale)
+  ├─ requirePortalActor(locale, customerId)
   ├─ getOnboardingSubmission(submissionId)      prueft Zugehoerigkeit serverseitig
   ├─ Katalog ueber form_key + schema_version aufloesen
   └─ Client-Komponente je Abschnitt

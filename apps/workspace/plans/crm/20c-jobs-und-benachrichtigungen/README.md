@@ -1,6 +1,6 @@
 # Ordner 20c — Jobs, Outbox und Benachrichtigungen
 
-> **Status:** offen · **Abhängigkeiten:** 03, 20b · **Aufwand:** 4–5 Tage · **Reviewziel:** 70–100 Dateien
+> **Status:** offen · **Abhängigkeiten:** 03, 12b, 20b · **Aufwand:** 4–5 Tage · **Reviewziel:** 70–100 Dateien
 
 ## Ziel und Stand nach Merge
 
@@ -37,7 +37,13 @@ per E-Mail gemeldet. Nach Merge werden Aufgabenreminder und Serien asynchron zuv
   doppelten Versand desselben Fensters, nicht gegen das Sammeln.
 - Glocke, Zähler und Liste mit Deep-Link über typisierte Routen.
 - Aufgabe: Zuweisung, frei gewählter Reminder und einmalige Überfälligkeit sowie die nachträgliche Aktivierung der
-  definierten Ereignisse für Uploads, Onboarding, Feedback und Chat.
+  definierten Ereignisse für Uploads, Onboarding, Feedback, Chat, vom Kunden erledigte Aufgaben (Ordner 13) und
+  Leistungsanfragen (Ordner 13a).
+- **Portal-Einladungsmail:** Das Einladen aus Ordner 12b schreibt ab hier einen Outbox-Eintrag in derselben
+  Transaktion; die Mail geht in `people.preferred_locale` an die Adresse der Personenzuordnung. Der Klartext-Token
+  steht nur im Job-Payload, wird nach erfolgreichem Versand aus dem Payload entfernt und erscheint nie in Logs oder
+  Fehlertexten. Die Kopierfunktion im Einladungsdialog bleibt als Rückfall; ein fehlgeschlagener Versand lässt eine
+  gültige, erneut sendbare Einladung zurück.
 - Normale Vorgänge bleiben In-App. Nur permanente kritische Job- oder Securityfehler senden eine
   interne E-Mail über das Mail-Package.
 - Mailprovider fehlt: Job bleibt sichtbar fehlgeschlagen, Fachwrite bleibt erfolgreich.
@@ -51,6 +57,8 @@ per E-Mail gemeldet. Nach Merge werden Aufgabenreminder und Serien asynchron zuv
       `canOn` gefiltert (Zugriffsbereiche, Task 36–38); ein entzogener Zugriff erzeugt keine weitere Meldung.
 - [ ] Die verzögert geplanten Cleanup- und Benachrichtigungsereignisse aus Storage, Onboarding, Feedback und Chat
       sind nachgezogen; der zugehörige Fachwrite bleibt bei einem Job- oder Providerfehler erfolgreich.
+- [ ] Portal-Einladungen werden per Outbox versendet; kein Token-Klartext in Logs, Fehlertexten oder nach dem
+      Versand im Job-Payload; die Kopierfunktion aus 12b bleibt nutzbar.
 - [ ] Glocke funktioniert mit Keyboard, Fokus und beiden Themes.
 - [ ] Ausfall von Mailprovider oder Runner macht die App nicht unbenutzbar.
 - [ ] `vercel.json`, Secret-Namen, Retry und manueller Replay sind dokumentiert.
