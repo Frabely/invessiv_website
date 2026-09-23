@@ -2,6 +2,7 @@ import "server-only";
 
 import { count, eq } from "drizzle-orm";
 
+import { resolveListPage } from "@invessiv/common/patterns/pagination/resolve-list-page";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { customers, projects, tasks } from "@invessiv/db/record-configuration";
 import { TASK_LIST_PAGE_SIZE } from "@/common/constants/crm/list/task-list-assignee";
@@ -12,10 +13,10 @@ import { taskListConditionsService } from "@/server/workspace/crm/services/task-
 import { taskListRowsService } from "@/server/workspace/crm/services/task-list-rows-service";
 
 /**
- * Every task the actor may read, across customers and projects, narrowed by the filters. Two
- * queries per call — the page and the count, built from the same conditions — and no per-row
- * lookups: the customer and project names come from the same join. `today` is the business day,
- * decided once by the caller so the rows and the due-date filters agree.
+ * Every task the actor may read, across customers and projects, narrowed by the filters. The
+ * count runs first so an out-of-range page clamps to the last one instead of coming back empty;
+ * no per-row lookups: the customer and project names come from the same join. `today` is the
+ * business day, decided once by the caller so the rows and the due-date filters agree.
  */
 export async function listTasks(
   filters: TaskListFilters,
@@ -25,23 +26,22 @@ export async function listTasks(
   const db = getDrizzleDatabaseClient();
   const where = taskListConditionsService.build(filters, actor, today);
 
-  const [rows, [totals]] = await Promise.all([
-    taskListRowsService.select(db, where, {
-      limit: TASK_LIST_PAGE_SIZE,
-      offset: (filters.page - 1) * TASK_LIST_PAGE_SIZE,
-    }),
-    db
-      .select({ total: count() })
-      .from(tasks)
-      .innerJoin(projects, eq(projects.id, tasks.project_id))
-      .innerJoin(customers, eq(customers.id, projects.customer_id))
-      .where(where),
-  ]);
-
-  return {
-    page: filters.page,
+  const [totals] = await db
+    .select({ total: count() })
+    .from(tasks)
+    .innerJoin(projects, eq(projects.id, tasks.project_id))
+    .innerJoin(customers, eq(customers.id, projects.customer_id))
+    .where(where);
+  const total = totals?.total ?? 0;
+  const { offset, page } = resolveListPage({
     perPage: TASK_LIST_PAGE_SIZE,
-    rows,
-    total: totals?.total ?? 0,
-  };
+    requestedPage: filters.page,
+    total,
+  });
+  const rows = await taskListRowsService.select(db, where, {
+    limit: TASK_LIST_PAGE_SIZE,
+    offset,
+  });
+
+  return { page, perPage: TASK_LIST_PAGE_SIZE, rows, total };
 }

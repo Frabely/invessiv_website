@@ -60,6 +60,17 @@ export async function changeTaskStatus(
 
   const data = validation.data;
   if (target.task.status === data.status) {
+    if (target.task.version !== data.version) {
+      return {
+        ok: false,
+        code: ConcurrencyErrorCode.VersionConflict,
+        conflict: {
+          code: ConcurrencyErrorCode.VersionConflict,
+          currentVersion: target.task.version,
+          current: tasksMapperService.toDto(target.task),
+        },
+      };
+    }
     return { ok: true, task: tasksMapperService.toDto(target.task) };
   }
 

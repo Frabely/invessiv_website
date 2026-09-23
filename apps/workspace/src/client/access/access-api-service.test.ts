@@ -149,6 +149,74 @@ describe("accessApiService", () => {
     );
   });
 
+  it("degrades a missing task count to zero instead of dropping the whole result", async () => {
+    stubFetch(HttpResponseCode.Conflict, {
+      error: WorkspaceMemberErrorCode.MemberHasOpenResponsibilities,
+      details: {
+        responsibilityCounts: {
+          [OwnableEntity.Customer]: 2,
+        },
+      },
+    });
+
+    const result = await accessApiService.updateMemberStatus("member-1", {
+      active: false,
+      version: 3,
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      code: WorkspaceMemberErrorCode.MemberHasOpenResponsibilities,
+      responsibilityCounts: {
+        [OwnableEntity.Customer]: 2,
+        [OwnableEntity.Task]: 0,
+      },
+    });
+  });
+
+  it("degrades a missing customer count to zero instead of dropping the whole result", async () => {
+    stubFetch(HttpResponseCode.Conflict, {
+      error: WorkspaceMemberErrorCode.MemberHasOpenResponsibilities,
+      details: {
+        responsibilityCounts: {
+          [OwnableEntity.Task]: 5,
+        },
+      },
+    });
+
+    const result = await accessApiService.updateMemberStatus("member-1", {
+      active: false,
+      version: 3,
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      code: WorkspaceMemberErrorCode.MemberHasOpenResponsibilities,
+      responsibilityCounts: {
+        [OwnableEntity.Customer]: 0,
+        [OwnableEntity.Task]: 5,
+      },
+    });
+  });
+
+  it("omits responsibility counts entirely when neither field is present", async () => {
+    stubFetch(HttpResponseCode.Conflict, {
+      error: WorkspaceMemberErrorCode.MemberHasOpenResponsibilities,
+      details: { responsibilityCounts: {} },
+    });
+
+    const result = await accessApiService.updateMemberStatus("member-1", {
+      active: false,
+      version: 3,
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      code: WorkspaceMemberErrorCode.MemberHasOpenResponsibilities,
+      responsibilityCounts: undefined,
+    });
+  });
+
   it("sends the versioned payload and returns the granted scope", async () => {
     const accessScope = {
       id: "scope-1",

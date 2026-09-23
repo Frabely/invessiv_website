@@ -22,6 +22,7 @@ import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { crmLineItemTemplatesPathFor } from "@/lib/auth/routes";
 import { getCrmLineItemTemplatesDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { requireWorkspacePermission } from "@/lib/auth/permissions";
+import { getLineItemTemplateById } from "@/server/workspace/crm/query-handler/get-line-item-template-by-id.query-handler";
 import { listLineItemTemplates } from "@/server/workspace/crm/query-handler/list-line-item-templates.query-handler";
 
 export const dynamic = "force-dynamic";
@@ -72,11 +73,16 @@ export default async function LineItemTemplatesPage({
     : null;
 
   const list = await listLineItemTemplates(requestedFilters);
-  const editLineItemTemplate =
+  const editLineItemTemplateId =
     dialogRequest?.mode === LineItemTemplateFormDialogMode.Edit
-      ? (list.rows.find((row) => row.id === dialogRequest.lineItemTemplateId) ??
-        null)
+      ? dialogRequest.lineItemTemplateId
       : null;
+  // The target row may sit on a different page than the one currently requested (e.g. a
+  // bookmarked edit link), so a miss on this page falls back to a direct lookup by id.
+  const editLineItemTemplate = editLineItemTemplateId
+    ? (list.rows.find((row) => row.id === editLineItemTemplateId) ??
+      (await getLineItemTemplateById(editLineItemTemplateId)))
+    : null;
   // An unknown edit id opens nothing; it is not an error.
   const showDialog =
     dialogRequest?.mode === LineItemTemplateFormDialogMode.Create ||

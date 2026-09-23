@@ -190,12 +190,13 @@ function readResponsibilityCounts(payload: unknown) {
   }
   const customerCount = counts[OwnableEntity.Customer];
   const taskCount = counts[OwnableEntity.Task];
-  if (typeof customerCount !== "number" || typeof taskCount !== "number") {
+  if (typeof customerCount !== "number" && typeof taskCount !== "number") {
     return undefined;
   }
   return {
-    [OwnableEntity.Customer]: customerCount,
-    [OwnableEntity.Task]: taskCount,
+    [OwnableEntity.Customer]:
+      typeof customerCount === "number" ? customerCount : 0,
+    [OwnableEntity.Task]: typeof taskCount === "number" ? taskCount : 0,
   };
 }
 

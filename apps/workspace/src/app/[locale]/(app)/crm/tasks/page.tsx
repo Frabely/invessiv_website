@@ -99,12 +99,17 @@ export default async function TasksPage({
     ),
   ];
   const canNavigateToCustomers = canAnywhere(actor, Permission.CustomersRead);
+  // "due soon" reaches from the past up to a week ahead, so an empty result under either period
+  // means the same good news: nothing overdue.
+  const isNothingOverduePeriod =
+    filters.period === TaskListPeriod.Overdue ||
+    filters.period === TaskListPeriod.DueSoon;
   const emptyVariant =
     list.total > 0
       ? null
       : !hasActiveFilters
         ? TasksEmptyStateVariant.Empty
-        : filters.period === TaskListPeriod.Overdue
+        : isNothingOverduePeriod
           ? TasksEmptyStateVariant.NothingOverdue
           : TasksEmptyStateVariant.NoResults;
 

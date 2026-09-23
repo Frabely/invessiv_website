@@ -24,6 +24,7 @@ import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { TASK_LIST_ASSIGNEE_ME } from "@/common/constants/crm/list/task-list-assignee";
 import { TaskListPeriod } from "@/common/constants/crm/list/task-list-periods";
 import { TaskListStatusFilter } from "@/common/constants/crm/list/task-list-status-filters";
+import { TASK_DUE_SOON_WINDOW_DAYS } from "@/common/constants/crm/task-due-states";
 import type { TaskListFilters } from "@/common/contracts/crm/task-list-filters";
 import { accessScope } from "@/common/patterns/auth/access-scope";
 import { taskDueStateService } from "@/lib/workspace/crm/task-due-state-service";
@@ -68,7 +69,7 @@ function periodCondition(
   if (period === TaskListPeriod.All) return undefined;
 
   const stillOpen = inArray(tasks.status, [...OPEN_TASK_STATUS_VALUES]);
-  const weekEnd = taskDueStateService.addDays(today, 7);
+  const weekEnd = taskDueStateService.addDays(today, TASK_DUE_SOON_WINDOW_DAYS);
   switch (period) {
     case TaskListPeriod.Overdue:
       return and(stillOpen, lt(tasks.due_on, today));

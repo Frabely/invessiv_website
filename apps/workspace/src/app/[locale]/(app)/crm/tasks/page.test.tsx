@@ -259,5 +259,13 @@ describe("TasksPage", () => {
       "nothing_overdue",
     );
     expect(screen.queryByTestId("table")).not.toBeInTheDocument();
+    cleanup();
+
+    // "due soon" includes everything overdue, so an empty result here is the same good news.
+    await renderPage({ period: "due_soon" });
+    expect(screen.getByTestId("empty")).toHaveAttribute(
+      "data-variant",
+      "nothing_overdue",
+    );
   });
 });

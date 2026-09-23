@@ -100,4 +100,25 @@ describe("lineItemTemplateReadService", () => {
       expect(calls.offset).toEqual([20]);
     });
   });
+
+  describe("findById", () => {
+    it("maps the matching row through the mapper service", async () => {
+      const row = { id: "row-1" };
+      const dto = { id: "row-1", version: 1 };
+      const db = { select: vi.fn(() => chain([row])) };
+      mocks.toDto.mockReturnValue(dto);
+
+      await expect(
+        lineItemTemplateReadService.findById(db as never, "row-1"),
+      ).resolves.toEqual(dto);
+    });
+
+    it("returns null when no row matches", async () => {
+      const db = { select: vi.fn(() => chain([])) };
+
+      await expect(
+        lineItemTemplateReadService.findById(db as never, "missing"),
+      ).resolves.toBeNull();
+    });
+  });
 });

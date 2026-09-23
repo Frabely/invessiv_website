@@ -46,4 +46,22 @@ async function listRows(
   return rows.map(lineItemTemplatesMapperService.toDto);
 }
 
-export const lineItemTemplateReadService = { countRows, listRows } as const;
+/** Archived templates stay addressable, so this is not filtered by status. */
+async function findById(
+  db: Database,
+  id: string,
+): Promise<LineItemTemplateDto | null> {
+  const [row] = await db
+    .select()
+    .from(lineItemTemplates)
+    .where(eq(lineItemTemplates.id, id))
+    .limit(1);
+
+  return row ? lineItemTemplatesMapperService.toDto(row) : null;
+}
+
+export const lineItemTemplateReadService = {
+  countRows,
+  findById,
+  listRows,
+} as const;

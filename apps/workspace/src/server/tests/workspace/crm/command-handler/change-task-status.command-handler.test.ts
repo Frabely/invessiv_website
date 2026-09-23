@@ -159,7 +159,22 @@ describe("changeTaskStatus", () => {
     );
   });
 
-  it("changes nothing and logs nothing when the status is already set", async () => {
+  it("changes nothing and logs nothing when the status and version already match", async () => {
+    const result = await changeTaskStatus(
+      TASK_ID,
+      { status: TaskStatus.Open, version: 3 },
+      workspaceActorWith([Permission.TasksWrite]),
+    );
+
+    expect(result).toMatchObject({
+      ok: true,
+      task: { id: TASK_ID, status: TaskStatus.Open, version: 3 },
+    });
+    expect(mocks.updateVersioned).not.toHaveBeenCalled();
+    expect(mocks.recordStatusChange).not.toHaveBeenCalled();
+  });
+
+  it("reports a version conflict when the status already matches but the version is stale", async () => {
     const result = await changeTaskStatus(
       TASK_ID,
       { status: TaskStatus.Open, version: 1 },
@@ -167,8 +182,13 @@ describe("changeTaskStatus", () => {
     );
 
     expect(result).toMatchObject({
-      ok: true,
-      task: { id: TASK_ID, status: TaskStatus.Open, version: 3 },
+      ok: false,
+      code: ConcurrencyErrorCode.VersionConflict,
+      conflict: {
+        code: ConcurrencyErrorCode.VersionConflict,
+        currentVersion: 3,
+        current: { id: TASK_ID, status: TaskStatus.Open, version: 3 },
+      },
     });
     expect(mocks.updateVersioned).not.toHaveBeenCalled();
     expect(mocks.recordStatusChange).not.toHaveBeenCalled();

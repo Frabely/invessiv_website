@@ -9,6 +9,7 @@ import type { CustomerDetailDto } from "@invessiv/common/contracts/crm/customer-
 import type { UpdateCustomerRequestDto } from "@invessiv/common/contracts/crm/update-customer-request.dto";
 import type { ListCustomersResult } from "@invessiv/common/contracts/crm/results/list-customers-result";
 import type { UpdateCustomerResult } from "@invessiv/common/contracts/crm/results/update-customer-result";
+import { resolveListPage } from "@invessiv/common/patterns/pagination/resolve-list-page";
 import {
   type ContactDatabaseTransaction,
   getDrizzleDatabaseClient,
@@ -270,8 +271,11 @@ async function searchCustomers(
       scope,
       baseCustomerIds,
     )) > 0;
-  const totalPages = Math.max(1, Math.ceil(total / CUSTOMER_LIST_PAGE_SIZE));
-  const page = total > 0 ? Math.min(filters.page, totalPages) : 1;
+  const { page } = resolveListPage({
+    perPage: CUSTOMER_LIST_PAGE_SIZE,
+    requestedPage: filters.page,
+    total,
+  });
   const rows = await customerReadService.listSummaries(
     db,
     { ...filters, page },
