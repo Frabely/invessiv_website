@@ -13,7 +13,7 @@ vi.mock("server-only", () => ({}));
 
 const mocks = vi.hoisted(() => ({
   listProjectLineItemsByCustomer: vi.fn(),
-  listLineItemTemplates: vi.fn(),
+  listAssignableLineItemTemplates: vi.fn(),
 }));
 
 vi.mock(
@@ -23,8 +23,10 @@ vi.mock(
   }),
 );
 vi.mock(
-  "@/server/workspace/crm/query-handler/list-line-item-templates.query-handler",
-  () => ({ listLineItemTemplates: mocks.listLineItemTemplates }),
+  "@/server/workspace/crm/query-handler/list-assignable-line-item-templates.query-handler",
+  () => ({
+    listAssignableLineItemTemplates: mocks.listAssignableLineItemTemplates,
+  }),
 );
 
 const CUSTOMER_ID = "11111111-1111-4111-8111-111111111111";
@@ -65,10 +67,7 @@ function actor(permissions: Permission[]): WorkspaceActor {
 describe("buildProjectLineItemsViewModel", () => {
   beforeEach(() => {
     mocks.listProjectLineItemsByCustomer.mockReset().mockResolvedValue([]);
-    mocks.listLineItemTemplates.mockReset().mockResolvedValue({
-      hasLineItemTemplates: true,
-      rows: [],
-    });
+    mocks.listAssignableLineItemTemplates.mockReset().mockResolvedValue([]);
   });
 
   it("does not disclose catalog templates to a project-line-item writer without catalog read access", async () => {
@@ -82,7 +81,7 @@ describe("buildProjectLineItemsViewModel", () => {
       projects: [{ id: project.id, title: project.title, project }],
     });
 
-    expect(mocks.listLineItemTemplates).not.toHaveBeenCalled();
+    expect(mocks.listAssignableLineItemTemplates).not.toHaveBeenCalled();
     expect(result).toMatchObject({ assignableTemplates: [] });
   });
 
@@ -98,8 +97,6 @@ describe("buildProjectLineItemsViewModel", () => {
       projects: [{ id: project.id, title: project.title, project }],
     });
 
-    expect(mocks.listLineItemTemplates).toHaveBeenCalledWith({
-      includeArchived: false,
-    });
+    expect(mocks.listAssignableLineItemTemplates).toHaveBeenCalledWith();
   });
 });

@@ -4,6 +4,7 @@ import { DataTableLayout, type ListPaginationProps } from "@invessiv/ui";
 import type { TaskListResult } from "@/common/contracts/crm/task-list-result";
 import type { TaskAssigneeOption } from "@/common/contracts/crm/tasks-view-model";
 import { buildCustomerCockpitHref } from "@/common/patterns/crm/customer-dialog-query";
+import { WorkspaceScrollableTableArea } from "@/components/workspace/shared/workspace-scrollable-table-area/workspace-scrollable-table-area";
 import type { Locale } from "@/config/i18n";
 import { useTaskStatusChange } from "@/hooks/workspace/use-task-status-change";
 import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
@@ -63,33 +64,38 @@ export function TasksOverviewTable({
 
   return (
     <>
-      <DataTableLayout
-        ariaLabel={overview.caption}
-        caption={overview.caption}
-        columns={columns}
-        pagination={pagination}
-        responsiveMode="cards"
-      >
-        {list.rows.map((row) => (
-          <TaskOverviewRow
-            assigneeName={memberNames.get(row.task.assigneeMemberId) ?? null}
-            canWrite={writableIds.has(row.task.projectId)}
-            content={content}
-            customerHref={
-              crmPath ? buildCustomerCockpitHref(crmPath, row.customerId) : null
-            }
-            key={row.task.id}
-            locale={locale}
-            onStatusChangeAction={(target, status) =>
-              statusChange.changeStatus(target.task, status)
-            }
-            pending={statusChange.isPending(row.task.id)}
-            row={row}
-            status={statusChange.statusOf(row.task)}
-            today={today}
-          />
-        ))}
-      </DataTableLayout>
+      <WorkspaceScrollableTableArea>
+        <DataTableLayout
+          ariaLabel={overview.caption}
+          caption={overview.caption}
+          columns={columns}
+          fillAvailableHeight
+          pagination={pagination}
+          responsiveMode="cards"
+        >
+          {list.rows.map((row) => (
+            <TaskOverviewRow
+              assigneeName={memberNames.get(row.task.assigneeMemberId) ?? null}
+              canWrite={writableIds.has(row.task.projectId)}
+              content={content}
+              customerHref={
+                crmPath
+                  ? buildCustomerCockpitHref(crmPath, row.customerId)
+                  : null
+              }
+              key={row.task.id}
+              locale={locale}
+              onStatusChangeAction={(target, status) =>
+                statusChange.changeStatus(target.task, status)
+              }
+              pending={statusChange.isPending(row.task.id)}
+              row={row}
+              status={statusChange.statusOf(row.task)}
+              today={today}
+            />
+          ))}
+        </DataTableLayout>
+      </WorkspaceScrollableTableArea>
       <p aria-live="polite" className="sr-only" role="status">
         {statusChange.announcement}
       </p>

@@ -19,6 +19,7 @@ import { CustomerListQueryParam } from "@/common/constants/crm/list/customer-lis
 import { SortableHeader } from "@/components/workspace/shared/table/sortable-header/sortable-header";
 import type { Locale } from "@/config/i18n";
 import type { CrmListDictionary } from "@/i18n/dictionaries/workspace/crm";
+import { WorkspaceScrollableTableArea } from "@/components/workspace/shared/workspace-scrollable-table-area/workspace-scrollable-table-area";
 import { CustomerTableRow } from "../customer-table-row/customer-table-row";
 import styles from "./customers-basic-list.module.css";
 
@@ -203,24 +204,27 @@ export function CustomersBasicList({
   ];
 
   return (
-    <DataTableLayout
-      ariaLabel={content.caption}
-      caption={content.caption}
-      columns={columns}
-      pagination={pagination}
-      tableClassName={styles.table}
-    >
-      {customers.map((customer) => (
-        <CustomerTableRow
-          basePath={basePath}
-          canWrite={writableCustomerIds.has(customer.id)}
-          content={content}
-          customer={customer}
-          key={customer.id}
-          locale={locale}
-          queryString={queryString}
-        />
-      ))}
-    </DataTableLayout>
+    <WorkspaceScrollableTableArea>
+      <DataTableLayout
+        ariaLabel={content.caption}
+        caption={content.caption}
+        columns={columns}
+        fillAvailableHeight
+        pagination={pagination}
+        tableClassName={styles.table}
+      >
+        {customers.map((customer) => (
+          <CustomerTableRow
+            basePath={basePath}
+            canWrite={writableCustomerIds.has(customer.id)}
+            content={content}
+            customer={customer}
+            key={customer.id}
+            locale={locale}
+            queryString={queryString}
+          />
+        ))}
+      </DataTableLayout>
+    </WorkspaceScrollableTableArea>
   );
 }

@@ -6,29 +6,24 @@ import { TaskListQueryParam } from "@/common/constants/crm/list/task-list-query-
 import { TASK_LIST_STATUS_FILTER_VALUES } from "@/common/constants/crm/list/task-list-status-filters";
 import type { TaskListFilters } from "@/common/contracts/crm/task-list-filters";
 import { DEFAULT_TASK_LIST_FILTERS } from "@/common/defaults/crm/task-list-default-filters";
-
-type SearchParamsInput = Record<string, string | string[] | undefined>;
+import {
+  type ListSearchParamsInput,
+  readListPage,
+  readListSearchParam,
+} from "@/common/patterns/crm/list-search-params-primitives";
 
 const SEARCH_MAX_LENGTH = 100;
-
-function readSingle(value: string | string[] | undefined): string | undefined {
-  return typeof value === "string" ? value : undefined;
-}
 
 function readId(value: string | undefined): string | null {
   return value !== undefined && isUuid(value) ? value : null;
 }
 
-function readPage(value: string | undefined): number {
-  const parsed = Number(value);
-  return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : 1;
-}
-
 /** Anything the URL carries that is not a known value falls back to the neutral default. */
 export function parseTaskListFilters(
-  searchParams: SearchParamsInput,
+  searchParams: ListSearchParamsInput,
 ): TaskListFilters {
-  const read = (param: TaskListQueryParam) => readSingle(searchParams[param]);
+  const read = (param: TaskListQueryParam) =>
+    readListSearchParam(searchParams[param]);
   const status = read(TaskListQueryParam.Status);
   const side = read(TaskListQueryParam.Side);
   const period = read(TaskListQueryParam.Period);
@@ -41,7 +36,7 @@ export function parseTaskListFilters(
     assignee: assignee === TASK_LIST_ASSIGNEE_ME ? assignee : readId(assignee),
     customerId: readId(read(TaskListQueryParam.Customer)),
     includeClosedProjects: read(TaskListQueryParam.ClosedProjects) === "true",
-    page: readPage(read(TaskListQueryParam.Page)),
+    page: readListPage(read(TaskListQueryParam.Page)),
     period:
       TASK_LIST_PERIOD_VALUES.find((value) => value === period) ??
       DEFAULT_TASK_LIST_FILTERS.period,

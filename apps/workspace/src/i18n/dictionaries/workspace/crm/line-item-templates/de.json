@@ -42,6 +42,15 @@
       "description": "Alle Templates sind archiviert. Archivierte einblenden, um sie zu sehen.",
       "action": "Archivierte einblenden"
     },
+    "pagination": {
+      "ariaLabel": "Seitennavigation des Leistungskatalogs",
+      "showing": "{from}–{to} von {total} Templates",
+      "page": "Seite {page}",
+      "first": "Erste",
+      "previous": "Zurück",
+      "next": "Weiter",
+      "last": "Letzte"
+    },
     "edit": "Bearbeiten",
     "archive": "Archivieren",
     "activate": "Reaktivieren"

@@ -24,9 +24,9 @@ type LineItemTemplateRowProps = {
   basePath: string;
   canWrite: boolean;
   content: CrmLineItemTemplatesDictionary;
-  includeArchived: boolean;
   locale: Locale;
   lineItemTemplate: LineItemTemplateDto;
+  queryString: string;
 };
 
 const getCurrencyFormatter = createNumberFormatterCache({
@@ -59,9 +59,9 @@ export function LineItemTemplateRow({
   basePath,
   canWrite,
   content,
-  includeArchived,
   locale,
   lineItemTemplate,
+  queryString,
 }: LineItemTemplateRowProps) {
   return (
     <DataTableRow mobileCard>
@@ -97,7 +97,7 @@ export function LineItemTemplateRow({
             href={buildLineItemTemplateEditHref(
               basePath,
               lineItemTemplate.id,
-              includeArchived,
+              queryString,
             )}
             scroll={false}
             title={content.list.edit}

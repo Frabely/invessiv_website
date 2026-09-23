@@ -70,6 +70,15 @@ describe("DataTable", () => {
       screen.getByRole("cell", { name: "Nordlicht Coaching" }),
     ).toHaveAttribute("data-mobile-card-slot", "primary");
   });
+
+  it("marks frames that fill a surrounding scrollable table area", () => {
+    const { container } = render(<DataTableFrame fillAvailableHeight />);
+
+    expect(container.firstChild).toHaveAttribute(
+      "data-fill-available-height",
+      "true",
+    );
+  });
 });
 
 describe("DataTableLayout", () => {

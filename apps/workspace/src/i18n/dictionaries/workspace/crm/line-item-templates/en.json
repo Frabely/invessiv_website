@@ -42,6 +42,15 @@
       "description": "Every template is archived. Show archived to see them.",
       "action": "Show archived"
     },
+    "pagination": {
+      "ariaLabel": "Service catalog page navigation",
+      "showing": "{from}–{to} of {total} templates",
+      "page": "Page {page}",
+      "first": "First",
+      "previous": "Previous",
+      "next": "Next",
+      "last": "Last"
+    },
     "edit": "Edit",
     "archive": "Archive",
     "activate": "Reactivate"

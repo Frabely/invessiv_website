@@ -2,22 +2,26 @@ import Link from "next/link";
 import { faLayerGroup, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import type { LineItemTemplateDto } from "@invessiv/common/contracts/crm/line-item-template.dto";
-import { DataTableLayout, EmptyState, PrimaryCtaLink } from "@invessiv/ui";
+import type { ListLineItemTemplatesResult } from "@invessiv/common/contracts/crm/results/list-line-item-templates-result";
+import {
+  DataTableLayout,
+  EmptyState,
+  type ListPaginationProps,
+  PrimaryCtaLink,
+} from "@invessiv/ui";
 import type { Locale } from "@/config/i18n";
 import type { CrmLineItemTemplatesDictionary } from "@/i18n/dictionaries/workspace/crm";
+import { WorkspaceScrollableTableArea } from "@/components/workspace/shared/workspace-scrollable-table-area/workspace-scrollable-table-area";
 import { LineItemTemplateRow } from "../line-item-template-row/line-item-template-row";
-import styles from "./line-item-templates-list.module.css";
 
 type LineItemTemplatesListProps = {
   basePath: string;
   canWrite: boolean;
   content: CrmLineItemTemplatesDictionary;
   createHref: string | null;
-  hasLineItemTemplates: boolean;
-  includeArchived: boolean;
+  list: ListLineItemTemplatesResult;
   locale: Locale;
-  lineItemTemplates: LineItemTemplateDto[];
+  queryString: string;
   toggleArchivedHref: string;
 };
 
@@ -26,14 +30,14 @@ export function LineItemTemplatesList({
   canWrite,
   content,
   createHref,
-  hasLineItemTemplates,
-  includeArchived,
+  list,
   locale,
-  lineItemTemplates,
+  queryString,
   toggleArchivedHref,
 }: LineItemTemplatesListProps) {
+  const lineItemTemplates = list.rows;
   if (lineItemTemplates.length === 0) {
-    if (hasLineItemTemplates) {
+    if (list.hasLineItemTemplates) {
       return (
         <EmptyState
           action={
@@ -74,6 +78,14 @@ export function LineItemTemplatesList({
     );
   }
 
+  const pagination: ListPaginationProps = {
+    basePath,
+    content: content.list.pagination,
+    currentPage: list.page,
+    perPage: list.perPage,
+    queryString,
+    total: list.total,
+  };
   const columns = [
     { header: content.list.columns.title, id: "title" },
     { header: content.list.columns.price, id: "price", width: 160 },
@@ -89,25 +101,26 @@ export function LineItemTemplatesList({
   ];
 
   return (
-    <section className={styles.shell}>
+    <WorkspaceScrollableTableArea>
       <DataTableLayout
         ariaLabel={content.list.caption}
         caption={content.list.caption}
         columns={columns}
-        frameClassName={styles.tableFrame}
+        fillAvailableHeight
+        pagination={pagination}
       >
         {lineItemTemplates.map((lineItemTemplate) => (
           <LineItemTemplateRow
             basePath={basePath}
             canWrite={canWrite}
             content={content}
-            includeArchived={includeArchived}
             key={lineItemTemplate.id}
             locale={locale}
             lineItemTemplate={lineItemTemplate}
+            queryString={queryString}
           />
         ))}
       </DataTableLayout>
-    </section>
+    </WorkspaceScrollableTableArea>
   );
 }

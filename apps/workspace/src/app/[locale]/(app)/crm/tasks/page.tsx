@@ -13,7 +13,7 @@ import { TasksOverviewEmptyState } from "@/components/workspace/crm/tasks/overvi
 import { TasksOverviewHeader } from "@/components/workspace/crm/tasks/overview/tasks-overview-header/tasks-overview-header";
 import { TasksOverviewTable } from "@/components/workspace/crm/tasks/overview/tasks-overview-table/tasks-overview-table";
 import { TasksOverviewToolbar } from "@/components/workspace/crm/tasks/overview/tasks-overview-toolbar/tasks-overview-toolbar";
-import { WorkspacePageShell } from "@/components/workspace/workspace-page-shell/workspace-page-shell";
+import { WorkspaceScrollablePageShell } from "@/components/workspace/shared/workspace-scrollable-page-shell/workspace-scrollable-page-shell";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { getCrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { requireWorkspaceActor } from "@/lib/auth/permissions";
@@ -109,7 +109,7 @@ export default async function TasksPage({
           : TasksEmptyStateVariant.NoResults;
 
   return (
-    <WorkspacePageShell pageId="crm-tasks">
+    <WorkspaceScrollablePageShell pageId="crm-tasks">
       <TasksOverviewHeader content={content} />
       <TasksOverviewToolbar
         basePath={basePath}
@@ -140,6 +140,6 @@ export default async function TasksPage({
           writableProjectIds={writableProjectIds}
         />
       )}
-    </WorkspacePageShell>
+    </WorkspaceScrollablePageShell>
   );
 }

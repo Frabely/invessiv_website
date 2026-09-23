@@ -6,7 +6,7 @@ import type { CreateLineItemTemplateRequestDto } from "@invessiv/common/contract
 import type { CreateLineItemTemplateResult } from "@invessiv/common/contracts/crm/results/create-line-item-template-result";
 import { CrmOperation } from "@/common/constants/crm/crm-operations";
 import { CrmEndpointAccessRule } from "@/common/constants/auth/crm-endpoint-access-rules";
-import { LineItemTemplateListQueryParam } from "@/common/constants/crm/list/line-item-template-list-query-params";
+import { parseLineItemTemplateListFilters } from "@/common/patterns/crm/line-item-template-list-search-params";
 import { withCrmPermission } from "@/lib/auth/api";
 import { readJsonBody } from "@/lib/http/read-json-body";
 import { logCrmFailure } from "@/lib/workspace/crm/log-crm-failure";
@@ -21,10 +21,10 @@ export const GET = withCrmPermission(
   async (request) => {
     try {
       const searchParams = new URL(request.url).searchParams;
-      const includeArchived =
-        searchParams.get(LineItemTemplateListQueryParam.IncludeArchived) ===
-        "true";
-      const result = await listLineItemTemplates({ includeArchived });
+      const filters = parseLineItemTemplateListFilters(
+        Object.fromEntries(searchParams.entries()),
+      );
+      const result = await listLineItemTemplates(filters);
       return Response.json(result, { status: HttpResponseCode.Ok });
     } catch (error: unknown) {
       logCrmFailure(CrmOperation.ListLineItemTemplates, error);

@@ -13,11 +13,13 @@ function getClassName(baseClassName: string, className?: string) {
 }
 
 export type DataTableFrameProps = HTMLAttributes<HTMLDivElement> & {
+  fillAvailableHeight?: boolean;
   responsiveMode?: "cards" | "scroll";
 };
 
 export function DataTableFrame({
   className,
+  fillAvailableHeight = false,
   responsiveMode = "cards",
   ...props
 }: DataTableFrameProps) {
@@ -25,6 +27,7 @@ export function DataTableFrame({
     <div
       {...props}
       className={getClassName(styles.frame, className)}
+      data-fill-available-height={fillAvailableHeight || undefined}
       data-responsive-mode={responsiveMode}
     />
   );
@@ -57,6 +60,8 @@ export type DataTableLayoutProps = {
   /** Pagination metadata. The layout renders the controls inside the table frame. */
   pagination?: ListPaginationProps;
   frameClassName?: string;
+  /** Fills the height provided by a surrounding scrollable table area. */
+  fillAvailableHeight?: boolean;
   overlay?: ReactNode;
   responsiveMode?: "cards" | "scroll";
   scrollClassName?: string;
@@ -73,13 +78,18 @@ export function DataTableLayout({
   columns,
   pagination,
   frameClassName,
+  fillAvailableHeight,
   overlay,
   responsiveMode,
   scrollClassName,
   tableClassName,
 }: DataTableLayoutProps) {
   return (
-    <DataTableFrame className={frameClassName} responsiveMode={responsiveMode}>
+    <DataTableFrame
+      className={frameClassName}
+      fillAvailableHeight={fillAvailableHeight}
+      responsiveMode={responsiveMode}
+    >
       {overlay}
       <DataTableScroll className={scrollClassName}>
         <DataTable aria-label={ariaLabel} className={tableClassName}>

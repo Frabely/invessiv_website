@@ -22,7 +22,7 @@ import { CustomerFormDialog } from "@/components/workspace/crm/form/customer-for
 import { CustomerCockpitDialog } from "@/components/workspace/crm/detail/customer-cockpit-dialog/customer-cockpit-dialog";
 import { CustomersBasicList } from "@/components/workspace/crm/list/customers-basic-list/customers-basic-list";
 import { CustomersPageHeader } from "@/components/workspace/crm/shell/customers-page-header/customers-page-header";
-import { WorkspacePageShell } from "@/components/workspace/workspace-page-shell/workspace-page-shell";
+import { WorkspaceScrollablePageShell } from "@/components/workspace/shared/workspace-scrollable-page-shell/workspace-scrollable-page-shell";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import {
   getCrmAccessDictionary,
@@ -223,7 +223,7 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
   const categories = showDialog ? await listActiveCustomerCategories() : [];
 
   return (
-    <WorkspacePageShell pageId="crm">
+    <WorkspaceScrollablePageShell pageId="crm">
       <CustomersPageHeader
         archivedToggleHref={archivedToggleHref}
         content={getCrmShellDictionary(activeLocale)}
@@ -322,6 +322,6 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
           }
         />
       ) : null}
-    </WorkspacePageShell>
+    </WorkspaceScrollablePageShell>
   );
 }

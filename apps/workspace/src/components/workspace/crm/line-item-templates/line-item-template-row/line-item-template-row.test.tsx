@@ -20,7 +20,6 @@ describe("LineItemTemplateRow", () => {
             basePath="/en/crm/line-item-templates"
             canWrite={false}
             content={content}
-            includeArchived={false}
             locale="en"
             lineItemTemplate={{
               id: "9c8f1a10-1b1a-4a10-8e10-000000000001",
@@ -34,6 +33,7 @@ describe("LineItemTemplateRow", () => {
               createdAt: "2026-01-01T00:00:00.000Z",
               updatedAt: "2026-01-01T00:00:00.000Z",
             }}
+            queryString=""
           />
         </tbody>
       </table>,

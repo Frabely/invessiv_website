@@ -19,6 +19,7 @@ import { LeadsBulkActionBar } from "../bulk/leads-bulk-action-bar/leads-bulk-act
 import { ListEmptyState } from "@/components/workspace/shared/table/list-empty-state/list-empty-state";
 import { ListSelectAllCheckbox } from "@/components/workspace/shared/table/list-select-all-checkbox/list-select-all-checkbox";
 import { ListSelectionProvider } from "@/components/workspace/shared/table/list-selection-provider/list-selection-provider";
+import { WorkspaceScrollableTableArea } from "@/components/workspace/shared/workspace-scrollable-table-area/workspace-scrollable-table-area";
 import { LeadsTableRow } from "../leads-table-row/leads-table-row";
 import { SortableHeader } from "@/components/workspace/shared/table/sortable-header/sortable-header";
 import { LeadsTableSpinner } from "./leads-table-spinner/leads-table-spinner";
@@ -188,7 +189,7 @@ export function LeadsTable({
   ];
 
   return (
-    <section className={styles.shell} aria-label={tableContent.columns.lead}>
+    <WorkspaceScrollableTableArea aria-label={tableContent.columns.lead}>
       <ListSelectionProvider
         rowIds={rowIds}
         selectionResetKey={selectionResetKey}
@@ -197,7 +198,7 @@ export function LeadsTable({
           ariaLabel={tableContent.columns.lead}
           caption={tableContent.columns.lead}
           columns={columns}
-          frameClassName={styles.tableFrame}
+          fillAvailableHeight
           pagination={pagination}
           overlay={<LeadsTableSpinner ariaLabel={tableContent.loadingLabel} />}
           scrollClassName={styles.tableScroll}
@@ -244,6 +245,6 @@ export function LeadsTable({
           sharedContent={sharedContent}
         />
       </ListSelectionProvider>
-    </section>
+    </WorkspaceScrollableTableArea>
   );
 }
