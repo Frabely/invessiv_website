@@ -6,9 +6,11 @@ import type { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
  * deliberately not a field here.
  */
 export interface TaskDto {
+  /** Identifier used for status changes and content edits. */
   id: string;
   /** The one project this task belongs to. There is no customer-level or free-floating task. */
   projectId: string;
+  /** Short task name shown in project and overview lists. */
   title: string;
   /** Longer explanation; empty string, never null, when nothing was filled in. */
   description: string;
@@ -28,6 +30,8 @@ export interface TaskDto {
   completedByMemberId: string | null;
   /** Optimistic-concurrency counter; every update request must echo the value it read. */
   version: number;
+  /** Creation timestamp supplied by the database for chronological list ordering. */
   createdAt: string;
+  /** Last database write timestamp; changes whenever the task version advances. */
   updatedAt: string;
 }

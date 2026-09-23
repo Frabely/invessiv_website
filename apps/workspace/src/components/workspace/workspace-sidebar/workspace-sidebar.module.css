@@ -293,7 +293,8 @@
       background-color 220ms ease;
   }
 
-  .sidebar:hover {
+  .sidebar:hover,
+  .sidebar:focus-within {
     width: 240px;
     background: color-mix(in srgb, var(--color-surface-1) 84%, transparent);
   }
@@ -315,7 +316,8 @@
     margin-left: 32px;
   }
 
-  .sidebar:hover .crmChildren {
+  .sidebar:hover .crmChildren,
+  .sidebar:focus-within .crmChildren {
     display: grid;
   }
 
@@ -329,7 +331,9 @@
   }
 
   .sidebar:hover .linkLabel,
-  .sidebar:hover .linkBadge {
+  .sidebar:hover .linkBadge,
+  .sidebar:focus-within .linkLabel,
+  .sidebar:focus-within .linkBadge {
     opacity: 1;
     transform: translateX(0);
     transition-delay: 80ms;

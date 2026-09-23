@@ -86,7 +86,8 @@ CREATE TABLE IF NOT EXISTS tasks
     IS
     NOT
     NULL
-)),
+)
+    ),
     CONSTRAINT tasks_version_check CHECK
 (
     version >

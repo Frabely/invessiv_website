@@ -4,6 +4,7 @@ import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { Badge } from "@invessiv/ui";
 import { TASK_STATUS_ICONS } from "@/common/constants/crm/badges/task-status-icons";
 import { TASK_STATUS_BADGE_TONES } from "@/common/constants/crm/badges/task-status-badge-tones";
+import styles from "./task-status-badge.module.css";
 import { TaskListStatusFilter } from "@/common/constants/crm/list/task-list-status-filters";
 
 type TaskStatusBadgeProps = {
@@ -26,7 +27,7 @@ export function TaskStatusBadge({
 }: TaskStatusBadgeProps) {
   return (
     <Badge
-      className={className}
+      className={className ? `${styles.badge} ${className}` : styles.badge}
       icon={STATUS_ICONS[status]}
       kind="status"
       label={label}

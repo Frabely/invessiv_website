@@ -5,6 +5,7 @@ import { TaskActionSide } from "@invessiv/common/constants/crm/task-action-sides
 import { Badge } from "@invessiv/ui";
 import { TASK_ACTION_SIDE_BADGE_TONES } from "@/common/constants/crm/badges/task-action-side-badge-tones";
 import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
+import styles from "./task-action-side-badge.module.css";
 
 type TaskActionSideBadgeProps = {
   actionSide: TaskActionSide;
@@ -23,6 +24,7 @@ export function TaskActionSideBadge({
 }: TaskActionSideBadgeProps) {
   return (
     <Badge
+      className={styles.badge}
       icon={ACTION_SIDE_ICONS[actionSide]}
       kind={actionSide}
       label={content.actionSide[actionSide]}
