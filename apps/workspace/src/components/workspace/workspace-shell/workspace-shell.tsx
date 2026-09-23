@@ -12,6 +12,9 @@ import { NavigationProgress } from "./navigation-progress/navigation-progress";
 import styles from "./workspace-shell.module.css";
 
 type WorkspaceShellProps = {
+  canOpenCrmCustomers?: boolean;
+  canOpenCrmTasks?: boolean;
+  canReadCrmLineItemTemplates?: boolean;
   children?: ReactNode;
   content: WorkspacePageContent;
   locale: Locale;
@@ -19,6 +22,9 @@ type WorkspaceShellProps = {
 };
 
 export function WorkspaceShell({
+  canOpenCrmCustomers = false,
+  canOpenCrmTasks = false,
+  canReadCrmLineItemTemplates = false,
   children,
   content,
   locale,
@@ -49,6 +55,9 @@ export function WorkspaceShell({
         />
         {hasNavigation ? (
           <WorkspaceSidebar
+            canOpenCrmCustomers={canOpenCrmCustomers}
+            canOpenCrmTasks={canOpenCrmTasks}
+            canReadCrmLineItemTemplates={canReadCrmLineItemTemplates}
             content={content}
             isOpen={isOpen}
             locale={locale}

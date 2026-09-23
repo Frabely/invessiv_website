@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
@@ -24,13 +23,11 @@ import { CustomerCockpitDialog } from "@/components/workspace/crm/detail/custome
 import { CustomersBasicList } from "@/components/workspace/crm/list/customers-basic-list/customers-basic-list";
 import { CustomersPageHeader } from "@/components/workspace/crm/shell/customers-page-header/customers-page-header";
 import { WorkspacePageShell } from "@/components/workspace/workspace-page-shell/workspace-page-shell";
-import { ButtonLink } from "@invessiv/ui";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import {
   getCrmAccessDictionary,
   getCrmCockpitDictionary,
   getCrmFormDictionary,
-  getCrmLineItemTemplatesDictionary,
   getCrmListDictionary,
   getCrmMetaDictionary,
   getCrmProjectLineItemsDictionary,
@@ -42,7 +39,6 @@ import { getLeadsSharedDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { requireWorkspaceArea } from "@/lib/auth/permissions";
 import {
   crmLineItemTemplatesPathFor,
-  crmTasksPathFor,
   workspaceAreaPathFor,
 } from "@/lib/auth/routes";
 import { resolveCustomerCategoryOptions } from "@/lib/workspace/crm/customer-category-options";
@@ -105,7 +101,6 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
   const canReadLeads = can(actor, Permission.LeadsRead);
   const canReadLineItemTemplates = can(actor, Permission.LineItemTemplatesRead);
   const canManageAccess = can(actor, Permission.MembersManage);
-  const canOpenTasks = canAnywhere(actor, Permission.TasksRead);
   const dialogRequest = canWrite
     ? readCustomerDialogRequest(resolvedSearchParams)
     : null;
@@ -229,24 +224,6 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
 
   return (
     <WorkspacePageShell pageId="crm">
-      {canOpenTasks ? (
-        <ButtonLink
-          href={crmTasksPathFor(activeLocale)}
-          linkComponent={Link}
-          variant="ghost"
-        >
-          {getCrmTasksDictionary(activeLocale).overview.shell.title}
-        </ButtonLink>
-      ) : null}
-      {canReadLineItemTemplates ? (
-        <ButtonLink
-          href={crmLineItemTemplatesPathFor(activeLocale)}
-          linkComponent={Link}
-          variant="ghost"
-        >
-          {getCrmLineItemTemplatesDictionary(activeLocale).shell.title}
-        </ButtonLink>
-      ) : null}
       <CustomersPageHeader
         archivedToggleHref={archivedToggleHref}
         content={getCrmShellDictionary(activeLocale)}
