@@ -210,6 +210,8 @@ async function runChecks(sql: Sql) {
             `,
   );
 
+  await runPortalFoundationChecks(sql, customerId, personId, memberId, name);
+
   const secondPersonId = randomUUID();
   await sql`
         INSERT INTO people (id, display_name, preferred_locale, version)
@@ -320,6 +322,139 @@ async function runChecks(sql: Sql) {
   await runProjectLineItemChecks(sql, memberId, name);
   await runTaskChecks(sql, memberId, name);
   await runConcurrencyChecks(sql, memberId, name);
+}
+
+/**
+ * A portal membership can only exist for a customer/person pair that is a real contact
+ * assignment, not any pair that happens to both exist. An invitation may have at most one open
+ * (unredeemed, unrevoked) row per assignment; revoking one frees the slot for a new one.
+ */
+async function runPortalFoundationChecks(
+  sql: Sql,
+  customerId: string,
+  personId: string,
+  memberId: string,
+  name: (suffix: string) => string,
+) {
+  const userId = randomUUID();
+  await sql`
+        INSERT INTO users (id, clerk_user_id, primary_email, display_name, active, version)
+        VALUES (${userId}, ${name(userId)}, ${name(`${userId}@example.test`)}, ${name("Portal user")}, TRUE, 1)
+    `;
+
+  const membershipId = randomUUID();
+  await expectAccepted(
+    "portal membership for an existing contact assignment is accepted",
+    () => sql`
+            INSERT INTO portal_memberships
+            (id, customer_id, person_id, user_id, activated_at, email_notifications_enabled, version)
+            VALUES (${membershipId}, ${customerId}, ${personId}, ${userId}, NOW(), TRUE, 1)
+        `,
+  );
+
+  await expectRejected(
+    "a second portal membership for the same customer and person is rejected",
+    () => sql`
+            INSERT INTO portal_memberships
+            (id, customer_id, person_id, user_id, activated_at, email_notifications_enabled, version)
+            VALUES (${randomUUID()}, ${customerId}, ${personId}, ${userId}, NOW(), TRUE, 1)
+        `,
+  );
+
+  const strangerPersonId = randomUUID();
+  await sql`
+        INSERT INTO people (id, display_name, preferred_locale, version)
+        VALUES (${strangerPersonId}, ${name("Stranger")}, 'de', 1)
+    `;
+  await expectRejected(
+    "a portal membership without a matching contact assignment is rejected",
+    () => sql`
+            INSERT INTO portal_memberships
+            (id, customer_id, person_id, user_id, activated_at, email_notifications_enabled, version)
+            VALUES (${randomUUID()}, ${customerId}, ${strangerPersonId}, ${userId}, NOW(), TRUE, 1)
+        `,
+  );
+
+  await expectRejected(
+    "a portal membership without version is rejected",
+    () => sql`
+            INSERT INTO portal_memberships
+            (id, customer_id, person_id, user_id, activated_at, email_notifications_enabled)
+            VALUES (${randomUUID()}, ${customerId}, ${personId}, ${userId}, NOW(), TRUE)
+        `,
+  );
+
+  await expectRejected(
+    "a portal membership without the mail preference is rejected",
+    () => sql`
+            INSERT INTO portal_memberships
+                (id, customer_id, person_id, user_id, activated_at, version)
+            VALUES (${randomUUID()}, ${customerId}, ${personId}, ${userId}, NOW(), 1)
+        `,
+  );
+
+  const assignmentRows = (await sql`
+        SELECT id
+        FROM customer_contact_assignments
+        WHERE customer_id = ${customerId}
+          AND person_id = ${personId}
+    `) as { id: string }[];
+  const assignmentId = assignmentRows[0]?.id;
+
+  const invitationId = randomUUID();
+  await expectAccepted(
+    "an open invitation for a contact assignment is accepted",
+    () => sql`
+            INSERT INTO portal_invitations
+            (id, assignment_id, token_hash, email_notifications_enabled, expires_at, created_by_member_id)
+            VALUES (${invitationId}, ${assignmentId}, ${name("token-1")}, TRUE, NOW() + INTERVAL '7 days',
+                    ${memberId})
+        `,
+  );
+
+  await expectRejected(
+    "a second open invitation for the same assignment is rejected",
+    () => sql`
+            INSERT INTO portal_invitations
+            (id, assignment_id, token_hash, email_notifications_enabled, expires_at, created_by_member_id)
+            VALUES (${randomUUID()}, ${assignmentId}, ${name("token-2")}, TRUE, NOW() + INTERVAL '7 days',
+                    ${memberId})
+        `,
+  );
+
+  await sql`UPDATE portal_invitations
+              SET revoked_at = NOW()
+              WHERE id = ${invitationId}`;
+
+  await expectAccepted(
+    "inviting again after revoking the open invitation is accepted",
+    () => sql`
+            INSERT INTO portal_invitations
+            (id, assignment_id, token_hash, email_notifications_enabled, expires_at, created_by_member_id)
+            VALUES (${randomUUID()}, ${assignmentId}, ${name("token-3")}, TRUE, NOW() + INTERVAL '7 days',
+                    ${memberId})
+        `,
+  );
+
+  await expectRejected(
+    "an invitation without the mail preference is rejected",
+    () => sql`
+            INSERT INTO portal_invitations
+                (id, assignment_id, token_hash, expires_at, created_by_member_id)
+            VALUES (${randomUUID()}, ${assignmentId}, ${name("token-4")}, NOW() + INTERVAL '7 days', ${memberId})
+        `,
+  );
+
+  await expectRejected(
+    "an invitation with both redeemed_at and revoked_at set is rejected",
+    () => sql`
+            INSERT INTO portal_invitations
+            (id, assignment_id, token_hash, email_notifications_enabled, expires_at, redeemed_at, revoked_at,
+             created_by_member_id)
+            VALUES (${randomUUID()}, ${assignmentId}, ${name("token-5")}, TRUE, NOW() + INTERVAL '7 days', NOW(),
+                    NOW(), ${memberId})
+        `,
+  );
 }
 
 /**

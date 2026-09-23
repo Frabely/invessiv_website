@@ -29,6 +29,16 @@ export function workspacePathFor(locale: Locale): string {
   return createLocalePathname(SITE_ROUTES.WORKSPACE, locale);
 }
 
+/** The company-picker entry point; a specific company's portal has its own path builder. */
+export function portalEntryPathFor(locale: Locale): string {
+  return createLocalePathname(SITE_ROUTES.PORTAL, locale);
+}
+
+/** The active company is always a path segment and is verified again by the portal gate. */
+export function portalPathFor(locale: Locale, customerId: string): string {
+  return `${portalEntryPathFor(locale)}/${encodeURIComponent(customerId)}`;
+}
+
 export function dashboardPathFor(locale: Locale): string {
   return createLocalePathname(SITE_ROUTES.DASHBOARD, locale);
 }

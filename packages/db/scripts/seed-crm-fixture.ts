@@ -9,7 +9,7 @@
  * in `plans/crm/AGENTS.md`).
  */
 import { randomUUID } from "node:crypto";
-import { inArray, like } from "drizzle-orm";
+import { inArray, like, or } from "drizzle-orm";
 
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
@@ -20,6 +20,8 @@ import {
   leadCategories,
   lineItemTemplates,
   people,
+  portalMembershipRoles,
+  portalMemberships,
   projectLineItems,
   projects,
   rolePermissions,
@@ -278,6 +280,24 @@ async function resetFixtureRows(tx: ContactDatabaseTransaction) {
 
   if (fixtureCustomers.length > 0) {
     const customerIds = fixtureCustomers.map((row) => row.id);
+    const fixtureProjects = await tx
+      .select({ id: projects.id })
+      .from(projects)
+      .where(inArray(projects.customer_id, customerIds));
+    const projectIds = fixtureProjects.map((row) => row.id);
+
+    // Deleting customers/projects first would null an activity's only subject via
+    // ON DELETE SET NULL and trip activities_subject_check; their activities go first.
+    await tx
+      .delete(activities)
+      .where(
+        projectIds.length > 0
+          ? or(
+              inArray(activities.customer_id, customerIds),
+              inArray(activities.project_id, projectIds),
+            )
+          : inArray(activities.customer_id, customerIds),
+      );
     await tx
       .delete(workspaceMemberScopedRoles)
       .where(inArray(workspaceMemberScopedRoles.customer_id, customerIds));
@@ -360,6 +380,27 @@ async function createFixtureMember(
   });
 
   return { memberId, userId };
+}
+
+/** A portal contact never gets a `workspace_members` row — that is what keeps the two realms apart. */
+async function createFixturePortalUser(
+  tx: ContactDatabaseTransaction,
+  key: string,
+) {
+  const userId = randomUUID();
+
+  await tx.insert(users).values({
+    id: userId,
+    clerk_user_id: `${FIXTURE_PREFIX}portal-${key}`,
+    primary_email: `fixture-portal-${key}@example.test`,
+    first_name: "Fixture",
+    last_name: "Portalkontakt",
+    display_name: `Fixture Portal ${key}`,
+    active: true,
+    version: 1,
+  });
+
+  return userId;
 }
 
 async function run() {
@@ -451,6 +492,52 @@ async function run() {
           version: 1,
         })),
       ),
+    );
+
+    // "bernd" is already a contact of both nordlicht and kluge-bau above: one portal account,
+    // two companies, exactly the multi-company switch case Ordner 12b needs to develop against.
+    const annaPortalUserId = await createFixturePortalUser(tx, "anna");
+    const berndPortalUserId = await createFixturePortalUser(tx, "bernd");
+    const activatedAt = new Date();
+    const portalMembershipFixtures = [
+      {
+        id: randomUUID(),
+        customerKey: "nordlicht",
+        personKey: "anna",
+        userId: annaPortalUserId,
+      },
+      {
+        id: randomUUID(),
+        customerKey: "nordlicht",
+        personKey: "bernd",
+        userId: berndPortalUserId,
+      },
+      {
+        id: randomUUID(),
+        customerKey: "kluge-bau",
+        personKey: "bernd",
+        userId: berndPortalUserId,
+      },
+    ];
+    await tx.insert(portalMemberships).values(
+      portalMembershipFixtures.map((membership) => ({
+        id: membership.id,
+        customer_id: customerIds.get(membership.customerKey) as string,
+        person_id: personIds.get(membership.personKey) as string,
+        user_id: membership.userId,
+        activated_at: activatedAt,
+        email_notifications_enabled: true,
+        version: 1,
+      })),
+    );
+    await tx.insert(portalMembershipRoles).values(
+      portalMembershipFixtures.map((membership) => ({
+        portal_membership_id: membership.id,
+        role_id: SYSTEM_ROLE_DEFINITIONS[SystemRoleKey.PortalStandard].id,
+        role_realm: AuthRealm.Portal,
+        assigned_by_member_id: owner.memberId,
+        assigned_at: activatedAt,
+      })),
     );
 
     const customerManagerRoleId = randomUUID();

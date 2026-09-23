@@ -1,0 +1,55 @@
+import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
+import { PERMISSION_DEFINITIONS } from "@invessiv/common/constants/auth/permission-definitions";
+import { Permission } from "@invessiv/common/constants/auth/permissions";
+import type { PortalActorRow } from "@invessiv/common/contracts/auth/rows/portal-actor-row";
+import { isPermission } from "@invessiv/common/patterns/auth/can";
+import { PortalActorResolutionError } from "@/common/constants/auth/portal-actor-resolution-errors";
+import type { ResolvePortalActorResult } from "@/server/portal/auth/resolve-portal-actor-types";
+import { createPortalActor } from "@/server/portal/auth/portal-actor";
+
+// Unknown keys and permissions of another realm are dropped instead of trusted.
+function isPortalPermission(key: string | null): key is Permission {
+  return (
+    key !== null &&
+    isPermission(key) &&
+    PERMISSION_DEFINITIONS[key].realm === AuthRealm.Portal
+  );
+}
+
+function mapRowsToResolution(
+  rows: PortalActorRow[],
+  customerId: string,
+): ResolvePortalActorResult {
+  const [first] = rows;
+
+  if (!first) {
+    return { ok: false, code: PortalActorResolutionError.UserMissing };
+  }
+  if (!first.user_active) {
+    return { ok: false, code: PortalActorResolutionError.UserInactive };
+  }
+  if (first.membership_id === null || first.revoked_at !== null) {
+    return { ok: false, code: PortalActorResolutionError.MembershipMissing };
+  }
+
+  const permissions = new Set(
+    rows.map((row) => row.permission_key).filter(isPortalPermission),
+  );
+  if (!permissions.has(Permission.PortalAccess)) {
+    return { ok: false, code: PortalActorResolutionError.AccessDenied };
+  }
+
+  return {
+    ok: true,
+    actor: createPortalActor({
+      userId: first.user_id,
+      membershipId: first.membership_id,
+      customerId,
+      personId: first.person_id as string,
+      permissions,
+      projectPermissions: new Map(),
+    }),
+  };
+}
+
+export const portalActorMappingService = { mapRowsToResolution } as const;
