@@ -213,7 +213,7 @@ describe("ProjectTasksSection", () => {
 
     fireEvent.click(
       screen.getByRole("button", {
-        name: "Status of “Provide hosting access”",
+        name: "Status of “Provide hosting access”: Open",
       }),
     );
     fireEvent.click(screen.getByRole("option", { name: content.status.done }));
@@ -239,7 +239,7 @@ describe("ProjectTasksSection", () => {
     });
     renderSection({ tasks: [task()] });
     const trigger = screen.getByRole("button", {
-      name: "Status of “Provide hosting access”",
+      name: "Status of “Provide hosting access”: Open",
     });
 
     fireEvent.click(trigger);
