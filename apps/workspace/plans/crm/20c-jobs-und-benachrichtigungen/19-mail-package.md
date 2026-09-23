@@ -1,6 +1,6 @@
 # Task 19 — Mail-Package
 
-> **Merge-Einheit:** Ordner 10 · **Branch:** `feat/crm-jobs-und-benachrichtigungen`
+> **Merge-Einheit:** Ordner 20c · **Branch:** `feat/crm-jobs-und-benachrichtigungen`
 > **Aufwand:** S · **Abhängigkeiten:** keine
 > **Migration:** keine
 

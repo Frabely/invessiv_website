@@ -1,4 +1,4 @@
-# Ordner 09 — Aufgabenserien und Reminder
+# Ordner 20b — Aufgabenserien und Reminder
 
 > **Status:** offen · **Abhängigkeit:** Ordner 08 · **Aufwand:** 3–4 Tage · **Reviewziel:** 50–90 Dateien
 
@@ -10,7 +10,7 @@
   Terminberechnung, Edit-Scope, Idempotenz und DST-Tests.
 
 Aufgaben können täglich, wöchentlich, monatlich oder jährlich wiederkehren und optional eine
-In-App-Erinnerung besitzen. Deren Auslösung folgt dem Cron-Takt aus Ordner 10, nicht der Minute.
+In-App-Erinnerung besitzen. Deren Auslösung folgt dem Cron-Takt aus Ordner 20c, nicht der Minute.
 Bis der generische Runner dort aktiviert wird,
 erzeugt der Abschluss-Command die nächste Aufgabe synchron und idempotent; zeitbasierte Reminder
 bleiben per Feature-Flag unsichtbar.
@@ -27,7 +27,7 @@ bleiben per Feature-Flag unsichtbar.
   Serie und aktualisiert noch nicht erledigte zukünftige Exemplare.
 - Pro Serie existiert höchstens ein noch nicht fälliges, vorab erzeugtes Exemplar.
 - Eine optionale Reminderzeit wird bereits UTC-fähig gespeichert und mit Europe/Berlin inklusive
-  DST berechnet, aber erst zusammen mit dem Runner in Ordner 10 in der UI freigeschaltet.
+  DST berechnet, aber erst zusammen mit dem Runner in Ordner 20c in der UI freigeschaltet.
 - Überfälligkeitsmarker funktioniert rein aus Querydaten und benötigt noch keinen Cron.
 
 ## Merge-Gate
@@ -36,7 +36,7 @@ bleiben per Feature-Flag unsichtbar.
 - [ ] Monatsende, Schaltjahr und DST sind getestet.
 - [ ] Änderungen an einer Serie verändern niemals abgeschlossene Exemplare.
 - [ ] Nicht wiederkehrende Aufgaben aus Ordner 08 bleiben unverändert.
-- [ ] Zeitbasierte Benachrichtigungsoptionen sind noch nicht sichtbar, solange Ordner 10 fehlt.
+- [ ] Zeitbasierte Benachrichtigungsoptionen sind noch nicht sichtbar, solange Ordner 20c fehlt.
 
 ## Rollback
 

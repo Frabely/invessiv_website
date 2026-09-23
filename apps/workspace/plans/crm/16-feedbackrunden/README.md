@@ -25,7 +25,7 @@ Merge beidseitig vollständig.
   über eine Upload-Session ohne Rundenbezug und werden erst beim Absenden atomar gebunden.
 - Absenden erzeugt atomar eine unveränderliche Runde mit fortlaufender Rundennummer und verknüpften
   Dateien; Status `submitted`. Höchstens eine nicht abgeschlossene Runde je Projekt.
-- Intern: `submitted` → `in_progress` → `completed`. Jeder Übergang erzeugt Activity und Notification.
+- Intern: `submitted` → `in_progress` → `completed`. Jeder Übergang erzeugt eine Activity; Notifications werden in Ordner 20c nachgezogen.
 - Abgeschlossene Runde wird nie zurückgesetzt oder bearbeitet. Weitere Punkte gehören zur nächsten.
 - Das Kontingent liegt als `projects.included_feedback_rounds` am Projekt (Default 2, entsteht
   bereits in Task 09). Ist es erschöpft, ersetzt eine Zusatzrunden-Anfrage das Formular.
@@ -49,7 +49,7 @@ Merge beidseitig vollständig.
 - [ ] Eine Runde kann nicht auf ein Projekt eines anderen Kunden zeigen.
 - [ ] Abgeschlossene Runde und Dateiliste sind unveränderlich.
 - [ ] Cross-Customer-Tests decken Runde, Datei und Anfrage ab.
-- [ ] Ausfall der Notification ändert den erfolgreichen Fachwrite nicht; Outbox retried.
+- [ ] Der erfolgreiche Fachwrite ist unabhängig von der späteren Notification; deren Outbox-Retry folgt in Ordner 20c.
 
 ## Rollback
 

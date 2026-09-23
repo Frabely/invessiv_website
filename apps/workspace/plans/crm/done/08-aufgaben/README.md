@@ -50,11 +50,11 @@ entschieden. 11a-2 und 11b können parallel zu 11a-1 laufen, sobald ihre Abhäng
 - **Vorlagen / Onboarding-Checkliste** (alter Task 12): zurückgestellt nach
   [`../zurueckgestellt/12-onboarding-checkliste.md`](../zurueckgestellt/12-onboarding-checkliste.md); eigener Ordner
   nach Nutzung der Aufgaben.
-- **Glocke mit Benachrichtigungen** zu überfälligen/bald fälligen Aufgaben: Ordner 10 (Outbox und Benachrichtigungen).
+- **Glocke mit Benachrichtigungen** zu überfälligen/bald fälligen Aufgaben: Ordner 20c (Outbox und Benachrichtigungen).
   Bis dahin übernimmt der Dashboard-Block (Task 11a-2) diese Rolle.
 - **Portalsicht** und **vom Kunden gestellte Aufgaben**: Ordner 13. Dort entstehen die Portal-Query (filtert
   `visible_to_customer = true` im `WHERE`) und additiv die Herkunft (`created_by_side`).
-- **Serien und Reminder**: Ordner 09.
+- **Serien und Reminder**: Ordner 20b.
 - **Kommentare und Anhänge** an Aufgaben: nicht geplant; Austausch läuft über den Kundenchat (Ordner 17/18).
 - **Uhrzeit** an der Fälligkeit: nicht geplant.
 

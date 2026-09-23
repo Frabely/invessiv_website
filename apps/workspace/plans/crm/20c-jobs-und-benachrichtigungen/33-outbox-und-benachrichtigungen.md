@@ -1,6 +1,6 @@
 # Task 33 — DB-Outbox, Job-Runner und Benachrichtigungen
 
-> **Merge-Einheit:** Ordner 10 · **Branch:** `feat/crm-jobs-und-benachrichtigungen`
+> **Merge-Einheit:** Ordner 20c · **Branch:** `feat/crm-jobs-und-benachrichtigungen`
 > **Abhängigkeiten:** Tasks 02, 19, 32 · **Status:** offen
 
 ## Context

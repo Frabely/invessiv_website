@@ -1,6 +1,6 @@
-# Ordner 10 — Jobs, Outbox und Benachrichtigungen
+# Ordner 20c — Jobs, Outbox und Benachrichtigungen
 
-> **Status:** offen · **Abhängigkeiten:** 03, 09 · **Aufwand:** 4–5 Tage · **Reviewziel:** 70–100 Dateien
+> **Status:** offen · **Abhängigkeiten:** 03, 20b · **Aufwand:** 4–5 Tage · **Reviewziel:** 70–100 Dateien
 
 ## Ziel und Stand nach Merge
 
@@ -10,7 +10,9 @@
 - [`33-outbox-und-benachrichtigungen.md`](./33-outbox-und-benachrichtigungen.md) — Queue,
   Runner, Glocke, Retry und Monitoring.
 
-Zeit- und nebenläufigkeitskritische Vorgänge laufen über eine transaktionale, wiederholbare Outbox.
+Zeit- und nebenläufigkeitskritische Vorgänge laufen über eine transaktionale, wiederholbare Outbox. Die bis dahin
+fertiggestellten Dashboard-Flows bleiben ohne zeitgesteuerte Nebenwirkungen nutzbar; ihre Cleanup- und
+Benachrichtigungsereignisse werden in dieser Einheit vollständig nachgezogen.
 Die Workspace-Glocke zeigt persönliche Ereignisse. Kritische permanente Fehler werden zusätzlich
 per E-Mail gemeldet. Nach Merge werden Aufgabenreminder und Serien asynchron zuverlässig ausgeführt.
 
@@ -34,7 +36,8 @@ per E-Mail gemeldet. Nach Merge werden Aufgabenreminder und Serien asynchron zuv
   beim Ablauf des Fensters **alle** zu einer Mail zusammen. Der Idempotenzschlüssel schützt gegen
   doppelten Versand desselben Fensters, nicht gegen das Sammeln.
 - Glocke, Zähler und Liste mit Deep-Link über typisierte Routen.
-- Aufgabe: Zuweisung, frei gewählter Reminder und einmalige Überfälligkeit.
+- Aufgabe: Zuweisung, frei gewählter Reminder und einmalige Überfälligkeit sowie die nachträgliche Aktivierung der
+  definierten Ereignisse für Uploads, Onboarding, Feedback und Chat.
 - Normale Vorgänge bleiben In-App. Nur permanente kritische Job- oder Securityfehler senden eine
   interne E-Mail über das Mail-Package.
 - Mailprovider fehlt: Job bleibt sichtbar fehlgeschlagen, Fachwrite bleibt erfolgreich.
@@ -46,6 +49,8 @@ per E-Mail gemeldet. Nach Merge werden Aufgabenreminder und Serien asynchron zuv
 - [ ] Notification-Deep-Link wird vor Ausgabe erneut autorisiert.
 - [ ] Empfänger kunden- oder projektbezogener Notifications und Digests werden beim Erzeugen **und** beim Versand über
       `canOn` gefiltert (Zugriffsbereiche, Task 36–38); ein entzogener Zugriff erzeugt keine weitere Meldung.
+- [ ] Die verzögert geplanten Cleanup- und Benachrichtigungsereignisse aus Storage, Onboarding, Feedback und Chat
+      sind nachgezogen; der zugehörige Fachwrite bleibt bei einem Job- oder Providerfehler erfolgreich.
 - [ ] Glocke funktioniert mit Keyboard, Fokus und beiden Themes.
 - [ ] Ausfall von Mailprovider oder Runner macht die App nicht unbenutzbar.
 - [ ] `vercel.json`, Secret-Namen, Retry und manueller Replay sind dokumentiert.

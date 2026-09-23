@@ -42,7 +42,7 @@ folgt in Task 15.
 | Löschen                   | Storage-Objekt zuerst, DB-Zuordnung danach. Schlägt das Storage-Löschen fehl, bleibt die Zeile stehen und wird als verwaist markiert — nie stille Inkonsistenz                           |
 | Nie in einer Transaktion  | Blob-Löschungen laufen außerhalb der DB-Transaktion; sonst hängt ein Rollback von einem externen Dienst ab                                                                               |
 | Kaskadiertes Löschen      | Beim Purge von Kunde oder Projekt räumt eine **explizite, idempotente Routine** die Storage-Objekte ab (Task 34). Postgres kann keine Blobs löschen                                      |
-| Verwaiste Sessions        | Eine nie finalisierte Upload-Session darf nach 24 Stunden technisch bereinigt werden — als Outbox-Job aus Ordner 10, nicht als Handskript                                                |
+| Verwaiste Sessions        | Eine nie finalisierte Upload-Session wird bis Ordner 20c nicht automatisch bereinigt; dort ergänzt ein idempotenter Outbox-Job die Bereinigung, nicht ein Handskript                     |
 | Erfolgreiche Dateien      | Werden **nie** automatisch gelöscht, unabhängig von Alter und Kontext                                                                                                                    |
 | Versionierung             | Nicht enthalten. Gleichnamige Uploads sind eigenständige Dateien                                                                                                                         |
 

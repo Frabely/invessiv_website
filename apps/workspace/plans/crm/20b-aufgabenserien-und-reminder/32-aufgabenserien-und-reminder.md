@@ -1,6 +1,6 @@
 # Task 32 — Aufgabenserien und Reminder
 
-> **Merge-Einheit:** Ordner 09 · **Branch:** `feat/crm-aufgabenserien-und-reminder`
+> **Merge-Einheit:** Ordner 20b · **Branch:** `feat/crm-aufgabenserien-und-reminder`
 > **Abhängigkeit:** Task 11 · **Status:** offen
 
 > **Hinweis Neuplanung Ordner 08 (21.09.2026):** Aufgaben gehören nur noch zu Projekten, haben die Status
@@ -76,7 +76,7 @@ Commands:
 - Wiederholung im Aufgabendialog aktivieren/deaktivieren.
 - Bei Serienaufgabe vor Änderung Auswahl „nur diese“ oder „diese und zukünftige“.
 - Keine Option für Unteraufgaben, Parent oder Hierarchie anzeigen.
-- Reminderfelder erst aktivieren, wenn der Runner aus Ordner 10 verfügbar ist. Die gespeicherte
+- Reminderfelder erst aktivieren, wenn der Runner aus Ordner 20c verfügbar ist. Die gespeicherte
   Reminderzeit ist exakt; die Auslösung folgt dem Cron-Takt (Geschäftszeit ±15 Minuten, sonst
   nächster Lauf). Die UI verspricht keine Minutengenauigkeit.
 
@@ -93,5 +93,5 @@ Commands:
 2. Zwei parallele Abschlüsse erzeugen genau ein Folgeexemplar.
 3. „Nur diese“ verändert keine Serie; „diese und zukünftige“ verändert keine erledigten Aufgaben.
 4. Deaktivieren verhindert neue Exemplare, löscht aber keine Historie.
-5. Reminder erscheint nach Ordner 10 einmalig — in der Geschäftszeit auf ±15 Minuten genau,
+5. Reminder erscheint nach Ordner 20c einmalig — in der Geschäftszeit auf ±15 Minuten genau,
    außerhalb beim nächsten Lauf. Ein Reminder für 03:00 erscheint am Morgen; das ist gewollt.

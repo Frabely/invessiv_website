@@ -48,7 +48,7 @@ Runde, statt einen zweiten Pfad zu bauen.
 - [ ] Der Kunde sieht seine eigenen Uploads, aber keine internen Dateien ohne Freigabe.
 - [ ] Medienlink akzeptiert nur `https`; der Server führt keinen Abruf der URL aus (SSRF).
 - [ ] `next/image` rendert Vorschauen; HEIC fällt sichtbar auf eine Dateikachel zurück.
-- [ ] Betriebsnotiz zum Blob-Speicherverbrauch steht im Runbook aus Ordner 10.
+- [ ] Betriebsnotiz zum Blob-Speicherverbrauch ist für das Runbook in Ordner 20c vorbereitet.
 
 ## Rollback
 

@@ -1,6 +1,6 @@
-# Ordner 11 — Renewals
+# Ordner 20d — Renewals
 
-> **Status:** offen · **Abhängigkeiten:** 05, 10 · **Aufwand:** 2–3 Tage · **Reviewziel:** 40–70 Dateien
+> **Status:** offen · **Abhängigkeiten:** 05, 20c · **Aufwand:** 2–3 Tage · **Reviewziel:** 40–70 Dateien
 
 ## Ziel und Stand nach Merge
 
@@ -18,7 +18,7 @@ vollständig nutzbar.
 - Additive Renewal-Migration, Drizzle-Modell und gemeinsame Contracts entstehen in diesem Ordner.
 - Pflicht: Kunde, Typ, Bezeichnung bei `other`, Ablaufdatum, Bearbeiter, Reminderstatus und `version`.
 - Bearbeiter übernimmt den bei der Kundenanlage vorhandenen technischen Kunden-Owner und kann danach geändert werden.
-- Ein späterer Kunden-Owner-Wechsel in Ordner 20a überschreibt den Renewal-Bearbeiter nicht.
+- Der bereits umgesetzte Kunden-Owner-Wechsel aus Ordner 20a überschreibt den Renewal-Bearbeiter nicht.
 - Erinnerungen bei 30, 14 und 7 Tagen sowie einmal bei Überfälligkeit; Deduplizierung pro Eintrag,
   Stufe und Datum.
 - „Verlängert“ verschiebt das Datum bewusst, setzt Reminderstufen zurück und protokolliert Alt/Neu.

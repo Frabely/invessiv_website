@@ -7,7 +7,7 @@
 ## Ziel
 
 Das Workspace-Dashboard zeigt die eigenen überfälligen und in den nächsten 7 Tagen fälligen Aufgaben. Das ist bis zur
-Glocke aus Ordner 10 der tägliche Einstieg.
+Glocke aus Ordner 20c der tägliche Einstieg.
 
 ## Entscheidungen
 

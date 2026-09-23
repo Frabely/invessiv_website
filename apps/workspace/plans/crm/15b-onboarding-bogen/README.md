@@ -41,7 +41,7 @@ Aufgaben ab — folgt in Ordner 15c, damit diese Einheit auf Formular und Daten 
 - [ ] Je Projekt und Vorlage existiert höchstens ein Entwurf (partieller Unique-Index, Test).
 - [ ] Feldantwort speichert ohne vollständiges Neuladen; ein Verbindungsabbruch verliert höchstens
       die zuletzt getippte Änderung.
-- [ ] Absenden ist atomar: Status, Zeitstempel, Activity und Outbox-Eintrag in einer Transaktion.
+- [ ] Absenden ist atomar: Status, Zeitstempel und Activity werden gemeinsam geschrieben; die Outbox-Benachrichtigung wird erst in Ordner 20c ergänzt.
 - [ ] Ein abgesendeter Bogen lässt sich über keinen Portalpfad mehr ändern (Negativtest).
 - [ ] Pflichtfeld fehlt: Absenden wird mit Feldverweis abgelehnt, nicht mit einer Sammelmeldung.
 - [ ] Cross-Customer-Negativtest mit echter Session für jeden neuen Portalendpunkt.

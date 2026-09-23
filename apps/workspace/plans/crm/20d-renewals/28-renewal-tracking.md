@@ -1,6 +1,6 @@
 # Task 28 — Renewal-Tracking
 
-> **Merge-Einheit:** Ordner 11 · **Branch:** `feat/crm-renewals`
+> **Merge-Einheit:** Ordner 20d · **Branch:** `feat/crm-renewals`
 > **Aufwand:** M · **Abhängigkeiten:** Task 05 (Slot), Task 19 (Mail)
 > **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
@@ -31,11 +31,11 @@ Kunden, zeigt sie an, wenn es relevant wird, und erinnert per Mail, bevor es zu 
 | Anzeige               | Widget im CRM-Dashboard „Läuft bald ab", zusätzlich Sektion im Kundendetail                                                                                                                                 |
 | Erledigen             | „Verlängert bis …" verschiebt das Datum und protokolliert den Vorgang — kein Löschen und Neuanlegen                                                                                                         |
 | Mail                  | Eine gesammelte Übersichtsmail je Tag, nicht eine je Eintrag                                                                                                                                                |
-| Auslösung             | Kein eigener Cron: Renewal-Prüfung ist ein Jobtyp der Outbox aus Ordner 10 und läuft im gemeinsamen Runner mit                                                                                              |
+| Auslösung             | Kein eigener Cron: Renewal-Prüfung ist ein Jobtyp der Outbox aus Ordner 20c und läuft im gemeinsamen Runner mit                                                                                             |
 | Warum ein Token       | Die Middleware lässt `/api/*` grundsätzlich durch — der Endpunkt muss sich selbst schützen                                                                                                                  |
 | Ort der `vercel.json` | **`apps/workspace/vercel.json`**, nicht im Repo-Root — Vercel Cron wird pro Projekt konfiguriert und die Datei muss im Root Directory des Workspace-Projekts liegen                                         |
 | Vor dem Bauen prüfen  | In den Vercel-Projekteinstellungen nachsehen, welches Root Directory für den Workspace gesetzt ist. Liegt die Datei falsch, läuft der Cron nie an — und das fällt erst auf, wenn eine Domain abgelaufen ist |
-| Warum kein eigener    | Ein Cron-Eintrag je Feature skaliert nicht und verteilt Retry, Lease und Monitoring auf mehrere Stellen. Der Plan hat genau **eine** Cron-Route: den Outbox-Runner aus Ordner 10                            |
+| Warum kein eigener    | Ein Cron-Eintrag je Feature skaliert nicht und verteilt Retry, Lease und Monitoring auf mehrere Stellen. Der Plan hat genau **eine** Cron-Route: den Outbox-Runner aus Ordner 20c                           |
 | Mehrfachversand       | Ein Zeitstempel je Eintrag verhindert, dass derselbe Eintrag mehrfach am Tag gemeldet wird                                                                                                                  |
 | Bereits abgelaufen    | Bleibt sichtbar und wird als überfällig geführt, verschwindet nicht                                                                                                                                         |
 | Automatik             | Keine automatische Verlängerung, keine Anbindung an Registrare. Das Tool erinnert, es handelt nicht                                                                                                         |

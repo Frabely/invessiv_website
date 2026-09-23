@@ -7,7 +7,8 @@
 - CRM-Chat zeigt unveränderliche Nachrichten, datensatzbezogene Ungelesen-Zähler je internem
   Mitglied und optionale Links auf freigegebene Dateien.
 - Mitarbeiter können senden; Änderungen/Löschungen sind nicht vorgesehen. Redaction bleibt Owner-only.
-- Versand erzeugt Activity und Outboxevent. Mailproviderfehler machen den Chatwrite nicht rückgängig.
+- Versand erzeugt eine Activity. Das Outboxevent wird erst in Ordner 20c ergänzt; bis dahin macht kein
+  Mailproviderfehler den Chatwrite rückgängig.
 - Keine Echtzeitverbindung; Laden beim Öffnen und Refresh nach Senden.
 
 ## Context

@@ -1,6 +1,6 @@
 # Ordner 14 — Storage-Adapter und sichere Upload-Pipeline
 
-> **Status:** offen · **Abhängigkeiten:** 01, 10 · **Aufwand:** 4–5 Tage · **Reviewziel:** 70–100 Dateien
+> **Status:** offen · **Abhängigkeiten:** 01 · **Aufwand:** 4–5 Tage · **Reviewziel:** 70–100 Dateien
 
 ## Ziel und Stand nach Merge
 
@@ -35,8 +35,8 @@ bleibt `master` vollständig nutzbar, ohne einen halben Datei-Flow zu zeigen.
 - 50 MB je Datei, 20 Dateien/300 MB je Upload-Session; Limits vor und während Verarbeitung erzwingen.
 - `inspection_status = unscanned` über No-op-`FileInspectionAdapter`; Interface und Statusmodell
   unterstützen späteren Scanner ohne Schemaumbau.
-- Sessionstatus verhindert doppelte Finalisierung. Nicht finalisierte Objekte werden nach 24 Stunden
-  über einen idempotenten Job bereinigt.
+- Sessionstatus verhindert doppelte Finalisierung. Nicht finalisierte Objekte bleiben bis zur Aktivierung des
+  idempotenten Cleanup-Jobs in Ordner 20c nachvollziehbar und reparierbar.
 - Storage- und Metadatenfehler hinterlassen einen reparierbaren Zustand statt verwaister DB-Zeile.
 
 ## Merge-Gate
@@ -50,5 +50,5 @@ bleibt `master` vollständig nutzbar, ohne einen halben Datei-Flow zu zeigen.
 
 ## Rollback
 
-Upload-Feature-Endpunkt deaktivieren und Cleanup-Job weiterlaufen lassen. Bereits finalisierte
+Upload-Feature-Endpunkt deaktivieren; der spätere Cleanup-Job bleibt deaktiviert. Bereits finalisierte
 Metadaten bleiben erhalten; kein Blob wird beim Deployment-Rollback gelöscht.
