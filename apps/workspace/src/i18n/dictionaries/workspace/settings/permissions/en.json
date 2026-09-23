@@ -140,6 +140,10 @@
     "workspace_credentials_manager": {
       "label": "Password access",
       "description": "May show and copy a single password."
+    },
+    "portal_standard": {
+      "label": "Portal standard",
+      "description": "Default role for newly invited portal contacts."
     }
   },
   "ownerOnly": "Owner only",

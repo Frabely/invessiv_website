@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { PERMISSION_DEFINITIONS } from "@invessiv/common/constants/auth/permission-definitions";
 import {
-  Permission,
-  PERMISSION_VALUES,
-} from "@invessiv/common/constants/auth/permissions";
+  PERMISSION_DEFINITIONS,
+  PORTAL_PERMISSION_VALUES,
+  WORKSPACE_PERMISSION_VALUES,
+} from "@invessiv/common/constants/auth/permission-definitions";
+import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { SYSTEM_ROLE_DEFINITIONS } from "@invessiv/common/constants/auth/system-role-definitions";
 import {
   SYSTEM_ROLE_KEY_VALUES,
@@ -17,6 +18,7 @@ describe("SystemRoleKey", () => {
       "workspace_owner",
       "workspace_member",
       "workspace_credentials_manager",
+      "portal_standard",
     ]);
     expect(SYSTEM_ROLE_KEY_VALUES).toEqual(Object.values(SystemRoleKey));
     expect(new Set(SYSTEM_ROLE_KEY_VALUES).size).toBe(
@@ -42,7 +44,15 @@ describe("SYSTEM_ROLE_DEFINITIONS", () => {
       [
         ...SYSTEM_ROLE_DEFINITIONS[SystemRoleKey.WorkspaceOwner].permissions,
       ].sort(),
-    ).toEqual([...PERMISSION_VALUES].sort());
+    ).toEqual([...WORKSPACE_PERMISSION_VALUES].sort());
+  });
+
+  it("gives portal standard every portal permission", () => {
+    expect(
+      [
+        ...SYSTEM_ROLE_DEFINITIONS[SystemRoleKey.PortalStandard].permissions,
+      ].sort(),
+    ).toEqual([...PORTAL_PERMISSION_VALUES].sort());
   });
 
   it("keeps the member role operational without deleting or revealing", () => {

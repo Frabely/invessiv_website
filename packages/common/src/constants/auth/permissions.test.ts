@@ -64,7 +64,19 @@ describe("Permission", () => {
   });
 
   it("derives the workspace permissions from the definitions", () => {
-    expect(WORKSPACE_PERMISSION_VALUES).toEqual(PERMISSION_VALUES);
+    expect(WORKSPACE_PERMISSION_VALUES).toEqual(
+      PERMISSION_VALUES.filter(
+        (permission) =>
+          PERMISSION_DEFINITIONS[permission].realm === AuthRealm.Workspace,
+      ),
+    );
+  });
+
+  it("keeps the portal permission out of the workspace permission list", () => {
+    expect(WORKSPACE_PERMISSION_VALUES).not.toContain(Permission.PortalAccess);
+    expect(PERMISSION_DEFINITIONS[Permission.PortalAccess].realm).toBe(
+      AuthRealm.Portal,
+    );
   });
 
   it("only lists assignable scope types when the permission is scope-assignable", () => {

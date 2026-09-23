@@ -140,6 +140,10 @@
     "workspace_credentials_manager": {
       "label": "Passwort-Freigabe",
       "description": "Darf einzelne Passwörter anzeigen und kopieren."
+    },
+    "portal_standard": {
+      "label": "Portal-Standard",
+      "description": "Vorbelegte Rolle für neu eingeladene Portalkontakte."
     }
   },
   "ownerOnly": "Nur Owner",

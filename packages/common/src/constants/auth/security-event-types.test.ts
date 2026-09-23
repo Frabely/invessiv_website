@@ -24,6 +24,11 @@ describe("SecurityEventType", () => {
       "role_updated",
       "workspace_member_access_scope_granted",
       "workspace_member_access_scope_revoked",
+      "portal_invitation_created",
+      "portal_invitation_revoked",
+      "portal_invitation_redeemed",
+      "portal_membership_revoked",
+      "portal_membership_roles_replaced",
     ]);
     expect(SECURITY_EVENT_TYPE_VALUES).toEqual(
       Object.values(SecurityEventType),
@@ -36,7 +41,12 @@ describe("SecurityEventType", () => {
 
 describe("SecuritySubjectType", () => {
   it("contains the exact values without duplicates", () => {
-    expect(SECURITY_SUBJECT_TYPE_VALUES).toEqual(["workspace_member", "role"]);
+    expect(SECURITY_SUBJECT_TYPE_VALUES).toEqual([
+      "workspace_member",
+      "role",
+      "portal_invitation",
+      "portal_membership",
+    ]);
     expect(SECURITY_SUBJECT_TYPE_VALUES).toEqual(
       Object.values(SecuritySubjectType),
     );
