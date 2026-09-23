@@ -7,6 +7,7 @@ import { DataTableLayout, EmptyState, PrimaryCtaLink } from "@invessiv/ui";
 import type { Locale } from "@/config/i18n";
 import type { CrmLineItemTemplatesDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { LineItemTemplateRow } from "../line-item-template-row/line-item-template-row";
+import styles from "./line-item-templates-list.module.css";
 
 type LineItemTemplatesListProps = {
   basePath: string;
@@ -88,22 +89,25 @@ export function LineItemTemplatesList({
   ];
 
   return (
-    <DataTableLayout
-      ariaLabel={content.list.caption}
-      caption={content.list.caption}
-      columns={columns}
-    >
-      {lineItemTemplates.map((lineItemTemplate) => (
-        <LineItemTemplateRow
-          basePath={basePath}
-          canWrite={canWrite}
-          content={content}
-          includeArchived={includeArchived}
-          key={lineItemTemplate.id}
-          locale={locale}
-          lineItemTemplate={lineItemTemplate}
-        />
-      ))}
-    </DataTableLayout>
+    <section className={styles.shell}>
+      <DataTableLayout
+        ariaLabel={content.list.caption}
+        caption={content.list.caption}
+        columns={columns}
+        frameClassName={styles.tableFrame}
+      >
+        {lineItemTemplates.map((lineItemTemplate) => (
+          <LineItemTemplateRow
+            basePath={basePath}
+            canWrite={canWrite}
+            content={content}
+            includeArchived={includeArchived}
+            key={lineItemTemplate.id}
+            locale={locale}
+            lineItemTemplate={lineItemTemplate}
+          />
+        ))}
+      </DataTableLayout>
+    </section>
   );
 }

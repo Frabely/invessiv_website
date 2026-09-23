@@ -20,6 +20,7 @@ import { crmLineItemTemplatesPathFor } from "@/lib/auth/routes";
 import { getCrmLineItemTemplatesDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { requireWorkspacePermission } from "@/lib/auth/permissions";
 import { listLineItemTemplates } from "@/server/workspace/crm/query-handler/list-line-item-templates.query-handler";
+import styles from "./page.module.css";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -93,7 +94,7 @@ export default async function LineItemTemplatesPage({
   );
 
   return (
-    <WorkspacePageShell pageId="crm-services">
+    <WorkspacePageShell className={styles.shell} pageId="crm-services">
       <LineItemTemplatesPageHeader
         archivedToggleHref={toggleArchivedHref}
         content={content}
