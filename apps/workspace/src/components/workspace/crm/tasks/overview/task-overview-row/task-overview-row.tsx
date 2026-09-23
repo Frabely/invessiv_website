@@ -51,8 +51,13 @@ export function TaskOverviewRow({
     <DataTableRow
       className={styles.row}
       data-pending={pending ? "true" : "false"}
+      mobileCard
     >
-      <DataTableCell className={styles.dueCell}>
+      <DataTableCell
+        className={`${styles.dueCell} ${styles.metaCell}`}
+        mobileCardSlot="supportingPrimary"
+      >
+        <span className={styles.mobileLabel}>{overview.columns.due}</span>
         <TaskDueLabel
           content={content}
           locale={locale}
@@ -60,10 +65,14 @@ export function TaskOverviewRow({
           today={today}
         />
       </DataTableCell>
-      <DataTableHeaderCell className={styles.taskCell} scope="row">
+      <DataTableHeaderCell
+        className={styles.taskCell}
+        mobileCardSlot="primary"
+        scope="row"
+      >
         <span className={styles.title}>{task.title}</span>
       </DataTableHeaderCell>
-      <DataTableCell>
+      <DataTableCell mobileCardSlot="secondary">
         {canWrite ? (
           <TaskStatusSelect
             content={content}
@@ -76,11 +85,25 @@ export function TaskOverviewRow({
           <TaskStatusBadge label={content.status[status]} status={status} />
         )}
       </DataTableCell>
-      <DataTableCell>
+      <DataTableCell
+        className={`${styles.sideCell} ${styles.metaCell}`}
+        mobileCardSlot="supportingSecondary"
+      >
+        <span className={styles.mobileLabel}>{overview.columns.side}</span>
         <TaskActionSideBadge actionSide={task.actionSide} content={content} />
       </DataTableCell>
-      <DataTableCell>{assigneeName ?? overview.noAssignee}</DataTableCell>
-      <DataTableCell className={styles.contextCell}>
+      <DataTableCell
+        className={`${styles.assigneeCell} ${styles.metaCell}`}
+        mobileCardSlot="supportingPrimary"
+      >
+        <span className={styles.mobileLabel}>{overview.columns.assignee}</span>
+        <span>{assigneeName ?? overview.noAssignee}</span>
+      </DataTableCell>
+      <DataTableCell
+        className={`${styles.contextCell} ${styles.customerCell} ${styles.metaCell}`}
+        mobileCardSlot="supportingPrimary"
+      >
+        <span className={styles.mobileLabel}>{overview.columns.customer}</span>
         {customerHref ? (
           <Link
             aria-label={formatMessage(overview.openCustomerNamed, {
@@ -96,10 +119,20 @@ export function TaskOverviewRow({
           <span className={styles.customer}>{row.customerDisplayName}</span>
         )}
       </DataTableCell>
-      <DataTableCell className={styles.contextCell}>
+      <DataTableCell
+        className={`${styles.contextCell} ${styles.projectCell} ${styles.metaCell}`}
+        mobileCardSlot="supportingSecondary"
+      >
+        <span className={styles.mobileLabel}>{overview.columns.project}</span>
         <span className={styles.project}>{row.projectTitle}</span>
       </DataTableCell>
-      <DataTableCell>
+      <DataTableCell
+        className={`${styles.visibilityCell} ${styles.metaCell}`}
+        mobileCardSlot="supportingSecondary"
+      >
+        <span className={styles.mobileLabel}>
+          {overview.columns.visibility}
+        </span>
         {task.visibleToCustomer ? (
           <span className={styles.visibility}>
             <FontAwesomeIcon aria-hidden="true" icon={faEye} />

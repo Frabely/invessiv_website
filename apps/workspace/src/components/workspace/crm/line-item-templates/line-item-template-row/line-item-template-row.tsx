@@ -1,12 +1,17 @@
 import Link from "next/link";
+import {
+  faEllipsisVertical,
+  faPenToSquare,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import type { LineItemTemplateDto } from "@invessiv/common/contracts/crm/line-item-template.dto";
 import {
-  ButtonLink,
   DataTableCell,
   DataTableHeaderCell,
   DataTableRow,
+  TableRowActions,
 } from "@invessiv/ui";
 import { buildLineItemTemplateEditHref } from "@/common/patterns/crm/line-item-template-dialog-query";
 import type { Locale } from "@/config/i18n";
@@ -60,37 +65,49 @@ export function LineItemTemplateRow({
 }: LineItemTemplateRowProps) {
   return (
     <DataTableRow mobileCard>
-      <DataTableHeaderCell className={styles.titleCell} scope="row">
+      <DataTableHeaderCell
+        className={styles.titleCell}
+        mobileCardSlot="primary"
+        scope="row"
+      >
         {lineItemTemplate.title}
       </DataTableHeaderCell>
-      <DataTableCell>
+      <DataTableCell mobileCardSlot="secondary">
         {formatPrice(lineItemTemplate, locale, content)}
       </DataTableCell>
-      <DataTableCell>
+      <DataTableCell mobileCardSlot="detail">
         {content.list.pricingMode[lineItemTemplate.pricingMode]}
       </DataTableCell>
-      <DataTableCell>
+      <DataTableCell mobileCardSlot="detail">
         <LineItemTemplateStatusBadge
           label={content.list.status[lineItemTemplate.status]}
           status={lineItemTemplate.status}
         />
       </DataTableCell>
-      <DataTableCell className={styles.actionsCell}>
-        {canWrite ? (
-          <ButtonLink
+      {canWrite ? (
+        <TableRowActions
+          menuIcon={
+            <FontAwesomeIcon aria-hidden="true" icon={faEllipsisVertical} />
+          }
+          menuLabel={content.list.edit}
+          mobileCardSlot="actions"
+        >
+          <Link
+            aria-label={content.list.edit}
             href={buildLineItemTemplateEditHref(
               basePath,
               lineItemTemplate.id,
               includeArchived,
             )}
-            linkComponent={Link}
-            linkComponentProps={{ scroll: false }}
-            variant="ghost"
+            scroll={false}
+            title={content.list.edit}
           >
-            {content.list.edit}
-          </ButtonLink>
-        ) : null}
-      </DataTableCell>
+            <FontAwesomeIcon aria-hidden="true" icon={faPenToSquare} />
+          </Link>
+        </TableRowActions>
+      ) : (
+        <DataTableCell mobileCardSlot="actions" />
+      )}
     </DataTableRow>
   );
 }

@@ -28,6 +28,10 @@
   min-width: 0;
 }
 
+.mobileLabel {
+  display: none;
+}
+
 .customer {
   display: block;
   color: var(--color-text);
@@ -57,4 +61,55 @@
 
 .row[data-pending="true"] {
   opacity: 0.65;
+}
+
+@media (max-width: 720px) {
+  .dueCell {
+    order: 1;
+  }
+
+  .sideCell {
+    order: 2;
+  }
+
+  .customerCell {
+    order: 3;
+  }
+
+  .projectCell {
+    order: 4;
+  }
+
+  .assigneeCell {
+    order: 5;
+  }
+
+  .visibilityCell {
+    order: 6;
+  }
+
+  .metaCell {
+    display: grid;
+    gap: 0.12rem;
+    min-width: 0;
+  }
+
+  .mobileLabel {
+    display: block;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-ui-xs);
+    font-weight: 650;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .customer,
+  .project {
+    margin-top: 0;
+    font-size: var(--font-size-body-sm);
+  }
+
+  .visibility {
+    margin-top: 0;
+  }
 }

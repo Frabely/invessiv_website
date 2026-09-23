@@ -54,44 +54,28 @@
 }
 
 @media (max-width: 720px) {
-  .row {
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    grid-template-areas:
-      "customer customer actions"
-      "number status status"
-      "owner owner updated"
-      "contact contact contact"
-      "one-time one-time one-time"
-      "monthly monthly monthly";
-  }
-
   .numberCell {
-    grid-area: number;
+    order: 1;
   }
 
-  .customerCell {
-    grid-area: customer;
-  }
-
-  .statusCell {
-    grid-area: status;
-    justify-self: end;
-  }
-
-  .ownerCell {
-    grid-area: owner;
+  .updatedCell {
+    order: 2;
   }
 
   .contactCell {
-    grid-area: contact;
+    order: 3;
+  }
+
+  .ownerCell {
+    order: 4;
   }
 
   .oneTimeCell {
-    grid-area: one-time;
+    order: 5;
   }
 
   .monthlyCell {
-    grid-area: monthly;
+    order: 6;
   }
 
   .mobileLabel {
@@ -99,15 +83,5 @@
     margin-bottom: 0.15rem;
     color: var(--color-text-muted);
     font-size: var(--font-size-ui-sm);
-  }
-
-  .updatedCell {
-    grid-area: updated;
-    justify-self: end;
-  }
-
-  .actionsCell {
-    grid-area: actions;
-    justify-self: end;
   }
 }

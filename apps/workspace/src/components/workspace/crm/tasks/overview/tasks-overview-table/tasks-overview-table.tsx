@@ -68,7 +68,7 @@ export function TasksOverviewTable({
         caption={overview.caption}
         columns={columns}
         pagination={pagination}
-        responsiveMode="scroll"
+        responsiveMode="cards"
       >
         {list.rows.map((row) => (
           <TaskOverviewRow

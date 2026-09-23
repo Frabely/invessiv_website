@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { can } from "@invessiv/common/patterns/auth/can";
-import { ButtonLink } from "@invessiv/ui";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import { TaskListPeriod } from "@/common/constants/crm/list/task-list-periods";
 import { TasksEmptyStateVariant } from "@/common/constants/crm/list/tasks-empty-state-variants";
@@ -101,7 +99,6 @@ export default async function TasksPage({
     ),
   ];
   const canNavigateToCustomers = canAnywhere(actor, Permission.CustomersRead);
-
   const emptyVariant =
     list.total > 0
       ? null
@@ -113,11 +110,6 @@ export default async function TasksPage({
 
   return (
     <WorkspacePageShell pageId="crm-tasks">
-      {canNavigateToCustomers ? (
-        <ButtonLink href={crmPath} linkComponent={Link} variant="ghost">
-          {content.overview.shell.backToCustomers}
-        </ButtonLink>
-      ) : null}
       <TasksOverviewHeader content={content} />
       <TasksOverviewToolbar
         basePath={basePath}

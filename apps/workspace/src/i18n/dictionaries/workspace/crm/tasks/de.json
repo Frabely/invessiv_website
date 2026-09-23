@@ -30,6 +30,7 @@
   "row": {
     "editNamed": "Aufgabe „{name}“ bearbeiten",
     "statusLabel": "Status von „{name}“",
+    "statusSelectLabel": "Status von „{name}“: {status}",
     "assignee": "Bearbeiter: {name}"
   },
   "status": {

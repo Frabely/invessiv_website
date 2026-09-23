@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import Link from "next/link";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { can } from "@invessiv/common/patterns/auth/can";
-import { ButtonLink } from "@invessiv/ui";
-import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import { LineItemTemplateFormDialogMode } from "@/common/constants/crm/forms/line-item-template-form-dialog-modes";
 import {
   buildLineItemTemplateCreateHref,
@@ -19,10 +16,7 @@ import { LineItemTemplatesList } from "@/components/workspace/crm/line-item-temp
 import { LineItemTemplatesPageHeader } from "@/components/workspace/crm/line-item-templates/line-item-templates-page-header/line-item-templates-page-header";
 import { WorkspacePageShell } from "@/components/workspace/workspace-page-shell/workspace-page-shell";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
-import {
-  crmLineItemTemplatesPathFor,
-  workspaceAreaPathFor,
-} from "@/lib/auth/routes";
+import { crmLineItemTemplatesPathFor } from "@/lib/auth/routes";
 import { getCrmLineItemTemplatesDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { requireWorkspacePermission } from "@/lib/auth/permissions";
 import { listLineItemTemplates } from "@/server/workspace/crm/query-handler/list-line-item-templates.query-handler";
@@ -100,13 +94,6 @@ export default async function LineItemTemplatesPage({
 
   return (
     <WorkspacePageShell pageId="crm-services">
-      <ButtonLink
-        href={workspaceAreaPathFor(activeLocale, WorkspaceArea.Crm)}
-        linkComponent={Link}
-        variant="ghost"
-      >
-        {content.shell.backToCustomers}
-      </ButtonLink>
       <LineItemTemplatesPageHeader
         archivedToggleHref={toggleArchivedHref}
         content={content}

@@ -53,27 +53,44 @@ export function CustomerTableRow({
 
   return (
     <DataTableRow className={styles.row} mobileCard>
-      <DataTableCell className={styles.numberCell}>
+      <DataTableCell
+        className={styles.numberCell}
+        mobileCardSlot="supportingPrimary"
+      >
         <span className={styles.number}>
           {formatCustomerNumber(customer.customerNumber)}
         </span>
       </DataTableCell>
-      <DataTableHeaderCell className={styles.customerCell} scope="row">
+      <DataTableHeaderCell
+        className={styles.customerCell}
+        mobileCardSlot="primary"
+        scope="row"
+      >
         <span className={styles.name}>{customer.displayName}</span>
         <span className={styles.meta}>
           {[customer.companyName, customer.city].filter(Boolean).join(", ")}
         </span>
       </DataTableHeaderCell>
-      <DataTableCell className={styles.statusCell}>
+      <DataTableCell className={styles.statusCell} mobileCardSlot="secondary">
         <CustomerStatusBadge
           label={content.status[customer.status]}
           status={customer.status}
         />
       </DataTableCell>
-      <DataTableCell className={styles.ownerCell}>
+      <DataTableCell
+        className={styles.ownerCell}
+        mobileCardSlot="supportingSecondary"
+      >
+        <span className={styles.mobileLabel}>{content.columns.owner}</span>
         {customer.ownerDisplayName ?? null}
       </DataTableCell>
-      <DataTableCell className={styles.contactCell}>
+      <DataTableCell
+        className={styles.contactCell}
+        mobileCardSlot="supportingPrimary"
+      >
+        <span className={styles.mobileLabel}>
+          {content.columns.primaryContact}
+        </span>
         {customer.primaryContactName ? (
           <span className={styles.contactName}>
             {customer.primaryContactName}
@@ -83,7 +100,10 @@ export function CustomerTableRow({
           <span className={styles.meta}>{customer.primaryContactEmail}</span>
         ) : null}
       </DataTableCell>
-      <DataTableCell className={styles.oneTimeCell}>
+      <DataTableCell
+        className={styles.oneTimeCell}
+        mobileCardSlot="supportingPrimary"
+      >
         {customer.projectLineItemValue ? (
           <>
             <span className={styles.mobileLabel}>
@@ -96,7 +116,10 @@ export function CustomerTableRow({
           </>
         ) : null}
       </DataTableCell>
-      <DataTableCell className={styles.monthlyCell}>
+      <DataTableCell
+        className={styles.monthlyCell}
+        mobileCardSlot="supportingSecondary"
+      >
         {customer.projectLineItemValue ? (
           <>
             <span className={styles.mobileLabel}>
@@ -109,7 +132,12 @@ export function CustomerTableRow({
           </>
         ) : null}
       </DataTableCell>
-      <DataTableCell className={styles.updatedCell} title={customer.updatedAt}>
+      <DataTableCell
+        className={styles.updatedCell}
+        mobileCardSlot="supportingSecondary"
+        title={customer.updatedAt}
+      >
+        <span className={styles.mobileLabel}>{content.columns.updated}</span>
         {updated}
       </DataTableCell>
       {
@@ -117,6 +145,7 @@ export function CustomerTableRow({
           actionGroupId={`customer-${customer.id}-actions`}
           className={styles.actionsCell}
           isPinned
+          mobileCardSlot="actions"
           menuIcon={
             <FontAwesomeIcon aria-hidden="true" icon={faEllipsisVertical} />
           }

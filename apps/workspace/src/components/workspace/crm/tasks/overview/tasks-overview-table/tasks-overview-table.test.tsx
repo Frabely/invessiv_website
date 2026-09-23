@@ -147,7 +147,7 @@ describe("TasksOverviewTable", () => {
     renderTable();
 
     expect(
-      screen.getByRole("button", { name: "Status of “Send logo”" }),
+      screen.getByRole("button", { name: "Status of “Send logo”: Open" }),
     ).toBeInTheDocument();
     expect(
       screen.queryByRole("button", { name: "Status of “Approve texts”" }),
@@ -164,7 +164,7 @@ describe("TasksOverviewTable", () => {
     renderTable();
 
     fireEvent.click(
-      screen.getByRole("button", { name: "Status of “Send logo”" }),
+      screen.getByRole("button", { name: "Status of “Send logo”: Open" }),
     );
     fireEvent.click(screen.getByRole("option", { name: content.status.done }));
 
@@ -189,7 +189,7 @@ describe("TasksOverviewTable", () => {
     });
     renderTable();
     const trigger = screen.getByRole("button", {
-      name: "Status of “Send logo”",
+      name: "Status of “Send logo”: Open",
     });
 
     fireEvent.click(trigger);

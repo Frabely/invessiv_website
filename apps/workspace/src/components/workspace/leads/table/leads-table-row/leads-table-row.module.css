@@ -100,24 +100,15 @@
 }
 
 @media (max-width: 720px) {
-  .row {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    grid-template-areas:
-      "check    lead     actions"
-      "stage    stage    category"
-      "score    score    score"
-      "social   social   social";
+  .stageCell {
+    order: 1;
   }
 
-  .checkboxCell {
-    grid-area: check;
-    width: 18px;
-    align-self: center;
+  .categoryCell {
+    order: 2;
   }
 
   .leadCell {
-    grid-area: lead;
     gap: 0.35rem;
   }
 
@@ -130,32 +121,6 @@
     white-space: normal;
     text-overflow: clip;
     font-size: 0.76rem;
-  }
-
-  .stageCell {
-    grid-area: stage;
-    justify-self: start;
-  }
-
-  .categoryCell {
-    grid-area: category;
-    justify-self: end;
-    min-width: 0;
-  }
-
-  .scoreCell {
-    grid-area: score;
-    padding-right: 0;
-  }
-
-  .socialCell {
-    grid-area: social;
-    justify-self: start;
-  }
-
-  .categoryCell,
-  .stageCell {
-    padding-right: 0;
   }
 
   .createdCell,

@@ -1,14 +1,8 @@
-import {
-  faCircle,
-  faCircleCheck,
-  faCirclePlay,
-  faCircleXmark,
-  faLayerGroup,
-  faListCheck,
-} from "@fortawesome/free-solid-svg-icons";
+import { faLayerGroup, faListCheck } from "@fortawesome/free-solid-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 
 import { Badge } from "@invessiv/ui";
+import { TASK_STATUS_ICONS } from "@/common/constants/crm/badges/task-status-icons";
 import { TASK_STATUS_BADGE_TONES } from "@/common/constants/crm/badges/task-status-badge-tones";
 import { TaskListStatusFilter } from "@/common/constants/crm/list/task-list-status-filters";
 
@@ -22,10 +16,7 @@ type TaskStatusBadgeProps = {
 const STATUS_ICONS: Record<TaskListStatusFilter, IconDefinition> = {
   [TaskListStatusFilter.All]: faLayerGroup,
   [TaskListStatusFilter.Active]: faListCheck,
-  [TaskListStatusFilter.Open]: faCircle,
-  [TaskListStatusFilter.InProgress]: faCirclePlay,
-  [TaskListStatusFilter.Done]: faCircleCheck,
-  [TaskListStatusFilter.Cancelled]: faCircleXmark,
+  ...TASK_STATUS_ICONS,
 };
 
 export function TaskStatusBadge({

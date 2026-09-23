@@ -145,9 +145,12 @@
     clip: rect(0 0 0 0);
   }
 
-  .frame[data-responsive-mode="cards"] .row[data-mobile-card] {
+  .frame[data-responsive-mode="cards"]
+    .row[data-mobile-card]:has([data-mobile-card-slot]) {
     display: grid;
-    gap: 0.35rem 0.45rem;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-areas: "selection primary secondary actions";
+    row-gap: 0.35rem;
     align-items: center;
     margin-bottom: 0.35rem;
     padding: 0.55rem 0.6rem;
@@ -156,14 +159,89 @@
     background: color-mix(in srgb, var(--color-surface-1) 82%, transparent);
   }
 
-  .frame[data-responsive-mode="cards"] .row[data-mobile-card]:last-child {
+  .frame[data-responsive-mode="cards"]
+    .row[data-mobile-card]:has([data-mobile-card-slot]):last-child {
     margin-bottom: 0;
   }
 
-  .frame[data-responsive-mode="cards"] .row[data-mobile-card] > td,
-  .frame[data-responsive-mode="cards"] .row[data-mobile-card] > .rowHeaderCell {
+  .frame[data-responsive-mode="cards"]
+    .row[data-mobile-card]:has([data-mobile-card-slot])
+    > td,
+  .frame[data-responsive-mode="cards"]
+    .row[data-mobile-card]:has([data-mobile-card-slot])
+    > .rowHeaderCell {
+    min-width: 0;
     padding: 0;
     border-bottom: none;
+  }
+
+  .frame[data-responsive-mode="cards"]
+    .row[data-mobile-card]:has([data-mobile-card-slot])
+    > [data-mobile-card-slot="selection"] {
+    grid-area: selection;
+    justify-self: start;
+    margin-inline-end: 0.45rem;
+  }
+
+  .frame[data-responsive-mode="cards"]
+    .row[data-mobile-card]:has([data-mobile-card-slot])
+    > [data-mobile-card-slot="selection"]:empty {
+    display: none;
+  }
+
+  .frame[data-responsive-mode="cards"]
+    .row[data-mobile-card]:has([data-mobile-card-slot])
+    > [data-mobile-card-slot="primary"] {
+    grid-area: primary;
+    min-width: 0;
+    justify-self: start;
+    text-align: start;
+  }
+
+  .frame[data-responsive-mode="cards"]
+    .row[data-mobile-card]:has([data-mobile-card-slot])
+    > [data-mobile-card-slot="secondary"] {
+    grid-area: secondary;
+    justify-self: end;
+    text-align: end;
+  }
+
+  .frame[data-responsive-mode="cards"]
+    .row[data-mobile-card]:has([data-mobile-card-slot])
+    > [data-mobile-card-slot="actions"] {
+    grid-area: actions;
+    justify-self: end;
+    margin-inline-start: 0.45rem;
+  }
+
+  .frame[data-responsive-mode="cards"]
+    .row[data-mobile-card]:has([data-mobile-card-slot])
+    > [data-mobile-card-slot="actions"]:empty {
+    display: none;
+  }
+
+  .frame[data-responsive-mode="cards"]
+    .row[data-mobile-card]:has([data-mobile-card-slot])
+    > [data-mobile-card-slot="supportingPrimary"] {
+    grid-column: 1 / span 2;
+    justify-self: start;
+    text-align: start;
+  }
+
+  .frame[data-responsive-mode="cards"]
+    .row[data-mobile-card]:has([data-mobile-card-slot])
+    > [data-mobile-card-slot="supportingSecondary"] {
+    grid-column: 3 / -1;
+    justify-self: end;
+    text-align: end;
+  }
+
+  .frame[data-responsive-mode="cards"]
+    .row[data-mobile-card]:has([data-mobile-card-slot])
+    > [data-mobile-card-slot="detail"] {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    text-align: start;
   }
 
   .frame[data-responsive-mode="scroll"] .scroll {

@@ -151,6 +151,15 @@ export type DataTableRowProps = HTMLAttributes<HTMLTableRowElement> & {
   mobileCard?: boolean;
 };
 
+type DataTableMobileCardSlot =
+  | "actions"
+  | "detail"
+  | "primary"
+  | "secondary"
+  | "selection"
+  | "supportingPrimary"
+  | "supportingSecondary";
+
 export function DataTableRow({
   className,
   mobileCard = false,
@@ -168,11 +177,13 @@ export function DataTableRow({
 export type DataTableHeaderCellProps =
   ThHTMLAttributes<HTMLTableCellElement> & {
     isPinned?: boolean;
+    mobileCardSlot?: DataTableMobileCardSlot;
   };
 
 export function DataTableHeaderCell({
   className,
   isPinned,
+  mobileCardSlot,
   scope,
   ...props
 }: DataTableHeaderCellProps) {
@@ -186,13 +197,26 @@ export function DataTableHeaderCell({
         className,
       )}
       data-pinned={isPinned ? "true" : undefined}
+      data-mobile-card-slot={mobileCardSlot}
       scope={scope}
     />
   );
 }
 
-export type DataTableCellProps = TdHTMLAttributes<HTMLTableCellElement>;
+export type DataTableCellProps = TdHTMLAttributes<HTMLTableCellElement> & {
+  mobileCardSlot?: DataTableMobileCardSlot;
+};
 
-export function DataTableCell({ className, ...props }: DataTableCellProps) {
-  return <td {...props} className={getClassName(styles.cell, className)} />;
+export function DataTableCell({
+  className,
+  mobileCardSlot,
+  ...props
+}: DataTableCellProps) {
+  return (
+    <td
+      {...props}
+      className={getClassName(styles.cell, className)}
+      data-mobile-card-slot={mobileCardSlot}
+    />
+  );
 }

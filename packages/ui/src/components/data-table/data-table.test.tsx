@@ -49,18 +49,26 @@ describe("DataTable", () => {
     ).toBeInTheDocument();
   });
 
-  it("marks a row for the shared mobile card shell", () => {
+  it("marks a row and its slots for the shared mobile card shell", () => {
     render(
       <DataTable>
         <DataTableBody>
           <DataTableRow mobileCard>
-            <DataTableCell>Nordlicht Coaching</DataTableCell>
+            <DataTableCell mobileCardSlot="selection" />
+            <DataTableCell mobileCardSlot="primary">
+              Nordlicht Coaching
+            </DataTableCell>
+            <DataTableCell mobileCardSlot="secondary">Active</DataTableCell>
+            <DataTableCell mobileCardSlot="detail">Details</DataTableCell>
           </DataTableRow>
         </DataTableBody>
       </DataTable>,
     );
 
     expect(screen.getByRole("row")).toHaveAttribute("data-mobile-card", "true");
+    expect(
+      screen.getByRole("cell", { name: "Nordlicht Coaching" }),
+    ).toHaveAttribute("data-mobile-card-slot", "primary");
   });
 });
 

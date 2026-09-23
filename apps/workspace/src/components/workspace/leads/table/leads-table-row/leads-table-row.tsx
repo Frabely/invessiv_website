@@ -2,7 +2,12 @@
 
 import { type KeyboardEvent, type MouseEvent } from "react";
 import { useRouter } from "next/navigation";
-import { CheckboxControl, DataTableRow } from "@invessiv/ui";
+import {
+  CheckboxControl,
+  DataTableCell,
+  DataTableHeaderCell,
+  DataTableRow,
+} from "@invessiv/ui";
 import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
 import type { Locale } from "@/config/i18n";
 import type { LeadActionPermissions } from "@/common/contracts/leads/lead-action-permissions";
@@ -147,7 +152,7 @@ export function LeadsTableRow({
       tabIndex={0}
       role="link"
     >
-      <td className={styles.checkboxCell}>
+      <DataTableCell className={styles.checkboxCell} mobileCardSlot="selection">
         {actions.canWrite || actions.canDelete ? (
           <CheckboxControl
             aria-label={`${tableContent.selection.row}: ${displayName}`}
@@ -156,39 +161,49 @@ export function LeadsTableRow({
             onClick={handleCheckboxClick}
           />
         ) : null}
-      </td>
+      </DataTableCell>
 
-      <td className={styles.leadCell}>
+      <DataTableHeaderCell
+        className={styles.leadCell}
+        mobileCardSlot="primary"
+        scope="row"
+      >
         <div className={styles.leadText}>
           <span className={styles.leadTitle}>{displayName}</span>
           {lead.email ? (
             <span className={styles.leadEmail}>{lead.email}</span>
           ) : null}
         </div>
-      </td>
+      </DataTableHeaderCell>
 
-      <td className={styles.categoryCell}>
+      <DataTableCell
+        className={styles.categoryCell}
+        mobileCardSlot="supportingSecondary"
+      >
         <LeadCategoryBadge
           categoryKey={lead.category?.labelKey}
           label={categoryLabel}
         />
-      </td>
+      </DataTableCell>
 
-      <td className={styles.stageCell}>
+      <DataTableCell
+        className={styles.stageCell}
+        mobileCardSlot="supportingPrimary"
+      >
         <LeadStatusBadge
           label={sharedContent.status[lead.leadStatus]}
           status={lead.leadStatus}
         />
-      </td>
+      </DataTableCell>
 
-      <td className={styles.scoreCell}>
+      <DataTableCell className={styles.scoreCell} mobileCardSlot="detail">
         <LeadScoreBar
           ariaLabel={sharedContent.score.ariaLabel}
           score={lead.score}
         />
-      </td>
+      </DataTableCell>
 
-      <td className={styles.socialCell}>
+      <DataTableCell className={styles.socialCell} mobileCardSlot="secondary">
         <LeadSocialProfiles
           emptyLabel={tableContent.placeholders.empty}
           labels={sharedContent.socialIconLabel}
@@ -196,22 +211,22 @@ export function LeadsTableRow({
           profiles={lead.socialProfiles}
           websiteUrl={lead.websiteUrl}
         />
-      </td>
+      </DataTableCell>
 
-      <td className={styles.createdCell} title={createdAbsolute}>
+      <DataTableCell className={styles.createdCell} title={createdAbsolute}>
         {createdRelative}
-      </td>
+      </DataTableCell>
 
-      <td className={styles.updatedCell} title={updatedAbsolute}>
+      <DataTableCell className={styles.updatedCell} title={updatedAbsolute}>
         {updatedRelative}
-      </td>
+      </DataTableCell>
 
-      <td className={styles.sourceCell}>
+      <DataTableCell className={styles.sourceCell}>
         <LeadSourceBadge
           label={sharedContent.source[lead.source]}
           source={lead.source}
         />
-      </td>
+      </DataTableCell>
 
       <LeadsTableRowActions
         canDelete={actions.canDelete}
@@ -224,6 +239,7 @@ export function LeadsTableRow({
         leadDisplayName={displayName}
         leadId={lead.id}
         menuLabel={tableContent.actions.label}
+        mobileCardSlot="actions"
         outreachContent={outreachContent}
       />
     </DataTableRow>

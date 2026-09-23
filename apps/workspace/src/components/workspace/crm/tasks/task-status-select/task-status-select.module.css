@@ -1,0 +1,23 @@
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+}
+
+.icon[data-status="open"] {
+  color: var(--color-cta);
+}
+
+.icon[data-status="in_progress"] {
+  color: var(--color-accent-gold);
+}
+
+.icon[data-status="done"] {
+  color: var(--color-success);
+}
+
+.icon[data-status="cancelled"] {
+  color: var(--color-text-muted);
+}
