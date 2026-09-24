@@ -49,6 +49,10 @@ import {
   PortalMembershipsConstraintName,
 } from "./crm/portal-memberships-constraint-names";
 import {
+  WORKSPACE_MEMBERS_CONSTRAINT_NAME_VALUES,
+  WorkspaceMembersConstraintName,
+} from "./crm/workspace-members-constraint-names";
+import {
   LINE_ITEM_TEMPLATES_CONSTRAINT_NAME_VALUES,
   LineItemTemplatesConstraintName,
 } from "./crm/line-item-templates-constraint-names";
@@ -141,6 +145,12 @@ const GROUPS: [string, string, Record<string, string>, readonly string[]][] = [
     "portal_invitation_roles_",
     PortalInvitationRolesConstraintName,
     PORTAL_INVITATION_ROLES_CONSTRAINT_NAME_VALUES,
+  ],
+  [
+    "workspace_members",
+    "workspace_members_",
+    WorkspaceMembersConstraintName,
+    WORKSPACE_MEMBERS_CONSTRAINT_NAME_VALUES,
   ],
 ];
 

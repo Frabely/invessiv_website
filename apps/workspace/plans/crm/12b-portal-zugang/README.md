@@ -12,7 +12,10 @@
 Kundenkontakte können sicher eingeladen werden, sich mit eigenem Clerk-Login anmelden, zwischen berechtigten Firmen
 wechseln und den Zugang sofort verlieren. Jeder Kontakt hat eigene Portalrollen. Nach Merge ist eine minimale, aber
 ehrlich nutzbare Portalseite mit Firmenname, Firmenwechsler und Abmelden aktiv; fachliche Module folgen ab Ordner 13.
-Das Flag `FeatureFlag.Portal` wird mit diesem Ordner eingeschaltet.
+Das Flag `FeatureFlag.Portal` wird mit diesem Ordner eingeschaltet. Der Flag-Mechanismus selbst
+(`isFeatureEnabled(FeatureFlag.Portal)` an jedem Gate) bleibt danach als Kill-Switch bestehen — seine Entfernung ist
+kein Teil dieses oder des folgenden Ordners, sondern ein eigener, bewusst später angesetzter Cleanup-Task, erst wenn
+das Portal (ab Ordner 13) produktiv stabil gelaufen ist.
 
 ## Einladung und Identität
 

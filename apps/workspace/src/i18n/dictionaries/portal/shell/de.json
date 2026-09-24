@@ -1,0 +1,31 @@
+{
+  "header": {
+    "brandLabel": "Invessiv Portal",
+    "brandHomeAriaLabel": "Zur Firmenauswahl",
+    "userMenuLabel": "Konto und Abmelden",
+    "localeMenuLabel": "Sprache wählen",
+    "localeSwitchLabel": "Sprache wechseln",
+    "themeSwitch": {
+      "actionLabel": {
+        "dark": "Hellen Modus aktivieren",
+        "light": "Dunklen Modus aktivieren"
+      }
+    }
+  },
+  "switcher": {
+    "menuLabel": "Firma wechseln",
+    "groupLabel": "Deine Firmen",
+    "currentBadge": "Aktuell"
+  },
+  "nav": {
+    "ariaLabel": "Portal-Navigation",
+    "items": {
+      "projects": "Projekte",
+      "files": "Dateien",
+      "assets": "Materialien",
+      "messages": "Nachrichten",
+      "onboarding": "Onboarding",
+      "services": "Leistungen"
+    }
+  }
+}

@@ -27,26 +27,27 @@ erlauben. Absicherung auf vier Ebenen, alle aus Task 49:
 
 ## Entscheidungen
 
-| Bereich          | Entscheidung                                                                                                                                              |
-| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Einladung        | Bindet genau eine `customer_contact_assignment_id` und die gewählten Portalrollen (`portal_invitation_roles`); gespeichert wird nur `token_hash`          |
-| Zustellung       | **Kein Mailversand in diesem Task.** Der Link wird genau einmal in der Antwort des Einladens ausgeliefert und im Dialog kopierbar angezeigt               |
-| Warum            | Mail-Package und Outbox entstehen erst in Ordner 20c. Ein direkter Versand ohne Outbox würde die Transaktionsregel brechen                                |
-| Nach 20c         | 20c ergänzt den Outbox-Versand der Einladungsmail in derselben Transaktion; die Kopierfunktion bleibt als Rückfall                                        |
-| Token            | Kryptografisch zufällig, SHA-256-Hash gespeichert, sieben Tage gültig, einmal nutzbar, widerrufbar, niemals in Logs, Activities oder Security-Events      |
-| Einlösung        | Kein Konto → Sign-up, vorhandenes Konto → Sign-in; anschließend derselbe Redeem-Pfad gegen die dann authentifizierte Kennung                              |
-| Zweite Firma     | Identisch zur ersten: eigene Einladung, eigenes Einlösen. Keine Direktanlage, keine Auto-Einlösung                                                        |
-| Rollen           | Je Mitgliedschaft; Vorgabe `portal_standard`; mindestens eine Rolle Pflicht. Kontakte derselben Firma dürfen verschiedene Rollen haben                    |
-| Rollenverwaltung | Portalrollen in den Einstellungen, Tab „Rollen“, Umschalter Mitarbeiter/Portal. Bestehende Rollendialoge, Permission-Auswahl gefiltert auf Realm `portal` |
-| Rechte intern    | Einladen, Widerrufen, Rollen je Kontakt: `portal.manage` (an den Kunden bindbar). Portalrollen definieren: `roles.manage`                                 |
-| Kunde            | Verwaltet in Version 1 nichts selbst                                                                                                                      |
-| Ausgeschlossen   | Interne Notizen, Audit, Zugangsdaten, Budgets, Stundensätze und Preise erreichen das Portal nie — unabhängig von Rollen                                   |
-| Widerruf         | Setzt `revoked_at`; offene Einladungen derselben Zuordnung werden mitentwertet; Historie bleibt                                                           |
-| Interne Nutzer   | Dürfen eingeladen werden; erreichen das Portal nur über eine eigene eingelöste Einladung. Eine interne Membership gewährt nie Portalzugriff und umgekehrt |
-| Portalvorschau   | Vor der **ersten** Einladung eines Kunden bestätigt ein Mitarbeiter, welche Bereiche die gewählten Rollen freischalten (siehe unten)                      |
-| Sprache          | Portalsprache aus `people.preferred_locale`; die Einlöseseite nutzt die Locale des Links                                                                  |
-| Kundenmails      | `email_notifications_enabled` wird beim Einladen gesetzt und übernommen; wirksam erst mit Ordner 20c                                                      |
-| Flag             | `FeatureFlag.Portal` wird mit dem Merge dieses Ordners eingeschaltet                                                                                      |
+| Bereich          | Entscheidung                                                                                                                                                                                    |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Einladung        | Bindet genau eine `customer_contact_assignment_id` und die gewählten Portalrollen (`portal_invitation_roles`); gespeichert wird nur `token_hash`                                                |
+| Zustellung       | **Kein Mailversand in diesem Task.** Der Link wird genau einmal in der Antwort des Einladens ausgeliefert und im Dialog kopierbar angezeigt                                                     |
+| Warum            | Mail-Package und Outbox entstehen erst in Ordner 20c. Ein direkter Versand ohne Outbox würde die Transaktionsregel brechen                                                                      |
+| Nach 20c         | 20c ergänzt den Outbox-Versand der Einladungsmail in derselben Transaktion; die Kopierfunktion bleibt als Rückfall                                                                              |
+| Token            | Kryptografisch zufällig, SHA-256-Hash gespeichert, sieben Tage gültig, einmal nutzbar, widerrufbar, niemals in Logs, Activities oder Security-Events                                            |
+| Einlösung        | Kein Konto → Sign-up, vorhandenes Konto → Sign-in; anschließend derselbe Redeem-Pfad gegen die dann authentifizierte Kennung                                                                    |
+| Zweite Firma     | Identisch zur ersten: eigene Einladung, eigenes Einlösen. Keine Direktanlage, keine Auto-Einlösung                                                                                              |
+| Rollen           | Je Mitgliedschaft; Vorgabe `portal_standard`; mindestens eine Rolle Pflicht. Kontakte derselben Firma dürfen verschiedene Rollen haben                                                          |
+| Rollenverwaltung | Portalrollen in den Einstellungen, Tab „Rollen“, Umschalter Mitarbeiter/Portal. Bestehende Rollendialoge, Permission-Auswahl gefiltert auf Realm `portal`                                       |
+| Rechte intern    | Einladen, Widerrufen, Rollen je Kontakt: `portal.manage` (an den Kunden bindbar). Portalrollen definieren: `roles.manage`                                                                       |
+| Kunde            | Verwaltet in Version 1 nichts selbst                                                                                                                                                            |
+| Ausgeschlossen   | Interne Notizen, Audit, Zugangsdaten, Budgets, Stundensätze und Preise erreichen das Portal nie — unabhängig von Rollen                                                                         |
+| Widerruf         | Setzt `revoked_at`; offene Einladungen derselben Zuordnung werden mitentwertet; Historie bleibt                                                                                                 |
+| Interne Nutzer   | Dürfen eingeladen werden; erreichen das Portal nur über eine eigene eingelöste Einladung. Eine interne Membership gewährt nie Portalzugriff und umgekehrt                                       |
+| Portalvorschau   | Vor der **ersten** Einladung eines Kunden bestätigt ein Mitarbeiter, welche Bereiche die gewählten Rollen freischalten (siehe unten)                                                            |
+| Sprache          | Portalsprache aus `people.preferred_locale`; die Einlöseseite nutzt die Locale des Links                                                                                                        |
+| Kundenmails      | `email_notifications_enabled` wird beim Einladen gesetzt und übernommen; wirksam erst mit Ordner 20c                                                                                            |
+| Flag             | `FeatureFlag.Portal` wird mit dem Merge dieses Ordners eingeschaltet                                                                                                                            |
+| Flag-Entfernung  | Kein Teil von 12b oder 13. Der Mechanismus bleibt als Kill-Switch, bis das Portal (ab Ordner 13) produktiv stabil gelaufen ist; die Entfernung ist ein eigener, später angesetzter Cleanup-Task |
 
 ## Portalvorschau
 

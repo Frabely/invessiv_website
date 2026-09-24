@@ -10,16 +10,31 @@ import {
 import { canAnywhere } from "@/common/patterns/auth/access-scope";
 import { listPermittedWorkspaceAreas } from "@/common/patterns/auth/list-permitted-workspace-areas";
 import { WorkspaceShell } from "@/components/workspace/workspace-shell/workspace-shell";
-import { isSupportedLocale } from "@/config/i18n";
+import { FeatureFlag, isFeatureEnabled } from "@/config/feature-flags";
+import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { getWorkspacePageContent } from "@/i18n/dictionaries/workspace";
 import { getWorkspaceAuthenticationForRender } from "@/lib/auth/permissions";
-import { signInPathWithRedirect, workspacePathFor } from "@/lib/auth/routes";
+import {
+  portalEntryPathFor,
+  signInPathWithRedirect,
+  workspacePathFor,
+} from "@/lib/auth/routes";
 import { WorkspaceAuthorizationUnavailableError } from "@/lib/auth/workspace-authorization-unavailable-error.class";
+import { hasPortalAccessForUserId } from "@/server/workspace/auth/query-handler/has-portal-access-for-user-id.query-handler";
 
 type WorkspaceLayoutProps = {
   children: ReactNode;
   params: Promise<unknown>;
 };
+
+/** Only offered once the flag is on; the header link stays absent, not disabled, otherwise. */
+async function resolvePortalHref(
+  locale: Locale,
+  userId: string,
+): Promise<string | null> {
+  const hasPortalAccess = await hasPortalAccessForUserId(userId);
+  return hasPortalAccess ? portalEntryPathFor(locale) : null;
+}
 
 export default async function WorkspaceLayout({
   children,
@@ -77,6 +92,10 @@ export default async function WorkspaceLayout({
 
   const content = getWorkspacePageContent(activeLocale);
 
+  const portalHref = isFeatureEnabled(FeatureFlag.Portal)
+    ? await resolvePortalHref(activeLocale, authentication.actor.userId)
+    : null;
+
   return (
     <WorkspaceShell
       content={content}
@@ -85,6 +104,7 @@ export default async function WorkspaceLayout({
       canReadCrmLineItemTemplates={canReadCrmLineItemTemplates}
       locale={activeLocale}
       permittedAreas={navigationAreas}
+      portalHref={portalHref}
     >
       {children}
     </WorkspaceShell>

@@ -19,6 +19,7 @@ type WorkspaceShellProps = {
   content: WorkspacePageContent;
   locale: Locale;
   permittedAreas: readonly WorkspaceArea[];
+  portalHref?: string | null;
 };
 
 export function WorkspaceShell({
@@ -29,6 +30,7 @@ export function WorkspaceShell({
   content,
   locale,
   permittedAreas,
+  portalHref = null,
 }: WorkspaceShellProps) {
   const { close, isOpen, toggle } = useWorkspaceSidebarDrawer();
   const [isPending, startTransition] = useTransition();
@@ -52,6 +54,7 @@ export function WorkspaceShell({
           isMobileMenuOpen={isOpen}
           locale={locale}
           onMobileMenuToggleAction={toggle}
+          portalHref={portalHref}
         />
         {hasNavigation ? (
           <WorkspaceSidebar

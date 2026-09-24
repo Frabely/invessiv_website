@@ -1,5 +1,6 @@
 import "server-only";
 
+import { eq } from "drizzle-orm";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
@@ -15,6 +16,7 @@ import {
 } from "@invessiv/db/record-configuration";
 import { UsersConstraintName } from "@invessiv/db/constraint-names/auth/users-constraint-names";
 import { WorkspaceMemberRolesConstraintName } from "@invessiv/db/constraint-names/auth/workspace-member-roles-constraint-names";
+import { WorkspaceMembersConstraintName } from "@invessiv/db/constraint-names/crm/workspace-members-constraint-names";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessSchemas } from "@/server/workspace/access/services/access-schemas";
 import { clerkDirectoryService } from "@/server/workspace/access/services/clerk-directory-service";
@@ -22,6 +24,7 @@ import { roleAssignmentService } from "@/server/workspace/access/services/role-a
 import { workspaceMemberReadService } from "@/server/workspace/access/services/workspace-member-read-service";
 import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
 import { postgresErrorService } from "@/server/workspace/shared/services/postgres-error-service";
+import { updateVersioned } from "@/server/workspace/shared/update-versioned";
 
 const USER_MASTER_DATA_CHECK_CONSTRAINTS: readonly string[] = [
   UsersConstraintName.PrimaryEmailCheck,
@@ -38,10 +41,13 @@ function mapKnownViolation(error: unknown): AddWorkspaceMemberResult | null {
     return null;
   }
 
-  // Two owners added the same account at once; the unique index decided.
+  // Two owners added the same account at once — either as a brand-new `users` row, or as the
+  // second `workspace_members` row for a reused, already-locked one; either way, the account is
+  // now a member.
   if (
     violation.code === PostgresErrorCode.UniqueViolation &&
-    violation.constraint === UsersConstraintName.ClerkUserIdUnique
+    (violation.constraint === UsersConstraintName.ClerkUserIdUnique ||
+      violation.constraint === WorkspaceMembersConstraintName.UserIdUnique)
   ) {
     return {
       ok: false,
@@ -116,21 +122,58 @@ export async function addWorkspaceMember(
         }
 
         const now = new Date();
-        const userId = crypto.randomUUID();
         const memberId = crypto.randomUUID();
 
-        await tx.insert(users).values({
-          id: userId,
-          clerk_user_id: profile.clerkUserId,
-          primary_email: primaryEmail,
-          first_name: profile.firstName,
-          last_name: profile.lastName,
-          display_name: profile.displayName,
-          active: true,
-          version: 1,
-          created_at: now,
-          updated_at: now,
-        });
+        // Locked for the rest of this transaction: a portal-only account (12b) may already hold
+        // this row, and it is reused rather than duplicated. The lock rules out a concurrent
+        // writer between this read and the update below, so `updateVersioned` cannot lose the
+        // race it exists to prevent.
+        const existingUserRows = await tx
+          .select()
+          .from(users)
+          .where(eq(users.clerk_user_id, profile.clerkUserId))
+          .for("update");
+        const existingUser = existingUserRows[0] ?? null;
+
+        let userId: string;
+        if (existingUser) {
+          userId = existingUser.id;
+          const masterDataSync = await updateVersioned({
+            tx,
+            table: users,
+            id: existingUser.id,
+            expectedVersion: existingUser.version,
+            patch: {
+              primary_email: primaryEmail,
+              first_name: profile.firstName,
+              last_name: profile.lastName,
+              display_name: profile.displayName,
+            },
+            toDto: (row) => row.id,
+          });
+          if (!masterDataSync.ok) {
+            // The `for("update")` lock above holds this row for the rest of the transaction, so
+            // neither a version conflict nor a vanished row can happen under normal operation.
+            // Failing loudly beats silently linking the member with stale master data.
+            throw new Error(
+              `Failed to sync master data for locked user row ${existingUser.id}: ${masterDataSync.code}`,
+            );
+          }
+        } else {
+          userId = crypto.randomUUID();
+          await tx.insert(users).values({
+            id: userId,
+            clerk_user_id: profile.clerkUserId,
+            primary_email: primaryEmail,
+            first_name: profile.firstName,
+            last_name: profile.lastName,
+            display_name: profile.displayName,
+            active: true,
+            version: 1,
+            created_at: now,
+            updated_at: now,
+          });
+        }
 
         await tx.insert(workspaceMembers).values({
           id: memberId,

@@ -219,6 +219,11 @@ export function AddMemberDialog({
                       <span className={styles.candidateText}>
                         <span className={styles.candidateName}>
                           {candidate.displayName}
+                          {candidate.hasPortalMembership ? (
+                            <span className={styles.portalBadge}>
+                              {text.portalBadge}
+                            </span>
+                          ) : null}
                         </span>
                         <span className={styles.candidateMeta}>
                           {candidate.primaryEmail ?? text.noEmail}

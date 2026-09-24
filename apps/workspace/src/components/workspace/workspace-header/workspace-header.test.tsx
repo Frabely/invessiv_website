@@ -127,6 +127,40 @@ describe("WorkspaceHeader", () => {
     expect(onMobileMenuToggle).toHaveBeenCalledTimes(1);
   });
 
+  it("shows a portal link when the user also has portal access", () => {
+    render(
+      <WorkspaceHeader
+        content={getWorkspacePageContent("de")}
+        hasNavigation
+        isMobileMenuOpen={false}
+        locale="de"
+        onMobileMenuToggleAction={vi.fn()}
+        portalHref="/de/portal"
+      />,
+    );
+
+    expect(screen.getByRole("link", { name: "Portal öffnen" })).toHaveAttribute(
+      "href",
+      "/de/portal",
+    );
+  });
+
+  it("omits the portal link without portal access", () => {
+    render(
+      <WorkspaceHeader
+        content={getWorkspacePageContent("de")}
+        hasNavigation
+        isMobileMenuOpen={false}
+        locale="de"
+        onMobileMenuToggleAction={vi.fn()}
+      />,
+    );
+
+    expect(
+      screen.queryByRole("link", { name: "Portal öffnen" }),
+    ).not.toBeInTheDocument();
+  });
+
   it("hides the navigation trigger when no area is available", () => {
     const { container } = render(
       <WorkspaceHeader

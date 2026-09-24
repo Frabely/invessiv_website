@@ -9,6 +9,7 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
+import { WorkspaceMembersConstraintName } from "@invessiv/db/constraint-names/crm/workspace-members-constraint-names";
 import { users } from "@invessiv/db/record-configuration/auth/users";
 
 /**
@@ -33,10 +34,10 @@ export const workspaceMembers = pgTable(
   },
   (table) => [
     check(
-      "workspace_members_version_check",
+      WorkspaceMembersConstraintName.VersionCheck,
       sql`${table.version}
         > 0`,
     ),
-    uniqueIndex("workspace_members_user_id_uidx").on(table.user_id),
+    uniqueIndex(WorkspaceMembersConstraintName.UserIdUnique).on(table.user_id),
   ],
 );

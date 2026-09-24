@@ -1,0 +1,48 @@
+.shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 32rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.description {
+  color: var(--color-text-muted);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.option {
+  display: block;
+  padding: 1rem 1.2rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
+  border-radius: 12px;
+  background: var(--color-surface-1);
+  color: var(--color-text);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.option:hover,
+.option:focus-visible {
+  border-color: var(--color-cta);
+}
+
+.option:focus-visible {
+  outline: 2px solid var(--color-cta);
+  outline-offset: 2px;
+}

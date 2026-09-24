@@ -1,4 +1,5 @@
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
+import type { PortalSection } from "@/common/constants/portal/portal-sections";
 import type { Locale } from "@/config/i18n";
 import { REDIRECT_URL_QUERY_PARAM, SITE_ROUTES } from "@/config/routes";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
@@ -34,9 +35,17 @@ export function portalEntryPathFor(locale: Locale): string {
   return createLocalePathname(SITE_ROUTES.PORTAL, locale);
 }
 
-/** The active company is always a path segment and is verified again by the portal gate. */
-export function portalPathFor(locale: Locale, customerId: string): string {
-  return `${portalEntryPathFor(locale)}/${encodeURIComponent(customerId)}`;
+/**
+ * The active company is always a path segment and is verified again by the portal gate. A
+ * section is only ever a fixed slug from `PortalSection`, so it needs no encoding.
+ */
+export function portalPathFor(
+  locale: Locale,
+  customerId: string,
+  section?: PortalSection,
+): string {
+  const basePath = `${portalEntryPathFor(locale)}/${encodeURIComponent(customerId)}`;
+  return section ? `${basePath}/${section}` : basePath;
 }
 
 export function dashboardPathFor(locale: Locale): string {

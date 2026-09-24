@@ -1,0 +1,73 @@
+.root {
+  position: relative;
+}
+
+.current {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
+  border-radius: 10px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.popover {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 14rem;
+  padding: 0.4rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
+  border-radius: 12px;
+  background: var(--color-surface-1);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.24);
+}
+
+.option {
+  display: block;
+}
+
+.optionLink,
+.optionActive {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+.optionLink:hover,
+.optionLink:focus-visible {
+  background: color-mix(in srgb, var(--color-surface-2) 80%, transparent);
+}
+
+.optionLink:focus-visible {
+  outline: 2px solid var(--color-cta);
+  outline-offset: 2px;
+}
+
+.currentBadge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-cta);
+}

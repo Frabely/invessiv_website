@@ -1,0 +1,67 @@
+.shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--color-surface-1);
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--color-border) 84%, transparent);
+  background: var(--color-surface-1);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem clamp(0.75rem, 1.5vw, 1.25rem);
+}
+
+.brand {
+  flex: 0 0 auto;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.switcherSlot {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.actions {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 0.5rem;
+}
+
+.userButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.nav {
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--color-border) 84%, transparent);
+  padding: 0.5rem clamp(0.75rem, 1.5vw, 1.25rem);
+}
+
+.main {
+  flex: 1 1 auto;
+  padding: 1rem clamp(0.75rem, 1.5vw, 1.25rem) 3rem;
+}
+
+@media (min-width: 768px) {
+  .inner {
+    padding: 0.75rem 1.5rem;
+  }
+}

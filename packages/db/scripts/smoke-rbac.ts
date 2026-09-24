@@ -27,6 +27,7 @@ import {
 } from "@invessiv/db/constraint-names/auth/security-events-constraint-names";
 import { USERS_CONSTRAINT_NAME_VALUES } from "@invessiv/db/constraint-names/auth/users-constraint-names";
 import { WORKSPACE_MEMBER_ROLES_CONSTRAINT_NAME_VALUES } from "@invessiv/db/constraint-names/auth/workspace-member-roles-constraint-names";
+import { WORKSPACE_MEMBERS_CONSTRAINT_NAME_VALUES } from "@invessiv/db/constraint-names/crm/workspace-members-constraint-names";
 import { PORTAL_INVITATION_ROLES_CONSTRAINT_NAME_VALUES } from "@invessiv/db/constraint-names/auth/portal-invitation-roles-constraint-names";
 import { PORTAL_MEMBERSHIP_ROLES_CONSTRAINT_NAME_VALUES } from "@invessiv/db/constraint-names/auth/portal-membership-roles-constraint-names";
 import { PORTAL_INVITATIONS_CONSTRAINT_NAME_VALUES } from "@invessiv/db/constraint-names/crm/portal-invitations-constraint-names";
@@ -493,6 +494,7 @@ const AUTH_CONSTRAINT_NAMES = [
   ...PERMISSIONS_CONSTRAINT_NAME_VALUES,
   ...ROLE_PERMISSIONS_CONSTRAINT_NAME_VALUES,
   ...WORKSPACE_MEMBER_ROLES_CONSTRAINT_NAME_VALUES,
+  ...WORKSPACE_MEMBERS_CONSTRAINT_NAME_VALUES,
   ...SECURITY_EVENTS_CONSTRAINT_NAME_VALUES,
   ...PORTAL_MEMBERSHIPS_CONSTRAINT_NAME_VALUES,
   ...PORTAL_INVITATIONS_CONSTRAINT_NAME_VALUES,

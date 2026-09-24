@@ -97,6 +97,34 @@ describe("portalActorMappingService.mapRowsToResolution", () => {
     expect(result.ok && result.actor.projectPermissions.size).toBe(0);
   });
 
+  it("denies access when the resolved membership itself has no grant, even if a second membership row of the same user and customer does", () => {
+    // Two different `person_id` contact assignments can both resolve to this `(user_id,
+    // customer_id)` pair. A second membership's role must never grant permissions to the actor
+    // built from the first.
+    const result = portalActorMappingService.mapRowsToResolution(
+      [
+        row({
+          membership_id: "membership-uuid-1",
+          person_id: "person-uuid-1",
+          revoked_at: null,
+          permission_key: null,
+        }),
+        row({
+          membership_id: "membership-uuid-2",
+          person_id: "person-uuid-2",
+          revoked_at: null,
+          permission_key: Permission.PortalAccess,
+        }),
+      ],
+      CUSTOMER_ID,
+    );
+
+    expect(result).toEqual({
+      ok: false,
+      code: PortalActorResolutionError.AccessDenied,
+    });
+  });
+
   it("drops unknown or workspace-realm permission keys instead of trusting them", () => {
     const result = portalActorMappingService.mapRowsToResolution(
       [

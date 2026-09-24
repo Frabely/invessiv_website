@@ -32,8 +32,14 @@ function mapRowsToResolution(
     return { ok: false, code: PortalActorResolutionError.MembershipMissing };
   }
 
+  // A user may hold two membership rows for the same customer via two different contact
+  // assignments (one per `person_id`); only the resolved membership's own rows may contribute
+  // permissions, or a revoked sibling membership's role could leak into this actor.
   const permissions = new Set(
-    rows.map((row) => row.permission_key).filter(isPortalPermission),
+    rows
+      .filter((row) => row.membership_id === first.membership_id)
+      .map((row) => row.permission_key)
+      .filter(isPortalPermission),
   );
   if (!permissions.has(Permission.PortalAccess)) {
     return { ok: false, code: PortalActorResolutionError.AccessDenied };
