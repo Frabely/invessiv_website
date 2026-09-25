@@ -1,6 +1,7 @@
 import { type APIRequestContext, expect, test } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
+import { PortalAccessErrorCode } from "@invessiv/common/constants/crm/errors/portal-access-error-codes";
 import {
   type PortalE2eFixture,
   portalE2ePaths,
@@ -404,8 +405,8 @@ test.describe.serial("portal access", () => {
       },
     });
     expect(missingAssignment.status()).toBe(HttpResponseCode.NotFound);
-    expect(((await missingAssignment.json()) as { code: string }).code).toBe(
-      "assignment_not_found",
+    expect(((await missingAssignment.json()) as { error: string }).error).toBe(
+      PortalAccessErrorCode.AssignmentNotFound,
     );
 
     const invalidRole = await manager.post(endpoint, {
@@ -416,8 +417,8 @@ test.describe.serial("portal access", () => {
       },
     });
     expect(invalidRole.status()).toBe(HttpResponseCode.BadRequest);
-    expect(((await invalidRole.json()) as { code: string }).code).toBe(
-      "invalid_portal_role",
+    expect(((await invalidRole.json()) as { error: string }).error).toBe(
+      PortalAccessErrorCode.InvalidPortalRole,
     );
 
     const visitor = await browser.newContext({

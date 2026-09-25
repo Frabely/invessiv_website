@@ -260,6 +260,8 @@ describe.skipIf(!RUN_INTEGRATION)(
             userId: actor.id,
             workspaceMemberId: actor.memberId,
             permissions: new Set([Permission.LeadsRead, Permission.LeadsWrite]),
+            customerPermissions: new Map(),
+            projectPermissions: new Map(),
           },
         });
       }, 30_000);

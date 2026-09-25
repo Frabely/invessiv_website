@@ -231,6 +231,7 @@ async function run() {
         [...orderedIds].sort().reverse().join(","),
     );
   } finally {
+    await db.delete(activities).where(eq(activities.lead_id, leadId));
     await db.delete(leads).where(eq(leads.id, leadId));
   }
 
