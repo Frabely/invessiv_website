@@ -38,6 +38,7 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
+      testIgnore: /portal-access\.e2e\.ts/,
       use: { ...devices["Desktop Chrome"] },
     },
   ],

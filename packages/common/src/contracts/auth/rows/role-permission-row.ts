@@ -1,7 +1,9 @@
 import type { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
+import type { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 
 /** One row per granted permission; `permission_key` is null for a role without permissions. */
 export type RolePermissionRow = {
+  realm: AuthRealm;
   id: string;
   name: string;
   system_key: SystemRoleKey | null;

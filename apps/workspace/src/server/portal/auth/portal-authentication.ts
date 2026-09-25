@@ -4,7 +4,6 @@ import { auth } from "@clerk/nextjs/server";
 
 import { isUuid } from "@invessiv/common/patterns/validation/is-uuid";
 import { PortalAuthStatus } from "@/common/constants/auth/portal-auth-statuses";
-import { FeatureFlag, isFeatureEnabled } from "@/config/feature-flags";
 import { resolvePortalActor } from "@/server/portal/query-handler/resolve-portal-actor.query-handler";
 
 import type { PortalAuthentication } from "./portal-authentication-types";
@@ -17,10 +16,6 @@ import type { PortalAuthentication } from "./portal-authentication-types";
 export async function authenticatePortalRequest(
   customerId: string,
 ): Promise<PortalAuthentication> {
-  if (!isFeatureEnabled(FeatureFlag.Portal)) {
-    return { status: PortalAuthStatus.NotMember };
-  }
-
   const { userId: clerkUserId } = await auth();
   if (!clerkUserId) {
     return { status: PortalAuthStatus.Unauthenticated };

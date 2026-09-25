@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -30,8 +31,10 @@ export function RolesList({
 }: RolesListProps) {
   const [openRole, setOpenRole] = useState<RoleDto | null>(null);
   const [isCreating, setIsCreating] = useState(false);
-  const systemRoles = roles.filter((role) => role.isSystem);
-  const customRoles = roles.filter((role) => !role.isSystem);
+  const [realm, setRealm] = useState<AuthRealm>(AuthRealm.Workspace);
+  const visibleRoles = roles.filter((role) => role.realm === realm);
+  const systemRoles = visibleRoles.filter((role) => role.isSystem);
+  const customRoles = visibleRoles.filter((role) => !role.isSystem);
 
   const createButton = (
     <PrimaryCtaButton
@@ -55,6 +58,37 @@ export function RolesList({
 
   return (
     <div className={styles.stack}>
+      <div
+        className={styles.realmSwitch}
+        role="group"
+        aria-label={content.dialog.roleTypeLabel}
+      >
+        <button
+          type="button"
+          aria-pressed={realm === AuthRealm.Workspace}
+          className={styles.realmButton}
+          onClick={() => {
+            closeDialog();
+            setRealm(AuthRealm.Workspace);
+          }}
+        >
+          {content.list.workspaceRealm}
+        </button>
+        <button
+          type="button"
+          aria-pressed={realm === AuthRealm.Portal}
+          className={styles.realmButton}
+          onClick={() => {
+            closeDialog();
+            setRealm(AuthRealm.Portal);
+          }}
+        >
+          {content.list.portalRealm}
+        </button>
+      </div>
+      {realm === AuthRealm.Portal ? (
+        <p className={styles.description}>{content.list.portalIntro}</p>
+      ) : null}
       <section
         aria-labelledby={CUSTOM_ROLES_HEADING_ID}
         className={styles.section}
@@ -121,6 +155,7 @@ export function RolesList({
           content={content}
           onCloseAction={closeDialog}
           permissionsContent={permissionsContent}
+          realm={realm}
           role={openRole}
         />
       ) : null}

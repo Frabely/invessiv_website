@@ -1,9 +1,11 @@
 import type { Permission } from "@invessiv/common/constants/auth/permissions";
 import type { VersionedDto } from "@invessiv/common/contracts/concurrency/versioned";
 import type { RoleSummaryDto } from "@invessiv/common/contracts/auth/role-summary.dto";
+import type { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 
-/** A workspace role with its permission set, as edited in the roles tab. */
+/** A workspace or portal role with its permission set, as edited in the roles tab. */
 export interface RoleDto extends RoleSummaryDto, VersionedDto {
+  realm: AuthRealm;
   /** False identifies a global role; true identifies a customer/project role. */
   scopeAssignable: boolean;
   /** Optional free text for custom roles. System roles carry no editable description. */
@@ -15,7 +17,7 @@ export interface RoleDto extends RoleSummaryDto, VersionedDto {
    * dropped by the mapper instead of being passed on.
    */
   permissions: Permission[];
-  /** Number of memberships holding the role, active or not. Informs before a deactivation. */
+  /** Number of workspace or portal memberships holding the role. Informs before a deactivation. */
   assignedMemberCount: number;
   /** ISO string of the role creation time. */
   createdAt: string;

@@ -8,10 +8,9 @@ import { authenticatePortalRequest } from "./portal-authentication";
 
 vi.mock("server-only", () => ({}));
 
-const { mockAuth, mockResolve, mockIsFeatureEnabled } = vi.hoisted(() => ({
+const { mockAuth, mockResolve } = vi.hoisted(() => ({
   mockAuth: vi.fn(),
   mockResolve: vi.fn(),
-  mockIsFeatureEnabled: vi.fn(),
 }));
 
 vi.mock("@clerk/nextjs/server", () => ({ auth: mockAuth }));
@@ -19,10 +18,6 @@ vi.mock(
   "@/server/portal/query-handler/resolve-portal-actor.query-handler",
   () => ({ resolvePortalActor: mockResolve }),
 );
-vi.mock("@/config/feature-flags", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("@/config/feature-flags")>()),
-  isFeatureEnabled: mockIsFeatureEnabled,
-}));
 
 const CUSTOMER_ID = "11111111-1111-4111-8111-111111111111";
 const ACTOR = createPortalActor({
@@ -38,18 +33,7 @@ describe("authenticatePortalRequest", () => {
   beforeEach(() => {
     mockAuth.mockReset();
     mockResolve.mockReset();
-    mockIsFeatureEnabled.mockReset().mockReturnValue(true);
     vi.spyOn(console, "error").mockImplementation(() => undefined);
-  });
-
-  it("is not_member when the flag is off, without touching Clerk or the database", async () => {
-    mockIsFeatureEnabled.mockReturnValue(false);
-
-    await expect(authenticatePortalRequest(CUSTOMER_ID)).resolves.toEqual({
-      status: PortalAuthStatus.NotMember,
-    });
-    expect(mockAuth).not.toHaveBeenCalled();
-    expect(mockResolve).not.toHaveBeenCalled();
   });
 
   it("is unauthenticated without a Clerk session", async () => {

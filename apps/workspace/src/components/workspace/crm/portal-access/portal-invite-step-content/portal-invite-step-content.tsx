@@ -1,0 +1,159 @@
+import {
+  ButtonControl,
+  CheckboxControl,
+  CustomSelect,
+  FormField,
+} from "@invessiv/ui";
+import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
+import type { PortalAccessDto } from "@invessiv/common/contracts/crm/portal-access.dto";
+import { portalRoleLabel } from "@/common/patterns/crm/portal-role-label";
+import type { CrmPortalAccessDictionary } from "@/i18n/dictionaries/workspace/crm";
+import styles from "./portal-invite-step-content.module.css";
+
+type Props = {
+  access: PortalAccessDto;
+  content: CrmPortalAccessDictionary;
+  baseId: string;
+  assignmentId: string;
+  roleIds: readonly string[];
+  contactName: string;
+  permittedAreas: readonly string[];
+  preview: boolean;
+  inviteUrl: string | null;
+  copied: boolean;
+  onAssignmentChange: (assignmentId: string) => void;
+  onRoleToggle: (roleId: string) => void;
+  onCopy: () => void;
+};
+
+function InvitationForm({
+  access,
+  content,
+  assignmentId,
+  onAssignmentChange,
+  roleIds,
+  onRoleToggle,
+  baseId,
+}: Pick<
+  Props,
+  | "access"
+  | "content"
+  | "assignmentId"
+  | "onAssignmentChange"
+  | "roleIds"
+  | "onRoleToggle"
+  | "baseId"
+>) {
+  return (
+    <div className={styles.stack}>
+      <FormField
+        kind={FormFieldKind.Custom}
+        label={content.dialog.contact}
+        renderControl={({ describedBy, id, invalid }) => (
+          <CustomSelect
+            describedBy={describedBy}
+            id={id}
+            invalid={invalid}
+            onChange={onAssignmentChange}
+            options={[
+              { label: content.dialog.contactPlaceholder, value: "" },
+              ...access.contacts.map((contact) => ({
+                label: contact.displayName,
+                value: contact.assignmentId,
+              })),
+            ]}
+            value={assignmentId}
+          />
+        )}
+      />
+      <fieldset className={styles.roles}>
+        <legend>{content.dialog.role}</legend>
+        {access.roles
+          .filter((role) => role.active)
+          .map((role) => {
+            const inputId = `${baseId}-role-${role.id}`;
+            return (
+              <div className={styles.role} key={role.id}>
+                <CheckboxControl
+                  checked={roleIds.includes(role.id)}
+                  id={inputId}
+                  onChange={() => onRoleToggle(role.id)}
+                />
+                <label htmlFor={inputId}>
+                  {portalRoleLabel(role, content.portalStandard)}
+                </label>
+              </div>
+            );
+          })}
+      </fieldset>
+    </div>
+  );
+}
+
+function InvitationPreview({
+  content,
+  contactName,
+  roles,
+  permittedAreas,
+}: {
+  content: CrmPortalAccessDictionary;
+  contactName: string;
+  roles: PortalAccessDto["roles"];
+  permittedAreas: readonly string[];
+}) {
+  return (
+    <div className={styles.stack}>
+      <p>
+        <strong>{contactName}</strong>
+      </p>
+      <ul>
+        {roles.map((role) => (
+          <li key={role.id}>{portalRoleLabel(role, content.portalStandard)}</li>
+        ))}
+      </ul>
+      {permittedAreas.length > 0 ? (
+        <ul>
+          {permittedAreas.map((area) => (
+            <li key={area}>{area}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>{content.dialog.previewNoAreas}</p>
+      )}
+      <p className={styles.private}>{content.dialog.previewPrivate}</p>
+    </div>
+  );
+}
+
+function OneTimeInviteLink({
+  inviteUrl,
+  copied,
+  content,
+  onCopy,
+}: Pick<Props, "inviteUrl" | "copied" | "content" | "onCopy">) {
+  return (
+    <div className={styles.stack}>
+      <p>{content.dialog.linkHint}</p>
+      <output className={styles.link}>{inviteUrl}</output>
+      <ButtonControl type="button" onClick={onCopy}>
+        {copied ? content.dialog.copied : content.dialog.copy}
+      </ButtonControl>
+    </div>
+  );
+}
+
+export function PortalInviteStepContent(props: Props) {
+  if (props.inviteUrl) return <OneTimeInviteLink {...props} />;
+  if (props.preview)
+    return (
+      <InvitationPreview
+        content={props.content}
+        contactName={props.contactName}
+        roles={props.access.roles.filter(
+          (role) => role.active && props.roleIds.includes(role.id),
+        )}
+        permittedAreas={props.permittedAreas}
+      />
+    );
+  return <InvitationForm {...props} />;
+}

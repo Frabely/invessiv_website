@@ -28,8 +28,6 @@ Gates `requirePortalActor` (Seiten) und `withPortalActor` (API) unter `auth/` si
   existierende (404 bzw. `notFound()`) — nie eine unterscheidbare Fehlermeldung.
 - **Kein E-Mail-Abgleich.** Zuordnung ausschließlich über `users.clerk_user_id`. Keine Spalte und kein Index auf
   einer E-Mail-Adresse in den Portaltabellen.
-- **Flag zuerst geprüft.** Ist `FeatureFlag.Portal` aus, antworten alle Portalpfade wie eine unbekannte Mitgliedschaft
-  (404) — vor jeder DB-Anfrage.
 - **Kein Cache über Requests.** Jeder Request löst neu auf, damit ein Widerruf beim nächsten Request wirkt.
   Innerhalb eines Seiten-Renders dedupliziert `react/cache` (`authenticateForRender`) nur für denselben `customerId`.
 - **Zugriffsfilter sind Pflicht, nicht Empfehlung.** Ab Ordner 12b filtert jede Portal-Query über

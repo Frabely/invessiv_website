@@ -44,6 +44,7 @@ const ROLE_ID = "9a1b2c3d-4e5f-4a6b-8c7d-0e1f2a3b4c5d";
 const actor = workspaceActorWith();
 
 const CURRENT: RoleDto = {
+  realm: "workspace",
   id: ROLE_ID,
   name: "Vertrieb",
   systemKey: null,

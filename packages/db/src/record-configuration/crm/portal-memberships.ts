@@ -72,10 +72,13 @@ export const portalMemberships = pgTable(
       sql`${table.version}
             > 0`,
     ),
+    // Partial, not a full unique index: a revoked membership stays as history, so it must not
+    // block a later re-invite/redeem for the same customer/person pair.
     uniqueIndex(PortalMembershipsConstraintName.CustomerPersonUnique).on(
       table.customer_id,
       table.person_id,
-    ),
+    ).where(sql`${table.revoked_at}
+    is null`),
     index(PortalMembershipsConstraintName.ActiveUserIndex).on(table.user_id)
       .where(sql`${table.revoked_at}
             is null`),

@@ -25,11 +25,6 @@ vi.mock("next/navigation", () => ({
 vi.mock("@clerk/nextjs/server", () => ({
   auth: mockAuth,
 }));
-const mockIsFeatureEnabled = vi.hoisted(() => vi.fn());
-vi.mock("@/config/feature-flags", () => ({
-  FeatureFlag: { Portal: "portal" },
-  isFeatureEnabled: mockIsFeatureEnabled,
-}));
 vi.mock(
   "@/server/portal/query-handler/list-portal-memberships-for-user.query-handler",
   () => ({
@@ -56,19 +51,9 @@ vi.mock(
 describe("PortalEntryPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockIsFeatureEnabled.mockReturnValue(true);
   });
 
   afterEach(cleanup);
-
-  it("answers 404 before any auth check when the flag is off", async () => {
-    mockIsFeatureEnabled.mockReturnValue(false);
-
-    await expect(
-      PortalEntryPage({ params: Promise.resolve({ locale: "de" }) }),
-    ).rejects.toThrow("NOT_FOUND");
-    expect(mockAuth).not.toHaveBeenCalled();
-  });
 
   it("rejects unsupported locales", async () => {
     await expect(

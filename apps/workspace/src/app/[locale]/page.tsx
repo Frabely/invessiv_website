@@ -5,7 +5,6 @@ import { WorkspaceAuthStatus } from "@/common/constants/auth/workspace-auth-stat
 import { listPermittedWorkspaceAreas } from "@/common/patterns/auth/list-permitted-workspace-areas";
 import { WorkspaceAccessStatus } from "@/components/workspace/workspace-access-status/workspace-access-status";
 import { WorkspaceShell } from "@/components/workspace/workspace-shell/workspace-shell";
-import { FeatureFlag, isFeatureEnabled } from "@/config/feature-flags";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import {
   getWorkspaceMetaContent,
@@ -25,10 +24,6 @@ import { hasPortalAccessForClerkUser } from "@/server/workspace/auth/query-handl
 async function resolvePortalRedirectForNonMember(
   locale: Locale,
 ): Promise<string | null> {
-  if (!isFeatureEnabled(FeatureFlag.Portal)) {
-    return null;
-  }
-
   const { userId: clerkUserId } = await auth();
   if (!clerkUserId) {
     return null;

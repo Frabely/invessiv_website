@@ -5,6 +5,7 @@ import { and, eq } from "drizzle-orm";
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
 import {
+  portalMembershipRoles,
   rolePermissions,
   roles,
   workspaceMemberRoles,
@@ -16,10 +17,12 @@ import { roleMappingService } from "@/server/workspace/access/services/role-mapp
 async function load(
   executor: AccessDatabaseExecutor,
   roleId?: string,
+  realm?: AuthRealm,
 ): Promise<RoleDto[]> {
   const rows = await executor
     .select({
       id: roles.id,
+      realm: roles.realm,
       name: roles.name,
       system_key: roles.system_key,
       description: roles.description,
@@ -35,7 +38,7 @@ async function load(
     .leftJoin(rolePermissions, eq(rolePermissions.role_id, roles.id))
     .where(
       and(
-        eq(roles.realm, AuthRealm.Workspace),
+        realm ? eq(roles.realm, realm) : undefined,
         roleId ? eq(roles.id, roleId) : undefined,
       ),
     );
@@ -53,9 +56,20 @@ async function load(
     })
     .from(workspaceMemberScopedRoles)
     .where(roleId ? eq(workspaceMemberScopedRoles.role_id, roleId) : undefined);
+  const portalAssignmentRows = await executor
+    .select({
+      role_id: portalMembershipRoles.role_id,
+      workspace_member_id: portalMembershipRoles.portal_membership_id,
+    })
+    .from(portalMembershipRoles)
+    .where(roleId ? eq(portalMembershipRoles.role_id, roleId) : undefined);
 
   const memberIdsByRole = new Map<string, Set<string>>();
-  for (const row of [...workspaceAssignmentRows, ...scopedAssignmentRows]) {
+  for (const row of [
+    ...workspaceAssignmentRows,
+    ...scopedAssignmentRows,
+    ...portalAssignmentRows,
+  ]) {
     const memberIds = memberIdsByRole.get(row.role_id) ?? new Set<string>();
     memberIds.add(row.workspace_member_id);
     memberIdsByRole.set(row.role_id, memberIds);
@@ -68,8 +82,11 @@ async function load(
   return roleMappingService.mapRowsToRoles(rows, countRows);
 }
 
-async function list(executor: AccessDatabaseExecutor): Promise<RoleDto[]> {
-  return load(executor);
+async function list(
+  executor: AccessDatabaseExecutor,
+  realm?: AuthRealm,
+): Promise<RoleDto[]> {
+  return load(executor, undefined, realm);
 }
 
 async function findById(

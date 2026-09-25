@@ -1,0 +1,28 @@
+.options {
+  display: grid;
+  gap: 0.7rem;
+  border: 0;
+  padding: 0;
+  color: var(--color-text);
+}
+
+.options legend {
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.option {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.option:focus-within {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}

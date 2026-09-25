@@ -44,6 +44,13 @@ per E-Mail gemeldet. Nach Merge werden Aufgabenreminder und Serien asynchron zuv
   steht nur im Job-Payload, wird nach erfolgreichem Versand aus dem Payload entfernt und erscheint nie in Logs oder
   Fehlertexten. Die Kopierfunktion im Einladungsdialog bleibt als Rückfall; ein fehlgeschlagener Versand lässt eine
   gültige, erneut sendbare Einladung zurück.
+- **E-Mail-Schalter erst mit echtem Versand:** In Ordner 12b sind sowohl die Checkbox im Einladungsdialog
+  als auch „Gebündelte E-Mails erlauben" an aktiven Mitgliedschaften bewusst unsichtbar; vor diesem Ordner
+  hätten sie keine Wirkung. Bis dahin setzt das Einladen `emailNotificationsEnabled` auf `true`.
+  Dieser Ordner ergänzt beide Bedienelemente in `invite-portal-contact-dialog/` und `portal-access-section/`
+  unter `apps/workspace/src/components/workspace/crm/portal-access/`, mit DE/EN-Dictionary-Texten und Tests.
+  Der versionierte PATCH-Pfad aus 12b wird erst dann in der UI verwendet; ein Portal-Selbstschalter erscheint
+  ebenfalls erst mit dem wirksamen Versand.
 - Normale Vorgänge bleiben In-App. Nur permanente kritische Job- oder Securityfehler senden eine
   interne E-Mail über das Mail-Package.
 - Mailprovider fehlt: Job bleibt sichtbar fehlgeschlagen, Fachwrite bleibt erfolgreich.
@@ -59,6 +66,8 @@ per E-Mail gemeldet. Nach Merge werden Aufgabenreminder und Serien asynchron zuv
       sind nachgezogen; der zugehörige Fachwrite bleibt bei einem Job- oder Providerfehler erfolgreich.
 - [ ] Portal-Einladungen werden per Outbox versendet; kein Token-Klartext in Logs, Fehlertexten oder nach dem
       Versand im Job-Payload; die Kopierfunktion aus 12b bleibt nutzbar.
+- [ ] Der E-Mail-Schalter ist erst mit funktionierendem Versand sichtbar: beim Einladen und an aktiven
+      Portalmitgliedschaften, in DE und EN; ein Opt-out wird in der Digest-Claim-Abfrage wirksam.
 - [ ] Glocke funktioniert mit Keyboard, Fokus und beiden Themes.
 - [ ] Ausfall von Mailprovider oder Runner macht die App nicht unbenutzbar.
 - [ ] `vercel.json`, Secret-Namen, Retry und manueller Replay sind dokumentiert.

@@ -5,6 +5,38 @@
   min-width: 0;
 }
 
+.realmSwitch {
+  display: inline-flex;
+  align-self: flex-start;
+  gap: 0.25rem;
+  padding: 0.3rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface-1);
+}
+
+.realmButton {
+  min-height: 44px;
+  padding: 0.55rem 1rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text-muted);
+  font: inherit;
+  cursor: pointer;
+}
+
+.realmButton[aria-pressed="true"] {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+.realmButton:focus-visible {
+  outline: 2px solid var(--color-text);
+  outline-offset: 2px;
+}
+
 .section {
   display: flex;
   flex-direction: column;

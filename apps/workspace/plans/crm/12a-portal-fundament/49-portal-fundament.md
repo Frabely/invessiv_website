@@ -12,7 +12,7 @@ das Fundament stehen, auf dem alle Portal-Ordner aufsetzen: Tabellen, Rechte, Ac
 Shell und Navigation. Ohne diesen Schnitt würde jeder Portal-Ordner Teile davon selbst erfinden — die Pläne von 13,
 15b und 18 verwenden heute schon drei verschiedene `requirePortalActor`-Signaturen und gemischte Routen-Slugs.
 
-Dieser Task baut **nichts Sichtbares**. Das Flag bleibt aus, und ohne Einladungsfluss entsteht in Produktion keine
+Dieser Task baut **nichts Sichtbares**. Ohne Einladungsfluss entsteht in Produktion keine
 Mitgliedschaft. Nutzbar ist das Fundament lokal über Seed-Daten und in Tests.
 
 ## Bereits vorhanden (wiederverwenden, nicht neu bauen)
@@ -46,7 +46,6 @@ Mitgliedschaft. Nutzbar ist das Fundament lokal über Seed-Daten und in Tests.
 | Projektbezug         | Vorbereitet, nicht aktiv: `PortalActor.projectPermissions` ist immer leer, `portalAccessCondition`/`portalCanOn` liefern „ganze Firma“. Spalte `project_id` folgt später additiv         |
 | Kein Zustand         | Aktiver Kunde steht im Pfad und wird je Request neu gegen eine aktive Mitgliedschaft aufgelöst. Kein Cookie, keine Clerk-Metadaten                                                       |
 | Kein E-Mail-Abgleich | Keine Spalte und kein Index auf einer E-Mail-Adresse. Autorisierung nur über `clerk_user_id` → `users.id` → Mitgliedschaft                                                               |
-| Flag                 | `FeatureFlag.Portal`, Default aus. Aus = Portalrouten und Portal-API antworten 404, keine Portal-Weiche nach Login                                                                       |
 | Routen-Slugs         | Englisch: `/portal`, `/portal/invite/[token]`, `/portal/[customerId]/{projects,files,assets,messages,onboarding,services}`, Feedback unter `projects/[projectId]/feedback`               |
 
 ## Tabellen
@@ -112,7 +111,6 @@ Security-Event-Typen (CHECK drop-and-recreate wie Migration 0025/0032): `portal_
 ```txt
 Seitenaufruf
   (portal)/portal/[customerId]/layout.tsx → requirePortalActor(locale, customerId)
-    → Flag aus: notFound()
     → kein Clerk-User: Redirect zur Anmeldung mit redirect_url
     → users über clerk_user_id, dann genau eine aktive Mitgliedschaft (user_id, customer_id), sonst notFound()
     → Portalrollen (Realm portal, aktiv) → Permissions; ohne portal.access: notFound()
@@ -127,7 +125,7 @@ Portal-API
   withPortalActor(handler) — Gegenstück zu withWorkspaceApiActor
     → Pfad /api/portal/[customerId]/… , löst gegen die Mitgliedschaft auf
     → Handler-Signatur (request, actor: PortalActor) — keine rohe customerId erreichbar
-    → Status-Mapping: 401 ohne Sitzung, 404 ohne Mitgliedschaft/Flag, 503 bei DB-Fehler
+    → Status-Mapping: 401 ohne Sitzung, 404 ohne Mitgliedschaft, 503 bei DB-Fehler
 
 Zugriffsfilter (Pflicht für jede Portal-Query ab Ordner 13)
   portalAccessCondition(actor, permission, { customerId: col, projectId?: col }) → SQL
@@ -138,7 +136,7 @@ Zugriffsfilter (Pflicht für jede Portal-Query ab Ordner 13)
 Weiche nach dem Login
   [locale]/page.tsx und Sign-in-Fallback
     → aktive Workspace-Mitgliedschaft: wie heute
-    → keine Workspace-, aber Portalmitgliedschaft (Flag an): Redirect /portal
+    → keine Workspace-, aber Portalmitgliedschaft: Redirect /portal
     → beides: intern, Portal-Link im Nutzermenü
 ```
 
@@ -162,8 +160,6 @@ packages/common/src/constants/auth/security-event-types.ts   + Portal-Ereignisse
 packages/common/src/constants/crm/errors/portal-error-codes.ts
 packages/common/src/contracts/portal/portal-membership.dto.ts
 
-apps/workspace/.env.example                                  + FEATURE_PORTAL_ENABLED
-apps/workspace/src/config/feature-flags.ts                   FeatureFlag + isFeatureEnabled (server-only)
 apps/workspace/src/config/routes.ts                          + PORTAL, PORTAL_INVITE
 apps/workspace/src/lib/navigation/portal-pathname.ts         portalPathFor(locale, customerId, section?)
 apps/workspace/src/proxy.ts                                  + öffentliche Einlöseroute
@@ -180,7 +176,7 @@ apps/workspace/src/server/portal/
   query-handler/list-portal-memberships-for-user.query-handler.ts
 apps/workspace/src/app/[locale]/(portal)/
   AGENTS.md  CLAUDE.md
-  layout.tsx                              Flag-Gate, Portal-Grundlayout
+  layout.tsx                              Locale-Gate, Portal-Grundlayout
   portal/page.tsx                         Firmenweiche
   portal/[customerId]/layout.tsx          requirePortalActor, PortalShell
   portal/[customerId]/page.tsx            Firmenname; ersetzt in Ordner 13
@@ -195,9 +191,9 @@ apps/workspace/src/app/[locale]/page.tsx                     Weiche nach Login
 
 ## Tickets
 
-### CRM-49-T1 — Flag, Migration, Modelle, Katalog
+### CRM-49-T1 — Migration, Modelle, Katalog
 
-- **Inhalt:** Feature-Flag-Modul; Tabellen wie oben; `portal.access` und Systemrolle `portal_standard` in Katalog
+- **Inhalt:** Tabellen wie oben; `portal.access` und Systemrolle `portal_standard` in Katalog
   und Migration; Security-Event-CHECKs; Seed.
 - **Akzeptanz:**
   - Migration idempotent; Drizzle-Modelle deckungsgleich (ausdrücklicher Review-Punkt)
@@ -221,7 +217,6 @@ apps/workspace/src/app/[locale]/page.tsx                     Weiche nach Login
   - DB-Fehler → fail-closed (503 API, Fehlerseite UI)
   - Kein exportierter Konstruktor außerhalb `server/portal/auth/**` (Test über Modul-Exporte)
   - `portalAccessCondition`: Rows fremder Firmen nie im Ergebnis, auch nicht über Join
-  - Flag aus → alle Portalpfade 404
 
 ### CRM-49-T3 — Routing, Shell, Navigation, Weiche
 
@@ -234,7 +229,7 @@ apps/workspace/src/app/[locale]/page.tsx                     Weiche nach Login
   - Firmenwechsel ist ein Link; zwei Tabs mit zwei Firmen funktionieren gleichzeitig
   - Navigation zeigt nur freigeschaltete Einträge; ohne Einträge keine leere Leiste
   - Keine internen Navigationspunkte im Portal
-  - Weiche: nur Portal → `/portal`; beides → intern mit Portal-Link; Flag aus → wie heute
+  - Weiche: nur Portal → `/portal`; beides → intern mit Portal-Link
   - Alle Pfade über `SITE_ROUTES`/Pfad-Builder, keine String-Literale
 
 ### CRM-49-T4 — 03b-Nachzug Mitgliederkandidaten
@@ -249,8 +244,8 @@ apps/workspace/src/app/[locale]/page.tsx                     Weiche nach Login
 
 ## Deploy-Sicherheit
 
-1. **Live sichtbar:** nichts. Flag aus.
-2. **Bricht nichts:** Die Weiche nach Login verhält sich bei ausgeschaltetem Flag wie heute. Die 03b-Änderung wirkt
+1. **Live sichtbar:** nichts ohne eingelöste Einladung.
+2. **Bricht nichts:** Die Weiche nach Login verhält sich ohne Portalmitgliedschaft wie heute. Die 03b-Änderung wirkt
    nur auf Konten mit `users`-Zeile ohne Mitgliedschaft; solche entstehen erst mit 12b.
 3. **Offen:** Einladung, Einlösung, Verwaltung (Ordner 12b); Portalinhalte (Ordner 13 ff.).
 

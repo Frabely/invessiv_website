@@ -5,10 +5,13 @@ import pickerDe from "./picker/de.json";
 import pickerEn from "./picker/en.json";
 import shellDe from "./shell/de.json";
 import shellEn from "./shell/en.json";
+import invitationDe from "./invitation/de.json";
+import invitationEn from "./invitation/en.json";
 
 export type PortalMetaDictionary = typeof metaDe;
 export type PortalPickerDictionary = typeof pickerDe;
 export type PortalShellDictionary = typeof shellDe;
+export type PortalInvitationDictionary = typeof invitationDe;
 
 const PORTAL_META: Record<Locale, PortalMetaDictionary> = {
   de: metaDe,
@@ -23,6 +26,10 @@ const PORTAL_PICKER: Record<Locale, PortalPickerDictionary> = {
 const PORTAL_SHELL: Record<Locale, PortalShellDictionary> = {
   de: shellDe,
   en: shellEn,
+};
+const PORTAL_INVITATION: Record<Locale, PortalInvitationDictionary> = {
+  de: invitationDe,
+  en: invitationEn,
 };
 
 export function getPortalMetaDictionary(locale: Locale): PortalMetaDictionary {
@@ -39,4 +46,10 @@ export function getPortalShellDictionary(
   locale: Locale,
 ): PortalShellDictionary {
   return PORTAL_SHELL[locale];
+}
+
+export function getPortalInvitationDictionary(
+  locale: Locale,
+): PortalInvitationDictionary {
+  return PORTAL_INVITATION[locale];
 }

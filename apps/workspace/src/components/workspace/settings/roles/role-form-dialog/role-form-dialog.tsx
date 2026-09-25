@@ -3,6 +3,7 @@
 import { type SubmitEvent, useId, useState } from "react";
 
 import type { RoleErrorCode } from "@invessiv/common/constants/auth/errors/role-error-codes";
+import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import {
   type Permission,
   PERMISSION_VALUES,
@@ -40,6 +41,7 @@ type RoleFormDialogProps = {
   permissionsContent: SettingsPermissionsDictionary;
   /** Null creates a new custom role; a system role opens read-only. */
   role: RoleDto | null;
+  realm?: AuthRealm;
 };
 
 export function RoleFormDialog({
@@ -47,6 +49,7 @@ export function RoleFormDialog({
   onCloseAction,
   permissionsContent,
   role,
+  realm = AuthRealm.Workspace,
 }: RoleFormDialogProps) {
   const formId = useId();
   const activeId = useId();
@@ -84,7 +87,10 @@ export function RoleFormDialog({
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     setShowValidation(true);
-    if (!name.trim() || scopeAssignable === null) {
+    if (
+      !name.trim() ||
+      (scopeAssignable === null && realm === AuthRealm.Workspace)
+    ) {
       return;
     }
 
@@ -99,10 +105,11 @@ export function RoleFormDialog({
             version: current.version,
           })
         : accessApiService.createRole({
+            ...(realm === AuthRealm.Portal ? { realm } : {}),
             name,
             description: normalizedDescription,
             permissions,
-            scopeAssignable,
+            scopeAssignable: selectedScopeAssignable,
           }),
     );
   }
@@ -126,13 +133,18 @@ export function RoleFormDialog({
         <div className={styles.form}>
           <div className={styles.readOnlyIntro}>
             <span className={styles.typeBadge}>{text.systemRoleType}</span>
-            <span className={styles.typeBadge}>{text.globalType}</span>
+            <span className={styles.typeBadge}>
+              {role.realm === AuthRealm.Portal
+                ? text.portalRoleType
+                : text.globalType}
+            </span>
             <span className={styles.readOnlyBadge}>{text.readOnlyLabel}</span>
             {roleDescription ? (
               <p className={styles.roleDescription}>{roleDescription}</p>
             ) : null}
           </div>
           <PermissionPicker
+            realm={role.realm}
             content={permissionsContent}
             legend={text.permissionsLabel}
             lockNonDelegable={false}
@@ -144,7 +156,7 @@ export function RoleFormDialog({
     );
   }
 
-  if (!role && scopeAssignable === null) {
+  if (!role && scopeAssignable === null && realm === AuthRealm.Workspace) {
     return (
       <Dialog
         closeLabel={text.close}
@@ -189,7 +201,9 @@ export function RoleFormDialog({
   }
 
   const selectedScopeAssignable =
-    scopeAssignable ?? role?.scopeAssignable ?? false;
+    realm === AuthRealm.Portal
+      ? false
+      : (scopeAssignable ?? role?.scopeAssignable ?? false);
 
   return (
     <Dialog
@@ -198,7 +212,7 @@ export function RoleFormDialog({
       description={text.description}
       footer={
         <>
-          {!role ? (
+          {!role && realm === AuthRealm.Workspace ? (
             <ButtonControl
               disabled={mutation.isSubmitting}
               onClick={() => setScopeAssignable(null)}
@@ -277,7 +291,11 @@ export function RoleFormDialog({
         <div className={styles.roleTypeLine}>
           <span className={styles.fieldLabel}>{text.roleTypeLabel}</span>
           <span className={styles.typeBadge}>
-            {selectedScopeAssignable ? text.customerRoleType : text.globalType}
+            {realm === AuthRealm.Portal
+              ? text.portalRoleType
+              : selectedScopeAssignable
+                ? text.customerRoleType
+                : text.globalType}
           </span>
         </div>
 
@@ -295,6 +313,7 @@ export function RoleFormDialog({
         />
 
         <PermissionPicker
+          realm={realm}
           content={permissionsContent}
           legend={text.permissionsLabel}
           lockNonDelegable

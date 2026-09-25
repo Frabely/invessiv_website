@@ -234,7 +234,7 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
   firmenweite Rolle.
 - Portalrouten nutzen englische Slugs (`/portal/[customerId]/projects|files|assets|messages|onboarding|services`,
   `/portal/invite/[token]`); die Portal-Navigation ist eine Registry (`PORTAL_NAV_ITEMS`) mit `requiredPermission`.
-- Das Portal ist über ein typisiertes, serverseitiges Feature-Flag (`FeatureFlag.Portal`) schaltbar.
+- Das Portal ist für eingeladene Kontakte aktiv; jede Anfrage prüft die Mitgliedschaft und die wirksamen Portalrollen.
 - Kunden können Leistungen aus einem freigegebenen Katalogausschnitt **preisfrei anfragen** (Ordner 13a). Das
   Angebot entsteht weiter außerhalb; die Anwendung dokumentiert Anfrage und Ausgang.
 - Widerruf wirkt sofort; historische Nachrichten und Audit-Einträge bleiben erhalten.
@@ -250,8 +250,9 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
   Das Fenster liegt als Konstante `PORTAL_DIGEST_WINDOW_HOURS` in `packages/common`; die Umstellung
   auf 24 Stunden ist eine Zeile und keine Migration.
 - Kundenmails sind abschaltbar: `portal_memberships.email_notifications_enabled`, Default true. Der
-  Wert wird bereits beim Einladen gesetzt und ist danach vom Portalmitglied selbst sowie intern
-  änderbar. Der Outbox-Job filtert darauf in der Abfrage.
+  Wert wird bereits beim Einladen gesetzt. Sichtbare Schalter für interne Nutzer und Portalmitglieder
+  werden erst mit dem E-Mail-Versand in Ordner 20c aktiviert; vorher wäre eine Einstellung ohne Wirkung irreführend.
+  Der Outbox-Job filtert darauf in der Abfrage.
 - Interne Benachrichtigungen bleiben bei einem 15-Minuten-Fenster; für die Reaktionszeit im Alltag
   ist Schnelligkeit gewünscht, und interne Mitglieder sind keine Kunden.
 - Keine freien CRM-Mails und kein Mail-Eingang in Version 1.
@@ -555,7 +556,6 @@ fertig und getestet gibt — der Leads-Bereich deckt den Großteil ab.
 | Portal-Actor / Gates  | `apps/workspace/src/server/portal/auth/**` (ab Ordner 12a; Vorlage: `lib/auth/{workspace-authentication,permissions,api}.ts`)     |
 | Portal-Zugriffsfilter | `apps/workspace/src/server/portal/shared/{portal-access-condition,portal-can-on}.ts` (ab 12a; Vorlage: `crm-access-condition.ts`) |
 | Portal-Navigation     | `apps/workspace/src/common/constants/portal/portal-nav-items.ts` (ab 12a; Vorlage: `workspace-sidebar-items.ts`)                  |
-| Feature-Flags         | `apps/workspace/src/config/feature-flags.ts` (ab 12a)                                                                             |
 
 Geteilte Listenbausteine wandern erst bei **tatsächlicher** Wiederverwendung nach
 `components/workspace/shared/` — nicht vorsorglich. Der Umzug ist risikoarm, solange es genau einen
@@ -581,7 +581,6 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12b erreicht:
   gelassen kann jeder ein Konto anlegen. Danach entstehen **alle** Konten über eine Einladung:
   Portalkontakte über den Token-Flow aus Ordner 12b, interne Mitglieder über eine Einladung im
   Clerk-Dashboard.
-- **`FEATURE_PORTAL_ENABLED`** in allen Deployment-Umgebungen bewusst gesetzt (Ordner 12a: aus, ab 12b: an).
 - **Master-Key für die Zugangsdaten** zusätzlich offline im eigenen Passwortmanager sichern, **bevor**
   der erste Datensatz entsteht. Der Plan kann Schlüssel rotieren, aber nicht verlieren: eine geleerte
   Vercel-Env macht alle Zugangsdaten dauerhaft unlesbar.
@@ -632,7 +631,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12b erreicht:
 | 07c | offen     | `07c-zugriffsverwaltung-ui`              | Zugriffe je Kunde/Projekt in Settings und Kundenakte konfigurierbar             |   50–80 |  2–3 T. |
 | 08  | läuft     | `08-aufgaben`                            | Projektaufgaben im Cockpit, globale Übersicht und Dashboard-Block nutzbar       | 120–180 |  4–5 T. |
 | 12a | offen     | `12a-portal-fundament`                   | Portal-Schema, Actor, Gates, Zugriffshelfer, Shell und Flag unsichtbar deployt  |   60–80 |  3–4 T. |
-| 12b | offen     | `12b-portal-zugang`                      | Einladung, Rollen je Kontakt, Widerruf und Mehrfirmenwechsel sicher nutzbar     |   60–80 |  3–4 T. |
+| 12b | läuft     | `12b-portal-zugang`                      | Einladung, Rollen je Kontakt, Widerruf und Mehrfirmenwechsel sicher nutzbar     |   60–80 |  3–4 T. |
 | 13  | offen     | `13-portal-dashboard`                    | Portal-Dashboard mit Aufgaben und Projektdaten produktiv nutzbar                |  60–100 |  3–4 T. |
 | 13a | offen     | `13a-portal-leistungsanfragen`           | Preisfreie Leistungsanfragen im Portal, intern bearbeitbar                      |   60–80 |  3–4 T. |
 | 14  | offen     | `14-storage-und-upload`                  | Storage-Adapter und sichere Upload-Pipeline unsichtbar sicher deployt           |  70–100 |  4–5 T. |

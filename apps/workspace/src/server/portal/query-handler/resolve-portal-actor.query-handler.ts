@@ -41,6 +41,7 @@ export async function resolvePortalActor(
       and(
         eq(portalMemberships.user_id, users.id),
         eq(portalMemberships.customer_id, customerId),
+        isNull(portalMemberships.revoked_at),
       ),
     )
     .leftJoin(

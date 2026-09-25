@@ -73,6 +73,7 @@ async function applyPermissionDiff(
   args: {
     roleId: string;
     scopeAssignable: boolean;
+    realm: AuthRealm;
     addedPermissions: readonly Permission[];
     removedPermissions: readonly Permission[];
   },
@@ -94,7 +95,7 @@ async function applyPermissionDiff(
     await tx.insert(rolePermissions).values(
       addedPermissions.map((permission) => ({
         role_id: roleId,
-        realm: AuthRealm.Workspace,
+        realm: args.realm,
         role_is_system: false,
         permission_key: permission,
         permission_delegable: PERMISSION_DEFINITIONS[permission].delegable,
@@ -151,6 +152,14 @@ async function updateRoleInTransaction(
     scopeAssignable: current.scopeAssignable,
   };
   if (
+    next.permissions.some(
+      (permission) =>
+        PERMISSION_DEFINITIONS[permission].realm !== current.realm,
+    )
+  ) {
+    return { ok: false, code: RoleErrorCode.ValidationError, errors: [] };
+  }
+  if (
     next.scopeAssignable &&
     next.permissions.some(
       (permission) => !PERMISSION_DEFINITIONS[permission].scopeAssignable,
@@ -193,6 +202,7 @@ async function updateRoleInTransaction(
   await applyPermissionDiff(tx, {
     roleId,
     scopeAssignable: next.scopeAssignable,
+    realm: current.realm,
     addedPermissions,
     removedPermissions,
   });

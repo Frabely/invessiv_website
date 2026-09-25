@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
 import { PortalCompanyPicker } from "@/components/portal/portal-company-picker/portal-company-picker";
-import { FeatureFlag, isFeatureEnabled } from "@/config/feature-flags";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import {
   getPortalMetaDictionary,
@@ -46,7 +45,7 @@ export default async function PortalEntryPage({
   params,
 }: PortalEntryPageProps) {
   const { locale } = await params;
-  if (!isSupportedLocale(locale) || !isFeatureEnabled(FeatureFlag.Portal)) {
+  if (!isSupportedLocale(locale)) {
     notFound();
   }
   const activeLocale = locale as Locale;

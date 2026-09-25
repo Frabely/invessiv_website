@@ -42,12 +42,6 @@ vi.mock("@clerk/nextjs/server", () => ({
   auth: mockAuth,
 }));
 
-const mockIsFeatureEnabled = vi.hoisted(() => vi.fn());
-vi.mock("@/config/feature-flags", () => ({
-  FeatureFlag: { Portal: "portal" },
-  isFeatureEnabled: mockIsFeatureEnabled,
-}));
-
 const mockHasPortalAccessForClerkUser = vi.hoisted(() => vi.fn());
 vi.mock(
   "@/server/workspace/auth/query-handler/has-portal-access-for-clerk-user.query-handler",
@@ -59,7 +53,6 @@ vi.mock(
 describe("WorkspacePage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockIsFeatureEnabled.mockReturnValue(false);
     mockAuth.mockResolvedValue({ userId: null });
     mockHasPortalAccessForClerkUser.mockResolvedValue(false);
   });
@@ -92,11 +85,10 @@ describe("WorkspacePage", () => {
     expect(screen.getByText(/Du musst nichts weiter tun/)).toBeInTheDocument();
   });
 
-  it("redirects a non-member with an active portal membership to the portal, flag on", async () => {
+  it("redirects a non-member with an active portal membership to the portal", async () => {
     mockAuthenticateWorkspaceRequest.mockResolvedValue({
       status: WorkspaceAuthStatus.NotMember,
     });
-    mockIsFeatureEnabled.mockReturnValue(true);
     mockAuth.mockResolvedValue({ userId: "clerk-user-1" });
     mockHasPortalAccessForClerkUser.mockResolvedValue(true);
 
@@ -109,11 +101,10 @@ describe("WorkspacePage", () => {
     );
   });
 
-  it("keeps a non-member with no portal membership on the pending screen, flag on", async () => {
+  it("keeps a non-member with no portal membership on the pending screen", async () => {
     mockAuthenticateWorkspaceRequest.mockResolvedValue({
       status: WorkspaceAuthStatus.NotMember,
     });
-    mockIsFeatureEnabled.mockReturnValue(true);
     mockAuth.mockResolvedValue({ userId: "clerk-user-1" });
     mockHasPortalAccessForClerkUser.mockResolvedValue(false);
 
@@ -125,23 +116,6 @@ describe("WorkspacePage", () => {
         name: "Dein Account ist bereit",
       }),
     ).toBeInTheDocument();
-  });
-
-  it("keeps a non-member on the pending screen when the flag is off, even with a portal membership", async () => {
-    mockAuthenticateWorkspaceRequest.mockResolvedValue({
-      status: WorkspaceAuthStatus.NotMember,
-    });
-    mockIsFeatureEnabled.mockReturnValue(false);
-
-    render(await WorkspacePage({ params: Promise.resolve({ locale: "de" }) }));
-
-    expect(
-      screen.getByRole("heading", {
-        level: 1,
-        name: "Dein Account ist bereit",
-      }),
-    ).toBeInTheDocument();
-    expect(mockHasPortalAccessForClerkUser).not.toHaveBeenCalled();
   });
 
   it("shows no-permission feedback for a member without an accessible area", async () => {

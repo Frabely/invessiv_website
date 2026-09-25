@@ -1,8 +1,10 @@
 import { z } from "zod";
 
-import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
+import {
+  AUTH_REALM_VALUES,
+  AuthRealm,
+} from "@invessiv/common/constants/auth/auth-realms";
 import { AccessScopeType } from "@invessiv/common/constants/auth/access-scope-types";
-import { PERMISSION_DEFINITIONS } from "@invessiv/common/constants/auth/permission-definitions";
 import { PERMISSION_VALUES } from "@invessiv/common/constants/auth/permissions";
 import { AccessFieldLimits } from "@/common/constants/access/access-field-limits";
 import { accessScopeAssignmentKey } from "@/common/patterns/access/access-scope-tree";
@@ -30,19 +32,6 @@ const roleIdsSchema = z
   .array(z.uuid())
   .max(AccessFieldLimits.AssignedRoleIdsMax)
   .refine(hasNoDuplicates, { message: "Role ids must be unique" });
-
-// Delegability is deliberately not checked here: the handlers answer it with its own error code.
-const workspacePermissionsSchema = z
-  .array(z.enum(PERMISSION_VALUES))
-  .refine(hasNoDuplicates, { message: "Permissions must be unique" })
-  .refine(
-    (permissions) =>
-      permissions.every(
-        (permission) =>
-          PERMISSION_DEFINITIONS[permission].realm === AuthRealm.Workspace,
-      ),
-    { message: "Only workspace permissions can be assigned" },
-  );
 
 const roleNameSchema = z
   .string()
@@ -106,17 +95,18 @@ export const accessSchemas = {
     version: versionSchema,
   }),
   createRole: z.object({
+    realm: z.enum(AUTH_REALM_VALUES).default(AuthRealm.Workspace),
     scopeAssignable: z.boolean(),
     name: roleNameSchema,
     description: roleDescriptionSchema,
-    permissions: workspacePermissionsSchema,
+    permissions: z.array(z.enum(PERMISSION_VALUES)).refine(hasNoDuplicates),
   }),
   updateRole: z
     .object({
       name: roleNameSchema,
       description: roleDescriptionSchema,
       active: z.boolean(),
-      permissions: workspacePermissionsSchema,
+      permissions: z.array(z.enum(PERMISSION_VALUES)).refine(hasNoDuplicates),
       version: versionSchema,
     })
     .strict(),

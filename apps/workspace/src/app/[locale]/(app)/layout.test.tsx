@@ -31,12 +31,6 @@ vi.mock("@/lib/auth/permissions", () => ({
   getWorkspaceAuthenticationForRender: mockGetAuthentication,
 }));
 
-const mockIsFeatureEnabled = vi.hoisted(() => vi.fn());
-vi.mock("@/config/feature-flags", () => ({
-  FeatureFlag: { Portal: "portal" },
-  isFeatureEnabled: mockIsFeatureEnabled,
-}));
-
 const mockHasPortalAccessForUserId = vi.hoisted(() => vi.fn());
 vi.mock(
   "@/server/workspace/auth/query-handler/has-portal-access-for-user-id.query-handler",
@@ -77,7 +71,6 @@ function authorizedWith(...permissions: Permission[]) {
 describe("WorkspaceLayout", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockIsFeatureEnabled.mockReturnValue(false);
     mockHasPortalAccessForUserId.mockResolvedValue(false);
   });
 
@@ -179,8 +172,7 @@ describe("WorkspaceLayout", () => {
     ).rejects.toThrow("Workspace authorization is unavailable.");
   });
 
-  it("passes a portal href when the flag is on and the user also has portal access", async () => {
-    mockIsFeatureEnabled.mockReturnValue(true);
+  it("passes a portal href when the user also has portal access", async () => {
     mockHasPortalAccessForUserId.mockResolvedValue(true);
     mockGetAuthentication.mockResolvedValue(
       authorizedWith(Permission.LeadsRead),
@@ -200,25 +192,7 @@ describe("WorkspaceLayout", () => {
     );
   });
 
-  it("omits the portal href when the flag is off", async () => {
-    mockIsFeatureEnabled.mockReturnValue(false);
-    mockGetAuthentication.mockResolvedValue(
-      authorizedWith(Permission.LeadsRead),
-    );
-
-    render(
-      await WorkspaceLayout({
-        children: <p>Protected content</p>,
-        params: Promise.resolve({ locale: "de" }),
-      }),
-    );
-
-    expect(mockHasPortalAccessForUserId).not.toHaveBeenCalled();
-    expect(screen.getByRole("main")).not.toHaveAttribute("data-portal-href");
-  });
-
-  it("omits the portal href when the flag is on but the user has no portal membership", async () => {
-    mockIsFeatureEnabled.mockReturnValue(true);
+  it("omits the portal href when the user has no portal membership", async () => {
     mockHasPortalAccessForUserId.mockResolvedValue(false);
     mockGetAuthentication.mockResolvedValue(
       authorizedWith(Permission.LeadsRead),

@@ -28,7 +28,10 @@ function mapRowsToResolution(
   if (!first.user_active) {
     return { ok: false, code: PortalActorResolutionError.UserInactive };
   }
-  if (first.membership_id === null || first.revoked_at !== null) {
+  const activeMembership = rows.find(
+    (row) => row.membership_id !== null && row.revoked_at === null,
+  );
+  if (!activeMembership) {
     return { ok: false, code: PortalActorResolutionError.MembershipMissing };
   }
 
@@ -37,7 +40,7 @@ function mapRowsToResolution(
   // permissions, or a revoked sibling membership's role could leak into this actor.
   const permissions = new Set(
     rows
-      .filter((row) => row.membership_id === first.membership_id)
+      .filter((row) => row.membership_id === activeMembership.membership_id)
       .map((row) => row.permission_key)
       .filter(isPortalPermission),
   );
@@ -48,10 +51,10 @@ function mapRowsToResolution(
   return {
     ok: true,
     actor: createPortalActor({
-      userId: first.user_id,
-      membershipId: first.membership_id,
+      userId: activeMembership.user_id,
+      membershipId: activeMembership.membership_id as string,
       customerId,
-      personId: first.person_id as string,
+      personId: activeMembership.person_id as string,
       permissions,
       projectPermissions: new Map(),
     }),

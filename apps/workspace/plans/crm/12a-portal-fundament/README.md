@@ -7,19 +7,17 @@
 **Konkreter Task-Plan**
 
 - [`49-portal-fundament.md`](./49-portal-fundament.md) — Schema, Portal-Rechte, `PortalActor`, Gates,
-  Zugriffshelfer, Routing, Portal-Shell mit Navigations-Registry, Feature-Flag und 03b-Nachzug.
+  Zugriffshelfer, Routing, Portal-Shell mit Navigations-Registry und 03b-Nachzug.
 
 Das Kundenportal hat nach diesem Ordner ein vollständiges, getestetes Fundament, bleibt aber **unsichtbar**: Das
-Feature-Flag `FeatureFlag.Portal` ist aus, und ohne Einladungsfluss (Ordner 12b) entsteht in Produktion keine
-Mitgliedschaft. Lokal und in Tests ist die Portal-Shell über Seed-Daten erreichbar.
+Ohne Einladungsfluss (Ordner 12b) entsteht in Produktion keine Mitgliedschaft. Lokal und in Tests
+ist die Portal-Shell über Seed-Daten erreichbar.
 
 Ordner 12a legt alles an, worauf **jeder** spätere Portal-Ordner (12b, 13, 13a, 15, 15a, 15b, 16, 18, 20) aufsetzt,
 damit keiner davon Auth, Navigation, Rechte oder Zugriffsfilter selbst erfindet.
 
 ## Umfang
 
-- **Feature-Flag-Mechanismus:** typisiert, serverseitig, env-basiert, Default aus. Erster Eintrag
-  `FeatureFlag.Portal`. Aus → alle Portalrouten antworten 404, Portal-API 404, keine Portal-Weiche nach Login.
 - **Schema:** `portal_memberships`, `portal_membership_roles`, `portal_invitations`, `portal_invitation_roles`;
   Security-Event- und Subject-Typen für Einladung, Einlösung, Widerruf und Rollenänderung.
 - **Portal-Rechte:** Portal-Permissions im bestehenden Katalog, Realm `portal`. 12a führt nur `portal.access` ein.
@@ -47,7 +45,7 @@ damit keiner davon Auth, Navigation, Rechte oder Zugriffsfilter selbst erfindet.
 
 ## Merge-Gate
 
-- [ ] Flag aus: jede Portalroute und jeder Portal-Endpunkt antwortet 404; interne Weiche unverändert.
+- [ ] Ohne Portalmitgliedschaft antworten geschützte Portalrouten und -Endpunkte mit 404.
 - [ ] Migration idempotent, Drizzle-Modelle deckungsgleich; `db:smoke:rbac` und Katalog-Check grün.
 - [ ] Eine Portalrolle ist keinem Workspace-Mitglied zuweisbar, eine Workspace-Rolle keiner Portalmitgliedschaft —
       jeweils auf DB-Ebene.
@@ -65,6 +63,5 @@ damit keiner davon Auth, Navigation, Rechte oder Zugriffsfilter selbst erfindet.
 
 ## Rollback
 
-Flag bleibt aus. Die Tabellen sind additiv und leer; ein Rückbau ist nicht nötig. Der interne Workspace ist
-unabhängig — die einzige Änderung im internen Pfad ist die Weiche nach dem Login, die bei ausgeschaltetem Flag
-unverändert arbeitet.
+Die Tabellen sind additiv und ohne Einladungen leer; ein Rückbau ist nicht nötig. Der interne
+Workspace bleibt unabhängig. Die Weiche nach dem Login greift nur bei aktiver Portalmitgliedschaft.

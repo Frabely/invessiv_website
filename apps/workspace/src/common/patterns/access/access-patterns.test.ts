@@ -32,6 +32,7 @@ import {
 
 function role(overrides: Partial<RoleDto>): RoleDto {
   return {
+    realm: "workspace",
     id: "role",
     name: "Role",
     systemKey: null,

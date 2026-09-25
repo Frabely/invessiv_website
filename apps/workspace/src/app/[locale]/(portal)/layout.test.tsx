@@ -10,14 +10,9 @@ const mockNotFound = vi.hoisted(() =>
     throw new Error("NOT_FOUND");
   }),
 );
-const mockIsFeatureEnabled = vi.hoisted(() => vi.fn());
 
 vi.mock("next/navigation", () => ({
   notFound: mockNotFound,
-}));
-vi.mock("@/config/feature-flags", () => ({
-  FeatureFlag: { Portal: "portal" },
-  isFeatureEnabled: mockIsFeatureEnabled,
 }));
 
 describe("PortalRouteLayout", () => {
@@ -27,20 +22,7 @@ describe("PortalRouteLayout", () => {
 
   afterEach(cleanup);
 
-  it("answers 404 for every portal route when the flag is off", async () => {
-    mockIsFeatureEnabled.mockReturnValue(false);
-
-    await expect(
-      PortalRouteLayout({
-        children: <p>Portal content</p>,
-        params: Promise.resolve({ locale: "de" }),
-      }),
-    ).rejects.toThrow("NOT_FOUND");
-  });
-
-  it("answers 404 for an unsupported locale even with the flag on", async () => {
-    mockIsFeatureEnabled.mockReturnValue(true);
-
+  it("answers 404 for an unsupported locale", async () => {
     await expect(
       PortalRouteLayout({
         children: <p>Portal content</p>,
@@ -49,9 +31,7 @@ describe("PortalRouteLayout", () => {
     ).rejects.toThrow("NOT_FOUND");
   });
 
-  it("renders its children when the flag is on", async () => {
-    mockIsFeatureEnabled.mockReturnValue(true);
-
+  it("renders its children for a supported locale", async () => {
     render(
       await PortalRouteLayout({
         children: <p>Portal content</p>,

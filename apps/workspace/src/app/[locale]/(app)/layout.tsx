@@ -10,7 +10,6 @@ import {
 import { canAnywhere } from "@/common/patterns/auth/access-scope";
 import { listPermittedWorkspaceAreas } from "@/common/patterns/auth/list-permitted-workspace-areas";
 import { WorkspaceShell } from "@/components/workspace/workspace-shell/workspace-shell";
-import { FeatureFlag, isFeatureEnabled } from "@/config/feature-flags";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { getWorkspacePageContent } from "@/i18n/dictionaries/workspace";
 import { getWorkspaceAuthenticationForRender } from "@/lib/auth/permissions";
@@ -27,7 +26,6 @@ type WorkspaceLayoutProps = {
   params: Promise<unknown>;
 };
 
-/** Only offered once the flag is on; the header link stays absent, not disabled, otherwise. */
 async function resolvePortalHref(
   locale: Locale,
   userId: string,
@@ -92,9 +90,10 @@ export default async function WorkspaceLayout({
 
   const content = getWorkspacePageContent(activeLocale);
 
-  const portalHref = isFeatureEnabled(FeatureFlag.Portal)
-    ? await resolvePortalHref(activeLocale, authentication.actor.userId)
-    : null;
+  const portalHref = await resolvePortalHref(
+    activeLocale,
+    authentication.actor.userId,
+  );
 
   return (
     <WorkspaceShell

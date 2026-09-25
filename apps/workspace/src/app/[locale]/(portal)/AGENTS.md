@@ -11,9 +11,8 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 ## Zweck
 
 Alle Kundenportal-Routen: `/portal` (Firmenweiche), `/portal/[customerId]` und jedes künftige
-Portal-Modul darunter (Ordner 13 ff.). `layout.tsx` prüft `FeatureFlag.Portal` einmal für die
-gesamte Gruppe — jede Seite antwortet bei ausgeschaltetem Flag 404, bevor irgendein Auth- oder
-DB-Zugriff läuft.
+Portal-Modul darunter (Ordner 13 ff.). `layout.tsx` prüft die unterstützte Locale für die
+gesamte Gruppe. Jede geschützte Portalseite prüft die Mitgliedschaft selbst.
 
 ## Verbindlich
 
@@ -39,8 +38,8 @@ DB-Zugriff läuft.
 - **`noindex`/`force-dynamic`** auf jeder Seite, wie im gesamten geschützten Bereich.
 - **Routen-Slugs englisch** (`projects`, `files`, `assets`, `messages`, `onboarding`, `services`),
   über `portalPathFor(locale, customerId, section?)` — nie String-Konkatenation.
-- **Negativtests Pflicht:** fremde/geratene `customerId`, fehlende `portal.access`, widerrufene
-  Mitgliedschaft, Flag aus.
+- **Negativtests Pflicht:** fremde/geratene `customerId`, fehlende `portal.access` und widerrufene
+  Mitgliedschaft.
 
 ## Skills
 

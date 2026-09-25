@@ -35,6 +35,11 @@ export function portalEntryPathFor(locale: Locale): string {
   return createLocalePathname(SITE_ROUTES.PORTAL, locale);
 }
 
+/** Public, single-use invitation path. The token is opaque and never logged by callers. */
+export function portalInvitePathFor(locale: Locale, token: string): string {
+  return `${createLocalePathname(SITE_ROUTES.PORTAL_INVITE, locale)}/${encodeURIComponent(token)}`;
+}
+
 /**
  * The active company is always a path segment and is verified again by the portal gate. A
  * section is only ever a fixed slug from `PortalSection`, so it needs no encoding.
@@ -68,4 +73,14 @@ export function signInPathWithRedirect(
     [REDIRECT_URL_QUERY_PARAM]: redirectUrl,
   });
   return `${signInPathFor(locale)}?${params.toString()}`;
+}
+
+export function signUpPathWithRedirect(
+  locale: Locale,
+  redirectUrl: string,
+): string {
+  const params = new URLSearchParams({
+    [REDIRECT_URL_QUERY_PARAM]: redirectUrl,
+  });
+  return `${signUpPathFor(locale)}?${params.toString()}`;
 }

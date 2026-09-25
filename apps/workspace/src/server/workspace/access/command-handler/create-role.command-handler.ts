@@ -31,7 +31,18 @@ export async function createRole(
     };
   }
 
-  const { name, description, permissions, scopeAssignable } = validation.data;
+  const { name, description, permissions, scopeAssignable, realm } =
+    validation.data;
+  if (realm === AuthRealm.Portal && scopeAssignable) {
+    return { ok: false, code: RoleErrorCode.ValidationError, errors: [] };
+  }
+  if (
+    permissions.some(
+      (permission) => PERMISSION_DEFINITIONS[permission].realm !== realm,
+    )
+  ) {
+    return { ok: false, code: RoleErrorCode.ValidationError, errors: [] };
+  }
   // System roles appear under their translated label, so a custom role must not look like one.
   if (reservedRoleNameService.isReserved(name)) {
     return { ok: false, code: RoleErrorCode.RoleNameReserved };
@@ -62,7 +73,7 @@ export async function createRole(
 
       await tx.insert(roles).values({
         id: roleId,
-        realm: AuthRealm.Workspace,
+        realm,
         system_key: null,
         name,
         description,
@@ -78,7 +89,7 @@ export async function createRole(
         await tx.insert(rolePermissions).values(
           permissions.map((permission) => ({
             role_id: roleId,
-            realm: AuthRealm.Workspace,
+            realm,
             role_is_system: false,
             permission_key: permission,
             permission_delegable: PERMISSION_DEFINITIONS[permission].delegable,

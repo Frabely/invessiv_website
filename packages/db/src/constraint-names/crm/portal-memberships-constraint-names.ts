@@ -5,7 +5,7 @@ export const PortalMembershipsConstraintName = {
   UserForeignKey: "portal_memberships_user_id_fkey",
   AssignmentForeignKey: "portal_memberships_assignment_fkey",
   VersionCheck: "portal_memberships_version_check",
-  CustomerPersonUnique: "portal_memberships_customer_person_uidx",
+  CustomerPersonUnique: "portal_memberships_active_customer_person_uidx",
   ActiveUserIndex: "portal_memberships_active_user_idx",
   ActiveCustomerIndex: "portal_memberships_active_customer_idx",
 } as const;

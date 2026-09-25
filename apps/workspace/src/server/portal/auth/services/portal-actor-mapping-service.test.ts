@@ -68,6 +68,22 @@ describe("portalActorMappingService.mapRowsToResolution", () => {
     });
   });
 
+  it("resolves a newly redeemed membership after an older membership was revoked", () => {
+    const result = portalActorMappingService.mapRowsToResolution(
+      [
+        row({
+          membership_id: "old-membership",
+          revoked_at: new Date("2026-01-01T00:00:00Z"),
+        }),
+        row({ membership_id: "new-membership", revoked_at: null }),
+      ],
+      CUSTOMER_ID,
+    );
+
+    expect(result.ok).toBe(true);
+    expect(result.ok && result.actor.membershipId).toBe("new-membership");
+  });
+
   it("rejects a membership whose roles never granted portal.access", () => {
     expect(
       portalActorMappingService.mapRowsToResolution(

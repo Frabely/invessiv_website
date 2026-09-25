@@ -39,6 +39,7 @@ const content = getSettingsMembersDictionary("de");
 const permissionsContent = getSettingsPermissionsDictionary("de");
 
 const MEMBER_ROLE: RoleDto = {
+  realm: "workspace",
   id: "role-member",
   name: "Workspace member",
   systemKey: SystemRoleKey.WorkspaceMember,

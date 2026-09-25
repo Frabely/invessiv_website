@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { WORKSPACE_PERMISSION_VALUES } from "@invessiv/common/constants/auth/permission-definitions";
+import { PERMISSION_VALUES } from "@invessiv/common/constants/auth/permissions";
 import {
   PERMISSION_GROUP_PERMISSIONS,
   PERMISSION_GROUP_VALUES,
@@ -19,15 +19,13 @@ describe("PERMISSION_GROUP_PERMISSIONS", () => {
     ]);
   });
 
-  it("places every workspace permission in exactly one group", () => {
+  it("places every permission in exactly one group", () => {
     const grouped = PERMISSION_GROUP_VALUES.flatMap(
       (group) => PERMISSION_GROUP_PERMISSIONS[group],
     );
 
     expect(new Set(grouped).size).toBe(grouped.length);
-    expect([...grouped].sort()).toEqual(
-      [...WORKSPACE_PERMISSION_VALUES].sort(),
-    );
+    expect([...grouped].sort()).toEqual([...PERMISSION_VALUES].sort());
   });
 });
 

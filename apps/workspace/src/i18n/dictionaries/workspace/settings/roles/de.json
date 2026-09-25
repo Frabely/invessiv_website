@@ -1,5 +1,8 @@
 {
   "list": {
+    "workspaceRealm": "Mitarbeiter",
+    "portalRealm": "Portal",
+    "portalIntro": "Portalrollen steuern, welche Bereiche eingeladene Kontakte in ihrer Firma sehen.",
     "systemHeading": "Systemrollen",
     "systemDescription": "Fest vorgegeben und nicht änderbar. Du kannst sie Mitgliedern zuweisen.",
     "customHeading": "Eigene Rollen",
@@ -10,6 +13,9 @@
     "memberCountZero": "Niemandem zugewiesen",
     "memberCountOne": "1 Mitglied",
     "memberCountOther": "{count} Mitglieder",
+    "portalCountZero": "Keinem Kontakt zugewiesen",
+    "portalCountOne": "1 Kontakt",
+    "portalCountOther": "{count} Kontakte",
     "inactiveBadge": "Inaktiv",
     "readOnlyBadge": "Nur lesbar",
     "systemRoleType": "Systemrolle",
@@ -21,6 +27,7 @@
     "emptyDescription": "Eigene Rollen geben Mitgliedern genau die Rechte, die sie brauchen. Lege eine an, sobald die Systemrolle „Mitglied“ zu viel oder zu wenig erlaubt."
   },
   "dialog": {
+    "portalRoleType": "Portalrolle",
     "createTitle": "Rolle anlegen",
     "typeSelectionTitle": "Rollentyp wählen",
     "typeSelectionDescription": "Lege zuerst fest, wo die neue Rolle gelten soll. Der Typ kann später nicht geändert werden.",

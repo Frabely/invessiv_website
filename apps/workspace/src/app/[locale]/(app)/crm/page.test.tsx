@@ -27,6 +27,7 @@ const mocks = vi.hoisted(() => ({
   buildProjectLineItemsViewModel: vi.fn(),
   buildTasksViewModel: vi.fn(),
   listProjectLineItemsByCustomer: vi.fn(),
+  getCustomerPortalAccess: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -48,6 +49,10 @@ vi.mock(
 vi.mock(
   "@/server/workspace/crm/query-handler/get-customer-cockpit-by-id.query-handler",
   () => ({ getCustomerCockpitById: mocks.getCustomerCockpitById }),
+);
+vi.mock(
+  "@/server/workspace/crm/query-handler/get-customer-portal-access.query-handler",
+  () => ({ getCustomerPortalAccess: mocks.getCustomerPortalAccess }),
 );
 vi.mock(
   "@/server/workspace/crm/query-handler/list-active-customer-categories.query-handler",
@@ -165,6 +170,7 @@ describe("CrmPage", () => {
     });
     mocks.getCustomerById.mockResolvedValue(null);
     mocks.getCustomerCockpitById.mockResolvedValue(null);
+    mocks.getCustomerPortalAccess.mockResolvedValue(null);
   });
 
   afterEach(() => {
@@ -243,6 +249,30 @@ describe("CrmPage", () => {
 
     expect(screen.getByTestId("cockpit")).toBeInTheDocument();
     expect(mocks.getCustomerCockpitById).toHaveBeenCalledWith(
+      TEST_CUSTOMER_ID,
+      expect.anything(),
+    );
+  });
+
+  it("does not load portal access without portal.manage for that customer", async () => {
+    mocks.requireWorkspaceArea.mockResolvedValue(
+      workspaceActorWith([Permission.CustomersRead]),
+    );
+    mocks.getCustomerCockpitById.mockResolvedValue({ id: TEST_CUSTOMER_ID });
+    await renderPage({ cockpit: TEST_CUSTOMER_ID });
+    expect(mocks.getCustomerPortalAccess).not.toHaveBeenCalled();
+  });
+
+  it("loads only the selected customer's portal access with portal.manage", async () => {
+    mocks.requireWorkspaceArea.mockResolvedValue(
+      workspaceActorWith([
+        Permission.CustomersRead,
+        Permission.PortalAccessManage,
+      ]),
+    );
+    mocks.getCustomerCockpitById.mockResolvedValue({ id: TEST_CUSTOMER_ID });
+    await renderPage({ cockpit: TEST_CUSTOMER_ID });
+    expect(mocks.getCustomerPortalAccess).toHaveBeenCalledWith(
       TEST_CUSTOMER_ID,
       expect.anything(),
     );

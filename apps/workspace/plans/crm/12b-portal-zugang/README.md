@@ -1,6 +1,6 @@
 # Ordner 12b — Portalzugang und Mehrfirmenzugriff
 
-> **Status:** offen · **Abhängigkeiten:** 12a · **Aufwand:** 3–4 Tage · **Reviewziel:** 60–80 Dateien
+> **Status:** läuft · **Abhängigkeiten:** 12a · **Aufwand:** 3–4 Tage · **Reviewziel:** 60–80 Dateien
 
 ## Ziel und Stand nach Merge
 
@@ -12,10 +12,8 @@
 Kundenkontakte können sicher eingeladen werden, sich mit eigenem Clerk-Login anmelden, zwischen berechtigten Firmen
 wechseln und den Zugang sofort verlieren. Jeder Kontakt hat eigene Portalrollen. Nach Merge ist eine minimale, aber
 ehrlich nutzbare Portalseite mit Firmenname, Firmenwechsler und Abmelden aktiv; fachliche Module folgen ab Ordner 13.
-Das Flag `FeatureFlag.Portal` wird mit diesem Ordner eingeschaltet. Der Flag-Mechanismus selbst
-(`isFeatureEnabled(FeatureFlag.Portal)` an jedem Gate) bleibt danach als Kill-Switch bestehen — seine Entfernung ist
-kein Teil dieses oder des folgenden Ordners, sondern ein eigener, bewusst später angesetzter Cleanup-Task, erst wenn
-das Portal (ab Ordner 13) produktiv stabil gelaufen ist.
+Das Portal ist nach diesem Ordner für eingeladene Kontakte nutzbar. Die Autorisierung erfolgt
+bei jeder Anfrage über die aktive Mitgliedschaft und die Portalrollen.
 
 ## Einladung und Identität
 
@@ -59,5 +57,5 @@ das Portal (ab Ordner 13) produktiv stabil gelaufen ist.
 
 ## Rollback
 
-Einladungen stoppen und `FeatureFlag.Portal` ausschalten. Mitgliedschaften bleiben gespeichert; weil es keinen
-Sitzungszustand gibt, endet der Zugang mit dem Flag sofort und vollständig. Der interne Workspace bleibt unabhängig.
+Einladungen stoppen und bei Bedarf aktive Portalmitgliedschaften widerrufen. Für einen technischen
+Rollback die vorherige App-Version bereitstellen; gespeicherte Mitgliedschaften bleiben erhalten.

@@ -94,6 +94,9 @@ Const-Objekt — nicht zusätzlich im DDL-Text und nicht im Modell.
   CHECK-Constraints nur erweitern und nie verengen. Rückbau erst, wenn der letzte Leser weg ist.
   Einzige dokumentierte Ausnahme: `0024` entfernt die leeren, von keiner App-Version gelesenen Legacy-Spalten an
   `workspace_members` hinter einem Leerheits-Preflight (Begründung: `plans/crm/03-mitglieder-und-auth/README.md`).
+  Weitere Ausnahme `0039`: Der vollständige Unique-Index aus `0038` verhindert eine neue Portalmitgliedschaft nach
+  Widerruf. `0039` legt zuerst den partiellen Ersatzindex an und entfernt danach nur den alten Index. Die Daten
+  bleiben erhalten; die Eindeutigkeit aktiver Mitgliedschaften ist durchgehend gesichert.
 - Idempotent: `CREATE … IF NOT EXISTS`, `--> statement-breakpoint` zwischen den Statements, ein
   zweiter Lauf ist folgenlos.
 - Eine bereits in `schema_migrations` registrierte Datei wird **niemals** verändert oder umbenannt.

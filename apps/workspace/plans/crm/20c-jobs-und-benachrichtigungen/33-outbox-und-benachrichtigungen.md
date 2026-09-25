@@ -81,6 +81,11 @@ gewinnt, und die übrigen fallen still weg.
   begrenzter Batchgröße. Ein Lauf arbeitet die Queue, bis Batchgrenze oder Zeitbudget erreicht ist.
 - Jobtypen zunächst Aufgabenfolge, Aufgabenreminder, Überfälligkeit, Digest und Mail, dazu der
   tägliche Queue-Cleanup.
+- Mit dem ersten wirksamen Portal-E-Mail-Versand die in 12b ausgeblendeten Optionen aktivieren:
+  Checkbox im Einladungsdialog und Schalter an aktiven Mitgliedschaften in der CRM-Kundenakte,
+  jeweils mit DE/EN-Texten und Tests. Der bestehende versionierte PATCH-Pfad wird dafür genutzt;
+  auch der Portal-Selbstschalter darf erst dann sichtbar werden. Vorher bleibt der gespeicherte
+  Vorgabewert `email_notifications_enabled = true` ohne sichtbare Einstellung.
 - **Zwei Zeitpläne auf dieselbe Route** in `apps/workspace/vercel.json`. Vercel-Cron rechnet in UTC;
   das Geschäftsfenster ist deshalb großzügig gesetzt und verschiebt sich mit der Sommerzeit um eine
   Stunde. Das ist folgenlos, weil der Runner idempotent ist und ein Lauf zu viel nichts kostet außer

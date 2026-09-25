@@ -30,6 +30,7 @@ import {
   getCrmFormDictionary,
   getCrmListDictionary,
   getCrmMetaDictionary,
+  getCrmPortalAccessDictionary,
   getCrmProjectLineItemsDictionary,
   getCrmShellDictionary,
   getCrmTasksDictionary,
@@ -60,6 +61,7 @@ import { listAccessCustomerProjects } from "@/server/workspace/access/query-hand
 import { listRoleAssignmentOptions } from "@/server/workspace/access/query-handler/list-role-assignment-options.query-handler";
 import { listWorkspaceMembers } from "@/server/workspace/access/query-handler/list-workspace-members.query-handler";
 import { responsibilityAccessService } from "@/server/workspace/shared/services/responsibility-access-service";
+import { getCustomerPortalAccess } from "@/server/workspace/crm/query-handler/get-customer-portal-access.query-handler";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -160,6 +162,13 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
   const cockpitProjects = cockpitCustomer
     ? await listCockpitProjectsByCustomer(cockpitCustomer.id, actor)
     : null;
+  const portalAccess =
+    cockpitCustomer &&
+    canOn(actor, Permission.PortalAccessManage, {
+      customerId: cockpitCustomer.id,
+    })
+      ? await getCustomerPortalAccess(cockpitCustomer.id, actor)
+      : null;
   const projectLineItemsViewModel =
     cockpitCustomer && cockpitProjects
       ? await buildProjectLineItemsViewModel({
@@ -319,6 +328,12 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
           tasks={tasksViewModel ?? undefined}
           tasksContent={
             tasksViewModel ? getCrmTasksDictionary(activeLocale) : undefined
+          }
+          portalAccess={portalAccess ?? undefined}
+          portalAccessContent={
+            portalAccess
+              ? getCrmPortalAccessDictionary(activeLocale)
+              : undefined
           }
         />
       ) : null}
