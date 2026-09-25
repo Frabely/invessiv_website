@@ -21,8 +21,7 @@ import {
 } from "@invessiv/db/record-configuration";
 import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
 import { portalInvitationState } from "@/common/patterns/portal/portal-invitation-state";
-import { portalRoleValidationService } from "@/server/shared/services/portal-role-validation-service";
-import { portalMembershipPresenceService } from "@/server/shared/services/portal-membership-presence-service";
+import { portalAccessValidationService } from "@/server/shared/services/portal-access-validation-service";
 
 type RedeemPortalInvitationResult =
   | { ok: true; customerId: string }
@@ -180,7 +179,7 @@ export async function redeemPortalInvitation(
     if (!assignment)
       return { ok: false, code: PortalInvitationErrorCode.Invalid };
     if (
-      await portalMembershipPresenceService.hasActiveMembership(
+      await portalAccessValidationService.hasActiveMembership(
         tx,
         assignment.customerId,
         assignment.personId,
@@ -193,7 +192,9 @@ export async function redeemPortalInvitation(
       .from(portalInvitationRoles)
       .where(eq(portalInvitationRoles.portal_invitation_id, invitation.id));
     const roleIds = roleRows.map((row) => row.roleId);
-    if (!(await portalRoleValidationService.areActivePortalRoles(tx, roleIds)))
+    if (
+      !(await portalAccessValidationService.areActivePortalRoles(tx, roleIds))
+    )
       return { ok: false, code: PortalInvitationErrorCode.Invalid };
 
     const userId = await resolveOrCreatePortalUser(

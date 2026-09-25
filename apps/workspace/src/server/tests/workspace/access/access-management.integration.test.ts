@@ -47,7 +47,7 @@ import { addWorkspaceMember } from "@/server/workspace/access/command-handler/ad
 import { createRole } from "@/server/workspace/access/command-handler/create-role.command-handler";
 import { replaceWorkspaceMemberRoles } from "@/server/workspace/access/command-handler/replace-workspace-member-roles.command-handler";
 import { updateWorkspaceMemberStatus } from "@/server/workspace/access/command-handler/update-workspace-member-status.command-handler";
-import { roleAssignmentService } from "@/server/workspace/access/services/role-assignment-service";
+import { memberRoleAssignmentService } from "@/server/workspace/access/services/member-role-assignment-service";
 import { workspaceOwnerInvariantService } from "@/server/workspace/auth/services/workspace-owner-invariant-service";
 
 vi.mock("server-only", () => ({}));
@@ -589,7 +589,7 @@ describe.skipIf(!RUN_INTEGRATION)(
       });
 
       const assignmentValidation = db.transaction(async (tx) => {
-        const result = await roleAssignmentService.checkAssignable(tx, {
+        const result = await memberRoleAssignmentService.checkAssignable(tx, {
           roleIds: [role.id],
           currentRoleIds: [],
         });

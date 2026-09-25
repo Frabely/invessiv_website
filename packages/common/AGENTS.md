@@ -53,6 +53,13 @@ export const FOO_KIND_VALUES = [FooKind.Bar, FooKind.Baz] as const;
 Alle bestehenden `as const`-Arrays in `packages/common/src/constants/**`, die String-Literale als Union-Typ exponieren,
 sind schrittweise auf dieses Pattern umzustellen (siehe `plans/Todo.md`).
 
+## Eine Contract-Datei pro Contract (verbindlich)
+
+Unter `contracts/**` erhält jeder eigenständige DTO-, Row- oder Result-Contract eine eigene, nach ihm benannte Datei (z.
+B. `portal-access.dto.ts` für `PortalAccessDto`). Keine Sammeldatei mit mehreren eigenständigen Contracts;
+abhängige Contracts werden per `import type` eingebunden. Nur rein lokale, nicht exportierte Hilfstypen dürfen in
+derselben Datei bleiben.
+
 ## Contract-Felder: immer camelCase
 
 Alle Felder in `contracts/**/*.dto.ts` verwenden **camelCase** — nie `snake_case`.

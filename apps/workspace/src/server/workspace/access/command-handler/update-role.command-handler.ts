@@ -22,8 +22,7 @@ import { rolePermissions, roles } from "@invessiv/db/record-configuration";
 import { RolesConstraintName } from "@invessiv/db/constraint-names/auth/roles-constraint-names";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessSchemas } from "@/server/workspace/access/services/access-schemas";
-import { reservedRoleNameService } from "@/server/workspace/access/services/reserved-role-name-service";
-import { roleReadService } from "@/server/workspace/access/services/role-read-service";
+import { roleService } from "@/server/workspace/access/services/role-service";
 import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
 import { updateVersioned } from "@/server/workspace/shared/update-versioned";
 import { postgresErrorService } from "@/server/workspace/shared/services/postgres-error-service";
@@ -114,7 +113,7 @@ async function resolveFailedVersionBump(
   isVersionConflict: boolean,
 ): Promise<UpdateRoleResult> {
   const fresh = isVersionConflict
-    ? await roleReadService.findById(tx, roleId)
+    ? await roleService.findById(tx, roleId)
     : null;
   if (!fresh) {
     return { ok: false, code: RoleErrorCode.RoleNotFound };
@@ -139,7 +138,7 @@ async function updateRoleInTransaction(
 ): Promise<UpdateRoleResult> {
   await lockRole(tx, roleId);
 
-  const current = await roleReadService.findById(tx, roleId);
+  const current = await roleService.findById(tx, roleId);
   if (!current) {
     return { ok: false, code: RoleErrorCode.RoleNotFound };
   }
@@ -167,7 +166,7 @@ async function updateRoleInTransaction(
   ) {
     return { ok: false, code: RoleErrorCode.PermissionNotScopeAssignable };
   }
-  if (reservedRoleNameService.isReserved(next.name)) {
+  if (roleService.isReservedName(next.name)) {
     return { ok: false, code: RoleErrorCode.RoleNameReserved };
   }
 
@@ -215,7 +214,7 @@ async function updateRoleInTransaction(
     occurredAt: new Date(),
   });
 
-  const role = await roleReadService.findById(tx, roleId);
+  const role = await roleService.findById(tx, roleId);
   if (!role) {
     throw new Error("Role is missing after its update");
   }

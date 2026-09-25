@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
-import { portalRoleValidationService } from "@/server/shared/services/portal-role-validation-service";
+import { portalAccessValidationService } from "@/server/shared/services/portal-access-validation-service";
 
 vi.mock("server-only", () => ({}));
 
@@ -16,11 +16,11 @@ function transactionWithAvailableRoles(
   return { select: () => query } as unknown as ContactDatabaseTransaction;
 }
 
-describe("portalRoleValidationService", () => {
+describe("portalAccessValidationService", () => {
   it("accepts a complete set of active portal roles", async () => {
     const tx = transactionWithAvailableRoles(["role-a", "role-b"]);
     expect(
-      await portalRoleValidationService.areActivePortalRoles(tx, [
+      await portalAccessValidationService.areActivePortalRoles(tx, [
         "role-a",
         "role-b",
       ]),
@@ -30,7 +30,7 @@ describe("portalRoleValidationService", () => {
   it("rejects a set when a selected role is unavailable", async () => {
     const tx = transactionWithAvailableRoles(["role-a"]);
     expect(
-      await portalRoleValidationService.areActivePortalRoles(tx, [
+      await portalAccessValidationService.areActivePortalRoles(tx, [
         "role-a",
         "role-b",
       ]),
@@ -45,7 +45,31 @@ describe("portalRoleValidationService", () => {
     };
     const tx = { select: () => query } as unknown as ContactDatabaseTransaction;
     expect(
-      await portalRoleValidationService.areActivePortalRoles(tx, ["role-a"]),
+      await portalAccessValidationService.areActivePortalRoles(tx, ["role-a"]),
     ).toBe(false);
   });
+
+  it.each([
+    { rows: [{ id: "membership-a" }], expected: true },
+    { rows: [], expected: false },
+  ])(
+    "checks active membership presence: $expected",
+    async ({ rows, expected }) => {
+      const query = {
+        from: () => query,
+        where: () => query,
+        limit: async () => rows,
+      };
+      const tx = {
+        select: () => query,
+      } as unknown as ContactDatabaseTransaction;
+      expect(
+        await portalAccessValidationService.hasActiveMembership(
+          tx,
+          "customer-a",
+          "person-a",
+        ),
+      ).toBe(expected);
+    },
+  );
 });

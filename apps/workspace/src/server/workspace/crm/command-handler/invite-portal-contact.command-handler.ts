@@ -3,7 +3,6 @@ import "server-only";
 import { createHash, randomBytes } from "node:crypto";
 
 import { and, eq } from "drizzle-orm";
-import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { PortalAccessErrorCode } from "@invessiv/common/constants/crm/errors/portal-access-error-codes";
 import type { InvitePortalContactRequestDto } from "@invessiv/common/contracts/crm/invite-portal-contact-request.dto";
 import type { InvitePortalContactResult } from "@invessiv/common/contracts/crm/results/invite-portal-contact-result";
@@ -14,8 +13,6 @@ import {
 import {
   customerContactAssignments,
   customers,
-  portalInvitationRoles,
-  portalInvitations,
 } from "@invessiv/db/record-configuration";
 import { canOn } from "@/common/patterns/auth/can-on";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
@@ -25,22 +22,11 @@ import { SecurityEventType } from "@invessiv/common/constants/auth/security-even
 import { SecuritySubjectType } from "@invessiv/common/constants/auth/security-subject-types";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { isUuid } from "@invessiv/common/patterns/validation/is-uuid";
-import { portalRoleValidationService } from "@/server/shared/services/portal-role-validation-service";
-import { portalMembershipPresenceService } from "@/server/shared/services/portal-membership-presence-service";
-import { portalInvitationRevocationService } from "@/server/workspace/crm/services/portal-access/portal-invitation-revocation-service";
+import { portalAccessValidationService } from "@/server/shared/services/portal-access-validation-service";
+import { portalAccessManagementService } from "@/server/workspace/crm/services/portal-access/portal-access-management-service";
 
 const INVITATION_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 type Assignment = { id: string; personId: string };
-type CreateInvitationArgs = {
-  tx: ContactDatabaseTransaction;
-  input: InvitePortalContactRequestDto;
-  assignmentId: string;
-  roleIds: string[];
-  tokenHash: string;
-  expiresAt: Date;
-  actor: WorkspaceActor;
-  now: Date;
-};
 
 function validInput(
   input: InvitePortalContactRequestDto | null,
@@ -92,39 +78,6 @@ async function findPreviewConfirmation(
   return customer ?? null;
 }
 
-async function createInvitationWithRoles({
-  tx,
-  input,
-  assignmentId,
-  roleIds,
-  tokenHash,
-  expiresAt,
-  actor,
-  now,
-}: CreateInvitationArgs): Promise<string> {
-  const invitationId = crypto.randomUUID();
-  await tx.insert(portalInvitations).values({
-    id: invitationId,
-    assignment_id: assignmentId,
-    token_hash: tokenHash,
-    email_notifications_enabled: input.emailNotificationsEnabled,
-    expires_at: expiresAt,
-    redeemed_at: null,
-    revoked_at: null,
-    created_by_member_id: actor.workspaceMemberId,
-    created_at: now,
-    updated_at: now,
-  });
-  await tx.insert(portalInvitationRoles).values(
-    roleIds.map((roleId) => ({
-      portal_invitation_id: invitationId,
-      role_id: roleId,
-      role_realm: AuthRealm.Portal,
-    })),
-  );
-  return invitationId;
-}
-
 /** Creates an invitation without retaining the plaintext token beyond this response. */
 export async function invitePortalContact(
   customerId: string,
@@ -164,7 +117,7 @@ export async function invitePortalContact(
     }
 
     if (
-      await portalMembershipPresenceService.hasActiveMembership(
+      await portalAccessValidationService.hasActiveMembership(
         tx,
         customerId,
         assignment.personId,
@@ -175,7 +128,7 @@ export async function invitePortalContact(
 
     const selectedRoleIds = [...new Set(input.roleIds)];
     if (
-      !(await portalRoleValidationService.areActivePortalRoles(
+      !(await portalAccessValidationService.areActivePortalRoles(
         tx,
         selectedRoleIds,
       ))
@@ -184,21 +137,21 @@ export async function invitePortalContact(
     }
 
     // A re-invite invalidates the old link before the new invitation is inserted.
-    await portalInvitationRevocationService.forAssignment(
+    await portalAccessManagementService.revokeInvitationsForAssignment(
       tx,
       assignment.id,
       now,
     );
-    const invitationId = await createInvitationWithRoles({
-      tx,
-      input,
-      assignmentId: assignment.id,
-      roleIds: selectedRoleIds,
-      tokenHash,
-      expiresAt,
-      actor,
-      now,
-    });
+    const invitationId =
+      await portalAccessManagementService.createInvitationWithRoles(tx, {
+        assignmentId: assignment.id,
+        roleIds: selectedRoleIds,
+        tokenHash,
+        expiresAt,
+        emailNotificationsEnabled: input.emailNotificationsEnabled,
+        createdByMemberId: actor.workspaceMemberId,
+        now,
+      });
     await securityEventService.createSecurityEvent(tx, {
       type: SecurityEventType.PortalInvitationCreated,
       actor: { type: ActorType.User, userId: actor.userId },

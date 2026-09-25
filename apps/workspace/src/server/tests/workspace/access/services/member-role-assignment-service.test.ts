@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
 import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
-import { roleAssignmentService } from "@/server/workspace/access/services/role-assignment-service";
+import { memberRoleAssignmentService } from "@/server/workspace/access/services/member-role-assignment-service";
 
 vi.mock("server-only", () => ({}));
 
@@ -35,17 +35,17 @@ function executorReturning(rows: RoleRow[]) {
     from: () => ({ where: () => ({ for: forLock }) }),
   }));
   const executor = { select } as unknown as Parameters<
-    typeof roleAssignmentService.checkAssignable
+    typeof memberRoleAssignmentService.checkAssignable
   >[0];
   return { executor, forLock, select };
 }
 
-describe("roleAssignmentService.checkAssignable", () => {
+describe("memberRoleAssignmentService.checkAssignable", () => {
   it("accepts an empty selection without querying", async () => {
     const { executor, select } = executorReturning([]);
 
     expect(
-      await roleAssignmentService.checkAssignable(executor, {
+      await memberRoleAssignmentService.checkAssignable(executor, {
         roleIds: [],
         currentRoleIds: [],
       }),
@@ -57,7 +57,7 @@ describe("roleAssignmentService.checkAssignable", () => {
     const { executor, forLock } = executorReturning([row(ROLE_A), row(ROLE_B)]);
 
     expect(
-      await roleAssignmentService.checkAssignable(executor, {
+      await memberRoleAssignmentService.checkAssignable(executor, {
         roleIds: [ROLE_A, ROLE_B],
         currentRoleIds: [],
       }),
@@ -71,7 +71,7 @@ describe("roleAssignmentService.checkAssignable", () => {
     ]);
 
     expect(
-      await roleAssignmentService.checkAssignable(executor, {
+      await memberRoleAssignmentService.checkAssignable(executor, {
         roleIds: [ROLE_A],
         currentRoleIds: [],
       }),
@@ -84,7 +84,7 @@ describe("roleAssignmentService.checkAssignable", () => {
     ]);
 
     expect(
-      await roleAssignmentService.checkAssignable(executor, {
+      await memberRoleAssignmentService.checkAssignable(executor, {
         roleIds: [ROLE_A],
         currentRoleIds: [ROLE_A],
       }),
@@ -98,7 +98,7 @@ describe("roleAssignmentService.checkAssignable", () => {
     ]);
 
     expect(
-      await roleAssignmentService.checkAssignable(executor, {
+      await memberRoleAssignmentService.checkAssignable(executor, {
         roleIds: [ROLE_A, ROLE_B],
         currentRoleIds: [ROLE_B],
       }),
@@ -124,7 +124,7 @@ describe("roleAssignmentService.checkAssignable", () => {
     const { executor } = executorReturning(rows);
 
     expect(
-      await roleAssignmentService.checkAssignable(executor, {
+      await memberRoleAssignmentService.checkAssignable(executor, {
         roleIds: [ROLE_A, ROLE_B],
         currentRoleIds,
       }),
@@ -138,7 +138,7 @@ describe("roleAssignmentService.checkAssignable", () => {
     ]);
 
     expect(
-      await roleAssignmentService.checkAssignable(executor, {
+      await memberRoleAssignmentService.checkAssignable(executor, {
         roleIds: [ROLE_A, ROLE_B],
         currentRoleIds: [ROLE_B],
       }),

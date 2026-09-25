@@ -130,6 +130,11 @@ Detailregeln stehen in den scope-spezifischen Dateien (siehe Index). Global gilt
 - **Keine Logik-Duplikate.** Taucht dieselbe Funktion, derselbe Unwrap-/Mapping-Block oder dieselbe bedingte
   Darstellung in einer zweiten Datei praktisch unverändert auf, wird sie in einen gemeinsamen, benannten Helfer
   extrahiert statt kopiert — unabhängig davon, ob der Baustein exportiert wird oder lokal bleibt.
+- **Services nach fachlichem Kontext bündeln.** In Frontend und Backend fasst ein Service zusammengehörige Operationen
+  an einer Entität oder einem klaren Kontext zusammen (z. B. Kunde anlegen, ändern und löschen). Für eine einzelne
+  Funktion keinen eigenen `*-service.ts` anlegen: zu einem bestehenden passenden Service hinzufügen oder einen passend
+  benannten Helfer verwenden. Unterschiedliche Fachkontexte nicht allein zur Vermeidung kleiner Dateien vermischen.
+  Handler bleiben nach genau einem Anwendungsfall benannt und orchestrieren diesen.
 - **Error-Codes** als Const-Objekt in `…/constants/<domain>/`, Message-Texte nur in co-located `*-error.ts` der
   Nutzungsschicht. **URL-Pfade** ausschließlich aus typisierten Konstanten (`SITE_ROUTES` in `src/config/routes.ts`) /
   Pfad-Helfern zusammenbauen, nie aus mehreren String-Literalen. Lokalisierte Pfade laufen über

@@ -26,9 +26,18 @@ vi.mock("@invessiv/db/core", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@invessiv/db/core")>()),
   getDrizzleDatabaseClient: mocks.getDatabase,
 }));
-vi.mock("@/server/workspace/access/services/role-read-service", () => ({
-  roleReadService: { findById: mocks.findById },
-}));
+vi.mock(
+  "@/server/workspace/access/services/role-service",
+  async (importOriginal) => {
+    const original =
+      await importOriginal<
+        typeof import("@/server/workspace/access/services/role-service")
+      >();
+    return {
+      roleService: { ...original.roleService, findById: mocks.findById },
+    };
+  },
+);
 vi.mock("@/server/workspace/auth/services/security-event-service", () => ({
   securityEventService: { createSecurityEvent: mocks.createEvent },
 }));

@@ -1,9 +1,13 @@
 import "server-only";
 
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq, inArray, isNull } from "drizzle-orm";
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
-import { rolePermissions, roles } from "@invessiv/db/record-configuration";
+import {
+  portalMemberships,
+  rolePermissions,
+  roles,
+} from "@invessiv/db/record-configuration";
 import { hasUsablePortalRoles } from "@/common/patterns/portal/has-usable-portal-roles";
 
 async function areActivePortalRoles(
@@ -25,4 +29,26 @@ async function areActivePortalRoles(
   return hasUsablePortalRoles(roleIds, available);
 }
 
-export const portalRoleValidationService = { areActivePortalRoles } as const;
+async function hasActiveMembership(
+  tx: ContactDatabaseTransaction,
+  customerId: string,
+  personId: string,
+): Promise<boolean> {
+  const [membership] = await tx
+    .select({ id: portalMemberships.id })
+    .from(portalMemberships)
+    .where(
+      and(
+        eq(portalMemberships.customer_id, customerId),
+        eq(portalMemberships.person_id, personId),
+        isNull(portalMemberships.revoked_at),
+      ),
+    )
+    .limit(1);
+  return membership !== undefined;
+}
+
+export const portalAccessValidationService = {
+  areActivePortalRoles,
+  hasActiveMembership,
+} as const;

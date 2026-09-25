@@ -13,6 +13,10 @@ import {
 } from "@invessiv/db/record-configuration";
 import type { AccessDatabaseExecutor } from "@/server/workspace/access/access-types";
 import { roleMappingService } from "@/server/workspace/access/services/role-mapping-service";
+import { SYSTEM_ROLE_DEFINITIONS } from "@invessiv/common/constants/auth/system-role-definitions";
+import { SYSTEM_ROLE_KEY_VALUES } from "@invessiv/common/constants/auth/system-role-keys";
+import { SUPPORTED_LOCALES } from "@/config/i18n";
+import { getSettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 
 async function load(
   executor: AccessDatabaseExecutor,
@@ -97,7 +101,31 @@ async function findById(
   return role ?? null;
 }
 
-export const roleReadService = {
+const ROLE_NAME_WHITESPACE_TO_COLLAPSE = /\s+/g;
+
+function normalizeRoleName(name: string): string {
+  return name
+    .trim()
+    .replace(ROLE_NAME_WHITESPACE_TO_COLLAPSE, " ")
+    .toLowerCase();
+}
+
+const RESERVED_ROLE_NAMES = new Set(
+  SYSTEM_ROLE_KEY_VALUES.flatMap((systemKey) => [
+    SYSTEM_ROLE_DEFINITIONS[systemKey].name,
+    ...SUPPORTED_LOCALES.map(
+      (locale) =>
+        getSettingsPermissionsDictionary(locale).systemRoles[systemKey].label,
+    ),
+  ]).map(normalizeRoleName),
+);
+
+function isReservedName(name: string): boolean {
+  return RESERVED_ROLE_NAMES.has(normalizeRoleName(name));
+}
+
+export const roleService = {
   findById,
   list,
+  isReservedName,
 } as const;

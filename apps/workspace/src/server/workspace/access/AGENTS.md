@@ -30,7 +30,8 @@ Command- und Query-Handler für Mitglieder, Rollen und den Owner-Flow. Die Actor
 - **Kein Selbst-Entzug.** `revokeWorkspaceOwner` lehnt ab, wenn Actor und Ziel dasselbe Mitglied sind
   (`SELF_OWNER_REVOCATION`), unabhängig von weiteren Ownern. Die Owner-Rolle verliert man nur durch einen anderen Owner.
 - **Systemrollen sind unveränderlich.** Name, Beschreibung, Aktiv-Flag und Rechtesatz ändern sich nur per Migration.
-- **Kein Systemrollen-Name für Custom-Rollen.** `reservedRoleNameService` sperrt den DB-Namen und das übersetzte Label
+- **Kein Systemrollen-Name für Custom-Rollen.** `roleService.isReservedName` sperrt den DB-Namen und das übersetzte
+  Label
   jeder unterstützten Sprache (`ROLE_NAME_RESERVED`). Der Service liest dafür die Settings-Dictionaries; eine neue
   Sprache ist damit automatisch abgedeckt.
 - **`GET /members` bleibt schmal.** `members.read` steckt in der Basisrolle; die Route liefert nur

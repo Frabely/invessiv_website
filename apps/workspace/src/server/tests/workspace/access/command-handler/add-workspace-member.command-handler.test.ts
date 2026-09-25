@@ -36,9 +36,12 @@ vi.mock("@invessiv/db/core", async (importOriginal) => ({
 vi.mock("@/server/workspace/access/services/clerk-directory-service", () => ({
   clerkDirectoryService: { findProfile: mocks.findProfile },
 }));
-vi.mock("@/server/workspace/access/services/role-assignment-service", () => ({
-  roleAssignmentService: { checkAssignable: mocks.checkAssignable },
-}));
+vi.mock(
+  "@/server/workspace/access/services/member-role-assignment-service",
+  () => ({
+    memberRoleAssignmentService: { checkAssignable: mocks.checkAssignable },
+  }),
+);
 vi.mock(
   "@/server/workspace/access/services/workspace-member-read-service",
   () => ({ workspaceMemberReadService: { findById: mocks.findById } }),

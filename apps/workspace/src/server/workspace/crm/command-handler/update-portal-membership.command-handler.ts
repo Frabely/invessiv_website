@@ -21,8 +21,8 @@ import {
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
 import { updateVersioned } from "@/server/workspace/shared/update-versioned";
-import { portalRoleValidationService } from "@/server/shared/services/portal-role-validation-service";
-import { portalMembershipAccessService } from "@/server/workspace/crm/services/portal-access/portal-membership-access-service";
+import { portalAccessValidationService } from "@/server/shared/services/portal-access-validation-service";
+import { portalAccessManagementService } from "@/server/workspace/crm/services/portal-access/portal-access-management-service";
 
 type MembershipRow = typeof portalMemberships.$inferSelect;
 type MembershipUpdateInput =
@@ -132,7 +132,7 @@ export async function updatePortalMembership(
 
   const db = getDrizzleDatabaseClient();
   return db.transaction(async (tx): Promise<MembershipResult> => {
-    const membership = await portalMembershipAccessService.loadAuthorizedActive(
+    const membership = await portalAccessManagementService.loadAuthorizedActive(
       tx,
       membershipId,
       actor,
@@ -141,7 +141,7 @@ export async function updatePortalMembership(
 
     if (
       isRoleReplacement(input) &&
-      !(await portalRoleValidationService.areActivePortalRoles(
+      !(await portalAccessValidationService.areActivePortalRoles(
         tx,
         input.roleIds,
       ))

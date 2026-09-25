@@ -20,7 +20,7 @@ import { WorkspaceMembersConstraintName } from "@invessiv/db/constraint-names/cr
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessSchemas } from "@/server/workspace/access/services/access-schemas";
 import { clerkDirectoryService } from "@/server/workspace/access/services/clerk-directory-service";
-import { roleAssignmentService } from "@/server/workspace/access/services/role-assignment-service";
+import { memberRoleAssignmentService } from "@/server/workspace/access/services/member-role-assignment-service";
 import { workspaceMemberReadService } from "@/server/workspace/access/services/workspace-member-read-service";
 import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
 import { postgresErrorService } from "@/server/workspace/shared/services/postgres-error-service";
@@ -113,10 +113,13 @@ export async function addWorkspaceMember(
   try {
     return await db.transaction(
       async (tx): Promise<AddWorkspaceMemberResult> => {
-        const assignability = await roleAssignmentService.checkAssignable(tx, {
-          roleIds,
-          currentRoleIds: [],
-        });
+        const assignability = await memberRoleAssignmentService.checkAssignable(
+          tx,
+          {
+            roleIds,
+            currentRoleIds: [],
+          },
+        );
         if (!assignability.ok) {
           return assignability;
         }
