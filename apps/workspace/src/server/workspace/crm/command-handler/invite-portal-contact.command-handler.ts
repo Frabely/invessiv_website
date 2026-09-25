@@ -16,7 +16,7 @@ import {
 } from "@invessiv/db/record-configuration";
 import { canOn } from "@/common/patterns/auth/can-on";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
-import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
+import { securityEventService } from "@/server/shared/services/security-event-service";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { SecurityEventType } from "@invessiv/common/constants/auth/security-event-types";
 import { SecuritySubjectType } from "@invessiv/common/constants/auth/security-subject-types";

@@ -1,6 +1,5 @@
 {
   "title": "Portal access",
-  "portalStandard": "Portal standard",
   "intro": "Choose which contacts can enter this customer's portal.",
   "empty": "No one has portal access yet. Invite an existing contact to open the company area.",
   "invite": "Invite contact",

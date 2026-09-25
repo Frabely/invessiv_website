@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, eq, isNull, lt, or } from "drizzle-orm";
+import { and, asc, eq, isNull, lt, or } from "drizzle-orm";
 
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
@@ -65,9 +65,8 @@ export async function resolvePortalActor(
     )
     .where(eq(users.clerk_user_id, clerkUserId))
     // A user can hold two active memberships for the same customer via two different contact
-    // assignments; ordering by the earliest activation makes which one wins deterministic
-    // instead of depending on arbitrary row order from the planner.
-    .orderBy(portalMemberships.activated_at);
+    // assignments. The ID resolves equal activation timestamps consistently.
+    .orderBy(asc(portalMemberships.activated_at), asc(portalMemberships.id));
 
   const resolution = portalActorMappingService.mapRowsToResolution(
     rows,

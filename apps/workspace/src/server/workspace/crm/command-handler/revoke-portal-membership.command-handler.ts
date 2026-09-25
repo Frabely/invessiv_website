@@ -8,7 +8,7 @@ import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { portalMemberships } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { portalAccessManagementService } from "@/server/workspace/crm/services/portal-access/portal-access-management-service";
-import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
+import { securityEventService } from "@/server/shared/services/security-event-service";
 import { updateVersioned } from "@/server/workspace/shared/update-versioned";
 
 /** Access ends on the next request; the membership and role history remain stored. */

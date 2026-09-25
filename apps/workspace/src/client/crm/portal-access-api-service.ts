@@ -2,11 +2,20 @@ import { HttpHeaderName } from "@invessiv/common/constants/http/http-header-name
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import { MediaType } from "@invessiv/common/constants/http/media-types";
-import { PortalAccessErrorCode } from "@invessiv/common/constants/crm/errors/portal-access-error-codes";
+import {
+  PORTAL_ACCESS_ERROR_CODE_VALUES,
+  PortalAccessErrorCode,
+} from "@invessiv/common/constants/crm/errors/portal-access-error-codes";
+import {
+  AUTH_ERROR_CODE_VALUES,
+  AuthErrorCode,
+} from "@invessiv/common/constants/auth/auth-error-codes";
 import type { ConfirmPortalPreviewRequestDto } from "@invessiv/common/contracts/crm/confirm-portal-preview-request.dto";
 import type { InvitePortalContactRequestDto } from "@invessiv/common/contracts/crm/invite-portal-contact-request.dto";
 import type { ReplacePortalMembershipRolesRequestDto } from "@invessiv/common/contracts/crm/replace-portal-membership-roles-request.dto";
 import { portalAccessApiEndpoints } from "@/common/patterns/crm/portal-access-api-endpoints";
+import { versionedJsonMutationService } from "@/client/shared/versioned-json-mutation-service";
+import type { UpdatePortalMembershipRequestDto } from "@invessiv/common/contracts/crm/update-portal-membership-request.dto";
 import type { Locale } from "@/config/i18n";
 
 type MembershipCurrent = {
@@ -14,6 +23,43 @@ type MembershipCurrent = {
   version: number;
   emailNotificationsEnabled: boolean;
 };
+
+const PORTAL_MEMBERSHIP_RESULT_KEY = "membership";
+const PORTAL_VERSIONED_ERROR_CODES = [
+  ...PORTAL_ACCESS_ERROR_CODE_VALUES,
+  ...AUTH_ERROR_CODE_VALUES,
+] as const;
+
+function isMembership(value: unknown): value is MembershipCurrent {
+  return (
+    versionedJsonMutationService.isRecord(value) &&
+    typeof value.id === "string" &&
+    typeof value.version === "number" &&
+    typeof value.emailNotificationsEnabled === "boolean"
+  );
+}
+
+function updateMembership(
+  url: string,
+  method: HttpMethod,
+  request:
+    ReplacePortalMembershipRolesRequestDto | UpdatePortalMembershipRequestDto,
+) {
+  return versionedJsonMutationService.mutateNamed(
+    PORTAL_MEMBERSHIP_RESULT_KEY,
+    url,
+    method,
+    request,
+    (payload) =>
+      versionedJsonMutationService.isRecord(payload) &&
+      isMembership(payload.membership)
+        ? payload.membership
+        : null,
+    isMembership,
+    PORTAL_VERSIONED_ERROR_CODES,
+    AuthErrorCode.Unavailable,
+  );
+}
 
 type ApiResult<T, TCurrent = MembershipCurrent> =
   | { ok: true; value: T }
@@ -84,10 +130,21 @@ export const portalAccessApiService = {
     customerId: string,
     request: ConfirmPortalPreviewRequestDto,
   ) =>
-    send<{ version: number }, { version: number }>(
+    versionedJsonMutationService.mutate(
       portalAccessApiEndpoints.preview(customerId),
       HttpMethod.Post,
       request,
+      (payload) =>
+        versionedJsonMutationService.isRecord(payload) &&
+        payload.ok === true &&
+        typeof payload.version === "number"
+          ? { version: payload.version }
+          : null,
+      (value): value is { version: number } =>
+        versionedJsonMutationService.isRecord(value) &&
+        typeof value.version === "number",
+      PORTAL_VERSIONED_ERROR_CODES,
+      AuthErrorCode.Unavailable,
     ),
   invite: (
     customerId: string,
@@ -100,13 +157,20 @@ export const portalAccessApiService = {
       request,
     ),
   replaceRoles: (id: string, request: ReplacePortalMembershipRolesRequestDto) =>
-    send<{
-      membership: {
-        id: string;
-        version: number;
-        emailNotificationsEnabled: boolean;
-      };
-    }>(portalAccessApiEndpoints.membershipRoles(id), HttpMethod.Put, request),
+    updateMembership(
+      portalAccessApiEndpoints.membershipRoles(id),
+      HttpMethod.Put,
+      request,
+    ),
+  updateNotifications: (
+    id: string,
+    request: UpdatePortalMembershipRequestDto,
+  ) =>
+    updateMembership(
+      portalAccessApiEndpoints.membership(id),
+      HttpMethod.Patch,
+      request,
+    ),
   revokeMembership: (id: string) =>
     send<{ ok: boolean }>(
       portalAccessApiEndpoints.membership(id),

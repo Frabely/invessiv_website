@@ -4,11 +4,13 @@ import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ButtonControl, Dialog, DialogSize } from "@invessiv/ui";
 import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
+import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { PortalAccessDto } from "@invessiv/common/contracts/crm/portal-access.dto";
 import { portalAccessApiService } from "@/client/crm/portal-access-api-service";
 import type { Locale } from "@/config/i18n";
 import type { CrmPortalAccessDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { getPortalShellDictionary } from "@/i18n/dictionaries/portal";
+import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import { PORTAL_NAV_ITEMS } from "@/common/constants/portal/portal-nav-items";
 import { portalAccessErrorMessage } from "@/common/patterns/crm/portal-access-error-message";
 import { PortalInviteStepContent } from "../portal-invite-step-content/portal-invite-step-content";
@@ -17,6 +19,7 @@ import styles from "./invite-portal-contact-dialog.module.css";
 export interface PortalInviteDialogProps {
   access: PortalAccessDto;
   content: CrmPortalAccessDictionary;
+  permissionsContent: SettingsPermissionsDictionary;
   initialAssignmentId: string;
   locale: Locale;
   onCloseAction: () => void;
@@ -25,6 +28,7 @@ export interface PortalInviteDialogProps {
 export function PortalInviteDialog({
   access,
   content,
+  permissionsContent,
   initialAssignmentId,
   locale,
   onCloseAction,
@@ -80,7 +84,7 @@ export function PortalInviteDialog({
       },
     );
     if (!confirmed.ok) {
-      if (confirmed.current) {
+      if (confirmed.code === ConcurrencyErrorCode.VersionConflict) {
         // Adopts the fresh version on a conflict so the input isn't lost — the user
         // simply retries with the same choices instead of closing and reopening the dialog.
         setCustomerVersion(confirmed.current.version);
@@ -186,6 +190,7 @@ export function PortalInviteDialog({
       <PortalInviteStepContent
         access={access}
         content={content}
+        permissionsContent={permissionsContent}
         baseId={baseId}
         assignmentId={assignmentId}
         roleIds={roleIds}

@@ -8,31 +8,17 @@ import { isSupportedLocale } from "@/config/i18n";
 import { withCrmPermission } from "@/lib/auth/api";
 import { portalInvitePathFor } from "@/lib/auth/routes";
 import { readJsonBody } from "@/lib/http/read-json-body";
+import { portalAccessApiError } from "@/lib/workspace/crm/portal-access-api-error";
 import { invitePortalContact } from "@/server/workspace/crm/command-handler/invite-portal-contact.command-handler";
 import { portalAccessSchemas } from "@/server/workspace/crm/services/portal-access/portal-access-schemas";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
-const ERROR_STATUS: Record<PortalAccessErrorCode, HttpResponseCode> = {
-  [PortalAccessErrorCode.CustomerNotFound]: HttpResponseCode.NotFound,
-  [PortalAccessErrorCode.AssignmentNotFound]: HttpResponseCode.NotFound,
-  [PortalAccessErrorCode.PreviewNotConfirmed]: HttpResponseCode.Conflict,
-  [PortalAccessErrorCode.MembershipAlreadyActive]: HttpResponseCode.Conflict,
-  [PortalAccessErrorCode.InvalidPortalRole]: HttpResponseCode.BadRequest,
-  [PortalAccessErrorCode.ValidationError]: HttpResponseCode.BadRequest,
-  [PortalAccessErrorCode.NotFound]: HttpResponseCode.NotFound,
-  [PortalAccessErrorCode.InvalidRoles]: HttpResponseCode.BadRequest,
-  [PortalAccessErrorCode.Unavailable]: HttpResponseCode.ServiceUnavailable,
-};
-
 export async function POST(request: NextRequest, { params }: RouteContext) {
   const { id } = await params;
   const locale = request.nextUrl.searchParams.get("locale");
   if (!locale || !isSupportedLocale(locale)) {
-    return Response.json(
-      { code: PortalAccessErrorCode.ValidationError },
-      { status: HttpResponseCode.BadRequest },
-    );
+    return portalAccessApiError(PortalAccessErrorCode.ValidationError);
   }
 
   return withCrmPermission(
@@ -43,10 +29,7 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
         ? portalAccessSchemas.invite.safeParse(parsed.body)
         : null;
       if (!input?.success) {
-        return Response.json(
-          { code: PortalAccessErrorCode.ValidationError },
-          { status: HttpResponseCode.BadRequest },
-        );
+        return portalAccessApiError(PortalAccessErrorCode.ValidationError);
       }
 
       try {
@@ -61,16 +44,10 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
           actor,
           inviteUrlForToken,
         );
-        return Response.json(result, {
-          status: result.ok
-            ? HttpResponseCode.Created
-            : ERROR_STATUS[result.code],
-        });
+        if (!result.ok) return portalAccessApiError(result.code);
+        return Response.json(result, { status: HttpResponseCode.Created });
       } catch {
-        return Response.json(
-          { code: PortalAccessErrorCode.Unavailable },
-          { status: HttpResponseCode.ServiceUnavailable },
-        );
+        return portalAccessApiError(PortalAccessErrorCode.Unavailable);
       }
     },
   )(request);

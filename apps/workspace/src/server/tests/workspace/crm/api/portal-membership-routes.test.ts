@@ -4,11 +4,15 @@ import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import { HttpHeaderName } from "@invessiv/common/constants/http/http-header-names";
 import { MediaType } from "@invessiv/common/constants/http/media-types";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
+import { PortalAccessErrorCode } from "@invessiv/common/constants/crm/errors/portal-access-error-codes";
 import { PUT } from "@/app/api/workspace/crm/portal-memberships/[id]/roles/route";
 import { PATCH } from "@/app/api/workspace/crm/portal-memberships/[id]/route";
 
 vi.mock("server-only", () => ({}));
-const mocks = vi.hoisted(() => ({ update: vi.fn() }));
+const mocks = vi.hoisted(() => ({
+  updateNotifications: vi.fn(),
+  replaceRoles: vi.fn(),
+}));
 vi.mock("@/lib/auth/api", () => ({
   withCrmPermission:
     (
@@ -19,9 +23,15 @@ vi.mock("@/lib/auth/api", () => ({
       handler(request, { userId: "user", workspaceMemberId: "member" }),
 }));
 vi.mock(
-  "@/server/workspace/crm/command-handler/update-portal-membership.command-handler",
+  "@/server/workspace/crm/command-handler/update-portal-membership-notifications.command-handler",
   () => ({
-    updatePortalMembership: mocks.update,
+    updatePortalMembershipNotifications: mocks.updateNotifications,
+  }),
+);
+vi.mock(
+  "@/server/workspace/crm/command-handler/replace-portal-membership-roles.command-handler",
+  () => ({
+    replacePortalMembershipRoles: mocks.replaceRoles,
   }),
 );
 
@@ -40,7 +50,10 @@ function request(method: HttpMethod, body: unknown): NextRequest {
 }
 
 describe("portal membership routes", () => {
-  beforeEach(() => mocks.update.mockReset());
+  beforeEach(() => {
+    mocks.updateNotifications.mockReset();
+    mocks.replaceRoles.mockReset();
+  });
 
   it("returns a version conflict DTO while preserving the submitted role set", async () => {
     const current = {
@@ -48,7 +61,7 @@ describe("portal membership routes", () => {
       version: 4,
       emailNotificationsEnabled: true,
     };
-    mocks.update.mockResolvedValue({
+    mocks.replaceRoles.mockResolvedValue({
       ok: false,
       code: "version_conflict",
       conflict: { code: "version_conflict", currentVersion: 4, current },
@@ -61,7 +74,7 @@ describe("portal membership routes", () => {
       currentVersion: 4,
       current,
     });
-    expect(mocks.update).toHaveBeenCalledWith(
+    expect(mocks.replaceRoles).toHaveBeenCalledWith(
       "membership-id",
       input,
       expect.anything(),
@@ -69,7 +82,7 @@ describe("portal membership routes", () => {
   });
 
   it("passes the versioned mail preference to the command", async () => {
-    mocks.update.mockResolvedValue({
+    mocks.updateNotifications.mockResolvedValue({
       ok: true,
       membership: {
         id: "membership-id",
@@ -80,11 +93,25 @@ describe("portal membership routes", () => {
     const input = { version: 4, emailNotificationsEnabled: false };
     const response = await PATCH(request(HttpMethod.Patch, input), context);
     expect(response.status).toBe(HttpResponseCode.Ok);
-    expect(mocks.update).toHaveBeenCalledWith(
+    expect(mocks.updateNotifications).toHaveBeenCalledWith(
       "membership-id",
       input,
       expect.anything(),
     );
+  });
+
+  it("returns the shared portal error envelope for malformed role requests", async () => {
+    const response = await PUT(
+      request(HttpMethod.Put, { version: 1, roleIds: [] }),
+      context,
+    );
+
+    expect(response.status).toBe(HttpResponseCode.BadRequest);
+    expect(await response.json()).toEqual({
+      error: PortalAccessErrorCode.ValidationError,
+      message: expect.any(String),
+    });
+    expect(mocks.replaceRoles).not.toHaveBeenCalled();
   });
 
   it.each([
@@ -93,7 +120,8 @@ describe("portal membership routes", () => {
   ])(
     "maps $code consistently in both membership routes",
     async ({ code, status }) => {
-      mocks.update.mockResolvedValue({ ok: false, code });
+      mocks.updateNotifications.mockResolvedValue({ ok: false, code });
+      mocks.replaceRoles.mockResolvedValue({ ok: false, code });
 
       const patchResponse = await PATCH(
         request(HttpMethod.Patch, {
@@ -109,8 +137,8 @@ describe("portal membership routes", () => {
 
       expect(patchResponse.status).toBe(status);
       expect(putResponse.status).toBe(status);
-      expect(await patchResponse.json()).toEqual({ code });
-      expect(await putResponse.json()).toEqual({ code });
+      expect(await patchResponse.json()).toMatchObject({ error: code });
+      expect(await putResponse.json()).toMatchObject({ error: code });
     },
   );
 });

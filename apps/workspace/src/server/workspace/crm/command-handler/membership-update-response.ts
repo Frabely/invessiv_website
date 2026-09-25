@@ -1,12 +1,12 @@
 import "server-only";
 
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
-import { PortalAccessErrorCode } from "@invessiv/common/constants/crm/errors/portal-access-error-codes";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
-import type { updatePortalMembership } from "@/server/workspace/crm/command-handler/update-portal-membership.command-handler";
+import { portalAccessApiError } from "@/lib/workspace/crm/portal-access-api-error";
+import type { updatePortalMembershipNotifications } from "@/server/workspace/crm/command-handler/update-portal-membership-notifications.command-handler";
 
 type MembershipUpdateResult = Awaited<
-  ReturnType<typeof updatePortalMembership>
+  ReturnType<typeof updatePortalMembershipNotifications>
 >;
 
 export function membershipUpdateResponse(
@@ -24,9 +24,5 @@ export function membershipUpdateResponse(
     });
   }
 
-  const status =
-    result.code === PortalAccessErrorCode.NotFound
-      ? HttpResponseCode.NotFound
-      : HttpResponseCode.BadRequest;
-  return Response.json({ code: result.code }, { status });
+  return portalAccessApiError(result.code);
 }

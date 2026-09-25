@@ -6,6 +6,7 @@ import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurre
 import { CrmEndpointAccessRule } from "@/common/constants/auth/crm-endpoint-access-rules";
 import { withCrmPermission } from "@/lib/auth/api";
 import { readJsonBody } from "@/lib/http/read-json-body";
+import { portalAccessApiError } from "@/lib/workspace/crm/portal-access-api-error";
 import { confirmCustomerPortalPreview } from "@/server/workspace/crm/command-handler/confirm-customer-portal-preview.command-handler";
 import { portalAccessSchemas } from "@/server/workspace/crm/services/portal-access/portal-access-schemas";
 
@@ -21,10 +22,7 @@ export async function POST(request: NextRequest, { params }: Context) {
         ? portalAccessSchemas.preview.safeParse(body.body)
         : null;
       if (!input?.success) {
-        return Response.json(
-          { code: PortalAccessErrorCode.ValidationError },
-          { status: HttpResponseCode.BadRequest },
-        );
+        return portalAccessApiError(PortalAccessErrorCode.ValidationError);
       }
 
       const result = await confirmCustomerPortalPreview(id, input.data, actor);
@@ -34,9 +32,7 @@ export async function POST(request: NextRequest, { params }: Context) {
         return Response.json(result.conflict, {
           status: HttpResponseCode.Conflict,
         });
-      if (result.code === PortalAccessErrorCode.NotFound)
-        return Response.json(result, { status: HttpResponseCode.NotFound });
-      return Response.json(result, { status: HttpResponseCode.BadRequest });
+      return portalAccessApiError(result.code);
     },
   )(request);
 }

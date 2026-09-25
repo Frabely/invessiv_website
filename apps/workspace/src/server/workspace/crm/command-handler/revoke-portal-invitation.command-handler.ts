@@ -13,7 +13,7 @@ import {
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { canOn } from "@/common/patterns/auth/can-on";
 import { isUuid } from "@invessiv/common/patterns/validation/is-uuid";
-import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
+import { securityEventService } from "@/server/shared/services/security-event-service";
 
 /** Revokes one still-open invitation. The customer id is looked up server-side before access is checked. */
 export async function revokePortalInvitation(

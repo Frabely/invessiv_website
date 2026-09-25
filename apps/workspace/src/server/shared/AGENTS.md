@@ -11,9 +11,11 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 Dieser Ordner ist die einzige zulässige Ausnahme von der Trennung zwischen `server/portal/` und
 `server/workspace/` (siehe `src/server/portal/AGENTS.md`): Er hält **Services**, die von Handlern
 beider Welten aufgerufen werden, weil dieselbe Fachlogik in beiden gebraucht wird — z. B. das
-Anlegen/Syncen einer `users`-Zeile für eine Clerk-Identität (`clerk-user-service.ts`) oder
+Anlegen/Syncen einer `users`-Zeile für eine Clerk-Identität (`clerk-user-service.ts`),
 Portal-Rollen-/Mitgliedschafts-Validierung, die sowohl vom Portal-Redeem-Flow als auch von
-CRM-Command-Handlern gebraucht wird (`portal-access-validation-service.ts`).
+CRM-Command-Handlern gebraucht wird (`portal-access-validation-service.ts`), oder das Schreiben von
+Security-Events (`security-event-service.ts`), das von Handlern beider Welten in derselben
+`security_events`-Tabelle protokolliert wird.
 
 ## Verbindlich
 

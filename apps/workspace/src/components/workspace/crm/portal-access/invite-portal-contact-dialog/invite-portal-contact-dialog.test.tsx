@@ -12,6 +12,7 @@ import type { PortalAccessDto } from "@invessiv/common/contracts/crm/portal-acce
 import { PortalAccessErrorCode } from "@invessiv/common/constants/crm/errors/portal-access-error-codes";
 import { AuthErrorCode } from "@invessiv/common/constants/auth/auth-error-codes";
 import { getCrmPortalAccessDictionary } from "@/i18n/dictionaries/workspace/crm";
+import { getSettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import { PortalInviteDialog } from "./invite-portal-contact-dialog";
 
 const mocks = vi.hoisted(() => ({
@@ -135,6 +136,7 @@ describe("PortalInviteDialog", () => {
       <PortalInviteDialog
         access={access}
         content={getCrmPortalAccessDictionary("de")}
+        permissionsContent={getSettingsPermissionsDictionary("de")}
         locale="de"
         initialAssignmentId={access.contacts[0].assignmentId}
         onCloseAction={() => {}}
@@ -167,6 +169,7 @@ describe("PortalInviteDialog", () => {
       <PortalInviteDialog
         access={{ ...access, previewConfirmedAt: "2026-09-24T12:00:00.000Z" }}
         content={getCrmPortalAccessDictionary("de")}
+        permissionsContent={getSettingsPermissionsDictionary("de")}
         locale="de"
         initialAssignmentId={access.contacts[0].assignmentId}
         onCloseAction={() => {}}
@@ -192,6 +195,7 @@ describe("PortalInviteDialog", () => {
       <PortalInviteDialog
         access={{ ...access, previewConfirmedAt: "2026-09-24T12:00:00.000Z" }}
         content={getCrmPortalAccessDictionary("de")}
+        permissionsContent={getSettingsPermissionsDictionary("de")}
         locale="de"
         initialAssignmentId={access.contacts[0].assignmentId}
         onCloseAction={() => {}}

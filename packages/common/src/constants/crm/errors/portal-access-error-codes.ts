@@ -12,3 +12,15 @@ export const PortalAccessErrorCode = {
 
 export type PortalAccessErrorCode =
   (typeof PortalAccessErrorCode)[keyof typeof PortalAccessErrorCode];
+
+export const PORTAL_ACCESS_ERROR_CODE_VALUES = [
+  PortalAccessErrorCode.CustomerNotFound,
+  PortalAccessErrorCode.AssignmentNotFound,
+  PortalAccessErrorCode.PreviewNotConfirmed,
+  PortalAccessErrorCode.MembershipAlreadyActive,
+  PortalAccessErrorCode.InvalidPortalRole,
+  PortalAccessErrorCode.ValidationError,
+  PortalAccessErrorCode.NotFound,
+  PortalAccessErrorCode.InvalidRoles,
+  PortalAccessErrorCode.Unavailable,
+] as const;

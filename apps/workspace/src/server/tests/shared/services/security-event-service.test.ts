@@ -4,7 +4,7 @@ import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { SecurityEventType } from "@invessiv/common/constants/auth/security-event-types";
 import { SecuritySubjectType } from "@invessiv/common/constants/auth/security-subject-types";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
-import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
+import { securityEventService } from "@/server/shared/services/security-event-service";
 
 vi.mock("server-only", () => ({}));
 

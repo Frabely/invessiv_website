@@ -19,7 +19,7 @@ import type {
   BootstrapWorkspaceOwnerInput,
   BootstrapWorkspaceOwnerResult,
 } from "@/server/workspace/auth/bootstrap-workspace-owner-types";
-import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
+import { securityEventService } from "@/server/shared/services/security-event-service";
 import { workspaceBootstrapIdentityService } from "@/server/workspace/auth/services/workspace-bootstrap-identity-service";
 import { workspaceOwnerInvariantService } from "@/server/workspace/auth/services/workspace-owner-invariant-service";
 

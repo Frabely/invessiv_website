@@ -4,6 +4,7 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { PortalAccessDto } from "@invessiv/common/contracts/crm/portal-access.dto";
 import { getCrmPortalAccessDictionary } from "@/i18n/dictionaries/workspace/crm";
+import { getSettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import { PortalAccessList } from "./portal-access-list";
 
 afterEach(cleanup);
@@ -55,6 +56,7 @@ describe("PortalAccessList", () => {
       <PortalAccessList
         access={access}
         content={getCrmPortalAccessDictionary("de")}
+        permissionsContent={getSettingsPermissionsDictionary("de")}
         locale="de"
         busyId={null}
         onReinvite={onReinvite}

@@ -38,7 +38,7 @@ vi.mock(
     };
   },
 );
-vi.mock("@/server/workspace/auth/services/security-event-service", () => ({
+vi.mock("@/server/shared/services/security-event-service", () => ({
   securityEventService: { createSecurityEvent: mocks.createEvent },
 }));
 

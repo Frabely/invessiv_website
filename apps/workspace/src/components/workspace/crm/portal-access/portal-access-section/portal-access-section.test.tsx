@@ -4,6 +4,7 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { PortalAccessDto } from "@invessiv/common/contracts/crm/portal-access.dto";
 import { getCrmPortalAccessDictionary } from "@/i18n/dictionaries/workspace/crm";
+import { getSettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import { PortalAccessSection } from "./portal-access-section";
 
 vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh: vi.fn() }) }));
@@ -32,6 +33,7 @@ describe("PortalAccessSection", () => {
       <PortalAccessSection
         access={emptyAccess}
         content={getCrmPortalAccessDictionary("de")}
+        permissionsContent={getSettingsPermissionsDictionary("de")}
         locale="de"
       />,
     );
@@ -67,6 +69,7 @@ describe("PortalAccessSection", () => {
           ],
         }}
         content={getCrmPortalAccessDictionary("de")}
+        permissionsContent={getSettingsPermissionsDictionary("de")}
         locale="de"
       />,
     );
@@ -98,6 +101,7 @@ describe("PortalAccessSection", () => {
           ],
         }}
         content={getCrmPortalAccessDictionary("de")}
+        permissionsContent={getSettingsPermissionsDictionary("de")}
         locale="de"
       />,
     );

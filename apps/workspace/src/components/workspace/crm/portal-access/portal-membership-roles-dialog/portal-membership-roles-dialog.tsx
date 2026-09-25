@@ -11,16 +11,18 @@ import type { PortalMembershipDto } from "@invessiv/common/contracts/crm/portal-
 import type { PortalRoleDto } from "@invessiv/common/contracts/crm/portal-role.dto";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { portalAccessApiService } from "@/client/crm/portal-access-api-service";
-import { portalRoleLabel } from "@/common/patterns/crm/portal-role-label";
 import { portalAccessErrorMessage } from "@/common/patterns/crm/portal-access-error-message";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import type { CrmPortalAccessDictionary } from "@/i18n/dictionaries/workspace/crm";
+import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
+import { resolveRoleLabel } from "@/lib/workspace/access/role-label";
 import styles from "./portal-membership-roles-dialog.module.css";
 
 export interface PortalMembershipRolesDialogProps {
   membership: PortalMembershipDto;
   roles: PortalRoleDto[];
   content: CrmPortalAccessDictionary;
+  permissionsContent: SettingsPermissionsDictionary;
   onCloseAction: () => void;
 }
 
@@ -28,6 +30,7 @@ export function PortalMembershipRolesDialog({
   membership,
   roles,
   content,
+  permissionsContent,
   onCloseAction,
 }: PortalMembershipRolesDialogProps) {
   const [selected, setSelected] = useState<string[]>(
@@ -47,7 +50,7 @@ export function PortalMembershipRolesDialog({
         roleIds: selected,
       });
       if (!result.ok) {
-        if (result.current) {
+        if (result.code === ConcurrencyErrorCode.VersionConflict) {
           return {
             ok: false,
             code: ConcurrencyErrorCode.VersionConflict,
@@ -58,7 +61,7 @@ export function PortalMembershipRolesDialog({
       }
       return {
         ok: true,
-        current: { ...current, ...result.value.membership, roleIds: selected },
+        current: { ...current, ...result.membership, roleIds: selected },
       };
     });
   }
@@ -101,7 +104,7 @@ export function PortalMembershipRolesDialog({
                   )
                 }
               />
-              {portalRoleLabel(role, content.portalStandard)}
+              {resolveRoleLabel(role, permissionsContent)}
             </label>
           ))}
       </fieldset>

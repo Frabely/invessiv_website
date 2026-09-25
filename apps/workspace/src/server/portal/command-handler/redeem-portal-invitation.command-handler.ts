@@ -18,7 +18,7 @@ import {
   portalMembershipRoles,
   portalMemberships,
 } from "@invessiv/db/record-configuration";
-import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
+import { securityEventService } from "@/server/shared/services/security-event-service";
 import { portalInvitationState } from "@/common/patterns/portal/portal-invitation-state";
 import { portalAccessValidationService } from "@/server/shared/services/portal-access-validation-service";
 import { clerkUserService } from "@/server/shared/services/clerk-user-service";

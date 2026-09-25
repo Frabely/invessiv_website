@@ -3,6 +3,7 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { getCrmPortalAccessDictionary } from "@/i18n/dictionaries/workspace/crm";
+import { getSettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import { PortalInvitationPreview } from "./portal-invitation-preview";
 
 afterEach(cleanup);
@@ -12,6 +13,7 @@ describe("PortalInvitationPreview", () => {
     render(
       <PortalInvitationPreview
         content={getCrmPortalAccessDictionary("de")}
+        permissionsContent={getSettingsPermissionsDictionary("de")}
         contactName="Alex Kontakt"
         roles={[
           {

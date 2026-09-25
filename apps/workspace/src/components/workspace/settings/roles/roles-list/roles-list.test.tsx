@@ -38,9 +38,10 @@ const role = (name: string, realm: AuthRealm): RoleDto => ({
 
 describe("RolesList", () => {
   it("switches between staff and portal roles without mixing realms", () => {
+    const content = getSettingsRolesDictionary("de");
     render(
       <RolesList
-        content={getSettingsRolesDictionary("de")}
+        content={content}
         permissionsContent={getSettingsPermissionsDictionary("de")}
         roles={[
           role("Staff role", AuthRealm.Workspace),
@@ -50,9 +51,13 @@ describe("RolesList", () => {
     );
     expect(screen.getByText("Staff role")).toBeInTheDocument();
     expect(screen.queryByText("Portal role")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(content.list.portalIntro),
+    ).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Portal" }));
     expect(screen.getByText("Portal role")).toBeInTheDocument();
     expect(screen.queryByText("Staff role")).not.toBeInTheDocument();
+    expect(screen.getByText(content.list.portalIntro)).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Rolle anlegen" }));
     expect(screen.getByTestId("role-dialog")).toHaveTextContent(
       AuthRealm.Portal,

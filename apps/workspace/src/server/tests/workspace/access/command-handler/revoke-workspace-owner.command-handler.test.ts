@@ -38,7 +38,7 @@ vi.mock(
   "@/server/workspace/access/services/workspace-member-version-service",
   () => ({ workspaceMemberVersionService: { bump: mocks.bump } }),
 );
-vi.mock("@/server/workspace/auth/services/security-event-service", () => ({
+vi.mock("@/server/shared/services/security-event-service", () => ({
   securityEventService: { createSecurityEvent: mocks.createEvent },
 }));
 

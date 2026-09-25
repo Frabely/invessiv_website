@@ -14,7 +14,7 @@ import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessSchemas } from "@/server/workspace/access/services/access-schemas";
 import { workspaceMemberReadService } from "@/server/workspace/access/services/workspace-member-read-service";
 import { workspaceMemberVersionService } from "@/server/workspace/access/services/workspace-member-version-service";
-import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
+import { securityEventService } from "@/server/shared/services/security-event-service";
 import { workspaceOwnerInvariantService } from "@/server/workspace/auth/services/workspace-owner-invariant-service";
 
 export async function revokeWorkspaceOwner(

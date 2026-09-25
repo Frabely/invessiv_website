@@ -1,7 +1,8 @@
 import type { PortalAccessDto } from "@invessiv/common/contracts/crm/portal-access.dto";
-import { portalRoleLabel } from "@/common/patterns/crm/portal-role-label";
 import type { Locale } from "@/config/i18n";
 import type { CrmPortalAccessDictionary } from "@/i18n/dictionaries/workspace/crm";
+import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
+import { resolveRoleLabel } from "@/lib/workspace/access/role-label";
 import { PortalInvitationRow } from "./portal-invitation-row";
 import { PortalMembershipRow } from "./portal-membership-row";
 import styles from "./portal-access-list.module.css";
@@ -9,6 +10,7 @@ import styles from "./portal-access-list.module.css";
 export interface PortalAccessListProps {
   access: PortalAccessDto;
   content: CrmPortalAccessDictionary;
+  permissionsContent: SettingsPermissionsDictionary;
   locale: Locale;
   busyId: string | null;
   onReinvite: (assignmentId: string) => void;
@@ -20,6 +22,7 @@ export interface PortalAccessListProps {
 export function PortalAccessList({
   access,
   content,
+  permissionsContent,
   locale,
   busyId,
   onReinvite,
@@ -38,7 +41,7 @@ export function PortalAccessList({
     ids
       .map((id) => roles.get(id))
       .filter((role) => role !== undefined)
-      .map((role) => portalRoleLabel(role, content.portalStandard))
+      .map((role) => resolveRoleLabel(role, permissionsContent))
       .join(", ");
 
   return (

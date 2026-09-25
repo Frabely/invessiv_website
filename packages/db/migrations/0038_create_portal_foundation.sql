@@ -1,7 +1,7 @@
--- Ordner 12a (Task 49): portal foundation. Adds the portal realm's first permission and its
--- default system role, plus the four portal tables. The feature stays invisible after this
--- migration: nothing creates an invitation until Ordner 12b builds that flow, and the portal
--- routes gate behind FeatureFlag.Portal in application code.
+-- Ordner 12a (Task 49) + Ordner 12b (Task 20): portal foundation, plus the mandatory preview
+-- confirmation made before a customer's first portal invitation. The feature stays invisible
+-- after this migration: nothing creates an invitation until Ordner 12b's flow runs, and the
+-- portal routes gate behind FeatureFlag.Portal in application code.
 
 -- Widen roles.system_key to allow the portal's default system role.
 ALTER TABLE roles DROP CONSTRAINT IF EXISTS roles_system_key_check;
@@ -121,8 +121,10 @@ CREATE TABLE IF NOT EXISTS portal_memberships
     );
 --> statement-breakpoint
 
-CREATE UNIQUE INDEX IF NOT EXISTS portal_memberships_customer_person_uidx
-    ON portal_memberships (customer_id, person_id);
+-- Partial, not a full unique index: a revoked membership stays as history, so it must not block a
+-- later re-invite/redeem for the same customer/person pair.
+CREATE UNIQUE INDEX IF NOT EXISTS portal_memberships_active_customer_person_uidx
+    ON portal_memberships (customer_id, person_id) WHERE revoked_at IS NULL;
 --> statement-breakpoint
 CREATE INDEX IF NOT EXISTS portal_memberships_active_user_idx
     ON portal_memberships (user_id) WHERE revoked_at IS NULL;
@@ -275,3 +277,27 @@ CREATE TABLE IF NOT EXISTS portal_invitation_roles
 )
   ON DELETE RESTRICT
     );
+--> statement-breakpoint
+
+-- Ordner 12b (Task 20): stores the one-time confirmation made before a customer receives their
+-- first portal invitation. Confirmation history remains available after access revocation.
+ALTER TABLE customers
+    ADD COLUMN IF NOT EXISTS portal_preview_confirmed_at TIMESTAMPTZ;
+--> statement-breakpoint
+ALTER TABLE customers
+    ADD COLUMN IF NOT EXISTS portal_preview_confirmed_by_member_id UUID REFERENCES workspace_members (id) ON DELETE RESTRICT;
+--> statement-breakpoint
+DO
+$$
+BEGIN
+    IF
+NOT EXISTS (
+        SELECT 1 FROM pg_constraint WHERE conname = 'customers_portal_preview_confirmation_check'
+    ) THEN
+ALTER TABLE customers
+    ADD CONSTRAINT customers_portal_preview_confirmation_check CHECK (
+        (portal_preview_confirmed_at IS NULL AND portal_preview_confirmed_by_member_id IS NULL)
+            OR (portal_preview_confirmed_at IS NOT NULL AND portal_preview_confirmed_by_member_id IS NOT NULL)
+        );
+END IF;
+END $$;

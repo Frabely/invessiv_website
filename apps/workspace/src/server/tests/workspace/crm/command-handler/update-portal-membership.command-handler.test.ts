@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { sql } from "drizzle-orm";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
-import { updatePortalMembership } from "@/server/workspace/crm/command-handler/update-portal-membership.command-handler";
+import { updatePortalMembershipNotifications } from "@/server/workspace/crm/command-handler/update-portal-membership-notifications.command-handler";
+import { replacePortalMembershipRoles } from "@/server/workspace/crm/command-handler/replace-portal-membership-roles.command-handler";
 import { revokePortalMembership } from "@/server/workspace/crm/command-handler/revoke-portal-membership.command-handler";
 import { workspaceActorWith } from "@/server/tests/support/workspace-auth-fixtures";
 
@@ -18,7 +19,7 @@ vi.mock("@invessiv/db/core", async (original) => ({
 vi.mock("@/server/workspace/shared/update-versioned", () => ({
   updateVersioned: mocks.updateVersioned,
 }));
-vi.mock("@/server/workspace/auth/services/security-event-service", () => ({
+vi.mock("@/server/shared/services/security-event-service", () => ({
   securityEventService: { createSecurityEvent: mocks.securityEvent },
 }));
 
@@ -43,7 +44,7 @@ function membershipQueryFor(membership: object) {
   return query;
 }
 
-describe("updatePortalMembership", () => {
+describe("updatePortalMembershipNotifications", () => {
   beforeEach(() => {
     mocks.getDatabase.mockReset();
     mocks.updateVersioned.mockReset();
@@ -51,17 +52,17 @@ describe("updatePortalMembership", () => {
   });
 
   it("rejects an empty role set before opening a transaction", async () => {
-    const result = await updatePortalMembership(
+    const result = await updatePortalMembershipNotifications(
       membershipId,
-      { version: 1, roleIds: [] },
+      { version: 0, emailNotificationsEnabled: true },
       workspaceActorWith(),
     );
-    expect(result).toEqual({ ok: false, code: "invalid_roles" });
+    expect(result).toEqual({ ok: false, code: "validation_error" });
     expect(mocks.getDatabase).not.toHaveBeenCalled();
   });
 
   it("rejects malformed request bodies before opening a transaction", async () => {
-    const result = await updatePortalMembership(
+    const result = await updatePortalMembershipNotifications(
       membershipId,
       "invalid" as never,
       workspaceActorWith(),
@@ -83,7 +84,7 @@ describe("updatePortalMembership", () => {
         callback: (tx: { select: () => typeof query }) => Promise<unknown>,
       ) => callback({ select: () => query }),
     });
-    const result = await updatePortalMembership(
+    const result = await updatePortalMembershipNotifications(
       membershipId,
       {
         version: 1,
@@ -112,7 +113,7 @@ describe("updatePortalMembership", () => {
       ok: true,
       value: { id: membershipId, version: 3, emailNotificationsEnabled: false },
     });
-    const result = await updatePortalMembership(
+    const result = await updatePortalMembershipNotifications(
       membershipId,
       {
         version: 2,
@@ -152,11 +153,19 @@ describe("updatePortalMembership", () => {
       leftJoin: () => roleQuery,
       where: async () => [{ id: roleId, permission: "portal.access" }],
     };
+    const membershipRoleQuery = {
+      from: () => membershipRoleQuery,
+      where: async () => [{ roleId: "58d4a66f-22a4-49a8-a3d4-e9fb80a3102d" }],
+    };
     const deleteQuery = { where: vi.fn().mockResolvedValue(undefined) };
     const insertQuery = { values: vi.fn().mockResolvedValue(undefined) };
     const tx = {
-      select: vi.fn((columns?: unknown) =>
-        columns ? roleQuery : membershipQuery,
+      select: vi.fn((columns?: { roleId?: unknown; permission?: unknown }) =>
+        columns?.roleId
+          ? membershipRoleQuery
+          : columns?.permission
+            ? roleQuery
+            : membershipQuery,
       ),
       delete: vi.fn(() => deleteQuery),
       insert: vi.fn(() => insertQuery),
@@ -169,7 +178,7 @@ describe("updatePortalMembership", () => {
       ok: true,
       value: { id: membershipId, version: 3, emailNotificationsEnabled: true },
     });
-    const result = await updatePortalMembership(
+    const result = await replacePortalMembershipRoles(
       membershipId,
       { version: 2, roleIds: [roleId] },
       customerPortalManager(),

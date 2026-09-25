@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
+import {
+  AUTH_REALM_VALUES,
+  AuthRealm,
+} from "@invessiv/common/constants/auth/auth-realms";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -23,6 +26,16 @@ type RolesListProps = {
 
 const CUSTOM_ROLES_HEADING_ID = "settings-custom-roles-heading";
 const SYSTEM_ROLES_HEADING_ID = "settings-system-roles-heading";
+const ROLE_LIST_REALM_CONFIG: Record<
+  AuthRealm,
+  {
+    labelKey: "workspaceRealm" | "portalRealm";
+    introKey: "portalIntro" | null;
+  }
+> = {
+  [AuthRealm.Workspace]: { labelKey: "workspaceRealm", introKey: null },
+  [AuthRealm.Portal]: { labelKey: "portalRealm", introKey: "portalIntro" },
+};
 
 export function RolesList({
   content,
@@ -32,10 +45,11 @@ export function RolesList({
   const [openRole, setOpenRole] = useState<RoleDto | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [realm, setRealm] = useState<AuthRealm>(AuthRealm.Workspace);
-  const realmSwitchOptions: { realm: AuthRealm; label: string }[] = [
-    { realm: AuthRealm.Workspace, label: content.list.workspaceRealm },
-    { realm: AuthRealm.Portal, label: content.list.portalRealm },
-  ];
+  const realmSwitchOptions = AUTH_REALM_VALUES.map((optionRealm) => ({
+    realm: optionRealm,
+    label: content.list[ROLE_LIST_REALM_CONFIG[optionRealm].labelKey],
+  }));
+  const introKey = ROLE_LIST_REALM_CONFIG[realm].introKey;
   const visibleRoles = roles.filter((role) => role.realm === realm);
   const systemRoles = visibleRoles.filter((role) => role.isSystem);
   const customRoles = visibleRoles.filter((role) => !role.isSystem);
@@ -82,8 +96,8 @@ export function RolesList({
           </ButtonControl>
         ))}
       </div>
-      {realm === AuthRealm.Portal ? (
-        <p className={styles.description}>{content.list.portalIntro}</p>
+      {introKey ? (
+        <p className={styles.description}>{content.list[introKey]}</p>
       ) : null}
       <section
         aria-labelledby={CUSTOM_ROLES_HEADING_ID}

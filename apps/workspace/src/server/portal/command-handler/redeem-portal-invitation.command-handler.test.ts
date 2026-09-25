@@ -11,7 +11,7 @@ vi.mock("@invessiv/db/core", async (original) => ({
   ...(await original<typeof import("@invessiv/db/core")>()),
   getDrizzleDatabaseClient: mocks.getDatabase,
 }));
-vi.mock("@/server/workspace/auth/services/security-event-service", () => ({
+vi.mock("@/server/shared/services/security-event-service", () => ({
   securityEventService: { createSecurityEvent: mocks.securityEvent },
 }));
 

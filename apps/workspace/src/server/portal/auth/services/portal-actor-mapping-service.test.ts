@@ -141,6 +141,29 @@ describe("portalActorMappingService.mapRowsToResolution", () => {
     });
   });
 
+  it("picks the first row's membership deterministically when two are active for this customer", () => {
+    // Whether this is the right membership depends on the query ordering rows by activation
+    // date before they ever reach this function — this only pins that the mapper itself always
+    // takes the first match instead of leaving it to arbitrary row order.
+    const result = portalActorMappingService.mapRowsToResolution(
+      [
+        row({
+          membership_id: "membership-earliest",
+          person_id: "person-earliest",
+        }),
+        row({
+          membership_id: "membership-later",
+          person_id: "person-later",
+        }),
+      ],
+      CUSTOMER_ID,
+    );
+
+    expect(result.ok).toBe(true);
+    expect(result.ok && result.actor.membershipId).toBe("membership-earliest");
+    expect(result.ok && result.actor.personId).toBe("person-earliest");
+  });
+
   it("drops unknown or workspace-realm permission keys instead of trusting them", () => {
     const result = portalActorMappingService.mapRowsToResolution(
       [

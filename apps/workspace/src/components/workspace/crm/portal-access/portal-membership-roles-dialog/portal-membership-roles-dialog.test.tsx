@@ -3,6 +3,7 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { getCrmPortalAccessDictionary } from "@/i18n/dictionaries/workspace/crm";
+import { getSettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import { PortalMembershipRolesDialog } from "./portal-membership-roles-dialog";
 
 const mocks = vi.hoisted(() => ({ replaceRoles: vi.fn(), refresh: vi.fn() }));
@@ -63,6 +64,7 @@ describe("PortalMembershipRolesDialog", () => {
           },
         ]}
         content={getCrmPortalAccessDictionary("de")}
+        permissionsContent={getSettingsPermissionsDictionary("de")}
         onCloseAction={() => {}}
       />,
     );

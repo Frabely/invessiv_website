@@ -22,26 +22,24 @@ import {
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessScopeAssignmentKey } from "@/common/patterns/access/access-scope-tree";
 import { accessScopeAssignmentService } from "@/server/workspace/access/services/access-scope-assignment-service";
+import { accessScopeMappingService } from "@/server/workspace/access/services/access-scope-mapping-service";
 import type {
   AccessDatabaseExecutor,
   RoleAssignabilityResult,
 } from "@/server/workspace/access/access-types";
 import { workspaceMemberReadService } from "@/server/workspace/access/services/workspace-member-read-service";
 import { workspaceMemberVersionService } from "@/server/workspace/access/services/workspace-member-version-service";
-import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
+import { securityEventService } from "@/server/shared/services/security-event-service";
 
 function scopeFromRow(
   row: typeof workspaceMemberScopedRoles.$inferSelect,
 ): AccessScopeAssignmentDto {
   return {
     roleId: row.role_id,
-    scope: row.project_id
-      ? {
-          type: AccessScopeType.Project,
-          customerId: row.customer_id,
-          projectId: row.project_id,
-        }
-      : { type: AccessScopeType.Customer, customerId: row.customer_id },
+    scope: accessScopeMappingService.scopeFromColumns(
+      row.customer_id,
+      row.project_id,
+    ),
   };
 }
 

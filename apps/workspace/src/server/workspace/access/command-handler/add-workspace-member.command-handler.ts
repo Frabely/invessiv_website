@@ -20,7 +20,7 @@ import { accessSchemas } from "@/server/workspace/access/services/access-schemas
 import { clerkDirectoryService } from "@/server/workspace/access/services/clerk-directory-service";
 import { memberRoleAssignmentService } from "@/server/workspace/access/services/member-role-assignment-service";
 import { workspaceMemberReadService } from "@/server/workspace/access/services/workspace-member-read-service";
-import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
+import { securityEventService } from "@/server/shared/services/security-event-service";
 import { postgresErrorService } from "@/server/workspace/shared/services/postgres-error-service";
 import { clerkUserService } from "@/server/shared/services/clerk-user-service";
 

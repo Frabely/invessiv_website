@@ -14,7 +14,7 @@ import { RolesConstraintName } from "@invessiv/db/constraint-names/auth/roles-co
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessSchemas } from "@/server/workspace/access/services/access-schemas";
 import { roleService } from "@/server/workspace/access/services/role-service";
-import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
+import { securityEventService } from "@/server/shared/services/security-event-service";
 import { postgresErrorService } from "@/server/workspace/shared/services/postgres-error-service";
 
 export async function createRole(

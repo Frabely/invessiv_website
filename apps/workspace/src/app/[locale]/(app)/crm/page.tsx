@@ -320,7 +320,7 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
               : undefined
           }
           permissionsContent={
-            customerAccessData
+            customerAccessData || portalAccess
               ? getSettingsPermissionsDictionary(activeLocale)
               : undefined
           }

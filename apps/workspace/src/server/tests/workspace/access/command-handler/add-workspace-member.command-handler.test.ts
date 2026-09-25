@@ -46,7 +46,7 @@ vi.mock(
   "@/server/workspace/access/services/workspace-member-read-service",
   () => ({ workspaceMemberReadService: { findById: mocks.findById } }),
 );
-vi.mock("@/server/workspace/auth/services/security-event-service", () => ({
+vi.mock("@/server/shared/services/security-event-service", () => ({
   securityEventService: { createSecurityEvent: mocks.createEvent },
 }));
 vi.mock("@/server/workspace/shared/update-versioned", () => ({

@@ -1,7 +1,18 @@
 import "server-only";
 
 import { AccessScopeType } from "@invessiv/common/constants/auth/access-scope-types";
+import type { AccessScopeDto } from "@invessiv/common/contracts/auth/access-scope.dto";
 import type { WorkspaceMemberAccessScopeDto } from "@invessiv/common/contracts/auth/workspace-member-access-scope.dto";
+
+/** The one place the customer/project scope union is built from a scoped-role row's columns. */
+function scopeFromColumns(
+  customerId: string,
+  projectId: string | null,
+): AccessScopeDto {
+  return projectId === null
+    ? { type: AccessScopeType.Customer, customerId }
+    : { type: AccessScopeType.Project, customerId, projectId };
+}
 
 function mapRow(row: {
   id: string;
@@ -16,17 +27,10 @@ function mapRow(row: {
     id: row.id,
     workspaceMemberId: row.workspace_member_id,
     roleId: row.role_id,
-    scope:
-      row.project_id === null
-        ? { type: AccessScopeType.Customer, customerId: row.customer_id }
-        : {
-            type: AccessScopeType.Project,
-            customerId: row.customer_id,
-            projectId: row.project_id,
-          },
+    scope: scopeFromColumns(row.customer_id, row.project_id),
     assignedByUserId: row.assigned_by_user_id,
     assignedAt: row.assigned_at.toISOString(),
   };
 }
 
-export const accessScopeMappingService = { mapRow } as const;
+export const accessScopeMappingService = { mapRow, scopeFromColumns } as const;

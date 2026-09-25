@@ -1,10 +1,12 @@
 import type { PortalRoleDto } from "@invessiv/common/contracts/crm/portal-role.dto";
-import { portalRoleLabel } from "@/common/patterns/crm/portal-role-label";
 import type { CrmPortalAccessDictionary } from "@/i18n/dictionaries/workspace/crm";
+import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
+import { resolveRoleLabel } from "@/lib/workspace/access/role-label";
 import styles from "./portal-invitation-preview.module.css";
 
 export interface PortalInvitationPreviewProps {
   content: CrmPortalAccessDictionary;
+  permissionsContent: SettingsPermissionsDictionary;
   contactName: string;
   roles: readonly PortalRoleDto[];
   permittedAreas: readonly string[];
@@ -12,6 +14,7 @@ export interface PortalInvitationPreviewProps {
 
 export function PortalInvitationPreview({
   content,
+  permissionsContent,
   contactName,
   roles,
   permittedAreas,
@@ -29,7 +32,7 @@ export function PortalInvitationPreview({
             <ul>
               {roles.map((role) => (
                 <li key={role.id}>
-                  {portalRoleLabel(role, content.portalStandard)}
+                  {resolveRoleLabel(role, permissionsContent)}
                 </li>
               ))}
             </ul>

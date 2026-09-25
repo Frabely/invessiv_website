@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { PortalAccessErrorCode } from "./portal-access-error-codes";
+import {
+  PORTAL_ACCESS_ERROR_CODE_VALUES,
+  PortalAccessErrorCode,
+} from "./portal-access-error-codes";
 
 describe("PortalAccessErrorCode", () => {
   it("keeps distinct codes without duplicates", () => {
@@ -16,5 +19,14 @@ describe("PortalAccessErrorCode", () => {
     });
     const values = Object.values(PortalAccessErrorCode);
     expect(new Set(values).size).toBe(values.length);
+  });
+
+  it("derives PORTAL_ACCESS_ERROR_CODE_VALUES from the const object without duplicates", () => {
+    expect(PORTAL_ACCESS_ERROR_CODE_VALUES).toEqual(
+      Object.values(PortalAccessErrorCode),
+    );
+    expect(new Set(PORTAL_ACCESS_ERROR_CODE_VALUES).size).toBe(
+      PORTAL_ACCESS_ERROR_CODE_VALUES.length,
+    );
   });
 });

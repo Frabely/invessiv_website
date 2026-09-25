@@ -6,14 +6,16 @@ import {
 } from "@invessiv/ui";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import type { PortalAccessDto } from "@invessiv/common/contracts/crm/portal-access.dto";
-import { portalRoleLabel } from "@/common/patterns/crm/portal-role-label";
 import type { CrmPortalAccessDictionary } from "@/i18n/dictionaries/workspace/crm";
+import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
+import { resolveRoleLabel } from "@/lib/workspace/access/role-label";
 import { PortalInvitationPreview } from "../portal-invitation-preview/portal-invitation-preview";
 import styles from "./portal-invite-step-content.module.css";
 
 type Props = {
   access: PortalAccessDto;
   content: CrmPortalAccessDictionary;
+  permissionsContent: SettingsPermissionsDictionary;
   baseId: string;
   assignmentId: string;
   roleIds: readonly string[];
@@ -30,6 +32,7 @@ type Props = {
 function InvitationForm({
   access,
   content,
+  permissionsContent,
   assignmentId,
   onAssignmentChange,
   roleIds,
@@ -39,6 +42,7 @@ function InvitationForm({
   Props,
   | "access"
   | "content"
+  | "permissionsContent"
   | "assignmentId"
   | "onAssignmentChange"
   | "roleIds"
@@ -81,7 +85,7 @@ function InvitationForm({
                   onChange={() => onRoleToggle(role.id)}
                 />
                 <label htmlFor={inputId}>
-                  {portalRoleLabel(role, content.portalStandard)}
+                  {resolveRoleLabel(role, permissionsContent)}
                 </label>
               </div>
             );
@@ -114,6 +118,7 @@ export function PortalInviteStepContent(props: Props) {
     return (
       <PortalInvitationPreview
         content={props.content}
+        permissionsContent={props.permissionsContent}
         contactName={props.contactName}
         roles={props.access.roles.filter(
           (role) => role.active && props.roleIds.includes(role.id),

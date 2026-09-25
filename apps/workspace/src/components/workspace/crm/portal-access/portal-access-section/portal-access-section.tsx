@@ -8,6 +8,7 @@ import { portalAccessApiService } from "@/client/crm/portal-access-api-service";
 import { portalAccessErrorMessage } from "@/common/patterns/crm/portal-access-error-message";
 import type { Locale } from "@/config/i18n";
 import type { CrmPortalAccessDictionary } from "@/i18n/dictionaries/workspace/crm";
+import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import { PortalInviteDialog } from "../invite-portal-contact-dialog/invite-portal-contact-dialog";
 import { PortalAccessList } from "../portal-access-list/portal-access-list";
 import { PortalMembershipRolesDialog } from "../portal-membership-roles-dialog/portal-membership-roles-dialog";
@@ -17,12 +18,14 @@ import styles from "./portal-access-section.module.css";
 export interface PortalAccessSectionProps {
   access: PortalAccessDto;
   content: CrmPortalAccessDictionary;
+  permissionsContent: SettingsPermissionsDictionary;
   locale: Locale;
 }
 
 export function PortalAccessSection({
   access,
   content,
+  permissionsContent,
   locale,
 }: PortalAccessSectionProps) {
   const router = useRouter();
@@ -96,6 +99,7 @@ export function PortalAccessSection({
         <PortalAccessList
           access={access}
           content={content}
+          permissionsContent={permissionsContent}
           locale={locale}
           busyId={busyId}
           onReinvite={setInviteAssignmentId}
@@ -109,6 +113,7 @@ export function PortalAccessSection({
         <PortalInviteDialog
           access={access}
           content={content}
+          permissionsContent={permissionsContent}
           locale={locale}
           initialAssignmentId={inviteAssignmentId}
           onCloseAction={() => setInviteAssignmentId(null)}
@@ -119,6 +124,7 @@ export function PortalAccessSection({
           membership={editingMembership}
           roles={access.roles}
           content={content}
+          permissionsContent={permissionsContent}
           onCloseAction={() => setEditingMembershipId(null)}
         />
       ) : null}

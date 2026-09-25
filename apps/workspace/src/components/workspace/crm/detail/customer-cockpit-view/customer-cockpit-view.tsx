@@ -161,10 +161,11 @@ export function CustomerCockpitView({
           tasksContent={tasksContent}
         />
       ) : null}
-      {portalAccess && portalAccessContent ? (
+      {portalAccess && portalAccessContent && permissionsContent ? (
         <PortalAccessSection
           access={portalAccess}
           content={portalAccessContent}
+          permissionsContent={permissionsContent}
           locale={locale}
         />
       ) : null}

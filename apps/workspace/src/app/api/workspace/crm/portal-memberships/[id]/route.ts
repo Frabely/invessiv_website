@@ -5,9 +5,10 @@ import { PortalAccessErrorCode } from "@invessiv/common/constants/crm/errors/por
 import { CrmEndpointAccessRule } from "@/common/constants/auth/crm-endpoint-access-rules";
 import { withCrmPermission } from "@/lib/auth/api";
 import { readJsonBody } from "@/lib/http/read-json-body";
-import { membershipUpdateResponse } from "../membership-update-response";
+import { portalAccessApiError } from "@/lib/workspace/crm/portal-access-api-error";
+import { membershipUpdateResponse } from "@/server/workspace/crm/command-handler/membership-update-response";
 import { portalAccessSchemas } from "@/server/workspace/crm/services/portal-access/portal-access-schemas";
-import { updatePortalMembership } from "@/server/workspace/crm/command-handler/update-portal-membership.command-handler";
+import { updatePortalMembershipNotifications } from "@/server/workspace/crm/command-handler/update-portal-membership-notifications.command-handler";
 import { revokePortalMembership } from "@/server/workspace/crm/command-handler/revoke-portal-membership.command-handler";
 
 type Context = { params: Promise<{ id: string }> };
@@ -22,13 +23,14 @@ export async function PATCH(request: NextRequest, { params }: Context) {
         ? portalAccessSchemas.membershipNotifications.safeParse(body.body)
         : null;
       if (!input?.success) {
-        return Response.json(
-          { code: PortalAccessErrorCode.ValidationError },
-          { status: HttpResponseCode.BadRequest },
-        );
+        return portalAccessApiError(PortalAccessErrorCode.ValidationError);
       }
 
-      const result = await updatePortalMembership(id, input.data, actor);
+      const result = await updatePortalMembershipNotifications(
+        id,
+        input.data,
+        actor,
+      );
       return membershipUpdateResponse(result);
     },
   )(request);
@@ -40,12 +42,8 @@ export async function DELETE(request: NextRequest, { params }: Context) {
     CrmEndpointAccessRule.PortalInvitationCreate,
     async (_, actor) => {
       const ok = await revokePortalMembership(id, actor);
-      return Response.json(
-        { ok },
-        {
-          status: ok ? HttpResponseCode.Ok : HttpResponseCode.NotFound,
-        },
-      );
+      if (!ok) return portalAccessApiError(PortalAccessErrorCode.NotFound);
+      return Response.json({ ok: true }, { status: HttpResponseCode.Ok });
     },
   )(request);
 }
