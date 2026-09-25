@@ -1,4 +1,7 @@
 import type { PortalAccessDto } from "@invessiv/common/contracts/crm/portal-access.dto";
+import type { PortalInvitationDto } from "@invessiv/common/contracts/crm/portal-invitation.dto";
+import type { PortalMembershipDto } from "@invessiv/common/contracts/crm/portal-membership.dto";
+import type { PortalRoleDto } from "@invessiv/common/contracts/crm/portal-role.dto";
 import type { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
 
 type ContactRow = { id: string; displayName: string };
@@ -26,8 +29,8 @@ type MembershipRow = {
   roleId: string | null;
 };
 
-function mapRoles(rows: readonly RoleRow[]): PortalAccessDto["roles"] {
-  const rolesById = new Map<string, PortalAccessDto["roles"][number]>();
+function mapRoles(rows: readonly RoleRow[]): PortalRoleDto[] {
+  const rolesById = new Map<string, PortalRoleDto>();
   for (const row of rows) {
     const role = rolesById.get(row.id) ?? {
       id: row.id,
@@ -45,11 +48,8 @@ function mapRoles(rows: readonly RoleRow[]): PortalAccessDto["roles"] {
 function mapInvitations(
   rows: readonly InvitationRow[],
   asOf: Date,
-): PortalAccessDto["invitations"] {
-  const invitationsById = new Map<
-    string,
-    PortalAccessDto["invitations"][number]
-  >();
+): PortalInvitationDto[] {
+  const invitationsById = new Map<string, PortalInvitationDto>();
   for (const row of rows) {
     const item = invitationsById.get(row.id) ?? {
       id: row.id,
@@ -65,13 +65,8 @@ function mapInvitations(
   return [...invitationsById.values()];
 }
 
-function mapMemberships(
-  rows: readonly MembershipRow[],
-): PortalAccessDto["memberships"] {
-  const membershipsById = new Map<
-    string,
-    PortalAccessDto["memberships"][number]
-  >();
+function mapMemberships(rows: readonly MembershipRow[]): PortalMembershipDto[] {
+  const membershipsById = new Map<string, PortalMembershipDto>();
   for (const row of rows) {
     const item = membershipsById.get(row.id) ?? {
       id: row.id,

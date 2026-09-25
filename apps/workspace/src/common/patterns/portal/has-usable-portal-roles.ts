@@ -5,11 +5,15 @@ export function hasUsablePortalRoles(
   selectedRoleIds: readonly string[],
   rows: readonly { id: string; permission: string | null }[],
 ): boolean {
+  const selectedIds = new Set(selectedRoleIds);
+  if (selectedIds.size === 0 || selectedIds.size !== selectedRoleIds.length)
+    return false;
+
   const availableIds = new Set(rows.map((row) => row.id));
-  return (
-    selectedRoleIds.length > 0 &&
-    availableIds.size === selectedRoleIds.length &&
-    selectedRoleIds.every((id) => availableIds.has(id)) &&
-    rows.some((row) => row.permission === Permission.PortalAccess)
+  if (selectedRoleIds.some((id) => !availableIds.has(id))) return false;
+
+  return rows.some(
+    (row) =>
+      selectedIds.has(row.id) && row.permission === Permission.PortalAccess,
   );
 }

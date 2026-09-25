@@ -1,0 +1,39 @@
+.preview {
+  display: grid;
+  gap: 1rem;
+  color: var(--color-text);
+}
+
+.details {
+  display: grid;
+  gap: 0.875rem;
+  margin: 0;
+}
+
+.details > div {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.details dt {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+}
+
+.details dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.details ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.private {
+  margin: 0;
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface-2);
+}

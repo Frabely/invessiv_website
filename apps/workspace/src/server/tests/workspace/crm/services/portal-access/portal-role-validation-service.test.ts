@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
-import { portalRoleValidationService } from "@/server/workspace/crm/services/portal-access/portal-role-validation-service";
+import { portalRoleValidationService } from "@/server/shared/services/portal-role-validation-service";
 
 vi.mock("server-only", () => ({}));
 

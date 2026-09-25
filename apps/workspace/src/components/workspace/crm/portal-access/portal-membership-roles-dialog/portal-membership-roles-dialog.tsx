@@ -1,8 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { ButtonControl, Dialog, DialogSize } from "@invessiv/ui";
-import type { PortalAccessDto } from "@invessiv/common/contracts/crm/portal-access.dto";
+import {
+  ButtonControl,
+  CheckboxControl,
+  Dialog,
+  DialogSize,
+} from "@invessiv/ui";
+import type { PortalMembershipDto } from "@invessiv/common/contracts/crm/portal-membership.dto";
+import type { PortalRoleDto } from "@invessiv/common/contracts/crm/portal-role.dto";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { portalAccessApiService } from "@/client/crm/portal-access-api-service";
 import { portalRoleLabel } from "@/common/patterns/crm/portal-role-label";
@@ -12,8 +18,8 @@ import type { CrmPortalAccessDictionary } from "@/i18n/dictionaries/workspace/cr
 import styles from "./portal-membership-roles-dialog.module.css";
 
 export interface PortalMembershipRolesDialogProps {
-  membership: PortalAccessDto["memberships"][number];
-  roles: PortalAccessDto["roles"];
+  membership: PortalMembershipDto;
+  roles: PortalRoleDto[];
   content: CrmPortalAccessDictionary;
   onCloseAction: () => void;
 }
@@ -85,8 +91,7 @@ export function PortalMembershipRolesDialog({
           .filter((role) => role.active)
           .map((role) => (
             <label className={styles.option} key={role.id}>
-              <input
-                type="checkbox"
+              <CheckboxControl
                 checked={selected.includes(role.id)}
                 onChange={() =>
                   setSelected((current) =>

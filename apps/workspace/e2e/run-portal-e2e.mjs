@@ -1,8 +1,7 @@
 import { spawn } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { parse } from "dotenv";
+import { loadPortalE2eEnvironment } from "./support/portal-e2e-database-guard.mjs";
 
 const appDirectory = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -10,36 +9,16 @@ const appDirectory = path.resolve(
 );
 const rootDirectory = path.resolve(appDirectory, "../..");
 
-function readEnv(file) {
-  return existsSync(file) ? parse(readFileSync(file, "utf8")) : {};
-}
-
-const rootDevelopment = readEnv(
-  path.join(rootDirectory, ".env.development.local"),
-);
-const appDevelopment = readEnv(
-  path.join(appDirectory, ".env.development.local"),
-);
-const development = { ...rootDevelopment, ...appDevelopment };
-const production = readEnv(path.join(rootDirectory, ".env.production.local"));
-const preview = readEnv(path.join(rootDirectory, ".env.preview.local"));
-
-if (
-  !development.DATABASE_URL ||
-  development.DATABASE_URL === production.DATABASE_URL ||
-  development.DATABASE_URL === preview.DATABASE_URL ||
-  !development.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.startsWith("pk_test_") ||
-  !development.CLERK_SECRET_KEY?.startsWith("sk_test_")
-) {
-  throw new Error(
-    "Portal E2E requires distinct development DB and Clerk development credentials.",
-  );
-}
+const { development, databaseUrl, publishableKey, secretKey } =
+  loadPortalE2eEnvironment(appDirectory);
 
 const environment = {
   ...process.env,
   ...development,
-  CLERK_PUBLISHABLE_KEY: development.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+  DATABASE_URL: databaseUrl,
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: publishableKey,
+  CLERK_SECRET_KEY: secretKey,
+  CLERK_PUBLISHABLE_KEY: publishableKey,
 };
 
 function run(args) {

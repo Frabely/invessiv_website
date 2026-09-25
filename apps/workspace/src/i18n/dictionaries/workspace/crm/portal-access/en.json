@@ -29,6 +29,7 @@
     "cancel": "Cancel",
     "previewTitle": "Confirm portal preview",
     "previewIntro": "Check the contact and roles before this customer's first invitation.",
+    "previewAreas": "Visible portal areas",
     "previewNoAreas": "Only the company area is currently available. More portal areas will follow.",
     "previewPrivate": "Prices, budgets, internal notes and credentials always stay internal.",
     "confirm": "Confirm preview and invite",

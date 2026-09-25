@@ -1,36 +1,13 @@
-import { config as loadDotenv, parse } from "dotenv";
-import { existsSync, readFileSync } from "node:fs";
-import path from "node:path";
 import { defineConfig, devices } from "@playwright/test";
+import { loadPortalE2eEnvironment } from "./e2e/support/portal-e2e-database-guard.mjs";
 
-loadDotenv({
-  path: "../../.env.development.local",
-  override: true,
-  quiet: true,
+const { development, databaseUrl, publishableKey, secretKey } =
+  loadPortalE2eEnvironment(__dirname);
+Object.assign(process.env, development, {
+  DATABASE_URL: databaseUrl,
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: publishableKey,
+  CLERK_SECRET_KEY: secretKey,
 });
-loadDotenv({ path: ".env.development.local", override: true, quiet: true });
-
-const databaseUrl = process.env.DATABASE_URL;
-const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-const secretKey = process.env.CLERK_SECRET_KEY;
-const rootDirectory = path.resolve(process.cwd(), "../..");
-const otherDatabaseUrl = (name: string) => {
-  const file = path.join(rootDirectory, `.env.${name}.local`);
-  return existsSync(file)
-    ? parse(readFileSync(file, "utf8")).DATABASE_URL
-    : undefined;
-};
-if (
-  !databaseUrl ||
-  databaseUrl === otherDatabaseUrl("preview") ||
-  databaseUrl === otherDatabaseUrl("production") ||
-  !publishableKey?.startsWith("pk_test_") ||
-  !secretKey?.startsWith("sk_test_")
-) {
-  throw new Error(
-    "Portal E2E requires the development database and Clerk development keys.",
-  );
-}
 process.env.CLERK_PUBLISHABLE_KEY = publishableKey;
 
 const baseURL = "http://localhost:4174";

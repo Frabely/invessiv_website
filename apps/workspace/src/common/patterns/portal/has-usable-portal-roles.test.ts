@@ -12,5 +12,12 @@ describe("hasUsablePortalRoles", () => {
     expect(hasUsablePortalRoles(["role-a", "role-c"], rows)).toBe(false);
     expect(hasUsablePortalRoles([], rows)).toBe(false);
     expect(hasUsablePortalRoles(["role-b"], rows)).toBe(false);
+    expect(hasUsablePortalRoles(["role-a", "role-a"], rows)).toBe(false);
+    expect(
+      hasUsablePortalRoles(
+        ["role-b"],
+        [...rows, { id: "role-c", permission: "portal.access" }],
+      ),
+    ).toBe(false);
   });
 });

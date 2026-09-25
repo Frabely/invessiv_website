@@ -3,6 +3,7 @@
 import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ButtonControl, Dialog, DialogSize } from "@invessiv/ui";
+import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
 import type { PortalAccessDto } from "@invessiv/common/contracts/crm/portal-access.dto";
 import { portalAccessApiService } from "@/client/crm/portal-access-api-service";
 import type { Locale } from "@/config/i18n";
@@ -32,7 +33,7 @@ export function PortalInviteDialog({
   const baseId = useId();
   const [assignmentId, setAssignmentId] = useState(initialAssignmentId);
   const defaultRoleId = access.roles.find(
-    (role) => role.systemKey === "portal_standard" && role.active,
+    (role) => role.systemKey === SystemRoleKey.PortalStandard && role.active,
   )?.id;
   const [roleIds, setRoleIds] = useState<string[]>(
     defaultRoleId ? [defaultRoleId] : [],

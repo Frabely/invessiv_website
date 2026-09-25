@@ -1,8 +1,8 @@
 import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
-import type { PortalAccessDto } from "@invessiv/common/contracts/crm/portal-access.dto";
+import type { PortalRoleDto } from "@invessiv/common/contracts/crm/portal-role.dto";
 
 export function portalRoleLabel(
-  role: Pick<PortalAccessDto["roles"][number], "name" | "systemKey">,
+  role: Pick<PortalRoleDto, "name" | "systemKey">,
   standardLabel: string,
 ): string {
   return role.systemKey === SystemRoleKey.PortalStandard

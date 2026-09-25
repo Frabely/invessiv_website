@@ -8,6 +8,7 @@ import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds"
 import type { PortalAccessDto } from "@invessiv/common/contracts/crm/portal-access.dto";
 import { portalRoleLabel } from "@/common/patterns/crm/portal-role-label";
 import type { CrmPortalAccessDictionary } from "@/i18n/dictionaries/workspace/crm";
+import { PortalInvitationPreview } from "../portal-invitation-preview/portal-invitation-preview";
 import styles from "./portal-invite-step-content.module.css";
 
 type Props = {
@@ -90,41 +91,6 @@ function InvitationForm({
   );
 }
 
-function InvitationPreview({
-  content,
-  contactName,
-  roles,
-  permittedAreas,
-}: {
-  content: CrmPortalAccessDictionary;
-  contactName: string;
-  roles: PortalAccessDto["roles"];
-  permittedAreas: readonly string[];
-}) {
-  return (
-    <div className={styles.stack}>
-      <p>
-        <strong>{contactName}</strong>
-      </p>
-      <ul>
-        {roles.map((role) => (
-          <li key={role.id}>{portalRoleLabel(role, content.portalStandard)}</li>
-        ))}
-      </ul>
-      {permittedAreas.length > 0 ? (
-        <ul>
-          {permittedAreas.map((area) => (
-            <li key={area}>{area}</li>
-          ))}
-        </ul>
-      ) : (
-        <p>{content.dialog.previewNoAreas}</p>
-      )}
-      <p className={styles.private}>{content.dialog.previewPrivate}</p>
-    </div>
-  );
-}
-
 function OneTimeInviteLink({
   inviteUrl,
   copied,
@@ -146,7 +112,7 @@ export function PortalInviteStepContent(props: Props) {
   if (props.inviteUrl) return <OneTimeInviteLink {...props} />;
   if (props.preview)
     return (
-      <InvitationPreview
+      <PortalInvitationPreview
         content={props.content}
         contactName={props.contactName}
         roles={props.access.roles.filter(

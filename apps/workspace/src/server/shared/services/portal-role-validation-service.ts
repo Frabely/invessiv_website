@@ -10,6 +10,7 @@ async function areActivePortalRoles(
   tx: ContactDatabaseTransaction,
   roleIds: readonly string[],
 ): Promise<boolean> {
+  if (roleIds.length === 0) return false;
   const available = await tx
     .select({ id: roles.id, permission: rolePermissions.permission_key })
     .from(roles)

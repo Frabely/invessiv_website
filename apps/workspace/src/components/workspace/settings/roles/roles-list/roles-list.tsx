@@ -6,7 +6,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
-import { EmptyState, PrimaryCtaButton } from "@invessiv/ui";
+import { ButtonControl, EmptyState, PrimaryCtaButton } from "@invessiv/ui";
 import type {
   SettingsPermissionsDictionary,
   SettingsRolesDictionary,
@@ -63,7 +63,7 @@ export function RolesList({
         role="group"
         aria-label={content.dialog.roleTypeLabel}
       >
-        <button
+        <ButtonControl
           type="button"
           aria-pressed={realm === AuthRealm.Workspace}
           className={styles.realmButton}
@@ -73,8 +73,8 @@ export function RolesList({
           }}
         >
           {content.list.workspaceRealm}
-        </button>
-        <button
+        </ButtonControl>
+        <ButtonControl
           type="button"
           aria-pressed={realm === AuthRealm.Portal}
           className={styles.realmButton}
@@ -84,7 +84,7 @@ export function RolesList({
           }}
         >
           {content.list.portalRealm}
-        </button>
+        </ButtonControl>
       </div>
       {realm === AuthRealm.Portal ? (
         <p className={styles.description}>{content.list.portalIntro}</p>

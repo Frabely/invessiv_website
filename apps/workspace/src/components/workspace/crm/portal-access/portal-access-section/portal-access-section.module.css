@@ -21,8 +21,7 @@
   font-size: var(--font-size-heading-sm);
 }
 
-.header p,
-.row p {
+.header p {
   margin: 0.25rem 0 0;
   color: var(--color-text-muted);
   font-size: var(--font-size-body-sm);
@@ -34,38 +33,4 @@
   border: 1px dashed var(--color-border-strong);
   border-radius: 10px;
   color: var(--color-text-muted);
-}
-
-.list {
-  display: grid;
-  gap: 0.75rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1rem;
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-}
-
-.row strong {
-  color: var(--color-text);
-}
-
-.row .status {
-  color: var(--color-text);
-  font-weight: 700;
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
 }

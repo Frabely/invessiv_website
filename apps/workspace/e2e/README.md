@@ -32,8 +32,13 @@ Start aus der Repository-Wurzel:
 corepack pnpm --filter @invessiv/workspace test:e2e:portal
 ```
 
-Der Befehl prüft, dass Development-Datenbank und Clerk-Development-Schlüssel konfiguriert sind
-und dass die Datenbank-URL sich von Preview und Production unterscheidet. Danach führt er die
+Der Befehl verlangt in Root und Workspace dieselbe Development-Datenbank sowie lesbare Preview-
+und Production-Konfigurationen. Er vergleicht die tatsächlichen Datenbank-Endpunkte ohne
+Zugangsdaten, Pooler-Zusatz und URL-Parameter und bricht bei fehlender oder gleicher Zuordnung ab.
+Zusätzlich muss der Development-Endpunkt zur fest hinterlegten Kennung in
+`e2e/allowed-development-database.json` passen. Wird die Development-Datenbank durch einen neuen
+Endpunkt ersetzt, muss diese Kennung bewusst aktualisiert werden.
+Danach führt er die
 Migrationen aus, baut die Workspace-App mit den Development-Werten und startet Playwright. Das
 Playwright-Setup legt drei synthetische Clerk-Nutzer mit `+clerk_test`-Adressen bei Bedarf an,
 erzeugt zwei Kunden und ihre Kontaktzuordnungen neu und speichert frische Sitzungen unter

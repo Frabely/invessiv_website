@@ -1,3 +1,4 @@
+import Link from "next/link";
 import styles from "./portal-invitation-actions.module.css";
 
 export type PortalInvitationActionsProps = {
@@ -18,12 +19,12 @@ export function PortalInvitationActions({
 }: PortalInvitationActionsProps) {
   return (
     <nav aria-label={ariaLabel} className={styles.actions}>
-      <a className={styles.primary} href={signUpHref}>
+      <Link className={styles.primary} href={signUpHref}>
         {signUpLabel}
-      </a>
-      <a className={styles.secondary} href={signInHref}>
+      </Link>
+      <Link className={styles.secondary} href={signInHref}>
         {signInLabel}
-      </a>
+      </Link>
     </nav>
   );
 }

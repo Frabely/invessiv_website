@@ -2,7 +2,7 @@ import "server-only";
 
 import { createHash, randomBytes } from "node:crypto";
 
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { PortalAccessErrorCode } from "@invessiv/common/constants/crm/errors/portal-access-error-codes";
 import type { InvitePortalContactRequestDto } from "@invessiv/common/contracts/crm/invite-portal-contact-request.dto";
@@ -16,7 +16,6 @@ import {
   customers,
   portalInvitationRoles,
   portalInvitations,
-  portalMemberships,
 } from "@invessiv/db/record-configuration";
 import { canOn } from "@/common/patterns/auth/can-on";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
@@ -26,7 +25,9 @@ import { SecurityEventType } from "@invessiv/common/constants/auth/security-even
 import { SecuritySubjectType } from "@invessiv/common/constants/auth/security-subject-types";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { isUuid } from "@invessiv/common/patterns/validation/is-uuid";
-import { portalRoleValidationService } from "@/server/workspace/crm/services/portal-access/portal-role-validation-service";
+import { portalRoleValidationService } from "@/server/shared/services/portal-role-validation-service";
+import { portalMembershipPresenceService } from "@/server/shared/services/portal-membership-presence-service";
+import { portalInvitationRevocationService } from "@/server/workspace/crm/services/portal-access/portal-invitation-revocation-service";
 
 const INVITATION_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 type Assignment = { id: string; personId: string };
@@ -89,43 +90,6 @@ async function findPreviewConfirmation(
     .where(eq(customers.id, customerId))
     .limit(1);
   return customer ?? null;
-}
-
-async function hasActiveMembership(
-  tx: ContactDatabaseTransaction,
-  customerId: string,
-  personId: string,
-): Promise<boolean> {
-  const [membership] = await tx
-    .select({ id: portalMemberships.id })
-    .from(portalMemberships)
-    .where(
-      and(
-        eq(portalMemberships.customer_id, customerId),
-        eq(portalMemberships.person_id, personId),
-        isNull(portalMemberships.revoked_at),
-      ),
-    )
-    .limit(1);
-  return membership !== undefined;
-}
-
-async function revokeOpenInvitationForAssignment(
-  tx: ContactDatabaseTransaction,
-  assignmentId: string,
-  now: Date,
-): Promise<void> {
-  // A re-invite invalidates the old link before the new invitation is inserted.
-  await tx
-    .update(portalInvitations)
-    .set({ revoked_at: now, updated_at: now })
-    .where(
-      and(
-        eq(portalInvitations.assignment_id, assignmentId),
-        isNull(portalInvitations.redeemed_at),
-        isNull(portalInvitations.revoked_at),
-      ),
-    );
 }
 
 async function createInvitationWithRoles({
@@ -199,7 +163,13 @@ export async function invitePortalContact(
       return { ok: false, code: PortalAccessErrorCode.PreviewNotConfirmed };
     }
 
-    if (await hasActiveMembership(tx, customerId, assignment.personId)) {
+    if (
+      await portalMembershipPresenceService.hasActiveMembership(
+        tx,
+        customerId,
+        assignment.personId,
+      )
+    ) {
       return { ok: false, code: PortalAccessErrorCode.MembershipAlreadyActive };
     }
 
@@ -213,7 +183,12 @@ export async function invitePortalContact(
       return { ok: false, code: PortalAccessErrorCode.InvalidPortalRole };
     }
 
-    await revokeOpenInvitationForAssignment(tx, assignment.id, now);
+    // A re-invite invalidates the old link before the new invitation is inserted.
+    await portalInvitationRevocationService.forAssignment(
+      tx,
+      assignment.id,
+      now,
+    );
     const invitationId = await createInvitationWithRoles({
       tx,
       input,

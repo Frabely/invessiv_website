@@ -1,7 +1,7 @@
 import "server-only";
 
 import { createHash } from "node:crypto";
-import { and, eq, inArray, isNull } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { SecurityEventType } from "@invessiv/common/constants/auth/security-event-types";
 import { SecuritySubjectType } from "@invessiv/common/constants/auth/security-subject-types";
@@ -17,13 +17,12 @@ import {
   portalInvitations,
   portalMembershipRoles,
   portalMemberships,
-  rolePermissions,
-  roles,
   users,
 } from "@invessiv/db/record-configuration";
 import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
 import { portalInvitationState } from "@/common/patterns/portal/portal-invitation-state";
-import { hasUsablePortalRoles } from "@/common/patterns/portal/has-usable-portal-roles";
+import { portalRoleValidationService } from "@/server/shared/services/portal-role-validation-service";
+import { portalMembershipPresenceService } from "@/server/shared/services/portal-membership-presence-service";
 
 type RedeemPortalInvitationResult =
   | { ok: true; customerId: string }
@@ -68,42 +67,6 @@ async function findInvitation(
     .limit(1)
     .for("update");
   return invitation ?? null;
-}
-
-async function hasActiveMembership(
-  tx: ContactDatabaseTransaction,
-  assignment: InvitationAssignment,
-): Promise<boolean> {
-  const [membership] = await tx
-    .select({ id: portalMemberships.id })
-    .from(portalMemberships)
-    .where(
-      and(
-        eq(portalMemberships.customer_id, assignment.customerId),
-        eq(portalMemberships.person_id, assignment.personId),
-        isNull(portalMemberships.revoked_at),
-      ),
-    )
-    .limit(1);
-  return membership !== undefined;
-}
-
-async function hasUsableInvitationRoles(
-  tx: ContactDatabaseTransaction,
-  roleIds: readonly string[],
-): Promise<boolean> {
-  const rows = await tx
-    .select({ id: roles.id, permission: rolePermissions.permission_key })
-    .from(roles)
-    .leftJoin(rolePermissions, eq(rolePermissions.role_id, roles.id))
-    .where(
-      and(
-        inArray(roles.id, [...roleIds]),
-        eq(roles.realm, AuthRealm.Portal),
-        eq(roles.active, true),
-      ),
-    );
-  return hasUsablePortalRoles(roleIds, rows);
 }
 
 async function findInvitationAssignment(
@@ -216,7 +179,13 @@ export async function redeemPortalInvitation(
     );
     if (!assignment)
       return { ok: false, code: PortalInvitationErrorCode.Invalid };
-    if (await hasActiveMembership(tx, assignment))
+    if (
+      await portalMembershipPresenceService.hasActiveMembership(
+        tx,
+        assignment.customerId,
+        assignment.personId,
+      )
+    )
       return { ok: false, code: PortalInvitationErrorCode.Invalid };
 
     const roleRows = await tx
@@ -224,7 +193,7 @@ export async function redeemPortalInvitation(
       .from(portalInvitationRoles)
       .where(eq(portalInvitationRoles.portal_invitation_id, invitation.id));
     const roleIds = roleRows.map((row) => row.roleId);
-    if (roleIds.length === 0 || !(await hasUsableInvitationRoles(tx, roleIds)))
+    if (!(await portalRoleValidationService.areActivePortalRoles(tx, roleIds)))
       return { ok: false, code: PortalInvitationErrorCode.Invalid };
 
     const userId = await resolveOrCreatePortalUser(

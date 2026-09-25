@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { ButtonControl } from "@invessiv/ui";
 import { portalInvitationApiService } from "@/client/portal/portal-invitation-api-service";
 import { PortalInvitationErrorCode } from "@invessiv/common/constants/portal/portal-invitation-error-codes";
 import type { Locale } from "@/config/i18n";
@@ -56,15 +57,14 @@ export function PortalInvitationRedeemer({
 
   return (
     <div className={styles.action}>
-      <button
-        className={styles.button}
+      <ButtonControl
         type="button"
         onClick={redeem}
         disabled={pending}
         aria-busy={pending}
       >
         {pending ? labels.loading : labels.redeem}
-      </button>
+      </ButtonControl>
       {message ? (
         <p className={styles.error} role="alert">
           {message}

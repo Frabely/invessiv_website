@@ -34,6 +34,9 @@ vi.mock("@invessiv/ui", () => ({
   }: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
     <button {...props}>{children}</button>
   ),
+  CheckboxControl: (props: React.InputHTMLAttributes<HTMLInputElement>) => (
+    <input {...props} type="checkbox" />
+  ),
 }));
 afterEach(cleanup);
 

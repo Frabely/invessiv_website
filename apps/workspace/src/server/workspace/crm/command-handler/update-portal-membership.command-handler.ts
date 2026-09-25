@@ -21,7 +21,7 @@ import {
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
 import { updateVersioned } from "@/server/workspace/shared/update-versioned";
-import { portalRoleValidationService } from "@/server/workspace/crm/services/portal-access/portal-role-validation-service";
+import { portalRoleValidationService } from "@/server/shared/services/portal-role-validation-service";
 import { portalMembershipAccessService } from "@/server/workspace/crm/services/portal-access/portal-membership-access-service";
 
 type MembershipRow = typeof portalMemberships.$inferSelect;
