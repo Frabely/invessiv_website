@@ -41,6 +41,7 @@ Scope- und detailspezifische Regeln stehen in der jeweils nächstgelegenen `AGEN
 | `apps/workspace/src/client/`                        | Client-Services als API-Schnittstelle: nehmen DTOs entgegen und rufen die API auf                               |
 | `apps/workspace/src/server/workspace/crm/`          | Interner CRM-Serverpfad: Primärkontakt-Invariante, kein Löschpfad, Portaltrennung                               |
 | `apps/workspace/src/server/workspace/shared/`       | Domänenübergreifende Server-Bausteine; `updateVersioned` als einziger versionierter Schreibweg                  |
+| `apps/workspace/src/server/shared/`                 | Services, die Portal- **und** Workspace-Handler teilen; einzige Ausnahme von der Portal/Workspace-Trennung      |
 | `apps/workspace/src/server/workspace/auth/`         | Actor-Auflösung, Owner-Bootstrap, Security-Events; fail-closed, keine Rollenprüfung in Features                 |
 | `apps/workspace/src/common/`                        | Workspace-shared Contracts/Constants                                                                            |
 | `packages/` (`common`, `db`, `ui`)                  | Geteilte Pakete: Const-Objekt-Pattern, Error-Codes, DTOs, Drizzle-Schema, app-neutrale UI                       |

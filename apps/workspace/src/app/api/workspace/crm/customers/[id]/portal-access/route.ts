@@ -1,6 +1,7 @@
 import "server-only";
 import type { NextRequest } from "next/server";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
+import { PortalAccessErrorCode } from "@invessiv/common/constants/crm/errors/portal-access-error-codes";
 import { CrmEndpointAccessRule } from "@/common/constants/auth/crm-endpoint-access-rules";
 import { withCrmPermission } from "@/lib/auth/api";
 import { getCustomerPortalAccess } from "@/server/workspace/crm/query-handler/get-customer-portal-access.query-handler";
@@ -15,7 +16,7 @@ export async function GET(request: NextRequest, { params }: Context) {
       const access = await getCustomerPortalAccess(id, actor);
       if (!access) {
         return Response.json(
-          { code: "not_found" },
+          { code: PortalAccessErrorCode.NotFound },
           { status: HttpResponseCode.NotFound },
         );
       }

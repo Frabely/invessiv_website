@@ -11,14 +11,23 @@ import { canOn } from "@/common/patterns/auth/can-on";
 import { updateVersioned } from "@/server/workspace/shared/update-versioned";
 import { isUuid } from "@invessiv/common/patterns/validation/is-uuid";
 
+type ConfirmDto = { version: number };
 type ConfirmResult =
   | { ok: true; version: number }
   | {
       ok: false;
       code:
         | typeof PortalAccessErrorCode.NotFound
-        | typeof PortalAccessErrorCode.ValidationError
-        | typeof ConcurrencyErrorCode.VersionConflict;
+        | typeof PortalAccessErrorCode.ValidationError;
+    }
+  | {
+      ok: false;
+      code: typeof ConcurrencyErrorCode.VersionConflict;
+      conflict: {
+        code: typeof ConcurrencyErrorCode.VersionConflict;
+        currentVersion: number;
+        current: ConfirmDto;
+      };
     };
 
 /** Records the mandatory, customer-scoped preview acknowledgement before the first invite. */
@@ -45,15 +54,16 @@ export async function confirmCustomerPortalPreview(
         portal_preview_confirmed_at: now,
         portal_preview_confirmed_by_member_id: actor.workspaceMemberId,
       },
-      toDto: (row) => ({ version: row.version }),
+      toDto: (row): ConfirmDto => ({ version: row.version }),
     }),
   );
   if (result.ok) return { ok: true, version: result.value.version };
-  return {
-    ok: false,
-    code:
-      result.code === ConcurrencyErrorCode.NotFound
-        ? PortalAccessErrorCode.NotFound
-        : ConcurrencyErrorCode.VersionConflict,
-  };
+  if (result.code === ConcurrencyErrorCode.VersionConflict) {
+    return {
+      ok: false,
+      code: ConcurrencyErrorCode.VersionConflict,
+      conflict: result.conflict,
+    };
+  }
+  return { ok: false, code: PortalAccessErrorCode.NotFound };
 }

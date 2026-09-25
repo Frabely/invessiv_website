@@ -6,25 +6,32 @@ import { PortalAccessErrorCode } from "@invessiv/common/constants/crm/errors/por
 import type { ConfirmPortalPreviewRequestDto } from "@invessiv/common/contracts/crm/confirm-portal-preview-request.dto";
 import type { InvitePortalContactRequestDto } from "@invessiv/common/contracts/crm/invite-portal-contact-request.dto";
 import type { ReplacePortalMembershipRolesRequestDto } from "@invessiv/common/contracts/crm/replace-portal-membership-roles-request.dto";
-import type { UpdatePortalMembershipRequestDto } from "@invessiv/common/contracts/crm/update-portal-membership-request.dto";
 import { portalAccessApiEndpoints } from "@/common/patterns/crm/portal-access-api-endpoints";
 import type { Locale } from "@/config/i18n";
 
-type ApiResult<T> =
+type MembershipCurrent = {
+  id: string;
+  version: number;
+  emailNotificationsEnabled: boolean;
+};
+
+type ApiResult<T, TCurrent = MembershipCurrent> =
   | { ok: true; value: T }
   | {
       ok: false;
       code: string;
-      current?: {
-        id: string;
-        version: number;
-        emailNotificationsEnabled: boolean;
-      };
+      current?: TCurrent;
     };
 
-type ApiFailure = Extract<ApiResult<unknown>, { ok: false }>;
+type ApiFailure<TCurrent> = Extract<
+  ApiResult<unknown, TCurrent>,
+  { ok: false }
+>;
 
-function toApiFailure(response: Response, payload: unknown): ApiFailure {
+function toApiFailure<TCurrent>(
+  response: Response,
+  payload: unknown,
+): ApiFailure<TCurrent> {
   if (typeof payload !== "object" || payload === null) {
     if (response.status === HttpResponseCode.NotFound)
       return { ok: false, code: PortalAccessErrorCode.NotFound };
@@ -44,20 +51,16 @@ function toApiFailure(response: Response, payload: unknown): ApiFailure {
     typeof current === "object" &&
     current !== null
   ) {
-    return {
-      ok: false,
-      code,
-      current: current as NonNullable<ApiFailure["current"]>,
-    };
+    return { ok: false, code, current: current as TCurrent };
   }
   return { ok: false, code };
 }
 
-async function send<T>(
+async function send<T, TCurrent = MembershipCurrent>(
   url: string,
   method: HttpMethod,
   body?: unknown,
-): Promise<ApiResult<T>> {
+): Promise<ApiResult<T, TCurrent>> {
   try {
     const response = await fetch(url, {
       method,
@@ -70,7 +73,7 @@ async function send<T>(
     });
     const payload: unknown = await response.json().catch(() => null);
     if (response.ok) return { ok: true, value: payload as T };
-    return toApiFailure(response, payload);
+    return toApiFailure<TCurrent>(response, payload);
   } catch {
     return { ok: false, code: PortalAccessErrorCode.Unavailable };
   }
@@ -81,7 +84,7 @@ export const portalAccessApiService = {
     customerId: string,
     request: ConfirmPortalPreviewRequestDto,
   ) =>
-    send<{ ok: true; version: number }>(
+    send<{ version: number }, { version: number }>(
       portalAccessApiEndpoints.preview(customerId),
       HttpMethod.Post,
       request,
@@ -92,7 +95,7 @@ export const portalAccessApiService = {
     request: InvitePortalContactRequestDto,
   ) =>
     send<{ invitation: { id: string; expiresAt: string }; inviteUrl: string }>(
-      `${portalAccessApiEndpoints.invite(customerId)}?locale=${encodeURIComponent(locale)}`,
+      portalAccessApiEndpoints.invite(customerId, locale),
       HttpMethod.Post,
       request,
     ),
@@ -104,17 +107,6 @@ export const portalAccessApiService = {
         emailNotificationsEnabled: boolean;
       };
     }>(portalAccessApiEndpoints.membershipRoles(id), HttpMethod.Put, request),
-  updateNotifications: (
-    id: string,
-    request: UpdatePortalMembershipRequestDto,
-  ) =>
-    send<{
-      membership: {
-        id: string;
-        version: number;
-        emailNotificationsEnabled: boolean;
-      };
-    }>(portalAccessApiEndpoints.membership(id), HttpMethod.Patch, request),
   revokeMembership: (id: string) =>
     send<{ ok: boolean }>(
       portalAccessApiEndpoints.membership(id),

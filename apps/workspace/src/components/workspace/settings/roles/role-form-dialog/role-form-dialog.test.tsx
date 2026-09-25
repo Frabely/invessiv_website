@@ -185,6 +185,7 @@ describe("RoleFormDialog", () => {
 
     await waitFor(() => expect(onClose).toHaveBeenCalled());
     expect(mocks.createRole).toHaveBeenCalledWith({
+      realm: "workspace",
       name: "Vertrieb",
       description: null,
       permissions: [Permission.LeadsRead, Permission.LeadsWrite],

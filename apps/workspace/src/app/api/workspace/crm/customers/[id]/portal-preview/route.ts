@@ -30,10 +30,12 @@ export async function POST(request: NextRequest, { params }: Context) {
       const result = await confirmCustomerPortalPreview(id, input.data, actor);
       if (result.ok)
         return Response.json(result, { status: HttpResponseCode.Ok });
+      if (result.code === ConcurrencyErrorCode.VersionConflict)
+        return Response.json(result.conflict, {
+          status: HttpResponseCode.Conflict,
+        });
       if (result.code === PortalAccessErrorCode.NotFound)
         return Response.json(result, { status: HttpResponseCode.NotFound });
-      if (result.code === ConcurrencyErrorCode.VersionConflict)
-        return Response.json(result, { status: HttpResponseCode.Conflict });
       return Response.json(result, { status: HttpResponseCode.BadRequest });
     },
   )(request);

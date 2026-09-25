@@ -17,7 +17,9 @@ Gates `requirePortalActor` (Seiten) und `withPortalActor` (API) unter `auth/` si
 
 - **Getrennt von `server/workspace/`.** Kein Portal-Handler liegt unter `server/workspace/`, kein Handler wird von
   beiden Welten benutzt — auch nicht mit einem Parameter, der entscheidet, wer fragt. Eine interne Mitgliedschaft
-  gewährt keinen Portalzugriff und umgekehrt, auch bei derselben `users.id`.
+  gewährt keinen Portalzugriff und umgekehrt, auch bei derselben `users.id`. Braucht ein Handler beider Welten
+  dieselbe Logik, wandert sie als Service nach `server/shared/` (siehe `src/server/shared/AGENTS.md`) — nie ein
+  Cross-Domain-Import zwischen den Handlern selbst.
 - **`PortalActor` ist branded.** Der Konstruktor `createPortalActor` in `auth/portal-actor.ts` ist die einzige Stelle,
   die eine Instanz erzeugt. Kein Codepfad baut einen `PortalActor` aus einer rohen `customerId` oder einem
   ungeprüften Row-Ergebnis zusammen.

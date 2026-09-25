@@ -28,6 +28,8 @@ function mapRowsToResolution(
   if (!first.user_active) {
     return { ok: false, code: PortalActorResolutionError.UserInactive };
   }
+  // rows arrive ordered by membership activation (earliest first), so when a user holds two
+  // active memberships for this customer, the first match here is always the same one.
   const activeMembership = rows.find(
     (row) => row.membership_id !== null && row.revoked_at === null,
   );

@@ -108,6 +108,39 @@ describe("memberRoleAssignmentService.checkAssignable", () => {
     });
   });
 
+  it("rejects dropping the owner role by omitting it from roleIds", async () => {
+    const { executor } = executorReturning([
+      row(ROLE_A),
+      row(ROLE_B, { system_key: SystemRoleKey.WorkspaceOwner }),
+    ]);
+
+    expect(
+      await memberRoleAssignmentService.checkAssignable(executor, {
+        roleIds: [ROLE_A],
+        currentRoleIds: [ROLE_A, ROLE_B],
+      }),
+    ).toEqual({
+      ok: false,
+      code: WorkspaceMemberErrorCode.OwnerRoleNotAssignable,
+    });
+  });
+
+  it("rejects wiping every role when the owner role is currently held", async () => {
+    const { executor } = executorReturning([
+      row(ROLE_B, { system_key: SystemRoleKey.WorkspaceOwner }),
+    ]);
+
+    expect(
+      await memberRoleAssignmentService.checkAssignable(executor, {
+        roleIds: [],
+        currentRoleIds: [ROLE_B],
+      }),
+    ).toEqual({
+      ok: false,
+      code: WorkspaceMemberErrorCode.OwnerRoleNotAssignable,
+    });
+  });
+
   it.each([
     ["an unknown role id", [row(ROLE_A)], []],
     [

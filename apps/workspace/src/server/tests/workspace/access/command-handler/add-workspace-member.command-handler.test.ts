@@ -190,7 +190,7 @@ describe("addWorkspaceMember", () => {
     });
     mocks.updateVersioned.mockResolvedValue({
       ok: true,
-      value: existingUser.id,
+      value: { id: existingUser.id, active: true },
     });
     mocks.findById.mockResolvedValue(CREATED_MEMBER);
 
@@ -206,6 +206,7 @@ describe("addWorkspaceMember", () => {
           first_name: "Anna",
           last_name: null,
           display_name: "Anna",
+          active: true,
         },
       }),
     );

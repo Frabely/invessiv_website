@@ -45,12 +45,21 @@ function scopeFromRow(
   };
 }
 
-/** Inactive or scope-only roles may remain held, but cannot be newly assigned workspace-wide. */
+/**
+ * Inactive or scope-only roles may remain held, but cannot be newly assigned workspace-wide.
+ * The WorkspaceOwner role can neither be newly assigned nor dropped here — it only ever
+ * changes through grantWorkspaceOwner/revokeWorkspaceOwner, so a removed role id is inspected
+ * alongside the submitted ones instead of being trusted to already be a non-owner role.
+ */
 async function checkAssignable(
   executor: AccessDatabaseExecutor,
   args: { roleIds: readonly string[]; currentRoleIds: readonly string[] },
 ): Promise<RoleAssignabilityResult> {
-  if (args.roleIds.length === 0) return { ok: true };
+  const removedRoleIds = args.currentRoleIds.filter(
+    (roleId) => !args.roleIds.includes(roleId),
+  );
+  const roleIdsToInspect = [...new Set([...args.roleIds, ...removedRoleIds])];
+  if (roleIdsToInspect.length === 0) return { ok: true };
 
   const rows = await executor
     .select({
@@ -61,17 +70,26 @@ async function checkAssignable(
       scope_assignable: roles.scope_assignable,
     })
     .from(roles)
-    .where(inArray(roles.id, [...args.roleIds]))
+    .where(inArray(roles.id, roleIdsToInspect))
     .for("update");
 
-  if (rows.some((row) => row.system_key === SystemRoleKey.WorkspaceOwner)) {
+  const ownerRoleIds = new Set(
+    rows
+      .filter((row) => row.system_key === SystemRoleKey.WorkspaceOwner)
+      .map((row) => row.id),
+  );
+  if (
+    args.roleIds.some((roleId) => ownerRoleIds.has(roleId)) ||
+    removedRoleIds.some((roleId) => ownerRoleIds.has(roleId))
+  ) {
     return { ok: false, code: WorkspaceMemberErrorCode.OwnerRoleNotAssignable };
   }
 
   const current = new Set(args.currentRoleIds);
+  const submittedRows = rows.filter((row) => args.roleIds.includes(row.id));
   const allAssignable =
-    rows.length === args.roleIds.length &&
-    rows.every(
+    submittedRows.length === args.roleIds.length &&
+    submittedRows.every(
       (row) =>
         row.realm === AuthRealm.Workspace &&
         (row.active || current.has(row.id)) &&

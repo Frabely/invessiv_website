@@ -63,7 +63,11 @@ export async function resolvePortalActor(
         eq(rolePermissions.realm, AuthRealm.Portal),
       ),
     )
-    .where(eq(users.clerk_user_id, clerkUserId));
+    .where(eq(users.clerk_user_id, clerkUserId))
+    // A user can hold two active memberships for the same customer via two different contact
+    // assignments; ordering by the earliest activation makes which one wins deterministic
+    // instead of depending on arbitrary row order from the planner.
+    .orderBy(portalMemberships.activated_at);
 
   const resolution = portalActorMappingService.mapRowsToResolution(
     rows,

@@ -1,6 +1,5 @@
 import "server-only";
 
-import { eq } from "drizzle-orm";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
@@ -10,7 +9,6 @@ import type { AddWorkspaceMemberRequestDto } from "@invessiv/common/contracts/au
 import type { AddWorkspaceMemberResult } from "@invessiv/common/contracts/auth/results/add-workspace-member-result";
 import { getDrizzleDatabaseClient, PostgresErrorCode } from "@invessiv/db/core";
 import {
-  users,
   workspaceMemberRoles,
   workspaceMembers,
 } from "@invessiv/db/record-configuration";
@@ -24,7 +22,7 @@ import { memberRoleAssignmentService } from "@/server/workspace/access/services/
 import { workspaceMemberReadService } from "@/server/workspace/access/services/workspace-member-read-service";
 import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
 import { postgresErrorService } from "@/server/workspace/shared/services/postgres-error-service";
-import { updateVersioned } from "@/server/workspace/shared/update-versioned";
+import { clerkUserService } from "@/server/shared/services/clerk-user-service";
 
 const USER_MASTER_DATA_CHECK_CONSTRAINTS: readonly string[] = [
   UsersConstraintName.PrimaryEmailCheck,
@@ -127,56 +125,22 @@ export async function addWorkspaceMember(
         const now = new Date();
         const memberId = crypto.randomUUID();
 
-        // Locked for the rest of this transaction: a portal-only account (12b) may already hold
-        // this row, and it is reused rather than duplicated. The lock rules out a concurrent
-        // writer between this read and the update below, so `updateVersioned` cannot lose the
-        // race it exists to prevent.
-        const existingUserRows = await tx
-          .select()
-          .from(users)
-          .where(eq(users.clerk_user_id, profile.clerkUserId))
-          .for("update");
-        const existingUser = existingUserRows[0] ?? null;
-
-        let userId: string;
-        if (existingUser) {
-          userId = existingUser.id;
-          const masterDataSync = await updateVersioned({
-            tx,
-            table: users,
-            id: existingUser.id,
-            expectedVersion: existingUser.version,
-            patch: {
-              primary_email: primaryEmail,
-              first_name: profile.firstName,
-              last_name: profile.lastName,
-              display_name: profile.displayName,
-            },
-            toDto: (row) => row.id,
-          });
-          if (!masterDataSync.ok) {
-            // The `for("update")` lock above holds this row for the rest of the transaction, so
-            // neither a version conflict nor a vanished row can happen under normal operation.
-            // Failing loudly beats silently linking the member with stale master data.
-            throw new Error(
-              `Failed to sync master data for locked user row ${existingUser.id}: ${masterDataSync.code}`,
-            );
-          }
-        } else {
-          userId = crypto.randomUUID();
-          await tx.insert(users).values({
-            id: userId,
-            clerk_user_id: profile.clerkUserId,
-            primary_email: primaryEmail,
-            first_name: profile.firstName,
-            last_name: profile.lastName,
-            display_name: profile.displayName,
-            active: true,
-            version: 1,
-            created_at: now,
-            updated_at: now,
-          });
-        }
+        // A portal-only account (12b) may already hold this identity's `users` row; adding it as
+        // a workspace member reuses and reactivates that row instead of duplicating it. Locking
+        // and master-data sync are shared with the portal-invitation flow so both stay consistent.
+        const user = await clerkUserService.ensureUser(
+          tx,
+          {
+            clerkUserId: profile.clerkUserId,
+            primaryEmail,
+            firstName: profile.firstName,
+            lastName: profile.lastName,
+            displayName: profile.displayName,
+          },
+          now,
+          { activate: true },
+        );
+        const userId = user.id;
 
         await tx.insert(workspaceMembers).values({
           id: memberId,

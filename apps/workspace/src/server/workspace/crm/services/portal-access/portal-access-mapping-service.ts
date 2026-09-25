@@ -29,46 +29,66 @@ type MembershipRow = {
   roleId: string | null;
 };
 
-function mapRoles(rows: readonly RoleRow[]): PortalRoleDto[] {
-  const rolesById = new Map<string, PortalRoleDto>();
+/**
+ * Every join here repeats the same shape: several flat rows share one id, and each row
+ * contributes at most one value to a one-to-many field on that id's DTO. `seed` builds the DTO
+ * from the row that first introduces the id; `collect` folds every row (including that first one)
+ * into it.
+ */
+function groupRowsById<TRow extends { id: string }, TItem>(
+  rows: readonly TRow[],
+  seed: (row: TRow) => TItem,
+  collect: (item: TItem, row: TRow) => void,
+): TItem[] {
+  const byId = new Map<string, TItem>();
   for (const row of rows) {
-    const role = rolesById.get(row.id) ?? {
+    const item = byId.get(row.id) ?? seed(row);
+    collect(item, row);
+    byId.set(row.id, item);
+  }
+  return [...byId.values()];
+}
+
+function mapRoles(rows: readonly RoleRow[]): PortalRoleDto[] {
+  return groupRowsById(
+    rows,
+    (row): PortalRoleDto => ({
       id: row.id,
       name: row.name,
       systemKey: row.systemKey,
       active: row.active,
       permissions: [],
-    };
-    if (row.permission) role.permissions.push(row.permission);
-    rolesById.set(row.id, role);
-  }
-  return [...rolesById.values()];
+    }),
+    (role, row) => {
+      if (row.permission) role.permissions.push(row.permission);
+    },
+  );
 }
 
 function mapInvitations(
   rows: readonly InvitationRow[],
   asOf: Date,
 ): PortalInvitationDto[] {
-  const invitationsById = new Map<string, PortalInvitationDto>();
-  for (const row of rows) {
-    const item = invitationsById.get(row.id) ?? {
+  return groupRowsById(
+    rows,
+    (row): PortalInvitationDto => ({
       id: row.id,
       assignmentId: row.assignmentId,
       roleIds: [],
       expiresAt: row.expiresAt.toISOString(),
       expired: row.expiresAt.getTime() <= asOf.getTime(),
       createdAt: row.createdAt.toISOString(),
-    };
-    if (row.roleId) item.roleIds.push(row.roleId);
-    invitationsById.set(row.id, item);
-  }
-  return [...invitationsById.values()];
+    }),
+    (item, row) => {
+      if (row.roleId) item.roleIds.push(row.roleId);
+    },
+  );
 }
 
 function mapMemberships(rows: readonly MembershipRow[]): PortalMembershipDto[] {
-  const membershipsById = new Map<string, PortalMembershipDto>();
-  for (const row of rows) {
-    const item = membershipsById.get(row.id) ?? {
+  return groupRowsById(
+    rows,
+    (row): PortalMembershipDto => ({
       id: row.id,
       assignmentId: row.assignmentId,
       version: row.version,
@@ -76,11 +96,11 @@ function mapMemberships(rows: readonly MembershipRow[]): PortalMembershipDto[] {
       activatedAt: row.activatedAt.toISOString(),
       lastSeenAt: row.lastSeenAt?.toISOString() ?? null,
       emailNotificationsEnabled: row.emailNotificationsEnabled,
-    };
-    if (row.roleId) item.roleIds.push(row.roleId);
-    membershipsById.set(row.id, item);
-  }
-  return [...membershipsById.values()];
+    }),
+    (item, row) => {
+      if (row.roleId) item.roleIds.push(row.roleId);
+    },
+  );
 }
 
 function mapRowsToDto(input: {

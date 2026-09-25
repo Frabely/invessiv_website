@@ -49,7 +49,10 @@ export async function POST(request: NextRequest) {
     return Response.json(result, {
       status: result.ok ? HttpResponseCode.Ok : HttpResponseCode.NotFound,
     });
-  } catch {
+  } catch (error: unknown) {
+    console.error("[portal-invitation-redeem] redemption failed", {
+      errorName: error instanceof Error ? error.name : typeof error,
+    });
     return Response.json(
       { code: PortalInvitationErrorCode.Unavailable },
       { status: HttpResponseCode.ServiceUnavailable },

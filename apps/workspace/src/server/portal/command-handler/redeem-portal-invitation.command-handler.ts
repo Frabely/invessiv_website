@@ -17,11 +17,11 @@ import {
   portalInvitations,
   portalMembershipRoles,
   portalMemberships,
-  users,
 } from "@invessiv/db/record-configuration";
 import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
 import { portalInvitationState } from "@/common/patterns/portal/portal-invitation-state";
 import { portalAccessValidationService } from "@/server/shared/services/portal-access-validation-service";
+import { clerkUserService } from "@/server/shared/services/clerk-user-service";
 
 type RedeemPortalInvitationResult =
   | { ok: true; customerId: string }
@@ -88,29 +88,20 @@ async function resolveOrCreatePortalUser(
   clerkUser: ClerkUser & { primaryEmail: string },
   now: Date,
 ): Promise<string | null> {
-  await tx
-    .insert(users)
-    .values({
-      id: crypto.randomUUID(),
-      clerk_user_id: clerkUser.id,
-      primary_email: clerkUser.primaryEmail,
-      first_name: clerkUser.firstName,
-      last_name: clerkUser.lastName,
-      display_name: clerkUser.displayName,
-      active: true,
-      version: 1,
-      created_at: now,
-      updated_at: now,
-    })
-    .onConflictDoNothing({ target: users.clerk_user_id });
-
-  const [linkedUser] = await tx
-    .select({ id: users.id, active: users.active })
-    .from(users)
-    .where(eq(users.clerk_user_id, clerkUser.id))
-    .limit(1)
-    .for("update");
-  return linkedUser?.active ? linkedUser.id : null;
+  // Shared with the workspace-member flow so both lock and sync the identity's `users` row the
+  // same way; unlike that flow, redemption never reactivates a deactivated account.
+  const user = await clerkUserService.ensureUser(
+    tx,
+    {
+      clerkUserId: clerkUser.id,
+      primaryEmail: clerkUser.primaryEmail,
+      firstName: clerkUser.firstName,
+      lastName: clerkUser.lastName,
+      displayName: clerkUser.displayName,
+    },
+    now,
+  );
+  return user.active ? user.id : null;
 }
 
 async function createPortalMembership(

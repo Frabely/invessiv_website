@@ -42,6 +42,9 @@ export function PortalInviteDialog({
   const [previewConfirmed, setPreviewConfirmed] = useState(
     access.previewConfirmedAt !== null,
   );
+  const [customerVersion, setCustomerVersion] = useState(
+    access.customerVersion,
+  );
   const [inviteUrl, setInviteUrl] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -73,10 +76,15 @@ export function PortalInviteDialog({
     const confirmed = await portalAccessApiService.confirmPreview(
       access.customerId,
       {
-        version: access.customerVersion,
+        version: customerVersion,
       },
     );
     if (!confirmed.ok) {
+      if (confirmed.current) {
+        // Adopts the fresh version on a conflict so the input isn't lost — the user
+        // simply retries with the same choices instead of closing and reopening the dialog.
+        setCustomerVersion(confirmed.current.version);
+      }
       setError(portalAccessErrorMessage(confirmed.code, content));
       return false;
     }

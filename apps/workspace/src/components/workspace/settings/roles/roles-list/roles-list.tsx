@@ -32,6 +32,10 @@ export function RolesList({
   const [openRole, setOpenRole] = useState<RoleDto | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [realm, setRealm] = useState<AuthRealm>(AuthRealm.Workspace);
+  const realmSwitchOptions: { realm: AuthRealm; label: string }[] = [
+    { realm: AuthRealm.Workspace, label: content.list.workspaceRealm },
+    { realm: AuthRealm.Portal, label: content.list.portalRealm },
+  ];
   const visibleRoles = roles.filter((role) => role.realm === realm);
   const systemRoles = visibleRoles.filter((role) => role.isSystem);
   const customRoles = visibleRoles.filter((role) => !role.isSystem);
@@ -63,28 +67,20 @@ export function RolesList({
         role="group"
         aria-label={content.dialog.roleTypeLabel}
       >
-        <ButtonControl
-          type="button"
-          aria-pressed={realm === AuthRealm.Workspace}
-          className={styles.realmButton}
-          onClick={() => {
-            closeDialog();
-            setRealm(AuthRealm.Workspace);
-          }}
-        >
-          {content.list.workspaceRealm}
-        </ButtonControl>
-        <ButtonControl
-          type="button"
-          aria-pressed={realm === AuthRealm.Portal}
-          className={styles.realmButton}
-          onClick={() => {
-            closeDialog();
-            setRealm(AuthRealm.Portal);
-          }}
-        >
-          {content.list.portalRealm}
-        </ButtonControl>
+        {realmSwitchOptions.map((option) => (
+          <ButtonControl
+            key={option.realm}
+            type="button"
+            aria-pressed={realm === option.realm}
+            className={styles.realmButton}
+            onClick={() => {
+              closeDialog();
+              setRealm(option.realm);
+            }}
+          >
+            {option.label}
+          </ButtonControl>
+        ))}
       </div>
       {realm === AuthRealm.Portal ? (
         <p className={styles.description}>{content.list.portalIntro}</p>
