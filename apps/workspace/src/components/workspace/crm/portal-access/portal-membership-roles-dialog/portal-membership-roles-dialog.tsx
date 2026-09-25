@@ -1,0 +1,124 @@
+"use client";
+
+import { useState } from "react";
+import {
+  ButtonControl,
+  CheckboxControl,
+  Dialog,
+  DialogSize,
+} from "@invessiv/ui";
+import type { PortalMembershipDto } from "@invessiv/common/contracts/crm/portal-membership.dto";
+import type { PortalRoleDto } from "@invessiv/common/contracts/crm/portal-role.dto";
+import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
+import { portalAccessApiService } from "@/client/crm/portal-access-api-service";
+import { portalAccessErrorMessage } from "@/common/patterns/crm/portal-access-error-message";
+import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
+import type { CrmPortalAccessDictionary } from "@/i18n/dictionaries/workspace/crm";
+import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
+import { resolveRoleLabel } from "@/lib/workspace/access/role-label";
+import styles from "./portal-membership-roles-dialog.module.css";
+
+export interface PortalMembershipRolesDialogProps {
+  membership: PortalMembershipDto;
+  roles: PortalRoleDto[];
+  content: CrmPortalAccessDictionary;
+  permissionsContent: SettingsPermissionsDictionary;
+  onCloseAction: () => void;
+}
+
+export function PortalMembershipRolesDialog({
+  membership,
+  roles,
+  content,
+  permissionsContent,
+  onCloseAction,
+}: PortalMembershipRolesDialogProps) {
+  const [selected, setSelected] = useState<string[]>(
+    membership.roleIds.filter((id) =>
+      roles.some((role) => role.id === id && role.active),
+    ),
+  );
+  const [validation, setValidation] = useState(false);
+  const mutation = useVersionedMutation(membership, onCloseAction);
+
+  async function save() {
+    setValidation(true);
+    if (selected.length === 0) return;
+    await mutation.submit(async (current) => {
+      const result = await portalAccessApiService.replaceRoles(current.id, {
+        version: current.version,
+        roleIds: selected,
+      });
+      if (!result.ok) {
+        if (result.code === ConcurrencyErrorCode.VersionConflict) {
+          return {
+            ok: false,
+            code: ConcurrencyErrorCode.VersionConflict,
+            current: { ...current, ...result.current },
+          };
+        }
+        return { ok: false, code: result.code };
+      }
+      return {
+        ok: true,
+        current: { ...current, ...result.membership, roleIds: selected },
+      };
+    });
+  }
+
+  return (
+    <Dialog
+      title={content.dialog.rolesTitle}
+      description={content.dialog.rolesHint}
+      closeLabel={content.dialog.close}
+      onCloseAction={mutation.close}
+      size={DialogSize.Narrow}
+      footer={
+        <>
+          <ButtonControl type="button" variant="ghost" onClick={mutation.close}>
+            {content.dialog.cancel}
+          </ButtonControl>
+          <ButtonControl
+            type="button"
+            disabled={mutation.isSubmitting}
+            onClick={() => void save()}
+          >
+            {content.dialog.save}
+          </ButtonControl>
+        </>
+      }
+    >
+      <fieldset className={styles.options}>
+        <legend>{content.dialog.role}</legend>
+        {roles
+          .filter((role) => role.active)
+          .map((role) => (
+            <label className={styles.option} key={role.id}>
+              <CheckboxControl
+                checked={selected.includes(role.id)}
+                onChange={() =>
+                  setSelected((current) =>
+                    current.includes(role.id)
+                      ? current.filter((id) => id !== role.id)
+                      : [...current, role.id],
+                  )
+                }
+              />
+              {resolveRoleLabel(role, permissionsContent)}
+            </label>
+          ))}
+      </fieldset>
+      {validation && selected.length === 0 ? (
+        <p role="alert">{content.errors.roles}</p>
+      ) : null}
+      {mutation.hasConflict ? (
+        <p role="alert">{content.errors.conflict}</p>
+      ) : null}
+      {mutation.errorCode ? (
+        <p role="alert">
+          {portalAccessErrorMessage(mutation.errorCode, content)}
+        </p>
+      ) : null}
+    </Dialog>
+  );
+}

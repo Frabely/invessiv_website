@@ -3,6 +3,7 @@
 import { useId } from "react";
 
 import { PERMISSION_DEFINITIONS } from "@invessiv/common/constants/auth/permission-definitions";
+import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import type { Permission } from "@invessiv/common/constants/auth/permissions";
 import { CheckboxControl } from "@invessiv/ui";
 import {
@@ -24,6 +25,7 @@ type PermissionPickerProps = {
   onToggleAction?: (permission: Permission) => void;
   readOnly: boolean;
   selected: readonly Permission[];
+  realm?: AuthRealm;
 };
 
 export function PermissionPicker({
@@ -35,6 +37,7 @@ export function PermissionPicker({
   onToggleAction,
   readOnly,
   selected,
+  realm = AuthRealm.Workspace,
 }: PermissionPickerProps) {
   const baseId = useId();
 
@@ -45,8 +48,9 @@ export function PermissionPicker({
         {PERMISSION_GROUP_VALUES.map((group) => {
           const groupPermissions = PERMISSION_GROUP_PERMISSIONS[group].filter(
             (permission) =>
-              !onlyScopeAssignable ||
-              PERMISSION_DEFINITIONS[permission].scopeAssignable,
+              PERMISSION_DEFINITIONS[permission].realm === realm &&
+              (!onlyScopeAssignable ||
+                PERMISSION_DEFINITIONS[permission].scopeAssignable),
           );
           if (groupPermissions.length === 0) return null;
           const groupTitleId = `${baseId}-${group}`;

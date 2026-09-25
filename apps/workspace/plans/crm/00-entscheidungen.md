@@ -143,7 +143,7 @@ Projekte erweitern die Ansicht erst nach Aufbau der Projektdomäne in Ordner 07.
   Darstellungspfad. Es gibt keine zweite Kunden-Detaildarstellung.
 - **Der Kunden-Cockpit-Dialog (Task 08c) ist die interne Mitarbeitersicht, nicht die Kundenportal-Sicht.**
   Er zeigt permission-abhängig, was der aufrufende Mitarbeiter zu diesem Kunden sehen darf — inklusive
-  Daten, die das spätere Kundenportal (Ordner 12/13) dem Kunden bewusst nie zeigt, etwa Preise (Task 42:
+  Daten, die das spätere Kundenportal (Ordner 12a ff.) dem Kunden bewusst nie zeigt, etwa Preise (Task 42:
   „Kein Portalzugriff auf Beträge") oder den internen Pipeline-/Prozessstand einer Anfrage
   (angefragt/angeboten/beauftragt). Zwei Mitglieder mit unterschiedlichen Permissions sehen für denselben
   Kunden unterschiedliche Sektionen; jede Sektion prüft ihre Permission unabhängig und fehlt vollständig,
@@ -217,10 +217,26 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
 
 - Zugang nur über explizite, einmalige Einladung an eine vorhandene Personenzuordnung.
 - Einladungstoken nur gehasht speichern, sieben Tage gültig, nach Nutzung oder Widerruf ungültig.
+- Bis Ordner 20c gibt es keine Einladungsmail: Der Link wird dem Einladenden genau einmal angezeigt und von ihm
+  weitergegeben. Ab 20c versendet die Outbox die Einladung; die Kopierfunktion bleibt als Rückfall.
 - Ein Clerk-Konto kann mehrere Firmen sicher wechseln; der Firmenwechsler gehört zu Version 1.
 - Der aktive Firmenkontext wird serverseitig gegen die Mitgliedschaft geprüft. Portal-Handler
   akzeptieren keine ungeprüfte `customerId` als Autorisierung.
-- Alle Portalmitglieder einer Firma erhalten denselben Portalumfang.
+- **Portalrollen je Kontakt (abgestimmt 23.09.2026, ersetzt „derselbe Portalumfang je Firma“):** Jeder Kundenkontakt
+  hat einen eigenen Login und je Firma eine eigene Mitgliedschaft. Portalrollen liegen im Realm `portal` derselben
+  Rollen-Engine, werden intern definiert (`roles.manage`) und je Mitgliedschaft zugewiesen (`portal.manage`).
+  Kontakte derselben Firma dürfen verschiedene Rollen haben. Der Kunde verwaltet in Version 1 nichts selbst.
+- Jeder Portal-Ordner führt die Portal-Permissions seines Moduls selbst ein und ergänzt die Systemrolle
+  `portal_standard`. Das Fundament (Ordner 12a) bringt nur `portal.access`.
+- Portalrollen gelten vorerst für die ganze Firma. Der Projektbezug ist vorbereitet: Jede Portal-Query filtert über
+  `portalAccessCondition`, jede Portal-Mutation prüft `portalCanOn`; projektgebundene Portalrollen kommen später
+  additiv, ohne fertige Module umzubauen. Firmenweite Module (Chat, Onboarding-Bogen) verlangen dann eine
+  firmenweite Rolle.
+- Portalrouten nutzen englische Slugs (`/portal/[customerId]/projects|files|assets|messages|onboarding|services`,
+  `/portal/invite/[token]`); die Portal-Navigation ist eine Registry (`PORTAL_NAV_ITEMS`) mit `requiredPermission`.
+- Das Portal ist für eingeladene Kontakte aktiv; jede Anfrage prüft die Mitgliedschaft und die wirksamen Portalrollen.
+- Kunden können Leistungen aus einem freigegebenen Katalogausschnitt **preisfrei anfragen** (Ordner 13a). Das
+  Angebot entsteht weiter außerhalb; die Anwendung dokumentiert Anfrage und Ausgang.
 - Widerruf wirkt sofort; historische Nachrichten und Audit-Einträge bleiben erhalten.
 - Vor der ersten Einladung bestätigt ein Mitarbeiter eine Vorschau aller sichtbaren Projekte,
   Aufgaben, Dateien und Stunden.
@@ -234,8 +250,9 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
   Das Fenster liegt als Konstante `PORTAL_DIGEST_WINDOW_HOURS` in `packages/common`; die Umstellung
   auf 24 Stunden ist eine Zeile und keine Migration.
 - Kundenmails sind abschaltbar: `portal_memberships.email_notifications_enabled`, Default true. Der
-  Wert wird bereits beim Einladen gesetzt und ist danach vom Portalmitglied selbst sowie intern
-  änderbar. Der Outbox-Job filtert darauf in der Abfrage.
+  Wert wird bereits beim Einladen gesetzt. Sichtbare Schalter für interne Nutzer und Portalmitglieder
+  werden erst mit dem E-Mail-Versand in Ordner 20c aktiviert; vorher wäre eine Einstellung ohne Wirkung irreführend.
+  Der Outbox-Job filtert darauf in der Abfrage.
 - Interne Benachrichtigungen bleiben bei einem 15-Minuten-Fenster; für die Reaktionszeit im Alltag
   ist Schnelligkeit gewünscht, und interne Mitglieder sind keine Kunden.
 - Keine freien CRM-Mails und kein Mail-Eingang in Version 1.
@@ -512,30 +529,33 @@ Mehrfirmen-Mitgliedschaft statt 1:1-Bindung, unveränderliche Runde statt Einrei
 Nichts davon wird neu erfunden. Vor jedem neuen Baustein wird hier geprüft, ob es die Sache schon
 fertig und getestet gibt — der Leads-Bereich deckt den Großteil ab.
 
-| Baustein              | Quelle                                                                                                                          |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| Tabellendefinition    | `packages/db/src/record-configuration/leads.ts`                                                                                 |
-| Migrationen           | `packages/db/migrations/0020_*.sql` + `packages/db/scripts/run-migrations.ts`                                                   |
-| Enums / Const-Objekte | `packages/common/src/constants/contact/contact-lead-statuses.ts`                                                                |
-| Fehlercodes           | `packages/common/src/constants/leads/errors/lead-error-codes.ts`                                                                |
-| Kategorien-Tabelle    | `packages/db/src/record-configuration/lead-categories.ts` (wird **mitgenutzt**, nicht kopiert)                                  |
-| Activity-Service      | `apps/workspace/src/server/workspace/shared/services/activity-service.ts`                                                       |
-| Schreibpfad           | `apps/workspace/src/server/workspace/leads/command-handler/update-lead.command-handler.ts` + `app/api/workspace/leads/route.ts` |
-| Ausblenden per Filter | `apps/workspace/src/server/workspace/leads/query-handler/lead-filter.query-handler.ts`                                          |
-| Listen-UI             | `apps/workspace/src/components/workspace/leads/table/**`                                                                        |
-| URL-State             | `apps/workspace/src/common/constants/leads/list/lead-list-query-params.ts`                                                      |
-| Create/Edit-Dialog    | `apps/workspace/src/components/workspace/leads/form/lead-form-dialog/**`                                                        |
-| Detail-Panel          | `apps/workspace/src/components/workspace/leads/detail/lead-detail-panel/**`                                                     |
-| Badges                | `apps/workspace/src/components/workspace/leads/shared/{lead-category-badge,lead-source-badge}/**`                               |
-| Empty-State           | `apps/workspace/src/components/workspace/leads/table/leads-empty-state/**`                                                      |
-| Upload-Route          | `apps/workspace/src/app/api/workspace/leads/import/route.ts`                                                                    |
-| Bulk-Aktionen         | `apps/workspace/src/app/api/workspace/leads/bulk/route.ts` + `components/.../table/bulk/**`                                     |
-| Seed-Skript           | `packages/db/scripts/seed-leads-fixture.ts` (Vorlage für `db:seed:crm`)                                                         |
-| Smoke-Test            | `packages/db/scripts/smoke-test.ts`                                                                                             |
-| ZIP                   | `apps/web/src/client/linkedin-post/services/linkedin-post-zip-download-service.ts`                                              |
-| HMAC / Token          | `apps/web/src/server/linkedin-post/services/usage-limit/linkedin-post-generator-usage-key-service.ts`                           |
-| DB-Rate-Limit         | `packages/db/src/linkedin-post/reserve-linkedin-post-generator-usage-limit.ts`                                                  |
-| Mail                  | `apps/web/src/server/services/mail/**`                                                                                          |
+| Baustein              | Quelle                                                                                                                            |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Tabellendefinition    | `packages/db/src/record-configuration/leads.ts`                                                                                   |
+| Migrationen           | `packages/db/migrations/0020_*.sql` + `packages/db/scripts/run-migrations.ts`                                                     |
+| Enums / Const-Objekte | `packages/common/src/constants/contact/contact-lead-statuses.ts`                                                                  |
+| Fehlercodes           | `packages/common/src/constants/leads/errors/lead-error-codes.ts`                                                                  |
+| Kategorien-Tabelle    | `packages/db/src/record-configuration/lead-categories.ts` (wird **mitgenutzt**, nicht kopiert)                                    |
+| Activity-Service      | `apps/workspace/src/server/workspace/shared/services/activity-service.ts`                                                         |
+| Schreibpfad           | `apps/workspace/src/server/workspace/leads/command-handler/update-lead.command-handler.ts` + `app/api/workspace/leads/route.ts`   |
+| Ausblenden per Filter | `apps/workspace/src/server/workspace/leads/query-handler/lead-filter.query-handler.ts`                                            |
+| Listen-UI             | `apps/workspace/src/components/workspace/leads/table/**`                                                                          |
+| URL-State             | `apps/workspace/src/common/constants/leads/list/lead-list-query-params.ts`                                                        |
+| Create/Edit-Dialog    | `apps/workspace/src/components/workspace/leads/form/lead-form-dialog/**`                                                          |
+| Detail-Panel          | `apps/workspace/src/components/workspace/leads/detail/lead-detail-panel/**`                                                       |
+| Badges                | `apps/workspace/src/components/workspace/leads/shared/{lead-category-badge,lead-source-badge}/**`                                 |
+| Empty-State           | `apps/workspace/src/components/workspace/leads/table/leads-empty-state/**`                                                        |
+| Upload-Route          | `apps/workspace/src/app/api/workspace/leads/import/route.ts`                                                                      |
+| Bulk-Aktionen         | `apps/workspace/src/app/api/workspace/leads/bulk/route.ts` + `components/.../table/bulk/**`                                       |
+| Seed-Skript           | `packages/db/scripts/seed-leads-fixture.ts` (Vorlage für `db:seed:crm`)                                                           |
+| Smoke-Test            | `packages/db/scripts/smoke-test.ts`                                                                                               |
+| ZIP                   | `apps/web/src/client/linkedin-post/services/linkedin-post-zip-download-service.ts`                                                |
+| HMAC / Token          | `apps/web/src/server/linkedin-post/services/usage-limit/linkedin-post-generator-usage-key-service.ts`                             |
+| DB-Rate-Limit         | `packages/db/src/linkedin-post/reserve-linkedin-post-generator-usage-limit.ts`                                                    |
+| Mail                  | `apps/web/src/server/services/mail/**`                                                                                            |
+| Portal-Actor / Gates  | `apps/workspace/src/server/portal/auth/**` (ab Ordner 12a; Vorlage: `lib/auth/{workspace-authentication,permissions,api}.ts`)     |
+| Portal-Zugriffsfilter | `apps/workspace/src/server/portal/shared/{portal-access-condition,portal-can-on}.ts` (ab 12a; Vorlage: `crm-access-condition.ts`) |
+| Portal-Navigation     | `apps/workspace/src/common/constants/portal/portal-nav-items.ts` (ab 12a; Vorlage: `workspace-sidebar-items.ts`)                  |
 
 Geteilte Listenbausteine wandern erst bei **tatsächlicher** Wiederverwendung nach
 `components/workspace/shared/` — nicht vorsorglich. Der Umzug ist risikoarm, solange es genau einen
@@ -555,11 +575,11 @@ Merge-Einheit 23 (Task 39) in einem eigenständigen Web-PR.
 
 ## Vor dem ersten echten Kunden (verbindlich)
 
-Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
+Kein Code, aber blockierend, sobald ein Kunde Ordner 12b erreicht:
 
 - **Clerk auf „Restricted"** stellen. `proxy.ts` lässt `/sign-up(.*)` öffentlich durch — offen
   gelassen kann jeder ein Konto anlegen. Danach entstehen **alle** Konten über eine Einladung:
-  Portalkontakte über den Token-Flow aus Ordner 12, interne Mitglieder über eine Einladung im
+  Portalkontakte über den Token-Flow aus Ordner 12b, interne Mitglieder über eine Einladung im
   Clerk-Dashboard.
 - **Master-Key für die Zugangsdaten** zusätzlich offline im eigenen Passwortmanager sichern, **bevor**
   der erste Datensatz entsteht. Der Plan kann Schlüssel rotieren, aber nicht verlieren: eine geleerte
@@ -610,8 +630,10 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12 erreicht:
 | 07b | im Review | `07b-zugriffsfilter-kunden-und-projekte` | Alle Kunden- und Projektpfade filtern über `accessScope`; Negativtests          |  60–100 |  3–4 T. |
 | 07c | offen     | `07c-zugriffsverwaltung-ui`              | Zugriffe je Kunde/Projekt in Settings und Kundenakte konfigurierbar             |   50–80 |  2–3 T. |
 | 08  | läuft     | `08-aufgaben`                            | Projektaufgaben im Cockpit, globale Übersicht und Dashboard-Block nutzbar       | 120–180 |  4–5 T. |
-| 12  | offen     | `12-portal-identitaet`                   | Einladung, Widerruf und Mehrfirmenwechsel sicher nutzbar                        |  80–100 |  4–5 T. |
+| 12a | offen     | `12a-portal-fundament`                   | Portal-Schema, Actor, Gates, Zugriffshelfer, Shell und Flag unsichtbar deployt  |   60–80 |  3–4 T. |
+| 12b | läuft     | `12b-portal-zugang`                      | Einladung, Rollen je Kontakt, Widerruf und Mehrfirmenwechsel sicher nutzbar     |   60–80 |  3–4 T. |
 | 13  | offen     | `13-portal-dashboard`                    | Portal-Dashboard mit Aufgaben und Projektdaten produktiv nutzbar                |  60–100 |  3–4 T. |
+| 13a | offen     | `13a-portal-leistungsanfragen`           | Preisfreie Leistungsanfragen im Portal, intern bearbeitbar                      |   60–80 |  3–4 T. |
 | 14  | offen     | `14-storage-und-upload`                  | Storage-Adapter und sichere Upload-Pipeline unsichtbar sicher deployt           |  70–100 |  4–5 T. |
 | 15  | offen     | `15-dateien-und-portal-downloads`        | Datei-UI, Freigabe, Portaldownload und ZIP vollständig nutzbar                  |  70–100 |  4–5 T. |
 | 15a | offen     | `15a-medien-und-portal-upload`           | Bilder/Video mit Limits je Art, Medienlink und rundenfreier Portal-Upload       |   60–80 |  2–3 T. |

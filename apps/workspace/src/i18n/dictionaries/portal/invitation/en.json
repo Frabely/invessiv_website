@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "title": "Portal access | Invessiv",
+    "description": "Confirm your access to the customer portal."
+  },
+  "page": {
+    "eyebrow": "Customer portal",
+    "title": "Your access is ready.",
+    "body": "Sign in or create an account to activate the one-time access for your company.",
+    "redeem": "Activate access",
+    "signIn": "Sign in",
+    "signUp": "Create account",
+    "loading": "Activating access …",
+    "invalid": "This access link is no longer valid. Please ask your project team for a new link.",
+    "expired": "This access link has expired. Please ask your project team for a new link.",
+    "redeemed": "This access link has already been used. Sign in with the account that activated access.",
+    "unavailable": "Access cannot be activated right now. Please try again later."
+  }
+}

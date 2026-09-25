@@ -1,0 +1,31 @@
+{
+  "header": {
+    "brandLabel": "Invessiv Portal",
+    "brandHomeAriaLabel": "Back to company picker",
+    "userMenuLabel": "Account and sign out",
+    "localeMenuLabel": "Select language",
+    "localeSwitchLabel": "Switch language",
+    "themeSwitch": {
+      "actionLabel": {
+        "dark": "Enable light mode",
+        "light": "Enable dark mode"
+      }
+    }
+  },
+  "switcher": {
+    "menuLabel": "Switch company",
+    "groupLabel": "Your companies",
+    "currentBadge": "Current"
+  },
+  "nav": {
+    "ariaLabel": "Portal navigation",
+    "items": {
+      "projects": "Projects",
+      "files": "Files",
+      "assets": "Assets",
+      "messages": "Messages",
+      "onboarding": "Onboarding",
+      "services": "Services"
+    }
+  }
+}

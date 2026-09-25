@@ -24,7 +24,11 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   Eingaben; nichts wird still verworfen.
 - **Schreibaktionen erscheinen nur, wenn die Page ein Ziel übergibt.** Kein deaktivierter Platzhalter.
 - **Texte ausschließlich aus `src/i18n/dictionaries/workspace/crm/**`**, DE und EN parallel. Statuswerte werden über
-  den Enum-Wert im Dictionary aufgelöst.
+  den Enum-Wert im Dictionary aufgelöst. **Ausnahme:** Systemrollen-Labels (`SystemRoleKey` → übersetzter Name) kommen
+  aus `SettingsPermissionsDictionary.systemRoles` über `resolveRoleLabel` (`src/lib/workspace/access/role-label.ts`) —
+  auch in Portal-Access-Komponenten (`portal-access/**`). Systemrollen sind ein auth-weites Konzept, keine
+  CRM-spezifische Übersetzung; eine zweite, separat gepflegte Übersetzung derselben Rolle ist die Fehlerquelle, die
+  diese Ausnahme vermeidet.
 - **Kundennummern** nur im View über `formatCustomerNumber` formatieren.
 - **Keine PII in URLs, Logs oder Activity-Metadaten.** Query-Parameter tragen ausschließlich IDs und Modi.
 - Farben nur über Theme-Tokens, Zustände über `data-*`; Dark und Light gleichwertig, mobil zuerst.

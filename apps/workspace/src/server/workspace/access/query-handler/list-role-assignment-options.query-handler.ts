@@ -2,13 +2,17 @@ import "server-only";
 
 import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/role-assignment-option.dto";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
-import { roleReadService } from "@/server/workspace/access/services/role-read-service";
+import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
+import { roleService } from "@/server/workspace/access/services/role-service";
 
 /** Returns only the role fields needed by the members tab. */
 export async function listRoleAssignmentOptions(): Promise<
   RoleAssignmentOptionDto[]
 > {
-  const roles = await roleReadService.list(getDrizzleDatabaseClient());
+  const roles = await roleService.list(
+    getDrizzleDatabaseClient(),
+    AuthRealm.Workspace,
+  );
   return roles.map(
     ({
       id,
@@ -24,7 +28,7 @@ export async function listRoleAssignmentOptions(): Promise<
       systemKey,
       active,
       description,
-      scopeAssignable: scopeAssignable === true,
+      scopeAssignable: scopeAssignable,
       permissions,
     }),
   );

@@ -1,4 +1,5 @@
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
+import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { ButtonControl } from "@invessiv/ui";
 import type {
   SettingsPermissionsDictionary,
@@ -34,13 +35,21 @@ export function RoleRow({
     ? content.list.viewButton
     : content.list.editButton;
   const memberCount =
-    role.assignedMemberCount === 0
-      ? content.list.memberCountZero
-      : formatCount(
-          role.assignedMemberCount,
-          content.list.memberCountOne,
-          content.list.memberCountOther,
-        );
+    role.realm === AuthRealm.Portal
+      ? role.assignedMemberCount === 0
+        ? content.list.portalCountZero
+        : formatCount(
+            role.assignedMemberCount,
+            content.list.portalCountOne,
+            content.list.portalCountOther,
+          )
+      : role.assignedMemberCount === 0
+        ? content.list.memberCountZero
+        : formatCount(
+            role.assignedMemberCount,
+            content.list.memberCountOne,
+            content.list.memberCountOther,
+          );
 
   return (
     <li className={styles.row} data-active={role.active ? "true" : "false"}>
@@ -53,9 +62,11 @@ export function RoleRow({
             </span>
           ) : null}
           <span className={styles.typeBadge}>
-            {role.scopeAssignable
-              ? content.list.customerRoleType
-              : content.list.globalType}
+            {role.realm === AuthRealm.Portal
+              ? content.dialog.portalRoleType
+              : role.scopeAssignable
+                ? content.list.customerRoleType
+                : content.list.globalType}
           </span>
           {role.active ? null : (
             <span className={styles.inactiveBadge}>

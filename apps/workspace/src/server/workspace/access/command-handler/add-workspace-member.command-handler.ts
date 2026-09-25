@@ -9,19 +9,20 @@ import type { AddWorkspaceMemberRequestDto } from "@invessiv/common/contracts/au
 import type { AddWorkspaceMemberResult } from "@invessiv/common/contracts/auth/results/add-workspace-member-result";
 import { getDrizzleDatabaseClient, PostgresErrorCode } from "@invessiv/db/core";
 import {
-  users,
   workspaceMemberRoles,
   workspaceMembers,
 } from "@invessiv/db/record-configuration";
 import { UsersConstraintName } from "@invessiv/db/constraint-names/auth/users-constraint-names";
 import { WorkspaceMemberRolesConstraintName } from "@invessiv/db/constraint-names/auth/workspace-member-roles-constraint-names";
+import { WorkspaceMembersConstraintName } from "@invessiv/db/constraint-names/crm/workspace-members-constraint-names";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessSchemas } from "@/server/workspace/access/services/access-schemas";
 import { clerkDirectoryService } from "@/server/workspace/access/services/clerk-directory-service";
-import { roleAssignmentService } from "@/server/workspace/access/services/role-assignment-service";
+import { memberRoleAssignmentService } from "@/server/workspace/access/services/member-role-assignment-service";
 import { workspaceMemberReadService } from "@/server/workspace/access/services/workspace-member-read-service";
-import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
+import { securityEventService } from "@/server/shared/services/security-event-service";
 import { postgresErrorService } from "@/server/workspace/shared/services/postgres-error-service";
+import { clerkUserService } from "@/server/shared/services/clerk-user-service";
 
 const USER_MASTER_DATA_CHECK_CONSTRAINTS: readonly string[] = [
   UsersConstraintName.PrimaryEmailCheck,
@@ -38,10 +39,13 @@ function mapKnownViolation(error: unknown): AddWorkspaceMemberResult | null {
     return null;
   }
 
-  // Two owners added the same account at once; the unique index decided.
+  // Two owners added the same account at once — either as a brand-new `users` row, or as the
+  // second `workspace_members` row for a reused, already-locked one; either way, the account is
+  // now a member.
   if (
     violation.code === PostgresErrorCode.UniqueViolation &&
-    violation.constraint === UsersConstraintName.ClerkUserIdUnique
+    (violation.constraint === UsersConstraintName.ClerkUserIdUnique ||
+      violation.constraint === WorkspaceMembersConstraintName.UserIdUnique)
   ) {
     return {
       ok: false,
@@ -107,30 +111,36 @@ export async function addWorkspaceMember(
   try {
     return await db.transaction(
       async (tx): Promise<AddWorkspaceMemberResult> => {
-        const assignability = await roleAssignmentService.checkAssignable(tx, {
-          roleIds,
-          currentRoleIds: [],
-        });
+        const assignability = await memberRoleAssignmentService.checkAssignable(
+          tx,
+          {
+            roleIds,
+            currentRoleIds: [],
+          },
+        );
         if (!assignability.ok) {
           return assignability;
         }
 
         const now = new Date();
-        const userId = crypto.randomUUID();
         const memberId = crypto.randomUUID();
 
-        await tx.insert(users).values({
-          id: userId,
-          clerk_user_id: profile.clerkUserId,
-          primary_email: primaryEmail,
-          first_name: profile.firstName,
-          last_name: profile.lastName,
-          display_name: profile.displayName,
-          active: true,
-          version: 1,
-          created_at: now,
-          updated_at: now,
-        });
+        // A portal-only account (12b) may already hold this identity's `users` row; adding it as
+        // a workspace member reuses and reactivates that row instead of duplicating it. Locking
+        // and master-data sync are shared with the portal-invitation flow so both stay consistent.
+        const user = await clerkUserService.ensureUser(
+          tx,
+          {
+            clerkUserId: profile.clerkUserId,
+            primaryEmail,
+            firstName: profile.firstName,
+            lastName: profile.lastName,
+            displayName: profile.displayName,
+          },
+          now,
+          { activate: true },
+        );
+        const userId = user.id;
 
         await tx.insert(workspaceMembers).values({
           id: memberId,

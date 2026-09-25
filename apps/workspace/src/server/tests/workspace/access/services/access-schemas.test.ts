@@ -51,6 +51,7 @@ describe("accessSchemas.createRole", () => {
     });
 
     expect(result.success && result.data).toEqual({
+      realm: "workspace",
       name: "Sales",
       description: null,
       permissions: [Permission.LeadsRead],

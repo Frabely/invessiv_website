@@ -39,6 +39,7 @@ const content = getSettingsMembersDictionary("de");
 const permissionsContent = getSettingsPermissionsDictionary("de");
 
 const MEMBER_ROLE: RoleDto = {
+  realm: "workspace",
   id: "role-member",
   name: "Workspace member",
   systemKey: SystemRoleKey.WorkspaceMember,
@@ -92,6 +93,7 @@ describe("AddMemberDialog", () => {
           clerkUserId: "user_anna",
           displayName: "Anna Beispiel",
           primaryEmail: "anna@example.test",
+          hasPortalMembership: false,
         },
       ],
     });
@@ -117,6 +119,7 @@ describe("AddMemberDialog", () => {
           clerkUserId: "user_anna",
           displayName: "Anna Beispiel",
           primaryEmail: "anna@example.test",
+          hasPortalMembership: false,
         },
       ],
     });
@@ -138,6 +141,27 @@ describe("AddMemberDialog", () => {
     expect(mocks.refresh).toHaveBeenCalled();
   });
 
+  it("marks a candidate that already has a portal membership, still selectable", async () => {
+    mocks.listClerkCandidates.mockResolvedValue({
+      ok: true,
+      candidates: [
+        {
+          clerkUserId: "user_ben",
+          displayName: "Ben Beispiel",
+          primaryEmail: "ben@example.test",
+          hasPortalMembership: true,
+        },
+      ],
+    });
+    renderDialog();
+    await screen.findByText("Ben Beispiel");
+
+    expect(screen.getByText(content.addDialog.portalBadge)).toBeInTheDocument();
+    expect(
+      screen.getByRole("radio", { name: /Ben Beispiel/ }),
+    ).not.toBeDisabled();
+  });
+
   it("shows the server error and keeps the dialog open", async () => {
     mocks.listClerkCandidates.mockResolvedValue({
       ok: true,
@@ -146,6 +170,7 @@ describe("AddMemberDialog", () => {
           clerkUserId: "user_anna",
           displayName: "Anna Beispiel",
           primaryEmail: "anna@example.test",
+          hasPortalMembership: false,
         },
       ],
     });

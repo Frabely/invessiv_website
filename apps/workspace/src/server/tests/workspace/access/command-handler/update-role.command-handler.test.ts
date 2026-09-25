@@ -30,13 +30,22 @@ vi.mock("@invessiv/db/core", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@invessiv/db/core")>()),
   getDrizzleDatabaseClient: mocks.getDatabase,
 }));
-vi.mock("@/server/workspace/access/services/role-read-service", () => ({
-  roleReadService: { findById: mocks.findById },
-}));
+vi.mock(
+  "@/server/workspace/access/services/role-service",
+  async (importOriginal) => {
+    const original =
+      await importOriginal<
+        typeof import("@/server/workspace/access/services/role-service")
+      >();
+    return {
+      roleService: { ...original.roleService, findById: mocks.findById },
+    };
+  },
+);
 vi.mock("@/server/workspace/shared/update-versioned", () => ({
   updateVersioned: mocks.updateVersioned,
 }));
-vi.mock("@/server/workspace/auth/services/security-event-service", () => ({
+vi.mock("@/server/shared/services/security-event-service", () => ({
   securityEventService: { createSecurityEvent: mocks.createEvent },
 }));
 
@@ -44,6 +53,7 @@ const ROLE_ID = "9a1b2c3d-4e5f-4a6b-8c7d-0e1f2a3b4c5d";
 const actor = workspaceActorWith();
 
 const CURRENT: RoleDto = {
+  realm: "workspace",
   id: ROLE_ID,
   name: "Vertrieb",
   systemKey: null,

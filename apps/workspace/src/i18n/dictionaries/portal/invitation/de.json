@@ -1,0 +1,19 @@
+{
+  "meta": {
+    "title": "Portalzugang | Invessiv",
+    "description": "Bestätige deinen Zugang zum Kundenportal."
+  },
+  "page": {
+    "eyebrow": "Kundenportal",
+    "title": "Dein Zugang liegt bereit.",
+    "body": "Melde dich an oder erstelle ein Konto, um den einmaligen Zugang für dein Unternehmen zu aktivieren.",
+    "redeem": "Zugang aktivieren",
+    "signIn": "Anmelden",
+    "signUp": "Konto erstellen",
+    "loading": "Zugang wird aktiviert …",
+    "invalid": "Dieser Zugangslink ist nicht mehr gültig. Bitte frage dein Projektteam nach einem neuen Link.",
+    "expired": "Dieser Zugangslink ist abgelaufen. Bitte frage dein Projektteam nach einem neuen Link.",
+    "redeemed": "Dieser Zugangslink wurde bereits verwendet. Melde dich mit dem Konto an, mit dem du den Zugang aktiviert hast.",
+    "unavailable": "Der Zugang kann gerade nicht aktiviert werden. Bitte versuche es später erneut."
+  }
+}

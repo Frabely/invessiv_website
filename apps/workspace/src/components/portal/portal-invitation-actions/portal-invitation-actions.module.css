@@ -1,0 +1,44 @@
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.primary,
+.secondary {
+  display: block;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.primary {
+  border: 1px solid var(--color-cta);
+  background: var(--color-cta);
+  color: var(--color-on-cta);
+}
+
+.primary:hover,
+.primary:focus-visible {
+  background: var(--color-cta-hover);
+  border-color: var(--color-cta-hover);
+}
+
+.secondary {
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text);
+}
+
+.secondary:hover,
+.secondary:focus-visible {
+  border-color: var(--color-cta);
+  color: var(--color-cta);
+}
+
+.primary:focus-visible,
+.secondary:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 3px;
+}

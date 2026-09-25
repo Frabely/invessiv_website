@@ -41,6 +41,12 @@ Für Contact-bezogenen Code gilt die Trennung:
 - Ein **Service** ist das Bindeglied zwischen mehreren Handlern: Er entsteht erst, wenn dieselbe Logik in einem zweiten
   Handler gebraucht wird. Dann wandert die Logik in ein Service-Objekt (z. B. `projectService` mit `updateProject`), und
   beide Handler rufen es auf — statt dass ein Handler den anderen aufruft oder die Logik kopiert wird.
+- Services nach Entität oder zusammenhängendem Fachkontext schneiden und zugehörige Operationen in einem Service-Objekt
+  anbieten. Keine Ein-Funktions-Services als bloße Hülle: eine einzelne wiederverwendete Funktion in einen passenden
+  bestehenden Service aufnehmen oder als benannten Helfer ohne `Service`-Suffix führen. Handler haben dagegen genau
+  einen Anwendungsfall pro Datei. Fachlich fremde Operationen werden nicht künstlich zusammengelegt.
+- Für verpflichtend separat gehaltene Mapper (`*-mapping-service.ts`) gilt die Mapping-Service-Pflichtstruktur unten;
+  ein eigenständiger Mapper darf deshalb eine einzige öffentliche Mapping-Methode besitzen.
 - Solange es nur einen Aufrufer gibt, bleibt die Logik im Handler; kein vorsorglicher Service „für später“.
 - Abgrenzung: `Service` als **Fachbegriff** ist davon unberührt. `LineItemTemplate` (Leistungskatalog) ist eine Entität
   und heißt korrekt so. Die einem Projekt zugewiesene Teilleistung heißt `ProjectLineItem` (Tabelle

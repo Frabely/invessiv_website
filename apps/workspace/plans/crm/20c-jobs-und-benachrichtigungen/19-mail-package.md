@@ -112,7 +112,8 @@ Root-AGENTS.md                             + packages/mail in der Index-Tabelle
 - **Skills:** `best-practices`
 - **Inhalt:**
   - Konfigurationsaufbau für den Workspace, Variablen in `.env.example` dokumentiert
-  - Noch **kein** Aufrufer — der kommt mit Task 20
+  - Erster Aufrufer ist der Einladungsversand über die Outbox (Task 33); Task 20 (Ordner 12b) zeigt den Link bis
+    dahin nur zum Kopieren an
 - **Akzeptanz:**
   - Ein Import aus `apps/workspace` typecheckt
   - Ohne konfigurierte Mailvariablen startet die Anwendung unverändert

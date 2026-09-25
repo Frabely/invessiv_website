@@ -27,6 +27,11 @@ import {
 } from "@invessiv/db/constraint-names/auth/security-events-constraint-names";
 import { USERS_CONSTRAINT_NAME_VALUES } from "@invessiv/db/constraint-names/auth/users-constraint-names";
 import { WORKSPACE_MEMBER_ROLES_CONSTRAINT_NAME_VALUES } from "@invessiv/db/constraint-names/auth/workspace-member-roles-constraint-names";
+import { WORKSPACE_MEMBERS_CONSTRAINT_NAME_VALUES } from "@invessiv/db/constraint-names/crm/workspace-members-constraint-names";
+import { PORTAL_INVITATION_ROLES_CONSTRAINT_NAME_VALUES } from "@invessiv/db/constraint-names/auth/portal-invitation-roles-constraint-names";
+import { PORTAL_MEMBERSHIP_ROLES_CONSTRAINT_NAME_VALUES } from "@invessiv/db/constraint-names/auth/portal-membership-roles-constraint-names";
+import { PORTAL_INVITATIONS_CONSTRAINT_NAME_VALUES } from "@invessiv/db/constraint-names/crm/portal-invitations-constraint-names";
+import { PORTAL_MEMBERSHIPS_CONSTRAINT_NAME_VALUES } from "@invessiv/db/constraint-names/crm/portal-memberships-constraint-names";
 import { securityEvents } from "@invessiv/db/record-configuration";
 import {
   findMissingConstraintNames,
@@ -489,10 +494,105 @@ const AUTH_CONSTRAINT_NAMES = [
   ...PERMISSIONS_CONSTRAINT_NAME_VALUES,
   ...ROLE_PERMISSIONS_CONSTRAINT_NAME_VALUES,
   ...WORKSPACE_MEMBER_ROLES_CONSTRAINT_NAME_VALUES,
+  ...WORKSPACE_MEMBERS_CONSTRAINT_NAME_VALUES,
   ...SECURITY_EVENTS_CONSTRAINT_NAME_VALUES,
+  ...PORTAL_MEMBERSHIPS_CONSTRAINT_NAME_VALUES,
+  ...PORTAL_INVITATIONS_CONSTRAINT_NAME_VALUES,
+  ...PORTAL_MEMBERSHIP_ROLES_CONSTRAINT_NAME_VALUES,
+  ...PORTAL_INVITATION_ROLES_CONSTRAINT_NAME_VALUES,
 ];
 
 // Models, error mapping and smokes share these names; a renamed index would silently turn a 409 into a 500.
+/**
+ * The same realm-pinning mechanism as `workspace_member_roles` (role_realm CHECK plus a
+ * composite foreign key to `roles(id, realm)`), applied to the two portal junction tables. A
+ * mocked test cannot prove Postgres itself rejects the wrong realm.
+ */
+async function runPortalRealmChecks(sql: Sql) {
+  const actorUserId = await insertUser(sql);
+  const memberId = await insertMember(sql, actorUserId);
+  const portalUserId = await insertUser(sql);
+
+  const customerId = randomUUID();
+  await sql`
+    INSERT INTO customers (id, display_name, status, owner_member_id, version)
+    VALUES (${customerId}, ${fixture(customerId)}, 'active', ${memberId}, 1)
+  `;
+  const personId = randomUUID();
+  await sql`
+    INSERT INTO people (id, display_name, preferred_locale, version)
+    VALUES (${personId}, ${fixture("Portal contact")}, 'de', 1)
+  `;
+  const assignmentId = randomUUID();
+  await sql`
+    INSERT INTO customer_contact_assignments (id, customer_id, person_id, is_primary, version)
+    VALUES (${assignmentId}, ${customerId}, ${personId}, TRUE, 1)
+  `;
+  const membershipId = randomUUID();
+  await sql`
+    INSERT INTO portal_memberships
+    (id, customer_id, person_id, user_id, activated_at, email_notifications_enabled, version)
+    VALUES (${membershipId}, ${customerId}, ${personId}, ${portalUserId}, NOW(), TRUE, 1)
+  `;
+
+  const portalRoleId = await insertRole(sql, {
+    realm: "portal",
+    name: fixture("Portal role for junction check"),
+  });
+  const workspaceRoleId = await insertRole(sql, {
+    realm: "workspace",
+    name: fixture("Workspace role for junction check"),
+  });
+  const assignedAt = new Date();
+
+  await expectAccepted(
+    "a portal role can be assigned to a portal membership",
+    () => sql`
+        INSERT INTO portal_membership_roles (portal_membership_id, role_id, role_realm, assigned_by_member_id,
+                                             assigned_at)
+        VALUES (${membershipId}, ${portalRoleId}, 'portal', ${memberId}, ${assignedAt})
+      `,
+  );
+  await expectRejected(
+    "a workspace role cannot be assigned to a portal membership (realm spoofed)",
+    () => sql`
+        INSERT INTO portal_membership_roles (portal_membership_id, role_id, role_realm, assigned_by_member_id,
+                                             assigned_at)
+        VALUES (${membershipId}, ${workspaceRoleId}, 'portal', ${memberId}, ${assignedAt})
+      `,
+  );
+  await expectRejected(
+    "a workspace role cannot be assigned to a portal membership (realm honest)",
+    () => sql`
+        INSERT INTO portal_membership_roles (portal_membership_id, role_id, role_realm, assigned_by_member_id,
+                                             assigned_at)
+        VALUES (${membershipId}, ${workspaceRoleId}, 'workspace', ${memberId}, ${assignedAt})
+      `,
+  );
+
+  const invitationId = randomUUID();
+  await sql`
+    INSERT INTO portal_invitations
+    (id, assignment_id, token_hash, email_notifications_enabled, expires_at, created_by_member_id)
+    VALUES (${invitationId}, ${assignmentId}, ${fixture("invite-token")}, TRUE, NOW() + INTERVAL '7 days',
+            ${memberId})
+  `;
+  await expectAccepted(
+    "a portal role can be attached to an invitation",
+    () => sql`
+        INSERT INTO portal_invitation_roles (portal_invitation_id, role_id, role_realm)
+        VALUES (${invitationId}, ${portalRoleId}, 'portal')
+      `,
+  );
+  await expectRejected(
+    "a workspace role cannot be attached to an invitation (realm honest)",
+    () => sql`
+        INSERT INTO portal_invitation_roles (portal_invitation_id, role_id, role_realm)
+        VALUES (${invitationId}, ${workspaceRoleId}, 'workspace')
+      `,
+  );
+}
+
 async function runConstraintNameChecks(sql: Sql) {
   const missing = new Set(
     await findMissingConstraintNames(sql, AUTH_CONSTRAINT_NAMES),
@@ -505,6 +605,28 @@ async function runConstraintNameChecks(sql: Sql) {
 
 async function cleanup(sql: Sql) {
   const pattern = `${FIXTURE_PREFIX}%`;
+  // customers.owner_member_id has no ON DELETE action, so the customer (and, cascading through
+  // it, the contact assignment, portal membership/invitation and their role rows) must go before
+  // the workspace_members delete further down.
+  await sql`
+    DELETE
+    FROM customer_contact_assignments
+    WHERE customer_id IN (SELECT id FROM customers WHERE display_name LIKE ${pattern})
+       OR person_id IN (SELECT id FROM people WHERE display_name LIKE ${pattern})
+  `;
+  await sql`DELETE
+            FROM customers
+            WHERE display_name LIKE ${pattern}`;
+  await sql`DELETE
+            FROM people
+            WHERE display_name LIKE ${pattern}`;
+  // Deleting the fixture lead first would null its activities' only subject via
+  // ON DELETE SET NULL and trip activities_subject_check; the activity goes first.
+  await sql`
+    DELETE
+    FROM activities
+    WHERE lead_id IN (SELECT id FROM leads WHERE display_name LIKE ${pattern})
+  `;
   await sql`DELETE FROM leads WHERE display_name LIKE ${pattern}`;
   await sql.query(`
     DO $$
@@ -557,6 +679,7 @@ async function run() {
     await runActorChecks(sql);
     await runSecurityEventConstraintChecks(sql);
     await runScopeAssignableNullabilityChecks(sql);
+    await runPortalRealmChecks(sql);
     await runConstraintNameChecks(sql);
   } finally {
     await cleanup(sql);

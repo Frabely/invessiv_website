@@ -45,6 +45,12 @@ export const customers = pgTable(
     notes: text("notes"),
     default_hourly_rate_cents: integer("default_hourly_rate_cents"),
     retention_review_after_days: integer("retention_review_after_days"),
+    portal_preview_confirmed_at: timestamp("portal_preview_confirmed_at", {
+      withTimezone: true,
+    }),
+    portal_preview_confirmed_by_member_id: uuid(
+      "portal_preview_confirmed_by_member_id",
+    ).references(() => workspaceMembers.id, { onDelete: "restrict" }),
     version: integer("version").notNull(),
     created_at: timestamp("created_at", { withTimezone: true })
       .notNull()
@@ -87,6 +93,21 @@ export const customers = pgTable(
       CustomersConstraintName.VersionCheck,
       sql`${table.version}
         > 0`,
+    ),
+    check(
+      CustomersConstraintName.PortalPreviewConfirmationCheck,
+      sql`(${table.portal_preview_confirmed_at} is null and ${table.portal_preview_confirmed_by_member_id} is null)
+              or (
+              ${table.portal_preview_confirmed_at}
+              is
+              not
+              null
+              and
+              ${table.portal_preview_confirmed_by_member_id}
+              is
+              not
+              null
+              )`,
     ),
     uniqueIndex(CustomersConstraintName.CustomerNumberUnique).on(
       table.customer_number,

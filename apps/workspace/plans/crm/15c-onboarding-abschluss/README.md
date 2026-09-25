@@ -22,7 +22,7 @@ Mitarbeiter buchen.
 
 - Der Bogen ersetzt keine Aufgabe. Er erledigt die Aufgaben, die er inhaltlich abdeckt, über eine
   explizite Zuordnung im Code — nicht über Namensähnlichkeit.
-- Abhaken durch den Bogen schreibt dieselbe Herkunft wie ein Klick des Kunden (`done_by_side = customer`)
+- Abhaken durch den Bogen schreibt dieselbe Herkunft wie ein Klick des Kunden (`completed_by_portal_membership_id`, Task 21)
   und ist in der Timeline unterscheidbar.
 - Der Buchungslink ist eine Eigenschaft des Mitarbeiters, nicht des Kunden. Der Kunde sieht den Link
   des für ihn zuständigen Mitarbeiters.

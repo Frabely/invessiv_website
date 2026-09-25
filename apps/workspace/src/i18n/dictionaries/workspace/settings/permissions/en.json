@@ -107,6 +107,10 @@
       "label": "Manage portal access",
       "description": "Invite customer contacts to the portal and revoke access."
     },
+    "portal.access": {
+      "label": "Enter customer portal",
+      "description": "Open the portal area of the invited company."
+    },
     "roles.manage": {
       "label": "Manage roles",
       "description": "Create and change roles."
@@ -140,6 +144,10 @@
     "workspace_credentials_manager": {
       "label": "Password access",
       "description": "May show and copy a single password."
+    },
+    "portal_standard": {
+      "label": "Portal standard",
+      "description": "Default role for newly invited portal contacts."
     }
   },
   "ownerOnly": "Owner only",

@@ -1,5 +1,5 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import type { ClerkMiddlewareAuth } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
@@ -8,6 +8,7 @@ const isPublicRoute = createRouteMatcher([
   "/sign-up(.*)",
   "/:locale/sign-in(.*)",
   "/:locale/sign-up(.*)",
+  "/:locale/portal/invite/(.*)",
 ]);
 
 export function isApiRoute(request: NextRequest) {

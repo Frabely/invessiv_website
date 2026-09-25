@@ -8,6 +8,8 @@ export const SITE_ROUTES = {
   SETTINGS: "/settings",
   SIGN_IN: "/sign-in",
   SIGN_UP: "/sign-up",
+  PORTAL: "/portal",
+  PORTAL_INVITE: "/portal/invite",
 } as const;
 
 export const REDIRECT_URL_QUERY_PARAM = "redirect_url";

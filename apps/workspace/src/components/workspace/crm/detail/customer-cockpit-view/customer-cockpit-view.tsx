@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import type { CustomerCockpitDto } from "@invessiv/common/contracts/crm/customer-cockpit.dto";
+import type { PortalAccessDto } from "@invessiv/common/contracts/crm/portal-access.dto";
+import { PortalAccessSection } from "@/components/workspace/crm/portal-access/portal-access-section/portal-access-section";
 import type { AccessScopeEntryDto } from "@invessiv/common/contracts/auth/access-scope-entry.dto";
 import type { AccessProjectOptionDto } from "@invessiv/common/contracts/auth/access-project-option.dto";
 import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/role-assignment-option.dto";
@@ -13,6 +15,7 @@ import { formatCustomerNumber } from "@invessiv/common/patterns/crm/format-custo
 import type {
   CrmAccessDictionary,
   CrmCockpitDictionary,
+  CrmPortalAccessDictionary,
   CrmProjectLineItemsDictionary,
   CrmTasksDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
@@ -44,6 +47,8 @@ type CustomerCockpitViewProps = {
   rolesHref?: string;
   tasks?: TasksViewModel;
   tasksContent?: CrmTasksDictionary;
+  portalAccess?: PortalAccessDto;
+  portalAccessContent?: CrmPortalAccessDictionary;
 };
 
 /** The shared customer detail content for the CRM dialog and future dashboard view. */
@@ -67,6 +72,8 @@ export function CustomerCockpitView({
   rolesHref,
   tasks,
   tasksContent,
+  portalAccess,
+  portalAccessContent,
 }: CustomerCockpitViewProps) {
   const [requestedAccessMemberId, setRequestedAccessMemberId] = useState<
     string | null
@@ -152,6 +159,14 @@ export function CustomerCockpitView({
           projects={projects}
           tasks={tasks}
           tasksContent={tasksContent}
+        />
+      ) : null}
+      {portalAccess && portalAccessContent && permissionsContent ? (
+        <PortalAccessSection
+          access={portalAccess}
+          content={portalAccessContent}
+          permissionsContent={permissionsContent}
+          locale={locale}
         />
       ) : null}
       {accessContent &&

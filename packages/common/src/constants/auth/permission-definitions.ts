@@ -186,6 +186,13 @@ export const PERMISSION_DEFINITIONS = {
     assignableScopeTypes: CUSTOMER_ONLY,
     description: "Invite and revoke customer portal access.",
   },
+  [Permission.PortalAccess]: {
+    realm: AuthRealm.Portal,
+    delegable: true,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description: "Enter this customer's portal.",
+  },
   [Permission.RolesManage]: {
     realm: AuthRealm.Workspace,
     delegable: false,
@@ -227,4 +234,11 @@ export const WORKSPACE_PERMISSION_VALUES: readonly Permission[] =
   PERMISSION_VALUES.filter(
     (permission) =>
       PERMISSION_DEFINITIONS[permission].realm === AuthRealm.Workspace,
+  );
+
+/** Grows automatically as later portal folders add their own permissions to the catalog. */
+export const PORTAL_PERMISSION_VALUES: readonly Permission[] =
+  PERMISSION_VALUES.filter(
+    (permission) =>
+      PERMISSION_DEFINITIONS[permission].realm === AuthRealm.Portal,
   );

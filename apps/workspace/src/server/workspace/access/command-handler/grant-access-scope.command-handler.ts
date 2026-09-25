@@ -18,7 +18,7 @@ import { accessScopeMappingService } from "@/server/workspace/access/services/ac
 import { accessScopeAssignmentService } from "@/server/workspace/access/services/access-scope-assignment-service";
 import { workspaceMemberReadService } from "@/server/workspace/access/services/workspace-member-read-service";
 import { workspaceMemberVersionService } from "@/server/workspace/access/services/workspace-member-version-service";
-import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
+import { securityEventService } from "@/server/shared/services/security-event-service";
 import { postgresErrorService } from "@/server/workspace/shared/services/postgres-error-service";
 
 export async function grantAccessScope(

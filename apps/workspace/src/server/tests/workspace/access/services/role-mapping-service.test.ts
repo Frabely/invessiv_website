@@ -10,6 +10,7 @@ const UPDATED_AT = new Date("2026-09-13T11:00:00.000Z");
 
 function row(overrides: Partial<RolePermissionRow>): RolePermissionRow {
   return {
+    realm: "workspace",
     id: "role-custom",
     name: "Sales",
     system_key: null,
@@ -42,6 +43,7 @@ describe("roleMappingService.mapRowsToRoles", () => {
 
     expect(roles).toEqual([
       {
+        realm: "workspace",
         id: "role-custom",
         name: "Sales",
         systemKey: null,
@@ -72,6 +74,21 @@ describe("roleMappingService.mapRowsToRoles", () => {
     );
 
     expect(role.permissions).toEqual([]);
+  });
+
+  it("keeps the portal realm and portal permission in the role DTO", () => {
+    const [role] = roleMappingService.mapRowsToRoles(
+      [
+        row({
+          id: "portal-role",
+          realm: "portal",
+          permission_key: Permission.PortalAccess,
+        }),
+      ],
+      [],
+    );
+    expect(role.realm).toBe("portal");
+    expect(role.permissions).toEqual([Permission.PortalAccess]);
   });
 
   it("orders system roles by catalog order before custom roles by name", () => {

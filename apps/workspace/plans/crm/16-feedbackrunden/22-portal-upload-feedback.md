@@ -106,11 +106,11 @@ ALTER TABLE files ADD CONSTRAINT files_feedback_round_id_fkey
 
 ```txt
 Portal
-  GET  /portal/[customerId]/dateien                        freigegebene Ergebnisse zum Download
+  GET  /portal/[customerId]/files                        freigegebene Ergebnisse zum Download
   GET  /api/portal/[customerId]/files/[fileId]/url         signierte URL, nur bei visible_to_customer
   POST /api/portal/[customerId]/files/archive              ZIP der freigegebenen Dateien
 
-  GET  /portal/[customerId]/projekte/[projectId]/feedback  Verlauf, Kontingent, Formular oder Anfrage
+  GET  /portal/[customerId]/projects/[projectId]/feedback  Verlauf, Kontingent, Formular oder Anfrage
   POST /api/portal/[customerId]/upload-sessions            Upload-Session ohne Rundenbezug (Task 14)
   POST /api/portal/[customerId]/upload-sessions/[id]/files/ticket
   POST /api/portal/[customerId]/upload-sessions/[id]/files/complete
@@ -149,7 +149,7 @@ apps/workspace/src/server/portal/
   command-handler/request-additional-feedback-round.command-handler.ts
   services/portal-feedback-rate-limit-service.ts
 
-apps/workspace/src/app/[locale]/(portal)/portal/[customerId]/projekte/[projectId]/feedback/page.tsx
+apps/workspace/src/app/[locale]/(portal)/portal/[customerId]/projects/[projectId]/feedback/page.tsx
 apps/workspace/src/components/portal/feedback/
   feedback-round-form/
   feedback-drop-zone/
@@ -234,7 +234,7 @@ apps/workspace/src/i18n/dictionaries/portal/feedback/{de,en}.json
 
 - **Files:** `server/portal/query-handler/list-customer-visible-files.query-handler.ts`,
   `api/portal/[customerId]/files/[fileId]/url/route.ts`, `api/portal/[customerId]/files/archive/route.ts`,
-  `(portal)/portal/[customerId]/dateien/page.tsx`, `components/portal/files/**`,
+  `(portal)/portal/[customerId]/files/page.tsx`, `components/portal/files/**`,
   `dictionaries/portal/files/{de,en}.json` + Tests
 - **Skills:** `frontend-design`, `accessibility`, `copywriting`
 - **Inhalt:**
@@ -254,7 +254,7 @@ apps/workspace/src/i18n/dictionaries/portal/feedback/{de,en}.json
 ### CRM-22-T6 — Portal-Oberfläche
 
 - **Files:** `components/portal/feedback/**`, `hooks/portal/use-feedback-draft.ts`,
-  `(portal)/portal/[customerId]/projekte/[projectId]/feedback/page.tsx`,
+  `(portal)/portal/[customerId]/projects/[projectId]/feedback/page.tsx`,
   `dictionaries/portal/feedback/{de,en}.json`
 - **Skills:** `frontend-design`, `accessibility`, `copywriting`
 - **Inhalt:**

@@ -1,4 +1,6 @@
 export * from "./permissions";
+export * from "./portal-invitation-roles";
+export * from "./portal-membership-roles";
 export * from "./role-permissions";
 export * from "./roles";
 export * from "./security-events";

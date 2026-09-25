@@ -22,9 +22,8 @@ import { rolePermissions, roles } from "@invessiv/db/record-configuration";
 import { RolesConstraintName } from "@invessiv/db/constraint-names/auth/roles-constraint-names";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessSchemas } from "@/server/workspace/access/services/access-schemas";
-import { reservedRoleNameService } from "@/server/workspace/access/services/reserved-role-name-service";
-import { roleReadService } from "@/server/workspace/access/services/role-read-service";
-import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
+import { roleService } from "@/server/workspace/access/services/role-service";
+import { securityEventService } from "@/server/shared/services/security-event-service";
 import { updateVersioned } from "@/server/workspace/shared/update-versioned";
 import { postgresErrorService } from "@/server/workspace/shared/services/postgres-error-service";
 
@@ -73,6 +72,7 @@ async function applyPermissionDiff(
   args: {
     roleId: string;
     scopeAssignable: boolean;
+    realm: AuthRealm;
     addedPermissions: readonly Permission[];
     removedPermissions: readonly Permission[];
   },
@@ -94,7 +94,7 @@ async function applyPermissionDiff(
     await tx.insert(rolePermissions).values(
       addedPermissions.map((permission) => ({
         role_id: roleId,
-        realm: AuthRealm.Workspace,
+        realm: args.realm,
         role_is_system: false,
         permission_key: permission,
         permission_delegable: PERMISSION_DEFINITIONS[permission].delegable,
@@ -113,7 +113,7 @@ async function resolveFailedVersionBump(
   isVersionConflict: boolean,
 ): Promise<UpdateRoleResult> {
   const fresh = isVersionConflict
-    ? await roleReadService.findById(tx, roleId)
+    ? await roleService.findById(tx, roleId)
     : null;
   if (!fresh) {
     return { ok: false, code: RoleErrorCode.RoleNotFound };
@@ -138,7 +138,7 @@ async function updateRoleInTransaction(
 ): Promise<UpdateRoleResult> {
   await lockRole(tx, roleId);
 
-  const current = await roleReadService.findById(tx, roleId);
+  const current = await roleService.findById(tx, roleId);
   if (!current) {
     return { ok: false, code: RoleErrorCode.RoleNotFound };
   }
@@ -151,6 +151,14 @@ async function updateRoleInTransaction(
     scopeAssignable: current.scopeAssignable,
   };
   if (
+    next.permissions.some(
+      (permission) =>
+        PERMISSION_DEFINITIONS[permission].realm !== current.realm,
+    )
+  ) {
+    return { ok: false, code: RoleErrorCode.ValidationError, errors: [] };
+  }
+  if (
     next.scopeAssignable &&
     next.permissions.some(
       (permission) => !PERMISSION_DEFINITIONS[permission].scopeAssignable,
@@ -158,7 +166,7 @@ async function updateRoleInTransaction(
   ) {
     return { ok: false, code: RoleErrorCode.PermissionNotScopeAssignable };
   }
-  if (reservedRoleNameService.isReserved(next.name)) {
+  if (roleService.isReservedName(next.name)) {
     return { ok: false, code: RoleErrorCode.RoleNameReserved };
   }
 
@@ -193,6 +201,7 @@ async function updateRoleInTransaction(
   await applyPermissionDiff(tx, {
     roleId,
     scopeAssignable: next.scopeAssignable,
+    realm: current.realm,
     addedPermissions,
     removedPermissions,
   });
@@ -205,7 +214,7 @@ async function updateRoleInTransaction(
     occurredAt: new Date(),
   });
 
-  const role = await roleReadService.findById(tx, roleId);
+  const role = await roleService.findById(tx, roleId);
   if (!role) {
     throw new Error("Role is missing after its update");
   }

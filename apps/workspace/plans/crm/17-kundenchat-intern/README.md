@@ -1,6 +1,6 @@
 # Ordner 17 — Kundenchat, Datenmodell und interne Seite
 
-> **Status:** offen · **Abhängigkeiten:** 12 · **Aufwand:** 3–4 Tage · **Reviewziel:** 60–90 Dateien
+> **Status:** offen · **Abhängigkeiten:** 12b · **Aufwand:** 3–4 Tage · **Reviewziel:** 60–90 Dateien
 
 ## Ziel und Stand nach Merge
 

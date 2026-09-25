@@ -1,42 +1,48 @@
 # Ordner 13 — Portal-Dashboard
 
-> **Status:** offen · **Abhängigkeiten:** 07, 08, 12 · **Aufwand:** 3–4 Tage · **Reviewziel:** 60–100 Dateien
+> **Status:** offen · **Abhängigkeiten:** 07, 08, 12b · **Aufwand:** 3–4 Tage · **Reviewziel:** 60–100 Dateien
 
-> **Hinweis Neuplanung Ordner 08 (21.09.2026):** Aufgaben sind nur noch Projektaufgaben mit vier Status; Details und
-> offene Anpassungen stehen im Kopf von `21-portal-dashboard.md`.
+> **Neuzuschnitt 23.09.2026:** Auth, Zugriffsfilter, Shell, Navigation und Flag kommen aus Ordner 12a; Portalrollen
+> sind je Kontakt konfigurierbar. Dieses Dashboard prüft deshalb Portal-Permissions statt „jeder Kontakt darf alles“.
 
 ## Ziel und Stand nach Merge
 
 **Konkreter Task-Plan**
 
-- [`21-portal-dashboard.md`](./21-portal-dashboard.md) — Portalqueries, Projektstatus,
-  Kundenaufgaben, Vorschau und UI.
+- [`21-portal-dashboard.md`](./21-portal-dashboard.md) — Portal-Permissions, Portalqueries, Projektstatus,
+  Kundenaufgaben, Abschluss durch den Kunden, Vorschau-Erweiterung und UI.
 
-Das Kundenportal zeigt freigegebene Projektinformationen und kundenseitige Aufgaben. Jeder aktive
-Kontakt einer Firma kann Kundenaufgaben abschließen. Der Dashboardflow ist nach Merge vollständig;
-Dateien, Feedback und Chat erscheinen erst in ihren späteren Ordnern.
+Das Kundenportal zeigt freigegebene Projektinformationen und kundenseitige Aufgaben. Kontakte mit
+`portal.tasks.complete` können Kundenaufgaben abschließen. Das Dashboard ist die Startseite des Portals; spätere
+Ordner ergänzen eigene Karten (Dateien 15, Leistungsanfragen 13a, Nachrichten 18, Stunden 20), jeweils an ihre
+Permission gebunden.
 
 ## Inhalte und Regeln
 
-- Aktive/pausierte Projekte mit Phase, nächstem Schritt, Termin und explizit freigegebenem
-  Preview-Link; keine Budgets oder Stundensätze.
-- Kundenaufgaben nur mit `visible_to_customer = true`; Filter liegt zwingend in der DB-Query.
-- Abschluss speichert Portalmitglied und Zeitpunkt, erzeugt Activity und interne Notification.
+- Neue Portal-Permissions: `portal.projects.read`, `portal.tasks.read`, `portal.tasks.complete`; `portal_standard`
+  wird ergänzt. Jeder Block erscheint nur mit seiner Permission und fehlt sonst vollständig.
+- Aktive/pausierte Projekte mit Phase, nächstem Schritt, Termin und explizit freigegebenem Preview-Link; keine
+  Budgets, Stundensätze, Preise oder Owner.
+- Kundenaufgaben nur mit `action_side = customer AND visible_to_customer = true`; Filter und Firmenkontext zwingend in
+  der Query über `portalAccessCondition`.
+- Abschluss speichert Portalmitgliedschaft und Zeitpunkt (additive Spalte), erzeugt eine Activity; die interne
+  Benachrichtigung folgt mit Ordner 20c.
 - Bereits erledigte Aufgaben bleiben als Verlauf sichtbar; Wiederöffnen nur intern.
-- Firmenwechsler aus Ordner 12 aktualisiert alle Module ohne Daten des vorherigen Kunden im Cache.
-- Bereiche ohne Inhalt werden nicht gerendert; Portalvorschau zeigt exakt dieselben DTOs wie der
-  echte Portalnutzer.
+- Der Firmenkontext steht im Pfad; clientseitige Caches sind nach `customerId` geschlüsselt, damit ein Firmenwechsel
+  nie Daten der vorherigen Firma zeigt.
+- Die Portalvorschau (Task 20) zeigt Projekte und Aufgaben über dieselben Query-Handler und DTOs wie das Portal.
 
 ## Merge-Gate
 
-- [ ] PortalDTO und HTML enthalten keinerlei interne Finanz-, Notiz- oder Ownerdaten.
-- [ ] Unsichtbare Aufgaben sind auch über direkte ID nicht abrufbar.
-- [ ] Jeder Firmenkontakt kann Kundenaufgabe erledigen; fremde Firma erhält 404.
+- [ ] Portal-DTO und HTML enthalten keinerlei interne Finanz-, Notiz- oder Ownerdaten.
+- [ ] Unsichtbare oder interne Aufgaben sind auch über direkte ID nicht abrufbar (404).
+- [ ] Ohne `portal.tasks.complete` kein Abhaken (Endpunkt 404, kein Bedienelement); fremde Firma 404.
+- [ ] Ohne `portal.projects.read` bzw. `portal.tasks.read` fehlt der jeweilige Block vollständig.
 - [ ] Doppelklick/Retry schließt genau einmal ab.
-- [ ] Firmenwechsel leert vorherige Querydaten und Browsercache-Schlüssel.
+- [ ] Zwei Firmen in zwei Tabs zeigen nie gemischte Daten.
 - [ ] Responsive, Keyboard, Fokus, DE/EN sowie Dark/Light sind geprüft.
 
 ## Rollback
 
-Dashboardmodule per Flag ausblenden; sichere Portalidentität und Minimalportal aus Ordner 12 bleiben
-nutzbar.
+Die drei Portal-Permissions aus `portal_standard` und eigenen Portalrollen entfernen: Blöcke und Endpunkte
+verschwinden. Sichere Portalidentität und Minimalportal aus Ordner 12a/12b bleiben nutzbar.

@@ -1,11 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import {
+  AUTH_REALM_VALUES,
+  AuthRealm,
+} from "@invessiv/common/constants/auth/auth-realms";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
-import { EmptyState, PrimaryCtaButton } from "@invessiv/ui";
+import { ButtonControl, EmptyState, PrimaryCtaButton } from "@invessiv/ui";
 import type {
   SettingsPermissionsDictionary,
   SettingsRolesDictionary,
@@ -22,6 +26,16 @@ type RolesListProps = {
 
 const CUSTOM_ROLES_HEADING_ID = "settings-custom-roles-heading";
 const SYSTEM_ROLES_HEADING_ID = "settings-system-roles-heading";
+const ROLE_LIST_REALM_CONFIG: Record<
+  AuthRealm,
+  {
+    labelKey: "workspaceRealm" | "portalRealm";
+    introKey: "portalIntro" | null;
+  }
+> = {
+  [AuthRealm.Workspace]: { labelKey: "workspaceRealm", introKey: null },
+  [AuthRealm.Portal]: { labelKey: "portalRealm", introKey: "portalIntro" },
+};
 
 export function RolesList({
   content,
@@ -30,8 +44,15 @@ export function RolesList({
 }: RolesListProps) {
   const [openRole, setOpenRole] = useState<RoleDto | null>(null);
   const [isCreating, setIsCreating] = useState(false);
-  const systemRoles = roles.filter((role) => role.isSystem);
-  const customRoles = roles.filter((role) => !role.isSystem);
+  const [realm, setRealm] = useState<AuthRealm>(AuthRealm.Workspace);
+  const realmSwitchOptions = AUTH_REALM_VALUES.map((optionRealm) => ({
+    realm: optionRealm,
+    label: content.list[ROLE_LIST_REALM_CONFIG[optionRealm].labelKey],
+  }));
+  const introKey = ROLE_LIST_REALM_CONFIG[realm].introKey;
+  const visibleRoles = roles.filter((role) => role.realm === realm);
+  const systemRoles = visibleRoles.filter((role) => role.isSystem);
+  const customRoles = visibleRoles.filter((role) => !role.isSystem);
 
   const createButton = (
     <PrimaryCtaButton
@@ -55,6 +76,29 @@ export function RolesList({
 
   return (
     <div className={styles.stack}>
+      <div
+        className={styles.realmSwitch}
+        role="group"
+        aria-label={content.dialog.roleTypeLabel}
+      >
+        {realmSwitchOptions.map((option) => (
+          <ButtonControl
+            key={option.realm}
+            type="button"
+            aria-pressed={realm === option.realm}
+            className={styles.realmButton}
+            onClick={() => {
+              closeDialog();
+              setRealm(option.realm);
+            }}
+          >
+            {option.label}
+          </ButtonControl>
+        ))}
+      </div>
+      {introKey ? (
+        <p className={styles.description}>{content.list[introKey]}</p>
+      ) : null}
       <section
         aria-labelledby={CUSTOM_ROLES_HEADING_ID}
         className={styles.section}
@@ -121,6 +165,7 @@ export function RolesList({
           content={content}
           onCloseAction={closeDialog}
           permissionsContent={permissionsContent}
+          realm={realm}
           role={openRole}
         />
       ) : null}

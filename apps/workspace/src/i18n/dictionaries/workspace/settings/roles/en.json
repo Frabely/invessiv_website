@@ -1,5 +1,8 @@
 {
   "list": {
+    "workspaceRealm": "Staff",
+    "portalRealm": "Portal",
+    "portalIntro": "Portal roles determine which areas invited contacts can see for their company.",
     "systemHeading": "System roles",
     "systemDescription": "Predefined and unchangeable. You can assign them to members.",
     "customHeading": "Custom roles",
@@ -10,6 +13,9 @@
     "memberCountZero": "Not assigned",
     "memberCountOne": "1 member",
     "memberCountOther": "{count} members",
+    "portalCountZero": "Not assigned to any contact",
+    "portalCountOne": "1 contact",
+    "portalCountOther": "{count} contacts",
     "inactiveBadge": "Inactive",
     "readOnlyBadge": "Read only",
     "systemRoleType": "System role",
@@ -21,6 +27,7 @@
     "emptyDescription": "Custom roles give members exactly the permissions they need. Create one as soon as the “Member” system role allows too much or too little."
   },
   "dialog": {
+    "portalRoleType": "Portal role",
     "createTitle": "Create role",
     "typeSelectionTitle": "Choose role type",
     "typeSelectionDescription": "First choose where the new role applies. Its type cannot be changed later.",

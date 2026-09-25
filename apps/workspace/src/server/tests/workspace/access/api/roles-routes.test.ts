@@ -38,6 +38,7 @@ vi.mock(
 );
 
 const ROLE: RoleDto = {
+  realm: "workspace",
   id: "role-1",
   name: "Sales",
   systemKey: null,

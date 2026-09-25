@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
+import { auth } from "@clerk/nextjs/server";
 import { WorkspaceAuthStatus } from "@/common/constants/auth/workspace-auth-statuses";
 import { listPermittedWorkspaceAreas } from "@/common/patterns/auth/list-permitted-workspace-areas";
 import { WorkspaceAccessStatus } from "@/components/workspace/workspace-access-status/workspace-access-status";
@@ -10,12 +11,27 @@ import {
   getWorkspacePageContent,
 } from "@/i18n/dictionaries/workspace";
 import {
+  portalEntryPathFor,
   signInPathWithRedirect,
   workspaceAreaPathFor,
   workspacePathFor,
 } from "@/lib/auth/routes";
 import { authenticateWorkspaceRequest } from "@/lib/auth/workspace-authentication";
 import { WorkspaceAuthorizationUnavailableError } from "@/lib/auth/workspace-authorization-unavailable-error.class";
+import { hasPortalAccessForClerkUser } from "@/server/workspace/auth/query-handler/has-portal-access-for-clerk-user.query-handler";
+
+/** A non-member with no workspace access at all may still hold a portal membership. */
+async function resolvePortalRedirectForNonMember(
+  locale: Locale,
+): Promise<string | null> {
+  const { userId: clerkUserId } = await auth();
+  if (!clerkUserId) {
+    return null;
+  }
+
+  const hasPortalAccess = await hasPortalAccessForClerkUser(clerkUserId);
+  return hasPortalAccess ? portalEntryPathFor(locale) : null;
+}
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -56,6 +72,11 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
 
   const content = getWorkspacePageContent(locale);
   if (authentication.status === WorkspaceAuthStatus.NotMember) {
+    const portalRedirect = await resolvePortalRedirectForNonMember(locale);
+    if (portalRedirect) {
+      redirect(portalRedirect);
+    }
+
     return (
       <WorkspaceShell content={content} locale={locale} permittedAreas={[]}>
         <WorkspaceAccessStatus

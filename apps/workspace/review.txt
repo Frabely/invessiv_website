@@ -1,0 +1,28 @@
+C:\Users\MoritzDesktop\IdeaProjects\invessiv_website\apps\workspace\src\components\workspace\crm\portal-access\portal-membership-roles-dialog\portal-membership-roles-dialog.tsx
+hier wird nicht unser custom Checkbox Input genutzt
+
+C:\Users\MoritzDesktop\IdeaProjects\invessiv_website\apps\workspace\src\components\workspace\crm\portal-access\portal-invite-step-content\portal-invite-step-content.tsx hier ist die html Struktur von InvitationPreview schlecht lesbar und
+
+C:\Users\MoritzDesktop\IdeaProjects\invessiv_website\apps\workspace\src\components\portal\portal-invitation-redeemer\portal-invitation-redeemer.tsx warum hier kein eigener button?
+
+C:\Users\MoritzDesktop\IdeaProjects\invessiv_website\apps\workspace\src\components\portal\portal-invitation-actions\portal-invitation-actions.tsx <a> statt link tag? spielt das eine rolle?
+
+wichtig und zu prüfen -> die e2e Tests dürfen wirklich nur die dev db nutzen niemals die echte prod db und eigentlich auch nicht die preview db
+
+C:\Users\MoritzDesktop\IdeaProjects\invessiv_website\apps\workspace\src\components\workspace\crm\portal-access\portal-access-section\portal-access-section.tsx hier ist sehr viel code in einem file und auch private inline functions, das sinnvoll in eigene komponetnen splitten
+
+C:\Users\MoritzDesktop\IdeaProjects\invessiv_website\apps\workspace\src\common\patterns\crm\portal-access-api-endpoints.ts die letzten strings der entpoints als const string var anlegen wie es sonst gemacht wird
+
+C:\Users\MoritzDesktop\IdeaProjects\invessiv_website\packages\common\src\contracts\crm\portal-access.dto.ts hier die untertypen als eigenes dto anlegen bitte roles zb
+
+portal_standard sollte ein const string sein kein hardcoded, prüfe ob es im changeset bzw auf dem branch andere typen gibt die so hardcoded verwendet werden und fixe das -> ich möchte keine const strings die potenzial haben sich zu ändern im code
+
+C:\Users\MoritzDesktop\IdeaProjects\invessiv_website\apps\workspace\src\common\patterns\portal\has-usable-portal-roles.ts schlecht lesbar -> korrgieren
+
+prüfe nochmal alle handler und Service ob sich über diese hinweg Logik ergibt die sich komplett oder nahezu doppelt und die in einen Service ausgelagert werden kann (und zB aktuell nur im handler als private Funktion genutzt wird)
+
+roles-list.tsx hier wurden 2 Buttons eingefügt -> warum nicht die eigenen Buttons Komponenten?
+
+
+
+

@@ -12,4 +12,10 @@ export interface ClerkCandidateDto {
    * primary address; such an account cannot be added until it has one.
    */
   primaryEmail: string | null;
+  /**
+   * True when the account already holds an active portal membership (Ordner 12b). Adding it
+   * reuses its existing `users` row instead of creating a second one, and grants no portal
+   * access by itself — the picker marks this so the fact is visible before adding.
+   */
+  hasPortalMembership: boolean;
 }

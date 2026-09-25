@@ -116,6 +116,27 @@
   min-width: 0;
 }
 
+.portalLink {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  height: 40px;
+  padding: 0 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 84%, transparent);
+  border-radius: 10px;
+  background: var(--header-control-surface);
+  color: var(--color-text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.portalLink:focus-visible {
+  outline: 2px solid var(--color-cta);
+  outline-offset: 2px;
+}
+
 .userButton {
   display: inline-flex;
   align-items: center;

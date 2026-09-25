@@ -11,6 +11,11 @@ export const SecurityEventType = {
   RoleUpdated: "role_updated",
   WorkspaceMemberAccessScopeGranted: "workspace_member_access_scope_granted",
   WorkspaceMemberAccessScopeRevoked: "workspace_member_access_scope_revoked",
+  PortalInvitationCreated: "portal_invitation_created",
+  PortalInvitationRevoked: "portal_invitation_revoked",
+  PortalInvitationRedeemed: "portal_invitation_redeemed",
+  PortalMembershipRevoked: "portal_membership_revoked",
+  PortalMembershipRolesReplaced: "portal_membership_roles_replaced",
 } as const;
 
 export type SecurityEventType =
@@ -29,4 +34,9 @@ export const SECURITY_EVENT_TYPE_VALUES = [
   SecurityEventType.RoleUpdated,
   SecurityEventType.WorkspaceMemberAccessScopeGranted,
   SecurityEventType.WorkspaceMemberAccessScopeRevoked,
+  SecurityEventType.PortalInvitationCreated,
+  SecurityEventType.PortalInvitationRevoked,
+  SecurityEventType.PortalInvitationRedeemed,
+  SecurityEventType.PortalMembershipRevoked,
+  SecurityEventType.PortalMembershipRolesReplaced,
 ] as const;

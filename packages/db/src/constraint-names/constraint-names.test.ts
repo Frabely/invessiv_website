@@ -29,9 +29,29 @@ import {
   WorkspaceMemberRolesConstraintName,
 } from "./auth/workspace-member-roles-constraint-names";
 import {
+  PORTAL_INVITATION_ROLES_CONSTRAINT_NAME_VALUES,
+  PortalInvitationRolesConstraintName,
+} from "./auth/portal-invitation-roles-constraint-names";
+import {
+  PORTAL_MEMBERSHIP_ROLES_CONSTRAINT_NAME_VALUES,
+  PortalMembershipRolesConstraintName,
+} from "./auth/portal-membership-roles-constraint-names";
+import {
   CUSTOMERS_CONSTRAINT_NAME_VALUES,
   CustomersConstraintName,
 } from "./crm/customers-constraint-names";
+import {
+  PORTAL_INVITATIONS_CONSTRAINT_NAME_VALUES,
+  PortalInvitationsConstraintName,
+} from "./crm/portal-invitations-constraint-names";
+import {
+  PORTAL_MEMBERSHIPS_CONSTRAINT_NAME_VALUES,
+  PortalMembershipsConstraintName,
+} from "./crm/portal-memberships-constraint-names";
+import {
+  WORKSPACE_MEMBERS_CONSTRAINT_NAME_VALUES,
+  WorkspaceMembersConstraintName,
+} from "./crm/workspace-members-constraint-names";
 import {
   LINE_ITEM_TEMPLATES_CONSTRAINT_NAME_VALUES,
   LineItemTemplatesConstraintName,
@@ -102,6 +122,36 @@ const GROUPS: [string, string, Record<string, string>, readonly string[]][] = [
     LINE_ITEM_TEMPLATES_CONSTRAINT_NAME_VALUES,
   ],
   ["tasks", "tasks_", TasksConstraintName, TASKS_CONSTRAINT_NAME_VALUES],
+  [
+    "portal_memberships",
+    "portal_memberships_",
+    PortalMembershipsConstraintName,
+    PORTAL_MEMBERSHIPS_CONSTRAINT_NAME_VALUES,
+  ],
+  [
+    "portal_invitations",
+    "portal_invitations_",
+    PortalInvitationsConstraintName,
+    PORTAL_INVITATIONS_CONSTRAINT_NAME_VALUES,
+  ],
+  [
+    "portal_membership_roles",
+    "portal_membership_roles_",
+    PortalMembershipRolesConstraintName,
+    PORTAL_MEMBERSHIP_ROLES_CONSTRAINT_NAME_VALUES,
+  ],
+  [
+    "portal_invitation_roles",
+    "portal_invitation_roles_",
+    PortalInvitationRolesConstraintName,
+    PORTAL_INVITATION_ROLES_CONSTRAINT_NAME_VALUES,
+  ],
+  [
+    "workspace_members",
+    "workspace_members_",
+    WorkspaceMembersConstraintName,
+    WORKSPACE_MEMBERS_CONSTRAINT_NAME_VALUES,
+  ],
 ];
 
 describe("constraint name constants", () => {

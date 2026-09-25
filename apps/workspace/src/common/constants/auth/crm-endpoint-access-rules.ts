@@ -7,6 +7,7 @@ import { Permission } from "@invessiv/common/constants/auth/permissions";
  */
 export const CrmEndpointAccessRule = {
   CustomerAccessScopes: "customer_access_scopes",
+  PortalInvitationCreate: "portal_invitation_create",
   CustomerCreate: "customer_create",
   CustomerDetail: "customer_detail",
   CustomerUpdate: "customer_update",
@@ -34,6 +35,10 @@ export const CRM_ENDPOINT_ACCESS_RULES = {
   [CrmEndpointAccessRule.CustomerAccessScopes]: {
     permission: Permission.MembersManage,
     scope: "workspace",
+  },
+  [CrmEndpointAccessRule.PortalInvitationCreate]: {
+    permission: Permission.PortalAccessManage,
+    scope: "customer",
   },
   [CrmEndpointAccessRule.CustomerCreate]: {
     permission: Permission.CustomersWrite,

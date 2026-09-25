@@ -13,7 +13,7 @@ import { memberResponsibilityLockService } from "@/server/workspace/access/servi
 import { responsibilityCounterService } from "@/server/workspace/access/services/responsibilities/responsibility-counter-registry";
 import { workspaceMemberReadService } from "@/server/workspace/access/services/workspace-member-read-service";
 import { workspaceMemberVersionService } from "@/server/workspace/access/services/workspace-member-version-service";
-import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
+import { securityEventService } from "@/server/shared/services/security-event-service";
 import { workspaceOwnerInvariantService } from "@/server/workspace/auth/services/workspace-owner-invariant-service";
 
 export async function updateWorkspaceMemberStatus(

@@ -23,7 +23,7 @@ wäre ein Chat ohne Echtzeit-Aktualisierung wertlos — man müsste zufällig hi
 
 | Bereich                          | Entscheidung                                                                                                                                                                        |
 | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Einstieg                         | Eigener Portalbereich `/portal/[customerId]/nachrichten` plus Ungelesen-Kennzeichnung im Dashboard                                                                                  |
+| Einstieg                         | Eigener Portalbereich `/portal/[customerId]/messages` plus Ungelesen-Kennzeichnung im Dashboard                                                                                     |
 | Komponente                       | Dieselbe `message-thread` wie im CRM, mit Portal-Texten und Portal-Gestaltung                                                                                                       |
 | Benachrichtigung an den Betreuer | Notification und gebündelte Mail werden in Ordner 20c aktiviert                                                                                                                     |
 | Warum gebündelt                  | Wer drei Sätze in drei Nachrichten schreibt, soll nicht drei Mails auslösen                                                                                                         |
@@ -39,8 +39,8 @@ wäre ein Chat ohne Echtzeit-Aktualisierung wertlos — man müsste zufällig hi
 ## Architektur
 
 ```txt
-/portal/[customerId]/nachrichten (Server Component)
-  ├─ requirePortalActor()
+/portal/[customerId]/messages (Server Component)
+  ├─ requirePortalActor(locale, customerId)
   ├─ getPortalConversation(customerId, { limit: 50 })
   └─ <MessageThread … />   dieselbe Komponente wie im CRM
 
@@ -67,7 +67,7 @@ Unterhaltung.
 packages/db/migrations/<nr>_add_conversation_notification_columns.sql
 packages/db/src/record-configuration/crm/conversations.ts   erweitert
 
-apps/workspace/src/app/[locale]/(portal)/portal/[customerId]/nachrichten/page.tsx + loading.tsx
+apps/workspace/src/app/[locale]/(portal)/portal/[customerId]/messages/page.tsx + loading.tsx
 apps/workspace/src/app/api/portal/[customerId]/conversation/**                    Routen aus Task 24
 apps/workspace/src/server/portal/services/
   portal-message-rate-limit-service.ts
@@ -121,7 +121,7 @@ apps/workspace/src/i18n/dictionaries/portal/emails/{de,en}.json
 
 ### CRM-26-T3 — Portal-Oberfläche
 
-- **Files:** `(portal)/portal/[customerId]/nachrichten/page.tsx`, `components/portal/messages/**`,
+- **Files:** `(portal)/portal/[customerId]/messages/page.tsx`, `components/portal/messages/**`,
   `dictionaries/portal/messages/{de,en}.json`
 - **Skills:** `frontend-design`, `accessibility`, `copywriting`
 - **Inhalt:**

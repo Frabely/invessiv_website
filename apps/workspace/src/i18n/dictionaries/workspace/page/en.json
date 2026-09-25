@@ -73,6 +73,7 @@
         }
       },
       "userMenuLabel": "Account and sign out",
+      "portalLink": "Open portal",
       "mobileMenuOpenLabel": "Open navigation",
       "mobileMenuCloseLabel": "Close navigation"
     },

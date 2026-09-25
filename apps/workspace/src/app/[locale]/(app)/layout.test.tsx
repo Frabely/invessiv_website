@@ -31,14 +31,28 @@ vi.mock("@/lib/auth/permissions", () => ({
   getWorkspaceAuthenticationForRender: mockGetAuthentication,
 }));
 
+const mockHasPortalAccessForUserId = vi.hoisted(() => vi.fn());
+vi.mock(
+  "@/server/workspace/auth/query-handler/has-portal-access-for-user-id.query-handler",
+  () => ({
+    hasPortalAccessForUserId: mockHasPortalAccessForUserId,
+  }),
+);
+
 vi.mock("@/components/workspace/workspace-shell/workspace-shell", () => ({
   WorkspaceShell: ({
     children,
     permittedAreas,
+    portalHref,
   }: {
     children: ReactNode;
     permittedAreas: readonly string[];
-  }) => <main data-areas={permittedAreas.join(",")}>{children}</main>,
+    portalHref?: string | null;
+  }) => (
+    <main data-areas={permittedAreas.join(",")} data-portal-href={portalHref}>
+      {children}
+    </main>
+  ),
 }));
 
 function authorizedWith(...permissions: Permission[]) {
@@ -57,6 +71,7 @@ function authorizedWith(...permissions: Permission[]) {
 describe("WorkspaceLayout", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockHasPortalAccessForUserId.mockResolvedValue(false);
   });
 
   afterEach(cleanup);
@@ -155,6 +170,42 @@ describe("WorkspaceLayout", () => {
         params: Promise.resolve({ locale: "de" }),
       }),
     ).rejects.toThrow("Workspace authorization is unavailable.");
+  });
+
+  it("passes a portal href when the user also has portal access", async () => {
+    mockHasPortalAccessForUserId.mockResolvedValue(true);
+    mockGetAuthentication.mockResolvedValue(
+      authorizedWith(Permission.LeadsRead),
+    );
+
+    render(
+      await WorkspaceLayout({
+        children: <p>Protected content</p>,
+        params: Promise.resolve({ locale: "de" }),
+      }),
+    );
+
+    expect(mockHasPortalAccessForUserId).toHaveBeenCalledWith("user-id");
+    expect(screen.getByRole("main")).toHaveAttribute(
+      "data-portal-href",
+      "/de/portal",
+    );
+  });
+
+  it("omits the portal href when the user has no portal membership", async () => {
+    mockHasPortalAccessForUserId.mockResolvedValue(false);
+    mockGetAuthentication.mockResolvedValue(
+      authorizedWith(Permission.LeadsRead),
+    );
+
+    render(
+      await WorkspaceLayout({
+        children: <p>Protected content</p>,
+        params: Promise.resolve({ locale: "de" }),
+      }),
+    );
+
+    expect(screen.getByRole("main")).not.toHaveAttribute("data-portal-href");
   });
 
   it("rejects unsupported locales before authentication", async () => {

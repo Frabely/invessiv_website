@@ -26,16 +26,26 @@ vi.mock("@invessiv/db/core", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@invessiv/db/core")>()),
   getDrizzleDatabaseClient: mocks.getDatabase,
 }));
-vi.mock("@/server/workspace/access/services/role-read-service", () => ({
-  roleReadService: { findById: mocks.findById },
-}));
-vi.mock("@/server/workspace/auth/services/security-event-service", () => ({
+vi.mock(
+  "@/server/workspace/access/services/role-service",
+  async (importOriginal) => {
+    const original =
+      await importOriginal<
+        typeof import("@/server/workspace/access/services/role-service")
+      >();
+    return {
+      roleService: { ...original.roleService, findById: mocks.findById },
+    };
+  },
+);
+vi.mock("@/server/shared/services/security-event-service", () => ({
   securityEventService: { createSecurityEvent: mocks.createEvent },
 }));
 
 const actor = workspaceActorWith();
 
 const STORED_ROLE: RoleDto = {
+  realm: "workspace",
   id: "role-new",
   name: "Vertrieb",
   systemKey: null,
@@ -143,6 +153,53 @@ describe("createRole", () => {
       code: RoleErrorCode.PermissionNotScopeAssignable,
     });
     expect(mocks.getDatabase).not.toHaveBeenCalled();
+  });
+
+  it("rejects workspace permissions in a portal role before opening a transaction", async () => {
+    const result = await createRole(
+      {
+        realm: AuthRealm.Portal,
+        name: "Portal custom",
+        description: null,
+        scopeAssignable: false,
+        permissions: [Permission.CustomersRead],
+      },
+      actor,
+    );
+    expect(result).toMatchObject({
+      ok: false,
+      code: RoleErrorCode.ValidationError,
+    });
+    expect(mocks.getDatabase).not.toHaveBeenCalled();
+  });
+
+  it("stores a portal role with portal realm permission rows", async () => {
+    mocks.findById.mockResolvedValue({
+      ...STORED_ROLE,
+      realm: AuthRealm.Portal,
+      permissions: [Permission.PortalAccess],
+    });
+    const result = await createRole(
+      {
+        realm: AuthRealm.Portal,
+        name: "Portal custom",
+        description: null,
+        scopeAssignable: false,
+        permissions: [Permission.PortalAccess],
+      },
+      actor,
+    );
+    expect(result.ok).toBe(true);
+    expect(insertedInto(roles)[0]).toMatchObject({
+      realm: AuthRealm.Portal,
+      scope_assignable: false,
+    });
+    expect(insertedInto(rolePermissions)[0]).toMatchObject([
+      {
+        realm: AuthRealm.Portal,
+        permission_key: Permission.PortalAccess,
+      },
+    ]);
   });
 
   it("stores a trimmed custom role with catalog delegability and exactly one event", async () => {

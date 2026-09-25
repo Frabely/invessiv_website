@@ -51,6 +51,12 @@ Wenn Iteration benötigt wird (z. B. Drizzle `{ enum: [...] }`, `sqlCheckIn`, UI
 `FOO_KIND_VALUES`-Array exportiert, das ausschließlich aus dem Const-Objekt abgeleitet wird. String-Literale erscheinen
 genau einmal, im Const-Objekt.
 
+## Eine Contract-Datei pro Contract (verbindlich)
+
+Unter `contracts/**` erhält jeder eigenständige DTO-, Row- oder Result-Contract eine eigene, nach ihm benannte Datei.
+Keine Sammeldatei mit mehreren exportierten Contracts; abhängige Contracts per `import type` einbinden. Rein lokale
+Hilfstypen dürfen in der Datei bleiben.
+
 ## Contract-Felder: immer camelCase
 
 Alle Felder in `contracts/**/*.ts` verwenden camelCase, nie `snake_case`. DB-Rows in `snake_case` werden in der

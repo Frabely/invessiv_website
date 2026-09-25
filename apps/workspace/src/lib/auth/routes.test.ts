@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import {
   dashboardPathFor,
+  portalEntryPathFor,
+  portalPathFor,
   signInPathFor,
   signInPathWithRedirect,
   signUpPathFor,
@@ -10,6 +12,7 @@ import {
 } from "./routes";
 import { REDIRECT_URL_QUERY_PARAM, SITE_ROUTES } from "@/config/routes";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
+import { PortalSection } from "@/common/constants/portal/portal-sections";
 
 describe("auth routes", () => {
   it("exposes locale-less segments for Clerk ENV-Vars", () => {
@@ -43,6 +46,18 @@ describe("auth routes", () => {
     const url = new URL(target, "https://invessiv.com");
     expect(url.pathname).toBe("/de/sign-in");
     expect(url.searchParams.get(REDIRECT_URL_QUERY_PARAM)).toBe("/de");
+  });
+
+  it("builds the portal company-picker path", () => {
+    expect(portalEntryPathFor("de")).toBe("/de/portal");
+    expect(portalEntryPathFor("en")).toBe("/en/portal");
+  });
+
+  it("builds a portal company path, optionally with a section", () => {
+    expect(portalPathFor("de", "customer-1")).toBe("/de/portal/customer-1");
+    expect(portalPathFor("en", "customer-1", PortalSection.Files)).toBe(
+      "/en/portal/customer-1/files",
+    );
   });
 
   it("encodes complex redirect targets without losing characters", () => {

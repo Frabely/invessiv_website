@@ -21,6 +21,8 @@ type WorkspaceHeaderProps = {
   isMobileMenuOpen: boolean;
   locale: Locale;
   onMobileMenuToggleAction: () => void;
+  /** Set only when the signed-in user also holds an active portal membership. */
+  portalHref?: string | null;
 };
 
 export function WorkspaceHeader({
@@ -29,6 +31,7 @@ export function WorkspaceHeader({
   isMobileMenuOpen,
   locale,
   onMobileMenuToggleAction,
+  portalHref = null,
 }: WorkspaceHeaderProps) {
   const headerContent = content.shell.header;
   const { locale: activeLocale, setLocale } = useLanguage();
@@ -133,6 +136,11 @@ export function WorkspaceHeader({
             onSelectAction={handleLocaleSelect}
             variant="desktop"
           />
+          {portalHref ? (
+            <a className={styles.portalLink} href={portalHref}>
+              {headerContent.portalLink}
+            </a>
+          ) : null}
           <div className={styles.userButton}>
             <UserButton />
           </div>

@@ -56,6 +56,7 @@ function mapRowsToRoles(
       const granted = permissionsByRole.get(row.id) ?? new Set<Permission>();
       return {
         id: row.id,
+        realm: row.realm,
         name: row.name,
         systemKey: row.system_key,
         active: row.active,

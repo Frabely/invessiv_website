@@ -6,7 +6,6 @@ import { listClerkCandidates } from "@/server/workspace/access/query-handler/lis
 vi.mock("server-only", () => ({}));
 
 const mocks = vi.hoisted(() => ({
-  fromUsers: vi.fn(),
   getDatabase: vi.fn(),
   listCandidateProfiles: vi.fn(),
 }));
@@ -21,12 +20,45 @@ vi.mock("@/server/workspace/access/services/clerk-directory-service", () => ({
   },
 }));
 
+function databaseWith(
+  linkedClerkUserIds: readonly string[] = [],
+  portalLinkedClerkUserIds: readonly string[] = [],
+) {
+  let lookupIndex = 0;
+  return {
+    select: () => {
+      lookupIndex += 1;
+      if (lookupIndex === 1) {
+        return {
+          from: () => ({
+            innerJoin: () =>
+              Promise.resolve(
+                linkedClerkUserIds.map((clerk_user_id) => ({ clerk_user_id })),
+              ),
+          }),
+        };
+      }
+
+      return {
+        from: () => ({
+          innerJoin: () => ({
+            where: () =>
+              Promise.resolve(
+                portalLinkedClerkUserIds.map((clerk_user_id) => ({
+                  clerk_user_id,
+                })),
+              ),
+          }),
+        }),
+      };
+    },
+  };
+}
+
 describe("listClerkCandidates", () => {
   beforeEach(() => {
     Object.values(mocks).forEach((mock) => mock.mockReset());
-    mocks.getDatabase.mockReturnValue({
-      select: () => ({ from: mocks.fromUsers }),
-    });
+    mocks.getDatabase.mockReturnValue(databaseWith());
   });
 
   it("rejects invalid input before reading the database or Clerk", async () => {
@@ -40,11 +72,10 @@ describe("listClerkCandidates", () => {
     expect(mocks.listCandidateProfiles).not.toHaveBeenCalled();
   });
 
-  it("passes every linked Clerk id to the paginated directory lookup", async () => {
-    mocks.fromUsers.mockResolvedValue([
-      { clerkUserId: "user_linked_a" },
-      { clerkUserId: "user_linked_b" },
-    ]);
+  it("excludes only accounts that already have a workspace_members row", async () => {
+    mocks.getDatabase.mockReturnValue(
+      databaseWith(["user_linked_a", "user_linked_b"]),
+    );
     mocks.listCandidateProfiles.mockResolvedValue({
       ok: true,
       profiles: [
@@ -69,6 +100,35 @@ describe("listClerkCandidates", () => {
           clerkUserId: "user_available",
           displayName: "Anna Beispiel",
           primaryEmail: "anna@example.test",
+          hasPortalMembership: false,
+        },
+      ],
+    });
+  });
+
+  it("marks a candidate that already has an active portal membership", async () => {
+    mocks.getDatabase.mockReturnValue(databaseWith([], ["user_portal"]));
+    mocks.listCandidateProfiles.mockResolvedValue({
+      ok: true,
+      profiles: [
+        {
+          clerkUserId: "user_portal",
+          displayName: "Ben Beispiel",
+          primaryEmail: "ben@example.test",
+        },
+      ],
+    });
+
+    const result = await listClerkCandidates({ query: "" });
+
+    expect(result).toEqual({
+      ok: true,
+      candidates: [
+        {
+          clerkUserId: "user_portal",
+          displayName: "Ben Beispiel",
+          primaryEmail: "ben@example.test",
+          hasPortalMembership: true,
         },
       ],
     });

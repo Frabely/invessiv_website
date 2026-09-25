@@ -6,6 +6,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
+import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { LeadConversionErrorCode } from "@invessiv/common/constants/crm/errors/lead-conversion-error-codes";
 import { findWorkspaceRoot, getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
@@ -41,7 +42,7 @@ describe.skipIf(!RUN_INTEGRATION)(
     const actor: WorkspaceActor = {
       userId,
       workspaceMemberId: memberId,
-      permissions: new Set(),
+      permissions: new Set([Permission.CustomersRead]),
       customerPermissions: new Map(),
       projectPermissions: new Map(),
     };

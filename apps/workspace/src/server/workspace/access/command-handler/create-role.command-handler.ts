@@ -13,9 +13,8 @@ import { rolePermissions, roles } from "@invessiv/db/record-configuration";
 import { RolesConstraintName } from "@invessiv/db/constraint-names/auth/roles-constraint-names";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessSchemas } from "@/server/workspace/access/services/access-schemas";
-import { reservedRoleNameService } from "@/server/workspace/access/services/reserved-role-name-service";
-import { roleReadService } from "@/server/workspace/access/services/role-read-service";
-import { securityEventService } from "@/server/workspace/auth/services/security-event-service";
+import { roleService } from "@/server/workspace/access/services/role-service";
+import { securityEventService } from "@/server/shared/services/security-event-service";
 import { postgresErrorService } from "@/server/workspace/shared/services/postgres-error-service";
 
 export async function createRole(
@@ -31,9 +30,20 @@ export async function createRole(
     };
   }
 
-  const { name, description, permissions, scopeAssignable } = validation.data;
+  const { name, description, permissions, scopeAssignable, realm } =
+    validation.data;
+  if (realm === AuthRealm.Portal && scopeAssignable) {
+    return { ok: false, code: RoleErrorCode.ValidationError, errors: [] };
+  }
+  if (
+    permissions.some(
+      (permission) => PERMISSION_DEFINITIONS[permission].realm !== realm,
+    )
+  ) {
+    return { ok: false, code: RoleErrorCode.ValidationError, errors: [] };
+  }
   // System roles appear under their translated label, so a custom role must not look like one.
-  if (reservedRoleNameService.isReserved(name)) {
+  if (roleService.isReservedName(name)) {
     return { ok: false, code: RoleErrorCode.RoleNameReserved };
   }
   // Delegability comes from the catalog in code, never from the request.
@@ -62,7 +72,7 @@ export async function createRole(
 
       await tx.insert(roles).values({
         id: roleId,
-        realm: AuthRealm.Workspace,
+        realm,
         system_key: null,
         name,
         description,
@@ -78,7 +88,7 @@ export async function createRole(
         await tx.insert(rolePermissions).values(
           permissions.map((permission) => ({
             role_id: roleId,
-            realm: AuthRealm.Workspace,
+            realm,
             role_is_system: false,
             permission_key: permission,
             permission_delegable: PERMISSION_DEFINITIONS[permission].delegable,
@@ -98,7 +108,7 @@ export async function createRole(
         occurredAt: now,
       });
 
-      const role = await roleReadService.findById(tx, roleId);
+      const role = await roleService.findById(tx, roleId);
       if (!role) {
         throw new Error("Role is missing inside its creating transaction");
       }

@@ -41,6 +41,7 @@ Scope- und detailspezifische Regeln stehen in der jeweils nächstgelegenen `AGEN
 | `apps/workspace/src/client/`                        | Client-Services als API-Schnittstelle: nehmen DTOs entgegen und rufen die API auf                               |
 | `apps/workspace/src/server/workspace/crm/`          | Interner CRM-Serverpfad: Primärkontakt-Invariante, kein Löschpfad, Portaltrennung                               |
 | `apps/workspace/src/server/workspace/shared/`       | Domänenübergreifende Server-Bausteine; `updateVersioned` als einziger versionierter Schreibweg                  |
+| `apps/workspace/src/server/shared/`                 | Services, die Portal- **und** Workspace-Handler teilen; einzige Ausnahme von der Portal/Workspace-Trennung      |
 | `apps/workspace/src/server/workspace/auth/`         | Actor-Auflösung, Owner-Bootstrap, Security-Events; fail-closed, keine Rollenprüfung in Features                 |
 | `apps/workspace/src/common/`                        | Workspace-shared Contracts/Constants                                                                            |
 | `packages/` (`common`, `db`, `ui`)                  | Geteilte Pakete: Const-Objekt-Pattern, Error-Codes, DTOs, Drizzle-Schema, app-neutrale UI                       |
@@ -130,6 +131,11 @@ Detailregeln stehen in den scope-spezifischen Dateien (siehe Index). Global gilt
 - **Keine Logik-Duplikate.** Taucht dieselbe Funktion, derselbe Unwrap-/Mapping-Block oder dieselbe bedingte
   Darstellung in einer zweiten Datei praktisch unverändert auf, wird sie in einen gemeinsamen, benannten Helfer
   extrahiert statt kopiert — unabhängig davon, ob der Baustein exportiert wird oder lokal bleibt.
+- **Services nach fachlichem Kontext bündeln.** In Frontend und Backend fasst ein Service zusammengehörige Operationen
+  an einer Entität oder einem klaren Kontext zusammen (z. B. Kunde anlegen, ändern und löschen). Für eine einzelne
+  Funktion keinen eigenen `*-service.ts` anlegen: zu einem bestehenden passenden Service hinzufügen oder einen passend
+  benannten Helfer verwenden. Unterschiedliche Fachkontexte nicht allein zur Vermeidung kleiner Dateien vermischen.
+  Handler bleiben nach genau einem Anwendungsfall benannt und orchestrieren diesen.
 - **Error-Codes** als Const-Objekt in `…/constants/<domain>/`, Message-Texte nur in co-located `*-error.ts` der
   Nutzungsschicht. **URL-Pfade** ausschließlich aus typisierten Konstanten (`SITE_ROUTES` in `src/config/routes.ts`) /
   Pfad-Helfern zusammenbauen, nie aus mehreren String-Literalen. Lokalisierte Pfade laufen über

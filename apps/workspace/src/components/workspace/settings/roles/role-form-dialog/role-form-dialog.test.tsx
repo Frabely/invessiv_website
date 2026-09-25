@@ -42,6 +42,7 @@ const content = getSettingsRolesDictionary("de");
 const permissionsContent = getSettingsPermissionsDictionary("de");
 
 const CUSTOM_GLOBAL_ROLE: RoleDto = {
+  realm: "workspace",
   id: "role-sales",
   name: "Vertrieb",
   systemKey: null,
@@ -184,6 +185,7 @@ describe("RoleFormDialog", () => {
 
     await waitFor(() => expect(onClose).toHaveBeenCalled());
     expect(mocks.createRole).toHaveBeenCalledWith({
+      realm: "workspace",
       name: "Vertrieb",
       description: null,
       permissions: [Permission.LeadsRead, Permission.LeadsWrite],
@@ -325,6 +327,7 @@ describe("RoleFormDialog", () => {
 
   it("opens system roles read-only with their global type badge", () => {
     const systemRole: RoleDto = {
+      realm: "workspace",
       id: "role-member",
       name: "Workspace member",
       systemKey: SystemRoleKey.WorkspaceMember,

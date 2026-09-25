@@ -38,7 +38,9 @@ Details und Abnahmekriterien stehen in den aktiven geordneten Merge-Einheiten.
 ## Kundenportal
 
 - Explizite Clerk-Einladung; ein Konto kann mehrere Kundenfirmen sicher wechseln.
+- Eigener Login je Kundenkontakt; intern definierte Portalrollen je Kontakt steuern, welche Bereiche er sieht.
 - Dashboard mit freigegebenen Projektdaten, Aufgaben, Dokumenten und Stunden.
+- Preisfreie Leistungsanfragen aus einem freigegebenen Katalogausschnitt; Angebot folgt außerhalb.
 - Strukturierter Onboarding-Bogen: Texte direkt ins Feld, Assets am zugehörigen Feld, Zwischenstand
   serverseitig gesichert, Absenden erledigt die zugehörigen Kundenaufgaben.
 - Upload von Bildern, Logos und kurzen Videos ohne Feedbackrunde; große Videos über einen Medienlink.
