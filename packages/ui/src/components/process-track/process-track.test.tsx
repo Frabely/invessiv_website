@@ -2,7 +2,7 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
-import { ProcessTrack } from "./process-track";
+import { ProcessTrack } from "@invessiv/ui";
 
 describe("ProcessTrack", () => {
   beforeAll(() => {
