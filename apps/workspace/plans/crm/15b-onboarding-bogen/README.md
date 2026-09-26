@@ -40,8 +40,17 @@ Aufgaben ab — folgt in Ordner 15c, damit diese Einheit auf Formular und Daten 
 - Assets hängen über eine Verknüpfungstabelle am Feld; der Scope-CHECK aus Ordner 14 bleibt unberührt.
 - Ein abgesendeter Bogen ist unveränderlich; das erneute Öffnen ist ein protokollierter interner Vorgang.
 
+## Portal-Widget (aus Ordner 13)
+
+Das Dashboard-Widget `onboarding` (volle Breite ganz oben, `openMode: dialog`) existiert seit Ordner 13 als Mock in der
+Widget-Registry (`PORTAL_WIDGET_LAYOUT`). Dieser Ordner stellt es auf echte Daten um: Bogen-Fortschritt und Einstieg
+„Weiter ausfüllen“, prominent beim ersten Login. Termin und Verschwinden nach Abschluss folgen in Ordner 15c. Keine
+eigene Dashboard-Karte außerhalb der Registry.
+
 ## Merge-Gate
 
+- [ ] Portal-Widget `onboarding` von Mock auf echte Daten umgestellt (Registry `mock: false` +
+      `requiredPermission: portal.onboarding.read`); Fortschritt stammt aus derselben Berechnung wie das Formular.
 - [ ] Katalogtest: jeder `labelKey`, `helpKey` und `choiceKey` existiert in DE und EN.
 - [ ] `satisfies Record<OnboardingFormKey, OnboardingFormDefinition>` bricht bei fehlender Vorlage.
 - [ ] Je Projekt und Vorlage existiert höchstens ein Entwurf (partieller Unique-Index, Test).

@@ -435,20 +435,20 @@ Jeder Schritt endet mit grünem `pnpm --filter @invessiv/workspace typecheck` + 
 
 ### S0 — Doku (nur Plan-/Regeldateien)
 
-- [ ] README `13-portal-dashboard/README.md`: Status „läuft“, Inhalte/Merge-Gate an E1–E24 anpassen (Owner-Sicht,
+- [x] README `13-portal-dashboard/README.md`: Status „läuft“, Inhalte/Merge-Gate an E1–E24 anpassen (Owner-Sicht,
       Mock-Widgets, Rollout-Gate E20, Widget-Registry, beide Aufgabenseiten, Ansprechpartner).
-- [ ] `00-entscheidungen.md`: Statuszeile 13 → „läuft“; neue Entscheidungen: Owner-Portalsicht (nur lesen, Security-
+- [x] `00-entscheidungen.md`: Statuszeile 13 → „läuft“; neue Entscheidungen: Owner-Portalsicht (nur lesen, Security-
       Event), Mock-Widgets + organisatorisches Rollout-Gate, Owner-Name/Mail portalöffentlich, alle Stundenbuchungen
       sichtbar (ohne Schalter), Renewals intern, Widget-Registry als einziger Einhängepunkt für Portal-Karten.
-- [ ] Folge-READMEs je ein Merge-Gate „Portal-Widget `<key>` von Mock auf echte Daten umgestellt (Registry
+- [x] Folge-READMEs je ein Merge-Gate „Portal-Widget `<key>` von Mock auf echte Daten umgestellt (Registry
       `mock: false` + Permission)“ plus 2–3 Zeilen Widget-Beschreibung aus E-Tabelle:
       `13a` (`serviceRequest`, ohne Preis), `15` (`files` Reiter „Von uns“), `15a` (`files` Reiter „Von Ihnen“,
       Medien), `15b`/`15c` (`onboarding`, verschwindet nach Abschluss), `16` (`feedback` inkl. „wer ist am Zug“ und
       Einreichen aus dem Dashboard), `18` (`messages` + `ChatDock` mit echtem Thread), `20` (`hours`, nur mit
       Kontingent, alle Buchungen).
-- [ ] Widersprüche bereinigen: `20-stunden-und-history/27-stundenbuchungen.md` (Schalter je Buchung entfernen),
+- [x] Widersprüche bereinigen: `20-stunden-und-history/27-stundenbuchungen.md` (Schalter je Buchung entfernen),
       Karten-Zusagen in 13a/15/15a auf Registry-Widget vereinheitlichen.
-- [ ] `apps/workspace/deleteable/planregeln-fuer-plan-skill.md` existiert bereits (nicht committen, temporär).
+- [x] `apps/workspace/deleteable/planregeln-fuer-plan-skill.md` existiert bereits (nicht committen, temporär).
 
 ### S1 — Extraktion geteilter Bausteine (keine Verhaltensänderung)
 

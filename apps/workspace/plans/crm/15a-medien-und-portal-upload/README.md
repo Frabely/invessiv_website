@@ -44,8 +44,17 @@ Runde, statt einen zweiten Pfad zu bauen.
 - Der Portal-Upload erzeugt Dateien mit `category = 'asset'`, niemals mit Rundenbezug.
 - Videos sind vom Sammel-ZIP ausgeschlossen; die Einzeldatei bleibt herunterladbar.
 
+## Portal-Widget (aus Ordner 13)
+
+Im Dashboard-Widget `files` (Registry `PORTAL_WIDGET_LAYOUT`, seit Ordner 15 mit echtem Reiter „Von uns“) stellt
+dieser Ordner den Reiter **„Von Ihnen“** auf echte Daten um: eigene Uploads inklusive Medien, herunterladbar, ohne
+Löschen oder Bearbeiten — eine Aktualisierung ist eine neue Datei. Keine eigene Dashboard-Karte außerhalb der
+Registry.
+
 ## Merge-Gate
 
+- [ ] Portal-Widget `files`, Reiter „Von Ihnen“, von Mock auf echte Daten umgestellt (Registry ohne Mock-Anteil;
+      Permission `portal.files.read`); kein Lösch- oder Bearbeitungsweg im Widget.
 - [ ] Signaturtest je erlaubtem Typ, inklusive Ablehnung einer als `.png` benannten HTML-Datei.
 - [ ] `.svg` und makrofähige Formate werden abgelehnt, mit Test.
 - [ ] Überschreiten des Limits der jeweiligen Art wird vor dem Upload abgelehnt, nicht danach.

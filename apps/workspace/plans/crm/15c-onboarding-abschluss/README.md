@@ -30,8 +30,17 @@ Mitarbeiter buchen.
 - „Onboarding abgeschlossen" ist kein neues Feld: es gilt, sobald die Projektphase über `onboarding`
   hinaus ist.
 
+## Portal-Widget (aus Ordner 13)
+
+Das Dashboard-Widget `onboarding` (Registry `PORTAL_WIDGET_LAYOUT`, seit Ordner 15b mit echtem Fortschritt) bekommt
+hier den Termin und sein Ende: Nach dem Absenden zeigt es die Terminbuchung; sobald die Projektphase über
+`onboarding` hinaus ist, **verschwindet das Widget** (`onlyWithContent`). Die Karten aus Task 46/47 sind Zustände
+dieses einen Widgets, keine zusätzlichen Dashboard-Karten.
+
 ## Merge-Gate
 
+- [ ] Portal-Widget `onboarding` vollständig echt (Registry ohne Mock-Anteil): Fortschritt, Termin, verschwindet nach
+      Abschluss; keine zusätzliche Karte außerhalb der Registry.
 - [ ] Absenden hakt genau die zugeordneten Aufgaben ab, keine weiteren; Test über die Zuordnungstabelle.
 - [ ] Bereits erledigte oder intern liegende Aufgaben bleiben unangetastet.
 - [ ] Ohne Bogen verhält sich das Portal-Dashboard unverändert (Regressionstest).

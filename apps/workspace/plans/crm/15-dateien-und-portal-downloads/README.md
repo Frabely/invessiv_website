@@ -40,8 +40,17 @@ sichtbar geschaltet.
 - Signierte URLs werden kurz vor Download erzeugt und nicht dauerhaft im DTO gespeichert.
 - Cache-Control verhindert das Speichern privater Antworten in öffentlichen Caches.
 
+## Portal-Widget (aus Ordner 13)
+
+Das Dashboard-Widget `files` („Dateien“, `openMode: dialog`) existiert seit Ordner 13 als Mock mit zwei Reitern in
+der Widget-Registry (`PORTAL_WIDGET_LAYOUT`). Dieser Ordner stellt den Reiter **„Von uns“** auf echte Daten um: nur
+explizit freigegebene Dateien mit Download. Der Reiter „Von Ihnen“ bleibt bis Ordner 15a Mock. Keine eigene
+Dashboard-Karte außerhalb der Registry.
+
 ## Merge-Gate
 
+- [ ] Portal-Widget `files` von Mock auf echte Daten umgestellt, Reiter „Von uns“ (Registry `mock: false` +
+      `requiredPermission: portal.files.read`); ohne Permission fehlt es vollständig.
 - [ ] Upload, Liste, Freigabe, Download, ZIP und Löschanfrage funktionieren als vollständiger Flow.
 - [ ] Portal kann interne Datei weder listen noch per erratener ID signieren lassen.
 - [ ] Mehrfachupload zeigt Fortschritt und Einzelfehler, ohne erfolgreiche Dateien zurückzurollen.

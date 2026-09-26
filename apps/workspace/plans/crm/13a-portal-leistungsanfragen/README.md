@@ -26,8 +26,17 @@ Angebot selbst entsteht weiterhin außerhalb (Lexware); die Anwendung dokumentie
   `service_requests.read`/`service_requests.write` (scopable, an Kunde bindbar). `portal_standard` wird ergänzt.
 - Navigationseintrag in `PORTAL_NAV_ITEMS`.
 
+## Portal-Widget (aus Ordner 13)
+
+Das Dashboard-Widget `serviceRequest` („Leistung anfragen“, `openMode: dialog`) existiert seit Ordner 13 als Mock in
+der Widget-Registry (`PORTAL_WIDGET_LAYOUT`). Dieser Ordner stellt es auf echte Daten um: freigegebene Leistungen nur
+mit Name und Beschreibung — **nie mit Preis** — plus eigene offene Anfragen; der Dialog führt zur Anfrage. Keine
+eigene Dashboard-Karte außerhalb der Registry.
+
 ## Merge-Gate
 
+- [ ] Portal-Widget `serviceRequest` von Mock auf echte Daten umgestellt (Registry `mock: false` +
+      `requiredPermission: portal.services.read`); ohne Permission fehlt es vollständig.
 - [ ] Kein Portal-DTO, keine Portal-Antwort und kein Portal-Log enthält Preis, Preisart oder Intervall.
 - [ ] Nur freigegebene, aktive Templates sind im Portal sichtbar; Archivieren entzieht die Freigabe sofort.
 - [ ] Eine Anfrage entsteht nur mit `portal.services.request`; Firma aus dem `PortalActor`, nie aus der Anfrage.

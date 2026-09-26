@@ -30,8 +30,17 @@ der Kundenseite, damit der Fremdzugriffs-Review nicht in einem großen PR unterg
   Providerstatus und interne Hinweise werden gemeinsam in Ordner 20c aktiviert.
 - Datenbankgestütztes Limit: 30 Nachrichten je Stunde und Portalmitglied.
 
+## Portal-Widget (aus Ordner 13)
+
+Das Dashboard-Widget `messages` („Nachrichten“, `openMode: dock`) und der `ChatDock` aus `@invessiv/ui` existieren
+seit Ordner 13 als Mock. Dieser Ordner stellt beide auf echte Daten um: das Widget zeigt Ungelesen-Stand und öffnet
+den Dock, der Dock bekommt den echten Verlauf als `children`. Die in der Kopfzeile genannte Dashboard-Karte „Offene
+Nachrichten“ **ist** dieses Registry-Widget, keine zusätzliche Karte.
+
 ## Merge-Gate
 
+- [ ] Portal-Widget `messages` und `ChatDock` von Mock auf echten Thread umgestellt (Registry `mock: false` +
+      `requiredPermission: portal.messages.read`); Schreiben nur mit `portal.messages.write`.
 - [ ] Mehrere Kontakte derselben Firma haben unabhängige Lesestände.
 - [ ] Widerrufenes Mitglied kann Verlauf und Deep-Link sofort nicht mehr laden.
 - [ ] Kunde A sieht unter keinem Sitzungszustand die Unterhaltung von Kunde B (404).

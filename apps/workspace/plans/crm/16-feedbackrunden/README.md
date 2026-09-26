@@ -45,8 +45,17 @@ Merge beidseitig vollständig.
 - CRM: Ungelesen-Zähler, Sammelliste, Kundendetail, verknüpfte Dateien und Statusaktionen.
 - Externe Texte ausschließlich als Text, maximal 20.000 Zeichen, keine HTML-/Markdown-Ausführung.
 
+## Portal-Widget (aus Ordner 13)
+
+Das Dashboard-Widget `feedback` (projektbezogen, `openMode: dialog`) existiert seit Ordner 13 als Mock in der
+Widget-Registry (`PORTAL_WIDGET_LAYOUT`). Dieser Ordner stellt es auf echte Daten um: übrige Runden, wer am Zug ist
+(„Sie“ / „wir“) und „Feedback geben“ bzw. Zusatzrunde anfragen direkt aus dem Dashboard-Dialog. Keine eigene
+Dashboard-Karte außerhalb der Registry.
+
 ## Merge-Gate
 
+- [ ] Portal-Widget `feedback` von Mock auf echte Daten umgestellt (Registry `mock: false` +
+      `requiredPermission: portal.feedback.read`); Einreichen aus dem Dashboard nur mit `portal.feedback.submit`.
 - [ ] Zwei parallele Submits erzeugen nur eine Rundennummer.
 - [ ] Eine Runde über dem Kontingent bleibt ohne genehmigte Anfrage gesperrt.
 - [ ] Ein Projekt mit erhöhtem Kontingent erlaubt die entsprechende Zahl Runden ohne Anfrage.

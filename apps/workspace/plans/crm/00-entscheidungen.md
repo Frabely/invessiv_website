@@ -203,8 +203,10 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
 - `visible_to_customer` ist standardmäßig aus; `action_side = customer` erzwingt Sichtbarkeit.
 - `done` speichert Zeitpunkt und Mitglied; intern darf jederzeit wieder geöffnet werden, jede Änderung ist eine
   Activity.
-- Jeder aktive Portal-Kontakt der Firma darf später eine Kundenaufgabe erledigen; Nutzer und Zeitpunkt
-  werden protokolliert (Ordner 13). Vom Kunden gestellte Aufgaben ergänzen dort additiv die Herkunft.
+- Portal-Kontakte mit `portal.tasks.complete` erledigen Kundenaufgaben; Portalmitgliedschaft und Zeitpunkt werden als
+  Herkunft protokolliert (`completed_by_portal_membership_id`, Ordner 13). Eine erledigte Aufgabe hat genau eine
+  Herkunft — Mitglied **oder** Portalmitgliedschaft (DB-CHECK); die Portal-Herkunft ist nur bei
+  `action_side = customer` zulässig. Wiederöffnen bleibt intern und leert beide Herkunftsspalten.
 - Wiederholung: täglich, wöchentlich, monatlich oder jährlich. Jede Wiederholung erzeugt ein neues,
   flaches Aufgabenobjekt; der Rhythmus bleibt am ursprünglichen Termin verankert.
 - Serienänderungen gelten wahlweise nur aktuell oder für zukünftige Exemplare.
@@ -239,7 +241,8 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
   Angebot entsteht weiter außerhalb; die Anwendung dokumentiert Anfrage und Ausgang.
 - Widerruf wirkt sofort; historische Nachrichten und Audit-Einträge bleiben erhalten.
 - Vor der ersten Einladung bestätigt ein Mitarbeiter eine Vorschau aller sichtbaren Projekte,
-  Aufgaben, Dateien und Stunden.
+  Aufgaben, Dateien und Stunden. Diese Vorschau ist die Owner-Portalsicht aus Ordner 13 (siehe unten), keine eigene
+  Vorschau-Route.
 - Portalsprache wird pro Person gespeichert (`de | en`).
 - Ein gemeinsamer Chat pro Kunde; Lesestände immer pro Portalmitglied.
 - Jeder Kundenchat besitzt genau einen internen Verantwortlichen, initial den Kunden-Owner. Die Zuständigkeit kann in
@@ -258,6 +261,30 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
 - Keine freien CRM-Mails und kein Mail-Eingang in Version 1.
 - Systemmails nutzen eine Invessiv-Reply-To-Adresse. Versand und Fehler werden gespeichert; kein
   Öffnungs- oder Klicktracking.
+
+**Portal-Dashboard (Entscheidung des Nutzers, 26.09.2026; Details E1–E24 in
+`13-portal-dashboard/21-portal-dashboard.md`):**
+
+- **Widget-Registry als einziger Einhängepunkt:** Jede Portal-Karte ist ein Eintrag in `PORTAL_WIDGET_LAYOUT` mit
+  stabilem Key, `order` in Zehnerschritten, Spans je Breakpoint, `openMode` (`dialog` | `expand` | `dock` | `none`)
+  und Scope (Kunde/Projekt). Folge-Ordner bauen keine eigenen Dashboard-Blöcke, sondern stellen ihr Widget in der
+  Registry von Mock auf echte Daten um (`mock: false` plus eigene Portal-Permission als `requiredPermission`).
+- **Mock-Widgets und organisatorisches Rollout-Gate:** Noch nicht gebaute kundensichtbare Features erscheinen als
+  Mock-Widget mit sichtbarem „Bald verfügbar“-Badge und ohne erfundene Werte. Das ist nur zulässig, weil Kunden erst
+  nach dem letzten kundensichtbaren Feature-Ordner eingeladen werden. Es gibt dafür bewusst **kein** Feature-Flag;
+  bis dahin sieht nur der Owner das Portal.
+- **Owner-Portalsicht:** Der Workspace-Owner öffnet jedes Kundenportal — auch produktiv — lesend über „Portal
+  ansehen“ im Cockpit. Lesen, öffnen und herunterladen ja, schreiben nie (Schreibrouten verlangen typseitig einen
+  `PortalActor`). Banner „Portalansicht von …“, deaktivierte Aktionen verlinken ins CRM, jeder Aufruf erzeugt das
+  Security-Event `portal_owner_view_opened`. Nicht-Owner erhalten 404. Lese-Handler nehmen einen `PortalReader`
+  (Mitgliedschaft oder Owner-Sicht); die Owner-Sicht ist ein Portal-Konstrukt, kein Workspace-Handler.
+- **Ansprechpartner portalöffentlich:** Name und E-Mail des Kunden-Owners und einer abweichenden Projektleitung sind
+  bewusst im Portal sichtbar. Mitarbeiter-IDs, Rollen, Bearbeiter von Aufgaben und Historie bleiben intern.
+- **Beide Aufgabenseiten:** Das Portal zeigt „Von Ihnen benötigt“ (`action_side = customer`) und „Daran arbeiten
+  wir“ (`action_side = internal AND visible_to_customer`); nur offen/erledigt, kein Bearbeitername.
+- Gebuchte Projektleistungen sind nicht portalsichtbar; Leistungsanfragen (Ordner 13a) zeigen nie Preise.
+- Kein Neuigkeiten-Feed im Dashboard; er folgt mit den Benachrichtigungen (Ordner 20c). Das Verschieben von Widgets
+  ist ein eigener späterer Ordner.
 
 ### Onboarding und Medien (Entscheidung des Nutzers, 16.09.2026)
 
@@ -352,10 +379,12 @@ Umsetzung in Ordner 15a–15c (Task 43–47), nach der Datei-UI und **vor** den 
 - Jeder Eintrag hat einen Bearbeiter, initial den Kunden-Owner.
 - In-App-Erinnerung bei 30, 14 und 7 Tagen sowie einmalig bei Überfälligkeit; keine normalen
   internen Reminder-Mails.
+- Renewals sind rein intern; es gibt kein Portal-Widget dafür (bestätigt 26.09.2026).
 - Stundenkontingent gehört zum Kunden; eine Buchung kann optional ein Projekt referenzieren.
 - Stunden sind informativ, keine Rechnungsgrundlage und keine Lexware-Schnittstelle.
-- Alle Buchungen sind portalöffentlich. Das Formular weist ausdrücklich darauf hin. Änderungen und
-  Löschungen werden mit Vorher-/Nachher-Werten protokolliert.
+- Alle Buchungen sind portalöffentlich — ohne Sichtbarkeitsschalter je Buchung (bestätigt 26.09.2026). Das Formular
+  weist ausdrücklich darauf hin. Änderungen und Löschungen werden mit Vorher-/Nachher-Werten protokolliert. Das
+  Portal-Widget „Stunden“ erscheint nur bei laufendem Kontingent und zeigt verbraucht, übrig und alle Buchungen.
 - Pausierte Kunden nach 180 Tagen, archivierte nach 90 Tagen zur manuellen Aufbewahrungsprüfung
   vorschlagen. Frist pro Kunde überschreibbar; keine automatische Löschung.
 - Kein Purge-Button. Ein getesteter Owner-Command bietet Vorschau, widerruft Zugriffe, entfernt
@@ -556,6 +585,7 @@ fertig und getestet gibt — der Leads-Bereich deckt den Großteil ab.
 | Portal-Actor / Gates  | `apps/workspace/src/server/portal/auth/**` (ab Ordner 12a; Vorlage: `lib/auth/{workspace-authentication,permissions,api}.ts`)     |
 | Portal-Zugriffsfilter | `apps/workspace/src/server/portal/shared/{portal-access-condition,portal-can-on}.ts` (ab 12a; Vorlage: `crm-access-condition.ts`) |
 | Portal-Navigation     | `apps/workspace/src/common/constants/portal/portal-nav-items.ts` (ab 12a; Vorlage: `workspace-sidebar-items.ts`)                  |
+| Portal-Widgets        | `apps/workspace/src/common/constants/portal/portal-widget-layout.ts` + `Widget`/`WidgetGrid` aus `@invessiv/ui` (ab 13)           |
 
 Geteilte Listenbausteine wandern erst bei **tatsächlicher** Wiederverwendung nach
 `components/workspace/shared/` — nicht vorsorglich. Der Umzug ist risikoarm, solange es genau einen
@@ -632,7 +662,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12b erreicht:
 | 08  | läuft     | `08-aufgaben`                            | Projektaufgaben im Cockpit, globale Übersicht und Dashboard-Block nutzbar       | 120–180 |  4–5 T. |
 | 12a | offen     | `12a-portal-fundament`                   | Portal-Schema, Actor, Gates, Zugriffshelfer, Shell und Flag unsichtbar deployt  |   60–80 |  3–4 T. |
 | 12b | läuft     | `12b-portal-zugang`                      | Einladung, Rollen je Kontakt, Widerruf und Mehrfirmenwechsel sicher nutzbar     |   60–80 |  3–4 T. |
-| 13  | offen     | `13-portal-dashboard`                    | Portal-Dashboard mit Aufgaben und Projektdaten produktiv nutzbar                |  60–100 |  3–4 T. |
+| 13  | läuft     | `13-portal-dashboard`                    | Widget-Dashboard mit Projekten, beiden Aufgabenseiten und Owner-Portalsicht     |    ≈130 |  5–7 T. |
 | 13a | offen     | `13a-portal-leistungsanfragen`           | Preisfreie Leistungsanfragen im Portal, intern bearbeitbar                      |   60–80 |  3–4 T. |
 | 14  | offen     | `14-storage-und-upload`                  | Storage-Adapter und sichere Upload-Pipeline unsichtbar sicher deployt           |  70–100 |  4–5 T. |
 | 15  | offen     | `15-dateien-und-portal-downloads`        | Datei-UI, Freigabe, Portaldownload und ZIP vollständig nutzbar                  |  70–100 |  4–5 T. |

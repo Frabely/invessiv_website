@@ -33,6 +33,13 @@ konsolidierte Timeline aller bisher implementierten CRM-Ereignisse.
 - Bearbeiten oder Entfernen verlangt aktuelle `version` und protokolliert vorherigen/neuen Wert.
 - Keine Rechnungslogik, Steuern, Preise, Gegenbuchungen oder Lexware-IDs.
 
+## Portal-Widget (aus Ordner 13)
+
+Das Dashboard-Widget `hours` („Stunden“, `openMode: dialog`) existiert seit Ordner 13 als Mock in der Widget-Registry
+(`PORTAL_WIDGET_LAYOUT`). Dieser Ordner stellt es auf echte Daten um: nur bei laufendem Kontingent sichtbar
+(`onlyWithContent`), zeigt verbraucht und übrig in `h:mm`; der Dialog listet **alle** Buchungen. Die in der Kopfzeile
+genannte Dashboard-Karte „Stundenkontingent“ **ist** dieses Registry-Widget.
+
 ## Timeline
 
 - Einheitliche chronologische Query über Activities mit stabiler Cursor-Pagination.
@@ -43,6 +50,8 @@ konsolidierte Timeline aller bisher implementierten CRM-Ereignisse.
 
 ## Merge-Gate
 
+- [ ] Portal-Widget `hours` von Mock auf echte Daten umgestellt (Registry `mock: false` +
+      `requiredPermission: portal.hours.read`); ohne laufendes Kontingent fehlt es vollständig.
 - [ ] Saldo stimmt bei parallelen Buchungen, Änderungen und Löschungen.
 - [ ] Projekt einer Buchung gehört zwingend zum selben Kunden.
 - [ ] Jede Buchung ist im Portal sichtbar; interner Text warnt vor dieser Öffentlichkeit.

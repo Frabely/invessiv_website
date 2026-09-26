@@ -4,6 +4,10 @@
 > **Aufwand:** M · **Abhängigkeiten:** Task 21 (Portal-Dashboard), Task 05 (Slot)
 > **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 
+> **Bereinigt 26.09.2026 (Ordner 13, E11/E17):** Es gibt **keinen** Sichtbarkeitsschalter je Buchung — alle Buchungen
+> sind portalöffentlich. Die Portalanzeige ist das Registry-Widget `hours` aus Ordner 13 (Mock → echt), kein eigener
+> Dashboard-Block.
+
 - Kontingent gehört zum Kunden; Buchung referenziert optional ein Projekt desselben Kunden.
 - Dauer wird als positive Minuten gespeichert, Rest wird immer berechnet und nie redundant persistiert.
 - Jede Buchung ist automatisch portalöffentlich. Beschreibung wird in der UI ausdrücklich als
@@ -30,8 +34,8 @@ schrumpfende Zahl.
 | Rest                | Immer berechnet (`Kontingent minus Summe der Buchungen`), nie als Spalte geführt                   |
 | Warum               | Ein gespeicherter Restwert und der Verlauf können auseinanderlaufen; die Berechnung kann es nicht  |
 | Dauer               | In Minuten als Ganzzahl gespeichert, im UI als `h:mm` — keine Fließkommazahlen bei Zeiten          |
-| Kundensichtbarkeit  | Je Buchung ein Schalter; Voreinstellung sichtbar. Interne Nacharbeit lässt sich ausblenden         |
-| Was der Kunde sieht | Kontingent, verbrauchte Summe, Rest und die sichtbaren Buchungen mit Datum und Beschreibung        |
+| Kundensichtbarkeit  | Kein Schalter: jede Buchung ist portalöffentlich; interne Nacharbeit wird nicht gebucht            |
+| Was der Kunde sieht | Kontingent, verbrauchte Summe, Rest und alle Buchungen mit Datum und Beschreibung                  |
 | Überziehung         | Erlaubt und deutlich ausgewiesen (negativer Rest), nicht blockiert                                 |
 | Zeiträume           | Ein Retainer hat Start und optionales Ende. Buchungen außerhalb sind erlaubt, werden aber markiert |
 | Wiederauffüllung    | Über einen neuen Retainer, nicht durch Ändern des alten — so bleibt die Historie ehrlich           |
@@ -59,7 +63,6 @@ time_entries
   performed_on date NOT NULL
   duration_minutes integer NOT NULL CHECK (duration_minutes > 0)
   description text NOT NULL
-  visible_to_customer boolean NOT NULL DEFAULT true
   created_at / updated_at
   INDEX (retainer_id, performed_on desc)
 ```
@@ -74,11 +77,10 @@ getRetainerBalance(retainerId)
   → SUM(duration_minutes) in einer Abfrage, kein Laden aller Zeilen
 
 Portal: getPortalDashboard (Task 21) wird um den laufenden Retainer erweitert
-  → nur sichtbare Buchungen, Summe über alle (auch unsichtbare)
+  → Summe und Liste über alle Buchungen; Registry-Widget `hours` auf mock: false + portal.hours.read
 ```
 
-Wichtig: Der Rest berechnet sich über **alle** Buchungen, angezeigt werden nur die sichtbaren. Sonst
-würde die Rechnung für den Kunden nicht aufgehen.
+Rest und angezeigte Liste beruhen auf denselben Buchungen — die Rechnung geht für den Kunden immer auf.
 
 ## Verzeichnisstruktur
 
@@ -105,9 +107,9 @@ apps/workspace/src/components/workspace/crm/retainer/
   time-entry-list/
   time-entry-quick-add/
   retainer-form-dialog/
-apps/workspace/src/components/portal/dashboard/portal-retainer-summary/
+apps/workspace/src/components/portal/dashboard/widgets/portal-hours-widget/   (besteht als Mock seit Ordner 13)
 apps/workspace/src/i18n/dictionaries/workspace/crm/retainer/{de,en}.json
-apps/workspace/src/i18n/dictionaries/portal/retainer/{de,en}.json
+apps/workspace/src/i18n/dictionaries/portal/dashboard/{de,en}.json            (Namespace widgets.hours)
 ```
 
 ## Tickets
@@ -144,32 +146,33 @@ apps/workspace/src/i18n/dictionaries/portal/retainer/{de,en}.json
 - **Inhalt:**
   - Saldo-Balken mit Kontingent, verbraucht und Rest; Überziehung deutlich, aber ohne Alarmton
   - Schnellerfassung: Datum (vorbelegt auf heute), Dauer, Beschreibung — in einer Zeile
-  - Buchungsliste nach Datum gruppiert, Sichtbarkeit je Zeile umschaltbar
+  - Buchungsliste nach Datum gruppiert
   - Mehrere Retainer über Registerkarten, laufender vorausgewählt
 - **Akzeptanz:**
   - Schnellerfassung vollständig per Tastatur, Eingabetaste speichert
   - Saldo-Balken ohne Farbwahrnehmung lesbar (Zahlen stehen dabei)
-  - Sichtbarkeitsschalter eindeutig beschriftet
+  - Hinweis „für den Kunden sichtbar“ an Beschreibung und Bestätigung unübersehbar
 
 ### CRM-27-T4 — Anzeige im Portal
 
-- **Files:** `components/portal/dashboard/portal-retainer-summary/**`,
-  `get-portal-dashboard.query-handler.ts` erweitert, `dictionaries/portal/retainer/{de,en}.json`
-- **Skills:** `frontend-design`, `copywriting`, `accessibility`
+- **Files:** `components/portal/dashboard/widgets/portal-hours-widget/**`, Registry-Eintrag `hours` in
+  `portal-widget-layout.ts`, `get-portal-dashboard.query-handler.ts` erweitert,
+  `dictionaries/portal/dashboard/{de,en}.json`
+- **Skills:** `impeccable`, `copywriting`, `accessibility`
 - **Inhalt:**
-  - Block „Stundenkontingent" im Dashboard mit Rest in `h:mm`
-  - Aufklappbare Liste der sichtbaren Buchungen mit Datum und Beschreibung
-  - Ohne laufenden Retainer entfällt der Block vollständig
+  - Registry-Widget `hours` von Mock auf echt (`mock: false`, `requiredPermission: portal.hours.read`)
+  - Widget zeigt verbraucht und übrig in `h:mm`; der Dialog listet alle Buchungen mit Datum und Beschreibung
+  - Ohne laufenden Retainer entfällt das Widget vollständig (`onlyWithContent`)
   - Überziehung sachlich formuliert
 - **Akzeptanz:**
-  - Test: unsichtbare Buchungen erscheinen im Portal nicht, zählen aber in die Summe
-  - Der Block fehlt, wenn kein Retainer läuft — kein leerer Kasten
+  - Test: jede Buchung erscheint im Portal und zählt in die Summe
+  - Das Widget fehlt, wenn kein Retainer läuft — kein leerer Kasten; ohne `portal.hours.read` fehlt es ebenfalls
   - Texte in DE und EN
 
 ## Deploy-Sicherheit
 
 1. **Live sichtbar:** neue Sektion „Stundenkontingent" im Kundendetail; im Portal-Dashboard
-   erscheint der Block, sobald ein Retainer angelegt ist.
+   zeigt das Widget `hours` echte Werte, sobald ein Retainer läuft.
 2. **Bricht nichts:** zwei neue Tabellen. Die Dashboard-Abfrage aus Task 21 wird um einen optionalen
    Teil erweitert — ohne Retainer bleibt das Ergebnis identisch zu vorher.
 3. **Offen:** nichts. Automatische Zeiterfassung oder Abrechnung sind bewusst nicht enthalten; die
@@ -181,7 +184,7 @@ apps/workspace/src/i18n/dictionaries/portal/retainer/{de,en}.json
 2. Buchungen lassen sich schnell erfassen; die Dauer akzeptiert mehrere Schreibweisen.
 3. Der Rest berechnet sich korrekt und aktualisiert sich sofort.
 4. Überziehung wird als negativer Rest ausgewiesen, nicht blockiert.
-5. Als unsichtbar markierte Buchungen erscheinen im Portal nicht, zählen aber mit.
-6. Das Portal zeigt Rest und sichtbare Buchungen; ohne Retainer fehlt der Block.
+5. Jede Buchung erscheint im Portal; es gibt keinen Sichtbarkeitsschalter.
+6. Das Portal zeigt verbraucht, Rest und alle Buchungen; ohne Retainer fehlt das Widget.
 7. Mehrere Retainer sind nebeneinander führbar.
 8. `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm build:workspace` grün.
