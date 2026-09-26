@@ -433,7 +433,11 @@ components/portal/
 
 Jeder Schritt endet mit grünem `pnpm --filter @invessiv/workspace typecheck` + betroffenen Tests.
 
-### S0 — Doku (nur Plan-/Regeldateien)
+Modell-Empfehlung in Klammern hinter jedem Schritt: Claude bei Security-kritischen Pfaden und UI (Skills `impeccable`,
+`ui-ux-pro-max`, `copywriting` sowie serena/webstorm/Playwright-MCP sind in Claude Code eingerichtet), GPT bei
+klar spezifizierter, mechanischer oder SQL-lastiger Arbeit. Einschätzung nach Aufgabenart, nicht nach Benchmarks.
+
+### S0 — Doku (nur Plan-/Regeldateien) (Claude · Opus 5.5 — erledigt)
 
 - [x] README `13-portal-dashboard/README.md`: Status „läuft“, Inhalte/Merge-Gate an E1–E24 anpassen (Owner-Sicht,
       Mock-Widgets, Rollout-Gate E20, Widget-Registry, beide Aufgabenseiten, Ansprechpartner).
@@ -450,7 +454,7 @@ Jeder Schritt endet mit grünem `pnpm --filter @invessiv/workspace typecheck` + 
       Karten-Zusagen in 13a/15/15a auf Registry-Widget vereinheitlichen.
 - [x] `apps/workspace/deleteable/planregeln-fuer-plan-skill.md` existiert bereits (nicht committen, temporär).
 
-### S1 — Extraktion geteilter Bausteine (keine Verhaltensänderung)
+### S1 — Extraktion geteilter Bausteine (keine Verhaltensänderung) (GPT · GPT-6 Sol)
 
 - [ ] `packages/common`: `widget-open-modes.ts`, `widget-column-spans.ts`, `contracts/ui/widget-layout.ts`,
       `contracts/ui/chat-dock-content.ts` (+ Exports in Package-`exports`, falls nötig).
@@ -464,13 +468,13 @@ Jeder Schritt endet mit grünem `pnpm --filter @invessiv/workspace typecheck` + 
 - [ ] `useOptimisticChange` + `useTaskStatusChange` darauf umbauen; Tests grün.
 - [ ] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test` grün.
 
-### S2 — `Widget` in packages/ui
+### S2 — `Widget` in packages/ui (Claude · Opus 5.5)
 
 - [ ] Komponente + CSS + Tests: je `openMode` richtige ARIA, Mock-Badge + `data-mock`, `wholeCardClickable` nur ohne
       interaktive Kinder (Doku im Docstring), Tastatur (Enter/Space), Fokus sichtbar, Expand toggelt `data-expanded`.
 - [ ] Export in `packages/ui/src/index.ts`.
 
-### S3 — Migration, Permissions, Seed
+### S3 — Migration, Permissions, Seed (GPT · GPT-6 Astra)
 
 - [ ] Migrationsnummer ermitteln; SQL wie 5.4; zweimal laufen lassen (idempotent).
 - [ ] Drizzle-Modell `tasks.ts` + Constraint-Namen; `permissions.ts`, `permission-definitions.ts`,
@@ -478,7 +482,7 @@ Jeder Schritt endet mit grünem `pnpm --filter @invessiv/workspace typecheck` + 
 - [ ] Seed erweitern (5.4); `db:seed:crm` läuft.
 - [ ] DB-Smokes (`db:smoke:rbac`, Katalog-Check) grün; negativer DB-Test: Done ohne/mit zwei Herkünften scheitert.
 
-### S4 — PortalReader / Owner-Sicht
+### S4 — PortalReader / Owner-Sicht (Claude · Opus 5.5)
 
 - [ ] `workspace-owner-lookup-service.ts` (server/shared) + Test (aktiv/inaktiv/ohne Rolle/DB-Fehler → fail closed).
 - [ ] `PortalOwnerView`, `PortalReader`, `resolve-portal-owner-view.ts`, `require-portal-reader.ts` + Tests:
@@ -488,7 +492,7 @@ Jeder Schritt endet mit grünem `pnpm --filter @invessiv/workspace typecheck` + 
 - [ ] Layout/Page umstellen; `layout.test.tsx`/`page.test.tsx` anpassen; Banner-Komponente.
 - [ ] AGENTS-Präzisierungen (server/portal, (portal)).
 
-### S5 — Dashboard-Query
+### S5 — Dashboard-Query (GPT · GPT-6 Astra)
 
 - [ ] DTO (Docstrings), Query-Handler, Mapping-Service; Tests (Integration gegen Test-DB, Muster der bestehenden
       Portal-Handler-Tests):
@@ -497,7 +501,7 @@ Jeder Schritt endet mit grünem `pnpm --filter @invessiv/workspace typecheck` + 
       Kunde ohne Projekt → leeres, gültiges DTO; Owner-Sicht liefert identisches DTO wie Vollrechte-Mitglied (außer
       `capabilities`); Anzahl Queries ≤ 4 bei 3 Projekten; DTO-Schlüssel-Snapshot ohne Finanz-/Notiz-/ID-Felder.
 
-### S6 — Abhaken
+### S6 — Abhaken (Claude · Opus 5.5)
 
 - [ ] Error-Codes, Command-Handler, Route, Client-Service, Hook; CRM-Vermerk + Statuswechsel-Anpassung.
 - [ ] Tests: fremde Firma → 404; interne Aufgabe derselben Firma → 404; unsichtbare → 404; ohne
@@ -505,7 +509,7 @@ Jeder Schritt endet mit grünem `pnpm --filter @invessiv/workspace typecheck` + 
       (`alreadyDone`); Activity geschrieben; Owner-Sicht hat keinen Schreibweg (Route verlangt `PortalActor`);
       CRM zeigt „vom Kunden erledigt“; Wiederöffnen im CRM leert die Portalherkunft.
 
-### S7 — Portal-UI
+### S7 — Portal-UI (Claude · Opus 5.5)
 
 - [ ] `components/portal/AGENTS.md` + `CLAUDE.md`.
 - [ ] Registry-Konstanten/Patterns + Tests (5.3).
@@ -517,12 +521,12 @@ Jeder Schritt endet mit grünem `pnpm --filter @invessiv/workspace typecheck` + 
   - Rollback + Live-Region, Owner-Sicht deaktiviert Checkbox mit Hinweis-Link, leere Kundenaufgaben → Bestätigung,
     Dialog öffnet/schließt per URL.
 
-### S8 — Cockpit-Einstieg
+### S8 — Cockpit-Einstieg (GPT · GPT-6 Luna)
 
 - [ ] Owner-Flag in `crm/page.tsx` ermitteln, Button „Portal ansehen“ in `CustomerCockpitView`, Dictionary DE/EN,
       Test (Nicht-Owner sieht keinen Button).
 
-### S9 — Verifikation & PR
+### S9 — Verifikation & PR (Claude · Sonnet 5; Gegenreview GPT-6 Astra)
 
 - [ ] Vollständige Gates (Abschnitt 8), Playwright-Abnahme, Screenshots (Desktop/Tablet/360 px × Dark/Light, Owner-
       Banner, Dialog, Dock, leerer Kunde), PR-Text: Was/Warum, Review-Scope-Begründung (> 120 Dateien), Testplan,
