@@ -1,15 +1,14 @@
 import "server-only";
 
-import { and, desc, eq, inArray, ne, sql } from "drizzle-orm";
+import { and, desc, eq, inArray, ne } from "drizzle-orm";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
-import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
+import { PORTAL_VISIBLE_PROJECT_STATUS_VALUES } from "@invessiv/common/constants/portal/portal-visible-project-statuses";
 import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
   customers,
-  people,
   projects,
   tasks,
   users,
@@ -34,7 +33,6 @@ export async function getPortalDashboard(
       ownerMemberId: customers.owner_member_id,
       contactName: users.display_name,
       contactEmail: users.primary_email,
-      greetingName: people.first_name,
     })
     .from(customers)
     .leftJoin(
@@ -42,10 +40,6 @@ export async function getPortalDashboard(
       eq(workspaceMembers.id, customers.owner_member_id),
     )
     .leftJoin(users, eq(users.id, workspaceMembers.user_id))
-    .leftJoin(
-      people,
-      isPortalOwnerView(reader) ? sql`FALSE` : eq(people.id, reader.personId),
-    )
     .where(
       portalAccessCondition.forReader(reader, Permission.PortalAccess, {
         customerId: customers.id,
@@ -87,12 +81,7 @@ export async function getPortalDashboard(
               Permission.PortalProjectsRead,
               { customerId: projects.customer_id },
             ),
-            inArray(projects.status, [
-              ProjectStatus.Planned,
-              ProjectStatus.Active,
-              ProjectStatus.Paused,
-              ProjectStatus.Completed,
-            ]),
+            inArray(projects.status, PORTAL_VISIBLE_PROJECT_STATUS_VALUES),
           ),
         )
         .orderBy(desc(projects.created_at))
@@ -129,12 +118,7 @@ export async function getPortalDashboard(
             ),
             eq(tasks.visible_to_customer, true),
             ne(tasks.status, TaskStatus.Cancelled),
-            inArray(projects.status, [
-              ProjectStatus.Planned,
-              ProjectStatus.Active,
-              ProjectStatus.Paused,
-              ProjectStatus.Completed,
-            ]),
+            inArray(projects.status, PORTAL_VISIBLE_PROJECT_STATUS_VALUES),
           ),
         )
     : [];

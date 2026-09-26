@@ -35,7 +35,7 @@ import { customerConstraintViolationService } from "@/server/workspace/crm/servi
 import { customerReadService } from "@/server/workspace/crm/services/customer-read-service";
 import { customerSchemas } from "@/server/workspace/crm/services/customer-schemas";
 import { customerWriteMappingService } from "@/server/workspace/crm/services/customer-write-mapping-service";
-import { activityService } from "@/server/workspace/shared/services/activity-service";
+import { activityService } from "@/server/shared/services/activity-service";
 import { updateVersioned } from "@/server/workspace/shared/update-versioned";
 
 const CUSTOMER_LIST_PAGE_SIZE = 25;

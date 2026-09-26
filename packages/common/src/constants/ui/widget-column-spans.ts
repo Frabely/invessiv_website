@@ -1,4 +1,5 @@
 export const WidgetColumnSpan = {
+  Three: 3,
   Four: 4,
   Six: 6,
   Eight: 8,

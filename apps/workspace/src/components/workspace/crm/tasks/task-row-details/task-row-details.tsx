@@ -1,7 +1,11 @@
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faEye,
+  faEyeSlash,
+  faUserCheck,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import type { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
+import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import type { TaskDto } from "@invessiv/common/contracts/crm/task.dto";
 import { getMemberInitials } from "@/common/patterns/access/member-initials";
 import type { Locale } from "@/config/i18n";
@@ -40,6 +44,12 @@ export function TaskRowDetails({
         </span>
         {task.description ? (
           <span className={styles.description}>{task.description}</span>
+        ) : null}
+        {status === TaskStatus.Done && task.completedByCustomer ? (
+          <span className={styles.completedByCustomer}>
+            <FontAwesomeIcon aria-hidden="true" icon={faUserCheck} />
+            {content.row.completedByCustomer}
+          </span>
         ) : null}
       </span>
       <span className={styles.meta}>

@@ -52,6 +52,7 @@ function task(overrides: Partial<TaskDto> = {}): TaskDto {
     dueOn: null,
     completedAt: null,
     completedByMemberId: null,
+    completedByCustomer: false,
     version: 1,
     createdAt: "2026-01-01T00:00:00.000Z",
     updatedAt: "2026-01-01T00:00:00.000Z",
@@ -111,6 +112,32 @@ describe("ProjectTasksSection", () => {
       screen.getByRole("button", { name: content.section.addAction }),
     );
     expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
+
+  it("marks a task the customer completed in the portal", () => {
+    renderSection({
+      tasks: [
+        task({
+          actionSide: TaskActionSide.Customer,
+          visibleToCustomer: true,
+          status: TaskStatus.Done,
+          completedAt: "2026-09-20T10:00:00.000Z",
+          completedByCustomer: true,
+        }),
+        task({
+          id: "99999999-9999-4999-8999-999999999999",
+          title: "Team task",
+          status: TaskStatus.Done,
+          completedAt: "2026-09-20T10:00:00.000Z",
+          completedByMemberId: MEMBER_ID,
+        }),
+      ],
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Show 2 closed" }));
+
+    expect(screen.getAllByText(content.row.completedByCustomer)).toHaveLength(
+      1,
+    );
   });
 
   it("shows no write action and a read-only explanation without write access", () => {

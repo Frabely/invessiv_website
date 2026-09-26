@@ -1,0 +1,142 @@
+{
+  "meta": {
+    "title": "Overview | Invessiv",
+    "description": "Your project status, open items and your contact at a glance."
+  },
+  "page": {
+    "heading": "Overview – {company}"
+  },
+  "mock": {
+    "badge": "Coming soon",
+    "dialogIntro": "This area is still being prepared. Once it is live, you will find here:",
+    "dialogClose": "Close"
+  },
+  "due": {
+    "overdue": "Due since {date}",
+    "today": "Due today",
+    "on": "By {date}"
+  },
+  "widgets": {
+    "onboarding": {
+      "title": "Getting started",
+      "open": "See the steps",
+      "teaser": "Soon you will see here which steps are left before your project starts and when your kick-off call takes place.",
+      "upcoming": [
+        "Your onboarding progress at a glance",
+        "The date of your kick-off call",
+        "What we still need from you before we start"
+      ]
+    },
+    "project": {
+      "title": "Your project",
+      "tabsLabel": "Your projects",
+      "plannedBadge": "starting soon",
+      "pausedNote": "This project is paused right now. We will get in touch before it continues.",
+      "plannedNote": "This project starts soon. You will see its progress here once we begin.",
+      "trackLabel": "Project progress",
+      "stepSummary": "Step {current} of {total}",
+      "nextStep": "Next step",
+      "preview": "Open preview",
+      "previewNewTab": "opens in a new tab",
+      "projectLead": "Project lead",
+      "emptyTitle": "Your project is being prepared",
+      "emptyDescription": "Once we start, you will see the progress, the next step and what we need from you here. If you have questions, your contact is always there for you."
+    },
+    "customerTasks": {
+      "title": "Needed from you",
+      "open": "See all",
+      "dialogDescription": "We need these items from you to keep things moving. Tick off what is done – we see it right away.",
+      "empty": "All done. We don't need anything from you right now.",
+      "moreOpen": "and {count} more",
+      "moreOpenOne": "and 1 more item",
+      "done": "Done ({count})",
+      "doneEmpty": "Nothing ticked off yet.",
+      "checkboxLabel": "Mark “{name}” as done",
+      "doneLabel": "“{name}” is done",
+      "openLabel": "“{name}” is open",
+      "ownerHint": "Nothing can be ticked off in the portal view.",
+      "ownerLink": "Complete in the CRM"
+    },
+    "ourTasks": {
+      "title": "What we're working on",
+      "more": "Show more",
+      "less": "Show less",
+      "empty": "Nothing visible is on our list for this project right now. We will be in touch as soon as things move on."
+    },
+    "feedback": {
+      "title": "Feedback",
+      "open": "Learn more",
+      "teaser": "Soon you will see here how many feedback rounds you have left and whose turn it is.",
+      "upcoming": [
+        "Your remaining feedback rounds",
+        "Whether it is your turn or ours",
+        "Giving feedback right from here"
+      ]
+    },
+    "hours": {
+      "title": "Hour budget",
+      "open": "Learn more",
+      "teaser": "Soon you will see here how many hours of your budget are used and how many are left.",
+      "upcoming": [
+        "Used and remaining hours",
+        "Every booking with date and description"
+      ]
+    },
+    "contact": {
+      "title": "Your contact",
+      "mail": "Send an email",
+      "mailLabel": "Send an email to {name}"
+    },
+    "messages": {
+      "title": "Messages",
+      "open": "Open chat",
+      "teaser": "Soon you can write to us right here – no long email threads."
+    },
+    "files": {
+      "title": "Files",
+      "open": "Learn more",
+      "tabsLabel": "Files by origin",
+      "fromYou": "From you",
+      "fromUs": "From us",
+      "teaserFromYou": "Soon you will find everything you uploaded for us here.",
+      "teaserFromUs": "Soon you will find everything we shared with you here.",
+      "upcoming": [
+        "Your uploads, ready to download",
+        "Files we shared with you, such as drafts and exports",
+        "New versions uploaded as new files"
+      ]
+    },
+    "serviceRequest": {
+      "title": "Request a service",
+      "open": "Learn more",
+      "teaser": "Soon you can request additional services right here – for example a new page module.",
+      "upcoming": [
+        "Our services with a short description",
+        "A request in just a few clicks"
+      ]
+    },
+    "completedProjects": {
+      "title": "Completed projects",
+      "open": "Show projects",
+      "close": "Hide projects",
+      "visit": "View website",
+      "visitLabel": "View {name} (opens in a new tab)"
+    }
+  },
+  "tasks": {
+    "announce": {
+      "completed": "“{name}” is done. Thank you.",
+      "failed": "“{name}” could not be saved. Please try again."
+    }
+  },
+  "chat": {
+    "title": "Messages",
+    "expand": "Open messages",
+    "collapse": "Close messages",
+    "readAlong": "Soon you can write directly to your contact here.",
+    "body": "The chat is being prepared. Until then, you can reach us by email.",
+    "inputLabel": "Message",
+    "inputPlaceholder": "Messages are coming soon",
+    "send": "Send"
+  }
+}

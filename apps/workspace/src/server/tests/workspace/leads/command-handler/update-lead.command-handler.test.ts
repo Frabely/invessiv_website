@@ -24,7 +24,7 @@ vi.mock(
   "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler",
   () => ({ getLeadById: getLeadByIdMock }),
 );
-vi.mock("@/server/workspace/shared/services/activity-service", () => ({
+vi.mock("@/server/shared/services/activity-service", () => ({
   activityService: {
     createActivity: createLeadActivityMock,
   },

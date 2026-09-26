@@ -1,0 +1,51 @@
+.hitArea,
+.status {
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: -0.6rem -0.5rem -0.6rem -0.75rem;
+  border-radius: 12px;
+}
+
+.hitArea {
+  cursor: pointer;
+}
+
+.hitArea:has(input:disabled) {
+  cursor: default;
+}
+
+.hitArea:has(input:focus-visible) {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -4px;
+}
+
+.hitArea:hover:has(input:enabled) {
+  background: color-mix(in srgb, var(--color-cta) 8%, transparent);
+}
+
+.hitArea[data-pending="true"] {
+  opacity: 0.7;
+}
+
+.status {
+  color: var(--color-text-muted);
+}
+
+.status svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.status[data-done="true"] {
+  color: var(--color-success);
+}
+
+.ring {
+  width: 1rem;
+  height: 1rem;
+  border: 1.5px solid var(--color-border-strong);
+  border-radius: 999px;
+}

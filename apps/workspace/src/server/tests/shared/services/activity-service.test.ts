@@ -5,7 +5,7 @@ import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { SystemActorKey } from "@invessiv/common/constants/activity/system-actor-keys";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import { activities } from "@invessiv/db/record-configuration";
-import { activityService } from "@/server/workspace/shared/services/activity-service";
+import { activityService } from "@/server/shared/services/activity-service";
 
 const { transactionMock } = vi.hoisted(() => ({
   transactionMock: vi.fn(),

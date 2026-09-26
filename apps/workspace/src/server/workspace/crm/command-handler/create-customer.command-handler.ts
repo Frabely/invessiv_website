@@ -11,7 +11,7 @@ import { customerConstraintViolationService } from "@/server/workspace/crm/servi
 import { customerService } from "@/server/workspace/crm/services/customer/customer-service";
 import { customerReadService } from "@/server/workspace/crm/services/customer-read-service";
 import { customerSchemas } from "@/server/workspace/crm/services/customer-schemas";
-import { activityService } from "@/server/workspace/shared/services/activity-service";
+import { activityService } from "@/server/shared/services/activity-service";
 
 /**
  * Customer, person, primary assignment and the `created` activity commit together or not

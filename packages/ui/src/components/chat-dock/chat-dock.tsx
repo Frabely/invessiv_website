@@ -13,6 +13,8 @@ export type ChatDockProps = {
   className?: string;
   content: ChatDockContent;
   expanded?: boolean;
+  /** Keeps the panel layered over the page instead of taking space in its layout. */
+  overlay?: boolean;
   onExpandedChangeAction?: (expanded: boolean) => void;
   children?: ReactNode;
 };
@@ -28,6 +30,7 @@ export function ChatDock({
   className,
   content,
   expanded: controlledExpanded,
+  overlay = false,
   onExpandedChangeAction,
   children,
 }: ChatDockProps) {
@@ -43,6 +46,7 @@ export function ChatDock({
       aria-labelledby={headingId}
       className={className ? `${styles.dock} ${className}` : styles.dock}
       data-expanded={expanded}
+      data-overlay={overlay}
     >
       <ButtonControl
         aria-controls={panelId}

@@ -4,7 +4,7 @@ import type { CreateActivityInput } from "@invessiv/common/contracts/activity/cr
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { activities } from "@invessiv/db/record-configuration";
-import { activityActorMappingService } from "@/server/workspace/shared/services/activity-actor/activity-actor-mapping-service";
+import { activityActorMappingService } from "@/server/shared/services/activity-actor-mapping-service";
 
 async function createActivity(
   tx: ContactDatabaseTransaction,

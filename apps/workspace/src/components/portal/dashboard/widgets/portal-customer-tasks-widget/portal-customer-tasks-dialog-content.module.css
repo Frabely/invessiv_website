@@ -1,0 +1,41 @@
+.content {
+  display: grid;
+  gap: 1rem;
+}
+
+.intro {
+  max-width: var(--measure-text);
+  margin: 0;
+  color: var(--color-text-muted);
+  line-height: 1.55;
+}
+
+.done {
+  border-top: 1px solid var(--color-border);
+}
+
+.doneSummary {
+  display: flex;
+  align-items: center;
+  min-height: 2.75rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.doneSummary:hover {
+  color: var(--color-text);
+}
+
+.doneSummary:focus-visible {
+  border-radius: 6px;
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.doneEmpty {
+  margin: 0 0 0.5rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+}

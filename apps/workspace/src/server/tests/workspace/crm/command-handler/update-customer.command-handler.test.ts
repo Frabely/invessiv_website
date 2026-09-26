@@ -44,7 +44,7 @@ vi.mock("@/server/workspace/crm/services/customer-read-service", () => ({
     findStatusById: mocks.findStatus,
   },
 }));
-vi.mock("@/server/workspace/shared/services/activity-service", () => ({
+vi.mock("@/server/shared/services/activity-service", () => ({
   activityService: { createActivity: mocks.createActivity },
 }));
 vi.mock(

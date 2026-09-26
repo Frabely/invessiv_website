@@ -301,7 +301,6 @@ describe.skipIf(!RUN_INTEGRATION)(
       expect(Object.keys(dto)).toEqual([
         "customer",
         "contact",
-        "greetingName",
         "projects",
         "completedProjects",
         "customerTasks",

@@ -4,6 +4,7 @@ import type { ActivityActor } from "@invessiv/common/contracts/activity/activity
 function mapActorToColumns(actor: ActivityActor) {
   switch (actor.type) {
     case ActorType.User:
+    case ActorType.Customer:
       return {
         actor_type: actor.type,
         actor_user_id: actor.userId,

@@ -10,7 +10,7 @@ import { DuplicateEmailError } from "@/server/workspace/leads/shared/duplicate-e
 const createLeadActivityMock = vi.fn().mockResolvedValue(undefined);
 
 vi.mock("server-only", () => ({}));
-vi.mock("@/server/workspace/shared/services/activity-service", () => ({
+vi.mock("@/server/shared/services/activity-service", () => ({
   activityService: {
     createActivity: createLeadActivityMock,
   },

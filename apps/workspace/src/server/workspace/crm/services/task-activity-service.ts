@@ -10,7 +10,7 @@ import {
 import type { TaskActionSide } from "@invessiv/common/constants/crm/task-action-sides";
 import type { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
-import { activityService } from "@/server/workspace/shared/services/activity-service";
+import { activityService } from "@/server/shared/services/activity-service";
 
 type TaskActivitySubject = {
   customerId: string;

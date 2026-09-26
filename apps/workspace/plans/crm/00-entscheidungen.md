@@ -565,7 +565,7 @@ fertig und getestet gibt — der Leads-Bereich deckt den Großteil ab.
 | Enums / Const-Objekte | `packages/common/src/constants/contact/contact-lead-statuses.ts`                                                                  |
 | Fehlercodes           | `packages/common/src/constants/leads/errors/lead-error-codes.ts`                                                                  |
 | Kategorien-Tabelle    | `packages/db/src/record-configuration/lead-categories.ts` (wird **mitgenutzt**, nicht kopiert)                                    |
-| Activity-Service      | `apps/workspace/src/server/workspace/shared/services/activity-service.ts`                                                         |
+| Activity-Service      | `apps/workspace/src/server/shared/services/activity-service.ts`                                                                   |
 | Schreibpfad           | `apps/workspace/src/server/workspace/leads/command-handler/update-lead.command-handler.ts` + `app/api/workspace/leads/route.ts`   |
 | Ausblenden per Filter | `apps/workspace/src/server/workspace/leads/query-handler/lead-filter.query-handler.ts`                                            |
 | Listen-UI             | `apps/workspace/src/components/workspace/leads/table/**`                                                                          |

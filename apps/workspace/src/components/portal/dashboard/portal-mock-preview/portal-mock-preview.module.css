@@ -1,0 +1,46 @@
+.preview {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.teaser {
+  max-width: var(--measure-text);
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.55;
+}
+
+.rows {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.dot,
+.line {
+  display: block;
+  background: color-mix(in srgb, var(--color-text-muted) 14%, transparent);
+}
+
+.dot {
+  flex: 0 0 auto;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 999px;
+}
+
+.line {
+  width: 70%;
+  height: 0.6rem;
+  border-radius: 999px;
+}
+
+.row:nth-child(even) .line {
+  width: 48%;
+}

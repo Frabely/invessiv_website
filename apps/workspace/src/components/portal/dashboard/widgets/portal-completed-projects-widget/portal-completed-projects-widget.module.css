@@ -1,0 +1,66 @@
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  gap: 0.25rem 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 0.75rem;
+  min-height: 2.75rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--color-border) 70%, transparent);
+}
+
+.title {
+  min-width: 0;
+  color: var(--color-text);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.visit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.75rem;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--color-cta);
+  text-underline-offset: 0.25em;
+}
+
+.visit svg {
+  width: 0.7rem;
+  height: 0.7rem;
+}
+
+.visit:hover {
+  text-decoration-thickness: 2px;
+}
+
+.visit:focus-visible {
+  border-radius: 6px;
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Collapsed, the titles read as one quiet line; the list with links lives in the expansion. */
+.summary {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}

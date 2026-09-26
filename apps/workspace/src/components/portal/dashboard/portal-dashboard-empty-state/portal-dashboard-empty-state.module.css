@@ -1,0 +1,8 @@
+/* The grid already spaces its slots; the empty state keeps no extra top offset. */
+.frame {
+  width: 100%;
+}
+
+.frame > * {
+  padding-top: 0;
+}

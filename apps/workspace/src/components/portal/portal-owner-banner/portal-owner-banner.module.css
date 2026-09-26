@@ -2,11 +2,7 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  flex-wrap: wrap;
-  padding: 0.65rem clamp(0.75rem, 1.5vw, 1.25rem);
-  border-bottom: 1px solid
-    color-mix(in srgb, var(--color-accent-warm) 38%, var(--color-border));
-  background: color-mix(in srgb, var(--color-accent-warm) 10%, transparent);
+  min-width: 0;
   color: var(--color-text);
 }
 

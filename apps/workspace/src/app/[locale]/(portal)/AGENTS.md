@@ -53,7 +53,7 @@ gesamte Gruppe. Jede geschützte Portalseite prüft die Mitgliedschaft selbst.
 
 ## Was hier nicht hingehört
 
-- Fachliche Portalinhalte selbst (Projekte, Dateien, Nachrichten, …) — die entstehen erst mit
-  Ordner 13 und den folgenden Portal-Ordnern.
+- Fachliche Portalinhalte als Markup (Widgets, Listen, Dialoge) — sie liegen unter `components/portal/`
+  (Regeln dort in `AGENTS.md`); Seiten laden nur DTO und Dictionary und orchestrieren.
 - Einladungs- und Einlöseflow (Ordner 12b).
 - Interne Admin-Funktionen oder Mitarbeiter-Navigation.

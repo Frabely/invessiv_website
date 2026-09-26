@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
-import { getPortalMetaDictionary } from "@/i18n/dictionaries/portal";
+import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
+import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
+import { buildCustomerCockpitHref } from "@/common/patterns/crm/customer-dialog-query";
+import { listVisiblePortalWidgets } from "@/common/patterns/portal/list-visible-portal-widgets";
+import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
+import { PortalDashboard } from "@/components/portal/dashboard/portal-dashboard/portal-dashboard";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
+import { getPortalDashboardDictionary } from "@/i18n/dictionaries/portal";
+import { workspaceAreaPathFor } from "@/lib/auth/routes";
+import { formatMessage } from "@/lib/i18n/format-message";
 import { requirePortalReader } from "@/server/portal/auth/require-portal-reader";
-import { getPortalCustomerDisplayName } from "@/server/portal/query-handler/get-portal-customer-display-name.query-handler";
+import { getPortalDashboard } from "@/server/portal/query-handler/get-portal-dashboard.query-handler";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -19,7 +27,7 @@ export async function generateMetadata({
     return {};
   }
 
-  const meta = getPortalMetaDictionary(locale).company;
+  const meta = getPortalDashboardDictionary(locale).meta;
   return {
     title: meta.title,
     description: meta.description,
@@ -27,7 +35,6 @@ export async function generateMetadata({
   };
 }
 
-/** A placeholder landing page; Ordner 13 replaces this with the first real portal module. */
 export default async function PortalCustomerPage({
   params,
 }: PortalCustomerPageProps) {
@@ -37,7 +44,42 @@ export default async function PortalCustomerPage({
     activeLocale,
     customerId.toLowerCase(),
   );
-  const displayName = await getPortalCustomerDisplayName(reader);
+  const today = taskDueStateService.businessToday();
+  const dashboard = await getPortalDashboard(reader, today);
+  const content = getPortalDashboardDictionary(activeLocale);
+  const keysWithContent = new Set<PortalWidgetKey>([
+    PortalWidgetKey.Project,
+    PortalWidgetKey.CustomerTasks,
+    PortalWidgetKey.OurTasks,
+  ]);
+  if (dashboard.contact) keysWithContent.add(PortalWidgetKey.Contact);
+  if (dashboard.completedProjects.length > 0)
+    keysWithContent.add(PortalWidgetKey.CompletedProjects);
 
-  return <h1>{displayName ?? ""}</h1>;
+  return (
+    <>
+      <h1 className="sr-only">
+        {formatMessage(content.page.heading, {
+          company: dashboard.customer.displayName,
+        })}
+      </h1>
+      <PortalDashboard
+        cockpitHref={
+          dashboard.capabilities.isOwnerView
+            ? buildCustomerCockpitHref(
+                workspaceAreaPathFor(activeLocale, WorkspaceArea.Crm),
+                reader.customerId,
+              )
+            : null
+        }
+        content={content}
+        customerId={reader.customerId}
+        dashboard={dashboard}
+        key={reader.customerId}
+        locale={activeLocale}
+        today={today}
+        widgets={listVisiblePortalWidgets(reader.permissions, keysWithContent)}
+      />
+    </>
+  );
 }

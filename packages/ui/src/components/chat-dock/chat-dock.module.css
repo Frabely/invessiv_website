@@ -169,11 +169,26 @@
 }
 
 @media (min-width: 1400px) {
-  .panel {
+  .dock:not([data-overlay="true"]) .panel {
     position: static;
     width: 22rem;
     box-shadow: none;
   }
+}
+
+.dock[data-overlay="true"] .panel {
+  position: absolute;
+  top: 0;
+  right: 100%;
+  bottom: 0;
+  left: auto;
+  width: min(26rem, calc(100vw - 3rem));
+  height: auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid var(--color-border-strong);
+  box-shadow: -18px 0 40px
+    color-mix(in srgb, var(--color-shadow) 60%, transparent);
 }
 
 @media (max-width: 760px) {
@@ -200,5 +215,18 @@
     border-left: 0;
     box-shadow: 0 -18px 40px
       color-mix(in srgb, var(--color-shadow) 60%, transparent);
+  }
+}
+
+@media (max-width: 760px) {
+  .dock[data-overlay="true"] .panel {
+    top: auto;
+    right: 0;
+    bottom: 100%;
+    left: 0;
+    width: auto;
+    height: min(70dvh, 32rem);
+    border: 1px solid var(--color-border-strong);
+    overflow-y: auto;
   }
 }

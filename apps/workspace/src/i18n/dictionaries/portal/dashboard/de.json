@@ -1,0 +1,142 @@
+{
+  "meta": {
+    "title": "Übersicht | Invessiv",
+    "description": "Dein Projektstand, offene Punkte und dein Ansprechpartner auf einen Blick."
+  },
+  "page": {
+    "heading": "Übersicht – {company}"
+  },
+  "mock": {
+    "badge": "Bald verfügbar",
+    "dialogIntro": "Dieser Bereich ist noch in Vorbereitung. Sobald er freigeschaltet ist, findest du hier:",
+    "dialogClose": "Schließen"
+  },
+  "due": {
+    "overdue": "Fällig seit {date}",
+    "today": "Heute fällig",
+    "on": "Bis {date}"
+  },
+  "widgets": {
+    "onboarding": {
+      "title": "Dein Start mit uns",
+      "open": "Ablauf ansehen",
+      "teaser": "Hier siehst du bald, welche Schritte bis zum Projektstart offen sind und wann dein Kennenlerntermin stattfindet.",
+      "upcoming": [
+        "Deinen Fortschritt im Onboarding auf einen Blick",
+        "Den Termin für dein Kennenlerngespräch",
+        "Was wir vor dem Start noch von dir brauchen"
+      ]
+    },
+    "project": {
+      "title": "Dein Projekt",
+      "tabsLabel": "Deine Projekte",
+      "plannedBadge": "startet bald",
+      "pausedNote": "Dieses Projekt ist gerade pausiert. Wir melden uns, bevor es weitergeht.",
+      "plannedNote": "Dieses Projekt startet bald. Den Fortschritt siehst du hier, sobald wir loslegen.",
+      "trackLabel": "Projektfortschritt",
+      "stepSummary": "Schritt {current} von {total}",
+      "nextStep": "Nächster Schritt",
+      "preview": "Vorschau öffnen",
+      "previewNewTab": "öffnet in einem neuen Tab",
+      "projectLead": "Projektleitung",
+      "emptyTitle": "Dein Projekt wird vorbereitet",
+      "emptyDescription": "Sobald wir starten, siehst du hier den Fortschritt, den nächsten Schritt und was wir von dir brauchen. Bei Fragen erreichst du deinen Ansprechpartner jederzeit."
+    },
+    "customerTasks": {
+      "title": "Von dir benötigt",
+      "open": "Alle ansehen",
+      "dialogDescription": "Diese Punkte brauchen wir von dir, damit es weitergeht. Hak ab, was erledigt ist – wir sehen es sofort.",
+      "empty": "Alles erledigt. Gerade brauchen wir nichts von dir.",
+      "moreOpen": "und {count} weitere",
+      "moreOpenOne": "und 1 weiterer Punkt",
+      "done": "Erledigt ({count})",
+      "doneEmpty": "Noch nichts abgehakt.",
+      "checkboxLabel": "„{name}“ als erledigt markieren",
+      "doneLabel": "„{name}“ ist erledigt",
+      "openLabel": "„{name}“ ist offen",
+      "ownerHint": "In der Portalansicht kannst du nichts abhaken.",
+      "ownerLink": "Im CRM erledigen"
+    },
+    "ourTasks": {
+      "title": "Daran arbeiten wir",
+      "more": "Mehr anzeigen",
+      "less": "Weniger anzeigen",
+      "empty": "Gerade steht bei uns für dieses Projekt nichts Sichtbares an. Wir melden uns, sobald es weitergeht."
+    },
+    "feedback": {
+      "title": "Feedback",
+      "open": "Mehr erfahren",
+      "teaser": "Hier siehst du bald, wie viele Feedbackrunden du noch hast und wer gerade am Zug ist.",
+      "upcoming": [
+        "Deine verbleibenden Feedbackrunden",
+        "Ob gerade du oder wir am Zug sind",
+        "Feedback direkt von hier abgeben"
+      ]
+    },
+    "hours": {
+      "title": "Stundenkontingent",
+      "open": "Mehr erfahren",
+      "teaser": "Hier siehst du bald, wie viele Stunden deines Kontingents verbraucht sind und wie viele übrig bleiben.",
+      "upcoming": [
+        "Verbrauchte und verbleibende Stunden",
+        "Alle Buchungen mit Datum und Beschreibung"
+      ]
+    },
+    "contact": {
+      "title": "Dein Ansprechpartner",
+      "mail": "E-Mail schreiben",
+      "mailLabel": "E-Mail an {name} schreiben"
+    },
+    "messages": {
+      "title": "Nachrichten",
+      "open": "Chat öffnen",
+      "teaser": "Bald schreibst du uns direkt hier – ohne lange E-Mail-Verläufe."
+    },
+    "files": {
+      "title": "Dateien",
+      "open": "Mehr erfahren",
+      "tabsLabel": "Dateien nach Herkunft",
+      "fromYou": "Von dir",
+      "fromUs": "Von uns",
+      "teaserFromYou": "Hier findest du bald alles, was du uns hochgeladen hast.",
+      "teaserFromUs": "Hier findest du bald alles, was wir für dich freigegeben haben.",
+      "upcoming": [
+        "Deine Uploads zum Herunterladen",
+        "Von uns freigegebene Dateien wie Entwürfe und Exporte",
+        "Neue Versionen als neue Datei hochladen"
+      ]
+    },
+    "serviceRequest": {
+      "title": "Leistung anfragen",
+      "open": "Mehr erfahren",
+      "teaser": "Bald fragst du zusätzliche Leistungen direkt hier an – zum Beispiel ein neues Seitenmodul.",
+      "upcoming": [
+        "Unsere Leistungen mit kurzer Beschreibung",
+        "Eine Anfrage mit wenigen Klicks"
+      ]
+    },
+    "completedProjects": {
+      "title": "Abgeschlossene Projekte",
+      "open": "Projekte anzeigen",
+      "close": "Projekte ausblenden",
+      "visit": "Website ansehen",
+      "visitLabel": "{name} ansehen (öffnet in einem neuen Tab)"
+    }
+  },
+  "tasks": {
+    "announce": {
+      "completed": "„{name}“ ist erledigt. Danke dir.",
+      "failed": "„{name}“ konnte nicht gespeichert werden. Bitte versuch es noch einmal."
+    }
+  },
+  "chat": {
+    "title": "Nachrichten",
+    "expand": "Nachrichten öffnen",
+    "collapse": "Nachrichten schließen",
+    "readAlong": "Hier schreibst du bald direkt mit deinem Ansprechpartner.",
+    "body": "Der Chat ist in Vorbereitung. Bis dahin erreichst du uns per E-Mail.",
+    "inputLabel": "Nachricht",
+    "inputPlaceholder": "Nachrichten sind bald verfügbar",
+    "send": "Senden"
+  }
+}

@@ -43,7 +43,7 @@ vi.mock(
 vi.mock("@/server/workspace/crm/services/customer-category-service", () => ({
   customerCategoryService: { isActive: mocks.isActiveCategory },
 }));
-vi.mock("@/server/workspace/shared/services/activity-service", () => ({
+vi.mock("@/server/shared/services/activity-service", () => ({
   activityService: { createActivity: mocks.createActivity },
 }));
 

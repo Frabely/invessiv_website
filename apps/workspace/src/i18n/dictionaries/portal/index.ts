@@ -1,4 +1,6 @@
 import type { Locale } from "@/config/i18n";
+import dashboardDe from "./dashboard/de.json";
+import dashboardEn from "./dashboard/en.json";
 import metaDe from "./meta/de.json";
 import metaEn from "./meta/en.json";
 import pickerDe from "./picker/de.json";
@@ -12,6 +14,7 @@ export type PortalMetaDictionary = typeof metaDe;
 export type PortalPickerDictionary = typeof pickerDe;
 export type PortalShellDictionary = typeof shellDe;
 export type PortalInvitationDictionary = typeof invitationDe;
+export type PortalDashboardDictionary = typeof dashboardDe;
 
 const PORTAL_META: Record<Locale, PortalMetaDictionary> = {
   de: metaDe,
@@ -27,6 +30,11 @@ const PORTAL_SHELL: Record<Locale, PortalShellDictionary> = {
   de: shellDe,
   en: shellEn,
 };
+const PORTAL_DASHBOARD: Record<Locale, PortalDashboardDictionary> = {
+  de: dashboardDe,
+  en: dashboardEn,
+};
+
 const PORTAL_INVITATION: Record<Locale, PortalInvitationDictionary> = {
   de: invitationDe,
   en: invitationEn,
@@ -52,4 +60,10 @@ export function getPortalInvitationDictionary(
   locale: Locale,
 ): PortalInvitationDictionary {
   return PORTAL_INVITATION[locale];
+}
+
+export function getPortalDashboardDictionary(
+  locale: Locale,
+): PortalDashboardDictionary {
+  return PORTAL_DASHBOARD[locale];
 }

@@ -16,7 +16,7 @@ import {
   isDuplicateEmailError,
   isDuplicateSocialProfileError,
 } from "@/server/workspace/leads/shared/is-duplicate-email-error";
-import { activityService } from "@/server/workspace/shared/services/activity-service";
+import { activityService } from "@/server/shared/services/activity-service";
 import { getLeadById } from "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler";
 
 export async function updateLead(

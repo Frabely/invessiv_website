@@ -5,7 +5,7 @@ import type { SecuritySubjectType } from "@invessiv/common/constants/auth/securi
 import type { ActivityActor } from "@invessiv/common/contracts/activity/activity-actor";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import { securityEvents } from "@invessiv/db/record-configuration";
-import { activityActorMappingService } from "@/server/workspace/shared/services/activity-actor/activity-actor-mapping-service";
+import { activityActorMappingService } from "@/server/shared/services/activity-actor-mapping-service";
 
 type CreateSecurityEventInput = {
   type: SecurityEventType;

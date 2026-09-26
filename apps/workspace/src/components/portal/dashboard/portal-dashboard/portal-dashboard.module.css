@@ -1,0 +1,51 @@
+/* The dashboard keeps the full content width; the chat rail floats above its right edge. */
+.frame {
+  position: relative;
+  width: 100%;
+}
+
+.content {
+  width: 100%;
+  min-width: 0;
+}
+
+.dock {
+  position: fixed;
+  z-index: 25;
+  inset: 4.75rem 0.75rem 0.75rem auto;
+  display: flex;
+}
+
+.chat {
+  flex: 1 1 auto;
+  width: 3rem;
+  min-height: 0;
+  border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+  border-radius: 18px;
+}
+
+@media (min-width: 768px) and (max-width: 1099px) {
+  .dock[data-owner-view="true"] {
+    top: 6rem;
+  }
+}
+
+@media (max-width: 760px) {
+  .dock {
+    inset: 4.25rem 0.5rem 0.5rem auto;
+  }
+
+  .dock[data-owner-view="true"] {
+    top: 8.25rem;
+  }
+
+  .chat {
+    width: 2.75rem;
+  }
+
+  .chat.chat > :global(button[aria-controls]) {
+    width: 2.75rem;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+}

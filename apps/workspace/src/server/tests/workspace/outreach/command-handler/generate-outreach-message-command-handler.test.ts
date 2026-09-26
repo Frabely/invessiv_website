@@ -41,7 +41,7 @@ vi.mock("@/server/workspace/outreach/services/outreach-ai-service", () => ({
 vi.mock("@/server/workspace/outreach/services/outreach-message-parser", () => ({
   outreachMessageParser: { parse: parseMock },
 }));
-vi.mock("@/server/workspace/shared/services/activity-service", () => ({
+vi.mock("@/server/shared/services/activity-service", () => ({
   activityService: {
     appendActivity: appendLeadActivityMock,
   },

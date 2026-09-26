@@ -24,7 +24,8 @@
     "editNamed": "Aufgabe „{name}“ bearbeiten",
     "statusLabel": "Status von „{name}“",
     "statusSelectLabel": "Status von „{name}“: {status}",
-    "assignee": "Bearbeiter: {name}"
+    "assignee": "Bearbeiter: {name}",
+    "completedByCustomer": "Vom Kunden erledigt"
   },
   "status": {
     "open": "Offen",

@@ -20,7 +20,7 @@ import {
   users,
   workspaceMembers,
 } from "@invessiv/db/record-configuration";
-import { activityService } from "@/server/workspace/shared/services/activity-service";
+import { activityService } from "@/server/shared/services/activity-service";
 
 vi.mock("server-only", () => ({}));
 

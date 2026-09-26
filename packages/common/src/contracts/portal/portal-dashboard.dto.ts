@@ -11,8 +11,6 @@ export interface PortalDashboardDto {
   customer: PortalDashboardCustomerDto;
   /** Assigned workspace contact; null if their identity is unavailable. */
   contact: PortalContactDto | null;
-  /** Contact's first name for the greeting; null in owner view or when absent. */
-  greetingName: string | null;
   /** Current and planned projects permitted for this reader. */
   projects: PortalProjectDto[];
   /** Completed projects shown separately from current work. */

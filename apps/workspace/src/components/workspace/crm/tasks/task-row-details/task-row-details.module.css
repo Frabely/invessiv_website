@@ -32,6 +32,14 @@
   -webkit-line-clamp: 2;
 }
 
+.completedByCustomer {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
 .meta {
   display: contents;
   color: var(--color-text-muted);

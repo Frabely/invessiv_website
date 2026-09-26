@@ -56,6 +56,27 @@ describe("PortalShell", () => {
     expect(screen.getByText("Portal content")).toBeInTheDocument();
   });
 
+  it("shows the greeting in the header only when one is given", () => {
+    const { rerender } = render(
+      <PortalShell
+        content={CONTENT}
+        greeting="Hallo Sam"
+        locale="de"
+        switcher={<span />}
+      >
+        <p>Portal content</p>
+      </PortalShell>,
+    );
+    expect(screen.getByText("Hallo Sam")).toBeInTheDocument();
+
+    rerender(
+      <PortalShell content={CONTENT} locale="de" switcher={<span />}>
+        <p>Portal content</p>
+      </PortalShell>,
+    );
+    expect(screen.queryByText("Hallo Sam")).toBeNull();
+  });
+
   it("renders no nav element when there are no permitted nav items", () => {
     render(
       <PortalShell content={CONTENT} locale="de" switcher={<span />}>

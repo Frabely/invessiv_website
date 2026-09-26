@@ -22,6 +22,12 @@ vi.mock(
   () => ({ getPortalCustomerDisplayName: mockGetPortalCustomerDisplayName }),
 );
 
+const mockGetPortalGreetingName = vi.hoisted(() => vi.fn());
+vi.mock(
+  "@/server/portal/query-handler/get-portal-greeting-name.query-handler",
+  () => ({ getPortalGreetingName: mockGetPortalGreetingName }),
+);
+
 const mockListPortalMembershipsForUserId = vi.hoisted(() => vi.fn());
 vi.mock(
   "@/server/portal/query-handler/list-portal-memberships-for-user-id.query-handler",
@@ -38,16 +44,19 @@ vi.mock("@/common/patterns/portal/list-permitted-portal-nav-items", () => ({
 vi.mock("@/components/portal/portal-shell/portal-shell", () => ({
   PortalShell: ({
     children,
+    greeting,
     nav,
     notice,
     switcher,
   }: {
     children: ReactNode;
+    greeting: string | null;
     nav: ReactNode;
     notice: ReactNode;
     switcher: ReactNode;
   }) => (
     <div>
+      <div data-testid="greeting-slot">{greeting}</div>
       <div data-testid="notice-slot">{notice}</div>
       <div data-testid="switcher-slot">{switcher}</div>
       <div data-testid="nav-slot">{nav}</div>
@@ -81,6 +90,7 @@ describe("PortalCustomerLayout", () => {
       { customerId: "customer-1", displayName: "Nordlicht Coaching" },
     ]);
     mockListPermittedPortalNavItems.mockReturnValue([]);
+    mockGetPortalGreetingName.mockResolvedValue(null);
   });
 
   afterEach(cleanup);
@@ -149,7 +159,7 @@ describe("PortalCustomerLayout", () => {
     expect(mockRequirePortalReader).toHaveBeenCalledWith("de", "customer-1");
   });
 
-  it("shows the owner banner instead of the switcher in the owner view", async () => {
+  it("shows only the company name and the owner banner in the owner view", async () => {
     mockRequirePortalReader.mockResolvedValue(
       createPortalOwnerView({
         userId: "owner-user-uuid",
@@ -167,7 +177,9 @@ describe("PortalCustomerLayout", () => {
     );
 
     expect(mockListPortalMembershipsForUserId).not.toHaveBeenCalled();
-    expect(screen.getByTestId("switcher-slot")).toBeEmptyDOMElement();
+    expect(screen.getByTestId("switcher-slot")).toHaveTextContent(
+      "Kanzlei Müller",
+    );
     expect(screen.getByTestId("notice-slot")).toHaveTextContent(
       "Portalansicht von Kanzlei Müller",
     );
@@ -175,6 +187,30 @@ describe("PortalCustomerLayout", () => {
       "href",
       "/de/crm?cockpit=customer-1",
     );
+  });
+
+  it("greets the contact by first name in the header", async () => {
+    mockGetPortalGreetingName.mockResolvedValue("Sam");
+
+    render(
+      await PortalCustomerLayout({
+        children: <p>Company content</p>,
+        params: Promise.resolve({ locale: "de", customerId: "customer-1" }),
+      }),
+    );
+
+    expect(screen.getByTestId("greeting-slot")).toHaveTextContent("Hallo Sam");
+  });
+
+  it("shows no greeting without a first name", async () => {
+    render(
+      await PortalCustomerLayout({
+        children: <p>Company content</p>,
+        params: Promise.resolve({ locale: "de", customerId: "customer-1" }),
+      }),
+    );
+
+    expect(screen.getByTestId("greeting-slot")).toBeEmptyDOMElement();
   });
 
   it("renders no banner for a customer contact", async () => {

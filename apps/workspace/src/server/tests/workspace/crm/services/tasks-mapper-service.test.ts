@@ -17,6 +17,7 @@ const OPEN_ROW: TaskRow = {
   due_on: "2026-10-01",
   completed_at: null,
   completed_by_member_id: null,
+  completed_by_portal_membership_id: null,
   version: 3,
   created_at: new Date("2026-01-01T10:00:00.000Z"),
   updated_at: new Date("2026-01-02T10:00:00.000Z"),
@@ -36,6 +37,7 @@ describe("tasksMapperService.toDto", () => {
       dueOn: "2026-10-01",
       completedAt: null,
       completedByMemberId: null,
+      completedByCustomer: false,
       version: 3,
       createdAt: "2026-01-01T10:00:00.000Z",
       updatedAt: "2026-01-02T10:00:00.000Z",
@@ -54,5 +56,21 @@ describe("tasksMapperService.toDto", () => {
     expect(dto.dueOn).toBeNull();
     expect(dto.completedAt).toBe("2026-01-03T09:00:00.000Z");
     expect(dto.completedByMemberId).toBe(OPEN_ROW.assignee_member_id);
+    expect(dto.completedByCustomer).toBe(false);
+  });
+
+  it("flags a portal completion without exposing the membership id", () => {
+    const dto = tasksMapperService.toDto({
+      ...OPEN_ROW,
+      status: TaskStatus.Done,
+      completed_at: new Date("2026-01-03T09:00:00.000Z"),
+      completed_by_portal_membership_id: "88888888-8888-4888-8888-888888888888",
+    });
+
+    expect(dto.completedByCustomer).toBe(true);
+    expect(dto.completedByMemberId).toBeNull();
+    expect(JSON.stringify(dto)).not.toContain(
+      "88888888-8888-4888-8888-888888888888",
+    );
   });
 });

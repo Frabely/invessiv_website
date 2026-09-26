@@ -8,9 +8,11 @@ import { PortalShell } from "@/components/portal/portal-shell/portal-shell";
 import type { Locale } from "@/config/i18n";
 import { getPortalShellDictionary } from "@/i18n/dictionaries/portal";
 import { portalPathFor, workspaceAreaPathFor } from "@/lib/auth/routes";
+import { formatMessage } from "@/lib/i18n/format-message";
 import { isPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
 import { requirePortalReader } from "@/server/portal/auth/require-portal-reader";
 import { getPortalCustomerDisplayName } from "@/server/portal/query-handler/get-portal-customer-display-name.query-handler";
+import { getPortalGreetingName } from "@/server/portal/query-handler/get-portal-greeting-name.query-handler";
 import { listPortalMembershipsForUserId } from "@/server/portal/query-handler/list-portal-memberships-for-user-id.query-handler";
 
 type PortalCustomerLayoutProps = {
@@ -21,7 +23,7 @@ type PortalCustomerLayoutProps = {
 /**
  * Resolves the portal reader for this render. Filters `PORTAL_NAV_ITEMS` through
  * `listPermittedPortalNavItems`, so a portal module only has to append its entry. The owner's
- * read-only view has no memberships to switch between and gets a banner instead.
+ * read-only view has no memberships to switch between: it shows only the name, plus a banner.
  */
 export default async function PortalCustomerLayout({
   children,
@@ -38,10 +40,19 @@ export default async function PortalCustomerLayout({
   const content = getPortalShellDictionary(activeLocale);
   const visibleNavItems = listPermittedPortalNavItems(reader.permissions);
   const isOwnerView = isPortalOwnerView(reader);
+  const greetingName = await getPortalGreetingName(reader);
+  const ownerCompanyName = isOwnerView
+    ? ((await getPortalCustomerDisplayName(reader)) ?? "")
+    : null;
 
   return (
     <PortalShell
       content={content}
+      greeting={
+        greetingName
+          ? formatMessage(content.header.greeting, { name: greetingName })
+          : null
+      }
       locale={activeLocale}
       nav={
         visibleNavItems.length > 0 ? (
@@ -68,20 +79,28 @@ export default async function PortalCustomerLayout({
               workspaceAreaPathFor(activeLocale, WorkspaceArea.Crm),
               reader.customerId,
             )}
-            companyName={(await getPortalCustomerDisplayName(reader)) ?? ""}
+            companyName={ownerCompanyName ?? ""}
             content={content.ownerView}
           />
         ) : null
       }
       switcher={
-        isOwnerView ? null : (
-          <CustomerSwitcher
-            activeCustomerId={reader.customerId}
-            companies={await listPortalMembershipsForUserId(reader.userId)}
-            content={content.switcher}
-            locale={activeLocale}
-          />
-        )
+        <CustomerSwitcher
+          activeCustomerId={reader.customerId}
+          companies={
+            ownerCompanyName === null
+              ? await listPortalMembershipsForUserId(reader.userId)
+              : // The owner has no memberships to switch between; only the name is shown.
+                [
+                  {
+                    customerId: reader.customerId,
+                    displayName: ownerCompanyName,
+                  },
+                ]
+          }
+          content={content.switcher}
+          locale={activeLocale}
+        />
       }
     >
       {children}

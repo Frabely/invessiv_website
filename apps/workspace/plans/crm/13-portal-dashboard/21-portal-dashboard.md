@@ -113,7 +113,7 @@ Kein Auto-Commit — der Owner reviewed und committet selbst.
 | E10     | Chat               | `CustomerChatDock` → `packages/ui` `ChatDock` (Texte als Props); Cockpit + Portal nutzen ihn. Widget „Nachrichten“ (`openMode: dock`) öffnet den Dock. Mock bis Ordner 17/18.                                                                                                                                                                                                                               |
 | E11/E17 | Stunden            | Widget nur bei laufendem Kontingent: verbraucht + übrig (`h:mm`); Dialog mit **allen** Buchungen. Mock bis Ordner 20.                                                                                                                                                                                                                                                                                       |
 | E12/E16 | Dateien            | Reiter „Von Ihnen“ (eigene Uploads, Download, kein Löschen/Bearbeiten, Aktualisierung = neue Datei) und „Von uns“ (explizit freigegeben). Mock bis 15/15a.                                                                                                                                                                                                                                                  |
-| E13     | Feedback           | Projektbezogen: übrige Runden, wer am Zug ist (Sie / wir), später „Feedback geben“ direkt aus dem Dashboard. Mock bis 16.                                                                                                                                                                                                                                                                                   |
+| E13     | Feedback           | Projektbezogen: übrige Runden, wer am Zug ist (du / wir), später „Feedback geben“ direkt aus dem Dashboard. Mock bis 16.                                                                                                                                                                                                                                                                                    |
 | E14     | Onboarding         | Bogen-Fortschritt + Termin oben, volle Breite, prominent beim ersten Login; verschwindet nach Abschluss. Mock bis 15b/15c.                                                                                                                                                                                                                                                                                  |
 | E15     | Renewals           | Intern, kein Widget.                                                                                                                                                                                                                                                                                                                                                                                        |
 | E18     | Verschieben        | Nicht in diesem Ordner. Registry mit stabilen Keys, `order`, Spans → DnD später ohne Umbau. Schätzung: localStorage 1,5–2 T (~15–20 Dateien), DB je Portalmitgliedschaft 3–4 T (~35–45), freies Raster 5+ T.                                                                                                                                                                                                |
@@ -425,7 +425,7 @@ components/portal/
 - Dictionaries: `src/i18n/dictionaries/portal/dashboard/{de,en}.json` + Getter in `portal/index.ts`
   (`getPortalDashboardDictionary`). Namespaces: `meta`, `page`, `widgets.<key>.{title,open,empty,…}`, `mock`,
   `tasks.announce.*`, `ownerView.*`, `chat.*`. Chat-Texte des Cockpits bleiben im Cockpit-Dictionary; beide erfüllen
-  `ChatDockContent`. Anrede „Sie“, freundlich, ohne Fachjargon („Bringschuld“ nie im UI).
+  `ChatDockContent`. Anrede „du“ (wie im restlichen Portal), freundlich, ohne Fachjargon („Bringschuld“ nie im UI).
 - Datumsformat über Locale (`Intl.DateTimeFormat` mit `Record<Locale,…>`-Konstante, falls nicht vorhanden unter
   `packages/common/src/constants/i18n/`). Überfällig: sichtbar, aber ohne Drohton.
 
@@ -541,25 +541,49 @@ jetzt in `packages/common`, damit das Portal-DTO keinen App-Import braucht. Gepr
 PostgreSQL-Integrationstests, darunter zwei echte Portalmitgliedschaften derselben Person, fehlende Leserechte,
 Owner-Sicht und leerer Kunde. `pnpm -r lint` und `pnpm -r typecheck` grün.
 
-### S6 — Abhaken (Claude · Opus 5.5)
+### S6 — Abhaken (Claude · Opus 5.5 — erledigt)
 
-- [ ] Error-Codes, Command-Handler, Route, Client-Service, Hook; CRM-Vermerk + Statuswechsel-Anpassung.
-- [ ] Tests: fremde Firma → 404; interne Aufgabe derselben Firma → 404; unsichtbare → 404; ohne
+- [x] Error-Codes, Command-Handler, Route, Client-Service, Hook; CRM-Vermerk + Statuswechsel-Anpassung.
+- [x] Tests: fremde Firma → 404; interne Aufgabe derselben Firma → 404; unsichtbare → 404; ohne
       `portal.tasks.complete` → 404; widerrufene Mitgliedschaft → 404; Doppelklick/Retry → genau ein Abschluss
       (`alreadyDone`); Activity geschrieben; Owner-Sicht hat keinen Schreibweg (Route verlangt `PortalActor`);
       CRM zeigt „vom Kunden erledigt“; Wiederöffnen im CRM leert die Portalherkunft.
 
-### S7 — Portal-UI (Claude · Opus 5.5)
+Umgesetzt: `completeCustomerTask` sperrt die Zeile (`FOR UPDATE`) und wiederholt im `UPDATE` jede
+Sichtbarkeitsbedingung (Firma über Projekt-Subquery, `action_side = customer`, sichtbar, Projektstatus aus der neuen
+Konstante `PORTAL_VISIBLE_PROJECT_STATUS_VALUES`, die jetzt auch die Dashboard-Query nutzt). Zusätzlich zu
+`portal.tasks.complete` wird `portal.tasks.read` verlangt (deckungsgleich mit `capabilities.canCompleteTasks`);
+abgebrochene Aufgaben ergeben ebenfalls 404. Route `POST /api/portal/[customerId]/tasks/[taskId]/complete`, Pfad über
+`WorkspaceApiEndpoint.Portal` + `portalTaskCompleteEndpoint` (`common/patterns/portal/portal-api-endpoints.ts`);
+DB-Fehler → 503 `unavailable`. Abweichungen: `activity-service` + `activity-actor-mapping-service` sind nach
+`server/shared/services/` umgezogen (zweite Welt nutzt sie jetzt; behebt nebenbei den Import aus
+`server/workspace/` in `security-event-service`), `ActivityActor` kennt `ActorType.Customer`. CRM: `TaskDto`
+`completedByCustomer`, `task-row-details` zeigt „Vom Kunden erledigt“, `changeTaskStatus` leert die Portalspalte bei
+jedem Wechsel. Geprüft: Route-Unit-Tests, `server/tests/portal/portal-task-completion.integration.test.ts`
+(`--mode rbac-integration` gegen `development`, 5 bestanden).
 
-- [ ] `components/portal/AGENTS.md` + `CLAUDE.md`.
-- [ ] Registry-Konstanten/Patterns + Tests (5.3).
-- [ ] Dictionaries DE/EN mit `copywriting`; identische Keys (Test/Typ über `typeof de`).
-- [ ] Widgets (echt + Mock), Dialog-Host über `?widget`, Projekt-Tabs über `?project`, Dock-Context, Checkbox,
+### S7 — Portal-UI (Claude · Opus 5.5 — erledigt)
+
+- [x] `components/portal/AGENTS.md` + `CLAUDE.md`.
+- [x] Registry-Konstanten/Patterns + Tests (5.3).
+- [x] Dictionaries DE/EN mit `copywriting`; identische Keys (Test/Typ über `typeof de`).
+- [x] Widgets (echt + Mock), Dialog-Host über `?widget`, Projekt-Tabs über `?project`, Dock-Context, Checkbox,
       Empty-State, Banner, `loading.tsx`, `PortalShell`-Greeting — mit `impeccable` + `ui-ux-pro-max` gestalten (ruhig,
       großzügig, Wiedererkennung zum Cockpit über Tokens/Radien/Typo, kein verkleinertes CRM).
-- [ ] Komponententests: Registry-Filter (Permission fehlt → Widget fehlt), Mock-Badge sichtbar, Checkbox optimistisch
+- [x] Komponententests: Registry-Filter (Permission fehlt → Widget fehlt), Mock-Badge sichtbar, Checkbox optimistisch
   - Rollback + Live-Region, Owner-Sicht deaktiviert Checkbox mit Hinweis-Link, leere Kundenaufgaben → Bestätigung,
     Dialog öffnet/schließt per URL.
+
+Umgesetzt: Die Page filtert die Registry serverseitig (`listVisiblePortalWidgets`) und übergibt nur sichtbare
+Einträge an `PortalDashboard` (`key={customerId}`). Abweichungen: (1) `greetingName` ist aus dem Dashboard-DTO
+entfernt; die Begrüßung liest das Layout über `getPortalGreetingName(reader)`, weil sie im Shell-Header steht (Owner
+→ `null` ohne Query). Unter 768 px bleibt sie aus Platzgründen ausgeblendet. (2) Kein Dock-Context: Das
+`messages`-Widget und der `ChatDock` liegen in derselben Komponente, der Zustand läuft über Props. (3) Statt je
+eines Ordners pro Mock gibt es `widgets/portal-mock-widget` (Dialog/Dock) und `widgets/portal-files-widget` (mit
+Reitern); Mock-Dialoge erklären, was dort entsteht. Mock-Inhalte sind statische Formen, kein pulsierendes Skeleton. (4)
+Tagesformatierung als `lib/i18n/format-calendar-day.ts` aus `TaskDueLabel` extrahiert und geteilt. (5)
+Meta-Titel „Übersicht | Invessiv“ kommt aus `portal/dashboard`. Offen für S9: Browserabnahme mit Screenshots
+(Clerk-Login nötig), der Impeccable-Detektor meldet keine Befunde.
 
 ### S8 — Cockpit-Einstieg (GPT · GPT-6 Luna)
 

@@ -19,9 +19,10 @@ import { updateVersioned } from "@/server/workspace/shared/update-versioned";
 
 /**
  * Any status may follow any other, so a done or cancelled task can be reopened. Completion data
- * is derived here — set when the task becomes `done`, cleared on any other status — which is the
- * only place that writes it. Asking for the status a task already has changes nothing and is not
- * logged.
+ * is derived here — set when the task becomes `done`, cleared on any other status. Every internal
+ * change drops a portal completion origin, so exactly one origin remains; the portal completion
+ * command is the only other writer. Asking for the status a task already has changes nothing and
+ * is not logged.
  */
 export async function changeTaskStatus(
   taskId: string,
@@ -86,6 +87,7 @@ export async function changeTaskStatus(
         status: data.status,
         completed_at: becomesDone ? new Date() : null,
         completed_by_member_id: becomesDone ? actor.workspaceMemberId : null,
+        completed_by_portal_membership_id: null,
       },
       toDto: tasksMapperService.toDto,
     });

@@ -1,6 +1,6 @@
 {
   "header": {
-    "brandLabel": "Invessiv Portal",
+    "greeting": "Hello {name}",
     "brandHomeAriaLabel": "Back to company picker",
     "userMenuLabel": "Account and sign out",
     "localeMenuLabel": "Select language",

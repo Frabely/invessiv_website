@@ -14,7 +14,7 @@ import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { customerConstraintViolationService } from "@/server/workspace/crm/services/customer-constraint-violation-service";
 import { customerService } from "@/server/workspace/crm/services/customer/customer-service";
 import { customerSchemas } from "@/server/workspace/crm/services/customer-schemas";
-import { activityService } from "@/server/workspace/shared/services/activity-service";
+import { activityService } from "@/server/shared/services/activity-service";
 
 /**
  * Locks the lead first, making the link itself the idempotency record for retries and

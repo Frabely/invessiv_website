@@ -26,7 +26,7 @@ import {
   getDrizzleDatabaseClient,
 } from "@invessiv/db/core";
 import { leads } from "@invessiv/db/record-configuration";
-import { activityService } from "@/server/workspace/shared/services/activity-service";
+import { activityService } from "@/server/shared/services/activity-service";
 
 const BULK_EDIT_ACTIVITY_FIELD_LABELS: Record<string, string> = {
   [BulkEditFieldKey.Status]: "status",

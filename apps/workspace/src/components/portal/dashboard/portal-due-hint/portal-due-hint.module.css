@@ -1,0 +1,23 @@
+.hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.hint svg {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+/* Warm accent instead of a danger red: noticeable, but not alarming. */
+.hint[data-state="overdue"] {
+  color: var(--color-text);
+}
+
+.hint[data-state="overdue"] svg {
+  color: var(--color-accent-warm);
+}

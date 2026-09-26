@@ -50,7 +50,7 @@ vi.mock("@/server/workspace/crm/services/customer-category-service", () => ({
 vi.mock("@/server/workspace/crm/services/customer-read-service", () => ({
   customerReadService: { findDetailById: mocks.findDetail },
 }));
-vi.mock("@/server/workspace/shared/services/activity-service", () => ({
+vi.mock("@/server/shared/services/activity-service", () => ({
   activityService: { createActivity: mocks.createActivity },
 }));
 

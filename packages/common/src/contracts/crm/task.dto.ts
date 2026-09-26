@@ -26,8 +26,10 @@ export interface TaskDto {
   dueOn: string | null;
   /** When the task was completed; set exactly while `status` is `done`, otherwise null. */
   completedAt: string | null;
-  /** The member who completed the task; set exactly while `status` is `done`, otherwise null. */
+  /** The member who completed the task; null while not done and when the customer completed it. */
   completedByMemberId: string | null;
+  /** True when a customer contact completed the task in the portal; which contact stays internal. */
+  completedByCustomer: boolean;
   /** Optimistic-concurrency counter; every update request must echo the value it read. */
   version: number;
   /** Creation timestamp supplied by the database for chronological list ordering. */

@@ -13,7 +13,6 @@ const customer = {
   ownerMemberId: "member-1",
   contactName: "Alex Example",
   contactEmail: "alex@example.test",
-  greetingName: "Sam",
 };
 
 function project(status: ProjectStatus, ownerMemberId = "member-1") {
@@ -109,6 +108,5 @@ describe("portalDashboardMappingService.mapRowsToDto", () => {
     expect(dto.customerTasks).toHaveLength(20);
     expect(dto.customerTasks[0]?.id).toBe("task-21");
     expect(dto.customerTasks.at(-1)?.id).toBe("task-2");
-    expect(dto.greetingName).toBeNull();
   });
 });

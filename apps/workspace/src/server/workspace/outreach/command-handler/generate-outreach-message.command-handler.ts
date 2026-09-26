@@ -8,7 +8,7 @@ import { getLeadById } from "@/server/workspace/leads/query-handler/get-lead-by-
 import { outreachAiService } from "@/server/workspace/outreach/services/outreach-ai-service";
 import { outreachSkillContextService } from "@/server/workspace/outreach/services/outreach-skill-context-service";
 import { outreachMessageParser } from "@/server/workspace/outreach/services/outreach-message-parser";
-import { activityService } from "@/server/workspace/shared/services/activity-service";
+import { activityService } from "@/server/shared/services/activity-service";
 
 export async function generateOutreachMessage(
   request: GenerateOutreachRequestDto,

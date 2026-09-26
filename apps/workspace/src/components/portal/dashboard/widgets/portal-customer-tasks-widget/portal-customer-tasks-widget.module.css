@@ -1,0 +1,5 @@
+.more {
+  margin: 0.25rem 0 0 3.2rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+}

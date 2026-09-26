@@ -9,7 +9,7 @@ import type { StatusChangeActivityMetadata } from "@invessiv/common/contracts/ac
 import type { BulkArchiveLeadsResult } from "@invessiv/common/contracts/leads/results/bulk-archive-leads-result";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { leads } from "@invessiv/db/record-configuration";
-import { activityService } from "@/server/workspace/shared/services/activity-service";
+import { activityService } from "@/server/shared/services/activity-service";
 
 export type BulkArchiveLeadsInput = {
   ids: string[];

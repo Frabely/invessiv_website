@@ -141,7 +141,21 @@ describe("changeTaskStatus", () => {
       status: TaskStatus.InProgress,
       completed_at: null,
       completed_by_member_id: null,
+      completed_by_portal_membership_id: null,
     });
+  });
+
+  it("replaces a portal completion origin when the team completes a reopened task", async () => {
+    await changeTaskStatus(
+      TASK_ID,
+      { status: TaskStatus.Done, version: 3 },
+      workspaceActorWith([Permission.TasksWrite]),
+    );
+
+    const { patch } = mocks.updateVersioned.mock.calls[0][0] as {
+      patch: Record<string, unknown>;
+    };
+    expect(patch).toMatchObject({ completed_by_portal_membership_id: null });
   });
 
   it("records the previous and the new status", async () => {

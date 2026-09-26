@@ -20,7 +20,7 @@ import {
   leadSubmissions,
   users,
 } from "@invessiv/db/record-configuration";
-import { activityService } from "@/server/workspace/shared/services/activity-service";
+import { activityService } from "@/server/shared/services/activity-service";
 import { leadsMapperService } from "@/server/workspace/leads/services/leads-mapper-service";
 import { deriveLeadDisplayName } from "@/server/workspace/leads/shared/lead-display-name";
 import { normalizeLeadProfileUrl } from "@/server/workspace/leads/shared/lead-url-normalization-service";

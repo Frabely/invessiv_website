@@ -13,7 +13,6 @@ type CustomerRow = {
   ownerMemberId: string;
   contactName: string | null;
   contactEmail: string | null;
-  greetingName: string | null;
 };
 
 type ProjectRow = {
@@ -129,7 +128,6 @@ function mapRowsToDto({
             email: customer.contactEmail,
           }
         : null,
-    greetingName: isOwnerView ? null : customer.greetingName,
     projects: currentProjects,
     completedProjects,
     customerTasks: [...openCustomerTasks, ...completedCustomerTasks].map(
