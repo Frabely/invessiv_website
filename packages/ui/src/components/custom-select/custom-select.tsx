@@ -24,7 +24,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { TriState } from "@invessiv/common/constants/filters/tri-state";
-import { CustomSelectSize } from "@invessiv/common/constants/ui/custom-select-sizes";
 import type {
   CustomMultiSelectOption,
   CustomSelectOption,
@@ -42,7 +41,6 @@ type SingleSelectProps<TValue extends string> = {
   invalid?: boolean;
   onClear?: () => void;
   options: readonly CustomSelectOption<TValue>[];
-  size?: CustomSelectSize;
   value: TValue;
   onChange: (next: TValue) => void;
 };
@@ -258,16 +256,10 @@ export function CustomSelect<TValue extends string = string>(
     );
   }
 
-  const {
-    options,
-    value,
-    onChange,
-    size: triggerSize = CustomSelectSize.Default,
-  } = props;
+  const { options, value, onChange } = props;
   const selected =
     options.find((option) => option.value === value) ?? options[0];
   const hasSelectedLeading = Boolean(selected?.leading);
-  const compact = triggerSize === CustomSelectSize.Compact;
 
   function handleSingleTriggerKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
     const selectedIndex = Math.max(
@@ -342,12 +334,10 @@ export function CustomSelect<TValue extends string = string>(
         data-clearable={clearButton ? true : undefined}
         data-has-leading={hasSelectedLeading || undefined}
         data-invalid={invalid || undefined}
-        data-size={triggerSize}
         disabled={disabled}
         id={id}
         onKeyDown={handleSingleTriggerKeyDown}
         ref={setTriggerRef}
-        title={compact ? selected?.label : undefined}
         type="button"
       >
         {selected?.leading ? (

@@ -156,31 +156,6 @@
   font-size: 0.82rem;
 }
 
-.trigger[data-size="compact"] {
-  display: inline-flex;
-  gap: 0.3rem;
-  width: auto;
-  min-height: 2rem;
-  padding: 0.25rem 0.5rem;
-  border-radius: 999px;
-}
-
-/* The label stays in the accessible name and the tooltip; only the symbol shows. */
-.trigger[data-size="compact"] .triggerText {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
-.trigger[data-size="compact"] .chevron {
-  position: static;
-  transform: none;
-  font-size: 0.7rem;
-}
-
 .clearButton {
   position: absolute;
   top: 50%;

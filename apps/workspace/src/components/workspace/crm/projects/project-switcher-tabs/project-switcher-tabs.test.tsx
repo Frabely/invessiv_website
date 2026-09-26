@@ -30,7 +30,7 @@ function Harness() {
       panelId="panel"
       projects={projects}
       statusLabels={content.projects.status}
-      tabIdFor={(id) => `tab-${id}`}
+      tabIdForAction={(id) => `tab-${id}`}
       tabsLabel={content.projects.tabsLabel}
     />
   );

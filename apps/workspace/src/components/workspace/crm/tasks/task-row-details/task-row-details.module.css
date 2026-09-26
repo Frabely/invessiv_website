@@ -1,0 +1,110 @@
+.main {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.title {
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  font-weight: 650;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.title[data-status="done"],
+.title[data-status="cancelled"] {
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.title[data-status="cancelled"] {
+  text-decoration: line-through;
+}
+
+.description {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.meta {
+  display: contents;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+.side {
+  grid-column: 2;
+  min-width: 0;
+}
+
+.side > span {
+  max-width: 100%;
+  padding: 0.35rem 0.5rem;
+  border-radius: 0.5rem;
+  line-height: 1.25;
+  white-space: normal;
+}
+
+.visibility,
+.assignee {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+.visibility {
+  grid-column: 3;
+}
+
+.due {
+  grid-column: 4;
+  min-width: 0;
+}
+
+.due > span {
+  white-space: normal;
+}
+
+.assignee {
+  grid-column: 5;
+}
+
+.initials {
+  display: inline-grid;
+  place-items: center;
+  width: 1.55rem;
+  height: 1.55rem;
+  flex: 0 0 auto;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+@container (max-width: 700px) {
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.8rem;
+  }
+
+  .side,
+  .visibility,
+  .due,
+  .assignee {
+    grid-column: auto;
+  }
+}

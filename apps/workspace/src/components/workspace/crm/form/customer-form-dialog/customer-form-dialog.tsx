@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  type KeyboardEvent,
   type Ref,
   type SubmitEvent,
   useEffect,
@@ -27,6 +26,7 @@ import {
   DialogSize,
   FormField,
   PrimaryCtaButton,
+  TabList,
 } from "@invessiv/ui";
 import { customersApiService } from "@/client/crm/customers-api-service";
 import { CustomerFormDialogMode } from "@/common/constants/crm/forms/customer-form-dialog-modes";
@@ -84,13 +84,6 @@ const CustomerFormTab = {
 } as const;
 
 type CustomerFormTab = (typeof CustomerFormTab)[keyof typeof CustomerFormTab];
-
-const CUSTOMER_FORM_TABS = [
-  CustomerFormTab.Customer,
-  CustomerFormTab.Contacts,
-  CustomerFormTab.Address,
-  CustomerFormTab.Details,
-] as const;
 
 const CUSTOMER_TAB_FIELDS = [
   "displayName",
@@ -278,32 +271,6 @@ export function CustomerFormDialog({
     );
   }
 
-  function handleTabKeyDown(
-    event: KeyboardEvent<HTMLButtonElement>,
-    currentTab: CustomerFormTab,
-  ) {
-    const currentIndex = CUSTOMER_FORM_TABS.indexOf(currentTab);
-    const nextIndex =
-      event.key === "ArrowRight"
-        ? (currentIndex + 1) % CUSTOMER_FORM_TABS.length
-        : event.key === "ArrowLeft"
-          ? (currentIndex - 1 + CUSTOMER_FORM_TABS.length) %
-            CUSTOMER_FORM_TABS.length
-          : event.key === "Home"
-            ? 0
-            : event.key === "End"
-              ? CUSTOMER_FORM_TABS.length - 1
-              : null;
-    if (nextIndex === null) return;
-
-    event.preventDefault();
-    const nextTab = CUSTOMER_FORM_TABS[nextIndex];
-    setActiveTab(nextTab);
-    requestAnimationFrame(() =>
-      document.getElementById(`${tabsId}-${nextTab}-tab`)?.focus(),
-    );
-  }
-
   function renderTextField(
     key: TextFieldKey,
     options: {
@@ -441,12 +408,11 @@ export function CustomerFormDialog({
             ))}
           </aside>
         ) : null}
-        <div
-          aria-label={content.tabs.label}
+        <TabList
+          activeValue={activeTab}
+          ariaLabel={content.tabs.label}
           className={styles.tabs}
-          role="tablist"
-        >
-          {[
+          items={[
             { tab: CustomerFormTab.Customer, label: content.sections.customer },
             {
               tab: CustomerFormTab.Contacts,
@@ -456,27 +422,23 @@ export function CustomerFormDialog({
             },
             { tab: CustomerFormTab.Address, label: content.sections.address },
             { tab: CustomerFormTab.Details, label: content.sections.details },
-          ].map(({ tab, label }) => (
-            <button
-              aria-controls={`${tabsId}-${tab}-panel`}
-              aria-selected={activeTab === tab}
-              className={styles.tab}
-              data-invalid={hasTabError(tab) || undefined}
-              id={`${tabsId}-${tab}-tab`}
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              onKeyDown={(event) => handleTabKeyDown(event, tab)}
-              role="tab"
-              tabIndex={activeTab === tab ? 0 : -1}
-              type="button"
-            >
-              {label}
-              {hasTabError(tab) ? (
-                <span aria-hidden="true" className={styles.tabErrorDot} />
-              ) : null}
-            </button>
-          ))}
-        </div>
+          ].map(({ tab, label }) => ({
+            value: tab,
+            id: `${tabsId}-${tab}-tab`,
+            panelId: `${tabsId}-${tab}-panel`,
+            invalid: hasTabError(tab),
+            label: (
+              <>
+                {label}
+                {hasTabError(tab) ? (
+                  <span aria-hidden="true" className={styles.tabErrorDot} />
+                ) : null}
+              </>
+            ),
+          }))}
+          onSelectAction={setActiveTab}
+          tabClassName={styles.tab}
+        />
         <div
           aria-labelledby={`${tabsId}-${CustomerFormTab.Customer}-tab`}
           hidden={activeTab !== CustomerFormTab.Customer}

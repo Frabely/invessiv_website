@@ -1,38 +1,5 @@
-.services {
-  display: grid;
-  gap: 0.9rem;
-  padding: 0.9rem 0;
-  border-top: 1px solid var(--color-border-strong);
-}
-
-.body {
-  display: grid;
-  gap: 0.9rem;
-}
-
-.head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.55rem 1rem;
-}
-
-.head h3 {
-  margin: 0;
-  color: var(--color-text);
-  font-size: var(--font-size-heading-sm);
-}
-
-.headMeta {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-left: auto;
-}
-
 .values {
   display: flex;
-  flex: 1 1 12rem;
   flex-wrap: wrap;
   gap: 0.2rem 0.75rem;
   min-width: 0;
@@ -56,13 +23,6 @@
 
 .actionButton {
   gap: 0.45rem;
-}
-
-.count {
-  color: var(--color-text-muted);
-  font-size: var(--font-size-ui-xs);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
 }
 
 .ledger {
@@ -153,35 +113,13 @@ button.row:focus-visible {
   white-space: nowrap;
 }
 
-.empty {
-  display: grid;
-  justify-items: start;
-  gap: 0.4rem;
-  padding: 0.5rem 0 0.25rem;
-}
-
-.emptyTitle {
-  margin: 0;
-  color: var(--color-text);
-  font-weight: 600;
-}
-
-.emptyText {
-  max-width: 60ch;
-  margin: 0;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-body-sm);
-}
-
 @media (max-width: 640px) {
-  .head {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 0.6rem;
+  .values {
+    gap: 0 0.75rem;
   }
 
-  .headMeta {
-    justify-content: space-between;
+  .value {
+    white-space: nowrap;
   }
 
   .row {

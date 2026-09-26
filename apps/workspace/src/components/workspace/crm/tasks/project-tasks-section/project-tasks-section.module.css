@@ -1,43 +1,5 @@
-.tasks {
-  display: grid;
-  gap: 0.9rem;
-  padding: 0.9rem 0;
-  border-top: 1px solid var(--color-border-strong);
-}
-
-.body {
-  display: grid;
-  gap: 0.9rem;
-}
-
-.head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.head h3 {
-  margin: 0;
-  color: var(--color-text);
-  font-size: var(--font-size-heading-sm);
-}
-
-.headMeta {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
 .actionButton {
   gap: 0.45rem;
-}
-
-.count {
-  color: var(--color-text-muted);
-  font-size: var(--font-size-ui-xs);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
 }
 
 .list {
@@ -77,36 +39,4 @@
 .toggle:focus-visible {
   outline: 2px solid var(--color-cta);
   outline-offset: 2px;
-}
-
-.empty {
-  display: grid;
-  justify-items: start;
-  gap: 0.4rem;
-  padding: 0.5rem 0 0.25rem;
-}
-
-.emptyTitle {
-  margin: 0;
-  color: var(--color-text);
-  font-weight: 600;
-}
-
-.emptyText {
-  max-width: 60ch;
-  margin: 0;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-body-sm);
-}
-
-@media (max-width: 640px) {
-  .head {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-
-  .headMeta {
-    justify-content: space-between;
-  }
 }

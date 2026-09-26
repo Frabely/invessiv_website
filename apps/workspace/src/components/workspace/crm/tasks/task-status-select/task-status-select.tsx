@@ -7,7 +7,6 @@ import {
   TASK_STATUS_VALUES,
   type TaskStatus,
 } from "@invessiv/common/constants/crm/task-statuses";
-import type { CustomSelectSize } from "@invessiv/common/constants/ui/custom-select-sizes";
 import { CustomSelect } from "@invessiv/ui";
 import { TASK_STATUS_ICONS } from "@/common/constants/crm/badges/task-status-icons";
 import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
@@ -18,7 +17,6 @@ type TaskStatusSelectProps = {
   content: CrmTasksDictionary;
   disabled?: boolean;
   onChangeAction: (status: TaskStatus) => void;
-  size?: CustomSelectSize;
   status: TaskStatus;
   /** Names the task in the accessible label, since every row carries one of these. */
   taskTitle: string;
@@ -28,7 +26,6 @@ export function TaskStatusSelect({
   content,
   disabled,
   onChangeAction,
-  size,
   status,
   taskTitle,
 }: TaskStatusSelectProps) {
@@ -55,7 +52,6 @@ export function TaskStatusSelect({
         ),
         value,
       }))}
-      size={size}
       value={status}
     />
   );

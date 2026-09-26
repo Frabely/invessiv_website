@@ -188,7 +188,7 @@ export function CustomerProjectsSection({
             panelId={panelId}
             projects={projects}
             statusLabels={content.projects.status}
-            tabIdFor={tabIdFor}
+            tabIdForAction={tabIdFor}
             tabsLabel={content.projects.tabsLabel}
           />
         ) : null}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,7 +11,7 @@ import { portalAccessErrorMessage } from "@/common/patterns/crm/portal-access-er
 import type { Locale } from "@/config/i18n";
 import type { CrmPortalAccessDictionary } from "@/i18n/dictionaries/workspace/crm";
 import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
-import { SectionCollapseToggle } from "@/components/workspace/crm/shared/section-collapse-toggle/section-collapse-toggle";
+import { CollapsibleSection } from "@/components/workspace/crm/shared/collapsible-section/collapsible-section";
 import { PortalInviteDialog } from "../invite-portal-contact-dialog/invite-portal-contact-dialog";
 import { PortalAccessList } from "../portal-access-list/portal-access-list";
 import { PortalMembershipRolesDialog } from "../portal-membership-roles-dialog/portal-membership-roles-dialog";
@@ -43,8 +43,6 @@ export function PortalAccessSection({
   );
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [expanded, setExpanded] = useState(false);
-  const bodyId = useId();
   const editingMembership = access.memberships.find(
     (item) => item.id === editingMembershipId,
   );
@@ -85,13 +83,9 @@ export function PortalAccessSection({
   }
 
   return (
-    <section
-      className={styles.section}
-      aria-labelledby="crm-portal-access-title"
-    >
-      <div className={styles.header}>
-        <h3 id="crm-portal-access-title">{content.title}</h3>
-        <div className={styles.headMeta}>
+    <>
+      <CollapsibleSection
+        action={
           <ButtonControl
             className={styles.actionButton}
             type="button"
@@ -100,36 +94,28 @@ export function PortalAccessSection({
             <FontAwesomeIcon aria-hidden="true" icon={faUserPlus} />
             {content.invite}
           </ButtonControl>
-          <SectionCollapseToggle
-            controls={bodyId}
-            expanded={expanded}
-            labelCollapse={content.collapseLabel}
-            labelExpand={content.expandLabel}
-            onToggleAction={() => setExpanded((current) => !current)}
+        }
+        description={content.intro}
+        labelCollapse={content.collapseLabel}
+        labelExpand={content.expandLabel}
+        title={content.title}
+      >
+        {access.invitations.length === 0 && access.memberships.length === 0 ? (
+          <p className={styles.empty}>{content.empty}</p>
+        ) : (
+          <PortalAccessList
+            access={access}
+            content={content}
+            permissionsContent={permissionsContent}
+            locale={locale}
+            busyId={busyId}
+            onReinvite={setInviteAssignmentId}
+            onRevokeInvitation={(id) => void revokeInvitation(id)}
+            onEditRoles={setEditingMembershipId}
+            onRevokeMembership={setRevokeMembershipId}
           />
-        </div>
-      </div>
-      {expanded ? (
-        <div className={styles.body} id={bodyId}>
-          <p className={styles.intro}>{content.intro}</p>
-          {access.invitations.length === 0 &&
-          access.memberships.length === 0 ? (
-            <p className={styles.empty}>{content.empty}</p>
-          ) : (
-            <PortalAccessList
-              access={access}
-              content={content}
-              permissionsContent={permissionsContent}
-              locale={locale}
-              busyId={busyId}
-              onReinvite={setInviteAssignmentId}
-              onRevokeInvitation={(id) => void revokeInvitation(id)}
-              onEditRoles={setEditingMembershipId}
-              onRevokeMembership={setRevokeMembershipId}
-            />
-          )}
-        </div>
-      ) : null}
+        )}
+      </CollapsibleSection>
       {error ? <p role="alert">{error}</p> : null}
       {inviteAssignmentId !== null ? (
         <PortalInviteDialog
@@ -158,6 +144,6 @@ export function PortalAccessSection({
           onConfirm={() => void revokeMembership(revokeMembershipId)}
         />
       ) : null}
-    </section>
+    </>
   );
 }

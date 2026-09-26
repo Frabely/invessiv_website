@@ -1,18 +1,15 @@
 "use client";
 
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import type { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import type { TaskDto } from "@invessiv/common/contracts/crm/task.dto";
 import { TASK_STATUS_ICONS } from "@/common/constants/crm/badges/task-status-icons";
-import { getMemberInitials } from "@/common/patterns/access/member-initials";
 import type { Locale } from "@/config/i18n";
 import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@/lib/i18n/format-message";
 import { taskDueStateService } from "@/lib/workspace/crm/task-due-state-service";
-import { TaskActionSideBadge } from "../task-action-side-badge/task-action-side-badge";
-import { TaskDueLabel } from "../task-due-label/task-due-label";
+import { TaskRowDetails } from "../task-row-details/task-row-details";
 import { TaskStatusSelect } from "../task-status-select/task-status-select";
 import styles from "./task-row.module.css";
 
@@ -48,50 +45,15 @@ export function TaskRow({
     { dueOn: task.dueOn, status },
     today,
   );
-  const assigneeLabel = assigneeName
-    ? formatMessage(content.row.assignee, { name: assigneeName })
-    : null;
   const details = (
-    <>
-      <span className={styles.main}>
-        <span className={styles.title}>{task.title}</span>
-        {task.description ? (
-          <span className={styles.description}>{task.description}</span>
-        ) : null}
-      </span>
-      <span className={styles.meta}>
-        <span className={styles.side}>
-          <TaskActionSideBadge actionSide={task.actionSide} content={content} />
-        </span>
-        <span className={styles.visibility}>
-          <FontAwesomeIcon
-            aria-hidden="true"
-            icon={task.visibleToCustomer ? faEye : faEyeSlash}
-          />
-          {task.visibleToCustomer
-            ? content.visibility.visible
-            : content.visibility.hidden}
-        </span>
-        {task.dueOn ? (
-          <span className={styles.due}>
-            <TaskDueLabel
-              content={content}
-              locale={locale}
-              task={{ dueOn: task.dueOn, status }}
-              today={today}
-            />
-          </span>
-        ) : null}
-        {assigneeName && assigneeLabel ? (
-          <span className={styles.assignee}>
-            <span aria-hidden="true" className={styles.initials}>
-              {getMemberInitials(assigneeName)}
-            </span>
-            {assigneeLabel}
-          </span>
-        ) : null}
-      </span>
-    </>
+    <TaskRowDetails
+      assigneeName={assigneeName}
+      content={content}
+      locale={locale}
+      status={status}
+      task={task}
+      today={today}
+    />
   );
 
   return (

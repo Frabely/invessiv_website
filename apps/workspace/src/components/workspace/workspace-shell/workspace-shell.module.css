@@ -124,6 +124,7 @@
 
 @media (min-width: 1024px) {
   .shell[data-has-navigation="true"] {
+    --workspace-sidebar-width: 64px;
     grid-template-columns: 64px minmax(0, 1fr);
   }
 

@@ -3,7 +3,6 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { CustomSelectSize } from "@invessiv/common/constants/ui/custom-select-sizes";
 import { CustomSelect } from "@invessiv/ui";
 
 const options = [
@@ -112,35 +111,5 @@ describe("CustomSelect single-select keyboard interaction", () => {
     fireEvent.click(trigger);
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
     expect(onChange).not.toHaveBeenCalled();
-  });
-});
-
-describe("CustomSelect compact size", () => {
-  it("keeps the selected label as tooltip and text while showing only the symbol", () => {
-    const onChange = vi.fn();
-    render(
-      <CustomSelect
-        ariaLabel="Status of Kickoff: Open"
-        id="status"
-        onChange={onChange}
-        options={[
-          { value: "open", label: "Open", leading: <span>○</span> },
-          { value: "done", label: "Done", leading: <span>●</span> },
-        ]}
-        size={CustomSelectSize.Compact}
-        value="open"
-      />,
-    );
-
-    const trigger = screen.getByRole("button", {
-      name: "Status of Kickoff: Open",
-    });
-    expect(trigger).toHaveAttribute("data-size", CustomSelectSize.Compact);
-    expect(trigger).toHaveAttribute("title", "Open");
-    expect(trigger).toHaveTextContent("Open");
-
-    fireEvent.keyDown(trigger, { key: "ArrowDown" });
-    fireEvent.click(screen.getByRole("option", { name: /Done/ }));
-    expect(onChange).toHaveBeenCalledWith("done");
   });
 });
