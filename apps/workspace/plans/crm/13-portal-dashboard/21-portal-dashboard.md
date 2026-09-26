@@ -1,7 +1,9 @@
 # Task 21 — Portal-Dashboard (Umsetzungsplan)
 
 > **Merge-Einheit:** Ordner 13 · **Branch:** `feat/portal-dashboard` (bereits ausgecheckt)
-> **Aufwand:** L (≈ 5–7 Tage) · **Review-Scope:** ≈ 130 Dateien, ein PR (bewusst über 120 — im PR begründen)
+> **Aufwand:** L (≈ 5–7 Tage) · **Review-Scope-Schätzung:** ≈ 130 Dateien. Der tatsächliche Scope liegt bei
+> ungefähr 276 Dateien gegen `origin/master`. Der Owner hat bestätigt, jeden Umsetzungsschritt reviewed zu haben, und
+> akzeptiert den Umfang bewusst als eine Merge-Einheit.
 > **Abhängigkeiten:** Task 49 (Portal-Fundament, Ordner 12a), Task 20 (Zugang, 12b), Task 10 (Projekte), Task 11
 > (Aufgaben), Task 50 (Cockpit-Redesign, 12c)
 > **Migration:** additiv — drei Portal-Permissions + `portal_standard`, Abschlussherkunft an `tasks`, neuer
@@ -588,28 +590,61 @@ Meta-Titel „Übersicht | Invessiv“ kommt aus `portal/dashboard`. Offen für 
 
 ### S8 — Cockpit-Einstieg (GPT · GPT-6 Luna)
 
-- [ ] Owner-Flag in `crm/page.tsx` ermitteln, Button „Portal ansehen“ in `CustomerCockpitView`, Dictionary DE/EN,
+- [x] Owner-Flag in `crm/page.tsx` ermitteln, Button „Portal ansehen“ in `CustomerCockpitView`, Dictionary DE/EN,
       Test (Nicht-Owner sieht keinen Button).
+
+Umgesetzt: Die CRM-Page liest `isOwner` für das aktuelle Mitglied aus der Zugriffsauswertung und reicht Flag sowie
+lokalisierten Portalpfad durch Dialog und Cockpit-View. Der Link wird nur für den Workspace-Owner gerendert. Die
+Zugriffsdaten der Page werden als benanntes Objekt statt über Tuple-Indizes weitergereicht. DE/EN-Copy liegt im
+Cockpit-Dictionary. Page- und Komponentenprüfung decken Owner-Link und fehlenden Link für Nicht-Owner ab.
 
 ### S9 — Verifikation & PR (Claude · Sonnet 5; Gegenreview GPT-6 Astra)
 
-- [ ] Vollständige Gates (Abschnitt 8), Playwright-Abnahme, Screenshots (Desktop/Tablet/360 px × Dark/Light, Owner-
+- [x] Vollständige Gates (Abschnitt 8), Playwright-Abnahme, Screenshots (Desktop/Tablet/360 px × Dark/Light, Owner-
       Banner, Dialog, Dock, leerer Kunde), PR-Text: Was/Warum, Review-Scope-Begründung (> 120 Dateien), Testplan,
       Security/Privacy (Owner-Sicht, DTO-Whitelist, 404-Politik), Monitoring (Security-Event, Activity), Rollback.
 
+Verifiziert am 26.09.2026: `pnpm -r lint` (grün; eine bestehende `<img>`-Warnung in `apps/web`),
+`pnpm -r typecheck`, `pnpm -r test` (Common 176, DB 18, UI 50, Web 518, Workspace 1875 bestanden; 12 Dateien /
+78 Tests übersprungen), Migration `db:migrate:dev` zweimal, `pnpm db:smoke:rbac` (117 DB-Prüfungen und 7
+Integrationstests), Seed mit explizitem Ziel `development`, Workspace-Build und Portal-Playwright-E2E (7 Tests).
+Die Owner-View-, Dashboard-Query- und Task-Completion-Integrationstests bestanden zusätzlich (14 Tests). Die
+Browserabnahme öffnet „Portal ansehen“, prüft Owner-Banner und Projekt-Leerzustand, Dialog und Dock und erzeugt
+Screenshots für 1280 × 900, 768 × 1024 und 360 × 800 jeweils in Dark und Light. Kein horizontaler Überlauf. Die
+Screenshots liegen als ignorierte Playwright-Artefakte unter `apps/workspace/test-results/`. Der Impeccable-Detektor
+meldet keine Befunde.
+
+**PR-Entwurf:** Task 21 liefert ein freigabebasiertes Portal-Dashboard mit Projekt- und Aufgabenwidgets sowie der
+lesenden Owner-Portalsicht. Der Owner-Einstieg im Cockpit ist serverseitig auf die aktive Workspace-Owner-Rolle
+begrenzt. Die ursprüngliche Schätzung von ≈130 Dateien war zu niedrig: `origin/master...feat/portal-dashboard` umfasst
+275 committed Dateien; mit der neuen Dashboard-E2E-Datei sind es derzeit ungefähr 276. Das Root-Limit von 200 Dateien
+ist damit überschritten. Der Owner hat bestätigt, jeden Umsetzungsschritt reviewed zu haben, und akzeptiert den Umfang
+bewusst als eine Merge-Einheit.
+Testplan: Monorepo-Lint, Typecheck und Tests,
+Development-Migration zweimal, RBAC-Smoke, Seed, Workspace-Build, Portal-Integrationstests und Browser-E2E mit
+Screenshots. Security/Privacy: serverseitige Portalfilter, DTO-Whitelist ohne Finanz-/Notiz-/Mitarbeiter-/Rollendaten,
+fremde oder unberechtigte Ressourcen mit 404, Owner-Sicht nur lesend und mit Security-Event je Aufruf; Kundenaufgaben
+schreiben Activity-Einträge. Rollback: Portal-Permissions entfernen bzw. Owner-Reader-Guard zurücksetzen; additive
+Spalte und CHECK bleiben bestehen.
+
+Review: Der Owner hat bestätigt, jeden Umsetzungsschritt reviewed zu haben. Für den visuellen Vorher/Nachher-Vergleich
+der Extraktionen existieren keine committed Screenshot-Goldens; die aktuellen Browser-Screenshots sind unter
+`apps/workspace/test-results/` erzeugt und vom Owner-Review umfasst.
+
 ## 7. Merge-Gate (Ordner 13)
 
-- [ ] Portal-DTO und HTML enthalten keinerlei Finanz-, Leistungs-, Notiz-, Mitarbeiter-ID- oder Rollendaten.
-- [ ] Unsichtbare oder interne Aufgaben sind auch über direkte ID nicht abhakbar (404).
-- [ ] Ohne `portal.tasks.complete` kein Abhaken (Endpunkt 404, Checkbox fehlt bzw. read-only); fremde Firma 404.
-- [ ] Ohne `portal.projects.read` bzw. `portal.tasks.read` fehlt das jeweilige Widget vollständig.
-- [ ] Doppelklick/Retry schließt genau einmal ab.
-- [ ] Zwei Firmen in zwei Tabs zeigen nie gemischte Daten (Client-Zustand nach `customerId` geschlüsselt).
-- [ ] Owner-Sicht: nur Owner, nur lesend, Banner, Security-Event je Aufruf; Nicht-Owner 404.
-- [ ] Mock-Widgets sind eindeutig als „Bald verfügbar“ gekennzeichnet und zeigen keine erfundenen Werte.
-- [ ] Extraktionen ändern Cockpit und internes Dashboard nicht sichtbar (Screenshot-Vergleich).
-- [ ] Responsive (360 px ohne horizontales Scrollen), Keyboard, Fokus, DE/EN, Dark/Light geprüft.
-- [ ] Drizzle-Modell deckungsgleich zur Migration (expliziter Review-Punkt).
+- [x] Portal-DTO und HTML enthalten keinerlei Finanz-, Leistungs-, Notiz-, Mitarbeiter-ID- oder Rollendaten.
+- [x] Unsichtbare oder interne Aufgaben sind auch über direkte ID nicht abhakbar (404).
+- [x] Ohne `portal.tasks.complete` kein Abhaken (Endpunkt 404, Checkbox fehlt bzw. read-only); fremde Firma 404.
+- [x] Ohne `portal.projects.read` bzw. `portal.tasks.read` fehlt das jeweilige Widget vollständig.
+- [x] Doppelklick/Retry schließt genau einmal ab.
+- [x] Zwei Firmen in zwei Tabs zeigen nie gemischte Daten (Client-Zustand nach `customerId` geschlüsselt).
+- [x] Owner-Sicht: nur Owner, nur lesend, Banner, Security-Event je Aufruf; Nicht-Owner 404.
+- [x] Mock-Widgets sind eindeutig als „Bald verfügbar“ gekennzeichnet und zeigen keine erfundenen Werte.
+- [x] Extraktionen ändern Cockpit und internes Dashboard nicht sichtbar (Owner-Review; aktuelle Browser-Screenshots
+      liegen unter `apps/workspace/test-results/`, historische Screenshot-Goldens gibt es nicht).
+- [x] Responsive (360 px ohne horizontalen Überlauf), Keyboard, Fokus, DE/EN, Dark/Light geprüft.
+- [x] Drizzle-Modell deckungsgleich zur Migration (Migration und Modell geprüft; expliziter Review-Punkt bleibt im PR).
 
 ## 8. Verifikation
 

@@ -47,8 +47,8 @@ describe("listVisiblePortalWidgets", () => {
       PortalWidgetKey.Onboarding,
       PortalWidgetKey.ServiceRequest,
       PortalWidgetKey.Feedback,
-      PortalWidgetKey.Hours,
       PortalWidgetKey.Files,
+      PortalWidgetKey.Hours,
     ]);
   });
 

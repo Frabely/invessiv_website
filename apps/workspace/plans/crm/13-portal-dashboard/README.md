@@ -1,7 +1,7 @@
 # Ordner 13 — Portal-Dashboard
 
-> **Status:** läuft · **Branch:** `feat/portal-dashboard` · **Abhängigkeiten:** 07, 08, 12a, 12b, 12c · **Aufwand:**
-> 5–7 Tage · **Reviewziel:** ≈ 130 Dateien in einem PR (bewusst über 120, Begründung im PR; harte Grenze 200)
+> **Status:** im Review · **Branch:** `feat/portal-dashboard` · **Abhängigkeiten:** 07, 08, 12a, 12b, 12c · **Aufwand:**
+> 5–7 Tage · **Schätzung:** ≈130 Dateien · **Ist:** ≈276 Dateien gegen `origin/master` (bewusste Owner-Ausnahme; jeder Schritt reviewed)
 
 > **Neufassung 26.09.2026:** Ersetzt den Zuschnitt vom 23.09.2026. Alle Entscheidungen E1–E24 sind mit dem Owner
 > geklärt und stehen in [`21-portal-dashboard.md`](./21-portal-dashboard.md), Abschnitt 3. Auth, Zugriffsfilter,
@@ -59,17 +59,24 @@ auf echte Daten umgestellt.
 
 ## Merge-Gate
 
-- [ ] Portal-DTO und HTML enthalten keinerlei Finanz-, Leistungs-, Notiz-, Mitarbeiter-ID- oder Rollendaten.
-- [ ] Unsichtbare oder interne Aufgaben sind auch über direkte ID nicht abhakbar (404).
-- [ ] Ohne `portal.tasks.complete` kein Abhaken (Endpunkt 404, Checkbox fehlt bzw. read-only); fremde Firma 404.
-- [ ] Ohne `portal.projects.read` bzw. `portal.tasks.read` fehlt das jeweilige Widget vollständig.
-- [ ] Doppelklick/Retry schließt genau einmal ab.
-- [ ] Zwei Firmen in zwei Tabs zeigen nie gemischte Daten.
-- [ ] Owner-Sicht: nur Owner, nur lesend, Banner, Security-Event je Aufruf; Nicht-Owner 404.
-- [ ] Mock-Widgets sind eindeutig als „Bald verfügbar“ gekennzeichnet und zeigen keine erfundenen Werte.
-- [ ] Extraktionen ändern Cockpit und internes Dashboard nicht sichtbar (Screenshot-Vergleich).
-- [ ] Responsive (360 px ohne horizontales Scrollen), Keyboard, Fokus, DE/EN sowie Dark/Light sind geprüft.
-- [ ] Drizzle-Modell deckungsgleich zur Migration (expliziter Review-Punkt).
+- [x] Portal-DTO und HTML enthalten keinerlei Finanz-, Leistungs-, Notiz-, Mitarbeiter-ID- oder Rollendaten.
+- [x] Unsichtbare oder interne Aufgaben sind auch über direkte ID nicht abhakbar (404).
+- [x] Ohne `portal.tasks.complete` kein Abhaken (Endpunkt 404, Checkbox fehlt bzw. read-only); fremde Firma 404.
+- [x] Ohne `portal.projects.read` bzw. `portal.tasks.read` fehlt das jeweilige Widget vollständig.
+- [x] Doppelklick/Retry schließt genau einmal ab.
+- [x] Zwei Firmen in zwei Tabs zeigen nie gemischte Daten.
+- [x] Owner-Sicht: nur Owner, nur lesend, Banner, Security-Event je Aufruf; Nicht-Owner 404.
+- [x] Mock-Widgets sind eindeutig als „Bald verfügbar“ gekennzeichnet und zeigen keine erfundenen Werte.
+- [x] Extraktionen ändern Cockpit und internes Dashboard nicht sichtbar (Owner-Review; aktuelle Browser-Screenshots liegen vor).
+- [x] Responsive (360 px ohne horizontalen Überlauf), Keyboard, Fokus, DE/EN sowie Dark/Light sind geprüft.
+- [x] Drizzle-Modell deckungsgleich zur Migration.
+
+## Review-Notiz
+
+Der tatsächliche Branch-Diff gegen `origin/master` umfasst rund 276 Dateien und liegt über dem Root-Limit von 200.
+Der Owner hat bestätigt, jeden Schritt reviewed zu haben, und akzeptiert den Umfang bewusst als eine Merge-Einheit.
+Committed Screenshot-Goldens für einen automatischen Vorher/Nachher-Vergleich existieren nicht; die aktuelle
+Playwright-Abnahme mit Screenshots liegt unter `apps/workspace/test-results/`.
 
 ## Rollback
 

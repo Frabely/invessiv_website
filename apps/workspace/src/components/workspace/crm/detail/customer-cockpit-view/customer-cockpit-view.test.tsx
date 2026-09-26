@@ -74,6 +74,37 @@ describe("CustomerCockpitView", () => {
     );
   });
 
+  it("shows the portal entry only to the workspace owner", () => {
+    const customer = customerDetailFixture();
+    const content = getCrmCockpitDictionary("en");
+    const { rerender } = render(
+      <CustomerCockpitView
+        content={content}
+        customer={customer}
+        locale="en"
+        isWorkspaceOwner={false}
+        portalHref="/en/portal/customer-1"
+      />,
+    );
+
+    expect(
+      screen.queryByRole("link", { name: content.portal.view }),
+    ).not.toBeInTheDocument();
+
+    rerender(
+      <CustomerCockpitView
+        content={content}
+        customer={customer}
+        locale="en"
+        isWorkspaceOwner
+        portalHref="/en/portal/customer-1"
+      />,
+    );
+    expect(
+      screen.getByRole("link", { name: content.portal.view }),
+    ).toHaveAttribute("href", "/en/portal/customer-1");
+  });
+
   it("shows real key figures only with data and roadmap figures without numbers", () => {
     const customer = customerDetailFixture();
     const content = getCrmCockpitDictionary("en");

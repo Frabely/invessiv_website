@@ -662,7 +662,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12b erreicht:
 | 08  | läuft     | `08-aufgaben`                            | Projektaufgaben im Cockpit, globale Übersicht und Dashboard-Block nutzbar       | 120–180 |  4–5 T. |
 | 12a | offen     | `12a-portal-fundament`                   | Portal-Schema, Actor, Gates, Zugriffshelfer, Shell und Flag unsichtbar deployt  |   60–80 |  3–4 T. |
 | 12b | läuft     | `12b-portal-zugang`                      | Einladung, Rollen je Kontakt, Widerruf und Mehrfirmenwechsel sicher nutzbar     |   60–80 |  3–4 T. |
-| 13  | läuft     | `13-portal-dashboard`                    | Widget-Dashboard mit Projekten, beiden Aufgabenseiten und Owner-Portalsicht     |    ≈130 |  5–7 T. |
+| 13  | im Review | `13-portal-dashboard`                    | Widget-Dashboard mit Projekten, beiden Aufgabenseiten und Owner-Portalsicht     |    ≈130 |  5–7 T. |
 | 13a | offen     | `13a-portal-leistungsanfragen`           | Preisfreie Leistungsanfragen im Portal, intern bearbeitbar                      |   60–80 |  3–4 T. |
 | 14  | offen     | `14-storage-und-upload`                  | Storage-Adapter und sichere Upload-Pipeline unsichtbar sicher deployt           |  70–100 |  4–5 T. |
 | 15  | offen     | `15-dateien-und-portal-downloads`        | Datei-UI, Freigabe, Portaldownload und ZIP vollständig nutzbar                  |  70–100 |  4–5 T. |

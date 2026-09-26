@@ -2,6 +2,9 @@
   "title": "Customer overview",
   "description": "A compact overview of this CRM customer.",
   "close": "Close",
+  "portal": {
+    "view": "View portal"
+  },
   "sections": {
     "status": "Status",
     "owner": "Owner",

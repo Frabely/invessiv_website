@@ -40,6 +40,7 @@ import { getLeadsSharedDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { requireWorkspaceArea } from "@/lib/auth/permissions";
 import {
   crmLineItemTemplatesPathFor,
+  portalPathFor,
   workspaceAreaPathFor,
 } from "@/lib/auth/routes";
 import { resolveCustomerCategoryOptions } from "@/lib/workspace/crm/customer-category-options";
@@ -199,8 +200,19 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
             customerId: cockpitCustomer.id,
             projectIds: cockpitProjects?.map((project) => project.id),
           }),
-        ])
+        ]).then(([scopes, projects, members, roles, responsibilityAccess]) => ({
+          scopes,
+          projects,
+          members,
+          roles,
+          responsibilityAccess,
+        }))
       : null;
+  const isWorkspaceOwner = Boolean(
+    customerAccessData?.members.some(
+      (member) => member.id === actor.workspaceMemberId && member.isOwner,
+    ),
+  );
   const rolesHref = buildSettingsTabHref(
     workspaceAreaPathFor(activeLocale, WorkspaceArea.Settings),
     SettingsTab.Roles,
@@ -279,18 +291,18 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
               ? getCrmAccessDictionary(activeLocale)
               : undefined
           }
-          accessMembers={customerAccessData?.[2]}
-          accessProjects={customerAccessData?.[1]}
-          accessRoles={customerAccessData?.[3]}
-          accessScopes={customerAccessData?.[0]}
+          accessMembers={customerAccessData?.members}
+          accessProjects={customerAccessData?.projects}
+          accessRoles={customerAccessData?.roles}
+          accessScopes={customerAccessData?.scopes}
           customerOwnerMemberId={
-            customerAccessData?.[4].targets.find(
+            customerAccessData?.responsibilityAccess.targets.find(
               (target) => target.entityId === `customer:${cockpitCustomer.id}`,
             )?.ownerMemberId
           }
           customerOwnerHasAccess={
             customerAccessData
-              ? !customerAccessData[4].inaccessibleEntityIds.has(
+              ? !customerAccessData.responsibilityAccess.inaccessibleEntityIds.has(
                   `customer:${cockpitCustomer.id}`,
                 )
               : undefined
@@ -298,6 +310,12 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
           closeHref={cockpitCloseHref}
           content={getCrmCockpitDictionary(activeLocale)}
           customer={cockpitCustomer}
+          isWorkspaceOwner={isWorkspaceOwner}
+          portalHref={
+            isWorkspaceOwner
+              ? portalPathFor(activeLocale, cockpitCustomer.id)
+              : undefined
+          }
           canWriteProjects={canAnywhere(actor, Permission.ProjectsWrite)}
           locale={activeLocale}
           projectLineItems={projectLineItemsViewModel ?? undefined}
@@ -312,7 +330,7 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
               ? Object.fromEntries(
                   cockpitProjects.map((project) => [
                     project.id,
-                    !customerAccessData[4].inaccessibleEntityIds.has(
+                    !customerAccessData.responsibilityAccess.inaccessibleEntityIds.has(
                       `project:${project.id}`,
                     ),
                   ]),

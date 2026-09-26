@@ -49,6 +49,8 @@ type CustomerCockpitViewProps = {
   accessMembers?: readonly WorkspaceMemberDto[];
   content: CrmCockpitDictionary;
   customer: CustomerCockpitDto;
+  isWorkspaceOwner?: boolean;
+  portalHref?: string;
   customerOwnerHasAccess?: boolean;
   customerOwnerMemberId?: string;
   locale: Locale;
@@ -76,6 +78,8 @@ export function CustomerCockpitView({
   accessScopes,
   content,
   customer,
+  isWorkspaceOwner = false,
+  portalHref,
   customerOwnerHasAccess,
   customerOwnerMemberId,
   locale,
@@ -145,6 +149,11 @@ export function CustomerCockpitView({
               </span>
               <h2 className={styles.customerName}>{customer.displayName}</h2>
             </div>
+          ) : null}
+          {isWorkspaceOwner && portalHref ? (
+            <a className={styles.portalLink} href={portalHref}>
+              {content.portal.view}
+            </a>
           ) : null}
           <dl className={styles.meta}>
             <div className={styles.metaItem}>

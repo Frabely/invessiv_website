@@ -33,6 +33,8 @@ type CustomerCockpitDialogProps = {
   closeHref: string;
   content: CrmCockpitDictionary;
   customer: CustomerCockpitDto;
+  isWorkspaceOwner?: boolean;
+  portalHref?: string;
   customerOwnerHasAccess?: boolean;
   customerOwnerMemberId?: string;
   locale: Locale;
@@ -58,6 +60,8 @@ export function CustomerCockpitDialog({
   closeHref,
   content,
   customer,
+  isWorkspaceOwner,
+  portalHref,
   customerOwnerHasAccess,
   customerOwnerMemberId,
   locale,
@@ -96,6 +100,8 @@ export function CustomerCockpitDialog({
         canWriteProjects={canWriteProjects}
         content={content}
         customer={customer}
+        isWorkspaceOwner={isWorkspaceOwner}
+        portalHref={portalHref}
         customerOwnerHasAccess={customerOwnerHasAccess}
         customerOwnerMemberId={customerOwnerMemberId}
         locale={locale}

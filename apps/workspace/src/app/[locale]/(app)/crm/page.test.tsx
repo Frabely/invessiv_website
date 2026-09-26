@@ -102,7 +102,21 @@ vi.mock(
 );
 vi.mock(
   "@/components/workspace/crm/detail/customer-cockpit-dialog/customer-cockpit-dialog",
-  () => ({ CustomerCockpitDialog: () => <div data-testid="cockpit" /> }),
+  () => ({
+    CustomerCockpitDialog: ({
+      isWorkspaceOwner,
+      portalHref,
+    }: {
+      isWorkspaceOwner?: boolean;
+      portalHref?: string;
+    }) => (
+      <div
+        data-owner={String(Boolean(isWorkspaceOwner))}
+        data-portal-href={portalHref ?? ""}
+        data-testid="cockpit"
+      />
+    ),
+  }),
 );
 vi.mock(
   "@/components/workspace/crm/shell/customers-page-header/customers-page-header",
@@ -251,6 +265,31 @@ describe("CrmPage", () => {
     expect(mocks.getCustomerCockpitById).toHaveBeenCalledWith(
       TEST_CUSTOMER_ID,
       expect.anything(),
+    );
+    expect(screen.getByTestId("cockpit")).toHaveAttribute(
+      "data-owner",
+      "false",
+    );
+    expect(screen.getByTestId("cockpit")).toHaveAttribute(
+      "data-portal-href",
+      "",
+    );
+  });
+
+  it("passes the portal entry only when the current member is the workspace owner", async () => {
+    const actor = workspaceActorWith();
+    mocks.requireWorkspaceArea.mockResolvedValue(actor);
+    mocks.listWorkspaceMembers.mockResolvedValue([
+      { id: actor.workspaceMemberId, isOwner: true },
+    ]);
+    mocks.getCustomerCockpitById.mockResolvedValue({ id: TEST_CUSTOMER_ID });
+
+    await renderPage({ cockpit: TEST_CUSTOMER_ID });
+
+    expect(screen.getByTestId("cockpit")).toHaveAttribute("data-owner", "true");
+    expect(screen.getByTestId("cockpit")).toHaveAttribute(
+      "data-portal-href",
+      `/de/portal/${TEST_CUSTOMER_ID}`,
     );
   });
 

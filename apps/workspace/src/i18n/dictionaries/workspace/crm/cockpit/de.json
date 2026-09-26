@@ -2,6 +2,9 @@
   "title": "Kundenansicht",
   "description": "Kompakter Überblick zu diesem CRM-Kunden.",
   "close": "Schließen",
+  "portal": {
+    "view": "Portal ansehen"
+  },
   "sections": {
     "status": "Status",
     "owner": "Zuständig",
