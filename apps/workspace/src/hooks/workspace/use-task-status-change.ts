@@ -87,7 +87,6 @@ export function useTaskStatusChange(content: CrmTasksDictionary) {
     announcement,
     changeStatus,
     isPending: (taskId: string) => pendingIds.has(taskId),
-    setAnnouncement,
     statusOf,
   };
 }

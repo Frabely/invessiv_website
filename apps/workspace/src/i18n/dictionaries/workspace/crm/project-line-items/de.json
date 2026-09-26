@@ -3,7 +3,9 @@
     "title": "Leistungen",
     "assignAction": "Leistung zuweisen",
     "count": "{count} Positionen",
-    "countOne": "1 Position"
+    "countOne": "1 Position",
+    "expandLabel": "Leistungen aufklappen",
+    "collapseLabel": "Leistungen zuklappen"
   },
   "values": {
     "oneTime": "Einmalzahlung",

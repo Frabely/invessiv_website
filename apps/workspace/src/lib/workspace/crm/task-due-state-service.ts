@@ -5,6 +5,7 @@ import {
   TASK_DUE_SOON_WINDOW_DAYS,
   TaskDueState,
 } from "@/common/constants/crm/task-due-states";
+import type { TaskSummary } from "@/common/contracts/crm/task-summary";
 
 const MILLISECONDS_PER_DAY = 86_400_000;
 
@@ -63,10 +64,25 @@ function dueState(
   return TaskDueState.None;
 }
 
+function summarize(
+  tasks: readonly { status: TaskStatus; dueOn: string | null }[],
+  today: string,
+): TaskSummary {
+  let open = 0;
+  let overdue = 0;
+  for (const task of tasks) {
+    if (!isStillOpen(task.status)) continue;
+    open += 1;
+    if (dueState(task, today) === TaskDueState.Overdue) overdue += 1;
+  }
+  return { open, overdue };
+}
+
 export const taskDueStateService = {
   isStillOpen,
   businessToday,
   addDays,
   daysBetween,
   dueState,
+  summarize,
 } as const;

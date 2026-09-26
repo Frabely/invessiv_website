@@ -153,6 +153,11 @@ describe("RoleFormDialog", () => {
     expect(
       screen.getByText(content.dialog.validation.nameRequired),
     ).toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: /Name/ })).toHaveFocus();
+    expect(screen.getByRole("textbox", { name: /Name/ })).toHaveAttribute(
+      "aria-invalid",
+      "true",
+    );
     expect(
       screen.getByRole("checkbox", { name: /^Mitglieder verwalten/ }),
     ).toBeDisabled();

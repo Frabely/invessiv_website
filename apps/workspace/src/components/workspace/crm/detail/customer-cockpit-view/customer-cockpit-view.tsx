@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
+import { faEnvelope, faUserTie } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { CustomerCockpitDto } from "@invessiv/common/contracts/crm/customer-cockpit.dto";
 import type { PortalAccessDto } from "@invessiv/common/contracts/crm/portal-access.dto";
 import { PortalAccessSection } from "@/components/workspace/crm/portal-access/portal-access-section/portal-access-section";
@@ -10,7 +12,10 @@ import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/ro
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import { CustomerProjectsSection } from "@/components/workspace/crm/projects/customer-projects-section/customer-projects-section";
 import { CustomerAccessSection } from "@/components/workspace/crm/detail/customer-access-section/customer-access-section";
+import { CustomerChatDock } from "@/components/workspace/crm/detail/customer-chat-dock/customer-chat-dock";
+import { MockSectionCard } from "@/components/workspace/crm/shared/mock-section-card/mock-section-card";
 import { OwnerWithoutAccessBadge } from "@/components/workspace/crm/shared/owner-without-access-badge/owner-without-access-badge";
+import { CustomerStatusBadge } from "@/components/workspace/crm/list/customer-status-badge/customer-status-badge";
 import { formatCustomerNumber } from "@invessiv/common/patterns/crm/format-customer-number";
 import type {
   CrmAccessDictionary,
@@ -24,8 +29,17 @@ import type { ProjectLineItemsViewModel } from "@/common/contracts/crm/project-l
 import type { TasksViewModel } from "@/common/contracts/crm/tasks-view-model";
 import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
 import type { Locale } from "@/config/i18n";
+import { formatMessage } from "@/lib/i18n/format-message";
 import { formatEuroCents } from "@/lib/workspace/crm/format-service-price";
+import { taskDueStateService } from "@/lib/workspace/crm/task-due-state-service";
 import styles from "./customer-cockpit-view.module.css";
+
+type FutureCustomerSection = keyof CrmCockpitDictionary["futureSections"];
+
+const COLLABORATION_MOCKS: readonly FutureCustomerSection[] = [
+  "files",
+  "hours",
+];
 
 type CustomerCockpitViewProps = {
   accessContent?: CrmAccessDictionary;
@@ -45,6 +59,8 @@ type CustomerCockpitViewProps = {
   projectLineItems?: ProjectLineItemsViewModel;
   projectLineItemsContent?: CrmProjectLineItemsDictionary;
   rolesHref?: string;
+  /** False inside the dialog, whose chrome already names the customer. */
+  showHeading?: boolean;
   tasks?: TasksViewModel;
   tasksContent?: CrmTasksDictionary;
   portalAccess?: PortalAccessDto;
@@ -70,6 +86,7 @@ export function CustomerCockpitView({
   projectLineItems,
   projectLineItemsContent,
   rolesHref,
+  showHeading = true,
   tasks,
   tasksContent,
   portalAccess,
@@ -78,6 +95,8 @@ export function CustomerCockpitView({
   const [requestedAccessMemberId, setRequestedAccessMemberId] = useState<
     string | null
   >(null);
+  const collaborationLabelId = useId();
+  const accessSecurityLabelId = useId();
   const canOpenAccessDialog = Boolean(
     accessContent &&
     accessMembers &&
@@ -93,107 +112,224 @@ export function CustomerCockpitView({
       (member) => member.id === customerOwnerMemberId && member.active,
     ),
   );
+  const taskSummary = tasks
+    ? taskDueStateService.summarize(tasks.tasks, tasks.today)
+    : null;
+
+  function renderMock(section: FutureCustomerSection) {
+    const future = content.futureSections[section];
+    return (
+      <MockSectionCard
+        badgeLabel={content.mock.badge}
+        body={future.body}
+        key={section}
+        labelCollapse={formatMessage(content.collapse.collapse, {
+          section: future.title,
+        })}
+        labelExpand={formatMessage(content.collapse.expand, {
+          section: future.title,
+        })}
+        title={future.title}
+      />
+    );
+  }
 
   return (
     <div className={styles.view}>
-      <header className={styles.hero}>
-        <span className={styles.number}>
-          {formatCustomerNumber(customer.customerNumber)}
-        </span>
-        <h2 className={styles.customerName}>{customer.displayName}</h2>
-        {projectLineItems && projectLineItemsContent ? (
-          <p className={styles.number}>
-            {projectLineItems.customerValue.oneTimeCents > 0
-              ? `${projectLineItemsContent.values.oneTime}: ${formatEuroCents(projectLineItems.customerValue.oneTimeCents, locale)}`
-              : null}
-            {projectLineItems.customerValue.monthlyCents > 0
-              ? ` · ${projectLineItemsContent.values.monthly}: ${formatEuroCents(projectLineItems.customerValue.monthlyCents, locale)}`
-              : null}
-          </p>
-        ) : null}
-      </header>
-      <div className={styles.grid}>
-        <section className={styles.section}>
-          <h3>{content.sections.status}</h3>
-          <p>{content.status[customer.status]}</p>
-        </section>
-        <section className={styles.section}>
-          <h3>{content.sections.owner}</h3>
-          <p>{customer.ownerDisplayName}</p>
-          {customerOwnerHasAccess === false &&
-          customerOwnerMemberId &&
-          canOpenAccessDialog ? (
-            <OwnerWithoutAccessBadge
-              content={content.ownerAccess}
-              onGrantAccessAction={
-                canGrantCustomerOwnerAccess
-                  ? () => setRequestedAccessMemberId(customerOwnerMemberId)
-                  : undefined
-              }
-            />
+      <div className={styles.content}>
+        <header className={styles.head}>
+          {showHeading ? (
+            <div className={styles.identity}>
+              <span className={styles.number}>
+                {formatCustomerNumber(customer.customerNumber)}
+              </span>
+              <h2 className={styles.customerName}>{customer.displayName}</h2>
+            </div>
           ) : null}
-        </section>
-        <section className={`${styles.section} ${styles.contact}`}>
-          <h3>{content.sections.primaryContact}</h3>
-          <p>{customer.primaryContactName}</p>
-          {customer.primaryContactEmail ? (
-            <a href={`mailto:${customer.primaryContactEmail}`}>
-              {customer.primaryContactEmail}
-            </a>
-          ) : (
-            <p className={styles.empty}>{content.noEmail}</p>
-          )}
-        </section>
+          <dl className={styles.meta}>
+            <div className={styles.metaItem}>
+              <dt>{content.sections.status}</dt>
+              <dd>
+                <CustomerStatusBadge
+                  label={content.status[customer.status]}
+                  status={customer.status}
+                />
+              </dd>
+            </div>
+            <div className={styles.metaItem}>
+              <dt>{content.sections.owner}</dt>
+              <dd>
+                <FontAwesomeIcon
+                  aria-hidden="true"
+                  className={styles.metaIcon}
+                  icon={faUserTie}
+                />
+                {customer.ownerDisplayName}
+                {customerOwnerHasAccess === false &&
+                customerOwnerMemberId &&
+                canOpenAccessDialog ? (
+                  <OwnerWithoutAccessBadge
+                    content={content.ownerAccess}
+                    onGrantAccessAction={
+                      canGrantCustomerOwnerAccess
+                        ? () =>
+                            setRequestedAccessMemberId(customerOwnerMemberId)
+                        : undefined
+                    }
+                  />
+                ) : null}
+              </dd>
+            </div>
+            <div className={styles.metaItem}>
+              <dt>{content.sections.primaryContact}</dt>
+              <dd>
+                <FontAwesomeIcon
+                  aria-hidden="true"
+                  className={styles.metaIcon}
+                  icon={faEnvelope}
+                />
+                <span>{customer.primaryContactName}</span>
+                {customer.primaryContactEmail ? (
+                  <a href={`mailto:${customer.primaryContactEmail}`}>
+                    {customer.primaryContactEmail}
+                  </a>
+                ) : (
+                  <span className={styles.empty}>{content.noEmail}</span>
+                )}
+              </dd>
+            </div>
+          </dl>
+          <ul aria-label={content.kpis.label} className={styles.kpis}>
+            {projectLineItems && projectLineItemsContent ? (
+              <li className={styles.kpi}>
+                <span className={styles.kpiLabel}>
+                  {content.kpis.customerValue}
+                </span>
+                <span className={styles.kpiValue}>
+                  {formatEuroCents(
+                    projectLineItems.customerValue.oneTimeCents,
+                    locale,
+                  )}
+                </span>
+                <span className={styles.kpiNote}>
+                  {content.kpis.oneTime}
+                  {projectLineItems.customerValue.monthlyCents > 0
+                    ? ` + ${formatEuroCents(projectLineItems.customerValue.monthlyCents, locale)} ${content.kpis.monthly}`
+                    : null}
+                </span>
+              </li>
+            ) : null}
+            {taskSummary ? (
+              <li className={styles.kpi}>
+                <span className={styles.kpiLabel}>
+                  {content.kpis.openTasks}
+                </span>
+                <span className={styles.kpiValue}>{taskSummary.open}</span>
+                {taskSummary.overdue > 0 ? (
+                  <span className={styles.kpiNote} data-tone="attention">
+                    {formatMessage(content.kpis.overdueTasks, {
+                      count: String(taskSummary.overdue),
+                    })}
+                  </span>
+                ) : null}
+              </li>
+            ) : null}
+            {[content.kpis.hoursLeft, content.kpis.openFeedback].map(
+              (label) => (
+                <li className={styles.kpi} data-mock="true" key={label}>
+                  <span className={styles.kpiLabel}>{label}</span>
+                  <span className={styles.kpiValue}>
+                    {content.kpis.mockValue}
+                  </span>
+                  <span className={styles.kpiNote}>{content.mock.badge}</span>
+                </li>
+              ),
+            )}
+          </ul>
+        </header>
+        <div className={styles.columns}>
+          <div className={styles.main}>
+            {projects ? (
+              <CustomerProjectsSection
+                accessMembers={accessMembers}
+                canWrite={canWriteProjects}
+                content={content}
+                customerId={customer.id}
+                locale={locale}
+                onGrantAccessAction={setRequestedAccessMemberId}
+                ownerHasAccess={projectOwnerHasAccess}
+                projectLineItems={projectLineItems}
+                projectLineItemsContent={projectLineItemsContent}
+                projects={projects}
+                tasks={tasks}
+                tasksContent={tasksContent}
+              />
+            ) : null}
+          </div>
+          <div className={styles.aside}>
+            <div
+              aria-labelledby={collaborationLabelId}
+              className={styles.group}
+              role="group"
+            >
+              <p className={styles.groupLabel} id={collaborationLabelId}>
+                {content.groups.collaboration}
+              </p>
+              {COLLABORATION_MOCKS.map(renderMock)}
+            </div>
+            <div
+              aria-labelledby={accessSecurityLabelId}
+              className={styles.group}
+              role="group"
+            >
+              <p className={styles.groupLabel} id={accessSecurityLabelId}>
+                {content.groups.accessSecurity}
+              </p>
+              {portalAccess && portalAccessContent && permissionsContent ? (
+                <PortalAccessSection
+                  access={portalAccess}
+                  content={portalAccessContent}
+                  permissionsContent={permissionsContent}
+                  locale={locale}
+                />
+              ) : null}
+              {accessContent &&
+              accessMembers &&
+              accessProjects &&
+              accessRoles &&
+              accessScopes &&
+              permissionsContent &&
+              rolesHref ? (
+                <CustomerAccessSection
+                  accessScopes={accessScopes}
+                  content={accessContent}
+                  customer={{
+                    id: customer.id,
+                    customerNumber: customer.customerNumber,
+                    displayName: customer.displayName,
+                  }}
+                  key={requestedAccessMemberId ?? "customer-access"}
+                  members={accessMembers}
+                  permissionsContent={permissionsContent}
+                  projects={accessProjects}
+                  roles={accessRoles}
+                  rolesHref={rolesHref}
+                  requestedMemberId={requestedAccessMemberId}
+                  onRequestedDialogCloseAction={() =>
+                    setRequestedAccessMemberId(null)
+                  }
+                />
+              ) : null}
+              {renderMock("credentials")}
+            </div>
+          </div>
+        </div>
       </div>
-      {projects ? (
-        <CustomerProjectsSection
-          accessMembers={accessMembers}
-          canWrite={canWriteProjects}
-          content={content}
-          customerId={customer.id}
-          locale={locale}
-          onGrantAccessAction={setRequestedAccessMemberId}
-          ownerHasAccess={projectOwnerHasAccess}
-          projectLineItems={projectLineItems}
-          projectLineItemsContent={projectLineItemsContent}
-          projects={projects}
-          tasks={tasks}
-          tasksContent={tasksContent}
-        />
-      ) : null}
-      {portalAccess && portalAccessContent && permissionsContent ? (
-        <PortalAccessSection
-          access={portalAccess}
-          content={portalAccessContent}
-          permissionsContent={permissionsContent}
-          locale={locale}
-        />
-      ) : null}
-      {accessContent &&
-      accessMembers &&
-      accessProjects &&
-      accessRoles &&
-      accessScopes &&
-      permissionsContent &&
-      rolesHref ? (
-        <CustomerAccessSection
-          accessScopes={accessScopes}
-          content={accessContent}
-          customer={{
-            id: customer.id,
-            customerNumber: customer.customerNumber,
-            displayName: customer.displayName,
-          }}
-          key={requestedAccessMemberId ?? "customer-access"}
-          members={accessMembers}
-          permissionsContent={permissionsContent}
-          projects={accessProjects}
-          roles={accessRoles}
-          rolesHref={rolesHref}
-          requestedMemberId={requestedAccessMemberId}
-          onRequestedDialogCloseAction={() => setRequestedAccessMemberId(null)}
-        />
-      ) : null}
+      <CustomerChatDock
+        badgeLabel={content.mock.badge}
+        className={styles.chat}
+        content={content.chat}
+      />
     </div>
   );
 }

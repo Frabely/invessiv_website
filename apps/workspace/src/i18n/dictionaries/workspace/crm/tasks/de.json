@@ -8,20 +8,13 @@
     "closedAriaLabel": "Abgeschlossene Aufgaben dieses Projekts",
     "showClosed": "{count} abgeschlossene anzeigen",
     "showClosedOne": "1 abgeschlossene anzeigen",
-    "hideClosed": "Abgeschlossene ausblenden"
-  },
-  "quickCreate": {
-    "label": "Neue Aufgabe",
-    "placeholder": "Aufgabe eintippen, Enter legt sie an",
-    "hint": "Fälligkeit, Bearbeiter und „Kunde ist dran“ stellst du danach über die Aufgabe ein.",
-    "error": "Die Aufgabe konnte nicht angelegt werden. Bitte versuche es erneut.",
-    "validation": {
-      "titleRequired": "Gib einen Aufgabentitel ein."
-    }
+    "hideClosed": "Abgeschlossene ausblenden",
+    "expandLabel": "Aufgaben aufklappen",
+    "collapseLabel": "Aufgaben zuklappen"
   },
   "empty": {
     "title": "Noch keine Aufgaben",
-    "description": "Hier steht, was im Projekt zu tun ist und was der Kunde beisteuern muss. Tippe eine Zeile und drücke Enter, dann ist die erste Aufgabe angelegt."
+    "description": "Hier steht, was im Projekt zu tun ist und was der Kunde beisteuern muss. Lege über „Aufgabe anlegen“ die erste Aufgabe an."
   },
   "emptyReadOnly": {
     "title": "Noch keine Aufgaben",
@@ -57,7 +50,6 @@
     "none": "Ohne Fälligkeit"
   },
   "announce": {
-    "created": "Aufgabe „{name}“ angelegt.",
     "statusChanged": "„{name}“ ist jetzt {status}.",
     "statusFailed": "Der Status von „{name}“ konnte nicht geändert werden."
   },

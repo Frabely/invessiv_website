@@ -7,7 +7,7 @@
   max-height: none;
   box-sizing: border-box;
   margin: 0;
-  padding: calc(var(--workspace-header-height, 60px) + 1rem)
+  padding: calc(var(--workspace-header-height, 68px) + 1rem)
     clamp(0.75rem, 2vw, 2rem) 1rem;
   border: 0;
   overflow: hidden;
@@ -42,11 +42,21 @@
   width: min(840px, 100%);
 }
 
+.dialog:has(.surface[data-size="full"]) {
+  padding: var(--workspace-header-height, 68px) 0 0;
+}
+
 .surface[data-size="full"] {
   width: 100%;
   height: 100%;
   max-height: none;
+  border: 0;
   border-radius: 0;
+  box-shadow: none;
+}
+
+.surface[data-size="full"] > .body {
+  padding: 0;
 }
 
 .header {
@@ -139,6 +149,10 @@
   .dialog {
     align-items: stretch;
     padding: 0.5rem;
+  }
+
+  .dialog:has(.surface[data-size="full"]) {
+    padding: var(--workspace-header-height, 64px) 0 0;
   }
 
   .surface {

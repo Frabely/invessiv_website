@@ -103,6 +103,12 @@ function renderSection() {
   );
 }
 
+function expandSection() {
+  fireEvent.click(
+    screen.getByRole("button", { name: content.section.expandLabel }),
+  );
+}
+
 describe("CustomerAccessSection", () => {
   beforeEach(() => {
     Object.values(mocks).forEach((mock) => mock.mockReset());
@@ -113,6 +119,7 @@ describe("CustomerAccessSection", () => {
 
   it("groups customer access and keeps projects without direct assignments visible", () => {
     renderSection();
+    expandSection();
 
     expect(
       screen.getByRole("heading", { name: content.section.wholeCustomer }),
@@ -130,6 +137,9 @@ describe("CustomerAccessSection", () => {
 
   it("preselects the customer and hides customer search when granting access", () => {
     renderSection();
+    expect(
+      screen.queryByRole("heading", { name: content.section.wholeCustomer }),
+    ).toBeNull();
     fireEvent.click(
       screen.getByRole("button", { name: content.section.giveAccess }),
     );
@@ -172,6 +182,7 @@ describe("CustomerAccessSection", () => {
       member: { ...member, accessScopeCount: 0, version: 3 },
     });
     renderSection();
+    expandSection();
 
     fireEvent.click(
       screen.getByRole("button", {

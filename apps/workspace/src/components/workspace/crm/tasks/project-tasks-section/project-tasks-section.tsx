@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
+import { faClipboardList } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import type { TaskDto } from "@invessiv/common/contracts/crm/task.dto";
 import { PrimaryCtaButton } from "@invessiv/ui";
@@ -10,8 +12,8 @@ import { useTaskStatusChange } from "@/hooks/workspace/use-task-status-change";
 import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@/lib/i18n/format-message";
 import { taskDueStateService } from "@/lib/workspace/crm/task-due-state-service";
+import { SectionCollapseToggle } from "@/components/workspace/crm/shared/section-collapse-toggle/section-collapse-toggle";
 import { TaskFormDialog } from "../task-form-dialog/task-form-dialog";
-import { TaskQuickCreate } from "../task-quick-create/task-quick-create";
 import { TaskRow } from "../task-row/task-row";
 import styles from "./project-tasks-section.module.css";
 
@@ -44,6 +46,8 @@ export function ProjectTasksSection({
   const [editing, setEditing] = useState<TaskDto | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [showClosed, setShowClosed] = useState(false);
+  const [expanded, setExpanded] = useState(true);
+  const bodyId = useId();
 
   const isOpen = (task: TaskDto) =>
     taskDueStateService.isStillOpen(statusChange.statusOf(task));
@@ -94,67 +98,78 @@ export function ProjectTasksSection({
             </span>
           ) : null}
           {canWrite ? (
-            <PrimaryCtaButton onClick={() => openDialog(null)} type="button">
+            <PrimaryCtaButton
+              className={styles.actionButton}
+              onClick={() => openDialog(null)}
+              type="button"
+            >
+              <FontAwesomeIcon aria-hidden="true" icon={faClipboardList} />
               {content.section.addAction}
             </PrimaryCtaButton>
           ) : null}
+          <SectionCollapseToggle
+            controls={bodyId}
+            expanded={expanded}
+            labelCollapse={content.section.collapseLabel}
+            labelExpand={content.section.expandLabel}
+            onToggleAction={() => setExpanded((current) => !current)}
+          />
         </div>
       </header>
 
-      {canWrite ? (
-        <TaskQuickCreate
-          content={content}
-          onAnnounceAction={statusChange.setAnnouncement}
-          projectId={projectId}
-        />
-      ) : null}
-
-      {tasks.length === 0 ? (
-        <div className={styles.empty}>
-          <p className={styles.emptyTitle}>
-            {canWrite ? content.empty.title : content.emptyReadOnly.title}
-          </p>
-          <p className={styles.emptyText}>
-            {canWrite
-              ? content.empty.description
-              : content.emptyReadOnly.description}
-          </p>
-        </div>
-      ) : (
-        <>
-          {openTasks.length > 0 ? (
-            <ul aria-label={content.section.ariaLabel} className={styles.list}>
-              {openTasks.map(renderRow)}
-            </ul>
-          ) : null}
-          {closedTasks.length > 0 ? (
-            <div className={styles.closed}>
-              <button
-                aria-expanded={showClosed}
-                className={styles.toggle}
-                onClick={() => setShowClosed((current) => !current)}
-                type="button"
-              >
-                {showClosed
-                  ? content.section.hideClosed
-                  : closedTasks.length === 1
-                    ? content.section.showClosedOne
-                    : formatMessage(content.section.showClosed, {
-                        count: String(closedTasks.length),
-                      })}
-              </button>
-              {showClosed ? (
+      {expanded ? (
+        <div className={styles.body} id={bodyId}>
+          {tasks.length === 0 ? (
+            <div className={styles.empty}>
+              <p className={styles.emptyTitle}>
+                {canWrite ? content.empty.title : content.emptyReadOnly.title}
+              </p>
+              <p className={styles.emptyText}>
+                {canWrite
+                  ? content.empty.description
+                  : content.emptyReadOnly.description}
+              </p>
+            </div>
+          ) : (
+            <>
+              {openTasks.length > 0 ? (
                 <ul
-                  aria-label={content.section.closedAriaLabel}
+                  aria-label={content.section.ariaLabel}
                   className={styles.list}
                 >
-                  {closedTasks.map(renderRow)}
+                  {openTasks.map(renderRow)}
                 </ul>
               ) : null}
-            </div>
-          ) : null}
-        </>
-      )}
+              {closedTasks.length > 0 ? (
+                <div className={styles.closed}>
+                  <button
+                    aria-expanded={showClosed}
+                    className={styles.toggle}
+                    onClick={() => setShowClosed((current) => !current)}
+                    type="button"
+                  >
+                    {showClosed
+                      ? content.section.hideClosed
+                      : closedTasks.length === 1
+                        ? content.section.showClosedOne
+                        : formatMessage(content.section.showClosed, {
+                            count: String(closedTasks.length),
+                          })}
+                  </button>
+                  {showClosed ? (
+                    <ul
+                      aria-label={content.section.closedAriaLabel}
+                      className={styles.list}
+                    >
+                      {closedTasks.map(renderRow)}
+                    </ul>
+                  ) : null}
+                </div>
+              ) : null}
+            </>
+          )}
+        </div>
+      ) : null}
 
       <p aria-live="polite" className="sr-only" role="status">
         {statusChange.announcement}

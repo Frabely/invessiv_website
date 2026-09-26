@@ -11,7 +11,9 @@
     "removeLabel": "Remove {role} access for {member} from {scope}",
     "removeConflict": "Someone just changed this member's access. The current state was loaded; try removing it again.",
     "giveAccess": "Give access",
-    "emptyMembers": "There is no active member who can receive access here."
+    "emptyMembers": "There is no active member who can receive access here.",
+    "expandLabel": "Expand access",
+    "collapseLabel": "Collapse access"
   },
   "dialog": {
     "title": "Give access",

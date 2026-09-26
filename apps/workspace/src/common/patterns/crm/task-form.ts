@@ -71,11 +71,3 @@ export function toUpdateTaskRequest(
     version: current.version,
   };
 }
-
-/** What Enter in the quick-create field sends: an internal, invisible task for the project owner. */
-export function toQuickCreateTaskRequest(title: string): CreateTaskRequestDto {
-  return toCreateTaskRequest({
-    ...createTaskFormValues(null),
-    title,
-  });
-}

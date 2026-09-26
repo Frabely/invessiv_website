@@ -29,9 +29,10 @@ test.describe("task writer", () => {
     await page
       .getByRole("tab", { name: taskProjectTitle, exact: true })
       .click();
-    const quickCreate = page.getByRole("textbox", { name: "Neue Aufgabe" });
-    await quickCreate.fill(taskTitle);
-    await quickCreate.press("Enter");
+    await page.getByRole("button", { name: "Aufgabe anlegen" }).click();
+    const dialog = page.getByRole("dialog", { name: "Aufgabe anlegen" });
+    await dialog.getByRole("textbox", { name: /Titel/ }).fill(taskTitle);
+    await dialog.getByRole("button", { name: "Aufgabe anlegen" }).click();
 
     await expect(page.getByText(taskTitle, { exact: true })).toBeVisible();
 

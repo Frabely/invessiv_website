@@ -3,7 +3,9 @@
     "title": "Services",
     "assignAction": "Assign service",
     "count": "{count} items",
-    "countOne": "1 item"
+    "countOne": "1 item",
+    "expandLabel": "Expand services",
+    "collapseLabel": "Collapse services"
   },
   "values": {
     "oneTime": "One-time payment",

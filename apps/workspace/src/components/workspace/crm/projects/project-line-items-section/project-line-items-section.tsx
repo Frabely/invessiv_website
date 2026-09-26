@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import Link from "next/link";
+import { faTag } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { ProjectLineItemStatus } from "@invessiv/common/constants/crm/project-line-item-statuses";
@@ -13,6 +15,7 @@ import type { Locale } from "@/config/i18n";
 import type { CrmProjectLineItemsDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@/lib/i18n/format-message";
 import { formatEuroCents } from "@/lib/workspace/crm/format-service-price";
+import { SectionCollapseToggle } from "@/components/workspace/crm/shared/section-collapse-toggle/section-collapse-toggle";
 import { ProjectLineItemFormDialog } from "../project-line-item-form-dialog/project-line-item-form-dialog";
 import styles from "./project-line-items-section.module.css";
 
@@ -60,6 +63,8 @@ export function ProjectLineItemsSection({
 }: ProjectLineItemsSectionProps) {
   const [editing, setEditing] = useState<ProjectLineItemDto | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const bodyId = useId();
 
   function openDialog(service: ProjectLineItemDto | null) {
     setEditing(service);
@@ -97,6 +102,16 @@ export function ProjectLineItemsSection({
     <section aria-labelledby="project-line-items" className={styles.services}>
       <header className={styles.head}>
         <h3 id="project-line-items">{content.section.title}</h3>
+        <dl className={styles.values}>
+          <div className={styles.value}>
+            <dt>{content.values.oneTime}:</dt>
+            <dd>{formatEuroCents(value.oneTimeCents, locale)}</dd>
+          </div>
+          <div className={styles.value}>
+            <dt>{content.values.monthly}:</dt>
+            <dd>{formatEuroCents(value.monthlyCents, locale)}</dd>
+          </div>
+        </dl>
         <div className={styles.headMeta}>
           {services.length > 0 ? (
             <span className={styles.count}>
@@ -108,61 +123,70 @@ export function ProjectLineItemsSection({
             </span>
           ) : null}
           {canWrite ? (
-            <PrimaryCtaButton onClick={() => openDialog(null)} type="button">
+            <PrimaryCtaButton
+              className={styles.actionButton}
+              onClick={() => openDialog(null)}
+              type="button"
+            >
+              <FontAwesomeIcon aria-hidden="true" icon={faTag} />
               {content.section.assignAction}
             </PrimaryCtaButton>
           ) : null}
+          <SectionCollapseToggle
+            controls={bodyId}
+            expanded={expanded}
+            labelCollapse={content.section.collapseLabel}
+            labelExpand={content.section.expandLabel}
+            onToggleAction={() => setExpanded((current) => !current)}
+          />
         </div>
       </header>
-      {value.oneTimeCents > 0 || value.monthlyCents > 0 ? (
-        <p className={styles.count}>
-          {value.oneTimeCents > 0
-            ? `${content.values.oneTime}: ${formatEuroCents(value.oneTimeCents, locale)}`
-            : null}
-          {value.monthlyCents > 0
-            ? ` · ${content.values.monthly}: ${formatEuroCents(value.monthlyCents, locale)}`
-            : null}
-        </p>
-      ) : null}
-
-      {services.length === 0 ? (
-        <div className={styles.empty}>
-          <p className={styles.emptyTitle}>
-            {canWrite ? content.empty.title : content.emptyReadOnly.title}
-          </p>
-          <p className={styles.emptyText}>
-            {canWrite
-              ? content.empty.description
-              : content.emptyReadOnly.description}
-          </p>
-          {canWrite && catalogHref && templates.length === 0 ? (
-            <ButtonLink href={catalogHref} linkComponent={Link} variant="ghost">
-              {content.form.noTemplates.action}
-            </ButtonLink>
-          ) : null}
-        </div>
-      ) : (
-        <ul aria-label={content.list.ariaLabel} className={styles.ledger}>
-          {services.map((service) => (
-            <li className={styles.item} key={service.id}>
-              {canWrite ? (
-                <button
-                  aria-label={formatMessage(content.list.editNamed, {
-                    name: service.title,
-                  })}
-                  className={styles.row}
-                  onClick={() => openDialog(service)}
-                  type="button"
+      {expanded ? (
+        <div className={styles.body} id={bodyId}>
+          {services.length === 0 ? (
+            <div className={styles.empty}>
+              <p className={styles.emptyTitle}>
+                {canWrite ? content.empty.title : content.emptyReadOnly.title}
+              </p>
+              <p className={styles.emptyText}>
+                {canWrite
+                  ? content.empty.description
+                  : content.emptyReadOnly.description}
+              </p>
+              {canWrite && catalogHref && templates.length === 0 ? (
+                <ButtonLink
+                  href={catalogHref}
+                  linkComponent={Link}
+                  variant="ghost"
                 >
-                  {renderLine(service)}
-                </button>
-              ) : (
-                <div className={styles.row}>{renderLine(service)}</div>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
+                  {content.form.noTemplates.action}
+                </ButtonLink>
+              ) : null}
+            </div>
+          ) : (
+            <ul aria-label={content.list.ariaLabel} className={styles.ledger}>
+              {services.map((service) => (
+                <li className={styles.item} key={service.id}>
+                  {canWrite ? (
+                    <button
+                      aria-label={formatMessage(content.list.editNamed, {
+                        name: service.title,
+                      })}
+                      className={styles.row}
+                      onClick={() => openDialog(service)}
+                      type="button"
+                    >
+                      {renderLine(service)}
+                    </button>
+                  ) : (
+                    <div className={styles.row}>{renderLine(service)}</div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      ) : null}
 
       {dialogOpen && canWrite ? (
         <ProjectLineItemFormDialog

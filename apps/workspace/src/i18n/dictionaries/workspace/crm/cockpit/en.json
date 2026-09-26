@@ -8,7 +8,11 @@
     "primaryContact": "Primary contact",
     "projects": "Projects"
   },
-  "status": { "active": "Active", "paused": "Paused", "archived": "Archived" },
+  "status": {
+    "active": "Active",
+    "paused": "Paused",
+    "archived": "Archived"
+  },
   "noEmail": "No email address saved.",
   "openAction": "Open customer overview",
   "openActionAriaLabel": "Open customer overview for {name}",
@@ -35,12 +39,8 @@
     "formDescription": "Set the status and process steps. Both can be adjusted later.",
     "empty": "No projects have been created for this customer yet.",
     "phase": "Phase",
+    "phaseProgress": "Step {current} of {total}",
     "owner": "Owner",
-    "comingSoon": "Chat will follow in this project.",
-    "areas": {
-      "services": "Services",
-      "chat": "Project chat"
-    },
     "status": {
       "planned": "Planned",
       "active": "Active",
@@ -56,6 +56,63 @@
       "feedback": "Feedback",
       "launch": "Launch",
       "maintenance": "Maintenance"
+    },
+    "tabsLabel": "This customer’s projects",
+    "futureAreas": {
+      "feedback": {
+        "title": "Feedback rounds",
+        "body": "Soon the customer’s feedback rounds land here with text, files and status – and how many rounds are left."
+      },
+      "onboarding": {
+        "title": "Onboarding form",
+        "body": "Soon you can read the onboarding form the customer fills in on the portal here and reuse their answers in one click."
+      }
     }
+  },
+  "mock": {
+    "badge": "Coming soon"
+  },
+  "collapse": {
+    "expand": "Expand {section}",
+    "collapse": "Collapse {section}"
+  },
+  "kpis": {
+    "label": "Key figures",
+    "customerValue": "Customer value",
+    "oneTime": "one-time",
+    "monthly": "per month",
+    "openTasks": "Open tasks overall",
+    "overdueTasks": "{count} overdue",
+    "hoursLeft": "Hours left",
+    "openFeedback": "Open feedback",
+    "mockValue": "—"
+  },
+  "groups": {
+    "collaboration": "Collaboration",
+    "accessSecurity": "Access & security"
+  },
+  "futureSections": {
+    "files": {
+      "title": "Files & media",
+      "body": "Soon all of this customer’s documents, images and videos live here – upload them, share them and make them available on the portal."
+    },
+    "hours": {
+      "title": "Hours & history",
+      "body": "Soon you will see the hour allowance here, every booking with a short note and how many hours are left. The customer sees the same on the portal."
+    },
+    "credentials": {
+      "title": "Credentials",
+      "body": "Soon you can store the logins for the accounts you manage for this customer here – encrypted and visible only to approved members."
+    }
+  },
+  "chat": {
+    "title": "Customer chat",
+    "body": "Soon you can write to the customer directly here. They reply from the portal.",
+    "readAlong": "The customer will read along here.",
+    "inputLabel": "Message",
+    "inputPlaceholder": "Write a message …",
+    "send": "Send",
+    "expand": "Open customer chat",
+    "collapse": "Close customer chat"
   }
 }

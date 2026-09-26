@@ -1,6 +1,6 @@
 "use client";
 
-import { type SubmitEvent, useId, useState } from "react";
+import { type SubmitEvent, useId, useRef, useState } from "react";
 
 import type { RoleErrorCode } from "@invessiv/common/constants/auth/errors/role-error-codes";
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
@@ -84,6 +84,7 @@ export function RoleFormDialog({
 }: RoleFormDialogProps) {
   const formId = useId();
   const activeId = useId();
+  const nameInputRef = useRef<HTMLInputElement>(null);
   const text = content.dialog;
   const readOnly = role?.isSystem ?? false;
   const [name, setName] = useState(role?.name ?? "");
@@ -123,6 +124,7 @@ export function RoleFormDialog({
       (ROLE_FORM_REALM_CONFIG[realm].requiresTypeSelection &&
         scopeAssignable === null)
     ) {
+      if (!name.trim()) nameInputRef.current?.focus();
       return;
     }
 
@@ -297,6 +299,7 @@ export function RoleFormDialog({
         >
           <FormField
             errorMessage={nameError}
+            inputRef={nameInputRef}
             inputProps={{
               autoComplete: "off",
               maxLength: AccessFieldLimits.RoleNameMaxLength,

@@ -1,14 +1,18 @@
 // @vitest-environment jsdom
 
 import "@testing-library/jest-dom/vitest";
-import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import type { ProjectLineItemDto } from "@invessiv/common/contracts/crm/project-line-item.dto";
 import { getCrmProjectLineItemsDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { ProjectLineItemsSection } from "./project-line-items-section";
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: vi.fn() }),
+}));
 
 const PROJECT_ID = "33333333-3333-4333-8333-333333333333";
 const TEMPLATE_ID = "9c8f1a10-1b1a-4a10-8e10-00000000f001";
@@ -32,6 +36,14 @@ function service(
   };
 }
 
+function expandSection(
+  content: ReturnType<typeof getCrmProjectLineItemsDictionary>,
+) {
+  fireEvent.click(
+    screen.getByRole("button", { name: content.section.expandLabel }),
+  );
+}
+
 describe("ProjectLineItemsSection", () => {
   afterEach(cleanup);
 
@@ -49,6 +61,7 @@ describe("ProjectLineItemsSection", () => {
         templates={[]}
       />,
     );
+    expandSection(content);
 
     expect(screen.getByText(content.empty.description)).toBeInTheDocument();
     expect(
@@ -70,6 +83,7 @@ describe("ProjectLineItemsSection", () => {
         templates={[]}
       />,
     );
+    expandSection(content);
 
     expect(
       screen.getByRole("link", { name: content.form.noTemplates.action }),
@@ -90,11 +104,14 @@ describe("ProjectLineItemsSection", () => {
         templates={[]}
       />,
     );
+    expandSection(content);
 
     expect(
       screen.getByText(content.emptyReadOnly.description),
     ).toBeInTheDocument();
-    expect(screen.queryByRole("button")).toBeNull();
+    expect(
+      screen.queryByRole("button", { name: content.section.assignAction }),
+    ).toBeNull();
   });
 
   it("renders every service with its own price and cadence", () => {
@@ -120,8 +137,11 @@ describe("ProjectLineItemsSection", () => {
         templates={[]}
       />,
     );
+    expandSection(content);
 
-    expect(screen.getByRole("list")).toBeInTheDocument();
+    expect(
+      screen.getByRole("list", { name: content.list.ariaLabel }),
+    ).toBeInTheDocument();
     expect(screen.getByText("Landingpage")).toBeInTheDocument();
     expect(screen.getByText(content.list.cadence.one_time)).toBeInTheDocument();
     expect(screen.getByText(content.list.cadence.monthly)).toBeInTheDocument();
@@ -141,6 +161,7 @@ describe("ProjectLineItemsSection", () => {
         templates={[]}
       />,
     );
+    expandSection(content);
 
     expect(screen.getByText(content.list.templateRemoved)).toBeInTheDocument();
     expect(screen.getByText("Landingpage")).toBeInTheDocument();
@@ -160,9 +181,66 @@ describe("ProjectLineItemsSection", () => {
         templates={[]}
       />,
     );
+    expandSection(content);
 
     expect(
       screen.getByRole("button", { name: /Landingpage/ }),
     ).toBeInTheDocument();
+  });
+
+  it("starts collapsed and still offers the assignment from the header", () => {
+    const content = getCrmProjectLineItemsDictionary("en");
+
+    render(
+      <ProjectLineItemsSection
+        canWrite
+        catalogHref="/en/crm/line-item-templates"
+        content={content}
+        locale="en"
+        projectId={PROJECT_ID}
+        services={[service()]}
+        templates={[]}
+      />,
+    );
+
+    expect(
+      screen.queryByRole("list", { name: content.list.ariaLabel }),
+    ).toBeNull();
+    expect(
+      screen.getByRole("button", { name: content.section.expandLabel }),
+    ).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(
+      screen.getByRole("button", { name: content.section.assignAction }),
+    );
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
+
+  it("keeps both project values visible in the collapsed header", () => {
+    const content = getCrmProjectLineItemsDictionary("de");
+    render(
+      <ProjectLineItemsSection
+        canWrite
+        catalogHref={null}
+        content={content}
+        locale="de"
+        projectId={PROJECT_ID}
+        services={[service()]}
+        templates={[]}
+        value={{ oneTimeCents: 275000, monthlyCents: 10000 }}
+      />,
+    );
+
+    const header = screen
+      .getByRole("heading", {
+        name: content.section.title,
+      })
+      .closest("header");
+    expect(header).toHaveTextContent(content.values.oneTime);
+    expect(header).toHaveTextContent(content.values.monthly);
+    expect(header).toHaveTextContent("2.750,00");
+    expect(header).toHaveTextContent("100,00");
+    expect(
+      screen.queryByRole("list", { name: content.list.ariaLabel }),
+    ).toBeNull();
   });
 });

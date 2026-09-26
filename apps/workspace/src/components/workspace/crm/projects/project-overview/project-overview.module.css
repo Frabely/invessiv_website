@@ -1,0 +1,230 @@
+.overview {
+  margin-bottom: 0.75rem;
+}
+
+.headline {
+  display: grid;
+  grid-template-columns: minmax(8rem, 0.8fr) minmax(0, 2fr) auto;
+  align-items: center;
+  gap: 1rem;
+}
+
+.titleBlock {
+  display: grid;
+  justify-items: start;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.titleBlock h3 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  grid-column: 3;
+  justify-self: end;
+}
+
+.owner {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.35rem 0.85rem 0.35rem 0.35rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface-2);
+}
+
+.avatar {
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 999px;
+  background: var(--color-cta);
+  color: var(--color-on-cta);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.ownerText {
+  display: grid;
+  gap: 0.05rem;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.2;
+}
+
+.ownerText > span {
+  color: var(--color-text-muted);
+  font-size: 0.72rem;
+}
+
+.edit {
+  min-width: 2.35rem;
+  min-height: 2.35rem;
+  padding: 0;
+  border-radius: 999px;
+  color: var(--color-text-muted);
+}
+
+.progress {
+  display: grid;
+  gap: 0.55rem;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 0.75rem 0.85rem 0.7rem;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-surface-1);
+}
+
+.progressSummary {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+}
+
+.progressSummary strong {
+  color: var(--color-text);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.progressSummary span {
+  font-variant-numeric: tabular-nums;
+}
+
+.track {
+  display: flex;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0 0 0.25rem;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  list-style: none;
+}
+
+.step {
+  flex: 1 1 0;
+  min-width: 4.5rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  line-height: 1.25;
+}
+
+.stepBody,
+.stepButton {
+  display: grid;
+  gap: 0.55rem;
+  width: 100%;
+}
+
+.stepButton {
+  padding: 0 0 0.15rem;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.stepButton:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+.segment {
+  position: relative;
+  height: 0.5rem;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--color-surface-2);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.step:first-child .segment {
+  border-radius: 999px 2px 2px 999px;
+}
+
+.step:last-child .segment {
+  border-radius: 2px 999px 999px 2px;
+}
+
+.step[data-state="complete"] .segment {
+  background: var(--color-cta);
+  box-shadow: none;
+}
+
+.step[data-state="current"] .segment {
+  background: color-mix(in srgb, var(--color-cta) 22%, var(--color-surface-2));
+  box-shadow: inset 0 0 0 1px var(--color-cta);
+}
+
+.step[data-state="current"] .segment::after {
+  position: absolute;
+  inset: 0 50% 0 0;
+  background: var(--color-cta);
+  content: "";
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  overflow-wrap: anywhere;
+}
+
+.check {
+  flex: 0 0 auto;
+  color: var(--color-cta);
+  font-size: 0.7rem;
+}
+
+.step[data-state="complete"] {
+  color: var(--color-text);
+}
+
+.step[data-state="current"] {
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+@media (hover: hover) {
+  .stepButton:hover .segment {
+    box-shadow: inset 0 0 0 1px var(--color-cta);
+  }
+
+  .stepButton:hover .label {
+    color: var(--color-text);
+  }
+}
+
+@media (max-width: 760px) {
+  .headline {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: stretch;
+  }
+
+  .actions {
+    grid-column: auto;
+    justify-self: stretch;
+    justify-content: space-between;
+  }
+}

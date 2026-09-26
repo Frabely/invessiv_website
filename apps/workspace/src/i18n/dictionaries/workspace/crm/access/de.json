@@ -11,7 +11,9 @@
     "removeLabel": "Zugriff {role} von {member} bei {scope} entfernen",
     "removeConflict": "Jemand hat die Zugriffe dieses Mitglieds gerade geändert. Der aktuelle Stand wurde geladen; versuche den Entzug erneut.",
     "giveAccess": "Zugriff geben",
-    "emptyMembers": "Es gibt kein aktives Mitglied, dem du hier Zugriff geben kannst."
+    "emptyMembers": "Es gibt kein aktives Mitglied, dem du hier Zugriff geben kannst.",
+    "expandLabel": "Zugriff aufklappen",
+    "collapseLabel": "Zugriff zuklappen"
   },
   "dialog": {
     "title": "Zugriff geben",

@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useId, useState } from "react";
 import { useRouter } from "next/navigation";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { ProjectDto } from "@invessiv/common/contracts/crm/project.dto";
 import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
@@ -26,10 +28,15 @@ import type {
   CrmProjectLineItemsDictionary,
   CrmTasksDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
-import { OwnerWithoutAccessBadge } from "@/components/workspace/crm/shared/owner-without-access-badge/owner-without-access-badge";
+import { ProjectOverview } from "@/components/workspace/crm/projects/project-overview/project-overview";
+import { MockSectionCard } from "@/components/workspace/crm/shared/mock-section-card/mock-section-card";
+import { ProjectSwitcherTabs } from "@/components/workspace/crm/projects/project-switcher-tabs/project-switcher-tabs";
+import { formatMessage } from "@/lib/i18n/format-message";
 import { ProjectLineItemsSection } from "@/components/workspace/crm/projects/project-line-items-section/project-line-items-section";
 import { ProjectTasksSection } from "@/components/workspace/crm/tasks/project-tasks-section/project-tasks-section";
 import styles from "./customer-projects-section.module.css";
+
+const PROJECT_FUTURE_AREAS = ["feedback", "onboarding"] as const;
 
 type CustomerProjectsSectionProps = {
   content: CrmCockpitDictionary;
@@ -88,18 +95,13 @@ export function CustomerProjectsSection({
     projects[0] ??
     null;
   const activeProjectDetails = activeProject?.project ?? null;
-  const currentStepRef = useRef<HTMLLIElement>(null);
+  const headingId = useId();
+  const tabIdPrefix = useId();
+  const panelId = useId();
+  const tabIdFor = (projectId: string) => `${tabIdPrefix}-${projectId}`;
   const activeOwner = accessMembers?.find(
     (member) => member.id === activeProjectDetails?.ownerMemberId,
   );
-
-  useEffect(() => {
-    currentStepRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-      inline: "center",
-    });
-  }, [activeProjectDetails?.id, activeProjectDetails?.currentProcessStep]);
 
   function openEditor(project: ProjectDto | null, nextCurrentStep?: string) {
     setEditing(project);
@@ -174,198 +176,110 @@ export function CustomerProjectsSection({
   }
 
   return (
-    <section aria-labelledby="cockpit-projects" className={styles.projects}>
-      <div className={styles.workspace}>
-        <aside className={styles.sidebar}>
-          <div className={styles.titleRow}>
-            <h3 id="cockpit-projects">{content.sections.projects}</h3>
-            {canWrite ? (
-              <PrimaryCtaButton
-                aria-label={content.projects.create}
-                onClick={() => openEditor(null)}
-                title={content.projects.create}
-                type="button"
-              >
-                +
-              </PrimaryCtaButton>
-            ) : null}
-          </div>
-          {projects.length === 0 ? (
-            <p className={styles.empty}>{content.projects.empty}</p>
-          ) : (
-            <div className={styles.switcher} role="tablist">
-              {projects.map((project) => (
-                <div className={styles.projectSwitchRow} key={project.id}>
-                  <button
-                    aria-selected={activeProject?.id === project.id}
-                    className={styles.projectSwitch}
-                    onClick={() => setSelectedProjectId(project.id)}
-                    role="tab"
-                    type="button"
-                  >
-                    <span>{project.title}</span>
-                    {project.project ? (
-                      <small>
-                        {content.projects.status[project.project.status]}
-                      </small>
-                    ) : null}
-                  </button>
-                  {canWrite && project.project ? (
-                    <ButtonControl
-                      aria-label={content.projects.edit}
-                      className={styles.projectEdit}
-                      onClick={() => openEditor(project.project)}
-                      title={content.projects.edit}
-                      type="button"
-                      variant="ghost"
-                    >
-                      ↗
-                    </ButtonControl>
-                  ) : null}
-                </div>
-              ))}
-            </div>
-          )}
-        </aside>
-        <main className={styles.projectCanvas}>
-          {activeProject ? (
-            <>
-              <div className={styles.projectHeader}>
-                <div>
-                  {activeProjectDetails ? (
-                    <p className={styles.eyebrow}>
-                      {content.projects.status[activeProjectDetails.status]}
-                    </p>
-                  ) : null}
-                  <h2>{activeProject.title}</h2>
-                </div>
-                {activeOwner ? (
-                  <div className={styles.ownerBlock}>
-                    <span>{content.projects.owner}</span>
-                    <strong>{activeOwner.displayName}</strong>
-                    {activeProjectDetails &&
-                    ownerHasAccess?.[activeProject.id] === false &&
-                    onGrantAccessAction ? (
-                      <OwnerWithoutAccessBadge
-                        content={content.ownerAccess}
-                        onGrantAccessAction={
-                          activeOwner.active
-                            ? () =>
-                                onGrantAccessAction(
-                                  activeProjectDetails.ownerMemberId,
-                                )
-                            : undefined
-                        }
-                      />
-                    ) : null}
-                  </div>
-                ) : null}
-              </div>
-              {activeProjectDetails ? (
-                <ol
-                  aria-label={content.projects.phase}
-                  className={styles.phaseScale}
-                >
-                  {activeProjectDetails.processSteps.map((item, index) => {
-                    const currentIndex =
-                      activeProjectDetails.processSteps.indexOf(
-                        activeProjectDetails.currentProcessStep,
-                      );
-                    const state =
-                      index < currentIndex
-                        ? "complete"
-                        : index === currentIndex
-                          ? "current"
-                          : "upcoming";
-                    return (
-                      <li
-                        data-state={state}
-                        key={`${item}-${index}`}
-                        ref={state === "current" ? currentStepRef : undefined}
-                      >
-                        {canWrite ? (
-                          <button
-                            aria-current={
-                              state === "current" ? "step" : undefined
-                            }
-                            className={styles.phaseButton}
-                            onClick={() =>
-                              openEditor(activeProjectDetails, item)
-                            }
-                            type="button"
-                          >
-                            <span
-                              aria-hidden="true"
-                              className={styles.phaseDot}
-                            />
-                            <span>{item}</span>
-                          </button>
-                        ) : (
-                          <>
-                            <span
-                              aria-hidden="true"
-                              className={styles.phaseDot}
-                            />
-                            <span>{item}</span>
-                          </>
-                        )}
-                      </li>
-                    );
-                  })}
-                </ol>
-              ) : null}
-              {projectLineItems &&
-              projectLineItemsContent &&
-              projectLineItems.readableProjectIds.includes(activeProject.id) ? (
-                <ProjectLineItemsSection
-                  canWrite={projectLineItems.writableProjectIds.includes(
-                    activeProject.id,
-                  )}
-                  catalogHref={projectLineItems.catalogHref}
-                  content={projectLineItemsContent}
-                  key={`line-items-${activeProject.id}`}
-                  locale={locale}
-                  projectId={activeProject.id}
-                  services={projectLineItems.services.filter(
-                    (service) => service.projectId === activeProject.id,
-                  )}
-                  templates={projectLineItems.assignableTemplates}
-                  value={
-                    projectLineItems.valuesByProjectId[activeProject.id] ?? {
-                      oneTimeCents: 0,
-                      monthlyCents: 0,
-                    }
-                  }
-                />
-              ) : null}
-              {tasks &&
-              tasksContent &&
-              tasks.readableProjectIds.includes(activeProject.id) ? (
-                <ProjectTasksSection
-                  canWrite={tasks.writableProjectIds.includes(activeProject.id)}
-                  content={tasksContent}
-                  key={`tasks-${activeProject.id}`}
-                  locale={locale}
-                  members={tasks.members}
-                  projectId={activeProject.id}
-                  tasks={tasks.tasks.filter(
-                    (task) => task.projectId === activeProject.id,
-                  )}
-                  today={tasks.today}
-                />
-              ) : null}
-              <div className={styles.areaPreview}>
-                <section>
-                  <h3>{content.projects.areas.chat}</h3>
-                  <p>{content.projects.comingSoon}</p>
-                </section>
-              </div>
-            </>
-          ) : (
-            <p className={styles.empty}>{content.projects.empty}</p>
-          )}
-        </main>
+    <section aria-labelledby={headingId} className={styles.projects}>
+      <h2 className="sr-only" id={headingId}>
+        {content.sections.projects}
+      </h2>
+      <div className={styles.tabBar}>
+        {projects.length > 0 ? (
+          <ProjectSwitcherTabs
+            activeProjectId={activeProject?.id ?? null}
+            onSelectAction={setSelectedProjectId}
+            panelId={panelId}
+            projects={projects}
+            statusLabels={content.projects.status}
+            tabIdFor={tabIdFor}
+            tabsLabel={content.projects.tabsLabel}
+          />
+        ) : null}
+        {canWrite ? (
+          <PrimaryCtaButton
+            className={styles.createButton}
+            onClick={() => openEditor(null)}
+            type="button"
+          >
+            <FontAwesomeIcon aria-hidden="true" icon={faPlus} />
+            <span>{content.projects.create}</span>
+          </PrimaryCtaButton>
+        ) : null}
       </div>
+      {activeProject ? (
+        <div
+          aria-labelledby={tabIdFor(activeProject.id)}
+          className={styles.projectCanvas}
+          id={panelId}
+          role="tabpanel"
+        >
+          <ProjectOverview
+            content={content}
+            onEditAction={canWrite ? openEditor : undefined}
+            onGrantAccessAction={onGrantAccessAction}
+            owner={activeOwner}
+            ownerWithoutAccess={ownerHasAccess?.[activeProject.id] === false}
+            project={activeProjectDetails}
+            title={activeProject.title}
+          />
+          {tasks &&
+          tasksContent &&
+          tasks.readableProjectIds.includes(activeProject.id) ? (
+            <ProjectTasksSection
+              canWrite={tasks.writableProjectIds.includes(activeProject.id)}
+              content={tasksContent}
+              key={`tasks-${activeProject.id}`}
+              locale={locale}
+              members={tasks.members}
+              projectId={activeProject.id}
+              tasks={tasks.tasks.filter(
+                (task) => task.projectId === activeProject.id,
+              )}
+              today={tasks.today}
+            />
+          ) : null}
+          {projectLineItems &&
+          projectLineItemsContent &&
+          projectLineItems.readableProjectIds.includes(activeProject.id) ? (
+            <ProjectLineItemsSection
+              canWrite={projectLineItems.writableProjectIds.includes(
+                activeProject.id,
+              )}
+              catalogHref={projectLineItems.catalogHref}
+              content={projectLineItemsContent}
+              key={`line-items-${activeProject.id}`}
+              locale={locale}
+              projectId={activeProject.id}
+              services={projectLineItems.services.filter(
+                (service) => service.projectId === activeProject.id,
+              )}
+              templates={projectLineItems.assignableTemplates}
+              value={
+                projectLineItems.valuesByProjectId[activeProject.id] ?? {
+                  oneTimeCents: 0,
+                  monthlyCents: 0,
+                }
+              }
+            />
+          ) : null}
+          {PROJECT_FUTURE_AREAS.map((area) => {
+            const futureArea = content.projects.futureAreas[area];
+            return (
+              <MockSectionCard
+                badgeLabel={content.mock.badge}
+                body={futureArea.body}
+                key={area}
+                labelCollapse={formatMessage(content.collapse.collapse, {
+                  section: futureArea.title,
+                })}
+                labelExpand={formatMessage(content.collapse.expand, {
+                  section: futureArea.title,
+                })}
+                title={futureArea.title}
+              />
+            );
+          })}
+        </div>
+      ) : (
+        <p className={styles.empty}>{content.projects.empty}</p>
+      )}
       {editorOpen ? (
         <Dialog
           closeLabel={content.projects.cancel}

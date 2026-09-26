@@ -1,22 +1,37 @@
 .section {
   display: grid;
-  gap: 1rem;
-  padding: clamp(1rem, 2vw, 1.4rem);
-  border: 1px solid var(--color-border);
-  background: var(--color-surface-2);
+  gap: 0.8rem;
+  padding: 0.8rem 0;
+  border-top: 1px solid var(--color-border-strong);
 }
 
 .header {
   display: flex;
-  align-items: flex-start;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.6rem 1rem;
+}
+
+.headMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-left: auto;
+}
+
+.actionButton {
+  gap: 0.45rem;
+}
+
+.body {
+  display: grid;
+  gap: 0.8rem;
 }
 
 .header h3,
 .group h4,
 .description,
-.eyebrow,
 .emptyGroup,
 .emptyMembers,
 .inheritedHint {
@@ -26,15 +41,6 @@
 .header h3 {
   color: var(--color-text);
   font-size: var(--font-size-heading-sm);
-}
-
-.eyebrow {
-  margin-bottom: 0.18rem;
-  color: var(--color-cta);
-  font-size: var(--font-size-ui-xs);
-  font-weight: 750;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
 
 .description,
@@ -47,23 +53,27 @@
 }
 
 .description {
-  margin-top: 0.3rem;
   max-width: var(--measure-compact);
 }
 
 .groups {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(18rem, 100%), 1fr));
-  gap: 0.75rem;
+  gap: 0.25rem;
 }
 
 .group {
   display: grid;
   align-content: start;
-  gap: 0.45rem;
+  gap: 0.35rem;
+  min-width: 0;
+  padding: 0.75rem 0.15rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.group[data-scope="customer"] {
   padding: 0.8rem 0.9rem;
   border: 1px solid var(--color-border);
-  border-top: 3px solid var(--color-cta);
+  border-radius: 12px;
   background: var(--color-surface-1);
 }
 
@@ -79,13 +89,12 @@
 }
 
 .emptyGroup {
-  padding: 0.55rem 0;
+  padding: 0.3rem 0 0;
   font-style: italic;
 }
 
 .inheritedHint {
-  padding-top: 0.55rem;
-  border-top: 1px dashed var(--color-border-strong);
+  padding-top: 0.2rem;
 }
 
 .emptyMembers {
@@ -104,11 +113,4 @@
   color: var(--color-text);
   font-size: var(--font-size-ui-sm);
   font-weight: 650;
-}
-
-@media (max-width: 620px) {
-  .header {
-    align-items: stretch;
-    flex-direction: column;
-  }
 }

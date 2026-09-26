@@ -8,7 +8,6 @@ import {
   applyActionSide,
   createTaskFormValues,
   toCreateTaskRequest,
-  toQuickCreateTaskRequest,
   toUpdateTaskRequest,
   validateTaskForm,
 } from "@/common/patterns/crm/task-form";
@@ -129,17 +128,6 @@ describe("request mapping", () => {
     expect(toUpdateTaskRequest(values, TASK)).toMatchObject({
       assigneeMemberId: TASK.assigneeMemberId,
       version: 4,
-    });
-  });
-
-  it("builds the quick-create request as an internal, invisible task without a deadline", () => {
-    expect(toQuickCreateTaskRequest("Analytics einrichten")).toEqual({
-      title: "Analytics einrichten",
-      description: "",
-      actionSide: TaskActionSide.Internal,
-      visibleToCustomer: false,
-      assigneeMemberId: null,
-      dueOn: null,
     });
   });
 });

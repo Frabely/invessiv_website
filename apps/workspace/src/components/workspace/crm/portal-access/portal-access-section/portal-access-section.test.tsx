@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import "@testing-library/jest-dom/vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { PortalAccessDto } from "@invessiv/common/contracts/crm/portal-access.dto";
 import { getCrmPortalAccessDictionary } from "@/i18n/dictionaries/workspace/crm";
@@ -9,7 +9,7 @@ import { PortalAccessSection } from "./portal-access-section";
 
 vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh: vi.fn() }) }));
 vi.mock("../invite-portal-contact-dialog/invite-portal-contact-dialog", () => ({
-  PortalInviteDialog: () => null,
+  PortalInviteDialog: () => <div role="dialog" />,
 }));
 vi.mock(
   "../portal-membership-roles-dialog/portal-membership-roles-dialog",
@@ -27,7 +27,30 @@ const emptyAccess: PortalAccessDto = {
   memberships: [],
 };
 
+function expandSection() {
+  fireEvent.click(
+    screen.getByRole("button", {
+      name: getCrmPortalAccessDictionary("de").expandLabel,
+    }),
+  );
+}
+
 describe("PortalAccessSection", () => {
+  it("starts collapsed and still lets a contact be invited from the header", () => {
+    render(
+      <PortalAccessSection
+        access={emptyAccess}
+        content={getCrmPortalAccessDictionary("de")}
+        permissionsContent={getSettingsPermissionsDictionary("de")}
+        locale="de"
+      />,
+    );
+
+    expect(screen.queryByText(/Lade einen bestehenden Kontakt ein/)).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Kontakt einladen" }));
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
+
   it("explains the purpose of portal access before any contact is invited", () => {
     render(
       <PortalAccessSection
@@ -37,6 +60,7 @@ describe("PortalAccessSection", () => {
         locale="de"
       />,
     );
+    expandSection();
     expect(
       screen.getByRole("heading", { name: "Portalzugang" }),
     ).toBeInTheDocument();
@@ -73,6 +97,7 @@ describe("PortalAccessSection", () => {
         locale="de"
       />,
     );
+    expandSection();
 
     expect(screen.getByText("Alex Contact")).toBeInTheDocument();
     expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
@@ -105,6 +130,7 @@ describe("PortalAccessSection", () => {
         locale="de"
       />,
     );
+    expandSection();
 
     expect(screen.getByText("Einladung abgelaufen")).toBeInTheDocument();
     expect(screen.queryByText(/Einladung offen/)).not.toBeInTheDocument();

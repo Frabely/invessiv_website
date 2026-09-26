@@ -1,10 +1,18 @@
 .row {
+  position: relative;
   display: grid;
-  grid-template-columns: 9.5rem minmax(0, 1fr);
-  align-items: start;
-  gap: 0.35rem 1rem;
-  padding: 0.75rem 0.5rem;
+  grid-template-columns: minmax(7.5rem, 8.5rem) minmax(0, 1fr);
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 4.5rem;
+  padding: 0.65rem 0.75rem;
   border-left: 2px solid transparent;
+  border-radius: 0.5rem;
+}
+
+.row:hover,
+.row:focus-within {
+  background: color-mix(in srgb, var(--color-surface-2) 65%, transparent);
 }
 
 .row[data-due="overdue"] {
@@ -16,47 +24,80 @@
 }
 
 .status {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
   min-width: 0;
 }
 
-.statusText {
-  color: var(--color-text-muted);
-  font-size: var(--font-size-ui-sm);
+.statusSymbol {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-cta);
+  font-size: var(--font-size-body-sm);
+  font-weight: 600;
 }
 
-.body {
+.statusSymbol[data-status="in_progress"] {
+  color: var(--color-accent-gold);
+}
+
+.statusSymbol[data-status="done"] {
+  color: var(--color-success);
+}
+
+.statusSymbol[data-status="cancelled"] {
+  color: var(--color-text-muted);
+}
+
+.details {
   display: grid;
-  gap: 0.3rem;
+  grid-template-columns:
+    minmax(7rem, 1.4fr) minmax(5.5rem, 1fr) minmax(6rem, 1fr)
+    minmax(6rem, 1fr) minmax(6rem, 1fr);
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+  padding: 0.25rem 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+button.details {
+  cursor: pointer;
+}
+
+button.details::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+}
+
+button.details:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 0.25rem;
+}
+
+.main {
+  display: grid;
+  gap: 0.2rem;
   min-width: 0;
 }
 
 .title {
-  padding: 0;
-  border: 0;
-  background: transparent;
   color: var(--color-text);
-  font: inherit;
-  font-weight: 600;
-  text-align: left;
+  font-size: var(--font-size-body-sm);
+  font-weight: 650;
+  line-height: 1.35;
   overflow-wrap: anywhere;
 }
 
-button.title {
-  justify-self: start;
-  cursor: pointer;
-}
-
-button.title:hover {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-button.title:focus-visible {
-  outline: 2px solid var(--color-cta);
-  outline-offset: 2px;
-}
-
-/* Closed tasks stay readable but step back, so the open ones carry the list. */
 .row[data-status="done"] .title,
 .row[data-status="cancelled"] .title {
   color: var(--color-text-muted);
@@ -70,31 +111,100 @@ button.title:focus-visible {
 .description {
   display: -webkit-box;
   overflow: hidden;
-  margin: 0;
   color: var(--color-text-muted);
-  font-size: var(--font-size-body-sm);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.4;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 }
 
 .meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.35rem 0.85rem;
+  display: contents;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+.side {
+  grid-column: 2;
+  min-width: 0;
+}
+
+.side > span {
+  max-width: 100%;
+  padding: 0.35rem 0.5rem;
+  border-radius: 0.5rem;
+  line-height: 1.25;
+  white-space: normal;
 }
 
 .visibility,
 .assignee {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
+  min-width: 0;
   color: var(--color-text-muted);
   font-size: var(--font-size-ui-xs);
 }
 
-@media (max-width: 640px) {
+.visibility {
+  grid-column: 3;
+}
+
+.due {
+  grid-column: 4;
+  min-width: 0;
+}
+
+.due > span {
+  white-space: normal;
+}
+
+.assignee {
+  grid-column: 5;
+}
+
+.initials {
+  display: inline-grid;
+  place-items: center;
+  width: 1.55rem;
+  height: 1.55rem;
+  flex: 0 0 auto;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+@container (max-width: 700px) {
   .row {
     grid-template-columns: minmax(0, 1fr);
+    gap: 0.25rem;
+  }
+
+  .status {
+    justify-content: flex-start;
+  }
+
+  .details {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.8rem;
+  }
+
+  .side,
+  .visibility,
+  .due,
+  .assignee {
+    grid-column: auto;
   }
 }

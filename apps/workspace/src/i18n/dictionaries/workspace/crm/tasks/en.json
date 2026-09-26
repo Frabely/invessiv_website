@@ -8,20 +8,13 @@
     "closedAriaLabel": "Closed tasks of this project",
     "showClosed": "Show {count} closed",
     "showClosedOne": "Show 1 closed",
-    "hideClosed": "Hide closed"
-  },
-  "quickCreate": {
-    "label": "New task",
-    "placeholder": "Type a task, press Enter to add it",
-    "hint": "Set the due date, assignee and “Customer to act” afterwards on the task itself.",
-    "error": "The task could not be created. Please try again.",
-    "validation": {
-      "titleRequired": "Enter a task title."
-    }
+    "hideClosed": "Hide closed",
+    "expandLabel": "Expand tasks",
+    "collapseLabel": "Collapse tasks"
   },
   "empty": {
     "title": "No tasks yet",
-    "description": "This is where you see what has to happen in the project and what the customer has to contribute. Type a line and press Enter to add the first task."
+    "description": "This is what needs doing in the project and what the customer has to contribute. Use “Add task” to add the first one."
   },
   "emptyReadOnly": {
     "title": "No tasks yet",
@@ -57,7 +50,6 @@
     "none": "No due date"
   },
   "announce": {
-    "created": "Task “{name}” added.",
     "statusChanged": "“{name}” is now {status}.",
     "statusFailed": "The status of “{name}” could not be changed."
   },

@@ -54,5 +54,7 @@
     "contact": "Select an existing contact.",
     "conflict": "The record changed. Your selection is preserved; check the current details and save again.",
     "preview": "Confirm the preview before creating the first invitation."
-  }
+  },
+  "expandLabel": "Expand portal access",
+  "collapseLabel": "Collapse portal access"
 }

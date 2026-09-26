@@ -46,6 +46,30 @@ describe("taskDueStateService.dueState", () => {
   });
 });
 
+describe("taskDueStateService.summarize", () => {
+  it("counts open tasks and the overdue ones among them, ignoring closed work", () => {
+    expect(
+      taskDueStateService.summarize(
+        [
+          { status: TaskStatus.Open, dueOn: "2026-09-20" },
+          { status: TaskStatus.InProgress, dueOn: null },
+          { status: TaskStatus.Open, dueOn: "2026-09-25" },
+          { status: TaskStatus.Done, dueOn: "2026-01-01" },
+          { status: TaskStatus.Cancelled, dueOn: "2026-01-01" },
+        ],
+        TODAY,
+      ),
+    ).toEqual({ open: 3, overdue: 1 });
+  });
+
+  it("returns zeros for no tasks", () => {
+    expect(taskDueStateService.summarize([], TODAY)).toEqual({
+      open: 0,
+      overdue: 0,
+    });
+  });
+});
+
 describe("taskDueStateService.businessToday", () => {
   it("uses the business time zone rather than UTC", () => {
     // 22:30 UTC on 20 Sep is already 00:30 on 21 Sep in Berlin (summer time, UTC+2).

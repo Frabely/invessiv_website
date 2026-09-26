@@ -1,5 +1,7 @@
 "use client";
 
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
 import type { AccessScopeEntryDto } from "@invessiv/common/contracts/auth/access-scope-entry.dto";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
@@ -61,12 +63,14 @@ export function CustomerAccessAssignmentRow({
           role: roleLabel,
           scope: scopeLabel,
         })}
+        className={styles.remove}
         disabled={mutation.isSubmitting}
         onClick={() => void removeAssignment()}
+        title={content.section.remove}
         type="button"
         variant="ghost"
       >
-        {content.section.remove}
+        <FontAwesomeIcon aria-hidden="true" icon={faTrash} />
       </ButtonControl>
       {mutation.hasConflict ? (
         <p className={styles.message} data-tone="conflict" role="alert">

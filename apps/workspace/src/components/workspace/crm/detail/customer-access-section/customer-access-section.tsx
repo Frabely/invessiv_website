@@ -1,6 +1,8 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
+import { faKey } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { AccessScopeType } from "@invessiv/common/constants/auth/access-scope-types";
 import type { AccessCustomerOptionDto } from "@invessiv/common/contracts/auth/access-customer-option.dto";
@@ -20,6 +22,7 @@ import type { CrmAccessDictionary } from "@/i18n/dictionaries/workspace/crm";
 import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import { formatMessage } from "@/lib/i18n/format-message";
 import { AccessScopeTree } from "@/components/workspace/settings/shared/access-scope-tree/access-scope-tree";
+import { SectionCollapseToggle } from "@/components/workspace/crm/shared/section-collapse-toggle/section-collapse-toggle";
 import { CustomerAccessAssignmentRow } from "../customer-access-assignment-row/customer-access-assignment-row";
 import styles from "./customer-access-section.module.css";
 
@@ -64,6 +67,8 @@ export function CustomerAccessSection({
   const [accessIsDirty, setAccessIsDirty] = useState(false);
   const [accessIsSubmitting, setAccessIsSubmitting] = useState(false);
   const [confirmDiscard, setConfirmDiscard] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const bodyId = useId();
   const triggerRef = useRef<HTMLElement | null>(null);
   const selectedMember =
     eligibleMembers.find((member) => member.id === selectedMemberId) ??
@@ -144,53 +149,72 @@ export function CustomerAccessSection({
   return (
     <section aria-labelledby={headingId} className={styles.section}>
       <header className={styles.header}>
-        <div>
-          <p className={styles.eyebrow}>
-            {formatCustomerNumber(customer.customerNumber)}
-          </p>
-          <h3 id={headingId}>{content.section.heading}</h3>
-          <p className={styles.description}>{content.section.description}</p>
+        <h3 id={headingId}>{content.section.heading}</h3>
+        <div className={styles.headMeta}>
+          {eligibleMembers.length > 0 ? (
+            <PrimaryCtaButton
+              className={styles.actionButton}
+              onClick={() => openDialog()}
+              type="button"
+            >
+              <FontAwesomeIcon aria-hidden="true" icon={faKey} />
+              {content.section.giveAccess}
+            </PrimaryCtaButton>
+          ) : null}
+          <SectionCollapseToggle
+            controls={bodyId}
+            expanded={expanded}
+            labelCollapse={content.section.collapseLabel}
+            labelExpand={content.section.expandLabel}
+            onToggleAction={() => setExpanded((current) => !current)}
+          />
         </div>
-        {eligibleMembers.length > 0 ? (
-          <PrimaryCtaButton onClick={() => openDialog()} type="button">
-            {content.section.giveAccess}
-          </PrimaryCtaButton>
-        ) : null}
       </header>
 
-      <div className={styles.groups}>
-        <section className={styles.group}>
-          <h4>{content.section.wholeCustomer}</h4>
-          {renderAssignments(
-            customerAssignments,
-            content.section.wholeCustomer,
-          )}
-        </section>
-        {[...knownProjects.values()].map((project) => {
-          const heading = formatMessage(content.section.projectHeading, {
-            project: project.title,
-          });
-          const projectAssignments = accessScopes.filter(
-            (assignment) =>
-              assignment.scope.type === AccessScopeType.Project &&
-              assignment.scope.projectId === project.id,
-          );
-          return (
-            <section className={styles.group} key={project.id}>
-              <h4>{heading}</h4>
-              {renderAssignments(projectAssignments, heading)}
-              {customerAssignments.length > 0 ? (
-                <p className={styles.inheritedHint}>
-                  {content.section.inheritedHint}
-                </p>
-              ) : null}
+      {expanded ? (
+        <div className={styles.body} id={bodyId}>
+          <p className={styles.description}>{content.section.description}</p>
+          <div className={styles.groups}>
+            <section className={styles.group} data-scope="customer">
+              <h4>{content.section.wholeCustomer}</h4>
+              {renderAssignments(
+                customerAssignments,
+                content.section.wholeCustomer,
+              )}
             </section>
-          );
-        })}
-      </div>
+            {[...knownProjects.values()].map((project) => {
+              const heading = formatMessage(content.section.projectHeading, {
+                project: project.title,
+              });
+              const projectAssignments = accessScopes.filter(
+                (assignment) =>
+                  assignment.scope.type === AccessScopeType.Project &&
+                  assignment.scope.projectId === project.id,
+              );
+              return (
+                <section
+                  className={styles.group}
+                  data-scope="project"
+                  key={project.id}
+                >
+                  <h4>{heading}</h4>
+                  {renderAssignments(projectAssignments, heading)}
+                  {customerAssignments.length > 0 ? (
+                    <p className={styles.inheritedHint}>
+                      {content.section.inheritedHint}
+                    </p>
+                  ) : null}
+                </section>
+              );
+            })}
+          </div>
 
-      {eligibleMembers.length === 0 ? (
-        <p className={styles.emptyMembers}>{content.section.emptyMembers}</p>
+          {eligibleMembers.length === 0 ? (
+            <p className={styles.emptyMembers}>
+              {content.section.emptyMembers}
+            </p>
+          ) : null}
+        </div>
       ) : null}
 
       {dialogOpen && selectedMember ? (

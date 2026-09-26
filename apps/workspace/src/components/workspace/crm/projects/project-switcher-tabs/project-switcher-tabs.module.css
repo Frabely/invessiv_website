@@ -1,0 +1,102 @@
+.tabs {
+  display: flex;
+  gap: 0.25rem;
+  min-width: 0;
+  overflow-x: auto;
+  /* A clipped neighbour tab already signals overflow; the bar itself only adds noise. */
+  scrollbar-width: none;
+}
+
+.tab {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 16rem;
+  padding: 0.7rem 0.9rem 0.8rem;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+}
+
+.tab::after {
+  position: absolute;
+  right: 0.6rem;
+  bottom: 0;
+  left: 0.6rem;
+  height: 2px;
+  border-radius: 2px;
+  background: transparent;
+  content: "";
+}
+
+.tab:hover {
+  color: var(--color-text);
+}
+
+.tab[aria-selected="true"] {
+  color: var(--color-text);
+}
+
+.tab[aria-selected="true"]::after {
+  background: var(--color-cta);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
+  border-radius: 6px;
+}
+
+.title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.statusDot {
+  --status-dot-color: var(--color-border-strong);
+  flex: 0 0 auto;
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 1px solid var(--status-dot-color);
+  border-radius: 999px;
+  background: var(--status-dot-color);
+}
+
+.statusDot[data-status="planned"] {
+  --status-dot-color: color-mix(
+    in srgb,
+    #38bdf8 74%,
+    var(--color-text-muted) 26%
+  );
+}
+
+.statusDot[data-status="active"] {
+  --status-dot-color: #36b37e;
+}
+
+.statusDot[data-status="paused"] {
+  --status-dot-color: var(--color-accent-gold);
+}
+
+.statusDot[data-status="completed"] {
+  --status-dot-color: var(--color-cta);
+}
+
+.statusDot[data-status="cancelled"] {
+  --status-dot-color: #ef4444;
+}
+
+.statusDot[data-status="archived"] {
+  --status-dot-color: color-mix(
+    in srgb,
+    var(--color-text-muted) 70%,
+    var(--color-border) 30%
+  );
+}

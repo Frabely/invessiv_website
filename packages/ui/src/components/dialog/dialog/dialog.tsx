@@ -26,7 +26,7 @@ export type DialogProps = {
   className?: string;
   description?: string;
   eyebrow?: ReactNode;
-  footer: ReactNode;
+  footer?: ReactNode;
   bodyClassName?: string;
   initialFocusRef?: RefObject<HTMLElement | null>;
   onCloseAction: () => void;
@@ -170,7 +170,7 @@ export function Dialog({
               {children}
             </div>
           ) : null}
-          <footer className={styles.footer}>{footer}</footer>
+          {footer ? <footer className={styles.footer}>{footer}</footer> : null}
         </div>
       </DialogPortalRootContext.Provider>
     </dialog>

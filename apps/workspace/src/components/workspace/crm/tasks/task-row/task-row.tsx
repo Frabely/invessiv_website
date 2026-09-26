@@ -1,11 +1,12 @@
 "use client";
 
-import { faEye } from "@fortawesome/free-solid-svg-icons";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import type { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import type { TaskDto } from "@invessiv/common/contracts/crm/task.dto";
-import { ButtonControl } from "@invessiv/ui";
+import { TASK_STATUS_ICONS } from "@/common/constants/crm/badges/task-status-icons";
+import { getMemberInitials } from "@/common/patterns/access/member-initials";
 import type { Locale } from "@/config/i18n";
 import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@/lib/i18n/format-message";
@@ -30,6 +31,7 @@ type TaskRowProps = {
   today: string;
 };
 
+/** A task row keeps the status control separate from its edit target. */
 export function TaskRow({
   assigneeName,
   canWrite,
@@ -45,6 +47,51 @@ export function TaskRow({
   const dueState = taskDueStateService.dueState(
     { dueOn: task.dueOn, status },
     today,
+  );
+  const assigneeLabel = assigneeName
+    ? formatMessage(content.row.assignee, { name: assigneeName })
+    : null;
+  const details = (
+    <>
+      <span className={styles.main}>
+        <span className={styles.title}>{task.title}</span>
+        {task.description ? (
+          <span className={styles.description}>{task.description}</span>
+        ) : null}
+      </span>
+      <span className={styles.meta}>
+        <span className={styles.side}>
+          <TaskActionSideBadge actionSide={task.actionSide} content={content} />
+        </span>
+        <span className={styles.visibility}>
+          <FontAwesomeIcon
+            aria-hidden="true"
+            icon={task.visibleToCustomer ? faEye : faEyeSlash}
+          />
+          {task.visibleToCustomer
+            ? content.visibility.visible
+            : content.visibility.hidden}
+        </span>
+        {task.dueOn ? (
+          <span className={styles.due}>
+            <TaskDueLabel
+              content={content}
+              locale={locale}
+              task={{ dueOn: task.dueOn, status }}
+              today={today}
+            />
+          </span>
+        ) : null}
+        {assigneeName && assigneeLabel ? (
+          <span className={styles.assignee}>
+            <span aria-hidden="true" className={styles.initials}>
+              {getMemberInitials(assigneeName)}
+            </span>
+            {assigneeLabel}
+          </span>
+        ) : null}
+      </span>
+    </>
   );
 
   return (
@@ -64,49 +111,29 @@ export function TaskRow({
             taskTitle={task.title}
           />
         ) : (
-          <span className={styles.statusText}>{content.status[status]}</span>
+          <span className={styles.statusSymbol} data-status={status}>
+            <FontAwesomeIcon
+              aria-hidden="true"
+              icon={TASK_STATUS_ICONS[status]}
+            />
+            {content.status[status]}
+          </span>
         )}
       </div>
-      <div className={styles.body}>
-        {canWrite ? (
-          <ButtonControl
-            aria-label={formatMessage(content.row.editNamed, {
-              name: task.title,
-            })}
-            className={styles.title}
-            onClick={() => onEditAction(task)}
-            type="button"
-            variant="ghost"
-          >
-            {task.title}
-          </ButtonControl>
-        ) : (
-          <span className={styles.title}>{task.title}</span>
-        )}
-        {task.description ? (
-          <p className={styles.description}>{task.description}</p>
-        ) : null}
-        <div className={styles.meta}>
-          <TaskActionSideBadge actionSide={task.actionSide} content={content} />
-          {task.visibleToCustomer ? (
-            <span className={styles.visibility}>
-              <FontAwesomeIcon aria-hidden="true" icon={faEye} />
-              {content.visibility.visible}
-            </span>
-          ) : null}
-          <TaskDueLabel
-            content={content}
-            locale={locale}
-            task={{ dueOn: task.dueOn, status }}
-            today={today}
-          />
-          {assigneeName ? (
-            <span className={styles.assignee}>
-              {formatMessage(content.row.assignee, { name: assigneeName })}
-            </span>
-          ) : null}
-        </div>
-      </div>
+      {canWrite ? (
+        <button
+          aria-label={formatMessage(content.row.editNamed, {
+            name: task.title,
+          })}
+          className={styles.details}
+          onClick={() => onEditAction(task)}
+          type="button"
+        >
+          {details}
+        </button>
+      ) : (
+        <div className={styles.details}>{details}</div>
+      )}
     </li>
   );
 }

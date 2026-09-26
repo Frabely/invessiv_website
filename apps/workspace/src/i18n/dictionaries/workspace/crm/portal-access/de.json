@@ -54,5 +54,7 @@
     "contact": "Wähle einen vorhandenen Kontakt.",
     "conflict": "Der Stand hat sich geändert. Deine Auswahl bleibt erhalten; prüfe die aktuellen Daten und speichere erneut.",
     "preview": "Die Vorschau muss vor der ersten Einladung bestätigt werden."
-  }
+  },
+  "expandLabel": "Portalzugang aufklappen",
+  "collapseLabel": "Portalzugang zuklappen"
 }

@@ -7,6 +7,7 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -88,9 +89,28 @@ describe("ProjectTasksSection", () => {
     expect(
       screen.getByRole("button", { name: content.section.addAction }),
     ).toBeInTheDocument();
+    expect(screen.queryByRole("textbox")).toBeNull();
+  });
+
+  it("starts open and folds away the body while the header keeps the add action", () => {
+    renderSection({ tasks: [task()] });
+
+    const toggle = screen.getByRole("button", {
+      name: content.section.collapseLabel,
+    });
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByText("Provide hosting access")).toBeInTheDocument();
+
+    fireEvent.click(toggle);
+
+    expect(screen.queryByText("Provide hosting access")).toBeNull();
     expect(
-      screen.getByRole("textbox", { name: content.quickCreate.label }),
-    ).toBeInTheDocument();
+      screen.getByRole("button", { name: content.section.expandLabel }),
+    ).toHaveAttribute("aria-expanded", "false");
+    fireEvent.click(
+      screen.getByRole("button", { name: content.section.addAction }),
+    );
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
   });
 
   it("shows no write action and a read-only explanation without write access", () => {
@@ -101,9 +121,6 @@ describe("ProjectTasksSection", () => {
     ).toBeInTheDocument();
     expect(
       screen.queryByRole("button", { name: content.section.addAction }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole("textbox", { name: content.quickCreate.label }),
     ).not.toBeInTheDocument();
   });
 
@@ -123,7 +140,16 @@ describe("ProjectTasksSection", () => {
     expect(screen.getByText(content.visibility.visible)).toBeInTheDocument();
     expect(screen.getByText("Overdue for 3 days")).toBeInTheDocument();
     expect(screen.getByText("Assignee: Ada Lovelace")).toBeInTheDocument();
+    expect(screen.getByText("AL")).toBeInTheDocument();
     expect(screen.getByText("1 open")).toBeInTheDocument();
+  });
+
+  it("explains who is acting and whether an undated task is visible to the customer", () => {
+    renderSection({ tasks: [task()] });
+
+    expect(screen.getByText(content.actionSide.internal)).toBeInTheDocument();
+    expect(screen.queryByText(content.due.none)).not.toBeInTheDocument();
+    expect(screen.getByText(content.visibility.hidden)).toBeInTheDocument();
   });
 
   it("leaves the assignee out when no member names were handed over", () => {
@@ -154,54 +180,34 @@ describe("ProjectTasksSection", () => {
     ).toHaveAttribute("aria-expanded", "true");
   });
 
-  it("creates a task on Enter, clears the field and announces it", async () => {
+  it("creates a task through the dialog behind the header action", async () => {
     mocks.createTask.mockResolvedValue({ ok: true, task: task() });
     renderSection();
-    const input = screen.getByRole("textbox", {
-      name: content.quickCreate.label,
+
+    fireEvent.click(
+      screen.getByRole("button", { name: content.section.addAction }),
+    );
+    const dialog = screen.getByRole("dialog", {
+      name: content.form.title.create,
     });
-
-    fireEvent.change(input, { target: { value: "  Set up analytics  " } });
-    fireEvent.submit(input.closest("form") as HTMLFormElement);
-
-    await waitFor(() => expect(mocks.createTask).toHaveBeenCalledTimes(1));
-    expect(mocks.createTask).toHaveBeenCalledWith(
-      PROJECT_ID,
-      expect.objectContaining({
-        title: "Set up analytics",
-        actionSide: TaskActionSide.Internal,
-        visibleToCustomer: false,
-        assigneeMemberId: null,
+    fireEvent.change(
+      within(dialog).getByRole("textbox", {
+        name: new RegExp(content.form.fields.title),
+      }),
+      { target: { value: "Set up analytics" } },
+    );
+    fireEvent.click(
+      within(dialog).getByRole("button", {
+        name: content.form.buttons.submitCreate,
       }),
     );
-    await waitFor(() => expect(input).toHaveValue(""));
-    expect(screen.getByRole("status")).toHaveTextContent(
-      "Task “Set up analytics” added.",
+
+    await waitFor(() =>
+      expect(mocks.createTask).toHaveBeenCalledWith(
+        PROJECT_ID,
+        expect.objectContaining({ title: "Set up analytics" }),
+      ),
     );
-    expect(mocks.refresh).toHaveBeenCalled();
-  });
-
-  it("validates a required quick-create title and keeps the text when the request fails", async () => {
-    renderSection();
-    const input = screen.getByRole("textbox", {
-      name: content.quickCreate.label,
-    });
-
-    fireEvent.submit(input.closest("form") as HTMLFormElement);
-    expect(mocks.createTask).not.toHaveBeenCalled();
-    expect(screen.getByText("Enter a task title.")).toBeInTheDocument();
-
-    mocks.createTask.mockResolvedValue({
-      ok: false,
-      code: TaskErrorCode.Internal,
-    });
-    fireEvent.change(input, { target: { value: "Keep me" } });
-    fireEvent.submit(input.closest("form") as HTMLFormElement);
-
-    expect(await screen.findByRole("alert")).toHaveTextContent(
-      content.quickCreate.error,
-    );
-    expect(input).toHaveValue("Keep me");
   });
 
   it("changes the status from the row, announces it and refreshes", async () => {
@@ -216,6 +222,7 @@ describe("ProjectTasksSection", () => {
         name: "Status of “Provide hosting access”: Open",
       }),
     );
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole("option", { name: content.status.done }));
 
     await waitFor(() =>
@@ -269,14 +276,10 @@ describe("ProjectTasksSection", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("opens the edit dialog from the task title", () => {
-    renderSection({ tasks: [task()] });
+  it("opens the edit dialog from the task details, not only the title", () => {
+    renderSection({ tasks: [task({ visibleToCustomer: true })] });
 
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: "Edit task “Provide hosting access”",
-      }),
-    );
+    fireEvent.click(screen.getByText(content.visibility.visible));
 
     expect(
       screen.getByRole("dialog", { name: content.form.title.edit }),

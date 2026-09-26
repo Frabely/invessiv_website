@@ -11,6 +11,9 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 
 - Gruppierte Subfolder nach Verantwortung: `shell/`, `list/`, `form/`, ab Task 05 `detail/`, ab Task 06 `contacts/`,
   ab Task 40 `services/` (Leistungstemplatekatalog), ab Task 41 `projects/` (Projektleistungen im Projekt-Canvas).
+  Ab Task 50 zusätzlich `shared/section-collapse-toggle/`, `shared/mock-section-card/`,
+  `projects/project-switcher-tabs/` und `detail/customer-chat-dock/`. Projektkopf (Status, Titel, Owner) und
+  Prozessleiste liegen in `projects/project-overview/`.
 - Pro Komponente ein Ordner `<gruppe>/<name>/<name>.tsx` mit co-located `<name>.module.css` und Test.
 - App-neutrale Grundbausteine (Dialog, Formularfeld, Button, Badge, Empty-State) kommen aus `@invessiv/ui`, nicht aus
   Kopien. Domänenneutrale Workspace-Bausteine erst bei tatsächlicher Wiederverwendung nach `workspace/shared/`.
@@ -63,3 +66,22 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   Bearbeiter-Angabe bzw. die Bearbeiter-Auswahl.
 - Server-Komponenten übergeben Client-Komponenten nur serialisierbare Daten (keine Funktionen); Links entstehen im
   Client aus Basispfaden über die Patterns in `common/patterns/crm/`.
+
+## Cockpit-Layout (ab Task 50)
+
+Plan: `apps/workspace/plans/crm/12c-cockpit-dashboard/50-cockpit-dashboard-redesign.md`.
+
+- Das Cockpit ist ein Vollbild-Dashboard: Kopf (Meta-Zeile + Kennzahl-Chips), links der Projektbereich mit
+  Projekt-Tabs, rechts die Kundenspalte in Themengruppen, ganz rechts der Kundenchat-Dock.
+- **Jeder Abschnitt folgt demselben Kopf:** Titel · Anzahl · optionale Primäraktion · Toggle. Auf- und Zuklappen
+  läuft ausschließlich über `shared/section-collapse-toggle`; kein zweiter Toggle-Weg.
+- **Der Kopf bleibt immer sichtbar.** Primäraktionen funktionieren auch bei eingeklapptem Abschnitt.
+- **Unterdialoge liegen außerhalb des einklappbaren Körpers**, damit sie sich auch bei eingeklapptem Abschnitt
+  öffnen (auch über das Owner-Badge in der Meta-Zeile).
+- **Roadmap-Bereiche ohne Umsetzung** erscheinen nur über `shared/mock-section-card`: ohne Daten-Props, ohne
+  Aktion, immer mit „Bald verfügbar“-Badge. Wird ein Bereich echt gebaut, ersetzt er seine Mock-Karte an
+  derselben Stelle.
+- Mock-Kennzahlen zeigen „—“, nie eine erfundene Zahl. Der Chat-Dock zeigt kein Ungelesen-Badge, solange es
+  keine echten Lesestände gibt (Ordner 17/18 docken dort an).
+- Der zugängliche Name eines Projekt-Tabs ist exakt der Projekttitel; der Status hängt über `aria-describedby`.
+- Offene und überfällige Aufgaben werden über `taskDueStateService.summarize` gezählt, nie in der Komponente.

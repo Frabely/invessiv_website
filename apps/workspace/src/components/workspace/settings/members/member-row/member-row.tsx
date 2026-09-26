@@ -7,6 +7,7 @@ import type {
   SettingsPermissionsDictionary,
 } from "@/i18n/dictionaries/workspace/settings";
 import { formatMessage } from "@/lib/i18n/format-message";
+import { getMemberInitials } from "@/common/patterns/access/member-initials";
 import { resolveRoleLabel } from "@/lib/workspace/access/role-label";
 import styles from "./member-row.module.css";
 
@@ -22,15 +23,6 @@ type MemberRowProps = {
   permissionsContent: SettingsPermissionsDictionary;
   responsibilityWithoutAccessCount?: number;
 };
-
-function getInitials(displayName: string): string {
-  const letters = displayName
-    .split(/[\s@._-]+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "");
-  return letters.join("") || "?";
-}
 
 export function MemberRow({
   canManageAccess,
@@ -52,7 +44,7 @@ export function MemberRow({
   return (
     <li className={styles.row} data-active={member.active ? "true" : "false"}>
       <span aria-hidden="true" className={styles.avatar}>
-        {getInitials(member.displayName)}
+        {getMemberInitials(member.displayName)}
       </span>
       <div className={styles.identity}>
         <p className={styles.nameLine}>

@@ -39,12 +39,8 @@
     "formDescription": "Lege Status und Prozessschritte fest. Beides kann später angepasst werden.",
     "empty": "Für diesen Kunden sind noch keine Projekte angelegt.",
     "phase": "Phase",
+    "phaseProgress": "Schritt {current} von {total}",
     "owner": "Zuständig",
-    "comingSoon": "Der Chat folgt in diesem Projekt.",
-    "areas": {
-      "services": "Leistungen",
-      "chat": "Projektchat"
-    },
     "status": {
       "planned": "Geplant",
       "active": "Aktiv",
@@ -60,6 +56,63 @@
       "feedback": "Feedback",
       "launch": "Launch",
       "maintenance": "Wartung"
+    },
+    "tabsLabel": "Projekte dieses Kunden",
+    "futureAreas": {
+      "feedback": {
+        "title": "Feedbackrunden",
+        "body": "Hier landen bald die Feedbackrunden des Kunden mit Text, Dateien und Status – und wie viele Runden noch offen sind."
+      },
+      "onboarding": {
+        "title": "Onboarding-Bogen",
+        "body": "Hier liest du bald den Onboarding-Bogen, den der Kunde im Portal ausfüllt, und übernimmst seine Texte mit einem Klick."
+      }
     }
+  },
+  "mock": {
+    "badge": "Bald verfügbar"
+  },
+  "collapse": {
+    "expand": "{section} aufklappen",
+    "collapse": "{section} zuklappen"
+  },
+  "kpis": {
+    "label": "Kennzahlen",
+    "customerValue": "Kundenwert",
+    "oneTime": "einmalig",
+    "monthly": "pro Monat",
+    "openTasks": "Offene Aufgaben gesamt",
+    "overdueTasks": "davon {count} überfällig",
+    "hoursLeft": "Stunden übrig",
+    "openFeedback": "Offenes Feedback",
+    "mockValue": "—"
+  },
+  "groups": {
+    "collaboration": "Zusammenarbeit",
+    "accessSecurity": "Zugänge & Sicherheit"
+  },
+  "futureSections": {
+    "files": {
+      "title": "Dateien & Medien",
+      "body": "Hier liegen bald alle Dokumente, Bilder und Videos dieses Kunden – hochladen, freigeben und im Portal bereitstellen."
+    },
+    "hours": {
+      "title": "Stunden & Verlauf",
+      "body": "Hier siehst du bald das Stundenkontingent, jede Buchung mit kurzer Notiz und wie viele Stunden übrig sind. Der Kunde sieht dasselbe im Portal."
+    },
+    "credentials": {
+      "title": "Zugangsdaten",
+      "body": "Hier speicherst du bald die Logins der Konten, die du für diesen Kunden betreust – verschlüsselt und nur für freigegebene Mitglieder sichtbar."
+    }
+  },
+  "chat": {
+    "title": "Kundenchat",
+    "body": "Hier schreibst du bald direkt mit dem Kunden. Er antwortet aus dem Portal.",
+    "readAlong": "Der Kunde liest hier später mit.",
+    "inputLabel": "Nachricht",
+    "inputPlaceholder": "Nachricht schreiben …",
+    "send": "Senden",
+    "expand": "Kundenchat öffnen",
+    "collapse": "Kundenchat schließen"
   }
 }

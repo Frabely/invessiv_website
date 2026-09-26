@@ -1,15 +1,18 @@
 .tasks {
   display: grid;
   gap: 0.9rem;
-  padding: 1.1rem 1.25rem 1.25rem;
-  border: 1px solid var(--color-border);
-  border-left: 3px solid var(--color-cta);
-  background: var(--color-surface-2);
+  padding: 0.9rem 0;
+  border-top: 1px solid var(--color-border-strong);
+}
+
+.body {
+  display: grid;
+  gap: 0.9rem;
 }
 
 .head {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 1rem;
 }
@@ -23,7 +26,11 @@
 .headMeta {
   display: flex;
   align-items: center;
-  gap: 0.9rem;
+  gap: 0.75rem;
+}
+
+.actionButton {
+  gap: 0.45rem;
 }
 
 .count {
@@ -35,6 +42,7 @@
 
 .list {
   display: grid;
+  container-type: inline-size;
   margin: 0;
   padding: 0;
   list-style: none;

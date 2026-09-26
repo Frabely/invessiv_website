@@ -1,9 +1,9 @@
 "use client";
 
-import { useRef } from "react";
 import { useRouter } from "next/navigation";
 
-import { ButtonControl, Dialog, DialogSize } from "@invessiv/ui";
+import { Dialog, DialogSize } from "@invessiv/ui";
+import { formatCustomerNumber } from "@invessiv/common/patterns/crm/format-customer-number";
 import { CustomerCockpitView } from "@/components/workspace/crm/detail/customer-cockpit-view/customer-cockpit-view";
 import type { CustomerCockpitDto } from "@invessiv/common/contracts/crm/customer-cockpit.dto";
 import type { PortalAccessDto } from "@invessiv/common/contracts/crm/portal-access.dto";
@@ -74,7 +74,6 @@ export function CustomerCockpitDialog({
   portalAccessContent,
 }: CustomerCockpitDialogProps) {
   const router = useRouter();
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   function close() {
     router.replace(closeHref, { scroll: false });
@@ -83,18 +82,7 @@ export function CustomerCockpitDialog({
   return (
     <Dialog
       closeLabel={content.close}
-      description={undefined}
-      footer={
-        <ButtonControl
-          onClick={close}
-          ref={closeButtonRef}
-          type="button"
-          variant="ghost"
-        >
-          {content.close}
-        </ButtonControl>
-      }
-      initialFocusRef={closeButtonRef}
+      eyebrow={formatCustomerNumber(customer.customerNumber)}
       onCloseAction={close}
       size={DialogSize.Full}
       title={customer.displayName}
@@ -117,6 +105,7 @@ export function CustomerCockpitDialog({
         projectLineItems={projectLineItems}
         projectLineItemsContent={projectLineItemsContent}
         rolesHref={rolesHref}
+        showHeading={false}
         tasks={tasks}
         tasksContent={tasksContent}
         portalAccess={portalAccess}

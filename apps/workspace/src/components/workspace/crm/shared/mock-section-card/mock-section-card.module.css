@@ -1,0 +1,39 @@
+.section {
+  display: grid;
+  gap: 0.55rem;
+  padding: 0.8rem 0;
+  border-top: 1px dashed var(--color-border-strong);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.head h3 {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-heading-sm);
+  font-weight: 600;
+}
+
+.badge {
+  flex: 0 0 auto;
+  padding: 0.12rem 0.5rem;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-badge);
+  white-space: nowrap;
+}
+
+.body {
+  max-width: 60ch;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.5;
+}
