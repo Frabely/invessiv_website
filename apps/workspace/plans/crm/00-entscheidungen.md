@@ -237,7 +237,7 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
 - Portalrouten nutzen englische Slugs (`/portal/[customerId]/projects|files|assets|messages|onboarding|services`,
   `/portal/invite/[token]`); die Portal-Navigation ist eine Registry (`PORTAL_NAV_ITEMS`) mit `requiredPermission`.
 - Das Portal ist für eingeladene Kontakte aktiv; jede Anfrage prüft die Mitgliedschaft und die wirksamen Portalrollen.
-- Kunden können Leistungen aus einem freigegebenen Katalogausschnitt **preisfrei anfragen** (Ordner 13a). Das
+- Kunden können Leistungen aus einem freigegebenen Katalogausschnitt **preisfrei anfragen** (Ordner 13c). Das
   Angebot entsteht weiter außerhalb; die Anwendung dokumentiert Anfrage und Ausgang.
 - Widerruf wirkt sofort; historische Nachrichten und Audit-Einträge bleiben erhalten.
 - Vor der ersten Einladung bestätigt ein Mitarbeiter eine Vorschau aller sichtbaren Projekte,
@@ -246,7 +246,7 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
 - Portalsprache wird pro Person gespeichert (`de | en`).
 - Ein gemeinsamer Chat pro Kunde; Lesestände immer pro Portalmitglied.
 - Jeder Kundenchat besitzt genau einen internen Verantwortlichen, initial den Kunden-Owner. Die Zuständigkeit kann in
-  Ordner 17 unabhängig geändert werden und gewährt selbst keinen Zugriff.
+  Ordner 13a unabhängig geändert werden und gewährt selbst keinen Zugriff.
 - Nachrichten sind unveränderlich. Nur der Owner darf rechtswidrige Inhalte protokolliert ausblenden.
 - Chatnachrichten referenzieren nur vorhandene, explizit portalöffentliche Dateien.
 - Kunden erhalten gebündelte E-Mail-Hinweise, höchstens **einmal je 12 Stunden** je Mitgliedschaft.
@@ -282,7 +282,7 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
   bewusst im Portal sichtbar. Mitarbeiter-IDs, Rollen, Bearbeiter von Aufgaben und Historie bleiben intern.
 - **Beide Aufgabenseiten:** Das Portal zeigt „Von Ihnen benötigt“ (`action_side = customer`) und „Daran arbeiten
   wir“ (`action_side = internal AND visible_to_customer`); nur offen/erledigt, kein Bearbeitername.
-- Gebuchte Projektleistungen sind nicht portalsichtbar; Leistungsanfragen (Ordner 13a) zeigen nie Preise.
+- Gebuchte Projektleistungen sind nicht portalsichtbar; Leistungsanfragen (Ordner 13c) zeigen nie Preise.
 - Kein Neuigkeiten-Feed im Dashboard; er folgt mit den Benachrichtigungen (Ordner 20c). Das Verschieben von Widgets
   ist ein eigener späterer Ordner.
 
@@ -663,15 +663,15 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12b erreicht:
 | 12a | offen     | `12a-portal-fundament`                   | Portal-Schema, Actor, Gates, Zugriffshelfer, Shell und Flag unsichtbar deployt  |   60–80 |  3–4 T. |
 | 12b | läuft     | `12b-portal-zugang`                      | Einladung, Rollen je Kontakt, Widerruf und Mehrfirmenwechsel sicher nutzbar     |   60–80 |  3–4 T. |
 | 13  | gemerged  | `13-portal-dashboard`                    | Widget-Dashboard mit Projekten, beiden Aufgabenseiten und Owner-Portalsicht     |    ≈276 |  5–7 T. |
-| 13a | offen     | `13a-portal-leistungsanfragen`           | Preisfreie Leistungsanfragen im Portal, intern bearbeitbar                      |   60–80 |  3–4 T. |
+| 13a | offen     | `13a-kundenchat-intern`                  | Chat-Datenmodell und interne Chatseite vollständig nutzbar                      |   60–90 |  3–4 T. |
+| 13b | offen     | `13b-kundenchat-portal`                  | Portalchat, Kundendigest und Abmeldeschalter aktiv                              |   50–80 |  2–3 T. |
+| 13c | offen     | `13c-portal-leistungsanfragen`           | Preisfreie Leistungsanfragen im Portal, intern bearbeitbar                      |   60–80 |  3–4 T. |
 | 14  | offen     | `14-storage-und-upload`                  | Storage-Adapter und sichere Upload-Pipeline unsichtbar sicher deployt           |  70–100 |  4–5 T. |
 | 15  | offen     | `15-dateien-und-portal-downloads`        | Datei-UI, Freigabe, Portaldownload und ZIP vollständig nutzbar                  |  70–100 |  4–5 T. |
 | 15a | offen     | `15a-medien-und-portal-upload`           | Bilder/Video mit Limits je Art, Medienlink und rundenfreier Portal-Upload       |   60–80 |  2–3 T. |
 | 15b | offen     | `15b-onboarding-bogen`                   | Strukturierter Onboarding-Bogen im Portal, intern vollständig lesbar            | 100–120 |  4–5 T. |
 | 15c | offen     | `15c-onboarding-abschluss`               | Bogen erledigt Kundenaufgaben; Terminbuchung beim zuständigen Mitarbeiter       |   50–70 |  2–3 T. |
 | 16  | offen     | `16-feedbackrunden`                      | Feedbackrunden im Kontingent plus freigabepflichtige Zusatzrunde nutzbar        |  70–100 |  4–5 T. |
-| 17  | offen     | `17-kundenchat-intern`                   | Chat-Datenmodell und interne Chatseite vollständig nutzbar                      |   60–90 |  3–4 T. |
-| 18  | offen     | `18-kundenchat-portal`                   | Portalchat, Kundendigest und Abmeldeschalter aktiv                              |   50–80 |  2–3 T. |
 | 19  | offen     | `19-credentials`                         | Verschlüsselte Zugangsdaten und Security-Audit vollständig nutzbar              |   50–80 |  3–4 T. |
 | 20  | offen     | `20-stunden-und-history`                 | Kontingente, Buchungen und konsolidierte Timeline vollständig nutzbar           |  60–100 |  3–4 T. |
 | 20a | offen     | `20a-kundenzustaendigkeit`               | Kundenverantwortung ist auswählbar, sichtbar und versioniert änderbar           |   25–45 |  1–2 T. |

@@ -1,6 +1,6 @@
 # Task 24 — Nachrichten Datenmodell
 
-> **Merge-Einheit:** Ordner 17 · **Branch:** `feat/crm-kundenchat-intern`
+> **Merge-Einheit:** Ordner 13a · **Branch:** `feat/crm-13a-kundenchat-intern`
 > **Aufwand:** M · **Abhängigkeiten:** Task 20 (Portalnutzer), Task 02 (Rechte)
 > **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 

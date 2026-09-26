@@ -215,7 +215,7 @@ deshalb wandert das Eyebrow in den Körper.
 **Neu:** `apps/workspace/src/components/workspace/crm/detail/customer-chat-dock/` (`.tsx`, `.module.css`, `.test.tsx`)
 
 Der Dock liegt unter `detail/`, weil er zum Cockpit auf Kundenebene gehört (Plan 17: eine Conversation
-pro Kunde, `project_id` optional). Die echte Umsetzung in Ordner 17/18 ersetzt den Mock-Inhalt an
+pro Kunde, `project_id` optional). Die echte Umsetzung in Ordner 13a/13b ersetzt den Mock-Inhalt an
 genau dieser Stelle.
 
 - Eingeklappt ist er ein schmaler, vertikaler Randreiter (~3 rem) ganz rechts im Dialog: Chat-Icon,
@@ -271,7 +271,7 @@ den echten Funktionen.
   - Die zwei Abschnittsregeln (Kopf immer sichtbar, Dialoge außerhalb des Körpers).
   - `SectionCollapseToggle` als einziger Toggle-Weg.
   - Mock-Abschnitte nur über `MockSectionCard`: ohne Daten, ohne Aktion, immer mit Badge.
-  - Der Chat-Dock ist der Andockpunkt für Ordner 17/18.
+  - Der Chat-Dock ist der Andockpunkt für Ordner 13a/13b.
   - Neue Roadmap-Bereiche ersetzen ihre Mock-Karte an derselben Stelle.
 - Die Gruppen-Liste unter „Struktur“ in derselben Datei um `shared/section-collapse-toggle`,
   `shared/mock-section-card` und `detail/customer-chat-dock` ergänzen.

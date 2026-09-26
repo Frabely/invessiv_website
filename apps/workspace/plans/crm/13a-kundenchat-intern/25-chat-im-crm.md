@@ -1,6 +1,6 @@
 # Task 25 — Chat im CRM
 
-> **Merge-Einheit:** Ordner 17 · **Branch:** `feat/crm-kundenchat-intern`
+> **Merge-Einheit:** Ordner 13a · **Branch:** `feat/crm-13a-kundenchat-intern`
 > **Aufwand:** M · **Abhängigkeiten:** Task 24
 > **Migration:** keine
 

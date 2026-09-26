@@ -1,11 +1,13 @@
-# Ordner 18 — Kundenchat im Portal
+# Ordner 13b — Kundenchat im Portal
 
-> **Status:** offen · **Abhängigkeiten:** 17, 12b, 15 · **Aufwand:** 2–3 Tage · **Reviewziel:** 50–80 Dateien
+> **Status:** offen · **Abhängigkeiten:** 13a, 12b, 15 · **Aufwand:** 2–3 Tage · **Reviewziel:** 50–80 Dateien
 
 > **Portal-Fundament (Neuzuschnitt 23.09.2026):** Seiten über `requirePortalActor(locale, customerId)`, Endpunkte über
 > `withPortalActor`, jede Portal-Query über `portalAccessCondition`, jede Portal-Mutation über `portalCanOn` (alles
-> aus Task 49). Eigene Portal-Permissions dieses Ordners, in `portal_standard` ergänzt: `portal.messages.read`, `portal.messages.write` — firmenweites Modul, verlangt nach Einführung des Projektbezugs eine firmenweite Rolle.
-> Navigation: „Nachrichten“ (`/portal/[customerId]/messages`) plus Dashboard-Karte „Offene Nachrichten“ in `PORTAL_NAV_ITEMS` mit `requiredPermission`. Negativtests zusätzlich für fehlende
+> aus Task 49). Eigene Portal-Permissions dieses Ordners, in `portal_standard` ergänzt: `portal.messages.read`,
+> `portal.messages.write` — firmenweites Modul, verlangt nach Einführung des Projektbezugs eine firmenweite Rolle.
+> Navigation: „Nachrichten“ (`/portal/[customerId]/messages`) plus Dashboard-Karte „Offene Nachrichten“ in
+> `PORTAL_NAV_ITEMS` mit `requiredPermission`. Negativtests zusätzlich für fehlende
 > Portal-Permission.
 
 ## Ziel und Stand nach Merge
@@ -52,5 +54,6 @@ Nachrichten“ **ist** dieses Registry-Widget, keine zusätzliche Karte.
 
 ## Rollback
 
-`portal.messages.*` aus `portal_standard` und eigenen Portalrollen nehmen; die späteren Kundendigestjobs stoppen. Der interne Chat aus Ordner 17 bleibt
+`portal.messages.*` aus `portal_standard` und eigenen Portalrollen nehmen; die späteren Kundendigestjobs stoppen. Der
+interne Chat aus Ordner 13a bleibt
 vollständig nutzbar; vorhandene Nachrichten bleiben gespeichert.

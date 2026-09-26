@@ -1,6 +1,6 @@
 # Task 26 — Chat im Portal
 
-> **Merge-Einheit:** Ordner 18 · **Branch:** `feat/crm-kundenchat-portal`
+> **Merge-Einheit:** Ordner 13b · **Branch:** `feat/crm-13b-kundenchat-portal`
 > **Aufwand:** M · **Abhängigkeiten:** Task 25 (Verlaufskomponente); Outbox-Aktivierung folgt in Ordner 20c
 > **Migration:** Nummer im Repository ermitteln (höchste bestehende plus eins)
 

@@ -1,4 +1,4 @@
-# Ordner 17 — Kundenchat, Datenmodell und interne Seite
+# Ordner 13a — Kundenchat, Datenmodell und interne Seite
 
 > **Status:** offen · **Abhängigkeiten:** 12b · **Aufwand:** 3–4 Tage · **Reviewziel:** 60–90 Dateien
 
@@ -12,7 +12,7 @@
 
 Pro Kunde existiert ein gemeinsamer Chat. Intern ist er nach diesem Merge vollständig nutzbar:
 schreiben, lesen, Lesestände, Ungelesen-Zähler, Sammelbereich und Dateiverweise. Die Kundenseite
-folgt in Ordner 18 — bis dahin ist der Chat ein intern sichtbarer Verlauf ohne Portalzugang.
+folgt in Ordner 13b — bis dahin ist der Chat ein intern sichtbarer Verlauf ohne Portalzugang.
 
 Das ist bewusst so geschnitten: die Portalgrenze ist der sicherheitskritische Teil und bekommt
 dadurch ihren eigenen, konzentrierten Review statt im großen PR mitzulaufen.
@@ -47,7 +47,7 @@ dadurch ihren eigenen, konzentrierten Review statt im großen PR mitzulaufen.
   Zuweisung und internem Schreiben.
 - Die sofortige Notification und die gebündelte Mail werden erst mit der Outbox in Ordner 20c aktiviert;
   Chat-Schreiben, Lesestände und Zuständigkeiten bleiben bis dahin vollständig nutzbar.
-- Der Kundendigest und der Abmeldeschalter gehören zu Ordner 18.
+- Der Kundendigest und der Abmeldeschalter gehören zu Ordner 13b.
 
 ## Merge-Gate
 

@@ -38,7 +38,7 @@ per E-Mail gemeldet. Nach Merge werden Aufgabenreminder und Serien asynchron zuv
 - Glocke, Zähler und Liste mit Deep-Link über typisierte Routen.
 - Aufgabe: Zuweisung, frei gewählter Reminder und einmalige Überfälligkeit sowie die nachträgliche Aktivierung der
   definierten Ereignisse für Uploads, Onboarding, Feedback, Chat, vom Kunden erledigte Aufgaben (Ordner 13) und
-  Leistungsanfragen (Ordner 13a).
+  Leistungsanfragen (Ordner 13c).
 - **Portal-Einladungsmail:** Das Einladen aus Ordner 12b schreibt ab hier einen Outbox-Eintrag in derselben
   Transaktion; die Mail geht in `people.preferred_locale` an die Adresse der Personenzuordnung. Der Klartext-Token
   steht nur im Job-Payload, wird nach erfolgreichem Versand aus dem Payload entfernt und erscheint nie in Logs oder
