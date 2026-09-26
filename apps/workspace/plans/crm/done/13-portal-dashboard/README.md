@@ -1,6 +1,6 @@
 # Ordner 13 — Portal-Dashboard
 
-> **Status:** im Review · **Branch:** `feat/portal-dashboard` · **Abhängigkeiten:** 07, 08, 12a, 12b, 12c · **Aufwand:**
+> **Status:** gemerged · **Branch:** `feat/portal-dashboard` · **Abhängigkeiten:** 07, 08, 12a, 12b, 12c · **Aufwand:**
 > 5–7 Tage · **Schätzung:** ≈130 Dateien · **Ist:** ≈276 Dateien gegen `origin/master` (bewusste Owner-Ausnahme; jeder Schritt reviewed)
 
 > **Neufassung 26.09.2026:** Ersetzt den Zuschnitt vom 23.09.2026. Alle Entscheidungen E1–E24 sind mit dem Owner
