@@ -53,6 +53,9 @@ describe("SYSTEM_ROLE_DEFINITIONS", () => {
         ...SYSTEM_ROLE_DEFINITIONS[SystemRoleKey.PortalStandard].permissions,
       ].sort(),
     ).toEqual([...PORTAL_PERMISSION_VALUES].sort());
+    expect(
+      SYSTEM_ROLE_DEFINITIONS[SystemRoleKey.PortalStandard].permissions,
+    ).toContain(Permission.PortalTasksComplete);
   });
 
   it("keeps the member role operational without deleting or revealing", () => {

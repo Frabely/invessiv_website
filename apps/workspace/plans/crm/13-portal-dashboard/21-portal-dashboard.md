@@ -481,21 +481,49 @@ klar spezifizierter, mechanischer oder SQL-lastiger Arbeit. Einschätzung nach A
 
 ### S3 — Migration, Permissions, Seed (GPT · GPT-6 Astra)
 
-- [ ] Migrationsnummer ermitteln; SQL wie 5.4; zweimal laufen lassen (idempotent).
-- [ ] Drizzle-Modell `tasks.ts` + Constraint-Namen; `permissions.ts`, `permission-definitions.ts`,
+- [x] Migrationsnummer ermitteln; SQL wie 5.4; zweimal laufen lassen (idempotent).
+- [x] Drizzle-Modell `tasks.ts` + Constraint-Namen; `permissions.ts`, `permission-definitions.ts`,
       `PORTAL_READ_PERMISSION_VALUES`, `security-event-types.ts`; Tests.
-- [ ] Seed erweitern (5.4); `db:seed:crm` läuft.
-- [ ] DB-Smokes (`db:smoke:rbac`, Katalog-Check) grün; negativer DB-Test: Done ohne/mit zwei Herkünften scheitert.
+- [x] Seed erweitern (5.4); `db:seed:crm` läuft.
+- [x] DB-Smokes (`db:smoke:rbac`, Katalog-Check) grün; negativer DB-Test: Done ohne/mit zwei Herkünften scheitert.
 
-### S4 — PortalReader / Owner-Sicht (Claude · Opus 5.5)
+Umgesetzt mit `0039_add_portal_dashboard.sql`. Ergänzend ist `SecuritySubjectType.Customer` samt DB-CHECK
+vorbereitet, damit S4 das Owner-Ereignis einem Kunden zuordnen kann. Rollenverwaltung: neue Rechte gruppiert und
+in DE/EN beschrieben. Der Seed-Helfer `scripts/crm-fixture/seed-portal-dashboard.ts` versorgt beide Portal-Kunden
+mit je sechs Projektzuständen und sieben Aufgaben; die bisherige Aufgabenanlage wurde dorthin verschoben.
 
-- [ ] `workspace-owner-lookup-service.ts` (server/shared) + Test (aktiv/inaktiv/ohne Rolle/DB-Fehler → fail closed).
-- [ ] `PortalOwnerView`, `PortalReader`, `resolve-portal-owner-view.ts`, `require-portal-reader.ts` + Tests:
+Verifiziert auf `development`: Migrationsrunner zweimal; zusätzlich SQL zweimal in einer anschließend
+zurückgerollten Transaktion auf den neuen Seed-Daten; Seed zweimal; 98 CRM-Constraint-Checks, 117 RBAC-Checks,
+RBAC-Integration (7 bestanden, 1 übersprungen) und Schema-/Katalog-Smoke grün. `pnpm -r lint` (eine bestehende
+`no-img-element`-Warnung im Web-Test), `pnpm -r typecheck`, `pnpm -r test` (2548 bestanden, 64 übersprungen)
+und Workspace-Build erfolgreich. S4–S9 bleiben offen.
+
+### S4 — PortalReader / Owner-Sicht (Claude · Opus 5.5 — erledigt)
+
+- [x] `workspace-owner-lookup-service.ts` (server/shared) + Test (aktiv/inaktiv/ohne Rolle/DB-Fehler → fail closed).
+- [x] `PortalOwnerView`, `PortalReader`, `resolve-portal-owner-view.ts`, `require-portal-reader.ts` + Tests:
       Mitglied → Actor; Owner ohne Mitgliedschaft → OwnerView + Security-Event; Nicht-Owner-Workspace-Mitglied → 404;
       nicht angemeldet → Redirect; fremde/nicht existente customerId → 404; DB-Fehler → Unavailable.
-- [ ] `portalAccessCondition.forReader`, `portalCanOn.forReader` + Tests.
-- [ ] Layout/Page umstellen; `layout.test.tsx`/`page.test.tsx` anpassen; Banner-Komponente.
-- [ ] AGENTS-Präzisierungen (server/portal, (portal)).
+- [x] `portalAccessCondition.forReader`, `portalCanOn.forReader` + Tests.
+- [x] Layout/Page umstellen; `layout.test.tsx`/`page.test.tsx` anpassen; Banner-Komponente.
+- [x] AGENTS-Präzisierungen (server/portal, (portal)).
+
+Umgesetzt: `authenticatePortalReader` (Mitgliedschaft zuerst, dann Owner-Versuch) teilt sich die Vorprüfung (Session,
+UUID, Fehler → Unavailable) mit `authenticatePortalRequest`. Die Owner-Sicht schreibt ihr Security-Event
+in derselben Transaktion (ohne Event keine Sicht; Subject `customer`, `metadata: null`). Abweichungen vom Plan:
+Banner liegt als `components/portal/portal-owner-banner/` (nicht unter `dashboard/`), weil das Layout ihn auf jeder
+Portalseite zeigt; `PortalShell` hat dafür einen `notice`-Slot, die Texte stehen im Shell-Dictionary (`ownerView`)
+statt im Dashboard-Dictionary. Neue Query `getPortalCustomerDisplayName(reader)` liefert Firmennamen für Banner und
+H1 (Platzhalter bis S7). `requirePortalActor` bleibt für Seiten, die nur Kundenkontakte sehen dürfen (15b/18).
+Nachträglich auf Review-Hinweis umbenannt: `portal-authentication.ts` → `portal-authentication-service.ts`. Zwei
+zusammengehörige Operationen zu einem Kontext (wer darf lesen/schreiben) mit geteilter interner Hilfsfunktion sind
+laut Root-AGENTS „Services nach fachlichem Kontext bündeln“ ein Service, nicht zwei lose Funktionen — Export jetzt
+als `portalAuthenticationService = { authenticateRequest, authenticateReader }`. `require-portal-actor.ts`,
+`require-portal-reader.ts`, `with-portal-actor.ts` und alle Tests angepasst.
+
+Verifiziert: Workspace-`typecheck`/`lint`, `pnpm test` (1818 bestanden), Integrationstest
+`server/tests/portal/portal-owner-view.integration.test.ts` mit `--mode rbac-integration` gegen `development`
+(5 bestanden, erneut nach dem Service-Umbau geprüft). Browserabnahme folgt mit S8 (Einstieg „Portal ansehen“).
 
 ### S5 — Dashboard-Query (GPT · GPT-6 Astra)
 

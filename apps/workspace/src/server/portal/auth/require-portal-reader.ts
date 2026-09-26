@@ -9,27 +9,26 @@ import { portalPathFor, signInPathWithRedirect } from "@/lib/auth/routes";
 
 import { portalAuthenticationService } from "./portal-authentication-service";
 import { PortalAuthorizationUnavailableError } from "./portal-authorization-unavailable-error.class";
-import type { PortalActor } from "./portal-actor";
+import type { PortalReader } from "./portal-reader";
 
-// Layout and page of one render share the lookup for the same customer; the next request
-// resolves again, and a different customerId in the same render gets its own lookup.
+// Layout and page of one render share the lookup, so an owner view writes one security event per
+// render, not one per component.
 const authenticateForRender = cache(
-  portalAuthenticationService.authenticateRequest,
+  portalAuthenticationService.authenticateReader,
 );
 
 /**
- * Resolves the portal actor for exactly this customer, or ends the render. `customerId` is a
- * value from the URL, never trusted on its own — this is the one place it gets checked against a
- * real membership.
+ * Page gate for read-only portal pages: a contact of this customer, or the workspace owner in
+ * read-only view. Write paths never use it — they stay on `withPortalActor`.
  */
-export async function requirePortalActor(
+export async function requirePortalReader(
   locale: Locale,
   customerId: string,
-): Promise<PortalActor> {
+): Promise<PortalReader> {
   const authentication = await authenticateForRender(customerId);
 
   if (authentication.status === PortalAuthStatus.Authorized) {
-    return authentication.actor;
+    return authentication.reader;
   }
   if (authentication.status === PortalAuthStatus.Unauthenticated) {
     redirect(signInPathWithRedirect(locale, portalPathFor(locale, customerId)));

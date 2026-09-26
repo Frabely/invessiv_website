@@ -10,6 +10,7 @@
 import { randomUUID } from "node:crypto";
 
 import { getDatabaseClient, getDatabaseUrl } from "@invessiv/db/core";
+import { TasksConstraintName } from "@invessiv/db/constraint-names/crm/tasks-constraint-names";
 import {
   configureDatabaseUrlFromTarget,
   type DatabaseTarget,
@@ -28,12 +29,26 @@ function record(name: string, ok: boolean, detail?: string) {
 }
 
 /** Expects the statement to be rejected by Postgres. */
-async function expectRejected(name: string, run: () => Promise<unknown>) {
+async function expectRejected(
+  name: string,
+  run: () => Promise<unknown>,
+  constraint?: string,
+) {
   try {
     await run();
     record(name, false, "was accepted, expected a rejection");
-  } catch {
-    record(name, true);
+  } catch (error: unknown) {
+    const actualConstraint =
+      typeof error === "object" && error !== null && "constraint" in error
+        ? error.constraint
+        : undefined;
+    record(
+      name,
+      !constraint || actualConstraint === constraint,
+      constraint && actualConstraint !== constraint
+        ? `Expected constraint ${constraint}, got ${String(actualConstraint)}`
+        : undefined,
+    );
   }
 }
 
@@ -647,16 +662,90 @@ async function runTaskChecks(
     dueOn?: string | null;
     completedAt?: Date | null;
     completedByMemberId?: string | null;
+    completedByPortalMembershipId?: string | null;
     version?: number;
   }) => sql`
     INSERT INTO tasks (id, project_id, title, description, status, action_side, visible_to_customer,
-                       assignee_member_id, due_on, completed_at, completed_by_member_id, version)
+                       assignee_member_id, due_on, completed_at, completed_by_member_id,
+                       completed_by_portal_membership_id, version)
     VALUES (${randomUUID()}, ${args.projectId ?? projectId}, ${args.title ?? name("Task")}, '',
             ${args.status ?? "open"}, ${args.actionSide ?? "internal"},
             ${args.visibleToCustomer ?? false}, ${args.assigneeMemberId ?? memberId},
             ${args.dueOn ?? null}, ${args.completedAt ?? null}, ${args.completedByMemberId ?? null},
-            ${args.version ?? 1})
+            ${args.completedByPortalMembershipId ?? null}, ${args.version ?? 1})
   `;
+
+  // A real contact membership makes these constraint checks independent of missing-reference failures.
+  const membershipId = randomUUID();
+  const [member] = (await sql`SELECT user_id
+                 FROM workspace_members
+                 WHERE id = ${memberId}`) as {
+    user_id: string;
+  }[];
+  const [person] = (await sql`SELECT id
+                 FROM people
+                 WHERE display_name = ${`${FIXTURE_PREFIX}Person`}`) as {
+    id: string;
+  }[];
+  await sql`
+    INSERT INTO customer_contact_assignments (id, customer_id, person_id, is_primary, version)
+    VALUES (${randomUUID()}, ${customerId}, ${person.id}, TRUE, 1)
+  `;
+  await sql`
+    INSERT INTO portal_memberships (id, customer_id, person_id, user_id, activated_at, email_notifications_enabled,
+                                    version)
+    VALUES (${membershipId}, ${customerId}, ${person.id}, ${member.user_id}, NOW(), TRUE, 1)
+  `;
+  const portalCompletion = {
+    status: "done",
+    actionSide: "customer",
+    visibleToCustomer: true,
+    completedAt: new Date(),
+    completedByPortalMembershipId: membershipId,
+  };
+  await expectAccepted(
+    "customer task completed by a portal member is accepted",
+    () => insertTask(portalCompletion),
+  );
+  await expectRejected(
+    "done task with two completion origins is rejected",
+    () => insertTask({ ...portalCompletion, completedByMemberId: memberId }),
+    TasksConstraintName.CompletionConsistencyCheck,
+  );
+  await expectRejected(
+    "portal completion of an internal task is rejected",
+    () => insertTask({ ...portalCompletion, actionSide: "internal" }),
+    TasksConstraintName.PortalCompletionCustomerSideCheck,
+  );
+  await expectRejected(
+    "portal completion without a timestamp is rejected",
+    () => insertTask({ ...portalCompletion, completedAt: null }),
+    TasksConstraintName.CompletionConsistencyCheck,
+  );
+  await expectRejected(
+    "completion by an unknown portal membership is rejected",
+    () =>
+      insertTask({
+        ...portalCompletion,
+        completedByPortalMembershipId: randomUUID(),
+      }),
+    TasksConstraintName.CompletedByPortalMembershipForeignKey,
+  );
+  await expectRejected(
+    "referenced completion membership cannot be deleted",
+    () => sql`DELETE
+                FROM portal_memberships
+                WHERE id = ${membershipId}`,
+    TasksConstraintName.CompletedByPortalMembershipForeignKey,
+  );
+  await expectAccepted(
+    "revocation preserves portal completion history",
+    () =>
+      sql`UPDATE portal_memberships
+              SET revoked_at = NOW(),
+                  version = version + 1
+              WHERE id = ${membershipId}`,
+  );
 
   await expectAccepted("valid open task is accepted", () => insertTask({}));
   await expectAccepted("valid done task with completion data is accepted", () =>
@@ -703,6 +792,7 @@ async function runTaskChecks(
   await expectRejected(
     "done task with only a completion time is rejected",
     () => insertTask({ status: "done", completedAt: new Date() }),
+    TasksConstraintName.CompletionConsistencyCheck,
   );
   await expectRejected("task version = 0 is rejected", () =>
     insertTask({ version: 0 }),

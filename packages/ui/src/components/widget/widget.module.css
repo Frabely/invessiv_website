@@ -53,6 +53,12 @@
   background: color-mix(in srgb, var(--color-cta) 12%, transparent);
 }
 
+/* Consuming apps do not load the Font Awesome stylesheet, so every icon is sized here. */
+.icon svg {
+  width: 1rem;
+  height: 1rem;
+}
+
 .widget[data-mock="true"] .icon {
   color: var(--color-text-muted);
   background: color-mix(in srgb, var(--color-text-muted) 10%, transparent);
@@ -116,6 +122,13 @@
 .openButton.openButton {
   align-self: center;
   margin-left: auto;
+}
+
+.openButton svg,
+.toggleButton svg {
+  flex: 0 0 auto;
+  width: 0.8rem;
+  height: 0.8rem;
 }
 
 .openButton.openButton:focus-visible,

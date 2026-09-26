@@ -27,5 +27,10 @@
       "onboarding": "Onboarding",
       "services": "Leistungen"
     }
+  },
+  "ownerView": {
+    "label": "Portalansicht von",
+    "hint": "Du siehst, was dein Kunde sieht – nur lesend. Ändern kannst du im CRM.",
+    "cockpitLink": "Im CRM öffnen"
   }
 }

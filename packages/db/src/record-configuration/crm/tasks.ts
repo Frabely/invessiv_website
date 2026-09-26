@@ -3,6 +3,7 @@ import {
   boolean,
   check,
   date,
+  foreignKey,
   index,
   integer,
   pgTable,
@@ -23,6 +24,7 @@ import {
 import { TasksConstraintName } from "@invessiv/db/constraint-names/crm/tasks-constraint-names";
 import { sqlCheckIn } from "@invessiv/db/core";
 import { projects } from "./projects";
+import { portalMemberships } from "./portal-memberships";
 import { workspaceMembers } from "./workspace-members";
 
 /**
@@ -53,6 +55,10 @@ export const tasks = pgTable(
     completed_by_member_id: uuid("completed_by_member_id").references(
       () => workspaceMembers.id,
     ),
+    // Read alongside the task; no lookup by completing membership needs an index.
+    completed_by_portal_membership_id: uuid(
+      "completed_by_portal_membership_id",
+    ),
     version: integer("version").notNull(),
     created_at: timestamp("created_at", { withTimezone: true })
       .notNull()
@@ -62,6 +68,11 @@ export const tasks = pgTable(
       .defaultNow(),
   },
   (t) => [
+    foreignKey({
+      name: TasksConstraintName.CompletedByPortalMembershipForeignKey,
+      columns: [t.completed_by_portal_membership_id],
+      foreignColumns: [portalMemberships.id],
+    }),
     check(
       TasksConstraintName.TitleCheck,
       sql`btrim
@@ -90,17 +101,29 @@ export const tasks = pgTable(
     check(
       TasksConstraintName.CompletionConsistencyCheck,
       sql`(${t.status} = ${TaskStatus.Done})
-                = (
-                ${t.completed_at}
-                is
-                not
-                null
-                and
-                ${t.completed_by_member_id}
-                is
-                not
-                null
-                )`,
+            = (
+            ${t.completed_at}
+            IS
+            NOT
+            NULL
+            AND
+            num_nonnulls
+            (
+            ${t.completed_by_member_id}
+            ,
+            ${t.completed_by_portal_membership_id}
+            )
+            =
+            1
+            )`,
+    ),
+    check(
+      TasksConstraintName.PortalCompletionCustomerSideCheck,
+      sql`${t.completed_by_portal_membership_id}
+          IS NULL OR
+          ${t.action_side}
+          =
+          ${TaskActionSide.Customer}`,
     ),
     check(
       TasksConstraintName.VersionCheck,

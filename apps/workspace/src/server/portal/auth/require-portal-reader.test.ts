@@ -2,9 +2,9 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { PortalAuthStatus } from "@/common/constants/auth/portal-auth-statuses";
-import { createPortalActor } from "./portal-actor";
-import { requirePortalActor } from "./require-portal-actor";
+import { createPortalOwnerView } from "./portal-owner-view";
 import { PortalAuthorizationUnavailableError } from "./portal-authorization-unavailable-error.class";
+import { requirePortalReader } from "./require-portal-reader";
 
 vi.mock("server-only", () => ({}));
 
@@ -19,7 +19,7 @@ const { mockAuthenticate, mockRedirect, mockNotFound } = vi.hoisted(() => ({
 }));
 
 vi.mock("./portal-authentication-service", () => ({
-  portalAuthenticationService: { authenticateRequest: mockAuthenticate },
+  portalAuthenticationService: { authenticateReader: mockAuthenticate },
 }));
 vi.mock("next/navigation", () => ({
   redirect: mockRedirect,
@@ -27,16 +27,13 @@ vi.mock("next/navigation", () => ({
 }));
 
 const CUSTOMER_ID = "11111111-1111-4111-8111-111111111111";
-const ACTOR = createPortalActor({
-  userId: "user-uuid-1",
-  membershipId: "membership-uuid-1",
+const OWNER_VIEW = createPortalOwnerView({
+  userId: "owner-user-uuid",
   customerId: CUSTOMER_ID,
-  personId: "person-uuid-1",
   permissions: new Set([Permission.PortalAccess]),
-  projectPermissions: new Map(),
 });
 
-describe("requirePortalActor", () => {
+describe("requirePortalReader", () => {
   beforeEach(() => {
     mockAuthenticate.mockReset();
     mockRedirect.mockClear();
@@ -48,16 +45,15 @@ describe("requirePortalActor", () => {
       status: PortalAuthStatus.Unauthenticated,
     });
 
-    await expect(requirePortalActor("de", CUSTOMER_ID)).rejects.toThrow(
+    await expect(requirePortalReader("de", CUSTOMER_ID)).rejects.toThrow(
       "REDIRECT:/de/sign-in?redirect_url=%2Fde%2Fportal",
     );
-    expect(mockNotFound).not.toHaveBeenCalled();
   });
 
-  it("answers 404 for a signed-in account without a membership for this customer", async () => {
+  it("answers 404 for neither a member nor the owner", async () => {
     mockAuthenticate.mockResolvedValue({ status: PortalAuthStatus.NotMember });
 
-    await expect(requirePortalActor("de", CUSTOMER_ID)).rejects.toThrow(
+    await expect(requirePortalReader("de", CUSTOMER_ID)).rejects.toThrow(
       "NOT_FOUND",
     );
     expect(mockRedirect).not.toHaveBeenCalled();
@@ -68,18 +64,20 @@ describe("requirePortalActor", () => {
       status: PortalAuthStatus.Unavailable,
     });
 
-    await expect(requirePortalActor("de", CUSTOMER_ID)).rejects.toBeInstanceOf(
+    await expect(requirePortalReader("de", CUSTOMER_ID)).rejects.toBeInstanceOf(
       PortalAuthorizationUnavailableError,
     );
   });
 
-  it("returns the resolved actor", async () => {
+  it("returns the resolved reader", async () => {
     mockAuthenticate.mockResolvedValue({
       status: PortalAuthStatus.Authorized,
-      actor: ACTOR,
+      reader: OWNER_VIEW,
     });
 
-    await expect(requirePortalActor("de", CUSTOMER_ID)).resolves.toBe(ACTOR);
+    await expect(requirePortalReader("de", CUSTOMER_ID)).resolves.toBe(
+      OWNER_VIEW,
+    );
     expect(mockAuthenticate).toHaveBeenCalledWith(CUSTOMER_ID);
   });
 });

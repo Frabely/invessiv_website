@@ -7,7 +7,7 @@ import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-
 import { PortalAuthStatus } from "@/common/constants/auth/portal-auth-statuses";
 import { authApiError } from "@/lib/auth/auth-api-error";
 
-import { authenticatePortalRequest } from "./portal-authentication";
+import { portalAuthenticationService } from "./portal-authentication-service";
 import type { PortalActor } from "./portal-actor";
 
 type PortalApiHandler = (
@@ -22,7 +22,8 @@ type PortalApiHandler = (
  */
 export function withPortalActor(customerId: string, handler: PortalApiHandler) {
   return async (request: NextRequest): Promise<Response> => {
-    const authentication = await authenticatePortalRequest(customerId);
+    const authentication =
+      await portalAuthenticationService.authenticateRequest(customerId);
 
     if (authentication.status === PortalAuthStatus.Authorized) {
       return handler(request, authentication.actor);

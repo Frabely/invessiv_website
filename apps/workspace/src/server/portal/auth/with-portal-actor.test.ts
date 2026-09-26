@@ -13,8 +13,8 @@ const { mockAuthenticate } = vi.hoisted(() => ({
   mockAuthenticate: vi.fn(),
 }));
 
-vi.mock("./portal-authentication", () => ({
-  authenticatePortalRequest: mockAuthenticate,
+vi.mock("./portal-authentication-service", () => ({
+  portalAuthenticationService: { authenticateRequest: mockAuthenticate },
 }));
 
 const CUSTOMER_ID = "11111111-1111-4111-8111-111111111111";

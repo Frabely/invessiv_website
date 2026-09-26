@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { getPortalMetaDictionary } from "@/i18n/dictionaries/portal";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
-import { requirePortalActor } from "@/server/portal/auth/require-portal-actor";
-import { listPortalMembershipsForUserId } from "@/server/portal/query-handler/list-portal-memberships-for-user-id.query-handler";
+import { requirePortalReader } from "@/server/portal/auth/require-portal-reader";
+import { getPortalCustomerDisplayName } from "@/server/portal/query-handler/get-portal-customer-display-name.query-handler";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -33,14 +33,11 @@ export default async function PortalCustomerPage({
 }: PortalCustomerPageProps) {
   const { locale, customerId } = await params;
   const activeLocale = locale as Locale;
-  const actor = await requirePortalActor(
+  const reader = await requirePortalReader(
     activeLocale,
     customerId.toLowerCase(),
   );
-  const companies = await listPortalMembershipsForUserId(actor.userId);
-  const activeCompany = companies.find(
-    (company) => company.customerId === actor.customerId,
-  );
+  const displayName = await getPortalCustomerDisplayName(reader);
 
-  return <h1>{activeCompany?.displayName ?? ""}</h1>;
+  return <h1>{displayName ?? ""}</h1>;
 }

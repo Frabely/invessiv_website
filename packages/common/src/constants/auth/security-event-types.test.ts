@@ -29,6 +29,7 @@ describe("SecurityEventType", () => {
       "portal_invitation_redeemed",
       "portal_membership_revoked",
       "portal_membership_roles_replaced",
+      "portal_owner_view_opened",
     ]);
     expect(SECURITY_EVENT_TYPE_VALUES).toEqual(
       Object.values(SecurityEventType),
@@ -46,6 +47,7 @@ describe("SecuritySubjectType", () => {
       "role",
       "portal_invitation",
       "portal_membership",
+      "customer",
     ]);
     expect(SECURITY_SUBJECT_TYPE_VALUES).toEqual(
       Object.values(SecuritySubjectType),

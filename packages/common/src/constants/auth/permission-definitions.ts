@@ -193,6 +193,27 @@ export const PERMISSION_DEFINITIONS = {
     assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
     description: "Enter this customer's portal.",
   },
+  [Permission.PortalProjectsRead]: {
+    realm: AuthRealm.Portal,
+    delegable: true,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description: "See released project status, steps and next step.",
+  },
+  [Permission.PortalTasksRead]: {
+    realm: AuthRealm.Portal,
+    delegable: true,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description: "View customer-visible tasks in this customer's portal.",
+  },
+  [Permission.PortalTasksComplete]: {
+    realm: AuthRealm.Portal,
+    delegable: true,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description: "Complete customer-side tasks in this customer's portal.",
+  },
   [Permission.RolesManage]: {
     realm: AuthRealm.Workspace,
     delegable: false,
@@ -242,3 +263,10 @@ export const PORTAL_PERMISSION_VALUES: readonly Permission[] =
     (permission) =>
       PERMISSION_DEFINITIONS[permission].realm === AuthRealm.Portal,
   );
+
+/** Explicit allowlist: adding a portal permission must never grant owner views a write capability. */
+export const PORTAL_READ_PERMISSION_VALUES = [
+  Permission.PortalAccess,
+  Permission.PortalProjectsRead,
+  Permission.PortalTasksRead,
+] as const satisfies readonly Permission[];

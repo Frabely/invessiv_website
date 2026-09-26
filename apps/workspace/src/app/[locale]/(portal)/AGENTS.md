@@ -20,9 +20,12 @@ gesamte Gruppe. Jede geschützte Portalseite prüft die Mitgliedschaft selbst.
   importiert, und keine Komponente aus `components/portal/**` wird im internen Bereich verwendet.
   `PortalShell` ist bewusst nicht `WorkspaceShell`: kein internes Branding, keine internen
   Navigationspunkte, keine Sidebar-Bereiche.
-- **`requirePortalActor(locale, customerId)` ist der einzige Weg zu einem `PortalActor`.** Jede
-  Seite unter `/portal/[customerId]/**` ruft ihn selbst auf (react `cache()` dedupliziert
-  innerhalb eines Renders); kein Handler bekommt eine ungeprüfte `customerId` aus der Route.
+- **Jede Seite unter `/portal/[customerId]/**` ruft ihren Auth-Guard selbst auf** (react `cache()` dedupliziert
+  innerhalb eines Renders); kein Handler bekommt eine ungeprüfte `customerId` aus der Route. Lesende Seiten nutzen
+  `requirePortalReader(locale, customerId)` — Kundenkontakt oder Workspace-Owner in der Nur-Lese-Sicht (Banner statt
+  Firmenwechsler). Seiten, die ausschließlich Kundenkontakte sehen dürfen, nutzen `requirePortalActor`.
+- **Owner-Sicht schreibt nie.** Interaktive Elemente mit Schreibwirkung sind in der Owner-Sicht deaktiviert und
+  verweisen ins CRM; der Schreibweg selbst ist über `withPortalActor` typseitig verschlossen.
 - **`/portal` bestätigt nie eine fremde Mitgliedschaft.** Die Firmenweiche antwortet bei keiner
   aktiven Mitgliedschaft 404, bei genau einer redirectet sie dorthin, bei mehreren zeigt sie die
   Auswahl — nie einen stillen Default.

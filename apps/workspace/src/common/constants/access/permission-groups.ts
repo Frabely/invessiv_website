@@ -66,6 +66,9 @@ export const PERMISSION_GROUP_PERMISSIONS = {
   [PermissionGroup.Portal]: [
     Permission.PortalAccessManage,
     Permission.PortalAccess,
+    Permission.PortalProjectsRead,
+    Permission.PortalTasksRead,
+    Permission.PortalTasksComplete,
   ],
   [PermissionGroup.Administration]: [
     Permission.MembersRead,

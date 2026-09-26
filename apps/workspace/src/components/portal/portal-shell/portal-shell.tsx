@@ -18,6 +18,8 @@ type PortalShellProps = {
   locale: Locale;
   /** Rendered only once a portal module registers an entry in `PORTAL_NAV_ITEMS`. */
   nav?: ReactNode | null;
+  /** Full-width notice below the header, e.g. the owner's read-only banner. */
+  notice?: ReactNode | null;
   /** Built by the caller from the actor's active memberships — kept out of this client shell. */
   switcher: ReactNode;
 };
@@ -32,6 +34,7 @@ export function PortalShell({
   content,
   locale,
   nav = null,
+  notice = null,
   switcher,
 }: PortalShellProps) {
   const headerContent = content.header;
@@ -85,6 +88,7 @@ export function PortalShell({
           </div>
         </div>
       </header>
+      {notice}
       {nav ? (
         <nav aria-label={content.nav.ariaLabel} className={styles.nav}>
           {nav}

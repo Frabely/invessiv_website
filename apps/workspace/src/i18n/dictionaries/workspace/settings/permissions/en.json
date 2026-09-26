@@ -111,6 +111,18 @@
       "label": "Enter customer portal",
       "description": "Open the portal area of the invited company."
     },
+    "portal.projects.read": {
+      "label": "View projects in the portal",
+      "description": "View released project status, phases and next steps."
+    },
+    "portal.tasks.read": {
+      "label": "View tasks in the portal",
+      "description": "View the company's customer-visible tasks."
+    },
+    "portal.tasks.complete": {
+      "label": "Complete customer tasks in the portal",
+      "description": "Mark tasks for the company as completed in the portal."
+    },
     "roles.manage": {
       "label": "Manage roles",
       "description": "Create and change roles."

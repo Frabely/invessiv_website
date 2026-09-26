@@ -111,6 +111,18 @@
       "label": "Kundenportal betreten",
       "description": "Den Portalbereich des eingeladenen Unternehmens öffnen."
     },
+    "portal.projects.read": {
+      "label": "Projekte im Portal ansehen",
+      "description": "Freigegebene Projektstände, Phasen und nächste Schritte ansehen."
+    },
+    "portal.tasks.read": {
+      "label": "Aufgaben im Portal ansehen",
+      "description": "Für Kunden sichtbare Aufgaben des Unternehmens ansehen."
+    },
+    "portal.tasks.complete": {
+      "label": "Kundenaufgaben im Portal erledigen",
+      "description": "Aufgaben für das Unternehmen im Portal als erledigt markieren."
+    },
     "roles.manage": {
       "label": "Rollen verwalten",
       "description": "Rollen anlegen und ändern."

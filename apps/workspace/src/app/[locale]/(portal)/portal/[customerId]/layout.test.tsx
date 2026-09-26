@@ -6,12 +6,21 @@ import type { ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { PortalSection } from "@/common/constants/portal/portal-sections";
+import { createPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
 import PortalCustomerLayout from "./layout";
 
-const mockRequirePortalActor = vi.hoisted(() => vi.fn());
-vi.mock("@/server/portal/auth/require-portal-actor", () => ({
-  requirePortalActor: mockRequirePortalActor,
+vi.mock("server-only", () => ({}));
+
+const mockRequirePortalReader = vi.hoisted(() => vi.fn());
+vi.mock("@/server/portal/auth/require-portal-reader", () => ({
+  requirePortalReader: mockRequirePortalReader,
 }));
+
+const mockGetPortalCustomerDisplayName = vi.hoisted(() => vi.fn());
+vi.mock(
+  "@/server/portal/query-handler/get-portal-customer-display-name.query-handler",
+  () => ({ getPortalCustomerDisplayName: mockGetPortalCustomerDisplayName }),
+);
 
 const mockListPortalMembershipsForUserId = vi.hoisted(() => vi.fn());
 vi.mock(
@@ -30,13 +39,16 @@ vi.mock("@/components/portal/portal-shell/portal-shell", () => ({
   PortalShell: ({
     children,
     nav,
+    notice,
     switcher,
   }: {
     children: ReactNode;
     nav: ReactNode;
+    notice: ReactNode;
     switcher: ReactNode;
   }) => (
     <div>
+      <div data-testid="notice-slot">{notice}</div>
       <div data-testid="switcher-slot">{switcher}</div>
       <div data-testid="nav-slot">{nav}</div>
       {children}
@@ -64,7 +76,7 @@ const ACTOR = {
 describe("PortalCustomerLayout", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockRequirePortalActor.mockResolvedValue(ACTOR);
+    mockRequirePortalReader.mockResolvedValue(ACTOR);
     mockListPortalMembershipsForUserId.mockResolvedValue([
       { customerId: "customer-1", displayName: "Nordlicht Coaching" },
     ]);
@@ -81,7 +93,7 @@ describe("PortalCustomerLayout", () => {
       }),
     );
 
-    expect(mockRequirePortalActor).toHaveBeenCalledWith("de", "customer-1");
+    expect(mockRequirePortalReader).toHaveBeenCalledWith("de", "customer-1");
     expect(mockListPortalMembershipsForUserId).toHaveBeenCalledWith(
       "user-uuid-1",
     );
@@ -134,6 +146,46 @@ describe("PortalCustomerLayout", () => {
       }),
     });
 
-    expect(mockRequirePortalActor).toHaveBeenCalledWith("de", "customer-1");
+    expect(mockRequirePortalReader).toHaveBeenCalledWith("de", "customer-1");
+  });
+
+  it("shows the owner banner instead of the switcher in the owner view", async () => {
+    mockRequirePortalReader.mockResolvedValue(
+      createPortalOwnerView({
+        userId: "owner-user-uuid",
+        customerId: "customer-1",
+        permissions: new Set([Permission.PortalAccess]),
+      }),
+    );
+    mockGetPortalCustomerDisplayName.mockResolvedValue("Kanzlei Müller");
+
+    render(
+      await PortalCustomerLayout({
+        children: <p>Company content</p>,
+        params: Promise.resolve({ locale: "de", customerId: "customer-1" }),
+      }),
+    );
+
+    expect(mockListPortalMembershipsForUserId).not.toHaveBeenCalled();
+    expect(screen.getByTestId("switcher-slot")).toBeEmptyDOMElement();
+    expect(screen.getByTestId("notice-slot")).toHaveTextContent(
+      "Portalansicht von Kanzlei Müller",
+    );
+    expect(screen.getByRole("link", { name: "Im CRM öffnen" })).toHaveAttribute(
+      "href",
+      "/de/crm?cockpit=customer-1",
+    );
+  });
+
+  it("renders no banner for a customer contact", async () => {
+    render(
+      await PortalCustomerLayout({
+        children: <p>Company content</p>,
+        params: Promise.resolve({ locale: "de", customerId: "customer-1" }),
+      }),
+    );
+
+    expect(screen.getByTestId("notice-slot")).toBeEmptyDOMElement();
+    expect(mockGetPortalCustomerDisplayName).not.toHaveBeenCalled();
   });
 });

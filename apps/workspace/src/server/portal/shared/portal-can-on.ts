@@ -3,6 +3,8 @@ import "server-only";
 import type { Permission } from "@invessiv/common/constants/auth/permissions";
 import { can } from "@invessiv/common/patterns/auth/can";
 import type { PortalActor } from "@/server/portal/auth/portal-actor";
+import { isPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
+import type { PortalReader } from "@/server/portal/auth/portal-reader";
 import type { PortalPermissionTarget } from "./portal-permission-target";
 
 /**
@@ -22,4 +24,14 @@ function forActor(
   );
 }
 
-export const portalCanOn = { forActor } as const;
+/** Read checks; an owner view is bound to its one customer and has no project grants. */
+function forReader(
+  reader: PortalReader,
+  permission: Permission,
+  target: PortalPermissionTarget,
+): boolean {
+  if (!isPortalOwnerView(reader)) return forActor(reader, permission, target);
+  return target.customerId === reader.customerId && can(reader, permission);
+}
+
+export const portalCanOn = { forActor, forReader } as const;

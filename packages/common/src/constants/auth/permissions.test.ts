@@ -8,6 +8,8 @@ import {
 } from "@invessiv/common/constants/auth/auth-realms";
 import {
   PERMISSION_DEFINITIONS,
+  PORTAL_PERMISSION_VALUES,
+  PORTAL_READ_PERMISSION_VALUES,
   WORKSPACE_PERMISSION_VALUES,
 } from "@invessiv/common/constants/auth/permission-definitions";
 import {
@@ -30,10 +32,12 @@ describe("Permission", () => {
     expect(new Set(PERMISSION_VALUES).size).toBe(PERMISSION_VALUES.length);
   });
 
-  // One dot, snake_case on both sides: `project_line_items.read` is one area, not two dots.
+  // Workspace keys have two segments; portal module keys add the portal namespace.
   it("uses dotted lowercase keys", () => {
     for (const permission of PERMISSION_VALUES) {
-      expect(permission).toMatch(/^[a-z]+(?:_[a-z]+)*\.[a-z]+(?:_[a-z]+)*$/);
+      expect(permission).toMatch(
+        /^(?:portal\.)?[a-z]+(?:_[a-z]+)*\.[a-z]+(?:_[a-z]+)*$/,
+      );
     }
   });
 
@@ -72,11 +76,39 @@ describe("Permission", () => {
     );
   });
 
-  it("keeps the portal permission out of the workspace permission list", () => {
-    expect(WORKSPACE_PERMISSION_VALUES).not.toContain(Permission.PortalAccess);
-    expect(PERMISSION_DEFINITIONS[Permission.PortalAccess].realm).toBe(
-      AuthRealm.Portal,
+  it("keeps all portal permissions delegable and outside workspace scopes", () => {
+    expect(PORTAL_PERMISSION_VALUES).toEqual([
+      Permission.PortalAccess,
+      Permission.PortalProjectsRead,
+      Permission.PortalTasksRead,
+      Permission.PortalTasksComplete,
+    ]);
+    for (const permission of PORTAL_PERMISSION_VALUES) {
+      expect(WORKSPACE_PERMISSION_VALUES).not.toContain(permission);
+      expect(PERMISSION_DEFINITIONS[permission]).toMatchObject({
+        realm: AuthRealm.Portal,
+        delegable: true,
+        scopeAssignable: false,
+        assignableScopeTypes: [],
+      });
+    }
+  });
+
+  it("gives owner views an explicit read-only allowlist", () => {
+    expect(PORTAL_READ_PERMISSION_VALUES).toEqual([
+      Permission.PortalAccess,
+      Permission.PortalProjectsRead,
+      Permission.PortalTasksRead,
+    ]);
+    expect(new Set(PORTAL_READ_PERMISSION_VALUES).size).toBe(
+      PORTAL_READ_PERMISSION_VALUES.length,
     );
+    expect(PORTAL_READ_PERMISSION_VALUES).not.toContain(
+      Permission.PortalTasksComplete,
+    );
+    for (const permission of PORTAL_READ_PERMISSION_VALUES) {
+      expect(PERMISSION_DEFINITIONS[permission].realm).toBe(AuthRealm.Portal);
+    }
   });
 
   it("only lists assignable scope types when the permission is scope-assignable", () => {

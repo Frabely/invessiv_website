@@ -16,6 +16,7 @@ export const SecurityEventType = {
   PortalInvitationRedeemed: "portal_invitation_redeemed",
   PortalMembershipRevoked: "portal_membership_revoked",
   PortalMembershipRolesReplaced: "portal_membership_roles_replaced",
+  PortalOwnerViewOpened: "portal_owner_view_opened",
 } as const;
 
 export type SecurityEventType =
@@ -39,4 +40,5 @@ export const SECURITY_EVENT_TYPE_VALUES = [
   SecurityEventType.PortalInvitationRedeemed,
   SecurityEventType.PortalMembershipRevoked,
   SecurityEventType.PortalMembershipRolesReplaced,
+  SecurityEventType.PortalOwnerViewOpened,
 ] as const;

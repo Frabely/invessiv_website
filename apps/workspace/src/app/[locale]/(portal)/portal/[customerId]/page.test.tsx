@@ -6,17 +6,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import PortalCustomerPage, { generateMetadata } from "./page";
 
-const mockRequirePortalActor = vi.hoisted(() => vi.fn());
-vi.mock("@/server/portal/auth/require-portal-actor", () => ({
-  requirePortalActor: mockRequirePortalActor,
+const mockRequirePortalReader = vi.hoisted(() => vi.fn());
+vi.mock("@/server/portal/auth/require-portal-reader", () => ({
+  requirePortalReader: mockRequirePortalReader,
 }));
 
-const mockListPortalMembershipsForUserId = vi.hoisted(() => vi.fn());
+const mockGetPortalCustomerDisplayName = vi.hoisted(() => vi.fn());
 vi.mock(
-  "@/server/portal/query-handler/list-portal-memberships-for-user-id.query-handler",
-  () => ({
-    listPortalMembershipsForUserId: mockListPortalMembershipsForUserId,
-  }),
+  "@/server/portal/query-handler/get-portal-customer-display-name.query-handler",
+  () => ({ getPortalCustomerDisplayName: mockGetPortalCustomerDisplayName }),
 );
 
 const ACTOR = {
@@ -31,15 +29,13 @@ const ACTOR = {
 describe("PortalCustomerPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockRequirePortalActor.mockResolvedValue(ACTOR);
+    mockRequirePortalReader.mockResolvedValue(ACTOR);
   });
 
   afterEach(cleanup);
 
   it("renders the active company's display name", async () => {
-    mockListPortalMembershipsForUserId.mockResolvedValue([
-      { customerId: "customer-1", displayName: "Nordlicht Coaching" },
-    ]);
+    mockGetPortalCustomerDisplayName.mockResolvedValue("Nordlicht Coaching");
 
     render(
       await PortalCustomerPage({
@@ -70,12 +66,12 @@ describe("PortalCustomerPage", () => {
   });
 
   it("normalizes the customerId case before resolving the actor", async () => {
-    mockListPortalMembershipsForUserId.mockResolvedValue([]);
+    mockGetPortalCustomerDisplayName.mockResolvedValue(null);
 
     await PortalCustomerPage({
       params: Promise.resolve({ locale: "de", customerId: "CUSTOMER-1" }),
     });
 
-    expect(mockRequirePortalActor).toHaveBeenCalledWith("de", "customer-1");
+    expect(mockRequirePortalReader).toHaveBeenCalledWith("de", "customer-1");
   });
 });

@@ -27,5 +27,10 @@
       "onboarding": "Onboarding",
       "services": "Services"
     }
+  },
+  "ownerView": {
+    "label": "Portal view of",
+    "hint": "You see what your customer sees, read-only. Make changes in the CRM.",
+    "cockpitLink": "Open in CRM"
   }
 }
