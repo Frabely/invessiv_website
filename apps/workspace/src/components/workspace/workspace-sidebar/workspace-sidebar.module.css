@@ -294,7 +294,7 @@
   }
 
   .sidebar:hover,
-  .sidebar:focus-within {
+  .sidebar:has(:focus-visible) {
     width: 240px;
     background: color-mix(in srgb, var(--color-surface-1) 84%, transparent);
   }
@@ -317,7 +317,7 @@
   }
 
   .sidebar:hover .crmChildren,
-  .sidebar:focus-within .crmChildren {
+  .sidebar:has(:focus-visible) .crmChildren {
     display: grid;
   }
 
@@ -332,8 +332,8 @@
 
   .sidebar:hover .linkLabel,
   .sidebar:hover .linkBadge,
-  .sidebar:focus-within .linkLabel,
-  .sidebar:focus-within .linkBadge {
+  .sidebar:has(:focus-visible) .linkLabel,
+  .sidebar:has(:focus-visible) .linkBadge {
     opacity: 1;
     transform: translateX(0);
     transition-delay: 80ms;

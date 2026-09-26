@@ -28,58 +28,24 @@
   text-underline-offset: 0.2em;
 }
 
+/* Sticks flush with the dialog edges so fields scroll visibly underneath it. */
 .tabs {
   position: sticky;
   top: 0;
   z-index: 2;
-  display: flex;
   margin: -0.55rem -0.7rem 0;
-  overflow-x: auto;
-  /* Frames the bled edges so it reads as deliberate: this bar intentionally
-     sits flush with the dialog's padding, and content scrolling underneath
-     it is expected, not a rendering glitch. */
-  border: 1px solid var(--color-border);
   background: var(--color-surface-1);
-  box-shadow: 0 8px 14px
-    color-mix(in srgb, var(--color-shadow) 16%, transparent);
-}
-
-.tab {
-  flex: 1 0 max-content;
-  min-height: 2.75rem;
-  padding-inline: 1rem;
-  border: 0;
-  border-bottom: 2px solid transparent;
-  background: transparent;
-  color: var(--color-text-muted);
-  font: inherit;
-  font-size: var(--font-size-ui-sm);
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.tab[aria-selected="true"] {
-  border-bottom-color: var(--color-cta);
-  color: var(--color-text);
-}
-
-.tab[data-invalid="true"] {
-  color: var(--color-danger);
+  box-shadow:
+    inset 0 -1px 0 var(--color-border),
+    0 8px 14px color-mix(in srgb, var(--color-shadow) 16%, transparent);
 }
 
 .tabErrorDot {
-  display: inline-block;
+  flex: 0 0 auto;
   width: 0.45rem;
   height: 0.45rem;
-  margin-left: 0.4rem;
   border-radius: 999px;
   background: var(--color-danger);
-  vertical-align: middle;
-}
-
-.tab:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
 }
 
 .typeSwitch {

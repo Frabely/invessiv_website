@@ -26,6 +26,19 @@
   scrollbar-width: thin;
 }
 
+/* The columns scroll on their own; their bar only shows while the column is in use, so a longer project does not add a permanent bar. */
+.main,
+.aside {
+  scrollbar-color: transparent transparent;
+}
+
+.main:hover,
+.main:focus-within,
+.aside:hover,
+.aside:focus-within {
+  scrollbar-color: var(--color-border-strong) transparent;
+}
+
 .chat {
   min-height: 0;
 }
@@ -180,6 +193,8 @@
   padding: 0.25rem clamp(1rem, 2.4vw, 1.75rem) 2.5rem;
   overflow: auto;
   overscroll-behavior: contain;
+  /* Project tabs differ in length; a reserved gutter keeps switching tabs from shifting the column. */
+  scrollbar-gutter: stable;
 }
 
 .aside {
@@ -193,6 +208,7 @@
   background: color-mix(in srgb, var(--color-surface-2) 55%, transparent);
   overflow: auto;
   overscroll-behavior: contain;
+  scrollbar-gutter: stable;
   container-type: inline-size;
 }
 

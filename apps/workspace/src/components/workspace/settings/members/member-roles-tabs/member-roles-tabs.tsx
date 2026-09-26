@@ -35,7 +35,6 @@ export function MemberRolesTabs({
     <TabList
       activeValue={activeTab}
       ariaLabel={text.tabsLabel}
-      className={styles.tabs}
       items={[
         {
           value: MemberRolesTab.Global,
@@ -69,7 +68,6 @@ export function MemberRolesTabs({
           : []),
       ]}
       onSelectAction={onSelectAction}
-      tabClassName={styles.tab}
     />
   );
 }

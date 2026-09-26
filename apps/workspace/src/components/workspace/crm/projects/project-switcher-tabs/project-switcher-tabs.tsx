@@ -32,7 +32,6 @@ export function ProjectSwitcherTabs({
       <TabList
         activeValue={activeProjectId ?? projects[0]?.id ?? ""}
         ariaLabel={tabsLabel}
-        className={styles.tabs}
         items={projects.map((project) => {
           const status = project.project?.status;
           return {
@@ -61,7 +60,6 @@ export function ProjectSwitcherTabs({
           };
         })}
         onSelectAction={onSelectAction}
-        tabClassName={styles.tab}
       />
       <div hidden>
         {projects.map((project) =>

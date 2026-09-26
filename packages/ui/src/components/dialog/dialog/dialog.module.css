@@ -42,15 +42,13 @@
   width: min(840px, 100%);
 }
 
-.dialog:has(.surface[data-size="full"]) {
-  padding: var(--workspace-header-height, 68px) 0 0
+/* Non-modal: it covers only the content area, so the app header and sidebar stay visible and usable. */
+.dialog[data-size="full"] {
+  inset: var(--workspace-header-height, 68px) 0 0
     var(--workspace-sidebar-width, 0px);
-}
-
-.dialog:has(.surface[data-size="full"])::backdrop {
-  background: transparent;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  width: auto;
+  height: auto;
+  padding: 0;
 }
 
 .surface[data-size="full"] {
@@ -158,9 +156,8 @@
     padding: 0.5rem;
   }
 
-  .dialog:has(.surface[data-size="full"]) {
-    padding: var(--workspace-header-height, 64px) 0 0
-      var(--workspace-sidebar-width, 0px);
+  .dialog[data-size="full"] {
+    padding: 0;
   }
 
   .surface {

@@ -437,7 +437,6 @@ export function CustomerFormDialog({
             ),
           }))}
           onSelectAction={setActiveTab}
-          tabClassName={styles.tab}
         />
         <div
           aria-labelledby={`${tabsId}-${CustomerFormTab.Customer}-tab`}

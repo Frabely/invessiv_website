@@ -55,20 +55,23 @@ export function Dialog({
   const [portalRoot, setPortalRoot] = useState<HTMLDialogElement | null>(null);
   const titleId = useId();
   const descriptionId = useId();
+  // A full-size dialog fills only the content area, so the app header and sidebar stay usable next to it.
+  const modal = size !== DialogSize.Full;
 
   useLayoutEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
     if (open && !dialog.open) {
-      if (typeof dialog.showModal === "function") {
-        dialog.showModal();
+      const openElement = modal ? dialog.showModal : dialog.show;
+      if (typeof openElement === "function") {
+        openElement.call(dialog);
       } else {
         dialog.setAttribute("open", "");
       }
       queueMicrotask(() => initialFocusRef?.current?.focus());
     }
     if (!open && dialog.open) closeDialogElement(dialog);
-  }, [initialFocusRef, open]);
+  }, [initialFocusRef, modal, open]);
 
   useLayoutEffect(
     () => () => {
@@ -87,13 +90,15 @@ export function Dialog({
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLDialogElement>) {
+    // Nested dialogs bubble through the React tree; the innermost one already handled the key.
+    if (event.defaultPrevented) return;
     if (event.key === "Escape") {
       event.preventDefault();
       requestClose();
       return;
     }
 
-    if (event.key !== "Tab") return;
+    if (!modal || event.key !== "Tab") return;
     const focusable = Array.from(
       event.currentTarget.querySelectorAll<HTMLElement>(
         "button, input, select, textarea, a[href]",
@@ -122,6 +127,7 @@ export function Dialog({
       aria-describedby={description ? descriptionId : undefined}
       aria-labelledby={titleId}
       className={styles.dialog}
+      data-size={size}
       onCancel={handleCancel}
       onKeyDown={handleKeyDown}
       onMouseDown={handleMouseDown}

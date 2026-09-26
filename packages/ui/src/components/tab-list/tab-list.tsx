@@ -19,7 +19,6 @@ type TabListProps<Value extends string> = {
     title?: string;
   }[];
   onSelectAction: (value: Value) => void;
-  tabClassName?: string;
 };
 
 export function TabList<Value extends string>({
@@ -28,7 +27,6 @@ export function TabList<Value extends string>({
   className,
   items,
   onSelectAction,
-  tabClassName,
 }: TabListProps<Value>) {
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const activeIndex = Math.max(
@@ -56,7 +54,7 @@ export function TabList<Value extends string>({
   return (
     <div
       aria-label={ariaLabel}
-      className={className ?? styles.list}
+      className={className ? `${styles.list} ${className}` : styles.list}
       role="tablist"
     >
       {items.map((item, index) => {
@@ -67,7 +65,7 @@ export function TabList<Value extends string>({
             aria-describedby={item.descriptionId}
             aria-label={item.accessibleName}
             aria-selected={selected}
-            className={tabClassName ?? styles.tab}
+            className={styles.tab}
             data-invalid={item.invalid || undefined}
             id={item.id}
             key={item.value}
