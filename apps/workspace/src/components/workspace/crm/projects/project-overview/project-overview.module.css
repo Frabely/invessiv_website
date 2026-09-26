@@ -78,17 +78,6 @@
   color: var(--color-text-muted);
 }
 
-.progress {
-  display: grid;
-  gap: 0.55rem;
-  box-sizing: border-box;
-  min-width: 0;
-  padding: 0.75rem 0.85rem 0.7rem;
-  border: 1px solid var(--color-border);
-  border-radius: 14px;
-  background: var(--color-surface-1);
-}
-
 .progressSummary {
   display: flex;
   justify-content: space-between;
@@ -107,113 +96,6 @@
 
 .progressSummary span {
   font-variant-numeric: tabular-nums;
-}
-
-.track {
-  display: flex;
-  gap: 0.3rem;
-  margin: 0;
-  padding: 0 0 0.25rem;
-  overflow-x: auto;
-  scrollbar-width: thin;
-  list-style: none;
-}
-
-.step {
-  flex: 1 1 0;
-  min-width: 4.5rem;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-ui-xs);
-  line-height: 1.25;
-}
-
-.stepBody,
-.stepButton {
-  display: grid;
-  gap: 0.55rem;
-  width: 100%;
-}
-
-.stepButton {
-  padding: 0 0 0.15rem;
-  border: 0;
-  border-radius: 4px;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-
-.stepButton:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 3px;
-}
-
-.segment {
-  position: relative;
-  height: 0.5rem;
-  overflow: hidden;
-  border-radius: 2px;
-  background: var(--color-surface-2);
-  box-shadow: inset 0 0 0 1px var(--color-border);
-}
-
-.step:first-child .segment {
-  border-radius: 999px 2px 2px 999px;
-}
-
-.step:last-child .segment {
-  border-radius: 2px 999px 999px 2px;
-}
-
-.step[data-state="complete"] .segment {
-  background: var(--color-cta);
-  box-shadow: none;
-}
-
-.step[data-state="current"] .segment {
-  background: color-mix(in srgb, var(--color-cta) 22%, var(--color-surface-2));
-  box-shadow: inset 0 0 0 1px var(--color-cta);
-}
-
-.step[data-state="current"] .segment::after {
-  position: absolute;
-  inset: 0 50% 0 0;
-  background: var(--color-cta);
-  content: "";
-}
-
-.label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  overflow-wrap: anywhere;
-}
-
-.check {
-  flex: 0 0 auto;
-  color: var(--color-cta);
-  font-size: 0.7rem;
-}
-
-.step[data-state="complete"] {
-  color: var(--color-text);
-}
-
-.step[data-state="current"] {
-  color: var(--color-text);
-  font-weight: 700;
-}
-
-@media (hover: hover) {
-  .stepButton:hover .segment {
-    box-shadow: inset 0 0 0 1px var(--color-cta);
-  }
-
-  .stepButton:hover .label {
-    color: var(--color-text);
-  }
 }
 
 @media (max-width: 760px) {

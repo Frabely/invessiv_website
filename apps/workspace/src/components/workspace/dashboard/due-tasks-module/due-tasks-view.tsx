@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 
 import { TaskActionSide } from "@invessiv/common/constants/crm/task-action-sides";
 import { TaskDueState } from "@/common/constants/crm/task-due-states";
@@ -7,7 +7,7 @@ import type { Locale } from "@/config/i18n";
 import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
 import type { DashboardDueTasksDictionary } from "@/i18n/dictionaries/workspace/dashboard";
 import { formatMessage } from "@/lib/i18n/format-message";
-import { taskDueStateService } from "@/lib/workspace/crm/task-due-state-service";
+import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
 import { formatIntegerCount } from "@/lib/workspace/dashboard/format-integer";
 import { TaskActionSideBadge } from "../../crm/tasks/task-action-side-badge/task-action-side-badge";
 import { TaskDueLabel } from "../../crm/tasks/task-due-label/task-due-label";

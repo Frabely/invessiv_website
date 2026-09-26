@@ -1,10 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import {
   faArchive,
   faCalendarDays,
-  faCheck,
   faCircleCheck,
   faCirclePause,
   faCircleXmark,
@@ -20,7 +18,7 @@ import {
 } from "@invessiv/common/constants/ui/badge-tones";
 import type { ProjectDto } from "@invessiv/common/contracts/crm/project.dto";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
-import { Badge, ButtonControl } from "@invessiv/ui";
+import { Badge, ButtonControl, ProcessTrack } from "@invessiv/ui";
 import { getMemberInitials } from "@/common/patterns/access/member-initials";
 import type { CrmCockpitDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { OwnerWithoutAccessBadge } from "@/components/workspace/crm/shared/owner-without-access-badge/owner-without-access-badge";
@@ -60,18 +58,9 @@ export function ProjectOverview({
   onGrantAccessAction,
   onEditAction,
 }: ProjectOverviewProps) {
-  const currentStepRef = useRef<HTMLLIElement>(null);
   const currentIndex = project
     ? Math.max(project.processSteps.indexOf(project.currentProcessStep), 0)
     : 0;
-
-  useEffect(() => {
-    currentStepRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-      inline: "center",
-    });
-  }, [project?.id, project?.currentProcessStep]);
 
   return (
     <div className={styles.overview}>
@@ -88,63 +77,25 @@ export function ProjectOverview({
           ) : null}
         </div>
         {project ? (
-          <div className={styles.progress}>
-            <p className={styles.progressSummary}>
-              <strong>{project.processSteps[currentIndex]}</strong>
-              <span>
-                {formatMessage(content.projects.phaseProgress, {
-                  current: currentIndex + 1,
-                  total: project.processSteps.length,
-                })}
-              </span>
-            </p>
-            <ol aria-label={content.projects.phase} className={styles.track}>
-              {project.processSteps.map((step, index) => {
-                const state =
-                  index < currentIndex
-                    ? "complete"
-                    : index === currentIndex
-                      ? "current"
-                      : "upcoming";
-                const body = (
-                  <>
-                    <span aria-hidden="true" className={styles.segment} />
-                    <span className={styles.label}>
-                      {state === "complete" ? (
-                        <FontAwesomeIcon
-                          aria-hidden="true"
-                          className={styles.check}
-                          icon={faCheck}
-                        />
-                      ) : null}
-                      {step}
-                    </span>
-                  </>
-                );
-                return (
-                  <li
-                    aria-current={state === "current" ? "step" : undefined}
-                    className={styles.step}
-                    data-state={state}
-                    key={`${step}-${index}`}
-                    ref={state === "current" ? currentStepRef : undefined}
-                  >
-                    {onEditAction ? (
-                      <button
-                        className={styles.stepButton}
-                        onClick={() => onEditAction(project, step)}
-                        type="button"
-                      >
-                        {body}
-                      </button>
-                    ) : (
-                      <span className={styles.stepBody}>{body}</span>
-                    )}
-                  </li>
-                );
-              })}
-            </ol>
-          </div>
+          <ProcessTrack
+            currentIndex={currentIndex}
+            label={content.projects.phase}
+            onStepAction={
+              onEditAction ? (step) => onEditAction(project, step) : undefined
+            }
+            steps={project.processSteps}
+            summary={
+              <p className={styles.progressSummary}>
+                <strong>{project.processSteps[currentIndex]}</strong>
+                <span>
+                  {formatMessage(content.projects.phaseProgress, {
+                    current: currentIndex + 1,
+                    total: project.processSteps.length,
+                  })}
+                </span>
+              </p>
+            }
+          />
         ) : null}
         <div className={styles.actions}>
           {owner ? (

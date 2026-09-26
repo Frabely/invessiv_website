@@ -1,4 +1,4 @@
-import {
+﻿import {
   faClock,
   faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
@@ -9,7 +9,7 @@ import { TaskDueState } from "@/common/constants/crm/task-due-states";
 import type { Locale } from "@/config/i18n";
 import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@/lib/i18n/format-message";
-import { taskDueStateService } from "@/lib/workspace/crm/task-due-state-service";
+import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
 import styles from "./task-due-label.module.css";
 
 type TaskDueLabelProps = {

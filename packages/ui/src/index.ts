@@ -19,4 +19,7 @@ export * from "./components/skeleton/skeleton";
 export * from "./components/table-row-actions/table-row-actions";
 export * from "./components/tab-list/tab-list";
 export * from "./components/tree-view/tree-view";
+export * from "./components/widget-grid/widget-grid";
+export * from "./components/process-track/process-track";
+export * from "./components/chat-dock/chat-dock";
 export { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";

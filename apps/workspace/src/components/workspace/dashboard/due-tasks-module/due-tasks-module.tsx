@@ -1,4 +1,4 @@
-import "server-only";
+﻿import "server-only";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
@@ -9,7 +9,7 @@ import type { Locale } from "@/config/i18n";
 import { getCrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { getDashboardDueTasksDictionary } from "@/i18n/dictionaries/workspace/dashboard";
 import { crmTasksPathFor } from "@/lib/auth/routes";
-import { taskDueStateService } from "@/lib/workspace/crm/task-due-state-service";
+import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
 import { buildTaskListHref } from "@/lib/workspace/crm/task-list-query-string";
 import { listMyDueTasks } from "@/server/workspace/crm/query-handler/list-my-due-tasks.query-handler";
 import { DueTasksView } from "./due-tasks-view";

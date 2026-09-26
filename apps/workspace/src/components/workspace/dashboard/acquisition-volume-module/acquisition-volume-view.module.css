@@ -1,0 +1,4 @@
+.cardWidth {
+  width: min(100%, 330px);
+  max-width: 330px;
+}

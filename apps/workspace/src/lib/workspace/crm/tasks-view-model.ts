@@ -6,7 +6,7 @@ import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
 import type { TasksViewModel } from "@/common/contracts/crm/tasks-view-model";
 import { canOn } from "@/common/patterns/auth/can-on";
-import { taskDueStateService } from "@/lib/workspace/crm/task-due-state-service";
+import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
 import { listWorkspaceMembers } from "@/server/workspace/access/query-handler/list-workspace-members.query-handler";
 import { listCustomerTasks } from "@/server/workspace/crm/query-handler/list-customer-tasks.query-handler";
 

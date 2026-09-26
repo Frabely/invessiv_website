@@ -6,6 +6,7 @@ import type { DashboardAcquisitionVolumeDictionary } from "@/i18n/dictionaries/w
 import { calculateKpiDelta } from "@/lib/workspace/dashboard/calculate-kpi-delta";
 import { formatIntegerCount } from "@/lib/workspace/dashboard/format-integer";
 import { KpiCard } from "../kpi-card/kpi-card";
+import styles from "./acquisition-volume-view.module.css";
 
 const PERCENT_FRACTION_DIGITS = 1;
 const PREVIOUS_PLACEHOLDER = "{previous}";
@@ -87,12 +88,14 @@ export function AcquisitionVolumeView({
       : undefined;
 
   return (
-    <KpiCard
-      badge={badge}
-      comparison={comparison}
-      subText={labels.subText}
-      title={title}
-      value={value}
-    />
+    <div className={styles.cardWidth}>
+      <KpiCard
+        badge={badge}
+        comparison={comparison}
+        subText={labels.subText}
+        title={title}
+        value={value}
+      />
+    </div>
   );
 }

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -8,7 +8,7 @@ import { TASK_STATUS_ICONS } from "@/common/constants/crm/badges/task-status-ico
 import type { Locale } from "@/config/i18n";
 import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@/lib/i18n/format-message";
-import { taskDueStateService } from "@/lib/workspace/crm/task-due-state-service";
+import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
 import { TaskRowDetails } from "../task-row-details/task-row-details";
 import { TaskStatusSelect } from "../task-status-select/task-status-select";
 import styles from "./task-row.module.css";

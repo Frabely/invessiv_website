@@ -1,4 +1,4 @@
-import "server-only";
+﻿import "server-only";
 
 import {
   and,
@@ -27,7 +27,7 @@ import { TaskListStatusFilter } from "@/common/constants/crm/list/task-list-stat
 import { TASK_DUE_SOON_WINDOW_DAYS } from "@/common/constants/crm/task-due-states";
 import type { TaskListFilters } from "@/common/contracts/crm/task-list-filters";
 import { accessScope } from "@/common/patterns/auth/access-scope";
-import { taskDueStateService } from "@/lib/workspace/crm/task-due-state-service";
+import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
 import { crmAccessCondition } from "@/server/workspace/shared/services/crm-access-condition";
 
 const CLOSED_PROJECT_STATUSES = [

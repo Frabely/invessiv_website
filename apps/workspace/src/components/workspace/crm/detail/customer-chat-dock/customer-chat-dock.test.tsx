@@ -5,20 +5,15 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { getCrmCockpitDictionary } from "@/i18n/dictionaries/workspace/crm";
-import { CustomerChatDock } from "./customer-chat-dock";
+import { ChatDock } from "@invessiv/ui";
 
 const content = getCrmCockpitDictionary("de");
 
-describe("CustomerChatDock", () => {
+describe("ChatDock in the cockpit", () => {
   afterEach(cleanup);
 
   it("starts collapsed and opens as a clearly marked mock without working controls", () => {
-    render(
-      <CustomerChatDock
-        badgeLabel={content.mock.badge}
-        content={content.chat}
-      />,
-    );
+    render(<ChatDock badgeLabel={content.mock.badge} content={content.chat} />);
 
     const toggle = screen.getByRole("button", { name: content.chat.expand });
     expect(toggle).toHaveAttribute("aria-expanded", "false");
@@ -43,10 +38,7 @@ describe("CustomerChatDock", () => {
 
   it("never shows an unread count while there are no real reads", () => {
     const { container } = render(
-      <CustomerChatDock
-        badgeLabel={content.mock.badge}
-        content={content.chat}
-      />,
+      <ChatDock badgeLabel={content.mock.badge} content={content.chat} />,
     );
     expect(container.textContent).not.toMatch(/\d/);
   });

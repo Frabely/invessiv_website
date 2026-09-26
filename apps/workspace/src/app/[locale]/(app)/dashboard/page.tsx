@@ -7,7 +7,8 @@ import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { requireWorkspaceArea } from "@/lib/auth/permissions";
 import { AcquisitionVolumeModule } from "@/components/workspace/dashboard/acquisition-volume-module/acquisition-volume-module";
 import { DueTasksModule } from "@/components/workspace/dashboard/due-tasks-module/due-tasks-module";
-import { DashboardGrid } from "@/components/workspace/dashboard/dashboard-grid/dashboard-grid";
+import { WidgetGrid } from "@invessiv/ui";
+import { DASHBOARD_WIDGET_LAYOUT } from "@/common/constants/dashboard/dashboard-widget-layout";
 import { MessagingConversionModule } from "@/components/workspace/dashboard/messaging-conversion-module/messaging-conversion-module";
 import { DashboardDateRangeFilter } from "@/components/workspace/dashboard/dashboard-date-range-filter/dashboard-date-range-filter";
 import { DashboardPageHeader } from "@/components/workspace/dashboard/dashboard-page-header/dashboard-page-header";
@@ -84,7 +85,8 @@ export default async function DashboardPage({
           />
         }
       />
-      <DashboardGrid
+      <WidgetGrid
+        layout={DASHBOARD_WIDGET_LAYOUT}
         slots={{
           dueTasks: <DueTasksModule actor={actor} locale={activeLocale} />,
           acquisitionVolume: (

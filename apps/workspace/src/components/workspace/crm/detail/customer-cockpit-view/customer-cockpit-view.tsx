@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useId, useState } from "react";
 import { faEnvelope, faUserTie } from "@fortawesome/free-solid-svg-icons";
@@ -12,7 +12,7 @@ import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/ro
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import { CustomerProjectsSection } from "@/components/workspace/crm/projects/customer-projects-section/customer-projects-section";
 import { CustomerAccessSection } from "@/components/workspace/crm/detail/customer-access-section/customer-access-section";
-import { CustomerChatDock } from "@/components/workspace/crm/detail/customer-chat-dock/customer-chat-dock";
+import { ChatDock } from "@invessiv/ui";
 import { MockSectionCard } from "@/components/workspace/crm/shared/mock-section-card/mock-section-card";
 import { OwnerWithoutAccessBadge } from "@/components/workspace/crm/shared/owner-without-access-badge/owner-without-access-badge";
 import { CustomerStatusBadge } from "@/components/workspace/crm/list/customer-status-badge/customer-status-badge";
@@ -31,7 +31,7 @@ import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.d
 import type { Locale } from "@/config/i18n";
 import { formatMessage } from "@/lib/i18n/format-message";
 import { formatEuroCents } from "@/lib/workspace/crm/format-service-price";
-import { taskDueStateService } from "@/lib/workspace/crm/task-due-state-service";
+import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
 import styles from "./customer-cockpit-view.module.css";
 
 type FutureCustomerSection = keyof CrmCockpitDictionary["futureSections"];
@@ -325,7 +325,7 @@ export function CustomerCockpitView({
           </div>
         </div>
       </div>
-      <CustomerChatDock
+      <ChatDock
         badgeLabel={content.mock.badge}
         className={styles.chat}
         content={content.chat}

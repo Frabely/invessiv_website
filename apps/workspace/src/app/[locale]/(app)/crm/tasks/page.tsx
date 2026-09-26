@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
@@ -18,7 +18,7 @@ import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { getCrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { requireWorkspaceActor } from "@/lib/auth/permissions";
 import { crmTasksPathFor, workspaceAreaPathFor } from "@/lib/auth/routes";
-import { taskDueStateService } from "@/lib/workspace/crm/task-due-state-service";
+import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
 import {
   buildTaskListQueryString,
   hasActiveTaskListFilters,

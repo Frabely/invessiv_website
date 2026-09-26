@@ -1,4 +1,4 @@
-import "server-only";
+﻿import "server-only";
 
 import { asc, eq } from "drizzle-orm";
 
@@ -9,7 +9,7 @@ import type { TaskListFilterOptions } from "@/common/contracts/crm/task-list-fil
 import { DEFAULT_TASK_LIST_FILTERS } from "@/common/defaults/crm/task-list-default-filters";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { customers, projects, tasks } from "@invessiv/db/record-configuration";
-import { taskDueStateService } from "@/lib/workspace/crm/task-due-state-service";
+import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
 import { taskListConditionsService } from "@/server/workspace/crm/services/task-list-conditions-service";
 
 /**

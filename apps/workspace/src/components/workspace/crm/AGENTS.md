@@ -12,8 +12,8 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 - Gruppierte Subfolder nach Verantwortung: `shell/`, `list/`, `form/`, ab Task 05 `detail/`, ab Task 06 `contacts/`,
   ab Task 40 `services/` (Leistungstemplatekatalog), ab Task 41 `projects/` (Projektleistungen im Projekt-Canvas).
   Ab Task 50 zusätzlich `shared/section-collapse-toggle/`, `shared/mock-section-card/`,
-  `projects/project-switcher-tabs/` und `detail/customer-chat-dock/`. Projektkopf (Status, Titel, Owner) und
-  Prozessleiste liegen in `projects/project-overview/`.
+  `projects/project-switcher-tabs/`. Projektkopf (Status, Titel, Owner) liegt in
+  `projects/project-overview/`; Prozessleiste und Chat-Dock kommen aus `@invessiv/ui`.
 - Pro Komponente ein Ordner `<gruppe>/<name>/<name>.tsx` mit co-located `<name>.module.css` und Test.
 - App-neutrale Grundbausteine (Dialog, Formularfeld, Button, Badge, Empty-State) kommen aus `@invessiv/ui`, nicht aus
   Kopien. Domänenneutrale Workspace-Bausteine erst bei tatsächlicher Wiederverwendung nach `workspace/shared/`.
