@@ -527,12 +527,19 @@ Verifiziert: Workspace-`typecheck`/`lint`, `pnpm test` (1818 bestanden), Integra
 
 ### S5 — Dashboard-Query (GPT · GPT-6 Astra)
 
-- [ ] DTO (Docstrings), Query-Handler, Mapping-Service; Tests (Integration gegen Test-DB, Muster der bestehenden
+- [x] DTO (Docstrings), Query-Handler, Mapping-Service; Tests (Integration gegen Test-DB, Muster der bestehenden
       Portal-Handler-Tests):
       interne/unsichtbare Aufgaben nie; fremde Firma nie (Person mit zweiter Mitgliedschaft); ohne
       `portal.tasks.read` keine Aufgaben; ohne `portal.projects.read` keine Projekte; archiviert/abgebrochen fehlen;
       Kunde ohne Projekt → leeres, gültiges DTO; Owner-Sicht liefert identisches DTO wie Vollrechte-Mitglied (außer
       `capabilities`); Anzahl Queries ≤ 4 bei 3 Projekten; DTO-Schlüssel-Snapshot ohne Finanz-/Notiz-/ID-Felder.
+
+Umgesetzt: Die Query liest Kunde/Kontakt, Projekte und sichtbare Aufgaben in höchstens drei Abfragen mit
+`portalAccessCondition.forReader` und expliziten Spaltenlisten. Der Mapper begrenzt erledigte Kundenaufgaben auf die
+letzten 20 und gibt weder Mitarbeiter-IDs noch Finanz- oder interne Felder weiter. Der gemeinsame Due-State-Const liegt
+jetzt in `packages/common`, damit das Portal-DTO keinen App-Import braucht. Geprüft mit Mapping-Unit-Tests und vier
+PostgreSQL-Integrationstests, darunter zwei echte Portalmitgliedschaften derselben Person, fehlende Leserechte,
+Owner-Sicht und leerer Kunde. `pnpm -r lint` und `pnpm -r typecheck` grün.
 
 ### S6 — Abhaken (Claude · Opus 5.5)
 

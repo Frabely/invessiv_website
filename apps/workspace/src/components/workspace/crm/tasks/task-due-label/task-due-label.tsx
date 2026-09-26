@@ -5,7 +5,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import type { TaskDto } from "@invessiv/common/contracts/crm/task.dto";
-import { TaskDueState } from "@/common/constants/crm/task-due-states";
+import { TaskDueState } from "@invessiv/common/constants/crm/task-due-states";
 import type { Locale } from "@/config/i18n";
 import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@/lib/i18n/format-message";

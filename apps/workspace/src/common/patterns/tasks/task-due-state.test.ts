@@ -1,7 +1,7 @@
-import { describe, expect, it } from "vitest";
+﻿import { describe, expect, it } from "vitest";
 
 import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
-import { TaskDueState } from "@/common/constants/crm/task-due-states";
+import { TaskDueState } from "@invessiv/common/constants/crm/task-due-states";
 import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
 
 const TODAY = "2026-09-21";

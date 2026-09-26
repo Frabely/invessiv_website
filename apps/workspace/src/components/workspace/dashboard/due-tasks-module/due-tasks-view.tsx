@@ -1,7 +1,7 @@
 ﻿import Link from "next/link";
 
 import { TaskActionSide } from "@invessiv/common/constants/crm/task-action-sides";
-import { TaskDueState } from "@/common/constants/crm/task-due-states";
+import { TaskDueState } from "@invessiv/common/constants/crm/task-due-states";
 import type { TaskListRowDto } from "@/common/contracts/crm/task-list-result";
 import type { Locale } from "@/config/i18n";
 import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";

@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import {
-  TASK_DUE_SOON_WINDOW_DAYS,
-  TaskDueState,
-} from "@/common/constants/crm/task-due-states";
+import { TASK_DUE_SOON_WINDOW_DAYS, TaskDueState } from "./task-due-states";
 
 describe("TaskDueState", () => {
   it("contains the exact states without duplicates", () => {

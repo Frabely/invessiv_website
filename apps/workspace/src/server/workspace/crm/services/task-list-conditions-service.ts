@@ -24,7 +24,7 @@ import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { TASK_LIST_ASSIGNEE_ME } from "@/common/constants/crm/list/task-list-assignee";
 import { TaskListPeriod } from "@/common/constants/crm/list/task-list-periods";
 import { TaskListStatusFilter } from "@/common/constants/crm/list/task-list-status-filters";
-import { TASK_DUE_SOON_WINDOW_DAYS } from "@/common/constants/crm/task-due-states";
+import { TASK_DUE_SOON_WINDOW_DAYS } from "@invessiv/common/constants/crm/task-due-states";
 import type { TaskListFilters } from "@/common/contracts/crm/task-list-filters";
 import { accessScope } from "@/common/patterns/auth/access-scope";
 import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";

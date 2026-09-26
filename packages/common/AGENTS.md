@@ -57,7 +57,9 @@ sind schrittweise auf dieses Pattern umzustellen (siehe `plans/Todo.md`).
 
 Unter `contracts/**` erhält jeder eigenständige DTO-, Row- oder Result-Contract eine eigene, nach ihm benannte Datei (z.
 B. `portal-access.dto.ts` für `PortalAccessDto`). Keine Sammeldatei mit mehreren eigenständigen Contracts;
-abhängige Contracts werden per `import type` eingebunden. Nur rein lokale, nicht exportierte Hilfstypen dürfen in
+abhängige Contracts werden per `import type` eingebunden. Auch jedes eigenständige Unter-DTO erhält eine eigene
+benannte Contract-Datei: verschachtelte Objekt-Shapes in DTO-Feldern werden als benanntes DTO modelliert, statt die
+Objektfelder inline zu definieren. Nur rein lokale, nicht exportierte Hilfstypen ohne Contract-Bedeutung dürfen in
 derselben Datei bleiben.
 
 ## Contract-Felder: immer camelCase

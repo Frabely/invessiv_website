@@ -54,8 +54,10 @@ genau einmal, im Const-Objekt.
 ## Eine Contract-Datei pro Contract (verbindlich)
 
 Unter `contracts/**` erhält jeder eigenständige DTO-, Row- oder Result-Contract eine eigene, nach ihm benannte Datei.
-Keine Sammeldatei mit mehreren exportierten Contracts; abhängige Contracts per `import type` einbinden. Rein lokale
-Hilfstypen dürfen in der Datei bleiben.
+Keine Sammeldatei mit mehreren exportierten Contracts; abhängige Contracts per `import type` einbinden. Auch jedes
+eigenständige Unter-DTO erhält eine eigene benannte Contract-Datei: verschachtelte Objekt-Shapes in DTO-Feldern werden
+als benanntes DTO modelliert, statt die Objektfelder inline zu definieren. Rein lokale, nicht exportierte Hilfstypen
+ohne Contract-Bedeutung dürfen in der Datei bleiben.
 
 ## Contract-Felder: immer camelCase
 

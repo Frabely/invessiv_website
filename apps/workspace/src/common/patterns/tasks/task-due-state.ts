@@ -1,10 +1,10 @@
-import { BUSINESS_TIME_ZONE } from "@invessiv/common/constants/crm/business-time-zone";
+﻿import { BUSINESS_TIME_ZONE } from "@invessiv/common/constants/crm/business-time-zone";
 import type { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import { OPEN_TASK_STATUS_VALUES } from "@invessiv/common/constants/crm/task-statuses";
 import {
   TASK_DUE_SOON_WINDOW_DAYS,
   TaskDueState,
-} from "@/common/constants/crm/task-due-states";
+} from "@invessiv/common/constants/crm/task-due-states";
 import type { TaskSummary } from "@/common/contracts/crm/task-summary";
 
 const MILLISECONDS_PER_DAY = 86_400_000;
