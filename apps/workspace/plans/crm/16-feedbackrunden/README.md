@@ -57,7 +57,9 @@ Dashboard-Karte außerhalb der Registry.
 Eine eingegangene Einreichung (`submit-feedback-round.command-handler.ts`) ruft
 `messageService.appendSystemMessage(...)` aus Ordner 13a auf — Dictionary-Key mit Parametern, fehlertolerant (die
 Einreichung scheitert nie daran), erhöht keinen Ungelesen-Zähler. Texte in `workspace/crm/messages` und
-`portal/messages` (DE/EN).
+`portal/messages` (DE/EN). Der Key kommt als neuer Wert in `SystemMessageKey`
+(`packages/common/src/constants/crm/system-message-keys.ts`);
+Muster: Phasenwechsel in `update-project.command-handler.ts` (Savepoint, Fehler nur geloggt).
 
 ## Merge-Gate
 

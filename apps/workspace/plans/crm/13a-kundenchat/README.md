@@ -28,7 +28,7 @@
 - [`26-chat-im-portal.md`](./26-chat-im-portal.md) — Portal-Dock, Portalseite und Rate-Limit.
 
 Pro Kunde existiert ein gemeinsamer Chat. Nach diesem Merge ist er **bidirektional** vollständig nutzbar: Mitarbeiter
-schreiben im Kunden-Cockpit oder im Posteingang `/crm/nachrichten`, Kunden im Portal-Dock oder unter
+schreiben im Kunden-Cockpit oder im Posteingang `/crm/messages`, Kunden im Portal-Dock oder unter
 `/portal/[customerId]/messages`. Beide Seiten sehen denselben Verlauf. Benachrichtigungen (Glocke, interne Bündelung,
 Kundendigest, E-Mail-Schalter) werden in Ordner 20c aktiviert; bis dahin sind Sidebar-Zähler, Posteingang und
 Portal-Widget die Hinweise auf neue Nachrichten.
@@ -112,7 +112,7 @@ früher genannte Dashboard-Karte „Offene Nachrichten“ **ist** dieses Registr
 - [ ] Chatverantwortung ist sichtbar, auf aktive berechtigte Mitglieder änderbar und als Activity protokolliert.
 - [ ] `Conversations` ist in `OwnableEntity` und der Responsibility-Registry registriert.
 - [ ] Cockpit-`ChatDock` zeigt den echten Verlauf; Mock-Kennzeichnung entfernt.
-- [ ] Posteingang `/crm/nachrichten` und Sidebar-Zähler stimmen; ein Zählerfehler bricht die Seite nicht.
+- [ ] Posteingang `/crm/messages` und Sidebar-Zähler stimmen; ein Zählerfehler bricht die Seite nicht.
 - [ ] Owner-Redaction ist im Verlauf gekennzeichnet und als Activity nachvollziehbar.
 - [ ] Der Hinweis, dass der Kunde mitliest, ist im CRM unübersehbar — das ist kein Notizfeld.
 

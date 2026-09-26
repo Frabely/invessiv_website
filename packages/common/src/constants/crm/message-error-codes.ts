@@ -7,3 +7,10 @@ export const MessageErrorCode = {
 } as const;
 export type MessageErrorCode =
   (typeof MessageErrorCode)[keyof typeof MessageErrorCode];
+export const MESSAGE_ERROR_CODE_VALUES = [
+  MessageErrorCode.NotFound,
+  MessageErrorCode.ValidationError,
+  MessageErrorCode.Forbidden,
+  MessageErrorCode.VersionConflict,
+  MessageErrorCode.Internal,
+] as const;

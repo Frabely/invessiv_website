@@ -7,6 +7,7 @@ import { formatCustomerNumber } from "@invessiv/common/patterns/crm/format-custo
 import { CustomerCockpitView } from "@/components/workspace/crm/detail/customer-cockpit-view/customer-cockpit-view";
 import type { CustomerCockpitDto } from "@invessiv/common/contracts/crm/customer-cockpit.dto";
 import type { PortalAccessDto } from "@invessiv/common/contracts/crm/portal-access.dto";
+import type { InternalConversationDto } from "@invessiv/common/contracts/crm/internal-conversation.dto";
 import type { AccessScopeEntryDto } from "@invessiv/common/contracts/auth/access-scope-entry.dto";
 import type { AccessProjectOptionDto } from "@invessiv/common/contracts/auth/access-project-option.dto";
 import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/role-assignment-option.dto";
@@ -14,6 +15,7 @@ import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspa
 import type {
   CrmAccessDictionary,
   CrmCockpitDictionary,
+  CrmMessagesDictionary,
   CrmPortalAccessDictionary,
   CrmProjectLineItemsDictionary,
   CrmTasksDictionary,
@@ -32,6 +34,10 @@ type CustomerCockpitDialogProps = {
   accessScopes?: readonly AccessScopeEntryDto[];
   closeHref: string;
   content: CrmCockpitDictionary;
+  conversation?: InternalConversationDto | null;
+  canWriteConversation?: boolean;
+  messagesContent?: CrmMessagesDictionary;
+  viewerMemberId: string;
   customer: CustomerCockpitDto;
   isWorkspaceOwner?: boolean;
   portalHref?: string;
@@ -59,6 +65,10 @@ export function CustomerCockpitDialog({
   accessScopes,
   closeHref,
   content,
+  conversation,
+  canWriteConversation,
+  messagesContent,
+  viewerMemberId,
   customer,
   isWorkspaceOwner,
   portalHref,
@@ -99,6 +109,10 @@ export function CustomerCockpitDialog({
         accessScopes={accessScopes}
         canWriteProjects={canWriteProjects}
         content={content}
+        conversation={conversation}
+        canWriteConversation={canWriteConversation}
+        messagesContent={messagesContent}
+        viewerMemberId={viewerMemberId}
         customer={customer}
         isWorkspaceOwner={isWorkspaceOwner}
         portalHref={portalHref}

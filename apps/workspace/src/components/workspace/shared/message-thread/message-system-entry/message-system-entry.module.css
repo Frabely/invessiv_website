@@ -1,0 +1,17 @@
+.entry {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.2rem 0.5rem;
+  max-width: 90%;
+  margin: 0.35rem auto;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  line-height: 1.45;
+  text-align: center;
+}
+
+.time {
+  font-variant-numeric: tabular-nums;
+}

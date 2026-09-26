@@ -5,7 +5,7 @@
 > **Migration:** keine
 
 - Der bestehende Mock-`ChatDock` im Kunden-Cockpit zeigt den echten Verlauf; Mitarbeiter lesen und schreiben dort.
-- Posteingang `/crm/nachrichten` über alle Kunden plus Sidebar-Zähler für ungelesene Kundennachrichten.
+- Posteingang `/crm/messages` über alle Kunden plus Sidebar-Zähler für ungelesene Kundennachrichten.
 - Nachrichten sind unveränderlich; kein Bearbeiten, kein Löschen. Redaction bleibt Workspace-Owner-only.
 - Versand erzeugt eine Activity. Notification/Mail folgen in Ordner 20c; kein Mailfehler kann den Chatwrite
   rückgängig machen.
@@ -27,7 +27,7 @@ Mock-Kommentar im Dock wird angepasst.
 - **Sidebar-Zähler:** Badge am Menüpunkt „Nachrichten“ der Workspace-Navigation. Zahl der Unterhaltungen, in denen
   eine Kundennachricht neuer ist als der **eigene** Lesestand. Eigene und Systemnachrichten zählen nicht. Klick →
   Posteingang. Einziger Hinweis auf neue Nachrichten, bis Ordner 20c Benachrichtigungen aktiviert.
-- **Posteingang `/crm/nachrichten`:** links Liste aller Unterhaltungen, auf die der Nutzer `chat.read` hat (Firma,
+- **Posteingang `/crm/messages`:** links Liste aller Unterhaltungen, auf die der Nutzer `chat.read` hat (Firma,
   Vorschau der letzten Nachricht, Zeit, Ungelesen-Markierung, sortiert nach letzter Nachricht; Filter „Nur meine“ =
   Verantwortlicher ist der Nutzer); rechts der ausgewählte Verlauf mit Antwortfeld und änderbarem Verantwortlichen.
   Auswahl und Filter über URL-Parameter. Mobil: Liste und Verlauf als zwei Ansichten.
@@ -36,7 +36,7 @@ Mock-Kommentar im Dock wird angepasst.
 
 | Bereich               | Entscheidung                                                                                                                |
 | --------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| Ort                   | `ChatDock` im Kunden-Cockpit + Posteingang `/crm/nachrichten` + Sidebar-Zähler                                              |
+| Ort                   | `ChatDock` im Kunden-Cockpit + Posteingang `/crm/messages` + Sidebar-Zähler                                                 |
 | Gemeinsame Komponente | `components/workspace/shared/message-thread/**` — app-intern geteilt, nicht in `packages/ui` (hängt an Workspace-Contracts) |
 | Aktualisierung        | Beim Öffnen laden, nach dem Senden neu laden, zusätzlich bei `visibilitychange`                                             |
 | Senden                | Enter sendet, Shift+Enter macht einen Zeilenumbruch; auf Touchgeräten sendet nur die Schaltfläche                           |
@@ -56,10 +56,10 @@ Mock-Kommentar im Dock wird angepasst.
 Kunden-Cockpit (Server Component lädt getCustomerConversation, limit 50)
   └─ customer-cockpit-view.tsx
        └─ <ChatDock badgeLabel={unread} …>
-            └─ <CustomerConversation …>        Client, nutzt messages-service
+            └─ <CustomerConversation …>        Client, Hook use-customer-conversation → messages-api-service
                  └─ <MessageThread messages onSend onLoadOlder labels />
 
-/crm/nachrichten (page.tsx orchestriert nur; noindex, dynamic = "force-dynamic")
+/crm/messages (page.tsx orchestriert nur; noindex, dynamic = "force-dynamic")
   └─ listConversations()   eine Query: Kunde, letzte Nachricht, Ungelesen je Nutzer, Owner
        └─ <ConversationInbox> Liste links, <CustomerConversation> rechts
 
@@ -85,23 +85,48 @@ apps/workspace/src/common/contracts/ui/message-thread-labels.ts
 apps/workspace/src/common/constants/crm/message-draft-storage.ts
 apps/workspace/src/hooks/workspace/shared/use-message-draft.ts
 apps/workspace/src/hooks/workspace/shared/use-thread-autoscroll.ts
-apps/workspace/src/lib/…/group-messages.ts          reine Gruppierung/Datumstrenner, getestet (ggf. common/patterns)
+apps/workspace/src/common/contracts/ui/{pending-thread-message,thread-message-item,thread-message-group,thread-day-section,message-text-segment}.ts
+apps/workspace/src/common/constants/ui/pending-message-statuses.ts
+apps/workspace/src/common/patterns/ui/{group-thread-messages,split-message-links,merge-thread-messages}.ts   rein, getestet
+apps/workspace/src/common/patterns/crm/describe-system-message.ts   Key + Parameter → Text (auch fürs Portal)
+apps/workspace/src/hooks/use-is-browser.ts                          Zeiten erst im Browser (Zeitzone)
+apps/workspace/src/hooks/workspace/crm/use-customer-conversation.ts Laden, Senden, Lesestand, Redaction
 
-apps/workspace/src/app/[locale]/(app)/crm/nachrichten/page.tsx + loading.tsx
+apps/workspace/src/app/[locale]/(app)/crm/messages/page.tsx + loading.tsx
 apps/workspace/src/config/routes.ts                            + CRM_MESSAGES
 apps/workspace/src/server/workspace/crm/query-handler/
-  list-conversations.query-handler.ts
-  count-unread-conversations.query-handler.ts
+  list-conversations.query-handler.ts                 + Vorschau (Lateral-Join), Owner-Name
+  count-unread-conversations.query-handler.ts         eigene EXISTS-Zählung
+  list-conversation-owner-candidates.query-handler.ts aktive Mitglieder mit chat.read am Kunden
 apps/workspace/src/components/workspace/crm/messages/
   customer-conversation/
   conversation-inbox/
   conversation-list-item/
   conversation-owner-select/
+  conversation-inbox-header/
 apps/workspace/src/components/workspace/crm/detail/customer-cockpit-view/customer-cockpit-view.tsx   Dock befüllen
-apps/workspace/src/client/crm/messages-service.ts
+apps/workspace/src/client/crm/messages-api-service.ts
 apps/workspace/src/i18n/dictionaries/workspace/crm/messages/{de,en}.json
+apps/workspace/src/i18n/dictionaries/portal/messages/{de,en}.json          nur Systemnachrichten; Task 26 ergänzt
+packages/common/src/constants/crm/system-message-keys.ts                  SystemMessageKey, SystemMessageParam
+packages/common/src/contracts/crm/{conversation-inbox-item,internal-conversation}.dto.ts   + lastMessage, ownerDisplayName, canRedact
 packages/ui/src/components/chat-dock/chat-dock.tsx             Mock-Kommentar anpassen, sonst unverändert
 ```
+
+## Umsetzungsstand (26.09.2026)
+
+Umgesetzt auf `feat/crm-13a-kundenchat-intern`, nicht committet. Bewusste Abweichungen vom Plan:
+
+- Route `/crm/messages` statt `/crm/nachrichten` — Root-Regel: Routen-Slugs Englisch.
+- Client-Service heißt `messages-api-service.ts` (Konvention `src/client/AGENTS.md`).
+- Rechte zum Ausblenden kommen als `canRedact` im `InternalConversationDto`; die Owner-Prüfung liegt einmal in
+  `conversationService.memberIsWorkspaceOwner` (vorher lokal im Redact-Handler).
+- Verantwortlichen-Auswahl zeigt nur aktive Mitglieder mit `chat.read` am Kunden oder workspace-weit und erscheint
+  nur mit `chat.write`; der Server prüft weiterhin selbst.
+- Systemnachricht zum Phasenwechsel läuft im Savepoint derselben Transaktion; ein Fehler wird geloggt, der
+  Phasenwechsel bleibt.
+- Ein fehlgeschlagener Versand bleibt als Nachricht mit „Erneut senden“ im Verlauf; der Entwurf im `localStorage`
+  wird beim Absenden geleert (nicht erst nach Erfolg).
 
 Vor dem Anlegen die scoped `AGENTS.md` in `components/workspace/shared/`, `components/workspace/crm/`,
 `app/[locale]/(app)/crm/` und `hooks/` lesen.

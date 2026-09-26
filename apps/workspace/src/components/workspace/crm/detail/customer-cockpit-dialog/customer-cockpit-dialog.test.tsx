@@ -25,6 +25,7 @@ describe("CustomerCockpitDialog", () => {
 
     render(
       <CustomerCockpitDialog
+        viewerMemberId="member-1"
         closeHref="/de/crm"
         content={content}
         customer={customer}

@@ -1,0 +1,99 @@
+.item {
+  list-style: none;
+}
+
+.link {
+  position: relative;
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.75rem 0.85rem 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.link:hover {
+  background: color-mix(in srgb, var(--color-surface-2) 60%, transparent);
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
+}
+
+.link[data-selected="true"] {
+  background: var(--color-surface-2);
+}
+
+/* The accent bar marks the open conversation; aria-current carries the same fact. */
+.link[data-selected="true"]::before {
+  content: "";
+  position: absolute;
+  inset: 0.5rem auto 0.5rem 0;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: var(--color-cta);
+}
+
+.top,
+.bottom {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.name {
+  overflow: hidden;
+  font-size: var(--font-size-ui-sm);
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.link[data-unread="true"] .name {
+  font-weight: 700;
+}
+
+.time,
+.owner {
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.owner {
+  flex-shrink: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.preview {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.link[data-unread="true"] .preview {
+  color: var(--color-text);
+}
+
+.unread {
+  flex-shrink: 0;
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  background: var(--color-cta);
+  color: var(--color-on-cta);
+  font-size: var(--font-size-badge);
+  font-weight: 600;
+  white-space: nowrap;
+}

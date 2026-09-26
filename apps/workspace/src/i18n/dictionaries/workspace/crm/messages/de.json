@@ -1,0 +1,83 @@
+{
+  "meta": {
+    "title": "Nachrichten | Invessiv",
+    "description": "Alle Kundenunterhaltungen an einem Ort: wer geschrieben hat, was noch ungelesen ist und wer antwortet."
+  },
+  "thread": {
+    "logLabel": "Verlauf mit dem Kunden",
+    "emptyTitle": "Noch keine Nachricht",
+    "emptyBody": "Was du hier schreibst, liest der Kunde in seinem Portal – und er kann direkt antworten.",
+    "loadOlder": "Ältere Nachrichten laden",
+    "loadingOlder": "Lädt …",
+    "newMessages": "Neue Nachrichten",
+    "today": "Heute",
+    "yesterday": "Gestern",
+    "own": "Du",
+    "redacted": "Nachricht vom Owner ausgeblendet",
+    "systemFallback": "Ereignis im Projekt",
+    "sending": "Wird gesendet …",
+    "failed": "Nicht gesendet",
+    "retry": "Erneut senden",
+    "redact": "Ausblenden",
+    "inputLabel": "Nachricht an den Kunden",
+    "inputPlaceholder": "Nachricht an den Kunden …",
+    "inputHint": "Enter sendet, Shift + Enter macht eine neue Zeile.",
+    "send": "Senden",
+    "characterCount": "{count} von {max} Zeichen"
+  },
+  "systemMessages": {
+    "projectPhaseChanged": "Projekt „{projectTitle}“ ist jetzt in der Phase {phase}."
+  },
+  "phases": {
+    "onboarding": "Onboarding",
+    "design": "Design",
+    "development": "Entwicklung",
+    "feedback": "Feedback",
+    "launch": "Launch",
+    "maintenance": "Wartung"
+  },
+  "dock": {
+    "unread": "{count} ungelesen"
+  },
+  "states": {
+    "loading": "Verlauf wird geladen …",
+    "loadError": "Der Verlauf konnte nicht geladen werden.",
+    "reload": "Erneut laden",
+    "olderError": "Ältere Nachrichten konnten nicht geladen werden."
+  },
+  "redaction": {
+    "title": "Nachricht ausblenden?",
+    "description": "Der Inhalt verschwindet für alle – auch für den Kunden – und lässt sich nicht wiederherstellen. Im Verlauf bleibt ein Hinweis, in der Aktivität bleibt nachvollziehbar, wer ausgeblendet hat.",
+    "confirm": "Nachricht ausblenden",
+    "cancel": "Abbrechen",
+    "close": "Dialog schließen",
+    "error": "Die Nachricht konnte nicht ausgeblendet werden. Versuch es noch einmal."
+  },
+  "inbox": {
+    "heading": "Nachrichten",
+    "intro": "Jeder Kunde hat genau einen Verlauf. Er erscheint auch in der Kundenakte und im Portal des Kunden.",
+    "listLabel": "Unterhaltungen",
+    "filterLabel": "Anzeigen",
+    "filterAll": "Alle",
+    "filterMine": "Nur meine",
+    "emptyTitle": "Noch keine Unterhaltung",
+    "emptyBody": "Sobald du einem Kunden schreibst oder er dir aus dem Portal, erscheint die Unterhaltung hier.",
+    "emptyFilteredTitle": "Keine Unterhaltung, für die du verantwortlich bist",
+    "emptyFilteredBody": "Zeig alle Unterhaltungen oder übernimm im Verlauf die Verantwortung.",
+    "showAll": "Alle anzeigen",
+    "noMessages": "Noch keine Nachricht",
+    "ownPrefix": "Du: ",
+    "unread": "{count} ungelesen",
+    "responsible": "Verantwortlich: {name}",
+    "selectPrompt": "Wähl links eine Unterhaltung aus.",
+    "backToList": "Zur Liste",
+    "openCockpit": "Kundenakte öffnen"
+  },
+  "owner": {
+    "label": "Verantwortlich",
+    "saving": "Wird gespeichert …",
+    "conflict": "Jemand hat die Verantwortung gerade geändert. Der aktuelle Stand ist übernommen.",
+    "invalid": "Diese Person kann den Verlauf nicht lesen oder ist nicht mehr aktiv.",
+    "error": "Die Verantwortung konnte nicht geändert werden."
+  }
+}

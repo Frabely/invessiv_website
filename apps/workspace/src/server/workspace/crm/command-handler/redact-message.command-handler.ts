@@ -1,39 +1,19 @@
 import "server-only";
 
-import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
-import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
 import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
 import {
   type ContactDatabaseTransaction,
   getDrizzleDatabaseClient,
 } from "@invessiv/db/core";
-import { roles, workspaceMemberRoles } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { canOn } from "@/common/patterns/auth/can-on";
 import { activityService } from "@/server/shared/services/activity-service";
 import { messageService } from "@/server/shared/services/message/message-service";
-
-async function memberHasWorkspaceOwnerRole(
-  tx: ContactDatabaseTransaction,
-  memberId: string,
-): Promise<boolean> {
-  const [ownerRole] = await tx
-    .select({ id: workspaceMemberRoles.role_id })
-    .from(workspaceMemberRoles)
-    .innerJoin(roles, eq(roles.id, workspaceMemberRoles.role_id))
-    .where(
-      and(
-        eq(workspaceMemberRoles.workspace_member_id, memberId),
-        eq(roles.system_key, SystemRoleKey.WorkspaceOwner),
-      ),
-    )
-    .limit(1);
-  return Boolean(ownerRole);
-}
+import { conversationService } from "@/server/workspace/crm/services/conversation-service";
 
 async function recordMessageRedaction(
   tx: ContactDatabaseTransaction,
@@ -56,7 +36,12 @@ async function redactAuthorizedMessage(
   messageId: string,
   actor: WorkspaceActor,
 ) {
-  if (!(await memberHasWorkspaceOwnerRole(tx, actor.workspaceMemberId)))
+  if (
+    !(await conversationService.memberIsWorkspaceOwner(
+      tx,
+      actor.workspaceMemberId,
+    ))
+  )
     return { ok: false, code: MessageErrorCode.Forbidden } as const;
 
   const target = await messageService.findRedactableTextMessage(tx, messageId);

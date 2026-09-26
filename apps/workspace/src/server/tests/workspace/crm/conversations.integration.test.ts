@@ -48,6 +48,7 @@ import { updateConversationOwner } from "@/server/workspace/crm/command-handler/
 import { getCustomerConversation } from "@/server/workspace/crm/query-handler/get-customer-conversation.query-handler";
 import { listConversations } from "@/server/workspace/crm/query-handler/list-conversations.query-handler";
 import { countUnreadConversations } from "@/server/workspace/crm/query-handler/count-unread-conversations.query-handler";
+import { listConversationOwnerCandidates } from "@/server/workspace/crm/query-handler/list-conversation-owner-candidates.query-handler";
 import { messageService } from "@/server/shared/services/message/message-service";
 import { GET as getPortalConversationRoute } from "@/app/api/portal/[customerId]/conversation/route";
 import { POST as sendPortalMessageRoute } from "@/app/api/portal/[customerId]/conversation/messages/route";
@@ -391,15 +392,34 @@ describe.skipIf(!RUN_INTEGRATION)(
         )?.unreadCount,
       ).toBe(1);
       expect(await countUnreadConversations(scopedReader)).toBe(1);
+      const inboxItem = (await listConversations(internalActor())).find(
+        (item) => item.customerId === customerA,
+      );
+      expect(inboxItem?.ownerDisplayName).toBe("Owner member");
+      expect(inboxItem?.lastMessage).toMatchObject({
+        body: "Thank you.",
+        senderSide: MessageSenderSide.Customer,
+        isOwn: false,
+      });
       expect(
-        (
-          await getCustomerConversation(
-            customerA,
-            internalActor(otherMemberId, otherUserId),
-            null,
-          )
-        )?.unreadCount,
-      ).toBe(1);
+        (await getCustomerConversation(customerA, internalActor(), null))
+          ?.canRedact,
+      ).toBe(true);
+      const otherView = await getCustomerConversation(
+        customerA,
+        internalActor(otherMemberId, otherUserId),
+        null,
+      );
+      expect(otherView?.unreadCount).toBe(1);
+      expect(otherView?.canRedact).toBe(false);
+      expect(
+        (await listConversationOwnerCandidates(customerA, internalActor())).map(
+          (candidate) => candidate.id,
+        ),
+      ).toContain(ownerMemberId);
+      expect(
+        await listConversationOwnerCandidates(customerA, scopedReader),
+      ).toEqual([]);
       await db.transaction((tx) =>
         messageService.appendSystemMessage(
           tx,

@@ -1,0 +1,57 @@
+.conversation {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0.5rem;
+  min-height: 0;
+  height: 100%;
+}
+
+.conversation > :only-child {
+  grid-row: 1 / -1;
+}
+
+.state {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.5rem;
+  min-height: 10rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  text-align: center;
+}
+
+.state p {
+  margin: 0;
+}
+
+.stateAction.stateAction {
+  min-height: 2rem;
+  padding: 0.25rem 0.85rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.stateAction.stateAction:hover,
+.stateAction.stateAction:focus-visible {
+  transform: none;
+  box-shadow: none;
+}
+
+.stateAction.stateAction:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.notice {
+  margin: 0;
+  padding: 0.4rem 0.6rem;
+  border-left: 2px solid var(--color-danger);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-xs);
+}

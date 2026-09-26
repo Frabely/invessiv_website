@@ -1,0 +1,14 @@
+{
+  "systemMessages": {
+    "projectPhaseChanged": "Dein Projekt „{projectTitle}“ ist jetzt in der Phase {phase}."
+  },
+  "systemFallback": "Neuigkeit zu deinem Projekt",
+  "phases": {
+    "onboarding": "Onboarding",
+    "design": "Design",
+    "development": "Entwicklung",
+    "feedback": "Feedback",
+    "launch": "Launch",
+    "maintenance": "Wartung"
+  }
+}

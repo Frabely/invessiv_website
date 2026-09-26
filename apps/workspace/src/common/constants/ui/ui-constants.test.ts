@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { DialogMessageRole } from "@/common/constants/ui/dialog-message-roles";
+import { PendingMessageStatus } from "@/common/constants/ui/pending-message-statuses";
 import {
   DIALOG_MESSAGE_TONE_VALUES,
   DialogMessageTone,
@@ -22,6 +23,17 @@ describe("DialogMessageRole", () => {
   it("contains the exact ARIA live roles without duplicates", () => {
     expect(DialogMessageRole).toEqual({ Status: "status", Alert: "alert" });
     const values = Object.values(DialogMessageRole);
+    expect(new Set(values).size).toBe(values.length);
+  });
+});
+
+describe("PendingMessageStatus", () => {
+  it("contains the exact send states without duplicates", () => {
+    expect(PendingMessageStatus).toEqual({
+      Sending: "sending",
+      Failed: "failed",
+    });
+    const values = Object.values(PendingMessageStatus);
     expect(new Set(values).size).toBe(values.length);
   });
 });

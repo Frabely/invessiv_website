@@ -2,13 +2,19 @@
 
 import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import {
   getCrmAccessDictionary,
   getCrmCockpitDictionary,
+  getCrmMessagesDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
+import {
+  MessageSenderSide,
+  MessageType,
+} from "@invessiv/common/constants/crm/message-types";
+import type { InternalConversationDto } from "@invessiv/common/contracts/crm/internal-conversation.dto";
 import { getSettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import {
@@ -21,8 +27,24 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ refresh: vi.fn() }),
 }));
 
+const messagesApiMocks = vi.hoisted(() => ({
+  getConversation: vi.fn(),
+  markRead: vi.fn(),
+  sendMessage: vi.fn(),
+  redactMessage: vi.fn(),
+  updateOwner: vi.fn(),
+}));
+vi.mock("@/client/crm/messages-api-service", () => ({
+  messagesApiService: messagesApiMocks,
+}));
+
 describe("CustomerCockpitView", () => {
   afterEach(cleanup);
+  beforeEach(() => {
+    vi.clearAllMocks();
+    messagesApiMocks.getConversation.mockReturnValue(new Promise(() => {}));
+    messagesApiMocks.markRead.mockReturnValue(new Promise(() => {}));
+  });
 
   it("renders the empty projects state without a dialog shell", () => {
     const customer = customerDetailFixture();
@@ -30,6 +52,7 @@ describe("CustomerCockpitView", () => {
 
     render(
       <CustomerCockpitView
+        viewerMemberId="member-1"
         content={content}
         locale="en"
         customer={customer}
@@ -47,7 +70,12 @@ describe("CustomerCockpitView", () => {
     const customer = customerDetailFixture();
     const content = getCrmCockpitDictionary("en");
     const { rerender } = render(
-      <CustomerCockpitView content={content} customer={customer} locale="en" />,
+      <CustomerCockpitView
+        viewerMemberId="member-1"
+        content={content}
+        customer={customer}
+        locale="en"
+      />,
     );
     expect(
       screen.getByRole("heading", { name: customer.displayName }),
@@ -55,6 +83,7 @@ describe("CustomerCockpitView", () => {
 
     rerender(
       <CustomerCockpitView
+        viewerMemberId="member-1"
         content={content}
         customer={customer}
         locale="en"
@@ -79,6 +108,7 @@ describe("CustomerCockpitView", () => {
     const content = getCrmCockpitDictionary("en");
     const { rerender } = render(
       <CustomerCockpitView
+        viewerMemberId="member-1"
         content={content}
         customer={customer}
         locale="en"
@@ -93,6 +123,7 @@ describe("CustomerCockpitView", () => {
 
     rerender(
       <CustomerCockpitView
+        viewerMemberId="member-1"
         content={content}
         customer={customer}
         locale="en"
@@ -109,7 +140,12 @@ describe("CustomerCockpitView", () => {
     const customer = customerDetailFixture();
     const content = getCrmCockpitDictionary("en");
     const { rerender } = render(
-      <CustomerCockpitView content={content} customer={customer} locale="en" />,
+      <CustomerCockpitView
+        viewerMemberId="member-1"
+        content={content}
+        customer={customer}
+        locale="en"
+      />,
     );
     const figures = () =>
       screen.getByRole("list", { name: content.kpis.label });
@@ -121,6 +157,7 @@ describe("CustomerCockpitView", () => {
 
     rerender(
       <CustomerCockpitView
+        viewerMemberId="member-1"
         content={content}
         customer={customer}
         locale="en"
@@ -143,10 +180,11 @@ describe("CustomerCockpitView", () => {
     );
   });
 
-  it("offers the customer areas and the chat only as marked placeholders", () => {
+  it("offers future customer areas as placeholders and hides the chat without chat.read", () => {
     const content = getCrmCockpitDictionary("de");
     render(
       <CustomerCockpitView
+        viewerMemberId="member-1"
         content={content}
         customer={customerDetailFixture()}
         locale="de"
@@ -159,8 +197,115 @@ describe("CustomerCockpitView", () => {
       ).toBeVisible();
     }
     expect(
-      screen.getByRole("button", { name: content.chat.expand }),
-    ).toHaveAttribute("aria-expanded", "false");
+      screen.queryByRole("button", { name: content.chat.expand }),
+    ).toBeNull();
+  });
+
+  describe("customer chat dock", () => {
+    function conversation(
+      overrides: Partial<InternalConversationDto> = {},
+    ): InternalConversationDto {
+      return {
+        id: "conversation-1",
+        customerId: customerDetailFixture().id,
+        unreadCount: 0,
+        lastMessageAt: "2026-09-25T10:00:00.000Z",
+        messages: [
+          {
+            id: "message-1",
+            conversationId: "conversation-1",
+            type: MessageType.Text,
+            body: "Wann kommt der Entwurf?",
+            metadata: null,
+            senderSide: MessageSenderSide.Customer,
+            senderDisplayName: "Anna Berger",
+            isOwn: false,
+            createdAt: "2026-09-25T10:00:00.000Z",
+            redactedAt: null,
+          },
+        ],
+        nextCursor: null,
+        ownerMemberId: "member-1",
+        ownerDisplayName: "Moritz",
+        version: 1,
+        canRedact: false,
+        ...overrides,
+      };
+    }
+
+    function renderDock(
+      props: Partial<Parameters<typeof CustomerCockpitView>[0]> = {},
+    ) {
+      const content = getCrmCockpitDictionary("de");
+      render(
+        <CustomerCockpitView
+          viewerMemberId="member-1"
+          content={content}
+          conversation={conversation()}
+          customer={customerDetailFixture()}
+          locale="de"
+          messagesContent={getCrmMessagesDictionary("de")}
+          {...props}
+        />,
+      );
+      fireEvent.click(
+        screen.getByRole("button", { name: content.chat.expand }),
+      );
+      return content;
+    }
+
+    it("shows the real thread, the read-along notice and a composer with chat.write", () => {
+      const content = renderDock({ canWriteConversation: true });
+
+      expect(screen.getByText(content.chat.readAlong)).toBeVisible();
+      expect(screen.getByText("Wann kommt der Entwurf?")).toBeVisible();
+      expect(
+        screen.getByRole("textbox", {
+          name: getCrmMessagesDictionary("de").thread.inputLabel,
+        }),
+      ).toBeVisible();
+      expect(messagesApiMocks.getConversation).toHaveBeenCalled();
+    });
+
+    it("stays readable without chat.write and offers no edit or delete", () => {
+      renderDock({ canWriteConversation: false });
+
+      expect(screen.getByText("Wann kommt der Entwurf?")).toBeVisible();
+      expect(screen.queryByRole("textbox")).toBeNull();
+      expect(
+        screen.queryByRole("button", { name: /bearbeiten|löschen/i }),
+      ).toBeNull();
+      expect(screen.queryByRole("button", { name: "Ausblenden" })).toBeNull();
+    });
+
+    it("offers hiding only to the workspace owner", () => {
+      renderDock({ conversation: conversation({ canRedact: true }) });
+
+      expect(screen.getByRole("button", { name: "Ausblenden" })).toBeVisible();
+    });
+
+    it("badges unread messages and marks them read on opening", () => {
+      const content = getCrmCockpitDictionary("de");
+      render(
+        <CustomerCockpitView
+          viewerMemberId="member-1"
+          content={content}
+          conversation={conversation({ unreadCount: 2 })}
+          customer={customerDetailFixture()}
+          locale="de"
+          messagesContent={getCrmMessagesDictionary("de")}
+        />,
+      );
+      expect(screen.getByText("2 ungelesen")).toBeInTheDocument();
+      expect(messagesApiMocks.markRead).not.toHaveBeenCalled();
+
+      fireEvent.click(
+        screen.getByRole("button", { name: content.chat.expand }),
+      );
+      expect(messagesApiMocks.markRead).toHaveBeenCalledWith(
+        customerDetailFixture().id,
+      );
+    });
   });
 
   it("shows an actionable observation until the owner has access", async () => {
@@ -189,6 +334,7 @@ describe("CustomerCockpitView", () => {
       customer,
       customerOwnerMemberId: member.id,
       locale: "de" as const,
+      viewerMemberId: "member-1",
       permissionsContent: getSettingsPermissionsDictionary("de"),
       projects: [],
       rolesHref: "/de/settings?tab=roles",

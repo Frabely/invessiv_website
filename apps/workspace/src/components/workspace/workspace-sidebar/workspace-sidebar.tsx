@@ -6,10 +6,12 @@ import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
   faAddressBook,
   faChartColumn,
+  faComments,
   faGear,
   faLayerGroup,
   faListCheck,
   faUsers,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
@@ -17,8 +19,10 @@ import { WorkspaceSidebarItemKey } from "@/common/constants/navigation/workspace
 import { WORKSPACE_SIDEBAR_ITEMS } from "@/common/constants/navigation/workspace-sidebar-items";
 import type { Locale } from "@/config/i18n";
 import type { WorkspacePageContent } from "@/i18n/dictionaries/workspace";
+import { formatMessage } from "@/lib/i18n/format-message";
 import {
   crmLineItemTemplatesPathFor,
+  crmMessagesPathFor,
   crmTasksPathFor,
   workspaceAreaPathFor,
 } from "@/lib/auth/routes";
@@ -27,12 +31,14 @@ import styles from "./workspace-sidebar.module.css";
 type WorkspaceSidebarProps = {
   canOpenCrmCustomers: boolean;
   canOpenCrmTasks: boolean;
+  canOpenCrmMessages: boolean;
   canReadCrmLineItemTemplates: boolean;
   content: WorkspacePageContent;
   isOpen: boolean;
   locale: Locale;
   onCloseAction: () => void;
   permittedAreas: readonly WorkspaceArea[];
+  unreadConversationCount: number;
 };
 
 const SIDEBAR_ICONS = {
@@ -45,12 +51,14 @@ const SIDEBAR_ICONS = {
 export function WorkspaceSidebar({
   canOpenCrmCustomers,
   canOpenCrmTasks,
+  canOpenCrmMessages,
   canReadCrmLineItemTemplates,
   content,
   isOpen,
   locale,
   onCloseAction,
   permittedAreas,
+  unreadConversationCount,
 }: WorkspaceSidebarProps) {
   const sidebarContent = content.shell.sidebar;
   const headerContent = content.shell.header;
@@ -82,17 +90,7 @@ export function WorkspaceSidebar({
           type="button"
         >
           <span aria-hidden="true" className={styles.closeIcon}>
-            <svg
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.8}
-              viewBox="0 0 24 24"
-            >
-              <path d="M6 6 18 18" />
-              <path d="M18 6 6 18" />
-            </svg>
+            <FontAwesomeIcon icon={faXmark} />
           </span>
         </button>
         <nav aria-label={sidebarContent.navAriaLabel} className={styles.nav}>
@@ -105,6 +103,7 @@ export function WorkspaceSidebar({
                 pathname === href || pathname.startsWith(`${href}/`);
               const isCrm = item.id === WorkspaceSidebarItemKey.Crm;
               const crmTasksHref = crmTasksPathFor(locale);
+              const crmMessagesHref = crmMessagesPathFor(locale);
               const crmLineItemTemplatesHref =
                 crmLineItemTemplatesPathFor(locale);
 
@@ -180,6 +179,40 @@ export function WorkspaceSidebar({
                           >
                             <FontAwesomeIcon icon={faListCheck} />
                             <span>{sidebarContent.items.tasks}</span>
+                          </Link>
+                        </li>
+                      ) : null}
+                      {canOpenCrmMessages ? (
+                        <li>
+                          <Link
+                            aria-current={
+                              pathname === crmMessagesHref ? "page" : undefined
+                            }
+                            className={styles.crmChildLink}
+                            data-active={
+                              pathname === crmMessagesHref ? "true" : "false"
+                            }
+                            href={crmMessagesHref}
+                            onClick={onCloseAction}
+                          >
+                            <FontAwesomeIcon icon={faComments} />
+                            <span>{sidebarContent.items.messages}</span>
+                            {unreadConversationCount > 0 ? (
+                              <>
+                                <span
+                                  aria-hidden="true"
+                                  className={styles.countBadge}
+                                >
+                                  {unreadConversationCount}
+                                </span>
+                                <span className="sr-only">
+                                  {formatMessage(
+                                    sidebarContent.unreadConversations,
+                                    { count: unreadConversationCount },
+                                  )}
+                                </span>
+                              </>
+                            ) : null}
                           </Link>
                         </li>
                       ) : null}

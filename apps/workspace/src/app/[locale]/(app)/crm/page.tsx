@@ -29,6 +29,7 @@ import {
   getCrmCockpitDictionary,
   getCrmFormDictionary,
   getCrmListDictionary,
+  getCrmMessagesDictionary,
   getCrmMetaDictionary,
   getCrmPortalAccessDictionary,
   getCrmProjectLineItemsDictionary,
@@ -63,6 +64,7 @@ import { listRoleAssignmentOptions } from "@/server/workspace/access/query-handl
 import { listWorkspaceMembers } from "@/server/workspace/access/query-handler/list-workspace-members.query-handler";
 import { responsibilityAccessService } from "@/server/workspace/shared/services/responsibility-access-service";
 import { getCustomerPortalAccess } from "@/server/workspace/crm/query-handler/get-customer-portal-access.query-handler";
+import { getCustomerConversation } from "@/server/workspace/crm/query-handler/get-customer-conversation.query-handler";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -160,6 +162,16 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
       )
       .map((row) => row.id),
   );
+  const canReadConversation =
+    cockpitCustomer !== null &&
+    canOn(actor, Permission.ChatRead, { customerId: cockpitCustomer.id });
+
+  const cockpitConversation =
+    cockpitCustomer && canReadConversation
+      ? await getCustomerConversation(cockpitCustomer.id, actor, null).catch(
+          () => null,
+        )
+      : undefined;
   const cockpitProjects = cockpitCustomer
     ? await listCockpitProjectsByCustomer(cockpitCustomer.id, actor)
     : null;
@@ -309,6 +321,16 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
           }
           closeHref={cockpitCloseHref}
           content={getCrmCockpitDictionary(activeLocale)}
+          conversation={cockpitConversation}
+          canWriteConversation={canOn(actor, Permission.ChatWrite, {
+            customerId: cockpitCustomer.id,
+          })}
+          messagesContent={
+            canReadConversation
+              ? getCrmMessagesDictionary(activeLocale)
+              : undefined
+          }
+          viewerMemberId={actor.workspaceMemberId}
           customer={cockpitCustomer}
           isWorkspaceOwner={isWorkspaceOwner}
           portalHref={

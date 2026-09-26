@@ -85,11 +85,13 @@
         "crm": "CRM",
         "customers": "Kunden",
         "tasks": "Aufgaben",
+        "messages": "Nachrichten",
         "lineItemTemplates": "Leistungskatalog",
         "leads": "Leads",
         "overview": "Übersicht",
         "settings": "Einstellungen"
-      }
+      },
+      "unreadConversations": "{count} Unterhaltungen mit ungelesenen Kundennachrichten"
     },
     "main": {
       "ariaLabel": "Workspace-Inhalt"

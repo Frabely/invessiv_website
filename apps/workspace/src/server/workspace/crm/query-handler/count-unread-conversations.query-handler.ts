@@ -7,8 +7,7 @@ import { conversationService } from "@/server/workspace/crm/services/conversatio
 export async function countUnreadConversations(
   actor: WorkspaceActor,
 ): Promise<number> {
-  return getDrizzleDatabaseClient().transaction(async (tx) => {
-    const items = await conversationService.listVisibleInbox(tx, actor);
-    return items.filter((item) => item.unreadCount > 0).length;
-  });
+  return getDrizzleDatabaseClient().transaction((tx) =>
+    conversationService.countUnreadConversations(tx, actor),
+  );
 }

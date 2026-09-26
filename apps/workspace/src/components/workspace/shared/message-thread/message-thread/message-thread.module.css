@@ -1,0 +1,119 @@
+.thread {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  min-height: 0;
+  height: 100%;
+}
+
+.viewport {
+  position: relative;
+  min-height: 0;
+}
+
+.log {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  height: 100%;
+  min-height: 10rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.25rem 0.25rem 0.5rem;
+}
+
+.log:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
+  border-radius: 8px;
+}
+
+/* Pushes a short history to the bottom, next to the composer, like any chat. */
+.log > :first-child {
+  margin-top: auto;
+}
+
+.day {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.loadOlder.loadOlder {
+  align-self: center;
+  min-height: 2rem;
+  padding: 0.25rem 0.85rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  background: var(--color-surface-1);
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--font-size-ui-xs);
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.loadOlder.loadOlder:disabled {
+  color: var(--color-text-muted);
+  cursor: progress;
+}
+
+.loadOlder.loadOlder:hover,
+.loadOlder.loadOlder:focus-visible {
+  background: var(--color-surface-1);
+  box-shadow: none;
+  transform: none;
+}
+
+.loadOlder.loadOlder:focus-visible,
+.newMessages.newMessages:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.empty {
+  display: grid;
+  gap: 0.35rem;
+  max-width: 28ch;
+  margin: auto;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+  text-align: center;
+}
+
+.empty p {
+  margin: 0;
+}
+
+.emptyTitle {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.newMessages.newMessages {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2rem;
+  padding: 0.3rem 0.85rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-cta);
+  color: var(--color-on-cta);
+  font: inherit;
+  font-size: var(--font-size-ui-xs);
+  font-weight: 600;
+  box-shadow: 0 6px 18px
+    color-mix(in srgb, var(--color-shadow) 50%, transparent);
+  cursor: pointer;
+  transform: translateX(-50%);
+}
+
+.newMessages.newMessages:hover,
+.newMessages.newMessages:focus-visible {
+  background: var(--color-cta);
+  transform: translateX(-50%);
+}

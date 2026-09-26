@@ -19,6 +19,8 @@ import accessDe from "./access/de.json";
 import accessEn from "./access/en.json";
 import portalAccessDe from "./portal-access/de.json";
 import portalAccessEn from "./portal-access/en.json";
+import messagesDe from "./messages/de.json";
+import messagesEn from "./messages/en.json";
 
 export type CrmMetaDictionary = typeof metaDe;
 export type CrmShellDictionary = typeof shellDe;
@@ -30,6 +32,7 @@ export type CrmLineItemTemplatesDictionary = typeof lineItemTemplatesDe;
 export type CrmTasksDictionary = typeof tasksDe;
 export type CrmAccessDictionary = typeof accessDe;
 export type CrmPortalAccessDictionary = typeof portalAccessDe;
+export type CrmMessagesDictionary = typeof messagesDe;
 
 const CRM_META: Record<Locale, CrmMetaDictionary> = {
   de: metaDe,
@@ -75,6 +78,17 @@ const CRM_PORTAL_ACCESS: Record<Locale, CrmPortalAccessDictionary> = {
   de: portalAccessDe,
   en: portalAccessEn,
 };
+
+const CRM_MESSAGES: Record<Locale, CrmMessagesDictionary> = {
+  de: messagesDe,
+  en: messagesEn,
+};
+
+export function getCrmMessagesDictionary(
+  locale: Locale,
+): CrmMessagesDictionary {
+  return CRM_MESSAGES[locale];
+}
 
 export function getCrmMetaDictionary(locale: Locale): CrmMetaDictionary {
   return CRM_META[locale];

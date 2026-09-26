@@ -7,4 +7,6 @@ export interface InternalConversationDto extends ConversationDto {
   ownerDisplayName: string;
   /** Optimistic lock independent of the customer version. */
   version: number;
+  /** Whether the viewer is workspace owner and may hide unlawful messages. */
+  canRedact: boolean;
 }

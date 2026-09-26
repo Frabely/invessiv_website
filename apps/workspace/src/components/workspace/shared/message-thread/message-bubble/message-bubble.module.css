@@ -1,0 +1,114 @@
+.row {
+  display: grid;
+  justify-items: start;
+  gap: 0.2rem;
+  max-width: min(85%, 34rem);
+}
+
+.row[data-own="true"] {
+  justify-self: end;
+  justify-items: end;
+}
+
+.bubble {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px 14px 14px 14px;
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.row[data-own="true"] .bubble {
+  border-color: color-mix(in srgb, var(--color-cta) 45%, var(--color-border));
+  border-radius: 14px 4px 14px 14px;
+  background: color-mix(in srgb, var(--color-cta) 16%, var(--color-surface-2));
+}
+
+.bubble[data-state="sending"] {
+  opacity: 0.7;
+}
+
+.bubble[data-state="failed"] {
+  border-style: dashed;
+  border-color: var(--color-danger);
+}
+
+.bubble[data-state="redacted"] {
+  border-style: dashed;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.bubble a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.bubble a:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+.status[data-state="failed"] {
+  color: var(--color-danger);
+}
+
+.action.action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 1.75rem;
+  padding: 0.1rem 0.4rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  box-shadow: none;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.action.action[data-tone="danger"] {
+  color: var(--color-text-muted);
+}
+
+.action.action:hover,
+.action.action[data-tone="danger"]:hover {
+  color: var(--color-text);
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+}
+
+.action.action:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 1px;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .bubble[data-state="sending"] {
+    transition: opacity 160ms ease-out;
+  }
+}

@@ -47,3 +47,35 @@ export function crmTaskEndpoint(taskId: string): string {
 export function crmTaskStatusEndpoint(taskId: string): string {
   return `${crmTaskEndpoint(taskId)}/${TASK_STATUS_PATH}`;
 }
+
+const CONVERSATION_PATH = "conversation";
+const CONVERSATION_MESSAGES_PATH = "messages";
+const CONVERSATION_READ_PATH = "read";
+const CONVERSATION_OWNER_PATH = "owner";
+const MESSAGE_REDACT_PATH = "redact";
+
+export function crmCustomerConversationEndpoint(customerId: string): string {
+  return `${crmCustomerEndpoint(customerId)}/${CONVERSATION_PATH}`;
+}
+
+export function crmCustomerConversationMessagesEndpoint(
+  customerId: string,
+): string {
+  return `${crmCustomerConversationEndpoint(customerId)}/${CONVERSATION_MESSAGES_PATH}`;
+}
+
+export function crmCustomerConversationReadEndpoint(
+  customerId: string,
+): string {
+  return `${crmCustomerConversationEndpoint(customerId)}/${CONVERSATION_READ_PATH}`;
+}
+
+export function crmCustomerConversationOwnerEndpoint(
+  customerId: string,
+): string {
+  return `${crmCustomerConversationEndpoint(customerId)}/${CONVERSATION_OWNER_PATH}`;
+}
+
+export function crmMessageRedactEndpoint(messageId: string): string {
+  return `${WorkspaceApiEndpoint.CrmMessages}/${encodeURIComponent(messageId)}/${MESSAGE_REDACT_PATH}`;
+}

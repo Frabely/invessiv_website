@@ -22,8 +22,9 @@ export type ChatDockProps = {
 const SKELETON_BUBBLES = ["incoming", "outgoing", "incoming"] as const;
 
 /**
- * The docking point for the customer chat (plan folders 17/18). Until then it is a visibly marked
- * mock: no messages, no sending and no unread indicator, so it never pretends a state that does not exist.
+ * The shell of the customer chat: toggle, title, badge and the read-along notice. The real thread is
+ * passed as `children`; without them the dock stays a visibly marked mock with no messages, no
+ * sending and no unread indicator, so it never pretends a state that does not exist.
  */
 export function ChatDock({
   badgeLabel,

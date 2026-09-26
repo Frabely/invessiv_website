@@ -5,6 +5,8 @@ import { faEnvelope, faUserTie } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { CustomerCockpitDto } from "@invessiv/common/contracts/crm/customer-cockpit.dto";
 import type { PortalAccessDto } from "@invessiv/common/contracts/crm/portal-access.dto";
+import type { InternalConversationDto } from "@invessiv/common/contracts/crm/internal-conversation.dto";
+import { CustomerConversation } from "@/components/workspace/crm/messages/customer-conversation/customer-conversation";
 import { PortalAccessSection } from "@/components/workspace/crm/portal-access/portal-access-section/portal-access-section";
 import type { AccessScopeEntryDto } from "@invessiv/common/contracts/auth/access-scope-entry.dto";
 import type { AccessProjectOptionDto } from "@invessiv/common/contracts/auth/access-project-option.dto";
@@ -20,6 +22,7 @@ import { formatCustomerNumber } from "@invessiv/common/patterns/crm/format-custo
 import type {
   CrmAccessDictionary,
   CrmCockpitDictionary,
+  CrmMessagesDictionary,
   CrmPortalAccessDictionary,
   CrmProjectLineItemsDictionary,
   CrmTasksDictionary,
@@ -48,6 +51,11 @@ type CustomerCockpitViewProps = {
   accessScopes?: readonly AccessScopeEntryDto[];
   accessMembers?: readonly WorkspaceMemberDto[];
   content: CrmCockpitDictionary;
+  /** Undefined without `chat.read` on the customer: the dock is then not rendered at all. */
+  conversation?: InternalConversationDto | null;
+  canWriteConversation?: boolean;
+  messagesContent?: CrmMessagesDictionary;
+  viewerMemberId: string;
   customer: CustomerCockpitDto;
   isWorkspaceOwner?: boolean;
   portalHref?: string;
@@ -77,6 +85,10 @@ export function CustomerCockpitView({
   accessRoles,
   accessScopes,
   content,
+  conversation,
+  canWriteConversation = false,
+  messagesContent,
+  viewerMemberId,
   customer,
   isWorkspaceOwner = false,
   portalHref,
@@ -96,6 +108,7 @@ export function CustomerCockpitView({
   portalAccess,
   portalAccessContent,
 }: CustomerCockpitViewProps) {
+  const [chatOpen, setChatOpen] = useState(false);
   const [requestedAccessMemberId, setRequestedAccessMemberId] = useState<
     string | null
   >(null);
@@ -334,11 +347,32 @@ export function CustomerCockpitView({
           </div>
         </div>
       </div>
-      <ChatDock
-        badgeLabel={content.mock.badge}
-        className={styles.chat}
-        content={content.chat}
-      />
+      {conversation !== undefined && messagesContent ? (
+        <ChatDock
+          badgeLabel={
+            conversation && conversation.unreadCount > 0
+              ? formatMessage(messagesContent.dock.unread, {
+                  count: conversation.unreadCount,
+                })
+              : undefined
+          }
+          className={styles.chat}
+          content={content.chat}
+          expanded={chatOpen}
+          onExpandedChangeAction={setChatOpen}
+        >
+          <CustomerConversation
+            active={chatOpen}
+            canWrite={canWriteConversation}
+            content={messagesContent}
+            customerId={customer.id}
+            initialConversation={conversation}
+            key={`${viewerMemberId}:${customer.id}`}
+            locale={locale}
+            viewerMemberId={viewerMemberId}
+          />
+        </ChatDock>
+      ) : null}
     </div>
   );
 }
