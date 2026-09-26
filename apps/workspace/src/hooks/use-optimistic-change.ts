@@ -1,5 +1,3 @@
-"use client";
-
 import { useRef, useState } from "react";
 import type { OptimisticChangeItem } from "@/common/contracts/hooks/optimistic-change-item";
 import type { OptimisticChangeOptions } from "@/common/contracts/hooks/optimistic-change-options";

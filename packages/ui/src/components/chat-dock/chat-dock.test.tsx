@@ -19,22 +19,29 @@ describe("ChatDock", () => {
   afterEach(cleanup);
 
   it("allows external control and renders a supplied thread", () => {
-    const onExpandedChange = vi.fn();
+    const onExpandedChangeAction = vi.fn();
     const { rerender } = render(
       <ChatDock
         content={content}
         expanded={false}
-        onExpandedChange={onExpandedChange}
+        onExpandedChangeAction={onExpandedChangeAction}
       >
         <p>Real thread</p>
       </ChatDock>,
     );
     fireEvent.click(screen.getByRole("button", { name: content.expand }));
-    expect(onExpandedChange).toHaveBeenCalledWith(true);
+    expect(
+      screen.getByRole("button", { name: content.expand }).textContent,
+    ).toBe("");
+    expect(onExpandedChangeAction).toHaveBeenCalledWith(true);
     expect(screen.getByText("Real thread")).not.toBeVisible();
 
     rerender(
-      <ChatDock content={content} expanded onExpandedChange={onExpandedChange}>
+      <ChatDock
+        content={content}
+        expanded
+        onExpandedChangeAction={onExpandedChangeAction}
+      >
         <p>Real thread</p>
       </ChatDock>,
     );

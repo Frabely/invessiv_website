@@ -1,14 +1,11 @@
 "use client";
 
 import { type ReactNode, useId, useState } from "react";
-import {
-  faChevronLeft,
-  faComments,
-  faPaperPlane,
-} from "@fortawesome/free-solid-svg-icons";
+import { faComments, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import type { ChatDockContent } from "@invessiv/common/contracts/ui/chat-dock-content";
+import { ButtonControl } from "../button/button";
 import styles from "./chat-dock.module.css";
 
 export type ChatDockProps = {
@@ -16,7 +13,7 @@ export type ChatDockProps = {
   className?: string;
   content: ChatDockContent;
   expanded?: boolean;
-  onExpandedChange?: (expanded: boolean) => void;
+  onExpandedChangeAction?: (expanded: boolean) => void;
   children?: ReactNode;
 };
 
@@ -31,7 +28,7 @@ export function ChatDock({
   className,
   content,
   expanded: controlledExpanded,
-  onExpandedChange,
+  onExpandedChangeAction,
   children,
 }: ChatDockProps) {
   const [localExpanded, setLocalExpanded] = useState(false);
@@ -47,29 +44,21 @@ export function ChatDock({
       className={className ? `${styles.dock} ${className}` : styles.dock}
       data-expanded={expanded}
     >
-      <button
+      <ButtonControl
         aria-controls={panelId}
         aria-expanded={expanded}
         aria-label={toggleLabel}
         className={styles.rail}
         onClick={() => {
           if (controlledExpanded === undefined) setLocalExpanded(!expanded);
-          onExpandedChange?.(!expanded);
+          onExpandedChangeAction?.(!expanded);
         }}
         title={toggleLabel}
         type="button"
+        variant="ghost"
       >
         <FontAwesomeIcon aria-hidden="true" icon={faComments} />
-        <span aria-hidden="true" className={styles.railLabel}>
-          {content.title}
-        </span>
-        {/* A real unread indicator attaches here once conversation reads exist (plan folder 17). */}
-        <FontAwesomeIcon
-          aria-hidden="true"
-          className={styles.railChevron}
-          icon={faChevronLeft}
-        />
-      </button>
+      </ButtonControl>
       <div className={styles.panel} hidden={!expanded} id={panelId}>
         <header className={styles.head}>
           <h2 id={headingId}>{content.title}</h2>
@@ -99,15 +88,16 @@ export function ChatDock({
                 placeholder={content.inputPlaceholder}
                 type="text"
               />
-              <button
+              <ButtonControl
                 aria-label={content.send}
                 className={styles.send}
                 disabled
                 title={content.send}
                 type="submit"
+                variant="ghost"
               >
                 <FontAwesomeIcon aria-hidden="true" icon={faPaperPlane} />
-              </button>
+              </ButtonControl>
             </form>
           </>
         )}

@@ -3,6 +3,8 @@
 import { type ReactNode, useEffect, useRef } from "react";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ProcessStepState } from "@invessiv/common/constants/ui/process-step-states";
+import { ButtonControl } from "../button/button";
 import styles from "./process-track.module.css";
 
 export type ProcessTrackProps = {
@@ -40,15 +42,15 @@ export function ProcessTrack({
         {steps.map((step, index) => {
           const state =
             index < currentIndex
-              ? "complete"
+              ? ProcessStepState.Complete
               : index === currentIndex
-                ? "current"
-                : "upcoming";
+                ? ProcessStepState.Current
+                : ProcessStepState.Upcoming;
           const body = (
             <>
               <span aria-hidden="true" className={styles.segment} />
               <span className={styles.label}>
-                {state === "complete" ? (
+                {state === ProcessStepState.Complete ? (
                   <FontAwesomeIcon
                     aria-hidden="true"
                     className={styles.check}
@@ -61,20 +63,25 @@ export function ProcessTrack({
           );
           return (
             <li
-              aria-current={state === "current" ? "step" : undefined}
+              aria-current={
+                state === ProcessStepState.Current ? "step" : undefined
+              }
               className={styles.step}
               data-state={state}
               key={`${step}-${index}`}
-              ref={state === "current" ? currentStepRef : undefined}
+              ref={
+                state === ProcessStepState.Current ? currentStepRef : undefined
+              }
             >
               {onStepAction ? (
-                <button
+                <ButtonControl
                   className={styles.stepButton}
                   onClick={() => onStepAction(step, index)}
                   type="button"
+                  variant="ghost"
                 >
                   {body}
-                </button>
+                </ButtonControl>
               ) : (
                 <span className={styles.stepBody}>{body}</span>
               )}
