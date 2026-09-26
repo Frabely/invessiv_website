@@ -47,6 +47,15 @@ der Widget-Registry (`PORTAL_WIDGET_LAYOUT`). Dieser Ordner stellt den Reiter **
 explizit freigegebene Dateien mit Download. Der Reiter „Von Ihnen“ bleibt bis Ordner 15a Mock. Keine eigene
 Dashboard-Karte außerhalb der Registry.
 
+## Chat-Anhänge (aus Ordner 13a)
+
+Ordner 13a hat den Kundenchat ohne Anhänge geliefert, weil noch keine Dateitabelle existierte. Dieser Ordner ergänzt
+additiv `message_files` (`message_id`, `file_id`, `customer_id` denormalisiert, UNIQUE `(message_id, file_id)`) als
+reine Verweise auf **portalöffentliche** Dateien — keine zweite Uploadablage. Beim Senden wird die Sichtbarkeit
+erneut geprüft; eine nicht freigegebene oder fremde Datei wird abgelehnt. Entzug einer Freigabe entfernt den späteren
+Downloadzugriff aus dem Chat. Verlaufskomponente `components/workspace/shared/message-thread/` zeigt Anhänge als
+Links; Contract `MessageDto` bekommt `attachments`.
+
 ## Merge-Gate
 
 - [ ] Portal-Widget `files` von Mock auf echte Daten umgestellt, Reiter „Von uns“ (Registry `mock: false` +
