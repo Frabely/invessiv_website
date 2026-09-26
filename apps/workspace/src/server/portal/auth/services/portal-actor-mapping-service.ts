@@ -57,6 +57,7 @@ function mapRowsToResolution(
       membershipId: activeMembership.membership_id as string,
       customerId,
       personId: activeMembership.person_id as string,
+      firstName: activeMembership.first_name?.trim() || null,
       permissions,
       projectPermissions: new Map(),
     }),

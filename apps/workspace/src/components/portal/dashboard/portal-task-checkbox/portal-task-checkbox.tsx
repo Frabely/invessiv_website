@@ -1,7 +1,5 @@
 "use client";
 
-import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CheckboxControl } from "@invessiv/ui";
 import styles from "./portal-task-checkbox.module.css";
 
@@ -14,8 +12,6 @@ export type PortalTaskCheckboxProps = {
   label: string;
   onCompleteAction: () => void;
   pending: boolean;
-  /** Without the completion right there is no control at all, only the status. */
-  readOnly: boolean;
   statusLabel: string;
 };
 
@@ -30,28 +26,14 @@ export function PortalTaskCheckbox({
   label,
   onCompleteAction,
   pending,
-  readOnly,
   statusLabel,
 }: PortalTaskCheckboxProps) {
-  if (readOnly) {
-    return (
-      <span className={styles.status} data-done={checked}>
-        {checked ? (
-          <FontAwesomeIcon aria-hidden="true" icon={faCircleCheck} />
-        ) : (
-          <span aria-hidden="true" className={styles.ring} />
-        )}
-        <span className="sr-only">{statusLabel}</span>
-      </span>
-    );
-  }
-
   return (
     <label className={styles.hitArea} data-pending={pending || undefined}>
       <CheckboxControl
         aria-busy={pending || undefined}
         aria-describedby={describedById}
-        aria-label={checked ? statusLabel : label}
+        aria-label={checked || !enabled ? statusLabel : label}
         checked={checked}
         disabled={!enabled || checked || pending}
         onChange={(event) => {

@@ -32,6 +32,7 @@ const ACTOR = createPortalActor({
   membershipId: "membership-uuid-1",
   customerId: CUSTOMER_ID,
   personId: "person-uuid-1",
+  firstName: null,
   permissions: new Set([
     Permission.PortalAccess,
     Permission.PortalTasksRead,

@@ -12,7 +12,6 @@ import { formatMessage } from "@/lib/i18n/format-message";
 import { isPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
 import { requirePortalReader } from "@/server/portal/auth/require-portal-reader";
 import { getPortalCustomerDisplayName } from "@/server/portal/query-handler/get-portal-customer-display-name.query-handler";
-import { getPortalGreetingName } from "@/server/portal/query-handler/get-portal-greeting-name.query-handler";
 import { listPortalMembershipsForUserId } from "@/server/portal/query-handler/list-portal-memberships-for-user-id.query-handler";
 
 type PortalCustomerLayoutProps = {
@@ -40,7 +39,7 @@ export default async function PortalCustomerLayout({
   const content = getPortalShellDictionary(activeLocale);
   const visibleNavItems = listPermittedPortalNavItems(reader.permissions);
   const isOwnerView = isPortalOwnerView(reader);
-  const greetingName = await getPortalGreetingName(reader);
+  const greetingName = isOwnerView ? null : reader.firstName;
   const ownerCompanyName = isOwnerView
     ? ((await getPortalCustomerDisplayName(reader)) ?? "")
     : null;

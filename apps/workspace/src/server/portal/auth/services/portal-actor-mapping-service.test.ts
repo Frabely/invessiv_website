@@ -15,6 +15,7 @@ function row(overrides: Partial<PortalActorRow> = {}): PortalActorRow {
     user_active: true,
     membership_id: "membership-uuid-1",
     person_id: "person-uuid-1",
+    first_name: " Sam ",
     revoked_at: null,
     permission_key: Permission.PortalAccess,
     ...overrides,
@@ -108,6 +109,7 @@ describe("portalActorMappingService.mapRowsToResolution", () => {
       membershipId: "membership-uuid-1",
       customerId: CUSTOMER_ID,
       personId: "person-uuid-1",
+      firstName: "Sam",
       permissions: new Set([Permission.PortalAccess]),
     });
     expect(result.ok && result.actor.projectPermissions.size).toBe(0);

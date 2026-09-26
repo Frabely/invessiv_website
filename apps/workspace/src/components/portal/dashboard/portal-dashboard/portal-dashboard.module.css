@@ -30,22 +30,17 @@
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 767px) {
   .dock {
-    inset: 4.25rem 0.5rem 0.5rem auto;
-  }
-
-  .dock[data-owner-view="true"] {
-    top: 8.25rem;
+    inset: auto 0.5rem 0.5rem 0.5rem;
   }
 
   .chat {
-    width: 2.75rem;
+    width: 100%;
   }
 
   .chat.chat > :global(button[aria-controls]) {
-    width: 2.75rem;
-    min-width: 2.75rem;
-    min-height: 2.75rem;
+    width: 100%;
+    min-height: 3rem;
   }
 }

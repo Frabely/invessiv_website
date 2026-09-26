@@ -16,6 +16,7 @@ const actor = createPortalActor({
   membershipId: "membership-1",
   customerId: "customer-1",
   personId: "person-1",
+  firstName: null,
   permissions: new Set([Permission.PortalAccess]),
   projectPermissions: new Map(),
 });

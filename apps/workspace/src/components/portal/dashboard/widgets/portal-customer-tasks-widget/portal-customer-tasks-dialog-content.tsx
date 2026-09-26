@@ -6,14 +6,11 @@ import { formatMessage } from "@/lib/i18n/format-message";
 import { PortalAllDoneNote } from "../../portal-all-done-note/portal-all-done-note";
 import {
   PortalTaskList,
-  type PortalTaskListProps,
+  type PortalTaskListBaseProps,
 } from "../../portal-task-list/portal-task-list";
 import styles from "./portal-customer-tasks-dialog-content.module.css";
 
-export type PortalCustomerTasksDialogContentProps = Omit<
-  PortalTaskListProps,
-  "showDescription" | "tasks"
-> & {
+export type PortalCustomerTasksDialogContentProps = PortalTaskListBaseProps & {
   doneTasks: readonly PortalCustomerTaskDto[];
   openTasks: readonly PortalCustomerTaskDto[];
   ownerNotice: ReactNode;

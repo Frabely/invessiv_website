@@ -11,6 +11,8 @@ import {
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
 import { ChatDock, WidgetGrid } from "@invessiv/ui";
+import type { PortalDashboardNavigationMode as PortalDashboardNavigationModeType } from "@/common/constants/portal/portal-dashboard-navigation-modes";
+import { PortalDashboardNavigationMode } from "@/common/constants/portal/portal-dashboard-navigation-modes";
 import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import type { PortalWidgetDefinition } from "@/common/contracts/portal/portal-widget-definition";
 import {
@@ -86,7 +88,7 @@ export function PortalDashboard({
 
   function navigate(
     change: Parameters<typeof buildPortalDashboardHref>[2],
-    mode: "push" | "replace",
+    mode: PortalDashboardNavigationModeType,
   ) {
     const href = buildPortalDashboardHref(
       pathname,
@@ -96,7 +98,8 @@ export function PortalDashboard({
     router[mode](href, { scroll: false });
   }
 
-  const openDialog = (widget: PortalWidgetKey) => navigate({ widget }, "push");
+  const openDialog = (widget: PortalWidgetKey) =>
+    navigate({ widget }, PortalDashboardNavigationMode.Push);
 
   const ownerNotice = (id: string): ReactNode =>
     isOwnerView && cockpitHref ? (
@@ -115,9 +118,9 @@ export function PortalDashboard({
   const taskListProps = {
     canComplete: canCompleteTasks,
     content,
-    isDone: completion.isDone,
+    isDoneAction: completion.isDone,
     isOwnerView,
-    isPending: completion.isPending,
+    isPendingAction: completion.isPending,
     locale,
     onCompleteAction: completion.complete,
     today,
@@ -155,7 +158,9 @@ export function PortalDashboard({
       <PortalProjectWidget
         content={content.widgets.project}
         locale={locale}
-        onSelectProjectAction={(project) => navigate({ project }, "replace")}
+        onSelectProjectAction={(project) =>
+          navigate({ project }, PortalDashboardNavigationMode.Replace)
+        }
         projects={dashboard.projects}
         selectedProject={selectedProject}
       />
@@ -245,7 +250,9 @@ export function PortalDashboard({
             ownerNotice={ownerNotice(dialogOwnerNoticeId)}
           />
         }
-        onCloseAction={() => navigate({ widget: null }, "replace")}
+        onCloseAction={() =>
+          navigate({ widget: null }, PortalDashboardNavigationMode.Replace)
+        }
         widgetKey={openWidget}
       />
       <p aria-live="polite" className="sr-only" role="status">

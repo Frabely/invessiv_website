@@ -8,26 +8,29 @@ import { PortalDueHint } from "../portal-due-hint/portal-due-hint";
 import { PortalTaskCheckbox } from "../portal-task-checkbox/portal-task-checkbox";
 import styles from "./portal-task-list.module.css";
 
-export type PortalTaskListProps = {
+export type PortalTaskListBaseProps = {
   canComplete: boolean;
   content: PortalDashboardDictionary;
-  isDone: (task: PortalCustomerTaskDto) => boolean;
+  isDoneAction: (task: PortalCustomerTaskDto) => boolean;
   isOwnerView: boolean;
-  isPending: (taskId: string) => boolean;
+  isPendingAction: (taskId: string) => boolean;
   locale: Locale;
   onCompleteAction: (task: PortalCustomerTaskDto) => void;
   ownerHintId?: string;
+  today: string;
+};
+
+export type PortalTaskListProps = PortalTaskListBaseProps & {
   showDescription?: boolean;
   tasks: readonly PortalCustomerTaskDto[];
-  today: string;
 };
 
 export function PortalTaskList({
   canComplete,
   content,
-  isDone,
+  isDoneAction,
   isOwnerView,
-  isPending,
+  isPendingAction,
   locale,
   onCompleteAction,
   ownerHintId,
@@ -40,7 +43,7 @@ export function PortalTaskList({
   return (
     <ul className={styles.list}>
       {tasks.map((task) => {
-        const done = isDone(task);
+        const done = isDoneAction(task);
         return (
           <li className={styles.item} data-done={done} key={task.id}>
             <PortalTaskCheckbox
@@ -49,8 +52,7 @@ export function PortalTaskList({
               enabled={canComplete}
               label={formatMessage(labels.checkboxLabel, { name: task.title })}
               onCompleteAction={() => onCompleteAction(task)}
-              pending={isPending(task.id)}
-              readOnly={!canComplete && !isOwnerView}
+              pending={isPendingAction(task.id)}
               statusLabel={formatMessage(
                 done ? labels.doneLabel : labels.openLabel,
                 { name: task.title },

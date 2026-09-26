@@ -576,9 +576,10 @@ jedem Wechsel. Geprüft: Route-Unit-Tests, `server/tests/portal/portal-task-comp
 
 Umgesetzt: Die Page filtert die Registry serverseitig (`listVisiblePortalWidgets`) und übergibt nur sichtbare
 Einträge an `PortalDashboard` (`key={customerId}`). Abweichungen: (1) `greetingName` ist aus dem Dashboard-DTO
-entfernt; die Begrüßung liest das Layout über `getPortalGreetingName(reader)`, weil sie im Shell-Header steht (Owner
-→ `null` ohne Query). Unter 768 px bleibt sie aus Platzgründen ausgeblendet. (2) Kein Dock-Context: Das
-`messages`-Widget und der `ChatDock` liegen in derselben Komponente, der Zustand läuft über Props. (3) Statt je
+entfernt; die Portal-Authentifizierung lädt den Vornamen zusammen mit der Mitgliedschaft. Das Layout nutzt ihn für
+den Shell-Header (Owner → `null` ohne zusätzliche Query). Unter 768 px bleibt die Begrüßung aus Platzgründen
+ausgeblendet. (2) Kein Dock-Context und kein `messages`-Widget: Der `ChatDock` hängt direkt am Dashboard, der Zustand
+läuft über Props. Auf Mobilgeräten öffnet sich das Dock vom unteren Bildschirmrand. (3) Statt je
 eines Ordners pro Mock gibt es `widgets/portal-mock-widget` (Dialog/Dock) und `widgets/portal-files-widget` (mit
 Reitern); Mock-Dialoge erklären, was dort entsteht. Mock-Inhalte sind statische Formen, kein pulsierendes Skeleton. (4)
 Tagesformatierung als `lib/i18n/format-calendar-day.ts` aus `TaskDueLabel` extrahiert und geteilt. (5)

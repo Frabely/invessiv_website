@@ -5,6 +5,7 @@ import { and, asc, eq, isNull, lt, or } from "drizzle-orm";
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
+  people,
   portalMembershipRoles,
   portalMemberships,
   rolePermissions,
@@ -32,6 +33,7 @@ export async function resolvePortalActor(
       user_active: users.active,
       membership_id: portalMemberships.id,
       person_id: portalMemberships.person_id,
+      first_name: people.first_name,
       revoked_at: portalMemberships.revoked_at,
       permission_key: rolePermissions.permission_key,
     })
@@ -44,6 +46,7 @@ export async function resolvePortalActor(
         isNull(portalMemberships.revoked_at),
       ),
     )
+    .leftJoin(people, eq(people.id, portalMemberships.person_id))
     .leftJoin(
       portalMembershipRoles,
       eq(portalMembershipRoles.portal_membership_id, portalMemberships.id),

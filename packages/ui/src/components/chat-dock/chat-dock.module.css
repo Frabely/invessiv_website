@@ -191,7 +191,7 @@
     color-mix(in srgb, var(--color-shadow) 60%, transparent);
 }
 
-@media (max-width: 760px) {
+@media (max-width: 767px) {
   .dock {
     z-index: 3;
     border-top: 1px solid var(--color-border-strong);
@@ -204,21 +204,6 @@
     padding: 0.8rem 1rem;
   }
 
-  .panel {
-    top: auto;
-    right: 0;
-    bottom: 100%;
-    left: 0;
-    width: auto;
-    height: min(70dvh, 32rem);
-    border-top: 1px solid var(--color-border-strong);
-    border-left: 0;
-    box-shadow: 0 -18px 40px
-      color-mix(in srgb, var(--color-shadow) 60%, transparent);
-  }
-}
-
-@media (max-width: 760px) {
   .dock[data-overlay="true"] .panel {
     top: auto;
     right: 0;
@@ -228,5 +213,7 @@
     height: min(70dvh, 32rem);
     border: 1px solid var(--color-border-strong);
     overflow-y: auto;
+    box-shadow: 0 -18px 40px
+      color-mix(in srgb, var(--color-shadow) 60%, transparent);
   }
 }

@@ -70,6 +70,7 @@ describe.skipIf(!RUN_INTEGRATION)(
         userId,
         membershipId: membershipA,
         personId,
+        firstName: null,
         customerId: customerA,
         permissions: new Set(permissions),
         projectPermissions: new Map(),

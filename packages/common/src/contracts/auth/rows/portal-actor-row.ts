@@ -8,6 +8,7 @@ export type PortalActorRow = {
   user_active: boolean;
   membership_id: string | null;
   person_id: string | null;
+  first_name: string | null;
   revoked_at: Date | null;
   permission_key: string | null;
 };

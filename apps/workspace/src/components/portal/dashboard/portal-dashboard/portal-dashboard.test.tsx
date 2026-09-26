@@ -241,15 +241,16 @@ describe("PortalDashboard", () => {
     ).toHaveAttribute("href", "/en/crm?cockpit=customer-1");
   });
 
-  it("shows status instead of a checkbox without the completion right", () => {
+  it("shows a disabled checkbox without the completion right", () => {
     renderDashboard(
       dto({ capabilities: { canCompleteTasks: false, isOwnerView: false } }),
     );
 
-    expect(within(customerTasksWidget()).queryByRole("checkbox")).toBeNull();
     expect(
-      within(customerTasksWidget()).getByText("“Task a” is open"),
-    ).toBeInTheDocument();
+      within(customerTasksWidget()).getByRole("checkbox", {
+        name: "“Task a” is open",
+      }),
+    ).toBeDisabled();
   });
 
   it("opens the task dialog through the URL and closes it by removing the parameter", () => {

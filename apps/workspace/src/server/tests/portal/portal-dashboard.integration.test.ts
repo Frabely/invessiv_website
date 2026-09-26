@@ -58,6 +58,7 @@ describe.skipIf(!RUN_INTEGRATION)(
         userId,
         membershipId: randomUUID(),
         personId,
+        firstName: null,
         customerId,
         permissions: new Set(permissions),
         projectPermissions: new Map(),

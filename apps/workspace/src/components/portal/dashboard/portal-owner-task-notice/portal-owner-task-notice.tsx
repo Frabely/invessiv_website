@@ -1,5 +1,6 @@
 import { faLock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 import styles from "./portal-owner-task-notice.module.css";
 
 export type PortalOwnerTaskNoticeProps = {
@@ -20,9 +21,9 @@ export function PortalOwnerTaskNotice({
     <p className={styles.notice} id={id}>
       <FontAwesomeIcon aria-hidden="true" icon={faLock} />
       <span>{hint}</span>
-      <a className={styles.link} href={cockpitHref}>
+      <Link className={styles.link} href={cockpitHref}>
         {linkLabel}
-      </a>
+      </Link>
     </p>
   );
 }

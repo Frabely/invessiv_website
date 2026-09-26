@@ -9,16 +9,13 @@ import { formatMessage } from "@/lib/i18n/format-message";
 import { PortalAllDoneNote } from "../../portal-all-done-note/portal-all-done-note";
 import {
   PortalTaskList,
-  type PortalTaskListProps,
+  type PortalTaskListBaseProps,
 } from "../../portal-task-list/portal-task-list";
 import styles from "./portal-customer-tasks-widget.module.css";
 
 const SUMMARY_LIMIT = 3;
 
-export type PortalCustomerTasksWidgetProps = Omit<
-  PortalTaskListProps,
-  "showDescription" | "tasks"
-> & {
+export type PortalCustomerTasksWidgetProps = PortalTaskListBaseProps & {
   /** Rendered below the list in the owner view; its id describes the disabled checkboxes. */
   ownerNotice: ReactNode;
   onOpenAction: () => void;
@@ -38,7 +35,9 @@ export function PortalCustomerTasksWidget({
   const content = listProps.content.widgets.customerTasks;
   const summary = openTasks.slice(0, SUMMARY_LIMIT);
   const remaining = openTasks.length - summary.length;
-  const openCount = openTasks.filter((task) => !listProps.isDone(task)).length;
+  const openCount = openTasks.filter(
+    (task) => !listProps.isDoneAction(task),
+  ).length;
 
   return (
     <Widget

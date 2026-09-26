@@ -12,6 +12,7 @@ export interface PortalActor extends PermissionHolder {
   readonly membershipId: string;
   readonly customerId: string;
   readonly personId: string;
+  readonly firstName: string | null;
   readonly projectPermissions: ReadonlyMap<string, ReadonlySet<Permission>>;
 }
 

@@ -1,5 +1,4 @@
-.hitArea,
-.status {
+.hitArea {
   display: inline-grid;
   flex: 0 0 auto;
   place-items: center;
@@ -28,24 +27,4 @@
 
 .hitArea[data-pending="true"] {
   opacity: 0.7;
-}
-
-.status {
-  color: var(--color-text-muted);
-}
-
-.status svg {
-  width: 1.05rem;
-  height: 1.05rem;
-}
-
-.status[data-done="true"] {
-  color: var(--color-success);
-}
-
-.ring {
-  width: 1rem;
-  height: 1rem;
-  border: 1.5px solid var(--color-border-strong);
-  border-radius: 999px;
 }

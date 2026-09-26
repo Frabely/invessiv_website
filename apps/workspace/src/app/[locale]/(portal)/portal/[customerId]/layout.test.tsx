@@ -22,12 +22,6 @@ vi.mock(
   () => ({ getPortalCustomerDisplayName: mockGetPortalCustomerDisplayName }),
 );
 
-const mockGetPortalGreetingName = vi.hoisted(() => vi.fn());
-vi.mock(
-  "@/server/portal/query-handler/get-portal-greeting-name.query-handler",
-  () => ({ getPortalGreetingName: mockGetPortalGreetingName }),
-);
-
 const mockListPortalMembershipsForUserId = vi.hoisted(() => vi.fn());
 vi.mock(
   "@/server/portal/query-handler/list-portal-memberships-for-user-id.query-handler",
@@ -78,6 +72,7 @@ const ACTOR = {
   membershipId: "membership-uuid-1",
   customerId: "customer-1",
   personId: "person-uuid-1",
+  firstName: null,
   permissions: new Set([Permission.PortalAccess]),
   projectPermissions: new Map(),
 };
@@ -90,7 +85,6 @@ describe("PortalCustomerLayout", () => {
       { customerId: "customer-1", displayName: "Nordlicht Coaching" },
     ]);
     mockListPermittedPortalNavItems.mockReturnValue([]);
-    mockGetPortalGreetingName.mockResolvedValue(null);
   });
 
   afterEach(cleanup);
@@ -190,7 +184,7 @@ describe("PortalCustomerLayout", () => {
   });
 
   it("greets the contact by first name in the header", async () => {
-    mockGetPortalGreetingName.mockResolvedValue("Sam");
+    mockRequirePortalReader.mockResolvedValue({ ...ACTOR, firstName: "Sam" });
 
     render(
       await PortalCustomerLayout({
