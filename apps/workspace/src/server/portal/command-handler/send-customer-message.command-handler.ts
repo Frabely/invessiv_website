@@ -5,6 +5,7 @@ import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
 import { MessageSenderSide } from "@invessiv/common/constants/crm/message-types";
+import type { SendMessageInput } from "@invessiv/common/contracts/crm/send-message.input";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { people } from "@invessiv/db/record-configuration";
 import type { PortalActor } from "@/server/portal/auth/portal-actor";
@@ -12,14 +13,11 @@ import { portalCanOn } from "@/server/portal/shared/portal-can-on";
 import { messageMappingService } from "@/server/shared/services/message/message-mapping-service";
 import { messageService } from "@/server/shared/services/message/message-service";
 
-export async function sendCustomerMessage(actor: PortalActor, input: unknown) {
-  const body = messageService.validateBody(input);
-  if (!body)
-    return { ok: false, code: MessageErrorCode.ValidationError } as const;
+export async function sendCustomerMessage(
+  actor: PortalActor,
+  input: SendMessageInput,
+) {
   if (
-    !portalCanOn.forActor(actor, Permission.PortalMessagesRead, {
-      customerId: actor.customerId,
-    }) ||
     !portalCanOn.forActor(actor, Permission.PortalMessagesWrite, {
       customerId: actor.customerId,
     })
@@ -41,7 +39,7 @@ export async function sendCustomerMessage(actor: PortalActor, input: unknown) {
     const message = await messageService.appendTextMessage(tx, {
       conversationId: conversation.id,
       customerId: actor.customerId,
-      body,
+      body: input.body,
       side: MessageSenderSide.Customer,
       memberId: null,
       portalMembershipId: actor.membershipId,

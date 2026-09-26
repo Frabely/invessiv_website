@@ -5,8 +5,8 @@ import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-c
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import { CrmEndpointAccessRule } from "@/common/constants/auth/crm-endpoint-access-rules";
 import { messageApiError } from "@/app/api/message-error";
+import { readMessageInput } from "@/app/api/read-message-input";
 import { withCrmPermission } from "@/lib/auth/api";
-import { readJsonBody } from "@/lib/http/read-json-body";
 import { sendInternalMessage } from "@/server/workspace/crm/command-handler/send-internal-message.command-handler";
 
 export const runtime = "nodejs";
@@ -17,16 +17,10 @@ export async function POST(request: NextRequest, { params }: Context) {
   return withCrmPermission(
     CrmEndpointAccessRule.CustomerConversationWrite,
     async (req, actor) => {
-      const parsed = await readJsonBody(req);
-      if (!parsed.ok) return messageApiError(MessageErrorCode.ValidationError);
+      const input = await readMessageInput(req);
+      if (!input) return messageApiError(MessageErrorCode.ValidationError);
       try {
-        const body =
-          typeof parsed.body === "object" &&
-          parsed.body !== null &&
-          "body" in parsed.body
-            ? parsed.body.body
-            : undefined;
-        const result = await sendInternalMessage(id, body, actor);
+        const result = await sendInternalMessage(id, input, actor);
         return result.ok
           ? Response.json(
               { message: result.message },

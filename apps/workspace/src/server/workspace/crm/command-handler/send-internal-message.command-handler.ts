@@ -5,6 +5,7 @@ import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
 import { MessageSenderSide } from "@invessiv/common/constants/crm/message-types";
+import type { SendMessageInput } from "@invessiv/common/contracts/crm/send-message.input";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { users } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
@@ -15,17 +16,14 @@ import { conversationService } from "@/server/workspace/crm/services/conversatio
 
 export async function sendInternalMessage(
   customerId: string,
-  input: unknown,
+  input: SendMessageInput,
   actor: WorkspaceActor,
 ) {
-  const body = messageService.validateBody(input);
-  if (!body)
-    return { ok: false, code: MessageErrorCode.ValidationError } as const;
   if (!canOn(actor, Permission.ChatWrite, { customerId }))
     return { ok: false, code: MessageErrorCode.NotFound } as const;
   return getDrizzleDatabaseClient().transaction(async (tx) => {
     const conversation =
-      await conversationService.getOrCreateAccessibleConversation(
+      await conversationService.getOrCreateWritableConversation(
         tx,
         customerId,
         actor,
@@ -41,7 +39,7 @@ export async function sendInternalMessage(
     const message = await messageService.appendTextMessage(tx, {
       conversationId: conversation.id,
       customerId,
-      body,
+      body: input.body,
       side: MessageSenderSide.Internal,
       memberId: actor.workspaceMemberId,
       portalMembershipId: null,

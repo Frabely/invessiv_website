@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, desc, eq, inArray, isNull, sql } from "drizzle-orm";
+import { and, desc, eq, isNull, sql } from "drizzle-orm";
 import { z } from "zod";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import {
@@ -19,17 +19,60 @@ import {
   workspaceMembers,
 } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
+import { accessScope } from "@/common/patterns/auth/access-scope";
 import { canOn } from "@/common/patterns/auth/can-on";
 import { messageService } from "@/server/shared/services/message/message-service";
+import { conversationMappingService } from "@/server/shared/services/message/conversation-mapping-service";
+import { crmAccessCondition } from "@/server/workspace/shared/services/crm-access-condition";
 
-async function getOrCreateAccessibleConversation(
+async function getOrCreateConversationForPermission(
+  db: ContactDatabaseTransaction,
+  customerId: string,
+  actor: WorkspaceActor,
+  permission: Permission,
+) {
+  if (!z.uuid().safeParse(customerId).success) return null;
+  if (!canOn(actor, permission, { customerId })) return null;
+  const [visibleCustomer] = await db
+    .select({ id: customers.id })
+    .from(customers)
+    .where(
+      and(
+        eq(customers.id, customerId),
+        crmAccessCondition.forScope(accessScope(actor, permission), {
+          customerId: customers.id,
+        }),
+      ),
+    )
+    .limit(1);
+  if (!visibleCustomer) return null;
+  return messageService.ensureCustomerConversation(db, customerId);
+}
+
+function getOrCreateReadableConversation(
   db: ContactDatabaseTransaction,
   customerId: string,
   actor: WorkspaceActor,
 ) {
-  if (!z.uuid().safeParse(customerId).success) return null;
-  if (!canOn(actor, Permission.ChatRead, { customerId })) return null;
-  return messageService.ensureCustomerConversation(db, customerId);
+  return getOrCreateConversationForPermission(
+    db,
+    customerId,
+    actor,
+    Permission.ChatRead,
+  );
+}
+
+function getOrCreateWritableConversation(
+  db: ContactDatabaseTransaction,
+  customerId: string,
+  actor: WorkspaceActor,
+) {
+  return getOrCreateConversationForPermission(
+    db,
+    customerId,
+    actor,
+    Permission.ChatWrite,
+  );
 }
 
 async function getConversationOwnerDisplayName(
@@ -66,31 +109,17 @@ async function getConversationDetail(
     actor.workspaceMemberId,
     null,
   );
-  return {
-    id: conversation.id,
-    customerId: conversation.customer_id,
-    ownerMemberId: conversation.owner_member_id,
-    ownerDisplayName: await getConversationOwnerDisplayName(
-      db,
-      conversation.owner_member_id,
-    ),
-    version: conversation.version,
+  return conversationMappingService.toInternalDto(
+    conversation,
+    await getConversationOwnerDisplayName(db, conversation.owner_member_id),
     unreadCount,
-    lastMessageAt: conversation.last_message_at?.toISOString() ?? null,
-    ...page,
-  };
-}
-
-function getReadableCustomerIds(actor: WorkspaceActor): string[] {
-  return [...actor.customerPermissions.entries()]
-    .filter(([, permissions]) => permissions.has(Permission.ChatRead))
-    .map(([id]) => id);
+    page,
+  );
 }
 
 async function selectVisibleInboxRows(
   db: ContactDatabaseTransaction,
   actor: WorkspaceActor,
-  visibleCustomerIds: string[],
 ) {
   return db
     .select({
@@ -116,9 +145,10 @@ async function selectVisibleInboxRows(
     .where(
       and(
         isNull(conversations.project_id),
-        actor.permissions.has(Permission.ChatRead)
-          ? undefined
-          : inArray(conversations.customer_id, visibleCustomerIds),
+        crmAccessCondition.forScope(accessScope(actor, Permission.ChatRead), {
+          customerId: conversations.customer_id,
+          projectId: conversations.project_id,
+        }),
       ),
     )
     .groupBy(conversations.id, customers.display_name)
@@ -132,25 +162,19 @@ async function listVisibleInbox(
   db: ContactDatabaseTransaction,
   actor: WorkspaceActor,
 ): Promise<ConversationInboxItemDto[]> {
-  const visibleCustomerIds = getReadableCustomerIds(actor);
-  if (
-    !actor.permissions.has(Permission.ChatRead) &&
-    visibleCustomerIds.length === 0
-  )
-    return [];
-  const rows = await selectVisibleInboxRows(db, actor, visibleCustomerIds);
-  return rows.map((row): ConversationInboxItemDto => ({
-    id: row.conversation.id,
-    customerId: row.conversation.customer_id,
-    customerDisplayName: row.customerName,
-    ownerMemberId: row.conversation.owner_member_id,
-    unreadCount: row.unreadCount,
-    lastMessageAt: row.conversation.last_message_at?.toISOString() ?? null,
-  }));
+  const rows = await selectVisibleInboxRows(db, actor);
+  return rows.map((row) =>
+    conversationMappingService.toInboxItemDto(
+      row.conversation,
+      row.customerName,
+      row.unreadCount,
+    ),
+  );
 }
 
 export const conversationService = {
-  getOrCreateAccessibleConversation,
+  getOrCreateReadableConversation,
+  getOrCreateWritableConversation,
   getConversationDetail,
   listVisibleInbox,
 } as const;

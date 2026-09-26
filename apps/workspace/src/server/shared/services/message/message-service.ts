@@ -13,10 +13,8 @@ import {
 } from "drizzle-orm";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
-import {
-  MESSAGE_BODY_MAX_LENGTH,
-  MESSAGE_PAGE_SIZE,
-} from "@invessiv/common/constants/crm/message-limits";
+import { MESSAGE_PAGE_SIZE } from "@invessiv/common/constants/crm/message-limits";
+import { isUuid } from "@invessiv/common/patterns/validation/is-uuid";
 import {
   MessageSenderSide,
   MessageType,
@@ -43,14 +41,6 @@ type TextMessageInput = {
   actorUserId: string;
 };
 
-function validateBody(value: unknown): string | null {
-  if (typeof value !== "string") return null;
-  const trimmed = value.trim();
-  return trimmed.length > 0 && trimmed.length <= MESSAGE_BODY_MAX_LENGTH
-    ? trimmed
-    : null;
-}
-
 function decodeMessageCursor(
   cursor: string | null,
 ): { createdAt: string; id: string } | null {
@@ -70,7 +60,7 @@ function decodeMessageCursor(
     if (
       !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3,6}Z$/.test(parsed[0]) ||
       !Number.isFinite(new Date(parsed[0]).getTime()) ||
-      !/^[0-9a-f-]{36}$/i.test(parsed[1])
+      !isUuid(parsed[1])
     )
       return null;
     return { createdAt: parsed[0], id: parsed[1] };
@@ -425,7 +415,6 @@ async function redactTextMessage(
 }
 
 export const messageService = {
-  validateBody,
   getMessagePage,
   countUnreadMessages,
   markConversationRead,

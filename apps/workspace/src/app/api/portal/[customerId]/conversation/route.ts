@@ -5,7 +5,7 @@ import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-c
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import { ConversationQueryParam } from "@/common/constants/crm/conversation-query-params";
 import { messageApiError } from "@/app/api/message-error";
-import { withPortalActor } from "@/server/portal/auth/with-portal-actor";
+import { withPortalReader } from "@/server/portal/auth/with-portal-reader";
 import { getPortalConversation } from "@/server/portal/query-handler/get-portal-conversation.query-handler";
 
 export const runtime = "nodejs";
@@ -13,10 +13,10 @@ type Context = { params: Promise<{ customerId: string }> };
 
 export async function GET(request: NextRequest, { params }: Context) {
   const { customerId } = await params;
-  return withPortalActor(customerId, async (req, actor) => {
+  return withPortalReader(customerId, async (req, reader) => {
     try {
       const conversation = await getPortalConversation(
-        actor,
+        reader,
         req.nextUrl.searchParams.get(ConversationQueryParam.Cursor),
       );
       return conversation

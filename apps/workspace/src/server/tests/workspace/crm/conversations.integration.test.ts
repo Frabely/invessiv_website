@@ -364,13 +364,15 @@ describe.skipIf(!RUN_INTEGRATION)(
       const portalActor = resolution.actor;
       const internal = await sendInternalMessage(
         customerA,
-        "  First draft is ready.  ",
+        { body: "First draft is ready." },
         internalActor(),
       );
       expect(internal.ok).toBe(true);
       const portalBefore = await getPortalConversation(portalActor, null);
       expect(portalBefore?.unreadCount).toBe(1);
-      const sent = await sendCustomerMessage(portalActor, "  Thank you.  ");
+      const sent = await sendCustomerMessage(portalActor, {
+        body: "Thank you.",
+      });
       expect(sent.ok).toBe(true);
       const scopedReader: WorkspaceActor = {
         ...internalActor(),
@@ -475,7 +477,7 @@ describe.skipIf(!RUN_INTEGRATION)(
       };
       expect(await getCustomerConversation(customerB, scoped, null)).toBeNull();
       expect(
-        await sendInternalMessage(customerB, "wrong company", scoped),
+        await sendInternalMessage(customerB, { body: "wrong company" }, scoped),
       ).toEqual({ ok: false, code: "NOT_FOUND" });
       expect(await markConversationRead(customerB, scoped)).toEqual({
         ok: false,

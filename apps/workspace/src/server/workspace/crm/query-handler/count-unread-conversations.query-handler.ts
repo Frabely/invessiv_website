@@ -9,6 +9,6 @@ export async function countUnreadConversations(
 ): Promise<number> {
   return getDrizzleDatabaseClient().transaction(async (tx) => {
     const items = await conversationService.listVisibleInbox(tx, actor);
-    return items.reduce((total, item) => total + item.unreadCount, 0);
+    return items.filter((item) => item.unreadCount > 0).length;
   });
 }

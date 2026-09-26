@@ -7,6 +7,7 @@ import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
+import type { UpdateConversationOwnerInput } from "@invessiv/common/contracts/crm/update-conversation-owner.input";
 import {
   type ContactDatabaseTransaction,
   getDrizzleDatabaseClient,
@@ -24,11 +25,6 @@ import { activityService } from "@/server/shared/services/activity-service";
 import { messageService } from "@/server/shared/services/message/message-service";
 import { memberResponsibilityLockService } from "@/server/workspace/access/services/responsibilities/member-responsibility-lock-service";
 import { updateVersioned } from "@/server/workspace/shared/update-versioned";
-
-const inputSchema = z.object({
-  ownerMemberId: z.uuid(),
-  version: z.number().int().positive(),
-});
 
 async function memberHasGlobalChatRead(
   tx: ContactDatabaseTransaction,
@@ -130,7 +126,7 @@ async function recordConversationOwnerChange(
 async function assignConversationOwner(
   tx: ContactDatabaseTransaction,
   customerId: string,
-  input: z.infer<typeof inputSchema>,
+  input: UpdateConversationOwnerInput,
   actor: WorkspaceActor,
 ) {
   const conversation = await messageService.findCustomerConversation(
@@ -178,16 +174,13 @@ async function assignConversationOwner(
 
 export async function updateConversationOwner(
   customerId: string,
-  input: unknown,
+  input: UpdateConversationOwnerInput,
   actor: WorkspaceActor,
 ) {
-  const parsed = inputSchema.safeParse(input);
-  if (!parsed.success)
-    return { ok: false, code: MessageErrorCode.ValidationError } as const;
   if (!actorMayAssignConversationOwner(actor, customerId))
     return { ok: false, code: MessageErrorCode.NotFound } as const;
 
   return getDrizzleDatabaseClient().transaction((tx) =>
-    assignConversationOwner(tx, customerId, parsed.data, actor),
+    assignConversationOwner(tx, customerId, input, actor),
   );
 }

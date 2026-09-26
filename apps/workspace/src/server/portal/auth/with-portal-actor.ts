@@ -2,12 +2,10 @@ import "server-only";
 
 import type { NextRequest } from "next/server";
 
-import { AuthErrorCode } from "@invessiv/common/constants/auth/auth-error-codes";
-import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import { PortalAuthStatus } from "@/common/constants/auth/portal-auth-statuses";
-import { authApiError } from "@/lib/auth/auth-api-error";
 
 import { portalAuthenticationService } from "./portal-authentication-service";
+import { portalApiAuthError } from "./portal-api-auth-error";
 import type { PortalActor } from "./portal-actor";
 
 type PortalApiHandler = (
@@ -28,19 +26,6 @@ export function withPortalActor(customerId: string, handler: PortalApiHandler) {
     if (authentication.status === PortalAuthStatus.Authorized) {
       return handler(request, authentication.actor);
     }
-    if (authentication.status === PortalAuthStatus.Unauthenticated) {
-      return authApiError(
-        AuthErrorCode.Unauthorized,
-        HttpResponseCode.Unauthorized,
-      );
-    }
-    if (authentication.status === PortalAuthStatus.NotMember) {
-      return authApiError(AuthErrorCode.NotFound, HttpResponseCode.NotFound);
-    }
-
-    return authApiError(
-      AuthErrorCode.Unavailable,
-      HttpResponseCode.ServiceUnavailable,
-    );
+    return portalApiAuthError(authentication.status);
   };
 }

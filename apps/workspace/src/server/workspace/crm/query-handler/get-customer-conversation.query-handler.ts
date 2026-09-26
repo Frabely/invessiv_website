@@ -12,7 +12,7 @@ export async function getCustomerConversation(
 ): Promise<InternalConversationDto | null> {
   return getDrizzleDatabaseClient().transaction(async (tx) => {
     const conversation =
-      await conversationService.getOrCreateAccessibleConversation(
+      await conversationService.getOrCreateReadableConversation(
         tx,
         customerId,
         actor,

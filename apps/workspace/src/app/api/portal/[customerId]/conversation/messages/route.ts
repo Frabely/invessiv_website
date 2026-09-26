@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import { messageApiError } from "@/app/api/message-error";
-import { readJsonBody } from "@/lib/http/read-json-body";
+import { readMessageInput } from "@/app/api/read-message-input";
 import { withPortalActor } from "@/server/portal/auth/with-portal-actor";
 import { sendCustomerMessage } from "@/server/portal/command-handler/send-customer-message.command-handler";
 
@@ -14,16 +14,10 @@ type Context = { params: Promise<{ customerId: string }> };
 export async function POST(request: NextRequest, { params }: Context) {
   const { customerId } = await params;
   return withPortalActor(customerId, async (req, actor) => {
-    const parsed = await readJsonBody(req);
-    if (!parsed.ok) return messageApiError(MessageErrorCode.ValidationError);
+    const input = await readMessageInput(req);
+    if (!input) return messageApiError(MessageErrorCode.ValidationError);
     try {
-      const body =
-        typeof parsed.body === "object" &&
-        parsed.body !== null &&
-        "body" in parsed.body
-          ? parsed.body.body
-          : undefined;
-      const result = await sendCustomerMessage(actor, body);
+      const result = await sendCustomerMessage(actor, input);
       return result.ok
         ? Response.json(
             { message: result.message },

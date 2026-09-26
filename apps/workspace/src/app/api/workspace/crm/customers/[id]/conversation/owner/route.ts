@@ -3,6 +3,7 @@ import "server-only";
 import type { NextRequest } from "next/server";
 import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
+import { updateConversationOwnerInputSchema } from "@invessiv/common/contracts/crm/update-conversation-owner.input";
 import { CrmEndpointAccessRule } from "@/common/constants/auth/crm-endpoint-access-rules";
 import { messageApiError } from "@/app/api/message-error";
 import { withCrmPermission } from "@/lib/auth/api";
@@ -19,8 +20,11 @@ export async function PATCH(request: NextRequest, { params }: Context) {
     async (req, actor) => {
       const parsed = await readJsonBody(req);
       if (!parsed.ok) return messageApiError(MessageErrorCode.ValidationError);
+      const input = updateConversationOwnerInputSchema.safeParse(parsed.body);
+      if (!input.success)
+        return messageApiError(MessageErrorCode.ValidationError);
       try {
-        const result = await updateConversationOwner(id, parsed.body, actor);
+        const result = await updateConversationOwner(id, input.data, actor);
         if (!result.ok)
           return "conflict" in result && result.conflict
             ? Response.json(result.conflict, {
