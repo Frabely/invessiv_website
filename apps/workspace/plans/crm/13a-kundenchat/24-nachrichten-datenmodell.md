@@ -61,7 +61,7 @@ export const MessageSenderSide = {
 // packages/common/src/constants/crm/message-limits.ts
 export const MESSAGE_BODY_MAX_LENGTH = 10_000;
 export const MESSAGE_PAGE_SIZE = 50;
-export const PORTAL_MESSAGES_PER_HOUR = 30;
+export const PORTAL_MESSAGES_PER_HOUR = 60;
 
 // packages/common/src/contracts/crm/message.dto.ts
 export interface MessageDto {
@@ -188,16 +188,15 @@ packages/common/src/contracts/crm/{message.dto.ts,conversation.dto.ts}
 
 apps/workspace/src/server/shared/services/message/
   message-mapping-service.ts      Row → MessageDto (Redaction-Platzhalter, isOwn)
-  message-validation-service.ts   Trim, Länge
+  message-service.ts              Validierung, Senden, Lesestand, Redaction, Systemnachrichten
 apps/workspace/src/server/workspace/crm/
-  services/conversation-service.ts            holen oder anlegen, Unread-Zählung, Cursor
-  services/system-message-service.ts          appendSystemMessage
+  services/conversation-service.ts            Zugriff, Details und Inbox
   query-handler/get-customer-conversation.query-handler.ts
   command-handler/send-internal-message.command-handler.ts
   command-handler/mark-conversation-read.command-handler.ts
   command-handler/redact-message.command-handler.ts
   command-handler/update-conversation-owner.command-handler.ts
-apps/workspace/src/server/workspace/access/services/responsibilities/conversation-responsibility-counter.ts
+apps/workspace/src/server/workspace/access/services/responsibilities/responsibility-counter-registry.ts
 apps/workspace/src/server/portal/
   query-handler/get-portal-conversation.query-handler.ts
   command-handler/send-customer-message.command-handler.ts
@@ -249,7 +248,7 @@ apps/workspace/src/common/constants/auth/crm-endpoint-access-rules.ts   + neue E
 
 - **Inhalt:**
   - Lesestand je Mitglied als Upsert; nie rückwärts (`GREATEST`)
-  - `systemMessageService.append(executor, customerId, key, params)` — nur bereitgestellt; Verdrahtung in Task 25
+  - `messageService.appendSystemMessage(executor, customerId, key, params)` — nur bereitgestellt; Verdrahtung in Task 25
   - Alle Routen; interne in `CRM_ENDPOINT_ACCESS_RULES`
 - **Akzeptanz (Tests):** Lesestand wird nicht zurückgesetzt; Systemnachricht erscheint in beiden Sichten und erhöht
   keinen Zähler; **Cross-Customer-Negativtests mit echten Sessions**: fremde Unterhaltung/Nachricht → 404 in allen

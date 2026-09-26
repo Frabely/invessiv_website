@@ -85,8 +85,12 @@ export function MemberStatusDialog({
     responsibilityCounts?.[OwnableEntity.Customer] ?? 0;
   const taskResponsibilityCount =
     responsibilityCounts?.[OwnableEntity.Task] ?? 0;
+  const conversationResponsibilityCount =
+    responsibilityCounts?.[OwnableEntity.Conversation] ?? 0;
   const hasOpenResponsibilities =
-    customerResponsibilityCount > 0 || taskResponsibilityCount > 0;
+    customerResponsibilityCount > 0 ||
+    taskResponsibilityCount > 0 ||
+    conversationResponsibilityCount > 0;
   const message = alreadyDone
     ? formatMessage(
         desiredActive ? text.alreadyActivated : text.alreadyDeactivated,
@@ -102,6 +106,11 @@ export function MemberStatusDialog({
           taskResponsibilityCount > 0
             ? formatMessage(text.openTasks, {
                 count: taskResponsibilityCount,
+              })
+            : null,
+          conversationResponsibilityCount > 0
+            ? formatMessage(text.openConversations, {
+                count: conversationResponsibilityCount,
               })
             : null,
         ]

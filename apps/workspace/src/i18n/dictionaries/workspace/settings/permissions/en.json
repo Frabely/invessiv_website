@@ -79,6 +79,14 @@
       "label": "Edit tasks",
       "description": "Create, change and assign tasks."
     },
+    "chat.read": {
+      "label": "Read customer conversations",
+      "description": "See a customer's shared message history."
+    },
+    "chat.write": {
+      "label": "Write customer messages",
+      "description": "Send messages in a customer's shared conversation."
+    },
     "files.read": {
       "label": "View files",
       "description": "Open and download customer files."
@@ -122,6 +130,14 @@
     "portal.tasks.complete": {
       "label": "Complete customer tasks in the portal",
       "description": "Mark tasks for the company as completed in the portal."
+    },
+    "portal.messages.read": {
+      "label": "Read portal messages",
+      "description": "See the company's shared message history."
+    },
+    "portal.messages.write": {
+      "label": "Write portal messages",
+      "description": "Reply in the company's shared conversation."
     },
     "roles.manage": {
       "label": "Manage roles",

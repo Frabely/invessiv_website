@@ -40,6 +40,8 @@ export const PERMISSION_GROUP_PERMISSIONS = {
   [PermissionGroup.Customers]: [
     Permission.CustomersRead,
     Permission.CustomersWrite,
+    Permission.ChatRead,
+    Permission.ChatWrite,
   ],
   [PermissionGroup.Projects]: [
     Permission.ProjectsRead,
@@ -69,6 +71,8 @@ export const PERMISSION_GROUP_PERMISSIONS = {
     Permission.PortalProjectsRead,
     Permission.PortalTasksRead,
     Permission.PortalTasksComplete,
+    Permission.PortalMessagesRead,
+    Permission.PortalMessagesWrite,
   ],
   [PermissionGroup.Administration]: [
     Permission.MembersRead,

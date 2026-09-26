@@ -190,13 +190,20 @@ function readResponsibilityCounts(payload: unknown) {
   }
   const customerCount = counts[OwnableEntity.Customer];
   const taskCount = counts[OwnableEntity.Task];
-  if (typeof customerCount !== "number" && typeof taskCount !== "number") {
+  const conversationCount = counts[OwnableEntity.Conversation];
+  if (
+    typeof customerCount !== "number" &&
+    typeof taskCount !== "number" &&
+    typeof conversationCount !== "number"
+  ) {
     return undefined;
   }
   return {
     [OwnableEntity.Customer]:
       typeof customerCount === "number" ? customerCount : 0,
     [OwnableEntity.Task]: typeof taskCount === "number" ? taskCount : 0,
+    [OwnableEntity.Conversation]:
+      typeof conversationCount === "number" ? conversationCount : 0,
   };
 }
 

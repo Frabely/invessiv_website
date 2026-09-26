@@ -66,7 +66,8 @@ Kunden-Cockpit (Server Component lädt getCustomerConversation, limit 50)
 Sidebar-Zähler: countUnreadConversations() im (app)-Layout, fehlertolerant (Fehler → kein Badge)
 ```
 
-Systemnachrichten: Ein Phasenwechsel in `update-project.command-handler.ts` ruft `systemMessageService.append` auf —
+Systemnachrichten: Ein Phasenwechsel in `update-project.command-handler.ts` ruft `messageService.appendSystemMessage`
+auf —
 fehlertolerant, die eigentliche Aktion scheitert nie daran. Die Einreichung aus Task 22 existiert noch nicht; ihre
 Verdrahtung gehört in Ordner 16 (dort als Aufgabe vermerken).
 

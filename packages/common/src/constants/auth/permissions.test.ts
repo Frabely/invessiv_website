@@ -82,6 +82,8 @@ describe("Permission", () => {
       Permission.PortalProjectsRead,
       Permission.PortalTasksRead,
       Permission.PortalTasksComplete,
+      Permission.PortalMessagesRead,
+      Permission.PortalMessagesWrite,
     ]);
     for (const permission of PORTAL_PERMISSION_VALUES) {
       expect(WORKSPACE_PERMISSION_VALUES).not.toContain(permission);

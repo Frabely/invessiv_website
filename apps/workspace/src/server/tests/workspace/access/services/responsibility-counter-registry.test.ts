@@ -25,14 +25,16 @@ vi.mock(
     taskResponsibilityCounterService: { countOpen: mocks.countOpenTasks },
   }),
 );
-
 describe("responsibilityCounterService", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it("returns a complete count keyed by every ownable entity", async () => {
-    const executor = {} as AccessDatabaseExecutor;
+    const where = vi.fn().mockResolvedValue([{ count: 4 }]);
+    const from = vi.fn().mockReturnValue({ where });
+    const select = vi.fn().mockReturnValue({ from });
+    const executor = { select } as unknown as AccessDatabaseExecutor;
     mocks.countOpenCustomers.mockResolvedValue(2);
     mocks.countOpenTasks.mockResolvedValue(3);
 
@@ -44,6 +46,7 @@ describe("responsibilityCounterService", () => {
     ).resolves.toEqual({
       [OwnableEntity.Customer]: 2,
       [OwnableEntity.Task]: 3,
+      [OwnableEntity.Conversation]: 4,
     });
 
     expect(mocks.countOpenCustomers).toHaveBeenCalledWith(
@@ -54,5 +57,8 @@ describe("responsibilityCounterService", () => {
       executor,
       "00000000-0000-4000-8000-000000000001",
     );
+    expect(select).toHaveBeenCalledOnce();
+    expect(from).toHaveBeenCalledOnce();
+    expect(where).toHaveBeenCalledOnce();
   });
 });

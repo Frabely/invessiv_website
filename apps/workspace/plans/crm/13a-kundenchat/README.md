@@ -1,6 +1,6 @@
 # Ordner 13a — Kundenchat (CRM und Portal)
 
-> **Status:** offen · **Abhängigkeiten:** 12b, 13 · **Aufwand:** 5–6 Tage · **Reviewziel:** 110–140 Dateien
+> **Status:** läuft · **Abhängigkeiten:** 12b, 13 · **Aufwand:** 5–6 Tage · **Reviewziel:** 110–140 Dateien
 
 > **Zusammenlegung (26.09.2026):** Die früheren Ordner 13a „Kundenchat intern“ und 13b „Kundenchat Portal“ sind zu
 > diesem Ordner zusammengeführt. Grund: Die Mockups stehen auf beiden Seiten bereits (`ChatDock` aus `@invessiv/ui`

@@ -55,7 +55,7 @@ Dashboard-Karte außerhalb der Registry.
 ## Chat-Systemnachricht (aus Ordner 13a)
 
 Eine eingegangene Einreichung (`submit-feedback-round.command-handler.ts`) ruft
-`systemMessageService.append(...)` aus Ordner 13a auf — Dictionary-Key mit Parametern, fehlertolerant (die
+`messageService.appendSystemMessage(...)` aus Ordner 13a auf — Dictionary-Key mit Parametern, fehlertolerant (die
 Einreichung scheitert nie daran), erhöht keinen Ungelesen-Zähler. Texte in `workspace/crm/messages` und
 `portal/messages` (DE/EN).
 

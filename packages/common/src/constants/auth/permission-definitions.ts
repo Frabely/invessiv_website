@@ -137,6 +137,20 @@ export const PERMISSION_DEFINITIONS = {
     assignableScopeTypes: CUSTOMER_AND_PROJECT,
     description: "Create, edit and reassign tasks.",
   },
+  [Permission.ChatRead]: {
+    realm: AuthRealm.Workspace,
+    delegable: true,
+    scopeAssignable: true,
+    assignableScopeTypes: CUSTOMER_ONLY,
+    description: "Read customer conversations.",
+  },
+  [Permission.ChatWrite]: {
+    realm: AuthRealm.Workspace,
+    delegable: true,
+    scopeAssignable: true,
+    assignableScopeTypes: CUSTOMER_ONLY,
+    description: "Send messages in customer conversations.",
+  },
   [Permission.FilesRead]: {
     realm: AuthRealm.Workspace,
     delegable: true,
@@ -213,6 +227,20 @@ export const PERMISSION_DEFINITIONS = {
     scopeAssignable: false,
     assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
     description: "Complete customer-side tasks in this customer's portal.",
+  },
+  [Permission.PortalMessagesRead]: {
+    realm: AuthRealm.Portal,
+    delegable: true,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description: "Read this customer's conversation.",
+  },
+  [Permission.PortalMessagesWrite]: {
+    realm: AuthRealm.Portal,
+    delegable: true,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description: "Send messages in this customer's conversation.",
   },
   [Permission.RolesManage]: {
     realm: AuthRealm.Workspace,

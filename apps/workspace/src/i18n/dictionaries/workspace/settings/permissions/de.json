@@ -79,6 +79,14 @@
       "label": "Aufgaben bearbeiten",
       "description": "Aufgaben anlegen, ändern und zuweisen."
     },
+    "chat.read": {
+      "label": "Kundenchats lesen",
+      "description": "Den gemeinsamen Nachrichtenverlauf eines Kunden sehen."
+    },
+    "chat.write": {
+      "label": "Kundenchats schreiben",
+      "description": "Nachrichten im gemeinsamen Kundenchat senden."
+    },
     "files.read": {
       "label": "Dateien ansehen",
       "description": "Kundendateien öffnen und herunterladen."
@@ -122,6 +130,14 @@
     "portal.tasks.complete": {
       "label": "Kundenaufgaben im Portal erledigen",
       "description": "Aufgaben für das Unternehmen im Portal als erledigt markieren."
+    },
+    "portal.messages.read": {
+      "label": "Nachrichten im Portal lesen",
+      "description": "Den gemeinsamen Nachrichtenverlauf des Unternehmens sehen."
+    },
+    "portal.messages.write": {
+      "label": "Nachrichten im Portal schreiben",
+      "description": "Im gemeinsamen Nachrichtenverlauf des Unternehmens antworten."
     },
     "roles.manage": {
       "label": "Rollen verwalten",
