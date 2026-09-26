@@ -81,3 +81,8 @@
     grid-column: span 12 / span 12;
   }
 }
+
+/* An expanded widget takes the full row at every breakpoint. */
+.slot:has(> [data-expanded="true"]) {
+  grid-column: span 12 / span 12;
+}

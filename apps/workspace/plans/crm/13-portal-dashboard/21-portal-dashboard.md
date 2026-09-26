@@ -454,25 +454,30 @@ klar spezifizierter, mechanischer oder SQL-lastiger Arbeit. Einschätzung nach A
       Karten-Zusagen in 13a/15/15a auf Registry-Widget vereinheitlichen.
 - [x] `apps/workspace/deleteable/planregeln-fuer-plan-skill.md` existiert bereits (nicht committen, temporär).
 
-### S1 — Extraktion geteilter Bausteine (keine Verhaltensänderung) (GPT · GPT-6 Sol)
+### S1 — Extraktion geteilter Bausteine (keine Verhaltensänderung) (GPT · GPT-6 Sol — erledigt)
 
-- [ ] `packages/common`: `widget-open-modes.ts`, `widget-column-spans.ts`, `contracts/ui/widget-layout.ts`,
+- [x] `packages/common`: `widget-open-modes.ts`, `widget-column-spans.ts`, `contracts/ui/widget-layout.ts`,
       `contracts/ui/chat-dock-content.ts` (+ Exports in Package-`exports`, falls nötig).
-- [ ] `WidgetGrid` nach `packages/ui` (Test: Slots ohne Inhalt fallen weg, `data-*-span` gesetzt); internes Dashboard
+- [x] `WidgetGrid` nach `packages/ui` (Test: Slots ohne Inhalt fallen weg, `data-*-span` gesetzt); internes Dashboard
       (`app/[locale]/(app)/dashboard/page.tsx` und Module) auf `WidgetGrid` + ausgelagertes Layout umstellen;
       `dashboard-grid/` löschen; bestehende Dashboard-Tests grün.
-- [ ] `ProcessTrack` nach `packages/ui`; `ProjectOverview` umstellen; Scroll-in-View des aktuellen Schritts erhalten;
+- [x] `ProcessTrack` nach `packages/ui`; `ProjectOverview` umstellen; Scroll-in-View des aktuellen Schritts erhalten;
       CRM-Tests grün, visuell unverändert (Screenshot vorher/nachher).
-- [ ] `ChatDock` nach `packages/ui`; Cockpit umstellen; alte Komponente + CSS löschen.
-- [ ] `task-due-state` nach `common/patterns/tasks/`; Importe umstellen; alte Datei löschen.
-- [ ] `useOptimisticChange` + `useTaskStatusChange` darauf umbauen; Tests grün.
-- [ ] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test` grün.
+- [x] `ChatDock` nach `packages/ui`; Cockpit umstellen; alte Komponente + CSS löschen.
+- [x] `task-due-state` nach `common/patterns/tasks/`; Importe umstellen; alte Datei löschen.
+- [x] `useOptimisticChange` + `useTaskStatusChange` darauf umbauen; Tests grün.
+- [x] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test` grün.
 
-### S2 — `Widget` in packages/ui (Claude · Opus 5.5)
+### S2 — `Widget` in packages/ui (Claude · Opus 5.5 — erledigt)
 
-- [ ] Komponente + CSS + Tests: je `openMode` richtige ARIA, Mock-Badge + `data-mock`, `wholeCardClickable` nur ohne
+- [x] Komponente + CSS + Tests: je `openMode` richtige ARIA, Mock-Badge + `data-mock`, `wholeCardClickable` nur ohne
       interaktive Kinder (Doku im Docstring), Tastatur (Enter/Space), Fokus sichtbar, Expand toggelt `data-expanded`.
-- [ ] Export in `packages/ui/src/index.ts`.
+- [x] Export in `packages/ui/src/index.ts`.
+- Umsetzungshinweise: Props als diskriminierte Union je `openMode` (Dialog/Dock verlangen `openLabel` +
+  `onOpenAction`, Dock zusätzlich `controlsId` + `expanded`, Expand `openLabel`/`closeLabel` + `expandedContent`);
+  Callbacks heißen `…Action` (Next-Client-Prop-Regel). `WidgetGrid` spannt Slots mit `data-expanded="true"` per
+  `:has()` auf 12 Spalten. `contracts/ui/widget-content.ts` bewusst nicht angelegt — Texte laufen als einzelne Props;
+  erst anlegen, wenn S7 eine gemeinsame Text-Shape braucht.
 
 ### S3 — Migration, Permissions, Seed (GPT · GPT-6 Astra)
 

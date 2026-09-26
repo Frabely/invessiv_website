@@ -1,0 +1,192 @@
+.widget {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  padding: clamp(1rem, 1.8vw, 1.4rem);
+  border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+  border-radius: 18px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-surface-1) 92%, transparent) 0%,
+    color-mix(in srgb, var(--color-surface-1) 76%, transparent) 100%
+  );
+  transition: border-color 160ms ease;
+}
+
+.widget[data-whole-card="true"]:hover {
+  border-color: color-mix(in srgb, var(--color-cta) 38%, var(--color-border));
+}
+
+.widget[data-mock="true"] {
+  border-style: dashed;
+  border-color: var(--color-border-strong);
+  background: color-mix(in srgb, var(--color-surface-1) 55%, transparent);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.heading {
+  display: flex;
+  flex: 1 1 12rem;
+  align-items: flex-start;
+  gap: 0.7rem;
+  min-width: 0;
+}
+
+.icon {
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 12px;
+  color: var(--color-cta);
+  background: color-mix(in srgb, var(--color-cta) 12%, transparent);
+}
+
+.widget[data-mock="true"] .icon {
+  color: var(--color-text-muted);
+  background: color-mix(in srgb, var(--color-text-muted) 10%, transparent);
+}
+
+.titleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-heading-sm);
+  font-weight: 650;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.count {
+  padding: 0.05rem 0.5rem;
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  background: color-mix(in srgb, var(--color-text-muted) 12%, transparent);
+  font-size: var(--font-size-badge);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.meta {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+}
+
+.mockBadge {
+  align-self: center;
+  padding: 0.12rem 0.55rem;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-badge);
+  white-space: nowrap;
+}
+
+/* Compact pill on top of ButtonControl's ghost look; doubled class wins over the base button rules. */
+.openButton.openButton,
+.toggleButton.toggleButton {
+  gap: 0.45rem;
+  min-height: 2.75rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: var(--font-size-ui-xs);
+  font-weight: 600;
+}
+
+.openButton.openButton {
+  align-self: center;
+  margin-left: auto;
+}
+
+.openButton.openButton:focus-visible,
+.toggleButton.toggleButton:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* Stretched button: the whole card becomes the click target without nesting controls. */
+.widget[data-whole-card="true"] .openButton.openButton {
+  transform: none; /* a transform would become the containing block of the stretched ::after */
+}
+
+.widget[data-whole-card="true"] .openButton::after {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  content: "";
+}
+
+.widget[data-whole-card="true"]:has(.openButton:focus-visible) {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.widget[data-whole-card="true"] .openButton.openButton:focus-visible {
+  outline: none;
+}
+
+.body {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+}
+
+.expanded {
+  min-width: 0;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.expanded[hidden] {
+  display: none;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.chevron {
+  transition: transform 180ms ease;
+}
+
+.widget[data-expanded="true"] .chevron {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .widget,
+  .chevron {
+    transition: none;
+  }
+
+  .openButton.openButton,
+  .toggleButton.toggleButton {
+    transition: none;
+    transform: none;
+  }
+}
