@@ -15,6 +15,7 @@ import {
   MessageType,
 } from "@invessiv/common/constants/crm/message-types";
 import type { InternalConversationDto } from "@invessiv/common/contracts/crm/internal-conversation.dto";
+import type { MessageDto } from "@invessiv/common/contracts/crm/message.dto";
 import {
   MESSAGE_DRAFT_STORAGE_KEY_PREFIX,
   MESSAGE_PENDING_STORAGE_KEY_PREFIX,
@@ -51,14 +52,17 @@ const conversation: InternalConversationDto = {
   canRedact: false,
 };
 
-function renderConversation(viewerMemberId: string) {
+function renderConversation(
+  viewerMemberId: string,
+  initialConversation: InternalConversationDto = conversation,
+) {
   return render(
     <CustomerConversation
       active
       canWrite
       content={content}
       customerId={customerId}
-      initialConversation={conversation}
+      initialConversation={initialConversation}
       locale="en"
       viewerMemberId={viewerMemberId}
     />,
@@ -121,6 +125,9 @@ describe("CustomerConversation pending storage", () => {
       },
     });
     fireEvent.click(screen.getByRole("button", { name: content.thread.retry }));
+    const firstSend = api.sendMessage.mock.calls[0][0];
+    const retrySend = api.sendMessage.mock.calls[1][0];
+    expect(retrySend.clientMessageId).toBe(firstSend.clientMessageId);
     await waitFor(() =>
       expect(window.localStorage.getItem(pendingKey)).toBeNull(),
     );
@@ -131,6 +138,83 @@ describe("CustomerConversation pending storage", () => {
     expect(
       screen.queryByRole("button", { name: content.thread.retry }),
     ).toBeNull();
+  });
+
+  it("marks only the displayed message as read", async () => {
+    const message: MessageDto = {
+      id: "22222222-2222-4222-8222-222222222222",
+      conversationId: conversation.id,
+      type: MessageType.Text,
+      body: "Visible customer message",
+      metadata: null,
+      senderSide: MessageSenderSide.Customer,
+      senderDisplayName: "Customer",
+      isOwn: false,
+      createdAt: "2026-09-26T10:00:00.000Z",
+      redactedAt: null,
+    };
+    api.markRead.mockResolvedValue({ ok: true, value: true });
+    renderConversation("member-a", {
+      ...conversation,
+      unreadCount: 1,
+      messages: [message],
+    });
+    await waitFor(() =>
+      expect(api.markRead).toHaveBeenCalledWith(customerId, message.id),
+    );
+  });
+
+  it("replaces a redacted older message without waiting for its page to reload", async () => {
+    const oldMessage: MessageDto = {
+      id: "33333333-3333-4333-8333-333333333333",
+      conversationId: conversation.id,
+      type: MessageType.Text,
+      body: "Sensitive older text",
+      metadata: null,
+      senderSide: MessageSenderSide.Customer,
+      senderDisplayName: "Customer",
+      isOwn: false,
+      createdAt: "2026-09-25T10:00:00.000Z",
+      redactedAt: null,
+    };
+    const latest = { ...conversation, canRedact: true, nextCursor: "older" };
+    api.getConversation.mockImplementation(
+      async (_id: string, cursor: string | null) => ({
+        ok: true,
+        value: cursor
+          ? { ...latest, messages: [oldMessage], nextCursor: null }
+          : latest,
+      }),
+    );
+    api.redactMessage.mockResolvedValue({
+      ok: true,
+      value: {
+        ...oldMessage,
+        body: null,
+        redactedAt: new Date().toISOString(),
+      },
+    });
+    renderConversation("member-a", latest);
+    fireEvent.click(
+      await screen.findByRole("button", { name: content.thread.loadOlder }),
+    );
+    fireEvent.click(
+      await screen.findByRole("button", { name: content.thread.redact }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: content.redaction.confirm }),
+    );
+    await waitFor(() =>
+      expect(api.redactMessage).toHaveBeenCalledWith(oldMessage.id),
+    );
+    await expect(
+      api.redactMessage.mock.results[0].value,
+    ).resolves.toMatchObject({ ok: true });
+    await waitFor(() => expect(api.getConversation).toHaveBeenCalledTimes(3));
+    await waitFor(() =>
+      expect(screen.queryByText("Sensitive older text")).toBeNull(),
+    );
+    expect(screen.getByText(content.thread.redacted)).toBeVisible();
   });
 
   it("does not display an unowned legacy draft after an account switch", () => {

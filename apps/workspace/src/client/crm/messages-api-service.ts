@@ -50,18 +50,30 @@ function sendMessage(
   );
 }
 
-function markRead(customerId: string): Promise<MessageClientResult<true>> {
+function markRead(
+  customerId: string,
+  lastSeenMessageId: string,
+): Promise<MessageClientResult<true>> {
   return conversationApiService.markRead(
     crmCustomerConversationReadEndpoint(customerId),
+    lastSeenMessageId,
   );
 }
 
-function redactMessage(messageId: string): Promise<MessageClientResult<true>> {
+function redactMessage(
+  messageId: string,
+): Promise<MessageClientResult<MessageDto>> {
   return conversationApiService.request(
     crmMessageRedactEndpoint(messageId),
     HttpMethod.Post,
     undefined,
-    () => true,
+    (payload) =>
+      isRecord(payload) &&
+      conversationApiService.isMessage(payload.message) &&
+      payload.message.id === messageId &&
+      payload.message.body === null
+        ? payload.message
+        : null,
   );
 }
 

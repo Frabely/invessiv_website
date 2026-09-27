@@ -19,7 +19,10 @@ export async function POST(request: NextRequest, { params }: Context) {
       try {
         const result = await redactMessage(messageId, actor);
         return result.ok
-          ? Response.json({ ok: true }, { status: HttpResponseCode.Ok })
+          ? Response.json(
+              { message: result.message },
+              { status: HttpResponseCode.Ok },
+            )
           : messageApiError(result.code);
       } catch (error) {
         console.error("[crm-message] redaction failed", {

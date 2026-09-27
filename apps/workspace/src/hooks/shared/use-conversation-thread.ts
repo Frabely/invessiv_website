@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import type { MessageThreadProps } from "@invessiv/ui";
 import type { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
 import { PendingMessageStatus } from "@invessiv/common/constants/ui/pending-message-statuses";
+import { MessageType } from "@invessiv/common/constants/crm/message-types";
 import type { ConversationDto } from "@invessiv/common/contracts/crm/conversation.dto";
 import type { MessageDto } from "@invessiv/common/contracts/crm/message.dto";
 import type { PendingThreadMessage } from "@invessiv/common/contracts/ui/pending-thread-message";
@@ -62,14 +63,6 @@ function withOlderPage<TConversation extends ConversationDto>(
     nextCursor: older.nextCursor,
     extendedBack: true,
   };
-}
-
-function withoutUnread<TConversation extends ConversationDto>(
-  current: ThreadState<TConversation>,
-): ThreadState<TConversation> {
-  return current.conversation
-    ? { ...current, conversation: { ...current.conversation, unreadCount: 0 } }
-    : current;
 }
 
 function readStoredPendingMessages(storageKey: string): PendingThreadMessage[] {
@@ -166,14 +159,12 @@ function useThreadPages<TConversation extends ConversationDto>(
     if (result.ok) setState((current) => withOlderPage(current, result.value));
   }, [api, state.nextCursor]);
 
-  const addConfirmedMessage = useCallback((message: MessageDto) => {
+  const replaceMessage = useCallback((message: MessageDto) => {
     setState((current) => ({
       ...current,
       messages: mergeThreadMessages(current.messages, [message]),
     }));
   }, []);
-
-  const clearUnread = useCallback(() => setState(withoutUnread), []);
 
   return {
     state,
@@ -182,8 +173,7 @@ function useThreadPages<TConversation extends ConversationDto>(
     olderFailed,
     reload,
     loadOlder,
-    addConfirmedMessage,
-    clearUnread,
+    replaceMessage,
   } as const;
 }
 
@@ -211,21 +201,31 @@ function useMarkReadWhileVisible<TConversation extends ConversationDto>(
   api: ConversationThreadApi<TConversation>,
   active: boolean,
   unreadCount: number,
-  clearUnread: () => void,
+  lastSeenMessageId: string | null,
+  reload: () => Promise<void>,
 ) {
   const router = useRouter();
   const markingRead = useRef(false);
+  const lastMarkedMessageId = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!active || unreadCount === 0 || markingRead.current) return;
+    if (
+      !active ||
+      unreadCount === 0 ||
+      !lastSeenMessageId ||
+      markingRead.current ||
+      lastMarkedMessageId.current === lastSeenMessageId
+    )
+      return;
     markingRead.current = true;
-    void api.markRead().then((result) => {
+    void api.markRead(lastSeenMessageId).then(async (result) => {
       markingRead.current = false;
       if (!result.ok) return;
-      clearUnread();
+      lastMarkedMessageId.current = lastSeenMessageId;
+      await reload();
       router.refresh();
     });
-  }, [active, api, clearUnread, router, unreadCount]);
+  }, [active, api, lastSeenMessageId, reload, router, unreadCount]);
 }
 
 /** Shows a message right away, keeps it with "send again" on failure and confirms it on success. */
@@ -239,7 +239,10 @@ function useMessageSending<TConversation extends ConversationDto>(
 
   const deliver = useCallback(
     async (entry: PendingThreadMessage) => {
-      const result = await api.sendMessage({ body: entry.body });
+      const result = await api.sendMessage({
+        body: entry.body,
+        clientMessageId: entry.clientId,
+      });
       if (!result.ok) {
         setSendError(result.code);
         setPending((current) =>
@@ -296,22 +299,28 @@ export function useConversationThread<TConversation extends ConversationDto>(
     `${MESSAGE_PENDING_STORAGE_KEY_PREFIX}${storageScopeId}`,
   );
   const pages = useThreadPages(api, initialConversation);
-  const { addConfirmedMessage, reload } = pages;
+  const { replaceMessage, reload } = pages;
   const confirmDelivery = useCallback(
     (message: MessageDto) => {
-      addConfirmedMessage(message);
+      replaceMessage(message);
       void reload();
     },
-    [addConfirmedMessage, reload],
+    [replaceMessage, reload],
   );
   const sending = useMessageSending(api, pending, setPending, confirmDelivery);
+  // An own send may be newer than an unseen reply that has not been reloaded yet.
+  const latestVisibleIncomingMessageId =
+    pages.state.messages.findLast(
+      (message) => message.type === MessageType.Text && !message.isOwn,
+    )?.id ?? null;
 
   useReloadWhileVisible(active, reload);
   useMarkReadWhileVisible(
     api,
     active,
     pages.state.conversation?.unreadCount ?? 0,
-    pages.clearUnread,
+    latestVisibleIncomingMessageId,
+    reload,
   );
 
   const { loadOlder } = pages;
@@ -333,6 +342,7 @@ export function useConversationThread<TConversation extends ConversationDto>(
     sendError: sending.sendError,
     reload,
     send: sending.send,
+    replaceMessage,
     /** Everything `MessageThread` needs from the thread state; texts come from the caller. */
     threadProps,
   } as const;

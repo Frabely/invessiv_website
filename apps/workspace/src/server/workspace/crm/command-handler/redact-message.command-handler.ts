@@ -13,6 +13,7 @@ import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { canOn } from "@/common/patterns/auth/can-on";
 import { activityService } from "@/server/shared/services/activity-service";
 import { messageService } from "@/server/shared/services/message/message-service";
+import { messageMappingService } from "@/server/shared/services/message/message-mapping-service";
 import { conversationService } from "@/server/workspace/crm/services/conversation-service";
 
 async function recordMessageRedaction(
@@ -62,7 +63,14 @@ async function redactAuthorizedMessage(
   if (!redacted) return { ok: false, code: MessageErrorCode.NotFound } as const;
 
   await recordMessageRedaction(tx, actor, target.customerId, messageId, now);
-  return { ok: true } as const;
+  return {
+    ok: true,
+    message: messageMappingService.toDto(
+      redacted,
+      actor.workspaceMemberId,
+      null,
+    ),
+  } as const;
 }
 
 export async function redactMessage(messageId: string, actor: WorkspaceActor) {

@@ -102,7 +102,7 @@ conversations
   customer_id uuid NOT NULL → customers.id ON DELETE CASCADE
   project_id  uuid NULL     → projects.id  ON DELETE CASCADE
   owner_member_id uuid NOT NULL → workspace_members.id
-  version integer NOT NULL DEFAULT 1
+  version integer NOT NULL                 beim Anlegen explizit 1
   last_message_at      timestamptz NULL
   internal_notified_at timestamptz NULL      Anker für Ordner 20c, hier nie geschrieben
   created_at / updated_at
@@ -113,8 +113,9 @@ conversations
 messages
   id uuid PK
   conversation_id uuid NOT NULL → conversations.id ON DELETE CASCADE
+  client_message_id uuid NULL              bei Textnachrichten aus der App gesetzt; Unique-Index ab Migration 0041
   customer_id uuid NOT NULL     → customers.id ON DELETE CASCADE     denormalisiert
-  type text NOT NULL DEFAULT 'text'          CHECK (type IN ('text','system'))
+  type text NOT NULL                        CHECK (type IN ('text','system'))
   body text NULL                             NULL nur nach Redaction
   metadata jsonb NULL
   sender_side text NOT NULL                  CHECK (sender_side IN ('internal','customer','system'))
@@ -222,6 +223,9 @@ apps/workspace/src/common/constants/auth/crm-endpoint-access-rules.ts   + neue E
 - **Inhalt:**
   - Holen oder anlegen mit `INSERT … ON CONFLICT DO NOTHING` + erneutem Lesen; Owner initial = Kunden-Owner
   - Nachrichten: neueste 50, Cursor für ältere, stabil sortiert über `(created_at, id)`
+  - Lesebestätigungen tragen die ID der zuletzt tatsächlich angezeigten Textnachricht der Gegenseite; der Server
+    prüft die Absenderseite und übernimmt deren DB-Zeitstempel, damit zwischen Laden und Bestätigen eingetroffene
+    Nachrichten auch nach einem eigenen Senden ungelesen bleiben.
   - Ungelesen = Nachrichten der **anderen** Seite (ohne `system`) nach dem eigenen `last_read_at`
   - Redacted-Nachrichten: `body = null`, `redactedAt` gesetzt
   - Portal-Query legt keine Conversation an, wenn keine existiert — sie liefert einen leeren Verlauf (kein Write im
@@ -233,11 +237,13 @@ apps/workspace/src/common/constants/auth/crm-endpoint-access-rules.ts   + neue E
 
 - **Inhalt:**
   - Senden (beide Seiten): Trim, 1–10.000 Zeichen, Anzeigename ermitteln und mitspeichern, `last_message_at`
-    aktualisieren, eigenen Lesestand mitziehen, Activity schreiben (ohne Nachrichteninhalt) — alles in einer
-    Transaktion
+    aktualisieren und Activity schreiben (ohne Nachrichteninhalt) — alles in einer Transaktion. Eine stabile
+    `clientMessageId` mit Unique-Index verhindert doppelte Nachrichten nach einem verlorenen Response und Retry.
+    Der Lesestand wird nur für tatsächlich angezeigte Nachrichten gesetzt.
   - Intern nur mit `chat.write` am Kunden; Portal nur mit `portal.messages.write`
   - Redaction: nur Workspace-Owner; setzt `body = null`, `redacted_at`, `redacted_by_member_id`; Activity ohne Inhalt;
-    `system`-Nachrichten und bereits redigierte Nachrichten sind nicht redigierbar
+    `system`-Nachrichten und bereits redigierte Nachrichten sind nicht redigierbar. Die Antwort enthält die
+    redigierte Nachricht, damit auch bereits geladene ältere Seiten ihren Text sofort ersetzen.
   - Owner-Wechsel über `updateVersioned`; Ziel muss aktives Mitglied mit wirksamem `chat.read` am Kunden sein; 409 mit
     `VersionConflictDto`; Activity
 - **Akzeptanz (Tests):** kein Endpunkt/Handler ändert `body` außer Redaction; leerer oder Whitespace-Text abgelehnt;

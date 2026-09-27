@@ -16,6 +16,7 @@ import { PORTAL_MESSAGES_PER_HOUR } from "@invessiv/common/constants/crm/message
 import { SYSTEM_ROLE_DEFINITIONS } from "@invessiv/common/constants/auth/system-role-definitions";
 import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
 import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
+import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
 import {
   MessageSenderSide,
   MessageType,
@@ -103,13 +104,20 @@ describe.skipIf(!RUN_INTEGRATION)(
       const sendResponse = await sendPortalMessageRoute(
         new NextRequest(`${url}/messages`, {
           method: HttpMethod.Post,
-          body: JSON.stringify({ body: "Message access probe" }),
+          body: JSON.stringify({
+            body: "Message access probe",
+            clientMessageId: randomUUID(),
+          }),
           headers: { [HttpHeaderName.ContentType]: MediaType.Json },
         }),
         context,
       );
       const markReadResponse = await markPortalReadRoute(
-        new NextRequest(`${url}/read`, { method: HttpMethod.Post }),
+        new NextRequest(`${url}/read`, {
+          method: HttpMethod.Post,
+          body: JSON.stringify({ lastSeenMessageId: randomUUID() }),
+          headers: { [HttpHeaderName.ContentType]: MediaType.Json },
+        }),
         context,
       );
       expect(readResponse.status).toBe(HttpResponseCode.NotFound);
@@ -265,17 +273,24 @@ describe.skipIf(!RUN_INTEGRATION)(
 
     it("can replay the additive migration twice without changing the schema", async () => {
       const workspaceRoot = findWorkspaceRoot(process.cwd());
-      const migration = await readFile(
-        path.join(
-          workspaceRoot,
-          "packages/db/migrations/0040_create_conversations.sql",
-        ),
-        "utf8",
+      const statements = (
+        await Promise.all(
+          [
+            "0040_create_conversations.sql",
+            "0041_add_message_idempotency.sql",
+          ].map((filename) =>
+            readFile(
+              path.join(workspaceRoot, "packages/db/migrations", filename),
+              "utf8",
+            ),
+          ),
+        )
+      ).flatMap((migration) =>
+        migration
+          .split(/^-->\s*statement-breakpoint\s*$/gm)
+          .map((statement) => statement.trim())
+          .filter(Boolean),
       );
-      const statements = migration
-        .split(/^-->\s*statement-breakpoint\s*$/gm)
-        .map((statement) => statement.trim())
-        .filter(Boolean);
       await db.transaction(async (tx) => {
         for (const statement of statements)
           await tx.execute(sql.raw(statement));
@@ -366,14 +381,15 @@ describe.skipIf(!RUN_INTEGRATION)(
       const portalActor = resolution.actor;
       const internal = await sendInternalMessage(
         customerA,
-        { body: "First draft is ready." },
+        { body: "First draft is ready.", clientMessageId: randomUUID() },
         internalActor(),
       );
-      expect(internal.ok).toBe(true);
+      if (!internal.ok) throw new Error("Expected internal message.");
       const portalBefore = await getPortalConversation(portalActor, null);
       expect(portalBefore?.unreadCount).toBe(1);
       const sent = await sendCustomerMessage(portalActor, {
         body: "Thank you.",
+        clientMessageId: randomUUID(),
       });
       expect(sent.ok).toBe(true);
       const scopedReader: WorkspaceActor = {
@@ -435,7 +451,14 @@ describe.skipIf(!RUN_INTEGRATION)(
         (await getCustomerConversation(customerA, internalActor(), null))
           ?.unreadCount,
       ).toBe(1);
-      expect(await markConversationRead(customerA, internalActor())).toEqual({
+      if (!sent.ok) throw new Error("Expected customer message.");
+      expect(
+        await markConversationRead(
+          customerA,
+          { lastSeenMessageId: sent.message.id },
+          internalActor(),
+        ),
+      ).toEqual({
         ok: true,
       });
       expect(
@@ -452,18 +475,29 @@ describe.skipIf(!RUN_INTEGRATION)(
           )
         )?.unreadCount,
       ).toBe(1);
-      expect(await markPortalConversationRead(portalActor)).toEqual({
+      expect(
+        await markPortalConversationRead(portalActor, {
+          lastSeenMessageId: sent.message.id,
+        }),
+      ).toEqual({ ok: false, code: MessageErrorCode.ValidationError });
+      expect(
+        await markPortalConversationRead(portalActor, {
+          lastSeenMessageId: internal.message.id,
+        }),
+      ).toEqual({
         ok: true,
       });
-      if (!sent.ok) throw new Error("Expected customer message.");
       expect(
         await redactMessage(
           sent.message.id,
           internalActor(otherMemberId, otherUserId),
         ),
       ).toEqual({ ok: false, code: "FORBIDDEN" });
-      expect(await redactMessage(sent.message.id, internalActor())).toEqual({
+      expect(
+        await redactMessage(sent.message.id, internalActor()),
+      ).toMatchObject({
         ok: true,
+        message: { id: sent.message.id, body: null },
       });
       const [stored] = await db
         .select({ body: messages.body, redactedAt: messages.redacted_at })
@@ -488,6 +522,67 @@ describe.skipIf(!RUN_INTEGRATION)(
       expect(audit).not.toHaveLength(0);
     });
 
+    it("keeps newly arrived messages unread and stores a retried send only once", async () => {
+      const resolution = await resolvePortalActor(portalClerkId, customerA);
+      if (!resolution.ok) throw new Error("Expected portal membership.");
+      const portalActor = resolution.actor;
+      const first = await sendInternalMessage(
+        customerA,
+        { body: "First update", clientMessageId: randomUUID() },
+        internalActor(),
+      );
+      if (!first.ok) throw new Error("Expected first message.");
+      const visible = await getPortalConversation(portalActor, null);
+      expect(visible?.messages.at(-1)?.id).toBe(first.message.id);
+      const second = await sendInternalMessage(
+        customerA,
+        {
+          body: "Arrived after the view loaded",
+          clientMessageId: randomUUID(),
+        },
+        internalActor(),
+      );
+      if (!second.ok) throw new Error("Expected second message.");
+      expect(
+        await markPortalConversationRead(portalActor, {
+          lastSeenMessageId: first.message.id,
+        }),
+      ).toEqual({ ok: true });
+      expect(
+        (await getPortalConversation(portalActor, null))?.unreadCount,
+      ).toBe(1);
+
+      const input = { body: "Please confirm", clientMessageId: randomUUID() };
+      const sent = await sendCustomerMessage(portalActor, input);
+      const repeated = await sendCustomerMessage(portalActor, input);
+      if (!sent.ok || !repeated.ok)
+        throw new Error("Expected successful retries.");
+      expect(repeated.message.id).toBe(sent.message.id);
+      const rows = await db
+        .select({ id: messages.id })
+        .from(messages)
+        .where(eq(messages.client_message_id, input.clientMessageId));
+      expect(rows).toHaveLength(1);
+      expect(
+        await sendCustomerMessage(portalActor, {
+          ...input,
+          body: "Changed body",
+        }),
+      ).toEqual({ ok: false, code: MessageErrorCode.ValidationError });
+
+      const internalInput = {
+        body: "Concurrent internal retry",
+        clientMessageId: randomUUID(),
+      };
+      const [firstInternal, repeatedInternal] = await Promise.all([
+        sendInternalMessage(customerA, internalInput, internalActor()),
+        sendInternalMessage(customerA, internalInput, internalActor()),
+      ]);
+      if (!firstInternal.ok || !repeatedInternal.ok)
+        throw new Error("Expected successful concurrent retries.");
+      expect(repeatedInternal.message.id).toBe(firstInternal.message.id);
+    });
+
     it("does not expose a foreign customer through internal handlers", async () => {
       const scoped: WorkspaceActor = {
         ...internalActor(),
@@ -498,9 +593,19 @@ describe.skipIf(!RUN_INTEGRATION)(
       };
       expect(await getCustomerConversation(customerB, scoped, null)).toBeNull();
       expect(
-        await sendInternalMessage(customerB, { body: "wrong company" }, scoped),
+        await sendInternalMessage(
+          customerB,
+          { body: "wrong company", clientMessageId: randomUUID() },
+          scoped,
+        ),
       ).toEqual({ ok: false, code: "NOT_FOUND" });
-      expect(await markConversationRead(customerB, scoped)).toEqual({
+      expect(
+        await markConversationRead(
+          customerB,
+          { lastSeenMessageId: randomUUID() },
+          scoped,
+        ),
+      ).toEqual({
         ok: false,
         code: "NOT_FOUND",
       });
@@ -663,7 +768,10 @@ describe.skipIf(!RUN_INTEGRATION)(
           `http://localhost/api/portal/${customerA}/conversation/messages`,
           {
             method: HttpMethod.Post,
-            body: JSON.stringify({ body: "One too many" }),
+            body: JSON.stringify({
+              body: "One too many",
+              clientMessageId: randomUUID(),
+            }),
             headers: { [HttpHeaderName.ContentType]: MediaType.Json },
           },
         ),
@@ -689,7 +797,10 @@ describe.skipIf(!RUN_INTEGRATION)(
       ).toBeNull();
       const internal = await sendInternalMessage(
         customerA,
-        { body: "Internal replies are never limited." },
+        {
+          body: "Internal replies are never limited.",
+          clientMessageId: randomUUID(),
+        },
         internalActor(),
       );
       expect(internal.ok).toBe(true);

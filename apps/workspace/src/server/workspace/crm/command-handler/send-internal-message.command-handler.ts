@@ -37,6 +37,7 @@ export async function sendInternalMessage(
       .limit(1);
     if (!sender) return { ok: false, code: MessageErrorCode.NotFound } as const;
     const message = await messageService.appendTextMessage(tx, {
+      clientMessageId: input.clientMessageId,
       conversationId: conversation.id,
       customerId,
       body: input.body,
@@ -47,6 +48,8 @@ export async function sendInternalMessage(
       actorType: ActorType.User,
       actorUserId: actor.userId,
     });
+    if (!message)
+      return { ok: false, code: MessageErrorCode.ValidationError } as const;
     return {
       ok: true,
       message: messageMappingService.toDto(

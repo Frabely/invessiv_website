@@ -1,6 +1,5 @@
 import "server-only";
 
-import { and, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
@@ -12,68 +11,14 @@ import {
   type ContactDatabaseTransaction,
   getDrizzleDatabaseClient,
 } from "@invessiv/db/core";
-import {
-  conversations,
-  rolePermissions,
-  roles,
-  workspaceMemberRoles,
-  workspaceMemberScopedRoles,
-} from "@invessiv/db/record-configuration";
+import { conversations } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { canOn } from "@/common/patterns/auth/can-on";
 import { activityService } from "@/server/shared/services/activity-service";
 import { messageService } from "@/server/shared/services/message/message-service";
+import { conversationService } from "@/server/workspace/crm/services/conversation-service";
 import { memberResponsibilityLockService } from "@/server/workspace/access/services/responsibilities/member-responsibility-lock-service";
 import { updateVersioned } from "@/server/workspace/shared/update-versioned";
-
-async function memberHasGlobalChatRead(
-  tx: ContactDatabaseTransaction,
-  memberId: string,
-): Promise<boolean> {
-  const [globalGrant] = await tx
-    .select({ key: rolePermissions.permission_key })
-    .from(workspaceMemberRoles)
-    .innerJoin(
-      rolePermissions,
-      eq(rolePermissions.role_id, workspaceMemberRoles.role_id),
-    )
-    .innerJoin(roles, eq(roles.id, workspaceMemberRoles.role_id))
-    .where(
-      and(
-        eq(workspaceMemberRoles.workspace_member_id, memberId),
-        eq(roles.active, true),
-        eq(rolePermissions.permission_key, Permission.ChatRead),
-      ),
-    )
-    .limit(1);
-  return Boolean(globalGrant);
-}
-
-async function memberHasScopedChatRead(
-  tx: ContactDatabaseTransaction,
-  memberId: string,
-  customerId: string,
-): Promise<boolean> {
-  const [customerGrant] = await tx
-    .select({ key: rolePermissions.permission_key })
-    .from(workspaceMemberScopedRoles)
-    .innerJoin(
-      rolePermissions,
-      eq(rolePermissions.role_id, workspaceMemberScopedRoles.role_id),
-    )
-    .innerJoin(roles, eq(roles.id, workspaceMemberScopedRoles.role_id))
-    .where(
-      and(
-        eq(workspaceMemberScopedRoles.workspace_member_id, memberId),
-        eq(workspaceMemberScopedRoles.customer_id, customerId),
-        isNull(workspaceMemberScopedRoles.project_id),
-        eq(roles.active, true),
-        eq(rolePermissions.permission_key, Permission.ChatRead),
-      ),
-    )
-    .limit(1);
-  return Boolean(customerGrant);
-}
 
 async function memberCanOwnConversation(
   tx: ContactDatabaseTransaction,
@@ -86,10 +31,7 @@ async function memberCanOwnConversation(
       memberId,
     );
   if (!active) return false;
-  return (
-    (await memberHasGlobalChatRead(tx, memberId)) ||
-    (await memberHasScopedChatRead(tx, memberId, customerId))
-  );
+  return conversationService.memberHasChatRead(tx, customerId, memberId);
 }
 
 function actorMayAssignConversationOwner(

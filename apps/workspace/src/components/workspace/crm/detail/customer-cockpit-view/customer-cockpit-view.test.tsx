@@ -306,6 +306,7 @@ describe("CustomerCockpitView", () => {
       );
       expect(messagesApiMocks.markRead).toHaveBeenCalledWith(
         customerDetailFixture().id,
+        "message-1",
       );
     });
   });

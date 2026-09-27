@@ -29,9 +29,13 @@ function sendMessage(
   );
 }
 
-function markRead(customerId: string): Promise<MessageClientResult<true>> {
+function markRead(
+  customerId: string,
+  lastSeenMessageId: string,
+): Promise<MessageClientResult<true>> {
   return conversationApiService.markRead(
     portalConversationReadEndpoint(customerId),
+    lastSeenMessageId,
   );
 }
 

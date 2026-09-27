@@ -63,7 +63,32 @@ const CONVERSATION: PortalConversationDto = {
   customerId: "customer-1",
   unreadCount: 2,
   lastMessageAt: null,
-  messages: [],
+  messages: [
+    {
+      id: "message-1",
+      conversationId: "conversation-1",
+      type: "text",
+      body: "First update",
+      metadata: null,
+      senderSide: "internal",
+      senderDisplayName: "Team",
+      isOwn: false,
+      createdAt: "2026-09-26T10:00:00.000Z",
+      redactedAt: null,
+    },
+    {
+      id: "message-2",
+      conversationId: "conversation-1",
+      type: "text",
+      body: "Second update",
+      metadata: null,
+      senderSide: "internal",
+      senderDisplayName: "Team",
+      isOwn: false,
+      createdAt: "2026-09-26T10:01:00.000Z",
+      redactedAt: null,
+    },
+  ],
   nextCursor: null,
   canWrite: true,
 };
@@ -382,9 +407,34 @@ describe("PortalDashboard", () => {
       screen.getByRole("log", { name: messagesContent.thread.logLabel }),
     ).toBeVisible();
     await waitFor(() =>
-      expect(mocks.markRead).toHaveBeenCalledWith("customer-1"),
+      expect(mocks.markRead).toHaveBeenCalledWith("customer-1", "message-2"),
     );
     expect(mocks.refresh).toHaveBeenCalled();
+  });
+
+  it("marks only the newest visible incoming message when an own message is newer", async () => {
+    const conversation: PortalConversationDto = {
+      ...CONVERSATION,
+      messages: [
+        CONVERSATION.messages[0]!,
+        {
+          ...CONVERSATION.messages[1]!,
+          senderSide: "customer",
+          isOwn: true,
+        },
+      ],
+    };
+    mocks.getConversation.mockResolvedValue({ ok: true, value: conversation });
+    mocks.markRead.mockResolvedValue({ ok: true, value: true });
+    renderDashboard(dto(), FULL_READ, null, conversation);
+
+    fireEvent.click(
+      screen.getByRole("button", { name: `${content.chat.expand} (2 unread)` }),
+    );
+
+    await waitFor(() =>
+      expect(mocks.markRead).toHaveBeenCalledWith("customer-1", "message-1"),
+    );
   });
 
   it("renders no chat dock without message read permission", () => {

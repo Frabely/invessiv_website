@@ -18,7 +18,8 @@ export function useCustomerConversation(
       getConversation: (cursor) =>
         messagesApiService.getConversation(customerId, cursor),
       sendMessage: (input) => messagesApiService.sendMessage(customerId, input),
-      markRead: () => messagesApiService.markRead(customerId),
+      markRead: (lastSeenMessageId) =>
+        messagesApiService.markRead(customerId, lastSeenMessageId),
     }),
     [customerId],
   );
@@ -28,15 +29,18 @@ export function useCustomerConversation(
     active,
     storageScopeId,
   );
-  const { reload } = thread;
+  const { reload, replaceMessage } = thread;
 
   const redact = useCallback(
     async (messageId: string) => {
       const result = await messagesApiService.redactMessage(messageId);
-      if (result.ok) await reload();
+      if (result.ok) {
+        replaceMessage(result.value);
+        await reload();
+      }
       return result.ok;
     },
-    [reload],
+    [reload, replaceMessage],
   );
 
   return { ...thread, redact } as const;

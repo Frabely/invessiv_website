@@ -77,12 +77,16 @@ function sendMessage(
   );
 }
 
-function markRead(endpoint: string): Promise<MessageClientResult<true>> {
-  return request(endpoint, HttpMethod.Post, undefined, () => true);
+function markRead(
+  endpoint: string,
+  lastSeenMessageId: string,
+): Promise<MessageClientResult<true>> {
+  return request(endpoint, HttpMethod.Post, { lastSeenMessageId }, () => true);
 }
 
 /** Transport shared by the CRM and the portal conversation services. */
 export const conversationApiService = {
+  isMessage,
   readErrorCode,
   request,
   getConversation,

@@ -39,7 +39,8 @@ CREATE TABLE IF NOT EXISTS conversations
 )
     );
 --> statement-breakpoint
-CREATE INDEX IF NOT EXISTS conversations_owner_customer_idx ON conversations(owner_member_id, customer_id);
+CREATE INDEX IF NOT EXISTS conversations_owner_customer_idx
+    ON conversations(owner_member_id, customer_id);
 --> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS conversations_customer_uidx
     ON conversations(customer_id, coalesce (project_id, '00000000-0000-0000-0000-000000000000'::uuid));
@@ -59,6 +60,7 @@ CREATE TABLE IF NOT EXISTS messages
 (
     id
 ) ON DELETE CASCADE,
+    client_message_id UUID,
     customer_id UUID NOT NULL REFERENCES customers
 (
     id
@@ -159,11 +161,15 @@ CREATE TABLE IF NOT EXISTS messages
 )
     );
 --> statement-breakpoint
-CREATE INDEX IF NOT EXISTS messages_conversation_order_idx ON messages(conversation_id, created_at DESC, id DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS messages_client_message_uidx ON messages(client_message_id);
+--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS messages_conversation_order_idx
+    ON messages(conversation_id, created_at DESC, id DESC);
 --> statement-breakpoint
 CREATE INDEX IF NOT EXISTS messages_customer_order_idx ON messages(customer_id, created_at DESC);
 --> statement-breakpoint
-CREATE INDEX IF NOT EXISTS messages_portal_sender_order_idx ON messages(sender_portal_membership_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS messages_portal_sender_order_idx
+    ON messages(sender_portal_membership_id, created_at DESC);
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS conversation_reads
 (
@@ -213,14 +219,20 @@ VALUES ('chat.read', 'workspace', TRUE, TRUE, 'Read customer conversations.'),
        ('portal.messages.write', 'portal', TRUE, FALSE,
         'Send messages in this customer''s conversation.') ON CONFLICT (key) DO NOTHING;
 --> statement-breakpoint
-INSERT INTO role_permissions (role_id, realm, role_is_system, role_scope_assignable, permission_key,
-                              permission_delegable, permission_scope_assignable)
+INSERT INTO role_permissions (role_id,
+                              realm,
+                              role_is_system,
+                              role_scope_assignable,
+                              permission_key,
+                              permission_delegable,
+                              permission_scope_assignable)
 SELECT r.id, p.realm, TRUE, r.scope_assignable, p.key, p.delegable, p.scope_assignable
 FROM permissions p
          CROSS JOIN roles r
 WHERE (p.key IN ('chat.read', 'chat.write') AND r.id IN (
                                                          '7d0c2a52-3f4b-4c3e-9a51-0b6f1e2d7a01',
-                                                         '7d0c2a52-3f4b-4c3e-9a51-0b6f1e2d7a02'))
+                                                         '7d0c2a52-3f4b-4c3e-9a51-0b6f1e2d7a02'
+    ))
    OR (p.key IN ('portal.messages.read', 'portal.messages.write')
     AND r.id = '7d0c2a52-3f4b-4c3e-9a51-0b6f1e2d7a04')
     ON CONFLICT (role_id, permission_key) DO NOTHING;

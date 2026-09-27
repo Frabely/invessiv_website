@@ -19,7 +19,8 @@ export function usePortalConversation(
         portalMessagesApiService.getConversation(customerId, cursor),
       sendMessage: (input) =>
         portalMessagesApiService.sendMessage(customerId, input),
-      markRead: () => portalMessagesApiService.markRead(customerId),
+      markRead: (lastSeenMessageId) =>
+        portalMessagesApiService.markRead(customerId, lastSeenMessageId),
     }),
     [customerId],
   );

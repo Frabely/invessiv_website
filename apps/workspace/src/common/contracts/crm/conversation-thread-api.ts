@@ -12,5 +12,5 @@ export type ConversationThreadApi<TConversation extends ConversationDto> = {
   sendMessage: (
     input: SendMessageInput,
   ) => Promise<MessageClientResult<MessageDto>>;
-  markRead: () => Promise<MessageClientResult<true>>;
+  markRead: (lastSeenMessageId: string) => Promise<MessageClientResult<true>>;
 };

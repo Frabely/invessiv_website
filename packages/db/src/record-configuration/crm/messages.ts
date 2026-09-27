@@ -6,6 +6,7 @@ import {
   pgTable,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
 import {
@@ -27,6 +28,7 @@ export const messages = pgTable(
     conversation_id: uuid("conversation_id")
       .notNull()
       .references(() => conversations.id, { onDelete: "cascade" }),
+    client_message_id: uuid("client_message_id"),
     customer_id: uuid("customer_id")
       .notNull()
       .references(() => customers.id, { onDelete: "cascade" }),
@@ -63,43 +65,43 @@ export const messages = pgTable(
     check(
       MessagesConstraintName.SenderConsistencyCheck,
       sql`(${t.sender_side} = ${MessageSenderSide.Internal} AND ${t.sender_member_id} IS NOT NULL AND ${t.sender_portal_membership_id} IS NULL)
-                OR (
-                ${t.sender_side}
-                =
-                ${MessageSenderSide.Customer}
-                AND
-                ${t.sender_member_id}
-                IS
-                NULL
-                AND
-                ${t.sender_portal_membership_id}
-                IS
-                NOT
-                NULL
-                )
-                OR
-                (
-                ${t.sender_side}
-                =
-                ${MessageSenderSide.System}
-                AND
-                ${t.sender_member_id}
-                IS
-                NULL
-                AND
-                ${t.sender_portal_membership_id}
-                IS
-                NULL
-                )`,
+          OR (
+          ${t.sender_side}
+          =
+          ${MessageSenderSide.Customer}
+          AND
+          ${t.sender_member_id}
+          IS
+          NULL
+          AND
+          ${t.sender_portal_membership_id}
+          IS
+          NOT
+          NULL
+          )
+          OR
+          (
+          ${t.sender_side}
+          =
+          ${MessageSenderSide.System}
+          AND
+          ${t.sender_member_id}
+          IS
+          NULL
+          AND
+          ${t.sender_portal_membership_id}
+          IS
+          NULL
+          )`,
     ),
     check(
       MessagesConstraintName.BodyCheck,
       sql`${t.body}
-            IS NOT NULL OR
-            ${t.redacted_at}
-            IS
-            NOT
-            NULL`,
+        IS NOT NULL OR
+        ${t.redacted_at}
+        IS
+        NOT
+        NULL`,
     ),
     index(MessagesConstraintName.ConversationOrderIndex).on(
       t.conversation_id,
@@ -113,6 +115,9 @@ export const messages = pgTable(
     index(MessagesConstraintName.PortalSenderOrderIndex).on(
       t.sender_portal_membership_id,
       t.created_at.desc(),
+    ),
+    uniqueIndex(MessagesConstraintName.ClientMessageUnique).on(
+      t.client_message_id,
     ),
   ],
 );

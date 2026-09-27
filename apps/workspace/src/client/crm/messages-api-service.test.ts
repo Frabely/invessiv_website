@@ -7,6 +7,7 @@ import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-
 import { messagesApiService } from "@/client/crm/messages-api-service";
 
 const CUSTOMER_ID = "11111111-1111-4111-8111-111111111111";
+const CLIENT_MESSAGE_ID = "33333333-3333-4333-8333-333333333333";
 const MESSAGE = {
   id: "22222222-2222-4222-8222-222222222222",
   createdAt: "2026-09-26T10:00:00.000Z",
@@ -46,6 +47,7 @@ describe("messagesApiService", () => {
 
     const result = await messagesApiService.sendMessage(CUSTOMER_ID, {
       body: "Hallo",
+      clientMessageId: CLIENT_MESSAGE_ID,
     });
 
     expect(result).toEqual({ ok: true, value: MESSAGE });
@@ -54,7 +56,10 @@ describe("messagesApiService", () => {
     );
     expect(fetchMock.mock.calls[0][1]).toMatchObject({
       method: HttpMethod.Post,
-      body: JSON.stringify({ body: "Hallo" }),
+      body: JSON.stringify({
+        body: "Hallo",
+        clientMessageId: CLIENT_MESSAGE_ID,
+      }),
     });
   });
 
@@ -69,7 +74,7 @@ describe("messagesApiService", () => {
     });
 
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
-    expect(await messagesApiService.markRead(CUSTOMER_ID)).toEqual({
+    expect(await messagesApiService.markRead(CUSTOMER_ID, MESSAGE.id)).toEqual({
       ok: false,
       code: MessageErrorCode.Internal,
     });

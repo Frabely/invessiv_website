@@ -93,6 +93,7 @@ describe("PortalConversation", () => {
     );
     expect(api.sendMessage).toHaveBeenCalledWith("customer-1", {
       body: "Hallo",
+      clientMessageId: expect.any(String),
     });
     expect(
       screen.getByRole("button", { name: content.thread.retry }),

@@ -6,4 +6,5 @@ export const MessagesConstraintName = {
   ConversationOrderIndex: "messages_conversation_order_idx",
   CustomerOrderIndex: "messages_customer_order_idx",
   PortalSenderOrderIndex: "messages_portal_sender_order_idx",
+  ClientMessageUnique: "messages_client_message_uidx",
 } as const;

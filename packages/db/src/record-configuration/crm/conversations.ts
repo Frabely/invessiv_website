@@ -42,7 +42,7 @@ export const conversations = pgTable(
     check(
       ConversationsConstraintName.VersionCheck,
       sql`${t.version}
-        > 0`,
+      > 0`,
     ),
     index(ConversationsConstraintName.OwnerCustomerIndex).on(
       t.owner_member_id,
@@ -51,12 +51,12 @@ export const conversations = pgTable(
     uniqueIndex(ConversationsConstraintName.CustomerProjectUnique).on(
       t.customer_id,
       sql`coalesce(
-            ${t.project_id},
-            '00000000-0000-0000-0000-000000000000'
-            :
-            :
-            uuid
-            )`,
+        ${t.project_id},
+        '00000000-0000-0000-0000-000000000000'
+        :
+        :
+        uuid
+        )`,
     ),
   ],
 );

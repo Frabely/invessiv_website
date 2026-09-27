@@ -10,6 +10,7 @@ import {
   isNull,
   or,
   sql,
+  type SQL,
 } from "drizzle-orm";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
@@ -35,6 +36,7 @@ import { messageMappingService } from "./message-mapping-service";
 import { activityService } from "../activity-service";
 
 type TextMessageInput = {
+  clientMessageId: string;
   conversationId: string;
   customerId: string;
   body: string;
@@ -146,9 +148,19 @@ async function getLastReadAt(
   conversationId: string,
   memberId: string | null,
   portalMembershipId: string | null,
-): Promise<Date | null> {
+): Promise<string | null> {
   const [read] = await db
-    .select({ at: conversationReads.last_read_at })
+    .select({
+      at: sql<string>`to_char
+        (
+        ${conversationReads.last_read_at}
+        AT
+        TIME
+        ZONE
+        'UTC',
+        'YYYY-MM-DD"T"HH24:MI:SS.US"Z"'
+        )`,
+    })
     .from(conversationReads)
     .where(
       and(
@@ -185,18 +197,24 @@ async function countUnreadMessages(
         ownSide === MessageSenderSide.Internal
           ? eq(messages.sender_side, MessageSenderSide.Customer)
           : eq(messages.sender_side, MessageSenderSide.Internal),
-        lastReadAt ? gt(messages.created_at, lastReadAt) : undefined,
+        lastReadAt
+          ? gt(
+              messages.created_at,
+              sql`${lastReadAt}
+              ::timestamptz`,
+            )
+          : undefined,
       ),
     );
   return result?.value ?? 0;
 }
 
-async function markConversationRead(
+async function markConversationReadAt(
   db: ContactDatabaseTransaction,
   conversationId: string,
   memberId: string | null,
   portalMembershipId: string | null,
-  at = new Date(),
+  at: SQL,
 ) {
   const values = {
     id: crypto.randomUUID(),
@@ -216,38 +234,70 @@ async function markConversationRead(
             conversationReads.portal_membership_id,
           ],
       targetWhere: memberId
-        ? sql`${conversationReads.member_id}
-                    IS NOT NULL`
-        : sql`${conversationReads.portal_membership_id}
-                    IS NOT NULL`,
+        ? isNotNull(conversationReads.member_id)
+        : isNotNull(conversationReads.portal_membership_id),
       set: {
         last_read_at: sql`greatest
-                (
-                ${conversationReads.last_read_at},
-                excluded
-                .
-                last_read_at
-                )`,
+        (
+        ${conversationReads.last_read_at},
+        excluded
+        .
+        last_read_at
+        )`,
       },
     });
+}
+
+async function markConversationReadThroughMessage(
+  db: ContactDatabaseTransaction,
+  conversationId: string,
+  lastSeenMessageId: string,
+  memberId: string | null,
+  portalMembershipId: string | null,
+): Promise<boolean> {
+  const [seen] = await db
+    .select({ id: messages.id })
+    .from(messages)
+    .where(
+      and(
+        eq(messages.id, lastSeenMessageId),
+        eq(messages.conversation_id, conversationId),
+        eq(messages.type, MessageType.Text),
+        memberId
+          ? eq(messages.sender_side, MessageSenderSide.Customer)
+          : eq(messages.sender_side, MessageSenderSide.Internal),
+      ),
+    )
+    .limit(1);
+  if (!seen) return false;
+  await markConversationReadAt(
+    db,
+    conversationId,
+    memberId,
+    portalMembershipId,
+    sql`(select ${messages.created_at} from ${messages} where ${messages.id} = ${lastSeenMessageId})`,
+  );
+  return true;
 }
 
 async function updateLastMessageAt(
   db: ContactDatabaseTransaction,
   conversationId: string,
-  at: Date,
+  messageId: string,
 ) {
+  const messageAt = sql`(select ${messages.created_at} from ${messages} where ${messages.id} = ${messageId})`;
   await db
     .update(conversations)
     .set({
       last_message_at: sql`greatest
-            (coalesce(
-            ${conversations.last_message_at},
-            ${at}
-            ),
-            ${at}
-            )`,
-      updated_at: at,
+      (coalesce(
+      ${conversations.last_message_at},
+      ${messageAt}
+      ),
+      ${messageAt}
+      )`,
+      updated_at: sql`clock_timestamp
+      ()`,
     })
     .where(eq(conversations.id, conversationId));
 }
@@ -297,7 +347,7 @@ async function insertMessageAndUpdateConversation(
   values: typeof messages.$inferInsert,
 ) {
   const [message] = await tx.insert(messages).values(values).returning();
-  await updateLastMessageAt(tx, message.conversation_id, message.created_at);
+  await updateLastMessageAt(tx, message.conversation_id, message.id);
   return message;
 }
 
@@ -315,33 +365,60 @@ async function recordTextMessageCreation(
   });
 }
 
+async function findMatchingTextMessage(
+  tx: ContactDatabaseTransaction,
+  input: Pick<
+    TextMessageInput,
+    | "clientMessageId"
+    | "conversationId"
+    | "body"
+    | "side"
+    | "memberId"
+    | "portalMembershipId"
+  >,
+) {
+  const [existing] = await tx
+    .select()
+    .from(messages)
+    .where(eq(messages.client_message_id, input.clientMessageId))
+    .limit(1);
+  return existing &&
+    existing.conversation_id === input.conversationId &&
+    existing.sender_side === input.side &&
+    existing.sender_member_id === input.memberId &&
+    existing.sender_portal_membership_id === input.portalMembershipId &&
+    (existing.body === input.body || existing.redacted_at !== null)
+    ? existing
+    : null;
+}
+
 async function appendTextMessage(
   tx: ContactDatabaseTransaction,
   input: TextMessageInput,
 ) {
-  const now = new Date();
-  const message = await insertMessageAndUpdateConversation(tx, {
-    id: crypto.randomUUID(),
-    conversation_id: input.conversationId,
-    customer_id: input.customerId,
-    type: MessageType.Text,
-    body: input.body,
-    metadata: null,
-    sender_side: input.side,
-    sender_member_id: input.memberId,
-    sender_portal_membership_id: input.portalMembershipId,
-    sender_display_name: input.displayName,
-    created_at: now,
-    redacted_at: null,
-    redacted_by_member_id: null,
-  });
-  await markConversationRead(
-    tx,
-    input.conversationId,
-    input.memberId,
-    input.portalMembershipId,
-    now,
-  );
+  const [message] = await tx
+    .insert(messages)
+    .values({
+      id: crypto.randomUUID(),
+      conversation_id: input.conversationId,
+      client_message_id: input.clientMessageId,
+      customer_id: input.customerId,
+      type: MessageType.Text,
+      body: input.body,
+      metadata: null,
+      sender_side: input.side,
+      sender_member_id: input.memberId,
+      sender_portal_membership_id: input.portalMembershipId,
+      sender_display_name: input.displayName,
+      created_at: sql`clock_timestamp
+        ()`,
+      redacted_at: null,
+      redacted_by_member_id: null,
+    })
+    .onConflictDoNothing({ target: messages.client_message_id })
+    .returning();
+  if (!message) return findMatchingTextMessage(tx, input);
+  await updateLastMessageAt(tx, input.conversationId, message.id);
   await recordTextMessageCreation(tx, input, message);
   return message;
 }
@@ -366,7 +443,6 @@ async function appendSystemMessage(
     sender_member_id: null,
     sender_portal_membership_id: null,
     sender_display_name: "System",
-    created_at: new Date(),
     redacted_at: null,
     redacted_by_member_id: null,
   });
@@ -401,7 +477,7 @@ async function redactTextMessage(
   target: { customerId: string; conversationId: string },
   memberId: string,
   at: Date,
-): Promise<boolean> {
+): Promise<typeof messages.$inferSelect | null> {
   const updated = await tx
     .update(messages)
     .set({ body: null, redacted_at: at, redacted_by_member_id: memberId })
@@ -415,8 +491,8 @@ async function redactTextMessage(
         isNotNull(messages.body),
       ),
     )
-    .returning({ id: messages.id });
-  return updated.length === 1;
+    .returning();
+  return updated[0] ?? null;
 }
 
 /**
@@ -456,10 +532,11 @@ async function findPortalSendRetryAfter(
 export const messageService = {
   getMessagePage,
   countUnreadMessages,
-  markConversationRead,
+  markConversationReadThroughMessage,
   findCustomerConversation,
   ensureCustomerConversation,
   appendTextMessage,
+  findMatchingTextMessage,
   appendSystemMessage,
   findPortalSendRetryAfter,
   findRedactableTextMessage,

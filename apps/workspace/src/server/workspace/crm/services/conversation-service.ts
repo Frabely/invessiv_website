@@ -210,6 +210,7 @@ async function selectVisibleInboxRows(
       lastMessage: {
         id: lastMessage.id,
         conversation_id: lastMessage.conversation_id,
+        client_message_id: lastMessage.client_message_id,
         customer_id: lastMessage.customer_id,
         type: lastMessage.type,
         body: lastMessage.body,
@@ -297,10 +298,11 @@ function roleGrantsChatRead() {
  * Active members who may own the conversation: `chat.read` workspace-wide or bound to the customer
  * itself. The owner command re-checks this; the list only avoids offering doomed choices.
  */
-async function listOwnerCandidates(
+async function selectOwnerCandidates(
   db: ContactDatabaseTransaction,
   customerId: string,
-): Promise<WorkspaceMemberOptionDto[]> {
+  memberId: string | null,
+) {
   const globalGrant = db
     .select({ id: workspaceMemberRoles.role_id })
     .from(workspaceMemberRoles)
@@ -333,10 +335,26 @@ async function listOwnerCandidates(
       and(
         eq(workspaceMembers.active, true),
         eq(users.active, true),
+        memberId ? eq(workspaceMembers.id, memberId) : undefined,
         or(exists(globalGrant), exists(customerGrant)),
       ),
     )
     .orderBy(asc(users.display_name), asc(workspaceMembers.id));
+}
+
+function listOwnerCandidates(
+  db: ContactDatabaseTransaction,
+  customerId: string,
+): Promise<WorkspaceMemberOptionDto[]> {
+  return selectOwnerCandidates(db, customerId, null);
+}
+
+async function memberHasChatRead(
+  db: ContactDatabaseTransaction,
+  customerId: string,
+  memberId: string,
+): Promise<boolean> {
+  return (await selectOwnerCandidates(db, customerId, memberId)).length > 0;
 }
 
 export const conversationService = {
@@ -346,5 +364,6 @@ export const conversationService = {
   listVisibleInbox,
   countUnreadConversations,
   listOwnerCandidates,
+  memberHasChatRead,
   memberIsWorkspaceOwner,
 } as const;

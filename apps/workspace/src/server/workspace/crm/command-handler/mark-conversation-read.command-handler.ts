@@ -4,6 +4,7 @@ import { and, eq, isNull } from "drizzle-orm";
 import { z } from "zod";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
+import type { MarkConversationReadInput } from "@invessiv/common/contracts/crm/mark-conversation-read.input";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { conversations } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
@@ -12,6 +13,7 @@ import { messageService } from "@/server/shared/services/message/message-service
 
 export async function markConversationRead(
   customerId: string,
+  input: MarkConversationReadInput,
   actor: WorkspaceActor,
 ) {
   if (
@@ -32,12 +34,15 @@ export async function markConversationRead(
       .limit(1);
     if (!conversation)
       return { ok: false, code: MessageErrorCode.NotFound } as const;
-    await messageService.markConversationRead(
+    const marked = await messageService.markConversationReadThroughMessage(
       tx,
       conversation.id,
+      input.lastSeenMessageId,
       actor.workspaceMemberId,
       null,
     );
-    return { ok: true } as const;
+    return marked
+      ? ({ ok: true } as const)
+      : ({ ok: false, code: MessageErrorCode.ValidationError } as const);
   });
 }
