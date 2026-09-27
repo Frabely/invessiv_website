@@ -37,6 +37,28 @@
   outline-offset: -3px;
 }
 
+.railIcon {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+}
+
+.railCount {
+  position: absolute;
+  top: -0.55rem;
+  right: -0.85rem;
+  min-width: 1.15rem;
+  padding: 0.05rem 0.3rem;
+  border-radius: 999px;
+  background: var(--color-cta);
+  color: var(--color-on-cta);
+  font-size: var(--font-size-badge);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  line-height: 1.1rem;
+  text-align: center;
+}
+
 .dock[data-expanded="true"] .rail {
   color: var(--color-text);
 }

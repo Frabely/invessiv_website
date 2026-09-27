@@ -34,21 +34,21 @@ Mock-Kommentar im Dock wird angepasst.
 
 ## Entscheidungen
 
-| Bereich               | Entscheidung                                                                                                                |
-| --------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| Ort                   | `ChatDock` im Kunden-Cockpit + Posteingang `/crm/messages` + Sidebar-Zähler                                                 |
-| Gemeinsame Komponente | `components/workspace/shared/message-thread/**` — app-intern geteilt, nicht in `packages/ui` (hängt an Workspace-Contracts) |
-| Aktualisierung        | Beim Öffnen laden, nach dem Senden neu laden, zusätzlich bei `visibilitychange`                                             |
-| Senden                | Enter sendet, Shift+Enter macht einen Zeilenumbruch; auf Touchgeräten sendet nur die Schaltfläche                           |
-| Sendezustand          | Optimistische Anzeige „wird gesendet“; bei Fehler bleibt die Nachricht mit „Erneut senden“ sichtbar                         |
-| Entwurf               | Ungesendeter Text bleibt je Kunde im `localStorage` (Key-Konstante in `common`), Zugriffe in `try/catch`                    |
-| Datumstrenner         | „Heute“, „Gestern“, danach Datum — über die Locale formatiert (`Intl`, keine Locale-Branches)                               |
-| Gruppierung           | Aufeinanderfolgende Nachrichten derselben Seite innerhalb von fünf Minuten teilen einen Kopf                                |
-| Links                 | Erkannt und klickbar (`rel="noopener noreferrer"`), sonst **nur Text**. Kein HTML, kein Markdown                            |
-| Systemnachrichten     | Mittig, zurückhaltend, ohne Sprechblase; Text aus Dictionary-Key + Parametern                                               |
-| Redaction             | Platzhalter „Nachricht vom Owner ausgeblendet“ statt Inhalt                                                                 |
-| Lesestand             | Wird gesetzt, sobald der Verlauf sichtbar ist (Dock geöffnet bzw. Posteingangsauswahl)                                      |
-| Verantwortung         | Anzeige + Änderung im Posteingang über versionierten PATCH (Task 24 T3)                                                     |
+| Bereich               | Entscheidung                                                                                                                                                         |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Ort                   | `ChatDock` im Kunden-Cockpit + Posteingang `/crm/messages` + Sidebar-Zähler                                                                                          |
+| Gemeinsame Komponente | Ursprünglich `components/workspace/shared/message-thread/**`; in Task 26 nach `packages/ui` verschoben (Portal darf nicht aus `components/workspace/**` importieren) |
+| Aktualisierung        | Beim Öffnen laden, nach dem Senden neu laden, zusätzlich bei `visibilitychange`                                                                                      |
+| Senden                | Enter sendet, Shift+Enter macht einen Zeilenumbruch; auf Touchgeräten sendet nur die Schaltfläche                                                                    |
+| Sendezustand          | Optimistische Anzeige „wird gesendet“; bei Fehler bleibt die Nachricht mit „Erneut senden“ sichtbar                                                                  |
+| Entwurf               | Ungesendeter Text bleibt je Kunde im `localStorage` (Key-Konstante in `common`), Zugriffe in `try/catch`                                                             |
+| Datumstrenner         | „Heute“, „Gestern“, danach Datum — über die Locale formatiert (`Intl`, keine Locale-Branches)                                                                        |
+| Gruppierung           | Aufeinanderfolgende Nachrichten derselben Seite innerhalb von fünf Minuten teilen einen Kopf                                                                         |
+| Links                 | Erkannt und klickbar (`rel="noopener noreferrer"`), sonst **nur Text**. Kein HTML, kein Markdown                                                                     |
+| Systemnachrichten     | Mittig, zurückhaltend, ohne Sprechblase; Text aus Dictionary-Key + Parametern                                                                                        |
+| Redaction             | Platzhalter „Nachricht vom Owner ausgeblendet“ statt Inhalt                                                                                                          |
+| Lesestand             | Wird gesetzt, sobald der Verlauf sichtbar ist (Dock geöffnet bzw. Posteingangsauswahl)                                                                               |
+| Verantwortung         | Anzeige + Änderung im Posteingang über versionierten PATCH (Task 24 T3)                                                                                              |
 
 ## Architektur
 

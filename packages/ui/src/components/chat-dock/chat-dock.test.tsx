@@ -48,4 +48,16 @@ describe("ChatDock", () => {
     expect(screen.getByText("Real thread")).toBeVisible();
     expect(screen.queryByText(content.body)).toBeNull();
   });
+
+  it("names unread messages on the collapsed rail", () => {
+    render(
+      <ChatDock badgeLabel="3 unread" content={content} unreadCount={3}>
+        <p>Real thread</p>
+      </ChatDock>,
+    );
+    const toggle = screen.getByRole("button", {
+      name: `${content.expand} (3 unread)`,
+    });
+    expect(toggle).toHaveTextContent("3");
+  });
 });

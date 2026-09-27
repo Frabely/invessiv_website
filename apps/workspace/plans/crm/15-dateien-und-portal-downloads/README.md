@@ -53,7 +53,7 @@ Ordner 13a hat den Kundenchat ohne Anhänge geliefert, weil noch keine Dateitabe
 additiv `message_files` (`message_id`, `file_id`, `customer_id` denormalisiert, UNIQUE `(message_id, file_id)`) als
 reine Verweise auf **portalöffentliche** Dateien — keine zweite Uploadablage. Beim Senden wird die Sichtbarkeit
 erneut geprüft; eine nicht freigegebene oder fremde Datei wird abgelehnt. Entzug einer Freigabe entfernt den späteren
-Downloadzugriff aus dem Chat. Verlaufskomponente `components/workspace/shared/message-thread/` zeigt Anhänge als
+Downloadzugriff aus dem Chat. Verlaufskomponente `packages/ui/src/components/message-thread/` zeigt Anhänge als
 Links; Contract `MessageDto` bekommt `attachments`.
 
 ## Merge-Gate

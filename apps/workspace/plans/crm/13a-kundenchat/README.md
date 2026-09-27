@@ -30,8 +30,8 @@
 Pro Kunde existiert ein gemeinsamer Chat. Nach diesem Merge ist er **bidirektional** vollständig nutzbar: Mitarbeiter
 schreiben im Kunden-Cockpit oder im Posteingang `/crm/messages`, Kunden im Portal-Dock oder unter
 `/portal/[customerId]/messages`. Beide Seiten sehen denselben Verlauf. Benachrichtigungen (Glocke, interne Bündelung,
-Kundendigest, E-Mail-Schalter) werden in Ordner 20c aktiviert; bis dahin sind Sidebar-Zähler, Posteingang und
-Portal-Widget die Hinweise auf neue Nachrichten.
+Kundendigest, E-Mail-Schalter) werden in Ordner 20c aktiviert; bis dahin sind Sidebar-Zähler, Posteingang und der
+Ungelesen-Zähler am Dock-Rail (CRM und Portal) die Hinweise auf neue Nachrichten.
 
 ## Einstieg für die Umsetzung (neue Session)
 
@@ -46,7 +46,7 @@ Verifizierte Code-Anker (Stand 26.09.2026):
 | `ChatDock` (Mock, `children`-Slot) | `packages/ui/src/components/chat-dock/chat-dock.tsx`, Texte `ChatDockContent` in `packages/common`                                                                                                                            |
 | Cockpit-Dock                       | `apps/workspace/src/components/workspace/crm/detail/customer-cockpit-view/customer-cockpit-view.tsx`                                                                                                                          |
 | Portal-Dock                        | `apps/workspace/src/components/portal/dashboard/portal-dashboard/portal-dashboard.tsx`                                                                                                                                        |
-| Portal-Widget `messages` (`mock`)  | `apps/workspace/src/common/constants/portal/portal-widget-layout.ts`, `portal-widget-keys.ts`                                                                                                                                 |
+| Portal-Dock (kein Widget mehr)     | Das frühere Widget `messages` wurde vor Ordner 13a entfernt; der dauerhafte `ChatDock` im Portal-Dashboard ist der Einstieg                                                                                                   |
 | Portal-Navigation/Sektionen        | `common/constants/portal/portal-nav-items.ts`, `portal-sections.ts` (`PortalSection.Messages`)                                                                                                                                |
 | Portal-Auth                        | `server/portal/auth/{with-portal-actor,require-portal-actor}.ts`                                                                                                                                                              |
 | Portal-Sichtbarkeit                | `server/portal/shared/portal-access-condition.ts` (`portalAccessCondition`, `portalCanOn`)                                                                                                                                    |
@@ -93,10 +93,10 @@ Nicht vorhanden (bewusst): Dateitabelle (→ Anhänge in Ordner 15), Feedback-Ei
 
 ## Portal-Widget und Cockpit-Dock (aus Ordner 12c und 13)
 
-Der `ChatDock` aus `@invessiv/ui` existiert als Mock im Kunden-Cockpit (Ordner 12c) und im Portal-Dashboard als
-Widget `messages` („Nachrichten“, `openMode: dock`, Ordner 13). Dieser Ordner stellt beide auf echte Daten um: Der
-Dock bekommt den echten Verlauf als `children`, das Portal-Widget zeigt den Ungelesen-Stand und öffnet den Dock. Die
-früher genannte Dashboard-Karte „Offene Nachrichten“ **ist** dieses Registry-Widget, keine zusätzliche Karte.
+Der `ChatDock` aus `@invessiv/ui` existiert als Mock im Kunden-Cockpit (Ordner 12c) und dauerhaft im
+Portal-Dashboard. Dieser Ordner stellt beide auf echte Daten um: Der Dock bekommt den echten Verlauf als `children` und
+zeigt den Ungelesen-Stand am eingeklappten Rail (`unreadCount`). Ein eigenes Dashboard-Widget „Nachrichten“ gibt es
+nicht (Entscheidung 27.09.2026, siehe Task 26).
 
 ## Benachrichtigung
 
@@ -118,8 +118,8 @@ früher genannte Dashboard-Karte „Offene Nachrichten“ **ist** dieses Registr
 
 **Portalgrenze (eigener Abschnitt im PR-Testplan)**
 
-- [ ] Portal-Widget `messages` und `ChatDock` von Mock auf echten Thread umgestellt (Registry `mock: false` +
-      `requiredPermission: portal.messages.read`); Schreiben nur mit `portal.messages.write`.
+- [ ] Portal-`ChatDock` von Mock auf echten Thread umgestellt, Ungelesen am Rail; ohne `portal.messages.read` kein
+      Dock; Schreiben nur mit `portal.messages.write`.
 - [ ] Mehrere Kontakte derselben Firma haben unabhängige Lesestände.
 - [ ] Widerrufenes Mitglied kann Verlauf und Deep-Link sofort nicht mehr laden.
 - [ ] Kunde A sieht unter keinem Sitzungszustand die Unterhaltung von Kunde B (404).

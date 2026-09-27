@@ -360,6 +360,7 @@ export function CustomerCockpitView({
           content={content.chat}
           expanded={chatOpen}
           onExpandedChangeAction={setChatOpen}
+          unreadCount={conversation?.unreadCount ?? 0}
         >
           <CustomerConversation
             active={chatOpen}

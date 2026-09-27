@@ -1,8 +1,37 @@
 {
+  "meta": {
+    "title": "Messages | Invessiv",
+    "description": "Your direct line to us: ask questions, give feedback and find everything about your project in one place."
+  },
+  "page": {
+    "heading": "Messages",
+    "intro": "Write to us right here. Everyone on your team with portal access sees the same conversation."
+  },
+  "thread": {
+    "logLabel": "Conversation with Invessiv",
+    "emptyTitle": "Just write to us",
+    "emptyBody": "Ask a question, give feedback or send us a link. On business days we usually reply within one day.",
+    "loadOlder": "Load older messages",
+    "loadingOlder": "Loading …",
+    "newMessages": "New messages",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "own": "You",
+    "redacted": "This message was hidden.",
+    "systemFallback": "Update on your project",
+    "sending": "Sending …",
+    "failed": "Not sent",
+    "retry": "Send again",
+    "redact": "Hide",
+    "inputLabel": "Your message",
+    "inputPlaceholder": "Your message …",
+    "inputHint": "Enter sends, Shift + Enter adds a new line.",
+    "send": "Send",
+    "characterCount": "{count} of {max} characters"
+  },
   "systemMessages": {
     "projectPhaseChanged": "Your project “{projectTitle}” is now in the {phase} phase."
   },
-  "systemFallback": "Update on your project",
   "phases": {
     "onboarding": "onboarding",
     "design": "design",
@@ -10,5 +39,19 @@
     "feedback": "feedback",
     "launch": "launch",
     "maintenance": "maintenance"
+  },
+  "dock": {
+    "unread": "{count} unread"
+  },
+  "states": {
+    "loading": "Loading conversation …",
+    "loadError": "The conversation could not be loaded.",
+    "reload": "Load again",
+    "olderError": "Older messages could not be loaded.",
+    "rateLimited": "You sent a lot of messages in the last hour. Wait a moment, then send again."
+  },
+  "ownerView": {
+    "hint": "You can't write in the portal view.",
+    "link": "Reply in the CRM"
   }
 }

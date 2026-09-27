@@ -23,7 +23,10 @@ export async function POST(request: NextRequest, { params }: Context) {
             { message: result.message },
             { status: HttpResponseCode.Created },
           )
-        : messageApiError(result.code);
+        : messageApiError(
+            result.code,
+            "retryAfterSeconds" in result ? result.retryAfterSeconds : null,
+          );
     } catch (error) {
       console.error("[portal-message] send failed", {
         errorName: error instanceof Error ? error.name : typeof error,

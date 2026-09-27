@@ -3,6 +3,7 @@ export const MessageErrorCode = {
   ValidationError: "VALIDATION_ERROR",
   Forbidden: "FORBIDDEN",
   VersionConflict: "VERSION_CONFLICT",
+  RateLimited: "RATE_LIMITED",
   Internal: "INTERNAL",
 } as const;
 export type MessageErrorCode =
@@ -12,5 +13,6 @@ export const MESSAGE_ERROR_CODE_VALUES = [
   MessageErrorCode.ValidationError,
   MessageErrorCode.Forbidden,
   MessageErrorCode.VersionConflict,
+  MessageErrorCode.RateLimited,
   MessageErrorCode.Internal,
 ] as const;

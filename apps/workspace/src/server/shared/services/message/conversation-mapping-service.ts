@@ -4,6 +4,7 @@ import type { ConversationDto } from "@invessiv/common/contracts/crm/conversatio
 import type { ConversationInboxItemDto } from "@invessiv/common/contracts/crm/conversation-inbox-item.dto";
 import type { InternalConversationDto } from "@invessiv/common/contracts/crm/internal-conversation.dto";
 import type { MessageDto } from "@invessiv/common/contracts/crm/message.dto";
+import type { PortalConversationDto } from "@invessiv/common/contracts/portal/portal-conversation.dto";
 import { conversations } from "@invessiv/db/record-configuration";
 
 function toConversationDto(
@@ -36,6 +37,27 @@ function toInternalDto(
   };
 }
 
+/** A customer without any message yet has no row; the portal still shows an empty thread. */
+function toPortalDto(
+  row: typeof conversations.$inferSelect | null,
+  customerId: string,
+  unreadCount: number,
+  page: Pick<ConversationDto, "messages" | "nextCursor">,
+  canWrite: boolean,
+): PortalConversationDto {
+  const conversation = row
+    ? toConversationDto(row, unreadCount, page)
+    : {
+        id: "",
+        customerId,
+        unreadCount: 0,
+        lastMessageAt: null,
+        messages: [],
+        nextCursor: null,
+      };
+  return { ...conversation, canWrite };
+}
+
 function toInboxItemDto(
   row: typeof conversations.$inferSelect,
   names: { customerDisplayName: string; ownerDisplayName: string },
@@ -57,5 +79,6 @@ function toInboxItemDto(
 export const conversationMappingService = {
   toConversationDto,
   toInternalDto,
+  toPortalDto,
   toInboxItemDto,
 } as const;

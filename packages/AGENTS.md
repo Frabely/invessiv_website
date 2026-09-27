@@ -60,6 +60,8 @@ Komponenten in `packages/ui` müssen:
 - Styling co-located als CSS Module halten
 - Theme-Tokens nutzen, die in konsumierenden Apps bereitgestellt werden
 - als Client Component markiert werden, wenn sie Hooks, Events oder Browser-State nutzen
+- Hooks, die nur UI-Komponenten des Pakets tragen (z. B. `use-thread-autoscroll`, `use-message-draft`), liegen
+  unter `packages/ui/src/hooks/`; Storage-Keys übergibt die konsumierende App, das Paket kennt keine App-Präfixe
 
 App-spezifische Varianten, Labels, Option-Icons oder Fachlogik bleiben beim konsumierenden App-Code und werden über
 Props

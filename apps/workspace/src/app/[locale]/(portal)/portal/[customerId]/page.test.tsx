@@ -14,6 +14,7 @@ vi.mock("server-only", () => ({}));
 const mocks = vi.hoisted(() => ({
   requirePortalReader: vi.fn(),
   getPortalDashboard: vi.fn(),
+  getPortalConversation: vi.fn(),
   dashboardProps: vi.fn(),
 }));
 
@@ -23,6 +24,10 @@ vi.mock("@/server/portal/auth/require-portal-reader", () => ({
 vi.mock(
   "@/server/portal/query-handler/get-portal-dashboard.query-handler",
   () => ({ getPortalDashboard: mocks.getPortalDashboard }),
+);
+vi.mock(
+  "@/server/portal/query-handler/get-portal-conversation.query-handler",
+  () => ({ getPortalConversation: mocks.getPortalConversation }),
 );
 vi.mock(
   "@/components/portal/dashboard/portal-dashboard/portal-dashboard",
@@ -72,6 +77,7 @@ describe("PortalCustomerPage", () => {
     Object.values(mocks).forEach((mock) => mock.mockReset());
     mocks.requirePortalReader.mockResolvedValue(ACTOR);
     mocks.getPortalDashboard.mockResolvedValue(dashboard());
+    mocks.getPortalConversation.mockResolvedValue(null);
   });
 
   afterEach(cleanup);
@@ -108,6 +114,25 @@ describe("PortalCustomerPage", () => {
     const props = await renderPage();
 
     expect(props.cockpitHref).toBe("/de/crm?cockpit=customer-1");
+  });
+
+  it("passes the conversation and the viewer for the chat dock", async () => {
+    const conversation = {
+      id: "conversation-1",
+      customerId: "customer-1",
+      unreadCount: 1,
+      lastMessageAt: null,
+      messages: [],
+      nextCursor: null,
+      canWrite: true,
+    };
+    mocks.getPortalConversation.mockResolvedValue(conversation);
+
+    const props = await renderPage();
+
+    expect(mocks.getPortalConversation).toHaveBeenCalledWith(ACTOR, null);
+    expect(props.conversation).toBe(conversation);
+    expect(props.viewerUserId).toBe(ACTOR.userId);
   });
 
   it("normalizes the customerId case before resolving the reader", async () => {

@@ -12,6 +12,7 @@ import { HttpHeaderName } from "@invessiv/common/constants/http/http-header-name
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import { MediaType } from "@invessiv/common/constants/http/media-types";
+import { PORTAL_MESSAGES_PER_HOUR } from "@invessiv/common/constants/crm/message-limits";
 import { SYSTEM_ROLE_DEFINITIONS } from "@invessiv/common/constants/auth/system-role-definitions";
 import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
 import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
@@ -618,6 +619,80 @@ describe.skipIf(!RUN_INTEGRATION)(
         internalActor(),
       );
       expect(inactive).toEqual({ ok: false, code: "VALIDATION_ERROR" });
+    });
+
+    it("limits portal sends per membership and hour and names the wait", async () => {
+      const resolution = await resolvePortalActor(portalClerkId, customerA);
+      if (!resolution.ok) throw new Error("Expected portal membership.");
+      const conversation = await db.transaction((tx) =>
+        messageService.ensureCustomerConversation(tx, customerA),
+      );
+      if (!conversation) throw new Error("Expected a conversation.");
+      const oldestAt = new Date(Date.now() - 50 * 60 * 1000);
+      const [{ recent }] = await db
+        .select({ recent: sql<number>`count(*)::int` })
+        .from(messages)
+        .where(
+          and(
+            eq(messages.sender_portal_membership_id, membershipId),
+            sql`${messages.created_at}
+                      > now() - interval '1 hour'`,
+          ),
+        );
+      const missing = PORTAL_MESSAGES_PER_HOUR - recent;
+      if (missing > 0)
+        await db.insert(messages).values(
+          Array.from({ length: missing }, (_, index) => ({
+            id: randomUUID(),
+            conversation_id: conversation.id,
+            customer_id: customerA,
+            type: MessageType.Text,
+            body: `Filler ${index}`,
+            metadata: null,
+            sender_side: MessageSenderSide.Customer,
+            sender_member_id: null,
+            sender_portal_membership_id: membershipId,
+            sender_display_name: "Portal contact",
+            created_at: oldestAt,
+          })),
+        );
+
+      clerkAuthMock.mockResolvedValue({ userId: portalClerkId });
+      const response = await sendPortalMessageRoute(
+        new NextRequest(
+          `http://localhost/api/portal/${customerA}/conversation/messages`,
+          {
+            method: HttpMethod.Post,
+            body: JSON.stringify({ body: "One too many" }),
+            headers: { [HttpHeaderName.ContentType]: MediaType.Json },
+          },
+        ),
+        { params: Promise.resolve({ customerId: customerA }) },
+      );
+      expect(response.status).toBe(HttpResponseCode.TooManyRequests);
+      const retryAfter = Number(
+        response.headers.get(HttpHeaderName.RetryAfter),
+      );
+      expect(retryAfter).toBeGreaterThan(0);
+      expect(retryAfter).toBeLessThanOrEqual(10 * 60 + 1);
+      const stored = await db
+        .select({ id: messages.id })
+        .from(messages)
+        .where(eq(messages.body, "One too many"));
+      expect(stored).toHaveLength(0);
+
+      // Another member's quota is untouched by this member's messages.
+      expect(
+        await db.transaction((tx) =>
+          messageService.findPortalSendRetryAfter(tx, randomUUID()),
+        ),
+      ).toBeNull();
+      const internal = await sendInternalMessage(
+        customerA,
+        { body: "Internal replies are never limited." },
+        internalActor(),
+      );
+      expect(internal.ok).toBe(true);
     });
   },
 );

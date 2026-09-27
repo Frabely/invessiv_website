@@ -297,4 +297,5 @@ export const PORTAL_READ_PERMISSION_VALUES = [
   Permission.PortalAccess,
   Permission.PortalProjectsRead,
   Permission.PortalTasksRead,
+  Permission.PortalMessagesRead,
 ] as const satisfies readonly Permission[];

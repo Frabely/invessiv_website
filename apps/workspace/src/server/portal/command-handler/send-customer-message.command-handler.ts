@@ -24,6 +24,16 @@ export async function sendCustomerMessage(
   )
     return { ok: false, code: MessageErrorCode.NotFound } as const;
   return getDrizzleDatabaseClient().transaction(async (tx) => {
+    const retryAfterSeconds = await messageService.findPortalSendRetryAfter(
+      tx,
+      actor.membershipId,
+    );
+    if (retryAfterSeconds !== null)
+      return {
+        ok: false,
+        code: MessageErrorCode.RateLimited,
+        retryAfterSeconds,
+      } as const;
     const [sender] = await tx
       .select({ displayName: people.display_name })
       .from(people)

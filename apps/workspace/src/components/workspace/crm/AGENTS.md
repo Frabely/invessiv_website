@@ -90,10 +90,12 @@ Plan: `apps/workspace/plans/crm/12c-cockpit-dashboard/50-cockpit-dashboard-redes
 
 Plan: `apps/workspace/plans/crm/13a-kundenchat/25-chat-im-crm.md`.
 
-- Komponenten liegen unter `messages/`. Der Verlauf selbst ist die domänenneutrale `shared/message-thread`; sie
-  bekommt alle Texte als `MessageThreadLabels` und wird auch vom Portal (Task 26) genutzt.
+- Komponenten liegen unter `messages/`. Der Verlauf selbst ist `MessageThread` aus `@invessiv/ui` (seit Task 26,
+  gemeinsam mit dem Portal); er bekommt alle Texte als `MessageThreadLabels`. Lade-/Fehlerzustand vor dem ersten
+  Laden über `MessageThreadStatus`.
 - Laden, Senden, Lesestand und Ausblenden laufen ausschließlich über `useCustomerConversation`
-  (`src/hooks/workspace/crm/`). Kein Polling: Laden beim Öffnen, nach dem Senden und bei `visibilitychange`.
+  (`src/hooks/workspace/crm/`), der auf dem geteilten `useConversationThread` (`src/hooks/shared/`) aufsetzt und nur
+  das Ausblenden ergänzt. Kein Polling: Laden beim Öffnen, nach dem Senden und bei `visibilitychange`.
 - Nachrichten sind unveränderlich: kein Bearbeiten, kein Löschen. „Ausblenden“ erscheint nur, wenn der Server
   `canRedact` liefert (Workspace-Owner), und immer mit Bestätigungsdialog.
 - Ohne `chat.write` fehlt das Eingabefeld, ohne Recht zum Neuzuweisen die Verantwortlichen-Auswahl — nie deaktiviert.

@@ -1,3 +1,4 @@
 export const MESSAGE_BODY_MAX_LENGTH = 10_000;
 export const MESSAGE_PAGE_SIZE = 50;
-export const PORTAL_MESSAGES_PER_HOUR = 60;
+export const PORTAL_MESSAGES_PER_HOUR = 30;
+export const PORTAL_MESSAGE_RATE_WINDOW_SECONDS = 60 * 60;

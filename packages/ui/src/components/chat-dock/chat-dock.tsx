@@ -16,6 +16,8 @@ export type ChatDockProps = {
   /** Keeps the panel layered over the page instead of taking space in its layout. */
   overlay?: boolean;
   onExpandedChangeAction?: (expanded: boolean) => void;
+  /** Shown on the rail while collapsed; the toggle's accessible name then adds `badgeLabel`. */
+  unreadCount?: number;
   children?: ReactNode;
 };
 
@@ -33,6 +35,7 @@ export function ChatDock({
   expanded: controlledExpanded,
   overlay = false,
   onExpandedChangeAction,
+  unreadCount = 0,
   children,
 }: ChatDockProps) {
   const [localExpanded, setLocalExpanded] = useState(false);
@@ -40,7 +43,13 @@ export function ChatDock({
   const panelId = useId();
   const headingId = useId();
   const inputId = useId();
-  const toggleLabel = expanded ? content.collapse : content.expand;
+  const hasUnread = unreadCount > 0;
+  const toggleLabel =
+    hasUnread && badgeLabel
+      ? `${expanded ? content.collapse : content.expand} (${badgeLabel})`
+      : expanded
+        ? content.collapse
+        : content.expand;
 
   return (
     <aside
@@ -62,7 +71,14 @@ export function ChatDock({
         type="button"
         variant="ghost"
       >
-        <FontAwesomeIcon aria-hidden="true" icon={faComments} />
+        <span className={styles.railIcon}>
+          <FontAwesomeIcon aria-hidden="true" icon={faComments} />
+          {hasUnread ? (
+            <span aria-hidden="true" className={styles.railCount}>
+              {unreadCount > 99 ? "99+" : unreadCount}
+            </span>
+          ) : null}
+        </span>
       </ButtonControl>
       <div className={styles.panel} hidden={!expanded} id={panelId}>
         <header className={styles.head}>

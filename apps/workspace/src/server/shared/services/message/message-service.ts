@@ -13,7 +13,11 @@ import {
 } from "drizzle-orm";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
-import { MESSAGE_PAGE_SIZE } from "@invessiv/common/constants/crm/message-limits";
+import {
+  MESSAGE_PAGE_SIZE,
+  PORTAL_MESSAGE_RATE_WINDOW_SECONDS,
+  PORTAL_MESSAGES_PER_HOUR,
+} from "@invessiv/common/constants/crm/message-limits";
 import { isUuid } from "@invessiv/common/patterns/validation/is-uuid";
 import {
   MessageSenderSide,
@@ -25,6 +29,7 @@ import {
   conversations,
   customers,
   messages,
+  portalMemberships,
 } from "@invessiv/db/record-configuration";
 import { messageMappingService } from "./message-mapping-service";
 import { activityService } from "../activity-service";
@@ -414,6 +419,40 @@ async function redactTextMessage(
   return updated.length === 1;
 }
 
+/**
+ * Seconds until the oldest counted message leaves the window, or null below the limit. Locks the
+ * membership row first, so parallel sends of one member cannot all pass the same count.
+ */
+async function findPortalSendRetryAfter(
+  tx: ContactDatabaseTransaction,
+  portalMembershipId: string,
+  now = new Date(),
+): Promise<number | null> {
+  await tx
+    .select({ id: portalMemberships.id })
+    .from(portalMemberships)
+    .where(eq(portalMemberships.id, portalMembershipId))
+    .for("update");
+  const windowMs = PORTAL_MESSAGE_RATE_WINDOW_SECONDS * 1000;
+  const counted = await tx
+    .select({ createdAt: messages.created_at })
+    .from(messages)
+    .where(
+      and(
+        eq(messages.sender_portal_membership_id, portalMembershipId),
+        gt(messages.created_at, new Date(now.getTime() - windowMs)),
+      ),
+    )
+    .orderBy(desc(messages.created_at))
+    .limit(PORTAL_MESSAGES_PER_HOUR);
+  const oldest = counted.at(-1);
+  if (counted.length < PORTAL_MESSAGES_PER_HOUR || !oldest) return null;
+  return Math.max(
+    1,
+    Math.ceil((oldest.createdAt.getTime() + windowMs - now.getTime()) / 1000),
+  );
+}
+
 export const messageService = {
   getMessagePage,
   countUnreadMessages,
@@ -422,6 +461,7 @@ export const messageService = {
   ensureCustomerConversation,
   appendTextMessage,
   appendSystemMessage,
+  findPortalSendRetryAfter,
   findRedactableTextMessage,
   redactTextMessage,
 } as const;

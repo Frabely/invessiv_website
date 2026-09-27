@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { portalTaskCompleteEndpoint } from "./portal-api-endpoints";
+import {
+  portalConversationEndpoint,
+  portalConversationMessagesEndpoint,
+  portalConversationReadEndpoint,
+  portalTaskCompleteEndpoint,
+} from "./portal-api-endpoints";
 
 describe("portalTaskCompleteEndpoint", () => {
   it("builds the completion path below the portal api", () => {
@@ -12,6 +17,20 @@ describe("portalTaskCompleteEndpoint", () => {
   it("encodes both path segments", () => {
     expect(portalTaskCompleteEndpoint("a/b", "c d")).toBe(
       "/api/portal/a%2Fb/tasks/c%20d/complete",
+    );
+  });
+});
+
+describe("portal conversation endpoints", () => {
+  it("builds the conversation paths below the encoded customer", () => {
+    expect(portalConversationEndpoint("a/b")).toBe(
+      "/api/portal/a%2Fb/conversation",
+    );
+    expect(portalConversationMessagesEndpoint("c-1")).toBe(
+      "/api/portal/c-1/conversation/messages",
+    );
+    expect(portalConversationReadEndpoint("c-1")).toBe(
+      "/api/portal/c-1/conversation/read",
     );
   });
 });

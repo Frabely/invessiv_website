@@ -15,15 +15,21 @@ import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import { TaskDueState } from "@invessiv/common/constants/crm/task-due-states";
 import { PortalTaskErrorCode } from "@invessiv/common/constants/portal/portal-task-error-codes";
+import type { PortalConversationDto } from "@invessiv/common/contracts/portal/portal-conversation.dto";
 import type { PortalCustomerTaskDto } from "@invessiv/common/contracts/portal/portal-customer-task.dto";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
 import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import { listVisiblePortalWidgets } from "@/common/patterns/portal/list-visible-portal-widgets";
-import { getPortalDashboardDictionary } from "@/i18n/dictionaries/portal";
+import {
+  getPortalDashboardDictionary,
+  getPortalMessagesDictionary,
+} from "@/i18n/dictionaries/portal";
 import { PortalDashboard } from "./portal-dashboard";
 
 const mocks = vi.hoisted(() => ({
   completeTask: vi.fn(),
+  getConversation: vi.fn(),
+  markRead: vi.fn(),
   push: vi.fn(),
   replace: vi.fn(),
   refresh: vi.fn(),
@@ -42,8 +48,25 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/client/portal/portal-tasks-api-service", () => ({
   portalTasksApiService: { completeTask: mocks.completeTask },
 }));
+vi.mock("@/client/portal/portal-messages-api-service", () => ({
+  portalMessagesApiService: {
+    getConversation: mocks.getConversation,
+    markRead: mocks.markRead,
+    sendMessage: vi.fn(),
+  },
+}));
 
 const content = getPortalDashboardDictionary("en");
+const messagesContent = getPortalMessagesDictionary("en");
+const CONVERSATION: PortalConversationDto = {
+  id: "conversation-1",
+  customerId: "customer-1",
+  unreadCount: 2,
+  lastMessageAt: null,
+  messages: [],
+  nextCursor: null,
+  canWrite: true,
+};
 const TODAY = "2026-09-26";
 const FULL_READ = new Set([
   Permission.PortalAccess,
@@ -99,6 +122,7 @@ function renderDashboard(
   dashboard: PortalDashboardDto = dto(),
   permissions: ReadonlySet<Permission> = FULL_READ,
   cockpitHref: string | null = null,
+  conversation: PortalConversationDto | null = CONVERSATION,
 ) {
   const keys = new Set<PortalWidgetKey>([
     PortalWidgetKey.Project,
@@ -110,10 +134,13 @@ function renderDashboard(
     <PortalDashboard
       cockpitHref={cockpitHref}
       content={content}
+      conversation={conversation}
       customerId="customer-1"
       dashboard={dashboard}
       locale="en"
+      messagesContent={messagesContent}
       today={TODAY}
+      viewerUserId="user-1"
       widgets={listVisiblePortalWidgets(permissions, keys)}
     />,
   );
@@ -269,10 +296,13 @@ describe("PortalDashboard", () => {
       <PortalDashboard
         cockpitHref={null}
         content={content}
+        conversation={CONVERSATION}
         customerId="customer-1"
         dashboard={dto()}
         locale="en"
+        messagesContent={messagesContent}
         today={TODAY}
+        viewerUserId="user-1"
         widgets={listVisiblePortalWidgets(
           FULL_READ,
           new Set([PortalWidgetKey.Project, PortalWidgetKey.CustomerTasks]),
@@ -334,13 +364,34 @@ describe("PortalDashboard", () => {
     ).toBeInTheDocument();
   });
 
-  it("opens the persistent chat dock without a dashboard widget", () => {
+  it("shows unread messages on the dock rail and marks them read when opened", async () => {
+    mocks.getConversation.mockResolvedValue({ ok: true, value: CONVERSATION });
+    mocks.markRead.mockResolvedValue({ ok: true, value: true });
     renderDashboard();
 
     expect(screen.queryByRole("region", { name: "Messages" })).toBeNull();
-    const trigger = screen.getByRole("button", { name: content.chat.expand });
+    const trigger = screen.getByRole("button", {
+      name: `${content.chat.expand} (2 unread)`,
+    });
     expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(mocks.markRead).not.toHaveBeenCalled();
+
     fireEvent.click(trigger);
     expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(
+      screen.getByRole("log", { name: messagesContent.thread.logLabel }),
+    ).toBeVisible();
+    await waitFor(() =>
+      expect(mocks.markRead).toHaveBeenCalledWith("customer-1"),
+    );
+    expect(mocks.refresh).toHaveBeenCalled();
+  });
+
+  it("renders no chat dock without message read permission", () => {
+    renderDashboard(dto(), FULL_READ, null, null);
+
+    expect(
+      screen.queryByRole("button", { name: content.chat.expand }),
+    ).toBeNull();
   });
 });

@@ -31,3 +31,18 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 - Client-Zustand, der Daten einer Firma hält, wird über `key={customerId}` an die Firma gebunden, damit zwei Firmen nie
   gemischt erscheinen.
 - `*Props`-Typen dürfen exportiert werden, sonst keine Typ- oder Konstantenexporte aus Komponenten.
+- Owner-Hinweise mit CRM-Link laufen über `portal-owner-notice/` (Aufgaben, Nachrichten) — kein zweiter Hinweisbaustein.
+
+## Kundenchat (ab Task 26)
+
+Plan: `apps/workspace/plans/crm/13a-kundenchat/26-chat-im-portal.md`.
+
+- Komponenten liegen unter `messages/`. Verlauf, Eingabefeld und Ladezustand kommen aus `@invessiv/ui`
+  (`MessageThread`, `MessageThreadStatus`) — dieselben Bausteine wie im CRM, nur mit Portal-Texten.
+- Laden, Senden und Lesestand laufen ausschließlich über `usePortalConversation` (`src/hooks/portal/`), der auf dem
+  geteilten `useConversationThread` aufsetzt. Kein Polling.
+- Das Eingabefeld erscheint nur, wenn der Server `canWrite` im `PortalConversationDto` liefert; die Owner-Sicht
+  bekommt nie `canWrite` und zeigt stattdessen den Owner-Hinweis mit CRM-Link.
+- Im Dashboard gibt es **kein** Nachrichten-Widget: Der `ChatDock` ist der Einstieg und zeigt Ungelesenes am Rail
+  (`unreadCount`). Ohne `portal.messages.read` wird der Dock nicht gerendert.
+- Drafts und fehlgeschlagene Sendungen sind je Nutzer und Firma gebunden (`viewerUserId:customerId`).

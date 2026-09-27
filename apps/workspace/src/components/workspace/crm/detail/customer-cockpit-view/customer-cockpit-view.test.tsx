@@ -300,7 +300,9 @@ describe("CustomerCockpitView", () => {
       expect(messagesApiMocks.markRead).not.toHaveBeenCalled();
 
       fireEvent.click(
-        screen.getByRole("button", { name: content.chat.expand }),
+        screen.getByRole("button", {
+          name: `${content.chat.expand} (2 ungelesen)`,
+        }),
       );
       expect(messagesApiMocks.markRead).toHaveBeenCalledWith(
         customerDetailFixture().id,

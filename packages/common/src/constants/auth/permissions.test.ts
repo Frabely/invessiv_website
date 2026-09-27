@@ -101,12 +101,16 @@ describe("Permission", () => {
       Permission.PortalAccess,
       Permission.PortalProjectsRead,
       Permission.PortalTasksRead,
+      Permission.PortalMessagesRead,
     ]);
     expect(new Set(PORTAL_READ_PERMISSION_VALUES).size).toBe(
       PORTAL_READ_PERMISSION_VALUES.length,
     );
     expect(PORTAL_READ_PERMISSION_VALUES).not.toContain(
       Permission.PortalTasksComplete,
+    );
+    expect(PORTAL_READ_PERMISSION_VALUES).not.toContain(
+      Permission.PortalMessagesWrite,
     );
     for (const permission of PORTAL_READ_PERMISSION_VALUES) {
       expect(PERMISSION_DEFINITIONS[permission].realm).toBe(AuthRealm.Portal);

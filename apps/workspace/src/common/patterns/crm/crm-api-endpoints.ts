@@ -1,4 +1,5 @@
 import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
+import { ConversationApiPath } from "@/common/constants/crm/conversation-api-paths";
 
 const LEAD_CONVERSION_ACTION = "convert";
 const PROJECTS_PATH = "projects";
@@ -48,32 +49,28 @@ export function crmTaskStatusEndpoint(taskId: string): string {
   return `${crmTaskEndpoint(taskId)}/${TASK_STATUS_PATH}`;
 }
 
-const CONVERSATION_PATH = "conversation";
-const CONVERSATION_MESSAGES_PATH = "messages";
-const CONVERSATION_READ_PATH = "read";
-const CONVERSATION_OWNER_PATH = "owner";
 const MESSAGE_REDACT_PATH = "redact";
 
 export function crmCustomerConversationEndpoint(customerId: string): string {
-  return `${crmCustomerEndpoint(customerId)}/${CONVERSATION_PATH}`;
+  return `${crmCustomerEndpoint(customerId)}/${ConversationApiPath.Conversation}`;
 }
 
 export function crmCustomerConversationMessagesEndpoint(
   customerId: string,
 ): string {
-  return `${crmCustomerConversationEndpoint(customerId)}/${CONVERSATION_MESSAGES_PATH}`;
+  return `${crmCustomerConversationEndpoint(customerId)}/${ConversationApiPath.Messages}`;
 }
 
 export function crmCustomerConversationReadEndpoint(
   customerId: string,
 ): string {
-  return `${crmCustomerConversationEndpoint(customerId)}/${CONVERSATION_READ_PATH}`;
+  return `${crmCustomerConversationEndpoint(customerId)}/${ConversationApiPath.Read}`;
 }
 
 export function crmCustomerConversationOwnerEndpoint(
   customerId: string,
 ): string {
-  return `${crmCustomerConversationEndpoint(customerId)}/${CONVERSATION_OWNER_PATH}`;
+  return `${crmCustomerConversationEndpoint(customerId)}/${ConversationApiPath.Owner}`;
 }
 
 export function crmMessageRedactEndpoint(messageId: string): string {

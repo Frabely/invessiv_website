@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { MessageType } from "@invessiv/common/constants/crm/message-types";
 import type { ConversationInboxItemDto } from "@invessiv/common/contracts/crm/conversation-inbox-item.dto";
+import { threadDayKey } from "@invessiv/common/patterns/ui/group-thread-messages";
+import { useIsBrowser } from "@invessiv/ui";
 import { describeSystemMessage } from "@/common/patterns/crm/describe-system-message";
-import { threadDayKey } from "@/common/patterns/ui/group-thread-messages";
 import type { Locale } from "@/config/i18n";
-import { useIsBrowser } from "@/hooks/use-is-browser";
 import type { CrmMessagesDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@/lib/i18n/format-message";
 import styles from "./conversation-list-item.module.css";

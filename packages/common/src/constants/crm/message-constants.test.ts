@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   MESSAGE_BODY_MAX_LENGTH,
   MESSAGE_PAGE_SIZE,
+  PORTAL_MESSAGE_RATE_WINDOW_SECONDS,
   PORTAL_MESSAGES_PER_HOUR,
 } from "./message-limits";
 import {
@@ -43,10 +44,12 @@ describe("message constants", () => {
       MESSAGE_BODY_MAX_LENGTH,
       MESSAGE_PAGE_SIZE,
       PORTAL_MESSAGES_PER_HOUR,
+      PORTAL_MESSAGE_RATE_WINDOW_SECONDS,
     }).toEqual({
       MESSAGE_BODY_MAX_LENGTH: 10_000,
       MESSAGE_PAGE_SIZE: 50,
-      PORTAL_MESSAGES_PER_HOUR: 60,
+      PORTAL_MESSAGES_PER_HOUR: 30,
+      PORTAL_MESSAGE_RATE_WINDOW_SECONDS: 3600,
     });
   });
 
@@ -56,6 +59,7 @@ describe("message constants", () => {
       ValidationError: "VALIDATION_ERROR",
       Forbidden: "FORBIDDEN",
       VersionConflict: "VERSION_CONFLICT",
+      RateLimited: "RATE_LIMITED",
       Internal: "INTERNAL",
     });
     expect(new Set(Object.values(MessageErrorCode)).size).toBe(

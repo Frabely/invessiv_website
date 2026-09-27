@@ -1,9 +1,1 @@
-/** Replaces `{key}` placeholders; unknown placeholders stay visible instead of vanishing. */
-export function formatMessage(
-  template: string,
-  values: Record<string, string | number>,
-): string {
-  return template.replace(/\{(\w+)}/g, (placeholder, key: string) =>
-    key in values ? String(values[key]) : placeholder,
-  );
-}
+export { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
