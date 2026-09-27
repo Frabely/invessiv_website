@@ -7,9 +7,9 @@ import {
   MessageThreadStatus,
 } from "@invessiv/ui";
 import type { InternalConversationDto } from "@invessiv/common/contracts/crm/internal-conversation.dto";
-import type { MessageDto } from "@invessiv/common/contracts/crm/message.dto";
 import { MESSAGE_DRAFT_STORAGE_KEY_PREFIX } from "@/common/constants/crm/message-draft-storage";
 import { describeSystemMessage } from "@/common/patterns/crm/describe-system-message";
+import { describeThreadNotice } from "@/common/patterns/crm/describe-thread-notice";
 import type { Locale } from "@/config/i18n";
 import { useCustomerConversation } from "@/hooks/workspace/crm/use-customer-conversation";
 import type { CrmMessagesDictionary } from "@/i18n/dictionaries/workspace/crm";
@@ -61,21 +61,17 @@ export function CustomerConversation({
   if (!thread.conversation) {
     return (
       <MessageThreadStatus
-        errorLabel={content.states.loadError}
         failed={thread.loadFailed}
-        loadingLabel={content.states.loading}
+        labels={content.states}
         onReloadAction={() => void thread.reload()}
-        reloadLabel={content.states.reload}
       />
     );
   }
 
-  const describe = (message: MessageDto) =>
-    describeSystemMessage(message, {
-      templates: content.systemMessages,
-      phases: content.phases,
-      fallback: content.thread.systemFallback,
-    });
+  function requestRedaction(messageId: string) {
+    setRedactionFailed(false);
+    setRedactionTarget(messageId);
+  }
 
   async function confirmRedaction() {
     if (!redactionTarget) return;
@@ -89,33 +85,18 @@ export function CustomerConversation({
   return (
     <div className={styles.conversation}>
       <MessageThread
-        describeSystemMessageAction={describe}
-        draftStorageKey={thread.draftStorageKey}
-        hasOlder={thread.hasOlder}
+        {...thread.threadProps}
+        describeSystemMessageAction={(message) =>
+          describeSystemMessage(message, content)
+        }
         labels={content.thread}
-        loadingOlder={thread.loadingOlder}
         locale={locale}
-        messages={thread.messages}
-        notice={
-          thread.loadFailed
-            ? content.states.loadError
-            : thread.olderFailed
-              ? content.states.olderError
-              : null
-        }
-        onLoadOlderAction={() => void thread.loadOlder()}
+        notice={describeThreadNotice(thread, content.states)}
         onRedactAction={
-          thread.conversation.canRedact
-            ? (messageId) => {
-                setRedactionFailed(false);
-                setRedactionTarget(messageId);
-              }
-            : undefined
+          thread.conversation.canRedact ? requestRedaction : undefined
         }
-        onRetryAction={thread.retry}
         onSendAction={canWrite ? thread.send : undefined}
         ownDisplayName={content.thread.own}
-        pending={thread.pending}
       />
       {redactionTarget ? (
         <ConfirmDialog

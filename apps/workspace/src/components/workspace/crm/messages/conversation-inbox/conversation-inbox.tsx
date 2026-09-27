@@ -13,7 +13,7 @@ import {
 import { buildConversationInboxHref } from "@/common/patterns/crm/conversation-inbox-query";
 import type { Locale } from "@/config/i18n";
 import type { CrmMessagesDictionary } from "@/i18n/dictionaries/workspace/crm";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ConversationListItem } from "../conversation-list-item/conversation-list-item";
 import { ConversationOwnerSelect } from "../conversation-owner-select/conversation-owner-select";
 import { CustomerConversation } from "../customer-conversation/customer-conversation";

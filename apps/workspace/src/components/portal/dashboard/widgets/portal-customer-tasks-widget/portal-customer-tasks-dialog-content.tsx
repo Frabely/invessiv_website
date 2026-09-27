@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import type { PortalCustomerTaskDto } from "@invessiv/common/contracts/portal/portal-customer-task.dto";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { PortalAllDoneNote } from "../../portal-all-done-note/portal-all-done-note";
 import {
   PortalTaskList,

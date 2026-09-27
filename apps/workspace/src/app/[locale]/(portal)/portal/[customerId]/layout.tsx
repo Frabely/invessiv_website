@@ -8,7 +8,7 @@ import { PortalShell } from "@/components/portal/portal-shell/portal-shell";
 import type { Locale } from "@/config/i18n";
 import { getPortalShellDictionary } from "@/i18n/dictionaries/portal";
 import { portalPathFor, workspaceAreaPathFor } from "@/lib/auth/routes";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { isPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
 import { requirePortalReader } from "@/server/portal/auth/require-portal-reader";
 import { getPortalCustomerDisplayName } from "@/server/portal/query-handler/get-portal-customer-display-name.query-handler";

@@ -3,7 +3,7 @@
 import type { PortalCustomerTaskDto } from "@invessiv/common/contracts/portal/portal-customer-task.dto";
 import type { Locale } from "@/config/i18n";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { PortalDueHint } from "../portal-due-hint/portal-due-hint";
 import { PortalTaskCheckbox } from "../portal-task-checkbox/portal-task-checkbox";
 import styles from "./portal-task-list.module.css";

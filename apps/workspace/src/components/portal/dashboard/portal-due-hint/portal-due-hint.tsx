@@ -5,7 +5,7 @@ import type { PortalTaskDto } from "@invessiv/common/contracts/portal/portal-tas
 import type { Locale } from "@/config/i18n";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
 import { formatCalendarDay } from "@/lib/i18n/format-calendar-day";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import styles from "./portal-due-hint.module.css";
 
 export type PortalDueHintProps = {

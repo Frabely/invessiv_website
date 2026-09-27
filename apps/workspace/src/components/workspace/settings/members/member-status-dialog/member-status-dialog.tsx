@@ -18,7 +18,7 @@ import {
   PrimaryCtaButton,
 } from "@invessiv/ui";
 import type { SettingsMembersDictionary } from "@/i18n/dictionaries/workspace/settings";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import styles from "./member-status-dialog.module.css";
 
 type MemberStatusDialogProps = {

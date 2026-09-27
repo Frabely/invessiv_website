@@ -9,7 +9,7 @@ import { DataTableCell, DataTableHeaderCell, DataTableRow } from "@invessiv/ui";
 import type { TaskListRowDto } from "@/common/contracts/crm/task-list-result";
 import type { Locale } from "@/config/i18n";
 import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { TaskActionSideBadge } from "../../task-action-side-badge/task-action-side-badge";
 import { TaskDueLabel } from "../../task-due-label/task-due-label";
 import { TaskStatusBadge } from "../../task-status-badge/task-status-badge";

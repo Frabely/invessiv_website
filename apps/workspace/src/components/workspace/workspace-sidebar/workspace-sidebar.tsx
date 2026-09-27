@@ -19,7 +19,7 @@ import { WorkspaceSidebarItemKey } from "@/common/constants/navigation/workspace
 import { WORKSPACE_SIDEBAR_ITEMS } from "@/common/constants/navigation/workspace-sidebar-items";
 import type { Locale } from "@/config/i18n";
 import type { WorkspacePageContent } from "@/i18n/dictionaries/workspace";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import {
   crmLineItemTemplatesPathFor,
   crmMessagesPathFor,

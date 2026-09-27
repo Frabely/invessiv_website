@@ -11,7 +11,7 @@ import {
   getPortalMessagesDictionary,
 } from "@/i18n/dictionaries/portal";
 import { workspaceAreaPathFor } from "@/lib/auth/routes";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { requirePortalReader } from "@/server/portal/auth/require-portal-reader";
 import { getPortalConversation } from "@/server/portal/query-handler/get-portal-conversation.query-handler";
 import { getPortalDashboard } from "@/server/portal/query-handler/get-portal-dashboard.query-handler";

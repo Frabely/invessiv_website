@@ -3,11 +3,6 @@ import { getCrmMessagesDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { describeSystemMessage } from "./describe-system-message";
 
 const content = getCrmMessagesDictionary("de");
-const texts = {
-  templates: content.systemMessages,
-  phases: content.phases,
-  fallback: content.thread.systemFallback,
-};
 
 describe("describeSystemMessage", () => {
   it("fills the template and translates the phase", () => {
@@ -17,16 +12,16 @@ describe("describeSystemMessage", () => {
           body: "projectPhaseChanged",
           metadata: { projectTitle: "Relaunch", phase: "development" },
         },
-        texts,
+        content,
       ),
     ).toBe("Projekt „Relaunch“ ist jetzt in der Phase Entwicklung.");
   });
 
   it("falls back for unknown or missing keys", () => {
     expect(
-      describeSystemMessage({ body: "unknown", metadata: null }, texts),
+      describeSystemMessage({ body: "unknown", metadata: null }, content),
     ).toBe(content.thread.systemFallback);
-    expect(describeSystemMessage({ body: null, metadata: null }, texts)).toBe(
+    expect(describeSystemMessage({ body: null, metadata: null }, content)).toBe(
       content.thread.systemFallback,
     );
   });

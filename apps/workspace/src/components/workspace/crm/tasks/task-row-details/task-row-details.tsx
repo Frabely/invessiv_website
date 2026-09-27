@@ -10,7 +10,7 @@ import type { TaskDto } from "@invessiv/common/contracts/crm/task.dto";
 import { getMemberInitials } from "@/common/patterns/access/member-initials";
 import type { Locale } from "@/config/i18n";
 import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { TaskActionSideBadge } from "../task-action-side-badge/task-action-side-badge";
 import { TaskDueLabel } from "../task-due-label/task-due-label";
 import styles from "./task-row-details.module.css";

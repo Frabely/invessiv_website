@@ -5,6 +5,8 @@ export type PortalInvitationCardProps = {
   body: string;
   children: ReactNode;
   eyebrow: string;
+  /** Small print below the actions, e.g. what the portal keeps in the browser. */
+  note?: string;
   title: string;
 };
 
@@ -13,6 +15,7 @@ export function PortalInvitationCard({
   body,
   children,
   eyebrow,
+  note,
   title,
 }: PortalInvitationCardProps) {
   return (
@@ -22,6 +25,7 @@ export function PortalInvitationCard({
         <h1 className={styles.title}>{title}</h1>
         <p className={styles.body}>{body}</p>
         <div className={styles.actions}>{children}</div>
+        {note ? <p className={styles.note}>{note}</p> : null}
       </div>
     </main>
   );

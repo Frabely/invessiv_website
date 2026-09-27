@@ -8,7 +8,7 @@ import { useIsBrowser } from "@invessiv/ui";
 import { describeSystemMessage } from "@/common/patterns/crm/describe-system-message";
 import type { Locale } from "@/config/i18n";
 import type { CrmMessagesDictionary } from "@/i18n/dictionaries/workspace/crm";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import styles from "./conversation-list-item.module.css";
 
 type ConversationListItemProps = {
@@ -26,11 +26,7 @@ function previewText(
   const message = item.lastMessage;
   if (!message) return content.inbox.noMessages;
   if (message.type === MessageType.System)
-    return describeSystemMessage(message, {
-      templates: content.systemMessages,
-      phases: content.phases,
-      fallback: content.thread.systemFallback,
-    });
+    return describeSystemMessage(message, content);
   const text = message.body ?? content.thread.redacted;
   return message.isOwn ? `${content.inbox.ownPrefix}${text}` : text;
 }

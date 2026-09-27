@@ -5,7 +5,7 @@ import type { PortalContactDto } from "@invessiv/common/contracts/portal/portal-
 import { Widget } from "@invessiv/ui";
 import { getMemberInitials } from "@/common/patterns/access/member-initials";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import styles from "./portal-contact-widget.module.css";
 
 export type PortalContactWidgetProps = {

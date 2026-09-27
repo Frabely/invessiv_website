@@ -34,7 +34,7 @@ import {
 import { resolveRecurringIntervalFor } from "@/common/patterns/crm/line-item-fields-form";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import type { CrmLineItemTemplatesDictionary } from "@/i18n/dictionaries/workspace/crm";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import styles from "./line-item-template-form-dialog.module.css";
 
 type LineItemTemplateFormDialogProps = {

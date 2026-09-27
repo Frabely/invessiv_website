@@ -53,6 +53,7 @@ export default async function PortalInvitePage({ params }: Props) {
     <PortalInvitationCard
       body={content.body}
       eyebrow={content.eyebrow}
+      note={errorMessage ? undefined : content.storageNote}
       title={content.title}
     >
       {errorMessage ? (

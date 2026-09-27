@@ -13,7 +13,7 @@ import type { ProjectLineItemValue } from "@invessiv/common/contracts/crm/projec
 import { ButtonLink, PrimaryCtaButton } from "@invessiv/ui";
 import type { Locale } from "@/config/i18n";
 import type { CrmProjectLineItemsDictionary } from "@/i18n/dictionaries/workspace/crm";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { formatEuroCents } from "@/lib/workspace/crm/format-service-price";
 import { CollapsibleSection } from "@/components/workspace/crm/shared/collapsible-section/collapsible-section";
 import { SectionEmptyState } from "@/components/workspace/crm/shared/section-empty-state/section-empty-state";

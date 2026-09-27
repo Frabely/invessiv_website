@@ -19,7 +19,7 @@ import type { CrmListDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { getCrmCockpitDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatRelativeTime } from "@/lib/format-relative-time";
 import { formatEuroCents } from "@/lib/workspace/crm/format-service-price";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import {
   buildCustomerCockpitHref,
   buildCustomerEditHref,

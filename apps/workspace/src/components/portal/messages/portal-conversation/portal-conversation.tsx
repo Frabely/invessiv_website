@@ -1,11 +1,10 @@
 "use client";
 
 import { useId } from "react";
-import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
-import type { MessageDto } from "@invessiv/common/contracts/crm/message.dto";
 import type { PortalConversationDto } from "@invessiv/common/contracts/portal/portal-conversation.dto";
 import { MessageThread, MessageThreadStatus } from "@invessiv/ui";
 import { describeSystemMessage } from "@/common/patterns/crm/describe-system-message";
+import { describeThreadNotice } from "@/common/patterns/crm/describe-thread-notice";
 import { PortalOwnerNotice } from "@/components/portal/portal-owner-notice/portal-owner-notice";
 import type { Locale } from "@/config/i18n";
 import { usePortalConversation } from "@/hooks/portal/use-portal-conversation";
@@ -47,46 +46,25 @@ export function PortalConversation({
   if (!thread.conversation) {
     return (
       <MessageThreadStatus
-        errorLabel={content.states.loadError}
         failed={thread.loadFailed}
-        loadingLabel={content.states.loading}
+        labels={content.states}
         onReloadAction={() => void thread.reload()}
-        reloadLabel={content.states.reload}
       />
     );
   }
 
-  const describe = (message: MessageDto) =>
-    describeSystemMessage(message, {
-      templates: content.systemMessages,
-      phases: content.phases,
-      fallback: content.thread.systemFallback,
-    });
-
-  const notice = thread.loadFailed
-    ? content.states.loadError
-    : thread.sendError === MessageErrorCode.RateLimited
-      ? content.states.rateLimited
-      : thread.olderFailed
-        ? content.states.olderError
-        : null;
-
   return (
     <div className={styles.conversation}>
       <MessageThread
-        describeSystemMessageAction={describe}
-        draftStorageKey={thread.draftStorageKey}
-        hasOlder={thread.hasOlder}
+        {...thread.threadProps}
+        describeSystemMessageAction={(message) =>
+          describeSystemMessage(message, content)
+        }
         labels={content.thread}
-        loadingOlder={thread.loadingOlder}
         locale={locale}
-        messages={thread.messages}
-        notice={notice}
-        onLoadOlderAction={() => void thread.loadOlder()}
-        onRetryAction={thread.retry}
+        notice={describeThreadNotice(thread, content.states)}
         onSendAction={thread.conversation.canWrite ? thread.send : undefined}
         ownDisplayName={content.thread.own}
-        pending={thread.pending}
       />
       {cockpitHref ? (
         <PortalOwnerNotice

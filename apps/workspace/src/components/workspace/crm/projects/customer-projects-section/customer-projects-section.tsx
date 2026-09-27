@@ -31,7 +31,7 @@ import type {
 import { ProjectOverview } from "@/components/workspace/crm/projects/project-overview/project-overview";
 import { MockSectionCard } from "@/components/workspace/crm/shared/mock-section-card/mock-section-card";
 import { ProjectSwitcherTabs } from "@/components/workspace/crm/projects/project-switcher-tabs/project-switcher-tabs";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ProjectLineItemsSection } from "@/components/workspace/crm/projects/project-line-items-section/project-line-items-section";
 import { ProjectTasksSection } from "@/components/workspace/crm/tasks/project-tasks-section/project-tasks-section";
 import styles from "./customer-projects-section.module.css";

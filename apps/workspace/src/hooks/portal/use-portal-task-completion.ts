@@ -5,7 +5,7 @@ import type { PortalCustomerTaskDto } from "@invessiv/common/contracts/portal/po
 import { portalTasksApiService } from "@/client/portal/portal-tasks-api-service";
 import { useOptimisticChange } from "@/hooks/use-optimistic-change";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 
 /**
  * Ticks a customer task off right away and rolls back with an announcement when the server

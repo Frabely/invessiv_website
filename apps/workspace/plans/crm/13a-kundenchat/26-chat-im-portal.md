@@ -105,8 +105,8 @@ Umgesetzt auf `feat/crm-13a-kundenchat-intern`, nicht committet. Bewusste Abweic
 - **Kein eigener Empty-State-Baustein.** `MessageThread` zeigt den leeren Verlauf bereits; die Texte kommen aus dem
   Portal-Dictionary.
 - **Drafts je Nutzer und Firma** (`userId:customerId`), analog `memberId:customerId` im CRM.
-- `formatMessage` wandert nach `packages/common`; `src/lib/i18n/format-message.ts` re-exportiert nur noch.
-  Folgeschritt: Importe schrittweise direkt auf `@invessiv/common/patterns/i18n/format-message` umstellen.
+- `formatMessage` wandert nach `packages/common`; alle Importe zeigen direkt dorthin, die App-Datei ist entfernt.
+- Einladungsseite nennt, dass Entwürfe und nicht gesendete Nachrichten im lokalen Browser-Speicher liegen.
 - Offen zur Prüfung: Die Antwortzeit im Empty-State („werktags in der Regel innerhalb eines Tages“) ist eine
   Zusage an Kunden und muss fachlich bestätigt werden.
 

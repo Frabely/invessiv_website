@@ -32,7 +32,7 @@ import type { ProjectLineItemsViewModel } from "@/common/contracts/crm/project-l
 import type { TasksViewModel } from "@/common/contracts/crm/tasks-view-model";
 import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
 import type { Locale } from "@/config/i18n";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { formatEuroCents } from "@/lib/workspace/crm/format-service-price";
 import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
 import styles from "./customer-cockpit-view.module.css";

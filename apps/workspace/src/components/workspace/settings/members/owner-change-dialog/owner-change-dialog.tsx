@@ -13,7 +13,7 @@ import {
 } from "@invessiv/ui";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import type { SettingsMembersDictionary } from "@/i18n/dictionaries/workspace/settings";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import styles from "./owner-change-dialog.module.css";
 
 type OwnerChangeDialogProps = {

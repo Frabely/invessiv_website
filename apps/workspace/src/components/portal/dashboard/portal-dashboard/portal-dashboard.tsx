@@ -28,7 +28,7 @@ import type {
   PortalDashboardDictionary,
   PortalMessagesDictionary,
 } from "@/i18n/dictionaries/portal";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { PortalDashboardEmptyState } from "../portal-dashboard-empty-state/portal-dashboard-empty-state";
 import { PortalOwnerNotice } from "@/components/portal/portal-owner-notice/portal-owner-notice";
 import { PortalWidgetDialogHost } from "../portal-widget-dialog-host/portal-widget-dialog-host";

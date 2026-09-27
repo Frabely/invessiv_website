@@ -10,7 +10,7 @@ import { accessApiService } from "@/client/access/access-api-service";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import type { CrmAccessDictionary } from "@/i18n/dictionaries/workspace/crm";
 import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { resolveRoleLabel } from "@/lib/workspace/access/role-label";
 import styles from "./customer-access-assignment-row.module.css";
 
