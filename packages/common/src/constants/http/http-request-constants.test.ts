@@ -23,7 +23,10 @@ describe("HttpMethod", () => {
 
 describe("HttpHeaderName and MediaType", () => {
   it("expose the exact header and media type values", () => {
-    expect(HttpHeaderName).toEqual({ ContentType: "Content-Type" });
+    expect(HttpHeaderName).toEqual({
+      ContentType: "Content-Type",
+      RetryAfter: "Retry-After",
+    });
     expect(MediaType).toEqual({ Json: "application/json" });
   });
 });

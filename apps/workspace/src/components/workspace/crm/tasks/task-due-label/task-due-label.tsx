@@ -9,7 +9,7 @@ import { TaskDueState } from "@invessiv/common/constants/crm/task-due-states";
 import type { Locale } from "@/config/i18n";
 import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatCalendarDay } from "@/lib/i18n/format-calendar-day";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
 import styles from "./task-due-label.module.css";
 

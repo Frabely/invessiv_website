@@ -1,0 +1,75 @@
+{
+  "meta": {
+    "title": "Messages | Invessiv",
+    "description": "Every customer conversation in one place: who wrote, what is still unread and who replies."
+  },
+  "thread": {
+    "logLabel": "Conversation with the customer",
+    "emptyTitle": "No messages yet",
+    "emptyBody": "What you write here, the customer reads in their portal – and can reply right away.",
+    "loadOlder": "Load older messages",
+    "loadingOlder": "Loading …",
+    "newMessages": "New messages",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "own": "You",
+    "redacted": "Message hidden by the owner",
+    "systemFallback": "Project event",
+    "sending": "Sending …",
+    "failed": "Not sent",
+    "retry": "Send again",
+    "redact": "Hide",
+    "inputLabel": "Message to the customer",
+    "inputPlaceholder": "Message to the customer …",
+    "inputHint": "Enter sends, Shift + Enter starts a new line.",
+    "send": "Send",
+    "characterCount": "{count} of {max} characters"
+  },
+  "systemMessages": {
+    "projectPhaseChanged": "Project “{projectTitle}” is now in the {phase} phase."
+  },
+  "dock": {
+    "unread": "{count} unread"
+  },
+  "states": {
+    "loading": "Loading conversation …",
+    "loadError": "The conversation could not be loaded.",
+    "reload": "Load again",
+    "olderError": "Older messages could not be loaded."
+  },
+  "redaction": {
+    "title": "Hide this message?",
+    "description": "The content disappears for everyone – the customer included – and cannot be restored. The conversation keeps a notice, and the activity log records who hid it.",
+    "confirm": "Hide message",
+    "cancel": "Cancel",
+    "close": "Close dialog",
+    "error": "The message could not be hidden. Please try again."
+  },
+  "inbox": {
+    "heading": "Messages",
+    "intro": "Each customer has exactly one conversation. It also appears in the customer record and in the customer's portal.",
+    "listLabel": "Conversations",
+    "filterLabel": "Show",
+    "filterAll": "All",
+    "filterMine": "Only mine",
+    "emptyTitle": "No conversations yet",
+    "emptyBody": "As soon as you write to a customer or they write to you from the portal, the conversation appears here.",
+    "emptyFilteredTitle": "No conversation you are responsible for",
+    "emptyFilteredBody": "Show all conversations or take over responsibility in one of them.",
+    "showAll": "Show all",
+    "noMessages": "No messages yet",
+    "ownPrefix": "You: ",
+    "unread": "{count} unread",
+    "responsible": "Responsible: {name}",
+    "selectPrompt": "Pick a conversation on the left.",
+    "backToList": "Back to list",
+    "openCockpit": "Open customer record"
+  },
+  "owner": {
+    "label": "Responsible",
+    "saving": "Saving …",
+    "conflict": "Someone just changed the responsible person. The current state is shown.",
+    "invalid": "This person cannot read the conversation or is no longer active.",
+    "error": "The responsible person could not be changed."
+  }
+}

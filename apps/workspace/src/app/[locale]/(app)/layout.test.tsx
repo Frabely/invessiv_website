@@ -39,17 +39,32 @@ vi.mock(
   }),
 );
 
+const mockCountUnreadConversations = vi.hoisted(() => vi.fn());
+vi.mock(
+  "@/server/workspace/crm/query-handler/count-unread-conversations.query-handler",
+  () => ({ countUnreadConversations: mockCountUnreadConversations }),
+);
+
 vi.mock("@/components/workspace/workspace-shell/workspace-shell", () => ({
   WorkspaceShell: ({
+    canOpenCrmMessages,
     children,
     permittedAreas,
     portalHref,
+    unreadConversationCount,
   }: {
+    canOpenCrmMessages?: boolean;
     children: ReactNode;
     permittedAreas: readonly string[];
     portalHref?: string | null;
+    unreadConversationCount?: number;
   }) => (
-    <main data-areas={permittedAreas.join(",")} data-portal-href={portalHref}>
+    <main
+      data-areas={permittedAreas.join(",")}
+      data-messages={String(Boolean(canOpenCrmMessages))}
+      data-portal-href={portalHref}
+      data-unread={String(unreadConversationCount ?? 0)}
+    >
       {children}
     </main>
   ),
@@ -72,6 +87,58 @@ describe("WorkspaceLayout", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockHasPortalAccessForUserId.mockResolvedValue(false);
+    mockCountUnreadConversations.mockResolvedValue(0);
+  });
+
+  it("passes the unread conversation count to the messages entry", async () => {
+    mockGetAuthentication.mockResolvedValue(
+      authorizedWith(Permission.ChatRead),
+    );
+    mockCountUnreadConversations.mockResolvedValue(3);
+
+    render(
+      await WorkspaceLayout({
+        children: <p>Protected content</p>,
+        params: Promise.resolve({ locale: "de" }),
+      }),
+    );
+
+    expect(screen.getByRole("main")).toHaveAttribute("data-messages", "true");
+    expect(screen.getByRole("main")).toHaveAttribute("data-unread", "3");
+  });
+
+  it("keeps the page intact when the unread count fails", async () => {
+    mockGetAuthentication.mockResolvedValue(
+      authorizedWith(Permission.ChatRead),
+    );
+    mockCountUnreadConversations.mockRejectedValue(new Error("db down"));
+    vi.spyOn(console, "error").mockImplementation(() => {});
+
+    render(
+      await WorkspaceLayout({
+        children: <p>Protected content</p>,
+        params: Promise.resolve({ locale: "de" }),
+      }),
+    );
+
+    expect(screen.getByText("Protected content")).toBeVisible();
+    expect(screen.getByRole("main")).toHaveAttribute("data-unread", "0");
+  });
+
+  it("does not count conversations without chat.read", async () => {
+    mockGetAuthentication.mockResolvedValue(
+      authorizedWith(Permission.LeadsRead),
+    );
+
+    render(
+      await WorkspaceLayout({
+        children: <p>Protected content</p>,
+        params: Promise.resolve({ locale: "de" }),
+      }),
+    );
+
+    expect(mockCountUnreadConversations).not.toHaveBeenCalled();
+    expect(screen.getByRole("main")).toHaveAttribute("data-messages", "false");
   });
 
   afterEach(cleanup);

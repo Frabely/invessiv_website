@@ -29,7 +29,7 @@ import { useNavigationContext } from "@/hooks/workspace/use-navigation-context";
 import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
 import { ImportLeadsDialog } from "@/components/workspace/leads/import/import-leads-dialog/import-leads-dialog";
 import { buildLeadHref } from "@/components/workspace/leads/table/lead-table-utils";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { LeadCategoryFilter } from "@/components/workspace/leads/toolbar/lead-category-filter/lead-category-filter";
 import { LeadProfileFilter } from "@/components/workspace/leads/toolbar/lead-profile-filter/lead-profile-filter";
 import { LeadScoreFilter } from "@/components/workspace/leads/toolbar/lead-score-filter/lead-score-filter";

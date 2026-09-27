@@ -20,7 +20,7 @@ import {
 } from "@invessiv/ui";
 import type { CrmAccessDictionary } from "@/i18n/dictionaries/workspace/crm";
 import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { AccessScopeTree } from "@/components/workspace/settings/shared/access-scope-tree/access-scope-tree";
 import { CollapsibleSection } from "@/components/workspace/crm/shared/collapsible-section/collapsible-section";
 import { CustomerAccessAssignmentRow } from "../customer-access-assignment-row/customer-access-assignment-row";

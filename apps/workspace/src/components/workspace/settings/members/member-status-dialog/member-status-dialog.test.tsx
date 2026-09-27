@@ -164,4 +164,31 @@ describe("MemberStatusDialog", () => {
     );
     expect(submit).toBeDisabled();
   });
+
+  it("names assigned conversations and disables deactivation", async () => {
+    mocks.updateStatus.mockResolvedValue({
+      ok: false,
+      code: WorkspaceMemberErrorCode.MemberHasOpenResponsibilities,
+      responsibilityCounts: {
+        [OwnableEntity.Customer]: 0,
+        [OwnableEntity.Task]: 0,
+        [OwnableEntity.Conversation]: 2,
+      },
+    });
+    render(
+      <MemberStatusDialog
+        content={content}
+        member={MEMBER}
+        onCloseAction={vi.fn()}
+      />,
+    );
+    const submit = screen.getByRole("button", {
+      name: content.statusDialog.deactivateSubmit,
+    });
+    fireEvent.click(submit);
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Kundenchats in Zuständigkeit: 2",
+    );
+    expect(submit).toBeDisabled();
+  });
 });

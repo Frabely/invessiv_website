@@ -6,10 +6,14 @@ import { listVisiblePortalWidgets } from "@/common/patterns/portal/list-visible-
 import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
 import { PortalDashboard } from "@/components/portal/dashboard/portal-dashboard/portal-dashboard";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
-import { getPortalDashboardDictionary } from "@/i18n/dictionaries/portal";
+import {
+  getPortalDashboardDictionary,
+  getPortalMessagesDictionary,
+} from "@/i18n/dictionaries/portal";
 import { workspaceAreaPathFor } from "@/lib/auth/routes";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { requirePortalReader } from "@/server/portal/auth/require-portal-reader";
+import { getPortalConversation } from "@/server/portal/query-handler/get-portal-conversation.query-handler";
 import { getPortalDashboard } from "@/server/portal/query-handler/get-portal-dashboard.query-handler";
 
 export const dynamic = "force-dynamic";
@@ -45,7 +49,10 @@ export default async function PortalCustomerPage({
     customerId.toLowerCase(),
   );
   const today = taskDueStateService.businessToday();
-  const dashboard = await getPortalDashboard(reader, today);
+  const [dashboard, conversationResult] = await Promise.all([
+    getPortalDashboard(reader, today),
+    getPortalConversation(reader, null),
+  ]);
   const content = getPortalDashboardDictionary(activeLocale);
   const keysWithContent = new Set<PortalWidgetKey>([
     PortalWidgetKey.Project,
@@ -73,11 +80,16 @@ export default async function PortalCustomerPage({
             : null
         }
         content={content}
+        conversation={
+          conversationResult.ok ? conversationResult.conversation : null
+        }
         customerId={reader.customerId}
         dashboard={dashboard}
         key={reader.customerId}
         locale={activeLocale}
+        messagesContent={getPortalMessagesDictionary(activeLocale)}
         today={today}
+        viewerUserId={reader.userId}
         widgets={listVisiblePortalWidgets(reader.permissions, keysWithContent)}
       />
     </>

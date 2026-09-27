@@ -5,7 +5,7 @@ import type { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import type { TaskDto } from "@invessiv/common/contracts/crm/task.dto";
 import { tasksApiService } from "@/client/crm/tasks-api-service";
 import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { useOptimisticChange } from "@/hooks/use-optimistic-change";
 
 type StatusTask = Pick<TaskDto, "id" | "status" | "title" | "version">;

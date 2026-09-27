@@ -111,7 +111,7 @@
   "chat": {
     "title": "Customer chat",
     "body": "Soon you can write to the customer directly here. They reply from the portal.",
-    "readAlong": "The customer will read along here.",
+    "readAlong": "The customer reads everything here in their portal. Internal notes do not belong in this chat.",
     "inputLabel": "Message",
     "inputPlaceholder": "Write a message …",
     "send": "Send",

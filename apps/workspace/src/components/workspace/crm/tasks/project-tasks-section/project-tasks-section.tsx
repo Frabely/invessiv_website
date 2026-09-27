@@ -10,7 +10,7 @@ import type { TaskAssigneeOption } from "@/common/contracts/crm/tasks-view-model
 import type { Locale } from "@/config/i18n";
 import { useTaskStatusChange } from "@/hooks/workspace/use-task-status-change";
 import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
 import { CollapsibleSection } from "@/components/workspace/crm/shared/collapsible-section/collapsible-section";
 import { SectionEmptyState } from "@/components/workspace/crm/shared/section-empty-state/section-empty-state";

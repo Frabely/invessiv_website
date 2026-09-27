@@ -1,5 +1,5 @@
-import type { Permission } from "@invessiv/common/constants/auth/permissions";
-import type { PortalSection } from "@/common/constants/portal/portal-sections";
+import { Permission } from "@invessiv/common/constants/auth/permissions";
+import { PortalSection } from "@/common/constants/portal/portal-sections";
 
 export interface PortalNavItem {
   readonly section: PortalSection;
@@ -9,9 +9,13 @@ export interface PortalNavItem {
 }
 
 /**
- * Empty until the first portal module (Ordner 13 onward) registers its entry.
- * `listPermittedPortalNavItems` (called from `portal/[customerId]/layout.tsx`) already filters
- * this by the actor's permissions, so a module only has to append here — no change to the shell
- * or the layout.
+ * `listPermittedPortalNavItems` (called from `portal/[customerId]/layout.tsx`) filters this by the
+ * actor's permissions, so a module only has to append here — no change to the shell or the layout.
  */
-export const PORTAL_NAV_ITEMS: readonly PortalNavItem[] = [];
+export const PORTAL_NAV_ITEMS: readonly PortalNavItem[] = [
+  {
+    section: PortalSection.Messages,
+    labelKey: PortalSection.Messages,
+    requiredPermission: Permission.PortalMessagesRead,
+  },
+];

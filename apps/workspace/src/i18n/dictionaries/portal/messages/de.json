@@ -1,0 +1,57 @@
+{
+  "meta": {
+    "title": "Nachrichten | Invessiv",
+    "description": "Dein direkter Draht zu uns: Fragen stellen, Rückmeldung geben und alles zu deinem Projekt an einem Ort nachlesen."
+  },
+  "page": {
+    "heading": "Nachrichten",
+    "intro": "Schreib uns direkt hier. Alle aus deinem Team, die Zugang zum Portal haben, sehen denselben Verlauf."
+  },
+  "thread": {
+    "logLabel": "Verlauf mit Invessiv",
+    "emptyTitle": "Schreib uns einfach",
+    "emptyBody": "Frag nach, gib Rückmeldung oder schick uns einen Link. Wir antworten werktags in der Regel innerhalb eines Tages.",
+    "loadOlder": "Ältere Nachrichten laden",
+    "loadingOlder": "Lädt …",
+    "newMessages": "Neue Nachrichten",
+    "today": "Heute",
+    "yesterday": "Gestern",
+    "own": "Du",
+    "redacted": "Diese Nachricht wurde ausgeblendet.",
+    "systemFallback": "Neuigkeit zu deinem Projekt",
+    "sending": "Wird gesendet …",
+    "failed": "Nicht gesendet",
+    "retry": "Erneut senden",
+    "redact": "Ausblenden",
+    "inputLabel": "Deine Nachricht",
+    "inputPlaceholder": "Deine Nachricht …",
+    "inputHint": "Enter sendet, Shift + Enter macht eine neue Zeile.",
+    "send": "Senden",
+    "characterCount": "{count} von {max} Zeichen"
+  },
+  "systemMessages": {
+    "projectPhaseChanged": "Dein Projekt „{projectTitle}“ ist jetzt in der Phase {phase}."
+  },
+  "phases": {
+    "onboarding": "Onboarding",
+    "design": "Design",
+    "development": "Entwicklung",
+    "feedback": "Feedback",
+    "launch": "Launch",
+    "maintenance": "Wartung"
+  },
+  "dock": {
+    "unread": "{count} ungelesen"
+  },
+  "states": {
+    "loading": "Verlauf wird geladen …",
+    "loadError": "Der Verlauf konnte nicht geladen werden.",
+    "reload": "Erneut laden",
+    "olderError": "Ältere Nachrichten konnten nicht geladen werden.",
+    "rateLimited": "Du hast in der letzten Stunde sehr viele Nachrichten geschickt. Warte kurz und sende dann erneut."
+  },
+  "ownerView": {
+    "hint": "In der Portalansicht kannst du nicht schreiben.",
+    "link": "Im CRM antworten"
+  }
+}

@@ -22,7 +22,7 @@ import { Badge, ButtonControl, ProcessTrack } from "@invessiv/ui";
 import { getMemberInitials } from "@/common/patterns/access/member-initials";
 import type { CrmCockpitDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { OwnerWithoutAccessBadge } from "@/components/workspace/crm/shared/owner-without-access-badge/owner-without-access-badge";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import styles from "./project-overview.module.css";
 
 const PROJECT_STATUS_BADGE: Record<

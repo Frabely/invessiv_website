@@ -4,6 +4,8 @@ import dashboardDe from "./dashboard/de.json";
 import dashboardEn from "./dashboard/en.json";
 import invitationDe from "./invitation/de.json";
 import invitationEn from "./invitation/en.json";
+import messagesDe from "./messages/de.json";
+import messagesEn from "./messages/en.json";
 import metaDe from "./meta/de.json";
 import metaEn from "./meta/en.json";
 import pickerDe from "./picker/de.json";
@@ -23,6 +25,7 @@ describe("portal dictionaries", () => {
   it.each([
     ["dashboard", dashboardDe, dashboardEn],
     ["invitation", invitationDe, invitationEn],
+    ["messages", messagesDe, messagesEn],
     ["meta", metaDe, metaEn],
     ["picker", pickerDe, pickerEn],
     ["shell", shellDe, shellEn],

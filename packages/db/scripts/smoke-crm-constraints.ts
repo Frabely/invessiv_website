@@ -11,6 +11,8 @@ import { randomUUID } from "node:crypto";
 
 import { getDatabaseClient, getDatabaseUrl } from "@invessiv/db/core";
 import { TasksConstraintName } from "@invessiv/db/constraint-names/crm/tasks-constraint-names";
+import { MessagesConstraintName } from "@invessiv/db/constraint-names/crm/messages-constraint-names";
+import { ConversationReadsConstraintName } from "@invessiv/db/constraint-names/crm/conversation-reads-constraint-names";
 import {
   configureDatabaseUrlFromTarget,
   type DatabaseTarget,
@@ -1040,6 +1042,77 @@ async function runMissingDefaultChecks(
             VALUES (${randomUUID()},
                     (SELECT id FROM customers WHERE display_name = ${name("Customer A")} LIMIT 1), ${personId}, 1)
         `,
+  );
+
+  const chatCustomerId = await insertCustomer(sql, {
+    ownerMemberId: memberId,
+    displayName: name("Chat defaults"),
+  });
+  const chatVersionCustomerId = await insertCustomer(sql, {
+    ownerMemberId: memberId,
+    displayName: name("Chat version default"),
+  });
+  const conversationId = randomUUID();
+  await sql`
+        INSERT INTO conversations (id, customer_id, owner_member_id, version)
+        VALUES (${conversationId}, ${chatCustomerId}, ${memberId}, 1)
+    `;
+  await expectRejected(
+    "conversation without version is rejected",
+    () => sql`
+            INSERT INTO conversations (id, customer_id, owner_member_id)
+            VALUES (${randomUUID()}, ${chatVersionCustomerId}, ${memberId})
+        `,
+  );
+  await expectRejected(
+    "message without type is rejected",
+    () => sql`
+            INSERT INTO messages (id, conversation_id, customer_id, body, sender_side,
+                                  sender_member_id, sender_display_name)
+            VALUES (${randomUUID()}, ${conversationId}, ${chatCustomerId},
+                    'hello', 'internal', ${memberId}, 'Fixture member')
+        `,
+  );
+  await expectRejected(
+    "conversation read without timestamp is rejected",
+    () => sql`
+            INSERT INTO conversation_reads (id, conversation_id, member_id)
+            VALUES (${randomUUID()}, ${conversationId}, ${memberId})
+        `,
+  );
+  await expectRejected(
+    "a second customer-wide conversation is rejected",
+    () => sql`
+            INSERT INTO conversations (id, customer_id, owner_member_id, version)
+            VALUES (${randomUUID()}, ${chatCustomerId}, ${memberId}, 1)
+        `,
+  );
+  await expectRejected(
+    "message with an internal side and no member is rejected",
+    () => sql`
+            INSERT INTO messages (id, conversation_id, customer_id, type, body, sender_side, sender_display_name)
+            VALUES (${randomUUID()}, ${conversationId}, ${chatCustomerId}, 'text', 'hello', 'internal',
+                    'Fixture member')
+        `,
+    MessagesConstraintName.SenderConsistencyCheck,
+  );
+  await expectRejected(
+    "message without body or redaction is rejected",
+    () => sql`
+            INSERT INTO messages (id, conversation_id, customer_id, type, body, sender_side,
+                                  sender_member_id, sender_display_name)
+            VALUES (${randomUUID()}, ${conversationId}, ${chatCustomerId}, 'text', NULL, 'internal',
+                    ${memberId}, 'Fixture member')
+        `,
+    MessagesConstraintName.BodyCheck,
+  );
+  await expectRejected(
+    "read without exactly one member is rejected",
+    () => sql`
+            INSERT INTO conversation_reads (id, conversation_id, last_read_at)
+            VALUES (${randomUUID()}, ${conversationId}, NOW())
+        `,
+    ConversationReadsConstraintName.ReaderCheck,
   );
 }
 

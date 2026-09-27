@@ -26,6 +26,10 @@ export const CrmEndpointAccessRule = {
   TaskCreate: "task_create",
   TaskDetail: "task_detail",
   TaskStatusChange: "task_status_change",
+  CustomerConversation: "customer_conversation",
+  CustomerConversationWrite: "customer_conversation_write",
+  ConversationOwnerUpdate: "conversation_owner_update",
+  MessageRedact: "message_redact",
 } as const;
 
 export type CrmEndpointAccessRule =
@@ -111,6 +115,22 @@ export const CRM_ENDPOINT_ACCESS_RULES = {
   [CrmEndpointAccessRule.TaskStatusChange]: {
     permission: Permission.TasksWrite,
     scope: "project",
+  },
+  [CrmEndpointAccessRule.CustomerConversation]: {
+    permission: Permission.ChatRead,
+    scope: "customer",
+  },
+  [CrmEndpointAccessRule.CustomerConversationWrite]: {
+    permission: Permission.ChatWrite,
+    scope: "customer",
+  },
+  [CrmEndpointAccessRule.ConversationOwnerUpdate]: {
+    permission: Permission.ChatWrite,
+    scope: "customer",
+  },
+  [CrmEndpointAccessRule.MessageRedact]: {
+    permission: Permission.ChatRedact,
+    scope: "workspace",
   },
 } as const satisfies Record<
   CrmEndpointAccessRule,

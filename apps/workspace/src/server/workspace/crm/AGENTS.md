@@ -67,6 +67,19 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   Command prüft `canOn`; fremde Kunden und Projekte verhalten sich wie nicht vorhanden (404),
   nicht wie ein Berechtigungsfehler.
 
+## Kundenchat (ab Task 24)
+
+- **Eine Unterhaltung entsteht erst mit der ersten Nachricht** (Text oder System) über
+  `conversationService.ensureCustomerConversation` (`src/server/shared/services/message/`). Lesende Handler legen nie
+  an; ohne Row liefern sie einen leeren Verlauf mit `id: null` und `ownership: null`.
+- **Der Verantwortliche folgt dem Kunden-Owner:** Beim Anlegen übernimmt die Unterhaltung den aktuellen Kunden-Owner.
+  Ein künftiger Owner-Wechsel am Kunden muss die Unterhaltung in derselben Transaktion über `updateVersioned`
+  mitziehen; die Auswahl in der Inbox bleibt als manuelle Abweichung möglich.
+- **Offene Verantwortung nur bei aktiven Kunden** (`conversation-responsibility-counter.ts`), analog zu Kunden.
+- **Ausblenden nur mit `chat.redact`** (nicht delegierbar). Keine Rollenprüfung im Chat-Code.
+- **„Ungelesen“ ist genau einmal definiert:** `conversationService.unreadMessageCondition` speist Verlauf, Inbox und
+  Sidebar-Zähler.
+
 ## Aufgaben (ab Task 11-2)
 
 - **Eine Aufgabe gehört zu genau einem Projekt.** `tasks` hat bewusst keine Kundenspalte; der Kunde folgt aus dem

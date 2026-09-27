@@ -55,7 +55,7 @@ entschieden. 11a-2 und 11b können parallel zu 11a-1 laufen, sobald ihre Abhäng
 - **Portalsicht** und **vom Kunden gestellte Aufgaben**: Ordner 13. Dort entstehen die Portal-Query (filtert
   `visible_to_customer = true` im `WHERE`) und additiv die Herkunft (`created_by_side`).
 - **Serien und Reminder**: Ordner 20b.
-- **Kommentare und Anhänge** an Aufgaben: nicht geplant; Austausch läuft über den Kundenchat (Ordner 17/18).
+- **Kommentare und Anhänge** an Aufgaben: nicht geplant; Austausch läuft über den Kundenchat (Ordner 13a/13b).
 - **Uhrzeit** an der Fälligkeit: nicht geplant.
 
 ## Merge-Gate (Ordner gesamt)

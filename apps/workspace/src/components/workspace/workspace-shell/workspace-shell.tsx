@@ -14,23 +14,27 @@ import styles from "./workspace-shell.module.css";
 type WorkspaceShellProps = {
   canOpenCrmCustomers?: boolean;
   canOpenCrmTasks?: boolean;
+  canOpenCrmMessages?: boolean;
   canReadCrmLineItemTemplates?: boolean;
   children?: ReactNode;
   content: WorkspacePageContent;
   locale: Locale;
   permittedAreas: readonly WorkspaceArea[];
   portalHref?: string | null;
+  unreadConversationCount?: number;
 };
 
 export function WorkspaceShell({
   canOpenCrmCustomers = false,
   canOpenCrmTasks = false,
+  canOpenCrmMessages = false,
   canReadCrmLineItemTemplates = false,
   children,
   content,
   locale,
   permittedAreas,
   portalHref = null,
+  unreadConversationCount = 0,
 }: WorkspaceShellProps) {
   const { close, isOpen, toggle } = useWorkspaceSidebarDrawer();
   const [isPending, startTransition] = useTransition();
@@ -60,12 +64,14 @@ export function WorkspaceShell({
           <WorkspaceSidebar
             canOpenCrmCustomers={canOpenCrmCustomers}
             canOpenCrmTasks={canOpenCrmTasks}
+            canOpenCrmMessages={canOpenCrmMessages}
             canReadCrmLineItemTemplates={canReadCrmLineItemTemplates}
             content={content}
             isOpen={isOpen}
             locale={locale}
             onCloseAction={close}
             permittedAreas={permittedAreas}
+            unreadConversationCount={unreadConversationCount}
           />
         ) : null}
         <main

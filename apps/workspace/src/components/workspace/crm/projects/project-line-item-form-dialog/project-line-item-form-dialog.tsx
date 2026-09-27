@@ -45,7 +45,7 @@ import { resolveRecurringIntervalFor } from "@/common/patterns/crm/line-item-fie
 import type { Locale } from "@/config/i18n";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import type { CrmProjectLineItemsDictionary } from "@/i18n/dictionaries/workspace/crm";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { formatEuroCents } from "@/lib/workspace/crm/format-service-price";
 import styles from "./project-line-item-form-dialog.module.css";
 

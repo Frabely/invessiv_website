@@ -11,6 +11,7 @@ export const WorkspaceApiEndpoint = {
   CrmProjectLineItems: "/api/workspace/crm/project-line-items",
   CrmLineItemTemplates: "/api/workspace/crm/line-item-templates",
   CrmTasks: "/api/workspace/crm/tasks",
+  CrmMessages: "/api/workspace/crm/messages",
   Leads: "/api/workspace/leads",
   LeadsBulk: "/api/workspace/leads/bulk",
   LeadsImport: "/api/workspace/leads/import",

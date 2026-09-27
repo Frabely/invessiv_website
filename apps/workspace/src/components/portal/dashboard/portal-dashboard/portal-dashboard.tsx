@@ -9,6 +9,7 @@ import {
   faRocket,
 } from "@fortawesome/free-solid-svg-icons";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
+import type { PortalConversationDto } from "@invessiv/common/contracts/portal/portal-conversation.dto";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
 import { ChatDock, WidgetGrid } from "@invessiv/ui";
 import type { PortalDashboardNavigationMode as PortalDashboardNavigationModeType } from "@/common/constants/portal/portal-dashboard-navigation-modes";
@@ -20,11 +21,16 @@ import {
   readPortalDashboardProject,
   readPortalDashboardWidget,
 } from "@/common/patterns/portal/portal-dashboard-query";
+import { describeUnreadBadge } from "@/common/patterns/crm/describe-unread-badge";
 import type { Locale } from "@/config/i18n";
+import { PortalConversation } from "@/components/portal/messages/portal-conversation/portal-conversation";
 import { usePortalTaskCompletion } from "@/hooks/portal/use-portal-task-completion";
-import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
+import type {
+  PortalDashboardDictionary,
+  PortalMessagesDictionary,
+} from "@/i18n/dictionaries/portal";
 import { PortalDashboardEmptyState } from "../portal-dashboard-empty-state/portal-dashboard-empty-state";
-import { PortalOwnerTaskNotice } from "../portal-owner-task-notice/portal-owner-task-notice";
+import { PortalOwnerNotice } from "@/components/portal/portal-owner-notice/portal-owner-notice";
 import { PortalWidgetDialogHost } from "../portal-widget-dialog-host/portal-widget-dialog-host";
 import { PortalCompletedProjectsWidget } from "../widgets/portal-completed-projects-widget/portal-completed-projects-widget";
 import { PortalContactWidget } from "../widgets/portal-contact-widget/portal-contact-widget";
@@ -40,13 +46,18 @@ export type PortalDashboardProps = {
   /** Cockpit link for the owner view's disabled actions; null for customer contacts. */
   cockpitHref: string | null;
   content: PortalDashboardDictionary;
+  /** Null without `portal.messages.read`; the chat dock is then not rendered at all. */
+  conversation: PortalConversationDto | null;
   customerId: string;
   dashboard: PortalDashboardDto;
   locale: Locale;
+  messagesContent: PortalMessagesDictionary;
   /** Business day (`YYYY-MM-DD`) decided once on the server. */
   today: string;
   /** Already filtered on the server by permission and content. */
   widgets: readonly PortalWidgetDefinition[];
+  /** Scopes locally kept drafts to the signed-in user. */
+  viewerUserId: string;
 };
 
 /**
@@ -56,11 +67,14 @@ export type PortalDashboardProps = {
 export function PortalDashboard({
   cockpitHref,
   content,
+  conversation,
   customerId,
   dashboard,
   locale,
+  messagesContent,
   today,
   widgets,
+  viewerUserId,
 }: PortalDashboardProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -103,7 +117,7 @@ export function PortalDashboard({
 
   const ownerNotice = (id: string): ReactNode =>
     isOwnerView && cockpitHref ? (
-      <PortalOwnerTaskNotice
+      <PortalOwnerNotice
         cockpitHref={cockpitHref}
         hint={content.widgets.customerTasks.ownerHint}
         id={id}
@@ -225,20 +239,36 @@ export function PortalDashboard({
           )}
         />
       </div>
-      <div
-        className={styles.dock}
-        data-owner-view={cockpitHref ? "true" : undefined}
-        id={dockId}
-      >
-        <ChatDock
-          badgeLabel={mockBadge}
-          className={styles.chat}
-          content={content.chat}
-          expanded={dockExpanded}
-          onExpandedChangeAction={setDockExpanded}
-          overlay
-        />
-      </div>
+      {conversation ? (
+        <div
+          className={styles.dock}
+          data-owner-view={cockpitHref ? "true" : undefined}
+          id={dockId}
+        >
+          <ChatDock
+            badgeLabel={describeUnreadBadge(
+              conversation.unreadCount,
+              messagesContent.dock.unread,
+            )}
+            className={styles.chat}
+            content={content.chat}
+            expanded={dockExpanded}
+            onExpandedChangeAction={setDockExpanded}
+            overlay
+            unreadCount={conversation.unreadCount}
+          >
+            <PortalConversation
+              active={dockExpanded}
+              cockpitHref={cockpitHref}
+              content={messagesContent}
+              customerId={customerId}
+              initialConversation={conversation}
+              locale={locale}
+              viewerUserId={viewerUserId}
+            />
+          </ChatDock>
+        </div>
+      ) : null}
       <PortalWidgetDialogHost
         content={content}
         customerTasksContent={

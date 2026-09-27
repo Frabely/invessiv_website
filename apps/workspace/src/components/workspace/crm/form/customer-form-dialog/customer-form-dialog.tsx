@@ -48,7 +48,7 @@ import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import { useLeadCustomerConversion } from "@/hooks/workspace/use-lead-customer-conversion";
 import { buildLeadDetailHref } from "@/common/patterns/leads/lead-detail-query";
 import type { CrmFormDictionary } from "@/i18n/dictionaries/workspace/crm";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { CustomerContactSection } from "../../contacts/customer-contact-section/customer-contact-section";
 import styles from "./customer-form-dialog.module.css";
 

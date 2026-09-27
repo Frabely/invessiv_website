@@ -1,0 +1,121 @@
+.composer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 0.4rem 0.5rem;
+}
+
+/* The replica after the textarea grows with its content, so the field grows without script. */
+.field {
+  display: grid;
+  max-height: 10rem;
+  overflow-y: auto;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 12px;
+  background: var(--color-surface-2);
+}
+
+.field::after {
+  content: attr(data-value) " ";
+  visibility: hidden;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.field textarea,
+.field::after {
+  grid-area: 1 / 1 / 2 / 2;
+  min-height: 2.5rem;
+  padding: 0.55rem 0.75rem;
+  font: inherit;
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.45;
+}
+
+.field textarea {
+  resize: none;
+  overflow: hidden;
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+}
+
+.field textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+.field textarea:focus-visible {
+  outline: none;
+}
+
+.field:focus-within {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 1px;
+}
+
+.send.send {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-cta);
+  color: var(--color-on-cta);
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.send.send:hover,
+.send.send:focus-visible {
+  background: var(--color-cta-hover);
+  box-shadow: none;
+  transform: none;
+}
+
+.send.send:disabled {
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}
+
+.send.send:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.meta {
+  display: flex;
+  grid-column: 1 / -1;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+.counter {
+  font-variant-numeric: tabular-nums;
+}
+
+.counter[data-limit="true"] {
+  color: var(--color-danger);
+}
+
+@media (pointer: coarse) {
+  .meta > span:first-child {
+    display: none;
+  }
+}
+
+@media (pointer: coarse) {
+  .send.send {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  .field textarea,
+  .field::after {
+    min-height: 2.75rem;
+  }
+}

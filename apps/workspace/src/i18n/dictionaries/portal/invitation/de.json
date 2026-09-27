@@ -14,6 +14,7 @@
     "invalid": "Dieser Zugangslink ist nicht mehr gültig. Bitte frage dein Projektteam nach einem neuen Link.",
     "expired": "Dieser Zugangslink ist abgelaufen. Bitte frage dein Projektteam nach einem neuen Link.",
     "redeemed": "Dieser Zugangslink wurde bereits verwendet. Melde dich mit dem Konto an, mit dem du den Zugang aktiviert hast.",
-    "unavailable": "Der Zugang kann gerade nicht aktiviert werden. Bitte versuche es später erneut."
+    "unavailable": "Der Zugang kann gerade nicht aktiviert werden. Bitte versuche es später erneut.",
+    "storageNote": "Gut zu wissen: Damit angefangene Nachrichten nicht verloren gehen, speichert das Portal Entwürfe und noch nicht gesendete Nachrichten im lokalen Speicher deines Browsers. Sie bleiben auf deinem Gerät und werden nach dem Senden gelöscht."
   }
 }

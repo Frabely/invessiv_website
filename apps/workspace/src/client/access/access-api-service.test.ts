@@ -123,6 +123,7 @@ describe("accessApiService", () => {
         responsibilityCounts: {
           [OwnableEntity.Customer]: 2,
           [OwnableEntity.Task]: 3,
+          [OwnableEntity.Conversation]: 4,
         },
       },
     });
@@ -138,6 +139,7 @@ describe("accessApiService", () => {
       responsibilityCounts: {
         [OwnableEntity.Customer]: 2,
         [OwnableEntity.Task]: 3,
+        [OwnableEntity.Conversation]: 4,
       },
     });
     expect(fetchMock).toHaveBeenCalledWith(
@@ -170,6 +172,7 @@ describe("accessApiService", () => {
       responsibilityCounts: {
         [OwnableEntity.Customer]: 2,
         [OwnableEntity.Task]: 0,
+        [OwnableEntity.Conversation]: 0,
       },
     });
   });
@@ -195,6 +198,7 @@ describe("accessApiService", () => {
       responsibilityCounts: {
         [OwnableEntity.Customer]: 0,
         [OwnableEntity.Task]: 5,
+        [OwnableEntity.Conversation]: 0,
       },
     });
   });

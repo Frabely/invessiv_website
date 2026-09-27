@@ -4,15 +4,65 @@ import type { ProjectDto } from "@invessiv/common/contracts/crm/project.dto";
 import { ProjectErrorCode } from "@invessiv/common/constants/crm/errors/project-error-codes";
 import type { UpdateProjectRequestDto } from "@invessiv/common/contracts/crm/update-project-request.dto";
 import type { VersionedWriteResult } from "@invessiv/common/contracts/concurrency/version-conflict.dto";
-import { getDrizzleDatabaseClient } from "@invessiv/db/core";
+import {
+  type ContactDatabaseTransaction,
+  getDrizzleDatabaseClient,
+} from "@invessiv/db/core";
 import { projects } from "@invessiv/db/record-configuration";
 import { eq } from "drizzle-orm";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
+import type { ProjectPhase } from "@invessiv/common/constants/crm/project-phases";
+import {
+  SystemMessageKey,
+  SystemMessageParam,
+} from "@invessiv/common/constants/crm/system-message-keys";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { canOn } from "@/common/patterns/auth/can-on";
+import { messageService } from "@/server/shared/services/message/message-service";
 import { projectMappingService } from "@/server/workspace/crm/services/project-mapping-service";
 import { projectSchemas } from "@/server/workspace/crm/services/project-schemas";
 import { updateVersioned } from "@/server/workspace/shared/update-versioned";
+
+async function announcePhaseChange(
+  tx: ContactDatabaseTransaction,
+  customerId: string,
+  projectTitle: string,
+  phase: ProjectPhase,
+) {
+  try {
+    await tx.transaction((savepoint) =>
+      messageService.appendSystemMessage(
+        savepoint,
+        customerId,
+        SystemMessageKey.ProjectPhaseChanged,
+        {
+          [SystemMessageParam.ProjectTitle]: projectTitle,
+          [SystemMessageParam.Phase]: phase,
+        },
+      ),
+    );
+  } catch (error) {
+    console.error("[crm-project] phase system message failed", {
+      errorName: error instanceof Error ? error.name : typeof error,
+    });
+  }
+}
+
+/**
+ * The phase before this write, read under the row lock that the update takes anyway. A value read
+ * before the transaction could be stale and announce a change that never happened.
+ */
+async function lockPreviousPhase(
+  tx: ContactDatabaseTransaction,
+  projectId: string,
+): Promise<ProjectPhase | null> {
+  const [row] = await tx
+    .select({ phase: projects.phase })
+    .from(projects)
+    .where(eq(projects.id, projectId))
+    .for("update");
+  return row?.phase ?? null;
+}
 
 export async function updateProject(
   projectId: string,
@@ -38,7 +88,8 @@ export async function updateProject(
     return ProjectErrorCode.NotFound;
   const data = parsed.data;
   return db.transaction(async (tx) => {
-    return await updateVersioned({
+    const previousPhase = await lockPreviousPhase(tx, projectId);
+    const result = await updateVersioned({
       tx,
       table: projects,
       id: projectId,
@@ -59,5 +110,8 @@ export async function updateProject(
       },
       toDto: projectMappingService.toDto,
     });
+    if (result.ok && data.phase !== previousPhase)
+      await announcePhaseChange(tx, target.customerId, data.title, data.phase);
+    return result;
   });
 }

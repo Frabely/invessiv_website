@@ -81,7 +81,23 @@ Plan: `apps/workspace/plans/crm/12c-cockpit-dashboard/50-cockpit-dashboard-redes
 - **Roadmap-Bereiche ohne Umsetzung** erscheinen nur über `shared/mock-section-card`: ohne Daten-Props, ohne
   Aktion, immer mit „Bald verfügbar“-Badge. Wird ein Bereich echt gebaut, ersetzt er seine Mock-Karte an
   derselben Stelle.
-- Mock-Kennzahlen zeigen „—“, nie eine erfundene Zahl. Der Chat-Dock zeigt kein Ungelesen-Badge, solange es
-  keine echten Lesestände gibt (Ordner 17/18 docken dort an).
+- Mock-Kennzahlen zeigen „—“, nie eine erfundene Zahl. Der Chat-Dock zeigt ab Ordner 13a den echten Verlauf und
+  als Badge nur die echte Ungelesen-Zahl; ohne `chat.read` am Kunden wird er gar nicht gerendert.
 - Der zugängliche Name eines Projekt-Tabs ist exakt der Projekttitel; der Status hängt über `aria-describedby`.
 - Offene und überfällige Aufgaben werden über `taskDueStateService.summarize` gezählt, nie in der Komponente.
+
+## Kundenchat (ab Task 25)
+
+Plan: `apps/workspace/plans/crm/13a-kundenchat/25-chat-im-crm.md`.
+
+- Komponenten liegen unter `messages/`. Der Verlauf selbst ist `MessageThread` aus `@invessiv/ui` (seit Task 26,
+  gemeinsam mit dem Portal); er bekommt alle Texte als `MessageThreadLabels`. Lade-/Fehlerzustand vor dem ersten
+  Laden über `MessageThreadStatus`.
+- Laden, Senden, Lesestand und Ausblenden laufen ausschließlich über `useCustomerConversation`
+  (`src/hooks/workspace/crm/`), der auf dem geteilten `useConversationThread` (`src/hooks/shared/`) aufsetzt und nur
+  das Ausblenden ergänzt. Kein Polling: Laden beim Öffnen, nach dem Senden und bei `visibilitychange`.
+- Nachrichten sind unveränderlich: kein Bearbeiten, kein Löschen. „Ausblenden“ erscheint nur, wenn der Server
+  `canRedact` (Permission `chat.redact`) durchreicht, und immer mit Bestätigungsdialog.
+- Ohne `chat.write` fehlt das Eingabefeld, ohne Recht zum Neuzuweisen die Verantwortlichen-Auswahl — nie deaktiviert.
+- Nachrichtentext wird nur als Text gerendert; Links erkennt `splitMessageLinks` (nur http/https).
+- Systemnachrichten werden über `describeSystemMessage` aus Dictionary-Key + Parametern formuliert.

@@ -2,7 +2,7 @@ import { ButtonControl } from "@invessiv/ui";
 import type { PortalInvitationDto } from "@invessiv/common/contracts/crm/portal-invitation.dto";
 import type { Locale } from "@/config/i18n";
 import type { CrmPortalAccessDictionary } from "@/i18n/dictionaries/workspace/crm";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import styles from "./portal-access-list.module.css";
 
 export interface PortalInvitationRowProps {

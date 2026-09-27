@@ -5,7 +5,7 @@ import { useId } from "react";
 import type { RoleAssignmentOptionDto } from "@invessiv/common/contracts/auth/role-assignment-option.dto";
 import { CheckboxControl } from "@invessiv/ui";
 import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import {
   resolveRoleDescription,
   resolveRoleLabel,

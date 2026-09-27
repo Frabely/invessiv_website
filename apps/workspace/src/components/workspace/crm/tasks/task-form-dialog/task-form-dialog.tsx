@@ -36,7 +36,7 @@ import {
 } from "@/common/patterns/crm/task-form";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import styles from "./task-form-dialog.module.css";
 
 type TaskFormDialogProps = {

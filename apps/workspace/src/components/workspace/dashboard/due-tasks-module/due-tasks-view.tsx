@@ -6,7 +6,7 @@ import type { TaskListRowDto } from "@/common/contracts/crm/task-list-result";
 import type { Locale } from "@/config/i18n";
 import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
 import type { DashboardDueTasksDictionary } from "@/i18n/dictionaries/workspace/dashboard";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
 import { formatIntegerCount } from "@/lib/workspace/dashboard/format-integer";
 import { TaskActionSideBadge } from "../../crm/tasks/task-action-side-badge/task-action-side-badge";

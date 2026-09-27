@@ -95,6 +95,7 @@
     "alreadyDeactivated": "{name} is already deactivated. Nothing left to do.",
     "responsibilities": "Open customer responsibilities: {count}. Assign them to another owner first.",
     "openTasks": "Open tasks: {count}. Assign them to another assignee first.",
+    "openConversations": "Assigned customer conversations: {count}. Assign them to another member first.",
     "done": "Close",
     "submitting": "Saving …",
     "cancel": "Cancel",

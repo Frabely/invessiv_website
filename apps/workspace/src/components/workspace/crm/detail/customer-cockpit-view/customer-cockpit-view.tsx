@@ -5,6 +5,9 @@ import { faEnvelope, faUserTie } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { CustomerCockpitDto } from "@invessiv/common/contracts/crm/customer-cockpit.dto";
 import type { PortalAccessDto } from "@invessiv/common/contracts/crm/portal-access.dto";
+import type { InternalConversationDto } from "@invessiv/common/contracts/crm/internal-conversation.dto";
+import { CustomerConversation } from "@/components/workspace/crm/messages/customer-conversation/customer-conversation";
+import { describeUnreadBadge } from "@/common/patterns/crm/describe-unread-badge";
 import { PortalAccessSection } from "@/components/workspace/crm/portal-access/portal-access-section/portal-access-section";
 import type { AccessScopeEntryDto } from "@invessiv/common/contracts/auth/access-scope-entry.dto";
 import type { AccessProjectOptionDto } from "@invessiv/common/contracts/auth/access-project-option.dto";
@@ -20,6 +23,7 @@ import { formatCustomerNumber } from "@invessiv/common/patterns/crm/format-custo
 import type {
   CrmAccessDictionary,
   CrmCockpitDictionary,
+  CrmMessagesDictionary,
   CrmPortalAccessDictionary,
   CrmProjectLineItemsDictionary,
   CrmTasksDictionary,
@@ -29,7 +33,7 @@ import type { ProjectLineItemsViewModel } from "@/common/contracts/crm/project-l
 import type { TasksViewModel } from "@/common/contracts/crm/tasks-view-model";
 import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
 import type { Locale } from "@/config/i18n";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { formatEuroCents } from "@/lib/workspace/crm/format-service-price";
 import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
 import styles from "./customer-cockpit-view.module.css";
@@ -48,6 +52,13 @@ type CustomerCockpitViewProps = {
   accessScopes?: readonly AccessScopeEntryDto[];
   accessMembers?: readonly WorkspaceMemberDto[];
   content: CrmCockpitDictionary;
+  /** Undefined without `chat.read` on the customer: the dock is then not rendered at all. */
+  conversation?: InternalConversationDto | null;
+  /** True only with `chat.redact`. */
+  canRedactConversation?: boolean;
+  canWriteConversation?: boolean;
+  messagesContent?: CrmMessagesDictionary;
+  viewerMemberId: string;
   customer: CustomerCockpitDto;
   isWorkspaceOwner?: boolean;
   portalHref?: string;
@@ -77,6 +88,11 @@ export function CustomerCockpitView({
   accessRoles,
   accessScopes,
   content,
+  conversation,
+  canRedactConversation = false,
+  canWriteConversation = false,
+  messagesContent,
+  viewerMemberId,
   customer,
   isWorkspaceOwner = false,
   portalHref,
@@ -96,6 +112,7 @@ export function CustomerCockpitView({
   portalAccess,
   portalAccessContent,
 }: CustomerCockpitViewProps) {
+  const [chatOpen, setChatOpen] = useState(false);
   const [requestedAccessMemberId, setRequestedAccessMemberId] = useState<
     string | null
   >(null);
@@ -334,11 +351,31 @@ export function CustomerCockpitView({
           </div>
         </div>
       </div>
-      <ChatDock
-        badgeLabel={content.mock.badge}
-        className={styles.chat}
-        content={content.chat}
-      />
+      {conversation !== undefined && messagesContent ? (
+        <ChatDock
+          badgeLabel={describeUnreadBadge(
+            conversation?.unreadCount ?? 0,
+            messagesContent.dock.unread,
+          )}
+          className={styles.chat}
+          content={content.chat}
+          expanded={chatOpen}
+          onExpandedChangeAction={setChatOpen}
+          unreadCount={conversation?.unreadCount ?? 0}
+        >
+          <CustomerConversation
+            active={chatOpen}
+            canRedact={canRedactConversation}
+            canWrite={canWriteConversation}
+            content={messagesContent}
+            customerId={customer.id}
+            initialConversation={conversation}
+            key={`${viewerMemberId}:${customer.id}`}
+            locale={locale}
+            viewerMemberId={viewerMemberId}
+          />
+        </ChatDock>
+      ) : null}
     </div>
   );
 }

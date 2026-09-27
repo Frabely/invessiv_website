@@ -28,6 +28,7 @@ const mocks = vi.hoisted(() => ({
   buildTasksViewModel: vi.fn(),
   listProjectLineItemsByCustomer: vi.fn(),
   getCustomerPortalAccess: vi.fn(),
+  getCustomerConversation: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -35,6 +36,7 @@ vi.mock("next/navigation", () => ({
     throw new Error("notFound called");
   }),
 }));
+vi.mock("server-only", () => ({}));
 vi.mock("@/lib/auth/permissions", () => ({
   requireWorkspaceArea: mocks.requireWorkspaceArea,
 }));
@@ -53,6 +55,10 @@ vi.mock(
 vi.mock(
   "@/server/workspace/crm/query-handler/get-customer-portal-access.query-handler",
   () => ({ getCustomerPortalAccess: mocks.getCustomerPortalAccess }),
+);
+vi.mock(
+  "@/server/workspace/crm/query-handler/get-customer-conversation.query-handler",
+  () => ({ getCustomerConversation: mocks.getCustomerConversation }),
 );
 vi.mock(
   "@/server/workspace/crm/query-handler/list-active-customer-categories.query-handler",
@@ -104,13 +110,16 @@ vi.mock(
   "@/components/workspace/crm/detail/customer-cockpit-dialog/customer-cockpit-dialog",
   () => ({
     CustomerCockpitDialog: ({
+      conversation,
       isWorkspaceOwner,
       portalHref,
     }: {
+      conversation?: unknown;
       isWorkspaceOwner?: boolean;
       portalHref?: string;
     }) => (
       <div
+        data-chat={conversation === undefined ? "hidden" : "shown"}
         data-owner={String(Boolean(isWorkspaceOwner))}
         data-portal-href={portalHref ?? ""}
         data-testid="cockpit"
@@ -163,6 +172,7 @@ describe("CrmPage", () => {
   beforeEach(() => {
     Object.values(mocks).forEach((mock) => mock.mockReset());
     mocks.requireWorkspaceArea.mockResolvedValue(workspaceActorWith());
+    mocks.getCustomerConversation.mockResolvedValue(null);
     mocks.listCustomers.mockResolvedValue({
       hasCustomers: true,
       page: 1,
@@ -274,6 +284,28 @@ describe("CrmPage", () => {
       "data-portal-href",
       "",
     );
+    expect(screen.getByTestId("cockpit")).toHaveAttribute(
+      "data-chat",
+      "hidden",
+    );
+    expect(mocks.getCustomerConversation).not.toHaveBeenCalled();
+  });
+
+  it("loads the conversation for the dock only with chat.read and survives its failure", async () => {
+    mocks.requireWorkspaceArea.mockResolvedValue(
+      workspaceActorWith([Permission.CustomersRead, Permission.ChatRead]),
+    );
+    mocks.getCustomerCockpitById.mockResolvedValue({ id: TEST_CUSTOMER_ID });
+    mocks.getCustomerConversation.mockRejectedValue(new Error("chat down"));
+
+    await renderPage({ cockpit: TEST_CUSTOMER_ID });
+
+    expect(mocks.getCustomerConversation).toHaveBeenCalledWith(
+      TEST_CUSTOMER_ID,
+      expect.anything(),
+      null,
+    );
+    expect(screen.getByTestId("cockpit")).toHaveAttribute("data-chat", "shown");
   });
 
   it("passes the portal entry only when the current member is the workspace owner", async () => {

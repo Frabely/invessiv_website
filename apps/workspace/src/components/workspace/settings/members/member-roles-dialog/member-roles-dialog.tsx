@@ -26,7 +26,7 @@ import type {
   SettingsMembersDictionary,
   SettingsPermissionsDictionary,
 } from "@/i18n/dictionaries/workspace/settings";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { resolveRoleLabel } from "@/lib/workspace/access/role-label";
 import { AccessScopeTree } from "../../shared/access-scope-tree/access-scope-tree";
 import { PermissionSummary } from "../../shared/permission-summary/permission-summary";

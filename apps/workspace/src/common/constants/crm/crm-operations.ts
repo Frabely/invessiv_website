@@ -15,6 +15,15 @@ export const CrmOperation = {
   CreateTask: "tasks.create",
   UpdateTask: "tasks.update",
   ChangeTaskStatus: "tasks.change-status",
+  GetConversation: "conversations.get",
+  CountUnreadConversations: "conversations.count-unread",
+  MarkConversationRead: "conversations.mark-read",
+  UpdateConversationOwner: "conversations.update-owner",
+  SendMessage: "messages.send",
+  RedactMessage: "messages.redact",
+  GetPortalConversation: "portal-conversations.get",
+  MarkPortalConversationRead: "portal-conversations.mark-read",
+  SendPortalMessage: "portal-messages.send",
 } as const;
 
 export type CrmOperation = (typeof CrmOperation)[keyof typeof CrmOperation];
@@ -35,4 +44,13 @@ export const CRM_OPERATION_VALUES = [
   CrmOperation.CreateTask,
   CrmOperation.UpdateTask,
   CrmOperation.ChangeTaskStatus,
+  CrmOperation.GetConversation,
+  CrmOperation.CountUnreadConversations,
+  CrmOperation.MarkConversationRead,
+  CrmOperation.UpdateConversationOwner,
+  CrmOperation.SendMessage,
+  CrmOperation.RedactMessage,
+  CrmOperation.GetPortalConversation,
+  CrmOperation.MarkPortalConversationRead,
+  CrmOperation.SendPortalMessage,
 ] as const;

@@ -1,0 +1,23 @@
+.owner {
+  display: grid;
+  grid-template-columns: auto minmax(10rem, 16rem);
+  align-items: center;
+  gap: 0.25rem 0.6rem;
+}
+
+.label {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+.status {
+  grid-column: 1 / -1;
+  min-height: 0;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+.status[data-tone="attention"] {
+  color: var(--color-danger);
+}

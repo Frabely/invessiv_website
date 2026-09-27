@@ -1,0 +1,7 @@
+.notice {
+  margin: 0;
+  padding: 0.4rem 0.6rem;
+  border-left: 2px solid var(--color-danger);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-xs);
+}

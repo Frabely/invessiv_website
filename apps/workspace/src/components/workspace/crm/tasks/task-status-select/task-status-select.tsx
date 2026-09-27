@@ -10,7 +10,7 @@ import {
 import { CustomSelect } from "@invessiv/ui";
 import { TASK_STATUS_ICONS } from "@/common/constants/crm/badges/task-status-icons";
 import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import styles from "./task-status-select.module.css";
 
 type TaskStatusSelectProps = {

@@ -15,10 +15,13 @@ import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
   activities,
+  conversationReads,
+  conversations,
   customerContactAssignments,
   customers,
   leadCategories,
   lineItemTemplates,
+  messages,
   people,
   portalMembershipRoles,
   portalMemberships,
@@ -39,6 +42,15 @@ import { SYSTEM_ROLE_DEFINITIONS } from "@invessiv/common/constants/auth/system-
 import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
+import {
+  MessageSenderSide,
+  MessageType,
+} from "@invessiv/common/constants/crm/message-types";
+import {
+  SystemMessageKey,
+  SystemMessageParam,
+} from "@invessiv/common/constants/crm/system-message-keys";
+import { ProjectPhase } from "@invessiv/common/constants/crm/project-phases";
 import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { LineItemTemplateStatus } from "@invessiv/common/constants/crm/line-item-template-statuses";
@@ -288,6 +300,11 @@ async function resetFixtureRows(tx: ContactDatabaseTransaction) {
     await tx
       .delete(workspaceMemberScopedRoles)
       .where(inArray(workspaceMemberScopedRoles.customer_id, customerIds));
+    // Messages retain their sender membership until the conversation is removed. Delete the
+    // thread before contact assignments cascade to portal memberships.
+    await tx
+      .delete(conversations)
+      .where(inArray(conversations.customer_id, customerIds));
     await tx.delete(projects).where(inArray(projects.customer_id, customerIds));
     await tx
       .delete(customerContactAssignments)
@@ -390,6 +407,167 @@ async function createFixturePortalUser(
   return userId;
 }
 
+async function seedConversationThreads(
+  tx: ContactDatabaseTransaction,
+  ownerMemberId: string,
+  customerIds: Map<string, string>,
+  portalMembershipFixtures: ReadonlyArray<{
+    id: string;
+    personKey: string;
+    customerKey: string;
+  }>,
+) {
+  const firstConversationAt = new Date("2026-09-24T09:15:00.000Z");
+  const firstReplyAt = new Date("2026-09-24T10:00:00.000Z");
+  const secondConversationAt = new Date("2026-09-25T08:30:00.000Z");
+  const phaseChangedAt = new Date("2026-09-24T10:30:00.000Z");
+  const followUpAt = new Date("2026-09-24T10:32:00.000Z");
+  const redactedAt = new Date("2026-09-24T11:05:00.000Z");
+  const latestNordlichtAt = new Date("2026-09-25T15:10:00.000Z");
+  const nordlichtConversationId = randomUUID();
+  const klugeConversationId = randomUUID();
+  const nordlichtCustomerId = customerIds.get("nordlicht") as string;
+  const klugeCustomerId = customerIds.get("kluge-bau") as string;
+  const annaMembershipId = portalMembershipFixtures.find(
+    (membership) => membership.personKey === "anna",
+  )!.id;
+  const berndKlugeMembershipId = portalMembershipFixtures.find(
+    (membership) => membership.customerKey === "kluge-bau",
+  )!.id;
+  await tx.insert(conversations).values([
+    {
+      id: nordlichtConversationId,
+      customer_id: nordlichtCustomerId,
+      project_id: null,
+      owner_member_id: ownerMemberId,
+      version: 1,
+      last_message_at: latestNordlichtAt,
+    },
+    {
+      id: klugeConversationId,
+      customer_id: klugeCustomerId,
+      project_id: null,
+      owner_member_id: ownerMemberId,
+      version: 1,
+      last_message_at: secondConversationAt,
+    },
+  ]);
+  await tx.insert(messages).values([
+    {
+      id: randomUUID(),
+      conversation_id: nordlichtConversationId,
+      customer_id: nordlichtCustomerId,
+      type: MessageType.Text,
+      body: "Hallo, wann sehen wir den ersten Entwurf?",
+      metadata: null,
+      sender_side: MessageSenderSide.Customer,
+      sender_member_id: null,
+      sender_portal_membership_id: annaMembershipId,
+      sender_display_name: "Anna Berger",
+      created_at: firstConversationAt,
+    },
+    {
+      id: randomUUID(),
+      conversation_id: nordlichtConversationId,
+      customer_id: nordlichtCustomerId,
+      type: MessageType.Text,
+      body: "Der erste Entwurf ist für Freitag eingeplant. Ich melde mich hier mit dem Link.",
+      metadata: null,
+      sender_side: MessageSenderSide.Internal,
+      sender_member_id: ownerMemberId,
+      sender_portal_membership_id: null,
+      sender_display_name: "Fixture owner",
+      created_at: firstReplyAt,
+    },
+    {
+      id: randomUUID(),
+      conversation_id: nordlichtConversationId,
+      customer_id: nordlichtCustomerId,
+      type: MessageType.System,
+      body: SystemMessageKey.ProjectPhaseChanged,
+      metadata: {
+        [SystemMessageParam.ProjectTitle]: "Website-Relaunch",
+        [SystemMessageParam.Phase]: ProjectPhase.Design,
+      },
+      sender_side: MessageSenderSide.System,
+      sender_member_id: null,
+      sender_portal_membership_id: null,
+      sender_display_name: "System",
+      created_at: phaseChangedAt,
+    },
+    {
+      id: randomUUID(),
+      conversation_id: nordlichtConversationId,
+      customer_id: nordlichtCustomerId,
+      type: MessageType.Text,
+      body: "Kleine Ergänzung: Die Farben aus dem Styleguide sind schon eingeplant, schau gern vorab rein: https://example.com/styleguide",
+      metadata: null,
+      sender_side: MessageSenderSide.Internal,
+      sender_member_id: ownerMemberId,
+      sender_portal_membership_id: null,
+      sender_display_name: "Fixture owner",
+      created_at: followUpAt,
+    },
+    {
+      // Hidden by the owner: the row keeps sender and time, the content is gone.
+      id: randomUUID(),
+      conversation_id: nordlichtConversationId,
+      customer_id: nordlichtCustomerId,
+      type: MessageType.Text,
+      body: null,
+      metadata: null,
+      sender_side: MessageSenderSide.Customer,
+      sender_member_id: null,
+      sender_portal_membership_id: annaMembershipId,
+      sender_display_name: "Anna Berger",
+      created_at: new Date("2026-09-24T11:00:00.000Z"),
+      redacted_at: redactedAt,
+      redacted_by_member_id: ownerMemberId,
+    },
+    {
+      id: randomUUID(),
+      conversation_id: nordlichtConversationId,
+      customer_id: nordlichtCustomerId,
+      type: MessageType.Text,
+      body: "Danke! Der Link funktioniert. Können wir die Startseite am Montag kurz durchsprechen?",
+      metadata: null,
+      sender_side: MessageSenderSide.Customer,
+      sender_member_id: null,
+      sender_portal_membership_id: annaMembershipId,
+      sender_display_name: "Anna Berger",
+      created_at: latestNordlichtAt,
+    },
+    {
+      id: randomUUID(),
+      conversation_id: klugeConversationId,
+      customer_id: klugeCustomerId,
+      type: MessageType.Text,
+      body: "Wir haben die Fotos für die Referenzseite zusammengestellt.",
+      metadata: null,
+      sender_side: MessageSenderSide.Customer,
+      sender_member_id: null,
+      sender_portal_membership_id: berndKlugeMembershipId,
+      sender_display_name: "Bernd Kluge",
+      created_at: secondConversationAt,
+    },
+  ]);
+  await tx.insert(conversationReads).values([
+    {
+      id: randomUUID(),
+      conversation_id: nordlichtConversationId,
+      member_id: ownerMemberId,
+      portal_membership_id: null,
+      last_read_at: firstConversationAt,
+    },
+    {
+      id: randomUUID(),
+      conversation_id: nordlichtConversationId,
+      member_id: null,
+      portal_membership_id: annaMembershipId,
+      last_read_at: firstConversationAt,
+    },
+  ]);
+}
 async function run() {
   const target = parseDatabaseTarget(process.argv);
 
@@ -525,6 +703,13 @@ async function run() {
         assigned_by_member_id: owner.memberId,
         assigned_at: activatedAt,
       })),
+    );
+
+    await seedConversationThreads(
+      tx,
+      owner.memberId,
+      customerIds,
+      portalMembershipFixtures,
     );
 
     const customerManagerRoleId = randomUUID();

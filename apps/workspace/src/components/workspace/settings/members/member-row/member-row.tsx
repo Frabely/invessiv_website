@@ -6,7 +6,7 @@ import type {
   SettingsMembersDictionary,
   SettingsPermissionsDictionary,
 } from "@/i18n/dictionaries/workspace/settings";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { getMemberInitials } from "@/common/patterns/access/member-initials";
 import { resolveRoleLabel } from "@/lib/workspace/access/role-label";
 import styles from "./member-row.module.css";

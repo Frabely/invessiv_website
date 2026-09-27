@@ -6,7 +6,7 @@ import type {
   SettingsAccessDictionary,
   SettingsPermissionsDictionary,
 } from "@/i18n/dictionaries/workspace/settings";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { resolveRoleLabel } from "@/lib/workspace/access/role-label";
 import styles from "./access-scope-row.module.css";
 

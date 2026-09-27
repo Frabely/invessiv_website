@@ -9,7 +9,7 @@ import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes"
 import type { PortalCompletedProjectDto } from "@invessiv/common/contracts/portal/portal-completed-project.dto";
 import { Widget } from "@invessiv/ui";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import styles from "./portal-completed-projects-widget.module.css";
 
 export type PortalCompletedProjectsWidgetProps = {

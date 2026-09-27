@@ -5,7 +5,7 @@ import { faListCheck } from "@fortawesome/free-solid-svg-icons";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
 import type { PortalCustomerTaskDto } from "@invessiv/common/contracts/portal/portal-customer-task.dto";
 import { Widget } from "@invessiv/ui";
-import { formatMessage } from "@/lib/i18n/format-message";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { PortalAllDoneNote } from "../../portal-all-done-note/portal-all-done-note";
 import {
   PortalTaskList,

@@ -36,5 +36,14 @@ describe("listPermittedPortalNavItems", () => {
     expect(
       listPermittedPortalNavItems(new Set([Permission.PortalAccess])),
     ).toEqual([]);
+    expect(
+      listPermittedPortalNavItems(new Set([Permission.PortalMessagesRead])),
+    ).toEqual([
+      {
+        section: PortalSection.Messages,
+        labelKey: PortalSection.Messages,
+        requiredPermission: Permission.PortalMessagesRead,
+      },
+    ]);
   });
 });
