@@ -47,8 +47,8 @@ export default async function PortalMessagesPage({
     activeLocale,
     customerId.toLowerCase(),
   );
-  const conversation = await getPortalConversation(reader, null);
-  if (!conversation) notFound();
+  const result = await getPortalConversation(reader, null);
+  if (!result.ok) notFound();
 
   return (
     <PortalMessagesView
@@ -61,7 +61,7 @@ export default async function PortalMessagesPage({
           : null
       }
       content={getPortalMessagesDictionary(activeLocale)}
-      conversation={conversation}
+      conversation={result.conversation}
       customerId={reader.customerId}
       key={reader.customerId}
       locale={activeLocale}

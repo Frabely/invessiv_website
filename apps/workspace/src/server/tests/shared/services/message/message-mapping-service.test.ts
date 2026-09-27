@@ -28,7 +28,10 @@ const row: typeof messages.$inferSelect = {
 describe("messageMappingService.toDto", () => {
   it("maps the immutable row and computes ownership for a portal member", () => {
     expect(
-      messageMappingService.toDto(row, null, row.sender_portal_membership_id),
+      messageMappingService.toDto(row, {
+        side: MessageSenderSide.Customer,
+        portalMembershipId: "44444444-4444-4444-8444-444444444444",
+      }),
     ).toEqual({
       id: row.id,
       conversationId: row.conversation_id,
@@ -46,11 +49,7 @@ describe("messageMappingService.toDto", () => {
   it("never exposes a redacted body even if a stale row still contains it", () => {
     const redactedAt = new Date("2026-09-25T12:00:00.000Z");
     expect(
-      messageMappingService.toDto(
-        { ...row, redacted_at: redactedAt },
-        null,
-        null,
-      ),
+      messageMappingService.toDto({ ...row, redacted_at: redactedAt }, null),
     ).toMatchObject({
       body: null,
       redactedAt: redactedAt.toISOString(),
@@ -71,12 +70,32 @@ describe("messageMappingService.toDto", () => {
           sender_display_name: "System",
         },
         null,
-        null,
       ),
     ).toMatchObject({
       body: "phase.changed",
       metadata: { phase: "build" },
       isOwn: false,
     });
+  });
+
+  it("marks an internal member's own message and not another member's", () => {
+    const internalRow = {
+      ...row,
+      sender_side: MessageSenderSide.Internal,
+      sender_member_id: "55555555-5555-4555-8555-555555555555",
+      sender_portal_membership_id: null,
+    };
+    expect(
+      messageMappingService.toDto(internalRow, {
+        side: MessageSenderSide.Internal,
+        memberId: "55555555-5555-4555-8555-555555555555",
+      }).isOwn,
+    ).toBe(true);
+    expect(
+      messageMappingService.toDto(internalRow, {
+        side: MessageSenderSide.Internal,
+        memberId: "66666666-6666-4666-8666-666666666666",
+      }).isOwn,
+    ).toBe(false);
   });
 });

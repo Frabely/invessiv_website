@@ -97,7 +97,7 @@ Plan: `apps/workspace/plans/crm/13a-kundenchat/25-chat-im-crm.md`.
   (`src/hooks/workspace/crm/`), der auf dem geteilten `useConversationThread` (`src/hooks/shared/`) aufsetzt und nur
   das Ausblenden ergänzt. Kein Polling: Laden beim Öffnen, nach dem Senden und bei `visibilitychange`.
 - Nachrichten sind unveränderlich: kein Bearbeiten, kein Löschen. „Ausblenden“ erscheint nur, wenn der Server
-  `canRedact` liefert (Workspace-Owner), und immer mit Bestätigungsdialog.
+  `canRedact` (Permission `chat.redact`) durchreicht, und immer mit Bestätigungsdialog.
 - Ohne `chat.write` fehlt das Eingabefeld, ohne Recht zum Neuzuweisen die Verantwortlichen-Auswahl — nie deaktiviert.
 - Nachrichtentext wird nur als Text gerendert; Links erkennt `splitMessageLinks` (nur http/https).
 - Systemnachrichten werden über `describeSystemMessage` aus Dictionary-Key + Parametern formuliert.

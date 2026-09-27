@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
+import { can } from "@invessiv/common/patterns/auth/can";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import { ConversationInboxFilter } from "@/common/constants/crm/conversation-inbox-filters";
 import { canAnywhere } from "@/common/patterns/auth/access-scope";
@@ -70,12 +71,13 @@ export default async function MessagesPage({
   // Only a conversation from the visible list can be opened; anything else selects nothing.
   const selectedItem =
     items.find((item) => item.customerId === request.customerId) ?? null;
-  const [selected, ownerCandidates] = selectedItem
+  const [selectedResult, ownerCandidates] = selectedItem
     ? await Promise.all([
         getCustomerConversation(selectedItem.customerId, actor, null),
         listConversationOwnerCandidates(selectedItem.customerId, actor),
       ])
     : [null, []];
+  const selected = selectedResult?.ok ? selectedResult.conversation : null;
   const canReadSelectedCustomer =
     selectedItem !== null &&
     canOn(actor, Permission.CustomersRead, {
@@ -87,6 +89,7 @@ export default async function MessagesPage({
       <ConversationInboxHeader content={content.inbox} />
       <ConversationInbox
         basePath={crmMessagesPathFor(activeLocale)}
+        canRedact={can(actor, Permission.ChatRedact)}
         canWriteSelected={
           selectedItem !== null &&
           canOn(actor, Permission.ChatWrite, {

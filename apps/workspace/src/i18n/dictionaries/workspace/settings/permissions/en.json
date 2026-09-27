@@ -87,6 +87,10 @@
       "label": "Write customer messages",
       "description": "Send messages in a customer's shared conversation."
     },
+    "chat.redact": {
+      "label": "Hide customer messages",
+      "description": "Hide unlawful content in a customer conversation for everyone. Owners only."
+    },
     "files.read": {
       "label": "View files",
       "description": "Open and download customer files."

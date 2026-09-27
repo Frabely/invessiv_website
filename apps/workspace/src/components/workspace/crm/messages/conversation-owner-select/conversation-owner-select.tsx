@@ -2,7 +2,7 @@
 
 import { useId } from "react";
 import { CustomSelect } from "@invessiv/ui";
-import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
+import { MessageErrorCode } from "@invessiv/common/constants/crm/errors/message-error-codes";
 import type { WorkspaceMemberOptionDto } from "@invessiv/common/contracts/auth/workspace-member-option.dto";
 import { messagesApiService } from "@/client/crm/messages-api-service";
 import type { ConversationOwnerAssignment } from "@/common/contracts/crm/conversation-owner-assignment";

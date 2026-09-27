@@ -1,3 +1,4 @@
+import { PROJECT_PHASE_SEQUENCE } from "@invessiv/common/constants/crm/project-phases";
 import { SystemMessageParam } from "@invessiv/common/constants/crm/system-message-keys";
 import type { MessageDto } from "@invessiv/common/contracts/crm/message.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
@@ -16,7 +17,9 @@ export function describeSystemMessage(
     : undefined;
   if (!template) return texts.thread.systemFallback;
   const params = { ...(message.metadata ?? {}) };
-  const phase = params[SystemMessageParam.Phase];
-  if (phase) params[SystemMessageParam.Phase] = texts.phases[phase] ?? phase;
+  const phase = PROJECT_PHASE_SEQUENCE.find(
+    (known) => known === params[SystemMessageParam.Phase],
+  );
+  if (phase) params[SystemMessageParam.Phase] = texts.phases[phase];
   return formatMessage(template, params);
 }

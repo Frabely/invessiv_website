@@ -151,6 +151,13 @@ export const PERMISSION_DEFINITIONS = {
     assignableScopeTypes: CUSTOMER_ONLY,
     description: "Send messages in customer conversations.",
   },
+  [Permission.ChatRedact]: {
+    realm: AuthRealm.Workspace,
+    delegable: false,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description: "Hide unlawful content in customer conversations.",
+  },
   [Permission.FilesRead]: {
     realm: AuthRealm.Workspace,
     delegable: true,

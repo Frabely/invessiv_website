@@ -3,6 +3,7 @@ import { PROJECT_PHASE_SEQUENCE } from "@invessiv/common/constants/crm/project-p
 import { SYSTEM_MESSAGE_KEY_VALUES } from "@invessiv/common/constants/crm/system-message-keys";
 import portalDe from "../../../portal/messages/de.json";
 import portalEn from "../../../portal/messages/en.json";
+import { getCrmMessagesDictionary } from "..";
 import de from "./de.json";
 import en from "./en.json";
 
@@ -20,8 +21,8 @@ describe("message dictionaries", () => {
   });
 
   it.each([
-    ["workspace de", de],
-    ["workspace en", en],
+    ["workspace de", getCrmMessagesDictionary("de")],
+    ["workspace en", getCrmMessagesDictionary("en")],
     ["portal de", portalDe],
     ["portal en", portalEn],
   ])("%s has a text for every system event and project phase", (_, dict) => {

@@ -8,7 +8,6 @@ describe("WorkspaceApiEndpoint", () => {
       AccessCustomers: "/api/workspace/access/customers",
       AccessCustomerOptions: "/api/workspace/access/customers/options",
       CrmCustomers: "/api/workspace/crm/customers",
-      CrmConversations: "/api/workspace/crm/conversations",
       CrmMessages: "/api/workspace/crm/messages",
       CrmPortalMemberships: "/api/workspace/crm/portal-memberships",
       CrmPortalInvitations: "/api/workspace/crm/portal-invitations",

@@ -3,9 +3,10 @@ import {
   MessageSenderSide,
   MessageType,
 } from "@invessiv/common/constants/crm/message-types";
+import type { ConversationDto } from "@invessiv/common/contracts/crm/conversation.dto";
 import type { MessageDto } from "@invessiv/common/contracts/crm/message.dto";
 import { conversations } from "@invessiv/db/record-configuration";
-import { conversationMappingService } from "@/server/shared/services/message/conversation-mapping-service";
+import { internalConversationMappingService } from "@/server/workspace/crm/services/internal-conversation-mapping-service";
 
 vi.mock("server-only", () => ({}));
 
@@ -34,33 +35,46 @@ const lastMessage: MessageDto = {
   redactedAt: null,
 };
 
-describe("conversationMappingService", () => {
-  it("maps the internal view with owner, version and redaction capability", () => {
+const conversation: ConversationDto = {
+  id: row.id,
+  customerId: row.customer_id,
+  unreadCount: 2,
+  lastMessageAt: "2026-09-24T10:00:00.000Z",
+  messages: [lastMessage],
+  nextCursor: null,
+};
+
+describe("internalConversationMappingService", () => {
+  it("adds the responsible member and version to the shared view", () => {
     expect(
-      conversationMappingService.toInternalDto(
+      internalConversationMappingService.toInternalDto(
+        conversation,
         row,
         "Moritz",
-        2,
-        { messages: [lastMessage], nextCursor: null },
-        true,
       ),
     ).toEqual({
-      id: row.id,
-      customerId: row.customer_id,
-      unreadCount: 2,
-      lastMessageAt: "2026-09-24T10:00:00.000Z",
-      messages: [lastMessage],
-      nextCursor: null,
-      ownerMemberId: row.owner_member_id,
-      ownerDisplayName: "Moritz",
-      version: 3,
-      canRedact: true,
+      ...conversation,
+      ownership: {
+        ownerMemberId: row.owner_member_id,
+        ownerDisplayName: "Moritz",
+        version: 3,
+      },
     });
+  });
+
+  it("has no ownership before the first message created the conversation", () => {
+    expect(
+      internalConversationMappingService.toInternalDto(
+        { ...conversation, id: null },
+        null,
+        "",
+      ).ownership,
+    ).toBeNull();
   });
 
   it("maps an inbox row with preview and names", () => {
     expect(
-      conversationMappingService.toInboxItemDto(
+      internalConversationMappingService.toInboxItemDto(
         row,
         { customerDisplayName: "Nordlicht GmbH", ownerDisplayName: "Moritz" },
         1,
@@ -78,8 +92,8 @@ describe("conversationMappingService", () => {
     });
   });
 
-  it("keeps an empty conversation without timestamp and preview", () => {
-    const item = conversationMappingService.toInboxItemDto(
+  it("keeps an inbox row without timestamp and preview", () => {
+    const item = internalConversationMappingService.toInboxItemDto(
       { ...row, last_message_at: null },
       { customerDisplayName: "Nordlicht GmbH", ownerDisplayName: "Moritz" },
       0,

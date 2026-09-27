@@ -110,7 +110,8 @@ describe("MessagesPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.getCustomerConversation.mockImplementation(async (customerId) => ({
-      customerId,
+      ok: true,
+      conversation: { customerId },
     }));
     mocks.listConversationOwnerCandidates.mockResolvedValue([]);
   });

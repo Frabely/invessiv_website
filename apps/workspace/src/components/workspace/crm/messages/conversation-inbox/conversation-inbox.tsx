@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -29,6 +27,8 @@ const FILTER_LABELS = {
 
 type ConversationInboxProps = {
   basePath: string;
+  /** True only with `chat.redact`. */
+  canRedact: boolean;
   /** True only with `chat.write` on the selected customer. */
   canWriteSelected: boolean;
   /** Link into the customer record; null without `customers.read` on the customer. */
@@ -48,6 +48,7 @@ type ConversationInboxProps = {
 
 export function ConversationInbox({
   basePath,
+  canRedact,
   canWriteSelected,
   cockpitHref,
   content,
@@ -156,29 +157,30 @@ export function ConversationInbox({
                   </Link>
                 ) : null}
               </div>
-              {ownerCandidates.length > 0 ? (
+              {selected.ownership && ownerCandidates.length > 0 ? (
                 <ConversationOwnerSelect
                   assignment={{
-                    ownerMemberId: selected.ownerMemberId,
-                    version: selected.version,
+                    ownerMemberId: selected.ownership.ownerMemberId,
+                    version: selected.ownership.version,
                   }}
                   candidates={ownerCandidates}
                   content={content.owner}
                   customerId={selected.customerId}
-                  key={`${selected.id}:${selected.version}`}
-                  ownerDisplayName={selected.ownerDisplayName}
+                  key={`${selected.id}:${selected.ownership.version}`}
+                  ownerDisplayName={selected.ownership.ownerDisplayName}
                 />
-              ) : (
+              ) : selected.ownership ? (
                 <p className={styles.ownerText}>
                   {formatMessage(text.responsible, {
-                    name: selected.ownerDisplayName,
+                    name: selected.ownership.ownerDisplayName,
                   })}
                 </p>
-              )}
+              ) : null}
             </header>
             <div className={styles.threadBody}>
               <CustomerConversation
                 active
+                canRedact={canRedact}
                 canWrite={canWriteSelected}
                 content={content}
                 customerId={selected.customerId}

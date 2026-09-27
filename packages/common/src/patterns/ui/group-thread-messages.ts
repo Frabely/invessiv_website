@@ -5,7 +5,6 @@ import type { ThreadMessageGroup } from "@invessiv/common/contracts/ui/thread-me
 import type { ThreadMessageItem } from "@invessiv/common/contracts/ui/thread-message-item";
 
 const GROUP_WINDOW_MS = 5 * 60 * 1000;
-const DAY_MS = 24 * 60 * 60 * 1000;
 
 function itemCreatedAt(item: ThreadMessageItem): string {
   return item.kind === ThreadMessageItemKind.Message
@@ -13,7 +12,8 @@ function itemCreatedAt(item: ThreadMessageItem): string {
     : item.pending.createdAt;
 }
 
-function itemKey(item: ThreadMessageItem): string {
+/** Stable React key of a row: the message id, or the client id while it is pending. */
+export function threadMessageItemKey(item: ThreadMessageItem): string {
   return item.kind === ThreadMessageItemKind.Message
     ? item.message.id
     : item.pending.clientId;
@@ -27,7 +27,9 @@ export function sortThreadMessageItems(
     const leftAt = itemCreatedAt(left);
     const rightAt = itemCreatedAt(right);
     if (leftAt !== rightAt) return leftAt < rightAt ? -1 : 1;
-    return itemKey(left).localeCompare(itemKey(right));
+    return threadMessageItemKey(left).localeCompare(
+      threadMessageItemKey(right),
+    );
   });
 }
 
@@ -62,7 +64,7 @@ function startGroup(
   ownDisplayName: string,
 ): ThreadMessageGroup {
   return {
-    key: itemKey(item),
+    key: threadMessageItemKey(item),
     isSystem: isSystemItem(item),
     isOwn: isOwnItem(item),
     senderDisplayName:
@@ -123,8 +125,13 @@ export function describeThreadDay(
 ): string {
   const dayKey = threadDayKey(firstAt);
   if (dayKey === threadDayKey(now.toISOString())) return labels.today;
-  if (dayKey === threadDayKey(new Date(now.getTime() - DAY_MS).toISOString()))
-    return labels.yesterday;
+  // Calendar arithmetic, not "minus 24 hours": days around a clock change are 23 or 25 hours long.
+  const yesterday = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() - 1,
+  );
+  if (dayKey === threadDayKey(yesterday.toISOString())) return labels.yesterday;
   return new Intl.DateTimeFormat(locale, {
     day: "numeric",
     month: "long",

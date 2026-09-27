@@ -23,6 +23,15 @@ describe("CrmOperation", () => {
       "tasks.create",
       "tasks.update",
       "tasks.change-status",
+      "conversations.get",
+      "conversations.count-unread",
+      "conversations.mark-read",
+      "conversations.update-owner",
+      "messages.send",
+      "messages.redact",
+      "portal-conversations.get",
+      "portal-conversations.mark-read",
+      "portal-messages.send",
     ]);
     expect(CRM_OPERATION_VALUES).toEqual(Object.values(CrmOperation));
     expect(new Set(CRM_OPERATION_VALUES).size).toBe(

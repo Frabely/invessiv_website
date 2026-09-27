@@ -35,6 +35,7 @@ type CustomerCockpitDialogProps = {
   closeHref: string;
   content: CrmCockpitDictionary;
   conversation?: InternalConversationDto | null;
+  canRedactConversation?: boolean;
   canWriteConversation?: boolean;
   messagesContent?: CrmMessagesDictionary;
   viewerMemberId: string;
@@ -66,6 +67,7 @@ export function CustomerCockpitDialog({
   closeHref,
   content,
   conversation,
+  canRedactConversation,
   canWriteConversation,
   messagesContent,
   viewerMemberId,
@@ -110,6 +112,7 @@ export function CustomerCockpitDialog({
         canWriteProjects={canWriteProjects}
         content={content}
         conversation={conversation}
+        canRedactConversation={canRedactConversation}
         canWriteConversation={canWriteConversation}
         messagesContent={messagesContent}
         viewerMemberId={viewerMemberId}

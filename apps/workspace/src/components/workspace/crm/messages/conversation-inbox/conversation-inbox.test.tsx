@@ -55,10 +55,11 @@ const selected: InternalConversationDto = {
   lastMessageAt: null,
   messages: [],
   nextCursor: null,
-  ownerMemberId: "member-1",
-  ownerDisplayName: "Moritz",
-  version: 1,
-  canRedact: false,
+  ownership: {
+    ownerMemberId: "member-1",
+    ownerDisplayName: "Moritz",
+    version: 1,
+  },
 };
 
 function renderInbox(
@@ -67,6 +68,7 @@ function renderInbox(
   return render(
     <ConversationInbox
       basePath="/de/crm/messages"
+      canRedact={false}
       canWriteSelected={false}
       cockpitHref={null}
       content={content}

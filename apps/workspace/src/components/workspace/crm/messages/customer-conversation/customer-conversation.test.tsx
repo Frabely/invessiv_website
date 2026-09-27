@@ -9,17 +9,14 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
+import { MessageErrorCode } from "@invessiv/common/constants/crm/errors/message-error-codes";
 import {
   MessageSenderSide,
   MessageType,
 } from "@invessiv/common/constants/crm/message-types";
 import type { InternalConversationDto } from "@invessiv/common/contracts/crm/internal-conversation.dto";
 import type { MessageDto } from "@invessiv/common/contracts/crm/message.dto";
-import {
-  MESSAGE_DRAFT_STORAGE_KEY_PREFIX,
-  MESSAGE_PENDING_STORAGE_KEY_PREFIX,
-} from "@/common/constants/crm/message-draft-storage";
+import { MESSAGE_PENDING_STORAGE_KEY_PREFIX } from "@/common/constants/crm/message-draft-storage";
 import { getCrmMessagesDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { CustomerConversation } from "./customer-conversation";
 
@@ -38,27 +35,31 @@ vi.mock("@/client/crm/messages-api-service", () => ({
 }));
 
 const customerId = "11111111-1111-4111-8111-111111111111";
+const conversationId = "conversation-1";
 const content = getCrmMessagesDictionary("en");
 const conversation: InternalConversationDto = {
-  id: "conversation-1",
+  id: conversationId,
   customerId,
   unreadCount: 0,
   lastMessageAt: null,
   messages: [],
   nextCursor: null,
-  ownerMemberId: "member-a",
-  ownerDisplayName: "Alice",
-  version: 1,
-  canRedact: false,
+  ownership: {
+    ownerMemberId: "member-a",
+    ownerDisplayName: "Alice",
+    version: 1,
+  },
 };
 
 function renderConversation(
   viewerMemberId: string,
   initialConversation: InternalConversationDto = conversation,
+  canRedact = false,
 ) {
   return render(
     <CustomerConversation
       active
+      canRedact={canRedact}
       canWrite
       content={content}
       customerId={customerId}
@@ -113,7 +114,7 @@ describe("CustomerConversation pending storage", () => {
       ok: true,
       value: {
         id: "message-1",
-        conversationId: conversation.id,
+        conversationId,
         type: MessageType.Text,
         body: "Please review the draft",
         metadata: null,
@@ -143,7 +144,7 @@ describe("CustomerConversation pending storage", () => {
   it("marks only the displayed message as read", async () => {
     const message: MessageDto = {
       id: "22222222-2222-4222-8222-222222222222",
-      conversationId: conversation.id,
+      conversationId,
       type: MessageType.Text,
       body: "Visible customer message",
       metadata: null,
@@ -167,7 +168,7 @@ describe("CustomerConversation pending storage", () => {
   it("replaces a redacted older message without waiting for its page to reload", async () => {
     const oldMessage: MessageDto = {
       id: "33333333-3333-4333-8333-333333333333",
-      conversationId: conversation.id,
+      conversationId,
       type: MessageType.Text,
       body: "Sensitive older text",
       metadata: null,
@@ -177,7 +178,7 @@ describe("CustomerConversation pending storage", () => {
       createdAt: "2026-09-25T10:00:00.000Z",
       redactedAt: null,
     };
-    const latest = { ...conversation, canRedact: true, nextCursor: "older" };
+    const latest = { ...conversation, nextCursor: "older" };
     api.getConversation.mockImplementation(
       async (_id: string, cursor: string | null) => ({
         ok: true,
@@ -194,7 +195,7 @@ describe("CustomerConversation pending storage", () => {
         redactedAt: new Date().toISOString(),
       },
     });
-    renderConversation("member-a", latest);
+    renderConversation("member-a", latest, true);
     fireEvent.click(
       await screen.findByRole("button", { name: content.thread.loadOlder }),
     );
@@ -215,24 +216,6 @@ describe("CustomerConversation pending storage", () => {
       expect(screen.queryByText("Sensitive older text")).toBeNull(),
     );
     expect(screen.getByText(content.thread.redacted)).toBeVisible();
-  });
-
-  it("does not display an unowned legacy draft after an account switch", () => {
-    window.localStorage.setItem(
-      `${MESSAGE_DRAFT_STORAGE_KEY_PREFIX}${customerId}`,
-      "Private legacy draft",
-    );
-
-    renderConversation("member-b");
-
-    expect(
-      screen.getByRole("textbox", { name: content.thread.inputLabel }),
-    ).toHaveValue("");
-    expect(
-      window.localStorage.getItem(
-        `${MESSAGE_DRAFT_STORAGE_KEY_PREFIX}${customerId}`,
-      ),
-    ).toBeNull();
   });
 
   it("isolates unsent drafts by member", () => {

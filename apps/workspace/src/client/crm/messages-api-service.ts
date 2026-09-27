@@ -1,4 +1,4 @@
-import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
+import { MessageErrorCode } from "@invessiv/common/constants/crm/errors/message-error-codes";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import type { InternalConversationDto } from "@invessiv/common/contracts/crm/internal-conversation.dto";

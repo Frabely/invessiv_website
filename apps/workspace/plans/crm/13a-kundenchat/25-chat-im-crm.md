@@ -6,7 +6,7 @@
 
 - Der bestehende Mock-`ChatDock` im Kunden-Cockpit zeigt den echten Verlauf; Mitarbeiter lesen und schreiben dort.
 - Posteingang `/crm/messages` über alle Kunden plus Sidebar-Zähler für ungelesene Kundennachrichten.
-- Nachrichten sind unveränderlich; kein Bearbeiten, kein Löschen. Redaction bleibt Workspace-Owner-only.
+- Nachrichten sind unveränderlich; kein Bearbeiten, kein Löschen. Redaction nur mit `chat.redact` (nur Owner-Rolle).
 - Versand erzeugt eine Activity. Notification/Mail folgen in Ordner 20c; kein Mailfehler kann den Chatwrite
   rückgängig machen.
 - Keine Echtzeitverbindung; Laden beim Öffnen, Refresh nach Senden und bei `visibilitychange`.
@@ -109,7 +109,7 @@ apps/workspace/src/client/crm/messages-api-service.ts
 apps/workspace/src/i18n/dictionaries/workspace/crm/messages/{de,en}.json
 apps/workspace/src/i18n/dictionaries/portal/messages/{de,en}.json          nur Systemnachrichten; Task 26 ergänzt
 packages/common/src/constants/crm/system-message-keys.ts                  SystemMessageKey, SystemMessageParam
-packages/common/src/contracts/crm/{conversation-inbox-item,internal-conversation}.dto.ts   + lastMessage, ownerDisplayName, canRedact
+packages/common/src/contracts/crm/{conversation-inbox-item,internal-conversation,conversation-ownership}.dto.ts   + lastMessage, ownership
 packages/ui/src/components/chat-dock/chat-dock.tsx             Mock-Kommentar anpassen, sonst unverändert
 ```
 
@@ -119,8 +119,12 @@ Umgesetzt auf `feat/crm-13a-kundenchat-intern`, nicht committet. Bewusste Abweic
 
 - Route `/crm/messages` statt `/crm/nachrichten` — Root-Regel: Routen-Slugs Englisch.
 - Client-Service heißt `messages-api-service.ts` (Konvention `src/client/AGENTS.md`).
-- Rechte zum Ausblenden kommen als `canRedact` im `InternalConversationDto`; die Owner-Prüfung liegt einmal in
-  `conversationService.memberIsWorkspaceOwner` (vorher lokal im Redact-Handler).
+- Ausblenden ist die nicht delegierbare Permission `chat.redact` (Owner-Rolle leitet alle Workspace-Permissions ab);
+  Seiten reichen `canRedact` als Prop durch, der Redact-Handler prüft `can(actor, chat.redact)`. Keine Rollenprüfung
+  im Feature (Regel aus `server/workspace/auth/AGENTS.md`).
+- Unterhaltungen entstehen erst mit der ersten Nachricht; Cockpit und Inbox lesen ohne Seiteneffekt. Konversationen
+  zählen bei der Deaktivierung nur für aktive Kunden als offene Verantwortung (wie Kunden selbst).
+- Keine eigenen Routen für Posteingang und Zähler: Seite und Layout rufen die Query-Handler direkt auf.
 - Verantwortlichen-Auswahl zeigt nur aktive Mitglieder mit `chat.read` am Kunden oder workspace-weit und erscheint
   nur mit `chat.write`; der Server prüft weiterhin selbst.
 - Systemnachricht zum Phasenwechsel läuft im Savepoint derselben Transaktion; ein Fehler wird geloggt, der

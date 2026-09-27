@@ -72,17 +72,17 @@ export function MessageBubble({
   }
 
   const { message } = item;
-  const redacted = message.redactedAt !== null || message.body === null;
+  // A redacted row never shows text, even if a stale body is still present.
+  const body = message.redactedAt === null ? message.body : null;
   return (
     <li className={styles.row} data-own={isOwn}>
-      <p className={styles.bubble} data-state={redacted ? "redacted" : "sent"}>
-        {redacted || message.body === null ? (
-          labels.redacted
-        ) : (
-          <MessageText body={message.body} />
-        )}
+      <p
+        className={styles.bubble}
+        data-state={body === null ? "redacted" : "sent"}
+      >
+        {body === null ? labels.redacted : <MessageText body={body} />}
       </p>
-      {onRedactAction && !redacted ? (
+      {onRedactAction && body !== null ? (
         <p className={styles.status}>
           <ButtonControl
             className={styles.action}

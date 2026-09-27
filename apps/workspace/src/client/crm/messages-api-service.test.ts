@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
+import { MessageErrorCode } from "@invessiv/common/constants/crm/errors/message-error-codes";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";

@@ -22,6 +22,8 @@ import { WorkspaceAuthorizationUnavailableError } from "@/lib/auth/workspace-aut
 import { hasPortalAccessForUserId } from "@/server/workspace/auth/query-handler/has-portal-access-for-user-id.query-handler";
 import { countUnreadConversations } from "@/server/workspace/crm/query-handler/count-unread-conversations.query-handler";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
+import { CrmOperation } from "@/common/constants/crm/crm-operations";
+import { logCrmFailure } from "@/lib/workspace/crm/log-crm-failure";
 
 type WorkspaceLayoutProps = {
   children: ReactNode;
@@ -43,9 +45,7 @@ async function resolveUnreadConversationCount(
   try {
     return await countUnreadConversations(actor);
   } catch (error) {
-    console.error("[crm-conversations] unread count failed", {
-      errorName: error instanceof Error ? error.name : typeof error,
-    });
+    logCrmFailure(CrmOperation.CountUnreadConversations, error);
     return 0;
   }
 }

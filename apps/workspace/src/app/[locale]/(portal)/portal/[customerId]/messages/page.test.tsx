@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { MessageErrorCode } from "@invessiv/common/constants/crm/errors/message-error-codes";
 
 import "@testing-library/jest-dom/vitest";
 import { cleanup, render } from "@testing-library/react";
@@ -73,7 +74,10 @@ describe("PortalMessagesPage", () => {
   beforeEach(() => {
     Object.values(mocks).forEach((mock) => mock.mockClear());
     mocks.requirePortalReader.mockResolvedValue(READER);
-    mocks.getPortalConversation.mockResolvedValue(CONVERSATION);
+    mocks.getPortalConversation.mockResolvedValue({
+      ok: true,
+      conversation: CONVERSATION,
+    });
     mocks.isPortalOwnerView.mockReturnValue(false);
   });
 
@@ -91,7 +95,10 @@ describe("PortalMessagesPage", () => {
   });
 
   it("answers 404 when the reader may not read messages", async () => {
-    mocks.getPortalConversation.mockResolvedValue(null);
+    mocks.getPortalConversation.mockResolvedValue({
+      ok: false,
+      code: MessageErrorCode.NotFound,
+    });
 
     await expect(renderPage()).rejects.toThrow("NEXT_NOT_FOUND");
     expect(mocks.viewProps).not.toHaveBeenCalled();

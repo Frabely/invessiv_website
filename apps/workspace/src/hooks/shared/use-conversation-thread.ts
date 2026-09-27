@@ -8,7 +8,7 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import type { MessageThreadProps } from "@invessiv/ui";
-import type { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
+import type { MessageErrorCode } from "@invessiv/common/constants/crm/errors/message-error-codes";
 import { PendingMessageStatus } from "@invessiv/common/constants/ui/pending-message-statuses";
 import { MessageType } from "@invessiv/common/constants/crm/message-types";
 import type { ConversationDto } from "@invessiv/common/contracts/crm/conversation.dto";

@@ -16,7 +16,7 @@ import { PORTAL_MESSAGES_PER_HOUR } from "@invessiv/common/constants/crm/message
 import { SYSTEM_ROLE_DEFINITIONS } from "@invessiv/common/constants/auth/system-role-definitions";
 import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
 import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
-import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
+import { MessageErrorCode } from "@invessiv/common/constants/crm/errors/message-error-codes";
 import {
   MessageSenderSide,
   MessageType,
@@ -51,7 +51,10 @@ import { getCustomerConversation } from "@/server/workspace/crm/query-handler/ge
 import { listConversations } from "@/server/workspace/crm/query-handler/list-conversations.query-handler";
 import { countUnreadConversations } from "@/server/workspace/crm/query-handler/count-unread-conversations.query-handler";
 import { listConversationOwnerCandidates } from "@/server/workspace/crm/query-handler/list-conversation-owner-candidates.query-handler";
+import { conversationService } from "@/server/shared/services/message/conversation-service";
 import { messageService } from "@/server/shared/services/message/message-service";
+import { conversationResponsibilityCounterService } from "@/server/workspace/access/services/responsibilities/conversation-responsibility-counter";
+import type { PortalReader } from "@/server/portal/auth/portal-reader";
 import { GET as getPortalConversationRoute } from "@/app/api/portal/[customerId]/conversation/route";
 import { POST as sendPortalMessageRoute } from "@/app/api/portal/[customerId]/conversation/messages/route";
 import { POST as markPortalReadRoute } from "@/app/api/portal/[customerId]/conversation/read/route";
@@ -90,6 +93,33 @@ describe.skipIf(!RUN_INTEGRATION)(
       customerPermissions: new Map(),
       projectPermissions: new Map(),
     });
+
+    const ownerActor = (): WorkspaceActor => ({
+      ...internalActor(),
+      permissions: new Set([
+        Permission.ChatRead,
+        Permission.ChatWrite,
+        Permission.ChatRedact,
+      ]),
+    });
+
+    async function internalView(
+      customerId: string,
+      actor: WorkspaceActor,
+      cursor: string | null = null,
+    ) {
+      const result = await getCustomerConversation(customerId, actor, cursor);
+      if (!result.ok)
+        throw new Error(`Expected a conversation, got ${result.code}.`);
+      return result.conversation;
+    }
+
+    async function portalView(reader: PortalReader) {
+      const result = await getPortalConversation(reader, null);
+      if (!result.ok)
+        throw new Error(`Expected a conversation, got ${result.code}.`);
+      return result.conversation;
+    }
 
     async function expectPortalConversationRoutesToReturnNotFound(
       customerId: string,
@@ -275,10 +305,7 @@ describe.skipIf(!RUN_INTEGRATION)(
       const workspaceRoot = findWorkspaceRoot(process.cwd());
       const statements = (
         await Promise.all(
-          [
-            "0040_create_conversations.sql",
-            "0041_add_message_idempotency.sql",
-          ].map((filename) =>
+          ["0040_create_conversations.sql"].map((filename) =>
             readFile(
               path.join(workspaceRoot, "packages/db/migrations", filename),
               "utf8",
@@ -300,17 +327,33 @@ describe.skipIf(!RUN_INTEGRATION)(
       expect(statements.length).toBeGreaterThan(10);
     });
 
-    it("creates one conversation concurrently and rejects a foreign customer session", async () => {
-      const [first, second] = await Promise.all([
-        getCustomerConversation(customerA, internalActor(), null),
-        getCustomerConversation(customerA, internalActor(), null),
+    it("creates the conversation with the first message only, once, owned by the customer owner", async () => {
+      const unread = await internalView(customerA, internalActor());
+      expect(unread.id).toBeNull();
+      expect(unread.ownership).toBeNull();
+      expect(
+        await db
+          .select({ id: conversations.id })
+          .from(conversations)
+          .where(eq(conversations.customer_id, customerA)),
+      ).toHaveLength(0);
+      await Promise.all([
+        sendInternalMessage(
+          customerA,
+          { body: "Welcome", clientMessageId: randomUUID() },
+          internalActor(),
+        ),
+        sendInternalMessage(
+          customerA,
+          { body: "Welcome as well", clientMessageId: randomUUID() },
+          internalActor(),
+        ),
       ]);
-      expect(first?.id).toBe(second?.id);
       const rows = await db
-        .select({ id: conversations.id })
+        .select({ ownerMemberId: conversations.owner_member_id })
         .from(conversations)
         .where(eq(conversations.customer_id, customerA));
-      expect(rows).toHaveLength(1);
+      expect(rows).toEqual([{ ownerMemberId }]);
       const allowed = await resolvePortalActor(portalClerkId, customerA);
       const denied = await resolvePortalActor(portalClerkId, customerB);
       expect(allowed.ok).toBe(true);
@@ -385,8 +428,8 @@ describe.skipIf(!RUN_INTEGRATION)(
         internalActor(),
       );
       if (!internal.ok) throw new Error("Expected internal message.");
-      const portalBefore = await getPortalConversation(portalActor, null);
-      expect(portalBefore?.unreadCount).toBe(1);
+      const portalBefore = await portalView(portalActor);
+      expect(portalBefore.unreadCount).toBe(3);
       const sent = await sendCustomerMessage(portalActor, {
         body: "Thank you.",
         clientMessageId: randomUUID(),
@@ -399,10 +442,9 @@ describe.skipIf(!RUN_INTEGRATION)(
           [customerA, new Set([Permission.ChatRead])],
         ]),
       };
-      expect(
-        (await getCustomerConversation(customerA, internalActor(), null))
-          ?.unreadCount,
-      ).toBe(1);
+      expect((await internalView(customerA, internalActor())).unreadCount).toBe(
+        1,
+      );
       expect(
         (await listConversations(internalActor())).find(
           (item) => item.customerId === customerA,
@@ -418,17 +460,12 @@ describe.skipIf(!RUN_INTEGRATION)(
         senderSide: MessageSenderSide.Customer,
         isOwn: false,
       });
-      expect(
-        (await getCustomerConversation(customerA, internalActor(), null))
-          ?.canRedact,
-      ).toBe(true);
-      const otherView = await getCustomerConversation(
+      const otherView = await internalView(
         customerA,
         internalActor(otherMemberId, otherUserId),
-        null,
       );
-      expect(otherView?.unreadCount).toBe(1);
-      expect(otherView?.canRedact).toBe(false);
+      expect(otherView.unreadCount).toBe(1);
+      expect(otherView.ownership?.ownerMemberId).toBe(ownerMemberId);
       expect(
         (await listConversationOwnerCandidates(customerA, internalActor())).map(
           (candidate) => candidate.id,
@@ -447,10 +484,9 @@ describe.skipIf(!RUN_INTEGRATION)(
           },
         ),
       );
-      expect(
-        (await getCustomerConversation(customerA, internalActor(), null))
-          ?.unreadCount,
-      ).toBe(1);
+      expect((await internalView(customerA, internalActor())).unreadCount).toBe(
+        1,
+      );
       if (!sent.ok) throw new Error("Expected customer message.");
       expect(
         await markConversationRead(
@@ -461,19 +497,17 @@ describe.skipIf(!RUN_INTEGRATION)(
       ).toEqual({
         ok: true,
       });
-      expect(
-        (await getCustomerConversation(customerA, internalActor(), null))
-          ?.unreadCount,
-      ).toBe(0);
+      expect((await internalView(customerA, internalActor())).unreadCount).toBe(
+        0,
+      );
       expect(await countUnreadConversations(scopedReader)).toBe(0);
       expect(
         (
-          await getCustomerConversation(
+          await internalView(
             customerA,
             internalActor(otherMemberId, otherUserId),
-            null,
           )
-        )?.unreadCount,
+        ).unreadCount,
       ).toBe(1);
       expect(
         await markPortalConversationRead(portalActor, {
@@ -492,10 +526,8 @@ describe.skipIf(!RUN_INTEGRATION)(
           sent.message.id,
           internalActor(otherMemberId, otherUserId),
         ),
-      ).toEqual({ ok: false, code: "FORBIDDEN" });
-      expect(
-        await redactMessage(sent.message.id, internalActor()),
-      ).toMatchObject({
+      ).toEqual({ ok: false, code: MessageErrorCode.Forbidden });
+      expect(await redactMessage(sent.message.id, ownerActor())).toMatchObject({
         ok: true,
         message: { id: sent.message.id, body: null },
       });
@@ -506,7 +538,7 @@ describe.skipIf(!RUN_INTEGRATION)(
       expect(stored.body).toBeNull();
       expect(stored.redactedAt).not.toBeNull();
       expect(
-        (await getPortalConversation(portalActor, null))?.messages.find(
+        (await portalView(portalActor)).messages.find(
           (message) => message.id === sent.message.id,
         )?.body,
       ).toBeNull();
@@ -532,8 +564,8 @@ describe.skipIf(!RUN_INTEGRATION)(
         internalActor(),
       );
       if (!first.ok) throw new Error("Expected first message.");
-      const visible = await getPortalConversation(portalActor, null);
-      expect(visible?.messages.at(-1)?.id).toBe(first.message.id);
+      const visible = await portalView(portalActor);
+      expect(visible.messages.at(-1)?.id).toBe(first.message.id);
       const second = await sendInternalMessage(
         customerA,
         {
@@ -548,9 +580,7 @@ describe.skipIf(!RUN_INTEGRATION)(
           lastSeenMessageId: first.message.id,
         }),
       ).toEqual({ ok: true });
-      expect(
-        (await getPortalConversation(portalActor, null))?.unreadCount,
-      ).toBe(1);
+      expect((await portalView(portalActor)).unreadCount).toBe(1);
 
       const input = { body: "Please confirm", clientMessageId: randomUUID() };
       const sent = await sendCustomerMessage(portalActor, input);
@@ -591,14 +621,17 @@ describe.skipIf(!RUN_INTEGRATION)(
           [customerA, new Set([Permission.ChatRead, Permission.ChatWrite])],
         ]),
       };
-      expect(await getCustomerConversation(customerB, scoped, null)).toBeNull();
+      expect(await getCustomerConversation(customerB, scoped, null)).toEqual({
+        ok: false,
+        code: MessageErrorCode.NotFound,
+      });
       expect(
         await sendInternalMessage(
           customerB,
           { body: "wrong company", clientMessageId: randomUUID() },
           scoped,
         ),
-      ).toEqual({ ok: false, code: "NOT_FOUND" });
+      ).toEqual({ ok: false, code: MessageErrorCode.NotFound });
       expect(
         await markConversationRead(
           customerB,
@@ -607,7 +640,7 @@ describe.skipIf(!RUN_INTEGRATION)(
         ),
       ).toEqual({
         ok: false,
-        code: "NOT_FOUND",
+        code: MessageErrorCode.NotFound,
       });
       expect(
         await updateConversationOwner(
@@ -615,7 +648,7 @@ describe.skipIf(!RUN_INTEGRATION)(
           { ownerMemberId: otherMemberId, version: 1 },
           scoped,
         ),
-      ).toEqual({ ok: false, code: "NOT_FOUND" });
+      ).toEqual({ ok: false, code: MessageErrorCode.NotFound });
       const [foreignMessage] = await db
         .select({ id: messages.id })
         .from(messages)
@@ -635,7 +668,7 @@ describe.skipIf(!RUN_INTEGRATION)(
       };
       expect(await redactMessage(foreignMessage.id, customerBOnly)).toEqual({
         ok: false,
-        code: "NOT_FOUND",
+        code: MessageErrorCode.NotFound,
       });
     });
 
@@ -677,15 +710,10 @@ describe.skipIf(!RUN_INTEGRATION)(
       const ids: string[] = [];
       let cursor: string | null = null;
       for (let pageNumber = 0; pageNumber < 5; pageNumber += 1) {
-        const page = await getCustomerConversation(
-          customerA,
-          internalActor(),
-          cursor,
-        );
-        expect(page).not.toBeNull();
-        if (pageNumber === 0) expect(page?.messages).toHaveLength(50);
-        ids.push(...(page?.messages ?? []).map((message) => message.id));
-        cursor = page?.nextCursor ?? null;
+        const page = await internalView(customerA, internalActor(), cursor);
+        if (pageNumber === 0) expect(page.messages).toHaveLength(50);
+        ids.push(...page.messages.map((message) => message.id));
+        cursor = page.nextCursor;
         if (!cursor) break;
       }
       const stored = await db
@@ -700,7 +728,7 @@ describe.skipIf(!RUN_INTEGRATION)(
           internalActor(),
           "not-a-cursor",
         ),
-      ).toBeNull();
+      ).toEqual({ ok: false, code: MessageErrorCode.ValidationError });
       const reassigned = await updateConversationOwner(
         customerA,
         { ownerMemberId: otherMemberId, version: conversation.version },
@@ -713,7 +741,7 @@ describe.skipIf(!RUN_INTEGRATION)(
         internalActor(),
       );
       expect(stale.ok).toBe(false);
-      if (!stale.ok) expect(stale.code).toBe("VERSION_CONFLICT");
+      if (!stale.ok) expect(stale.code).toBe(MessageErrorCode.VersionConflict);
       await db
         .update(workspaceMembers)
         .set({ active: false })
@@ -723,14 +751,17 @@ describe.skipIf(!RUN_INTEGRATION)(
         { ownerMemberId: otherMemberId, version: conversation.version + 1 },
         internalActor(),
       );
-      expect(inactive).toEqual({ ok: false, code: "VALIDATION_ERROR" });
+      expect(inactive).toEqual({
+        ok: false,
+        code: MessageErrorCode.ValidationError,
+      });
     });
 
     it("limits portal sends per membership and hour and names the wait", async () => {
       const resolution = await resolvePortalActor(portalClerkId, customerA);
       if (!resolution.ok) throw new Error("Expected portal membership.");
       const conversation = await db.transaction((tx) =>
-        messageService.ensureCustomerConversation(tx, customerA),
+        conversationService.ensureCustomerConversation(tx, customerA),
       );
       if (!conversation) throw new Error("Expected a conversation.");
       const oldestAt = new Date(Date.now() - 50 * 60 * 1000);
@@ -804,6 +835,29 @@ describe.skipIf(!RUN_INTEGRATION)(
         internalActor(),
       );
       expect(internal.ok).toBe(true);
+    });
+
+    it("counts a conversation as responsibility only while its customer is active", async () => {
+      const countFor = (memberId: string) =>
+        conversationResponsibilityCounterService.countOpen(db, memberId);
+      const [{ owner }] = await db
+        .select({ owner: conversations.owner_member_id })
+        .from(conversations)
+        .where(eq(conversations.customer_id, customerA));
+      const before = await countFor(owner);
+      expect(before).toBeGreaterThan(0);
+      await db
+        .update(customers)
+        .set({ status: CustomerStatus.Archived })
+        .where(eq(customers.id, customerA));
+      try {
+        expect(await countFor(owner)).toBe(before - 1);
+      } finally {
+        await db
+          .update(customers)
+          .set({ status: CustomerStatus.Active })
+          .where(eq(customers.id, customerA));
+      }
     });
   },
 );

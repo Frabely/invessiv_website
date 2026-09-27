@@ -1,4 +1,4 @@
-import type { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
+import type { MessageErrorCode } from "@invessiv/common/constants/crm/errors/message-error-codes";
 
 /** The request outcomes of a conversation that decide which error line is shown. */
 export type ThreadNoticeState = {

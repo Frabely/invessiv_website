@@ -1,8 +1,8 @@
 import type { MessageDto } from "./message.dto";
 
 export interface ConversationDto {
-  /** Stable conversation identifier for this customer. */
-  id: string;
+  /** Stable conversation identifier; null until the first message creates the conversation. */
+  id: string | null;
   /** Customer whose members can read the conversation. */
   customerId: string;
   /** Messages from the other side after this viewer's read timestamp. */

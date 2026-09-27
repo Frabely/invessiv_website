@@ -48,6 +48,22 @@ async function announcePhaseChange(
   }
 }
 
+/**
+ * The phase before this write, read under the row lock that the update takes anyway. A value read
+ * before the transaction could be stale and announce a change that never happened.
+ */
+async function lockPreviousPhase(
+  tx: ContactDatabaseTransaction,
+  projectId: string,
+): Promise<ProjectPhase | null> {
+  const [row] = await tx
+    .select({ phase: projects.phase })
+    .from(projects)
+    .where(eq(projects.id, projectId))
+    .for("update");
+  return row?.phase ?? null;
+}
+
 export async function updateProject(
   projectId: string,
   input: UpdateProjectRequestDto,
@@ -58,7 +74,7 @@ export async function updateProject(
     return ProjectErrorCode.ValidationError;
   const db = getDrizzleDatabaseClient();
   const [target] = await db
-    .select({ customerId: projects.customer_id, phase: projects.phase })
+    .select({ customerId: projects.customer_id })
     .from(projects)
     .where(eq(projects.id, projectId))
     .limit(1);
@@ -72,6 +88,7 @@ export async function updateProject(
     return ProjectErrorCode.NotFound;
   const data = parsed.data;
   return db.transaction(async (tx) => {
+    const previousPhase = await lockPreviousPhase(tx, projectId);
     const result = await updateVersioned({
       tx,
       table: projects,
@@ -93,7 +110,7 @@ export async function updateProject(
       },
       toDto: projectMappingService.toDto,
     });
-    if (result.ok && data.phase !== target.phase)
+    if (result.ok && data.phase !== previousPhase)
       await announcePhaseChange(tx, target.customerId, data.title, data.phase);
     return result;
   });

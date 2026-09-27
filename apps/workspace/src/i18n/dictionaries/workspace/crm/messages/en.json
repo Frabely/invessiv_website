@@ -28,14 +28,6 @@
   "systemMessages": {
     "projectPhaseChanged": "Project “{projectTitle}” is now in the {phase} phase."
   },
-  "phases": {
-    "onboarding": "onboarding",
-    "design": "design",
-    "development": "development",
-    "feedback": "feedback",
-    "launch": "launch",
-    "maintenance": "maintenance"
-  },
   "dock": {
     "unread": "{count} unread"
   },

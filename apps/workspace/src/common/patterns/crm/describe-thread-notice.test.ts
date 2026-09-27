@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
+import { MessageErrorCode } from "@invessiv/common/constants/crm/errors/message-error-codes";
 import { describeThreadNotice } from "./describe-thread-notice";
 
 const texts = {

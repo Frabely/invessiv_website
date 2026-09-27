@@ -6,10 +6,6 @@ import {
   PORTAL_MESSAGES_PER_HOUR,
 } from "./message-limits";
 import {
-  MESSAGE_ERROR_CODE_VALUES,
-  MessageErrorCode,
-} from "./message-error-codes";
-import {
   MESSAGE_SENDER_SIDE_VALUES,
   MESSAGE_TYPE_VALUES,
   MessageSenderSide,
@@ -51,21 +47,6 @@ describe("message constants", () => {
       PORTAL_MESSAGES_PER_HOUR: 30,
       PORTAL_MESSAGE_RATE_WINDOW_SECONDS: 3600,
     });
-  });
-
-  it("exposes distinct error codes", () => {
-    expect(MessageErrorCode).toEqual({
-      NotFound: "NOT_FOUND",
-      ValidationError: "VALIDATION_ERROR",
-      Forbidden: "FORBIDDEN",
-      VersionConflict: "VERSION_CONFLICT",
-      RateLimited: "RATE_LIMITED",
-      Internal: "INTERNAL",
-    });
-    expect(new Set(Object.values(MessageErrorCode)).size).toBe(
-      Object.values(MessageErrorCode).length,
-    );
-    expect(MESSAGE_ERROR_CODE_VALUES).toEqual(Object.values(MessageErrorCode));
   });
 });
 

@@ -1,4 +1,4 @@
-import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
+import { MessageErrorCode } from "@invessiv/common/constants/crm/errors/message-error-codes";
 import type { ThreadNoticeState } from "@/common/contracts/crm/thread-notice-state";
 import type { ThreadNoticeTexts } from "@/common/contracts/crm/thread-notice-texts";
 

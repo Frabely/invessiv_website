@@ -1,4 +1,4 @@
-import type { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
+import type { MessageErrorCode } from "@invessiv/common/constants/crm/errors/message-error-codes";
 import type { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { ConversationOwnerAssignment } from "./conversation-owner-assignment";
 

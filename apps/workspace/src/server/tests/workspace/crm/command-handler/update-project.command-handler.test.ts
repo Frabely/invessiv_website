@@ -16,6 +16,7 @@ vi.mock("server-only", () => ({}));
 const mocks = vi.hoisted(() => ({
   getDatabase: vi.fn(),
   limit: vi.fn(),
+  lockPhase: vi.fn(),
   updateVersioned: vi.fn(),
   appendSystemMessage: vi.fn(),
 }));
@@ -52,16 +53,22 @@ function input(phase: ProjectPhase): UpdateProjectRequestDto {
   } as unknown as UpdateProjectRequestDto;
 }
 
-// The system message runs in a savepoint of the same transaction.
-const tx: { transaction: (callback: (value: unknown) => unknown) => unknown } =
-  { transaction: (callback) => callback(tx) };
+// The previous phase is read under the row lock; the system message runs in a savepoint.
+const tx: {
+  select: () => unknown;
+  transaction: (callback: (value: unknown) => unknown) => unknown;
+} = {
+  select: () => ({
+    from: () => ({ where: () => ({ for: mocks.lockPhase }) }),
+  }),
+  transaction: (callback) => callback(tx),
+};
 
 describe("updateProject phase change", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mocks.limit.mockResolvedValue([
-      { customerId: CUSTOMER_ID, phase: ProjectPhase.Design },
-    ]);
+    mocks.limit.mockResolvedValue([{ customerId: CUSTOMER_ID }]);
+    mocks.lockPhase.mockResolvedValue([{ phase: ProjectPhase.Design }]);
     mocks.getDatabase.mockReturnValue({
       select: () => ({
         from: () => ({ where: () => ({ limit: mocks.limit }) }),
@@ -122,5 +129,14 @@ describe("updateProject phase change", () => {
       ok: true,
       value: { phase: ProjectPhase.Development },
     });
+  });
+
+  it("compares against the phase read inside the transaction, not a stale one", async () => {
+    mocks.lockPhase.mockResolvedValue([{ phase: ProjectPhase.Development }]);
+
+    await updateProject(PROJECT_ID, input(ProjectPhase.Development), actor);
+
+    expect(mocks.lockPhase).toHaveBeenCalledWith("update");
+    expect(mocks.appendSystemMessage).not.toHaveBeenCalled();
   });
 });

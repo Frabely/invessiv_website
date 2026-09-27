@@ -1,4 +1,4 @@
-import type { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
+import type { MessageErrorCode } from "@invessiv/common/constants/crm/errors/message-error-codes";
 
 /** Outcome of a chat request; a network failure maps to `internal`. */
 export type MessageClientResult<TValue> =

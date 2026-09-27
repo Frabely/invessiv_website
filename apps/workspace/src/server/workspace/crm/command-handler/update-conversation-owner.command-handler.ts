@@ -1,10 +1,8 @@
 import "server-only";
 
-import { z } from "zod";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
-import { Permission } from "@invessiv/common/constants/auth/permissions";
-import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
+import { MessageErrorCode } from "@invessiv/common/constants/crm/errors/message-error-codes";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { UpdateConversationOwnerInput } from "@invessiv/common/contracts/crm/update-conversation-owner.input";
 import {
@@ -12,11 +10,11 @@ import {
   getDrizzleDatabaseClient,
 } from "@invessiv/db/core";
 import { conversations } from "@invessiv/db/record-configuration";
+import { CONVERSATION_ACTIVITY_ENTITY } from "@/common/constants/crm/message-activity-metadata";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
-import { canOn } from "@/common/patterns/auth/can-on";
 import { activityService } from "@/server/shared/services/activity-service";
-import { messageService } from "@/server/shared/services/message/message-service";
-import { conversationService } from "@/server/workspace/crm/services/conversation-service";
+import { conversationService } from "@/server/shared/services/message/conversation-service";
+import { internalConversationService } from "@/server/workspace/crm/services/internal-conversation-service";
 import { memberResponsibilityLockService } from "@/server/workspace/access/services/responsibilities/member-responsibility-lock-service";
 import { updateVersioned } from "@/server/workspace/shared/update-versioned";
 
@@ -31,17 +29,10 @@ async function memberCanOwnConversation(
       memberId,
     );
   if (!active) return false;
-  return conversationService.memberHasChatRead(tx, customerId, memberId);
-}
-
-function actorMayAssignConversationOwner(
-  actor: WorkspaceActor,
-  customerId: string,
-): boolean {
-  return (
-    z.uuid().safeParse(customerId).success &&
-    canOn(actor, Permission.ChatRead, { customerId }) &&
-    canOn(actor, Permission.ChatWrite, { customerId })
+  return internalConversationService.memberHasChatRead(
+    tx,
+    customerId,
+    memberId,
   );
 }
 
@@ -56,7 +47,7 @@ async function recordConversationOwnerChange(
     actor: { type: ActorType.User, userId: actor.userId },
     type: ActivityType.FieldChange,
     metadata: {
-      entity: "conversation",
+      entity: CONVERSATION_ACTIVITY_ENTITY,
       conversation_id: conversation.id,
       previous_owner_member_id: conversation.owner_member_id,
       next_owner_member_id: nextOwnerMemberId,
@@ -71,7 +62,7 @@ async function assignConversationOwner(
   input: UpdateConversationOwnerInput,
   actor: WorkspaceActor,
 ) {
-  const conversation = await messageService.findCustomerConversation(
+  const conversation = await conversationService.findCustomerConversation(
     tx,
     customerId,
   );
@@ -119,7 +110,7 @@ export async function updateConversationOwner(
   input: UpdateConversationOwnerInput,
   actor: WorkspaceActor,
 ) {
-  if (!actorMayAssignConversationOwner(actor, customerId))
+  if (!internalConversationService.actorMayAssignOwner(actor, customerId))
     return { ok: false, code: MessageErrorCode.NotFound } as const;
 
   return getDrizzleDatabaseClient().transaction((tx) =>

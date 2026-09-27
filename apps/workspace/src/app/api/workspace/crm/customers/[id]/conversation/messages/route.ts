@@ -1,12 +1,16 @@
 import "server-only";
 
 import type { NextRequest } from "next/server";
-import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
+import { MessageErrorCode } from "@invessiv/common/constants/crm/errors/message-error-codes";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import { CrmEndpointAccessRule } from "@/common/constants/auth/crm-endpoint-access-rules";
-import { messageApiError } from "@/app/api/message-error";
-import { readMessageInput } from "@/app/api/read-message-input";
+import { CrmOperation } from "@/common/constants/crm/crm-operations";
 import { withCrmPermission } from "@/lib/auth/api";
+import {
+  messageApiError,
+  messageApiFailure,
+} from "@/lib/workspace/crm/message-api-error";
+import { readSendMessageInput } from "@/lib/workspace/crm/message-request-input";
 import { sendInternalMessage } from "@/server/workspace/crm/command-handler/send-internal-message.command-handler";
 
 export const runtime = "nodejs";
@@ -17,7 +21,7 @@ export async function POST(request: NextRequest, { params }: Context) {
   return withCrmPermission(
     CrmEndpointAccessRule.CustomerConversationWrite,
     async (req, actor) => {
-      const input = await readMessageInput(req);
+      const input = await readSendMessageInput(req);
       if (!input) return messageApiError(MessageErrorCode.ValidationError);
       try {
         const result = await sendInternalMessage(id, input, actor);
@@ -28,10 +32,7 @@ export async function POST(request: NextRequest, { params }: Context) {
             )
           : messageApiError(result.code);
       } catch (error) {
-        console.error("[crm-message] send failed", {
-          errorName: error instanceof Error ? error.name : typeof error,
-        });
-        return messageApiError(MessageErrorCode.Internal);
+        return messageApiFailure(CrmOperation.SendMessage, error);
       }
     },
   )(request);

@@ -49,7 +49,7 @@ export default async function PortalCustomerPage({
     customerId.toLowerCase(),
   );
   const today = taskDueStateService.businessToday();
-  const [dashboard, conversation] = await Promise.all([
+  const [dashboard, conversationResult] = await Promise.all([
     getPortalDashboard(reader, today),
     getPortalConversation(reader, null),
   ]);
@@ -80,7 +80,9 @@ export default async function PortalCustomerPage({
             : null
         }
         content={content}
-        conversation={conversation}
+        conversation={
+          conversationResult.ok ? conversationResult.conversation : null
+        }
         customerId={reader.customerId}
         dashboard={dashboard}
         key={reader.customerId}

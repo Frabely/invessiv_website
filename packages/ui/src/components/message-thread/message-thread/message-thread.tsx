@@ -13,6 +13,7 @@ import {
   describeThreadDay,
   groupThreadMessages,
   sortThreadMessageItems,
+  threadMessageItemKey,
 } from "@invessiv/common/patterns/ui/group-thread-messages";
 import { useIsBrowser } from "../../../hooks/use-is-browser";
 import { useThreadAutoscroll } from "../../../hooks/use-thread-autoscroll";
@@ -81,12 +82,6 @@ export function MessageThread({
   );
   const firstItem = items.at(0);
   const lastItem = items.at(-1);
-  const keyOf = (item: ThreadMessageItem | undefined) =>
-    item
-      ? item.kind === ThreadMessageItemKind.Message
-        ? item.message.id
-        : item.pending.clientId
-      : null;
   const {
     containerRef,
     hasUnseen,
@@ -94,8 +89,8 @@ export function MessageThread({
     scrollToBottom,
     stickToBottomOnNextChange,
   } = useThreadAutoscroll(
-    isBrowser ? keyOf(firstItem) : null,
-    isBrowser ? keyOf(lastItem) : null,
+    isBrowser && firstItem ? threadMessageItemKey(firstItem) : null,
+    isBrowser && lastItem ? threadMessageItemKey(lastItem) : null,
   );
   const timeFormat = useMemo(
     () =>

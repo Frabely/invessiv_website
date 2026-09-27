@@ -36,6 +36,7 @@ vi.mock("next/navigation", () => ({
     throw new Error("notFound called");
   }),
 }));
+vi.mock("server-only", () => ({}));
 vi.mock("@/lib/auth/permissions", () => ({
   requireWorkspaceArea: mocks.requireWorkspaceArea,
 }));

@@ -1,13 +1,17 @@
 import "server-only";
 
 import type { NextRequest } from "next/server";
-import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
+import { MessageErrorCode } from "@invessiv/common/constants/crm/errors/message-error-codes";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import { updateConversationOwnerInputSchema } from "@invessiv/common/contracts/crm/update-conversation-owner.input";
 import { CrmEndpointAccessRule } from "@/common/constants/auth/crm-endpoint-access-rules";
-import { messageApiError } from "@/app/api/message-error";
+import { CrmOperation } from "@/common/constants/crm/crm-operations";
 import { withCrmPermission } from "@/lib/auth/api";
 import { readJsonBody } from "@/lib/http/read-json-body";
+import {
+  messageApiError,
+  messageApiFailure,
+} from "@/lib/workspace/crm/message-api-error";
 import { updateConversationOwner } from "@/server/workspace/crm/command-handler/update-conversation-owner.command-handler";
 
 export const runtime = "nodejs";
@@ -18,28 +22,26 @@ export async function PATCH(request: NextRequest, { params }: Context) {
   return withCrmPermission(
     CrmEndpointAccessRule.ConversationOwnerUpdate,
     async (req, actor) => {
-      const parsed = await readJsonBody(req);
-      if (!parsed.ok) return messageApiError(MessageErrorCode.ValidationError);
-      const input = updateConversationOwnerInputSchema.safeParse(parsed.body);
-      if (!input.success)
+      const json = await readJsonBody(req);
+      const input = json.ok
+        ? updateConversationOwnerInputSchema.safeParse(json.body)
+        : null;
+      if (!input?.success)
         return messageApiError(MessageErrorCode.ValidationError);
       try {
         const result = await updateConversationOwner(id, input.data, actor);
-        if (!result.ok)
-          return "conflict" in result && result.conflict
-            ? Response.json(result.conflict, {
-                status: HttpResponseCode.Conflict,
-              })
-            : messageApiError(result.code);
-        return Response.json(
-          { ownerMemberId: result.ownerMemberId, version: result.version },
-          { status: HttpResponseCode.Ok },
-        );
+        if (result.ok)
+          return Response.json(
+            { ownerMemberId: result.ownerMemberId, version: result.version },
+            { status: HttpResponseCode.Ok },
+          );
+        return result.code === MessageErrorCode.VersionConflict
+          ? Response.json(result.conflict, {
+              status: HttpResponseCode.Conflict,
+            })
+          : messageApiError(result.code);
       } catch (error) {
-        console.error("[crm-conversation] owner update failed", {
-          errorName: error instanceof Error ? error.name : typeof error,
-        });
-        return messageApiError(MessageErrorCode.Internal);
+        return messageApiFailure(CrmOperation.UpdateConversationOwner, error);
       }
     },
   )(request);

@@ -2,14 +2,11 @@
 
 import { useId } from "react";
 import type { PortalConversationDto } from "@invessiv/common/contracts/portal/portal-conversation.dto";
-import { MessageThread, MessageThreadStatus } from "@invessiv/ui";
-import { describeSystemMessage } from "@/common/patterns/crm/describe-system-message";
-import { describeThreadNotice } from "@/common/patterns/crm/describe-thread-notice";
 import { PortalOwnerNotice } from "@/components/portal/portal-owner-notice/portal-owner-notice";
+import { ConversationThreadView } from "@/components/shared/conversation-thread-view/conversation-thread-view";
 import type { Locale } from "@/config/i18n";
 import { usePortalConversation } from "@/hooks/portal/use-portal-conversation";
 import type { PortalMessagesDictionary } from "@/i18n/dictionaries/portal";
-import styles from "./portal-conversation.module.css";
 
 export type PortalConversationProps = {
   /** Only a visible conversation loads, refreshes and counts as read. */
@@ -43,29 +40,13 @@ export function PortalConversation({
 
   if (!active) return null;
 
-  if (!thread.conversation) {
-    return (
-      <MessageThreadStatus
-        failed={thread.loadFailed}
-        labels={content.states}
-        onReloadAction={() => void thread.reload()}
-      />
-    );
-  }
-
   return (
-    <div className={styles.conversation}>
-      <MessageThread
-        {...thread.threadProps}
-        describeSystemMessageAction={(message) =>
-          describeSystemMessage(message, content)
-        }
-        labels={content.thread}
-        locale={locale}
-        notice={describeThreadNotice(thread, content.states)}
-        onSendAction={thread.conversation.canWrite ? thread.send : undefined}
-        ownDisplayName={content.thread.own}
-      />
+    <ConversationThreadView
+      content={content}
+      locale={locale}
+      onSendAction={thread.conversation?.canWrite ? thread.send : undefined}
+      thread={thread}
+    >
       {cockpitHref ? (
         <PortalOwnerNotice
           cockpitHref={cockpitHref}
@@ -74,6 +55,6 @@ export function PortalConversation({
           linkLabel={content.ownerView.link}
         />
       ) : null}
-    </div>
+    </ConversationThreadView>
   );
 }

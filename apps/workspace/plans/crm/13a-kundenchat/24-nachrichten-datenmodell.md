@@ -38,7 +38,7 @@ Verlauf erscheinen kann wie geschriebene Nachrichten.
 | Nachrichtentypen                      | `text` (geschrieben) und `system` (automatisch, z. B. Phasenwechsel)                                                                                     |
 | Absender                              | `sender_side` (`internal`/`customer`/`system`) plus `sender_member_id` bzw. `sender_portal_membership_id` und der zum Sendezeitpunkt gültige Anzeigename |
 | Warum der Name mitgespeichert wird    | Der Verlauf soll lesbar bleiben, auch wenn ein Ansprechpartner später entfernt wird                                                                      |
-| Bearbeiten und Löschen                | Gibt es nicht. Redaction nur durch Workspace-Owner (Systemrolle), mit Activity                                                                           |
+| Bearbeiten und Löschen                | Gibt es nicht. Redaction nur mit `chat.redact` (nicht delegierbar, hat nur die Owner-Rolle), mit Activity                                                |
 | Länge                                 | Anwendungslimit 10.000 Zeichen nach Trim, Minimum 1                                                                                                      |
 | Anhänge                               | Nicht in diesem Ordner; Ordner 15 ergänzt `message_files` (Verweise auf portalöffentliche Dateien)                                                       |
 | Blättern                              | Neueste 50, ältere auf Anforderung über einen Cursor (`created_at`, `id`)                                                                                |
@@ -163,8 +163,6 @@ POST  /api/workspace/crm/customers/[id]/conversation/messages   POST /api/portal
 POST  /api/workspace/crm/customers/[id]/conversation/read  POST /api/portal/[customerId]/conversation/read
 POST  /api/workspace/crm/messages/[messageId]/redact       —
 PATCH /api/workspace/crm/customers/[id]/conversation/owner —
-GET   /api/workspace/crm/conversations                     —   (Posteingang, Task 25)
-GET   /api/workspace/crm/conversations/unread-count        —   (Sidebar-Zähler, Task 25)
 ```
 
 Getrennte Routen und getrennte Handler für beide Welten — kein gemeinsamer Handler mit Parameter „wer fragt". Portal-
@@ -188,10 +186,14 @@ packages/common/src/constants/auth/{permissions,permission-definitions,system-ro
 packages/common/src/contracts/crm/{message.dto.ts,conversation.dto.ts}
 
 apps/workspace/src/server/shared/services/message/
+  conversation-reader-types.ts    ConversationReader: internes Mitglied oder Portal-Mitgliedschaft
+  conversation-service.ts         Unterhaltung finden/anlegen, Lesestand, eine Definition von „ungelesen“
+  conversation-mapping-service.ts Row → ConversationDto (leerer Verlauf ohne Row)
   message-mapping-service.ts      Row → MessageDto (Redaction-Platzhalter, isOwn)
-  message-service.ts              Validierung, Senden, Lesestand, Redaction, Systemnachrichten
+  message-service.ts              Seiten, Senden (idempotent), Systemnachrichten, Portal-Limit
 apps/workspace/src/server/workspace/crm/
-  services/conversation-service.ts            Zugriff, Details und Inbox
+  services/internal-conversation-service.ts          Sichtbarkeit, Inbox, Zähler, Owner-Kandidaten
+  services/internal-conversation-mapping-service.ts  InternalConversationDto, Inbox-Zeile
   query-handler/get-customer-conversation.query-handler.ts
   command-handler/send-internal-message.command-handler.ts
   command-handler/mark-conversation-read.command-handler.ts
@@ -221,15 +223,15 @@ apps/workspace/src/common/constants/auth/crm-endpoint-access-rules.ts   + neue E
 ### CRM-24-T2 — Unterhaltung holen und Ungelesen-Zählung
 
 - **Inhalt:**
-  - Holen oder anlegen mit `INSERT … ON CONFLICT DO NOTHING` + erneutem Lesen; Owner initial = Kunden-Owner
+  - Anlegen nur beim Schreiben (erste Text- oder Systemnachricht) mit `INSERT … ON CONFLICT DO NOTHING` + erneutem
+    Lesen; Owner = Kunden-Owner zu diesem Zeitpunkt. Lesen (CRM wie Portal) legt nie an und liefert ohne Row einen
+    leeren Verlauf (`id: null`, intern `ownership: null`).
   - Nachrichten: neueste 50, Cursor für ältere, stabil sortiert über `(created_at, id)`
   - Lesebestätigungen tragen die ID der zuletzt tatsächlich angezeigten Textnachricht der Gegenseite; der Server
     prüft die Absenderseite und übernimmt deren DB-Zeitstempel, damit zwischen Laden und Bestätigen eingetroffene
     Nachrichten auch nach einem eigenen Senden ungelesen bleiben.
   - Ungelesen = Nachrichten der **anderen** Seite (ohne `system`) nach dem eigenen `last_read_at`
   - Redacted-Nachrichten: `body = null`, `redactedAt` gesetzt
-  - Portal-Query legt keine Conversation an, wenn keine existiert — sie liefert einen leeren Verlauf (kein Write im
-    GET des Portals)
 - **Akzeptanz (Tests):** eigene Nachrichten zählen nie als ungelesen; Systemnachrichten zählen nicht; Cursor
   überspringt und wiederholt keine Nachricht; zwei parallele Aufrufe erzeugen genau eine Unterhaltung.
 
@@ -241,7 +243,7 @@ apps/workspace/src/common/constants/auth/crm-endpoint-access-rules.ts   + neue E
     `clientMessageId` mit Unique-Index verhindert doppelte Nachrichten nach einem verlorenen Response und Retry.
     Der Lesestand wird nur für tatsächlich angezeigte Nachrichten gesetzt.
   - Intern nur mit `chat.write` am Kunden; Portal nur mit `portal.messages.write`
-  - Redaction: nur Workspace-Owner; setzt `body = null`, `redacted_at`, `redacted_by_member_id`; Activity ohne Inhalt;
+  - Redaction: nur mit `chat.redact`; setzt `body = null`, `redacted_at`, `redacted_by_member_id`; Activity ohne Inhalt;
     `system`-Nachrichten und bereits redigierte Nachrichten sind nicht redigierbar. Die Antwort enthält die
     redigierte Nachricht, damit auch bereits geladene ältere Seiten ihren Text sofort ersetzen.
   - Owner-Wechsel über `updateVersioned`; Ziel muss aktives Mitglied mit wirksamem `chat.read` am Kunden sein; 409 mit

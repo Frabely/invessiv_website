@@ -1,11 +1,14 @@
 import "server-only";
 
 import type { NextRequest } from "next/server";
-import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import { CrmEndpointAccessRule } from "@/common/constants/auth/crm-endpoint-access-rules";
-import { messageApiError } from "@/app/api/message-error";
+import { CrmOperation } from "@/common/constants/crm/crm-operations";
 import { withCrmPermission } from "@/lib/auth/api";
+import {
+  messageApiError,
+  messageApiFailure,
+} from "@/lib/workspace/crm/message-api-error";
 import { redactMessage } from "@/server/workspace/crm/command-handler/redact-message.command-handler";
 
 export const runtime = "nodejs";
@@ -25,10 +28,7 @@ export async function POST(request: NextRequest, { params }: Context) {
             )
           : messageApiError(result.code);
       } catch (error) {
-        console.error("[crm-message] redaction failed", {
-          errorName: error instanceof Error ? error.name : typeof error,
-        });
-        return messageApiError(MessageErrorCode.Internal);
+        return messageApiFailure(CrmOperation.RedactMessage, error);
       }
     },
   )(request);

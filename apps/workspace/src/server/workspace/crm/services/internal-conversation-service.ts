@@ -7,20 +7,13 @@ import {
   desc,
   eq,
   exists,
-  gt,
   isNull,
   or,
   sql,
 } from "drizzle-orm";
-import { z } from "zod";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
-import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
-import {
-  MessageSenderSide,
-  MessageType,
-} from "@invessiv/common/constants/crm/message-types";
+import { MessageSenderSide } from "@invessiv/common/constants/crm/message-types";
 import type { WorkspaceMemberOptionDto } from "@invessiv/common/contracts/auth/workspace-member-option.dto";
-import type { InternalConversationDto } from "@invessiv/common/contracts/crm/internal-conversation.dto";
 import type { ConversationInboxItemDto } from "@invessiv/common/contracts/crm/conversation-inbox-item.dto";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import {
@@ -38,20 +31,28 @@ import {
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessScope } from "@/common/patterns/auth/access-scope";
 import { canOn } from "@/common/patterns/auth/can-on";
-import { messageService } from "@/server/shared/services/message/message-service";
-import { conversationMappingService } from "@/server/shared/services/message/conversation-mapping-service";
+import { isUuid } from "@invessiv/common/patterns/validation/is-uuid";
+import type { ConversationReader } from "@/server/shared/services/message/conversation-reader-types";
+import { conversationService } from "@/server/shared/services/message/conversation-service";
 import { messageMappingService } from "@/server/shared/services/message/message-mapping-service";
 import { crmAccessCondition } from "@/server/workspace/shared/services/crm-access-condition";
+import { internalConversationMappingService } from "./internal-conversation-mapping-service";
 
-async function getOrCreateConversationForPermission(
-  db: ContactDatabaseTransaction,
+function readerOf(actor: WorkspaceActor): ConversationReader {
+  return {
+    side: MessageSenderSide.Internal,
+    memberId: actor.workspaceMemberId,
+  };
+}
+
+/** The customer must be inside the actor's access scope for `permission`, checked in `WHERE`. */
+async function isCustomerVisible(
+  tx: ContactDatabaseTransaction,
   customerId: string,
   actor: WorkspaceActor,
   permission: Permission,
-) {
-  if (!z.uuid().safeParse(customerId).success) return null;
-  if (!canOn(actor, permission, { customerId })) return null;
-  const [visibleCustomer] = await db
+): Promise<boolean> {
+  const [visible] = await tx
     .select({ id: customers.id })
     .from(customers)
     .where(
@@ -63,96 +64,7 @@ async function getOrCreateConversationForPermission(
       ),
     )
     .limit(1);
-  if (!visibleCustomer) return null;
-  return messageService.ensureCustomerConversation(db, customerId);
-}
-
-function getOrCreateReadableConversation(
-  db: ContactDatabaseTransaction,
-  customerId: string,
-  actor: WorkspaceActor,
-) {
-  return getOrCreateConversationForPermission(
-    db,
-    customerId,
-    actor,
-    Permission.ChatRead,
-  );
-}
-
-function getOrCreateWritableConversation(
-  db: ContactDatabaseTransaction,
-  customerId: string,
-  actor: WorkspaceActor,
-) {
-  return getOrCreateConversationForPermission(
-    db,
-    customerId,
-    actor,
-    Permission.ChatWrite,
-  );
-}
-
-async function getConversationOwnerDisplayName(
-  db: ContactDatabaseTransaction,
-  ownerMemberId: string,
-): Promise<string> {
-  const [owner] = await db
-    .select({ displayName: users.display_name })
-    .from(workspaceMembers)
-    .innerJoin(users, eq(users.id, workspaceMembers.user_id))
-    .where(eq(workspaceMembers.id, ownerMemberId))
-    .limit(1);
-  return owner?.displayName ?? "";
-}
-
-/** Redaction is reserved for the workspace owner system role, independent of any CRM grant. */
-async function memberIsWorkspaceOwner(
-  db: ContactDatabaseTransaction,
-  memberId: string,
-): Promise<boolean> {
-  const [ownerRole] = await db
-    .select({ id: workspaceMemberRoles.role_id })
-    .from(workspaceMemberRoles)
-    .innerJoin(roles, eq(roles.id, workspaceMemberRoles.role_id))
-    .where(
-      and(
-        eq(workspaceMemberRoles.workspace_member_id, memberId),
-        eq(roles.system_key, SystemRoleKey.WorkspaceOwner),
-      ),
-    )
-    .limit(1);
-  return Boolean(ownerRole);
-}
-
-async function getConversationDetail(
-  db: ContactDatabaseTransaction,
-  conversation: typeof conversations.$inferSelect,
-  actor: WorkspaceActor,
-  cursor: string | null,
-): Promise<InternalConversationDto | null> {
-  const page = await messageService.getMessagePage(
-    db,
-    conversation.id,
-    cursor,
-    actor.workspaceMemberId,
-    null,
-  );
-  if (!page) return null;
-  const unreadCount = await messageService.countUnreadMessages(
-    db,
-    conversation.id,
-    MessageSenderSide.Internal,
-    actor.workspaceMemberId,
-    null,
-  );
-  return conversationMappingService.toInternalDto(
-    conversation,
-    await getConversationOwnerDisplayName(db, conversation.owner_member_id),
-    unreadCount,
-    page,
-    await memberIsWorkspaceOwner(db, actor.workspaceMemberId),
-  );
+  return Boolean(visible);
 }
 
 function visibleCustomerConversation(actor: WorkspaceActor) {
@@ -165,44 +77,31 @@ function visibleCustomerConversation(actor: WorkspaceActor) {
   );
 }
 
-function viewerReadJoin(actor: WorkspaceActor) {
-  return and(
-    eq(conversationReads.conversation_id, conversations.id),
-    eq(conversationReads.member_id, actor.workspaceMemberId),
-  );
-}
-
-/** Customer text after the joined read position of the viewer; own and system messages never count. */
-function unreadCustomerMessage() {
+function unreadMessagesOfConversation() {
   return and(
     eq(messages.conversation_id, conversations.id),
-    eq(messages.type, MessageType.Text),
-    eq(messages.sender_side, MessageSenderSide.Customer),
-    or(
-      isNull(conversationReads.last_read_at),
-      gt(messages.created_at, conversationReads.last_read_at),
-    ),
+    conversationService.unreadMessageCondition(MessageSenderSide.Internal),
   );
 }
 
 // One statement for the whole inbox: the newest message per conversation comes from a lateral
 // join and the unread count from a correlated count, so the list never issues a query per row.
 async function selectVisibleInboxRows(
-  db: ContactDatabaseTransaction,
+  tx: ContactDatabaseTransaction,
   actor: WorkspaceActor,
 ) {
-  const lastMessage = db
+  const lastMessage = tx
     .select()
     .from(messages)
     .where(eq(messages.conversation_id, conversations.id))
     .orderBy(desc(messages.created_at), desc(messages.id))
     .limit(1)
     .as("last_message");
-  const unreadCount = db
+  const unreadCount = tx
     .select({ value: count() })
     .from(messages)
-    .where(unreadCustomerMessage());
-  return db
+    .where(unreadMessagesOfConversation());
+  return tx
     .select({
       conversation: conversations,
       customerName: customers.display_name,
@@ -232,7 +131,10 @@ async function selectVisibleInboxRows(
       eq(workspaceMembers.id, conversations.owner_member_id),
     )
     .innerJoin(users, eq(users.id, workspaceMembers.user_id))
-    .leftJoin(conversationReads, viewerReadJoin(actor))
+    .leftJoin(
+      conversationReads,
+      conversationService.readPositionJoin(readerOf(actor), conversations.id),
+    )
     .leftJoinLateral(lastMessage, sql`true`)
     .where(visibleCustomerConversation(actor))
     .orderBy(
@@ -242,12 +144,12 @@ async function selectVisibleInboxRows(
 }
 
 async function listVisibleInbox(
-  db: ContactDatabaseTransaction,
+  tx: ContactDatabaseTransaction,
   actor: WorkspaceActor,
 ): Promise<ConversationInboxItemDto[]> {
-  const rows = await selectVisibleInboxRows(db, actor);
+  const rows = await selectVisibleInboxRows(tx, actor);
   return rows.map((row) =>
-    conversationMappingService.toInboxItemDto(
+    internalConversationMappingService.toInboxItemDto(
       row.conversation,
       {
         customerDisplayName: row.customerName,
@@ -255,32 +157,31 @@ async function listVisibleInbox(
       },
       row.unreadCount,
       row.lastMessage
-        ? messageMappingService.toDto(
-            row.lastMessage,
-            actor.workspaceMemberId,
-            null,
-          )
+        ? messageMappingService.toDto(row.lastMessage, readerOf(actor))
         : null,
     ),
   );
 }
 
 async function countUnreadConversations(
-  db: ContactDatabaseTransaction,
+  tx: ContactDatabaseTransaction,
   actor: WorkspaceActor,
 ): Promise<number> {
-  const [result] = await db
+  const [result] = await tx
     .select({ value: count() })
     .from(conversations)
-    .leftJoin(conversationReads, viewerReadJoin(actor))
+    .leftJoin(
+      conversationReads,
+      conversationService.readPositionJoin(readerOf(actor), conversations.id),
+    )
     .where(
       and(
         visibleCustomerConversation(actor),
         exists(
-          db
+          tx
             .select({ id: messages.id })
             .from(messages)
-            .where(unreadCustomerMessage()),
+            .where(unreadMessagesOfConversation()),
         ),
       ),
     );
@@ -296,14 +197,14 @@ function roleGrantsChatRead() {
 
 /**
  * Active members who may own the conversation: `chat.read` workspace-wide or bound to the customer
- * itself. The owner command re-checks this; the list only avoids offering doomed choices.
+ * itself. The list and the owner command share this query, so they cannot drift apart.
  */
 async function selectOwnerCandidates(
-  db: ContactDatabaseTransaction,
+  tx: ContactDatabaseTransaction,
   customerId: string,
   memberId: string | null,
 ) {
-  const globalGrant = db
+  const globalGrant = tx
     .select({ id: workspaceMemberRoles.role_id })
     .from(workspaceMemberRoles)
     .innerJoin(roles, eq(roles.id, workspaceMemberRoles.role_id))
@@ -314,7 +215,7 @@ async function selectOwnerCandidates(
         roleGrantsChatRead(),
       ),
     );
-  const customerGrant = db
+  const customerGrant = tx
     .select({ id: workspaceMemberScopedRoles.role_id })
     .from(workspaceMemberScopedRoles)
     .innerJoin(roles, eq(roles.id, workspaceMemberScopedRoles.role_id))
@@ -327,7 +228,7 @@ async function selectOwnerCandidates(
         roleGrantsChatRead(),
       ),
     );
-  return db
+  return tx
     .select({ id: workspaceMembers.id, displayName: users.display_name })
     .from(workspaceMembers)
     .innerJoin(users, eq(users.id, workspaceMembers.user_id))
@@ -342,28 +243,39 @@ async function selectOwnerCandidates(
     .orderBy(asc(users.display_name), asc(workspaceMembers.id));
 }
 
+/** Reassigning needs read and write on the customer; only then are the candidates revealed. */
+function actorMayAssignOwner(
+  actor: WorkspaceActor,
+  customerId: string,
+): boolean {
+  return (
+    isUuid(customerId) &&
+    canOn(actor, Permission.ChatRead, { customerId }) &&
+    canOn(actor, Permission.ChatWrite, { customerId })
+  );
+}
+
 function listOwnerCandidates(
-  db: ContactDatabaseTransaction,
+  tx: ContactDatabaseTransaction,
   customerId: string,
 ): Promise<WorkspaceMemberOptionDto[]> {
-  return selectOwnerCandidates(db, customerId, null);
+  return selectOwnerCandidates(tx, customerId, null);
 }
 
 async function memberHasChatRead(
-  db: ContactDatabaseTransaction,
+  tx: ContactDatabaseTransaction,
   customerId: string,
   memberId: string,
 ): Promise<boolean> {
-  return (await selectOwnerCandidates(db, customerId, memberId)).length > 0;
+  return (await selectOwnerCandidates(tx, customerId, memberId)).length > 0;
 }
 
-export const conversationService = {
-  getOrCreateReadableConversation,
-  getOrCreateWritableConversation,
-  getConversationDetail,
-  listVisibleInbox,
+export const internalConversationService = {
+  actorMayAssignOwner,
   countUnreadConversations,
+  isCustomerVisible,
   listOwnerCandidates,
+  listVisibleInbox,
   memberHasChatRead,
-  memberIsWorkspaceOwner,
+  readerOf,
 } as const;

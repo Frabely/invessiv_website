@@ -65,6 +65,9 @@ import { listWorkspaceMembers } from "@/server/workspace/access/query-handler/li
 import { responsibilityAccessService } from "@/server/workspace/shared/services/responsibility-access-service";
 import { getCustomerPortalAccess } from "@/server/workspace/crm/query-handler/get-customer-portal-access.query-handler";
 import { getCustomerConversation } from "@/server/workspace/crm/query-handler/get-customer-conversation.query-handler";
+import { CrmOperation } from "@/common/constants/crm/crm-operations";
+import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
+import { logCrmFailure } from "@/lib/workspace/crm/log-crm-failure";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -73,6 +76,20 @@ type CrmPageProps = {
   params: Promise<{ locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
+
+// The chat is a side panel: a failure shows its reload state instead of breaking the cockpit.
+async function loadCockpitConversation(
+  customerId: string,
+  actor: WorkspaceActor,
+) {
+  try {
+    const result = await getCustomerConversation(customerId, actor, null);
+    return result.ok ? result.conversation : null;
+  } catch (error) {
+    logCrmFailure(CrmOperation.GetConversation, error);
+    return null;
+  }
+}
 
 export async function generateMetadata({
   params,
@@ -168,9 +185,7 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
 
   const cockpitConversation =
     cockpitCustomer && canReadConversation
-      ? await getCustomerConversation(cockpitCustomer.id, actor, null).catch(
-          () => null,
-        )
+      ? await loadCockpitConversation(cockpitCustomer.id, actor)
       : undefined;
   const cockpitProjects = cockpitCustomer
     ? await listCockpitProjectsByCustomer(cockpitCustomer.id, actor)
@@ -322,6 +337,7 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
           closeHref={cockpitCloseHref}
           content={getCrmCockpitDictionary(activeLocale)}
           conversation={cockpitConversation}
+          canRedactConversation={can(actor, Permission.ChatRedact)}
           canWriteConversation={canOn(actor, Permission.ChatWrite, {
             customerId: cockpitCustomer.id,
           })}

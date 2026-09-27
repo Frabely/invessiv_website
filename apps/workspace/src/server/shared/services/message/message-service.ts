@@ -1,17 +1,6 @@
 import "server-only";
 
-import {
-  and,
-  count,
-  desc,
-  eq,
-  gt,
-  isNotNull,
-  isNull,
-  or,
-  sql,
-  type SQL,
-} from "drizzle-orm";
+import { and, desc, eq, gt, or, sql } from "drizzle-orm";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import {
@@ -19,78 +8,101 @@ import {
   PORTAL_MESSAGE_RATE_WINDOW_SECONDS,
   PORTAL_MESSAGES_PER_HOUR,
 } from "@invessiv/common/constants/crm/message-limits";
-import { isUuid } from "@invessiv/common/patterns/validation/is-uuid";
 import {
   MessageSenderSide,
   MessageType,
 } from "@invessiv/common/constants/crm/message-types";
+import type { ConversationDto } from "@invessiv/common/contracts/crm/conversation.dto";
+import { isUuid } from "@invessiv/common/patterns/validation/is-uuid";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
-import {
-  conversationReads,
-  conversations,
-  customers,
-  messages,
-  portalMemberships,
-} from "@invessiv/db/record-configuration";
-import { messageMappingService } from "./message-mapping-service";
+import { messages, portalMemberships } from "@invessiv/db/record-configuration";
+import { MESSAGE_ACTIVITY_ENTITY } from "@/common/constants/crm/message-activity-metadata";
 import { activityService } from "../activity-service";
+import type { ConversationReader } from "./conversation-reader-types";
+import { conversationService } from "./conversation-service";
+import { messageMappingService } from "./message-mapping-service";
+
+const MAX_CURSOR_LENGTH = 256;
+const CURSOR_TIMESTAMP_PATTERN =
+  /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3,6}Z$/;
+
+type CursorPosition = { createdAt: string; id: string };
 
 type TextMessageInput = {
   clientMessageId: string;
   conversationId: string;
   customerId: string;
   body: string;
-  side: typeof MessageSenderSide.Internal | typeof MessageSenderSide.Customer;
-  memberId: string | null;
-  portalMembershipId: string | null;
-  displayName: string;
+  sender: ConversationReader;
+  senderDisplayName: string;
   actorType: typeof ActorType.User | typeof ActorType.Customer;
   actorUserId: string;
 };
 
-function decodeMessageCursor(
-  cursor: string | null,
-): { createdAt: string; id: string } | null {
-  if (!cursor) return null;
-  if (cursor.length > 256) return null;
+function parseCursorPosition(value: unknown): CursorPosition | null {
+  if (
+    !Array.isArray(value) ||
+    value.length !== 2 ||
+    typeof value[0] !== "string" ||
+    typeof value[1] !== "string"
+  )
+    return null;
+  const [createdAt, id] = value;
+  const validTimestamp =
+    CURSOR_TIMESTAMP_PATTERN.test(createdAt) &&
+    Number.isFinite(new Date(createdAt).getTime());
+  return validTimestamp && isUuid(id) ? { createdAt, id } : null;
+}
+
+function decodeMessageCursor(cursor: string): CursorPosition | null {
+  if (cursor.length > MAX_CURSOR_LENGTH) return null;
   try {
-    const parsed: unknown = JSON.parse(
-      Buffer.from(cursor, "base64url").toString("utf8"),
+    return parseCursorPosition(
+      JSON.parse(Buffer.from(cursor, "base64url").toString("utf8")),
     );
-    if (
-      !Array.isArray(parsed) ||
-      parsed.length !== 2 ||
-      typeof parsed[0] !== "string" ||
-      typeof parsed[1] !== "string"
-    )
-      return null;
-    if (
-      !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3,6}Z$/.test(parsed[0]) ||
-      !Number.isFinite(new Date(parsed[0]).getTime()) ||
-      !isUuid(parsed[1])
-    )
-      return null;
-    return { createdAt: parsed[0], id: parsed[1] };
   } catch {
     return null;
   }
 }
 
-function encodeMessageCursor(row: {
-  cursorAt: string;
-  message: { id: string };
-}) {
-  return Buffer.from(JSON.stringify([row.cursorAt, row.message.id])).toString(
-    "base64url",
+/** The timestamp keeps microseconds as text; a JS `Date` would cut them and skip rows. */
+function encodeMessageCursor(position: CursorPosition): string {
+  return Buffer.from(
+    JSON.stringify([position.createdAt, position.id]),
+  ).toString("base64url");
+}
+
+function olderThan(position: CursorPosition) {
+  return or(
+    sql`${messages.created_at}
+        <
+        ${position.createdAt}
+        :
+        :
+        timestamptz`,
+    and(
+      sql`${messages.created_at}
+            =
+            ${position.createdAt}
+            :
+            :
+            timestamptz`,
+      sql`${messages.id}
+            <
+            ${position.id}
+            :
+            :
+            uuid`,
+    ),
   );
 }
 
 async function selectMessagePageRows(
-  db: ContactDatabaseTransaction,
+  tx: ContactDatabaseTransaction,
   conversationId: string,
-  position: { createdAt: string; id: string } | null,
+  position: CursorPosition | null,
 ) {
-  return db
+  return tx
     .select({
       message: messages,
       cursorAt: sql<string>`to_char(${messages.created_at} AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"')`,
@@ -99,256 +111,52 @@ async function selectMessagePageRows(
     .where(
       and(
         eq(messages.conversation_id, conversationId),
-        position
-          ? or(
-              sql`${messages.created_at} < ${position.createdAt}::timestamptz`,
-              and(
-                sql`${messages.created_at} = ${position.createdAt}::timestamptz`,
-                sql`${messages.id} < ${position.id}::uuid`,
-              ),
-            )
-          : undefined,
+        position ? olderThan(position) : undefined,
       ),
     )
     .orderBy(desc(messages.created_at), desc(messages.id))
     .limit(MESSAGE_PAGE_SIZE + 1);
 }
 
+/**
+ * Newest page, or the page before `cursor`, in chronological order. Null only for a cursor that
+ * was not issued by this service; the caller answers that as a validation error.
+ */
 async function getMessagePage(
-  db: ContactDatabaseTransaction,
+  tx: ContactDatabaseTransaction,
   conversationId: string,
   cursor: string | null,
-  ownMemberId: string | null,
-  ownPortalMembershipId: string | null,
-) {
-  const position = decodeMessageCursor(cursor);
+  viewer: ConversationReader | null,
+): Promise<Pick<ConversationDto, "messages" | "nextCursor"> | null> {
+  const position = cursor ? decodeMessageCursor(cursor) : null;
   if (cursor && !position) return null;
-  const rows = await selectMessagePageRows(db, conversationId, position);
-  const selected = rows.slice(0, MESSAGE_PAGE_SIZE);
-  const oldest = selected.at(-1);
+  const rows = await selectMessagePageRows(tx, conversationId, position);
+  const page = rows.slice(0, MESSAGE_PAGE_SIZE);
+  const oldest = page.at(-1);
   return {
-    messages: selected
+    messages: page
       .reverse()
-      .map((row) =>
-        messageMappingService.toDto(
-          row.message,
-          ownMemberId,
-          ownPortalMembershipId,
-        ),
-      ),
+      .map((row) => messageMappingService.toDto(row.message, viewer)),
     nextCursor:
       rows.length > MESSAGE_PAGE_SIZE && oldest
-        ? encodeMessageCursor(oldest)
+        ? encodeMessageCursor({
+            createdAt: oldest.cursorAt,
+            id: oldest.message.id,
+          })
         : null,
   };
 }
 
-async function getLastReadAt(
-  db: ContactDatabaseTransaction,
-  conversationId: string,
-  memberId: string | null,
-  portalMembershipId: string | null,
-): Promise<string | null> {
-  const [read] = await db
-    .select({
-      at: sql<string>`to_char
-        (
-        ${conversationReads.last_read_at}
-        AT
-        TIME
-        ZONE
-        'UTC',
-        'YYYY-MM-DD"T"HH24:MI:SS.US"Z"'
-        )`,
-    })
-    .from(conversationReads)
-    .where(
-      and(
-        eq(conversationReads.conversation_id, conversationId),
-        memberId
-          ? eq(conversationReads.member_id, memberId)
-          : eq(conversationReads.portal_membership_id, portalMembershipId!),
-      ),
-    )
-    .limit(1);
-  return read?.at ?? null;
-}
-
-async function countUnreadMessages(
-  db: ContactDatabaseTransaction,
-  conversationId: string,
-  ownSide: MessageSenderSide,
-  memberId: string | null,
-  portalMembershipId: string | null,
-) {
-  const lastReadAt = await getLastReadAt(
-    db,
-    conversationId,
-    memberId,
-    portalMembershipId,
-  );
-  const [result] = await db
-    .select({ value: count() })
-    .from(messages)
-    .where(
-      and(
-        eq(messages.conversation_id, conversationId),
-        eq(messages.type, MessageType.Text),
-        ownSide === MessageSenderSide.Internal
-          ? eq(messages.sender_side, MessageSenderSide.Customer)
-          : eq(messages.sender_side, MessageSenderSide.Internal),
-        lastReadAt
-          ? gt(
-              messages.created_at,
-              sql`${lastReadAt}
-              ::timestamptz`,
-            )
-          : undefined,
-      ),
-    );
-  return result?.value ?? 0;
-}
-
-async function markConversationReadAt(
-  db: ContactDatabaseTransaction,
-  conversationId: string,
-  memberId: string | null,
-  portalMembershipId: string | null,
-  at: SQL,
-) {
-  const values = {
-    id: crypto.randomUUID(),
-    conversation_id: conversationId,
-    member_id: memberId,
-    portal_membership_id: portalMembershipId,
-    last_read_at: at,
+function senderColumns(sender: ConversationReader) {
+  return {
+    sender_side: sender.side,
+    sender_member_id:
+      sender.side === MessageSenderSide.Internal ? sender.memberId : null,
+    sender_portal_membership_id:
+      sender.side === MessageSenderSide.Customer
+        ? sender.portalMembershipId
+        : null,
   };
-  await db
-    .insert(conversationReads)
-    .values(values)
-    .onConflictDoUpdate({
-      target: memberId
-        ? [conversationReads.conversation_id, conversationReads.member_id]
-        : [
-            conversationReads.conversation_id,
-            conversationReads.portal_membership_id,
-          ],
-      targetWhere: memberId
-        ? isNotNull(conversationReads.member_id)
-        : isNotNull(conversationReads.portal_membership_id),
-      set: {
-        last_read_at: sql`greatest
-        (
-        ${conversationReads.last_read_at},
-        excluded
-        .
-        last_read_at
-        )`,
-      },
-    });
-}
-
-async function markConversationReadThroughMessage(
-  db: ContactDatabaseTransaction,
-  conversationId: string,
-  lastSeenMessageId: string,
-  memberId: string | null,
-  portalMembershipId: string | null,
-): Promise<boolean> {
-  const [seen] = await db
-    .select({ id: messages.id })
-    .from(messages)
-    .where(
-      and(
-        eq(messages.id, lastSeenMessageId),
-        eq(messages.conversation_id, conversationId),
-        eq(messages.type, MessageType.Text),
-        memberId
-          ? eq(messages.sender_side, MessageSenderSide.Customer)
-          : eq(messages.sender_side, MessageSenderSide.Internal),
-      ),
-    )
-    .limit(1);
-  if (!seen) return false;
-  await markConversationReadAt(
-    db,
-    conversationId,
-    memberId,
-    portalMembershipId,
-    sql`(select ${messages.created_at} from ${messages} where ${messages.id} = ${lastSeenMessageId})`,
-  );
-  return true;
-}
-
-async function updateLastMessageAt(
-  db: ContactDatabaseTransaction,
-  conversationId: string,
-  messageId: string,
-) {
-  const messageAt = sql`(select ${messages.created_at} from ${messages} where ${messages.id} = ${messageId})`;
-  await db
-    .update(conversations)
-    .set({
-      last_message_at: sql`greatest
-      (coalesce(
-      ${conversations.last_message_at},
-      ${messageAt}
-      ),
-      ${messageAt}
-      )`,
-      updated_at: sql`clock_timestamp
-      ()`,
-    })
-    .where(eq(conversations.id, conversationId));
-}
-
-async function findCustomerConversation(
-  tx: ContactDatabaseTransaction,
-  customerId: string,
-) {
-  const [conversation] = await tx
-    .select()
-    .from(conversations)
-    .where(
-      and(
-        eq(conversations.customer_id, customerId),
-        isNull(conversations.project_id),
-      ),
-    )
-    .limit(1);
-  return conversation ?? null;
-}
-
-async function ensureCustomerConversation(
-  tx: ContactDatabaseTransaction,
-  customerId: string,
-) {
-  const [customer] = await tx
-    .select({ ownerMemberId: customers.owner_member_id })
-    .from(customers)
-    .where(eq(customers.id, customerId))
-    .limit(1);
-  if (!customer) return null;
-  await tx
-    .insert(conversations)
-    .values({
-      id: crypto.randomUUID(),
-      customer_id: customerId,
-      project_id: null,
-      owner_member_id: customer.ownerMemberId,
-      version: 1,
-    })
-    .onConflictDoNothing();
-  return findCustomerConversation(tx, customerId);
-}
-
-async function insertMessageAndUpdateConversation(
-  tx: ContactDatabaseTransaction,
-  values: typeof messages.$inferInsert,
-) {
-  const [message] = await tx.insert(messages).values(values).returning();
-  await updateLastMessageAt(tx, message.conversation_id, message.id);
-  return message;
 }
 
 async function recordTextMessageCreation(
@@ -360,21 +168,20 @@ async function recordTextMessageCreation(
     customerId: input.customerId,
     actor: { type: input.actorType, userId: input.actorUserId },
     type: ActivityType.Created,
-    metadata: { entity: "message", message_id: message.id },
+    metadata: { entity: MESSAGE_ACTIVITY_ENTITY, message_id: message.id },
     occurredAt: message.created_at,
   });
 }
 
+/**
+ * The earlier message of a retried send, but only if it is really the same send: same sender,
+ * conversation and text (or since redacted). A reused client id with other content matches nothing.
+ */
 async function findMatchingTextMessage(
   tx: ContactDatabaseTransaction,
   input: Pick<
     TextMessageInput,
-    | "clientMessageId"
-    | "conversationId"
-    | "body"
-    | "side"
-    | "memberId"
-    | "portalMembershipId"
+    "clientMessageId" | "conversationId" | "body" | "sender"
   >,
 ) {
   const [existing] = await tx
@@ -382,16 +189,19 @@ async function findMatchingTextMessage(
     .from(messages)
     .where(eq(messages.client_message_id, input.clientMessageId))
     .limit(1);
-  return existing &&
+  if (!existing) return null;
+  const sender = senderColumns(input.sender);
+  const sameSend =
     existing.conversation_id === input.conversationId &&
-    existing.sender_side === input.side &&
-    existing.sender_member_id === input.memberId &&
-    existing.sender_portal_membership_id === input.portalMembershipId &&
-    (existing.body === input.body || existing.redacted_at !== null)
-    ? existing
-    : null;
+    existing.sender_side === sender.sender_side &&
+    existing.sender_member_id === sender.sender_member_id &&
+    existing.sender_portal_membership_id ===
+      sender.sender_portal_membership_id &&
+    (existing.body === input.body || existing.redacted_at !== null);
+  return sameSend ? existing : null;
 }
 
+/** Idempotent per `clientMessageId`: a retry returns the stored message, or null on a mismatch. */
 async function appendTextMessage(
   tx: ContactDatabaseTransaction,
   input: TextMessageInput,
@@ -406,10 +216,8 @@ async function appendTextMessage(
       type: MessageType.Text,
       body: input.body,
       metadata: null,
-      sender_side: input.side,
-      sender_member_id: input.memberId,
-      sender_portal_membership_id: input.portalMembershipId,
-      sender_display_name: input.displayName,
+      ...senderColumns(input.sender),
+      sender_display_name: input.senderDisplayName,
       created_at: sql`clock_timestamp
         ()`,
       redacted_at: null,
@@ -418,81 +226,47 @@ async function appendTextMessage(
     .onConflictDoNothing({ target: messages.client_message_id })
     .returning();
   if (!message) return findMatchingTextMessage(tx, input);
-  await updateLastMessageAt(tx, input.conversationId, message.id);
+  await conversationService.touchLastMessageAt(
+    tx,
+    input.conversationId,
+    message.id,
+  );
   await recordTextMessageCreation(tx, input, message);
   return message;
 }
 
+/** Creates the conversation if needed; null only when the customer does not exist. */
 async function appendSystemMessage(
   tx: ContactDatabaseTransaction,
   customerId: string,
   key: string,
   params: Record<string, string>,
 ) {
-  const conversation = await ensureCustomerConversation(tx, customerId);
+  const conversation = await conversationService.ensureCustomerConversation(
+    tx,
+    customerId,
+  );
   if (!conversation) return null;
-
-  return insertMessageAndUpdateConversation(tx, {
-    id: crypto.randomUUID(),
-    conversation_id: conversation.id,
-    customer_id: customerId,
-    type: MessageType.System,
-    body: key,
-    metadata: params,
-    sender_side: MessageSenderSide.System,
-    sender_member_id: null,
-    sender_portal_membership_id: null,
-    sender_display_name: "System",
-    redacted_at: null,
-    redacted_by_member_id: null,
-  });
-}
-
-async function findRedactableTextMessage(
-  tx: ContactDatabaseTransaction,
-  messageId: string,
-) {
-  const [target] = await tx
-    .select({
-      customerId: messages.customer_id,
-      conversationId: messages.conversation_id,
+  const [message] = await tx
+    .insert(messages)
+    .values({
+      id: crypto.randomUUID(),
+      conversation_id: conversation.id,
+      client_message_id: null,
+      customer_id: customerId,
+      type: MessageType.System,
+      body: key,
+      metadata: params,
+      sender_side: MessageSenderSide.System,
+      sender_member_id: null,
+      sender_portal_membership_id: null,
+      sender_display_name: "System",
+      redacted_at: null,
+      redacted_by_member_id: null,
     })
-    .from(messages)
-    .innerJoin(conversations, eq(conversations.id, messages.conversation_id))
-    .where(
-      and(
-        eq(messages.id, messageId),
-        eq(messages.type, MessageType.Text),
-        isNull(messages.redacted_at),
-        isNull(conversations.project_id),
-      ),
-    )
-    .limit(1);
-  return target ?? null;
-}
-
-async function redactTextMessage(
-  tx: ContactDatabaseTransaction,
-  messageId: string,
-  target: { customerId: string; conversationId: string },
-  memberId: string,
-  at: Date,
-): Promise<typeof messages.$inferSelect | null> {
-  const updated = await tx
-    .update(messages)
-    .set({ body: null, redacted_at: at, redacted_by_member_id: memberId })
-    .where(
-      and(
-        eq(messages.id, messageId),
-        eq(messages.customer_id, target.customerId),
-        eq(messages.conversation_id, target.conversationId),
-        eq(messages.type, MessageType.Text),
-        isNull(messages.redacted_at),
-        isNotNull(messages.body),
-      ),
-    )
     .returning();
-  return updated[0] ?? null;
+  await conversationService.touchLastMessageAt(tx, conversation.id, message.id);
+  return message;
 }
 
 /**
@@ -530,15 +304,9 @@ async function findPortalSendRetryAfter(
 }
 
 export const messageService = {
-  getMessagePage,
-  countUnreadMessages,
-  markConversationReadThroughMessage,
-  findCustomerConversation,
-  ensureCustomerConversation,
+  appendSystemMessage,
   appendTextMessage,
   findMatchingTextMessage,
-  appendSystemMessage,
   findPortalSendRetryAfter,
-  findRedactableTextMessage,
-  redactTextMessage,
+  getMessagePage,
 } as const;

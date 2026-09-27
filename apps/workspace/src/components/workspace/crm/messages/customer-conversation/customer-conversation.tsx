@@ -1,15 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import {
-  ConfirmDialog,
-  MessageThread,
-  MessageThreadStatus,
-} from "@invessiv/ui";
+import { useState } from "react";
+import { ConfirmDialog } from "@invessiv/ui";
 import type { InternalConversationDto } from "@invessiv/common/contracts/crm/internal-conversation.dto";
-import { MESSAGE_DRAFT_STORAGE_KEY_PREFIX } from "@/common/constants/crm/message-draft-storage";
-import { describeSystemMessage } from "@/common/patterns/crm/describe-system-message";
-import { describeThreadNotice } from "@/common/patterns/crm/describe-thread-notice";
+import { ConversationThreadView } from "@/components/shared/conversation-thread-view/conversation-thread-view";
 import type { Locale } from "@/config/i18n";
 import { useCustomerConversation } from "@/hooks/workspace/crm/use-customer-conversation";
 import type { CrmMessagesDictionary } from "@/i18n/dictionaries/workspace/crm";
@@ -18,6 +12,8 @@ import styles from "./customer-conversation.module.css";
 type CustomerConversationProps = {
   /** Only a visible conversation loads, refreshes and counts as read. */
   active: boolean;
+  /** True only with `chat.redact`, which the owner role alone holds. */
+  canRedact: boolean;
   canWrite: boolean;
   content: CrmMessagesDictionary;
   customerId: string;
@@ -28,6 +24,7 @@ type CustomerConversationProps = {
 
 export function CustomerConversation({
   active,
+  canRedact,
   canWrite,
   content,
   customerId,
@@ -45,28 +42,7 @@ export function CustomerConversation({
   const [redacting, setRedacting] = useState(false);
   const [redactionFailed, setRedactionFailed] = useState(false);
 
-  useEffect(() => {
-    // Legacy drafts had no owner scope and cannot be assigned safely after an account switch.
-    try {
-      window.localStorage.removeItem(
-        `${MESSAGE_DRAFT_STORAGE_KEY_PREFIX}${customerId}`,
-      );
-    } catch {
-      // Blocked storage does not affect the conversation.
-    }
-  }, [customerId]);
-
   if (!active) return null;
-
-  if (!thread.conversation) {
-    return (
-      <MessageThreadStatus
-        failed={thread.loadFailed}
-        labels={content.states}
-        onReloadAction={() => void thread.reload()}
-      />
-    );
-  }
 
   function requestRedaction(messageId: string) {
     setRedactionFailed(false);
@@ -83,21 +59,13 @@ export function CustomerConversation({
   }
 
   return (
-    <div className={styles.conversation}>
-      <MessageThread
-        {...thread.threadProps}
-        describeSystemMessageAction={(message) =>
-          describeSystemMessage(message, content)
-        }
-        labels={content.thread}
-        locale={locale}
-        notice={describeThreadNotice(thread, content.states)}
-        onRedactAction={
-          thread.conversation.canRedact ? requestRedaction : undefined
-        }
-        onSendAction={canWrite ? thread.send : undefined}
-        ownDisplayName={content.thread.own}
-      />
+    <ConversationThreadView
+      content={content}
+      locale={locale}
+      onRedactAction={canRedact ? requestRedaction : undefined}
+      onSendAction={canWrite ? thread.send : undefined}
+      thread={thread}
+    >
       {redactionTarget ? (
         <ConfirmDialog
           busy={redacting}
@@ -117,6 +85,6 @@ export function CustomerConversation({
           ) : null}
         </ConfirmDialog>
       ) : null}
-    </div>
+    </ConversationThreadView>
   );
 }

@@ -32,7 +32,10 @@ export type CrmLineItemTemplatesDictionary = typeof lineItemTemplatesDe;
 export type CrmTasksDictionary = typeof tasksDe;
 export type CrmAccessDictionary = typeof accessDe;
 export type CrmPortalAccessDictionary = typeof portalAccessDe;
-export type CrmMessagesDictionary = typeof messagesDe;
+/** Phase names come from the cockpit, so the CRM names a phase the same way everywhere. */
+export type CrmMessagesDictionary = typeof messagesDe & {
+  phases: CrmCockpitDictionary["projects"]["phases"];
+};
 
 const CRM_META: Record<Locale, CrmMetaDictionary> = {
   de: metaDe,
@@ -80,8 +83,8 @@ const CRM_PORTAL_ACCESS: Record<Locale, CrmPortalAccessDictionary> = {
 };
 
 const CRM_MESSAGES: Record<Locale, CrmMessagesDictionary> = {
-  de: messagesDe,
-  en: messagesEn,
+  de: { ...messagesDe, phases: cockpitDe.projects.phases },
+  en: { ...messagesEn, phases: cockpitEn.projects.phases },
 };
 
 export function getCrmMessagesDictionary(

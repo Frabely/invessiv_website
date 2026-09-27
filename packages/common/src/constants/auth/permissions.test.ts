@@ -53,6 +53,7 @@ describe("Permission", () => {
     );
 
     expect(nonDelegable).toEqual([
+      Permission.ChatRedact,
       Permission.RolesManage,
       Permission.MembersManage,
       Permission.DataExport,

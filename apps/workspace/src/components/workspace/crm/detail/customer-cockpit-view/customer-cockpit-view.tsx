@@ -7,6 +7,7 @@ import type { CustomerCockpitDto } from "@invessiv/common/contracts/crm/customer
 import type { PortalAccessDto } from "@invessiv/common/contracts/crm/portal-access.dto";
 import type { InternalConversationDto } from "@invessiv/common/contracts/crm/internal-conversation.dto";
 import { CustomerConversation } from "@/components/workspace/crm/messages/customer-conversation/customer-conversation";
+import { describeUnreadBadge } from "@/common/patterns/crm/describe-unread-badge";
 import { PortalAccessSection } from "@/components/workspace/crm/portal-access/portal-access-section/portal-access-section";
 import type { AccessScopeEntryDto } from "@invessiv/common/contracts/auth/access-scope-entry.dto";
 import type { AccessProjectOptionDto } from "@invessiv/common/contracts/auth/access-project-option.dto";
@@ -53,6 +54,8 @@ type CustomerCockpitViewProps = {
   content: CrmCockpitDictionary;
   /** Undefined without `chat.read` on the customer: the dock is then not rendered at all. */
   conversation?: InternalConversationDto | null;
+  /** True only with `chat.redact`. */
+  canRedactConversation?: boolean;
   canWriteConversation?: boolean;
   messagesContent?: CrmMessagesDictionary;
   viewerMemberId: string;
@@ -86,6 +89,7 @@ export function CustomerCockpitView({
   accessScopes,
   content,
   conversation,
+  canRedactConversation = false,
   canWriteConversation = false,
   messagesContent,
   viewerMemberId,
@@ -349,13 +353,10 @@ export function CustomerCockpitView({
       </div>
       {conversation !== undefined && messagesContent ? (
         <ChatDock
-          badgeLabel={
-            conversation && conversation.unreadCount > 0
-              ? formatMessage(messagesContent.dock.unread, {
-                  count: conversation.unreadCount,
-                })
-              : undefined
-          }
+          badgeLabel={describeUnreadBadge(
+            conversation?.unreadCount ?? 0,
+            messagesContent.dock.unread,
+          )}
           className={styles.chat}
           content={content.chat}
           expanded={chatOpen}
@@ -364,6 +365,7 @@ export function CustomerCockpitView({
         >
           <CustomerConversation
             active={chatOpen}
+            canRedact={canRedactConversation}
             canWrite={canWriteConversation}
             content={messagesContent}
             customerId={customer.id}

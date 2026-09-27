@@ -9,6 +9,7 @@ vi.mock("server-only", () => ({}));
 const mocks = vi.hoisted(() => ({
   countOpenCustomers: vi.fn(),
   countOpenTasks: vi.fn(),
+  countOpenConversations: vi.fn(),
 }));
 
 vi.mock(
@@ -25,40 +26,40 @@ vi.mock(
     taskResponsibilityCounterService: { countOpen: mocks.countOpenTasks },
   }),
 );
+vi.mock(
+  "@/server/workspace/access/services/responsibilities/conversation-responsibility-counter",
+  () => ({
+    conversationResponsibilityCounterService: {
+      countOpen: mocks.countOpenConversations,
+    },
+  }),
+);
+
 describe("responsibilityCounterService", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it("returns a complete count keyed by every ownable entity", async () => {
-    const where = vi.fn().mockResolvedValue([{ count: 4 }]);
-    const from = vi.fn().mockReturnValue({ where });
-    const select = vi.fn().mockReturnValue({ from });
-    const executor = { select } as unknown as AccessDatabaseExecutor;
+    const executor = {} as AccessDatabaseExecutor;
+    const memberId = "00000000-0000-4000-8000-000000000001";
     mocks.countOpenCustomers.mockResolvedValue(2);
     mocks.countOpenTasks.mockResolvedValue(3);
+    mocks.countOpenConversations.mockResolvedValue(4);
 
     await expect(
-      responsibilityCounterService.countOpenByMemberId(
-        executor,
-        "00000000-0000-4000-8000-000000000001",
-      ),
+      responsibilityCounterService.countOpenByMemberId(executor, memberId),
     ).resolves.toEqual({
       [OwnableEntity.Customer]: 2,
       [OwnableEntity.Task]: 3,
       [OwnableEntity.Conversation]: 4,
     });
 
-    expect(mocks.countOpenCustomers).toHaveBeenCalledWith(
-      executor,
-      "00000000-0000-4000-8000-000000000001",
-    );
-    expect(mocks.countOpenTasks).toHaveBeenCalledWith(
-      executor,
-      "00000000-0000-4000-8000-000000000001",
-    );
-    expect(select).toHaveBeenCalledOnce();
-    expect(from).toHaveBeenCalledOnce();
-    expect(where).toHaveBeenCalledOnce();
+    for (const counter of [
+      mocks.countOpenCustomers,
+      mocks.countOpenTasks,
+      mocks.countOpenConversations,
+    ])
+      expect(counter).toHaveBeenCalledWith(executor, memberId);
   });
 });

@@ -87,6 +87,10 @@
       "label": "Kundenchats schreiben",
       "description": "Nachrichten im gemeinsamen Kundenchat senden."
     },
+    "chat.redact": {
+      "label": "Kundennachrichten ausblenden",
+      "description": "Rechtswidrige Inhalte im Kundenchat für alle ausblenden. Nur für Owner."
+    },
     "files.read": {
       "label": "Dateien ansehen",
       "description": "Kundendateien öffnen und herunterladen."

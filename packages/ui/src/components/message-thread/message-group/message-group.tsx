@@ -1,6 +1,6 @@
-import { ThreadMessageItemKind } from "@invessiv/common/constants/ui/thread-message-item-kinds";
 import type { MessageThreadLabels } from "@invessiv/common/contracts/ui/message-thread-labels";
 import type { ThreadMessageGroup } from "@invessiv/common/contracts/ui/thread-message-group";
+import { threadMessageItemKey } from "@invessiv/common/patterns/ui/group-thread-messages";
 import { MessageBubble } from "../message-bubble/message-bubble";
 import styles from "./message-group.module.css";
 
@@ -37,11 +37,7 @@ export function MessageGroup({
           <MessageBubble
             isOwn={group.isOwn}
             item={item}
-            key={
-              item.kind === ThreadMessageItemKind.Message
-                ? item.message.id
-                : item.pending.clientId
-            }
+            key={threadMessageItemKey(item)}
             labels={labels}
             onRedactAction={canRedact ? onRedactAction : undefined}
             onRetryAction={onRetryAction}

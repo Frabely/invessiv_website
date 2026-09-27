@@ -1,8 +1,6 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import { MESSAGE_BODY_MAX_LENGTH } from "@invessiv/common/constants/crm/message-limits";
 import { sendMessageInputSchema } from "@invessiv/common/contracts/crm/send-message.input";
-
-vi.mock("server-only", () => ({}));
 
 const clientMessageId = "11111111-1111-4111-8111-111111111111";
 

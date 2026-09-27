@@ -28,11 +28,8 @@ export const CrmEndpointAccessRule = {
   TaskStatusChange: "task_status_change",
   CustomerConversation: "customer_conversation",
   CustomerConversationWrite: "customer_conversation_write",
-  CustomerConversationRead: "customer_conversation_read",
   ConversationOwnerUpdate: "conversation_owner_update",
   MessageRedact: "message_redact",
-  Conversations: "conversations",
-  ConversationsUnreadCount: "conversations_unread_count",
 } as const;
 
 export type CrmEndpointAccessRule =
@@ -127,25 +124,13 @@ export const CRM_ENDPOINT_ACCESS_RULES = {
     permission: Permission.ChatWrite,
     scope: "customer",
   },
-  [CrmEndpointAccessRule.CustomerConversationRead]: {
-    permission: Permission.ChatRead,
-    scope: "customer",
-  },
   [CrmEndpointAccessRule.ConversationOwnerUpdate]: {
     permission: Permission.ChatWrite,
     scope: "customer",
   },
   [CrmEndpointAccessRule.MessageRedact]: {
-    permission: Permission.ChatRead,
-    scope: "customer",
-  },
-  [CrmEndpointAccessRule.Conversations]: {
-    permission: Permission.ChatRead,
-    scope: "list",
-  },
-  [CrmEndpointAccessRule.ConversationsUnreadCount]: {
-    permission: Permission.ChatRead,
-    scope: "list",
+    permission: Permission.ChatRedact,
+    scope: "workspace",
   },
 } as const satisfies Record<
   CrmEndpointAccessRule,

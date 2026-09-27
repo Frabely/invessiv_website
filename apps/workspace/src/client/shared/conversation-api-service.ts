@@ -1,7 +1,7 @@
 import {
   MESSAGE_ERROR_CODE_VALUES,
   MessageErrorCode,
-} from "@invessiv/common/constants/crm/message-error-codes";
+} from "@invessiv/common/constants/crm/errors/message-error-codes";
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import type { ConversationDto } from "@invessiv/common/contracts/crm/conversation.dto";
 import type { MessageDto } from "@invessiv/common/contracts/crm/message.dto";
@@ -40,7 +40,7 @@ function isConversation<TConversation extends ConversationDto>(
 ): value is TConversation {
   return (
     isRecord(value) &&
-    typeof value.id === "string" &&
+    (typeof value.id === "string" || value.id === null) &&
     Array.isArray(value.messages)
   );
 }

@@ -1,12 +1,24 @@
 import "server-only";
 
+import { MessageSenderSide } from "@invessiv/common/constants/crm/message-types";
 import type { MessageDto } from "@invessiv/common/contracts/crm/message.dto";
 import { messages } from "@invessiv/db/record-configuration";
+import type { ConversationReader } from "./conversation-reader-types";
 
+function isOwnMessage(
+  row: typeof messages.$inferSelect,
+  viewer: ConversationReader | null,
+): boolean {
+  if (!viewer) return false;
+  return viewer.side === MessageSenderSide.Internal
+    ? row.sender_member_id === viewer.memberId
+    : row.sender_portal_membership_id === viewer.portalMembershipId;
+}
+
+/** `viewer` is null for the read-only owner view of the portal, which never owns a message. */
 function toDto(
   row: typeof messages.$inferSelect,
-  ownMemberId: string | null,
-  ownPortalMembershipId: string | null,
+  viewer: ConversationReader | null,
 ): MessageDto {
   return {
     id: row.id,
@@ -16,10 +28,7 @@ function toDto(
     metadata: row.metadata,
     senderSide: row.sender_side,
     senderDisplayName: row.sender_display_name,
-    isOwn:
-      (ownMemberId !== null && row.sender_member_id === ownMemberId) ||
-      (ownPortalMembershipId !== null &&
-        row.sender_portal_membership_id === ownPortalMembershipId),
+    isOwn: isOwnMessage(row, viewer),
     createdAt: row.created_at.toISOString(),
     redactedAt: row.redacted_at?.toISOString() ?? null,
   };

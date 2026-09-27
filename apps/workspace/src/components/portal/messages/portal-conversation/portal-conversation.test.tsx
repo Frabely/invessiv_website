@@ -9,7 +9,7 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { MessageErrorCode } from "@invessiv/common/constants/crm/message-error-codes";
+import { MessageErrorCode } from "@invessiv/common/constants/crm/errors/message-error-codes";
 import type { PortalConversationDto } from "@invessiv/common/contracts/portal/portal-conversation.dto";
 import { getPortalMessagesDictionary } from "@/i18n/dictionaries/portal";
 import { PortalConversation } from "./portal-conversation";

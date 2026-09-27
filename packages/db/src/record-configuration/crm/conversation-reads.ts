@@ -31,22 +31,22 @@ export const conversationReads = pgTable(
     check(
       ConversationReadsConstraintName.ReaderCheck,
       sql`num_nonnulls
-            (
-            ${t.member_id},
-            ${t.portal_membership_id}
-            )
-            =
-            1`,
+        (
+        ${t.member_id},
+        ${t.portal_membership_id}
+        )
+        =
+        1`,
     ),
     uniqueIndex(ConversationReadsConstraintName.MemberUnique).on(
       t.conversation_id,
       t.member_id,
     ).where(sql`${t.member_id}
-            IS NOT NULL`),
+          IS NOT NULL`),
     uniqueIndex(ConversationReadsConstraintName.PortalMemberUnique).on(
       t.conversation_id,
       t.portal_membership_id,
     ).where(sql`${t.portal_membership_id}
-            IS NOT NULL`),
+          IS NOT NULL`),
   ],
 );

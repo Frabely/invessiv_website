@@ -225,10 +225,11 @@ describe("CustomerCockpitView", () => {
           },
         ],
         nextCursor: null,
-        ownerMemberId: "member-1",
-        ownerDisplayName: "Moritz",
-        version: 1,
-        canRedact: false,
+        ownership: {
+          ownerMemberId: "member-1",
+          ownerDisplayName: "Moritz",
+          version: 1,
+        },
         ...overrides,
       };
     }
@@ -278,8 +279,8 @@ describe("CustomerCockpitView", () => {
       expect(screen.queryByRole("button", { name: "Ausblenden" })).toBeNull();
     });
 
-    it("offers hiding only to the workspace owner", () => {
-      renderDock({ conversation: conversation({ canRedact: true }) });
+    it("offers hiding only with chat.redact", () => {
+      renderDock({ canRedactConversation: true });
 
       expect(screen.getByRole("button", { name: "Ausblenden" })).toBeVisible();
     });

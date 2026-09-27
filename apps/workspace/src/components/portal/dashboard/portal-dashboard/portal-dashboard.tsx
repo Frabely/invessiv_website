@@ -21,6 +21,7 @@ import {
   readPortalDashboardProject,
   readPortalDashboardWidget,
 } from "@/common/patterns/portal/portal-dashboard-query";
+import { describeUnreadBadge } from "@/common/patterns/crm/describe-unread-badge";
 import type { Locale } from "@/config/i18n";
 import { PortalConversation } from "@/components/portal/messages/portal-conversation/portal-conversation";
 import { usePortalTaskCompletion } from "@/hooks/portal/use-portal-task-completion";
@@ -28,7 +29,6 @@ import type {
   PortalDashboardDictionary,
   PortalMessagesDictionary,
 } from "@/i18n/dictionaries/portal";
-import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { PortalDashboardEmptyState } from "../portal-dashboard-empty-state/portal-dashboard-empty-state";
 import { PortalOwnerNotice } from "@/components/portal/portal-owner-notice/portal-owner-notice";
 import { PortalWidgetDialogHost } from "../portal-widget-dialog-host/portal-widget-dialog-host";
@@ -246,13 +246,10 @@ export function PortalDashboard({
           id={dockId}
         >
           <ChatDock
-            badgeLabel={
-              conversation.unreadCount > 0
-                ? formatMessage(messagesContent.dock.unread, {
-                    count: conversation.unreadCount,
-                  })
-                : undefined
-            }
+            badgeLabel={describeUnreadBadge(
+              conversation.unreadCount,
+              messagesContent.dock.unread,
+            )}
             className={styles.chat}
             content={content.chat}
             expanded={dockExpanded}

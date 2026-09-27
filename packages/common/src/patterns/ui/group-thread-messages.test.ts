@@ -156,6 +156,18 @@ describe("describeThreadDay", () => {
     );
   });
 
+  it("names yesterday right after a clock change", () => {
+    const afterSpringForward = new Date(2026, 2, 30, 0, 30);
+    expect(
+      describeThreadDay(
+        new Date(2026, 2, 29, 12, 0).toISOString(),
+        afterSpringForward,
+        "en",
+        labels,
+      ),
+    ).toBe("Yesterday");
+  });
+
   it("uses the local calendar day", () => {
     expect(threadDayKey(localIso(3, 0, 5))).toBe("2026-09-03");
   });

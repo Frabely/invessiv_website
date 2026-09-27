@@ -1,4 +1,5 @@
 // @vitest-environment jsdom
+import { MessageErrorCode } from "@invessiv/common/constants/crm/errors/message-error-codes";
 
 import "@testing-library/jest-dom/vitest";
 import { cleanup, render, screen } from "@testing-library/react";
@@ -77,7 +78,10 @@ describe("PortalCustomerPage", () => {
     Object.values(mocks).forEach((mock) => mock.mockReset());
     mocks.requirePortalReader.mockResolvedValue(ACTOR);
     mocks.getPortalDashboard.mockResolvedValue(dashboard());
-    mocks.getPortalConversation.mockResolvedValue(null);
+    mocks.getPortalConversation.mockResolvedValue({
+      ok: false,
+      code: MessageErrorCode.NotFound,
+    });
   });
 
   afterEach(cleanup);
@@ -126,7 +130,7 @@ describe("PortalCustomerPage", () => {
       nextCursor: null,
       canWrite: true,
     };
-    mocks.getPortalConversation.mockResolvedValue(conversation);
+    mocks.getPortalConversation.mockResolvedValue({ ok: true, conversation });
 
     const props = await renderPage();
 
