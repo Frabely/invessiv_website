@@ -12,6 +12,8 @@ import {
 } from "./upload-limits";
 import { FILE_INSPECTION_STATUS_VALUES } from "./file-inspection-status";
 import { FileErrorCode } from "./file-error-code";
+import { UUID_PATTERN } from "./uuid-pattern";
+import { UNSAFE_FILE_LINK_CHARACTERS } from "./file-link-pattern";
 import {
   StorageDisposition,
   StorageProvider,
@@ -126,6 +128,12 @@ describe("file constants", () => {
       "STORAGE_INVALID_RANGE",
       "STORAGE_PROXY_REQUIRED",
     ]);
+    expect(UUID_PATTERN.source).toBe(
+      "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+    );
+    expect(UUID_PATTERN.flags).toBe("i");
+    expect(UNSAFE_FILE_LINK_CHARACTERS.source).toBe("[\\s\\\\]");
+    expect(UNSAFE_FILE_LINK_CHARACTERS.flags).toBe("u");
     for (const group of [
       AssetKind,
       UploadExtension,

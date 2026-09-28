@@ -1,16 +1,7 @@
+import { isHttpUrl } from "@invessiv/common/patterns/url/parse-http-url";
+
 export function isOpenableUrl(value: string): boolean {
-  const trimmedValue = value.trim();
-
-  if (!trimmedValue) {
-    return false;
-  }
-
-  try {
-    const url = new URL(trimmedValue);
-    return url.protocol === "http:" || url.protocol === "https:";
-  } catch {
-    return false;
-  }
+  return isHttpUrl(value.trim());
 }
 
 export function openExternalUrl(value: string) {

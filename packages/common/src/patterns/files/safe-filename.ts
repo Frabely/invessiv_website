@@ -1,4 +1,5 @@
 import { MAX_SAFE_FILENAME_BYTES } from "../../constants/files/upload-limits";
+import { UUID_PATTERN } from "../../constants/files/uuid-pattern";
 
 export function sanitizeFilename(name: string): string {
   const leaf = name.normalize("NFC").split(/[\\/]/).pop() ?? "";
@@ -46,9 +47,7 @@ export function createFileStorageKey(
   fileId: string,
   filename: string,
 ): string {
-  const uuid =
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  if (!uuid.test(customerId) || !uuid.test(fileId))
+  if (!UUID_PATTERN.test(customerId) || !UUID_PATTERN.test(fileId))
     throw new Error("Invalid storage scope");
   return `customers/${customerId}/${fileId}/${sanitizeFilename(filename)}`;
 }

@@ -8,6 +8,8 @@ import {
 } from "@invessiv/common/constants/files/upload-limits";
 import { StorageError } from "./storage-error";
 
+const UNSAFE_DOWNLOAD_FILENAME_CHARACTERS = /[\\/\r\n]/;
+
 export function validateKey(key: string): void {
   if (
     !key ||
@@ -51,7 +53,7 @@ export function validateDownload(
   if (
     !Object.values(StorageDisposition).includes(options.disposition) ||
     !options.filename ||
-    /[\\/\r\n]/.test(options.filename)
+    UNSAFE_DOWNLOAD_FILENAME_CHARACTERS.test(options.filename)
   )
     throw new StorageError(StorageErrorCode.InvalidInput);
 }

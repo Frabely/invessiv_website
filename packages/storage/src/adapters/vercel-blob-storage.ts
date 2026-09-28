@@ -22,6 +22,11 @@ import {
   validateUpload,
 } from "../storage-validation";
 
+const BLOB_OPERATION = {
+  Get: "get",
+  Put: "put",
+} as const;
+
 export function createVercelBlobStorage(): StorageAdapter {
   let cached: Awaited<ReturnType<typeof issueSignedToken>> | undefined;
   let issuing: ReturnType<typeof issueSignedToken> | undefined;
@@ -30,28 +35,34 @@ export function createVercelBlobStorage(): StorageAdapter {
     if (cached && cached.validUntil > Math.max(expiresAt, Date.now() + 60_000))
       return cached;
     if (!issuing) {
-      issuing = issueSignedToken({
-        operations: ["get", "put"],
-        validUntil: Date.now() + 3_600_000,
-      })
-        .then((value) => {
+      issuing = (async () => {
+        try {
+          const value = await issueSignedToken({
+            operations: [BLOB_OPERATION.Get, BLOB_OPERATION.Put],
+            validUntil: Date.now() + 3_600_000,
+          });
           cached = value;
           return value;
-        })
-        .finally(() => {
+        } finally {
           issuing = undefined;
-        });
+        }
+      })();
     }
     return issuing;
   }
 
-  async function safe<T>(operation: () => Promise<T>): Promise<T> {
+  async function safe<T>(
+    operation: () => Promise<T>,
+    onNotFound?: () => T,
+  ): Promise<T> {
     try {
       return await operation();
     } catch (error) {
       if (error instanceof StorageError) throw error;
-      if (error instanceof BlobNotFoundError)
+      if (error instanceof BlobNotFoundError) {
+        if (onNotFound) return onNotFound();
         throw new StorageError(StorageErrorCode.NotFound);
+      }
       // Provider errors can contain signed URLs and credentials; never propagate them.
       throw new StorageError(StorageErrorCode.Unavailable);
     }
@@ -68,7 +79,7 @@ export function createVercelBlobStorage(): StorageAdapter {
   async function read(key: string, range?: string) {
     const validUntil = Date.now() + 60_000;
     const { presignedUrl } = await presignUrl(await token(validUntil), {
-      operation: "get",
+      operation: BLOB_OPERATION.Get,
       pathname: key,
       access: "private",
       validUntil,
@@ -100,6 +111,49 @@ export function createVercelBlobStorage(): StorageAdapter {
     return { response, idle };
   }
 
+  function isValidRangeResponse(
+    response: Response,
+    start: number,
+    endInclusive: number,
+  ): boolean {
+    const header = response.headers.get(HttpHeaderName.ContentRange);
+    const match = /^bytes (\d+)-(\d+)\/(\d+)$/.exec(header ?? "");
+    return (
+      response.status === HttpResponseCode.PartialContent &&
+      !!match &&
+      Number(match[1]) === start &&
+      Number(match[2]) === endInclusive &&
+      Number(match[3]) > endInclusive
+    );
+  }
+
+  async function collectExactRange(
+    response: Response,
+    idle: ReturnType<typeof createIdleAbort>,
+    expected: number,
+  ): Promise<Uint8Array> {
+    const bytes = new Uint8Array(expected);
+    const reader = response.body!.getReader();
+    let offset = 0;
+    try {
+      for (;;) {
+        const { done, value } = await reader.read();
+        idle.keepAlive();
+        if (done) break;
+        if (offset + value.length > expected)
+          throw new StorageError(StorageErrorCode.InvalidRange);
+        bytes.set(value, offset);
+        offset += value.length;
+      }
+    } finally {
+      await reader.cancel();
+      reader.releaseLock();
+    }
+    if (offset !== expected)
+      throw new StorageError(StorageErrorCode.InvalidRange);
+    return bytes;
+  }
+
   return {
     async createUploadUrl(key, options) {
       validateUpload(key, options);
@@ -107,7 +161,7 @@ export function createVercelBlobStorage(): StorageAdapter {
         const { presignedUrl } = await presignUrl(
           await token(options.expiresAt.getTime()),
           {
-            operation: "put",
+            operation: BLOB_OPERATION.Put,
             pathname: key,
             access: "private",
             validUntil: options.expiresAt.getTime(),
@@ -127,8 +181,8 @@ export function createVercelBlobStorage(): StorageAdapter {
     },
     async head(key) {
       validateKey(key);
-      return safe(async () => {
-        try {
+      return safe(
+        async () => {
           const metadata = await head(key);
           if (
             !new URL(metadata.url).hostname.endsWith(
@@ -137,11 +191,9 @@ export function createVercelBlobStorage(): StorageAdapter {
           )
             throw new StorageError(StorageErrorCode.Configuration);
           return { size: metadata.size, contentType: metadata.contentType };
-        } catch (error) {
-          if (error instanceof BlobNotFoundError) return null;
-          throw error;
-        }
-      });
+        },
+        () => null,
+      );
     },
     async readRange(key, start, endInclusive) {
       validateRange(key, start, endInclusive);
@@ -151,39 +203,15 @@ export function createVercelBlobStorage(): StorageAdapter {
           `bytes=${start}-${endInclusive}`,
         );
         try {
-          const header = response.headers.get(HttpHeaderName.ContentRange);
-          const match = /^bytes (\d+)-(\d+)\/(\d+)$/.exec(header ?? "");
-          if (
-            response.status !== HttpResponseCode.PartialContent ||
-            !match ||
-            Number(match[1]) !== start ||
-            Number(match[2]) !== endInclusive ||
-            Number(match[3]) <= endInclusive
-          ) {
+          if (!isValidRangeResponse(response, start, endInclusive)) {
             await response.body!.cancel();
             throw new StorageError(StorageErrorCode.InvalidRange);
           }
-          const expected = endInclusive - start + 1;
-          const bytes = new Uint8Array(expected);
-          const reader = response.body!.getReader();
-          let offset = 0;
-          try {
-            for (;;) {
-              const { done, value } = await reader.read();
-              idle.keepAlive();
-              if (done) break;
-              if (offset + value.length > expected)
-                throw new StorageError(StorageErrorCode.InvalidRange);
-              bytes.set(value, offset);
-              offset += value.length;
-            }
-          } finally {
-            await reader.cancel();
-            reader.releaseLock();
-          }
-          if (offset !== expected)
-            throw new StorageError(StorageErrorCode.InvalidRange);
-          return bytes;
+          return await collectExactRange(
+            response,
+            idle,
+            endInclusive - start + 1,
+          );
         } finally {
           idle.dispose();
         }
@@ -202,7 +230,7 @@ export function createVercelBlobStorage(): StorageAdapter {
         const { presignedUrl } = await presignUrl(
           await token(options.expiresAt.getTime()),
           {
-            operation: "get",
+            operation: BLOB_OPERATION.Get,
             pathname: key,
             access: "private",
             validUntil: options.expiresAt.getTime(),
@@ -248,13 +276,10 @@ export function createVercelBlobStorage(): StorageAdapter {
     },
     async delete(key) {
       validateKey(key);
-      return safe(async () => {
-        try {
-          await del(key);
-        } catch (error) {
-          if (!(error instanceof BlobNotFoundError)) throw error;
-        }
-      });
+      return safe(
+        () => del(key),
+        () => undefined,
+      );
     },
   };
 }

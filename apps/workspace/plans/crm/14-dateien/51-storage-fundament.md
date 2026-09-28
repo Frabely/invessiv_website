@@ -74,8 +74,8 @@ Pending-Limits, Idempotenz, Activities, Autorisierung und Aufräumjob liegen bei
 - Negativtests für Limits, Metadaten, Dateisignaturen, SVG, Office, Range-Antworten, Konfiguration und Tokenfehler.
 - `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test` und
   `pnpm --filter @invessiv/workspace build` erfolgreich.
-- 2.809 Tests erfolgreich, 87 bestehende Workspace-Integrationstests übersprungen;
-  davon 63 Tests für dieses Fundament. Die übersprungenen Tests benötigen ihre gesonderten DB-Modi.
+- 2.811 Tests erfolgreich, 87 bestehende Workspace-Integrationstests übersprungen;
+  davon 64 Tests für dieses Fundament. Die übersprungenen Tests benötigen ihre gesonderten DB-Modi.
 - Bestehende Warnung: `no-img-element` in einem Marketing-Test; keine Lintfehler.
 - Kein DB-Smoke erforderlich: keine Änderung an DB oder Persistenz.
 - Kein E2E/A11y-Smoke erforderlich: keine neue sichtbare Route und kein neuer interaktiver Ablauf.

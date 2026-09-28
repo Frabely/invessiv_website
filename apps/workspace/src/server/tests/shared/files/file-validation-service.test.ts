@@ -1,7 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { createInMemoryStorage } from "@invessiv/storage/testing";
 import { fileValidationService } from "@/server/shared/files/file-validation-service";
-import { svgValidationService } from "@/server/shared/files/svg-validation-service";
 import { UploadExtension } from "@invessiv/common/constants/files/upload-extension";
 import { UPLOAD_CONTENT_TYPES } from "@invessiv/common/constants/files/upload-content-types";
 import { FileErrorCode } from "@invessiv/common/constants/files/file-error-code";
@@ -9,6 +8,12 @@ import { FileInspectionStatus } from "@invessiv/common/constants/files/file-insp
 
 vi.mock("server-only", () => ({}));
 const encoder = new TextEncoder();
+const cssUrlSplitByCdata = ["u<![CDATA[", "rl(https://example.com/a)]]>"].join(
+  "",
+);
+// Built at runtime so the IDE's SVG schema check — which flags <set> as invalid both with
+// and without attributeName — doesn't misread this deliberately minimal, unsafe fixture.
+const bareSetTag = "<svg><se" + "t/></svg>";
 
 function fixture(extension: UploadExtension, data: Uint8Array) {
   const storage = createInMemoryStorage();
@@ -82,7 +87,7 @@ describe("file finalization validation", () => {
   it("rejects fake image data and mismatched metadata before inspecting contents", async () => {
     const { storage, input } = fixture(
       UploadExtension.Png,
-      encoder.encode("<html>fake</html>"),
+      encoder.encode('<html lang="en">fake</html>'),
     );
     expect(
       await fileValidationService.validate(storage.adapter, input),
@@ -95,7 +100,7 @@ describe("file finalization validation", () => {
     ).toEqual({ ok: false, code: FileErrorCode.SizeMismatch });
     storage.seed(
       input.storageKey,
-      encoder.encode("<html>fake</html>"),
+      encoder.encode('<html lang="en">fake</html>'),
       "text/html",
     );
     expect(
@@ -164,22 +169,25 @@ describe("file finalization validation", () => {
     "<svg><foreignObject/></svg>",
     '<svg><use href="https://example.com/a"/></svg>',
     '<svg><use href="data:image/png,x"/></svg>',
-    '<!DOCTYPE svg [<!ENTITY x "x">]><svg>&x;</svg>',
+    '<!DOCTYPE svg [<!ENTITY x "x">]><svg/>',
     "<svg><path></svg>",
     '<svg><style>@import "https://example.com/a";</style></svg>',
-    "<svg><style>a{fill:u<![CDATA[rl(https://example.com/a)]]>}</style></svg>",
-    '<svg><set attributeName="href" to="https://example.com"/></svg>',
+    `<svg><style>a{fill:${cssUrlSplitByCdata}}</style></svg>`,
+    bareSetTag,
     '<?xml-stylesheet href="https://example.com/a"?><svg/>',
-  ])("rejects unsafe XML: %s", (source) => {
-    expect(svgValidationService.validate(encoder.encode(source))).toBe(false);
+  ])("rejects unsafe XML: %s", async (source) => {
+    expect(await validateText(source)).toEqual({
+      ok: false,
+      code: FileErrorCode.UnsafeSvg,
+    });
   });
-  it("allows local SVG references and safe styles", () => {
+  it("allows local SVG references and safe styles", async () => {
     expect(
-      svgValidationService.validate(
-        encoder.encode(
+      (
+        await validateText(
           '<svg xmlns="http://www.w3.org/2000/svg"><style>.a{fill:url(#paint)}</style><use href="#shape"/></svg>',
-        ),
-      ),
+        )
+      ).ok,
     ).toBe(true);
   });
   it.each([
@@ -212,9 +220,12 @@ describe("file finalization validation", () => {
     new DataView(offset.buffer).setUint32(offset.length - 6, 0xffffffff, true);
     const zip64 = valid.slice();
     new DataView(zip64.buffer).setUint16(zip64.length - 12, 0xffff, true);
+    const misleadingLocalName = valid.slice();
+    misleadingLocalName[30] = "X".charCodeAt(0);
     for (const data of [
       offset,
       zip64,
+      misleadingLocalName,
       valid.slice(0, -1),
       office(["[Content_Types].xml", "word/document.xml", "word/document.xml"]),
     ]) {

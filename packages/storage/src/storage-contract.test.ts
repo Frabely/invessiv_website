@@ -241,6 +241,37 @@ describe("Vercel private adapter", () => {
       });
     }
   });
+  it("keeps the idle timeout active until a range body finishes", async () => {
+    vi.useFakeTimers();
+    const adapter = createVercelBlobStorage();
+    let requestSignal: AbortSignal | null | undefined;
+    vi.mocked(fetch).mockImplementationOnce(async (_url, options) => {
+      requestSignal = options?.signal;
+      return new Response(
+        new ReadableStream({
+          start(controller) {
+            requestSignal?.addEventListener("abort", () => {
+              controller.error(new Error("stalled read"));
+            });
+          },
+        }),
+        {
+          status: HttpResponseCode.PartialContent,
+          headers: { [HttpHeaderName.ContentRange]: "bytes 0-1/2" },
+        },
+      );
+    });
+
+    const reading = adapter.readRange(key, 0, 1);
+    const rejectedRead = expect(reading).rejects.toMatchObject({
+      code: StorageErrorCode.Unavailable,
+    });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(requestSignal?.aborted).toBe(false);
+    await vi.advanceTimersByTimeAsync(30_000);
+    expect(requestSignal?.aborted).toBe(true);
+    await rejectedRead;
+  });
   it("requires explicit configuration in every environment", () => {
     vi.stubEnv("STORAGE_PROVIDER", "");
     vi.stubEnv("NODE_ENV", "production");
