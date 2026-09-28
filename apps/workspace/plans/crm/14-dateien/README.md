@@ -1,6 +1,6 @@
 # Ordner 14 — Dateien, Links und Portal-Dateien
 
-> **Status:** offen · **Abhängigkeiten:** 07, 12a, 12b, 13, 13a · **Aufwand:** 12–16 Tage gesamt ·
+> **Status:** läuft · **Abhängigkeiten:** 07, 12a, 12b, 13, 13a · **Aufwand:** 12–16 Tage gesamt ·
 > **Reviewziel:** sechs Teil-PRs mit je 25–90 Dateien
 
 > **Neuzuschnitt 28.09.2026 (mit dem Owner abgestimmt):** Ersetzt die Ordner `14-storage-und-upload`,
@@ -22,14 +22,14 @@ mergebar bleibt. Jede Teil-Einheit hat einen eigenen Branch, einen eigenen PR, e
 unten und hält `master` deploybar. Reine Fundamente bleiben unsichtbar; sichtbare Funktionen werden vertikal
 vollständig geliefert.
 
-| PR   | Task | Branch                             | Datei                                                                      | Nach Merge sichtbar          | Dateien | Umsetzung       | Status |
-| ---- | ---- | ---------------------------------- | -------------------------------------------------------------------------- | ---------------------------- | ------: | --------------- | ------ |
-| 14.1 | 51   | `feat/crm-dateien-1-fundament`     | [`51-storage-fundament.md`](./51-storage-fundament.md)                     | nichts                       |   40–60 | GPT · max       | offen  |
-| 14.2 | 52   | `feat/crm-dateien-2-datenmodell`   | [`52-datenmodell-und-interne-api.md`](./52-datenmodell-und-interne-api.md) | nichts (API ohne Aufrufer)   |   60–90 | GPT · max       | offen  |
-| 14.3 | 53   | `feat/crm-dateien-3-interne-ui`    | [`53-drop-zone-und-interne-ui.md`](./53-drop-zone-und-interne-ui.md)       | interner Dateibereich        |   70–90 | Claude · max    | offen  |
-| 14.4 | 54   | `feat/crm-dateien-4-zip`           | [`54-mehrfachauswahl-und-zip.md`](./54-mehrfachauswahl-und-zip.md)         | Mehrfachauswahl + ZIP intern |   25–40 | GPT · mittel    | offen  |
-| 14.5 | 55   | `feat/crm-dateien-5-portal`        | [`55-portal-dateien.md`](./55-portal-dateien.md)                           | Dateien im Kundenportal      |   60–90 | Claude · max    | offen  |
-| 14.6 | 56   | `feat/crm-dateien-6-chat-anhaenge` | [`56-chat-anhaenge.md`](./56-chat-anhaenge.md)                             | Anhänge in beiden Chats      |   35–55 | Claude · mittel | offen  |
+| PR   | Task | Branch                             | Datei                                                                      | Nach Merge sichtbar          | Dateien | Umsetzung       | Status    |
+| ---- | ---- | ---------------------------------- | -------------------------------------------------------------------------- | ---------------------------- | ------: | --------------- | --------- |
+| 14.1 | 51   | `feat/crm-dateien-1-fundament`     | [`51-storage-fundament.md`](./51-storage-fundament.md)                     | nichts                       |   40–60 | GPT · max       | im Review |
+| 14.2 | 52   | `feat/crm-dateien-2-datenmodell`   | [`52-datenmodell-und-interne-api.md`](./52-datenmodell-und-interne-api.md) | nichts (API ohne Aufrufer)   |   60–90 | GPT · max       | offen     |
+| 14.3 | 53   | `feat/crm-dateien-3-interne-ui`    | [`53-drop-zone-und-interne-ui.md`](./53-drop-zone-und-interne-ui.md)       | interner Dateibereich        |   70–90 | Claude · max    | offen     |
+| 14.4 | 54   | `feat/crm-dateien-4-zip`           | [`54-mehrfachauswahl-und-zip.md`](./54-mehrfachauswahl-und-zip.md)         | Mehrfachauswahl + ZIP intern |   25–40 | GPT · mittel    | offen     |
+| 14.5 | 55   | `feat/crm-dateien-5-portal`        | [`55-portal-dateien.md`](./55-portal-dateien.md)                           | Dateien im Kundenportal      |   60–90 | Claude · max    | offen     |
+| 14.6 | 56   | `feat/crm-dateien-6-chat-anhaenge` | [`56-chat-anhaenge.md`](./56-chat-anhaenge.md)                             | Anhänge in beiden Chats      |   35–55 | Claude · mittel | offen     |
 
 **Umsetzung (Modell · Variante):** Empfehlung, welches Modell die Teil-PR umsetzt und mit welcher Denkstufe.
 
@@ -47,8 +47,9 @@ vollständig geliefert.
 Betriebs-Checkliste für Vercel und Environment: [`VERCEL-SETUP.md`](./VERCEL-SETUP.md). Sie muss vor dem Merge von
 14.2 (erste Nutzung in Preview) erledigt sein.
 
-Die Task-Dateien 51–56 entstehen im nächsten Planungsschritt (Implementierungsplan) aus dieser README; bis dahin ist
-diese Datei die verbindliche Spezifikation.
+Task 51 ist in seiner [Umsetzungs- und Übergabedokumentation](./51-storage-fundament.md) beschrieben.
+Die Task-Dateien 52–56 entstehen im nächsten Planungsschritt aus dieser README; bis dahin ist
+diese Datei für diese Einheiten die verbindliche Spezifikation.
 
 ## Ziel und Stand nach Abschluss
 

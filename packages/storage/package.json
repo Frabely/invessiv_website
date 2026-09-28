@@ -1,0 +1,22 @@
+{
+  "name": "@invessiv/storage",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./testing": "./src/testing/in-memory-storage.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@invessiv/common": "workspace:*",
+    "@vercel/blob": "^2.8.0",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "vitest": "latest"
+  }
+}

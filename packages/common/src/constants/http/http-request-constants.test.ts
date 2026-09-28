@@ -26,6 +26,8 @@ describe("HttpHeaderName and MediaType", () => {
     expect(HttpHeaderName).toEqual({
       ContentType: "Content-Type",
       RetryAfter: "Retry-After",
+      Range: "Range",
+      ContentRange: "Content-Range",
     });
     expect(MediaType).toEqual({ Json: "application/json" });
   });
