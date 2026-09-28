@@ -6,4 +6,10 @@ export const AssetKind = {
   Link: "link",
 } as const;
 export type AssetKind = (typeof AssetKind)[keyof typeof AssetKind];
-export const ASSET_KIND_VALUES = Object.values(AssetKind);
+export const ASSET_KIND_VALUES = [
+  AssetKind.Document,
+  AssetKind.Image,
+  AssetKind.Video,
+  AssetKind.Font,
+  AssetKind.Link,
+] as const;

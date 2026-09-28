@@ -21,4 +21,24 @@ export const UploadExtension = {
 } as const;
 export type UploadExtension =
   (typeof UploadExtension)[keyof typeof UploadExtension];
-export const UPLOAD_EXTENSION_VALUES = Object.values(UploadExtension);
+export const UPLOAD_EXTENSION_VALUES = [
+  UploadExtension.Pdf,
+  UploadExtension.Pptx,
+  UploadExtension.Docx,
+  UploadExtension.Xlsx,
+  UploadExtension.Txt,
+  UploadExtension.Csv,
+  UploadExtension.Png,
+  UploadExtension.Jpg,
+  UploadExtension.Jpeg,
+  UploadExtension.Webp,
+  UploadExtension.Heic,
+  UploadExtension.Heif,
+  UploadExtension.Svg,
+  UploadExtension.Mp4,
+  UploadExtension.Mov,
+  UploadExtension.Webm,
+  UploadExtension.Otf,
+  UploadExtension.Ttf,
+  UploadExtension.Woff2,
+] as const;

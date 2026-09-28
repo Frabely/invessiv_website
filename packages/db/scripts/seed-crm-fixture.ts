@@ -19,6 +19,7 @@ import {
   conversations,
   customerContactAssignments,
   customers,
+  files,
   leadCategories,
   lineItemTemplates,
   messages,
@@ -55,6 +56,7 @@ import { BillingInterval } from "@invessiv/common/constants/crm/billing-interval
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { LineItemTemplateStatus } from "@invessiv/common/constants/crm/line-item-template-statuses";
 import { seedPortalDashboard } from "./crm-fixture/seed-portal-dashboard";
+import { seedFiles } from "./crm-fixture/seed-files";
 import { Locale } from "@invessiv/common/contracts/i18n/locale";
 import {
   configureDatabaseUrlFromTarget,
@@ -305,6 +307,7 @@ async function resetFixtureRows(tx: ContactDatabaseTransaction) {
     await tx
       .delete(conversations)
       .where(inArray(conversations.customer_id, customerIds));
+    await tx.delete(files).where(inArray(files.customer_id, customerIds));
     await tx.delete(projects).where(inArray(projects.customer_id, customerIds));
     await tx
       .delete(customerContactAssignments)
@@ -769,6 +772,7 @@ async function run() {
       })),
     });
     const projectId = activeProjectIds.get(nordlichtId) as string;
+    await seedFiles(tx, nordlichtId, projectId, owner.memberId);
     // Snapshots, not references: the workshop price is deliberately below its template price to
     // show that a project keeps what was agreed even after the catalog moves on.
     await tx.insert(projectLineItems).values([

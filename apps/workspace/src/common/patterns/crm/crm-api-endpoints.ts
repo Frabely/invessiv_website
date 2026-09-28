@@ -7,6 +7,7 @@ const LINE_ITEMS_PATH = "line-items";
 const TASKS_PATH = "tasks";
 const TASK_STATUS_PATH = "status";
 const MESSAGE_REDACT_PATH = "redact";
+const FILE_DOWNLOAD_PATH = "download";
 
 export function crmCustomerEndpoint(customerId: string): string {
   return `${WorkspaceApiEndpoint.CrmCustomers}/${encodeURIComponent(customerId)}`;
@@ -74,4 +75,8 @@ export function crmCustomerConversationOwnerEndpoint(
 
 export function crmMessageRedactEndpoint(messageId: string): string {
   return `${WorkspaceApiEndpoint.CrmMessages}/${encodeURIComponent(messageId)}/${MESSAGE_REDACT_PATH}`;
+}
+
+export function crmFileDownloadEndpoint(fileId: string): string {
+  return `${WorkspaceApiEndpoint.CrmFiles}/${encodeURIComponent(fileId)}/${FILE_DOWNLOAD_PATH}`;
 }

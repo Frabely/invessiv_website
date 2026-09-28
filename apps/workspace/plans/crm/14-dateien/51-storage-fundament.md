@@ -1,6 +1,6 @@
 # Task 51 — Storage-Fundament
 
-> **Status:** im Review · **Teil-PR:** 14.1 · **Branch:** `feat/crm-dateien-1-fundament`
+> **Status:** gemerged · **Teil-PR:** 14.1 · **Branch:** `feat/crm-dateien-1-fundament`
 
 ## Gelieferter Scope
 

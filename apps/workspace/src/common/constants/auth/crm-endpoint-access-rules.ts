@@ -6,6 +6,14 @@ import { Permission } from "@invessiv/common/constants/auth/permissions";
  * its query or command; `workspace` deliberately requires a global permission.
  */
 export const CrmEndpointAccessRule = {
+  FilesList: "files_list",
+  FileUpload: "file_upload",
+  FileComplete: "file_complete",
+  FileLink: "file_link",
+  FileUpdate: "file_update",
+  FileDelete: "file_delete",
+  FileDownloadUrl: "file_download_url",
+  FileDownload: "file_download",
   CustomerAccessScopes: "customer_access_scopes",
   PortalInvitationCreate: "portal_invitation_create",
   CustomerCreate: "customer_create",
@@ -36,6 +44,38 @@ export type CrmEndpointAccessRule =
   (typeof CrmEndpointAccessRule)[keyof typeof CrmEndpointAccessRule];
 
 export const CRM_ENDPOINT_ACCESS_RULES = {
+  [CrmEndpointAccessRule.FilesList]: {
+    permission: Permission.FilesRead,
+    scope: "list",
+  },
+  [CrmEndpointAccessRule.FileUpload]: {
+    permission: Permission.FilesWrite,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.FileComplete]: {
+    permission: Permission.FilesWrite,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.FileLink]: {
+    permission: Permission.FilesWrite,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.FileUpdate]: {
+    permission: Permission.FilesWrite,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.FileDelete]: {
+    permission: Permission.FilesDelete,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.FileDownloadUrl]: {
+    permission: Permission.FilesRead,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.FileDownload]: {
+    permission: Permission.FilesRead,
+    scope: "project",
+  },
   [CrmEndpointAccessRule.CustomerAccessScopes]: {
     permission: Permission.MembersManage,
     scope: "workspace",

@@ -662,6 +662,7 @@ describe.skipIf(!RUN_INTEGRATION)(
         .limit(1);
       const customerBOnly: WorkspaceActor = {
         ...scoped,
+        permissions: new Set([Permission.ChatRedact]),
         customerPermissions: new Map([
           [customerB, new Set([Permission.ChatRead, Permission.ChatWrite])],
         ]),

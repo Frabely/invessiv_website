@@ -75,24 +75,24 @@ function encodeMessageCursor(position: CursorPosition): string {
 function olderThan(position: CursorPosition) {
   return or(
     sql`${messages.created_at}
-        <
-        ${position.createdAt}
-        :
-        :
-        timestamptz`,
+      < cast(
+      ${position.createdAt}
+      as
+      timestamptz
+      )`,
     and(
       sql`${messages.created_at}
-            =
-            ${position.createdAt}
-            :
-            :
-            timestamptz`,
+        = cast(
+        ${position.createdAt}
+        as
+        timestamptz
+        )`,
       sql`${messages.id}
-            <
-            ${position.id}
-            :
-            :
-            uuid`,
+        < cast(
+        ${position.id}
+        as
+        uuid
+        )`,
     ),
   );
 }
