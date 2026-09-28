@@ -25,12 +25,12 @@ Projekt und den Environments verbinden).
 
 Durch das Verbinden setzt Vercel automatisch:
 
-| Variable                  | Herkunft                           | Zweck                                                           |
-| ------------------------- | ---------------------------------- | --------------------------------------------------------------- |
-| `BLOB_STORE_ID`           | automatisch beim Verbinden         | Store-Kennung, zusammen mit OIDC                                |
-| `VERCEL_OIDC_TOKEN`       | automatisch (System-Variable)      | Kurzlebige, rotierende Server-Authentifizierung (bevorzugt)     |
-| `BLOB_READ_WRITE_TOKEN`   | automatisch beim Verbinden         | Statischer Fallback, nötig für lokale Entwicklung               |
-| `BLOB_WEBHOOK_PUBLIC_KEY` | in der Store-Verbindung aktivieren | Verifikation von Upload-Callbacks (nur als Absicherung genutzt) |
+| Variable                  | Herkunft                           | Zweck                                                        |
+| ------------------------- | ---------------------------------- | ------------------------------------------------------------ |
+| `BLOB_STORE_ID`           | automatisch beim Verbinden         | Store-Kennung für die OIDC-Authentifizierung                 |
+| `VERCEL_OIDC_TOKEN`       | automatisch (System-Variable)      | Kurzlebige, rotierende Server-Authentifizierung              |
+| `BLOB_READ_WRITE_TOKEN`   | optional, nur wenn ausgewählt      | Langlebiger Fallback; für neue OIDC-Verbindungen nicht nötig |
+| `BLOB_WEBHOOK_PUBLIC_KEY` | automatisch durch Store-Verbindung | Aktuell ungenutzt; es ist kein Upload-Callback konfiguriert  |
 
 Manuell im Projekt setzen (alle drei Environments):
 
@@ -38,17 +38,17 @@ Manuell im Projekt setzen (alle drei Environments):
 | ------------------ | ------------- | ----------------------------------------------------------------------------------------------- |
 | `STORAGE_PROVIDER` | `vercel-blob` | Wählt den Adapter. Ohne Wert startet die App, Dateifunktionen melden einen Konfigurationsfehler |
 
-`BLOB_WEBHOOK_PUBLIC_KEY` aktivieren: Store → **Projects** → Menü (⋯) neben dem Projekt → **Update Project
-Connection** → Webhook-Key einschließen.
-
 Keine dieser Variablen trägt `NEXT_PUBLIC_`; alle sind ausschließlich serverseitig.
 
 ## 3. Lokale Entwicklung
 
-1. `vercel env pull` im Workspace-Projekt ausführen (liest Development → Preview-Store).
-2. In `apps/workspace/.env.local` prüfen, dass `BLOB_READ_WRITE_TOKEN`, `BLOB_STORE_ID` und `STORAGE_PROVIDER`
+1. `vercel env pull` im Workspace-Projekt ausführen (liest Development → Preview-Store und den lokalen
+   `VERCEL_OIDC_TOKEN`).
+2. In `apps/workspace/.env.local` prüfen, dass `BLOB_STORE_ID`, `VERCEL_OIDC_TOKEN` und `STORAGE_PROVIDER`
    gesetzt sind. Fehlen die Blob-Variablen, enthält die Store-Verbindung kein **Development** — im Store unter
-   **Projects** → ⋯ → **Update Project Connection** ergänzen.
+   **Projects** → ⋯ → **Update Project Connection** ergänzen. Falls lokale OIDC-Authentifizierung nicht verfügbar
+   ist, kann `BLOB_READ_WRITE_TOKEN` als lokaler Fallback aus den Store-Einstellungen in `.env.local` gesetzt werden;
+   dafür den langlebigen Token nicht zusätzlich für Vercel-Deployments aktivieren.
 3. Lokale Uploads landen im Preview-Store. Upload-Callbacks von Vercel erreichen `localhost` nicht; das ist
    unkritisch, weil die Finalisierung über den eigenen `complete`-Aufruf läuft.
 4. `.env*.local` bleibt lokal und wird nie als Quelle für committed Werte genutzt.

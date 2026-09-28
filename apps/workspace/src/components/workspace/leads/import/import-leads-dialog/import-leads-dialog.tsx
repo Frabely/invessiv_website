@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  type ChangeEvent,
-  type DragEvent,
-  useCallback,
-  useId,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
@@ -27,7 +20,7 @@ import {
   getLeadImportRowIssueMessage,
 } from "@/client/leads/import/import-leads-error-message";
 import { importLeadsService } from "@/client/leads/import/import-leads-service";
-import { ButtonControl, Dialog } from "@invessiv/ui";
+import { ButtonControl, Dialog, FileDropZone } from "@invessiv/ui";
 import { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";
 import { ColumnPillGroup } from "../column-pill-group/column-pill-group";
 import { DialogFooter } from "../dialog-footer/dialog-footer";
@@ -88,26 +81,17 @@ function getSeverityClass(severity: LeadImportRowIssueSeverity): string {
 
 export function ImportLeadsDialog({ content }: Props) {
   const router = useRouter();
-  const fileInputId = useId();
   const [open, setOpen] = useState(false);
   const [phase, setPhase] = useState<LeadImportDialogPhase>({
     tag: LeadImportDialogPhaseTag.Picking,
   });
   const [file, setFile] = useState<File | null>(null);
   const [fileSizeError, setFileSizeError] = useState<string | null>(null);
-  const [isDropActive, setIsDropActive] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const dragCounterRef = useRef(0);
 
   function resetState() {
     setPhase({ tag: LeadImportDialogPhaseTag.Picking });
     setFile(null);
     setFileSizeError(null);
-    setIsDropActive(false);
-    dragCounterRef.current = 0;
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
   }
 
   const closeDialog = useCallback(() => {
@@ -127,16 +111,11 @@ export function ImportLeadsDialog({ content }: Props) {
     if (selected.size > MAX_FILE_BYTES) {
       setFileSizeError(content.errors.client_too_large);
       setFile(null);
-      setIsDropActive(false);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
       return;
     }
 
     setFileSizeError(null);
     setFile(selected);
-    setIsDropActive(false);
 
     try {
       const preview = await buildCsvPreview(selected);
@@ -147,37 +126,6 @@ export function ImportLeadsDialog({ content }: Props) {
         message: content.errors.generic,
       });
     }
-  }
-
-  async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-    await handleSelectedFile(event.target.files?.[0]);
-  }
-
-  function handleDropZoneDragEnter(event: DragEvent<HTMLDivElement>) {
-    event.preventDefault();
-    dragCounterRef.current += 1;
-    setIsDropActive(true);
-  }
-
-  function handleDropZoneDragOver(event: DragEvent<HTMLDivElement>) {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = "copy";
-    setIsDropActive(true);
-  }
-
-  function handleDropZoneDragLeave(event: DragEvent<HTMLDivElement>) {
-    event.preventDefault();
-    dragCounterRef.current = Math.max(0, dragCounterRef.current - 1);
-    if (dragCounterRef.current === 0) {
-      setIsDropActive(false);
-    }
-  }
-
-  async function handleDropZoneDrop(event: DragEvent<HTMLDivElement>) {
-    event.preventDefault();
-    dragCounterRef.current = 0;
-    setIsDropActive(false);
-    await handleSelectedFile(event.dataTransfer.files?.[0]);
   }
 
   async function handleSubmit() {
@@ -232,46 +180,14 @@ export function ImportLeadsDialog({ content }: Props) {
           title={content.dialog.title}
         >
           <div className={styles.body}>
-            <input
-              accept=".csv,text/csv,application/vnd.ms-excel"
-              className={styles.fileInput}
-              id={fileInputId}
-              onChange={handleFileChange}
-              ref={fileInputRef}
-              type="file"
-            />
-
             {phase.tag === LeadImportDialogPhaseTag.Picking && (
               <div className={styles.pickingPhase}>
-                <div
-                  className={`${styles.dropzone} ${isDropActive ? styles.dropzoneActive : ""}`}
-                  aria-describedby={`${content.dialog.aria.dropzoneLabelId} ${content.dialog.aria.dropzoneHintId}`}
-                  aria-labelledby={content.dialog.aria.dropzoneLabelId}
-                  role="group"
-                  onDragEnter={handleDropZoneDragEnter}
-                  onDragLeave={handleDropZoneDragLeave}
-                  onDragOver={handleDropZoneDragOver}
-                  onDrop={handleDropZoneDrop}
-                >
-                  <label
-                    className={styles.dropzoneLabelWrapper}
-                    id={content.dialog.aria.dropzoneLabelId}
-                    htmlFor={fileInputId}
-                  >
-                    <span aria-hidden="true" className={styles.dropzoneIcon}>
-                      <FontAwesomeIcon icon={faArrowUpFromBracket} />
-                    </span>
-                    <span className={styles.dropzoneLabel}>
-                      {content.dialog.dropzoneLabel}
-                    </span>
-                    <span
-                      className={styles.dropzoneHint}
-                      id={content.dialog.aria.dropzoneHintId}
-                    >
-                      {content.dialog.dropzoneHint}
-                    </span>
-                  </label>
-                </div>
+                <FileDropZone
+                  accept=".csv,text/csv,application/vnd.ms-excel"
+                  hint={content.dialog.dropzoneHint}
+                  label={content.dialog.dropzoneLabel}
+                  onFilesSelected={(files) => handleSelectedFile(files[0])}
+                />
 
                 {fileSizeError && (
                   <p className={styles.inlineError} role="alert">

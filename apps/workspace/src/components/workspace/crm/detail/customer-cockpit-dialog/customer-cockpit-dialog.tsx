@@ -15,6 +15,7 @@ import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspa
 import type {
   CrmAccessDictionary,
   CrmCockpitDictionary,
+  CrmFilesDictionary,
   CrmMessagesDictionary,
   CrmPortalAccessDictionary,
   CrmProjectLineItemsDictionary,
@@ -23,6 +24,7 @@ import type {
 import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import type { ProjectLineItemsViewModel } from "@/common/contracts/crm/project-line-items-view-model";
 import type { TasksViewModel } from "@/common/contracts/crm/tasks-view-model";
+import type { FilesViewModel } from "@/common/contracts/crm/files/files-view-model";
 import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
 import type { Locale } from "@/config/i18n";
 
@@ -40,6 +42,8 @@ type CustomerCockpitDialogProps = {
   messagesContent?: CrmMessagesDictionary;
   viewerMemberId: string;
   customer: CustomerCockpitDto;
+  files?: FilesViewModel;
+  filesContent?: CrmFilesDictionary;
   isWorkspaceOwner?: boolean;
   portalHref?: string;
   customerOwnerHasAccess?: boolean;
@@ -72,6 +76,8 @@ export function CustomerCockpitDialog({
   messagesContent,
   viewerMemberId,
   customer,
+  files,
+  filesContent,
   isWorkspaceOwner,
   portalHref,
   customerOwnerHasAccess,
@@ -117,6 +123,8 @@ export function CustomerCockpitDialog({
         messagesContent={messagesContent}
         viewerMemberId={viewerMemberId}
         customer={customer}
+        files={files}
+        filesContent={filesContent}
         isWorkspaceOwner={isWorkspaceOwner}
         portalHref={portalHref}
         customerOwnerHasAccess={customerOwnerHasAccess}

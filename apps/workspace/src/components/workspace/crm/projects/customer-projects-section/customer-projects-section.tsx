@@ -25,6 +25,7 @@ import type { TasksViewModel } from "@/common/contracts/crm/tasks-view-model";
 import type { Locale } from "@/config/i18n";
 import type {
   CrmCockpitDictionary,
+  CrmFilesDictionary,
   CrmProjectLineItemsDictionary,
   CrmTasksDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
@@ -34,6 +35,8 @@ import { ProjectSwitcherTabs } from "@/components/workspace/crm/projects/project
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ProjectLineItemsSection } from "@/components/workspace/crm/projects/project-line-items-section/project-line-items-section";
 import { ProjectTasksSection } from "@/components/workspace/crm/tasks/project-tasks-section/project-tasks-section";
+import { CustomerFilesSection } from "@/components/workspace/crm/files/customer-files-section/customer-files-section";
+import type { FilesViewModel } from "@/common/contracts/crm/files/files-view-model";
 import styles from "./customer-projects-section.module.css";
 
 const PROJECT_FUTURE_AREAS = ["feedback", "onboarding"] as const;
@@ -53,6 +56,11 @@ type CustomerProjectsSectionProps = {
   /** Absent when the actor may not read tasks anywhere; the area is then not shown. */
   tasks?: TasksViewModel;
   tasksContent?: CrmTasksDictionary;
+  /** Absent without `files.read` anywhere; a project outside `read.projectIds` shows no files. */
+  files?: FilesViewModel;
+  filesContent?: CrmFilesDictionary;
+  filesRevision?: number;
+  onFilesChangedAction?: () => void;
 };
 
 /** Project context rendered inside the existing customer cockpit, not as a second detail view. */
@@ -69,6 +77,10 @@ export function CustomerProjectsSection({
   projectLineItemsContent,
   tasks,
   tasksContent,
+  files,
+  filesContent,
+  filesRevision = 0,
+  onFilesChangedAction,
 }: CustomerProjectsSectionProps) {
   const router = useRouter();
   const [editorOpen, setEditorOpen] = useState(false);
@@ -257,6 +269,20 @@ export function CustomerProjectsSection({
                   monthlyCents: 0,
                 }
               }
+            />
+          ) : null}
+          {files &&
+          filesContent &&
+          files.read.projectIds.includes(activeProject.id) ? (
+            <CustomerFilesSection
+              content={filesContent}
+              customerId={customerId}
+              key={`files-${activeProject.id}`}
+              locale={locale}
+              onChangedAction={onFilesChangedAction ?? (() => undefined)}
+              projectId={activeProject.id}
+              revision={filesRevision}
+              viewModel={files}
             />
           ) : null}
           {PROJECT_FUTURE_AREAS.map((area) => {

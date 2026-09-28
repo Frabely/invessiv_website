@@ -23,6 +23,7 @@ import { formatCustomerNumber } from "@invessiv/common/patterns/crm/format-custo
 import type {
   CrmAccessDictionary,
   CrmCockpitDictionary,
+  CrmFilesDictionary,
   CrmMessagesDictionary,
   CrmPortalAccessDictionary,
   CrmProjectLineItemsDictionary,
@@ -31,6 +32,8 @@ import type {
 import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import type { ProjectLineItemsViewModel } from "@/common/contracts/crm/project-line-items-view-model";
 import type { TasksViewModel } from "@/common/contracts/crm/tasks-view-model";
+import type { FilesViewModel } from "@/common/contracts/crm/files/files-view-model";
+import { CustomerFilesSection } from "@/components/workspace/crm/files/customer-files-section/customer-files-section";
 import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
 import type { Locale } from "@/config/i18n";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
@@ -39,11 +42,6 @@ import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
 import styles from "./customer-cockpit-view.module.css";
 
 type FutureCustomerSection = keyof CrmCockpitDictionary["futureSections"];
-
-const COLLABORATION_MOCKS: readonly FutureCustomerSection[] = [
-  "files",
-  "hours",
-];
 
 type CustomerCockpitViewProps = {
   accessContent?: CrmAccessDictionary;
@@ -60,6 +58,9 @@ type CustomerCockpitViewProps = {
   messagesContent?: CrmMessagesDictionary;
   viewerMemberId: string;
   customer: CustomerCockpitDto;
+  /** Absent without `files.read` in any scope of the customer; the area then does not exist. */
+  files?: FilesViewModel;
+  filesContent?: CrmFilesDictionary;
   isWorkspaceOwner?: boolean;
   portalHref?: string;
   customerOwnerHasAccess?: boolean;
@@ -94,6 +95,8 @@ export function CustomerCockpitView({
   messagesContent,
   viewerMemberId,
   customer,
+  files,
+  filesContent,
   isWorkspaceOwner = false,
   portalHref,
   customerOwnerHasAccess,
@@ -113,6 +116,8 @@ export function CustomerCockpitView({
   portalAccessContent,
 }: CustomerCockpitViewProps) {
   const [chatOpen, setChatOpen] = useState(false);
+  const [filesRevision, setFilesRevision] = useState(0);
+  const bumpFilesRevision = () => setFilesRevision((current) => current + 1);
   const [requestedAccessMemberId, setRequestedAccessMemberId] = useState<
     string | null
   >(null);
@@ -282,6 +287,10 @@ export function CustomerCockpitView({
                 content={content}
                 customerId={customer.id}
                 locale={locale}
+                files={files}
+                filesContent={filesContent}
+                filesRevision={filesRevision}
+                onFilesChangedAction={bumpFilesRevision}
                 onGrantAccessAction={setRequestedAccessMemberId}
                 ownerHasAccess={projectOwnerHasAccess}
                 projectLineItems={projectLineItems}
@@ -301,7 +310,17 @@ export function CustomerCockpitView({
               <p className={styles.groupLabel} id={collaborationLabelId}>
                 {content.groups.collaboration}
               </p>
-              {COLLABORATION_MOCKS.map(renderMock)}
+              {files && filesContent ? (
+                <CustomerFilesSection
+                  content={filesContent}
+                  customerId={customer.id}
+                  locale={locale}
+                  onChangedAction={bumpFilesRevision}
+                  revision={filesRevision}
+                  viewModel={files}
+                />
+              ) : null}
+              {renderMock("hours")}
             </div>
             <div
               aria-labelledby={accessSecurityLabelId}

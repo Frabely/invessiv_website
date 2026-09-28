@@ -1,0 +1,15 @@
+.form {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.error {
+  margin: 0;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--color-danger) 40%, transparent);
+  border-radius: 0.6rem;
+  background: color-mix(in srgb, var(--color-danger) 8%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.5;
+}

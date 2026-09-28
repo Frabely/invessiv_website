@@ -8,6 +8,7 @@ import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspa
 import {
   getCrmAccessDictionary,
   getCrmCockpitDictionary,
+  getCrmFilesDictionary,
   getCrmMessagesDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
 import {
@@ -24,7 +25,14 @@ import {
 import { CustomerCockpitView } from "./customer-cockpit-view";
 
 vi.mock("next/navigation", () => ({
+  usePathname: () => "/en/crm",
   useRouter: () => ({ refresh: vi.fn() }),
+  useSearchParams: () => new URLSearchParams(),
+}));
+
+const filesApiMocks = vi.hoisted(() => ({ listFiles: vi.fn() }));
+vi.mock("@/client/crm/files-api-service", () => ({
+  filesApiService: filesApiMocks,
 }));
 
 const messagesApiMocks = vi.hoisted(() => ({
@@ -44,6 +52,47 @@ describe("CustomerCockpitView", () => {
     vi.clearAllMocks();
     messagesApiMocks.getConversation.mockReturnValue(new Promise(() => {}));
     messagesApiMocks.markRead.mockReturnValue(new Promise(() => {}));
+  });
+
+  it("replaces the files placeholder with the real section only when files are readable", async () => {
+    filesApiMocks.listFiles.mockResolvedValue({
+      ok: true,
+      value: { files: [], total: 0, page: 1, pageSize: 25 },
+    });
+    const content = getCrmCockpitDictionary("en");
+    const filesContent = getCrmFilesDictionary("en");
+    const none = { customerWide: false, projectIds: [] };
+    const { rerender } = render(
+      <CustomerCockpitView
+        viewerMemberId="member-1"
+        content={content}
+        customer={customerDetailFixture()}
+        locale="en"
+      />,
+    );
+    expect(
+      screen.queryByRole("heading", { name: filesContent.section.title }),
+    ).toBeNull();
+    rerender(
+      <CustomerCockpitView
+        viewerMemberId="member-1"
+        content={content}
+        customer={customerDetailFixture()}
+        files={{
+          projects: [],
+          read: { customerWide: true, projectIds: [] },
+          write: none,
+          remove: none,
+          members: [],
+        }}
+        filesContent={filesContent}
+        locale="en"
+      />,
+    );
+    expect(
+      screen.getByRole("heading", { name: filesContent.section.title }),
+    ).toBeVisible();
+    expect(await screen.findByText(filesContent.empty.title)).toBeVisible();
   });
 
   it("renders the empty projects state without a dialog shell", () => {

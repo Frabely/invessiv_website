@@ -1,0 +1,104 @@
+.lightbox.lightbox {
+  width: min(72rem, 100%);
+}
+
+.body.body {
+  padding: 0;
+}
+
+.stage {
+  display: grid;
+  place-items: center;
+  min-height: min(60dvh, 40rem);
+  background: color-mix(in srgb, var(--color-bg) 85%, transparent);
+}
+
+.image,
+.video {
+  display: block;
+  max-width: 100%;
+  max-height: 70dvh;
+  object-fit: contain;
+}
+
+/* A checkerboard shows transparent logos and SVGs against any theme. */
+.stage[data-kind="image"] {
+  background-color: var(--color-surface-1);
+  background-image:
+    linear-gradient(45deg, var(--color-surface-2) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--color-surface-2) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--color-surface-2) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--color-surface-2) 75%);
+  background-position:
+    0 0,
+    0 0.6rem,
+    0.6rem -0.6rem,
+    -0.6rem 0;
+  background-size: 1.2rem 1.2rem;
+}
+
+.frame {
+  width: 100%;
+  height: 70dvh;
+  border: 0;
+  background: var(--color-surface-1);
+}
+
+.text {
+  align-self: stretch;
+  justify-self: stretch;
+  max-height: 70dvh;
+  margin: 0;
+  padding: 1rem 1.25rem;
+  overflow: auto;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.state {
+  margin: 0;
+  padding: 2rem 1.25rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+  text-align: center;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  width: 100%;
+}
+
+.paging {
+  display: flex;
+  gap: 0.3rem;
+}
+
+@media (max-width: 640px) {
+  .lightbox.lightbox {
+    width: 100%;
+    height: 100%;
+  }
+
+  .stage {
+    min-height: 0;
+    height: 100%;
+  }
+
+  .image,
+  .video,
+  .frame,
+  .text {
+    max-height: none;
+  }
+
+  .frame {
+    height: 100%;
+  }
+}

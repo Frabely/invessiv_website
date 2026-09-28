@@ -12,7 +12,7 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 - Gruppierte Subfolder nach Verantwortung: `shell/`, `list/`, `form/`, ab Task 05 `detail/`, ab Task 06 `contacts/`,
   ab Task 40 `services/` (Leistungstemplatekatalog), ab Task 41 `projects/` (Projektleistungen im Projekt-Canvas).
   Ab Task 50 zusätzlich `shared/section-collapse-toggle/`, `shared/mock-section-card/`,
-  `projects/project-switcher-tabs/`. Projektkopf (Status, Titel, Owner) liegt in
+  `projects/project-switcher-tabs/`, ab Task 53 `files/` (Dateien & Links). Projektkopf (Status, Titel, Owner) liegt in
   `projects/project-overview/`; Prozessleiste und Chat-Dock kommen aus `@invessiv/ui`.
 - Pro Komponente ein Ordner `<gruppe>/<name>/<name>.tsx` mit co-located `<name>.module.css` und Test.
 - App-neutrale Grundbausteine (Dialog, Formularfeld, Button, Badge, Empty-State) kommen aus `@invessiv/ui`, nicht aus
@@ -101,3 +101,21 @@ Plan: `apps/workspace/plans/crm/13a-kundenchat/25-chat-im-crm.md`.
 - Ohne `chat.write` fehlt das Eingabefeld, ohne Recht zum Neuzuweisen die Verantwortlichen-Auswahl — nie deaktiviert.
 - Nachrichtentext wird nur als Text gerendert; Links erkennt `splitMessageLinks` (nur http/https).
 - Systemnachrichten werden über `describeSystemMessage` aus Dictionary-Key + Parametern formuliert.
+
+## Dateien & Links (ab Task 53)
+
+Plan: `apps/workspace/plans/crm/14-dateien/53-drop-zone-und-interne-ui.md`.
+
+- Komponenten liegen unter `files/`. Orchestrator ist `files/customer-files-section`; im Cockpit kundenweit, im
+  Projekt-Canvas mit `projectId` fest auf das Projekt (ohne Projektfilter und Projektspalte).
+- Der Bereich existiert nur, wenn die Page ein `FilesViewModel` übergibt (`buildFilesViewModel`, `canOn` je Scope).
+  Schreib- und Löschaktionen erscheinen nur für Scopes in `write` bzw. `remove`; der Client schlägt über
+  `filesScopeRights` nach und wertet nie selbst Rollen aus. Projektrechte öffnen nie kundenweite Einträge.
+- Die Liste lädt über `useCustomerFiles` aus der API, nicht über die Page. Nach jeder Änderung ruft der Abschnitt
+  `onChangedAction` auf; das Cockpit erhöht `filesRevision`, damit alle Dateiabschnitte neu laden.
+- Filter Projekt/Art/Herkunft leben in der URL (`CustomerFilesQueryParam`, `history.replaceState`); die Freitextsuche
+  bleibt außerhalb der URL.
+- Uploads laufen ausschließlich über `useUploadQueue` (`src/hooks/shared/`) mit einem `UploadQueueTransport`; Datei-
+  auswahl ausschließlich über `FileDropZone` aus `@invessiv/ui`. Signierte URLs landen nie in State, der persistiert,
+  geloggt oder in die URL geschrieben wird.
+- Vorschau nur für `filePresentation.previewKindOf(...) !== null`; SVG ausschließlich als `<img>`, Text nur als Text.

@@ -1,0 +1,177 @@
+{
+  "section": {
+    "title": "Files & links",
+    "count": "{count} entries",
+    "countOne": "1 entry",
+    "collapseLabel": "Collapse files & links",
+    "expandLabel": "Expand files & links",
+    "listLabel": "Files and links",
+    "loading": "Loading files …",
+    "loadError": "The files could not be loaded.",
+    "retry": "Load again",
+    "loadMore": "Load more",
+    "shown": "Showing {shown} of {total}",
+    "dropOverlay": "Drop to upload"
+  },
+  "actions": {
+    "upload": "Upload file",
+    "addLink": "Add link"
+  },
+  "toolbar": {
+    "label": "Filter files",
+    "search": "Search files",
+    "searchPlaceholder": "Name or note",
+    "project": "Project",
+    "projectAll": "All projects",
+    "customerWide": "Customer-wide",
+    "kind": "Type",
+    "kindAll": "All types",
+    "origin": "Origin",
+    "originAll": "All origins",
+    "reset": "Reset filters"
+  },
+  "kinds": {
+    "document": "Document",
+    "image": "Image",
+    "video": "Video",
+    "font": "Font",
+    "link": "Link"
+  },
+  "origins": {
+    "customer": "From customer",
+    "shared": "Shared",
+    "internal": "Internal"
+  },
+  "visibility": {
+    "visible": "Visible to customer",
+    "hidden": "Internal only"
+  },
+  "row": {
+    "byCustomer": "Customer",
+    "byTeam": "Team",
+    "customerWide": "Customer-wide",
+    "opensInNewTab": "opens in a new tab",
+    "actionsLabel": "Actions for {name}",
+    "preview": "Preview",
+    "download": "Download",
+    "open": "Open",
+    "edit": "Edit",
+    "delete": "Delete",
+    "previewNamed": "Preview {name}",
+    "downloadNamed": "Download {name}",
+    "openNamed": "Open {name}",
+    "editNamed": "Edit {name}",
+    "deleteNamed": "Delete {name}"
+  },
+  "empty": {
+    "title": "No files yet",
+    "description": "Upload documents, images, videos or fonts – or add a link. New files stay internal until you share them.",
+    "readOnlyDescription": "Once the team or the customer shares files, you will find them here.",
+    "filteredTitle": "No matches",
+    "filteredDescription": "Adjust the search or filters – or reset the filters."
+  },
+  "upload": {
+    "title": "Upload files",
+    "description": "Project, visibility and note apply to every file in this upload.",
+    "dropLabel": "Drag files here or browse",
+    "dropHint": "PDF, Office, text, images, videos up to 200 MB and fonts · up to 20 files, 1 GB in total",
+    "largerHint": "Larger files? Add a link instead.",
+    "project": "Project",
+    "customerWideOption": "Customer-wide (no project)",
+    "visible": "Visible to the customer",
+    "visibleHint": "Leave off to keep the files internal. You can change this later.",
+    "note": "Note",
+    "notePlaceholder": "Optional, e.g. “Final version”",
+    "cancel": "Cancel",
+    "close": "Close",
+    "start": "Upload {count} files",
+    "startOne": "Upload 1 file",
+    "more": "Upload more files",
+    "busyHint": "Wait until every upload has finished, or cancel them.",
+    "queueLabel": "Selected files",
+    "summary": "{done} of {total} files uploaded",
+    "remove": "Remove {name}",
+    "cancelItem": "Cancel {name}",
+    "retryItem": "Retry {name}",
+    "progress": "Progress {name}",
+    "status": {
+      "staged": "Ready",
+      "rejected": "Not possible",
+      "queued": "Waiting",
+      "uploading": "Uploading",
+      "finalizing": "Checking",
+      "done": "Uploaded",
+      "failed": "Failed",
+      "cancelled": "Cancelled"
+    }
+  },
+  "link": {
+    "title": "Add link",
+    "description": "For files that are too large or already stored elsewhere. We never open the link ourselves.",
+    "name": "Label",
+    "namePlaceholder": "e.g. Brand film 4K",
+    "url": "Link",
+    "urlPlaceholder": "https://",
+    "urlHint": "WeTransfer links expire after 7 days. Upload the file instead or use a permanent link.",
+    "nameRequired": "Enter a label.",
+    "urlInvalid": "Enter a complete link starting with https://.",
+    "submit": "Save link",
+    "submitting": "Saving …"
+  },
+  "edit": {
+    "titleFile": "Edit file",
+    "titleLink": "Edit link",
+    "customerLocked": "Added by the customer – stays visible to them.",
+    "submit": "Save changes",
+    "submitting": "Saving …",
+    "conflict": "Someone just changed this entry. We loaded the current state and kept your input. Save again to apply it."
+  },
+  "delete": {
+    "titleFile": "Delete file?",
+    "titleLink": "Delete link?",
+    "description": "“{name}” will be deleted permanently. This cannot be undone.",
+    "visibleWarning": "The customer sees this entry in the portal – afterwards they no longer will.",
+    "confirm": "Delete permanently",
+    "cancel": "Keep",
+    "conflict": "The entry was just changed. Check the current state and delete again."
+  },
+  "lightbox": {
+    "close": "Close preview",
+    "previous": "Previous file",
+    "next": "Next file",
+    "position": "{index} of {total}",
+    "loading": "Loading preview …",
+    "error": "The preview could not be loaded. Download the file instead.",
+    "download": "Download"
+  },
+  "announcements": {
+    "uploaded": "{name} uploaded",
+    "linkAdded": "Link “{name}” added",
+    "saved": "Changes to “{name}” saved",
+    "deleted": "“{name}” deleted"
+  },
+  "errors": {
+    "FILE_NOT_FOUND": "This entry or its target no longer exists. Reload the list.",
+    "FILE_VALIDATION_ERROR": "The details are incomplete or invalid.",
+    "FILE_PENDING_LIMIT": "Too many open uploads. Wait a moment and try again.",
+    "FILE_CUSTOMER_VISIBILITY": "Customer uploads stay visible to the customer.",
+    "FILE_UPLOAD_OWNER": "Only whoever started the upload can finish it.",
+    "FILE_NOT_UPLOAD": "This entry is a link, not a file.",
+    "FILE_STORAGE_UNAVAILABLE": "File storage is unavailable right now. Try again in a moment.",
+    "FILE_INTERNAL": "That did not work. Try again.",
+    "UNSUPPORTED_EXTENSION": "This format is not supported.",
+    "INVALID_SIZE": "The file is empty.",
+    "FILE_TOO_LARGE": "The file is too large for this format. Use a link instead.",
+    "TOO_MANY_FILES": "At most 20 files per upload.",
+    "BATCH_TOO_LARGE": "At most 1 GB per upload in total.",
+    "MISSING_OBJECT": "The file did not arrive completely. Try again.",
+    "SIZE_MISMATCH": "The file did not arrive completely. Try again.",
+    "CONTENT_TYPE_MISMATCH": "The file type does not match its extension.",
+    "INVALID_SIGNATURE": "The content does not match the file extension.",
+    "UNSAFE_SVG": "The SVG contains scripts or external references and was refused.",
+    "INVALID_OFFICE": "The Office document is damaged or contains macros.",
+    "INVALID_LINK": "Enter a complete link starting with https://.",
+    "UPLOAD_NETWORK": "The connection dropped. Try again.",
+    "UPLOAD_REFUSED": "File storage refused the upload. Try again."
+  }
+}

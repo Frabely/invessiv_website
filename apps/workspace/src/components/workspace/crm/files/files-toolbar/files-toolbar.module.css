@@ -1,0 +1,65 @@
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.6rem;
+}
+
+.search {
+  flex: 1 1 100%;
+  min-width: 0;
+}
+
+.filter > div {
+  width: 100%;
+}
+
+.reset:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.filter {
+  flex: 1 1 8.5rem;
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.filterLabel {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 600;
+}
+
+.toolbar .reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.5rem;
+  padding: 0 0.6rem;
+  border: 1px solid transparent;
+  border-radius: 0.6rem;
+  color: var(--color-text-muted);
+  background: transparent;
+  border-color: transparent;
+  transform: none;
+  box-shadow: none;
+  font: inherit;
+  font-size: var(--font-size-ui-xs);
+  font-weight: 600;
+}
+
+.toolbar .reset:hover {
+  background: transparent;
+  border-color: transparent;
+  color: var(--color-text);
+  transform: none;
+  box-shadow: none;
+}
+
+@container files-list (min-width: 40rem) {
+  .search {
+    flex: 1 1 14rem;
+  }
+}
