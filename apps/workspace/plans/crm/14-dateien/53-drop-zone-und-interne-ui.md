@@ -1,6 +1,6 @@
 # Task 53 — Drop-Zone und interne Datei-UI
 
-> **Status:** umgesetzt, Review offen · **Teil-PR:** 14.3 · **Branch:** `feat/crm-dateien-3-interne-ui`
+> **Status:** gemerged · **Teil-PR:** 14.3 · **Branch:** `feat/crm-dateien-3-interne-ui`
 
 ## Gelieferter Scope
 

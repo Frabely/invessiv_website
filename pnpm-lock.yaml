@@ -185,6 +185,9 @@ importers:
       drizzle-orm:
         specifier: ^0.45.2
         version: 0.45.2(@neondatabase/serverless@1.0.2)(@types/pg@8.20.0)
+      fflate:
+        specifier: ^0.8.3
+        version: 0.8.3
       next:
         specifier: 16.1.6
         version: 16.1.6(@babel/core@7.29.0)(@playwright/test@1.63.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)

@@ -67,6 +67,15 @@
   font-size: var(--font-size-ui-sm);
 }
 
+.archiveBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.7rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .dropOverlay {
     backdrop-filter: none;

@@ -17,6 +17,18 @@
     "upload": "Datei hochladen",
     "addLink": "Link hinzufügen"
   },
+  "archive": {
+    "groupLabel": "Dateien für ZIP auswählen",
+    "selectNamed": "{name} für ZIP auswählen",
+    "selectShown": "Angezeigte auswählen",
+    "selected": "{count} ausgewählt",
+    "clear": "Auswahl aufheben",
+    "download": "Als ZIP herunterladen",
+    "preparing": "ZIP wird vorbereitet …",
+    "filename": "dateien.zip",
+    "videoHint": "Videos einzeln herunterladen.",
+    "limitReached": "Höchstens 100 Einträge pro ZIP."
+  },
   "toolbar": {
     "label": "Dateien filtern",
     "search": "Dateien durchsuchen",
@@ -153,6 +165,8 @@
   "errors": {
     "FILE_NOT_FOUND": "Den Eintrag oder das Ziel gibt es nicht mehr. Lade die Liste neu.",
     "FILE_VALIDATION_ERROR": "Die Angaben sind unvollständig oder ungültig.",
+    "FILE_ARCHIVE_LIMIT": "Wähle höchstens 100 Einträge mit zusammen maximal 300 MB aus.",
+    "FILE_ARCHIVE_VIDEO": "Videos kannst du nur einzeln herunterladen.",
     "FILE_PENDING_LIMIT": "Zu viele offene Uploads. Warte einen Moment und versuch es erneut.",
     "FILE_CUSTOMER_VISIBILITY": "Uploads des Kunden bleiben für ihn sichtbar.",
     "FILE_UPLOAD_OWNER": "Nur wer den Upload gestartet hat, kann ihn abschließen.",

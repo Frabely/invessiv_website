@@ -15,7 +15,7 @@ import { UploadSide } from "@invessiv/common/constants/files/upload-side";
 import type { FileDto } from "@invessiv/common/contracts/files/file.dto";
 import { filePresentation } from "@invessiv/common/patterns/files/file-presentation";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { ButtonControl } from "@invessiv/ui";
+import { ButtonControl, CheckboxControl } from "@invessiv/ui";
 import type { Locale } from "@/config/i18n";
 import type { CrmFilesDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { FileKindIcon } from "../file-kind-icon/file-kind-icon";
@@ -34,6 +34,8 @@ type FileRowProps = {
   onEditAction?: (file: FileDto) => void;
   /** Undefined when the browser cannot show this format. */
   onPreviewAction?: (file: FileDto) => void;
+  selected?: boolean;
+  onSelectAction?: (file: FileDto) => void;
 };
 
 const dateFormatters = new Map<Locale, Intl.DateTimeFormat>();
@@ -65,6 +67,8 @@ export function FileRow({
   onDownloadAction,
   onEditAction,
   onPreviewAction,
+  selected,
+  onSelectAction,
 }: FileRowProps) {
   const name = { name: file.displayName };
   const isLink = file.source === FileSource.Link;
@@ -76,7 +80,20 @@ export function FileRow({
       : content.row.byTeam);
 
   return (
-    <li className={styles.row} data-origin={file.uploadedBySide}>
+    <li
+      className={styles.row}
+      data-origin={file.uploadedBySide}
+      data-selected={selected ? "true" : "false"}
+    >
+      {onSelectAction ? (
+        <label className={styles.select}>
+          <CheckboxControl
+            aria-label={formatMessage(content.archive.selectNamed, name)}
+            checked={selected ?? false}
+            onChange={() => onSelectAction(file)}
+          />
+        </label>
+      ) : null}
       <FileKindIcon assetKind={file.assetKind} extension={file.extension} />
       <div className={styles.identity}>
         {isLink && file.url ? (

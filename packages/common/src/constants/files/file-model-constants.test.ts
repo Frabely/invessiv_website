@@ -14,6 +14,8 @@ describe("file model constants", () => {
     expect(Object.values(FileApiErrorCode)).toEqual([
       "FILE_NOT_FOUND",
       "FILE_VALIDATION_ERROR",
+      "FILE_ARCHIVE_LIMIT",
+      "FILE_ARCHIVE_VIDEO",
       "FILE_PENDING_LIMIT",
       "FILE_CUSTOMER_VISIBILITY",
       "FILE_UPLOAD_OWNER",

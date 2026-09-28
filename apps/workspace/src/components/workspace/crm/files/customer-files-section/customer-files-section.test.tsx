@@ -139,6 +139,23 @@ afterEach(() => {
 });
 
 describe("CustomerFilesSection", () => {
+  it("stores a selected file in customer-scoped URL state", async () => {
+    renderSection();
+    const checkbox = await screen.findByRole("checkbox", {
+      name: "Vertrag.pdf für ZIP auswählen",
+    });
+    fireEvent.click(checkbox);
+    expect(checkbox).toBeChecked();
+    expect(screen.getByText("1 ausgewählt")).toBeVisible();
+    expect(window.location.search).toContain(`filesSelected=${CUSTOMER_ID}%3A`);
+    expect(window.location.search).toContain(
+      "44444444-4444-4444-8444-444444444444",
+    );
+    fireEvent.click(checkbox);
+    expect(checkbox).not.toBeChecked();
+    expect(window.location.search).not.toContain("filesSelected");
+  });
+
   it("lists files and links with visibility in text, uploader and project", async () => {
     renderSection();
     const list = await screen.findByRole("list", {

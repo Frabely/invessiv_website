@@ -6,6 +6,7 @@ export const CustomerFilesQueryParam = {
   Project: "filesProject",
   Kind: "filesKind",
   Origin: "filesOrigin",
+  Selected: "filesSelected",
 } as const;
 export type CustomerFilesQueryParam =
   (typeof CustomerFilesQueryParam)[keyof typeof CustomerFilesQueryParam];
