@@ -288,21 +288,22 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
 
 ### Onboarding und Medien (Entscheidung des Nutzers, 16.09.2026)
 
-Umsetzung in Ordner 15a–15c (Task 43–47), nach der Datei-UI und **vor** den Feedbackrunden.
+Umsetzung der Medien in Ordner 14 (Task 51–56, Neuzuschnitt 28.09.2026), des Bogens in Ordner 15b–15c
+(Task 44–47), nach dem Dateibereich und **vor** den Feedbackrunden.
 
-- **Medienarten und Limits.** Bilder (`.png`, `.jpg`, `.jpeg`, `.webp`, `.heic`) und Video (`.mp4`,
-  `.mov`) sind erlaubt; `.svg`, Archive, HTML und makrofähige Office-Formate bleiben ausgeschlossen.
-  Limits liegen als `UPLOAD_LIMIT_BY_KIND` in `packages/common`: Dokument 50 MB, Bild 25 MB, Video
-  200 MB. HEIC wird angenommen, aber nicht im Browser vorgeschaut. Das ersetzt die frühere Regel
-  „keine Bilder" aus Ordner 14.
-- **Große Videos laufen über einen Medienlink** (`customer_asset_links`, nur `https`). Der Server
-  ruft eine solche URL niemals ab — kein Thumbnail, kein Metadatenabruf, keine Vorschau.
+- **Medienarten und Limits.** Formate, Limits und Vorschauregeln stehen verbindlich in
+  `14-dateien/README.md` (`UPLOAD_LIMIT_BY_KIND` in `packages/common`, Limits je Endung: PDF/PPTX
+  100 MB, DOCX/XLSX 50 MB, TXT/CSV 10 MB, Bilder 40 MB, SVG 5 MB, Video 200 MB als Einzel-PUT ohne
+  Multipart, Schrift 10 MB). SVG ist mit Inhaltsprüfung erlaubt; Archive, HTML und
+  makrofähige Office-Formate bleiben ausgeschlossen. HEIC wird angenommen, aber nicht im Browser
+  vorgeschaut.
+- **Große Dateien laufen über einen Link** (Zeile in `files` mit `source = 'link'`, nur `https`). Der
+  Server ruft eine solche URL niemals ab — kein Thumbnail, kein Metadatenabruf, keine Vorschau.
 - **Rundenfreier Portal-Upload.** Der Kunde lädt Assets ohne Feedbackrunde hoch; Kontingent und
-  Runden bleiben unberührt. Feedbackrunden (Ordner 16) binden die Upload-Session danach nur noch an
-  die Runde, statt einen zweiten Pfad zu bauen.
-- **Eigene Uploads sieht der Kunde.** Die Portalabfrage prüft
-  `visible_to_customer = true OR uploaded_by_side = 'customer'`. Für interne Uploads gilt die
-  Freigabepflicht unverändert.
+  Runden bleiben unberührt. Feedbackrunden (Ordner 16) binden die `files`-Zeilen danach nur noch
+  über `feedback_round_id` an die Runde, statt einen zweiten Pfad zu bauen.
+- **Eigene Uploads sieht der Kunde.** Ein Kundenupload ist per CHECK immer
+  `visible_to_customer = true`. Für interne Uploads gilt die Freigabepflicht unverändert.
 - **Der Onboarding-Bogen ist ein strukturiertes Formular**, kein Dateiabwurf: Texte werden ins Feld
   geschrieben, Assets hängen am zugehörigen Feld. Der Fragenkatalog liegt als typisierte Konstante im
   Code (drei Vorlagen), Fragen tragen Dictionary-Keys. Kein Formularbaukasten in Version 1 —
@@ -342,24 +343,31 @@ Umsetzung in Ordner 15a–15c (Task 43–47), nach der Datei-UI und **vor** den 
 
 ### Dateien
 
-- Vercel Blob hinter einem anbieterneutralen `StorageAdapter`.
-- Erlaubt in Ordner 14: `.pdf`, `.txt`, `.docx`, `.xlsx`, `.pptx`. Keine alten binären oder
-  makrofähigen Office-Formate, HTML oder Archive. **Ordner 15a ergänzt Bild- und Videotypen mit
-  eigenen Limits** (Abschnitt „Onboarding und Medien"); `.svg` bleibt dauerhaft ausgeschlossen.
-- 50 MB je Datei; 20 Dateien und 300 MB je Sammelupload.
-- Die ZIP-Grenzen (`MAX_ARCHIVE_FILES`, `MAX_ARCHIVE_BYTES`) werden in Ordner 15 **gemessen**, nicht
+Neuzuschnitt 28.09.2026 (mit dem Owner abgestimmt); die vollständige Spezifikation steht in
+`14-dateien/README.md`, Betriebsschritte in `14-dateien/VERCEL-SETUP.md`.
+
+- **Privater** Vercel-Blob-Store hinter einem anbieterneutralen `StorageAdapter` (`packages/storage`);
+  Upload und Download über kurzlebige presigned URLs, nie über dauerhaft öffentliche Links.
+- Formate und Limits je Art in `UPLOAD_LIMIT_BY_KIND` (Dokument, Bild inkl. SVG, Video, Schrift);
+  keine alten binären oder makrofähigen Office-Formate, kein HTML, keine Archive.
+- 20 Dateien und 1 GB je Sammelupload; größere Dateien über einen Link.
+- Die ZIP-Grenzen (`MAX_ARCHIVE_FILES`, `MAX_ARCHIVE_BYTES`) werden in PR 14.4 **gemessen**, nicht
   geschätzt. Startwerte 100 Dateien und 300 MB gelten als unbestätigt, bis der Durchsatz des
   Blob-Stores gegen das Zeitbudget der Function belegt ist. Passt es nicht, sinkt die Grenze.
-- Flache Ablage mit Kategorien statt Ordnerhierarchie.
-- Jede Datei gehört exakt einem Kunden-, Projekt- oder Feedbackrundenkontext.
-- Neue Dateien sind intern; Portalzugriff erst nach expliziter Freigabe in der DB-Abfrage.
+- Flache Ablage **ohne** Kategorien; Einordnung abgeleitet aus Herkunft und Sichtbarkeit, dazu eine
+  optionale Notiz. Dateien und Links liegen in einer Tabelle `files` (`source = upload | link`).
+- Jede Datei gehört exakt einem Kunden-, Projekt- oder (ab Ordner 16) Feedbackrundenkontext;
+  Projektzuordnung ist intern änderbar.
+- Neue interne Dateien sind intern; Portalzugriff erst nach expliziter Freigabe in der DB-Abfrage.
 - Keine Versionierung. Erneute Uploads sind unabhängige Dateien.
-- Portalnutzer stellen Löschanfragen, löschen aber nicht selbst.
-- Prüfung von Erweiterung, normalisiertem MIME-Typ, Dateisignatur, Größe und SHA-256.
+- Portalnutzer entfernen und bearbeiten nichts, auch keine eigenen Uploads; Korrekturen laufen über
+  den Chat.
+- Prüfung von Erweiterung, normalisiertem MIME-Typ, Dateisignatur bzw. Container- und SVG-Inhalt und
+  Größe. Kein SHA-256 in Version 1.
 - `FileInspectionAdapter` mit `unscanned | pending | clean | rejected | error`; Version 1 nutzt
   einen No-op-Adapter und speichert `unscanned`. Das akzeptierte Risiko wird dokumentiert.
-- Abgebrochene, keinem Datensatz zugeordnete Upload-Sessions dürfen nach 24 Stunden technisch
-  bereinigt werden. Erfolgreiche Kundendokumente werden nie automatisch gelöscht.
+- Nie finalisierte `pending`-Zeilen dürfen nach 24 Stunden technisch bereinigt werden (Job in
+  Ordner 20c). Erfolgreiche Kundendokumente werden nie automatisch gelöscht.
 
 ### Zugangsdaten
 
@@ -478,7 +486,7 @@ Kontingent wäre um den 17. des Monats leer.
 
 ### Function-Laufzeit
 
-- Der konkrete `maxDuration`-Wert der ZIP-Route wird vor Ordner 15 gemessen und dort eingetragen.
+- Der konkrete `maxDuration`-Wert der ZIP-Route wird in PR 14.4 gemessen und dort eingetragen.
   Das serverseitige Zeitbudget leitet sich daraus ab und liegt darunter, damit ein Überschreiten eine
   Meldung erzeugt und keinen Abbruch mitten im Download.
 - `maxDuration`, die beiden Cron-Intervalle und die Neon-Tarifentscheidung werden im PR der
@@ -510,13 +518,12 @@ people
                                       ├── customer_credentials
                                       ├── customer_renewals
                                       ├── customer_tags
-                                      ├── customer_asset_links                       (Ordner 15a)
                                       └── retainers ── time_entries
 
 line_item_templates ── pflegbarer globaler Katalog
 projects ── project_line_items (vollständige Template-Snapshots, Ordner 07)
 
-files ── genau ein Scope: customer | project | feedback_round
+files ── Dateien und Links (Ordner 14); genau ein Scope: customer | project | feedback_round
 activities ── Lead- und CRM-Historie
 security_events ── append-only Sicherheitsprotokoll (Mitglieder, Rollen, Owner, Reveal, Purge)
 outbox_jobs ── zuverlässige asynchrone Seiteneffekte
@@ -527,7 +534,8 @@ outbox_jobs ── zuverlässige asynchrone Seiteneffekte
 Kindtabellen eines Aggregats tragen den Aggregatnamen als Präfix — wie die bestehenden
 `lead_activities`, `lead_categories`, `lead_submissions` und `lead_email_contacts` in
 `packages/db/src/record-configuration/`. Verbindlich sind damit `customer_contact_assignments`,
-`customer_credentials`, `customer_renewals`, `customer_tags` und `customer_asset_links`.
+`customer_credentials`, `customer_renewals` und `customer_tags`. Links liegen seit dem Neuzuschnitt
+von Ordner 14 in `files`; eine Tabelle `customer_asset_links` entsteht nicht.
 
 Präfixfrei bleiben eigenständige und querschnittliche Tabellen: `users`, `workspace_members`, `permissions`, `roles`,
 `role_permissions`, `workspace_member_roles`, `workspace_member_scoped_roles`, `people`,
@@ -643,45 +651,43 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12b erreicht:
 
 ## Merge-Einheiten
 
-| #   | Status    | Ordner                                   | Nach dem Merge vollständig nutzbar                                              | Dateien | Aufwand |
-| --- | --------- | ---------------------------------------- | ------------------------------------------------------------------------------- | ------: | ------: |
-| 01  | gemerged  | `01-kernschema-und-contracts`            | Additives Kunden-/Personen-Kernschema ist unsichtbar deployt; Leads unverändert |   50–80 |  3–4 T. |
-| 02  | gemerged  | `02-activity-migration`                  | Bestehende Lead-Timeline arbeitet verlustfrei auf dem neuen Modell              |   40–70 |  3–4 T. |
-| 03  | gemerged  | `03-mitglieder-und-auth`                 | Persistierte User, Permission-Katalog, Bereichs-Gates und fail-closed Auth      |  80–120 |  4–5 T. |
-| 03b | gemerged  | `03b-mitglieder-und-rollenverwaltung`    | Mitglieder, Rollen und Owner-Flow verwaltbar; Aktionen permissionabhängig       | 100–120 |  3–4 T. |
-| 03c | gemerged  | `03c-uebergabe-und-deaktivierung`        | Mitglieder-Lifecycle mit Owner- und Zuständigkeitssperre                        |   30–50 |  1–2 T. |
-| 03d | gemerged  | `03d-geteilte-ui-bausteine`              | Dialog-, Panel- und Listenbausteine geteilt (`packages/ui` + workspace/shared)  | 145–165 |  4–5 T. |
-| 04  | gemerged  | `04-personen-und-kundenakte`             | Kunden samt Pflichtkontakt, Owner, Archiv und Detail vollständig nutzbar        |  80–100 |  4–5 T. |
-| 05  | im Review | `05-kundenliste-und-zuweisung`           | Paginierte Kundenliste mit Statusbadge und Statuspflege im Kundenformular       |   40–70 |  2–3 T. |
-| 06  | im Review | `06-lead-konvertierung`                  | Leads können sicher direkt als neue CRM-Kunden angelegt werden                  |   40–70 |  2–3 T. |
-| 06b | läuft     | `06b-mitarbeiter-cockpit`                | Kundenansicht aus Kundenliste und -formular, Dashboard-Detailpfad vorbereitet   |   35–60 |  2–3 T. |
-| 07  | läuft     | `07-projekte`                            | Projekte, Templatekatalog, Projektleistungen und berechnete Werte nutzbar       |  50–100 | 7–10 T. |
-| 07a | läuft     | `07a-zugriffsbereiche-fundament`         | Gebundene Rollen in DB, Actor und API unsichtbar und wirkungslos deployt        |   60–90 |    3 T. |
-| 07b | im Review | `07b-zugriffsfilter-kunden-und-projekte` | Alle Kunden- und Projektpfade filtern über `accessScope`; Negativtests          |  60–100 |  3–4 T. |
-| 07c | offen     | `07c-zugriffsverwaltung-ui`              | Zugriffe je Kunde/Projekt in Settings und Kundenakte konfigurierbar             |   50–80 |  2–3 T. |
-| 08  | läuft     | `08-aufgaben`                            | Projektaufgaben im Cockpit, globale Übersicht und Dashboard-Block nutzbar       | 120–180 |  4–5 T. |
-| 12a | offen     | `12a-portal-fundament`                   | Portal-Schema, Actor, Gates, Zugriffshelfer, Shell und Flag unsichtbar deployt  |   60–80 |  3–4 T. |
-| 12b | läuft     | `12b-portal-zugang`                      | Einladung, Rollen je Kontakt, Widerruf und Mehrfirmenwechsel sicher nutzbar     |   60–80 |  3–4 T. |
-| 13  | gemerged  | `13-portal-dashboard`                    | Widget-Dashboard mit Projekten, beiden Aufgabenseiten und Owner-Portalsicht     |    ≈276 |  5–7 T. |
-| 13a | läuft     | `13a-kundenchat`                         | Kundenchat im CRM-Cockpit, Posteingang und Portal bidirektional nutzbar         | 110–140 |  5–6 T. |
-| 13c | offen     | `13c-portal-leistungsanfragen`           | Preisfreie Leistungsanfragen im Portal, intern bearbeitbar                      |   60–80 |  3–4 T. |
-| 14  | offen     | `14-storage-und-upload`                  | Storage-Adapter und sichere Upload-Pipeline unsichtbar sicher deployt           |  70–100 |  4–5 T. |
-| 15  | offen     | `15-dateien-und-portal-downloads`        | Datei-UI, Freigabe, Portaldownload und ZIP vollständig nutzbar                  |  70–100 |  4–5 T. |
-| 15a | offen     | `15a-medien-und-portal-upload`           | Bilder/Video mit Limits je Art, Medienlink und rundenfreier Portal-Upload       |   60–80 |  2–3 T. |
-| 15b | offen     | `15b-onboarding-bogen`                   | Strukturierter Onboarding-Bogen im Portal, intern vollständig lesbar            | 100–120 |  4–5 T. |
-| 15c | offen     | `15c-onboarding-abschluss`               | Bogen erledigt Kundenaufgaben; Terminbuchung beim zuständigen Mitarbeiter       |   50–70 |  2–3 T. |
-| 16  | offen     | `16-feedbackrunden`                      | Feedbackrunden im Kontingent plus freigabepflichtige Zusatzrunde nutzbar        |  70–100 |  4–5 T. |
-| 19  | offen     | `19-credentials`                         | Verschlüsselte Zugangsdaten und Security-Audit vollständig nutzbar              |   50–80 |  3–4 T. |
-| 20  | offen     | `20-stunden-und-history`                 | Kontingente, Buchungen und konsolidierte Timeline vollständig nutzbar           |  60–100 |  3–4 T. |
-| 20a | offen     | `20a-kundenzustaendigkeit`               | Kundenverantwortung ist auswählbar, sichtbar und versioniert änderbar           |   25–45 |  1–2 T. |
-| 20b | offen     | `20b-aufgabenserien-und-reminder`        | Wiederholungen, Fälligkeit und Überfälligkeit zuverlässig aktiv                 |   50–90 |  3–4 T. |
-| 20c | offen     | `20c-jobs-und-benachrichtigungen`        | Outbox-Runner, Glocke, Retry und kritische Fehlerbenachrichtigung aktiv         |  70–100 |  4–5 T. |
-| 20d | offen     | `20d-renewals`                           | Renewal-Verwaltung und 30/14/7-Erinnerungen vollständig nutzbar                 |   40–70 |  2–3 T. |
-| 21  | offen     | `21-datenschutz-backup-rollout`          | Export, Owner-Purge, Backup/Restore und Produktivabnahme nachgewiesen           |  60–100 |  4–5 T. |
-| 22  | offen     | `22-activity-cleanup`                    | `lead_activities` abgebaut, genau eine Activity-Tabelle                         |    5–15 |    1 T. |
-| 22a | offen     | `22a-kundenorganisation-und-uebergabe`   | Suche, Filter, Tags und globale Zuständigkeitsübergabe vollständig nutzbar      |  70–110 |  4–6 T. |
-| 23  | offen     | `23-web-ui-abschluss`                    | Website nutzt geteilte Buttons/Formulare in bewusster Web-Ausprägung            |   35–55 |  3–4 T. |
-| 24  | offen     | `24-zustaendigkeitszugriff-absicherung`  | Owner-Wechsel und Übergaben verhindern Zuständigkeiten ohne wirksamen Zugriff   |   40–70 |  2–3 T. |
+| #   | Status    | Ordner                                   | Nach dem Merge vollständig nutzbar                                                            | Dateien |  Aufwand |
+| --- | --------- | ---------------------------------------- | --------------------------------------------------------------------------------------------- | ------: | -------: |
+| 01  | gemerged  | `01-kernschema-und-contracts`            | Additives Kunden-/Personen-Kernschema ist unsichtbar deployt; Leads unverändert               |   50–80 |   3–4 T. |
+| 02  | gemerged  | `02-activity-migration`                  | Bestehende Lead-Timeline arbeitet verlustfrei auf dem neuen Modell                            |   40–70 |   3–4 T. |
+| 03  | gemerged  | `03-mitglieder-und-auth`                 | Persistierte User, Permission-Katalog, Bereichs-Gates und fail-closed Auth                    |  80–120 |   4–5 T. |
+| 03b | gemerged  | `03b-mitglieder-und-rollenverwaltung`    | Mitglieder, Rollen und Owner-Flow verwaltbar; Aktionen permissionabhängig                     | 100–120 |   3–4 T. |
+| 03c | gemerged  | `03c-uebergabe-und-deaktivierung`        | Mitglieder-Lifecycle mit Owner- und Zuständigkeitssperre                                      |   30–50 |   1–2 T. |
+| 03d | gemerged  | `03d-geteilte-ui-bausteine`              | Dialog-, Panel- und Listenbausteine geteilt (`packages/ui` + workspace/shared)                | 145–165 |   4–5 T. |
+| 04  | gemerged  | `04-personen-und-kundenakte`             | Kunden samt Pflichtkontakt, Owner, Archiv und Detail vollständig nutzbar                      |  80–100 |   4–5 T. |
+| 05  | im Review | `05-kundenliste-und-zuweisung`           | Paginierte Kundenliste mit Statusbadge und Statuspflege im Kundenformular                     |   40–70 |   2–3 T. |
+| 06  | im Review | `06-lead-konvertierung`                  | Leads können sicher direkt als neue CRM-Kunden angelegt werden                                |   40–70 |   2–3 T. |
+| 06b | läuft     | `06b-mitarbeiter-cockpit`                | Kundenansicht aus Kundenliste und -formular, Dashboard-Detailpfad vorbereitet                 |   35–60 |   2–3 T. |
+| 07  | läuft     | `07-projekte`                            | Projekte, Templatekatalog, Projektleistungen und berechnete Werte nutzbar                     |  50–100 |  7–10 T. |
+| 07a | läuft     | `07a-zugriffsbereiche-fundament`         | Gebundene Rollen in DB, Actor und API unsichtbar und wirkungslos deployt                      |   60–90 |     3 T. |
+| 07b | im Review | `07b-zugriffsfilter-kunden-und-projekte` | Alle Kunden- und Projektpfade filtern über `accessScope`; Negativtests                        |  60–100 |   3–4 T. |
+| 07c | offen     | `07c-zugriffsverwaltung-ui`              | Zugriffe je Kunde/Projekt in Settings und Kundenakte konfigurierbar                           |   50–80 |   2–3 T. |
+| 08  | läuft     | `08-aufgaben`                            | Projektaufgaben im Cockpit, globale Übersicht und Dashboard-Block nutzbar                     | 120–180 |   4–5 T. |
+| 12a | offen     | `12a-portal-fundament`                   | Portal-Schema, Actor, Gates, Zugriffshelfer, Shell und Flag unsichtbar deployt                |   60–80 |   3–4 T. |
+| 12b | läuft     | `12b-portal-zugang`                      | Einladung, Rollen je Kontakt, Widerruf und Mehrfirmenwechsel sicher nutzbar                   |   60–80 |   3–4 T. |
+| 13  | gemerged  | `13-portal-dashboard`                    | Widget-Dashboard mit Projekten, beiden Aufgabenseiten und Owner-Portalsicht                   |    ≈276 |   5–7 T. |
+| 13a | läuft     | `13a-kundenchat`                         | Kundenchat im CRM-Cockpit, Posteingang und Portal bidirektional nutzbar                       | 110–140 |   5–6 T. |
+| 13c | offen     | `13c-portal-leistungsanfragen`           | Preisfreie Leistungsanfragen im Portal, intern bearbeitbar                                    |   60–80 |   3–4 T. |
+| 14  | läuft     | `14-dateien`                             | Dateien, Links, ZIP, Portal-Dateien, Chat-Anhänge; sechs Teil-PRs (14.1–14.6), 14.1 im Review | 290–425 | 12–16 T. |
+| 15b | offen     | `15b-onboarding-bogen`                   | Strukturierter Onboarding-Bogen im Portal, intern vollständig lesbar                          | 100–120 |   4–5 T. |
+| 15c | offen     | `15c-onboarding-abschluss`               | Bogen erledigt Kundenaufgaben; Terminbuchung beim zuständigen Mitarbeiter                     |   50–70 |   2–3 T. |
+| 16  | offen     | `16-feedbackrunden`                      | Feedbackrunden im Kontingent plus freigabepflichtige Zusatzrunde nutzbar                      |  70–100 |   4–5 T. |
+| 19  | offen     | `19-credentials`                         | Verschlüsselte Zugangsdaten und Security-Audit vollständig nutzbar                            |   50–80 |   3–4 T. |
+| 20  | offen     | `20-stunden-und-history`                 | Kontingente, Buchungen und konsolidierte Timeline vollständig nutzbar                         |  60–100 |   3–4 T. |
+| 20a | offen     | `20a-kundenzustaendigkeit`               | Kundenverantwortung ist auswählbar, sichtbar und versioniert änderbar                         |   25–45 |   1–2 T. |
+| 20b | offen     | `20b-aufgabenserien-und-reminder`        | Wiederholungen, Fälligkeit und Überfälligkeit zuverlässig aktiv                               |   50–90 |   3–4 T. |
+| 20c | offen     | `20c-jobs-und-benachrichtigungen`        | Outbox-Runner, Glocke, Retry und kritische Fehlerbenachrichtigung aktiv                       |  70–100 |   4–5 T. |
+| 20d | offen     | `20d-renewals`                           | Renewal-Verwaltung und 30/14/7-Erinnerungen vollständig nutzbar                               |   40–70 |   2–3 T. |
+| 21  | offen     | `21-datenschutz-backup-rollout`          | Export, Owner-Purge, Backup/Restore und Produktivabnahme nachgewiesen                         |  60–100 |   4–5 T. |
+| 22  | offen     | `22-activity-cleanup`                    | `lead_activities` abgebaut, genau eine Activity-Tabelle                                       |    5–15 |     1 T. |
+| 22a | offen     | `22a-kundenorganisation-und-uebergabe`   | Suche, Filter, Tags und globale Zuständigkeitsübergabe vollständig nutzbar                    |  70–110 |   4–6 T. |
+| 23  | offen     | `23-web-ui-abschluss`                    | Website nutzt geteilte Buttons/Formulare in bewusster Web-Ausprägung                          |   35–55 |   3–4 T. |
+| 24  | offen     | `24-zustaendigkeitszugriff-absicherung`  | Owner-Wechsel und Übergaben verhindern Zuständigkeiten ohne wirksamen Zugriff                 |   40–70 |   2–3 T. |
 
 Statuswerte: `offen` → `läuft` → `im Review` → `gemerged`. Beim Merge werden die Tabelle und der
 Status in der Ordner-README gemeinsam aktualisiert.
@@ -702,7 +708,7 @@ mergebarer Ordner. Zusammenlegen allein zum Erreichen des Zielkorridors ist nich
 - Eigene Terminverwaltung mit Verfügbarkeiten, Absagen und Kalendersynchronisation.
 - Freies CRM-Mailmodul, Mail-Eingang, Trackingpixel.
 - Dateiordner, Dateiversionen, Bildannotation, Kommentare pro Datei, serverseitige Bild- oder
-  Videokonvertierung. Bilder und Video als Upload sind seit Ordner 15a enthalten.
+  Videokonvertierung. Bilder, Video und Schriften als Upload sind seit Ordner 14 enthalten.
 - Malware-Scanner, TOTP oder Credential-Freigabe im Portal.
 - Frei konfigurierbare Workflows oder Aufgabenhierarchien.
 - Attributbasierte Regeln, explizite Deny-Regeln und Enterprise-IdP-/SCIM-Synchronisation. Die Zugriffsbereiche aus
