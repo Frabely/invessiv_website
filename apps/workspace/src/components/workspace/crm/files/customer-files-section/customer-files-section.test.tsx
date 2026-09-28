@@ -198,13 +198,16 @@ describe("CustomerFilesSection", () => {
     window.history.replaceState(null, "", "/de/crm?customer=abc");
     renderSection();
     await screen.findByRole("list", { name: content.section.listLabel });
-    fireEvent.change(screen.getByLabelText(content.toolbar.kind), {
-      target: { value: AssetKind.Image },
-    });
+    fireEvent.click(screen.getByRole("button", { name: content.toolbar.kind }));
+    fireEvent.click(
+      screen.getByRole("option", { name: content.kinds[AssetKind.Image] }),
+    );
     fireEvent.change(screen.getByLabelText(content.toolbar.search), {
       target: { value: "Vertrag" },
     });
-    expect(window.location.search).toBe("?customer=abc&filesKind=image");
+    await waitFor(() =>
+      expect(window.location.search).toBe("?customer=abc&filesKind=image"),
+    );
     await waitFor(() =>
       expect(mocks.listFiles).toHaveBeenLastCalledWith(CUSTOMER_ID, {
         page: 1,
@@ -247,9 +250,12 @@ describe("CustomerFilesSection", () => {
     renderSection();
     expect(await screen.findByText(content.empty.title)).toBeVisible();
     expect(screen.getByText(content.empty.description)).toBeVisible();
-    fireEvent.change(screen.getByLabelText(content.toolbar.origin), {
-      target: { value: "internal" },
-    });
+    fireEvent.click(
+      screen.getByRole("button", { name: content.toolbar.origin }),
+    );
+    fireEvent.click(
+      screen.getByRole("option", { name: content.origins.internal }),
+    );
     expect(await screen.findByText(content.empty.filteredTitle)).toBeVisible();
   });
 

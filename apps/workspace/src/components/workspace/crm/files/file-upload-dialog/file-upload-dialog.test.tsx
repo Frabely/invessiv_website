@@ -77,9 +77,10 @@ describe("FileUploadDialog", () => {
     expect(
       screen.getByText(content.errors.UNSUPPORTED_EXTENSION),
     ).toBeVisible();
-    fireEvent.change(screen.getByLabelText(content.upload.project), {
-      target: { value: PROJECT_ID },
-    });
+    fireEvent.click(
+      screen.getByRole("button", { name: content.upload.project }),
+    );
+    fireEvent.click(screen.getByRole("option", { name: "Website" }));
     fireEvent.click(screen.getByLabelText(content.upload.visible));
     fireEvent.change(screen.getByLabelText(content.upload.note), {
       target: { value: " Final " },
