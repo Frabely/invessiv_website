@@ -1,0 +1,68 @@
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.6rem;
+}
+
+.search {
+  flex: 1 1 100%;
+  min-width: 0;
+}
+
+.filter select {
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0 0.6rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 0.6rem;
+  background: var(--color-surface-1);
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--font-size-body-sm);
+}
+
+.filter select:focus-visible,
+.reset:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.filter {
+  flex: 1 1 8.5rem;
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.filterLabel {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 600;
+}
+
+.reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.5rem;
+  padding: 0 0.6rem;
+  border: 0;
+  border-radius: 0.6rem;
+  background: transparent;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: var(--font-size-ui-xs);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.reset:hover {
+  color: var(--color-text);
+}
+
+@container files-list (min-width: 40rem) {
+  .search {
+    flex: 1 1 14rem;
+  }
+}

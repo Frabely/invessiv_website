@@ -1,0 +1,177 @@
+{
+  "section": {
+    "title": "Dateien & Links",
+    "count": "{count} Einträge",
+    "countOne": "1 Eintrag",
+    "collapseLabel": "Dateien & Links einklappen",
+    "expandLabel": "Dateien & Links ausklappen",
+    "listLabel": "Dateien und Links",
+    "loading": "Dateien werden geladen …",
+    "loadError": "Die Dateien konnten nicht geladen werden.",
+    "retry": "Erneut laden",
+    "loadMore": "Weitere laden",
+    "shown": "{shown} von {total} angezeigt",
+    "dropOverlay": "Loslassen, um hochzuladen"
+  },
+  "actions": {
+    "upload": "Datei hochladen",
+    "addLink": "Link hinzufügen"
+  },
+  "toolbar": {
+    "label": "Dateien filtern",
+    "search": "Dateien durchsuchen",
+    "searchPlaceholder": "Name oder Notiz",
+    "project": "Projekt",
+    "projectAll": "Alle Projekte",
+    "customerWide": "Kundenweit",
+    "kind": "Art",
+    "kindAll": "Alle Arten",
+    "origin": "Herkunft",
+    "originAll": "Alle Herkünfte",
+    "reset": "Filter zurücksetzen"
+  },
+  "kinds": {
+    "document": "Dokument",
+    "image": "Bild",
+    "video": "Video",
+    "font": "Schrift",
+    "link": "Link"
+  },
+  "origins": {
+    "customer": "Vom Kunden",
+    "shared": "Freigegeben",
+    "internal": "Intern"
+  },
+  "visibility": {
+    "visible": "Für Kunden sichtbar",
+    "hidden": "Nur intern"
+  },
+  "row": {
+    "byCustomer": "Kunde",
+    "byTeam": "Team",
+    "customerWide": "Kundenweit",
+    "opensInNewTab": "öffnet in neuem Tab",
+    "actionsLabel": "Aktionen für {name}",
+    "preview": "Vorschau",
+    "download": "Herunterladen",
+    "open": "Öffnen",
+    "edit": "Bearbeiten",
+    "delete": "Löschen",
+    "previewNamed": "Vorschau von {name}",
+    "downloadNamed": "{name} herunterladen",
+    "openNamed": "{name} öffnen",
+    "editNamed": "{name} bearbeiten",
+    "deleteNamed": "{name} löschen"
+  },
+  "empty": {
+    "title": "Noch keine Dateien",
+    "description": "Lade Dokumente, Bilder, Videos oder Schriften hoch – oder hinterlege einen Link. Neue Dateien bleiben intern, bis du sie freigibst.",
+    "readOnlyDescription": "Sobald das Team oder der Kunde Dateien teilt, findest du sie hier.",
+    "filteredTitle": "Keine Treffer",
+    "filteredDescription": "Passe Suche oder Filter an – oder setze die Filter zurück."
+  },
+  "upload": {
+    "title": "Dateien hochladen",
+    "description": "Projekt, Sichtbarkeit und Notiz gelten für alle Dateien dieses Uploads.",
+    "dropLabel": "Dateien hierher ziehen oder auswählen",
+    "dropHint": "PDF, Office, Text, Bilder, Videos bis 200 MB und Schriften · bis zu 20 Dateien, zusammen höchstens 1 GB",
+    "largerHint": "Größere Dateien? Füge stattdessen einen Link hinzu.",
+    "project": "Projekt",
+    "customerWideOption": "Kundenweit (ohne Projekt)",
+    "visible": "Für den Kunden sichtbar",
+    "visibleHint": "Aus lassen, wenn die Dateien intern bleiben sollen. Du kannst das später ändern.",
+    "note": "Notiz",
+    "notePlaceholder": "Optional, z. B. „Finale Version“",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "start": "{count} Dateien hochladen",
+    "startOne": "1 Datei hochladen",
+    "more": "Weitere Dateien hochladen",
+    "busyHint": "Warte, bis alle Uploads fertig sind, oder brich sie ab.",
+    "queueLabel": "Ausgewählte Dateien",
+    "summary": "{done} von {total} Dateien hochgeladen",
+    "remove": "{name} entfernen",
+    "cancelItem": "{name} abbrechen",
+    "retryItem": "{name} erneut versuchen",
+    "progress": "Fortschritt {name}",
+    "status": {
+      "staged": "Bereit",
+      "rejected": "Nicht möglich",
+      "queued": "Wartet",
+      "uploading": "Wird hochgeladen",
+      "finalizing": "Wird geprüft",
+      "done": "Hochgeladen",
+      "failed": "Fehlgeschlagen",
+      "cancelled": "Abgebrochen"
+    }
+  },
+  "link": {
+    "title": "Link hinzufügen",
+    "description": "Für Dateien, die zu groß sind oder schon woanders liegen. Wir rufen den Link nie selbst auf.",
+    "name": "Bezeichnung",
+    "namePlaceholder": "z. B. Imagefilm 4K",
+    "url": "Link",
+    "urlPlaceholder": "https://",
+    "urlHint": "WeTransfer-Links verfallen nach 7 Tagen. Lade die Datei lieber hoch oder nutze einen dauerhaften Link.",
+    "nameRequired": "Gib eine Bezeichnung ein.",
+    "urlInvalid": "Gib einen vollständigen Link ein, der mit https:// beginnt.",
+    "submit": "Link speichern",
+    "submitting": "Wird gespeichert …"
+  },
+  "edit": {
+    "titleFile": "Datei bearbeiten",
+    "titleLink": "Link bearbeiten",
+    "customerLocked": "Vom Kunden hinzugefügt – bleibt für ihn sichtbar.",
+    "submit": "Änderungen speichern",
+    "submitting": "Wird gespeichert …",
+    "conflict": "Jemand hat diesen Eintrag gerade geändert. Wir haben den aktuellen Stand geladen; deine Eingaben sind noch da. Speichere erneut, um sie zu übernehmen."
+  },
+  "delete": {
+    "titleFile": "Datei löschen?",
+    "titleLink": "Link löschen?",
+    "description": "„{name}“ wird endgültig gelöscht. Das lässt sich nicht rückgängig machen.",
+    "visibleWarning": "Der Kunde sieht diesen Eintrag im Portal – danach nicht mehr.",
+    "confirm": "Endgültig löschen",
+    "cancel": "Behalten",
+    "conflict": "Der Eintrag wurde gerade geändert. Prüfe den aktuellen Stand und lösche erneut."
+  },
+  "lightbox": {
+    "close": "Vorschau schließen",
+    "previous": "Vorherige Datei",
+    "next": "Nächste Datei",
+    "position": "{index} von {total}",
+    "loading": "Vorschau wird geladen …",
+    "error": "Die Vorschau konnte nicht geladen werden. Lade die Datei stattdessen herunter.",
+    "download": "Herunterladen"
+  },
+  "announcements": {
+    "uploaded": "{name} hochgeladen",
+    "linkAdded": "Link „{name}“ hinzugefügt",
+    "saved": "Änderungen an „{name}“ gespeichert",
+    "deleted": "„{name}“ gelöscht"
+  },
+  "errors": {
+    "FILE_NOT_FOUND": "Den Eintrag oder das Ziel gibt es nicht mehr. Lade die Liste neu.",
+    "FILE_VALIDATION_ERROR": "Die Angaben sind unvollständig oder ungültig.",
+    "FILE_PENDING_LIMIT": "Zu viele offene Uploads. Warte einen Moment und versuch es erneut.",
+    "FILE_CUSTOMER_VISIBILITY": "Uploads des Kunden bleiben für ihn sichtbar.",
+    "FILE_UPLOAD_OWNER": "Nur wer den Upload gestartet hat, kann ihn abschließen.",
+    "FILE_NOT_UPLOAD": "Dieser Eintrag ist ein Link und keine Datei.",
+    "FILE_STORAGE_UNAVAILABLE": "Der Dateispeicher ist gerade nicht erreichbar. Versuch es gleich noch einmal.",
+    "FILE_INTERNAL": "Das hat nicht geklappt. Versuch es erneut.",
+    "UNSUPPORTED_EXTENSION": "Dieses Format wird nicht unterstützt.",
+    "INVALID_SIZE": "Die Datei ist leer.",
+    "FILE_TOO_LARGE": "Die Datei ist zu groß für dieses Format. Nutze stattdessen einen Link.",
+    "TOO_MANY_FILES": "Höchstens 20 Dateien pro Upload.",
+    "BATCH_TOO_LARGE": "Zusammen höchstens 1 GB pro Upload.",
+    "MISSING_OBJECT": "Die Datei ist nicht vollständig angekommen. Versuch es erneut.",
+    "SIZE_MISMATCH": "Die Datei ist nicht vollständig angekommen. Versuch es erneut.",
+    "CONTENT_TYPE_MISMATCH": "Der Dateityp passt nicht zur Endung.",
+    "INVALID_SIGNATURE": "Der Inhalt passt nicht zur Dateiendung.",
+    "UNSAFE_SVG": "Das SVG enthält Skripte oder externe Verweise und wurde abgelehnt.",
+    "INVALID_OFFICE": "Das Office-Dokument ist beschädigt oder enthält Makros.",
+    "INVALID_LINK": "Gib einen vollständigen Link ein, der mit https:// beginnt.",
+    "UPLOAD_NETWORK": "Die Verbindung wurde unterbrochen. Versuch es erneut.",
+    "UPLOAD_REFUSED": "Der Dateispeicher hat den Upload abgelehnt. Versuch es erneut."
+  }
+}

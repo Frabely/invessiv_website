@@ -24,8 +24,8 @@ export const UPLOAD_LIMIT_BY_KIND = {
 } as const;
 export const MAX_UPLOAD_FILES = 20;
 export const MAX_UPLOAD_BATCH_BYTES = 1_000 * MB;
-// Not consumed until the Task 53 lightbox: above this, TXT/CSV render as a
-// download instead of plaintext (see 14-dateien/README.md, format table).
+export const MAX_PARALLEL_UPLOADS = 3;
+// Above this, TXT/CSV render as a download instead of plaintext in the lightbox.
 export const MAX_TEXT_PREVIEW_BYTES = MB;
 export const UPLOAD_URL_TTL_MS = 10 * 60_000;
 export const DOWNLOAD_URL_TTL_MS = 5 * 60_000;

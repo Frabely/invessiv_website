@@ -21,6 +21,8 @@ import portalAccessDe from "./portal-access/de.json";
 import portalAccessEn from "./portal-access/en.json";
 import messagesDe from "./messages/de.json";
 import messagesEn from "./messages/en.json";
+import filesDe from "./files/de.json";
+import filesEn from "./files/en.json";
 
 export type CrmMetaDictionary = typeof metaDe;
 export type CrmShellDictionary = typeof shellDe;
@@ -32,6 +34,7 @@ export type CrmLineItemTemplatesDictionary = typeof lineItemTemplatesDe;
 export type CrmTasksDictionary = typeof tasksDe;
 export type CrmAccessDictionary = typeof accessDe;
 export type CrmPortalAccessDictionary = typeof portalAccessDe;
+export type CrmFilesDictionary = typeof filesDe;
 /** Phase names come from the cockpit, so the CRM names a phase the same way everywhere. */
 export type CrmMessagesDictionary = typeof messagesDe & {
   phases: CrmCockpitDictionary["projects"]["phases"];
@@ -136,4 +139,13 @@ export function getCrmProjectLineItemsDictionary(
 
 export function getCrmTasksDictionary(locale: Locale): CrmTasksDictionary {
   return CRM_TASKS[locale];
+}
+
+const CRM_FILES: Record<Locale, CrmFilesDictionary> = {
+  de: filesDe,
+  en: filesEn,
+};
+
+export function getCrmFilesDictionary(locale: Locale): CrmFilesDictionary {
+  return CRM_FILES[locale];
 }

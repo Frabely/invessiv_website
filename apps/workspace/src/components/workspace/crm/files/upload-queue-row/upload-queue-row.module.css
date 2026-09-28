@@ -1,0 +1,135 @@
+.row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.75rem;
+  padding: 0.65rem 0.4rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.row:last-child {
+  border-bottom: 0;
+}
+
+.body {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.name {
+  margin: 0;
+  overflow: hidden;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.85rem;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+.size {
+  font-variant-numeric: tabular-nums;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+}
+
+.row[data-status="done"] .status {
+  color: var(--color-success);
+}
+
+.row[data-status="failed"] .status,
+.row[data-status="rejected"] .status {
+  color: var(--color-danger);
+}
+
+.row[data-status="uploading"] .status,
+.row[data-status="finalizing"] .status {
+  color: var(--color-cta);
+}
+
+.row[data-status="rejected"],
+.row[data-status="cancelled"] {
+  opacity: 0.8;
+}
+
+.error {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: var(--font-size-ui-xs);
+  line-height: 1.45;
+}
+
+.progress {
+  width: 100%;
+  height: 0.35rem;
+  margin-top: 0.3rem;
+  overflow: hidden;
+  border: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-text) 10%, transparent);
+  accent-color: var(--color-cta);
+  appearance: none;
+}
+
+.progress::-webkit-progress-bar {
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-text) 10%, transparent);
+}
+
+.progress::-webkit-progress-value {
+  border-radius: 999px;
+  background: var(--color-cta);
+  transition: width 200ms ease;
+}
+
+.progress::-moz-progress-bar {
+  border-radius: 999px;
+  background: var(--color-cta);
+}
+
+.actions {
+  display: flex;
+  gap: 0.15rem;
+}
+
+.action {
+  display: inline-grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.action:hover {
+  color: var(--color-text);
+}
+
+.action:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress::-webkit-progress-value {
+    transition: none;
+  }
+}

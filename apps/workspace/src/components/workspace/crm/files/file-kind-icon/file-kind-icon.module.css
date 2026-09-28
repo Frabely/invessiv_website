@@ -1,0 +1,33 @@
+.icon {
+  --kind-tone: var(--color-text-muted);
+
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.6rem;
+  background: color-mix(in srgb, var(--kind-tone) 14%, transparent);
+  color: var(--kind-tone);
+  font-size: 0.95rem;
+}
+
+.icon[data-kind="document"] {
+  --kind-tone: var(--color-cta);
+}
+
+.icon[data-kind="image"] {
+  --kind-tone: var(--color-accent-gold);
+}
+
+.icon[data-kind="video"] {
+  --kind-tone: var(--color-accent-orange);
+}
+
+.icon[data-kind="font"] {
+  --kind-tone: var(--color-success);
+}
+
+.icon[data-kind="link"] {
+  --kind-tone: var(--color-text);
+}
