@@ -1,6 +1,7 @@
 import { and, eq, inArray } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
+import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { FileStatus } from "@invessiv/common/constants/files/file-status";
 import { FileOrigin } from "@invessiv/common/constants/files/file-origin";
@@ -11,6 +12,7 @@ import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurre
 import { StorageDisposition } from "@invessiv/common/constants/storage/storage-options";
 import { StorageErrorCode } from "@invessiv/common/constants/storage/storage-error-code";
 import { MAX_UPLOAD_FILES } from "@invessiv/common/constants/files/upload-limits";
+import { MAX_ARCHIVE_BYTES } from "@/common/constants/crm/files/file-archive-limits";
 import { activities, files } from "@invessiv/db/record-configuration";
 import { createInMemoryStorage } from "@invessiv/storage/testing";
 import { StorageError } from "@invessiv/storage";
@@ -23,6 +25,7 @@ import { deleteFile } from "@/server/workspace/crm/command-handler/delete-file.c
 import { listCustomerFiles } from "@/server/workspace/crm/query-handler/list-customer-files.query-handler";
 import { getFileDownloadUrl } from "@/server/workspace/crm/query-handler/get-file-download-url.query-handler";
 import { downloadFile } from "@/server/workspace/crm/query-handler/download-file.query-handler";
+import { createFilesArchive } from "@/server/workspace/crm/query-handler/create-files-archive.query-handler";
 import { createFileTestFixture } from "./file-test-fixture";
 
 vi.mock("server-only", () => ({}));
@@ -79,6 +82,60 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       memory.seed(row.storage_key!, bytes, row.content_type!);
       return { row, ticket };
     }
+
+    it("preflights archive IDs against customer and project scope before streaming", async () => {
+      const own = await createFileLink(f.customerId, link(), f.actor());
+      const foreign = await createFileLink(
+        f.foreignCustomerId,
+        link({ projectId: f.foreignProjectId }),
+        f.actor(),
+      );
+      if (!own.ok || !foreign.ok)
+        throw new Error("Expected archive fixture links");
+      expect(
+        await createFilesArchive(f.customerId, [own.value.id], restricted()),
+      ).toMatchObject({ ok: true });
+      expect(
+        await createFilesArchive(
+          f.customerId,
+          [own.value.id, foreign.value.id],
+          f.actor(),
+        ),
+      ).toMatchObject({ code: E.NotFound });
+      expect(
+        await createFilesArchive(
+          f.customerId,
+          [own.value.id],
+          f.actor({ permissions: new Set() }),
+        ),
+      ).toMatchObject({ code: E.NotFound });
+      expect(
+        await createFilesArchive(
+          f.customerId,
+          [own.value.id, own.value.id],
+          f.actor(),
+        ),
+      ).toMatchObject({ code: E.Validation });
+
+      const binary = await upload();
+      await completeFileUpload(binary.row.id, f.actor());
+      await f
+        .database()
+        .update(files)
+        .set({ size_bytes: MAX_ARCHIVE_BYTES + 1 })
+        .where(eq(files.id, binary.row.id));
+      expect(
+        await createFilesArchive(f.customerId, [binary.row.id], f.actor()),
+      ).toMatchObject({ code: E.ArchiveLimit });
+      await f
+        .database()
+        .update(files)
+        .set({ asset_kind: AssetKind.Video })
+        .where(eq(files.id, binary.row.id));
+      expect(
+        await createFilesArchive(f.customerId, [binary.row.id], f.actor()),
+      ).toMatchObject({ code: E.ArchiveVideo });
+    });
 
     it("creates internal links without fetching their destination and rejects unsafe URLs", async () => {
       const fetch = vi.spyOn(globalThis, "fetch");

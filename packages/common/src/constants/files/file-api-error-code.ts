@@ -1,6 +1,8 @@
 export const FileApiErrorCode = {
   NotFound: "FILE_NOT_FOUND",
   Validation: "FILE_VALIDATION_ERROR",
+  ArchiveLimit: "FILE_ARCHIVE_LIMIT",
+  ArchiveVideo: "FILE_ARCHIVE_VIDEO",
   PendingLimit: "FILE_PENDING_LIMIT",
   CustomerVisibility: "FILE_CUSTOMER_VISIBILITY",
   UploadOwner: "FILE_UPLOAD_OWNER",

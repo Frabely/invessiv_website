@@ -7,6 +7,7 @@ import { Permission } from "@invessiv/common/constants/auth/permissions";
  */
 export const CrmEndpointAccessRule = {
   FilesList: "files_list",
+  FilesArchive: "files_archive",
   FileUpload: "file_upload",
   FileComplete: "file_complete",
   FileLink: "file_link",
@@ -47,6 +48,10 @@ export const CRM_ENDPOINT_ACCESS_RULES = {
   [CrmEndpointAccessRule.FilesList]: {
     permission: Permission.FilesRead,
     scope: "list",
+  },
+  [CrmEndpointAccessRule.FilesArchive]: {
+    permission: Permission.FilesRead,
+    scope: "customer",
   },
   [CrmEndpointAccessRule.FileUpload]: {
     permission: Permission.FilesWrite,

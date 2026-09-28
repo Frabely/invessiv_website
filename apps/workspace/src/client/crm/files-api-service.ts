@@ -18,6 +18,7 @@ import type { FileDeleteClientResult } from "@/common/contracts/files/file-delet
 import type { FileMutationClientResult } from "@/common/contracts/files/file-mutation-client-result";
 import {
   crmCustomerFileLinksEndpoint,
+  crmCustomerFilesArchiveEndpoint,
   crmCustomerFilesEndpoint,
   crmCustomerFileUploadsEndpoint,
   crmFileCompleteEndpoint,
@@ -196,6 +197,27 @@ function getDownloadUrl(
   );
 }
 
+async function downloadArchive(
+  customerId: string,
+  fileIds: readonly string[],
+): Promise<FileClientResult<Blob>> {
+  try {
+    const response = await fetch(crmCustomerFilesArchiveEndpoint(customerId), {
+      method: HttpMethod.Post,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ fileIds }),
+    });
+    if (!response.ok)
+      return {
+        ok: false,
+        code: readCode(await response.json().catch(() => null)),
+      };
+    return { ok: true, value: await response.blob() };
+  } catch {
+    return { ok: false, code: FileApiErrorCode.Internal };
+  }
+}
+
 export const filesApiService = {
   listFiles,
   createUpload,
@@ -204,5 +226,6 @@ export const filesApiService = {
   updateFile,
   deleteFile,
   getDownloadUrl,
+  downloadArchive,
   readText,
 } as const;

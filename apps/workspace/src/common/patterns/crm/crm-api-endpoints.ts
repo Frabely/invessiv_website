@@ -10,6 +10,7 @@ const MESSAGE_REDACT_PATH = "redact";
 const FILES_PATH = "files";
 const FILE_UPLOADS_PATH = "uploads";
 const FILE_LINKS_PATH = "links";
+const FILE_ARCHIVE_PATH = "archive";
 const FILE_COMPLETE_PATH = "complete";
 const FILE_DOWNLOAD_URL_PATH = "download-url";
 const FILE_DOWNLOAD_PATH = "download";
@@ -96,6 +97,10 @@ export function crmCustomerFileUploadsEndpoint(customerId: string): string {
 
 export function crmCustomerFileLinksEndpoint(customerId: string): string {
   return `${crmCustomerFilesEndpoint(customerId)}/${FILE_LINKS_PATH}`;
+}
+
+export function crmCustomerFilesArchiveEndpoint(customerId: string): string {
+  return `${crmCustomerFilesEndpoint(customerId)}/${FILE_ARCHIVE_PATH}`;
 }
 
 export function crmFileEndpoint(fileId: string): string {

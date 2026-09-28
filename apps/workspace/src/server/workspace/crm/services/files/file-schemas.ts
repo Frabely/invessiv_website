@@ -3,6 +3,7 @@ import { ASSET_KIND_VALUES } from "@invessiv/common/constants/files/asset-kind";
 import { FILE_ORIGIN_VALUES } from "@invessiv/common/constants/files/file-origin";
 import { StorageDisposition } from "@invessiv/common/constants/storage/storage-options";
 import { validateFileLink } from "@invessiv/common/patterns/files/validate-file-link";
+import { MAX_ARCHIVE_FILES } from "@/common/constants/crm/files/file-archive-limits";
 
 const fields = {
   projectId: z.uuid().nullable().optional(),
@@ -27,6 +28,13 @@ export const fileSchemas = {
     .strictObject({ ...fields, version })
     .refine((input) => Object.keys(fields).some((key) => key in input)),
   delete: z.strictObject({ version }),
+  archive: z.strictObject({
+    fileIds: z
+      .array(z.uuid())
+      .min(1)
+      .max(MAX_ARCHIVE_FILES)
+      .refine((ids) => new Set(ids).size === ids.length),
+  }),
   list: z.strictObject({
     page: z.coerce.number().int().min(1).max(100_000).default(1),
     pageSize: z.coerce.number().int().min(1).max(100).default(25),

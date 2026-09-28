@@ -2,6 +2,8 @@
 
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import type { FileDto } from "@invessiv/common/contracts/files/file.dto";
+import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
+import { MAX_ARCHIVE_FILES } from "@/common/constants/crm/files/file-archive-limits";
 import { filePresentation } from "@invessiv/common/patterns/files/file-presentation";
 import { ButtonControl } from "@invessiv/ui";
 import { FileListLoadStatus } from "@/common/constants/crm/files/file-list-load-status";
@@ -33,6 +35,8 @@ export type CustomerFilesListProps = {
   onPreviewAction: (file: FileDto) => void;
   canDeleteAction: (file: FileDto) => boolean;
   canEditAction: (file: FileDto) => boolean;
+  selectedIds: readonly string[];
+  onSelectAction: (file: FileDto) => void;
 };
 
 export function CustomerFilesList({
@@ -56,6 +60,8 @@ export function CustomerFilesList({
   onPreviewAction,
   canDeleteAction,
   canEditAction,
+  selectedIds,
+  onSelectAction,
 }: CustomerFilesListProps) {
   if (status === FileListLoadStatus.Loading && files.length === 0)
     return (
@@ -129,6 +135,14 @@ export function CustomerFilesList({
                 file.uploadedByMemberId
                   ? (memberNames.get(file.uploadedByMemberId) ?? null)
                   : null
+              }
+              selected={selectedIds.includes(file.id)}
+              onSelectAction={
+                file.assetKind === AssetKind.Video ||
+                (selectedIds.length >= MAX_ARCHIVE_FILES &&
+                  !selectedIds.includes(file.id))
+                  ? undefined
+                  : onSelectAction
               }
             />
           );

@@ -5,9 +5,9 @@
 .row {
   display: grid;
   grid-template-areas:
-    "icon identity identity"
-    "icon visibility actions";
-  grid-template-columns: auto minmax(0, 1fr) auto;
+    "select icon identity identity"
+    "select icon visibility actions";
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.35rem 0.75rem;
   padding: 0.7rem 0.6rem;
@@ -26,6 +26,20 @@
     var(--color-accent-gold) 70%,
     transparent
   );
+}
+
+.row[data-selected="true"] {
+  background: color-mix(in srgb, var(--color-cta) 10%, transparent);
+}
+
+.select {
+  grid-area: select;
+  align-self: start;
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
 }
 
 .row > :first-child {
@@ -176,8 +190,8 @@ a.name:hover {
 
 @container files-list (min-width: 34rem) {
   .row {
-    grid-template-areas: "icon identity visibility actions";
-    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-areas: "select icon identity visibility actions";
+    grid-template-columns: auto auto minmax(0, 1fr) auto auto;
     align-items: center;
   }
 }

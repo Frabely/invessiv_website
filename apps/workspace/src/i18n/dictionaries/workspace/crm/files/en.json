@@ -17,6 +17,18 @@
     "upload": "Upload file",
     "addLink": "Add link"
   },
+  "archive": {
+    "groupLabel": "Select files for ZIP",
+    "selectNamed": "Select {name} for ZIP",
+    "selectShown": "Select shown files",
+    "selected": "{count} selected",
+    "clear": "Clear selection",
+    "download": "Download ZIP",
+    "preparing": "Preparing ZIP …",
+    "filename": "files.zip",
+    "videoHint": "Download videos individually.",
+    "limitReached": "Up to 100 entries per ZIP."
+  },
   "toolbar": {
     "label": "Filter files",
     "search": "Search files",
@@ -153,6 +165,8 @@
   "errors": {
     "FILE_NOT_FOUND": "This entry or its target no longer exists. Reload the list.",
     "FILE_VALIDATION_ERROR": "The details are incomplete or invalid.",
+    "FILE_ARCHIVE_LIMIT": "Select up to 100 entries totalling no more than 300 MB.",
+    "FILE_ARCHIVE_VIDEO": "Download videos individually.",
     "FILE_PENDING_LIMIT": "Too many open uploads. Wait a moment and try again.",
     "FILE_CUSTOMER_VISIBILITY": "Customer uploads stay visible to the customer.",
     "FILE_UPLOAD_OWNER": "Only whoever started the upload can finish it.",

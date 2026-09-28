@@ -19,6 +19,8 @@ const STATUS_BY_CODE: Partial<Record<E | FileErrorCode, H>> = {
 const messages: Record<E | FileErrorCode, string> = {
   [E.NotFound]: "File or target not found.",
   [E.Validation]: "Invalid file request.",
+  [E.ArchiveLimit]: "Archive file count or size limit exceeded.",
+  [E.ArchiveVideo]: "Videos must be downloaded individually.",
   [E.PendingLimit]: "Too many pending uploads.",
   [E.CustomerVisibility]: "Customer uploads must remain visible.",
   [E.UploadOwner]: "Only the uploader can complete this upload.",

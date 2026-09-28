@@ -16,6 +16,7 @@ import { updateFile } from "@/server/workspace/crm/command-handler/update-file.c
 import { downloadFile } from "@/server/workspace/crm/query-handler/download-file.query-handler";
 import { StorageError } from "@invessiv/storage";
 import { GET as list } from "@/app/api/workspace/crm/customers/[id]/files/route";
+import { POST as archive } from "@/app/api/workspace/crm/customers/[id]/files/archive/route";
 import { POST as upload } from "@/app/api/workspace/crm/customers/[id]/files/uploads/route";
 import { POST as link } from "@/app/api/workspace/crm/customers/[id]/files/links/route";
 import { POST as complete } from "@/app/api/workspace/crm/files/[fileId]/complete/route";
@@ -44,6 +45,7 @@ const id = "10101010-1010-4010-8010-101010101010";
 const context = { params: Promise.resolve({ id, fileId: id }) };
 const routes = [
   [list, HttpMethod.Get],
+  [archive, HttpMethod.Post],
   [upload, HttpMethod.Post],
   [link, HttpMethod.Post],
   [complete, HttpMethod.Post],
@@ -124,6 +126,22 @@ describe("file HTTP authorization and responses", () => {
     ).toBe(H.UnprocessableContent);
     expect((await link(request(HttpMethod.Post), context)).status).toBe(
       H.BadRequest,
+    );
+  });
+  it("rejects duplicate and malformed archive selections before reading files", async () => {
+    authorize([Permission.FilesRead]);
+    const duplicate = await archive(
+      request(HttpMethod.Post, { fileIds: [id, id] }),
+      context,
+    );
+    expect(duplicate.status).toBe(H.UnprocessableContent);
+    const invalid = await archive(
+      request(HttpMethod.Post, { fileIds: ["invalid"] }),
+      context,
+    );
+    expect(invalid.status).toBe(H.UnprocessableContent);
+    expect(duplicate.headers.get(HttpHeaderName.CacheControl)).toBe(
+      "private, no-store",
     );
   });
   it("maps a missing resource and version conflicts without changing their contract", async () => {
