@@ -11,6 +11,7 @@ import { UploadQueueItemStatus as Status } from "@invessiv/common/constants/file
 import type { UploadQueueItem } from "@invessiv/common/contracts/files/upload-queue-item";
 import { filePresentation } from "@invessiv/common/patterns/files/file-presentation";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
+import { ButtonControl } from "@invessiv/ui";
 import type { Locale } from "@/config/i18n";
 import type { CrmFilesDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { FileKindIcon } from "../file-kind-icon/file-kind-icon";
@@ -80,37 +81,40 @@ export function UploadQueueRow({
       </div>
       <div className={styles.actions}>
         {canRemove ? (
-          <button
+          <ButtonControl
             aria-label={formatMessage(content.upload.remove, name)}
             className={styles.action}
             onClick={() => onRemoveAction(item.id)}
             title={formatMessage(content.upload.remove, name)}
             type="button"
+            variant="ghost"
           >
             <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
-          </button>
+          </ButtonControl>
         ) : null}
         {canCancel ? (
-          <button
+          <ButtonControl
             aria-label={formatMessage(content.upload.cancelItem, name)}
             className={styles.action}
             onClick={() => onCancelAction(item.id)}
             title={formatMessage(content.upload.cancelItem, name)}
             type="button"
+            variant="ghost"
           >
             <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
-          </button>
+          </ButtonControl>
         ) : null}
         {canRetry ? (
-          <button
+          <ButtonControl
             aria-label={formatMessage(content.upload.retryItem, name)}
             className={styles.action}
             onClick={() => onRetryAction(item.id)}
             title={formatMessage(content.upload.retryItem, name)}
             type="button"
+            variant="ghost"
           >
             <FontAwesomeIcon aria-hidden="true" icon={faArrowRotateRight} />
-          </button>
+          </ButtonControl>
         ) : null}
       </div>
     </li>

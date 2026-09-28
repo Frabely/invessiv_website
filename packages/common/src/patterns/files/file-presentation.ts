@@ -36,17 +36,18 @@ function previewKindOf(
 }
 
 /** Decimal units, matching how the upload limits are stated. */
+const SIZE_UNITS = ["byte", "kilobyte", "megabyte", "gigabyte"] as const;
+
 function formatSize(bytes: number, locale: string): string {
-  const units = ["byte", "kilobyte", "megabyte", "gigabyte"] as const;
   let value = bytes;
   let index = 0;
-  while (value >= 1000 && index < units.length - 1) {
+  while (value >= 1000 && index < SIZE_UNITS.length - 1) {
     value /= 1000;
     index += 1;
   }
   return new Intl.NumberFormat(locale, {
     style: "unit",
-    unit: units[index],
+    unit: SIZE_UNITS[index],
     unitDisplay: "short",
     maximumFractionDigits: index === 0 || value >= 100 ? 0 : 1,
   }).format(value);

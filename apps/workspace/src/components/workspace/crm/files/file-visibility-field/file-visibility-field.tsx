@@ -7,6 +7,7 @@ import styles from "./file-visibility-field.module.css";
 type FileVisibilityFieldProps = {
   checked: boolean;
   content: CrmFilesDictionary;
+  disabled?: boolean;
   /** Customer uploads always stay visible; the switch is then replaced by an explanation. */
   locked?: boolean;
   onChangeAction: (checked: boolean) => void;
@@ -15,6 +16,7 @@ type FileVisibilityFieldProps = {
 export function FileVisibilityField({
   checked,
   content,
+  disabled = false,
   locked = false,
   onChangeAction,
 }: FileVisibilityFieldProps) {
@@ -25,6 +27,7 @@ export function FileVisibilityField({
       <label className={styles.label}>
         <CheckboxControl
           checked={checked}
+          disabled={disabled}
           onChange={(event) => onChangeAction(event.target.checked)}
         />
         <span>{content.upload.visible}</span>

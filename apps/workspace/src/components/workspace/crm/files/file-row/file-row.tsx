@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   faArrowUpRightFromSquare,
   faDownload,
@@ -14,6 +15,7 @@ import { UploadSide } from "@invessiv/common/constants/files/upload-side";
 import type { FileDto } from "@invessiv/common/contracts/files/file.dto";
 import { filePresentation } from "@invessiv/common/patterns/files/file-presentation";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
+import { ButtonControl } from "@invessiv/ui";
 import type { Locale } from "@/config/i18n";
 import type { CrmFilesDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { FileKindIcon } from "../file-kind-icon/file-kind-icon";
@@ -78,7 +80,7 @@ export function FileRow({
       <FileKindIcon assetKind={file.assetKind} extension={file.extension} />
       <div className={styles.identity}>
         {isLink && file.url ? (
-          <a
+          <Link
             className={styles.name}
             href={file.url}
             rel="noopener noreferrer"
@@ -86,15 +88,16 @@ export function FileRow({
           >
             {file.displayName}
             <span className="sr-only"> ({content.row.opensInNewTab})</span>
-          </a>
+          </Link>
         ) : onPreviewAction ? (
-          <button
+          <ButtonControl
             className={styles.name}
             onClick={() => onPreviewAction(file)}
             type="button"
+            variant="ghost"
           >
             {file.displayName}
-          </button>
+          </ButtonControl>
         ) : (
           <span className={styles.name}>{file.displayName}</span>
         )}
@@ -138,18 +141,19 @@ export function FileRow({
         role="group"
       >
         {onPreviewAction ? (
-          <button
+          <ButtonControl
             aria-label={formatMessage(content.row.previewNamed, name)}
             className={styles.action}
             onClick={() => onPreviewAction(file)}
             title={content.row.preview}
             type="button"
+            variant="ghost"
           >
             <FontAwesomeIcon aria-hidden="true" icon={faEye} />
-          </button>
+          </ButtonControl>
         ) : null}
         {isLink && file.url ? (
-          <a
+          <Link
             aria-label={formatMessage(content.row.openNamed, name)}
             className={styles.action}
             href={file.url}
@@ -161,40 +165,43 @@ export function FileRow({
               aria-hidden="true"
               icon={faArrowUpRightFromSquare}
             />
-          </a>
+          </Link>
         ) : (
-          <button
+          <ButtonControl
             aria-label={formatMessage(content.row.downloadNamed, name)}
             className={styles.action}
             onClick={() => onDownloadAction(file)}
             title={content.row.download}
             type="button"
+            variant="ghost"
           >
             <FontAwesomeIcon aria-hidden="true" icon={faDownload} />
-          </button>
+          </ButtonControl>
         )}
         {onEditAction ? (
-          <button
+          <ButtonControl
             aria-label={formatMessage(content.row.editNamed, name)}
             className={styles.action}
             onClick={() => onEditAction(file)}
             title={content.row.edit}
             type="button"
+            variant="ghost"
           >
             <FontAwesomeIcon aria-hidden="true" icon={faPen} />
-          </button>
+          </ButtonControl>
         ) : null}
         {onDeleteAction ? (
-          <button
+          <ButtonControl
             aria-label={formatMessage(content.row.deleteNamed, name)}
             className={styles.action}
             data-tone="danger"
             onClick={() => onDeleteAction(file)}
             title={content.row.delete}
             type="button"
+            variant="ghost"
           >
             <FontAwesomeIcon aria-hidden="true" icon={faTrashCan} />
-          </button>
+          </ButtonControl>
         ) : null}
       </div>
     </li>

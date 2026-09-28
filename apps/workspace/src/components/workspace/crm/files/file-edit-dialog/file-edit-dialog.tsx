@@ -3,15 +3,7 @@
 import { type SubmitEvent, useId, useState } from "react";
 import { FileSource } from "@invessiv/common/constants/files/file-source";
 import { UploadSide } from "@invessiv/common/constants/files/upload-side";
-import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
-import { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";
 import type { FileDto } from "@invessiv/common/contracts/files/file.dto";
-import {
-  ButtonControl,
-  Dialog,
-  FormField,
-  PrimaryCtaButton,
-} from "@invessiv/ui";
 import { filesApiService } from "@/client/crm/files-api-service";
 import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
 import type { FilesProjectOption } from "@/common/contracts/crm/files/files-project-option";
@@ -19,8 +11,8 @@ import type { FileClientErrorCode } from "@/common/contracts/files/file-client-e
 import { fileEditRequest } from "@/common/patterns/crm/files/file-edit-request";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import type { CrmFilesDictionary } from "@/i18n/dictionaries/workspace/crm";
-import { FileTargetSelect } from "../file-target-select/file-target-select";
-import { FileVisibilityField } from "../file-visibility-field/file-visibility-field";
+import { FileMetadataFields } from "../file-metadata-fields/file-metadata-fields";
+import { FileFormDialog } from "../file-form-dialog/file-form-dialog";
 import styles from "./file-edit-dialog.module.css";
 
 type FileEditDialogProps = {
@@ -69,33 +61,15 @@ export function FileEditDialog({
   }
 
   return (
-    <Dialog
+    <FileFormDialog
       busy={mutation.isSubmitting}
+      cancelLabel={content.upload.cancel}
       closeLabel={content.upload.close}
       description={file.displayName}
-      footer={
-        <>
-          <ButtonControl
-            disabled={mutation.isSubmitting}
-            onClick={mutation.close}
-            type="button"
-            variant="ghost"
-          >
-            {content.upload.cancel}
-          </ButtonControl>
-          <PrimaryCtaButton
-            disabled={mutation.isSubmitting}
-            form={formId}
-            type="submit"
-          >
-            {mutation.isSubmitting
-              ? content.edit.submitting
-              : content.edit.submit}
-          </PrimaryCtaButton>
-        </>
-      }
+      formId={formId}
       onCloseAction={mutation.close}
-      size={DialogSize.Narrow}
+      submitLabel={content.edit.submit}
+      submittingLabel={content.edit.submitting}
       title={
         file.source === FileSource.Link
           ? content.edit.titleLink
@@ -108,36 +82,23 @@ export function FileEditDialog({
         noValidate
         onSubmit={handleSubmit}
       >
-        <FileTargetSelect
+        <FileMetadataFields
           content={content}
-          onChangeAction={(projectId) =>
+          note={values.note}
+          onNoteChangeAction={(note) =>
+            setValues((current) => ({ ...current, note }))
+          }
+          onTargetChangeAction={(projectId) =>
             setValues((current) => ({ ...current, projectId }))
+          }
+          onVisibilityChangeAction={(visibleToCustomer) =>
+            setValues((current) => ({ ...current, visibleToCustomer }))
           }
           projects={projects}
           targets={targets}
-          value={values.projectId}
-        />
-        <FileVisibilityField
-          checked={values.visibleToCustomer}
-          content={content}
-          locked={file.uploadedBySide === UploadSide.Customer}
-          onChangeAction={(visibleToCustomer) =>
-            setValues((current) => ({ ...current, visibleToCustomer }))
-          }
-        />
-        <FormField
-          inputProps={{
-            maxLength: 200,
-            onChange: (event) =>
-              setValues((current) => ({
-                ...current,
-                note: event.target.value,
-              })),
-            placeholder: content.upload.notePlaceholder,
-            value: values.note,
-          }}
-          kind={FormFieldKind.Text}
-          label={content.upload.note}
+          target={values.projectId}
+          visibilityLocked={file.uploadedBySide === UploadSide.Customer}
+          visibleToCustomer={values.visibleToCustomer}
         />
         {mutation.hasConflict ? (
           <p
@@ -158,6 +119,6 @@ export function FileEditDialog({
           </p>
         ) : null}
       </form>
-    </Dialog>
+    </FileFormDialog>
   );
 }

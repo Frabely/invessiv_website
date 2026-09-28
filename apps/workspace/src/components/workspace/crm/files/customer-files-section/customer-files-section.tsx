@@ -7,11 +7,11 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { UPLOAD_ACCEPT_ATTRIBUTE } from "@invessiv/common/constants/files/upload-accept";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { StorageDisposition } from "@invessiv/common/constants/storage/storage-options";
 import { FileDropZoneVariant } from "@invessiv/common/constants/ui/file-drop-zone-variants";
 import type { FileDto } from "@invessiv/common/contracts/files/file.dto";
 import { filePresentation } from "@invessiv/common/patterns/files/file-presentation";
-import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import {
   ButtonControl,
   FileDropZone,
@@ -24,7 +24,6 @@ import type { FilesViewModel } from "@/common/contracts/crm/files/files-view-mod
 import { customerFilesFilter } from "@/common/patterns/crm/files/customer-files-filter";
 import { filesScopeRights } from "@/common/patterns/crm/files/files-scope-rights";
 import { CollapsibleSection } from "@/components/workspace/crm/shared/collapsible-section/collapsible-section";
-import { SectionEmptyState } from "@/components/workspace/crm/shared/section-empty-state/section-empty-state";
 import type { Locale } from "@/config/i18n";
 import { useCustomerFiles } from "@/hooks/workspace/crm/use-customer-files";
 import { useCustomerFilesFilter } from "@/hooks/workspace/crm/use-customer-files-filter";
@@ -33,9 +32,9 @@ import { FileDeleteDialog } from "../file-delete-dialog/file-delete-dialog";
 import { FileEditDialog } from "../file-edit-dialog/file-edit-dialog";
 import { FileLightbox } from "../file-lightbox/file-lightbox";
 import { FileLinkDialog } from "../file-link-dialog/file-link-dialog";
-import { FileRow } from "../file-row/file-row";
 import { FilesToolbar } from "../files-toolbar/files-toolbar";
 import { FileUploadDialog } from "../file-upload-dialog/file-upload-dialog";
+import { CustomerFilesList } from "../customer-files-list/customer-files-list";
 import styles from "./customer-files-section.module.css";
 
 type CustomerFilesSectionProps = {
@@ -50,6 +49,13 @@ type CustomerFilesSectionProps = {
   viewModel: FilesViewModel;
   onChangedAction: () => void;
 };
+
+type FileOverlay =
+  | { kind: "upload"; files: File[] }
+  | { kind: "link" }
+  | { kind: "edit"; file: FileDto }
+  | { kind: "delete"; file: FileDto }
+  | { kind: "preview"; fileId: string };
 
 /**
  * The files and links of a customer, or of one project. The list loads through the API; every
@@ -71,11 +77,7 @@ export function CustomerFilesSection({
     fixedProjectId: projectId,
   });
   const list = useCustomerFiles(customerId, filters.filter, revision);
-  const [uploadFiles, setUploadFiles] = useState<File[] | null>(null);
-  const [linkOpen, setLinkOpen] = useState(false);
-  const [editing, setEditing] = useState<FileDto | null>(null);
-  const [deleting, setDeleting] = useState<FileDto | null>(null);
-  const [previewFileId, setPreviewFileId] = useState<string | null>(null);
+  const [overlay, setOverlay] = useState<FileOverlay | null>(null);
   const [announcement, setAnnouncement] = useState("");
   const [actionError, setActionError] = useState<string | null>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
@@ -114,18 +116,15 @@ export function CustomerFilesSection({
   // index fresh from the live `previewable` list on every render, instead of storing it in state,
   // means a file that disappeared (deleted, filtered out) closes the lightbox instead of silently
   // showing whatever now sits at the old index.
+  const previewFileId = overlay?.kind === "preview" ? overlay.fileId : null;
   const previewIndex =
     previewFileId === null
       ? null
       : previewable.findIndex((file) => file.id === previewFileId);
   const previewOpen = previewIndex !== null && previewIndex >= 0;
-  const dialogOpen =
-    uploadFiles !== null ||
-    linkOpen ||
-    editing !== null ||
-    deleting !== null ||
-    previewOpen;
-  const drag = useFileDragTarget(openUpload, !canWrite || dialogOpen);
+  const isFileOverlayOpen =
+    overlay !== null && (overlay.kind !== "preview" || previewOpen);
+  const drag = useFileDragTarget(openUpload, !canWrite || isFileOverlayOpen);
 
   function rememberFocus() {
     returnFocusRef.current =
@@ -141,7 +140,7 @@ export function CustomerFilesSection({
 
   function openUpload(files: File[] = []) {
     rememberFocus();
-    setUploadFiles(files);
+    setOverlay({ kind: "upload", files });
   }
 
   function changed(message: string) {
@@ -165,131 +164,6 @@ export function CustomerFilesSection({
     document.body.append(anchor);
     anchor.click();
     anchor.remove();
-  }
-
-  function projectLabel(file: FileDto) {
-    if (projectId) return undefined;
-    return file.projectId === null
-      ? content.row.customerWide
-      : viewModel.projects.find((project) => project.id === file.projectId)
-          ?.title;
-  }
-
-  function renderBody() {
-    if (list.status === FileListLoadStatus.Loading && list.files.length === 0)
-      return (
-        <p className={styles.state} role="status">
-          {content.section.loading}
-        </p>
-      );
-    if (list.status === FileListLoadStatus.Error && list.files.length === 0)
-      return (
-        <div className={styles.state} role="alert">
-          <p>{content.section.loadError}</p>
-          <ButtonControl onClick={list.reload} type="button" variant="ghost">
-            {content.section.retry}
-          </ButtonControl>
-        </div>
-      );
-    if (list.files.length === 0)
-      return customerFilesFilter.isFiltered(
-        projectId
-          ? { ...filters.filter, projectId: undefined }
-          : filters.filter,
-      ) ? (
-        <SectionEmptyState
-          action={
-            <ButtonControl
-              onClick={filters.reset}
-              type="button"
-              variant="ghost"
-            >
-              {content.toolbar.reset}
-            </ButtonControl>
-          }
-          description={content.empty.filteredDescription}
-          title={content.empty.filteredTitle}
-        />
-      ) : (
-        <SectionEmptyState
-          description={
-            canWrite
-              ? content.empty.description
-              : content.empty.readOnlyDescription
-          }
-          title={content.empty.title}
-        />
-      );
-    return (
-      <>
-        <ul
-          aria-busy={list.status === FileListLoadStatus.Loading}
-          aria-label={content.section.listLabel}
-          className={styles.list}
-        >
-          {list.files.map((file) => {
-            const isPreviewable = filePresentation.previewKindOf(file) !== null;
-            return (
-              <FileRow
-                content={content}
-                file={file}
-                key={file.id}
-                locale={locale}
-                onDeleteAction={
-                  filesScopeRights.allows(viewModel.remove, file.projectId)
-                    ? (target) => {
-                        rememberFocus();
-                        setDeleting(target);
-                      }
-                    : undefined
-                }
-                onDownloadAction={download}
-                onEditAction={
-                  filesScopeRights.allows(viewModel.write, file.projectId)
-                    ? (target) => {
-                        rememberFocus();
-                        setEditing(target);
-                      }
-                    : undefined
-                }
-                onPreviewAction={
-                  isPreviewable
-                    ? () => {
-                        rememberFocus();
-                        setPreviewFileId(file.id);
-                      }
-                    : undefined
-                }
-                projectLabel={projectLabel(file)}
-                uploaderName={
-                  file.uploadedByMemberId
-                    ? (memberNames.get(file.uploadedByMemberId) ?? null)
-                    : null
-                }
-              />
-            );
-          })}
-        </ul>
-        <div className={styles.more}>
-          <p className={styles.shown}>
-            {formatMessage(content.section.shown, {
-              shown: String(list.files.length),
-              total: String(list.total),
-            })}
-          </p>
-          {list.hasMore ? (
-            <ButtonControl
-              disabled={list.status === FileListLoadStatus.LoadingMore}
-              onClick={list.loadMore}
-              type="button"
-              variant="ghost"
-            >
-              {content.section.loadMore}
-            </ButtonControl>
-          ) : null}
-        </div>
-      </>
-    );
   }
 
   return (
@@ -316,15 +190,15 @@ export function CustomerFilesSection({
             <p aria-live="polite" className="sr-only" role="status">
               {announcement}
             </p>
-            {uploadFiles !== null ? (
+            {overlay?.kind === "upload" ? (
               <FileUploadDialog
                 content={content}
                 customerId={customerId}
                 defaultTarget={defaultTarget}
-                initialFiles={uploadFiles}
+                initialFiles={overlay.files}
                 locale={locale}
                 onCloseAction={() => {
-                  setUploadFiles(null);
+                  setOverlay(null);
                   restoreFocus();
                 }}
                 onUploadedAction={(file) =>
@@ -338,13 +212,13 @@ export function CustomerFilesSection({
                 targets={writeTargets}
               />
             ) : null}
-            {linkOpen ? (
+            {overlay?.kind === "link" ? (
               <FileLinkDialog
                 content={content}
                 customerId={customerId}
                 defaultTarget={defaultTarget}
                 onCloseAction={() => {
-                  setLinkOpen(false);
+                  setOverlay(null);
                   restoreFocus();
                 }}
                 onCreatedAction={(file) =>
@@ -358,13 +232,13 @@ export function CustomerFilesSection({
                 targets={writeTargets}
               />
             ) : null}
-            {editing ? (
+            {overlay?.kind === "edit" ? (
               <FileEditDialog
                 content={content}
-                file={editing}
-                key={editing.id}
+                file={overlay.file}
+                key={overlay.file.id}
                 onCloseAction={() => {
-                  setEditing(null);
+                  setOverlay(null);
                   restoreFocus();
                 }}
                 onSavedAction={(file) =>
@@ -378,14 +252,14 @@ export function CustomerFilesSection({
                 targets={moveTargets}
               />
             ) : null}
-            {deleting ? (
+            {overlay?.kind === "delete" ? (
               <FileDeleteDialog
                 content={content}
-                file={deleting}
-                key={deleting.id}
+                file={overlay.file}
+                key={overlay.file.id}
                 onChangedAction={list.replace}
                 onCloseAction={() => {
-                  setDeleting(null);
+                  setOverlay(null);
                   restoreFocus();
                 }}
                 onDeletedAction={(file) =>
@@ -403,12 +277,16 @@ export function CustomerFilesSection({
                 files={previewable}
                 index={previewIndex}
                 onCloseAction={() => {
-                  setPreviewFileId(null);
+                  setOverlay(null);
                   restoreFocus();
                 }}
                 onDownloadAction={download}
                 onIndexChangeAction={(nextIndex) =>
-                  setPreviewFileId(previewable[nextIndex]?.id ?? null)
+                  setOverlay(
+                    previewable[nextIndex]
+                      ? { kind: "preview", fileId: previewable[nextIndex].id }
+                      : null,
+                  )
                 }
               />
             ) : null}
@@ -445,7 +323,7 @@ export function CustomerFilesSection({
                 className={styles.linkButton}
                 onClick={() => {
                   rememberFocus();
-                  setLinkOpen(true);
+                  setOverlay({ kind: "link" });
                 }}
                 type="button"
                 variant="ghost"
@@ -469,7 +347,45 @@ export function CustomerFilesSection({
               {actionError}
             </p>
           ) : null}
-          {renderBody()}
+          <CustomerFilesList
+            canDeleteAction={(file) =>
+              filesScopeRights.allows(viewModel.remove, file.projectId)
+            }
+            canEditAction={(file) =>
+              filesScopeRights.allows(viewModel.write, file.projectId)
+            }
+            canWrite={canWrite}
+            content={content}
+            files={list.files}
+            filterIsActive={customerFilesFilter.isFiltered(
+              projectId
+                ? { ...filters.filter, projectId: undefined }
+                : filters.filter,
+            )}
+            hasMore={list.hasMore}
+            locale={locale}
+            memberNames={memberNames}
+            onDeleteAction={(file) => {
+              rememberFocus();
+              setOverlay({ kind: "delete", file });
+            }}
+            onDownloadAction={download}
+            onEditAction={(file) => {
+              rememberFocus();
+              setOverlay({ kind: "edit", file });
+            }}
+            onLoadMoreAction={list.loadMore}
+            onPreviewAction={(file) => {
+              rememberFocus();
+              setOverlay({ kind: "preview", fileId: file.id });
+            }}
+            onReloadAction={list.reload}
+            onResetAction={filters.reset}
+            projectId={projectId}
+            projects={viewModel.projects}
+            status={list.status}
+            total={list.total}
+          />
         </div>
       </CollapsibleSection>
       {drag.active ? (

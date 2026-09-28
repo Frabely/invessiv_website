@@ -1,10 +1,9 @@
 "use client";
 
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
-import { FormField } from "@invessiv/ui";
+import { CustomSelect, FormField } from "@invessiv/ui";
 import type { FilesProjectOption } from "@/common/contracts/crm/files/files-project-option";
 import type { CrmFilesDictionary } from "@/i18n/dictionaries/workspace/crm";
-import styles from "./file-target-select.module.css";
 
 type FileTargetSelectProps = {
   content: CrmFilesDictionary;
@@ -32,32 +31,24 @@ export function FileTargetSelect({
       kind={FormFieldKind.Custom}
       label={content.upload.project}
       renderControl={({ describedBy, id }) => (
-        <select
-          aria-describedby={describedBy}
-          className={styles.select}
+        <CustomSelect
+          ariaLabel={content.upload.project}
+          describedBy={describedBy}
           disabled={disabled}
           id={id}
-          onChange={(event) =>
-            onChangeAction(
-              event.target.value === CUSTOMER_WIDE_VALUE
-                ? null
-                : event.target.value,
-            )
+          onChange={(nextValue) =>
+            onChangeAction(nextValue === CUSTOMER_WIDE_VALUE ? null : nextValue)
           }
-          value={value ?? CUSTOMER_WIDE_VALUE}
-        >
-          {targets.map((target) => (
-            <option
-              key={target ?? CUSTOMER_WIDE_VALUE}
-              value={target ?? CUSTOMER_WIDE_VALUE}
-            >
-              {target === null
+          options={targets.map((target) => ({
+            value: target ?? CUSTOMER_WIDE_VALUE,
+            label:
+              target === null
                 ? content.upload.customerWideOption
                 : (projects.find((project) => project.id === target)?.title ??
-                  target)}
-            </option>
-          ))}
-        </select>
+                  target),
+          }))}
+          value={value ?? CUSTOMER_WIDE_VALUE}
+        />
       )}
     />
   );

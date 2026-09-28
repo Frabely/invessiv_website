@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import { UPLOAD_ACCEPT_ATTRIBUTE } from "@invessiv/common/constants/files/upload-accept";
 import { UploadQueueItemStatus } from "@invessiv/common/constants/files/upload-queue-item-status";
 import { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";
@@ -11,7 +10,6 @@ import {
   ButtonControl,
   Dialog,
   FileDropZone,
-  FormField,
   PrimaryCtaButton,
 } from "@invessiv/ui";
 import { filesApiService } from "@/client/crm/files-api-service";
@@ -19,8 +17,7 @@ import type { FilesProjectOption } from "@/common/contracts/crm/files/files-proj
 import type { Locale } from "@/config/i18n";
 import { useUploadQueue } from "@/hooks/shared/use-upload-queue";
 import type { CrmFilesDictionary } from "@/i18n/dictionaries/workspace/crm";
-import { FileTargetSelect } from "../file-target-select/file-target-select";
-import { FileVisibilityField } from "../file-visibility-field/file-visibility-field";
+import { FileMetadataFields } from "../file-metadata-fields/file-metadata-fields";
 import { UploadQueueRow } from "../upload-queue-row/upload-queue-row";
 import styles from "./file-upload-dialog.module.css";
 
@@ -177,27 +174,17 @@ export function FileUploadDialog({
             : null}
         </p>
         <fieldset className={styles.settings} disabled={settingsLocked}>
-          <FileTargetSelect
+          <FileMetadataFields
             content={content}
-            onChangeAction={setTarget}
+            disabled={settingsLocked}
+            note={note}
+            onNoteChangeAction={setNote}
+            onTargetChangeAction={setTarget}
+            onVisibilityChangeAction={setVisible}
             projects={projects}
             targets={targets}
-            value={target}
-          />
-          <FileVisibilityField
-            checked={visible}
-            content={content}
-            onChangeAction={setVisible}
-          />
-          <FormField
-            inputProps={{
-              maxLength: 200,
-              onChange: (event) => setNote(event.target.value),
-              placeholder: content.upload.notePlaceholder,
-              value: note,
-            }}
-            kind={FormFieldKind.Text}
-            label={content.upload.note}
+            target={target}
+            visibleToCustomer={visible}
           />
         </fieldset>
       </div>

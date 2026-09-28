@@ -17,16 +17,20 @@ function read(
   const kind = params.get(CustomerFilesQueryParam.Kind);
   const origin = params.get(CustomerFilesQueryParam.Origin);
   return {
-    projectId:
-      project === CUSTOMER_WIDE_FILES_FILTER
-        ? null
-        : project && readableProjectIds.includes(project)
-          ? project
-          : undefined,
+    projectId: readProject(project, readableProjectIds),
     assetKind: ASSET_KIND_VALUES.find((value) => value === kind),
     origin: FILE_ORIGIN_VALUES.find((value) => value === origin),
     search: "",
   };
+}
+
+function readProject(
+  project: string | null,
+  readableProjectIds: readonly string[],
+): string | null | undefined {
+  if (project === CUSTOMER_WIDE_FILES_FILTER) return null;
+  if (project && readableProjectIds.includes(project)) return project;
+  return undefined;
 }
 
 /** Writes the filter onto a copy of the current params, keeping everything else of the URL. */

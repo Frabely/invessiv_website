@@ -2,9 +2,11 @@
 
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useId } from "react";
 import { ASSET_KIND_VALUES } from "@invessiv/common/constants/files/asset-kind";
 import { FILE_ORIGIN_VALUES } from "@invessiv/common/constants/files/file-origin";
 import { CUSTOMER_WIDE_FILES_FILTER } from "@/common/constants/crm/files/customer-files-query-params";
+import { ButtonControl, CustomSelect } from "@invessiv/ui";
 import type { CustomerFilesFilter } from "@/common/contracts/crm/files/customer-files-filter";
 import type { FilesProjectOption } from "@/common/contracts/crm/files/files-project-option";
 import { ListSearchField } from "@/components/workspace/shared/toolbar/list-search-field/list-search-field";
@@ -37,6 +39,9 @@ export function FilesToolbar({
   onResetAction,
   onSearchChangeAction,
 }: FilesToolbarProps) {
+  const projectSelectId = useId();
+  const kindSelectId = useId();
+  const originSelectId = useId();
   const current = {
     projectId: filter.projectId,
     assetKind: filter.assetKind,
@@ -63,82 +68,92 @@ export function FilesToolbar({
         />
       </div>
       {projects && (projects.length > 0 || showCustomerWide) ? (
-        <label className={styles.filter}>
+        <div className={styles.filter}>
           <span className={styles.filterLabel}>{content.toolbar.project}</span>
-          <select
-            onChange={(event) =>
+          <CustomSelect
+            ariaLabel={content.toolbar.project}
+            id={projectSelectId}
+            onChange={(value) =>
               onFilterChangeAction({
                 ...current,
-                projectId: readProject(event.target.value),
+                projectId: readProject(value),
               })
             }
+            options={[
+              { value: "", label: content.toolbar.projectAll },
+              ...(showCustomerWide
+                ? [
+                    {
+                      value: CUSTOMER_WIDE_FILES_FILTER,
+                      label: content.toolbar.customerWide,
+                    },
+                  ]
+                : []),
+              ...projects.map((project) => ({
+                value: project.id,
+                label: project.title,
+              })),
+            ]}
             value={
               filter.projectId === null
                 ? CUSTOMER_WIDE_FILES_FILTER
                 : (filter.projectId ?? "")
             }
-          >
-            <option value="">{content.toolbar.projectAll}</option>
-            {showCustomerWide ? (
-              <option value={CUSTOMER_WIDE_FILES_FILTER}>
-                {content.toolbar.customerWide}
-              </option>
-            ) : null}
-            {projects.map((project) => (
-              <option key={project.id} value={project.id}>
-                {project.title}
-              </option>
-            ))}
-          </select>
-        </label>
+          />
+        </div>
       ) : null}
-      <label className={styles.filter}>
+      <div className={styles.filter}>
         <span className={styles.filterLabel}>{content.toolbar.kind}</span>
-        <select
-          onChange={(event) =>
+        <CustomSelect
+          ariaLabel={content.toolbar.kind}
+          id={kindSelectId}
+          onChange={(value) =>
             onFilterChangeAction({
               ...current,
-              assetKind: ASSET_KIND_VALUES.find(
-                (value) => value === event.target.value,
-              ),
+              assetKind: ASSET_KIND_VALUES.find((kind) => kind === value),
             })
           }
+          options={[
+            { value: "", label: content.toolbar.kindAll },
+            ...ASSET_KIND_VALUES.map((kind) => ({
+              value: kind,
+              label: content.kinds[kind],
+            })),
+          ]}
           value={filter.assetKind ?? ""}
-        >
-          <option value="">{content.toolbar.kindAll}</option>
-          {ASSET_KIND_VALUES.map((kind) => (
-            <option key={kind} value={kind}>
-              {content.kinds[kind]}
-            </option>
-          ))}
-        </select>
-      </label>
-      <label className={styles.filter}>
+        />
+      </div>
+      <div className={styles.filter}>
         <span className={styles.filterLabel}>{content.toolbar.origin}</span>
-        <select
-          onChange={(event) =>
+        <CustomSelect
+          ariaLabel={content.toolbar.origin}
+          id={originSelectId}
+          onChange={(value) =>
             onFilterChangeAction({
               ...current,
-              origin: FILE_ORIGIN_VALUES.find(
-                (value) => value === event.target.value,
-              ),
+              origin: FILE_ORIGIN_VALUES.find((origin) => origin === value),
             })
           }
+          options={[
+            { value: "", label: content.toolbar.originAll },
+            ...FILE_ORIGIN_VALUES.map((origin) => ({
+              value: origin,
+              label: content.origins[origin],
+            })),
+          ]}
           value={filter.origin ?? ""}
-        >
-          <option value="">{content.toolbar.originAll}</option>
-          {FILE_ORIGIN_VALUES.map((origin) => (
-            <option key={origin} value={origin}>
-              {content.origins[origin]}
-            </option>
-          ))}
-        </select>
-      </label>
+        />
+      </div>
       {filtered ? (
-        <button className={styles.reset} onClick={onResetAction} type="button">
+        <ButtonControl
+          className={styles.reset}
+          onClick={onResetAction}
+          type="button"
+          variant="ghost"
+        >
           <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
           {content.toolbar.reset}
-        </button>
+        </ButtonControl>
       ) : null}
     </div>
   );

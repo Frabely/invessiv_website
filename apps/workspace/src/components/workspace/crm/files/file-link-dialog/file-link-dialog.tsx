@@ -2,21 +2,15 @@
 
 import { type SubmitEvent, useId, useRef, useState } from "react";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
-import { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";
 import type { FileDto } from "@invessiv/common/contracts/files/file.dto";
 import { validateFileLink } from "@invessiv/common/patterns/files/validate-file-link";
-import {
-  ButtonControl,
-  Dialog,
-  FormField,
-  PrimaryCtaButton,
-} from "@invessiv/ui";
+import { FormField } from "@invessiv/ui";
 import { filesApiService } from "@/client/crm/files-api-service";
 import type { FileClientErrorCode } from "@/common/contracts/files/file-client-error-code";
 import type { FilesProjectOption } from "@/common/contracts/crm/files/files-project-option";
 import type { CrmFilesDictionary } from "@/i18n/dictionaries/workspace/crm";
-import { FileTargetSelect } from "../file-target-select/file-target-select";
-import { FileVisibilityField } from "../file-visibility-field/file-visibility-field";
+import { FileMetadataFields } from "../file-metadata-fields/file-metadata-fields";
+import { FileFormDialog } from "../file-form-dialog/file-form-dialog";
 import styles from "./file-link-dialog.module.css";
 
 type FileLinkDialogProps = {
@@ -82,28 +76,16 @@ export function FileLinkDialog({
   }
 
   return (
-    <Dialog
+    <FileFormDialog
       busy={busy}
+      cancelLabel={content.upload.cancel}
       closeLabel={content.upload.close}
       description={content.link.description}
-      footer={
-        <>
-          <ButtonControl
-            disabled={busy}
-            onClick={onCloseAction}
-            type="button"
-            variant="ghost"
-          >
-            {content.upload.cancel}
-          </ButtonControl>
-          <PrimaryCtaButton disabled={busy} form={formId} type="submit">
-            {busy ? content.link.submitting : content.link.submit}
-          </PrimaryCtaButton>
-        </>
-      }
+      formId={formId}
       initialFocusRef={nameRef}
       onCloseAction={onCloseAction}
-      size={DialogSize.Narrow}
+      submitLabel={content.link.submit}
+      submittingLabel={content.link.submitting}
       title={content.link.title}
     >
       <form
@@ -140,27 +122,16 @@ export function FileLinkDialog({
           label={content.link.url}
           required
         />
-        <FileTargetSelect
+        <FileMetadataFields
           content={content}
-          onChangeAction={setTarget}
+          note={note}
+          onNoteChangeAction={setNote}
+          onTargetChangeAction={setTarget}
+          onVisibilityChangeAction={setVisible}
           projects={projects}
           targets={targets}
-          value={target}
-        />
-        <FileVisibilityField
-          checked={visible}
-          content={content}
-          onChangeAction={setVisible}
-        />
-        <FormField
-          inputProps={{
-            maxLength: 200,
-            onChange: (event) => setNote(event.target.value),
-            placeholder: content.upload.notePlaceholder,
-            value: note,
-          }}
-          kind={FormFieldKind.Text}
-          label={content.upload.note}
+          target={target}
+          visibleToCustomer={visible}
         />
         {errorCode ? (
           <p className={styles.error} role="alert">
@@ -168,6 +139,6 @@ export function FileLinkDialog({
           </p>
         ) : null}
       </form>
-    </Dialog>
+    </FileFormDialog>
   );
 }
