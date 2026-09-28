@@ -7,14 +7,14 @@ Diese Datei regelt die Umsetzung des CRM-Plans unabhängig vom Zielordner. Spezi
 
 1. `00-entscheidungen.md` enthält alle Entscheidungen.
 2. `core-features.md` ist die Funktionsübersicht.
-3. Die 36 aktiven geordneten Ordner enthalten Merge-Gates und Abnahmekriterien; der aufgelöste Ordner 03a zählt nicht
+3. Die 34 aktiven geordneten Ordner enthalten Merge-Gates und Abnahmekriterien; der aufgelöste Ordner 03a zählt nicht
    als eigene Merge-Einheit.
 
 Frühere Planstände mit 16 Merge-Einheiten und 34 Tasks sind vollständig ersetzt. Keine erinnerte
 Altentscheidung darf übernommen werden, wenn sie nicht in den aktuellen Dateien steht.
 
 **Ordnernummer ≠ Task-Nummer.** Die Ordnernummer (01–03, 03b–03d, 04–06, 06b, 07, 07a–07c, 08, 12a–12b, 13, 13a, 13c,
-14–16, 19–20,
+14, 15b, 15c, 16, 19–20,
 20a–20d, 21–22, 22a, 23–24) ist die
 Merge-Reihenfolge und kann sich beim
 Neuschnitt verschieben. Die Task-Nummer ist die Identität und bleibt: Task 08 heißt überall Task 08
@@ -24,6 +24,8 @@ und Abhängigkeitsaussagen die **Ordner**-Nummer.
 ## Mergebarer Master ist Pflicht
 
 - Ein Ordner entspricht einem Branch `feat/crm-<ordner-slug>`, einem PR und einem Merge.
+  **Ausnahme:** Ordner `14-dateien` wird bewusst in sechs Teil-PRs (14.1–14.6) mit eigenen Branches geliefert;
+  Regeln und Status stehen in dessen README.
 - Nach jedem Ordner sind Migration, Tests und App-Build grün; `master` ist produktiv deploybar.
 - Kein Ordner darf eine UI auf unvollständige Handler, fehlende Tabellen oder spätere Ordner zeigen.
 - Reine Fundamente bleiben unsichtbar. Sichtbare Funktionen werden vertikal vollständig geliefert.

@@ -8,6 +8,11 @@
 > Navigation: kein eigener Eintrag; Einstieg über die Projektkarte (`/portal/[customerId]/projects/[projectId]/feedback`) in `PORTAL_NAV_ITEMS` mit `requiredPermission`. Negativtests zusätzlich für fehlende
 > Portal-Permission.
 
+> **Hinweis Neuzuschnitt Dateien (28.09.2026):** Ordner 14, 15 und 15a (Task 13–16, 43) sind durch `14-dateien`
+> (Task 51–56) ersetzt. Beim Start dieses Ordners anpassen: keine Upload-Session-Tabelle (Runde bindet `files`-Zeilen
+> über `feedback_round_id`), keine Spalte `category` (Feedback = gesetzter `feedback_round_id`), ZIP über den
+> Archiv-Service aus Task 54. Details: `14-dateien/README.md`, Abschnitt „Auswirkungen auf spätere Ordner“.
+
 ## Ziel und Stand nach Merge
 
 **Konkrete Task-Pläne**
