@@ -4,7 +4,7 @@
 > `../00-entscheidungen.md`, `../AGENTS.md` und die scoped `AGENTS.md` am Zielcode. Diese Task-Datei plus README sind
 > vollständig; frühere Chat- oder Planstände (Task 22/23) gelten nicht.
 
-> **Status:** im Review · **Teil-PR:** 16.1 · **Branch:** `feat/crm-feedback-1-prozessblock`
+> **Status:** gemerged · **Teil-PR:** 16.1 · **Branch:** `feat/crm-feedback-1-prozessblock`
 > **Abhängigkeiten:** Ordner 07 (Projekte), 13 (Portal-Dashboard) gemerged · **Aufwand:** 1,5–2 T. · **Dateien:** 60–75
 > **Migration:** ja, eine (`0044_add_project_feedback_rounds.sql`)
 
