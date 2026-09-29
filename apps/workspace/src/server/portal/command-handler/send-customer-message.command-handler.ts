@@ -4,17 +4,18 @@ import { eq } from "drizzle-orm";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { MessageErrorCode } from "@invessiv/common/constants/crm/errors/message-error-codes";
-import type { SendMessageInput } from "@invessiv/common/contracts/crm/send-message.input";
+import type { SendMessageData } from "@invessiv/common/contracts/crm/send-message.input";
 import {
   type ContactDatabaseTransaction,
   getDrizzleDatabaseClient,
 } from "@invessiv/db/core";
 import { people } from "@invessiv/db/record-configuration";
 import type { PortalActor } from "@/server/portal/auth/portal-actor";
+import { portalFileService } from "@/server/portal/services/files/portal-file-service";
 import { portalCanOn } from "@/server/portal/shared/portal-can-on";
 import { portalConversationReader } from "@/server/portal/shared/portal-conversation-reader";
+import { customerFileVisibilityService } from "@/server/shared/files/customer-file-visibility-service";
 import { conversationService } from "@/server/shared/services/message/conversation-service";
-import { messageMappingService } from "@/server/shared/services/message/message-mapping-service";
 import { messageService } from "@/server/shared/services/message/message-service";
 
 async function getSenderDisplayName(
@@ -36,7 +37,7 @@ async function getSenderDisplayName(
 async function findRetriedOrThrottledSend(
   tx: ContactDatabaseTransaction,
   actor: PortalActor,
-  input: SendMessageInput,
+  input: SendMessageData,
   conversationId: string,
 ) {
   const retryAfterSeconds = await messageService.findPortalSendRetryAfter(
@@ -47,15 +48,32 @@ async function findRetriedOrThrottledSend(
     clientMessageId: input.clientMessageId,
     conversationId,
     body: input.body,
+    attachmentFileIds: input.attachmentFileIds,
     sender: portalConversationReader.forActor(actor),
   });
   return { existing, retryAfterSeconds };
 }
 
+/**
+ * A contact attaches only what the portal shows them (which includes `portal.files.read`); the
+ * portal never releases anything.
+ */
+function mayAttach(
+  tx: ContactDatabaseTransaction,
+  actor: PortalActor,
+  fileIds: readonly string[],
+): Promise<boolean> {
+  return customerFileVisibilityService.allMatch(
+    tx,
+    fileIds,
+    portalFileService.visibleCondition(actor),
+  );
+}
+
 async function appendCustomerMessage(
   tx: ContactDatabaseTransaction,
   actor: PortalActor,
-  input: SendMessageInput,
+  input: SendMessageData,
 ) {
   const sender = portalConversationReader.forActor(actor);
   const conversation = await conversationService.ensureCustomerConversation(
@@ -70,10 +88,16 @@ async function appendCustomerMessage(
     input,
     conversation.id,
   );
+  const visibility = portalFileService.visibleCondition(actor);
   if (existing)
     return {
       ok: true,
-      message: messageMappingService.toDto(existing, sender),
+      message: await messageService.toViewerDto(
+        tx,
+        existing,
+        sender,
+        visibility,
+      ),
     } as const;
   if (retryAfterSeconds !== null)
     return {
@@ -81,30 +105,38 @@ async function appendCustomerMessage(
       code: MessageErrorCode.RateLimited,
       retryAfterSeconds,
     } as const;
+  if (!(await mayAttach(tx, actor, input.attachmentFileIds)))
+    return { ok: false, code: MessageErrorCode.NotFound } as const;
   const senderDisplayName = await getSenderDisplayName(tx, actor.personId);
   if (!senderDisplayName)
     return { ok: false, code: MessageErrorCode.NotFound } as const;
-  const message = await messageService.appendTextMessage(tx, {
+  const appended = await messageService.appendTextMessage(tx, {
     clientMessageId: input.clientMessageId,
     conversationId: conversation.id,
     customerId: actor.customerId,
     body: input.body,
+    attachmentFileIds: input.attachmentFileIds,
     sender,
     senderDisplayName,
     actorType: ActorType.Customer,
     actorUserId: actor.userId,
   });
-  if (!message)
+  if (!appended)
     return { ok: false, code: MessageErrorCode.ValidationError } as const;
   return {
     ok: true,
-    message: messageMappingService.toDto(message, sender),
+    message: await messageService.toViewerDto(
+      tx,
+      appended.message,
+      sender,
+      visibility,
+    ),
   } as const;
 }
 
 export async function sendCustomerMessage(
   actor: PortalActor,
-  input: SendMessageInput,
+  input: SendMessageData,
 ) {
   if (
     !portalCanOn.forActor(actor, Permission.PortalMessagesWrite, {

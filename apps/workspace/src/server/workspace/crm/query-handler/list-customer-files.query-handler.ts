@@ -1,7 +1,6 @@
 import "server-only";
 import { and, count, desc, eq, ilike, isNull, or } from "drizzle-orm";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
-import { FileStatus } from "@invessiv/common/constants/files/file-status";
 import { FileOrigin } from "@invessiv/common/constants/files/file-origin";
 import { UploadSide } from "@invessiv/common/constants/files/upload-side";
 import { FileApiErrorCode as E } from "@invessiv/common/constants/files/file-api-error-code";
@@ -12,6 +11,7 @@ import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { customers, files } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessScope } from "@/common/patterns/auth/access-scope";
+import { customerFileVisibilityService } from "@/server/shared/files/customer-file-visibility-service";
 import { crmAccessCondition } from "@/server/workspace/shared/services/crm-access-condition";
 import { fileSchemas } from "../services/files/file-schemas";
 import { fileAccessService } from "../services/files/file-access-service";
@@ -91,10 +91,11 @@ export async function listCustomerFiles(
     ? or(ilike(files.display_name, search), ilike(files.note, search))
     : undefined;
   const condition = and(
-    fileAccessService.condition(actor, Permission.FilesRead),
+    fileAccessService.readableCondition(actor),
     eq(files.customer_id, customerId),
-    eq(files.status, FileStatus.Ready),
-    isNull(files.orphaned_at),
+    data.shareable
+      ? customerFileVisibilityService.openableCondition(customerId)
+      : undefined,
     projectCondition,
     data.assetKind ? eq(files.asset_kind, data.assetKind) : undefined,
     originCondition,

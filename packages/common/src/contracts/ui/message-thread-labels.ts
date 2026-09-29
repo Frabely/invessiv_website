@@ -40,4 +40,16 @@ export type MessageThreadLabels = {
   send: string;
   /** Character counter, receives `{count}` and `{max}`. */
   characterCount: string;
+  /** Accessible name of a message's or the composer's attachment list. */
+  attachmentsLabel: string;
+  /** Chip text for an entry the viewer may no longer see; the name stays hidden. */
+  attachmentUnavailable: string;
+  /** Bubble text for a message without text whose attachments were all removed. */
+  attachmentGone: string;
+  /** Accessible name of a chip's download action, receives `{name}`. */
+  downloadAttachment: string;
+  /** Accessible name of a link chip, receives `{name}`; it opens in a new tab. */
+  openAttachmentLink: string;
+  /** Accessible name of the remove action on a composer chip, receives `{name}`. */
+  removeAttachment: string;
 };

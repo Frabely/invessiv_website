@@ -13,7 +13,10 @@ import { portalFileMappingService } from "@/server/portal/services/files/portal-
 import { portalFileSchemas } from "@/server/portal/services/files/portal-file-schemas";
 import { portalFileService } from "@/server/portal/services/files/portal-file-service";
 
-/** One tab of visible entries, newest first; without `portal.files.read` the page does not exist. */
+/**
+ * Visible entries, newest first: one tab, or both origins for the chat's file picker. Without
+ * `portal.files.read` the page does not exist.
+ */
 export async function listPortalFiles(
   reader: PortalReader,
   input: PortalFileListQueryDto,
@@ -30,7 +33,7 @@ export async function listPortalFiles(
   const db = getDrizzleDatabaseClient();
   const condition = and(
     portalFileService.visibleCondition(reader),
-    portalFileService.originCondition(origin),
+    origin ? portalFileService.originCondition(origin) : undefined,
   );
   const [rows, [total]] = await Promise.all([
     db

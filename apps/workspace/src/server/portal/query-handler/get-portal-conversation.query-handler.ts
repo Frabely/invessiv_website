@@ -2,6 +2,7 @@ import "server-only";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { MessageErrorCode } from "@invessiv/common/constants/crm/errors/message-error-codes";
+import type { ConversationAttachmentAccessDto } from "@invessiv/common/contracts/crm/conversation-attachment-access.dto";
 import type { ConversationDto } from "@invessiv/common/contracts/crm/conversation.dto";
 import {
   type ContactDatabaseTransaction,
@@ -10,6 +11,7 @@ import {
 import { conversations } from "@invessiv/db/record-configuration";
 import { isPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
 import type { PortalReader } from "@/server/portal/auth/portal-reader";
+import { portalFileService } from "@/server/portal/services/files/portal-file-service";
 import { portalConversationMappingService } from "@/server/portal/services/portal-conversation-mapping-service";
 import { portalAccessCondition } from "@/server/portal/shared/portal-access-condition";
 import { portalCanOn } from "@/server/portal/shared/portal-can-on";
@@ -28,6 +30,24 @@ function readerMayWrite(reader: PortalReader): boolean {
   );
 }
 
+/**
+ * Attaching is part of writing; picking needs file read, uploading also file write, because the
+ * send checks every attachment against what the contact may read.
+ */
+function attachmentAccessOf(
+  reader: PortalReader,
+): ConversationAttachmentAccessDto {
+  if (isPortalOwnerView(reader) || !readerMayWrite(reader))
+    return { pick: false, upload: false };
+  const scope = { customerId: reader.customerId };
+  const pick = portalCanOn.forActor(reader, Permission.PortalFilesRead, scope);
+  return {
+    pick,
+    upload:
+      pick && portalCanOn.forActor(reader, Permission.PortalFilesWrite, scope),
+  };
+}
+
 async function loadConversationPage(
   tx: ContactDatabaseTransaction,
   reader: PortalReader,
@@ -40,6 +60,7 @@ async function loadConversationPage(
     conversation.id,
     cursor,
     viewer,
+    portalFileService.visibleCondition(reader),
   );
   if (!page) return null;
   const unreadCount = viewer
@@ -78,6 +99,7 @@ async function loadVisibleConversation(
     conversation: portalConversationMappingService.toPortalDto(
       loaded,
       readerMayWrite(reader),
+      attachmentAccessOf(reader),
     ),
   } as const;
 }

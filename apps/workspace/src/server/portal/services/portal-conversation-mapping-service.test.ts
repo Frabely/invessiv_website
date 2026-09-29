@@ -14,13 +14,20 @@ const conversation: ConversationDto = {
 };
 
 describe("portalConversationMappingService.toPortalDto", () => {
-  it("adds only the write capability to the shared view", () => {
+  it("adds the write and attachment capabilities to the shared view", () => {
+    const attachmentAccess = { pick: true, upload: false };
     expect(
-      portalConversationMappingService.toPortalDto(conversation, true),
-    ).toEqual({ ...conversation, canWrite: true });
+      portalConversationMappingService.toPortalDto(
+        conversation,
+        true,
+        attachmentAccess,
+      ),
+    ).toEqual({ ...conversation, canWrite: true, attachmentAccess });
     expect(
-      portalConversationMappingService.toPortalDto(conversation, false)
-        .canWrite,
+      portalConversationMappingService.toPortalDto(conversation, false, {
+        pick: false,
+        upload: false,
+      }).canWrite,
     ).toBe(false);
   });
 });

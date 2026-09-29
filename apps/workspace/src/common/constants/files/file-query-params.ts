@@ -5,5 +5,6 @@ export const FileQueryParam = {
   AssetKind: "assetKind",
   Origin: "origin",
   Search: "search",
+  Shareable: "shareable",
   Disposition: "disposition",
 } as const;

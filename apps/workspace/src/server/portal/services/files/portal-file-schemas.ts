@@ -9,7 +9,7 @@ export const portalFileSchemas = {
   list: z.strictObject({
     page: shared.page,
     pageSize: shared.pageSize,
-    origin: z.enum(PORTAL_FILE_ORIGIN_VALUES),
+    origin: z.enum(PORTAL_FILE_ORIGIN_VALUES).optional(),
   }),
   upload: z.strictObject({
     displayName: shared.displayName,

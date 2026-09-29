@@ -33,6 +33,7 @@ export const fileSchemas = {
     assetKind: z.enum(ASSET_KIND_VALUES).optional(),
     origin: z.enum(FILE_ORIGIN_VALUES).optional(),
     search: z.string().trim().max(200).optional(),
+    shareable: z.boolean().optional(),
   }),
   disposition: shared.disposition,
 };

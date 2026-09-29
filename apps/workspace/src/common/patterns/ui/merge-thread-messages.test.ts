@@ -12,6 +12,7 @@ function message(id: string, createdAt: string, body = id): MessageDto {
     conversationId: "c",
     type: MessageType.Text,
     body,
+    attachments: [],
     metadata: null,
     senderSide: MessageSenderSide.Customer,
     senderDisplayName: "Anna",

@@ -370,7 +370,7 @@ export function CustomerCockpitView({
           </div>
         </div>
       </div>
-      {conversation !== undefined && messagesContent ? (
+      {conversation !== undefined && messagesContent && filesContent ? (
         <ChatDock
           badgeLabel={describeUnreadBadge(
             conversation?.unreadCount ?? 0,
@@ -388,6 +388,7 @@ export function CustomerCockpitView({
             canWrite={canWriteConversation}
             content={messagesContent}
             customerId={customer.id}
+            filesContent={filesContent}
             initialConversation={conversation}
             key={`${viewerMemberId}:${customer.id}`}
             locale={locale}

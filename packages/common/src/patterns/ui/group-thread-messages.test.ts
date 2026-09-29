@@ -30,6 +30,7 @@ function message(
       conversationId: "conversation",
       type: MessageType.Text,
       body: id,
+      attachments: [],
       metadata: null,
       senderSide: MessageSenderSide.Customer,
       senderDisplayName: "Anna",
@@ -51,6 +52,7 @@ describe("groupThreadMessages", () => {
         pending: {
           clientId: "pending",
           body: "Unsent",
+          attachments: [],
           createdAt: localIso(20, 10, 1),
           status: PendingMessageStatus.Failed,
         },
@@ -115,6 +117,7 @@ describe("groupThreadMessages", () => {
           pending: {
             clientId: "p1",
             body: "Pending",
+            attachments: [],
             createdAt: localIso(20, 10, 1),
             status: PendingMessageStatus.Sending,
           },

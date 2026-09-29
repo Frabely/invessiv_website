@@ -20,8 +20,16 @@ const api = vi.hoisted(() => ({
 }));
 vi.mock("@/client/crm/files-api-service", () => ({
   filesApiService: {
-    createUpload: api.createUpload,
-    completeUpload: api.completeUpload,
+    // The dialog only sees the transport; it is built on the mocked requests.
+    uploadTransport: (customerId: string, fields: object) => ({
+      createTicket: (file: File) =>
+        api.createUpload(customerId, {
+          ...fields,
+          displayName: file.name,
+          sizeBytes: file.size,
+        }),
+      complete: api.completeUpload,
+    }),
   },
 }));
 vi.mock("@/client/shared/storage-transfer", () => ({

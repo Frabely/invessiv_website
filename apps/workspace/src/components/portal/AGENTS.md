@@ -46,6 +46,11 @@ Plan: `apps/workspace/plans/crm/13a-kundenchat/26-chat-im-portal.md`.
 - Im Dashboard gibt es **kein** Nachrichten-Widget: Der `ChatDock` ist der Einstieg und zeigt Ungelesenes am Rail
   (`unreadCount`). Ohne `portal.messages.read` wird der Dock nicht gerendert.
 - Drafts und fehlgeschlagene Sendungen sind je Nutzer und Firma gebunden (`viewerUserId:customerId`).
+- **Anhänge (ab Task 56):** 📎 erscheint nur, wenn die Seite `filesContent` übergibt und der Server
+  `attachmentAccess` im `PortalConversationDto` setzt (Owner-Sicht nie). Datei-Zugriff läuft über
+  `usePortalChatAttachmentApi`; Auswahl, Upload und Freigabe-Hinweis kommen aus der geteilten
+  `ConversationThreadView` (`components/shared/chat-attachments/`). Das Portal gibt nie etwas frei; ein nicht mehr
+  sichtbarer Anhang erscheint als „Nicht mehr verfügbar“ ohne Namen.
 
 ## Dateien (ab Task 55)
 

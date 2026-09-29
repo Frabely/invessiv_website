@@ -14,4 +14,6 @@ export interface FileListQueryDto {
   origin?: FileOrigin;
   /** Literal substring search over name and note. */
   search?: string;
+  /** Only entries the customer could open once released, as the chat's file picker offers. */
+  shareable?: boolean;
 }

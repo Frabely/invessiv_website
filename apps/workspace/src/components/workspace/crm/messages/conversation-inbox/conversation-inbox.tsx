@@ -10,7 +10,10 @@ import {
 } from "@/common/constants/crm/conversation-inbox-filters";
 import { buildConversationInboxHref } from "@/common/patterns/crm/conversation-inbox-query";
 import type { Locale } from "@/config/i18n";
-import type { CrmMessagesDictionary } from "@/i18n/dictionaries/workspace/crm";
+import type {
+  CrmFilesDictionary,
+  CrmMessagesDictionary,
+} from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ConversationListItem } from "../conversation-list-item/conversation-list-item";
 import { ConversationOwnerSelect } from "../conversation-owner-select/conversation-owner-select";
@@ -34,6 +37,8 @@ type ConversationInboxProps = {
   /** Link into the customer record; null without `customers.read` on the customer. */
   cockpitHref: string | null;
   content: CrmMessagesDictionary;
+  /** Upload labels and file errors for attachments in the selected conversation. */
+  filesContent: CrmFilesDictionary;
   filter: ConversationInboxFilter;
   /** Distinguishes "nothing yet" from "nothing for this filter". */
   hasAnyConversation: boolean;
@@ -52,6 +57,7 @@ export function ConversationInbox({
   canWriteSelected,
   cockpitHref,
   content,
+  filesContent,
   filter,
   hasAnyConversation,
   items,
@@ -184,6 +190,7 @@ export function ConversationInbox({
                 canWrite={canWriteSelected}
                 content={content}
                 customerId={selected.customerId}
+                filesContent={filesContent}
                 initialConversation={selected}
                 key={`${viewerMemberId}:${selected.customerId}`}
                 locale={locale}

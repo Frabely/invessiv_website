@@ -4,6 +4,7 @@ import path from "node:path";
 import { config as loadDotenv } from "dotenv";
 import { and, eq, inArray, isNull, sql } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { sendMessageInputSchema } from "@invessiv/common/contracts/crm/send-message.input";
 import { NextRequest } from "next/server";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
@@ -340,12 +341,18 @@ describe.skipIf(!RUN_INTEGRATION)(
       await Promise.all([
         sendInternalMessage(
           customerA,
-          { body: "Welcome", clientMessageId: randomUUID() },
+          sendMessageInputSchema.parse({
+            body: "Welcome",
+            clientMessageId: randomUUID(),
+          }),
           internalActor(),
         ),
         sendInternalMessage(
           customerA,
-          { body: "Welcome as well", clientMessageId: randomUUID() },
+          sendMessageInputSchema.parse({
+            body: "Welcome as well",
+            clientMessageId: randomUUID(),
+          }),
           internalActor(),
         ),
       ]);
@@ -424,16 +431,22 @@ describe.skipIf(!RUN_INTEGRATION)(
       const portalActor = resolution.actor;
       const internal = await sendInternalMessage(
         customerA,
-        { body: "First draft is ready.", clientMessageId: randomUUID() },
+        sendMessageInputSchema.parse({
+          body: "First draft is ready.",
+          clientMessageId: randomUUID(),
+        }),
         internalActor(),
       );
       if (!internal.ok) throw new Error("Expected internal message.");
       const portalBefore = await portalView(portalActor);
       expect(portalBefore.unreadCount).toBe(3);
-      const sent = await sendCustomerMessage(portalActor, {
-        body: "Thank you.",
-        clientMessageId: randomUUID(),
-      });
+      const sent = await sendCustomerMessage(
+        portalActor,
+        sendMessageInputSchema.parse({
+          body: "Thank you.",
+          clientMessageId: randomUUID(),
+        }),
+      );
       expect(sent.ok).toBe(true);
       const scopedReader: WorkspaceActor = {
         ...internalActor(),
@@ -560,7 +573,10 @@ describe.skipIf(!RUN_INTEGRATION)(
       const portalActor = resolution.actor;
       const first = await sendInternalMessage(
         customerA,
-        { body: "First update", clientMessageId: randomUUID() },
+        sendMessageInputSchema.parse({
+          body: "First update",
+          clientMessageId: randomUUID(),
+        }),
         internalActor(),
       );
       if (!first.ok) throw new Error("Expected first message.");
@@ -568,10 +584,10 @@ describe.skipIf(!RUN_INTEGRATION)(
       expect(visible.messages.at(-1)?.id).toBe(first.message.id);
       const second = await sendInternalMessage(
         customerA,
-        {
+        sendMessageInputSchema.parse({
           body: "Arrived after the view loaded",
           clientMessageId: randomUUID(),
-        },
+        }),
         internalActor(),
       );
       if (!second.ok) throw new Error("Expected second message.");
@@ -583,8 +599,14 @@ describe.skipIf(!RUN_INTEGRATION)(
       expect((await portalView(portalActor)).unreadCount).toBe(1);
 
       const input = { body: "Please confirm", clientMessageId: randomUUID() };
-      const sent = await sendCustomerMessage(portalActor, input);
-      const repeated = await sendCustomerMessage(portalActor, input);
+      const sent = await sendCustomerMessage(
+        portalActor,
+        sendMessageInputSchema.parse(input),
+      );
+      const repeated = await sendCustomerMessage(
+        portalActor,
+        sendMessageInputSchema.parse(input),
+      );
       if (!sent.ok || !repeated.ok)
         throw new Error("Expected successful retries.");
       expect(repeated.message.id).toBe(sent.message.id);
@@ -594,10 +616,13 @@ describe.skipIf(!RUN_INTEGRATION)(
         .where(eq(messages.client_message_id, input.clientMessageId));
       expect(rows).toHaveLength(1);
       expect(
-        await sendCustomerMessage(portalActor, {
-          ...input,
-          body: "Changed body",
-        }),
+        await sendCustomerMessage(
+          portalActor,
+          sendMessageInputSchema.parse({
+            ...input,
+            body: "Changed body",
+          }),
+        ),
       ).toEqual({ ok: false, code: MessageErrorCode.ValidationError });
 
       const internalInput = {
@@ -605,8 +630,16 @@ describe.skipIf(!RUN_INTEGRATION)(
         clientMessageId: randomUUID(),
       };
       const [firstInternal, repeatedInternal] = await Promise.all([
-        sendInternalMessage(customerA, internalInput, internalActor()),
-        sendInternalMessage(customerA, internalInput, internalActor()),
+        sendInternalMessage(
+          customerA,
+          sendMessageInputSchema.parse(internalInput),
+          internalActor(),
+        ),
+        sendInternalMessage(
+          customerA,
+          sendMessageInputSchema.parse(internalInput),
+          internalActor(),
+        ),
       ]);
       if (!firstInternal.ok || !repeatedInternal.ok)
         throw new Error("Expected successful concurrent retries.");
@@ -628,7 +661,10 @@ describe.skipIf(!RUN_INTEGRATION)(
       expect(
         await sendInternalMessage(
           customerB,
-          { body: "wrong company", clientMessageId: randomUUID() },
+          sendMessageInputSchema.parse({
+            body: "wrong company",
+            clientMessageId: randomUUID(),
+          }),
           scoped,
         ),
       ).toEqual({ ok: false, code: MessageErrorCode.NotFound });
@@ -829,10 +865,10 @@ describe.skipIf(!RUN_INTEGRATION)(
       ).toBeNull();
       const internal = await sendInternalMessage(
         customerA,
-        {
+        sendMessageInputSchema.parse({
           body: "Internal replies are never limited.",
           clientMessageId: randomUUID(),
-        },
+        }),
         internalActor(),
       );
       expect(internal.ok).toBe(true);

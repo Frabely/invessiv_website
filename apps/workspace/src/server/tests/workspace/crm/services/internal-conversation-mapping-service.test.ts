@@ -27,6 +27,7 @@ const lastMessage: MessageDto = {
   conversationId: row.id,
   type: MessageType.Text,
   body: "Hello",
+  attachments: [],
   metadata: null,
   senderSide: MessageSenderSide.Customer,
   senderDisplayName: "Anna Berger",
@@ -51,9 +52,11 @@ describe("internalConversationMappingService", () => {
         conversation,
         row,
         "Moritz",
+        { pick: true, upload: true },
       ),
     ).toEqual({
       ...conversation,
+      attachmentAccess: { pick: true, upload: true },
       ownership: {
         ownerMemberId: row.owner_member_id,
         ownerDisplayName: "Moritz",
@@ -68,6 +71,7 @@ describe("internalConversationMappingService", () => {
         { ...conversation, id: null },
         null,
         "",
+        { pick: false, upload: false },
       ).ownership,
     ).toBeNull();
   });

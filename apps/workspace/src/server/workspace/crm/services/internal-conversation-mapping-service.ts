@@ -1,5 +1,6 @@
 import "server-only";
 
+import type { ConversationAttachmentAccessDto } from "@invessiv/common/contracts/crm/conversation-attachment-access.dto";
 import type { ConversationDto } from "@invessiv/common/contracts/crm/conversation.dto";
 import type { ConversationInboxItemDto } from "@invessiv/common/contracts/crm/conversation-inbox-item.dto";
 import type { InternalConversationDto } from "@invessiv/common/contracts/crm/internal-conversation.dto";
@@ -11,9 +12,11 @@ function toInternalDto(
   conversation: ConversationDto,
   row: typeof conversations.$inferSelect | null,
   ownerDisplayName: string,
+  attachmentAccess: ConversationAttachmentAccessDto,
 ): InternalConversationDto {
   return {
     ...conversation,
+    attachmentAccess,
     ownership: row
       ? {
           ownerMemberId: row.owner_member_id,

@@ -11,7 +11,11 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { MessageErrorCode } from "@invessiv/common/constants/crm/errors/message-error-codes";
 import type { PortalConversationDto } from "@invessiv/common/contracts/portal/portal-conversation.dto";
-import { getPortalMessagesDictionary } from "@/i18n/dictionaries/portal";
+import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
+import {
+  getPortalFilesDictionary,
+  getPortalMessagesDictionary,
+} from "@/i18n/dictionaries/portal";
 import { PortalConversation } from "./portal-conversation";
 
 const api = vi.hoisted(() => ({
@@ -26,6 +30,14 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/client/portal/portal-messages-api-service", () => ({
   portalMessagesApiService: api,
 }));
+const filesApi = vi.hoisted(() => ({
+  listFiles: vi.fn(),
+  getDownloadUrl: vi.fn(),
+  uploadTransport: vi.fn(),
+}));
+vi.mock("@/client/portal/portal-files-api-service", () => ({
+  portalFilesApiService: filesApi,
+}));
 
 const content = getPortalMessagesDictionary("de");
 const CONVERSATION: PortalConversationDto = {
@@ -36,6 +48,7 @@ const CONVERSATION: PortalConversationDto = {
   messages: [],
   nextCursor: null,
   canWrite: true,
+  attachmentAccess: { pick: false, upload: false },
 };
 
 function renderConversation(
@@ -48,6 +61,7 @@ function renderConversation(
       cockpitHref={cockpitHref}
       content={content}
       customerId="customer-1"
+      filesContent={getPortalFilesDictionary("de")}
       initialConversation={conversation}
       locale="de"
       viewerUserId="user-1"
@@ -98,6 +112,82 @@ describe("PortalConversation", () => {
     expect(
       screen.getByRole("button", { name: content.thread.retry }),
     ).toBeVisible();
+  });
+
+  it("attaches a visible file without any release step", async () => {
+    const fileId = "44444444-4444-4444-8444-444444444444";
+    filesApi.listFiles.mockResolvedValue({
+      ok: true,
+      value: {
+        files: [
+          {
+            id: fileId,
+            displayName: "logo.png",
+            assetKind: AssetKind.Image,
+          },
+        ],
+        total: 1,
+        page: 1,
+        pageSize: 25,
+      },
+    });
+    api.sendMessage.mockReturnValue(new Promise(() => {}));
+    render(
+      <PortalConversation
+        active
+        cockpitHref={null}
+        content={content}
+        customerId="customer-1"
+        filesContent={getPortalFilesDictionary("de")}
+        initialConversation={{
+          ...CONVERSATION,
+          attachmentAccess: { pick: true, upload: false },
+        }}
+        locale="de"
+        viewerUserId="user-1"
+      />,
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: content.attachments.attach }),
+    );
+    fireEvent.click(
+      await screen.findByRole("checkbox", { name: "logo.png anhängen" }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: content.attachments.confirm }),
+    );
+    expect(filesApi.listFiles).toHaveBeenCalledWith("customer-1", null, 1);
+    expect(screen.queryByRole("note")).toBeNull();
+    fireEvent.click(
+      await screen.findByRole("button", { name: content.thread.send }),
+    );
+    await waitFor(() =>
+      expect(api.sendMessage).toHaveBeenCalledWith("customer-1", {
+        body: "",
+        clientMessageId: expect.any(String),
+        attachmentFileIds: [fileId],
+        releaseHiddenAttachments: false,
+      }),
+    );
+  });
+
+  it("offers no 📎 to the read-only owner view", () => {
+    render(
+      <PortalConversation
+        active
+        cockpitHref="/de/crm?cockpit=customer-1"
+        content={content}
+        customerId="customer-1"
+        filesContent={getPortalFilesDictionary("de")}
+        initialConversation={{ ...CONVERSATION, canWrite: false }}
+        locale="de"
+        viewerUserId="user-1"
+      />,
+    );
+    expect(
+      screen.queryByRole("button", { name: content.attachments.attach }),
+    ).toBeNull();
   });
 
   it("shows no composer without write permission", () => {

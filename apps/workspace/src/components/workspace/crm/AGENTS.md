@@ -101,6 +101,11 @@ Plan: `apps/workspace/plans/crm/13a-kundenchat/25-chat-im-crm.md`.
 - Ohne `chat.write` fehlt das Eingabefeld, ohne Recht zum Neuzuweisen die Verantwortlichen-Auswahl — nie deaktiviert.
 - Nachrichtentext wird nur als Text gerendert; Links erkennt `splitMessageLinks` (nur http/https).
 - Systemnachrichten werden über `describeSystemMessage` aus Dictionary-Key + Parametern formuliert.
+- **Anhänge (ab Task 56):** 📎 erscheint nur mit `filesContent` und serverseitigem `attachmentAccess`. Datei-Zugriff
+  läuft über `useCrmChatAttachmentApi`; die Auswahl listet nur teilbare Einträge (`shareable`), Chat-Uploads
+  landen kundenweit und intern. Solange ein interner Eintrag
+  angehängt ist, zeigt der Composer den Hinweis „Diese Datei wird für den Kunden freigegeben“; erst dann sendet der
+  Client `releaseHiddenAttachments: true`. Ohne das Flag lehnt der Server mit `ATTACHMENT_RELEASE_REQUIRED` ab.
 
 ## Dateien & Links (ab Task 53)
 

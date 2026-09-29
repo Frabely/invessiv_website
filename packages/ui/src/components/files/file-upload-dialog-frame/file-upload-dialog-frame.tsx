@@ -14,7 +14,8 @@ import { UploadQueueRow } from "../upload-queue-row/upload-queue-row";
 import styles from "./file-upload-dialog-frame.module.css";
 
 export type FileUploadDialogFrameProps = {
-  fields: ReactNode;
+  /** Settings shared by the whole batch; without them the dialog shows no settings group. */
+  fields?: ReactNode;
   /** BCP 47 locale for file sizes. */
   locale: string;
   labels: {
@@ -154,9 +155,11 @@ export function FileUploadDialogFrame({
               })
             : null}
         </p>
-        <fieldset className={styles.settings} disabled={queue.hasStarted}>
-          {fields}
-        </fieldset>
+        {fields ? (
+          <fieldset className={styles.settings} disabled={queue.hasStarted}>
+            {fields}
+          </fieldset>
+        ) : null}
       </div>
     </Dialog>
   );

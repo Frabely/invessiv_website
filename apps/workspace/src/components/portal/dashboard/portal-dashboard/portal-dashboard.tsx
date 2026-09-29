@@ -28,6 +28,7 @@ import { PortalConversation } from "@/components/portal/messages/portal-conversa
 import { usePortalTaskCompletion } from "@/hooks/portal/use-portal-task-completion";
 import type {
   PortalDashboardDictionary,
+  PortalFilesDictionary,
   PortalMessagesDictionary,
 } from "@/i18n/dictionaries/portal";
 import { PortalDashboardEmptyState } from "../portal-dashboard-empty-state/portal-dashboard-empty-state";
@@ -55,6 +56,8 @@ export type PortalDashboardProps = {
   filesHref: string;
   /** Null without `portal.files.read`; the files widget is then not rendered. */
   filesOverview: PortalFilesOverviewDto | null;
+  /** Upload labels and file errors for attachments in the chat dock. */
+  filesContent: PortalFilesDictionary;
   locale: Locale;
   messagesContent: PortalMessagesDictionary;
   /** Business day (`YYYY-MM-DD`) decided once on the server. */
@@ -77,6 +80,7 @@ export function PortalDashboard({
   dashboard,
   filesHref,
   filesOverview,
+  filesContent,
   locale,
   messagesContent,
   today,
@@ -270,6 +274,7 @@ export function PortalDashboard({
               cockpitHref={cockpitHref}
               content={messagesContent}
               customerId={customerId}
+              filesContent={filesContent}
               initialConversation={conversation}
               locale={locale}
               viewerUserId={viewerUserId}

@@ -1,0 +1,5 @@
+(typeof files.$inferSelect)["asset_kind"] -> das als typ definieren -> AssetKind -> gibt es schon
+gleiches hier labels: MessageAttachmentListProps["labels"];
+C:\Users\MoritzDesktop\IdeaProjects\invessiv_website\packages\ui\src\components\message-thread\message-attachment-list\message-attachment-list.tsx -> a und button durch die jeweiligen komponente ersetzen?
+C:\Users\MoritzDesktop\IdeaProjects\invessiv_website\apps\workspace\src\components\shared\chat-attachments\chat-attachment-menu\chat-attachment-menu.tsx button -> Buttoncontrol?
+message-composer.tsx button zu button control

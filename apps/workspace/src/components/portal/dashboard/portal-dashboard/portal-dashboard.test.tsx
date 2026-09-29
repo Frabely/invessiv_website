@@ -27,6 +27,7 @@ import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import { listVisiblePortalWidgets } from "@/common/patterns/portal/list-visible-portal-widgets";
 import {
   getPortalDashboardDictionary,
+  getPortalFilesDictionary,
   getPortalMessagesDictionary,
 } from "@/i18n/dictionaries/portal";
 import { PortalDashboard } from "./portal-dashboard";
@@ -74,6 +75,7 @@ const CONVERSATION: PortalConversationDto = {
       conversationId: "conversation-1",
       type: "text",
       body: "First update",
+      attachments: [],
       metadata: null,
       senderSide: "internal",
       senderDisplayName: "Team",
@@ -86,6 +88,7 @@ const CONVERSATION: PortalConversationDto = {
       conversationId: "conversation-1",
       type: "text",
       body: "Second update",
+      attachments: [],
       metadata: null,
       senderSide: "internal",
       senderDisplayName: "Team",
@@ -96,6 +99,7 @@ const CONVERSATION: PortalConversationDto = {
   ],
   nextCursor: null,
   canWrite: true,
+  attachmentAccess: { pick: false, upload: false },
 };
 const TODAY = "2026-09-26";
 // The widget's accessible name also carries its entry count.
@@ -198,6 +202,7 @@ function renderDashboard(
       filesHref="/en/portal/customer-1/files"
       filesOverview={filesOverview}
       locale="en"
+      filesContent={getPortalFilesDictionary("en")}
       messagesContent={messagesContent}
       today={TODAY}
       viewerUserId="user-1"
@@ -388,6 +393,7 @@ describe("PortalDashboard", () => {
         filesHref="/en/portal/customer-1/files"
         filesOverview={FILES}
         locale="en"
+        filesContent={getPortalFilesDictionary("en")}
         messagesContent={messagesContent}
         today={TODAY}
         viewerUserId="user-1"

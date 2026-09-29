@@ -95,6 +95,7 @@ export const files = pgTable(
       foreignColumns: [portalMemberships.id],
     }),
     unique(N.StorageKeyUnique).on(t.storage_key),
+    unique(N.IdCustomerUnique).on(t.id, t.customer_id),
     check(N.SourceCheck, sqlCheckIn(t.source, FILE_SOURCE_VALUES)),
     check(N.StatusCheck, sqlCheckIn(t.status, FILE_STATUS_VALUES)),
     check(N.AssetKindCheck, sqlCheckIn(t.asset_kind, ASSET_KIND_VALUES)),

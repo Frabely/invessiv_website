@@ -23,7 +23,13 @@
     "inputPlaceholder": "Nachricht an den Kunden …",
     "inputHint": "Enter sendet, Shift + Enter macht eine neue Zeile.",
     "send": "Senden",
-    "characterCount": "{count} von {max} Zeichen"
+    "characterCount": "{count} von {max} Zeichen",
+    "attachmentsLabel": "Anhänge",
+    "attachmentUnavailable": "Nicht mehr verfügbar",
+    "attachmentGone": "Anhang nicht mehr verfügbar",
+    "downloadAttachment": "{name} herunterladen",
+    "openAttachmentLink": "{name} in neuem Tab öffnen",
+    "removeAttachment": "{name} entfernen"
   },
   "systemMessages": {
     "projectPhaseChanged": "Projekt „{projectTitle}“ ist jetzt in der Phase {phase}."
@@ -35,7 +41,8 @@
     "loading": "Verlauf wird geladen …",
     "loadError": "Der Verlauf konnte nicht geladen werden.",
     "reload": "Erneut laden",
-    "olderError": "Ältere Nachrichten konnten nicht geladen werden."
+    "olderError": "Ältere Nachrichten konnten nicht geladen werden.",
+    "attachmentFailed": "Ein Anhang lässt sich nicht mit dem Kunden teilen, etwa weil sein Projekt archiviert ist. Entferne ihn und sende erneut."
   },
   "redaction": {
     "title": "Nachricht ausblenden?",
@@ -63,7 +70,8 @@
     "responsible": "Verantwortlich: {name}",
     "selectPrompt": "Wähl links eine Unterhaltung aus.",
     "backToList": "Zur Liste",
-    "openCockpit": "Kundenakte öffnen"
+    "openCockpit": "Kundenakte öffnen",
+    "attachmentOnly": "Anhang"
   },
   "owner": {
     "label": "Verantwortlich",
@@ -71,5 +79,32 @@
     "conflict": "Jemand hat die Verantwortung gerade geändert. Der aktuelle Stand ist übernommen.",
     "invalid": "Diese Person kann den Verlauf nicht lesen oder ist nicht mehr aktiv.",
     "error": "Die Verantwortung konnte nicht geändert werden."
+  },
+  "attachments": {
+    "attach": "Datei anhängen",
+    "upload": "Neue Datei hochladen",
+    "pick": "Vorhandene Datei wählen",
+    "limitReached": "Höchstens {max} Anhänge pro Nachricht.",
+    "search": "Suchen",
+    "searchPlaceholder": "Name oder Notiz",
+    "emptySearch": "Keine Datei passt zu deiner Suche.",
+    "loading": "Dateien werden geladen …",
+    "loadError": "Die Dateien konnten nicht geladen werden.",
+    "retry": "Erneut laden",
+    "loadMore": "Weitere laden",
+    "confirm": "Anhängen",
+    "confirmCount": "{count} anhängen",
+    "cancel": "Abbrechen",
+    "close": "Dialog schließen",
+    "selectNamed": "{name} anhängen",
+    "downloadError": "Der Anhang lässt sich gerade nicht herunterladen. Lade den Verlauf neu.",
+    "uploadTitle": "Datei für den Chat hochladen",
+    "uploadDescription": "Die Datei landet kundenweit unter „Dateien“ und hängt danach an deiner Nachricht. Beim Senden wird sie für den Kunden freigegeben.",
+    "pickerTitle": "Vorhandene Datei wählen",
+    "pickerDescription": "Dateien und Links dieses Kunden. Interne Einträge werden beim Senden für den Kunden freigegeben.",
+    "empty": "Für diesen Kunden gibt es noch keine Dateien oder Links.",
+    "internalBadge": "Intern",
+    "releaseNoticeOne": "Diese Datei wird für den Kunden freigegeben.",
+    "releaseNoticeMany": "Diese Dateien werden für den Kunden freigegeben."
   }
 }

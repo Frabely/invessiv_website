@@ -15,6 +15,7 @@ import { FileQueryParam } from "@/common/constants/files/file-query-params";
 import type { FileClientResult } from "@/common/contracts/files/file-client-result";
 import type { FileDeleteClientResult } from "@/common/contracts/files/file-delete-client-result";
 import type { FileMutationClientResult } from "@/common/contracts/files/file-mutation-client-result";
+import type { UploadQueueTransport } from "@/common/contracts/files/upload-queue-transport";
 import {
   crmCustomerFileLinksEndpoint,
   crmCustomerFilesArchiveEndpoint,
@@ -63,6 +64,7 @@ function listFiles(
   if (query.assetKind) params.set(FileQueryParam.AssetKind, query.assetKind);
   if (query.origin) params.set(FileQueryParam.Origin, query.origin);
   if (query.search) params.set(FileQueryParam.Search, query.search);
+  if (query.shareable) params.set(FileQueryParam.Shareable, "true");
   const search = params.toString();
   return transport.request(
     search
@@ -92,6 +94,18 @@ function completeUpload(fileId: string): Promise<FileClientResult<FileDto>> {
     HttpMethod.Post,
     undefined,
     readFile,
+  );
+}
+
+/** The queue transport for this customer; `fields` are the settings shared by every file of a batch. */
+function uploadTransport(
+  customerId: string,
+  fields: Omit<CreateFileUploadRequestDto, "displayName" | "sizeBytes">,
+): UploadQueueTransport {
+  return transport.uploadQueueTransport(
+    (file) => createUpload(customerId, { ...fields, ...file }),
+    completeUpload,
+    cancelPendingUpload,
   );
 }
 
@@ -169,6 +183,7 @@ export const filesApiService = {
   createUpload,
   completeUpload,
   cancelPendingUpload,
+  uploadTransport,
   createLink,
   updateFile,
   deleteFile,

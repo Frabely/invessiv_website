@@ -6,6 +6,7 @@ const texts = {
   loadError: "load",
   olderError: "older",
   rateLimited: "limit",
+  attachmentFailed: "attachment",
 };
 const calm = { loadFailed: false, olderFailed: false, sendError: null };
 
@@ -33,7 +34,23 @@ describe("describeThreadNotice", () => {
     expect(
       describeThreadNotice(
         { ...calm, sendError: MessageErrorCode.RateLimited },
-        { loadError: "load", olderError: "older" },
+        { loadError: "load", olderError: "older", attachmentFailed: "a" },
+      ),
+    ).toBeNull();
+  });
+
+  it("explains a refused attachment above a failed older page", () => {
+    for (const sendError of [
+      MessageErrorCode.AttachmentUnavailable,
+      MessageErrorCode.AttachmentReleaseRequired,
+    ])
+      expect(
+        describeThreadNotice({ ...calm, olderFailed: true, sendError }, texts),
+      ).toBe("attachment");
+    expect(
+      describeThreadNotice(
+        { ...calm, sendError: MessageErrorCode.NotFound },
+        texts,
       ),
     ).toBeNull();
   });

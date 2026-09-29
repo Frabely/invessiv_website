@@ -39,18 +39,11 @@ export function FileUploadDialog({
   const [visible, setVisible] = useState(false);
   const [note, setNote] = useState("");
   const queue = useUploadQueue(
-    {
-      createTicket: (file) =>
-        filesApiService.createUpload(customerId, {
-          displayName: file.name,
-          sizeBytes: file.size,
-          projectId: target,
-          visibleToCustomer: visible,
-          note: note.trim() || null,
-        }),
-      complete: filesApiService.completeUpload,
-      cancelPending: filesApiService.cancelPendingUpload,
-    },
+    filesApiService.uploadTransport(customerId, {
+      projectId: target,
+      visibleToCustomer: visible,
+      note: note.trim() || null,
+    }),
     { onUploadedAction },
   );
   useInitialUploadFiles(initialFiles, queue.stage);

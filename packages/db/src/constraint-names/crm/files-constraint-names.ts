@@ -4,6 +4,7 @@ export const FilesConstraintName = {
   MemberForeignKey: "files_member_fk",
   PortalMembershipForeignKey: "files_portal_membership_fk",
   StorageKeyUnique: "files_storage_key_unique",
+  IdCustomerUnique: "files_id_customer_unique",
   SourceCheck: "files_source_check",
   StatusCheck: "files_status_check",
   AssetKindCheck: "files_asset_kind_check",

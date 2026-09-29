@@ -10,7 +10,10 @@ import {
 import type { ConversationInboxItemDto } from "@invessiv/common/contracts/crm/conversation-inbox-item.dto";
 import type { InternalConversationDto } from "@invessiv/common/contracts/crm/internal-conversation.dto";
 import { ConversationInboxFilter } from "@/common/constants/crm/conversation-inbox-filters";
-import { getCrmMessagesDictionary } from "@/i18n/dictionaries/workspace/crm";
+import {
+  getCrmFilesDictionary,
+  getCrmMessagesDictionary,
+} from "@/i18n/dictionaries/workspace/crm";
 import { ConversationInbox } from "./conversation-inbox";
 
 vi.mock("next/navigation", () => ({
@@ -39,6 +42,7 @@ const item: ConversationInboxItemDto = {
     conversationId: "conversation-1",
     type: MessageType.Text,
     body: null,
+    attachments: [],
     metadata: null,
     senderSide: MessageSenderSide.Customer,
     senderDisplayName: "Anna",
@@ -55,6 +59,7 @@ const selected: InternalConversationDto = {
   lastMessageAt: null,
   messages: [],
   nextCursor: null,
+  attachmentAccess: { pick: false, upload: false },
   ownership: {
     ownerMemberId: "member-1",
     ownerDisplayName: "Moritz",
@@ -72,6 +77,7 @@ function renderInbox(
       canWriteSelected={false}
       cockpitHref={null}
       content={content}
+      filesContent={getCrmFilesDictionary("de")}
       filter={ConversationInboxFilter.All}
       hasAnyConversation
       items={[item]}

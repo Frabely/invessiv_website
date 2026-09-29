@@ -17,13 +17,18 @@ import {
 } from "@invessiv/common/patterns/ui/group-thread-messages";
 import { useIsBrowser } from "../../../hooks/use-is-browser";
 import { useThreadAutoscroll } from "../../../hooks/use-thread-autoscroll";
-import { MessageComposer } from "../message-composer/message-composer";
+import {
+  MessageComposer,
+  type MessageComposerAttachmentsProps,
+} from "../message-composer/message-composer";
 import { MessageDateDivider } from "../message-date-divider/message-date-divider";
 import { MessageGroup } from "../message-group/message-group";
 import { MessageSystemEntry } from "../message-system-entry/message-system-entry";
 import styles from "./message-thread.module.css";
 
 export type MessageThreadProps = {
+  /** Attachment area of the composer; without it the composer sends text only. */
+  composerAttachments?: MessageComposerAttachmentsProps;
   /** localStorage key of the unsent text; the consumer scopes it to viewer and conversation. */
   draftStorageKey: string;
   /** Turns a system event (dictionary key + parameters) into text. */
@@ -35,6 +40,8 @@ export type MessageThreadProps = {
   messages: readonly MessageDto[];
   /** Error line above the history, e.g. a failed reload; announced as an alert. */
   notice?: string | null;
+  /** Downloads an uploaded attachment through the consumer's file endpoints. */
+  onDownloadAttachmentAction?: (fileId: string) => void;
   onLoadOlderAction: () => void;
   onRedactAction?: (messageId: string) => void;
   onRetryAction: (clientId: string) => void;
@@ -45,6 +52,7 @@ export type MessageThreadProps = {
 };
 
 export function MessageThread({
+  composerAttachments,
   draftStorageKey,
   describeSystemMessageAction,
   hasOlder,
@@ -53,6 +61,7 @@ export function MessageThread({
   locale,
   messages,
   notice,
+  onDownloadAttachmentAction,
   onLoadOlderAction,
   onRedactAction,
   onRetryAction,
@@ -164,6 +173,7 @@ export function MessageThread({
                       group={group}
                       key={group.key}
                       labels={labels}
+                      onDownloadAttachmentAction={onDownloadAttachmentAction}
                       onRedactAction={onRedactAction}
                       onRetryAction={onRetryAction}
                       timeLabel={timeLabel}
@@ -187,6 +197,7 @@ export function MessageThread({
       </div>
       {onSendAction ? (
         <MessageComposer
+          attachments={composerAttachments}
           draftStorageKey={draftStorageKey}
           labels={labels}
           onSendAction={handleSend}

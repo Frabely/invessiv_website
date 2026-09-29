@@ -3,7 +3,9 @@ import {
   MessageSenderSide,
   MessageType,
 } from "@invessiv/common/constants/crm/message-types";
+import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
 import { messages } from "@invessiv/db/record-configuration";
+import type { MessageAttachmentRow } from "@/server/shared/services/message/message-attachment-types";
 import { messageMappingService } from "@/server/shared/services/message/message-mapping-service";
 
 vi.mock("server-only", () => ({}));
@@ -25,6 +27,45 @@ const row: typeof messages.$inferSelect = {
   redacted_by_member_id: null,
 };
 
+const attachment: MessageAttachmentRow = {
+  messageId: row.id,
+  position: 0,
+  available: true,
+  fileId: "77777777-7777-4777-8777-777777777777",
+  displayName: "Brand guide",
+  assetKind: AssetKind.Link,
+  url: "https://example.com/guide",
+};
+
+describe("messageMappingService.toAttachmentDto", () => {
+  it("maps a visible entry with name, kind and link target", () => {
+    expect(messageMappingService.toAttachmentDto(attachment)).toEqual({
+      position: 0,
+      available: true,
+      fileId: attachment.fileId,
+      displayName: "Brand guide",
+      assetKind: AssetKind.Link,
+      url: "https://example.com/guide",
+    });
+  });
+
+  it("reveals nothing but the position of an entry the viewer may not see", () => {
+    expect(
+      messageMappingService.toAttachmentDto({
+        ...attachment,
+        available: false,
+      }),
+    ).toEqual({
+      position: 0,
+      available: false,
+      fileId: null,
+      displayName: null,
+      assetKind: null,
+      url: null,
+    });
+  });
+});
+
 describe("messageMappingService.toDto", () => {
   it("maps the immutable row and computes ownership for a portal member", () => {
     expect(
@@ -37,6 +78,7 @@ describe("messageMappingService.toDto", () => {
       conversationId: row.conversation_id,
       type: MessageType.Text,
       body: "Hello",
+      attachments: [],
       metadata: null,
       senderSide: MessageSenderSide.Customer,
       senderDisplayName: "Anna Berger",
@@ -46,15 +88,29 @@ describe("messageMappingService.toDto", () => {
     });
   });
 
-  it("never exposes a redacted body even if a stale row still contains it", () => {
+  it("never exposes a redacted body or its attachments", () => {
     const redactedAt = new Date("2026-09-25T12:00:00.000Z");
     expect(
-      messageMappingService.toDto({ ...row, redacted_at: redactedAt }, null),
+      messageMappingService.toDto({ ...row, redacted_at: redactedAt }, null, [
+        messageMappingService.toAttachmentDto(attachment),
+      ]),
     ).toMatchObject({
       body: null,
+      attachments: [],
       redactedAt: redactedAt.toISOString(),
       isOwn: false,
     });
+  });
+
+  it("keeps the attachments of a visible message in the given order", () => {
+    const first = messageMappingService.toAttachmentDto(attachment);
+    const second = messageMappingService.toAttachmentDto({
+      ...attachment,
+      position: 1,
+    });
+    expect(
+      messageMappingService.toDto(row, null, [first, second]).attachments,
+    ).toEqual([first, second]);
   });
 
   it("maps a system event key and parameters", () => {

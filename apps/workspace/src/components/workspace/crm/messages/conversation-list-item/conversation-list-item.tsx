@@ -27,7 +27,11 @@ function previewText(
   if (!message) return content.inbox.noMessages;
   if (message.type === MessageType.System)
     return describeSystemMessage(message, content);
-  const text = message.body ?? content.thread.redacted;
+  // The inbox loads no attachments, so an empty body means the message carried files only.
+  const text =
+    message.body === null
+      ? content.thread.redacted
+      : message.body || content.inbox.attachmentOnly;
   return message.isOwn ? `${content.inbox.ownPrefix}${text}` : text;
 }
 

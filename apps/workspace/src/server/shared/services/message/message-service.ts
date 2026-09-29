@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, desc, eq, gt, or, sql } from "drizzle-orm";
+import { and, desc, eq, gt, or, type SQL, sql } from "drizzle-orm";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import {
@@ -13,6 +13,7 @@ import {
   MessageType,
 } from "@invessiv/common/constants/crm/message-types";
 import type { ConversationDto } from "@invessiv/common/contracts/crm/conversation.dto";
+import type { MessageDto } from "@invessiv/common/contracts/crm/message.dto";
 import { isUuid } from "@invessiv/common/patterns/validation/is-uuid";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import { messages, portalMemberships } from "@invessiv/db/record-configuration";
@@ -20,6 +21,7 @@ import { MESSAGE_ACTIVITY_ENTITY } from "@/common/constants/crm/message-activity
 import { activityService } from "../activity-service";
 import type { ConversationReader } from "./conversation-reader-types";
 import { conversationService } from "./conversation-service";
+import { messageAttachmentService } from "./message-attachment-service";
 import { messageMappingService } from "./message-mapping-service";
 
 const MAX_CURSOR_LENGTH = 256;
@@ -33,6 +35,8 @@ type TextMessageInput = {
   conversationId: string;
   customerId: string;
   body: string;
+  /** Already authorized for this customer by the calling handler. */
+  attachmentFileIds: readonly string[];
   sender: ConversationReader;
   senderDisplayName: string;
   actorType: typeof ActorType.User | typeof ActorType.Customer;
@@ -121,12 +125,14 @@ async function selectMessagePageRows(
 /**
  * Newest page, or the page before `cursor`, in chronological order. Null only for a cursor that
  * was not issued by this service; the caller answers that as a validation error.
+ * `attachmentVisibility` is the viewer's file filter; attachments outside it show as unavailable.
  */
 async function getMessagePage(
   tx: ContactDatabaseTransaction,
   conversationId: string,
   cursor: string | null,
   viewer: ConversationReader | null,
+  attachmentVisibility: SQL,
 ): Promise<Pick<ConversationDto, "messages" | "nextCursor"> | null> {
   const position = cursor ? decodeMessageCursor(cursor) : null;
   if (cursor && !position) return null;
@@ -134,9 +140,12 @@ async function getMessagePage(
   const page = rows.slice(0, MESSAGE_PAGE_SIZE);
   const oldest = page.at(-1);
   return {
-    messages: page
-      .reverse()
-      .map((row) => messageMappingService.toDto(row.message, viewer)),
+    messages: await toViewerDtos(
+      tx,
+      page.reverse().map((row) => row.message),
+      viewer,
+      attachmentVisibility,
+    ),
     nextCursor:
       rows.length > MESSAGE_PAGE_SIZE && oldest
         ? encodeMessageCursor({
@@ -173,15 +182,54 @@ async function recordTextMessageCreation(
   });
 }
 
+/** Messages as `viewer` sees them; all attachments are resolved through the viewer's file filter at once. */
+async function toViewerDtos(
+  tx: ContactDatabaseTransaction,
+  rows: readonly (typeof messages.$inferSelect)[],
+  viewer: ConversationReader | null,
+  attachmentVisibility: SQL,
+): Promise<MessageDto[]> {
+  const attachments = await messageAttachmentService.loadByMessage(
+    tx,
+    rows.map((row) => row.id),
+    attachmentVisibility,
+  );
+  return rows.map((row) =>
+    messageMappingService.toDto(row, viewer, attachments.get(row.id)),
+  );
+}
+
+async function toViewerDto(
+  tx: ContactDatabaseTransaction,
+  message: typeof messages.$inferSelect,
+  viewer: ConversationReader | null,
+  attachmentVisibility: SQL,
+): Promise<MessageDto> {
+  const [dto] = await toViewerDtos(tx, [message], viewer, attachmentVisibility);
+  return dto;
+}
+
+function sameFileIds(stored: readonly string[], sent: readonly string[]) {
+  return (
+    stored.length === sent.length &&
+    stored.every((fileId, index) => fileId === sent[index])
+  );
+}
+
 /**
  * The earlier message of a retried send, but only if it is really the same send: same sender,
- * conversation and text (or since redacted). A reused client id with other content matches nothing.
+ * conversation, text and attachment list (or since redacted). A reused client id with other
+ * content matches nothing.
  */
 async function findMatchingTextMessage(
   tx: ContactDatabaseTransaction,
   input: Pick<
     TextMessageInput,
-    "clientMessageId" | "conversationId" | "body" | "sender"
+    | "clientMessageId"
+    | "conversationId"
+    | "body"
+    | "attachmentFileIds"
+    | "sender"
   >,
 ) {
   const [existing] = await tx
@@ -195,17 +243,26 @@ async function findMatchingTextMessage(
     existing.conversation_id === input.conversationId &&
     existing.sender_side === sender.sender_side &&
     existing.sender_member_id === sender.sender_member_id &&
-    existing.sender_portal_membership_id ===
-      sender.sender_portal_membership_id &&
-    (existing.body === input.body || existing.redacted_at !== null);
-  return sameSend ? existing : null;
+    existing.sender_portal_membership_id === sender.sender_portal_membership_id;
+  if (!sameSend) return null;
+  if (existing.redacted_at !== null) return existing;
+  return existing.body === input.body &&
+    sameFileIds(
+      await messageAttachmentService.listFileIds(tx, existing.id),
+      input.attachmentFileIds,
+    )
+    ? existing
+    : null;
 }
 
-/** Idempotent per `clientMessageId`: a retry returns the stored message, or null on a mismatch. */
+/**
+ * Idempotent per `clientMessageId`: a retry returns the stored message with `created: false`, a
+ * mismatch returns null. Attachments are written in the same transaction as the message.
+ */
 async function appendTextMessage(
   tx: ContactDatabaseTransaction,
   input: TextMessageInput,
-) {
+): Promise<{ message: typeof messages.$inferSelect; created: boolean } | null> {
   const [message] = await tx
     .insert(messages)
     .values({
@@ -225,14 +282,18 @@ async function appendTextMessage(
     })
     .onConflictDoNothing({ target: messages.client_message_id })
     .returning();
-  if (!message) return findMatchingTextMessage(tx, input);
+  if (!message) {
+    const existing = await findMatchingTextMessage(tx, input);
+    return existing ? { message: existing, created: false } : null;
+  }
+  await messageAttachmentService.attach(tx, message, input.attachmentFileIds);
   await conversationService.touchLastMessageAt(
     tx,
     input.conversationId,
     message.id,
   );
   await recordTextMessageCreation(tx, input, message);
-  return message;
+  return { message, created: true };
 }
 
 /** Creates the conversation if needed; null only when the customer does not exist. */
@@ -309,4 +370,5 @@ export const messageService = {
   findMatchingTextMessage,
   findPortalSendRetryAfter,
   getMessagePage,
+  toViewerDto,
 } as const;

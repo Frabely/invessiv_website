@@ -1,22 +1,47 @@
 "use client";
 
-import { type KeyboardEvent, type SyntheticEvent, useId } from "react";
+import {
+  type KeyboardEvent,
+  type ReactNode,
+  type SyntheticEvent,
+  useId,
+} from "react";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ButtonControl } from "@invessiv/ui";
 import { MESSAGE_BODY_MAX_LENGTH } from "@invessiv/common/constants/crm/message-limits";
+import { AttachmentChipKind } from "@invessiv/common/constants/ui/attachment-chip-kinds";
+import type { ComposerAttachment } from "@invessiv/common/contracts/ui/composer-attachment";
 import type { MessageThreadLabels } from "@invessiv/common/contracts/ui/message-thread-labels";
 import { useMessageDraft } from "../../../hooks/use-message-draft";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
+import { AttachmentChip } from "../attachment-chip/attachment-chip";
 import styles from "./message-composer.module.css";
 
 const COUNTER_THRESHOLD = Math.floor(MESSAGE_BODY_MAX_LENGTH * 0.8);
 
+export type MessageComposerAttachmentsProps = {
+  /** Picked entries; a message may be sent with them alone. */
+  items: readonly ComposerAttachment[];
+  /** Shown above the field while it applies, e.g. that an entry will be released on send. */
+  notice: string | null;
+  onRemoveAction: (fileId: string) => void;
+  /** The consumer's attach control (menu, dialogs); the package knows no upload or file API. */
+  trigger: ReactNode;
+};
+
 type MessageComposerProps = {
+  attachments?: MessageComposerAttachmentsProps;
   draftStorageKey: string;
   labels: Pick<
     MessageThreadLabels,
-    "characterCount" | "inputHint" | "inputLabel" | "inputPlaceholder" | "send"
+    | "attachmentsLabel"
+    | "characterCount"
+    | "inputHint"
+    | "inputLabel"
+    | "inputPlaceholder"
+    | "removeAttachment"
+    | "send"
   >;
   onSendAction: (body: string) => void;
 };
@@ -27,6 +52,7 @@ function isCoarsePointer(): boolean {
 }
 
 export function MessageComposer({
+  attachments,
   draftStorageKey,
   labels,
   onSendAction,
@@ -35,11 +61,21 @@ export function MessageComposer({
   const inputId = useId();
   const hintId = useId();
   const counterId = useId();
+  const noticeId = useId();
   const showCounter = draft.length >= COUNTER_THRESHOLD;
+  const items = attachments?.items ?? [];
+  const canSend = Boolean(draft.trim()) || items.length > 0;
+  const describedBy = [
+    hintId,
+    showCounter ? counterId : null,
+    attachments?.notice ? noticeId : null,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   function send() {
+    if (!canSend) return;
     const body = draft.trim();
-    if (!body) return;
     setDraft("");
     onSendAction(body);
   }
@@ -62,13 +98,42 @@ export function MessageComposer({
   }
 
   return (
-    <form className={styles.composer} onSubmit={handleSubmit}>
+    <form
+      className={styles.composer}
+      data-attach={Boolean(attachments)}
+      onSubmit={handleSubmit}
+    >
+      {items.length > 0 ? (
+        <ul aria-label={labels.attachmentsLabel} className={styles.chips}>
+          {items.map((item) => (
+            <li key={item.fileId}>
+              <AttachmentChip
+                assetKind={item.assetKind}
+                kind={AttachmentChipKind.Removable}
+                name={item.displayName}
+                onRemoveAction={() => attachments?.onRemoveAction(item.fileId)}
+                removeLabel={formatMessage(labels.removeAttachment, {
+                  name: item.displayName,
+                })}
+              />
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      {attachments?.notice ? (
+        <p className={styles.notice} id={noticeId} role="note">
+          {attachments.notice}
+        </p>
+      ) : null}
+      {attachments ? (
+        <div className={styles.trigger}>{attachments.trigger}</div>
+      ) : null}
       <label className="sr-only" htmlFor={inputId}>
         {labels.inputLabel}
       </label>
       <div className={styles.field} data-value={draft}>
         <textarea
-          aria-describedby={showCounter ? `${hintId} ${counterId}` : hintId}
+          aria-describedby={describedBy}
           id={inputId}
           maxLength={MESSAGE_BODY_MAX_LENGTH}
           onChange={(event) => setDraft(event.target.value)}
@@ -81,7 +146,7 @@ export function MessageComposer({
       <ButtonControl
         aria-label={labels.send}
         className={styles.send}
-        disabled={!draft.trim()}
+        disabled={!canSend}
         title={labels.send}
         type="submit"
       >

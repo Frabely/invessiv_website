@@ -59,6 +59,7 @@ const CONVERSATION: PortalConversationDto = {
   messages: [],
   nextCursor: null,
   canWrite: true,
+  attachmentAccess: { pick: false, upload: false },
 };
 
 async function renderPage(customerId = "customer-1") {

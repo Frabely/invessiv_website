@@ -27,7 +27,13 @@
     "inputPlaceholder": "Deine Nachricht …",
     "inputHint": "Enter sendet, Shift + Enter macht eine neue Zeile.",
     "send": "Senden",
-    "characterCount": "{count} von {max} Zeichen"
+    "characterCount": "{count} von {max} Zeichen",
+    "attachmentsLabel": "Anhänge",
+    "attachmentUnavailable": "Nicht mehr verfügbar",
+    "attachmentGone": "Anhang nicht mehr verfügbar",
+    "downloadAttachment": "{name} herunterladen",
+    "openAttachmentLink": "{name} in neuem Tab öffnen",
+    "removeAttachment": "{name} entfernen"
   },
   "systemMessages": {
     "projectPhaseChanged": "Dein Projekt „{projectTitle}“ ist jetzt in der Phase {phase}."
@@ -48,10 +54,32 @@
     "loadError": "Der Verlauf konnte nicht geladen werden.",
     "reload": "Erneut laden",
     "olderError": "Ältere Nachrichten konnten nicht geladen werden.",
-    "rateLimited": "Du hast in der letzten Stunde sehr viele Nachrichten geschickt. Warte kurz und sende dann erneut."
+    "rateLimited": "Du hast in der letzten Stunde sehr viele Nachrichten geschickt. Warte kurz und sende dann erneut.",
+    "attachmentFailed": "Ein Anhang ist nicht mehr verfügbar. Entferne ihn und sende erneut."
   },
   "ownerView": {
     "hint": "In der Portalansicht kannst du nicht schreiben.",
     "link": "Im CRM antworten"
+  },
+  "attachments": {
+    "attach": "Datei anhängen",
+    "upload": "Neue Datei hochladen",
+    "pick": "Vorhandene Datei wählen",
+    "limitReached": "Höchstens {max} Anhänge pro Nachricht.",
+    "loading": "Dateien werden geladen …",
+    "loadError": "Die Dateien konnten nicht geladen werden.",
+    "retry": "Erneut laden",
+    "loadMore": "Weitere laden",
+    "confirm": "Anhängen",
+    "confirmCount": "{count} anhängen",
+    "cancel": "Abbrechen",
+    "close": "Dialog schließen",
+    "selectNamed": "{name} anhängen",
+    "downloadError": "Der Anhang lässt sich gerade nicht herunterladen. Lade den Verlauf neu.",
+    "uploadTitle": "Datei für den Chat hochladen",
+    "uploadDescription": "Wir sehen die Datei sofort. Du findest sie auch unter „Dateien“ bei „Von dir“.",
+    "pickerTitle": "Vorhandene Datei wählen",
+    "pickerDescription": "Alles, was wir für dich freigegeben haben, und alles, was du uns geschickt hast.",
+    "empty": "Hier gibt es noch keine Dateien oder Links."
   }
 }

@@ -8,6 +8,7 @@ import { PortalDashboard } from "@/components/portal/dashboard/portal-dashboard/
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import {
   getPortalDashboardDictionary,
+  getPortalFilesDictionary,
   getPortalMessagesDictionary,
 } from "@/i18n/dictionaries/portal";
 import { portalPathFor, workspaceAreaPathFor } from "@/lib/auth/routes";
@@ -102,6 +103,7 @@ export default async function PortalCustomerPage({
           reader.customerId,
           PortalSection.Files,
         )}
+        filesContent={getPortalFilesDictionary(activeLocale)}
         filesOverview={
           fromUs.ok && fromYou.ok
             ? { fromUs: fromUs.value, fromYou: fromYou.value }

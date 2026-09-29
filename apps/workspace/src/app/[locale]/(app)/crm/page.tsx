@@ -360,7 +360,10 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
           customer={cockpitCustomer}
           files={filesViewModel ?? undefined}
           filesContent={
-            filesViewModel ? getCrmFilesDictionary(activeLocale) : undefined
+            // The chat needs the upload labels even without the files area.
+            filesViewModel || canReadConversation
+              ? getCrmFilesDictionary(activeLocale)
+              : undefined
           }
           isWorkspaceOwner={isWorkspaceOwner}
           portalHref={

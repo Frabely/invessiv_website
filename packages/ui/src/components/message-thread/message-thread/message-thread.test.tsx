@@ -13,6 +13,7 @@ import {
   MessageSenderSide,
   MessageType,
 } from "@invessiv/common/constants/crm/message-types";
+import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
 import type { MessageDto } from "@invessiv/common/contracts/crm/message.dto";
 import { PendingMessageStatus } from "@invessiv/common/constants/ui/pending-message-statuses";
 import type { MessageThreadLabels } from "@invessiv/common/contracts/ui/message-thread-labels";
@@ -39,6 +40,12 @@ const labels: MessageThreadLabels = {
   inputHint: "Enter sends, Shift+Enter adds a line",
   send: "Send",
   characterCount: "{count} of {max}",
+  attachmentsLabel: "Attachments",
+  attachmentUnavailable: "No longer available",
+  attachmentGone: "Attachment no longer available",
+  downloadAttachment: "Download {name}",
+  openAttachmentLink: "Open {name} in a new tab",
+  removeAttachment: "Remove {name}",
 };
 
 let sequence = 0;
@@ -50,6 +57,7 @@ function message(overrides: Partial<MessageDto> = {}): MessageDto {
     conversationId: "conversation",
     type: MessageType.Text,
     body: `Body ${sequence}`,
+    attachments: [],
     metadata: null,
     senderSide: MessageSenderSide.Customer,
     senderDisplayName: "Anna Berger",
@@ -167,6 +175,7 @@ describe("MessageThread", () => {
         {
           clientId: "p1",
           body: "Draft text",
+          attachments: [],
           createdAt: new Date().toISOString(),
           status: PendingMessageStatus.Failed,
         },
@@ -196,6 +205,61 @@ describe("MessageThread", () => {
   it("is read-only without a send handler", () => {
     renderThread({ onSendAction: undefined });
     expect(screen.queryByRole("textbox")).toBeNull();
+  });
+
+  it("shows attachment chips and hides the name of an unavailable entry", () => {
+    const onDownloadAttachmentAction = vi.fn();
+    renderThread({
+      onDownloadAttachmentAction,
+      messages: [
+        message({
+          body: "",
+          attachments: [
+            {
+              position: 0,
+              available: true,
+              fileId: "file-1",
+              displayName: "offer.pdf",
+              assetKind: AssetKind.Document,
+              url: null,
+            },
+            {
+              position: 1,
+              available: true,
+              fileId: "link-1",
+              displayName: "Brand film",
+              assetKind: AssetKind.Link,
+              url: "https://example.test/film",
+            },
+            {
+              position: 2,
+              available: false,
+              fileId: null,
+              displayName: null,
+              assetKind: null,
+              url: null,
+            },
+          ],
+        }),
+      ],
+    });
+
+    const list = screen.getByRole("list", { name: labels.attachmentsLabel });
+    fireEvent.click(
+      within(list).getByRole("button", { name: "Download offer.pdf" }),
+    );
+    expect(onDownloadAttachmentAction).toHaveBeenCalledWith("file-1");
+    const link = within(list).getByRole("link", {
+      name: "Open Brand film in a new tab",
+    });
+    expect(link).toHaveAttribute("href", "https://example.test/film");
+    expect(link).toHaveAttribute("rel", "noopener noreferrer");
+    expect(within(list).getByText(labels.attachmentUnavailable)).toBeVisible();
+  });
+
+  it("explains a message whose only attachments were removed", () => {
+    renderThread({ messages: [message({ body: "", attachments: [] })] });
+    expect(screen.getByText(labels.attachmentGone)).toBeVisible();
   });
 });
 
@@ -246,6 +310,42 @@ describe("MessageComposer inside the thread", () => {
       fireEvent.change(input, { target: { value: "Still typing" } }),
     ).not.toThrow();
     expect(input).toHaveValue("Still typing");
+  });
+
+  it("sends with attachments alone, removes a chip and shows the release notice", () => {
+    const onRemoveAction = vi.fn();
+    const props = renderThread({
+      draftStorageKey: "attachments",
+      composerAttachments: {
+        items: [
+          {
+            fileId: "file-1",
+            displayName: "offer.pdf",
+            assetKind: AssetKind.Document,
+            releasesOnSend: true,
+          },
+        ],
+        notice: "This file will be shared with the customer.",
+        onRemoveAction,
+        trigger: <button type="button">Attach</button>,
+      },
+    });
+
+    expect(screen.getByRole("note")).toHaveTextContent(
+      "This file will be shared with the customer.",
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Remove offer.pdf" }));
+    expect(onRemoveAction).toHaveBeenCalledWith("file-1");
+    const send = screen.getByRole("button", { name: labels.send });
+    expect(send).toBeEnabled();
+    fireEvent.click(send);
+    expect(props.onSendAction).toHaveBeenCalledWith("");
+    expect(screen.getByRole("button", { name: "Attach" })).toBeVisible();
+  });
+
+  it("keeps sending disabled without text and attachments", () => {
+    renderThread({ draftStorageKey: "empty" });
+    expect(screen.getByRole("button", { name: labels.send })).toBeDisabled();
   });
 
   it("shows the character counter near the limit", () => {

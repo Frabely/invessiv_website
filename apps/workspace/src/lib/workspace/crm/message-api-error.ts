@@ -12,6 +12,9 @@ const STATUS: Record<MessageErrorCode, HttpResponseCode> = {
   [MessageErrorCode.Forbidden]: HttpResponseCode.Forbidden,
   [MessageErrorCode.VersionConflict]: HttpResponseCode.Conflict,
   [MessageErrorCode.RateLimited]: HttpResponseCode.TooManyRequests,
+  [MessageErrorCode.AttachmentReleaseRequired]: HttpResponseCode.Conflict,
+  [MessageErrorCode.AttachmentUnavailable]:
+    HttpResponseCode.UnprocessableContent,
   [MessageErrorCode.Internal]: HttpResponseCode.InternalServerError,
 };
 
@@ -21,6 +24,10 @@ const MESSAGES: Record<MessageErrorCode, string> = {
   [MessageErrorCode.Forbidden]: "This action is not permitted.",
   [MessageErrorCode.VersionConflict]: "Conversation was changed.",
   [MessageErrorCode.RateLimited]: "Too many messages. Try again later.",
+  [MessageErrorCode.AttachmentReleaseRequired]:
+    "An attachment is internal and must be released to the customer.",
+  [MessageErrorCode.AttachmentUnavailable]:
+    "An attachment cannot be shared with the customer.",
   [MessageErrorCode.Internal]: "Messages are temporarily unavailable.",
 };
 

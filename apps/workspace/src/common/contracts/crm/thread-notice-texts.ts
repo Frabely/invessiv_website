@@ -6,4 +6,6 @@ export type ThreadNoticeTexts = {
   olderError: string;
   /** Only the portal is rate limited, so the CRM has no text for it. */
   rateLimited?: string;
+  /** An attachment of the last send can no longer be shared. */
+  attachmentFailed: string;
 };

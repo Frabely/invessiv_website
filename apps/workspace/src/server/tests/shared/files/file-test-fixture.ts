@@ -158,5 +158,6 @@ export function createFileTestFixture() {
     foreignProjectId,
     memberId,
     membershipId,
+    personId,
   };
 }

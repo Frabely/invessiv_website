@@ -21,17 +21,20 @@ const RETRYABLE_CODES: ReadonlySet<UploadQueueErrorCode> = new Set([
 /**
  * Classifies a new selection against the files already accepted into the current batch. Files
  * beyond the count or byte budget are refused one by one, so the fitting part still uploads.
+ * `maxFiles` narrows the count budget, e.g. to the free attachment slots of a chat message.
  */
 function planSelection(
   candidates: readonly UploadCandidate[],
   accepted: { count: number; bytes: number },
+  maxFiles: number = MAX_UPLOAD_FILES,
 ): UploadClassification[] {
+  const countLimit = Math.min(maxFiles, MAX_UPLOAD_FILES);
   let count = accepted.count;
   let bytes = accepted.bytes;
   return candidates.map((candidate) => {
     const result = classifyUploadCandidate(candidate);
     if (!result.ok) return result;
-    if (count + 1 > MAX_UPLOAD_FILES)
+    if (count + 1 > countLimit)
       return { ok: false, code: FileErrorCode.TooManyFiles };
     if (bytes + candidate.size > MAX_UPLOAD_BATCH_BYTES)
       return { ok: false, code: FileErrorCode.BatchTooLarge };

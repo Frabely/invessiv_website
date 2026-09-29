@@ -23,7 +23,13 @@
     "inputPlaceholder": "Message to the customer …",
     "inputHint": "Enter sends, Shift + Enter starts a new line.",
     "send": "Send",
-    "characterCount": "{count} of {max} characters"
+    "characterCount": "{count} of {max} characters",
+    "attachmentsLabel": "Attachments",
+    "attachmentUnavailable": "No longer available",
+    "attachmentGone": "Attachment no longer available",
+    "downloadAttachment": "Download {name}",
+    "openAttachmentLink": "Open {name} in a new tab",
+    "removeAttachment": "Remove {name}"
   },
   "systemMessages": {
     "projectPhaseChanged": "Project “{projectTitle}” is now in the {phase} phase."
@@ -35,7 +41,8 @@
     "loading": "Loading conversation …",
     "loadError": "The conversation could not be loaded.",
     "reload": "Load again",
-    "olderError": "Older messages could not be loaded."
+    "olderError": "Older messages could not be loaded.",
+    "attachmentFailed": "An attachment can't be shared with the customer, for example because its project is archived. Remove it and send again."
   },
   "redaction": {
     "title": "Hide this message?",
@@ -63,7 +70,8 @@
     "responsible": "Responsible: {name}",
     "selectPrompt": "Pick a conversation on the left.",
     "backToList": "Back to list",
-    "openCockpit": "Open customer record"
+    "openCockpit": "Open customer record",
+    "attachmentOnly": "Attachment"
   },
   "owner": {
     "label": "Responsible",
@@ -71,5 +79,32 @@
     "conflict": "Someone just changed the responsible person. The current state is shown.",
     "invalid": "This person cannot read the conversation or is no longer active.",
     "error": "The responsible person could not be changed."
+  },
+  "attachments": {
+    "attach": "Attach a file",
+    "upload": "Upload a new file",
+    "pick": "Choose an existing file",
+    "limitReached": "Up to {max} attachments per message.",
+    "search": "Search",
+    "searchPlaceholder": "Name or note",
+    "emptySearch": "No file matches your search.",
+    "loading": "Loading files …",
+    "loadError": "The files could not be loaded.",
+    "retry": "Try again",
+    "loadMore": "Load more",
+    "confirm": "Attach",
+    "confirmCount": "Attach {count}",
+    "cancel": "Cancel",
+    "close": "Close dialog",
+    "selectNamed": "Attach {name}",
+    "downloadError": "This attachment can't be downloaded right now. Reload the conversation.",
+    "uploadTitle": "Upload a file for the chat",
+    "uploadDescription": "The file is stored customer-wide under “Files” and then attached to your message. Sending shares it with the customer.",
+    "pickerTitle": "Choose an existing file",
+    "pickerDescription": "Files and links of this customer. Internal entries are shared with the customer when you send.",
+    "empty": "This customer has no files or links yet.",
+    "internalBadge": "Internal",
+    "releaseNoticeOne": "This file will be shared with the customer.",
+    "releaseNoticeMany": "These files will be shared with the customer."
   }
 }

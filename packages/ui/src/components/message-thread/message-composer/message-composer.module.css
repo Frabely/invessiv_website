@@ -5,6 +5,38 @@
   gap: 0.4rem 0.5rem;
 }
 
+.composer[data-attach="true"] {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+.chips,
+.notice {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0;
+  list-style: none;
+}
+
+.notice {
+  padding: 0.4rem 0.6rem;
+  border-left: 3px solid var(--color-cta);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-cta) 10%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-xs);
+}
+
+.trigger {
+  display: flex;
+  align-self: end;
+}
+
 /* The replica after the textarea grows with its content, so the field grows without script. */
 .field {
   display: grid;
