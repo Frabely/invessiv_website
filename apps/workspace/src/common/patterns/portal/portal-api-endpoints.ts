@@ -1,5 +1,6 @@
 import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
 import { ConversationApiPath } from "@/common/constants/crm/conversation-api-paths";
+import { FeedbackApiPath } from "@/common/constants/feedback/feedback-api-paths";
 import { FileApiPath } from "@/common/constants/files/file-api-paths";
 
 const TASKS_PATH = "tasks";
@@ -70,4 +71,53 @@ export function portalFileDownloadEndpoint(
   fileId: string,
 ): string {
   return `${portalFileEndpoint(customerId, fileId)}/${FileApiPath.Download}`;
+}
+
+export function portalProjectFeedbackEndpoint(
+  customerId: string,
+  projectId: string,
+): string {
+  return `${WorkspaceApiEndpoint.Portal}/${encodeURIComponent(customerId)}/${FeedbackApiPath.Projects}/${encodeURIComponent(projectId)}/${FeedbackApiPath.Feedback}`;
+}
+
+function portalFeedbackRoundEndpoint(customerId: string, roundId: string) {
+  return `${WorkspaceApiEndpoint.Portal}/${encodeURIComponent(customerId)}/${FeedbackApiPath.FeedbackRounds}/${encodeURIComponent(roundId)}`;
+}
+
+export function portalFeedbackDraftEndpoint(
+  customerId: string,
+  roundId: string,
+): string {
+  return `${portalFeedbackRoundEndpoint(customerId, roundId)}/${FeedbackApiPath.Draft}`;
+}
+
+export function portalFeedbackSubmitEndpoint(
+  customerId: string,
+  roundId: string,
+): string {
+  return `${portalFeedbackRoundEndpoint(customerId, roundId)}/${FeedbackApiPath.Submit}`;
+}
+
+export function portalFeedbackApproveEndpoint(
+  customerId: string,
+  roundId: string,
+): string {
+  return `${portalFeedbackRoundEndpoint(customerId, roundId)}/${FeedbackApiPath.Approve}`;
+}
+
+export function portalFeedbackItemFilesEndpoint(
+  customerId: string,
+  roundId: string,
+  itemId: string,
+): string {
+  return `${portalFeedbackRoundEndpoint(customerId, roundId)}/${FeedbackApiPath.Items}/${encodeURIComponent(itemId)}/${FeedbackApiPath.Files}`;
+}
+
+export function portalFeedbackItemFileEndpoint(
+  customerId: string,
+  roundId: string,
+  itemId: string,
+  fileId: string,
+): string {
+  return `${portalFeedbackItemFilesEndpoint(customerId, roundId, itemId)}/${encodeURIComponent(fileId)}`;
 }

@@ -40,6 +40,9 @@ export const CrmEndpointAccessRule = {
   CustomerConversationWrite: "customer_conversation_write",
   ConversationOwnerUpdate: "conversation_owner_update",
   MessageRedact: "message_redact",
+  FeedbackRounds: "feedback_rounds",
+  FeedbackRoundHandOver: "feedback_round_hand_over",
+  FeedbackRoundDetail: "feedback_round_detail",
 } as const;
 
 export type CrmEndpointAccessRule =
@@ -181,6 +184,18 @@ export const CRM_ENDPOINT_ACCESS_RULES = {
   [CrmEndpointAccessRule.MessageRedact]: {
     permission: Permission.ChatRedact,
     scope: "workspace",
+  },
+  [CrmEndpointAccessRule.FeedbackRounds]: {
+    permission: Permission.ProjectsRead,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.FeedbackRoundHandOver]: {
+    permission: Permission.ProjectsWrite,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.FeedbackRoundDetail]: {
+    permission: Permission.ProjectsRead,
+    scope: "project",
   },
 } as const satisfies Record<
   CrmEndpointAccessRule,

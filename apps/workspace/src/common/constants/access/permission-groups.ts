@@ -76,6 +76,8 @@ export const PERMISSION_GROUP_PERMISSIONS = {
     Permission.PortalMessagesWrite,
     Permission.PortalFilesRead,
     Permission.PortalFilesWrite,
+    Permission.PortalFeedbackRead,
+    Permission.PortalFeedbackSubmit,
   ],
   [PermissionGroup.Administration]: [
     Permission.MembersRead,

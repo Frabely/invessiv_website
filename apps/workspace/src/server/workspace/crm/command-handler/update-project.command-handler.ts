@@ -19,34 +19,26 @@ import {
 } from "@invessiv/common/constants/crm/system-message-keys";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { canOn } from "@/common/patterns/auth/can-on";
-import { messageService } from "@/server/shared/services/message/message-service";
+import { announceSystemMessage } from "@/server/shared/services/message/announce-system-message";
 import { projectMappingService } from "@/server/workspace/crm/services/project-mapping-service";
 import { projectSchemas } from "@/server/workspace/crm/services/project-schemas";
 import { updateVersioned } from "@/server/workspace/shared/update-versioned";
 
-async function announcePhaseChange(
+function announcePhaseChange(
   tx: ContactDatabaseTransaction,
   customerId: string,
   projectTitle: string,
   phase: ProjectPhase,
 ) {
-  try {
-    await tx.transaction((savepoint) =>
-      messageService.appendSystemMessage(
-        savepoint,
-        customerId,
-        SystemMessageKey.ProjectPhaseChanged,
-        {
-          [SystemMessageParam.ProjectTitle]: projectTitle,
-          [SystemMessageParam.Phase]: phase,
-        },
-      ),
-    );
-  } catch (error) {
-    console.error("[crm-project] phase system message failed", {
-      errorName: error instanceof Error ? error.name : typeof error,
-    });
-  }
+  return announceSystemMessage(
+    tx,
+    customerId,
+    SystemMessageKey.ProjectPhaseChanged,
+    {
+      [SystemMessageParam.ProjectTitle]: projectTitle,
+      [SystemMessageParam.Phase]: phase,
+    },
+  );
 }
 
 /**

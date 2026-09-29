@@ -17,6 +17,18 @@ describe("describeSystemMessage", () => {
     ).toBe("Projekt „Relaunch“ ist jetzt in der Phase Entwicklung.");
   });
 
+  it("fills the round number of a feedback event", () => {
+    expect(
+      describeSystemMessage(
+        {
+          body: "feedbackRoundSubmitted",
+          metadata: { projectTitle: "Relaunch", roundNumber: "2" },
+        },
+        content,
+      ),
+    ).toBe("Der Kunde hat Feedbackrunde 2 für „Relaunch“ eingereicht.");
+  });
+
   it("falls back for unknown or missing keys", () => {
     expect(
       describeSystemMessage({ body: "unknown", metadata: null }, content),

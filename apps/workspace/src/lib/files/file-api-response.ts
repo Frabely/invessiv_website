@@ -12,6 +12,7 @@ import {
 } from "@invessiv/common/constants/storage/storage-options";
 import { StorageError } from "@invessiv/storage";
 import { FileQueryParam } from "@/common/constants/files/file-query-params";
+import { markPrivateNoStore } from "@/lib/http/private-no-store";
 import { readJsonBody } from "@/lib/http/read-json-body";
 import type { FileDownload } from "@/server/shared/files/file-object-service-types";
 import { fileRequestSchemas } from "@/server/shared/files/file-request-schemas";
@@ -41,9 +42,8 @@ export async function privateFileResponse(
     console.error("[files] request failed", { code });
     response = fileApiResponse({ ok: false, code });
   }
-  response.headers.set(HttpHeaderName.CacheControl, "private, no-store");
   response.headers.set(HttpHeaderName.XContentTypeOptions, "nosniff");
-  return response;
+  return markPrivateNoStore(response);
 }
 
 export async function parseFileBody<T>(

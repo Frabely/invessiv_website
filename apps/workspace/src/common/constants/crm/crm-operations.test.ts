@@ -32,6 +32,9 @@ describe("CrmOperation", () => {
       "portal-conversations.get",
       "portal-conversations.mark-read",
       "portal-messages.send",
+      "feedback-rounds.list",
+      "feedback-rounds.hand-over",
+      "feedback-rounds.get",
     ]);
     expect(CRM_OPERATION_VALUES).toEqual(Object.values(CrmOperation));
     expect(new Set(CRM_OPERATION_VALUES).size).toBe(

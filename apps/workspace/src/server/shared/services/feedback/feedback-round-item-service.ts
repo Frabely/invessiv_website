@@ -9,10 +9,13 @@ import { updateVersioned } from "@/server/workspace/shared/update-versioned";
 import { feedbackMappingService } from "./feedback-mapping-service";
 import type {
   FeedbackDraftItemInput,
+  FeedbackReadExecutor,
   FeedbackRoundItemRow,
   FeedbackRoundRef,
   LoadedFeedbackItem,
+  LockedFeedbackFile,
 } from "./feedback-service-types";
+import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
 
 const positionConstraint = sql.identifier(
   FeedbackRoundItemsConstraintName.RoundPositionUnique,
@@ -23,7 +26,7 @@ const positionConstraint = sql.identifier(
  * (portal release or internal scope); an attachment outside it is left out entirely.
  */
 async function loadByRound(
-  tx: ContactDatabaseTransaction,
+  tx: FeedbackReadExecutor,
   roundIds: readonly string[],
   visibility: SQL,
 ): Promise<Map<string, LoadedFeedbackItem[]>> {
@@ -72,7 +75,53 @@ async function loadByRound(
   return byRound;
 }
 
+/** The caller holds the file lock, so a lost version race is a bug, not a user conflict. */
+async function writeFileBinding(
+  tx: ContactDatabaseTransaction,
+  file: LockedFeedbackFile,
+  patch: Pick<
+    typeof files.$inferInsert,
+    "feedback_round_id" | "feedback_item_id" | "project_id"
+  >,
+) {
+  const write = await updateVersioned({
+    tx,
+    table: files,
+    id: file.id,
+    expectedVersion: file.version,
+    patch,
+    toDto: (row) => row,
+  });
+  if (!write.ok) throw new Error("Locked feedback file changed");
+  return write.value;
+}
+
+/** A file without project joins the round's project; the item binding requires one. */
+async function attachFile(
+  tx: ContactDatabaseTransaction,
+  file: LockedFeedbackFile,
+  target: { round: FeedbackRoundRef; itemId: string },
+): Promise<FeedbackAttachmentDto> {
+  const row = await writeFileBinding(tx, file, {
+    feedback_round_id: target.round.id,
+    feedback_item_id: target.itemId,
+    project_id: target.round.project_id,
+  });
+  return feedbackMappingService.fileToAttachmentDto(row);
+}
+
 /** The file stays with the customer under "your uploads"; only its feedback binding goes. */
+async function detachFile(
+  tx: ContactDatabaseTransaction,
+  file: LockedFeedbackFile,
+): Promise<FeedbackAttachmentDto> {
+  const row = await writeFileBinding(tx, file, {
+    feedback_round_id: null,
+    feedback_item_id: null,
+  });
+  return feedbackMappingService.fileToAttachmentDto(row);
+}
+
 async function detachFiles(
   tx: ContactDatabaseTransaction,
   itemIds: readonly string[],
@@ -82,17 +131,25 @@ async function detachFiles(
     .from(files)
     .where(inArray(files.feedback_item_id, [...itemIds]))
     .for("update");
-  for (const file of bound) {
-    const write = await updateVersioned({
-      tx,
-      table: files,
-      id: file.id,
-      expectedVersion: file.version,
-      patch: { feedback_round_id: null, feedback_item_id: null },
-      toDto: (row) => row.id,
-    });
-    if (!write.ok) throw new Error("Locked feedback file changed");
-  }
+  for (const file of bound) await detachFile(tx, file);
+}
+
+/** Attachments already on the item and on the whole round; the round lock keeps both stable. */
+async function countAttachments(
+  tx: FeedbackReadExecutor,
+  target: { roundId: string; itemId: string },
+): Promise<{ onItem: number; onRound: number }> {
+  const [counts] = await tx
+    .select({
+      onItem:
+        sql<number>`count(*) filter (where ${files.feedback_item_id} = ${target.itemId})`.mapWith(
+          Number,
+        ),
+      onRound: sql<number>`count(*)`.mapWith(Number),
+    })
+    .from(files)
+    .where(eq(files.feedback_round_id, target.roundId));
+  return counts ?? { onItem: 0, onRound: 0 };
 }
 
 function hasChanged(
@@ -180,4 +237,7 @@ async function replaceDraftItems(
 export const feedbackRoundItemService = {
   loadByRound,
   replaceDraftItems,
+  attachFile,
+  detachFile,
+  countAttachments,
 } as const;

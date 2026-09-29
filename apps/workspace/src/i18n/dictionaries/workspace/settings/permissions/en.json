@@ -151,6 +151,14 @@
       "label": "Upload portal files",
       "description": "Upload own files and add links. Deleting and editing stay internal."
     },
+    "portal.feedback.read": {
+      "label": "View portal feedback rounds",
+      "description": "See handed-over feedback rounds, their items and the team's results."
+    },
+    "portal.feedback.submit": {
+      "label": "Give feedback in the portal",
+      "description": "Save feedback items, attach files, submit rounds and approve the project."
+    },
     "roles.manage": {
       "label": "Manage roles",
       "description": "Create and change roles."

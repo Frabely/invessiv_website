@@ -1,5 +1,6 @@
 import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
 import { ConversationApiPath } from "@/common/constants/crm/conversation-api-paths";
+import { FeedbackApiPath } from "@/common/constants/feedback/feedback-api-paths";
 import { FileApiPath } from "@/common/constants/files/file-api-paths";
 
 const LEAD_CONVERSION_ACTION = "convert";
@@ -19,6 +20,14 @@ export function crmCustomerProjectsEndpoint(customerId: string): string {
 
 export function crmProjectEndpoint(projectId: string): string {
   return `${WorkspaceApiEndpoint.CrmProjects}/${encodeURIComponent(projectId)}`;
+}
+
+export function crmProjectFeedbackRoundsEndpoint(projectId: string): string {
+  return `${crmProjectEndpoint(projectId)}/${FeedbackApiPath.FeedbackRounds}`;
+}
+
+export function crmFeedbackRoundEndpoint(roundId: string): string {
+  return `${WorkspaceApiEndpoint.CrmFeedbackRounds}/${encodeURIComponent(roundId)}`;
 }
 
 export function crmLeadConversionEndpoint(leadId: string): string {

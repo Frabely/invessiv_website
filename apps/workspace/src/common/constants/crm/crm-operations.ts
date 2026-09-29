@@ -24,6 +24,9 @@ export const CrmOperation = {
   GetPortalConversation: "portal-conversations.get",
   MarkPortalConversationRead: "portal-conversations.mark-read",
   SendPortalMessage: "portal-messages.send",
+  ListFeedbackRounds: "feedback-rounds.list",
+  HandOverFeedbackRound: "feedback-rounds.hand-over",
+  GetFeedbackRound: "feedback-rounds.get",
 } as const;
 
 export type CrmOperation = (typeof CrmOperation)[keyof typeof CrmOperation];
@@ -53,4 +56,7 @@ export const CRM_OPERATION_VALUES = [
   CrmOperation.GetPortalConversation,
   CrmOperation.MarkPortalConversationRead,
   CrmOperation.SendPortalMessage,
+  CrmOperation.ListFeedbackRounds,
+  CrmOperation.HandOverFeedbackRound,
+  CrmOperation.GetFeedbackRound,
 ] as const;

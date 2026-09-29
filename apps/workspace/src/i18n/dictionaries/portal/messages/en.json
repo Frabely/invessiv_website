@@ -36,7 +36,13 @@
     "removeAttachment": "Remove {name}"
   },
   "systemMessages": {
-    "projectPhaseChanged": "Your project “{projectTitle}” is now in the {phase} phase."
+    "projectPhaseChanged": "Your project “{projectTitle}” is now in the {phase} phase.",
+    "feedbackRoundHandedOver": "Feedback round {roundNumber} for “{projectTitle}” is ready. It’s your turn.",
+    "feedbackRoundSubmitted": "Feedback round {roundNumber} for “{projectTitle}” is submitted. We’re reviewing your feedback.",
+    "feedbackRoundDiscussionRequested": "We’d like to talk through feedback round {roundNumber} for “{projectTitle}” with you.",
+    "feedbackRoundReturned": "Feedback round {roundNumber} for “{projectTitle}” is open again. You can add to it.",
+    "feedbackRoundCompleted": "Feedback round {roundNumber} for “{projectTitle}” is done. You’ll find the results on the feedback page.",
+    "feedbackApproved": "“{projectTitle}” is approved in feedback round {roundNumber}. Thanks for your feedback."
   },
   "phases": {
     "onboarding": "onboarding",

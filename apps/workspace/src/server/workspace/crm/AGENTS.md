@@ -98,3 +98,17 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 - **Activities enthalten nie Titel oder Beschreibung**, nur Ids und die geänderten Werte (`task-activity-service`).
 - **Alle Listen nutzen `taskListOrderService`, alle Filter `taskListConditionsService`.** Die Filter sind das
   SQL-Gegenstück zu `taskDueStateService`; der Zugriffsbereich steht zuerst und wird von keinem Filter erweitert.
+
+## Feedbackrunden (ab Task 59)
+
+- **Übergabe nur unter Projektsperre.** `handOverFeedbackRound` sperrt das Projekt (`FOR UPDATE`, dieselbe Sperre wie
+  der Projekt-Editor) und prüft dann `findFeedbackHandOverBlocker`
+  (`@invessiv/common/patterns/crm/feedback-hand-over-blocker`). Dieselbe Funktion liefert der Rundenliste den Grund
+  `handOverBlocker`; Liste und Command dürfen nie eigene Bedingungen ergänzen.
+- Eine zweite Übergabe während einer laufenden Runde antwortet mit `ROUND_ALREADY_ACTIVE` **und** der laufenden Runde.
+- Übergabe ändert `projects.phase` und `current_process_step` nie; sie schreibt nur die Runde, `feedback_areas`
+  (über `updateVersioned`), die Activity und die Systemnachricht.
+- Lesen über `projects.read`, Übergabe über `projects.write`, jeweils mit `crmAccessCondition` in der `WHERE`-Klausel
+  und `canOn`. Anhänge im Detail folgen `fileAccessService.readableCondition` — ohne `files.read` keine Dateien.
+- Services unter `services/feedback/`: `feedback-round-service.ts` (Projektspur, Rundenliste mit Punktzahl, Blocker),
+  `feedback-round-mapping-service.ts`, `feedback-round-schemas.ts`.

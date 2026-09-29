@@ -151,6 +151,14 @@
       "label": "Dateien im Portal hochladen",
       "description": "Eigene Dateien hochladen und Links hinterlegen. Löschen und Bearbeiten bleiben intern."
     },
+    "portal.feedback.read": {
+      "label": "Feedbackrunden im Portal ansehen",
+      "description": "Übergebene Feedbackrunden, ihre Punkte und die Ergebnisse des Teams sehen."
+    },
+    "portal.feedback.submit": {
+      "label": "Feedback im Portal abgeben",
+      "description": "Feedback-Punkte speichern, Dateien anhängen, Runden einreichen und das Projekt freigeben."
+    },
     "roles.manage": {
       "label": "Rollen verwalten",
       "description": "Rollen anlegen und ändern."

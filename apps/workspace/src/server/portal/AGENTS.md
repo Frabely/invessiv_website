@@ -45,3 +45,17 @@ einzigen regulären Aufrufer.
   `portalAccessCondition` und jede Portal-Mutation prüft `portalCanOn` — beide firmenweit, vorbereitet für
   `projectPermissions`, das heute immer leer ist.
 - Logs enthalten keine E-Mail-Adressen, Namen oder Clerk-Kennungen.
+
+## Feedbackrunden (ab Task 59)
+
+- Lesen verlangt `portal.feedback.read` **und** `portal.projects.read`, Schreiben zusätzlich `portal.feedback.submit`;
+  das Projekt muss in `PORTAL_VISIBLE_PROJECT_STATUS_VALUES` liegen. Jeder Fehlgriff (fremde Firma, geratene ID,
+  fehlendes Recht, archiviertes Projekt) ist `not_found`.
+- Jede Mutation sperrt zuerst die Runde über `portalFeedbackService.lockRound` und prüft `rejectUnlessOpen`; Version
+  und Status werden unter dieser Sperre verglichen. Parallele Speicherungen, Einreichen und Anhängen serialisieren
+  sich dadurch an der Runde.
+- Punkt-IDs kommen vom Client: eine ID aus einer anderen Runde wird als `validation` abgelehnt, nie übernommen.
+- Anhängen nur für fertige eigene Kundendateien ohne Punkt; eine Datei, die der Kunde nicht sehen darf, ist
+  `not_found`, eine sichtbare, aber unpassende `not_attachable`.
+- Fehlercodes sind `PortalFeedbackErrorCode`; Statuscodes und Texte stehen ausschließlich in
+  `src/lib/portal/portal-feedback-api-response.ts`.

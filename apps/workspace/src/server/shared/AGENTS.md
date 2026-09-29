@@ -79,3 +79,14 @@ Transaktion um.
   `submission_received`, jeder weitere Statuswechsel `field_change` mit Feld `status`). Die Runde steht in `metadata`
   (`entity: FEEDBACK_ROUND_ACTIVITY_ENTITY`, `feedback_round_id`, `round_number`); Feedbacktext kommt nie ins Log.
 - Zeilen- und Eingabetypen liegen in `feedback-service-types.ts`, das Anhangs-Mapping in `feedback-mapping-service.ts`.
+- Ab Task 59: `feedback-round-item-service.ts` bindet und löst einzelne Dateien (`attachFile`, `detachFile`; die
+  Dateizeile sperrt der Handler vorher) und zählt Anhänge je Punkt und Runde (`countAttachments`, Limits prüft der
+  Handler unter der Rundensperre). `loadByRound` nimmt einen reinen Lese-Executor, damit Query-Handler ohne Transaktion
+  lesen. `announce-feedback-round.ts` schreibt die Chat-Systemnachricht eines Rundenereignisses (Projekttitel +
+  Rundennummer) über `announceSystemMessage`.
+
+## Systemnachrichten (ab Task 59)
+
+`services/message/announce-system-message.ts` ist der einzige Weg für fachliche Chat-Hinweise: Savepoint, Fehler nur
+geloggt (Name, Key, kein Text). Ein Fachwrite scheitert nie an seiner Systemnachricht. Neue Ereignisse rufen diesen
+Helfer auf, statt Savepoint und Logging zu kopieren.
