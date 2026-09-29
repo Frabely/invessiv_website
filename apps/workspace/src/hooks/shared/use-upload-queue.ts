@@ -22,6 +22,8 @@ export function useUploadQueue<TFile extends { id: string } = FileDto>(
     onUploadedAction?: (file: TFile) => void;
     /** Narrows the batch below `MAX_UPLOAD_FILES`; later files are refused as too many. */
     maxFiles?: number;
+    /** Localized warning for client-side route changes during a running upload. */
+    leaveWarning?: string;
   } = {},
 ) {
   const [items, setItems] = useState<UploadQueueItem[]>([]);
@@ -175,6 +177,60 @@ export function useUploadQueue<TFile extends { id: string } = FileDto>(
     window.addEventListener("beforeunload", warn);
     return () => window.removeEventListener("beforeunload", warn);
   }, [isActive]);
+
+  useEffect(() => {
+    if (!isActive || !options.leaveWarning) return;
+    const pathname = window.location.pathname;
+    const search = window.location.search;
+
+    function guardLink(event: MouseEvent) {
+      if (
+        event.defaultPrevented ||
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      )
+        return;
+      const target = event.target;
+      const anchor =
+        target instanceof Element ? target.closest("a[href]") : null;
+      if (
+        !(anchor instanceof HTMLAnchorElement) ||
+        anchor.hasAttribute("download") ||
+        (anchor.target && anchor.target !== "_self")
+      )
+        return;
+      const destination = new URL(anchor.href, window.location.href);
+      if (
+        destination.origin !== window.location.origin ||
+        (destination.pathname === pathname &&
+          destination.search === window.location.search)
+      )
+        return;
+      if (!window.confirm(options.leaveWarning!)) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
+    }
+
+    function guardHistory() {
+      if (
+        window.location.pathname === pathname &&
+        window.location.search === search
+      )
+        return;
+      if (!window.confirm(options.leaveWarning!)) window.history.forward();
+    }
+
+    document.addEventListener("click", guardLink, true);
+    window.addEventListener("popstate", guardHistory, true);
+    return () => {
+      document.removeEventListener("click", guardLink, true);
+      window.removeEventListener("popstate", guardHistory, true);
+    };
+  }, [isActive, options.leaveWarning]);
 
   function stage(files: readonly File[]) {
     const kept = items.filter(

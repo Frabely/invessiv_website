@@ -1,6 +1,6 @@
 # Task 52 — Datenmodell und interne Datei-API
 
-> **Status:** im Review · **Teil-PR:** 14.2 · **Branch:** `feat/crm-dateien-2-datenmodell`
+> **Status:** gemerged · **Teil-PR:** 14.2 · **Branch:** `feat/crm-dateien-2-datenmodell`
 
 ## Gelieferter Scope
 

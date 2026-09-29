@@ -100,6 +100,7 @@
     "startOne": "1 Datei hochladen",
     "more": "Weitere Dateien hochladen",
     "busyHint": "Warte, bis alle Uploads fertig sind, oder brich sie ab.",
+    "leaveWarning": "Es laufen noch Uploads. Möchtest du diese Seite wirklich verlassen?",
     "queueLabel": "Ausgewählte Dateien",
     "summary": "{done} von {total} Dateien hochgeladen",
     "remove": "{name} entfernen",

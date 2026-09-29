@@ -32,4 +32,8 @@ export type ChatAttachmentTexts = {
   releaseNoticeOne?: string;
   /** Same notice for several internal entries. */
   releaseNoticeMany?: string;
+  /** Explicit confirmation before the CRM releases an internal attachment. */
+  releaseConfirmTitle?: string;
+  releaseConfirmDescription?: string;
+  releaseConfirmButton?: string;
 };

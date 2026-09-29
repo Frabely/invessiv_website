@@ -1,7 +1,7 @@
 "use client";
 
-import { useId, useMemo, useRef, useState } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useId, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { usePathname } from "next/navigation";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
@@ -58,6 +58,21 @@ type Overlay =
   | { kind: "link" }
   | { kind: "preview"; fileId: string };
 
+const PORTAL_TAB_CHANGE_EVENT = "portal-files-tab-change";
+
+function subscribeToTabChange(onChange: () => void) {
+  window.addEventListener("popstate", onChange);
+  window.addEventListener(PORTAL_TAB_CHANGE_EVENT, onChange);
+  return () => {
+    window.removeEventListener("popstate", onChange);
+    window.removeEventListener(PORTAL_TAB_CHANGE_EVENT, onChange);
+  };
+}
+
+function currentSearch() {
+  return window.location.search;
+}
+
 /**
  * The customer's files page: intake on top, the two origins as tabs below. Mount it with
  * `key={customerId}` so no list or selection state crosses companies.
@@ -73,10 +88,16 @@ export function PortalFilesView({
   projects,
 }: PortalFilesViewProps) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const baseId = useId();
   const ownerNoticeId = useId();
-  const tab = readPortalFilesTab(searchParams.get(PortalFilesQueryParam.Tab));
+  const search = useSyncExternalStore(
+    subscribeToTabChange,
+    currentSearch,
+    () => `?${PortalFilesQueryParam.Tab}=${initialTab}`,
+  );
+  const tab = readPortalFilesTab(
+    new URLSearchParams(search).get(PortalFilesQueryParam.Tab),
+  );
   const [revision, setRevision] = useState(0);
   const list = usePortalFiles(customerId, tab, revision, {
     origin: initialTab,
@@ -125,6 +146,7 @@ export function PortalFilesView({
       "",
       `${pathname}?${params.toString()}`,
     );
+    window.dispatchEvent(new Event(PORTAL_TAB_CHANGE_EVENT));
   }
 
   function open(next: Overlay) {

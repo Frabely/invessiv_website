@@ -37,6 +37,7 @@ export function ChatUploadDialog<TFile extends { id: string }>({
   const queue = useUploadQueue<TFile>(upload.transport, {
     onUploadedAction: (file) => onUploadedAction(upload.toAttachment(file)),
     maxFiles: budget,
+    leaveWarning: labels.leaveWarning,
   });
 
   return (

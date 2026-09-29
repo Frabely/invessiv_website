@@ -5,6 +5,7 @@ import {
   type ReactNode,
   type SyntheticEvent,
   useId,
+  useState,
 } from "react";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -16,6 +17,7 @@ import type { MessageThreadLabels } from "@invessiv/common/contracts/ui/message-
 import { useMessageDraft } from "../../../hooks/use-message-draft";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { AttachmentChip } from "../attachment-chip/attachment-chip";
+import { ConfirmDialog } from "../../dialog/confirm-dialog/confirm-dialog";
 import styles from "./message-composer.module.css";
 
 const COUNTER_THRESHOLD = Math.floor(MESSAGE_BODY_MAX_LENGTH * 0.8);
@@ -25,6 +27,14 @@ export type MessageComposerAttachmentsProps = {
   items: readonly ComposerAttachment[];
   /** Shown above the field while it applies, e.g. that an entry will be released on send. */
   notice: string | null;
+  /** Requires an explicit choice before a send that releases an internal file. */
+  confirmation?: {
+    title: string;
+    description: string;
+    confirmLabel: string;
+    cancelLabel: string;
+    closeLabel: string;
+  };
   onRemoveAction: (fileId: string) => void;
   /** The consumer's attach control (menu, dialogs); the package knows no upload or file API. */
   trigger: ReactNode;
@@ -58,6 +68,7 @@ export function MessageComposer({
   onSendAction,
 }: MessageComposerProps) {
   const [draft, setDraft] = useMessageDraft(draftStorageKey);
+  const [pendingBody, setPendingBody] = useState<string | null>(null);
   const inputId = useId();
   const hintId = useId();
   const counterId = useId();
@@ -76,6 +87,18 @@ export function MessageComposer({
   function send() {
     if (!canSend) return;
     const body = draft.trim();
+    if (attachments?.confirmation) {
+      setPendingBody(body);
+      return;
+    }
+    setDraft("");
+    onSendAction(body);
+  }
+
+  function confirmSend() {
+    if (pendingBody === null) return;
+    const body = pendingBody;
+    setPendingBody(null);
     setDraft("");
     onSendAction(body);
   }
@@ -168,6 +191,17 @@ export function MessageComposer({
           </span>
         ) : null}
       </p>
+      {pendingBody !== null && attachments?.confirmation ? (
+        <ConfirmDialog
+          cancelLabel={attachments.confirmation.cancelLabel}
+          closeLabel={attachments.confirmation.closeLabel}
+          confirmLabel={attachments.confirmation.confirmLabel}
+          description={attachments.confirmation.description}
+          onCancelAction={() => setPendingBody(null)}
+          onConfirmAction={confirmSend}
+          title={attachments.confirmation.title}
+        />
+      ) : null}
     </form>
   );
 }

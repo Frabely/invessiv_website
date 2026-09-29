@@ -1,6 +1,6 @@
 # Task 56 — Anhänge in beiden Chats
 
-> **Status:** im Review · **Teil-PR:** 14.6 · **Branch:** `feat/crm-dateien-6-chat-anhaenge`
+> **Status:** gemerged · **Teil-PR:** 14.6 · **Branch:** `feat/crm-dateien-6-chat-anhaenge`
 
 ## Ziel
 
@@ -140,5 +140,6 @@ Composer-Button entfernen (bzw. `attachmentAccess` nie setzen); bestehende `mess
 
 - Manuelle Abnahme im Preview: 📎 in Cockpit, Inbox, Portal-Nachrichten und Portal-Dock; Upload aus dem Chat mit
   echtem Store; Tastatur/Fokus im Menü und in den Dialogen; Dark/Light; 360 px.
-- E2E für den Anhangsfluss ist nicht ergänzt (die Portal-E2E-Suite braucht Clerk-Testsitzungen).
+- Der nachträgliche Browser-Test in `e2e/portal-files.e2e.ts` prüft das Anhängen eines internen Links, den
+  Bestätigungsdialog, Abbrechen ohne Sendeanfrage, bestätigtes Senden und die Sichtbarkeit im Kundenportal.
 - Review durch das andere Modell (README).

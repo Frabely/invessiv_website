@@ -8,7 +8,10 @@ import { HttpResponseCode as H } from "@invessiv/common/constants/http/http-resp
 import { MediaType } from "@invessiv/common/constants/http/media-types";
 import { PortalFileOrigin } from "@invessiv/common/constants/portal/portal-file-origin";
 import { GET as list } from "@/app/api/portal/[customerId]/files/route";
-import { POST as archive } from "@/app/api/portal/[customerId]/files/archive/route";
+import {
+  GET as nativeArchive,
+  POST as archive,
+} from "@/app/api/portal/[customerId]/files/archive/route";
 import { POST as link } from "@/app/api/portal/[customerId]/files/links/route";
 import { POST as upload } from "@/app/api/portal/[customerId]/files/uploads/route";
 import { POST as complete } from "@/app/api/portal/[customerId]/files/[fileId]/complete/route";
@@ -95,6 +98,7 @@ const readRoutes = [
   [downloadUrl, HttpMethod.Get],
   [download, HttpMethod.Get],
   [archive, HttpMethod.Post],
+  [nativeArchive, HttpMethod.Get],
 ] as const;
 const writeRoutes = [
   [upload, HttpMethod.Post],
@@ -282,5 +286,27 @@ describe("portal file routes", () => {
     );
     expect(response.status).toBe(H.UnprocessableContent);
     expect(mocks.createPortalFilesArchive).not.toHaveBeenCalled();
+  });
+
+  it("preflights and reauthorizes a native archive download", async () => {
+    mocks.createPortalFilesArchive.mockResolvedValue({ ok: true, rows: [] });
+    const preflight = await archive(
+      request(
+        HttpMethod.Post,
+        { fileIds: [FILE_ID] },
+        "/archive?preflight=true",
+      ),
+      context,
+    );
+    expect(await preflight.json()).toEqual({ ready: true });
+    const response = await nativeArchive(
+      request(HttpMethod.Get, undefined, `/archive?fileId=${FILE_ID}`),
+      context,
+    );
+    expect(response.status).toBe(H.Ok);
+    expect(response.headers.get(HttpHeaderName.ContentType)).toBe(
+      MediaType.Zip,
+    );
+    expect(mocks.createPortalFilesArchive).toHaveBeenCalledTimes(2);
   });
 });

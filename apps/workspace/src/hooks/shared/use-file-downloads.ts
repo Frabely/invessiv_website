@@ -17,7 +17,7 @@ export function useFileDownloads<TFile extends { id: string }>(input: {
     disposition: StorageDisposition,
   ) => Promise<FileClientResult<string>>;
   readText: (fileId: string) => Promise<FileClientResult<string>>;
-  getArchive: (ids: readonly string[]) => Promise<FileClientResult<Blob>>;
+  getArchive: (ids: readonly string[]) => Promise<FileClientResult<string>>;
 }) {
   const [archiveBusy, setArchiveBusy] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -56,7 +56,18 @@ export function useFileDownloads<TFile extends { id: string }>(input: {
         setActionError(input.errors[result.code]);
         return;
       }
-      browserDownload.saveBlob(result.value, input.archiveFilename);
+      browserDownload.downloadUrl(
+        result.value,
+        input.archiveFilename,
+        (code) => {
+          if (code === FileApiErrorCode.NotFound) input.clearSelection();
+          setActionError(
+            code && code in input.errors
+              ? input.errors[code as FileClientErrorCode]
+              : input.errors[FileApiErrorCode.Internal],
+          );
+        },
+      );
       input.clearSelection();
     } finally {
       setArchiveBusy(false);

@@ -1,5 +1,6 @@
 import { createHash, randomBytes, randomUUID } from "node:crypto";
-import { eq, inArray, like } from "drizzle-orm";
+import { eq, inArray, like, or } from "drizzle-orm";
+import { BlobNotFoundError, del } from "@vercel/blob";
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
 import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
@@ -12,8 +13,10 @@ import {
   getDrizzleDatabaseClient,
 } from "@invessiv/db/core";
 import {
+  activities,
   customerContactAssignments,
   customers,
+  files,
   people,
   portalInvitationRoles,
   portalInvitations,
@@ -114,12 +117,40 @@ async function removeOldCustomers(tx: ContactDatabaseTransaction) {
     .from(customers)
     .where(like(customers.display_name, `${PREFIX}%`));
   if (oldCustomers.length) {
-    await tx.delete(customers).where(
-      inArray(
-        customers.id,
-        oldCustomers.map((row) => row.id),
-      ),
+    const customerIds = oldCustomers.map((row) => row.id);
+    const storedFiles = await tx
+      .select({ customerId: files.customer_id, storageKey: files.storage_key })
+      .from(files)
+      .where(inArray(files.customer_id, customerIds));
+    if (storedFiles.some((row) => row.storageKey)) {
+      for (const row of storedFiles) {
+        if (!row.storageKey) continue;
+        if (!row.storageKey.startsWith(`customers/${row.customerId}/`))
+          throw new Error("Portal E2E file has an unexpected storage scope.");
+        // Keep the database reference if storage cleanup fails so the next run can retry.
+        try {
+          await del(row.storageKey);
+        } catch (error) {
+          if (!(error instanceof BlobNotFoundError)) throw error;
+        }
+      }
+    }
+    const oldProjects = await tx
+      .select({ id: projects.id })
+      .from(projects)
+      .where(inArray(projects.customer_id, customerIds));
+    await tx.delete(activities).where(
+      oldProjects.length > 0
+        ? or(
+            inArray(activities.customer_id, customerIds),
+            inArray(
+              activities.project_id,
+              oldProjects.map((row) => row.id),
+            ),
+          )
+        : inArray(activities.customer_id, customerIds),
     );
+    await tx.delete(customers).where(inArray(customers.id, customerIds));
   }
   const oldPeople = await tx
     .select({ id: people.id })

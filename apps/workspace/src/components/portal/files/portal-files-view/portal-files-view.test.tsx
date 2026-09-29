@@ -19,7 +19,6 @@ import { PortalFilesView } from "./portal-files-view";
 
 const mocks = vi.hoisted(() => ({
   replace: vi.fn(),
-  search: { value: "" },
   listFiles: vi.fn(),
   getDownloadUrl: vi.fn(),
 }));
@@ -27,7 +26,7 @@ const mocks = vi.hoisted(() => ({
 vi.mock("next/navigation", () => ({
   usePathname: () => "/en/portal/customer-1/files",
   useRouter: () => ({ replace: mocks.replace, push: vi.fn() }),
-  useSearchParams: () => new URLSearchParams(mocks.search.value),
+  useSearchParams: () => new URLSearchParams(window.location.search),
 }));
 vi.mock("@/client/portal/portal-files-api-service", () => ({
   portalFilesApiService: {
@@ -85,7 +84,7 @@ function renderView(
 
 describe("PortalFilesView", () => {
   beforeEach(() => {
-    mocks.search.value = "";
+    window.history.replaceState(null, "", "/en/portal/customer-1/files");
     mocks.listFiles.mockResolvedValue({ ok: true, value: page([]) });
   });
 
@@ -140,11 +139,18 @@ describe("PortalFilesView", () => {
     expect(window.location.pathname + window.location.search).toBe(
       "/en/portal/customer-1/files?tab=fromYou",
     );
+    expect(
+      screen.getByRole("tab", { name: content.tabs.fromYou }),
+    ).toHaveAttribute("aria-selected", "true");
     expect(mocks.replace).not.toHaveBeenCalled();
   });
 
   it("explains the empty tabs by their purpose", async () => {
-    mocks.search.value = "tab=fromYou";
+    window.history.replaceState(
+      null,
+      "",
+      "/en/portal/customer-1/files?tab=fromYou",
+    );
     renderView({ initialPage: page([]) });
 
     expect(
@@ -171,7 +177,12 @@ describe("PortalFilesView", () => {
     const view = renderView();
     expect(screen.getByText("Offer.pdf")).toBeInTheDocument();
 
-    mocks.search.value = "tab=fromYou";
+    window.history.replaceState(
+      null,
+      "",
+      "/en/portal/customer-1/files?tab=fromYou",
+    );
+    window.dispatchEvent(new PopStateEvent("popstate"));
     view.rerender(
       <PortalFilesView
         canUpload

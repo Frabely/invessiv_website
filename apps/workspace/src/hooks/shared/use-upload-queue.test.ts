@@ -191,6 +191,75 @@ describe("useUploadQueue", () => {
     expect(after.defaultPrevented).toBe(false);
   });
 
+  it("blocks a client-side link until the user agrees to leave", async () => {
+    const api = transport();
+    let finish: (value: StorageTransferResult) => void = () => undefined;
+    transfer.transferToStorage.mockImplementation(
+      () => new Promise((resolve) => (finish = resolve)),
+    );
+    const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
+    const link = document.createElement("a");
+    link.href = "/de/dashboard";
+    document.body.append(link);
+    const { result } = renderHook(() =>
+      useUploadQueue(api, { leaveWarning: "Upload still running" }),
+    );
+    act(() => result.current.stage([file("a.mp4")]));
+    act(() => result.current.start());
+    await waitFor(() => expect(transfer.transferToStorage).toHaveBeenCalled());
+
+    const declined = new MouseEvent("click", {
+      bubbles: true,
+      cancelable: true,
+    });
+    link.dispatchEvent(declined);
+    expect(declined.defaultPrevented).toBe(true);
+    expect(confirm).toHaveBeenCalledWith("Upload still running");
+
+    link.href = `${window.location.pathname}?cockpit=another-customer`;
+    const queryChange = new MouseEvent("click", {
+      bubbles: true,
+      cancelable: true,
+    });
+    link.dispatchEvent(queryChange);
+    expect(queryChange.defaultPrevented).toBe(true);
+
+    const originalUrl = window.location.href;
+    const forward = vi
+      .spyOn(window.history, "forward")
+      .mockImplementation(() => undefined);
+    window.history.replaceState(
+      null,
+      "",
+      `${window.location.pathname}?cockpit=another-customer`,
+    );
+    window.dispatchEvent(new PopStateEvent("popstate"));
+    expect(forward).toHaveBeenCalledOnce();
+    window.history.replaceState(null, "", originalUrl);
+    forward.mockRestore();
+
+    link.target = "_blank";
+    const newTab = new MouseEvent("click", {
+      bubbles: true,
+      cancelable: true,
+    });
+    link.dispatchEvent(newTab);
+    expect(newTab.defaultPrevented).toBe(false);
+    link.target = "";
+
+    confirm.mockReturnValue(true);
+    const accepted = new MouseEvent("click", {
+      bubbles: true,
+      cancelable: true,
+    });
+    link.dispatchEvent(accepted);
+    expect(accepted.defaultPrevented).toBe(false);
+
+    await act(async () => finish({ ok: true }));
+    link.remove();
+    confirm.mockRestore();
+  });
+
   it("releases a failed portal ticket before retrying with a new one", async () => {
     const api = {
       ...transport(),

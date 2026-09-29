@@ -5,6 +5,7 @@ import { HttpResponseCode as H } from "@invessiv/common/constants/http/http-resp
 import { FileApiErrorCode as E } from "@invessiv/common/constants/files/file-api-error-code";
 import type { FileResult } from "@invessiv/common/contracts/files/file-result";
 import { MediaType } from "@invessiv/common/constants/http/media-types";
+import { sanitizeFilename } from "@invessiv/common/patterns/files/safe-filename";
 import {
   StorageDisposition,
   type StorageDisposition as StorageDispositionType,
@@ -95,12 +96,19 @@ export function fileDownloadResponse(
 /** The archive is produced while the response is read; it is never buffered on the server. */
 export function fileArchiveResponse(
   stream: ReadableStream<Uint8Array>,
+  requestedFilename?: string | null,
 ): Response {
+  const filename = requestedFilename?.toLowerCase().endsWith(".zip")
+    ? sanitizeFilename(requestedFilename)
+    : "dateien.zip";
+  const encoded = encodeURIComponent(filename).replace(
+    /['()*]/g,
+    (char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`,
+  );
   return new Response(stream, {
     headers: {
       [HttpHeaderName.ContentType]: MediaType.Zip,
-      // The browser saves under the localized dictionary name; this is only the fallback.
-      [HttpHeaderName.ContentDisposition]: 'attachment; filename="dateien.zip"',
+      [HttpHeaderName.ContentDisposition]: `attachment; filename="dateien.zip"; filename*=UTF-8''${encoded}`,
     },
   });
 }

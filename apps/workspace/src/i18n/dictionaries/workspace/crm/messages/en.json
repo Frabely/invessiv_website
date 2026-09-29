@@ -105,6 +105,9 @@
     "empty": "This customer has no files or links yet.",
     "internalBadge": "Internal",
     "releaseNoticeOne": "This file will be shared with the customer.",
-    "releaseNoticeMany": "These files will be shared with the customer."
+    "releaseNoticeMany": "These files will be shared with the customer.",
+    "releaseConfirmTitle": "Share files with the customer?",
+    "releaseConfirmDescription": "When you send this message, the customer can view and download the attached internal files.",
+    "releaseConfirmButton": "Share and send"
   }
 }

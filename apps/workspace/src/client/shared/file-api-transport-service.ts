@@ -127,19 +127,24 @@ function getDownloadUrl(
 async function downloadArchive(
   url: string,
   fileIds: readonly string[],
-): Promise<FileClientResult<Blob>> {
+): Promise<FileClientResult<string>> {
   try {
-    const response = await fetch(url, {
-      method: HttpMethod.Post,
-      headers: { [HttpHeaderName.ContentType]: MediaType.Json },
-      body: JSON.stringify({ fileIds }),
-    });
+    const response = await fetch(
+      `${url}?${new URLSearchParams({ [FileQueryParam.ArchivePreflight]: "true" })}`,
+      {
+        method: HttpMethod.Post,
+        headers: { [HttpHeaderName.ContentType]: MediaType.Json },
+        body: JSON.stringify({ fileIds }),
+      },
+    );
     if (!response.ok)
       return {
         ok: false,
         code: readCode(await response.json().catch(() => null)),
       };
-    return { ok: true, value: await response.blob() };
+    const query = new URLSearchParams();
+    for (const id of fileIds) query.append(FileQueryParam.ArchiveFileId, id);
+    return { ok: true, value: `${url}?${query.toString()}` };
   } catch {
     return { ok: false, code: FileApiErrorCode.Internal };
   }

@@ -7,4 +7,7 @@ export const FileQueryParam = {
   Search: "search",
   Shareable: "shareable",
   Disposition: "disposition",
+  ArchiveFileId: "fileId",
+  ArchivePreflight: "preflight",
+  ArchiveFilename: "filename",
 } as const;

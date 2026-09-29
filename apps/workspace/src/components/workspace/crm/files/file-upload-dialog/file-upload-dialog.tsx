@@ -44,7 +44,7 @@ export function FileUploadDialog({
       visibleToCustomer: visible,
       note: note.trim() || null,
     }),
-    { onUploadedAction },
+    { onUploadedAction, leaveWarning: content.upload.leaveWarning },
   );
   useInitialUploadFiles(initialFiles, queue.stage);
 

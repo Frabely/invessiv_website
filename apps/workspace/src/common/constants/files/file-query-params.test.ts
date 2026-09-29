@@ -11,6 +11,9 @@ it("keeps file query names stable and unique", () => {
     Search: "search",
     Shareable: "shareable",
     Disposition: "disposition",
+    ArchiveFileId: "fileId",
+    ArchivePreflight: "preflight",
+    ArchiveFilename: "filename",
   });
   expect(new Set(Object.values(FileQueryParam)).size).toBe(
     Object.keys(FileQueryParam).length,

@@ -27,6 +27,7 @@ export type FileUploadDialogFrameProps = {
     start: string;
     startOne: string;
     busyHint: string;
+    leaveWarning: string;
     queueLabel: string;
     summary: string;
     dropLabel: string;

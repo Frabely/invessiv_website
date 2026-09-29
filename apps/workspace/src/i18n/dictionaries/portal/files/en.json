@@ -37,6 +37,7 @@
     "startOne": "Upload 1 file",
     "more": "Upload more",
     "busyHint": "Keep this window open until every file is uploaded.",
+    "leaveWarning": "Uploads are still running. Do you really want to leave this page?",
     "queueLabel": "Selected files",
     "summary": "{done} of {total} files uploaded",
     "remove": "Remove {name}",

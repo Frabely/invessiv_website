@@ -1,6 +1,6 @@
 # Ordner 14 — Dateien, Links und Portal-Dateien
 
-> **Status:** läuft · **Abhängigkeiten:** 07, 12a, 12b, 13, 13a · **Aufwand:** 12–16 Tage gesamt ·
+> **Status:** gemerged; Review-Nachbesserung auf `fix/crm-files-review` · **Abhängigkeiten:** 07, 12a, 12b, 13, 13a · **Aufwand:** 12–16 Tage gesamt ·
 > **Reviewziel:** sechs Teil-PRs mit je 25–90 Dateien
 
 > **Neuzuschnitt 28.09.2026 (mit dem Owner abgestimmt):** Ersetzt die Ordner `14-storage-und-upload`,
@@ -22,14 +22,14 @@ mergebar bleibt. Jede Teil-Einheit hat einen eigenen Branch, einen eigenen PR, e
 unten und hält `master` deploybar. Reine Fundamente bleiben unsichtbar; sichtbare Funktionen werden vertikal
 vollständig geliefert.
 
-| PR   | Task | Branch                             | Datei                                                                      | Nach Merge sichtbar          | Dateien | Umsetzung       | Status    |
-| ---- | ---- | ---------------------------------- | -------------------------------------------------------------------------- | ---------------------------- | ------: | --------------- | --------- |
-| 14.1 | 51   | `feat/crm-dateien-1-fundament`     | [`51-storage-fundament.md`](./51-storage-fundament.md)                     | nichts                       |   40–60 | GPT · max       | gemerged  |
-| 14.2 | 52   | `feat/crm-dateien-2-datenmodell`   | [`52-datenmodell-und-interne-api.md`](./52-datenmodell-und-interne-api.md) | nichts (API ohne Aufrufer)   |   60–90 | GPT · max       | im Review |
-| 14.3 | 53   | `feat/crm-dateien-3-interne-ui`    | [`53-drop-zone-und-interne-ui.md`](./53-drop-zone-und-interne-ui.md)       | interner Dateibereich        |   70–90 | Claude · max    | gemerged  |
-| 14.4 | 54   | `feat/crm-dateien-4-zip`           | [`54-mehrfachauswahl-und-zip.md`](./54-mehrfachauswahl-und-zip.md)         | Mehrfachauswahl + ZIP intern |   25–40 | GPT · mittel    | gemerged  |
-| 14.5 | 55   | `feat/crm-dateien-5-portal`        | [`55-portal-dateien.md`](./55-portal-dateien.md)                           | Dateien im Kundenportal      |   60–90 | Claude · max    | im Review |
-| 14.6 | 56   | `feat/crm-dateien-6-chat-anhaenge` | [`56-chat-anhaenge.md`](./56-chat-anhaenge.md)                             | Anhänge in beiden Chats      |   35–55 | Claude · mittel | im Review |
+| PR   | Task | Branch                             | Datei                                                                      | Nach Merge sichtbar          | Dateien | Umsetzung       | Status   |
+| ---- | ---- | ---------------------------------- | -------------------------------------------------------------------------- | ---------------------------- | ------: | --------------- | -------- |
+| 14.1 | 51   | `feat/crm-dateien-1-fundament`     | [`51-storage-fundament.md`](./51-storage-fundament.md)                     | nichts                       |   40–60 | GPT · max       | gemerged |
+| 14.2 | 52   | `feat/crm-dateien-2-datenmodell`   | [`52-datenmodell-und-interne-api.md`](./52-datenmodell-und-interne-api.md) | nichts (API ohne Aufrufer)   |   60–90 | GPT · max       | gemerged |
+| 14.3 | 53   | `feat/crm-dateien-3-interne-ui`    | [`53-drop-zone-und-interne-ui.md`](./53-drop-zone-und-interne-ui.md)       | interner Dateibereich        |   70–90 | Claude · max    | gemerged |
+| 14.4 | 54   | `feat/crm-dateien-4-zip`           | [`54-mehrfachauswahl-und-zip.md`](./54-mehrfachauswahl-und-zip.md)         | Mehrfachauswahl + ZIP intern |   25–40 | GPT · mittel    | gemerged |
+| 14.5 | 55   | `feat/crm-dateien-5-portal`        | [`55-portal-dateien.md`](./55-portal-dateien.md)                           | Dateien im Kundenportal      |   60–90 | Claude · max    | gemerged |
+| 14.6 | 56   | `feat/crm-dateien-6-chat-anhaenge` | [`56-chat-anhaenge.md`](./56-chat-anhaenge.md)                             | Anhänge in beiden Chats      |   35–55 | Claude · mittel | gemerged |
 
 **Umsetzung (Modell · Variante):** Empfehlung, welches Modell die Teil-PR umsetzt und mit welcher Denkstufe.
 
@@ -53,6 +53,24 @@ Task 53 ist in seiner [Umsetzungs- und Übergabedokumentation](./53-drop-zone-un
 Task 54 ist in seiner [Umsetzungs- und Übergabedokumentation](./54-mehrfachauswahl-und-zip.md) beschrieben.
 Task 55 ist in seiner [Umsetzungsdokumentation](./55-portal-dateien.md) beschrieben.
 Task 56 ist in seiner [Umsetzungsdokumentation](./56-chat-anhaenge.md) beschrieben.
+
+## Review-Nachbesserung auf `fix/crm-files-review`
+
+- Intern angehängte Dateien erhalten vor dem Senden einen expliziten Freigabedialog. Abbrechen erhält Entwurf und
+  Anhänge; ein Browser-Test prüft, dass dabei keine Sendeanfrage entsteht und der bestätigte Versand den Link im Portal
+  sichtbar macht.
+- ZIP-Downloads nutzen nach einer autorisierten Vorprüfung einen nativen Download. Der Browser sammelt das Archiv nicht
+  mehr über `response.blob()` im JavaScript-Speicher; die Download-Route prüft Berechtigung und Auswahl erneut. Ein
+  gleichoriginiger Download-Frame meldet auch Fehler nach der Vorprüfung an die UI. Der Live-Test prüft die ZIP-Einträge
+  und deren Inhalt sowie diesen späteren Fehlerfall.
+- Aktive Uploads warnen bei Seitenwechsel über Links, auch bei geändertem Query-Parameter, Browser-Zurück und beim
+  Verlassen des Dokuments. Der modale Upload-Dialog verhindert sein Schließen während des Transfers.
+- Der opt-in Browser-Test mit `E2E_LIVE_BLOB=true` prüft gegen den privaten Development-Store den echten internen
+  Upload, zunächst gesperrten Portalzugriff, Freigabe, Einzel- und ZIP-Download sowie einen Kunden-Upload. Die
+  Testdatenbereinigung entfernt die zugehörigen Blob-Objekte und Activities vor alten E2E-Kunden; ein fehlgeschlagenes
+  Blob-Löschen bricht die Bereinigung ab, damit die Datenbankreferenz erhalten bleibt.
+- Lokale Gates: `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm db:smoke:crm` und
+  `pnpm --filter @invessiv/workspace build` grün. Die Preview-Abnahme auf Mobilgeräten und in beiden Themes bleibt offen.
 
 ## Ziel und Stand nach Abschluss
 
@@ -325,7 +343,7 @@ Auswirkungen auf spätere Ordner:
 ## Merge-Gates (je Teil-PR zusätzlich zur Task-Datei)
 
 - [ ] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm --filter @invessiv/workspace build` grün.
-- [ ] Kein Test kontaktiert einen echten Anbieter (außer der manuell ausgeführten ZIP-Messung in 14.4).
+- [ ] Normale Testläufe kontaktieren keinen echten Anbieter. Der neue Blob-E2E-Test läuft nur mit `E2E_LIVE_BLOB=true` gegen den privaten Development-Store.
 - [ ] Token, presigned URLs und Storage-Keys erscheinen nicht in Clientbundle, Logs, Activities oder DTOs.
 - [ ] Negativtests: fremder Kunde, fremdes Projekt, fehlende Permission (Workspace und Portal) → 404/403.
 - [ ] Portal kann interne Dateien weder listen noch per erratener ID signieren lassen.
@@ -334,7 +352,7 @@ Auswirkungen auf spätere Ordner:
 - [ ] Limitüberschreitung wird vor dem Upload abgelehnt (Browser) und zusätzlich an der CDN und bei `complete`.
 - [ ] Doppeltes `complete` erzeugt genau eine `ready`-Zeile und genau eine Activity.
 - [ ] Sichtbar gelieferte UI: Tastatur, Fokus, Live-Regionen, Dark/Light, mobil ab 360 px ohne horizontales Scrollen.
-- [ ] E2E (ab 14.5): interner Upload → freigeben → Kunde sieht und lädt; Kundenupload → intern sichtbar; interne
+- [x] E2E (ab 14.5): interner Upload → freigeben → Kunde sieht und lädt; Kundenupload → intern sichtbar; interne
       Datei für den Kunden unsichtbar, auch per ID.
 
 ## Rollback

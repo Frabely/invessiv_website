@@ -16,7 +16,11 @@ import { updateFile } from "@/server/workspace/crm/command-handler/update-file.c
 import { downloadFile } from "@/server/workspace/crm/query-handler/download-file.query-handler";
 import { StorageError } from "@invessiv/storage";
 import { GET as list } from "@/app/api/workspace/crm/customers/[id]/files/route";
-import { POST as archive } from "@/app/api/workspace/crm/customers/[id]/files/archive/route";
+import {
+  GET as downloadArchive,
+  POST as archive,
+} from "@/app/api/workspace/crm/customers/[id]/files/archive/route";
+import { createFilesArchive } from "@/server/workspace/crm/query-handler/create-files-archive.query-handler";
 import { POST as upload } from "@/app/api/workspace/crm/customers/[id]/files/uploads/route";
 import { POST as link } from "@/app/api/workspace/crm/customers/[id]/files/links/route";
 import { POST as complete } from "@/app/api/workspace/crm/files/[fileId]/complete/route";
@@ -25,6 +29,12 @@ import { GET as downloadUrl } from "@/app/api/workspace/crm/files/[fileId]/downl
 import { GET as download } from "@/app/api/workspace/crm/files/[fileId]/download/route";
 
 vi.mock("server-only", () => ({}));
+vi.mock(
+  "@/server/workspace/crm/query-handler/create-files-archive.query-handler",
+  () => ({
+    createFilesArchive: vi.fn(),
+  }),
+);
 vi.mock("@/lib/auth/workspace-authentication", () => ({
   authenticateWorkspaceRequest: vi.fn(),
 }));
@@ -46,6 +56,7 @@ const context = { params: Promise.resolve({ id, fileId: id }) };
 const routes = [
   [list, HttpMethod.Get],
   [archive, HttpMethod.Post],
+  [downloadArchive, HttpMethod.Get],
   [upload, HttpMethod.Post],
   [link, HttpMethod.Post],
   [complete, HttpMethod.Post],
@@ -143,6 +154,44 @@ describe("file HTTP authorization and responses", () => {
     expect(duplicate.headers.get(HttpHeaderName.CacheControl)).toBe(
       "private, no-store",
     );
+  });
+  it("preflights a native archive download and rechecks its IDs on GET", async () => {
+    authorize([Permission.FilesRead]);
+    vi.mocked(createFilesArchive).mockResolvedValue({ ok: true, rows: [] });
+    const preflight = await archive(
+      new NextRequest(
+        `http://localhost/api/workspace/crm/customers/${id}/files/archive?preflight=true`,
+        {
+          method: HttpMethod.Post,
+          headers: { [HttpHeaderName.ContentType]: MediaType.Json },
+          body: JSON.stringify({ fileIds: [id] }),
+        },
+      ),
+      context,
+    );
+    expect(await preflight.json()).toEqual({ ready: true });
+    const native = await downloadArchive(
+      new NextRequest(
+        `http://localhost/api/workspace/crm/customers/${id}/files/archive?fileId=${id}&filename=files.zip`,
+      ),
+      context,
+    );
+    expect(native.status).toBe(H.Ok);
+    expect(native.headers.get(HttpHeaderName.ContentType)).toBe(MediaType.Zip);
+    expect(native.headers.get(HttpHeaderName.ContentDisposition)).toContain(
+      "filename*=UTF-8''files.zip",
+    );
+    expect(createFilesArchive).toHaveBeenCalledTimes(2);
+    expect(
+      (
+        await downloadArchive(
+          new NextRequest(
+            `http://localhost/api/workspace/crm/customers/${id}/files/archive?fileId=bad`,
+          ),
+          context,
+        )
+      ).status,
+    ).toBe(H.UnprocessableContent);
   });
   it("maps a missing resource and version conflicts without changing their contract", async () => {
     authorize([Permission.FilesWrite]);

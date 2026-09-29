@@ -1,6 +1,6 @@
 # Task 55 — Dateien im Kundenportal
 
-> **Status:** im Review · **Teil-PR:** 14.5 · **Branch:** `feat/crm-dateien-5-portal`
+> **Status:** gemerged · **Teil-PR:** 14.5 · **Branch:** `feat/crm-dateien-5-portal`
 
 ## Ziel
 
@@ -75,7 +75,9 @@ Echte Zweitnutzung durch das Portal zieht aus dem internen CRM-Pfad hierher:
   `complete` → eine `ready`-Zeile, eine Activity; Pending-Limit; ZIP nur sichtbare IDs; Owner-Sicht liest, schreibt nie.
 - Komponenten: Portalansicht (Reiter, Empty-States, Owner-Sicht, Auswahl), Widget, geteilte UI-Bausteine.
 - E2E `e2e/portal-files.e2e.ts`: freigegebener Link erscheint, interner nicht (auch nicht per ID), Kundenlink
-  erscheint intern unter „Vom Kunden“. Echter Blob-Upload wird im Preview manuell abgenommen
+  erscheint intern unter „Vom Kunden“. Mit `E2E_LIVE_BLOB=true` wird zusätzlich ein echter Upload im privaten
+  Development-Store samt Freigabe, Einzel- und ZIP-Download sowie Kunden-Upload geprüft. Die Preview-Abnahme bleibt
+  separat
   ([Vercel-Checkliste](./VERCEL-SETUP.md)).
 
 ## Rollback

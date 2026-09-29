@@ -90,6 +90,7 @@ export function ConversationThreadView<TFile extends { id: string }>({
 
   const { api, texts } = attachments;
   const picked = thread.attachments.items;
+  const releaseWarning = releaseNotice(picked, texts);
   const remaining = MESSAGE_ATTACHMENTS_MAX - picked.length;
   const limitText = formatMessage(texts.limitReached, {
     max: String(MESSAGE_ATTACHMENTS_MAX),
@@ -114,7 +115,20 @@ export function ConversationThreadView<TFile extends { id: string }>({
     send && (api.listFiles || api.upload)
       ? {
           items: picked,
-          notice: releaseNotice(picked, texts),
+          notice: releaseWarning,
+          confirmation:
+            releaseWarning &&
+            texts.releaseConfirmTitle &&
+            texts.releaseConfirmDescription &&
+            texts.releaseConfirmButton
+              ? {
+                  title: texts.releaseConfirmTitle,
+                  description: texts.releaseConfirmDescription,
+                  confirmLabel: texts.releaseConfirmButton,
+                  cancelLabel: texts.cancel,
+                  closeLabel: texts.close,
+                }
+              : undefined,
           onRemoveAction: thread.attachments.remove,
           trigger: (
             <ChatAttachmentMenu

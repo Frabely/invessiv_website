@@ -297,6 +297,23 @@ describe("CustomerConversation pending storage", () => {
       content.attachments.releaseNoticeOne,
     );
     fireEvent.click(screen.getByRole("button", { name: content.thread.send }));
+    expect(api.sendMessage).not.toHaveBeenCalled();
+    expect(
+      screen.getByRole("dialog", {
+        name: content.attachments.releaseConfirmTitle,
+      }),
+    ).toBeVisible();
+    fireEvent.click(
+      screen.getByRole("button", { name: content.attachments.cancel }),
+    );
+    expect(api.sendMessage).not.toHaveBeenCalled();
+    expect(screen.getByRole("note")).toBeVisible();
+    fireEvent.click(screen.getByRole("button", { name: content.thread.send }));
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: content.attachments.releaseConfirmButton,
+      }),
+    );
     await waitFor(() =>
       expect(api.sendMessage).toHaveBeenCalledWith(
         customerId,

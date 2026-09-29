@@ -105,6 +105,9 @@
     "empty": "Für diesen Kunden gibt es noch keine Dateien oder Links.",
     "internalBadge": "Intern",
     "releaseNoticeOne": "Diese Datei wird für den Kunden freigegeben.",
-    "releaseNoticeMany": "Diese Dateien werden für den Kunden freigegeben."
+    "releaseNoticeMany": "Diese Dateien werden für den Kunden freigegeben.",
+    "releaseConfirmTitle": "Dateien für den Kunden freigeben?",
+    "releaseConfirmDescription": "Mit dem Senden kann der Kunde die angehängten internen Dateien sehen und herunterladen.",
+    "releaseConfirmButton": "Freigeben und senden"
   }
 }

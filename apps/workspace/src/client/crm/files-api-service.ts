@@ -171,7 +171,7 @@ function getDownloadUrl(
 function downloadArchive(
   customerId: string,
   fileIds: readonly string[],
-): Promise<FileClientResult<Blob>> {
+): Promise<FileClientResult<string>> {
   return transport.downloadArchive(
     crmCustomerFilesArchiveEndpoint(customerId),
     fileIds,
