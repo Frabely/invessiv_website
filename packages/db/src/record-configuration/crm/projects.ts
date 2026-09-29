@@ -16,7 +16,7 @@ import { PROJECT_PHASE_SEQUENCE } from "@invessiv/common/constants/crm/project-p
 import { PROJECT_STATUS_VALUES } from "@invessiv/common/constants/crm/project-statuses";
 import { PROJECT_WORKFLOW_KEY_VALUES } from "@invessiv/common/constants/crm/project-workflows";
 import { ProjectsConstraintName } from "@invessiv/db/constraint-names/crm/projects-constraint-names";
-import { sqlCheckIn } from "@invessiv/db/core";
+import { sqlCheckIn, sqlLimit } from "@invessiv/db/core";
 import { customers } from "./customers";
 import { workspaceMembers } from "./workspace-members";
 
@@ -150,7 +150,7 @@ export const projects = pgTable(
     index(ProjectsConstraintName.OpenOwnerIndex).on(t.owner_member_id),
     check(
       ProjectsConstraintName.FeedbackAreasCheck,
-      sql`cardinality(${t.feedback_areas}) <= ${sql.raw(String(FEEDBACK_LIMITS.areasPerProject))}`,
+      sql`cardinality(${t.feedback_areas}) <= ${sqlLimit(FEEDBACK_LIMITS.areasPerProject)}`,
     ),
   ],
 );

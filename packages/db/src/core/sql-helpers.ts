@@ -19,6 +19,16 @@ export function sqlCheckIn<
 }
 
 /**
+ * Inlines a numeric limit into a CHECK expression. DDL cannot take bind parameters, so the value is
+ * written into the SQL text; only integers from compile-time constants are accepted.
+ */
+export function sqlLimit(value: number) {
+  if (!Number.isSafeInteger(value))
+    throw new RangeError(`sqlLimit expects an integer, received: ${value}`);
+  return sql.raw(String(value));
+}
+
+/**
  * A human actor references a user and no system key; a system actor carries a key and no user.
  * Shared by `activities` and `security_events` so both tables enforce the same invariant.
  */

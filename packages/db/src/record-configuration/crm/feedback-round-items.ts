@@ -16,7 +16,7 @@ import {
 } from "@invessiv/common/constants/crm/feedback-item-results";
 import { FEEDBACK_LIMITS } from "@invessiv/common/constants/crm/feedback-limits";
 import { FeedbackRoundItemsConstraintName as N } from "@invessiv/db/constraint-names/crm/feedback-round-items-constraint-names";
-import { sqlCheckIn } from "@invessiv/db/core";
+import { sqlCheckIn, sqlLimit } from "@invessiv/db/core";
 import { feedbackRounds } from "./feedback-rounds";
 import { portalMemberships } from "./portal-memberships";
 import { workspaceMembers } from "./workspace-members";
@@ -70,21 +70,21 @@ export const feedbackRoundItems = pgTable(
     unique(N.RoundPositionUnique).on(t.round_id, t.position),
     check(
       N.PositionCheck,
-      sql`${t.position} >= 0 and ${t.position} < ${sql.raw(String(FEEDBACK_LIMITS.itemsPerRound))}`,
+      sql`${t.position} >= 0 and ${t.position} < ${sqlLimit(FEEDBACK_LIMITS.itemsPerRound)}`,
     ),
     check(
       N.AreaLabelCheck,
-      sql`${t.area_label} is null or (btrim(${t.area_label}) <> '' and length(${t.area_label}) <= ${sql.raw(String(FEEDBACK_LIMITS.areaLabelMaxLength))})`,
+      sql`${t.area_label} is null or (btrim(${t.area_label}) <> '' and length(${t.area_label}) <= ${sqlLimit(FEEDBACK_LIMITS.areaLabelMaxLength)})`,
     ),
     check(N.KindCheck, sqlCheckIn(t.kind, FEEDBACK_ITEM_KIND_VALUES)),
     check(
       N.BodyCheck,
-      sql`length(${t.body}) <= ${sql.raw(String(FEEDBACK_LIMITS.itemBodyMaxLength))}`,
+      sql`length(${t.body}) <= ${sqlLimit(FEEDBACK_LIMITS.itemBodyMaxLength)}`,
     ),
     check(N.ResultCheck, sqlCheckIn(t.result, FEEDBACK_ITEM_RESULT_VALUES)),
     check(
       N.ResultNoteLengthCheck,
-      sql`length(${t.result_note}) <= ${sql.raw(String(FEEDBACK_LIMITS.noteMaxLength))}`,
+      sql`length(${t.result_note}) <= ${sqlLimit(FEEDBACK_LIMITS.noteMaxLength)}`,
     ),
     check(N.VersionCheck, sql`${t.version} > 0`),
     check(

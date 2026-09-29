@@ -20,12 +20,10 @@ import {
   INTERNAL_QUEUE_FEEDBACK_ROUND_STATUS_VALUES,
 } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import { FeedbackRoundsConstraintName as N } from "@invessiv/db/constraint-names/crm/feedback-rounds-constraint-names";
-import { sqlCheckIn } from "@invessiv/db/core";
+import { sqlCheckIn, sqlLimit } from "@invessiv/db/core";
 import { portalMemberships } from "./portal-memberships";
 import { projects } from "./projects";
 import { workspaceMembers } from "./workspace-members";
-
-const noteMaxLength = sql.raw(String(FEEDBACK_LIMITS.noteMaxLength));
 
 /**
  * One feedback round of one project, created by the team at handover. `customer_id` is
@@ -106,24 +104,24 @@ export const feedbackRounds = pgTable(
     unique(N.ProjectNumberUnique).on(t.project_id, t.round_number),
     check(
       N.RoundNumberCheck,
-      sql`${t.round_number} between 1 and ${sql.raw(String(FEEDBACK_LIMITS.roundsPerProject))}`,
+      sql`${t.round_number} between 1 and ${sqlLimit(FEEDBACK_LIMITS.roundsPerProject)}`,
     ),
     check(N.StatusCheck, sqlCheckIn(t.status, FEEDBACK_ROUND_STATUS_VALUES)),
     check(
       N.PreviewUrlCheck,
-      sql`${t.preview_url} like 'https://%' and length(${t.preview_url}) <= 2048`,
+      sql`${t.preview_url} like 'https://%' and length(${t.preview_url}) <= ${sqlLimit(FEEDBACK_LIMITS.previewUrlMaxLength)}`,
     ),
     check(
       N.HandoverNoteCheck,
-      sql`length(${t.handover_note}) <= ${noteMaxLength}`,
+      sql`length(${t.handover_note}) <= ${sqlLimit(FEEDBACK_LIMITS.noteMaxLength)}`,
     ),
     check(
       N.AreaOptionsCheck,
-      sql`cardinality(${t.area_options}) <= ${sql.raw(String(FEEDBACK_LIMITS.areasPerProject))}`,
+      sql`cardinality(${t.area_options}) <= ${sqlLimit(FEEDBACK_LIMITS.areasPerProject)}`,
     ),
     check(
       N.CustomerNoticeCheck,
-      sql`length(${t.customer_notice}) <= ${noteMaxLength}`,
+      sql`length(${t.customer_notice}) <= ${sqlLimit(FEEDBACK_LIMITS.noteMaxLength)}`,
     ),
     check(N.VersionCheck, sql`${t.version} > 0`),
     check(
