@@ -1,6 +1,5 @@
 import "server-only";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
-import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { FileApiErrorCode as E } from "@invessiv/common/constants/files/file-api-error-code";
 import { UploadSide } from "@invessiv/common/constants/files/upload-side";
 import type { FileResult } from "@invessiv/common/contracts/files/file-result";
@@ -8,6 +7,7 @@ import type { CreatePortalFileLinkRequestDto } from "@invessiv/common/contracts/
 import type { PortalFileDto } from "@invessiv/common/contracts/portal/portal-file.dto";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import type { PortalActor } from "@/server/portal/auth/portal-actor";
+import { portalActivityActor } from "@/server/portal/auth/portal-activity-actor";
 import { portalFileMappingService } from "@/server/portal/services/files/portal-file-mapping-service";
 import { portalFileSchemas } from "@/server/portal/services/files/portal-file-schemas";
 import { portalFileService } from "@/server/portal/services/files/portal-file-service";
@@ -43,7 +43,7 @@ export async function createPortalFileLink(
     await fileObjectService.recordActivity(
       tx,
       row,
-      { type: ActorType.Customer, userId: actor.userId },
+      portalActivityActor(actor),
       ActivityType.Created,
     );
     return { ok: true, value: portalFileMappingService.toDto(row, null) };

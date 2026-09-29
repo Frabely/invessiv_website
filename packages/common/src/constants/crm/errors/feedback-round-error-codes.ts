@@ -1,6 +1,7 @@
 export const FeedbackRoundErrorCode = {
   RoundNotFound: "FEEDBACK_ROUND_NOT_FOUND",
   ItemNotFound: "FEEDBACK_ITEM_NOT_FOUND",
+  ProjectNotFound: "PROJECT_NOT_FOUND",
   ValidationError: "VALIDATION_ERROR",
   ProjectNotEligible: "PROJECT_NOT_ELIGIBLE",
   RoundStepMissing: "FEEDBACK_ROUND_STEP_MISSING",
@@ -18,6 +19,7 @@ export const FeedbackRoundErrorCode = {
   ConfirmationRequired: "CONFIRMATION_REQUIRED",
   AttachmentLimitReached: "ATTACHMENT_LIMIT_REACHED",
   FileNotAttachable: "FILE_NOT_ATTACHABLE",
+  Internal: "INTERNAL",
 } as const;
 
 export type FeedbackRoundErrorCode =

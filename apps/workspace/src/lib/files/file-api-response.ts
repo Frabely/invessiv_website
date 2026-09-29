@@ -12,7 +12,8 @@ import {
 } from "@invessiv/common/constants/storage/storage-options";
 import { StorageError } from "@invessiv/storage";
 import { FileQueryParam } from "@/common/constants/files/file-query-params";
-import { readJsonBody } from "@/lib/http/read-json-body";
+import { privateResponse } from "@/lib/http/private-no-store";
+import { withJsonBody } from "@/lib/http/with-json-body";
 import type { FileDownload } from "@/server/shared/files/file-object-service-types";
 import { fileRequestSchemas } from "@/server/shared/files/file-request-schemas";
 import { fileErrorResponse } from "./file-api-error";
@@ -31,17 +32,13 @@ export function fileApiResponse<T>(
 export async function privateFileResponse(
   operation: () => Promise<Response>,
 ): Promise<Response> {
-  let response: Response;
-  try {
-    response = await operation();
-  } catch (error) {
+  const response = await privateResponse(operation, (error) => {
     const code =
       error instanceof StorageError ? E.StorageUnavailable : E.Internal;
     // Provider exceptions and SQL details may contain a signed URL or free text.
     console.error("[files] request failed", { code });
-    response = fileApiResponse({ ok: false, code });
-  }
-  response.headers.set(HttpHeaderName.CacheControl, "private, no-store");
+    return fileApiResponse({ ok: false, code });
+  });
   response.headers.set(HttpHeaderName.XContentTypeOptions, "nosniff");
   return response;
 }
@@ -55,12 +52,16 @@ export async function parseFileBody<T>(
   },
   run: (input: T) => Promise<Response>,
 ): Promise<Response> {
-  const body = await readJsonBody(request);
-  if (!body.ok) return fileErrorResponse(E.Validation, H.BadRequest);
-  const parsed = schema.safeParse(body.body);
-  return parsed.success
-    ? run(parsed.data)
-    : fileApiResponse({ ok: false, code: E.Validation });
+  return withJsonBody(
+    request,
+    (body) => {
+      const parsed = schema.safeParse(body);
+      return parsed.success
+        ? run(parsed.data)
+        : Promise.resolve(fileApiResponse({ ok: false, code: E.Validation }));
+    },
+    () => fileErrorResponse(E.Validation, H.BadRequest),
+  );
 }
 
 export async function parseFileDisposition(

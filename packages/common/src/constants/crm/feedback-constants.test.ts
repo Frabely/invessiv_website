@@ -23,6 +23,10 @@ import {
   FEEDBACK_ROUND_ERROR_CODE_VALUES,
   FeedbackRoundErrorCode,
 } from "./errors/feedback-round-error-codes";
+import {
+  FEEDBACK_HAND_OVER_BLOCKER_VALUES,
+  FeedbackHandOverBlocker,
+} from "./feedback-hand-over-blockers";
 import { PortalFeedbackErrorCode } from "../portal/portal-feedback-error-codes";
 
 describe("feedback const objects", () => {
@@ -32,9 +36,15 @@ describe("feedback const objects", () => {
     [FeedbackItemKind, FEEDBACK_ITEM_KIND_VALUES],
     [FeedbackItemResult, FEEDBACK_ITEM_RESULT_VALUES],
     [FeedbackRoundErrorCode, FEEDBACK_ROUND_ERROR_CODE_VALUES],
+    [FeedbackHandOverBlocker, FEEDBACK_HAND_OVER_BLOCKER_VALUES],
   ] as const)("lists every value exactly once", (constObject, values) => {
     expect([...values]).toEqual(Object.values(constObject));
     expect(new Set(values).size).toBe(values.length);
+  });
+
+  it("uses only handover error codes as blockers", () => {
+    for (const blocker of FEEDBACK_HAND_OVER_BLOCKER_VALUES)
+      expect(FEEDBACK_ROUND_ERROR_CODE_VALUES).toContain(blocker);
   });
 
   it("keeps portal feedback error codes distinct", () => {

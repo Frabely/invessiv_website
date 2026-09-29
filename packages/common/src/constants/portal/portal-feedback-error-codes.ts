@@ -9,6 +9,7 @@ export const PortalFeedbackErrorCode = {
   ConfirmationRequired: "confirmation_required",
   AttachmentLimit: "attachment_limit",
   NotAttachable: "not_attachable",
+  Unavailable: "unavailable",
 } as const;
 
 export type PortalFeedbackErrorCode =

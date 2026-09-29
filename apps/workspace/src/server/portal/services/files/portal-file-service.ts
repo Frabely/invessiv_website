@@ -1,10 +1,9 @@
 import "server-only";
-import { and, eq, inArray, isNull, type SQL } from "drizzle-orm";
+import { and, eq, isNull, type SQL } from "drizzle-orm";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { FileSource } from "@invessiv/common/constants/files/file-source";
 import { UploadSide } from "@invessiv/common/constants/files/upload-side";
 import { PortalFileOrigin } from "@invessiv/common/constants/portal/portal-file-origin";
-import { PORTAL_VISIBLE_PROJECT_STATUS_VALUES } from "@invessiv/common/constants/portal/portal-visible-project-statuses";
 import {
   type ContactDatabaseTransaction,
   getDrizzleDatabaseClient,
@@ -18,6 +17,7 @@ import type { PortalActor } from "@/server/portal/auth/portal-actor";
 import type { PortalReader } from "@/server/portal/auth/portal-reader";
 import { portalAccessCondition } from "@/server/portal/shared/portal-access-condition";
 import { portalCanOn } from "@/server/portal/shared/portal-can-on";
+import { portalProjectCondition } from "@/server/portal/shared/portal-project-condition";
 import { customerFileVisibilityService } from "@/server/shared/files/customer-file-visibility-service";
 import type { FileRow } from "@/server/shared/files/file-object-service-types";
 import { portalFileSchemas } from "./portal-file-schemas";
@@ -91,8 +91,7 @@ async function targetExists(
     .where(
       and(
         eq(projects.id, projectId),
-        eq(projects.customer_id, actor.customerId),
-        inArray(projects.status, PORTAL_VISIBLE_PROJECT_STATUS_VALUES),
+        portalProjectCondition(actor, Permission.PortalProjectsRead),
       ),
     )
     .limit(1)
@@ -143,6 +142,31 @@ async function lockOwnUpload(
   return row ?? null;
 }
 
+/**
+ * Any entry of the company that the contact may see, not only own uploads; a hidden internal entry
+ * answers like a missing one. The caller decides what the entry may be used for.
+ */
+async function lockVisible(
+  tx: ContactDatabaseTransaction,
+  actor: PortalActor,
+  id: string,
+): Promise<FileRow | null> {
+  if (!portalFileSchemas.id.safeParse(id).success) return null;
+  const [row] = await tx
+    .select()
+    .from(files)
+    .where(
+      and(
+        eq(files.id, id),
+        eq(files.customer_id, actor.customerId),
+        eq(files.visible_to_customer, true),
+      ),
+    )
+    .limit(1)
+    .for("update");
+  return row ?? null;
+}
+
 export const portalFileService = {
   visibleCondition,
   originCondition,
@@ -152,4 +176,5 @@ export const portalFileService = {
   targetExists,
   lockMembership,
   lockOwnUpload,
+  lockVisible,
 };

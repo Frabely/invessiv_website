@@ -1,14 +1,17 @@
 import "server-only";
 
-import { and, asc, eq, inArray, type SQL, sql } from "drizzle-orm";
+import { and, asc, eq, inArray, ne, type SQL, sql } from "drizzle-orm";
 
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import { FeedbackRoundItemsConstraintName } from "@invessiv/db/constraint-names/crm/feedback-round-items-constraint-names";
 import { feedbackRoundItems, files } from "@invessiv/db/record-configuration";
-import { updateVersioned } from "@/server/workspace/shared/update-versioned";
+import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
+import { feedbackAttachmentService } from "./feedback-attachment-service";
+import { FeedbackItemIdTakenError } from "./feedback-item-id-taken-error.class";
 import { feedbackMappingService } from "./feedback-mapping-service";
 import type {
   FeedbackDraftItemInput,
+  FeedbackReadExecutor,
   FeedbackRoundItemRow,
   FeedbackRoundRef,
   LoadedFeedbackItem,
@@ -23,7 +26,7 @@ const positionConstraint = sql.identifier(
  * (portal release or internal scope); an attachment outside it is left out entirely.
  */
 async function loadByRound(
-  tx: ContactDatabaseTransaction,
+  tx: FeedbackReadExecutor,
   roundIds: readonly string[],
   visibility: SQL,
 ): Promise<Map<string, LoadedFeedbackItem[]>> {
@@ -72,47 +75,110 @@ async function loadByRound(
   return byRound;
 }
 
-/** The file stays with the customer under "your uploads"; only its feedback binding goes. */
-async function detachFiles(
+async function rejectForeignIds(
   tx: ContactDatabaseTransaction,
-  itemIds: readonly string[],
+  round: FeedbackRoundRef,
+  items: readonly FeedbackDraftItemInput[],
 ): Promise<void> {
-  const bound = await tx
-    .select({ id: files.id, version: files.version })
-    .from(files)
-    .where(inArray(files.feedback_item_id, [...itemIds]))
-    .for("update");
-  for (const file of bound) {
-    const write = await updateVersioned({
-      tx,
-      table: files,
-      id: file.id,
-      expectedVersion: file.version,
-      patch: { feedback_round_id: null, feedback_item_id: null },
-      toDto: (row) => row.id,
-    });
-    if (!write.ok) throw new Error("Locked feedback file changed");
-  }
+  if (items.length === 0) return;
+  const [foreign] = await tx
+    .select({ id: feedbackRoundItems.id })
+    .from(feedbackRoundItems)
+    .where(
+      and(
+        inArray(
+          feedbackRoundItems.id,
+          items.map((item) => item.id),
+        ),
+        ne(feedbackRoundItems.round_id, round.id),
+      ),
+    )
+    .limit(1);
+  if (foreign) throw new FeedbackItemIdTakenError();
 }
 
-function hasChanged(
-  stored: FeedbackRoundItemRow,
-  next: FeedbackDraftItemInput,
+/** Deletes items missing from the draft after unbinding their files, which stay with the customer. */
+async function removeMissingItems(
+  tx: ContactDatabaseTransaction,
+  stored: readonly FeedbackRoundItemRow[],
+  items: readonly FeedbackDraftItemInput[],
+): Promise<void> {
+  const keptIds = new Set(items.map((item) => item.id));
+  const removedIds = stored
+    .filter((item) => !keptIds.has(item.id))
+    .map((item) => item.id);
+  if (removedIds.length === 0) return;
+  await feedbackAttachmentService.detachItemFiles(tx, removedIds);
+  await tx
+    .delete(feedbackRoundItems)
+    .where(inArray(feedbackRoundItems.id, removedIds));
+}
+
+/** A parallel save of another round may claim the same client id after the check; the PK decides. */
+async function insertItem(
+  tx: ContactDatabaseTransaction,
+  round: FeedbackRoundRef,
+  item: FeedbackDraftItemInput,
   position: number,
-): boolean {
-  return (
-    stored.position !== position ||
-    stored.area_label !== next.areaLabel ||
-    stored.kind !== next.kind ||
-    stored.body !== next.body
+  portalMembershipId: string,
+): Promise<void> {
+  const inserted = await tx
+    .insert(feedbackRoundItems)
+    .values({
+      id: item.id,
+      round_id: round.id,
+      position,
+      area_label: item.areaLabel,
+      kind: item.kind,
+      body: item.body,
+      created_by_portal_membership_id: portalMembershipId,
+      result: null,
+      result_note: null,
+      result_set_by_member_id: null,
+      result_set_at: null,
+      version: 1,
+    })
+    .onConflictDoNothing({ target: feedbackRoundItems.id })
+    .returning({ id: feedbackRoundItems.id });
+  if (inserted.length === 0) throw new FeedbackItemIdTakenError();
+}
+
+async function updateItem(
+  tx: ContactDatabaseTransaction,
+  stored: FeedbackRoundItemRow,
+  item: FeedbackDraftItemInput,
+  position: number,
+): Promise<void> {
+  if (
+    stored.position === position &&
+    stored.area_label === item.areaLabel &&
+    stored.kind === item.kind &&
+    stored.body === item.body
+  )
+    return;
+  await updateLockedVersioned(
+    {
+      tx,
+      table: feedbackRoundItems,
+      id: stored.id,
+      expectedVersion: stored.version,
+      patch: {
+        position,
+        area_label: item.areaLabel,
+        kind: item.kind,
+        body: item.body,
+      },
+    },
+    "Locked feedback item changed",
   );
 }
 
 /**
  * Brings the stored draft in line with `items`: the list order becomes the position, unknown ids are
- * inserted, missing ones deleted. The handler has validated ids, areas and limits and holds the round
+ * inserted, missing ones deleted. The handler has validated areas and limits and holds the round
  * lock. Swapping two positions would trip the unique index row by row, so it is checked once at the
- * end instead.
+ * end instead. An id of another round throws `FeedbackItemIdTakenError`; the caller runs this in a
+ * savepoint and answers with a validation error.
  */
 async function replaceDraftItems(
   tx: ContactDatabaseTransaction,
@@ -120,59 +186,20 @@ async function replaceDraftItems(
   items: readonly FeedbackDraftItemInput[],
   portalMembershipId: string,
 ): Promise<void> {
+  await rejectForeignIds(tx, round, items);
   const stored = await tx
     .select()
     .from(feedbackRoundItems)
     .where(eq(feedbackRoundItems.round_id, round.id))
     .for("update");
+  await removeMissingItems(tx, stored, items);
+
   const storedById = new Map(stored.map((item) => [item.id, item]));
-  const keptIds = new Set(items.map((item) => item.id));
-  const removedIds = stored
-    .filter((item) => !keptIds.has(item.id))
-    .map((item) => item.id);
-
-  if (removedIds.length > 0) {
-    await detachFiles(tx, removedIds);
-    await tx
-      .delete(feedbackRoundItems)
-      .where(inArray(feedbackRoundItems.id, removedIds));
-  }
-
   await tx.execute(sql`set constraints ${positionConstraint} deferred`);
   for (const [position, item] of items.entries()) {
     const existing = storedById.get(item.id);
-    if (!existing) {
-      await tx.insert(feedbackRoundItems).values({
-        id: item.id,
-        round_id: round.id,
-        position,
-        area_label: item.areaLabel,
-        kind: item.kind,
-        body: item.body,
-        created_by_portal_membership_id: portalMembershipId,
-        result: null,
-        result_note: null,
-        result_set_by_member_id: null,
-        result_set_at: null,
-        version: 1,
-      });
-      continue;
-    }
-    if (!hasChanged(existing, item, position)) continue;
-    const write = await updateVersioned({
-      tx,
-      table: feedbackRoundItems,
-      id: item.id,
-      expectedVersion: existing.version,
-      patch: {
-        position,
-        area_label: item.areaLabel,
-        kind: item.kind,
-        body: item.body,
-      },
-      toDto: (row) => row.id,
-    });
-    if (!write.ok) throw new Error("Locked feedback item changed");
+    if (existing) await updateItem(tx, existing, item, position);
+    else await insertItem(tx, round, item, position, portalMembershipId);
   }
   await tx.execute(sql`set constraints ${positionConstraint} immediate`);
 }

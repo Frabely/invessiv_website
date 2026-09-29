@@ -1,9 +1,8 @@
 import "server-only";
 
-import { and, desc, eq, inArray, ne } from "drizzle-orm";
+import { and, desc, eq, ne } from "drizzle-orm";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
-import { PORTAL_VISIBLE_PROJECT_STATUS_VALUES } from "@invessiv/common/constants/portal/portal-visible-project-statuses";
 import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
@@ -18,6 +17,7 @@ import type { PortalReader } from "@/server/portal/auth/portal-reader";
 import { isPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
 import { portalCanOn } from "@/server/portal/shared/portal-can-on";
 import { portalAccessCondition } from "@/server/portal/shared/portal-access-condition";
+import { portalProjectCondition } from "@/server/portal/shared/portal-project-condition";
 import { portalDashboardMappingService } from "@/server/portal/services/portal-dashboard-mapping-service";
 
 /** Reads only explicitly released dashboard columns in at most three queries. */
@@ -75,16 +75,7 @@ export async function getPortalDashboard(
           eq(workspaceMembers.id, projects.owner_member_id),
         )
         .leftJoin(users, eq(users.id, workspaceMembers.user_id))
-        .where(
-          and(
-            portalAccessCondition.forReader(
-              reader,
-              Permission.PortalProjectsRead,
-              { customerId: projects.customer_id },
-            ),
-            inArray(projects.status, PORTAL_VISIBLE_PROJECT_STATUS_VALUES),
-          ),
-        )
+        .where(portalProjectCondition(reader, Permission.PortalProjectsRead))
         .orderBy(desc(projects.created_at))
     : [];
 
@@ -110,16 +101,9 @@ export async function getPortalDashboard(
         .innerJoin(projects, eq(projects.id, tasks.project_id))
         .where(
           and(
-            portalAccessCondition.forReader(
-              reader,
-              Permission.PortalTasksRead,
-              {
-                customerId: projects.customer_id,
-              },
-            ),
+            portalProjectCondition(reader, Permission.PortalTasksRead),
             eq(tasks.visible_to_customer, true),
             ne(tasks.status, TaskStatus.Cancelled),
-            inArray(projects.status, PORTAL_VISIBLE_PROJECT_STATUS_VALUES),
           ),
         )
     : [];

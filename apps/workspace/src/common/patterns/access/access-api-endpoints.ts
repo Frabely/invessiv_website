@@ -1,10 +1,10 @@
 import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
+import { ProjectApiPath } from "@/common/constants/crm/project-api-paths";
 
 const MEMBER_ROLES_PATH_SEGMENT = "roles";
 const MEMBER_ROLE_ASSIGNMENTS_PATH_SEGMENT = "role-assignments";
 const MEMBER_OWNER_PATH_SEGMENT = "owner";
 const ACCESS_SCOPES_PATH_SEGMENT = "access-scopes";
-const ACCESS_CUSTOMER_PROJECTS_PATH_SEGMENT = "projects";
 
 export function workspaceMemberEndpoint(memberId: string): string {
   return `${WorkspaceApiEndpoint.Members}/${encodeURIComponent(memberId)}`;
@@ -36,7 +36,7 @@ export function workspaceMemberAccessScopeEndpoint(
 }
 
 export function accessCustomerProjectsEndpoint(customerId: string): string {
-  return `${WorkspaceApiEndpoint.AccessCustomers}/${encodeURIComponent(customerId)}/${ACCESS_CUSTOMER_PROJECTS_PATH_SEGMENT}`;
+  return `${WorkspaceApiEndpoint.AccessCustomers}/${encodeURIComponent(customerId)}/${ProjectApiPath.Projects}`;
 }
 
 export function accessCustomersEndpoint(search: string): string {

@@ -263,6 +263,20 @@ export const PERMISSION_DEFINITIONS = {
     assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
     description: "Upload own files and add own links.",
   },
+  [Permission.PortalFeedbackRead]: {
+    realm: AuthRealm.Portal,
+    delegable: true,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description: "See feedback rounds, their items and results.",
+  },
+  [Permission.PortalFeedbackSubmit]: {
+    realm: AuthRealm.Portal,
+    delegable: true,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description: "Save, submit and approve feedback rounds.",
+  },
   [Permission.RolesManage]: {
     realm: AuthRealm.Workspace,
     delegable: false,
@@ -320,4 +334,5 @@ export const PORTAL_READ_PERMISSION_VALUES = [
   Permission.PortalTasksRead,
   Permission.PortalMessagesRead,
   Permission.PortalFilesRead,
+  Permission.PortalFeedbackRead,
 ] as const satisfies readonly Permission[];

@@ -1,21 +1,13 @@
-﻿import { BUSINESS_TIME_ZONE } from "@invessiv/common/constants/crm/business-time-zone";
-import type { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
+﻿import type { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import { OPEN_TASK_STATUS_VALUES } from "@invessiv/common/constants/crm/task-statuses";
 import {
   TASK_DUE_SOON_WINDOW_DAYS,
   TaskDueState,
 } from "@invessiv/common/constants/crm/task-due-states";
 import type { TaskSummary } from "@/common/contracts/crm/task-summary";
+import { businessToday } from "@/common/patterns/time/business-today";
 
 const MILLISECONDS_PER_DAY = 86_400_000;
-
-// `en-CA` formats a date as YYYY-MM-DD, which sorts and compares as plain text.
-const BUSINESS_DATE_FORMAT = new Intl.DateTimeFormat("en-CA", {
-  timeZone: BUSINESS_TIME_ZONE,
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-});
 
 function isStillOpen(status: TaskStatus): boolean {
   return (OPEN_TASK_STATUS_VALUES as readonly TaskStatus[]).includes(status);
@@ -23,11 +15,6 @@ function isStillOpen(status: TaskStatus): boolean {
 
 function toUtcDay(isoDate: string): number {
   return Date.parse(`${isoDate}T00:00:00Z`);
-}
-
-/** The calendar day of `now` in the business time zone, as `YYYY-MM-DD`. */
-function businessToday(now: Date = new Date()): string {
-  return BUSINESS_DATE_FORMAT.format(now);
 }
 
 function addDays(isoDate: string, days: number): string {

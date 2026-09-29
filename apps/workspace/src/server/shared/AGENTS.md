@@ -79,3 +79,23 @@ Transaktion um.
   `submission_received`, jeder weitere Statuswechsel `field_change` mit Feld `status`). Die Runde steht in `metadata`
   (`entity: FEEDBACK_ROUND_ACTIVITY_ENTITY`, `feedback_round_id`, `round_number`); Feedbacktext kommt nie ins Log.
 - Zeilen- und Eingabetypen liegen in `feedback-service-types.ts`, das Anhangs-Mapping in `feedback-mapping-service.ts`.
+- Ab Task 59:
+  - `feedback-round-write-service.ts` ist der einzige Schreibweg einer **gesperrten** Runde samt aller Nebenwirkungen in
+    derselben Transaktion: `recordHandOver` (Activity + Chat nach dem Insert), `saveDraft` (Entwurfsstempel +
+    `replaceDraftItems`), `submit` (Status, Sammelaufgabe, Activity, Chat), `approve` (Status, Projektschritt,
+    Activity, Chat). Welcher Schritt erlaubt ist, entscheidet der Handler über `canTransition`; kein Handler schreibt
+    Rundenstatus, Activity oder Rundennachricht an diesem Service vorbei. Task 61 ergänzt hier die internen Schritte.
+  - `feedback-attachment-service.ts` schreibt als einzige Stelle die Spalten `feedback_round_id`/`feedback_item_id`
+    einer Datei (`attachFile`, `detachFile`, `detachItemFiles`). Anhängen liegt bewusst neben Lösen, obwohl nur das
+    Portal anhängt: Binden und Lösen dürfen nicht auseinanderlaufen. Die Dateizeile sperrt der Handler vorher.
+  - `replaceDraftItems` wirft `FeedbackItemIdTakenError`, wenn eine Client-ID einer anderen Runde gehört (auch im
+    Wettlauf, über den Primärschlüssel); der Aufrufer fängt das in einem Savepoint als Validierungsfehler.
+  - `loadByRound` nimmt einen reinen Lese-Executor, damit Query-Handler ohne Transaktion lesen.
+  - Gesperrte Zeilen werden über `updateLockedVersioned` geschrieben (wirft statt 409, weil ein Versionsverlust unter
+    Sperre ein Fehler ist).
+
+## Systemnachrichten (ab Task 59)
+
+`services/message/announce-system-message.ts` ist der einzige Weg für fachliche Chat-Hinweise: Savepoint, Fehler nur
+geloggt (Name, Key, kein Text). Ein Fachwrite scheitert nie an seiner Systemnachricht. Neue Ereignisse rufen diesen
+Helfer auf, statt Savepoint und Logging zu kopieren.

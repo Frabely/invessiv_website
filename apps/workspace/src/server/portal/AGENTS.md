@@ -45,3 +45,23 @@ einzigen regulären Aufrufer.
   `portalAccessCondition` und jede Portal-Mutation prüft `portalCanOn` — beide firmenweit, vorbereitet für
   `projectPermissions`, das heute immer leer ist.
 - Logs enthalten keine E-Mail-Adressen, Namen oder Clerk-Kennungen.
+
+## Feedbackrunden (ab Task 59)
+
+- Lesen verlangt `portal.feedback.read` **und** `portal.projects.read`, Schreiben zusätzlich `portal.feedback.submit`;
+  das Projekt muss in `PORTAL_VISIBLE_PROJECT_STATUS_VALUES` liegen. Jeder Fehlgriff (fremde Firma, geratene ID,
+  fehlendes Recht, archiviertes Projekt) ist `not_found`.
+- Jede Mutation läuft in `portalFeedbackService.withLockedRound` (Transaktion, Rundensperre, Fehlgriff = `not_found`)
+  und prüft `rejectUnlessAllowed`: erlaubt ist nur, was `canTransition(status, ziel, customer)` erlaubt, sonst
+  `locked`; die Version wird unter der Sperre verglichen. Ein Entwurf (Speichern, Anhängen, Lösen) gilt als
+  bearbeitbar, solange er eingereicht werden könnte. Geschrieben wird ausschließlich über
+  `feedbackRoundWriteService` bzw. `feedbackAttachmentService` (`server/shared/services/feedback/`).
+- Anhängen und Lösen verlangen zusätzlich `portal.files.read` (`canAttach`): Anhänge werden über die Portal-
+  Dateisichtbarkeit gezeigt, ohne das Recht wären angehängte Dateien für den Kontakt unsichtbar.
+- „Projekt im Portal sichtbar" ist genau einmal definiert: `shared/portal-project-condition.ts`. Der Activity-Actor
+  eines Kontakts kommt aus `auth/portal-activity-actor.ts`.
+- Punkt-IDs kommen vom Client: eine ID aus einer anderen Runde wird als `validation` abgelehnt, nie übernommen.
+- Anhängen nur für fertige eigene Kundendateien ohne Punkt; eine Datei, die der Kunde nicht sehen darf, ist
+  `not_found`, eine sichtbare, aber unpassende `not_attachable`.
+- Fehlercodes sind `PortalFeedbackErrorCode`; Statuscodes und Texte stehen ausschließlich in
+  `src/lib/portal/portal-feedback-api-error.ts`.

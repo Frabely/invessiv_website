@@ -12,8 +12,52 @@ import {
   portalFilesArchiveEndpoint,
   portalFilesEndpoint,
   portalFileUploadsEndpoint,
+  portalFeedbackApproveEndpoint,
+  portalFeedbackDraftEndpoint,
+  portalFeedbackItemFileEndpoint,
+  portalFeedbackItemFilesEndpoint,
+  portalFeedbackSubmitEndpoint,
+  portalProjectFeedbackEndpoint,
   portalTaskCompleteEndpoint,
 } from "./portal-api-endpoints";
+
+describe("portal feedback endpoints", () => {
+  it("builds the project feedback page path", () => {
+    expect(portalProjectFeedbackEndpoint("c-1", "p-1")).toBe(
+      "/api/portal/c-1/projects/p-1/feedback",
+    );
+  });
+
+  it("builds the round command paths", () => {
+    expect(portalFeedbackDraftEndpoint("c-1", "r-1")).toBe(
+      "/api/portal/c-1/feedback-rounds/r-1/draft",
+    );
+    expect(portalFeedbackSubmitEndpoint("c-1", "r-1")).toBe(
+      "/api/portal/c-1/feedback-rounds/r-1/submit",
+    );
+    expect(portalFeedbackApproveEndpoint("c-1", "r-1")).toBe(
+      "/api/portal/c-1/feedback-rounds/r-1/approve",
+    );
+  });
+
+  it("builds the item file paths", () => {
+    expect(portalFeedbackItemFilesEndpoint("c-1", "r-1", "i-1")).toBe(
+      "/api/portal/c-1/feedback-rounds/r-1/items/i-1/files",
+    );
+    expect(portalFeedbackItemFileEndpoint("c-1", "r-1", "i-1", "f-1")).toBe(
+      "/api/portal/c-1/feedback-rounds/r-1/items/i-1/files/f-1",
+    );
+  });
+
+  it("encodes every path segment", () => {
+    expect(portalProjectFeedbackEndpoint("a/b", "c d")).toBe(
+      "/api/portal/a%2Fb/projects/c%20d/feedback",
+    );
+    expect(portalFeedbackItemFileEndpoint("a/b", "r/1", "i 1", "f?1")).toBe(
+      "/api/portal/a%2Fb/feedback-rounds/r%2F1/items/i%201/files/f%3F1",
+    );
+  });
+});
 
 describe("portalTaskCompleteEndpoint", () => {
   it("builds the completion path below the portal api", () => {

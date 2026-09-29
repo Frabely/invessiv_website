@@ -13,6 +13,11 @@ export interface PortalProjectFeedbackDto {
   activeRound: PortalFeedbackRoundDto | null;
   /** Finished rounds, newest first, including an approved one. */
   history: PortalFeedbackRoundDto[];
-  /** Whether this viewer may save, attach, submit and approve; the owner view only reads. */
+  /** Whether this viewer may save, submit and approve; the owner view only reads. */
   canSubmit: boolean;
+  /**
+   * Whether this viewer may attach and detach files; needs `canSubmit` plus the portal file read
+   * right, because attachments are shown through the portal's file visibility.
+   */
+  canAttach: boolean;
 }

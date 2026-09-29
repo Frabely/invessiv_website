@@ -32,7 +32,13 @@
     "removeAttachment": "Remove {name}"
   },
   "systemMessages": {
-    "projectPhaseChanged": "Project “{projectTitle}” is now in the {phase} phase."
+    "projectPhaseChanged": "Project “{projectTitle}” is now in the {phase} phase.",
+    "feedbackRoundHandedOver": "Feedback round {roundNumber} for “{projectTitle}” was handed over to the customer.",
+    "feedbackRoundSubmitted": "The customer submitted feedback round {roundNumber} for “{projectTitle}”.",
+    "feedbackRoundDiscussionRequested": "A call was requested for feedback round {roundNumber} of “{projectTitle}”.",
+    "feedbackRoundReturned": "Feedback round {roundNumber} for “{projectTitle}” went back to the customer for additions.",
+    "feedbackRoundCompleted": "Feedback round {roundNumber} for “{projectTitle}” is completed.",
+    "feedbackApproved": "The customer approved “{projectTitle}” in feedback round {roundNumber}."
   },
   "dock": {
     "unread": "{count} unread"

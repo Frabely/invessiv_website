@@ -1,6 +1,6 @@
 import type { AssetKind } from "../../constants/files/asset-kind";
 
-/** A customer upload hung on one feedback item; downloads go through the file endpoints of the viewer's side. */
+/** A customer upload or link hung on one feedback item; downloads go through the file endpoints of the viewer's side. */
 export interface FeedbackAttachmentDto {
   /** File entry the chip downloads or previews. */
   fileId: string;
@@ -8,6 +8,6 @@ export interface FeedbackAttachmentDto {
   displayName: string;
   /** Drives the type icon and the preview. */
   assetKind: AssetKind;
-  /** Verified byte size; feedback attachments are always finished uploads, never links. */
+  /** Verified byte size of a finished upload; 0 for a link, which has no bytes of its own. */
   sizeBytes: number;
 }

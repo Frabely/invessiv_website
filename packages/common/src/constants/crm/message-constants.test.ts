@@ -57,11 +57,18 @@ describe("system message constants", () => {
   it("exposes the exact event keys and parameters without duplicates", () => {
     expect(SystemMessageKey).toEqual({
       ProjectPhaseChanged: "projectPhaseChanged",
+      FeedbackRoundHandedOver: "feedbackRoundHandedOver",
+      FeedbackRoundSubmitted: "feedbackRoundSubmitted",
+      FeedbackRoundDiscussionRequested: "feedbackRoundDiscussionRequested",
+      FeedbackRoundReturned: "feedbackRoundReturned",
+      FeedbackRoundCompleted: "feedbackRoundCompleted",
+      FeedbackApproved: "feedbackApproved",
     });
     expect(SYSTEM_MESSAGE_KEY_VALUES).toEqual(Object.values(SystemMessageKey));
     expect(SystemMessageParam).toEqual({
       ProjectTitle: "projectTitle",
       Phase: "phase",
+      RoundNumber: "roundNumber",
     });
     const params = Object.values(SystemMessageParam);
     expect(new Set(params).size).toBe(params.length);

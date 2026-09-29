@@ -223,3 +223,13 @@ Kontingent erschöpft. „Noch keine Runde“ und „alle Runden erledigt“ sin
 4. Ein zweites Projekt: Freigabe ohne Punkte nur mit Haken; danach „Abgenommen“ im Widget, Leiste hinter dem Block.
 5. `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm db:smoke:crm`,
    `pnpm --filter @invessiv/workspace build` grün; E2E grün.
+
+## Hinweise aus dem Review von Task 59 (API)
+
+- Die Übergabe schreibt `projects.feedback_areas` und erhöht damit die Projektversion. Ein parallel geöffneter
+  Projekt-Editor erhält danach 409; der Konfliktdialog soll erklären, dass die Bereiche bei der Übergabe geändert wurden.
+- Das Team sieht eine offene Runde samt Entwurf schon vor dem Einreichen (`GET feedback-rounds/[id]`). Der Kundenbogen
+  macht das transparent (z. B. „Dein Entwurf ist für unser Team sichtbar").
+- Anhängen/Lösen verlangt `portal.feedback.submit` **und** `portal.files.read`; ohne Dateirecht blendet der Bogen die
+  Datei-Aktionen aus.
+- Alle Feedback-Endpunkte liefern das DTO direkt (ohne `{ round }`-Hülle).
