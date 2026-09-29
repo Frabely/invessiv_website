@@ -3,7 +3,6 @@ import "server-only";
 import { and, eq } from "drizzle-orm";
 
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
-import { PortalFeedbackErrorCode } from "@invessiv/common/constants/portal/portal-feedback-error-codes";
 import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
 import type { PortalFeedbackResult } from "@invessiv/common/contracts/portal/results/portal-feedback-result";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
@@ -14,11 +13,6 @@ import { portalFeedbackService } from "@/server/portal/services/feedback/portal-
 import { feedbackAttachmentService } from "@/server/shared/services/feedback/feedback-attachment-service";
 
 type Result = PortalFeedbackResult<FeedbackAttachmentDto>;
-
-const NOT_FOUND = {
-  ok: false,
-  code: PortalFeedbackErrorCode.NotFound,
-} as const;
 
 /** Only a file bound to exactly this item of this round; anything else looks absent. */
 async function lockBoundFile(
@@ -54,7 +48,7 @@ export async function detachPortalFeedbackFile(
     !fileId.success ||
     !portalFeedbackService.canAttach(actor)
   )
-    return NOT_FOUND;
+    return portalFeedbackService.notFound();
 
   return portalFeedbackService.withLockedRound(
     actor,
@@ -72,7 +66,7 @@ export async function detachPortalFeedbackFile(
         itemId: itemId.data,
         fileId: fileId.data,
       });
-      if (!file) return NOT_FOUND;
+      if (!file) return portalFeedbackService.notFound();
       return {
         ok: true,
         value: await feedbackAttachmentService.detachFile(tx, file),

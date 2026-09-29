@@ -1,8 +1,5 @@
 import { eq, inArray } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
-import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
-import { SYSTEM_ROLE_DEFINITIONS } from "@invessiv/common/constants/auth/system-role-definitions";
-import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
 import { FeedbackRoundErrorCode } from "@invessiv/common/constants/crm/errors/feedback-round-error-codes";
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import { SystemMessageKey } from "@invessiv/common/constants/crm/system-message-keys";
@@ -10,11 +7,8 @@ import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurre
 import { PortalFeedbackErrorCode as E } from "@invessiv/common/constants/portal/portal-feedback-error-codes";
 import { Locale } from "@invessiv/common/contracts/i18n/locale";
 import {
-  customerContactAssignments,
   messages,
   people,
-  portalMembershipRoles,
-  portalMemberships,
   tasks,
   users,
 } from "@invessiv/db/record-configuration";
@@ -27,6 +21,7 @@ import { submitPortalFeedbackRound } from "@/server/portal/command-handler/submi
 import { getPortalProjectFeedback } from "@/server/portal/query-handler/get-portal-project-feedback.query-handler";
 import { resolvePortalActor } from "@/server/portal/query-handler/resolve-portal-actor.query-handler";
 import { messageService } from "@/server/shared/services/message/message-service";
+import { insertStandardPortalMembership } from "@/server/tests/support/portal-membership-fixture";
 import { handOverFeedbackRound } from "@/server/workspace/crm/command-handler/hand-over-feedback-round.command-handler";
 import { createFeedbackIntegrationFixture } from "../../shared/services/feedback/feedback-integration-fixture";
 
@@ -44,7 +39,6 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
     async function session(customerId: string) {
       const userId = crypto.randomUUID();
       const personId = crypto.randomUUID();
-      const membershipId = crypto.randomUUID();
       userIds.push(userId);
       personIds.push(personId);
       const db = f.database();
@@ -62,28 +56,12 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         preferred_locale: Locale.De,
         version: 1,
       });
-      await db.insert(customerContactAssignments).values({
-        id: crypto.randomUUID(),
-        customer_id: customerId,
-        person_id: personId,
-        is_primary: false,
-        version: 1,
-      });
-      await db.insert(portalMemberships).values({
-        id: membershipId,
-        customer_id: customerId,
-        person_id: personId,
-        user_id: userId,
-        activated_at: new Date(),
-        email_notifications_enabled: false,
-        version: 1,
-      });
-      await db.insert(portalMembershipRoles).values({
-        portal_membership_id: membershipId,
-        role_id: SYSTEM_ROLE_DEFINITIONS[SystemRoleKey.PortalStandard].id,
-        role_realm: AuthRealm.Portal,
-        assigned_by_member_id: f.memberId,
-        assigned_at: new Date(),
+      await insertStandardPortalMembership(db, {
+        customerId,
+        personId,
+        userId,
+        assignedByMemberId: f.memberId,
+        isPrimary: false,
       });
       const resolved = await resolvePortalActor(PREFIX + userId, customerId);
       if (!resolved.ok) throw new Error("Expected a resolved portal session");

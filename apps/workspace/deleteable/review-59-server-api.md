@@ -311,3 +311,79 @@ Entwurf").
 
 Gates danach: lint (nur bestehende Warnungen), typecheck, `pnpm -r test` (Workspace 410 Dateien), `db:smoke:crm`
 (145 Checks, 148 Tests), `db:smoke:rbac` (117 Checks), Portal-Suites im RBAC-Modus (14 Tests), Workspace-Build — grün.
+
+---
+
+## Review-Durchgang 2 (nach den Fixes, 29.09.2026)
+
+Scope: kompletter Branch gegen `master` (118 Dateien, davon 90 ohne Tests/Pläne). Gates weiterhin grün. Keine
+hohen Befunde mehr; die Struktur (Portal ↔ Shared ↔ Workspace) ist sauber getrennt, Schreibwege laufen über je eine
+Stelle, Locks/Nebenläufigkeit unverändert korrekt (Übergabe sperrt Projekt und liest Runden nur; Freigabe sperrt
+Runde → Projekt; kein Deadlock-Pfad).
+
+### N-01 · mittel · Logik/Contract — `canAttach` erreicht die UI nicht
+
+`PortalProjectFeedbackDto` kennt nur `canSubmit`. Seit R2-02 verlangt Anhängen/Lösen zusätzlich `portal.files.read`;
+Plan 60 geht davon aus, dass der Bogen die Datei-Aktionen dann ausblendet — dafür fehlt das Feld. Folge in Task 60:
+toter Button bzw. 404 beim Klick. Fix: `canAttach: boolean` im DTO (+ Docstring), gesetzt über
+`portalFeedbackService.canAttach` (bzw. `false` für die Owner-Sicht).
+
+### N-02 · niedrig · Logik — Übergabe nutzt die Übergangstabelle nicht
+
+Portal-Commands prüfen jetzt über `canTransition`, die Übergabe nur über `findFeedbackHandOverBlocker`. Fachlich
+gleichwertig, aber die Tabelle ist laut Plan „einzige Quelle". Fix: in `findFeedbackHandOverBlocker` zuerst
+`canTransition(null, Open, Internal)` (1 Zeile), damit eine spätere Tabellenänderung auch die Übergabe sperrt.
+
+### N-03 · niedrig · Logik — geparste ID wird nicht verwendet
+
+`portal-feedback-service.ts:80/88` und `get-portal-project-feedback.query-handler.ts:28/41` validieren die ID über das
+Schema (das auf Kleinbuchstaben normalisiert), filtern aber mit dem Rohwert. Heute unkritisch (Routen lowercasen, der
+UUID-Vergleich in Postgres ist ohnehin case-insensitiv), aber inkonsistent zu Attach/Detach. Fix: `parsed.data`
+verwenden.
+
+### N-04 · niedrig · Effizienz — Existenzprüfung lädt alle Texte
+
+`attach…:attachToItem` nutzt `listItemHeads` (id + body, bis 30 × 5.000 Zeichen) nur, um zu prüfen, ob der Punkt zur
+Runde gehört. Fix: eigene Abfrage `select id … where id = itemId and round_id = …` oder `listItemHeads` ohne `body`
+plus separater Body-Abfrage im Submit.
+
+### N-05 · niedrig · Duplikat (Tests) — Portal-Session-Aufbau zweimal
+
+`portal-feedback-sessions.integration.test.ts` (`session`) und `portal-task-completion.integration.test.ts`
+(`insertMembership`) bauen dieselbe Membership mit `portal_standard`-Rolle. Fix: gemeinsamer Test-Helfer unter
+`server/tests/support/` (z. B. `createPortalSession(db, customerId, assignedBy)`).
+
+### N-06 · niedrig · Duplikat — Pfadsegment `projects` zweimal
+
+`FeedbackApiPath.Projects` und lokales `PROJECTS_PATH` in `crm-api-endpoints.ts`. Fix: CRM-Endpunkte nutzen die
+Konstante mit, oder ein gemeinsames `ProjectApiPath`.
+
+### N-07 · niedrig · Duplikat — `NOT_FOUND`-Konstante in Attach und Detach
+
+Zwei identische Result-Konstanten. Trivial; nur wenn R1-01-Rahmen erweitert wird (z. B. `withLockedRound` übernimmt
+auch die ID-/Rechte-Vorprüfung von Attach/Detach), fällt beides weg.
+
+### Geprüft, ohne Befund
+
+- Schreib-Service: Status, Aufgabe, Activity, Chat laufen je Schritt an genau einer Stelle; Savepoint für den Entwurf
+  rollt bei fremder ID auch den Entwurfsstempel zurück.
+- `withLockedRound` committet bei Fehlerergebnissen nichts Halbes (alle Ablehnungen vor dem ersten Write).
+- `portalProjectCondition`-Umbau in Dashboard, Dateiliste, `targetExists` und `completeCustomerTask` verhaltensgleich
+  (RBAC-Integrationssuites 14/14 grün).
+- `updateLockedVersioned` getestet; Bestand (3 Stellen) bewusst noch nicht umgestellt.
+- Tests spiegeln die Struktur, Mapping-/Schema-Tests vollständig, keine fremden Dateien mehr im Diff.
+
+### Umsetzungsstand Durchgang 2
+
+| ID   | Status  | Umsetzung                                                                                                                                                                                                        |
+| ---- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| N-01 | behoben | `canAttach` in `PortalProjectFeedbackDto`; `portalFeedbackService.canAttach` nimmt jetzt einen `PortalReader` (Owner-Sicht → `false`); Integrationstests prüfen Kontakt, Owner-Sicht und Kontakt ohne Dateirecht |
+| N-02 | behoben | `findFeedbackHandOverBlocker` prüft zuerst `canTransition(null, open, internal)`                                                                                                                                 |
+| N-03 | behoben | `lockRound` und `getPortalProjectFeedback` filtern mit der geparsten ID                                                                                                                                          |
+| N-04 | behoben | `portalFeedbackService.hasItem` (nur id) für Attach; `listItemHeads` bleibt für Submit/Approve                                                                                                                   |
+| N-05 | behoben | `server/tests/support/portal-membership-fixture.ts` (`insertStandardPortalMembership`), genutzt von Feedback-Sessions- und Task-Completion-Test                                                                  |
+| N-06 | behoben | `common/constants/crm/project-api-paths.ts` (`ProjectApiPath`, + Test); CRM-, Access- und Portal-Endpunkte nutzen es, `FeedbackApiPath.Projects` und zwei lokale Konstanten entfallen                            |
+| N-07 | behoben | `portalFeedbackService.notFound()`; die beiden `NOT_FOUND`-Konstanten entfallen                                                                                                                                  |
+
+Gates: typecheck, lint (nur bestehende Warnung), `pnpm -r test` (Workspace 411 Dateien), `db:smoke:crm`
+(145 Checks, 148 Tests), Portal-RBAC-Suites 14/14, Workspace-Build — grün.

@@ -6,10 +6,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
-import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
-import { SYSTEM_ROLE_DEFINITIONS } from "@invessiv/common/constants/auth/system-role-definitions";
-import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
 import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
 import { ProjectBillingModel } from "@invessiv/common/constants/crm/project-billing-models";
 import { ProjectPhase } from "@invessiv/common/constants/crm/project-phases";
@@ -24,7 +21,6 @@ import {
   customerContactAssignments,
   customers,
   people,
-  portalMembershipRoles,
   portalMemberships,
   projects,
   tasks,
@@ -34,6 +30,7 @@ import {
 import { createPortalActor } from "@/server/portal/auth/portal-actor";
 import { completeCustomerTask } from "@/server/portal/command-handler/complete-customer-task.command-handler";
 import { resolvePortalActor } from "@/server/portal/query-handler/resolve-portal-actor.query-handler";
+import { insertStandardPortalMembership } from "@/server/tests/support/portal-membership-fixture";
 import { workspaceActorWith } from "@/server/tests/support/workspace-auth-fixtures";
 import { changeTaskStatus } from "@/server/workspace/crm/command-handler/change-task-status.command-handler";
 import { tasksMapperService } from "@/server/workspace/crm/services/tasks-mapper-service";
@@ -123,32 +120,14 @@ describe.skipIf(!RUN_INTEGRATION)(
       return row;
     }
 
-    async function insertMembership(customerId: string) {
-      const id = randomUUID();
-      await db.insert(customerContactAssignments).values({
-        id: randomUUID(),
-        customer_id: customerId,
-        person_id: personId,
-        is_primary: true,
-        version: 1,
+    function insertMembership(customerId: string) {
+      return insertStandardPortalMembership(db, {
+        customerId,
+        personId,
+        userId,
+        assignedByMemberId: memberId,
+        isPrimary: true,
       });
-      await db.insert(portalMemberships).values({
-        id,
-        customer_id: customerId,
-        person_id: personId,
-        user_id: userId,
-        activated_at: new Date(),
-        email_notifications_enabled: false,
-        version: 1,
-      });
-      await db.insert(portalMembershipRoles).values({
-        portal_membership_id: id,
-        role_id: SYSTEM_ROLE_DEFINITIONS[SystemRoleKey.PortalStandard].id,
-        role_realm: AuthRealm.Portal,
-        assigned_by_member_id: memberId,
-        assigned_at: new Date(),
-      });
-      return id;
     }
 
     beforeAll(async () => {

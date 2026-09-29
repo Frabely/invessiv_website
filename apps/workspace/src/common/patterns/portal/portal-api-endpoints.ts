@@ -1,5 +1,6 @@
 import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
 import { ConversationApiPath } from "@/common/constants/crm/conversation-api-paths";
+import { ProjectApiPath } from "@/common/constants/crm/project-api-paths";
 import { FeedbackApiPath } from "@/common/constants/feedback/feedback-api-paths";
 import { FileApiPath } from "@/common/constants/files/file-api-paths";
 
@@ -77,7 +78,7 @@ export function portalProjectFeedbackEndpoint(
   customerId: string,
   projectId: string,
 ): string {
-  return `${WorkspaceApiEndpoint.Portal}/${encodeURIComponent(customerId)}/${FeedbackApiPath.Projects}/${encodeURIComponent(projectId)}/${FeedbackApiPath.Feedback}`;
+  return `${WorkspaceApiEndpoint.Portal}/${encodeURIComponent(customerId)}/${ProjectApiPath.Projects}/${encodeURIComponent(projectId)}/${FeedbackApiPath.Feedback}`;
 }
 
 function portalFeedbackRoundEndpoint(customerId: string, roundId: string) {

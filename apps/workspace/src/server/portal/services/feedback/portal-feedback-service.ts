@@ -59,13 +59,17 @@ function canSubmit(reader: PortalReader): boolean {
  * Attachments are shown through the portal's file visibility, which needs `portal.files.read`.
  * Without it a contact could hang files onto items and never see them again.
  */
-function canAttach(actor: PortalActor): boolean {
+function canAttach(reader: PortalReader): boolean {
   return (
-    canSubmit(actor) &&
-    portalCanOn.forActor(actor, Permission.PortalFilesRead, {
-      customerId: actor.customerId,
+    canSubmit(reader) &&
+    portalCanOn.forReader(reader, Permission.PortalFilesRead, {
+      customerId: reader.customerId,
     })
   );
+}
+
+function notFound(): PortalFeedbackResult<never> {
+  return { ok: false, code: PortalFeedbackErrorCode.NotFound };
 }
 
 /**
@@ -77,15 +81,15 @@ async function lockRound(
   actor: PortalActor,
   roundId: string,
 ): Promise<LockedRound | null> {
-  if (!canSubmit(actor) || !portalFeedbackSchemas.id.safeParse(roundId).success)
-    return null;
+  const id = portalFeedbackSchemas.id.safeParse(roundId);
+  if (!canSubmit(actor) || !id.success) return null;
   const [row] = await tx
     .select({ round: feedbackRounds, projectTitle: projects.title })
     .from(feedbackRounds)
     .innerJoin(projects, eq(projects.id, feedbackRounds.project_id))
     .where(
       and(
-        eq(feedbackRounds.id, roundId),
+        eq(feedbackRounds.id, id.data),
         eq(feedbackRounds.customer_id, actor.customerId),
         portalProjectCondition(actor, Permission.PortalFeedbackRead),
       ),
@@ -109,7 +113,7 @@ function withLockedRound<T>(
 ): Promise<PortalFeedbackResult<T>> {
   return getDrizzleDatabaseClient().transaction(async (tx) => {
     const locked = await lockRound(tx, actor, roundId);
-    if (!locked) return { ok: false, code: PortalFeedbackErrorCode.NotFound };
+    if (!locked) return notFound();
     return run(tx, locked);
   });
 }
@@ -166,7 +170,26 @@ async function rejectUnlessAllowed(
   };
 }
 
-/** Id and text of every item in display order; enough for the submit, approve and attach checks. */
+/** Whether the item belongs to this round; attaching needs nothing else from it. */
+async function hasItem(
+  tx: FeedbackReadExecutor,
+  roundId: string,
+  itemId: string,
+): Promise<boolean> {
+  const [item] = await tx
+    .select({ id: feedbackRoundItems.id })
+    .from(feedbackRoundItems)
+    .where(
+      and(
+        eq(feedbackRoundItems.id, itemId),
+        eq(feedbackRoundItems.round_id, roundId),
+      ),
+    )
+    .limit(1);
+  return !!item;
+}
+
+/** Id and text of every item in display order; the submit and approve checks need them. */
 function listItemHeads(
   tx: FeedbackReadExecutor,
   roundId: string,
@@ -182,9 +205,11 @@ export const portalFeedbackService = {
   canRead,
   canSubmit,
   canAttach,
+  notFound,
   withLockedRound,
   rejectUnlessAllowed,
   listItemHeads,
+  hasItem,
   toRoundDtos,
   toRoundDto,
 } as const;

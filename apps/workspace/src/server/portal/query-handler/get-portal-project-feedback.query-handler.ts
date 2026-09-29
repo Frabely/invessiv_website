@@ -23,11 +23,8 @@ export async function getPortalProjectFeedback(
   reader: PortalReader,
   projectId: string,
 ): Promise<PortalProjectFeedbackDto | null> {
-  if (
-    !portalFeedbackService.canRead(reader) ||
-    !portalFeedbackSchemas.id.safeParse(projectId).success
-  )
-    return null;
+  const id = portalFeedbackSchemas.id.safeParse(projectId);
+  if (!portalFeedbackService.canRead(reader) || !id.success) return null;
   const db = getDrizzleDatabaseClient();
   const [project] = await db
     .select({
@@ -38,7 +35,7 @@ export async function getPortalProjectFeedback(
     .from(projects)
     .where(
       and(
-        eq(projects.id, projectId),
+        eq(projects.id, id.data),
         portalProjectCondition(reader, Permission.PortalFeedbackRead),
       ),
     )
@@ -62,5 +59,6 @@ export async function getPortalProjectFeedback(
     activeRound,
     history: rounds.filter((round) => round !== activeRound),
     canSubmit: portalFeedbackService.canSubmit(reader),
+    canAttach: portalFeedbackService.canAttach(reader),
   };
 }

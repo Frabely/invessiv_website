@@ -23,11 +23,6 @@ import type { FeedbackRoundRow } from "@/server/shared/services/feedback/feedbac
 
 type Result = PortalFeedbackResult<FeedbackAttachmentDto>;
 
-const NOT_FOUND = {
-  ok: false,
-  code: PortalFeedbackErrorCode.NotFound,
-} as const;
-
 /** Only a finished own upload or link that is still free and fits the round's project. */
 function isAttachable(file: FileRow, round: FeedbackRoundRow): boolean {
   return (
@@ -67,10 +62,10 @@ async function attachToItem(
   round: FeedbackRoundRow,
   target: { itemId: string; fileId: string },
 ): Promise<Result> {
-  const items = await portalFeedbackService.listItemHeads(tx, round.id);
-  if (!items.some((item) => item.id === target.itemId)) return NOT_FOUND;
+  if (!(await portalFeedbackService.hasItem(tx, round.id, target.itemId)))
+    return portalFeedbackService.notFound();
   const file = await portalFileService.lockVisible(tx, actor, target.fileId);
-  if (!file) return NOT_FOUND;
+  if (!file) return portalFeedbackService.notFound();
   if (file.feedback_item_id === target.itemId)
     return {
       ok: true,
@@ -103,7 +98,7 @@ export async function attachPortalFeedbackFile(
     return { ok: false, code: PortalFeedbackErrorCode.Validation };
   const itemId = portalFeedbackSchemas.id.safeParse(target.itemId);
   if (!itemId.success || !portalFeedbackService.canAttach(actor))
-    return NOT_FOUND;
+    return portalFeedbackService.notFound();
 
   return portalFeedbackService.withLockedRound(
     actor,

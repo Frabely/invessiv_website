@@ -144,6 +144,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         activeRound: { id: roundId, items: [{ body }, { body: "" }] },
         history: [],
         canSubmit: true,
+        canAttach: true,
       });
     });
 
@@ -397,6 +398,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       });
       expect(await getPortalProjectFeedback(owner, projectId)).toMatchObject({
         canSubmit: false,
+        canAttach: false,
         activeRound: { roundNumber: 1 },
       });
     });
@@ -423,6 +425,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       ]);
       expect(await getPortalProjectFeedback(viewer, projectId)).toMatchObject({
         canSubmit: false,
+        canAttach: false,
       });
       expect(
         await submitPortalFeedbackRound(viewer, roundId, { version: 1 }),
@@ -446,7 +449,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
     });
 
     it("needs project, file and feedback rights for the matching step", async () => {
-      const { roundId } = await openRound();
+      const { projectId, roundId } = await openRound();
       const target = item("mit Datei");
       await save(roundId, [target]);
       const file = await customerLink();
@@ -469,6 +472,9 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         Permission.PortalFeedbackRead,
         Permission.PortalFeedbackSubmit,
       ]);
+      expect(
+        await getPortalProjectFeedback(withoutFiles, projectId),
+      ).toMatchObject({ canSubmit: true, canAttach: false });
       expect(
         await attachPortalFeedbackFile(
           withoutFiles,

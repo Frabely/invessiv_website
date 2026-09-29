@@ -2,7 +2,6 @@
 export const FeedbackApiPath = {
   FeedbackRounds: "feedback-rounds",
   Feedback: "feedback",
-  Projects: "projects",
   Draft: "draft",
   Submit: "submit",
   Approve: "approve",

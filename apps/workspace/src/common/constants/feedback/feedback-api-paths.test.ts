@@ -7,7 +7,6 @@ describe("FeedbackApiPath", () => {
     expect(FeedbackApiPath).toEqual({
       FeedbackRounds: "feedback-rounds",
       Feedback: "feedback",
-      Projects: "projects",
       Draft: "draft",
       Submit: "submit",
       Approve: "approve",

@@ -1,10 +1,10 @@
 import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
 import { ConversationApiPath } from "@/common/constants/crm/conversation-api-paths";
+import { ProjectApiPath } from "@/common/constants/crm/project-api-paths";
 import { FeedbackApiPath } from "@/common/constants/feedback/feedback-api-paths";
 import { FileApiPath } from "@/common/constants/files/file-api-paths";
 
 const LEAD_CONVERSION_ACTION = "convert";
-const PROJECTS_PATH = "projects";
 const LINE_ITEMS_PATH = "line-items";
 const TASKS_PATH = "tasks";
 const TASK_STATUS_PATH = "status";
@@ -15,7 +15,7 @@ export function crmCustomerEndpoint(customerId: string): string {
 }
 
 export function crmCustomerProjectsEndpoint(customerId: string): string {
-  return `${crmCustomerEndpoint(customerId)}/${PROJECTS_PATH}`;
+  return `${crmCustomerEndpoint(customerId)}/${ProjectApiPath.Projects}`;
 }
 
 export function crmProjectEndpoint(projectId: string): string {

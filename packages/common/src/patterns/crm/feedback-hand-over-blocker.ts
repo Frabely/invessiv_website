@@ -1,10 +1,12 @@
 import { FeedbackHandOverBlocker } from "../../constants/crm/feedback-hand-over-blockers";
-import type { FeedbackRoundStatus } from "../../constants/crm/feedback-round-statuses";
+import { FeedbackRoundStatus } from "../../constants/crm/feedback-round-statuses";
+import { FeedbackTransitionSide } from "../../constants/crm/feedback-transition-sides";
 import {
   ProjectStatus,
   type ProjectStatus as ProjectStatusValue,
 } from "../../constants/crm/project-statuses";
 import {
+  canTransition,
   feedbackQuota,
   feedbackRoundStepPosition,
   isAtFeedbackStep,
@@ -22,13 +24,21 @@ type HandOverInput = {
 
 /**
  * The one definition of "round n + 1 may be handed over now". The handover command answers with
- * the returned code, the round list shows it as the reason the button is disabled. Checks run from
+ * the returned code, the round list shows it as the reason the button is disabled. The handover
+ * itself must be a step of `FEEDBACK_ROUND_TRANSITIONS` like every other one. Checks run from
  * the coarsest to the finest, so the reason names what has to change first.
  */
 export function findFeedbackHandOverBlocker(
   input: HandOverInput,
 ): FeedbackHandOverBlocker | null {
-  if (input.projectStatus !== ProjectStatus.Active)
+  if (
+    input.projectStatus !== ProjectStatus.Active ||
+    !canTransition(
+      null,
+      FeedbackRoundStatus.Open,
+      FeedbackTransitionSide.Internal,
+    )
+  )
     return FeedbackHandOverBlocker.ProjectNotEligible;
   const quota = feedbackQuota({
     included: input.includedFeedbackRounds,
