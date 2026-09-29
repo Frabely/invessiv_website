@@ -28,7 +28,8 @@ getesteten Owner-Command.
 ## Exportinhalt
 
 - Strukturierte Manifestversion und Exportzeitpunkt.
-- Kundenstamm, Personen und Zuordnungen, Projekte, Aufgaben und Serien, Feedback, Chat,
+- Kundenstamm, Personen und Zuordnungen, Projekte, Aufgaben und Serien, Feedback (`feedback_rounds`,
+  `feedback_round_items` samt Ergebnissen; Feedbackdateien als normale `files`-Zeilen), Chat,
   freigegebene und interne Dateien, Renewals, Retainer, Stunden und Activities.
 - Credential-Metadaten: Titel, URL und Änderungsdatum; keine verschlüsselten Envelopes im
   benutzerlesbaren Export und kein Klartext.

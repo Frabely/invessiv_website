@@ -120,7 +120,7 @@ files
   id                                uuid PK
   customer_id                       uuid NOT NULL → customers.id ON DELETE CASCADE
   project_id                        uuid NULL; FK (project_id, customer_id) → projects (id, customer_id)
-  feedback_round_id                 uuid NULL, reserviert; FK und Scope-Regel kommen in Ordner 16
+  feedback_round_id                 uuid NULL, reserviert; FK, `feedback_item_id` und Scope-Regeln kommen in Ordner 16 (Task 58)
   source                            text NOT NULL  CHECK in FILE_SOURCE_VALUES ('upload','link')
   status                            text NOT NULL  CHECK in FILE_STATUS_VALUES ('pending','ready')
   asset_kind                        text NOT NULL  CHECK in ASSET_KIND_VALUES ('document','image','video','font','link')
@@ -314,8 +314,11 @@ Portal (`/api/portal/[customerId]/…`, `withPortalActor`; Kunde nur aus der val
 Auswirkungen auf spätere Ordner:
 
 - **15b Onboarding-Bogen:** nutzt den Upload-Pfad dieses Ordners; `onboarding_answer_files` verweist auf `files`.
-- **16 Feedbackrunden:** statt Upload-Session bindet die Runde `pending`/`ready`-Zeilen über `feedback_round_id`;
-  „`category = feedback`“ wird durch den gesetzten `feedback_round_id` ersetzt; ZIP nutzt den Archiv-Service aus 14.4.
+- **16 Feedbackrunden (Neuzuschnitt 29.09.2026):** Der Kunde lädt über den Portal-Upload aus 14.5 hoch; die fertige
+  (`ready`) Kundendatei wird danach über `feedback_round_id` + `feedback_item_id` an einen Feedback-Punkt gehängt
+  (zusammengesetzte FKs, beide gesetzt oder beide `NULL`). „Feedback“ ergibt sich aus dem gesetzten
+  `feedback_round_id`. Feedbackdateien lassen sich intern nicht umhängen und nach dem Einreichen nicht löschen
+  (`FILE_FEEDBACK_BOUND`). ZIP über den bestehenden Archiv-Endpunkt aus 14.4. Details: `16-feedbackrunden/`.
 - **20c Jobs:** Aufräumjob für `pending`-Zeilen älter als 24 h (Objekt löschen, dann Zeile); Blob-Volumen im Runbook.
 - **21 Datenschutz/Purge:** Purge eines Kunden löscht erst alle Objekte unter `customers/<customerId>/`, dann DB.
 

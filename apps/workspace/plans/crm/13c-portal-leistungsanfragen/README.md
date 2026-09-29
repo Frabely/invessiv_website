@@ -33,6 +33,15 @@ der Widget-Registry (`PORTAL_WIDGET_LAYOUT`). Dieser Ordner stellt es auf echte 
 mit Name und Beschreibung — **nie mit Preis** — plus eigene offene Anfragen; der Dialog führt zur Anfrage. Keine
 eigene Dashboard-Karte außerhalb der Registry.
 
+## Auswirkung aus Ordner 16 (Feedbackrunden)
+
+- **Zusatzrunde als anfragbare Leistung:** Eine freigegebene Katalogleistung „Zusätzliche Feedbackrunde“ (ohne Preis
+  im Portal). Die Übernahme einer angenommenen Anfrage erhöht `projects.included_feedback_rounds` des betroffenen
+  Projekts um genau 1 — höchstens bis 20, mit Activity und Actor, nie nach einer Abnahme (`approved`-Runde).
+- Die Portal-Feedbackseite (Task 60/61) verweist bei erschöpftem Kontingent ab diesem Ordner auf die Anfrage statt
+  auf den Chat; die Übergabe der zusätzlichen Runde bleibt eine interne Aktion.
+- Doppelte Übernahme erhöht das Kontingent nicht zweimal (Idempotenz über den Anfragestatus).
+
 ## Merge-Gate
 
 - [ ] Portal-Widget `serviceRequest` von Mock auf echte Daten umgestellt (Registry `mock: false` +

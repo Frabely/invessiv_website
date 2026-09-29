@@ -18,7 +18,7 @@ Mailversand existiert bereits, aber ausschließlich in `apps/web`: ein Provider-
 Resend-Implementierung über direktes `fetch` und eine Fassade, die ohne Konfiguration sauber
 degradiert statt zu werfen. Der Workspace hat davon nichts.
 
-Portal-Einladungen (Task 20), Benachrichtigungen bei Einreichungen (Task 22), neue Nachrichten (Task 26) und
+Portal-Einladungen (Task 20), Benachrichtigungen zu Feedbackrunden (Task 59–61), neue Nachrichten (Task 26) und
 Ablauferinnerungen (Task 28) brauchen alle Mailversand. Statt den Code zu kopieren,
 wandert er in ein gemeinsames Paket.
 
