@@ -3,7 +3,7 @@ import "server-only";
 import { FeedbackRoundErrorCode as E } from "@invessiv/common/constants/crm/errors/feedback-round-error-codes";
 import { HttpResponseCode as H } from "@invessiv/common/constants/http/http-response-codes";
 import type { CrmOperation } from "@/common/constants/crm/crm-operations";
-import { markPrivateNoStore } from "@/lib/http/private-no-store";
+import { privateResponse } from "@/lib/http/private-no-store";
 import { logCrmFailure } from "@/lib/workspace/crm/log-crm-failure";
 
 const STATUS: Record<E, H> = {
@@ -69,16 +69,12 @@ export function feedbackRoundApiError(
  * Every feedback answer carries customer text, so denied, failed and successful answers alike stay
  * out of caches. Unexpected failures are logged by operation only.
  */
-export async function privateFeedbackRoundResponse(
+export function privateFeedbackRoundResponse(
   operation: CrmOperation,
   run: () => Promise<Response>,
 ): Promise<Response> {
-  let response: Response;
-  try {
-    response = await run();
-  } catch (error: unknown) {
+  return privateResponse(run, (error) => {
     logCrmFailure(operation, error);
-    response = feedbackRoundApiError(E.Internal);
-  }
-  return markPrivateNoStore(response);
+    return feedbackRoundApiError(E.Internal);
+  });
 }

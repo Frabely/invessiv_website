@@ -9,7 +9,12 @@ import { SystemMessageKey } from "@invessiv/common/constants/crm/system-message-
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { PortalFeedbackErrorCode as E } from "@invessiv/common/constants/portal/portal-feedback-error-codes";
 import type { PortalFeedbackDraftItemDto } from "@invessiv/common/contracts/portal/portal-feedback-draft-item.dto";
-import { files, messages, tasks } from "@invessiv/db/record-configuration";
+import {
+  feedbackRounds,
+  files,
+  messages,
+  tasks,
+} from "@invessiv/db/record-configuration";
 import { createInMemoryStorage } from "@invessiv/storage/testing";
 import { createPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
 import { approvePortalFeedback } from "@/server/portal/command-handler/approve-portal-feedback.command-handler";
@@ -438,6 +443,86 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
           fileId: crypto.randomUUID(),
         }),
       ).toEqual({ ok: false, code: E.NotFound });
+    });
+
+    it("needs project, file and feedback rights for the matching step", async () => {
+      const { roundId } = await openRound();
+      const target = item("mit Datei");
+      await save(roundId, [target]);
+      const file = await customerLink();
+      const withoutProjects = f.contact([
+        Permission.PortalAccess,
+        Permission.PortalFeedbackRead,
+        Permission.PortalFeedbackSubmit,
+        Permission.PortalFilesRead,
+      ]);
+      expect(
+        await savePortalFeedbackDraft(withoutProjects, roundId, {
+          version: 2,
+          items: [],
+        }),
+      ).toEqual({ ok: false, code: E.NotFound });
+
+      const withoutFiles = f.contact([
+        Permission.PortalAccess,
+        Permission.PortalProjectsRead,
+        Permission.PortalFeedbackRead,
+        Permission.PortalFeedbackSubmit,
+      ]);
+      expect(
+        await attachPortalFeedbackFile(
+          withoutFiles,
+          { roundId, itemId: target.id },
+          { fileId: file },
+        ),
+      ).toEqual({ ok: false, code: E.NotFound });
+      expect(
+        await savePortalFeedbackDraft(withoutFiles, roundId, {
+          version: 2,
+          items: [target],
+        }),
+      ).toMatchObject({ ok: true });
+    });
+
+    it("detaches only from the item the file hangs on", async () => {
+      const { roundId } = await openRound();
+      const first = item("eins");
+      const second = item("zwei");
+      await save(roundId, [first, second]);
+      const file = await customerLink();
+      await attachPortalFeedbackFile(
+        f.contact(),
+        { roundId, itemId: first.id },
+        { fileId: file },
+      );
+      expect(
+        await detachPortalFeedbackFile(f.contact(), {
+          roundId,
+          itemId: second.id,
+          fileId: file,
+        }),
+      ).toEqual({ ok: false, code: E.NotFound });
+      expect((await readFile(file)).feedback_item_id).toBe(first.id);
+    });
+
+    it("answers a stale tab with locked once the team moved the round on", async () => {
+      const { roundId } = await openRound();
+      await save(roundId, [item("fertig")]);
+      await submitPortalFeedbackRound(f.contact(), roundId, { version: 2 });
+      expect(
+        await approvePortalFeedback(f.contact(), roundId, {
+          version: 3,
+          confirmFinal: false,
+        }),
+      ).toEqual({ ok: false, code: E.Locked });
+      await f
+        .database()
+        .update(feedbackRounds)
+        .set({ status: FeedbackRoundStatus.InProgress, started_at: new Date() })
+        .where(eq(feedbackRounds.id, roundId));
+      expect(
+        await submitPortalFeedbackRound(f.contact(), roundId, { version: 3 }),
+      ).toEqual({ ok: false, code: E.Locked });
     });
   },
 );

@@ -7,7 +7,7 @@ import {
   portalFeedbackApiResponse,
   privatePortalFeedbackResponse,
   withPortalFeedbackBody,
-} from "@/lib/portal/portal-feedback-api-response";
+} from "@/lib/portal/portal-feedback-api-error";
 import { withPortalActor } from "@/server/portal/auth/with-portal-actor";
 import { approvePortalFeedback } from "@/server/portal/command-handler/approve-portal-feedback.command-handler";
 

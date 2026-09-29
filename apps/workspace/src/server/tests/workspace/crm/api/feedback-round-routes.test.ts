@@ -113,7 +113,7 @@ describe("feedback round routes", () => {
       listContext,
     );
     expect(response.status).toBe(HttpResponseCode.Created);
-    expect(await response.json()).toEqual({ round: { id: ROUND_ID } });
+    expect(await response.json()).toEqual({ id: ROUND_ID });
     expectPrivate(response);
   });
 

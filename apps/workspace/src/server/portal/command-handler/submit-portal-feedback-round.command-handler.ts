@@ -1,24 +1,16 @@
 import "server-only";
 
-import { asc, eq } from "drizzle-orm";
-
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
-import { SystemMessageKey } from "@invessiv/common/constants/crm/system-message-keys";
 import { PortalFeedbackErrorCode } from "@invessiv/common/constants/portal/portal-feedback-error-codes";
 import type { PortalFeedbackResult } from "@invessiv/common/contracts/portal/results/portal-feedback-result";
 import type { SubmitPortalFeedbackRoundRequestDto } from "@invessiv/common/contracts/portal/submit-portal-feedback-round-request.dto";
 import type { SubmitPortalFeedbackRoundResponseDto } from "@invessiv/common/contracts/portal/submit-portal-feedback-round-response.dto";
-import {
-  type ContactDatabaseTransaction,
-  getDrizzleDatabaseClient,
-} from "@invessiv/db/core";
-import { feedbackRoundItems } from "@invessiv/db/record-configuration";
+import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import type { PortalActor } from "@/server/portal/auth/portal-actor";
+import { portalActivityActor } from "@/server/portal/auth/portal-activity-actor";
 import { portalFeedbackSchemas } from "@/server/portal/services/feedback/portal-feedback-schemas";
 import { portalFeedbackService } from "@/server/portal/services/feedback/portal-feedback-service";
-import { announceFeedbackRound } from "@/server/shared/services/feedback/announce-feedback-round";
-import { feedbackRoundActivityService } from "@/server/shared/services/feedback/feedback-round-activity-service";
-import { feedbackRoundTaskService } from "@/server/shared/services/feedback/feedback-round-task-service";
+import { feedbackRoundWriteService } from "@/server/shared/services/feedback/feedback-round-write-service";
 import type { FeedbackRoundRow } from "@/server/shared/services/feedback/feedback-service-types";
 
 type Result = PortalFeedbackResult<SubmitPortalFeedbackRoundResponseDto>;
@@ -28,11 +20,7 @@ async function rejectIncompleteDraft(
   tx: ContactDatabaseTransaction,
   round: FeedbackRoundRow,
 ): Promise<Result | null> {
-  const items = await tx
-    .select({ id: feedbackRoundItems.id, body: feedbackRoundItems.body })
-    .from(feedbackRoundItems)
-    .where(eq(feedbackRoundItems.round_id, round.id))
-    .orderBy(asc(feedbackRoundItems.position));
+  const items = await portalFeedbackService.listItemHeads(tx, round.id);
   if (items.length === 0)
     return { ok: false, code: PortalFeedbackErrorCode.ItemsRequired };
   const itemIds = items
@@ -43,14 +31,17 @@ async function rejectIncompleteDraft(
     : null;
 }
 
-/** A retry or double click by the contact who submitted is a success and creates nothing twice. */
+/**
+ * A retry or double click by the contact who just submitted is a success and creates nothing twice.
+ * Once the team moved the round on, a stale tab gets `locked` like everyone else.
+ */
 async function answerRepeatedSubmission(
   tx: ContactDatabaseTransaction,
   actor: PortalActor,
   round: FeedbackRoundRow,
 ): Promise<Result | null> {
   if (
-    round.status === FeedbackRoundStatus.Open ||
+    round.status !== FeedbackRoundStatus.Submitted ||
     round.submitted_by_portal_membership_id !== actor.membershipId
   )
     return null;
@@ -76,49 +67,34 @@ export async function submitPortalFeedbackRound(
   if (!parsed.success)
     return { ok: false, code: PortalFeedbackErrorCode.Validation };
 
-  return getDrizzleDatabaseClient().transaction(async (tx): Promise<Result> => {
-    const locked = await portalFeedbackService.lockRound(tx, actor, roundId);
-    if (!locked) return { ok: false, code: PortalFeedbackErrorCode.NotFound };
-    const { round, projectTitle } = locked;
-    const rejected =
-      (await answerRepeatedSubmission(tx, actor, round)) ??
-      (await portalFeedbackService.rejectUnlessOpen(
-        tx,
-        actor,
-        round,
-        parsed.data.version,
-      )) ??
-      (await rejectIncompleteDraft(tx, round));
-    if (rejected) return rejected;
+  return portalFeedbackService.withLockedRound(
+    actor,
+    roundId,
+    async (tx, { round, projectTitle }) => {
+      const rejected =
+        (await answerRepeatedSubmission(tx, actor, round)) ??
+        (await portalFeedbackService.rejectUnlessAllowed(
+          tx,
+          actor,
+          round,
+          FeedbackRoundStatus.Submitted,
+          parsed.data.version,
+        )) ??
+        (await rejectIncompleteDraft(tx, round));
+      if (rejected) return rejected;
 
-    const submitted = await portalFeedbackService.writeRound(tx, round, {
-      status: FeedbackRoundStatus.Submitted,
-      submitted_at: new Date(),
-      submitted_by_portal_membership_id: actor.membershipId,
-    });
-    const activityActor = portalFeedbackService.activityActor(actor);
-    await feedbackRoundTaskService.ensureOpenForSubmission(
-      tx,
-      submitted,
-      activityActor,
-    );
-    await feedbackRoundActivityService.recordSubmitted(
-      tx,
-      submitted,
-      activityActor,
-    );
-    await announceFeedbackRound(
-      tx,
-      submitted,
-      projectTitle,
-      SystemMessageKey.FeedbackRoundSubmitted,
-    );
-    return {
-      ok: true,
-      value: {
-        alreadySubmitted: false,
-        round: await portalFeedbackService.toRoundDto(tx, actor, submitted),
-      },
-    };
-  });
+      const submitted = await feedbackRoundWriteService.submit(tx, round, {
+        actor: portalActivityActor(actor),
+        portalMembershipId: actor.membershipId,
+        projectTitle,
+      });
+      return {
+        ok: true,
+        value: {
+          alreadySubmitted: false,
+          round: await portalFeedbackService.toRoundDto(tx, actor, submitted),
+        },
+      };
+    },
+  );
 }

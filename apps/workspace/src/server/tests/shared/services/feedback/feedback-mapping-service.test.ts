@@ -32,3 +32,20 @@ describe("feedbackMappingService.toAttachmentDto", () => {
     ).toBe(0);
   });
 });
+
+describe("feedbackMappingService.fileToAttachmentDto", () => {
+  it("maps a file row and shows a link without size as 0 bytes", () => {
+    const row = {
+      id: "22222222-2222-4222-8222-222222222222",
+      display_name: "Vorschau",
+      asset_kind: AssetKind.Link,
+      size_bytes: null,
+    } as Parameters<typeof feedbackMappingService.fileToAttachmentDto>[0];
+    expect(feedbackMappingService.fileToAttachmentDto(row)).toEqual({
+      fileId: "22222222-2222-4222-8222-222222222222",
+      displayName: "Vorschau",
+      assetKind: AssetKind.Link,
+      sizeBytes: 0,
+    });
+  });
+});

@@ -9,7 +9,7 @@ import type { HandOverFeedbackRoundResult } from "@invessiv/common/contracts/crm
 import { CrmEndpointAccessRule } from "@/common/constants/auth/crm-endpoint-access-rules";
 import { CrmOperation } from "@/common/constants/crm/crm-operations";
 import { withCrmPermission } from "@/lib/auth/api";
-import { readJsonBody } from "@/lib/http/read-json-body";
+import { withJsonBody } from "@/lib/http/with-json-body";
 import {
   feedbackRoundApiError,
   privateFeedbackRoundResponse,
@@ -23,10 +23,7 @@ type RouteContext = { params: Promise<{ projectId: string }> };
 
 function handOverResponse(result: HandOverFeedbackRoundResult): Response {
   if (result.ok)
-    return Response.json(
-      { round: result.round },
-      { status: HttpResponseCode.Created },
-    );
+    return Response.json(result.round, { status: HttpResponseCode.Created });
   if (result.code === FeedbackRoundErrorCode.RoundAlreadyActive)
     return feedbackRoundApiError(result.code, {
       activeRound: result.activeRound,
@@ -56,19 +53,20 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
   return privateFeedbackRoundResponse(CrmOperation.HandOverFeedbackRound, () =>
     withCrmPermission(
       CrmEndpointAccessRule.FeedbackRoundHandOver,
-      async (authorizedRequest, actor) => {
-        const parsed = await readJsonBody(authorizedRequest);
-        if (!parsed.ok)
-          return feedbackRoundApiError(FeedbackRoundErrorCode.ValidationError);
-        // The command validates the body against its schema before using it.
-        return handOverResponse(
-          await handOverFeedbackRound(
-            projectId,
-            parsed.body as HandOverFeedbackRoundRequestDto,
-            actor,
-          ),
-        );
-      },
+      (authorizedRequest, actor) =>
+        withJsonBody(
+          authorizedRequest,
+          async (body) =>
+            // The command validates the body against its schema before using it.
+            handOverResponse(
+              await handOverFeedbackRound(
+                projectId,
+                body as HandOverFeedbackRoundRequestDto,
+                actor,
+              ),
+            ),
+          () => feedbackRoundApiError(FeedbackRoundErrorCode.ValidationError),
+        ),
     )(request),
   );
 }

@@ -7,9 +7,9 @@ import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { FeedbackRoundErrorCode } from "@invessiv/common/constants/crm/errors/feedback-round-error-codes";
 import { FeedbackHandOverBlocker } from "@invessiv/common/constants/crm/feedback-hand-over-blockers";
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
-import { SystemMessageKey } from "@invessiv/common/constants/crm/system-message-keys";
 import type { HandOverFeedbackRoundRequestDto } from "@invessiv/common/contracts/crm/hand-over-feedback-round-request.dto";
 import type { HandOverFeedbackRoundResult } from "@invessiv/common/contracts/crm/results/hand-over-feedback-round-result";
+import { sameSequence } from "@invessiv/common/patterns/collections/same-sequence";
 import { isActiveFeedbackRound } from "@invessiv/common/patterns/crm/feedback-round-state";
 import {
   type ContactDatabaseTransaction,
@@ -19,8 +19,7 @@ import { feedbackRounds, projects } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessScope } from "@/common/patterns/auth/access-scope";
 import { canOn } from "@/common/patterns/auth/can-on";
-import { announceFeedbackRound } from "@/server/shared/services/feedback/announce-feedback-round";
-import { feedbackRoundActivityService } from "@/server/shared/services/feedback/feedback-round-activity-service";
+import { feedbackRoundWriteService } from "@/server/shared/services/feedback/feedback-round-write-service";
 import type { FeedbackRoundRow } from "@/server/shared/services/feedback/feedback-service-types";
 import { feedbackRoundMappingService } from "@/server/workspace/crm/services/feedback/feedback-round-mapping-service";
 import { feedbackRoundSchemas } from "@/server/workspace/crm/services/feedback/feedback-round-schemas";
@@ -30,7 +29,7 @@ import type {
   FeedbackProjectTrack,
 } from "@/server/workspace/crm/services/feedback/feedback-round-types";
 import { crmAccessCondition } from "@/server/workspace/shared/services/crm-access-condition";
-import { updateVersioned } from "@/server/workspace/shared/update-versioned";
+import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
 
 type HandOverInput = z.output<typeof feedbackRoundSchemas.handOver>;
 
@@ -73,20 +72,17 @@ async function saveProjectAreas(
   project: FeedbackProjectTrack,
   areas: readonly string[],
 ): Promise<void> {
-  if (
-    areas.length === project.feedbackAreas.length &&
-    areas.every((area, index) => area === project.feedbackAreas[index])
-  )
-    return;
-  const write = await updateVersioned({
-    tx,
-    table: projects,
-    id: project.id,
-    expectedVersion: project.version,
-    patch: { feedback_areas: [...areas] },
-    toDto: (row) => row.id,
-  });
-  if (!write.ok) throw new Error("Locked feedback round project changed");
+  if (sameSequence(areas, project.feedbackAreas)) return;
+  await updateLockedVersioned(
+    {
+      tx,
+      table: projects,
+      id: project.id,
+      expectedVersion: project.version,
+      patch: { feedback_areas: [...areas] },
+    },
+    "Locked feedback round project changed",
+  );
 }
 
 function rejectBlocked(
@@ -156,16 +152,10 @@ export async function handOverFeedbackRound(
 
     const round = await insertRound(tx, project, rounds, parsed.data, actor);
     await saveProjectAreas(tx, project, parsed.data.areaOptions);
-    await feedbackRoundActivityService.recordHandedOver(tx, round, {
-      type: ActorType.User,
-      userId: actor.userId,
+    await feedbackRoundWriteService.recordHandOver(tx, round, {
+      actor: { type: ActorType.User, userId: actor.userId },
+      projectTitle: project.title,
     });
-    await announceFeedbackRound(
-      tx,
-      round,
-      project.title,
-      SystemMessageKey.FeedbackRoundHandedOver,
-    );
     return { ok: true, round: feedbackRoundMappingService.toDto(round, []) };
   });
 }

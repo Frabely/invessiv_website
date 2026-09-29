@@ -3,6 +3,7 @@ import "server-only";
 import { and, desc, eq, gt, or, type SQL, sql } from "drizzle-orm";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
+import { sameSequence } from "@invessiv/common/patterns/collections/same-sequence";
 import {
   MESSAGE_PAGE_SIZE,
   PORTAL_MESSAGE_RATE_WINDOW_SECONDS,
@@ -209,13 +210,6 @@ async function toViewerDto(
   return dto;
 }
 
-function sameFileIds(stored: readonly string[], sent: readonly string[]) {
-  return (
-    stored.length === sent.length &&
-    stored.every((fileId, index) => fileId === sent[index])
-  );
-}
-
 /**
  * The earlier message of a retried send, but only if it is really the same send: same sender,
  * conversation, text and attachment list (or since redacted). A reused client id with other
@@ -247,7 +241,7 @@ async function findMatchingTextMessage(
   if (!sameSend) return null;
   if (existing.redacted_at !== null) return existing;
   return existing.body === input.body &&
-    sameFileIds(
+    sameSequence(
       await messageAttachmentService.listFileIds(tx, existing.id),
       input.attachmentFileIds,
     )

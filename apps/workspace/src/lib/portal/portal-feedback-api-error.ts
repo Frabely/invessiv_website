@@ -6,8 +6,8 @@ import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurre
 import { HttpResponseCode as H } from "@invessiv/common/constants/http/http-response-codes";
 import { PortalFeedbackErrorCode as E } from "@invessiv/common/constants/portal/portal-feedback-error-codes";
 import type { PortalFeedbackResult } from "@invessiv/common/contracts/portal/results/portal-feedback-result";
-import { markPrivateNoStore } from "@/lib/http/private-no-store";
-import { readJsonBody } from "@/lib/http/read-json-body";
+import { privateResponse } from "@/lib/http/private-no-store";
+import { withJsonBody } from "@/lib/http/with-json-body";
 
 const ERRORS: Record<E, { status: H; message: string }> = {
   [E.NotFound]: { status: H.NotFound, message: "Feedback not found." },
@@ -75,29 +75,28 @@ export function portalFeedbackNotFound(): Response {
 }
 
 /** A body that is not JSON at all is rejected here; the command validates its shape. */
-export async function withPortalFeedbackBody<T>(
+export function withPortalFeedbackBody<T>(
   request: NextRequest,
   run: (body: T) => Promise<Response>,
 ): Promise<Response> {
-  const parsed = await readJsonBody(request);
-  return parsed.ok ? run(parsed.body as T) : errorResponse(E.Validation);
+  return withJsonBody(
+    request,
+    (body) => run(body as T),
+    () => errorResponse(E.Validation),
+  );
 }
 
 /**
  * Wraps authorization as well, so a denied request gets the same private caching. A thrown error
  * is logged by name only: SQL details could carry customer text.
  */
-export async function privatePortalFeedbackResponse(
+export function privatePortalFeedbackResponse(
   operation: () => Promise<Response>,
 ): Promise<Response> {
-  let response: Response;
-  try {
-    response = await operation();
-  } catch (error) {
+  return privateResponse(operation, (error) => {
     console.error("[portal-feedback] request failed", {
       errorName: error instanceof Error ? error.name : typeof error,
     });
-    response = errorResponse(E.Unavailable);
-  }
-  return markPrivateNoStore(response);
+    return errorResponse(E.Unavailable);
+  });
 }

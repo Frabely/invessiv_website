@@ -8,7 +8,7 @@ import {
   portalFeedbackApiResponse,
   privatePortalFeedbackResponse,
   withPortalFeedbackBody,
-} from "@/lib/portal/portal-feedback-api-response";
+} from "@/lib/portal/portal-feedback-api-error";
 import { withPortalActor } from "@/server/portal/auth/with-portal-actor";
 import { attachPortalFeedbackFile } from "@/server/portal/command-handler/attach-portal-feedback-file.command-handler";
 

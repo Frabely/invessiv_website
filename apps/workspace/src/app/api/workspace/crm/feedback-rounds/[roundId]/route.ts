@@ -25,7 +25,7 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
       async (_, actor) => {
         const round = await getFeedbackRound(roundId, actor);
         return round
-          ? Response.json({ round }, { status: HttpResponseCode.Ok })
+          ? Response.json(round, { status: HttpResponseCode.Ok })
           : feedbackRoundApiError(FeedbackRoundErrorCode.RoundNotFound);
       },
     )(request),

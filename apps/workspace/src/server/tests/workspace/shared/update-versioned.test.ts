@@ -1,7 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { integer, pgTable, text, timestamp } from "drizzle-orm/pg-core";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
-import { updateVersioned } from "@/server/workspace/shared/update-versioned";
+import {
+  updateLockedVersioned,
+  updateVersioned,
+} from "@/server/workspace/shared/update-versioned";
 import type { VersionedPatch } from "@/server/workspace/shared/update-versioned-types";
 
 vi.mock("server-only", () => ({}));
@@ -209,5 +212,33 @@ describe("updateVersioned", () => {
     });
 
     expect(tx.select).not.toHaveBeenCalled();
+  });
+});
+
+describe("updateLockedVersioned", () => {
+  it("returns the written row", async () => {
+    const written = row({ id: "c1", version: 2, display_name: "Neu" });
+    const { tx } = createTx({ updatedRows: [written], currentRows: [] });
+
+    await expect(
+      updateLockedVersioned(
+        { tx: tx as never, table, id: "c1", expectedVersion: 1, patch: {} },
+        "Locked row changed",
+      ),
+    ).resolves.toEqual(written);
+  });
+
+  it("throws instead of reporting a conflict on a locked row", async () => {
+    const { tx } = createTx({
+      updatedRows: [],
+      currentRows: [row({ id: "c1", version: 3, display_name: "Alt" })],
+    });
+
+    await expect(
+      updateLockedVersioned(
+        { tx: tx as never, table, id: "c1", expectedVersion: 1, patch: {} },
+        "Locked row changed",
+      ),
+    ).rejects.toThrow("Locked row changed");
   });
 });

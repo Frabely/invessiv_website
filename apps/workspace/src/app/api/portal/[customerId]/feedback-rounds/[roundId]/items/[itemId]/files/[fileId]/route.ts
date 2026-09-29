@@ -5,7 +5,7 @@ import type { NextRequest } from "next/server";
 import {
   portalFeedbackApiResponse,
   privatePortalFeedbackResponse,
-} from "@/lib/portal/portal-feedback-api-response";
+} from "@/lib/portal/portal-feedback-api-error";
 import { withPortalActor } from "@/server/portal/auth/with-portal-actor";
 import { detachPortalFeedbackFile } from "@/server/portal/command-handler/detach-portal-feedback-file.command-handler";
 

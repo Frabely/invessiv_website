@@ -18,7 +18,7 @@ import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { getCrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { DEFAULT_LOCALE } from "@/lib/site-metadata";
 import { taskActivityService } from "@/server/shared/services/task-activity-service";
-import { updateVersioned } from "@/server/workspace/shared/update-versioned";
+import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
 import type { FeedbackRoundRef } from "./feedback-service-types";
 
 async function lockRoundTask(tx: ContactDatabaseTransaction, roundId: string) {
@@ -74,20 +74,21 @@ async function moveTask(
   const task = await lockRoundTask(tx, round.id);
   if (!task || task.status !== change.from) return;
   const becomesDone = change.to === TaskStatus.Done;
-  const write = await updateVersioned({
-    tx,
-    table: tasks,
-    id: task.id,
-    expectedVersion: task.version,
-    patch: {
-      status: change.to,
-      completed_at: becomesDone ? new Date() : null,
-      completed_by_member_id: becomesDone ? completedByMemberId : null,
-      completed_by_portal_membership_id: null,
+  await updateLockedVersioned(
+    {
+      tx,
+      table: tasks,
+      id: task.id,
+      expectedVersion: task.version,
+      patch: {
+        status: change.to,
+        completed_at: becomesDone ? new Date() : null,
+        completed_by_member_id: becomesDone ? completedByMemberId : null,
+        completed_by_portal_membership_id: null,
+      },
     },
-    toDto: (row) => row,
-  });
-  if (!write.ok) throw new Error("Locked feedback round task changed");
+    "Locked feedback round task changed",
+  );
   await taskActivityService.recordStatusChange(
     tx,
     {

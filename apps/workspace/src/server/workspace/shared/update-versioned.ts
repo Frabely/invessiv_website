@@ -79,3 +79,22 @@ export async function updateVersioned<
     },
   };
 }
+
+/**
+ * For rows the caller has locked `FOR UPDATE` and read the version from: a lost race is then a bug,
+ * not a user conflict, so it throws and rolls the transaction back instead of returning a 409.
+ */
+export async function updateLockedVersioned<TTable extends VersionedTable>(
+  args: {
+    tx: ContactDatabaseTransaction;
+    table: TTable;
+    id: string;
+    expectedVersion: number;
+    patch: VersionedPatch<TTable>;
+  },
+  failure: string,
+): Promise<VersionedRow<TTable>> {
+  const write = await updateVersioned({ ...args, toDto: (row) => row });
+  if (!write.ok) throw new Error(failure);
+  return write.value;
+}

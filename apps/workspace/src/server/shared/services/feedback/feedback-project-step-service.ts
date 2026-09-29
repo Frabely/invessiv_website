@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { feedbackRoundStepPosition } from "@invessiv/common/patterns/crm/feedback-round-state";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import { projects } from "@invessiv/db/record-configuration";
-import { updateVersioned } from "@/server/workspace/shared/update-versioned";
+import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
 
 /**
  * After an approval the project moves to the step right behind the approved round. A round behind
@@ -36,15 +36,16 @@ async function advancePastFeedbackRound(
   if (position === null || position >= project.processSteps.length) return;
   const nextStep = project.processSteps[position];
   if (nextStep === project.currentProcessStep) return;
-  const write = await updateVersioned({
-    tx,
-    table: projects,
-    id: projectId,
-    expectedVersion: project.version,
-    patch: { current_process_step: nextStep },
-    toDto: (row) => row.id,
-  });
-  if (!write.ok) throw new Error("Locked feedback round project changed");
+  await updateLockedVersioned(
+    {
+      tx,
+      table: projects,
+      id: projectId,
+      expectedVersion: project.version,
+      patch: { current_process_step: nextStep },
+    },
+    "Locked feedback round project changed",
+  );
 }
 
 export const feedbackProjectStepService = {

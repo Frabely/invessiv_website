@@ -4,7 +4,6 @@ import { and, eq, inArray, sql } from "drizzle-orm";
 import { z } from "zod";
 
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
-import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { TaskActionSide } from "@invessiv/common/constants/crm/task-action-sides";
 import {
@@ -12,13 +11,14 @@ import {
   TaskStatus,
 } from "@invessiv/common/constants/crm/task-statuses";
 import { PortalTaskErrorCode } from "@invessiv/common/constants/portal/portal-task-error-codes";
-import { PORTAL_VISIBLE_PROJECT_STATUS_VALUES } from "@invessiv/common/constants/portal/portal-visible-project-statuses";
 import type { CompleteCustomerTaskResult } from "@invessiv/common/contracts/portal/results/complete-customer-task-result";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { projects, tasks } from "@invessiv/db/record-configuration";
 import { TASK_ACTIVITY_ENTITY } from "@/common/constants/crm/task-activity-metadata";
 import type { PortalActor } from "@/server/portal/auth/portal-actor";
+import { portalActivityActor } from "@/server/portal/auth/portal-activity-actor";
 import { portalCanOn } from "@/server/portal/shared/portal-can-on";
+import { portalProjectCondition } from "@/server/portal/shared/portal-project-condition";
 import { activityService } from "@/server/shared/services/activity-service";
 
 const taskIdSchema = z.uuid();
@@ -53,12 +53,7 @@ export async function completeCustomerTask(
       db
         .select({ id: projects.id })
         .from(projects)
-        .where(
-          and(
-            eq(projects.customer_id, actor.customerId),
-            inArray(projects.status, PORTAL_VISIBLE_PROJECT_STATUS_VALUES),
-          ),
-        ),
+        .where(portalProjectCondition(actor, Permission.PortalTasksRead)),
     ),
   );
 
@@ -114,7 +109,7 @@ export async function completeCustomerTask(
     await activityService.createActivity(tx, {
       customerId: actor.customerId,
       projectId: target.projectId,
-      actor: { type: ActorType.Customer, userId: actor.userId },
+      actor: portalActivityActor(actor),
       type: ActivityType.StatusChange,
       body: `${target.status} → ${TaskStatus.Done}`,
       metadata: {

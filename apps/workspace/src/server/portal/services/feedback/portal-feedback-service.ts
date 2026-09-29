@@ -1,33 +1,39 @@
 import "server-only";
 
-import { and, eq, inArray, type SQL } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 
-import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
-import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
+import type { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
+import { FeedbackTransitionSide } from "@invessiv/common/constants/crm/feedback-transition-sides";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { PortalFeedbackErrorCode } from "@invessiv/common/constants/portal/portal-feedback-error-codes";
-import type { ActivityActor } from "@invessiv/common/contracts/activity/activity-actor";
-import { PORTAL_VISIBLE_PROJECT_STATUS_VALUES } from "@invessiv/common/constants/portal/portal-visible-project-statuses";
 import type { PortalFeedbackRoundDto } from "@invessiv/common/contracts/portal/portal-feedback-round.dto";
 import type { PortalFeedbackResult } from "@invessiv/common/contracts/portal/results/portal-feedback-result";
-import type { ContactDatabaseTransaction } from "@invessiv/db/core";
-import { feedbackRounds, projects } from "@invessiv/db/record-configuration";
+import { canTransition } from "@invessiv/common/patterns/crm/feedback-round-state";
+import {
+  type ContactDatabaseTransaction,
+  getDrizzleDatabaseClient,
+} from "@invessiv/db/core";
+import {
+  feedbackRoundItems,
+  feedbackRounds,
+  projects,
+} from "@invessiv/db/record-configuration";
 import type { PortalActor } from "@/server/portal/auth/portal-actor";
 import { isPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
 import type { PortalReader } from "@/server/portal/auth/portal-reader";
-import { portalAccessCondition } from "@/server/portal/shared/portal-access-condition";
 import { portalCanOn } from "@/server/portal/shared/portal-can-on";
+import { portalProjectCondition } from "@/server/portal/shared/portal-project-condition";
 import { portalFileService } from "@/server/portal/services/files/portal-file-service";
 import { feedbackRoundItemService } from "@/server/shared/services/feedback/feedback-round-item-service";
 import type {
   FeedbackReadExecutor,
   FeedbackRoundRow,
 } from "@/server/shared/services/feedback/feedback-service-types";
-import { updateVersioned } from "@/server/workspace/shared/update-versioned";
-import type { VersionedPatch } from "@/server/workspace/shared/update-versioned-types";
 import { portalFeedbackMappingService } from "./portal-feedback-mapping-service";
 import { portalFeedbackSchemas } from "./portal-feedback-schemas";
+
+type LockedRound = { round: FeedbackRoundRow; projectTitle: string };
 
 /** Feedback hangs on a project, so the portal shows it only together with the project itself. */
 function canRead(reader: PortalReader): boolean {
@@ -49,14 +55,17 @@ function canSubmit(reader: PortalReader): boolean {
   );
 }
 
-/** Projects of the reader's company that the portal shows at all; archived ones keep their rounds internal. */
-function visibleProjectCondition(reader: PortalReader): SQL {
-  return and(
-    portalAccessCondition.forReader(reader, Permission.PortalFeedbackRead, {
-      customerId: projects.customer_id,
-    }),
-    inArray(projects.status, PORTAL_VISIBLE_PROJECT_STATUS_VALUES),
-  )!;
+/**
+ * Attachments are shown through the portal's file visibility, which needs `portal.files.read`.
+ * Without it a contact could hang files onto items and never see them again.
+ */
+function canAttach(actor: PortalActor): boolean {
+  return (
+    canSubmit(actor) &&
+    portalCanOn.forActor(actor, Permission.PortalFilesRead, {
+      customerId: actor.customerId,
+    })
+  );
 }
 
 /**
@@ -67,7 +76,7 @@ async function lockRound(
   tx: ContactDatabaseTransaction,
   actor: PortalActor,
   roundId: string,
-): Promise<{ round: FeedbackRoundRow; projectTitle: string } | null> {
+): Promise<LockedRound | null> {
   if (!canSubmit(actor) || !portalFeedbackSchemas.id.safeParse(roundId).success)
     return null;
   const [row] = await tx
@@ -78,12 +87,31 @@ async function lockRound(
       and(
         eq(feedbackRounds.id, roundId),
         eq(feedbackRounds.customer_id, actor.customerId),
-        visibleProjectCondition(actor),
+        portalProjectCondition(actor, Permission.PortalFeedbackRead),
       ),
     )
     .limit(1)
     .for("update", { of: feedbackRounds });
   return row ?? null;
+}
+
+/**
+ * The frame of every portal feedback command: one transaction, the round locked first, a miss as
+ * `not_found`. Parallel saves, submissions and attachments of one round serialize on this lock.
+ */
+function withLockedRound<T>(
+  actor: PortalActor,
+  roundId: string,
+  run: (
+    tx: ContactDatabaseTransaction,
+    locked: LockedRound,
+  ) => Promise<PortalFeedbackResult<T>>,
+): Promise<PortalFeedbackResult<T>> {
+  return getDrizzleDatabaseClient().transaction(async (tx) => {
+    const locked = await lockRound(tx, actor, roundId);
+    if (!locked) return { ok: false, code: PortalFeedbackErrorCode.NotFound };
+    return run(tx, locked);
+  });
 }
 
 /** Rounds with their items; attachments follow the portal's own file visibility. */
@@ -111,12 +139,22 @@ async function toRoundDto(
   return dto;
 }
 
-/** A stale version answers with the whole current round, so the client can offer its own text back. */
-async function conflict(
+/**
+ * The customer may only take steps `FEEDBACK_ROUND_TRANSITIONS` allows from the current status;
+ * everything else is `locked`. A draft counts as editable while it could still be submitted.
+ * `expectedVersion` is compared under the round lock, so a stale client gets the whole current round.
+ */
+async function rejectUnlessAllowed(
   tx: ContactDatabaseTransaction,
   actor: PortalActor,
   round: FeedbackRoundRow,
-): Promise<PortalFeedbackResult<never>> {
+  target: FeedbackRoundStatus,
+  expectedVersion?: number,
+): Promise<PortalFeedbackResult<never> | null> {
+  if (!canTransition(round.status, target, FeedbackTransitionSide.Customer))
+    return { ok: false, code: PortalFeedbackErrorCode.Locked };
+  if (expectedVersion === undefined || round.version === expectedVersion)
+    return null;
   return {
     ok: false,
     code: ConcurrencyErrorCode.VersionConflict,
@@ -128,53 +166,25 @@ async function conflict(
   };
 }
 
-/**
- * Only an open round takes customer changes. `expectedVersion` is compared under the round lock,
- * so no parallel save can slip in between the check and the write.
- */
-async function rejectUnlessOpen(
-  tx: ContactDatabaseTransaction,
-  actor: PortalActor,
-  round: FeedbackRoundRow,
-  expectedVersion?: number,
-): Promise<PortalFeedbackResult<never> | null> {
-  if (round.status !== FeedbackRoundStatus.Open)
-    return { ok: false, code: PortalFeedbackErrorCode.Locked };
-  if (expectedVersion !== undefined && round.version !== expectedVersion)
-    return conflict(tx, actor, round);
-  return null;
-}
-
-/** The round row is locked, so a lost version race here is a bug and not a user conflict. */
-async function writeRound(
-  tx: ContactDatabaseTransaction,
-  round: FeedbackRoundRow,
-  patch: VersionedPatch<typeof feedbackRounds>,
-): Promise<FeedbackRoundRow> {
-  const write = await updateVersioned({
-    tx,
-    table: feedbackRounds,
-    id: round.id,
-    expectedVersion: round.version,
-    patch,
-    toDto: (row) => row,
-  });
-  if (!write.ok) throw new Error("Locked feedback round changed");
-  return write.value;
-}
-
-function activityActor(actor: PortalActor): ActivityActor {
-  return { type: ActorType.Customer, userId: actor.userId };
+/** Id and text of every item in display order; enough for the submit, approve and attach checks. */
+function listItemHeads(
+  tx: FeedbackReadExecutor,
+  roundId: string,
+): Promise<{ id: string; body: string }[]> {
+  return tx
+    .select({ id: feedbackRoundItems.id, body: feedbackRoundItems.body })
+    .from(feedbackRoundItems)
+    .where(eq(feedbackRoundItems.round_id, roundId))
+    .orderBy(asc(feedbackRoundItems.position));
 }
 
 export const portalFeedbackService = {
   canRead,
   canSubmit,
-  visibleProjectCondition,
-  lockRound,
-  rejectUnlessOpen,
-  writeRound,
-  activityActor,
+  canAttach,
+  withLockedRound,
+  rejectUnlessAllowed,
+  listItemHeads,
   toRoundDtos,
   toRoundDto,
 } as const;

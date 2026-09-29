@@ -1,43 +1,51 @@
 import "server-only";
 
-import { eq } from "drizzle-orm";
-
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
-import { SystemMessageKey } from "@invessiv/common/constants/crm/system-message-keys";
 import { PortalFeedbackErrorCode } from "@invessiv/common/constants/portal/portal-feedback-error-codes";
 import type { ApprovePortalFeedbackRequestDto } from "@invessiv/common/contracts/portal/approve-portal-feedback-request.dto";
 import type { PortalFeedbackRoundDto } from "@invessiv/common/contracts/portal/portal-feedback-round.dto";
 import type { PortalFeedbackResult } from "@invessiv/common/contracts/portal/results/portal-feedback-result";
-import {
-  type ContactDatabaseTransaction,
-  getDrizzleDatabaseClient,
-} from "@invessiv/db/core";
-import { feedbackRoundItems } from "@invessiv/db/record-configuration";
+import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import type { PortalActor } from "@/server/portal/auth/portal-actor";
+import { portalActivityActor } from "@/server/portal/auth/portal-activity-actor";
 import { portalFeedbackSchemas } from "@/server/portal/services/feedback/portal-feedback-schemas";
 import { portalFeedbackService } from "@/server/portal/services/feedback/portal-feedback-service";
-import { announceFeedbackRound } from "@/server/shared/services/feedback/announce-feedback-round";
-import { feedbackProjectStepService } from "@/server/shared/services/feedback/feedback-project-step-service";
-import { feedbackRoundActivityService } from "@/server/shared/services/feedback/feedback-round-activity-service";
+import { feedbackRoundWriteService } from "@/server/shared/services/feedback/feedback-round-write-service";
+import type { FeedbackRoundRow } from "@/server/shared/services/feedback/feedback-service-types";
 
 type Result = PortalFeedbackResult<PortalFeedbackRoundDto>;
 
-async function hasItems(
+/**
+ * The transition table allows `completed → approved` as well; that path needs the latest-round
+ * check and follows in Task 61. Until then only "approve without changes" from `open` is served.
+ */
+async function rejectUnlessApprovable(
   tx: ContactDatabaseTransaction,
-  roundId: string,
-): Promise<boolean> {
-  const [item] = await tx
-    .select({ id: feedbackRoundItems.id })
-    .from(feedbackRoundItems)
-    .where(eq(feedbackRoundItems.round_id, roundId))
-    .limit(1);
-  return !!item;
+  actor: PortalActor,
+  round: FeedbackRoundRow,
+  input: { version: number; confirmFinal?: boolean },
+): Promise<Result | null> {
+  const rejected = await portalFeedbackService.rejectUnlessAllowed(
+    tx,
+    actor,
+    round,
+    FeedbackRoundStatus.Approved,
+    input.version,
+  );
+  if (rejected) return rejected;
+  if (round.status !== FeedbackRoundStatus.Open)
+    return { ok: false, code: PortalFeedbackErrorCode.Locked };
+  if (input.confirmFinal !== true)
+    return { ok: false, code: PortalFeedbackErrorCode.ConfirmationRequired };
+  const items = await portalFeedbackService.listItemHeads(tx, round.id);
+  return items.length > 0
+    ? { ok: false, code: PortalFeedbackErrorCode.ItemsPresent }
+    : null;
 }
 
 /**
  * "Approve without changes": only from an open round without items, and only after the explicit
- * confirmation. The track moves behind the round in the same transaction; the approval after a
- * completed round follows in Task 61.
+ * confirmation. The track moves behind the round in the same transaction.
  */
 export async function approvePortalFeedback(
   actor: PortalActor,
@@ -47,48 +55,27 @@ export async function approvePortalFeedback(
   const parsed = portalFeedbackSchemas.approve.safeParse(input);
   if (!parsed.success)
     return { ok: false, code: PortalFeedbackErrorCode.Validation };
-  if (parsed.data.confirmFinal !== true)
-    return { ok: false, code: PortalFeedbackErrorCode.ConfirmationRequired };
 
-  return getDrizzleDatabaseClient().transaction(async (tx): Promise<Result> => {
-    const locked = await portalFeedbackService.lockRound(tx, actor, roundId);
-    if (!locked) return { ok: false, code: PortalFeedbackErrorCode.NotFound };
-    const { round, projectTitle } = locked;
-    const rejected = await portalFeedbackService.rejectUnlessOpen(
-      tx,
-      actor,
-      round,
-      parsed.data.version,
-    );
-    if (rejected) return rejected;
-    if (await hasItems(tx, round.id))
-      return { ok: false, code: PortalFeedbackErrorCode.ItemsPresent };
-
-    const approved = await portalFeedbackService.writeRound(tx, round, {
-      status: FeedbackRoundStatus.Approved,
-      approved_at: new Date(),
-      approved_by_portal_membership_id: actor.membershipId,
-    });
-    await feedbackProjectStepService.advancePastFeedbackRound(
-      tx,
-      approved.project_id,
-      approved.round_number,
-    );
-    await feedbackRoundActivityService.recordStatusChange(
-      tx,
-      approved,
-      portalFeedbackService.activityActor(actor),
-      { previous: round.status, next: approved.status },
-    );
-    await announceFeedbackRound(
-      tx,
-      approved,
-      projectTitle,
-      SystemMessageKey.FeedbackApproved,
-    );
-    return {
-      ok: true,
-      value: await portalFeedbackService.toRoundDto(tx, actor, approved),
-    };
-  });
+  return portalFeedbackService.withLockedRound(
+    actor,
+    roundId,
+    async (tx, { round, projectTitle }) => {
+      const rejected = await rejectUnlessApprovable(
+        tx,
+        actor,
+        round,
+        parsed.data,
+      );
+      if (rejected) return rejected;
+      const approved = await feedbackRoundWriteService.approve(tx, round, {
+        actor: portalActivityActor(actor),
+        portalMembershipId: actor.membershipId,
+        projectTitle,
+      });
+      return {
+        ok: true,
+        value: await portalFeedbackService.toRoundDto(tx, actor, approved),
+      };
+    },
+  );
 }

@@ -111,4 +111,7 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 - Lesen über `projects.read`, Übergabe über `projects.write`, jeweils mit `crmAccessCondition` in der `WHERE`-Klausel
   und `canOn`. Anhänge im Detail folgen `fileAccessService.readableCondition` — ohne `files.read` keine Dateien.
 - Services unter `services/feedback/`: `feedback-round-service.ts` (Projektspur, Rundenliste mit Punktzahl, Blocker),
-  `feedback-round-mapping-service.ts`, `feedback-round-schemas.ts`.
+  `feedback-round-mapping-service.ts`, `feedback-round-schemas.ts`. Activity und Chat nach der Übergabe schreibt
+  `feedbackRoundWriteService.recordHandOver` (`server/shared/services/feedback/`).
+- Bewusste Abweichung vom übrigen CRM (Planvorgabe Task 59): `VALIDATION_ERROR` der Feedback-Endpunkte antwortet
+  **400**, nicht 422. Antworten liefern das DTO direkt, ohne Hülle (`{ round }`), wie die Portal-Endpunkte.

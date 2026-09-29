@@ -6,7 +6,7 @@ import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-
 import {
   portalFeedbackNotFound,
   privatePortalFeedbackResponse,
-} from "@/lib/portal/portal-feedback-api-response";
+} from "@/lib/portal/portal-feedback-api-error";
 import { withPortalReader } from "@/server/portal/auth/with-portal-reader";
 import { getPortalProjectFeedback } from "@/server/portal/query-handler/get-portal-project-feedback.query-handler";
 

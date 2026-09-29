@@ -2,6 +2,7 @@ import "server-only";
 
 import { and, desc, eq } from "drizzle-orm";
 
+import { Permission } from "@invessiv/common/constants/auth/permissions";
 import type { PortalProjectFeedbackDto } from "@invessiv/common/contracts/portal/portal-project-feedback.dto";
 import {
   feedbackQuota,
@@ -10,6 +11,7 @@ import {
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { feedbackRounds, projects } from "@invessiv/db/record-configuration";
 import type { PortalReader } from "@/server/portal/auth/portal-reader";
+import { portalProjectCondition } from "@/server/portal/shared/portal-project-condition";
 import { portalFeedbackSchemas } from "@/server/portal/services/feedback/portal-feedback-schemas";
 import { portalFeedbackService } from "@/server/portal/services/feedback/portal-feedback-service";
 
@@ -37,21 +39,17 @@ export async function getPortalProjectFeedback(
     .where(
       and(
         eq(projects.id, projectId),
-        portalFeedbackService.visibleProjectCondition(reader),
+        portalProjectCondition(reader, Permission.PortalFeedbackRead),
       ),
     )
     .limit(1);
   if (!project) return null;
 
+  // The project condition already bound the company; the rounds follow their project.
   const rows = await db
     .select()
     .from(feedbackRounds)
-    .where(
-      and(
-        eq(feedbackRounds.project_id, project.id),
-        eq(feedbackRounds.customer_id, reader.customerId),
-      ),
-    )
+    .where(eq(feedbackRounds.project_id, project.id))
     .orderBy(desc(feedbackRounds.round_number));
   const rounds = await portalFeedbackService.toRoundDtos(db, reader, rows);
   const activeRound =

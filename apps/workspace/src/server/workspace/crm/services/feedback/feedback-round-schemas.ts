@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { FEEDBACK_LIMITS } from "@invessiv/common/constants/crm/feedback-limits";
 import { validateFileLink } from "@invessiv/common/patterns/files/validate-file-link";
-import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
+import { businessToday } from "@/common/patterns/time/business-today";
 
 const optionalText = (maxLength: number) =>
   z
@@ -25,9 +25,7 @@ const dueOn = z.iso
   .date()
   .nullish()
   .transform((value) => value ?? null)
-  .refine(
-    (value) => value === null || value >= taskDueStateService.businessToday(),
-  );
+  .refine((value) => value === null || value >= businessToday());
 
 const areaOptions = z
   .array(z.string().trim().min(1).max(FEEDBACK_LIMITS.areaLabelMaxLength))

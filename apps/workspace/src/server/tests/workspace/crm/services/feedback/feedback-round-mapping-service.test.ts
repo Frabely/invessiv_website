@@ -6,7 +6,7 @@ import {
   loadedItem,
   ROUND_ID,
   roundRow,
-} from "../../../shared/services/feedback/feedback-round-fixtures";
+} from "../../../../shared/services/feedback/feedback-round-fixtures";
 
 vi.mock("server-only", () => ({}));
 

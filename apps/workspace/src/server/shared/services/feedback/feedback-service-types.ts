@@ -1,4 +1,5 @@
 import type { FeedbackItemKind } from "@invessiv/common/constants/crm/feedback-item-kinds";
+import type { ActivityActor } from "@invessiv/common/contracts/activity/activity-actor";
 import type { AssetKind } from "@invessiv/common/constants/files/asset-kind";
 import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
@@ -33,6 +34,13 @@ export type FeedbackAttachmentRow = {
   displayName: string;
   assetKind: AssetKind;
   sizeBytes: number | null;
+};
+
+/** Who writes on the customer's side, and the title the chat notice names. */
+export type FeedbackCustomerWrite = {
+  actor: ActivityActor;
+  portalMembershipId: string;
+  projectTitle: string;
 };
 
 /** A file row the caller has locked `FOR UPDATE`; its version is the one to write against. */
