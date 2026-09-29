@@ -68,8 +68,8 @@ Sidebar-Zähler: countUnreadConversations() im (app)-Layout, fehlertolerant (Feh
 
 Systemnachrichten: Ein Phasenwechsel in `update-project.command-handler.ts` ruft `messageService.appendSystemMessage`
 auf —
-fehlertolerant, die eigentliche Aktion scheitert nie daran. Die Einreichung aus Task 22 existiert noch nicht; ihre
-Verdrahtung gehört in Ordner 16 (dort als Aufgabe vermerken).
+fehlertolerant, die eigentliche Aktion scheitert nie daran. Die Feedbackrunden existieren noch nicht; ihre
+Systemnachrichten verdrahtet Ordner 16 (Task 59/61).
 
 ## Verzeichnisstruktur
 

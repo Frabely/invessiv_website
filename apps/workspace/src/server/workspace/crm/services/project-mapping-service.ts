@@ -16,6 +16,7 @@ function toDto(row: ProjectRow): ProjectDto {
     workflowKey: row.workflow_key,
     billingModel: row.billing_model,
     includedFeedbackRounds: row.included_feedback_rounds,
+    feedbackRoundPositions: row.feedback_round_positions ?? [],
     previewUrl: row.preview_url,
     nextStepLabel: row.next_step_label,
     nextStepDueOn: row.next_step_due_on,

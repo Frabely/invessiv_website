@@ -44,6 +44,11 @@ per E-Mail gemeldet. Nach Merge werden Aufgabenreminder und Serien asynchron zuv
   `portal_memberships.customer_notified_at`, kein Versand bei `last_seen_at` jünger als 30 Minuten) und die
   zugehörigen Mailvorlagen in DE/EN. Nachrichtentext wird in der Mail nie als HTML ausgeführt; der Link führt den
   Kunden ins Portal, den Betreuer ins CRM.
+- **Feedbackrunden (Ordner 16, Task 57–62):** Bis hier informieren nur Chat-Systemnachrichten. Dieser Ordner ergänzt
+  Outbox-Ereignisse in derselben Transaktion wie der Fachwrite: an die Portal-Kontakte (Kundendigest) bei Übergabe,
+  Gespräch angefordert, Zurück an den Kunden und Abschluss; intern (Glocke, Projekt-Owner) bei Eingereicht und
+  Abnahme. Optional eine einmalige Fristerinnerung für `feedback_rounds.due_on` an den Kunden. Kein Feedbacktext in
+  Mails, nur Projekt, Runde und Link. Die Systemnachrichten bleiben bestehen.
 - **Portal-Einladungsmail:** Das Einladen aus Ordner 12b schreibt ab hier einen Outbox-Eintrag in derselben
   Transaktion; die Mail geht in `people.preferred_locale` an die Adresse der Personenzuordnung. Der Klartext-Token
   steht nur im Job-Payload, wird nach erfolgreichem Versand aus dem Payload entfernt und erscheint nie in Logs oder

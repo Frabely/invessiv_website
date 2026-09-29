@@ -29,6 +29,9 @@ Details und Abnahmekriterien stehen in den aktiven geordneten Merge-Einheiten.
   und Zahlungen bleiben in Lexware.
 - Flache Projektaufgaben mit Status, internem Bearbeiter, Handlungsseite (wir/Kunde), Sichtbarkeit für den Kunden,
   Fälligkeitsdatum, Wiederholung, globaler Übersicht und Dashboard-Block.
+- Prozessleiste je Projekt aus Freitext-Schritten plus einzelnen Feedbackrunden-Schritten, die an beliebiger Stelle
+  eingefügt werden und die Feedbackrunden automatisch abbilden; Feedbackrunden übergeben, Punkte bewerten und abschließen, Sammelaufgabe je Runde,
+  Feedback-Eingang mit Zähler.
 - Workspace-Glocke für Zuweisungen, Fälligkeiten, Portalereignisse, Renewals und Jobfehler.
 - Explizite atomare Gesamtübergabe aller offenen Zuständigkeiten eines Mitglieds nach dem vollständigen CRM-Ausbau.
 - Renewals für Domain, Hosting, SSL, Lizenz und sonstige Laufzeiten.
@@ -43,10 +46,13 @@ Details und Abnahmekriterien stehen in den aktiven geordneten Merge-Einheiten.
 - Preisfreie Leistungsanfragen aus einem freigegebenen Katalogausschnitt; Angebot folgt außerhalb.
 - Strukturierter Onboarding-Bogen: Texte direkt ins Feld, Assets am zugehörigen Feld, Zwischenstand
   serverseitig gesichert, Absenden erledigt die zugehörigen Kundenaufgaben.
-- Upload von Bildern, Logos und kurzen Videos ohne Feedbackrunde; große Videos über einen Medienlink.
+- Upload von Bildern, Logos und kurzen Videos, frei oder als Anhang eines Feedback-Punkts; große Videos über einen
+  Medienlink.
 - Onboarding-Termin beim zuständigen Mitarbeiter über dessen Buchungslink, erst nach aktivem Klick geladen.
 - Gemeinsamer Kundenchat mit Lesestand je Kontakt und gebündelten E-Mail-Hinweisen.
-- Zwei reguläre Feedbackrunden je Projekt; weitere Runde nur nach Anfrage und Freigabe.
+- Feedbackrunden im Kontingent des Projekts (Standard zwei): Wir übergeben einen Stand mit Vorschau, der Kunde
+  sammelt Feedback-Punkte mit Bereich und Dateien, speichert zwischen und reicht ein; danach Ergebnisse je Punkt und
+  am Ende die Freigabe (Abnahme) im Portal. Zusatzrunden über die Leistungsanfragen.
 - Upload erlaubter Dokumente und Download nur explizit freigegebener Dateien.
 - Deutsch und Englisch mit persönlicher Sprachpräferenz.
 
@@ -56,7 +62,7 @@ Details und Abnahmekriterien stehen in den aktiven geordneten Merge-Einheiten.
 - Zugriffsbereiche: Rollen in der UI an einzelne Kunden oder Projekte binden; der Workspace-Owner sieht immer alles.
 - Optimistische Nebenläufigkeitskontrolle für bearbeitbare Kerndaten.
 - Transaktionale Outbox und idempotenter Job-Runner.
-- Vercel-Blob-Adapter, Upload-Sessions, Inhaltsprüfung und vorbereiteter Inspection-Adapter.
+- Vercel-Blob-Adapter, Inhaltsprüfung und vorbereiteter Inspection-Adapter.
 - Tägliche verschlüsselte DB-Sicherung, Dateikopie und quartalsweiser Restore-Test.
 - Reversibles Archiv und nichtöffentlicher Owner-Purge mit Storage-Bereinigung.
 - Der Zugangsstatus „Keine Berechtigung“ bietet zum Produktivrollout optional einen sicheren

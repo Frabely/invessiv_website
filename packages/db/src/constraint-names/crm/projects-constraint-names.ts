@@ -6,6 +6,8 @@ export const ProjectsConstraintName = {
   WorkflowCheck: "projects_workflow_check",
   BillingModelCheck: "projects_billing_model_check",
   FeedbackRoundsCheck: "projects_feedback_rounds_check",
+  FeedbackRoundPositionsCheck: "projects_feedback_round_positions_check",
+  FeedbackRoundsMatchCheck: "projects_feedback_rounds_match_check",
   BudgetCheck: "projects_budget_cents_check",
   HourlyRateCheck: "projects_hourly_rate_cents_check",
   VersionCheck: "projects_version_check",

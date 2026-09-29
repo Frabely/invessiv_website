@@ -10,6 +10,7 @@
 import { randomUUID } from "node:crypto";
 
 import { getDatabaseClient, getDatabaseUrl } from "@invessiv/db/core";
+import { ProjectsConstraintName } from "@invessiv/db/constraint-names/crm/projects-constraint-names";
 import { TasksConstraintName } from "@invessiv/db/constraint-names/crm/tasks-constraint-names";
 import { MessagesConstraintName } from "@invessiv/db/constraint-names/crm/messages-constraint-names";
 import { MessageFilesConstraintName } from "@invessiv/db/constraint-names/crm/message-files-constraint-names";
@@ -338,6 +339,7 @@ async function runChecks(sql: Sql) {
   await runMissingDefaultChecks(sql, memberId, personId, name);
   await runLineItemTemplateChecks(sql, name);
   await runProjectLineItemChecks(sql, memberId, name);
+  await runProjectFeedbackRoundChecks(sql, memberId, name);
   await runTaskChecks(sql, memberId, name);
   await runConcurrencyChecks(sql, memberId, name);
 }
@@ -629,6 +631,80 @@ async function runProjectLineItemChecks(
     "deleting a project removes its services",
     cascadedRows[0].count === 0,
     `remaining: ${cascadedRows[0].count}`,
+  );
+}
+
+/**
+ * Every feedback round position must point into the step list or just past its end, the round count
+ * must match `included_feedback_rounds`, and shortening the steps below a round must fail instead of
+ * leaving a dangling position.
+ */
+async function runProjectFeedbackRoundChecks(
+  sql: Sql,
+  memberId: string,
+  name: (suffix: string) => string,
+) {
+  const customerId = await insertCustomer(sql, {
+    ownerMemberId: memberId,
+    displayName: name("Feedback round customer"),
+  });
+  const insertProject = (
+    feedbackRoundPositions: number[] | null,
+    includedFeedbackRounds = feedbackRoundPositions?.length ?? 2,
+  ) => sql`
+    INSERT INTO projects (id, customer_id, owner_member_id, title, status, phase, process_steps,
+                          current_process_step, workflow_key, billing_model,
+                          included_feedback_rounds, feedback_round_positions, version)
+    VALUES (${randomUUID()}, ${customerId}, ${memberId}, ${name("Feedback round project")}, 'active',
+            'onboarding', ARRAY ['Onboarding', 'Design', 'Launch'], 'Onboarding', 'standard_web_v1',
+            'fixed_price', ${includedFeedbackRounds}, ${feedbackRoundPositions}, 1)
+    RETURNING id
+  `;
+  const positionsConstraint =
+    ProjectsConstraintName.FeedbackRoundPositionsCheck;
+
+  await expectAccepted(
+    "project from before the rounds column is accepted",
+    () => insertProject(null),
+  );
+  await expectAccepted("project without feedback rounds is accepted", () =>
+    insertProject([]),
+  );
+  await expectAccepted(
+    "feedback rounds in several gaps, twice in one gap, are accepted",
+    () => insertProject([0, 2, 2, 3]),
+  );
+  await expectRejected(
+    "negative feedback round position is rejected",
+    () => insertProject([-1]),
+    positionsConstraint,
+  );
+  await expectRejected(
+    "feedback round position past the end is rejected",
+    () => insertProject([4]),
+    positionsConstraint,
+  );
+  await expectRejected("more than 20 feedback rounds are rejected", () =>
+    insertProject(Array.from({ length: 21 }, () => 3)),
+  );
+  await expectRejected(
+    "a round count that differs from the positions is rejected",
+    () => insertProject([1, 2], 3),
+    ProjectsConstraintName.FeedbackRoundsMatchCheck,
+  );
+
+  const [lastRound] = (await insertProject([3])) as { id: string }[];
+  record("feedback round at the end is accepted", Boolean(lastRound?.id));
+  if (!lastRound) return;
+
+  await expectRejected(
+    "shortening the steps below a feedback round is rejected",
+    () => sql`
+      UPDATE projects
+      SET process_steps = ARRAY ['Onboarding', 'Design']
+      WHERE id = ${lastRound.id}
+    `,
+    positionsConstraint,
   );
 }
 

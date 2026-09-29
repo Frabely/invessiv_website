@@ -21,6 +21,7 @@ type ProjectRow = {
   status: ProjectStatus;
   processSteps: string[];
   currentProcessStep: string;
+  feedbackRoundPositions: number[] | null;
   nextStepLabel: string | null;
   nextStepDueOn: string | null;
   previewUrl: string | null;
@@ -85,6 +86,7 @@ function mapRowsToDto({
       status: row.status,
       processSteps: row.processSteps,
       currentProcessStep: row.currentProcessStep,
+      feedbackRoundPositions: row.feedbackRoundPositions ?? [],
       nextStep:
         row.nextStepLabel !== null || row.nextStepDueOn !== null
           ? { label: row.nextStepLabel, dueOn: row.nextStepDueOn }

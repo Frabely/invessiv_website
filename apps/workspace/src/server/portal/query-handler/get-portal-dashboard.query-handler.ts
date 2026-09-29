@@ -62,6 +62,7 @@ export async function getPortalDashboard(
           status: projects.status,
           processSteps: projects.process_steps,
           currentProcessStep: projects.current_process_step,
+          feedbackRoundPositions: projects.feedback_round_positions,
           nextStepLabel: projects.next_step_label,
           nextStepDueOn: projects.next_step_due_on,
           previewUrl: projects.preview_url,

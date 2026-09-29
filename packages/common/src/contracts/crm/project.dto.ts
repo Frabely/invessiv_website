@@ -25,8 +25,10 @@ export interface ProjectDto {
   workflowKey: ProjectWorkflowKey;
   /** Internal billing model. */
   billingModel: ProjectBillingModel;
-  /** Included feedback rounds. */
+  /** Included feedback rounds; equals feedbackRoundPositions.length for every project written with rounds. */
   includedFeedbackRounds: number;
+  /** One entry per feedback round, ascending: the round sits before processSteps[position]; processSteps.length places it last. */
+  feedbackRoundPositions: number[];
   /** Optional preview URL. */
   previewUrl: string | null;
   /** Next internal action. */

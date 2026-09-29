@@ -101,6 +101,12 @@ export async function updateProject(
         process_steps: data.processSteps,
         current_process_step: data.currentProcessStep,
         billing_model: data.billingModel,
+        ...(data.feedbackRoundPositions
+          ? {
+              included_feedback_rounds: data.feedbackRoundPositions.length,
+              feedback_round_positions: data.feedbackRoundPositions,
+            }
+          : {}),
         preview_url: data.previewUrl,
         next_step_label: data.nextStepLabel,
         next_step_due_on: data.nextStepDueOn,

@@ -24,8 +24,8 @@ und Abhängigkeitsaussagen die **Ordner**-Nummer.
 ## Mergebarer Master ist Pflicht
 
 - Ein Ordner entspricht einem Branch `feat/crm-<ordner-slug>`, einem PR und einem Merge.
-  **Ausnahme:** Ordner `14-dateien` wird bewusst in sechs Teil-PRs (14.1–14.6) mit eigenen Branches geliefert;
-  Regeln und Status stehen in dessen README.
+  **Ausnahme:** Die Ordner `14-dateien` (14.1–14.6) und `16-feedbackrunden` (16.1–16.6) werden bewusst in je sechs
+  Teil-PRs mit eigenen Branches geliefert; Regeln und Status stehen in der jeweiligen README.
 - Nach jedem Ordner sind Migration, Tests und App-Build grün; `master` ist produktiv deploybar.
 - Kein Ordner darf eine UI auf unvollständige Handler, fehlende Tabellen oder spätere Ordner zeigen.
 - Reine Fundamente bleiben unsichtbar. Sichtbare Funktionen werden vertikal vollständig geliefert.

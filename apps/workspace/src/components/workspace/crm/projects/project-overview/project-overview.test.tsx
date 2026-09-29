@@ -90,3 +90,67 @@ describe("ProjectOverview", () => {
     expect(onEditAction).toHaveBeenLastCalledWith(project);
   });
 });
+
+describe("ProjectOverview feedback rounds", () => {
+  beforeAll(() => {
+    Element.prototype.scrollIntoView = vi.fn();
+  });
+  afterEach(cleanup);
+
+  const withBlock = projectFixture({
+    processSteps: steps,
+    currentProcessStep: "Entwicklung",
+    feedbackRoundPositions: [2, 3, 3],
+    includedFeedbackRounds: 3,
+  });
+
+  it("shows each round as an accented track step at its own position", () => {
+    render(
+      <ProjectOverview
+        content={content}
+        ownerWithoutAccess={false}
+        project={withBlock}
+        title="Website"
+      />,
+    );
+
+    const items = screen.getAllByRole("listitem");
+    expect(items.map((item) => item.textContent)).toEqual([
+      "Onboarding",
+      "Design",
+      "Feedbackrunde 1",
+      "Entwicklung",
+      "Feedbackrunde 2",
+      "Feedbackrunde 3",
+      "Launch",
+    ]);
+    expect(items.map((item) => item.dataset.variant)).toEqual([
+      "default",
+      "default",
+      "accent",
+      "default",
+      "accent",
+      "accent",
+      "default",
+    ]);
+    expect(screen.getByText("Schritt 4 von 7")).toBeVisible();
+  });
+
+  it("opens the editor without a preselected step when a round is chosen", () => {
+    const onEditAction = vi.fn();
+    render(
+      <ProjectOverview
+        content={content}
+        onEditAction={onEditAction}
+        ownerWithoutAccess={false}
+        project={withBlock}
+        title="Website"
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Feedbackrunde 2" }));
+    expect(onEditAction).toHaveBeenCalledWith(withBlock, undefined);
+    fireEvent.click(screen.getByRole("button", { name: "Launch" }));
+    expect(onEditAction).toHaveBeenLastCalledWith(withBlock, "Launch");
+  });
+});

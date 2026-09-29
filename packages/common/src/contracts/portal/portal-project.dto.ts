@@ -13,6 +13,8 @@ export interface PortalProjectDto {
   processSteps: string[];
   /** Current label within `processSteps`. */
   currentProcessStep: string;
+  /** One entry per feedback round, ascending: the round sits before `processSteps[position]`. */
+  feedbackRoundPositions: number[];
   /** Next announced action; null when neither label nor date is set. */
   nextStep: PortalProjectNextStepDto | null;
   /** Optional preview or live link configured for this project. */

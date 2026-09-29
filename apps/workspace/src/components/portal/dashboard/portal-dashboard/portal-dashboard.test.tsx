@@ -166,6 +166,7 @@ function dto(overrides: Partial<PortalDashboardDto> = {}): PortalDashboardDto {
         status: ProjectStatus.Active,
         processSteps: ["Design", "Build", "Launch"],
         currentProcessStep: "Build",
+        feedbackRoundPositions: [1, 2],
         nextStep: { label: "First version", dueOn: "2026-10-16" },
         previewUrl: "https://preview.example.test",
         projectLead: null,
@@ -229,12 +230,27 @@ describe("PortalDashboard", () => {
   it("renders the project with its step, next step and preview link", () => {
     renderDashboard();
 
-    expect(screen.getByText("Step 2 of 3")).toBeInTheDocument();
+    expect(screen.getByText("Step 3 of 5")).toBeInTheDocument();
     expect(screen.getByText("First version")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Open preview/ })).toHaveAttribute(
       "href",
       "https://preview.example.test",
     );
+  });
+
+  it("shows each feedback round at its own place in the project track", () => {
+    renderDashboard();
+
+    const track = screen.getByRole("list", { name: "Project progress" });
+    expect(
+      [...track.querySelectorAll("li")].map((item) => item.textContent),
+    ).toEqual([
+      "Design",
+      "Feedback round 1",
+      "Build",
+      "Feedback round 2",
+      "Launch",
+    ]);
   });
 
   it("marks every mock widget as coming soon", () => {

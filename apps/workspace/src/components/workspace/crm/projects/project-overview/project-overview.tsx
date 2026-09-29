@@ -11,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ProcessTrackItemKind } from "@invessiv/common/constants/crm/process-track-item-kinds";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import {
   BadgeTone,
@@ -23,6 +24,10 @@ import { getMemberInitials } from "@/common/patterns/access/member-initials";
 import type { CrmCockpitDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { OwnerWithoutAccessBadge } from "@/components/workspace/crm/shared/owner-without-access-badge/owner-without-access-badge";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
+import {
+  buildProjectProcessTrack,
+  toProcessTrackSteps,
+} from "@invessiv/common/patterns/crm/project-process-track";
 import styles from "./project-overview.module.css";
 
 const PROJECT_STATUS_BADGE: Record<
@@ -58,9 +63,18 @@ export function ProjectOverview({
   onGrantAccessAction,
   onEditAction,
 }: ProjectOverviewProps) {
-  const currentIndex = project
-    ? Math.max(project.processSteps.indexOf(project.currentProcessStep), 0)
-    : 0;
+  const track = project
+    ? buildProjectProcessTrack({
+        processSteps: project.processSteps,
+        currentProcessStep: project.currentProcessStep,
+        feedbackRoundPositions: project.feedbackRoundPositions,
+        roundLabel: (number) =>
+          formatMessage(content.projects.feedbackRound.label, { number }),
+      })
+    : null;
+  const total = track?.items.length ?? 0;
+  const currentIndex = Math.min(Math.max(track?.currentIndex ?? 0, 0), total);
+  const currentItem = track?.items[Math.min(currentIndex, total - 1)];
 
   return (
     <div className={styles.overview}>
@@ -81,16 +95,27 @@ export function ProjectOverview({
             currentIndex={currentIndex}
             label={content.projects.phase}
             onStepAction={
-              onEditAction ? (step) => onEditAction(project, step) : undefined
+              onEditAction
+                ? (_, index) => {
+                    const item = track?.items[index];
+                    // Rounds are not selectable as current step; they open the editor unchanged.
+                    onEditAction(
+                      project,
+                      item?.kind === ProcessTrackItemKind.Custom
+                        ? item.label
+                        : undefined,
+                    );
+                  }
+                : undefined
             }
-            steps={project.processSteps}
+            steps={toProcessTrackSteps(track?.items ?? [])}
             summary={
               <p className={styles.progressSummary}>
-                <strong>{project.processSteps[currentIndex]}</strong>
+                <strong>{currentItem?.label}</strong>
                 <span>
                   {formatMessage(content.projects.phaseProgress, {
-                    current: currentIndex + 1,
-                    total: project.processSteps.length,
+                    current: Math.min(currentIndex + 1, total),
+                    total,
                   })}
                 </span>
               </p>

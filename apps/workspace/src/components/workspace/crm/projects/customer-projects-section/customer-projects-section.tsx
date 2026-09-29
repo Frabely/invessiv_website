@@ -1,25 +1,12 @@
 "use client";
 
 import { useId, useState } from "react";
-import { useRouter } from "next/navigation";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { ProjectDto } from "@invessiv/common/contracts/crm/project.dto";
 import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
-import { ProjectBillingModel } from "@invessiv/common/constants/crm/project-billing-models";
-import {
-  PROJECT_PHASE_SEQUENCE,
-  ProjectPhase,
-} from "@invessiv/common/constants/crm/project-phases";
-import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
-import {
-  ButtonControl,
-  Dialog,
-  FormField,
-  PrimaryCtaButton,
-} from "@invessiv/ui";
-import { projectsApiService } from "@/client/crm/projects-api-service";
+import { PrimaryCtaButton } from "@invessiv/ui";
 import type { ProjectLineItemsViewModel } from "@/common/contracts/crm/project-line-items-view-model";
 import type { TasksViewModel } from "@/common/contracts/crm/tasks-view-model";
 import type { Locale } from "@/config/i18n";
@@ -29,6 +16,7 @@ import type {
   CrmProjectLineItemsDictionary,
   CrmTasksDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
+import { ProjectEditorDialog } from "@/components/workspace/crm/projects/project-editor-dialog/project-editor-dialog";
 import { ProjectOverview } from "@/components/workspace/crm/projects/project-overview/project-overview";
 import { MockSectionCard } from "@/components/workspace/crm/shared/mock-section-card/mock-section-card";
 import { ProjectSwitcherTabs } from "@/components/workspace/crm/projects/project-switcher-tabs/project-switcher-tabs";
@@ -40,6 +28,12 @@ import type { FilesViewModel } from "@/common/contracts/crm/files/files-view-mod
 import styles from "./customer-projects-section.module.css";
 
 const PROJECT_FUTURE_AREAS = ["feedback", "onboarding"] as const;
+
+type EditorState = {
+  project: ProjectDto | null;
+  nextCurrentStep?: string;
+  key: number;
+};
 
 type CustomerProjectsSectionProps = {
   content: CrmCockpitDictionary;
@@ -82,23 +76,7 @@ export function CustomerProjectsSection({
   filesRevision = 0,
   onFilesChangedAction,
 }: CustomerProjectsSectionProps) {
-  const router = useRouter();
-  const [editorOpen, setEditorOpen] = useState(false);
-  const [editing, setEditing] = useState<ProjectDto | null>(null);
-  const [title, setTitle] = useState("");
-  const defaultProcessSteps = PROJECT_PHASE_SEQUENCE.map(
-    (value) => content.projects.phases[value],
-  );
-  const [processSteps, setProcessSteps] = useState(defaultProcessSteps);
-  const [currentProcessStep, setCurrentProcessStep] = useState(
-    defaultProcessSteps[0],
-  );
-  const [newProcessStep, setNewProcessStep] = useState("");
-  const [status, setStatus] = useState<ProjectDto["status"]>(
-    ProjectStatus.Planned,
-  );
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState(false);
+  const [editor, setEditor] = useState<EditorState | null>(null);
   const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
     projects[0]?.id ?? null,
   );
@@ -116,75 +94,7 @@ export function CustomerProjectsSection({
   );
 
   function openEditor(project: ProjectDto | null, nextCurrentStep?: string) {
-    setEditing(project);
-    setTitle(project?.title ?? "");
-    const steps = project?.processSteps ?? defaultProcessSteps;
-    setProcessSteps(steps);
-    setCurrentProcessStep(
-      nextCurrentStep ?? project?.currentProcessStep ?? steps[0],
-    );
-    setStatus(project?.status ?? ProjectStatus.Planned);
-    setEditorOpen(true);
-  }
-
-  async function saveProject() {
-    if (!title.trim() || busy) return;
-    setBusy(true);
-    setError(false);
-    const request = {
-      title,
-      status,
-      phase: ProjectPhase.Onboarding,
-      processSteps,
-      currentProcessStep,
-      billingModel: editing?.billingModel ?? ProjectBillingModel.FixedPrice,
-      previewUrl: editing?.previewUrl ?? null,
-      nextStepLabel: editing?.nextStepLabel ?? null,
-      nextStepDueOn: editing?.nextStepDueOn ?? null,
-      startedOn: editing?.startedOn ?? null,
-      budgetCents: editing?.budgetCents ?? null,
-      hourlyRateCents: editing?.hourlyRateCents ?? null,
-      ...(editing ? { version: editing.version } : {}),
-    };
-    const succeeded = editing
-      ? await projectsApiService.updateProject(editing.id, {
-          ...request,
-          version: editing.version,
-        })
-      : await projectsApiService.createProject(customerId, request);
-
-    if (succeeded) {
-      setEditorOpen(false);
-      router.refresh();
-      return;
-    }
-
-    setError(true);
-    setBusy(false);
-  }
-
-  function updateProcessStep(index: number, value: string) {
-    const next = processSteps.map((step, stepIndex) =>
-      stepIndex === index ? value : step,
-    );
-    if (processSteps[index] === currentProcessStep)
-      setCurrentProcessStep(value);
-    setProcessSteps(next);
-  }
-
-  function removeProcessStep(index: number) {
-    if (processSteps.length === 1) return;
-    const next = processSteps.filter((_, stepIndex) => stepIndex !== index);
-    if (processSteps[index] === currentProcessStep)
-      setCurrentProcessStep(next[0]);
-    setProcessSteps(next);
-  }
-
-  function addProcessStep() {
-    const step = newProcessStep.trim();
-    if (!step) return;
-    setProcessSteps((current) => [...current, step]);
-    setNewProcessStep("");
+    setEditor({ project, nextCurrentStep, key: (editor?.key ?? 0) + 1 });
   }
 
   return (
@@ -306,128 +216,15 @@ export function CustomerProjectsSection({
       ) : (
         <p className={styles.empty}>{content.projects.empty}</p>
       )}
-      {editorOpen ? (
-        <Dialog
-          closeLabel={content.projects.cancel}
-          description={content.projects.formDescription}
-          footer={
-            <>
-              <ButtonControl
-                onClick={() => setEditorOpen(false)}
-                type="button"
-                variant="ghost"
-              >
-                {content.projects.cancel}
-              </ButtonControl>
-              <PrimaryCtaButton
-                disabled={busy}
-                onClick={saveProject}
-                type="button"
-              >
-                {content.projects.save}
-              </PrimaryCtaButton>
-            </>
-          }
-          onCloseAction={() => setEditorOpen(false)}
-          size="narrow"
-          title={
-            editing
-              ? content.projects.formTitleEdit
-              : content.projects.formTitleCreate
-          }
-        >
-          <div className={styles.form}>
-            <FormField
-              kind="text"
-              label={content.projects.title}
-              inputProps={{
-                autoFocus: true,
-                onChange: (event) => setTitle(event.target.value),
-                required: true,
-                value: title,
-              }}
-            />
-            <label className={styles.selectLabel}>
-              {content.projects.statusLabel}
-              <select
-                onChange={(event) =>
-                  setStatus(event.target.value as ProjectDto["status"])
-                }
-                value={status}
-              >
-                {Object.entries(content.projects.status).map(
-                  ([value, label]) => (
-                    <option key={value} value={value}>
-                      {label}
-                    </option>
-                  ),
-                )}
-              </select>
-            </label>
-            <label className={styles.selectLabel}>
-              {content.projects.processSteps}
-              <span className={styles.processStepList}>
-                {processSteps.map((step, index) => (
-                  <span
-                    className={styles.processStepRow}
-                    key={`${step}-${index}`}
-                  >
-                    <input
-                      aria-label={`${content.projects.processSteps} ${index + 1}`}
-                      onChange={(event) =>
-                        updateProcessStep(index, event.target.value)
-                      }
-                      value={step}
-                    />
-                    <ButtonControl
-                      aria-label={content.projects.removeProcessStep}
-                      disabled={processSteps.length === 1}
-                      onClick={() => removeProcessStep(index)}
-                      title={content.projects.removeProcessStep}
-                      type="button"
-                      variant="ghost"
-                    >
-                      ×
-                    </ButtonControl>
-                  </span>
-                ))}
-              </span>
-              <span className={styles.addStepRow}>
-                <input
-                  onChange={(event) => setNewProcessStep(event.target.value)}
-                  placeholder={content.projects.processStepPlaceholder}
-                  value={newProcessStep}
-                />
-                <ButtonControl
-                  onClick={addProcessStep}
-                  type="button"
-                  variant="ghost"
-                >
-                  {content.projects.addProcessStep}
-                </ButtonControl>
-              </span>
-              <small>{content.projects.processStepsHint}</small>
-            </label>
-            <label className={styles.selectLabel}>
-              {content.projects.currentProcessStep}
-              <select
-                onChange={(event) => setCurrentProcessStep(event.target.value)}
-                value={currentProcessStep}
-              >
-                {processSteps.map((step, index) => (
-                  <option key={`${step}-${index}`} value={step}>
-                    {step}
-                  </option>
-                ))}
-              </select>
-            </label>
-            {error ? (
-              <p className={styles.error} role="alert">
-                {content.projects.saveError}
-              </p>
-            ) : null}
-          </div>
-        </Dialog>
+      {editor ? (
+        <ProjectEditorDialog
+          content={content.projects}
+          customerId={customerId}
+          key={editor.key}
+          nextCurrentStep={editor.nextCurrentStep}
+          onCloseAction={() => setEditor(null)}
+          project={editor.project}
+        />
       ) : null}
     </section>
   );

@@ -73,4 +73,25 @@ test.describe.serial("portal dashboard", () => {
       fullPage: true,
     });
   });
+
+  test("shows each feedback round at its own place in the project track", async ({
+    page,
+  }) => {
+    await page.goto(`/de/portal/${fixture.customerB}`);
+    const track = page.getByRole("list", { name: "Projektfortschritt" });
+    await expect(track).toBeVisible();
+    await expect(track.getByRole("listitem")).toHaveText([
+      "Onboarding",
+      "Design",
+      "Feedbackrunde 1",
+      "Entwicklung",
+      "Feedbackrunde 2",
+      "Feedbackrunde 3",
+      "Launch",
+      "Wartung",
+    ]);
+    await expect(
+      track.getByRole("listitem").filter({ hasText: "Entwicklung" }),
+    ).toHaveAttribute("aria-current", "step");
+  });
 });

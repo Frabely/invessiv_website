@@ -1,0 +1,158 @@
+.editor {
+  display: grid;
+  gap: 0.55rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  margin-bottom: 0.4rem;
+  padding: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+}
+
+.count {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+.count svg {
+  color: var(--color-accent-warm);
+}
+
+.rows {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stepRow,
+.roundRow {
+  display: grid;
+  grid-template-columns: 1.75rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.position {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.stepInput {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 8px;
+  background: var(--color-surface-1);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.stepInput:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 1px;
+}
+
+/* A round is a fixed row with logic, so it must never read as another text step. */
+.roundRow {
+  min-height: 2.75rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 55%, var(--color-border));
+  border-left-width: 3px;
+  border-radius: 10px;
+  background: color-mix(
+    in srgb,
+    var(--color-accent-warm) 8%,
+    var(--color-surface-1)
+  );
+}
+
+.roundIcon {
+  justify-self: center;
+  color: var(--color-accent-warm);
+}
+
+.roundLabel {
+  padding-left: 0.6rem;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+}
+
+.actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.15rem;
+}
+
+.iconButton.iconButton {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0;
+  border-radius: 8px;
+}
+
+.insertRoundButton.insertRoundButton {
+  min-height: 2.75rem;
+  padding: 0 0.65rem;
+  gap: 0.35rem;
+  border-radius: 8px;
+  font-size: var(--font-size-ui-xs);
+}
+
+.insertRoundButton.insertRoundButton:not(:disabled) svg {
+  color: var(--color-accent-warm);
+}
+
+.addRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.addRow .stepInput {
+  flex: 1 1 12rem;
+}
+
+.addButton.addButton {
+  min-height: 2.75rem;
+  gap: 0.45rem;
+}
+
+.hint {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+/* Narrow dialogs: the actions move below the label so the step text keeps its width. */
+@media (max-width: 36rem) {
+  .stepRow,
+  .roundRow {
+    grid-template-columns: 1.75rem minmax(0, 1fr);
+  }
+
+  .actions {
+    grid-column: 2;
+    justify-self: end;
+  }
+
+  .addButton.addButton {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+}
