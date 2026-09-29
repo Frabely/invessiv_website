@@ -76,10 +76,10 @@ async function checkAttachments(
     .select({
       file: files,
       openable: sql<boolean>`coalesce((
-        ${openable}
-        ),
-        false
-        )`,
+      ${openable}
+      ),
+      false
+      )`,
     })
     .from(files)
     .where(
