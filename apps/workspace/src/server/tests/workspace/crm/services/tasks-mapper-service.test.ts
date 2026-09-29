@@ -18,6 +18,7 @@ const OPEN_ROW: TaskRow = {
   completed_at: null,
   completed_by_member_id: null,
   completed_by_portal_membership_id: null,
+  feedback_round_id: null,
   version: 3,
   created_at: new Date("2026-01-01T10:00:00.000Z"),
   updated_at: new Date("2026-01-02T10:00:00.000Z"),
@@ -38,6 +39,7 @@ describe("tasksMapperService.toDto", () => {
       completedAt: null,
       completedByMemberId: null,
       completedByCustomer: false,
+      feedbackRoundId: null,
       version: 3,
       createdAt: "2026-01-01T10:00:00.000Z",
       updatedAt: "2026-01-02T10:00:00.000Z",
@@ -72,5 +74,16 @@ describe("tasksMapperService.toDto", () => {
     expect(JSON.stringify(dto)).not.toContain(
       "88888888-8888-4888-8888-888888888888",
     );
+  });
+});
+
+describe("tasksMapperService.toDto feedback round", () => {
+  it("passes the round of a collecting task through", () => {
+    const roundId = "99999999-9999-4999-8999-999999999999";
+
+    expect(
+      tasksMapperService.toDto({ ...OPEN_ROW, feedback_round_id: roundId })
+        .feedbackRoundId,
+    ).toBe(roundId);
   });
 });

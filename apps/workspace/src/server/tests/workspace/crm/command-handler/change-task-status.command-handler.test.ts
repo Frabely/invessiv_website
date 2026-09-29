@@ -25,7 +25,7 @@ vi.mock("@invessiv/db/core", async (importOriginal) => ({
 vi.mock("@/server/workspace/shared/update-versioned", () => ({
   updateVersioned: mocks.updateVersioned,
 }));
-vi.mock("@/server/workspace/crm/services/task-activity-service", () => ({
+vi.mock("@/server/shared/services/task-activity-service", () => ({
   taskActivityService: { recordStatusChange: mocks.recordStatusChange },
 }));
 

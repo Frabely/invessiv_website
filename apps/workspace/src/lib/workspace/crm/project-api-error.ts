@@ -4,12 +4,15 @@ import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-
 const STATUS: Record<ProjectErrorCode, HttpResponseCode> = {
   [ProjectErrorCode.NotFound]: HttpResponseCode.NotFound,
   [ProjectErrorCode.ValidationError]: HttpResponseCode.UnprocessableContent,
+  [ProjectErrorCode.FeedbackRoundInUse]: HttpResponseCode.Conflict,
   [ProjectErrorCode.Internal]: HttpResponseCode.InternalServerError,
 };
 
 const MESSAGES: Record<ProjectErrorCode, string> = {
   [ProjectErrorCode.NotFound]: "Project not found",
   [ProjectErrorCode.ValidationError]: "Validation failed",
+  [ProjectErrorCode.FeedbackRoundInUse]:
+    "Handed-over feedback rounds cannot be moved or removed",
   [ProjectErrorCode.Internal]: "Internal error",
 };
 

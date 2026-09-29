@@ -1,5 +1,6 @@
 import "server-only";
 
+import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { eq } from "drizzle-orm";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
@@ -12,7 +13,7 @@ import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { projects, tasks } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { canOn } from "@/common/patterns/auth/can-on";
-import { taskActivityService } from "@/server/workspace/crm/services/task-activity-service";
+import { taskActivityService } from "@/server/shared/services/task-activity-service";
 import { taskSchemas } from "@/server/workspace/crm/services/task-schemas";
 import { tasksMapperService } from "@/server/workspace/crm/services/tasks-mapper-service";
 import { updateVersioned } from "@/server/workspace/shared/update-versioned";
@@ -110,7 +111,7 @@ export async function changeTaskStatus(
         projectId: target.task.project_id,
         taskId,
       },
-      actor,
+      { type: ActorType.User, userId: actor.userId },
       { previous: target.task.status, next: data.status },
     );
 

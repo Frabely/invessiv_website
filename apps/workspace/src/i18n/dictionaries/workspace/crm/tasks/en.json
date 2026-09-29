@@ -1,4 +1,7 @@
 {
+  "feedbackRound": {
+    "title": "Implement feedback round {roundNumber}"
+  },
   "section": {
     "title": "Tasks",
     "addAction": "Add task",

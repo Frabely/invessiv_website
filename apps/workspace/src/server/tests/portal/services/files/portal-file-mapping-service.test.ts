@@ -19,6 +19,7 @@ function row(
     customer_id: "customer-1",
     project_id: "project-1",
     feedback_round_id: null,
+    feedback_item_id: null,
     source: FileSource.Upload,
     status: FileStatus.Ready,
     asset_kind: AssetKind.Document,

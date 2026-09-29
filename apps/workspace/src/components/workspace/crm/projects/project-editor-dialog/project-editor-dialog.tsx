@@ -1,7 +1,7 @@
 "use client";
 
 import { type SubmitEvent, useId, useState } from "react";
-import type { ProjectErrorCode } from "@invessiv/common/constants/crm/errors/project-error-codes";
+import { ProjectErrorCode } from "@invessiv/common/constants/crm/errors/project-error-codes";
 import type { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import type { ProjectDto } from "@invessiv/common/contracts/crm/project.dto";
 import { FormDialog, FormField } from "@invessiv/ui";
@@ -166,7 +166,9 @@ export function ProjectEditorDialog({
             data-tone={DialogMessageTone.Error}
             role="alert"
           >
-            {content.saveError}
+            {mutation.errorCode === ProjectErrorCode.FeedbackRoundInUse
+              ? content.feedbackRoundInUse
+              : content.saveError}
           </p>
         ) : null}
       </form>

@@ -19,6 +19,7 @@ const ROW = {
   billing_model: ProjectBillingModel.FixedPrice,
   included_feedback_rounds: 2,
   feedback_round_positions: [1, 1] as number[] | null,
+  feedback_areas: [],
   preview_url: null,
   next_step_label: null,
   next_step_due_on: null,

@@ -16,8 +16,12 @@ it("keeps model and migration constraint names aligned without duplicates", () =
   ];
   expect(names.sort()).toEqual(Object.values(FilesConstraintName).sort());
   expect(new Set(names).size).toBe(names.length);
-  // 0043 adds the (id, customer_id) key that chat attachments reference.
-  const migration = ["0041_create_files.sql", "0043_create_message_files.sql"]
+  // 0043 adds the (id, customer_id) key chat attachments reference; 0045 binds files to feedback items.
+  const migration = [
+    "0041_create_files.sql",
+    "0043_create_message_files.sql",
+    "0045_create_feedback_rounds.sql",
+  ]
     .map((file) =>
       readFileSync(resolve(process.cwd(), "migrations", file), "utf8"),
     )

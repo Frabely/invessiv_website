@@ -29,6 +29,7 @@
     "save": "Save project",
     "saving": "Saving …",
     "saveError": "The project could not be saved. Please try again.",
+    "feedbackRoundInUse": "Feedback rounds that were handed over stay where they are. Only move or remove rounds that have not been handed over yet.",
     "saveConflict": "Someone just changed this project. We loaded the current version; your input is still here. Save again to apply it.",
     "cancel": "Cancel",
     "title": "Project name",

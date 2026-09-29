@@ -1,0 +1,17 @@
+export const FeedbackRoundItemsConstraintName = {
+  RoundForeignKey: "feedback_round_items_round_fk",
+  CreatedByForeignKey: "feedback_round_items_created_by_fk",
+  ResultSetByForeignKey: "feedback_round_items_result_set_by_fk",
+  IdRoundUnique: "feedback_round_items_id_round_uidx",
+  RoundPositionUnique: "feedback_round_items_round_position_uidx",
+  PositionCheck: "feedback_round_items_position_check",
+  AreaLabelCheck: "feedback_round_items_area_label_check",
+  KindCheck: "feedback_round_items_kind_check",
+  BodyCheck: "feedback_round_items_body_check",
+  ResultCheck: "feedback_round_items_result_check",
+  ResultNoteLengthCheck: "feedback_round_items_result_note_length_check",
+  VersionCheck: "feedback_round_items_version_check",
+  ResultFieldsCheck: "feedback_round_items_result_fields_check",
+  ResultNoteCheck: "feedback_round_items_result_note_check",
+  ResultReplyCheck: "feedback_round_items_result_reply_check",
+} as const;

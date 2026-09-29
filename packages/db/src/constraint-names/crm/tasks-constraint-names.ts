@@ -15,6 +15,9 @@ export const TasksConstraintName = {
   VersionCheck: "tasks_version_check",
   ProjectStatusDueIndex: "tasks_project_status_due_idx",
   OpenAssigneeDueIndex: "tasks_open_assignee_due_idx",
+  FeedbackRoundProjectForeignKey: "tasks_feedback_round_project_fk",
+  FeedbackRoundSideCheck: "tasks_feedback_round_side_check",
+  FeedbackRoundUnique: "tasks_feedback_round_uidx",
 } as const;
 
 export type TasksConstraintName =
@@ -34,4 +37,7 @@ export const TASKS_CONSTRAINT_NAME_VALUES = [
   TasksConstraintName.VersionCheck,
   TasksConstraintName.ProjectStatusDueIndex,
   TasksConstraintName.OpenAssigneeDueIndex,
+  TasksConstraintName.FeedbackRoundProjectForeignKey,
+  TasksConstraintName.FeedbackRoundSideCheck,
+  TasksConstraintName.FeedbackRoundUnique,
 ] as const;

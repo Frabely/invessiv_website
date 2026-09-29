@@ -43,6 +43,12 @@ export async function updateFile(
     )
       return { ok: false, code: E.CustomerVisibility };
     if (
+      row.feedback_round_id &&
+      data.projectId !== undefined &&
+      data.projectId !== row.project_id
+    )
+      return { ok: false, code: E.FeedbackBound };
+    if (
       data.projectId !== undefined &&
       !(await fileAccessService.targetExists(
         tx,

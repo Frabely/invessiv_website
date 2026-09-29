@@ -141,6 +141,7 @@
     "FILE_ARCHIVE_VIDEO": "Videos lädst du einzeln herunter.",
     "FILE_PENDING_LIMIT": "Gerade laufen zu viele Uploads. Warte einen Moment und versuch es erneut.",
     "FILE_CUSTOMER_VISIBILITY": "Das lässt sich hier nicht ändern.",
+    "FILE_FEEDBACK_BOUND": "Diese Datei gehört zu deinem eingereichten Feedback und bleibt erhalten.",
     "FILE_UPLOAD_OWNER": "Diesen Upload kann nur abschließen, wer ihn gestartet hat.",
     "FILE_NOT_UPLOAD": "Dieser Eintrag ist ein Link und keine Datei.",
     "FILE_STORAGE_UNAVAILABLE": "Der Dateispeicher ist gerade nicht erreichbar. Versuch es gleich noch einmal.",

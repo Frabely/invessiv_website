@@ -14,6 +14,7 @@ describe("file mapping", () => {
     customer_id: "customer",
     project_id: "project",
     feedback_round_id: null,
+    feedback_item_id: null,
     source: FileSource.Upload,
     status: FileStatus.Ready,
     asset_kind: AssetKind.Document,

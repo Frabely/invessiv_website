@@ -15,6 +15,7 @@ export interface TaskRow {
   completed_at: Date | null;
   completed_by_member_id: string | null;
   completed_by_portal_membership_id: string | null;
+  feedback_round_id: string | null;
   version: number;
   created_at: Date;
   updated_at: Date;

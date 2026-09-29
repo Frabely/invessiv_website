@@ -191,4 +191,27 @@ describe("ProjectEditorDialog", () => {
 
     expect(await screen.findByText(content.saveError)).toBeVisible();
   });
+
+  it("explains why handed-over feedback rounds cannot move", async () => {
+    mocks.createProject.mockResolvedValueOnce({
+      ok: false,
+      code: ProjectErrorCode.FeedbackRoundInUse,
+    });
+    render(
+      <ProjectEditorDialog
+        content={content}
+        customerId="customer-1"
+        onCloseAction={vi.fn()}
+        project={null}
+      />,
+    );
+
+    fireEvent.change(screen.getByLabelText(content.title, { exact: false }), {
+      target: { value: "Relaunch" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: content.save }));
+
+    expect(await screen.findByText(content.feedbackRoundInUse)).toBeVisible();
+    expect(screen.queryByText(content.saveError)).toBeNull();
+  });
 });

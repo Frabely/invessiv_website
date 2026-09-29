@@ -204,3 +204,77 @@ describe("updateProject feedback rounds", () => {
     expect(patch).not.toHaveProperty("included_feedback_rounds");
   });
 });
+
+describe("updateProject handed-over feedback rounds", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mocks.limit.mockResolvedValue([{ customerId: CUSTOMER_ID }]);
+    mocks.getDatabase.mockReturnValue({
+      select: () => ({
+        from: () => ({ where: () => ({ limit: mocks.limit }) }),
+      }),
+      transaction: (callback: (value: typeof tx) => unknown) => callback(tx),
+    });
+    mocks.updateVersioned.mockResolvedValue({ ok: true, value: {} });
+  });
+
+  function lockedTrack(handedOverRounds: number) {
+    mocks.lockPhase.mockResolvedValue([
+      {
+        phase: ProjectPhase.Design,
+        processSteps: ["Kickoff"],
+        feedbackRoundPositions: [1, 1],
+        handedOverRounds,
+      },
+    ]);
+  }
+
+  it("refuses moving a handed-over round without writing", async () => {
+    lockedTrack(1);
+
+    const result = await updateProject(
+      PROJECT_ID,
+      input(ProjectPhase.Design),
+      workspaceActorWith([Permission.ProjectsWrite]),
+    );
+
+    expect(result).toBe(ProjectErrorCode.FeedbackRoundInUse);
+    expect(mocks.updateVersioned).not.toHaveBeenCalled();
+  });
+
+  it("refuses dropping a handed-over round", async () => {
+    lockedTrack(2);
+
+    const result = await updateProject(
+      PROJECT_ID,
+      { ...input(ProjectPhase.Design), feedbackRoundPositions: [1] },
+      workspaceActorWith([Permission.ProjectsWrite]),
+    );
+
+    expect(result).toBe(ProjectErrorCode.FeedbackRoundInUse);
+  });
+
+  it("allows edits that keep the handed-over rounds in place", async () => {
+    lockedTrack(1);
+
+    const result = await updateProject(
+      PROJECT_ID,
+      { ...input(ProjectPhase.Design), feedbackRoundPositions: [1] },
+      workspaceActorWith([Permission.ProjectsWrite]),
+    );
+
+    expect(result).toMatchObject({ ok: true });
+  });
+
+  it("allows any track change while no round was handed over", async () => {
+    lockedTrack(0);
+
+    const result = await updateProject(
+      PROJECT_ID,
+      input(ProjectPhase.Design),
+      workspaceActorWith([Permission.ProjectsWrite]),
+    );
+
+    expect(result).toMatchObject({ ok: true });
+  });
+});

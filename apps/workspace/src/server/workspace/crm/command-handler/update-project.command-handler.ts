@@ -8,8 +8,9 @@ import {
   type ContactDatabaseTransaction,
   getDrizzleDatabaseClient,
 } from "@invessiv/db/core";
-import { projects } from "@invessiv/db/record-configuration";
-import { eq } from "drizzle-orm";
+import { feedbackRounds, projects } from "@invessiv/db/record-configuration";
+import { eq, sql } from "drizzle-orm";
+import { keepsHandedOverRoundPositions } from "@invessiv/common/patterns/crm/feedback-round-positions";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import type { ProjectPhase } from "@invessiv/common/constants/crm/project-phases";
 import {
@@ -49,19 +50,28 @@ async function announcePhaseChange(
 }
 
 /**
- * The phase before this write, read under the row lock that the update takes anyway. A value read
- * before the transaction could be stale and announce a change that never happened.
+ * Phase and track before this write, read under the row lock that the update takes anyway. A value
+ * read before the transaction could be stale and announce a change that never happened. The highest
+ * handed-over round is read under the same lock, which the round handover takes as well.
  */
-async function lockPreviousPhase(
+async function lockPreviousState(
   tx: ContactDatabaseTransaction,
   projectId: string,
-): Promise<ProjectPhase | null> {
+) {
   const [row] = await tx
-    .select({ phase: projects.phase })
+    .select({
+      phase: projects.phase,
+      processSteps: projects.process_steps,
+      feedbackRoundPositions: projects.feedback_round_positions,
+      handedOverRounds:
+        sql<number>`(select coalesce(max(${feedbackRounds.round_number}), 0) from ${feedbackRounds} where ${feedbackRounds.project_id} = ${projects.id})`.mapWith(
+          Number,
+        ),
+    })
     .from(projects)
     .where(eq(projects.id, projectId))
     .for("update");
-  return row?.phase ?? null;
+  return row ?? null;
 }
 
 export async function updateProject(
@@ -88,7 +98,25 @@ export async function updateProject(
     return ProjectErrorCode.NotFound;
   const data = parsed.data;
   return db.transaction(async (tx) => {
-    const previousPhase = await lockPreviousPhase(tx, projectId);
+    const previous = await lockPreviousState(tx, projectId);
+    if (
+      previous?.handedOverRounds &&
+      !keepsHandedOverRoundPositions({
+        before: {
+          processSteps: previous.processSteps,
+          positions: previous.feedbackRoundPositions ?? [],
+        },
+        after: {
+          processSteps: data.processSteps,
+          positions:
+            data.feedbackRoundPositions ??
+            previous.feedbackRoundPositions ??
+            [],
+        },
+        handedOverRounds: previous.handedOverRounds,
+      })
+    )
+      return ProjectErrorCode.FeedbackRoundInUse;
     const result = await updateVersioned({
       tx,
       table: projects,
@@ -116,7 +144,7 @@ export async function updateProject(
       },
       toDto: projectMappingService.toDto,
     });
-    if (result.ok && data.phase !== previousPhase)
+    if (result.ok && data.phase !== previous?.phase)
       await announcePhaseChange(tx, target.customerId, data.title, data.phase);
     return result;
   });

@@ -6,6 +6,7 @@ import { HttpResponseCode as H } from "@invessiv/common/constants/http/http-resp
 const STATUS_BY_CODE: Partial<Record<E | FileErrorCode, H>> = {
   [E.NotFound]: H.NotFound,
   [E.PendingLimit]: H.TooManyRequests,
+  [E.FeedbackBound]: H.Conflict,
   [E.StorageUnavailable]: H.ServiceUnavailable,
   [E.Internal]: H.InternalServerError,
   [FileErrorCode.TooLarge]: H.PayloadTooLarge,
@@ -18,6 +19,7 @@ const MESSAGES: Record<E | FileErrorCode, string> = {
   [E.ArchiveVideo]: "Videos must be downloaded individually.",
   [E.PendingLimit]: "Too many pending uploads.",
   [E.CustomerVisibility]: "Customer uploads must remain visible.",
+  [E.FeedbackBound]: "This file belongs to submitted feedback.",
   [E.UploadOwner]: "Only the uploader can complete this upload.",
   [E.NotUpload]: "This entry is not an upload.",
   [E.StorageUnavailable]: "File storage is temporarily unavailable.",

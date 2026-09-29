@@ -1,7 +1,6 @@
 import "server-only";
 
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
-import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import {
   TASK_ACTIVITY_ENTITY,
@@ -9,7 +8,7 @@ import {
 } from "@/common/constants/crm/task-activity-metadata";
 import type { TaskActionSide } from "@invessiv/common/constants/crm/task-action-sides";
 import type { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
-import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
+import type { ActivityActor } from "@invessiv/common/contracts/activity/activity-actor";
 import { activityService } from "@/server/shared/services/activity-service";
 
 type TaskActivitySubject = {
@@ -28,18 +27,18 @@ type TaskTrackedFields = {
  * Activities carry the ids and the changed values, never the title or description: the timeline
  * resolves the task by id and the free text must not be copied into an append-only log.
  */
-function baseInput(subject: TaskActivitySubject, actor: WorkspaceActor) {
+function baseInput(subject: TaskActivitySubject, actor: ActivityActor) {
   return {
     customerId: subject.customerId,
     projectId: subject.projectId,
-    actor: { type: ActorType.User, userId: actor.userId },
+    actor,
   } as const;
 }
 
 async function recordCreated(
   tx: ContactDatabaseTransaction,
   subject: TaskActivitySubject,
-  actor: WorkspaceActor,
+  actor: ActivityActor,
 ): Promise<void> {
   await activityService.createActivity(tx, {
     ...baseInput(subject, actor),
@@ -51,7 +50,7 @@ async function recordCreated(
 async function recordStatusChange(
   tx: ContactDatabaseTransaction,
   subject: TaskActivitySubject,
-  actor: WorkspaceActor,
+  actor: ActivityActor,
   change: { previous: TaskStatus; next: TaskStatus },
 ): Promise<void> {
   await activityService.createActivity(tx, {
@@ -71,7 +70,7 @@ async function recordStatusChange(
 async function recordFieldChanges(
   tx: ContactDatabaseTransaction,
   subject: TaskActivitySubject,
-  actor: WorkspaceActor,
+  actor: ActivityActor,
   change: { previous: TaskTrackedFields; next: TaskTrackedFields },
 ): Promise<void> {
   const fields = [

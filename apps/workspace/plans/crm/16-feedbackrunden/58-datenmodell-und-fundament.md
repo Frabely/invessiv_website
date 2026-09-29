@@ -11,7 +11,7 @@
 > Block“ → Schritt direkt nach der abgenommenen Runde; „Block entfernen“ → übergebene Rundenschritte entfernen oder
 > verschieben; Kontingent = Anzahl der Rundenschritte. Details: README, Abschnitt „Feedbackrunden in der Prozessleiste“.
 
-> **Status:** offen · **Teil-PR:** 16.2 · **Branch:** `feat/crm-feedback-2-datenmodell`
+> **Status:** läuft · **Teil-PR:** 16.2 · **Branch:** `feat/crm-feedback-2-datenmodell`
 > **Abhängigkeiten:** Task 57 (16.1), Ordner 08 (Aufgaben), Task 52 (14.2, `files`) gemerged · **Aufwand:** 2 T. ·
 > **Dateien:** 45–65
 > **Migration:** ja, eine (Nummer im Repo ermitteln)
@@ -112,7 +112,8 @@ feedback_round_items
   created_at, updated_at           timestamptz NOT NULL
 
   UNIQUE feedback_round_items_id_round_uidx (id, round_id)
-  UNIQUE feedback_round_items_round_position_uidx (round_id, position)
+  UNIQUE feedback_round_items_round_position_uidx (round_id, position) DEFERRABLE INITIALLY IMMEDIATE
+                                                                 replaceDraftItems schiebt ihn zum Tauschen auf
   CHECK num_nonnulls(result, result_set_by_member_id, result_set_at) IN (0, 3)
   CHECK result_note IS NULL OR result IS NOT NULL
   CHECK result NOT IN ('not_implemented','additional_service') OR btrim(coalesce(result_note,'')) <> ''

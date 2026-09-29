@@ -33,6 +33,8 @@ import { UPLOAD_EXTENSION_VALUES } from "@invessiv/common/constants/files/upload
 import { FilesConstraintName as N } from "@invessiv/db/constraint-names/crm/files-constraint-names";
 import { sqlCheckIn } from "@invessiv/db/core";
 import { customers } from "./customers";
+import { feedbackRoundItems } from "./feedback-round-items";
+import { feedbackRounds } from "./feedback-rounds";
 import { projects } from "./projects";
 import { workspaceMembers } from "./workspace-members";
 import { portalMemberships } from "./portal-memberships";
@@ -43,8 +45,9 @@ export const files = pgTable(
     id: uuid("id").primaryKey(),
     customer_id: uuid("customer_id").notNull(),
     project_id: uuid("project_id"),
-    // Reserved for the later feedback-round migration, including its foreign key.
+    // Set together: every feedback file hangs on exactly one item of that round.
     feedback_round_id: uuid("feedback_round_id"),
+    feedback_item_id: uuid("feedback_item_id"),
     source: text("source", { enum: FILE_SOURCE_VALUES }).notNull(),
     status: text("status", { enum: FILE_STATUS_VALUES }).notNull(),
     asset_kind: text("asset_kind", { enum: ASSET_KIND_VALUES }).notNull(),
@@ -93,6 +96,17 @@ export const files = pgTable(
       name: N.PortalMembershipForeignKey,
       columns: [t.uploaded_by_portal_membership_id],
       foreignColumns: [portalMemberships.id],
+    }),
+    // No cascade: rounds and items only disappear through the customer purge, which removes files first.
+    foreignKey({
+      name: N.FeedbackRoundProjectForeignKey,
+      columns: [t.feedback_round_id, t.project_id],
+      foreignColumns: [feedbackRounds.id, feedbackRounds.project_id],
+    }),
+    foreignKey({
+      name: N.FeedbackItemRoundForeignKey,
+      columns: [t.feedback_item_id, t.feedback_round_id],
+      foreignColumns: [feedbackRoundItems.id, feedbackRoundItems.round_id],
     }),
     unique(N.StorageKeyUnique).on(t.storage_key),
     unique(N.IdCustomerUnique).on(t.id, t.customer_id),
@@ -243,5 +257,21 @@ export const files = pgTable(
     index(N.PendingIndex).on(t.status, t.created_at).where(sql`${t.status}
             =
             ${FileStatus.Pending}`),
+    check(
+      N.FeedbackScopeCheck,
+      sql`(${t.feedback_round_id} is null) = (${t.feedback_item_id} is null)`,
+    ),
+    // A composite key with a null project matches nothing under MATCH SIMPLE.
+    check(
+      N.FeedbackProjectCheck,
+      sql`${t.feedback_round_id} is null or ${t.project_id} is not null`,
+    ),
+    check(
+      N.FeedbackOriginCheck,
+      sql`${t.feedback_round_id} is null or (${t.uploaded_by_side} = ${UploadSide.Customer} and ${t.status} = ${FileStatus.Ready})`,
+    ),
+    index(N.FeedbackItemIndex)
+      .on(t.feedback_item_id)
+      .where(sql`${t.feedback_item_id} is not null`),
   ],
 );

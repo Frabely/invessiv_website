@@ -15,6 +15,7 @@ function toDto(row: TaskRow): TaskDto {
     completedAt: row.completed_at?.toISOString() ?? null,
     completedByMemberId: row.completed_by_member_id,
     completedByCustomer: row.completed_by_portal_membership_id !== null,
+    feedbackRoundId: row.feedback_round_id,
     version: row.version,
     createdAt: row.created_at.toISOString(),
     updatedAt: row.updated_at.toISOString(),
