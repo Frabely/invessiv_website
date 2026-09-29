@@ -41,8 +41,7 @@ Ticket-Anlage inkl. Pending-Limit, Abschluss inkl. Aktivität, Abbruch offener U
 `customer-file-visibility-service.ts` (ab Task 56: einzige Definition „der Kunde könnte diesen Eintrag öffnen“ —
 fertig, nicht verwaist, kundenweit oder in einem portal-sichtbaren Projekt — plus `allMatch` für ID-Listen), dazu
 Validierung und Storage-Zugang. Autorisierung, Sichtbarkeitsfilter, die Sperre der Uploader-Zeile und die Prüfung „nur
-der eigene
-Upload“ bleiben in den getrennten Handlern (`portalFileService` bzw. `fileAccessService`).
+der eigene Upload“ bleiben in den getrennten Handlern (`portalFileService` bzw. `fileAccessService`).
 
 ## Chat-Anhänge (ab Task 56)
 

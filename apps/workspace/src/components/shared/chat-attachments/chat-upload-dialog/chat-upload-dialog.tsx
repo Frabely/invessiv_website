@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   FileUploadDialogFrame,
   type FileUploadDialogFrameProps,
@@ -12,6 +13,8 @@ export type ChatUploadDialogProps<TFile extends { id: string }> = {
   /** File dictionary labels with the chat's own title and description. */
   labels: FileUploadDialogFrameProps["labels"];
   locale: string;
+  /** Free attachment slots when the dialog opened; later files are refused as too many. */
+  maxFiles: number;
   onCloseAction: () => void;
   /** Every finished upload is attached right away; the dialog stays open for more. */
   onUploadedAction: (attachment: ComposerAttachment) => void;
@@ -23,13 +26,17 @@ export type ChatUploadDialogProps<TFile extends { id: string }> = {
 export function ChatUploadDialog<TFile extends { id: string }>({
   labels,
   locale,
+  maxFiles,
   onCloseAction,
   onUploadedAction,
   rowLabels,
   upload,
 }: ChatUploadDialogProps<TFile>) {
+  // Every finished upload takes a slot, so the budget is fixed when the dialog opens.
+  const [budget] = useState(maxFiles);
   const queue = useUploadQueue<TFile>(upload.transport, {
     onUploadedAction: (file) => onUploadedAction(upload.toAttachment(file)),
+    maxFiles: budget,
   });
 
   return (

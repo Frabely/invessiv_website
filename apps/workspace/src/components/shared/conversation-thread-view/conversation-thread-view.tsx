@@ -8,8 +8,10 @@ import {
   MessageThreadStatus,
 } from "@invessiv/ui";
 import { MESSAGE_ATTACHMENTS_MAX } from "@invessiv/common/constants/crm/message-limits";
+import { FileErrorCode } from "@invessiv/common/constants/files/file-error-code";
 import type { ConversationDto } from "@invessiv/common/contracts/crm/conversation.dto";
 import type { ComposerAttachment } from "@invessiv/common/contracts/ui/composer-attachment";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import type { ConversationThreadTexts } from "@/common/contracts/crm/conversation-thread-texts";
 import type { ChatAttachmentApi } from "@/common/contracts/files/chat-attachment-api";
 import type { ChatAttachmentTexts } from "@/common/contracts/files/chat-attachment-texts";
@@ -39,8 +41,8 @@ export type ConversationThreadAttachmentsProps<TFile extends { id: string }> = {
 };
 
 export type ConversationThreadViewProps<TFile extends { id: string }> = {
-  /** Without it the thread shows attachment chips but offers no download and no 📎. */
-  attachments?: ConversationThreadAttachmentsProps<TFile>;
+  /** Chips are always shown; download and 📎 follow the capabilities of `api`. */
+  attachments: ConversationThreadAttachmentsProps<TFile>;
   /** Rendered below the thread, e.g. the owner notice of the portal or a confirmation dialog. */
   children?: ReactNode;
   content: ConversationThreadTexts;
@@ -58,9 +60,9 @@ function releaseNotice(
 ): string | null {
   const released = items.filter((item) => item.releasesOnSend).length;
   if (released === 0) return null;
-  return (
-    (released === 1 ? texts.releaseNoticeOne : texts.releaseNoticeMany) ?? null
-  );
+  const notice =
+    released === 1 ? texts.releaseNoticeOne : texts.releaseNoticeMany;
+  return notice ?? null;
 }
 
 /** The conversation as the CRM and the portal show it: loading state first, then the thread. */
@@ -86,32 +88,40 @@ export function ConversationThreadView<TFile extends { id: string }>({
     );
   }
 
+  const { api, texts } = attachments;
   const picked = thread.attachments.items;
-  const api = attachments?.api;
+  const remaining = MESSAGE_ATTACHMENTS_MAX - picked.length;
+  const limitText = formatMessage(texts.limitReached, {
+    max: String(MESSAGE_ATTACHMENTS_MAX),
+  });
 
   async function download(fileId: string) {
-    if (!api) return;
     setDownloadFailed(false);
     const result = await api.getDownloadUrl(fileId);
     if (result.ok) browserDownload.openUrl(result.value);
     else setDownloadFailed(true);
   }
 
+  // The download error belongs to the last download; the next send clears it.
+  const send = onSendAction
+    ? (body: string) => {
+        setDownloadFailed(false);
+        onSendAction(body);
+      }
+    : undefined;
   // Attaching belongs to writing: a read-only thread shows chips but no 📎.
   const composerAttachments: MessageComposerAttachmentsProps | undefined =
-    attachments &&
-    onSendAction &&
-    (attachments.api.listFiles || attachments.api.upload)
+    send && (api.listFiles || api.upload)
       ? {
           items: picked,
-          notice: releaseNotice(picked, attachments.texts),
+          notice: releaseNotice(picked, texts),
           onRemoveAction: thread.attachments.remove,
           trigger: (
             <ChatAttachmentMenu
-              canPick={Boolean(attachments.api.listFiles)}
-              canUpload={Boolean(attachments.api.upload)}
-              labels={attachments.texts}
-              limitReached={picked.length >= MESSAGE_ATTACHMENTS_MAX}
+              canPick={Boolean(api.listFiles)}
+              canUpload={Boolean(api.upload)}
+              labels={{ ...texts, limitReached: limitText }}
+              limitReached={remaining <= 0}
               onPickAction={() => setDialog(AttachmentDialog.Pick)}
               onUploadAction={() => setDialog(AttachmentDialog.Upload)}
             />
@@ -121,7 +131,7 @@ export function ConversationThreadView<TFile extends { id: string }>({
   // A failed reload or send outranks a failed download.
   const notice =
     describeThreadNotice(thread, content.states) ??
-    (downloadFailed && attachments ? attachments.texts.downloadError : null);
+    (downloadFailed ? texts.downloadError : null);
 
   return (
     <div className={styles.conversation}>
@@ -134,42 +144,45 @@ export function ConversationThreadView<TFile extends { id: string }>({
         labels={content.thread}
         locale={locale}
         notice={notice}
-        onDownloadAttachmentAction={
-          api ? (fileId) => void download(fileId) : undefined
-        }
+        onDownloadAttachmentAction={(fileId) => void download(fileId)}
         onRedactAction={onRedactAction}
-        onSendAction={onSendAction}
+        onSendAction={send}
         ownDisplayName={content.thread.own}
       />
-      {dialog === AttachmentDialog.Pick && attachments && api?.listFiles ? (
+      {dialog === AttachmentDialog.Pick && api.listFiles ? (
         <ChatFilePickerDialog
           attachedIds={picked.map((item) => item.fileId)}
-          labels={attachments.texts}
+          labels={{ ...texts, limitReached: limitText }}
           listFiles={api.listFiles}
           onCloseAction={() => setDialog(null)}
           onPickAction={(selected) => {
             thread.attachments.add(selected);
             setDialog(null);
           }}
-          remaining={MESSAGE_ATTACHMENTS_MAX - picked.length}
+          remaining={remaining}
           searchable={api.searchable}
         />
       ) : null}
-      {dialog === AttachmentDialog.Upload && attachments && api?.upload ? (
+      {dialog === AttachmentDialog.Upload && api.upload ? (
         <ChatUploadDialog
           labels={{
             ...attachments.files.upload,
-            title: attachments.texts.uploadTitle,
-            description: attachments.texts.uploadDescription,
+            title: texts.uploadTitle,
+            description: texts.uploadDescription,
           }}
           locale={locale}
+          maxFiles={remaining}
           onCloseAction={() => setDialog(null)}
           onUploadedAction={(attachment) =>
             thread.attachments.add([attachment])
           }
           rowLabels={{
             ...attachments.files.upload,
-            errors: attachments.files.errors,
+            // The chat's own limit replaces the batch limit of the files area.
+            errors: {
+              ...attachments.files.errors,
+              [FileErrorCode.TooManyFiles]: limitText,
+            },
           }}
           upload={api.upload}
         />

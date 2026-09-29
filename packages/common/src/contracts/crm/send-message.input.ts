@@ -29,3 +29,6 @@ export const sendMessageInputSchema = z
 
 /** Request shape; attachment fields are optional, so a plain text send stays `{ body, clientMessageId }`. */
 export type SendMessageInput = z.input<typeof sendMessageInputSchema>;
+
+/** Validated payload the send handlers work with: ids normalized, defaults applied. */
+export type SendMessageData = z.output<typeof sendMessageInputSchema>;

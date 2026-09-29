@@ -61,6 +61,7 @@ function renderConversation(
       cockpitHref={cockpitHref}
       content={content}
       customerId="customer-1"
+      filesContent={getPortalFilesDictionary("de")}
       initialConversation={conversation}
       locale="de"
       viewerUserId="user-1"

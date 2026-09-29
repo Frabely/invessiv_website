@@ -19,8 +19,8 @@ export type PortalConversationProps = {
   cockpitHref: string | null;
   content: PortalMessagesDictionary;
   customerId: string;
-  /** Without it the chat offers no attachments; the server decides what may be attached. */
-  filesContent?: PortalFilesDictionary;
+  /** Upload labels and file errors for chat attachments. */
+  filesContent: PortalFilesDictionary;
   initialConversation: PortalConversationDto | null;
   locale: Locale;
   /** Keeps drafts and failed sends private to the signed-in user. */
@@ -53,15 +53,11 @@ export function PortalConversation({
 
   return (
     <ConversationThreadView
-      attachments={
-        filesContent
-          ? {
-              api: attachmentApi,
-              files: filesContent,
-              texts: content.attachments,
-            }
-          : undefined
-      }
+      attachments={{
+        api: attachmentApi,
+        files: filesContent,
+        texts: content.attachments,
+      }}
       content={content}
       locale={locale}
       onSendAction={thread.conversation?.canWrite ? thread.send : undefined}

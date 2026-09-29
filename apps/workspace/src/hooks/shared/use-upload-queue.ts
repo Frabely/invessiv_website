@@ -18,7 +18,11 @@ import type { UploadQueueTransport } from "@/common/contracts/files/upload-queue
  */
 export function useUploadQueue<TFile extends { id: string } = FileDto>(
   transport: UploadQueueTransport<TFile>,
-  options: { onUploadedAction?: (file: TFile) => void } = {},
+  options: {
+    onUploadedAction?: (file: TFile) => void;
+    /** Narrows the batch below `MAX_UPLOAD_FILES`; later files are refused as too many. */
+    maxFiles?: number;
+  } = {},
 ) {
   const [items, setItems] = useState<UploadQueueItem[]>([]);
   const filesRef = useRef(new Map<string, File>());
@@ -177,10 +181,14 @@ export function useUploadQueue<TFile extends { id: string } = FileDto>(
       (item) =>
         item.status !== Status.Rejected && item.status !== Status.Cancelled,
     );
-    const plan = uploadQueuePlan.planSelection(files, {
-      count: kept.length,
-      bytes: kept.reduce((sum, item) => sum + item.size, 0),
-    });
+    const plan = uploadQueuePlan.planSelection(
+      files,
+      {
+        count: kept.length,
+        bytes: kept.reduce((sum, item) => sum + item.size, 0),
+      },
+      options.maxFiles,
+    );
     const staged = files.map((file, index): UploadQueueItem => {
       sequenceRef.current += 1;
       const id = `upload-${sequenceRef.current}`;

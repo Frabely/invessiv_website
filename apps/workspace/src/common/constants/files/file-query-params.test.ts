@@ -9,6 +9,7 @@ it("keeps file query names stable and unique", () => {
     AssetKind: "assetKind",
     Origin: "origin",
     Search: "search",
+    Shareable: "shareable",
     Disposition: "disposition",
   });
   expect(new Set(Object.values(FileQueryParam)).size).toBe(

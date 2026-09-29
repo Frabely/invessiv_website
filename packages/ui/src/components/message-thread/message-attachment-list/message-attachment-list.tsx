@@ -1,87 +1,56 @@
-import {
-  faDownload,
-  faUpRightFromSquare,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { AttachmentChipKind } from "@invessiv/common/constants/ui/attachment-chip-kinds";
 import type { MessageAttachmentDto } from "@invessiv/common/contracts/crm/message-attachment.dto";
 import type { MessageThreadLabels } from "@invessiv/common/contracts/ui/message-thread-labels";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { FileKindIcon } from "@invessiv/ui";
+import {
+  AttachmentChip,
+  type AttachmentChipProps,
+} from "../attachment-chip/attachment-chip";
 import styles from "./message-attachment-list.module.css";
+
+type MessageAttachmentListLabels = Pick<
+  MessageThreadLabels,
+  | "attachmentsLabel"
+  | "attachmentUnavailable"
+  | "downloadAttachment"
+  | "openAttachmentLink"
+>;
 
 type MessageAttachmentListProps = {
   attachments: readonly MessageAttachmentDto[];
-  labels: Pick<
-    MessageThreadLabels,
-    | "attachmentsLabel"
-    | "attachmentUnavailable"
-    | "downloadAttachment"
-    | "openAttachmentLink"
-  >;
+  labels: MessageAttachmentListLabels;
   /** Without it upload chips only name the file; a pending message is not downloadable yet. */
   onDownloadAction?: (fileId: string) => void;
 };
 
-function AttachmentChip({
-  attachment,
-  labels,
-  onDownloadAction,
-}: {
-  attachment: MessageAttachmentDto;
-  labels: MessageAttachmentListProps["labels"];
-  onDownloadAction?: (fileId: string) => void;
-}) {
-  const { available, fileId, displayName, assetKind, url } = attachment;
-  if (!available || !fileId || !displayName)
-    return (
-      <span className={styles.chip} data-state="unavailable">
-        <FileKindIcon assetKind={null} />
-        {labels.attachmentUnavailable}
-      </span>
-    );
-  const content = (
-    <>
-      <FileKindIcon assetKind={assetKind} />
-      <span className={styles.name}>{displayName}</span>
-    </>
-  );
+function chipProps(
+  attachment: MessageAttachmentDto,
+  labels: MessageAttachmentListLabels,
+  onDownloadAction?: (fileId: string) => void,
+): AttachmentChipProps {
+  if (!attachment.available)
+    return {
+      kind: AttachmentChipKind.Static,
+      assetKind: null,
+      name: labels.attachmentUnavailable,
+      unavailable: true,
+    };
+  const { assetKind, displayName, fileId, url } = attachment;
+  const base = { assetKind, name: displayName };
   if (url)
-    return (
-      <a
-        aria-label={formatMessage(labels.openAttachmentLink, {
-          name: displayName,
-        })}
-        className={styles.chip}
-        href={url}
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        {content}
-        <FontAwesomeIcon
-          aria-hidden="true"
-          className={styles.action}
-          icon={faUpRightFromSquare}
-        />
-      </a>
-    );
-  if (!onDownloadAction) return <span className={styles.chip}>{content}</span>;
-  return (
-    <button
-      aria-label={formatMessage(labels.downloadAttachment, {
-        name: displayName,
-      })}
-      className={styles.chip}
-      onClick={() => onDownloadAction(fileId)}
-      type="button"
-    >
-      {content}
-      <FontAwesomeIcon
-        aria-hidden="true"
-        className={styles.action}
-        icon={faDownload}
-      />
-    </button>
-  );
+    return {
+      ...base,
+      kind: AttachmentChipKind.Link,
+      href: url,
+      label: formatMessage(labels.openAttachmentLink, { name: displayName }),
+    };
+  if (!onDownloadAction) return { ...base, kind: AttachmentChipKind.Static };
+  return {
+    ...base,
+    kind: AttachmentChipKind.Download,
+    onDownloadAction: () => onDownloadAction(fileId),
+    label: formatMessage(labels.downloadAttachment, { name: displayName }),
+  };
 }
 
 /** Files and links of one message; an entry the viewer may not see shows no name. */
@@ -96,9 +65,7 @@ export function MessageAttachmentList({
       {attachments.map((attachment) => (
         <li key={attachment.position}>
           <AttachmentChip
-            attachment={attachment}
-            labels={labels}
-            onDownloadAction={onDownloadAction}
+            {...chipProps(attachment, labels, onDownloadAction)}
           />
         </li>
       ))}

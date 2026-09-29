@@ -84,7 +84,7 @@
     "attach": "Attach a file",
     "upload": "Upload a new file",
     "pick": "Choose an existing file",
-    "limitReached": "Up to 10 attachments per message.",
+    "limitReached": "Up to {max} attachments per message.",
     "search": "Search",
     "searchPlaceholder": "Name or note",
     "emptySearch": "No file matches your search.",

@@ -295,6 +295,7 @@ describe("CustomerCockpitView", () => {
           content={content}
           conversation={conversation()}
           customer={customerDetailFixture()}
+          filesContent={getCrmFilesDictionary("de")}
           locale="de"
           messagesContent={getCrmMessagesDictionary("de")}
           {...props}
@@ -344,6 +345,7 @@ describe("CustomerCockpitView", () => {
           content={content}
           conversation={conversation({ unreadCount: 2 })}
           customer={customerDetailFixture()}
+          filesContent={getCrmFilesDictionary("de")}
           locale="de"
           messagesContent={getCrmMessagesDictionary("de")}
         />,

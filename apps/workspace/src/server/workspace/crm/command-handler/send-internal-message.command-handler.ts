@@ -1,10 +1,10 @@
 import "server-only";
 
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { MessageErrorCode } from "@invessiv/common/constants/crm/errors/message-error-codes";
-import type { SendMessageInput } from "@invessiv/common/contracts/crm/send-message.input";
+import type { SendMessageData } from "@invessiv/common/contracts/crm/send-message.input";
 import { isUuid } from "@invessiv/common/patterns/validation/is-uuid";
 import {
   type ContactDatabaseTransaction,
@@ -15,12 +15,13 @@ import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { canOn } from "@/common/patterns/auth/can-on";
 import { customerFileVisibilityService } from "@/server/shared/files/customer-file-visibility-service";
 import type { FileRow } from "@/server/shared/files/file-object-service-types";
+import type { ConversationReader } from "@/server/shared/services/message/conversation-reader-types";
 import { conversationService } from "@/server/shared/services/message/conversation-service";
 import { messageService } from "@/server/shared/services/message/message-service";
-import { updateVersioned } from "@/server/workspace/shared/update-versioned";
 import { fileAccessService } from "@/server/workspace/crm/services/files/file-access-service";
 import { fileActivityService } from "@/server/workspace/crm/services/files/file-activity-service";
 import { internalConversationService } from "@/server/workspace/crm/services/internal-conversation-service";
+import { updateVersioned } from "@/server/workspace/shared/update-versioned";
 
 type AttachmentCheck =
   { ok: true; hidden: FileRow[] } | { ok: false; code: MessageErrorCode };
@@ -37,6 +38,27 @@ async function getSenderDisplayName(
   return sender?.displayName ?? null;
 }
 
+/** A delivered send is answered as such, even if one of its attachments changed since. */
+async function findRetriedSend(
+  tx: ContactDatabaseTransaction,
+  customerId: string,
+  input: SendMessageData,
+  sender: ConversationReader,
+) {
+  const conversation = await conversationService.findCustomerConversation(
+    tx,
+    customerId,
+  );
+  if (!conversation) return null;
+  return messageService.findMatchingTextMessage(tx, {
+    clientMessageId: input.clientMessageId,
+    conversationId: conversation.id,
+    body: input.body,
+    attachmentFileIds: input.attachmentFileIds,
+    sender,
+  });
+}
+
 /**
  * Locks every attached entry. Unreadable or foreign ids look absent; entries the customer could
  * never open are refused. Internal entries additionally need `files.write` and the confirmation.
@@ -44,13 +66,21 @@ async function getSenderDisplayName(
 async function checkAttachments(
   tx: ContactDatabaseTransaction,
   customerId: string,
-  input: SendMessageInput,
+  input: SendMessageData,
   actor: WorkspaceActor,
 ): Promise<AttachmentCheck> {
-  const ids = input.attachmentFileIds ?? [];
+  const ids = input.attachmentFileIds;
   if (ids.length === 0) return { ok: true, hidden: [] };
+  const openable = customerFileVisibilityService.openableCondition(customerId);
   const rows = await tx
-    .select()
+    .select({
+      file: files,
+      openable: sql<boolean>`coalesce((
+        ${openable}
+        ),
+        false
+        )`,
+    })
     .from(files)
     .where(
       and(
@@ -62,21 +92,17 @@ async function checkAttachments(
     .for("update");
   if (rows.length !== ids.length)
     return { ok: false, code: MessageErrorCode.NotFound };
-  if (
-    !(await customerFileVisibilityService.allMatch(
-      tx,
-      ids,
-      customerFileVisibilityService.openableCondition(customerId),
-    ))
-  )
+  if (rows.some((row) => !row.openable))
     return { ok: false, code: MessageErrorCode.AttachmentUnavailable };
-  const hidden = rows.filter((row) => !row.visible_to_customer);
+  const hidden = rows
+    .map((row) => row.file)
+    .filter((file) => !file.visible_to_customer);
   if (
     hidden.some(
-      (row) =>
+      (file) =>
         !canOn(actor, Permission.FilesWrite, {
           customerId,
-          projectId: row.project_id ?? undefined,
+          projectId: file.project_id ?? undefined,
         }),
     )
   )
@@ -110,7 +136,7 @@ async function releaseToCustomer(
 async function appendToVisibleConversation(
   tx: ContactDatabaseTransaction,
   customerId: string,
-  input: SendMessageInput,
+  input: SendMessageData,
   actor: WorkspaceActor,
 ) {
   if (
@@ -122,6 +148,19 @@ async function appendToVisibleConversation(
     ))
   )
     return { ok: false, code: MessageErrorCode.NotFound } as const;
+  const sender = internalConversationService.readerOf(actor);
+  const visibility = fileAccessService.readableCondition(actor);
+  const retried = await findRetriedSend(tx, customerId, input, sender);
+  if (retried)
+    return {
+      ok: true,
+      message: await messageService.toViewerDto(
+        tx,
+        retried,
+        sender,
+        visibility,
+      ),
+    } as const;
   const attachments = await checkAttachments(tx, customerId, input, actor);
   if (!attachments.ok) return attachments;
   const conversation = await conversationService.ensureCustomerConversation(
@@ -131,13 +170,12 @@ async function appendToVisibleConversation(
   const senderDisplayName = await getSenderDisplayName(tx, actor.userId);
   if (!conversation || !senderDisplayName)
     return { ok: false, code: MessageErrorCode.NotFound } as const;
-  const sender = internalConversationService.readerOf(actor);
   const appended = await messageService.appendTextMessage(tx, {
     clientMessageId: input.clientMessageId,
     conversationId: conversation.id,
     customerId,
     body: input.body,
-    attachmentFileIds: input.attachmentFileIds ?? [],
+    attachmentFileIds: input.attachmentFileIds,
     sender,
     senderDisplayName,
     actorType: ActorType.User,
@@ -152,14 +190,14 @@ async function appendToVisibleConversation(
       tx,
       appended.message,
       sender,
-      fileAccessService.readableCondition(actor),
+      visibility,
     ),
   } as const;
 }
 
 export async function sendInternalMessage(
   customerId: string,
-  input: SendMessageInput,
+  input: SendMessageData,
   actor: WorkspaceActor,
 ) {
   if (

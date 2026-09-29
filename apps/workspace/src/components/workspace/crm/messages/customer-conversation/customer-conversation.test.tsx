@@ -78,6 +78,7 @@ function renderConversation(
       canWrite
       content={content}
       customerId={customerId}
+      filesContent={getCrmFilesDictionary("en")}
       initialConversation={initialConversation}
       locale="en"
       viewerMemberId={viewerMemberId}
@@ -236,10 +237,10 @@ describe("CustomerConversation pending storage", () => {
     expect(screen.getByText(content.thread.redacted)).toBeVisible();
   });
 
-  it("offers no attachments without file texts", () => {
+  it("offers no attachments without file access", () => {
     renderConversation("member-a", {
       ...conversation,
-      attachmentAccess: { pick: true, upload: true },
+      attachmentAccess: { pick: false, upload: false },
     });
     expect(
       screen.queryByRole("button", { name: content.attachments.attach }),

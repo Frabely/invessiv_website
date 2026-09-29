@@ -84,7 +84,7 @@
     "attach": "Datei anhängen",
     "upload": "Neue Datei hochladen",
     "pick": "Vorhandene Datei wählen",
-    "limitReached": "Höchstens 10 Anhänge pro Nachricht.",
+    "limitReached": "Höchstens {max} Anhänge pro Nachricht.",
     "search": "Suchen",
     "searchPlaceholder": "Name oder Notiz",
     "emptySearch": "Keine Datei passt zu deiner Suche.",

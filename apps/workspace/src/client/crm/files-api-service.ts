@@ -64,6 +64,7 @@ function listFiles(
   if (query.assetKind) params.set(FileQueryParam.AssetKind, query.assetKind);
   if (query.origin) params.set(FileQueryParam.Origin, query.origin);
   if (query.search) params.set(FileQueryParam.Search, query.search);
+  if (query.shareable) params.set(FileQueryParam.Shareable, "true");
   const search = params.toString();
   return transport.request(
     search
@@ -101,16 +102,11 @@ function uploadTransport(
   customerId: string,
   fields: Omit<CreateFileUploadRequestDto, "displayName" | "sizeBytes">,
 ): UploadQueueTransport {
-  return {
-    createTicket: (file) =>
-      createUpload(customerId, {
-        ...fields,
-        displayName: file.name,
-        sizeBytes: file.size,
-      }),
-    complete: completeUpload,
-    cancelPending: cancelPendingUpload,
-  };
+  return transport.uploadQueueTransport(
+    (file) => createUpload(customerId, { ...fields, ...file }),
+    completeUpload,
+    cancelPendingUpload,
+  );
 }
 
 function cancelPendingUpload(

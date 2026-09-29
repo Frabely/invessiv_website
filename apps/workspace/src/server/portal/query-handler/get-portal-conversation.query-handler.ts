@@ -30,16 +30,21 @@ function readerMayWrite(reader: PortalReader): boolean {
   );
 }
 
-/** Attaching is part of writing; picking needs file read, uploading file write. */
+/**
+ * Attaching is part of writing; picking needs file read, uploading also file write, because the
+ * send checks every attachment against what the contact may read.
+ */
 function attachmentAccessOf(
   reader: PortalReader,
 ): ConversationAttachmentAccessDto {
   if (isPortalOwnerView(reader) || !readerMayWrite(reader))
     return { pick: false, upload: false };
   const scope = { customerId: reader.customerId };
+  const pick = portalCanOn.forActor(reader, Permission.PortalFilesRead, scope);
   return {
-    pick: portalCanOn.forActor(reader, Permission.PortalFilesRead, scope),
-    upload: portalCanOn.forActor(reader, Permission.PortalFilesWrite, scope),
+    pick,
+    upload:
+      pick && portalCanOn.forActor(reader, Permission.PortalFilesWrite, scope),
   };
 }
 

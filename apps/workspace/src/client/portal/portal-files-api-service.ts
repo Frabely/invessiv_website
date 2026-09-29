@@ -87,16 +87,11 @@ function uploadTransport(
   customerId: string,
   fields: Omit<CreatePortalFileUploadRequestDto, "displayName" | "sizeBytes">,
 ): UploadQueueTransport<PortalFileDto> {
-  return {
-    createTicket: (file) =>
-      createUpload(customerId, {
-        ...fields,
-        displayName: file.name,
-        sizeBytes: file.size,
-      }),
-    complete: (fileId) => completeUpload(customerId, fileId),
-    cancelPending: (fileId) => cancelPendingUpload(customerId, fileId),
-  };
+  return transport.uploadQueueTransport(
+    (file) => createUpload(customerId, { ...fields, ...file }),
+    (fileId) => completeUpload(customerId, fileId),
+    (fileId) => cancelPendingUpload(customerId, fileId),
+  );
 }
 
 function createLink(

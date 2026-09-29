@@ -8,10 +8,13 @@ export type ChatAttachmentTexts = {
   uploadDescription: string;
   pickerTitle: string;
   pickerDescription: string;
-  search: string;
-  searchPlaceholder: string;
+  /** Label of the picker's search field; only the CRM list can search. */
+  search?: string;
+  /** Placeholder of the search field. */
+  searchPlaceholder?: string;
   empty: string;
-  emptySearch: string;
+  /** Empty state for a search without results. */
+  emptySearch?: string;
   loading: string;
   loadError: string;
   retry: string;

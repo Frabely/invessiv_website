@@ -370,7 +370,7 @@ export function CustomerCockpitView({
           </div>
         </div>
       </div>
-      {conversation !== undefined && messagesContent ? (
+      {conversation !== undefined && messagesContent && filesContent ? (
         <ChatDock
           badgeLabel={describeUnreadBadge(
             conversation?.unreadCount ?? 0,

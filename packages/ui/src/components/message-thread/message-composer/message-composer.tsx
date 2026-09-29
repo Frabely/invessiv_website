@@ -6,15 +6,16 @@ import {
   type SyntheticEvent,
   useId,
 } from "react";
-import { faPaperPlane, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ButtonControl } from "@invessiv/ui";
 import { MESSAGE_BODY_MAX_LENGTH } from "@invessiv/common/constants/crm/message-limits";
+import { AttachmentChipKind } from "@invessiv/common/constants/ui/attachment-chip-kinds";
 import type { ComposerAttachment } from "@invessiv/common/contracts/ui/composer-attachment";
 import type { MessageThreadLabels } from "@invessiv/common/contracts/ui/message-thread-labels";
 import { useMessageDraft } from "../../../hooks/use-message-draft";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { FileKindIcon } from "../../files/file-kind-icon/file-kind-icon";
+import { AttachmentChip } from "../attachment-chip/attachment-chip";
 import styles from "./message-composer.module.css";
 
 const COUNTER_THRESHOLD = Math.floor(MESSAGE_BODY_MAX_LENGTH * 0.8);
@@ -105,19 +106,16 @@ export function MessageComposer({
       {items.length > 0 ? (
         <ul aria-label={labels.attachmentsLabel} className={styles.chips}>
           {items.map((item) => (
-            <li className={styles.chip} key={item.fileId}>
-              <FileKindIcon assetKind={item.assetKind} />
-              <span className={styles.chipName}>{item.displayName}</span>
-              <button
-                aria-label={formatMessage(labels.removeAttachment, {
+            <li key={item.fileId}>
+              <AttachmentChip
+                assetKind={item.assetKind}
+                kind={AttachmentChipKind.Removable}
+                name={item.displayName}
+                onRemoveAction={() => attachments?.onRemoveAction(item.fileId)}
+                removeLabel={formatMessage(labels.removeAttachment, {
                   name: item.displayName,
                 })}
-                className={styles.chipRemove}
-                onClick={() => attachments?.onRemoveAction(item.fileId)}
-                type="button"
-              >
-                <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
-              </button>
+              />
             </li>
           ))}
         </ul>

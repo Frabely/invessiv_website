@@ -106,11 +106,21 @@ Composer-Button entfernen (bzw. `attachmentAccess` nie setzen); bestehende `mess
 - Migration `0043_create_message_files.sql`: `UNIQUE (id, customer_id)` an `messages` und `files` als Ziel der
   zusammengesetzten FKs, dazu `message_files`. Additiv und idempotent; auf Development angewendet.
 - `SendMessageInput` ist die Request-Form (`z.input`): `attachmentFileIds` und `releaseHiddenAttachments` sind optional,
-  ein reiner Textversand bleibt `{ body, clientMessageId }`. Die Route validiert und normalisiert IDs auf
-  Kleinschreibung.
+  ein reiner Textversand bleibt `{ body, clientMessageId }`. Die Route validiert, normalisiert IDs auf Kleinschreibung
+  und reicht `SendMessageData` (`z.output`, Defaults gesetzt) an die Handler weiter.
+- Intern wird ein Retry vor der Anhangsprüfung erkannt; eine inzwischen nicht mehr teilbare Datei macht aus einem
+  zugestellten Senden keinen Fehler. Die Prüfung sperrt die Einträge und liest „teilbar“ in derselben Abfrage.
+- CRM-Liste `GET files` nimmt `shareable=true` an und filtert dann über
+  `customerFileVisibilityService.openableCondition`; die Chat-Auswahl nutzt das, archivierte Projekte erscheinen dort
+  nicht. `list-customer-files` nutzt `fileAccessService.readableCondition`.
+- `upload` in `attachmentAccess` setzt `pick` voraus, weil jedes Senden die Leseberechtigung prüft.
+- Der Chat-Upload ist auf die freien Anhangsplätze begrenzt (`useUploadQueue`-Option `maxFiles`,
+  `uploadQueuePlan.planSelection`); überzählige Dateien zeigen den Limit-Text statt still verworfen zu werden.
+- Upload-Transport beider Seiten über `fileApiTransportService.uploadQueueTransport`.
 - `messageService.appendTextMessage` liefert `{ message, created }`; die interne Freigabe läuft nur bei `created`.
 - Portal-Liste `GET files` ohne `origin` liefert beide Herkünfte (Dateiauswahl im Chat); der Client übergibt `null`.
-- UI im Paket: `MessageAttachmentList` (Chips), Composer mit Anhangsbereich (`composerAttachments`), Bubble zeigt
+- UI im Paket: `AttachmentChip` (eine Chip-Basis für Composer und Nachricht, Aktionen über `ButtonControl`/
+  `ButtonLink`), `MessageAttachmentList`, Composer mit Anhangsbereich (`composerAttachments`), Bubble zeigt
   „Anhang nicht mehr verfügbar“ für leere Nachrichten ohne verbliebene Anhänge. In der App:
   `components/shared/chat-attachments/` (📎-Menü, Auswahl über `usePagedFiles`, Upload über `useUploadQueue`), die
   seitenabhängige Datei-API in `useCrmChatAttachmentApi` bzw. `usePortalChatAttachmentApi`. Die vier Einbindungen
@@ -122,9 +132,9 @@ Composer-Button entfernen (bzw. `attachmentAccess` nie setzen); bestehende `mess
 ## Prüfung
 
 - `pnpm -r lint` (nur die bestehende `no-img-element`-Warnung in `apps/web`), `pnpm -r typecheck`, `pnpm -r test`
-  (Workspace: 2110 bestanden, 132 übersprungen), `pnpm --filter @invessiv/workspace build`: grün.
-- `pnpm db:smoke:crm`: 108 Constraint-Checks (u. a. fehlende Position, fremder Kunde, Positionslimit) und 106
-  Integrationstests grün, darunter die Anhangsfälle aus „Tests“.
+  (Workspace: 2111 bestanden, 132 übersprungen), `pnpm --filter @invessiv/workspace build`: grün.
+- `pnpm db:smoke:crm`: 108 Constraint-Checks (u. a. fehlende Position, fremder Kunde, Positionslimit) und 107
+  Integrationstests grün, darunter die Anhangsfälle aus „Tests“ und der interne Retry nach entzogener Teilbarkeit.
 
 ## Offen vor dem Merge
 

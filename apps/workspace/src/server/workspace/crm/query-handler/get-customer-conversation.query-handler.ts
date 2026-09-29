@@ -37,8 +37,8 @@ async function getOwnerDisplayName(
 }
 
 /**
- * Chat uploads land customer-wide, so upload needs customer-wide `files.write`; picking needs
- * customer-wide `files.read`. Both are part of writing a message.
+ * Chat uploads land customer-wide, so upload needs customer-wide `files.write` on top of the
+ * customer-wide `files.read` that picking and every send need. Both are part of writing a message.
  */
 function attachmentAccessOf(
   actor: WorkspaceActor,
@@ -46,9 +46,10 @@ function attachmentAccessOf(
 ): ConversationAttachmentAccessDto {
   if (!canOn(actor, Permission.ChatWrite, { customerId }))
     return { pick: false, upload: false };
+  const pick = canOn(actor, Permission.FilesRead, { customerId });
   return {
-    pick: canOn(actor, Permission.FilesRead, { customerId }),
-    upload: canOn(actor, Permission.FilesWrite, { customerId }),
+    pick,
+    upload: pick && canOn(actor, Permission.FilesWrite, { customerId }),
   };
 }
 

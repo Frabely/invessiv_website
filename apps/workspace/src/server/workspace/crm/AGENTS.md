@@ -79,7 +79,9 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 - **Ausblenden nur mit `chat.redact`** (nicht delegierbar). Keine Rollenprüfung im Chat-Code.
 - **Anhänge (ab Task 56):** `sendInternalMessage` sperrt jeden Anhang, verlangt `files.read` im Scope (sonst 404),
   lehnt `pending`, verwaiste und Einträge in nicht portal-sichtbaren Projekten mit `ATTACHMENT_UNAVAILABLE` ab und gibt
-  interne Einträge nur mit `files.write` am Scope und `releaseHiddenAttachments` frei.
+  interne Einträge nur mit `files.write` am Scope und `releaseHiddenAttachments` frei. Ein Retry wird vor dieser
+  Prüfung erkannt und liefert die zugestellte Nachricht, auch wenn ein Anhang inzwischen nicht mehr teilbar ist. Die
+  Dateiliste bietet mit `shareable` nur Einträge an, die der Kunde öffnen könnte (Dateiauswahl im Chat).
 - **„Ungelesen“ ist genau einmal definiert:** `conversationService.unreadMessageCondition` speist Verlauf, Inbox und
   Sidebar-Zähler.
 

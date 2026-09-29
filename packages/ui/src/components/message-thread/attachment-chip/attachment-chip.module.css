@@ -1,0 +1,101 @@
+/* Doubled selectors outrank the shared button styles, as elsewhere in the thread. */
+.chip.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.4rem;
+  max-width: 100%;
+  min-height: 2rem;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface-1);
+  box-shadow: none;
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--font-size-ui-xs);
+  text-decoration: none;
+  cursor: default;
+}
+
+.chip.chip[data-removable="true"] {
+  padding-right: 0.2rem;
+  background: var(--color-surface-2);
+}
+
+a.chip.chip,
+button.chip.chip {
+  cursor: pointer;
+}
+
+a.chip.chip:hover,
+button.chip.chip:hover,
+a.chip.chip:focus-visible,
+button.chip.chip:focus-visible {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface-1);
+  box-shadow: none;
+  transform: none;
+}
+
+a.chip.chip:focus-visible,
+button.chip.chip:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.chip.chip[data-state="unavailable"] {
+  border-style: dashed;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.action {
+  flex: none;
+  color: var(--color-text-muted);
+  font-size: 0.75em;
+}
+
+.remove.remove {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  min-height: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-text-muted);
+}
+
+.remove.remove:hover,
+.remove.remove:focus-visible {
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-text);
+  transform: none;
+}
+
+.remove.remove:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 1px;
+}
+
+@media (pointer: coarse) {
+  .chip.chip {
+    min-height: 2.75rem;
+  }
+
+  .remove.remove {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+}

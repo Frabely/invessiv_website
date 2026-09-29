@@ -13,7 +13,6 @@ import { FileListLoadStatus } from "@/common/constants/files/file-list-load-stat
 import type { ChatAttachmentApi } from "@/common/contracts/files/chat-attachment-api";
 import type { ChatAttachmentTexts } from "@/common/contracts/files/chat-attachment-texts";
 import { mapPagedFiles } from "@/common/patterns/files/map-paged-files";
-import { toComposerAttachment } from "@/common/patterns/files/to-composer-attachment";
 import { usePagedFiles } from "@/hooks/shared/use-paged-files";
 import styles from "./chat-file-picker-dialog.module.css";
 
@@ -34,6 +33,11 @@ export type ChatFilePickerDialogProps = {
 // The shared paged list keys entries by `id`; the composer only ever receives `fileId`.
 function withId(attachment: ComposerAttachment) {
   return { ...attachment, id: attachment.fileId };
+}
+
+function withoutId(file: ReturnType<typeof withId>): ComposerAttachment {
+  const { fileId, displayName, assetKind, releasesOnSend } = file;
+  return { fileId, displayName, assetKind, releasesOnSend };
 }
 
 /** Picks existing files and links the viewer may attach; the server checks every id again. */
@@ -125,7 +129,7 @@ export function ChatFilePickerDialog({
           </div>
         ) : !loading && list.files.length === 0 ? (
           <p className={styles.status}>
-            {query ? labels.emptySearch : labels.empty}
+            {query ? (labels.emptySearch ?? labels.empty) : labels.empty}
           </p>
         ) : (
           <ul aria-busy={loading} className={styles.list}>
@@ -143,9 +147,7 @@ export function ChatFilePickerDialog({
                       })}
                       checked={checked}
                       disabled={attached || (!checked && full)}
-                      onChange={() =>
-                        toggle(toComposerAttachment(file, file.releasesOnSend))
-                      }
+                      onChange={() => toggle(withoutId(file))}
                     />
                     <FileKindIcon assetKind={file.assetKind} />
                     <span className={styles.name}>{file.displayName}</span>

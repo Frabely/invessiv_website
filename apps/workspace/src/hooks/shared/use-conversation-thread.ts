@@ -21,7 +21,7 @@ import {
   MESSAGE_PENDING_STORAGE_KEY_PREFIX,
 } from "@/common/constants/crm/message-draft-storage";
 import type { ConversationThreadApi } from "@/common/contracts/crm/conversation-thread-api";
-import { mergeComposerAttachments } from "@/common/patterns/crm/merge-composer-attachments";
+import { mergeComposerAttachments } from "@/common/patterns/ui/merge-composer-attachments";
 import { parseStoredPendingMessages } from "@/common/patterns/crm/parse-stored-pending-messages";
 import { mergeThreadMessages } from "@/common/patterns/ui/merge-thread-messages";
 

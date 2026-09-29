@@ -21,8 +21,8 @@ type CustomerConversationProps = {
   canWrite: boolean;
   content: CrmMessagesDictionary;
   customerId: string;
-  /** Without it the chat offers no attachments; the server decides what may be attached. */
-  filesContent?: CrmFilesDictionary;
+  /** Upload labels and file errors for chat attachments. */
+  filesContent: CrmFilesDictionary;
   initialConversation: InternalConversationDto | null;
   locale: Locale;
   viewerMemberId: string;
@@ -71,15 +71,11 @@ export function CustomerConversation({
 
   return (
     <ConversationThreadView
-      attachments={
-        filesContent
-          ? {
-              api: attachmentApi,
-              files: filesContent,
-              texts: content.attachments,
-            }
-          : undefined
-      }
+      attachments={{
+        api: attachmentApi,
+        files: filesContent,
+        texts: content.attachments,
+      }}
       content={content}
       locale={locale}
       onRedactAction={canRedact ? requestRedaction : undefined}

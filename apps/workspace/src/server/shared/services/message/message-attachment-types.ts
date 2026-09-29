@@ -1,4 +1,4 @@
-import type { files } from "@invessiv/db/record-configuration";
+import type { AssetKind } from "@invessiv/common/constants/files/asset-kind";
 
 /** One attachment as the page query reads it; `available` is already decided for the viewer. */
 export type MessageAttachmentRow = {
@@ -7,6 +7,6 @@ export type MessageAttachmentRow = {
   available: boolean;
   fileId: string;
   displayName: string;
-  assetKind: (typeof files.$inferSelect)["asset_kind"];
+  assetKind: AssetKind;
   url: string | null;
 };

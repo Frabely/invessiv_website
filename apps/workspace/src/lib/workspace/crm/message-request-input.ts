@@ -7,7 +7,7 @@ import {
   markConversationReadInputSchema,
 } from "@invessiv/common/contracts/crm/mark-conversation-read.input";
 import {
-  type SendMessageInput,
+  type SendMessageData,
   sendMessageInputSchema,
 } from "@invessiv/common/contracts/crm/send-message.input";
 import { readJsonBody } from "@/lib/http/read-json-body";
@@ -25,7 +25,7 @@ async function readValidBody<TSchema extends z.ZodType>(
 /** Send payload shared by the portal and the workspace route; null answers as a validation error. */
 export function readSendMessageInput(
   request: NextRequest,
-): Promise<SendMessageInput | null> {
+): Promise<SendMessageData | null> {
   return readValidBody(request, sendMessageInputSchema);
 }
 

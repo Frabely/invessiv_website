@@ -90,6 +90,23 @@ describe("uploadQueuePlan", () => {
     ).toEqual([{ ok: false, code: FileErrorCode.BatchTooLarge }]);
   });
 
+  it("narrows the count budget to a smaller limit but never widens it", () => {
+    const files = [
+      { name: "a.png", size: 1 },
+      { name: "b.png", size: 1 },
+    ];
+    expect(
+      uploadQueuePlan
+        .planSelection(files, { count: 0, bytes: 0 }, 1)
+        .map((entry) => (entry.ok ? "ok" : entry.code)),
+    ).toEqual(["ok", FileErrorCode.TooManyFiles]);
+    expect(
+      uploadQueuePlan
+        .planSelection(files, { count: 19, bytes: 0 }, 50)
+        .map((entry) => (entry.ok ? "ok" : entry.code)),
+    ).toEqual(["ok", FileErrorCode.TooManyFiles]);
+  });
+
   it("retries only transient failures", () => {
     expect(uploadQueuePlan.isRetryable(UploadTransferErrorCode.Network)).toBe(
       true,

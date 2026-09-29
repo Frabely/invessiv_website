@@ -32,6 +32,7 @@ export function useCrmChatAttachmentApi(
               await filesApiService.listFiles(customerId, {
                 page,
                 search: search || undefined,
+                shareable: true,
               }),
               toAttachment,
             )

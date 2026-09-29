@@ -10,6 +10,7 @@ import { FileQueryParam } from "@/common/constants/files/file-query-params";
 import type { FileClientErrorCode } from "@/common/contracts/files/file-client-error-code";
 import type { FileClientResult } from "@/common/contracts/files/file-client-result";
 import type { PagedFiles } from "@/common/contracts/files/paged-files";
+import type { UploadQueueTransport } from "@/common/contracts/files/upload-queue-transport";
 
 const { isRecord, send } = versionedJsonMutationService;
 const KNOWN_CODES: readonly FileClientErrorCode[] = [
@@ -144,6 +145,23 @@ async function downloadArchive(
   }
 }
 
+/** A side's upload calls as queue transport; the picked file supplies name and size of its ticket. */
+function uploadQueueTransport<TFile extends { id: string }>(
+  createTicket: (file: {
+    displayName: string;
+    sizeBytes: number;
+  }) => ReturnType<UploadQueueTransport<TFile>["createTicket"]>,
+  complete: UploadQueueTransport<TFile>["complete"],
+  cancelPending: NonNullable<UploadQueueTransport<TFile>["cancelPending"]>,
+): UploadQueueTransport<TFile> {
+  return {
+    createTicket: (file) =>
+      createTicket({ displayName: file.name, sizeBytes: file.size }),
+    complete,
+    cancelPending,
+  };
+}
+
 export const fileApiTransportService = {
   isFileEntry,
   readCode,
@@ -155,4 +173,5 @@ export const fileApiTransportService = {
   readText,
   getDownloadUrl,
   downloadArchive,
+  uploadQueueTransport,
 } as const;

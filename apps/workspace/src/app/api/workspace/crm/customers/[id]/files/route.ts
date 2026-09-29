@@ -31,6 +31,7 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
           assetKind: query.get(Q.AssetKind) ?? undefined,
           origin: query.get(Q.Origin) ?? undefined,
           search: query.get(Q.Search) ?? undefined,
+          shareable: query.get(Q.Shareable) === "true" || undefined,
         });
         if (!parsed.success)
           return fileApiResponse({

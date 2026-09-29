@@ -7,6 +7,7 @@ import {
   faPaperclip,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ButtonControl } from "@invessiv/ui";
 import type { ChatAttachmentTexts } from "@/common/contracts/files/chat-attachment-texts";
 import styles from "./chat-attachment-menu.module.css";
 
@@ -74,7 +75,7 @@ export function ChatAttachmentMenu({
 
   return (
     <div className={styles.menu} ref={rootRef}>
-      <button
+      <ButtonControl
         aria-controls={both ? menuId : undefined}
         aria-expanded={both ? open : undefined}
         aria-label={labels.attach}
@@ -84,30 +85,33 @@ export function ChatAttachmentMenu({
         ref={triggerRef}
         title={limitReached ? labels.limitReached : labels.attach}
         type="button"
+        variant="ghost"
       >
         <FontAwesomeIcon aria-hidden="true" icon={faPaperclip} />
-      </button>
+      </ButtonControl>
       {both && open ? (
         <ul className={styles.options} id={menuId}>
           <li>
-            <button
+            <ButtonControl
               className={styles.option}
               onClick={() => choose(onUploadAction)}
               type="button"
+              variant="ghost"
             >
               <FontAwesomeIcon aria-hidden="true" icon={faCloudArrowUp} />
               {labels.upload}
-            </button>
+            </ButtonControl>
           </li>
           <li>
-            <button
+            <ButtonControl
               className={styles.option}
               onClick={() => choose(onPickAction)}
               type="button"
+              variant="ghost"
             >
               <FontAwesomeIcon aria-hidden="true" icon={faFolderOpen} />
               {labels.pick}
-            </button>
+            </ButtonControl>
           </li>
         </ul>
       ) : null}
