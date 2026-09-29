@@ -51,11 +51,7 @@ async function loadByMessage(
     .select({
       messageId: messageFiles.message_id,
       position: messageFiles.position,
-      available: sql<boolean>`coalesce((
-        ${visibility}
-        ),
-        false
-        )`,
+      available: sql<boolean>`coalesce((${visibility}), false)`,
       fileId: files.id,
       displayName: files.display_name,
       assetKind: files.asset_kind,

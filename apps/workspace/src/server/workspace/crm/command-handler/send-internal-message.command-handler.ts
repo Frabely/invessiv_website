@@ -75,11 +75,7 @@ async function checkAttachments(
   const rows = await tx
     .select({
       file: files,
-      openable: sql<boolean>`coalesce((
-      ${openable}
-      ),
-      false
-      )`,
+      openable: sql<boolean>`coalesce((${openable}), false)`,
     })
     .from(files)
     .where(
