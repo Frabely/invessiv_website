@@ -9,7 +9,7 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { FileLinkDialogFrame } from "./file-link-dialog-frame";
+import { FileLinkDialogFrame } from "@invessiv/ui";
 
 const labels = {
   title: "Add link",

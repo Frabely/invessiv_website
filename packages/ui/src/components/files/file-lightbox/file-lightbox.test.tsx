@@ -7,7 +7,7 @@ import { FilePreviewKind } from "@invessiv/common/constants/files/file-preview-k
 import { FileSource } from "@invessiv/common/constants/files/file-source";
 import type { FilePreviewItem } from "@invessiv/common/contracts/files/file-preview-item";
 import type { FileLightboxLabels } from "@invessiv/common/contracts/ui/file-lightbox-labels";
-import { FileLightbox } from "./file-lightbox";
+import { FileLightbox } from "@invessiv/ui";
 
 const labels: FileLightboxLabels = {
   close: "Close preview",

@@ -5,7 +5,7 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
 import { FileSource } from "@invessiv/common/constants/files/file-source";
-import { FileEntryRow } from "./file-entry-row";
+import { FileEntryRow } from "@invessiv/ui";
 
 const labels = {
   opensInNewTab: "Opens in new tab",
