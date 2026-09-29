@@ -24,5 +24,4 @@ export const portalFileSchemas = {
     note: shared.note,
   }),
   archive: shared.archive,
-  disposition: shared.disposition,
 };

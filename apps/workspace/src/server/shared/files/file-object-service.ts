@@ -1,7 +1,7 @@
 import "server-only";
-import type { ActivityType } from "@invessiv/common/constants/activity/activity-types";
+import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
-import { eq } from "drizzle-orm";
+import { and, count, eq, gt, isNull } from "drizzle-orm";
 import { FileApiErrorCode } from "@invessiv/common/constants/files/file-api-error-code";
 import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
 import { FileInspectionStatus } from "@invessiv/common/constants/files/file-inspection-status";
@@ -9,11 +9,14 @@ import { FileSource } from "@invessiv/common/constants/files/file-source";
 import { FileStatus } from "@invessiv/common/constants/files/file-status";
 import {
   DOWNLOAD_URL_TTL_MS,
+  MAX_UPLOAD_FILES,
   UPLOAD_URL_TTL_MS,
 } from "@invessiv/common/constants/files/upload-limits";
+import { UploadSide } from "@invessiv/common/constants/files/upload-side";
 import { StorageErrorCode } from "@invessiv/common/constants/storage/storage-error-code";
 import type { StorageDisposition } from "@invessiv/common/constants/storage/storage-options";
 import type { FileOperationErrorCode } from "@invessiv/common/contracts/files/file-operation-error-code";
+import type { FileResult } from "@invessiv/common/contracts/files/file-result";
 import type { UploadClassification } from "@invessiv/common/contracts/files/upload-classification";
 import type { StorageUploadTicket } from "@invessiv/common/contracts/storage/storage-upload-ticket";
 import {
@@ -30,6 +33,7 @@ import type {
   FileDownload,
   FileLinkInput,
   FileRow,
+  FileUploader,
   PendingUploadInput,
 } from "./file-object-service-types";
 import { fileValidationService } from "./file-validation-service";
@@ -90,14 +94,44 @@ async function createLink(
 }
 
 /**
+ * A pending row whose ticket has expired can no longer receive bytes, so it stops holding a slot.
+ * Otherwise an interrupted batch would lock the uploader out until the cleanup job runs.
+ */
+async function pendingSlotsTaken(
+  tx: ContactDatabaseTransaction,
+  uploader: FileUploader,
+): Promise<number> {
+  const [pending] = await tx
+    .select({ count: count() })
+    .from(files)
+    .where(
+      and(
+        uploader.side === UploadSide.Internal
+          ? eq(files.uploaded_by_member_id, uploader.memberId)
+          : eq(
+              files.uploaded_by_portal_membership_id,
+              uploader.portalMembershipId,
+            ),
+        eq(files.status, FileStatus.Pending),
+        isNull(files.orphaned_at),
+        gt(files.created_at, new Date(Date.now() - UPLOAD_URL_TTL_MS)),
+      ),
+    );
+  return pending.count;
+}
+
+/**
  * Signs first and inserts afterwards, so a failed signature never consumes a pending slot. The
- * caller has already authorized the target and counted the uploader's pending slots.
+ * caller has already authorized the target and locked the uploader row, which serializes the
+ * slot count across parallel requests.
  */
 async function issueUpload(
   tx: ContactDatabaseTransaction,
   input: PendingUploadInput,
   candidate: AcceptedUpload,
-): Promise<{ row: FileRow; ticket: StorageUploadTicket }> {
+): Promise<FileResult<{ row: FileRow; ticket: StorageUploadTicket }>> {
+  if ((await pendingSlotsTaken(tx, input.uploader)) >= MAX_UPLOAD_FILES)
+    return { ok: false, code: FileApiErrorCode.PendingLimit };
   const id = crypto.randomUUID();
   const key = createFileStorageKey(input.customerId, id, input.displayName);
   const ticket = await storageService.getAdapter().createUploadUrl(key, {
@@ -128,7 +162,7 @@ async function issueUpload(
       version: 1,
     })
     .returning();
-  return { row, ticket };
+  return { ok: true, value: { row, ticket } };
 }
 
 /** Called only while holding the file row lock. Retains the key when storage is unavailable. */
@@ -203,6 +237,46 @@ async function finalizeUpload(
 }
 
 /**
+ * Finishes a locked upload the caller already attributed to its uploader. The row lock serializes
+ * parallel calls: a repeated call finds the row ready and records no second activity.
+ */
+async function completeUpload(
+  tx: ContactDatabaseTransaction,
+  row: FileRow,
+  actor: FileActivityActor,
+): Promise<FileResult<FileRow>> {
+  if (row.orphaned_at) return { ok: false, code: FileApiErrorCode.NotFound };
+  if (
+    row.source !== FileSource.Upload ||
+    !row.storage_key ||
+    !row.extension ||
+    !row.size_bytes
+  )
+    return { ok: false, code: FileApiErrorCode.NotUpload };
+  const finalized = await finalizeUpload(tx, row);
+  if (!finalized.ok) return finalized;
+  if (finalized.completed)
+    await recordActivity(tx, row, actor, ActivityType.FileUploaded);
+  return { ok: true, value: finalized.row };
+}
+
+/** Releases a locked, unfinished upload; ready files are never cancellable. */
+async function cancelPending(
+  tx: ContactDatabaseTransaction,
+  row: FileRow,
+): Promise<FileResult<{ cancelled: true }>> {
+  if (
+    row.orphaned_at ||
+    row.status !== FileStatus.Pending ||
+    row.source !== FileSource.Upload
+  )
+    return { ok: false, code: FileApiErrorCode.NotFound };
+  if (!(await remove(tx, row)))
+    return { ok: false, code: FileApiErrorCode.StorageUnavailable };
+  return { ok: true, value: { cancelled: true } };
+}
+
+/**
  * A short-lived URL for a readable upload. Stores that cannot set the download name get the
  * caller's authenticated proxy route instead.
  */
@@ -243,7 +317,8 @@ export const fileObjectService = {
   recordActivity,
   createLink,
   issueUpload,
-  finalizeUpload,
+  completeUpload,
+  cancelPending,
   remove,
   createDownloadUrl,
   openDownload,

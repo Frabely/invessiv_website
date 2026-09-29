@@ -1,5 +1,4 @@
 import "server-only";
-import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { FileApiErrorCode as E } from "@invessiv/common/constants/files/file-api-error-code";
 import type { FileResult } from "@invessiv/common/contracts/files/file-result";
@@ -10,10 +9,7 @@ import { portalFileMappingService } from "@/server/portal/services/files/portal-
 import { portalFileService } from "@/server/portal/services/files/portal-file-service";
 import { fileObjectService } from "@/server/shared/files/file-object-service";
 
-/**
- * Finishes the actor's own upload. The row lock serializes parallel calls: a repeated call finds
- * the row ready and returns it without a second check or a second activity.
- */
+/** Finishes the actor's own upload; a repeated call returns the ready entry unchanged. */
 export async function completePortalFileUpload(
   actor: PortalActor,
   id: string,
@@ -23,18 +19,14 @@ export async function completePortalFileUpload(
   return getDrizzleDatabaseClient().transaction(async (tx) => {
     const row = await portalFileService.lockOwnUpload(tx, actor, id);
     if (!row) return { ok: false, code: E.NotFound };
-    const finalized = await fileObjectService.finalizeUpload(tx, row);
-    if (!finalized.ok) return finalized;
-    if (finalized.completed)
-      await fileObjectService.recordActivity(
-        tx,
-        row,
-        { type: ActorType.Customer, userId: actor.userId },
-        ActivityType.FileUploaded,
-      );
+    const completed = await fileObjectService.completeUpload(tx, row, {
+      type: ActorType.Customer,
+      userId: actor.userId,
+    });
+    if (!completed.ok) return completed;
     return {
       ok: true,
-      value: portalFileMappingService.toDto(finalized.row, null),
+      value: portalFileMappingService.toDto(completed.value, null),
     };
   });
 }

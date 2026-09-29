@@ -49,6 +49,12 @@ async function request<T>(
     : { ok: true, value };
 }
 
+function readOne<TFile>(
+  isFile: (value: unknown) => value is TFile,
+): (payload: unknown) => TFile | null {
+  return (payload) => (isFile(payload) ? payload : null);
+}
+
 function readPage<TFile>(
   payload: unknown,
   isFile: (value: unknown) => value is TFile,
@@ -142,6 +148,7 @@ export const fileApiTransportService = {
   isFileEntry,
   readCode,
   request,
+  readOne,
   readPage,
   readTicket,
   readCancelled,

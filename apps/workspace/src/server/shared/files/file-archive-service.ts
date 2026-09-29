@@ -7,6 +7,7 @@ import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
 import { FileApiErrorCode } from "@invessiv/common/constants/files/file-api-error-code";
 import type { FileOperationErrorCode } from "@invessiv/common/contracts/files/file-operation-error-code";
 import { sanitizeFilename } from "@invessiv/common/patterns/files/safe-filename";
+import { files } from "@invessiv/db/record-configuration";
 import {
   ARCHIVE_TIME_BUDGET_MS,
   MAX_ARCHIVE_BYTES,
@@ -18,6 +19,16 @@ import type { ArchiveRow } from "./file-object-service-types";
 type ArchiveEntry = Pick<ArchiveRow, "displayName" | "storageKey" | "url">;
 
 const UUID = z.uuid();
+
+/** The select list behind `ArchiveRow`; callers add their own filter columns. */
+const columns = {
+  id: files.id,
+  assetKind: files.asset_kind,
+  displayName: files.display_name,
+  storageKey: files.storage_key,
+  sizeBytes: files.size_bytes,
+  url: files.url,
+};
 
 function uniqueName(name: string, used: Set<string>): string {
   const safe = sanitizeFilename(name);
@@ -133,7 +144,7 @@ function checkSelection(
   if (
     !UUID.safeParse(customerId).success ||
     fileIds.length < 1 ||
-    new Set(fileIds).size !== fileIds.length ||
+    new Set(fileIds.map((id) => id.toLowerCase())).size !== fileIds.length ||
     !fileIds.every((id) => UUID.safeParse(id).success)
   )
     return FileApiErrorCode.Validation;
@@ -168,8 +179,12 @@ function plan(
   }
   if (totalBytes > MAX_ARCHIVE_BYTES)
     return { ok: false, code: FileApiErrorCode.ArchiveLimit };
-  const byId = new Map(rows.map((row) => [row.id, row]));
-  return { ok: true, rows: fileIds.map((id) => byId.get(id)!) };
+  // Postgres matches ids case-insensitively, so the lookup must too.
+  const byId = new Map(rows.map((row) => [row.id.toLowerCase(), row]));
+  const ordered = fileIds.map((id) => byId.get(id.toLowerCase()));
+  if (ordered.some((row) => !row))
+    return { ok: false, code: FileApiErrorCode.NotFound };
+  return { ok: true, rows: ordered as ArchiveRow[] };
 }
 
-export const fileArchiveService = { checkSelection, plan, stream };
+export const fileArchiveService = { columns, checkSelection, plan, stream };

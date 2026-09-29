@@ -1,8 +1,6 @@
 import "server-only";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { FileApiErrorCode as E } from "@invessiv/common/constants/files/file-api-error-code";
-import { FileSource } from "@invessiv/common/constants/files/file-source";
-import { FileStatus } from "@invessiv/common/constants/files/file-status";
 import type { FileResult } from "@invessiv/common/contracts/files/file-result";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
@@ -24,16 +22,8 @@ export async function cancelFileUpload(
       actor,
       Permission.FilesWrite,
     );
-    if (
-      !row ||
-      row.orphaned_at ||
-      row.status !== FileStatus.Pending ||
-      row.source !== FileSource.Upload ||
-      row.uploaded_by_member_id !== actor.workspaceMemberId
-    )
+    if (!row || row.uploaded_by_member_id !== actor.workspaceMemberId)
       return { ok: false, code: E.NotFound };
-    if (!(await fileObjectService.remove(tx, row)))
-      return { ok: false, code: E.StorageUnavailable };
-    return { ok: true, value: { cancelled: true } };
+    return fileObjectService.cancelPending(tx, row);
   });
 }

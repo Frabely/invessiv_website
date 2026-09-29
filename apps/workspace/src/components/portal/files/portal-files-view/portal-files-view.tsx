@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useMemo, useRef, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
@@ -72,7 +72,6 @@ export function PortalFilesView({
   locale,
   projects,
 }: PortalFilesViewProps) {
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const baseId = useId();
@@ -117,10 +116,15 @@ export function PortalFilesView({
       : -1;
   const panelId = `${baseId}-panel`;
 
+  // No server round trip: the list hook loads the tab itself, a re-render would be discarded.
   function selectTab(next: PortalFileOrigin) {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(window.location.search);
     params.set(PortalFilesQueryParam.Tab, next);
-    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    window.history.replaceState(
+      window.history.state,
+      "",
+      `${pathname}?${params.toString()}`,
+    );
   }
 
   function open(next: Overlay) {

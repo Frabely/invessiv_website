@@ -1,9 +1,7 @@
 import "server-only";
-import { and, count, eq, isNull } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
-import { FileStatus } from "@invessiv/common/constants/files/file-status";
 import { UploadSide } from "@invessiv/common/constants/files/upload-side";
-import { MAX_UPLOAD_FILES } from "@invessiv/common/constants/files/upload-limits";
 import { FileApiErrorCode as E } from "@invessiv/common/constants/files/file-api-error-code";
 import type { FileResult } from "@invessiv/common/contracts/files/file-result";
 import type { FileDto } from "@invessiv/common/contracts/files/file.dto";
@@ -11,7 +9,7 @@ import type { StorageUploadTicket } from "@invessiv/common/contracts/storage/sto
 import type { CreateFileUploadRequestDto } from "@invessiv/common/contracts/files/create-file-upload-request.dto";
 import { classifyUploadCandidate } from "@invessiv/common/patterns/files/classify-upload-candidate";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
-import { files, workspaceMembers } from "@invessiv/db/record-configuration";
+import { workspaceMembers } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { fileObjectService } from "@/server/shared/files/file-object-service";
 import { fileSchemas } from "../services/files/file-schemas";
@@ -56,19 +54,7 @@ export async function createFileUpload(
       )
       .for("update");
     if (!member) return { ok: false, code: E.NotFound };
-    const [pending] = await tx
-      .select({ count: count() })
-      .from(files)
-      .where(
-        and(
-          eq(files.uploaded_by_member_id, actor.workspaceMemberId),
-          eq(files.status, FileStatus.Pending),
-          isNull(files.orphaned_at),
-        ),
-      );
-    if (pending.count >= MAX_UPLOAD_FILES)
-      return { ok: false, code: E.PendingLimit };
-    const { row, ticket } = await fileObjectService.issueUpload(
+    const issued = await fileObjectService.issueUpload(
       tx,
       {
         customerId,
@@ -85,6 +71,13 @@ export async function createFileUpload(
       },
       candidate,
     );
-    return { ok: true, value: { file: fileMappingService.toDto(row), ticket } };
+    if (!issued.ok) return issued;
+    return {
+      ok: true,
+      value: {
+        file: fileMappingService.toDto(issued.value.row),
+        ticket: issued.value.ticket,
+      },
+    };
   });
 }

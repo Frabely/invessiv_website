@@ -131,15 +131,16 @@ describe("PortalFilesView", () => {
     ).toHaveAttribute("href", "/en/crm?cockpit=customer-1");
   });
 
-  it("keeps the tab in the URL", () => {
+  it("keeps the tab in the URL without a server navigation", () => {
+    window.history.replaceState(null, "", "/en/portal/customer-1/files");
     renderView();
 
     fireEvent.click(screen.getByRole("tab", { name: content.tabs.fromYou }));
 
-    expect(mocks.replace).toHaveBeenCalledWith(
+    expect(window.location.pathname + window.location.search).toBe(
       "/en/portal/customer-1/files?tab=fromYou",
-      { scroll: false },
     );
+    expect(mocks.replace).not.toHaveBeenCalled();
   });
 
   it("explains the empty tabs by their purpose", async () => {

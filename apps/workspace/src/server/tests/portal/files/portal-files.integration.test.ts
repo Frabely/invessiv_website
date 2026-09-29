@@ -10,7 +10,10 @@ import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import { ProjectWorkflowKey } from "@invessiv/common/constants/crm/project-workflows";
 import { FileApiErrorCode as E } from "@invessiv/common/constants/files/file-api-error-code";
 import { FileStatus } from "@invessiv/common/constants/files/file-status";
-import { MAX_UPLOAD_FILES } from "@invessiv/common/constants/files/upload-limits";
+import {
+  MAX_UPLOAD_FILES,
+  UPLOAD_URL_TTL_MS,
+} from "@invessiv/common/constants/files/upload-limits";
 import { UploadSide } from "@invessiv/common/constants/files/upload-side";
 import { PortalFileOrigin } from "@invessiv/common/constants/portal/portal-file-origin";
 import { StorageDisposition } from "@invessiv/common/constants/storage/storage-options";
@@ -462,6 +465,31 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
           (result) => !result.ok && result.code === E.PendingLimit,
         ),
       ).toHaveLength(2);
+    }, 60_000);
+
+    it("frees the slots of pending uploads whose ticket has expired", async () => {
+      const blocked = await createPortalFileUpload(contact(), {
+        displayName: "x.txt",
+        sizeBytes: 1,
+      });
+      expect(blocked).toMatchObject({ code: E.PendingLimit });
+
+      await f
+        .database()
+        .update(files)
+        .set({ created_at: new Date(Date.now() - UPLOAD_URL_TTL_MS - 1_000) })
+        .where(
+          and(
+            eq(files.uploaded_by_portal_membership_id, f.membershipId),
+            eq(files.status, FileStatus.Pending),
+          ),
+        );
+      expect(
+        await createPortalFileUpload(contact(), {
+          displayName: "x.txt",
+          sizeBytes: 1,
+        }),
+      ).toMatchObject({ ok: true });
     }, 60_000);
   },
 );

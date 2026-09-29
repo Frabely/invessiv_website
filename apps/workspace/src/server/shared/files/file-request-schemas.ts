@@ -14,7 +14,7 @@ export const fileRequestSchemas = {
   linkUrl: z.string().refine(validateFileLink),
   archive: z.strictObject({
     fileIds: z
-      .array(z.uuid())
+      .array(z.uuid().transform((id) => id.toLowerCase()))
       .min(1)
       .max(MAX_ARCHIVE_FILES)
       .refine((ids) => new Set(ids).size === ids.length),

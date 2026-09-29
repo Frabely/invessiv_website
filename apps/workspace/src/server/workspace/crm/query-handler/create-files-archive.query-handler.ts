@@ -19,15 +19,7 @@ export async function createFilesArchive(
   if (invalid) return { ok: false, code: invalid } as const;
 
   const rows = await getDrizzleDatabaseClient()
-    .select({
-      id: files.id,
-      projectId: files.project_id,
-      assetKind: files.asset_kind,
-      displayName: files.display_name,
-      storageKey: files.storage_key,
-      sizeBytes: files.size_bytes,
-      url: files.url,
-    })
+    .select({ ...fileArchiveService.columns, projectId: files.project_id })
     .from(files)
     .where(
       and(

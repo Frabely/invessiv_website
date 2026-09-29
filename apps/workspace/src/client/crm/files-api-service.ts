@@ -37,6 +37,8 @@ function isFile(value: unknown): value is FileDto {
   );
 }
 
+const readFile = transport.readOne(isFile);
+
 function readWriteFailure(response: JsonResponse) {
   const current = readVersionConflict(response, isFile);
   return current
@@ -89,7 +91,7 @@ function completeUpload(fileId: string): Promise<FileClientResult<FileDto>> {
     crmFileCompleteEndpoint(fileId),
     HttpMethod.Post,
     undefined,
-    (payload) => (isFile(payload) ? payload : null),
+    readFile,
   );
 }
 
@@ -112,7 +114,7 @@ function createLink(
     crmCustomerFileLinksEndpoint(customerId),
     HttpMethod.Post,
     input,
-    (payload) => (isFile(payload) ? payload : null),
+    readFile,
   );
 }
 

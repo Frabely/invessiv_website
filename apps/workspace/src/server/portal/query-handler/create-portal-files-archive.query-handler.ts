@@ -14,14 +14,7 @@ export async function createPortalFilesArchive(
   const invalid = fileArchiveService.checkSelection(reader.customerId, fileIds);
   if (invalid) return { ok: false, code: invalid } as const;
   const rows = await getDrizzleDatabaseClient()
-    .select({
-      id: files.id,
-      assetKind: files.asset_kind,
-      displayName: files.display_name,
-      storageKey: files.storage_key,
-      sizeBytes: files.size_bytes,
-      url: files.url,
-    })
+    .select(fileArchiveService.columns)
     .from(files)
     .where(
       and(

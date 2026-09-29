@@ -10,8 +10,10 @@ import {
   type StorageDisposition as StorageDispositionType,
 } from "@invessiv/common/constants/storage/storage-options";
 import { StorageError } from "@invessiv/storage";
+import { FileQueryParam } from "@/common/constants/files/file-query-params";
 import { readJsonBody } from "@/lib/http/read-json-body";
 import type { FileDownload } from "@/server/shared/files/file-object-service-types";
+import { fileRequestSchemas } from "@/server/shared/files/file-request-schemas";
 import { fileErrorResponse } from "./file-api-error";
 
 export function fileApiResponse<T>(
@@ -55,6 +57,18 @@ export async function parseFileBody<T>(
   const body = await readJsonBody(request);
   if (!body.ok) return fileErrorResponse(E.Validation, H.BadRequest);
   const parsed = schema.safeParse(body.body);
+  return parsed.success
+    ? run(parsed.data)
+    : fileApiResponse({ ok: false, code: E.Validation });
+}
+
+export async function parseFileDisposition(
+  request: NextRequest,
+  run: (disposition: StorageDispositionType) => Promise<Response>,
+): Promise<Response> {
+  const parsed = fileRequestSchemas.disposition.safeParse(
+    request.nextUrl.searchParams.get(FileQueryParam.Disposition) ?? undefined,
+  );
   return parsed.success
     ? run(parsed.data)
     : fileApiResponse({ ok: false, code: E.Validation });

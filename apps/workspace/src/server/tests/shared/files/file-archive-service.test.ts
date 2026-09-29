@@ -1,11 +1,48 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { strFromU8, unzipSync } from "fflate";
+import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
+import { FileApiErrorCode } from "@invessiv/common/constants/files/file-api-error-code";
 import { storageService } from "@/server/shared/files/storage-service";
 import { fileArchiveService } from "@/server/shared/files/file-archive-service";
+import { fileRequestSchemas } from "@/server/shared/files/file-request-schemas";
 
 vi.mock("server-only", () => ({}));
 
 afterEach(() => vi.restoreAllMocks());
+
+describe("file archive selection", () => {
+  const id = "0f8b4b7e-3c1d-4a5e-9b2f-6d7c8e9fa0b1";
+  const row = {
+    id,
+    assetKind: AssetKind.Document,
+    displayName: "offer.pdf",
+    storageKey: "key",
+    sizeBytes: 10,
+    url: null,
+  };
+
+  it("plans upper-case ids against the lower-case rows Postgres returns", () => {
+    expect(fileArchiveService.plan([id.toUpperCase()], [row])).toEqual({
+      ok: true,
+      rows: [row],
+    });
+  });
+
+  it("rejects the same id in two spellings", () => {
+    expect(
+      fileArchiveService.checkSelection(crypto.randomUUID(), [
+        id,
+        id.toUpperCase(),
+      ]),
+    ).toBe(FileApiErrorCode.Validation);
+  });
+
+  it("normalizes archive ids to lower case at the request boundary", () => {
+    expect(
+      fileRequestSchemas.archive.parse({ fileIds: [id.toUpperCase()] }),
+    ).toEqual({ fileIds: [id] });
+  });
+});
 
 describe("file archive stream", () => {
   it("finishes a valid archive and lists files skipped after the time budget", async () => {

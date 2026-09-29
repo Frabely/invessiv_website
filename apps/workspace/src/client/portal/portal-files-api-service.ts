@@ -27,9 +27,7 @@ function isFile(value: unknown): value is PortalFileDto {
   );
 }
 
-function readFile(payload: unknown): PortalFileDto | null {
-  return isFile(payload) ? payload : null;
-}
+const readFile = transport.readOne(isFile);
 
 function listFiles(
   customerId: string,
