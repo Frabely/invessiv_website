@@ -5,6 +5,78 @@
   gap: 0.4rem 0.5rem;
 }
 
+.composer[data-attach="true"] {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+.chips,
+.notice {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0;
+  list-style: none;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  max-width: 100%;
+  padding: 0.15rem 0.2rem 0.15rem 0.6rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-xs);
+}
+
+.chipName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chipRemove {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.chipRemove:hover {
+  color: var(--color-text);
+}
+
+.chipRemove:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 1px;
+}
+
+.notice {
+  padding: 0.4rem 0.6rem;
+  border-left: 3px solid var(--color-cta);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--color-cta) 10%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-xs);
+}
+
+.trigger {
+  display: flex;
+  align-self: end;
+}
+
 /* The replica after the textarea grows with its content, so the field grows without script. */
 .field {
   display: grid;
@@ -117,5 +189,10 @@
   .field textarea,
   .field::after {
     min-height: 2.75rem;
+  }
+
+  .chipRemove {
+    width: 2.75rem;
+    height: 2.75rem;
   }
 }

@@ -29,7 +29,7 @@ vollständig geliefert.
 | 14.3 | 53   | `feat/crm-dateien-3-interne-ui`    | [`53-drop-zone-und-interne-ui.md`](./53-drop-zone-und-interne-ui.md)       | interner Dateibereich        |   70–90 | Claude · max    | gemerged  |
 | 14.4 | 54   | `feat/crm-dateien-4-zip`           | [`54-mehrfachauswahl-und-zip.md`](./54-mehrfachauswahl-und-zip.md)         | Mehrfachauswahl + ZIP intern |   25–40 | GPT · mittel    | gemerged  |
 | 14.5 | 55   | `feat/crm-dateien-5-portal`        | [`55-portal-dateien.md`](./55-portal-dateien.md)                           | Dateien im Kundenportal      |   60–90 | Claude · max    | im Review |
-| 14.6 | 56   | `feat/crm-dateien-6-chat-anhaenge` | [`56-chat-anhaenge.md`](./56-chat-anhaenge.md)                             | Anhänge in beiden Chats      |   35–55 | Claude · mittel | offen     |
+| 14.6 | 56   | `feat/crm-dateien-6-chat-anhaenge` | [`56-chat-anhaenge.md`](./56-chat-anhaenge.md)                             | Anhänge in beiden Chats      |   35–55 | Claude · mittel | im Review |
 
 **Umsetzung (Modell · Variante):** Empfehlung, welches Modell die Teil-PR umsetzt und mit welcher Denkstufe.
 
@@ -52,8 +52,7 @@ Task 52 ist in seiner [Umsetzungs- und Übergabedokumentation](./52-datenmodell-
 Task 53 ist in seiner [Umsetzungs- und Übergabedokumentation](./53-drop-zone-und-interne-ui.md) beschrieben.
 Task 54 ist in seiner [Umsetzungs- und Übergabedokumentation](./54-mehrfachauswahl-und-zip.md) beschrieben.
 Task 55 ist in seiner [Umsetzungsdokumentation](./55-portal-dateien.md) beschrieben.
-Die Task-Datei 56 entsteht im nächsten Planungsschritt aus dieser README; bis dahin ist
-diese Datei für diese Einheit die verbindliche Spezifikation.
+Task 56 ist in seiner [Umsetzungsdokumentation](./56-chat-anhaenge.md) beschrieben.
 
 ## Ziel und Stand nach Abschluss
 

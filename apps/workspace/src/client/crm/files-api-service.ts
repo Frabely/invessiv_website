@@ -15,6 +15,7 @@ import { FileQueryParam } from "@/common/constants/files/file-query-params";
 import type { FileClientResult } from "@/common/contracts/files/file-client-result";
 import type { FileDeleteClientResult } from "@/common/contracts/files/file-delete-client-result";
 import type { FileMutationClientResult } from "@/common/contracts/files/file-mutation-client-result";
+import type { UploadQueueTransport } from "@/common/contracts/files/upload-queue-transport";
 import {
   crmCustomerFileLinksEndpoint,
   crmCustomerFilesArchiveEndpoint,
@@ -95,6 +96,23 @@ function completeUpload(fileId: string): Promise<FileClientResult<FileDto>> {
   );
 }
 
+/** The queue transport for this customer; `fields` are the settings shared by every file of a batch. */
+function uploadTransport(
+  customerId: string,
+  fields: Omit<CreateFileUploadRequestDto, "displayName" | "sizeBytes">,
+): UploadQueueTransport {
+  return {
+    createTicket: (file) =>
+      createUpload(customerId, {
+        ...fields,
+        displayName: file.name,
+        sizeBytes: file.size,
+      }),
+    complete: completeUpload,
+    cancelPending: cancelPendingUpload,
+  };
+}
+
 function cancelPendingUpload(
   fileId: string,
 ): Promise<FileClientResult<{ cancelled: true }>> {
@@ -169,6 +187,7 @@ export const filesApiService = {
   createUpload,
   completeUpload,
   cancelPendingUpload,
+  uploadTransport,
   createLink,
   updateFile,
   deleteFile,

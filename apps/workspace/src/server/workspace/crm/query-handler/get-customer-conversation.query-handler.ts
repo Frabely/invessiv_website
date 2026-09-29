@@ -3,6 +3,7 @@ import "server-only";
 import { eq } from "drizzle-orm";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { MessageErrorCode } from "@invessiv/common/constants/crm/errors/message-error-codes";
+import type { ConversationAttachmentAccessDto } from "@invessiv/common/contracts/crm/conversation-attachment-access.dto";
 import { isUuid } from "@invessiv/common/patterns/validation/is-uuid";
 import {
   type ContactDatabaseTransaction,
@@ -18,6 +19,7 @@ import { canOn } from "@/common/patterns/auth/can-on";
 import { conversationMappingService } from "@/server/shared/services/message/conversation-mapping-service";
 import { conversationService } from "@/server/shared/services/message/conversation-service";
 import { messageService } from "@/server/shared/services/message/message-service";
+import { fileAccessService } from "@/server/workspace/crm/services/files/file-access-service";
 import { internalConversationMappingService } from "@/server/workspace/crm/services/internal-conversation-mapping-service";
 import { internalConversationService } from "@/server/workspace/crm/services/internal-conversation-service";
 
@@ -34,6 +36,22 @@ async function getOwnerDisplayName(
   return owner?.displayName ?? "";
 }
 
+/**
+ * Chat uploads land customer-wide, so upload needs customer-wide `files.write`; picking needs
+ * customer-wide `files.read`. Both are part of writing a message.
+ */
+function attachmentAccessOf(
+  actor: WorkspaceActor,
+  customerId: string,
+): ConversationAttachmentAccessDto {
+  if (!canOn(actor, Permission.ChatWrite, { customerId }))
+    return { pick: false, upload: false };
+  return {
+    pick: canOn(actor, Permission.FilesRead, { customerId }),
+    upload: canOn(actor, Permission.FilesWrite, { customerId }),
+  };
+}
+
 async function loadExistingConversation(
   tx: ContactDatabaseTransaction,
   conversation: typeof conversations.$inferSelect,
@@ -46,6 +64,7 @@ async function loadExistingConversation(
     conversation.id,
     cursor,
     reader,
+    fileAccessService.readableCondition(actor),
   );
   if (!page)
     return { ok: false, code: MessageErrorCode.ValidationError } as const;
@@ -65,6 +84,7 @@ async function loadExistingConversation(
       ),
       conversation,
       await getOwnerDisplayName(tx, conversation.owner_member_id),
+      attachmentAccessOf(actor, conversation.customer_id),
     ),
   } as const;
 }
@@ -100,6 +120,7 @@ async function loadVisibleConversation(
       }),
       null,
       "",
+      attachmentAccessOf(actor, customerId),
     ),
   } as const;
 }

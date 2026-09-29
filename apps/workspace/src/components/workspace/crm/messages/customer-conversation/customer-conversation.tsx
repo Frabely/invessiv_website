@@ -5,8 +5,12 @@ import { ConfirmDialog } from "@invessiv/ui";
 import type { InternalConversationDto } from "@invessiv/common/contracts/crm/internal-conversation.dto";
 import { ConversationThreadView } from "@/components/shared/conversation-thread-view/conversation-thread-view";
 import type { Locale } from "@/config/i18n";
+import { useCrmChatAttachmentApi } from "@/hooks/workspace/crm/use-crm-chat-attachment-api";
 import { useCustomerConversation } from "@/hooks/workspace/crm/use-customer-conversation";
-import type { CrmMessagesDictionary } from "@/i18n/dictionaries/workspace/crm";
+import type {
+  CrmFilesDictionary,
+  CrmMessagesDictionary,
+} from "@/i18n/dictionaries/workspace/crm";
 import styles from "./customer-conversation.module.css";
 
 type CustomerConversationProps = {
@@ -17,6 +21,8 @@ type CustomerConversationProps = {
   canWrite: boolean;
   content: CrmMessagesDictionary;
   customerId: string;
+  /** Without it the chat offers no attachments; the server decides what may be attached. */
+  filesContent?: CrmFilesDictionary;
   initialConversation: InternalConversationDto | null;
   locale: Locale;
   viewerMemberId: string;
@@ -28,6 +34,7 @@ export function CustomerConversation({
   canWrite,
   content,
   customerId,
+  filesContent,
   initialConversation,
   locale,
   viewerMemberId,
@@ -37,6 +44,10 @@ export function CustomerConversation({
     initialConversation,
     active,
     `${viewerMemberId}:${customerId}`,
+  );
+  const attachmentApi = useCrmChatAttachmentApi(
+    customerId,
+    thread.conversation?.attachmentAccess ?? null,
   );
   const [redactionTarget, setRedactionTarget] = useState<string | null>(null);
   const [redacting, setRedacting] = useState(false);
@@ -60,6 +71,15 @@ export function CustomerConversation({
 
   return (
     <ConversationThreadView
+      attachments={
+        filesContent
+          ? {
+              api: attachmentApi,
+              files: filesContent,
+              texts: content.attachments,
+            }
+          : undefined
+      }
       content={content}
       locale={locale}
       onRedactAction={canRedact ? requestRedaction : undefined}

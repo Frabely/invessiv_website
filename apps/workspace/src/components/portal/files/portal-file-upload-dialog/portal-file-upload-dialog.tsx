@@ -34,19 +34,10 @@ export function PortalFileUploadDialog({
   const [projectId, setProjectId] = useState<string | null>(null);
   const [note, setNote] = useState("");
   const queue = useUploadQueue<PortalFileDto>(
-    {
-      createTicket: (file) =>
-        portalFilesApiService.createUpload(customerId, {
-          displayName: file.name,
-          sizeBytes: file.size,
-          projectId,
-          note: note.trim() || null,
-        }),
-      complete: (fileId) =>
-        portalFilesApiService.completeUpload(customerId, fileId),
-      cancelPending: (fileId) =>
-        portalFilesApiService.cancelPendingUpload(customerId, fileId),
-    },
+    portalFilesApiService.uploadTransport(customerId, {
+      projectId,
+      note: note.trim() || null,
+    }),
     { onUploadedAction },
   );
   useInitialUploadFiles(initialFiles, queue.stage);

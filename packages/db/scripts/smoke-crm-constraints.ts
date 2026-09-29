@@ -12,6 +12,7 @@ import { randomUUID } from "node:crypto";
 import { getDatabaseClient, getDatabaseUrl } from "@invessiv/db/core";
 import { TasksConstraintName } from "@invessiv/db/constraint-names/crm/tasks-constraint-names";
 import { MessagesConstraintName } from "@invessiv/db/constraint-names/crm/messages-constraint-names";
+import { MessageFilesConstraintName } from "@invessiv/db/constraint-names/crm/message-files-constraint-names";
 import { ConversationReadsConstraintName } from "@invessiv/db/constraint-names/crm/conversation-reads-constraint-names";
 import {
   configureDatabaseUrlFromTarget,
@@ -1113,6 +1114,78 @@ async function runMissingDefaultChecks(
             VALUES (${randomUUID()}, ${conversationId}, NOW())
         `,
     ConversationReadsConstraintName.ReaderCheck,
+  );
+  await runMessageFileChecks(sql, memberId, conversationId, chatCustomerId, {
+    foreignCustomerId: chatVersionCustomerId,
+    name,
+  });
+}
+
+async function insertLinkFile(
+  sql: Sql,
+  customerId: string,
+  memberId: string,
+  displayName: string,
+) {
+  const id = randomUUID();
+  await sql`
+    INSERT INTO files (id, customer_id, source, status, asset_kind, display_name, visible_to_customer,
+                       uploaded_by_side, uploaded_by_member_id, url, version)
+    VALUES (${id}, ${customerId}, 'link', 'ready', 'link', ${displayName}, FALSE, 'internal', ${memberId},
+            'https://example.test/file', 1)
+  `;
+  return id;
+}
+
+/** Chat attachments: no position default, and the composite keys keep message and file on one customer. */
+async function runMessageFileChecks(
+  sql: Sql,
+  memberId: string,
+  conversationId: string,
+  customerId: string,
+  options: { foreignCustomerId: string; name: (suffix: string) => string },
+) {
+  const messageId = randomUUID();
+  await sql`
+    INSERT INTO messages (id, conversation_id, customer_id, type, body, sender_side, sender_member_id,
+                          sender_display_name)
+    VALUES (${messageId}, ${conversationId}, ${customerId}, 'text', '', 'internal', ${memberId},
+            'Fixture member')
+  `;
+  const ownFileId = await insertLinkFile(
+    sql,
+    customerId,
+    memberId,
+    options.name("Own attachment"),
+  );
+  const foreignFileId = await insertLinkFile(
+    sql,
+    options.foreignCustomerId,
+    memberId,
+    options.name("Foreign attachment"),
+  );
+  await expectRejected(
+    "message file without position is rejected",
+    () => sql`
+        INSERT INTO message_files (id, message_id, file_id, customer_id)
+        VALUES (${randomUUID()}, ${messageId}, ${ownFileId}, ${customerId})
+      `,
+  );
+  await expectRejected(
+    "message file of another customer is rejected",
+    () => sql`
+        INSERT INTO message_files (id, message_id, file_id, customer_id, position)
+        VALUES (${randomUUID()}, ${messageId}, ${foreignFileId}, ${customerId}, 0)
+      `,
+    MessageFilesConstraintName.FileCustomerForeignKey,
+  );
+  await expectRejected(
+    "message file position beyond the attachment limit is rejected",
+    () => sql`
+        INSERT INTO message_files (id, message_id, file_id, customer_id, position)
+        VALUES (${randomUUID()}, ${messageId}, ${ownFileId}, ${customerId}, 10)
+      `,
+    MessageFilesConstraintName.PositionCheck,
   );
 }
 

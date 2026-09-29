@@ -13,7 +13,10 @@ import { ConversationInbox } from "@/components/workspace/crm/messages/conversat
 import { ConversationInboxHeader } from "@/components/workspace/crm/messages/conversation-inbox-header/conversation-inbox-header";
 import { WorkspaceScrollablePageShell } from "@/components/workspace/shared/workspace-scrollable-page-shell/workspace-scrollable-page-shell";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
-import { getCrmMessagesDictionary } from "@/i18n/dictionaries/workspace/crm";
+import {
+  getCrmFilesDictionary,
+  getCrmMessagesDictionary,
+} from "@/i18n/dictionaries/workspace/crm";
 import { requireWorkspaceActor } from "@/lib/auth/permissions";
 import { crmMessagesPathFor, workspaceAreaPathFor } from "@/lib/auth/routes";
 import { getCustomerConversation } from "@/server/workspace/crm/query-handler/get-customer-conversation.query-handler";
@@ -105,6 +108,7 @@ export default async function MessagesPage({
             : null
         }
         content={content}
+        filesContent={getCrmFilesDictionary(activeLocale)}
         filter={request.filter}
         hasAnyConversation={allItems.length > 0}
         items={items}

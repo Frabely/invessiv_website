@@ -5,8 +5,12 @@ import type { PortalConversationDto } from "@invessiv/common/contracts/portal/po
 import { PortalOwnerNotice } from "@/components/portal/portal-owner-notice/portal-owner-notice";
 import { ConversationThreadView } from "@/components/shared/conversation-thread-view/conversation-thread-view";
 import type { Locale } from "@/config/i18n";
+import { usePortalChatAttachmentApi } from "@/hooks/portal/use-portal-chat-attachment-api";
 import { usePortalConversation } from "@/hooks/portal/use-portal-conversation";
-import type { PortalMessagesDictionary } from "@/i18n/dictionaries/portal";
+import type {
+  PortalFilesDictionary,
+  PortalMessagesDictionary,
+} from "@/i18n/dictionaries/portal";
 
 export type PortalConversationProps = {
   /** Only a visible conversation loads, refreshes and counts as read. */
@@ -15,6 +19,8 @@ export type PortalConversationProps = {
   cockpitHref: string | null;
   content: PortalMessagesDictionary;
   customerId: string;
+  /** Without it the chat offers no attachments; the server decides what may be attached. */
+  filesContent?: PortalFilesDictionary;
   initialConversation: PortalConversationDto | null;
   locale: Locale;
   /** Keeps drafts and failed sends private to the signed-in user. */
@@ -26,6 +32,7 @@ export function PortalConversation({
   cockpitHref,
   content,
   customerId,
+  filesContent,
   initialConversation,
   locale,
   viewerUserId,
@@ -37,11 +44,24 @@ export function PortalConversation({
     active,
     `${viewerUserId}:${customerId}`,
   );
+  const attachmentApi = usePortalChatAttachmentApi(
+    customerId,
+    thread.conversation?.attachmentAccess ?? null,
+  );
 
   if (!active) return null;
 
   return (
     <ConversationThreadView
+      attachments={
+        filesContent
+          ? {
+              api: attachmentApi,
+              files: filesContent,
+              texts: content.attachments,
+            }
+          : undefined
+      }
       content={content}
       locale={locale}
       onSendAction={thread.conversation?.canWrite ? thread.send : undefined}

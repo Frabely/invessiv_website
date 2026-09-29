@@ -1,8 +1,7 @@
 import "server-only";
-import { and, eq, inArray, isNull, or, type SQL } from "drizzle-orm";
+import { and, eq, inArray, isNull, type SQL } from "drizzle-orm";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { FileSource } from "@invessiv/common/constants/files/file-source";
-import { FileStatus } from "@invessiv/common/constants/files/file-status";
 import { UploadSide } from "@invessiv/common/constants/files/upload-side";
 import { PortalFileOrigin } from "@invessiv/common/constants/portal/portal-file-origin";
 import { PORTAL_VISIBLE_PROJECT_STATUS_VALUES } from "@invessiv/common/constants/portal/portal-visible-project-statuses";
@@ -19,24 +18,13 @@ import type { PortalActor } from "@/server/portal/auth/portal-actor";
 import type { PortalReader } from "@/server/portal/auth/portal-reader";
 import { portalAccessCondition } from "@/server/portal/shared/portal-access-condition";
 import { portalCanOn } from "@/server/portal/shared/portal-can-on";
+import { customerFileVisibilityService } from "@/server/shared/files/customer-file-visibility-service";
 import type { FileRow } from "@/server/shared/files/file-object-service-types";
 import { portalFileSchemas } from "./portal-file-schemas";
 
-function visibleProjectIds(customerId: string) {
-  return getDrizzleDatabaseClient()
-    .select({ id: projects.id })
-    .from(projects)
-    .where(
-      and(
-        eq(projects.customer_id, customerId),
-        inArray(projects.status, PORTAL_VISIBLE_PROJECT_STATUS_VALUES),
-      ),
-    );
-}
-
 /**
- * The single definition of "the customer may see this entry": released, finished, not orphaned,
- * and either company-wide or in a project the portal shows. Archived and cancelled projects keep
+ * The single definition of "the customer may see this entry": released and openable (finished, not
+ * orphaned, company-wide or in a project the portal shows). Archived and cancelled projects keep
  * their files internal, also for guessed ids.
  */
 function visibleCondition(reader: PortalReader): SQL {
@@ -45,12 +33,7 @@ function visibleCondition(reader: PortalReader): SQL {
       customerId: files.customer_id,
     }),
     eq(files.visible_to_customer, true),
-    eq(files.status, FileStatus.Ready),
-    isNull(files.orphaned_at),
-    or(
-      isNull(files.project_id),
-      inArray(files.project_id, visibleProjectIds(reader.customerId)),
-    ),
+    customerFileVisibilityService.openableCondition(reader.customerId),
   )!;
 }
 

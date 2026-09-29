@@ -6,6 +6,7 @@ import {
   pgTable,
   text,
   timestamp,
+  unique,
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
@@ -119,5 +120,6 @@ export const messages = pgTable(
     uniqueIndex(MessagesConstraintName.ClientMessageUnique).on(
       t.client_message_id,
     ),
+    unique(MessagesConstraintName.IdCustomerUnique).on(t.id, t.customer_id),
   ],
 );

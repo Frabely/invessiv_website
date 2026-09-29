@@ -1,6 +1,7 @@
 import "server-only";
-import { and, eq } from "drizzle-orm";
-import type { Permission } from "@invessiv/common/constants/auth/permissions";
+import { and, eq, isNull, type SQL } from "drizzle-orm";
+import { Permission } from "@invessiv/common/constants/auth/permissions";
+import { FileStatus } from "@invessiv/common/constants/files/file-status";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import { customers, files, projects } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
@@ -13,6 +14,15 @@ function condition(actor: WorkspaceActor, permission: Permission) {
     customerId: files.customer_id,
     projectId: files.project_id,
   });
+}
+
+/** Finished, not orphaned entries inside the actor's `files.read` scope; what the chat may show. */
+function readableCondition(actor: WorkspaceActor): SQL {
+  return and(
+    eq(files.status, FileStatus.Ready),
+    isNull(files.orphaned_at),
+    condition(actor, Permission.FilesRead),
+  )!;
 }
 
 async function targetExists(
@@ -69,4 +79,9 @@ async function lock(
   return row;
 }
 
-export const fileAccessService = { condition, targetExists, lock };
+export const fileAccessService = {
+  condition,
+  readableCondition,
+  targetExists,
+  lock,
+};

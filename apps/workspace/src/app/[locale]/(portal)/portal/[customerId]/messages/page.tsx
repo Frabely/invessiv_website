@@ -4,7 +4,10 @@ import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import { buildCustomerCockpitHref } from "@/common/patterns/crm/customer-dialog-query";
 import { PortalMessagesView } from "@/components/portal/messages/portal-messages-view/portal-messages-view";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
-import { getPortalMessagesDictionary } from "@/i18n/dictionaries/portal";
+import {
+  getPortalFilesDictionary,
+  getPortalMessagesDictionary,
+} from "@/i18n/dictionaries/portal";
 import { workspaceAreaPathFor } from "@/lib/auth/routes";
 import { isPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
 import { requirePortalReader } from "@/server/portal/auth/require-portal-reader";
@@ -63,6 +66,7 @@ export default async function PortalMessagesPage({
       content={getPortalMessagesDictionary(activeLocale)}
       conversation={result.conversation}
       customerId={reader.customerId}
+      filesContent={getPortalFilesDictionary(activeLocale)}
       key={reader.customerId}
       locale={activeLocale}
       viewerUserId={reader.userId}

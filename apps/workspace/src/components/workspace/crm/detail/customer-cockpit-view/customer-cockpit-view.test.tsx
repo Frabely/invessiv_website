@@ -265,6 +265,7 @@ describe("CustomerCockpitView", () => {
             conversationId: "conversation-1",
             type: MessageType.Text,
             body: "Wann kommt der Entwurf?",
+            attachments: [],
             metadata: null,
             senderSide: MessageSenderSide.Customer,
             senderDisplayName: "Anna Berger",
@@ -274,6 +275,7 @@ describe("CustomerCockpitView", () => {
           },
         ],
         nextCursor: null,
+        attachmentAccess: { pick: false, upload: false },
         ownership: {
           ownerMemberId: "member-1",
           ownerDisplayName: "Moritz",

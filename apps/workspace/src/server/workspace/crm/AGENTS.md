@@ -77,6 +77,9 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   mitziehen; die Auswahl in der Inbox bleibt als manuelle Abweichung möglich.
 - **Offene Verantwortung nur bei aktiven Kunden** (`conversation-responsibility-counter.ts`), analog zu Kunden.
 - **Ausblenden nur mit `chat.redact`** (nicht delegierbar). Keine Rollenprüfung im Chat-Code.
+- **Anhänge (ab Task 56):** `sendInternalMessage` sperrt jeden Anhang, verlangt `files.read` im Scope (sonst 404),
+  lehnt `pending`, verwaiste und Einträge in nicht portal-sichtbaren Projekten mit `ATTACHMENT_UNAVAILABLE` ab und gibt
+  interne Einträge nur mit `files.write` am Scope und `releaseHiddenAttachments` frei.
 - **„Ungelesen“ ist genau einmal definiert:** `conversationService.unreadMessageCondition` speist Verlauf, Inbox und
   Sidebar-Zähler.
 

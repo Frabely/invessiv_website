@@ -388,6 +388,7 @@ export function CustomerCockpitView({
             canWrite={canWriteConversation}
             content={messagesContent}
             customerId={customer.id}
+            filesContent={filesContent}
             initialConversation={conversation}
             key={`${viewerMemberId}:${customer.id}`}
             locale={locale}

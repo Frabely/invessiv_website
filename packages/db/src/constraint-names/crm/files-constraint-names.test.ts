@@ -16,10 +16,12 @@ it("keeps model and migration constraint names aligned without duplicates", () =
   ];
   expect(names.sort()).toEqual(Object.values(FilesConstraintName).sort());
   expect(new Set(names).size).toBe(names.length);
-  const migration = readFileSync(
-    resolve(process.cwd(), "migrations/0041_create_files.sql"),
-    "utf8",
-  );
+  // 0043 adds the (id, customer_id) key that chat attachments reference.
+  const migration = ["0041_create_files.sql", "0043_create_message_files.sql"]
+    .map((file) =>
+      readFileSync(resolve(process.cwd(), "migrations", file), "utf8"),
+    )
+    .join("\n");
   for (const name of names) expect(migration).toContain(name);
   for (const column of configuration.columns) {
     expect(migration).toMatch(new RegExp(`\\b${column.name}\\s`, "i"));

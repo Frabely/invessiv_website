@@ -8,6 +8,7 @@ type MessageGroupProps = {
   canRedact: boolean;
   group: ThreadMessageGroup;
   labels: MessageThreadLabels;
+  onDownloadAttachmentAction?: (fileId: string) => void;
   onRedactAction?: (messageId: string) => void;
   onRetryAction: (clientId: string) => void;
   timeLabel: string;
@@ -18,6 +19,7 @@ export function MessageGroup({
   canRedact,
   group,
   labels,
+  onDownloadAttachmentAction,
   onRedactAction,
   onRetryAction,
   timeLabel,
@@ -39,6 +41,7 @@ export function MessageGroup({
             item={item}
             key={threadMessageItemKey(item)}
             labels={labels}
+            onDownloadAttachmentAction={onDownloadAttachmentAction}
             onRedactAction={canRedact ? onRedactAction : undefined}
             onRetryAction={onRetryAction}
           />

@@ -12,6 +12,8 @@ describe("MessageErrorCode", () => {
       Forbidden: "FORBIDDEN",
       VersionConflict: "VERSION_CONFLICT",
       RateLimited: "RATE_LIMITED",
+      AttachmentReleaseRequired: "ATTACHMENT_RELEASE_REQUIRED",
+      AttachmentUnavailable: "ATTACHMENT_UNAVAILABLE",
       Internal: "INTERNAL",
     });
     expect(MESSAGE_ERROR_CODE_VALUES).toEqual(Object.values(MessageErrorCode));

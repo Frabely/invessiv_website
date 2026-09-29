@@ -9,6 +9,7 @@ import type { PortalFileDto } from "@invessiv/common/contracts/portal/portal-fil
 import { fileApiTransportService as transport } from "@/client/shared/file-api-transport-service";
 import { FileQueryParam } from "@/common/constants/files/file-query-params";
 import type { FileClientResult } from "@/common/contracts/files/file-client-result";
+import type { UploadQueueTransport } from "@/common/contracts/files/upload-queue-transport";
 import {
   portalFileCancelEndpoint,
   portalFileCompleteEndpoint,
@@ -29,15 +30,14 @@ function isFile(value: unknown): value is PortalFileDto {
 
 const readFile = transport.readOne(isFile);
 
+/** `origin` null lists both tabs at once, as the chat's file picker needs. */
 function listFiles(
   customerId: string,
-  origin: PortalFileOrigin,
+  origin: PortalFileOrigin | null,
   page: number,
 ): Promise<FileClientResult<PortalFileListPageDto>> {
-  const params = new URLSearchParams({
-    [FileQueryParam.Origin]: origin,
-    [FileQueryParam.Page]: String(page),
-  });
+  const params = new URLSearchParams({ [FileQueryParam.Page]: String(page) });
+  if (origin) params.set(FileQueryParam.Origin, origin);
   return transport.request(
     `${portalFilesEndpoint(customerId)}?${params.toString()}`,
     HttpMethod.Get,
@@ -80,6 +80,23 @@ function cancelPendingUpload(
     undefined,
     transport.readCancelled,
   );
+}
+
+/** The queue transport for this customer; `fields` are the settings shared by every file of a batch. */
+function uploadTransport(
+  customerId: string,
+  fields: Omit<CreatePortalFileUploadRequestDto, "displayName" | "sizeBytes">,
+): UploadQueueTransport<PortalFileDto> {
+  return {
+    createTicket: (file) =>
+      createUpload(customerId, {
+        ...fields,
+        displayName: file.name,
+        sizeBytes: file.size,
+      }),
+    complete: (fileId) => completeUpload(customerId, fileId),
+    cancelPending: (fileId) => cancelPendingUpload(customerId, fileId),
+  };
 }
 
 function createLink(
@@ -127,6 +144,7 @@ export const portalFilesApiService = {
   createUpload,
   completeUpload,
   cancelPendingUpload,
+  uploadTransport,
   createLink,
   readText,
   getDownloadUrl,

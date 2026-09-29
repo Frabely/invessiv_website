@@ -12,3 +12,4 @@ export * from "./tasks";
 export * from "./line-item-templates";
 export * from "./workspace-members";
 export * from "./files";
+export * from "./message-files";

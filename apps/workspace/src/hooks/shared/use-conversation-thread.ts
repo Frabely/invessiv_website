@@ -13,12 +13,15 @@ import { PendingMessageStatus } from "@invessiv/common/constants/ui/pending-mess
 import { MessageType } from "@invessiv/common/constants/crm/message-types";
 import type { ConversationDto } from "@invessiv/common/contracts/crm/conversation.dto";
 import type { MessageDto } from "@invessiv/common/contracts/crm/message.dto";
+import type { SendMessageInput } from "@invessiv/common/contracts/crm/send-message.input";
+import type { ComposerAttachment } from "@invessiv/common/contracts/ui/composer-attachment";
 import type { PendingThreadMessage } from "@invessiv/common/contracts/ui/pending-thread-message";
 import {
   MESSAGE_DRAFT_STORAGE_KEY_PREFIX,
   MESSAGE_PENDING_STORAGE_KEY_PREFIX,
 } from "@/common/constants/crm/message-draft-storage";
 import type { ConversationThreadApi } from "@/common/contracts/crm/conversation-thread-api";
+import { mergeComposerAttachments } from "@/common/patterns/crm/merge-composer-attachments";
 import { parseStoredPendingMessages } from "@/common/patterns/crm/parse-stored-pending-messages";
 import { mergeThreadMessages } from "@/common/patterns/ui/merge-thread-messages";
 
@@ -89,12 +92,30 @@ function writeStoredPendingMessages(
   }
 }
 
-function createPendingMessage(body: string): PendingThreadMessage {
+function createPendingMessage(
+  body: string,
+  attachments: readonly ComposerAttachment[],
+): PendingThreadMessage {
   return {
     clientId: crypto.randomUUID(),
     body,
+    attachments: [...attachments],
     createdAt: new Date().toISOString(),
     status: PendingMessageStatus.Sending,
+  };
+}
+
+/** Plain text sends keep their original payload; attachment fields are added only when used. */
+function toSendInput(entry: PendingThreadMessage): SendMessageInput {
+  if (entry.attachments.length === 0)
+    return { body: entry.body, clientMessageId: entry.clientId };
+  return {
+    body: entry.body,
+    clientMessageId: entry.clientId,
+    attachmentFileIds: entry.attachments.map((attachment) => attachment.fileId),
+    releaseHiddenAttachments: entry.attachments.some(
+      (attachment) => attachment.releasesOnSend,
+    ),
   };
 }
 
@@ -239,10 +260,7 @@ function useMessageSending<TConversation extends ConversationDto>(
 
   const deliver = useCallback(
     async (entry: PendingThreadMessage) => {
-      const result = await api.sendMessage({
-        body: entry.body,
-        clientMessageId: entry.clientId,
-      });
+      const result = await api.sendMessage(toSendInput(entry));
       if (!result.ok) {
         setSendError(result.code);
         setPending((current) =>
@@ -261,8 +279,8 @@ function useMessageSending<TConversation extends ConversationDto>(
   );
 
   const send = useCallback(
-    (body: string) => {
-      const entry = createPendingMessage(body);
+    (body: string, attachments: readonly ComposerAttachment[]) => {
+      const entry = createPendingMessage(body, attachments);
       setPending((current) => [...current, entry]);
       void deliver(entry);
     },
@@ -308,6 +326,27 @@ export function useConversationThread<TConversation extends ConversationDto>(
     [replaceMessage, reload],
   );
   const sending = useMessageSending(api, pending, setPending, confirmDelivery);
+  const [attachments, setAttachments] = useState<ComposerAttachment[]>([]);
+  const addAttachments = useCallback(
+    (added: readonly ComposerAttachment[]) =>
+      setAttachments((current) => mergeComposerAttachments(current, added)),
+    [],
+  );
+  const removeAttachment = useCallback(
+    (fileId: string) =>
+      setAttachments((current) =>
+        current.filter((attachment) => attachment.fileId !== fileId),
+      ),
+    [],
+  );
+  const { send: sendWith } = sending;
+  const send = useCallback(
+    (body: string) => {
+      sendWith(body, attachments);
+      setAttachments([]);
+    },
+    [attachments, sendWith],
+  );
   // An own send may be newer than an unseen reply that has not been reloaded yet.
   const latestVisibleIncomingMessageId =
     pages.state.messages.findLast(
@@ -341,7 +380,14 @@ export function useConversationThread<TConversation extends ConversationDto>(
     /** Code of the last failed send; cleared by the next successful one. */
     sendError: sending.sendError,
     reload,
-    send: sending.send,
+    /** Sends the text together with the attachments picked so far, then clears them. */
+    send,
+    /** Entries picked for the next message; kept in memory only, never in storage. */
+    attachments: {
+      items: attachments,
+      add: addAttachments,
+      remove: removeAttachment,
+    },
     replaceMessage,
     /** Everything `MessageThread` needs from the thread state; texts come from the caller. */
     threadProps,

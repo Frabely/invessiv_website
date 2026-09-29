@@ -17,7 +17,13 @@ import {
 import type { InternalConversationDto } from "@invessiv/common/contracts/crm/internal-conversation.dto";
 import type { MessageDto } from "@invessiv/common/contracts/crm/message.dto";
 import { MESSAGE_PENDING_STORAGE_KEY_PREFIX } from "@/common/constants/crm/message-draft-storage";
-import { getCrmMessagesDictionary } from "@/i18n/dictionaries/workspace/crm";
+import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
+import { FileApiErrorCode } from "@invessiv/common/constants/files/file-api-error-code";
+import { StorageDisposition } from "@invessiv/common/constants/storage/storage-options";
+import {
+  getCrmFilesDictionary,
+  getCrmMessagesDictionary,
+} from "@/i18n/dictionaries/workspace/crm";
 import { CustomerConversation } from "./customer-conversation";
 
 const api = vi.hoisted(() => ({
@@ -33,6 +39,14 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/client/crm/messages-api-service", () => ({
   messagesApiService: api,
 }));
+const filesApi = vi.hoisted(() => ({
+  listFiles: vi.fn(),
+  getDownloadUrl: vi.fn(),
+  uploadTransport: vi.fn(),
+}));
+vi.mock("@/client/crm/files-api-service", () => ({
+  filesApiService: filesApi,
+}));
 
 const customerId = "11111111-1111-4111-8111-111111111111";
 const conversationId = "conversation-1";
@@ -44,6 +58,7 @@ const conversation: InternalConversationDto = {
   lastMessageAt: null,
   messages: [],
   nextCursor: null,
+  attachmentAccess: { pick: false, upload: false },
   ownership: {
     ownerMemberId: "member-a",
     ownerDisplayName: "Alice",
@@ -117,6 +132,7 @@ describe("CustomerConversation pending storage", () => {
         conversationId,
         type: MessageType.Text,
         body: "Please review the draft",
+        attachments: [],
         metadata: null,
         senderSide: MessageSenderSide.Internal,
         senderDisplayName: "Alice",
@@ -147,6 +163,7 @@ describe("CustomerConversation pending storage", () => {
       conversationId,
       type: MessageType.Text,
       body: "Visible customer message",
+      attachments: [],
       metadata: null,
       senderSide: MessageSenderSide.Customer,
       senderDisplayName: "Customer",
@@ -171,6 +188,7 @@ describe("CustomerConversation pending storage", () => {
       conversationId,
       type: MessageType.Text,
       body: "Sensitive older text",
+      attachments: [],
       metadata: null,
       senderSide: MessageSenderSide.Customer,
       senderDisplayName: "Customer",
@@ -216,6 +234,139 @@ describe("CustomerConversation pending storage", () => {
       expect(screen.queryByText("Sensitive older text")).toBeNull(),
     );
     expect(screen.getByText(content.thread.redacted)).toBeVisible();
+  });
+
+  it("offers no attachments without file texts", () => {
+    renderConversation("member-a", {
+      ...conversation,
+      attachmentAccess: { pick: true, upload: true },
+    });
+    expect(
+      screen.queryByRole("button", { name: content.attachments.attach }),
+    ).toBeNull();
+  });
+
+  it("shows the release notice for an internal file and confirms it on send", async () => {
+    const fileId = "44444444-4444-4444-8444-444444444444";
+    filesApi.listFiles.mockResolvedValue({
+      ok: true,
+      value: {
+        files: [
+          {
+            id: fileId,
+            displayName: "offer.pdf",
+            assetKind: AssetKind.Document,
+            visibleToCustomer: false,
+          },
+        ],
+        total: 1,
+        page: 1,
+        pageSize: 25,
+      },
+    });
+    render(
+      <CustomerConversation
+        active
+        canRedact={false}
+        canWrite
+        content={content}
+        customerId={customerId}
+        filesContent={getCrmFilesDictionary("en")}
+        initialConversation={{
+          ...conversation,
+          attachmentAccess: { pick: true, upload: false },
+        }}
+        locale="en"
+        viewerMemberId="member-a"
+      />,
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: content.attachments.attach }),
+    );
+    fireEvent.click(
+      await screen.findByRole("checkbox", { name: "Attach offer.pdf" }),
+    );
+    expect(screen.getByText(content.attachments.internalBadge)).toBeVisible();
+    fireEvent.click(
+      screen.getByRole("button", { name: content.attachments.confirm }),
+    );
+
+    expect(await screen.findByRole("note")).toHaveTextContent(
+      content.attachments.releaseNoticeOne,
+    );
+    fireEvent.click(screen.getByRole("button", { name: content.thread.send }));
+    await waitFor(() =>
+      expect(api.sendMessage).toHaveBeenCalledWith(
+        customerId,
+        expect.objectContaining({
+          body: "",
+          attachmentFileIds: [fileId],
+          releaseHiddenAttachments: true,
+        }),
+      ),
+    );
+    expect(screen.queryByRole("note")).toBeNull();
+  });
+
+  it("downloads an uploaded attachment through the CRM file endpoint", async () => {
+    filesApi.getDownloadUrl.mockResolvedValue({
+      ok: false,
+      code: FileApiErrorCode.NotFound,
+    });
+    const withAttachment: InternalConversationDto = {
+      ...conversation,
+      messages: [
+        {
+          id: "55555555-5555-4555-8555-555555555555",
+          conversationId,
+          type: MessageType.Text,
+          body: "",
+          attachments: [
+            {
+              position: 0,
+              available: true,
+              fileId: "file-1",
+              displayName: "offer.pdf",
+              assetKind: AssetKind.Document,
+              url: null,
+            },
+          ],
+          metadata: null,
+          senderSide: MessageSenderSide.Customer,
+          senderDisplayName: "Customer",
+          isOwn: false,
+          createdAt: "2026-09-26T10:00:00.000Z",
+          redactedAt: null,
+        },
+      ],
+    };
+    render(
+      <CustomerConversation
+        active
+        canRedact={false}
+        canWrite
+        content={content}
+        customerId={customerId}
+        filesContent={getCrmFilesDictionary("en")}
+        initialConversation={withAttachment}
+        locale="en"
+        viewerMemberId="member-a"
+      />,
+    );
+
+    fireEvent.click(
+      await screen.findByRole("button", { name: "Download offer.pdf" }),
+    );
+    await waitFor(() =>
+      expect(filesApi.getDownloadUrl).toHaveBeenCalledWith(
+        "file-1",
+        StorageDisposition.Attachment,
+      ),
+    );
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      content.attachments.downloadError,
+    );
   });
 
   it("isolates unsent drafts by member", () => {

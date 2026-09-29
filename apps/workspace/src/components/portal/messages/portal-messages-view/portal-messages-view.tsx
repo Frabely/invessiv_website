@@ -1,7 +1,10 @@
 import type { PortalConversationDto } from "@invessiv/common/contracts/portal/portal-conversation.dto";
 import { PortalConversation } from "@/components/portal/messages/portal-conversation/portal-conversation";
 import type { Locale } from "@/config/i18n";
-import type { PortalMessagesDictionary } from "@/i18n/dictionaries/portal";
+import type {
+  PortalFilesDictionary,
+  PortalMessagesDictionary,
+} from "@/i18n/dictionaries/portal";
 import styles from "./portal-messages-view.module.css";
 
 export type PortalMessagesViewProps = {
@@ -9,6 +12,8 @@ export type PortalMessagesViewProps = {
   content: PortalMessagesDictionary;
   conversation: PortalConversationDto;
   customerId: string;
+  /** Upload labels and file errors for chat attachments. */
+  filesContent: PortalFilesDictionary;
   locale: Locale;
   viewerUserId: string;
 };
@@ -19,6 +24,7 @@ export function PortalMessagesView({
   content,
   conversation,
   customerId,
+  filesContent,
   locale,
   viewerUserId,
 }: PortalMessagesViewProps) {
@@ -34,6 +40,7 @@ export function PortalMessagesView({
           cockpitHref={cockpitHref}
           content={content}
           customerId={customerId}
+          filesContent={filesContent}
           initialConversation={conversation}
           locale={locale}
           viewerUserId={viewerUserId}
