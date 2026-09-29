@@ -1,0 +1,22 @@
+.frame {
+  display: grid;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 52rem;
+  margin-inline: auto;
+}
+
+.heading.heading {
+  width: 10rem;
+  height: 1.5rem;
+}
+
+.intake.intake {
+  min-height: 11rem;
+  border-radius: 1.1rem;
+}
+
+.panel.panel {
+  min-height: 16rem;
+  border-radius: 18px;
+}

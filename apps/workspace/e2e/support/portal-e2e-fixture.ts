@@ -14,11 +14,17 @@ export const portalE2ePaths = {
     ".playwright",
     "portal-contact-b.json",
   ),
+  filesContactState: path.join(
+    process.cwd(),
+    ".playwright",
+    "portal-files-contact.json",
+  ),
 } as const;
 
 export type PortalE2eFixture = {
   customerA: string;
   customerB: string;
+  filesCustomer: string;
   assignmentA: string;
   assignmentB: string;
   assignmentOther: string;

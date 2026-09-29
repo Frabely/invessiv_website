@@ -1,0 +1,184 @@
+.row {
+  display: grid;
+  grid-template-areas: "select icon identity" "select icon actions";
+  grid-template-columns: 2.75rem auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.35rem 0.75rem;
+  padding: 0.75rem 0.5rem 0.75rem 0;
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--color-border) 60%, transparent);
+}
+
+.row[data-has-status="true"] {
+  grid-template-areas: "select icon identity identity" "select icon status actions";
+  grid-template-columns: 2.75rem auto minmax(0, 1fr) auto;
+}
+
+.row[data-compact="true"] {
+  border-bottom: 0;
+  border-left: 2px solid transparent;
+  border-radius: 0.6rem;
+  padding: 0.7rem 0.6rem;
+}
+
+.row[data-compact="true"]:hover,
+.row[data-compact="true"]:focus-within {
+  background: color-mix(in srgb, var(--color-surface-2) 65%, transparent);
+}
+
+.row[data-origin="customer"] {
+  border-left-color: color-mix(
+    in srgb,
+    var(--color-accent-gold) 70%,
+    transparent
+  );
+}
+
+.row:last-child {
+  border-bottom: 0;
+}
+
+.row[data-selected="true"] {
+  background: color-mix(in srgb, var(--color-cta) 10%, transparent);
+}
+
+.select {
+  grid-area: select;
+  display: grid;
+  place-items: center;
+  align-self: start;
+  width: 2.75rem;
+  min-height: 2.75rem;
+}
+
+.icon {
+  grid-area: icon;
+  align-self: start;
+  margin-top: 0.35rem;
+}
+
+.identity {
+  grid-area: identity;
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.name {
+  justify-self: start;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--font-size-body-sm);
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+button.name,
+a.name {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 30%, transparent);
+  text-underline-offset: 0.2em;
+}
+
+button.name:hover,
+a.name:hover {
+  color: var(--color-cta);
+}
+
+.name:focus-visible,
+.action:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 0.35rem;
+}
+
+.note {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-xs);
+  line-height: 1.45;
+  opacity: 0.85;
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.85rem;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+.numeric {
+  font-variant-numeric: tabular-nums;
+}
+
+.status {
+  grid-area: status;
+}
+
+.actions {
+  grid-area: actions;
+  display: flex;
+  gap: 0.15rem;
+}
+
+.action {
+  display: inline-grid;
+  place-items: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.actions .action {
+  min-height: 2.75rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  transform: none;
+  box-shadow: none;
+}
+
+.actions .action:hover {
+  transform: none;
+  box-shadow: none;
+  background: color-mix(
+    in srgb,
+    var(--color-surface-2) 90%,
+    var(--color-text) 6%
+  );
+  color: var(--color-text);
+}
+
+.action[data-tone="danger"]:hover {
+  color: var(--color-danger);
+}
+
+@container files-list (min-width: 34rem) {
+  .row[data-compact="true"] {
+    grid-template-areas: "select icon identity status actions";
+    grid-template-columns: 2.75rem auto minmax(0, 1fr) auto auto;
+  }
+}
+
+@media (min-width: 36rem) {
+  .row:not([data-compact="true"]) {
+    grid-template-areas: "select icon identity actions";
+    grid-template-columns: 2.75rem auto minmax(0, 1fr) auto;
+  }
+}

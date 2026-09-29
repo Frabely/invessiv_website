@@ -1,15 +1,20 @@
 import type { FileDto } from "@invessiv/common/contracts/files/file.dto";
-import type { FileUploadTicketResponseDto } from "@invessiv/common/contracts/files/file-upload-ticket-response.dto";
+import type { StorageUploadTicket } from "@invessiv/common/contracts/storage/storage-upload-ticket";
 import type { FileClientResult } from "./file-client-result";
 
 /**
  * The actor-specific half of an upload: workspace and portal issue tickets and finalize through
- * their own endpoints, while the queue mechanics stay shared.
+ * their own endpoints with their own DTOs, while the queue mechanics stay shared.
  */
-export interface UploadQueueTransport {
+export interface UploadQueueTransport<TFile extends { id: string } = FileDto> {
   createTicket(
     file: File,
-  ): Promise<FileClientResult<FileUploadTicketResponseDto>>;
+  ): Promise<FileClientResult<{ file: TFile; ticket: StorageUploadTicket }>>;
 
-  complete(fileId: string): Promise<FileClientResult<FileDto>>;
+  complete(fileId: string): Promise<FileClientResult<TFile>>;
+
+  /** Releases an unfinished ticket before retrying or after a cancelled transfer. */
+  cancelPending?(
+    fileId: string,
+  ): Promise<FileClientResult<{ cancelled: true }>>;
 }

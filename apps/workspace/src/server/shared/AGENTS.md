@@ -31,3 +31,11 @@ Security-Events (`security-event-service.ts`), das von Handlern beider Welten in
   der jeweils anderen Welt dieselbe Logik braucht — kein vorsorglicher Platz „für später“.
 - Benennung und Exportform wie in `src/server/AGENTS.md` beschrieben (`*-service.ts`, ein
   Service-Objekt als öffentliche API).
+
+## Dateien (ab Task 55)
+
+`files/` hält die Bausteine, die CRM- und Portal-Handler für Dateien teilen: `file-object-service.ts` (Link- und Ticket-
+Anlage, Finalisierung über `updateVersioned`, Entfernen mit `orphaned_at`-Fallback, Download-URL, Stream und
+actor-neutrale Aktivitätszeilen), `file-archive-service.ts` (ZIP-Vorprüfung und Streaming), `file-request-schemas.ts`
+(gemeinsame Request-Felder), dazu Validierung und Storage-Zugang. Autorisierung, Sichtbarkeitsfilter und
+Uploader-Zuordnung bleiben in den getrennten Handlern (`portalFileService` bzw. `fileAccessService`).

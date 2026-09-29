@@ -4,42 +4,43 @@ import { useMemo, useRef, useState } from "react";
 import {
   faArrowUpFromBracket,
   faLink,
-  faDownload,
 } from "@fortawesome/free-solid-svg-icons";
 import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
-import { FileApiErrorCode } from "@invessiv/common/constants/files/file-api-error-code";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { UPLOAD_ACCEPT_ATTRIBUTE } from "@invessiv/common/constants/files/upload-accept";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { StorageDisposition } from "@invessiv/common/constants/storage/storage-options";
 import { FileDropZoneVariant } from "@invessiv/common/constants/ui/file-drop-zone-variants";
 import type { FileDto } from "@invessiv/common/contracts/files/file.dto";
 import { filePresentation } from "@invessiv/common/patterns/files/file-presentation";
 import {
   ButtonControl,
+  FileArchiveToolbar,
   FileDropZone,
+  FileLightbox,
   PrimaryCtaButton,
   useFileDragTarget,
 } from "@invessiv/ui";
 import { filesApiService } from "@/client/crm/files-api-service";
-import { FileListLoadStatus } from "@/common/constants/crm/files/file-list-load-status";
+import { FileListLoadStatus } from "@/common/constants/files/file-list-load-status";
 import type { FilesViewModel } from "@/common/contracts/crm/files/files-view-model";
 import { customerFilesFilter } from "@/common/patterns/crm/files/customer-files-filter";
 import { filesScopeRights } from "@/common/patterns/crm/files/files-scope-rights";
+import { fileArchiveSelection } from "@/common/patterns/files/file-archive-selection";
 import { CollapsibleSection } from "@/components/workspace/crm/shared/collapsible-section/collapsible-section";
 import type { Locale } from "@/config/i18n";
 import { useCustomerFiles } from "@/hooks/workspace/crm/use-customer-files";
 import { useCustomerFilesFilter } from "@/hooks/workspace/crm/use-customer-files-filter";
-import { useCustomerFilesSelection } from "@/hooks/workspace/crm/use-customer-files-selection";
+import { CustomerFilesQueryParam } from "@/common/constants/crm/files/customer-files-query-params";
+import { useFileSelection } from "@/hooks/shared/use-file-selection";
+import { useFileDownloads } from "@/hooks/shared/use-file-downloads";
 import type { CrmFilesDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { FileDeleteDialog } from "../file-delete-dialog/file-delete-dialog";
 import { FileEditDialog } from "../file-edit-dialog/file-edit-dialog";
-import { FileLightbox } from "../file-lightbox/file-lightbox";
 import { FileLinkDialog } from "../file-link-dialog/file-link-dialog";
 import { FilesToolbar } from "../files-toolbar/files-toolbar";
 import { FileUploadDialog } from "../file-upload-dialog/file-upload-dialog";
 import { CustomerFilesList } from "../customer-files-list/customer-files-list";
-import { MAX_ARCHIVE_FILES } from "@/common/constants/crm/files/file-archive-limits";
+import { MAX_ARCHIVE_FILES } from "@/common/constants/files/file-archive-limits";
 import styles from "./customer-files-section.module.css";
 
 type CustomerFilesSectionProps = {
@@ -82,12 +83,23 @@ export function CustomerFilesSection({
     fixedProjectId: projectId,
   });
   const list = useCustomerFiles(customerId, filters.filter, revision);
-  const selection = useCustomerFilesSelection(customerId);
+  const selection = useFileSelection(
+    customerId,
+    CustomerFilesQueryParam.Selected,
+  );
   const [overlay, setOverlay] = useState<FileOverlay | null>(null);
-  const [archiveBusy, setArchiveBusy] = useState(false);
   const [announcement, setAnnouncement] = useState("");
-  const [actionError, setActionError] = useState<string | null>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
+  const { archiveBusy, actionError, download, loadPreview, downloadArchive } =
+    useFileDownloads<FileDto>({
+      archiveFilename: content.archive.filename,
+      errors: content.errors,
+      selectedIds: selection.selectedIds,
+      clearSelection: selection.clear,
+      getDownloadUrl: filesApiService.getDownloadUrl,
+      readText: filesApiService.readText,
+      getArchive: (ids) => filesApiService.downloadArchive(customerId, ids),
+    });
 
   const writeTargets = projectId
     ? filesScopeRights.allows(viewModel.write, projectId)
@@ -153,53 +165,6 @@ export function CustomerFilesSection({
   function changed(message: string) {
     setAnnouncement(message);
     onChangedAction();
-  }
-
-  async function download(file: FileDto) {
-    setActionError(null);
-    const result = await filesApiService.getDownloadUrl(
-      file.id,
-      StorageDisposition.Attachment,
-    );
-    if (!result.ok) {
-      setActionError(content.errors[result.code]);
-      return;
-    }
-    const anchor = document.createElement("a");
-    anchor.href = result.value;
-    anchor.rel = "noopener";
-    document.body.append(anchor);
-    anchor.click();
-    anchor.remove();
-  }
-
-  async function downloadArchive() {
-    if (!selection.selectedIds.length || archiveBusy) return;
-    setArchiveBusy(true);
-    setActionError(null);
-    try {
-      const result = await filesApiService.downloadArchive(
-        customerId,
-        selection.selectedIds,
-      );
-      if (!result.ok) {
-        // The archive is all-or-nothing, so a stale id would block every retry.
-        if (result.code === FileApiErrorCode.NotFound) selection.clear();
-        setActionError(content.errors[result.code]);
-        return;
-      }
-      const url = URL.createObjectURL(result.value);
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = content.archive.filename;
-      document.body.append(anchor);
-      anchor.click();
-      anchor.remove();
-      window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
-      selection.clear();
-    } finally {
-      setArchiveBusy(false);
-    }
   }
 
   return (
@@ -310,9 +275,10 @@ export function CustomerFilesSection({
             ) : null}
             {previewIndex !== null && previewIndex >= 0 ? (
               <FileLightbox
-                content={content}
                 files={previewable}
                 index={previewIndex}
+                labels={content.lightbox}
+                loadSourceAction={loadPreview}
                 onCloseAction={() => {
                   setOverlay(null);
                   restoreFocus();
@@ -379,60 +345,21 @@ export function CustomerFilesSection({
             projects={projectId ? undefined : viewModel.projects}
             showCustomerWide={viewModel.read.customerWide}
           />
-          {list.files.length ? (
-            <div
-              className={styles.archiveBar}
-              role="group"
-              aria-label={content.archive.groupLabel}
-            >
-              <ButtonControl
-                onClick={() =>
-                  selection.add(
-                    list.files
-                      .filter((file) => file.assetKind !== AssetKind.Video)
-                      .map((file) => file.id),
-                  )
-                }
-                type="button"
-                variant="ghost"
-              >
-                {content.archive.selectShown}
-              </ButtonControl>
-              {selection.selectedIds.length ? (
-                <>
-                  <span>
-                    {formatMessage(content.archive.selected, {
-                      count: String(selection.selectedIds.length),
-                    })}
-                  </span>
-                  <ButtonControl
-                    onClick={selection.clear}
-                    type="button"
-                    variant="ghost"
-                  >
-                    {content.archive.clear}
-                  </ButtonControl>
-                  <ButtonControl
-                    disabled={archiveBusy}
-                    onClick={downloadArchive}
-                    type="button"
-                    variant="ghost"
-                  >
-                    <FontAwesomeIcon aria-hidden="true" icon={faDownload} />
-                    {archiveBusy
-                      ? content.archive.preparing
-                      : content.archive.download}
-                  </ButtonControl>
-                  {selection.selectedIds.length === MAX_ARCHIVE_FILES ? (
-                    <span>{content.archive.limitReached}</span>
-                  ) : null}
-                </>
-              ) : null}
-              {list.files.some((file) => file.assetKind === AssetKind.Video) ? (
-                <span>{content.archive.videoHint}</span>
-              ) : null}
-            </div>
-          ) : null}
+          <FileArchiveToolbar
+            busy={archiveBusy}
+            hasFiles={list.files.length > 0}
+            hasVideo={list.files.some(
+              (file) => file.assetKind === AssetKind.Video,
+            )}
+            labels={content.archive}
+            limitReached={selection.selectedIds.length === MAX_ARCHIVE_FILES}
+            onClearAction={selection.clear}
+            onDownloadAction={downloadArchive}
+            onSelectShownAction={() =>
+              selection.add(fileArchiveSelection.shownIds(list.files))
+            }
+            selectedCount={selection.selectedIds.length}
+          />
           {actionError ? (
             <p className={styles.actionError} role="alert">
               {actionError}

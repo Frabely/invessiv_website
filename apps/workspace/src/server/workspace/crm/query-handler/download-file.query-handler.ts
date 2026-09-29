@@ -1,30 +1,18 @@
 import "server-only";
 import { FileApiErrorCode as E } from "@invessiv/common/constants/files/file-api-error-code";
 import type { FileResult } from "@invessiv/common/contracts/files/file-result";
-import { sanitizeFilename } from "@invessiv/common/patterns/files/safe-filename";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
-import { storageService } from "@/server/shared/files/storage-service";
+import type { FileDownload } from "@/server/shared/files/file-object-service-types";
+import { fileObjectService } from "@/server/shared/files/file-object-service";
 import { fileService } from "../services/files/file-service";
 
 export async function downloadFile(
   id: string,
   actor: WorkspaceActor,
-): Promise<
-  FileResult<{
-    stream: ReadableStream<Uint8Array>;
-    filename: string;
-    contentType: string;
-  }>
-> {
+): Promise<FileResult<FileDownload>> {
   const row = await fileService.findReadable(id, actor);
-  if (!row?.storage_key || !row.content_type)
-    return { ok: false, code: E.NotFound };
-  return {
-    ok: true,
-    value: {
-      stream: await storageService.getAdapter().openReadStream(row.storage_key),
-      filename: sanitizeFilename(row.display_name),
-      contentType: row.content_type,
-    },
-  };
+  const download = row ? await fileObjectService.openDownload(row) : null;
+  return download
+    ? { ok: true, value: download }
+    : { ok: false, code: E.NotFound };
 }

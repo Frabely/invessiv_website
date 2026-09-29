@@ -7,7 +7,7 @@ import { withCrmPermission } from "@/lib/auth/api";
 import {
   fileApiResponse,
   privateFileResponse,
-} from "@/lib/workspace/crm/file-api-response";
+} from "@/lib/files/file-api-response";
 import { fileSchemas } from "@/server/workspace/crm/services/files/file-schemas";
 import { listCustomerFiles } from "@/server/workspace/crm/query-handler/list-customer-files.query-handler";
 

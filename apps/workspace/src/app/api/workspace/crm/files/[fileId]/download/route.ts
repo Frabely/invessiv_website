@@ -1,13 +1,16 @@
 import "server-only";
 import type { NextRequest } from "next/server";
-import { HttpHeaderName } from "@invessiv/common/constants/http/http-header-names";
+import { FileApiErrorCode } from "@invessiv/common/constants/files/file-api-error-code";
 import { CrmEndpointAccessRule } from "@/common/constants/auth/crm-endpoint-access-rules";
+import { FileQueryParam } from "@/common/constants/files/file-query-params";
 import { withCrmPermission } from "@/lib/auth/api";
 import {
   fileApiResponse,
+  fileDownloadResponse,
   privateFileResponse,
-} from "@/lib/workspace/crm/file-api-response";
+} from "@/lib/files/file-api-response";
 import { downloadFile } from "@/server/workspace/crm/query-handler/download-file.query-handler";
+import { fileSchemas } from "@/server/workspace/crm/services/files/file-schemas";
 
 export const runtime = "nodejs";
 type RouteContext = { params: Promise<{ fileId: string }> };
@@ -17,21 +20,20 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
   return privateFileResponse(() =>
     withCrmPermission(
       CrmEndpointAccessRule.FileDownload,
-      async (_authorized, actor) => {
-        const result = await downloadFile(fileId, actor);
-        if (!result.ok) return fileApiResponse(result);
-        const { stream, filename, contentType } = result.value;
-        const encoded = encodeURIComponent(filename).replace(
-          /['()*]/g,
-          (char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`,
+      async (authorized, actor) => {
+        const parsed = fileSchemas.disposition.safeParse(
+          authorized.nextUrl.searchParams.get(FileQueryParam.Disposition) ??
+            undefined,
         );
-        return new Response(stream, {
-          headers: {
-            [HttpHeaderName.ContentType]: contentType,
-            [HttpHeaderName.ContentDisposition]: `attachment; filename="download"; filename*=UTF-8''${encoded}`,
-            [HttpHeaderName.ContentSecurityPolicy]: "sandbox",
-          },
-        });
+        if (!parsed.success)
+          return fileApiResponse({
+            ok: false,
+            code: FileApiErrorCode.Validation,
+          });
+        const result = await downloadFile(fileId, actor);
+        return result.ok
+          ? fileDownloadResponse(result.value, parsed.data)
+          : fileApiResponse(result);
       },
     )(request),
   );

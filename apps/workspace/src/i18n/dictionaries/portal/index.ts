@@ -11,6 +11,8 @@ import invitationDe from "./invitation/de.json";
 import invitationEn from "./invitation/en.json";
 import messagesDe from "./messages/de.json";
 import messagesEn from "./messages/en.json";
+import filesDe from "./files/de.json";
+import filesEn from "./files/en.json";
 
 export type PortalMetaDictionary = typeof metaDe;
 export type PortalPickerDictionary = typeof pickerDe;
@@ -18,6 +20,7 @@ export type PortalShellDictionary = typeof shellDe;
 export type PortalInvitationDictionary = typeof invitationDe;
 export type PortalDashboardDictionary = typeof dashboardDe;
 export type PortalMessagesDictionary = typeof messagesDe;
+export type PortalFilesDictionary = typeof filesDe;
 
 const PORTAL_META: Record<Locale, PortalMetaDictionary> = {
   de: metaDe,
@@ -80,4 +83,15 @@ export function getPortalDashboardDictionary(
   locale: Locale,
 ): PortalDashboardDictionary {
   return PORTAL_DASHBOARD[locale];
+}
+
+const PORTAL_FILES: Record<Locale, PortalFilesDictionary> = {
+  de: filesDe,
+  en: filesEn,
+};
+
+export function getPortalFilesDictionary(
+  locale: Locale,
+): PortalFilesDictionary {
+  return PORTAL_FILES[locale];
 }

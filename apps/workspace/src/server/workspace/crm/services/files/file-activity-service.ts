@@ -4,7 +4,7 @@ import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import type { files } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
-import { activityService } from "@/server/shared/services/activity-service";
+import { fileObjectService } from "@/server/shared/files/file-object-service";
 
 async function record(
   tx: ContactDatabaseTransaction,
@@ -13,18 +13,13 @@ async function record(
   type: ActivityType,
   fields?: string[],
 ) {
-  await activityService.createActivity(tx, {
-    customerId: row.customer_id,
-    projectId: row.project_id,
-    actor: { type: ActorType.User, userId: actor.userId },
+  await fileObjectService.recordActivity(
+    tx,
+    row,
+    { type: ActorType.User, userId: actor.userId },
     type,
-    // Free text, URLs, keys and filenames must never enter the append-only timeline.
-    metadata: {
-      entity: "file",
-      file_id: row.id,
-      ...(fields ? { fields } : {}),
-    },
-  });
+    fields,
+  );
 }
 
 async function recordChanges(

@@ -11,6 +11,7 @@ import {
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
 import type { PortalConversationDto } from "@invessiv/common/contracts/portal/portal-conversation.dto";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
+import type { PortalFilesOverviewDto } from "@invessiv/common/contracts/portal/portal-files-overview.dto";
 import { ChatDock, WidgetGrid } from "@invessiv/ui";
 import type { PortalDashboardNavigationMode as PortalDashboardNavigationModeType } from "@/common/constants/portal/portal-dashboard-navigation-modes";
 import { PortalDashboardNavigationMode } from "@/common/constants/portal/portal-dashboard-navigation-modes";
@@ -50,6 +51,10 @@ export type PortalDashboardProps = {
   conversation: PortalConversationDto | null;
   customerId: string;
   dashboard: PortalDashboardDto;
+  /** Files page of this customer, for the files widget. */
+  filesHref: string;
+  /** Null without `portal.files.read`; the files widget is then not rendered. */
+  filesOverview: PortalFilesOverviewDto | null;
   locale: Locale;
   messagesContent: PortalMessagesDictionary;
   /** Business day (`YYYY-MM-DD`) decided once on the server. */
@@ -70,6 +75,8 @@ export function PortalDashboard({
   conversation,
   customerId,
   dashboard,
+  filesHref,
+  filesOverview,
   locale,
   messagesContent,
   today,
@@ -210,13 +217,14 @@ export function PortalDashboard({
         content={content.widgets.contact}
       />
     ) : null,
-    [PortalWidgetKey.Files]: (
+    [PortalWidgetKey.Files]: filesOverview ? (
       <PortalFilesWidget
-        badgeLabel={mockBadge}
         content={content.widgets.files}
-        onOpenAction={() => openDialog(PortalWidgetKey.Files)}
+        filesHref={filesHref}
+        locale={locale}
+        overview={filesOverview}
       />
-    ),
+    ) : null,
     [PortalWidgetKey.ServiceRequest]: mockDialog(
       PortalWidgetKey.ServiceRequest,
       faCirclePlus,

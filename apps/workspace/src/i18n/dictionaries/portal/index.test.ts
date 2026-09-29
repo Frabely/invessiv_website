@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 
 import dashboardDe from "./dashboard/de.json";
 import dashboardEn from "./dashboard/en.json";
+import filesDe from "./files/de.json";
+import filesEn from "./files/en.json";
 import invitationDe from "./invitation/de.json";
 import invitationEn from "./invitation/en.json";
 import messagesDe from "./messages/de.json";
@@ -24,6 +26,7 @@ function keyPaths(value: unknown, prefix = ""): string[] {
 describe("portal dictionaries", () => {
   it.each([
     ["dashboard", dashboardDe, dashboardEn],
+    ["files", filesDe, filesEn],
     ["invitation", invitationDe, invitationEn],
     ["messages", messagesDe, messagesEn],
     ["meta", metaDe, metaEn],
@@ -35,6 +38,7 @@ describe("portal dictionaries", () => {
 
   it.each([
     ["dashboard", dashboardDe, dashboardEn],
+    ["files", filesDe, filesEn],
     ["shell", shellDe, shellEn],
   ])("%s has no empty texts", (_name, de, en) => {
     for (const text of [JSON.stringify(de), JSON.stringify(en)]) {

@@ -18,6 +18,11 @@ import { PortalTaskErrorCode } from "@invessiv/common/constants/portal/portal-ta
 import type { PortalConversationDto } from "@invessiv/common/contracts/portal/portal-conversation.dto";
 import type { PortalCustomerTaskDto } from "@invessiv/common/contracts/portal/portal-customer-task.dto";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
+import type { PortalFilesOverviewDto } from "@invessiv/common/contracts/portal/portal-files-overview.dto";
+import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
+import { FileSource } from "@invessiv/common/constants/files/file-source";
+import { UploadExtension } from "@invessiv/common/constants/files/upload-extension";
+import { PortalFileOrigin } from "@invessiv/common/constants/portal/portal-file-origin";
 import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import { listVisiblePortalWidgets } from "@/common/patterns/portal/list-visible-portal-widgets";
 import {
@@ -93,11 +98,38 @@ const CONVERSATION: PortalConversationDto = {
   canWrite: true,
 };
 const TODAY = "2026-09-26";
+// The widget's accessible name also carries its entry count.
+const FILES_WIDGET_NAME = new RegExp("^" + content.widgets.files.title);
+const FILES: PortalFilesOverviewDto = {
+  fromUs: {
+    files: [
+      {
+        id: "file-1",
+        projectId: null,
+        projectTitle: null,
+        source: FileSource.Upload,
+        assetKind: AssetKind.Document,
+        displayName: "Offer.pdf",
+        note: null,
+        origin: PortalFileOrigin.FromUs,
+        extension: UploadExtension.Pdf,
+        sizeBytes: 2048,
+        url: null,
+        createdAt: "2026-09-25T10:00:00.000Z",
+      },
+    ],
+    total: 4,
+    page: 1,
+    pageSize: 3,
+  },
+  fromYou: { files: [], total: 0, page: 1, pageSize: 3 },
+};
 const FULL_READ = new Set([
   Permission.PortalAccess,
   Permission.PortalProjectsRead,
   Permission.PortalTasksRead,
   Permission.PortalTasksComplete,
+  Permission.PortalFilesRead,
 ]);
 
 function customerTask(
@@ -148,6 +180,7 @@ function renderDashboard(
   permissions: ReadonlySet<Permission> = FULL_READ,
   cockpitHref: string | null = null,
   conversation: PortalConversationDto | null = CONVERSATION,
+  filesOverview: PortalFilesOverviewDto | null = FILES,
 ) {
   const keys = new Set<PortalWidgetKey>([
     PortalWidgetKey.Project,
@@ -162,6 +195,8 @@ function renderDashboard(
       conversation={conversation}
       customerId="customer-1"
       dashboard={dashboard}
+      filesHref="/en/portal/customer-1/files"
+      filesOverview={filesOverview}
       locale="en"
       messagesContent={messagesContent}
       today={TODAY}
@@ -204,13 +239,39 @@ describe("PortalDashboard", () => {
       content.widgets.onboarding.title,
       content.widgets.feedback.title,
       content.widgets.hours.title,
-      content.widgets.files.title,
       content.widgets.serviceRequest.title,
     ]) {
       const widget = screen.getByRole("region", { name: title });
       expect(widget).toHaveAttribute("data-mock", "true");
       expect(within(widget).getByText(content.mock.badge)).toBeInTheDocument();
     }
+  });
+
+  it("shows the newest released files and links to the files page", () => {
+    renderDashboard();
+
+    const widget = screen.getByRole("region", { name: FILES_WIDGET_NAME });
+    expect(widget).not.toHaveAttribute("data-mock", "true");
+    expect(within(widget).getByText("Offer.pdf")).toBeInTheDocument();
+    expect(within(widget).getByText("and 3 more")).toBeInTheDocument();
+    expect(
+      within(widget).getByRole("link", { name: content.widgets.files.all }),
+    ).toHaveAttribute("href", "/en/portal/customer-1/files");
+
+    fireEvent.click(
+      within(widget).getByRole("tab", { name: content.widgets.files.fromYou }),
+    );
+    expect(
+      within(widget).getByText(content.widgets.files.emptyFromYou),
+    ).toBeInTheDocument();
+  });
+
+  it("omits the files widget without portal.files.read", () => {
+    renderDashboard(dto(), FULL_READ, null, CONVERSATION, null);
+
+    expect(
+      screen.queryByRole("region", { name: FILES_WIDGET_NAME }),
+    ).toBeNull();
   });
 
   it("omits both task widgets without the read permission", () => {
@@ -324,6 +385,8 @@ describe("PortalDashboard", () => {
         conversation={CONVERSATION}
         customerId="customer-1"
         dashboard={dto()}
+        filesHref="/en/portal/customer-1/files"
+        filesOverview={FILES}
         locale="en"
         messagesContent={messagesContent}
         today={TODAY}

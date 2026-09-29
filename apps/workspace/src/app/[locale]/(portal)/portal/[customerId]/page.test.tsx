@@ -5,6 +5,8 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
+import { FileApiErrorCode } from "@invessiv/common/constants/files/file-api-error-code";
+import { PortalFileOrigin } from "@invessiv/common/constants/portal/portal-file-origin";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
 import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import type { PortalDashboardProps } from "@/components/portal/dashboard/portal-dashboard/portal-dashboard";
@@ -16,8 +18,14 @@ const mocks = vi.hoisted(() => ({
   requirePortalReader: vi.fn(),
   getPortalDashboard: vi.fn(),
   getPortalConversation: vi.fn(),
+  listPortalFiles: vi.fn(),
   dashboardProps: vi.fn(),
 }));
+
+vi.mock(
+  "@/server/portal/query-handler/list-portal-files.query-handler",
+  () => ({ listPortalFiles: mocks.listPortalFiles }),
+);
 
 vi.mock("@/server/portal/auth/require-portal-reader", () => ({
   requirePortalReader: mocks.requirePortalReader,
@@ -82,9 +90,37 @@ describe("PortalCustomerPage", () => {
       ok: false,
       code: MessageErrorCode.NotFound,
     });
+    mocks.listPortalFiles.mockResolvedValue({
+      ok: false,
+      code: FileApiErrorCode.NotFound,
+    });
   });
 
   afterEach(cleanup);
+
+  it("passes the newest files of both tabs and the files page link", async () => {
+    const page = { files: [], total: 0, page: 1, pageSize: 3 };
+    mocks.listPortalFiles.mockResolvedValue({ ok: true, value: page });
+
+    const props = await renderPage();
+
+    expect(mocks.listPortalFiles).toHaveBeenCalledWith(ACTOR, {
+      origin: PortalFileOrigin.FromUs,
+      pageSize: 3,
+    });
+    expect(mocks.listPortalFiles).toHaveBeenCalledWith(ACTOR, {
+      origin: PortalFileOrigin.FromYou,
+      pageSize: 3,
+    });
+    expect(props.filesOverview).toEqual({ fromUs: page, fromYou: page });
+    expect(props.filesHref).toBe("/de/portal/customer-1/files");
+  });
+
+  it("hides the files overview when the reader may not read files", async () => {
+    const props = await renderPage();
+
+    expect(props.filesOverview).toBeNull();
+  });
 
   it("renders a visually hidden heading with the company name", async () => {
     await renderPage();

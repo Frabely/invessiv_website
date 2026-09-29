@@ -18,4 +18,9 @@ export const PORTAL_NAV_ITEMS: readonly PortalNavItem[] = [
     labelKey: PortalSection.Messages,
     requiredPermission: Permission.PortalMessagesRead,
   },
+  {
+    section: PortalSection.Files,
+    labelKey: PortalSection.Files,
+    requiredPermission: Permission.PortalFilesRead,
+  },
 ];

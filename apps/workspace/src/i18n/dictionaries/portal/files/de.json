@@ -1,0 +1,162 @@
+{
+  "meta": {
+    "title": "Dateien | Invessiv",
+    "description": "Alles, was wir für dich freigegeben haben, und alles, was du uns geschickt hast – an einem Ort."
+  },
+  "page": {
+    "heading": "Dateien",
+    "intro": "Hier findest du Entwürfe und Unterlagen von uns. Logos, Fotos, Texte oder Videos für dein Projekt lädst du direkt hier hoch."
+  },
+  "tabs": {
+    "label": "Dateien nach Herkunft",
+    "fromUs": "Von uns",
+    "fromYou": "Von dir"
+  },
+  "actions": {
+    "upload": "Dateien hochladen",
+    "addLink": "Link hinzufügen"
+  },
+  "intake": {
+    "dropLabel": "Dateien auswählen oder hierher ziehen",
+    "dropHint": "Fotos, Videos bis 200 MB, Logos, Schriften und Dokumente · bis zu 20 Dateien auf einmal",
+    "linkHint": "Datei zu groß oder schon in der Cloud? Schick uns einfach den Link."
+  },
+  "upload": {
+    "title": "Dateien hochladen",
+    "description": "Wir sehen deine Dateien, sobald sie hochgeladen sind.",
+    "dropLabel": "Weitere Dateien auswählen",
+    "dropHint": "Bis zu 20 Dateien, zusammen höchstens 1 GB",
+    "largerHint": "Größere Dateien? Füge stattdessen einen Link hinzu.",
+    "project": "Wofür ist das?",
+    "generalOption": "Allgemein",
+    "note": "Notiz",
+    "notePlaceholder": "Optional, z. B. „Logo in Weiß für dunkle Hintergründe“",
+    "cancel": "Abbrechen",
+    "close": "Fertig",
+    "start": "{count} Dateien hochladen",
+    "startOne": "1 Datei hochladen",
+    "more": "Noch mehr hochladen",
+    "busyHint": "Lass dieses Fenster offen, bis alle Dateien hochgeladen sind.",
+    "queueLabel": "Ausgewählte Dateien",
+    "summary": "{done} von {total} Dateien hochgeladen",
+    "remove": "{name} entfernen",
+    "cancelItem": "{name} abbrechen",
+    "retryItem": "{name} erneut versuchen",
+    "progress": "Fortschritt {name}",
+    "status": {
+      "staged": "Bereit",
+      "rejected": "Nicht möglich",
+      "queued": "Wartet",
+      "uploading": "Wird hochgeladen",
+      "finalizing": "Wird geprüft",
+      "done": "Hochgeladen",
+      "failed": "Fehlgeschlagen",
+      "cancelled": "Abgebrochen"
+    }
+  },
+  "link": {
+    "title": "Link hinzufügen",
+    "description": "Für große Videos oder Ordner in Google Drive, Dropbox & Co. Wir öffnen den Link erst, wenn wir die Dateien brauchen.",
+    "name": "Bezeichnung",
+    "namePlaceholder": "z. B. Imagefilm 4K",
+    "url": "Link",
+    "urlPlaceholder": "https://",
+    "urlHint": "WeTransfer-Links verfallen nach 7 Tagen. Lade die Datei lieber hoch oder nutze einen dauerhaften Link.",
+    "nameRequired": "Gib eine Bezeichnung ein.",
+    "urlInvalid": "Gib einen vollständigen Link ein, der mit https:// beginnt.",
+    "submit": "Link speichern",
+    "submitting": "Wird gespeichert …"
+  },
+  "list": {
+    "label": "Dateien und Links",
+    "loading": "Dateien werden geladen …",
+    "loadError": "Die Dateien konnten nicht geladen werden.",
+    "retry": "Erneut laden",
+    "loadMore": "Weitere laden",
+    "shown": "{shown} von {total} angezeigt"
+  },
+  "kinds": {
+    "document": "Dokument",
+    "image": "Bild",
+    "video": "Video",
+    "font": "Schrift",
+    "link": "Link"
+  },
+  "row": {
+    "general": "Allgemein",
+    "opensInNewTab": "öffnet in neuem Tab",
+    "actionsLabel": "Aktionen für {name}",
+    "preview": "Ansehen",
+    "download": "Herunterladen",
+    "open": "Öffnen",
+    "previewNamed": "{name} ansehen",
+    "downloadNamed": "{name} herunterladen",
+    "openNamed": "{name} öffnen"
+  },
+  "empty": {
+    "fromUs": {
+      "title": "Noch nichts von uns",
+      "description": "Sobald wir Entwürfe, Exporte oder Unterlagen für dich freigeben, liegen sie hier zum Ansehen und Herunterladen bereit."
+    },
+    "fromYou": {
+      "title": "Du hast uns noch nichts geschickt",
+      "description": "Lade Logos, Fotos, Texte oder Videos hoch – alles, was wir für dein Projekt brauchen. Wir sehen es sofort.",
+      "readOnlyDescription": "Hier erscheint alles, was dein Team uns hochlädt oder als Link schickt."
+    }
+  },
+  "archive": {
+    "groupLabel": "Dateien für ZIP auswählen",
+    "selectNamed": "{name} für ZIP auswählen",
+    "selectShown": "Alle angezeigten auswählen",
+    "selected": "{count} ausgewählt",
+    "clear": "Auswahl aufheben",
+    "download": "Als ZIP herunterladen",
+    "preparing": "ZIP wird vorbereitet …",
+    "filename": "dateien.zip",
+    "videoHint": "Videos lädst du einzeln herunter.",
+    "limitReached": "Höchstens 100 Einträge pro ZIP."
+  },
+  "lightbox": {
+    "close": "Vorschau schließen",
+    "previous": "Vorherige Datei",
+    "next": "Nächste Datei",
+    "position": "{index} von {total}",
+    "loading": "Vorschau wird geladen …",
+    "error": "Die Vorschau konnte nicht geladen werden. Lade die Datei stattdessen herunter.",
+    "download": "Herunterladen"
+  },
+  "announcements": {
+    "uploaded": "{name} hochgeladen",
+    "linkAdded": "Link „{name}“ gespeichert"
+  },
+  "owner": {
+    "hint": "In der Portalansicht kannst du nichts hochladen.",
+    "link": "Im CRM hochladen"
+  },
+  "errors": {
+    "FILE_NOT_FOUND": "Diese Datei ist nicht mehr verfügbar. Lade die Seite neu.",
+    "FILE_VALIDATION_ERROR": "Die Angaben sind unvollständig oder ungültig.",
+    "FILE_ARCHIVE_LIMIT": "Wähle höchstens 100 Einträge mit zusammen maximal 300 MB aus.",
+    "FILE_ARCHIVE_VIDEO": "Videos lädst du einzeln herunter.",
+    "FILE_PENDING_LIMIT": "Gerade laufen zu viele Uploads. Warte einen Moment und versuch es erneut.",
+    "FILE_CUSTOMER_VISIBILITY": "Das lässt sich hier nicht ändern.",
+    "FILE_UPLOAD_OWNER": "Diesen Upload kann nur abschließen, wer ihn gestartet hat.",
+    "FILE_NOT_UPLOAD": "Dieser Eintrag ist ein Link und keine Datei.",
+    "FILE_STORAGE_UNAVAILABLE": "Der Dateispeicher ist gerade nicht erreichbar. Versuch es gleich noch einmal.",
+    "FILE_INTERNAL": "Das hat nicht geklappt. Versuch es erneut.",
+    "UNSUPPORTED_EXTENSION": "Dieses Format können wir nicht annehmen. Als PDF, Bild oder Link klappt es.",
+    "INVALID_SIZE": "Die Datei ist leer.",
+    "FILE_TOO_LARGE": "Die Datei ist zu groß für dieses Format. Schick uns stattdessen einen Link.",
+    "TOO_MANY_FILES": "Höchstens 20 Dateien pro Upload.",
+    "BATCH_TOO_LARGE": "Zusammen höchstens 1 GB pro Upload.",
+    "MISSING_OBJECT": "Die Datei ist nicht vollständig angekommen. Versuch es erneut.",
+    "SIZE_MISMATCH": "Die Datei ist nicht vollständig angekommen. Versuch es erneut.",
+    "CONTENT_TYPE_MISMATCH": "Der Dateityp passt nicht zur Endung.",
+    "INVALID_SIGNATURE": "Der Inhalt passt nicht zur Dateiendung.",
+    "UNSAFE_SVG": "Das SVG enthält Skripte oder externe Verweise. Schick es uns bitte als PNG oder PDF.",
+    "INVALID_OFFICE": "Das Office-Dokument ist beschädigt oder enthält Makros. Speichere es ohne Makros oder als PDF.",
+    "INVALID_LINK": "Gib einen vollständigen Link ein, der mit https:// beginnt.",
+    "UPLOAD_NETWORK": "Die Verbindung wurde unterbrochen. Versuch es erneut.",
+    "UPLOAD_REFUSED": "Der Dateispeicher hat den Upload abgelehnt. Versuch es erneut."
+  }
+}

@@ -6,7 +6,7 @@ import { withCrmPermission } from "@/lib/auth/api";
 import {
   fileApiResponse,
   privateFileResponse,
-} from "@/lib/workspace/crm/file-api-response";
+} from "@/lib/files/file-api-response";
 import { completeFileUpload } from "@/server/workspace/crm/command-handler/complete-file-upload.command-handler";
 
 export const runtime = "nodejs";

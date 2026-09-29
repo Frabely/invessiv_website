@@ -10,6 +10,7 @@ import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { fileSchemas } from "../services/files/file-schemas";
 import { fileAccessService } from "../services/files/file-access-service";
 import { fileActivityService } from "../services/files/file-activity-service";
+import { fileObjectService } from "@/server/shared/files/file-object-service";
 import { fileService } from "../services/files/file-service";
 
 export async function deleteFile(
@@ -31,7 +32,7 @@ export async function deleteFile(
     if (!row || row.status !== FileStatus.Ready)
       return { ok: false, code: E.NotFound };
     if (row.version !== parsed.data.version) return fileService.conflict(row);
-    if (!(await fileService.remove(tx, row)))
+    if (!(await fileObjectService.remove(tx, row)))
       return { ok: false, code: E.StorageUnavailable };
     await fileActivityService.record(tx, row, actor, ActivityType.FieldChange, [
       "deleted",

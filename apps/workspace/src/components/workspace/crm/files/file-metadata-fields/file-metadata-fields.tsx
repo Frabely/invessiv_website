@@ -1,7 +1,6 @@
 "use client";
 
-import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
-import { FormField } from "@invessiv/ui";
+import { FileNoteField } from "@invessiv/ui";
 import type { FilesProjectOption } from "@/common/contracts/crm/files/files-project-option";
 import type { CrmFilesDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { FileTargetSelect } from "../file-target-select/file-target-select";
@@ -52,16 +51,12 @@ export function FileMetadataFields({
         locked={visibilityLocked}
         onChangeAction={onVisibilityChangeAction}
       />
-      <FormField
-        inputProps={{
-          disabled,
-          maxLength: 200,
-          onChange: (event) => onNoteChangeAction(event.target.value),
-          placeholder: content.upload.notePlaceholder,
-          value: note,
-        }}
-        kind={FormFieldKind.Text}
+      <FileNoteField
+        disabled={disabled}
         label={content.upload.note}
+        onChangeAction={onNoteChangeAction}
+        placeholder={content.upload.notePlaceholder}
+        value={note}
       />
     </>
   );

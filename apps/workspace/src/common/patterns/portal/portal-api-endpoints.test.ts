@@ -4,6 +4,14 @@ import {
   portalConversationEndpoint,
   portalConversationMessagesEndpoint,
   portalConversationReadEndpoint,
+  portalFileCancelEndpoint,
+  portalFileCompleteEndpoint,
+  portalFileDownloadEndpoint,
+  portalFileDownloadUrlEndpoint,
+  portalFileLinksEndpoint,
+  portalFilesArchiveEndpoint,
+  portalFilesEndpoint,
+  portalFileUploadsEndpoint,
   portalTaskCompleteEndpoint,
 } from "./portal-api-endpoints";
 
@@ -31,6 +39,31 @@ describe("portal conversation endpoints", () => {
     );
     expect(portalConversationReadEndpoint("c-1")).toBe(
       "/api/portal/c-1/conversation/read",
+    );
+  });
+});
+
+describe("portal file endpoints", () => {
+  it("builds every file path below the encoded customer", () => {
+    expect(portalFilesEndpoint("a/b")).toBe("/api/portal/a%2Fb/files");
+    expect(portalFileUploadsEndpoint("c-1")).toBe(
+      "/api/portal/c-1/files/uploads",
+    );
+    expect(portalFileLinksEndpoint("c-1")).toBe("/api/portal/c-1/files/links");
+    expect(portalFilesArchiveEndpoint("c-1")).toBe(
+      "/api/portal/c-1/files/archive",
+    );
+    expect(portalFileCompleteEndpoint("c-1", "f 1")).toBe(
+      "/api/portal/c-1/files/f%201/complete",
+    );
+    expect(portalFileCancelEndpoint("c-1", "f 1")).toBe(
+      "/api/portal/c-1/files/f%201/cancel",
+    );
+    expect(portalFileDownloadUrlEndpoint("c-1", "f-1")).toBe(
+      "/api/portal/c-1/files/f-1/download-url",
+    );
+    expect(portalFileDownloadEndpoint("c-1", "f-1")).toBe(
+      "/api/portal/c-1/files/f-1/download",
     );
   });
 });

@@ -1,15 +1,15 @@
 import "server-only";
 import type { NextRequest } from "next/server";
-import { HttpHeaderName as H } from "@invessiv/common/constants/http/http-header-names";
 import { CrmEndpointAccessRule } from "@/common/constants/auth/crm-endpoint-access-rules";
 import { withCrmPermission } from "@/lib/auth/api";
 import {
   fileApiResponse,
+  fileArchiveResponse,
   parseFileBody,
   privateFileResponse,
-} from "@/lib/workspace/crm/file-api-response";
+} from "@/lib/files/file-api-response";
 import { createFilesArchive } from "@/server/workspace/crm/query-handler/create-files-archive.query-handler";
-import { fileArchiveStream } from "@/server/workspace/crm/services/files/file-archive-stream";
+import { fileArchiveService } from "@/server/shared/files/file-archive-service";
 import { fileSchemas } from "@/server/workspace/crm/services/files/file-schemas";
 
 export const runtime = "nodejs";
@@ -25,14 +25,8 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
         parseFileBody(authorized, fileSchemas.archive, async ({ fileIds }) => {
           const result = await createFilesArchive(id, fileIds, actor);
           if (!result.ok) return fileApiResponse(result);
-          return new Response(
-            fileArchiveStream(result.rows, authorized.signal),
-            {
-              headers: {
-                [H.ContentType]: "application/zip",
-                [H.ContentDisposition]: 'attachment; filename="dateien.zip"',
-              },
-            },
+          return fileArchiveResponse(
+            fileArchiveService.stream(result.rows, authorized.signal),
           );
         }),
     )(request),

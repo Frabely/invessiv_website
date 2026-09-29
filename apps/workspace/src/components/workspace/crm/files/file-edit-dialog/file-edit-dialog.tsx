@@ -4,6 +4,7 @@ import { type SubmitEvent, useId, useState } from "react";
 import { FileSource } from "@invessiv/common/constants/files/file-source";
 import { UploadSide } from "@invessiv/common/constants/files/upload-side";
 import type { FileDto } from "@invessiv/common/contracts/files/file.dto";
+import { FormDialog } from "@invessiv/ui";
 import { filesApiService } from "@/client/crm/files-api-service";
 import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
 import type { FilesProjectOption } from "@/common/contracts/crm/files/files-project-option";
@@ -12,7 +13,6 @@ import { fileEditRequest } from "@/common/patterns/crm/files/file-edit-request";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import type { CrmFilesDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { FileMetadataFields } from "../file-metadata-fields/file-metadata-fields";
-import { FileFormDialog } from "../file-form-dialog/file-form-dialog";
 import styles from "./file-edit-dialog.module.css";
 
 type FileEditDialogProps = {
@@ -61,7 +61,7 @@ export function FileEditDialog({
   }
 
   return (
-    <FileFormDialog
+    <FormDialog
       busy={mutation.isSubmitting}
       cancelLabel={content.upload.cancel}
       closeLabel={content.upload.close}
@@ -119,6 +119,6 @@ export function FileEditDialog({
           </p>
         ) : null}
       </form>
-    </FileFormDialog>
+    </FormDialog>
   );
 }

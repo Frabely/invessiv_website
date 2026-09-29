@@ -1,5 +1,6 @@
 import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
 import { ConversationApiPath } from "@/common/constants/crm/conversation-api-paths";
+import { FileApiPath } from "@/common/constants/files/file-api-paths";
 
 const LEAD_CONVERSION_ACTION = "convert";
 const PROJECTS_PATH = "projects";
@@ -7,13 +8,6 @@ const LINE_ITEMS_PATH = "line-items";
 const TASKS_PATH = "tasks";
 const TASK_STATUS_PATH = "status";
 const MESSAGE_REDACT_PATH = "redact";
-const FILES_PATH = "files";
-const FILE_UPLOADS_PATH = "uploads";
-const FILE_LINKS_PATH = "links";
-const FILE_ARCHIVE_PATH = "archive";
-const FILE_COMPLETE_PATH = "complete";
-const FILE_DOWNLOAD_URL_PATH = "download-url";
-const FILE_DOWNLOAD_PATH = "download";
 
 export function crmCustomerEndpoint(customerId: string): string {
   return `${WorkspaceApiEndpoint.CrmCustomers}/${encodeURIComponent(customerId)}`;
@@ -84,23 +78,23 @@ export function crmMessageRedactEndpoint(messageId: string): string {
 }
 
 export function crmFileDownloadEndpoint(fileId: string): string {
-  return `${crmFileEndpoint(fileId)}/${FILE_DOWNLOAD_PATH}`;
+  return `${crmFileEndpoint(fileId)}/${FileApiPath.Download}`;
 }
 
 export function crmCustomerFilesEndpoint(customerId: string): string {
-  return `${crmCustomerEndpoint(customerId)}/${FILES_PATH}`;
+  return `${crmCustomerEndpoint(customerId)}/${FileApiPath.Files}`;
 }
 
 export function crmCustomerFileUploadsEndpoint(customerId: string): string {
-  return `${crmCustomerFilesEndpoint(customerId)}/${FILE_UPLOADS_PATH}`;
+  return `${crmCustomerFilesEndpoint(customerId)}/${FileApiPath.Uploads}`;
 }
 
 export function crmCustomerFileLinksEndpoint(customerId: string): string {
-  return `${crmCustomerFilesEndpoint(customerId)}/${FILE_LINKS_PATH}`;
+  return `${crmCustomerFilesEndpoint(customerId)}/${FileApiPath.Links}`;
 }
 
 export function crmCustomerFilesArchiveEndpoint(customerId: string): string {
-  return `${crmCustomerFilesEndpoint(customerId)}/${FILE_ARCHIVE_PATH}`;
+  return `${crmCustomerFilesEndpoint(customerId)}/${FileApiPath.Archive}`;
 }
 
 export function crmFileEndpoint(fileId: string): string {
@@ -108,9 +102,13 @@ export function crmFileEndpoint(fileId: string): string {
 }
 
 export function crmFileCompleteEndpoint(fileId: string): string {
-  return `${crmFileEndpoint(fileId)}/${FILE_COMPLETE_PATH}`;
+  return `${crmFileEndpoint(fileId)}/${FileApiPath.Complete}`;
+}
+
+export function crmFileCancelEndpoint(fileId: string): string {
+  return `${crmFileEndpoint(fileId)}/${FileApiPath.Cancel}`;
 }
 
 export function crmFileDownloadUrlEndpoint(fileId: string): string {
-  return `${crmFileEndpoint(fileId)}/${FILE_DOWNLOAD_URL_PATH}`;
+  return `${crmFileEndpoint(fileId)}/${FileApiPath.DownloadUrl}`;
 }

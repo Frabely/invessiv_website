@@ -1,7 +1,7 @@
 import { ASSET_KIND_VALUES } from "@invessiv/common/constants/files/asset-kind";
 import { FILE_ORIGIN_VALUES } from "@invessiv/common/constants/files/file-origin";
 import type { FileListQueryDto } from "@invessiv/common/contracts/files/file-list-query.dto";
-import { CUSTOMER_FILES_PAGE_SIZE } from "@/common/constants/crm/files/customer-files-list-limits";
+import { FILES_PAGE_SIZE } from "@/common/constants/files/files-page-size";
 import {
   CUSTOMER_WIDE_FILES_FILTER,
   CustomerFilesQueryParam,
@@ -61,7 +61,7 @@ function toListQuery(
   const search = filter.search.trim();
   return {
     page,
-    pageSize: CUSTOMER_FILES_PAGE_SIZE,
+    pageSize: FILES_PAGE_SIZE,
     ...(filter.projectId !== undefined ? { projectId: filter.projectId } : {}),
     ...(filter.assetKind ? { assetKind: filter.assetKind } : {}),
     ...(filter.origin ? { origin: filter.origin } : {}),

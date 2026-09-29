@@ -22,6 +22,7 @@ describe("listVisiblePortalWidgets", () => {
         Permission.PortalAccess,
         Permission.PortalProjectsRead,
         Permission.PortalTasksRead,
+        Permission.PortalFilesRead,
       ]),
     ).toHaveLength(Object.values(PortalWidgetKey).length);
   });
@@ -47,9 +48,17 @@ describe("listVisiblePortalWidgets", () => {
       PortalWidgetKey.Onboarding,
       PortalWidgetKey.ServiceRequest,
       PortalWidgetKey.Feedback,
-      PortalWidgetKey.Files,
       PortalWidgetKey.Hours,
     ]);
+  });
+
+  it("shows the files widget only with portal.files.read", () => {
+    expect(keys([Permission.PortalAccess])).not.toContain(
+      PortalWidgetKey.Files,
+    );
+    expect(
+      keys([Permission.PortalAccess, Permission.PortalFilesRead]),
+    ).toContain(PortalWidgetKey.Files);
   });
 
   it("hides content-only widgets while their data is empty", () => {

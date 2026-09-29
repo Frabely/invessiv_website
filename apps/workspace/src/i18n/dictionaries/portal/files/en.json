@@ -1,0 +1,162 @@
+{
+  "meta": {
+    "title": "Files | Invessiv",
+    "description": "Everything we shared with you and everything you sent us, in one place."
+  },
+  "page": {
+    "heading": "Files",
+    "intro": "Find drafts and documents from us here. Upload logos, photos, copy or videos for your project right on this page."
+  },
+  "tabs": {
+    "label": "Files by origin",
+    "fromUs": "From us",
+    "fromYou": "From you"
+  },
+  "actions": {
+    "upload": "Upload files",
+    "addLink": "Add link"
+  },
+  "intake": {
+    "dropLabel": "Choose files or drop them here",
+    "dropHint": "Photos, videos up to 200 MB, logos, fonts and documents · up to 20 files at once",
+    "linkHint": "File too big or already in the cloud? Just send us the link."
+  },
+  "upload": {
+    "title": "Upload files",
+    "description": "We see your files as soon as they are uploaded.",
+    "dropLabel": "Choose more files",
+    "dropHint": "Up to 20 files, 1 GB in total",
+    "largerHint": "Larger files? Add a link instead.",
+    "project": "What is this for?",
+    "generalOption": "General",
+    "note": "Note",
+    "notePlaceholder": "Optional, e.g. “White logo for dark backgrounds”",
+    "cancel": "Cancel",
+    "close": "Done",
+    "start": "Upload {count} files",
+    "startOne": "Upload 1 file",
+    "more": "Upload more",
+    "busyHint": "Keep this window open until every file is uploaded.",
+    "queueLabel": "Selected files",
+    "summary": "{done} of {total} files uploaded",
+    "remove": "Remove {name}",
+    "cancelItem": "Cancel {name}",
+    "retryItem": "Retry {name}",
+    "progress": "Progress of {name}",
+    "status": {
+      "staged": "Ready",
+      "rejected": "Not possible",
+      "queued": "Waiting",
+      "uploading": "Uploading",
+      "finalizing": "Checking",
+      "done": "Uploaded",
+      "failed": "Failed",
+      "cancelled": "Cancelled"
+    }
+  },
+  "link": {
+    "title": "Add link",
+    "description": "For large videos or folders in Google Drive, Dropbox and the like. We only open the link when we need the files.",
+    "name": "Label",
+    "namePlaceholder": "e.g. Brand film 4K",
+    "url": "Link",
+    "urlPlaceholder": "https://",
+    "urlHint": "WeTransfer links expire after 7 days. Upload the file instead or use a permanent link.",
+    "nameRequired": "Enter a label.",
+    "urlInvalid": "Enter a complete link starting with https://.",
+    "submit": "Save link",
+    "submitting": "Saving …"
+  },
+  "list": {
+    "label": "Files and links",
+    "loading": "Loading files …",
+    "loadError": "The files could not be loaded.",
+    "retry": "Reload",
+    "loadMore": "Load more",
+    "shown": "Showing {shown} of {total}"
+  },
+  "kinds": {
+    "document": "Document",
+    "image": "Image",
+    "video": "Video",
+    "font": "Font",
+    "link": "Link"
+  },
+  "row": {
+    "general": "General",
+    "opensInNewTab": "opens in a new tab",
+    "actionsLabel": "Actions for {name}",
+    "preview": "View",
+    "download": "Download",
+    "open": "Open",
+    "previewNamed": "View {name}",
+    "downloadNamed": "Download {name}",
+    "openNamed": "Open {name}"
+  },
+  "empty": {
+    "fromUs": {
+      "title": "Nothing from us yet",
+      "description": "As soon as we share drafts, exports or documents with you, they are ready here to view and download."
+    },
+    "fromYou": {
+      "title": "You haven't sent us anything yet",
+      "description": "Upload logos, photos, copy or videos – everything we need for your project. We see it right away.",
+      "readOnlyDescription": "Everything your team uploads or sends as a link appears here."
+    }
+  },
+  "archive": {
+    "groupLabel": "Select files for a ZIP",
+    "selectNamed": "Select {name} for the ZIP",
+    "selectShown": "Select all shown",
+    "selected": "{count} selected",
+    "clear": "Clear selection",
+    "download": "Download as ZIP",
+    "preparing": "Preparing ZIP …",
+    "filename": "files.zip",
+    "videoHint": "Download videos one at a time.",
+    "limitReached": "At most 100 entries per ZIP."
+  },
+  "lightbox": {
+    "close": "Close preview",
+    "previous": "Previous file",
+    "next": "Next file",
+    "position": "{index} of {total}",
+    "loading": "Loading preview …",
+    "error": "The preview could not be loaded. Download the file instead.",
+    "download": "Download"
+  },
+  "announcements": {
+    "uploaded": "{name} uploaded",
+    "linkAdded": "Link “{name}” saved"
+  },
+  "owner": {
+    "hint": "You can't upload in the portal view.",
+    "link": "Upload in the CRM"
+  },
+  "errors": {
+    "FILE_NOT_FOUND": "This file is no longer available. Reload the page.",
+    "FILE_VALIDATION_ERROR": "Some details are missing or invalid.",
+    "FILE_ARCHIVE_LIMIT": "Select at most 100 entries with 300 MB in total.",
+    "FILE_ARCHIVE_VIDEO": "Download videos one at a time.",
+    "FILE_PENDING_LIMIT": "Too many uploads are running. Wait a moment and try again.",
+    "FILE_CUSTOMER_VISIBILITY": "This can't be changed here.",
+    "FILE_UPLOAD_OWNER": "Only the person who started this upload can finish it.",
+    "FILE_NOT_UPLOAD": "This entry is a link, not a file.",
+    "FILE_STORAGE_UNAVAILABLE": "File storage is unavailable right now. Try again in a moment.",
+    "FILE_INTERNAL": "That didn't work. Try again.",
+    "UNSUPPORTED_EXTENSION": "We can't accept this format. A PDF, image or link works.",
+    "INVALID_SIZE": "The file is empty.",
+    "FILE_TOO_LARGE": "The file is too large for this format. Send us a link instead.",
+    "TOO_MANY_FILES": "At most 20 files per upload.",
+    "BATCH_TOO_LARGE": "At most 1 GB per upload in total.",
+    "MISSING_OBJECT": "The file did not arrive completely. Try again.",
+    "SIZE_MISMATCH": "The file did not arrive completely. Try again.",
+    "CONTENT_TYPE_MISMATCH": "The file type does not match its extension.",
+    "INVALID_SIGNATURE": "The content does not match the file extension.",
+    "UNSAFE_SVG": "The SVG contains scripts or external references. Please send it as a PNG or PDF.",
+    "INVALID_OFFICE": "The Office document is damaged or contains macros. Save it without macros or as a PDF.",
+    "INVALID_LINK": "Enter a complete link starting with https://.",
+    "UPLOAD_NETWORK": "The connection dropped. Try again.",
+    "UPLOAD_REFUSED": "File storage refused the upload. Try again."
+  }
+}
