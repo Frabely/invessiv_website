@@ -8,7 +8,7 @@ import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
 import { FileInspectionStatus } from "@invessiv/common/constants/files/file-inspection-status";
 import { UploadExtension } from "@invessiv/common/constants/files/upload-extension";
 import { UPLOAD_CONTENT_TYPES } from "@invessiv/common/constants/files/upload-content-types";
-import { createFileTestFixture } from "./file-test-fixture";
+import { createFileTestFixture } from "../../../shared/files/file-test-fixture";
 
 vi.mock("server-only", () => ({}));
 describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(

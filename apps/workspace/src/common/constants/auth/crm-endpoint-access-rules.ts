@@ -10,6 +10,7 @@ export const CrmEndpointAccessRule = {
   FilesArchive: "files_archive",
   FileUpload: "file_upload",
   FileComplete: "file_complete",
+  FileCancel: "file_cancel",
   FileLink: "file_link",
   FileUpdate: "file_update",
   FileDelete: "file_delete",
@@ -58,6 +59,10 @@ export const CRM_ENDPOINT_ACCESS_RULES = {
     scope: "project",
   },
   [CrmEndpointAccessRule.FileComplete]: {
+    permission: Permission.FilesWrite,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.FileCancel]: {
     permission: Permission.FilesWrite,
     scope: "project",
   },

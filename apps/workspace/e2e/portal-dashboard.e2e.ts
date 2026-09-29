@@ -25,7 +25,11 @@ test.describe.serial("portal dashboard", () => {
     await expect(portalLink).toBeVisible();
     await portalLink.click();
     await expect(page.getByText(/Portalansicht von/)).toBeVisible();
-    await expect(page.getByText("Dein Projekt wird vorbereitet")).toBeVisible();
+    await expect(
+      page
+        .getByRole("heading", { name: "Dein Projekt wird vorbereitet" })
+        .first(),
+    ).toBeVisible();
 
     for (const viewport of [
       { name: "desktop", width: 1280, height: 900 },
@@ -52,7 +56,7 @@ test.describe.serial("portal dashboard", () => {
       }
     }
 
-    await page.goto(`/de/portal/${fixture.customerA}?widget=files`);
+    await page.goto(`/de/portal/${fixture.customerA}?widget=onboarding`);
     await expect(page.getByRole("dialog")).toBeVisible();
     await page.screenshot({
       path: testInfo.outputPath("portal-widget-dialog.png"),

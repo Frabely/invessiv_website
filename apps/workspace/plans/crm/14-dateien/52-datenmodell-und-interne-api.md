@@ -61,7 +61,9 @@ Storage-Pfad enthalten; ein separates `storageKey`-Feld wird nie ausgegeben.
 - Pro tatsächlich geändertem Fachfeld entsteht eine Activity ohne Freitext, Dateiname, URL oder Storage-Key.
   Providerfehler werden nur als neutraler Fehlercode geloggt.
 - Pending-Bereinigung nach 24 Stunden und Wiederaufnahme markierter Objekte folgen in Ordner 20c. Bis dahin belegen
-  abgebrochene Uploads Pending-Slots. Erfolgreiche Dateien werden nie automatisch gelöscht.
+  abgebrochene Uploads nur so lange einen Pending-Slot, wie ihr Upload-Ticket gültig ist (`UPLOAD_URL_TTL_MS`); danach
+  zählt die Zeile nicht mehr zum Limit (seit Task 55, gilt für CRM und Portal). Erfolgreiche Dateien werden nie
+  automatisch gelöscht.
 
 ## Ergänzende Gate-Korrekturen am bestehenden Chat
 

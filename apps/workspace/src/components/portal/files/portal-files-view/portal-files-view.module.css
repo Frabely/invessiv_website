@@ -1,0 +1,95 @@
+/*
+ * One column. The intake is the page's one loud element: a wide, thumb-sized target that opens
+ * the gallery or the camera on phones. The library below stays quiet and list-like.
+ */
+.page {
+  display: grid;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 52rem;
+  margin-inline: auto;
+}
+
+.header {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.header h1 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-heading-md);
+}
+
+.header p {
+  max-width: 60ch;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+.intake {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.dropZone {
+  border-radius: 1.1rem;
+}
+
+.dropZone label {
+  min-height: 11rem;
+  justify-content: center;
+}
+
+.linkRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.linkRow p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  line-height: 1.45;
+}
+
+.library {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.panel {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0.5rem 0.75rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+  border-radius: 18px;
+  background: var(--color-surface-2);
+}
+
+.actionError {
+  margin: 0;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--color-danger) 40%, transparent);
+  border-radius: 0.6rem;
+  background: color-mix(in srgb, var(--color-danger) 8%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+}
+
+@media (min-width: 768px) {
+  .dropZone label {
+    min-height: 9rem;
+  }
+
+  .panel {
+    padding: 0.75rem 1.1rem 1rem;
+  }
+}

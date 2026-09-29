@@ -190,4 +190,106 @@ describe("useUploadQueue", () => {
     window.dispatchEvent(after);
     expect(after.defaultPrevented).toBe(false);
   });
+
+  it("releases a failed portal ticket before retrying with a new one", async () => {
+    const api = {
+      ...transport(),
+      cancelPending: vi.fn(async () => ({
+        ok: true as const,
+        value: { cancelled: true as const },
+      })),
+    };
+    transfer.transferToStorage
+      .mockResolvedValueOnce({
+        ok: false,
+        code: UploadTransferErrorCode.Network,
+      })
+      .mockResolvedValueOnce({ ok: true });
+    const { result } = renderHook(() => useUploadQueue(api));
+    act(() => result.current.stage([file("retry.pdf")]));
+    act(() => result.current.start());
+    await waitFor(() =>
+      expect(result.current.items[0].status).toBe(Status.Failed),
+    );
+    expect(api.cancelPending).toHaveBeenCalledWith("server-1");
+
+    act(() => result.current.retry(result.current.items[0].id));
+    await waitFor(() =>
+      expect(result.current.items[0].status).toBe(Status.Done),
+    );
+    expect(api.createTicket).toHaveBeenCalledTimes(2);
+    expect(api.complete).toHaveBeenCalledWith("server-2");
+  });
+
+  it("does not issue a replacement ticket while cleanup is unavailable", async () => {
+    const api = {
+      ...transport(),
+      cancelPending: vi
+        .fn()
+        .mockResolvedValueOnce({
+          ok: false,
+          code: FileApiErrorCode.StorageUnavailable,
+        })
+        .mockResolvedValueOnce({ ok: true, value: { cancelled: true } }),
+    };
+    transfer.transferToStorage
+      .mockResolvedValueOnce({
+        ok: false,
+        code: UploadTransferErrorCode.Network,
+      })
+      .mockResolvedValueOnce({ ok: true });
+    const { result } = renderHook(() => useUploadQueue(api));
+    act(() => result.current.stage([file("retry.pdf")]));
+    act(() => result.current.start());
+    await waitFor(() =>
+      expect(result.current.items[0].status).toBe(Status.Failed),
+    );
+    expect(api.createTicket).toHaveBeenCalledTimes(1);
+
+    act(() => result.current.retry(result.current.items[0].id));
+    await waitFor(() =>
+      expect(result.current.items[0].status).toBe(Status.Done),
+    );
+    expect(api.cancelPending).toHaveBeenCalledTimes(2);
+    expect(api.createTicket).toHaveBeenCalledTimes(2);
+  });
+
+  it("releases a ticket even when cancellation happens before it arrives", async () => {
+    let issueTicket: (
+      ticket: Awaited<ReturnType<ReturnType<typeof transport>["createTicket"]>>,
+    ) => void = () => undefined;
+    const api = {
+      ...transport(),
+      cancelPending: vi.fn(async () => ({
+        ok: true as const,
+        value: { cancelled: true as const },
+      })),
+    };
+    api.createTicket.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          issueTicket = resolve;
+        }),
+    );
+    const { result } = renderHook(() => useUploadQueue(api));
+    act(() => result.current.stage([file("cancel.pdf")]));
+    act(() => result.current.start());
+    await waitFor(() => expect(api.createTicket).toHaveBeenCalledTimes(1));
+    act(() => result.current.cancel(result.current.items[0].id));
+    expect(result.current.isActive).toBe(true);
+    await act(async () =>
+      issueTicket({
+        ok: true,
+        value: {
+          file: { id: "server-late" } as FileDto,
+          ticket: { url: "https://store", method: "PUT", headers: {} },
+        },
+      }),
+    );
+    await waitFor(() =>
+      expect(result.current.items[0].status).toBe(Status.Cancelled),
+    );
+    expect(api.cancelPending).toHaveBeenCalledWith("server-late");
+    expect(transfer.transferToStorage).not.toHaveBeenCalled();
+  });
 });

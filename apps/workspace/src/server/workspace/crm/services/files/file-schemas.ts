@@ -1,49 +1,38 @@
 import { z } from "zod";
 import { ASSET_KIND_VALUES } from "@invessiv/common/constants/files/asset-kind";
 import { FILE_ORIGIN_VALUES } from "@invessiv/common/constants/files/file-origin";
-import { StorageDisposition } from "@invessiv/common/constants/storage/storage-options";
-import { validateFileLink } from "@invessiv/common/patterns/files/validate-file-link";
-import { MAX_ARCHIVE_FILES } from "@/common/constants/crm/files/file-archive-limits";
+import { fileRequestSchemas as shared } from "@/server/shared/files/file-request-schemas";
 
 const fields = {
-  projectId: z.uuid().nullable().optional(),
+  projectId: shared.projectId,
   visibleToCustomer: z.boolean().optional(),
-  note: z.string().trim().max(200).nullable().optional(),
+  note: shared.note,
 };
-const displayName = z.string().trim().min(1).max(255);
 const version = z.int().positive();
 export const fileSchemas = {
-  id: z.uuid(),
+  id: shared.id,
   upload: z.strictObject({
     ...fields,
-    displayName,
-    sizeBytes: z.int().positive(),
+    displayName: shared.displayName,
+    sizeBytes: shared.sizeBytes,
   }),
   link: z.strictObject({
     ...fields,
-    displayName,
-    url: z.string().refine(validateFileLink),
+    displayName: shared.displayName,
+    url: shared.linkUrl,
   }),
   update: z
     .strictObject({ ...fields, version })
     .refine((input) => Object.keys(fields).some((key) => key in input)),
   delete: z.strictObject({ version }),
-  archive: z.strictObject({
-    fileIds: z
-      .array(z.uuid())
-      .min(1)
-      .max(MAX_ARCHIVE_FILES)
-      .refine((ids) => new Set(ids).size === ids.length),
-  }),
+  archive: shared.archive,
   list: z.strictObject({
-    page: z.coerce.number().int().min(1).max(100_000).default(1),
-    pageSize: z.coerce.number().int().min(1).max(100).default(25),
-    projectId: z.uuid().nullable().optional(),
+    page: shared.page,
+    pageSize: shared.pageSize,
+    projectId: shared.projectId,
     assetKind: z.enum(ASSET_KIND_VALUES).optional(),
     origin: z.enum(FILE_ORIGIN_VALUES).optional(),
     search: z.string().trim().max(200).optional(),
   }),
-  disposition: z
-    .enum(StorageDisposition)
-    .default(StorageDisposition.Attachment),
+  disposition: shared.disposition,
 };

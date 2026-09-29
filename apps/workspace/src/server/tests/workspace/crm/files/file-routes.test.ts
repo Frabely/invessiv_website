@@ -221,7 +221,7 @@ describe("file HTTP authorization and responses", () => {
     expect(await response.json()).toMatchObject({
       code: FileApiErrorCode.StorageUnavailable,
     });
-    expect(log).toHaveBeenCalledWith("[workspace-files] request failed", {
+    expect(log).toHaveBeenCalledWith("[files] request failed", {
       code: FileApiErrorCode.StorageUnavailable,
     });
     log.mockRestore();

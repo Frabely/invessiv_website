@@ -111,7 +111,13 @@ Plan: `apps/workspace/plans/crm/14-dateien/53-drop-zone-und-interne-ui.md`.
 - Der Bereich existiert nur, wenn die Page ein `FilesViewModel` übergibt (`buildFilesViewModel`, `canOn` je Scope).
   Schreib- und Löschaktionen erscheinen nur für Scopes in `write` bzw. `remove`; der Client schlägt über
   `filesScopeRights` nach und wertet nie selbst Rollen aus. Projektrechte öffnen nie kundenweite Einträge.
-- Die Liste lädt über `useCustomerFiles` aus der API, nicht über die Page. Nach jeder Änderung ruft der Abschnitt
+- Typ-Symbol, Upload-Zeile, Lightbox und Formular-Dialog kommen seit Task 55 aus `@invessiv/ui` (`FileKindIcon`,
+  `UploadQueueRow`, `FileLightbox`, `FormDialog`), weil das Portal sie ebenfalls nutzt; Texte gehen als Labels hinein.
+- Upload- und Link-Dialoge, Dateizeile, Listenrahmen und ZIP-Auswahlleiste verwenden die geteilten UI-Bausteine
+  `FileUploadDialogFrame`, `FileLinkDialogFrame`, `FileEntryRow`, `FileListFrame` und `FileArchiveToolbar`.
+  CRM-Komponenten ergänzen nur Rechte, Zielauswahl, Sichtbarkeit und ihre API-Aufrufe.
+- Die Liste lädt über `useCustomerFiles` (auf dem geteilten `usePagedFiles`) aus der API, nicht über die Page.
+  Die ZIP-Auswahl läuft über das geteilte `useFileSelection`. Nach jeder Änderung ruft der Abschnitt
   `onChangedAction` auf; das Cockpit erhöht `filesRevision`, damit alle Dateiabschnitte neu laden.
 - Filter Projekt/Art/Herkunft leben in der URL (`CustomerFilesQueryParam`, `history.replaceState`); die Freitextsuche
   bleibt außerhalb der URL.

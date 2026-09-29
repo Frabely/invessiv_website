@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MAX_PARALLEL_UPLOADS } from "@invessiv/common/constants/files/upload-limits";
+import { FileApiErrorCode } from "@invessiv/common/constants/files/file-api-error-code";
 import { UploadQueueItemStatus as Status } from "@invessiv/common/constants/files/upload-queue-item-status";
 import type { FileDto } from "@invessiv/common/contracts/files/file.dto";
 import type { UploadQueueErrorCode } from "@invessiv/common/contracts/files/upload-queue-error-code";
@@ -15,9 +16,9 @@ import type { UploadQueueTransport } from "@/common/contracts/files/upload-queue
  * progress, cancel and retry per file, and a leave-page warning while anything is in flight.
  * A retry after a failed finalization resumes there instead of uploading the bytes again.
  */
-export function useUploadQueue(
-  transport: UploadQueueTransport,
-  options: { onUploadedAction?: (file: FileDto) => void } = {},
+export function useUploadQueue<TFile extends { id: string } = FileDto>(
+  transport: UploadQueueTransport<TFile>,
+  options: { onUploadedAction?: (file: TFile) => void } = {},
 ) {
   const [items, setItems] = useState<UploadQueueItem[]>([]);
   const filesRef = useRef(new Map<string, File>());
@@ -25,6 +26,7 @@ export function useUploadQueue(
   const serverIdsRef = useRef(new Map<string, string>());
   const storedRef = useRef(new Set<string>());
   const runningRef = useRef(new Set<string>());
+  const cancelRequestedRef = useRef(new Set<string>());
   const sequenceRef = useRef(0);
   const transportRef = useRef(transport);
   const onUploadedRef = useRef(options.onUploadedAction);
@@ -56,11 +58,37 @@ export function useUploadQueue(
     async (id: string) => {
       const file = filesRef.current.get(id);
       if (!file) return;
+
+      async function releasePending(): Promise<UploadQueueErrorCode | null> {
+        const serverId = serverIdsRef.current.get(id);
+        if (!serverId) return null;
+        const cancelPending = transportRef.current.cancelPending;
+        if (cancelPending) {
+          const cancelled = await cancelPending(serverId);
+          if (!cancelled.ok && cancelled.code !== FileApiErrorCode.NotFound)
+            return cancelled.code;
+        }
+        serverIdsRef.current.delete(id);
+        storedRef.current.delete(id);
+        return null;
+      }
       try {
         if (!storedRef.current.has(id)) {
+          const previousCleanupError = await releasePending();
+          if (previousCleanupError) return fail(id, previousCleanupError);
           const ticket = await transportRef.current.createTicket(file);
-          if (!ticket.ok) return fail(id, ticket.code);
+          if (!ticket.ok) {
+            if (cancelRequestedRef.current.has(id))
+              return patch(id, { status: Status.Cancelled, progress: 0 });
+            return fail(id, ticket.code);
+          }
           serverIdsRef.current.set(id, ticket.value.file.id);
+          if (cancelRequestedRef.current.has(id)) {
+            const cleanupError = await releasePending();
+            return cleanupError
+              ? fail(id, cleanupError)
+              : patch(id, { status: Status.Cancelled, progress: 0 });
+          }
           const controller = new AbortController();
           controllersRef.current.set(id, controller);
           const transfer = await transferToStorage(
@@ -71,6 +99,8 @@ export function useUploadQueue(
           );
           controllersRef.current.delete(id);
           if (!transfer.ok) {
+            const cleanupError = await releasePending();
+            if (cleanupError) return fail(id, cleanupError);
             if ("aborted" in transfer)
               return patch(id, { status: Status.Cancelled, progress: 0 });
             return fail(id, transfer.code);
@@ -85,9 +115,12 @@ export function useUploadQueue(
           // Refused content is removed on the server; only a transient failure may resume.
           if (!uploadQueuePlan.isRetryable(completed.code))
             storedRef.current.delete(id);
+          if (!uploadQueuePlan.isRetryable(completed.code))
+            serverIdsRef.current.delete(id);
           return fail(id, completed.code);
         }
         patch(id, { status: Status.Done, errorCode: null });
+        serverIdsRef.current.delete(id);
         onUploadedRef.current?.(completed.value);
       } finally {
         runningRef.current.delete(id);
@@ -179,6 +212,7 @@ export function useUploadQueue(
 
   function remove(id: string) {
     filesRef.current.delete(id);
+    cancelRequestedRef.current.delete(id);
     setItems((current) =>
       current.filter(
         (item) =>
@@ -189,6 +223,7 @@ export function useUploadQueue(
   }
 
   function cancel(id: string) {
+    cancelRequestedRef.current.add(id);
     const controller = controllersRef.current.get(id);
     if (controller) {
       controller.abort();
@@ -197,6 +232,7 @@ export function useUploadQueue(
     setItems((current) =>
       current.map((item) =>
         item.id === id &&
+        !runningRef.current.has(id) &&
         (item.status === Status.Queued || item.status === Status.Staged)
           ? { ...item, status: Status.Cancelled }
           : item,
@@ -205,6 +241,7 @@ export function useUploadQueue(
   }
 
   function retry(id: string) {
+    cancelRequestedRef.current.delete(id);
     setItems((current) =>
       current.map((item) =>
         item.id === id &&
@@ -221,6 +258,7 @@ export function useUploadQueue(
     filesRef.current.clear();
     serverIdsRef.current.clear();
     storedRef.current.clear();
+    cancelRequestedRef.current.clear();
     setItems([]);
   }
 

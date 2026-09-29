@@ -1,1 +1,0 @@
-export const CUSTOMER_FILES_PAGE_SIZE = 25;

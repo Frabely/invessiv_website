@@ -7,7 +7,7 @@ import {
   fileApiResponse,
   parseFileBody,
   privateFileResponse,
-} from "@/lib/workspace/crm/file-api-response";
+} from "@/lib/files/file-api-response";
 import { createFileUpload } from "@/server/workspace/crm/command-handler/create-file-upload.command-handler";
 import { fileSchemas } from "@/server/workspace/crm/services/files/file-schemas";
 

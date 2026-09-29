@@ -1,3 +1,65 @@
 .panel {
+  display: grid;
+  gap: 0.5rem;
   margin-top: 0.9rem;
+}
+
+.list {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.name {
+  overflow: hidden;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.date,
+.more,
+.empty {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+.date {
+  font-variant-numeric: tabular-nums;
+}
+
+.empty {
+  line-height: 1.5;
+}
+
+.all {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.75rem;
+  color: var(--color-cta);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.all:hover {
+  text-decoration: underline;
+}
+
+.all:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 0.35rem;
 }

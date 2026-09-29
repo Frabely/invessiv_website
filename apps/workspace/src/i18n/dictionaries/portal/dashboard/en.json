@@ -94,17 +94,14 @@
     },
     "files": {
       "title": "Files",
-      "open": "Learn more",
+      "all": "All files",
       "tabsLabel": "Files by origin",
       "fromYou": "From you",
       "fromUs": "From us",
-      "teaserFromYou": "Soon you will find everything you uploaded for us here.",
-      "teaserFromUs": "Soon you will find everything we shared with you here.",
-      "upcoming": [
-        "Your uploads, ready to download",
-        "Files we shared with you, such as drafts and exports",
-        "New versions uploaded as new files"
-      ]
+      "emptyFromUs": "As soon as we share something with you, it appears here.",
+      "emptyFromYou": "Upload logos, photos or copy for your project under “All files”.",
+      "more": "and {count} more",
+      "moreOne": "and 1 more"
     },
     "serviceRequest": {
       "title": "Request a service",

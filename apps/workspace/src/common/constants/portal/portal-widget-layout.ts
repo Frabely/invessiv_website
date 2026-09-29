@@ -94,9 +94,10 @@ export const PORTAL_WIDGET_LAYOUT: readonly PortalWidgetDefinition[] = [
     key: PortalWidgetKey.Files,
     order: 90,
     span: QUARTER_ROW,
-    openMode: WidgetOpenMode.Dialog,
+    openMode: WidgetOpenMode.None,
     scope: PortalWidgetScope.Customer,
-    mock: true,
+    mock: false,
+    requiredPermission: Permission.PortalFilesRead,
     onlyWithContent: false,
   },
   {

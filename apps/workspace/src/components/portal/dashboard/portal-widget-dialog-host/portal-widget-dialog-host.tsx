@@ -39,7 +39,6 @@ export function PortalWidgetDialogHost({
     widgetKey === PortalWidgetKey.Onboarding ||
     widgetKey === PortalWidgetKey.Feedback ||
     widgetKey === PortalWidgetKey.Hours ||
-    widgetKey === PortalWidgetKey.Files ||
     widgetKey === PortalWidgetKey.ServiceRequest
       ? content.widgets[widgetKey]
       : null;

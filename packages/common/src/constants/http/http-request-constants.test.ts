@@ -33,6 +33,9 @@ describe("HttpHeaderName and MediaType", () => {
       Range: "Range",
       ContentRange: "Content-Range",
     });
-    expect(MediaType).toEqual({ Json: "application/json" });
+    expect(MediaType).toEqual({
+      Json: "application/json",
+      Zip: "application/zip",
+    });
   });
 });

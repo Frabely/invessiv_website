@@ -54,6 +54,9 @@ describe("filePresentation", () => {
     expect(filePresentation.formatSize(1_500, "en")).toBe("1.5 kB");
     expect(filePresentation.formatSize(40_000_000, "de")).toBe("40 MB");
     expect(filePresentation.formatSize(250_000_000, "en")).toBe("250 MB");
+    expect(filePresentation.formatDate("2026-09-28T10:00:00.000Z", "en")).toBe(
+      "Sep 28, 2026",
+    );
   });
 
   it("shows the bare host of a link", () => {

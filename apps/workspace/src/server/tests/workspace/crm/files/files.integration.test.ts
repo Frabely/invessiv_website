@@ -12,7 +12,7 @@ import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurre
 import { StorageDisposition } from "@invessiv/common/constants/storage/storage-options";
 import { StorageErrorCode } from "@invessiv/common/constants/storage/storage-error-code";
 import { MAX_UPLOAD_FILES } from "@invessiv/common/constants/files/upload-limits";
-import { MAX_ARCHIVE_BYTES } from "@/common/constants/crm/files/file-archive-limits";
+import { MAX_ARCHIVE_BYTES } from "@/common/constants/files/file-archive-limits";
 import { activities, files } from "@invessiv/db/record-configuration";
 import { createInMemoryStorage } from "@invessiv/storage/testing";
 import { StorageError } from "@invessiv/storage";
@@ -26,7 +26,7 @@ import { listCustomerFiles } from "@/server/workspace/crm/query-handler/list-cus
 import { getFileDownloadUrl } from "@/server/workspace/crm/query-handler/get-file-download-url.query-handler";
 import { downloadFile } from "@/server/workspace/crm/query-handler/download-file.query-handler";
 import { createFilesArchive } from "@/server/workspace/crm/query-handler/create-files-archive.query-handler";
-import { createFileTestFixture } from "./file-test-fixture";
+import { createFileTestFixture } from "../../../shared/files/file-test-fixture";
 
 vi.mock("server-only", () => ({}));
 describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(

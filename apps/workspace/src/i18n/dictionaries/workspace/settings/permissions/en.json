@@ -143,6 +143,14 @@
       "label": "Write portal messages",
       "description": "Reply in the company's shared conversation."
     },
+    "portal.files.read": {
+      "label": "View portal files",
+      "description": "See, preview and download released files and links."
+    },
+    "portal.files.write": {
+      "label": "Upload portal files",
+      "description": "Upload own files and add links. Deleting and editing stay internal."
+    },
     "roles.manage": {
       "label": "Manage roles",
       "description": "Create and change roles."

@@ -94,17 +94,14 @@
     },
     "files": {
       "title": "Dateien",
-      "open": "Mehr erfahren",
+      "all": "Alle Dateien",
       "tabsLabel": "Dateien nach Herkunft",
       "fromYou": "Von dir",
       "fromUs": "Von uns",
-      "teaserFromYou": "Hier findest du bald alles, was du uns hochgeladen hast.",
-      "teaserFromUs": "Hier findest du bald alles, was wir für dich freigegeben haben.",
-      "upcoming": [
-        "Deine Uploads zum Herunterladen",
-        "Von uns freigegebene Dateien wie Entwürfe und Exporte",
-        "Neue Versionen als neue Datei hochladen"
-      ]
+      "emptyFromUs": "Sobald wir etwas für dich freigeben, liegt es hier.",
+      "emptyFromYou": "Logos, Fotos oder Texte für dein Projekt lädst du unter „Alle Dateien“ hoch.",
+      "more": "und {count} weitere",
+      "moreOne": "und 1 weitere"
     },
     "serviceRequest": {
       "title": "Leistung anfragen",

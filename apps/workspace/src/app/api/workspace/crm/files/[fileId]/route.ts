@@ -7,7 +7,7 @@ import {
   fileApiResponse,
   parseFileBody,
   privateFileResponse,
-} from "@/lib/workspace/crm/file-api-response";
+} from "@/lib/files/file-api-response";
 import { deleteFile } from "@/server/workspace/crm/command-handler/delete-file.command-handler";
 import { updateFile } from "@/server/workspace/crm/command-handler/update-file.command-handler";
 import { fileSchemas } from "@/server/workspace/crm/services/files/file-schemas";

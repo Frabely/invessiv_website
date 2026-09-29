@@ -13,6 +13,8 @@ import {
   people,
   portalInvitationRoles,
   portalInvitations,
+  portalMembershipRoles,
+  portalMemberships,
   roles,
   users,
   workspaceMemberRoles,
@@ -130,6 +132,7 @@ async function removeOldCustomers(tx: ContactDatabaseTransaction) {
 
 export async function preparePortalE2eDatabase(
   managerClerkUserId: string,
+  filesContactClerkUserId: string,
 ): Promise<PortalE2eFixture> {
   return getDrizzleDatabaseClient().transaction(async (tx) => {
     const { ownerId, portalId } = await loadSystemRoles(tx);
@@ -142,9 +145,11 @@ export async function preparePortalE2eDatabase(
 
     const customerA = randomUUID();
     const customerB = randomUUID();
+    const filesCustomer = randomUUID();
     const personA = randomUUID();
     const personB = randomUUID();
     const personExpired = randomUUID();
+    const personFiles = randomUUID();
     const assignmentA = randomUUID();
     const assignmentB = randomUUID();
     const assignmentOther = randomUUID();
@@ -172,6 +177,13 @@ export async function preparePortalE2eDatabase(
         preferred_locale: "de",
         version: 1,
       },
+      {
+        id: personFiles,
+        display_name: `${PREFIX} Files Contact`,
+        primary_email: "invessiv-portal-files+clerk_test@example.com",
+        preferred_locale: "de",
+        version: 1,
+      },
     ]);
     await tx.insert(customers).values([
       {
@@ -184,6 +196,13 @@ export async function preparePortalE2eDatabase(
       {
         id: customerB,
         display_name: `${PREFIX} Customer B`,
+        status: CustomerStatus.Active,
+        owner_member_id: managerMemberId,
+        version: 1,
+      },
+      {
+        id: filesCustomer,
+        display_name: `${PREFIX} Files Customer`,
         status: CustomerStatus.Active,
         owner_member_id: managerMemberId,
         version: 1,
@@ -218,7 +237,53 @@ export async function preparePortalE2eDatabase(
         is_primary: false,
         version: 1,
       },
+      {
+        id: randomUUID(),
+        customer_id: filesCustomer,
+        person_id: personFiles,
+        is_primary: true,
+        version: 1,
+      },
     ]);
+
+    const filesUserId = randomUUID();
+    await tx
+      .insert(users)
+      .values({
+        id: filesUserId,
+        clerk_user_id: filesContactClerkUserId,
+        primary_email: "invessiv-portal-files+clerk_test@example.com",
+        first_name: "Portal",
+        last_name: "E2E Files Contact",
+        display_name: `${PREFIX} Files Contact`,
+        active: true,
+        version: 1,
+      })
+      .onConflictDoNothing({ target: users.clerk_user_id });
+    const [filesUser] = await tx
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.clerk_user_id, filesContactClerkUserId))
+      .limit(1);
+    if (!filesUser)
+      throw new Error("Portal E2E files contact identity is missing.");
+    const filesMembershipId = randomUUID();
+    await tx.insert(portalMemberships).values({
+      id: filesMembershipId,
+      customer_id: filesCustomer,
+      person_id: personFiles,
+      user_id: filesUser.id,
+      activated_at: new Date(),
+      email_notifications_enabled: false,
+      version: 1,
+    });
+    await tx.insert(portalMembershipRoles).values({
+      portal_membership_id: filesMembershipId,
+      role_id: portalId,
+      role_realm: AuthRealm.Portal,
+      assigned_by_member_id: managerMemberId,
+      assigned_at: new Date(),
+    });
 
     const expiredToken = randomBytes(32).toString("base64url");
     const invitationId = randomUUID();
@@ -240,6 +305,7 @@ export async function preparePortalE2eDatabase(
     return {
       customerA,
       customerB,
+      filesCustomer,
       assignmentA,
       assignmentB,
       assignmentOther,

@@ -58,4 +58,25 @@ function linkHost(url: string): string | null {
   return parseHttpUrl(url)?.hostname.replace(/^www\./u, "") ?? null;
 }
 
-export const filePresentation = { previewKindOf, formatSize, linkHost };
+const dateFormatters = new Map<string, Intl.DateTimeFormat>();
+
+/** Short upload date for list rows, e.g. "28 Sept 2026". */
+function formatDate(iso: string, locale: string): string {
+  let formatter = dateFormatters.get(locale);
+  if (!formatter) {
+    formatter = new Intl.DateTimeFormat(locale, {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+    dateFormatters.set(locale, formatter);
+  }
+  return formatter.format(new Date(iso));
+}
+
+export const filePresentation = {
+  previewKindOf,
+  formatSize,
+  formatDate,
+  linkHost,
+};

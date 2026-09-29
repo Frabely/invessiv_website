@@ -143,6 +143,14 @@
       "label": "Nachrichten im Portal schreiben",
       "description": "Im gemeinsamen Nachrichtenverlauf des Unternehmens antworten."
     },
+    "portal.files.read": {
+      "label": "Dateien im Portal ansehen",
+      "description": "Freigegebene Dateien und Links ansehen, in der Vorschau öffnen und herunterladen."
+    },
+    "portal.files.write": {
+      "label": "Dateien im Portal hochladen",
+      "description": "Eigene Dateien hochladen und Links hinterlegen. Löschen und Bearbeiten bleiben intern."
+    },
     "roles.manage": {
       "label": "Rollen verwalten",
       "description": "Rollen anlegen und ändern."
