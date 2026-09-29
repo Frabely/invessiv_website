@@ -3,7 +3,7 @@ import { ProjectFieldLimits } from "@invessiv/common/constants/crm/forms/project
 import { PROJECT_BILLING_MODEL_VALUES } from "@invessiv/common/constants/crm/project-billing-models";
 import { PROJECT_PHASE_SEQUENCE } from "@invessiv/common/constants/crm/project-phases";
 import { PROJECT_STATUS_VALUES } from "@invessiv/common/constants/crm/project-statuses";
-import { sortFeedbackRoundPositions } from "@invessiv/common/patterns/crm/sort-feedback-round-positions";
+import { sortFeedbackRoundPositions } from "@invessiv/common/patterns/crm/feedback-round-positions";
 import { formValidationSchemas } from "@invessiv/common/patterns/validation/form-validation-schemas";
 
 const nullableText = z

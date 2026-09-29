@@ -180,3 +180,43 @@ describe("custom step operations", () => {
     expect(value.currentProcessStep).toBe("Gestaltung");
   });
 });
+
+describe("duplicate step labels", () => {
+  const twins = plan({
+    steps: ["Design", "Entwicklung", "Design"],
+    currentProcessStep: "Design",
+    feedbackRoundPositions: [],
+  });
+
+  it("keeps the current step while another step still carries its label", () => {
+    expect(removeCustomStep(twins, 0).currentProcessStep).toBe("Design");
+    expect(renameCustomStep(twins, 0, "Konzept").currentProcessStep).toBe(
+      "Design",
+    );
+  });
+
+  it("follows a rename when it removes the last step with the current label", () => {
+    const single = plan({ currentProcessStep: "Entwicklung" });
+
+    expect(renameCustomStep(single, 1, "Umsetzung").currentProcessStep).toBe(
+      "Umsetzung",
+    );
+  });
+});
+
+describe("invalid stored positions", () => {
+  it("clamps them into the step list instead of dropping the rounds", () => {
+    const rows = toProcessPlanRows(plan({ feedbackRoundPositions: [-2, 9] }));
+
+    expect(
+      rows.filter((row) => row.kind === ProcessPlanRowKind.FeedbackRound),
+    ).toHaveLength(2);
+    expect(rowLabels(plan({ feedbackRoundPositions: [-2, 9] }))).toEqual([
+      "R1",
+      "Design",
+      "Entwicklung",
+      "Launch",
+      "R2",
+    ]);
+  });
+});

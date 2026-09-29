@@ -3,11 +3,26 @@ import {
   PROJECT_PHASE_SEQUENCE,
   ProjectPhase,
 } from "@invessiv/common/constants/crm/project-phases";
-import { sortFeedbackRoundPositions } from "@invessiv/common/patterns/crm/sort-feedback-round-positions";
+import {
+  normalizeFeedbackRoundPositions,
+  sortFeedbackRoundPositions,
+} from "@invessiv/common/patterns/crm/feedback-round-positions";
 import { ProcessPlanMoveDirection } from "@/common/constants/crm/process-plan-move-directions";
 import { ProcessPlanRowKind } from "@/common/constants/crm/process-plan-row-kinds";
 import type { ProjectProcessPlan } from "@/common/contracts/crm/project-process-plan";
 import type { ProjectProcessPlanRow } from "@/common/contracts/crm/project-process-plan-row";
+
+/**
+ * The current step is stored as a label, and labels may repeat. It only changes once no step
+ * carries it any more; otherwise renaming or removing a twin would move the current step.
+ */
+function keepCurrentStep(
+  currentProcessStep: string,
+  steps: readonly string[],
+  fallback: string,
+): string {
+  return steps.includes(currentProcessStep) ? currentProcessStep : fallback;
+}
 
 type RowSlot =
   | { kind: typeof ProcessPlanRowKind.CustomStep; label: string }
@@ -34,7 +49,10 @@ export function createDefaultProcessPlan(
 }
 
 function toSlots(plan: ProjectProcessPlan): RowSlot[] {
-  const positions = sortFeedbackRoundPositions(plan.feedbackRoundPositions);
+  const positions = normalizeFeedbackRoundPositions(
+    plan.feedbackRoundPositions,
+    plan.steps.length,
+  );
   const slots: RowSlot[] = [];
   let round = 0;
   for (let stepIndex = 0; stepIndex <= plan.steps.length; stepIndex += 1) {
@@ -154,10 +172,11 @@ export function removeCustomStep(
   const next = fromSlots(plan, slots);
   return {
     ...next,
-    currentProcessStep:
-      plan.steps[stepIndex] === plan.currentProcessStep
-        ? next.steps[0]!
-        : plan.currentProcessStep,
+    currentProcessStep: keepCurrentStep(
+      plan.currentProcessStep,
+      next.steps,
+      next.steps[0]!,
+    ),
   };
 }
 
@@ -167,14 +186,12 @@ export function renameCustomStep(
   label: string,
 ): ProjectProcessPlan {
   if (!(stepIndex in plan.steps)) return plan;
+  const steps = plan.steps.map((step, index) =>
+    index === stepIndex ? label : step,
+  );
   return {
     ...plan,
-    steps: plan.steps.map((step, index) =>
-      index === stepIndex ? label : step,
-    ),
-    currentProcessStep:
-      plan.steps[stepIndex] === plan.currentProcessStep
-        ? label
-        : plan.currentProcessStep,
+    steps,
+    currentProcessStep: keepCurrentStep(plan.currentProcessStep, steps, label),
   };
 }

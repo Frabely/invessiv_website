@@ -27,6 +27,7 @@
     "create": "Create project",
     "edit": "Edit project",
     "save": "Save project",
+    "saving": "Saving …",
     "saveError": "The project could not be saved. Please try again.",
     "saveConflict": "Someone just changed this project. We loaded the current version; your input is still here. Save again to apply it.",
     "cancel": "Cancel",
@@ -55,9 +56,11 @@
       "moveDown": "Move {round} down",
       "moved": "Feedback round {number} now comes after {step}.",
       "movedToStart": "Feedback round {number} is now at the start.",
-      "countNone": "No feedback round planned yet.",
-      "countOne": "1 feedback round planned.",
-      "countMany": "{count} feedback rounds planned.",
+      "count": {
+        "none": "No feedback round planned yet.",
+        "one": "1 feedback round planned.",
+        "many": "{count} feedback rounds planned."
+      },
       "limitReached": "A project can have at most {max} feedback rounds."
     },
     "formTitleCreate": "Create project",

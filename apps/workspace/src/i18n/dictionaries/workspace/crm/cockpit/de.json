@@ -27,6 +27,7 @@
     "create": "Projekt anlegen",
     "edit": "Projekt bearbeiten",
     "save": "Projekt speichern",
+    "saving": "Wird gespeichert …",
     "saveError": "Das Projekt konnte nicht gespeichert werden. Bitte versuche es erneut.",
     "saveConflict": "Jemand hat dieses Projekt gerade geändert. Wir haben den aktuellen Stand geladen; deine Eingaben sind noch da. Speichere erneut, um sie zu übernehmen.",
     "cancel": "Abbrechen",
@@ -55,9 +56,11 @@
       "moveDown": "{round} nach unten",
       "moved": "Feedbackrunde {number} steht jetzt nach {step}.",
       "movedToStart": "Feedbackrunde {number} steht jetzt am Anfang.",
-      "countNone": "Noch keine Feedbackrunde eingeplant.",
-      "countOne": "1 Feedbackrunde eingeplant.",
-      "countMany": "{count} Feedbackrunden eingeplant.",
+      "count": {
+        "none": "Noch keine Feedbackrunde eingeplant.",
+        "one": "1 Feedbackrunde eingeplant.",
+        "many": "{count} Feedbackrunden eingeplant."
+      },
       "limitReached": "Mehr als {max} Feedbackrunden je Projekt sind nicht möglich."
     },
     "formTitleCreate": "Neues Projekt anlegen",

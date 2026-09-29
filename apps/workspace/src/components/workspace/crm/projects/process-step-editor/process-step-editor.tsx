@@ -10,6 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ProjectFieldLimits } from "@invessiv/common/constants/crm/forms/project-field-limits";
+import { formatCountMessage } from "@invessiv/common/patterns/i18n/format-count-message";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl } from "@invessiv/ui";
 import { ProcessPlanMoveDirection } from "@/common/constants/crm/process-plan-move-directions";
@@ -57,12 +58,7 @@ export function ProcessStepEditor({
   const rows = toProcessPlanRows(plan);
   const roundCount = plan.feedbackRoundPositions.length;
   const roundsFull = roundCount >= ProjectFieldLimits.FeedbackRoundsMax;
-  const countText =
-    roundCount === 0
-      ? roundContent.countNone
-      : roundCount === 1
-        ? roundContent.countOne
-        : formatMessage(roundContent.countMany, { count: roundCount });
+  const countText = formatCountMessage(roundCount, roundContent.count);
 
   // Runs after every render: a change re-renders the rows, then focus follows the affected row.
   useEffect(() => {

@@ -1,15 +1,10 @@
 "use client";
 
-import { useId, useState } from "react";
+import { type SubmitEvent, useId, useState } from "react";
 import type { ProjectErrorCode } from "@invessiv/common/constants/crm/errors/project-error-codes";
 import type { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import type { ProjectDto } from "@invessiv/common/contracts/crm/project.dto";
-import {
-  ButtonControl,
-  Dialog,
-  FormField,
-  PrimaryCtaButton,
-} from "@invessiv/ui";
+import { FormDialog, FormField } from "@invessiv/ui";
 import { projectsApiService } from "@/client/crm/projects-api-service";
 import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
 import {
@@ -40,6 +35,7 @@ export function ProjectEditorDialog({
   nextCurrentStep,
   onCloseAction,
 }: ProjectEditorDialogProps) {
+  const formId = useId();
   const currentStepId = useId();
   const currentStepHintId = useId();
   const [values, setValues] = useState(() =>
@@ -55,7 +51,8 @@ export function ProjectEditorDialog({
     onCloseAction,
   );
 
-  async function saveProject() {
+  async function saveProject(event: SubmitEvent<HTMLFormElement>) {
+    event.preventDefault();
     if (!values.title.trim() || mutation.isSubmitting) return;
     await mutation.submit(async (stored) => {
       const result = stored
@@ -72,28 +69,23 @@ export function ProjectEditorDialog({
   }
 
   return (
-    <Dialog
+    <FormDialog
+      busy={mutation.isSubmitting}
+      cancelLabel={content.cancel}
       closeLabel={content.cancel}
       description={content.formDescription}
-      footer={
-        <>
-          <ButtonControl onClick={mutation.close} type="button" variant="ghost">
-            {content.cancel}
-          </ButtonControl>
-          <PrimaryCtaButton
-            disabled={mutation.isSubmitting}
-            onClick={saveProject}
-            type="button"
-          >
-            {content.save}
-          </PrimaryCtaButton>
-        </>
-      }
+      formId={formId}
       onCloseAction={mutation.close}
-      size="narrow"
+      submitLabel={content.save}
+      submittingLabel={content.saving}
       title={project ? content.formTitleEdit : content.formTitleCreate}
     >
-      <div className={styles.form}>
+      <form
+        className={styles.form}
+        id={formId}
+        noValidate
+        onSubmit={saveProject}
+      >
         <FormField
           kind="text"
           label={content.title}
@@ -177,7 +169,7 @@ export function ProjectEditorDialog({
             {content.saveError}
           </p>
         ) : null}
-      </div>
-    </Dialog>
+      </form>
+    </FormDialog>
   );
 }

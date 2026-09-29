@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { sortFeedbackRoundPositions } from "@invessiv/common/patterns/crm/sort-feedback-round-positions";
+import {
+  normalizeFeedbackRoundPositions,
+  sortFeedbackRoundPositions,
+} from "@invessiv/common/patterns/crm/feedback-round-positions";
 
 describe("sortFeedbackRoundPositions", () => {
   it("sorts numerically and keeps duplicate positions", () => {
@@ -10,5 +13,11 @@ describe("sortFeedbackRoundPositions", () => {
     const positions = [3, 1];
     sortFeedbackRoundPositions(positions);
     expect(positions).toEqual([3, 1]);
+  });
+});
+
+describe("normalizeFeedbackRoundPositions", () => {
+  it("clamps positions into the step list and sorts them", () => {
+    expect(normalizeFeedbackRoundPositions([9, -2, 1], 3)).toEqual([0, 1, 3]);
   });
 });

@@ -4,7 +4,7 @@ import type { ProjectProcessTrack } from "../../contracts/crm/project-process-tr
 import type { ProjectProcessTrackInput } from "../../contracts/crm/project-process-track-input";
 import type { ProjectProcessTrackItem } from "../../contracts/crm/project-process-track-item";
 import type { ProcessTrackStep } from "../../contracts/ui/process-track-step";
-import { sortFeedbackRoundPositions } from "./sort-feedback-round-positions";
+import { normalizeFeedbackRoundPositions } from "./feedback-round-positions";
 
 /**
  * Feedback rounds are the only steps with logic; free-text steps are plain labels, even one called
@@ -19,10 +19,9 @@ export function buildProjectProcessTrack({
   roundLabel,
 }: ProjectProcessTrackInput): ProjectProcessTrack {
   const approvedRound = roundProgress?.approvedRoundNumber ?? null;
-  const positions = sortFeedbackRoundPositions(
-    feedbackRoundPositions.map((position) =>
-      Math.min(Math.max(position, 0), processSteps.length),
-    ),
+  const positions = normalizeFeedbackRoundPositions(
+    feedbackRoundPositions,
+    processSteps.length,
   ).slice(0, approvedRound ?? undefined);
 
   const items: ProjectProcessTrackItem[] = [];
