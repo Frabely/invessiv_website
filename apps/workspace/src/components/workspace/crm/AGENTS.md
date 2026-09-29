@@ -13,7 +13,8 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   ab Task 40 `services/` (Leistungstemplatekatalog), ab Task 41 `projects/` (Projektleistungen im Projekt-Canvas).
   Ab Task 50 zusätzlich `shared/section-collapse-toggle/`, `shared/mock-section-card/`,
   `projects/project-switcher-tabs/`, ab Task 53 `files/` (Dateien & Links). Projektkopf (Status, Titel, Owner) liegt in
-  `projects/project-overview/`; Prozessleiste und Chat-Dock kommen aus `@invessiv/ui`.
+  `projects/project-overview/`; Prozessleiste und Chat-Dock kommen aus `@invessiv/ui`. Ab Task 57 liegt der
+  Projekt-Editor in `projects/project-editor-dialog/`, die Schrittliste in `projects/process-step-editor/`.
 - Pro Komponente ein Ordner `<gruppe>/<name>/<name>.tsx` mit co-located `<name>.module.css` und Test.
 - App-neutrale Grundbausteine (Dialog, Formularfeld, Button, Badge, Empty-State) kommen aus `@invessiv/ui`, nicht aus
   Kopien. Domänenneutrale Workspace-Bausteine erst bei tatsächlicher Wiederverwendung nach `workspace/shared/`.
@@ -50,6 +51,23 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   Summe — Projektwerte entstehen in Task 42.
 - Leerer Zustand erklärt den Zweck des Bereichs und unterscheidet Schreib- von Leserecht. Ist der Katalog ohne aktives
   Template, führt der Weg sichtbar dorthin statt in einen leeren Dialog.
+
+## Prozessleiste und Feedbackrunden (ab Task 57)
+
+Plan: `apps/workspace/plans/crm/16-feedbackrunden/57-feedbackblock-und-kontingent.md`.
+
+- Die Leiste besteht aus Freitext-Schritten und **einzelnen Rundenschritten** (`feedbackRoundPositions`). Jede Runde
+  wird im Editor über „+ Runde“ einzeln hinter einer Zeile eingefügt; es gibt keinen Block und kein Zahlenfeld. Die
+  Rundennummer folgt aus der Reihenfolge, das Kontingent aus der Anzahl (serverseitig abgeleitet).
+- Editor-Operationen laufen ausschließlich über `common/patterns/crm/project-process-plan.ts`, die Anzeige in CRM und
+  Portal ausschließlich über `buildProjectProcessTrack` + `toProcessTrackSteps` aus `@invessiv/common`. Kein zweiter
+  Weg, Positionen oder Rundennummern in einer Komponente zu berechnen.
+- Es gibt keine Label-Erkennung: Ein Freitext-Schritt „Feedback“ ist ein normaler Schritt.
+- Rundenschritte sind im Select „Aktueller Prozessschritt“ nicht wählbar; ein Klick auf eine Runde in der Leiste öffnet
+  den Editor ohne Vorauswahl.
+- Speichern läuft über `useVersionedMutation`; ein Konflikt übernimmt den aktuellen Stand und behält die Eingaben.
+- Nummern in der Positionsspalte zählen nur Freitext-Schritte. Der sichtbare Button-Text („Runde“) steht am Anfang des
+  zugänglichen Namens (WCAG 2.5.3).
 
 ## Aufgaben (ab Task 11-3)
 

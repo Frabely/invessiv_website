@@ -191,11 +191,13 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
 - Zusätzlich `workflow_key = standard_web_v1`, damit weitere Abläufe später additiv entstehen.
 - Ein Projekt hat genau einen Owner und übernimmt bei Anlage den Kunden-Owner.
 - Abrechnungsart: `fixed_price`, `hourly`, `retainer`, `internal`; ausschließlich EUR.
-- Die kundensichtbare Prozessleiste (`process_steps`, `current_process_step`) ist Freitext. Zusätzlich kann höchstens
-  ein vordefinierter **Feedbackblock** eingefügt werden (`feedback_block_position`, Ordner 16); nur er trägt Logik.
+- Die kundensichtbare Prozessleiste (`process_steps`, `current_process_step`) ist Freitext. Zusätzlich werden
+  **einzelne Feedbackrunden-Schritte** an beliebiger Stelle eingefügt, je Klick genau eine Runde
+  (`feedback_round_positions`, Ordner 16); nur sie tragen Logik.
   Ein Freitext-Schritt „Feedback“ bleibt ein normaler Schritt — es gibt keine Label-Erkennung.
-- Das Feedbackrunden-Kontingent `included_feedback_rounds` (1–20, Default 2) ist intern pflegbar und nie kleiner als
-  die höchste vergebene Rundennummer.
+- Das Feedbackrunden-Kontingent ist die Anzahl der Rundenschritte (0–20, neue Projekte: 2);
+  `included_feedback_rounds` wird serverseitig synchron gehalten und ist nie kleiner als die höchste vergebene
+  Rundennummer.
 - Budget und Stundensatz sind niemals portalöffentlich. **Aufgaben neu geplant am 21.09.2026 (mit dem Nutzer abgestimmt,
   Details in `08-aufgaben/README.md`):**
 
@@ -339,7 +341,7 @@ Neuzuschnitt 29.09.2026 (mit dem Owner abgestimmt); vollständige Spezifikation 
 - Eine Feedbackrunde gehört immer zu genau einem Projekt; `project_id` ist Pflicht. Kommunikation
   ohne Projektbezug läuft über den Chat.
 - **Wir erzeugen die Runde** durch „Runde übergeben“ (Vorschau-Link, „Was ist neu“, optionale Frist) — nur bei
-  aktivem Projekt mit Feedbackblock, das am Feedbackschritt steht, ohne aktive Runde, ohne Abnahme und im Kontingent.
+  aktivem Projekt mit Rundenschritt n, das am Feedbackschritt steht, ohne aktive Runde, ohne Abnahme und im Kontingent.
 - Rundennummer fortlaufend je Projekt ab 1. Höchstens eine aktive Runde je Projekt.
 - Status: `open` → `submitted` → (`in_discussion`, überspringbar) → `in_progress` → `completed`; dazu `approved`
   (Abnahme). Das Team kann eine Runde aus `submitted`/`in_discussion` mit Hinweis an den Kunden zurückgeben.
@@ -352,10 +354,11 @@ Neuzuschnitt 29.09.2026 (mit dem Owner abgestimmt); vollständige Spezifikation 
   Rundenstatus folgt.
 - **Abnahme:** Der Kunde gibt ohne Änderungen frei (offene Runde ohne Punkte) oder nimmt nach der letzten
   abgeschlossenen Runde ab — immer mit Bestätigungsdialog und `confirmFinal`. Endgültig, keine Rücknahme in
-  Version 1. Danach steht die Prozessleiste hinter dem Feedbackblock.
-- Das Rundenkontingent liegt als `projects.included_feedback_rounds` am Projekt, Default 2, intern änderbar. Frühes
-  Feedback ist eine normale Runde und zählt ins Kontingent.
-- Zusatzrunden bucht der Kunde später über Leistungsanfragen (Ordner 13c); bis dahin erhöht das Team das Kontingent.
+  Version 1. Danach steht die Prozessleiste hinter der abgenommenen Runde.
+- Das Rundenkontingent ergibt sich aus den Rundenschritten in der Prozessleiste (neue Projekte: 2 vor „Launch“), intern
+  änderbar durch Einfügen oder Entfernen einzelner Rundenschritte. Frühes Feedback ist ein normaler Rundenschritt,
+  z. B. hinter „Design“, und zählt ins Kontingent.
+- Zusatzrunden bucht der Kunde später über Leistungsanfragen (Ordner 13c); bis dahin fügt das Team intern einen Rundenschritt ein.
   Das Portal nennt keinen Betrag.
 - Übergabe, Abschluss und Abnahme verändern die Projektphase niemals.
 - Benachrichtigung bis Ordner 20c ausschließlich über Chat-Systemnachrichten.
@@ -698,7 +701,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12b erreicht:
 | 14  | läuft     | `14-dateien`                             | Dateien, Links, ZIP, Portal-Dateien, Chat-Anhänge; sechs Teil-PRs (14.1–14.6), 14.1/14.3/14.4 gemerged, 14.2, 14.5 und 14.6 im Review | 290–425 | 12–16 T. |
 | 15b | offen     | `15b-onboarding-bogen`                   | Strukturierter Onboarding-Bogen im Portal, intern vollständig lesbar                                                                  | 100–120 |   4–5 T. |
 | 15c | offen     | `15c-onboarding-abschluss`               | Bogen erledigt Kundenaufgaben; Terminbuchung beim zuständigen Mitarbeiter                                                             |   50–70 |   2–3 T. |
-| 16  | offen     | `16-feedbackrunden`                      | Feedbackblock, Übergabe, Feedback-Punkte, Bearbeitung, Abnahme und Eingang; sechs Teil-PRs (16.1–16.6)                                | 315–430 | 13–16 T. |
+| 16  | läuft     | `16-feedbackrunden`                      | Rundenschritte, Übergabe, Feedback-Punkte, Bearbeitung, Abnahme und Eingang; sechs Teil-PRs (16.1–16.6), 16.1 im Review               | 315–430 | 13–16 T. |
 | 19  | offen     | `19-credentials`                         | Verschlüsselte Zugangsdaten und Security-Audit vollständig nutzbar                                                                    |   50–80 |   3–4 T. |
 | 20  | offen     | `20-stunden-und-history`                 | Kontingente, Buchungen und konsolidierte Timeline vollständig nutzbar                                                                 |  60–100 |   3–4 T. |
 | 20a | offen     | `20a-kundenzustaendigkeit`               | Kundenverantwortung ist auswählbar, sichtbar und versioniert änderbar                                                                 |   25–45 |   1–2 T. |

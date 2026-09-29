@@ -4,6 +4,13 @@
 > `../00-entscheidungen.md`, `../AGENTS.md` und die scoped `AGENTS.md` am Zielcode. Diese Task-Datei plus README sind
 > vollständig; frühere Chat- oder Planstände (Task 22/23) gelten nicht.
 
+> **Modelländerung aus Task 57 (29.09.2026, mit dem Owner abgestimmt, verbindlich):** Es gibt **keinen Feedbackblock**
+> mit Rundenzahl mehr. Jede Runde ist ein eigener Rundenschritt in der Prozessleiste (`projects.feedback_round_positions`,
+> Rundennummer = Reihenfolge). Wo diese Datei noch „Block“ sagt, gilt: „Block vorhanden“ → „Rundenschritt n vorhanden“;
+> „am Feedbackschritt“ → aktueller Schritt ist der letzte Freitext-Schritt vor Rundenschritt n; „Projektschritt nach dem
+> Block“ → Schritt direkt nach der abgenommenen Runde; „Block entfernen“ → übergebene Rundenschritte entfernen oder
+> verschieben; Kontingent = Anzahl der Rundenschritte. Details: README, Abschnitt „Feedbackrunden in der Prozessleiste“.
+
 > **Status:** offen · **Teil-PR:** 16.3 · **Branch:** `feat/crm-feedback-3-api`
 > **Abhängigkeiten:** Task 58 (16.2), Task 55 (14.5, Portal-Upload), Ordner 13a (Chat, `appendSystemMessage`)
 > gemerged · **Aufwand:** 2,5–3 T. · **Dateien:** 60–80
@@ -100,7 +107,7 @@ kind | null, body }]` (≤ 30; `areaLabel` muss in `area_options` liegen).
 - `command-handler/approve-portal-feedback.command-handler.ts`
   - Request: `version`, `confirmFinal: true` (sonst `CONFIRMATION_REQUIRED`, 422).
   - In diesem Task nur aus `open` mit **0 Punkten** (`ITEMS_PRESENT`, falls Punkte vorhanden). Setzt `approved_*`,
-    ruft `advancePastFeedbackBlock`; Activity; Systemnachricht `feedbackApproved`. Task 61 ergänzt `completed →
+    ruft `advancePastFeedbackRound`; Activity; Systemnachricht `feedbackApproved`. Task 61 ergänzt `completed →
 approved`.
 - `command-handler/attach-portal-feedback-file.command-handler.ts`
   - Runde `FOR UPDATE`, Status `open`; Datei ist eigene Kundendatei (`uploaded_by_side = customer`) desselben Kunden,

@@ -4,6 +4,13 @@
 > `../00-entscheidungen.md`, `../AGENTS.md` und die scoped `AGENTS.md` am Zielcode. Diese Task-Datei plus README sind
 > vollständig; frühere Chat- oder Planstände (Task 22/23) gelten nicht.
 
+> **Modelländerung aus Task 57 (29.09.2026, mit dem Owner abgestimmt, verbindlich):** Es gibt **keinen Feedbackblock**
+> mit Rundenzahl mehr. Jede Runde ist ein eigener Rundenschritt in der Prozessleiste (`projects.feedback_round_positions`,
+> Rundennummer = Reihenfolge). Wo diese Datei noch „Block“ sagt, gilt: „Block vorhanden“ → „Rundenschritt n vorhanden“;
+> „am Feedbackschritt“ → aktueller Schritt ist der letzte Freitext-Schritt vor Rundenschritt n; „Projektschritt nach dem
+> Block“ → Schritt direkt nach der abgenommenen Runde; „Block entfernen“ → übergebene Rundenschritte entfernen oder
+> verschieben; Kontingent = Anzahl der Rundenschritte. Details: README, Abschnitt „Feedbackrunden in der Prozessleiste“.
+
 > **Status:** offen · **Teil-PR:** 16.4 · **Branch:** `feat/crm-feedback-4-uebergabe-bogen`
 > **Abhängigkeiten:** Task 59 (16.3) gemerged · **Aufwand:** 3–4 T. · **Dateien:** 70–95
 > **Migration:** keine
@@ -17,7 +24,8 @@ Der erste sichtbare Teil des Kreislaufs:
   übergibt Runde n, sieht Kontingent, Verlauf und die eingereichte Runde mit allen Punkten und Dateien.
 - **Portal:** Der Kunde sieht im Dashboard-Widget, wer am Zug ist, öffnet den Feedbackbogen, legt Punkte an, hängt
   Dateien an, speichert zwischen, reicht ein — oder gibt ohne Änderungen frei.
-- **Leiste:** Der Feedbackblock wird automatisch aktiv, sobald Runde 1 existiert.
+- **Leiste:** Der Rundenschritt einer laufenden Runde wird automatisch aktiv; abgeschlossene Runden gelten als erledigt
+  (`roundProgress` aus Task 57 mit `activeRoundNumber`, `completedRoundNumber`, `approvedRoundNumber`).
 
 **Bewusster Zwischenstand:** Eingereichte Runden bleiben bis Task 61 auf `submitted` (siehe README, Rollout-Gate:
 noch keine Kunden eingeladen). Intern gibt es in diesem PR keine Statusbuttons, die ins Leere führen.
@@ -158,7 +166,8 @@ Kontingent erschöpft. „Noch keine Runde“ und „alle Runden erledigt“ sin
   „Wir sind dran“ / „Abgenommen“), Frist, Link „Feedback geben“ bzw. „Ansehen“. Ohne Runden und ohne Block erklärt es,
   wofür der Bereich gedacht ist.
 - Dashboard-Query (`get-portal-dashboard.query-handler.ts`) liefert `PortalFeedbackSummaryDto` und ergänzt
-  `PortalProjectFeedbackBlockDto` um `latestRoundNumber` und `approvedRoundNumber`; CRM-Projektansicht analog. Die
+  `PortalProjectDto` um den Rundenfortschritt (`activeRoundNumber`, `completedRoundNumber`, `approvedRoundNumber`,
+  Contract `ProjectFeedbackRoundProgress`); CRM-Projektansicht analog. Die
   Leisten nutzen `buildProjectProcessTrack` (Task 57) mit `roundProgress`.
 
 ## Tickets

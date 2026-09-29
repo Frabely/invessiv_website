@@ -4,6 +4,13 @@
 > `../00-entscheidungen.md`, `../AGENTS.md` und die scoped `AGENTS.md` am Zielcode. Diese Task-Datei plus README sind
 > vollständig; frühere Chat- oder Planstände (Task 22/23) gelten nicht.
 
+> **Modelländerung aus Task 57 (29.09.2026, mit dem Owner abgestimmt, verbindlich):** Es gibt **keinen Feedbackblock**
+> mit Rundenzahl mehr. Jede Runde ist ein eigener Rundenschritt in der Prozessleiste (`projects.feedback_round_positions`,
+> Rundennummer = Reihenfolge). Wo diese Datei noch „Block“ sagt, gilt: „Block vorhanden“ → „Rundenschritt n vorhanden“;
+> „am Feedbackschritt“ → aktueller Schritt ist der letzte Freitext-Schritt vor Rundenschritt n; „Projektschritt nach dem
+> Block“ → Schritt direkt nach der abgenommenen Runde; „Block entfernen“ → übergebene Rundenschritte entfernen oder
+> verschieben; Kontingent = Anzahl der Rundenschritte. Details: README, Abschnitt „Feedbackrunden in der Prozessleiste“.
+
 > **Status:** offen · **Teil-PR:** 16.2 · **Branch:** `feat/crm-feedback-2-datenmodell`
 > **Abhängigkeiten:** Task 57 (16.1), Ordner 08 (Aufgaben), Task 52 (14.2, `files`) gemerged · **Aufwand:** 2 T. ·
 > **Dateien:** 45–65
@@ -167,11 +174,11 @@ feedback_round_items
 - `feedback-limits.ts`: `FEEDBACK_LIMITS` (30 Punkte, 5.000 Zeichen, Bereich 80, 30 Bereiche, Notizen 2.000,
   10 Dateien je Punkt, 50 je Runde).
 - `errors/feedback-round-error-codes.ts`: `FEEDBACK_ROUND_NOT_FOUND`, `FEEDBACK_ITEM_NOT_FOUND`, `VALIDATION_ERROR`,
-  `PROJECT_NOT_ELIGIBLE`, `FEEDBACK_BLOCK_MISSING`, `PROJECT_NOT_AT_FEEDBACK_STEP`, `ROUND_ALREADY_ACTIVE`,
+  `PROJECT_NOT_ELIGIBLE`, `FEEDBACK_ROUND_STEP_MISSING`, `PROJECT_NOT_AT_FEEDBACK_STEP`, `ROUND_ALREADY_ACTIVE`,
   `QUOTA_EXHAUSTED`, `PROJECT_ALREADY_APPROVED`, `INVALID_TRANSITION`, `ROUND_LOCKED`, `ITEMS_REQUIRED`,
   `ITEM_TEXT_REQUIRED`, `ITEMS_PRESENT`, `RESULTS_INCOMPLETE`, `NOT_LATEST_ROUND`, `CONFIRMATION_REQUIRED`,
   `ATTACHMENT_LIMIT_REACHED`, `FILE_NOT_ATTACHABLE` (+ Test nach Muster `project-error-codes.test.ts`).
-- `errors/project-error-codes.ts`: `+ PROJECT_FEEDBACK_QUOTA_BELOW_USED`, `+ PROJECT_FEEDBACK_BLOCK_IN_USE`.
+- `errors/project-error-codes.ts`: `+ PROJECT_FEEDBACK_ROUND_IN_USE`.
 - `packages/common/src/constants/files/…` (bestehende Datei-Fehlercodes): `+ FILE_FEEDBACK_BOUND`.
 - `packages/common/src/constants/portal/portal-feedback-error-codes.ts` (Muster `portal-task-error-codes.ts`):
   `not_found`, `locked`, `validation`, `items_required`, `item_text_required`, `items_present`, `not_latest`,
@@ -190,22 +197,22 @@ Request-DTOs entstehen in dem Task, der ihre Route baut.
 - `canTransition(from, to, side)` aus der Tabelle.
 - `isActiveFeedbackRound(status)`.
 - `feedbackQuota({ included, rounds })` → `{ included, used, remaining, activeRoundNumber, approvedRoundNumber }`.
-- `isAtFeedbackStep({ processSteps, currentProcessStep, feedbackBlockPosition, hasRounds })` nach der Regel
-  „Runde 1: aktueller Schritt ist der letzte vor dem Block (Block an Position 0: der erste Schritt); sonst durch
-  Runden aktiv“.
+- `isAtFeedbackStep({ processSteps, currentProcessStep, feedbackRoundPositions, roundNumber })` nach der Regel
+  „aktueller Schritt ist der letzte Freitext-Schritt vor Rundenschritt n (Rundenschritt an Position 0: der erste
+  Schritt)“.
 
 ## Übergangstabelle
 
-| Von → Nach                                  | Seite    | Bedingungen (unter Sperre)                                                                                           | Nebenwirkungen (gleiche Transaktion)                                                    |
-| ------------------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| – → `open` (Übergabe)                       | intern   | Projekt `active`; Block vorhanden; am Feedbackschritt; keine aktive, keine abgenommene Runde; `max + 1 ≤ Kontingent` | Runde mit Snapshots; `projects.feedback_areas` aktualisieren; Activity; Systemnachricht |
-| `open` → `submitted`                        | customer | `version`; ≥ 1 Punkt; jeder Punkt mit Text                                                                           | `submitted_*`; Sammelaufgabe anlegen bzw. wieder öffnen; Activity; Systemnachricht      |
-| `open` → `approved`                         | customer | `version`; **0 Punkte**; `confirmFinal`                                                                              | `approved_*`; Projektschritt nach dem Block; Activity; Systemnachricht                  |
-| `submitted` → `in_discussion`               | intern   | `version`; optional `customer_notice`                                                                                | Activity; Systemnachricht                                                               |
-| `submitted`/`in_discussion` → `in_progress` | intern   | `version`                                                                                                            | `started_at`; Aufgabe `open` → `in_progress`; Activity                                  |
-| `submitted`/`in_discussion` → `open`        | intern   | `version`; `customer_notice` Pflicht                                                                                 | `submitted_*` leeren (Punkte bleiben); Aufgabe → `cancelled`; Activity; Systemnachricht |
-| `in_progress` → `completed`                 | intern   | `version`; alle Punkte mit Ergebnis                                                                                  | `completed_*`; Aufgabe → `done`; Activity; Systemnachricht                              |
-| `completed` → `approved` (Abnahme)          | customer | höchste Runde des Projekts; keine aktive Runde; `confirmFinal`                                                       | `approved_*`; Projektschritt nach dem Block; Activity; Systemnachricht                  |
+| Von → Nach                                  | Seite    | Bedingungen (unter Sperre)                                                                                       | Nebenwirkungen (gleiche Transaktion)                                                    |
+| ------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| – → `open` (Übergabe)                       | intern   | Projekt `active`; Rundenschritt n = max + 1 vorhanden; am Feedbackschritt; keine aktive, keine abgenommene Runde | Runde mit Snapshots; `projects.feedback_areas` aktualisieren; Activity; Systemnachricht |
+| `open` → `submitted`                        | customer | `version`; ≥ 1 Punkt; jeder Punkt mit Text                                                                       | `submitted_*`; Sammelaufgabe anlegen bzw. wieder öffnen; Activity; Systemnachricht      |
+| `open` → `approved`                         | customer | `version`; **0 Punkte**; `confirmFinal`                                                                          | `approved_*`; Projektschritt nach der Runde; Activity; Systemnachricht                  |
+| `submitted` → `in_discussion`               | intern   | `version`; optional `customer_notice`                                                                            | Activity; Systemnachricht                                                               |
+| `submitted`/`in_discussion` → `in_progress` | intern   | `version`                                                                                                        | `started_at`; Aufgabe `open` → `in_progress`; Activity                                  |
+| `submitted`/`in_discussion` → `open`        | intern   | `version`; `customer_notice` Pflicht                                                                             | `submitted_*` leeren (Punkte bleiben); Aufgabe → `cancelled`; Activity; Systemnachricht |
+| `in_progress` → `completed`                 | intern   | `version`; alle Punkte mit Ergebnis                                                                              | `completed_*`; Aufgabe → `done`; Activity; Systemnachricht                              |
+| `completed` → `approved` (Abnahme)          | customer | höchste Runde des Projekts; keine aktive Runde; `confirmFinal`                                                   | `approved_*`; Projektschritt nach der Runde; Activity; Systemnachricht                  |
 
 Alle anderen Kombinationen → `INVALID_TRANSITION` (409). Nach einer Abnahme ist keine Übergabe mehr möglich
 (`PROJECT_ALREADY_APPROVED`). Die Tabelle ist die einzige Quelle für Server und UI (Buttons erscheinen nur, wenn
@@ -229,8 +236,8 @@ in `apps/workspace/src/server/shared/AGENTS.md`, Abschnitt „feedback“ ergän
   `replaceDraftItems(tx, round, items, actor)`: Insert/Update/Delete gegen den gespeicherten Stand; vor dem Löschen
   eines Punkts werden seine Dateien gelöst (`feedback_round_id`/`feedback_item_id` → NULL, die Datei bleibt unter
   „Von dir“).
-- `feedback-project-step-service.ts` — `advancePastFeedbackBlock(tx, projectId)`: sperrt das Projekt, setzt
-  `current_process_step = process_steps[p]`, falls `p < cardinality`, über `updateVersioned`
+- `feedback-project-step-service.ts` — `advancePastFeedbackRound(tx, projectId, roundNumber)`: sperrt das Projekt,
+  setzt `current_process_step = process_steps[p_n]` (Position des Rundenschritts n), falls `p_n < cardinality`, über `updateVersioned`
   (`server/workspace/shared/update-versioned.ts`) mit der gesperrten Version.
 - `feedback-round-activity-service.ts` — schreibt Activities über `server/shared/services/activity-service.ts`.
   **Keine neuen Activity-Typen und keine Activity-Migration:** `activities.type` hat einen CHECK auf
@@ -244,9 +251,9 @@ in `apps/workspace/src/server/shared/AGENTS.md`, Abschnitt „feedback“ ergän
 
 ## Guards in bestehenden Handlern
 
-- `update-project.command-handler.ts`: Kontingent < höchste Rundennummer → `PROJECT_FEEDBACK_QUOTA_BELOW_USED` (422);
-  Block entfernen, obwohl Runden existieren → `PROJECT_FEEDBACK_BLOCK_IN_USE` (409). Beide unter `FOR UPDATE` des
-  Projekts.
+- `update-project.command-handler.ts`: Die Positionen der Rundenschritte 1 … höchste vergebene Rundennummer dürfen
+  sich relativ zu den Freitext-Schritten nicht ändern und nicht wegfallen → sonst `PROJECT_FEEDBACK_ROUND_IN_USE`
+  (409), unter `FOR UPDATE` des Projekts. Damit bleibt das Kontingent automatisch ≥ höchste Rundennummer.
 - `update-file.command-handler.ts`: Projektwechsel einer Datei mit `feedback_round_id` → `FILE_FEEDBACK_BOUND` (409).
 - `delete-file.command-handler.ts`: Löschen einer Datei, deren Runde nicht mehr `open` ist → `FILE_FEEDBACK_BOUND`.
 - `tasks-mapper-service.ts`: liefert `feedbackRoundId`.
@@ -281,7 +288,7 @@ Projekt mit Abnahme. Bleibt optional, damit Empty-States prüfbar bleiben.
   `server/tests/shared/feedback/`
 - **Akzeptanz:** Sammelaufgabe wird genau einmal angelegt und bei erneutem Einreichen wieder geöffnet; manuell
   erledigte Aufgabe bleibt bei Abschluss unberührt; ohne aktiven Owner keine Aufgabe und kein Fehler;
-  `replaceDraftItems` löst Dateien entfernter Punkte; `advancePastFeedbackBlock` bei Block am Ende ändert nichts
+  `replaceDraftItems` löst Dateien entfernter Punkte; `advancePastFeedbackRound` bei Block am Ende ändert nichts
 
 ### CRM-58-T4 — Guards
 

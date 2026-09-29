@@ -29,8 +29,8 @@ Details und Abnahmekriterien stehen in den aktiven geordneten Merge-Einheiten.
   und Zahlungen bleiben in Lexware.
 - Flache Projektaufgaben mit Status, internem Bearbeiter, Handlungsseite (wir/Kunde), Sichtbarkeit für den Kunden,
   Fälligkeitsdatum, Wiederholung, globaler Übersicht und Dashboard-Block.
-- Prozessleiste je Projekt aus Freitext-Schritten plus einem vordefinierten Feedbackblock, der die Feedbackrunden
-  automatisch abbildet; Feedbackrunden übergeben, Punkte bewerten und abschließen, Sammelaufgabe je Runde,
+- Prozessleiste je Projekt aus Freitext-Schritten plus einzelnen Feedbackrunden-Schritten, die an beliebiger Stelle
+  eingefügt werden und die Feedbackrunden automatisch abbilden; Feedbackrunden übergeben, Punkte bewerten und abschließen, Sammelaufgabe je Runde,
   Feedback-Eingang mit Zähler.
 - Workspace-Glocke für Zuweisungen, Fälligkeiten, Portalereignisse, Renewals und Jobfehler.
 - Explizite atomare Gesamtübergabe aller offenen Zuständigkeiten eines Mitglieds nach dem vollständigen CRM-Ausbau.

@@ -4,6 +4,13 @@
 > `../00-entscheidungen.md`, `../AGENTS.md` und die scoped `AGENTS.md` am Zielcode. Diese Task-Datei plus README sind
 > vollständig; frühere Chat- oder Planstände (Task 22/23) gelten nicht.
 
+> **Modelländerung aus Task 57 (29.09.2026, mit dem Owner abgestimmt, verbindlich):** Es gibt **keinen Feedbackblock**
+> mit Rundenzahl mehr. Jede Runde ist ein eigener Rundenschritt in der Prozessleiste (`projects.feedback_round_positions`,
+> Rundennummer = Reihenfolge). Wo diese Datei noch „Block“ sagt, gilt: „Block vorhanden“ → „Rundenschritt n vorhanden“;
+> „am Feedbackschritt“ → aktueller Schritt ist der letzte Freitext-Schritt vor Rundenschritt n; „Projektschritt nach dem
+> Block“ → Schritt direkt nach der abgenommenen Runde; „Block entfernen“ → übergebene Rundenschritte entfernen oder
+> verschieben; Kontingent = Anzahl der Rundenschritte. Details: README, Abschnitt „Feedbackrunden in der Prozessleiste“.
+
 > **Status:** offen · **Teil-PR:** 16.5 · **Branch:** `feat/crm-feedback-5-bearbeitung`
 > **Abhängigkeiten:** Task 60 (16.4) gemerged · **Aufwand:** 3 T. · **Dateien:** 70–90
 > **Migration:** keine
@@ -58,7 +65,7 @@ Portal: `POST feedback-rounds/[roundId]/approve` (aus Task 59) wird um `complete
     `in_progress` (sonst `ROUND_LOCKED`); `updateVersioned` am Punkt; `result_set_*`.
 - `apps/workspace/src/server/portal/command-handler/approve-portal-feedback.command-handler.ts` erweitern:
   `completed → approved` nur für die höchste Rundennummer (`NOT_LATEST_ROUND`) und ohne aktive Runde; wie gehabt
-  `confirmFinal`, `advancePastFeedbackBlock`, Activity, Systemnachricht `feedbackApproved`.
+  `confirmFinal`, `advancePastFeedbackRound`, Activity, Systemnachricht `feedbackApproved`.
 - Portal-Query: Ergebnisse und Antworten erst ab `completed` im DTO (Test sichert, dass sie vorher fehlen).
 
 ## UI

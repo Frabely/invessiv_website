@@ -1,6 +1,6 @@
 # Ordner 16 — Feedbackrunden
 
-> **Status:** offen · **Abhängigkeiten:** 07, 08, 13, 13a, 14 (14.2 und 14.5 gemerged) · **Aufwand:** 13–16 Tage
+> **Status:** läuft (16.1 im Review) · **Abhängigkeiten:** 07, 08, 13, 13a, 14 (14.2 und 14.5 gemerged) · **Aufwand:** 13–16 Tage
 > gesamt · **Reviewziel:** sechs Teil-PRs mit je 30–95 Dateien
 
 > **Neuzuschnitt 29.09.2026 (mit dem Owner abgestimmt):** Ersetzt die bisherigen Task-Pläne 22
@@ -22,14 +22,14 @@ Feedbackbereich in einem Ordner, wird aber in sechs Teil-PRs geliefert. Jede Tei
 einen eigenen PR, einen eigenen Status in der Tabelle unten und hält `master` deploybar. Reine Fundamente bleiben
 unsichtbar; sichtbare Funktionen werden vertikal vollständig geliefert.
 
-| PR   | Task | Branch                                | Datei                                                                            | Nach Merge sichtbar                                                                     | Dateien | Umsetzung       | Status |
-| ---- | ---- | ------------------------------------- | -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ------: | --------------- | ------ |
-| 16.1 | 57   | `feat/crm-feedback-1-prozessblock`    | [`57-feedbackblock-und-kontingent.md`](./57-feedbackblock-und-kontingent.md)     | Feedbackblock im Projekt-Editor, in CRM- und Portal-Leiste; Kontingent pflegbar         |   40–55 | Claude · max    | offen  |
-| 16.2 | 58   | `feat/crm-feedback-2-datenmodell`     | [`58-datenmodell-und-fundament.md`](./58-datenmodell-und-fundament.md)           | nichts                                                                                  |   45–65 | GPT · max       | offen  |
-| 16.3 | 59   | `feat/crm-feedback-3-api`             | [`59-server-api-uebergabe-und-bogen.md`](./59-server-api-uebergabe-und-bogen.md) | nichts (API ohne Aufrufer)                                                              |   60–80 | GPT · max       | offen  |
-| 16.4 | 60   | `feat/crm-feedback-4-uebergabe-bogen` | [`60-ui-uebergabe-und-kundenbogen.md`](./60-ui-uebergabe-und-kundenbogen.md)     | Intern: Runde übergeben, Runde lesen. Portal: Feedbackbogen, Widget, aktive Leiste      |   70–95 | Claude · max    | offen  |
-| 16.5 | 61   | `feat/crm-feedback-5-bearbeitung`     | [`61-bearbeitung-ergebnisse-abnahme.md`](./61-bearbeitung-ergebnisse-abnahme.md) | Intern: Gespräch, Umsetzung, Zurück, Ergebnisse, Abschluss. Portal: Ergebnisse, Abnahme |   70–90 | Claude · max    | offen  |
-| 16.6 | 62   | `feat/crm-feedback-6-eingang`         | [`62-eingang-und-zaehler.md`](./62-eingang-und-zaehler.md)                       | Interner Feedback-Eingang mit Sidebar-Zähler                                            |   30–45 | Claude · mittel | offen  |
+| PR   | Task | Branch                                | Datei                                                                            | Nach Merge sichtbar                                                                     | Dateien | Umsetzung       | Status    |
+| ---- | ---- | ------------------------------------- | -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ------: | --------------- | --------- |
+| 16.1 | 57   | `feat/crm-feedback-1-prozessblock`    | [`57-feedbackblock-und-kontingent.md`](./57-feedbackblock-und-kontingent.md)     | Einzelne Feedbackrunden im Projekt-Editor, in CRM- und Portal-Leiste                    |   60–75 | Claude · max    | im Review |
+| 16.2 | 58   | `feat/crm-feedback-2-datenmodell`     | [`58-datenmodell-und-fundament.md`](./58-datenmodell-und-fundament.md)           | nichts                                                                                  |   45–65 | GPT · max       | offen     |
+| 16.3 | 59   | `feat/crm-feedback-3-api`             | [`59-server-api-uebergabe-und-bogen.md`](./59-server-api-uebergabe-und-bogen.md) | nichts (API ohne Aufrufer)                                                              |   60–80 | GPT · max       | offen     |
+| 16.4 | 60   | `feat/crm-feedback-4-uebergabe-bogen` | [`60-ui-uebergabe-und-kundenbogen.md`](./60-ui-uebergabe-und-kundenbogen.md)     | Intern: Runde übergeben, Runde lesen. Portal: Feedbackbogen, Widget, aktive Leiste      |   70–95 | Claude · max    | offen     |
+| 16.5 | 61   | `feat/crm-feedback-5-bearbeitung`     | [`61-bearbeitung-ergebnisse-abnahme.md`](./61-bearbeitung-ergebnisse-abnahme.md) | Intern: Gespräch, Umsetzung, Zurück, Ergebnisse, Abschluss. Portal: Ergebnisse, Abnahme |   70–90 | Claude · max    | offen     |
+| 16.6 | 62   | `feat/crm-feedback-6-eingang`         | [`62-eingang-und-zaehler.md`](./62-eingang-und-zaehler.md)                       | Interner Feedback-Eingang mit Sidebar-Zähler                                            |   30–45 | Claude · mittel | offen     |
 
 **Umsetzung (Modell · Variante):** Empfehlung wie in `14-dateien`: GPT für Migrationen mit vielen Constraints,
 Nebenläufigkeit und Autorisierungs-Negativtests; Claude für UI, Copy (`frontend-design`, `copywriting`) und
@@ -65,28 +65,28 @@ Der Ablauf bildet den echten Review-Rhythmus ab:
    restlichen Runden verfallen.
 
 Kunde und Team sehen jederzeit, wie viele Runden enthalten, verbraucht und offen sind und wer am Zug ist — im
-Portal-Widget, auf der Feedbackseite, in der Projektansicht und als **Feedbackblock** in der Prozessleiste.
+Portal-Widget, auf der Feedbackseite, in der Projektansicht und als **Rundenschritte** in der Prozessleiste.
 
 ## Getroffene Entscheidungen
 
 ### Rundenmodell
 
-| Bereich                | Entscheidung                                                                                                                                                                                         |
-| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Wer erzeugt eine Runde | **Wir**, durch „Runde übergeben“. Nicht der Kunde beim Absenden                                                                                                                                      |
-| Warum                  | Die Runde beschreibt, worauf sich das Feedback bezieht (Vorschau, Neuigkeiten). Ohne diesen Bezug weiß in Runde 2 niemand, welchen Stand Punkt 3 meinte                                              |
-| Scope                  | Eine Runde gehört genau einem Projekt; `project_id` Pflicht, `customer_id` denormalisiert und per zusammengesetztem FK an das Projekt gebunden                                                       |
-| Rundennummer           | Fortlaufend je Projekt ab 1, serverseitig vergeben, lückenlos                                                                                                                                        |
-| Aktive Runde           | Höchstens eine Runde je Projekt in `open`, `submitted`, `in_discussion` oder `in_progress` (partieller Unique-Index)                                                                                 |
-| Kontingent             | `projects.included_feedback_rounds` (existiert, 1–20, Default 2), ab 16.1 intern pflegbar (Zahlenfeld in der Blockzeile). Invariante: Kontingent ≥ höchste vergebene Rundennummer                    |
-| Frühes Feedback        | Die Ausnahme (z. B. auf das Design) ist eine normale Runde und zählt ins Kontingent. Der Feedbackblock wird dafür in der Leiste nach vorn geschoben                                                  |
-| Phase                  | Runden hängen **nicht** an `projects.phase`. Übergabe, Abschluss und Abnahme ändern die Phase nie                                                                                                    |
-| Zusatzrunden           | Nicht in diesem Ordner. Später bucht der Kunde sie über 13c (Leistungsanfragen); bis dahin erhöht das Team das Kontingent intern. Das Portal nennt keinen Preis                                      |
-| Übergabe erlaubt       | Projektstatus `active` **und** Feedbackblock vorhanden **und** Projekt steht am Feedbackschritt (siehe „Feedbackblock“) **und** keine aktive Runde **und** keine Abnahme **und** Nummer ≤ Kontingent |
-| Abnahme                | Genau eine Runde je Projekt kann `approved` sein (partieller Unique-Index). Endgültig; **keine Rücknahme in v1**                                                                                     |
-| Bestätigung Abnahme    | Vor Freigabe/Abnahme zwingend ein Dialog mit Checkbox („Mit der Freigabe ist das Projekt von deiner Seite abgeschlossen …“); der Server verlangt zusätzlich `confirmFinal: true`                     |
-| Protokoll Abnahme      | `approved_at` + `approved_by_portal_membership_id` an der Runde; Activity; Chat-Systemnachricht                                                                                                      |
-| Löschen                | Runden und Punkte werden nie gelöscht (nur per Kunden-Purge in Ordner 21)                                                                                                                            |
+| Bereich                | Entscheidung                                                                                                                                                                                                                 |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Wer erzeugt eine Runde | **Wir**, durch „Runde übergeben“. Nicht der Kunde beim Absenden                                                                                                                                                              |
+| Warum                  | Die Runde beschreibt, worauf sich das Feedback bezieht (Vorschau, Neuigkeiten). Ohne diesen Bezug weiß in Runde 2 niemand, welchen Stand Punkt 3 meinte                                                                      |
+| Scope                  | Eine Runde gehört genau einem Projekt; `project_id` Pflicht, `customer_id` denormalisiert und per zusammengesetztem FK an das Projekt gebunden                                                                               |
+| Rundennummer           | Fortlaufend je Projekt ab 1, serverseitig vergeben, lückenlos                                                                                                                                                                |
+| Aktive Runde           | Höchstens eine Runde je Projekt in `open`, `submitted`, `in_discussion` oder `in_progress` (partieller Unique-Index)                                                                                                         |
+| Kontingent             | Anzahl der Rundenschritte in der Leiste (`feedback_round_positions`); `projects.included_feedback_rounds` (0–20) wird serverseitig synchron gehalten. Invariante: Kontingent ≥ höchste vergebene Rundennummer                |
+| Frühes Feedback        | Die Ausnahme (z. B. auf das Design) ist eine normale Runde: ein Rundenschritt hinter „Design“, der ins Kontingent zählt                                                                                                      |
+| Phase                  | Runden hängen **nicht** an `projects.phase`. Übergabe, Abschluss und Abnahme ändern die Phase nie                                                                                                                            |
+| Zusatzrunden           | Nicht in diesem Ordner. Später bucht der Kunde sie über 13c (Leistungsanfragen); bis dahin fügt das Team intern einen weiteren Rundenschritt ein. Das Portal nennt keinen Preis                                              |
+| Übergabe erlaubt       | Projektstatus `active` **und** Rundenschritt n vorhanden **und** Projekt steht am Feedbackschritt (siehe „Feedbackrunden in der Prozessleiste“) **und** keine aktive Runde **und** keine Abnahme **und** Nummer ≤ Kontingent |
+| Abnahme                | Genau eine Runde je Projekt kann `approved` sein (partieller Unique-Index). Endgültig; **keine Rücknahme in v1**                                                                                                             |
+| Bestätigung Abnahme    | Vor Freigabe/Abnahme zwingend ein Dialog mit Checkbox („Mit der Freigabe ist das Projekt von deiner Seite abgeschlossen …“); der Server verlangt zusätzlich `confirmFinal: true`                                             |
+| Protokoll Abnahme      | `approved_at` + `approved_by_portal_membership_id` an der Runde; Activity; Chat-Systemnachricht                                                                                                                              |
+| Löschen                | Runden und Punkte werden nie gelöscht (nur per Kunden-Purge in Ordner 21)                                                                                                                                                    |
 
 ### Status
 
@@ -155,27 +155,30 @@ Quelle für Server und UI.
 - Bewusst **nicht**: je Punkt eine Aufgabe (Aufgabenflut, Statusmodell passt nicht, Portal-Dopplung). Das ist später
   additiv möglich, weil Punkte eigene Zeilen sind.
 
-### Feedbackblock in der Prozessleiste
+### Feedbackrunden in der Prozessleiste
 
-Die Prozessleiste (`projects.process_steps`, `current_process_step`) bleibt **Freitext wie heute**. Neu ist ein
-**vordefinierter Schritt „Feedbackblock“**, der im Projekt-Editor statt eines Freitext-Schritts eingefügt wird
-(„Schritt hinzufügen → Freitext | Feedbackblock“). Er steht als eigene Zeile zwischen den Freitext-Schritten, lässt
-sich wie diese verschieben und entfernen und ist der **einzige** Schritt mit Logik.
+Die Prozessleiste (`projects.process_steps`, `current_process_step`) bleibt **Freitext wie heute**. Neu sind
+**einzelne Feedbackrunden-Schritte**: Im Projekt-Editor fügt der Mitarbeiter hinter jeder Zeile mit „+ Runde“ genau eine
+Feedbackrunde ein. Wer zwei Runden zwischen „Entwicklung“ und „Launch“ will, fügt dort zwei ein; eine weitere zwischen
+„Design“ und „Entwicklung“ kommt einzeln dazu. Rundenschritte stehen als eigene Zeilen zwischen den Freitext-Schritten,
+lassen sich einzeln verschieben und entfernen und sind die **einzigen** Schritte mit Logik.
 
-| Bereich             | Entscheidung                                                                                                                                                                                       |
-| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Speicherung         | `projects.feedback_block_position INTEGER NULL`: der Block steht vor `process_steps[p]`; `p = cardinality(process_steps)` = am Ende; `NULL` = kein Block                                           |
-| Anzahl              | Höchstens ein Block je Projekt (ergibt sich aus der Spalte)                                                                                                                                        |
-| Freitext „Feedback“ | Legt der Mitarbeiter einen Freitext-Schritt „Feedback“ an, ist das ein normaler Schritt **ohne** Logik. Es gibt nirgends eine Label-Erkennung                                                      |
-| Editor-UI           | Zwei getrennte Wege: „Schritt hinzufügen“ (Freitext) und „Feedbackblock einfügen“; Blockzeile unverwechselbar mit fester Beschriftung und Kontingentfeld; ↑/↓ für alle Zeilen (Details in Task 57) |
-| Entfernen           | Frei, solange das Projekt keine Runde hat; ab der ersten Runde serverseitig gesperrt (`PROJECT_FEEDBACK_BLOCK_IN_USE`, Task 58)                                                                    |
-| Darstellung         | Lokalisiert „Feedbackrunde 1 … N“ mit N = Kontingent; nach Abnahme in Runde k nur 1 … k. Der Block speichert keine eigene Zahl                                                                     |
-| Aktueller Schritt   | Abgeleitet: Abnahme vorhanden → Block erledigt. Sonst mindestens eine Runde → Block aktiv, Runde k (höchste) hervorgehoben, `current_process_step` ignoriert. Sonst gilt `current_process_step`    |
-| Am Feedbackschritt  | Für Runde 1: `current_process_step` ist der letzte Freitext-Schritt vor dem Block (Block an Position 0: der erste Schritt). Für Runde ≥ 2 ist der Block durch Runden bereits aktiv                 |
-| Nach der Abnahme    | Derselbe Command setzt `current_process_step = process_steps[p]` (der Schritt direkt nach dem Block, z. B. „Launch“), falls vorhanden, in derselben Transaktion                                    |
-| Neue Projekte       | Vorbelegte Schritte aus den Phasen **ohne** das Freitext-Label „Feedback“; der Block steht an dessen Stelle (vor „Launch“)                                                                         |
-| Bestand             | Es gibt keine Produktivdaten: kein Backfill, keine Label-Heuristik                                                                                                                                 |
-| Verworfen           | jsonb-Schrittmodell (Umbau aller fertigen Stellen für einen einzigen Logikschritt), Parallel-Array (zwei Arrays synchron halten), eigene Tabelle (überdimensioniert)                               |
+| Bereich             | Entscheidung                                                                                                                                                                                                                |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Speicherung         | `projects.feedback_round_positions INTEGER[]`: je Runde ein Eintrag, aufsteigend; die Runde steht vor `process_steps[p]`, `p = cardinality(process_steps)` = am Ende. `NULL` (Altzeilen) = keine Runden                     |
+| Anzahl              | 0–20 Runden je Projekt; mehrere Runden an derselben Stelle sind erlaubt                                                                                                                                                     |
+| Nummerierung        | Ergibt sich aus der Reihenfolge in der Leiste (Runde 1 = erster Rundenschritt). Die Runde speichert keine eigene Nummer in der Leiste                                                                                       |
+| Kontingent          | = Anzahl der Rundenschritte. Der Server schreibt `included_feedback_rounds = cardinality(feedback_round_positions)` bei jedem Speichern; ein CHECK erzwingt die Gleichheit. Kein eigenes Zahlenfeld                         |
+| Freitext „Feedback“ | Legt der Mitarbeiter einen Freitext-Schritt „Feedback“ an, ist das ein normaler Schritt **ohne** Logik. Es gibt nirgends eine Label-Erkennung                                                                               |
+| Editor-UI           | Je Zeile ↑/↓, „+ Runde“ (fügt genau eine Runde direkt darunter ein) und ✕. Rundenzeilen sind unverwechselbar (Akzentrahmen, feste Beschriftung, kein Eingabefeld). Anzahl der Runden steht über der Liste (Details Task 57) |
+| Entfernen           | Frei für noch nicht übergebene Runden. Runden bis zur höchsten übergebenen Nummer sind serverseitig gegen Entfernen und Verschieben gesperrt (`PROJECT_FEEDBACK_ROUND_IN_USE`, Task 58)                                     |
+| Darstellung         | Lokalisiert „Feedbackrunde n“ je Rundenschritt; nach Abnahme in Runde k verschwinden die Runden > k aus der Leiste                                                                                                          |
+| Aktueller Schritt   | Abgeleitet: Eine laufende Runde (`open` bis `in_progress`) ist aktuell. Sonst gilt `current_process_step`, aber nie vor der zuletzt abgeschlossenen bzw. abgenommenen Runde                                                 |
+| Am Feedbackschritt  | Für Runde k: `current_process_step` ist der letzte Freitext-Schritt vor dem Rundenschritt k (Runde an Position 0: der erste Schritt)                                                                                        |
+| Nach der Abnahme    | Derselbe Command setzt `current_process_step = process_steps[p_k]` (der Schritt direkt nach der abgenommenen Runde, z. B. „Launch“), falls vorhanden, in derselben Transaktion                                              |
+| Neue Projekte       | Vorbelegte Schritte aus den Phasen **ohne** das Freitext-Label „Feedback“; an dessen Stelle (vor „Launch“) stehen zwei einzelne Rundenschritte                                                                              |
+| Bestand             | Es gibt keine Produktivdaten: kein Backfill, keine Label-Heuristik                                                                                                                                                          |
+| Verworfen           | Ein Feedbackblock mit Rundenzahl (erster Entwurf von Task 57, vom Owner verworfen: Runden sollen einzeln an beliebiger Stelle stehen), jsonb-Schrittmodell, eigene Tabelle                                                  |
 
 ### Benachrichtigung
 
@@ -222,9 +225,9 @@ Datei-Limits je Endung bleiben `UPLOAD_LIMIT_BY_KIND` (14-dateien).
 | Ein Freitext bis 20.000 Zeichen                                    | Feedback-Punkte mit Bereich, Art, Text (≤ 5.000) und Dateien                           |
 | Status `submitted → in_progress → completed`                       | `open → submitted → (in_discussion) → in_progress → completed`, dazu `approved`        |
 | Keine Kundenfreigabe                                               | Freigabe ohne Änderungen und Abnahme nach der letzten Runde, mit Bestätigung           |
-| `feedback_round_requests` (Zusatzrunden-Anfrage, interne Freigabe) | Entfällt; Zusatzrunden über 13c, bis dahin Kontingent intern erhöhen                   |
+| `feedback_round_requests` (Zusatzrunden-Anfrage, interne Freigabe) | Entfällt; Zusatzrunden über 13c, bis dahin intern einen Rundenschritt einfügen         |
 | Antworttext beim Statuswechsel                                     | Ergebnis und Antwort je Punkt; Hinweis an den Kunden bei Gespräch und Zurück           |
-| Keine Verbindung zur Prozessleiste                                 | Vordefinierter Feedbackblock in der Leiste                                             |
+| Keine Verbindung zur Prozessleiste                                 | Einzelne Rundenschritte in der Leiste                                                  |
 | Keine Aufgabe                                                      | Typisierte Sammelaufgabe je Runde                                                      |
 | Rate-Limit 5 Absendungen je Stunde                                 | Entfällt: Runden entstehen nur durch uns, je Runde genau ein Einreichen                |
 | Portal-Dateiseite in Task 22                                       | Bereits durch Task 55 geliefert                                                        |
@@ -232,8 +235,9 @@ Datei-Limits je Endung bleiben `UPLOAD_LIMIT_BY_KIND` (14-dateien).
 
 ## Auswirkungen auf spätere Ordner
 
-- **13c Leistungsanfragen:** Zusatzrunde als anfragbare Leistung. Die Übernahme einer angenommenen Anfrage erhöht
-  `included_feedback_rounds` um 1 (≤ 20, Activity mit Actor, nie nach einer Abnahme). Die Portal-Feedbackseite
+- **13c Leistungsanfragen:** Zusatzrunde als anfragbare Leistung. Die Übernahme einer angenommenen Anfrage fügt
+  einen Rundenschritt direkt hinter dem letzten Rundenschritt ein (Kontingent +1, ≤ 20, Activity mit Actor, nie nach
+  einer Abnahme). Die Portal-Feedbackseite
   verlinkt bei erschöpftem Kontingent auf die Anfrage statt auf den Chat.
 - **20c Jobs und Benachrichtigungen:** Mail/Glocke für Übergabe, Gespräch angefordert, Zurück an Kunden und Abschluss
   (an die Portal-Kontakte des Kunden) sowie Eingereicht und Abnahme (an den Projekt-Owner); optional Fristerinnerung
@@ -262,7 +266,8 @@ Datei-Limits je Endung bleiben `UPLOAD_LIMIT_BY_KIND` (14-dateien).
 
 ## Rollback
 
-- 16.1: Revert; die Spalte `feedback_block_position` bleibt ungenutzt stehen (additiv).
+- 16.1: Revert; die Spalte `feedback_round_positions` bleibt ungenutzt stehen (additiv), der auf 0–20 erweiterte CHECK
+  schadet der alten Version nicht.
 - 16.2/16.3: nichts sichtbar; Revert genügt.
 - 16.4/16.5: `portal.feedback.*` aus `portal_standard` und eigenen Portalrollen nehmen; Widget und Feedbackseite
   verschwinden. Interne Sektion per Revert ausblenden; vorhandene Runden bleiben in der DB erhalten.

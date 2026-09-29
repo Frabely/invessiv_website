@@ -3,6 +3,10 @@ import { eq, inArray, like } from "drizzle-orm";
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
 import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
+import { ProjectBillingModel } from "@invessiv/common/constants/crm/project-billing-models";
+import { ProjectPhase } from "@invessiv/common/constants/crm/project-phases";
+import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
+import { ProjectWorkflowKey } from "@invessiv/common/constants/crm/project-workflows";
 import {
   type ContactDatabaseTransaction,
   getDrizzleDatabaseClient,
@@ -15,6 +19,7 @@ import {
   portalInvitations,
   portalMembershipRoles,
   portalMemberships,
+  projects,
   roles,
   users,
   workspaceMemberRoles,
@@ -208,6 +213,34 @@ export async function preparePortalE2eDatabase(
         version: 1,
       },
     ]);
+    // Customer B: one feedback round after the design and two before the launch.
+    await tx.insert(projects).values({
+      id: randomUUID(),
+      customer_id: customerB,
+      owner_member_id: managerMemberId,
+      title: `${PREFIX} Website-Relaunch`,
+      status: ProjectStatus.Active,
+      phase: ProjectPhase.Development,
+      process_steps: [
+        "Onboarding",
+        "Design",
+        "Entwicklung",
+        "Launch",
+        "Wartung",
+      ],
+      current_process_step: "Entwicklung",
+      workflow_key: ProjectWorkflowKey.StandardWebV1,
+      billing_model: ProjectBillingModel.FixedPrice,
+      included_feedback_rounds: 3,
+      feedback_round_positions: [2, 3, 3],
+      preview_url: null,
+      next_step_label: null,
+      next_step_due_on: null,
+      started_on: null,
+      budget_cents: null,
+      hourly_rate_cents: null,
+      version: 1,
+    });
     await tx.insert(customerContactAssignments).values([
       {
         id: assignmentA,

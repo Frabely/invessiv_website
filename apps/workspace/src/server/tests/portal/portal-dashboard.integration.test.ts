@@ -91,6 +91,7 @@ describe.skipIf(!RUN_INTEGRATION)(
         workflow_key: ProjectWorkflowKey.StandardWebV1,
         billing_model: ProjectBillingModel.FixedPrice,
         included_feedback_rounds: 2,
+        feedback_round_positions: [1, 1],
         budget_cents: 990000,
         version: 1,
       });
@@ -314,10 +315,12 @@ describe.skipIf(!RUN_INTEGRATION)(
         "status",
         "processSteps",
         "currentProcessStep",
+        "feedbackRoundPositions",
         "nextStep",
         "previewUrl",
         "projectLead",
       ]);
+      expect(dto.projects[0]?.feedbackRoundPositions).toEqual([1, 1]);
       expect(Object.keys(dto.customerTasks[0]!)).toEqual([
         "id",
         "projectId",

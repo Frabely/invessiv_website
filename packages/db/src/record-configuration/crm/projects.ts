@@ -41,6 +41,7 @@ export const projects = pgTable(
       enum: PROJECT_BILLING_MODEL_VALUES,
     }).notNull(),
     included_feedback_rounds: integer("included_feedback_rounds").notNull(),
+    feedback_round_positions: integer("feedback_round_positions").array(),
     preview_url: text("preview_url"),
     next_step_label: text("next_step_label"),
     next_step_due_on: date("next_step_due_on"),
@@ -84,7 +85,15 @@ export const projects = pgTable(
     check(
       ProjectsConstraintName.FeedbackRoundsCheck,
       sql`${t.included_feedback_rounds}
-            between 1 and 20`,
+            between 0 and 20`,
+    ),
+    check(
+      ProjectsConstraintName.FeedbackRoundPositionsCheck,
+      sql`${t.feedback_round_positions} is null or (cardinality(${t.feedback_round_positions}) <= 20 and array_position(${t.feedback_round_positions}, null) is null and 0 <= all (${t.feedback_round_positions}) and cardinality(${t.process_steps}) >= all (${t.feedback_round_positions}))`,
+    ),
+    check(
+      ProjectsConstraintName.FeedbackRoundsMatchCheck,
+      sql`${t.feedback_round_positions} is null or cardinality(${t.feedback_round_positions}) = ${t.included_feedback_rounds}`,
     ),
     check(
       ProjectsConstraintName.BudgetCheck,

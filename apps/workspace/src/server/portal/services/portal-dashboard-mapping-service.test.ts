@@ -22,6 +22,7 @@ function project(status: ProjectStatus, ownerMemberId = "member-1") {
     status,
     processSteps: ["Start", "Finish"],
     currentProcessStep: "Start",
+    feedbackRoundPositions: [1, 1] as number[] | null,
     nextStepLabel: null,
     nextStepDueOn: null,
     previewUrl: null,
@@ -108,5 +109,28 @@ describe("portalDashboardMappingService.mapRowsToDto", () => {
     expect(dto.customerTasks).toHaveLength(20);
     expect(dto.customerTasks[0]?.id).toBe("task-21");
     expect(dto.customerTasks.at(-1)?.id).toBe("task-2");
+  });
+});
+
+describe("portalDashboardMappingService feedback rounds", () => {
+  function map(feedbackRoundPositions: number[] | null) {
+    return portalDashboardMappingService.mapRowsToDto({
+      customer,
+      projects: [{ ...project(ProjectStatus.Active), feedbackRoundPositions }],
+      tasks: [],
+      today: "2026-09-26",
+      canCompleteTasks: false,
+      isOwnerView: false,
+    });
+  }
+
+  it("exposes the round positions", () => {
+    expect(map([0, 1, 1]).projects[0]?.feedbackRoundPositions).toEqual([
+      0, 1, 1,
+    ]);
+  });
+
+  it("maps a project from before the rounds column to no rounds", () => {
+    expect(map(null).projects[0]?.feedbackRoundPositions).toEqual([]);
   });
 });

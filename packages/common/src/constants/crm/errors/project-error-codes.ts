@@ -1,6 +1,7 @@
 export const ProjectErrorCode = {
   NotFound: "PROJECT_NOT_FOUND",
   ValidationError: "PROJECT_VALIDATION_ERROR",
+  Internal: "PROJECT_INTERNAL",
 } as const;
 
 export type ProjectErrorCode =

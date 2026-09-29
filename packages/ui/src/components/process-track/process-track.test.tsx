@@ -2,6 +2,7 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { ProcessStepVariant } from "@invessiv/common/constants/ui/process-step-variants";
 import { ProcessTrack } from "@invessiv/ui";
 
 describe("ProcessTrack", () => {
@@ -38,5 +39,40 @@ describe("ProcessTrack", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Launch" }));
     expect(onStepAction).toHaveBeenCalledWith("Launch", 2);
+  });
+});
+
+describe("ProcessTrack step objects", () => {
+  afterEach(cleanup);
+
+  it("renders labels and exposes the accent variant as a data attribute", () => {
+    const onStepAction = vi.fn();
+    render(
+      <ProcessTrack
+        currentIndex={0}
+        label="Phases"
+        onStepAction={onStepAction}
+        scrollCurrentIntoView={false}
+        steps={[
+          { key: "start", label: "Start" },
+          {
+            key: "round-1",
+            label: "Round 1",
+            variant: ProcessStepVariant.Accent,
+          },
+          {
+            key: "round-2",
+            label: "Round 1",
+            variant: ProcessStepVariant.Accent,
+          },
+        ]}
+      />,
+    );
+
+    expect(
+      screen.getAllByRole("listitem").map((item) => item.dataset.variant),
+    ).toEqual(["default", "accent", "accent"]);
+    fireEvent.click(screen.getAllByRole("button", { name: "Round 1" })[1]!);
+    expect(onStepAction).toHaveBeenCalledWith("Round 1", 2);
   });
 });

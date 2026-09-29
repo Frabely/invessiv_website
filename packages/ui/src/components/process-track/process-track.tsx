@@ -4,17 +4,34 @@ import { type ReactNode, useEffect, useRef } from "react";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ProcessStepState } from "@invessiv/common/constants/ui/process-step-states";
+import { ProcessStepVariant } from "@invessiv/common/constants/ui/process-step-variants";
+import type { ProcessTrackStep } from "@invessiv/common/contracts/ui/process-track-step";
 import { ButtonControl } from "../button/button";
 import styles from "./process-track.module.css";
 
 export type ProcessTrackProps = {
-  steps: readonly string[];
+  /** Plain labels, or step objects when steps need a stable key or an accent. */
+  steps: readonly (string | ProcessTrackStep)[];
   currentIndex: number;
   label: string;
   summary?: ReactNode;
   onStepAction?: (step: string, index: number) => void;
   scrollCurrentIntoView?: boolean;
 };
+
+function toStep(step: string | ProcessTrackStep, index: number) {
+  return typeof step === "string"
+    ? {
+        key: `${step}-${index}`,
+        label: step,
+        variant: ProcessStepVariant.Default,
+      }
+    : {
+        key: step.key,
+        label: step.label,
+        variant: step.variant ?? ProcessStepVariant.Default,
+      };
+}
 
 export function ProcessTrack({
   steps,
@@ -39,7 +56,8 @@ export function ProcessTrack({
     <div className={styles.progress}>
       {summary}
       <ol aria-label={label} className={styles.track}>
-        {steps.map((step, index) => {
+        {steps.map((rawStep, index) => {
+          const step = toStep(rawStep, index);
           const state =
             index < currentIndex
               ? ProcessStepState.Complete
@@ -57,7 +75,7 @@ export function ProcessTrack({
                     icon={faCheck}
                   />
                 ) : null}
-                {step}
+                {step.label}
               </span>
             </>
           );
@@ -68,7 +86,8 @@ export function ProcessTrack({
               }
               className={styles.step}
               data-state={state}
-              key={`${step}-${index}`}
+              data-variant={step.variant}
+              key={step.key}
               ref={
                 state === ProcessStepState.Current ? currentStepRef : undefined
               }
@@ -76,7 +95,7 @@ export function ProcessTrack({
               {onStepAction ? (
                 <ButtonControl
                   className={styles.stepButton}
-                  onClick={() => onStepAction(step, index)}
+                  onClick={() => onStepAction(step.label, index)}
                   type="button"
                   variant="ghost"
                 >

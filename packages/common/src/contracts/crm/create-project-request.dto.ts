@@ -15,6 +15,8 @@ export interface CreateProjectRequestDto {
   currentProcessStep: string;
   /** Internal billing model. */
   billingModel: ProjectBillingModel;
+  /** One entry per feedback round (0 … processSteps.length, at most 20); the server derives the included rounds from it. */
+  feedbackRoundPositions: number[];
   /** Optional preview URL. */
   previewUrl: string | null;
   /** Optional next action label. */

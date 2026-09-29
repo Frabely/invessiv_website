@@ -15,6 +15,10 @@ import type { Locale } from "@/config/i18n";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
 import { formatCalendarDay } from "@/lib/i18n/format-calendar-day";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
+import {
+  buildProjectProcessTrack,
+  toProcessTrackSteps,
+} from "@invessiv/common/patterns/crm/project-process-track";
 import styles from "./portal-project-widget.module.css";
 
 export type PortalProjectWidgetProps = {
@@ -36,7 +40,13 @@ export function PortalProjectWidget({
   const panelId = `${baseId}-panel`;
   const tabId = (projectId: string) => `${baseId}-tab-${projectId}`;
   const hasTabs = projects.length > 1;
-  const currentIndex = project.processSteps.indexOf(project.currentProcessStep);
+  const track = buildProjectProcessTrack({
+    processSteps: project.processSteps,
+    currentProcessStep: project.currentProcessStep,
+    feedbackRoundPositions: project.feedbackRoundPositions,
+    roundLabel: (number) => formatMessage(content.feedbackRound, { number }),
+  });
+  const total = track.items.length;
   const isPlanned = project.status === ProjectStatus.Planned;
   const note = isPlanned
     ? content.plannedNote
@@ -82,16 +92,16 @@ export function PortalProjectWidget({
         role={hasTabs ? "tabpanel" : undefined}
       >
         {note ? <p className={styles.note}>{note}</p> : null}
-        {!isPlanned && currentIndex >= 0 ? (
+        {!isPlanned && track.currentIndex >= 0 ? (
           <ProcessTrack
-            currentIndex={currentIndex}
+            currentIndex={track.currentIndex}
             label={content.trackLabel}
-            steps={project.processSteps}
+            steps={toProcessTrackSteps(track.items)}
             summary={
               <p className={styles.stepSummary}>
                 {formatMessage(content.stepSummary, {
-                  current: currentIndex + 1,
-                  total: project.processSteps.length,
+                  current: Math.min(track.currentIndex + 1, total),
+                  total,
                 })}
               </p>
             }

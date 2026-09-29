@@ -6,6 +6,7 @@ import {
   SystemMessageKey,
   SystemMessageParam,
 } from "@invessiv/common/constants/crm/system-message-keys";
+import { ProjectErrorCode } from "@invessiv/common/constants/crm/errors/project-error-codes";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { UpdateProjectRequestDto } from "@invessiv/common/contracts/crm/update-project-request.dto";
 import { workspaceActorWith } from "@/server/tests/support/workspace-auth-fixtures";
@@ -43,6 +44,7 @@ function input(phase: ProjectPhase): UpdateProjectRequestDto {
     processSteps: ["Kickoff"],
     currentProcessStep: "Kickoff",
     billingModel: "fixed_price",
+    feedbackRoundPositions: [1, 0, 1],
     previewUrl: null,
     nextStepLabel: null,
     nextStepDueOn: null,
@@ -138,5 +140,67 @@ describe("updateProject phase change", () => {
 
     expect(mocks.lockPhase).toHaveBeenCalledWith("update");
     expect(mocks.appendSystemMessage).not.toHaveBeenCalled();
+  });
+});
+
+describe("updateProject feedback rounds", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mocks.limit.mockResolvedValue([{ customerId: CUSTOMER_ID }]);
+    mocks.lockPhase.mockResolvedValue([{ phase: ProjectPhase.Design }]);
+    mocks.getDatabase.mockReturnValue({
+      select: () => ({
+        from: () => ({ where: () => ({ limit: mocks.limit }) }),
+      }),
+      transaction: (callback: (value: typeof tx) => unknown) => callback(tx),
+    });
+    mocks.updateVersioned.mockResolvedValue({ ok: true, value: {} });
+  });
+
+  it("writes the sorted round positions and derives the included rounds", async () => {
+    await updateProject(
+      PROJECT_ID,
+      input(ProjectPhase.Design),
+      workspaceActorWith([Permission.ProjectsWrite]),
+    );
+
+    expect(mocks.updateVersioned).toHaveBeenCalledWith(
+      expect.objectContaining({
+        patch: expect.objectContaining({
+          included_feedback_rounds: 3,
+          feedback_round_positions: [0, 1, 1],
+        }),
+      }),
+    );
+  });
+
+  it("rejects a round position past the step list before writing", async () => {
+    const result = await updateProject(
+      PROJECT_ID,
+      { ...input(ProjectPhase.Design), feedbackRoundPositions: [2] },
+      workspaceActorWith([Permission.ProjectsWrite]),
+    );
+
+    expect(result).toBe(ProjectErrorCode.ValidationError);
+    expect(mocks.updateVersioned).not.toHaveBeenCalled();
+  });
+
+  it("keeps the stored rounds when a client from before the rounds sends none", async () => {
+    const { feedbackRoundPositions: _omitted, ...legacyInput } = input(
+      ProjectPhase.Design,
+    );
+
+    const result = await updateProject(
+      PROJECT_ID,
+      legacyInput as UpdateProjectRequestDto,
+      workspaceActorWith([Permission.ProjectsWrite]),
+    );
+
+    expect(result).toMatchObject({ ok: true });
+    const { patch } = mocks.updateVersioned.mock.calls[0]![0] as {
+      patch: Record<string, unknown>;
+    };
+    expect(patch).not.toHaveProperty("feedback_round_positions");
+    expect(patch).not.toHaveProperty("included_feedback_rounds");
   });
 });

@@ -35,6 +35,7 @@
       "plannedNote": "Dieses Projekt startet bald. Den Fortschritt siehst du hier, sobald wir loslegen.",
       "trackLabel": "Projektfortschritt",
       "stepSummary": "Schritt {current} von {total}",
+      "feedbackRound": "Feedbackrunde {number}",
       "nextStep": "Nächster Schritt",
       "preview": "Vorschau öffnen",
       "previewNewTab": "öffnet in einem neuen Tab",

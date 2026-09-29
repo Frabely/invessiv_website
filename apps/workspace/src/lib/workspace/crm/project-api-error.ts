@@ -4,11 +4,13 @@ import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-
 const STATUS: Record<ProjectErrorCode, HttpResponseCode> = {
   [ProjectErrorCode.NotFound]: HttpResponseCode.NotFound,
   [ProjectErrorCode.ValidationError]: HttpResponseCode.UnprocessableContent,
+  [ProjectErrorCode.Internal]: HttpResponseCode.InternalServerError,
 };
 
 const MESSAGES: Record<ProjectErrorCode, string> = {
   [ProjectErrorCode.NotFound]: "Project not found",
   [ProjectErrorCode.ValidationError]: "Validation failed",
+  [ProjectErrorCode.Internal]: "Internal error",
 };
 
 /** `status` only overrides the mapping for a body that is not JSON at all (400 instead of 422). */
