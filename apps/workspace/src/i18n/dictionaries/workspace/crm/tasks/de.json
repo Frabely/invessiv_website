@@ -1,4 +1,7 @@
 {
+  "feedbackRound": {
+    "title": "Feedbackrunde {roundNumber} umsetzen"
+  },
   "section": {
     "title": "Aufgaben",
     "addAction": "Aufgabe anlegen",

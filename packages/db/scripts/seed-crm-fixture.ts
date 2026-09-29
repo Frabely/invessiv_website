@@ -57,6 +57,7 @@ import { ServicePricingMode } from "@invessiv/common/constants/crm/service-prici
 import { LineItemTemplateStatus } from "@invessiv/common/constants/crm/line-item-template-statuses";
 import { seedPortalDashboard } from "./crm-fixture/seed-portal-dashboard";
 import { seedFiles } from "./crm-fixture/seed-files";
+import { seedFeedbackRounds } from "./crm-fixture/seed-feedback-rounds";
 import { Locale } from "@invessiv/common/contracts/i18n/locale";
 import {
   configureDatabaseUrlFromTarget,
@@ -773,6 +774,22 @@ async function run() {
     });
     const projectId = activeProjectIds.get(nordlichtId) as string;
     await seedFiles(tx, nordlichtId, projectId, owner.memberId);
+    const feedbackProject = (customerKey: string) => {
+      const customerId = customerIds.get(customerKey) as string;
+      const membership = portalMembershipFixtures.find(
+        (entry) => entry.customerKey === customerKey,
+      );
+      return {
+        customerId,
+        projectId: activeProjectIds.get(customerId) as string,
+        membershipId: membership?.id as string,
+      };
+    };
+    await seedFeedbackRounds(tx, {
+      memberId: projectMember.memberId,
+      running: feedbackProject("nordlicht"),
+      approved: feedbackProject("kluge-bau"),
+    });
     // Snapshots, not references: the workshop price is deliberately below its template price to
     // show that a project keeps what was agreed even after the catalog moves on.
     await tx.insert(projectLineItems).values([

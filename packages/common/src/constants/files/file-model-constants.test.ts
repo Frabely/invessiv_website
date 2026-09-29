@@ -18,6 +18,7 @@ describe("file model constants", () => {
       "FILE_ARCHIVE_VIDEO",
       "FILE_PENDING_LIMIT",
       "FILE_CUSTOMER_VISIBILITY",
+      "FILE_FEEDBACK_BOUND",
       "FILE_UPLOAD_OWNER",
       "FILE_NOT_UPLOAD",
       "FILE_STORAGE_UNAVAILABLE",

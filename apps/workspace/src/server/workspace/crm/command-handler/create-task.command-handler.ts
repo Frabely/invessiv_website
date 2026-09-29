@@ -1,5 +1,6 @@
 import "server-only";
 
+import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { eq } from "drizzle-orm";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
@@ -11,7 +12,7 @@ import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { projects, tasks } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { canOn } from "@/common/patterns/auth/can-on";
-import { taskActivityService } from "@/server/workspace/crm/services/task-activity-service";
+import { taskActivityService } from "@/server/shared/services/task-activity-service";
 import { taskAssigneeService } from "@/server/workspace/crm/services/task-assignee-service";
 import { taskSchemas } from "@/server/workspace/crm/services/task-schemas";
 import { tasksMapperService } from "@/server/workspace/crm/services/tasks-mapper-service";
@@ -87,7 +88,7 @@ export async function createTask(
     await taskActivityService.recordCreated(
       tx,
       { customerId: project.customerId, projectId, taskId: row.id },
-      actor,
+      { type: ActorType.User, userId: actor.userId },
     );
 
     return { ok: true, task: tasksMapperService.toDto(row) };

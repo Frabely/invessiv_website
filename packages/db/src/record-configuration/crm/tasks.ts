@@ -9,6 +9,7 @@ import {
   pgTable,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
 
@@ -23,6 +24,7 @@ import {
 } from "@invessiv/common/constants/crm/task-statuses";
 import { TasksConstraintName } from "@invessiv/db/constraint-names/crm/tasks-constraint-names";
 import { sqlCheckIn } from "@invessiv/db/core";
+import { feedbackRounds } from "./feedback-rounds";
 import { projects } from "./projects";
 import { portalMemberships } from "./portal-memberships";
 import { workspaceMembers } from "./workspace-members";
@@ -59,6 +61,8 @@ export const tasks = pgTable(
     completed_by_portal_membership_id: uuid(
       "completed_by_portal_membership_id",
     ),
+    // Marks the one collecting task of a feedback round; never inferred from the title.
+    feedback_round_id: uuid("feedback_round_id"),
     version: integer("version").notNull(),
     created_at: timestamp("created_at", { withTimezone: true })
       .notNull()
@@ -138,5 +142,17 @@ export const tasks = pgTable(
     index(TasksConstraintName.OpenAssigneeDueIndex)
       .on(t.assignee_member_id, t.due_on)
       .where(sqlCheckIn(t.status, OPEN_TASK_STATUS_VALUES)),
+    foreignKey({
+      name: TasksConstraintName.FeedbackRoundProjectForeignKey,
+      columns: [t.feedback_round_id, t.project_id],
+      foreignColumns: [feedbackRounds.id, feedbackRounds.project_id],
+    }),
+    check(
+      TasksConstraintName.FeedbackRoundSideCheck,
+      sql`${t.feedback_round_id} is null or ${t.action_side} = ${TaskActionSide.Internal}`,
+    ),
+    uniqueIndex(TasksConstraintName.FeedbackRoundUnique)
+      .on(t.feedback_round_id)
+      .where(sql`${t.feedback_round_id} is not null`),
   ],
 );

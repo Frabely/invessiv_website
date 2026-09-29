@@ -15,6 +15,9 @@ import { TasksConstraintName } from "@invessiv/db/constraint-names/crm/tasks-con
 import { MessagesConstraintName } from "@invessiv/db/constraint-names/crm/messages-constraint-names";
 import { MessageFilesConstraintName } from "@invessiv/db/constraint-names/crm/message-files-constraint-names";
 import { ConversationReadsConstraintName } from "@invessiv/db/constraint-names/crm/conversation-reads-constraint-names";
+import { FeedbackRoundItemsConstraintName } from "@invessiv/db/constraint-names/crm/feedback-round-items-constraint-names";
+import { FeedbackRoundsConstraintName } from "@invessiv/db/constraint-names/crm/feedback-rounds-constraint-names";
+import { FilesConstraintName } from "@invessiv/db/constraint-names/crm/files-constraint-names";
 import {
   configureDatabaseUrlFromTarget,
   type DatabaseTarget,
@@ -341,6 +344,7 @@ async function runChecks(sql: Sql) {
   await runProjectLineItemChecks(sql, memberId, name);
   await runProjectFeedbackRoundChecks(sql, memberId, name);
   await runTaskChecks(sql, memberId, name);
+  await runFeedbackRoundTableChecks(sql, memberId, name);
   await runConcurrencyChecks(sql, memberId, name);
 }
 
@@ -705,6 +709,349 @@ async function runProjectFeedbackRoundChecks(
       WHERE id = ${lastRound.id}
     `,
     positionsConstraint,
+  );
+}
+
+/**
+ * Feedback rounds: numbering, "one active and one approved round per project", status consistency,
+ * item results, and the keys that bind files and the collecting task to a round of the same project.
+ */
+async function runFeedbackRoundTableChecks(
+  sql: Sql,
+  memberId: string,
+  name: (suffix: string) => string,
+) {
+  const R = FeedbackRoundsConstraintName;
+  const I = FeedbackRoundItemsConstraintName;
+  const F = FilesConstraintName;
+  const T = TasksConstraintName;
+  const customerId = await insertCustomer(sql, {
+    ownerMemberId: memberId,
+    displayName: name("Feedback customer"),
+  });
+  const otherCustomerId = await insertCustomer(sql, {
+    ownerMemberId: memberId,
+    displayName: name("Feedback other customer"),
+  });
+  const insertProject = async (
+    ownerCustomerId: string,
+    feedbackAreas?: string[],
+  ) => {
+    const id = randomUUID();
+    await sql`
+      INSERT INTO projects (id, customer_id, owner_member_id, title, status, phase, process_steps,
+                            current_process_step, workflow_key, billing_model, included_feedback_rounds,
+                            feedback_round_positions, version)
+      VALUES (${id}, ${ownerCustomerId}, ${memberId}, ${name("Feedback project")}, 'active', 'onboarding',
+              ARRAY ['Design', 'Launch'], 'Design', 'standard_web_v1', 'fixed_price', 2, ARRAY [1, 1], 1)
+    `;
+    if (feedbackAreas)
+      await sql`UPDATE projects SET feedback_areas = ${feedbackAreas} WHERE id = ${id}`;
+    return id;
+  };
+  const projectId = await insertProject(customerId);
+  const otherProjectId = await insertProject(customerId);
+  const foreignProjectId = await insertProject(otherCustomerId);
+
+  const [member] =
+    (await sql`SELECT user_id FROM workspace_members WHERE id = ${memberId}`) as {
+      user_id: string;
+    }[];
+  const personId = randomUUID();
+  await sql`
+    INSERT INTO people (id, display_name, preferred_locale, version)
+    VALUES (${personId}, ${name("Feedback contact")}, 'de', 1)
+  `;
+  await sql`
+    INSERT INTO customer_contact_assignments (id, customer_id, person_id, is_primary, version)
+    VALUES (${randomUUID()}, ${customerId}, ${personId}, TRUE, 1)
+  `;
+  const membershipId = randomUUID();
+  await sql`
+    INSERT INTO portal_memberships (id, customer_id, person_id, user_id, activated_at, email_notifications_enabled,
+                                    version)
+    VALUES (${membershipId}, ${customerId}, ${personId}, ${member.user_id}, NOW(), TRUE, 1)
+  `;
+
+  type RoundArgs = {
+    projectId?: string;
+    customerId?: string;
+    roundNumber?: number;
+    status?: string;
+    submittedAt?: Date | null;
+    startedAt?: Date | null;
+    completedAt?: Date | null;
+    completedByMemberId?: string | null;
+    approvedAt?: Date | null;
+    areaOptions?: string[];
+  };
+  const insertRound = async (args: RoundArgs = {}) => {
+    const id = randomUUID();
+    await sql`
+      INSERT INTO feedback_rounds (id, project_id, customer_id, round_number, status, area_options,
+                                   handed_over_by_member_id, handed_over_at, submitted_at, started_at,
+                                   completed_at, completed_by_member_id, approved_at, version)
+      VALUES (${id}, ${args.projectId ?? projectId}, ${args.customerId ?? customerId}, ${args.roundNumber ?? 1},
+              ${args.status ?? "open"}, ${args.areaOptions ?? ["Startseite"]}, ${memberId}, NOW(),
+              ${args.submittedAt ?? null}, ${args.startedAt ?? null}, ${args.completedAt ?? null},
+              ${args.completedByMemberId ?? null}, ${args.approvedAt ?? null}, 1)
+    `;
+    return id;
+  };
+  const now = new Date();
+  const completed = {
+    status: "completed",
+    submittedAt: now,
+    startedAt: now,
+    completedAt: now,
+    completedByMemberId: memberId,
+  };
+
+  await expectRejected(
+    "feedback round without status is rejected",
+    () => sql`
+      INSERT INTO feedback_rounds (id, project_id, customer_id, round_number, area_options,
+                                   handed_over_by_member_id, handed_over_at, version)
+      VALUES (${randomUUID()}, ${otherProjectId}, ${customerId}, 1, '{}', ${memberId}, NOW(), 1)
+    `,
+  );
+  await expectRejected(
+    "feedback round without version is rejected",
+    () => sql`
+      INSERT INTO feedback_rounds (id, project_id, customer_id, round_number, status, area_options,
+                                   handed_over_by_member_id, handed_over_at)
+      VALUES (${randomUUID()}, ${otherProjectId}, ${customerId}, 1, 'open', '{}', ${memberId}, NOW())
+    `,
+  );
+  await expectRejected(
+    "feedback round with a customer other than the project's is rejected",
+    () => insertRound({ projectId: foreignProjectId }),
+    R.ProjectCustomerForeignKey,
+  );
+  await expectRejected(
+    "round number 21 is rejected",
+    () => insertRound({ roundNumber: 21 }),
+    R.RoundNumberCheck,
+  );
+  await expectRejected(
+    "a 31st area in the round snapshot is rejected",
+    () =>
+      insertRound({
+        areaOptions: Array.from({ length: 31 }, (_, i) => `Seite ${i}`),
+      }),
+    R.AreaOptionsCheck,
+  );
+  await expectRejected(
+    "completed round without completion data is rejected",
+    () =>
+      insertRound({
+        ...completed,
+        completedAt: null,
+        completedByMemberId: null,
+      }),
+    R.CompletedCheck,
+  );
+  await expectRejected(
+    "submitted round without submission time is rejected",
+    () => insertRound({ status: "submitted" }),
+    R.SubmittedCheck,
+  );
+  await expectRejected(
+    "approved status without approval time is rejected",
+    () => insertRound({ status: "approved" }),
+    R.ApprovedCheck,
+  );
+
+  const firstRoundId = await insertRound({ ...completed });
+  await expectRejected(
+    "a duplicate round number is rejected",
+    () => insertRound({ ...completed }),
+    R.ProjectNumberUnique,
+  );
+  const activeRoundId = await insertRound({ roundNumber: 2 });
+  await expectRejected(
+    "a second active round is rejected",
+    () =>
+      insertRound({ roundNumber: 3, status: "submitted", submittedAt: now }),
+    R.ActiveUnique,
+  );
+  await insertRound({
+    projectId: otherProjectId,
+    status: "approved",
+    approvedAt: now,
+  });
+  await expectRejected(
+    "a second approved round is rejected",
+    () =>
+      insertRound({
+        projectId: otherProjectId,
+        roundNumber: 2,
+        status: "approved",
+        approvedAt: now,
+      }),
+    R.ApprovedUnique,
+  );
+
+  await expectRejected(
+    "a 31st project feedback area is rejected",
+    () =>
+      insertProject(
+        customerId,
+        Array.from({ length: 31 }, (_, i) => `Seite ${i}`),
+      ),
+    ProjectsConstraintName.FeedbackAreasCheck,
+  );
+  await expectAccepted(
+    "project without feedback areas gets an empty list",
+    async () => {
+      const [row] =
+        (await sql`SELECT feedback_areas FROM projects WHERE id = ${projectId}`) as {
+          feedback_areas: string[];
+        }[];
+      if (row.feedback_areas.length !== 0)
+        throw new Error("feedback_areas is not empty");
+    },
+  );
+
+  type ItemArgs = {
+    roundId?: string;
+    position?: number;
+    result?: string | null;
+    resultNote?: string | null;
+    resultSetByMemberId?: string | null;
+    resultSetAt?: Date | null;
+  };
+  const insertItem = async (args: ItemArgs = {}) => {
+    const id = randomUUID();
+    await sql`
+      INSERT INTO feedback_round_items (id, round_id, position, body, created_by_portal_membership_id, result,
+                                        result_note, result_set_by_member_id, result_set_at, version)
+      VALUES (${id}, ${args.roundId ?? firstRoundId}, ${args.position ?? 0}, 'Header zu groß', ${membershipId},
+              ${args.result ?? null}, ${args.resultNote ?? null}, ${args.resultSetByMemberId ?? null},
+              ${args.resultSetAt ?? null}, 1)
+    `;
+    return id;
+  };
+  await expectRejected(
+    "feedback item without version is rejected",
+    () => sql`
+      INSERT INTO feedback_round_items (id, round_id, position, body)
+      VALUES (${randomUUID()}, ${firstRoundId}, 9, '')
+    `,
+  );
+  await expectRejected(
+    "feedback item at position 30 is rejected",
+    () => insertItem({ position: 30 }),
+    I.PositionCheck,
+  );
+  await expectRejected(
+    "item result without actor is rejected",
+    () => insertItem({ position: 1, result: "implemented" }),
+    I.ResultFieldsCheck,
+  );
+  await expectRejected(
+    "not implemented without a reply is rejected",
+    () =>
+      insertItem({
+        position: 1,
+        result: "not_implemented",
+        resultNote: "  ",
+        resultSetByMemberId: memberId,
+        resultSetAt: now,
+      }),
+    I.ResultReplyCheck,
+  );
+  const itemId = await insertItem({
+    result: "implemented",
+    resultSetByMemberId: memberId,
+    resultSetAt: now,
+  });
+  const activeItemId = await insertItem({ roundId: activeRoundId });
+
+  type FileArgs = {
+    projectId?: string | null;
+    roundId?: string | null;
+    itemId?: string | null;
+    side?: "internal" | "customer";
+    status?: "pending" | "ready";
+  };
+  const insertFile = (args: FileArgs) => {
+    const side = args.side ?? "customer";
+    return sql`
+      INSERT INTO files (id, customer_id, project_id, feedback_round_id, feedback_item_id, source, status,
+                         asset_kind, display_name, visible_to_customer, uploaded_by_side, uploaded_by_member_id,
+                         uploaded_by_portal_membership_id, storage_key, content_type, extension, size_bytes,
+                         inspection_status, version)
+      VALUES (${randomUUID()}, ${customerId}, ${args.projectId === undefined ? projectId : args.projectId},
+              ${args.roundId ?? null}, ${args.itemId ?? null}, 'upload', ${args.status ?? "ready"}, 'document',
+              ${name("Feedback file")}, TRUE, ${side}, ${side === "internal" ? memberId : null},
+              ${side === "customer" ? membershipId : null}, ${name(randomUUID())}, 'application/pdf', 'pdf', 1,
+              'unscanned', 1)
+    `;
+  };
+  await expectAccepted("customer file on its own round item is accepted", () =>
+    insertFile({ roundId: firstRoundId, itemId }),
+  );
+  await expectRejected(
+    "file on an item of another round is rejected",
+    () => insertFile({ roundId: firstRoundId, itemId: activeItemId }),
+    F.FeedbackItemRoundForeignKey,
+  );
+  await expectRejected(
+    "file on a round of another project is rejected",
+    () =>
+      insertFile({ projectId: otherProjectId, roundId: firstRoundId, itemId }),
+    F.FeedbackRoundProjectForeignKey,
+  );
+  await expectRejected(
+    "file with a round but without a project is rejected",
+    () => insertFile({ projectId: null, roundId: firstRoundId, itemId }),
+    F.FeedbackProjectCheck,
+  );
+  await expectRejected(
+    "file with a round but without an item is rejected",
+    () => insertFile({ roundId: firstRoundId }),
+    F.FeedbackScopeCheck,
+  );
+  await expectRejected(
+    "internal upload on an item is rejected",
+    () => insertFile({ roundId: firstRoundId, itemId, side: "internal" }),
+    F.FeedbackOriginCheck,
+  );
+  await expectRejected(
+    "pending upload on an item is rejected",
+    () => insertFile({ roundId: firstRoundId, itemId, status: "pending" }),
+    F.FeedbackOriginCheck,
+  );
+
+  const insertRoundTask = (args: {
+    projectId?: string;
+    roundId: string;
+    actionSide?: string;
+  }) => sql`
+    INSERT INTO tasks (id, project_id, title, description, status, action_side, visible_to_customer,
+                       assignee_member_id, feedback_round_id, version)
+    VALUES (${randomUUID()}, ${args.projectId ?? projectId}, ${name("Feedback task")}, '', 'open',
+            ${args.actionSide ?? "internal"}, ${args.actionSide === "customer"}, ${memberId}, ${args.roundId}, 1)
+  `;
+  await expectAccepted("collecting task of a round is accepted", () =>
+    insertRoundTask({ roundId: firstRoundId }),
+  );
+  await expectRejected(
+    "a second task for the same round is rejected",
+    () => insertRoundTask({ roundId: firstRoundId }),
+    T.FeedbackRoundUnique,
+  );
+  await expectRejected(
+    "task with a round of another project is rejected",
+    () =>
+      insertRoundTask({ projectId: otherProjectId, roundId: activeRoundId }),
+    T.FeedbackRoundProjectForeignKey,
+  );
+  await expectRejected(
+    "customer-side task with a round is rejected",
+    () => insertRoundTask({ roundId: activeRoundId, actionSide: "customer" }),
+    T.FeedbackRoundSideCheck,
   );
 }
 
@@ -1362,6 +1709,10 @@ async function runConcurrencyChecks(
 
 async function cleanup(sql: Sql) {
   const pattern = `${FIXTURE_PREFIX}%`;
+  // Files reference projects and feedback items without a cascade, so they go first.
+  await sql`DELETE
+              FROM files
+              WHERE customer_id IN (SELECT id FROM customers WHERE display_name LIKE ${pattern})`;
   // Projects take their services with them; the customer delete below then takes the projects.
   await sql`DELETE
               FROM projects

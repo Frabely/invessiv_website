@@ -29,6 +29,7 @@
     "save": "Projekt speichern",
     "saving": "Wird gespeichert …",
     "saveError": "Das Projekt konnte nicht gespeichert werden. Bitte versuche es erneut.",
+    "feedbackRoundInUse": "Übergebene Feedbackrunden bleiben an ihrer Stelle. Verschiebe oder entferne nur Runden, die noch nicht übergeben sind.",
     "saveConflict": "Jemand hat dieses Projekt gerade geändert. Wir haben den aktuellen Stand geladen; deine Eingaben sind noch da. Speichere erneut, um sie zu übernehmen.",
     "cancel": "Abbrechen",
     "title": "Projektname",

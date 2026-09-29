@@ -13,3 +13,5 @@ export * from "./line-item-templates";
 export * from "./workspace-members";
 export * from "./files";
 export * from "./message-files";
+export * from "./feedback-rounds";
+export * from "./feedback-round-items";

@@ -112,6 +112,7 @@ export function taskFixture(overrides: Partial<TaskDto> = {}): TaskDto {
     completedAt: null,
     completedByMemberId: null,
     completedByCustomer: false,
+    feedbackRoundId: null,
     version: 1,
     createdAt: "2026-01-01T00:00:00.000Z",
     updatedAt: "2026-01-01T00:00:00.000Z",

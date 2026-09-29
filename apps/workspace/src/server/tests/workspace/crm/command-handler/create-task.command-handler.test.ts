@@ -26,7 +26,7 @@ vi.mock("@invessiv/db/core", async (importOriginal) => ({
 vi.mock("@/server/workspace/crm/services/task-assignee-service", () => ({
   taskAssigneeService: { isActiveMember: mocks.isActiveMember },
 }));
-vi.mock("@/server/workspace/crm/services/task-activity-service", () => ({
+vi.mock("@/server/shared/services/task-activity-service", () => ({
   taskActivityService: { recordCreated: mocks.recordCreated },
 }));
 

@@ -10,12 +10,13 @@ import {
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
+import { FEEDBACK_LIMITS } from "@invessiv/common/constants/crm/feedback-limits";
 import { PROJECT_BILLING_MODEL_VALUES } from "@invessiv/common/constants/crm/project-billing-models";
 import { PROJECT_PHASE_SEQUENCE } from "@invessiv/common/constants/crm/project-phases";
 import { PROJECT_STATUS_VALUES } from "@invessiv/common/constants/crm/project-statuses";
 import { PROJECT_WORKFLOW_KEY_VALUES } from "@invessiv/common/constants/crm/project-workflows";
 import { ProjectsConstraintName } from "@invessiv/db/constraint-names/crm/projects-constraint-names";
-import { sqlCheckIn } from "@invessiv/db/core";
+import { sqlCheckIn, sqlLimit } from "@invessiv/db/core";
 import { customers } from "./customers";
 import { workspaceMembers } from "./workspace-members";
 
@@ -42,6 +43,12 @@ export const projects = pgTable(
     }).notNull(),
     included_feedback_rounds: integer("included_feedback_rounds").notNull(),
     feedback_round_positions: integer("feedback_round_positions").array(),
+    // The only business default on this table: inserts of the previous app version must keep working
+    // during the deploy window of migration 0045.
+    feedback_areas: text("feedback_areas")
+      .array()
+      .notNull()
+      .default(sql`'{}'`),
     preview_url: text("preview_url"),
     next_step_label: text("next_step_label"),
     next_step_due_on: date("next_step_due_on"),
@@ -141,5 +148,9 @@ export const projects = pgTable(
       t.created_at.desc(),
     ),
     index(ProjectsConstraintName.OpenOwnerIndex).on(t.owner_member_id),
+    check(
+      ProjectsConstraintName.FeedbackAreasCheck,
+      sql`cardinality(${t.feedback_areas}) <= ${sqlLimit(FEEDBACK_LIMITS.areasPerProject)}`,
+    ),
   ],
 );

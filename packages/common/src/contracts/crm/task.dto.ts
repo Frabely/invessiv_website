@@ -30,6 +30,8 @@ export interface TaskDto {
   completedByMemberId: string | null;
   /** True when a customer contact completed the task in the portal; which contact stays internal. */
   completedByCustomer: boolean;
+  /** Set on the collecting task of a feedback round, which the round creates and keeps in sync. */
+  feedbackRoundId: string | null;
   /** Optimistic-concurrency counter; every update request must echo the value it read. */
   version: number;
   /** Creation timestamp supplied by the database for chronological list ordering. */

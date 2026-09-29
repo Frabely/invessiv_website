@@ -22,4 +22,10 @@ export const FilesConstraintName = {
   ProjectIndex: "files_project_idx",
   CustomerVisibleIndex: "files_customer_visible_idx",
   PendingIndex: "files_pending_idx",
+  FeedbackRoundProjectForeignKey: "files_feedback_round_project_fk",
+  FeedbackItemRoundForeignKey: "files_feedback_item_round_fk",
+  FeedbackScopeCheck: "files_feedback_scope_check",
+  FeedbackProjectCheck: "files_feedback_project_check",
+  FeedbackOriginCheck: "files_feedback_origin_check",
+  FeedbackItemIndex: "files_feedback_item_idx",
 } as const;

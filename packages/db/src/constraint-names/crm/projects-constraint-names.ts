@@ -14,4 +14,5 @@ export const ProjectsConstraintName = {
   IdCustomerUnique: "projects_id_customer_uidx",
   CustomerCreatedAtIndex: "projects_customer_created_at_idx",
   OpenOwnerIndex: "projects_open_owner_idx",
+  FeedbackAreasCheck: "projects_feedback_areas_check",
 } as const;
