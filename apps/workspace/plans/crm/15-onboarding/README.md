@@ -1,6 +1,6 @@
 # Ordner 15 — Onboarding
 
-> **Status:** offen · **Abhängigkeiten:** 07 (Projekte, Projektleistungen), 08 (Aufgaben), 12a/12b/13 (Portal), 13a
+> **Status:** läuft (15.1) · **Abhängigkeiten:** 07 (Projekte, Projektleistungen), 08 (Aufgaben), 12a/12b/13 (Portal), 13a
 > (Chat, Systemnachrichten), 14 (Dateien), 16 (Feedbackrunden, deren Bausteine hier verallgemeinert werden) — alle
 > gemerged · **Aufwand:** 16–21 Tage gesamt · **Reviewziel:** acht Teil-PRs mit je 30–110 Dateien
 
@@ -65,7 +65,7 @@ deploybar. Reine Fundamente bleiben unsichtbar; sichtbare Funktionen werden vert
 
 | PR   | Task | Branch                               | Datei                                                                                                              | Nach Merge sichtbar                                                                        | Dateien | Status |
 | ---- | ---- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------: | ------ |
-| 15.1 | 63   | `feat/crm-onboarding-1-datenmodell`  | [`63-datenmodell-und-regeln.md`](./63-datenmodell-und-regeln.md)                                                   | nichts                                                                                     |   55–75 | offen  |
+| 15.1 | 63   | `feat/crm-onboarding-1-datenmodell`  | [`63-datenmodell-und-regeln.md`](./63-datenmodell-und-regeln.md)                                                   | nichts                                                                                     |   55–75 | läuft  |
 | 15.2 | 64   | `feat/crm-onboarding-2-katalog`      | [`64-baustein-katalog-und-vorlagen.md`](./64-baustein-katalog-und-vorlagen.md) + [`64a`](./64a-standardkatalog.md) | CRM-Seite „Onboarding-Vorlagen“ mit Bausteinen und Vorlagen, Standardkatalog               |  90–110 | offen  |
 | 15.3 | 65   | `feat/crm-onboarding-3-bogen-intern` | [`65-bogen-anlegen-und-anpassen.md`](./65-bogen-anlegen-und-anpassen.md)                                           | Intern: Onboarding je Projekt starten und anpassen (Entwurf)                               |   70–90 | offen  |
 | 15.4 | 66   | `feat/crm-onboarding-4-portal-form`  | [`66-portal-formular.md`](./66-portal-formular.md)                                                                 | nichts für Kunden (Portal-Seite existiert, ist aber ohne freigegebenen Bogen unerreichbar) |  80–100 | offen  |
@@ -133,7 +133,7 @@ Tests und Seeds erzeugen freigegebene Bögen direkt.
 - Portal-Code importiert nie aus `components/workspace/**`. Was beide Seiten brauchen, liegt in `components/shared`
   oder `packages/ui`.
 - **Keine Logik-Duplikate:** Sichtbarkeit, Pflichtprüfung und Fortschritt kommen ausschließlich aus
-  `packages/common/src/patterns/crm/onboarding-completeness.ts` (Task 63). Blockkopien entstehen ausschließlich über den
+  `packages/common/src/patterns/crm/onboarding/onboarding-completeness.ts` (Task 63). Blockkopien entstehen ausschließlich über den
   Kopierdienst (`onboardingBlockCopyService`, Task 64). Der Block-Editor aus Task 64 wird in Task 65 für Bögen wiederverwendet, nicht kopiert.
 - Chat-Systemnachrichten über `announceSystemMessage` (wie Feedbackrunden), bis Ordner 20c Benachrichtigungen liefert.
 

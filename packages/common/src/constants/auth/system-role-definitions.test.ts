@@ -62,6 +62,8 @@ describe("SYSTEM_ROLE_DEFINITIONS", () => {
       expect.arrayContaining([
         Permission.PortalFeedbackRead,
         Permission.PortalFeedbackSubmit,
+        Permission.PortalOnboardingRead,
+        Permission.PortalOnboardingSubmit,
       ]),
     );
   });

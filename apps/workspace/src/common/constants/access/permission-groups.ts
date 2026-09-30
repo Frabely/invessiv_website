@@ -55,6 +55,8 @@ export const PERMISSION_GROUP_PERMISSIONS = {
   [PermissionGroup.Services]: [
     Permission.LineItemTemplatesRead,
     Permission.LineItemTemplatesWrite,
+    Permission.OnboardingTemplatesRead,
+    Permission.OnboardingTemplatesWrite,
   ],
   [PermissionGroup.Files]: [
     Permission.FilesRead,
@@ -78,6 +80,8 @@ export const PERMISSION_GROUP_PERMISSIONS = {
     Permission.PortalFilesWrite,
     Permission.PortalFeedbackRead,
     Permission.PortalFeedbackSubmit,
+    Permission.PortalOnboardingRead,
+    Permission.PortalOnboardingSubmit,
   ],
   [PermissionGroup.Administration]: [
     Permission.MembersRead,

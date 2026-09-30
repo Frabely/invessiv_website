@@ -71,6 +71,14 @@
       "label": "Edit service catalog",
       "description": "Create, change and archive line item templates."
     },
+    "onboarding_templates.read": {
+      "label": "View onboarding templates",
+      "description": "Open the building blocks and templates for onboarding forms."
+    },
+    "onboarding_templates.write": {
+      "label": "Edit onboarding templates",
+      "description": "Create, change and archive building blocks and templates for onboarding forms."
+    },
     "tasks.read": {
       "label": "View tasks",
       "description": "See the tasks of a project."
@@ -158,6 +166,14 @@
     "portal.feedback.submit": {
       "label": "Give feedback in the portal",
       "description": "Save feedback items, attach files, submit rounds and approve the project."
+    },
+    "portal.onboarding.read": {
+      "label": "View portal onboarding",
+      "description": "See released onboarding forms with their answers and files."
+    },
+    "portal.onboarding.submit": {
+      "label": "Fill in portal onboarding",
+      "description": "Fill in onboarding forms, attach files and submit them."
     },
     "roles.manage": {
       "label": "Manage roles",

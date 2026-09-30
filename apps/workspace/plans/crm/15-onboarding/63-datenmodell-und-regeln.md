@@ -5,7 +5,7 @@
 > `packages/db/src/record-configuration/crm/AGENTS.md`, `packages/common/AGENTS.md`. Diese Task-Datei plus README sind
 > vollständig; die früheren Pläne 44–47 (Ordner 15b/15c) gelten nicht.
 
-> **Status:** offen · **Teil-PR:** 15.1 · **Branch:** `feat/crm-onboarding-1-datenmodell`
+> **Status:** läuft · **Teil-PR:** 15.1 · **Branch:** `feat/crm-onboarding-1-datenmodell`
 > **Abhängigkeiten:** Ordner 07, 13a, 14, 16 gemerged · **Aufwand:** 2–3 T. · **Dateien:** 55–75
 > **Migration:** ja, zwei (Schema + Permissions; Nummern im Repo ermitteln, zum Planungszeitpunkt war `0046` die
 > höchste)
@@ -468,6 +468,43 @@ export function insertListItem<T>(
     Tabellen dieses Tasks ersetzen; Präfix-Absatz anpassen.
   - Statustabelle: Zeilen 15b und 15c durch eine Zeile `15 | offen | 15-onboarding | …` ersetzen.
 - **Akzeptanz:** Kein Widerspruch zwischen `00-entscheidungen.md` und der README dieses Ordners (Review-Punkt)
+
+## Umsetzungsnotizen (Abweichungen vom Plan, 30.09.2026)
+
+Bei der Umsetzung nachgezogen; der Plan oben bleibt als Entstehungsstand stehen, maßgeblich ist der Code.
+
+- **Migration `0047_create_onboarding.sql`** enthält Schema und Permissions. Reihenfolge der Tabellen: zuerst
+  `onboarding_templates`, dann `onboarding_forms` (der Bogen verweist auf die Vorlage), dann `onboarding_blocks`.
+- **Bedingung als ein zusammengesetzter Schlüssel** statt zweier einzelner `SET NULL`-Schlüssel:
+  `onboarding_fields_condition_choice_fk (condition_choice_id, condition_field_id) → onboarding_field_choices (id,
+field_id) ON DELETE SET NULL`. Zwei Einzelschlüssel hätten beim Löschen einer Option nur eine Spalte geleert,
+  `condition_pair_check` verletzt und das Löschen abgebrochen. Der zusammengesetzte Schlüssel leert beide Spalten und
+  erzwingt zusätzlich, dass die Option zum Auslöserfeld gehört.
+- **Listen-Pattern** liegt unter `packages/common/src/patterns/collections/ordered-list.ts` (bestehender Ordner für
+  generische Sammlungshelfer, neben `same-sequence.ts`) statt unter `patterns/shared/`.
+- **Typen der Vollständigkeitsfunktion** (`OnboardingCompletenessInput`, `OnboardingMissingField`,
+  `OnboardingBlockProgress`, `OnboardingCompleteness`) liegen nach der Export-Regel unter
+  `contracts/crm/onboarding/`, nicht in der Pattern-Datei; `OnboardingAnswerFileRef` heißt
+  `OnboardingAnswerFileRefDto`. `isOnboardingFieldVisible(field, input, groupEntryId = null)` nimmt den
+  Gruppeneintrag als dritten Parameter, weil Bedingungen in Unterfeldern je Eintrag gelten.
+- **`ratio` ist 1, wenn `totalRequired = 0`** (Akzeptanz T3 „Bogen ohne Pflichtfelder: ratio = 1“); der Kommentar
+  „0 bei totalRequired = 0“ im Code-Skizzenblock oben war widersprüchlich. Ein unbeantworteter Bogen mit
+  Pflichtfeldern hat `ratio = 0`. Optionale Felder, deren `min_items` nach dem ersten Eintrag greift, zählen in
+  `totalRequired` mit, damit der Fortschritt nicht 100 % zeigt, solange etwas fehlt.
+- **Zusätzliche Konstanten:** `onboarding-transition-sides.ts`, `onboarding-key-patterns.ts` (Regex-Quelle für
+  CHECK und Validierung), `onboarding-confirmed-value.ts` (`"true"`), `onboarding-value-error-codes.ts` (Codes von
+  `validateOnboardingValue`), weitere Typgruppen in `onboarding-field-types.ts` für die DB-CHECKs;
+  `ONBOARDING_LIMITS` enthält zusätzlich die DB-Obergrenzen (`stored*`), abgesichert durch
+  `onboarding-limits-migration.test.ts`.
+- **`portal.onboarding.read`** steht zusätzlich in `PORTAL_READ_PERMISSION_VALUES` (Owner-Portalsicht), weil Task 66
+  die Leseseiten über `withPortalReader` baut. Die Katalog-Permissions liegen in der Rechtegruppe „Leistungen“ neben
+  `line_item_templates.*`.
+- **Constraint-Namen-Tests** laufen gebündelt in `onboarding-constraint-names.test.ts` (alle 14 Tabellen, inklusive
+  Spalten-/Default-Abgleich mit der Migration) statt in 14 gleichförmigen Einzeldateien.
+- **Smoke** liegt als eigenes Modul `packages/db/scripts/crm-smoke/onboarding-checks.ts` und wird von
+  `smoke-crm-constraints.ts` aufgerufen. Der Negativfall „Antwort an einem Feld eines fremden Bogens“ ist ohne Trigger
+  nicht DB-seitig prüfbar und gehört als Integrationstest zum Schreibpfad (Task 66); ebenso „Vorlage referenziert nur
+  Katalogblöcke“ (Task 64).
 
 ## Merge-Gate 15.1
 

@@ -4,6 +4,10 @@ import {
   ProjectPhase,
 } from "@invessiv/common/constants/crm/project-phases";
 import {
+  insertListItem,
+  moveListItem,
+} from "@invessiv/common/patterns/collections/ordered-list";
+import {
   normalizeFeedbackRoundPositions,
   sortFeedbackRoundPositions,
 } from "@invessiv/common/patterns/crm/feedback-round-positions";
@@ -118,8 +122,12 @@ export function insertFeedbackRoundAfter(
     return plan;
   const slots = toSlots(plan);
   if (!(rowIndex in slots)) return plan;
-  slots.splice(rowIndex + 1, 0, { kind: ProcessPlanRowKind.FeedbackRound });
-  return fromSlots(plan, slots);
+  return fromSlots(
+    plan,
+    insertListItem(slots, rowIndex + 1, {
+      kind: ProcessPlanRowKind.FeedbackRound,
+    }),
+  );
 }
 
 /** Round numbers follow the order, so removing round n renumbers the rounds after it. */
@@ -139,14 +147,9 @@ export function moveProcessPlanRow(
   direction: ProcessPlanMoveDirection,
 ): ProjectProcessPlan {
   const slots = toSlots(plan);
-  const targetIndex =
-    direction === ProcessPlanMoveDirection.Up ? rowIndex - 1 : rowIndex + 1;
-  if (!(rowIndex in slots) || !(targetIndex in slots)) return plan;
-  [slots[rowIndex], slots[targetIndex]] = [
-    slots[targetIndex]!,
-    slots[rowIndex]!,
-  ];
-  return fromSlots(plan, slots);
+  const step = direction === ProcessPlanMoveDirection.Up ? -1 : 1;
+  if (!(rowIndex in slots) || !(rowIndex + step in slots)) return plan;
+  return fromSlots(plan, moveListItem(slots, rowIndex, step));
 }
 
 /** New steps go below everything, trailing rounds included, so the list reads in input order. */

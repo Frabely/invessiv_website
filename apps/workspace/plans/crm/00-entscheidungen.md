@@ -634,6 +634,7 @@ fertig und getestet gibt — der Leads-Bereich deckt den Großteil ab.
 | Portal-Zugriffsfilter | `apps/workspace/src/server/portal/shared/{portal-access-condition,portal-can-on}.ts` (ab 12a; Vorlage: `crm-access-condition.ts`) |
 | Portal-Navigation     | `apps/workspace/src/common/constants/portal/portal-nav-items.ts` (ab 12a; Vorlage: `workspace-sidebar-items.ts`)                  |
 | Portal-Widgets        | `apps/workspace/src/common/constants/portal/portal-widget-layout.ts` + `Widget`/`WidgetGrid` aus `@invessiv/ui` (ab 13)           |
+| Hoch/Runter-Sortieren | `packages/common/src/patterns/collections/ordered-list.ts` (ab Task 63; genutzt von `project-process-plan.ts`)                    |
 
 Geteilte Listenbausteine wandern erst bei **tatsächlicher** Wiederverwendung nach
 `components/workspace/shared/` — nicht vorsorglich. Der Umzug ist risikoarm, solange es genau einen
@@ -714,7 +715,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12b erreicht:
 | 13a | läuft     | `13a-kundenchat`                         | Kundenchat im CRM-Cockpit, Posteingang und Portal bidirektional nutzbar                                                                            | 110–140 |   5–6 T. |
 | 13c | offen     | `13c-portal-leistungsanfragen`           | Preisfreie Leistungsanfragen im Portal, intern bearbeitbar                                                                                         |   60–80 |   3–4 T. |
 | 14  | läuft     | `14-dateien`                             | Dateien, Links, ZIP, Portal-Dateien, Chat-Anhänge; sechs Teil-PRs (14.1–14.6), 14.1/14.3/14.4 gemerged, 14.2, 14.5 und 14.6 im Review              | 290–425 | 12–16 T. |
-| 15  | offen     | `15-onboarding`                          | Onboarding-Baukasten (Katalog, Vorlagen), Bogen je Projekt, Portal-Formular, Prüfung, Nachforderung, Termin, Abschluss; acht Teil-PRs (15.1–15.8)  | 495–675 | 16–21 T. |
+| 15  | läuft     | `15-onboarding`                          | Onboarding-Baukasten (Katalog, Vorlagen), Bogen je Projekt, Portal-Formular, Prüfung, Nachforderung, Termin, Abschluss; acht Teil-PRs, 15.1 läuft  | 495–675 | 16–21 T. |
 | 16  | läuft     | `16-feedbackrunden`                      | Rundenschritte, Übergabe, Feedback-Punkte, Bearbeitung, Abnahme und Eingang; sechs Teil-PRs (16.1–16.6), 16.1 gemerged, 16.2 läuft, 16.6 im Review | 315–430 | 13–16 T. |
 | 19  | offen     | `19-credentials`                         | Verschlüsselte Zugangsdaten und Security-Audit vollständig nutzbar                                                                                 |   50–80 |   3–4 T. |
 | 20  | offen     | `20-stunden-und-history`                 | Kontingente, Buchungen und konsolidierte Timeline vollständig nutzbar                                                                              |  60–100 |   3–4 T. |

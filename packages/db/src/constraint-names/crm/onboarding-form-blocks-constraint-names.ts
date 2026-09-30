@@ -1,0 +1,15 @@
+export const OnboardingFormBlocksConstraintName = {
+  PrimaryKey: "onboarding_form_blocks_pkey",
+  FormForeignKey: "onboarding_form_blocks_form_fk",
+  BlockOwnerForeignKey: "onboarding_form_blocks_block_owner_fk",
+  ReviewedByForeignKey: "onboarding_form_blocks_reviewed_by_fk",
+  PositionUnique: "onboarding_form_blocks_position_uidx",
+  PositionCheck: "onboarding_form_blocks_position_check",
+  ReviewStatusCheck: "onboarding_form_blocks_review_status_check",
+  ClarificationModeCheck: "onboarding_form_blocks_clarification_mode_check",
+  ReviewNoteCheck: "onboarding_form_blocks_review_note_check",
+  VersionCheck: "onboarding_form_blocks_version_check",
+  ClarificationCheck: "onboarding_form_blocks_clarification_check",
+  ReviewedCheck: "onboarding_form_blocks_reviewed_check",
+  ClarificationNoteCheck: "onboarding_form_blocks_clarification_note_check",
+} as const;
