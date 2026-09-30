@@ -265,10 +265,10 @@ export function FeedbackSheet({
       {dialog === FeedbackOpenDialog.Approve ? (
         <FeedbackApproveDialog
           busy={busy}
-          content={content}
           error={dialogError}
           hasRemainingRounds={hasRemainingRounds}
           onCancelAction={() => setDialog(null)}
+          texts={content.approveDialog}
           onConfirmAction={() =>
             void finish(
               (version) =>

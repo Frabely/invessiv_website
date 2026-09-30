@@ -503,4 +503,144 @@ describe("FeedbackPageView", () => {
       screen.queryByRole("button", { name: content.editor.add }),
     ).not.toBeInTheDocument();
   });
+
+  it("shows the requested call with the team's note and the chat link", () => {
+    renderView(
+      feedback({
+        activeRound: round({
+          status: FeedbackRoundStatus.InDiscussion,
+          submittedAt: "2026-09-29T09:00:00.000Z",
+          customerNotice: "Does Thursday work?",
+          items: [
+            {
+              id: "item-1",
+              position: 0,
+              areaLabel: null,
+              kind: null,
+              body: "Bigger logo",
+              result: null,
+              resultNote: null,
+              attachments: [],
+            },
+          ],
+        }),
+      }),
+    );
+    expect(
+      screen.getByRole("heading", { name: content.states.discussion.title }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Does Thursday work?")).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: content.states.discussion.chatLink }),
+    ).toHaveAttribute("href", "/en/portal/customer-1/messages");
+    expect(screen.getByText("Bigger logo")).toBeInTheDocument();
+  });
+
+  it("puts the handback note above an editable sheet", () => {
+    renderView(
+      feedback({
+        activeRound: round({ customerNotice: "Please add the screenshot" }),
+      }),
+    );
+    expect(
+      screen.getByRole("heading", { name: content.states.returned.title }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Please add the screenshot")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: content.editor.add }),
+    ).toBeInTheDocument();
+  });
+
+  it("shows the results of the last round and approves only with the confirmation", async () => {
+    const completed = round({
+      status: FeedbackRoundStatus.Completed,
+      submittedAt: "2026-09-29T09:00:00.000Z",
+      completedAt: "2026-09-30T09:00:00.000Z",
+      version: 5,
+      items: [
+        {
+          id: "item-1",
+          position: 0,
+          areaLabel: null,
+          kind: null,
+          body: "Members area",
+          result: "additional_service",
+          resultNote: "Happy to send a quote",
+          attachments: [],
+        },
+      ],
+    });
+    mocks.approve.mockResolvedValue({
+      ok: true,
+      round: { ...completed, status: FeedbackRoundStatus.Approved },
+    });
+    renderView(
+      feedback({
+        activeRound: null,
+        history: [completed],
+        quota: {
+          included: 1,
+          used: 1,
+          remaining: 0,
+          activeRoundNumber: null,
+          approvedRoundNumber: null,
+        },
+      }),
+    );
+    expect(
+      screen.getByRole("heading", { name: content.states.approvalDue.title }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(content.result.choices.additional_service),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Happy to send a quote")).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: content.states.exhausted.chatLink }),
+    ).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: content.finalApproval.action }),
+    );
+    const dialog = screen.getByRole("dialog");
+    const confirm = within(dialog).getByRole("button", {
+      name: content.finalApproveDialog.confirm,
+    });
+    expect(confirm).toBeDisabled();
+    fireEvent.click(within(dialog).getByRole("checkbox"));
+    await act(async () => {
+      fireEvent.click(confirm);
+    });
+    expect(mocks.approve).toHaveBeenCalledWith("customer-1", "round-1", 5);
+    expect(mocks.refresh).toHaveBeenCalled();
+  });
+
+  it("offers an early approval between rounds as a quiet option", () => {
+    renderView(
+      feedback({
+        activeRound: null,
+        history: [
+          round({
+            status: FeedbackRoundStatus.Completed,
+            completedAt: "2026-09-30T09:00:00.000Z",
+          }),
+        ],
+        quota: {
+          included: 2,
+          used: 1,
+          remaining: 1,
+          activeRoundNumber: null,
+          approvedRoundNumber: null,
+        },
+      }),
+    );
+    expect(
+      screen.getByRole("heading", { name: "Round 1 is implemented" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(content.finalApproval.earlyHint),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: content.states.exhausted.chatLink }),
+    ).not.toBeInTheDocument();
+  });
 });

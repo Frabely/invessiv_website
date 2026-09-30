@@ -6,6 +6,7 @@ import type {
   feedbackRoundItems,
   feedbackRounds,
 } from "@invessiv/db/record-configuration";
+import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 
 /** Reads run on the pooled client or inside a command's transaction alike. */
 export type FeedbackReadExecutor = Pick<ContactDatabaseTransaction, "select">;
@@ -31,6 +32,12 @@ export type FeedbackDraftItemInput = {
 export type FeedbackCustomerWrite = {
   actor: ActivityActor;
   portalMembershipId: string;
+  projectTitle: string;
+};
+
+/** Which member writes on the team's side, and the title the chat notice names. */
+export type FeedbackMemberWrite = {
+  actor: WorkspaceActor;
   projectTitle: string;
 };
 

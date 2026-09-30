@@ -1,5 +1,6 @@
 import "server-only";
 
+import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import {
   SystemMessageKey,
@@ -18,6 +19,7 @@ import { feedbackRoundTaskService } from "./feedback-round-task-service";
 import type {
   FeedbackCustomerWrite,
   FeedbackDraftItemInput,
+  FeedbackMemberWrite,
   FeedbackRoundRef,
   FeedbackRoundRow,
 } from "./feedback-service-types";
@@ -97,10 +99,12 @@ async function submit(
   round: FeedbackRoundRow,
   context: FeedbackCustomerWrite,
 ): Promise<FeedbackRoundRow> {
+  // A notice belongs to the step it announced; the handback notice ends with the resubmission.
   const submitted = await writeRound(tx, round, {
     status: FeedbackRoundStatus.Submitted,
     submitted_at: new Date(),
     submitted_by_portal_membership_id: context.portalMembershipId,
+    customer_notice: null,
   });
   await feedbackRoundTaskService.ensureOpenForSubmission(
     tx,
@@ -152,9 +156,119 @@ async function approve(
   return approved;
 }
 
+/** The team asks for a call; the optional notice tells the customer what about. */
+async function requestDiscussion(
+  tx: ContactDatabaseTransaction,
+  round: FeedbackRoundRow,
+  context: FeedbackMemberWrite & { customerNotice: string | null },
+): Promise<FeedbackRoundRow> {
+  const changed = await writeRound(tx, round, {
+    status: FeedbackRoundStatus.InDiscussion,
+    customer_notice: context.customerNotice,
+  });
+  await feedbackRoundActivityService.recordStatusChange(
+    tx,
+    changed,
+    { type: ActorType.User, userId: context.actor.userId },
+    { previous: round.status, next: changed.status },
+  );
+  await announce(
+    tx,
+    changed,
+    context.projectTitle,
+    SystemMessageKey.FeedbackRoundDiscussionRequested,
+  );
+  return changed;
+}
+
+/** Starting the work moves the collecting task along; the customer learns it from the round status. */
+async function startImplementation(
+  tx: ContactDatabaseTransaction,
+  round: FeedbackRoundRow,
+  context: FeedbackMemberWrite,
+): Promise<FeedbackRoundRow> {
+  const changed = await writeRound(tx, round, {
+    status: FeedbackRoundStatus.InProgress,
+    started_at: new Date(),
+    customer_notice: null,
+  });
+  await feedbackRoundTaskService.markInProgress(tx, changed, context.actor);
+  await feedbackRoundActivityService.recordStatusChange(
+    tx,
+    changed,
+    { type: ActorType.User, userId: context.actor.userId },
+    { previous: round.status, next: changed.status },
+  );
+  return changed;
+}
+
+/**
+ * Hands the round back to the customer: items stay, the submission stamp goes, the collecting task
+ * is cancelled until the next submission reopens it. `read_at` resets, so a resubmission shows up
+ * as new again.
+ */
+async function returnToCustomer(
+  tx: ContactDatabaseTransaction,
+  round: FeedbackRoundRow,
+  context: FeedbackMemberWrite & { customerNotice: string },
+): Promise<FeedbackRoundRow> {
+  const changed = await writeRound(tx, round, {
+    status: FeedbackRoundStatus.Open,
+    customer_notice: context.customerNotice,
+    submitted_at: null,
+    submitted_by_portal_membership_id: null,
+    read_at: null,
+  });
+  await feedbackRoundTaskService.cancelForReturn(tx, changed, context.actor);
+  await feedbackRoundActivityService.recordStatusChange(
+    tx,
+    changed,
+    { type: ActorType.User, userId: context.actor.userId },
+    { previous: round.status, next: changed.status },
+  );
+  await announce(
+    tx,
+    changed,
+    context.projectTitle,
+    SystemMessageKey.FeedbackRoundReturned,
+  );
+  return changed;
+}
+
+/** The handler has checked that every item has a result; the task is done in the same transaction. */
+async function complete(
+  tx: ContactDatabaseTransaction,
+  round: FeedbackRoundRow,
+  context: FeedbackMemberWrite,
+): Promise<FeedbackRoundRow> {
+  const changed = await writeRound(tx, round, {
+    status: FeedbackRoundStatus.Completed,
+    completed_at: new Date(),
+    completed_by_member_id: context.actor.workspaceMemberId,
+  });
+  await feedbackRoundTaskService.completeForRound(tx, changed, context.actor);
+  await feedbackRoundActivityService.recordStatusChange(
+    tx,
+    changed,
+    { type: ActorType.User, userId: context.actor.userId },
+    { previous: round.status, next: changed.status },
+  );
+  await announce(
+    tx,
+    changed,
+    context.projectTitle,
+    SystemMessageKey.FeedbackRoundCompleted,
+  );
+  return changed;
+}
+
 export const feedbackRoundWriteService = {
   recordHandOver,
   saveDraft,
   submit,
   approve,
+  requestDiscussion,
+  startImplementation,
+  returnToCustomer,
+  complete,
 } as const;

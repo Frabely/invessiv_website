@@ -9,7 +9,16 @@ import {
   feedbackRounds,
   projects,
 } from "@invessiv/db/record-configuration";
-import type { FeedbackReadExecutor } from "@/server/shared/services/feedback/feedback-service-types";
+import type { FeedbackRoundDto } from "@invessiv/common/contracts/crm/feedback-round.dto";
+import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
+import { feedbackRoundItemService } from "@/server/shared/services/feedback/feedback-round-item-service";
+import type {
+  FeedbackReadExecutor,
+  FeedbackRoundRow,
+} from "@/server/shared/services/feedback/feedback-service-types";
+import { loadFeedbackContactNames } from "@/server/shared/services/feedback/load-feedback-contact-names";
+import { fileAccessService } from "@/server/workspace/crm/services/files/file-access-service";
+import { feedbackRoundMappingService } from "./feedback-round-mapping-service";
 import type {
   CountedFeedbackRound,
   FeedbackProjectTrack,
@@ -82,8 +91,36 @@ function findHandOverBlocker(
   });
 }
 
+/**
+ * One round with items, attachments and results. Attachments follow the member's own file scope,
+ * so `projects.read` without `files.read` shows the items but no files.
+ */
+async function toRoundDto(
+  executor: FeedbackReadExecutor,
+  round: FeedbackRoundRow,
+  actor: WorkspaceActor,
+): Promise<FeedbackRoundDto> {
+  const [items, contactNames] = await Promise.all([
+    feedbackRoundItemService.loadByRound(
+      executor,
+      [round.id],
+      fileAccessService.readableCondition(actor),
+    ),
+    loadFeedbackContactNames(executor, [
+      round.draft_updated_by_portal_membership_id,
+      round.submitted_by_portal_membership_id,
+    ]),
+  ]);
+  return feedbackRoundMappingService.toDto(
+    round,
+    items.get(round.id) ?? [],
+    contactNames,
+  );
+}
+
 export const feedbackRoundService = {
   findProjectTrack,
   listRounds,
   findHandOverBlocker,
+  toRoundDto,
 } as const;

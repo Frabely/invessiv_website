@@ -46,5 +46,12 @@ describe("StatusRow", () => {
     const row = screen.getByRole("listitem");
     expect(row).toHaveAttribute("data-tone", "attention");
     expect(row).toHaveAttribute("data-pending", "true");
+    expect(row).not.toHaveAttribute("data-align");
+  });
+
+  it("pins the status slot to the top on request", () => {
+    renderRow({ alignStart: true });
+
+    expect(screen.getByRole("listitem")).toHaveAttribute("data-align", "start");
   });
 });

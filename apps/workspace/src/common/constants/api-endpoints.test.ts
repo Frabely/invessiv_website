@@ -7,6 +7,7 @@ describe("WorkspaceApiEndpoint", () => {
     expect(WorkspaceApiEndpoint).toEqual({
       CrmFiles: "/api/workspace/crm/files",
       CrmFeedbackRounds: "/api/workspace/crm/feedback-rounds",
+      CrmFeedbackRoundItems: "/api/workspace/crm/feedback-round-items",
       AccessCustomers: "/api/workspace/access/customers",
       AccessCustomerOptions: "/api/workspace/access/customers/options",
       CrmCustomers: "/api/workspace/crm/customers",

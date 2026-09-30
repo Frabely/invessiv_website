@@ -6,6 +6,7 @@ import {
 } from "./support/portal-e2e-fixture";
 
 let fixture: PortalE2eFixture;
+let roundOneId: string;
 
 function feedbackPath(customerId: string, projectId: string) {
   return `/de/portal/${customerId}/projects/${projectId}/feedback`;
@@ -26,7 +27,10 @@ async function handOver(page: Page, projectId: string) {
   return ((await response.json()) as { id: string }).id;
 }
 
-/** Handover, two contacts on one draft, submission and the approval without changes. */
+/**
+ * Handover, two contacts on one draft, submission, the internal processing with results, the next
+ * round, a handback, the approval after the last round, and the approval without changes.
+ */
 test.describe.serial("portal feedback", () => {
   test.use({ storageState: portalE2ePaths.managerState });
 
@@ -60,6 +64,7 @@ test.describe.serial("portal feedback", () => {
     const handoverResponse = await handedOver;
     expect(handoverResponse.ok()).toBe(true);
     const roundId = ((await handoverResponse.json()) as { id: string }).id;
+    roundOneId = roundId;
     await expect(dialog).toBeHidden();
     await expect(page).toHaveURL(new RegExp(`feedbackRound=${roundId}`));
 
@@ -177,6 +182,206 @@ test.describe.serial("portal feedback", () => {
     await expect(page.getByText(/Eingereicht von/)).toBeVisible();
   });
 
+  test("processes round 1, hands over round 2, takes it back and approves after it", async ({
+    page,
+    browser,
+  }) => {
+    const suffix = Date.now().toString(36);
+    const cockpit = `/de/crm?cockpit=${fixture.feedbackCustomer}&project=${fixture.feedbackProject}`;
+    const url = feedbackPath(fixture.feedbackCustomer, fixture.feedbackProject);
+    const contact = await browser.newContext({
+      storageState: portalE2ePaths.feedbackContactState,
+    });
+    try {
+      const b = await contact.newPage();
+
+      // Request a call: the customer sees the note.
+      await page.goto(`${cockpit}&feedbackRound=${roundOneId}`);
+      await page.getByRole("button", { name: "Gespräch anfordern" }).click();
+      const call = page.getByRole("dialog", { name: "Gespräch anfordern" });
+      await call
+        .getByLabel(/Hinweis an den Kunden/)
+        .fill(`Passt dir Donnerstag? ${suffix}`);
+      await call.getByRole("button", { name: "Gespräch anfordern" }).click();
+      await expect(call).toBeHidden();
+      await b.goto(url);
+      await expect(
+        b.getByRole("heading", {
+          name: "Wir möchten dein Feedback kurz besprechen",
+        }),
+      ).toBeVisible();
+      await expect(
+        b.getByText(`Passt dir Donnerstag? ${suffix}`),
+      ).toBeVisible();
+
+      // Start, rate both items (one as additional service with a reply), complete.
+      await page.getByRole("button", { name: "Umsetzung starten" }).click();
+      await expect(
+        page.getByRole("button", { name: "Runde abschließen" }),
+      ).toBeVisible();
+      await page
+        .getByRole("button", { name: "Ergebnis für Punkt 1: Noch offen" })
+        .click();
+      await page.getByRole("option", { name: "Umgesetzt" }).click();
+      await expect(page.getByText("1 von 2 Punkten bewertet")).toBeVisible();
+      await page
+        .getByRole("button", { name: "Ergebnis für Punkt 2: Noch offen" })
+        .click();
+      await page.getByRole("option", { name: "Zusatzleistung" }).click();
+      const reply = page.getByRole("dialog", { name: "Antwort zu Punkt 2" });
+      await reply
+        .getByLabel(/Antwort an den Kunden/)
+        .fill(`Gern als Zusatzleistung ${suffix}`);
+      await reply.getByRole("button", { name: "Ergebnis speichern" }).click();
+      await expect(reply).toBeHidden();
+      await expect(page.getByText("2 von 2 Punkten bewertet")).toBeVisible();
+
+      await page.getByRole("button", { name: "Runde abschließen" }).click();
+      const complete = page.getByRole("dialog", {
+        name: "Feedbackrunde 1 abschließen",
+      });
+      await complete.getByRole("button", { name: "Runde abschließen" }).click();
+      const done = page.getByRole("dialog", {
+        name: "Feedbackrunde 1 ist abgeschlossen",
+      });
+      await done.getByRole("button", { name: "Runde 2 übergeben" }).click();
+      const handover = page.getByRole("dialog", {
+        name: "Feedbackrunde 2 übergeben",
+      });
+      const handedOver = page.waitForResponse(
+        (response) =>
+          response
+            .url()
+            .endsWith(`/projects/${fixture.feedbackProject}/feedback-rounds`) &&
+          response.request().method() === "POST",
+      );
+      await handover.getByRole("button", { name: "Runde übergeben" }).click();
+      const secondResponse = await handedOver;
+      expect(secondResponse.ok()).toBe(true);
+      const roundTwoId = ((await secondResponse.json()) as { id: string }).id;
+
+      const first = (await (
+        await page.request.get(
+          `/api/workspace/crm/feedback-rounds/${roundOneId}`,
+        )
+      ).json()) as { status: string };
+      expect(first.status).toBe("completed");
+
+      // The customer sees the results of round 1 and fills round 2.
+      await b.goto(url);
+      await expect(b.getByText("Feedbackrunde 2 von 2")).toBeVisible();
+      await b.getByText("Feedbackrunde 1", { exact: true }).click();
+      await expect(b.getByText("Zusatzleistung")).toBeVisible();
+      await expect(
+        b.getByText(`Gern als Zusatzleistung ${suffix}`),
+      ).toBeVisible();
+      await b.getByRole("button", { name: "Punkt hinzufügen" }).click();
+      const saved = b.waitForResponse(isDraftSave(roundTwoId));
+      await b.getByRole("textbox").first().fill(`Impressum ergänzen ${suffix}`);
+      expect((await saved).ok()).toBe(true);
+      await b.getByRole("button", { name: "Feedback einreichen" }).click();
+      await b
+        .getByRole("dialog", { name: "Feedback einreichen?" })
+        .getByRole("button", { name: "Jetzt einreichen" })
+        .click();
+      await expect(
+        b.getByText("Eingereicht – wir sichten dein Feedback"),
+      ).toBeVisible();
+
+      // Hand round 2 back: the note shows up, the points stay editable.
+      await page.goto(`${cockpit}&feedbackRound=${roundTwoId}`);
+      await page.getByRole("button", { name: "Zurück an den Kunden" }).click();
+      const back = page.getByRole("dialog", {
+        name: "Runde zurück an den Kunden",
+      });
+      await back
+        .getByLabel(/Was soll der Kunde ergänzen/)
+        .fill(`Welche Adresse soll rein? ${suffix}`);
+      await back.getByRole("button", { name: "Zurückgeben" }).click();
+      await expect(back).toBeHidden();
+      await b.reload();
+      await expect(
+        b.getByRole("heading", {
+          name: "Wir haben dir die Runde zurückgegeben",
+        }),
+      ).toBeVisible();
+      await expect(
+        b.getByText(`Welche Adresse soll rein? ${suffix}`),
+      ).toBeVisible();
+      await expect(b.getByRole("textbox").first()).toHaveValue(
+        `Impressum ergänzen ${suffix}`,
+      );
+      await b.getByRole("button", { name: "Feedback einreichen" }).click();
+      await b
+        .getByRole("dialog", { name: "Feedback einreichen?" })
+        .getByRole("button", { name: "Jetzt einreichen" })
+        .click();
+      await expect(
+        b.getByText("Eingereicht – wir sichten dein Feedback"),
+      ).toBeVisible();
+
+      // The team finishes round 2 through the API.
+      const readRound = async () =>
+        (await (
+          await page.request.get(
+            `/api/workspace/crm/feedback-rounds/${roundTwoId}`,
+          )
+        ).json()) as {
+          version: number;
+          items: { id: string; version: number }[];
+        };
+      let second = await readRound();
+      expect(
+        (
+          await page.request.post(
+            `/api/workspace/crm/feedback-rounds/${roundTwoId}/status`,
+            { data: { version: second.version, to: "in_progress" } },
+          )
+        ).ok(),
+      ).toBe(true);
+      second = await readRound();
+      expect(
+        (
+          await page.request.patch(
+            `/api/workspace/crm/feedback-round-items/${second.items[0].id}/result`,
+            {
+              data: { version: second.items[0].version, result: "implemented" },
+            },
+          )
+        ).ok(),
+      ).toBe(true);
+      expect(
+        (
+          await page.request.post(
+            `/api/workspace/crm/feedback-rounds/${roundTwoId}/status`,
+            { data: { version: second.version, to: "completed" } },
+          )
+        ).ok(),
+      ).toBe(true);
+
+      // After the last round the customer approves, only with the confirmation.
+      await b.goto(url);
+      await expect(
+        b.getByRole("heading", { name: "Die letzte Runde ist umgesetzt" }),
+      ).toBeVisible();
+      await b.getByRole("button", { name: "Projekt abnehmen" }).click();
+      const approval = b.getByRole("dialog", { name: "Projekt abnehmen?" });
+      const confirm = approval.getByRole("button", {
+        name: "Projekt abnehmen",
+      });
+      await expect(confirm).toBeDisabled();
+      await approval.getByRole("checkbox").check();
+      await confirm.click();
+      await expect(b.getByText(/Abgenommen am/).first()).toBeVisible();
+
+      await b.goto(`/de/portal/${fixture.feedbackCustomer}`);
+      const widget = b.getByRole("region", { name: "Feedback" });
+      await expect(widget.getByText(/Abgenommen am/).first()).toBeVisible();
+    } finally {
+      await contact.close();
+    }
+  });
+
   test("approves a project without changes only with the confirmation", async ({
     page,
     browser,
@@ -203,11 +408,11 @@ test.describe.serial("portal feedback", () => {
         })
         .check();
       await confirm.click();
-      await expect(b.getByText(/Freigegeben am/)).toBeVisible();
+      await expect(b.getByText(/Abgenommen am/)).toBeVisible();
 
       await b.goto(`/de/portal/${fixture.feedbackCustomer}`);
       const widget = b.getByRole("region", { name: "Feedback" });
-      await expect(widget.getByText("Abgenommen")).toBeVisible();
+      await expect(widget.getByText(/Abgenommen am/)).toBeVisible();
     } finally {
       await contact.close();
     }

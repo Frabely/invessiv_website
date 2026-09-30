@@ -43,7 +43,8 @@
     "items": "{count} items",
     "itemsOne": "1 item",
     "itemsNone": "No items yet",
-    "unread": "New"
+    "unread": "New",
+    "completed": "Completed on {date}"
   },
   "detail": {
     "back": "All rounds",
@@ -67,7 +68,8 @@
     "attachments": "Attachments of item {number}",
     "archive": "All attachments as ZIP",
     "archiveBusy": "Creating ZIP …",
-    "archiveFilename": "feedback-round-{number}.zip"
+    "archiveFilename": "feedback-round-{number}.zip",
+    "customerNotice": "Note to the customer"
   },
   "handover": {
     "title": "Hand over feedback round {number}",
@@ -108,6 +110,105 @@
   },
   "announcements": {
     "handedOver": "Feedback round {number} is handed over.",
-    "alreadyActive": "Feedback round {number} is already running and is open."
+    "alreadyActive": "Feedback round {number} is already running and is open.",
+    "statusChanged": "Feedback round {number}: {status}.",
+    "resultSaved": "Item {number}: {result} saved."
+  },
+  "actions": {
+    "groupLabel": "Next step for this round",
+    "in_discussion": "Request a call",
+    "in_progress": "Start implementation",
+    "open": "Hand back to the customer",
+    "completed": "Complete round",
+    "starting": "Starting …"
+  },
+  "notice": {
+    "discussion": {
+      "title": "Request a call",
+      "description": "The customer sees in the portal that you want to discuss their feedback and gets a chat message. Agree on the time in the chat.",
+      "label": "Note to the customer",
+      "hint": "Optional: what it is about or when you are available.",
+      "placeholder": "For example: I have two questions about items 3 and 5. Does Thursday morning work for you?",
+      "submit": "Request a call",
+      "submitting": "Requesting …",
+      "required": "Tell the customer briefly what it is about.",
+      "conflict": "The round just changed. You now see the current state; your text is still here."
+    },
+    "return": {
+      "title": "Hand the round back to the customer",
+      "description": "The customer can edit the round again and resubmit it. Their items stay, the collecting task is cancelled.",
+      "label": "What should the customer add?",
+      "hint": "The customer sees this note at the top of their feedback sheet.",
+      "placeholder": "For example: For item 2 we need a screenshot of the page where the error happens.",
+      "submit": "Hand back",
+      "submitting": "Handing back …",
+      "required": "Tell the customer what is missing.",
+      "conflict": "The round just changed. You now see the current state; your text is still here."
+    }
+  },
+  "textDialog": {
+    "counter": "{count} of {max} characters",
+    "cancel": "Cancel",
+    "close": "Close",
+    "previewLabel": "What the customer sees once the round is completed",
+    "previewEmpty": "Your reply appears here.",
+    "customerReplyLabel": "Our reply"
+  },
+  "result": {
+    "choices": {
+      "pending": "Not rated",
+      "implemented": "Implemented",
+      "not_implemented": "Not implemented",
+      "additional_service": "Additional service"
+    },
+    "selectLabel": "Result for item {number}: {result}",
+    "reply": "Reply to the customer",
+    "editReply": "Edit reply to item {number}",
+    "note": {
+      "not_implemented": {
+        "description": "Explain to the customer why you are not implementing this item. They see the reply once the round is completed.",
+        "placeholder": "For example: The contact form stays single-column so it remains easy to read on phones."
+      },
+      "additional_service": {
+        "description": "Explain to the customer that this item goes beyond the order and how it can move forward. They see the reply once the round is completed.",
+        "placeholder": "For example: A members area is not part of the order. We are happy to send you a quote."
+      }
+    },
+    "noteCommon": {
+      "title": "Reply to item {number}",
+      "label": "Reply to the customer",
+      "hint": "Required for this result.",
+      "submit": "Save result",
+      "submitting": "Saving …",
+      "required": "Write the customer a short reply.",
+      "conflict": "Someone just rated this item. You now see the current state; your reply is still here."
+    }
+  },
+  "progress": {
+    "label": "{rated} of {total} items rated"
+  },
+  "complete": {
+    "title": "Complete feedback round {number}",
+    "description": "Afterwards the customer sees every result and reply, and the collecting task is done. Results can no longer be changed.",
+    "countsLabel": "Results of this round",
+    "allRated": "All {total} items have a result.",
+    "missing": "{count} of {total} items have no result yet. Rate them before you complete the round.",
+    "submit": "Complete round",
+    "submitting": "Completing …",
+    "cancel": "Cancel",
+    "close": "Close",
+    "doneTitle": "Feedback round {number} is completed",
+    "nextDescription": "The project still has {remaining} of {included} rounds open. Hand over round {next} as soon as the next version is ready.",
+    "handOverNext": "Hand over round {next}",
+    "later": "Later",
+    "approvalHint": "That was the last round. The customer can now approve the project in the portal."
+  },
+  "processingErrors": {
+    "notFound": "The round is no longer available. Reload the page.",
+    "changed": "The round has changed in the meantime. You now see the current state.",
+    "locked": "The round is completed. Results can no longer be changed.",
+    "resultsIncomplete": "Rate every item first, then you can complete the round.",
+    "validation": "Some details do not fit. Check the text and try again.",
+    "internal": "That did not work. Please try again."
   }
 }

@@ -13,7 +13,8 @@ import styles from "./feedback-approve-dialog.module.css";
 
 export type FeedbackApproveDialogProps = {
   busy: boolean;
-  content: PortalFeedbackDictionary;
+  /** The shortcut and the final approval word the same step differently. */
+  texts: PortalFeedbackDictionary["approveDialog"];
   error: string | null;
   /** Other rounds would expire; the text says so only when there are any. */
   hasRemainingRounds: boolean;
@@ -27,13 +28,12 @@ export type FeedbackApproveDialogProps = {
  */
 export function FeedbackApproveDialog({
   busy,
-  content,
+  texts,
   error,
   hasRemainingRounds,
   onCancelAction,
   onConfirmAction,
 }: FeedbackApproveDialogProps) {
-  const texts = content.approveDialog;
   const checkboxId = useId();
   const [confirmed, setConfirmed] = useState(false);
 

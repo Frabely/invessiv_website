@@ -62,3 +62,8 @@
   font-size: var(--font-size-body-sm);
   line-height: 1.55;
 }
+
+.results {
+  display: grid;
+  gap: 1rem;
+}

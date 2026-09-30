@@ -39,3 +39,21 @@ export const RESULT_VISIBLE_FEEDBACK_ROUND_STATUS_VALUES = [
   FeedbackRoundStatus.Completed,
   FeedbackRoundStatus.Approved,
 ] as const;
+
+/** Statuses the team may set on a running round; each still has to be a transition from the current one. */
+export const INTERNAL_FEEDBACK_ROUND_TARGET_STATUS_VALUES = [
+  FeedbackRoundStatus.InDiscussion,
+  FeedbackRoundStatus.InProgress,
+  FeedbackRoundStatus.Open,
+  FeedbackRoundStatus.Completed,
+] as const;
+
+export type InternalFeedbackRoundTargetStatus =
+  (typeof INTERNAL_FEEDBACK_ROUND_TARGET_STATUS_VALUES)[number];
+
+/** Only while the team works on a submitted round can item results change; afterwards they are final. */
+export const RESULT_EDITABLE_FEEDBACK_ROUND_STATUS_VALUES = [
+  FeedbackRoundStatus.Submitted,
+  FeedbackRoundStatus.InDiscussion,
+  FeedbackRoundStatus.InProgress,
+] as const;

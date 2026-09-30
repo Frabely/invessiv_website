@@ -23,8 +23,8 @@
     "submitted": "Eingereicht",
     "in_discussion": "Wir besprechen es",
     "in_progress": "Wir setzen um",
-    "completed": "Abgeschlossen",
-    "approved": "Freigegeben"
+    "completed": "Umgesetzt",
+    "approved": "Abgenommen"
   },
   "states": {
     "none": {
@@ -40,17 +40,35 @@
       "description": "Danke dir. Wir melden uns, sobald wir alles durchgesehen haben. Ändern kannst du diese Runde jetzt nicht mehr."
     },
     "working": {
-      "title": "Wir sind dran",
-      "description": "Wir arbeiten dein Feedback gerade ein. Hier siehst du, sobald die Runde abgeschlossen ist."
+      "title": "Wir setzen dein Feedback um",
+      "description": "Wir arbeiten deine Punkte gerade ab. Sobald die Runde abgeschlossen ist, siehst du hier zu jedem Punkt, was wir gemacht haben."
     },
     "approved": {
-      "title": "Freigegeben am {date}",
+      "title": "Abgenommen am {date}",
       "description": "Das Projekt ist von deiner Seite abgeschlossen. Wir bereiten jetzt den Launch vor."
     },
     "exhausted": {
-      "title": "Alle Feedbackrunden sind genutzt",
-      "description": "Du hast noch Wünsche? Schreib uns im Chat, dann finden wir gemeinsam einen Weg.",
+      "title": "Du brauchst noch eine Runde?",
+      "description": "Schreib uns im Chat, dann finden wir gemeinsam einen Weg.",
       "chatLink": "Zum Chat"
+    },
+    "noticeLabel": "Nachricht von uns",
+    "returned": {
+      "title": "Wir haben dir die Runde zurückgegeben",
+      "description": "Du kannst deine Punkte wieder bearbeiten und die Runde erneut einreichen. Das fehlt uns noch:"
+    },
+    "discussion": {
+      "title": "Wir möchten dein Feedback kurz besprechen",
+      "description": "Bevor wir loslegen, klären wir ein paar Punkte am besten kurz gemeinsam. Schreib uns im Chat, wann es dir passt.",
+      "chatLink": "Termin im Chat abstimmen"
+    },
+    "completed": {
+      "title": "Runde {number} ist umgesetzt",
+      "description": "Hier siehst du zu jedem Punkt, was wir gemacht haben. Den nächsten Stand zeigen wir dir, sobald er fertig ist."
+    },
+    "approvalDue": {
+      "title": "Die letzte Runde ist umgesetzt",
+      "description": "Sieh dir an, was wir mit deinen Punkten gemacht haben, und nimm das Projekt ab, wenn alles passt."
     }
   },
   "editor": {
@@ -132,7 +150,7 @@
     "title": "Frühere Runden",
     "roundTitle": "Feedbackrunde {number}",
     "submittedOn": "eingereicht am {date}",
-    "approvedOn": "freigegeben am {date}",
+    "approvedOn": "abgenommen am {date}",
     "items": "{count} Punkte",
     "itemsOne": "1 Punkt",
     "itemsNone": "ohne Punkte",
@@ -144,19 +162,42 @@
     "approved": "Das Projekt ist freigegeben.",
     "restored": "Deine Fassung ist wiederhergestellt und wird gespeichert.",
     "attached": "{name} an Punkt {number} angehängt",
-    "detached": "{name} vom Punkt gelöst"
+    "detached": "{name} vom Punkt gelöst",
+    "accepted": "Das Projekt ist abgenommen."
   },
   "errors": {
     "not_found": "Diese Feedbackrunde gibt es nicht mehr. Lade die Seite neu.",
-    "locked": "Diese Runde wurde gerade eingereicht und lässt sich nicht mehr ändern.",
+    "locked": "Diese Runde hat sich gerade geändert. Du siehst jetzt den aktuellen Stand.",
     "validation": "Etwas stimmt mit deinen Angaben nicht. Lade die Seite neu und versuch es erneut.",
     "items_required": "Füg mindestens einen Punkt hinzu, bevor du einreichst.",
     "item_text_required": "Bei einigen Punkten fehlt noch der Text.",
     "items_present": "Du hast schon Punkte angelegt. Reich sie ein, statt freizugeben.",
-    "not_latest": "Freigeben geht nur in der aktuellen Runde.",
+    "not_latest": "Abnehmen geht nur in der neuesten Runde. Du siehst jetzt den aktuellen Stand.",
     "confirmation_required": "Bitte setz den Haken, um freizugeben.",
     "attachment_limit": "An diesen Punkt passen keine weiteren Dateien.",
     "not_attachable": "Diese Datei lässt sich hier nicht anhängen.",
     "unavailable": "Das hat gerade nicht geklappt. Versuch es gleich noch einmal."
+  },
+  "result": {
+    "choices": {
+      "implemented": "Umgesetzt",
+      "not_implemented": "Nicht umgesetzt",
+      "additional_service": "Zusatzleistung"
+    },
+    "reply": "Unsere Antwort"
+  },
+  "finalApproval": {
+    "action": "Projekt abnehmen",
+    "earlyHint": "Passt schon alles? Dann kannst du das Projekt auch jetzt abnehmen. Die übrigen Runden verfallen damit.",
+    "lastHint": "Wenn alles passt, nimm das Projekt ab. Danach bereiten wir den Launch vor."
+  },
+  "finalApproveDialog": {
+    "title": "Projekt abnehmen?",
+    "description": "Mit der Abnahme ist das Projekt von deiner Seite abgeschlossen. Die übrigen Feedbackrunden verfallen, und wir bereiten den Launch vor. Das lässt sich nicht rückgängig machen.",
+    "descriptionLast": "Mit der Abnahme ist das Projekt von deiner Seite abgeschlossen, und wir bereiten den Launch vor. Das lässt sich nicht rückgängig machen.",
+    "checkbox": "Ich habe die Ergebnisse geprüft und nehme das Projekt ab.",
+    "confirm": "Projekt abnehmen",
+    "cancel": "Abbrechen",
+    "close": "Schließen"
   }
 }

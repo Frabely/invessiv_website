@@ -4,6 +4,7 @@ import type { PortalFeedbackItemDto } from "@invessiv/common/contracts/portal/po
 import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { FeedbackAttachmentList } from "@/components/shared/feedback/feedback-attachment-list/feedback-attachment-list";
+import { FeedbackItemResult } from "@/components/shared/feedback/feedback-item-result/feedback-item-result";
 import { FeedbackReadOnlyItemContent } from "@/components/shared/feedback/feedback-read-only-item-content/feedback-read-only-item-content";
 import type { Locale } from "@/config/i18n";
 import { usePortalFileDownloads } from "@/hooks/portal/use-portal-file-downloads";
@@ -74,6 +75,16 @@ export function FeedbackItemList({
                 ) : null
               }
             />
+            {item.result ? (
+              <div className={styles.result}>
+                <FeedbackItemResult
+                  label={content.result.choices[item.result]}
+                  note={item.resultNote}
+                  noteLabel={content.result.reply}
+                  result={item.result}
+                />
+              </div>
+            ) : null}
           </li>
         ))}
       </ol>

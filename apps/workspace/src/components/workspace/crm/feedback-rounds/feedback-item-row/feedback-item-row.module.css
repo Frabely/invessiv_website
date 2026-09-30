@@ -13,3 +13,26 @@
   color: var(--color-text-muted);
   font-variant-numeric: tabular-nums;
 }
+
+/* Rated rows sit in a StatusRow; the item content needs the top alignment of a long text. */
+.details {
+  align-content: start;
+  gap: 0.6rem;
+}
+
+.open {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+}
+
+.reply {
+  display: grid;
+  justify-items: start;
+  gap: 0.25rem;
+}
+
+.error {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: var(--font-size-ui-sm);
+}

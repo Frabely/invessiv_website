@@ -23,6 +23,10 @@
   color: var(--color-text-muted);
 }
 
+.row[data-align="start"] {
+  align-items: start;
+}
+
 .row[data-pending="true"] {
   opacity: 0.65;
 }

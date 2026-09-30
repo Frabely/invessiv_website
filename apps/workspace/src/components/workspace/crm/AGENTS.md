@@ -85,6 +85,15 @@ Plan: `apps/workspace/plans/crm/16-feedbackrunden/60-ui-uebergabe-und-kundenboge
 - Kundentext erscheint nur als Text (`FeedbackItemText`/`LinkedText`), Links in neuem Tab mit
   `rel="noopener noreferrer"`. Portal und CRM teilen `components/shared/feedback/**`.
 - Solange eine Runde läuft, ist „Aktueller Prozessschritt“ im Projekt-Editor gesperrt und nennt die Runde.
+- **Bearbeitung (ab Task 61):** `feedback-round-status-actions` zeigt genau die internen Ziele, die `canTransition`
+  vom aktuellen Status erlaubt; ohne `projects.write` fehlt die Gruppe. Gespräch und Zurückgeben laufen über den
+  generischen `feedback-text-dialog` (eine versionierte Schreibaktion mit Text, Konflikt behält den Text),
+  „Umsetzung starten“ direkt, der Abschluss über `feedback-complete-dialog` (Prüfliste, danach Angebot „Runde n+1
+  übergeben“ nur unterhalb des Kontingents, sonst Abnahme-Hinweis).
+- Ergebnisse je Punkt über `feedback-item-result-select` in der Zeile (`StatusRow`, `alignStart`): „Umgesetzt“
+  speichert sofort, die beiden anderen öffnen die Antwort mit Vorschau in Kundensicht (`FeedbackItemResult` aus
+  `components/shared/feedback/`). „Noch offen“ erscheint nur, solange kein Ergebnis gesetzt ist.
+- Fehlercodes beider Befehle werden nur über `feedbackProcessingError` (`common/patterns/crm/`) in Texte übersetzt.
 
 ## Aufgaben (ab Task 11-3)
 

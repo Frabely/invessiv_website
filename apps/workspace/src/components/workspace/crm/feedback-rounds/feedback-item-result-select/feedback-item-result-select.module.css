@@ -1,0 +1,23 @@
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+}
+
+.icon[data-result="pending"] {
+  color: var(--color-text-muted);
+}
+
+.icon[data-result="implemented"] {
+  color: var(--color-success);
+}
+
+.icon[data-result="not_implemented"] {
+  color: var(--color-text-muted);
+}
+
+.icon[data-result="additional_service"] {
+  color: var(--color-accent-gold);
+}

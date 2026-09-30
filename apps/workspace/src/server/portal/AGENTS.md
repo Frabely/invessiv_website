@@ -63,5 +63,9 @@ einzigen regulären Aufrufer.
 - Punkt-IDs kommen vom Client: eine ID aus einer anderen Runde wird als `validation` abgelehnt, nie übernommen.
 - Anhängen nur für fertige eigene Kundendateien ohne Punkt; eine Datei, die der Kunde nicht sehen darf, ist
   `not_found`, eine sichtbare, aber unpassende `not_attachable`.
+- Abnahme (ab Task 61): aus `open` nur ohne Punkte, aus `completed` nur für die höchste Rundennummer ohne laufende
+  Runde (`not_latest` bzw. `locked`), immer mit `confirmFinal`. Für den Weg aus `completed` sperrt der Handler
+  zusätzlich das Projekt (dieselbe Sperre wie die Übergabe), damit Abnahme und Übergabe der nächsten Runde nie
+  gleichzeitig gelingen. Ergebnisse und Antworten enthält das Portal-DTO erst ab `completed`.
 - Fehlercodes sind `PortalFeedbackErrorCode`; Statuscodes und Texte stehen ausschließlich in
   `src/lib/portal/portal-feedback-api-error.ts`.

@@ -217,7 +217,8 @@ async function insertPortalMember(
   });
 }
 
-/** Design is the last step before round 1, so the team can hand it over right away. */
+/** Both rounds sit before "Launch" and the project is at "Entwicklung", so round 2 follows round 1
+ * without moving the track, and the approval moves it to "Launch". */
 function feedbackProjectRow(
   id: string,
   customerId: string,
@@ -232,11 +233,11 @@ function feedbackProjectRow(
     status: ProjectStatus.Active,
     phase: ProjectPhase.Development,
     process_steps: ["Design", "Entwicklung", "Launch"],
-    current_process_step: "Design",
+    current_process_step: "Entwicklung",
     workflow_key: ProjectWorkflowKey.StandardWebV1,
     billing_model: ProjectBillingModel.FixedPrice,
     included_feedback_rounds: 2,
-    feedback_round_positions: [1, 2],
+    feedback_round_positions: [2, 2],
     feedback_areas: ["Startseite", "Kontakt"],
     preview_url: "https://example.com/preview",
     next_step_label: null,

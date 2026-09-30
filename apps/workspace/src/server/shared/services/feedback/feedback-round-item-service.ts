@@ -136,13 +136,11 @@ async function updateItem(
   item: FeedbackDraftItemInput,
   position: number,
 ): Promise<void> {
-  if (
-    stored.position === position &&
-    stored.area_label === item.areaLabel &&
-    stored.kind === item.kind &&
-    stored.body === item.body
-  )
-    return;
+  const contentChanged =
+    stored.area_label !== item.areaLabel ||
+    stored.kind !== item.kind ||
+    stored.body !== item.body;
+  if (stored.position === position && !contentChanged) return;
   await updateLockedVersioned(
     {
       tx,
@@ -154,6 +152,14 @@ async function updateItem(
         area_label: item.areaLabel,
         kind: item.kind,
         body: item.body,
+        ...(contentChanged
+          ? {
+              result: null,
+              result_note: null,
+              result_set_by_member_id: null,
+              result_set_at: null,
+            }
+          : {}),
       },
     },
     "Locked feedback item changed",

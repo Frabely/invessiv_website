@@ -23,7 +23,7 @@
     "submitted": "Submitted",
     "in_discussion": "We're discussing it",
     "in_progress": "We're on it",
-    "completed": "Done",
+    "completed": "Implemented",
     "approved": "Approved"
   },
   "states": {
@@ -40,17 +40,35 @@
       "description": "Thank you. We'll get back to you once we've gone through everything. This round can no longer be changed."
     },
     "working": {
-      "title": "We're on it",
-      "description": "We're working your feedback in right now. You'll see here when the round is done."
+      "title": "We're implementing your feedback",
+      "description": "We're working through your points right now. Once the round is completed, you'll see here what we did with each point."
     },
     "approved": {
       "title": "Approved on {date}",
       "description": "The project is complete from your side. We're now preparing the launch."
     },
     "exhausted": {
-      "title": "All feedback rounds are used",
-      "description": "Still have requests? Write to us in the chat and we'll find a way together.",
+      "title": "Need another round?",
+      "description": "Write to us in the chat and we'll find a way together.",
       "chatLink": "Go to chat"
+    },
+    "noticeLabel": "Message from us",
+    "returned": {
+      "title": "We handed the round back to you",
+      "description": "You can edit your points again and resubmit the round. Here is what we still need:"
+    },
+    "discussion": {
+      "title": "We'd like to talk through your feedback",
+      "description": "Before we start, a few points are easiest to clear up together. Let us know in the chat when it suits you.",
+      "chatLink": "Find a time in the chat"
+    },
+    "completed": {
+      "title": "Round {number} is implemented",
+      "description": "Here you can see what we did with each point. We'll show you the next version as soon as it's ready."
+    },
+    "approvalDue": {
+      "title": "The last round is implemented",
+      "description": "Take a look at what we did with your points and approve the project if everything fits."
     }
   },
   "editor": {
@@ -144,19 +162,42 @@
     "approved": "The project is approved.",
     "restored": "Your version is restored and being saved.",
     "attached": "{name} attached to point {number}",
-    "detached": "{name} detached from the point"
+    "detached": "{name} detached from the point",
+    "accepted": "The project is approved."
   },
   "errors": {
     "not_found": "This feedback round no longer exists. Reload the page.",
-    "locked": "This round was just submitted and can no longer be changed.",
+    "locked": "This round just changed. You now see the current state.",
     "validation": "Something is off with your input. Reload the page and try again.",
     "items_required": "Add at least one point before you submit.",
     "item_text_required": "Some points are still missing a text.",
     "items_present": "You've already added points. Submit them instead of approving.",
-    "not_latest": "You can only approve in the current round.",
+    "not_latest": "You can only approve in the latest round. You now see the current state.",
     "confirmation_required": "Please tick the box to approve.",
     "attachment_limit": "No more files fit on this point.",
     "not_attachable": "This file can't be attached here.",
     "unavailable": "That didn't work just now. Try again in a moment."
+  },
+  "result": {
+    "choices": {
+      "implemented": "Implemented",
+      "not_implemented": "Not implemented",
+      "additional_service": "Additional service"
+    },
+    "reply": "Our reply"
+  },
+  "finalApproval": {
+    "action": "Approve project",
+    "earlyHint": "Everything fits already? Then you can approve the project now. The remaining rounds expire with it.",
+    "lastHint": "If everything fits, approve the project. We'll then prepare the launch."
+  },
+  "finalApproveDialog": {
+    "title": "Approve the project?",
+    "description": "With the approval, the project is complete on your side. The remaining feedback rounds expire, and we prepare the launch. This cannot be undone.",
+    "descriptionLast": "With the approval, the project is complete on your side, and we prepare the launch. This cannot be undone.",
+    "checkbox": "I have checked the results and approve the project.",
+    "confirm": "Approve project",
+    "cancel": "Cancel",
+    "close": "Close"
   }
 }

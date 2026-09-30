@@ -5,7 +5,9 @@ export const PortalFeedbackPageState = {
   /** An open round this viewer may only read (owner view, no submit right). */
   OpenReadOnly: "open_read_only",
   Submitted: "submitted",
-  /** The team discusses or implements the submitted round. */
+  /** The team asked for a call before implementing. */
+  Discussion: "discussion",
+  /** The team implements the submitted round. */
   Working: "working",
   /** No round was handed over yet. */
   None: "none",
@@ -23,6 +25,7 @@ export const PORTAL_FEEDBACK_PAGE_STATE_VALUES = [
   PortalFeedbackPageState.Sheet,
   PortalFeedbackPageState.OpenReadOnly,
   PortalFeedbackPageState.Submitted,
+  PortalFeedbackPageState.Discussion,
   PortalFeedbackPageState.Working,
   PortalFeedbackPageState.None,
   PortalFeedbackPageState.Between,

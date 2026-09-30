@@ -30,6 +30,14 @@ export function crmFeedbackRoundEndpoint(roundId: string): string {
   return `${WorkspaceApiEndpoint.CrmFeedbackRounds}/${encodeURIComponent(roundId)}`;
 }
 
+export function crmFeedbackRoundStatusEndpoint(roundId: string): string {
+  return `${crmFeedbackRoundEndpoint(roundId)}/${FeedbackApiPath.Status}`;
+}
+
+export function crmFeedbackItemResultEndpoint(itemId: string): string {
+  return `${WorkspaceApiEndpoint.CrmFeedbackRoundItems}/${encodeURIComponent(itemId)}/${FeedbackApiPath.Result}`;
+}
+
 export function crmLeadConversionEndpoint(leadId: string): string {
   return `${WorkspaceApiEndpoint.CrmLeadConversions}/${encodeURIComponent(leadId)}/${LEAD_CONVERSION_ACTION}`;
 }

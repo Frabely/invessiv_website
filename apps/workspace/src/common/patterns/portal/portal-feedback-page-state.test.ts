@@ -62,6 +62,16 @@ describe("portalFeedbackPageState", () => {
     ).toBe(PortalFeedbackPageState.Working);
   });
 
+  it("gives a requested call its own state", () => {
+    expect(
+      portalFeedbackPageState({
+        activeRound: round(FeedbackRoundStatus.InDiscussion),
+        quota: QUOTA,
+        canSubmit: false,
+      }),
+    ).toBe(PortalFeedbackPageState.Discussion);
+  });
+
   it("distinguishes no round yet, between rounds, all used and approved", () => {
     const state = (quota: Partial<FeedbackQuotaDto>) =>
       portalFeedbackPageState({

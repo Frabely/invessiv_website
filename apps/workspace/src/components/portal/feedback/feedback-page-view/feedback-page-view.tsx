@@ -4,6 +4,7 @@ import { useId, useState } from "react";
 import Link from "next/link";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import type { PortalProjectFeedbackDto } from "@invessiv/common/contracts/portal/portal-project-feedback.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { PortalFeedbackPageState } from "@/common/constants/portal/portal-feedback-page-states";
@@ -15,11 +16,13 @@ import type {
   PortalFilesDictionary,
 } from "@/i18n/dictionaries/portal";
 import { formatMomentDay } from "@/lib/i18n/format-moment-day";
+import { FeedbackFinalApproval } from "../feedback-final-approval/feedback-final-approval";
 import { FeedbackItemList } from "../feedback-item-list/feedback-item-list";
 import { FeedbackQuotaNotice } from "../feedback-quota-notice/feedback-quota-notice";
 import { FeedbackRoundHistory } from "../feedback-round-history/feedback-round-history";
 import { FeedbackRoundIntro } from "../feedback-round-intro/feedback-round-intro";
 import { FeedbackSheet } from "../feedback-sheet/feedback-sheet";
+import { FeedbackTeamNotice } from "../feedback-team-notice/feedback-team-notice";
 import styles from "./feedback-page-view.module.css";
 
 export type FeedbackPageViewProps = {
@@ -33,7 +36,7 @@ export type FeedbackPageViewProps = {
   feedback: PortalProjectFeedbackDto;
   filesContent: PortalFilesDictionary;
   locale: Locale;
-  /** Chat page for the exhausted quota; null without chat access. */
+  /** Chat page for calls and the exhausted quota; null without chat access. */
   messagesHref: string | null;
 };
 
@@ -59,6 +62,14 @@ export function FeedbackPageView({
   const approvedRound = feedback.history.find(
     (entry) => entry.roundNumber === feedback.quota.approvedRoundNumber,
   );
+  // Between rounds and after the last one, the newest round is completed and its results lead.
+  const resultsRound =
+    (state === PortalFeedbackPageState.Between ||
+      state === PortalFeedbackPageState.Exhausted) &&
+    feedback.history[0]?.status === FeedbackRoundStatus.Completed
+      ? feedback.history[0]
+      : null;
+  const history = resultsRound ? feedback.history.slice(1) : feedback.history;
 
   const readOnlyItems =
     round &&
@@ -72,6 +83,17 @@ export function FeedbackPageView({
         locale={locale}
       />
     ) : null;
+
+  const ownerOrReadOnlyHint = cockpitHref ? (
+    <PortalOwnerNotice
+      cockpitHref={cockpitHref}
+      hint={content.page.ownerHint}
+      id={ownerNoticeId}
+      linkLabel={content.page.ownerLink}
+    />
+  ) : (
+    <p className={styles.hint}>{content.page.readOnlyHint}</p>
+  );
 
   function stateNotice(title: string, description: string) {
     return (
@@ -101,6 +123,15 @@ export function FeedbackPageView({
           round={round}
         />
       ) : null}
+      {round?.status === FeedbackRoundStatus.Open && round.customerNotice ? (
+        <FeedbackTeamNotice
+          chat={null}
+          description={content.states.returned.description}
+          notice={round.customerNotice}
+          noticeLabel={content.states.noticeLabel}
+          title={content.states.returned.title}
+        />
+      ) : null}
       {state === PortalFeedbackPageState.Sheet && round ? (
         <FeedbackSheet
           canAttach={feedback.canAttach}
@@ -118,16 +149,7 @@ export function FeedbackPageView({
       ) : null}
       {state === PortalFeedbackPageState.OpenReadOnly ? (
         <>
-          {cockpitHref ? (
-            <PortalOwnerNotice
-              cockpitHref={cockpitHref}
-              hint={content.page.ownerHint}
-              id={ownerNoticeId}
-              linkLabel={content.page.ownerLink}
-            />
-          ) : (
-            <p className={styles.hint}>{content.page.readOnlyHint}</p>
-          )}
+          {ownerOrReadOnlyHint}
           {readOnlyItems}
         </>
       ) : null}
@@ -137,6 +159,25 @@ export function FeedbackPageView({
             content.states.submitted.title,
             content.states.submitted.description,
           )}
+          {readOnlyItems}
+        </>
+      ) : null}
+      {state === PortalFeedbackPageState.Discussion && round ? (
+        <>
+          <FeedbackTeamNotice
+            chat={
+              messagesHref
+                ? {
+                    href: messagesHref,
+                    label: content.states.discussion.chatLink,
+                  }
+                : null
+            }
+            description={content.states.discussion.description}
+            notice={round.customerNotice}
+            noticeLabel={content.states.noticeLabel}
+            title={content.states.discussion.title}
+          />
           {readOnlyItems}
         </>
       ) : null}
@@ -155,12 +196,52 @@ export function FeedbackPageView({
             content.states.none.description,
           )
         : null}
-      {state === PortalFeedbackPageState.Between
+      {state === PortalFeedbackPageState.Between && !resultsRound
         ? stateNotice(
             content.states.between.title,
             content.states.between.description,
           )
         : null}
+      {resultsRound ? (
+        <section aria-labelledby="feedback-results" className={styles.results}>
+          <div className={styles.state}>
+            <h2 id="feedback-results">
+              {formatMessage(
+                state === PortalFeedbackPageState.Exhausted
+                  ? content.states.approvalDue.title
+                  : content.states.completed.title,
+                { number: resultsRound.roundNumber },
+              )}
+            </h2>
+            <p>
+              {state === PortalFeedbackPageState.Exhausted
+                ? content.states.approvalDue.description
+                : content.states.completed.description}
+            </p>
+          </div>
+          {resultsRound.items.length > 0 ? (
+            <FeedbackItemList
+              content={content}
+              customerId={customerId}
+              filesContent={filesContent}
+              items={resultsRound.items}
+              locale={locale}
+            />
+          ) : null}
+          {feedback.canSubmit ? (
+            <FeedbackFinalApproval
+              content={content}
+              customerId={customerId}
+              hasRemainingRounds={feedback.quota.remaining > 0}
+              key={`${resultsRound.id}:${resultsRound.version}`}
+              onAnnounceAction={setAnnouncement}
+              round={resultsRound}
+            />
+          ) : state === PortalFeedbackPageState.Exhausted ? (
+            ownerOrReadOnlyHint
+          ) : null}
+        </section>
+      ) : null}
       {state === PortalFeedbackPageState.Approved
         ? stateNotice(
             approvedRound?.approvedAt
@@ -182,7 +263,7 @@ export function FeedbackPageView({
         customerId={customerId}
         filesContent={filesContent}
         locale={locale}
-        rounds={feedback.history}
+        rounds={history}
       />
       <p aria-live="polite" className="sr-only" role="status">
         {announcement}

@@ -48,7 +48,8 @@
   font-size: var(--font-size-ui-sm);
 }
 
-.note {
+.note,
+.notice {
   display: grid;
   gap: 0.25rem;
   padding-left: 0.85rem;
@@ -56,6 +57,7 @@
 }
 
 .note h5,
+.notice h5,
 .itemsHead h5 {
   margin: 0;
   color: var(--color-text-muted);
@@ -63,7 +65,8 @@
   font-weight: 600;
 }
 
-.note p {
+.note p,
+.notice p {
   margin: 0;
   font-size: var(--font-size-body-sm);
   line-height: 1.6;
@@ -100,4 +103,9 @@
   margin: 0;
   color: var(--color-danger);
   font-size: var(--font-size-ui-sm);
+}
+
+/* What the customer was told for the call or the handback; warm, because it waits on them. */
+.notice {
+  border-left-color: var(--color-accent-warm);
 }

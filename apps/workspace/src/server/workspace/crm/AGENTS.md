@@ -113,5 +113,13 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 - Services unter `services/feedback/`: `feedback-round-service.ts` (Projektspur, Rundenliste mit Punktzahl, Blocker),
   `feedback-round-mapping-service.ts`, `feedback-round-schemas.ts`. Activity und Chat nach der Übergabe schreibt
   `feedbackRoundWriteService.recordHandOver` (`server/shared/services/feedback/`).
+- **Bearbeitung (ab Task 61):** `changeFeedbackRoundStatus` sperrt die Runde (`FOR UPDATE`), vergleicht die Version
+  unter der Sperre (409 mit `VersionConflictDto` und aktueller Runde), prüft `canTransition(…, internal)` und für den
+  Abschluss, dass jeder Punkt ein Ergebnis hat (`RESULTS_INCOMPLETE`). Der Request ist eine nach `to` diskriminierte
+  Union: Zurückgeben verlangt einen Hinweis, Gespräch erlaubt einen, Start und Abschluss verbieten ihn.
+- `setFeedbackItemResult` hält die Runde nur `FOR SHARE`: Ergebnisse mehrerer Punkte laufen parallel, der Abschluss
+  wartet auf sie. Ergebnisse gehen nur in `RESULT_EDITABLE_FEEDBACK_ROUND_STATUS_VALUES`, sonst `ROUND_LOCKED`; der
+  Punkt wird über `updateVersioned` geschrieben. Ergebnisse schreiben keine Activity (sonst Log-Flut je Punkt).
+- Das Runden-DTO baut ausschließlich `feedbackRoundService.toRoundDto` (Detail-Query und Statusbefehl).
 - Bewusste Abweichung vom übrigen CRM (Planvorgabe Task 59): `VALIDATION_ERROR` der Feedback-Endpunkte antwortet
   **400**, nicht 422. Antworten liefern das DTO direkt, ohne Hülle (`{ round }`), wie die Portal-Endpunkte.

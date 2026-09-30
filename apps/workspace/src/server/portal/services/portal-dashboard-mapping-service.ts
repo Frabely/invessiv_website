@@ -51,6 +51,7 @@ type RoundRow = {
   roundNumber: number;
   status: FeedbackRoundStatus;
   dueOn: string | null;
+  approvedAt: Date | null;
 };
 
 type DashboardRows = {
@@ -60,7 +61,7 @@ type DashboardRows = {
   /** Rounds of the listed projects; null without `portal.feedback.read`. */
   feedbackRounds: RoundRow[] | null;
   /** Round states only, for the track; loaded with the projects. */
-  roundStates: Omit<RoundRow, "dueOn">[];
+  roundStates: Omit<RoundRow, "dueOn" | "approvedAt">[];
   today: string;
   canCompleteTasks: boolean;
   isOwnerView: boolean;
@@ -98,6 +99,7 @@ function mapFeedbackSummary(
     roundNumber: latest?.roundNumber ?? null,
     status: latest?.status ?? null,
     dueOn: latest?.dueOn ?? null,
+    approvedAt: latest?.approvedAt?.toISOString() ?? null,
     included: project.includedFeedbackRounds,
     used: latest?.roundNumber ?? 0,
   };

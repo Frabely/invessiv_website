@@ -3,15 +3,78 @@ import {
   FeedbackRoundErrorCode,
 } from "@invessiv/common/constants/crm/errors/feedback-round-error-codes";
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
+import type { ChangeFeedbackRoundStatusRequestDto } from "@invessiv/common/contracts/crm/change-feedback-round-status-request.dto";
+import type { FeedbackRoundItemDto } from "@invessiv/common/contracts/crm/feedback-round-item.dto";
+import type { FeedbackRoundDto } from "@invessiv/common/contracts/crm/feedback-round.dto";
 import type { HandOverFeedbackRoundRequestDto } from "@invessiv/common/contracts/crm/hand-over-feedback-round-request.dto";
+import type { SetFeedbackItemResultRequestDto } from "@invessiv/common/contracts/crm/set-feedback-item-result-request.dto";
 import { versionedJsonMutationService } from "@/client/shared/versioned-json-mutation-service";
+import type { VersionedJsonMutationResult } from "@/common/contracts/client/versioned-json-mutation-result";
 import type { HandOverFeedbackRoundClientResult } from "@/common/contracts/crm/feedback-round-client-result";
-import { crmProjectFeedbackRoundsEndpoint } from "@/common/patterns/crm/crm-api-endpoints";
+import {
+  crmFeedbackItemResultEndpoint,
+  crmFeedbackRoundStatusEndpoint,
+  crmProjectFeedbackRoundsEndpoint,
+} from "@/common/patterns/crm/crm-api-endpoints";
 
-const { isRecord, readErrorCode, send } = versionedJsonMutationService;
+const { isRecord, mutate, readErrorCode, send } = versionedJsonMutationService;
 
 function readId(value: unknown): string | null {
   return isRecord(value) && typeof value.id === "string" ? value.id : null;
+}
+
+function isRound(value: unknown): value is FeedbackRoundDto {
+  return (
+    isRecord(value) &&
+    typeof value.id === "string" &&
+    typeof value.status === "string" &&
+    typeof value.version === "number" &&
+    Array.isArray(value.items)
+  );
+}
+
+function isItem(value: unknown): value is FeedbackRoundItemDto {
+  return (
+    isRecord(value) &&
+    typeof value.id === "string" &&
+    typeof value.version === "number" &&
+    "result" in value
+  );
+}
+
+/** A 409 carries the current round, so the caller can show what changed instead of guessing. */
+function changeStatus(
+  roundId: string,
+  request: ChangeFeedbackRoundStatusRequestDto,
+): Promise<
+  VersionedJsonMutationResult<FeedbackRoundDto, FeedbackRoundErrorCode>
+> {
+  return mutate(
+    crmFeedbackRoundStatusEndpoint(roundId),
+    HttpMethod.Post,
+    request,
+    (payload) => (isRound(payload) ? payload : null),
+    isRound,
+    FEEDBACK_ROUND_ERROR_CODE_VALUES,
+    FeedbackRoundErrorCode.Internal,
+  );
+}
+
+function setItemResult(
+  itemId: string,
+  request: SetFeedbackItemResultRequestDto,
+): Promise<
+  VersionedJsonMutationResult<FeedbackRoundItemDto, FeedbackRoundErrorCode>
+> {
+  return mutate(
+    crmFeedbackItemResultEndpoint(itemId),
+    HttpMethod.Patch,
+    request,
+    (payload) => (isItem(payload) ? payload : null),
+    isItem,
+    FEEDBACK_ROUND_ERROR_CODE_VALUES,
+    FeedbackRoundErrorCode.Internal,
+  );
 }
 
 async function handOver(
@@ -47,4 +110,6 @@ async function handOver(
 
 export const feedbackRoundsApiService = {
   handOver,
+  changeStatus,
+  setItemResult,
 } as const;

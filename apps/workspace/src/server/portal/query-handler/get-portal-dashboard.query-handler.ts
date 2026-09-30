@@ -92,6 +92,7 @@ export async function getPortalDashboard(
           roundNumber: feedbackRounds.round_number,
           status: feedbackRounds.status,
           dueOn: feedbackRounds.due_on,
+          approvedAt: feedbackRounds.approved_at,
         })
         .from(feedbackRounds)
         .where(

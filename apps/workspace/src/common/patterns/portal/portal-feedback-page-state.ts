@@ -19,6 +19,8 @@ export function portalFeedbackPageState(
       : PortalFeedbackPageState.OpenReadOnly;
   if (activeRound?.status === FeedbackRoundStatus.Submitted)
     return PortalFeedbackPageState.Submitted;
+  if (activeRound?.status === FeedbackRoundStatus.InDiscussion)
+    return PortalFeedbackPageState.Discussion;
   if (activeRound) return PortalFeedbackPageState.Working;
   if (quota.approvedRoundNumber !== null)
     return PortalFeedbackPageState.Approved;

@@ -84,7 +84,13 @@ Transaktion um.
     derselben Transaktion: `recordHandOver` (Activity + Chat nach dem Insert), `saveDraft` (Entwurfsstempel +
     `replaceDraftItems`), `submit` (Status, Sammelaufgabe, Activity, Chat), `approve` (Status, Projektschritt,
     Activity, Chat). Welcher Schritt erlaubt ist, entscheidet der Handler über `canTransition`; kein Handler schreibt
-    Rundenstatus, Activity oder Rundennachricht an diesem Service vorbei. Task 61 ergänzt hier die internen Schritte.
+    Rundenstatus, Activity oder Rundennachricht an diesem Service vorbei. Ab Task 61 zusätzlich die internen
+    Schritte (`FeedbackMemberWrite`): `requestDiscussion` (Hinweis optional, Chat), `startImplementation`
+    (`started_at`, Aufgabe `in_progress`, kein Chat), `returnToCustomer` (Hinweis Pflicht, `submitted_*` und `read_at`
+    geleert, Aufgabe `cancelled`, Chat) und `complete` (`completed_*`, Aufgabe `done`, Chat). Jeder Schritt schreibt
+    genau eine Activity.
+  - `customer_notice` gehört immer zum aktuellen Schritt: Gespräch und Zurückgeben setzen ihn, Umsetzung starten und
+    erneutes Einreichen leeren ihn. So zeigt keine Oberfläche einen veralteten Hinweis.
   - `feedback-attachment-service.ts` schreibt als einzige Stelle die Spalten `feedback_round_id`/`feedback_item_id`
     einer Datei (`attachFile`, `detachFile`, `detachItemFiles`). Anhängen liegt bewusst neben Lösen, obwohl nur das
     Portal anhängt: Binden und Lösen dürfen nicht auseinanderlaufen. Die Dateizeile sperrt der Handler vorher.

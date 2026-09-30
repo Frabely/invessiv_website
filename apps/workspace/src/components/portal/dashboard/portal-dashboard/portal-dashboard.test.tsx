@@ -308,6 +308,7 @@ describe("PortalDashboard", () => {
             roundNumber: 1,
             status: FeedbackRoundStatus.Open,
             dueOn: "2026-10-14",
+            approvedAt: null,
             included: 2,
             used: 1,
           },
@@ -336,6 +337,50 @@ describe("PortalDashboard", () => {
       "href",
       "/en/portal/customer-1/projects/project-1/feedback",
     );
+  });
+
+  it("asks for the approval after the last round and dates it afterwards", () => {
+    renderDashboard(
+      dto({
+        feedback: [
+          {
+            projectId: "project-1",
+            projectTitle: "Relaunch",
+            roundNumber: 2,
+            status: FeedbackRoundStatus.Completed,
+            dueOn: null,
+            approvedAt: null,
+            included: 2,
+            used: 2,
+          },
+          {
+            projectId: "project-2",
+            projectTitle: "Shop",
+            roundNumber: 1,
+            status: FeedbackRoundStatus.Approved,
+            dueOn: null,
+            approvedAt: "2026-09-25T09:00:00.000Z",
+            included: 2,
+            used: 1,
+          },
+        ],
+      }),
+      new Set([...FULL_READ, Permission.PortalFeedbackRead]),
+    );
+
+    const widget = screen.getByRole("region", {
+      name: content.widgets.feedback.title,
+    });
+    expect(
+      within(widget).getByText(content.widgets.feedback.turn.approvalDue),
+    ).toBeInTheDocument();
+    expect(
+      within(widget).getByRole("link", { name: "Approve Relaunch" }),
+    ).toHaveAttribute("data-primary", "true");
+    expect(within(widget).getByText(/^Approved on /)).toBeInTheDocument();
+    expect(
+      within(widget).getByRole("link", { name: "View feedback on Shop" }),
+    ).toBeInTheDocument();
   });
 
   it("explains the feedback area while no project has round steps", () => {

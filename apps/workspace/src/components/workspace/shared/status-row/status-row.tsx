@@ -20,6 +20,8 @@ export type StatusRowProps = {
   openLabel?: string;
   pending?: boolean;
   tone?: StatusRowToneValue;
+  /** Pins the status slot to the top for rows whose content can run over several lines. */
+  alignStart?: boolean;
 };
 
 /**
@@ -34,6 +36,7 @@ export function StatusRow({
   openLabel,
   pending = false,
   tone = StatusRowTone.Default,
+  alignStart = false,
 }: StatusRowProps) {
   const detailsClass = detailsClassName
     ? `${styles.details} ${detailsClassName}`
@@ -41,6 +44,7 @@ export function StatusRow({
   return (
     <li
       className={styles.row}
+      data-align={alignStart ? "start" : undefined}
       data-pending={pending ? "true" : "false"}
       data-tone={tone}
     >

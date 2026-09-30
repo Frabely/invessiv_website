@@ -1,0 +1,26 @@
+.approval {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+/* After the last round the approval is the one thing left to do, so it gets the frame. */
+.approval[data-prominent="true"] {
+  padding: 1.1rem 1.2rem;
+  border: 1px solid color-mix(in srgb, var(--color-success) 45%, transparent);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--color-success) 8%, transparent);
+}
+
+.text {
+  flex: 1 1 18rem;
+  max-width: 60ch;
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.55;
+}

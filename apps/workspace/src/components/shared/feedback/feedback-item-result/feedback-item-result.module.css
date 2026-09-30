@@ -1,0 +1,37 @@
+.result {
+  display: grid;
+  justify-items: start;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+/* The reply reads as the team speaking, so it carries the same edge as the handover note. */
+.reply {
+  display: grid;
+  gap: 0.2rem;
+  max-width: 68ch;
+  padding: 0.1rem 0 0.1rem 0.8rem;
+  border-left: 2px solid var(--color-accent-gold);
+}
+
+.result[data-result="implemented"] .reply {
+  border-left-color: var(--color-success);
+}
+
+.result[data-result="not_implemented"] .reply {
+  border-left-color: var(--color-border-strong);
+}
+
+.replyLabel {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 600;
+}
+
+.replyText {
+  margin: 0;
+  font-size: var(--font-size-body-sm);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

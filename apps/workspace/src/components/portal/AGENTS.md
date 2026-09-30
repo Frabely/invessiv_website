@@ -86,5 +86,11 @@ Plan: `apps/workspace/plans/crm/16-feedbackrunden/60-ui-uebergabe-und-kundenboge
 - Bearbeiten nur mit `canSubmit`, Anhängen/Lösen nur mit `canAttach`, Upload zusätzlich mit `portal.files.write`
   (`canUpload` der Seite). Die Owner-Sicht liest nur und zeigt den Owner-Hinweis mit CRM-Link.
 - Freigeben ohne Änderungen erscheint nur ohne Punkte und nur über `feedback-approve-dialog` mit Pflicht-Haken.
+- Ab Task 61: Gespräch (`discussion`) und zurückgegebene Runde zeigen den Hinweis des Teams über
+  `feedback-team-notice`. Ergebnisse je Punkt zeigt `feedback-item-list` über das geteilte `FeedbackItemResult`.
+  Nach einer abgeschlossenen Runde stehen ihre Ergebnisse vorn; `feedback-final-approval` bietet die Abnahme an
+  (nach der letzten Runde prominent, vorher als ruhige Option) und nutzt `feedback-approve-dialog` mit eigenen Texten
+  (`finalApproveDialog`). Sprachregel: Die Abkürzung aus einer leeren Runde heißt „freigeben“, die Abnahme nach der
+  letzten Runde „abnehmen“; der Endzustand heißt überall „Abgenommen am …“.
 - Links auf die Seite entstehen nur über `buildPortalFeedbackPath`. Das Dashboard-Widget `feedback` erscheint nur
   mit `portal.feedback.read` (`dashboard.feedback !== null`).

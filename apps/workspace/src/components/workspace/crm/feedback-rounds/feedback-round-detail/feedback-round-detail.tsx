@@ -7,7 +7,10 @@ import {
   faFileZipper,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
+import {
+  FeedbackRoundStatus,
+  RESULT_EDITABLE_FEEDBACK_ROUND_STATUS_VALUES,
+} from "@invessiv/common/constants/crm/feedback-round-statuses";
 import type { FeedbackRoundDto } from "@invessiv/common/contracts/crm/feedback-round.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl, LinkedText } from "@invessiv/ui";
@@ -23,6 +26,8 @@ import type {
 import { formatCalendarDay } from "@/lib/i18n/format-calendar-day";
 import { formatMomentDay } from "@/lib/i18n/format-moment-day";
 import { FeedbackItemRow } from "../feedback-item-row/feedback-item-row";
+import { FeedbackResultProgress } from "../feedback-result-progress/feedback-result-progress";
+import { FeedbackRoundStatusActions } from "../feedback-round-status-actions/feedback-round-status-actions";
 import styles from "./feedback-round-detail.module.css";
 
 type FeedbackRoundDetailProps = {
@@ -34,6 +39,12 @@ type FeedbackRoundDetailProps = {
   filesContent: CrmFilesDictionary;
   locale: Locale;
   round: FeedbackRoundDto;
+  /** `projects.write` on the project: status steps and item results. */
+  canWrite: boolean;
+  /** Round steps in the track; the completion offers the next round only below it. */
+  included: number;
+  onAnnounceAction: (message: string) => void;
+  onHandOverNextAction: () => void;
 };
 
 /** Submission wins over the draft: once submitted, who submitted is what the team needs. */
@@ -64,9 +75,23 @@ export function FeedbackRoundDetail({
   filesContent,
   locale,
   round,
+  canWrite,
+  included,
+  onAnnounceAction,
+  onHandOverNextAction,
 }: FeedbackRoundDetailProps) {
   const texts = content.detail;
   const headingId = `feedback-round-${round.id}`;
+  const showResults = round.status !== FeedbackRoundStatus.Open;
+  const editableResults =
+    canWrite &&
+    (
+      RESULT_EDITABLE_FEEDBACK_ROUND_STATUS_VALUES as readonly string[]
+    ).includes(round.status);
+  const noticeVisible =
+    round.customerNotice !== null &&
+    (round.status === FeedbackRoundStatus.InDiscussion ||
+      round.status === FeedbackRoundStatus.Open);
   const attachmentIds = round.items.flatMap((item) =>
     item.attachments.map((file) => file.id),
   );
@@ -132,12 +157,35 @@ export function FeedbackRoundDetail({
           </p>
         </div>
       ) : null}
+      {noticeVisible ? (
+        <div className={styles.notice}>
+          <h5>{texts.customerNotice}</h5>
+          <p>
+            <LinkedText text={round.customerNotice ?? ""} />
+          </p>
+        </div>
+      ) : null}
       {round.status === FeedbackRoundStatus.Open ? (
         <p className={styles.hint}>{texts.openHint}</p>
+      ) : null}
+      {canWrite ? (
+        <FeedbackRoundStatusActions
+          content={content}
+          included={included}
+          onAnnounceAction={onAnnounceAction}
+          onHandOverNextAction={onHandOverNextAction}
+          round={round}
+        />
       ) : null}
       <section aria-labelledby={`${headingId}-items`} className={styles.items}>
         <div className={styles.itemsHead}>
           <h5 id={`${headingId}-items`}>{texts.itemsTitle}</h5>
+          {showResults && round.items.length > 0 ? (
+            <FeedbackResultProgress
+              items={round.items}
+              label={content.progress.label}
+            />
+          ) : null}
           {canReadFiles && attachmentIds.length > 0 ? (
             <ButtonControl
               disabled={downloads.archiveBusy}
@@ -175,11 +223,13 @@ export function FeedbackRoundDetail({
                     />
                   ) : undefined
                 }
-                content={texts}
+                content={content}
+                editable={editableResults}
                 item={item}
                 key={item.id}
-                kindLabels={content.kind}
                 number={index + 1}
+                onAnnounceAction={onAnnounceAction}
+                showResult={showResults}
               />
             ))}
           </ol>

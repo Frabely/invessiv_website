@@ -91,5 +91,6 @@ function toDto(
 
 export const feedbackRoundMappingService = {
   toDto,
+  toItemDto,
   toSummaryDto,
 } as const;

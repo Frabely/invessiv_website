@@ -150,16 +150,22 @@ describe("portalDashboardMappingService feedback summary", () => {
       roundNumber: 1,
       status: FeedbackRoundStatus.Completed,
       dueOn: "2026-09-10",
+      approvedAt: null,
     },
     {
       projectId: "active-project",
       roundNumber: 2,
       status: FeedbackRoundStatus.Open,
       dueOn: "2026-10-14",
+      approvedAt: null,
     },
   ];
 
-  function map(feedbackRounds: typeof rounds | null) {
+  function map(
+    feedbackRounds: Parameters<
+      typeof portalDashboardMappingService.mapRowsToDto
+    >[0]["feedbackRounds"],
+  ) {
     return portalDashboardMappingService.mapRowsToDto({
       customer,
       projects: [
@@ -185,6 +191,7 @@ describe("portalDashboardMappingService feedback summary", () => {
         roundNumber: 2,
         status: FeedbackRoundStatus.Open,
         dueOn: "2026-10-14",
+        approvedAt: null,
         included: 2,
         used: 2,
       },
@@ -194,10 +201,27 @@ describe("portalDashboardMappingService feedback summary", () => {
         roundNumber: null,
         status: null,
         dueOn: null,
+        approvedAt: null,
         included: 2,
         used: 0,
       },
     ]);
+  });
+
+  it("carries the approval date of an approved latest round", () => {
+    const approvedAt = new Date("2026-09-25T09:00:00.000Z");
+    const approved = [
+      {
+        ...rounds[0],
+        status: FeedbackRoundStatus.Approved,
+        approvedAt,
+      },
+    ];
+    expect(map(approved).feedback?.[0]).toMatchObject({
+      roundNumber: 1,
+      status: FeedbackRoundStatus.Approved,
+      approvedAt: approvedAt.toISOString(),
+    });
   });
 
   it("has no feedback entries without the read permission", () => {

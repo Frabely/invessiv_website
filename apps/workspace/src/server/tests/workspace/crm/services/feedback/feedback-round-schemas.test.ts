@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
+import { FeedbackItemResult } from "@invessiv/common/constants/crm/feedback-item-results";
 import { FEEDBACK_LIMITS } from "@invessiv/common/constants/crm/feedback-limits";
+import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import { businessToday } from "@/common/patterns/time/business-today";
 import { feedbackRoundSchemas } from "@/server/workspace/crm/services/feedback/feedback-round-schemas";
 
@@ -54,5 +56,98 @@ describe("feedbackRoundSchemas.handOver", () => {
       }).success,
     ).toBe(false);
     expect(parse({ areaOptions: [], customerId: "x" }).success).toBe(false);
+  });
+});
+
+describe("feedbackRoundSchemas.changeStatus", () => {
+  const parse = (input: object) =>
+    feedbackRoundSchemas.changeStatus.safeParse(input);
+
+  it("keeps an optional call notice trimmed and nulls an empty one", () => {
+    expect(
+      feedbackRoundSchemas.changeStatus.parse({
+        version: 3,
+        to: FeedbackRoundStatus.InDiscussion,
+        customerNotice: "  Donnerstag?  ",
+      }),
+    ).toEqual({
+      version: 3,
+      to: FeedbackRoundStatus.InDiscussion,
+      customerNotice: "Donnerstag?",
+    });
+    expect(
+      feedbackRoundSchemas.changeStatus.parse({
+        version: 3,
+        to: FeedbackRoundStatus.InDiscussion,
+        customerNotice: "   ",
+      }),
+    ).toMatchObject({ customerNotice: null });
+  });
+
+  it("requires a notice for the handback and refuses one elsewhere", () => {
+    const open = { version: 3, to: FeedbackRoundStatus.Open };
+    expect(parse(open).success).toBe(false);
+    expect(parse({ ...open, customerNotice: "  " }).success).toBe(false);
+    expect(parse({ ...open, customerNotice: "Bitte ergänzen" }).success).toBe(
+      true,
+    );
+    expect(
+      parse({
+        version: 3,
+        to: FeedbackRoundStatus.Completed,
+        customerNotice: "Fertig",
+      }).success,
+    ).toBe(false);
+    expect(
+      parse({ version: 3, to: FeedbackRoundStatus.InProgress }).success,
+    ).toBe(true);
+  });
+
+  it("refuses customer targets, long notices and a missing version", () => {
+    expect(
+      parse({ version: 3, to: FeedbackRoundStatus.Approved }).success,
+    ).toBe(false);
+    expect(
+      parse({
+        version: 3,
+        to: FeedbackRoundStatus.Open,
+        customerNotice: "x".repeat(FEEDBACK_LIMITS.noteMaxLength + 1),
+      }).success,
+    ).toBe(false);
+    expect(parse({ to: FeedbackRoundStatus.InProgress }).success).toBe(false);
+  });
+});
+
+describe("feedbackRoundSchemas.setItemResult", () => {
+  const parse = (input: object) =>
+    feedbackRoundSchemas.setItemResult.safeParse(input);
+
+  it("demands a reply for results the customer is owed an explanation for", () => {
+    for (const result of [
+      FeedbackItemResult.NotImplemented,
+      FeedbackItemResult.AdditionalService,
+    ]) {
+      expect(parse({ version: 1, result }).success).toBe(false);
+      expect(parse({ version: 1, result, resultNote: " " }).success).toBe(
+        false,
+      );
+      expect(parse({ version: 1, result, resultNote: "Weil …" }).success).toBe(
+        true,
+      );
+    }
+    expect(
+      parse({ version: 1, result: FeedbackItemResult.Implemented }).success,
+    ).toBe(true);
+  });
+
+  it("refuses unknown results and replies beyond the limit", () => {
+    expect(parse({ version: 1, result: "done" }).success).toBe(false);
+    expect(
+      parse({
+        version: 1,
+        result: FeedbackItemResult.NotImplemented,
+        resultNote: "x".repeat(FEEDBACK_LIMITS.noteMaxLength + 1),
+      }).success,
+    ).toBe(false);
   });
 });

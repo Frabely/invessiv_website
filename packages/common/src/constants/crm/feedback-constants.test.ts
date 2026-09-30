@@ -12,9 +12,12 @@ import {
   ACTIVE_FEEDBACK_ROUND_STATUS_VALUES,
   FEEDBACK_ROUND_STATUS_VALUES,
   FeedbackRoundStatus,
+  INTERNAL_FEEDBACK_ROUND_TARGET_STATUS_VALUES,
   INTERNAL_QUEUE_FEEDBACK_ROUND_STATUS_VALUES,
+  RESULT_EDITABLE_FEEDBACK_ROUND_STATUS_VALUES,
   RESULT_VISIBLE_FEEDBACK_ROUND_STATUS_VALUES,
 } from "./feedback-round-statuses";
+import { FEEDBACK_ROUND_TRANSITIONS } from "./feedback-round-transitions";
 import {
   FEEDBACK_TRANSITION_SIDE_VALUES,
   FeedbackTransitionSide,
@@ -87,6 +90,27 @@ describe("feedback status groups", () => {
     expect(FEEDBACK_ITEM_RESULTS_REQUIRING_NOTE).toEqual([
       "not_implemented",
       "additional_service",
+    ]);
+  });
+
+  it("offers the team exactly the targets of its own transitions on a round", () => {
+    const internalTargets = new Set(
+      FEEDBACK_ROUND_TRANSITIONS.filter(
+        (transition) =>
+          transition.side === FeedbackTransitionSide.Internal &&
+          transition.from !== null,
+      ).map((transition) => transition.to),
+    );
+    expect(new Set(INTERNAL_FEEDBACK_ROUND_TARGET_STATUS_VALUES)).toEqual(
+      internalTargets,
+    );
+  });
+
+  it("lets results change only while the team works on a submitted round", () => {
+    expect(RESULT_EDITABLE_FEEDBACK_ROUND_STATUS_VALUES).toEqual([
+      "submitted",
+      "in_discussion",
+      "in_progress",
     ]);
   });
 });

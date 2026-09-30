@@ -44,6 +44,10 @@ function milestoneLabel(
     return formatMessage(texts.approved, {
       date: formatMomentDay(round.approvedAt, locale),
     });
+  if (round.completedAt)
+    return formatMessage(texts.completed, {
+      date: formatMomentDay(round.completedAt, locale),
+    });
   if (round.submittedAt)
     return formatMessage(texts.submitted, {
       date: formatMomentDay(round.submittedAt, locale),
@@ -152,10 +156,14 @@ export function ProjectFeedbackSection({
         <FeedbackRoundDetail
           backHref={selection.hrefFor({ projectId })}
           canReadFiles={viewModel.canReadFiles}
+          canWrite={viewModel.canWrite}
           content={content}
           customerId={customerId}
           filesContent={filesContent}
+          included={overview.quota.included}
           locale={locale}
+          onAnnounceAction={setAnnouncement}
+          onHandOverNextAction={() => setDialogOpen(true)}
           round={detail}
         />
       ) : overview.rounds.length === 0 ? (

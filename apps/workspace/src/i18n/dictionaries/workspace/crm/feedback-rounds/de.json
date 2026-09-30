@@ -43,7 +43,8 @@
     "items": "{count} Punkte",
     "itemsOne": "1 Punkt",
     "itemsNone": "Noch keine Punkte",
-    "unread": "Neu"
+    "unread": "Neu",
+    "completed": "Abgeschlossen am {date}"
   },
   "detail": {
     "back": "Alle Runden",
@@ -67,7 +68,8 @@
     "attachments": "Anhänge von Punkt {number}",
     "archive": "Alle Anhänge als ZIP",
     "archiveBusy": "ZIP wird erstellt …",
-    "archiveFilename": "feedbackrunde-{number}.zip"
+    "archiveFilename": "feedbackrunde-{number}.zip",
+    "customerNotice": "Hinweis an den Kunden"
   },
   "handover": {
     "title": "Feedbackrunde {number} übergeben",
@@ -108,6 +110,105 @@
   },
   "announcements": {
     "handedOver": "Feedbackrunde {number} ist übergeben.",
-    "alreadyActive": "Feedbackrunde {number} läuft bereits und ist geöffnet."
+    "alreadyActive": "Feedbackrunde {number} läuft bereits und ist geöffnet.",
+    "statusChanged": "Feedbackrunde {number}: {status}.",
+    "resultSaved": "Punkt {number}: {result} gespeichert."
+  },
+  "actions": {
+    "groupLabel": "Nächster Schritt für diese Runde",
+    "in_discussion": "Gespräch anfordern",
+    "in_progress": "Umsetzung starten",
+    "open": "Zurück an den Kunden",
+    "completed": "Runde abschließen",
+    "starting": "Wird gestartet …"
+  },
+  "notice": {
+    "discussion": {
+      "title": "Gespräch anfordern",
+      "description": "Der Kunde sieht im Portal, dass ihr sein Feedback besprechen wollt, und bekommt eine Nachricht im Chat. Den Termin macht ihr im Chat aus.",
+      "label": "Hinweis an den Kunden",
+      "hint": "Optional: worum es gehen soll oder wann du Zeit hast.",
+      "placeholder": "Zum Beispiel: Zu Punkt 3 und 5 habe ich zwei Rückfragen. Passt dir Donnerstagvormittag?",
+      "submit": "Gespräch anfordern",
+      "submitting": "Wird angefordert …",
+      "required": "Schreib dem Kunden kurz, worum es geht.",
+      "conflict": "Die Runde hat sich gerade geändert. Du siehst den aktuellen Stand; dein Text ist noch da."
+    },
+    "return": {
+      "title": "Runde zurück an den Kunden",
+      "description": "Der Kunde kann die Runde wieder bearbeiten und erneut einreichen. Seine Punkte bleiben erhalten, die Sammelaufgabe wird abgebrochen.",
+      "label": "Was soll der Kunde ergänzen?",
+      "hint": "Der Kunde sieht den Hinweis oben in seinem Feedbackbogen.",
+      "placeholder": "Zum Beispiel: Bei Punkt 2 fehlt uns ein Screenshot der Seite, auf der der Fehler auftritt.",
+      "submit": "Zurückgeben",
+      "submitting": "Wird zurückgegeben …",
+      "required": "Schreib dem Kunden, was noch fehlt.",
+      "conflict": "Die Runde hat sich gerade geändert. Du siehst den aktuellen Stand; dein Text ist noch da."
+    }
+  },
+  "textDialog": {
+    "counter": "{count} von {max} Zeichen",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "previewLabel": "So sieht der Kunde es nach dem Abschluss",
+    "previewEmpty": "Deine Antwort erscheint hier.",
+    "customerReplyLabel": "Unsere Antwort"
+  },
+  "result": {
+    "choices": {
+      "pending": "Noch offen",
+      "implemented": "Umgesetzt",
+      "not_implemented": "Nicht umgesetzt",
+      "additional_service": "Zusatzleistung"
+    },
+    "selectLabel": "Ergebnis für Punkt {number}: {result}",
+    "reply": "Antwort an den Kunden",
+    "editReply": "Antwort zu Punkt {number} bearbeiten",
+    "note": {
+      "not_implemented": {
+        "description": "Erklär dem Kunden, warum ihr den Punkt nicht umsetzt. Er sieht die Antwort, sobald die Runde abgeschlossen ist.",
+        "placeholder": "Zum Beispiel: Das Kontaktformular bleibt einspaltig, damit es auf dem Handy gut lesbar ist."
+      },
+      "additional_service": {
+        "description": "Erklär dem Kunden, dass der Punkt über den Auftrag hinausgeht und wie es weitergehen kann. Er sieht die Antwort, sobald die Runde abgeschlossen ist.",
+        "placeholder": "Zum Beispiel: Ein Mitgliederbereich ist nicht Teil des Auftrags. Wir schicken dir gern ein Angebot."
+      }
+    },
+    "noteCommon": {
+      "title": "Antwort zu Punkt {number}",
+      "label": "Antwort an den Kunden",
+      "hint": "Pflicht bei diesem Ergebnis.",
+      "submit": "Ergebnis speichern",
+      "submitting": "Wird gespeichert …",
+      "required": "Schreib dem Kunden eine kurze Antwort.",
+      "conflict": "Jemand hat den Punkt gerade bewertet. Du siehst den aktuellen Stand; deine Antwort ist noch da."
+    }
+  },
+  "progress": {
+    "label": "{rated} von {total} Punkten bewertet"
+  },
+  "complete": {
+    "title": "Feedbackrunde {number} abschließen",
+    "description": "Danach sieht der Kunde alle Ergebnisse und Antworten, und die Sammelaufgabe ist erledigt. Ergebnisse lassen sich dann nicht mehr ändern.",
+    "countsLabel": "Ergebnisse dieser Runde",
+    "allRated": "Alle {total} Punkte haben ein Ergebnis.",
+    "missing": "{count} von {total} Punkten haben noch kein Ergebnis. Bewerte sie, bevor du abschließt.",
+    "submit": "Runde abschließen",
+    "submitting": "Wird abgeschlossen …",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "doneTitle": "Feedbackrunde {number} ist abgeschlossen",
+    "nextDescription": "Im Projekt sind noch {remaining} von {included} Runden offen. Übergib Runde {next} direkt, wenn der nächste Stand bereitliegt.",
+    "handOverNext": "Runde {next} übergeben",
+    "later": "Später",
+    "approvalHint": "Das war die letzte Runde. Der Kunde kann das Projekt jetzt im Portal abnehmen."
+  },
+  "processingErrors": {
+    "notFound": "Die Runde ist nicht mehr erreichbar. Lade die Seite neu.",
+    "changed": "Die Runde hat sich inzwischen geändert. Du siehst jetzt den aktuellen Stand.",
+    "locked": "Die Runde ist abgeschlossen. Ergebnisse lassen sich nicht mehr ändern.",
+    "resultsIncomplete": "Bewerte zuerst alle Punkte, dann kannst du abschließen.",
+    "validation": "Einige Angaben passen nicht. Prüf den Text und versuch es erneut.",
+    "internal": "Das hat nicht geklappt. Versuch es noch einmal."
   }
 }

@@ -31,3 +31,8 @@
   color: var(--color-danger);
   font-size: var(--font-size-ui-xs);
 }
+
+/* The result belongs to the text column, under the customer's own point. */
+.result {
+  grid-column: 2;
+}

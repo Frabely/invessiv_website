@@ -12,6 +12,8 @@ export interface PortalFeedbackSummaryDto {
   status: FeedbackRoundStatus | null;
   /** Requested feedback date of that round; null when none was set. */
   dueOn: string | null;
+  /** When the customer approved the project in that round; null unless it is `approved`. */
+  approvedAt: string | null;
   /** Round steps in the project's track. */
   included: number;
   /** Rounds handed over so far. */

@@ -1,0 +1,44 @@
+.progress {
+  display: grid;
+  gap: 0.35rem;
+  max-width: 28rem;
+}
+
+.label {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.strip {
+  display: flex;
+  gap: 3px;
+  height: 0.4rem;
+}
+
+.segment {
+  flex: 1 1 0;
+  min-width: 0.35rem;
+  border-radius: 2px;
+  background: var(--color-border);
+  transition: background-color 180ms ease;
+}
+
+.segment[data-result="implemented"] {
+  background: var(--color-success);
+}
+
+.segment[data-result="not_implemented"] {
+  background: var(--color-text-muted);
+}
+
+.segment[data-result="additional_service"] {
+  background: var(--color-accent-gold);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .segment {
+    transition: none;
+  }
+}

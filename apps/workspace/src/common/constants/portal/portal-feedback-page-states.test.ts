@@ -11,6 +11,7 @@ describe("PortalFeedbackPageState", () => {
       "sheet",
       "open_read_only",
       "submitted",
+      "discussion",
       "working",
       "none",
       "between",
