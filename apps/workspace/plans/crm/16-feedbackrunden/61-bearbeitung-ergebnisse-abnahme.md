@@ -24,18 +24,18 @@ Kunde sieht die Ergebnisse und nimmt nach der letzten Runde ab.
 
 ## Getroffene Entscheidungen
 
-| Frage                | Entscheidung                                                                                                                                          |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Gespräch             | „Gespräch anfordern“ setzt `in_discussion` mit optionalem Hinweis an den Kunden. Der Termin selbst läuft über Chat bzw. später den Buchungslink (15c) |
-| Überspringen         | „Umsetzung starten“ ist aus `submitted` und `in_discussion` möglich                                                                                   |
-| Zurück an Kunden     | Aus `submitted`/`in_discussion`, Hinweis Pflicht; Punkte bleiben; Sammelaufgabe → `cancelled`; erneutes Einreichen öffnet dieselbe Aufgabe            |
-| Ergebnisse           | Setzbar in `submitted`, `in_discussion`, `in_progress`; je Punkt versioniert; „nicht umgesetzt“/„Zusatzleistung“ verlangen eine Antwort               |
-| Abschluss            | Nur aus `in_progress`, nur wenn alle Punkte ein Ergebnis haben; Sammelaufgabe → `done` in derselben Transaktion                                       |
-| Nächste Runde        | Nach dem Abschluss bietet der Dialog „Runde n+1 jetzt übergeben“ an (vorbelegter Übergabe-Dialog aus Task 60), nur mit Restkontingent                 |
-| Abnahme              | Kunde, nur an der höchsten Runde im Status `completed`, keine aktive Runde, mit Bestätigungsdialog und `confirmFinal`                                 |
-| Kontingent erschöpft | Portal zeigt nach der letzten Runde „Abnehmen“ und den Hinweis „Du brauchst eine weitere Runde? Schreib uns im Chat“ (später 13c)                     |
-| Phase                | Keine Aktion ändert `projects.phase`                                                                                                                  |
-| Nicht enthalten      | Abnahme zurücknehmen, Ergebnisse nach Abschluss ändern, Kommentare je Punkt                                                                           |
+| Frage                | Entscheidung                                                                                                                                              |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Gespräch             | „Gespräch anfordern“ setzt `in_discussion` mit optionalem Hinweis an den Kunden. Der Termin selbst läuft über Chat bzw. später den Buchungslink (Task 69) |
+| Überspringen         | „Umsetzung starten“ ist aus `submitted` und `in_discussion` möglich                                                                                       |
+| Zurück an Kunden     | Aus `submitted`/`in_discussion`, Hinweis Pflicht; Punkte bleiben; Sammelaufgabe → `cancelled`; erneutes Einreichen öffnet dieselbe Aufgabe                |
+| Ergebnisse           | Setzbar in `submitted`, `in_discussion`, `in_progress`; je Punkt versioniert; „nicht umgesetzt“/„Zusatzleistung“ verlangen eine Antwort                   |
+| Abschluss            | Nur aus `in_progress`, nur wenn alle Punkte ein Ergebnis haben; Sammelaufgabe → `done` in derselben Transaktion                                           |
+| Nächste Runde        | Nach dem Abschluss bietet der Dialog „Runde n+1 jetzt übergeben“ an (vorbelegter Übergabe-Dialog aus Task 60), nur mit Restkontingent                     |
+| Abnahme              | Kunde, nur an der höchsten Runde im Status `completed`, keine aktive Runde, mit Bestätigungsdialog und `confirmFinal`                                     |
+| Kontingent erschöpft | Portal zeigt nach der letzten Runde „Abnehmen“ und den Hinweis „Du brauchst eine weitere Runde? Schreib uns im Chat“ (später 13c)                         |
+| Phase                | Keine Aktion ändert `projects.phase`                                                                                                                      |
+| Nicht enthalten      | Abnahme zurücknehmen, Ergebnisse nach Abschluss ändern, Kommentare je Punkt                                                                               |
 
 ## Endpunkte
 

@@ -44,8 +44,10 @@ Details und Abnahmekriterien stehen in den aktiven geordneten Merge-Einheiten.
 - Eigener Login je Kundenkontakt; intern definierte Portalrollen je Kontakt steuern, welche Bereiche er sieht.
 - Dashboard mit freigegebenen Projektdaten, Aufgaben, Dokumenten und Stunden.
 - Preisfreie Leistungsanfragen aus einem freigegebenen Katalogausschnitt; Angebot folgt außerhalb.
-- Strukturierter Onboarding-Bogen: Texte direkt ins Feld, Assets am zugehörigen Feld, Zwischenstand
-  serverseitig gesichert, Absenden erledigt die zugehörigen Kundenaufgaben.
+- Strukturierter Onboarding-Bogen je Projekt aus einer pflegbaren Vorlage (Bausteine je Kunde anpassbar): Texte
+  direkt ins Feld, Assets am zugehörigen Feld, Zwischenstand serverseitig gesichert, bereits Vereinbartes nur zur
+  Bestätigung, firmenweite Angaben aus dem letzten Onboarding vorbefüllt. Nach dem Absenden Prüfung je Block mit
+  Nachforderung; nach dem Onboarding-Call abgeschlossen und dauerhaft lesbar.
 - Upload von Bildern, Logos und kurzen Videos, frei oder als Anhang eines Feedback-Punkts; große Videos über einen
   Medienlink.
 - Onboarding-Termin beim zuständigen Mitarbeiter über dessen Buchungslink, erst nach aktivem Klick geladen.

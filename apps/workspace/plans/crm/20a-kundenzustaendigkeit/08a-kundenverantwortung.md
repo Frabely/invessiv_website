@@ -1,7 +1,7 @@
 # Task 08a — Kundenverantwortung zuweisen
 
 > **Merge-Einheit:** Ordner 20a · **Branch:** `feat/crm-kundenzustaendigkeit`
-> **Aufwand:** S–M · **Abhängigkeiten:** Ordner 07, 07a–07c, 12–15c, 16–20
+> **Aufwand:** S–M · **Abhängigkeiten:** Ordner 07, 07a–07c, 12–15, 16–20
 > **Migration:** keine
 
 ## Ziel

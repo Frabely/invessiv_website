@@ -296,8 +296,8 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
 
 ### Onboarding und Medien (Entscheidung des Nutzers, 16.09.2026)
 
-Umsetzung der Medien in Ordner 14 (Task 51–56, Neuzuschnitt 28.09.2026), des Bogens in Ordner 15b–15c
-(Task 44–47), nach dem Dateibereich und **vor** den Feedbackrunden.
+Umsetzung der Medien in Ordner 14 (Task 51–56, Neuzuschnitt 28.09.2026), des Onboardings in Ordner 15
+(Task 63–70, Neuzuschnitt 30.09.2026; ersetzt die Ordner 15b/15c mit Task 44–47).
 
 - **Medienarten und Limits.** Formate, Limits und Vorschauregeln stehen verbindlich in
   `14-dateien/README.md` (`UPLOAD_LIMIT_BY_KIND` in `packages/common`, Limits je Endung: PDF/PPTX
@@ -314,24 +314,35 @@ Umsetzung der Medien in Ordner 14 (Task 51–56, Neuzuschnitt 28.09.2026), des B
 - **Eigene Uploads sieht der Kunde.** Ein Kundenupload ist per CHECK immer
   `visible_to_customer = true`. Für interne Uploads gilt die Freigabepflicht unverändert.
 - **Der Onboarding-Bogen ist ein strukturiertes Formular**, kein Dateiabwurf: Texte werden ins Feld
-  geschrieben, Assets hängen am zugehörigen Feld. Der Fragenkatalog liegt als typisierte Konstante im
-  Code (drei Vorlagen), Fragen tragen Dictionary-Keys. Kein Formularbaukasten in Version 1 —
-  entscheidend ist, dass eine im Backoffice getippte Frage keine zweite Sprachfassung hätte.
-- **Antworten sind relationale Zeilen** (`field_key` plus Wert), kein `jsonb` und kein Array.
-  Mehrfachauswahl sind mehrere Zeilen.
-- **Der Entwurf liegt serverseitig**, weil ein Bogen mit 25 Feldern über Tage, an mehreren Geräten und oft zu
-  zweit entsteht (dieselbe Begründung gilt seit dem Neuzuschnitt auch für Feedbackrunden). Genau ein Entwurf je
-  Projekt und Vorlage.
-- Ein abgesendeter Bogen ist unveränderlich. Erneutes Öffnen ist ein interner, protokollierter
-  Vorgang mit Begründung — anders als eine Feedbackrunde ist der Bogen Arbeitsgrundlage, kein
-  kundenseitiger Zeitstand.
-- **Der Bogen ersetzt keine Aufgabe.** Das Absenden erledigt genau die Kundenaufgaben, die eine
-  typisierte Zuordnung im Code benennt; Aufgaben mit eigenem Titel werden nie automatisch abgehakt.
+  geschrieben, Assets hängen am zugehörigen Feld. Ziel: Nach dem Onboarding muss nichts mehr einzeln per Mail
+  nachgefordert werden. Details: `15-onboarding/README.md`.
+- **Pflegbarer Baukasten (Neuentscheidung 30.09.2026).** Bausteine (Blöcke mit Feldern) und Vorlagen (geordnete
+  Blockauswahl) liegen in der Datenbank und werden im CRM gepflegt — wie der Leistungskatalog. Feldtypen sind ein
+  fester Satz im Code (Const-Objekt + DB-CHECK); Texte liegen in eigenen Lokalisierungstabellen je Element, Pflicht
+  ist mindestens eine Sprache. Die frühere Entscheidung „Fragen als Const-Objekt, keine Pflegeoberfläche“ ist
+  aufgehoben.
+- **Snapshot je Projekt.** Genau ein Bogen je Projekt, entstanden als tiefe Kopie einer Vorlage; Katalog und Bogen
+  teilen dieselben Definitionstabellen (`onboarding_blocks.owner_form_id`). Blöcke und Fragen sind je Kunde
+  entfernbar und ergänzbar. Katalogänderungen wirken nie auf bestehende Bögen.
+- **Vorbefüllung.** Firmenweite Blöcke (`carry_over`) übernehmen Antworten und Dateien aus dem letzten
+  abgeschlossenen Bogen desselben Kunden; einzelne Felder werden aus CRM-Daten vorbelegt. Kein Zurückschreiben ins
+  CRM.
+- **Was feststeht, wird nicht gefragt.** Projektleistungen erscheinen nur lesbar und werden bestätigt; sie werden
+  beim Abschluss eingefroren.
+- **Antworten sind relationale Zeilen** (Feld plus Wert oder Option), kein `jsonb` und kein Array.
+  Mehrfachauswahl sind mehrere Zeilen. Autosave je Feld, serverseitig, last write wins je Feld.
+- **Ablauf:** `draft → open → submitted ⇄ changes_requested → completed`. Nach dem Absenden prüft das Team je Block;
+  Rückfragen gehen als Nachforderung ans Portal (nur diese Blöcke editierbar) oder in die Call-Agenda.
+- **„Onboarding abgeschlossen“ ist der Bogenstatus `completed`**, gesetzt intern, wenn alle Pflichtangaben da sind
+  und der Onboarding-Call stattgefunden hat (Datum). Die Projektphase kann dabei auf `design` weiterschalten. Danach
+  ist der Bogen dauerhaft nur lesbar; weitere Dateien kommen über Dateibereich, Chat oder Aufgaben.
+- **Keine Aufgaben-Verzahnung.** Der Bogen hakt keine Kundenaufgaben ab; beim Absenden entsteht nur eine interne
+  Sammelaufgabe „Onboarding prüfen“.
+- **Keine Passwörter im Bogen.** Abgefragt werden nur Fakten (Zugangs-E-Mail, Domain, Anbieter); Konten und
+  Zugangsdaten liegen im Credentials-Bereich (Ordner 19).
 - **Onboarding-Termin** über einen Buchungslink am Mitarbeiter (`workspace_members.booking_url`).
-  Der Kunde sieht den Link des Projekt-Owners, ersatzweise des Kunden-Owners. Das Widget lädt erst
-  nach einem ausdrücklichen Klick, nie beim Seitenaufruf. Eine eigene Terminverwaltung ist nicht Teil
-  von Version 1. „Onboarding abgeschlossen" ist kein neues Feld: es gilt, sobald die Projektphase
-  über `onboarding` hinaus ist.
+  Der Kunde sieht den Link des Projekt-Owners, ersatzweise des Kunden-Owners, und öffnet ihn erst nach einem
+  ausdrücklichen Klick; kein Fremdskript im Portal. Eine eigene Terminverwaltung ist nicht Teil von Version 1.
 
 ### Feedbackrunden
 
@@ -533,9 +544,11 @@ people
                                       ├── projects ──┬── tasks / task_series
                                       │              ├── feedback_rounds
                                       │              │   └── feedback_round_items ── files
-                                      │              └── onboarding_submissions      (Ordner 15b)
-                                      │                  ├── onboarding_answers
-                                      │                  └── onboarding_answer_files ── files
+                                      │              └── onboarding_forms            (Ordner 15)
+                                      │                  ├── onboarding_form_blocks ── onboarding_blocks (Bogenkopien)
+                                      │                  ├── onboarding_group_entries / onboarding_answers
+                                      │                  ├── onboarding_answer_files ── files
+                                      │                  └── onboarding_form_services (Leistungs-Snapshot)
                                       ├── portal_memberships ── conversation_reads
                                       ├── conversations ── messages ── message_files
                                       ├── customer_credentials
@@ -545,6 +558,8 @@ people
 
 line_item_templates ── pflegbarer globaler Katalog
 projects ── project_line_items (vollständige Template-Snapshots, Ordner 07)
+onboarding_templates ── onboarding_template_blocks ── onboarding_blocks (Katalog, owner_form_id IS NULL)
+onboarding_blocks ── onboarding_fields ── onboarding_field_choices   (+ je Element eine *_translations-Tabelle)
 
 files ── Dateien und Links (Ordner 14); Scope hierarchisch: customer ⊃ project ⊃ feedback_round/feedback_item
 activities ── Lead- und CRM-Historie
@@ -564,12 +579,12 @@ Präfixfrei bleiben eigenständige und querschnittliche Tabellen: `users`, `work
 `role_permissions`, `workspace_member_roles`, `workspace_member_scoped_roles`, `people`,
 `customers`, `projects`, `tasks`, `task_series`, `portal_memberships`, `portal_invitations`,
 `conversations`, `messages`, `message_files`, `conversation_reads`, `feedback_rounds`,
-`onboarding_submissions`, `onboarding_answers`, `onboarding_answer_files`,
-`retainers`, `time_entries`, `files`, `activities`, `security_events`, `outbox_jobs`,
+`onboarding_forms`, `retainers`, `time_entries`, `files`, `activities`, `security_events`, `outbox_jobs`,
 `notifications`, `line_item_templates`, `project_line_items`.
 
-`onboarding_submissions` ist präfixfrei, weil der Bogen am Projekt hängt und kein Kindobjekt des
-Kunden ist; seine eigenen Kindtabellen tragen das Präfix `onboarding_`. Entsprechend heißt die Kindtabelle der
+`onboarding_forms` ist präfixfrei, weil der Bogen am Projekt hängt und kein Kindobjekt des
+Kunden ist; seine Kindtabellen und die Katalogtabellen des Onboardings tragen das Präfix `onboarding_`
+(`onboarding_form_blocks`, `onboarding_answers`, `onboarding_templates`, `onboarding_blocks`, …). Entsprechend heißt die Kindtabelle der
 Feedbackrunden `feedback_round_items`.
 
 `portal_memberships` und `feedback_rounds` sind bewusst präfixfrei: sie ersetzen die früheren
@@ -699,8 +714,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12b erreicht:
 | 13a | läuft     | `13a-kundenchat`                         | Kundenchat im CRM-Cockpit, Posteingang und Portal bidirektional nutzbar                                                                            | 110–140 |   5–6 T. |
 | 13c | offen     | `13c-portal-leistungsanfragen`           | Preisfreie Leistungsanfragen im Portal, intern bearbeitbar                                                                                         |   60–80 |   3–4 T. |
 | 14  | läuft     | `14-dateien`                             | Dateien, Links, ZIP, Portal-Dateien, Chat-Anhänge; sechs Teil-PRs (14.1–14.6), 14.1/14.3/14.4 gemerged, 14.2, 14.5 und 14.6 im Review              | 290–425 | 12–16 T. |
-| 15b | offen     | `15b-onboarding-bogen`                   | Strukturierter Onboarding-Bogen im Portal, intern vollständig lesbar                                                                               | 100–120 |   4–5 T. |
-| 15c | offen     | `15c-onboarding-abschluss`               | Bogen erledigt Kundenaufgaben; Terminbuchung beim zuständigen Mitarbeiter                                                                          |   50–70 |   2–3 T. |
+| 15  | offen     | `15-onboarding`                          | Onboarding-Baukasten (Katalog, Vorlagen), Bogen je Projekt, Portal-Formular, Prüfung, Nachforderung, Termin, Abschluss; acht Teil-PRs (15.1–15.8)  | 495–675 | 16–21 T. |
 | 16  | läuft     | `16-feedbackrunden`                      | Rundenschritte, Übergabe, Feedback-Punkte, Bearbeitung, Abnahme und Eingang; sechs Teil-PRs (16.1–16.6), 16.1 gemerged, 16.2 läuft, 16.6 im Review | 315–430 | 13–16 T. |
 | 19  | offen     | `19-credentials`                         | Verschlüsselte Zugangsdaten und Security-Audit vollständig nutzbar                                                                                 |   50–80 |   3–4 T. |
 | 20  | offen     | `20-stunden-und-history`                 | Kontingente, Buchungen und konsolidierte Timeline vollständig nutzbar                                                                              |  60–100 |   3–4 T. |
@@ -728,8 +742,6 @@ mergebarer Ordner. Zusammenlegen allein zum Erreichen des Zielkorridors ist nich
   bleibt in Lexware: kein Angebotsobjekt im CRM, keine Mahnstufe, keine Teilzahlung, keine Steuer-
   oder Summenrechnung. Eine Lexware-Schnittstelle ist nach Version 1 möglich.
 - Rabatt-Regel-Engine für Leistungskombinationen. Wartung + SEO bleibt ein eigenes Template.
-- Pflegeoberfläche für Onboarding-Fragen; sie bleiben Const-Objekte im Code. Der
-  Leistungstemplatekatalog ist dagegen bewusst pflegbar.
 - Eigene Terminverwaltung mit Verfügbarkeiten, Absagen und Kalendersynchronisation.
 - Freies CRM-Mailmodul, Mail-Eingang, Trackingpixel.
 - Dateiordner, Dateiversionen, Bildannotation, Kommentare pro Datei, serverseitige Bild- oder

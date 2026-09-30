@@ -331,7 +331,7 @@ Portal (`/api/portal/[customerId]/…`, `withPortalActor`; Kunde nur aus der val
 
 Auswirkungen auf spätere Ordner:
 
-- **15b Onboarding-Bogen:** nutzt den Upload-Pfad dieses Ordners; `onboarding_answer_files` verweist auf `files`.
+- **15 Onboarding:** nutzt den Upload-Pfad dieses Ordners; `onboarding_answer_files` verweist auf `files` (Task 63/67).
 - **16 Feedbackrunden (Neuzuschnitt 29.09.2026):** Der Kunde lädt über den Portal-Upload aus 14.5 hoch; die fertige
   (`ready`) Kundendatei wird danach über `feedback_round_id` + `feedback_item_id` an einen Feedback-Punkt gehängt
   (zusammengesetzte FKs, beide gesetzt oder beide `NULL`). „Feedback“ ergibt sich aus dem gesetzten
