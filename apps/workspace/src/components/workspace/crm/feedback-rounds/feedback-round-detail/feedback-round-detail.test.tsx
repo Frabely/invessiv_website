@@ -131,7 +131,7 @@ describe("FeedbackRoundDetail read stamp", () => {
     renderDetail(round());
     await waitFor(() => expect(mocks.router.refresh).toHaveBeenCalledTimes(1));
     expect(mocks.markRead).toHaveBeenCalledTimes(1);
-    expect(mocks.markRead).toHaveBeenCalledWith("round-1");
+    expect(mocks.markRead).toHaveBeenCalledWith("round-1", { version: 3 });
     expect(mocks.changeStatus).not.toHaveBeenCalled();
   });
 
