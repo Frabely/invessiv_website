@@ -6,6 +6,7 @@ import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-rou
 import { feedbackRounds } from "@invessiv/db/record-configuration";
 import { savePortalFeedbackDraft } from "@/server/portal/command-handler/save-portal-feedback-draft.command-handler";
 import { submitPortalFeedbackRound } from "@/server/portal/command-handler/submit-portal-feedback-round.command-handler";
+import { changeFeedbackRoundStatus } from "@/server/workspace/crm/command-handler/change-feedback-round-status.command-handler";
 import { handOverFeedbackRound } from "@/server/workspace/crm/command-handler/hand-over-feedback-round.command-handler";
 import { markFeedbackRoundRead } from "@/server/workspace/crm/command-handler/mark-feedback-round-read.command-handler";
 import { countUnreadFeedbackRounds } from "@/server/workspace/crm/query-handler/count-unread-feedback-rounds.query-handler";
@@ -120,6 +121,52 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       expect(await countUnreadFeedbackRounds(actor)).toBe(0);
       const [listed] = (await listFeedbackInbox(NO_FILTERS, actor)).items;
       expect(listed).toMatchObject({ id: roundId, unread: false });
+    });
+
+    it("does not let a stale read stamp clear a later submission", async () => {
+      const { projectId, roundId } = await submittedRound();
+      const actor = boundTo(projectId);
+      const firstSubmission = await f.readRound(roundId);
+      const returned = await changeFeedbackRoundStatus(
+        roundId,
+        {
+          version: firstSubmission.version,
+          to: FeedbackRoundStatus.Open,
+          customerNotice: "Please revise the draft.",
+        },
+        f.member(),
+      );
+      if (!returned.ok) throw new Error("Expected the round to be returned");
+
+      const openRound = await f.readRound(roundId);
+      const resubmitted = await submitPortalFeedbackRound(
+        f.contact(),
+        roundId,
+        {
+          version: openRound.version,
+        },
+      );
+      if (!resubmitted.ok)
+        throw new Error("Expected the round to be resubmitted");
+
+      expect(
+        await markFeedbackRoundRead(
+          roundId,
+          { version: firstSubmission.version },
+          actor,
+        ),
+      ).toEqual({ ok: true, marked: false });
+      expect(await countUnreadFeedbackRounds(actor)).toBe(1);
+
+      const latestSubmission = await f.readRound(roundId);
+      expect(
+        await markFeedbackRoundRead(
+          roundId,
+          { version: latestSubmission.version },
+          actor,
+        ),
+      ).toEqual({ ok: true, marked: true });
+      expect(await countUnreadFeedbackRounds(actor)).toBe(0);
     });
 
     it("never stamps a round that is still with the customer", async () => {

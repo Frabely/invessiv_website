@@ -146,7 +146,6 @@ describe("feedbackRoundMappingService.toInboxItemDto", () => {
     expect(
       feedbackRoundMappingService.toInboxItemDto({
         ...row,
-        unread: false,
         round: roundRow({
           status: FeedbackRoundStatus.Submitted,
           round_number: 2,
@@ -176,6 +175,7 @@ describe("feedbackRoundMappingService.toInboxItemDto", () => {
     expect(
       feedbackRoundMappingService.toInboxItemDto({
         ...row,
+        unread: false,
         round: roundRow({
           status: FeedbackRoundStatus.InProgress,
           submitted_at: submitted,

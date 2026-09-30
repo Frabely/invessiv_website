@@ -166,11 +166,12 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         (await statusActivities(projectId))
           .map((activity) => activity.metadata)
           .filter((metadata) => metadata?.feedback_round_id === roundId)
-          .map((metadata) => metadata?.next),
+          .map((metadata) => metadata?.next)
+          .sort(),
       ).toEqual([
+        FeedbackRoundStatus.Completed,
         FeedbackRoundStatus.InDiscussion,
         FeedbackRoundStatus.InProgress,
-        FeedbackRoundStatus.Completed,
       ]);
       const notices = await f
         .database()

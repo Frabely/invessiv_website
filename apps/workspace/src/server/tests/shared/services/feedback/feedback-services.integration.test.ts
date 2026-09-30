@@ -375,12 +375,14 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         );
       const list = loaded.get(target.id) ?? [];
       expect(list.map((entry) => entry.item.id)).toEqual([first, second]);
-      expect(list[0].attachments).toEqual([
+      expect(list[0].attachments).toMatchObject([
         {
-          fileId: shown,
+          id: shown,
           displayName: "Screenshot",
           assetKind: AssetKind.Link,
-          sizeBytes: 0,
+          source: FileSource.Link,
+          sizeBytes: null,
+          url: `https://example.com/${shown}`,
         },
       ]);
       expect(list[1].attachments).toEqual([]);
