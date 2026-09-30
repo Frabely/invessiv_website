@@ -103,6 +103,7 @@ async function list(
       round: feedbackRounds,
       customerDisplayName: customers.display_name,
       projectTitle: projects.title,
+      unread,
       itemCount: sql<number>`(${itemCount})`.mapWith(Number),
       fileCount: sql<number>`(${fileCount})`.mapWith(Number),
       excerpt: sql<string | null>`(${excerpt})`,
@@ -177,6 +178,7 @@ async function findReadable(
 async function markRead(
   executor: Pick<ContactDatabaseTransaction, "update">,
   roundId: string,
+  expectedVersion: number,
 ): Promise<boolean> {
   const marked = await executor
     .update(feedbackRounds)
@@ -184,6 +186,7 @@ async function markRead(
     .where(
       and(
         eq(feedbackRounds.id, roundId),
+        eq(feedbackRounds.version, expectedVersion),
         isNull(feedbackRounds.read_at),
         ne(feedbackRounds.status, FeedbackRoundStatus.Open),
       ),
@@ -197,5 +200,6 @@ export const feedbackInboxService = {
   listCustomers,
   countUnread,
   findReadable,
+  unreadCondition,
   markRead,
 } as const;

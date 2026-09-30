@@ -18,6 +18,7 @@ import type {
 } from "@/server/shared/services/feedback/feedback-service-types";
 import { loadFeedbackContactNames } from "@/server/shared/services/feedback/load-feedback-contact-names";
 import { fileAccessService } from "@/server/workspace/crm/services/files/file-access-service";
+import { feedbackInboxService } from "./feedback-inbox-service";
 import { feedbackRoundMappingService } from "./feedback-round-mapping-service";
 import type {
   CountedFeedbackRound,
@@ -68,6 +69,7 @@ async function listRounds(
         sql<number>`(select count(*) from ${feedbackRoundItems} where ${feedbackRoundItems.round_id} = ${feedbackRounds.id})`.mapWith(
           Number,
         ),
+      unread: sql<boolean>`(${feedbackInboxService.unreadCondition()})`,
     })
     .from(feedbackRounds)
     .where(eq(feedbackRounds.project_id, projectId))

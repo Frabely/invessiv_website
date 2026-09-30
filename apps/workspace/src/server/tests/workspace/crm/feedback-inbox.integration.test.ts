@@ -101,8 +101,9 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       const { projectId, roundId } = await submittedRound();
       const actor = boundTo(projectId);
       const before = await f.readRound(roundId);
+      const request = { version: before.version };
 
-      expect(await markFeedbackRoundRead(roundId, actor)).toEqual({
+      expect(await markFeedbackRoundRead(roundId, request, actor)).toEqual({
         ok: true,
         marked: true,
       });
@@ -111,7 +112,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       expect(first.status).toBe(FeedbackRoundStatus.Submitted);
       expect(first.version).toBe(before.version);
 
-      expect(await markFeedbackRoundRead(roundId, actor)).toEqual({
+      expect(await markFeedbackRoundRead(roundId, request, actor)).toEqual({
         ok: true,
         marked: false,
       });
@@ -125,10 +126,13 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       const projectId = await f.project();
       const roundId = await handedOverRound(projectId);
 
-      expect(await markFeedbackRoundRead(roundId, boundTo(projectId))).toEqual({
-        ok: true,
-        marked: false,
-      });
+      expect(
+        await markFeedbackRoundRead(
+          roundId,
+          { version: 1 },
+          boundTo(projectId),
+        ),
+      ).toEqual({ ok: true, marked: false });
       expect((await f.readRound(roundId)).read_at).toBeNull();
     });
 
@@ -156,6 +160,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
 
     it("hides rounds outside a bound role, in the list, the counter and the stamp", async () => {
       const { roundId } = await submittedRound();
+      const version = (await f.readRound(roundId)).version;
       const sibling = boundTo(f.siblingProjectId);
       const foreign = f.actor({
         permissions: new Set(),
@@ -168,10 +173,9 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         const inbox = await listFeedbackInbox(NO_FILTERS, actor);
         expect(inbox.items.map((item) => item.id)).not.toContain(roundId);
         expect(inbox.customers.map((c) => c.id)).not.toContain(f.customerId);
-        expect(await markFeedbackRoundRead(roundId, actor)).toEqual({
-          ok: false,
-          code: E.RoundNotFound,
-        });
+        expect(
+          await markFeedbackRoundRead(roundId, { version }, actor),
+        ).toEqual({ ok: false, code: E.RoundNotFound });
       }
       expect(await countUnreadFeedbackRounds(sibling)).toBe(0);
       expect((await f.readRound(roundId)).read_at).toBeNull();
@@ -180,6 +184,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
     it("filters by status, unread and customer without losing the customer options", async () => {
       const { projectId, roundId } = await submittedRound();
       const actor = boundTo(projectId);
+      const version = (await f.readRound(roundId)).version;
 
       expect(
         (
@@ -201,7 +206,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       expect(otherCustomer.items).toEqual([]);
       expect(otherCustomer.customers.map((c) => c.id)).toEqual([f.customerId]);
 
-      await markFeedbackRoundRead(roundId, actor);
+      await markFeedbackRoundRead(roundId, { version }, actor);
       expect(
         (await listFeedbackInbox({ ...NO_FILTERS, unreadOnly: true }, actor))
           .items,
@@ -209,10 +214,9 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
     });
 
     it("rejects malformed ids as not found", async () => {
-      expect(await markFeedbackRoundRead("not-a-uuid", f.member())).toEqual({
-        ok: false,
-        code: E.RoundNotFound,
-      });
+      expect(
+        await markFeedbackRoundRead("not-a-uuid", { version: 1 }, f.member()),
+      ).toEqual({ ok: false, code: E.RoundNotFound });
     });
   },
 );

@@ -7,6 +7,7 @@ import type { ChangeFeedbackRoundStatusRequestDto } from "@invessiv/common/contr
 import type { FeedbackRoundItemDto } from "@invessiv/common/contracts/crm/feedback-round-item.dto";
 import type { FeedbackRoundDto } from "@invessiv/common/contracts/crm/feedback-round.dto";
 import type { HandOverFeedbackRoundRequestDto } from "@invessiv/common/contracts/crm/hand-over-feedback-round-request.dto";
+import type { MarkFeedbackRoundReadRequestDto } from "@invessiv/common/contracts/crm/mark-feedback-round-read-request.dto";
 import type { SetFeedbackItemResultRequestDto } from "@invessiv/common/contracts/crm/set-feedback-item-result-request.dto";
 import { versionedJsonMutationService } from "@/client/shared/versioned-json-mutation-service";
 import type { VersionedJsonMutationResult } from "@/common/contracts/client/versioned-json-mutation-result";
@@ -110,11 +111,14 @@ async function handOver(
 }
 
 /** True only when this call stamped the round; a failure or an earlier stamp both answer false. */
-async function markRead(roundId: string): Promise<boolean> {
+async function markRead(
+  roundId: string,
+  request: MarkFeedbackRoundReadRequestDto,
+): Promise<boolean> {
   const response = await send(
     crmFeedbackRoundReadEndpoint(roundId),
     HttpMethod.Post,
-    undefined,
+    request,
   );
   return (
     response?.ok === true &&

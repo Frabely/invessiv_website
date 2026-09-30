@@ -19,6 +19,7 @@ export type FeedbackProjectTrack = {
 export type CountedFeedbackRound = {
   round: FeedbackRoundRow;
   itemCount: number;
+  unread: boolean;
 };
 
 /** A round of the internal inbox with what its card shows next to the round itself. */
@@ -29,4 +30,5 @@ export type FeedbackInboxRow = {
   itemCount: number;
   fileCount: number;
   excerpt: string | null;
+  unread: boolean;
 };

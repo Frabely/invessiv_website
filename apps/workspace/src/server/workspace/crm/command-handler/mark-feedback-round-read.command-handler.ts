@@ -3,6 +3,7 @@ import "server-only";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { FeedbackRoundErrorCode } from "@invessiv/common/constants/crm/errors/feedback-round-error-codes";
 import type { MarkFeedbackRoundReadResult } from "@invessiv/common/contracts/crm/results/mark-feedback-round-read-result";
+import type { MarkFeedbackRoundReadRequestDto } from "@invessiv/common/contracts/crm/mark-feedback-round-read-request.dto";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { canOn } from "@/common/patterns/auth/can-on";
@@ -17,6 +18,7 @@ const ROUND_NOT_FOUND = {
 /** Reading is not a status change: the round keeps its status, version and activity log. */
 export async function markFeedbackRoundRead(
   roundId: string,
+  input: MarkFeedbackRoundReadRequestDto,
   actor: WorkspaceActor,
 ): Promise<MarkFeedbackRoundReadResult> {
   if (!feedbackRoundSchemas.entityId.safeParse(roundId).success)
@@ -33,6 +35,6 @@ export async function markFeedbackRoundRead(
     return ROUND_NOT_FOUND;
   return {
     ok: true,
-    marked: await feedbackInboxService.markRead(db, round.id),
+    marked: await feedbackInboxService.markRead(db, round.id, input.version),
   };
 }

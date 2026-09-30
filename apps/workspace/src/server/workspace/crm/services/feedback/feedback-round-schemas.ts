@@ -81,6 +81,7 @@ const setItemResult = z
 
 export const feedbackRoundSchemas = {
   entityId: z.uuid(),
+  markRead: z.strictObject({ version }),
   handOver: z.strictObject({
     previewUrl,
     handoverNote: optionalText(FEEDBACK_LIMITS.noteMaxLength),

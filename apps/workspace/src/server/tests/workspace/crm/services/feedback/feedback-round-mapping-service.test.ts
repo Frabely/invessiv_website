@@ -87,7 +87,7 @@ describe("feedbackRoundMappingService.toDto", () => {
 });
 
 describe("feedbackRoundMappingService.toSummaryDto", () => {
-  it("counts a submitted round nobody opened as unread", () => {
+  it("maps the unread state computed by the round query", () => {
     const submittedAt = new Date("2026-09-03T09:00:00.000Z");
     expect(
       feedbackRoundMappingService.toSummaryDto(
@@ -97,6 +97,7 @@ describe("feedbackRoundMappingService.toSummaryDto", () => {
           due_on: "2026-09-10",
         }),
         3,
+        true,
       ),
     ).toEqual({
       id: ROUND_ID,
@@ -122,11 +123,12 @@ describe("feedbackRoundMappingService.toSummaryDto", () => {
           read_at: new Date(),
         }),
         0,
+        false,
       ).unread,
     ).toBe(false);
-    expect(feedbackRoundMappingService.toSummaryDto(roundRow(), 0).unread).toBe(
-      false,
-    );
+    expect(
+      feedbackRoundMappingService.toSummaryDto(roundRow(), 0, false).unread,
+    ).toBe(false);
   });
 });
 
@@ -136,6 +138,7 @@ describe("feedbackRoundMappingService.toInboxItemDto", () => {
     projectTitle: "Relaunch",
     itemCount: 3,
     fileCount: 2,
+    unread: true,
     excerpt: "Logo größer",
   };
 
@@ -143,6 +146,7 @@ describe("feedbackRoundMappingService.toInboxItemDto", () => {
     expect(
       feedbackRoundMappingService.toInboxItemDto({
         ...row,
+        unread: false,
         round: roundRow({
           status: FeedbackRoundStatus.Submitted,
           round_number: 2,

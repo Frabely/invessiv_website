@@ -101,6 +101,7 @@ function rejectBlocked(
       activeRound: feedbackRoundMappingService.toSummaryDto(
         active.round,
         active.itemCount,
+        active.unread,
       ),
     };
   if (blocker === FeedbackHandOverBlocker.RoundAlreadyActive)

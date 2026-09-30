@@ -35,8 +35,8 @@ export async function listProjectFeedbackRounds(
   if (!project) return null;
 
   const counted = await feedbackRoundService.listRounds(db, project.id);
-  const rounds = counted.map(({ round, itemCount }) =>
-    feedbackRoundMappingService.toSummaryDto(round, itemCount),
+  const rounds = counted.map(({ round, itemCount, unread }) =>
+    feedbackRoundMappingService.toSummaryDto(round, itemCount, unread),
   );
   const quota = feedbackQuota({
     included: project.includedFeedbackRounds,

@@ -12,7 +12,7 @@ import { feedbackRoundsApiService } from "@/client/crm/feedback-rounds-api-servi
  * the sidebar counter and the round list drop the "new" marker.
  */
 export function useMarkFeedbackRoundRead(
-  round: Pick<FeedbackRoundDto, "id" | "readAt" | "status">,
+  round: Pick<FeedbackRoundDto, "id" | "readAt" | "status" | "version">,
 ) {
   const router = useRouter();
   const requestedFor = useRef<string | null>(null);
@@ -22,8 +22,10 @@ export function useMarkFeedbackRoundRead(
   useEffect(() => {
     if (!shouldMark || requestedFor.current === round.id) return;
     requestedFor.current = round.id;
-    void feedbackRoundsApiService.markRead(round.id).then((marked) => {
-      if (marked) router.refresh();
-    });
-  }, [round.id, router, shouldMark]);
+    void feedbackRoundsApiService
+      .markRead(round.id, { version: round.version })
+      .then((marked) => {
+        if (marked) router.refresh();
+      });
+  }, [round.id, round.version, router, shouldMark]);
 }

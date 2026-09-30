@@ -11,7 +11,7 @@
 > Block“ → Schritt direkt nach der abgenommenen Runde; „Block entfernen“ → übergebene Rundenschritte entfernen oder
 > verschieben; Kontingent = Anzahl der Rundenschritte. Details: README, Abschnitt „Feedbackrunden in der Prozessleiste“.
 
-> **Status:** läuft · **Teil-PR:** 16.2 · **Branch:** `feat/crm-feedback-2-datenmodell`
+> **Status:** gemerged · **Teil-PR:** 16.2 · **Branch:** `feat/crm-feedback-2-datenmodell`
 > **Abhängigkeiten:** Task 57 (16.1), Ordner 08 (Aufgaben), Task 52 (14.2, `files`) gemerged · **Aufwand:** 2 T. ·
 > **Dateien:** 45–65
 > **Migration:** ja, eine (Nummer im Repo ermitteln)

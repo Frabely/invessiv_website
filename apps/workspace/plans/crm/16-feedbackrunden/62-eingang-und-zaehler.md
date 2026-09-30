@@ -4,7 +4,7 @@
 > `../00-entscheidungen.md`, `../AGENTS.md` und die scoped `AGENTS.md` am Zielcode. Diese Task-Datei plus README sind
 > vollständig; frühere Chat- oder Planstände (Task 22/23) gelten nicht.
 
-> **Status:** im Review · **Teil-PR:** 16.6 · **Branch:** `feat/crm-feedback-6-eingang`
+> **Status:** gemerged · **Teil-PR:** 16.6 · **Branch:** `feat/crm-feedback-6-eingang`
 > **Abhängigkeiten:** Task 61 (16.5) gemerged · **Aufwand:** 1–1,5 T. · **Dateien:** 30–45
 > **Migration:** keine (Indizes entstehen in Task 58)
 > **Skills:** `frontend-design`, `copywriting`
@@ -36,7 +36,9 @@ Chat-Systemnachricht diese Rolle.
 - `query-handler/count-unread-feedback-rounds.query-handler.ts` — über `feedback_rounds_unread_idx`; Muster
   `count-unread-conversations.query-handler.ts`.
 - `command-handler/mark-feedback-round-read.command-handler.ts` — `UPDATE … SET read_at = now() WHERE id = $1 AND
-read_at IS NULL`; keine Version, keine Activity. **Dieser Task** ergänzt im Runden-Detail aus Task 60
+version = $2 AND read_at IS NULL`; die gelesene Version bindet den Stempel an den geöffneten Rundenzustand, damit ein
+  verzögerter Aufruf keine spätere erneute Einreichung als gelesen markiert. Der Lesestempel erhöht die Version nicht
+  und schreibt keine Activity. **Dieser Task** ergänzt im Runden-Detail aus Task 60
   (`components/workspace/crm/feedback-rounds/feedback-round-detail/`) den Aufruf beim Öffnen (clientseitig nach dem
   Rendern; ein Fehler bleibt still und blockiert die Ansicht nicht).
 - Routen: `GET /api/workspace/crm/feedback-rounds` (Eingang, Filter), `POST /api/workspace/crm/feedback-rounds/[roundId]/read`;

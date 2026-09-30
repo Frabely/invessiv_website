@@ -1,9 +1,6 @@
 import "server-only";
 
-import {
-  FeedbackRoundStatus,
-  INTERNAL_QUEUE_FEEDBACK_ROUND_STATUS_VALUES,
-} from "@invessiv/common/constants/crm/feedback-round-statuses";
+import { INTERNAL_QUEUE_FEEDBACK_ROUND_STATUS_VALUES } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import type { FeedbackInboxItemDto } from "@invessiv/common/contracts/crm/feedback-inbox-item.dto";
 import type { FeedbackRoundItemDto } from "@invessiv/common/contracts/crm/feedback-round-item.dto";
 import type { FeedbackRoundSummaryDto } from "@invessiv/common/contracts/crm/feedback-round-summary.dto";
@@ -34,14 +31,10 @@ function toItemDto({
   };
 }
 
-/** Unread is the inbox notion: submitted and not yet opened by any member. */
-function isUnread(row: FeedbackRoundRow): boolean {
-  return row.status === FeedbackRoundStatus.Submitted && row.read_at === null;
-}
-
 function toSummaryDto(
   row: FeedbackRoundRow,
   itemCount: number,
+  unread: boolean,
 ): FeedbackRoundSummaryDto {
   return {
     id: row.id,
@@ -54,7 +47,7 @@ function toSummaryDto(
     completedAt: row.completed_at?.toISOString() ?? null,
     approvedAt: row.approved_at?.toISOString() ?? null,
     itemCount,
-    unread: isUnread(row),
+    unread,
   };
 }
 
@@ -66,6 +59,7 @@ function toInboxItemDto({
   itemCount,
   fileCount,
   excerpt,
+  unread,
 }: FeedbackInboxRow): FeedbackInboxItemDto {
   const status = INTERNAL_QUEUE_FEEDBACK_ROUND_STATUS_VALUES.find(
     (value) => value === round.status,
@@ -85,7 +79,7 @@ function toInboxItemDto({
     itemCount,
     fileCount,
     excerpt,
-    unread: isUnread(round),
+    unread,
   };
 }
 
