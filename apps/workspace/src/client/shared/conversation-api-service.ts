@@ -8,16 +8,17 @@ import type { MessageDto } from "@invessiv/common/contracts/crm/message.dto";
 import type { SendMessageInput } from "@invessiv/common/contracts/crm/send-message.input";
 import { ConversationQueryParam } from "@/common/constants/crm/conversation-query-params";
 import type { MessageClientResult } from "@/common/contracts/crm/message-client-result";
+import { readApiErrorCode } from "@/common/patterns/client/read-api-error-code";
 import { versionedJsonMutationService } from "./versioned-json-mutation-service";
 
 const { isRecord, send } = versionedJsonMutationService;
 
 // Chat routes answer errors as `{ code, message }`, not the `{ error }` shape of older routes.
 function readErrorCode(payload: unknown): MessageErrorCode {
-  const code = isRecord(payload) ? payload.code : undefined;
-  return (
-    MESSAGE_ERROR_CODE_VALUES.find((known) => known === code) ??
-    MessageErrorCode.Internal
+  return readApiErrorCode(
+    payload,
+    MESSAGE_ERROR_CODE_VALUES,
+    MessageErrorCode.Internal,
   );
 }
 

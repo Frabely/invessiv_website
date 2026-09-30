@@ -1,6 +1,5 @@
 import type { FeedbackItemKind } from "@invessiv/common/constants/crm/feedback-item-kinds";
 import type { ActivityActor } from "@invessiv/common/contracts/activity/activity-actor";
-import type { AssetKind } from "@invessiv/common/constants/files/asset-kind";
 import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import type {
@@ -26,14 +25,6 @@ export type FeedbackDraftItemInput = {
   areaLabel: string | null;
   kind: FeedbackItemKind | null;
   body: string;
-};
-
-/** File columns of one attachment as the item query selects them. */
-export type FeedbackAttachmentRow = {
-  fileId: string;
-  displayName: string;
-  assetKind: AssetKind;
-  sizeBytes: number | null;
 };
 
 /** Who writes on the customer's side, and the title the chat notice names. */

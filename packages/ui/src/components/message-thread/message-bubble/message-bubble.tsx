@@ -2,13 +2,12 @@ import { faRotateRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ButtonControl } from "@invessiv/ui";
 import { PendingMessageStatus } from "@invessiv/common/constants/ui/pending-message-statuses";
-import { MessageTextSegmentKind } from "@invessiv/common/constants/ui/message-text-segment-kinds";
 import { ThreadMessageItemKind } from "@invessiv/common/constants/ui/thread-message-item-kinds";
 import type { MessageAttachmentDto } from "@invessiv/common/contracts/crm/message-attachment.dto";
 import type { ComposerAttachment } from "@invessiv/common/contracts/ui/composer-attachment";
 import type { MessageThreadLabels } from "@invessiv/common/contracts/ui/message-thread-labels";
 import type { ThreadMessageItem } from "@invessiv/common/contracts/ui/thread-message-item";
-import { splitMessageLinks } from "@invessiv/common/patterns/ui/split-message-links";
+import { LinkedText } from "@invessiv/ui";
 import { MessageAttachmentList } from "../message-attachment-list/message-attachment-list";
 import styles from "./message-bubble.module.css";
 
@@ -32,23 +31,6 @@ type MessageBubbleProps = {
   onRedactAction?: (messageId: string) => void;
   onRetryAction: (clientId: string) => void;
 };
-
-function MessageText({ body }: { body: string }) {
-  return splitMessageLinks(body).map((segment, index) =>
-    segment.kind === MessageTextSegmentKind.Link ? (
-      <a
-        href={segment.value}
-        key={index}
-        rel="noopener noreferrer"
-        target="_blank"
-      >
-        {segment.value}
-      </a>
-    ) : (
-      <span key={index}>{segment.value}</span>
-    ),
-  );
-}
 
 /** A pending send shows what it carries, but nothing is downloadable before the server confirms. */
 function pendingAttachments(
@@ -78,7 +60,7 @@ export function MessageBubble({
       <li className={styles.row} data-own="true">
         {item.pending.body ? (
           <p className={styles.bubble} data-state={item.pending.status}>
-            <MessageText body={item.pending.body} />
+            <LinkedText text={item.pending.body} />
           </p>
         ) : null}
         <MessageAttachmentList
@@ -118,7 +100,7 @@ export function MessageBubble({
         </p>
       ) : body ? (
         <p className={styles.bubble} data-state="sent">
-          <MessageText body={body} />
+          <LinkedText text={body} />
         </p>
       ) : null}
       <MessageAttachmentList

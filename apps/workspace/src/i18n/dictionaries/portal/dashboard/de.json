@@ -66,13 +66,25 @@
     },
     "feedback": {
       "title": "Feedback",
-      "open": "Mehr erfahren",
-      "teaser": "Hier siehst du bald, wie viele Feedbackrunden du noch hast und wer gerade am Zug ist.",
-      "upcoming": [
-        "Deine verbleibenden Feedbackrunden",
-        "Ob gerade du oder wir am Zug sind",
-        "Feedback direkt von hier abgeben"
-      ]
+      "roundOf": "Runde {number} von {included}",
+      "noRound": "Noch keine Runde",
+      "turn": {
+        "none": "Wir bereiten den ersten Stand vor",
+        "open": "Du bist dran",
+        "submitted": "Wir sind dran",
+        "in_discussion": "Wir sind dran",
+        "in_progress": "Wir sind dran",
+        "completed": "Wir bereiten die nächste Runde vor",
+        "approved": "Abgenommen"
+      },
+      "due": "bis {date}",
+      "give": "Feedback geben",
+      "view": "Ansehen",
+      "giveNamed": "Feedback zu {project} geben",
+      "viewNamed": "Feedback zu {project} ansehen",
+      "emptyTitle": "Hier gibst du uns Feedback",
+      "emptyDescription": "Sobald wir dir einen Stand zeigen, sagst du uns hier Punkt für Punkt, was passt und was wir ändern sollen.",
+      "projectLink": "Zum Feedback"
     },
     "hours": {
       "title": "Stundenkontingent",

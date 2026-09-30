@@ -9,6 +9,9 @@ import type { Locale } from "@/config/i18n";
 import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
+import { StatusRowTone } from "@/common/constants/ui/status-row-tones";
+import { TaskDueState } from "@invessiv/common/constants/crm/task-due-states";
+import { StatusRow } from "@/components/workspace/shared/status-row/status-row";
 import { TaskRowDetails } from "../task-row-details/task-row-details";
 import { TaskStatusSelect } from "../task-status-select/task-status-select";
 import styles from "./task-row.module.css";
@@ -28,7 +31,7 @@ type TaskRowProps = {
   today: string;
 };
 
-/** A task row keeps the status control separate from its edit target. */
+/** A task row keeps the status control separate from its edit target (layout: `StatusRow`). */
 export function TaskRow({
   assigneeName,
   canWrite,
@@ -45,26 +48,18 @@ export function TaskRow({
     { dueOn: task.dueOn, status },
     today,
   );
-  const details = (
-    <TaskRowDetails
-      assigneeName={assigneeName}
-      content={content}
-      locale={locale}
-      status={status}
-      task={task}
-      today={today}
-    />
-  );
-
   return (
-    <li
-      className={styles.row}
-      data-due={dueState}
-      data-pending={pending ? "true" : "false"}
-      data-status={status}
-    >
-      <div className={styles.status}>
-        {canWrite ? (
+    <StatusRow
+      detailsClassName={styles.details}
+      onOpenAction={canWrite ? () => onEditAction(task) : undefined}
+      openLabel={
+        canWrite
+          ? formatMessage(content.row.editNamed, { name: task.title })
+          : undefined
+      }
+      pending={pending}
+      status={
+        canWrite ? (
           <TaskStatusSelect
             content={content}
             disabled={pending}
@@ -80,22 +75,22 @@ export function TaskRow({
             />
             {content.status[status]}
           </span>
-        )}
-      </div>
-      {canWrite ? (
-        <button
-          aria-label={formatMessage(content.row.editNamed, {
-            name: task.title,
-          })}
-          className={styles.details}
-          onClick={() => onEditAction(task)}
-          type="button"
-        >
-          {details}
-        </button>
-      ) : (
-        <div className={styles.details}>{details}</div>
-      )}
-    </li>
+        )
+      }
+      tone={
+        dueState === TaskDueState.Overdue
+          ? StatusRowTone.Attention
+          : StatusRowTone.Default
+      }
+    >
+      <TaskRowDetails
+        assigneeName={assigneeName}
+        content={content}
+        locale={locale}
+        status={status}
+        task={task}
+        today={today}
+      />
+    </StatusRow>
   );
 }

@@ -7,6 +7,8 @@ export const CustomerListQueryParam = {
   Edit: "edit",
   Cockpit: "cockpit",
   Search: "search",
+  Project: "project",
+  FeedbackRound: "feedbackRound",
 } as const;
 
 export type CustomerListQueryParam =
@@ -20,4 +22,6 @@ export const CUSTOMER_LIST_QUERY_PARAM_VALUES = [
   CustomerListQueryParam.Edit,
   CustomerListQueryParam.Cockpit,
   CustomerListQueryParam.Search,
+  CustomerListQueryParam.Project,
+  CustomerListQueryParam.FeedbackRound,
 ] as const;

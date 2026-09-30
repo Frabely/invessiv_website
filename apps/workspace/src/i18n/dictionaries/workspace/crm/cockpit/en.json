@@ -30,7 +30,7 @@
     "saving": "Saving …",
     "saveError": "The project could not be saved. Please try again.",
     "feedbackRoundInUse": "Feedback rounds that were handed over stay where they are. Only move or remove rounds that have not been handed over yet.",
-    "saveConflict": "Someone just changed this project. We loaded the current version; your input is still here. Save again to apply it.",
+    "saveConflict": "Someone just changed this project, for example by handing over a feedback round. We loaded the current version; your input is still here. Save again to apply it.",
     "cancel": "Cancel",
     "title": "Project name",
     "statusLabel": "Status",
@@ -40,6 +40,7 @@
     "newProcessStepLabel": "New process step",
     "currentProcessStep": "Current process step",
     "currentProcessStepHint": "Only free-text steps can be selected. Feedback rounds before the current step count as done.",
+    "currentProcessStepLocked": "Set by feedback round {number} while it is running. Once it is completed, you can choose the step again.",
     "addProcessStep": "Add step",
     "removeProcessStep": "Remove {step}",
     "moveProcessStepUp": "Move {step} up",
@@ -89,10 +90,6 @@
     },
     "tabsLabel": "This customer’s projects",
     "futureAreas": {
-      "feedback": {
-        "title": "Feedback rounds",
-        "body": "Soon the customer’s feedback rounds land here with text, files and status – and how many rounds are left."
-      },
       "onboarding": {
         "title": "Onboarding form",
         "body": "Soon you can read the onboarding form the customer fills in on the portal here and reuse their answers in one click."

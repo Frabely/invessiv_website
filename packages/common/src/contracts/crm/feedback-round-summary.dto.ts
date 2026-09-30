@@ -10,6 +10,8 @@ export interface FeedbackRoundSummaryDto {
   status: FeedbackRoundStatus;
   /** When the round was handed over. */
   handedOverAt: string;
+  /** HTTPS preview of that handover; the next handover starts from the latest one. */
+  previewUrl: string | null;
   /** Requested feedback date as `YYYY-MM-DD`; null when none was set. */
   dueOn: string | null;
   /** When the customer submitted; null while unsubmitted. */

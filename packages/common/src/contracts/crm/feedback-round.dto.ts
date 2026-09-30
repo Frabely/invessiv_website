@@ -27,10 +27,14 @@ export interface FeedbackRoundDto {
   handedOverAt: string;
   /** Last draft save by the customer; null while nothing was saved yet. */
   draftUpdatedAt: string | null;
+  /** Display name of the contact who saved last; null before the first save or once removed. */
+  draftUpdatedByName: string | null;
   /** When the customer submitted; null while open and after the team handed it back. */
   submittedAt: string | null;
   /** Contact who submitted; null while unsubmitted or once the membership was removed. */
   submittedByPortalMembershipId: string | null;
+  /** Display name of that contact; null under the same conditions. */
+  submittedByName: string | null;
   /** Note to the customer when the team asks for a call or hands the round back. */
   customerNotice: string | null;
   /** When implementation started; null before `in_progress`. */

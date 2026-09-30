@@ -1,0 +1,113 @@
+{
+  "section": {
+    "title": "Feedback rounds",
+    "count": "Round {used} of {included}",
+    "countNone": "{included} rounds planned",
+    "handOver": "Hand over round {number}",
+    "listLabel": "Feedback rounds of this project",
+    "expandLabel": "Expand feedback rounds",
+    "collapseLabel": "Collapse feedback rounds"
+  },
+  "empty": {
+    "title": "No round handed over yet",
+    "description": "This is where the customer collects feedback on a version you hand over: items per page, with screenshots. Hand over the first round as soon as there is something to see.",
+    "readOnlyDescription": "As soon as the team hands over a round, it shows up here with the customer's feedback."
+  },
+  "blockers": {
+    "PROJECT_NOT_ELIGIBLE": "Rounds can only be handed over in active projects.",
+    "PROJECT_ALREADY_APPROVED": "The customer approved the project. There are no further rounds.",
+    "ROUND_ALREADY_ACTIVE": "Round {number} is still running. Hand over the next round once it is completed.",
+    "QUOTA_EXHAUSTED": "All {included} rounds are handed over. For another round, add a round step in the project editor.",
+    "FEEDBACK_ROUND_STEP_MISSING": "The process track has no round step yet. Add one in the project editor with “+ Round”.",
+    "PROJECT_NOT_AT_FEEDBACK_STEP": "Round {number} comes later in the process track. Set the current step to the step right before it."
+  },
+  "status": {
+    "open": "With the customer",
+    "submitted": "Submitted",
+    "in_discussion": "In discussion",
+    "in_progress": "In progress",
+    "completed": "Completed",
+    "approved": "Approved"
+  },
+  "kind": {
+    "change_request": "Change request",
+    "bug": "Bug"
+  },
+  "row": {
+    "title": "Feedback round {number}",
+    "openNamed": "Open feedback round {number}",
+    "handedOver": "Handed over on {date}",
+    "submitted": "Submitted on {date}",
+    "approved": "Approved on {date}",
+    "due": "Feedback by {date}",
+    "items": "{count} items",
+    "itemsOne": "1 item",
+    "itemsNone": "No items yet",
+    "unread": "New"
+  },
+  "detail": {
+    "back": "All rounds",
+    "title": "Feedback round {number}",
+    "preview": "Open preview",
+    "opensInNewTab": "opens in a new tab",
+    "handoverNote": "What's new",
+    "due": "Feedback by {date}",
+    "submittedBy": "Submitted by {name} on {date}",
+    "submittedAt": "Submitted on {date}",
+    "draftBy": "Last edited by {name} on {date}",
+    "draftAt": "Last edited on {date}",
+    "noDraft": "The customer has not saved anything yet.",
+    "openHint": "The round is with the customer. You see their draft; it can still change until they submit.",
+    "itemsTitle": "Items",
+    "itemsEmpty": "No items yet.",
+    "general": "General",
+    "itemNumber": "Item {number}",
+    "showMore": "Show full text",
+    "showLess": "Show less",
+    "attachments": "Attachments of item {number}",
+    "archive": "All attachments as ZIP",
+    "archiveBusy": "Creating ZIP …",
+    "archiveFilename": "feedback-round-{number}.zip"
+  },
+  "handover": {
+    "title": "Hand over feedback round {number}",
+    "description": "The customer sees the round in the portal right away and gets a chat message.",
+    "previewUrl": "Preview link",
+    "previewUrlHint": "HTTPS link to the version you want feedback on.",
+    "previewUrlPlaceholder": "https://",
+    "handoverNote": "What's new",
+    "handoverNotePlaceholder": "For example: first complete version of all pages",
+    "dueOn": "Feedback by",
+    "dueOnHint": "Only a note for the customer; nothing expires.",
+    "areas": "Areas",
+    "areasHint": "The customer assigns every item to an area. “General” is always available.",
+    "areaInput": "New area",
+    "areaInputPlaceholder": "For example: Home page",
+    "areaAdd": "Add",
+    "areaRemove": "Remove area “{name}”",
+    "areaCount": "{count} of {max}",
+    "submit": "Hand over round",
+    "submitting": "Handing over …",
+    "cancel": "Cancel",
+    "close": "Close",
+    "validation": {
+      "PREVIEW_URL_INVALID": "Enter a complete HTTPS link.",
+      "DUE_ON_PAST": "The due date cannot be in the past."
+    },
+    "areaRejections": {
+      "empty": "Enter a name.",
+      "tooLong": "At most {max} characters.",
+      "duplicate": "This area already exists.",
+      "limitReached": "At most {max} areas."
+    },
+    "errors": {
+      "validation": "Some details do not fit. Check the marked fields.",
+      "notFound": "The project is no longer available. Reload the page.",
+      "internal": "The round was not handed over. Try again."
+    }
+  },
+  "announcements": {
+    "handedOver": "Feedback round {number} is handed over.",
+    "alreadyActive": "Feedback round {number} is already running and is open."
+  }
+}

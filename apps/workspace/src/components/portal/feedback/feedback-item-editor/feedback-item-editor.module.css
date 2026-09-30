@@ -1,0 +1,136 @@
+/*
+ * A point reads like a margin note on a proof: the number hangs in its own gutter, the note
+ * itself stays calm. On narrow phones the gutter folds away above the fields.
+ */
+.item {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr);
+  gap: 0.75rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.number {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1.5px solid var(--color-cta);
+  border-radius: 999px;
+  color: var(--color-cta);
+  font-size: var(--font-size-ui-sm);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.item[data-invalid="true"] .number {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
+.body {
+  display: grid;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 0.5rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+.field select,
+.textField textarea {
+  width: 100%;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 0.6rem;
+  background: var(--color-surface-1);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.field select {
+  min-height: 44px;
+  padding: 0 0.6rem;
+  font-size: var(--font-size-ui-sm);
+}
+
+.textField {
+  display: block;
+}
+
+.textField textarea {
+  min-height: 6rem;
+  padding: 0.7rem 0.8rem;
+  font-size: var(--font-size-body-sm);
+  line-height: 1.55;
+  resize: vertical;
+}
+
+.item[data-invalid="true"] textarea {
+  border-color: var(--color-danger);
+}
+
+.field select:focus-visible,
+.textField textarea:focus-visible,
+.remove:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.remove {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.remove:hover {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+}
+
+.error,
+.counter {
+  margin: 0;
+  font-size: var(--font-size-ui-xs);
+}
+
+.error {
+  color: var(--color-danger);
+}
+
+.counter {
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 30rem) {
+  .item {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .head {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .head .field + .field {
+    grid-row: 2;
+    grid-column: 1 / -1;
+  }
+}

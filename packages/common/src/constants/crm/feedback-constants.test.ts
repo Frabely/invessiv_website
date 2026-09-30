@@ -27,7 +27,10 @@ import {
   FEEDBACK_HAND_OVER_BLOCKER_VALUES,
   FeedbackHandOverBlocker,
 } from "./feedback-hand-over-blockers";
-import { PortalFeedbackErrorCode } from "../portal/portal-feedback-error-codes";
+import {
+  PORTAL_FEEDBACK_ERROR_CODE_VALUES,
+  PortalFeedbackErrorCode,
+} from "../portal/portal-feedback-error-codes";
 
 describe("feedback const objects", () => {
   it.each([
@@ -50,6 +53,7 @@ describe("feedback const objects", () => {
   it("keeps portal feedback error codes distinct", () => {
     const values = Object.values(PortalFeedbackErrorCode);
     expect(new Set(values).size).toBe(values.length);
+    expect([...PORTAL_FEEDBACK_ERROR_CODE_VALUES]).toEqual(values);
   });
 });
 

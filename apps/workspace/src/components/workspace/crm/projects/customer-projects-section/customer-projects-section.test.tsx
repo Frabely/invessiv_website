@@ -12,8 +12,12 @@ import {
 } from "@/server/tests/workspace/crm/support/crm-fixtures";
 import { CustomerProjectsSection } from "./customer-projects-section";
 
+const navigation = vi.hoisted(() => ({ replace: vi.fn() }));
+
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ refresh: vi.fn() }),
+  useRouter: () => ({ refresh: vi.fn(), replace: navigation.replace }),
+  usePathname: () => "/de/crm",
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 const content = getCrmCockpitDictionary("de");
@@ -46,7 +50,7 @@ describe("CustomerProjectsSection", () => {
   afterEach(cleanup);
 
   it("switches the project canvas through the tabs", () => {
-    renderSection(false);
+    const view = renderSection(false);
 
     const panel = screen.getByRole("tabpanel");
     expect(panel).toHaveAccessibleName("Website");
@@ -55,11 +59,44 @@ describe("CustomerProjectsSection", () => {
     ).toBeVisible();
 
     fireEvent.click(screen.getByRole("tab", { name: "Shop" }));
+    expect(navigation.replace).toHaveBeenCalledWith(
+      `/de/crm?cockpit=${TEST_CUSTOMER_ID}&project=${shop.id}`,
+      { scroll: false },
+    );
+    view.rerender(
+      <CustomerProjectsSection
+        canWrite={false}
+        content={content}
+        customerId={TEST_CUSTOMER_ID}
+        locale="de"
+        projects={projects}
+        selectedProjectId={shop.id}
+      />,
+    );
 
     expect(screen.getByRole("tabpanel")).toHaveAccessibleName("Shop");
     expect(
       screen.getByRole("heading", { level: 3, name: "Shop" }),
     ).toBeVisible();
+  });
+
+  it("follows a new project selected through the URL", () => {
+    const props = {
+      canWrite: false,
+      content,
+      customerId: TEST_CUSTOMER_ID,
+      locale: "de" as const,
+      projects,
+    };
+    const view = render(
+      <CustomerProjectsSection {...props} selectedProjectId={website.id} />,
+    );
+    expect(screen.getByRole("tabpanel")).toHaveAccessibleName("Website");
+
+    view.rerender(
+      <CustomerProjectsSection {...props} selectedProjectId={shop.id} />,
+    );
+    expect(screen.getByRole("tabpanel")).toHaveAccessibleName("Shop");
   });
 
   it("offers create and edit only with write access, editing from the project header", () => {

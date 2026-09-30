@@ -11,6 +11,7 @@ import {
 import {
   canTransition,
   feedbackQuota,
+  feedbackRoundProgress,
   feedbackRoundStepPosition,
   isActiveFeedbackRound,
   isAtFeedbackStep,
@@ -124,6 +125,42 @@ describe("feedbackQuota", () => {
       used: 2,
       remaining: 0,
       activeRoundNumber: null,
+      approvedRoundNumber: 2,
+    });
+  });
+});
+
+describe("feedbackRoundProgress", () => {
+  it("is empty without rounds", () => {
+    expect(feedbackRoundProgress([])).toEqual({
+      activeRoundNumber: null,
+      completedRoundNumber: null,
+      approvedRoundNumber: null,
+    });
+  });
+
+  it("names the running round next to the last completed one", () => {
+    expect(
+      feedbackRoundProgress([
+        { roundNumber: 1, status: S.Completed },
+        { roundNumber: 2, status: S.Submitted },
+      ]),
+    ).toEqual({
+      activeRoundNumber: 2,
+      completedRoundNumber: 1,
+      approvedRoundNumber: null,
+    });
+  });
+
+  it("reports the approval round", () => {
+    expect(
+      feedbackRoundProgress([
+        { roundNumber: 1, status: S.Completed },
+        { roundNumber: 2, status: S.Approved },
+      ]),
+    ).toEqual({
+      activeRoundNumber: null,
+      completedRoundNumber: 1,
       approvedRoundNumber: 2,
     });
   });

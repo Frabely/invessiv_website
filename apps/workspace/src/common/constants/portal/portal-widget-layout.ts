@@ -75,9 +75,10 @@ export const PORTAL_WIDGET_LAYOUT: readonly PortalWidgetDefinition[] = [
     key: PortalWidgetKey.Feedback,
     order: 60,
     span: COMPACT_ROW,
-    openMode: WidgetOpenMode.Dialog,
+    openMode: WidgetOpenMode.None,
     scope: PortalWidgetScope.Project,
-    mock: true,
+    mock: false,
+    requiredPermission: Permission.PortalFeedbackRead,
     onlyWithContent: false,
   },
   {

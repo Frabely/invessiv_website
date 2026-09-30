@@ -12,10 +12,14 @@ import type { TasksViewModel } from "@/common/contracts/crm/tasks-view-model";
 import type { Locale } from "@/config/i18n";
 import type {
   CrmCockpitDictionary,
+  CrmFeedbackRoundsDictionary,
   CrmFilesDictionary,
   CrmProjectLineItemsDictionary,
   CrmTasksDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
+import type { FeedbackRoundsViewModel } from "@/common/contracts/crm/feedback-rounds-view-model";
+import { ProjectFeedbackSection } from "@/components/workspace/crm/feedback-rounds/project-feedback-section/project-feedback-section";
+import { useCockpitSelection } from "@/hooks/workspace/crm/use-cockpit-selection";
 import { ProjectEditorDialog } from "@/components/workspace/crm/projects/project-editor-dialog/project-editor-dialog";
 import { ProjectOverview } from "@/components/workspace/crm/projects/project-overview/project-overview";
 import { MockSectionCard } from "@/components/workspace/crm/shared/mock-section-card/mock-section-card";
@@ -27,7 +31,7 @@ import { CustomerFilesSection } from "@/components/workspace/crm/files/customer-
 import type { FilesViewModel } from "@/common/contracts/crm/files/files-view-model";
 import styles from "./customer-projects-section.module.css";
 
-const PROJECT_FUTURE_AREAS = ["feedback", "onboarding"] as const;
+const PROJECT_FUTURE_AREAS = ["onboarding"] as const;
 
 type EditorState = {
   project: ProjectDto | null;
@@ -55,6 +59,11 @@ type CustomerProjectsSectionProps = {
   filesContent?: CrmFilesDictionary;
   filesRevision?: number;
   onFilesChangedAction?: () => void;
+  /** Project tab from the URL; an unknown or foreign id falls back to the first project. */
+  selectedProjectId?: string | null;
+  /** Rounds of the open tab; absent without `projects.read` there, the section then does not exist. */
+  feedback?: FeedbackRoundsViewModel;
+  feedbackContent?: CrmFeedbackRoundsDictionary;
 };
 
 /** Project context rendered inside the existing customer cockpit, not as a second detail view. */
@@ -75,11 +84,13 @@ export function CustomerProjectsSection({
   filesContent,
   filesRevision = 0,
   onFilesChangedAction,
+  selectedProjectId: requestedProjectId = null,
+  feedback,
+  feedbackContent,
 }: CustomerProjectsSectionProps) {
   const [editor, setEditor] = useState<EditorState | null>(null);
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(
-    projects[0]?.id ?? null,
-  );
+  const selection = useCockpitSelection(customerId);
+  const selectedProjectId = requestedProjectId ?? projects[0]?.id ?? null;
   const activeProject =
     projects.find((project) => project.id === selectedProjectId) ??
     projects[0] ??
@@ -92,6 +103,13 @@ export function CustomerProjectsSection({
   const activeOwner = accessMembers?.find(
     (member) => member.id === activeProjectDetails?.ownerMemberId,
   );
+  // Rounds of a tab that is still loading are never shown under another project.
+  const activeFeedback =
+    feedback && feedback.projectId === activeProject?.id ? feedback : null;
+
+  function selectProject(projectId: string) {
+    selection.select({ projectId });
+  }
 
   function openEditor(project: ProjectDto | null, nextCurrentStep?: string) {
     setEditor({ project, nextCurrentStep, key: (editor?.key ?? 0) + 1 });
@@ -106,7 +124,7 @@ export function CustomerProjectsSection({
         {projects.length > 0 ? (
           <ProjectSwitcherTabs
             activeProjectId={activeProject?.id ?? null}
-            onSelectAction={setSelectedProjectId}
+            onSelectAction={selectProject}
             panelId={panelId}
             projects={projects}
             statusLabels={content.projects.status}
@@ -139,6 +157,7 @@ export function CustomerProjectsSection({
             owner={activeOwner}
             ownerWithoutAccess={ownerHasAccess?.[activeProject.id] === false}
             project={activeProjectDetails}
+            roundProgress={activeFeedback?.roundProgress}
             title={activeProject.title}
           />
           {tasks &&
@@ -195,6 +214,16 @@ export function CustomerProjectsSection({
               viewModel={files}
             />
           ) : null}
+          {activeFeedback && feedbackContent && filesContent ? (
+            <ProjectFeedbackSection
+              content={feedbackContent}
+              customerId={customerId}
+              filesContent={filesContent}
+              key={`feedback-${activeProject.id}`}
+              locale={locale}
+              viewModel={activeFeedback}
+            />
+          ) : null}
           {PROJECT_FUTURE_AREAS.map((area) => {
             const futureArea = content.projects.futureAreas[area];
             return (
@@ -222,6 +251,11 @@ export function CustomerProjectsSection({
           customerId={customerId}
           key={editor.key}
           nextCurrentStep={editor.nextCurrentStep}
+          runningFeedbackRound={
+            activeFeedback && activeFeedback.projectId === editor.project?.id
+              ? activeFeedback.roundProgress.activeRoundNumber
+              : null
+          }
           onCloseAction={() => setEditor(null)}
           project={editor.project}
         />

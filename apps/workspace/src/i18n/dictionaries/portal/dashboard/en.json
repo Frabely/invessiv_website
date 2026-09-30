@@ -66,13 +66,25 @@
     },
     "feedback": {
       "title": "Feedback",
-      "open": "Learn more",
-      "teaser": "Soon you will see here how many feedback rounds you have left and whose turn it is.",
-      "upcoming": [
-        "Your remaining feedback rounds",
-        "Whether it is your turn or ours",
-        "Giving feedback right from here"
-      ]
+      "roundOf": "Round {number} of {included}",
+      "noRound": "No round yet",
+      "turn": {
+        "none": "We're preparing the first version",
+        "open": "Your turn",
+        "submitted": "Our turn",
+        "in_discussion": "Our turn",
+        "in_progress": "Our turn",
+        "completed": "We're preparing the next round",
+        "approved": "Approved"
+      },
+      "due": "by {date}",
+      "give": "Give feedback",
+      "view": "View",
+      "giveNamed": "Give feedback on {project}",
+      "viewNamed": "View feedback on {project}",
+      "emptyTitle": "This is where you give us feedback",
+      "emptyDescription": "As soon as we show you a version, you tell us here point by point what works and what we should change.",
+      "projectLink": "Go to feedback"
     },
     "hours": {
       "title": "Hour budget",

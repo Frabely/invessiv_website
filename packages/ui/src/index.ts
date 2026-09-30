@@ -9,6 +9,7 @@ export * from "./components/form/form-status/form-status";
 export * from "./components/dialog/dialog/dialog";
 export * from "./components/dialog/confirm-dialog/confirm-dialog";
 export * from "./components/empty-state/empty-state";
+export * from "./components/linked-text/linked-text";
 export * from "./components/file-drop-zone/file-drop-zone";
 export * from "./components/badge/badge";
 export * from "./components/data-table/data-table";

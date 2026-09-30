@@ -18,6 +18,7 @@ import {
   type BadgeTone as BadgeToneValue,
 } from "@invessiv/common/constants/ui/badge-tones";
 import type { ProjectDto } from "@invessiv/common/contracts/crm/project.dto";
+import type { ProjectFeedbackRoundProgress } from "@invessiv/common/contracts/crm/project-feedback-round-progress";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import { Badge, ButtonControl, ProcessTrack } from "@invessiv/ui";
 import { getMemberInitials } from "@/common/patterns/access/member-initials";
@@ -49,6 +50,8 @@ export type ProjectOverviewProps = {
   owner?: WorkspaceMemberDto;
   ownerWithoutAccess: boolean;
   onGrantAccessAction?: (memberId: string) => void;
+  /** Round state of the project; absent without read access to its rounds. */
+  roundProgress?: ProjectFeedbackRoundProgress;
   /** Absent without write access; the header then offers no edit entry points. */
   onEditAction?: (project: ProjectDto, processStep?: string) => void;
 };
@@ -62,12 +65,14 @@ export function ProjectOverview({
   ownerWithoutAccess,
   onGrantAccessAction,
   onEditAction,
+  roundProgress,
 }: ProjectOverviewProps) {
   const track = project
     ? buildProjectProcessTrack({
         processSteps: project.processSteps,
         currentProcessStep: project.currentProcessStep,
         feedbackRoundPositions: project.feedbackRoundPositions,
+        roundProgress,
         roundLabel: (number) =>
           formatMessage(content.projects.feedbackRound.label, { number }),
       })

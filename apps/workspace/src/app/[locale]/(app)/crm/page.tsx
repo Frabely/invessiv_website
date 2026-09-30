@@ -14,6 +14,8 @@ import {
   buildCustomerCockpitHref,
   buildCustomerCreateHref,
   buildCustomerDialogCloseHref,
+  readCockpitFeedbackRoundId,
+  readCockpitProjectId,
   readCustomerCockpitId,
   readCustomerDialogRequest,
 } from "@/common/patterns/crm/customer-dialog-query";
@@ -27,6 +29,7 @@ import { isSupportedLocale, type Locale } from "@/config/i18n";
 import {
   getCrmAccessDictionary,
   getCrmCockpitDictionary,
+  getCrmFeedbackRoundsDictionary,
   getCrmFilesDictionary,
   getCrmFormDictionary,
   getCrmListDictionary,
@@ -58,6 +61,7 @@ import { listCockpitProjectsByCustomer } from "@/server/workspace/crm/query-hand
 import { buildProjectLineItemsViewModel } from "@/lib/workspace/crm/project-line-items-view-model";
 import { buildTasksViewModel } from "@/lib/workspace/crm/tasks-view-model";
 import { buildFilesViewModel } from "@/lib/workspace/crm/files-view-model";
+import { buildFeedbackRoundsViewModel } from "@/lib/workspace/crm/feedback-rounds-view-model";
 import { calculateProjectLineItemValue } from "@invessiv/common/patterns/crm/project-line-item-value";
 import { listProjectLineItemsByCustomer } from "@/server/workspace/crm/query-handler/list-project-line-items-by-customer.query-handler";
 import { listCustomerAccessScopes } from "@/server/workspace/access/query-handler/list-customer-access-scopes.query-handler";
@@ -226,6 +230,19 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
           projects: cockpitProjects,
         })
       : null;
+  // Only the open tab loads its rounds; an unknown or foreign project id falls back to the first.
+  const requestedProjectId = readCockpitProjectId(resolvedSearchParams);
+  const selectedCockpitProject =
+    cockpitProjects?.find((project) => project.id === requestedProjectId) ??
+    cockpitProjects?.[0] ??
+    null;
+  const feedbackViewModel = selectedCockpitProject
+    ? await buildFeedbackRoundsViewModel({
+        actor,
+        project: selectedCockpitProject.project,
+        requestedRoundId: readCockpitFeedbackRoundId(resolvedSearchParams),
+      })
+    : null;
   const customerAccessData =
     cockpitCustomer && canManageAccess
       ? await Promise.all([
@@ -360,8 +377,8 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
           customer={cockpitCustomer}
           files={filesViewModel ?? undefined}
           filesContent={
-            // The chat needs the upload labels even without the files area.
-            filesViewModel || canReadConversation
+            // The chat and the feedback attachments need the file labels even without the files area.
+            filesViewModel || canReadConversation || feedbackViewModel
               ? getCrmFilesDictionary(activeLocale)
               : undefined
           }
@@ -380,6 +397,13 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
               : undefined
           }
           projects={cockpitProjects}
+          selectedProjectId={selectedCockpitProject?.id ?? null}
+          feedback={feedbackViewModel ?? undefined}
+          feedbackContent={
+            feedbackViewModel
+              ? getCrmFeedbackRoundsDictionary(activeLocale)
+              : undefined
+          }
           projectOwnerHasAccess={
             customerAccessData && cockpitProjects
               ? Object.fromEntries(

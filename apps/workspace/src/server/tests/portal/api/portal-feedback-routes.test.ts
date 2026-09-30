@@ -230,7 +230,7 @@ describe("portal feedback routes", () => {
   it("attaches with 201 and passes the ids from the path", async () => {
     mocks.attachPortalFeedbackFile.mockResolvedValue({
       ok: true,
-      value: { fileId: FILE_ID },
+      value: { id: FILE_ID },
     });
     const response = await attach(
       request(HttpMethod.Post, { fileId: FILE_ID }),
@@ -247,7 +247,7 @@ describe("portal feedback routes", () => {
   it("detaches through the verified actor", async () => {
     mocks.detachPortalFeedbackFile.mockResolvedValue({
       ok: true,
-      value: { fileId: FILE_ID },
+      value: { id: FILE_ID },
     });
     const response = await detach(request(HttpMethod.Delete), context);
     expect(response.status).toBe(H.Ok);

@@ -2,6 +2,7 @@ import { FeedbackItemKind } from "@invessiv/common/constants/crm/feedback-item-k
 import { FeedbackItemResult } from "@invessiv/common/constants/crm/feedback-item-results";
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
+import { FileSource } from "@invessiv/common/constants/files/file-source";
 import type {
   FeedbackRoundRow,
   LoadedFeedbackItem,
@@ -63,10 +64,15 @@ export function loadedItem(): LoadedFeedbackItem {
     },
     attachments: [
       {
-        fileId: "88888888-8888-4888-8888-888888888888",
+        id: "88888888-8888-4888-8888-888888888888",
         displayName: "screen.png",
         assetKind: AssetKind.Image,
+        source: FileSource.Upload,
+        extension: "png",
         sizeBytes: 1024,
+        url: null,
+        note: null,
+        createdAt: "2026-09-02T08:00:00.000Z",
       },
     ],
   };

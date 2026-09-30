@@ -28,6 +28,7 @@ function toItemDto(
 function toRoundDto(
   row: FeedbackRoundRow,
   items: readonly LoadedFeedbackItem[],
+  contactNames: ReadonlyMap<string, string>,
 ): PortalFeedbackRoundDto {
   const resultsVisible = (
     RESULT_VISIBLE_FEEDBACK_ROUND_STATUS_VALUES as readonly string[]
@@ -41,6 +42,9 @@ function toRoundDto(
     dueOn: row.due_on,
     areaOptions: row.area_options,
     draftUpdatedAt: row.draft_updated_at?.toISOString() ?? null,
+    draftUpdatedByName: row.draft_updated_by_portal_membership_id
+      ? (contactNames.get(row.draft_updated_by_portal_membership_id) ?? null)
+      : null,
     submittedAt: row.submitted_at?.toISOString() ?? null,
     customerNotice: row.customer_notice,
     completedAt: row.completed_at?.toISOString() ?? null,

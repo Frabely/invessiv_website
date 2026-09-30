@@ -14,7 +14,7 @@ import { FileDropZoneVariant } from "@invessiv/common/constants/ui/file-drop-zon
 import type { PortalFileDto } from "@invessiv/common/contracts/portal/portal-file.dto";
 import type { PortalFileListPageDto } from "@invessiv/common/contracts/portal/portal-file-list-page.dto";
 import type { PortalFileProjectOptionDto } from "@invessiv/common/contracts/portal/portal-file-project-option.dto";
-import { filePresentation } from "@invessiv/common/patterns/files/file-presentation";
+import { filePreviewSelection } from "@/common/patterns/files/file-preview-selection";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import {
   ButtonControl,
@@ -23,7 +23,6 @@ import {
   FileLightbox,
   TabList,
 } from "@invessiv/ui";
-import { portalFilesApiService } from "@/client/portal/portal-files-api-service";
 import { MAX_ARCHIVE_FILES } from "@/common/constants/files/file-archive-limits";
 import { PortalFilesQueryParam } from "@/common/constants/portal/portal-files-query-params";
 import { fileArchiveSelection } from "@/common/patterns/files/file-archive-selection";
@@ -31,7 +30,7 @@ import { readPortalFilesTab } from "@/common/patterns/portal/portal-files-tab";
 import type { Locale } from "@/config/i18n";
 import { PortalOwnerNotice } from "@/components/portal/portal-owner-notice/portal-owner-notice";
 import { useFileSelection } from "@/hooks/shared/use-file-selection";
-import { useFileDownloads } from "@/hooks/shared/use-file-downloads";
+import { usePortalFileDownloads } from "@/hooks/portal/use-portal-file-downloads";
 import { usePortalFiles } from "@/hooks/portal/use-portal-files";
 import type { PortalFilesDictionary } from "@/i18n/dictionaries/portal";
 import { PortalFileLinkDialog } from "../portal-file-link-dialog/portal-file-link-dialog";
@@ -111,30 +110,21 @@ export function PortalFilesView({
   const [announcement, setAnnouncement] = useState("");
   const returnFocusRef = useRef<HTMLElement | null>(null);
   const { archiveBusy, actionError, download, loadPreview, downloadArchive } =
-    useFileDownloads<PortalFileDto>({
-      archiveFilename: content.archive.filename,
-      errors: content.errors,
+    usePortalFileDownloads<PortalFileDto>(customerId, content.errors, {
+      filename: content.archive.filename,
       selectedIds: selection.selectedIds,
       clearSelection: selection.clear,
-      getDownloadUrl: (fileId, disposition) =>
-        portalFilesApiService.getDownloadUrl(customerId, fileId, disposition),
-      readText: (fileId) => portalFilesApiService.readText(customerId, fileId),
-      getArchive: (ids) =>
-        portalFilesApiService.downloadArchive(customerId, ids),
     });
 
   const previewable = useMemo(
-    () =>
-      list.files.filter(
-        (file) => filePresentation.previewKindOf(file) !== null,
-      ),
+    () => filePreviewSelection.list(list.files),
     [list.files],
   );
   // Resolved on every render, so a file that left the list closes the preview.
-  const previewIndex =
-    overlay?.kind === "preview"
-      ? previewable.findIndex((file) => file.id === overlay.fileId)
-      : -1;
+  const previewIndex = filePreviewSelection.indexOf(
+    previewable,
+    overlay?.kind === "preview" ? overlay.fileId : null,
+  );
   const panelId = `${baseId}-panel`;
 
   // No server round trip: the list hook loads the tab itself, a re-render would be discarded.

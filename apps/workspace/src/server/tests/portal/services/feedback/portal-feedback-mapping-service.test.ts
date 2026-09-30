@@ -20,6 +20,7 @@ describe("portalFeedbackMappingService.toRoundDto", () => {
         area_options: ["Startseite"],
       }),
       [],
+      new Map(),
     );
     expect(dto).toEqual({
       id: ROUND_ID,
@@ -30,6 +31,7 @@ describe("portalFeedbackMappingService.toRoundDto", () => {
       dueOn: "2026-09-10",
       areaOptions: ["Startseite"],
       draftUpdatedAt: null,
+      draftUpdatedByName: null,
       submittedAt: null,
       customerNotice: null,
       completedAt: null,
@@ -41,6 +43,19 @@ describe("portalFeedbackMappingService.toRoundDto", () => {
     expect(dto).not.toHaveProperty("readAt");
   });
 
+  it("names the contact who saved the draft last", () => {
+    const membershipId = "99999999-9999-4999-8999-999999999999";
+    const dto = portalFeedbackMappingService.toRoundDto(
+      roundRow({
+        draft_updated_at: new Date("2026-09-03T09:00:00.000Z"),
+        draft_updated_by_portal_membership_id: membershipId,
+      }),
+      [],
+      new Map([[membershipId, "Anna Berger"]]),
+    );
+    expect(dto.draftUpdatedByName).toBe("Anna Berger");
+  });
+
   it("hides results before the round is completed", () => {
     const [item] = portalFeedbackMappingService.toRoundDto(
       roundRow({
@@ -49,6 +64,7 @@ describe("portalFeedbackMappingService.toRoundDto", () => {
         started_at: new Date(),
       }),
       [loadedItem()],
+      new Map(),
     ).items;
     expect(item).toEqual({
       id: ITEM_ID,
@@ -68,6 +84,7 @@ describe("portalFeedbackMappingService.toRoundDto", () => {
       const [item] = portalFeedbackMappingService.toRoundDto(
         roundRow({ status }),
         [loadedItem()],
+        new Map(),
       ).items;
       expect(item.result).toBe("not_implemented");
       expect(item.resultNote).toBe("Kommt in Phase 2");

@@ -20,9 +20,11 @@ import type {
   CrmPortalAccessDictionary,
   CrmProjectLineItemsDictionary,
   CrmTasksDictionary,
+  CrmFeedbackRoundsDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
 import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import type { ProjectLineItemsViewModel } from "@/common/contracts/crm/project-line-items-view-model";
+import type { FeedbackRoundsViewModel } from "@/common/contracts/crm/feedback-rounds-view-model";
 import type { TasksViewModel } from "@/common/contracts/crm/tasks-view-model";
 import type { FilesViewModel } from "@/common/contracts/crm/files/files-view-model";
 import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
@@ -58,6 +60,11 @@ type CustomerCockpitDialogProps = {
   rolesHref?: string;
   tasks?: TasksViewModel;
   tasksContent?: CrmTasksDictionary;
+  /** Project tab from the URL. */
+  selectedProjectId?: string | null;
+  /** Rounds of the open project tab; absent without `projects.read` there. */
+  feedback?: FeedbackRoundsViewModel;
+  feedbackContent?: CrmFeedbackRoundsDictionary;
   portalAccess?: PortalAccessDto;
   portalAccessContent?: CrmPortalAccessDictionary;
 };
@@ -92,6 +99,9 @@ export function CustomerCockpitDialog({
   rolesHref,
   tasks,
   tasksContent,
+  selectedProjectId,
+  feedback,
+  feedbackContent,
   portalAccess,
   portalAccessContent,
 }: CustomerCockpitDialogProps) {
@@ -139,6 +149,9 @@ export function CustomerCockpitDialog({
         showHeading={false}
         tasks={tasks}
         tasksContent={tasksContent}
+        selectedProjectId={selectedProjectId}
+        feedback={feedback}
+        feedbackContent={feedbackContent}
         portalAccess={portalAccess}
         portalAccessContent={portalAccessContent}
       />

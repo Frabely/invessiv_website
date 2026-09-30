@@ -1,4 +1,5 @@
 import type { ProjectStatus } from "../../constants/crm/project-statuses";
+import type { ProjectFeedbackRoundProgress } from "../crm/project-feedback-round-progress";
 import type { PortalProjectLeadDto } from "./portal-project-lead.dto";
 import type { PortalProjectNextStepDto } from "./portal-project-next-step.dto";
 
@@ -15,6 +16,8 @@ export interface PortalProjectDto {
   currentProcessStep: string;
   /** One entry per feedback round, ascending: the round sits before `processSteps[position]`. */
   feedbackRoundPositions: number[];
+  /** Running, completed and approved round; the track follows them instead of the current step. */
+  roundProgress: ProjectFeedbackRoundProgress;
   /** Next announced action; null when neither label nor date is set. */
   nextStep: PortalProjectNextStepDto | null;
   /** Optional preview or live link configured for this project. */

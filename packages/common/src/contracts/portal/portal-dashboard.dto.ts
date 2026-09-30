@@ -2,6 +2,7 @@ import type { PortalCompletedProjectDto } from "./portal-completed-project.dto";
 import type { PortalContactDto } from "./portal-contact.dto";
 import type { PortalDashboardCapabilitiesDto } from "./portal-dashboard-capabilities.dto";
 import type { PortalDashboardCustomerDto } from "./portal-dashboard-customer.dto";
+import type { PortalFeedbackSummaryDto } from "./portal-feedback-summary.dto";
 import type { PortalCustomerTaskDto } from "./portal-customer-task.dto";
 import type { PortalProjectDto } from "./portal-project.dto";
 import type { PortalTaskDto } from "./portal-task.dto";
@@ -19,6 +20,8 @@ export interface PortalDashboardDto {
   customerTasks: PortalCustomerTaskDto[];
   /** Visible internal-side tasks; they cannot be completed from the portal. */
   ourTasks: PortalTaskDto[];
+  /** Current projects with round steps; null without `portal.feedback.read`, the widget then does not exist. */
+  feedback: PortalFeedbackSummaryDto[] | null;
   /** Rendering rights derived from the verified reader, not from request parameters. */
   capabilities: PortalDashboardCapabilitiesDto;
 }

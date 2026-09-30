@@ -1,0 +1,38 @@
+.content {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.6rem;
+  font-size: var(--font-size-ui-sm);
+}
+
+.content[data-compact="true"] .head {
+  gap: 0.3rem 0.75rem;
+  font-size: var(--font-size-ui-xs);
+}
+
+.area {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.content[data-compact="true"] .area {
+  font-weight: 700;
+}
+
+.kind {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--color-text-muted);
+}
+
+.content[data-compact="false"] .kind[data-kind="bug"] {
+  color: var(--color-danger);
+}

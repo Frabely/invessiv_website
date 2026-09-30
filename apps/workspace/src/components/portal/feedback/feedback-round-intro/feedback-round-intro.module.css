@@ -1,0 +1,79 @@
+.intro {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.85rem;
+}
+
+.round {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-heading-sm);
+  line-height: 1.25;
+}
+
+.due {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+}
+
+.preview {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 1.1rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 160ms ease;
+}
+
+.preview:hover {
+  border-color: var(--color-cta);
+}
+
+.preview:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+/* The team's note reads like a quote the customer answers to. */
+.note {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.25rem 0 0.25rem 1rem;
+  border-left: 3px solid var(--color-cta);
+}
+
+.note h3 {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 600;
+}
+
+.note p {
+  max-width: 65ch;
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.55;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preview {
+    transition: none;
+  }
+}

@@ -1,0 +1,41 @@
+.summary {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.summary p {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+.summary .total {
+  font-weight: 700;
+}
+
+.areas {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.areas li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+}
+
+.summary .final {
+  color: var(--color-text-muted);
+}
+
+.summary .error {
+  color: var(--color-danger);
+}

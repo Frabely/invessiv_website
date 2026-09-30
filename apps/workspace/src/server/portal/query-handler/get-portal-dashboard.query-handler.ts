@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, desc, eq, ne } from "drizzle-orm";
+import { and, desc, eq, inArray, ne } from "drizzle-orm";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
@@ -8,6 +8,7 @@ import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/porta
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
   customers,
+  feedbackRounds,
   projects,
   tasks,
   users,
@@ -19,8 +20,12 @@ import { portalCanOn } from "@/server/portal/shared/portal-can-on";
 import { portalAccessCondition } from "@/server/portal/shared/portal-access-condition";
 import { portalProjectCondition } from "@/server/portal/shared/portal-project-condition";
 import { portalDashboardMappingService } from "@/server/portal/services/portal-dashboard-mapping-service";
+import { portalFeedbackService } from "@/server/portal/services/feedback/portal-feedback-service";
 
-/** Reads only explicitly released dashboard columns in at most three queries. */
+/**
+ * Reads only explicitly released dashboard columns in at most four queries. Round states feed the
+ * track of every visible project; due dates and the widget need `portal.feedback.read` as well.
+ */
 export async function getPortalDashboard(
   reader: PortalReader,
   today: string,
@@ -63,6 +68,7 @@ export async function getPortalDashboard(
           processSteps: projects.process_steps,
           currentProcessStep: projects.current_process_step,
           feedbackRoundPositions: projects.feedback_round_positions,
+          includedFeedbackRounds: projects.included_feedback_rounds,
           nextStepLabel: projects.next_step_label,
           nextStepDueOn: projects.next_step_due_on,
           previewUrl: projects.preview_url,
@@ -78,6 +84,24 @@ export async function getPortalDashboard(
         .where(portalProjectCondition(reader, Permission.PortalProjectsRead))
         .orderBy(desc(projects.created_at))
     : [];
+
+  const roundRows = projectRows.length
+    ? await db
+        .select({
+          projectId: feedbackRounds.project_id,
+          roundNumber: feedbackRounds.round_number,
+          status: feedbackRounds.status,
+          dueOn: feedbackRounds.due_on,
+        })
+        .from(feedbackRounds)
+        .where(
+          inArray(
+            feedbackRounds.project_id,
+            projectRows.map((row) => row.id),
+          ),
+        )
+    : [];
+  const canReadFeedback = portalFeedbackService.canRead(reader);
 
   const taskRows = portalCanOn.forReader(
     reader,
@@ -112,6 +136,12 @@ export async function getPortalDashboard(
     customer,
     projects: projectRows,
     tasks: taskRows,
+    feedbackRounds: canReadFeedback ? roundRows : null,
+    roundStates: roundRows.map(({ projectId, roundNumber, status }) => ({
+      projectId,
+      roundNumber,
+      status,
+    })),
     today,
     canCompleteTasks:
       !isPortalOwnerView(reader) &&

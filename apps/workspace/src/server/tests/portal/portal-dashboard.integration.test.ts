@@ -307,6 +307,7 @@ describe.skipIf(!RUN_INTEGRATION)(
         "completedProjects",
         "customerTasks",
         "ourTasks",
+        "feedback",
         "capabilities",
       ]);
       expect(Object.keys(dto.projects[0]!)).toEqual([
@@ -316,6 +317,7 @@ describe.skipIf(!RUN_INTEGRATION)(
         "processSteps",
         "currentProcessStep",
         "feedbackRoundPositions",
+        "roundProgress",
         "nextStep",
         "previewUrl",
         "projectLead",

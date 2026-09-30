@@ -1,0 +1,22 @@
+.attachments {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.queue {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.drop {
+  justify-self: start;
+}
+
+.error {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: var(--font-size-ui-xs);
+}

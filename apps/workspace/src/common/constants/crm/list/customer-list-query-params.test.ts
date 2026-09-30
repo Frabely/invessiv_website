@@ -15,6 +15,8 @@ describe("CustomerListQueryParam", () => {
       "edit",
       "cockpit",
       "search",
+      "project",
+      "feedbackRound",
     ]);
     expect(CUSTOMER_LIST_QUERY_PARAM_VALUES).toEqual(
       Object.values(CustomerListQueryParam),

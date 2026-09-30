@@ -1,0 +1,162 @@
+{
+  "meta": {
+    "title": "Feedback | Invessiv",
+    "description": "Give us feedback on the current state of your project – point by point, with screenshots."
+  },
+  "page": {
+    "heading": "Feedback on {project}",
+    "back": "Back to overview",
+    "ownerHint": "You can't give feedback in the portal view.",
+    "ownerLink": "View in the CRM",
+    "readOnlyHint": "You can read the feedback but not edit it. Ask the person who looks after the project on your side."
+  },
+  "intro": {
+    "roundOf": "Feedback round {number} of {included}",
+    "due": "please by {date}",
+    "preview": "Open preview",
+    "previewNewTab": "opens in a new tab",
+    "handoverNote": "What's new",
+    "draftVisible": "Our team can already see your draft. We only get started once you submit."
+  },
+  "status": {
+    "open": "Your turn",
+    "submitted": "Submitted",
+    "in_discussion": "We're discussing it",
+    "in_progress": "We're on it",
+    "completed": "Done",
+    "approved": "Approved"
+  },
+  "states": {
+    "none": {
+      "title": "Nothing to review yet",
+      "description": "As soon as we show you a version, you can give feedback here – point by point and with screenshots."
+    },
+    "between": {
+      "title": "We're working on the next version",
+      "description": "Your last round is done. As soon as the next version is ready, you'll continue here."
+    },
+    "submitted": {
+      "title": "Submitted – we're reviewing your feedback",
+      "description": "Thank you. We'll get back to you once we've gone through everything. This round can no longer be changed."
+    },
+    "working": {
+      "title": "We're on it",
+      "description": "We're working your feedback in right now. You'll see here when the round is done."
+    },
+    "approved": {
+      "title": "Approved on {date}",
+      "description": "The project is complete from your side. We're now preparing the launch."
+    },
+    "exhausted": {
+      "title": "All feedback rounds are used",
+      "description": "Still have requests? Write to us in the chat and we'll find a way together.",
+      "chatLink": "Go to chat"
+    }
+  },
+  "editor": {
+    "listLabel": "Your feedback points",
+    "itemLabel": "Point {number}",
+    "area": "Area",
+    "general": "General",
+    "kind": "Type",
+    "kindNone": "Leave open",
+    "body": "What do you notice?",
+    "bodyPlaceholder": "e.g. “The hero image feels too dark, the team photo would be better”",
+    "counter": "{count} of {max} characters",
+    "bodyRequired": "Add a short note on what we should change.",
+    "remove": "Remove point {number}",
+    "add": "Add point",
+    "limit": "More than {max} points don't fit into one round. Feel free to combine similar points.",
+    "empty": "No points yet. Add your first one – one point per request makes it easiest for us."
+  },
+  "kinds": {
+    "change_request": "Change request",
+    "bug": "Bug"
+  },
+  "attachments": {
+    "label": "Attachments of point {number}",
+    "dropLabel": "Attach file",
+    "dropHint": "Screenshot, PDF or image",
+    "detach": "Detach {name} from the point",
+    "detachTitle": "Detach from the point – the file stays in Files",
+    "queueLabel": "Uploads for point {number}"
+  },
+  "draft": {
+    "saving": "Saving …",
+    "saved": "Saved · {time}",
+    "unsaved": "Not saved yet",
+    "failed": "Saving didn't work.",
+    "retry": "Try again",
+    "editedBy": "last edited by {name}",
+    "justNow": "just now",
+    "minutesAgo": "{count} min ago",
+    "at": "on {date}",
+    "leaveWarning": "Your latest changes aren't saved yet. Do you really want to leave this page?",
+    "conflict": {
+      "title": "Someone else just saved",
+      "description": "You're now seeing the latest version. Your own unsaved points aren't lost.",
+      "restore": "Restore my version",
+      "copy": "Copy my text",
+      "copied": "Copied",
+      "dismiss": "Keep latest version"
+    }
+  },
+  "actions": {
+    "saveNow": "Save draft",
+    "submit": "Submit feedback",
+    "approveHint": "No changes needed?",
+    "approve": "Approve project without changes"
+  },
+  "submitDialog": {
+    "title": "Submit feedback?",
+    "description": "We receive all points at once and get started.",
+    "items": "{count} points",
+    "itemsOne": "1 point",
+    "files": "{count} files attached",
+    "filesOne": "1 file attached",
+    "final": "After that, you can't change anything.",
+    "confirm": "Submit now",
+    "cancel": "Not yet",
+    "close": "Close"
+  },
+  "approveDialog": {
+    "title": "Approve project?",
+    "description": "With your approval, the project is complete from your side. The remaining feedback rounds expire and we prepare the launch. This can't be undone.",
+    "descriptionLast": "With your approval, the project is complete from your side and we prepare the launch. This can't be undone.",
+    "checkbox": "I have checked everything and approve the project.",
+    "confirm": "Approve project",
+    "cancel": "Cancel",
+    "close": "Close"
+  },
+  "history": {
+    "title": "Earlier rounds",
+    "roundTitle": "Feedback round {number}",
+    "submittedOn": "submitted on {date}",
+    "approvedOn": "approved on {date}",
+    "items": "{count} points",
+    "itemsOne": "1 point",
+    "itemsNone": "no points",
+    "showMore": "Show more",
+    "showLess": "Show less"
+  },
+  "announcements": {
+    "submitted": "Your feedback is submitted.",
+    "approved": "The project is approved.",
+    "restored": "Your version is restored and being saved.",
+    "attached": "{name} attached to point {number}",
+    "detached": "{name} detached from the point"
+  },
+  "errors": {
+    "not_found": "This feedback round no longer exists. Reload the page.",
+    "locked": "This round was just submitted and can no longer be changed.",
+    "validation": "Something is off with your input. Reload the page and try again.",
+    "items_required": "Add at least one point before you submit.",
+    "item_text_required": "Some points are still missing a text.",
+    "items_present": "You've already added points. Submit them instead of approving.",
+    "not_latest": "You can only approve in the current round.",
+    "confirmation_required": "Please tick the box to approve.",
+    "attachment_limit": "No more files fit on this point.",
+    "not_attachable": "This file can't be attached here.",
+    "unavailable": "That didn't work just now. Try again in a moment."
+  }
+}

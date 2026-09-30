@@ -1,0 +1,162 @@
+{
+  "meta": {
+    "title": "Feedback | Invessiv",
+    "description": "Gib uns Feedback zum aktuellen Stand deines Projekts – Punkt für Punkt, mit Screenshots."
+  },
+  "page": {
+    "heading": "Feedback zu {project}",
+    "back": "Zurück zum Überblick",
+    "ownerHint": "In der Portalansicht kannst du kein Feedback abgeben.",
+    "ownerLink": "Im CRM ansehen",
+    "readOnlyHint": "Du kannst das Feedback lesen, aber nicht bearbeiten. Frag die Person, die bei euch das Projekt betreut."
+  },
+  "intro": {
+    "roundOf": "Feedbackrunde {number} von {included}",
+    "due": "bitte bis {date}",
+    "preview": "Vorschau öffnen",
+    "previewNewTab": "öffnet in einem neuen Tab",
+    "handoverNote": "Was ist neu",
+    "draftVisible": "Dein Entwurf ist für unser Team schon sichtbar. Wir legen aber erst los, wenn du einreichst."
+  },
+  "status": {
+    "open": "Du bist dran",
+    "submitted": "Eingereicht",
+    "in_discussion": "Wir besprechen es",
+    "in_progress": "Wir setzen um",
+    "completed": "Abgeschlossen",
+    "approved": "Freigegeben"
+  },
+  "states": {
+    "none": {
+      "title": "Noch kein Stand zum Anschauen",
+      "description": "Sobald wir dir einen Stand zeigen, kannst du hier Feedback geben – Punkt für Punkt und mit Screenshots."
+    },
+    "between": {
+      "title": "Wir arbeiten an der nächsten Version",
+      "description": "Deine letzte Runde ist erledigt. Sobald der nächste Stand fertig ist, geht es hier weiter."
+    },
+    "submitted": {
+      "title": "Eingereicht – wir sichten dein Feedback",
+      "description": "Danke dir. Wir melden uns, sobald wir alles durchgesehen haben. Ändern kannst du diese Runde jetzt nicht mehr."
+    },
+    "working": {
+      "title": "Wir sind dran",
+      "description": "Wir arbeiten dein Feedback gerade ein. Hier siehst du, sobald die Runde abgeschlossen ist."
+    },
+    "approved": {
+      "title": "Freigegeben am {date}",
+      "description": "Das Projekt ist von deiner Seite abgeschlossen. Wir bereiten jetzt den Launch vor."
+    },
+    "exhausted": {
+      "title": "Alle Feedbackrunden sind genutzt",
+      "description": "Du hast noch Wünsche? Schreib uns im Chat, dann finden wir gemeinsam einen Weg.",
+      "chatLink": "Zum Chat"
+    }
+  },
+  "editor": {
+    "listLabel": "Deine Feedbackpunkte",
+    "itemLabel": "Punkt {number}",
+    "area": "Bereich",
+    "general": "Allgemein",
+    "kind": "Art",
+    "kindNone": "Offen lassen",
+    "body": "Was fällt dir auf?",
+    "bodyPlaceholder": "z. B. „Das Hero-Bild wirkt zu dunkel, lieber das Teamfoto“",
+    "counter": "{count} von {max} Zeichen",
+    "bodyRequired": "Schreib kurz dazu, was wir ändern sollen.",
+    "remove": "Punkt {number} entfernen",
+    "add": "Punkt hinzufügen",
+    "limit": "Mehr als {max} Punkte passen nicht in eine Runde. Fass ähnliche Punkte gern zusammen.",
+    "empty": "Noch keine Punkte. Füg deinen ersten hinzu – ein Punkt pro Wunsch macht es für uns am leichtesten."
+  },
+  "kinds": {
+    "change_request": "Änderungswunsch",
+    "bug": "Fehler"
+  },
+  "attachments": {
+    "label": "Anhänge von Punkt {number}",
+    "dropLabel": "Datei anhängen",
+    "dropHint": "Screenshot, PDF oder Bild",
+    "detach": "{name} vom Punkt lösen",
+    "detachTitle": "Vom Punkt lösen – die Datei bleibt unter Dateien",
+    "queueLabel": "Uploads für Punkt {number}"
+  },
+  "draft": {
+    "saving": "Wird gespeichert …",
+    "saved": "Gespeichert · {time}",
+    "unsaved": "Noch nicht gespeichert",
+    "failed": "Speichern hat nicht geklappt.",
+    "retry": "Erneut versuchen",
+    "editedBy": "zuletzt bearbeitet von {name}",
+    "justNow": "gerade eben",
+    "minutesAgo": "vor {count} Min.",
+    "at": "am {date}",
+    "leaveWarning": "Deine letzten Änderungen sind noch nicht gespeichert. Möchtest du die Seite wirklich verlassen?",
+    "conflict": {
+      "title": "Jemand anderes hat gerade gespeichert",
+      "description": "Du siehst jetzt den neuesten Stand. Deine eigenen, nicht gespeicherten Punkte sind nicht verloren.",
+      "restore": "Meine Fassung wiederherstellen",
+      "copy": "Meinen Text kopieren",
+      "copied": "Kopiert",
+      "dismiss": "Neuesten Stand behalten"
+    }
+  },
+  "actions": {
+    "saveNow": "Zwischenspeichern",
+    "submit": "Feedback einreichen",
+    "approveHint": "Keine Änderungen nötig?",
+    "approve": "Projekt ohne Änderungen freigeben"
+  },
+  "submitDialog": {
+    "title": "Feedback einreichen?",
+    "description": "Wir bekommen alle Punkte auf einmal und legen damit los.",
+    "items": "{count} Punkte",
+    "itemsOne": "1 Punkt",
+    "files": "{count} Dateien angehängt",
+    "filesOne": "1 Datei angehängt",
+    "final": "Danach kannst du nichts mehr ändern.",
+    "confirm": "Jetzt einreichen",
+    "cancel": "Noch nicht",
+    "close": "Schließen"
+  },
+  "approveDialog": {
+    "title": "Projekt freigeben?",
+    "description": "Mit der Freigabe ist das Projekt von deiner Seite abgeschlossen. Die übrigen Feedbackrunden verfallen, und wir bereiten den Launch vor. Das lässt sich nicht rückgängig machen.",
+    "descriptionLast": "Mit der Freigabe ist das Projekt von deiner Seite abgeschlossen, und wir bereiten den Launch vor. Das lässt sich nicht rückgängig machen.",
+    "checkbox": "Ich habe alles geprüft und gebe das Projekt frei.",
+    "confirm": "Projekt freigeben",
+    "cancel": "Abbrechen",
+    "close": "Schließen"
+  },
+  "history": {
+    "title": "Frühere Runden",
+    "roundTitle": "Feedbackrunde {number}",
+    "submittedOn": "eingereicht am {date}",
+    "approvedOn": "freigegeben am {date}",
+    "items": "{count} Punkte",
+    "itemsOne": "1 Punkt",
+    "itemsNone": "ohne Punkte",
+    "showMore": "Mehr anzeigen",
+    "showLess": "Weniger anzeigen"
+  },
+  "announcements": {
+    "submitted": "Dein Feedback ist eingereicht.",
+    "approved": "Das Projekt ist freigegeben.",
+    "restored": "Deine Fassung ist wiederhergestellt und wird gespeichert.",
+    "attached": "{name} an Punkt {number} angehängt",
+    "detached": "{name} vom Punkt gelöst"
+  },
+  "errors": {
+    "not_found": "Diese Feedbackrunde gibt es nicht mehr. Lade die Seite neu.",
+    "locked": "Diese Runde wurde gerade eingereicht und lässt sich nicht mehr ändern.",
+    "validation": "Etwas stimmt mit deinen Angaben nicht. Lade die Seite neu und versuch es erneut.",
+    "items_required": "Füg mindestens einen Punkt hinzu, bevor du einreichst.",
+    "item_text_required": "Bei einigen Punkten fehlt noch der Text.",
+    "items_present": "Du hast schon Punkte angelegt. Reich sie ein, statt freizugeben.",
+    "not_latest": "Freigeben geht nur in der aktuellen Runde.",
+    "confirmation_required": "Bitte setz den Haken, um freizugeben.",
+    "attachment_limit": "An diesen Punkt passen keine weiteren Dateien.",
+    "not_attachable": "Diese Datei lässt sich hier nicht anhängen.",
+    "unavailable": "Das hat gerade nicht geklappt. Versuch es gleich noch einmal."
+  }
+}

@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
+import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import { TaskActionSide } from "@invessiv/common/constants/crm/task-action-sides";
 import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
@@ -23,6 +24,7 @@ function project(status: ProjectStatus, ownerMemberId = "member-1") {
     processSteps: ["Start", "Finish"],
     currentProcessStep: "Start",
     feedbackRoundPositions: [1, 1] as number[] | null,
+    includedFeedbackRounds: 2,
     nextStepLabel: null,
     nextStepDueOn: null,
     previewUrl: null,
@@ -62,6 +64,8 @@ describe("portalDashboardMappingService.mapRowsToDto", () => {
         task(0, TaskStatus.Open, TaskActionSide.Customer),
         task(1, TaskStatus.InProgress, TaskActionSide.Internal),
       ],
+      feedbackRounds: [],
+      roundStates: [],
       today: "2026-09-26",
       canCompleteTasks: true,
       isOwnerView: false,
@@ -101,6 +105,8 @@ describe("portalDashboardMappingService.mapRowsToDto", () => {
       customer,
       projects: [],
       tasks,
+      feedbackRounds: null,
+      roundStates: [],
       today: "2026-09-26",
       canCompleteTasks: false,
       isOwnerView: true,
@@ -118,6 +124,8 @@ describe("portalDashboardMappingService feedback rounds", () => {
       customer,
       projects: [{ ...project(ProjectStatus.Active), feedbackRoundPositions }],
       tasks: [],
+      feedbackRounds: null,
+      roundStates: [],
       today: "2026-09-26",
       canCompleteTasks: false,
       isOwnerView: false,
@@ -132,5 +140,81 @@ describe("portalDashboardMappingService feedback rounds", () => {
 
   it("maps a project from before the rounds column to no rounds", () => {
     expect(map(null).projects[0]?.feedbackRoundPositions).toEqual([]);
+  });
+});
+
+describe("portalDashboardMappingService feedback summary", () => {
+  const rounds = [
+    {
+      projectId: "active-project",
+      roundNumber: 1,
+      status: FeedbackRoundStatus.Completed,
+      dueOn: "2026-09-10",
+    },
+    {
+      projectId: "active-project",
+      roundNumber: 2,
+      status: FeedbackRoundStatus.Open,
+      dueOn: "2026-10-14",
+    },
+  ];
+
+  function map(feedbackRounds: typeof rounds | null) {
+    return portalDashboardMappingService.mapRowsToDto({
+      customer,
+      projects: [
+        project(ProjectStatus.Active),
+        { ...project(ProjectStatus.Planned), includedFeedbackRounds: 0 },
+        { ...project(ProjectStatus.Paused), feedbackRoundPositions: [1] },
+        project(ProjectStatus.Completed),
+      ],
+      tasks: [],
+      feedbackRounds,
+      roundStates: rounds,
+      today: "2026-09-26",
+      canCompleteTasks: false,
+      isOwnerView: false,
+    });
+  }
+
+  it("summarizes the latest round of every current project with round steps", () => {
+    expect(map(rounds).feedback).toEqual([
+      {
+        projectId: "active-project",
+        projectTitle: "active",
+        roundNumber: 2,
+        status: FeedbackRoundStatus.Open,
+        dueOn: "2026-10-14",
+        included: 2,
+        used: 2,
+      },
+      {
+        projectId: "paused-project",
+        projectTitle: "paused",
+        roundNumber: null,
+        status: null,
+        dueOn: null,
+        included: 2,
+        used: 0,
+      },
+    ]);
+  });
+
+  it("has no feedback entries without the read permission", () => {
+    expect(map(null).feedback).toBeNull();
+  });
+
+  it("derives the track progress from the round states alone", () => {
+    const dto = map(null);
+    expect(dto.projects[0]?.roundProgress).toEqual({
+      activeRoundNumber: 2,
+      completedRoundNumber: 1,
+      approvedRoundNumber: null,
+    });
+    expect(dto.projects[1]?.roundProgress).toEqual({
+      activeRoundNumber: null,
+      completedRoundNumber: null,
+      approvedRoundNumber: null,
+    });
   });
 });
