@@ -8,6 +8,7 @@ import {
   faChartColumn,
   faComments,
   faGear,
+  faInbox,
   faLayerGroup,
   faListCheck,
   faUsers,
@@ -19,8 +20,10 @@ import { WorkspaceSidebarItemKey } from "@/common/constants/navigation/workspace
 import { WORKSPACE_SIDEBAR_ITEMS } from "@/common/constants/navigation/workspace-sidebar-items";
 import type { Locale } from "@/config/i18n";
 import type { WorkspacePageContent } from "@/i18n/dictionaries/workspace";
+import { formatCountMessage } from "@invessiv/common/patterns/i18n/format-count-message";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import {
+  crmFeedbackPathFor,
   crmLineItemTemplatesPathFor,
   crmMessagesPathFor,
   crmTasksPathFor,
@@ -31,6 +34,7 @@ import styles from "./workspace-sidebar.module.css";
 type WorkspaceSidebarProps = {
   canOpenCrmCustomers: boolean;
   canOpenCrmTasks: boolean;
+  canOpenCrmFeedback: boolean;
   canOpenCrmMessages: boolean;
   canReadCrmLineItemTemplates: boolean;
   content: WorkspacePageContent;
@@ -39,7 +43,51 @@ type WorkspaceSidebarProps = {
   onCloseAction: () => void;
   permittedAreas: readonly WorkspaceArea[];
   unreadConversationCount: number;
+  unreadFeedbackRoundCount: number;
 };
+
+type CrmChildLinkProps = {
+  href: string;
+  icon: IconDefinition;
+  label: string;
+  onClickAction: () => void;
+  pathname: string;
+  /** Shown only above zero; the badge is visual, the sentence is what screen readers hear. */
+  count?: { value: number; description: string };
+};
+
+function CrmChildLink({
+  count,
+  href,
+  icon,
+  label,
+  onClickAction,
+  pathname,
+}: CrmChildLinkProps) {
+  const isActive = pathname === href;
+  return (
+    <li>
+      <Link
+        aria-current={isActive ? "page" : undefined}
+        className={styles.crmChildLink}
+        data-active={isActive ? "true" : "false"}
+        href={href}
+        onClick={onClickAction}
+      >
+        <FontAwesomeIcon icon={icon} />
+        <span>{label}</span>
+        {count && count.value > 0 ? (
+          <>
+            <span aria-hidden="true" className={styles.countBadge}>
+              {count.value}
+            </span>
+            <span className="sr-only">{count.description}</span>
+          </>
+        ) : null}
+      </Link>
+    </li>
+  );
+}
 
 const SIDEBAR_ICONS = {
   [WorkspaceSidebarItemKey.Overview]: faChartColumn,
@@ -51,6 +99,7 @@ const SIDEBAR_ICONS = {
 export function WorkspaceSidebar({
   canOpenCrmCustomers,
   canOpenCrmTasks,
+  canOpenCrmFeedback,
   canOpenCrmMessages,
   canReadCrmLineItemTemplates,
   content,
@@ -59,6 +108,7 @@ export function WorkspaceSidebar({
   onCloseAction,
   permittedAreas,
   unreadConversationCount,
+  unreadFeedbackRoundCount,
 }: WorkspaceSidebarProps) {
   const sidebarContent = content.shell.sidebar;
   const headerContent = content.shell.header;
@@ -102,10 +152,6 @@ export function WorkspaceSidebar({
               const isActive =
                 pathname === href || pathname.startsWith(`${href}/`);
               const isCrm = item.id === WorkspaceSidebarItemKey.Crm;
-              const crmTasksHref = crmTasksPathFor(locale);
-              const crmMessagesHref = crmMessagesPathFor(locale);
-              const crmLineItemTemplatesHref =
-                crmLineItemTemplatesPathFor(locale);
 
               const icon = (
                 <span aria-hidden="true" className={styles.linkIcon}>
@@ -149,96 +195,63 @@ export function WorkspaceSidebar({
                       className={styles.crmChildren}
                     >
                       {canOpenCrmCustomers ? (
-                        <li>
-                          <Link
-                            aria-current={
-                              pathname === href ? "page" : undefined
-                            }
-                            className={styles.crmChildLink}
-                            data-active={pathname === href ? "true" : "false"}
-                            href={href}
-                            onClick={onCloseAction}
-                          >
-                            <FontAwesomeIcon icon={faUsers} />
-                            <span>{sidebarContent.items.customers}</span>
-                          </Link>
-                        </li>
+                        <CrmChildLink
+                          href={href}
+                          icon={faUsers}
+                          label={sidebarContent.items.customers}
+                          onClickAction={onCloseAction}
+                          pathname={pathname}
+                        />
                       ) : null}
                       {canOpenCrmTasks ? (
-                        <li>
-                          <Link
-                            aria-current={
-                              pathname === crmTasksHref ? "page" : undefined
-                            }
-                            className={styles.crmChildLink}
-                            data-active={
-                              pathname === crmTasksHref ? "true" : "false"
-                            }
-                            href={crmTasksHref}
-                            onClick={onCloseAction}
-                          >
-                            <FontAwesomeIcon icon={faListCheck} />
-                            <span>{sidebarContent.items.tasks}</span>
-                          </Link>
-                        </li>
+                        <CrmChildLink
+                          href={crmTasksPathFor(locale)}
+                          icon={faListCheck}
+                          label={sidebarContent.items.tasks}
+                          onClickAction={onCloseAction}
+                          pathname={pathname}
+                        />
+                      ) : null}
+                      {canOpenCrmFeedback ? (
+                        <CrmChildLink
+                          count={{
+                            value: unreadFeedbackRoundCount,
+                            description: formatCountMessage(
+                              unreadFeedbackRoundCount,
+                              sidebarContent.unreadFeedbackRounds,
+                            ),
+                          }}
+                          href={crmFeedbackPathFor(locale)}
+                          icon={faInbox}
+                          label={sidebarContent.items.feedback}
+                          onClickAction={onCloseAction}
+                          pathname={pathname}
+                        />
                       ) : null}
                       {canOpenCrmMessages ? (
-                        <li>
-                          <Link
-                            aria-current={
-                              pathname === crmMessagesHref ? "page" : undefined
-                            }
-                            className={styles.crmChildLink}
-                            data-active={
-                              pathname === crmMessagesHref ? "true" : "false"
-                            }
-                            href={crmMessagesHref}
-                            onClick={onCloseAction}
-                          >
-                            <FontAwesomeIcon icon={faComments} />
-                            <span>{sidebarContent.items.messages}</span>
-                            {unreadConversationCount > 0 ? (
-                              <>
-                                <span
-                                  aria-hidden="true"
-                                  className={styles.countBadge}
-                                >
-                                  {unreadConversationCount}
-                                </span>
-                                <span className="sr-only">
-                                  {formatMessage(
-                                    sidebarContent.unreadConversations,
-                                    { count: unreadConversationCount },
-                                  )}
-                                </span>
-                              </>
-                            ) : null}
-                          </Link>
-                        </li>
+                        <CrmChildLink
+                          count={{
+                            value: unreadConversationCount,
+                            description: formatMessage(
+                              sidebarContent.unreadConversations,
+                              { count: unreadConversationCount },
+                            ),
+                          }}
+                          href={crmMessagesPathFor(locale)}
+                          icon={faComments}
+                          label={sidebarContent.items.messages}
+                          onClickAction={onCloseAction}
+                          pathname={pathname}
+                        />
                       ) : null}
                       {canReadCrmLineItemTemplates ? (
-                        <li>
-                          <Link
-                            aria-current={
-                              pathname === crmLineItemTemplatesHref
-                                ? "page"
-                                : undefined
-                            }
-                            className={styles.crmChildLink}
-                            data-active={
-                              pathname === crmLineItemTemplatesHref
-                                ? "true"
-                                : "false"
-                            }
-                            href={crmLineItemTemplatesHref}
-                            onClick={onCloseAction}
-                          >
-                            <FontAwesomeIcon icon={faLayerGroup} />
-                            <span>
-                              {sidebarContent.items.lineItemTemplates}
-                            </span>
-                          </Link>
-                        </li>
+                        <CrmChildLink
+                          href={crmLineItemTemplatesPathFor(locale)}
+                          icon={faLayerGroup}
+                          label={sidebarContent.items.lineItemTemplates}
+                          onClickAction={onCloseAction}
+                          pathname={pathname}
+                        />
                       ) : null}
                     </ul>
                   ) : null}

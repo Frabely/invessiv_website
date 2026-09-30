@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   crmFeedbackItemResultEndpoint,
   crmFeedbackRoundEndpoint,
+  crmFeedbackRoundReadEndpoint,
   crmFeedbackRoundStatusEndpoint,
   crmProjectFeedbackRoundsEndpoint,
 } from "./crm-api-endpoints";
@@ -35,6 +36,12 @@ describe("crm feedback round endpoints", () => {
     );
     expect(crmFeedbackItemResultEndpoint("i-1")).toBe(
       "/api/workspace/crm/feedback-round-items/i-1/result",
+    );
+  });
+
+  it("puts the read stamp below the round", () => {
+    expect(crmFeedbackRoundReadEndpoint("r/1")).toBe(
+      "/api/workspace/crm/feedback-rounds/r%2F1/read",
     );
   });
 });

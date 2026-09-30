@@ -9,6 +9,7 @@ export const FeedbackApiPath = {
   Files: "files",
   Status: "status",
   Result: "result",
+  Read: "read",
 } as const;
 
 export type FeedbackApiPath =

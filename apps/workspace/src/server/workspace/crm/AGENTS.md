@@ -121,5 +121,11 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   wartet auf sie. Ergebnisse gehen nur in `RESULT_EDITABLE_FEEDBACK_ROUND_STATUS_VALUES`, sonst `ROUND_LOCKED`; der
   Punkt wird über `updateVersioned` geschrieben. Ergebnisse schreiben keine Activity (sonst Log-Flut je Punkt).
 - Das Runden-DTO baut ausschließlich `feedbackRoundService.toRoundDto` (Detail-Query und Statusbefehl).
+- **Eingang und Zähler (ab Task 62):** `feedback-inbox-service.ts` ist die einzige Quelle für Eingang
+  (`listFeedbackInbox`), Sidebar-Zähler (`countUnreadFeedbackRounds`) und Lesestempel (`markFeedbackRoundRead`).
+  Der Eingang zeigt nur `INTERNAL_QUEUE_FEEDBACK_ROUND_STATUS_VALUES`, filtert über `crmAccessCondition` mit
+  `projects.read` und lädt Punktzahl, lesbare Dateien und den Anfang des ersten Punkts in einer Abfrage.
+  „Ungelesen“ heißt `submitted` und `read_at IS NULL`. Der Lesestempel setzt `read_at` nur einmal, nie für
+  `open`-Runden, ändert weder Status noch Version und schreibt keine Activity.
 - Bewusste Abweichung vom übrigen CRM (Planvorgabe Task 59): `VALIDATION_ERROR` der Feedback-Endpunkte antwortet
   **400**, nicht 422. Antworten liefern das DTO direkt, ohne Hülle (`{ round }`), wie die Portal-Endpunkte.

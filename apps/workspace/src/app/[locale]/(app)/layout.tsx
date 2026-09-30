@@ -21,7 +21,7 @@ import {
 import { WorkspaceAuthorizationUnavailableError } from "@/lib/auth/workspace-authorization-unavailable-error.class";
 import { hasPortalAccessForUserId } from "@/server/workspace/auth/query-handler/has-portal-access-for-user-id.query-handler";
 import { countUnreadConversations } from "@/server/workspace/crm/query-handler/count-unread-conversations.query-handler";
-import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
+import { countUnreadFeedbackRounds } from "@/server/workspace/crm/query-handler/count-unread-feedback-rounds.query-handler";
 import { CrmOperation } from "@/common/constants/crm/crm-operations";
 import { logCrmFailure } from "@/lib/workspace/crm/log-crm-failure";
 
@@ -38,14 +38,15 @@ async function resolvePortalHref(
   return hasPortalAccess ? portalEntryPathFor(locale) : null;
 }
 
-// The counter is only a hint: a failing query hides the badge instead of breaking every page.
-async function resolveUnreadConversationCount(
-  actor: WorkspaceActor,
+// Counters are only a hint: a failing query hides the badge instead of breaking every page.
+async function resolveCount(
+  operation: CrmOperation,
+  count: () => Promise<number>,
 ): Promise<number> {
   try {
-    return await countUnreadConversations(actor);
+    return await count();
   } catch (error) {
-    logCrmFailure(CrmOperation.CountUnreadConversations, error);
+    logCrmFailure(operation, error);
     return 0;
   }
 }
@@ -96,9 +97,14 @@ export default async function WorkspaceLayout({
     authentication.actor,
     Permission.ChatRead,
   );
+  const canOpenCrmFeedback = canAnywhere(
+    authentication.actor,
+    Permission.ProjectsRead,
+  );
   const hasCrmNavigation =
     canOpenCrmCustomers ||
     canOpenCrmTasks ||
+    canOpenCrmFeedback ||
     canOpenCrmMessages ||
     canReadCrmLineItemTemplates;
   const navigationAreas = WORKSPACE_AREA_VALUES.filter(
@@ -113,24 +119,35 @@ export default async function WorkspaceLayout({
 
   const content = getWorkspacePageContent(activeLocale);
 
-  const [portalHref, unreadConversationCount] = await Promise.all([
-    resolvePortalHref(activeLocale, authentication.actor.userId),
-    canOpenCrmMessages
-      ? resolveUnreadConversationCount(authentication.actor)
-      : 0,
-  ]);
+  const actor = authentication.actor;
+  const [portalHref, unreadConversationCount, unreadFeedbackRoundCount] =
+    await Promise.all([
+      resolvePortalHref(activeLocale, actor.userId),
+      canOpenCrmMessages
+        ? resolveCount(CrmOperation.CountUnreadConversations, () =>
+            countUnreadConversations(actor),
+          )
+        : 0,
+      canOpenCrmFeedback
+        ? resolveCount(CrmOperation.CountUnreadFeedbackRounds, () =>
+            countUnreadFeedbackRounds(actor),
+          )
+        : 0,
+    ]);
 
   return (
     <WorkspaceShell
       content={content}
       canOpenCrmCustomers={canOpenCrmCustomers}
       canOpenCrmTasks={canOpenCrmTasks}
+      canOpenCrmFeedback={canOpenCrmFeedback}
       canOpenCrmMessages={canOpenCrmMessages}
       canReadCrmLineItemTemplates={canReadCrmLineItemTemplates}
       locale={activeLocale}
       permittedAreas={navigationAreas}
       portalHref={portalHref}
       unreadConversationCount={unreadConversationCount}
+      unreadFeedbackRoundCount={unreadFeedbackRoundCount}
     >
       {children}
     </WorkspaceShell>

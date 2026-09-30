@@ -1,0 +1,140 @@
+.card {
+  position: relative;
+  display: grid;
+  gap: 0.55rem;
+  padding: 1rem 1.1rem 1rem 1.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface-1);
+  transition: border-color 140ms ease;
+}
+
+/* A rail on the leading edge marks new rounds; the "New" badge says the same in words. */
+.card[data-unread="true"] {
+  border-color: color-mix(in srgb, var(--color-cta) 45%, var(--color-border));
+  box-shadow: inset 3px 0 0 var(--color-cta);
+}
+
+.card:hover {
+  border-color: var(--color-border-strong);
+}
+
+.card:focus-within {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+}
+
+.context {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.6rem;
+  min-width: 0;
+  margin: 0;
+  font-size: var(--font-size-ui-sm);
+}
+
+.customer {
+  color: var(--color-text);
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.project {
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.unread {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  background: var(--color-cta);
+  color: var(--color-on-cta);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 700;
+}
+
+.unread svg {
+  width: 0.45em;
+  height: 0.45em;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-size-body-md);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.link {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+/* The whole card is the click target; the badges stay plain text below it. */
+.link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.link:focus-visible {
+  outline: none;
+}
+
+.excerpt {
+  display: -webkit-box;
+  margin: 0;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--color-border-strong);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.55;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+.excerpt[data-empty="true"] {
+  font-style: italic;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+.count {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}

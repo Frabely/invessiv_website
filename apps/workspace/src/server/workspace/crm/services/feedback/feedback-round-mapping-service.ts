@@ -1,6 +1,10 @@
 import "server-only";
 
-import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
+import {
+  FeedbackRoundStatus,
+  INTERNAL_QUEUE_FEEDBACK_ROUND_STATUS_VALUES,
+} from "@invessiv/common/constants/crm/feedback-round-statuses";
+import type { FeedbackInboxItemDto } from "@invessiv/common/contracts/crm/feedback-inbox-item.dto";
 import type { FeedbackRoundItemDto } from "@invessiv/common/contracts/crm/feedback-round-item.dto";
 import type { FeedbackRoundSummaryDto } from "@invessiv/common/contracts/crm/feedback-round-summary.dto";
 import type { FeedbackRoundDto } from "@invessiv/common/contracts/crm/feedback-round.dto";
@@ -8,6 +12,7 @@ import type {
   FeedbackRoundRow,
   LoadedFeedbackItem,
 } from "@/server/shared/services/feedback/feedback-service-types";
+import type { FeedbackInboxRow } from "./feedback-round-types";
 
 function toItemDto({
   item,
@@ -30,6 +35,10 @@ function toItemDto({
 }
 
 /** Unread is the inbox notion: submitted and not yet opened by any member. */
+function isUnread(row: FeedbackRoundRow): boolean {
+  return row.status === FeedbackRoundStatus.Submitted && row.read_at === null;
+}
+
 function toSummaryDto(
   row: FeedbackRoundRow,
   itemCount: number,
@@ -45,8 +54,38 @@ function toSummaryDto(
     completedAt: row.completed_at?.toISOString() ?? null,
     approvedAt: row.approved_at?.toISOString() ?? null,
     itemCount,
-    unread:
-      row.status === FeedbackRoundStatus.Submitted && row.read_at === null,
+    unread: isUnread(row),
+  };
+}
+
+/** The inbox query only selects queue rounds; anything else here is a broken query, not data. */
+function toInboxItemDto({
+  round,
+  customerDisplayName,
+  projectTitle,
+  itemCount,
+  fileCount,
+  excerpt,
+}: FeedbackInboxRow): FeedbackInboxItemDto {
+  const status = INTERNAL_QUEUE_FEEDBACK_ROUND_STATUS_VALUES.find(
+    (value) => value === round.status,
+  );
+  if (!status || !round.submitted_at)
+    throw new Error("Feedback inbox row outside the internal queue");
+  return {
+    id: round.id,
+    roundNumber: round.round_number,
+    status,
+    customerId: round.customer_id,
+    customerDisplayName,
+    projectId: round.project_id,
+    projectTitle,
+    submittedAt: round.submitted_at.toISOString(),
+    dueOn: round.due_on,
+    itemCount,
+    fileCount,
+    excerpt,
+    unread: isUnread(round),
   };
 }
 
@@ -91,6 +130,7 @@ function toDto(
 
 export const feedbackRoundMappingService = {
   toDto,
+  toInboxItemDto,
   toItemDto,
   toSummaryDto,
 } as const;

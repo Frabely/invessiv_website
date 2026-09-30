@@ -6,6 +6,7 @@ export const SITE_ROUTES = {
   CRM_LINE_ITEM_TEMPLATES: "/crm/line-item-templates",
   CRM_TASKS: "/crm/tasks",
   CRM_MESSAGES: "/crm/messages",
+  CRM_FEEDBACK: "/crm/feedback",
   SETTINGS: "/settings",
   SIGN_IN: "/sign-in",
   SIGN_UP: "/sign-up",

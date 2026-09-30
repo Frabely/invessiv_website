@@ -24,6 +24,7 @@ const mocks = vi.hoisted(() => ({
   router: { refresh: vi.fn(), replace: vi.fn() },
   changeStatus: vi.fn(),
   setItemResult: vi.fn(),
+  markRead: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -35,6 +36,7 @@ vi.mock("@/client/crm/feedback-rounds-api-service", () => ({
   feedbackRoundsApiService: {
     changeStatus: mocks.changeStatus,
     setItemResult: mocks.setItemResult,
+    markRead: mocks.markRead,
   },
 }));
 
@@ -120,6 +122,37 @@ function renderDetail(
 
 beforeEach(() => {
   vi.resetAllMocks();
+  mocks.markRead.mockResolvedValue(false);
+});
+
+describe("FeedbackRoundDetail read stamp", () => {
+  it("stamps an unread round once and refreshes the counter", async () => {
+    mocks.markRead.mockResolvedValue(true);
+    renderDetail(round());
+    await waitFor(() => expect(mocks.router.refresh).toHaveBeenCalledTimes(1));
+    expect(mocks.markRead).toHaveBeenCalledTimes(1);
+    expect(mocks.markRead).toHaveBeenCalledWith("round-1");
+    expect(mocks.changeStatus).not.toHaveBeenCalled();
+  });
+
+  it("leaves read rounds and rounds still with the customer alone", () => {
+    renderDetail(round({ readAt: "2026-09-29T10:00:00.000Z" }));
+    cleanup();
+    renderDetail(
+      round({ status: FeedbackRoundStatus.Open, submittedAt: null }),
+    );
+    expect(mocks.markRead).not.toHaveBeenCalled();
+  });
+
+  it("keeps the view when the stamp fails", async () => {
+    mocks.markRead.mockResolvedValue(false);
+    renderDetail(round());
+    await waitFor(() => expect(mocks.markRead).toHaveBeenCalled());
+    expect(mocks.router.refresh).not.toHaveBeenCalled();
+    expect(
+      screen.getByRole("heading", { name: "Feedback round 1" }),
+    ).toBeInTheDocument();
+  });
 });
 
 afterEach(cleanup);

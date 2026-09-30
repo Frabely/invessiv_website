@@ -8,6 +8,51 @@
     "expandLabel": "Expand feedback rounds",
     "collapseLabel": "Collapse feedback rounds"
   },
+  "inbox": {
+    "meta": {
+      "title": "Feedback | Invessiv",
+      "description": "Every submitted feedback round the team has to act on, across all customers and projects."
+    },
+    "title": "Feedback",
+    "description": "Every round customers have submitted and you are still working on. Newly submitted rounds come first.",
+    "listLabel": "Feedback rounds the team has to act on",
+    "toolbar": {
+      "ariaLabel": "Filter feedback",
+      "clear": "Clear selection",
+      "reset": "Reset filters",
+      "unreadOnly": "New rounds only",
+      "status": {
+        "label": "Status",
+        "ariaLabel": "Filter by status",
+        "all": "All open"
+      },
+      "customer": {
+        "label": "Customer",
+        "ariaLabel": "Filter by customer",
+        "all": "All customers"
+      }
+    },
+    "card": {
+      "open": "{customer}, {project}: open feedback round {number}",
+      "round": "Feedback round {number}",
+      "submitted": "Submitted on {date}",
+      "due": "Feedback due {date}",
+      "files": "{count} files",
+      "filesOne": "1 file",
+      "noExcerpt": "The first item has no text.",
+      "unread": "New"
+    },
+    "empty": {
+      "title": "All caught up",
+      "description": "No feedback is waiting for you right now. As soon as a customer submits a round, it shows up here.",
+      "action": "Go to customers"
+    },
+    "noResults": {
+      "title": "No matches for this filter",
+      "description": "There is open feedback, just not for this selection. Loosen a filter or reset them all.",
+      "action": "Reset filters"
+    }
+  },
   "empty": {
     "title": "No round handed over yet",
     "description": "This is where the customer collects feedback on a version you hand over: items per page, with screenshots. Hand over the first round as soon as there is something to see.",

@@ -29,6 +29,9 @@ export const CrmOperation = {
   GetFeedbackRound: "feedback-rounds.get",
   ChangeFeedbackRoundStatus: "feedback-rounds.change-status",
   SetFeedbackItemResult: "feedback-items.set-result",
+  ListFeedbackInbox: "feedback-rounds.list-inbox",
+  CountUnreadFeedbackRounds: "feedback-rounds.count-unread",
+  MarkFeedbackRoundRead: "feedback-rounds.mark-read",
 } as const;
 
 export type CrmOperation = (typeof CrmOperation)[keyof typeof CrmOperation];
@@ -63,4 +66,7 @@ export const CRM_OPERATION_VALUES = [
   CrmOperation.GetFeedbackRound,
   CrmOperation.ChangeFeedbackRoundStatus,
   CrmOperation.SetFeedbackItemResult,
+  CrmOperation.ListFeedbackInbox,
+  CrmOperation.CountUnreadFeedbackRounds,
+  CrmOperation.MarkFeedbackRoundRead,
 ] as const;

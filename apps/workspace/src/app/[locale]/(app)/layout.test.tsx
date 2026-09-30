@@ -40,6 +40,11 @@ vi.mock(
 );
 
 const mockCountUnreadConversations = vi.hoisted(() => vi.fn());
+const mockCountUnreadFeedbackRounds = vi.hoisted(() => vi.fn());
+vi.mock(
+  "@/server/workspace/crm/query-handler/count-unread-feedback-rounds.query-handler",
+  () => ({ countUnreadFeedbackRounds: mockCountUnreadFeedbackRounds }),
+);
 vi.mock(
   "@/server/workspace/crm/query-handler/count-unread-conversations.query-handler",
   () => ({ countUnreadConversations: mockCountUnreadConversations }),
@@ -47,20 +52,26 @@ vi.mock(
 
 vi.mock("@/components/workspace/workspace-shell/workspace-shell", () => ({
   WorkspaceShell: ({
+    canOpenCrmFeedback,
     canOpenCrmMessages,
     children,
     permittedAreas,
     portalHref,
     unreadConversationCount,
+    unreadFeedbackRoundCount,
   }: {
+    canOpenCrmFeedback?: boolean;
     canOpenCrmMessages?: boolean;
     children: ReactNode;
     permittedAreas: readonly string[];
     portalHref?: string | null;
     unreadConversationCount?: number;
+    unreadFeedbackRoundCount?: number;
   }) => (
     <main
       data-areas={permittedAreas.join(",")}
+      data-feedback={String(Boolean(canOpenCrmFeedback))}
+      data-unread-feedback={String(unreadFeedbackRoundCount ?? 0)}
       data-messages={String(Boolean(canOpenCrmMessages))}
       data-portal-href={portalHref}
       data-unread={String(unreadConversationCount ?? 0)}
@@ -88,6 +99,64 @@ describe("WorkspaceLayout", () => {
     vi.clearAllMocks();
     mockHasPortalAccessForUserId.mockResolvedValue(false);
     mockCountUnreadConversations.mockResolvedValue(0);
+    mockCountUnreadFeedbackRounds.mockResolvedValue(0);
+  });
+
+  it("passes the unread feedback round count to the feedback entry", async () => {
+    mockGetAuthentication.mockResolvedValue(
+      authorizedWith(Permission.ProjectsRead),
+    );
+    mockCountUnreadFeedbackRounds.mockResolvedValue(2);
+
+    render(
+      await WorkspaceLayout({
+        children: <p>Protected content</p>,
+        params: Promise.resolve({ locale: "de" }),
+      }),
+    );
+
+    expect(screen.getByRole("main")).toHaveAttribute("data-feedback", "true");
+    expect(screen.getByRole("main")).toHaveAttribute(
+      "data-unread-feedback",
+      "2",
+    );
+  });
+
+  it("keeps the page intact when the feedback count fails", async () => {
+    mockGetAuthentication.mockResolvedValue(
+      authorizedWith(Permission.ProjectsRead),
+    );
+    mockCountUnreadFeedbackRounds.mockRejectedValue(new Error("db down"));
+    vi.spyOn(console, "error").mockImplementation(() => {});
+
+    render(
+      await WorkspaceLayout({
+        children: <p>Protected content</p>,
+        params: Promise.resolve({ locale: "de" }),
+      }),
+    );
+
+    expect(screen.getByText("Protected content")).toBeVisible();
+    expect(screen.getByRole("main")).toHaveAttribute(
+      "data-unread-feedback",
+      "0",
+    );
+  });
+
+  it("does not count feedback rounds without projects.read", async () => {
+    mockGetAuthentication.mockResolvedValue(
+      authorizedWith(Permission.ChatRead),
+    );
+
+    render(
+      await WorkspaceLayout({
+        children: <p>Protected content</p>,
+        params: Promise.resolve({ locale: "de" }),
+      }),
+    );
+
+    expect(mockCountUnreadFeedbackRounds).not.toHaveBeenCalled();
+    expect(screen.getByRole("main")).toHaveAttribute("data-feedback", "false");
   });
 
   it("passes the unread conversation count to the messages entry", async () => {

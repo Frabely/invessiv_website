@@ -85,13 +85,18 @@
         "crm": "CRM",
         "customers": "Customers",
         "tasks": "Tasks",
+        "feedback": "Feedback",
         "messages": "Messages",
         "lineItemTemplates": "Service catalog",
         "leads": "Leads",
         "overview": "Overview",
         "settings": "Settings"
       },
-      "unreadConversations": "{count} conversations with unread customer messages"
+      "unreadConversations": "{count} conversations with unread customer messages",
+      "unreadFeedbackRounds": {
+        "one": "1 newly submitted feedback round",
+        "many": "{count} newly submitted feedback rounds"
+      }
     },
     "main": {
       "ariaLabel": "Workspace content"
