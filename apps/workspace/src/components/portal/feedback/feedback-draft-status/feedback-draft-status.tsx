@@ -71,19 +71,22 @@ export function FeedbackDraftStatus({
     return () => clearInterval(timer);
   }, []);
 
-  const saved = savedAt
+  let line = savedAt
     ? formatMessage(texts.saved, {
         time: savedTime(savedAt, now, texts, locale),
       })
     : null;
-  const line =
-    saveState === FeedbackDraftSaveState.Saving
-      ? texts.saving
-      : saveState === FeedbackDraftSaveState.Unsaved
-        ? texts.unsaved
-        : saveState === FeedbackDraftSaveState.Failed
-          ? texts.failed
-          : saved;
+  switch (saveState) {
+    case FeedbackDraftSaveState.Saving:
+      line = texts.saving;
+      break;
+    case FeedbackDraftSaveState.Unsaved:
+      line = texts.unsaved;
+      break;
+    case FeedbackDraftSaveState.Failed:
+      line = texts.failed;
+      break;
+  }
 
   async function copy() {
     if (!conflictItems) return;

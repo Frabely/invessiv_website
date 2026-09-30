@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FEEDBACK_ITEM_KIND_VALUES } from "@invessiv/common/constants/crm/feedback-item-kinds";
 import { FEEDBACK_LIMITS } from "@invessiv/common/constants/crm/feedback-limits";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
+import { CustomSelect } from "@invessiv/ui";
 import type { FeedbackDraftItem } from "@/common/contracts/portal/feedback-draft-item";
 import type { PortalFeedbackDictionary } from "@/i18n/dictionaries/portal";
 import styles from "./feedback-item-editor.module.css";
@@ -41,6 +42,8 @@ export function FeedbackItemEditor({
   onRemoveAction,
 }: FeedbackItemEditorProps) {
   const baseId = useId();
+  const areaSelectId = `${baseId}-area`;
+  const kindSelectId = `${baseId}-kind`;
   const texts = content.editor;
   const itemLabel = formatMessage(texts.itemLabel, { number });
   const headingId = `${baseId}-heading`;
@@ -73,45 +76,43 @@ export function FeedbackItemEditor({
         <div className={styles.head}>
           <label className={styles.field}>
             <span>{texts.area}</span>
-            <select
-              onChange={(event) =>
+            <CustomSelect
+              ariaLabel={`${itemLabel}: ${texts.area}`}
+              id={areaSelectId}
+              onChange={(areaLabel) =>
                 onChangeAction({
-                  areaLabel:
-                    event.target.value === NONE_VALUE
-                      ? null
-                      : event.target.value,
+                  areaLabel: areaLabel === NONE_VALUE ? null : areaLabel,
                 })
               }
+              options={[
+                { label: texts.general, value: NONE_VALUE },
+                ...areas.map((area) => ({ label: area, value: area })),
+              ]}
               value={item.areaLabel ?? NONE_VALUE}
-            >
-              <option value={NONE_VALUE}>{texts.general}</option>
-              {areas.map((area) => (
-                <option key={area} value={area}>
-                  {area}
-                </option>
-              ))}
-            </select>
+            />
           </label>
           <label className={styles.field}>
             <span>{texts.kind}</span>
-            <select
-              onChange={(event) =>
+            <CustomSelect
+              ariaLabel={`${itemLabel}: ${texts.kind}`}
+              id={kindSelectId}
+              onChange={(kindValue) =>
                 onChangeAction({
                   kind:
                     FEEDBACK_ITEM_KIND_VALUES.find(
-                      (kind) => kind === event.target.value,
+                      (kind) => kind === kindValue,
                     ) ?? null,
                 })
               }
+              options={[
+                { label: texts.kindNone, value: NONE_VALUE },
+                ...FEEDBACK_ITEM_KIND_VALUES.map((kind) => ({
+                  label: content.kinds[kind],
+                  value: kind,
+                })),
+              ]}
               value={item.kind ?? NONE_VALUE}
-            >
-              <option value={NONE_VALUE}>{texts.kindNone}</option>
-              {FEEDBACK_ITEM_KIND_VALUES.map((kind) => (
-                <option key={kind} value={kind}>
-                  {content.kinds[kind]}
-                </option>
-              ))}
-            </select>
+            />
           </label>
           <button
             aria-label={formatMessage(texts.remove, { number })}

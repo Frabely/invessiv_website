@@ -27,7 +27,7 @@
   text-underline-offset: 0.15em;
 }
 
-.toggle {
+.toggle.toggle {
   min-height: 2.75rem;
   padding: 0;
   border: 0;
@@ -36,10 +36,21 @@
   font: inherit;
   font-size: var(--font-size-ui-sm);
   font-weight: 600;
-  cursor: pointer;
+  box-shadow: none;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
 }
 
-.toggle:focus-visible {
+.toggle.toggle:hover,
+.toggle.toggle:focus-visible {
+  transform: none;
+  border-color: transparent;
+  background: transparent;
+  color: var(--color-cta);
+  box-shadow: none;
+}
+
+.toggle.toggle:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
   border-radius: 0.25rem;
