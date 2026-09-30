@@ -4,7 +4,7 @@
 > `../00-entscheidungen.md`, `../AGENTS.md` und die scoped `AGENTS.md` am Zielcode. Diese Task-Datei plus README sind
 > vollständig; frühere Chat- oder Planstände (Task 22/23) gelten nicht.
 
-> **Status:** offen · **Teil-PR:** 16.6 · **Branch:** `feat/crm-feedback-6-eingang`
+> **Status:** im Review · **Teil-PR:** 16.6 · **Branch:** `feat/crm-feedback-6-eingang`
 > **Abhängigkeiten:** Task 61 (16.5) gemerged · **Aufwand:** 1–1,5 T. · **Dateien:** 30–45
 > **Migration:** keine (Indizes entstehen in Task 58)
 > **Skills:** `frontend-design`, `copywriting`

@@ -20,3 +20,13 @@ export type CountedFeedbackRound = {
   round: FeedbackRoundRow;
   itemCount: number;
 };
+
+/** A round of the internal inbox with what its card shows next to the round itself. */
+export type FeedbackInboxRow = {
+  round: FeedbackRoundRow;
+  customerDisplayName: string;
+  projectTitle: string;
+  itemCount: number;
+  fileCount: number;
+  excerpt: string | null;
+};

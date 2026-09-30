@@ -19,6 +19,7 @@ import { FeedbackAttachmentList } from "@/components/shared/feedback/feedback-at
 import { FeedbackRoundStatusBadge } from "@/components/shared/feedback/feedback-round-status-badge/feedback-round-status-badge";
 import type { Locale } from "@/config/i18n";
 import { useFileDownloads } from "@/hooks/shared/use-file-downloads";
+import { useMarkFeedbackRoundRead } from "@/hooks/workspace/crm/use-mark-feedback-round-read";
 import type {
   CrmFeedbackRoundsDictionary,
   CrmFilesDictionary,
@@ -80,6 +81,7 @@ export function FeedbackRoundDetail({
   onAnnounceAction,
   onHandOverNextAction,
 }: FeedbackRoundDetailProps) {
+  useMarkFeedbackRoundRead(round);
   const texts = content.detail;
   const headingId = `feedback-round-${round.id}`;
   const showResults = round.status !== FeedbackRoundStatus.Open;

@@ -34,6 +34,9 @@ export const INTERNAL_QUEUE_FEEDBACK_ROUND_STATUS_VALUES = [
   FeedbackRoundStatus.InProgress,
 ] as const;
 
+export type InternalQueueFeedbackRoundStatus =
+  (typeof INTERNAL_QUEUE_FEEDBACK_ROUND_STATUS_VALUES)[number];
+
 /** Only from these statuses may the customer see item results and replies. */
 export const RESULT_VISIBLE_FEEDBACK_ROUND_STATUS_VALUES = [
   FeedbackRoundStatus.Completed,

@@ -13,6 +13,7 @@ import type { VersionedJsonMutationResult } from "@/common/contracts/client/vers
 import type { HandOverFeedbackRoundClientResult } from "@/common/contracts/crm/feedback-round-client-result";
 import {
   crmFeedbackItemResultEndpoint,
+  crmFeedbackRoundReadEndpoint,
   crmFeedbackRoundStatusEndpoint,
   crmProjectFeedbackRoundsEndpoint,
 } from "@/common/patterns/crm/crm-api-endpoints";
@@ -108,8 +109,23 @@ async function handOver(
     : { ok: false, code };
 }
 
+/** True only when this call stamped the round; a failure or an earlier stamp both answer false. */
+async function markRead(roundId: string): Promise<boolean> {
+  const response = await send(
+    crmFeedbackRoundReadEndpoint(roundId),
+    HttpMethod.Post,
+    undefined,
+  );
+  return (
+    response?.ok === true &&
+    isRecord(response.payload) &&
+    response.payload.marked === true
+  );
+}
+
 export const feedbackRoundsApiService = {
   handOver,
   changeStatus,
   setItemResult,
+  markRead,
 } as const;

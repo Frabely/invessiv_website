@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  crmFeedbackPathFor,
   dashboardPathFor,
   portalEntryPathFor,
   portalPathFor,
@@ -31,6 +32,8 @@ describe("auth routes", () => {
     expect(workspacePathFor("en")).toBe("/en");
     expect(dashboardPathFor("de")).toBe("/de/dashboard");
     expect(dashboardPathFor("en")).toBe("/en/dashboard");
+    expect(crmFeedbackPathFor("de")).toBe("/de/crm/feedback");
+    expect(crmFeedbackPathFor("en")).toBe("/en/crm/feedback");
   });
 
   it("builds a locale-prefixed path for every workspace area", () => {

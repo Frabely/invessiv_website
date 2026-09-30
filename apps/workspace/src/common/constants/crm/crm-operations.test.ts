@@ -37,6 +37,9 @@ describe("CrmOperation", () => {
       "feedback-rounds.get",
       "feedback-rounds.change-status",
       "feedback-items.set-result",
+      "feedback-rounds.list-inbox",
+      "feedback-rounds.count-unread",
+      "feedback-rounds.mark-read",
     ]);
     expect(CRM_OPERATION_VALUES).toEqual(Object.values(CrmOperation));
     expect(new Set(CRM_OPERATION_VALUES).size).toBe(

@@ -34,6 +34,10 @@ export function crmFeedbackRoundStatusEndpoint(roundId: string): string {
   return `${crmFeedbackRoundEndpoint(roundId)}/${FeedbackApiPath.Status}`;
 }
 
+export function crmFeedbackRoundReadEndpoint(roundId: string): string {
+  return `${crmFeedbackRoundEndpoint(roundId)}/${FeedbackApiPath.Read}`;
+}
+
 export function crmFeedbackItemResultEndpoint(itemId: string): string {
   return `${WorkspaceApiEndpoint.CrmFeedbackRoundItems}/${encodeURIComponent(itemId)}/${FeedbackApiPath.Result}`;
 }

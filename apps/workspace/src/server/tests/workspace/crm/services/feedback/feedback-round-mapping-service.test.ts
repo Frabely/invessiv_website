@@ -129,3 +129,61 @@ describe("feedbackRoundMappingService.toSummaryDto", () => {
     );
   });
 });
+
+describe("feedbackRoundMappingService.toInboxItemDto", () => {
+  const row = {
+    customerDisplayName: "Nordlicht GmbH",
+    projectTitle: "Relaunch",
+    itemCount: 3,
+    fileCount: 2,
+    excerpt: "Logo größer",
+  };
+
+  it("maps a submitted round with its card context", () => {
+    expect(
+      feedbackRoundMappingService.toInboxItemDto({
+        ...row,
+        round: roundRow({
+          status: FeedbackRoundStatus.Submitted,
+          round_number: 2,
+          submitted_at: new Date("2026-09-03T09:00:00.000Z"),
+          due_on: "2026-09-10",
+        }),
+      }),
+    ).toEqual({
+      id: ROUND_ID,
+      roundNumber: 2,
+      status: FeedbackRoundStatus.Submitted,
+      customerId: "11111111-1111-4111-8111-111111111111",
+      customerDisplayName: "Nordlicht GmbH",
+      projectId: "22222222-2222-4222-8222-222222222222",
+      projectTitle: "Relaunch",
+      submittedAt: "2026-09-03T09:00:00.000Z",
+      dueOn: "2026-09-10",
+      itemCount: 3,
+      fileCount: 2,
+      excerpt: "Logo größer",
+      unread: true,
+    });
+  });
+
+  it("is no longer new once opened or in progress", () => {
+    const submitted = new Date();
+    expect(
+      feedbackRoundMappingService.toInboxItemDto({
+        ...row,
+        round: roundRow({
+          status: FeedbackRoundStatus.InProgress,
+          submitted_at: submitted,
+          started_at: submitted,
+        }),
+      }).unread,
+    ).toBe(false);
+  });
+
+  it("rejects a round outside the internal queue", () => {
+    expect(() =>
+      feedbackRoundMappingService.toInboxItemDto({ ...row, round: roundRow() }),
+    ).toThrow("Feedback inbox row outside the internal queue");
+  });
+});

@@ -22,6 +22,19 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams("cockpit=customer-1"),
 }));
 
+vi.mock("@/client/crm/feedback-rounds-api-service", async (importOriginal) => {
+  const original =
+    await importOriginal<
+      typeof import("@/client/crm/feedback-rounds-api-service")
+    >();
+  return {
+    feedbackRoundsApiService: {
+      ...original.feedbackRoundsApiService,
+      markRead: vi.fn().mockResolvedValue(false),
+    },
+  };
+});
+
 const content = getCrmFeedbackRoundsDictionary("en");
 const filesContent = getCrmFilesDictionary("en");
 

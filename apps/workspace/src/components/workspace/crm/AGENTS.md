@@ -94,6 +94,12 @@ Plan: `apps/workspace/plans/crm/16-feedbackrunden/60-ui-uebergabe-und-kundenboge
   speichert sofort, die beiden anderen öffnen die Antwort mit Vorschau in Kundensicht (`FeedbackItemResult` aus
   `components/shared/feedback/`). „Noch offen“ erscheint nur, solange kein Ergebnis gesetzt ist.
 - Fehlercodes beider Befehle werden nur über `feedbackProcessingError` (`common/patterns/crm/`) in Texte übersetzt.
+- **Eingang (ab Task 62):** `feedback-inbox` (Kopf, Filter, Liste, zwei unterscheidbare Empty-States),
+  `feedback-inbox-card` und `feedback-inbox-toolbar`. Filter sind URL-State über
+  `feedback-inbox-query` (`common/patterns/crm/`); Karten verlinken nur über `buildCustomerCockpitHref` mit
+  Projekt und Runde. „Neu“ steht immer als Symbol **und** Text. Das Runden-Detail stempelt beim Anzeigen über
+  `useMarkFeedbackRoundRead`; ein Fehler bleibt still, ein neuer Stempel löst `router.refresh()` für den
+  Sidebar-Zähler aus.
 
 ## Aufgaben (ab Task 11-3)
 

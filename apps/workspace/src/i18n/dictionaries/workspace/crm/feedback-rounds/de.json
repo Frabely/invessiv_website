@@ -8,6 +8,51 @@
     "expandLabel": "Feedbackrunden aufklappen",
     "collapseLabel": "Feedbackrunden zuklappen"
   },
+  "inbox": {
+    "meta": {
+      "title": "Feedback | Invessiv",
+      "description": "Alle eingereichten Feedbackrunden, bei denen das Team am Zug ist – über alle Kunden und Projekte."
+    },
+    "title": "Feedback",
+    "description": "Hier landen alle Runden, die Kunden eingereicht haben und die ihr noch bearbeitet. Neu eingereichte stehen oben.",
+    "listLabel": "Feedbackrunden, bei denen das Team am Zug ist",
+    "toolbar": {
+      "ariaLabel": "Feedback filtern",
+      "clear": "Auswahl aufheben",
+      "reset": "Filter zurücksetzen",
+      "unreadOnly": "Nur neue Runden",
+      "status": {
+        "label": "Status",
+        "ariaLabel": "Nach Status filtern",
+        "all": "Alle offenen"
+      },
+      "customer": {
+        "label": "Kunde",
+        "ariaLabel": "Nach Kunde filtern",
+        "all": "Alle Kunden"
+      }
+    },
+    "card": {
+      "open": "{customer}, {project}: Feedbackrunde {number} öffnen",
+      "round": "Feedbackrunde {number}",
+      "submitted": "Eingereicht am {date}",
+      "due": "Feedback bis {date}",
+      "files": "{count} Dateien",
+      "filesOne": "1 Datei",
+      "noExcerpt": "Der erste Punkt hat keinen Text.",
+      "unread": "Neu"
+    },
+    "empty": {
+      "title": "Alles erledigt",
+      "description": "Gerade wartet kein Feedback auf euch. Sobald ein Kunde eine Runde einreicht, erscheint sie hier.",
+      "action": "Zu den Kunden"
+    },
+    "noResults": {
+      "title": "Keine Treffer für diesen Filter",
+      "description": "Es gibt offenes Feedback, nur nicht mit dieser Auswahl. Lockere einen Filter oder setze alle zurück.",
+      "action": "Filter zurücksetzen"
+    }
+  },
   "empty": {
     "title": "Noch keine Runde übergeben",
     "description": "Hier sammelt der Kunde sein Feedback zu einem Stand, den du ihm übergibst: Punkte je Seite, mit Screenshots. Übergib die erste Runde, sobald es etwas zu sehen gibt.",
