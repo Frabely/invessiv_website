@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FEEDBACK_LIMITS } from "@invessiv/common/constants/crm/feedback-limits";
-import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { PortalFeedbackErrorCode } from "@invessiv/common/constants/portal/portal-feedback-error-codes";
 import type { PortalFeedbackRoundDto } from "@invessiv/common/contracts/portal/portal-feedback-round.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
@@ -15,7 +14,9 @@ import {
   FeedbackOpenDialog,
   type FeedbackOpenDialog as FeedbackOpenDialogValue,
 } from "@/common/constants/portal/feedback-open-dialog";
+import { PortalFeedbackRoundResultKind } from "@/common/constants/portal/portal-feedback-round-result-kinds";
 import type { PortalFeedbackRoundClientResult } from "@/common/contracts/portal/portal-feedback-client-result";
+import { portalFeedbackRoundResult } from "@/common/patterns/portal/portal-feedback-round-result";
 import type { Locale } from "@/config/i18n";
 import { useFeedbackDraft } from "@/hooks/portal/use-feedback-draft";
 import type {
@@ -107,31 +108,33 @@ export function FeedbackSheet({
       setDialog(null);
       return;
     }
-    const result = await send(draft.currentVersion());
+    const outcome = portalFeedbackRoundResult(
+      await send(draft.currentVersion()),
+    );
     setBusy(false);
-    if (result.ok) {
+    if (outcome.kind === PortalFeedbackRoundResultKind.Success) {
       setDialog(null);
       onAnnounceAction(announcement);
       router.refresh();
       return;
     }
-    if (result.code === ConcurrencyErrorCode.VersionConflict) {
+    if (outcome.kind === PortalFeedbackRoundResultKind.Conflict) {
       setDialog(null);
-      draft.takeConflict(result.current);
+      draft.takeConflict(outcome.current);
       return;
     }
-    if (result.code === PortalFeedbackErrorCode.ItemTextRequired) {
+    if (outcome.kind === PortalFeedbackRoundResultKind.ItemTextRequired) {
       setDialog(null);
-      setInvalidIds(new Set(result.itemIds));
-      setFormError(content.errors[result.code]);
+      setInvalidIds(new Set(outcome.itemIds));
+      setFormError(content.errors[PortalFeedbackErrorCode.ItemTextRequired]);
       return;
     }
-    if (result.code === PortalFeedbackErrorCode.Locked) {
+    if (outcome.kind === PortalFeedbackRoundResultKind.Locked) {
       setDialog(null);
       router.refresh();
       return;
     }
-    setDialogError(content.errors[result.code]);
+    setDialogError(content.errors[outcome.code]);
   }
 
   return (
