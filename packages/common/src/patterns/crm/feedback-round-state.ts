@@ -5,6 +5,7 @@ import {
 import { FEEDBACK_ROUND_TRANSITIONS } from "../../constants/crm/feedback-round-transitions";
 import type { FeedbackTransitionSide } from "../../constants/crm/feedback-transition-sides";
 import type { FeedbackQuotaDto } from "../../contracts/crm/feedback-quota.dto";
+import type { ProjectFeedbackRoundProgress } from "../../contracts/crm/project-feedback-round-progress";
 import { normalizeFeedbackRoundPositions } from "./feedback-round-positions";
 
 /** `from: null` asks whether a new round may be handed over. */
@@ -49,6 +50,26 @@ export function feedbackQuota({
     remaining: approved ? 0 : Math.max(included - used, 0),
     activeRoundNumber: active?.roundNumber ?? null,
     approvedRoundNumber: approved?.roundNumber ?? null,
+  };
+}
+
+/** What the process track needs: the running, the last completed and the approved round. */
+export function feedbackRoundProgress(
+  rounds: readonly { roundNumber: number; status: FeedbackRoundStatus }[],
+): ProjectFeedbackRoundProgress {
+  const completed = rounds.filter(
+    (round) => round.status === FeedbackRoundStatus.Completed,
+  );
+  return {
+    activeRoundNumber:
+      rounds.find((round) => isActiveFeedbackRound(round.status))
+        ?.roundNumber ?? null,
+    completedRoundNumber: completed.length
+      ? Math.max(...completed.map((round) => round.roundNumber))
+      : null,
+    approvedRoundNumber:
+      rounds.find((round) => round.status === FeedbackRoundStatus.Approved)
+        ?.roundNumber ?? null,
   };
 }
 

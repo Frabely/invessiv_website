@@ -69,6 +69,23 @@ Plan: `apps/workspace/plans/crm/16-feedbackrunden/57-feedbackblock-und-kontingen
 - Nummern in der Positionsspalte zählen nur Freitext-Schritte. Der sichtbare Button-Text („Runde“) steht am Anfang des
   zugänglichen Namens (WCAG 2.5.3).
 
+## Feedbackrunden intern (ab Task 60)
+
+Plan: `apps/workspace/plans/crm/16-feedbackrunden/60-ui-uebergabe-und-kundenbogen.md`.
+
+- Komponenten liegen unter `feedback-rounds/`; Orchestrator ist `project-feedback-section`. Die Sektion existiert nur,
+  wenn die Page ein `FeedbackRoundsViewModel` für das offene Projekt baut (`lib/workspace/crm/feedback-rounds-view-model.ts`).
+- **Keine Fachlogik im Client.** Ob übergeben werden darf und warum nicht, kommt als `canHandOver` bzw.
+  `handOverBlocker` vom Server; die UI zeigt nur Button oder Grundtext. Künftige Statusbuttons (Task 61) entstehen
+  ausschließlich aus `canTransition` (`@invessiv/common/patterns/crm/feedback-round-state`), nie aus eigenen Abfragen.
+- Ohne `projects.write` fehlt „Runde übergeben“ vollständig, ebenso der Sperrgrund. Anhänge und ZIP nur mit
+  `files.read`; Punkte selbst sind ohne Dateirecht lesbar.
+- Projektwahl und Runden-Detail sind URL-State (`project`, `feedbackRound`) über `useCockpitSelection`; Links entstehen
+  nur über `buildCustomerCockpitHref` mit `CockpitSelection`. Eine fremde Runden-ID öffnet nichts.
+- Kundentext erscheint nur als Text (`FeedbackItemText`/`LinkedText`), Links in neuem Tab mit
+  `rel="noopener noreferrer"`. Portal und CRM teilen `components/shared/feedback/**`.
+- Solange eine Runde läuft, ist „Aktueller Prozessschritt“ im Projekt-Editor gesperrt und nennt die Runde.
+
 ## Aufgaben (ab Task 11-3)
 
 - Komponenten liegen unter `tasks/`; die Projektsektion (`project-tasks-section`) und die globale Übersicht

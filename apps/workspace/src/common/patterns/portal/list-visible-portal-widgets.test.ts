@@ -23,6 +23,7 @@ describe("listVisiblePortalWidgets", () => {
         Permission.PortalProjectsRead,
         Permission.PortalTasksRead,
         Permission.PortalFilesRead,
+        Permission.PortalFeedbackRead,
       ]),
     ).toHaveLength(Object.values(PortalWidgetKey).length);
   });
@@ -47,9 +48,17 @@ describe("listVisiblePortalWidgets", () => {
     expect(keys([])).toEqual([
       PortalWidgetKey.Onboarding,
       PortalWidgetKey.ServiceRequest,
-      PortalWidgetKey.Feedback,
       PortalWidgetKey.Hours,
     ]);
+  });
+
+  it("shows the feedback widget only with portal.feedback.read", () => {
+    expect(keys([Permission.PortalAccess])).not.toContain(
+      PortalWidgetKey.Feedback,
+    );
+    expect(
+      keys([Permission.PortalAccess, Permission.PortalFeedbackRead]),
+    ).toContain(PortalWidgetKey.Feedback);
   });
 
   it("shows the files widget only with portal.files.read", () => {

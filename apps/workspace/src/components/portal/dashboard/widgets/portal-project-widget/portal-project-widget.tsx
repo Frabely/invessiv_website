@@ -1,9 +1,11 @@
 "use client";
 
 import { useId } from "react";
+import Link from "next/link";
 import {
   faArrowUpRightFromSquare,
   faDiagramProject,
+  faHandHoldingHeart,
   faUserTie,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -23,6 +25,9 @@ import styles from "./portal-project-widget.module.css";
 
 export type PortalProjectWidgetProps = {
   content: PortalDashboardDictionary["widgets"]["project"];
+  /** Feedback page of the project; null while it has no round or without the right. */
+  feedbackHref: string | null;
+  feedbackLinkLabel: string;
   locale: Locale;
   onSelectProjectAction: (projectId: string) => void;
   projects: readonly PortalProjectDto[];
@@ -31,6 +36,8 @@ export type PortalProjectWidgetProps = {
 
 export function PortalProjectWidget({
   content,
+  feedbackHref,
+  feedbackLinkLabel,
   locale,
   onSelectProjectAction,
   projects,
@@ -44,6 +51,7 @@ export function PortalProjectWidget({
     processSteps: project.processSteps,
     currentProcessStep: project.currentProcessStep,
     feedbackRoundPositions: project.feedbackRoundPositions,
+    roundProgress: project.roundProgress,
     roundLabel: (number) => formatMessage(content.feedbackRound, { number }),
   });
   const total = track.items.length;
@@ -107,7 +115,10 @@ export function PortalProjectWidget({
             }
           />
         ) : null}
-        {nextStep || project.previewUrl || project.projectLead ? (
+        {nextStep ||
+        project.previewUrl ||
+        project.projectLead ||
+        feedbackHref ? (
           <div className={styles.details}>
             {nextStep ? (
               <div className={styles.nextStep}>
@@ -134,6 +145,12 @@ export function PortalProjectWidget({
                   <strong>{project.projectLead.displayName}</strong>
                 </span>
               </p>
+            ) : null}
+            {feedbackHref ? (
+              <Link className={styles.preview} href={feedbackHref}>
+                <FontAwesomeIcon aria-hidden="true" icon={faHandHoldingHeart} />
+                {feedbackLinkLabel}
+              </Link>
             ) : null}
             {project.previewUrl ? (
               <a

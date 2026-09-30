@@ -19,6 +19,8 @@ export interface PortalFeedbackRoundDto {
   areaOptions: string[];
   /** Last draft save by any contact; null while nothing was saved. */
   draftUpdatedAt: string | null;
+  /** Display name of the contact who saved last, so two contacts do not surprise each other. */
+  draftUpdatedByName: string | null;
   /** When the round was submitted; null while open. */
   submittedAt: string | null;
   /** Note from the team for a requested call or a handed-back round. */

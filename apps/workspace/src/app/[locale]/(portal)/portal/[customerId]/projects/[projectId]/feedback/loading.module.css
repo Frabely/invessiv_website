@@ -1,0 +1,22 @@
+.frame {
+  display: grid;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 48rem;
+  margin-inline: auto;
+}
+
+.heading.heading {
+  width: 14rem;
+  height: 1.75rem;
+}
+
+.intro.intro {
+  min-height: 6rem;
+  border-radius: 1rem;
+}
+
+.item.item {
+  min-height: 9rem;
+  border-radius: 1rem;
+}

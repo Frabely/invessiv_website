@@ -33,13 +33,7 @@ async function loadByRound(
   const byRound = new Map<string, LoadedFeedbackItem[]>();
   if (roundIds.length === 0) return byRound;
   const rows = await tx
-    .select({
-      item: feedbackRoundItems,
-      fileId: files.id,
-      displayName: files.display_name,
-      assetKind: files.asset_kind,
-      sizeBytes: files.size_bytes,
-    })
+    .select({ item: feedbackRoundItems, file: files })
     .from(feedbackRoundItems)
     .leftJoin(
       files,
@@ -62,15 +56,8 @@ async function loadByRound(
       list.push(loaded);
       byRound.set(row.item.round_id, list);
     }
-    if (row.fileId && row.displayName && row.assetKind)
-      loaded.attachments.push(
-        feedbackMappingService.toAttachmentDto({
-          fileId: row.fileId,
-          displayName: row.displayName,
-          assetKind: row.assetKind,
-          sizeBytes: row.sizeBytes,
-        }),
-      );
+    if (row.file)
+      loaded.attachments.push(feedbackMappingService.toAttachmentDto(row.file));
   }
   return byRound;
 }

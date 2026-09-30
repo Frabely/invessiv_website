@@ -69,7 +69,7 @@ async function attachToItem(
   if (file.feedback_item_id === target.itemId)
     return {
       ok: true,
-      value: feedbackMappingService.fileToAttachmentDto(file),
+      value: feedbackMappingService.toAttachmentDto(file),
     };
   if (!isAttachable(file, round))
     return { ok: false, code: PortalFeedbackErrorCode.NotAttachable };

@@ -67,6 +67,7 @@ function dashboard(
     completedProjects: [],
     customerTasks: [],
     ourTasks: [],
+    feedback: null,
     capabilities: { canCompleteTasks: false, isOwnerView: false },
     ...overrides,
   };

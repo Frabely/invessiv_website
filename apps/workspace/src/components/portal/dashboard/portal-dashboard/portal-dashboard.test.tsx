@@ -12,6 +12,7 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
+import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import { TaskDueState } from "@invessiv/common/constants/crm/task-due-states";
 import { PortalTaskErrorCode } from "@invessiv/common/constants/portal/portal-task-error-codes";
@@ -167,6 +168,11 @@ function dto(overrides: Partial<PortalDashboardDto> = {}): PortalDashboardDto {
         processSteps: ["Design", "Build", "Launch"],
         currentProcessStep: "Build",
         feedbackRoundPositions: [1, 2],
+        roundProgress: {
+          activeRoundNumber: null,
+          completedRoundNumber: null,
+          approvedRoundNumber: null,
+        },
         nextStep: { label: "First version", dueOn: "2026-10-16" },
         previewUrl: "https://preview.example.test",
         projectLead: null,
@@ -175,6 +181,7 @@ function dto(overrides: Partial<PortalDashboardDto> = {}): PortalDashboardDto {
     completedProjects: [],
     customerTasks: [customerTask("a")],
     ourTasks: [],
+    feedback: null,
     capabilities: { canCompleteTasks: true, isOwnerView: false },
     ...overrides,
   };
@@ -258,7 +265,6 @@ describe("PortalDashboard", () => {
 
     for (const title of [
       content.widgets.onboarding.title,
-      content.widgets.feedback.title,
       content.widgets.hours.title,
       content.widgets.serviceRequest.title,
     ]) {
@@ -266,6 +272,94 @@ describe("PortalDashboard", () => {
       expect(widget).toHaveAttribute("data-mock", "true");
       expect(within(widget).getByText(content.mock.badge)).toBeInTheDocument();
     }
+  });
+
+  it("marks the running round as the current step of the track", () => {
+    const base = dto();
+    renderDashboard(
+      dto({
+        projects: [
+          {
+            ...base.projects[0]!,
+            currentProcessStep: "Design",
+            roundProgress: {
+              activeRoundNumber: 1,
+              completedRoundNumber: null,
+              approvedRoundNumber: null,
+            },
+          },
+        ],
+      }),
+    );
+
+    const track = screen.getByRole("list", { name: "Project progress" });
+    expect(track.querySelector('[aria-current="step"]')).toHaveTextContent(
+      "Feedback round 1",
+    );
+  });
+
+  it("shows whose turn it is per project and links to the feedback page", () => {
+    renderDashboard(
+      dto({
+        feedback: [
+          {
+            projectId: "project-1",
+            projectTitle: "Relaunch",
+            roundNumber: 1,
+            status: FeedbackRoundStatus.Open,
+            dueOn: "2026-10-14",
+            included: 2,
+            used: 1,
+          },
+        ],
+      }),
+      new Set([...FULL_READ, Permission.PortalFeedbackRead]),
+    );
+
+    const widget = screen.getByRole("region", {
+      name: content.widgets.feedback.title,
+    });
+    expect(widget).not.toHaveAttribute("data-mock", "true");
+    expect(within(widget).getByText("Round 1 of 2")).toBeInTheDocument();
+    expect(
+      within(widget).getByText(content.widgets.feedback.turn.open),
+    ).toBeInTheDocument();
+    expect(
+      within(widget).getByRole("link", { name: "Give feedback on Relaunch" }),
+    ).toHaveAttribute(
+      "href",
+      "/en/portal/customer-1/projects/project-1/feedback",
+    );
+    expect(
+      screen.getByRole("link", { name: content.widgets.feedback.projectLink }),
+    ).toHaveAttribute(
+      "href",
+      "/en/portal/customer-1/projects/project-1/feedback",
+    );
+  });
+
+  it("explains the feedback area while no project has round steps", () => {
+    renderDashboard(
+      dto({ feedback: [] }),
+      new Set([...FULL_READ, Permission.PortalFeedbackRead]),
+    );
+
+    expect(
+      screen.getByText(content.widgets.feedback.emptyTitle),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", {
+        name: content.widgets.feedback.projectLink,
+      }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("renders no feedback widget without portal.feedback.read", () => {
+    renderDashboard(dto({ feedback: null }));
+
+    expect(
+      screen.queryByRole("region", { name: content.widgets.feedback.title }),
+    ).not.toBeInTheDocument();
   });
 
   it("shows the newest released files and links to the files page", () => {

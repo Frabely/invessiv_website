@@ -23,6 +23,8 @@ import messagesDe from "./messages/de.json";
 import messagesEn from "./messages/en.json";
 import filesDe from "./files/de.json";
 import filesEn from "./files/en.json";
+import feedbackRoundsDe from "./feedback-rounds/de.json";
+import feedbackRoundsEn from "./feedback-rounds/en.json";
 
 export type CrmMetaDictionary = typeof metaDe;
 export type CrmShellDictionary = typeof shellDe;
@@ -35,6 +37,7 @@ export type CrmTasksDictionary = typeof tasksDe;
 export type CrmAccessDictionary = typeof accessDe;
 export type CrmPortalAccessDictionary = typeof portalAccessDe;
 export type CrmFilesDictionary = typeof filesDe;
+export type CrmFeedbackRoundsDictionary = typeof feedbackRoundsDe;
 /** Phase names come from the cockpit, so the CRM names a phase the same way everywhere. */
 export type CrmMessagesDictionary = typeof messagesDe & {
   phases: CrmCockpitDictionary["projects"]["phases"];
@@ -148,4 +151,15 @@ const CRM_FILES: Record<Locale, CrmFilesDictionary> = {
 
 export function getCrmFilesDictionary(locale: Locale): CrmFilesDictionary {
   return CRM_FILES[locale];
+}
+
+const CRM_FEEDBACK_ROUNDS: Record<Locale, CrmFeedbackRoundsDictionary> = {
+  de: feedbackRoundsDe,
+  en: feedbackRoundsEn,
+};
+
+export function getCrmFeedbackRoundsDictionary(
+  locale: Locale,
+): CrmFeedbackRoundsDictionary {
+  return CRM_FEEDBACK_ROUNDS[locale];
 }

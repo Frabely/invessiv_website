@@ -1,0 +1,113 @@
+{
+  "section": {
+    "title": "Feedbackrunden",
+    "count": "Runde {used} von {included}",
+    "countNone": "{included} Runden geplant",
+    "handOver": "Runde {number} übergeben",
+    "listLabel": "Feedbackrunden dieses Projekts",
+    "expandLabel": "Feedbackrunden aufklappen",
+    "collapseLabel": "Feedbackrunden zuklappen"
+  },
+  "empty": {
+    "title": "Noch keine Runde übergeben",
+    "description": "Hier sammelt der Kunde sein Feedback zu einem Stand, den du ihm übergibst: Punkte je Seite, mit Screenshots. Übergib die erste Runde, sobald es etwas zu sehen gibt.",
+    "readOnlyDescription": "Sobald das Team eine Runde übergibt, erscheint sie hier mit dem Feedback des Kunden."
+  },
+  "blockers": {
+    "PROJECT_NOT_ELIGIBLE": "Runden lassen sich nur in aktiven Projekten übergeben.",
+    "PROJECT_ALREADY_APPROVED": "Der Kunde hat das Projekt abgenommen. Weitere Runden gibt es nicht.",
+    "ROUND_ALREADY_ACTIVE": "Runde {number} läuft noch. Die nächste Runde übergibst du nach ihrem Abschluss.",
+    "QUOTA_EXHAUSTED": "Alle {included} Runden sind übergeben. Für eine weitere Runde füge im Projekt-Editor einen Rundenschritt hinzu.",
+    "FEEDBACK_ROUND_STEP_MISSING": "Die Prozessleiste hat noch keinen Rundenschritt. Füge ihn im Projekt-Editor über „+ Runde“ hinzu.",
+    "PROJECT_NOT_AT_FEEDBACK_STEP": "Runde {number} steht später in der Prozessleiste. Setze den aktuellen Schritt auf den Schritt direkt davor."
+  },
+  "status": {
+    "open": "Beim Kunden",
+    "submitted": "Eingereicht",
+    "in_discussion": "Im Gespräch",
+    "in_progress": "In Umsetzung",
+    "completed": "Abgeschlossen",
+    "approved": "Abgenommen"
+  },
+  "kind": {
+    "change_request": "Änderungswunsch",
+    "bug": "Fehler"
+  },
+  "row": {
+    "title": "Feedbackrunde {number}",
+    "openNamed": "Feedbackrunde {number} öffnen",
+    "handedOver": "Übergeben am {date}",
+    "submitted": "Eingereicht am {date}",
+    "approved": "Abgenommen am {date}",
+    "due": "Feedback bis {date}",
+    "items": "{count} Punkte",
+    "itemsOne": "1 Punkt",
+    "itemsNone": "Noch keine Punkte",
+    "unread": "Neu"
+  },
+  "detail": {
+    "back": "Alle Runden",
+    "title": "Feedbackrunde {number}",
+    "preview": "Vorschau öffnen",
+    "opensInNewTab": "öffnet in neuem Tab",
+    "handoverNote": "Was ist neu",
+    "due": "Feedback bis {date}",
+    "submittedBy": "Eingereicht von {name} am {date}",
+    "submittedAt": "Eingereicht am {date}",
+    "draftBy": "Zuletzt bearbeitet von {name} am {date}",
+    "draftAt": "Zuletzt bearbeitet am {date}",
+    "noDraft": "Der Kunde hat noch nichts gespeichert.",
+    "openHint": "Die Runde liegt beim Kunden. Du siehst seinen Entwurf; er kann sich bis zum Einreichen noch ändern.",
+    "itemsTitle": "Punkte",
+    "itemsEmpty": "Noch keine Punkte.",
+    "general": "Allgemein",
+    "itemNumber": "Punkt {number}",
+    "showMore": "Ganzen Text anzeigen",
+    "showLess": "Text kürzen",
+    "attachments": "Anhänge von Punkt {number}",
+    "archive": "Alle Anhänge als ZIP",
+    "archiveBusy": "ZIP wird erstellt …",
+    "archiveFilename": "feedbackrunde-{number}.zip"
+  },
+  "handover": {
+    "title": "Feedbackrunde {number} übergeben",
+    "description": "Der Kunde sieht die Runde sofort im Portal und bekommt eine Nachricht im Chat.",
+    "previewUrl": "Vorschau-Link",
+    "previewUrlHint": "HTTPS-Link auf den Stand, zu dem du Feedback möchtest.",
+    "previewUrlPlaceholder": "https://",
+    "handoverNote": "Was ist neu",
+    "handoverNotePlaceholder": "Zum Beispiel: Erste komplette Version aller Seiten",
+    "dueOn": "Feedback bis",
+    "dueOnHint": "Nur ein Hinweis für den Kunden; nichts verfällt.",
+    "areas": "Bereiche",
+    "areasHint": "Der Kunde ordnet jeden Punkt einem Bereich zu. „Allgemein“ gibt es immer.",
+    "areaInput": "Neuer Bereich",
+    "areaInputPlaceholder": "Zum Beispiel: Startseite",
+    "areaAdd": "Hinzufügen",
+    "areaRemove": "Bereich „{name}“ entfernen",
+    "areaCount": "{count} von {max}",
+    "submit": "Runde übergeben",
+    "submitting": "Wird übergeben …",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "validation": {
+      "PREVIEW_URL_INVALID": "Gib einen vollständigen HTTPS-Link an.",
+      "DUE_ON_PAST": "Die Frist darf nicht in der Vergangenheit liegen."
+    },
+    "areaRejections": {
+      "empty": "Gib einen Namen ein.",
+      "tooLong": "Höchstens {max} Zeichen.",
+      "duplicate": "Diesen Bereich gibt es schon.",
+      "limitReached": "Höchstens {max} Bereiche."
+    },
+    "errors": {
+      "validation": "Einige Angaben passen nicht. Prüfe die markierten Felder.",
+      "notFound": "Das Projekt ist nicht mehr erreichbar. Lade die Seite neu.",
+      "internal": "Die Runde wurde nicht übergeben. Versuch es noch einmal."
+    }
+  },
+  "announcements": {
+    "handedOver": "Feedbackrunde {number} ist übergeben.",
+    "alreadyActive": "Feedbackrunde {number} läuft bereits und ist geöffnet."
+  }
+}

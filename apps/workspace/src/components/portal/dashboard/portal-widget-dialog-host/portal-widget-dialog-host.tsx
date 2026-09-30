@@ -37,7 +37,6 @@ export function PortalWidgetDialogHost({
 
   const mock =
     widgetKey === PortalWidgetKey.Onboarding ||
-    widgetKey === PortalWidgetKey.Feedback ||
     widgetKey === PortalWidgetKey.Hours ||
     widgetKey === PortalWidgetKey.ServiceRequest
       ? content.widgets[widgetKey]

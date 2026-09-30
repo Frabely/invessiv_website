@@ -166,9 +166,92 @@ async function removeOldCustomers(tx: ContactDatabaseTransaction) {
   }
 }
 
+/** A contact with an active standard portal membership, created without the invitation flow. */
+async function insertPortalMember(
+  tx: ContactDatabaseTransaction,
+  input: {
+    clerkUserId: string;
+    email: string;
+    lastName: string;
+    customerId: string;
+    personId: string;
+    portalRoleId: string;
+    managerMemberId: string;
+  },
+) {
+  await tx
+    .insert(users)
+    .values({
+      id: randomUUID(),
+      clerk_user_id: input.clerkUserId,
+      primary_email: input.email,
+      first_name: "Portal",
+      last_name: input.lastName,
+      display_name: `${PREFIX} ${input.lastName}`,
+      active: true,
+      version: 1,
+    })
+    .onConflictDoNothing({ target: users.clerk_user_id });
+  const [user] = await tx
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.clerk_user_id, input.clerkUserId))
+    .limit(1);
+  if (!user) throw new Error("Portal E2E contact identity is missing.");
+  const membershipId = randomUUID();
+  await tx.insert(portalMemberships).values({
+    id: membershipId,
+    customer_id: input.customerId,
+    person_id: input.personId,
+    user_id: user.id,
+    activated_at: new Date(),
+    email_notifications_enabled: false,
+    version: 1,
+  });
+  await tx.insert(portalMembershipRoles).values({
+    portal_membership_id: membershipId,
+    role_id: input.portalRoleId,
+    role_realm: AuthRealm.Portal,
+    assigned_by_member_id: input.managerMemberId,
+    assigned_at: new Date(),
+  });
+}
+
+/** Design is the last step before round 1, so the team can hand it over right away. */
+function feedbackProjectRow(
+  id: string,
+  customerId: string,
+  ownerMemberId: string,
+  title: string,
+) {
+  return {
+    id,
+    customer_id: customerId,
+    owner_member_id: ownerMemberId,
+    title: `${PREFIX} ${title}`,
+    status: ProjectStatus.Active,
+    phase: ProjectPhase.Development,
+    process_steps: ["Design", "Entwicklung", "Launch"],
+    current_process_step: "Design",
+    workflow_key: ProjectWorkflowKey.StandardWebV1,
+    billing_model: ProjectBillingModel.FixedPrice,
+    included_feedback_rounds: 2,
+    feedback_round_positions: [1, 2],
+    feedback_areas: ["Startseite", "Kontakt"],
+    preview_url: "https://example.com/preview",
+    next_step_label: null,
+    next_step_due_on: null,
+    started_on: null,
+    budget_cents: null,
+    hourly_rate_cents: null,
+    version: 1,
+  };
+}
+
 export async function preparePortalE2eDatabase(
   managerClerkUserId: string,
   filesContactClerkUserId: string,
+  feedbackContactClerkUserId: string,
 ): Promise<PortalE2eFixture> {
   return getDrizzleDatabaseClient().transaction(async (tx) => {
     const { ownerId, portalId } = await loadSystemRoles(tx);
@@ -182,6 +265,10 @@ export async function preparePortalE2eDatabase(
     const customerA = randomUUID();
     const customerB = randomUUID();
     const filesCustomer = randomUUID();
+    const feedbackCustomer = randomUUID();
+    const feedbackProject = randomUUID();
+    const feedbackApprovalProject = randomUUID();
+    const personFeedback = randomUUID();
     const personA = randomUUID();
     const personB = randomUUID();
     const personExpired = randomUUID();
@@ -220,6 +307,13 @@ export async function preparePortalE2eDatabase(
         preferred_locale: "de",
         version: 1,
       },
+      {
+        id: personFeedback,
+        display_name: `${PREFIX} Feedback Contact`,
+        primary_email: "invessiv-portal-feedback+clerk_test@example.com",
+        preferred_locale: "de",
+        version: 1,
+      },
     ]);
     await tx.insert(customers).values([
       {
@@ -243,7 +337,30 @@ export async function preparePortalE2eDatabase(
         owner_member_id: managerMemberId,
         version: 1,
       },
+      {
+        id: feedbackCustomer,
+        display_name: `${PREFIX} Feedback Customer`,
+        status: CustomerStatus.Active,
+        owner_member_id: managerMemberId,
+        version: 1,
+      },
     ]);
+    await tx
+      .insert(projects)
+      .values([
+        feedbackProjectRow(
+          feedbackProject,
+          feedbackCustomer,
+          managerMemberId,
+          "Feedback-Website",
+        ),
+        feedbackProjectRow(
+          feedbackApprovalProject,
+          feedbackCustomer,
+          managerMemberId,
+          "Feedback-Freigabe",
+        ),
+      ]);
     // Customer B: one feedback round after the design and two before the launch.
     await tx.insert(projects).values({
       id: randomUUID(),
@@ -308,6 +425,20 @@ export async function preparePortalE2eDatabase(
         is_primary: true,
         version: 1,
       },
+      {
+        id: randomUUID(),
+        customer_id: feedbackCustomer,
+        person_id: personFiles,
+        is_primary: true,
+        version: 1,
+      },
+      {
+        id: randomUUID(),
+        customer_id: feedbackCustomer,
+        person_id: personFeedback,
+        is_primary: false,
+        version: 1,
+      },
     ]);
 
     const filesUserId = randomUUID();
@@ -349,6 +480,25 @@ export async function preparePortalE2eDatabase(
       assigned_at: new Date(),
     });
 
+    await insertPortalMember(tx, {
+      clerkUserId: filesContactClerkUserId,
+      email: "invessiv-portal-files+clerk_test@example.com",
+      lastName: "Files Contact",
+      customerId: feedbackCustomer,
+      personId: personFiles,
+      portalRoleId: portalId,
+      managerMemberId,
+    });
+    await insertPortalMember(tx, {
+      clerkUserId: feedbackContactClerkUserId,
+      email: "invessiv-portal-feedback+clerk_test@example.com",
+      lastName: "Feedback Contact",
+      customerId: feedbackCustomer,
+      personId: personFeedback,
+      portalRoleId: portalId,
+      managerMemberId,
+    });
+
     const expiredToken = randomBytes(32).toString("base64url");
     const invitationId = randomUUID();
     await tx.insert(portalInvitations).values({
@@ -370,6 +520,9 @@ export async function preparePortalE2eDatabase(
       customerA,
       customerB,
       filesCustomer,
+      feedbackCustomer,
+      feedbackProject,
+      feedbackApprovalProject,
       assignmentA,
       assignmentB,
       assignmentOther,

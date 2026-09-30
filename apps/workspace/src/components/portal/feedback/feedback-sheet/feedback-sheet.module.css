@@ -1,0 +1,73 @@
+.sheet {
+  display: grid;
+  gap: 1rem;
+}
+
+.visible,
+.empty,
+.hint {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+.empty {
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.items {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.add {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+}
+
+.error {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: var(--font-size-ui-sm);
+}
+
+/*
+ * Save state and the two actions stay in reach while scrolling a long sheet; on phones the bar
+ * sits above the safe area so the submit button never hides behind the browser chrome.
+ */
+.bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.9rem 0 calc(0.9rem + var(--mobile-safe-bottom, 0px));
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.approve {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+}

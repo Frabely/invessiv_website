@@ -1,0 +1,98 @@
+.list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  padding: 0.7rem 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.item:first-child {
+  border-top: 0;
+}
+
+.text {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.project {
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.75rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+.none {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  grid-column: 1 / -1;
+  justify-self: start;
+  min-height: 44px;
+  padding: 0 1rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* Only the customer's turn gets the loud button; everything else stays a quiet way in. */
+.link[data-primary="true"] {
+  border-color: var(--color-cta);
+  background: var(--color-cta);
+  color: var(--color-on-cta);
+}
+
+.link:hover {
+  border-color: var(--color-cta);
+}
+
+.link[data-primary="true"]:hover {
+  background: var(--color-cta-hover);
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.empty {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.empty p {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+.empty .emptyTitle {
+  color: var(--color-text);
+  font-weight: 600;
+}

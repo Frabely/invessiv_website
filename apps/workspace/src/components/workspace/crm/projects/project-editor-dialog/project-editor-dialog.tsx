@@ -4,6 +4,7 @@ import { type SubmitEvent, useId, useState } from "react";
 import { ProjectErrorCode } from "@invessiv/common/constants/crm/errors/project-error-codes";
 import type { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import type { ProjectDto } from "@invessiv/common/contracts/crm/project.dto";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { FormDialog, FormField } from "@invessiv/ui";
 import { projectsApiService } from "@/client/crm/projects-api-service";
 import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
@@ -25,6 +26,11 @@ export type ProjectEditorDialogProps = {
   project: ProjectDto | null;
   /** Preselects a current step, e.g. after clicking a step in the track. */
   nextCurrentStep?: string;
+  /**
+   * Round that is running right now; the track ignores the current step meanwhile, so the select
+   * is locked and says why. Between rounds the step is free again.
+   */
+  runningFeedbackRound?: number | null;
   onCloseAction: () => void;
 };
 
@@ -33,6 +39,7 @@ export function ProjectEditorDialog({
   customerId,
   project,
   nextCurrentStep,
+  runningFeedbackRound = null,
   onCloseAction,
 }: ProjectEditorDialogProps) {
   const formId = useId();
@@ -129,6 +136,7 @@ export function ProjectEditorDialog({
           <label htmlFor={currentStepId}>{content.currentProcessStep}</label>
           <select
             aria-describedby={currentStepHintId}
+            disabled={runningFeedbackRound !== null}
             id={currentStepId}
             onChange={(event) =>
               setValues((current) => ({
@@ -148,7 +156,11 @@ export function ProjectEditorDialog({
             ))}
           </select>
           <small className={styles.hint} id={currentStepHintId}>
-            {content.currentProcessStepHint}
+            {runningFeedbackRound !== null
+              ? formatMessage(content.currentProcessStepLocked, {
+                  number: runningFeedbackRound,
+                })
+              : content.currentProcessStepHint}
           </small>
         </div>
         {mutation.hasConflict ? (

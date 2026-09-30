@@ -39,6 +39,7 @@ function toSummaryDto(
     roundNumber: row.round_number,
     status: row.status,
     handedOverAt: row.handed_over_at.toISOString(),
+    previewUrl: row.preview_url,
     dueOn: row.due_on,
     submittedAt: row.submitted_at?.toISOString() ?? null,
     completedAt: row.completed_at?.toISOString() ?? null,
@@ -49,10 +50,14 @@ function toSummaryDto(
   };
 }
 
+/** `contactNames` resolves portal memberships to display names; a missing one maps to null. */
 function toDto(
   row: FeedbackRoundRow,
   items: readonly LoadedFeedbackItem[],
+  contactNames: ReadonlyMap<string, string>,
 ): FeedbackRoundDto {
+  const nameOf = (id: string | null) =>
+    id === null ? null : (contactNames.get(id) ?? null);
   return {
     id: row.id,
     projectId: row.project_id,
@@ -66,8 +71,10 @@ function toDto(
     handedOverByMemberId: row.handed_over_by_member_id,
     handedOverAt: row.handed_over_at.toISOString(),
     draftUpdatedAt: row.draft_updated_at?.toISOString() ?? null,
+    draftUpdatedByName: nameOf(row.draft_updated_by_portal_membership_id),
     submittedAt: row.submitted_at?.toISOString() ?? null,
     submittedByPortalMembershipId: row.submitted_by_portal_membership_id,
+    submittedByName: nameOf(row.submitted_by_portal_membership_id),
     customerNotice: row.customer_notice,
     startedAt: row.started_at?.toISOString() ?? null,
     completedAt: row.completed_at?.toISOString() ?? null,

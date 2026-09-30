@@ -26,6 +26,7 @@ import { portalCanOn } from "@/server/portal/shared/portal-can-on";
 import { portalProjectCondition } from "@/server/portal/shared/portal-project-condition";
 import { portalFileService } from "@/server/portal/services/files/portal-file-service";
 import { feedbackRoundItemService } from "@/server/shared/services/feedback/feedback-round-item-service";
+import { loadFeedbackContactNames } from "@/server/shared/services/feedback/load-feedback-contact-names";
 import type {
   FeedbackReadExecutor,
   FeedbackRoundRow,
@@ -124,13 +125,23 @@ async function toRoundDtos(
   reader: PortalReader,
   rounds: readonly FeedbackRoundRow[],
 ): Promise<PortalFeedbackRoundDto[]> {
-  const items = await feedbackRoundItemService.loadByRound(
-    executor,
-    rounds.map((round) => round.id),
-    portalFileService.visibleCondition(reader),
-  );
+  const [items, contactNames] = await Promise.all([
+    feedbackRoundItemService.loadByRound(
+      executor,
+      rounds.map((round) => round.id),
+      portalFileService.visibleCondition(reader),
+    ),
+    loadFeedbackContactNames(
+      executor,
+      rounds.map((round) => round.draft_updated_by_portal_membership_id),
+    ),
+  ]);
   return rounds.map((round) =>
-    portalFeedbackMappingService.toRoundDto(round, items.get(round.id) ?? []),
+    portalFeedbackMappingService.toRoundDto(
+      round,
+      items.get(round.id) ?? [],
+      contactNames,
+    ),
   );
 }
 

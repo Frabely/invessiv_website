@@ -28,7 +28,7 @@ async function writeBinding(
     { tx, table: files, id: file.id, expectedVersion: file.version, patch },
     "Locked feedback file changed",
   );
-  return feedbackMappingService.fileToAttachmentDto(row);
+  return feedbackMappingService.toAttachmentDto(row);
 }
 
 /** A file without project joins the round's project; the item binding requires one. */

@@ -11,7 +11,7 @@ import { UPLOAD_ACCEPT_ATTRIBUTE } from "@invessiv/common/constants/files/upload
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { FileDropZoneVariant } from "@invessiv/common/constants/ui/file-drop-zone-variants";
 import type { FileDto } from "@invessiv/common/contracts/files/file.dto";
-import { filePresentation } from "@invessiv/common/patterns/files/file-presentation";
+import { filePreviewSelection } from "@/common/patterns/files/file-preview-selection";
 import {
   ButtonControl,
   FileArchiveToolbar,
@@ -118,10 +118,7 @@ export function CustomerFilesSection({
       ? filters.filter.projectId
       : (writeTargets[0] ?? null));
   const previewable = useMemo(
-    () =>
-      list.files.filter(
-        (file) => filePresentation.previewKindOf(file) !== null,
-      ),
+    () => filePreviewSelection.list(list.files),
     [list.files],
   );
   const memberNames = useMemo(
@@ -136,11 +133,8 @@ export function CustomerFilesSection({
   // means a file that disappeared (deleted, filtered out) closes the lightbox instead of silently
   // showing whatever now sits at the old index.
   const previewFileId = overlay?.kind === "preview" ? overlay.fileId : null;
-  const previewIndex =
-    previewFileId === null
-      ? null
-      : previewable.findIndex((file) => file.id === previewFileId);
-  const previewOpen = previewIndex !== null && previewIndex >= 0;
+  const previewIndex = filePreviewSelection.indexOf(previewable, previewFileId);
+  const previewOpen = previewIndex >= 0;
   const isFileOverlayOpen =
     overlay !== null && (overlay.kind !== "preview" || previewOpen);
   const drag = useFileDragTarget(openUpload, !canWrite || isFileOverlayOpen);
@@ -273,7 +267,7 @@ export function CustomerFilesSection({
                 }}
               />
             ) : null}
-            {previewIndex !== null && previewIndex >= 0 ? (
+            {previewIndex >= 0 ? (
               <FileLightbox
                 files={previewable}
                 index={previewIndex}

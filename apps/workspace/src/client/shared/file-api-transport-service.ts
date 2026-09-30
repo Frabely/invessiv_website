@@ -6,6 +6,7 @@ import { MediaType } from "@invessiv/common/constants/http/media-types";
 import type { StorageDisposition } from "@invessiv/common/constants/storage/storage-options";
 import type { StorageUploadTicket } from "@invessiv/common/contracts/storage/storage-upload-ticket";
 import { versionedJsonMutationService } from "@/client/shared/versioned-json-mutation-service";
+import { readApiErrorCode } from "@/common/patterns/client/read-api-error-code";
 import { FileQueryParam } from "@/common/constants/files/file-query-params";
 import type { FileClientErrorCode } from "@/common/contracts/files/file-client-error-code";
 import type { FileClientResult } from "@/common/contracts/files/file-client-result";
@@ -30,10 +31,7 @@ function isFileEntry(
 }
 
 function readCode(payload: unknown): FileClientErrorCode {
-  const code = isRecord(payload) ? payload.code : undefined;
-  return (
-    KNOWN_CODES.find((known) => known === code) ?? FileApiErrorCode.Internal
-  );
+  return readApiErrorCode(payload, KNOWN_CODES, FileApiErrorCode.Internal);
 }
 
 async function request<T>(

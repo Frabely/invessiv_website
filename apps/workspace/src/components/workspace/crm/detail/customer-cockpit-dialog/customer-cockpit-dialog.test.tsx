@@ -14,7 +14,11 @@ const navigation = vi.hoisted(() => ({
   replace: vi.fn(),
 }));
 
-vi.mock("next/navigation", () => ({ useRouter: () => navigation }));
+vi.mock("next/navigation", () => ({
+  useRouter: () => navigation,
+  usePathname: () => "/de/crm",
+  useSearchParams: () => new URLSearchParams(),
+}));
 
 describe("CustomerCockpitDialog", () => {
   afterEach(cleanup);

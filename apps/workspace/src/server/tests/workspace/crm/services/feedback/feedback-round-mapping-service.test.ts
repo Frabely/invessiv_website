@@ -12,7 +12,9 @@ vi.mock("server-only", () => ({}));
 
 describe("feedbackRoundMappingService.toDto", () => {
   it("maps every round column and keeps nullable ones null", () => {
-    expect(feedbackRoundMappingService.toDto(roundRow(), [])).toEqual({
+    expect(
+      feedbackRoundMappingService.toDto(roundRow(), [], new Map()),
+    ).toEqual({
       id: ROUND_ID,
       projectId: "22222222-2222-4222-8222-222222222222",
       customerId: "11111111-1111-4111-8111-111111111111",
@@ -25,8 +27,10 @@ describe("feedbackRoundMappingService.toDto", () => {
       handedOverByMemberId: "66666666-6666-4666-8666-666666666666",
       handedOverAt: "2026-09-01T08:00:00.000Z",
       draftUpdatedAt: null,
+      draftUpdatedByName: null,
       submittedAt: null,
       submittedByPortalMembershipId: null,
+      submittedByName: null,
       customerNotice: null,
       startedAt: null,
       completedAt: null,
@@ -41,10 +45,30 @@ describe("feedbackRoundMappingService.toDto", () => {
     });
   });
 
+  it("names the contacts behind the draft and the submission", () => {
+    const membershipId = "99999999-9999-4999-8999-999999999999";
+    const dto = feedbackRoundMappingService.toDto(
+      roundRow({
+        status: FeedbackRoundStatus.Submitted,
+        submitted_at: new Date(),
+        submitted_by_portal_membership_id: membershipId,
+        draft_updated_by_portal_membership_id: membershipId,
+      }),
+      [],
+      new Map([[membershipId, "Anna Berger"]]),
+    );
+    expect(dto).toMatchObject({
+      submittedByName: "Anna Berger",
+      draftUpdatedByName: "Anna Berger",
+    });
+  });
+
   it("maps items with the internal result and attachments", () => {
-    const [item] = feedbackRoundMappingService.toDto(roundRow(), [
-      loadedItem(),
-    ]).items;
+    const [item] = feedbackRoundMappingService.toDto(
+      roundRow(),
+      [loadedItem()],
+      new Map(),
+    ).items;
     expect(item).toEqual({
       id: ITEM_ID,
       position: 0,
@@ -79,6 +103,7 @@ describe("feedbackRoundMappingService.toSummaryDto", () => {
       roundNumber: 1,
       status: FeedbackRoundStatus.Submitted,
       handedOverAt: "2026-09-01T08:00:00.000Z",
+      previewUrl: null,
       dueOn: "2026-09-10",
       submittedAt: "2026-09-03T09:00:00.000Z",
       completedAt: null,

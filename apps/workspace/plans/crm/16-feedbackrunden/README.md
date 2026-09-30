@@ -1,6 +1,6 @@
 # Ordner 16 — Feedbackrunden
 
-> **Status:** läuft (16.1 gemerged, 16.2 läuft) · **Abhängigkeiten:** 07, 08, 13, 13a, 14 (14.2 und 14.5 gemerged) · **Aufwand:** 13–16 Tage
+> **Status:** läuft (16.1–16.3 gemerged, 16.4 läuft) · **Abhängigkeiten:** 07, 08, 13, 13a, 14 (14.2 und 14.5 gemerged) · **Aufwand:** 13–16 Tage
 > gesamt · **Reviewziel:** sechs Teil-PRs mit je 30–95 Dateien
 
 > **Neuzuschnitt 29.09.2026 (mit dem Owner abgestimmt):** Ersetzt die bisherigen Task-Pläne 22
@@ -22,14 +22,14 @@ Feedbackbereich in einem Ordner, wird aber in sechs Teil-PRs geliefert. Jede Tei
 einen eigenen PR, einen eigenen Status in der Tabelle unten und hält `master` deploybar. Reine Fundamente bleiben
 unsichtbar; sichtbare Funktionen werden vertikal vollständig geliefert.
 
-| PR   | Task | Branch                                | Datei                                                                            | Nach Merge sichtbar                                                                     | Dateien | Umsetzung       | Status    |
-| ---- | ---- | ------------------------------------- | -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ------: | --------------- | --------- |
-| 16.1 | 57   | `feat/crm-feedback-1-prozessblock`    | [`57-feedbackblock-und-kontingent.md`](./57-feedbackblock-und-kontingent.md)     | Einzelne Feedbackrunden im Projekt-Editor, in CRM- und Portal-Leiste                    |   60–75 | Claude · max    | gemerged  |
-| 16.2 | 58   | `feat/crm-feedback-2-datenmodell`     | [`58-datenmodell-und-fundament.md`](./58-datenmodell-und-fundament.md)           | nichts                                                                                  |   45–65 | GPT · max       | läuft     |
-| 16.3 | 59   | `feat/crm-feedback-3-api`             | [`59-server-api-uebergabe-und-bogen.md`](./59-server-api-uebergabe-und-bogen.md) | nichts (API ohne Aufrufer)                                                              |   60–80 | GPT · max       | im Review |
-| 16.4 | 60   | `feat/crm-feedback-4-uebergabe-bogen` | [`60-ui-uebergabe-und-kundenbogen.md`](./60-ui-uebergabe-und-kundenbogen.md)     | Intern: Runde übergeben, Runde lesen. Portal: Feedbackbogen, Widget, aktive Leiste      |   70–95 | Claude · max    | offen     |
-| 16.5 | 61   | `feat/crm-feedback-5-bearbeitung`     | [`61-bearbeitung-ergebnisse-abnahme.md`](./61-bearbeitung-ergebnisse-abnahme.md) | Intern: Gespräch, Umsetzung, Zurück, Ergebnisse, Abschluss. Portal: Ergebnisse, Abnahme |   70–90 | Claude · max    | offen     |
-| 16.6 | 62   | `feat/crm-feedback-6-eingang`         | [`62-eingang-und-zaehler.md`](./62-eingang-und-zaehler.md)                       | Interner Feedback-Eingang mit Sidebar-Zähler                                            |   30–45 | Claude · mittel | offen     |
+| PR   | Task | Branch                                | Datei                                                                            | Nach Merge sichtbar                                                                     | Dateien | Umsetzung       | Status   |
+| ---- | ---- | ------------------------------------- | -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | ------: | --------------- | -------- |
+| 16.1 | 57   | `feat/crm-feedback-1-prozessblock`    | [`57-feedbackblock-und-kontingent.md`](./57-feedbackblock-und-kontingent.md)     | Einzelne Feedbackrunden im Projekt-Editor, in CRM- und Portal-Leiste                    |   60–75 | Claude · max    | gemerged |
+| 16.2 | 58   | `feat/crm-feedback-2-datenmodell`     | [`58-datenmodell-und-fundament.md`](./58-datenmodell-und-fundament.md)           | nichts                                                                                  |   45–65 | GPT · max       | läuft    |
+| 16.3 | 59   | `feat/crm-feedback-3-api`             | [`59-server-api-uebergabe-und-bogen.md`](./59-server-api-uebergabe-und-bogen.md) | nichts (API ohne Aufrufer)                                                              |   60–80 | GPT · max       | gemerged |
+| 16.4 | 60   | `feat/crm-feedback-4-uebergabe-bogen` | [`60-ui-uebergabe-und-kundenbogen.md`](./60-ui-uebergabe-und-kundenbogen.md)     | Intern: Runde übergeben, Runde lesen. Portal: Feedbackbogen, Widget, aktive Leiste      |   70–95 | Claude · max    | läuft    |
+| 16.5 | 61   | `feat/crm-feedback-5-bearbeitung`     | [`61-bearbeitung-ergebnisse-abnahme.md`](./61-bearbeitung-ergebnisse-abnahme.md) | Intern: Gespräch, Umsetzung, Zurück, Ergebnisse, Abschluss. Portal: Ergebnisse, Abnahme |   70–90 | Claude · max    | offen    |
+| 16.6 | 62   | `feat/crm-feedback-6-eingang`         | [`62-eingang-und-zaehler.md`](./62-eingang-und-zaehler.md)                       | Interner Feedback-Eingang mit Sidebar-Zähler                                            |   30–45 | Claude · mittel | offen    |
 
 **Umsetzung (Modell · Variante):** Empfehlung wie in `14-dateien`: GPT für Migrationen mit vielen Constraints,
 Nebenläufigkeit und Autorisierungs-Negativtests; Claude für UI, Copy (`frontend-design`, `copywriting`) und

@@ -9,6 +9,7 @@ import { feedbackRounds } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessScope } from "@/common/patterns/auth/access-scope";
 import { feedbackRoundItemService } from "@/server/shared/services/feedback/feedback-round-item-service";
+import { loadFeedbackContactNames } from "@/server/shared/services/feedback/load-feedback-contact-names";
 import { feedbackRoundMappingService } from "@/server/workspace/crm/services/feedback/feedback-round-mapping-service";
 import { feedbackRoundSchemas } from "@/server/workspace/crm/services/feedback/feedback-round-schemas";
 import { fileAccessService } from "@/server/workspace/crm/services/files/file-access-service";
@@ -42,10 +43,20 @@ export async function getFeedbackRound(
     .limit(1);
   if (!round) return null;
 
-  const items = await feedbackRoundItemService.loadByRound(
-    db,
-    [round.id],
-    fileAccessService.readableCondition(actor),
+  const [items, contactNames] = await Promise.all([
+    feedbackRoundItemService.loadByRound(
+      db,
+      [round.id],
+      fileAccessService.readableCondition(actor),
+    ),
+    loadFeedbackContactNames(db, [
+      round.draft_updated_by_portal_membership_id,
+      round.submitted_by_portal_membership_id,
+    ]),
+  ]);
+  return feedbackRoundMappingService.toDto(
+    round,
+    items.get(round.id) ?? [],
+    contactNames,
   );
-  return feedbackRoundMappingService.toDto(round, items.get(round.id) ?? []);
 }

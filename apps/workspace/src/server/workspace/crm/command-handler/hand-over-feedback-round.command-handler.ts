@@ -156,6 +156,9 @@ export async function handOverFeedbackRound(
       actor: { type: ActorType.User, userId: actor.userId },
       projectTitle: project.title,
     });
-    return { ok: true, round: feedbackRoundMappingService.toDto(round, []) };
+    return {
+      ok: true,
+      round: feedbackRoundMappingService.toDto(round, [], new Map()),
+    };
   });
 }

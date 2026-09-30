@@ -5,7 +5,6 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   faCirclePlus,
   faClock,
-  faHandHoldingHeart,
   faRocket,
 } from "@fortawesome/free-solid-svg-icons";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
@@ -22,6 +21,7 @@ import {
   readPortalDashboardProject,
   readPortalDashboardWidget,
 } from "@/common/patterns/portal/portal-dashboard-query";
+import { buildPortalFeedbackPath } from "@/common/patterns/portal/portal-feedback-path";
 import { describeUnreadBadge } from "@/common/patterns/crm/describe-unread-badge";
 import type { Locale } from "@/config/i18n";
 import { PortalConversation } from "@/components/portal/messages/portal-conversation/portal-conversation";
@@ -38,6 +38,7 @@ import { PortalCompletedProjectsWidget } from "../widgets/portal-completed-proje
 import { PortalContactWidget } from "../widgets/portal-contact-widget/portal-contact-widget";
 import { PortalCustomerTasksDialogContent } from "../widgets/portal-customer-tasks-widget/portal-customer-tasks-dialog-content";
 import { PortalCustomerTasksWidget } from "../widgets/portal-customer-tasks-widget/portal-customer-tasks-widget";
+import { PortalFeedbackWidget } from "../widgets/portal-feedback-widget/portal-feedback-widget";
 import { PortalFilesWidget } from "../widgets/portal-files-widget/portal-files-widget";
 import { PortalMockWidget } from "../widgets/portal-mock-widget/portal-mock-widget";
 import { PortalOurTasksWidget } from "../widgets/portal-our-tasks-widget/portal-our-tasks-widget";
@@ -158,7 +159,6 @@ export function PortalDashboard({
   const mockDialog = (
     key:
       | typeof PortalWidgetKey.Onboarding
-      | typeof PortalWidgetKey.Feedback
       | typeof PortalWidgetKey.Hours
       | typeof PortalWidgetKey.ServiceRequest,
     icon: Parameters<typeof PortalMockWidget>[0]["icon"],
@@ -182,6 +182,19 @@ export function PortalDashboard({
     [PortalWidgetKey.Project]: selectedProject ? (
       <PortalProjectWidget
         content={content.widgets.project}
+        feedbackHref={
+          dashboard.feedback?.some(
+            (entry) =>
+              entry.projectId === selectedProject.id && entry.status !== null,
+          )
+            ? buildPortalFeedbackPath({
+                locale,
+                customerId,
+                projectId: selectedProject.id,
+              })
+            : null
+        }
+        feedbackLinkLabel={content.widgets.feedback.projectLink}
         locale={locale}
         onSelectProjectAction={(project) =>
           navigate({ project }, PortalDashboardNavigationMode.Replace)
@@ -210,10 +223,14 @@ export function PortalDashboard({
         today={today}
       />
     ),
-    [PortalWidgetKey.Feedback]: mockDialog(
-      PortalWidgetKey.Feedback,
-      faHandHoldingHeart,
-    ),
+    [PortalWidgetKey.Feedback]: dashboard.feedback ? (
+      <PortalFeedbackWidget
+        content={content.widgets.feedback}
+        customerId={customerId}
+        entries={dashboard.feedback}
+        locale={locale}
+      />
+    ) : null,
     [PortalWidgetKey.Hours]: mockDialog(PortalWidgetKey.Hours, faClock),
     [PortalWidgetKey.Contact]: dashboard.contact ? (
       <PortalContactWidget

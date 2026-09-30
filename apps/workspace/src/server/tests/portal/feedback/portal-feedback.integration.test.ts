@@ -188,7 +188,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       const own = await customerLink();
       expect(await attach(first.id, own)).toMatchObject({
         ok: true,
-        value: { fileId: own },
+        value: { id: own },
       });
       expect(await readFile(own)).toMatchObject({
         project_id: projectId,
@@ -254,7 +254,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
           itemId: kept.id,
           fileId: keptFile,
         }),
-      ).toMatchObject({ ok: true, value: { fileId: keptFile } });
+      ).toMatchObject({ ok: true, value: { id: keptFile } });
       expect(await save(roundId, [kept], 2)).toMatchObject({ ok: true });
       for (const id of [keptFile, removedFile])
         expect(await readFile(id)).toMatchObject({

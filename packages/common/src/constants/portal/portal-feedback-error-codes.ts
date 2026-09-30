@@ -14,3 +14,17 @@ export const PortalFeedbackErrorCode = {
 
 export type PortalFeedbackErrorCode =
   (typeof PortalFeedbackErrorCode)[keyof typeof PortalFeedbackErrorCode];
+
+export const PORTAL_FEEDBACK_ERROR_CODE_VALUES = [
+  PortalFeedbackErrorCode.NotFound,
+  PortalFeedbackErrorCode.Locked,
+  PortalFeedbackErrorCode.Validation,
+  PortalFeedbackErrorCode.ItemsRequired,
+  PortalFeedbackErrorCode.ItemTextRequired,
+  PortalFeedbackErrorCode.ItemsPresent,
+  PortalFeedbackErrorCode.NotLatest,
+  PortalFeedbackErrorCode.ConfirmationRequired,
+  PortalFeedbackErrorCode.AttachmentLimit,
+  PortalFeedbackErrorCode.NotAttachable,
+  PortalFeedbackErrorCode.Unavailable,
+] as const;

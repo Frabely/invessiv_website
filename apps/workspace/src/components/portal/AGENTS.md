@@ -71,3 +71,20 @@ Plan: `apps/workspace/plans/crm/14-dateien/55-portal-dateien.md`.
 - Nach eigenem Upload oder Link springt die Ansicht auf „Von dir“, damit der Kunde sieht, was angekommen ist.
 - Das Dashboard-Widget `files` zeigt je Reiter die drei neuesten Einträge und verlinkt die Seite; ohne
   `portal.files.read` wird es nicht gerendert.
+
+## Feedbackbogen (ab Task 60)
+
+Plan: `apps/workspace/plans/crm/16-feedbackrunden/60-ui-uebergabe-und-kundenbogen.md`.
+
+- Komponenten liegen unter `feedback/`; Orchestrator ist `feedback/feedback-page-view`, der Bogen einer offenen Runde
+  `feedback/feedback-sheet`. Welcher Zustand gezeigt wird, entscheidet ausschließlich `portalFeedbackPageState`
+  (`common/patterns/portal/`).
+- Entwurf, Autosave (≈ 1,5 s entprellt), Konflikt und Verlassen-Warnung laufen ausschließlich über `useFeedbackDraft`
+  (`src/hooks/portal/`); API-Aufrufe nur über `portalFeedbackApiService`. Vor Upload, Einreichen und Freigeben wird
+  immer `flush()` abgewartet. Ein 409 zeigt den aktuellen Stand und bietet die eigene Fassung zum Wiederherstellen
+  oder Kopieren an — nie stilles Überschreiben.
+- Bearbeiten nur mit `canSubmit`, Anhängen/Lösen nur mit `canAttach`, Upload zusätzlich mit `portal.files.write`
+  (`canUpload` der Seite). Die Owner-Sicht liest nur und zeigt den Owner-Hinweis mit CRM-Link.
+- Freigeben ohne Änderungen erscheint nur ohne Punkte und nur über `feedback-approve-dialog` mit Pflicht-Haken.
+- Links auf die Seite entstehen nur über `buildPortalFeedbackPath`. Das Dashboard-Widget `feedback` erscheint nur
+  mit `portal.feedback.read` (`dashboard.feedback !== null`).

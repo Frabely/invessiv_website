@@ -31,6 +31,12 @@ const TEST_USERS = [
     lastName: "E2E Files Contact",
     state: portalE2ePaths.filesContactState,
   },
+  {
+    email: "invessiv-portal-feedback+clerk_test@example.com",
+    firstName: "Portal",
+    lastName: "E2E Feedback Contact",
+    state: portalE2ePaths.feedbackContactState,
+  },
 ] as const;
 
 async function ensureTestUsers() {
@@ -83,9 +89,15 @@ test("prepares development Clerk users, database rows and authenticated sessions
   const users = await ensureTestUsers();
   const managerId = users.get(TEST_USERS[0].email);
   const filesContactId = users.get(TEST_USERS[3].email);
+  const feedbackContactId = users.get(TEST_USERS[4].email);
   expect(managerId).toBeTruthy();
   expect(filesContactId).toBeTruthy();
-  const fixture = await preparePortalE2eDatabase(managerId!, filesContactId!);
+  expect(feedbackContactId).toBeTruthy();
+  const fixture = await preparePortalE2eDatabase(
+    managerId!,
+    filesContactId!,
+    feedbackContactId!,
+  );
   await mkdir(portalE2ePaths.directory, { recursive: true });
   await writeFile(portalE2ePaths.fixture, JSON.stringify(fixture), "utf8");
   for (const user of TEST_USERS) {
