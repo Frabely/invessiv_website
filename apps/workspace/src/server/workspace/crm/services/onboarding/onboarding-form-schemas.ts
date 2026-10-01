@@ -22,4 +22,8 @@ export const onboardingFormSchemas = {
     direction: z.union([z.literal(-1), z.literal(1)]),
     expectedFormVersion,
   }),
+  release: z.strictObject({
+    expectedVersion: expectedFormVersion,
+    acknowledgeWarnings: z.boolean(),
+  }),
 } as const;

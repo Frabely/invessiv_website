@@ -9,6 +9,7 @@ export const OnboardingErrorCode = {
   ReviewIncomplete: "ONBOARDING_REVIEW_INCOMPLETE",
   CallDateRequired: "ONBOARDING_CALL_DATE_REQUIRED",
   FileNotAttachable: "ONBOARDING_FILE_NOT_ATTACHABLE",
+  ReleaseWarnings: "ONBOARDING_RELEASE_WARNINGS",
   ValidationError: "VALIDATION_ERROR",
   Internal: "INTERNAL",
 } as const;

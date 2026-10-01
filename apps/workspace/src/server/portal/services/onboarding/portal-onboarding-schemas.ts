@@ -22,4 +22,19 @@ export const portalOnboardingSchemas = {
     z.strictObject({ ...slot, values }),
     z.strictObject({ ...slot, choiceIds }),
   ]),
+  groupEntry: z.strictObject({ id, fieldId: id }),
+  moveGroupEntry: z.strictObject({
+    direction: z.union([z.literal(-1), z.literal(1)]),
+  }),
+  attachFile: z.strictObject({ ...slot, fileId: id }),
+  // A remark is stored trimmed; one without text is no remark and is rejected, not dropped.
+  confirmServices: z.strictObject({
+    confirmed: z.literal(true),
+    note: z
+      .string()
+      .trim()
+      .min(1)
+      .max(QUESTIONNAIRE_LIMITS.noteMaxLength)
+      .nullable(),
+  }),
 } as const;

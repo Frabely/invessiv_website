@@ -238,6 +238,7 @@ describe("onboardingFormMappingService.toFormDto", () => {
     ]);
     expect(dto.answerFiles).toEqual([
       {
+        id: "link-1",
         fieldId: "field-files",
         groupEntryId: null,
         position: 1,

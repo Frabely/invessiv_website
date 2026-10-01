@@ -15,6 +15,7 @@ import { updateLockedVersioned } from "@/server/workspace/shared/update-versione
 import type {
   OnboardingCustomerTransition,
   OnboardingFormRow,
+  OnboardingMemberTransition,
 } from "./onboarding-form-types";
 
 /**
@@ -61,4 +62,46 @@ async function submit(
   return submitted;
 }
 
-export const onboardingFormTransitionService = { submit } as const;
+/** Opens a draft for the customer: from here on the portal shows the form and takes answers. */
+async function release(
+  tx: ContactDatabaseTransaction,
+  form: OnboardingFormRow,
+  context: OnboardingMemberTransition,
+): Promise<OnboardingFormRow> {
+  const released = await updateLockedVersioned(
+    {
+      tx,
+      table: onboardingForms,
+      id: form.id,
+      expectedVersion: form.version,
+      patch: {
+        status: OnboardingFormStatus.Open,
+        released_at: new Date(),
+        released_by_member_id: context.memberId,
+      },
+    },
+    "Locked onboarding form changed",
+  );
+  await activityService.createActivity(tx, {
+    customerId: released.customer_id,
+    projectId: released.project_id,
+    type: ActivityType.StatusChange,
+    body: `${form.status} → ${released.status}`,
+    metadata: {
+      entity: ONBOARDING_FORM_ACTIVITY_ENTITY,
+      onboarding_form_id: released.id,
+      previous_status: form.status,
+      next_status: released.status,
+    },
+    actor: context.actor,
+  });
+  await announceSystemMessage(
+    tx,
+    released.customer_id,
+    SystemMessageKey.OnboardingReleased,
+    { [SystemMessageParam.ProjectTitle]: context.projectTitle },
+  );
+  return released;
+}
+
+export const onboardingFormTransitionService = { release, submit } as const;

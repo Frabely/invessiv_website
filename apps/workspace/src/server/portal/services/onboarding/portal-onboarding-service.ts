@@ -11,7 +11,9 @@ import {
 import { PortalOnboardingErrorCode } from "@invessiv/common/constants/portal/portal-onboarding-error-codes";
 import type { OnboardingBlockReviewRef } from "@invessiv/common/contracts/crm/onboarding/onboarding-block-review-ref";
 import type { QuestionnaireFieldDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-field.dto";
+import type { QuestionnaireGroupEntryDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-group-entry.dto";
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
+import type { PortalOnboardingAnswerSavedDto } from "@invessiv/common/contracts/portal/portal-onboarding-answer-saved.dto";
 import type { PortalOnboardingFormSummaryDto } from "@invessiv/common/contracts/portal/portal-onboarding-form-summary.dto";
 import type { PortalOnboardingFormDto } from "@invessiv/common/contracts/portal/portal-onboarding-form.dto";
 import type { PortalOnboardingResult } from "@invessiv/common/contracts/portal/results/portal-onboarding-result";
@@ -35,11 +37,14 @@ import { portalFileService } from "@/server/portal/services/files/portal-file-se
 import { portalCanOn } from "@/server/portal/shared/portal-can-on";
 import { portalProjectCondition } from "@/server/portal/shared/portal-project-condition";
 import { loadPortalContactNames } from "@/server/shared/services/load-portal-contact-names";
+import { onboardingFormMappingService } from "@/server/shared/services/onboarding/onboarding-form-mapping-service";
 import { onboardingFormReadService } from "@/server/shared/services/onboarding/onboarding-form-read-service";
 import type {
   OnboardingAnswerSlot,
   OnboardingFormRow,
+  OnboardingGroupEntryRow,
 } from "@/server/shared/services/onboarding/onboarding-form-types";
+import { onboardingGroupEntryService } from "@/server/shared/services/onboarding/onboarding-group-entry-service";
 import { portalOnboardingMappingService } from "./portal-onboarding-mapping-service";
 import { portalOnboardingSchemas } from "./portal-onboarding-schemas";
 import type { PortalVisibleOnboardingForm } from "./portal-onboarding-types";
@@ -61,6 +66,19 @@ function canSubmit(reader: PortalReader): boolean {
     !isPortalOwnerView(reader) &&
     canRead(reader) &&
     portalCanOn.forActor(reader, Permission.PortalOnboardingSubmit, {
+      customerId: reader.customerId,
+    })
+  );
+}
+
+/**
+ * Attaching and detaching show files through the portal's file visibility, which needs
+ * `portal.files.read`. Without it a contact could hang files onto a field and never see them again.
+ */
+function canAttach(reader: PortalReader): boolean {
+  return (
+    canSubmit(reader) &&
+    portalCanOn.forReader(reader, Permission.PortalFilesRead, {
       customerId: reader.customerId,
     })
   );
@@ -167,6 +185,19 @@ async function loadReviewRefs(
     .where(eq(onboardingFormBlocks.form_id, formId));
 }
 
+/** The blocks the actor may write into right now, read under the form lock. */
+async function listEditableBlockIds(
+  tx: ContactDatabaseTransaction,
+  actor: PortalActor,
+  form: OnboardingFormRow,
+): Promise<string[]> {
+  return editableBlockIds(
+    actor,
+    form.status,
+    await loadReviewRefs(tx, form.id),
+  );
+}
+
 /**
  * The field of a slot the actor may write right now. A field of another form is `not_found`, a
  * block that is not open for the customer `locked`. A sub-field needs an entry of its own group
@@ -184,11 +215,7 @@ async function findWritableField(
     slot.fieldId,
   );
   if (!field) return notFound();
-  const editable = editableBlockIds(
-    actor,
-    form.status,
-    await loadReviewRefs(tx, form.id),
-  );
+  const editable = await listEditableBlockIds(tx, actor, form);
   if (!editable.includes(field.blockId))
     return { ok: false, code: PortalOnboardingErrorCode.Locked };
 
@@ -213,6 +240,55 @@ async function findWritableField(
     if (!entry) return invalid;
   }
   return { ok: true, value: field };
+}
+
+/**
+ * A group entry of this form whose block the actor may write right now. An entry of another form
+ * is `not_found`, a block that is not open for the customer `locked`.
+ */
+async function findWritableGroupEntry(
+  tx: ContactDatabaseTransaction,
+  actor: PortalActor,
+  form: OnboardingFormRow,
+  entryId: string,
+): Promise<PortalOnboardingResult<OnboardingGroupEntryRow>> {
+  const id = portalOnboardingSchemas.id.safeParse(entryId);
+  const entry = id.success
+    ? await onboardingGroupEntryService.find(tx, id.data)
+    : null;
+  if (!entry || entry.form_id !== form.id) return notFound();
+  const field = await findWritableField(tx, actor, form, {
+    formId: form.id,
+    fieldId: entry.field_id,
+    groupEntryId: null,
+  });
+  return field.ok ? { ok: true, value: entry } : field;
+}
+
+/** The entries of a group in display order, as every group command answers. */
+async function listGroupEntryDtos(
+  executor: ReadExecutor,
+  formId: string,
+  fieldId: string,
+): Promise<QuestionnaireGroupEntryDto[]> {
+  const entries = await onboardingGroupEntryService.listOfField(
+    executor,
+    formId,
+    fieldId,
+  );
+  return entries.map(onboardingFormMappingService.toGroupEntryDto);
+}
+
+/** What every write answers with, for the status line of the form. */
+async function toSavedDto(
+  executor: ReadExecutor,
+  actor: PortalActor,
+): Promise<PortalOnboardingAnswerSavedDto> {
+  const names = await loadPortalContactNames(executor, [actor.membershipId]);
+  return {
+    savedAt: new Date().toISOString(),
+    savedByName: names.get(actor.membershipId) ?? null,
+  };
 }
 
 /** The newest answer row stands for "last edited"; the form head is not touched by autosaves. */
@@ -317,11 +393,16 @@ async function toSummaryDto(
 
 export const portalOnboardingService = {
   canRead,
+  canAttach,
   notFound,
   listVisibleForms,
   findVisibleForm,
   withLockedForm,
+  listEditableBlockIds,
   findWritableField,
+  findWritableGroupEntry,
+  listGroupEntryDtos,
+  toSavedDto,
   toFormDto,
   toSummaryDto,
 } as const;

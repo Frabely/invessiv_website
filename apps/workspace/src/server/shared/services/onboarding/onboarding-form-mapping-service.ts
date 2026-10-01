@@ -41,6 +41,7 @@ function toAnswerFileDto({
   file,
 }: OnboardingAnswerFileWithFile): QuestionnaireAnswerFileDto {
   return {
+    id: link.id,
     fieldId: link.field_id,
     groupEntryId: link.group_entry_id,
     position: link.position,
@@ -130,6 +131,7 @@ function toSummaryDto(
 
 export const onboardingFormMappingService = {
   toAnswerDto,
+  toAnswerFileDto,
   toFormDto,
   toGroupEntryDto,
   toServiceDto,

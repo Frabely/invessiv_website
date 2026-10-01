@@ -6,6 +6,7 @@ export const FileApiErrorCode = {
   PendingLimit: "FILE_PENDING_LIMIT",
   CustomerVisibility: "FILE_CUSTOMER_VISIBILITY",
   FeedbackBound: "FILE_FEEDBACK_BOUND",
+  OnboardingBound: "FILE_ONBOARDING_BOUND",
   UploadOwner: "FILE_UPLOAD_OWNER",
   NotUpload: "FILE_NOT_UPLOAD",
   StorageUnavailable: "FILE_STORAGE_UNAVAILABLE",

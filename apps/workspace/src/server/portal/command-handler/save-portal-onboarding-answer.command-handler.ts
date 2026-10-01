@@ -15,7 +15,6 @@ import { validateQuestionnaireValue } from "@invessiv/common/patterns/crm/questi
 import type { PortalActor } from "@/server/portal/auth/portal-actor";
 import { portalOnboardingSchemas } from "@/server/portal/services/onboarding/portal-onboarding-schemas";
 import { portalOnboardingService } from "@/server/portal/services/onboarding/portal-onboarding-service";
-import { loadPortalContactNames } from "@/server/shared/services/load-portal-contact-names";
 import { onboardingAnswerWriteService } from "@/server/shared/services/onboarding/onboarding-answer-write-service";
 import type { OnboardingSlotContent } from "@/server/shared/services/onboarding/onboarding-form-types";
 
@@ -100,13 +99,9 @@ export async function savePortalOnboardingAnswer(
         { slot: target, content },
         { portalMembershipId: actor.membershipId },
       );
-      const names = await loadPortalContactNames(tx, [actor.membershipId]);
       return {
         ok: true,
-        value: {
-          savedAt: new Date().toISOString(),
-          savedByName: names.get(actor.membershipId) ?? null,
-        },
+        value: await portalOnboardingService.toSavedDto(tx, actor),
       };
     },
   );

@@ -125,23 +125,14 @@ async function lockWritableProject(
 }
 
 /**
- * Locks a form for a structure change. Every such write holds this lock, so the status, the block
- * list and the block keys are checked against a stable form. A form the actor may not write
- * behaves like a missing one; a form past its first submission is fixed.
+ * Locks a form the actor may write, whatever its status. A form outside the actor's
+ * `projects.write` scope behaves like a missing one.
  */
-async function lockForStructure(
+async function lockWritableForm(
   tx: ContactDatabaseTransaction,
   formId: string,
   actor: WorkspaceActor,
-): Promise<
-  | { ok: true; form: OnboardingFormRow }
-  | {
-      ok: false;
-      code:
-        | typeof OnboardingErrorCode.FormNotFound
-        | typeof OnboardingErrorCode.NotEditable;
-    }
-> {
+): Promise<OnboardingFormRow | null> {
   const [form] = await tx
     .select()
     .from(onboardingForms)
@@ -166,7 +157,30 @@ async function lockForStructure(
       projectId: form.project_id,
     })
   )
-    return { ok: false, code: OnboardingErrorCode.FormNotFound };
+    return null;
+  return form;
+}
+
+/**
+ * Locks a form for a structure change. Every such write holds this lock, so the status, the block
+ * list and the block keys are checked against a stable form. A form the actor may not write
+ * behaves like a missing one; a form past its first submission is fixed.
+ */
+async function lockForStructure(
+  tx: ContactDatabaseTransaction,
+  formId: string,
+  actor: WorkspaceActor,
+): Promise<
+  | { ok: true; form: OnboardingFormRow }
+  | {
+      ok: false;
+      code:
+        | typeof OnboardingErrorCode.FormNotFound
+        | typeof OnboardingErrorCode.NotEditable;
+    }
+> {
+  const form = await lockWritableForm(tx, formId, actor);
+  if (!form) return { ok: false, code: OnboardingErrorCode.FormNotFound };
   if (!isOnboardingStructureEditable(form.status))
     return { ok: false, code: OnboardingErrorCode.NotEditable };
   return { ok: true, form };
@@ -178,5 +192,6 @@ export const onboardingFormAccessService = {
   findReadableForm,
   findReadableProject,
   lockForStructure,
+  lockWritableForm,
   lockWritableProject,
 } as const;

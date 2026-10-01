@@ -11,6 +11,12 @@ describe("ONBOARDING_ERROR_CODE_VALUES", () => {
     );
   });
 
+  it("names the release that waits for acknowledged warnings", () => {
+    expect(OnboardingErrorCode.ReleaseWarnings).toBe(
+      "ONBOARDING_RELEASE_WARNINGS",
+    );
+  });
+
   it("contains no duplicates", () => {
     expect(new Set(ONBOARDING_ERROR_CODE_VALUES).size).toBe(
       ONBOARDING_ERROR_CODE_VALUES.length,

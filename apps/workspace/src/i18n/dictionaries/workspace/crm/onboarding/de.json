@@ -20,6 +20,7 @@
     "ONBOARDING_REVIEW_INCOMPLETE": "Die Prüfung ist noch nicht abgeschlossen.",
     "ONBOARDING_CALL_DATE_REQUIRED": "Das Datum des Onboarding-Calls fehlt.",
     "ONBOARDING_FILE_NOT_ATTACHABLE": "Die Datei kann nicht angehängt werden.",
+    "ONBOARDING_RELEASE_WARNINGS": "Vor der Freigabe gibt es Hinweise. Prüfe sie und bestätige die Freigabe.",
     "VALIDATION_ERROR": "Die Eingaben sind unvollständig oder ungültig.",
     "INTERNAL": "Das hat nicht geklappt. Versuch es gleich noch einmal."
   },

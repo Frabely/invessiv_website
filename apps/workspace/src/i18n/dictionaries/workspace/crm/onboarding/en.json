@@ -20,6 +20,7 @@
     "ONBOARDING_REVIEW_INCOMPLETE": "The review is not finished yet.",
     "ONBOARDING_CALL_DATE_REQUIRED": "The date of the onboarding call is missing.",
     "ONBOARDING_FILE_NOT_ATTACHABLE": "The file cannot be attached.",
+    "ONBOARDING_RELEASE_WARNINGS": "There are notes to check before the release. Review them and confirm the release.",
     "VALIDATION_ERROR": "The input is incomplete or invalid.",
     "INTERNAL": "That did not work. Try again in a moment."
   },

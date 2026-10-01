@@ -19,6 +19,7 @@ describe("file model constants", () => {
       "FILE_PENDING_LIMIT",
       "FILE_CUSTOMER_VISIBILITY",
       "FILE_FEEDBACK_BOUND",
+      "FILE_ONBOARDING_BOUND",
       "FILE_UPLOAD_OWNER",
       "FILE_NOT_UPLOAD",
       "FILE_STORAGE_UNAVAILABLE",

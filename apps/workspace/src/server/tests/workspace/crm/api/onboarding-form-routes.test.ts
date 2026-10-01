@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { OnboardingErrorCode } from "@invessiv/common/constants/crm/errors/onboarding-error-codes";
 import { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
+import { OnboardingReleaseWarningKind } from "@invessiv/common/constants/crm/onboarding/onboarding-release-warning-kinds";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { HttpHeaderName } from "@invessiv/common/constants/http/http-header-names";
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
@@ -16,6 +17,7 @@ import * as blocksRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/
 import * as fieldMoveRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/fields/[fieldId]/move/route";
 import * as fieldRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/fields/[fieldId]/route";
 import * as fieldUsageRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/fields/[fieldId]/usage/route";
+import * as releaseRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/release/route";
 import * as formRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/route";
 import * as projectOnboardingRoute from "@/app/api/workspace/crm/projects/[projectId]/onboarding/route";
 import {
@@ -46,6 +48,7 @@ const mocks = vi.hoisted(() => ({
   updateOnboardingFormField: vi.fn(),
   deleteOnboardingFormField: vi.fn(),
   moveOnboardingFormField: vi.fn(),
+  releaseOnboardingForm: vi.fn(),
 }));
 
 vi.mock("@/lib/auth/workspace-authentication", () => ({
@@ -98,6 +101,10 @@ vi.mock(
 vi.mock(
   "@/server/workspace/crm/command-handler/move-onboarding-form-field.command-handler",
   () => ({ moveOnboardingFormField: mocks.moveOnboardingFormField }),
+);
+vi.mock(
+  "@/server/workspace/crm/command-handler/release-onboarding-form.command-handler",
+  () => ({ releaseOnboardingForm: mocks.releaseOnboardingForm }),
 );
 
 type Call = (request: NextRequest) => Promise<Response>;
@@ -187,6 +194,12 @@ const WRITES: [string, Call, keyof typeof mocks, unknown[]][] = [
     (r) => fieldMoveRoute.POST(r, fieldContext),
     "moveOnboardingFormField",
     [ID, FIELD_ID],
+  ],
+  [
+    "POST release",
+    (r) => releaseRoute.POST(r, formContext),
+    "releaseOnboardingForm",
+    [ID],
   ],
 ];
 
@@ -420,6 +433,42 @@ describe("CRM onboarding form routes", () => {
     );
     expect(response.status).toBe(status);
     expect(await response.json()).toMatchObject({ error: code });
+  });
+
+  it("answers a release that waits for an acknowledgement with 409 and its warnings", async () => {
+    const warnings = [
+      {
+        kind: OnboardingReleaseWarningKind.MissingTranslation,
+        blockId: BLOCK_ID,
+        locale: "en",
+      },
+      { kind: OnboardingReleaseWarningKind.NoPortalAccess },
+    ];
+    mocks.releaseOnboardingForm.mockResolvedValue({
+      ok: false,
+      code: OnboardingErrorCode.ReleaseWarnings,
+      warnings,
+    });
+    const response = await releaseRoute.POST(
+      request(BASE, HttpMethod.Post, "{}"),
+      formContext,
+    );
+    expect(response.status).toBe(HttpResponseCode.Conflict);
+    expect(await response.json()).toMatchObject({
+      error: OnboardingErrorCode.ReleaseWarnings,
+      details: { warnings },
+    });
+  });
+
+  it("answers a released form with 200 and the form", async () => {
+    const form = { id: ID, version: 2, blocks: [] };
+    mocks.releaseOnboardingForm.mockResolvedValue({ ok: true, value: form });
+    const response = await releaseRoute.POST(
+      request(BASE, HttpMethod.Post, "{}"),
+      formContext,
+    );
+    expect(response.status).toBe(HttpResponseCode.Ok);
+    expect(await response.json()).toEqual(form);
   });
 
   it("passes validation details through with 422", async () => {

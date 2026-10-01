@@ -1,0 +1,118 @@
+import "server-only";
+
+import { and, asc, eq, gt, isNull, sql } from "drizzle-orm";
+
+import type { QuestionnaireAnswerFileDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-answer-file.dto";
+import type { ContactDatabaseTransaction } from "@invessiv/db/core";
+import { onboardingAnswerFiles } from "@invessiv/db/record-configuration";
+import type { FileRow } from "@/server/shared/files/file-object-service-types";
+import { onboardingFormMappingService } from "./onboarding-form-mapping-service";
+import type {
+  OnboardingAnswerFileRow,
+  OnboardingAnswerSlot,
+} from "./onboarding-form-types";
+
+type ReadExecutor = Pick<ContactDatabaseTransaction, "select">;
+
+function slotCondition(slot: OnboardingAnswerSlot) {
+  return and(
+    eq(onboardingAnswerFiles.form_id, slot.formId),
+    eq(onboardingAnswerFiles.field_id, slot.fieldId),
+    slot.groupEntryId === null
+      ? isNull(onboardingAnswerFiles.group_entry_id)
+      : eq(onboardingAnswerFiles.group_entry_id, slot.groupEntryId),
+  );
+}
+
+/** The links of one files slot in display order. */
+function listOfSlot(
+  executor: ReadExecutor,
+  slot: OnboardingAnswerSlot,
+): Promise<OnboardingAnswerFileRow[]> {
+  return executor
+    .select()
+    .from(onboardingAnswerFiles)
+    .where(slotCondition(slot))
+    .orderBy(asc(onboardingAnswerFiles.position));
+}
+
+async function find(
+  executor: ReadExecutor,
+  id: string,
+): Promise<OnboardingAnswerFileRow | null> {
+  const [link] = await executor
+    .select()
+    .from(onboardingAnswerFiles)
+    .where(eq(onboardingAnswerFiles.id, id))
+    .limit(1);
+  return link ?? null;
+}
+
+/** Whether a file hangs on any form; such a file must not be deleted from under it. */
+async function isBound(
+  executor: ReadExecutor,
+  fileId: string,
+): Promise<boolean> {
+  const [link] = await executor
+    .select({ id: onboardingAnswerFiles.id })
+    .from(onboardingAnswerFiles)
+    .where(eq(onboardingAnswerFiles.file_id, fileId))
+    .limit(1);
+  return !!link;
+}
+
+/**
+ * Links a file to a files slot. Whether the slot takes it (field type, kind, limit, ownership)
+ * decides the caller, who also holds the form and the file locked: this is only the one place
+ * `onboarding_answer_files` is written.
+ */
+async function attach(
+  tx: ContactDatabaseTransaction,
+  slot: OnboardingAnswerSlot,
+  file: FileRow,
+  position: number,
+): Promise<QuestionnaireAnswerFileDto> {
+  const [link] = await tx
+    .insert(onboardingAnswerFiles)
+    .values({
+      id: crypto.randomUUID(),
+      form_id: slot.formId,
+      field_id: slot.fieldId,
+      group_entry_id: slot.groupEntryId,
+      file_id: file.id,
+      position,
+    })
+    .returning();
+  return onboardingFormMappingService.toAnswerFileDto({ link, file });
+}
+
+/** Removes the link only; the file stays in the customer's files. The links behind it move up. */
+async function detach(
+  tx: ContactDatabaseTransaction,
+  link: OnboardingAnswerFileRow,
+): Promise<void> {
+  await tx
+    .delete(onboardingAnswerFiles)
+    .where(eq(onboardingAnswerFiles.id, link.id));
+  await tx
+    .update(onboardingAnswerFiles)
+    .set({ position: sql`${onboardingAnswerFiles.position} - 1` })
+    .where(
+      and(
+        slotCondition({
+          formId: link.form_id,
+          fieldId: link.field_id,
+          groupEntryId: link.group_entry_id,
+        }),
+        gt(onboardingAnswerFiles.position, link.position),
+      ),
+    );
+}
+
+export const onboardingAttachmentService = {
+  attach,
+  detach,
+  find,
+  isBound,
+  listOfSlot,
+} as const;

@@ -56,6 +56,13 @@ export type OnboardingCustomerTransition = {
   projectTitle: string;
 };
 
+/** A status change the team triggers, with what its activity and chat notice need. */
+export type OnboardingMemberTransition = {
+  actor: ActivityActor;
+  memberId: string;
+  projectTitle: string;
+};
+
 /** Everything a form DTO is made of, loaded for one viewer. */
 export type OnboardingFormParts = {
   form: OnboardingFormRow;
