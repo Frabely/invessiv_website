@@ -249,6 +249,16 @@ export function OnboardingGroupField({
           <FontAwesomeIcon aria-hidden="true" icon={faPlus} />
           {texts.add}
         </ButtonControl>
+        {field.minItems !== null && field.minItems > 1 ? (
+          <p className={styles.limit}>
+            {formatMessage(
+              entries.length >= field.minItems
+                ? texts.minimumReached
+                : texts.minimum,
+              { min: field.minItems, count: entries.length },
+            )}
+          </p>
+        ) : null}
         {field.maxItems !== null ? (
           <p className={styles.limit}>
             {formatMessage(texts.limit, { max: field.maxItems })}

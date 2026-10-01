@@ -49,6 +49,8 @@
   "field": {
     "clearChoice": "Clear selection",
     "maxChoices": "Pick up to {max}",
+    "minChoices": "Pick at least {min} – {count} so far.",
+    "minChoicesReached": "Pick at least {min} – reached.",
     "characters": "{count} of {max} characters",
     "errors": {
       "empty": "Please fill in this field.",
@@ -69,6 +71,8 @@
       "moveDown": "Move entry {number} down",
       "remove": "Remove entry {number}",
       "limit": "Maximum number of entries: {max}",
+      "minimum": "At least {min} entries – {count} so far.",
+      "minimumReached": "At least {min} entries – reached.",
       "removeDialog": {
         "title": "Remove this entry?",
         "description": "The answers of this entry are lost. Attached files stay under “Files”.",
@@ -85,6 +89,8 @@
       "detach": "Remove {name}",
       "detachTitle": "Detach from the onboarding – the file stays in Files",
       "limit": "Maximum number of files: {max}",
+      "minimum": "At least {min} files – {count} so far.",
+      "minimumReached": "At least {min} files – reached.",
       "noUpload": "You can’t upload files here. Ask the person who looks after the project on your side."
     },
     "services": {

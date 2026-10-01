@@ -309,6 +309,14 @@ describe("OnboardingFormView field types of the full form", () => {
       ).toBeInTheDocument();
     });
 
+    it("says how many entries a group still needs for its minimum", () => {
+      renderView(
+        formOf([{ ...TEAM, minItems: 3 }], { groupEntries: [entry("e-1", 0)] }),
+      );
+
+      expect(screen.getByText("At least 3 entries – 1 so far.")).toBeVisible();
+    });
+
     it("moves an entry and shows the order the server answers with", async () => {
       mocks.moveGroupEntry.mockResolvedValue({
         ok: true,
@@ -547,6 +555,38 @@ describe("OnboardingFormView field types of the full form", () => {
       expect(screen.getByText(content.submit.complete)).toBeInTheDocument();
     });
 
+    it("says how many files a field still needs for its minimum", () => {
+      renderView(
+        formOf([{ ...LOGO, ...REQUIRED, minItems: 5 }], {
+          answerFiles: [
+            link("link-1", "file-1", "logo.png"),
+            link("link-2", "file-2", "mark.png", { position: 1 }),
+          ],
+        }),
+      );
+
+      expect(screen.getByText("At least 5 files – 2 so far.")).toBeVisible();
+    });
+
+    it("says the minimum of a files field is reached once it is", () => {
+      renderView(
+        formOf([{ ...LOGO, minItems: 2 }], {
+          answerFiles: [
+            link("link-1", "file-1", "logo.png"),
+            link("link-2", "file-2", "mark.png", { position: 1 }),
+          ],
+        }),
+      );
+
+      expect(screen.getByText("At least 2 files – reached.")).toBeVisible();
+    });
+
+    it("names no minimum when one file is all a field can need", () => {
+      renderView(formOf([{ ...LOGO, ...REQUIRED, minItems: 1 }]));
+
+      expect(screen.queryByText(/At least/)).toBeNull();
+    });
+
     it("counts a step as started once it holds a file or a group entry", () => {
       const step = () =>
         within(screen.getByRole("list", { name: content.steps.label }))
@@ -782,6 +822,21 @@ describe("OnboardingFormView field types of the full form", () => {
         "form-1",
         { fieldId: "Brand", groupEntryId: null, values: ["#1a2b3c"] },
       );
+    });
+
+    it("says how many options a multiple choice still needs", () => {
+      renderView(
+        formOf([
+          field("Topics", {
+            type: T.MultiChoice,
+            label: "Topics",
+            minItems: 2,
+            choices: choices("Topics", "Rooms", "Team", "Products"),
+          }),
+        ]),
+      );
+
+      expect(screen.getByText("Pick at least 2 – 0 so far.")).toBeVisible();
     });
 
     it("offers five levels between the two poles of a scale", async () => {

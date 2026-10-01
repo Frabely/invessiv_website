@@ -49,6 +49,8 @@
   "field": {
     "clearChoice": "Auswahl entfernen",
     "maxChoices": "Höchstens {max} auswählbar",
+    "minChoices": "Mindestens {min} auswählen – bisher {count}.",
+    "minChoicesReached": "Mindestens {min} auswählen – erreicht.",
     "characters": "{count} von {max} Zeichen",
     "errors": {
       "empty": "Bitte füll dieses Feld aus.",
@@ -69,6 +71,8 @@
       "moveDown": "Eintrag {number} nach unten",
       "remove": "Eintrag {number} entfernen",
       "limit": "Maximale Anzahl an Einträgen: {max}",
+      "minimum": "Mindestens {min} Einträge – bisher {count}.",
+      "minimumReached": "Mindestens {min} Einträge – erreicht.",
       "removeDialog": {
         "title": "Eintrag entfernen?",
         "description": "Die Angaben dieses Eintrags gehen verloren. Angehängte Dateien bleiben unter „Dateien“ erhalten.",
@@ -85,6 +89,8 @@
       "detach": "{name} entfernen",
       "detachTitle": "Vom Onboarding lösen – die Datei bleibt unter Dateien",
       "limit": "Maximale Anzahl an Dateien: {max}",
+      "minimum": "Mindestens {min} Dateien – bisher {count}.",
+      "minimumReached": "Mindestens {min} Dateien – erreicht.",
       "noUpload": "Du kannst hier keine Dateien hochladen. Frag die Person, die bei euch das Projekt betreut."
     },
     "services": {

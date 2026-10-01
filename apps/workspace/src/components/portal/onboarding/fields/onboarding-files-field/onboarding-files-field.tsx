@@ -144,6 +144,16 @@ export function OnboardingFilesField({
           note: null,
         })}
       />
+      {field.minItems !== null && field.minItems > 1 ? (
+        <p className={styles.note}>
+          {formatMessage(
+            links.length >= field.minItems
+              ? texts.minimumReached
+              : texts.minimum,
+            { min: field.minItems, count: links.length },
+          )}
+        </p>
+      ) : null}
       {field.maxItems !== null ? (
         <p className={styles.note}>
           {formatMessage(texts.limit, { max: field.maxItems })}
