@@ -44,11 +44,19 @@ function toFormDto(parts: PortalOnboardingFormParts): PortalOnboardingFormDto {
     answers: form.answers,
     groupEntries: form.groupEntries,
     answerFiles: form.answerFiles,
+    // Without the line item id: the portal confirms what was agreed, it never addresses a service.
+    services: form.services.map(({ title, description, position }) => ({
+      title,
+      description,
+      position,
+    })),
     servicesConfirmed: form.servicesConfirmedAt !== null,
+    servicesNote: form.servicesNote,
     editableBlockIds: [...parts.editableBlockIds],
     lastEditedAt: parts.lastEditedAt?.toISOString() ?? null,
     lastEditedByName: parts.lastEditedByName,
     canSubmit: parts.canSubmit,
+    canAttach: parts.canAttach,
   };
 }
 

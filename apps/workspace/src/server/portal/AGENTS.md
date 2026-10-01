@@ -117,3 +117,7 @@ Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-le
   in einem für den Kunden offenen Block `locked`. Eine Anmerkung ohne Text ist `validation`, nie stillschweigend leer.
 - Jeder dieser Schreibwege antwortet für die Statuszeile mit `portalOnboardingService.toSavedDto` bzw. dem geänderten
   Stand; die Bogen-`version` vergleicht keiner von ihnen.
+- Das Portal-DTO trägt `services` (`PortalOnboardingServiceDto`: Titel, Beschreibung, Position — ohne Preis und ohne
+  die ID der Projektleistung), `servicesNote` und `canAttach` (`portal.onboarding.submit` und `portal.files.read`,
+  nie die Owner-Sicht). Das Dashboard-Widget liest dieselbe Zusammenfassung wie die Übersicht
+  (`listPortalOnboardingForms`); es gibt dafür keine zweite Abfrage und kein Feld im `PortalDashboardDto`.

@@ -127,10 +127,43 @@ Plan: `apps/workspace/plans/crm/15-onboarding/66-portal-formular.md`.
   (`onboardingAnswerDrafts.toAnswers`). Keine Komponente entscheidet selbst, ob ein Feld sichtbar oder Pflicht ist.
   Die Schrittleiste (`ProcessTrack` mit `progress` je Schritt) zeigt je Block offen, angefangen oder vollständig
   (`onboardingStepProgress`), nie einen Haken nur fürs Durchklicken.
-- `questionnaire-field` schaltet je Feldtyp. Task 66 kennt `short_text`, `long_text`, `email`, `phone`, `url`,
-  `choice`, `yes_no`, `multi_choice`; ein unbekannter Typ rendert nichts (Konsolenwarnung nur in der Entwicklung).
-  Gruppen, Dateien, Projektleistungen, Bestätigung, Farbe und Skala folgen mit Task 67.
+- `questionnaire-field` schaltet je Feldtyp und kennt ab Task 67 alle 14 Typen; ein unbekannter Typ rendert nichts
+  (Konsolenwarnung nur in der Entwicklung).
 - Die Leseansicht ist der geteilte `OnboardingAnswerReadView` (`components/shared/onboarding/`), derselbe Baustein wie
   im CRM-Tab „Antworten“. Antworttext läuft ausschließlich über `LinkedText`, nie als HTML.
 - Links auf Übersicht, Bogen und Schritt entstehen nur über `buildPortalOnboardingPath` bzw.
-  `buildPortalOnboardingStepSearch`. Es gibt bis Task 67 keinen Navigationseintrag und kein Widget.
+  `buildPortalOnboardingStepSearch`.
+
+Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-leistungen.md`):
+
+- **Ein Slot statt eines Felds.** Entwürfe, Speicherzustände, ungültige Eingaben und DOM-IDs laufen über den
+  Slot-Schlüssel `onboardingAnswerDrafts.slotKey(fieldId, groupEntryId)`: auf Blockebene die Feld-ID, im Unterfeld
+  Feld plus Gruppeneintrag. Wer ein Feld adressiert, baut nie selbst einen Schlüssel.
+- **Was der Bogen neben Antworten hält**, liegt in `useOnboardingFormState` (`src/hooks/portal/`): Gruppeneinträge,
+  Datei-Verknüpfungen und die Leistungsbestätigung. Gruppenbefehle laufen nacheinander; ein neuer Eintrag erscheint
+  sofort unter einer hier erzeugten ID, und `useOnboardingAutosave` wartet über `waitForEntryAction`, bis er auf dem
+  Server existiert, bevor es ein Unterfeld speichert. Ein Fehler erscheint am Feld, zu dem er gehört. Beim Absenden
+  wartet der Editor `settle()` und `flush()` ab und sendet nicht, solange ein Upload läuft.
+- **Felder bekommen alles über `QuestionnaireFieldProps["form"]`** (Entwürfe, Live-Zustand, Aktionen, Texte). Eine
+  Gruppe rendert ihre Unterfelder über eine Render-Prop durch dieselbe `questionnaire-field`, genau eine Ebene tief;
+  Bedingungen von Unterfeldern werden je Eintrag ausgewertet.
+- **Gruppen** (`fields/onboarding-group-field`): Einträge sind linierte Abschnitte, keine Karten im Schritt. Der Fokus
+  folgt dem Geschehen: in den neuen Eintrag, mit dem verschobenen Eintrag mit (am Rand auf die Gegenrichtung), nach
+  dem Entfernen auf „Eintrag hinzufügen“. Während ein Befehl läuft, bleiben die Schaltflächen fokussierbar
+  (`aria-disabled`) und ignorieren Klicks. Entfernen fragt nur nach, wenn der Eintrag Angaben oder Dateien hat.
+- **Dateien** (`fields/onboarding-files-field`) nutzen `shared/portal-attachment-field/`; hochgeladen wird ins
+  Projekt des Bogens, gelöst wird über die Verknüpfung (`answerFileId`). Anhängen und Lösen nur mit `canAttach` aus
+  dem DTO, Upload zusätzlich mit `canUpload` der Seite (`portal.files.write`, nie die Owner-Sicht).
+- **Projektleistungen** zeigen `services` aus dem DTO ohne Preise. „Passt so“ speichert sofort, eine Anmerkung beim
+  Verlassen des Textfelds; ohne Text wird nichts gesendet.
+- **Farbe** nie als Inline-Style: im Formular trägt der native Farbwähler die Vorschau, in der Leseansicht ein
+  SVG-Attribut (`fill`). **Skala** sind fünf native Radios in einer Spur; die beiden Optionen des Felds sind nur die
+  Pol-Beschriftungen.
+- **Leseansicht:** `OnboardingAnswerReadView` zeigt Gruppeneinträge mit eigenen Antworten, Dateien, Leistungen samt
+  Bestätigung und Anmerkung, Bestätigung, Farbe und Skala. Download und Vorschau reicht der Aufrufer als `files`
+  herein (Portal: `usePortalFileDownloads`, CRM: `useFileDownloads` mit `filesApiService`); ohne `files` stehen nur
+  die Dateinamen da.
+- **Navigation und Widget:** Der Eintrag „Onboarding“ steht in `PORTAL_NAV_ITEMS` hinter `portal.onboarding.read`.
+  Das Widget `onboarding` ist echt (`onlyWithContent`): Die Seite lädt `listPortalOnboardingForms` und meldet Inhalt
+  nur, wenn es einen Bogen gibt. Welchen Bogen es zeigt, entscheidet `pickPortalOnboardingWidgetForm` (der, bei dem
+  der Kunde dran ist, sonst der jüngste); der Fortschritt kommt aus derselben Zusammenfassung wie Übersicht und CRM.

@@ -2,15 +2,12 @@
 
 import { type ReactNode, useId, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import {
-  faCirclePlus,
-  faClock,
-  faRocket,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCirclePlus, faClock } from "@fortawesome/free-solid-svg-icons";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
 import type { PortalConversationDto } from "@invessiv/common/contracts/portal/portal-conversation.dto";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
 import type { PortalFilesOverviewDto } from "@invessiv/common/contracts/portal/portal-files-overview.dto";
+import type { PortalOnboardingFormSummaryDto } from "@invessiv/common/contracts/portal/portal-onboarding-form-summary.dto";
 import { ChatDock, WidgetGrid } from "@invessiv/ui";
 import type { PortalDashboardNavigationMode as PortalDashboardNavigationModeType } from "@/common/constants/portal/portal-dashboard-navigation-modes";
 import { PortalDashboardNavigationMode } from "@/common/constants/portal/portal-dashboard-navigation-modes";
@@ -21,6 +18,7 @@ import {
   readPortalDashboardProject,
   readPortalDashboardWidget,
 } from "@/common/patterns/portal/portal-dashboard-query";
+import { pickPortalOnboardingWidgetForm } from "@/common/patterns/portal/pick-portal-onboarding-widget-form";
 import { buildPortalFeedbackPath } from "@/common/patterns/portal/portal-feedback-path";
 import { describeUnreadBadge } from "@/common/patterns/crm/describe-unread-badge";
 import type { Locale } from "@/config/i18n";
@@ -41,6 +39,7 @@ import { PortalCustomerTasksWidget } from "../widgets/portal-customer-tasks-widg
 import { PortalFeedbackWidget } from "../widgets/portal-feedback-widget/portal-feedback-widget";
 import { PortalFilesWidget } from "../widgets/portal-files-widget/portal-files-widget";
 import { PortalMockWidget } from "../widgets/portal-mock-widget/portal-mock-widget";
+import { PortalOnboardingWidget } from "../widgets/portal-onboarding-widget/portal-onboarding-widget";
 import { PortalOurTasksWidget } from "../widgets/portal-our-tasks-widget/portal-our-tasks-widget";
 import { PortalProjectWidget } from "../widgets/portal-project-widget/portal-project-widget";
 import styles from "./portal-dashboard.module.css";
@@ -61,6 +60,8 @@ export type PortalDashboardProps = {
   filesContent: PortalFilesDictionary;
   locale: Locale;
   messagesContent: PortalMessagesDictionary;
+  /** The released forms of the company, newest first; empty without `portal.onboarding.read`. */
+  onboarding: readonly PortalOnboardingFormSummaryDto[];
   /** Business day (`YYYY-MM-DD`) decided once on the server. */
   today: string;
   /** Already filtered on the server by permission and content. */
@@ -84,6 +85,7 @@ export function PortalDashboard({
   filesContent,
   locale,
   messagesContent,
+  onboarding,
   today,
   widgets,
   viewerUserId,
@@ -155,12 +157,10 @@ export function PortalDashboard({
     ? dashboard.ourTasks.filter((task) => task.projectId === selectedProject.id)
     : dashboard.ourTasks;
 
+  const onboardingForm = pickPortalOnboardingWidgetForm(onboarding);
   const mockBadge = content.mock.badge;
   const mockDialog = (
-    key:
-      | typeof PortalWidgetKey.Onboarding
-      | typeof PortalWidgetKey.Hours
-      | typeof PortalWidgetKey.ServiceRequest,
+    key: typeof PortalWidgetKey.Hours | typeof PortalWidgetKey.ServiceRequest,
     icon: Parameters<typeof PortalMockWidget>[0]["icon"],
   ) => (
     <PortalMockWidget
@@ -175,10 +175,14 @@ export function PortalDashboard({
   );
 
   const slots: Partial<Record<PortalWidgetKey, ReactNode>> = {
-    [PortalWidgetKey.Onboarding]: mockDialog(
-      PortalWidgetKey.Onboarding,
-      faRocket,
-    ),
+    [PortalWidgetKey.Onboarding]: onboardingForm ? (
+      <PortalOnboardingWidget
+        content={content.widgets.onboarding}
+        customerId={customerId}
+        form={onboardingForm}
+        locale={locale}
+      />
+    ) : null,
     [PortalWidgetKey.Project]: selectedProject ? (
       <PortalProjectWidget
         content={content.widgets.project}

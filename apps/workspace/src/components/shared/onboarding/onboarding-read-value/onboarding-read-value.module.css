@@ -28,3 +28,27 @@
   font-size: var(--font-size-body-sm);
   line-height: 1.5;
 }
+
+.color {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.55;
+}
+
+/* The frame keeps a white or black colour visible on either theme. */
+.swatch {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 6px;
+}
+
+.poles {
+  color: var(--color-text-muted);
+}

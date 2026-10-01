@@ -13,6 +13,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
+import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import { TaskDueState } from "@invessiv/common/constants/crm/task-due-states";
 import { PortalTaskErrorCode } from "@invessiv/common/constants/portal/portal-task-error-codes";
@@ -20,6 +21,7 @@ import type { PortalConversationDto } from "@invessiv/common/contracts/portal/po
 import type { PortalCustomerTaskDto } from "@invessiv/common/contracts/portal/portal-customer-task.dto";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
 import type { PortalFilesOverviewDto } from "@invessiv/common/contracts/portal/portal-files-overview.dto";
+import type { PortalOnboardingFormSummaryDto } from "@invessiv/common/contracts/portal/portal-onboarding-form-summary.dto";
 import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
 import { FileSource } from "@invessiv/common/constants/files/file-source";
 import { UploadExtension } from "@invessiv/common/constants/files/upload-extension";
@@ -135,6 +137,7 @@ const FULL_READ = new Set([
   Permission.PortalTasksRead,
   Permission.PortalTasksComplete,
   Permission.PortalFilesRead,
+  Permission.PortalOnboardingRead,
 ]);
 
 function customerTask(
@@ -193,6 +196,7 @@ function renderDashboard(
   cockpitHref: string | null = null,
   conversation: PortalConversationDto | null = CONVERSATION,
   filesOverview: PortalFilesOverviewDto | null = FILES,
+  onboarding: PortalOnboardingFormSummaryDto[] = [],
 ) {
   const keys = new Set<PortalWidgetKey>([
     PortalWidgetKey.Project,
@@ -200,6 +204,7 @@ function renderDashboard(
     PortalWidgetKey.OurTasks,
     PortalWidgetKey.Contact,
   ]);
+  if (onboarding.length > 0) keys.add(PortalWidgetKey.Onboarding);
   return render(
     <PortalDashboard
       cockpitHref={cockpitHref}
@@ -212,6 +217,7 @@ function renderDashboard(
       locale="en"
       filesContent={getPortalFilesDictionary("en")}
       messagesContent={messagesContent}
+      onboarding={onboarding}
       today={TODAY}
       viewerUserId="user-1"
       widgets={listVisiblePortalWidgets(permissions, keys)}
@@ -260,11 +266,43 @@ describe("PortalDashboard", () => {
     ]);
   });
 
+  it("shows the onboarding of the company with its progress and the way into the form", () => {
+    renderDashboard(undefined, undefined, null, CONVERSATION, FILES, [
+      {
+        id: "form-1",
+        projectId: "project-1",
+        projectTitle: "Relaunch",
+        status: OnboardingFormStatus.Open,
+        progress: { answeredRequired: 1, totalRequired: 4, ratio: 0.25 },
+        submittedAt: null,
+        completedAt: null,
+        canEdit: true,
+      },
+    ]);
+
+    const widget = screen.getByRole("region", {
+      name: content.widgets.onboarding.title,
+    });
+    expect(widget).not.toHaveAttribute("data-mock", "true");
+    expect(
+      within(widget).getByRole("link", {
+        name: "Continue the onboarding for Relaunch",
+      }),
+    ).toHaveAttribute("href", "/en/portal/customer-1/onboarding/form-1");
+  });
+
+  it("has no onboarding widget while the company has no form", () => {
+    renderDashboard();
+
+    expect(
+      screen.queryByRole("region", { name: content.widgets.onboarding.title }),
+    ).toBeNull();
+  });
+
   it("marks every mock widget as coming soon", () => {
     renderDashboard();
 
     for (const title of [
-      content.widgets.onboarding.title,
       content.widgets.hours.title,
       content.widgets.serviceRequest.title,
     ]) {
@@ -550,6 +588,7 @@ describe("PortalDashboard", () => {
         locale="en"
         filesContent={getPortalFilesDictionary("en")}
         messagesContent={messagesContent}
+        onboarding={[]}
         today={TODAY}
         viewerUserId="user-1"
         widgets={listVisiblePortalWidgets(

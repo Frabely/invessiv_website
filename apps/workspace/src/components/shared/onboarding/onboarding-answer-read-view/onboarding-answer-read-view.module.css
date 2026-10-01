@@ -74,9 +74,98 @@
   line-height: 1.55;
 }
 
+/* Entries of a group: each one a ruled sub-sheet under its number, not a card of its own. */
+.entries {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entry {
+  min-width: 0;
+  padding-left: 0.85rem;
+  border-left: 2px solid var(--color-border-strong);
+}
+
+.entry .field:last-child {
+  border-bottom: 0;
+}
+
+.entryTitle {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.names,
+.serviceList {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.5;
+  list-style: none;
+  overflow-wrap: anywhere;
+}
+
+.services {
+  display: grid;
+  gap: 0.6rem;
+  justify-items: start;
+}
+
+.serviceList li {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.serviceTitle {
+  font-weight: 600;
+}
+
+.serviceDescription {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  white-space: pre-line;
+}
+
+.plain {
+  max-width: 68ch;
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.remark {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.remarkLabel {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 600;
+}
+
 @media (min-width: 720px) {
   .field {
     grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
     gap: 1.5rem;
+  }
+
+  /* Inside an entry the answer column is already narrow: question above answer again. */
+  .entry .field {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.3rem;
   }
 }

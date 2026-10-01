@@ -77,7 +77,16 @@
     "read": {
       "unanswered": "Not answered",
       "empty": "No answer",
-      "required": "Required"
+      "required": "Required",
+      "confirmed": "Confirmed",
+      "scale": "{step} of {max}",
+      "entry": "Entry {number}",
+      "noEntries": "No entries",
+      "filesLabel": "Files for “{field}”",
+      "servicesConfirmed": "Confirmed by the customer",
+      "servicesNotConfirmed": "Not confirmed yet",
+      "servicesNote": "Customer’s remark",
+      "servicesEmpty": "No services recorded"
     }
   },
   "structure": {

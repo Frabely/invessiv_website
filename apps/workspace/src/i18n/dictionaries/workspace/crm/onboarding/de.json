@@ -77,7 +77,16 @@
     "read": {
       "unanswered": "Nicht beantwortet",
       "empty": "Keine Angabe",
-      "required": "Pflichtangabe"
+      "required": "Pflichtangabe",
+      "confirmed": "Bestätigt",
+      "scale": "{step} von {max}",
+      "entry": "Eintrag {number}",
+      "noEntries": "Keine Einträge",
+      "filesLabel": "Dateien zu „{field}“",
+      "servicesConfirmed": "Vom Kunden bestätigt",
+      "servicesNotConfirmed": "Noch nicht bestätigt",
+      "servicesNote": "Anmerkung des Kunden",
+      "servicesEmpty": "Keine Leistungen hinterlegt"
     }
   },
   "structure": {

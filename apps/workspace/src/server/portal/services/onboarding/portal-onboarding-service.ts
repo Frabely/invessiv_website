@@ -368,6 +368,7 @@ async function toFormDto(
       })),
     ),
     canSubmit: canSubmit(reader),
+    canAttach: canAttach(reader),
     prefilledBlockIds,
     submittedByName: nameOf(form.submitted_by_portal_membership_id),
     lastEditedAt: lastAnswer?.at ?? null,

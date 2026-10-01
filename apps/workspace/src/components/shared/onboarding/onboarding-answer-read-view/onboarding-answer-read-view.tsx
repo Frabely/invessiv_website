@@ -1,112 +1,234 @@
+import type { ReactNode } from "react";
 import { QuestionnaireFieldRequirement } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-requirements";
-import {
-  QUESTIONNAIRE_NON_ANSWER_ROW_TYPE_VALUES,
-  type QuestionnaireFieldType,
-} from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
+import { QuestionnaireFieldType } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
+import type { FilePreviewKind } from "@invessiv/common/constants/files/file-preview-kind";
+import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
+import type { QuestionnaireAnswerFileDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-answer-file.dto";
 import type { QuestionnaireCompletenessInput } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-completeness-input";
 import type { QuestionnaireResolvedBlock } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-resolved-block";
+import type { QuestionnaireResolvedField } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-resolved-field";
+import type { PortalOnboardingServiceDto } from "@invessiv/common/contracts/portal/portal-onboarding-service.dto";
 import {
   getQuestionnaireCompleteness,
   isQuestionnaireFieldVisible,
 } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
+import { LinkedText } from "@invessiv/ui";
+import type { FeedbackAttachmentTexts } from "@/common/contracts/files/feedback-attachment-texts";
 import type { OnboardingReadTexts } from "@/common/contracts/shared/onboarding-read-texts";
+import { onboardingAnswerDrafts } from "@/common/patterns/portal/onboarding-answer-drafts";
+import { FeedbackAttachmentList } from "@/components/shared/feedback/feedback-attachment-list/feedback-attachment-list";
 import { OnboardingReadValue } from "../onboarding-read-value/onboarding-read-value";
 import styles from "./onboarding-answer-read-view.module.css";
 
-// Files, groups and the booked services have no answer rows; their read views come with Task 67.
-const UNSUPPORTED_TYPES: readonly QuestionnaireFieldType[] =
-  QUESTIONNAIRE_NON_ANSWER_ROW_TYPE_VALUES;
-
 export type OnboardingAnswerReadViewProps = Omit<
   QuestionnaireCompletenessInput,
-  "blocks"
+  "blocks" | "answerFiles"
 > & {
+  /** Attached files the viewer may open, with the link each one hangs on. */
+  answerFiles: readonly QuestionnaireAnswerFileDto[];
   /** Blocks in form order with texts resolved for the reader. */
   blocks: readonly QuestionnaireResolvedBlock[];
   /** Shown when the form has no blocks at all. */
   emptyText?: string;
+  /**
+   * How attached files open on the viewer's side: its file texts, download and preview. Without
+   * it a files field lists the names only.
+   */
+  files?: {
+    loadPreviewAction: (
+      file: FeedbackAttachmentDto,
+      kind: FilePreviewKind,
+    ) => Promise<string | null>;
+    locale: string;
+    onDownloadAction: (file: FeedbackAttachmentDto) => void;
+    texts: FeedbackAttachmentTexts;
+  };
+  /** The booked services a `project_services` field shows, never with a price. */
+  services: readonly PortalOnboardingServiceDto[];
+  /** Remark the customer left with the confirmation of the services. */
+  servicesNote: string | null;
   /** False where the block title already stands above the view, as in a single step. */
   showBlockTitles?: boolean;
   texts: OnboardingReadTexts;
 };
 
 /**
- * Every answer of a form, read-only, for the portal and for the CRM alike. Which fields are
- * visible and which required ones lack an answer comes from `getQuestionnaireCompleteness`, the
- * same function that guards the submission.
+ * Every answer of a form, read-only, for the portal and for the CRM alike: text and selections,
+ * group entries with their own answers, attached files, the booked services and what the customer
+ * said about them. Which fields are visible and which required ones lack an answer comes from
+ * `getQuestionnaireCompleteness`, the same function that guards the submission.
  */
 export function OnboardingAnswerReadView({
+  answerFiles,
   blocks,
   emptyText,
+  files,
+  services,
+  servicesNote,
   showBlockTitles = true,
   texts,
   ...content
 }: OnboardingAnswerReadViewProps) {
-  const input = { blocks, ...content };
+  const input = { blocks, answerFiles, ...content };
   const missing = new Set(
-    getQuestionnaireCompleteness(input).missing.map((entry) => entry.fieldId),
+    getQuestionnaireCompleteness(input).missing.map((entry) =>
+      onboardingAnswerDrafts.slotKey(entry.fieldId, entry.groupEntryId),
+    ),
   );
 
   if (blocks.length === 0)
     return emptyText ? <p className={styles.empty}>{emptyText}</p> : null;
 
+  function none(slotKey: string, emptyLabel = texts.empty): ReactNode {
+    const lacking = missing.has(slotKey);
+    return (
+      <span className={styles.none} data-state={lacking ? "missing" : "empty"}>
+        {lacking ? texts.unanswered : emptyLabel}
+      </span>
+    );
+  }
+
+  function renderValue(
+    field: QuestionnaireResolvedField,
+    groupEntryId: string | null,
+  ): ReactNode {
+    const slotKey = onboardingAnswerDrafts.slotKey(field.id, groupEntryId);
+
+    if (field.type === QuestionnaireFieldType.Files) {
+      const attached = answerFiles
+        .filter(
+          (link) =>
+            link.fieldId === field.id && link.groupEntryId === groupEntryId,
+        )
+        .sort((left, right) => left.position - right.position)
+        .map((link) => link.file);
+      if (attached.length === 0) return none(slotKey);
+      const label = formatMessage(texts.filesLabel, { field: field.label });
+      return files ? (
+        <FeedbackAttachmentList
+          attachments={attached}
+          label={label}
+          loadPreviewAction={files.loadPreviewAction}
+          locale={files.locale}
+          onDownloadAction={files.onDownloadAction}
+          texts={files.texts}
+        />
+      ) : (
+        <ul aria-label={label} className={styles.names}>
+          {attached.map((file) => (
+            <li key={file.id}>{file.displayName}</li>
+          ))}
+        </ul>
+      );
+    }
+
+    if (field.type === QuestionnaireFieldType.Group) {
+      const entries = content.groupEntries
+        .filter((entry) => entry.fieldId === field.id)
+        .sort((left, right) => left.position - right.position);
+      if (entries.length === 0) return none(slotKey, texts.noEntries);
+      return (
+        <ol className={styles.entries}>
+          {entries.map((entry, index) => (
+            <li className={styles.entry} key={entry.id}>
+              <p className={styles.entryTitle}>
+                {formatMessage(texts.entry, { number: index + 1 })}
+              </p>
+              <dl className={styles.fields}>
+                {field.children
+                  .filter((child) =>
+                    isQuestionnaireFieldVisible(child, input, entry.id),
+                  )
+                  .map((child) => renderRow(child, entry.id))}
+              </dl>
+            </li>
+          ))}
+        </ol>
+      );
+    }
+
+    if (field.type === QuestionnaireFieldType.ProjectServices)
+      return (
+        <div className={styles.services}>
+          {services.length > 0 ? (
+            <ul className={styles.serviceList}>
+              {services.map((service) => (
+                <li key={service.position}>
+                  <span className={styles.serviceTitle}>{service.title}</span>
+                  {service.description ? (
+                    <span className={styles.serviceDescription}>
+                      {service.description}
+                    </span>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className={styles.plain}>{texts.servicesEmpty}</p>
+          )}
+          {content.servicesConfirmed ? (
+            <p className={styles.plain}>{texts.servicesConfirmed}</p>
+          ) : (
+            none(slotKey, texts.servicesNotConfirmed)
+          )}
+          {servicesNote ? (
+            <div className={styles.remark}>
+              <p className={styles.remarkLabel}>{texts.servicesNote}</p>
+              <p className={styles.plain}>
+                <LinkedText text={servicesNote} />
+              </p>
+            </div>
+          ) : null}
+        </div>
+      );
+
+    const answers = content.answers.filter(
+      (answer) =>
+        answer.fieldId === field.id && answer.groupEntryId === groupEntryId,
+    );
+    return answers.length > 0 ? (
+      <OnboardingReadValue answers={answers} field={field} texts={texts} />
+    ) : (
+      none(slotKey)
+    );
+  }
+
+  function renderRow(
+    field: QuestionnaireResolvedField,
+    groupEntryId: string | null,
+  ): ReactNode {
+    const required =
+      field.requirement === QuestionnaireFieldRequirement.Required;
+    return (
+      <div className={styles.field} key={field.id}>
+        <dt className={styles.label}>
+          {field.label}
+          {required ? (
+            <abbr className={styles.required} title={texts.required}>
+              *
+            </abbr>
+          ) : null}
+        </dt>
+        <dd className={styles.value}>{renderValue(field, groupEntryId)}</dd>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.view}>
-      {blocks.map((block) => {
-        const fields = block.fields.filter(
-          (field) =>
-            !UNSUPPORTED_TYPES.includes(field.type) &&
-            isQuestionnaireFieldVisible(field, input),
-        );
-        return (
-          <section className={styles.block} key={block.id}>
-            {showBlockTitles ? (
-              <h3 className={styles.title}>{block.title}</h3>
-            ) : null}
-            <dl className={styles.fields}>
-              {fields.map((field) => {
-                const answers = content.answers.filter(
-                  (answer) =>
-                    answer.fieldId === field.id && answer.groupEntryId === null,
-                );
-                const required =
-                  field.requirement === QuestionnaireFieldRequirement.Required;
-                return (
-                  <div className={styles.field} key={field.id}>
-                    <dt className={styles.label}>
-                      {field.label}
-                      {required ? (
-                        <abbr
-                          className={styles.required}
-                          title={texts.required}
-                        >
-                          *
-                        </abbr>
-                      ) : null}
-                    </dt>
-                    <dd className={styles.value}>
-                      {answers.length > 0 ? (
-                        <OnboardingReadValue answers={answers} field={field} />
-                      ) : (
-                        <span
-                          className={styles.none}
-                          data-state={
-                            missing.has(field.id) ? "missing" : "empty"
-                          }
-                        >
-                          {missing.has(field.id)
-                            ? texts.unanswered
-                            : texts.empty}
-                        </span>
-                      )}
-                    </dd>
-                  </div>
-                );
-              })}
-            </dl>
-          </section>
-        );
-      })}
+      {blocks.map((block) => (
+        <section className={styles.block} key={block.id}>
+          {showBlockTitles ? (
+            <h3 className={styles.title}>{block.title}</h3>
+          ) : null}
+          <dl className={styles.fields}>
+            {block.fields
+              .filter((field) => isQuestionnaireFieldVisible(field, input))
+              .map((field) => renderRow(field, null))}
+          </dl>
+        </section>
+      ))}
     </div>
   );
 }

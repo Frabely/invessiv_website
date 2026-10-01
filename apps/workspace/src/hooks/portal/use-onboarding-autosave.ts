@@ -17,19 +17,26 @@ const AUTOSAVE_DELAY_MS = 1_500;
 
 /**
  * Holds the answers of a form locally and saves them slot by slot: text debounced and when the
- * field is left, a selection at once. Saves run one after another, so the last write of a field
+ * field is left, a selection at once. Saves run one after another, so the last write of a slot
  * wins. Text that fails its field's validation stays in the input and is never sent; a failed
- * save keeps the input as well and can be retried.
+ * save keeps the input as well and can be retried. A slot is a field on block level or a
+ * sub-field within one group entry; every key here is an `onboardingAnswerDrafts.slotKey`.
  */
 export function useOnboardingAutosave({
   customerId,
   form,
   leaveWarning,
   onLockedAction,
+  waitForEntryAction,
 }: {
   customerId: string;
   form: PortalOnboardingFormDto;
   leaveWarning: string;
+  /**
+   * Resolves once a group entry exists on the server. An entry is shown before its creation went
+   * through, and a sub-field answer sent ahead of it would be refused. False drops the save.
+   */
+  waitForEntryAction?: (groupEntryId: string) => Promise<boolean>;
   /** The form left the editable state elsewhere (submitted by another contact); the page reloads. */
   onLockedAction: () => void;
 }) {
@@ -40,7 +47,7 @@ export function useOnboardingAutosave({
   const [drafts, setDrafts] = useState(() =>
     onboardingAnswerDrafts.fromAnswers(form.answers),
   );
-  /** Fields with input that is neither saved nor on its way. */
+  /** Slots with input that is neither saved nor on its way. */
   const [pending, setPending] = useState<ReadonlySet<string>>(new Set());
   const [failed, setFailed] = useState<ReadonlySet<string>>(new Set());
   const [saving, setSaving] = useState(false);
@@ -58,9 +65,11 @@ export function useOnboardingAutosave({
   const timersRef = useRef(new Map<string, ReturnType<typeof setTimeout>>());
   const runningRef = useRef<Promise<void> | null>(null);
   const onLockedRef = useRef(onLockedAction);
+  const waitForEntryRef = useRef(waitForEntryAction);
 
   useEffect(() => {
     onLockedRef.current = onLockedAction;
+    waitForEntryRef.current = waitForEntryAction;
   });
 
   const syncPending = useCallback(() => {
@@ -68,24 +77,30 @@ export function useOnboardingAutosave({
   }, []);
 
   const saveField = useCallback(
-    async (fieldId: string) => {
+    async (key: string) => {
+      const { fieldId, groupEntryId } =
+        onboardingAnswerDrafts.parseSlotKey(key);
       const field = fields.get(fieldId);
-      const entries = draftsRef.current.get(fieldId) ?? [];
+      if (!field) return;
+      if (groupEntryId && !(await waitForEntryRef.current?.(groupEntryId)))
+        return;
+      // Read after the wait: what was typed meanwhile is part of this save.
+      const entries = draftsRef.current.get(key);
       // Invalid text is never sent; the field shows why and the last saved value stays stored.
-      if (!field || onboardingAnswerDrafts.validate(field, entries)) return;
+      if (!entries || onboardingAnswerDrafts.validate(field, entries)) return;
       const result = await portalOnboardingApiService.saveAnswer(
         customerId,
         form.id,
-        onboardingAnswerDrafts.toRequest(field, entries),
+        onboardingAnswerDrafts.toRequest(field, entries, groupEntryId),
       );
       if (result.ok) {
-        failedRef.current.delete(fieldId);
+        failedRef.current.delete(key);
         setSavedAt(result.value.savedAt);
         setSavedByName(result.value.savedByName);
         setSavedHere(true);
         if (failedRef.current.size === 0) setErrorCode(null);
       } else {
-        failedRef.current.add(fieldId);
+        failedRef.current.add(key);
         setErrorCode(result.code);
         if (
           result.code === PortalOnboardingErrorCode.Locked ||
@@ -168,10 +183,12 @@ export function useOnboardingAutosave({
 
   const invalid = useMemo(() => {
     const errors = new Map<string, QuestionnaireValueErrorCode>();
-    for (const [fieldId, entries] of drafts) {
-      const field = fields.get(fieldId);
+    for (const [key, entries] of drafts) {
+      const field = fields.get(
+        onboardingAnswerDrafts.parseSlotKey(key).fieldId,
+      );
       const code = field && onboardingAnswerDrafts.validate(field, entries);
-      if (code) errors.set(fieldId, code);
+      if (code) errors.set(key, code);
     }
     return errors;
   }, [drafts, fields]);
@@ -183,8 +200,10 @@ export function useOnboardingAutosave({
   const flush = useCallback(async (): Promise<boolean> => {
     for (const fieldId of [...timersRef.current.keys()]) void enqueue(fieldId);
     await pump();
-    const unsendable = [...draftsRef.current].some(([fieldId, entries]) => {
-      const field = fields.get(fieldId);
+    const unsendable = [...draftsRef.current].some(([key, entries]) => {
+      const field = fields.get(
+        onboardingAnswerDrafts.parseSlotKey(key).fieldId,
+      );
       return field && onboardingAnswerDrafts.validate(field, entries) !== null;
     });
     return (
@@ -201,6 +220,31 @@ export function useOnboardingAutosave({
     void pump();
   }, [pump, syncPending]);
 
+  /** Forgets everything typed into a removed group entry; nothing of it is saved anymore. */
+  const discardEntry = useCallback(
+    (groupEntryId: string) => {
+      const ofEntry = (key: string) =>
+        onboardingAnswerDrafts.parseSlotKey(key).groupEntryId === groupEntryId;
+      for (const [key, timer] of timersRef.current)
+        if (ofEntry(key)) {
+          clearTimeout(timer);
+          timersRef.current.delete(key);
+        }
+      for (const key of [...queueRef.current])
+        if (ofEntry(key)) queueRef.current.delete(key);
+      for (const key of [...failedRef.current])
+        if (ofEntry(key)) failedRef.current.delete(key);
+      draftsRef.current = onboardingAnswerDrafts.dropEntry(
+        draftsRef.current,
+        groupEntryId,
+      );
+      setDrafts(draftsRef.current);
+      setFailed(new Set(failedRef.current));
+      syncPending();
+    },
+    [syncPending],
+  );
+
   useEffect(() => {
     const timers = timersRef.current;
     return () => {
@@ -209,8 +253,8 @@ export function useOnboardingAutosave({
   }, []);
 
   const answers = useMemo(
-    () => onboardingAnswerDrafts.toAnswers(drafts, fields, form.answers),
-    [drafts, fields, form.answers],
+    () => onboardingAnswerDrafts.toAnswers(drafts, fields),
+    [drafts, fields],
   );
 
   let saveState: DraftSaveState = savedHere
@@ -231,7 +275,7 @@ export function useOnboardingAutosave({
     drafts,
     /** The drafts as answer rows, for visibility and completeness while typing. */
     answers,
-    /** Fields whose text cannot be saved, with the reason. */
+    /** Slots whose text cannot be saved, with the reason. */
     invalid,
     saveState,
     errorCode,
@@ -239,6 +283,7 @@ export function useOnboardingAutosave({
     savedByName,
     change,
     commit,
+    discardEntry,
     flush,
     retry,
   };

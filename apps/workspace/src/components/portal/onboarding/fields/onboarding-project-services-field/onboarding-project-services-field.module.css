@@ -1,0 +1,60 @@
+.field {
+  display: grid;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+/* The booked services read as an agreed list, not as options: ruled lines across the full width. */
+.services {
+  display: grid;
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--color-border-strong);
+  list-style: none;
+}
+
+.service {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.title {
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  font-weight: 600;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.description {
+  max-width: 62ch;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+.empty {
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+}
+
+.question {
+  grid-column: 1 / -1;
+  margin: 0.35rem 0 0;
+  color: var(--color-text);
+  font-size: var(--font-size-label-md);
+  font-weight: 600;
+}
+
+.error {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: var(--font-size-ui-xs);
+}

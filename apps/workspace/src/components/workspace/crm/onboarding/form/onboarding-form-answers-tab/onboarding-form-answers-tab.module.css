@@ -4,3 +4,9 @@
   max-width: 56rem;
   padding-top: 1.25rem;
 }
+
+.error {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: var(--font-size-ui-sm);
+}

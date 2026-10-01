@@ -500,6 +500,13 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       const [link] = await storedLinks(form.id);
       const other = await customerFile(form);
 
+      expect(
+        await getPortalOnboardingForm(contact, form.id, Locale.De),
+      ).toMatchObject({ canSubmit: true, canAttach: true });
+      expect(
+        await getPortalOnboardingForm(blindToFiles, form.id, Locale.De),
+      ).toMatchObject({ canSubmit: true, canAttach: false });
+
       for (const actor of [stranger, reader, blindToFiles]) {
         expect(await attach(actor, form, other)).toEqual(NOT_FOUND);
         expect(

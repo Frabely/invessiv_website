@@ -5,6 +5,7 @@ import type { QuestionnaireProgressDto } from "@invessiv/common/contracts/crm/qu
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl, ConfirmDialog, PrimaryCtaButton } from "@invessiv/ui";
 import type { OnboardingMissingAnswer } from "@/common/contracts/portal/onboarding-missing-answer";
+import { onboardingAnswerDrafts } from "@/common/patterns/portal/onboarding-answer-drafts";
 import { OnboardingProgressBar } from "@/components/shared/onboarding/onboarding-progress-bar/onboarding-progress-bar";
 import type { PortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
 import styles from "./onboarding-submit-step.module.css";
@@ -65,7 +66,12 @@ export function OnboardingSubmitStep({
           <h3 className={styles.missingTitle}>{texts.missingHeading}</h3>
           <ul className={styles.list}>
             {missing.map((answer) => (
-              <li key={answer.fieldId}>
+              <li
+                key={onboardingAnswerDrafts.slotKey(
+                  answer.fieldId,
+                  answer.groupEntryId,
+                )}
+              >
                 {/* A button, not a link: the jump stays on the page and must not ask to leave it. */}
                 <ButtonControl
                   className={styles.jump}

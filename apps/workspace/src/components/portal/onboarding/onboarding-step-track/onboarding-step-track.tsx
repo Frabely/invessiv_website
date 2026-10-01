@@ -1,7 +1,7 @@
 "use client";
 
 import { ProcessStepProgress } from "@invessiv/common/constants/ui/process-step-progress";
-import type { QuestionnaireAnswerDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-answer.dto";
+import type { QuestionnaireCompletenessInput } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-completeness-input";
 import type { QuestionnaireCompleteness } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-completeness";
 import type { PortalOnboardingBlockDto } from "@invessiv/common/contracts/portal/portal-onboarding-block.dto";
 import { flattenQuestionnaireFields } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-block-structure";
@@ -12,12 +12,16 @@ import { OnboardingProgressBar } from "@/components/shared/onboarding/onboarding
 import type { PortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
 
 export type OnboardingStepTrackProps = {
-  answers: readonly QuestionnaireAnswerDto[];
   blocks: readonly PortalOnboardingBlockDto[];
   completeness: QuestionnaireCompleteness;
   content: PortalOnboardingDictionary;
   /** Block id of the open step, or the review section. */
   current: string;
+  /** The live state of the form: answers, files and group entries all count as work on a step. */
+  input: Pick<
+    QuestionnaireCompletenessInput,
+    "answers" | "answerFiles" | "groupEntries"
+  >;
   onSelectAction: (section: string) => void;
 };
 
@@ -26,14 +30,18 @@ export type OnboardingStepTrackProps = {
  * so each one shows its own progress instead of a tick for having been passed.
  */
 export function OnboardingStepTrack({
-  answers,
   blocks,
   completeness,
   content,
   current,
+  input,
   onSelectAction,
 }: OnboardingStepTrackProps) {
-  const answered = new Set(answers.map((answer) => answer.fieldId));
+  const answered = new Set(
+    [...input.answers, ...input.answerFiles, ...input.groupEntries].map(
+      (entry) => entry.fieldId,
+    ),
+  );
   const steps = [
     ...blocks.map((block) => {
       const progress = completeness.blocks.find(

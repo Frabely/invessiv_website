@@ -22,6 +22,7 @@ import type { QuestionnaireFixedChoiceLabels } from "@/common/contracts/crm/ques
 import type { Locale } from "@/config/i18n";
 import type {
   CrmOnboardingDictionary,
+  CrmFilesDictionary,
   CrmQuestionnaireDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
 import { OnboardingStatusBadge } from "../../project/onboarding-status-badge/onboarding-status-badge";
@@ -36,6 +37,8 @@ export type OnboardingFormPageViewProps = {
   catalogBlocks: readonly QuestionnaireBlockSummaryDto[];
   content: CrmOnboardingDictionary;
   context: OnboardingFormContextDto;
+  /** File texts for the attachments on the answers tab. */
+  filesContent: CrmFilesDictionary;
   fixedChoiceLabels: QuestionnaireFixedChoiceLabels;
   form: OnboardingFormDto;
   locale: Locale;
@@ -52,6 +55,7 @@ export function OnboardingFormPageView({
   catalogBlocks,
   content,
   context,
+  filesContent,
   fixedChoiceLabels,
   form: initialForm,
   locale,
@@ -119,6 +123,7 @@ export function OnboardingFormPageView({
         {activeTab === OnboardingFormTab.Answers ? (
           <OnboardingFormAnswersTab
             content={content}
+            filesContent={filesContent}
             form={form}
             locale={locale}
           />

@@ -1,40 +1,37 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { QuestionnaireValueErrorCode } from "@invessiv/common/constants/crm/questionnaire/questionnaire-value-error-codes";
-import type { QuestionnaireCompletenessInput } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-completeness-input";
 import type { PortalOnboardingBlockDto } from "@invessiv/common/contracts/portal/portal-onboarding-block.dto";
 import { isQuestionnaireFieldVisible } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { languageName } from "@invessiv/common/patterns/i18n/language-name";
-import type { OnboardingAnswerDrafts } from "@/common/contracts/portal/onboarding-answer-drafts";
 import { onboardingFieldDomId } from "@/common/patterns/portal/onboarding-field-dom-id";
-import { OnboardingAnswerReadView } from "@/components/shared/onboarding/onboarding-answer-read-view/onboarding-answer-read-view";
+import {
+  OnboardingAnswerReadView,
+  type OnboardingAnswerReadViewProps,
+} from "@/components/shared/onboarding/onboarding-answer-read-view/onboarding-answer-read-view";
 import type { Locale } from "@/config/i18n";
 import type { PortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
-import { QuestionnaireField } from "../questionnaire-field/questionnaire-field";
+import {
+  QuestionnaireField,
+  type QuestionnaireFieldProps,
+} from "../questionnaire-field/questionnaire-field";
 import styles from "./onboarding-block-step.module.css";
 
 export type OnboardingBlockStepProps = {
   block: PortalOnboardingBlockDto;
   content: PortalOnboardingDictionary;
-  drafts: OnboardingAnswerDrafts;
   /** False during a change request for blocks the team did not hand back. */
   editable: boolean;
-  /** Field to focus instead of the heading, after a jump from the list of missing answers. */
+  /** How attached files open while the block is read-only. */
+  files: OnboardingAnswerReadViewProps["files"];
+  /** Slot to focus instead of the heading, after a jump from the list of missing answers. */
   focusFieldId: string | null;
-  /** The live answers of the whole form; conditions are evaluated against them. */
-  input: QuestionnaireCompletenessInput;
-  invalid: ReadonlyMap<string, QuestionnaireValueErrorCode>;
+  /** What every field of the step reads from and writes to. */
+  form: QuestionnaireFieldProps["form"];
   locale: Locale;
   /** Whether the step was reached by navigating; a fresh page load leaves the focus alone. */
   moveFocus: boolean;
-  onChangeAction: (
-    fieldId: string,
-    entries: readonly string[],
-    options?: { immediate?: boolean },
-  ) => void;
-  onCommitAction: (fieldId: string) => void;
 };
 
 /**
@@ -44,16 +41,14 @@ export type OnboardingBlockStepProps = {
 export function OnboardingBlockStep({
   block,
   content,
-  drafts,
   editable,
+  files,
   focusFieldId,
-  input,
-  invalid,
+  form,
   locale,
   moveFocus,
-  onChangeAction,
-  onCommitAction,
 }: OnboardingBlockStepProps) {
+  const { input } = form;
   const headingRef = useRef<HTMLHeadingElement>(null);
   const texts = content.block;
   const fields = block.fields.filter((field) =>
@@ -97,15 +92,10 @@ export function OnboardingBlockStep({
           <div className={styles.fields}>
             {fields.map((field) => (
               <QuestionnaireField
-                entries={drafts.get(field.id) ?? []}
                 field={field}
-                invalid={invalid.get(field.id) ?? null}
+                form={form}
+                groupEntryId={null}
                 key={field.id}
-                onChangeAction={(entries, options) =>
-                  onChangeAction(field.id, entries, options)
-                }
-                onCommitAction={() => onCommitAction(field.id)}
-                texts={content.field}
               />
             ))}
           </div>
@@ -116,8 +106,14 @@ export function OnboardingBlockStep({
         <>
           <p className={styles.note}>{texts.locked}</p>
           <OnboardingAnswerReadView
-            {...input}
+            answerFiles={form.answerFiles}
+            answers={input.answers}
             blocks={[block]}
+            files={files}
+            groupEntries={input.groupEntries}
+            services={form.services}
+            servicesConfirmed={input.servicesConfirmed}
+            servicesNote={form.servicesNote}
             showBlockTitles={false}
             texts={content.read}
           />

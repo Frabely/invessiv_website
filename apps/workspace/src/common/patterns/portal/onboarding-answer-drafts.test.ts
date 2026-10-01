@@ -8,7 +8,10 @@ import { onboardingAnswerDrafts as drafts } from "@/common/patterns/portal/onboa
 const text = { id: "name", type: T.ShortText, maxLength: null };
 const mail = { id: "mail", type: T.Email, maxLength: null };
 const multi = { id: "many", type: T.MultiChoice, maxLength: null };
-const fields = new Map([text, mail, multi].map((field) => [field.id, field]));
+const member = { id: "member", type: T.ShortText, maxLength: null };
+const fields = new Map(
+  [text, mail, multi, member].map((field) => [field.id, field]),
+);
 
 function answer(
   overrides: Partial<QuestionnaireAnswerDto>,
@@ -37,11 +40,49 @@ describe("onboardingAnswerDrafts.fromAnswers", () => {
     });
   });
 
-  it("leaves answers of group entries out", () => {
-    expect(
-      drafts.fromAnswers([answer({ groupEntryId: "entry-1", value: "x" })])
-        .size,
-    ).toBe(0);
+  it("keeps the answers of group entries apart, one slot per entry", () => {
+    const result = drafts.fromAnswers([
+      answer({ fieldId: "member", groupEntryId: "entry-1", value: "Ada" }),
+      answer({ fieldId: "member", groupEntryId: "entry-2", value: "Grace" }),
+    ]);
+
+    expect(Object.fromEntries(result)).toEqual({
+      [drafts.slotKey("member", "entry-1")]: ["Ada"],
+      [drafts.slotKey("member", "entry-2")]: ["Grace"],
+    });
+  });
+});
+
+describe("onboardingAnswerDrafts slot keys", () => {
+  it("uses the field id alone on block level", () => {
+    expect(drafts.slotKey("name", null)).toBe("name");
+    expect(drafts.parseSlotKey("name")).toEqual({
+      fieldId: "name",
+      groupEntryId: null,
+    });
+  });
+
+  it("round-trips the slot of a group entry", () => {
+    const key = drafts.slotKey("member", "entry-1");
+
+    expect(key).not.toBe("member");
+    expect(drafts.parseSlotKey(key)).toEqual({
+      fieldId: "member",
+      groupEntryId: "entry-1",
+    });
+  });
+
+  it("drops every slot of a removed entry and nothing else", () => {
+    const current = new Map([
+      ["name", ["Acme"]],
+      [drafts.slotKey("member", "entry-1"), ["Ada"]],
+      [drafts.slotKey("member", "entry-2"), ["Grace"]],
+    ]);
+
+    expect(Object.fromEntries(drafts.dropEntry(current, "entry-1"))).toEqual({
+      name: ["Acme"],
+      [drafts.slotKey("member", "entry-2")]: ["Grace"],
+    });
   });
 });
 
@@ -64,27 +105,21 @@ describe("onboardingAnswerDrafts.validate", () => {
 });
 
 describe("onboardingAnswerDrafts.toAnswers", () => {
-  it("turns drafts into answer rows and keeps group answers", () => {
-    const grouped = answer({
-      fieldId: "member",
-      groupEntryId: "entry-1",
-      value: "Ada",
-    });
-
+  it("turns drafts into answer rows, sub-field drafts with their entry", () => {
     expect(
       drafts.toAnswers(
         new Map([
           ["name", ["Acme"]],
           ["many", ["b", "a"]],
+          [drafts.slotKey("member", "entry-1"), ["Ada"]],
         ]),
         fields,
-        [grouped, answer({ value: "Old" })],
       ),
     ).toEqual([
-      grouped,
       answer({ value: "Acme" }),
       answer({ fieldId: "many", sortOrder: 0, choiceId: "b" }),
       answer({ fieldId: "many", sortOrder: 1, choiceId: "a" }),
+      answer({ fieldId: "member", groupEntryId: "entry-1", value: "Ada" }),
     ]);
   });
 
@@ -97,7 +132,6 @@ describe("onboardingAnswerDrafts.toAnswers", () => {
           ["gone", ["x"]],
         ]),
         fields,
-        [],
       ),
     ).toEqual([]);
   });
@@ -114,6 +148,14 @@ describe("onboardingAnswerDrafts.toRequest", () => {
       fieldId: "many",
       groupEntryId: null,
       choiceIds: ["a"],
+    });
+  });
+
+  it("addresses the entry of a sub-field answer", () => {
+    expect(drafts.toRequest(member, ["Ada"], "entry-1")).toEqual({
+      fieldId: "member",
+      groupEntryId: "entry-1",
+      values: ["Ada"],
     });
   });
 

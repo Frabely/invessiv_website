@@ -22,7 +22,10 @@ import {
   portalOnboardingField as field,
   portalOnboardingForm,
 } from "@/components/shared/onboarding/testing/portal-onboarding-form-fixture";
-import { getPortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
+import {
+  getPortalFilesDictionary,
+  getPortalOnboardingDictionary,
+} from "@/i18n/dictionaries/portal";
 import { OnboardingFormView } from "./onboarding-form-view";
 
 const mocks = vi.hoisted(() => ({
@@ -46,6 +49,7 @@ vi.mock("@/client/portal/portal-onboarding-api-service", () => ({
 }));
 
 const content = getPortalOnboardingDictionary("en");
+const filesContent = getPortalFilesDictionary("en");
 const REQUIRED = { requirement: QuestionnaireFieldRequirement.Required };
 const SAVED = {
   ok: true,
@@ -82,9 +86,11 @@ function renderView(
   return render(
     <OnboardingFormView
       backHref="/en/portal/customer-1"
+      canUpload
       cockpitHref={cockpitHref}
       content={content}
       customerId="customer-1"
+      filesContent={filesContent}
       form={dto}
       locale="en"
     />,

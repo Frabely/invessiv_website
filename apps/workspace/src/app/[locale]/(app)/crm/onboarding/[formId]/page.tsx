@@ -11,6 +11,7 @@ import { OnboardingFormPageView } from "@/components/workspace/crm/onboarding/fo
 import { WorkspaceScrollablePageShell } from "@/components/workspace/shared/workspace-scrollable-page-shell/workspace-scrollable-page-shell";
 import { isSupportedLocale } from "@/config/i18n";
 import {
+  getCrmFilesDictionary,
   getCrmOnboardingDictionary,
   getCrmQuestionnaireDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
@@ -82,6 +83,7 @@ export default async function OnboardingFormPage({
         catalogBlocks={catalogBlocks}
         content={getCrmOnboardingDictionary(locale)}
         context={context}
+        filesContent={getCrmFilesDictionary(locale)}
         fixedChoiceLabels={buildQuestionnaireFixedChoiceLabels()}
         form={form}
         locale={locale}

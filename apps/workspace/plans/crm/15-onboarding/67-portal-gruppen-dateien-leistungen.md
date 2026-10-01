@@ -178,3 +178,34 @@ Bei der Umsetzung nachgezogen; der Plan oben bleibt als Entstehungsstand stehen,
 - **Nicht in T2:** `PortalOnboardingFormDto` trägt weiter nur `servicesConfirmed`; die Leistungsliste, die Anmerkung
   und der interne Hinweis „Leistungen seit Bestätigung geändert“ gehören zu den Feldkomponenten in T3/T4. Kein
   Seed-Zuwachs (kein neues Schema).
+
+### T3 — Portal-Felder, Navigation, Widget
+
+- **Portal-DTO erweitert:** `services` (`PortalOnboardingServiceDto`, ohne Preis und ohne ID der Projektleistung),
+  `servicesNote` und `canAttach`. `canUpload` berechnet die Seite wie beim Feedbackbogen (`portal.files.write`, nie
+  die Owner-Sicht).
+- **Slot-Schlüssel statt Feld-ID:** Entwürfe, Speicherzustände und DOM-IDs laufen über
+  `onboardingAnswerDrafts.slotKey(fieldId, groupEntryId)`. Der Sprung aus der Liste fehlender Angaben trägt den
+  Slot-Schlüssel im bestehenden URL-Parameter `field`, damit er auch ein Unterfeld in einem bestimmten Eintrag trifft.
+- **Zweiter Hook `useOnboardingFormState`** für Gruppeneinträge, Datei-Verknüpfungen und Leistungsbestätigung. Er
+  meldet Fehler je Feld; die Statuszeile des Bogens fasst ihn mit dem Autosave zusammen.
+- **Neuer Eintrag vor der Serverantwort:** Der Eintrag erscheint sofort; das Speichern seiner Unterfelder wartet, bis
+  der Server ihn angelegt hat. Verschieben und Entfernen zeigen sich erst mit der Serverantwort.
+- **`moveListItem` wird nicht gebraucht:** Die Reihenfolge kommt aus der Serverantwort, der Client tauscht nicht
+  selbst.
+- **Leistungsbestätigung ohne eigenen Knopf:** „Passt so“ speichert beim Auswählen, eine Anmerkung beim Verlassen des
+  Textfelds (wie jedes andere Textfeld des Bogens). Ohne Text bleibt die Bestätigung unverändert und das Feld nennt den
+  Grund.
+- **Grenzen neutral formuliert** („Maximale Anzahl an Einträgen: 1“), weil der Wert 1 sonst falsche Mehrzahl ergäbe.
+- **Farbvorschau** ist der native Farbwähler selbst (mit Rahmen); in der Leseansicht ein SVG mit `fill`-Attribut,
+  weil Inline-Styles nicht erlaubt sind.
+- **Widget-Daten:** Die Dashboard-Seite ruft `listPortalOnboardingForms` auf und reicht die Liste durch; der
+  `PortalDashboardDto` bleibt unverändert. Das Widget zeigt genau einen Bogen (`pickPortalOnboardingWidgetForm`).
+  Der Zustand „abgeschlossen“ ist schon gebaut, entsteht aber erst mit Task 70.
+- **Upload-Auswahl:** `uploadAcceptForKinds` (`packages/common`) schränkt den Dateidialog auf die Endungen der
+  zugelassenen Arten ein; entschieden wird weiter auf dem Server.
+- **Schrittleiste:** Ein Schritt zählt auch als angefangen, wenn er nur eine Datei oder einen Gruppeneintrag enthält.
+- **CRM-Tab „Antworten“** zeigt die Dateien mit Download und Vorschau (`useFileDownloads`, `filesApiService`); die
+  Seite reicht dafür das Datei-Dictionary durch.
+- **Nicht in T3:** der interne Hinweis „Leistungen seit Bestätigung geändert“ (braucht ein Feld im internen DTO,
+  gehört zur Bogenseite in T4), der E2E-Kernablauf (braucht „Freigeben“ aus T4) und eine Sichtprüfung im Browser.

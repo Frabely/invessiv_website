@@ -14,6 +14,9 @@ import type { OnboardingAnswerDrafts } from "@/common/contracts/portal/onboardin
 const CHOICE_ANSWER_TYPES: readonly QuestionnaireFieldType[] =
   QUESTIONNAIRE_CHOICE_ANSWER_TYPE_VALUES;
 
+// Neither a uuid nor a field key contains it, so a key splits back into its two parts.
+const ENTRY_SEPARATOR = "@";
+
 type Field = Pick<QuestionnaireResolvedField, "id" | "type" | "maxLength">;
 
 function isChoiceField(field: Pick<Field, "type">): boolean {
@@ -30,22 +33,55 @@ function indexFields(
   );
 }
 
-/** The stored block-level answers as drafts; answers within group entries are not edited here. */
+/**
+ * The key of one slot: the field id on block level, field and entry for a sub-field within a
+ * group entry. Drafts, save states and DOM ids of a form all go by it.
+ */
+function slotKey(fieldId: string, groupEntryId: string | null): string {
+  return groupEntryId === null
+    ? fieldId
+    : `${fieldId}${ENTRY_SEPARATOR}${groupEntryId}`;
+}
+
+function parseSlotKey(key: string): {
+  fieldId: string;
+  groupEntryId: string | null;
+} {
+  const at = key.indexOf(ENTRY_SEPARATOR);
+  return at === -1
+    ? { fieldId: key, groupEntryId: null }
+    : { fieldId: key.slice(0, at), groupEntryId: key.slice(at + 1) };
+}
+
+/** The stored answers as drafts, one list per slot in stored order. */
 function fromAnswers(
   answers: readonly QuestionnaireAnswerDto[],
 ): Map<string, string[]> {
   const drafts = new Map<string, string[]>();
-  const rows = answers
-    .filter((answer) => answer.groupEntryId === null)
-    .sort((left, right) => left.sortOrder - right.sortOrder);
+  const rows = [...answers].sort(
+    (left, right) => left.sortOrder - right.sortOrder,
+  );
   for (const answer of rows) {
     const entry = answer.choiceId ?? answer.value;
     if (entry === null) continue;
-    const entries = drafts.get(answer.fieldId);
+    const key = slotKey(answer.fieldId, answer.groupEntryId);
+    const entries = drafts.get(key);
     if (entries) entries.push(entry);
-    else drafts.set(answer.fieldId, [entry]);
+    else drafts.set(key, [entry]);
   }
   return drafts;
+}
+
+/** The drafts without the slots of a removed group entry. */
+function dropEntry(
+  drafts: OnboardingAnswerDrafts,
+  groupEntryId: string,
+): Map<string, string[]> {
+  return new Map(
+    [...drafts]
+      .filter(([key]) => parseSlotKey(key).groupEntryId !== groupEntryId)
+      .map(([key, entries]) => [key, [...entries]]),
+  );
 }
 
 /** Why the typed text cannot be saved; null for choices, blank text and valid text. */
@@ -61,19 +97,17 @@ function validate(
 
 /**
  * The drafts as answer rows for `getQuestionnaireCompleteness`, so conditions and progress follow
- * every keystroke. Text that would not be saved does not count as an answer; answers the drafts do
- * not cover (group entries) pass through unchanged.
+ * every keystroke. Text that would not be saved does not count as an answer.
  */
 function toAnswers(
   drafts: OnboardingAnswerDrafts,
   fields: ReadonlyMap<string, Field>,
-  stored: readonly QuestionnaireAnswerDto[],
 ): QuestionnaireAnswerDto[] {
-  const answers = stored.filter((answer) => answer.groupEntryId !== null);
-  for (const [fieldId, entries] of drafts) {
-    const field = fields.get(fieldId);
+  const answers: QuestionnaireAnswerDto[] = [];
+  for (const [key, entries] of drafts) {
+    const slot = parseSlotKey(key);
+    const field = fields.get(slot.fieldId);
     if (!field) continue;
-    const slot = { fieldId, groupEntryId: null };
     if (isChoiceField(field)) {
       entries.forEach((choiceId, sortOrder) =>
         answers.push({ ...slot, sortOrder, value: null, choiceId }),
@@ -91,8 +125,9 @@ function toAnswers(
 function toRequest(
   field: Field,
   entries: readonly string[],
+  groupEntryId: string | null = null,
 ): SavePortalOnboardingAnswerRequestDto {
-  const slot = { fieldId: field.id, groupEntryId: null };
+  const slot = { fieldId: field.id, groupEntryId };
   if (isChoiceField(field)) return { ...slot, choiceIds: [...entries] };
   const text = entries[0] ?? "";
   return { ...slot, values: text.trim() === "" ? [] : [text] };
@@ -101,7 +136,10 @@ function toRequest(
 export const onboardingAnswerDrafts = {
   isChoiceField,
   indexFields,
+  slotKey,
+  parseSlotKey,
   fromAnswers,
+  dropEntry,
   validate,
   toAnswers,
   toRequest,

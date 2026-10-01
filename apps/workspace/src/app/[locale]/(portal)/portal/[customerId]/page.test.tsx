@@ -19,8 +19,14 @@ const mocks = vi.hoisted(() => ({
   getPortalDashboard: vi.fn(),
   getPortalConversation: vi.fn(),
   listPortalFiles: vi.fn(),
+  listPortalOnboardingForms: vi.fn(),
   dashboardProps: vi.fn(),
 }));
+
+vi.mock(
+  "@/server/portal/query-handler/list-portal-onboarding-forms.query-handler",
+  () => ({ listPortalOnboardingForms: mocks.listPortalOnboardingForms }),
+);
 
 vi.mock(
   "@/server/portal/query-handler/list-portal-files.query-handler",
@@ -95,6 +101,7 @@ describe("PortalCustomerPage", () => {
       ok: false,
       code: FileApiErrorCode.NotFound,
     });
+    mocks.listPortalOnboardingForms.mockResolvedValue([]);
   });
 
   afterEach(cleanup);
@@ -115,6 +122,38 @@ describe("PortalCustomerPage", () => {
     });
     expect(props.filesOverview).toEqual({ fromUs: page, fromYou: page });
     expect(props.filesHref).toBe("/de/portal/customer-1/files");
+  });
+
+  it("shows the onboarding widget only to a reader with the right and a form", async () => {
+    const forms = [{ id: "form-1", projectTitle: "Relaunch" }];
+    mocks.listPortalOnboardingForms.mockResolvedValue(forms);
+
+    const blind = await renderPage();
+    expect(blind.widgets.map((entry) => entry.key)).not.toContain(
+      PortalWidgetKey.Onboarding,
+    );
+
+    mocks.requirePortalReader.mockResolvedValue({
+      ...ACTOR,
+      permissions: new Set([
+        Permission.PortalAccess,
+        Permission.PortalOnboardingRead,
+      ]),
+    });
+    const reader = await renderPage();
+    expect(mocks.listPortalOnboardingForms).toHaveBeenLastCalledWith(
+      expect.objectContaining({ customerId: "customer-1" }),
+    );
+    expect(reader.onboarding).toEqual(forms);
+    expect(reader.widgets.map((entry) => entry.key)).toContain(
+      PortalWidgetKey.Onboarding,
+    );
+
+    mocks.listPortalOnboardingForms.mockResolvedValue([]);
+    const empty = await renderPage();
+    expect(empty.widgets.map((entry) => entry.key)).not.toContain(
+      PortalWidgetKey.Onboarding,
+    );
   });
 
   it("hides the files overview when the reader may not read files", async () => {
