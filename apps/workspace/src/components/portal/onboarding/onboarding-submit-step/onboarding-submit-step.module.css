@@ -46,33 +46,39 @@
   list-style: none;
 }
 
-.jump {
+.step .jump {
   display: flex;
   align-items: center;
   min-height: 44px;
   padding: 0;
   border: 0;
+  border-radius: 0;
   background: none;
   font-family: inherit;
+  font-size: var(--font-size-body-sm);
+  font-weight: 400;
+  line-height: 1.4;
   text-align: left;
   cursor: pointer;
   color: var(--color-text);
-  font-size: var(--font-size-body-sm);
-  line-height: 1.4;
   overflow-wrap: anywhere;
   text-decoration: underline;
   text-decoration-color: var(--color-accent-warm);
   text-underline-offset: 0.25em;
 }
 
-.jump:hover {
+.step .jump:hover {
+  background: none;
+  box-shadow: none;
+  transform: none;
   text-decoration-thickness: 2px;
 }
 
-.jump:focus-visible {
+.step .jump:focus-visible {
   border-radius: 6px;
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
+  transform: none;
 }
 
 .complete {
