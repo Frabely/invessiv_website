@@ -32,6 +32,11 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   gemischt erscheinen.
 - `*Props`-Typen dürfen exportiert werden, sonst keine Typ- oder Konstantenexporte aus Komponenten.
 - Owner-Hinweise mit CRM-Link laufen über `portal-owner-notice/` (Aufgaben, Nachrichten) — kein zweiter Hinweisbaustein.
+- **Dateien an ein Ziel hängen** (Feedbackpunkt, ab Task 67 Bogenfeld) läuft ausschließlich über
+  `shared/portal-attachment-field/`: Liste, Upload-Warteschlange, Upload-Fläche und Fehlerzeile in einem Baustein.
+  Der Nutzer übergibt Transport, `attachAction`/`detachAction` (Ablehnung als fertiger Text), Grenze (`maxFiles`),
+  `accept` und Texte; der Baustein kennt weder Endpunkte noch Fachbegriffe. Kein zweiter Upload-Baustein je Bereich.
+  Unter `shared/` liegt nur, was mehrere Portal-Bereiche nutzen.
 
 ## Kundenchat (ab Task 26)
 
@@ -87,6 +92,8 @@ Plan: `apps/workspace/plans/crm/16-feedbackrunden/60-ui-uebergabe-und-kundenboge
   oder Kopieren an — nie stilles Überschreiben.
 - Bearbeiten nur mit `canSubmit`, Anhängen/Lösen nur mit `canAttach`, Upload zusätzlich mit `portal.files.write`
   (`canUpload` der Seite). Die Owner-Sicht liest nur und zeigt den Owner-Hinweis mit CRM-Link.
+  `feedback-item-attachments` bindet nur noch die Endpunkte, Texte und die Grenze des Punkts an
+  `shared/portal-attachment-field/`.
 - Freigeben ohne Änderungen erscheint nur ohne Punkte und nur über `feedback-approve-dialog` mit Pflicht-Haken.
 - Ab Task 61: Gespräch (`discussion`) und zurückgegebene Runde zeigen den Hinweis des Teams über
   `feedback-team-notice`. Ergebnisse je Punkt zeigt `feedback-item-list` über das geteilte `FeedbackItemResult`.
