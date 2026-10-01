@@ -1,0 +1,31 @@
+.field {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  min-height: 2.75rem;
+  padding-block: 0.35rem;
+  cursor: pointer;
+}
+
+.field[data-disabled] {
+  cursor: default;
+  opacity: 0.65;
+}
+
+.text {
+  display: grid;
+  gap: 0.15rem;
+  padding-top: 0.1rem;
+}
+
+.label {
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  font-weight: 600;
+}
+
+.hint {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  line-height: 1.5;
+}

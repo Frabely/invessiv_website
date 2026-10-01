@@ -32,6 +32,8 @@ export const CrmEndpointAccessRule = {
   LineItemTemplateDetail: "line_item_template_detail",
   LineItemTemplateCreate: "line_item_template_create",
   LineItemTemplates: "line_item_templates",
+  QuestionnaireCatalog: "questionnaire_catalog",
+  QuestionnaireCatalogWrite: "questionnaire_catalog_write",
   Tasks: "tasks",
   TaskCreate: "task_create",
   TaskDetail: "task_detail",
@@ -155,6 +157,14 @@ export const CRM_ENDPOINT_ACCESS_RULES = {
   },
   [CrmEndpointAccessRule.LineItemTemplates]: {
     permission: Permission.LineItemTemplatesRead,
+    scope: "workspace",
+  },
+  [CrmEndpointAccessRule.QuestionnaireCatalog]: {
+    permission: Permission.QuestionnaireTemplatesRead,
+    scope: "workspace",
+  },
+  [CrmEndpointAccessRule.QuestionnaireCatalogWrite]: {
+    permission: Permission.QuestionnaireTemplatesWrite,
     scope: "workspace",
   },
   [CrmEndpointAccessRule.Tasks]: {

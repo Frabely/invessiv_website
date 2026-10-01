@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import {
   crmFeedbackPathFor,
+  crmQuestionnaireBlockPathFor,
+  crmQuestionnaireTemplatePathFor,
+  crmQuestionnaireTemplatesPathFor,
   dashboardPathFor,
   portalEntryPathFor,
   portalPathFor,
@@ -34,6 +37,18 @@ describe("auth routes", () => {
     expect(dashboardPathFor("en")).toBe("/en/dashboard");
     expect(crmFeedbackPathFor("de")).toBe("/de/crm/feedback");
     expect(crmFeedbackPathFor("en")).toBe("/en/crm/feedback");
+  });
+
+  it("nests the onboarding editors below the catalog and encodes their ids", () => {
+    expect(crmQuestionnaireTemplatesPathFor("de")).toBe(
+      "/de/crm/questionnaire-templates",
+    );
+    expect(crmQuestionnaireBlockPathFor("en", "b 1")).toBe(
+      "/en/crm/questionnaire-templates/blocks/b%201",
+    );
+    expect(crmQuestionnaireTemplatePathFor("de", "t-1")).toBe(
+      "/de/crm/questionnaire-templates/templates/t-1",
+    );
   });
 
   it("builds a locale-prefixed path for every workspace area", () => {

@@ -1,0 +1,65 @@
+.titleCell {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.titleLink {
+  color: var(--color-text);
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.titleLink:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.titleLink:focus-visible,
+.action:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.key {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  overflow-wrap: anywhere;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.2rem;
+}
+
+.badges:empty {
+  display: none;
+}
+
+.carryOver {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 600;
+}
+
+.number {
+  font-variant-numeric: tabular-nums;
+}
+
+.action {
+  display: inline-grid;
+  place-items: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  color: var(--color-text-muted);
+}
+
+.action:hover {
+  color: var(--color-text);
+}

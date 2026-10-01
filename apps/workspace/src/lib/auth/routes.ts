@@ -61,6 +61,24 @@ export function crmLineItemTemplatesPathFor(locale: Locale): string {
   return createLocalePathname(SITE_ROUTES.CRM_LINE_ITEM_TEMPLATES, locale);
 }
 
+export function crmQuestionnaireTemplatesPathFor(locale: Locale): string {
+  return createLocalePathname(SITE_ROUTES.CRM_QUESTIONNAIRE_TEMPLATES, locale);
+}
+
+export function crmQuestionnaireBlockPathFor(
+  locale: Locale,
+  blockId: string,
+): string {
+  return `${createLocalePathname(SITE_ROUTES.CRM_QUESTIONNAIRE_BLOCK_EDITOR, locale)}/${encodeURIComponent(blockId)}`;
+}
+
+export function crmQuestionnaireTemplatePathFor(
+  locale: Locale,
+  templateId: string,
+): string {
+  return `${createLocalePathname(SITE_ROUTES.CRM_QUESTIONNAIRE_TEMPLATE_EDITOR, locale)}/${encodeURIComponent(templateId)}`;
+}
+
 export function crmTasksPathFor(locale: Locale): string {
   return createLocalePathname(SITE_ROUTES.CRM_TASKS, locale);
 }

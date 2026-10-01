@@ -58,6 +58,7 @@ import { LineItemTemplateStatus } from "@invessiv/common/constants/crm/line-item
 import { seedPortalDashboard } from "./crm-fixture/seed-portal-dashboard";
 import { seedFiles } from "./crm-fixture/seed-files";
 import { seedFeedbackRounds } from "./crm-fixture/seed-feedback-rounds";
+import { seedOnboarding } from "./crm-fixture/seed-onboarding";
 import { Locale } from "@invessiv/common/contracts/i18n/locale";
 import {
   configureDatabaseUrlFromTarget,
@@ -789,6 +790,10 @@ async function run() {
       memberId: projectMember.memberId,
       running: feedbackProject("nordlicht"),
       approved: feedbackProject("kluge-bau"),
+    });
+    await seedOnboarding(tx, {
+      memberId: projectMember.memberId,
+      ...feedbackProject("nordlicht"),
     });
     // Snapshots, not references: the workshop price is deliberately below its template price to
     // show that a project keeps what was agreed even after the catalog moves on.

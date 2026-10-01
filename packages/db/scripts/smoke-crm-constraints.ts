@@ -19,6 +19,10 @@ import { FeedbackRoundItemsConstraintName } from "@invessiv/db/constraint-names/
 import { FeedbackRoundsConstraintName } from "@invessiv/db/constraint-names/crm/feedback-rounds-constraint-names";
 import { FilesConstraintName } from "@invessiv/db/constraint-names/crm/files-constraint-names";
 import {
+  cleanupQuestionnaireFixtures,
+  runOnboardingChecks,
+} from "./crm-smoke/onboarding-checks";
+import {
   configureDatabaseUrlFromTarget,
   type DatabaseTarget,
   parseDatabaseTarget,
@@ -345,6 +349,15 @@ async function runChecks(sql: Sql) {
   await runProjectFeedbackRoundChecks(sql, memberId, name);
   await runTaskChecks(sql, memberId, name);
   await runFeedbackRoundTableChecks(sql, memberId, name);
+  await runOnboardingChecks({
+    sql,
+    memberId,
+    name,
+    insertCustomer: (displayName) =>
+      insertCustomer(sql, { ownerMemberId: memberId, displayName }),
+    expectRejected,
+    expectAccepted,
+  });
   await runConcurrencyChecks(sql, memberId, name);
 }
 
@@ -1709,6 +1722,7 @@ async function runConcurrencyChecks(
 
 async function cleanup(sql: Sql) {
   const pattern = `${FIXTURE_PREFIX}%`;
+  await cleanupQuestionnaireFixtures(sql, pattern);
   // Files reference projects and feedback items without a cascade, so they go first.
   await sql`DELETE
               FROM files

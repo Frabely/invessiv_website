@@ -123,6 +123,21 @@ export const PERMISSION_DEFINITIONS = {
     assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
     description: "Create, edit and archive line item templates.",
   },
+  [Permission.QuestionnaireTemplatesRead]: {
+    realm: AuthRealm.Workspace,
+    delegable: true,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description: "View the questionnaire building blocks and templates.",
+  },
+  [Permission.QuestionnaireTemplatesWrite]: {
+    realm: AuthRealm.Workspace,
+    delegable: true,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description:
+      "Create, edit and archive questionnaire building blocks and templates.",
+  },
   [Permission.TasksRead]: {
     realm: AuthRealm.Workspace,
     delegable: true,
@@ -277,6 +292,20 @@ export const PERMISSION_DEFINITIONS = {
     assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
     description: "Save, submit and approve feedback rounds.",
   },
+  [Permission.PortalOnboardingRead]: {
+    realm: AuthRealm.Portal,
+    delegable: true,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description: "See released onboarding forms with their answers and files.",
+  },
+  [Permission.PortalOnboardingSubmit]: {
+    realm: AuthRealm.Portal,
+    delegable: true,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description: "Fill in, attach files to and submit onboarding forms.",
+  },
   [Permission.RolesManage]: {
     realm: AuthRealm.Workspace,
     delegable: false,
@@ -335,4 +364,5 @@ export const PORTAL_READ_PERMISSION_VALUES = [
   Permission.PortalMessagesRead,
   Permission.PortalFilesRead,
   Permission.PortalFeedbackRead,
+  Permission.PortalOnboardingRead,
 ] as const satisfies readonly Permission[];

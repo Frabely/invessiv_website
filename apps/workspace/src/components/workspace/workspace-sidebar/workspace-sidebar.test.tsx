@@ -17,6 +17,7 @@ const content = getWorkspacePageContent("de");
 function renderSidebar(
   overrides: {
     canOpenCrmFeedback?: boolean;
+    canReadCrmQuestionnaireTemplates?: boolean;
     unreadFeedbackRoundCount?: number;
   } = {},
 ) {
@@ -27,6 +28,9 @@ function renderSidebar(
       canOpenCrmMessages={false}
       canOpenCrmTasks={false}
       canReadCrmLineItemTemplates={false}
+      canReadCrmQuestionnaireTemplates={
+        overrides.canReadCrmQuestionnaireTemplates ?? false
+      }
       content={content}
       isOpen={false}
       locale="de"
@@ -75,6 +79,21 @@ describe("WorkspaceSidebar feedback entry", () => {
     renderSidebar({ canOpenCrmFeedback: false });
     expect(
       screen.queryByRole("link", { name: /Feedback/ }),
+    ).not.toBeInTheDocument();
+  });
+});
+
+describe("WorkspaceSidebar questionnaire templates entry", () => {
+  it("links the catalog only with questionnaire_templates.read", () => {
+    renderSidebar({ canReadCrmQuestionnaireTemplates: true });
+    expect(
+      screen.getByRole("link", { name: "Fragebogen-Vorlagen" }),
+    ).toHaveAttribute("href", "/de/crm/questionnaire-templates");
+    cleanup();
+
+    renderSidebar();
+    expect(
+      screen.queryByRole("link", { name: "Fragebogen-Vorlagen" }),
     ).not.toBeInTheDocument();
   });
 });

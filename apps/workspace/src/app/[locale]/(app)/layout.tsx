@@ -93,6 +93,10 @@ export default async function WorkspaceLayout({
     authentication.actor,
     Permission.LineItemTemplatesRead,
   );
+  const canReadCrmQuestionnaireTemplates = can(
+    authentication.actor,
+    Permission.QuestionnaireTemplatesRead,
+  );
   const canOpenCrmMessages = canAnywhere(
     authentication.actor,
     Permission.ChatRead,
@@ -106,7 +110,8 @@ export default async function WorkspaceLayout({
     canOpenCrmTasks ||
     canOpenCrmFeedback ||
     canOpenCrmMessages ||
-    canReadCrmLineItemTemplates;
+    canReadCrmLineItemTemplates ||
+    canReadCrmQuestionnaireTemplates;
   const navigationAreas = WORKSPACE_AREA_VALUES.filter(
     (area) =>
       permittedAreas.includes(area) ||
@@ -143,6 +148,7 @@ export default async function WorkspaceLayout({
       canOpenCrmFeedback={canOpenCrmFeedback}
       canOpenCrmMessages={canOpenCrmMessages}
       canReadCrmLineItemTemplates={canReadCrmLineItemTemplates}
+      canReadCrmQuestionnaireTemplates={canReadCrmQuestionnaireTemplates}
       locale={activeLocale}
       permittedAreas={navigationAreas}
       portalHref={portalHref}

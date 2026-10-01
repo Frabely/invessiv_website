@@ -34,6 +34,8 @@ export const SYSTEM_ROLE_DEFINITIONS = {
       Permission.ProjectLineItemsWrite,
       Permission.LineItemTemplatesRead,
       Permission.LineItemTemplatesWrite,
+      Permission.QuestionnaireTemplatesRead,
+      Permission.QuestionnaireTemplatesWrite,
       Permission.TasksRead,
       Permission.TasksWrite,
       Permission.ChatRead,

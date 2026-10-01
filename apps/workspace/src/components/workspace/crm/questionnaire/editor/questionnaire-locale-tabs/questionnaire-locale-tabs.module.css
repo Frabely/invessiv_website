@@ -1,0 +1,15 @@
+.tabs {
+  align-self: start;
+}
+
+.label {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.missing {
+  color: var(--color-accent-warm);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 600;
+}

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
   faAddressBook,
+  faClipboardList,
   faChartColumn,
   faComments,
   faGear,
@@ -25,6 +26,7 @@ import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import {
   crmFeedbackPathFor,
   crmLineItemTemplatesPathFor,
+  crmQuestionnaireTemplatesPathFor,
   crmMessagesPathFor,
   crmTasksPathFor,
   workspaceAreaPathFor,
@@ -37,6 +39,7 @@ type WorkspaceSidebarProps = {
   canOpenCrmFeedback: boolean;
   canOpenCrmMessages: boolean;
   canReadCrmLineItemTemplates: boolean;
+  canReadCrmQuestionnaireTemplates: boolean;
   content: WorkspacePageContent;
   isOpen: boolean;
   locale: Locale;
@@ -102,6 +105,7 @@ export function WorkspaceSidebar({
   canOpenCrmFeedback,
   canOpenCrmMessages,
   canReadCrmLineItemTemplates,
+  canReadCrmQuestionnaireTemplates,
   content,
   isOpen,
   locale,
@@ -249,6 +253,15 @@ export function WorkspaceSidebar({
                           href={crmLineItemTemplatesPathFor(locale)}
                           icon={faLayerGroup}
                           label={sidebarContent.items.lineItemTemplates}
+                          onClickAction={onCloseAction}
+                          pathname={pathname}
+                        />
+                      ) : null}
+                      {canReadCrmQuestionnaireTemplates ? (
+                        <CrmChildLink
+                          href={crmQuestionnaireTemplatesPathFor(locale)}
+                          icon={faClipboardList}
+                          label={sidebarContent.items.questionnaireTemplates}
                           onClickAction={onCloseAction}
                           pathname={pathname}
                         />

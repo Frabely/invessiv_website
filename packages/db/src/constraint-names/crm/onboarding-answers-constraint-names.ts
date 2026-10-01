@@ -1,0 +1,16 @@
+export const OnboardingAnswersConstraintName = {
+  FormForeignKey: "onboarding_answers_form_fk",
+  FieldForeignKey: "onboarding_answers_field_fk",
+  EntryFormForeignKey: "onboarding_answers_entry_form_fk",
+  ChoiceFieldForeignKey: "onboarding_answers_choice_field_fk",
+  UpdatedByPortalForeignKey: "onboarding_answers_updated_by_portal_fk",
+  UpdatedByMemberForeignKey: "onboarding_answers_updated_by_member_fk",
+  SlotUnique: "onboarding_answers_slot_uidx",
+  ChoiceBlockLevelUnique: "onboarding_answers_choice_block_uidx",
+  ChoiceGroupEntryUnique: "onboarding_answers_choice_entry_uidx",
+  ValueCheck: "onboarding_answers_value_check",
+  SortOrderCheck: "onboarding_answers_sort_order_check",
+  ContentCheck: "onboarding_answers_content_check",
+  UpdatedByCheck: "onboarding_answers_updated_by_check",
+  FormIndex: "onboarding_answers_form_idx",
+} as const;

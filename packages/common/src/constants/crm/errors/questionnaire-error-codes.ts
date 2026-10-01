@@ -1,0 +1,20 @@
+export const QuestionnaireErrorCode = {
+  TemplateNotFound: "QUESTIONNAIRE_TEMPLATE_NOT_FOUND",
+  BlockNotFound: "QUESTIONNAIRE_BLOCK_NOT_FOUND",
+  FieldNotFound: "QUESTIONNAIRE_FIELD_NOT_FOUND",
+  TranslationRequired: "QUESTIONNAIRE_TRANSLATION_REQUIRED",
+  InvalidCondition: "QUESTIONNAIRE_INVALID_CONDITION",
+  InvalidFieldConfig: "QUESTIONNAIRE_INVALID_FIELD_CONFIG",
+  BlockInUse: "QUESTIONNAIRE_BLOCK_IN_USE",
+  LimitReached: "QUESTIONNAIRE_LIMIT_REACHED",
+  KeyTaken: "QUESTIONNAIRE_KEY_TAKEN",
+  ValidationError: "VALIDATION_ERROR",
+  Internal: "INTERNAL",
+} as const;
+
+export type QuestionnaireErrorCode =
+  (typeof QuestionnaireErrorCode)[keyof typeof QuestionnaireErrorCode];
+
+export const QUESTIONNAIRE_ERROR_CODE_VALUES = Object.values(
+  QuestionnaireErrorCode,
+) as readonly QuestionnaireErrorCode[];

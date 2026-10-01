@@ -1,0 +1,351 @@
+{
+  "meta": {
+    "title": "Fragebogen-Vorlagen | Invessiv",
+    "description": "Bausteine und Vorlagen für Fragebögen pflegen, etwa für das Onboarding eines Projekts."
+  },
+  "catalog": {
+    "title": "Fragebogen-Vorlagen",
+    "description": "Bausteine sind die Schritte eines Fragebogens, Vorlagen stellen sie für einen Anlass zusammen, etwa das Onboarding eines Projekttyps. Änderungen hier wirken nur auf neue Bögen.",
+    "tabs": {
+      "ariaLabel": "Bereich wählen",
+      "blocks": "Bausteine",
+      "templates": "Vorlagen"
+    },
+    "filters": {
+      "ariaLabel": "Liste filtern",
+      "status": "Status",
+      "statusOptions": {
+        "active": "Aktive",
+        "archived": "Archivierte",
+        "all": "Alle"
+      },
+      "search": "Suchen",
+      "searchPlaceholderBlocks": "Titel oder Schlüssel",
+      "searchPlaceholderTemplates": "Titel",
+      "submit": "Suchen",
+      "reset": "Filter zurücksetzen"
+    },
+    "createBlock": "Neuer Baustein",
+    "createTemplate": "Neue Vorlage",
+    "status": {
+      "active": "Aktiv",
+      "archived": "Archiviert"
+    },
+    "blocks": {
+      "caption": "Bausteine",
+      "columns": {
+        "title": "Baustein",
+        "fields": "Felder",
+        "usage": "In Vorlagen",
+        "status": "Status",
+        "actions": "Aktionen"
+      },
+      "carryOver": "Firmenweit",
+      "carryOverHint": "Wird beim nächsten Projekt aus dem letzten Bogen vorbefüllt",
+      "fieldCount": "{count} Felder",
+      "fieldCountOne": "1 Feld",
+      "usage": "{count}",
+      "open": "„{name}“ bearbeiten",
+      "empty": {
+        "title": "Noch keine Bausteine",
+        "description": "Bausteine sind die Abschnitte eines Fragebogens, etwa „Unternehmen“ oder „Logos & Corporate Design“. Leg den ersten an und füge ihm Felder hinzu.",
+        "action": "Neuer Baustein"
+      },
+      "noResults": {
+        "title": "Kein Baustein passt zum Filter",
+        "description": "Ändere die Suche oder zeig auch archivierte Bausteine.",
+        "action": "Filter zurücksetzen"
+      }
+    },
+    "templates": {
+      "caption": "Vorlagen",
+      "columns": {
+        "title": "Vorlage",
+        "blocks": "Bausteine",
+        "updated": "Geändert",
+        "status": "Status",
+        "actions": "Aktionen"
+      },
+      "blockCount": "{count} Bausteine",
+      "blockCountOne": "1 Baustein",
+      "open": "„{name}“ bearbeiten",
+      "empty": {
+        "title": "Noch keine Vorlagen",
+        "description": "Eine Vorlage legt fest, welche Bausteine ein Bogen in welcher Reihenfolge bekommt, zum Beispiel für eine kompakte Landingpage.",
+        "action": "Neue Vorlage"
+      },
+      "noResults": {
+        "title": "Keine Vorlage passt zum Filter",
+        "description": "Ändere die Suche oder zeig auch archivierte Vorlagen.",
+        "action": "Filter zurücksetzen"
+      }
+    },
+    "createBlockDialog": {
+      "title": "Neuer Baustein",
+      "description": "Titel und Schlüssel jetzt, Felder und weitere Sprachen danach im Editor.",
+      "fields": {
+        "title": "Titel ({language})",
+        "key": "Schlüssel",
+        "carryOver": "Firmenweit"
+      },
+      "hints": {
+        "key": "Interner Name aus Kleinbuchstaben, Ziffern und Unterstrichen. Wird aus dem Titel vorgeschlagen.",
+        "carryOver": "Inhalte gelten für das ganze Unternehmen und werden beim nächsten Projekt vorbefüllt."
+      },
+      "submit": "Anlegen und bearbeiten",
+      "submitting": "Wird angelegt …"
+    },
+    "createTemplateDialog": {
+      "title": "Neue Vorlage",
+      "description": "Die Bausteine wählst du danach im Vorlagen-Editor.",
+      "fields": {
+        "title": "Titel",
+        "description": "Beschreibung"
+      },
+      "hints": {
+        "description": "Wann passt diese Vorlage? Nur intern sichtbar."
+      },
+      "submit": "Anlegen und bearbeiten",
+      "submitting": "Wird angelegt …"
+    },
+    "dialog": {
+      "cancel": "Abbrechen",
+      "close": "Schließen"
+    },
+    "validation": {
+      "required": "Bitte ausfüllen.",
+      "key": "Nur Kleinbuchstaben, Ziffern und Unterstriche, beginnend mit einem Buchstaben, mindestens zwei Zeichen.",
+      "number": "Bitte eine ganze Zahl eingeben.",
+      "minChoices": "Diese Auswahl braucht mindestens zwei Optionen."
+    }
+  },
+  "blockPage": {
+    "back": "Zurück zu den Bausteinen",
+    "keyLabel": "Schlüssel",
+    "usage": "In {count} Vorlagen verwendet",
+    "usageOne": "In 1 Vorlage verwendet",
+    "usageNone": "In keiner Vorlage verwendet",
+    "duplicate": "Duplizieren",
+    "delete": "Löschen",
+    "deleteBlockedHint": "Wird in Vorlagen verwendet und kann deshalb nur archiviert werden.",
+    "duplicateDialog": {
+      "title": "Baustein duplizieren",
+      "description": "Die Kopie übernimmt alle Felder, Optionen und Texte. Du bearbeitest sie danach im Editor.",
+      "key": "Schlüssel der Kopie",
+      "submit": "Duplizieren",
+      "submitting": "Wird dupliziert …"
+    },
+    "deleteDialog": {
+      "title": "Baustein löschen?",
+      "description": "„{name}“ wird mit allen Feldern gelöscht. Bestehende Bögen behalten ihre Kopie.",
+      "confirm": "Endgültig löschen",
+      "cancel": "Behalten"
+    }
+  },
+  "templatePage": {
+    "back": "Zurück zu den Vorlagen"
+  },
+  "editor": {
+    "head": {
+      "legend": "Schritt",
+      "title": "Titel",
+      "intro": "Hinweis über den Feldern",
+      "introHint": "Optional. Erklärt dem Kunden kurz, worum es in diesem Schritt geht.",
+      "key": "Schlüssel",
+      "carryOver": "Firmenweit",
+      "carryOverHint": "Wird beim nächsten Projekt aus dem letzten abgeschlossenen Bogen vorbefüllt.",
+      "status": "Status",
+      "save": "Änderungen speichern",
+      "saving": "Wird gespeichert …",
+      "saved": "Gespeichert."
+    },
+    "locales": {
+      "ariaLabel": "Sprache der Texte",
+      "missing": "fehlt",
+      "missingBadge": "Fehlt: {languages}",
+      "missingDescription": "Diese Sprache ist noch nicht gepflegt. Im Portal erscheint dann die erste vorhandene Sprache."
+    },
+    "fields": {
+      "legend": "Felder",
+      "count": "{count} Felder",
+      "countOne": "1 Feld",
+      "add": "Feld hinzufügen",
+      "addChild": "Unterfeld hinzufügen",
+      "addChildTo": "Unterfeld zu „{name}“ hinzufügen",
+      "empty": {
+        "title": "Noch keine Felder",
+        "description": "Felder sind die Fragen dieses Schritts. Leg das erste an, zum Beispiel einen Text, eine Auswahl oder einen Datei-Upload."
+      },
+      "groupEmpty": "Diese Gruppe hat noch keine Unterfelder. Jeder Eintrag des Kunden fragt sie ab.",
+      "required": "Pflicht",
+      "condition": "Nur wenn „{trigger}“ = „{choice}“",
+      "prefill": "Vorbelegt",
+      "untitled": "Ohne Titel",
+      "fallback": "{language}",
+      "edit": "„{name}“ bearbeiten",
+      "delete": "„{name}“ löschen",
+      "moveUp": "„{name}“ nach oben",
+      "moveDown": "„{name}“ nach unten",
+      "moved": "„{name}“ steht jetzt an Position {position}.",
+      "added": "„{name}“ wurde hinzugefügt.",
+      "removed": "„{name}“ wurde gelöscht.",
+      "updated": "„{name}“ wurde gespeichert."
+    },
+    "fieldDialog": {
+      "createTitle": "Feld hinzufügen",
+      "createChildTitle": "Unterfeld zu „{name}“ hinzufügen",
+      "editTitle": "Feld bearbeiten",
+      "type": "Feldtyp",
+      "typeFixed": "Der Typ ist nach dem Anlegen fest.",
+      "key": "Schlüssel",
+      "keyHint": "Interner Name, eindeutig in diesem Baustein. Wird aus der Beschriftung vorgeschlagen.",
+      "required": "Pflichtfeld",
+      "requiredHint": "Gilt nur, solange das Feld sichtbar ist.",
+      "label": "Frage",
+      "help": "Hilfetext",
+      "helpHint": "Optional. Sag dem Kunden, wofür wir die Angabe brauchen.",
+      "texts": "Texte",
+      "config": "Einstellungen",
+      "maxLength": "Höchstens Zeichen",
+      "maxLengthHint": "Leer lassen für den Standard ({count}).",
+      "minItems": "Mindestens",
+      "maxItems": "Höchstens",
+      "itemsHint": {
+        "files": "Anzahl Dateien. Leer lassen für keine Grenze.",
+        "group": "Anzahl Einträge. Leer lassen für keine Grenze.",
+        "multi_choice": "Anzahl gewählter Optionen. Leer lassen für keine Grenze."
+      },
+      "acceptedKinds": "Erlaubte Dateiarten",
+      "acceptedKindsHint": "Nichts gewählt heißt: alle Dateiarten.",
+      "prefill": "Vorbelegen mit",
+      "prefillNone": "Nicht vorbelegen",
+      "prefillHint": "Der Kunde sieht den Wert aus dem CRM und kann ihn ändern. Zurück ins CRM geschrieben wird nichts.",
+      "submitCreate": "Feld hinzufügen",
+      "submitEdit": "Feld speichern",
+      "submitting": "Wird gespeichert …",
+      "conflict": "Jemand hat diesen Baustein inzwischen geändert. Der aktuelle Stand ist geladen, deine Eingaben sind noch da. Prüf sie und speichere erneut."
+    },
+    "choices": {
+      "legend": "Optionen",
+      "polesLegend": "Beschriftung der Pole",
+      "add": "Option hinzufügen",
+      "key": "Schlüssel",
+      "label": "Beschriftung ({language})",
+      "moveUp": "Option „{name}“ nach oben",
+      "moveDown": "Option „{name}“ nach unten",
+      "remove": "Option „{name}“ entfernen",
+      "fixedHint": "Die Optionen dieses Typs sind fest, nur die Beschriftung ist änderbar.",
+      "minimumHint": "Mindestens zwei Optionen.",
+      "poles": {
+        "low": "Linker Pol",
+        "high": "Rechter Pol"
+      },
+      "defaults": {
+        "yes": "Ja",
+        "no": "Nein"
+      },
+      "newOption": "Option {number}"
+    },
+    "condition": {
+      "legend": "Sichtbarkeit",
+      "always": "Immer sichtbar",
+      "trigger": "Nur sichtbar, wenn",
+      "choice": "diese Antwort hat",
+      "noCandidates": "Bedingungen brauchen ein Auswahl- oder Ja/Nein-Feld weiter oben auf derselben Ebene."
+    },
+    "deleteDialog": {
+      "title": "Feld löschen?",
+      "description": "„{name}“ wird aus diesem Baustein gelöscht. Bestehende Bögen behalten ihre Kopie.",
+      "descriptionGroup": "„{name}“ wird mit allen Unterfeldern aus diesem Baustein gelöscht. Bestehende Bögen behalten ihre Kopie.",
+      "confirm": "Löschen",
+      "cancel": "Behalten"
+    },
+    "conflict": "Jemand hat diesen Baustein inzwischen geändert. Der aktuelle Stand ist geladen, bitte wiederhole deine Änderung."
+  },
+  "templateEditor": {
+    "head": {
+      "legend": "Vorlage",
+      "title": "Titel",
+      "description": "Beschreibung",
+      "descriptionHint": "Wann passt diese Vorlage? Nur intern sichtbar.",
+      "status": "Status"
+    },
+    "blocks": {
+      "legend": "Bausteine in dieser Reihenfolge",
+      "count": "{count} Bausteine",
+      "countOne": "1 Baustein",
+      "add": "Baustein hinzufügen",
+      "empty": "Diese Vorlage hat noch keine Bausteine. Füg sie in der Reihenfolge hinzu, in der der Kunde sie ausfüllt.",
+      "moveUp": "„{name}“ nach oben",
+      "moveDown": "„{name}“ nach unten",
+      "remove": "„{name}“ entfernen",
+      "moved": "„{name}“ steht jetzt an Position {position}.",
+      "added": "„{name}“ wurde an Position {position} hinzugefügt.",
+      "removed": "„{name}“ wurde entfernt.",
+      "archived": "Archiviert",
+      "archivedHint": "Bleibt in der Vorlage, kann aber nicht neu hinzugefügt werden.",
+      "open": "Baustein öffnen"
+    },
+    "picker": {
+      "title": "Baustein hinzufügen",
+      "description": "Nur aktive Bausteine, die noch nicht in der Vorlage sind.",
+      "search": "Bausteine durchsuchen",
+      "searchPlaceholder": "Titel oder Schlüssel",
+      "add": "Hinzufügen",
+      "addNamed": "„{name}“ hinzufügen",
+      "empty": "Alle aktiven Bausteine sind schon in der Vorlage.",
+      "noResults": "Kein Baustein passt zur Suche.",
+      "close": "Fertig"
+    },
+    "unsaved": "Ungespeicherte Änderungen",
+    "save": "Vorlage speichern",
+    "saving": "Wird gespeichert …",
+    "saved": "Gespeichert.",
+    "reset": "Änderungen verwerfen",
+    "conflict": "Jemand hat diese Vorlage inzwischen geändert. Der aktuelle Stand ist geladen, deine Eingaben sind noch da. Prüf sie und speichere erneut."
+  },
+  "fieldTypes": {
+    "short_text": "Kurzer Text",
+    "long_text": "Langer Text",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "url": "Link",
+    "choice": "Auswahl (eine)",
+    "multi_choice": "Auswahl (mehrere)",
+    "yes_no": "Ja / Nein",
+    "scale": "Skala",
+    "color": "Farbe",
+    "files": "Dateien",
+    "confirmation": "Bestätigung",
+    "group": "Gruppe (wiederholbar)",
+    "project_services": "Projektleistungen bestätigen"
+  },
+  "prefillSources": {
+    "customer_company_name": "Firmenname des Kunden",
+    "customer_address": "Anschrift des Kunden",
+    "customer_vat_id": "USt-ID des Kunden",
+    "customer_website_url": "Website des Kunden",
+    "primary_contact_name": "Name des Hauptkontakts",
+    "primary_contact_email": "E-Mail des Hauptkontakts",
+    "primary_contact_phone": "Telefon des Hauptkontakts"
+  },
+  "assetKinds": {
+    "document": "Dokumente",
+    "image": "Bilder",
+    "video": "Videos",
+    "font": "Schriften"
+  },
+  "errors": {
+    "QUESTIONNAIRE_TEMPLATE_NOT_FOUND": "Die Vorlage existiert nicht mehr.",
+    "QUESTIONNAIRE_BLOCK_NOT_FOUND": "Der Baustein existiert nicht mehr.",
+    "QUESTIONNAIRE_FIELD_NOT_FOUND": "Das Feld existiert nicht mehr. Lade die Seite neu.",
+    "QUESTIONNAIRE_TRANSLATION_REQUIRED": "Mindestens eine Sprache braucht einen Text.",
+    "QUESTIONNAIRE_INVALID_CONDITION": "Die Bedingung passt nicht mehr: Ein Feld oder eine Option wird noch von einer Bedingung verwendet, oder der Auslöser stünde hinter dem abhängigen Feld.",
+    "QUESTIONNAIRE_INVALID_FIELD_CONFIG": "Die Einstellungen passen nicht zum Feldtyp. Prüf Optionen und Grenzen.",
+    "QUESTIONNAIRE_BLOCK_IN_USE": "Der Baustein steckt in einer Vorlage und kann nur archiviert werden.",
+    "QUESTIONNAIRE_LIMIT_REACHED": "Eine Obergrenze ist erreicht, etwa die Zahl der Felder oder Optionen.",
+    "QUESTIONNAIRE_KEY_TAKEN": "Dieser Schlüssel ist schon vergeben.",
+    "VALIDATION_ERROR": "Die Eingaben sind unvollständig oder ungültig.",
+    "INTERNAL": "Das hat nicht geklappt. Versuch es gleich noch einmal."
+  }
+}

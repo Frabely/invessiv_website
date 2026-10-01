@@ -2,7 +2,7 @@
 
 > **Vor dem Start lesen:** [`README.md`](./README.md), [`63-datenmodell-und-regeln.md`](./63-datenmodell-und-regeln.md),
 > [`64-baustein-katalog-und-vorlagen.md`](./64-baustein-katalog-und-vorlagen.md) (Block-Editor, Listen-Editor,
-> Definitions-Services, `onboardingBlockCopyService` — hier wiederverwendet), `../00-entscheidungen.md`,
+> Definitions-Services, `questionnaireBlockCopyService` — hier wiederverwendet), `../00-entscheidungen.md`,
 > `../AGENTS.md`, scoped `AGENTS.md` unter `src/server/workspace/crm/`, `src/components/workspace/crm/`,
 > `src/app/[locale]/(app)/crm/`.
 
@@ -22,26 +22,26 @@ weil das Portal-Formular erst dann komplett ist) — kein toter Button, der Boge
 
 ## Entscheidungen
 
-| Bereich                    | Entscheidung                                                                                                                                                                                                                                                                                                                                                                      |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Einstieg                   | Projektbereich „Onboarding“ in `customer-projects-section` ersetzt den `MockSectionCard` für `PROJECT_FUTURE_AREAS = ["onboarding"]` (Konstante entfällt, wenn sie danach leer ist)                                                                                                                                                                                               |
-| Bogenseite                 | Eigene Seite `/crm/onboarding/[formId]` (`SITE_ROUTES`-Pfad-Helfer), noindex, `force-dynamic`. Tab „Aufbau“ in diesem Task; „Antworten“ (Task 66) und „Prüfung“ (Task 68) folgen als weitere Tabs                                                                                                                                                                                 |
-| Berechtigt                 | Lesen `projects.read`, alles Schreibende `projects.write` — jeweils `crmAccessCondition.forScope(accessScope(actor, …), { customerId, projectId })` in der Query und `canOn` im Schreibpfad. Keine neue Permission                                                                                                                                                                |
-| Projektstatus              | Starten nur bei Projekten in `ONBOARDING_ELIGIBLE_PROJECT_STATUS_VALUES` (`planned`, `active`; neue Konstante unter `packages/common/src/constants/crm/onboarding/`), sonst 409 `ONBOARDING_PROJECT_NOT_ELIGIBLE` (Fehlercode in diesem Task ergänzen)                                                                                                                            |
-| Ein Bogen je Projekt       | Zweites Starten → 409 `ONBOARDING_FORM_EXISTS` (Unique-Index aus Task 63 ist die letzte Absicherung, der Handler prüft vorher)                                                                                                                                                                                                                                                    |
-| Anlegen                    | Eine Transaktion: Bogen (`draft`, `version 1`), je Vorlagenblock `onboardingBlockCopyService.copy(tx, catalogBlockId, formId)`, `onboarding_form_blocks` mit Position und `review_status = pending`, Vorbefüllung, Activity `created` am Projekt                                                                                                                                  |
-| Ohne Vorlage               | Erlaubt („Leer starten“): Bogen ohne Blöcke; Blöcke kommen aus dem Katalog oder werden neu angelegt                                                                                                                                                                                                                                                                               |
-| Strukturänderungen erlaubt | In `draft` und `open`. In `submitted`, `changes_requested`, `completed` gesperrt (`ONBOARDING_NOT_EDITABLE`) — geprüft wird gegen einen stabilen Stand. Fehlendes nach dem Absenden läuft über die Nachforderung (Task 68)                                                                                                                                                        |
-| Feld mit Antworten löschen | Erlaubt, aber der Dialog nennt die Zahl betroffener Antworten und Dateien (`ConfirmDialog`, `tone: danger`); Antworten fallen per Cascade weg, **Dateien bleiben** im Dateibereich des Kunden (nur die Verknüpfung entfällt)                                                                                                                                                      |
-| Eigene Blöcke              | „Eigener Baustein“ legt einen leeren Block direkt im Bogen an (`owner_form_id = formId`, `source_block_id NULL`). Er wird nie vorbefüllt                                                                                                                                                                                                                                          |
-| Block aus Bogen in Katalog | Nicht in diesem Task (bewusst: Katalogpflege bleibt auf der Katalogseite)                                                                                                                                                                                                                                                                                                         |
-| Vorbefüllung aus Vorbogen  | Quelle: jüngster Bogen desselben Kunden mit `status = completed` (anderes Projekt). Für jeden **neuen** Bogenblock mit `carry_over = true` und `source_block_id = S` wird der Block mit derselben `source_block_id` im Vorbogen gesucht                                                                                                                                           |
-| Zuordnung                  | Felder über `key` (Unterfelder über Gruppen-`key` + eigenen `key`), Optionen über `key`, Gruppeneinträge in Reihenfolge. Nicht zuordenbare Werte werden verworfen, nie geraten                                                                                                                                                                                                    |
-| Dateien bei Vorbefüllung   | Dieselbe `file_id` wird verknüpft (`onboarding_answer_files`), keine Kopie. Die Datei gehört demselben Kunden; Projektbindung der Datei bleibt unverändert                                                                                                                                                                                                                        |
-| Kennzeichnung              | Vorbefüllte Antworten tragen `updated_by_member_id` des Anlegers. Keine neue Spalte für die Herkunft: Das Portal (Task 66) zeigt je `carry_over`-Block „Aus deinem letzten Onboarding übernommen — bitte prüfen“, solange Antworten des Blocks vor `released_at` entstanden und seitdem nicht vom Kunden geändert sind                                                            |
-| CRM-Vorbelegung            | Nur für Felder ohne übernommene Antwort. Quellen laut `OnboardingPrefillSource`: `customers.company_name`, Adresse (`street`, `postal_code`, `city`, `country` als mehrzeiliger Text), `vat_id`, `website_url`, Primärkontakt aus `customer_contact_assignments` (`is_primary`) + `people` (`display_name`, `business_email ?? primary_email`, `business_phone ?? primary_phone`) |
-| Kein Zurückschreiben       | Weder Vorbefüllung noch spätere Antworten ändern CRM-Stammdaten                                                                                                                                                                                                                                                                                                                   |
-| Vorlagenänderung danach    | Wirkt nicht auf bestehende Bögen (Snapshot). Kein „Aktualisieren aus Vorlage“                                                                                                                                                                                                                                                                                                     |
+| Bereich                    | Entscheidung                                                                                                                                                                                                                                                                                                                                                                         |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Einstieg                   | Projektbereich „Onboarding“ in `customer-projects-section` ersetzt den `MockSectionCard` für `PROJECT_FUTURE_AREAS = ["onboarding"]` (Konstante entfällt, wenn sie danach leer ist)                                                                                                                                                                                                  |
+| Bogenseite                 | Eigene Seite `/crm/onboarding/[formId]` (`SITE_ROUTES`-Pfad-Helfer), noindex, `force-dynamic`. Tab „Aufbau“ in diesem Task; „Antworten“ (Task 66) und „Prüfung“ (Task 68) folgen als weitere Tabs                                                                                                                                                                                    |
+| Berechtigt                 | Lesen `projects.read`, alles Schreibende `projects.write` — jeweils `crmAccessCondition.forScope(accessScope(actor, …), { customerId, projectId })` in der Query und `canOn` im Schreibpfad. Keine neue Permission                                                                                                                                                                   |
+| Projektstatus              | Starten nur bei Projekten in `ONBOARDING_ELIGIBLE_PROJECT_STATUS_VALUES` (`planned`, `active`; neue Konstante unter `packages/common/src/constants/crm/onboarding/`), sonst 409 `ONBOARDING_PROJECT_NOT_ELIGIBLE` (Fehlercode in diesem Task ergänzen)                                                                                                                               |
+| Ein Bogen je Projekt       | Zweites Starten → 409 `ONBOARDING_FORM_EXISTS` (Unique-Index aus Task 63 ist die letzte Absicherung, der Handler prüft vorher)                                                                                                                                                                                                                                                       |
+| Anlegen                    | Eine Transaktion: Bogen (`draft`, `version 1`), je Vorlagenblock `questionnaireBlockCopyService.copy(tx, catalogBlockId, formId)`, `onboarding_form_blocks` mit Position und `review_status = pending`, Vorbefüllung, Activity `created` am Projekt                                                                                                                                  |
+| Ohne Vorlage               | Erlaubt („Leer starten“): Bogen ohne Blöcke; Blöcke kommen aus dem Katalog oder werden neu angelegt                                                                                                                                                                                                                                                                                  |
+| Strukturänderungen erlaubt | In `draft` und `open`. In `submitted`, `changes_requested`, `completed` gesperrt (`ONBOARDING_NOT_EDITABLE`) — geprüft wird gegen einen stabilen Stand. Fehlendes nach dem Absenden läuft über die Nachforderung (Task 68)                                                                                                                                                           |
+| Feld mit Antworten löschen | Erlaubt, aber der Dialog nennt die Zahl betroffener Antworten und Dateien (`ConfirmDialog`, `tone: danger`); Antworten fallen per Cascade weg, **Dateien bleiben** im Dateibereich des Kunden (nur die Verknüpfung entfällt)                                                                                                                                                         |
+| Eigene Blöcke              | „Eigener Baustein“ legt einen leeren Block direkt im Bogen an (`owner_form_id = formId`, `source_block_id NULL`). Er wird nie vorbefüllt                                                                                                                                                                                                                                             |
+| Block aus Bogen in Katalog | Nicht in diesem Task (bewusst: Katalogpflege bleibt auf der Katalogseite)                                                                                                                                                                                                                                                                                                            |
+| Vorbefüllung aus Vorbogen  | Quelle: jüngster Bogen desselben Kunden mit `status = completed` (anderes Projekt). Für jeden **neuen** Bogenblock mit `carry_over = true` und `source_block_id = S` wird der Block mit derselben `source_block_id` im Vorbogen gesucht                                                                                                                                              |
+| Zuordnung                  | Felder über `key` (Unterfelder über Gruppen-`key` + eigenen `key`), Optionen über `key`, Gruppeneinträge in Reihenfolge. Nicht zuordenbare Werte werden verworfen, nie geraten                                                                                                                                                                                                       |
+| Dateien bei Vorbefüllung   | Dieselbe `file_id` wird verknüpft (`onboarding_answer_files`), keine Kopie. Die Datei gehört demselben Kunden; Projektbindung der Datei bleibt unverändert                                                                                                                                                                                                                           |
+| Kennzeichnung              | Vorbefüllte Antworten tragen `updated_by_member_id` des Anlegers. Keine neue Spalte für die Herkunft: Das Portal (Task 66) zeigt je `carry_over`-Block „Aus deinem letzten Onboarding übernommen — bitte prüfen“, solange Antworten des Blocks vor `released_at` entstanden und seitdem nicht vom Kunden geändert sind                                                               |
+| CRM-Vorbelegung            | Nur für Felder ohne übernommene Antwort. Quellen laut `QuestionnairePrefillSource`: `customers.company_name`, Adresse (`street`, `postal_code`, `city`, `country` als mehrzeiliger Text), `vat_id`, `website_url`, Primärkontakt aus `customer_contact_assignments` (`is_primary`) + `people` (`display_name`, `business_email ?? primary_email`, `business_phone ?? primary_phone`) |
+| Kein Zurückschreiben       | Weder Vorbefüllung noch spätere Antworten ändern CRM-Stammdaten                                                                                                                                                                                                                                                                                                                      |
+| Vorlagenänderung danach    | Wirkt nicht auf bestehende Bögen (Snapshot). Kein „Aktualisieren aus Vorlage“                                                                                                                                                                                                                                                                                                        |
 
 ## Architektur
 
@@ -68,7 +68,7 @@ parallele Bearbeiter einen Konflikt sehen.
 Server
   src/server/workspace/crm/services/onboarding/
     onboarding-form-access-service.ts     Bogen laden inkl. Zugriff, Status-Guard „Struktur editierbar“
-    onboarding-form-create-service.ts     Anlegen inkl. Blockkopien (nutzt onboardingBlockCopyService)
+    onboarding-form-create-service.ts     Anlegen inkl. Blockkopien (nutzt questionnaireBlockCopyService)
     onboarding-prefill-service.ts         Vorbogen suchen, Antworten/Gruppen/Dateien übertragen; CRM-Vorbelegung
   src/server/shared/services/onboarding/
     onboarding-form-read-service.ts       OnboardingFormDto zusammenbauen (Definition über den Read-Service
@@ -99,20 +99,45 @@ apps/workspace/src/components/workspace/crm/onboarding/
   form/
     onboarding-form-page-view/       Kopf (Kunde, Projekt, Status, Vorlage), TabList (?tab=structure)
     onboarding-form-structure/       links: ordered-block-list-editor (Task 64) mit Blöcken des Bogens,
-                                     „Aus Katalog hinzufügen“ (onboarding-block-picker-dialog, Task 64),
-                                     „Eigener Baustein“; rechts: onboarding-block-editor (Task 64) für ?block=<id>
+                                     „Aus Katalog hinzufügen“ (questionnaire-block-picker-dialog, Task 64),
+                                     „Eigener Baustein“; rechts: questionnaire-block-editor (Task 64) für ?block=<id>
     onboarding-field-delete-dialog/  ConfirmDialog mit Nutzungszahlen
 apps/workspace/src/client/crm/onboarding-form-api-service.ts
-    implementiert OnboardingDefinitionClientApi (Task 64) für Bogenblöcke + Blocklisten-Operationen
+    implementiert QuestionnaireDefinitionClientApi (Task 64) für Bogenblöcke + Blocklisten-Operationen
 apps/workspace/src/app/[locale]/(app)/crm/onboarding/[formId]/page.tsx
 ```
 
 - Der Editor bekommt `readOnly`, wenn der Status keine Strukturänderung erlaubt; dann zeigt er einen Hinweis
   („Nach dem Absenden ist der Aufbau fest. Fehlendes forderst du in der Prüfung nach.“) statt Aktionen.
 - Auswahl des Blocks im URL-State (`?block=`), damit Reload und geteilte Links funktionieren.
-- Fortschritt im Projektbereich über `getOnboardingCompleteness` (Task 63) — keine eigene Berechnung.
+- Fortschritt im Projektbereich über `getQuestionnaireCompleteness` (Task 63) — keine eigene Berechnung. Das ist ein
+  Pattern (reine Funktion, `packages/common`). Neu in diesem Task ist nur der `onboarding-form-read-service`, der die
+  Eingaben dafür beschafft; er enthält keine Regel zu Sichtbarkeit, Pflicht oder Fortschritt (siehe README, Regeln).
 - Dictionary: `src/i18n/dictionaries/workspace/crm/onboarding/{de,en}.json` erweitert um `project`, `form`,
   `structure`.
+
+## Was aus Task 64 fertig bereitliegt (Stand 01.10.2026)
+
+Damit Task 65 nur noch den Bogen-Rahmen baut und keine Logik des Baukastens wiederholt:
+
+| Bereich                      | Fertig und owner-neutral                                                                                                                                                                                                             | Task 65 ergänzt nur                                                                                                                                                    |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Server, Bausteine und Felder | `questionnaireDefinitionWriteService`: `createBlock`, `updateBlock`, `deleteBlock`, `createField`, `updateField`, `deleteField`, `moveField`, jeweils mit Owner; `questionnaireBlockCopyService.copyBlock` für Kopien in einen Bogen | dünne Bogen-Handler: Bogen mit Zugriffsbedingung laden, Status prüfen (`ONBOARDING_NOT_EDITABLE`), Service mit der Bogen-ID aufrufen                                   |
+| Server, Lesen                | `questionnaireDefinitionReadService.findBlock/findBlocks(…, owner)`, `isBlockKeyTaken(…, owner, key)`                                                                                                                                | `onboarding-form-read-service` (Eingaben für die Vollständigkeit)                                                                                                      |
+| Server, Reihenfolge          | Feldreihenfolge im Service                                                                                                                                                                                                           | Reihenfolge der Bogenblöcke (`onboarding_form_blocks.position`): eigene Operation, die `moveListItem` und das aufgeschobene Positions-Constraint wie `moveField` nutzt |
+| Client                       | `questionnaireDefinitionApiService.forEndpoints(paths)` baut `QuestionnaireDefinitionClientApi` aus den Pfaden des Owners                                                                                                            | `onboarding-form-api-service.ts`: die Pfade des Bogens plus Blocklisten-Operationen (Block hinzufügen, entfernen, verschieben)                                         |
+| UI                           | `questionnaire-block-editor`, `questionnaire-block-head-form`, `block-list/ordered-block-list-editor`, `block-list/questionnaire-block-picker-dialog` (Texte über Props)                                                             | Rahmen: Seite, Tabs, Statushinweis `readOnly`, Löschdialog mit Nutzungszahlen, eigene Dictionary-Texte für Liste und Auswahl                                           |
+
+Offene Punkte für Task 65:
+
+- **Schlüssel im Bogen:** `isBlockKeyTaken` prüft im Bogen nur im Code; die Datenbank erzwingt es nur für den Katalog
+  (`questionnaire_blocks_catalog_key_uidx`). Wird derselbe Katalogbaustein zweimal hinzugefügt, entstehen zwei
+  Blöcke mit gleichem Schlüssel. Entweder die Auswahl blendet bereits enthaltene Bausteine aus (wie bei Vorlagen) oder
+  `0047` bekommt einen Unique-Index `(owner_form_id, key) WHERE owner_form_id IS NOT NULL`; Entscheidung dort treffen.
+- **Fehlercode `ONBOARDING_NOT_EDITABLE`:** Der geteilte Client (`QuestionnaireClientResult`) kennt nur
+  `QuestionnaireErrorCode`; ein unbekannter Code wird zu `INTERNAL`. Der Editor ist im gesperrten Status `readOnly`,
+  der Fall bleibt also ein Wettlauf. Soll er einen eigenen Text bekommen, den Code-Typ des Clients erweitern, nicht
+  den Editor verzweigen.
 
 ## Tickets
 
@@ -153,7 +178,7 @@ apps/workspace/src/app/[locale]/(app)/crm/onboarding/[formId]/page.tsx
   - Ohne Bogen: Empty-State erklärt, wofür das Onboarding da ist, und bietet „Onboarding starten“ (nur mit
     `projects.write`)
   - Mit Bogen: Status, Fortschritt (dieselbe Funktion wie später Portal) und Link zur Bogenseite
-  - Bogenseite nutzt `onboarding-block-editor` und `ordered-block-list-editor` aus Task 64 **ohne** Kopie (Review-Punkt)
+  - Bogenseite nutzt `questionnaire-block-editor` und `ordered-block-list-editor` aus Task 64 **ohne** Kopie (Review-Punkt)
   - Löschdialog nennt betroffene Antworten und Dateien
   - Tastatur, Fokus nach Aktionen, Dark/Light, mobil ohne horizontales Scrollen
 

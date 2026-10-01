@@ -1,5 +1,6 @@
 import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
 import { ConversationApiPath } from "@/common/constants/crm/conversation-api-paths";
+import { QuestionnaireApiPath } from "@/common/constants/crm/questionnaire/questionnaire-api-paths";
 import { ProjectApiPath } from "@/common/constants/crm/project-api-paths";
 import { FeedbackApiPath } from "@/common/constants/feedback/feedback-api-paths";
 import { FileApiPath } from "@/common/constants/files/file-api-paths";
@@ -50,6 +51,32 @@ export function crmLineItemTemplateEndpoint(
   lineItemTemplateId: string,
 ): string {
   return `${WorkspaceApiEndpoint.CrmLineItemTemplates}/${encodeURIComponent(lineItemTemplateId)}`;
+}
+
+export function crmQuestionnaireBlockEndpoint(blockId: string): string {
+  return `${WorkspaceApiEndpoint.CrmQuestionnaireBlocks}/${encodeURIComponent(blockId)}`;
+}
+
+export function crmQuestionnaireBlockDuplicateEndpoint(
+  blockId: string,
+): string {
+  return `${crmQuestionnaireBlockEndpoint(blockId)}/${QuestionnaireApiPath.Duplicate}`;
+}
+
+export function crmQuestionnaireBlockFieldsEndpoint(blockId: string): string {
+  return `${crmQuestionnaireBlockEndpoint(blockId)}/${QuestionnaireApiPath.Fields}`;
+}
+
+export function crmQuestionnaireFieldEndpoint(fieldId: string): string {
+  return `${WorkspaceApiEndpoint.CrmQuestionnaireFields}/${encodeURIComponent(fieldId)}`;
+}
+
+export function crmQuestionnaireFieldMoveEndpoint(fieldId: string): string {
+  return `${crmQuestionnaireFieldEndpoint(fieldId)}/${QuestionnaireApiPath.Move}`;
+}
+
+export function crmQuestionnaireTemplateEndpoint(templateId: string): string {
+  return `${WorkspaceApiEndpoint.CrmQuestionnaireTemplates}/${encodeURIComponent(templateId)}`;
 }
 
 export function crmProjectLineItemsEndpoint(projectId: string): string {

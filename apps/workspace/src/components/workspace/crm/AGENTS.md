@@ -180,3 +180,27 @@ Plan: `apps/workspace/plans/crm/14-dateien/53-drop-zone-und-interne-ui.md`.
   auswahl ausschließlich über `FileDropZone` aus `@invessiv/ui`. Signierte URLs landen nie in State, der persistiert,
   geloggt oder in die URL geschrieben wird.
 - Vorschau nur für `filePresentation.previewKindOf(...) !== null`; SVG ausschließlich als `<img>`, Text nur als Text.
+
+## Fragebogen-Baukasten (`questionnaire`, ab Task 64)
+
+Plan: `apps/workspace/plans/crm/15-onboarding/64-baustein-katalog-und-vorlagen.md`.
+
+- **Fachneutral benannt:** Der Baukasten heißt im Code `questionnaire`, weil er außer dem Onboarding weitere
+  Einsatzorte bekommen soll. Unter `questionnaire/` steht keine Onboarding-Fachlichkeit (Bogenstatus, Prüfung,
+  Projektbezug) und kein Bezeichner mit `onboarding`; die lebt in eigenen `onboarding`-Ordnern und bindet den
+  Baukasten ein.
+- Komponenten unter `questionnaire/`: `catalog/` (Seite, Listen, Anlege-Dialoge, Katalog-Hülle der Baustein-Seite),
+  `editor/` (owner-neutraler Block-Editor), `block-list/` (geordnete Blockliste und Baustein-Auswahl: Vorlagen
+  und Bögen nutzen beide, Texte kommen über Props), `templates/` (Vorlagen-Editor).
+- **`editor/**` importiert nichts aus `catalog/` und nichts aus `src/client/`** (Test in
+  `questionnaire-block-editor.test.tsx`). Schreibzugriffe kommen als `QuestionnaireDefinitionClientApi` über die Props;
+  Task 65 injiziert die Bogen-Implementierung und nutzt den Editor unverändert.
+- **Die Schreibzugriffe des Editors baut `questionnaireDefinitionApiService.forEndpoints(...)`** (`src/client/crm/`)
+  aus den Pfaden des Owners. Katalog und Bogen übergeben nur ihre Pfade (`QuestionnaireDefinitionEndpoints`); Anfragen,
+  Antwortprüfung und Konfliktbehandlung gibt es einmal. Ein Bogen schreibt keinen eigenen Client für dieselben Aufrufe.
+- Feld-Dialog, Löschbestätigung und Seiten-Dialoge leben in der URL (`QuestionnaireEditorQueryParam`), die
+  Baustein-Auswahl des Vorlagen-Editors als Teil des ungespeicherten Entwurfs in React-State.
+- Formularwerte ↔ Request nur über `common/patterns/crm/questionnaire/questionnaire-field-form.ts`, Strukturfragen
+  (Ebene, Bedingungskandidaten) nur über `@invessiv/common/patterns/crm/questionnaire/questionnaire-block-structure`.
+- Sprachnamen über `languageName` bzw. `languageList` aus `@invessiv/common/patterns/i18n/language-name`
+  (`Intl.DisplayNames`), nie aus dem Dictionary.

@@ -71,6 +71,14 @@
       "label": "Leistungskatalog bearbeiten",
       "description": "Leistungstemplates anlegen, ändern und archivieren."
     },
+    "questionnaire_templates.read": {
+      "label": "Fragebogen-Vorlagen ansehen",
+      "description": "Bausteine und Vorlagen für Fragebögen öffnen."
+    },
+    "questionnaire_templates.write": {
+      "label": "Fragebogen-Vorlagen bearbeiten",
+      "description": "Bausteine und Vorlagen für Fragebögen anlegen, ändern und archivieren."
+    },
     "tasks.read": {
       "label": "Aufgaben ansehen",
       "description": "Die Aufgaben eines Projekts einsehen."
@@ -158,6 +166,14 @@
     "portal.feedback.submit": {
       "label": "Feedback im Portal abgeben",
       "description": "Feedback-Punkte speichern, Dateien anhängen, Runden einreichen und das Projekt freigeben."
+    },
+    "portal.onboarding.read": {
+      "label": "Onboarding im Portal ansehen",
+      "description": "Freigegebene Onboarding-Bögen mit Antworten und Dateien sehen."
+    },
+    "portal.onboarding.submit": {
+      "label": "Onboarding im Portal ausfüllen",
+      "description": "Onboarding-Bögen ausfüllen, Dateien anhängen und absenden."
     },
     "roles.manage": {
       "label": "Rollen verwalten",
