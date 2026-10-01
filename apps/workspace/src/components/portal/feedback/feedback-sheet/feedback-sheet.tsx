@@ -17,6 +17,7 @@ import {
 import { PortalFeedbackRoundResultKind } from "@/common/constants/portal/portal-feedback-round-result-kinds";
 import type { PortalFeedbackRoundClientResult } from "@/common/contracts/portal/portal-feedback-client-result";
 import { portalFeedbackRoundResult } from "@/common/patterns/portal/portal-feedback-round-result";
+import { DraftSaveStatus } from "@/components/shared/draft-save-status/draft-save-status";
 import type { Locale } from "@/config/i18n";
 import { useFeedbackDraft } from "@/hooks/portal/use-feedback-draft";
 import type {
@@ -24,7 +25,7 @@ import type {
   PortalFilesDictionary,
 } from "@/i18n/dictionaries/portal";
 import { FeedbackApproveDialog } from "../feedback-approve-dialog/feedback-approve-dialog";
-import { FeedbackDraftStatus } from "../feedback-draft-status/feedback-draft-status";
+import { FeedbackDraftConflict } from "../feedback-draft-conflict/feedback-draft-conflict";
 import { FeedbackItemAttachments } from "../feedback-item-attachments/feedback-item-attachments";
 import { FeedbackItemEditor } from "../feedback-item-editor/feedback-item-editor";
 import { FeedbackSubmitDialog } from "../feedback-submit-dialog/feedback-submit-dialog";
@@ -204,20 +205,27 @@ export function FeedbackSheet({
         </p>
       ) : null}
       <div className={styles.bar}>
-        <FeedbackDraftStatus
-          conflictItems={draft.conflictItems}
-          content={content}
-          errorCode={draft.errorCode}
+        <DraftSaveStatus
+          conflict={
+            draft.conflictItems ? (
+              <FeedbackDraftConflict
+                items={draft.conflictItems}
+                onDismissAction={draft.dismissConflict}
+                onRestoreAction={() => {
+                  draft.restoreConflict();
+                  onAnnounceAction(content.announcements.restored);
+                }}
+                texts={content.draft.conflict}
+              />
+            ) : undefined
+          }
+          errorText={draft.errorCode ? content.errors[draft.errorCode] : null}
           locale={locale}
-          onDismissConflictAction={draft.dismissConflict}
-          onRestoreConflictAction={() => {
-            draft.restoreConflict();
-            onAnnounceAction(content.announcements.restored);
-          }}
           onRetryAction={() => void draft.flush()}
           saveState={draft.saveState}
           savedAt={draft.savedAt}
           savedByName={draft.savedByName}
+          texts={content.draft}
         />
         <div className={styles.actions}>
           <ButtonControl

@@ -230,3 +230,9 @@ Plan: `apps/workspace/plans/crm/15-onboarding/65-bogen-anlegen-und-anpassen.md`.
 - Das Löschen eines Felds zeigt über `renderDeleteDialogAction` des Editors den `OnboardingFieldDeleteDialog` mit der
   Zahl betroffener Antworten und Dateien; gelöscht wird erst, wenn die Zahl geladen ist.
 - Fehlertexte nur über `onboardingFormErrorText` (`common/patterns/crm/onboarding/`).
+
+- **Tab „Antworten“ (ab Task 66):** Der Tab steht in der URL (`OnboardingFormQueryParam.Tab`, gelesen über
+  `readOnboardingFormTab`; der Aufbau ist der Standard und hinterlässt keinen Parameter). `onboarding-form-answers-tab`
+  löst die Blocktexte mit `resolveQuestionnaireBlock` in der Oberflächensprache auf und zeigt sie über den geteilten
+  `OnboardingAnswerReadView` (`components/shared/onboarding/`) — derselbe Renderer wie die Portal-Leseansicht, nur
+  lesend. Der Aufbau bleibt beim Tabwechsel gemountet.

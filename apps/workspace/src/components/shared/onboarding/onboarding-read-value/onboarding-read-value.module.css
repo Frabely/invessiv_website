@@ -1,0 +1,30 @@
+.text {
+  max-width: 68ch;
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.text a {
+  color: var(--color-cta-hover);
+  text-underline-offset: 0.2em;
+}
+
+.text a:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.choices {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.5;
+}

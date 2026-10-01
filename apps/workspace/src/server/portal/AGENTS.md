@@ -69,3 +69,31 @@ einzigen regulären Aufrufer.
   gleichzeitig gelingen. Ergebnisse und Antworten enthält das Portal-DTO erst ab `completed`.
 - Fehlercodes sind `PortalFeedbackErrorCode`; Statuscodes und Texte stehen ausschließlich in
   `src/lib/portal/portal-feedback-api-error.ts`.
+
+## Onboarding-Bogen (ab Task 66)
+
+Plan: `apps/workspace/plans/crm/15-onboarding/66-portal-formular.md`.
+
+- „Bogen im Portal sichtbar“ ist genau einmal definiert: `portalOnboardingService` (`services/onboarding/`) —
+  Status in `ONBOARDING_PORTAL_VISIBLE_STATUS_VALUES` (nie `draft`), Firma des Lesers und Projekt laut
+  `portalProjectCondition` mit `portal.onboarding.read`. Jeder Fehlgriff (fremde Firma, geratene ID, Entwurf,
+  archiviertes Projekt, fehlendes Recht) ist `null` bzw. `not_found`.
+- Schreiben verlangt zusätzlich `portal.onboarding.submit` und nie die Owner-Sicht; ohne das Recht antwortet jeder
+  Schreibpfad `not_found` (wie bei den Feedbackrunden).
+- Jede Mutation läuft in `portalOnboardingService.withLockedForm` (Transaktion, Bogenzeile `FOR UPDATE`). Speichern
+  und Absenden eines Bogens laufen dadurch nacheinander: Nach dem Absenden schreibt kein Autosave mehr hinein.
+- **Speichern ersetzt einen Slot.** `findWritableField` prüft: Feld gehört zu einem Block dieses Bogens (sonst
+  `not_found`), der Block ist für den Kunden offen (`listCustomerEditableOnboardingBlockIds`: bei `open` alle, bei
+  `changes_requested` nur `clarification` + `customer`; sonst `locked`), Unterfeld und Gruppeneintrag passen zusammen
+  (sonst `validation`). Ob der Inhalt zum Feld passt (Option des Feldes, Höchstzahl, `validateQuestionnaireValue`),
+  prüft der Handler; ein ungültiger Wert schreibt nichts. Geschrieben wird ausschließlich über
+  `onboardingAnswerWriteService`. Die Bogen-`version` wird beim Autosave weder verglichen noch erhöht.
+- **Absenden** prüft unter der Sperre `canTransitionOnboardingForm(status, submitted, customer)` (sonst `locked`) und
+  berechnet die Vollständigkeit mit `onboardingFormReadService.toCompleteness` neu — dieselbe Funktion wie im
+  Client. Fehlt etwas, antwortet es `required_missing` mit `missing[]`. Status, Zeitpunkt, Person, Activity und
+  Systemnachricht schreibt `onboardingFormTransitionService.submit`.
+- Das Portal-DTO baut ausschließlich `portalOnboardingMappingService`: Texte in der Locale der Anfrage über
+  `resolveQuestionnaireBlock` (ohne Schlüssel, Versionen, Vorbelegungsquellen und andere Sprachen), die Rückfrage des
+  Teams nur bei `clarification_mode = customer`, Namen nur von Kontakten.
+- Fehlercodes sind `PortalOnboardingErrorCode`; Statuscodes und Texte stehen ausschließlich in
+  `src/lib/portal/portal-onboarding-api-error.ts` (`validation` antwortet hier 422).

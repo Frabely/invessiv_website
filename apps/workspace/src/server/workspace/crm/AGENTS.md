@@ -180,7 +180,9 @@ Plan: `apps/workspace/plans/crm/15-onboarding/65-bogen-anlegen-und-anpassen.md`.
 - **Vorbefüllung nie raten:** Felder über `key` und Typ, Optionen über `key`, Werte nur, wenn sie die Prüfung des
   neuen Feldes bestehen. Quelle ist ausschließlich der jüngste Bogen desselben Kunden im Status `completed`.
   `confirmation` und `project_services` werden nie übernommen. CRM-Werte füllen nur Felder ohne übernommene Antwort;
-  nichts wird ins CRM zurückgeschrieben. Im Bogen selbst angelegte Bausteine werden nie vorbefüllt.
+  nichts wird ins CRM zurückgeschrieben. Im Bogen selbst angelegte Bausteine werden nie vorbefüllt. Die Antwortzeilen
+  schreibt die Vorbefüllung über `onboardingAnswerWriteService.insertSlots` (`server/shared/services/onboarding/`),
+  denselben Schreibweg wie das Portal.
 - **Die Vorbefüllung überschreitet nie die Rechte des Aufrufers.** Quelle ist der jüngste abgeschlossene Bogen, den
   der Aufrufer mit `projects.read` lesen darf (eine projektgebundene Rolle bekommt nichts aus dem Schwesterprojekt, und
   `prefillAvailable` verrät es auch nicht); CRM-Stammdaten kopiert nur, wer `customers.read` am Kunden hat. Beides

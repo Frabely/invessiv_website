@@ -6,7 +6,7 @@
 > `../00-entscheidungen.md`, `../AGENTS.md`, scoped `AGENTS.md` unter `src/components/portal/`,
 > `src/server/portal/`, `src/client/`, `src/hooks/`.
 
-> **Status:** offen · **Teil-PR:** 15.4 · **Branch:** `feat/crm-onboarding-4-portal-form`
+> **Status:** im Review · **Teil-PR:** 15.4 · **Branch:** `feat/crm-onboarding-4-portal-form`
 > **Abhängigkeiten:** Task 65 (15.3) gemerged · **Aufwand:** 3 T. · **Dateien:** 80–100
 > **Migration:** keine
 
@@ -175,8 +175,55 @@ Fokus und A11y: Nach Schrittwechsel Fokus auf die Blocküberschrift; Sprunglink 
 
 ## Merge-Gate 15.4
 
-- [ ] Für Kunden nichts sichtbar (kein `open`-Bogen möglich, keine Navigation, kein Widget).
-- [ ] Feedbackbogen nach Refactor unverändert (Tests).
-- [ ] Vollständigkeit im Client und beim Absenden aus derselben Funktion.
-- [ ] Cross-Customer-Negativtests mit echter Session für alle vier Portalendpunkte.
+- [x] Für Kunden nichts sichtbar (kein `open`-Bogen möglich, keine Navigation, kein Widget).
+- [x] Feedbackbogen nach Refactor unverändert (Tests).
+- [x] Vollständigkeit im Client und beim Absenden aus derselben Funktion.
+- [x] Cross-Customer-Negativtests mit echter Session für alle vier Portalendpunkte.
 - [ ] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, DB-Smokes, Workspace-Build grün.
+
+## Umsetzungsnotizen (Abweichungen vom Plan, 01.10.2026)
+
+Bei der Umsetzung nachgezogen; der Plan oben bleibt als Entstehungsstand stehen, maßgeblich ist der Code.
+
+- **Liste im Portal** antwortet `PortalOnboardingFormSummaryDto[]` (Projekt-ID, Projekttitel, `canEdit` zusätzlich)
+  statt `OnboardingFormSummaryDto[]`: Die Übersicht braucht den Projekttitel, und Portal-Seiten lesen nur
+  Portal-DTOs.
+- **`GET …/onboarding/[formId]`** nimmt die Sprache als `?locale=` (unbekannt → Standardsprache); die Seite ruft den
+  Query-Handler direkt mit der Locale der Route auf.
+- **`POST …/submit`** hat keinen Body und antwortet mit der Zusammenfassung; abgesendet wird, was der Server unter der
+  Bogensperre hält. Ein zweites Absenden antwortet `locked` (kein stiller Erfolg wie bei den Feedbackrunden).
+- **`PUT …/answers`** antwortet `{ savedAt, savedByName }` für die Statuszeile. `validation` ist 422 (auch ein Body,
+  der kein JSON ist); ohne `portal.onboarding.submit` antwortet jeder Schreibpfad 404 wie im Feedback-Muster.
+  Einzeilige Werte werden getrimmt gespeichert, Langtext unverändert.
+- **`PortalOnboardingErrorCode.Unavailable`** ergänzt (503 und Netzwerkfehler im Client), analog zum Feedback.
+- **Aufgelöste Texte als Pattern:** `resolveQuestionnaireBlock` (`packages/common`) liefert
+  `QuestionnaireResolvedBlock/Field/Choice`; `PortalOnboardingBlockDto` erweitert diesen Typ um `position`,
+  `prefilled` und `reviewNote`. So füttern Portal und CRM-Tab denselben Lese-Renderer. Statt `isFallback` trägt der
+  Block `fallbackLocale` (die Sprache, auf die zurückgefallen wurde), damit der Hinweis sie nennen kann
+  (`languageName`).
+- **Vollständigkeit auf schmalen Typen:** `QuestionnaireCompletenessBlock/Field` beschreiben, was die Funktion liest;
+  die volle Definition und der aufgelöste Portal-Block passen beide. Die Funktion selbst ist unverändert.
+- **„Vorbefüllt“** heißt: `carry_over`-Block mit mindestens einer Antwort, die ein Mitglied geschrieben hat. Der
+  Vergleich mit `released_at` entfällt: `released_at` kommt aus der Anwendungsuhr, `updated_at` aus der Datenbank,
+  und im Test lag die Antwort dadurch scheinbar nach der Freigabe. Ein Speichern des Kunden ersetzt die Zeilen des
+  Slots, also verschwindet der Hinweis, sobald alles Übernommene angefasst wurde.
+- **„Zuletzt bearbeitet von“** nennt nur Kontakte. Stammt die jüngste Antwort aus der Vorbefüllung, bleibt der Name
+  leer.
+- **Schrittleiste:** `ProcessTrack` (`packages/ui`) kennt optional `progress` je Schritt
+  (`ProcessStepProgress`: `empty`, `partial`, `complete`). Ohne die Angabe verhält er sich wie bisher.
+- **Schritt im URL-State** über `history.pushState` (`usePortalOnboardingStep`), nicht über `router.push`: Das
+  Formular hält seine Antworten lokal, ein Server-Roundtrip je Schritt brächte nichts.
+- **Zusätzliche Komponenten:** `onboarding-form-editor` (Hook, Schritte, Absenden; `onboarding-form-view` entscheidet
+  nur Formular oder Leseansicht) und `fields/onboarding-option-group` (gemeinsamer Rahmen der Auswahlfelder).
+  `feedback-draft-conflict` ist die Konfliktanzeige, die der Feedbackbogen als Slot an `DraftSaveStatus` reicht.
+- **Geteilte Helfer:** `loadFeedbackContactNames` heißt `loadPortalContactNames` und liegt unter
+  `server/shared/services/`; `flattenQuestionnaireFields` ist generisch über die Feldform; die Portal-Sessions der
+  Integrationstests kommen aus `tests/support/portal-session-fixture.ts`.
+- **Sprung zu fehlenden Angaben** ist eine Schaltfläche, kein Link: Er bleibt auf der Seite, und ein
+  `a[href]` würde bei ungespeicherten Eingaben die Verlassen-Warnung auslösen. Die Adresse des Schritts steht trotzdem
+  in der URL (`?section=…&field=…`).
+- **Unbeantwortet lassen einer Einzelauswahl:** Ein optionales Auswahlfeld bietet „Auswahl entfernen“.
+- **Nicht in diesem Task:** kein Playwright-E2E (es gibt bis Task 67 keinen erreichbaren Bogen), kein
+  Seed-Zuwachs (der Beispielbogen im Status `open` stammt aus Task 63). Nach einem 422 beim Absenden lädt die Seite
+  neu, der offene Editor behält aber seinen lokalen Stand; relevant nur, wenn ein zweiter Kontakt gleichzeitig eine
+  Pflichtangabe leert.

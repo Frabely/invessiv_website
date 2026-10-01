@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useId, useState } from "react";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,6 +14,10 @@ import {
   ONBOARDING_FORM_TAB_VALUES,
   OnboardingFormTab,
 } from "@/common/constants/crm/onboarding/onboarding-form-tabs";
+import {
+  buildOnboardingFormTabHref,
+  readOnboardingFormTab,
+} from "@/common/patterns/crm/onboarding/onboarding-form-query";
 import type { QuestionnaireFixedChoiceLabels } from "@/common/contracts/crm/questionnaire/questionnaire-fixed-choice-labels";
 import type { Locale } from "@/config/i18n";
 import type {
@@ -20,6 +25,7 @@ import type {
   CrmQuestionnaireDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
 import { OnboardingStatusBadge } from "../../project/onboarding-status-badge/onboarding-status-badge";
+import { OnboardingFormAnswersTab } from "../onboarding-form-answers-tab/onboarding-form-answers-tab";
 import { OnboardingFormStructure } from "../onboarding-form-structure/onboarding-form-structure";
 import styles from "./onboarding-form-page-view.module.css";
 
@@ -37,8 +43,8 @@ export type OnboardingFormPageViewProps = {
 };
 
 /**
- * The internal page of one form: where it belongs, its status, and its tabs. The structure is the
- * only tab so far; answers and review join it with their tasks.
+ * The internal page of one form: where it belongs, its status, and its tabs. The tab is URL state,
+ * so a reload and a shared link open the same view; the review joins with its task.
  */
 export function OnboardingFormPageView({
   backHref,
@@ -51,8 +57,13 @@ export function OnboardingFormPageView({
   locale,
   questionnaireContent,
 }: OnboardingFormPageViewProps) {
-  const tabId = useId();
-  const panelId = useId();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const baseId = useId();
+  const activeTab = readOnboardingFormTab(searchParams);
+  const tabId = (tab: OnboardingFormTab) => `${baseId}-tab-${tab}`;
+  const panelId = `${baseId}-panel`;
   // A conflict can bring a form whose status changed; the head follows it.
   const [form, setForm] = useState(initialForm);
   const text = content.form;
@@ -82,29 +93,48 @@ export function OnboardingFormPageView({
           status={form.status}
         />
       </header>
-      <TabList
-        activeValue={OnboardingFormTab.Structure}
-        ariaLabel={text.tabs.ariaLabel}
-        items={ONBOARDING_FORM_TAB_VALUES.map((tab) => ({
-          value: tab,
-          id: tabId,
-          panelId,
-          label: text.tabs[tab],
-        }))}
-        // One tab only: there is nothing to switch to yet.
-        onSelectAction={() => undefined}
-      />
-      <div aria-labelledby={tabId} id={panelId} role="tabpanel">
-        <OnboardingFormStructure
-          canWrite={canWrite}
-          catalogBlocks={catalogBlocks}
-          content={content}
-          fixedChoiceLabels={fixedChoiceLabels}
-          form={initialForm}
-          locale={locale}
-          onFormChangeAction={setForm}
-          questionnaireContent={questionnaireContent}
+      <div className={styles.tabs}>
+        <TabList
+          activeValue={activeTab}
+          ariaLabel={text.tabs.ariaLabel}
+          items={ONBOARDING_FORM_TAB_VALUES.map((tab) => ({
+            value: tab,
+            id: tabId(tab),
+            panelId,
+            label: text.tabs[tab],
+          }))}
+          onSelectAction={(tab) =>
+            router.replace(
+              buildOnboardingFormTabHref(
+                pathname,
+                searchParams.toString(),
+                tab,
+              ),
+              { scroll: false },
+            )
+          }
         />
+      </div>
+      <div aria-labelledby={tabId(activeTab)} id={panelId} role="tabpanel">
+        {activeTab === OnboardingFormTab.Answers ? (
+          <OnboardingFormAnswersTab
+            content={content}
+            form={form}
+            locale={locale}
+          />
+        ) : null}
+        <div hidden={activeTab !== OnboardingFormTab.Structure}>
+          <OnboardingFormStructure
+            canWrite={canWrite}
+            catalogBlocks={catalogBlocks}
+            content={content}
+            fixedChoiceLabels={fixedChoiceLabels}
+            form={initialForm}
+            locale={locale}
+            onFormChangeAction={setForm}
+            questionnaireContent={questionnaireContent}
+          />
+        </div>
       </div>
     </div>
   );

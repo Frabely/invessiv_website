@@ -62,7 +62,21 @@
     "templateNone": "No template",
     "tabs": {
       "ariaLabel": "Areas of the form",
-      "structure": "Structure"
+      "structure": "Structure",
+      "answers": "Answers"
+    }
+  },
+  "answers": {
+    "empty": "This form has no blocks yet. Once it has, the answers of the customer appear here.",
+    "progress": {
+      "barLabel": "Answered required fields",
+      "label": "{answered} of {total} required answers given",
+      "none": "The form has no required answers."
+    },
+    "read": {
+      "unanswered": "Not answered",
+      "empty": "No answer",
+      "required": "Required"
     }
   },
   "structure": {

@@ -1,0 +1,98 @@
+.step {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-heading-lg);
+  line-height: 1.2;
+}
+
+.title:focus {
+  outline: none;
+}
+
+.text {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.6;
+}
+
+.missing {
+  display: grid;
+  gap: 0.4rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 45%, transparent);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--color-accent-warm) 8%, transparent);
+}
+
+.missingTitle {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-heading-sm);
+}
+
+.list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step .jump {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  font-family: inherit;
+  font-size: var(--font-size-body-sm);
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: left;
+  cursor: pointer;
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-decoration-color: var(--color-accent-warm);
+  text-underline-offset: 0.25em;
+}
+
+.step .jump:hover {
+  background: none;
+  box-shadow: none;
+  transform: none;
+  text-decoration-thickness: 2px;
+}
+
+.step .jump:focus-visible {
+  border-radius: 6px;
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  transform: none;
+}
+
+.complete {
+  margin: 0;
+  padding-left: 0.85rem;
+  border-left: 2px solid var(--color-success);
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.5;
+}
+
+.error {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}

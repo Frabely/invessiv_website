@@ -16,7 +16,7 @@ import type {
   FeedbackReadExecutor,
   FeedbackRoundRow,
 } from "@/server/shared/services/feedback/feedback-service-types";
-import { loadFeedbackContactNames } from "@/server/shared/services/feedback/load-feedback-contact-names";
+import { loadPortalContactNames } from "@/server/shared/services/load-portal-contact-names";
 import { fileAccessService } from "@/server/workspace/crm/services/files/file-access-service";
 import { feedbackInboxService } from "./feedback-inbox-service";
 import { feedbackRoundMappingService } from "./feedback-round-mapping-service";
@@ -108,7 +108,7 @@ async function toRoundDto(
       [round.id],
       fileAccessService.readableCondition(actor),
     ),
-    loadFeedbackContactNames(executor, [
+    loadPortalContactNames(executor, [
       round.draft_updated_by_portal_membership_id,
       round.submitted_by_portal_membership_id,
     ]),

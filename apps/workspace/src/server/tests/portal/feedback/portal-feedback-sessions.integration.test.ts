@@ -1,17 +1,11 @@
-import { eq, inArray } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { FeedbackRoundErrorCode } from "@invessiv/common/constants/crm/errors/feedback-round-error-codes";
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import { SystemMessageKey } from "@invessiv/common/constants/crm/system-message-keys";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { PortalFeedbackErrorCode as E } from "@invessiv/common/constants/portal/portal-feedback-error-codes";
-import { Locale } from "@invessiv/common/contracts/i18n/locale";
-import {
-  messages,
-  people,
-  tasks,
-  users,
-} from "@invessiv/db/record-configuration";
+import { messages, tasks } from "@invessiv/db/record-configuration";
 import { approvePortalFeedback } from "@/server/portal/command-handler/approve-portal-feedback.command-handler";
 import { attachPortalFeedbackFile } from "@/server/portal/command-handler/attach-portal-feedback-file.command-handler";
 import { createPortalFileLink } from "@/server/portal/command-handler/create-portal-file-link.command-handler";
@@ -19,9 +13,8 @@ import { detachPortalFeedbackFile } from "@/server/portal/command-handler/detach
 import { savePortalFeedbackDraft } from "@/server/portal/command-handler/save-portal-feedback-draft.command-handler";
 import { submitPortalFeedbackRound } from "@/server/portal/command-handler/submit-portal-feedback-round.command-handler";
 import { getPortalProjectFeedback } from "@/server/portal/query-handler/get-portal-project-feedback.query-handler";
-import { resolvePortalActor } from "@/server/portal/query-handler/resolve-portal-actor.query-handler";
 import { messageService } from "@/server/shared/services/message/message-service";
-import { insertStandardPortalMembership } from "@/server/tests/support/portal-membership-fixture";
+import { createPortalSessionFixture } from "@/server/tests/support/portal-session-fixture";
 import { handOverFeedbackRound } from "@/server/workspace/crm/command-handler/hand-over-feedback-round.command-handler";
 import { createFeedbackIntegrationFixture } from "../../shared/services/feedback/feedback-integration-fixture";
 
@@ -32,41 +25,12 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
   () => {
     const f = createFeedbackIntegrationFixture();
     const PREFIX = `integration:feedback-sessions:${crypto.randomUUID()}:`;
-    const userIds: string[] = [];
-    const personIds: string[] = [];
-
-    /** A contact with the standard portal role, resolved like a request would resolve it. */
-    async function session(customerId: string) {
-      const userId = crypto.randomUUID();
-      const personId = crypto.randomUUID();
-      userIds.push(userId);
-      personIds.push(personId);
-      const db = f.database();
-      await db.insert(users).values({
-        id: userId,
-        clerk_user_id: PREFIX + userId,
-        primary_email: `${userId}@example.test`,
-        display_name: PREFIX,
-        active: true,
-        version: 1,
-      });
-      await db.insert(people).values({
-        id: personId,
-        display_name: PREFIX,
-        preferred_locale: Locale.De,
-        version: 1,
-      });
-      await insertStandardPortalMembership(db, {
-        customerId,
-        personId,
-        userId,
-        assignedByMemberId: f.memberId,
-        isPrimary: false,
-      });
-      const resolved = await resolvePortalActor(PREFIX + userId, customerId);
-      if (!resolved.ok) throw new Error("Expected a resolved portal session");
-      return resolved.actor;
-    }
+    const sessions = createPortalSessionFixture(
+      () => f.database(),
+      f.memberId,
+      PREFIX,
+    );
+    const session = (customerId: string) => sessions.session(customerId);
 
     async function handOver(projectId: string) {
       const handed = await handOverFeedbackRound(
@@ -94,8 +58,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
     afterAll(async () => {
       vi.restoreAllMocks();
       await f.cleanup();
-      await f.database().delete(people).where(inArray(people.id, personIds));
-      await f.database().delete(users).where(inArray(users.id, userIds));
+      await sessions.cleanup();
     }, 60_000);
 
     it("runs handover, drafts of two contacts, conflict and submission", async () => {

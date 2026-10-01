@@ -119,3 +119,18 @@ das Mapping liegt in `onboarding-form-mapping-service.ts`, die Zeilentypen in `o
   `getQuestionnaireCompleteness` auf. Der Fortschritt zählt jede Datei-Verknüpfung, unabhängig vom Betrachter.
 - Die Quelle der Projektleistungen (aktuelle `project_line_items` außer `rejected`, nach Abschluss der Snapshot
   `onboarding_form_services`) wird ausschließlich in `loadServices` gewählt.
+
+Ab Task 66:
+
+- `onboardingFormReadService.toCompleteness` beschafft die Eingaben und ruft `getQuestionnaireCompleteness` auf;
+  `toSummaryDto` und das Absenden im Portal nutzen genau diesen Weg. `findField` liefert ein Feld nur, wenn sein
+  Block dem Bogen gehört.
+- `onboarding-answer-write-service.ts` ist der einzige Schreibweg für `onboarding_answers`: `replaceSlot` (Portal,
+  ersetzt alle Zeilen eines Slots, leerer Inhalt löscht) und `insertSlots` (Vorbefüllung beim Start). Wer schreibt,
+  steht als `OnboardingAnswerAuthor` an jeder Zeile. Ob Feld und Inhalt zulässig sind, entscheidet der Aufrufer.
+- `onboarding-form-transition-service.ts` führt Statuswechsel eines **gesperrten** Bogens samt Nebenwirkungen aus
+  (`submit`: Status, `submitted_*`, Activity `submission_received`, Systemnachricht `onboardingSubmitted`). Ob der
+  Wechsel erlaubt ist, entscheidet der Handler seiner Welt über `canTransitionOnboardingForm`. Freigeben,
+  Nachfordern und Abschließen kommen mit ihren Tasks hier dazu.
+- `services/load-portal-contact-names.ts` (früher unter `feedback/`) liefert Anzeigenamen von Kontakten je
+  Portal-Mitgliedschaft für Feedbackrunden und Onboarding.

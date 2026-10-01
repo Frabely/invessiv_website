@@ -2,6 +2,7 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { ProcessStepProgress } from "@invessiv/common/constants/ui/process-step-progress";
 import { ProcessStepVariant } from "@invessiv/common/constants/ui/process-step-variants";
 import { ProcessTrack } from "@invessiv/ui";
 
@@ -74,5 +75,63 @@ describe("ProcessTrack step objects", () => {
     ).toEqual(["default", "accent", "accent"]);
     fireEvent.click(screen.getAllByRole("button", { name: "Round 1" })[1]!);
     expect(onStepAction).toHaveBeenCalledWith("Round 1", 2);
+  });
+});
+
+describe("ProcessTrack step progress", () => {
+  beforeAll(() => {
+    Element.prototype.scrollIntoView = vi.fn();
+  });
+  afterEach(cleanup);
+
+  it("shows each step by its own progress instead of its position", () => {
+    render(
+      <ProcessTrack
+        currentIndex={2}
+        label="Steps"
+        steps={[
+          {
+            key: "a",
+            label: "Company",
+            progress: ProcessStepProgress.Empty,
+          },
+          {
+            key: "b",
+            label: "Brand",
+            progress: ProcessStepProgress.Complete,
+          },
+          {
+            key: "c",
+            label: "Content",
+            progress: ProcessStepProgress.Partial,
+          },
+        ]}
+      />,
+    );
+
+    const items = screen.getAllByRole("listitem");
+    expect(items.map((item) => item.dataset.progress)).toEqual([
+      "empty",
+      "complete",
+      "partial",
+    ]);
+    // A skipped step before the current one is not ticked off.
+    expect(items[0].querySelector("svg")).toBeNull();
+    expect(items[1].querySelector("svg")).not.toBeNull();
+    expect(items[2]).toHaveAttribute("aria-current", "step");
+  });
+
+  it("leaves steps without progress to the position-based states", () => {
+    render(
+      <ProcessTrack
+        currentIndex={1}
+        label="Phases"
+        steps={["Start", "Build"]}
+      />,
+    );
+
+    const [first] = screen.getAllByRole("listitem");
+    expect(first.dataset.progress).toBeUndefined();
+    expect(first.querySelector("svg")).not.toBeNull();
   });
 });

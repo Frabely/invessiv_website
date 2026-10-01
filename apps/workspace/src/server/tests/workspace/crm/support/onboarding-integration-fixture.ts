@@ -1,6 +1,7 @@
 import { and, eq, isNull, like } from "drizzle-orm";
 
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
+import type { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import { QuestionnaireCatalogStatus } from "@invessiv/common/constants/crm/questionnaire/questionnaire-catalog-statuses";
 import type { QuestionnaireFieldType } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
 import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
@@ -19,6 +20,7 @@ import {
   onboardingAnswers,
   onboardingForms,
   onboardingGroupEntries,
+  projects,
   questionnaireBlocks,
   questionnaireTemplates,
 } from "@invessiv/db/record-configuration";
@@ -72,21 +74,36 @@ export function createOnboardingIntegrationFixture() {
         },
       }),
     );
-    for (const field of fields) {
-      const parent = field.parent
-        ? block.fields.find((candidate) => candidate.key === field.parent)!
-        : null;
-      block = value(
-        await createQuestionnaireField(
-          block.id,
-          fieldRequestFixture(field.key, field.type, block.version, {
-            parentFieldId: parent?.id ?? null,
-            ...field.overrides,
-          }),
-        ),
-      );
-    }
+    for (const field of fields) block = await catalogField(block, field);
     return block;
+  }
+
+  /** Appends one field; a condition needs the id of a trigger that already exists. */
+  async function catalogField(
+    block: QuestionnaireBlockDto,
+    field: FieldSpec,
+  ): Promise<QuestionnaireBlockDto> {
+    const parent = field.parent
+      ? block.fields.find((candidate) => candidate.key === field.parent)!
+      : null;
+    return value(
+      await createQuestionnaireField(
+        block.id,
+        fieldRequestFixture(field.key, field.type, block.version, {
+          parentFieldId: parent?.id ?? null,
+          ...field.overrides,
+        }),
+      ),
+    );
+  }
+
+  /** Moves a project straight to a status the start command would not accept. */
+  async function setProjectStatus(projectId: string, status: ProjectStatus) {
+    await f
+      .database()
+      .update(projects)
+      .set({ status })
+      .where(eq(projects.id, projectId));
   }
 
   async function template(
@@ -244,6 +261,8 @@ export function createOnboardingIntegrationFixture() {
     keyPrefix,
     value,
     catalogBlock,
+    catalogField,
+    setProjectStatus,
     template,
     setFormStatus,
     answer,

@@ -1,0 +1,81 @@
+.group {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  padding: 0;
+  color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
+  font-size: var(--font-size-label-md);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.help {
+  max-width: 62ch;
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 52%, var(--color-text-muted) 48%);
+  font-size: var(--font-size-caption);
+  font-weight: 500;
+  line-height: 1.45;
+  white-space: pre-line;
+}
+
+/* Options stack on phones and wrap side by side once there is room for two. */
+.options {
+  display: grid;
+  gap: 0.5rem;
+}
+
+@media (min-width: 640px) {
+  .options {
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  }
+}
+
+.options :global(label) {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 48px;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
+  border-radius: 15px;
+  background: color-mix(
+    in srgb,
+    var(--color-surface-2) 64%,
+    var(--color-surface-1) 36%
+  );
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.4;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.options :global(label:has(input:checked)) {
+  border-color: color-mix(in srgb, var(--color-cta) 60%, transparent);
+  background: color-mix(in srgb, var(--color-cta) 12%, var(--color-surface-1));
+}
+
+.options :global(label:has(input:disabled)) {
+  color: var(--color-text-muted);
+  cursor: default;
+}
+
+.options :global(label:has(input:focus-visible)) {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.options :global(input[type="radio"]) {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--color-cta);
+}

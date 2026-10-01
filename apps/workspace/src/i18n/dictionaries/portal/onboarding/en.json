@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "title": "Onboarding | Invessiv",
+    "description": "Give us everything we need for your project – at your own pace, step by step."
+  },
+  "page": {
+    "heading": "Onboarding for {project}",
+    "back": "Back to overview",
+    "ownerHint": "In the portal view you can only read the onboarding.",
+    "ownerLink": "Open in CRM",
+    "readOnlyHint": "You can read the onboarding, but not fill it in. Ask the person who looks after the project on your side."
+  },
+  "overview": {
+    "heading": "Onboarding",
+    "intro": "This is where we collect everything we need for your project. You don’t have to finish in one go: every answer is saved right away.",
+    "listLabel": "Your onboardings",
+    "continue": "Continue",
+    "view": "View",
+    "empty": {
+      "title": "No onboarding for you yet",
+      "description": "As soon as we start a project with you, you’ll find its questionnaire here: texts, images, contacts and everything else in one place."
+    }
+  },
+  "status": {
+    "draft": "In preparation",
+    "open": "Open",
+    "submitted": "Submitted",
+    "changes_requested": "Question from us",
+    "completed": "Completed"
+  },
+  "progress": {
+    "label": "{answered} of {total} required answers",
+    "none": "No required answers",
+    "barLabel": "Progress"
+  },
+  "steps": {
+    "label": "Steps of the onboarding",
+    "review": "Review & submit",
+    "next": "Next",
+    "back": "Back"
+  },
+  "block": {
+    "fallback": "This section is only available in {language}.",
+    "prefilled": "Taken over from your last onboarding. Please check that everything is still right.",
+    "reviewNote": "Our question",
+    "locked": "You can’t change this section right now.",
+    "empty": "There is nothing to fill in here."
+  },
+  "field": {
+    "clearChoice": "Clear selection",
+    "maxChoices": "Pick up to {max}",
+    "characters": "{count} of {max} characters",
+    "errors": {
+      "empty": "Please fill in this field.",
+      "too_long": "This text is too long. Please shorten it a little.",
+      "invalid_email": "This doesn’t look like an email address.",
+      "invalid_phone": "This doesn’t look like a phone number.",
+      "invalid_url": "The link has to start with http:// or https://.",
+      "invalid_color": "Please enter the colour as a hex value, for example #1A2B3C.",
+      "invalid_scale": "Please pick a step.",
+      "not_confirmed": "Please confirm this point.",
+      "not_a_value_field": "This field can’t be filled in here."
+    }
+  },
+  "draft": {
+    "saving": "Saving …",
+    "saved": "Saved · {time}",
+    "unsaved": "Not saved yet",
+    "failed": "Not saved.",
+    "retry": "Try again",
+    "editedBy": "last edited by {name}",
+    "justNow": "just now",
+    "minutesAgo": "{count} min ago",
+    "at": "on {date}",
+    "leaveWarning": "Your latest answers are not saved yet. Do you really want to leave the page?"
+  },
+  "submit": {
+    "heading": "Review & submit",
+    "intro": "Take one more look. Once you submit, we get all your answers and start working.",
+    "complete": "All required answers are in. You can submit.",
+    "missingHeading": "These required answers are still missing",
+    "missingItem": "{field} in “{block}”",
+    "invalid": "At least one field holds an answer we can’t save like this. Please correct it before you submit.",
+    "notSaved": "We couldn’t save everything. Try again before you submit.",
+    "lockNotice": "After submitting you can’t change your answers anymore. If something is still missing later, we’ll get in touch.",
+    "action": "Submit onboarding"
+  },
+  "submitDialog": {
+    "title": "Submit the onboarding?",
+    "description": "We get all your answers at once. After that you can’t change anything.",
+    "confirm": "Submit now",
+    "cancel": "Not yet",
+    "close": "Close"
+  },
+  "states": {
+    "submitted": {
+      "title": "Submitted on {date}",
+      "by": "by {name}",
+      "description": "Thank you. We’ll review your answers and get back to you."
+    },
+    "changes_requested": {
+      "title": "We still have questions",
+      "description": "Have a look at our questions. We’ll let you know as soon as you can answer them."
+    },
+    "completed": {
+      "title": "Onboarding completed",
+      "description": "Everything is in. Your answers stay here for reference."
+    }
+  },
+  "read": {
+    "heading": "Your answers",
+    "unanswered": "Not answered",
+    "empty": "No answer",
+    "required": "Required"
+  },
+  "announcements": {
+    "submitted": "Onboarding submitted.",
+    "step": "Step {number} of {total}: {title}"
+  },
+  "errors": {
+    "not_found": "This onboarding no longer exists. Reload the page.",
+    "locked": "The onboarding just changed. You now see the current state.",
+    "validation": "We can’t save this answer like this. Please check it again.",
+    "required_missing": "Required answers are still missing. You now see which ones.",
+    "limit_reached": "No more entries fit here.",
+    "not_attachable": "This file can’t be attached here.",
+    "unavailable": "That didn’t work just now. Try again in a moment."
+  }
+}

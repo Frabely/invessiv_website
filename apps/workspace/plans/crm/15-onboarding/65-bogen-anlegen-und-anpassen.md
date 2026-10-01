@@ -6,7 +6,7 @@
 > `../AGENTS.md`, scoped `AGENTS.md` unter `src/server/workspace/crm/`, `src/components/workspace/crm/`,
 > `src/app/[locale]/(app)/crm/`.
 
-> **Status:** im Review · **Teil-PR:** 15.3 · **Branch:** `feat/crm-onboarding-3-bogen-intern`
+> **Status:** gemergt · **Teil-PR:** 15.3 · **Branch:** `feat/crm-onboarding-3-bogen-intern`
 > **Abhängigkeiten:** Task 64 (15.2) gemerged · **Aufwand:** 2–3 T. · **Dateien:** 70–90
 > **Migration:** keine
 

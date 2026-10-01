@@ -25,7 +25,10 @@ describe("onboarding form constants", () => {
     expect([...ONBOARDING_FORM_TAB_VALUES]).toEqual(
       Object.values(OnboardingFormTab),
     );
-    expect(OnboardingFormTab).toEqual({ Structure: "structure" });
+    expect(OnboardingFormTab).toEqual({
+      Structure: "structure",
+      Answers: "answers",
+    });
   });
 
   it("names the query params of the form page", () => {

@@ -1,0 +1,27 @@
+.editor {
+  display: grid;
+  gap: 1.75rem;
+  min-width: 0;
+}
+
+/*
+ * Save state and step buttons stay in reach on a long step; on phones the bar sits above the safe
+ * area so the buttons never hide behind the browser chrome.
+ */
+.bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.9rem 0 calc(0.9rem + var(--mobile-safe-bottom, 0px));
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+}

@@ -3,14 +3,14 @@ import "server-only";
 import { eq, inArray } from "drizzle-orm";
 
 import { people, portalMemberships } from "@invessiv/db/record-configuration";
-import type { FeedbackReadExecutor } from "./feedback-service-types";
+import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 
 /**
- * Display names of the contacts who last edited or submitted rounds, so two contacts of one company
- * see who worked on the draft. A removed membership simply has no name.
+ * Display names of contacts by portal membership, so two contacts of one company see who edited or
+ * submitted last. A removed membership simply has no name.
  */
-export async function loadFeedbackContactNames(
-  executor: FeedbackReadExecutor,
+export async function loadPortalContactNames(
+  executor: Pick<ContactDatabaseTransaction, "select">,
   membershipIds: readonly (string | null)[],
 ): Promise<ReadonlyMap<string, string>> {
   const ids = [...new Set(membershipIds.filter((id) => id !== null))];

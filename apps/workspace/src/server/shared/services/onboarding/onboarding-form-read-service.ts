@@ -8,6 +8,9 @@ import type { OnboardingFormServiceDto } from "@invessiv/common/contracts/crm/on
 import type { OnboardingFormSummaryDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form-summary.dto";
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
 import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block.dto";
+import type { QuestionnaireCompleteness } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-completeness";
+import type { QuestionnaireFieldDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-field.dto";
+import { findQuestionnaireField } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-block-structure";
 import { getQuestionnaireCompleteness } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
 import {
   files,
@@ -168,10 +171,10 @@ async function toFormDto(
  * requirement or progress lives here. Every file link counts, whoever may open the file: the
  * progress of a form must not depend on the viewer.
  */
-async function toSummaryDto(
+async function toCompleteness(
   executor: QuestionnaireReadExecutor,
   form: OnboardingFormRow,
-): Promise<OnboardingFormSummaryDto> {
+): Promise<QuestionnaireCompleteness> {
   const [structure, answers, groupEntries, answerFiles] = await Promise.all([
     loadStructure(executor, form.id),
     loadAnswers(executor, form.id),
@@ -184,16 +187,25 @@ async function toSummaryDto(
       .from(onboardingAnswerFiles)
       .where(eq(onboardingAnswerFiles.form_id, form.id)),
   ]);
-  const { answeredRequired, totalRequired, ratio } =
-    getQuestionnaireCompleteness({
-      blocks: structure.blocks,
-      answers: answers.map(onboardingFormMappingService.toAnswerDto),
-      answerFiles,
-      groupEntries: groupEntries.map(
-        onboardingFormMappingService.toGroupEntryDto,
-      ),
-      servicesConfirmed: form.services_confirmed_at !== null,
-    });
+  return getQuestionnaireCompleteness({
+    blocks: structure.blocks,
+    answers: answers.map(onboardingFormMappingService.toAnswerDto),
+    answerFiles,
+    groupEntries: groupEntries.map(
+      onboardingFormMappingService.toGroupEntryDto,
+    ),
+    servicesConfirmed: form.services_confirmed_at !== null,
+  });
+}
+
+async function toSummaryDto(
+  executor: QuestionnaireReadExecutor,
+  form: OnboardingFormRow,
+): Promise<OnboardingFormSummaryDto> {
+  const { answeredRequired, totalRequired, ratio } = await toCompleteness(
+    executor,
+    form,
+  );
   return onboardingFormMappingService.toSummaryDto(form, {
     answeredRequired,
     totalRequired,
@@ -201,7 +213,29 @@ async function toSummaryDto(
   });
 }
 
+/** A field of one of the form's own blocks; a field of another form or of the catalog is null. */
+async function findField(
+  executor: QuestionnaireReadExecutor,
+  formId: string,
+  fieldId: string,
+): Promise<QuestionnaireFieldDto | null> {
+  const blockId = await questionnaireDefinitionReadService.findFieldBlockId(
+    executor,
+    fieldId,
+    formId,
+  );
+  if (!blockId) return null;
+  const block = await questionnaireDefinitionReadService.findBlock(
+    executor,
+    blockId,
+    formId,
+  );
+  return (block && findQuestionnaireField(block, fieldId)) ?? null;
+}
+
 export const onboardingFormReadService = {
+  findField,
+  toCompleteness,
   toFormDto,
   toSummaryDto,
 } as const;

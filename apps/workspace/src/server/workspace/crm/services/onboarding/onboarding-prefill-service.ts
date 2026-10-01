@@ -33,11 +33,14 @@ import {
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessScope } from "@/common/patterns/auth/access-scope";
 import { canOn } from "@/common/patterns/auth/can-on";
+import { onboardingAnswerWriteService } from "@/server/shared/services/onboarding/onboarding-answer-write-service";
 import type {
   OnboardingAnswerFileRow,
   OnboardingAnswerRow,
   OnboardingFormRow,
   OnboardingGroupEntryRow,
+  OnboardingSlotContent,
+  OnboardingSlotWrite,
 } from "@/server/shared/services/onboarding/onboarding-form-types";
 import { questionnaireDefinitionReadService } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-read-service";
 import type { QuestionnaireReadExecutor } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-types";
@@ -59,7 +62,7 @@ type SourceContent = {
 };
 
 type NewRows = {
-  answers: (typeof onboardingAnswers.$inferInsert)[];
+  answers: OnboardingSlotWrite[];
   entries: (typeof onboardingGroupEntries.$inferInsert)[];
   files: (typeof onboardingAnswerFiles.$inferInsert)[];
 };
@@ -204,23 +207,18 @@ function matchField(
   );
 }
 
-function answerRow(
+function slotWrite(
   target: PrefillTarget,
   slot: Slot,
-  content:
-    { value: string; choiceId: null } | { value: null; choiceId: string },
-  sortOrder: number,
-): NewRows["answers"][number] {
+  content: OnboardingSlotContent,
+): OnboardingSlotWrite {
   return {
-    id: crypto.randomUUID(),
-    form_id: target.form.id,
-    field_id: slot.field.id,
-    group_entry_id: slot.entryId,
-    choice_id: content.choiceId,
-    value: content.value,
-    sort_order: sortOrder,
-    updated_by_portal_membership_id: null,
-    updated_by_member_id: target.actor.workspaceMemberId,
+    slot: {
+      formId: target.form.id,
+      fieldId: slot.field.id,
+      groupEntryId: slot.entryId,
+    },
+    content,
   };
 }
 
@@ -281,23 +279,20 @@ function carrySlot(
       field.type === QuestionnaireFieldType.MultiChoice
         ? (field.maxItems ?? L.choicesPerField)
         : 1;
-    stored
+    const choiceIds = stored
       .flatMap((answer) => {
         const key = answer.choice_id ? keyById.get(answer.choice_id) : null;
         return (key && idByKey.get(key)) || [];
       })
-      .slice(0, limit)
-      .forEach((choiceId, sortOrder) =>
-        rows.answers.push(
-          answerRow(target, to, { value: null, choiceId }, sortOrder),
-        ),
-      );
+      .slice(0, limit);
+    if (choiceIds.length > 0)
+      rows.answers.push(slotWrite(target, to, { choiceIds }));
     return;
   }
 
   const value = stored[0]?.value;
   if (value && validateQuestionnaireValue(field, value).ok)
-    rows.answers.push(answerRow(target, to, { value, choiceId: null }, 0));
+    rows.answers.push(slotWrite(target, to, { values: [value] }));
 }
 
 /** Group entries keep their order and get new ids; their sub-fields are taken over per entry. */
@@ -460,7 +455,7 @@ async function fillFromCrm(
     })
   )
     return;
-  const answered = new Set(rows.answers.map((answer) => answer.field_id));
+  const answered = new Set(rows.answers.map((answer) => answer.slot.fieldId));
   const fields = blocks
     .flatMap((block) => block.fields)
     .filter((field) => field.prefillSource !== null && !answered.has(field.id));
@@ -470,12 +465,7 @@ async function fillFromCrm(
     const value = values[field.prefillSource!]?.trim();
     if (value && validateQuestionnaireValue(field, value).ok)
       rows.answers.push(
-        answerRow(
-          target,
-          { field, entryId: null },
-          { value, choiceId: null },
-          0,
-        ),
+        slotWrite(target, { field, entryId: null }, { values: [value] }),
       );
   }
 }
@@ -500,8 +490,10 @@ async function prefillBlocks(
 
   if (rows.entries.length > 0)
     await tx.insert(onboardingGroupEntries).values(rows.entries);
-  if (rows.answers.length > 0)
-    await tx.insert(onboardingAnswers).values(rows.answers);
+  // The actor marks every pre-filled answer as written by the team.
+  await onboardingAnswerWriteService.insertSlots(tx, rows.answers, {
+    memberId: target.actor.workspaceMemberId,
+  });
   if (rows.files.length > 0)
     await tx.insert(onboardingAnswerFiles).values(rows.files);
 }

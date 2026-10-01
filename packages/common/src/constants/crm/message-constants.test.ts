@@ -63,6 +63,7 @@ describe("system message constants", () => {
       FeedbackRoundReturned: "feedbackRoundReturned",
       FeedbackRoundCompleted: "feedbackRoundCompleted",
       FeedbackApproved: "feedbackApproved",
+      OnboardingSubmitted: "onboardingSubmitted",
     });
     expect(SYSTEM_MESSAGE_KEY_VALUES).toEqual(Object.values(SystemMessageKey));
     expect(SystemMessageParam).toEqual({

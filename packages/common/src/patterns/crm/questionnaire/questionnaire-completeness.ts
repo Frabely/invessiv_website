@@ -5,12 +5,12 @@ import type { QuestionnaireAnswerDto } from "../../../contracts/crm/questionnair
 import type { QuestionnaireBlockProgress } from "../../../contracts/crm/questionnaire/questionnaire-block-progress";
 import type { QuestionnaireCompleteness } from "../../../contracts/crm/questionnaire/questionnaire-completeness";
 import type { QuestionnaireCompletenessInput } from "../../../contracts/crm/questionnaire/questionnaire-completeness-input";
-import type { QuestionnaireFieldDto } from "../../../contracts/crm/questionnaire/questionnaire-field.dto";
+import type { QuestionnaireCompletenessField } from "../../../contracts/crm/questionnaire/questionnaire-completeness-field";
 import type { QuestionnaireGroupEntryDto } from "../../../contracts/crm/questionnaire/questionnaire-group-entry.dto";
 import type { QuestionnaireMissingField } from "../../../contracts/crm/questionnaire/questionnaire-missing-field";
 
 type CompletenessIndex = {
-  fields: ReadonlyMap<string, QuestionnaireFieldDto>;
+  fields: ReadonlyMap<string, QuestionnaireCompletenessField>;
   answers: ReadonlyMap<string, QuestionnaireAnswerDto[]>;
   fileCounts: ReadonlyMap<string, number>;
   entries: ReadonlyMap<string, QuestionnaireGroupEntryDto[]>;
@@ -39,7 +39,7 @@ function groupBy<T>(items: readonly T[], key: (item: T) => string) {
 }
 
 function buildIndex(input: QuestionnaireCompletenessInput): CompletenessIndex {
-  const fields = new Map<string, QuestionnaireFieldDto>();
+  const fields = new Map<string, QuestionnaireCompletenessField>();
   for (const block of input.blocks)
     for (const field of block.fields) {
       fields.set(field.id, field);
@@ -78,7 +78,7 @@ function answersOf(
  * visible; anything else, including a cycle the write path failed to prevent, hides the field.
  */
 function isVisible(
-  field: QuestionnaireFieldDto,
+  field: QuestionnaireCompletenessField,
   groupEntryId: string | null,
   index: CompletenessIndex,
   visiting: Set<string>,
@@ -116,7 +116,7 @@ function isVisible(
 }
 
 function countItems(
-  field: QuestionnaireFieldDto,
+  field: QuestionnaireCompletenessField,
   groupEntryId: string | null,
   index: CompletenessIndex,
 ): number | null {
@@ -135,7 +135,7 @@ function countItems(
 }
 
 function hasAnswer(
-  field: QuestionnaireFieldDto,
+  field: QuestionnaireCompletenessField,
   groupEntryId: string | null,
   index: CompletenessIndex,
 ): boolean {
@@ -159,7 +159,7 @@ function hasAnswer(
 
 /** `min_items` also binds an optional field as soon as it has one entry. */
 function evaluate(
-  field: QuestionnaireFieldDto,
+  field: QuestionnaireCompletenessField,
   groupEntryId: string | null,
   index: CompletenessIndex,
 ): FieldEvaluation {
@@ -177,7 +177,7 @@ function evaluate(
 }
 
 export function isQuestionnaireFieldVisible(
-  field: QuestionnaireFieldDto,
+  field: QuestionnaireCompletenessField,
   input: QuestionnaireCompletenessInput,
   groupEntryId: string | null = null,
 ): boolean {
@@ -202,7 +202,7 @@ export function getQuestionnaireCompleteness(
       totalRequired: 0,
     };
     const visit = (
-      field: QuestionnaireFieldDto,
+      field: QuestionnaireCompletenessField,
       groupEntryId: string | null,
     ) => {
       if (!isVisible(field, groupEntryId, index, new Set())) return false;

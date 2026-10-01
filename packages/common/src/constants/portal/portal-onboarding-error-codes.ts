@@ -5,6 +5,7 @@ export const PortalOnboardingErrorCode = {
   RequiredMissing: "required_missing",
   LimitReached: "limit_reached",
   NotAttachable: "not_attachable",
+  Unavailable: "unavailable",
 } as const;
 
 export type PortalOnboardingErrorCode =
@@ -17,4 +18,5 @@ export const PORTAL_ONBOARDING_ERROR_CODE_VALUES = [
   PortalOnboardingErrorCode.RequiredMissing,
   PortalOnboardingErrorCode.LimitReached,
   PortalOnboardingErrorCode.NotAttachable,
+  PortalOnboardingErrorCode.Unavailable,
 ] as const;

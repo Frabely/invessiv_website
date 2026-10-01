@@ -26,7 +26,7 @@ import { portalCanOn } from "@/server/portal/shared/portal-can-on";
 import { portalProjectCondition } from "@/server/portal/shared/portal-project-condition";
 import { portalFileService } from "@/server/portal/services/files/portal-file-service";
 import { feedbackRoundItemService } from "@/server/shared/services/feedback/feedback-round-item-service";
-import { loadFeedbackContactNames } from "@/server/shared/services/feedback/load-feedback-contact-names";
+import { loadPortalContactNames } from "@/server/shared/services/load-portal-contact-names";
 import type {
   FeedbackReadExecutor,
   FeedbackRoundRow,
@@ -131,7 +131,7 @@ async function toRoundDtos(
       rounds.map((round) => round.id),
       portalFileService.visibleCondition(reader),
     ),
-    loadFeedbackContactNames(
+    loadPortalContactNames(
       executor,
       rounds.map((round) => round.draft_updated_by_portal_membership_id),
     ),
