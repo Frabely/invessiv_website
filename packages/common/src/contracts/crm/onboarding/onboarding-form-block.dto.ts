@@ -1,6 +1,6 @@
 import type { OnboardingBlockReviewStatus } from "../../../constants/crm/onboarding/onboarding-block-review-statuses";
 import type { OnboardingClarificationMode } from "../../../constants/crm/onboarding/onboarding-clarification-modes";
-import type { OnboardingBlockDto } from "./onboarding-block.dto";
+import type { QuestionnaireBlockDto } from "../questionnaire/questionnaire-block.dto";
 
 /** A block as a step of one form, with the team's review of it. */
 export interface OnboardingFormBlockDto {
@@ -19,5 +19,5 @@ export interface OnboardingFormBlockDto {
   /** Optimistic-concurrency counter of the review; independent of the definition's version. */
   version: number;
   /** The form's own copy of the block with its fields. */
-  block: OnboardingBlockDto;
+  block: QuestionnaireBlockDto;
 }

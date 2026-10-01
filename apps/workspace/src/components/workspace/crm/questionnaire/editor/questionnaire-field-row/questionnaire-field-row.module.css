@@ -1,0 +1,150 @@
+.item {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.65rem;
+  padding: 0.6rem 0.5rem 0.6rem 0.65rem;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface-1);
+}
+
+/* A conditional field hangs off its trigger: an indent plus a branch line says "only sometimes". */
+.item[data-conditional] > .row {
+  margin-left: 1.25rem;
+  border-style: dashed;
+  border-color: var(--color-border-strong);
+}
+
+.item[data-group] > .row {
+  border-color: color-mix(
+    in srgb,
+    var(--color-accent-warm) 45%,
+    var(--color-border)
+  );
+  background: color-mix(
+    in srgb,
+    var(--color-accent-warm) 6%,
+    var(--color-surface-1)
+  );
+}
+
+.typeIcon {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 8px;
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+}
+
+.item[data-group] > .row .typeIcon {
+  color: var(--color-accent-warm);
+}
+
+.body {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+  padding-top: 0.1rem;
+}
+
+.name {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.45rem;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.fallback {
+  padding: 0 0.4rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 600;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.75rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+.key {
+  overflow-wrap: anywhere;
+  opacity: 0.8;
+}
+
+.required,
+.flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 650;
+}
+
+.required {
+  color: var(--color-text);
+}
+
+.required svg {
+  color: var(--color-success);
+}
+
+.condition {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 600;
+}
+
+.condition svg {
+  color: var(--color-accent-warm);
+  transform: rotate(90deg);
+}
+
+.actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.1rem;
+}
+
+.iconButton.iconButton {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0;
+  border-radius: 8px;
+}
+
+@media (max-width: 640px) {
+  .row {
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+  }
+
+  .actions {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+
+  .item[data-conditional] > .row {
+    margin-left: 0.6rem;
+  }
+}

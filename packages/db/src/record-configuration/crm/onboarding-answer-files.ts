@@ -9,11 +9,11 @@ import {
   unique,
   uuid,
 } from "drizzle-orm/pg-core";
-import { ONBOARDING_LIMITS } from "@invessiv/common/constants/crm/onboarding/onboarding-limits";
+import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
 import { OnboardingAnswerFilesConstraintName as N } from "@invessiv/db/constraint-names/crm/onboarding-answer-files-constraint-names";
 import { sqlLimit } from "@invessiv/db/core";
 import { files } from "./files";
-import { onboardingFields } from "./onboarding-fields";
+import { questionnaireFields } from "./questionnaire-fields";
 import { onboardingForms } from "./onboarding-forms";
 import { onboardingGroupEntries } from "./onboarding-group-entries";
 
@@ -44,7 +44,7 @@ export const onboardingAnswerFiles = pgTable(
     foreignKey({
       name: N.FieldForeignKey,
       columns: [t.field_id],
-      foreignColumns: [onboardingFields.id],
+      foreignColumns: [questionnaireFields.id],
     }).onDelete("cascade"),
     foreignKey({
       name: N.EntryFormForeignKey,
@@ -64,7 +64,7 @@ export const onboardingAnswerFiles = pgTable(
       .nullsNotDistinct(),
     check(
       N.PositionCheck,
-      sql`${t.position} >= 0 and ${t.position} < ${sqlLimit(ONBOARDING_LIMITS.storedPositionCeiling)}`,
+      sql`${t.position} >= 0 and ${t.position} < ${sqlLimit(QUESTIONNAIRE_LIMITS.storedPositionCeiling)}`,
     ),
     index(N.FileIndex).on(t.file_id),
   ],

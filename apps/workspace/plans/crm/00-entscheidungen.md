@@ -322,7 +322,7 @@ Umsetzung der Medien in Ordner 14 (Task 51–56, Neuzuschnitt 28.09.2026), des O
   ist mindestens eine Sprache. Die frühere Entscheidung „Fragen als Const-Objekt, keine Pflegeoberfläche“ ist
   aufgehoben.
 - **Snapshot je Projekt.** Genau ein Bogen je Projekt, entstanden als tiefe Kopie einer Vorlage; Katalog und Bogen
-  teilen dieselben Definitionstabellen (`onboarding_blocks.owner_form_id`). Blöcke und Fragen sind je Kunde
+  teilen dieselben Definitionstabellen (`questionnaire_blocks.owner_form_id`). Blöcke und Fragen sind je Kunde
   entfernbar und ergänzbar. Katalogänderungen wirken nie auf bestehende Bögen.
 - **Vorbefüllung.** Firmenweite Blöcke (`carry_over`) übernehmen Antworten und Dateien aus dem letzten
   abgeschlossenen Bogen desselben Kunden; einzelne Felder werden aus CRM-Daten vorbelegt. Kein Zurückschreiben ins
@@ -545,7 +545,7 @@ people
                                       │              ├── feedback_rounds
                                       │              │   └── feedback_round_items ── files
                                       │              └── onboarding_forms            (Ordner 15)
-                                      │                  ├── onboarding_form_blocks ── onboarding_blocks (Bogenkopien)
+                                      │                  ├── onboarding_form_blocks ── questionnaire_blocks (Bogenkopien)
                                       │                  ├── onboarding_group_entries / onboarding_answers
                                       │                  ├── onboarding_answer_files ── files
                                       │                  └── onboarding_form_services (Leistungs-Snapshot)
@@ -558,8 +558,8 @@ people
 
 line_item_templates ── pflegbarer globaler Katalog
 projects ── project_line_items (vollständige Template-Snapshots, Ordner 07)
-onboarding_templates ── onboarding_template_blocks ── onboarding_blocks (Katalog, owner_form_id IS NULL)
-onboarding_blocks ── onboarding_fields ── onboarding_field_choices   (+ je Element eine *_translations-Tabelle)
+questionnaire_templates ── questionnaire_template_blocks ── questionnaire_blocks (Katalog, owner_form_id IS NULL)
+questionnaire_blocks ── questionnaire_fields ── questionnaire_field_choices   (+ je Element eine *_translations-Tabelle)
 
 files ── Dateien und Links (Ordner 14); Scope hierarchisch: customer ⊃ project ⊃ feedback_round/feedback_item
 activities ── Lead- und CRM-Historie
@@ -583,9 +583,11 @@ Präfixfrei bleiben eigenständige und querschnittliche Tabellen: `users`, `work
 `notifications`, `line_item_templates`, `project_line_items`.
 
 `onboarding_forms` ist präfixfrei, weil der Bogen am Projekt hängt und kein Kindobjekt des
-Kunden ist; seine Kindtabellen und die Katalogtabellen des Onboardings tragen das Präfix `onboarding_`
-(`onboarding_form_blocks`, `onboarding_answers`, `onboarding_templates`, `onboarding_blocks`, …). Entsprechend heißt die Kindtabelle der
-Feedbackrunden `feedback_round_items`.
+Kunden ist; seine Kindtabellen tragen das Präfix `onboarding_` (`onboarding_form_blocks`, `onboarding_answers`, …).
+Die Definitionstabellen des Fragebogen-Baukastens sind fachneutral und tragen das Präfix `questionnaire_`
+(`questionnaire_templates`, `questionnaire_blocks`, `questionnaire_fields`, …), weil der Baukasten außer dem
+Onboarding weitere Einsatzorte bekommen soll. Entsprechend heißt die Kindtabelle der Feedbackrunden
+`feedback_round_items`.
 
 `portal_memberships` und `feedback_rounds` sind bewusst präfixfrei: sie ersetzen die früheren
 `customer_portal_users` und `customer_submissions` nicht nur im Namen, sondern im Modell —
@@ -692,42 +694,42 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12b erreicht:
 
 ## Merge-Einheiten
 
-| #   | Status    | Ordner                                   | Nach dem Merge vollständig nutzbar                                                                                                                 | Dateien |  Aufwand |
-| --- | --------- | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------: | -------: |
-| 01  | gemerged  | `01-kernschema-und-contracts`            | Additives Kunden-/Personen-Kernschema ist unsichtbar deployt; Leads unverändert                                                                    |   50–80 |   3–4 T. |
-| 02  | gemerged  | `02-activity-migration`                  | Bestehende Lead-Timeline arbeitet verlustfrei auf dem neuen Modell                                                                                 |   40–70 |   3–4 T. |
-| 03  | gemerged  | `03-mitglieder-und-auth`                 | Persistierte User, Permission-Katalog, Bereichs-Gates und fail-closed Auth                                                                         |  80–120 |   4–5 T. |
-| 03b | gemerged  | `03b-mitglieder-und-rollenverwaltung`    | Mitglieder, Rollen und Owner-Flow verwaltbar; Aktionen permissionabhängig                                                                          | 100–120 |   3–4 T. |
-| 03c | gemerged  | `03c-uebergabe-und-deaktivierung`        | Mitglieder-Lifecycle mit Owner- und Zuständigkeitssperre                                                                                           |   30–50 |   1–2 T. |
-| 03d | gemerged  | `03d-geteilte-ui-bausteine`              | Dialog-, Panel- und Listenbausteine geteilt (`packages/ui` + workspace/shared)                                                                     | 145–165 |   4–5 T. |
-| 04  | gemerged  | `04-personen-und-kundenakte`             | Kunden samt Pflichtkontakt, Owner, Archiv und Detail vollständig nutzbar                                                                           |  80–100 |   4–5 T. |
-| 05  | im Review | `05-kundenliste-und-zuweisung`           | Paginierte Kundenliste mit Statusbadge und Statuspflege im Kundenformular                                                                          |   40–70 |   2–3 T. |
-| 06  | im Review | `06-lead-konvertierung`                  | Leads können sicher direkt als neue CRM-Kunden angelegt werden                                                                                     |   40–70 |   2–3 T. |
-| 06b | läuft     | `06b-mitarbeiter-cockpit`                | Kundenansicht aus Kundenliste und -formular, Dashboard-Detailpfad vorbereitet                                                                      |   35–60 |   2–3 T. |
-| 07  | läuft     | `07-projekte`                            | Projekte, Templatekatalog, Projektleistungen und berechnete Werte nutzbar                                                                          |  50–100 |  7–10 T. |
-| 07a | läuft     | `07a-zugriffsbereiche-fundament`         | Gebundene Rollen in DB, Actor und API unsichtbar und wirkungslos deployt                                                                           |   60–90 |     3 T. |
-| 07b | im Review | `07b-zugriffsfilter-kunden-und-projekte` | Alle Kunden- und Projektpfade filtern über `accessScope`; Negativtests                                                                             |  60–100 |   3–4 T. |
-| 07c | offen     | `07c-zugriffsverwaltung-ui`              | Zugriffe je Kunde/Projekt in Settings und Kundenakte konfigurierbar                                                                                |   50–80 |   2–3 T. |
-| 08  | läuft     | `08-aufgaben`                            | Projektaufgaben im Cockpit, globale Übersicht und Dashboard-Block nutzbar                                                                          | 120–180 |   4–5 T. |
-| 12a | offen     | `12a-portal-fundament`                   | Portal-Schema, Actor, Gates, Zugriffshelfer, Shell und Flag unsichtbar deployt                                                                     |   60–80 |   3–4 T. |
-| 12b | läuft     | `12b-portal-zugang`                      | Einladung, Rollen je Kontakt, Widerruf und Mehrfirmenwechsel sicher nutzbar                                                                        |   60–80 |   3–4 T. |
-| 13  | gemerged  | `13-portal-dashboard`                    | Widget-Dashboard mit Projekten, beiden Aufgabenseiten und Owner-Portalsicht                                                                        |    ≈276 |   5–7 T. |
-| 13a | läuft     | `13a-kundenchat`                         | Kundenchat im CRM-Cockpit, Posteingang und Portal bidirektional nutzbar                                                                            | 110–140 |   5–6 T. |
-| 13c | offen     | `13c-portal-leistungsanfragen`           | Preisfreie Leistungsanfragen im Portal, intern bearbeitbar                                                                                         |   60–80 |   3–4 T. |
-| 14  | läuft     | `14-dateien`                             | Dateien, Links, ZIP, Portal-Dateien, Chat-Anhänge; sechs Teil-PRs (14.1–14.6), 14.1/14.3/14.4 gemerged, 14.2, 14.5 und 14.6 im Review              | 290–425 | 12–16 T. |
-| 15  | läuft     | `15-onboarding`                          | Onboarding-Baukasten (Katalog, Vorlagen), Bogen je Projekt, Portal-Formular, Prüfung, Nachforderung, Termin, Abschluss; acht Teil-PRs, 15.1 läuft  | 495–675 | 16–21 T. |
-| 16  | läuft     | `16-feedbackrunden`                      | Rundenschritte, Übergabe, Feedback-Punkte, Bearbeitung, Abnahme und Eingang; sechs Teil-PRs (16.1–16.6), 16.1 gemerged, 16.2 läuft, 16.6 im Review | 315–430 | 13–16 T. |
-| 19  | offen     | `19-credentials`                         | Verschlüsselte Zugangsdaten und Security-Audit vollständig nutzbar                                                                                 |   50–80 |   3–4 T. |
-| 20  | offen     | `20-stunden-und-history`                 | Kontingente, Buchungen und konsolidierte Timeline vollständig nutzbar                                                                              |  60–100 |   3–4 T. |
-| 20a | offen     | `20a-kundenzustaendigkeit`               | Kundenverantwortung ist auswählbar, sichtbar und versioniert änderbar                                                                              |   25–45 |   1–2 T. |
-| 20b | offen     | `20b-aufgabenserien-und-reminder`        | Wiederholungen, Fälligkeit und Überfälligkeit zuverlässig aktiv                                                                                    |   50–90 |   3–4 T. |
-| 20c | offen     | `20c-jobs-und-benachrichtigungen`        | Outbox-Runner, Glocke, Retry und kritische Fehlerbenachrichtigung aktiv                                                                            |  70–100 |   4–5 T. |
-| 20d | offen     | `20d-renewals`                           | Renewal-Verwaltung und 30/14/7-Erinnerungen vollständig nutzbar                                                                                    |   40–70 |   2–3 T. |
-| 21  | offen     | `21-datenschutz-backup-rollout`          | Export, Owner-Purge, Backup/Restore und Produktivabnahme nachgewiesen                                                                              |  60–100 |   4–5 T. |
-| 22  | offen     | `22-activity-cleanup`                    | `lead_activities` abgebaut, genau eine Activity-Tabelle                                                                                            |    5–15 |     1 T. |
-| 22a | offen     | `22a-kundenorganisation-und-uebergabe`   | Suche, Filter, Tags und globale Zuständigkeitsübergabe vollständig nutzbar                                                                         |  70–110 |   4–6 T. |
-| 23  | offen     | `23-web-ui-abschluss`                    | Website nutzt geteilte Buttons/Formulare in bewusster Web-Ausprägung                                                                               |   35–55 |   3–4 T. |
-| 24  | offen     | `24-zustaendigkeitszugriff-absicherung`  | Owner-Wechsel und Übergaben verhindern Zuständigkeiten ohne wirksamen Zugriff                                                                      |   40–70 |   2–3 T. |
+| #   | Status    | Ordner                                   | Nach dem Merge vollständig nutzbar                                                                                                                    | Dateien |  Aufwand |
+| --- | --------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------: | -------: |
+| 01  | gemerged  | `01-kernschema-und-contracts`            | Additives Kunden-/Personen-Kernschema ist unsichtbar deployt; Leads unverändert                                                                       |   50–80 |   3–4 T. |
+| 02  | gemerged  | `02-activity-migration`                  | Bestehende Lead-Timeline arbeitet verlustfrei auf dem neuen Modell                                                                                    |   40–70 |   3–4 T. |
+| 03  | gemerged  | `03-mitglieder-und-auth`                 | Persistierte User, Permission-Katalog, Bereichs-Gates und fail-closed Auth                                                                            |  80–120 |   4–5 T. |
+| 03b | gemerged  | `03b-mitglieder-und-rollenverwaltung`    | Mitglieder, Rollen und Owner-Flow verwaltbar; Aktionen permissionabhängig                                                                             | 100–120 |   3–4 T. |
+| 03c | gemerged  | `03c-uebergabe-und-deaktivierung`        | Mitglieder-Lifecycle mit Owner- und Zuständigkeitssperre                                                                                              |   30–50 |   1–2 T. |
+| 03d | gemerged  | `03d-geteilte-ui-bausteine`              | Dialog-, Panel- und Listenbausteine geteilt (`packages/ui` + workspace/shared)                                                                        | 145–165 |   4–5 T. |
+| 04  | gemerged  | `04-personen-und-kundenakte`             | Kunden samt Pflichtkontakt, Owner, Archiv und Detail vollständig nutzbar                                                                              |  80–100 |   4–5 T. |
+| 05  | im Review | `05-kundenliste-und-zuweisung`           | Paginierte Kundenliste mit Statusbadge und Statuspflege im Kundenformular                                                                             |   40–70 |   2–3 T. |
+| 06  | im Review | `06-lead-konvertierung`                  | Leads können sicher direkt als neue CRM-Kunden angelegt werden                                                                                        |   40–70 |   2–3 T. |
+| 06b | läuft     | `06b-mitarbeiter-cockpit`                | Kundenansicht aus Kundenliste und -formular, Dashboard-Detailpfad vorbereitet                                                                         |   35–60 |   2–3 T. |
+| 07  | läuft     | `07-projekte`                            | Projekte, Templatekatalog, Projektleistungen und berechnete Werte nutzbar                                                                             |  50–100 |  7–10 T. |
+| 07a | läuft     | `07a-zugriffsbereiche-fundament`         | Gebundene Rollen in DB, Actor und API unsichtbar und wirkungslos deployt                                                                              |   60–90 |     3 T. |
+| 07b | im Review | `07b-zugriffsfilter-kunden-und-projekte` | Alle Kunden- und Projektpfade filtern über `accessScope`; Negativtests                                                                                |  60–100 |   3–4 T. |
+| 07c | offen     | `07c-zugriffsverwaltung-ui`              | Zugriffe je Kunde/Projekt in Settings und Kundenakte konfigurierbar                                                                                   |   50–80 |   2–3 T. |
+| 08  | läuft     | `08-aufgaben`                            | Projektaufgaben im Cockpit, globale Übersicht und Dashboard-Block nutzbar                                                                             | 120–180 |   4–5 T. |
+| 12a | offen     | `12a-portal-fundament`                   | Portal-Schema, Actor, Gates, Zugriffshelfer, Shell und Flag unsichtbar deployt                                                                        |   60–80 |   3–4 T. |
+| 12b | läuft     | `12b-portal-zugang`                      | Einladung, Rollen je Kontakt, Widerruf und Mehrfirmenwechsel sicher nutzbar                                                                           |   60–80 |   3–4 T. |
+| 13  | gemerged  | `13-portal-dashboard`                    | Widget-Dashboard mit Projekten, beiden Aufgabenseiten und Owner-Portalsicht                                                                           |    ≈276 |   5–7 T. |
+| 13a | läuft     | `13a-kundenchat`                         | Kundenchat im CRM-Cockpit, Posteingang und Portal bidirektional nutzbar                                                                               | 110–140 |   5–6 T. |
+| 13c | offen     | `13c-portal-leistungsanfragen`           | Preisfreie Leistungsanfragen im Portal, intern bearbeitbar                                                                                            |   60–80 |   3–4 T. |
+| 14  | läuft     | `14-dateien`                             | Dateien, Links, ZIP, Portal-Dateien, Chat-Anhänge; sechs Teil-PRs (14.1–14.6), 14.1/14.3/14.4 gemerged, 14.2, 14.5 und 14.6 im Review                 | 290–425 | 12–16 T. |
+| 15  | läuft     | `15-onboarding`                          | Onboarding-Baukasten (Katalog, Vorlagen), Bogen je Projekt, Portal-Formular, Prüfung, Nachforderung, Termin, Abschluss; acht Teil-PRs, 15.2 im Review | 495–675 | 16–21 T. |
+| 16  | läuft     | `16-feedbackrunden`                      | Rundenschritte, Übergabe, Feedback-Punkte, Bearbeitung, Abnahme und Eingang; sechs Teil-PRs (16.1–16.6), 16.1 gemerged, 16.2 läuft, 16.6 im Review    | 315–430 | 13–16 T. |
+| 19  | offen     | `19-credentials`                         | Verschlüsselte Zugangsdaten und Security-Audit vollständig nutzbar                                                                                    |   50–80 |   3–4 T. |
+| 20  | offen     | `20-stunden-und-history`                 | Kontingente, Buchungen und konsolidierte Timeline vollständig nutzbar                                                                                 |  60–100 |   3–4 T. |
+| 20a | offen     | `20a-kundenzustaendigkeit`               | Kundenverantwortung ist auswählbar, sichtbar und versioniert änderbar                                                                                 |   25–45 |   1–2 T. |
+| 20b | offen     | `20b-aufgabenserien-und-reminder`        | Wiederholungen, Fälligkeit und Überfälligkeit zuverlässig aktiv                                                                                       |   50–90 |   3–4 T. |
+| 20c | offen     | `20c-jobs-und-benachrichtigungen`        | Outbox-Runner, Glocke, Retry und kritische Fehlerbenachrichtigung aktiv                                                                               |  70–100 |   4–5 T. |
+| 20d | offen     | `20d-renewals`                           | Renewal-Verwaltung und 30/14/7-Erinnerungen vollständig nutzbar                                                                                       |   40–70 |   2–3 T. |
+| 21  | offen     | `21-datenschutz-backup-rollout`          | Export, Owner-Purge, Backup/Restore und Produktivabnahme nachgewiesen                                                                                 |  60–100 |   4–5 T. |
+| 22  | offen     | `22-activity-cleanup`                    | `lead_activities` abgebaut, genau eine Activity-Tabelle                                                                                               |    5–15 |     1 T. |
+| 22a | offen     | `22a-kundenorganisation-und-uebergabe`   | Suche, Filter, Tags und globale Zuständigkeitsübergabe vollständig nutzbar                                                                            |  70–110 |   4–6 T. |
+| 23  | offen     | `23-web-ui-abschluss`                    | Website nutzt geteilte Buttons/Formulare in bewusster Web-Ausprägung                                                                                  |   35–55 |   3–4 T. |
+| 24  | offen     | `24-zustaendigkeitszugriff-absicherung`  | Owner-Wechsel und Übergaben verhindern Zuständigkeiten ohne wirksamen Zugriff                                                                         |   40–70 |   2–3 T. |
 
 Statuswerte: `offen` → `läuft` → `im Review` → `gemerged`. Beim Merge werden die Tabelle und der
 Status in der Ordner-README gemeinsam aktualisiert.

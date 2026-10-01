@@ -1,6 +1,6 @@
 # Ordner 15 — Onboarding
 
-> **Status:** läuft (15.1) · **Abhängigkeiten:** 07 (Projekte, Projektleistungen), 08 (Aufgaben), 12a/12b/13 (Portal), 13a
+> **Status:** läuft (15.2) · **Abhängigkeiten:** 07 (Projekte, Projektleistungen), 08 (Aufgaben), 12a/12b/13 (Portal), 13a
 > (Chat, Systemnachrichten), 14 (Dateien), 16 (Feedbackrunden, deren Bausteine hier verallgemeinert werden) — alle
 > gemerged · **Aufwand:** 16–21 Tage gesamt · **Reviewziel:** acht Teil-PRs mit je 30–110 Dateien
 
@@ -17,6 +17,25 @@
 > `withPortalActor` bzw. `withPortalReader`, jede Portal-Query über `portalAccessCondition`, jede Portal-Mutation über
 > `portalCanOn` (alles in `apps/workspace/src/server/portal/shared/` bzw. `auth/`). Eigene Portal-Permissions dieses
 > Ordners, in `portal_standard` ergänzt: `portal.onboarding.read` und `portal.onboarding.submit`. Firmenweites Modul.
+
+## Benennung: `questionnaire` und `onboarding` (01.10.2026, mit dem Owner abgestimmt)
+
+Der Baukasten (Bausteine, Felder, Optionen, Übersetzungen, Vorlagen, Block-Editor, Vollständigkeits- und
+Wertprüfung) soll später auch außerhalb des Onboardings nutzbar sein, mindestens als einbindbare UI. Er ist deshalb
+im Code **fachneutral als `questionnaire`** benannt: Tabellen `questionnaire_*`, Konstanten, DTOs und Patterns unter
+`…/crm/questionnaire/`, Komponenten unter `components/workspace/crm/questionnaire/`, Services unter
+`services/questionnaire/`, API unter `/api/workspace/crm/questionnaire/…`, Katalogseite `/crm/questionnaire-templates`,
+Permissions `questionnaire_templates.read/write`, Fehlercodes `QuestionnaireErrorCode`.
+
+**`onboarding` heißt nur, was fachlich Onboarding ist:** der Bogen am Projekt (`onboarding_forms`), sein Statusfluss,
+die Prüfung je Block (`onboarding_form_blocks`), Antworten, Gruppeneinträge und Datei-Verknüpfungen
+(`onboarding_answers`, `onboarding_group_entries`, `onboarding_answer_files`), der Leistungs-Snapshot, die
+Portal-Permissions `portal.onboarding.*` und die Fehlercodes `OnboardingErrorCode`.
+
+Bewusst **nicht** gebaut: eine neutrale Bogen-Instanz, ein Einsatzbereich-Merkmal am Katalog oder ein zweiter
+Einsatzort. `questionnaire_blocks.owner_form_id` zeigt weiter auf `onboarding_forms`. Ein weiterer Einsatzort bringt
+seine eigenen Tabellen mit und bindet Editor und Patterns ein. Die Task-Dateien 65–70 nennen Bausteine des
+Baukastens bereits mit den neuen Namen; neue Dateien dort folgen derselben Trennung.
 
 ## Worum es geht
 
@@ -63,16 +82,16 @@ Wie `14-dateien` und `16-feedbackrunden` liegt das Onboarding in **einem** Ordne
 geliefert. Jede Teil-Einheit hat einen eigenen Branch, einen eigenen PR, einen eigenen Status und hält `master`
 deploybar. Reine Fundamente bleiben unsichtbar; sichtbare Funktionen werden vertikal vollständig geliefert.
 
-| PR   | Task | Branch                               | Datei                                                                                                              | Nach Merge sichtbar                                                                        | Dateien | Status |
-| ---- | ---- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------: | ------ |
-| 15.1 | 63   | `feat/crm-onboarding-1-datenmodell`  | [`63-datenmodell-und-regeln.md`](./63-datenmodell-und-regeln.md)                                                   | nichts                                                                                     |   55–75 | läuft  |
-| 15.2 | 64   | `feat/crm-onboarding-2-katalog`      | [`64-baustein-katalog-und-vorlagen.md`](./64-baustein-katalog-und-vorlagen.md) + [`64a`](./64a-standardkatalog.md) | CRM-Seite „Onboarding-Vorlagen“ mit Bausteinen und Vorlagen, Standardkatalog               |  90–110 | offen  |
-| 15.3 | 65   | `feat/crm-onboarding-3-bogen-intern` | [`65-bogen-anlegen-und-anpassen.md`](./65-bogen-anlegen-und-anpassen.md)                                           | Intern: Onboarding je Projekt starten und anpassen (Entwurf)                               |   70–90 | offen  |
-| 15.4 | 66   | `feat/crm-onboarding-4-portal-form`  | [`66-portal-formular.md`](./66-portal-formular.md)                                                                 | nichts für Kunden (Portal-Seite existiert, ist aber ohne freigegebenen Bogen unerreichbar) |  80–100 | offen  |
-| 15.5 | 67   | `feat/crm-onboarding-5-portal-voll`  | [`67-portal-gruppen-dateien-leistungen.md`](./67-portal-gruppen-dateien-leistungen.md)                             | Freigeben, Portal-Navigation, Widget, vollständiger Bogen inkl. Gruppen und Uploads        |  80–105 | offen  |
-| 15.6 | 68   | `feat/crm-onboarding-6-pruefung`     | [`68-pruefung-und-nachforderung.md`](./68-pruefung-und-nachforderung.md)                                           | Intern: Prüfung je Block, Nachforderung, Call-Agenda. Portal: Nachforderung bearbeiten     |   60–80 | offen  |
-| 15.7 | 69   | `feat/crm-onboarding-7-termin`       | [`69-onboarding-termin.md`](./69-onboarding-termin.md)                                                             | Buchungslink im Profil, Terminkarte im Onboarding-Widget                                   |   35–50 | offen  |
-| 15.8 | 70   | `feat/crm-onboarding-8-abschluss`    | [`70-abschluss-und-leseansicht.md`](./70-abschluss-und-leseansicht.md)                                             | Onboarding abschließen, dauerhafte Leseansicht, Vorbefüllung für Folgeprojekte aktiv       |   45–65 | offen  |
+| PR   | Task | Branch                               | Datei                                                                                                              | Nach Merge sichtbar                                                                        | Dateien | Status    |
+| ---- | ---- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------: | --------- |
+| 15.1 | 63   | `feat/crm-onboarding-1-datenmodell`  | [`63-datenmodell-und-regeln.md`](./63-datenmodell-und-regeln.md)                                                   | nichts                                                                                     |   55–75 | läuft     |
+| 15.2 | 64   | `feat/crm-onboarding-2-katalog`      | [`64-baustein-katalog-und-vorlagen.md`](./64-baustein-katalog-und-vorlagen.md) + [`64a`](./64a-standardkatalog.md) | CRM-Seite „Onboarding-Vorlagen“ mit Bausteinen und Vorlagen, Standardkatalog               |  90–110 | im Review |
+| 15.3 | 65   | `feat/crm-onboarding-3-bogen-intern` | [`65-bogen-anlegen-und-anpassen.md`](./65-bogen-anlegen-und-anpassen.md)                                           | Intern: Onboarding je Projekt starten und anpassen (Entwurf)                               |   70–90 | offen     |
+| 15.4 | 66   | `feat/crm-onboarding-4-portal-form`  | [`66-portal-formular.md`](./66-portal-formular.md)                                                                 | nichts für Kunden (Portal-Seite existiert, ist aber ohne freigegebenen Bogen unerreichbar) |  80–100 | offen     |
+| 15.5 | 67   | `feat/crm-onboarding-5-portal-voll`  | [`67-portal-gruppen-dateien-leistungen.md`](./67-portal-gruppen-dateien-leistungen.md)                             | Freigeben, Portal-Navigation, Widget, vollständiger Bogen inkl. Gruppen und Uploads        |  80–105 | offen     |
+| 15.6 | 68   | `feat/crm-onboarding-6-pruefung`     | [`68-pruefung-und-nachforderung.md`](./68-pruefung-und-nachforderung.md)                                           | Intern: Prüfung je Block, Nachforderung, Call-Agenda. Portal: Nachforderung bearbeiten     |   60–80 | offen     |
+| 15.7 | 69   | `feat/crm-onboarding-7-termin`       | [`69-onboarding-termin.md`](./69-onboarding-termin.md)                                                             | Buchungslink im Profil, Terminkarte im Onboarding-Widget                                   |   35–50 | offen     |
+| 15.8 | 70   | `feat/crm-onboarding-8-abschluss`    | [`70-abschluss-und-leseansicht.md`](./70-abschluss-und-leseansicht.md)                                             | Onboarding abschließen, dauerhafte Leseansicht, Vorbefüllung für Folgeprojekte aktiv       |   45–65 | offen     |
 
 **Reihenfolge ist zwingend:** 15.1 → 15.2 → 15.3 → 15.4 → 15.5 → 15.6 → 15.7 → 15.8. Jede Einheit setzt die
 vorherige als gemerged voraus.
@@ -133,8 +152,16 @@ Tests und Seeds erzeugen freigegebene Bögen direkt.
 - Portal-Code importiert nie aus `components/workspace/**`. Was beide Seiten brauchen, liegt in `components/shared`
   oder `packages/ui`.
 - **Keine Logik-Duplikate:** Sichtbarkeit, Pflichtprüfung und Fortschritt kommen ausschließlich aus
-  `packages/common/src/patterns/crm/onboarding/onboarding-completeness.ts` (Task 63). Blockkopien entstehen ausschließlich über den
-  Kopierdienst (`onboardingBlockCopyService`, Task 64). Der Block-Editor aus Task 64 wird in Task 65 für Bögen wiederverwendet, nicht kopiert.
+  `packages/common/src/patterns/crm/questionnaire/questionnaire-completeness.ts` (Task 63). Blockkopien entstehen ausschließlich über den
+  Kopierdienst (`questionnaireBlockCopyService`, Task 64). Der Block-Editor aus Task 64 wird in Task 65 für Bögen wiederverwendet, nicht kopiert.
+- **Vollständigkeit ist ein Pattern, kein Service.** `getQuestionnaireCompleteness` und
+  `isQuestionnaireFieldVisible` sind reine Funktionen (Eingabe rein, Ergebnis raus, kein Zustand, kein Zugriff auf
+  Datenbank oder Zeit) und liegen deshalb unter `packages/common/src/patterns/`; so laufen Server und Client
+  (Portal, CRM) mit derselben Logik. **Ab Task 65 kommt ein Service dazu, aber nur für das Beschaffen der Eingaben:**
+  `onboarding-form-read-service` lädt Bogen, Antworten, Dateien und Gruppeneinträge und ruft die Funktion auf. Die
+  Regeln selbst bleiben im Pattern; ein Service darf sie nie nachbauen oder um eine eigene Variante ergänzen. Braucht
+  ein zweiter Einsatzort des Baukastens eine andere Berechnung, wird sie ein weiteres Pattern, nicht ein Schalter im
+  bestehenden.
 - Chat-Systemnachrichten über `announceSystemMessage` (wie Feedbackrunden), bis Ordner 20c Benachrichtigungen liefert.
 
 ## Bewusst nicht enthalten

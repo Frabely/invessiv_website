@@ -17,6 +17,7 @@ type WorkspaceShellProps = {
   canOpenCrmFeedback?: boolean;
   canOpenCrmMessages?: boolean;
   canReadCrmLineItemTemplates?: boolean;
+  canReadCrmQuestionnaireTemplates?: boolean;
   children?: ReactNode;
   content: WorkspacePageContent;
   locale: Locale;
@@ -32,6 +33,7 @@ export function WorkspaceShell({
   canOpenCrmFeedback = false,
   canOpenCrmMessages = false,
   canReadCrmLineItemTemplates = false,
+  canReadCrmQuestionnaireTemplates = false,
   children,
   content,
   locale,
@@ -71,6 +73,7 @@ export function WorkspaceShell({
             canOpenCrmFeedback={canOpenCrmFeedback}
             canOpenCrmMessages={canOpenCrmMessages}
             canReadCrmLineItemTemplates={canReadCrmLineItemTemplates}
+            canReadCrmQuestionnaireTemplates={canReadCrmQuestionnaireTemplates}
             content={content}
             isOpen={isOpen}
             locale={locale}

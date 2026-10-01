@@ -1,9 +1,9 @@
 import type { OnboardingFormStatus } from "../../../constants/crm/onboarding/onboarding-form-statuses";
-import type { OnboardingAnswerFileDto } from "./onboarding-answer-file.dto";
-import type { OnboardingAnswerDto } from "./onboarding-answer.dto";
+import type { QuestionnaireAnswerFileDto } from "../questionnaire/questionnaire-answer-file.dto";
+import type { QuestionnaireAnswerDto } from "../questionnaire/questionnaire-answer.dto";
 import type { OnboardingFormBlockDto } from "./onboarding-form-block.dto";
 import type { OnboardingFormServiceDto } from "./onboarding-form-service.dto";
-import type { OnboardingGroupEntryDto } from "./onboarding-group-entry.dto";
+import type { QuestionnaireGroupEntryDto } from "../questionnaire/questionnaire-group-entry.dto";
 
 /** The onboarding form of one project with its own block copies, answers and files. */
 export interface OnboardingFormDto {
@@ -42,11 +42,11 @@ export interface OnboardingFormDto {
   /** Steps in form order, each with its block copy and review. */
   blocks: OnboardingFormBlockDto[];
   /** All answer rows of the form. */
-  answers: OnboardingAnswerDto[];
+  answers: QuestionnaireAnswerDto[];
   /** All attached files of the form. */
-  answerFiles: OnboardingAnswerFileDto[];
+  answerFiles: QuestionnaireAnswerFileDto[];
   /** All group entries of the form. */
-  groupEntries: OnboardingGroupEntryDto[];
+  groupEntries: QuestionnaireGroupEntryDto[];
   /** Current project line items; the frozen snapshot once the form is completed. */
   services: OnboardingFormServiceDto[];
   /** Optimistic-concurrency counter of the form head; answer autosaves do not advance it. */

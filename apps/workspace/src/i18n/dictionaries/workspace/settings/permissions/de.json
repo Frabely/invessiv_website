@@ -71,13 +71,13 @@
       "label": "Leistungskatalog bearbeiten",
       "description": "Leistungstemplates anlegen, ändern und archivieren."
     },
-    "onboarding_templates.read": {
-      "label": "Onboarding-Vorlagen ansehen",
-      "description": "Bausteine und Vorlagen für Onboarding-Bögen öffnen."
+    "questionnaire_templates.read": {
+      "label": "Fragebogen-Vorlagen ansehen",
+      "description": "Bausteine und Vorlagen für Fragebögen öffnen."
     },
-    "onboarding_templates.write": {
-      "label": "Onboarding-Vorlagen bearbeiten",
-      "description": "Bausteine und Vorlagen für Onboarding-Bögen anlegen, ändern und archivieren."
+    "questionnaire_templates.write": {
+      "label": "Fragebogen-Vorlagen bearbeiten",
+      "description": "Bausteine und Vorlagen für Fragebögen anlegen, ändern und archivieren."
     },
     "tasks.read": {
       "label": "Aufgaben ansehen",

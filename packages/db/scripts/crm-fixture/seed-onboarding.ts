@@ -1,27 +1,27 @@
 import { randomUUID } from "node:crypto";
 import { OnboardingBlockReviewStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-block-review-statuses";
-import { OnboardingCatalogStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-catalog-statuses";
-import { OnboardingFieldRequirement } from "@invessiv/common/constants/crm/onboarding/onboarding-field-requirements";
-import { OnboardingFieldType } from "@invessiv/common/constants/crm/onboarding/onboarding-field-types";
+import { QuestionnaireCatalogStatus } from "@invessiv/common/constants/crm/questionnaire/questionnaire-catalog-statuses";
+import { QuestionnaireFieldRequirement } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-requirements";
+import { QuestionnaireFieldType } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
-import { OnboardingPrefillSource } from "@invessiv/common/constants/crm/onboarding/onboarding-prefill-sources";
-import { OnboardingYesNoChoiceKey } from "@invessiv/common/constants/crm/onboarding/onboarding-yes-no-choice-keys";
+import { QuestionnairePrefillSource } from "@invessiv/common/constants/crm/questionnaire/questionnaire-prefill-sources";
+import { QuestionnaireYesNoChoiceKey } from "@invessiv/common/constants/crm/questionnaire/questionnaire-yes-no-choice-keys";
 import { Locale } from "@invessiv/common/contracts/i18n/locale";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import {
   onboardingAnswers,
-  onboardingBlocks,
-  onboardingBlockTranslations,
-  onboardingChoiceTranslations,
-  onboardingFieldChoices,
-  onboardingFields,
-  onboardingFieldTranslations,
+  questionnaireBlocks,
+  questionnaireBlockTranslations,
+  questionnaireChoiceTranslations,
+  questionnaireFieldChoices,
+  questionnaireFields,
+  questionnaireFieldTranslations,
   onboardingFormBlocks,
   onboardingForms,
   onboardingGroupEntries,
 } from "@invessiv/db/record-configuration";
 
-type OnboardingFixtureInput = {
+type QuestionnaireFixtureInput = {
   memberId: string;
   customerId: string;
   projectId: string;
@@ -30,10 +30,10 @@ type OnboardingFixtureInput = {
 
 type FieldSpec = {
   key: string;
-  type: (typeof onboardingFields.$inferInsert)["type"];
-  requirement?: (typeof onboardingFields.$inferInsert)["requirement"];
+  type: (typeof questionnaireFields.$inferInsert)["type"];
+  requirement?: (typeof questionnaireFields.$inferInsert)["requirement"];
   labels: Record<Locale, string>;
-  prefillSource?: (typeof onboardingFields.$inferInsert)["prefill_source"];
+  prefillSource?: (typeof questionnaireFields.$inferInsert)["prefill_source"];
 };
 
 function daysAgo(days: number): Date {
@@ -41,7 +41,7 @@ function daysAgo(days: number): Date {
 }
 
 type SeededField = {
-  row: typeof onboardingFields.$inferInsert & { id: string };
+  row: typeof questionnaireFields.$inferInsert & { id: string };
   labels: Record<Locale, string>;
 };
 
@@ -49,7 +49,7 @@ function fieldRow(
   blockId: string,
   spec: FieldSpec,
   position: number,
-  extra: Partial<typeof onboardingFields.$inferInsert> = {},
+  extra: Partial<typeof questionnaireFields.$inferInsert> = {},
 ): SeededField {
   const row = {
     id: randomUUID(),
@@ -58,7 +58,7 @@ function fieldRow(
     key: spec.key,
     position,
     type: spec.type,
-    requirement: spec.requirement ?? OnboardingFieldRequirement.Required,
+    requirement: spec.requirement ?? QuestionnaireFieldRequirement.Required,
     max_length: null,
     min_items: null,
     max_items: null,
@@ -88,7 +88,7 @@ function fieldTranslations({ row, labels }: SeededField) {
  */
 export async function seedOnboarding(
   tx: ContactDatabaseTransaction,
-  { memberId, customerId, projectId, membershipId }: OnboardingFixtureInput,
+  { memberId, customerId, projectId, membershipId }: QuestionnaireFixtureInput,
 ) {
   const formId = randomUUID();
   await tx.insert(onboardingForms).values({
@@ -124,18 +124,18 @@ export async function seedOnboarding(
       titles: { de: "Gebuchte Leistungen", en: "Booked services" },
     },
   ].map((block) => ({ ...block, id: randomUUID() }));
-  await tx.insert(onboardingBlocks).values(
+  await tx.insert(questionnaireBlocks).values(
     blocks.map((block) => ({
       id: block.id,
       owner_form_id: formId,
       source_block_id: null,
       key: block.key,
       carry_over: block.carryOver,
-      status: OnboardingCatalogStatus.Active,
+      status: QuestionnaireCatalogStatus.Active,
       version: 1,
     })),
   );
-  await tx.insert(onboardingBlockTranslations).values(
+  await tx.insert(questionnaireBlockTranslations).values(
     blocks.flatMap((block) =>
       Object.entries(block.titles).map(([locale, title]) => ({
         block_id: block.id,
@@ -168,9 +168,9 @@ export async function seedOnboarding(
     company.id,
     {
       key: "company_name",
-      type: OnboardingFieldType.ShortText,
+      type: QuestionnaireFieldType.ShortText,
       labels: { de: "Firmenname", en: "Company name" },
-      prefillSource: OnboardingPrefillSource.CustomerCompanyName,
+      prefillSource: QuestionnairePrefillSource.CustomerCompanyName,
     },
     0,
   );
@@ -178,7 +178,7 @@ export async function seedOnboarding(
     company.id,
     {
       key: "has_shop",
-      type: OnboardingFieldType.YesNo,
+      type: QuestionnaireFieldType.YesNo,
       labels: {
         de: "Betreibt ihr einen Onlineshop?",
         en: "Do you run an online shop?",
@@ -192,7 +192,7 @@ export async function seedOnboarding(
     company.id,
     {
       key: "shop_url",
-      type: OnboardingFieldType.Url,
+      type: QuestionnaireFieldType.Url,
       labels: { de: "Adresse des Shops", en: "Shop address" },
     },
     2,
@@ -202,8 +202,8 @@ export async function seedOnboarding(
     team.id,
     {
       key: "team_members",
-      type: OnboardingFieldType.Group,
-      requirement: OnboardingFieldRequirement.Optional,
+      type: QuestionnaireFieldType.Group,
+      requirement: QuestionnaireFieldRequirement.Optional,
       labels: { de: "Teammitglieder", en: "Team members" },
     },
     0,
@@ -213,7 +213,7 @@ export async function seedOnboarding(
     team.id,
     {
       key: "member_name",
-      type: OnboardingFieldType.ShortText,
+      type: QuestionnaireFieldType.ShortText,
       labels: { de: "Name", en: "Name" },
     },
     0,
@@ -223,8 +223,8 @@ export async function seedOnboarding(
     team.id,
     {
       key: "member_role",
-      type: OnboardingFieldType.ShortText,
-      requirement: OnboardingFieldRequirement.Optional,
+      type: QuestionnaireFieldType.ShortText,
+      requirement: QuestionnaireFieldRequirement.Optional,
       labels: { de: "Funktion", en: "Role" },
     },
     1,
@@ -234,7 +234,7 @@ export async function seedOnboarding(
     services.id,
     {
       key: "services_confirmation",
-      type: OnboardingFieldType.ProjectServices,
+      type: QuestionnaireFieldType.ProjectServices,
       labels: {
         de: "Passen die gebuchten Leistungen?",
         en: "Do the booked services fit?",
@@ -246,35 +246,35 @@ export async function seedOnboarding(
   // The condition references a choice of has_shop, so the fields go in before their choices and
   // the dependent field only after both exist.
   await tx
-    .insert(onboardingFields)
+    .insert(questionnaireFields)
     .values([companyName, hasShop, teamGroup, servicesField].map((f) => f.row));
-  await tx.insert(onboardingFieldChoices).values([
+  await tx.insert(questionnaireFieldChoices).values([
     {
       id: yesChoiceId,
       field_id: hasShop.row.id,
-      key: OnboardingYesNoChoiceKey.Yes,
+      key: QuestionnaireYesNoChoiceKey.Yes,
       position: 0,
       version: 1,
     },
     {
       id: noChoiceId,
       field_id: hasShop.row.id,
-      key: OnboardingYesNoChoiceKey.No,
+      key: QuestionnaireYesNoChoiceKey.No,
       position: 1,
       version: 1,
     },
   ]);
   await tx
-    .insert(onboardingFields)
+    .insert(questionnaireFields)
     .values([shopUrl, memberName, memberRole].map((f) => f.row));
-  await tx.insert(onboardingChoiceTranslations).values([
+  await tx.insert(questionnaireChoiceTranslations).values([
     { choice_id: yesChoiceId, locale: Locale.De, label: "Ja" },
     { choice_id: yesChoiceId, locale: Locale.En, label: "Yes" },
     { choice_id: noChoiceId, locale: Locale.De, label: "Nein" },
     { choice_id: noChoiceId, locale: Locale.En, label: "No" },
   ]);
   await tx
-    .insert(onboardingFieldTranslations)
+    .insert(questionnaireFieldTranslations)
     .values(
       [
         companyName,

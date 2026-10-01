@@ -8,10 +8,10 @@ import {
   unique,
   uuid,
 } from "drizzle-orm/pg-core";
-import { ONBOARDING_LIMITS } from "@invessiv/common/constants/crm/onboarding/onboarding-limits";
+import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
 import { OnboardingGroupEntriesConstraintName as N } from "@invessiv/db/constraint-names/crm/onboarding-group-entries-constraint-names";
 import { sqlLimit } from "@invessiv/db/core";
-import { onboardingFields } from "./onboarding-fields";
+import { questionnaireFields } from "./questionnaire-fields";
 import { onboardingForms } from "./onboarding-forms";
 
 /** One repetition of a group field. The id comes from the client so it stays stable across autosaves. */
@@ -38,14 +38,14 @@ export const onboardingGroupEntries = pgTable(
     foreignKey({
       name: N.FieldForeignKey,
       columns: [t.field_id],
-      foreignColumns: [onboardingFields.id],
+      foreignColumns: [questionnaireFields.id],
     }).onDelete("cascade"),
     // DEFERRABLE INITIALLY IMMEDIATE in the migration; Drizzle cannot express it.
     unique(N.PositionUnique).on(t.field_id, t.position),
     unique(N.IdFormUnique).on(t.id, t.form_id),
     check(
       N.PositionCheck,
-      sql`${t.position} >= 0 and ${t.position} < ${sqlLimit(ONBOARDING_LIMITS.storedPositionCeiling)}`,
+      sql`${t.position} >= 0 and ${t.position} < ${sqlLimit(QUESTIONNAIRE_LIMITS.storedPositionCeiling)}`,
     ),
   ],
 );

@@ -15,10 +15,10 @@ import {
   OnboardingBlockReviewStatus,
 } from "@invessiv/common/constants/crm/onboarding/onboarding-block-review-statuses";
 import { ONBOARDING_CLARIFICATION_MODE_VALUES } from "@invessiv/common/constants/crm/onboarding/onboarding-clarification-modes";
-import { ONBOARDING_LIMITS } from "@invessiv/common/constants/crm/onboarding/onboarding-limits";
+import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
 import { OnboardingFormBlocksConstraintName as N } from "@invessiv/db/constraint-names/crm/onboarding-form-blocks-constraint-names";
 import { sqlCheckIn, sqlLimit } from "@invessiv/db/core";
-import { onboardingBlocks } from "./onboarding-blocks";
+import { questionnaireBlocks } from "./questionnaire-blocks";
 import { onboardingForms } from "./onboarding-forms";
 import { workspaceMembers } from "./workspace-members";
 
@@ -53,7 +53,10 @@ export const onboardingFormBlocks = pgTable(
     foreignKey({
       name: N.BlockOwnerForeignKey,
       columns: [t.block_id, t.form_id],
-      foreignColumns: [onboardingBlocks.id, onboardingBlocks.owner_form_id],
+      foreignColumns: [
+        questionnaireBlocks.id,
+        questionnaireBlocks.owner_form_id,
+      ],
     }).onDelete("cascade"),
     foreignKey({
       name: N.ReviewedByForeignKey,
@@ -64,7 +67,7 @@ export const onboardingFormBlocks = pgTable(
     unique(N.PositionUnique).on(t.form_id, t.position),
     check(
       N.PositionCheck,
-      sql`${t.position} >= 0 and ${t.position} < ${sqlLimit(ONBOARDING_LIMITS.storedPositionCeiling)}`,
+      sql`${t.position} >= 0 and ${t.position} < ${sqlLimit(QUESTIONNAIRE_LIMITS.storedPositionCeiling)}`,
     ),
     check(
       N.ReviewStatusCheck,
@@ -76,7 +79,7 @@ export const onboardingFormBlocks = pgTable(
     ),
     check(
       N.ReviewNoteCheck,
-      sql`length(${t.review_note}) <= ${sqlLimit(ONBOARDING_LIMITS.noteMaxLength)}`,
+      sql`length(${t.review_note}) <= ${sqlLimit(QUESTIONNAIRE_LIMITS.noteMaxLength)}`,
     ),
     check(N.VersionCheck, sql`${t.version} > 0`),
     check(

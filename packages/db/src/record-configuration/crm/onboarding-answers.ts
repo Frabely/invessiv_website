@@ -11,11 +11,11 @@ import {
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
-import { ONBOARDING_LIMITS } from "@invessiv/common/constants/crm/onboarding/onboarding-limits";
+import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
 import { OnboardingAnswersConstraintName as N } from "@invessiv/db/constraint-names/crm/onboarding-answers-constraint-names";
 import { sqlLimit } from "@invessiv/db/core";
-import { onboardingFieldChoices } from "./onboarding-field-choices";
-import { onboardingFields } from "./onboarding-fields";
+import { questionnaireFieldChoices } from "./questionnaire-field-choices";
+import { questionnaireFields } from "./questionnaire-fields";
 import { onboardingForms } from "./onboarding-forms";
 import { onboardingGroupEntries } from "./onboarding-group-entries";
 import { portalMemberships } from "./portal-memberships";
@@ -54,7 +54,7 @@ export const onboardingAnswers = pgTable(
     foreignKey({
       name: N.FieldForeignKey,
       columns: [t.field_id],
-      foreignColumns: [onboardingFields.id],
+      foreignColumns: [questionnaireFields.id],
     }).onDelete("cascade"),
     foreignKey({
       name: N.EntryFormForeignKey,
@@ -68,8 +68,8 @@ export const onboardingAnswers = pgTable(
       name: N.ChoiceFieldForeignKey,
       columns: [t.choice_id, t.field_id],
       foreignColumns: [
-        onboardingFieldChoices.id,
-        onboardingFieldChoices.field_id,
+        questionnaireFieldChoices.id,
+        questionnaireFieldChoices.field_id,
       ],
     }).onDelete("cascade"),
     foreignKey({
@@ -95,11 +95,11 @@ export const onboardingAnswers = pgTable(
       ),
     check(
       N.ValueCheck,
-      sql`${t.value} is null or (btrim(${t.value}) <> '' and length(${t.value}) <= ${sqlLimit(ONBOARDING_LIMITS.storedValueMaxLength)})`,
+      sql`${t.value} is null or (btrim(${t.value}) <> '' and length(${t.value}) <= ${sqlLimit(QUESTIONNAIRE_LIMITS.storedValueMaxLength)})`,
     ),
     check(
       N.SortOrderCheck,
-      sql`${t.sort_order} >= 0 and ${t.sort_order} < ${sqlLimit(ONBOARDING_LIMITS.storedPositionCeiling)}`,
+      sql`${t.sort_order} >= 0 and ${t.sort_order} < ${sqlLimit(QUESTIONNAIRE_LIMITS.storedPositionCeiling)}`,
     ),
     check(N.ContentCheck, sql`num_nonnulls(${t.value}, ${t.choice_id}) = 1`),
     check(

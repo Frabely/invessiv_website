@@ -1,0 +1,560 @@
+import "server-only";
+
+import { and, eq, inArray, sql } from "drizzle-orm";
+
+import type { Locale } from "@invessiv/common";
+import { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
+import { QuestionnaireCatalogStatus } from "@invessiv/common/constants/crm/questionnaire/questionnaire-catalog-statuses";
+import type { QuestionnaireFieldType } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
+import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
+import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block.dto";
+import type { QuestionnaireChoiceDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-choice.dto";
+import type { QuestionnaireFieldDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-field.dto";
+import type { QuestionnaireCommandResult } from "@invessiv/common/contracts/crm/questionnaire/results/questionnaire-command-result";
+import type { UpdateQuestionnaireBlockRequestDto } from "@invessiv/common/contracts/crm/questionnaire/update-questionnaire-block-request.dto";
+import type { QuestionnaireFieldInputDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-field-input.dto";
+import { moveListItem } from "@invessiv/common/patterns/collections/ordered-list";
+import {
+  findQuestionnaireField as findField,
+  questionnaireFieldLevel,
+} from "@invessiv/common/patterns/crm/questionnaire/questionnaire-block-structure";
+import { QuestionnaireFieldChoicesConstraintName } from "@invessiv/db/constraint-names/crm/questionnaire-field-choices-constraint-names";
+import { QuestionnaireFieldsConstraintName } from "@invessiv/db/constraint-names/crm/questionnaire-fields-constraint-names";
+import type { ContactDatabaseTransaction } from "@invessiv/db/core";
+import {
+  questionnaireBlocks,
+  questionnaireBlockTranslations,
+  questionnaireChoiceTranslations,
+  questionnaireFieldChoices,
+  questionnaireFields,
+  questionnaireFieldTranslations,
+} from "@invessiv/db/record-configuration";
+import { questionnaireDefinitionReadService as readService } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-read-service";
+import type {
+  QuestionnaireBlockOwner,
+  QuestionnaireBlockRow,
+} from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-types";
+import { questionnaireDefinitionValidation } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-validation";
+import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
+
+type BlockResult = QuestionnaireCommandResult<QuestionnaireBlockDto>;
+type OpenedBlock =
+  | { ok: true; block: QuestionnaireBlockDto }
+  | { ok: false; result: BlockResult };
+
+const BLOCK_NOT_FOUND = {
+  ok: false,
+  code: QuestionnaireErrorCode.BlockNotFound,
+} as const;
+const FIELD_NOT_FOUND = {
+  ok: false,
+  code: QuestionnaireErrorCode.FieldNotFound,
+} as const;
+
+const fieldPositionConstraint = sql.identifier(
+  QuestionnaireFieldsConstraintName.PositionUnique,
+);
+const choicePositionConstraint = sql.identifier(
+  QuestionnaireFieldChoicesConstraintName.PositionUnique,
+);
+
+/** Every write on a block and its fields holds this lock, so invariants are checked on a stable block. */
+async function lockBlock(
+  tx: ContactDatabaseTransaction,
+  blockId: string,
+  owner: QuestionnaireBlockOwner,
+): Promise<QuestionnaireBlockRow | null> {
+  const [row] = await tx
+    .select()
+    .from(questionnaireBlocks)
+    .where(
+      and(
+        eq(questionnaireBlocks.id, blockId),
+        readService.ownerCondition(owner),
+      ),
+    )
+    .limit(1)
+    .for("update");
+  return row ?? null;
+}
+
+function blockConflict(block: QuestionnaireBlockDto): BlockResult {
+  return {
+    ok: false,
+    code: ConcurrencyErrorCode.VersionConflict,
+    conflict: {
+      code: ConcurrencyErrorCode.VersionConflict,
+      currentVersion: block.version,
+      current: block,
+    },
+  };
+}
+
+/** Locks and loads the block; a stale version answers with the current block for the editor. */
+async function openBlock(
+  tx: ContactDatabaseTransaction,
+  blockId: string,
+  owner: QuestionnaireBlockOwner,
+  expectedVersion: number,
+): Promise<OpenedBlock> {
+  if (!(await lockBlock(tx, blockId, owner)))
+    return { ok: false, result: BLOCK_NOT_FOUND };
+  const block = (await readService.findBlock(tx, blockId, owner))!;
+  if (block.version !== expectedVersion)
+    return { ok: false, result: blockConflict(block) };
+  return { ok: true, block };
+}
+
+/** The block version is the one counter the editor compares; every write on the block bumps it. */
+async function finishBlock(
+  tx: ContactDatabaseTransaction,
+  block: QuestionnaireBlockDto,
+  owner: QuestionnaireBlockOwner,
+  patch: Partial<
+    Pick<QuestionnaireBlockRow, "key" | "carry_over" | "status">
+  > = {},
+): Promise<BlockResult> {
+  await updateLockedVersioned(
+    {
+      tx,
+      table: questionnaireBlocks,
+      id: block.id,
+      expectedVersion: block.version,
+      patch,
+    },
+    "Questionnaire block changed while it was locked",
+  );
+  return {
+    ok: true,
+    value: (await readService.findBlock(tx, block.id, owner))!,
+  };
+}
+
+/** Rebuilds the block with one level replaced; the level is the block or one group's children. */
+function withSiblings(
+  block: QuestionnaireBlockDto,
+  parentFieldId: string | null,
+  siblings: QuestionnaireFieldDto[],
+): QuestionnaireBlockDto {
+  if (parentFieldId === null) return { ...block, fields: siblings };
+  return {
+    ...block,
+    fields: block.fields.map((field) =>
+      field.id === parentFieldId ? { ...field, children: siblings } : field,
+    ),
+  };
+}
+
+/** Options keep their id (and so the conditions on them) as long as their key stays. */
+function toChoices(
+  input: QuestionnaireFieldInputDto["choices"],
+  existing: readonly QuestionnaireChoiceDto[],
+): QuestionnaireChoiceDto[] {
+  const byKey = new Map(existing.map((choice) => [choice.key, choice]));
+  return input.map((choice, position) => {
+    const stored = byKey.get(choice.key);
+    return {
+      id: stored?.id ?? crypto.randomUUID(),
+      key: choice.key,
+      position,
+      labels: choice.labels,
+      version: stored?.version ?? 1,
+    };
+  });
+}
+
+function toField(
+  input: QuestionnaireFieldInputDto,
+  base: Pick<
+    QuestionnaireFieldDto,
+    "id" | "blockId" | "parentFieldId" | "position" | "children" | "version"
+  > & {
+    type: QuestionnaireFieldType;
+    choices: readonly QuestionnaireChoiceDto[];
+  },
+): QuestionnaireFieldDto {
+  return {
+    id: base.id,
+    blockId: base.blockId,
+    parentFieldId: base.parentFieldId,
+    key: input.key,
+    position: base.position,
+    type: base.type,
+    requirement: input.requirement,
+    maxLength: input.maxLength,
+    minItems: input.minItems,
+    maxItems: input.maxItems,
+    acceptedAssetKinds: input.acceptedAssetKinds,
+    prefillSource: input.prefillSource,
+    conditionFieldId: input.conditionFieldId,
+    conditionChoiceId: input.conditionChoiceId,
+    translations: input.translations,
+    choices: toChoices(input.choices, base.choices),
+    children: base.children,
+    version: base.version,
+  };
+}
+
+function fieldColumns(field: QuestionnaireFieldDto) {
+  return {
+    key: field.key,
+    requirement: field.requirement,
+    max_length: field.maxLength,
+    min_items: field.minItems,
+    max_items: field.maxItems,
+    accepted_asset_kinds: field.acceptedAssetKinds,
+    prefill_source: field.prefillSource,
+    condition_field_id: field.conditionFieldId,
+    condition_choice_id: field.conditionChoiceId,
+  };
+}
+
+function fieldTranslationRows(field: QuestionnaireFieldDto) {
+  return Object.entries(field.translations).map(([locale, text]) => ({
+    field_id: field.id,
+    locale: locale as Locale,
+    label: text.label,
+    help: text.help,
+  }));
+}
+
+function choiceTranslationRows(choices: readonly QuestionnaireChoiceDto[]) {
+  return choices.flatMap((choice) =>
+    Object.entries(choice.labels).map(([locale, label]) => ({
+      choice_id: choice.id,
+      locale: locale as Locale,
+      label,
+    })),
+  );
+}
+
+async function insertChoices(
+  tx: ContactDatabaseTransaction,
+  fieldId: string,
+  choices: readonly QuestionnaireChoiceDto[],
+): Promise<void> {
+  if (choices.length === 0) return;
+  await tx.insert(questionnaireFieldChoices).values(
+    choices.map((choice) => ({
+      id: choice.id,
+      field_id: fieldId,
+      key: choice.key,
+      position: choice.position,
+      version: choice.version,
+    })),
+  );
+}
+
+async function insertTexts(
+  tx: ContactDatabaseTransaction,
+  field: QuestionnaireFieldDto,
+  choices: readonly QuestionnaireChoiceDto[],
+): Promise<void> {
+  const fieldRows = fieldTranslationRows(field);
+  if (fieldRows.length > 0)
+    await tx.insert(questionnaireFieldTranslations).values(fieldRows);
+  const choiceRows = choiceTranslationRows(choices);
+  if (choiceRows.length > 0)
+    await tx.insert(questionnaireChoiceTranslations).values(choiceRows);
+}
+
+/**
+ * Brings the stored options in line with the field: unknown keys are inserted, missing ones
+ * deleted, kept ones repositioned. Swapped positions would trip the unique index row by row, so it
+ * is checked once at the end. Options carry no `updated_at` and are written only as part of their
+ * field, whose version this write bumps.
+ */
+async function replaceChoices(
+  tx: ContactDatabaseTransaction,
+  before: QuestionnaireFieldDto,
+  after: QuestionnaireFieldDto,
+): Promise<void> {
+  const kept = new Set(after.choices.map((choice) => choice.id));
+  const removed = before.choices.filter((choice) => !kept.has(choice.id));
+  if (removed.length > 0)
+    await tx.delete(questionnaireFieldChoices).where(
+      inArray(
+        questionnaireFieldChoices.id,
+        removed.map((choice) => choice.id),
+      ),
+    );
+
+  const stored = new Map(before.choices.map((choice) => [choice.id, choice]));
+  await tx.execute(sql`set constraints ${choicePositionConstraint} deferred`);
+  for (const choice of after.choices) {
+    const previous = stored.get(choice.id);
+    if (previous && previous.position !== choice.position)
+      await tx
+        .update(questionnaireFieldChoices)
+        .set({ position: choice.position })
+        .where(eq(questionnaireFieldChoices.id, choice.id));
+  }
+  await insertChoices(
+    tx,
+    after.id,
+    after.choices.filter((choice) => !stored.has(choice.id)),
+  );
+  await tx.execute(sql`set constraints ${choicePositionConstraint} immediate`);
+
+  const keptIds = after.choices
+    .filter((choice) => stored.has(choice.id))
+    .map((choice) => choice.id);
+  if (keptIds.length > 0)
+    await tx
+      .delete(questionnaireChoiceTranslations)
+      .where(inArray(questionnaireChoiceTranslations.choice_id, keptIds));
+}
+
+function invalid(
+  code: NonNullable<
+    ReturnType<typeof questionnaireDefinitionValidation.validateBlock>
+  >,
+): BlockResult {
+  return { ok: false, code };
+}
+
+/** Blocks of a form are never archived, so their status is not taken from the request. */
+async function updateBlock(
+  tx: ContactDatabaseTransaction,
+  owner: QuestionnaireBlockOwner,
+  blockId: string,
+  input: UpdateQuestionnaireBlockRequestDto,
+): Promise<BlockResult> {
+  const opened = await openBlock(tx, blockId, owner, input.version);
+  if (!opened.ok) return opened.result;
+  if (
+    owner === null &&
+    input.key !== opened.block.key &&
+    (await readService.isCatalogKeyTaken(tx, input.key))
+  )
+    return invalid(QuestionnaireErrorCode.KeyTaken);
+  const next = { ...opened.block, translations: input.translations };
+  const code = questionnaireDefinitionValidation.validateBlock(next);
+  if (code) return invalid(code);
+
+  await tx
+    .delete(questionnaireBlockTranslations)
+    .where(eq(questionnaireBlockTranslations.block_id, blockId));
+  await tx.insert(questionnaireBlockTranslations).values(
+    Object.entries(input.translations).map(([locale, text]) => ({
+      block_id: blockId,
+      locale: locale as Locale,
+      title: text.title,
+      intro: text.intro,
+    })),
+  );
+  return finishBlock(tx, opened.block, owner, {
+    key: input.key,
+    carry_over: input.carryOver,
+    status: owner === null ? input.status : QuestionnaireCatalogStatus.Active,
+  });
+}
+
+async function createField(
+  tx: ContactDatabaseTransaction,
+  owner: QuestionnaireBlockOwner,
+  blockId: string,
+  input: QuestionnaireFieldInputDto & {
+    type: QuestionnaireFieldType;
+    parentFieldId: string | null;
+    expectedBlockVersion: number;
+  },
+): Promise<BlockResult> {
+  const opened = await openBlock(
+    tx,
+    blockId,
+    owner,
+    input.expectedBlockVersion,
+  );
+  if (!opened.ok) return opened.result;
+  const { block } = opened;
+  // A sub-field only goes below a group of the same block; the validation rejects other types.
+  if (
+    input.parentFieldId !== null &&
+    !block.fields.some((field) => field.id === input.parentFieldId)
+  )
+    return FIELD_NOT_FOUND;
+
+  const siblings = questionnaireFieldLevel(block, input.parentFieldId);
+  const field = toField(input, {
+    id: crypto.randomUUID(),
+    blockId,
+    parentFieldId: input.parentFieldId,
+    position: siblings.length,
+    type: input.type,
+    choices: [],
+    children: [],
+    version: 1,
+  });
+  const code = questionnaireDefinitionValidation.validateBlock(
+    withSiblings(block, input.parentFieldId, [...siblings, field]),
+  );
+  if (code) return invalid(code);
+
+  await tx.insert(questionnaireFields).values({
+    id: field.id,
+    block_id: blockId,
+    parent_field_id: field.parentFieldId,
+    position: field.position,
+    type: field.type,
+    version: field.version,
+    ...fieldColumns(field),
+  });
+  await insertChoices(tx, field.id, field.choices);
+  await insertTexts(tx, field, field.choices);
+  return finishBlock(tx, block, owner);
+}
+
+async function updateField(
+  tx: ContactDatabaseTransaction,
+  owner: QuestionnaireBlockOwner,
+  fieldId: string,
+  input: QuestionnaireFieldInputDto & { expectedBlockVersion: number },
+): Promise<BlockResult> {
+  const blockId = await readService.findFieldBlockId(tx, fieldId, owner);
+  if (!blockId) return FIELD_NOT_FOUND;
+  const opened = await openBlock(
+    tx,
+    blockId,
+    owner,
+    input.expectedBlockVersion,
+  );
+  if (!opened.ok) return opened.result;
+  const { block } = opened;
+  const before = findField(block, fieldId);
+  if (!before) return FIELD_NOT_FOUND;
+
+  const after = toField(input, before);
+  const siblings = questionnaireFieldLevel(block, before.parentFieldId).map(
+    (field) => (field.id === fieldId ? after : field),
+  );
+  const code = questionnaireDefinitionValidation.validateBlock(
+    withSiblings(block, before.parentFieldId, siblings),
+  );
+  if (code) return invalid(code);
+
+  await replaceChoices(tx, before, after);
+  await updateLockedVersioned(
+    {
+      tx,
+      table: questionnaireFields,
+      id: fieldId,
+      expectedVersion: before.version,
+      patch: fieldColumns(after),
+    },
+    "Questionnaire field changed while its block was locked",
+  );
+  await tx
+    .delete(questionnaireFieldTranslations)
+    .where(eq(questionnaireFieldTranslations.field_id, fieldId));
+  await insertTexts(tx, after, after.choices);
+  return finishBlock(tx, block, owner);
+}
+
+/** Closes the gap a removed field leaves, so positions stay dense and below the stored ceiling. */
+async function compactPositions(
+  tx: ContactDatabaseTransaction,
+  siblings: readonly QuestionnaireFieldDto[],
+): Promise<void> {
+  for (const [position, field] of siblings.entries()) {
+    if (field.position === position) continue;
+    await updateLockedVersioned(
+      {
+        tx,
+        table: questionnaireFields,
+        id: field.id,
+        expectedVersion: field.version,
+        patch: { position },
+      },
+      "Questionnaire field changed while its block was locked",
+    );
+  }
+}
+
+async function deleteField(
+  tx: ContactDatabaseTransaction,
+  owner: QuestionnaireBlockOwner,
+  fieldId: string,
+  expectedBlockVersion: number,
+): Promise<BlockResult> {
+  const blockId = await readService.findFieldBlockId(tx, fieldId, owner);
+  if (!blockId) return FIELD_NOT_FOUND;
+  const opened = await openBlock(tx, blockId, owner, expectedBlockVersion);
+  if (!opened.ok) return opened.result;
+  const { block } = opened;
+  const field = findField(block, fieldId);
+  if (!field) return FIELD_NOT_FOUND;
+
+  // A field that still triggers another one stays; its dependent would silently become unconditional.
+  const remaining = questionnaireFieldLevel(block, field.parentFieldId).filter(
+    (sibling) => sibling.id !== fieldId,
+  );
+  const code = questionnaireDefinitionValidation.validateBlock(
+    withSiblings(block, field.parentFieldId, remaining),
+  );
+  if (code) return invalid(code);
+
+  await tx
+    .delete(questionnaireFields)
+    .where(eq(questionnaireFields.id, fieldId));
+  await compactPositions(tx, remaining);
+  return finishBlock(tx, block, owner);
+}
+
+/** Swaps two neighbours in one transaction; the unique position index is checked at commit. */
+async function moveField(
+  tx: ContactDatabaseTransaction,
+  owner: QuestionnaireBlockOwner,
+  fieldId: string,
+  direction: -1 | 1,
+  expectedBlockVersion: number,
+): Promise<BlockResult> {
+  const blockId = await readService.findFieldBlockId(tx, fieldId, owner);
+  if (!blockId) return FIELD_NOT_FOUND;
+  const opened = await openBlock(tx, blockId, owner, expectedBlockVersion);
+  if (!opened.ok) return opened.result;
+  const { block } = opened;
+  const field = findField(block, fieldId);
+  if (!field) return FIELD_NOT_FOUND;
+
+  const siblings = questionnaireFieldLevel(block, field.parentFieldId);
+  const index = siblings.findIndex((sibling) => sibling.id === fieldId);
+  const neighbour = siblings[index + direction];
+  if (!neighbour) return { ok: true, value: block };
+
+  const reordered = moveListItem(siblings, index, direction).map(
+    (sibling, position) => ({ ...sibling, position }),
+  );
+  const code = questionnaireDefinitionValidation.validateBlock(
+    withSiblings(block, field.parentFieldId, reordered),
+  );
+  if (code) return invalid(code);
+
+  await tx.execute(sql`set constraints ${fieldPositionConstraint} deferred`);
+  for (const [moved, position] of [
+    [field, neighbour.position],
+    [neighbour, field.position],
+  ] as const)
+    await updateLockedVersioned(
+      {
+        tx,
+        table: questionnaireFields,
+        id: moved.id,
+        expectedVersion: moved.version,
+        patch: { position },
+      },
+      "Questionnaire field changed while its block was locked",
+    );
+  await tx.execute(sql`set constraints ${fieldPositionConstraint} immediate`);
+  return finishBlock(tx, block, owner);
+}
+
+export const questionnaireDefinitionWriteService = {
+  blockConflict,
+  createField,
+  deleteField,
+  lockBlock,
+  moveField,
+  updateBlock,
+  updateField,
+} as const;

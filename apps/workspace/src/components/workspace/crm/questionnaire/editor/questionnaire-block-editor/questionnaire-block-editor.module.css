@@ -1,0 +1,53 @@
+.editor {
+  display: grid;
+  gap: clamp(1rem, 2.4vw, 1.5rem);
+  min-width: 0;
+  max-width: 60rem;
+}
+
+.fields {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.fieldsHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.fieldsTitle {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body);
+  font-weight: 700;
+}
+
+.count {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.addButton.addButton {
+  gap: 0.45rem;
+  font-size: var(--font-size-body-sm);
+}
+
+.failure {
+  margin: 0;
+  padding: 0.65rem 0.8rem;
+  border-left: 3px solid var(--color-danger);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}

@@ -123,20 +123,20 @@ export const PERMISSION_DEFINITIONS = {
     assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
     description: "Create, edit and archive line item templates.",
   },
-  [Permission.OnboardingTemplatesRead]: {
+  [Permission.QuestionnaireTemplatesRead]: {
     realm: AuthRealm.Workspace,
     delegable: true,
     scopeAssignable: false,
     assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
-    description: "View the onboarding building blocks and templates.",
+    description: "View the questionnaire building blocks and templates.",
   },
-  [Permission.OnboardingTemplatesWrite]: {
+  [Permission.QuestionnaireTemplatesWrite]: {
     realm: AuthRealm.Workspace,
     delegable: true,
     scopeAssignable: false,
     assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
     description:
-      "Create, edit and archive onboarding building blocks and templates.",
+      "Create, edit and archive questionnaire building blocks and templates.",
   },
   [Permission.TasksRead]: {
     realm: AuthRealm.Workspace,

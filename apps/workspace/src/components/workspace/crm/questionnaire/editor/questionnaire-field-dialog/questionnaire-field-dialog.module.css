@@ -1,0 +1,78 @@
+.form {
+  display: grid;
+  gap: 1.25rem;
+  padding: 0.55rem 0.7rem;
+}
+
+.notice,
+.failure {
+  margin: 0;
+  padding: 0.65rem 0.8rem;
+  border-left: 3px solid var(--color-accent-warm);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-accent-warm) 10%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+.failure {
+  border-left-color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
+}
+
+.basics {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 0.75rem 1rem;
+}
+
+.fixedType {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.fixedTypeLabel {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+}
+
+.fixedTypeValue {
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  font-weight: 650;
+}
+
+.fixedTypeHint {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+.texts {
+  display: grid;
+  gap: 0.6rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  padding: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  font-weight: 650;
+}
+
+.panel {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (max-width: 560px) {
+  .basics {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

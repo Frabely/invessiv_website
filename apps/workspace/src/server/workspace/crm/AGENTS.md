@@ -129,3 +129,22 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   `open`-Runden, ändert weder Status noch Version und schreibt keine Activity.
 - Bewusste Abweichung vom übrigen CRM (Planvorgabe Task 59): `VALIDATION_ERROR` der Feedback-Endpunkte antwortet
   **400**, nicht 422. Antworten liefern das DTO direkt, ohne Hülle (`{ round }`), wie die Portal-Endpunkte.
+
+## Fragebogen-Baukasten (`questionnaire`, ab Task 64)
+
+Plan: `apps/workspace/plans/crm/15-onboarding/64-baustein-katalog-und-vorlagen.md`.
+
+- **Fachneutral benannt:** Definitionen (Bausteine, Felder, Optionen, Vorlagen) heißen `questionnaire`, weil der
+  Baukasten weitere Einsatzorte bekommen soll. Onboarding-Fachlichkeit (Bogen, Statusfluss, Prüfung, Antworten) heißt
+  weiter `onboarding` und liegt nicht unter `services/questionnaire/`.
+- Services unter `services/questionnaire/`. **Owner-neutral:** `questionnaireDefinitionWriteService` und
+  `questionnaireDefinitionReadService` nehmen einen `QuestionnaireBlockOwner` (`null` = Katalog, sonst Bogen-ID) und filtern
+  ihn in der `WHERE`-Klausel; ein Block oder Feld eines anderen Owners verhält sich wie nicht vorhanden (404).
+- **Jeder Schreibweg an einem Block** sperrt die Blockzeile, vergleicht die Blockversion unter der Sperre und erhöht sie
+  über `updateLockedVersioned`. Antwort ist immer der ganze Block (`QuestionnaireCommandResult<QuestionnaireBlockDto>`).
+- **Invarianten ausschließlich über `questionnaireDefinitionValidation.validateBlock`** auf dem Block nach der Änderung;
+  kein Handler prüft Typ-Konfiguration, Bedingungen, Gruppen, Limits oder Übersetzungen selbst.
+- **Blockkopien ausschließlich über `questionnaireBlockCopyService.copyBlock`** (in der Transaktion des Aufrufers, neue IDs,
+  Bedingungen auf die Kopien umgehängt, `source_block_id` nur bei Kopien in einen Bogen).
+- Katalogrechte workspace-weit (`questionnaire_templates.read/write`, kein `canOn`); Endpunkte über
+  `CrmEndpointAccessRule.QuestionnaireCatalog` bzw. `QuestionnaireCatalogWrite`.

@@ -5,6 +5,12 @@ import {
   crmFeedbackRoundEndpoint,
   crmFeedbackRoundReadEndpoint,
   crmFeedbackRoundStatusEndpoint,
+  crmQuestionnaireBlockDuplicateEndpoint,
+  crmQuestionnaireBlockEndpoint,
+  crmQuestionnaireBlockFieldsEndpoint,
+  crmQuestionnaireFieldEndpoint,
+  crmQuestionnaireFieldMoveEndpoint,
+  crmQuestionnaireTemplateEndpoint,
   crmProjectFeedbackRoundsEndpoint,
 } from "./crm-api-endpoints";
 
@@ -42,6 +48,29 @@ describe("crm feedback round endpoints", () => {
   it("puts the read stamp below the round", () => {
     expect(crmFeedbackRoundReadEndpoint("r/1")).toBe(
       "/api/workspace/crm/feedback-rounds/r%2F1/read",
+    );
+  });
+});
+
+describe("crm onboarding catalog endpoints", () => {
+  it("nests duplicate and fields below the block and move below the field", () => {
+    expect(crmQuestionnaireBlockEndpoint("b-1")).toBe(
+      "/api/workspace/crm/questionnaire/blocks/b-1",
+    );
+    expect(crmQuestionnaireBlockDuplicateEndpoint("b-1")).toBe(
+      "/api/workspace/crm/questionnaire/blocks/b-1/duplicate",
+    );
+    expect(crmQuestionnaireBlockFieldsEndpoint("b-1")).toBe(
+      "/api/workspace/crm/questionnaire/blocks/b-1/fields",
+    );
+    expect(crmQuestionnaireFieldEndpoint("f-1")).toBe(
+      "/api/workspace/crm/questionnaire/fields/f-1",
+    );
+    expect(crmQuestionnaireFieldMoveEndpoint("f-1")).toBe(
+      "/api/workspace/crm/questionnaire/fields/f-1/move",
+    );
+    expect(crmQuestionnaireTemplateEndpoint("t/1")).toBe(
+      "/api/workspace/crm/questionnaire/templates/t%2F1",
     );
   });
 });

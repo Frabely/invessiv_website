@@ -55,8 +55,8 @@ export const PERMISSION_GROUP_PERMISSIONS = {
   [PermissionGroup.Services]: [
     Permission.LineItemTemplatesRead,
     Permission.LineItemTemplatesWrite,
-    Permission.OnboardingTemplatesRead,
-    Permission.OnboardingTemplatesWrite,
+    Permission.QuestionnaireTemplatesRead,
+    Permission.QuestionnaireTemplatesWrite,
   ],
   [PermissionGroup.Files]: [
     Permission.FilesRead,

@@ -5,33 +5,33 @@ import { describe, expect, it, vi } from "vitest";
 import {
   onboardingAnswerFiles,
   onboardingAnswers,
-  onboardingBlocks,
-  onboardingBlockTranslations,
-  onboardingChoiceTranslations,
-  onboardingFieldChoices,
-  onboardingFields,
-  onboardingFieldTranslations,
+  questionnaireBlocks,
+  questionnaireBlockTranslations,
+  questionnaireChoiceTranslations,
+  questionnaireFieldChoices,
+  questionnaireFields,
+  questionnaireFieldTranslations,
   onboardingFormBlocks,
   onboardingForms,
   onboardingFormServices,
   onboardingGroupEntries,
-  onboardingTemplateBlocks,
-  onboardingTemplates,
+  questionnaireTemplateBlocks,
+  questionnaireTemplates,
 } from "@invessiv/db";
 import { OnboardingAnswerFilesConstraintName } from "./onboarding-answer-files-constraint-names";
 import { OnboardingAnswersConstraintName } from "./onboarding-answers-constraint-names";
-import { OnboardingBlockTranslationsConstraintName } from "./onboarding-block-translations-constraint-names";
-import { OnboardingBlocksConstraintName } from "./onboarding-blocks-constraint-names";
-import { OnboardingChoiceTranslationsConstraintName } from "./onboarding-choice-translations-constraint-names";
-import { OnboardingFieldChoicesConstraintName } from "./onboarding-field-choices-constraint-names";
-import { OnboardingFieldTranslationsConstraintName } from "./onboarding-field-translations-constraint-names";
-import { OnboardingFieldsConstraintName } from "./onboarding-fields-constraint-names";
+import { QuestionnaireBlockTranslationsConstraintName } from "./questionnaire-block-translations-constraint-names";
+import { QuestionnaireBlocksConstraintName } from "./questionnaire-blocks-constraint-names";
+import { QuestionnaireChoiceTranslationsConstraintName } from "./questionnaire-choice-translations-constraint-names";
+import { QuestionnaireFieldChoicesConstraintName } from "./questionnaire-field-choices-constraint-names";
+import { QuestionnaireFieldTranslationsConstraintName } from "./questionnaire-field-translations-constraint-names";
+import { QuestionnaireFieldsConstraintName } from "./questionnaire-fields-constraint-names";
 import { OnboardingFormBlocksConstraintName } from "./onboarding-form-blocks-constraint-names";
 import { OnboardingFormServicesConstraintName } from "./onboarding-form-services-constraint-names";
 import { OnboardingFormsConstraintName } from "./onboarding-forms-constraint-names";
 import { OnboardingGroupEntriesConstraintName } from "./onboarding-group-entries-constraint-names";
-import { OnboardingTemplateBlocksConstraintName } from "./onboarding-template-blocks-constraint-names";
-import { OnboardingTemplatesConstraintName } from "./onboarding-templates-constraint-names";
+import { QuestionnaireTemplateBlocksConstraintName } from "./questionnaire-template-blocks-constraint-names";
+import { QuestionnaireTemplatesConstraintName } from "./questionnaire-templates-constraint-names";
 
 vi.mock("server-only", () => ({}));
 
@@ -41,15 +41,24 @@ const migration = readFileSync(
 );
 
 const TABLES: [PgTable, Record<string, string>][] = [
-  [onboardingTemplates, OnboardingTemplatesConstraintName],
+  [questionnaireTemplates, QuestionnaireTemplatesConstraintName],
   [onboardingForms, OnboardingFormsConstraintName],
-  [onboardingBlocks, OnboardingBlocksConstraintName],
-  [onboardingBlockTranslations, OnboardingBlockTranslationsConstraintName],
-  [onboardingFields, OnboardingFieldsConstraintName],
-  [onboardingFieldTranslations, OnboardingFieldTranslationsConstraintName],
-  [onboardingFieldChoices, OnboardingFieldChoicesConstraintName],
-  [onboardingChoiceTranslations, OnboardingChoiceTranslationsConstraintName],
-  [onboardingTemplateBlocks, OnboardingTemplateBlocksConstraintName],
+  [questionnaireBlocks, QuestionnaireBlocksConstraintName],
+  [
+    questionnaireBlockTranslations,
+    QuestionnaireBlockTranslationsConstraintName,
+  ],
+  [questionnaireFields, QuestionnaireFieldsConstraintName],
+  [
+    questionnaireFieldTranslations,
+    QuestionnaireFieldTranslationsConstraintName,
+  ],
+  [questionnaireFieldChoices, QuestionnaireFieldChoicesConstraintName],
+  [
+    questionnaireChoiceTranslations,
+    QuestionnaireChoiceTranslationsConstraintName,
+  ],
+  [questionnaireTemplateBlocks, QuestionnaireTemplateBlocksConstraintName],
   [onboardingFormBlocks, OnboardingFormBlocksConstraintName],
   [onboardingGroupEntries, OnboardingGroupEntriesConstraintName],
   [onboardingAnswers, OnboardingAnswersConstraintName],

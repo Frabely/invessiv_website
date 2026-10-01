@@ -16,10 +16,10 @@ import {
   ONBOARDING_SUBMITTED_STATUS_VALUES,
   OnboardingFormStatus,
 } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
-import { ONBOARDING_LIMITS } from "@invessiv/common/constants/crm/onboarding/onboarding-limits";
+import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
 import { OnboardingFormsConstraintName as N } from "@invessiv/db/constraint-names/crm/onboarding-forms-constraint-names";
 import { sqlCheckIn, sqlLimit } from "@invessiv/db/core";
-import { onboardingTemplates } from "./onboarding-templates";
+import { questionnaireTemplates } from "./questionnaire-templates";
 import { portalMemberships } from "./portal-memberships";
 import { projects } from "./projects";
 import { workspaceMembers } from "./workspace-members";
@@ -71,7 +71,7 @@ export const onboardingForms = pgTable(
     foreignKey({
       name: N.SourceTemplateForeignKey,
       columns: [t.source_template_id],
-      foreignColumns: [onboardingTemplates.id],
+      foreignColumns: [questionnaireTemplates.id],
     }).onDelete("set null"),
     foreignKey({
       name: N.CreatedByForeignKey,
@@ -104,7 +104,7 @@ export const onboardingForms = pgTable(
     check(N.StatusCheck, sqlCheckIn(t.status, ONBOARDING_FORM_STATUS_VALUES)),
     check(
       N.ServicesNoteCheck,
-      sql`length(${t.services_note}) <= ${sqlLimit(ONBOARDING_LIMITS.noteMaxLength)}`,
+      sql`length(${t.services_note}) <= ${sqlLimit(QUESTIONNAIRE_LIMITS.noteMaxLength)}`,
     ),
     check(N.VersionCheck, sql`${t.version} > 0`),
     check(

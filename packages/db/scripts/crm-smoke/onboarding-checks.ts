@@ -8,9 +8,9 @@ import { randomBytes, randomUUID } from "node:crypto";
 
 import type { getDatabaseClient } from "@invessiv/db/core";
 import { OnboardingAnswersConstraintName as A } from "@invessiv/db/constraint-names/crm/onboarding-answers-constraint-names";
-import { OnboardingBlockTranslationsConstraintName as BT } from "@invessiv/db/constraint-names/crm/onboarding-block-translations-constraint-names";
-import { OnboardingBlocksConstraintName as B } from "@invessiv/db/constraint-names/crm/onboarding-blocks-constraint-names";
-import { OnboardingFieldsConstraintName as F } from "@invessiv/db/constraint-names/crm/onboarding-fields-constraint-names";
+import { QuestionnaireBlockTranslationsConstraintName as BT } from "@invessiv/db/constraint-names/crm/questionnaire-block-translations-constraint-names";
+import { QuestionnaireBlocksConstraintName as B } from "@invessiv/db/constraint-names/crm/questionnaire-blocks-constraint-names";
+import { QuestionnaireFieldsConstraintName as F } from "@invessiv/db/constraint-names/crm/questionnaire-fields-constraint-names";
 import { OnboardingFormBlocksConstraintName as FB } from "@invessiv/db/constraint-names/crm/onboarding-form-blocks-constraint-names";
 import { OnboardingFormsConstraintName as O } from "@invessiv/db/constraint-names/crm/onboarding-forms-constraint-names";
 
@@ -158,7 +158,7 @@ export async function runOnboardingChecks(context: OnboardingSmokeContext) {
   ) => {
     const id = randomUUID();
     await sql`
-      INSERT INTO onboarding_blocks (id, owner_form_id, source_block_id, key, carry_over, status, version)
+      INSERT INTO questionnaire_blocks (id, owner_form_id, source_block_id, key, carry_over, status, version)
       VALUES (${id}, ${args.ownerFormId ?? null}, ${args.sourceBlockId ?? null}, ${args.key ?? smokeKey()}, FALSE,
               ${args.status ?? "active"}, 1)
     `;
@@ -167,21 +167,21 @@ export async function runOnboardingChecks(context: OnboardingSmokeContext) {
   await expectRejected(
     "onboarding block without carry_over is rejected",
     () => sql`
-      INSERT INTO onboarding_blocks (id, key, status, version)
+      INSERT INTO questionnaire_blocks (id, key, status, version)
       VALUES (${randomUUID()}, ${smokeKey()}, 'active', 1)
     `,
   );
   await expectRejected(
     "onboarding block without status is rejected",
     () => sql`
-      INSERT INTO onboarding_blocks (id, key, carry_over, version)
+      INSERT INTO questionnaire_blocks (id, key, carry_over, version)
       VALUES (${randomUUID()}, ${smokeKey()}, FALSE, 1)
     `,
   );
   await expectRejected(
     "onboarding block without version is rejected",
     () => sql`
-      INSERT INTO onboarding_blocks (id, key, carry_over, status)
+      INSERT INTO questionnaire_blocks (id, key, carry_over, status)
       VALUES (${randomUUID()}, ${smokeKey()}, FALSE, 'active')
     `,
   );
@@ -214,21 +214,21 @@ export async function runOnboardingChecks(context: OnboardingSmokeContext) {
   });
   await expectAccepted("a form copy may repeat the catalog key", async () => {
     const rows =
-      (await sql`SELECT id FROM onboarding_blocks WHERE id = ${blockId}`) as unknown[];
+      (await sql`SELECT id FROM questionnaire_blocks WHERE id = ${blockId}`) as unknown[];
     if (rows.length !== 1) throw new Error("form copy is missing");
   });
 
   await expectRejected(
     "block translation without title is rejected",
     () => sql`
-      INSERT INTO onboarding_block_translations (block_id, locale)
+      INSERT INTO questionnaire_block_translations (block_id, locale)
       VALUES (${blockId}, 'de')
     `,
   );
   await expectRejected(
     "block translation in an unsupported locale is rejected",
     () => sql`
-      INSERT INTO onboarding_block_translations (block_id, locale, title)
+      INSERT INTO questionnaire_block_translations (block_id, locale, title)
       VALUES (${blockId}, 'fr', 'Entreprise')
     `,
     BT.LocaleCheck,
@@ -236,7 +236,7 @@ export async function runOnboardingChecks(context: OnboardingSmokeContext) {
   await expectAccepted(
     "block translation is accepted",
     () => sql`
-    INSERT INTO onboarding_block_translations (block_id, locale, title, intro)
+    INSERT INTO questionnaire_block_translations (block_id, locale, title, intro)
     VALUES (${blockId}, 'de', 'Unternehmen', NULL)
   `,
   );
@@ -253,7 +253,7 @@ export async function runOnboardingChecks(context: OnboardingSmokeContext) {
   const insertField = async (args: FieldArgs = {}) => {
     const id = randomUUID();
     await sql`
-      INSERT INTO onboarding_fields (id, block_id, parent_field_id, key, position, type, requirement, max_length,
+      INSERT INTO questionnaire_fields (id, block_id, parent_field_id, key, position, type, requirement, max_length,
                                      condition_field_id, condition_choice_id, version)
       VALUES (${id}, ${args.blockId ?? blockId}, ${args.parentFieldId ?? null}, ${smokeKey()}, ${args.position ?? 0},
               ${args.type ?? "short_text"}, 'required', ${args.maxLength ?? null}, ${args.conditionFieldId ?? null},
@@ -268,7 +268,7 @@ export async function runOnboardingChecks(context: OnboardingSmokeContext) {
   ) => {
     const id = randomUUID();
     await sql`
-      INSERT INTO onboarding_field_choices (id, field_id, key, position, version)
+      INSERT INTO questionnaire_field_choices (id, field_id, key, position, version)
       VALUES (${id}, ${fieldId}, ${key}, ${position}, 1)
     `;
     return id;
@@ -276,14 +276,14 @@ export async function runOnboardingChecks(context: OnboardingSmokeContext) {
   await expectRejected(
     "onboarding field without requirement is rejected",
     () => sql`
-      INSERT INTO onboarding_fields (id, block_id, key, position, type, version)
+      INSERT INTO questionnaire_fields (id, block_id, key, position, type, version)
       VALUES (${randomUUID()}, ${blockId}, ${smokeKey()}, 50, 'short_text', 1)
     `,
   );
   await expectRejected(
     "onboarding field without version is rejected",
     () => sql`
-      INSERT INTO onboarding_fields (id, block_id, key, position, type, requirement)
+      INSERT INTO questionnaire_fields (id, block_id, key, position, type, requirement)
       VALUES (${randomUUID()}, ${blockId}, ${smokeKey()}, 50, 'short_text', 'required')
     `,
   );
@@ -338,9 +338,9 @@ export async function runOnboardingChecks(context: OnboardingSmokeContext) {
   await expectAccepted(
     "deleting the trigger choice clears the whole condition",
     async () => {
-      await sql`DELETE FROM onboarding_field_choices WHERE id = ${yesId}`;
+      await sql`DELETE FROM questionnaire_field_choices WHERE id = ${yesId}`;
       const [row] = (await sql`
-        SELECT condition_field_id, condition_choice_id FROM onboarding_fields WHERE id = ${dependentId}
+        SELECT condition_field_id, condition_choice_id FROM questionnaire_fields WHERE id = ${dependentId}
       `) as {
         condition_field_id: string | null;
         condition_choice_id: string | null;
@@ -353,21 +353,21 @@ export async function runOnboardingChecks(context: OnboardingSmokeContext) {
   await expectRejected(
     "field translation without label is rejected",
     () => sql`
-      INSERT INTO onboarding_field_translations (field_id, locale)
+      INSERT INTO questionnaire_field_translations (field_id, locale)
       VALUES (${triggerId}, 'de')
     `,
   );
   await expectRejected(
     "field choice without version is rejected",
     () => sql`
-      INSERT INTO onboarding_field_choices (id, field_id, key, position)
+      INSERT INTO questionnaire_field_choices (id, field_id, key, position)
       VALUES (${randomUUID()}, ${triggerId}, 'maybe', 9)
     `,
   );
   await expectRejected(
     "choice translation without label is rejected",
     () => sql`
-      INSERT INTO onboarding_choice_translations (choice_id, locale)
+      INSERT INTO questionnaire_choice_translations (choice_id, locale)
       VALUES (${noId}, 'de')
     `,
   );
@@ -376,35 +376,35 @@ export async function runOnboardingChecks(context: OnboardingSmokeContext) {
   await expectRejected(
     "onboarding template without status is rejected",
     () => sql`
-      INSERT INTO onboarding_templates (id, title, version)
+      INSERT INTO questionnaire_templates (id, title, version)
       VALUES (${randomUUID()}, ${name("Template")}, 1)
     `,
   );
   await expectRejected(
     "onboarding template without version is rejected",
     () => sql`
-      INSERT INTO onboarding_templates (id, title, status)
+      INSERT INTO questionnaire_templates (id, title, status)
       VALUES (${randomUUID()}, ${name("Template")}, 'active')
     `,
   );
   await sql`
-    INSERT INTO onboarding_templates (id, title, status, version)
+    INSERT INTO questionnaire_templates (id, title, status, version)
     VALUES (${templateId}, ${name("Template")}, 'active', 1)
   `;
   await expectRejected(
     "template block without position is rejected",
     () => sql`
-      INSERT INTO onboarding_template_blocks (template_id, block_id)
+      INSERT INTO questionnaire_template_blocks (template_id, block_id)
       VALUES (${templateId}, ${catalogBlockId})
     `,
   );
   await sql`
-    INSERT INTO onboarding_template_blocks (template_id, block_id, position)
+    INSERT INTO questionnaire_template_blocks (template_id, block_id, position)
     VALUES (${templateId}, ${catalogBlockId}, 0)
   `;
   await expectRejected(
     "a catalog block in use by a template cannot be deleted",
-    () => sql`DELETE FROM onboarding_blocks WHERE id = ${catalogBlockId}`,
+    () => sql`DELETE FROM questionnaire_blocks WHERE id = ${catalogBlockId}`,
   );
 
   type FormBlockArgs = {
@@ -592,11 +592,11 @@ export async function runOnboardingChecks(context: OnboardingSmokeContext) {
 }
 
 /** Runs before the customer cleanup, whose project cascade removes forms and their own blocks. */
-export async function cleanupOnboardingFixtures(sql: Sql, pattern: string) {
+export async function cleanupQuestionnaireFixtures(sql: Sql, pattern: string) {
   const keyPattern = `${ONBOARDING_SMOKE_KEY_PREFIX.replace(/_/g, "\\_")}%`;
-  await sql`DELETE FROM onboarding_templates WHERE title LIKE ${pattern}`;
+  await sql`DELETE FROM questionnaire_templates WHERE title LIKE ${pattern}`;
   await sql`
-    DELETE FROM onboarding_blocks
+    DELETE FROM questionnaire_blocks
     WHERE owner_form_id IS NULL AND key LIKE ${keyPattern}
   `;
 }
