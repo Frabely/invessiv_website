@@ -211,15 +211,19 @@ async function listCatalogBlocks(
   return questionnaireMappingService.toBlockDtos(rows);
 }
 
-/** Catalog keys are unique; blocks of forms keep the key of their origin and do not count. */
-async function isCatalogKeyTaken(
+/**
+ * Block keys are unique within one owner: across the catalog, or across the blocks of one form.
+ * A form's copy keeps the key of its origin, so it never collides with the catalog.
+ */
+async function isBlockKeyTaken(
   executor: QuestionnaireReadExecutor,
+  owner: QuestionnaireBlockOwner,
   key: string,
 ): Promise<boolean> {
   const [row] = await executor
     .select({ id: questionnaireBlocks.id })
     .from(questionnaireBlocks)
-    .where(and(eq(questionnaireBlocks.key, key), ownerCondition(null)))
+    .where(and(eq(questionnaireBlocks.key, key), ownerCondition(owner)))
     .limit(1);
   return row !== undefined;
 }
@@ -258,7 +262,7 @@ export const questionnaireDefinitionReadService = {
   findBlocks,
   findFieldBlockId,
   hasCatalogBlocks,
-  isCatalogKeyTaken,
+  isBlockKeyTaken,
   listCatalogBlocks,
   ownerCondition,
 } as const;

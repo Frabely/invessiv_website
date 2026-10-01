@@ -11,6 +11,7 @@ import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/quest
 import type { QuestionnaireChoiceDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-choice.dto";
 import type { QuestionnaireFieldDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-field.dto";
 import type { QuestionnaireCommandResult } from "@invessiv/common/contracts/crm/questionnaire/results/questionnaire-command-result";
+import type { CreateQuestionnaireBlockRequestDto } from "@invessiv/common/contracts/crm/questionnaire/create-questionnaire-block-request.dto";
 import type { UpdateQuestionnaireBlockRequestDto } from "@invessiv/common/contracts/crm/questionnaire/update-questionnaire-block-request.dto";
 import type { QuestionnaireFieldInputDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-field-input.dto";
 import { moveListItem } from "@invessiv/common/patterns/collections/ordered-list";
@@ -313,6 +314,61 @@ function invalid(
   return { ok: false, code };
 }
 
+/** An empty, active block of `owner`; its fields are added afterwards. */
+async function createBlock(
+  tx: ContactDatabaseTransaction,
+  owner: QuestionnaireBlockOwner,
+  input: CreateQuestionnaireBlockRequestDto,
+): Promise<BlockResult> {
+  const texts = Object.entries(input.translations);
+  if (texts.length === 0)
+    return invalid(QuestionnaireErrorCode.TranslationRequired);
+  if (await readService.isBlockKeyTaken(tx, owner, input.key))
+    return invalid(QuestionnaireErrorCode.KeyTaken);
+
+  const id = crypto.randomUUID();
+  await tx.insert(questionnaireBlocks).values({
+    id,
+    owner_form_id: owner,
+    source_block_id: null,
+    key: input.key,
+    carry_over: input.carryOver,
+    status: QuestionnaireCatalogStatus.Active,
+    version: 1,
+  });
+  await tx.insert(questionnaireBlockTranslations).values(
+    texts.map(([locale, text]) => ({
+      block_id: id,
+      locale: locale as Locale,
+      title: text.title,
+      intro: text.intro,
+    })),
+  );
+  return { ok: true, value: (await readService.findBlock(tx, id, owner))! };
+}
+
+/**
+ * Removes a block of `owner` for good and answers with it as it was. A block that a template
+ * still lists answers `BLOCK_IN_USE`; only catalog blocks can be listed, so that never applies to
+ * the blocks of a form.
+ */
+async function deleteBlock(
+  tx: ContactDatabaseTransaction,
+  owner: QuestionnaireBlockOwner,
+  blockId: string,
+  expectedVersion: number,
+): Promise<BlockResult> {
+  const opened = await openBlock(tx, blockId, owner, expectedVersion);
+  if (!opened.ok) return opened.result;
+  if ((await readService.countTemplateUsage(tx, [blockId])).has(blockId))
+    return { ok: false, code: QuestionnaireErrorCode.BlockInUse };
+
+  await tx
+    .delete(questionnaireBlocks)
+    .where(eq(questionnaireBlocks.id, blockId));
+  return { ok: true, value: opened.block };
+}
+
 /** Blocks of a form are never archived, so their status is not taken from the request. */
 async function updateBlock(
   tx: ContactDatabaseTransaction,
@@ -323,9 +379,8 @@ async function updateBlock(
   const opened = await openBlock(tx, blockId, owner, input.version);
   if (!opened.ok) return opened.result;
   if (
-    owner === null &&
     input.key !== opened.block.key &&
-    (await readService.isCatalogKeyTaken(tx, input.key))
+    (await readService.isBlockKeyTaken(tx, owner, input.key))
   )
     return invalid(QuestionnaireErrorCode.KeyTaken);
   const next = { ...opened.block, translations: input.translations };
@@ -551,7 +606,9 @@ async function moveField(
 
 export const questionnaireDefinitionWriteService = {
   blockConflict,
+  createBlock,
   createField,
+  deleteBlock,
   deleteField,
   lockBlock,
   moveField,

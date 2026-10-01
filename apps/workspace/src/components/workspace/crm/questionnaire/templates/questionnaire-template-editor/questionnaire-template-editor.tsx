@@ -29,8 +29,8 @@ import { QuestionnaireFormValidationCode } from "@/common/constants/crm/question
 import type { CrmQuestionnaireDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { crmQuestionnaireBlockPathFor } from "@/lib/auth/routes";
 import { QuestionnaireCatalogStatusBadge } from "../../catalog/questionnaire-catalog-status-badge/questionnaire-catalog-status-badge";
-import { QuestionnaireBlockPickerDialog } from "../questionnaire-block-picker-dialog/questionnaire-block-picker-dialog";
-import { OrderedBlockListEditor } from "../ordered-block-list-editor/ordered-block-list-editor";
+import { QuestionnaireBlockPickerDialog } from "../../block-list/questionnaire-block-picker-dialog/questionnaire-block-picker-dialog";
+import { OrderedBlockListEditor } from "../../block-list/ordered-block-list-editor/ordered-block-list-editor";
 import styles from "./questionnaire-template-editor.module.css";
 
 export type QuestionnaireTemplateEditorProps = {

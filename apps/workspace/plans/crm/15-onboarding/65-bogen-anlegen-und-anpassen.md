@@ -116,6 +116,29 @@ apps/workspace/src/app/[locale]/(app)/crm/onboarding/[formId]/page.tsx
 - Dictionary: `src/i18n/dictionaries/workspace/crm/onboarding/{de,en}.json` erweitert um `project`, `form`,
   `structure`.
 
+## Was aus Task 64 fertig bereitliegt (Stand 01.10.2026)
+
+Damit Task 65 nur noch den Bogen-Rahmen baut und keine Logik des Baukastens wiederholt:
+
+| Bereich                      | Fertig und owner-neutral                                                                                                                                                                                                             | Task 65 ergänzt nur                                                                                                                                                    |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Server, Bausteine und Felder | `questionnaireDefinitionWriteService`: `createBlock`, `updateBlock`, `deleteBlock`, `createField`, `updateField`, `deleteField`, `moveField`, jeweils mit Owner; `questionnaireBlockCopyService.copyBlock` für Kopien in einen Bogen | dünne Bogen-Handler: Bogen mit Zugriffsbedingung laden, Status prüfen (`ONBOARDING_NOT_EDITABLE`), Service mit der Bogen-ID aufrufen                                   |
+| Server, Lesen                | `questionnaireDefinitionReadService.findBlock/findBlocks(…, owner)`, `isBlockKeyTaken(…, owner, key)`                                                                                                                                | `onboarding-form-read-service` (Eingaben für die Vollständigkeit)                                                                                                      |
+| Server, Reihenfolge          | Feldreihenfolge im Service                                                                                                                                                                                                           | Reihenfolge der Bogenblöcke (`onboarding_form_blocks.position`): eigene Operation, die `moveListItem` und das aufgeschobene Positions-Constraint wie `moveField` nutzt |
+| Client                       | `questionnaireDefinitionApiService.forEndpoints(paths)` baut `QuestionnaireDefinitionClientApi` aus den Pfaden des Owners                                                                                                            | `onboarding-form-api-service.ts`: die Pfade des Bogens plus Blocklisten-Operationen (Block hinzufügen, entfernen, verschieben)                                         |
+| UI                           | `questionnaire-block-editor`, `questionnaire-block-head-form`, `block-list/ordered-block-list-editor`, `block-list/questionnaire-block-picker-dialog` (Texte über Props)                                                             | Rahmen: Seite, Tabs, Statushinweis `readOnly`, Löschdialog mit Nutzungszahlen, eigene Dictionary-Texte für Liste und Auswahl                                           |
+
+Offene Punkte für Task 65:
+
+- **Schlüssel im Bogen:** `isBlockKeyTaken` prüft im Bogen nur im Code; die Datenbank erzwingt es nur für den Katalog
+  (`questionnaire_blocks_catalog_key_uidx`). Wird derselbe Katalogbaustein zweimal hinzugefügt, entstehen zwei
+  Blöcke mit gleichem Schlüssel. Entweder die Auswahl blendet bereits enthaltene Bausteine aus (wie bei Vorlagen) oder
+  `0047` bekommt einen Unique-Index `(owner_form_id, key) WHERE owner_form_id IS NOT NULL`; Entscheidung dort treffen.
+- **Fehlercode `ONBOARDING_NOT_EDITABLE`:** Der geteilte Client (`QuestionnaireClientResult`) kennt nur
+  `QuestionnaireErrorCode`; ein unbekannter Code wird zu `INTERNAL`. Der Editor ist im gesperrten Status `readOnly`,
+  der Fall bleibt also ein Wettlauf. Soll er einen eigenen Text bekommen, den Code-Typ des Clients erweitern, nicht
+  den Editor verzweigen.
+
 ## Tickets
 
 ### CRM-65-T1 — Anlegen, Kopieren, Vorbefüllen

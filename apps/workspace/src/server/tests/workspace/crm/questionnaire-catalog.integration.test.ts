@@ -32,6 +32,7 @@ import { updateQuestionnaireTemplate } from "@/server/workspace/crm/command-hand
 import { listQuestionnaireBlocks } from "@/server/workspace/crm/query-handler/list-questionnaire-blocks.query-handler";
 import { questionnaireBlockCopyService } from "@/server/workspace/crm/services/questionnaire/questionnaire-block-copy-service";
 import { questionnaireDefinitionReadService } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-read-service";
+import { questionnaireDefinitionWriteService } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-write-service";
 import { createFileTestFixture } from "../../shared/files/file-test-fixture";
 
 vi.mock("server-only", () => ({}));
@@ -640,6 +641,96 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
           f.database(),
           unused.id,
           null,
+        ),
+      ).toBeNull();
+    });
+
+    it("creates, renames and removes a block that belongs to a form", async () => {
+      const owner = await form();
+      const database = f.database();
+      const key = nextKey();
+      const created = value(
+        await database.transaction((tx) =>
+          questionnaireDefinitionWriteService.createBlock(tx, owner, {
+            key,
+            carryOver: false,
+            translations: { de: { title: "Eigener Baustein", intro: null } },
+          }),
+        ),
+      );
+      expect(created).toMatchObject({ key, sourceBlockId: null });
+
+      // Only its own form sees it; the catalog does not, and its key counts only inside the form.
+      expect(
+        await questionnaireDefinitionReadService.findBlock(
+          database,
+          created.id,
+          null,
+        ),
+      ).toBeNull();
+      expect(
+        await questionnaireDefinitionReadService.isBlockKeyTaken(
+          database,
+          null,
+          key,
+        ),
+      ).toBe(false);
+      expect(
+        await database.transaction((tx) =>
+          questionnaireDefinitionWriteService.createBlock(tx, owner, {
+            key,
+            carryOver: false,
+            translations: { de: { title: "Doppelt", intro: null } },
+          }),
+        ),
+      ).toEqual({ ok: false, code: QuestionnaireErrorCode.KeyTaken });
+
+      const renamed = value(
+        await database.transaction((tx) =>
+          questionnaireDefinitionWriteService.updateBlock(
+            tx,
+            owner,
+            created.id,
+            {
+              key,
+              carryOver: true,
+              status: QuestionnaireCatalogStatus.Archived,
+              translations: { de: { title: "Umbenannt", intro: null } },
+              version: created.version,
+            },
+          ),
+        ),
+      );
+      expect(renamed.status).toBe(QuestionnaireCatalogStatus.Active);
+
+      expect(
+        await database.transaction((tx) =>
+          questionnaireDefinitionWriteService.deleteBlock(
+            tx,
+            owner,
+            created.id,
+            created.version,
+          ),
+        ),
+      ).toMatchObject({
+        ok: false,
+        code: ConcurrencyErrorCode.VersionConflict,
+      });
+      value(
+        await database.transaction((tx) =>
+          questionnaireDefinitionWriteService.deleteBlock(
+            tx,
+            owner,
+            created.id,
+            renamed.version,
+          ),
+        ),
+      );
+      expect(
+        await questionnaireDefinitionReadService.findBlock(
+          database,
+          created.id,
+          owner,
         ),
       ).toBeNull();
     });

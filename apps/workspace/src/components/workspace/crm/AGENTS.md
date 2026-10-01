@@ -190,11 +190,14 @@ Plan: `apps/workspace/plans/crm/15-onboarding/64-baustein-katalog-und-vorlagen.m
   Projektbezug) und kein Bezeichner mit `onboarding`; die lebt in eigenen `onboarding`-Ordnern und bindet den
   Baukasten ein.
 - Komponenten unter `questionnaire/`: `catalog/` (Seite, Listen, Anlege-Dialoge, Katalog-Hülle der Baustein-Seite),
-  `editor/` (owner-neutraler Block-Editor), `templates/` (Vorlagen-Editor, generischer `ordered-block-list-editor`,
-  Baustein-Auswahl).
+  `editor/` (owner-neutraler Block-Editor), `block-list/` (geordnete Blockliste und Baustein-Auswahl: Vorlagen
+  und Bögen nutzen beide, Texte kommen über Props), `templates/` (Vorlagen-Editor).
 - **`editor/**` importiert nichts aus `catalog/` und nichts aus `src/client/`** (Test in
   `questionnaire-block-editor.test.tsx`). Schreibzugriffe kommen als `QuestionnaireDefinitionClientApi` über die Props;
   Task 65 injiziert die Bogen-Implementierung und nutzt den Editor unverändert.
+- **Die Schreibzugriffe des Editors baut `questionnaireDefinitionApiService.forEndpoints(...)`** (`src/client/crm/`)
+  aus den Pfaden des Owners. Katalog und Bogen übergeben nur ihre Pfade (`QuestionnaireDefinitionEndpoints`); Anfragen,
+  Antwortprüfung und Konfliktbehandlung gibt es einmal. Ein Bogen schreibt keinen eigenen Client für dieselben Aufrufe.
 - Feld-Dialog, Löschbestätigung und Seiten-Dialoge leben in der URL (`QuestionnaireEditorQueryParam`), die
   Baustein-Auswahl des Vorlagen-Editors als Teil des ungespeicherten Entwurfs in React-State.
 - Formularwerte ↔ Request nur über `common/patterns/crm/questionnaire/questionnaire-field-form.ts`, Strukturfragen

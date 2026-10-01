@@ -31,8 +31,9 @@ export async function duplicateQuestionnaireBlock(
     if (!source)
       return { ok: false, code: QuestionnaireErrorCode.BlockNotFound };
     if (
-      await questionnaireDefinitionReadService.isCatalogKeyTaken(
+      await questionnaireDefinitionReadService.isBlockKeyTaken(
         tx,
+        null,
         parsed.data.key,
       )
     )

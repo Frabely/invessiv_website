@@ -140,6 +140,12 @@ Plan: `apps/workspace/plans/crm/15-onboarding/64-baustein-katalog-und-vorlagen.m
 - Services unter `services/questionnaire/`. **Owner-neutral:** `questionnaireDefinitionWriteService` und
   `questionnaireDefinitionReadService` nehmen einen `QuestionnaireBlockOwner` (`null` = Katalog, sonst Bogen-ID) und filtern
   ihn in der `WHERE`-Klausel; ein Block oder Feld eines anderen Owners verhält sich wie nicht vorhanden (404).
+- **Alle Schreibwege an Bausteinen und Feldern sind im Service, nicht in den Handlern.**
+  `questionnaireDefinitionWriteService` kennt `createBlock`, `updateBlock`, `deleteBlock` und die Feldoperationen, jeweils
+  mit dem `QuestionnaireBlockOwner`. Ein Handler parst, ruft den Service mit seinem Owner auf und gibt das Ergebnis
+  zurück. Schlüssel sind je Owner eindeutig (`isBlockKeyTaken`): im Katalog global, im Bogen innerhalb des Bogens.
+  Die Bogen-Handler aus Task 65 rufen dieselben Methoden mit der Bogen-ID auf und ergänzen nur ihre Zugriffs- und
+  Statusprüfung; eine zweite Fassung der Logik gibt es nicht.
 - **Jeder Schreibweg an einem Block** sperrt die Blockzeile, vergleicht die Blockversion unter der Sperre und erhöht sie
   über `updateLockedVersioned`. Antwort ist immer der ganze Block (`QuestionnaireCommandResult<QuestionnaireBlockDto>`).
 - **Invarianten ausschließlich über `questionnaireDefinitionValidation.validateBlock`** auf dem Block nach der Änderung;
