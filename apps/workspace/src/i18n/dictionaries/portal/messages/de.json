@@ -42,7 +42,8 @@
     "feedbackRoundDiscussionRequested": "Wir möchten Feedbackrunde {roundNumber} für „{projectTitle}“ kurz mit dir besprechen.",
     "feedbackRoundReturned": "Feedbackrunde {roundNumber} für „{projectTitle}“ ist wieder offen. Du kannst sie ergänzen.",
     "feedbackRoundCompleted": "Feedbackrunde {roundNumber} für „{projectTitle}“ ist umgesetzt. Die Ergebnisse findest du auf der Feedbackseite.",
-    "feedbackApproved": "„{projectTitle}“ ist in Feedbackrunde {roundNumber} freigegeben. Danke für dein Feedback."
+    "feedbackApproved": "„{projectTitle}“ ist in Feedbackrunde {roundNumber} freigegeben. Danke für dein Feedback.",
+    "onboardingSubmitted": "Dein Onboarding für „{projectTitle}“ ist abgesendet. Wir prüfen deine Angaben und melden uns."
   },
   "phases": {
     "onboarding": "Onboarding",

@@ -81,3 +81,11 @@
   font-weight: 600;
   overflow-wrap: anywhere;
 }
+
+/*
+ * The tab row scrolls sideways, so as a direct grid item it has no automatic minimum height: once a
+ * tab is taller than the page, the grid squeezes the row to nothing. A plain wrapper keeps it.
+ */
+.tabs {
+  min-width: 0;
+}

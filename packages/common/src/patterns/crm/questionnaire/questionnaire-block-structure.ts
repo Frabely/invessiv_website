@@ -2,10 +2,10 @@ import { QUESTIONNAIRE_CONDITION_TRIGGER_TYPE_VALUES } from "../../../constants/
 import type { QuestionnaireBlockDto } from "../../../contracts/crm/questionnaire/questionnaire-block.dto";
 import type { QuestionnaireFieldDto } from "../../../contracts/crm/questionnaire/questionnaire-field.dto";
 
-/** Block-level fields and group sub-fields in display order. */
-export function flattenQuestionnaireFields(
-  fields: readonly QuestionnaireFieldDto[],
-): QuestionnaireFieldDto[] {
+/** Block-level fields and group sub-fields in display order; works on any field shape with children. */
+export function flattenQuestionnaireFields<
+  TField extends { children: readonly TField[] },
+>(fields: readonly TField[]): TField[] {
   return fields.flatMap((field) => [field, ...field.children]);
 }
 

@@ -157,3 +157,40 @@
 .step[data-variant="accent"] .check {
   color: var(--color-accent-warm);
 }
+
+/*
+ * Steps with their own progress: the fill says how far the step is, the outline which one is open.
+ * A step that was skipped stays empty even when it lies before the current one.
+ */
+.step[data-progress] .segment {
+  background: var(--color-surface-2);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.step[data-progress] .segment::after {
+  position: absolute;
+  inset: 0 100% 0 0;
+  background: var(--color-cta);
+  content: "";
+}
+
+.step[data-progress="partial"] .segment::after {
+  inset: 0 50% 0 0;
+}
+
+.step[data-progress="complete"] .segment::after {
+  inset: 0;
+}
+
+.step[data-progress][data-state="current"] .segment {
+  box-shadow: inset 0 0 0 1px var(--color-cta);
+}
+
+/* The label follows the progress as well: a passed but unfinished step stays quiet. */
+.step[data-progress]:not([data-state="current"]) {
+  color: var(--color-text-muted);
+}
+
+.step[data-progress="complete"]:not([data-state="current"]) {
+  color: var(--color-text);
+}

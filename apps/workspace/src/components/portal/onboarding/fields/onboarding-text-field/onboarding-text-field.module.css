@@ -1,0 +1,10 @@
+.help {
+  display: block;
+  max-width: 62ch;
+  white-space: pre-line;
+}
+
+.counter {
+  display: block;
+  font-variant-numeric: tabular-nums;
+}

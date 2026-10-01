@@ -38,7 +38,8 @@
     "feedbackRoundDiscussionRequested": "A call was requested for feedback round {roundNumber} of “{projectTitle}”.",
     "feedbackRoundReturned": "Feedback round {roundNumber} for “{projectTitle}” went back to the customer for additions.",
     "feedbackRoundCompleted": "Feedback round {roundNumber} for “{projectTitle}” is completed.",
-    "feedbackApproved": "The customer approved “{projectTitle}” in feedback round {roundNumber}."
+    "feedbackApproved": "The customer approved “{projectTitle}” in feedback round {roundNumber}.",
+    "onboardingSubmitted": "The customer submitted the onboarding for “{projectTitle}”."
   },
   "dock": {
     "unread": "{count} unread"

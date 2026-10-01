@@ -3,6 +3,7 @@ import { ConversationApiPath } from "@/common/constants/crm/conversation-api-pat
 import { ProjectApiPath } from "@/common/constants/crm/project-api-paths";
 import { FeedbackApiPath } from "@/common/constants/feedback/feedback-api-paths";
 import { FileApiPath } from "@/common/constants/files/file-api-paths";
+import { PortalOnboardingApiPath } from "@/common/constants/portal/portal-onboarding-api-paths";
 
 const TASKS_PATH = "tasks";
 const TASK_COMPLETE_PATH = "complete";
@@ -121,4 +122,22 @@ export function portalFeedbackItemFileEndpoint(
   fileId: string,
 ): string {
   return `${portalFeedbackItemFilesEndpoint(customerId, roundId, itemId)}/${encodeURIComponent(fileId)}`;
+}
+
+function portalOnboardingFormEndpoint(customerId: string, formId: string) {
+  return `${WorkspaceApiEndpoint.Portal}/${encodeURIComponent(customerId)}/${PortalOnboardingApiPath.Onboarding}/${encodeURIComponent(formId)}`;
+}
+
+export function portalOnboardingAnswersEndpoint(
+  customerId: string,
+  formId: string,
+): string {
+  return `${portalOnboardingFormEndpoint(customerId, formId)}/${PortalOnboardingApiPath.Answers}`;
+}
+
+export function portalOnboardingSubmitEndpoint(
+  customerId: string,
+  formId: string,
+): string {
+  return `${portalOnboardingFormEndpoint(customerId, formId)}/${PortalOnboardingApiPath.Submit}`;
 }

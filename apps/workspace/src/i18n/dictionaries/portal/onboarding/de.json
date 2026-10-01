@@ -1,0 +1,129 @@
+{
+  "meta": {
+    "title": "Onboarding | Invessiv",
+    "description": "Gib uns alles, was wir für dein Projekt brauchen – in deinem Tempo, Schritt für Schritt."
+  },
+  "page": {
+    "heading": "Onboarding für {project}",
+    "back": "Zurück zum Überblick",
+    "ownerHint": "In der Portalansicht kannst du das Onboarding nur lesen.",
+    "ownerLink": "Im CRM ansehen",
+    "readOnlyHint": "Du kannst das Onboarding lesen, aber nicht ausfüllen. Frag die Person, die bei euch das Projekt betreut."
+  },
+  "overview": {
+    "heading": "Onboarding",
+    "intro": "Hier sammeln wir alles, was wir für dein Projekt brauchen. Du musst nicht alles auf einmal ausfüllen: Jede Angabe wird sofort gespeichert.",
+    "listLabel": "Deine Onboardings",
+    "continue": "Weiter ausfüllen",
+    "view": "Ansehen",
+    "empty": {
+      "title": "Noch kein Onboarding für dich",
+      "description": "Sobald wir ein Projekt mit dir starten, findest du hier den Fragebogen dazu: Texte, Bilder, Ansprechpersonen und alles Weitere an einem Ort."
+    }
+  },
+  "status": {
+    "draft": "In Vorbereitung",
+    "open": "Offen",
+    "submitted": "Abgesendet",
+    "changes_requested": "Rückfrage",
+    "completed": "Abgeschlossen"
+  },
+  "progress": {
+    "label": "{answered} von {total} Pflichtangaben",
+    "none": "Keine Pflichtangaben",
+    "barLabel": "Fortschritt"
+  },
+  "steps": {
+    "label": "Schritte des Onboardings",
+    "review": "Prüfen & absenden",
+    "next": "Weiter",
+    "back": "Zurück"
+  },
+  "block": {
+    "fallback": "Dieser Abschnitt ist nur auf {language} verfügbar.",
+    "prefilled": "Aus deinem letzten Onboarding übernommen. Bitte prüf, ob noch alles stimmt.",
+    "reviewNote": "Unsere Rückfrage",
+    "locked": "Diesen Abschnitt kannst du gerade nicht ändern.",
+    "empty": "In diesem Abschnitt gibt es nichts auszufüllen."
+  },
+  "field": {
+    "clearChoice": "Auswahl entfernen",
+    "maxChoices": "Höchstens {max} auswählbar",
+    "characters": "{count} von {max} Zeichen",
+    "errors": {
+      "empty": "Bitte füll dieses Feld aus.",
+      "too_long": "Der Text ist zu lang. Kürz ihn bitte etwas.",
+      "invalid_email": "Das sieht nicht nach einer E-Mail-Adresse aus.",
+      "invalid_phone": "Das sieht nicht nach einer Telefonnummer aus.",
+      "invalid_url": "Der Link muss mit http:// oder https:// beginnen.",
+      "invalid_color": "Bitte gib die Farbe als Hex-Wert an, zum Beispiel #1A2B3C.",
+      "invalid_scale": "Bitte wähl eine Stufe aus.",
+      "not_confirmed": "Bitte bestätig diesen Punkt.",
+      "not_a_value_field": "Dieses Feld kann hier nicht ausgefüllt werden."
+    }
+  },
+  "draft": {
+    "saving": "Wird gespeichert …",
+    "saved": "Gespeichert · {time}",
+    "unsaved": "Noch nicht gespeichert",
+    "failed": "Nicht gespeichert.",
+    "retry": "Erneut versuchen",
+    "editedBy": "zuletzt bearbeitet von {name}",
+    "justNow": "gerade eben",
+    "minutesAgo": "vor {count} Min.",
+    "at": "am {date}",
+    "leaveWarning": "Deine letzten Angaben sind noch nicht gespeichert. Möchtest du die Seite wirklich verlassen?"
+  },
+  "submit": {
+    "heading": "Prüfen & absenden",
+    "intro": "Schau noch einmal drüber. Mit dem Absenden bekommen wir alle Angaben und legen los.",
+    "complete": "Alle Pflichtangaben sind da. Du kannst absenden.",
+    "missingHeading": "Diese Pflichtangaben fehlen noch",
+    "missingItem": "{field} in „{block}“",
+    "invalid": "Mindestens ein Feld enthält eine Angabe, die wir so nicht speichern können. Bitte korrigier sie vor dem Absenden.",
+    "notSaved": "Wir konnten nicht alles speichern. Versuch es noch einmal, bevor du absendest.",
+    "lockNotice": "Nach dem Absenden kannst du deine Angaben nicht mehr ändern. Fehlt später noch etwas, melden wir uns bei dir.",
+    "action": "Onboarding absenden"
+  },
+  "submitDialog": {
+    "title": "Onboarding absenden?",
+    "description": "Wir bekommen alle Angaben auf einmal. Danach kannst du nichts mehr ändern.",
+    "confirm": "Jetzt absenden",
+    "cancel": "Noch nicht",
+    "close": "Schließen"
+  },
+  "states": {
+    "submitted": {
+      "title": "Abgesendet am {date}",
+      "by": "von {name}",
+      "description": "Danke dir. Wir prüfen deine Angaben und melden uns."
+    },
+    "changes_requested": {
+      "title": "Wir haben noch Fragen",
+      "description": "Schau dir unsere Rückfragen an. Sobald du sie beantworten kannst, sagen wir dir Bescheid."
+    },
+    "completed": {
+      "title": "Onboarding abgeschlossen",
+      "description": "Alles da. Deine Angaben bleiben hier zum Nachlesen."
+    }
+  },
+  "read": {
+    "heading": "Deine Angaben",
+    "unanswered": "Nicht beantwortet",
+    "empty": "Keine Angabe",
+    "required": "Pflichtangabe"
+  },
+  "announcements": {
+    "submitted": "Onboarding abgesendet.",
+    "step": "Schritt {number} von {total}: {title}"
+  },
+  "errors": {
+    "not_found": "Dieses Onboarding gibt es nicht mehr. Lade die Seite neu.",
+    "locked": "Das Onboarding hat sich gerade geändert. Du siehst jetzt den aktuellen Stand.",
+    "validation": "Diese Angabe können wir so nicht speichern. Bitte prüf sie noch einmal.",
+    "required_missing": "Es fehlen noch Pflichtangaben. Du siehst jetzt, welche.",
+    "limit_reached": "Hier passen keine weiteren Einträge.",
+    "not_attachable": "Diese Datei lässt sich hier nicht anhängen.",
+    "unavailable": "Das hat gerade nicht geklappt. Versuch es gleich noch einmal."
+  }
+}

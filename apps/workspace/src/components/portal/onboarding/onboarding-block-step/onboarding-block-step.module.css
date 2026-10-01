@@ -1,0 +1,71 @@
+.step {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-heading-lg);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+/* The heading takes the focus after a step change; it is no control, so it shows no ring. */
+.title:focus {
+  outline: none;
+}
+
+.intro {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.note {
+  max-width: 62ch;
+  margin: 0;
+  padding-left: 0.85rem;
+  border-left: 2px solid var(--color-border-strong);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+.review {
+  display: grid;
+  gap: 0.2rem;
+  max-width: 62ch;
+  padding: 0.9rem 1rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 45%, transparent);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--color-accent-warm) 8%, transparent);
+}
+
+.reviewLabel {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 600;
+}
+
+.reviewNote {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+/* Generous air between questions: this form is filled in over days, not scanned. */
+.fields {
+  display: grid;
+  gap: 1.35rem;
+  padding-top: 0.5rem;
+}

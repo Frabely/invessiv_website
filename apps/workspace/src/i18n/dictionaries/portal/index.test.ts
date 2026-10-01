@@ -12,6 +12,8 @@ import messagesDe from "./messages/de.json";
 import messagesEn from "./messages/en.json";
 import metaDe from "./meta/de.json";
 import metaEn from "./meta/en.json";
+import onboardingDe from "./onboarding/de.json";
+import onboardingEn from "./onboarding/en.json";
 import pickerDe from "./picker/de.json";
 import pickerEn from "./picker/en.json";
 import shellDe from "./shell/de.json";
@@ -30,6 +32,7 @@ describe("portal dictionaries", () => {
     ["dashboard", dashboardDe, dashboardEn],
     ["files", filesDe, filesEn],
     ["feedback", feedbackDe, feedbackEn],
+    ["onboarding", onboardingDe, onboardingEn],
     ["invitation", invitationDe, invitationEn],
     ["messages", messagesDe, messagesEn],
     ["meta", metaDe, metaEn],
@@ -43,6 +46,7 @@ describe("portal dictionaries", () => {
     ["dashboard", dashboardDe, dashboardEn],
     ["files", filesDe, filesEn],
     ["feedback", feedbackDe, feedbackEn],
+    ["onboarding", onboardingDe, onboardingEn],
     ["shell", shellDe, shellEn],
   ])("%s has no empty texts", (_name, de, en) => {
     for (const text of [JSON.stringify(de), JSON.stringify(en)]) {

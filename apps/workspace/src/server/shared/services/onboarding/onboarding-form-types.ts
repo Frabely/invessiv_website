@@ -1,3 +1,4 @@
+import type { ActivityActor } from "@invessiv/common/contracts/activity/activity-actor";
 import type { OnboardingFormServiceDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form-service.dto";
 import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block.dto";
 import type {
@@ -27,6 +28,33 @@ export type OnboardingServiceSource = Pick<
   OnboardingFormServiceDto,
   "projectLineItemId" | "title" | "description"
 >;
+
+/** One slot of a form: a field on block level, or a sub-field within one group entry. */
+export type OnboardingAnswerSlot = {
+  formId: string;
+  fieldId: string;
+  groupEntryId: string | null;
+};
+
+/** What a slot holds: text values or selected options, never both. Empty means no answer. */
+export type OnboardingSlotContent =
+  { values: readonly string[] } | { choiceIds: readonly string[] };
+
+export type OnboardingSlotWrite = {
+  slot: OnboardingAnswerSlot;
+  content: OnboardingSlotContent;
+};
+
+/** Who wrote an answer: a contact in the portal, or a member through the pre-fill. */
+export type OnboardingAnswerAuthor =
+  { portalMembershipId: string } | { memberId: string };
+
+/** A status change the customer triggers, with what its activity and chat notice need. */
+export type OnboardingCustomerTransition = {
+  actor: ActivityActor;
+  portalMembershipId: string;
+  projectTitle: string;
+};
 
 /** Everything a form DTO is made of, loaded for one viewer. */
 export type OnboardingFormParts = {

@@ -80,7 +80,9 @@ Plan: `apps/workspace/plans/crm/16-feedbackrunden/60-ui-uebergabe-und-kundenboge
   `feedback/feedback-sheet`. Welcher Zustand gezeigt wird, entscheidet ausschließlich `portalFeedbackPageState`
   (`common/patterns/portal/`).
 - Entwurf, Autosave (≈ 1,5 s entprellt), Konflikt und Verlassen-Warnung laufen ausschließlich über `useFeedbackDraft`
-  (`src/hooks/portal/`); API-Aufrufe nur über `portalFeedbackApiService`. Vor Upload, Einreichen und Freigeben wird
+  (`src/hooks/portal/`); API-Aufrufe nur über `portalFeedbackApiService`. Die Statuszeile ist der geteilte
+  `DraftSaveStatus` (`components/shared/draft-save-status/`), die Konfliktanzeige reicht der Bogen als Slot durch
+  (`feedback-draft-conflict`); die Verlassen-Warnung kommt aus `useLeaveWarning` (`src/hooks/shared/`). Vor Upload, Einreichen und Freigeben wird
   immer `flush()` abgewartet. Ein 409 zeigt den aktuellen Stand und bietet die eigene Fassung zum Wiederherstellen
   oder Kopieren an — nie stilles Überschreiben.
 - Bearbeiten nur mit `canSubmit`, Anhängen/Lösen nur mit `canAttach`, Upload zusätzlich mit `portal.files.write`
@@ -94,3 +96,34 @@ Plan: `apps/workspace/plans/crm/16-feedbackrunden/60-ui-uebergabe-und-kundenboge
   letzten Runde „abnehmen“; der Endzustand heißt überall „Abgenommen am …“.
 - Links auf die Seite entstehen nur über `buildPortalFeedbackPath`. Das Dashboard-Widget `feedback` erscheint nur
   mit `portal.feedback.read` (`dashboard.feedback !== null`).
+
+## Onboarding-Bogen (ab Task 66)
+
+Plan: `apps/workspace/plans/crm/15-onboarding/66-portal-formular.md`.
+
+- Komponenten liegen unter `onboarding/`; Orchestrator ist `onboarding/onboarding-form-view`. Wer gerade schreiben
+  darf (`editableBlockIds` nicht leer), bekommt `onboarding-form-editor`, alle anderen und jeder spätere Status die
+  Leseansicht. Die Übersicht `onboarding-overview` sieht nur, wer mehrere Bögen hat; bei genau einem leitet die Seite
+  direkt dorthin.
+- **Ein Block = ein Schritt.** Der Schritt steht in der URL (`?section=<blockId>` bzw. `review`, optional
+  `&field=<fieldId>`) und wird ausschließlich über `usePortalOnboardingStep` gelesen und geschrieben
+  (`history.pushState`, kein Server-Roundtrip). Pflichtfelder blockieren den Schrittwechsel nie. Nach einem Wechsel
+  liegt der Fokus auf der Blocküberschrift, nach einem Sprung aus der Liste fehlender Angaben auf dem Feld
+  (`onboardingFieldDomId`).
+- **Speichern nur über `useOnboardingAutosave`** (`src/hooks/portal/`): Text entprellt (1,5 s) und beim Verlassen des
+  Felds, Auswahlen sofort; Speichervorgänge laufen nacheinander, letzter Stand je Feld gewinnt. Ungültiger Text bleibt
+  im Feld, zeigt seinen Grund und wird nie gesendet; ein fehlgeschlagener Speichervorgang behält die Eingabe und bietet
+  „Erneut versuchen“. API-Aufrufe nur über `portalOnboardingApiService`. Vor dem Absenden wird immer `flush()`
+  abgewartet; ist danach etwas nicht gespeichert, wird nicht abgesendet.
+- **Sichtbarkeit, Pflicht und Fortschritt kommen ausschließlich aus `getQuestionnaireCompleteness` bzw.
+  `isQuestionnaireFieldVisible`** (`@invessiv/common`), gefüttert mit den lokalen Antworten
+  (`onboardingAnswerDrafts.toAnswers`). Keine Komponente entscheidet selbst, ob ein Feld sichtbar oder Pflicht ist.
+  Die Schrittleiste (`ProcessTrack` mit `progress` je Schritt) zeigt je Block offen, angefangen oder vollständig
+  (`onboardingStepProgress`), nie einen Haken nur fürs Durchklicken.
+- `questionnaire-field` schaltet je Feldtyp. Task 66 kennt `short_text`, `long_text`, `email`, `phone`, `url`,
+  `choice`, `yes_no`, `multi_choice`; ein unbekannter Typ rendert nichts (Konsolenwarnung nur in der Entwicklung).
+  Gruppen, Dateien, Projektleistungen, Bestätigung, Farbe und Skala folgen mit Task 67.
+- Die Leseansicht ist der geteilte `OnboardingAnswerReadView` (`components/shared/onboarding/`), derselbe Baustein wie
+  im CRM-Tab „Antworten“. Antworttext läuft ausschließlich über `LinkedText`, nie als HTML.
+- Links auf Übersicht, Bogen und Schritt entstehen nur über `buildPortalOnboardingPath` bzw.
+  `buildPortalOnboardingStepSearch`. Es gibt bis Task 67 keinen Navigationseintrag und kein Widget.

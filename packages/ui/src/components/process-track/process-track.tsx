@@ -3,6 +3,7 @@
 import { type ReactNode, useEffect, useRef } from "react";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ProcessStepProgress } from "@invessiv/common/constants/ui/process-step-progress";
 import { ProcessStepState } from "@invessiv/common/constants/ui/process-step-states";
 import { ProcessStepVariant } from "@invessiv/common/constants/ui/process-step-variants";
 import type { ProcessTrackStep } from "@invessiv/common/contracts/ui/process-track-step";
@@ -25,11 +26,13 @@ function toStep(step: string | ProcessTrackStep, index: number) {
         key: `${step}-${index}`,
         label: step,
         variant: ProcessStepVariant.Default,
+        progress: undefined,
       }
     : {
         key: step.key,
         label: step.label,
         variant: step.variant ?? ProcessStepVariant.Default,
+        progress: step.progress,
       };
 }
 
@@ -64,11 +67,15 @@ export function ProcessTrack({
               : index === currentIndex
                 ? ProcessStepState.Current
                 : ProcessStepState.Upcoming;
+          // A step with its own progress is ticked off when it is done, not when it was passed.
+          const done = step.progress
+            ? step.progress === ProcessStepProgress.Complete
+            : state === ProcessStepState.Complete;
           const body = (
             <>
               <span aria-hidden="true" className={styles.segment} />
               <span className={styles.label}>
-                {state === ProcessStepState.Complete ? (
+                {done ? (
                   <FontAwesomeIcon
                     aria-hidden="true"
                     className={styles.check}
@@ -85,6 +92,7 @@ export function ProcessTrack({
                 state === ProcessStepState.Current ? "step" : undefined
               }
               className={styles.step}
+              data-progress={step.progress}
               data-state={state}
               data-variant={step.variant}
               key={step.key}

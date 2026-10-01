@@ -11,6 +11,8 @@ import {
   portalFileLinksEndpoint,
   portalFilesArchiveEndpoint,
   portalFilesEndpoint,
+  portalOnboardingAnswersEndpoint,
+  portalOnboardingSubmitEndpoint,
   portalFileUploadsEndpoint,
   portalFeedbackApproveEndpoint,
   portalFeedbackDraftEndpoint,
@@ -108,6 +110,17 @@ describe("portal file endpoints", () => {
     );
     expect(portalFileDownloadEndpoint("c-1", "f-1")).toBe(
       "/api/portal/c-1/files/f-1/download",
+    );
+  });
+});
+
+describe("portal onboarding endpoints", () => {
+  it("builds the answer and submit paths below the encoded form", () => {
+    expect(portalOnboardingAnswersEndpoint("a/b", "f 1")).toBe(
+      "/api/portal/a%2Fb/onboarding/f%201/answers",
+    );
+    expect(portalOnboardingSubmitEndpoint("c-1", "f-1")).toBe(
+      "/api/portal/c-1/onboarding/f-1/submit",
     );
   });
 });

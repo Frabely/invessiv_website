@@ -11,11 +11,12 @@ import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedb
 import type { PortalFeedbackRoundDto } from "@invessiv/common/contracts/portal/portal-feedback-round.dto";
 import { portalFeedbackApiService } from "@/client/portal/portal-feedback-api-service";
 import {
-  FeedbackDraftSaveState,
-  type FeedbackDraftSaveState as FeedbackDraftSaveStateValue,
-} from "@/common/constants/portal/feedback-draft-save-states";
+  DraftSaveState,
+  type DraftSaveState as DraftSaveStateValue,
+} from "@/common/constants/shared/draft-save-states";
 import type { FeedbackDraftItem } from "@/common/contracts/portal/feedback-draft-item";
 import { feedbackDraftItems } from "@/common/patterns/portal/feedback-draft-items";
+import { useLeaveWarning } from "@/hooks/shared/use-leave-warning";
 
 // Long enough to not save on every keystroke, short enough that a reload rarely loses anything.
 const AUTOSAVE_DELAY_MS = 1_500;
@@ -43,8 +44,8 @@ export function useFeedbackDraft({
   const [items, setItems] = useState<FeedbackDraftItem[]>(() =>
     feedbackDraftItems.fromRound(round),
   );
-  const [saveState, setSaveState] = useState<FeedbackDraftSaveStateValue>(
-    FeedbackDraftSaveState.Idle,
+  const [saveState, setSaveState] = useState<DraftSaveStateValue>(
+    DraftSaveState.Idle,
   );
   const [errorCode, setErrorCode] =
     useState<PortalFeedbackErrorCodeValue | null>(null);
@@ -93,7 +94,7 @@ export function useFeedbackDraft({
       adopt(feedbackDraftItems.fromRound(current));
       setSavedAt(current.draftUpdatedAt);
       setSavedByName(current.draftUpdatedByName);
-      setSaveState(FeedbackDraftSaveState.Conflict);
+      setSaveState(DraftSaveState.Conflict);
       if (current.status !== FeedbackRoundStatus.Open) onLockedRef.current();
     },
     [adopt],
@@ -102,7 +103,7 @@ export function useFeedbackDraft({
   const saveOnce = useCallback(async (): Promise<boolean> => {
     const revision = revisionRef.current;
     const snapshot = itemsRef.current;
-    setSaveState(FeedbackDraftSaveState.Saving);
+    setSaveState(DraftSaveState.Saving);
     const result = await portalFeedbackApiService.saveDraft(
       customerId,
       round.id,
@@ -119,8 +120,8 @@ export function useFeedbackDraft({
       setErrorCode(null);
       setSaveState(
         revisionRef.current === revision
-          ? FeedbackDraftSaveState.Saved
-          : FeedbackDraftSaveState.Unsaved,
+          ? DraftSaveState.Saved
+          : DraftSaveState.Unsaved,
       );
       return true;
     }
@@ -129,7 +130,7 @@ export function useFeedbackDraft({
       return false;
     }
     setErrorCode(result.code);
-    setSaveState(FeedbackDraftSaveState.Failed);
+    setSaveState(DraftSaveState.Failed);
     if (
       result.code === PortalFeedbackErrorCode.Locked ||
       result.code === PortalFeedbackErrorCode.NotFound
@@ -172,7 +173,7 @@ export function useFeedbackDraft({
       itemsRef.current = next;
       setItems(next);
       revisionRef.current += 1;
-      setSaveState(FeedbackDraftSaveState.Unsaved);
+      setSaveState(DraftSaveState.Unsaved);
       clearTimer();
       timerRef.current = setTimeout(() => {
         void flushRef.current();
@@ -184,39 +185,12 @@ export function useFeedbackDraft({
   useEffect(() => clearTimer, []);
 
   const hasUnsaved =
-    saveState === FeedbackDraftSaveState.Unsaved ||
-    saveState === FeedbackDraftSaveState.Saving ||
-    saveState === FeedbackDraftSaveState.Failed ||
+    saveState === DraftSaveState.Unsaved ||
+    saveState === DraftSaveState.Saving ||
+    saveState === DraftSaveState.Failed ||
     conflictItems !== null;
 
-  useEffect(() => {
-    if (!hasUnsaved) return;
-    function warn(event: BeforeUnloadEvent) {
-      event.preventDefault();
-    }
-    function guardLink(event: MouseEvent) {
-      if (event.defaultPrevented || event.button !== 0) return;
-      const anchor =
-        event.target instanceof Element
-          ? event.target.closest("a[href]")
-          : null;
-      if (
-        !(anchor instanceof HTMLAnchorElement) ||
-        (anchor.target && anchor.target !== "_self")
-      )
-        return;
-      if (!window.confirm(leaveWarning)) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-      }
-    }
-    window.addEventListener("beforeunload", warn);
-    document.addEventListener("click", guardLink, true);
-    return () => {
-      window.removeEventListener("beforeunload", warn);
-      document.removeEventListener("click", guardLink, true);
-    };
-  }, [hasUnsaved, leaveWarning]);
+  useLeaveWarning(hasUnsaved, leaveWarning);
 
   function addItem() {
     commit((current) => [
@@ -277,9 +251,9 @@ export function useFeedbackDraft({
     setConflictItems(null);
     conflictPendingRef.current = false;
     if (revisionRef.current === savedRevisionRef.current) {
-      setSaveState(FeedbackDraftSaveState.Saved);
+      setSaveState(DraftSaveState.Saved);
     } else {
-      setSaveState(FeedbackDraftSaveState.Unsaved);
+      setSaveState(DraftSaveState.Unsaved);
       void flushRef.current();
     }
   }

@@ -62,7 +62,21 @@
     "templateNone": "Ohne Vorlage",
     "tabs": {
       "ariaLabel": "Bereiche des Bogens",
-      "structure": "Aufbau"
+      "structure": "Aufbau",
+      "answers": "Antworten"
+    }
+  },
+  "answers": {
+    "empty": "Dieser Bogen hat noch keine Bausteine. Sobald er welche hat, stehen hier die Antworten des Kunden.",
+    "progress": {
+      "barLabel": "Beantwortete Pflichtangaben",
+      "label": "{answered} von {total} Pflichtangaben beantwortet",
+      "none": "Der Bogen hat keine Pflichtangaben."
+    },
+    "read": {
+      "unanswered": "Nicht beantwortet",
+      "empty": "Keine Angabe",
+      "required": "Pflichtangabe"
     }
   },
   "structure": {

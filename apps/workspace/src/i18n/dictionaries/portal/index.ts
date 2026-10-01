@@ -15,6 +15,8 @@ import filesDe from "./files/de.json";
 import filesEn from "./files/en.json";
 import feedbackDe from "./feedback/de.json";
 import feedbackEn from "./feedback/en.json";
+import onboardingDe from "./onboarding/de.json";
+import onboardingEn from "./onboarding/en.json";
 
 export type PortalMetaDictionary = typeof metaDe;
 export type PortalPickerDictionary = typeof pickerDe;
@@ -24,6 +26,7 @@ export type PortalDashboardDictionary = typeof dashboardDe;
 export type PortalMessagesDictionary = typeof messagesDe;
 export type PortalFilesDictionary = typeof filesDe;
 export type PortalFeedbackDictionary = typeof feedbackDe;
+export type PortalOnboardingDictionary = typeof onboardingDe;
 
 const PORTAL_META: Record<Locale, PortalMetaDictionary> = {
   de: metaDe,
@@ -108,4 +111,15 @@ export function getPortalFeedbackDictionary(
   locale: Locale,
 ): PortalFeedbackDictionary {
   return PORTAL_FEEDBACK[locale];
+}
+
+const PORTAL_ONBOARDING: Record<Locale, PortalOnboardingDictionary> = {
+  de: onboardingDe,
+  en: onboardingEn,
+};
+
+export function getPortalOnboardingDictionary(
+  locale: Locale,
+): PortalOnboardingDictionary {
+  return PORTAL_ONBOARDING[locale];
 }

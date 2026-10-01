@@ -10,7 +10,9 @@ import { detectOnboardingBlockListChange } from "./onboarding-block-list-change"
 import { onboardingFormErrorText } from "./onboarding-form-error-text";
 import {
   buildOnboardingFormHref,
+  buildOnboardingFormTabHref,
   readOnboardingFormBlockId,
+  readOnboardingFormTab,
 } from "./onboarding-form-query";
 
 describe("detectOnboardingBlockListChange", () => {
@@ -32,6 +34,42 @@ describe("detectOnboardingBlockListChange", () => {
       detectOnboardingBlockListChange(["a", "b", "c"], ["c", "b", "a"]),
     ).toBeNull();
     expect(detectOnboardingBlockListChange(["a"], ["a", "b"])).toBeNull();
+  });
+});
+
+describe("onboarding form tab query", () => {
+  it("reads the tab and falls back to the structure for anything unknown", () => {
+    expect(readOnboardingFormTab(new URLSearchParams("tab=answers"))).toBe(
+      "answers",
+    );
+    expect(readOnboardingFormTab(new URLSearchParams("tab=nope"))).toBe(
+      "structure",
+    );
+    expect(readOnboardingFormTab(new URLSearchParams(""))).toBe("structure");
+  });
+
+  it("sets the tab, drops the default one and keeps every other param", () => {
+    expect(
+      buildOnboardingFormTabHref(
+        "/de/crm/onboarding/f-1",
+        "block=b-1",
+        "answers",
+      ),
+    ).toBe("/de/crm/onboarding/f-1?block=b-1&tab=answers");
+    expect(
+      buildOnboardingFormTabHref(
+        "/de/crm/onboarding/f-1",
+        "tab=answers&block=b-1",
+        "structure",
+      ),
+    ).toBe("/de/crm/onboarding/f-1?block=b-1");
+    expect(
+      buildOnboardingFormTabHref(
+        "/de/crm/onboarding/f-1",
+        "tab=answers",
+        "structure",
+      ),
+    ).toBe("/de/crm/onboarding/f-1");
   });
 });
 

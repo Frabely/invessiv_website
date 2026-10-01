@@ -1,0 +1,82 @@
+/* A record sheet: one ruled section per block, question left, answer right on wide screens. */
+.view {
+  display: grid;
+  gap: 1.75rem;
+}
+
+.block {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.title {
+  margin: 0;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--color-border-strong);
+  color: var(--color-text);
+  font-size: var(--font-size-heading-sm);
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.fields {
+  display: grid;
+  margin: 0;
+}
+
+.field {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.label {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.required {
+  margin-left: 0.2rem;
+  color: var(--color-accent-warm);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.value {
+  min-width: 0;
+  margin: 0;
+}
+
+.none {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+}
+
+/* A missing required answer must stand out without relying on colour alone. */
+.none[data-state="missing"] {
+  padding: 0.15rem 0.5rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 55%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent-warm) 10%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+}
+
+.empty {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.55;
+}
+
+@media (min-width: 720px) {
+  .field {
+    grid-template-columns: minmax(0, 15rem) minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+}
