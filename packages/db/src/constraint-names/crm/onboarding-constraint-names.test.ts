@@ -67,7 +67,7 @@ const TABLES: [PgTable, Record<string, string>][] = [
 ];
 
 function tableSection(tableName: string): string {
-  const start = migration.indexOf(`CREATE TABLE IF NOT EXISTS ${tableName}\n`);
+  const start = migration.indexOf(`CREATE TABLE IF NOT EXISTS ${tableName}`);
   if (start < 0)
     throw new Error(`Table ${tableName} is missing in migration 0047`);
   const end = migration.indexOf("\n);", start);
