@@ -137,3 +137,44 @@ CRM-UI
 - [ ] Widget und Navigation hinter `portal.onboarding.read`; ohne Bogen kein Widget.
 - [ ] A11y-Smoke für den Portal-Bogen (Tastatur, Fokusreihenfolge, Kontrast).
 - [ ] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, DB-Smokes, Workspace-Build grün.
+
+## Umsetzungsnotizen (Abweichungen vom Plan, 01.10.2026)
+
+Bei der Umsetzung nachgezogen; der Plan oben bleibt als Entstehungsstand stehen, maßgeblich ist der Code.
+
+### T1 — Upload-Baustein
+
+- `PortalAttachmentField` nimmt `FeedbackAttachmentDto` als Dateiform; `QuestionnaireAttachment` hat dieselben
+  Felder. `maxFiles` ist eine Pflichtzahl.
+
+### T2 — Server
+
+- **Antworten der neuen Portal-Endpunkte:** Die drei Gruppenbefehle antworten mit allen Einträgen der Gruppe
+  (`QuestionnaireGroupEntryDto[]`, weil sich Positionen verschieben), Anhängen mit der Verknüpfung
+  (`QuestionnaireAnswerFileDto`), Lösen und die Leistungsbestätigung mit `{ savedAt, savedByName }` für die Statuszeile.
+- **`QuestionnaireAnswerFileDto.id`** ergänzt (ID der Verknüpfung): `DELETE …/files/[answerFileId]` adressiert sie,
+  nicht die Datei.
+- **Anhängen und Lösen verlangen zusätzlich `portal.files.read`** (wie bei den Feedbackrunden); ohne das Recht
+  antworten beide 404. Sonst könnte ein Kontakt Dateien anhängen, die er danach nicht sieht.
+- **„Desselben Projekts“ gilt streng:** Eine Kundendatei ohne Projekt ist `not_attachable` (anders als bei den
+  Feedbackrunden, die sie ins Projekt ziehen). Der Portal-Upload aus T3 setzt das Projekt.
+- **Gruppeneintrag mit fremder ID:** eine ID, die schon zu einem anderen Feld oder Bogen gehört, ist `validation`
+  (422); dieselbe ID am selben Feld erneut ist ein Erfolg (Wiederholung eines Requests).
+- **Leistungsbestätigung** erhöht die Bogenversion (`updateLockedVersioned`, einziger versionierter Schreibweg). Ohne
+  `project_services`-Feld im Bogen antwortet sie 422, liegt das Feld in keinem für den Kunden offenen Block 409.
+  `note: null` heißt „Passt so“; eine Anmerkung wird getrimmt gespeichert.
+- **Freigeben:** Der Übergang wird vor der Version geprüft, damit ein zweites Freigeben mit veralteter Version
+  `ONBOARDING_INVALID_TRANSITION` antwortet und keinen Versionskonflikt. Die Warnungen stehen in der 409-Antwort unter
+  `details.warnings` (`OnboardingReleaseWarningDto`: `missing_translation` mit `blockId` und `locale`,
+  `no_portal_access`). Ohne Portalkontakt entfällt die Sprachwarnung: Es gibt niemanden, dessen Sprache fehlen könnte.
+  „Aktives Portalmitglied“ heißt: Mitgliedschaft ohne `revoked_at`.
+- **Regeln als Pattern:** `isOnboardingFormReleasable` und `listOnboardingReleaseWarnings`
+  (`packages/common/src/patterns/crm/onboarding/onboarding-release-check.ts`), damit T4 dieselben Regeln lesen kann.
+- **`FILE_ONBOARDING_BOUND` gilt unabhängig vom Bogenstatus.** Task 63 nannte „solange der Bogen nicht `completed`
+  ist“; die README verlangt aber, dass ein abgeschlossener Bogen dauerhaft mit allen Anhängen lesbar bleibt. Der
+  Löschpfad lehnt deshalb jede verknüpfte Datei ab; erst nach dem Lösen ist sie löschbar.
+- **Systemnachricht `onboardingReleased`** (Portal: „Dein Onboarding für … ist bereit. Du bist dran.“) und der
+  Fehlertext `FILE_ONBOARDING_BOUND` sind in allen vier Dictionaries gepflegt.
+- **Nicht in T2:** `PortalOnboardingFormDto` trägt weiter nur `servicesConfirmed`; die Leistungsliste, die Anmerkung
+  und der interne Hinweis „Leistungen seit Bestätigung geändert“ gehören zu den Feldkomponenten in T3/T4. Kein
+  Seed-Zuwachs (kein neues Schema).

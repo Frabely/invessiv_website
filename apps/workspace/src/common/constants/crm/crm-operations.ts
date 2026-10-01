@@ -58,6 +58,7 @@ export const CrmOperation = {
   DeleteOnboardingFormField: "onboarding-form-fields.delete",
   MoveOnboardingFormField: "onboarding-form-fields.move",
   GetOnboardingFieldUsage: "onboarding-form-fields.usage",
+  ReleaseOnboardingForm: "onboarding-forms.release",
 } as const;
 
 export type CrmOperation = (typeof CrmOperation)[keyof typeof CrmOperation];
@@ -121,4 +122,5 @@ export const CRM_OPERATION_VALUES = [
   CrmOperation.DeleteOnboardingFormField,
   CrmOperation.MoveOnboardingFormField,
   CrmOperation.GetOnboardingFieldUsage,
+  CrmOperation.ReleaseOnboardingForm,
 ] as const;

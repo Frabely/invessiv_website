@@ -192,3 +192,12 @@ Plan: `apps/workspace/plans/crm/15-onboarding/65-bogen-anlegen-und-anpassen.md`.
 - Fehlerabbildung der Routen: `onboardingApiError` (`src/lib/workspace/crm/`) für `OnboardingErrorCode`, Codes des
   Baukastens gehen an `questionnaireApiError` weiter. Endpunkte über `CrmEndpointAccessRule.OnboardingForm` bzw.
   `OnboardingFormWrite`.
+- **Freigeben (ab Task 67):** `releaseOnboardingForm` sperrt den Bogen über `lockWritableForm` (ohne Statusprüfung,
+  damit ein zweites Freigeben `ONBOARDING_INVALID_TRANSITION` statt `ONBOARDING_NOT_EDITABLE` antwortet) und prüft den
+  Übergang **vor** der Version. Blockierend ist `isOnboardingFormReleasable` (`QUESTIONNAIRE_INVALID_FIELD_CONFIG`),
+  bestätigbar sind die Warnungen aus `listOnboardingReleaseWarnings` (`@invessiv/common`, gefüttert mit den
+  `preferred_locale` der nicht widerrufenen Portal-Mitgliedschaften des Kunden): ohne `acknowledgeWarnings` antwortet
+  der Befehl `ONBOARDING_RELEASE_WARNINGS` (409, Liste unter `details.warnings`). Status, Zeitpunkt, Person, Activity
+  und Systemnachricht schreibt `onboardingFormTransitionService.release`.
+- **Dateien an einem Bogen bleiben:** `deleteFile` lehnt eine Datei mit Verknüpfung in `onboarding_answer_files` mit
+  `FILE_ONBOARDING_BOUND` (409) ab, unabhängig vom Bogenstatus; geprüft wird unter der Dateisperre.

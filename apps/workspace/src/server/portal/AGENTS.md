@@ -97,3 +97,23 @@ Plan: `apps/workspace/plans/crm/15-onboarding/66-portal-formular.md`.
   Teams nur bei `clarification_mode = customer`, Namen nur von Kontakten.
 - Fehlercodes sind `PortalOnboardingErrorCode`; Statuscodes und Texte stehen ausschließlich in
   `src/lib/portal/portal-onboarding-api-error.ts` (`validation` antwortet hier 422).
+
+Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-leistungen.md`):
+
+- **Gruppeneinträge** (`add`/`remove`/`move`): Die ID kommt vom Client. Dieselbe ID am selben Feld erneut ist ein
+  Erfolg, eine ID eines anderen Feldes oder Bogens `validation`, nie übernommen. Das Feld muss eine Gruppe dieses
+  Bogens sein (`validation` bzw. `not_found`), die Grenze ist `max_items`, sonst
+  `QUESTIONNAIRE_LIMITS.groupEntriesPerField` (`limit_reached`). Entfernen und Verschieben laufen über
+  `findWritableGroupEntry`: Eintrag eines anderen Bogens ist `not_found`, ein nicht offener Block `locked`. Geschrieben
+  wird ausschließlich über `onboardingGroupEntryService`; alle drei Befehle antworten mit den Einträgen der Gruppe.
+- **Dateien anhängen und lösen** verlangen zusätzlich `portal.files.read` (`canAttach`, wie bei den Feedbackrunden),
+  sonst `not_found`. Anhängbar ist nur eine fertige, nicht verwaiste Kundendatei **des Projekts dieses Bogens**, deren
+  Art das Feld annimmt; eine Datei, die der Kontakt nicht sehen darf, ist `not_found`, eine sichtbare unpassende
+  `not_attachable`. Die Grenze (`max_items`, sonst `filesPerField`) wird unter der Bogensperre gezählt. Lösen adressiert
+  die Verknüpfung (`answerFileId`), nicht die Datei: Eine aus dem Vorbogen übernommene Datei eines anderen Projekts
+  lässt sich lösen, aber nicht erneut anhängen. Geschrieben wird ausschließlich über `onboardingAttachmentService`.
+- **Leistungen bestätigen** schreibt `services_confirmed_*` und `services_note` am Bogenkopf über
+  `updateLockedVersioned` (die Bogenversion steigt). Ohne `project_services`-Feld im Bogen `validation`, liegt keines
+  in einem für den Kunden offenen Block `locked`. Eine Anmerkung ohne Text ist `validation`, nie stillschweigend leer.
+- Jeder dieser Schreibwege antwortet für die Statuszeile mit `portalOnboardingService.toSavedDto` bzw. dem geänderten
+  Stand; die Bogen-`version` vergleicht keiner von ihnen.

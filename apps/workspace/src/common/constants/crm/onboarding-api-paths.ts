@@ -5,6 +5,7 @@ export const OnboardingApiPath = {
   Fields: "fields",
   Move: "move",
   Usage: "usage",
+  Release: "release",
 } as const;
 
 export type OnboardingApiPath =

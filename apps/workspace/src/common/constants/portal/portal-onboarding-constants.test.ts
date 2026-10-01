@@ -17,6 +17,10 @@ describe("portal onboarding constants", () => {
       Onboarding: "onboarding",
       Answers: "answers",
       Submit: "submit",
+      GroupEntries: "group-entries",
+      Move: "move",
+      Files: "files",
+      ServicesConfirmation: "services-confirmation",
     });
     expectUnique(Object.values(PortalOnboardingApiPath));
   });

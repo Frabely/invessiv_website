@@ -134,3 +134,15 @@ Ab Task 66:
   Nachfordern und Abschließen kommen mit ihren Tasks hier dazu.
 - `services/load-portal-contact-names.ts` (früher unter `feedback/`) liefert Anzeigenamen von Kontakten je
   Portal-Mitgliedschaft für Feedbackrunden und Onboarding.
+
+Ab Task 67:
+
+- `onboarding-group-entry-service.ts` ist der einzige Schreibweg für `onboarding_group_entries`: `append`, `remove`
+  (Antworten und Datei-Verknüpfungen fallen über die zusammengesetzten Fremdschlüssel weg, die Dateien bleiben; die
+  Einträge dahinter rücken in einem Statement auf) und `move` (Tausch mit kurz aufgeschobenem Positionsindex).
+- `onboarding-attachment-service.ts` ist der einzige Schreibweg für `onboarding_answer_files` (`attach`, `detach` mit
+  Aufrücken der Positionen im Slot). `isBound` beantwortet dem internen Datei-Löschpfad, ob eine Datei an einem Bogen
+  hängt. Ob Feld, Art, Grenze und Besitz passen, entscheidet der Handler, der Bogen und Datei gesperrt hält.
+- `onboardingFormTransitionService.release` öffnet einen gesperrten Entwurf (`released_*`, Activity `status_change`
+  mit `previous_status`/`next_status`, Systemnachricht `onboardingReleased`). Ob freigegeben werden darf und welche
+  Warnungen offen sind, entscheidet der Workspace-Handler.

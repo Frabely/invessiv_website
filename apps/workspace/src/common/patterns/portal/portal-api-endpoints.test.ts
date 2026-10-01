@@ -12,6 +12,12 @@ import {
   portalFilesArchiveEndpoint,
   portalFilesEndpoint,
   portalOnboardingAnswersEndpoint,
+  portalOnboardingFileEndpoint,
+  portalOnboardingFilesEndpoint,
+  portalOnboardingGroupEntriesEndpoint,
+  portalOnboardingGroupEntryEndpoint,
+  portalOnboardingGroupEntryMoveEndpoint,
+  portalOnboardingServicesConfirmationEndpoint,
   portalOnboardingSubmitEndpoint,
   portalFileUploadsEndpoint,
   portalFeedbackApproveEndpoint,
@@ -121,6 +127,30 @@ describe("portal onboarding endpoints", () => {
     );
     expect(portalOnboardingSubmitEndpoint("c-1", "f-1")).toBe(
       "/api/portal/c-1/onboarding/f-1/submit",
+    );
+  });
+
+  it("addresses group entries and their move below the form", () => {
+    expect(portalOnboardingGroupEntriesEndpoint("c-1", "f-1")).toBe(
+      "/api/portal/c-1/onboarding/f-1/group-entries",
+    );
+    expect(portalOnboardingGroupEntryEndpoint("c-1", "f-1", "e 1")).toBe(
+      "/api/portal/c-1/onboarding/f-1/group-entries/e%201",
+    );
+    expect(portalOnboardingGroupEntryMoveEndpoint("c-1", "f-1", "e-1")).toBe(
+      "/api/portal/c-1/onboarding/f-1/group-entries/e-1/move",
+    );
+  });
+
+  it("addresses file links and the services confirmation below the form", () => {
+    expect(portalOnboardingFilesEndpoint("c-1", "f-1")).toBe(
+      "/api/portal/c-1/onboarding/f-1/files",
+    );
+    expect(portalOnboardingFileEndpoint("c-1", "f-1", "l 1")).toBe(
+      "/api/portal/c-1/onboarding/f-1/files/l%201",
+    );
+    expect(portalOnboardingServicesConfirmationEndpoint("c-1", "f-1")).toBe(
+      "/api/portal/c-1/onboarding/f-1/services-confirmation",
     );
   });
 });
