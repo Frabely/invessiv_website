@@ -238,6 +238,47 @@ describe("QuestionnaireBlockEditor", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("lets the owner replace the delete confirmation and still deletes through the api", async () => {
+    const remaining = blockFixture([], { version: 4 });
+    const fake = api({
+      deleteField: vi.fn().mockResolvedValue({ ok: true, value: remaining }),
+    });
+    navigation.params = new URLSearchParams(
+      "questionnaireDeleteField=f-has_team",
+    );
+    render(
+      <QuestionnaireBlockEditor
+        api={fake}
+        block={block()}
+        canWrite
+        content={content}
+        fixedChoiceLabels={LABELS}
+        locale="de"
+        renderDeleteDialogAction={({ name, onConfirmAction }) => (
+          <button onClick={onConfirmAction} type="button">
+            {`Owner dialog for ${name}`}
+          </button>
+        )}
+        showStatus
+      />,
+    );
+
+    expect(
+      screen.queryByText(content.editor.deleteDialog.title),
+    ).not.toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Owner dialog for Gibt es ein Team?",
+      }),
+    );
+
+    await waitFor(() =>
+      expect(fake.deleteField).toHaveBeenCalledWith("f-has_team", {
+        expectedBlockVersion: 3,
+      }),
+    );
+  });
+
   it("explains an empty block", () => {
     renderEditor(api(), true, blockFixture([]));
     expect(

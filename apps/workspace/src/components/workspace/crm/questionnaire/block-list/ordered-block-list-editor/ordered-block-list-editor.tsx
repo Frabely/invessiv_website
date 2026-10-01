@@ -38,6 +38,8 @@ export type OrderedBlockListEditorProps = {
   onChangeAction: (ids: string[]) => void;
   /** Receives what a screen reader should hear; the owner renders one live region for all changes. */
   onAnnounceAction: (message: string) => void;
+  /** Shows the order only: without the right to change it the controls are absent, not disabled. */
+  readOnly?: boolean;
 };
 
 /**
@@ -51,6 +53,7 @@ export function OrderedBlockListEditor({
   labels,
   onAnnounceAction,
   onChangeAction,
+  readOnly = false,
 }: OrderedBlockListEditorProps) {
   const listRef = useRef<HTMLOListElement>(null);
   const pendingFocusRef = useRef<{ index: number; control: string } | null>(
@@ -124,44 +127,46 @@ export function OrderedBlockListEditor({
                     <span className={styles.detail}>{item.detail}</span>
                   ) : null}
                 </span>
-                <span className={styles.actions}>
-                  <ButtonControl
-                    aria-label={upLabel}
-                    className={styles.iconButton}
-                    data-control="up"
-                    disabled={disabled || index === 0}
-                    onClick={() => move(index, -1)}
-                    title={upLabel}
-                    type="button"
-                    variant="ghost"
-                  >
-                    <FontAwesomeIcon aria-hidden="true" icon={faArrowUp} />
-                  </ButtonControl>
-                  <ButtonControl
-                    aria-label={downLabel}
-                    className={styles.iconButton}
-                    data-control="down"
-                    disabled={disabled || index === items.length - 1}
-                    onClick={() => move(index, 1)}
-                    title={downLabel}
-                    type="button"
-                    variant="ghost"
-                  >
-                    <FontAwesomeIcon aria-hidden="true" icon={faArrowDown} />
-                  </ButtonControl>
-                  <ButtonControl
-                    aria-label={removeLabel}
-                    className={styles.iconButton}
-                    data-control="remove"
-                    disabled={disabled}
-                    onClick={() => remove(index)}
-                    title={removeLabel}
-                    type="button"
-                    variant="ghost"
-                  >
-                    <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
-                  </ButtonControl>
-                </span>
+                {readOnly ? null : (
+                  <span className={styles.actions}>
+                    <ButtonControl
+                      aria-label={upLabel}
+                      className={styles.iconButton}
+                      data-control="up"
+                      disabled={disabled || index === 0}
+                      onClick={() => move(index, -1)}
+                      title={upLabel}
+                      type="button"
+                      variant="ghost"
+                    >
+                      <FontAwesomeIcon aria-hidden="true" icon={faArrowUp} />
+                    </ButtonControl>
+                    <ButtonControl
+                      aria-label={downLabel}
+                      className={styles.iconButton}
+                      data-control="down"
+                      disabled={disabled || index === items.length - 1}
+                      onClick={() => move(index, 1)}
+                      title={downLabel}
+                      type="button"
+                      variant="ghost"
+                    >
+                      <FontAwesomeIcon aria-hidden="true" icon={faArrowDown} />
+                    </ButtonControl>
+                    <ButtonControl
+                      aria-label={removeLabel}
+                      className={styles.iconButton}
+                      data-control="remove"
+                      disabled={disabled}
+                      onClick={() => remove(index)}
+                      title={removeLabel}
+                      type="button"
+                      variant="ghost"
+                    >
+                      <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
+                    </ButtonControl>
+                  </span>
+                )}
               </li>
             );
           })}

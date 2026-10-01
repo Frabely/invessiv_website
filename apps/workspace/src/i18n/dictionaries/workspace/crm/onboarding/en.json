@@ -1,0 +1,153 @@
+{
+  "meta": {
+    "title": "Onboarding | Invessiv"
+  },
+  "status": {
+    "draft": "Draft",
+    "open": "Released",
+    "submitted": "Submitted",
+    "changes_requested": "Changes requested",
+    "completed": "Completed"
+  },
+  "errors": {
+    "ONBOARDING_FORM_NOT_FOUND": "The form no longer exists.",
+    "ONBOARDING_PROJECT_NOT_FOUND": "The project no longer exists.",
+    "ONBOARDING_PROJECT_NOT_ELIGIBLE": "An onboarding can only be started for planned and active projects.",
+    "ONBOARDING_FORM_EXISTS": "This project already has a form. Reload the page.",
+    "ONBOARDING_INVALID_TRANSITION": "This status change is not possible.",
+    "ONBOARDING_NOT_EDITABLE": "The structure is fixed by now and can no longer be changed.",
+    "ONBOARDING_REQUIRED_MISSING": "Required answers are missing.",
+    "ONBOARDING_REVIEW_INCOMPLETE": "The review is not finished yet.",
+    "ONBOARDING_CALL_DATE_REQUIRED": "The date of the onboarding call is missing.",
+    "ONBOARDING_FILE_NOT_ATTACHABLE": "The file cannot be attached.",
+    "VALIDATION_ERROR": "The input is incomplete or invalid.",
+    "INTERNAL": "That did not work. Try again in a moment."
+  },
+  "project": {
+    "title": "Onboarding",
+    "start": "Start onboarding",
+    "open": "Open form",
+    "empty": {
+      "title": "No onboarding started yet",
+      "description": "The onboarding collects every detail and file for this project before the work begins. You pick a template and adjust the form to this project.",
+      "readOnlyDescription": "The onboarding lets the team collect every detail and file for this project before the work begins. None has been started for this project yet."
+    },
+    "notEligible": "An onboarding can only be started for planned and active projects.",
+    "draftHint": "The form is a draft. The customer cannot see it yet.",
+    "progressLabel": "Answered required fields",
+    "progress": "{answered} of {total} required fields answered",
+    "progressNone": "The form has no required fields yet.",
+    "dialog": {
+      "title": "Start onboarding",
+      "description": "This creates a draft with its own copies of the blocks. You adjust it for this project afterwards; the customer cannot see it yet.",
+      "template": "Template",
+      "templateHint": "Later changes to the template do not affect this form.",
+      "templateOption": "{title} ({count} blocks)",
+      "templateOptionOne": "{title} (1 block)",
+      "blank": "Start empty",
+      "blankHint": "The form starts without blocks. You add them from the catalog or create your own.",
+      "noTemplates": "There is no active template yet. You can start empty and add blocks in the form.",
+      "prefillHint": "Company-wide answers are taken over from this customer's last completed onboarding.",
+      "submit": "Create draft",
+      "submitting": "Creating …",
+      "cancel": "Cancel",
+      "close": "Close"
+    }
+  },
+  "form": {
+    "back": "Back to the project",
+    "title": "Onboarding: {project}",
+    "customer": "Customer",
+    "template": "Template",
+    "templateNone": "No template",
+    "tabs": {
+      "ariaLabel": "Areas of the form",
+      "structure": "Structure"
+    }
+  },
+  "structure": {
+    "blocks": {
+      "legend": "Blocks in this order",
+      "count": "{count} blocks",
+      "countOne": "1 block",
+      "addFromCatalog": "Add from catalog",
+      "addOwn": "Own block",
+      "empty": "This form has no blocks yet. Add some from the catalog or create your own.",
+      "emptyReadOnly": "This form has no blocks.",
+      "moveUp": "Move “{name}” up",
+      "moveDown": "Move “{name}” down",
+      "remove": "Remove “{name}”",
+      "moved": "“{name}” is now at position {position}.",
+      "added": "“{name}” was added at position {position}.",
+      "removed": "“{name}” was removed.",
+      "fields": "{count} fields",
+      "fieldsOne": "1 field",
+      "own": "Only in this form",
+      "open": "Edit",
+      "openNamed": "Edit “{name}”",
+      "current": "Open"
+    },
+    "picker": {
+      "title": "Add a block from the catalog",
+      "description": "The form gets its own copy. Only active blocks that are not in the form yet.",
+      "search": "Search blocks",
+      "searchPlaceholder": "Title or key",
+      "add": "Add",
+      "addNamed": "Add “{name}”",
+      "empty": "Every active block is already in the form.",
+      "noResults": "No block matches the search.",
+      "close": "Done"
+    },
+    "ownDialog": {
+      "title": "Own block",
+      "description": "This block exists only in this form. You add fields and further languages afterwards.",
+      "fields": {
+        "title": "Title ({language})",
+        "key": "Key"
+      },
+      "hints": {
+        "key": "Internal name of lowercase letters, digits and underscores. Suggested from the title."
+      },
+      "submit": "Create block",
+      "submitting": "Creating …",
+      "cancel": "Cancel",
+      "close": "Close"
+    },
+    "removeDialog": {
+      "title": "Remove block?",
+      "description": "“{name}” is removed from this form with all its fields and answers. Attached files stay in the customer's file area.",
+      "confirm": "Remove",
+      "cancel": "Keep",
+      "close": "Close"
+    },
+    "fieldDeleteDialog": {
+      "title": "Delete field?",
+      "description": "“{name}” is deleted from this form.",
+      "descriptionGroup": "“{name}” is deleted from this form with all its sub-fields.",
+      "usageLoading": "Counting affected answers …",
+      "usageNone": "This field has no answers and no files yet.",
+      "usage": "This affects {answers} and {files}. The answers are lost. The files stay in the customer's file area; only their link to the form is removed.",
+      "usageFailed": "The number of affected answers could not be loaded. Existing answers to this field are lost when you delete it.",
+      "answers": {
+        "none": "no answers",
+        "one": "1 answer",
+        "many": "{count} answers"
+      },
+      "files": {
+        "none": "no files",
+        "one": "1 file",
+        "many": "{count} files"
+      },
+      "confirm": "Delete",
+      "cancel": "Keep",
+      "close": "Close"
+    },
+    "editor": {
+      "heading": "Edit block",
+      "select": "Pick a block from the list to edit its texts and fields.",
+      "locked": "After the submission the structure is fixed. Request what is missing in the review.",
+      "readOnly": "You can view this form but not change it.",
+      "conflict": "Someone has changed the form in the meantime. The current state is loaded, please repeat your change."
+    }
+  }
+}

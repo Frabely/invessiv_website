@@ -1,0 +1,16 @@
+.form {
+  display: grid;
+  gap: 1rem;
+  padding: 0.55rem 0.7rem;
+}
+
+.failure {
+  margin: 0;
+  padding: 0.65rem 0.8rem;
+  border-left: 3px solid var(--color-danger);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}

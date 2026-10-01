@@ -16,6 +16,7 @@ export const WorkspaceApiEndpoint = {
   CrmQuestionnaireBlocks: "/api/workspace/crm/questionnaire/blocks",
   CrmQuestionnaireFields: "/api/workspace/crm/questionnaire/fields",
   CrmQuestionnaireTemplates: "/api/workspace/crm/questionnaire/templates",
+  CrmOnboardingForms: "/api/workspace/crm/onboarding/forms",
   CrmTasks: "/api/workspace/crm/tasks",
   CrmMessages: "/api/workspace/crm/messages",
   Leads: "/api/workspace/leads",

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  crmOnboardingFormPathFor,
   crmFeedbackPathFor,
   crmQuestionnaireBlockPathFor,
   crmQuestionnaireTemplatePathFor,
@@ -64,6 +65,15 @@ describe("auth routes", () => {
     const url = new URL(target, "https://invessiv.com");
     expect(url.pathname).toBe("/de/sign-in");
     expect(url.searchParams.get(REDIRECT_URL_QUERY_PARAM)).toBe("/de");
+  });
+
+  it("builds the localized page of one onboarding form and encodes its id", () => {
+    expect(crmOnboardingFormPathFor("de", "form-1")).toBe(
+      "/de/crm/onboarding/form-1",
+    );
+    expect(crmOnboardingFormPathFor("en", "a/b")).toBe(
+      "/en/crm/onboarding/a%2Fb",
+    );
   });
 
   it("builds the portal company-picker path", () => {

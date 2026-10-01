@@ -1,0 +1,142 @@
+/* The list is the step order the customer walks through; the editor next to it holds one step. */
+.structure {
+  display: grid;
+  grid-template-columns: minmax(0, 24rem) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(1rem, 2.4vw, 2rem);
+  min-width: 0;
+}
+
+.list {
+  position: sticky;
+  top: 0;
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.listHeader {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.heading {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-md);
+  font-weight: 700;
+}
+
+.heading:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+.count {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.listActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.addButton.addButton {
+  gap: 0.45rem;
+  font-size: var(--font-size-body-sm);
+}
+
+.notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface-1);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+.notice svg {
+  flex: 0 0 auto;
+  margin-top: 0.2rem;
+  color: var(--color-cta);
+}
+
+.failure {
+  margin: 0;
+  padding: 0.65rem 0.8rem;
+  border-left: 3px solid var(--color-danger);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+.empty,
+.placeholder {
+  margin: 0;
+  padding: 1rem;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: 10px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.5;
+}
+
+.own {
+  padding: 0 0.45rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.open {
+  color: var(--color-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.open:hover {
+  color: var(--color-text);
+}
+
+/* The open block is named in text; weight and colour only add to it. */
+.open[aria-current="true"] {
+  color: var(--color-cta);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.open:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.editor {
+  min-width: 0;
+}
+
+@media (max-width: 900px) {
+  .structure {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .list {
+    position: static;
+  }
+}

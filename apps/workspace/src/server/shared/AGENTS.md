@@ -105,3 +105,17 @@ Transaktion um.
 `services/message/announce-system-message.ts` ist der einzige Weg für fachliche Chat-Hinweise: Savepoint, Fehler nur
 geloggt (Name, Key, kein Text). Ein Fachwrite scheitert nie an seiner Systemnachricht. Neue Ereignisse rufen diesen
 Helfer auf, statt Savepoint und Logging zu kopieren.
+
+## Onboarding-Bogen (ab Task 65)
+
+`services/onboarding/onboarding-form-read-service.ts` baut `OnboardingFormDto` und `OnboardingFormSummaryDto`;
+das Mapping liegt in `onboarding-form-mapping-service.ts`, die Zeilentypen in `onboarding-form-types.ts`.
+
+- Der Service liegt bewusst schon hier, obwohl bis Task 66 nur Workspace-Handler ihn nutzen: Die Portal-Handler aus
+  Task 66 lesen denselben Bogen (Planvorgabe Task 65). Welche Dateien ein Betrachter sieht, entscheidet die
+  Sichtbarkeitsbedingung des Aufrufers (`fileAccessService.readableCondition` bzw. der Portal-Filter); ein Link auf
+  eine nicht sichtbare Datei entfällt.
+- **Keine Regel zu Sichtbarkeit, Pflicht oder Fortschritt.** `toSummaryDto` beschafft nur die Eingaben und ruft
+  `getQuestionnaireCompleteness` auf. Der Fortschritt zählt jede Datei-Verknüpfung, unabhängig vom Betrachter.
+- Die Quelle der Projektleistungen (aktuelle `project_line_items` außer `rejected`, nach Abschluss der Snapshot
+  `onboarding_form_services`) wird ausschließlich in `loadServices` gewählt.

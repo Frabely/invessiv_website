@@ -7,6 +7,7 @@ export const SITE_ROUTES = {
   CRM_QUESTIONNAIRE_TEMPLATES: "/crm/questionnaire-templates",
   CRM_QUESTIONNAIRE_BLOCK_EDITOR: "/crm/questionnaire-templates/blocks",
   CRM_QUESTIONNAIRE_TEMPLATE_EDITOR: "/crm/questionnaire-templates/templates",
+  CRM_ONBOARDING_FORM: "/crm/onboarding",
   CRM_TASKS: "/crm/tasks",
   CRM_MESSAGES: "/crm/messages",
   CRM_FEEDBACK: "/crm/feedback",

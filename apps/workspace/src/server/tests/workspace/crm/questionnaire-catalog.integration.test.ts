@@ -4,14 +4,9 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
 import { QuestionnaireCatalogStatus } from "@invessiv/common/constants/crm/questionnaire/questionnaire-catalog-statuses";
 import { QuestionnaireFieldRequirement } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-requirements";
-import {
-  QuestionnaireFieldType,
-  type QuestionnaireFieldType as FieldType,
-} from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
+import { QuestionnaireFieldType } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
-import type { UpdateQuestionnaireFieldRequestDto } from "@invessiv/common/contracts/crm/questionnaire/update-questionnaire-field-request.dto";
-import type { CreateQuestionnaireFieldRequestDto } from "@invessiv/common/contracts/crm/questionnaire/create-questionnaire-field-request.dto";
 import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block.dto";
 import type { QuestionnaireCommandResult } from "@invessiv/common/contracts/crm/questionnaire/results/questionnaire-command-result";
 import {
@@ -35,6 +30,11 @@ import { questionnaireBlockCopyService } from "@/server/workspace/crm/services/q
 import { questionnaireDefinitionReadService } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-read-service";
 import { questionnaireDefinitionWriteService } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-write-service";
 import { createFileTestFixture } from "../../shared/files/file-test-fixture";
+import {
+  fieldByKey,
+  fieldRequestFixture as fieldInput,
+  updateFieldRequestFixture as updateFieldInput,
+} from "./support/questionnaire-definition-fixtures";
 
 vi.mock("server-only", () => ({}));
 
@@ -44,58 +44,6 @@ const TITLE_PREFIX = `integration:questionnaire:${KEY_PREFIX}`;
 function value<T>(result: QuestionnaireCommandResult<T>): T {
   if (!result.ok) throw new Error(`expected success, got ${result.code}`);
   return result.value;
-}
-
-/** An update request: the type and the level of an existing field are fixed, so they are not sent. */
-function updateFieldInput(
-  ...args: Parameters<typeof fieldInput>
-): UpdateQuestionnaireFieldRequestDto {
-  const input: Partial<CreateQuestionnaireFieldRequestDto> = fieldInput(
-    ...args,
-  );
-  delete input.type;
-  delete input.parentFieldId;
-  return input as UpdateQuestionnaireFieldRequestDto;
-}
-
-function fieldInput(
-  key: string,
-  type: FieldType,
-  expectedBlockVersion: number,
-  overrides: Partial<CreateQuestionnaireFieldRequestDto> = {},
-): CreateQuestionnaireFieldRequestDto {
-  return {
-    key,
-    type,
-    parentFieldId: null,
-    requirement: QuestionnaireFieldRequirement.Optional,
-    maxLength: null,
-    minItems: null,
-    maxItems: null,
-    acceptedAssetKinds: null,
-    prefillSource: null,
-    conditionFieldId: null,
-    conditionChoiceId: null,
-    translations: {
-      de: { label: key, help: null },
-      en: { label: key, help: null },
-    },
-    choices:
-      type === QuestionnaireFieldType.YesNo
-        ? [
-            { key: "yes", labels: { de: "Ja", en: "Yes" } },
-            { key: "no", labels: { de: "Nein", en: "No" } },
-          ]
-        : [],
-    expectedBlockVersion,
-    ...overrides,
-  };
-}
-
-function fieldByKey(block: QuestionnaireBlockDto, key: string) {
-  return block.fields
-    .flatMap((field) => [field, ...field.children])
-    .find((field) => field.key === key)!;
 }
 
 describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(

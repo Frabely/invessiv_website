@@ -29,10 +29,13 @@ import type {
   CrmProjectLineItemsDictionary,
   CrmTasksDictionary,
   CrmFeedbackRoundsDictionary,
+  CrmOnboardingDictionary,
+  CrmQuestionnaireDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
 import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import type { ProjectLineItemsViewModel } from "@/common/contracts/crm/project-line-items-view-model";
 import type { FeedbackRoundsViewModel } from "@/common/contracts/crm/feedback-rounds-view-model";
+import type { OnboardingViewModel } from "@/common/contracts/crm/onboarding/onboarding-view-model";
 import type { TasksViewModel } from "@/common/contracts/crm/tasks-view-model";
 import type { FilesViewModel } from "@/common/contracts/crm/files/files-view-model";
 import { CustomerFilesSection } from "@/components/workspace/crm/files/customer-files-section/customer-files-section";
@@ -84,6 +87,9 @@ type CustomerCockpitViewProps = {
   /** Rounds of the open project tab; absent without `projects.read` there. */
   feedback?: FeedbackRoundsViewModel;
   feedbackContent?: CrmFeedbackRoundsDictionary;
+  onboarding?: OnboardingViewModel;
+  onboardingContent?: CrmOnboardingDictionary;
+  questionnaireErrors?: CrmQuestionnaireDictionary["errors"];
   portalAccess?: PortalAccessDto;
   portalAccessContent?: CrmPortalAccessDictionary;
 };
@@ -122,6 +128,9 @@ export function CustomerCockpitView({
   selectedProjectId,
   feedback,
   feedbackContent,
+  onboarding,
+  onboardingContent,
+  questionnaireErrors,
   portalAccess,
   portalAccessContent,
 }: CustomerCockpitViewProps) {
@@ -311,6 +320,9 @@ export function CustomerCockpitView({
                 selectedProjectId={selectedProjectId}
                 feedback={feedback}
                 feedbackContent={feedbackContent}
+                onboarding={onboarding}
+                onboardingContent={onboardingContent}
+                questionnaireErrors={questionnaireErrors}
               />
             ) : null}
           </div>

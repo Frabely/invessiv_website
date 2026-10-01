@@ -3,7 +3,6 @@ import "server-only";
 import type { z } from "zod";
 
 import { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
-import type { QuestionnaireCommandResult } from "@invessiv/common/contracts/crm/questionnaire/results/questionnaire-command-result";
 import { QuestionnaireBlocksConstraintName } from "@invessiv/db/constraint-names/crm/questionnaire-blocks-constraint-names";
 import { QuestionnaireFieldsConstraintName } from "@invessiv/db/constraint-names/crm/questionnaire-fields-constraint-names";
 import {
@@ -17,6 +16,11 @@ const KEY_CONSTRAINTS: readonly string[] = [
   QuestionnaireBlocksConstraintName.CatalogKeyUnique,
   QuestionnaireFieldsConstraintName.BlockKeyUnique,
 ];
+
+type KeyTaken = {
+  ok: false;
+  code: typeof QuestionnaireErrorCode.KeyTaken;
+};
 
 type Parsed<TSchema extends z.ZodType> =
   | { ok: true; data: z.output<TSchema> }
@@ -49,12 +53,11 @@ function parse<TSchema extends z.ZodType>(
 /**
  * Runs a command in one transaction. The key checks before a write keep the common case
  * friendly; a parallel write that takes the same key in between still ends as `KEY_TAKEN`.
+ * The result type is the caller's: form commands answer with their own, wider result.
  */
-async function run<T>(
-  command: (
-    tx: ContactDatabaseTransaction,
-  ) => Promise<QuestionnaireCommandResult<T>>,
-): Promise<QuestionnaireCommandResult<T>> {
+async function run<TResult>(
+  command: (tx: ContactDatabaseTransaction) => Promise<TResult>,
+): Promise<TResult | KeyTaken> {
   try {
     return await getDrizzleDatabaseClient().transaction(command);
   } catch (error: unknown) {
@@ -62,9 +65,11 @@ async function run<T>(
       error,
       PostgresErrorCode.UniqueViolation,
     );
-    if (constraint && KEY_CONSTRAINTS.includes(constraint))
-      return { ok: false, code: QuestionnaireErrorCode.KeyTaken };
-    throw error;
+    if (!constraint || !KEY_CONSTRAINTS.includes(constraint)) throw error;
+    return {
+      ok: false,
+      code: QuestionnaireErrorCode.KeyTaken,
+    };
   }
 }
 

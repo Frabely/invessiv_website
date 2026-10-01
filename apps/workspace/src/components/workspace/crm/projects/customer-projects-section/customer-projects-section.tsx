@@ -14,15 +14,18 @@ import type {
   CrmCockpitDictionary,
   CrmFeedbackRoundsDictionary,
   CrmFilesDictionary,
+  CrmOnboardingDictionary,
   CrmProjectLineItemsDictionary,
+  CrmQuestionnaireDictionary,
   CrmTasksDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
+import type { OnboardingViewModel } from "@/common/contracts/crm/onboarding/onboarding-view-model";
+import { ProjectOnboardingSection } from "@/components/workspace/crm/onboarding/project/project-onboarding-section/project-onboarding-section";
 import type { FeedbackRoundsViewModel } from "@/common/contracts/crm/feedback-rounds-view-model";
 import { ProjectFeedbackSection } from "@/components/workspace/crm/feedback-rounds/project-feedback-section/project-feedback-section";
 import { useCockpitSelection } from "@/hooks/workspace/crm/use-cockpit-selection";
 import { ProjectEditorDialog } from "@/components/workspace/crm/projects/project-editor-dialog/project-editor-dialog";
 import { ProjectOverview } from "@/components/workspace/crm/projects/project-overview/project-overview";
-import { MockSectionCard } from "@/components/workspace/crm/shared/mock-section-card/mock-section-card";
 import { ProjectSwitcherTabs } from "@/components/workspace/crm/projects/project-switcher-tabs/project-switcher-tabs";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ProjectLineItemsSection } from "@/components/workspace/crm/projects/project-line-items-section/project-line-items-section";
@@ -30,8 +33,6 @@ import { ProjectTasksSection } from "@/components/workspace/crm/tasks/project-ta
 import { CustomerFilesSection } from "@/components/workspace/crm/files/customer-files-section/customer-files-section";
 import type { FilesViewModel } from "@/common/contracts/crm/files/files-view-model";
 import styles from "./customer-projects-section.module.css";
-
-const PROJECT_FUTURE_AREAS = ["onboarding"] as const;
 
 type EditorState = {
   project: ProjectDto | null;
@@ -64,6 +65,11 @@ type CustomerProjectsSectionProps = {
   /** Rounds of the open tab; absent without `projects.read` there, the section then does not exist. */
   feedback?: FeedbackRoundsViewModel;
   feedbackContent?: CrmFeedbackRoundsDictionary;
+  /** Onboarding of the open tab; absent without `projects.read` there, the section then does not exist. */
+  onboarding?: OnboardingViewModel;
+  onboardingContent?: CrmOnboardingDictionary;
+  /** Error texts of the questionnaire kit, which a start of an onboarding can answer with. */
+  questionnaireErrors?: CrmQuestionnaireDictionary["errors"];
 };
 
 /** Project context rendered inside the existing customer cockpit, not as a second detail view. */
@@ -87,6 +93,9 @@ export function CustomerProjectsSection({
   selectedProjectId: requestedProjectId = null,
   feedback,
   feedbackContent,
+  onboarding,
+  onboardingContent,
+  questionnaireErrors,
 }: CustomerProjectsSectionProps) {
   const [editor, setEditor] = useState<EditorState | null>(null);
   const selection = useCockpitSelection(customerId);
@@ -106,6 +115,10 @@ export function CustomerProjectsSection({
   // Rounds of a tab that is still loading are never shown under another project.
   const activeFeedback =
     feedback && feedback.projectId === activeProject?.id ? feedback : null;
+  const activeOnboarding =
+    onboarding && onboarding.projectId === activeProject?.id
+      ? onboarding
+      : null;
 
   function selectProject(projectId: string) {
     selection.select({ projectId });
@@ -224,23 +237,21 @@ export function CustomerProjectsSection({
               viewModel={activeFeedback}
             />
           ) : null}
-          {PROJECT_FUTURE_AREAS.map((area) => {
-            const futureArea = content.projects.futureAreas[area];
-            return (
-              <MockSectionCard
-                badgeLabel={content.mock.badge}
-                body={futureArea.body}
-                key={area}
-                labelCollapse={formatMessage(content.collapse.collapse, {
-                  section: futureArea.title,
-                })}
-                labelExpand={formatMessage(content.collapse.expand, {
-                  section: futureArea.title,
-                })}
-                title={futureArea.title}
-              />
-            );
-          })}
+          {activeOnboarding && onboardingContent && questionnaireErrors ? (
+            <ProjectOnboardingSection
+              content={onboardingContent}
+              key={`onboarding-${activeProject.id}`}
+              kitErrors={questionnaireErrors}
+              labelCollapse={formatMessage(content.collapse.collapse, {
+                section: onboardingContent.project.title,
+              })}
+              labelExpand={formatMessage(content.collapse.expand, {
+                section: onboardingContent.project.title,
+              })}
+              locale={locale}
+              viewModel={activeOnboarding}
+            />
+          ) : null}
         </div>
       ) : (
         <p className={styles.empty}>{content.projects.empty}</p>

@@ -11,6 +11,7 @@ const STATUS: Record<E, H> = {
   [E.BlockInUse]: H.Conflict,
   [E.LimitReached]: H.UnprocessableContent,
   [E.KeyTaken]: H.Conflict,
+  [E.NotEditable]: H.Conflict,
   [E.ValidationError]: H.UnprocessableContent,
   [E.Internal]: H.InternalServerError,
 };
@@ -25,6 +26,7 @@ const MESSAGES: Record<E, string> = {
   [E.BlockInUse]: "The block is used by a template",
   [E.LimitReached]: "A limit of the questionnaire kit is reached",
   [E.KeyTaken]: "The key is already taken",
+  [E.NotEditable]: "The structure can no longer be changed",
   [E.ValidationError]: "Validation failed",
   [E.Internal]: "Unexpected server error",
 };

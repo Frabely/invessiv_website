@@ -97,4 +97,25 @@ describe("questionnaireDefinitionApiService", () => {
       await api.deleteField("f", { expectedBlockVersion: 1 }),
     ).toMatchObject({ ok: false, code: QuestionnaireErrorCode.Internal });
   });
+
+  it("translates the owner's own codes into the kit's, so the editor needs no branch", async () => {
+    const owned = questionnaireDefinitionApiService.forEndpoints(
+      {
+        block: (id) => `/owner/blocks/${id}`,
+        blockFields: (id) => `/owner/blocks/${id}/fields`,
+        field: (id) => `/owner/fields/${id}`,
+        fieldMove: (id) => `/owner/fields/${id}/move`,
+      },
+      { OWNER_LOCKED: QuestionnaireErrorCode.NotEditable },
+    );
+    respondWith(HttpResponseCode.Conflict, { error: "OWNER_LOCKED" });
+
+    expect(await owned.deleteField("f-1", { expectedBlockVersion: 1 })).toEqual(
+      { ok: false, code: QuestionnaireErrorCode.NotEditable },
+    );
+    expect(await api.deleteField("f-1", { expectedBlockVersion: 1 })).toEqual({
+      ok: false,
+      code: QuestionnaireErrorCode.Internal,
+    });
+  });
 });

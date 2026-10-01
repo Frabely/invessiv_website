@@ -31,6 +31,15 @@ export const ONBOARDING_PORTAL_VISIBLE_STATUS_VALUES = [
   OnboardingFormStatus.Completed,
 ] as const;
 
+/**
+ * Blocks and fields may change only here. After the first submission the review works on a fixed
+ * structure; what is missing then goes through a change request.
+ */
+export const ONBOARDING_STRUCTURE_EDITABLE_STATUS_VALUES = [
+  OnboardingFormStatus.Draft,
+  OnboardingFormStatus.Open,
+] as const;
+
 /** Every status after the first submission; a CHECK requires `submitted_at` for them. */
 export const ONBOARDING_SUBMITTED_STATUS_VALUES = [
   OnboardingFormStatus.Submitted,

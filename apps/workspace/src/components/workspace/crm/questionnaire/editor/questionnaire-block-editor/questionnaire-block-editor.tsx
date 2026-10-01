@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { faListUl, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
@@ -19,6 +19,7 @@ import { ButtonControl, ConfirmDialog, EmptyState } from "@invessiv/ui";
 import { QuestionnaireEditorDialogKind } from "@/common/constants/crm/questionnaire/questionnaire-editor-dialog-kinds";
 import type { QuestionnaireClientResult } from "@/common/contracts/crm/questionnaire/questionnaire-client-result";
 import type { QuestionnaireDefinitionClientApi } from "@/common/contracts/crm/questionnaire/questionnaire-definition-client-api";
+import type { QuestionnaireFieldDeleteDialog } from "@/common/contracts/crm/questionnaire/questionnaire-field-delete-dialog";
 import type { QuestionnaireFieldFormValues } from "@/common/contracts/crm/questionnaire/questionnaire-field-form-values";
 import type { QuestionnaireFixedChoiceLabels } from "@/common/contracts/crm/questionnaire/questionnaire-fixed-choice-labels";
 import { questionnaireFieldName } from "@/common/patterns/crm/questionnaire/questionnaire-display-name";
@@ -40,6 +41,13 @@ export type QuestionnaireBlockEditorProps = {
   locale: Locale;
   /** Called after every accepted write, e.g. to refresh counts outside the editor. */
   onBlockChangeAction?: (block: QuestionnaireBlockDto) => void;
+  /**
+   * Replaces the delete confirmation. An owner whose fields carry answers says there what is
+   * lost; the catalog keeps the editor's own dialog.
+   */
+  renderDeleteDialogAction?: (
+    dialog: QuestionnaireFieldDeleteDialog,
+  ) => ReactNode;
   showStatus: boolean;
 };
 
@@ -63,6 +71,7 @@ export function QuestionnaireBlockEditor({
   fixedChoiceLabels,
   locale,
   onBlockChangeAction,
+  renderDeleteDialogAction,
   showStatus,
 }: QuestionnaireBlockEditorProps) {
   const [block, setBlock] = useState(initialBlock);
@@ -343,7 +352,16 @@ export function QuestionnaireBlockEditor({
         />
       ) : null}
 
-      {canWrite && deleteField ? (
+      {canWrite && deleteField && renderDeleteDialogAction
+        ? renderDeleteDialogAction({
+            field: deleteField,
+            name: name(deleteField),
+            busy: dialogState.busy,
+            onCancelAction: closeDialog,
+            onConfirmAction: () => void removeField(deleteField),
+          })
+        : null}
+      {canWrite && deleteField && !renderDeleteDialogAction ? (
         <ConfirmDialog
           busy={dialogState.busy}
           cancelLabel={content.editor.deleteDialog.cancel}

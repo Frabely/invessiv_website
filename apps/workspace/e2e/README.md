@@ -20,6 +20,16 @@ werden. Session-Dateien enthalten Secrets und dürfen nicht committed werden.
 Der Test legt eine neue Aufgabe an und ändert ihren Status. Das Fixture darf deshalb nur für E2E-Tests verwendet
 werden; die Session-Datei bleibt lokal.
 
+## Onboarding-Bogen im Kunden-Cockpit
+
+- `E2E_ONBOARDING_WRITER_STORAGE_STATE`: JSON-Datei einer Clerk-Session mit `projects.read` und `projects.write`
+- `E2E_ONBOARDING_CUSTOMER_ID`: Kunde des isolierten Onboarding-Fixtures
+- `E2E_ONBOARDING_PROJECT_TITLE`: eindeutig lesbarer Titel eines geplanten oder aktiven Fixture-Projekts
+
+Der Test startet beim ersten Lauf das Onboarding des Projekts (leer) und öffnet danach den vorhandenen Bogen, weil ein
+Projekt genau einen Bogen hat und es keinen Löschpfad gibt. Er legt einen eigenen Baustein an und entfernt ihn wieder.
+Das Fixture darf deshalb nur für E2E-Tests verwendet werden; der Bogen muss im Status `draft` oder `open` bleiben.
+
 ## Portalzugang
 
 Die Portalsuite läuft mit echten Clerk-Development-Sitzungen gegen die Development-Datenbank. Sie

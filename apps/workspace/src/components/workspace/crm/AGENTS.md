@@ -204,3 +204,29 @@ Plan: `apps/workspace/plans/crm/15-onboarding/64-baustein-katalog-und-vorlagen.m
   (Ebene, Bedingungskandidaten) nur über `@invessiv/common/patterns/crm/questionnaire/questionnaire-block-structure`.
 - Sprachnamen über `languageName` bzw. `languageList` aus `@invessiv/common/patterns/i18n/language-name`
   (`Intl.DisplayNames`), nie aus dem Dictionary.
+
+## Onboarding-Bogen intern (ab Task 65)
+
+Plan: `apps/workspace/plans/crm/15-onboarding/65-bogen-anlegen-und-anpassen.md`.
+
+- Komponenten unter `onboarding/`: `project/` (Abschnitt im Projekt-Canvas, Startdialog, Status-Badge) und `form/`
+  (Seitenkopf mit Tabs, Aufbau, Dialoge). Der Abschnitt existiert nur, wenn die Page ein `OnboardingViewModel` für
+  das offene Projekt baut (`lib/workspace/crm/onboarding-view-model.ts`); er ersetzt die frühere Mock-Karte.
+- **Keine Fachlogik im Client.** Ob gestartet werden darf, kommt als `canStart` und `projectEligible` vom Server. Ob
+  der Aufbau änderbar ist, entscheidet `isOnboardingStructureEditable` aus `@invessiv/common`; ohne Recht oder nach
+  dem Absenden fehlen die Aktionen und ein Hinweis erklärt warum.
+- **Der Baukasten wird eingebunden, nicht kopiert** (Test in `onboarding-form-structure.test.tsx`):
+  `QuestionnaireBlockEditor`, `OrderedBlockListEditor`, `QuestionnaireBlockPickerDialog` und
+  `QuestionnaireBlockIdentityFields`. Die Schreibzugriffe des Editors baut
+  `onboardingFormApiService.definitionApi(formId)` über `questionnaireDefinitionApiService.forEndpoints`; eigene Codes
+  des Bogens (`ONBOARDING_NOT_EDITABLE`) übersetzt der Client dort in Codes des Baukastens, der Editor verzweigt nicht.
+- Die Blockliste meldet eine Änderung als neue Reihenfolge; `detectOnboardingBlockListChange` liest daraus den einen
+  Serverbefehl. Verschieben zeigt die neue Reihenfolge sofort (Fokus folgt der Zeile) und stellt sie bei Ablehnung
+  wieder her; Entfernen fragt vorher nach. Nach einem Schreibvorgang des Editors wird der Bogen neu gelesen, damit die
+  Liste die aktuelle Bogenversion kennt.
+- Der gewählte Baustein steht in der URL (`OnboardingFormQueryParam.Block`), eine unbekannte ID öffnet nichts. Die
+  kurzlebigen Dialoge (Auswahl, eigener Baustein, Entfernen, Start) sind React-State wie die Übergabe der
+  Feedbackrunde.
+- Das Löschen eines Felds zeigt über `renderDeleteDialogAction` des Editors den `OnboardingFieldDeleteDialog` mit der
+  Zahl betroffener Antworten und Dateien; gelöscht wird erst, wenn die Zahl geladen ist.
+- Fehlertexte nur über `onboardingFormErrorText` (`common/patterns/crm/onboarding/`).

@@ -1,0 +1,96 @@
+import "server-only";
+
+import { OnboardingErrorCode } from "@invessiv/common/constants/crm/errors/onboarding-error-codes";
+import { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
+import { QuestionnaireCatalogStatus } from "@invessiv/common/constants/crm/questionnaire/questionnaire-catalog-statuses";
+import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
+import type { AddOnboardingFormBlockRequestDto } from "@invessiv/common/contracts/crm/onboarding/add-onboarding-form-block-request.dto";
+import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
+import type { OnboardingCommandResult } from "@invessiv/common/contracts/crm/onboarding/results/onboarding-command-result";
+import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
+import { onboardingFormCreateService } from "@/server/workspace/crm/services/onboarding/onboarding-form-create-service";
+import { onboardingFormSchemas } from "@/server/workspace/crm/services/onboarding/onboarding-form-schemas";
+import { onboardingFormStructureService } from "@/server/workspace/crm/services/onboarding/onboarding-form-structure-service";
+import { onboardingPrefillService } from "@/server/workspace/crm/services/onboarding/onboarding-prefill-service";
+import { questionnaireDefinitionReadService } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-read-service";
+import { questionnaireDefinitionWriteService } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-write-service";
+
+/**
+ * A new last step of a form: a snapshot copy of an active catalog block, pre-filled like the
+ * blocks at the start, or an empty block of its own. Block keys are unique within a form; the
+ * check is race-free because every structure write holds the form lock, so the same catalog block
+ * cannot be added twice.
+ */
+export async function addOnboardingFormBlock(
+  formId: string,
+  input: AddOnboardingFormBlockRequestDto,
+  actor: WorkspaceActor,
+): Promise<OnboardingCommandResult<OnboardingFormDto>> {
+  const parsed = onboardingFormSchemas.addBlock.safeParse(input);
+  if (!parsed.success)
+    return {
+      ok: false,
+      code: OnboardingErrorCode.ValidationError,
+      errors: parsed.error.issues,
+    };
+  const data = parsed.data;
+
+  return onboardingFormStructureService.runBlockListCommand(
+    formId,
+    data.expectedFormVersion,
+    actor,
+    async (tx, form) => {
+      const steps = await onboardingFormStructureService.listSteps(tx, form.id);
+      if (steps.length >= QUESTIONNAIRE_LIMITS.blocksPerOwner)
+        return { ok: false, code: QuestionnaireErrorCode.LimitReached };
+
+      if ("catalogBlockId" in data) {
+        const source = await questionnaireDefinitionReadService.findBlock(
+          tx,
+          data.catalogBlockId,
+          null,
+        );
+        if (!source || source.status !== QuestionnaireCatalogStatus.Active)
+          return { ok: false, code: QuestionnaireErrorCode.BlockNotFound };
+        if (
+          await questionnaireDefinitionReadService.isBlockKeyTaken(
+            tx,
+            form.id,
+            source.key,
+          )
+        )
+          return { ok: false, code: QuestionnaireErrorCode.KeyTaken };
+        const blockId = await onboardingFormCreateService.appendCatalogBlock(
+          tx,
+          form.id,
+          source,
+          steps.length,
+        );
+        await onboardingPrefillService.prefillBlocks(tx, {
+          form,
+          blockIds: [blockId],
+          actor,
+        });
+        return null;
+      }
+
+      const created = await questionnaireDefinitionWriteService.createBlock(
+        tx,
+        form.id,
+        { key: data.key, carryOver: false, translations: data.translations },
+      );
+      if (!created.ok) {
+        if ("conflict" in created)
+          throw new Error("Creating a block cannot conflict with a version");
+        return created;
+      }
+      await onboardingFormCreateService.appendStep(
+        tx,
+        form.id,
+        created.value.id,
+        steps.length,
+      );
+      return null;
+    },
+  );
+}

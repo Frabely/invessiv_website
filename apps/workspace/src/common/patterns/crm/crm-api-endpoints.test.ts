@@ -5,6 +5,15 @@ import {
   crmFeedbackRoundEndpoint,
   crmFeedbackRoundReadEndpoint,
   crmFeedbackRoundStatusEndpoint,
+  crmOnboardingFormBlockEndpoint,
+  crmOnboardingFormBlockFieldsEndpoint,
+  crmOnboardingFormBlockMoveEndpoint,
+  crmOnboardingFormBlocksEndpoint,
+  crmOnboardingFormEndpoint,
+  crmOnboardingFormFieldEndpoint,
+  crmOnboardingFormFieldMoveEndpoint,
+  crmOnboardingFormFieldUsageEndpoint,
+  crmProjectOnboardingEndpoint,
   crmQuestionnaireBlockDuplicateEndpoint,
   crmQuestionnaireBlockEndpoint,
   crmQuestionnaireBlockFieldsEndpoint,
@@ -71,6 +80,50 @@ describe("crm onboarding catalog endpoints", () => {
     );
     expect(crmQuestionnaireTemplateEndpoint("t/1")).toBe(
       "/api/workspace/crm/questionnaire/templates/t%2F1",
+    );
+  });
+});
+
+describe("crm onboarding form endpoints", () => {
+  it("puts the project state below the project and the form below the onboarding api", () => {
+    expect(crmProjectOnboardingEndpoint("p-1")).toBe(
+      "/api/workspace/crm/projects/p-1/onboarding",
+    );
+    expect(crmOnboardingFormEndpoint("f-1")).toBe(
+      "/api/workspace/crm/onboarding/forms/f-1",
+    );
+  });
+
+  it("addresses blocks and fields below their form", () => {
+    expect(crmOnboardingFormBlocksEndpoint("f-1")).toBe(
+      "/api/workspace/crm/onboarding/forms/f-1/blocks",
+    );
+    expect(crmOnboardingFormBlockEndpoint("f-1", "b-1")).toBe(
+      "/api/workspace/crm/onboarding/forms/f-1/blocks/b-1",
+    );
+    expect(crmOnboardingFormBlockMoveEndpoint("f-1", "b-1")).toBe(
+      "/api/workspace/crm/onboarding/forms/f-1/blocks/b-1/move",
+    );
+    expect(crmOnboardingFormBlockFieldsEndpoint("f-1", "b-1")).toBe(
+      "/api/workspace/crm/onboarding/forms/f-1/blocks/b-1/fields",
+    );
+    expect(crmOnboardingFormFieldEndpoint("f-1", "q-1")).toBe(
+      "/api/workspace/crm/onboarding/forms/f-1/fields/q-1",
+    );
+    expect(crmOnboardingFormFieldMoveEndpoint("f-1", "q-1")).toBe(
+      "/api/workspace/crm/onboarding/forms/f-1/fields/q-1/move",
+    );
+    expect(crmOnboardingFormFieldUsageEndpoint("f-1", "q-1")).toBe(
+      "/api/workspace/crm/onboarding/forms/f-1/fields/q-1/usage",
+    );
+  });
+
+  it("encodes every id", () => {
+    expect(crmOnboardingFormBlockEndpoint("a/b", "c d")).toBe(
+      "/api/workspace/crm/onboarding/forms/a%2Fb/blocks/c%20d",
+    );
+    expect(crmOnboardingFormFieldEndpoint("a/b", "c d")).toBe(
+      "/api/workspace/crm/onboarding/forms/a%2Fb/fields/c%20d",
     );
   });
 });

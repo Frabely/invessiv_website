@@ -30,6 +30,9 @@ die Kundenakte. Pläne: `apps/workspace/plans/crm/04-personen-und-kundenakte/` u
 6. **Private Seite.** `robots: { index: false, follow: false, nocache: true }` und
    `export const dynamic = "force-dynamic"`.
 7. **Kein Link ins Leere.** Zeilen verlinken die Akte erst, wenn Task 05 sie liefert.
+8. **Bogenseite `onboarding/[formId]` (ab Task 65).** Sie gated über `requireWorkspaceArea(locale, WorkspaceArea.Crm)`
+   und lässt die Query-Handler auf das Projekt des Bogens eingrenzen; ein Bogen außerhalb des Zugriffsbereichs ist
+   ein 404. Katalogbausteine für die Auswahl lädt sie nur mit `projects.write` am Projekt und änderbarem Aufbau.
 
 ## Was hier nicht hingehört
 

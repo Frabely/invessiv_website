@@ -4,9 +4,11 @@ import {
   QuestionnaireFieldType,
   type QuestionnaireFieldType as FieldType,
 } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
+import type { CreateQuestionnaireFieldRequestDto } from "@invessiv/common/contracts/crm/questionnaire/create-questionnaire-field-request.dto";
 import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block.dto";
 import type { QuestionnaireChoiceDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-choice.dto";
 import type { QuestionnaireFieldDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-field.dto";
+import type { UpdateQuestionnaireFieldRequestDto } from "@invessiv/common/contracts/crm/questionnaire/update-questionnaire-field-request.dto";
 
 export const FIXTURE_BLOCK_ID = "0b000000-0000-4000-8000-000000000001";
 
@@ -73,4 +75,60 @@ export function blockFixture(
     version: 1,
     ...overrides,
   };
+}
+
+/** A create-field request with every optional setting empty; yes/no fields get their two fixed options. */
+export function fieldRequestFixture(
+  key: string,
+  type: FieldType,
+  expectedBlockVersion: number,
+  overrides: Partial<CreateQuestionnaireFieldRequestDto> = {},
+): CreateQuestionnaireFieldRequestDto {
+  return {
+    key,
+    type,
+    parentFieldId: null,
+    requirement: QuestionnaireFieldRequirement.Optional,
+    maxLength: null,
+    minItems: null,
+    maxItems: null,
+    acceptedAssetKinds: null,
+    prefillSource: null,
+    conditionFieldId: null,
+    conditionChoiceId: null,
+    translations: {
+      de: { label: key, help: null },
+      en: { label: key, help: null },
+    },
+    choices:
+      type === QuestionnaireFieldType.YesNo
+        ? [
+            { key: "yes", labels: { de: "Ja", en: "Yes" } },
+            { key: "no", labels: { de: "Nein", en: "No" } },
+          ]
+        : [],
+    expectedBlockVersion,
+    ...overrides,
+  };
+}
+
+/** Block-level fields and sub-fields alike, looked up by their key. */
+export function fieldByKey(
+  block: QuestionnaireBlockDto,
+  key: string,
+): QuestionnaireFieldDto {
+  return block.fields
+    .flatMap((field) => [field, ...field.children])
+    .find((field) => field.key === key)!;
+}
+
+/** An update request: the type and the level of an existing field are fixed, so they are not sent. */
+export function updateFieldRequestFixture(
+  ...args: Parameters<typeof fieldRequestFixture>
+): UpdateQuestionnaireFieldRequestDto {
+  const input: Partial<CreateQuestionnaireFieldRequestDto> =
+    fieldRequestFixture(...args);
+  delete input.type;
+  delete input.parentFieldId;
+  return input as UpdateQuestionnaireFieldRequestDto;
 }

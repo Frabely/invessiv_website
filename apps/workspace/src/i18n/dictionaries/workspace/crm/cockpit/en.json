@@ -88,13 +88,7 @@
       "launch": "Launch",
       "maintenance": "Maintenance"
     },
-    "tabsLabel": "This customer’s projects",
-    "futureAreas": {
-      "onboarding": {
-        "title": "Onboarding form",
-        "body": "Soon you can read the onboarding form the customer fills in on the portal here and reuse their answers in one click."
-      }
-    }
+    "tabsLabel": "This customer’s projects"
   },
   "mock": {
     "badge": "Coming soon"

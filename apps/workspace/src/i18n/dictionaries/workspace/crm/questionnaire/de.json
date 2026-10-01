@@ -345,6 +345,7 @@
     "QUESTIONNAIRE_BLOCK_IN_USE": "Der Baustein steckt in einer Vorlage und kann nur archiviert werden.",
     "QUESTIONNAIRE_LIMIT_REACHED": "Eine Obergrenze ist erreicht, etwa die Zahl der Felder oder Optionen.",
     "QUESTIONNAIRE_KEY_TAKEN": "Dieser Schlüssel ist schon vergeben.",
+    "QUESTIONNAIRE_NOT_EDITABLE": "Der Aufbau ist inzwischen fest und lässt sich nicht mehr ändern. Lade die Seite neu.",
     "VALIDATION_ERROR": "Die Eingaben sind unvollständig oder ungültig.",
     "INTERNAL": "Das hat nicht geklappt. Versuch es gleich noch einmal."
   }

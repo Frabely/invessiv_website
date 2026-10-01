@@ -74,4 +74,22 @@ describe("OrderedBlockListEditor", () => {
       "„Unternehmen“ wurde entfernt.",
     );
   });
+
+  it("shows the order without any control when it is read-only", () => {
+    render(
+      <OrderedBlockListEditor
+        empty={<p>leer</p>}
+        items={[
+          { id: "a", name: NAMES.a! },
+          { id: "b", name: NAMES.b! },
+        ]}
+        labels={labels}
+        onAnnounceAction={() => undefined}
+        onChangeAction={() => undefined}
+        readOnly
+      />,
+    );
+    expect(order()).toEqual(["Ansprechpartner", "Unternehmen"]);
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
+  });
 });

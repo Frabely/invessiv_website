@@ -2,20 +2,21 @@
 
 import { useRouter } from "next/navigation";
 import { type SubmitEvent, useId, useRef, useState } from "react";
-import { QUESTIONNAIRE_KEY_PATTERN_SOURCE } from "@invessiv/common/constants/crm/questionnaire/questionnaire-key-patterns";
-import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
 import type { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
-import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { FormDialog, FormField } from "@invessiv/ui";
+import { FormDialog } from "@invessiv/ui";
 import { questionnaireCatalogApiService } from "@/client/crm/questionnaire-catalog-api-service";
-import { QuestionnaireFormValidationCode } from "@/common/constants/crm/questionnaire/questionnaire-form-validation-codes";
-import { suggestQuestionnaireKey } from "@/common/patterns/crm/questionnaire/questionnaire-key-suggestion";
+import type {
+  QuestionnaireBlockIdentity,
+  QuestionnaireBlockIdentityErrors,
+} from "@/common/contracts/crm/questionnaire/questionnaire-block-identity";
+import { validateQuestionnaireBlockIdentity } from "@/common/patterns/crm/questionnaire/questionnaire-block-identity";
 import { questionnaireFailureCode } from "@/common/patterns/crm/questionnaire/questionnaire-client-failure";
 import { languageName } from "@invessiv/common/patterns/i18n/language-name";
 import type { CrmQuestionnaireDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { crmQuestionnaireBlockPathFor } from "@/lib/auth/routes";
+import { QuestionnaireBlockIdentityFields } from "../../block-list/questionnaire-block-identity-fields/questionnaire-block-identity-fields";
 import { QuestionnaireCheckboxField } from "../../editor/questionnaire-checkbox-field/questionnaire-checkbox-field";
 import styles from "./questionnaire-block-create-dialog.module.css";
 
@@ -24,8 +25,6 @@ export type QuestionnaireBlockCreateDialogProps = {
   content: CrmQuestionnaireDictionary;
   locale: Locale;
 };
-
-const KEY = new RegExp(QUESTIONNAIRE_KEY_PATTERN_SOURCE);
 
 /** The title is written in the editor's own language; further languages follow in the editor. */
 export function QuestionnaireBlockCreateDialog({
@@ -36,18 +35,15 @@ export function QuestionnaireBlockCreateDialog({
   const router = useRouter();
   const formId = useId();
   const titleRef = useRef<HTMLInputElement>(null);
-  const [title, setTitle] = useState("");
-  const [key, setKey] = useState("");
-  const [keyEdited, setKeyEdited] = useState(false);
+  const [identity, setIdentity] = useState<QuestionnaireBlockIdentity>({
+    title: "",
+    key: "",
+  });
   const [carryOver, setCarryOver] = useState(false);
-  const [errors, setErrors] = useState<{
-    title?: QuestionnaireFormValidationCode;
-    key?: QuestionnaireFormValidationCode;
-  }>({});
+  const [errors, setErrors] = useState<QuestionnaireBlockIdentityErrors>({});
   const [failure, setFailure] = useState<QuestionnaireErrorCode | null>(null);
   const [busy, setBusy] = useState(false);
   const texts = content.catalog.createBlockDialog;
-  const validation = content.catalog.validation;
 
   function close() {
     router.replace(closeHref, { scroll: false });
@@ -56,16 +52,7 @@ export function QuestionnaireBlockCreateDialog({
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     if (busy) return;
-    const next = {
-      title: title.trim()
-        ? undefined
-        : QuestionnaireFormValidationCode.Required,
-      key: !key
-        ? QuestionnaireFormValidationCode.Required
-        : KEY.test(key)
-          ? undefined
-          : QuestionnaireFormValidationCode.Key,
-    };
+    const next = validateQuestionnaireBlockIdentity(identity);
     setErrors(next);
     if (next.title || next.key) {
       titleRef.current?.focus();
@@ -74,9 +61,11 @@ export function QuestionnaireBlockCreateDialog({
     setBusy(true);
     setFailure(null);
     const result = await questionnaireCatalogApiService.createBlock({
-      key,
+      key: identity.key,
       carryOver,
-      translations: { [locale]: { title: title.trim(), intro: null } },
+      translations: {
+        [locale]: { title: identity.title.trim(), intro: null },
+      },
     });
     if (result.ok) {
       router.push(crmQuestionnaireBlockPathFor(locale, result.value.id));
@@ -110,43 +99,17 @@ export function QuestionnaireBlockCreateDialog({
             {content.errors[failure]}
           </p>
         ) : null}
-        <FormField
-          errorMessage={errors.title ? validation[errors.title] : undefined}
-          inputProps={{
-            maxLength: QUESTIONNAIRE_LIMITS.titleMaxLength,
-            name: "questionnaire-block-title",
-            onChange: (event) => {
-              setTitle(event.target.value);
-              if (!keyEdited)
-                setKey(suggestQuestionnaireKey(event.target.value));
-            },
-            value: title,
-          }}
-          inputRef={titleRef}
-          kind={FormFieldKind.Text}
-          label={formatMessage(texts.fields.title, {
+        <QuestionnaireBlockIdentityFields
+          errors={errors}
+          keyHint={texts.hints.key}
+          keyLabel={texts.fields.key}
+          onChangeAction={setIdentity}
+          titleLabel={formatMessage(texts.fields.title, {
             language: languageName(locale, locale),
           })}
-          required
-        />
-        <FormField
-          errorMessage={errors.key ? validation[errors.key] : undefined}
-          hint={texts.hints.key}
-          inputProps={{
-            autoCapitalize: "off",
-            autoComplete: "off",
-            maxLength: QUESTIONNAIRE_LIMITS.keyMaxLength,
-            name: "questionnaire-block-key",
-            onChange: (event) => {
-              setKey(event.target.value);
-              setKeyEdited(true);
-            },
-            spellCheck: false,
-            value: key,
-          }}
-          kind={FormFieldKind.Text}
-          label={texts.fields.key}
-          required
+          titleRef={titleRef}
+          validation={content.catalog.validation}
+          value={identity}
         />
         <QuestionnaireCheckboxField
           checked={carryOver}

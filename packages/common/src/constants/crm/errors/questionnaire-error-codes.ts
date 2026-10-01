@@ -8,6 +8,7 @@ export const QuestionnaireErrorCode = {
   BlockInUse: "QUESTIONNAIRE_BLOCK_IN_USE",
   LimitReached: "QUESTIONNAIRE_LIMIT_REACHED",
   KeyTaken: "QUESTIONNAIRE_KEY_TAKEN",
+  NotEditable: "QUESTIONNAIRE_NOT_EDITABLE",
   ValidationError: "VALIDATION_ERROR",
   Internal: "INTERNAL",
 } as const;

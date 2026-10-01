@@ -49,6 +49,8 @@ export const CrmEndpointAccessRule = {
   FeedbackItemResult: "feedback_item_result",
   FeedbackInbox: "feedback_inbox",
   FeedbackRoundRead: "feedback_round_read",
+  OnboardingForm: "onboarding_form",
+  OnboardingFormWrite: "onboarding_form_write",
 } as const;
 
 export type CrmEndpointAccessRule =
@@ -225,6 +227,14 @@ export const CRM_ENDPOINT_ACCESS_RULES = {
   },
   [CrmEndpointAccessRule.FeedbackRoundRead]: {
     permission: Permission.ProjectsRead,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.OnboardingForm]: {
+    permission: Permission.ProjectsRead,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.OnboardingFormWrite]: {
+    permission: Permission.ProjectsWrite,
     scope: "project",
   },
 } as const satisfies Record<

@@ -13,6 +13,8 @@ import projectLineItemsDe from "./project-line-items/de.json";
 import projectLineItemsEn from "./project-line-items/en.json";
 import lineItemTemplatesDe from "./line-item-templates/de.json";
 import lineItemTemplatesEn from "./line-item-templates/en.json";
+import onboardingDe from "./onboarding/de.json";
+import onboardingEn from "./onboarding/en.json";
 import questionnaireDe from "./questionnaire/de.json";
 import questionnaireEn from "./questionnaire/en.json";
 import tasksDe from "./tasks/de.json";
@@ -36,6 +38,7 @@ export type CrmCockpitDictionary = typeof cockpitDe;
 export type CrmProjectLineItemsDictionary = typeof projectLineItemsDe;
 export type CrmLineItemTemplatesDictionary = typeof lineItemTemplatesDe;
 export type CrmQuestionnaireDictionary = typeof questionnaireDe;
+export type CrmOnboardingDictionary = typeof onboardingDe;
 export type CrmTasksDictionary = typeof tasksDe;
 export type CrmAccessDictionary = typeof accessDe;
 export type CrmPortalAccessDictionary = typeof portalAccessDe;
@@ -129,6 +132,17 @@ export function getCrmLineItemTemplatesDictionary(
   locale: Locale,
 ): CrmLineItemTemplatesDictionary {
   return CRM_LINE_ITEM_TEMPLATES[locale];
+}
+
+const CRM_ONBOARDING: Record<Locale, CrmOnboardingDictionary> = {
+  de: onboardingDe,
+  en: onboardingEn,
+};
+
+export function getCrmOnboardingDictionary(
+  locale: Locale,
+): CrmOnboardingDictionary {
+  return CRM_ONBOARDING[locale];
 }
 
 export function getCrmQuestionnaireDictionary(

@@ -88,13 +88,7 @@
       "launch": "Launch",
       "maintenance": "Wartung"
     },
-    "tabsLabel": "Projekte dieses Kunden",
-    "futureAreas": {
-      "onboarding": {
-        "title": "Onboarding-Bogen",
-        "body": "Hier liest du bald den Onboarding-Bogen, den der Kunde im Portal ausfüllt, und übernimmst seine Texte mit einem Klick."
-      }
-    }
+    "tabsLabel": "Projekte dieses Kunden"
   },
   "mock": {
     "badge": "Bald verfügbar"

@@ -154,3 +154,39 @@ Plan: `apps/workspace/plans/crm/15-onboarding/64-baustein-katalog-und-vorlagen.m
   Bedingungen auf die Kopien umgehängt, `source_block_id` nur bei Kopien in einen Bogen).
 - Katalogrechte workspace-weit (`questionnaire_templates.read/write`, kein `canOn`); Endpunkte über
   `CrmEndpointAccessRule.QuestionnaireCatalog` bzw. `QuestionnaireCatalogWrite`.
+
+## Onboarding-Bogen intern (ab Task 65)
+
+Plan: `apps/workspace/plans/crm/15-onboarding/65-bogen-anlegen-und-anpassen.md`.
+
+- Services unter `services/onboarding/`: `onboarding-form-access-service.ts` (Bogen und Projekt mit Zugriffsbedingung
+  laden, `lockForStructure`), `onboarding-form-create-service.ts` (Bogen anlegen, Katalogblock als Schritt kopieren),
+  `onboarding-prefill-service.ts` (Übernahme aus dem letzten abgeschlossenen Bogen, CRM-Vorbelegung),
+  `onboarding-form-structure-service.ts` (Rahmen für Strukturbefehle, Schritte verschieben und entfernen),
+  `onboarding-form-schemas.ts`. Das DTO baut `onboardingFormReadService` unter `server/shared/services/onboarding/`.
+- Lesen über `projects.read`, alles Schreibende über `projects.write`, jeweils mit `crmAccessCondition` in der
+  `WHERE`-Klausel und `canOn`. Ein Bogen außerhalb des Zugriffsbereichs antwortet `ONBOARDING_FORM_NOT_FOUND`.
+- **Start nur unter Projektsperre** (`lockWritableProject`, dieselbe Sperre wie der Projekt-Editor): Status aus
+  `isOnboardingProjectEligible`, ein Bogen je Projekt, Kopien, Vorbefüllung und Activity `created` in einer Transaktion.
+- **Jede Strukturänderung hält die Bogenzeile `FOR UPDATE`** (`lockForStructure`) und prüft darunter Zugriff und
+  `isOnboardingStructureEditable` (`draft`, `open`; sonst `ONBOARDING_NOT_EDITABLE`). Deshalb ist die Schlüsselprüfung
+  `isBlockKeyTaken` im Bogen ohne Unique-Index sicher: derselbe Katalogbaustein lässt sich nicht zweimal hinzufügen
+  (`QUESTIONNAIRE_KEY_TAKEN`).
+- **Zwei Aggregate, zwei Versionen.** Befehle an der Blockliste (`add`, `remove`, `move`) laufen über
+  `runBlockListCommand`: sie vergleichen `expectedFormVersion` und antworten mit dem ganzen `OnboardingFormDto` (auch im
+  409). Kopf- und Feldbefehle laufen über `runDefinitionCommand`: sie rufen `questionnaireDefinitionWriteService` mit der
+  Bogen-ID als Owner auf, vergleichen die Blockversion und antworten mit dem Block. Beide erhöhen bei Erfolg die
+  Bogenversion über `updateLockedVersioned`. Kein Bogen-Handler enthält eigene Definitionslogik.
+- **Vorbefüllung nie raten:** Felder über `key` und Typ, Optionen über `key`, Werte nur, wenn sie die Prüfung des
+  neuen Feldes bestehen. Quelle ist ausschließlich der jüngste Bogen desselben Kunden im Status `completed`.
+  `confirmation` und `project_services` werden nie übernommen. CRM-Werte füllen nur Felder ohne übernommene Antwort;
+  nichts wird ins CRM zurückgeschrieben. Im Bogen selbst angelegte Bausteine werden nie vorbefüllt.
+- **Die Vorbefüllung überschreitet nie die Rechte des Aufrufers.** Quelle ist der jüngste abgeschlossene Bogen, den
+  der Aufrufer mit `projects.read` lesen darf (eine projektgebundene Rolle bekommt nichts aus dem Schwesterprojekt, und
+  `prefillAvailable` verrät es auch nicht); CRM-Stammdaten kopiert nur, wer `customers.read` am Kunden hat. Beides
+  hängt am `actor` in `onboardingPrefillService`, nicht an den Handlern.
+- Entfernen eines Blocks läuft über `questionnaireDefinitionWriteService.deleteBlock`; Antworten und Datei-Verknüpfungen
+  fallen per Cascade weg, die Dateien bleiben.
+- Fehlerabbildung der Routen: `onboardingApiError` (`src/lib/workspace/crm/`) für `OnboardingErrorCode`, Codes des
+  Baukastens gehen an `questionnaireApiError` weiter. Endpunkte über `CrmEndpointAccessRule.OnboardingForm` bzw.
+  `OnboardingFormWrite`.

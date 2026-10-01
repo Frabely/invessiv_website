@@ -5,7 +5,12 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
-import { getCrmCockpitDictionary } from "@/i18n/dictionaries/workspace/crm";
+import type { OnboardingViewModel } from "@/common/contracts/crm/onboarding/onboarding-view-model";
+import {
+  getCrmCockpitDictionary,
+  getCrmOnboardingDictionary,
+  getCrmQuestionnaireDictionary,
+} from "@/i18n/dictionaries/workspace/crm";
 import {
   projectFixture,
   TEST_CUSTOMER_ID,
@@ -125,14 +130,59 @@ describe("CustomerProjectsSection", () => {
     ).toBeVisible();
   });
 
-  it("reserves the roadmap areas of a project as marked placeholders", () => {
-    renderSection(false);
-
-    for (const area of Object.values(content.projects.futureAreas)) {
-      expect(screen.getByRole("heading", { name: area.title })).toBeVisible();
-    }
-    expect(screen.getAllByText(content.mock.badge)).toHaveLength(
-      Object.keys(content.projects.futureAreas).length,
+  it("shows the onboarding of the open tab in place of the former placeholder", () => {
+    const onboardingContent = getCrmOnboardingDictionary("de");
+    const onboarding = (projectId: string): OnboardingViewModel => ({
+      projectId,
+      state: {
+        projectId,
+        form: null,
+        canStart: true,
+        projectEligible: true,
+        prefillAvailable: false,
+      },
+      templates: [],
+      formHref: null,
+    });
+    const props = {
+      canWrite: false,
+      content,
+      customerId: TEST_CUSTOMER_ID,
+      locale: "de" as const,
+      onboardingContent,
+      projects,
+      questionnaireErrors: getCrmQuestionnaireDictionary("de").errors,
+    };
+    const view = render(
+      <CustomerProjectsSection
+        {...props}
+        onboarding={onboarding(website.id)}
+      />,
     );
+
+    expect(
+      screen.getByRole("heading", { name: onboardingContent.project.title }),
+    ).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: onboardingContent.project.start }),
+    ).toBeVisible();
+    expect(screen.queryByText(content.mock.badge)).toBeNull();
+
+    // The state of another tab is never shown under this project.
+    view.rerender(
+      <CustomerProjectsSection {...props} onboarding={onboarding(shop.id)} />,
+    );
+    expect(
+      screen.queryByRole("heading", { name: onboardingContent.project.title }),
+    ).toBeNull();
+  });
+
+  it("has no onboarding area without the right to read the project", () => {
+    renderSection(false);
+    expect(
+      screen.queryByRole("heading", {
+        name: getCrmOnboardingDictionary("de").project.title,
+      }),
+    ).toBeNull();
   });
 });

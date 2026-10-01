@@ -1,6 +1,6 @@
 # Ordner 15 — Onboarding
 
-> **Status:** läuft (15.1–15.2 gemergt, 15.3 offen) · **Abhängigkeiten:** 07 (Projekte, Projektleistungen), 08 (Aufgaben), 12a/12b/13 (Portal), 13a
+> **Status:** läuft (15.1–15.2 gemergt, 15.3 im Review) · **Abhängigkeiten:** 07 (Projekte, Projektleistungen), 08 (Aufgaben), 12a/12b/13 (Portal), 13a
 > (Chat, Systemnachrichten), 14 (Dateien), 16 (Feedbackrunden, deren Bausteine hier verallgemeinert werden) — alle
 > gemerged · **Aufwand:** 16–21 Tage gesamt · **Reviewziel:** acht Teil-PRs mit je 30–110 Dateien
 
@@ -82,16 +82,16 @@ Wie `14-dateien` und `16-feedbackrunden` liegt das Onboarding in **einem** Ordne
 geliefert. Jede Teil-Einheit hat einen eigenen Branch, einen eigenen PR, einen eigenen Status und hält `master`
 deploybar. Reine Fundamente bleiben unsichtbar; sichtbare Funktionen werden vertikal vollständig geliefert.
 
-| PR   | Task | Branch                               | Datei                                                                                                              | Nach Merge sichtbar                                                                        | Dateien | Status  |
-| ---- | ---- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------: | ------- |
-| 15.1 | 63   | `feat/crm-onboarding-1-datenmodell`  | [`63-datenmodell-und-regeln.md`](./63-datenmodell-und-regeln.md)                                                   | nichts                                                                                     |   55–75 | gemergt |
-| 15.2 | 64   | `feat/crm-onboarding-2-katalog`      | [`64-baustein-katalog-und-vorlagen.md`](./64-baustein-katalog-und-vorlagen.md) + [`64a`](./64a-standardkatalog.md) | CRM-Seite „Onboarding-Vorlagen“ mit Bausteinen und Vorlagen, Standardkatalog               |  90–110 | gemergt |
-| 15.3 | 65   | `feat/crm-onboarding-3-bogen-intern` | [`65-bogen-anlegen-und-anpassen.md`](./65-bogen-anlegen-und-anpassen.md)                                           | Intern: Onboarding je Projekt starten und anpassen (Entwurf)                               |   70–90 | offen   |
-| 15.4 | 66   | `feat/crm-onboarding-4-portal-form`  | [`66-portal-formular.md`](./66-portal-formular.md)                                                                 | nichts für Kunden (Portal-Seite existiert, ist aber ohne freigegebenen Bogen unerreichbar) |  80–100 | offen   |
-| 15.5 | 67   | `feat/crm-onboarding-5-portal-voll`  | [`67-portal-gruppen-dateien-leistungen.md`](./67-portal-gruppen-dateien-leistungen.md)                             | Freigeben, Portal-Navigation, Widget, vollständiger Bogen inkl. Gruppen und Uploads        |  80–105 | offen   |
-| 15.6 | 68   | `feat/crm-onboarding-6-pruefung`     | [`68-pruefung-und-nachforderung.md`](./68-pruefung-und-nachforderung.md)                                           | Intern: Prüfung je Block, Nachforderung, Call-Agenda. Portal: Nachforderung bearbeiten     |   60–80 | offen   |
-| 15.7 | 69   | `feat/crm-onboarding-7-termin`       | [`69-onboarding-termin.md`](./69-onboarding-termin.md)                                                             | Buchungslink im Profil, Terminkarte im Onboarding-Widget                                   |   35–50 | offen   |
-| 15.8 | 70   | `feat/crm-onboarding-8-abschluss`    | [`70-abschluss-und-leseansicht.md`](./70-abschluss-und-leseansicht.md)                                             | Onboarding abschließen, dauerhafte Leseansicht, Vorbefüllung für Folgeprojekte aktiv       |   45–65 | offen   |
+| PR   | Task | Branch                               | Datei                                                                                                              | Nach Merge sichtbar                                                                        | Dateien | Status    |
+| ---- | ---- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------: | --------- |
+| 15.1 | 63   | `feat/crm-onboarding-1-datenmodell`  | [`63-datenmodell-und-regeln.md`](./63-datenmodell-und-regeln.md)                                                   | nichts                                                                                     |   55–75 | gemergt   |
+| 15.2 | 64   | `feat/crm-onboarding-2-katalog`      | [`64-baustein-katalog-und-vorlagen.md`](./64-baustein-katalog-und-vorlagen.md) + [`64a`](./64a-standardkatalog.md) | CRM-Seite „Onboarding-Vorlagen“ mit Bausteinen und Vorlagen, Standardkatalog               |  90–110 | gemergt   |
+| 15.3 | 65   | `feat/crm-onboarding-3-bogen-intern` | [`65-bogen-anlegen-und-anpassen.md`](./65-bogen-anlegen-und-anpassen.md)                                           | Intern: Onboarding je Projekt starten und anpassen (Entwurf)                               |   70–90 | im Review |
+| 15.4 | 66   | `feat/crm-onboarding-4-portal-form`  | [`66-portal-formular.md`](./66-portal-formular.md)                                                                 | nichts für Kunden (Portal-Seite existiert, ist aber ohne freigegebenen Bogen unerreichbar) |  80–100 | offen     |
+| 15.5 | 67   | `feat/crm-onboarding-5-portal-voll`  | [`67-portal-gruppen-dateien-leistungen.md`](./67-portal-gruppen-dateien-leistungen.md)                             | Freigeben, Portal-Navigation, Widget, vollständiger Bogen inkl. Gruppen und Uploads        |  80–105 | offen     |
+| 15.6 | 68   | `feat/crm-onboarding-6-pruefung`     | [`68-pruefung-und-nachforderung.md`](./68-pruefung-und-nachforderung.md)                                           | Intern: Prüfung je Block, Nachforderung, Call-Agenda. Portal: Nachforderung bearbeiten     |   60–80 | offen     |
+| 15.7 | 69   | `feat/crm-onboarding-7-termin`       | [`69-onboarding-termin.md`](./69-onboarding-termin.md)                                                             | Buchungslink im Profil, Terminkarte im Onboarding-Widget                                   |   35–50 | offen     |
+| 15.8 | 70   | `feat/crm-onboarding-8-abschluss`    | [`70-abschluss-und-leseansicht.md`](./70-abschluss-und-leseansicht.md)                                             | Onboarding abschließen, dauerhafte Leseansicht, Vorbefüllung für Folgeprojekte aktiv       |   45–65 | offen     |
 
 **Reihenfolge ist zwingend:** 15.1 → 15.2 → 15.3 → 15.4 → 15.5 → 15.6 → 15.7 → 15.8. Jede Einheit setzt die
 vorherige als gemerged voraus.

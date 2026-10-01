@@ -1,5 +1,6 @@
 import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
 import { ConversationApiPath } from "@/common/constants/crm/conversation-api-paths";
+import { OnboardingApiPath } from "@/common/constants/crm/onboarding-api-paths";
 import { QuestionnaireApiPath } from "@/common/constants/crm/questionnaire/questionnaire-api-paths";
 import { ProjectApiPath } from "@/common/constants/crm/project-api-paths";
 import { FeedbackApiPath } from "@/common/constants/feedback/feedback-api-paths";
@@ -77,6 +78,60 @@ export function crmQuestionnaireFieldMoveEndpoint(fieldId: string): string {
 
 export function crmQuestionnaireTemplateEndpoint(templateId: string): string {
   return `${WorkspaceApiEndpoint.CrmQuestionnaireTemplates}/${encodeURIComponent(templateId)}`;
+}
+
+export function crmProjectOnboardingEndpoint(projectId: string): string {
+  return `${crmProjectEndpoint(projectId)}/${OnboardingApiPath.Onboarding}`;
+}
+
+export function crmOnboardingFormEndpoint(formId: string): string {
+  return `${WorkspaceApiEndpoint.CrmOnboardingForms}/${encodeURIComponent(formId)}`;
+}
+
+export function crmOnboardingFormBlocksEndpoint(formId: string): string {
+  return `${crmOnboardingFormEndpoint(formId)}/${OnboardingApiPath.Blocks}`;
+}
+
+export function crmOnboardingFormBlockEndpoint(
+  formId: string,
+  blockId: string,
+): string {
+  return `${crmOnboardingFormBlocksEndpoint(formId)}/${encodeURIComponent(blockId)}`;
+}
+
+export function crmOnboardingFormBlockMoveEndpoint(
+  formId: string,
+  blockId: string,
+): string {
+  return `${crmOnboardingFormBlockEndpoint(formId, blockId)}/${OnboardingApiPath.Move}`;
+}
+
+export function crmOnboardingFormBlockFieldsEndpoint(
+  formId: string,
+  blockId: string,
+): string {
+  return `${crmOnboardingFormBlockEndpoint(formId, blockId)}/${OnboardingApiPath.Fields}`;
+}
+
+export function crmOnboardingFormFieldEndpoint(
+  formId: string,
+  fieldId: string,
+): string {
+  return `${crmOnboardingFormEndpoint(formId)}/${OnboardingApiPath.Fields}/${encodeURIComponent(fieldId)}`;
+}
+
+export function crmOnboardingFormFieldMoveEndpoint(
+  formId: string,
+  fieldId: string,
+): string {
+  return `${crmOnboardingFormFieldEndpoint(formId, fieldId)}/${OnboardingApiPath.Move}`;
+}
+
+export function crmOnboardingFormFieldUsageEndpoint(
+  formId: string,
+  fieldId: string,
+): string {
+  return `${crmOnboardingFormFieldEndpoint(formId, fieldId)}/${OnboardingApiPath.Usage}`;
 }
 
 export function crmProjectLineItemsEndpoint(projectId: string): string {

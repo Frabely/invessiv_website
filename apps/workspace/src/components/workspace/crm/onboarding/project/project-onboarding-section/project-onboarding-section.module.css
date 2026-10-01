@@ -1,0 +1,66 @@
+.action {
+  min-height: 2.35rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 10px;
+  gap: 0.45rem;
+}
+
+.summary {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.progress {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.85rem;
+}
+
+/* Wide enough to read a quarter at a glance, never wider than the text beside it needs. */
+.meter {
+  flex: 1 1 12rem;
+  max-width: 20rem;
+  height: 0.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-border) 70%, transparent);
+  overflow: hidden;
+  appearance: none;
+}
+
+.meter::-webkit-progress-bar {
+  background: transparent;
+}
+
+.meter::-webkit-progress-value {
+  border-radius: 999px;
+  background: var(--color-cta);
+}
+
+.meter::-moz-progress-bar {
+  border-radius: 999px;
+  background: var(--color-cta);
+}
+
+.progressText {
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+.hint svg {
+  flex: 0 0 auto;
+  margin-top: 0.2rem;
+  color: var(--color-cta);
+}

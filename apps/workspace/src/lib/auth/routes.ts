@@ -79,6 +79,14 @@ export function crmQuestionnaireTemplatePathFor(
   return `${createLocalePathname(SITE_ROUTES.CRM_QUESTIONNAIRE_TEMPLATE_EDITOR, locale)}/${encodeURIComponent(templateId)}`;
 }
 
+/** The internal page of one onboarding form: its structure now, answers and review later. */
+export function crmOnboardingFormPathFor(
+  locale: Locale,
+  formId: string,
+): string {
+  return `${createLocalePathname(SITE_ROUTES.CRM_ONBOARDING_FORM, locale)}/${encodeURIComponent(formId)}`;
+}
+
 export function crmTasksPathFor(locale: Locale): string {
   return createLocalePathname(SITE_ROUTES.CRM_TASKS, locale);
 }

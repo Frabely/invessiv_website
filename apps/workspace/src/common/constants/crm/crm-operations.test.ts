@@ -54,6 +54,18 @@ describe("CrmOperation", () => {
       "feedback-rounds.list-inbox",
       "feedback-rounds.count-unread",
       "feedback-rounds.mark-read",
+      "onboarding-forms.get-for-project",
+      "onboarding-forms.start",
+      "onboarding-forms.get",
+      "onboarding-form-blocks.add",
+      "onboarding-form-blocks.update",
+      "onboarding-form-blocks.remove",
+      "onboarding-form-blocks.move",
+      "onboarding-form-fields.create",
+      "onboarding-form-fields.update",
+      "onboarding-form-fields.delete",
+      "onboarding-form-fields.move",
+      "onboarding-form-fields.usage",
     ]);
     expect(CRM_OPERATION_VALUES).toEqual(Object.values(CrmOperation));
     expect(new Set(CRM_OPERATION_VALUES).size).toBe(

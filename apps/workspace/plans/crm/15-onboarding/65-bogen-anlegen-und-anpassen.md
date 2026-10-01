@@ -6,7 +6,7 @@
 > `../AGENTS.md`, scoped `AGENTS.md` unter `src/server/workspace/crm/`, `src/components/workspace/crm/`,
 > `src/app/[locale]/(app)/crm/`.
 
-> **Status:** offen · **Teil-PR:** 15.3 · **Branch:** `feat/crm-onboarding-3-bogen-intern`
+> **Status:** im Review · **Teil-PR:** 15.3 · **Branch:** `feat/crm-onboarding-3-bogen-intern`
 > **Abhängigkeiten:** Task 64 (15.2) gemerged · **Aufwand:** 2–3 T. · **Dateien:** 70–90
 > **Migration:** keine
 
@@ -189,3 +189,43 @@ Offene Punkte für Task 65:
 - [ ] Editor-Komponenten aus Task 64 wiederverwendet, Definitions-Services gemeinsam genutzt.
 - [ ] Alle Endpunkte in `CRM_ENDPOINT_ACCESS_RULES` mit Negativtests (fremder Kunde, fremdes Projekt, ohne Recht).
 - [ ] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, DB-Smokes, Workspace-Build grün.
+
+## Umsetzungsnotizen (Abweichungen vom Plan, 01.10.2026)
+
+Bei der Umsetzung nachgezogen; der Plan oben bleibt als Entstehungsstand stehen, maßgeblich ist der Code.
+
+- **Offener Punkt „Schlüssel im Bogen“:** keine Migration. Jede Strukturänderung hält die Bogenzeile `FOR UPDATE`,
+  darunter ist `isBlockKeyTaken` wettlaufsicher. Derselbe Katalogbaustein zweimal → 409 `QUESTIONNAIRE_KEY_TAKEN`;
+  zusätzlich blendet die Auswahl Bausteine aus, die der Bogen schon enthält (über `sourceBlockId`).
+- **Offener Punkt `ONBOARDING_NOT_EDITABLE`:** Der Baukasten hat den neutralen Code `QUESTIONNAIRE_NOT_EDITABLE`
+  bekommen (Text im Katalog-Dictionary). `questionnaireDefinitionApiService.forEndpoints(paths, ownerCodes)` übersetzt
+  die Codes eines Owners; der Bogen übergibt `ONBOARDING_NOT_EDITABLE → QUESTIONNAIRE_NOT_EDITABLE` und
+  `ONBOARDING_FORM_NOT_FOUND → QUESTIONNAIRE_BLOCK_NOT_FOUND`. Der Editor ist unverändert und kennt kein Onboarding.
+- **`GET …/projects/[projectId]/onboarding`** antwortet `ProjectOnboardingDto` (`form`, `canStart`,
+  `projectEligible`, `prefillAvailable`) statt `OnboardingFormSummaryDto | null`: Ob gestartet werden darf, entscheidet
+  der Server, und 404 (Projekt nicht erreichbar) bleibt von „noch kein Bogen“ unterscheidbar.
+- **Neue Fehlercodes:** `ONBOARDING_PROJECT_NOT_ELIGIBLE` (409, wie geplant) und `ONBOARDING_PROJECT_NOT_FOUND` (404,
+  fremdes oder unbekanntes Projekt beim Start).
+- **Antworten der Endpunkte:** Blocklisten-Befehle (`POST …/blocks`, `DELETE …/blocks/[blockId]`, `…/move`) tragen
+  `expectedFormVersion` und antworten mit dem ganzen `OnboardingFormDto`, auch im 409. Kopf- und Feldbefehle tragen wie
+  im Katalog die Blockversion und antworten mit dem Block; sie erhöhen die Bogenversion, ohne sie zu vergleichen.
+  `POST …/blocks` nimmt `{ catalogBlockId, expectedFormVersion }` oder `{ key, translations, expectedFormVersion }`.
+- **Zusätzlicher Service** `onboarding-form-structure-service.ts` (Rahmen der Strukturbefehle, Schritte verschieben und
+  entfernen) neben den drei geplanten; das Mapping liegt in `onboarding-form-mapping-service.ts` (mit eigenem Test).
+- **Vorbefüllung:** Feldtyp muss übereinstimmen und der Wert die Prüfung des neuen Feldes bestehen
+  (`validateQuestionnaireValue`), sonst wird er verworfen. `confirmation` wird nie übernommen: eine Bestätigung ist
+  eine Erklärung des Kunden in genau diesem Bogen. CRM-Vorbelegung gilt nur für Felder auf Blockebene. Ein später aus
+  dem Katalog ergänzter Baustein wird wie beim Start vorbefüllt; ein eigener Baustein nie.
+- **Nutzungszahlen:** `answers` zählt beantwortete Stellen (eine Mehrfachauswahl zählt einmal), bei einer Gruppe die
+  ihrer Unterfelder über alle Einträge.
+- **Editor-Erweiterungen im Baukasten** (owner-neutral): `renderDeleteDialogAction` am `QuestionnaireBlockEditor`
+  (der Bogen zeigt dort die Nutzungszahlen), `readOnly` am `OrderedBlockListEditor` (ohne Recht fehlen die
+  Bedienelemente), `QuestionnaireBlockIdentityFields` (Titel und Schlüssel, vom Katalog-Dialog und vom Dialog
+  „Eigener Baustein“ genutzt).
+- **Seitenkontext:** `get-onboarding-form-context` liefert Kunde, Projekt und Vorlagentitel für den Seitenkopf.
+- **Dictionary:** eigenes `src/i18n/dictionaries/workspace/crm/onboarding/{de,en}.json` (`meta`, `status`, `errors`,
+  `project`, `form`, `structure`); `projects.futureAreas` im Cockpit-Dictionary entfällt mit der Mock-Karte.
+- **URL-State:** gewählter Baustein `?block=<id>`; Start-, Auswahl-, Anlege- und Entfernen-Dialog sind React-State
+  (wie die Übergabe der Feedbackrunde). `?tab=` ist als Konstante angelegt, wird mit nur einem Tab aber nicht gesetzt.
+- **E2E:** `e2e/onboarding.e2e.ts` (Start bzw. Öffnen, eigener Baustein, Entfernen) braucht eine Clerk-Session und ist
+  ohne `E2E_ONBOARDING_*` übersprungen.

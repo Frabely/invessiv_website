@@ -345,6 +345,7 @@
     "QUESTIONNAIRE_BLOCK_IN_USE": "The block is part of a template and can only be archived.",
     "QUESTIONNAIRE_LIMIT_REACHED": "A limit is reached, such as the number of fields or options.",
     "QUESTIONNAIRE_KEY_TAKEN": "This key is already taken.",
+    "QUESTIONNAIRE_NOT_EDITABLE": "The structure is fixed by now and can no longer be changed. Reload the page.",
     "VALIDATION_ERROR": "The input is incomplete or invalid.",
     "INTERNAL": "That did not work. Please try again in a moment."
   }

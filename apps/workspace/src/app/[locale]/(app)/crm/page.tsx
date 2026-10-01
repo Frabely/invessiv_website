@@ -35,8 +35,10 @@ import {
   getCrmListDictionary,
   getCrmMessagesDictionary,
   getCrmMetaDictionary,
+  getCrmOnboardingDictionary,
   getCrmPortalAccessDictionary,
   getCrmProjectLineItemsDictionary,
+  getCrmQuestionnaireDictionary,
   getCrmShellDictionary,
   getCrmTasksDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
@@ -62,6 +64,7 @@ import { buildProjectLineItemsViewModel } from "@/lib/workspace/crm/project-line
 import { buildTasksViewModel } from "@/lib/workspace/crm/tasks-view-model";
 import { buildFilesViewModel } from "@/lib/workspace/crm/files-view-model";
 import { buildFeedbackRoundsViewModel } from "@/lib/workspace/crm/feedback-rounds-view-model";
+import { buildOnboardingViewModel } from "@/lib/workspace/crm/onboarding-view-model";
 import { calculateProjectLineItemValue } from "@invessiv/common/patterns/crm/project-line-item-value";
 import { listProjectLineItemsByCustomer } from "@/server/workspace/crm/query-handler/list-project-line-items-by-customer.query-handler";
 import { listCustomerAccessScopes } from "@/server/workspace/access/query-handler/list-customer-access-scopes.query-handler";
@@ -243,6 +246,13 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
         requestedRoundId: readCockpitFeedbackRoundId(resolvedSearchParams),
       })
     : null;
+  const onboardingViewModel = selectedCockpitProject
+    ? await buildOnboardingViewModel({
+        actor,
+        locale: activeLocale,
+        project: selectedCockpitProject.project,
+      })
+    : null;
   const customerAccessData =
     cockpitCustomer && canManageAccess
       ? await Promise.all([
@@ -402,6 +412,17 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
           feedbackContent={
             feedbackViewModel
               ? getCrmFeedbackRoundsDictionary(activeLocale)
+              : undefined
+          }
+          onboarding={onboardingViewModel ?? undefined}
+          onboardingContent={
+            onboardingViewModel
+              ? getCrmOnboardingDictionary(activeLocale)
+              : undefined
+          }
+          questionnaireErrors={
+            onboardingViewModel
+              ? getCrmQuestionnaireDictionary(activeLocale).errors
               : undefined
           }
           projectOwnerHasAccess={

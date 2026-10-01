@@ -11,14 +11,18 @@ import {
   ONBOARDING_CLARIFICATION_MODE_VALUES,
   OnboardingClarificationMode,
 } from "./onboarding-clarification-modes";
+import { PROJECT_LINE_ITEM_STATUS_VALUES } from "../project-line-item-statuses";
+import { ONBOARDING_ELIGIBLE_PROJECT_STATUS_VALUES } from "./onboarding-eligible-project-statuses";
 import {
   ONBOARDING_CUSTOMER_EDITABLE_STATUS_VALUES,
   ONBOARDING_FORM_STATUS_VALUES,
   ONBOARDING_PORTAL_VISIBLE_STATUS_VALUES,
+  ONBOARDING_STRUCTURE_EDITABLE_STATUS_VALUES,
   ONBOARDING_SUBMITTED_STATUS_VALUES,
   OnboardingFormStatus,
 } from "./onboarding-form-statuses";
 import { ONBOARDING_FORM_TRANSITIONS } from "./onboarding-form-transitions";
+import { ONBOARDING_VISIBLE_LINE_ITEM_STATUS_VALUES } from "./onboarding-visible-line-item-statuses";
 import {
   ONBOARDING_TRANSITION_SIDE_VALUES,
   OnboardingTransitionSide,
@@ -80,5 +84,27 @@ describe("onboarding form statuses", () => {
       "changes_requested",
       "completed",
     ]);
+  });
+
+  it("allows structure changes only before the first submission", () => {
+    expect(ONBOARDING_STRUCTURE_EDITABLE_STATUS_VALUES).toEqual([
+      "draft",
+      "open",
+    ]);
+  });
+});
+
+describe("onboarding project rules", () => {
+  it("starts an onboarding only for planned and active projects", () => {
+    expect(ONBOARDING_ELIGIBLE_PROJECT_STATUS_VALUES).toEqual([
+      "planned",
+      "active",
+    ]);
+  });
+
+  it("shows every booked service except rejected ones", () => {
+    expect(ONBOARDING_VISIBLE_LINE_ITEM_STATUS_VALUES).toEqual(
+      PROJECT_LINE_ITEM_STATUS_VALUES.filter((status) => status !== "rejected"),
+    );
   });
 });

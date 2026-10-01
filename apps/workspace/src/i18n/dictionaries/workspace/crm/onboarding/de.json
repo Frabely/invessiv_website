@@ -1,0 +1,153 @@
+{
+  "meta": {
+    "title": "Onboarding | Invessiv"
+  },
+  "status": {
+    "draft": "Entwurf",
+    "open": "Freigegeben",
+    "submitted": "Abgesendet",
+    "changes_requested": "Nachforderung offen",
+    "completed": "Abgeschlossen"
+  },
+  "errors": {
+    "ONBOARDING_FORM_NOT_FOUND": "Der Bogen existiert nicht mehr.",
+    "ONBOARDING_PROJECT_NOT_FOUND": "Das Projekt existiert nicht mehr.",
+    "ONBOARDING_PROJECT_NOT_ELIGIBLE": "Ein Onboarding lässt sich nur für geplante und aktive Projekte starten.",
+    "ONBOARDING_FORM_EXISTS": "Für dieses Projekt gibt es schon einen Bogen. Lade die Seite neu.",
+    "ONBOARDING_INVALID_TRANSITION": "Dieser Statuswechsel ist nicht möglich.",
+    "ONBOARDING_NOT_EDITABLE": "Der Aufbau ist inzwischen fest und lässt sich nicht mehr ändern.",
+    "ONBOARDING_REQUIRED_MISSING": "Es fehlen Pflichtangaben.",
+    "ONBOARDING_REVIEW_INCOMPLETE": "Die Prüfung ist noch nicht abgeschlossen.",
+    "ONBOARDING_CALL_DATE_REQUIRED": "Das Datum des Onboarding-Calls fehlt.",
+    "ONBOARDING_FILE_NOT_ATTACHABLE": "Die Datei kann nicht angehängt werden.",
+    "VALIDATION_ERROR": "Die Eingaben sind unvollständig oder ungültig.",
+    "INTERNAL": "Das hat nicht geklappt. Versuch es gleich noch einmal."
+  },
+  "project": {
+    "title": "Onboarding",
+    "start": "Onboarding starten",
+    "open": "Bogen öffnen",
+    "empty": {
+      "title": "Noch kein Onboarding gestartet",
+      "description": "Mit dem Onboarding sammelst du alle Angaben und Dateien für dieses Projekt ein, bevor die Arbeit beginnt. Du wählst eine Vorlage und passt den Bogen an dieses Projekt an.",
+      "readOnlyDescription": "Mit dem Onboarding sammelt das Team alle Angaben und Dateien für dieses Projekt ein, bevor die Arbeit beginnt. Für dieses Projekt wurde noch keines gestartet."
+    },
+    "notEligible": "Ein Onboarding lässt sich nur für geplante und aktive Projekte starten.",
+    "draftHint": "Der Bogen ist ein Entwurf. Der Kunde sieht ihn noch nicht.",
+    "progressLabel": "Beantwortete Pflichtangaben",
+    "progress": "{answered} von {total} Pflichtangaben beantwortet",
+    "progressNone": "Der Bogen hat noch keine Pflichtangaben.",
+    "dialog": {
+      "title": "Onboarding starten",
+      "description": "Es entsteht ein Entwurf mit eigenen Kopien der Bausteine. Du passt ihn danach für dieses Projekt an; der Kunde sieht ihn noch nicht.",
+      "template": "Vorlage",
+      "templateHint": "Spätere Änderungen an der Vorlage wirken nicht auf diesen Bogen.",
+      "templateOption": "{title} ({count} Bausteine)",
+      "templateOptionOne": "{title} (1 Baustein)",
+      "blank": "Leer starten",
+      "blankHint": "Der Bogen startet ohne Bausteine. Du fügst sie aus dem Katalog hinzu oder legst eigene an.",
+      "noTemplates": "Es gibt noch keine aktive Vorlage. Du kannst leer starten und Bausteine im Bogen ergänzen.",
+      "prefillHint": "Firmenweite Angaben übernimmt der Bogen aus dem letzten abgeschlossenen Onboarding dieses Kunden.",
+      "submit": "Entwurf anlegen",
+      "submitting": "Wird angelegt …",
+      "cancel": "Abbrechen",
+      "close": "Schließen"
+    }
+  },
+  "form": {
+    "back": "Zurück zum Projekt",
+    "title": "Onboarding: {project}",
+    "customer": "Kunde",
+    "template": "Vorlage",
+    "templateNone": "Ohne Vorlage",
+    "tabs": {
+      "ariaLabel": "Bereiche des Bogens",
+      "structure": "Aufbau"
+    }
+  },
+  "structure": {
+    "blocks": {
+      "legend": "Bausteine in dieser Reihenfolge",
+      "count": "{count} Bausteine",
+      "countOne": "1 Baustein",
+      "addFromCatalog": "Aus Katalog hinzufügen",
+      "addOwn": "Eigener Baustein",
+      "empty": "Dieser Bogen hat noch keine Bausteine. Füg welche aus dem Katalog hinzu oder leg einen eigenen an.",
+      "emptyReadOnly": "Dieser Bogen hat keine Bausteine.",
+      "moveUp": "„{name}“ nach oben",
+      "moveDown": "„{name}“ nach unten",
+      "remove": "„{name}“ entfernen",
+      "moved": "„{name}“ steht jetzt an Position {position}.",
+      "added": "„{name}“ wurde an Position {position} hinzugefügt.",
+      "removed": "„{name}“ wurde entfernt.",
+      "fields": "{count} Felder",
+      "fieldsOne": "1 Feld",
+      "own": "Nur in diesem Bogen",
+      "open": "Bearbeiten",
+      "openNamed": "„{name}“ bearbeiten",
+      "current": "Geöffnet"
+    },
+    "picker": {
+      "title": "Baustein aus dem Katalog hinzufügen",
+      "description": "Der Bogen bekommt eine eigene Kopie. Nur aktive Bausteine, die noch nicht im Bogen sind.",
+      "search": "Bausteine durchsuchen",
+      "searchPlaceholder": "Titel oder Schlüssel",
+      "add": "Hinzufügen",
+      "addNamed": "„{name}“ hinzufügen",
+      "empty": "Alle aktiven Bausteine sind schon im Bogen.",
+      "noResults": "Kein Baustein passt zur Suche.",
+      "close": "Fertig"
+    },
+    "ownDialog": {
+      "title": "Eigener Baustein",
+      "description": "Diesen Baustein gibt es nur in diesem Bogen. Felder und weitere Sprachen legst du danach an.",
+      "fields": {
+        "title": "Titel ({language})",
+        "key": "Schlüssel"
+      },
+      "hints": {
+        "key": "Interner Name aus Kleinbuchstaben, Ziffern und Unterstrichen. Wird aus dem Titel vorgeschlagen."
+      },
+      "submit": "Baustein anlegen",
+      "submitting": "Wird angelegt …",
+      "cancel": "Abbrechen",
+      "close": "Schließen"
+    },
+    "removeDialog": {
+      "title": "Baustein entfernen?",
+      "description": "„{name}“ wird mit allen Feldern und Antworten aus diesem Bogen entfernt. Angehängte Dateien bleiben im Dateibereich des Kunden.",
+      "confirm": "Entfernen",
+      "cancel": "Behalten",
+      "close": "Schließen"
+    },
+    "fieldDeleteDialog": {
+      "title": "Feld löschen?",
+      "description": "„{name}“ wird aus diesem Bogen gelöscht.",
+      "descriptionGroup": "„{name}“ wird mit allen Unterfeldern aus diesem Bogen gelöscht.",
+      "usageLoading": "Betroffene Antworten werden gezählt …",
+      "usageNone": "Zu diesem Feld gibt es noch keine Antworten und keine Dateien.",
+      "usage": "Betroffen sind {answers} und {files}. Die Antworten gehen verloren. Die Dateien bleiben im Dateibereich des Kunden, nur ihre Verknüpfung zum Bogen entfällt.",
+      "usageFailed": "Die Zahl der betroffenen Antworten ließ sich nicht laden. Vorhandene Antworten zu diesem Feld gehen beim Löschen verloren.",
+      "answers": {
+        "none": "keine Antworten",
+        "one": "1 Antwort",
+        "many": "{count} Antworten"
+      },
+      "files": {
+        "none": "keine Dateien",
+        "one": "1 Datei",
+        "many": "{count} Dateien"
+      },
+      "confirm": "Löschen",
+      "cancel": "Behalten",
+      "close": "Schließen"
+    },
+    "editor": {
+      "heading": "Baustein bearbeiten",
+      "select": "Wähl einen Baustein aus der Liste, um seine Texte und Felder zu bearbeiten.",
+      "locked": "Nach dem Absenden ist der Aufbau fest. Fehlendes forderst du in der Prüfung nach.",
+      "readOnly": "Du kannst diesen Bogen ansehen, aber nicht ändern.",
+      "conflict": "Jemand hat den Bogen inzwischen geändert. Der aktuelle Stand ist geladen, bitte wiederhole deine Änderung."
+    }
+  }
+}
