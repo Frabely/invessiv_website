@@ -1,35 +1,64 @@
-/* The picker is the preview: a swatch with its own frame, so white and black stay visible. */
+/* A button with a text, so it reads as something to press; its swatch is the preview. */
 .picker {
+  display: inline-flex;
   flex: 0 0 auto;
-  width: 44px;
-  height: 44px;
-  padding: 3px;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 0.85rem 0 0.5rem;
   border: 1px solid var(--color-border-strong);
   border-radius: 12px;
   background: var(--color-surface-1);
+  color: var(--color-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
 }
 
-.picker::-webkit-color-swatch-wrapper {
+.picker:hover {
+  border-color: var(--color-accent-warm);
+}
+
+.picker:focus-within {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.swatch {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.swatch::-webkit-color-swatch-wrapper {
   padding: 0;
 }
 
-.picker::-webkit-color-swatch {
+.swatch::-webkit-color-swatch {
   border: 1px solid var(--color-border-strong);
   border-radius: 8px;
 }
 
-.picker::-moz-color-swatch {
+.swatch::-moz-color-swatch {
   border: 1px solid var(--color-border-strong);
   border-radius: 8px;
 }
 
 /* Without a valid colour the swatch would show the fallback black as if it were the answer. */
-.picker[data-empty="true"] {
-  opacity: 0.45;
+.swatch[data-empty="true"]::-webkit-color-swatch {
+  border-style: dashed;
+  background: transparent;
 }
 
-.picker:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
+.swatch[data-empty="true"]::-moz-color-swatch {
+  border-style: dashed;
+  background: transparent;
+}
+
+.swatch:focus-visible {
+  outline: none;
 }

@@ -767,8 +767,10 @@ describe("OnboardingFormView field types of the full form", () => {
         screen.getByText(content.field.errors.invalid_color),
       ).toBeInTheDocument();
 
+      // The picker is a visible button, not a bare swatch: its text leads its accessible name.
+      expect(screen.getByText("Pick colour")).toBeVisible();
       fireEvent.change(
-        screen.getByLabelText("Pick the colour for “Brand colour”"),
+        screen.getByLabelText("Pick colour for “Brand colour”"),
         {
           target: { value: "#1a2b3c" },
         },

@@ -98,7 +98,8 @@
       "noteRequired": "Schreib kurz, was nicht passt."
     },
     "color": {
-      "pickerLabel": "Farbe für „{field}“ auswählen",
+      "pickerAction": "Farbe wählen",
+      "pickerLabel": "Farbe wählen für „{field}“",
       "placeholder": "#1A2B3C"
     },
     "scale": {

@@ -1,5 +1,7 @@
 "use client";
 
+import { faPalette } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import { QuestionnaireFieldRequirement } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-requirements";
 import type { QuestionnaireResolvedField } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-resolved-field";
@@ -26,8 +28,9 @@ export type OnboardingColorFieldProps = {
 };
 
 /**
- * A colour as hex text with the native picker next to it. Both write the same value; the picker
- * doubles as the preview and keeps its own border, so a white or black colour stays visible.
+ * A colour as hex text with a visibly labelled picker button next to it. Both write the same
+ * value; the button's swatch is the preview and keeps its own border, so a white or black colour
+ * stays visible.
  */
 export function OnboardingColorField({
   errorMessage,
@@ -58,18 +61,22 @@ export function OnboardingColorField({
         value,
       }}
       inputSuffix={
-        <input
-          aria-label={formatMessage(texts.color.pickerLabel, {
-            field: field.label,
-          })}
-          className={styles.picker}
-          data-empty={valid ? undefined : "true"}
-          onChange={(event) =>
-            onChangeAction(event.target.value, { immediate: true })
-          }
-          type="color"
-          value={valid ? value.trim() : PICKER_FALLBACK}
-        />
+        <label className={styles.picker}>
+          <input
+            aria-label={formatMessage(texts.color.pickerLabel, {
+              field: field.label,
+            })}
+            className={styles.swatch}
+            data-empty={valid ? undefined : "true"}
+            onChange={(event) =>
+              onChangeAction(event.target.value, { immediate: true })
+            }
+            type="color"
+            value={valid ? value.trim() : PICKER_FALLBACK}
+          />
+          <FontAwesomeIcon aria-hidden="true" icon={faPalette} />
+          <span>{texts.color.pickerAction}</span>
+        </label>
       }
       kind={FormFieldKind.Text}
       label={field.label}

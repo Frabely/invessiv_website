@@ -135,3 +135,58 @@ describe("ProcessTrack step progress", () => {
     expect(first.querySelector("svg")).not.toBeNull();
   });
 });
+
+describe("ProcessTrack scrolling", () => {
+  const pageScroll = vi.fn();
+  const trackScroll = vi.fn();
+
+  beforeAll(() => {
+    Element.prototype.scrollIntoView = pageScroll;
+    Object.defineProperty(Element.prototype, "scrollLeft", {
+      configurable: true,
+      get: () => 0,
+      set: trackScroll,
+    });
+  });
+  afterEach(() => {
+    cleanup();
+    pageScroll.mockClear();
+    trackScroll.mockClear();
+  });
+
+  it("never scrolls the page, only its own track", () => {
+    render(
+      <ProcessTrack currentIndex={1} label="Phases" steps={["A", "B", "C"]} />,
+    );
+
+    expect(pageScroll).not.toHaveBeenCalled();
+    expect(trackScroll).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps its position when only the steps are rebuilt", () => {
+    const { rerender } = render(
+      <ProcessTrack currentIndex={1} label="Phases" steps={["A", "B", "C"]} />,
+    );
+    trackScroll.mockClear();
+
+    rerender(
+      <ProcessTrack currentIndex={1} label="Phases" steps={["A", "B", "C"]} />,
+    );
+
+    expect(trackScroll).not.toHaveBeenCalled();
+    expect(pageScroll).not.toHaveBeenCalled();
+  });
+
+  it("follows the current step when it changes", () => {
+    const { rerender } = render(
+      <ProcessTrack currentIndex={0} label="Phases" steps={["A", "B", "C"]} />,
+    );
+    trackScroll.mockClear();
+
+    rerender(
+      <ProcessTrack currentIndex={2} label="Phases" steps={["A", "B", "C"]} />,
+    );
+
+    expect(trackScroll).toHaveBeenCalledTimes(1);
+  });
+});

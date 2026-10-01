@@ -44,21 +44,29 @@ export function ProcessTrack({
   onStepAction,
   scrollCurrentIntoView = true,
 }: ProcessTrackProps) {
+  const trackRef = useRef<HTMLOListElement>(null);
   const currentStepRef = useRef<HTMLLIElement>(null);
 
+  // Scrolls the track itself, never the page: `scrollIntoView` would also pull the page up to the
+  // track on every re-render of a form that sits far below it. Only a new current step moves it.
   useEffect(() => {
-    if (!scrollCurrentIntoView) return;
-    currentStepRef.current?.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-      inline: "center",
-    });
-  }, [currentIndex, scrollCurrentIntoView, steps]);
+    const track = trackRef.current;
+    const step = currentStepRef.current;
+    if (!scrollCurrentIntoView || !track || !step) return;
+    const trackBox = track.getBoundingClientRect();
+    const stepBox = step.getBoundingClientRect();
+    // Smooth scrolling is the track's CSS, so reduced motion is respected in one place.
+    track.scrollLeft =
+      track.scrollLeft +
+      stepBox.left -
+      trackBox.left -
+      (trackBox.width - stepBox.width) / 2;
+  }, [currentIndex, scrollCurrentIntoView]);
 
   return (
     <div className={styles.progress}>
       {summary}
-      <ol aria-label={label} className={styles.track}>
+      <ol aria-label={label} className={styles.track} ref={trackRef}>
         {steps.map((rawStep, index) => {
           const step = toStep(rawStep, index);
           const state =
