@@ -6,7 +6,7 @@
 > `apps/workspace/src/server/`, `src/server/workspace/crm/`, `src/components/workspace/crm/`,
 > `src/app/[locale]/(app)/crm/`.
 
-> **Status:** im Review · **Teil-PR:** 15.2 · **Branch:** `feat/crm-onboarding-2-katalog`
+> **Status:** gemergt · **Teil-PR:** 15.2 · **Branch:** `feat/crm-onboarding-2-katalog`
 > **Abhängigkeiten:** Task 63 (15.1) gemerged · **Aufwand:** 3–4 T. · **Dateien:** 90–110
 > **Migration:** ja, eine Seed-Migration für den Standardkatalog (siehe T5)
 

@@ -5,7 +5,7 @@
 > `packages/db/src/record-configuration/crm/AGENTS.md`, `packages/common/AGENTS.md`. Diese Task-Datei plus README sind
 > vollständig; die früheren Pläne 44–47 (Ordner 15b/15c) gelten nicht.
 
-> **Status:** läuft · **Teil-PR:** 15.1 · **Branch:** `feat/crm-onboarding-1-datenmodell`
+> **Status:** gemergt · **Teil-PR:** 15.1 · **Branch:** `feat/crm-onboarding-1-datenmodell`
 > **Abhängigkeiten:** Ordner 07, 13a, 14, 16 gemerged · **Aufwand:** 2–3 T. · **Dateien:** 55–75
 > **Migration:** ja, zwei (Schema + Permissions; Nummern im Repo ermitteln, zum Planungszeitpunkt war `0046` die
 > höchste)
