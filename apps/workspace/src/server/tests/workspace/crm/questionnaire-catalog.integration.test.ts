@@ -10,6 +10,7 @@ import {
 } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
+import type { UpdateQuestionnaireFieldRequestDto } from "@invessiv/common/contracts/crm/questionnaire/update-questionnaire-field-request.dto";
 import type { CreateQuestionnaireFieldRequestDto } from "@invessiv/common/contracts/crm/questionnaire/create-questionnaire-field-request.dto";
 import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block.dto";
 import type { QuestionnaireCommandResult } from "@invessiv/common/contracts/crm/questionnaire/results/questionnaire-command-result";
@@ -43,6 +44,18 @@ const TITLE_PREFIX = `integration:questionnaire:${KEY_PREFIX}`;
 function value<T>(result: QuestionnaireCommandResult<T>): T {
   if (!result.ok) throw new Error(`expected success, got ${result.code}`);
   return result.value;
+}
+
+/** An update request: the type and the level of an existing field are fixed, so they are not sent. */
+function updateFieldInput(
+  ...args: Parameters<typeof fieldInput>
+): UpdateQuestionnaireFieldRequestDto {
+  const input: Partial<CreateQuestionnaireFieldRequestDto> = fieldInput(
+    ...args,
+  );
+  delete input.type;
+  delete input.parentFieldId;
+  return input as UpdateQuestionnaireFieldRequestDto;
 }
 
 function fieldInput(
@@ -303,7 +316,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
 
       expect(
         await updateQuestionnaireField(channel.id, {
-          ...fieldInput(
+          ...updateFieldInput(
             "channel",
             QuestionnaireFieldType.Choice,
             block.version,
@@ -334,7 +347,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       const trigger = fieldByKey(block, "has_locations");
       expect(
         await updateQuestionnaireField(trigger.id, {
-          ...fieldInput(
+          ...updateFieldInput(
             "has_locations",
             QuestionnaireFieldType.YesNo,
             block.version,
@@ -353,7 +366,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
 
       const updated = value(
         await updateQuestionnaireField(trigger.id, {
-          ...fieldInput(
+          ...updateFieldInput(
             "has_locations",
             QuestionnaireFieldType.YesNo,
             block.version,
@@ -506,7 +519,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       const formField = fieldByKey(copy!, "has_locations");
       expect(
         await updateQuestionnaireField(formField.id, {
-          ...fieldInput(
+          ...updateFieldInput(
             "has_locations",
             QuestionnaireFieldType.YesNo,
             copy!.version,
