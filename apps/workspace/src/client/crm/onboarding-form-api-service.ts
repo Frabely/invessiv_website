@@ -1,16 +1,21 @@
 import { OnboardingErrorCode } from "@invessiv/common/constants/crm/errors/onboarding-error-codes";
 import { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
+import { ONBOARDING_RELEASE_WARNING_KIND_VALUES } from "@invessiv/common/constants/crm/onboarding/onboarding-release-warning-kinds";
+import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import type { AddOnboardingFormBlockRequestDto } from "@invessiv/common/contracts/crm/onboarding/add-onboarding-form-block-request.dto";
 import type { MoveOnboardingFormBlockRequestDto } from "@invessiv/common/contracts/crm/onboarding/move-onboarding-form-block-request.dto";
 import type { OnboardingFieldUsageDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-field-usage.dto";
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
+import type { OnboardingReleaseWarningDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-release-warning.dto";
+import type { ReleaseOnboardingFormRequestDto } from "@invessiv/common/contracts/crm/onboarding/release-onboarding-form-request.dto";
 import type { RemoveOnboardingFormBlockRequestDto } from "@invessiv/common/contracts/crm/onboarding/remove-onboarding-form-block-request.dto";
 import type { StartProjectOnboardingRequestDto } from "@invessiv/common/contracts/crm/onboarding/start-project-onboarding-request.dto";
 import { questionnaireDefinitionApiService } from "@/client/crm/questionnaire-definition-api-service";
 import { versionedJsonMutationService } from "@/client/shared/versioned-json-mutation-service";
 import { ONBOARDING_FORM_CLIENT_ERROR_CODE_VALUES } from "@/common/constants/crm/onboarding/onboarding-form-client-error-codes";
 import type { OnboardingFormClientResult } from "@/common/contracts/crm/onboarding/onboarding-form-client-result";
+import type { OnboardingReleaseClientResult } from "@/common/contracts/crm/onboarding/onboarding-release-client-result";
 import type { QuestionnaireDefinitionClientApi } from "@/common/contracts/crm/questionnaire/questionnaire-definition-client-api";
 import type { QuestionnaireOwnerErrorCodes } from "@/common/contracts/crm/questionnaire/questionnaire-owner-error-codes";
 import {
@@ -22,10 +27,14 @@ import {
   crmOnboardingFormFieldEndpoint,
   crmOnboardingFormFieldMoveEndpoint,
   crmOnboardingFormFieldUsageEndpoint,
+  crmOnboardingFormReleaseEndpoint,
   crmProjectOnboardingEndpoint,
 } from "@/common/patterns/crm/crm-api-endpoints";
 
-const { isRecord } = versionedJsonMutationService;
+const { isRecord, readErrorCode, readVersionConflict, send } =
+  versionedJsonMutationService;
+
+const WARNING_KINDS: readonly string[] = ONBOARDING_RELEASE_WARNING_KIND_VALUES;
 
 // What the block editor shows when its form, not its block, refuses a write.
 const OWNER_CODES: QuestionnaireOwnerErrorCodes = {
@@ -40,6 +49,17 @@ function isForm(value: unknown): value is OnboardingFormDto {
     typeof value.status === "string" &&
     typeof value.version === "number" &&
     Array.isArray(value.blocks)
+  );
+}
+
+/** A warning of a kind this client does not know yet is left out instead of shown half. */
+function isReleaseWarning(
+  value: unknown,
+): value is OnboardingReleaseWarningDto {
+  return (
+    isRecord(value) &&
+    typeof value.kind === "string" &&
+    WARNING_KINDS.includes(value.kind)
   );
 }
 
@@ -121,6 +141,41 @@ function removeBlock(
   );
 }
 
+/**
+ * Releases a draft to the portal. Without `acknowledgeWarnings` a form with warnings comes back
+ * with their list instead of being released; the same request with the flag set goes through.
+ */
+async function release(
+  formId: string,
+  request: ReleaseOnboardingFormRequestDto,
+): Promise<OnboardingReleaseClientResult> {
+  const response = await send(
+    crmOnboardingFormReleaseEndpoint(formId),
+    HttpMethod.Post,
+    request,
+  );
+  if (!response) return { ok: false, code: OnboardingErrorCode.Internal };
+  if (response.ok && isForm(response.payload))
+    return { ok: true, value: response.payload };
+
+  const current = readVersionConflict(response, isForm);
+  if (current)
+    return { ok: false, code: ConcurrencyErrorCode.VersionConflict, current };
+
+  const code = readErrorCode(
+    response.payload,
+    ONBOARDING_FORM_CLIENT_ERROR_CODE_VALUES,
+    OnboardingErrorCode.Internal,
+  );
+  if (code !== OnboardingErrorCode.ReleaseWarnings) return { ok: false, code };
+  const details = isRecord(response.payload) ? response.payload.details : null;
+  const warnings =
+    isRecord(details) && Array.isArray(details.warnings)
+      ? details.warnings.filter(isReleaseWarning)
+      : [];
+  return { ok: false, code, warnings };
+}
+
 function getFieldUsage(formId: string, fieldId: string) {
   return read(crmOnboardingFormFieldUsageEndpoint(formId, fieldId), isUsage);
 }
@@ -149,6 +204,7 @@ export const onboardingFormApiService = {
   getFieldUsage,
   getForm,
   moveBlock,
+  release,
   removeBlock,
   start,
 } as const;

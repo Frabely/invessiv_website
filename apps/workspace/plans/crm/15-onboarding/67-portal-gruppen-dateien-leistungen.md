@@ -6,7 +6,7 @@
 > erweitert), `../00-entscheidungen.md`, `../AGENTS.md`, `plans/crm/14-dateien/README.md` (Upload-Ablauf),
 > scoped `AGENTS.md` unter `src/components/portal/`, `src/server/portal/`, `src/server/shared/`.
 
-> **Status:** läuft · **Teil-PR:** 15.5 · **Branch:** `feat/crm-onboarding-5-portal-voll`
+> **Status:** im Review · **Teil-PR:** 15.5 · **Branch:** `feat/crm-onboarding-5-portal-voll`
 > **Abhängigkeiten:** Task 66 (15.4) gemerged · **Aufwand:** 3–4 T. · **Dateien:** 80–105
 > **Migration:** keine
 
@@ -209,3 +209,27 @@ Bei der Umsetzung nachgezogen; der Plan oben bleibt als Entstehungsstand stehen,
   Seite reicht dafür das Datei-Dictionary durch.
 - **Nicht in T3:** der interne Hinweis „Leistungen seit Bestätigung geändert“ (braucht ein Feld im internen DTO,
   gehört zur Bogenseite in T4), der E2E-Kernablauf (braucht „Freigeben“ aus T4) und eine Sichtprüfung im Browser.
+
+### T4 — Freigeben im CRM
+
+- **Dialog in zwei Stufen:** „Freigeben“ öffnet immer zuerst eine Rückfrage. Nennt der Server Warnungen, bleibt der
+  Dialog offen, listet sie einzeln und der Knopf heißt „Trotzdem freigeben“; erst dieser zweite Klick sendet
+  `acknowledgeWarnings: true`.
+- **Leerer Bogen ohne Serveraufruf:** `isOnboardingFormReleasable` (dieselbe Funktion wie im Handler) erklärt im
+  Dialog, was fehlt; es gibt dann keinen Freigeben-Knopf. Meldet der Server es trotzdem (ein Kollege hat inzwischen
+  ein Feld entfernt), erscheint derselbe Text.
+- **Status `open` heißt intern „Beim Kunden“** (vorher „Freigegeben“), wie in der Tabelle „Intern sichtbar“.
+- **Fortschritt im Seitenkopf** ab der Freigabe, aus `getQuestionnaireCompleteness`; der Projektbereich zeigte den
+  Fortschritt bereits aus derselben Zusammenfassung.
+- **Hinweis im Aufbau** nach der Freigabe: „Der Kunde sieht jede Änderung am Aufbau sofort.“
+- **`servicesChangedSinceConfirmation`** im internen `OnboardingFormDto` (aus T2/T3 hierher verschoben); der Tab
+  „Antworten“ zeigt dazu einen Hinweis. Jede Statusänderung einer Projektleistung zählt, auch eine Ablehnung.
+- **E2E:** `e2e/portal-onboarding.e2e.ts` spielt den Kernablauf durch (Entwurf über die API, Freigeben im CRM,
+  Widget, Ausfüllen mit Gruppeneintrag und Upload, Reload, Absenden, Antworten im CRM) auf einem eigenen
+  Fixture-Projekt `onboardingProject`. Zwei bestehende E2E-Stellen waren durch Task 67 überholt und sind angepasst:
+  `onboarding.e2e.ts` erwartete „kein Freigeben“, `portal-dashboard.e2e.ts` öffnete den früheren Mock-Dialog des
+  Onboarding-Widgets (jetzt der des Stundenkontingents).
+- **Entwurf im Portal: 404 nur über die API prüfbar.** Die Bogenseite liegt unter `portal/[customerId]/loading.tsx`
+  und wird gestreamt; ihr `notFound()` kommt erst nach dem Statuscode an (200 mit Not-Found-Inhalt, seit Task 66).
+  Der E2E prüft den Entwurf deshalb über `GET /api/portal/…/onboarding/{id}` (404) und den fehlenden Seiteninhalt;
+  ein fremder Kunde scheitert weiterhin schon im Layout mit echtem 404.

@@ -42,10 +42,12 @@ test.describe("onboarding writer", () => {
     await expect(
       page.getByRole("tab", { name: "Aufbau", selected: true }),
     ).toBeVisible();
-    // There is no release action before the portal form is complete.
-    await expect(page.getByRole("button", { name: /freigeben/i })).toHaveCount(
-      0,
-    );
+    // The fixture form is never released here: it has to stay editable for the next run.
+    await expect(
+      page
+        .getByRole("button", { name: "Freigeben" })
+        .or(page.getByText("Beim Kunden")),
+    ).toBeVisible();
 
     await page.getByRole("button", { name: "Eigener Baustein" }).click();
     const ownDialog = page.getByRole("dialog", { name: "Eigener Baustein" });

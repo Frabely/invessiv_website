@@ -2,14 +2,16 @@
 
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useId, useState } from "react";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { useId, useRef, useState } from "react";
+import { faArrowLeft, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import type { OnboardingFormContextDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form-context.dto";
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
 import type { QuestionnaireBlockSummaryDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block-summary.dto";
+import { getQuestionnaireCompleteness } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { TabList } from "@invessiv/ui";
+import { PrimaryCtaButton, TabList } from "@invessiv/ui";
 import {
   ONBOARDING_FORM_TAB_VALUES,
   OnboardingFormTab,
@@ -19,6 +21,7 @@ import {
   readOnboardingFormTab,
 } from "@/common/patterns/crm/onboarding/onboarding-form-query";
 import type { QuestionnaireFixedChoiceLabels } from "@/common/contracts/crm/questionnaire/questionnaire-fixed-choice-labels";
+import { OnboardingProgressBar } from "@/components/shared/onboarding/onboarding-progress-bar/onboarding-progress-bar";
 import type { Locale } from "@/config/i18n";
 import type {
   CrmOnboardingDictionary,
@@ -28,6 +31,7 @@ import type {
 import { OnboardingStatusBadge } from "../../project/onboarding-status-badge/onboarding-status-badge";
 import { OnboardingFormAnswersTab } from "../onboarding-form-answers-tab/onboarding-form-answers-tab";
 import { OnboardingFormStructure } from "../onboarding-form-structure/onboarding-form-structure";
+import { OnboardingReleaseDialog } from "../onboarding-release-dialog/onboarding-release-dialog";
 import styles from "./onboarding-form-page-view.module.css";
 
 export type OnboardingFormPageViewProps = {
@@ -46,8 +50,9 @@ export type OnboardingFormPageViewProps = {
 };
 
 /**
- * The internal page of one form: where it belongs, its status, and its tabs. The tab is URL state,
- * so a reload and a shared link open the same view; the review joins with its task.
+ * The internal page of one form: where it belongs, its status, the release of a draft and its tabs.
+ * The tab is URL state, so a reload and a shared link open the same view; the review joins with its
+ * task. Once released, the head shows how far the customer has got.
  */
 export function OnboardingFormPageView({
   backHref,
@@ -68,9 +73,27 @@ export function OnboardingFormPageView({
   const activeTab = readOnboardingFormTab(searchParams);
   const tabId = (tab: OnboardingFormTab) => `${baseId}-tab-${tab}`;
   const panelId = `${baseId}-panel`;
+  const titleRef = useRef<HTMLHeadingElement>(null);
   // A conflict can bring a form whose status changed; the head follows it.
   const [form, setForm] = useState(initialForm);
+  // The structure editor keeps its own copy; a form that arrives from outside it restarts it.
+  const [structureSeed, setStructureSeed] = useState({
+    form: initialForm,
+    revision: 0,
+  });
+  const [releasing, setReleasing] = useState(false);
+  const [announcement, setAnnouncement] = useState("");
   const text = content.form;
+  const released = form.status !== OnboardingFormStatus.Draft;
+
+  /** Takes over a form the release answered with, in the head and in the structure editor. */
+  function adopt(next: OnboardingFormDto) {
+    setForm(next);
+    setStructureSeed((current) => ({
+      form: next,
+      revision: current.revision + 1,
+    }));
+  }
 
   return (
     <div className={styles.page}>
@@ -79,7 +102,7 @@ export function OnboardingFormPageView({
         {text.back}
       </Link>
       <header className={styles.header}>
-        <h1 className={styles.title}>
+        <h1 className={styles.title} ref={titleRef} tabIndex={-1}>
           {formatMessage(text.title, { project: context.projectTitle })}
         </h1>
         <dl className={styles.meta}>
@@ -96,6 +119,30 @@ export function OnboardingFormPageView({
           label={content.status[form.status]}
           status={form.status}
         />
+        {canWrite && !released ? (
+          <PrimaryCtaButton
+            className={styles.release}
+            onClick={() => setReleasing(true)}
+            type="button"
+          >
+            <FontAwesomeIcon aria-hidden="true" icon={faPaperPlane} />
+            {content.release.action}
+          </PrimaryCtaButton>
+        ) : null}
+        {released && form.blocks.length > 0 ? (
+          <div className={styles.progress}>
+            <OnboardingProgressBar
+              progress={getQuestionnaireCompleteness({
+                blocks: form.blocks.map((step) => step.block),
+                answers: form.answers,
+                answerFiles: form.answerFiles,
+                groupEntries: form.groupEntries,
+                servicesConfirmed: form.servicesConfirmedAt !== null,
+              })}
+              texts={content.answers.progress}
+            />
+          </div>
+        ) : null}
       </header>
       <div className={styles.tabs}>
         <TabList
@@ -134,13 +181,37 @@ export function OnboardingFormPageView({
             catalogBlocks={catalogBlocks}
             content={content}
             fixedChoiceLabels={fixedChoiceLabels}
-            form={initialForm}
+            form={structureSeed.form}
+            key={structureSeed.revision}
             locale={locale}
             onFormChangeAction={setForm}
             questionnaireContent={questionnaireContent}
           />
         </div>
       </div>
+      {releasing ? (
+        <OnboardingReleaseDialog
+          content={content.release.dialog}
+          errorTexts={{
+            onboarding: content.errors,
+            questionnaire: questionnaireContent.errors,
+          }}
+          form={form}
+          locale={locale}
+          onCloseAction={() => setReleasing(false)}
+          onConflictAction={adopt}
+          onReleasedAction={(next) => {
+            adopt(next);
+            setReleasing(false);
+            setAnnouncement(content.release.released);
+            // The button that opened the dialog is gone with the draft status.
+            titleRef.current?.focus();
+          }}
+        />
+      ) : null}
+      <p aria-live="polite" className="sr-only" role="status">
+        {announcement}
+      </p>
     </div>
   );
 }

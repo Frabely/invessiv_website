@@ -65,6 +65,9 @@ export function OnboardingFormAnswersTab({
           texts={texts.progress}
         />
       ) : null}
+      {form.servicesChangedSinceConfirmation ? (
+        <p className={styles.notice}>{texts.servicesChanged}</p>
+      ) : null}
       {downloads.actionError ? (
         <p className={styles.error} role="alert">
           {downloads.actionError}

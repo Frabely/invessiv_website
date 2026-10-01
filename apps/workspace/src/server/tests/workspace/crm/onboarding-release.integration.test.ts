@@ -8,6 +8,7 @@ import { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/qu
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { OnboardingReleaseWarningKind } from "@invessiv/common/constants/crm/onboarding/onboarding-release-warning-kinds";
 import { QuestionnaireFieldType as T } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
+import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { SystemMessageKey } from "@invessiv/common/constants/crm/system-message-keys";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
@@ -18,8 +19,10 @@ import {
   messages,
   people,
   portalMemberships,
+  projectLineItems,
 } from "@invessiv/db/record-configuration";
 import { ONBOARDING_FORM_ACTIVITY_ENTITY } from "@/common/constants/crm/onboarding-form-activity-metadata";
+import { confirmPortalOnboardingServices } from "@/server/portal/command-handler/confirm-portal-onboarding-services.command-handler";
 import { getPortalOnboardingForm } from "@/server/portal/query-handler/get-portal-onboarding-form.query-handler";
 import { messageService } from "@/server/shared/services/message/message-service";
 import { createPortalSessionFixture } from "@/server/tests/support/portal-session-fixture";
@@ -27,6 +30,7 @@ import { addOnboardingFormBlock } from "@/server/workspace/crm/command-handler/a
 import { createOnboardingFormField } from "@/server/workspace/crm/command-handler/create-onboarding-form-field.command-handler";
 import { releaseOnboardingForm } from "@/server/workspace/crm/command-handler/release-onboarding-form.command-handler";
 import { startProjectOnboarding } from "@/server/workspace/crm/command-handler/start-project-onboarding.command-handler";
+import { getOnboardingForm } from "@/server/workspace/crm/query-handler/get-onboarding-form.query-handler";
 import { createOnboardingIntegrationFixture } from "./support/onboarding-integration-fixture";
 import { fieldRequestFixture } from "./support/questionnaire-definition-fixtures";
 
@@ -319,6 +323,48 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       expect(await release({ ...form, id: "not-a-uuid" })).toEqual(
         FORM_NOT_FOUND,
       );
+    });
+
+    it("tells the team when the booked services changed after the customer confirmed them", async () => {
+      const contact = await sessions.session(f.customerId);
+      const form = await draft([
+        await f.catalogBlock([{ key: "services", type: T.ProjectServices }]),
+      ]);
+      const changed = async () =>
+        (await getOnboardingForm(form.id, f.member()))
+          ?.servicesChangedSinceConfirmation;
+      /** A line item whose last change lies the given seconds away from now. */
+      const lineItem = (title: string, secondsFromNow: number) =>
+        f
+          .database()
+          .insert(projectLineItems)
+          .values({
+            id: crypto.randomUUID(),
+            project_id: form.projectId,
+            source_line_item_template_id: null,
+            title,
+            description: "",
+            price_cents: 100,
+            pricing_mode: ServicePricingMode.OneTime,
+            recurring_interval: null,
+            status: null,
+            version: 1,
+            updated_at: new Date(Date.now() + secondsFromNow * 1_000),
+          });
+
+      await lineItem("Landingpage", -3_600);
+      expect(await release(form)).toMatchObject({ ok: true });
+      // Nothing is confirmed yet, so nothing can have changed since.
+      expect(await changed()).toBe(false);
+
+      await confirmPortalOnboardingServices(contact, form.id, {
+        confirmed: true,
+        note: null,
+      });
+      expect(await changed()).toBe(false);
+
+      await lineItem("Blog", 3_600);
+      expect(await changed()).toBe(true);
     });
 
     it("hides the form from members without projects.write and outside their scope", async () => {

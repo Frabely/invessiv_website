@@ -72,4 +72,5 @@ export type OnboardingFormParts = {
   groupEntries: readonly OnboardingGroupEntryRow[];
   answerFiles: readonly OnboardingAnswerFileWithFile[];
   services: readonly OnboardingFormServiceDto[];
+  servicesChangedSinceConfirmation: boolean;
 };

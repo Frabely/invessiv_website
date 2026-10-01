@@ -169,3 +169,76 @@ describe("onboardingFormApiService", () => {
     });
   });
 });
+
+describe("onboardingFormApiService.release", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  const request = { expectedVersion: 2, acknowledgeWarnings: false };
+  const released = { ...form, status: "open", version: 3 };
+
+  it("posts the release below the form and hands back the released form", async () => {
+    const fetchMock = respondWith(HttpResponseCode.Ok, released);
+
+    expect(await onboardingFormApiService.release("f-1", request)).toEqual({
+      ok: true,
+      value: released,
+    });
+    expect(calls(fetchMock)).toEqual([
+      [`${FORMS}/f-1/release`, HttpMethod.Post, JSON.stringify(request)],
+    ]);
+  });
+
+  it("names the warnings a release waits for", async () => {
+    const warnings = [
+      { kind: "missing_translation", blockId: "b-1", locale: "en" },
+      { kind: "no_portal_access" },
+    ];
+    respondWith(HttpResponseCode.Conflict, {
+      error: OnboardingErrorCode.ReleaseWarnings,
+      message: "warnings",
+      details: { warnings: [...warnings, { kind: "unknown" }, "broken"] },
+    });
+
+    expect(await onboardingFormApiService.release("f-1", request)).toEqual({
+      ok: false,
+      code: OnboardingErrorCode.ReleaseWarnings,
+      warnings,
+    });
+  });
+
+  it("carries the current form of a version conflict", async () => {
+    respondWith(HttpResponseCode.Conflict, {
+      code: ConcurrencyErrorCode.VersionConflict,
+      currentVersion: 3,
+      current: released,
+    });
+
+    expect(await onboardingFormApiService.release("f-1", request)).toEqual({
+      ok: false,
+      code: ConcurrencyErrorCode.VersionConflict,
+      current: released,
+    });
+  });
+
+  it("reads the code of a refused release", async () => {
+    respondWith(HttpResponseCode.UnprocessableContent, {
+      error: QuestionnaireErrorCode.InvalidFieldConfig,
+    });
+
+    expect(await onboardingFormApiService.release("f-1", request)).toEqual({
+      ok: false,
+      code: QuestionnaireErrorCode.InvalidFieldConfig,
+    });
+  });
+
+  it("treats a network failure as an internal error", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
+
+    expect(await onboardingFormApiService.release("f-1", request)).toEqual({
+      ok: false,
+      code: OnboardingErrorCode.Internal,
+    });
+  });
+});

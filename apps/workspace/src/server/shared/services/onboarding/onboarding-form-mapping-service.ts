@@ -97,6 +97,7 @@ function toFormDto(parts: OnboardingFormParts): OnboardingFormDto {
     servicesConfirmedByPortalMembershipId:
       form.services_confirmed_by_portal_membership_id,
     servicesNote: form.services_note,
+    servicesChangedSinceConfirmation: parts.servicesChangedSinceConfirmation,
     callHeldOn: form.call_held_on,
     completedAt: iso(form.completed_at),
     completedByMemberId: form.completed_by_member_id,

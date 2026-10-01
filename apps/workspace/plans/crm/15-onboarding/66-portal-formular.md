@@ -6,7 +6,7 @@
 > `../00-entscheidungen.md`, `../AGENTS.md`, scoped `AGENTS.md` unter `src/components/portal/`,
 > `src/server/portal/`, `src/client/`, `src/hooks/`.
 
-> **Status:** im Review · **Teil-PR:** 15.4 · **Branch:** `feat/crm-onboarding-4-portal-form`
+> **Status:** gemergt · **Teil-PR:** 15.4 · **Branch:** `feat/crm-onboarding-4-portal-form`
 > **Abhängigkeiten:** Task 65 (15.3) gemerged · **Aufwand:** 3 T. · **Dateien:** 80–100
 > **Migration:** keine
 

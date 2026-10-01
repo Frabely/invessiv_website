@@ -33,6 +33,11 @@ export interface OnboardingFormDto {
   servicesConfirmedByPortalMembershipId: string | null;
   /** Customer remark on the booked services; null when left empty. Never changes the services. */
   servicesNote: string | null;
+  /**
+   * A project line item changed after the customer confirmed the services. The confirmation stays
+   * valid; the team clears it up in the review. Always false while unconfirmed or once completed.
+   */
+  servicesChangedSinceConfirmation: boolean;
   /** Date of the onboarding call as `YYYY-MM-DD`; required for completion. */
   callHeldOn: string | null;
   /** When the team completed the form; null until `completed`, afterwards read-only for good. */

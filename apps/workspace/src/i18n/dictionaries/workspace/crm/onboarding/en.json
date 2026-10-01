@@ -4,7 +4,7 @@
   },
   "status": {
     "draft": "Draft",
-    "open": "Released",
+    "open": "With the customer",
     "submitted": "Submitted",
     "changes_requested": "Changes requested",
     "completed": "Completed"
@@ -67,8 +67,29 @@
       "answers": "Answers"
     }
   },
+  "release": {
+    "action": "Release",
+    "released": "The form is released. The customer can now fill it in in the portal.",
+    "dialog": {
+      "title": "Release this form?",
+      "description": "The customer then sees the form in the portal and can fill it in. You can keep changing its structure until they submit.",
+      "confirm": "Release",
+      "confirmAnyway": "Release anyway",
+      "cancel": "Cancel",
+      "close": "Close",
+      "warningsHeading": "What you should know first",
+      "warnings": {
+        "missing_translation": "“{block}” lacks some texts in {language}. Contacts with that language see the block in another language.",
+        "no_portal_access": "The customer has no portal access yet. Nobody can open the form until you invite a contact."
+      },
+      "unknownBlock": "A block",
+      "notReleasable": "The form does not ask anything yet. It needs at least one block, every block at least one field and every group at least one sub-field.",
+      "conflict": "Someone changed the form in the meantime. The current version is loaded. Check it, then release."
+    }
+  },
   "answers": {
     "empty": "This form has no blocks yet. Once it has, the answers of the customer appear here.",
+    "servicesChanged": "The project services were changed after the customer confirmed them. Clear that up with them before you complete the onboarding.",
     "progress": {
       "barLabel": "Answered required fields",
       "label": "{answered} of {total} required answers given",
@@ -170,6 +191,7 @@
       "heading": "Edit block",
       "select": "Pick a block from the list to edit its texts and fields.",
       "locked": "After the submission the structure is fixed. Request what is missing in the review.",
+      "released": "The form is released. The customer sees every change to its structure at once.",
       "readOnly": "You can view this form but not change it.",
       "conflict": "Someone has changed the form in the meantime. The current state is loaded, please repeat your change."
     }

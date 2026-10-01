@@ -5,6 +5,20 @@
   padding-top: 1.25rem;
 }
 
+/* Something the team has to clear up with the customer, not a failure of the page. */
+.notice {
+  max-width: 62ch;
+  margin: 0;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 45%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-accent-warm) 8%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
 .error {
   margin: 0;
   color: var(--color-danger);

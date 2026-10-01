@@ -29,12 +29,15 @@ werden; die Session-Datei bleibt lokal.
 Der Test startet beim ersten Lauf das Onboarding des Projekts (leer) und öffnet danach den vorhandenen Bogen, weil ein
 Projekt genau einen Bogen hat und es keinen Löschpfad gibt. Er legt einen eigenen Baustein an und entfernt ihn wieder.
 Das Fixture darf deshalb nur für E2E-Tests verwendet werden; der Bogen muss im Status `draft` oder `open` bleiben.
+Der Test gibt den Bogen nie selbst frei. Den Kernablauf „Starten → Freigeben → Ausfüllen → Absenden“ prüft
+`portal-onboarding.e2e.ts` in der Portalsuite auf einem Projekt, das jeder Lauf neu anlegt.
 
 ## Portalzugang
 
 Die Portalsuite läuft mit echten Clerk-Development-Sitzungen gegen die Development-Datenbank. Sie
 prüft Einladungsdialog, Vorschau, Einlösung, zweiten Tokenversuch, Rollenänderung,
-Firmenisolation, Firmenwechsel, Widerruf, parallele Einlösung und konkrete API-Fehler.
+Firmenisolation, Firmenwechsel, Widerruf, parallele Einlösung und konkrete API-Fehler, dazu Dashboard,
+Dateien, Feedbackrunden und den Kernablauf des Onboardings (Freigeben, Ausfüllen mit Gruppe und Upload, Absenden).
 
 Start aus der Repository-Wurzel:
 

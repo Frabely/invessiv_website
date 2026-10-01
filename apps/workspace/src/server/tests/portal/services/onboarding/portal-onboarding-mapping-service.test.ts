@@ -48,6 +48,7 @@ function form(blocks: OnboardingFormBlockDto[]): OnboardingFormDto {
     servicesConfirmedAt: null,
     servicesConfirmedByPortalMembershipId: null,
     servicesNote: null,
+    servicesChangedSinceConfirmation: false,
     callHeldOn: null,
     completedAt: null,
     completedByMemberId: null,
