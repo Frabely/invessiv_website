@@ -33,7 +33,6 @@ export async function removeOnboardingFormBlock(
     formId,
     parsed.data.expectedFormVersion,
     actor,
-    (tx, form) =>
-      onboardingFormStructureService.removeStep(tx, form.id, blockId),
+    (tx, form) => onboardingFormStructureService.removeStep(tx, form, blockId),
   );
 }

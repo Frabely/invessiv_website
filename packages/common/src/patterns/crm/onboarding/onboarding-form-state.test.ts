@@ -11,6 +11,7 @@ import {
   canTransitionOnboardingForm,
   isOnboardingCallBookable,
   isOnboardingCallDateAcceptable,
+  isOnboardingFormReleased,
   isOnboardingProjectEligible,
   isOnboardingReviewOpen,
   isOnboardingStructureEditable,
@@ -22,6 +23,14 @@ describe("isOnboardingStructureEditable", () => {
     expect(
       ONBOARDING_FORM_STATUS_VALUES.filter(isOnboardingStructureEditable),
     ).toEqual(["draft", "open"]);
+  });
+});
+
+describe("isOnboardingFormReleased", () => {
+  it("counts every status after the draft as seen by the customer", () => {
+    expect(
+      ONBOARDING_FORM_STATUS_VALUES.filter(isOnboardingFormReleased),
+    ).toEqual(["open", "submitted", "changes_requested", "completed"]);
   });
 });
 

@@ -4,6 +4,7 @@ import { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/qu
 import type { OnboardingCommandResult } from "@invessiv/common/contracts/crm/onboarding/results/onboarding-command-result";
 import type { UpdateQuestionnaireFieldRequestDto } from "@invessiv/common/contracts/crm/questionnaire/update-questionnaire-field-request.dto";
 import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block.dto";
+import { isOnboardingFormReleased } from "@invessiv/common/patterns/crm/onboarding/onboarding-form-state";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { onboardingFormSchemas } from "@/server/workspace/crm/services/onboarding/onboarding-form-schemas";
 import { onboardingFormStructureService } from "@/server/workspace/crm/services/onboarding/onboarding-form-structure-service";
@@ -29,12 +30,24 @@ export async function updateOnboardingFormField(
   return onboardingFormStructureService.runDefinitionCommand(
     formId,
     actor,
-    (tx, owner) =>
-      questionnaireDefinitionWriteService.updateField(
+    async (tx, owner, form) => {
+      // The customer's answer would vanish with its option, without anyone noticing.
+      if (
+        isOnboardingFormReleased(form.status) &&
+        (await onboardingFormStructureService.dropsAnsweredChoice(
+          tx,
+          form.id,
+          fieldId,
+          parsed.data.choices.map((choice) => choice.key),
+        ))
+      )
+        return { ok: false, code: QuestionnaireErrorCode.ChoiceInUse };
+      return questionnaireDefinitionWriteService.updateField(
         tx,
         owner,
         fieldId,
         parsed.data,
-      ),
+      );
+    },
   );
 }

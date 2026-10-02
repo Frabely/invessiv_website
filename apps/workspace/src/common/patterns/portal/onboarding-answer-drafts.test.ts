@@ -4,6 +4,11 @@ import { QuestionnaireFieldType as T } from "@invessiv/common/constants/crm/ques
 import { QuestionnaireValueErrorCode } from "@invessiv/common/constants/crm/questionnaire/questionnaire-value-error-codes";
 import type { QuestionnaireAnswerDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-answer.dto";
 import { onboardingAnswerDrafts as drafts } from "@/common/patterns/portal/onboarding-answer-drafts";
+import {
+  portalOnboardingBlock,
+  portalOnboardingChoices,
+  portalOnboardingField,
+} from "@/components/shared/onboarding/testing/portal-onboarding-form-fixture";
 
 const text = { id: "name", type: T.ShortText, maxLength: null };
 const mail = { id: "mail", type: T.Email, maxLength: null };
@@ -25,6 +30,40 @@ function answer(
     ...overrides,
   };
 }
+
+describe("onboardingAnswerDrafts.listInvalid", () => {
+  const ask = portalOnboardingField("ask", {
+    type: T.YesNo,
+    choices: portalOnboardingChoices("ask", "yes", "no"),
+  });
+  const askMail = portalOnboardingField("askmail", {
+    type: T.Email,
+    conditionFieldId: "ask",
+    conditionChoiceId: "ask-yes",
+  });
+  const blocks = [portalOnboardingBlock("block-1", [ask, askMail])];
+  const index = drafts.indexFields(blocks);
+
+  it("names invalid text of a field that is visible", () => {
+    const typed = new Map([
+      ["ask", ["ask-yes"]],
+      ["askmail", ["nope"]],
+    ]);
+
+    expect([...drafts.listInvalid(typed, index, blocks)]).toEqual([
+      ["askmail", QuestionnaireValueErrorCode.InvalidEmail],
+    ]);
+  });
+
+  it("leaves out a field its condition hides", () => {
+    const typed = new Map([
+      ["ask", ["ask-no"]],
+      ["askmail", ["nope"]],
+    ]);
+
+    expect(drafts.listInvalid(typed, index, blocks).size).toBe(0);
+  });
+});
 
 describe("onboardingAnswerDrafts.fromAnswers", () => {
   it("collects text and options per field in stored order", () => {

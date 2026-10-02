@@ -5,6 +5,7 @@ export const OnboardingErrorCode = {
   FormExists: "ONBOARDING_FORM_EXISTS",
   InvalidTransition: "ONBOARDING_INVALID_TRANSITION",
   NotEditable: "ONBOARDING_NOT_EDITABLE",
+  EmptyForm: "ONBOARDING_EMPTY_FORM",
   RequiredMissing: "ONBOARDING_REQUIRED_MISSING",
   ReviewIncomplete: "ONBOARDING_REVIEW_INCOMPLETE",
   CallDateRequired: "ONBOARDING_CALL_DATE_REQUIRED",

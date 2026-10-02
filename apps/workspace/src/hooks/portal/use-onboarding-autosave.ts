@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { QuestionnaireValueErrorCode } from "@invessiv/common/constants/crm/questionnaire/questionnaire-value-error-codes";
 import {
   PortalOnboardingErrorCode,
   type PortalOnboardingErrorCode as PortalOnboardingErrorCodeValue,
@@ -181,17 +180,10 @@ export function useOnboardingAutosave({
     [enqueue],
   );
 
-  const invalid = useMemo(() => {
-    const errors = new Map<string, QuestionnaireValueErrorCode>();
-    for (const [key, entries] of drafts) {
-      const field = fields.get(
-        onboardingAnswerDrafts.parseSlotKey(key).fieldId,
-      );
-      const code = field && onboardingAnswerDrafts.validate(field, entries);
-      if (code) errors.set(key, code);
-    }
-    return errors;
-  }, [drafts, fields]);
+  const invalid = useMemo(
+    () => onboardingAnswerDrafts.listInvalid(drafts, fields, form.blocks),
+    [drafts, fields, form.blocks],
+  );
 
   /**
    * Saves everything typed so far. Resolves false when something is not stored: a failed save or
@@ -200,19 +192,18 @@ export function useOnboardingAutosave({
   const flush = useCallback(async (): Promise<boolean> => {
     for (const fieldId of [...timersRef.current.keys()]) void enqueue(fieldId);
     await pump();
-    const unsendable = [...draftsRef.current].some(([key, entries]) => {
-      const field = fields.get(
-        onboardingAnswerDrafts.parseSlotKey(key).fieldId,
-      );
-      return field && onboardingAnswerDrafts.validate(field, entries) !== null;
-    });
+    const unsendable = onboardingAnswerDrafts.listInvalid(
+      draftsRef.current,
+      fields,
+      form.blocks,
+    ).size;
     return (
-      !unsendable &&
+      unsendable === 0 &&
       failedRef.current.size === 0 &&
       queueRef.current.size === 0 &&
       timersRef.current.size === 0
     );
-  }, [enqueue, fields, pump]);
+  }, [enqueue, fields, form.blocks, pump]);
 
   const retry = useCallback(() => {
     for (const fieldId of failedRef.current) queueRef.current.add(fieldId);

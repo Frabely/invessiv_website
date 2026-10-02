@@ -16,6 +16,7 @@
     "ONBOARDING_FORM_EXISTS": "Für dieses Projekt gibt es schon einen Bogen. Lade die Seite neu.",
     "ONBOARDING_INVALID_TRANSITION": "Dieser Statuswechsel ist nicht möglich.",
     "ONBOARDING_NOT_EDITABLE": "Der Aufbau ist inzwischen fest und lässt sich nicht mehr ändern.",
+    "ONBOARDING_EMPTY_FORM": "Das ist der letzte Baustein, der den Kunden etwas fragt. Ein freigegebener Bogen braucht mindestens einen davon.",
     "ONBOARDING_REQUIRED_MISSING": "Es fehlen Pflichtangaben.",
     "ONBOARDING_REVIEW_INCOMPLETE": "Kein Block hat eine Rückfrage an den Kunden.",
     "ONBOARDING_CALL_DATE_REQUIRED": "Das Datum des Onboarding-Calls fehlt.",

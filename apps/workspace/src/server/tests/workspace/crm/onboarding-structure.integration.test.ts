@@ -764,6 +764,159 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         ).toMatchObject({ ok: true });
       });
 
+      it("keeps an option of a released form that already has an answer", async () => {
+        const option = (key: string) => ({ key, labels: { de: key } });
+        const source = await f.catalogBlock([
+          {
+            key: "kind",
+            type: T.Choice,
+            overrides: { choices: ["a", "b", "c"].map(option) },
+          },
+        ]);
+        const form = f.value(
+          await startProjectOnboarding(
+            await f.project(),
+            { templateId: (await f.template([source.id])).id },
+            f.member(),
+          ),
+        );
+        const block = form.blocks[0]!.block;
+        const kind = fieldByKey(block, "kind");
+        const chosen = kind.choices.find((choice) => choice.key === "b")!;
+        await f.setFormStatus(form.id, OnboardingFormStatus.Open);
+        await f.answer(form, kind.id, { choiceId: chosen.id });
+        const update = (keys: string[], version: number) =>
+          updateOnboardingFormField(
+            form.id,
+            kind.id,
+            updateFieldRequestFixture("kind", T.Choice, version, {
+              choices: keys.map(option),
+            }),
+            f.member(),
+          );
+
+        // Dropping the option and giving it another key both delete the stored row.
+        for (const keys of [
+          ["a", "c"],
+          ["a", "b_renamed", "c"],
+        ])
+          expect(await update(keys, block.version)).toEqual({
+            ok: false,
+            code: QuestionnaireErrorCode.ChoiceInUse,
+          });
+        expect((await reread(form.id)).answers).toHaveLength(1);
+
+        expect(await update(["a", "b"], block.version)).toMatchObject({
+          ok: true,
+        });
+        expect((await reread(form.id)).answers).toHaveLength(1);
+      });
+
+      it("lets a draft drop an option together with its pre-filled answer", async () => {
+        const option = (key: string) => ({ key, labels: { de: key } });
+        const source = await f.catalogBlock([
+          {
+            key: "kind",
+            type: T.Choice,
+            overrides: { choices: ["a", "b", "c"].map(option) },
+          },
+        ]);
+        const form = f.value(
+          await startProjectOnboarding(
+            await f.project(),
+            { templateId: (await f.template([source.id])).id },
+            f.member(),
+          ),
+        );
+        const block = form.blocks[0]!.block;
+        const kind = fieldByKey(block, "kind");
+        await f.answer(form, kind.id, {
+          choiceId: kind.choices.find((choice) => choice.key === "b")!.id,
+        });
+
+        expect(
+          await updateOnboardingFormField(
+            form.id,
+            kind.id,
+            updateFieldRequestFixture("kind", T.Choice, block.version, {
+              choices: ["a", "c"].map(option),
+            }),
+            f.member(),
+          ),
+        ).toMatchObject({ ok: true });
+        expect((await reread(form.id)).answers).toEqual([]);
+      });
+
+      it("never lets a released form lose the last field of a block or of a group", async () => {
+        const { form, block } = await draft();
+        await f.setFormStatus(form.id, OnboardingFormStatus.Open);
+        const remove = (key: string, version: number) =>
+          deleteOnboardingFormField(
+            form.id,
+            fieldByKey(block, key).id,
+            { expectedBlockVersion: version },
+            f.member(),
+          );
+        const lastField = { ok: false, code: QuestionnaireErrorCode.LastField };
+
+        expect(await remove("member_name", block.version)).toEqual(lastField);
+        const withoutLogo = f.value(await remove("logo", block.version));
+        const withoutTeam = f.value(await remove("team", withoutLogo.version));
+        expect(await remove("name", withoutTeam.version)).toEqual(lastField);
+        expect(
+          (await reread(form.id)).blocks[0]!.block.fields.map(
+            (field) => field.key,
+          ),
+        ).toEqual(["name"]);
+      });
+
+      it("lets a draft lose every field of a block", async () => {
+        const { form, block } = await draft();
+
+        expect(
+          await deleteOnboardingFormField(
+            form.id,
+            fieldByKey(block, "member_name").id,
+            { expectedBlockVersion: block.version },
+            f.member(),
+          ),
+        ).toMatchObject({ ok: true });
+      });
+
+      it("never lets a released form lose the last block that asks something", async () => {
+        const { form, block } = await draft();
+        const withEmpty = f.value(
+          await addOnboardingFormBlock(
+            form.id,
+            ownBlock(`${f.keyPrefix}_empty`, form.version),
+            f.member(),
+          ),
+        );
+        await f.setFormStatus(form.id, OnboardingFormStatus.Open);
+
+        expect(
+          await removeOnboardingFormBlock(
+            form.id,
+            block.id,
+            { expectedFormVersion: withEmpty.version },
+            f.member(),
+          ),
+        ).toEqual({ ok: false, code: OnboardingErrorCode.EmptyForm });
+
+        const empty = withEmpty.blocks[1]!.block;
+        const withoutEmpty = f.value(
+          await removeOnboardingFormBlock(
+            form.id,
+            empty.id,
+            { expectedFormVersion: withEmpty.version },
+            f.member(),
+          ),
+        );
+        expect(withoutEmpty.blocks.map((step) => step.block.id)).toEqual([
+          block.id,
+        ]);
+      });
+
       it("hides the form from foreign customers, other projects and read-only members", async () => {
         const { form } = await draft();
         const foreign = await draft(

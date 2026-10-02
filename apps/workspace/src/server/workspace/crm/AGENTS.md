@@ -187,6 +187,12 @@ Plan: `apps/workspace/plans/crm/15-onboarding/65-bogen-anlegen-und-anpassen.md`.
   der Aufrufer mit `projects.read` lesen darf (eine projektgebundene Rolle bekommt nichts aus dem Schwesterprojekt, und
   `prefillAvailable` verrät es auch nicht); CRM-Stammdaten kopiert nur, wer `customers.read` am Kunden hat. Beides
   hängt am `actor` in `onboardingPrefillService`, nicht an den Handlern.
+- **Ein freigegebener Bogen verliert nichts unbemerkt** (`isOnboardingFormReleased`, also ab `open`): Ein Feld-Update,
+  das eine bereits beantwortete Option entfernt oder ihren `key` ändert, antwortet `QUESTIONNAIRE_CHOICE_IN_USE`
+  (`onboardingFormStructureService.dropsAnsweredChoice`, unter der Bogensperre). Das letzte Feld eines Blocks und das
+  letzte Unterfeld einer Gruppe bleiben (`QUESTIONNAIRE_LAST_FIELD`, Option `keepLevelFilled` an `deleteField`), ebenso
+  der letzte Block mit einem Feld (`ONBOARDING_EMPTY_FORM` in `removeStep`). Alle drei antworten 409; im Entwurf gilt
+  keine dieser Regeln.
 - Entfernen eines Blocks läuft über `questionnaireDefinitionWriteService.deleteBlock`; Antworten und Datei-Verknüpfungen
   fallen per Cascade weg, die Dateien bleiben.
 - Fehlerabbildung der Routen: `onboardingApiError` (`src/lib/workspace/crm/`) für `OnboardingErrorCode`, Codes des

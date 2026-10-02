@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, asc, eq, gt, sql } from "drizzle-orm";
+import { and, asc, eq, gt, ne, notInArray, sql } from "drizzle-orm";
 
 import { OnboardingErrorCode } from "@invessiv/common/constants/crm/errors/onboarding-error-codes";
 import { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
@@ -8,11 +8,16 @@ import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurre
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
 import type { OnboardingCommandResult } from "@invessiv/common/contracts/crm/onboarding/results/onboarding-command-result";
 import type { QuestionnaireCommandResult } from "@invessiv/common/contracts/crm/questionnaire/results/questionnaire-command-result";
+import { isOnboardingFormReleased } from "@invessiv/common/patterns/crm/onboarding/onboarding-form-state";
 import { OnboardingFormBlocksConstraintName } from "@invessiv/db/constraint-names/crm/onboarding-form-blocks-constraint-names";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import {
+  onboardingAnswers,
   onboardingFormBlocks,
   onboardingForms,
+  questionnaireBlocks,
+  questionnaireFieldChoices,
+  questionnaireFields,
 } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { onboardingFormReadService } from "@/server/shared/services/onboarding/onboarding-form-read-service";
@@ -71,6 +76,7 @@ async function runDefinitionCommand<T>(
   command: (
     tx: ContactDatabaseTransaction,
     formId: string,
+    form: OnboardingFormRow,
   ) => Promise<QuestionnaireCommandResult<T>>,
 ): Promise<OnboardingCommandResult<T>> {
   if (!onboardingFormSchemas.entityId.safeParse(formId).success)
@@ -83,7 +89,7 @@ async function runDefinitionCommand<T>(
         actor,
       );
       if (!locked.ok) return locked;
-      const result = await command(tx, locked.form.id);
+      const result = await command(tx, locked.form.id, locked.form);
       if (result.ok) await bumpVersion(tx, locked.form);
       return result;
     },
@@ -187,16 +193,72 @@ async function moveStep(
   return null;
 }
 
-/**
- * Deletes a block of the form through the shared definition service; its step, fields, answers
- * and file links go with it, the files stay with the customer. The steps behind it move up in one
- * statement, which the deferrable index checks as a whole.
- */
-async function removeStep(
+/** Whether any block of the form other than `blockId` has a field. */
+async function asksWithout(
   tx: ContactDatabaseTransaction,
   formId: string,
   blockId: string,
+): Promise<boolean> {
+  const [field] = await tx
+    .select({ id: questionnaireFields.id })
+    .from(questionnaireFields)
+    .innerJoin(
+      questionnaireBlocks,
+      eq(questionnaireBlocks.id, questionnaireFields.block_id),
+    )
+    .where(
+      and(
+        eq(questionnaireBlocks.owner_form_id, formId),
+        ne(questionnaireBlocks.id, blockId),
+      ),
+    )
+    .limit(1);
+  return field !== undefined;
+}
+
+/**
+ * Whether an update of a field would delete an option that already has an answer. Options are
+ * recognised by their key, so a changed key drops the old option, and its answer rows go with it
+ * through the foreign key. Read under the form lock, which the portal's saves take as well.
+ */
+async function dropsAnsweredChoice(
+  tx: ContactDatabaseTransaction,
+  formId: string,
+  fieldId: string,
+  keptKeys: readonly string[],
+): Promise<boolean> {
+  const [answer] = await tx
+    .select({ id: onboardingAnswers.id })
+    .from(onboardingAnswers)
+    .innerJoin(
+      questionnaireFieldChoices,
+      eq(questionnaireFieldChoices.id, onboardingAnswers.choice_id),
+    )
+    .where(
+      and(
+        eq(onboardingAnswers.form_id, formId),
+        eq(onboardingAnswers.field_id, fieldId),
+        keptKeys.length > 0
+          ? notInArray(questionnaireFieldChoices.key, [...keptKeys])
+          : undefined,
+      ),
+    )
+    .limit(1);
+  return answer !== undefined;
+}
+
+/**
+ * Deletes a block of the form through the shared definition service; its step, fields, answers
+ * and file links go with it, the files stay with the customer. The steps behind it move up in one
+ * statement, which the deferrable index checks as a whole. A released form keeps at least one
+ * block with a field, so the customer never gets a form that asks nothing.
+ */
+async function removeStep(
+  tx: ContactDatabaseTransaction,
+  form: OnboardingFormRow,
+  blockId: string,
 ): Promise<Rejection | null> {
+  const formId = form.id;
   const [step] = await tx
     .select()
     .from(onboardingFormBlocks)
@@ -211,6 +273,11 @@ async function removeStep(
     ? await questionnaireDefinitionWriteService.lockBlock(tx, blockId, formId)
     : null;
   if (!step || !block) return BLOCK_NOT_FOUND;
+  if (
+    isOnboardingFormReleased(form.status) &&
+    !(await asksWithout(tx, formId, blockId))
+  )
+    return { ok: false, code: OnboardingErrorCode.EmptyForm };
 
   const deleted = await questionnaireDefinitionWriteService.deleteBlock(
     tx,
@@ -233,6 +300,7 @@ async function removeStep(
 }
 
 export const onboardingFormStructureService = {
+  dropsAnsweredChoice,
   listSteps,
   moveStep,
   removeStep,

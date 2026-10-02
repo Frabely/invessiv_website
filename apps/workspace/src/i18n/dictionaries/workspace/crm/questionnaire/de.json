@@ -343,6 +343,8 @@
     "QUESTIONNAIRE_INVALID_CONDITION": "Die Bedingung passt nicht mehr: Ein Feld oder eine Option wird noch von einer Bedingung verwendet, oder der Auslöser stünde hinter dem abhängigen Feld.",
     "QUESTIONNAIRE_INVALID_FIELD_CONFIG": "Die Einstellungen passen nicht zum Feldtyp. Prüf Optionen und Grenzen.",
     "QUESTIONNAIRE_BLOCK_IN_USE": "Der Baustein steckt in einer Vorlage und kann nur archiviert werden.",
+    "QUESTIONNAIRE_CHOICE_IN_USE": "Eine Option, die du entfernt oder umbenannt hast, hat der Kunde schon gewählt. Lass sie stehen, sonst ginge seine Antwort verloren.",
+    "QUESTIONNAIRE_LAST_FIELD": "Das letzte Feld eines Bausteins oder einer Gruppe bleibt, solange der Bogen beim Kunden ist. Leg erst ein anderes Feld an.",
     "QUESTIONNAIRE_LIMIT_REACHED": "Eine Obergrenze ist erreicht, etwa die Zahl der Felder oder Optionen.",
     "QUESTIONNAIRE_KEY_TAKEN": "Dieser Schlüssel ist schon vergeben.",
     "QUESTIONNAIRE_NOT_EDITABLE": "Der Aufbau ist inzwischen fest und lässt sich nicht mehr ändern. Lade die Seite neu.",

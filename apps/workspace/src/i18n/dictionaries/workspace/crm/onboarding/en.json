@@ -16,6 +16,7 @@
     "ONBOARDING_FORM_EXISTS": "This project already has a form. Reload the page.",
     "ONBOARDING_INVALID_TRANSITION": "This status change is not possible.",
     "ONBOARDING_NOT_EDITABLE": "The structure is fixed by now and can no longer be changed.",
+    "ONBOARDING_EMPTY_FORM": "This is the last block that asks the customer anything. A released form needs at least one of them.",
     "ONBOARDING_REQUIRED_MISSING": "Required answers are missing.",
     "ONBOARDING_REVIEW_INCOMPLETE": "No block has a question for the customer.",
     "ONBOARDING_CALL_DATE_REQUIRED": "The date of the onboarding call is missing.",

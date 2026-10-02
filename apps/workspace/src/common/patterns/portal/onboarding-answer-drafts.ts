@@ -8,6 +8,7 @@ import type { QuestionnaireResolvedBlock } from "@invessiv/common/contracts/crm/
 import type { QuestionnaireResolvedField } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-resolved-field";
 import type { SavePortalOnboardingAnswerRequestDto } from "@invessiv/common/contracts/portal/save-portal-onboarding-answer-request.dto";
 import { flattenQuestionnaireFields } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-block-structure";
+import { isQuestionnaireFieldVisible } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
 import { validateQuestionnaireValue } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-field-value";
 import type { OnboardingAnswerDrafts } from "@/common/contracts/portal/onboarding-answer-drafts";
 
@@ -121,6 +122,34 @@ function toAnswers(
   return answers;
 }
 
+/**
+ * Slots whose text cannot be saved, with the reason. A field its condition hides is left out: the
+ * customer cannot reach it, so its text must neither warn nor hold up the submission. Visibility
+ * only reads the answers, so files, entries and the services are not needed here.
+ */
+function listInvalid(
+  drafts: OnboardingAnswerDrafts,
+  fields: ReadonlyMap<string, QuestionnaireResolvedField>,
+  blocks: readonly QuestionnaireResolvedBlock[],
+): Map<string, QuestionnaireValueErrorCode> {
+  const input = {
+    blocks,
+    answers: toAnswers(drafts, fields),
+    answerFiles: [],
+    groupEntries: [],
+    servicesConfirmed: false,
+  };
+  const invalid = new Map<string, QuestionnaireValueErrorCode>();
+  for (const [key, entries] of drafts) {
+    const slot = parseSlotKey(key);
+    const field = fields.get(slot.fieldId);
+    const code = field && validate(field, entries);
+    if (code && isQuestionnaireFieldVisible(field, input, slot.groupEntryId))
+      invalid.set(key, code);
+  }
+  return invalid;
+}
+
 /** Blank text clears the slot, like an empty selection does. */
 function toRequest(
   field: Field,
@@ -141,6 +170,7 @@ export const onboardingAnswerDrafts = {
   fromAnswers,
   dropEntry,
   validate,
+  listInvalid,
   toAnswers,
   toRequest,
 } as const;

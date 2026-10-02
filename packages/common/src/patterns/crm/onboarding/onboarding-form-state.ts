@@ -19,6 +19,16 @@ export function isOnboardingStructureEditable(
   ).includes(status);
 }
 
+/**
+ * Whether the customer has seen the form. From then on a structure change must neither delete an
+ * answer unnoticed nor leave a step that asks nothing.
+ */
+export function isOnboardingFormReleased(
+  status: OnboardingFormStatus,
+): boolean {
+  return status !== OnboardingFormStatus.Draft;
+}
+
 /** Whether an onboarding may be started for a project in this status. */
 export function isOnboardingProjectEligible(status: ProjectStatus): boolean {
   return (

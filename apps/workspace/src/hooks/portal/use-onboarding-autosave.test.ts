@@ -35,6 +35,15 @@ const form = portalOnboardingForm(
         type: T.MultiChoice,
         choices: portalOnboardingChoices("many", "a", "b"),
       }),
+      portalOnboardingField("ask", {
+        type: T.YesNo,
+        choices: portalOnboardingChoices("ask", "yes", "no"),
+      }),
+      portalOnboardingField("askmail", {
+        type: T.Email,
+        conditionFieldId: "ask",
+        conditionChoiceId: "ask-yes",
+      }),
     ]),
   ],
   { answers: [portalOnboardingAnswer("name", { value: "Acme" })] },
@@ -163,6 +172,29 @@ describe("useOnboardingAutosave", () => {
       flushed = await result.current.flush();
     });
     expect(flushed).toBe(false);
+  });
+
+  it("ignores invalid text in a field its condition has hidden again", async () => {
+    const { result } = setup();
+
+    act(() => result.current.change("ask", ["ask-yes"], { immediate: true }));
+    act(() => result.current.change("askmail", ["nope"]));
+    act(() => result.current.commit("askmail"));
+    await settle();
+    expect(result.current.invalid.get("askmail")).toBe(
+      QuestionnaireValueErrorCode.InvalidEmail,
+    );
+
+    act(() => result.current.change("ask", ["ask-no"], { immediate: true }));
+    await settle();
+
+    expect(result.current.invalid.size).toBe(0);
+    expect(result.current.saveState).toBe(DraftSaveState.Saved);
+    let flushed = false;
+    await act(async () => {
+      flushed = await result.current.flush();
+    });
+    expect(flushed).toBe(true);
   });
 
   it("keeps the input after a failed save and saves it on retry", async () => {

@@ -526,11 +526,16 @@ async function compactPositions(
   }
 }
 
+/**
+ * `keepLevelFilled` refuses to remove the last field of a block or the last sub-field of a group.
+ * An owner whose blocks someone already fills in passes it, so no step ends up asking nothing.
+ */
 async function deleteField(
   tx: ContactDatabaseTransaction,
   owner: QuestionnaireBlockOwner,
   fieldId: string,
   expectedBlockVersion: number,
+  options: { keepLevelFilled?: boolean } = {},
 ): Promise<BlockResult> {
   const blockId = await readService.findFieldBlockId(tx, fieldId, owner);
   if (!blockId) return FIELD_NOT_FOUND;
@@ -544,6 +549,8 @@ async function deleteField(
   const remaining = questionnaireFieldLevel(block, field.parentFieldId).filter(
     (sibling) => sibling.id !== fieldId,
   );
+  if (options.keepLevelFilled && remaining.length === 0)
+    return invalid(QuestionnaireErrorCode.LastField);
   const code = questionnaireDefinitionValidation.validateBlock(
     withSiblings(block, field.parentFieldId, remaining),
   );

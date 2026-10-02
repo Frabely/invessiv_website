@@ -77,6 +77,7 @@ export function PortalAttachmentField({
   const [busy, setBusy] = useState(false);
   const [attaching, setAttaching] = useState(false);
   const onActivityChangeRef = useRef(onActivityChangeAction);
+  const mountedRef = useRef(true);
 
   useEffect(() => {
     onActivityChangeRef.current = onActivityChangeAction;
@@ -97,7 +98,9 @@ export function PortalAttachmentField({
   }
 
   const queue = useUploadQueue<PortalFileDto>(transport, {
-    onUploadedAction: (file) => void attach(file),
+    onUploadedAction: (file) => {
+      if (mountedRef.current) void attach(file);
+    },
     maxFiles: Math.max(0, maxFiles - attachments.length - (attaching ? 1 : 0)),
     leaveWarning: filesContent.upload.leaveWarning,
   });
@@ -112,7 +115,28 @@ export function PortalAttachmentField({
     onActivityChangeRef.current?.(active);
   }, [active]);
 
-  useEffect(() => () => onActivityChangeRef.current?.(false), []);
+  const queueRef = useRef(queue);
+  useEffect(() => {
+    queueRef.current = queue;
+  });
+
+  // An unmounted field shows neither progress nor errors, so nothing may keep running behind it:
+  // uploads on their way are cancelled and one that still finishes is not attached anymore.
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      const { items, cancel } = queueRef.current;
+      for (const item of items)
+        if (
+          item.status === UploadQueueItemStatus.Queued ||
+          item.status === UploadQueueItemStatus.Uploading ||
+          item.status === UploadQueueItemStatus.Finalizing
+        )
+          cancel(item.id);
+      onActivityChangeRef.current?.(false);
+    };
+  }, []);
 
   async function select(files: File[]) {
     setError(null);

@@ -153,6 +153,9 @@ export function OnboardingFormEditor({
   const block = form.blocks.find((entry) => entry.id === step.section);
 
   function goTo(target: PortalOnboardingStepTarget) {
+    // A step change unmounts the fields of the step, which cancels their running uploads.
+    if (uploading.size > 0 && !window.confirm(filesContent.upload.leaveWarning))
+      return;
     const position = sections.indexOf(target.section ?? sections[0]);
     setNavigated(true);
     setSubmitError(null);

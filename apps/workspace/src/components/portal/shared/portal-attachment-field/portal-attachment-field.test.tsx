@@ -35,6 +35,7 @@ const mocks = vi.hoisted(() => ({
   queueTransport: null as unknown,
   stage: vi.fn(),
   start: vi.fn(),
+  cancel: vi.fn(),
 }));
 
 vi.mock("@/hooks/shared/use-upload-queue", () => ({
@@ -46,7 +47,7 @@ vi.mock("@/hooks/shared/use-upload-queue", () => ({
       isActive: mocks.queueActive,
       stage: mocks.stage,
       start: mocks.start,
-      cancel: vi.fn(),
+      cancel: mocks.cancel,
       remove: vi.fn(),
       retry: vi.fn(),
     };
@@ -146,6 +147,7 @@ describe("PortalAttachmentField", () => {
     mocks.queueTransport = null;
     mocks.stage.mockReset();
     mocks.start.mockReset();
+    mocks.cancel.mockReset();
   });
   afterEach(cleanup);
 
@@ -350,6 +352,35 @@ describe("PortalAttachmentField", () => {
     unmount();
 
     expect(onActivityChangeAction).toHaveBeenLastCalledWith(false);
+  });
+
+  it("cancels every upload still on its way when it unmounts", () => {
+    mocks.queueActive = true;
+    mocks.queueItems = [
+      queueItem(UploadQueueItemStatus.Queued),
+      queueItem(UploadQueueItemStatus.Uploading),
+      queueItem(UploadQueueItemStatus.Done),
+    ];
+    const { unmount } = render(<PortalAttachmentField {...props()} />);
+
+    unmount();
+
+    expect(mocks.cancel.mock.calls).toEqual([
+      ["upload-queued"],
+      ["upload-uploading"],
+    ]);
+  });
+
+  it("does not attach a file whose upload finished after the unmount", async () => {
+    const attachAction = vi.fn();
+    const { unmount } = render(
+      <PortalAttachmentField {...props({ attachAction })} />,
+    );
+
+    unmount();
+    await finishUpload({ id: "file-9" });
+
+    expect(attachAction).not.toHaveBeenCalled();
   });
 
   it("reports activity while an uploaded file is being attached", async () => {

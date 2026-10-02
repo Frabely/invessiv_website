@@ -4,6 +4,7 @@ import { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/qu
 import type { OnboardingCommandResult } from "@invessiv/common/contracts/crm/onboarding/results/onboarding-command-result";
 import type { DeleteQuestionnaireFieldRequestDto } from "@invessiv/common/contracts/crm/questionnaire/delete-questionnaire-field-request.dto";
 import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block.dto";
+import { isOnboardingFormReleased } from "@invessiv/common/patterns/crm/onboarding/onboarding-form-state";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { onboardingFormSchemas } from "@/server/workspace/crm/services/onboarding/onboarding-form-schemas";
 import { onboardingFormStructureService } from "@/server/workspace/crm/services/onboarding/onboarding-form-structure-service";
@@ -32,12 +33,13 @@ export async function deleteOnboardingFormField(
   return onboardingFormStructureService.runDefinitionCommand(
     formId,
     actor,
-    (tx, owner) =>
+    (tx, owner, form) =>
       questionnaireDefinitionWriteService.deleteField(
         tx,
         owner,
         fieldId,
         parsed.data.expectedBlockVersion,
+        { keepLevelFilled: isOnboardingFormReleased(form.status) },
       ),
   );
 }

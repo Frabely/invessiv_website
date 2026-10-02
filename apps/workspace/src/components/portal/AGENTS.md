@@ -122,6 +122,11 @@ Plan: `apps/workspace/plans/crm/15-onboarding/66-portal-formular.md`.
   im Feld, zeigt seinen Grund und wird nie gesendet; ein fehlgeschlagener Speichervorgang behält die Eingabe und bietet
   „Erneut versuchen“. API-Aufrufe nur über `portalOnboardingApiService`. Vor dem Absenden wird immer `flush()`
   abgewartet; ist danach etwas nicht gespeichert, wird nicht abgesendet.
+- **Ungültige Eingaben zählen nur in sichtbaren Feldern** (`onboardingAnswerDrafts.listInvalid`). Text in einem Feld,
+  das seine Bedingung wieder ausblendet, warnt nicht und hält das Absenden nicht auf.
+- **Ein Schrittwechsel während eines Uploads fragt nach** (`upload.leaveWarning` der Dateitexte). Ein abgebautes
+  `portal-attachment-field` bricht seine laufenden Uploads ab und hängt nichts mehr an: Hinter einem Feld, das weder
+  Fortschritt noch Fehler zeigen kann, läuft nichts weiter.
 - **Sichtbarkeit, Pflicht und Fortschritt kommen ausschließlich aus `getQuestionnaireCompleteness` bzw.
   `isQuestionnaireFieldVisible`** (`@invessiv/common`), gefüttert mit den lokalen Antworten
   (`onboardingAnswerDrafts.toAnswers`). Keine Komponente entscheidet selbst, ob ein Feld sichtbar oder Pflicht ist.

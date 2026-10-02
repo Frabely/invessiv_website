@@ -45,6 +45,7 @@ const mocks = vi.hoisted(() => ({
   detachFile: vi.fn(),
   confirmServices: vi.fn(),
   queueOptions: [] as unknown[],
+  queueActive: false,
 }));
 
 const PATH = "/en/portal/customer-1/onboarding/form-1";
@@ -71,7 +72,7 @@ vi.mock("@/hooks/shared/use-upload-queue", () => ({
     mocks.queueOptions.push(options);
     return {
       items: [],
-      isActive: false,
+      isActive: mocks.queueActive,
       stage: vi.fn(),
       start: vi.fn(),
       cancel: vi.fn(),
@@ -185,6 +186,7 @@ describe("OnboardingFormView field types of the full form", () => {
     vi.useFakeTimers();
     vi.resetAllMocks();
     mocks.queueOptions = [];
+    mocks.queueActive = false;
     mocks.saveAnswer.mockResolvedValue(SAVED);
     Element.prototype.scrollIntoView = vi.fn();
     window.scrollTo = vi.fn();
@@ -553,6 +555,28 @@ describe("OnboardingFormView field types of the full form", () => {
       await click(screen.getByRole("button", { name: content.steps.next }));
 
       expect(screen.getByText(content.submit.complete)).toBeInTheDocument();
+    });
+
+    it("asks before a step change would cut off a running upload", async () => {
+      mocks.queueActive = true;
+      const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
+      renderView(formOf([LOGO]));
+
+      await click(screen.getByRole("button", { name: content.steps.next }));
+
+      expect(confirm).toHaveBeenCalledExactlyOnceWith(
+        filesContent.upload.leaveWarning,
+      );
+      expect(
+        screen.queryByRole("heading", { name: content.submit.heading }),
+      ).toBeNull();
+
+      confirm.mockReturnValue(true);
+      await click(screen.getByRole("button", { name: content.steps.next }));
+
+      expect(
+        screen.getByRole("heading", { name: content.submit.heading }),
+      ).toBeInTheDocument();
     });
 
     it("says how many files a field still needs for its minimum", () => {

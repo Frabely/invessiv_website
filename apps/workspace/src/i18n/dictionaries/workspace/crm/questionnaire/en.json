@@ -343,6 +343,8 @@
     "QUESTIONNAIRE_INVALID_CONDITION": "The condition no longer fits: a field or option is still used by a condition, or the trigger would sit behind the dependent field.",
     "QUESTIONNAIRE_INVALID_FIELD_CONFIG": "The settings do not fit the field type. Check options and limits.",
     "QUESTIONNAIRE_BLOCK_IN_USE": "The block is part of a template and can only be archived.",
+    "QUESTIONNAIRE_CHOICE_IN_USE": "The customer already chose an option you removed or gave a new key. Keep it, or the answer would be lost.",
+    "QUESTIONNAIRE_LAST_FIELD": "The last field of a block or group stays while the form is with the customer. Add another field first.",
     "QUESTIONNAIRE_LIMIT_REACHED": "A limit is reached, such as the number of fields or options.",
     "QUESTIONNAIRE_KEY_TAKEN": "This key is already taken.",
     "QUESTIONNAIRE_NOT_EDITABLE": "The structure is fixed by now and can no longer be changed. Reload the page.",
