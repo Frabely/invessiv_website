@@ -8,7 +8,7 @@ export type VersionedTable = PgTable & {
 
 type ManagedVersionedColumn = "created_at" | "id" | "updated_at" | "version";
 
-export type VersionedPatch<TTable extends VersionedTable> = Omit<
+export type VersionedPatch<TTable extends PgTable> = Omit<
   PgUpdateSetSource<TTable>,
   ManagedVersionedColumn
 >;

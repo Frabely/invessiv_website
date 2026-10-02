@@ -104,7 +104,9 @@ function isRequest(method: string, path: RegExp) {
 
 /**
  * The core flow of the onboarding: the team starts and releases a form, a contact fills it in
- * with a group entry and an upload and submits it, and the team reads the answers.
+ * with a group entry and an upload and submits it, and the team reads the answers. Then the
+ * review: a question goes back to the customer, the contact adds what was missing and submits
+ * again, and the team marks the block as complete.
  */
 test.describe.serial("portal onboarding", () => {
   test.use({ storageState: portalE2ePaths.managerState });
@@ -115,10 +117,12 @@ test.describe.serial("portal onboarding", () => {
     ) as PortalE2eFixture;
   });
 
-  test("releases a draft, lets a contact fill it in with a group and an upload, and submits it", async ({
+  test("releases a draft, lets a contact fill it in and submit, asks back and gets the addition", async ({
     page,
     browser,
   }, testInfo) => {
+    // Two submissions and a review in between: the flow needs more than the default budget.
+    test.slow();
     const suffix = Date.now().toString(36);
     const customer = fixture.feedbackCustomer;
     const formId = await startDraft(page, fixture.onboardingProject, suffix);
@@ -293,5 +297,108 @@ test.describe.serial("portal onboarding", () => {
     await expect(
       answers.getByRole("list", { name: "Dateien zu „Briefing“" }),
     ).toContainText(`briefing-${suffix}.txt`);
+
+    // The review: one question for the customer, then the form goes back.
+    await page.getByRole("tab", { name: "Prüfung" }).click();
+    const review = page.getByRole("tabpanel");
+    await expect(review.getByText("0 von 1 Blöcken geprüft")).toBeVisible();
+    await expect(
+      review.getByRole("button", { name: "Nachforderung senden" }),
+    ).toBeDisabled();
+    await review.getByRole("radio", { name: "Rückfrage" }).check();
+    await review
+      .getByRole("textbox", { name: /Rückfrage/ })
+      .fill(`Wie lautet der volle Firmenname? ${suffix}`);
+    const reviewed = page.waitForResponse(
+      isRequest("PATCH", new RegExp(`/forms/${formId}/blocks/[^/]+/review$`)),
+    );
+    await review.getByRole("button", { name: "Rückfrage speichern" }).click();
+    expect((await reviewed).ok()).toBe(true);
+    await expect(review.getByText("1 von 1 Blöcken geprüft")).toBeVisible();
+
+    await review.getByRole("button", { name: "Nachforderung senden" }).click();
+    const requestDialog = page.getByRole("dialog", {
+      name: "Nachforderung senden?",
+    });
+    await expect(
+      requestDialog.getByText(`Wie lautet der volle Firmenname? ${suffix}`),
+    ).toBeVisible();
+    const requested = page.waitForResponse(
+      isRequest("POST", new RegExp(`/forms/${formId}/request-changes$`)),
+    );
+    await requestDialog
+      .getByRole("button", { name: "Nachforderung senden" })
+      .click();
+    expect((await requested).ok()).toBe(true);
+    await expect(requestDialog).toBeHidden();
+    await expect(
+      page.getByRole("main").getByText("Nachforderung offen").first(),
+    ).toBeVisible();
+    // While the customer works on the form, the review is locked.
+    await expect(review.getByRole("radio")).toHaveCount(0);
+
+    const returningContext = await browser.newContext({
+      storageState: portalE2ePaths.feedbackContactState,
+    });
+    try {
+      const contact = await returningContext.newPage();
+      await contact.goto(`/de/portal/${customer}`);
+      const widget = contact.getByRole("region", { name: "Onboarding" });
+      await expect(widget.getByText("Wir haben Rückfragen")).toBeVisible();
+      await widget.getByRole("link", { name: /jetzt ergänzen/ }).click();
+      await expect(
+        contact.getByText(`Wie lautet der volle Firmenname? ${suffix}`),
+      ).toBeVisible();
+
+      const saved = contact.waitForResponse(
+        isRequest("PUT", new RegExp(`/onboarding/${formId}/answers$`)),
+      );
+      const company = contact.getByRole("textbox", { name: /Firmenname/ });
+      await company.fill(`Nordlicht Coaching GmbH ${suffix}`);
+      await company.blur();
+      expect((await saved).ok()).toBe(true);
+
+      await contact
+        .getByRole("button", { name: "Weiter", exact: true })
+        .click();
+      await contact
+        .getByRole("button", { name: "Onboarding absenden" })
+        .click();
+      await contact
+        .getByRole("dialog", { name: "Onboarding absenden?" })
+        .getByRole("button", { name: "Jetzt absenden" })
+        .click();
+      await expect(contact.getByText(/Abgesendet am/)).toBeVisible();
+      await expect(contact.getByRole("textbox")).toHaveCount(0);
+    } finally {
+      await returningContext.close();
+    }
+
+    // The block the customer was asked about is open again; everything is there now.
+    await page.goto(`/de/crm/onboarding/${formId}?tab=review`);
+    const second = page.getByRole("tabpanel");
+    await expect(second.getByText("0 von 1 Blöcken geprüft")).toBeVisible();
+    await expect(
+      second.getByText(`Nordlicht Coaching GmbH ${suffix}`),
+    ).toBeVisible();
+    const completed = page.waitForResponse(
+      isRequest("PATCH", new RegExp(`/forms/${formId}/blocks/[^/]+/review$`)),
+    );
+    await second.getByRole("radio", { name: "Vollständig" }).check();
+    expect((await completed).ok()).toBe(true);
+    await expect(second.getByText("1 von 1 Blöcken geprüft")).toBeVisible();
+    await expect(second.getByText("keine Rückfragen")).toBeVisible();
+
+    // One collecting task for the form, whatever happened in between.
+    const tasks = await page.request.get(
+      `/api/workspace/crm/projects/${fixture.onboardingProject}/tasks`,
+    );
+    expect(tasks.ok()).toBe(true);
+    const body = (await tasks.json()) as {
+      tasks: { onboardingFormId: string | null }[];
+    };
+    expect(
+      body.tasks.filter((task) => task.onboardingFormId === formId),
+    ).toHaveLength(1);
   });
 });

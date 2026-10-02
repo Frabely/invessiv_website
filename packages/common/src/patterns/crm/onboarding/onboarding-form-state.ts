@@ -26,6 +26,14 @@ export function isOnboardingProjectEligible(status: ProjectStatus): boolean {
   ).includes(status);
 }
 
+/**
+ * Whether the team may review blocks: only while the form lies with it. During a change request
+ * the customer works on it, and a completed form is final.
+ */
+export function isOnboardingReviewOpen(status: OnboardingFormStatus): boolean {
+  return status === OnboardingFormStatus.Submitted;
+}
+
 export function canTransitionOnboardingForm(
   from: OnboardingFormStatus,
   to: OnboardingFormStatus,

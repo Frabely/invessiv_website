@@ -67,6 +67,8 @@ describe("CrmOperation", () => {
       "onboarding-form-fields.move",
       "onboarding-form-fields.usage",
       "onboarding-forms.release",
+      "onboarding-form-blocks.review",
+      "onboarding-forms.request-changes",
     ]);
     expect(CRM_OPERATION_VALUES).toEqual(Object.values(CrmOperation));
     expect(new Set(CRM_OPERATION_VALUES).size).toBe(

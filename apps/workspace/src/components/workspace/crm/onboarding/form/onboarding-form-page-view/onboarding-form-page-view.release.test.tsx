@@ -307,6 +307,37 @@ describe("OnboardingFormPageView release", () => {
     expect(screen.getByText(content.status.draft)).toBeInTheDocument();
   });
 
+  it("shows the review tab and how far the review is once the form is submitted", () => {
+    mocks.search = "tab=review";
+    renderPage(
+      form({
+        status: OnboardingFormStatus.Submitted,
+        releasedAt: "2026-10-01T08:00:00.000Z",
+        submittedAt: "2026-10-02T08:00:00.000Z",
+      }),
+    );
+
+    expect(
+      screen.getByRole("tab", { name: content.form.tabs.review }),
+    ).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("banner")).toHaveTextContent(
+      "0 von 1 Blöcken geprüft",
+    );
+    expect(
+      within(screen.getByRole("tabpanel")).getByRole("radio", {
+        name: content.review.status.complete,
+      }),
+    ).toBeInTheDocument();
+    cleanup();
+
+    // A draft has nothing to review yet, and its head says nothing about a review.
+    renderPage();
+    expect(screen.getByRole("tabpanel")).toHaveTextContent(
+      content.review.states.notSubmitted.title,
+    );
+    expect(screen.getByRole("banner")).not.toHaveTextContent("geprüft");
+  });
+
   it("tells the team on the answers tab that the services changed after the confirmation", () => {
     mocks.search = "tab=answers";
     renderPage(

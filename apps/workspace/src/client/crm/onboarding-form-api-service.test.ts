@@ -75,6 +75,38 @@ describe("onboardingFormApiService", () => {
     ]);
   });
 
+  it("sends a review to the block and a change request to the form", async () => {
+    const fetchMock = respondWith(HttpResponseCode.Ok, form);
+    const review = {
+      reviewStatus: "clarification",
+      clarificationMode: "customer",
+      note: "Welche Domain?",
+      expectedVersion: 3,
+    } as const;
+
+    expect(
+      await onboardingFormApiService.reviewBlock("f-1", "b-1", review),
+    ).toEqual({ ok: true, value: form });
+    expect(
+      await onboardingFormApiService.requestChanges("f-1", {
+        expectedVersion: 2,
+      }),
+    ).toEqual({ ok: true, value: form });
+
+    expect(calls(fetchMock)).toEqual([
+      [
+        `${FORMS}/f-1/blocks/b-1/review`,
+        HttpMethod.Patch,
+        JSON.stringify(review),
+      ],
+      [
+        `${FORMS}/f-1/request-changes`,
+        HttpMethod.Post,
+        JSON.stringify({ expectedVersion: 2 }),
+      ],
+    ]);
+  });
+
   it("hands back the current form of a version conflict", async () => {
     respondWith(HttpResponseCode.Conflict, {
       code: ConcurrencyErrorCode.VersionConflict,

@@ -49,6 +49,16 @@
   font-variant-numeric: tabular-nums;
 }
 
+.review {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 1.25rem;
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-variant-numeric: tabular-nums;
+}
+
 .hint {
   display: flex;
   align-items: flex-start;

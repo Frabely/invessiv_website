@@ -2,6 +2,9 @@
   "feedbackRound": {
     "title": "Feedbackrunde {roundNumber} umsetzen"
   },
+  "onboardingForm": {
+    "title": "Onboarding prüfen"
+  },
   "section": {
     "title": "Aufgaben",
     "addAction": "Aufgabe anlegen",

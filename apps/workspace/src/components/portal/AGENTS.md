@@ -167,3 +167,8 @@ Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-le
   Das Widget `onboarding` ist echt (`onlyWithContent`): Die Seite lädt `listPortalOnboardingForms` und meldet Inhalt
   nur, wenn es einen Bogen gibt. Welchen Bogen es zeigt, entscheidet `pickPortalOnboardingWidgetForm` (der, bei dem
   der Kunde dran ist, sonst der jüngste); der Fortschritt kommt aus derselben Zusammenfassung wie Übersicht und CRM.
+
+- **Nachforderung (ab Task 68):** Im Status `changes_requested` öffnet der Bogen auf dem ersten Block aus
+  `editableBlockIds` (`usePortalOnboardingStep` nimmt dafür einen Startabschnitt), zeigt über dem Formular, was zu
+  tun ist, und an jedem nachgeforderten Block die Rückfrage des Teams (`reviewNote`). Alle anderen Blöcke bleiben
+  lesend. Das Widget heißt dann „Wir haben Rückfragen“ und führt mit „Jetzt ergänzen“ in den Bogen.

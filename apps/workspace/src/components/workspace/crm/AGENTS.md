@@ -249,3 +249,20 @@ Plan: `apps/workspace/plans/crm/15-onboarding/65-bogen-anlegen-und-anpassen.md`.
 - Der Tab „Antworten“ zeigt die Dateien mit Download und Vorschau (`useFileDownloads`, `filesApiService`) und, wenn
   `servicesChangedSinceConfirmation` gesetzt ist, den Hinweis, dass die Projektleistungen nach der Bestätigung des
   Kunden geändert wurden.
+
+- **Tab „Prüfung“ (ab Task 68):** Komponenten unter `onboarding/review/`: `onboarding-review-tab` (Orchestrator),
+  `onboarding-review-block-card` (Antworten des Blocks über den geteilten `OnboardingAnswerReadView`, darunter das
+  Ergebnis; die farbige Leiste links wiederholt nur, was als Text dasteht), `onboarding-review-controls`,
+  `onboarding-call-agenda` und `onboarding-request-changes-dialog`. Ob geprüft werden darf, entscheidet
+  `isOnboardingReviewOpen` (`@invessiv/common`) zusammen mit `canWrite`; sonst stehen die Ergebnisse lesend da und
+  ein Hinweis erklärt warum. Vor dem ersten Absenden zeigt der Tab einen Empty-State, der seinen Zweck erklärt.
+- „Offen“ und „Vollständig“ speichern mit dem Klick, eine Rückfrage erst über „Rückfrage speichern“ (Klärungsart und
+  Notiz). Jede Antwort ist der ganze Bogen; die Seite übernimmt ihn. Ein Konflikt lädt den aktuellen Stand, eine
+  getippte Rückfrage bleibt stehen und der nächste Versuch läuft gegen die neue Version.
+- Zahlen kommen ausschließlich aus `summarizeOnboardingReview`, formuliert über
+  `describeOnboardingReviewSummary` (`common/patterns/crm/onboarding/`) — im Tab, im Seitenkopf und im
+  Projektbereich (dort aus `ProjectOnboardingDto.review`). Die Agenda baut `buildOnboardingCallAgenda`
+  (nur Call-Rückfragen plus die beiden Leistungshinweise); „Agenda kopieren“ legt reinen Text aus
+  `formatOnboardingCallAgenda` in die Zwischenablage.
+- Download und Vorschau angehängter Dateien in den Tabs „Antworten“ und „Prüfung“ laufen über
+  `useOnboardingFileDownloads` (`src/hooks/workspace/`).

@@ -17,7 +17,7 @@
     "ONBOARDING_INVALID_TRANSITION": "This status change is not possible.",
     "ONBOARDING_NOT_EDITABLE": "The structure is fixed by now and can no longer be changed.",
     "ONBOARDING_REQUIRED_MISSING": "Required answers are missing.",
-    "ONBOARDING_REVIEW_INCOMPLETE": "The review is not finished yet.",
+    "ONBOARDING_REVIEW_INCOMPLETE": "No block has a question for the customer.",
     "ONBOARDING_CALL_DATE_REQUIRED": "The date of the onboarding call is missing.",
     "ONBOARDING_FILE_NOT_ATTACHABLE": "The file cannot be attached.",
     "ONBOARDING_RELEASE_WARNINGS": "There are notes to check before the release. Review them and confirm the release.",
@@ -64,7 +64,8 @@
     "tabs": {
       "ariaLabel": "Areas of the form",
       "structure": "Structure",
-      "answers": "Answers"
+      "answers": "Answers",
+      "review": "Review"
     }
   },
   "release": {
@@ -194,6 +195,76 @@
       "released": "The form is released. The customer sees every change to its structure at once.",
       "readOnly": "You can view this form but not change it.",
       "conflict": "Someone has changed the form in the meantime. The current state is loaded, please repeat your change."
+    }
+  },
+  "review": {
+    "summary": {
+      "reviewed": "{reviewed} of {total} blocks reviewed",
+      "clarifications": "{count} questions",
+      "clarificationsOne": "1 question",
+      "clarificationsNone": "no questions"
+    },
+    "states": {
+      "notSubmitted": {
+        "title": "Nothing to review yet",
+        "description": "The review starts once the customer has submitted the form. Then you go through it block by block: complete or question."
+      },
+      "changesRequested": "The change request is with the customer. The review is locked until they submit again.",
+      "completed": "The onboarding is completed. The review stays here as a record.",
+      "readOnly": "You can view the review but not change it."
+    },
+    "status": {
+      "pending": "Open",
+      "complete": "Complete",
+      "clarification": "Question"
+    },
+    "mode": {
+      "customer": "Ask the customer",
+      "call": "Clarify in the call"
+    },
+    "modeHint": {
+      "customer": "The customer reads the question in the portal and can edit this block again once you send the change request.",
+      "call": "The question goes on the agenda for the onboarding call. The customer does not see it."
+    },
+    "controls": {
+      "legend": "Review of “{block}”",
+      "modeLegend": "How do we clear this up?",
+      "note": "Question",
+      "noteRequired": "Write what is missing or unclear.",
+      "noteTooLong": "The question can have at most {max} characters.",
+      "save": "Save question",
+      "saving": "Saving …",
+      "saved": "Review of “{block}” saved.",
+      "conflict": "Someone has reviewed this block in the meantime. The current state is loaded.",
+      "reviewedAt": "Last reviewed on {date}"
+    },
+    "blocks": {
+      "heading": "Blocks in the order of the form",
+      "noAnswers": "This block has no fields."
+    },
+    "request": {
+      "action": "Send change request",
+      "hint": "You can send once at least one block has a question for the customer.",
+      "sent": "The change request is sent. The customer can now complete the blocks in the portal.",
+      "dialog": {
+        "title": "Send change request?",
+        "description": "The customer gets a chat message and can edit only these blocks again. The review is locked until they submit again.",
+        "listHeading": "These questions go to the customer",
+        "confirm": "Send change request",
+        "cancel": "Cancel",
+        "close": "Close",
+        "conflict": "Someone has changed the form in the meantime. The current state is loaded. Check the list, then send."
+      }
+    },
+    "agenda": {
+      "title": "Agenda for the onboarding call",
+      "empty": "No items yet. Questions you want to clarify in the call end up here.",
+      "servicesChanged": "Services were changed after the customer confirmed them",
+      "servicesNote": "Customer's remark on the services",
+      "copy": "Copy agenda",
+      "copied": "Agenda copied.",
+      "copyFailed": "Copying did not work. Select the items and copy them by hand.",
+      "textHeading": "Onboarding call agenda: {project}"
     }
   }
 }

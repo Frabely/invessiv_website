@@ -63,6 +63,18 @@ export type OnboardingMemberTransition = {
   projectTitle: string;
 };
 
+/** A block the team hands back to the customer, as activity and chat notice name it. */
+export type OnboardingRequestedBlock = {
+  blockId: string;
+  title: string;
+  note: string;
+};
+
+/** The change request of the team with the blocks it reopens. */
+export type OnboardingChangeRequest = OnboardingMemberTransition & {
+  requested: readonly OnboardingRequestedBlock[];
+};
+
 /** Everything a form DTO is made of, loaded for one viewer. */
 export type OnboardingFormParts = {
   form: OnboardingFormRow;

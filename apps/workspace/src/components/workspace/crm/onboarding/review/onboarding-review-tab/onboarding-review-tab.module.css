@@ -1,0 +1,76 @@
+.tab {
+  display: grid;
+  gap: 1.5rem;
+  max-width: 56rem;
+  padding-top: 1.25rem;
+}
+
+/* Why the review is closed right now; a state of the form, not a failure of the page. */
+.notice {
+  max-width: 62ch;
+  margin: 0;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 45%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-accent-warm) 8%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 1.25rem;
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-md);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.questions {
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.request {
+  display: grid;
+  justify-items: start;
+  gap: 0.4rem;
+  max-width: 24rem;
+}
+
+.request svg {
+  margin-right: 0.45rem;
+}
+
+.hint {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.45;
+}
+
+.error {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: var(--font-size-ui-sm);
+}
+
+/* Room between the blocks: each one is read, judged and left behind. */
+.blocks {
+  display: grid;
+  gap: 2.25rem;
+  margin: 0;
+  padding: 0;
+}

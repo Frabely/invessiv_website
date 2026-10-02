@@ -150,7 +150,8 @@
     },
     "changes_requested": {
       "title": "Wir haben noch Fragen",
-      "description": "Schau dir unsere Rückfragen an. Sobald du sie beantworten kannst, sagen wir dir Bescheid."
+      "description": "Schau dir unsere Rückfragen an. Sobald du sie beantworten kannst, sagen wir dir Bescheid.",
+      "editable": "Wir brauchen noch etwas von dir. Die Abschnitte mit unserer Rückfrage kannst du jetzt ergänzen, alle anderen bleiben zum Nachlesen. Danach sendest du das Onboarding erneut ab."
     },
     "completed": {
       "title": "Onboarding abgeschlossen",

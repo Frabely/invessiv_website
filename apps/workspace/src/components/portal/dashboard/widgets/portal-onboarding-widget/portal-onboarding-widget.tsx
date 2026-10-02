@@ -38,6 +38,19 @@ export function PortalOnboardingWidget({
     form.status === OnboardingFormStatus.ChangesRequested;
   const proceed = yourTurn && form.canEdit;
   const named = { project: form.projectTitle };
+  // A change request asks for a few additions, not for filling in the form again.
+  const amend =
+    proceed && form.status === OnboardingFormStatus.ChangesRequested;
+  const linkLabel = amend
+    ? content.amend
+    : proceed
+      ? content.continue
+      : content.view;
+  const linkLabelNamed = amend
+    ? content.amendNamed
+    : proceed
+      ? content.continueNamed
+      : content.viewNamed;
 
   return (
     <Widget
@@ -78,10 +91,7 @@ export function PortalOnboardingWidget({
           </p>
         ) : null}
         <Link
-          aria-label={formatMessage(
-            proceed ? content.continueNamed : content.viewNamed,
-            named,
-          )}
+          aria-label={formatMessage(linkLabelNamed, named)}
           className={styles.link}
           data-primary={proceed ? "true" : undefined}
           href={buildPortalOnboardingPath({
@@ -90,7 +100,7 @@ export function PortalOnboardingWidget({
             formId: form.id,
           })}
         >
-          {proceed ? content.continue : content.view}
+          {linkLabel}
         </Link>
       </div>
     </Widget>

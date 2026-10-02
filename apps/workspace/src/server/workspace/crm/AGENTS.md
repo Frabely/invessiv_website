@@ -201,3 +201,16 @@ Plan: `apps/workspace/plans/crm/15-onboarding/65-bogen-anlegen-und-anpassen.md`.
   und Systemnachricht schreibt `onboardingFormTransitionService.release`.
 - **Dateien an einem Bogen bleiben:** `deleteFile` lehnt eine Datei mit Verknüpfung in `onboarding_answer_files` mit
   `FILE_ONBOARDING_BOUND` (409) ab, unabhängig vom Bogenstatus; geprüft wird unter der Dateisperre.
+
+- **Prüfung und Nachforderung (ab Task 68):** `reviewOnboardingBlock` und `requestOnboardingChanges` sperren den
+  Bogen über `lockWritableForm` (`projects.write` + `canOn`, sonst `ONBOARDING_FORM_NOT_FOUND`). Geprüft wird nur,
+  solange `isOnboardingReviewOpen` gilt (Status `submitted`), sonst `ONBOARDING_INVALID_TRANSITION` (409). Die
+  Prüfung vergleicht die **Version des Schritts** (409 mit `VersionConflictDto`, `current` ist der ganze Bogen) und
+  erhöht die Bogenversion bewusst nicht, damit zwei Mitglieder verschiedene Blöcke parallel prüfen können. Eine
+  Rückfrage braucht Klärungsart und Notiz (422); `pending` und `complete` tragen keine Notiz. Ein Block eines
+  anderen Bogens ist `QUESTIONNAIRE_BLOCK_NOT_FOUND`.
+- Die Nachforderung prüft den Übergang **vor** der Bogenversion, verlangt mindestens einen Block mit
+  `clarification` + `customer` (`ONBOARDING_REVIEW_INCOMPLETE`, 422) und lässt Call-Rückfragen stehen. Status,
+  Activity und Systemnachricht schreibt `onboardingFormTransitionService.requestChanges`.
+- `getProjectOnboarding` liefert zusätzlich `review` (`summarizeOnboardingReview` aus `@invessiv/common`); kein
+  Handler zählt Prüfstände selbst.

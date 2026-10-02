@@ -67,6 +67,18 @@
   max-width: 28rem;
 }
 
+/* How far the review is, in the same quiet line as the progress above it. */
+.review {
+  display: flex;
+  flex: 1 1 100%;
+  flex-wrap: wrap;
+  gap: 0.15rem 1.25rem;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  font-variant-numeric: tabular-nums;
+}
+
 .meta {
   display: flex;
   flex-wrap: wrap;

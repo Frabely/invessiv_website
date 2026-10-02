@@ -62,3 +62,10 @@ questionnaire_field_choices (id, field_id)`: Er bindet die Option an das Auslös
   Dubletten-Schutz. Dubletten verhindert die Personensuche im Dialog.
 - Kein `deleted_at`. Archivierung läuft über den Status und ist reversibel.
 - Kein `archived_at` an `projects`: Archivierung ist ausschließlich ein Status.
+
+## Sammelaufgaben (`tasks`)
+
+- Eine Aufgabe hat höchstens eine Herkunft: `feedback_round_id` (Task 58) oder `onboarding_form_id` (Task 68,
+  Migration `0049`), abgesichert durch `tasks_single_origin_check`. Beide sind immer intern
+  (`*_side_check`), je Runde bzw. Bogen einmalig (partieller Unique-Index) und über einen zusammengesetzten
+  Schlüssel an dasselbe Projekt gebunden. Der Fremdschlüssel auf den Bogen kaskadiert nicht.

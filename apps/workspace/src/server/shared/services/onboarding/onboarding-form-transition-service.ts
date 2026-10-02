@@ -13,15 +13,21 @@ import { activityService } from "@/server/shared/services/activity-service";
 import { announceSystemMessage } from "@/server/shared/services/message/announce-system-message";
 import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
 import type {
+  OnboardingChangeRequest,
   OnboardingCustomerTransition,
   OnboardingFormRow,
   OnboardingMemberTransition,
 } from "./onboarding-form-types";
+import { onboardingReviewService } from "./onboarding-review-service";
+import { onboardingTaskService } from "./onboarding-task-service";
 
 /**
  * Status changes of a form the handler has locked, with every side effect in the same transaction.
  * Whether the step is allowed decides the handler of its world through `ONBOARDING_FORM_TRANSITIONS`;
  * this service only carries it out, so activity and chat notice can never be forgotten on one path.
+ *
+ * A submission also reopens the review of the blocks the customer was asked about and makes sure
+ * the form has its collecting task; the first submission finds neither.
  */
 async function submit(
   tx: ContactDatabaseTransaction,
@@ -42,6 +48,8 @@ async function submit(
     },
     "Locked onboarding form changed",
   );
+  await onboardingReviewService.reopenRequested(tx, submitted.id);
+  await onboardingTaskService.ensureForSubmission(tx, submitted, context.actor);
   // Answers never enter the append-only log; the entry only says that the form came in.
   await activityService.createActivity(tx, {
     customerId: submitted.customer_id,
@@ -104,4 +112,58 @@ async function release(
   return released;
 }
 
-export const onboardingFormTransitionService = { release, submit } as const;
+/**
+ * Hands a submitted form back to the customer. The questions go into the activity, because the
+ * review rows lose them once the form comes in again; the chat notice only names the blocks.
+ */
+async function requestChanges(
+  tx: ContactDatabaseTransaction,
+  form: OnboardingFormRow,
+  context: OnboardingChangeRequest,
+): Promise<OnboardingFormRow> {
+  const requested = await updateLockedVersioned(
+    {
+      tx,
+      table: onboardingForms,
+      id: form.id,
+      expectedVersion: form.version,
+      patch: { status: OnboardingFormStatus.ChangesRequested },
+    },
+    "Locked onboarding form changed",
+  );
+  await activityService.createActivity(tx, {
+    customerId: requested.customer_id,
+    projectId: requested.project_id,
+    type: ActivityType.StatusChange,
+    body: `${form.status} → ${requested.status}`,
+    metadata: {
+      entity: ONBOARDING_FORM_ACTIVITY_ENTITY,
+      onboarding_form_id: requested.id,
+      previous_status: form.status,
+      next_status: requested.status,
+      clarifications: context.requested.map((block) => ({
+        block_id: block.blockId,
+        note: block.note,
+      })),
+    },
+    actor: context.actor,
+  });
+  await announceSystemMessage(
+    tx,
+    requested.customer_id,
+    SystemMessageKey.OnboardingChangesRequested,
+    {
+      [SystemMessageParam.ProjectTitle]: context.projectTitle,
+      [SystemMessageParam.BlockTitles]: context.requested
+        .map((block) => block.title)
+        .join(", "),
+    },
+  );
+  return requested;
+}
+
+export const onboardingFormTransitionService = {
+  release,
+  requestChanges,
+  submit,
+} as const;

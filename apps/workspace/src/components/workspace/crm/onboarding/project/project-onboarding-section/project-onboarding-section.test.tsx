@@ -34,10 +34,13 @@ vi.mock("@/client/crm/onboarding-form-api-service", () => ({
 const content = getCrmOnboardingDictionary("de");
 const text = content.project;
 
-function state(overrides: Partial<ProjectOnboardingDto> = {}) {
+function state(
+  overrides: Partial<ProjectOnboardingDto> = {},
+): ProjectOnboardingDto {
   return {
     projectId: "p-1",
     form: null,
+    review: null,
     canStart: true,
     projectEligible: true,
     prefillAvailable: false,
@@ -102,6 +105,45 @@ describe("ProjectOnboardingSection", () => {
       screen.getByText(text.empty.readOnlyDescription),
     ).toBeInTheDocument();
     expect(screen.getByText(text.notEligible)).toBeInTheDocument();
+  });
+
+  it("shows how far the review is once the customer has submitted", () => {
+    const submitted = {
+      id: "f-1",
+      status: OnboardingFormStatus.Submitted,
+      progress: { answeredRequired: 4, totalRequired: 4, ratio: 1 },
+      submittedAt: "2026-10-02T08:00:00.000Z",
+      completedAt: null,
+    };
+    const review = {
+      total: 5,
+      reviewed: 2,
+      clarifications: 1,
+      customerClarifications: 1,
+      callClarifications: 0,
+    };
+    renderSection({
+      state: state({ canStart: false, form: submitted, review }),
+      formHref: "/de/crm/onboarding/f-1",
+    });
+    expect(screen.getByText("2 von 5 Blöcken geprüft")).toBeInTheDocument();
+    expect(screen.getByText("1 Rückfrage")).toBeInTheDocument();
+    cleanup();
+
+    // Before a submission there is nothing to review, whatever the columns hold.
+    renderSection({
+      state: state({
+        canStart: false,
+        form: {
+          ...submitted,
+          status: OnboardingFormStatus.Open,
+          submittedAt: null,
+        },
+        review: { ...review, reviewed: 0, clarifications: 0 },
+      }),
+      formHref: "/de/crm/onboarding/f-1",
+    });
+    expect(screen.queryByText(/Blöcken geprüft/)).not.toBeInTheDocument();
   });
 
   it("starts from the chosen template and opens the new form", async () => {

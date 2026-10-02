@@ -150,7 +150,8 @@
     },
     "changes_requested": {
       "title": "We still have questions",
-      "description": "Have a look at our questions. We’ll let you know as soon as you can answer them."
+      "description": "Have a look at our questions. We’ll let you know as soon as you can answer them.",
+      "editable": "We still need something from you. You can now complete the sections with our question; all others stay readable. Then submit the onboarding again."
     },
     "completed": {
       "title": "Onboarding completed",

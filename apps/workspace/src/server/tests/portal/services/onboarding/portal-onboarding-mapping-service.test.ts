@@ -279,32 +279,39 @@ describe("portalOnboardingMappingService.toFormDto", () => {
     });
   });
 
-  it("shows the review note only for a block handed back to the customer", () => {
+  it("shows the review note only for a block handed back to the customer, and only once the form went back", () => {
     const reviewed = {
       reviewStatus: OnboardingBlockReviewStatus.Clarification,
       reviewNote: "Bitte ergänzen",
       reviewedByMemberId: "member-1",
       reviewedAt: "2026-10-02T08:00:00.000Z",
     };
-    const blocks = portalOnboardingMappingService.toFormDto(
-      parts([
-        step(blockFixture([], { id: "customer" }), {
-          ...reviewed,
-          clarificationMode: OnboardingClarificationMode.Customer,
-        }),
-        step(blockFixture([], { id: "call" }), {
-          ...reviewed,
-          position: 1,
-          clarificationMode: OnboardingClarificationMode.Call,
-        }),
-      ]),
-    ).blocks;
+    const steps = [
+      step(blockFixture([], { id: "customer" }), {
+        ...reviewed,
+        clarificationMode: OnboardingClarificationMode.Customer,
+      }),
+      step(blockFixture([], { id: "call" }), {
+        ...reviewed,
+        position: 1,
+        clarificationMode: OnboardingClarificationMode.Call,
+      }),
+    ];
+    const mapped = (status: OnboardingFormStatus) =>
+      portalOnboardingMappingService.toFormDto(
+        parts(steps, { form: { ...form(steps), status } }),
+      ).blocks;
+    const blocks = mapped(OnboardingFormStatus.ChangesRequested);
 
     expect(blocks.map((block) => block.reviewNote)).toEqual([
       "Bitte ergänzen",
       null,
     ]);
     expect(blocks[0]).not.toHaveProperty("reviewedByMemberId");
+    // While the team still reviews, a question it has not sent yet stays internal.
+    expect(
+      mapped(OnboardingFormStatus.Submitted).map((block) => block.reviewNote),
+    ).toEqual([null, null]);
   });
 
   it("marks only company-wide blocks with answers of the team as pre-filled", () => {

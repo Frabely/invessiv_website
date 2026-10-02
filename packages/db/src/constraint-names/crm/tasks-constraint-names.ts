@@ -18,6 +18,10 @@ export const TasksConstraintName = {
   FeedbackRoundProjectForeignKey: "tasks_feedback_round_project_fk",
   FeedbackRoundSideCheck: "tasks_feedback_round_side_check",
   FeedbackRoundUnique: "tasks_feedback_round_uidx",
+  OnboardingFormProjectForeignKey: "tasks_onboarding_form_project_fk",
+  OnboardingFormSideCheck: "tasks_onboarding_form_side_check",
+  OnboardingFormUnique: "tasks_onboarding_form_uidx",
+  SingleOriginCheck: "tasks_single_origin_check",
 } as const;
 
 export type TasksConstraintName =
@@ -40,4 +44,8 @@ export const TASKS_CONSTRAINT_NAME_VALUES = [
   TasksConstraintName.FeedbackRoundProjectForeignKey,
   TasksConstraintName.FeedbackRoundSideCheck,
   TasksConstraintName.FeedbackRoundUnique,
+  TasksConstraintName.OnboardingFormProjectForeignKey,
+  TasksConstraintName.OnboardingFormSideCheck,
+  TasksConstraintName.OnboardingFormUnique,
+  TasksConstraintName.SingleOriginCheck,
 ] as const;

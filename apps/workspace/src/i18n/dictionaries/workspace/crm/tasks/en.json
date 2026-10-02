@@ -2,6 +2,9 @@
   "feedbackRound": {
     "title": "Implement feedback round {roundNumber}"
   },
+  "onboardingForm": {
+    "title": "Review onboarding"
+  },
   "section": {
     "title": "Tasks",
     "addAction": "Add task",

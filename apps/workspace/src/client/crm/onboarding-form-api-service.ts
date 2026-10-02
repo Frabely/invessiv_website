@@ -10,6 +10,8 @@ import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboardin
 import type { OnboardingReleaseWarningDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-release-warning.dto";
 import type { ReleaseOnboardingFormRequestDto } from "@invessiv/common/contracts/crm/onboarding/release-onboarding-form-request.dto";
 import type { RemoveOnboardingFormBlockRequestDto } from "@invessiv/common/contracts/crm/onboarding/remove-onboarding-form-block-request.dto";
+import type { RequestOnboardingChangesRequestDto } from "@invessiv/common/contracts/crm/onboarding/request-onboarding-changes-request.dto";
+import type { ReviewOnboardingBlockRequestDto } from "@invessiv/common/contracts/crm/onboarding/review-onboarding-block-request.dto";
 import type { StartProjectOnboardingRequestDto } from "@invessiv/common/contracts/crm/onboarding/start-project-onboarding-request.dto";
 import { questionnaireDefinitionApiService } from "@/client/crm/questionnaire-definition-api-service";
 import { versionedJsonMutationService } from "@/client/shared/versioned-json-mutation-service";
@@ -22,12 +24,14 @@ import {
   crmOnboardingFormBlockEndpoint,
   crmOnboardingFormBlockFieldsEndpoint,
   crmOnboardingFormBlockMoveEndpoint,
+  crmOnboardingFormBlockReviewEndpoint,
   crmOnboardingFormBlocksEndpoint,
   crmOnboardingFormEndpoint,
   crmOnboardingFormFieldEndpoint,
   crmOnboardingFormFieldMoveEndpoint,
   crmOnboardingFormFieldUsageEndpoint,
   crmOnboardingFormReleaseEndpoint,
+  crmOnboardingFormRequestChangesEndpoint,
   crmProjectOnboardingEndpoint,
 } from "@/common/patterns/crm/crm-api-endpoints";
 
@@ -176,6 +180,31 @@ async function release(
   return { ok: false, code, warnings };
 }
 
+/** Sets the review of one block; a stale review version comes back with the current form. */
+function reviewBlock(
+  formId: string,
+  blockId: string,
+  request: ReviewOnboardingBlockRequestDto,
+) {
+  return mutateForm(
+    crmOnboardingFormBlockReviewEndpoint(formId, blockId),
+    HttpMethod.Patch,
+    request,
+  );
+}
+
+/** Hands the blocks with a question for the customer back to the portal. */
+function requestChanges(
+  formId: string,
+  request: RequestOnboardingChangesRequestDto,
+) {
+  return mutateForm(
+    crmOnboardingFormRequestChangesEndpoint(formId),
+    HttpMethod.Post,
+    request,
+  );
+}
+
 function getFieldUsage(formId: string, fieldId: string) {
   return read(crmOnboardingFormFieldUsageEndpoint(formId, fieldId), isUsage);
 }
@@ -206,5 +235,7 @@ export const onboardingFormApiService = {
   moveBlock,
   release,
   removeBlock,
+  requestChanges,
+  reviewBlock,
   start,
 } as const;

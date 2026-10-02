@@ -316,6 +316,9 @@ Umsetzung der Medien in Ordner 14 (Task 51–56, Neuzuschnitt 28.09.2026), des O
 - **Der Onboarding-Bogen ist ein strukturiertes Formular**, kein Dateiabwurf: Texte werden ins Feld
   geschrieben, Assets hängen am zugehörigen Feld. Ziel: Nach dem Onboarding muss nichts mehr einzeln per Mail
   nachgefordert werden. Details: `15-onboarding/README.md`.
+- **Sammelaufgabe „Onboarding prüfen“ (Task 68).** Beim ersten Absenden entsteht eine typisierte interne Aufgabe je
+  Bogen (`tasks.onboarding_form_id`), dem Projekt-Owner zugewiesen, sonst dem Kunden-Owner; ohne aktiven Owner
+  entsteht keine. Eine Aufgabe hat höchstens eine Herkunft (Feedbackrunde oder Bogen).
 - **Pflegbarer Baukasten (Neuentscheidung 30.09.2026).** Bausteine (Blöcke mit Feldern) und Vorlagen (geordnete
   Blockauswahl) liegen in der Datenbank und werden im CRM gepflegt — wie der Leistungskatalog. Feldtypen sind ein
   fester Satz im Code (Const-Objekt + DB-CHECK); Texte liegen in eigenen Lokalisierungstabellen je Element, Pflicht
@@ -717,7 +720,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12b erreicht:
 | 13a | läuft     | `13a-kundenchat`                         | Kundenchat im CRM-Cockpit, Posteingang und Portal bidirektional nutzbar                                                                               | 110–140 |   5–6 T. |
 | 13c | offen     | `13c-portal-leistungsanfragen`           | Preisfreie Leistungsanfragen im Portal, intern bearbeitbar                                                                                            |   60–80 |   3–4 T. |
 | 14  | läuft     | `14-dateien`                             | Dateien, Links, ZIP, Portal-Dateien, Chat-Anhänge; sechs Teil-PRs (14.1–14.6), 14.1/14.3/14.4 gemerged, 14.2, 14.5 und 14.6 im Review                 | 290–425 | 12–16 T. |
-| 15  | läuft     | `15-onboarding`                          | Onboarding-Baukasten (Katalog, Vorlagen), Bogen je Projekt, Portal-Formular, Prüfung, Nachforderung, Termin, Abschluss; acht Teil-PRs, 15.5 im Review | 495–675 | 16–21 T. |
+| 15  | läuft     | `15-onboarding`                          | Onboarding-Baukasten (Katalog, Vorlagen), Bogen je Projekt, Portal-Formular, Prüfung, Nachforderung, Termin, Abschluss; acht Teil-PRs, 15.6 im Review | 495–675 | 16–21 T. |
 | 16  | läuft     | `16-feedbackrunden`                      | Rundenschritte, Übergabe, Feedback-Punkte, Bearbeitung, Abnahme und Eingang; sechs Teil-PRs (16.1–16.6), 16.1 gemerged, 16.2 läuft, 16.6 im Review    | 315–430 | 13–16 T. |
 | 19  | offen     | `19-credentials`                         | Verschlüsselte Zugangsdaten und Security-Audit vollständig nutzbar                                                                                    |   50–80 |   3–4 T. |
 | 20  | offen     | `20-stunden-und-history`                 | Kontingente, Buchungen und konsolidierte Timeline vollständig nutzbar                                                                                 |  60–100 |   3–4 T. |

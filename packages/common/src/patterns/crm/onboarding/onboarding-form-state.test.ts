@@ -10,6 +10,7 @@ import { PROJECT_STATUS_VALUES } from "../../../constants/crm/project-statuses";
 import {
   canTransitionOnboardingForm,
   isOnboardingProjectEligible,
+  isOnboardingReviewOpen,
   isOnboardingStructureEditable,
   listCustomerEditableOnboardingBlockIds,
 } from "./onboarding-form-state";
@@ -19,6 +20,14 @@ describe("isOnboardingStructureEditable", () => {
     expect(
       ONBOARDING_FORM_STATUS_VALUES.filter(isOnboardingStructureEditable),
     ).toEqual(["draft", "open"]);
+  });
+});
+
+describe("isOnboardingReviewOpen", () => {
+  it("opens the review only while the form lies with the team", () => {
+    expect(
+      ONBOARDING_FORM_STATUS_VALUES.filter(isOnboardingReviewOpen),
+    ).toEqual(["submitted"]);
   });
 });
 

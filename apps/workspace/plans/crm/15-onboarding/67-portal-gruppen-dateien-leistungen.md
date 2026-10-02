@@ -6,7 +6,7 @@
 > erweitert), `../00-entscheidungen.md`, `../AGENTS.md`, `plans/crm/14-dateien/README.md` (Upload-Ablauf),
 > scoped `AGENTS.md` unter `src/components/portal/`, `src/server/portal/`, `src/server/shared/`.
 
-> **Status:** im Review · **Teil-PR:** 15.5 · **Branch:** `feat/crm-onboarding-5-portal-voll`
+> **Status:** gemergt · **Teil-PR:** 15.5 · **Branch:** `feat/crm-onboarding-5-portal-voll`
 > **Abhängigkeiten:** Task 66 (15.4) gemerged · **Aufwand:** 3–4 T. · **Dateien:** 80–105
 > **Migration:** keine
 

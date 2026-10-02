@@ -381,6 +381,31 @@ describe("OnboardingFormView", () => {
     ).toHaveAttribute("href", "/en/crm/onboarding/form-1");
   });
 
+  it("opens a change request on the first block the team asked about and keeps the others read-only", () => {
+    const dto = form({
+      status: OnboardingFormStatus.ChangesRequested,
+      submittedAt: "2026-10-01T10:00:00.000Z",
+      editableBlockIds: ["Brand"],
+      answers: [answer("Name", { value: "Acme" })],
+    });
+    dto.blocks[1].reviewNote = "Which claim do you mean?";
+    renderView(dto);
+
+    expect(
+      screen.getByText(content.states.changes_requested.editable),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Brand" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Which claim do you mean?")).toBeInTheDocument();
+    expect(screen.getByRole("textbox", { name: /Claim/ })).toBeEnabled();
+
+    fireEvent.click(stepButton("Company"));
+    expect(screen.getByText(content.block.locked)).toBeInTheDocument();
+    expect(screen.queryByRole("textbox", { name: /Name/ })).toBeNull();
+    expect(screen.getByText("Acme")).toBeInTheDocument();
+  });
+
   it("names a block whose texts fell back to another language", () => {
     const dto = form();
     dto.blocks[0].fallbackLocale = "de";
