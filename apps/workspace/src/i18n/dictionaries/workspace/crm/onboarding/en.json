@@ -35,6 +35,7 @@
     },
     "notEligible": "An onboarding can only be started for planned and active projects.",
     "draftHint": "The form is a draft. The customer cannot see it yet.",
+    "completedOn": "Completed on {date}. The form is the working basis for this project.",
     "progressLabel": "Answered required fields",
     "progress": "{answered} of {total} required fields answered",
     "progressNone": "The form has no required fields yet.",
@@ -61,6 +62,8 @@
     "customer": "Customer",
     "template": "Template",
     "templateNone": "No template",
+    "callHeldOn": "Onboarding call",
+    "completedAt": "Completion",
     "tabs": {
       "ariaLabel": "Areas of the form",
       "structure": "Structure",
@@ -86,6 +89,35 @@
       "unknownBlock": "A block",
       "notReleasable": "The form does not ask anything yet. It needs at least one block, every block at least one field and every group at least one sub-field.",
       "conflict": "Someone changed the form in the meantime. The current version is loaded. Check it, then release."
+    }
+  },
+  "complete": {
+    "action": "Complete onboarding",
+    "completed": "The onboarding is completed. The form is read-only from now on.",
+    "dialog": {
+      "title": "Complete the onboarding?",
+      "description": "The form becomes read-only for good, in the portal and in the CRM. The project services stay exactly as the form shows them now.",
+      "callHeldOn": "Date of the onboarding call",
+      "callHeldOnHint": "The day the call took place.",
+      "callHeldOnRequired": "Enter the day the call took place.",
+      "callHeldOnFuture": "The call cannot lie in the future.",
+      "advancePhase": "Move the project on to the “Design” phase",
+      "advancePhaseHint": "The customer gets a message about it in the chat.",
+      "missingHeading": "These required answers are still missing",
+      "missingItem": "{field} in “{block}”",
+      "missingHint": "You can only complete once they are in. Request them from the customer in the review.",
+      "missingLink": "View answers",
+      "untitledField": "Untitled field",
+      "hintsHeading": "Good to know",
+      "unreviewed": "{count} blocks are still unreviewed. Their state stays as history.",
+      "unreviewedOne": "1 block is still unreviewed. Its state stays as history.",
+      "callPoints": "{count} points are still on the agenda for the call.",
+      "callPointsOne": "1 point is still on the agenda for the call.",
+      "confirm": "Complete onboarding",
+      "confirming": "Completing …",
+      "cancel": "Cancel",
+      "close": "Close",
+      "conflict": "Someone changed the form in the meantime. The current state is loaded. Check it, then complete."
     }
   },
   "answers": {

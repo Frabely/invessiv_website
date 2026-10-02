@@ -41,7 +41,8 @@
     "feedbackApproved": "Der Kunde hat „{projectTitle}“ in Feedbackrunde {roundNumber} abgenommen.",
     "onboardingSubmitted": "Der Kunde hat das Onboarding für „{projectTitle}“ abgesendet.",
     "onboardingReleased": "Das Onboarding für „{projectTitle}“ wurde für den Kunden freigegeben.",
-    "onboardingChangesRequested": "Das Onboarding für „{projectTitle}“ ging mit Rückfragen zurück an den Kunden: {blockTitles}."
+    "onboardingChangesRequested": "Das Onboarding für „{projectTitle}“ ging mit Rückfragen zurück an den Kunden: {blockTitles}.",
+    "onboardingCompleted": "Das Onboarding für „{projectTitle}“ wurde abgeschlossen."
   },
   "dock": {
     "unread": "{count} ungelesen"

@@ -75,6 +75,12 @@ export type OnboardingChangeRequest = OnboardingMemberTransition & {
   requested: readonly OnboardingRequestedBlock[];
 };
 
+/** The completion by the team: the day the call took place and whether the project moves on. */
+export type OnboardingCompletion = OnboardingMemberTransition & {
+  callHeldOn: string;
+  advancePhase: boolean;
+};
+
 /** Everything a form DTO is made of, loaded for one viewer. */
 export type OnboardingFormParts = {
   form: OnboardingFormRow;

@@ -1,6 +1,6 @@
 # Ordner 15 — Onboarding
 
-> **Status:** läuft (15.1–15.6 gemergt, 15.7 im Review) · **Abhängigkeiten:** 07 (Projekte, Projektleistungen), 08 (Aufgaben), 12a/12b/13 (Portal), 13a
+> **Status:** läuft (15.1–15.6 gemergt, 15.7 und 15.8 im Review) · **Abhängigkeiten:** 07 (Projekte, Projektleistungen), 08 (Aufgaben), 12a/12b/13 (Portal), 13a
 > (Chat, Systemnachrichten), 14 (Dateien), 16 (Feedbackrunden, deren Bausteine hier verallgemeinert werden) — alle
 > gemerged · **Aufwand:** 16–21 Tage gesamt · **Reviewziel:** acht Teil-PRs mit je 30–110 Dateien
 
@@ -91,7 +91,7 @@ deploybar. Reine Fundamente bleiben unsichtbar; sichtbare Funktionen werden vert
 | 15.5 | 67   | `feat/crm-onboarding-5-portal-voll`  | [`67-portal-gruppen-dateien-leistungen.md`](./67-portal-gruppen-dateien-leistungen.md)                             | Freigeben, Portal-Navigation, Widget, vollständiger Bogen inkl. Gruppen und Uploads        |  80–105 | gemergt   |
 | 15.6 | 68   | `feat/crm-onboarding-6-pruefung`     | [`68-pruefung-und-nachforderung.md`](./68-pruefung-und-nachforderung.md)                                           | Intern: Prüfung je Block, Nachforderung, Call-Agenda. Portal: Nachforderung bearbeiten     |   60–80 | gemergt   |
 | 15.7 | 69   | `feat/crm-onboarding-7-termin`       | [`69-onboarding-termin.md`](./69-onboarding-termin.md)                                                             | Buchungslink im Profil, Terminkarte im Onboarding-Widget                                   |   35–50 | im Review |
-| 15.8 | 70   | `feat/crm-onboarding-8-abschluss`    | [`70-abschluss-und-leseansicht.md`](./70-abschluss-und-leseansicht.md)                                             | Onboarding abschließen, dauerhafte Leseansicht, Vorbefüllung für Folgeprojekte aktiv       |   45–65 | offen     |
+| 15.8 | 70   | `feat/crm-onboarding-8-abschluss`    | [`70-abschluss-und-leseansicht.md`](./70-abschluss-und-leseansicht.md)                                             | Onboarding abschließen, dauerhafte Leseansicht, Vorbefüllung für Folgeprojekte aktiv       |   45–65 | im Review |
 
 **Reihenfolge ist zwingend:** 15.1 → 15.2 → 15.3 → 15.4 → 15.5 → 15.6 → 15.7 → 15.8. Jede Einheit setzt die
 vorherige als gemerged voraus.
@@ -117,6 +117,8 @@ Tests und Seeds erzeugen freigegebene Bögen direkt.
   (Rollout-Gate). Werden vorher Kunden eingeladen, werden 15.5 und 15.6 gemeinsam gemergt.
 - **Nach 15.6 bis 15.8:** Rückfragen und Call-Agenda funktionieren; der Abschluss kommt mit 15.8. Das Portal-Widget
   zeigt bis dahin „Abgesendet · Wir melden uns“.
+- **Ab 15.8:** Der Ablauf ist vollständig. Ein abgeschlossener Bogen ist in Portal und CRM nur lesbar, seine
+  Leistungen sind eingefroren, und das nächste Projekt desselben Kunden übernimmt die firmenweiten Angaben.
 
 ## Fachmodell (Kurzfassung — Details in den Task-Dateien)
 

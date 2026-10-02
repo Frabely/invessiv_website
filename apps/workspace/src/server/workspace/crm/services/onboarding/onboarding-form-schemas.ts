@@ -46,4 +46,11 @@ export const onboardingFormSchemas = {
     }),
   ]),
   requestChanges: z.strictObject({ expectedVersion: expectedFormVersion }),
+  // The call date stays a plain string here: an empty or future day is a missing precondition
+  // with its own code, not a malformed request.
+  complete: z.strictObject({
+    expectedVersion: expectedFormVersion,
+    callHeldOn: z.string(),
+    advancePhase: z.boolean(),
+  }),
 } as const;

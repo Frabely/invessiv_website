@@ -62,6 +62,7 @@ function renderPage(
         customerName: "Nordlicht Coaching",
         projectId: "p-1",
         projectTitle: "Website-Relaunch",
+        projectPhase: "onboarding",
         templateTitle,
       }}
       fixedChoiceLabels={{

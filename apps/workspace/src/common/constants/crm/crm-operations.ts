@@ -61,6 +61,7 @@ export const CrmOperation = {
   ReleaseOnboardingForm: "onboarding-forms.release",
   ReviewOnboardingBlock: "onboarding-form-blocks.review",
   RequestOnboardingChanges: "onboarding-forms.request-changes",
+  CompleteOnboardingForm: "onboarding-forms.complete",
 } as const;
 
 export type CrmOperation = (typeof CrmOperation)[keyof typeof CrmOperation];
@@ -127,4 +128,5 @@ export const CRM_OPERATION_VALUES = [
   CrmOperation.ReleaseOnboardingForm,
   CrmOperation.ReviewOnboardingBlock,
   CrmOperation.RequestOnboardingChanges,
+  CrmOperation.CompleteOnboardingForm,
 ] as const;

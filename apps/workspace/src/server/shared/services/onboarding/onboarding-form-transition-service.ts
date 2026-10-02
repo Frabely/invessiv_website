@@ -14,11 +14,14 @@ import { announceSystemMessage } from "@/server/shared/services/message/announce
 import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
 import type {
   OnboardingChangeRequest,
+  OnboardingCompletion,
   OnboardingCustomerTransition,
   OnboardingFormRow,
   OnboardingMemberTransition,
 } from "./onboarding-form-types";
+import { onboardingProjectStepService } from "./onboarding-project-step-service";
 import { onboardingReviewService } from "./onboarding-review-service";
+import { onboardingServicesSnapshotService } from "./onboarding-services-snapshot-service";
 import { onboardingTaskService } from "./onboarding-task-service";
 
 /**
@@ -162,7 +165,64 @@ async function requestChanges(
   return requested;
 }
 
+/**
+ * Closes a submitted form for good. The services are frozen before the status changes, because
+ * from `completed` on the form reads the snapshot instead of the project's line items. The phase
+ * moves last and announces itself, so the chat reads "completed" before "next phase".
+ */
+async function complete(
+  tx: ContactDatabaseTransaction,
+  form: OnboardingFormRow,
+  context: OnboardingCompletion,
+): Promise<OnboardingFormRow> {
+  await onboardingServicesSnapshotService.freeze(tx, form);
+  const completed = await updateLockedVersioned(
+    {
+      tx,
+      table: onboardingForms,
+      id: form.id,
+      expectedVersion: form.version,
+      patch: {
+        status: OnboardingFormStatus.Completed,
+        completed_at: new Date(),
+        completed_by_member_id: context.memberId,
+        call_held_on: context.callHeldOn,
+      },
+    },
+    "Locked onboarding form changed",
+  );
+  await onboardingTaskService.completeForForm(
+    tx,
+    completed,
+    context.actor,
+    context.memberId,
+  );
+  await activityService.createActivity(tx, {
+    customerId: completed.customer_id,
+    projectId: completed.project_id,
+    type: ActivityType.StatusChange,
+    body: `${form.status} → ${completed.status}`,
+    metadata: {
+      entity: ONBOARDING_FORM_ACTIVITY_ENTITY,
+      onboarding_form_id: completed.id,
+      previous_status: form.status,
+      next_status: completed.status,
+    },
+    actor: context.actor,
+  });
+  await announceSystemMessage(
+    tx,
+    completed.customer_id,
+    SystemMessageKey.OnboardingCompleted,
+    { [SystemMessageParam.ProjectTitle]: context.projectTitle },
+  );
+  if (context.advancePhase)
+    await onboardingProjectStepService.advancePastOnboarding(tx, completed);
+  return completed;
+}
+
 export const onboardingFormTransitionService = {
+  complete,
   release,
   requestChanges,
   submit,

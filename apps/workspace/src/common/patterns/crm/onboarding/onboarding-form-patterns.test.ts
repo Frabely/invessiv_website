@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { OnboardingErrorCode } from "@invessiv/common/constants/crm/errors/onboarding-error-codes";
+import { ONBOARDING_FORM_STATUS_VALUES } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
 import { QuestionnaireFormValidationCode } from "@/common/constants/crm/questionnaire/questionnaire-form-validation-codes";
 import { validateQuestionnaireBlockIdentity } from "@/common/patterns/crm/questionnaire/questionnaire-block-identity";
@@ -11,6 +12,7 @@ import { onboardingFormErrorText } from "./onboarding-form-error-text";
 import {
   buildOnboardingFormHref,
   buildOnboardingFormTabHref,
+  defaultOnboardingFormTab,
   readOnboardingFormBlockId,
   readOnboardingFormTab,
 } from "./onboarding-form-query";
@@ -70,6 +72,48 @@ describe("onboarding form tab query", () => {
         "structure",
       ),
     ).toBe("/de/crm/onboarding/f-1");
+  });
+});
+
+describe("onboarding form default tab", () => {
+  it("opens a completed form on its answers and every other one on its structure", () => {
+    expect(
+      ONBOARDING_FORM_STATUS_VALUES.map((status) => [
+        status,
+        defaultOnboardingFormTab(status),
+      ]),
+    ).toEqual([
+      ["draft", "structure"],
+      ["open", "structure"],
+      ["submitted", "structure"],
+      ["changes_requested", "structure"],
+      ["completed", "answers"],
+    ]);
+  });
+
+  it("reads and builds the tab against the default it is given", () => {
+    expect(readOnboardingFormTab(new URLSearchParams(""), "answers")).toBe(
+      "answers",
+    );
+    expect(
+      readOnboardingFormTab(new URLSearchParams("tab=structure"), "answers"),
+    ).toBe("structure");
+    expect(
+      buildOnboardingFormTabHref(
+        "/de/crm/onboarding/f-1",
+        "tab=structure",
+        "answers",
+        "answers",
+      ),
+    ).toBe("/de/crm/onboarding/f-1");
+    expect(
+      buildOnboardingFormTabHref(
+        "/de/crm/onboarding/f-1",
+        "",
+        "structure",
+        "answers",
+      ),
+    ).toBe("/de/crm/onboarding/f-1?tab=structure");
   });
 });
 

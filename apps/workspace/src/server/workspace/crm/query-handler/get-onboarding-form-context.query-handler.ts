@@ -32,6 +32,7 @@ export async function getOnboardingFormContext(
       customerName: customers.display_name,
       projectId: projects.id,
       projectTitle: projects.title,
+      projectPhase: projects.phase,
       templateTitle: questionnaireTemplates.title,
     })
     .from(onboardingForms)

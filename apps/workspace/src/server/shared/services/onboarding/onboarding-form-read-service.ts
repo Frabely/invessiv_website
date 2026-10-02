@@ -1,9 +1,8 @@
 import "server-only";
 
-import { and, asc, eq, gt, inArray, isNull, or, type SQL } from "drizzle-orm";
+import { and, asc, eq, gt, type SQL } from "drizzle-orm";
 
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
-import { ONBOARDING_VISIBLE_LINE_ITEM_STATUS_VALUES } from "@invessiv/common/constants/crm/onboarding/onboarding-visible-line-item-statuses";
 import type { OnboardingFormServiceDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form-service.dto";
 import type { OnboardingFormSummaryDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form-summary.dto";
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
@@ -17,7 +16,6 @@ import {
   onboardingAnswerFiles,
   onboardingAnswers,
   onboardingFormBlocks,
-  onboardingFormServices,
   onboardingGroupEntries,
   projectLineItems,
 } from "@invessiv/db/record-configuration";
@@ -28,6 +26,7 @@ import type {
   OnboardingFormBlockRow,
   OnboardingFormRow,
 } from "./onboarding-form-types";
+import { onboardingServicesSnapshotService } from "./onboarding-services-snapshot-service";
 
 type Structure = {
   steps: OnboardingFormBlockRow[];
@@ -83,48 +82,14 @@ async function loadServices(
   executor: QuestionnaireReadExecutor,
   form: OnboardingFormRow,
 ): Promise<OnboardingFormServiceDto[]> {
-  if (form.status === OnboardingFormStatus.Completed) {
-    const rows = await executor
-      .select()
-      .from(onboardingFormServices)
-      .where(eq(onboardingFormServices.form_id, form.id))
-      .orderBy(asc(onboardingFormServices.position));
-    return rows.map((row) =>
-      onboardingFormMappingService.toServiceDto(
-        {
-          projectLineItemId: row.project_line_item_id,
-          title: row.title,
-          description: row.description,
-        },
-        row.position,
-      ),
-    );
-  }
-  const rows = await executor
-    .select()
-    .from(projectLineItems)
-    .where(
-      and(
-        eq(projectLineItems.project_id, form.project_id),
-        or(
-          isNull(projectLineItems.status),
-          inArray(projectLineItems.status, [
-            ...ONBOARDING_VISIBLE_LINE_ITEM_STATUS_VALUES,
-          ]),
-        ),
-      ),
-    )
-    .orderBy(asc(projectLineItems.created_at), asc(projectLineItems.id));
-  return rows.map((row, position) =>
-    onboardingFormMappingService.toServiceDto(
-      {
-        projectLineItemId: row.id,
-        title: row.title,
-        description: row.description,
-      },
-      position,
-    ),
-  );
+  const services =
+    form.status === OnboardingFormStatus.Completed
+      ? await onboardingServicesSnapshotService.listFrozen(executor, form.id)
+      : await onboardingServicesSnapshotService.listLive(
+          executor,
+          form.project_id,
+        );
+  return services.map(onboardingFormMappingService.toServiceDto);
 }
 
 /**

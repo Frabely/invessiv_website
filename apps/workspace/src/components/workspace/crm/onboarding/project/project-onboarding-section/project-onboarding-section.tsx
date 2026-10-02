@@ -18,6 +18,7 @@ import { CollapsibleSection } from "@/components/workspace/crm/shared/collapsibl
 import { SectionEmptyState } from "@/components/workspace/crm/shared/section-empty-state/section-empty-state";
 import type { Locale } from "@/config/i18n";
 import type { CrmOnboardingDictionary } from "@/i18n/dictionaries/workspace/crm";
+import { formatMomentDay } from "@/lib/i18n/format-moment-day";
 import { OnboardingStartDialog } from "../onboarding-start-dialog/onboarding-start-dialog";
 import { OnboardingStatusBadge } from "../onboarding-status-badge/onboarding-status-badge";
 import styles from "./project-onboarding-section.module.css";
@@ -134,6 +135,14 @@ export function ProjectOnboardingSection({
             <p className={styles.review}>
               <span>{review.reviewed}</span>
               <span>{review.clarifications}</span>
+            </p>
+          ) : null}
+          {form.status === OnboardingFormStatus.Completed &&
+          form.completedAt ? (
+            <p className={styles.completed}>
+              {formatMessage(text.completedOn, {
+                date: formatMomentDay(form.completedAt, locale),
+              })}
             </p>
           ) : null}
           {form.status === OnboardingFormStatus.Draft ? (

@@ -214,3 +214,12 @@ Plan: `apps/workspace/plans/crm/15-onboarding/65-bogen-anlegen-und-anpassen.md`.
   Activity und Systemnachricht schreibt `onboardingFormTransitionService.requestChanges`.
 - `getProjectOnboarding` liefert zusätzlich `review` (`summarizeOnboardingReview` aus `@invessiv/common`); kein
   Handler zählt Prüfstände selbst.
+- **Abschließen (ab Task 70):** `completeOnboardingForm` sperrt den Bogen über `lockWritableForm` und prüft in dieser
+  Reihenfolge: Übergang (`ONBOARDING_INVALID_TRANSITION`, nur aus `submitted`), Bogenversion (409 mit dem ganzen
+  Bogen), Call-Datum über `isOnboardingCallDateAcceptable` gegen `businessToday()` (`ONBOARDING_CALL_DATE_REQUIRED`,
+  422 — leer, kein Kalendertag oder in der Zukunft) und fehlende sichtbare Pflichtangaben über
+  `onboardingFormReadService.toCompleteness` (`ONBOARDING_REQUIRED_MISSING`, 422, Liste unter `details.missing`).
+  Ungeprüfte Blöcke und Call-Rückfragen blockieren nicht. Alles Weitere schreibt
+  `onboardingFormTransitionService.complete`; ein Fehler darin rollt den ganzen Abschluss zurück.
+- `getOnboardingFormContext` liefert zusätzlich `projectPhase`, damit der Abschlussdialog den Phasenwechsel nur
+  anbietet, solange das Projekt in `onboarding` steht. Die Entscheidung trifft trotzdem der Server.

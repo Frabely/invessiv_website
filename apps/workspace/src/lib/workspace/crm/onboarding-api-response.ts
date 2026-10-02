@@ -6,7 +6,8 @@ import { onboardingApiError } from "@/lib/workspace/crm/onboarding-api-error";
 
 /**
  * Success answers carry the DTO without an envelope; a version conflict carries the
- * `VersionConflictDto`, a release that waits for an acknowledgement its warnings as details.
+ * `VersionConflictDto`, a release that waits for an acknowledgement its warnings and a completion
+ * that lacks required answers the missing fields as details.
  */
 export function onboardingApiResponse<T>(
   result: OnboardingCommandResult<T>,
@@ -20,6 +21,10 @@ export function onboardingApiResponse<T>(
   if ("warnings" in result)
     return onboardingApiError(result.code, {
       details: { warnings: result.warnings },
+    });
+  if ("missing" in result)
+    return onboardingApiError(result.code, {
+      details: { missing: result.missing },
     });
   return onboardingApiError(result.code, {
     details: "errors" in result ? result.errors : undefined,

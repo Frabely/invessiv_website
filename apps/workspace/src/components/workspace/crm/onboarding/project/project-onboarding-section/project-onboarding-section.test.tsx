@@ -213,6 +213,29 @@ describe("ProjectOnboardingSection", () => {
     ).not.toBeInTheDocument();
   });
 
+  it("says when the onboarding was completed", () => {
+    renderSection({
+      state: state({
+        canStart: false,
+        form: {
+          id: "f-1",
+          status: OnboardingFormStatus.Completed,
+          progress: { answeredRequired: 4, totalRequired: 4, ratio: 1 },
+          submittedAt: "2026-10-02T08:00:00.000Z",
+          completedAt: "2026-10-05T10:00:00.000Z",
+        },
+      }),
+      formHref: "/de/crm/onboarding/f-1",
+    });
+
+    expect(screen.getByText(content.status.completed)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Abgeschlossen am 5. Okt. 2026. Der Bogen ist die Arbeitsgrundlage für dieses Projekt.",
+      ),
+    ).toBeInTheDocument();
+  });
+
   it("says so when a form has no required fields yet", () => {
     renderSection({
       state: state({

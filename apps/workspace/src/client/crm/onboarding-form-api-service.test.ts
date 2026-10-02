@@ -92,6 +92,15 @@ describe("onboardingFormApiService", () => {
         expectedVersion: 2,
       }),
     ).toEqual({ ok: true, value: form });
+    const completion = {
+      expectedVersion: 2,
+      callHeldOn: "2026-09-15",
+      advancePhase: true,
+    };
+    expect(await onboardingFormApiService.complete("f-1", completion)).toEqual({
+      ok: true,
+      value: form,
+    });
 
     expect(calls(fetchMock)).toEqual([
       [
@@ -104,6 +113,7 @@ describe("onboardingFormApiService", () => {
         HttpMethod.Post,
         JSON.stringify({ expectedVersion: 2 }),
       ],
+      [`${FORMS}/f-1/complete`, HttpMethod.Post, JSON.stringify(completion)],
     ]);
   });
 

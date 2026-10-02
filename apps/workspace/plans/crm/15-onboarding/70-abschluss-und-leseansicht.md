@@ -6,7 +6,7 @@
 > Lese-Renderer), [`68-pruefung-und-nachforderung.md`](./68-pruefung-und-nachforderung.md) (Sammelaufgabe,
 > Call-Agenda), `../00-entscheidungen.md`, `../AGENTS.md`, scoped `AGENTS.md` am Zielcode.
 
-> **Status:** offen · **Teil-PR:** 15.8 · **Branch:** `feat/crm-onboarding-8-abschluss`
+> **Status:** im Review · **Teil-PR:** 15.8 · **Branch:** `feat/crm-onboarding-8-abschluss`
 > **Abhängigkeiten:** Task 69 (15.7) gemerged · **Aufwand:** 1–2 T. · **Dateien:** 45–65
 > **Migration:** keine
 
@@ -92,3 +92,62 @@ Portal-UI
 - [ ] README dieses Ordners, `00-entscheidungen.md` (Statustabelle) und `core-features.md` auf „gemerged“ bzw.
       aktuellen Stand gebracht.
 - [ ] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, DB-Smokes, Workspace-Build grün.
+
+## Umsetzungsnotizen (02.10.2026)
+
+Abweichungen und Entscheidungen bei der Umsetzung, jeweils mit dem, was es kostet, falls sie falsch sind.
+
+### T1 — Abschließen (Server)
+
+- **Kein neuer `completed`-Guard.** Die Planvorgabe „zentral über `onboarding-form-access-service` bzw.
+  `portal-onboarding-service`“ ist bereits erfüllt: Strukturbefehle laufen über `lockForStructure`
+  (`isOnboardingStructureEditable`), Prüfung und Statuswechsel über `isOnboardingReviewOpen` bzw.
+  `canTransitionOnboardingForm`, alle Portal-Schreibpfade über `findWritableField`/`listEditableBlockIds`
+  (`listCustomerEditableOnboardingBlockIds`). Keine dieser Regeln lässt `completed` zu. Ein zusätzlicher Schalter
+  wäre eine zweite Wahrheit gewesen. Abgesichert durch Negativtests je Endpunkt-Gruppe. Kosten, falls falsch: ein
+  künftiger Schreibpfad, der an diesen Funktionen vorbeigeht, wäre nicht automatisch gesperrt.
+- **Fehlercodes nach Abschluss:** Strukturbefehle antworten `ONBOARDING_NOT_EDITABLE`, Prüfung und Statuswechsel
+  `ONBOARDING_INVALID_TRANSITION`, das Portal `locked` — alle 409, wie der Plan verlangt.
+- **Call-Datum:** Der Request trägt `callHeldOn` als Zeichenkette; leer, kein echter Kalendertag oder in der Zukunft
+  antwortet einheitlich `ONBOARDING_CALL_DATE_REQUIRED` (422), nicht `VALIDATION_ERROR`. „Nicht in der Zukunft“
+  heißt: nicht nach dem heutigen Tag in der Geschäftszeitzone (`businessToday()`), wie bei Aufgaben und
+  Feedbackrunden. Die Regel steht einmal in `isOnboardingCallDateAcceptable` (`@invessiv/common`) und gilt für
+  Server und Dialog.
+- **Reihenfolge der Prüfungen:** Übergang → Version → Call-Datum → Pflichtangaben. Der Übergang steht vor der
+  Version, wie bei Freigabe und Nachforderung.
+- **`ONBOARDING_REQUIRED_MISSING` trägt die Liste** als eigene Variante in `OnboardingCommandResult`
+  (`missing: QuestionnaireMissingField[]`), in der Antwort unter `details.missing`.
+- **Snapshot-Service hält beide Quellen** (`listLive`, `listFrozen`, `freeze`); die Live-Abfrage ist aus dem
+  Read-Service dorthin umgezogen, damit der Snapshot aus exakt derselben Abfrage entsteht, die der Bogen anzeigt.
+  Die Wahl der Quelle bleibt allein in `loadServices`.
+- **Phasenwechsel zuletzt.** `complete` schreibt erst Bogen, Aufgabe, Activity und die Systemnachricht
+  `onboardingCompleted`, dann die Phase mit ihrer eigenen Nachricht, damit der Chat in sinnvoller Reihenfolge liest.
+  Alles bleibt eine Transaktion (Rollback-Test).
+- **`announcePhaseChange`** liegt als benannter Helfer unter `server/shared/services/message/announce-phase-change.ts`
+  (kein Service-Objekt für eine Funktion, wie `announce-system-message.ts`).
+- **Neue Systemnachricht `onboardingCompleted`** (Konstante, DE/EN in Portal- und CRM-Chat). Der Plan nennt nur
+  „Chat-Systemnachricht“.
+- **`OnboardingFormContextDto.projectPhase`** ist neu, damit der Dialog den Phasen-Haken nur zeigt, wenn er etwas
+  bewirkt.
+- **Smoke:** `onboarding-complete.integration.test.ts` ist in `db:smoke:crm` eingetragen.
+
+### T2 — Abschlussdialog und Leseansichten
+
+- **Dialog blockiert nur bei den zwei harten Voraussetzungen.** Fehlende Pflichtangaben sperren den Knopf und
+  nennen die Felder mit Link in den Tab „Antworten“; das Call-Datum wird beim Bestätigen geprüft. Ungeprüfte Blöcke
+  und Call-Punkte sind Hinweise.
+- **Standard-Tab:** `defaultOnboardingFormTab(status)`; der jeweilige Standard-Tab hinterlässt keinen URL-Parameter.
+  Ein Link mit `?tab=answers` auf einen abgeschlossenen Bogen funktioniert weiter.
+- **Portal-Kopf:** „Abgeschlossen am …“ als Überschrift, darunter „Das ist die Grundlage für dein Projekt …“ und der
+  Hinweis auf Dateibereich und Chat. Die Links erscheinen nur mit `portal.files.read` bzw. `portal.messages.read`.
+- **Widget und Terminkarte** brauchten keine Änderung: Der Zustand „Abgeschlossen am … · Ansehen“ war seit Task 67
+  gebaut und getestet, die Terminkarte verschwindet über `isOnboardingCallBookable` (Task 69).
+
+### Offen
+
+- **E2E nicht gelaufen.** `e2e/portal-onboarding.e2e.ts` ist um Abschluss, CRM-Leseansicht, Portal-Leseansicht und
+  zwei abgelehnte Schreibversuche erweitert, aber in dieser Umsetzung nicht ausgeführt.
+- **„Folgeprojekt vorbefüllt“ steht nicht im E2E**, sondern als Integrationstest (echter Abschlussbefehl, danach
+  Start im zweiten Projekt): Die E2E-Fixture hat nur ein Onboarding-Projekt, und im Bogen selbst angelegte Bausteine
+  werden nie vorbefüllt.
+- **Sichtprüfung im Browser** (Dialog, Kopf, Portal-Leseansicht, Dark/Light, mobil, Tastatur) steht aus.

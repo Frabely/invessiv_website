@@ -3,13 +3,14 @@ import type { OnboardingErrorCode } from "../../../../constants/crm/errors/onboa
 import type { QuestionnaireErrorCode } from "../../../../constants/crm/errors/questionnaire-error-codes";
 import type { ConcurrencyErrorCode } from "../../../../constants/errors/concurrency-error-codes";
 import type { VersionConflictDto } from "../../../concurrency/version-conflict.dto";
+import type { QuestionnaireMissingField } from "../../questionnaire/questionnaire-missing-field";
 import type { OnboardingReleaseWarningDto } from "../onboarding-release-warning.dto";
 
 /**
  * Result of every internal form command. Form commands reuse the questionnaire kit, so its codes
  * pass through unchanged. A conflict carries the current aggregate: the form for block list
  * commands, the block for head and field commands. A release that waits for an acknowledgement
- * names its warnings.
+ * names its warnings, a completion that lacks required answers names the fields.
  */
 export type OnboardingCommandResult<T> =
   | { ok: true; value: T }
@@ -25,7 +26,13 @@ export type OnboardingCommandResult<T> =
         | typeof OnboardingErrorCode.ValidationError
         | typeof OnboardingErrorCode.Internal
         | typeof OnboardingErrorCode.ReleaseWarnings
+        | typeof OnboardingErrorCode.RequiredMissing
       >;
+    }
+  | {
+      ok: false;
+      code: typeof OnboardingErrorCode.RequiredMissing;
+      missing: QuestionnaireMissingField[];
     }
   | {
       ok: false;

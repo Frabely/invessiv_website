@@ -144,6 +144,10 @@ export function crmOnboardingFormRequestChangesEndpoint(
   return `${crmOnboardingFormEndpoint(formId)}/${OnboardingApiPath.RequestChanges}`;
 }
 
+export function crmOnboardingFormCompleteEndpoint(formId: string): string {
+  return `${crmOnboardingFormEndpoint(formId)}/${OnboardingApiPath.Complete}`;
+}
+
 export function crmOnboardingFormBlockReviewEndpoint(
   formId: string,
   blockId: string,

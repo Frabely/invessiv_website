@@ -57,6 +57,25 @@ export function isOnboardingCallBookable(
   );
 }
 
+const CALENDAR_DAY = /^\d{4}-\d{2}-\d{2}$/;
+
+/**
+ * Whether `value` names the day of a call that can have taken place: a real calendar day as
+ * `YYYY-MM-DD`, not later than `today`. The caller passes today in the business time zone.
+ */
+export function isOnboardingCallDateAcceptable(
+  value: string,
+  today: string,
+): boolean {
+  if (!CALENDAR_DAY.test(value)) return false;
+  const day = new Date(`${value}T00:00:00Z`);
+  return (
+    !Number.isNaN(day.getTime()) &&
+    day.toISOString().slice(0, 10) === value &&
+    value <= today
+  );
+}
+
 export function canTransitionOnboardingForm(
   from: OnboardingFormStatus,
   to: OnboardingFormStatus,

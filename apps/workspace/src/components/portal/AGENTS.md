@@ -182,3 +182,10 @@ Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-le
   wird vor dem Klick geladen:** kein Skript, kein `iframe`, kein Bild. Der Kalender öffnet sich als Link in einem neuen
   Tab (`rel="noopener noreferrer"`), der Anbieterhinweis steht davor. Eine Einbettung wäre eine neue Entscheidung
   (Consent), kein Detail dieser Komponente.
+
+- **Abschluss (ab Task 70):** Ein abgeschlossener Bogen zeigt „Abgeschlossen am …“, den Satz, dass er die Grundlage
+  des Projekts ist, und den Hinweis, dass Nachträge nicht mehr über das Onboarding laufen. Die Links in den
+  Dateibereich (`filesHref`, nur mit `portal.files.read`) und in den Chat (`chatHref`, nur mit
+  `portal.messages.read`) reicht die Seite herein; ohne Recht fehlt der Link, der Satz bleibt wahr. Antworten und
+  Anhänge stehen im geteilten `OnboardingAnswerReadView`, es gibt keine Schreibaktion. Das Widget zeigt
+  „Abgeschlossen am …“ mit „Ansehen“; die Terminkarte entfällt, weil der Server keinen `call` mehr liefert.

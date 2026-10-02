@@ -11,6 +11,7 @@ import { getCrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { DEFAULT_LOCALE } from "@/lib/site-metadata";
 import { projectResponsibleMemberService } from "@/server/shared/services/project-responsible-member-service";
 import { taskActivityService } from "@/server/shared/services/task-activity-service";
+import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
 import type { OnboardingFormRow } from "./onboarding-form-types";
 
 /**
@@ -67,4 +68,54 @@ async function ensureForSubmission(
   );
 }
 
-export const onboardingTaskService = { ensureForSubmission } as const;
+/**
+ * Closes the collecting task with the form. Only a task that is still open or in progress moves;
+ * one someone cancelled or finished by hand keeps that state.
+ */
+async function completeForForm(
+  tx: ContactDatabaseTransaction,
+  form: OnboardingFormRow,
+  actor: ActivityActor,
+  memberId: string,
+): Promise<void> {
+  const [task] = await tx
+    .select()
+    .from(tasks)
+    .where(eq(tasks.onboarding_form_id, form.id))
+    .for("update");
+  if (
+    !task ||
+    (task.status !== TaskStatus.Open && task.status !== TaskStatus.InProgress)
+  )
+    return;
+  await updateLockedVersioned(
+    {
+      tx,
+      table: tasks,
+      id: task.id,
+      expectedVersion: task.version,
+      patch: {
+        status: TaskStatus.Done,
+        completed_at: new Date(),
+        completed_by_member_id: memberId,
+        completed_by_portal_membership_id: null,
+      },
+    },
+    "Locked onboarding task changed",
+  );
+  await taskActivityService.recordStatusChange(
+    tx,
+    {
+      customerId: form.customer_id,
+      projectId: form.project_id,
+      taskId: task.id,
+    },
+    actor,
+    { previous: task.status, next: TaskStatus.Done },
+  );
+}
+
+export const onboardingTaskService = {
+  completeForForm,
+  ensureForSubmission,
+} as const;

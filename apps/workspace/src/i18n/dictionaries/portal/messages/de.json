@@ -45,7 +45,8 @@
     "feedbackApproved": "„{projectTitle}“ ist in Feedbackrunde {roundNumber} freigegeben. Danke für dein Feedback.",
     "onboardingSubmitted": "Dein Onboarding für „{projectTitle}“ ist abgesendet. Wir prüfen deine Angaben und melden uns.",
     "onboardingReleased": "Dein Onboarding für „{projectTitle}“ ist bereit. Du bist dran.",
-    "onboardingChangesRequested": "Für dein Onboarding zu „{projectTitle}“ brauchen wir noch etwas zu: {blockTitles}. Du kannst es jetzt ergänzen."
+    "onboardingChangesRequested": "Für dein Onboarding zu „{projectTitle}“ brauchen wir noch etwas zu: {blockTitles}. Du kannst es jetzt ergänzen.",
+    "onboardingCompleted": "Dein Onboarding für „{projectTitle}“ ist abgeschlossen. Deine Angaben sind jetzt die Grundlage für dein Projekt."
   },
   "phases": {
     "onboarding": "Onboarding",

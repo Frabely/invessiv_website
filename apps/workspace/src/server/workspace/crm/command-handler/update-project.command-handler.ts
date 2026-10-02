@@ -12,34 +12,12 @@ import { feedbackRounds, projects } from "@invessiv/db/record-configuration";
 import { eq, sql } from "drizzle-orm";
 import { keepsHandedOverRoundPositions } from "@invessiv/common/patterns/crm/feedback-round-positions";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
-import type { ProjectPhase } from "@invessiv/common/constants/crm/project-phases";
-import {
-  SystemMessageKey,
-  SystemMessageParam,
-} from "@invessiv/common/constants/crm/system-message-keys";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { canOn } from "@/common/patterns/auth/can-on";
-import { announceSystemMessage } from "@/server/shared/services/message/announce-system-message";
+import { announcePhaseChange } from "@/server/shared/services/message/announce-phase-change";
 import { projectMappingService } from "@/server/workspace/crm/services/project-mapping-service";
 import { projectSchemas } from "@/server/workspace/crm/services/project-schemas";
 import { updateVersioned } from "@/server/workspace/shared/update-versioned";
-
-function announcePhaseChange(
-  tx: ContactDatabaseTransaction,
-  customerId: string,
-  projectTitle: string,
-  phase: ProjectPhase,
-) {
-  return announceSystemMessage(
-    tx,
-    customerId,
-    SystemMessageKey.ProjectPhaseChanged,
-    {
-      [SystemMessageParam.ProjectTitle]: projectTitle,
-      [SystemMessageParam.Phase]: phase,
-    },
-  );
-}
 
 /**
  * Phase and track before this write, read under the row lock that the update takes anyway. A value

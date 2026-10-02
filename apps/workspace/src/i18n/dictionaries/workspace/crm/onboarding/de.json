@@ -35,6 +35,7 @@
     },
     "notEligible": "Ein Onboarding lässt sich nur für geplante und aktive Projekte starten.",
     "draftHint": "Der Bogen ist ein Entwurf. Der Kunde sieht ihn noch nicht.",
+    "completedOn": "Abgeschlossen am {date}. Der Bogen ist die Arbeitsgrundlage für dieses Projekt.",
     "progressLabel": "Beantwortete Pflichtangaben",
     "progress": "{answered} von {total} Pflichtangaben beantwortet",
     "progressNone": "Der Bogen hat noch keine Pflichtangaben.",
@@ -61,6 +62,8 @@
     "customer": "Kunde",
     "template": "Vorlage",
     "templateNone": "Ohne Vorlage",
+    "callHeldOn": "Onboarding-Call",
+    "completedAt": "Abschluss",
     "tabs": {
       "ariaLabel": "Bereiche des Bogens",
       "structure": "Aufbau",
@@ -86,6 +89,35 @@
       "unknownBlock": "Ein Baustein",
       "notReleasable": "Der Bogen fragt noch nichts ab. Er braucht mindestens einen Baustein, jeder Baustein mindestens ein Feld und jede Gruppe mindestens ein Unterfeld.",
       "conflict": "Jemand hat den Bogen inzwischen geändert. Der aktuelle Stand ist geladen. Prüf ihn und gib dann frei."
+    }
+  },
+  "complete": {
+    "action": "Onboarding abschließen",
+    "completed": "Das Onboarding ist abgeschlossen. Der Bogen ist ab jetzt nur noch lesbar.",
+    "dialog": {
+      "title": "Onboarding abschließen?",
+      "description": "Der Bogen ist danach dauerhaft nur noch lesbar, im Portal und im CRM. Die Projektleistungen bleiben so stehen, wie der Bogen sie jetzt zeigt.",
+      "callHeldOn": "Datum des Onboarding-Calls",
+      "callHeldOnHint": "Der Tag, an dem der Call stattgefunden hat.",
+      "callHeldOnRequired": "Trag ein, wann der Call stattgefunden hat.",
+      "callHeldOnFuture": "Der Call kann nicht in der Zukunft liegen.",
+      "advancePhase": "Projekt in die Phase „Design“ weiterschalten",
+      "advancePhaseHint": "Der Kunde bekommt dazu eine Nachricht im Chat.",
+      "missingHeading": "Diese Pflichtangaben fehlen noch",
+      "missingItem": "{field} in „{block}“",
+      "missingHint": "Abschließen kannst du erst, wenn sie da sind. Fordere sie in der Prüfung beim Kunden nach.",
+      "missingLink": "Antworten ansehen",
+      "untitledField": "Feld ohne Titel",
+      "hintsHeading": "Gut zu wissen",
+      "unreviewed": "{count} Blöcke sind noch ungeprüft. Ihr Stand bleibt als Verlauf stehen.",
+      "unreviewedOne": "1 Block ist noch ungeprüft. Sein Stand bleibt als Verlauf stehen.",
+      "callPoints": "{count} Punkte stehen noch auf der Agenda für den Call.",
+      "callPointsOne": "1 Punkt steht noch auf der Agenda für den Call.",
+      "confirm": "Onboarding abschließen",
+      "confirming": "Wird abgeschlossen …",
+      "cancel": "Abbrechen",
+      "close": "Schließen",
+      "conflict": "Jemand hat den Bogen inzwischen geändert. Der aktuelle Stand ist geladen. Prüf ihn und schließ dann ab."
     }
   },
   "answers": {

@@ -14,6 +14,7 @@ import * as blockFieldsRoute from "@/app/api/workspace/crm/onboarding/forms/[for
 import * as blockMoveRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/blocks/[blockId]/move/route";
 import * as blockReviewRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/blocks/[blockId]/review/route";
 import * as blockRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/blocks/[blockId]/route";
+import * as completeRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/complete/route";
 import * as blocksRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/blocks/route";
 import * as fieldMoveRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/fields/[fieldId]/move/route";
 import * as fieldRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/fields/[fieldId]/route";
@@ -53,6 +54,7 @@ const mocks = vi.hoisted(() => ({
   releaseOnboardingForm: vi.fn(),
   reviewOnboardingBlock: vi.fn(),
   requestOnboardingChanges: vi.fn(),
+  completeOnboardingForm: vi.fn(),
 }));
 
 vi.mock("@/lib/auth/workspace-authentication", () => ({
@@ -117,6 +119,10 @@ vi.mock(
 vi.mock(
   "@/server/workspace/crm/command-handler/request-onboarding-changes.command-handler",
   () => ({ requestOnboardingChanges: mocks.requestOnboardingChanges }),
+);
+vi.mock(
+  "@/server/workspace/crm/command-handler/complete-onboarding-form.command-handler",
+  () => ({ completeOnboardingForm: mocks.completeOnboardingForm }),
 );
 
 type Call = (request: NextRequest) => Promise<Response>;
@@ -223,6 +229,12 @@ const WRITES: [string, Call, keyof typeof mocks, unknown[]][] = [
     "POST request changes",
     (r) => requestChangesRoute.POST(r, formContext),
     "requestOnboardingChanges",
+    [ID],
+  ],
+  [
+    "POST complete",
+    (r) => completeRoute.POST(r, formContext),
+    "completeOnboardingForm",
     [ID],
   ],
 ];
@@ -529,6 +541,41 @@ describe("CRM onboarding form routes", () => {
     expect(response.status).toBe(HttpResponseCode.UnprocessableContent);
     expect(await response.json()).toMatchObject({
       error: OnboardingErrorCode.ReviewIncomplete,
+    });
+  });
+
+  it("answers a completion that lacks required answers with 422 and the fields", async () => {
+    const missing = [
+      { blockId: BLOCK_ID, fieldId: FIELD_ID, groupEntryId: null },
+    ];
+    mocks.completeOnboardingForm.mockResolvedValue({
+      ok: false,
+      code: OnboardingErrorCode.RequiredMissing,
+      missing,
+    });
+    const response = await completeRoute.POST(
+      request(BASE, HttpMethod.Post, "{}"),
+      formContext,
+    );
+    expect(response.status).toBe(HttpResponseCode.UnprocessableContent);
+    expect(await response.json()).toMatchObject({
+      error: OnboardingErrorCode.RequiredMissing,
+      details: { missing },
+    });
+  });
+
+  it("answers a completion without a call date with 422", async () => {
+    mocks.completeOnboardingForm.mockResolvedValue({
+      ok: false,
+      code: OnboardingErrorCode.CallDateRequired,
+    });
+    const response = await completeRoute.POST(
+      request(BASE, HttpMethod.Post, "{}"),
+      formContext,
+    );
+    expect(response.status).toBe(HttpResponseCode.UnprocessableContent);
+    expect(await response.json()).toMatchObject({
+      error: OnboardingErrorCode.CallDateRequired,
     });
   });
 

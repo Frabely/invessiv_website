@@ -4,6 +4,7 @@ import { ONBOARDING_RELEASE_WARNING_KIND_VALUES } from "@invessiv/common/constan
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import type { AddOnboardingFormBlockRequestDto } from "@invessiv/common/contracts/crm/onboarding/add-onboarding-form-block-request.dto";
+import type { CompleteOnboardingFormRequestDto } from "@invessiv/common/contracts/crm/onboarding/complete-onboarding-form-request.dto";
 import type { MoveOnboardingFormBlockRequestDto } from "@invessiv/common/contracts/crm/onboarding/move-onboarding-form-block-request.dto";
 import type { OnboardingFieldUsageDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-field-usage.dto";
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
@@ -26,6 +27,7 @@ import {
   crmOnboardingFormBlockMoveEndpoint,
   crmOnboardingFormBlockReviewEndpoint,
   crmOnboardingFormBlocksEndpoint,
+  crmOnboardingFormCompleteEndpoint,
   crmOnboardingFormEndpoint,
   crmOnboardingFormFieldEndpoint,
   crmOnboardingFormFieldMoveEndpoint,
@@ -205,6 +207,18 @@ function requestChanges(
   );
 }
 
+/**
+ * Completes a submitted form. Missing required answers and a missing or future call date come
+ * back as plain codes; the dialog reads what is missing from the form it already shows.
+ */
+function complete(formId: string, request: CompleteOnboardingFormRequestDto) {
+  return mutateForm(
+    crmOnboardingFormCompleteEndpoint(formId),
+    HttpMethod.Post,
+    request,
+  );
+}
+
 function getFieldUsage(formId: string, fieldId: string) {
   return read(crmOnboardingFormFieldUsageEndpoint(formId, fieldId), isUsage);
 }
@@ -229,6 +243,7 @@ function definitionApi(formId: string): QuestionnaireDefinitionClientApi {
 
 export const onboardingFormApiService = {
   addBlock,
+  complete,
   definitionApi,
   getFieldUsage,
   getForm,

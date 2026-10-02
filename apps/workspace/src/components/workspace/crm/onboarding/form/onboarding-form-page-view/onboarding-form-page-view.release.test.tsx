@@ -122,6 +122,7 @@ function renderPage(dto: OnboardingFormDto = form(), canWrite = true) {
         customerName: "Nordlicht Coaching",
         projectId: "p-1",
         projectTitle: "Website-Relaunch",
+        projectPhase: "onboarding",
         templateTitle: null,
       }}
       filesContent={getCrmFilesDictionary("de")}

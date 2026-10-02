@@ -178,3 +178,27 @@ Ab Task 69 (`apps/workspace/plans/crm/15-onboarding/69-onboarding-termin.md`):
   der erste aus Projekt-Owner und Kunden-Owner, der aktiv ist **und** einen Buchungslink hat. Anders als
   `findActiveMemberId` gibt ein aktiver Projekt-Owner ohne Link die Frage an den Kunden-Owner weiter. Reine
   Leseabfrage ohne Sperre; ein inaktives Mitglied liefert nie einen Link.
+
+Ab Task 70 (`apps/workspace/plans/crm/15-onboarding/70-abschluss-und-leseansicht.md`):
+
+- `onboardingFormTransitionService.complete` schließt einen **gesperrten** Bogen in einer Transaktion: Snapshot der
+  Leistungen, Status `completed` mit `completed_at/_by` und `call_held_on`, Sammelaufgabe, Activity `status_change`,
+  Systemnachricht `onboardingCompleted`, zuletzt optional der Phasenwechsel (damit im Chat „abgeschlossen“ vor „neue
+  Phase“ steht). Ob abgeschlossen werden darf (Übergang, Version, Call-Datum, Pflichtangaben), entscheidet der
+  Workspace-Handler.
+- `onboarding-services-snapshot-service.ts` hält beide Quellen der Projektleistungen: `listLive` (aktuelle
+  `project_line_items` außer `rejected`, in Buchungsreihenfolge) und `listFrozen` (`onboarding_form_services`).
+  `freeze` schreibt genau das, was `listLive` in diesem Moment zeigt. Welche Quelle ein Bogen liest, wählt weiterhin
+  nur `loadServices` im Read-Service; ab `completed` erscheint keine spätere Leistungsanfrage mehr im Bogen.
+- `onboarding-project-step-service.ts` — `advancePastOnboarding` sperrt das Projekt und schaltet nur aus der Phase
+  `onboarding` nach `design`; `current_process_step` rückt nur weiter, solange er noch der erste Schritt ist. Jede
+  andere Phase bleibt unberührt. Geschrieben wird über `updateLockedVersioned`. Bewusst ein Service mit einer Methode
+  (Planvorgabe, Muster `feedbackProjectStepService`).
+- `services/message/announce-phase-change.ts` — die eine Systemnachricht eines Phasenwechsels, aus
+  `update-project.command-handler.ts` extrahiert. Projekt-Editor und Onboarding-Abschluss rufen denselben Helfer.
+- `onboardingTaskService.completeForForm` setzt die Sammelaufgabe auf `done`, aber nur aus `open` oder `in_progress`;
+  eine von Hand abgebrochene oder erledigte Aufgabe bleibt.
+- **Nach `completed` ist der Bogen unveränderlich.** Es gibt dafür keinen eigenen Schalter: Die bestehenden Regeln
+  schließen `completed` bereits aus (`isOnboardingStructureEditable`, `isOnboardingReviewOpen`,
+  `canTransitionOnboardingForm`, `listCustomerEditableOnboardingBlockIds`). Ein neuer Schreibpfad am Bogen muss durch
+  eine dieser Funktionen laufen; `onboarding-complete.integration.test.ts` prüft jede Endpunkt-Gruppe.

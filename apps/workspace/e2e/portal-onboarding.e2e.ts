@@ -106,7 +106,8 @@ function isRequest(method: string, path: RegExp) {
  * The core flow of the onboarding: the team starts and releases a form, a contact fills it in
  * with a group entry and an upload and submits it, and the team reads the answers. Then the
  * review: a question goes back to the customer, the contact adds what was missing and submits
- * again, and the team marks the block as complete.
+ * again, and the team marks the block as complete. Last the completion: the form closes with the
+ * call date and stays readable with its answers and files in CRM and portal.
  */
 test.describe.serial("portal onboarding", () => {
   test.use({ storageState: portalE2ePaths.managerState });
@@ -117,7 +118,7 @@ test.describe.serial("portal onboarding", () => {
     ) as PortalE2eFixture;
   });
 
-  test("releases a draft, lets a contact fill it in and submit, asks back and gets the addition", async ({
+  test("releases a draft, lets a contact fill it in and submit, asks back, gets the addition and completes", async ({
     page,
     browser,
   }, testInfo) => {
@@ -406,5 +407,85 @@ test.describe.serial("portal onboarding", () => {
     expect(
       body.tasks.filter((task) => task.onboardingFormId === formId),
     ).toHaveLength(1);
+
+    // The completion: the day of the call, then the form is read-only for good on both sides.
+    await page.getByRole("button", { name: "Onboarding abschließen" }).click();
+    const completeDialog = page.getByRole("dialog", {
+      name: "Onboarding abschließen?",
+    });
+    await completeDialog
+      .getByLabel(/Datum des Onboarding-Calls/)
+      // The UTC day is never ahead of the business day, so it is never in the future.
+      .fill(new Date().toISOString().slice(0, 10));
+    const finished = page.waitForResponse(
+      isRequest("POST", new RegExp(`/forms/${formId}/complete$`)),
+    );
+    await completeDialog
+      .getByRole("button", { name: "Onboarding abschließen" })
+      .click();
+    expect((await finished).ok()).toBe(true);
+    await expect(completeDialog).toBeHidden();
+    await expect(
+      page
+        .getByRole("main")
+        .getByText("Abgeschlossen", { exact: true })
+        .first(),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Onboarding abschließen" }),
+    ).toHaveCount(0);
+
+    // A completed form opens on its answers, and no write gets through anymore.
+    await page.goto(`/de/crm/onboarding/${formId}`);
+    await expect(page.getByRole("tab", { name: "Antworten" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    await expect(
+      page.getByRole("tabpanel").getByText(`Nordlicht Coaching GmbH ${suffix}`),
+    ).toBeVisible();
+    const closed = (await (
+      await page.request.get(`${FORMS}/${formId}`)
+    ).json()) as Form;
+    expect(closed.status).toBe("completed");
+    const refused = await page.request.post(
+      `${FORMS}/${formId}/request-changes`,
+      { data: { expectedVersion: closed.version } },
+    );
+    expect(refused.status()).toBe(409);
+
+    const closingContext = await browser.newContext({
+      storageState: portalE2ePaths.feedbackContactState,
+    });
+    try {
+      const contact = await closingContext.newPage();
+      await contact.goto(`/de/portal/${customer}`);
+      const widget = contact.getByRole("region", { name: "Onboarding" });
+      await expect(widget.getByText(/Abgeschlossen am/)).toBeVisible();
+      await widget.getByRole("link", { name: /ansehen/ }).click();
+      await expect(
+        contact.getByRole("heading", { name: /Abgeschlossen am/ }),
+      ).toBeVisible();
+      await expect(
+        contact.getByText(`Nordlicht Coaching GmbH ${suffix}`),
+      ).toBeVisible();
+      await expect(
+        contact.getByRole("list", { name: "Dateien zu „Briefing“" }),
+      ).toContainText(`briefing-${suffix}.txt`);
+      await expect(contact.getByRole("textbox")).toHaveCount(0);
+      const locked = await contact.request.put(
+        `/api/portal/${customer}/onboarding/${formId}/answers`,
+        {
+          data: {
+            fieldId: closed.blocks[0].block.fields[0].id,
+            groupEntryId: null,
+            values: ["Nachträglich"],
+          },
+        },
+      );
+      expect(locked.status()).toBe(409);
+    } finally {
+      await closingContext.close();
+    }
   });
 });

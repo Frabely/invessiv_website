@@ -13,6 +13,7 @@ describe("OnboardingApiPath", () => {
       Release: "release",
       Review: "review",
       RequestChanges: "request-changes",
+      Complete: "complete",
     });
     const values = Object.values(OnboardingApiPath);
     expect(new Set(values).size).toBe(values.length);

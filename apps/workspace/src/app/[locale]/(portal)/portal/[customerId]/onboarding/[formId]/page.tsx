@@ -81,6 +81,11 @@ export default async function PortalOnboardingFormPage({
       content={getPortalOnboardingDictionary(activeLocale)}
       customerId={reader.customerId}
       filesContent={getPortalFilesDictionary(activeLocale)}
+      filesHref={
+        portalCanOn.forReader(reader, Permission.PortalFilesRead, target)
+          ? portalPathFor(activeLocale, reader.customerId, PortalSection.Files)
+          : null
+      }
       form={form}
       key={reader.customerId}
       locale={activeLocale}

@@ -10,6 +10,7 @@ import { PROJECT_STATUS_VALUES } from "../../../constants/crm/project-statuses";
 import {
   canTransitionOnboardingForm,
   isOnboardingCallBookable,
+  isOnboardingCallDateAcceptable,
   isOnboardingProjectEligible,
   isOnboardingReviewOpen,
   isOnboardingStructureEditable,
@@ -165,5 +166,24 @@ describe("listCustomerEditableOnboardingBlockIds", () => {
     OnboardingFormStatus.Completed,
   ])("opens nothing while the form is %s", (status) => {
     expect(listCustomerEditableOnboardingBlockIds(status, blocks)).toEqual([]);
+  });
+});
+
+describe("isOnboardingCallDateAcceptable", () => {
+  const today = "2026-10-02";
+
+  it("accepts today and any earlier day", () => {
+    for (const value of ["2026-10-02", "2026-10-01", "2025-02-28"])
+      expect(isOnboardingCallDateAcceptable(value, today)).toBe(true);
+  });
+
+  it("refuses a day in the future", () => {
+    for (const value of ["2026-10-03", "2027-01-01"])
+      expect(isOnboardingCallDateAcceptable(value, today)).toBe(false);
+  });
+
+  it("refuses an empty value and anything that is no calendar day", () => {
+    for (const value of ["", "02.10.2026", "2026-02-30", "2026-13-01", "x"])
+      expect(isOnboardingCallDateAcceptable(value, today)).toBe(false);
   });
 });

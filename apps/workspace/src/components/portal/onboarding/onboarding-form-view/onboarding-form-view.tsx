@@ -37,6 +37,8 @@ export type OnboardingFormViewProps = {
   customerId: string;
   /** File texts and errors for uploads, downloads and previews of attached files. */
   filesContent: PortalFilesDictionary;
+  /** The company's files page, where files go once the form is completed; null without `portal.files.read`. */
+  filesHref?: string | null;
   form: PortalOnboardingFormDto;
   locale: Locale;
 };
@@ -55,6 +57,7 @@ export function OnboardingFormView({
   content,
   customerId,
   filesContent,
+  filesHref = null,
   form,
   locale,
 }: OnboardingFormViewProps) {
@@ -120,11 +123,39 @@ export function OnboardingFormView({
               <p>{content.states.submitted.description}</p>
             </div>
           ) : null}
-          {state === OnboardingFormStatus.ChangesRequested ||
-          state === OnboardingFormStatus.Completed ? (
+          {state === OnboardingFormStatus.ChangesRequested ? (
             <div className={styles.state}>
-              <h2>{content.states[state].title}</h2>
-              <p>{content.states[state].description}</p>
+              <h2>{content.states.changes_requested.title}</h2>
+              <p>{content.states.changes_requested.description}</p>
+            </div>
+          ) : null}
+          {state === OnboardingFormStatus.Completed && form.completedAt ? (
+            <div className={styles.state}>
+              <h2>
+                {formatMessage(content.states.completed.title, {
+                  date: formatMomentDay(form.completedAt, locale),
+                })}
+              </h2>
+              <p>{content.states.completed.description}</p>
+              <p>{content.states.completed.more}</p>
+              {filesHref || chatHref ? (
+                <ul className={styles.links}>
+                  {filesHref ? (
+                    <li>
+                      <Link href={filesHref}>
+                        {content.states.completed.filesLink}
+                      </Link>
+                    </li>
+                  ) : null}
+                  {chatHref ? (
+                    <li>
+                      <Link href={chatHref}>
+                        {content.states.completed.chatLink}
+                      </Link>
+                    </li>
+                  ) : null}
+                </ul>
+              ) : null}
             </div>
           ) : null}
           {call ? (

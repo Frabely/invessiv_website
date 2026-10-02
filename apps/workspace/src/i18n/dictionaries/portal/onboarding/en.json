@@ -154,8 +154,11 @@
       "editable": "We still need something from you. You can now complete the sections with our question; all others stay readable. Then submit the onboarding again."
     },
     "completed": {
-      "title": "Onboarding completed",
-      "description": "Everything is in. Your answers stay here for reference."
+      "title": "Completed on {date}",
+      "description": "This is the basis for your project. Your answers and files stay here for reference.",
+      "more": "Another file to add later, or something changes? From now on that no longer goes through the onboarding.",
+      "filesLink": "Upload a file in the files area",
+      "chatLink": "Write a message"
     }
   },
   "call": {

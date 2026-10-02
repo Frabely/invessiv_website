@@ -41,7 +41,8 @@
     "feedbackApproved": "The customer approved “{projectTitle}” in feedback round {roundNumber}.",
     "onboardingSubmitted": "The customer submitted the onboarding for “{projectTitle}”.",
     "onboardingReleased": "The onboarding for “{projectTitle}” was released to the customer.",
-    "onboardingChangesRequested": "The onboarding for “{projectTitle}” went back to the customer with questions on: {blockTitles}."
+    "onboardingChangesRequested": "The onboarding for “{projectTitle}” went back to the customer with questions on: {blockTitles}.",
+    "onboardingCompleted": "The onboarding for “{projectTitle}” was completed."
   },
   "dock": {
     "unread": "{count} unread"

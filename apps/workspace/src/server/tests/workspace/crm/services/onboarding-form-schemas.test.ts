@@ -5,7 +5,7 @@ import { OnboardingClarificationMode as M } from "@invessiv/common/constants/crm
 import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
 import { onboardingFormSchemas } from "@/server/workspace/crm/services/onboarding/onboarding-form-schemas";
 
-const { review, requestChanges } = onboardingFormSchemas;
+const { review, requestChanges, complete } = onboardingFormSchemas;
 
 describe("onboardingFormSchemas.review", () => {
   it("accepts pending and complete without a question", () => {
@@ -72,5 +72,33 @@ describe("onboardingFormSchemas.requestChanges", () => {
       { expectedVersion: 3, x: 1 },
     ])
       expect(requestChanges.safeParse(input).success).toBe(false);
+  });
+});
+
+describe("onboardingFormSchemas.complete", () => {
+  const request = {
+    expectedVersion: 3,
+    callHeldOn: "2026-09-15",
+    advancePhase: true,
+  };
+
+  it("takes version, call date and the phase switch", () => {
+    expect(complete.parse(request)).toEqual(request);
+    // Whether the date is a real, past day is a precondition of the command, not of the shape.
+    expect(complete.safeParse({ ...request, callHeldOn: "" }).success).toBe(
+      true,
+    );
+  });
+
+  it("refuses a missing field, a wrong type and anything extra", () => {
+    for (const input of [
+      { ...request, expectedVersion: 0 },
+      { ...request, callHeldOn: undefined },
+      { ...request, callHeldOn: null },
+      { ...request, advancePhase: undefined },
+      { ...request, advancePhase: "yes" },
+      { ...request, x: 1 },
+    ])
+      expect(complete.safeParse(input).success).toBe(false);
   });
 });

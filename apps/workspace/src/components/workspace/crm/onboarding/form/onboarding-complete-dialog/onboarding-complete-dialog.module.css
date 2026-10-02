@@ -1,0 +1,103 @@
+.form {
+  display: grid;
+  gap: 1rem;
+  padding: 0.55rem 0.7rem;
+}
+
+.failure {
+  margin: 0;
+  padding: 0.65rem 0.8rem;
+  border-left: 3px solid var(--color-danger);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+/* What holds the completion up reads as a stop; what is merely worth knowing as a pause. */
+.missing,
+.hints {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.8rem 0.9rem;
+  border-radius: 10px;
+}
+
+.missing {
+  border: 1px solid color-mix(in srgb, var(--color-danger) 45%, transparent);
+  background: color-mix(in srgb, var(--color-danger) 8%, transparent);
+}
+
+.hints {
+  border: 1px solid
+    color-mix(in srgb, var(--color-accent-warm) 45%, transparent);
+  background: color-mix(in srgb, var(--color-accent-warm) 8%, transparent);
+}
+
+.heading {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 700;
+}
+
+.list {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.note {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  min-height: 2.75rem;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.advance {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  padding-top: 0.6rem;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.checkHint {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}

@@ -266,3 +266,15 @@ Plan: `apps/workspace/plans/crm/15-onboarding/65-bogen-anlegen-und-anpassen.md`.
   `formatOnboardingCallAgenda` in die Zwischenablage.
 - Download und Vorschau angehängter Dateien in den Tabs „Antworten“ und „Prüfung“ laufen über
   `useOnboardingFileDownloads` (`src/hooks/workspace/`).
+
+- **Abschluss (ab Task 70):** „Onboarding abschließen“ steht im Seitenkopf, nur wenn `canTransitionOnboardingForm`
+  den Schritt aus dem aktuellen Status erlaubt und nur mit `canWrite`. `onboarding-complete-dialog` kennt genau zwei
+  harte Voraussetzungen: das Call-Datum (Pflichtfeld, `max` = `businessToday()`, geprüft über
+  `isOnboardingCallDateAcceptable`) und fehlende Pflichtangaben aus `getQuestionnaireCompleteness` (Liste mit Link
+  in den Tab „Antworten“, der Knopf bleibt gesperrt). Ungeprüfte Blöcke und Call-Punkte aus
+  `summarizeOnboardingReview` stehen als Hinweis da und sperren nie. Der Phasenwechsel ist ein Haken (Standard an)
+  und erscheint nur, wenn die Page `projectPhase = onboarding` übergibt.
+- **Nach dem Abschluss** öffnet die Seite auf „Antworten“: `defaultOnboardingFormTab(status)` bestimmt den
+  Standard-Tab, `readOnboardingFormTab` und `buildOnboardingFormTabHref` bekommen ihn übergeben (der Standard-Tab
+  hinterlässt keinen Parameter). Der Kopf zeigt Call-Datum (`formatCalendarDay`) und Abschluss (`formatMomentDay`),
+  der Projektbereich „Abgeschlossen am …“. Aufbau und Prüfung bleiben lesend mit ihren bestehenden Hinweisen.

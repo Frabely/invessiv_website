@@ -154,8 +154,11 @@
       "editable": "Wir brauchen noch etwas von dir. Die Abschnitte mit unserer Rückfrage kannst du jetzt ergänzen, alle anderen bleiben zum Nachlesen. Danach sendest du das Onboarding erneut ab."
     },
     "completed": {
-      "title": "Onboarding abgeschlossen",
-      "description": "Alles da. Deine Angaben bleiben hier zum Nachlesen."
+      "title": "Abgeschlossen am {date}",
+      "description": "Das ist die Grundlage für dein Projekt. Deine Angaben und Dateien bleiben hier zum Nachlesen.",
+      "more": "Kommt später noch eine Datei dazu oder ändert sich etwas? Das läuft ab jetzt nicht mehr über das Onboarding.",
+      "filesLink": "Datei im Dateibereich hochladen",
+      "chatLink": "Nachricht schreiben"
     }
   },
   "call": {

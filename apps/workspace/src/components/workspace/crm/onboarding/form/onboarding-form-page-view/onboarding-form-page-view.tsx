@@ -3,12 +3,19 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useId, useRef, useState } from "react";
-import { faArrowLeft, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeft,
+  faCircleCheck,
+  faPaperPlane,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
+import { OnboardingTransitionSide } from "@invessiv/common/constants/crm/onboarding/onboarding-transition-sides";
+import { ProjectPhase } from "@invessiv/common/constants/crm/project-phases";
 import type { OnboardingFormContextDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form-context.dto";
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
 import type { QuestionnaireBlockSummaryDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block-summary.dto";
+import { canTransitionOnboardingForm } from "@invessiv/common/patterns/crm/onboarding/onboarding-form-state";
 import { summarizeOnboardingReview } from "@invessiv/common/patterns/crm/onboarding/onboarding-review";
 import { getQuestionnaireCompleteness } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
@@ -19,6 +26,7 @@ import {
 } from "@/common/constants/crm/onboarding/onboarding-form-tabs";
 import {
   buildOnboardingFormTabHref,
+  defaultOnboardingFormTab,
   readOnboardingFormTab,
 } from "@/common/patterns/crm/onboarding/onboarding-form-query";
 import type { QuestionnaireFixedChoiceLabels } from "@/common/contracts/crm/questionnaire/questionnaire-fixed-choice-labels";
@@ -30,8 +38,11 @@ import type {
   CrmFilesDictionary,
   CrmQuestionnaireDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
+import { formatCalendarDay } from "@/lib/i18n/format-calendar-day";
+import { formatMomentDay } from "@/lib/i18n/format-moment-day";
 import { OnboardingStatusBadge } from "../../project/onboarding-status-badge/onboarding-status-badge";
 import { OnboardingReviewTab } from "../../review/onboarding-review-tab/onboarding-review-tab";
+import { OnboardingCompleteDialog } from "../onboarding-complete-dialog/onboarding-complete-dialog";
 import { OnboardingFormAnswersTab } from "../onboarding-form-answers-tab/onboarding-form-answers-tab";
 import { OnboardingFormStructure } from "../onboarding-form-structure/onboarding-form-structure";
 import { OnboardingReleaseDialog } from "../onboarding-release-dialog/onboarding-release-dialog";
@@ -55,7 +66,8 @@ export type OnboardingFormPageViewProps = {
 /**
  * The internal page of one form: where it belongs, its status, the release of a draft and its tabs.
  * The tab is URL state, so a reload and a shared link open the same view. Once released, the head
- * shows how far the customer has got; once submitted, how far the review is.
+ * shows how far the customer has got; once submitted, how far the review is and the way to
+ * complete it. A completed form opens on its answers and names the call and the completion.
  */
 export function OnboardingFormPageView({
   backHref,
@@ -73,7 +85,6 @@ export function OnboardingFormPageView({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const baseId = useId();
-  const activeTab = readOnboardingFormTab(searchParams);
   const tabId = (tab: OnboardingFormTab) => `${baseId}-tab-${tab}`;
   const panelId = `${baseId}-panel`;
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -84,10 +95,25 @@ export function OnboardingFormPageView({
     form: initialForm,
     revision: 0,
   });
+  const defaultTab = defaultOnboardingFormTab(form.status);
+  const activeTab = readOnboardingFormTab(searchParams, defaultTab);
+  const tabHref = (tab: OnboardingFormTab) =>
+    buildOnboardingFormTabHref(
+      pathname,
+      searchParams.toString(),
+      tab,
+      defaultTab,
+    );
   const [releasing, setReleasing] = useState(false);
+  const [completing, setCompleting] = useState(false);
   const [announcement, setAnnouncement] = useState("");
   const text = content.form;
   const released = form.status !== OnboardingFormStatus.Draft;
+  const completable = canTransitionOnboardingForm(
+    form.status,
+    OnboardingFormStatus.Completed,
+    OnboardingTransitionSide.Internal,
+  );
   const reviewSummary =
     form.submittedAt === null
       ? null
@@ -128,6 +154,18 @@ export function OnboardingFormPageView({
             <dt>{text.template}</dt>
             <dd>{context.templateTitle ?? text.templateNone}</dd>
           </div>
+          {form.callHeldOn ? (
+            <div className={styles.metaItem}>
+              <dt>{text.callHeldOn}</dt>
+              <dd>{formatCalendarDay(form.callHeldOn, locale)}</dd>
+            </div>
+          ) : null}
+          {form.completedAt ? (
+            <div className={styles.metaItem}>
+              <dt>{text.completedAt}</dt>
+              <dd>{formatMomentDay(form.completedAt, locale)}</dd>
+            </div>
+          ) : null}
         </dl>
         <OnboardingStatusBadge
           label={content.status[form.status]}
@@ -141,6 +179,16 @@ export function OnboardingFormPageView({
           >
             <FontAwesomeIcon aria-hidden="true" icon={faPaperPlane} />
             {content.release.action}
+          </PrimaryCtaButton>
+        ) : null}
+        {canWrite && completable ? (
+          <PrimaryCtaButton
+            className={styles.release}
+            onClick={() => setCompleting(true)}
+            type="button"
+          >
+            <FontAwesomeIcon aria-hidden="true" icon={faCircleCheck} />
+            {content.complete.action}
           </PrimaryCtaButton>
         ) : null}
         {released && form.blocks.length > 0 ? (
@@ -175,14 +223,7 @@ export function OnboardingFormPageView({
             label: text.tabs[tab],
           }))}
           onSelectAction={(tab) =>
-            router.replace(
-              buildOnboardingFormTabHref(
-                pathname,
-                searchParams.toString(),
-                tab,
-              ),
-              { scroll: false },
-            )
+            router.replace(tabHref(tab), { scroll: false })
           }
         />
       </div>
@@ -237,6 +278,25 @@ export function OnboardingFormPageView({
             // The button that opened the dialog is gone with the draft status.
             titleRef.current?.focus();
           }}
+        />
+      ) : null}
+      {completing ? (
+        <OnboardingCompleteDialog
+          answersHref={tabHref(OnboardingFormTab.Answers)}
+          content={content.complete.dialog}
+          errorTexts={errorTexts}
+          form={form}
+          locale={locale}
+          onCloseAction={() => setCompleting(false)}
+          onCompletedAction={(next) => {
+            adopt(next);
+            setCompleting(false);
+            setAnnouncement(content.complete.completed);
+            // The button that opened the dialog is gone with the submitted status.
+            titleRef.current?.focus();
+          }}
+          onConflictAction={adopt}
+          phaseAdvanceable={context.projectPhase === ProjectPhase.Onboarding}
         />
       ) : null}
       <p aria-live="polite" className="sr-only" role="status">

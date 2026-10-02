@@ -7,6 +7,7 @@ import { OnboardingErrorCode } from "@invessiv/common/constants/crm/errors/onboa
 import { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
 import { OnboardingBlockReviewStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-block-review-statuses";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
+import { ProjectPhase } from "@invessiv/common/constants/crm/project-phases";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import { QuestionnaireCatalogStatus } from "@invessiv/common/constants/crm/questionnaire/questionnaire-catalog-statuses";
 import { QuestionnaireFieldType as T } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
@@ -140,6 +141,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         customerName: expect.stringContaining(f.customerId),
         projectId,
         projectTitle: expect.stringContaining("integration:files:"),
+        projectPhase: ProjectPhase.Onboarding,
         templateTitle: template.title,
       });
     });

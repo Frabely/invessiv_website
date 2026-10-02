@@ -1,17 +1,30 @@
+import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { OnboardingFormQueryParam } from "@/common/constants/crm/onboarding/onboarding-form-query-params";
 import {
   ONBOARDING_FORM_TAB_VALUES,
   OnboardingFormTab,
 } from "@/common/constants/crm/onboarding/onboarding-form-tabs";
 
-/** An unknown or missing tab is the structure, the tab the page opens with. */
+/**
+ * The tab a form opens with: its structure while the team still builds or reviews it, its answers
+ * once it is completed and only read.
+ */
+export function defaultOnboardingFormTab(
+  status: OnboardingFormStatus,
+): OnboardingFormTab {
+  return status === OnboardingFormStatus.Completed
+    ? OnboardingFormTab.Answers
+    : OnboardingFormTab.Structure;
+}
+
+/** An unknown or missing tab is the default one, the tab the page opens with. */
 export function readOnboardingFormTab(
   params: URLSearchParams,
+  defaultTab: OnboardingFormTab = OnboardingFormTab.Structure,
 ): OnboardingFormTab {
   const requested = params.get(OnboardingFormQueryParam.Tab);
   return (
-    ONBOARDING_FORM_TAB_VALUES.find((tab) => tab === requested) ??
-    OnboardingFormTab.Structure
+    ONBOARDING_FORM_TAB_VALUES.find((tab) => tab === requested) ?? defaultTab
   );
 }
 
@@ -20,10 +33,10 @@ export function buildOnboardingFormTabHref(
   pathname: string,
   queryString: string,
   tab: OnboardingFormTab,
+  defaultTab: OnboardingFormTab = OnboardingFormTab.Structure,
 ): string {
   const params = new URLSearchParams(queryString);
-  if (tab === OnboardingFormTab.Structure)
-    params.delete(OnboardingFormQueryParam.Tab);
+  if (tab === defaultTab) params.delete(OnboardingFormQueryParam.Tab);
   else params.set(OnboardingFormQueryParam.Tab, tab);
   const query = params.toString();
   return query ? `${pathname}?${query}` : pathname;
