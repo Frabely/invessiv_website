@@ -1,12 +1,10 @@
 import "server-only";
 
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 
-import type { Locale } from "@invessiv/common";
 import { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
 import { QuestionnaireCatalogStatus } from "@invessiv/common/constants/crm/questionnaire/questionnaire-catalog-statuses";
 import type { QuestionnaireFieldType } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
-import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block.dto";
 import type { QuestionnaireChoiceDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-choice.dto";
 import type { QuestionnaireFieldDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-field.dto";
@@ -35,8 +33,11 @@ import type {
   QuestionnaireBlockOwner,
   QuestionnaireBlockRow,
 } from "@/server/shared/services/questionnaire/questionnaire-definition-types";
+import { questionnaireMappingService } from "@/server/shared/services/questionnaire/questionnaire-mapping-service";
+import { positionService } from "@/server/shared/services/position-service";
 import { questionnaireDefinitionValidation } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-definition-validation";
 import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
+import { versionConflict } from "@/server/workspace/shared/version-conflict";
 
 type BlockResult = QuestionnaireCommandResult<QuestionnaireBlockDto>;
 type OpenedBlock =
@@ -51,13 +52,6 @@ const FIELD_NOT_FOUND = {
   ok: false,
   code: QuestionnaireErrorCode.FieldNotFound,
 } as const;
-
-const fieldPositionConstraint = sql.identifier(
-  QuestionnaireFieldsConstraintName.PositionUnique,
-);
-const choicePositionConstraint = sql.identifier(
-  QuestionnaireFieldChoicesConstraintName.PositionUnique,
-);
 
 /** Every write on a block and its fields holds this lock, so invariants are checked on a stable block. */
 async function lockBlock(
@@ -80,15 +74,7 @@ async function lockBlock(
 }
 
 function blockConflict(block: QuestionnaireBlockDto): BlockResult {
-  return {
-    ok: false,
-    code: ConcurrencyErrorCode.VersionConflict,
-    conflict: {
-      code: ConcurrencyErrorCode.VersionConflict,
-      currentVersion: block.version,
-      current: block,
-    },
-  };
+  return versionConflict(block.version, block);
 }
 
 /** Locks and loads the block; a stale version answers with the current block for the editor. */
@@ -196,54 +182,19 @@ function toField(
   };
 }
 
-function fieldColumns(field: QuestionnaireFieldDto) {
-  return {
-    key: field.key,
-    requirement: field.requirement,
-    max_length: field.maxLength,
-    min_items: field.minItems,
-    max_items: field.maxItems,
-    accepted_asset_kinds: field.acceptedAssetKinds,
-    prefill_source: field.prefillSource,
-    condition_field_id: field.conditionFieldId,
-    condition_choice_id: field.conditionChoiceId,
-  };
-}
-
-function fieldTranslationRows(field: QuestionnaireFieldDto) {
-  return Object.entries(field.translations).map(([locale, text]) => ({
-    field_id: field.id,
-    locale: locale as Locale,
-    label: text.label,
-    help: text.help,
-  }));
-}
-
-function choiceTranslationRows(choices: readonly QuestionnaireChoiceDto[]) {
-  return choices.flatMap((choice) =>
-    Object.entries(choice.labels).map(([locale, label]) => ({
-      choice_id: choice.id,
-      locale: locale as Locale,
-      label,
-    })),
-  );
-}
-
 async function insertChoices(
   tx: ContactDatabaseTransaction,
   fieldId: string,
   choices: readonly QuestionnaireChoiceDto[],
 ): Promise<void> {
   if (choices.length === 0) return;
-  await tx.insert(questionnaireFieldChoices).values(
-    choices.map((choice) => ({
-      id: choice.id,
-      field_id: fieldId,
-      key: choice.key,
-      position: choice.position,
-      version: choice.version,
-    })),
-  );
+  await tx
+    .insert(questionnaireFieldChoices)
+    .values(
+      choices.map((choice) =>
+        questionnaireMappingService.mapChoiceDtoToRow(fieldId, choice),
+      ),
+    );
 }
 
 async function insertTexts(
@@ -251,10 +202,15 @@ async function insertTexts(
   field: QuestionnaireFieldDto,
   choices: readonly QuestionnaireChoiceDto[],
 ): Promise<void> {
-  const fieldRows = fieldTranslationRows(field);
+  const fieldRows = questionnaireMappingService.mapFieldTranslationsToRows(
+    field.id,
+    field.translations,
+  );
   if (fieldRows.length > 0)
     await tx.insert(questionnaireFieldTranslations).values(fieldRows);
-  const choiceRows = choiceTranslationRows(choices);
+  const choiceRows = choices.flatMap((choice) =>
+    questionnaireMappingService.mapChoiceLabelsToRows(choice.id, choice.labels),
+  );
   if (choiceRows.length > 0)
     await tx.insert(questionnaireChoiceTranslations).values(choiceRows);
 }
@@ -281,21 +237,25 @@ async function replaceChoices(
     );
 
   const stored = new Map(before.choices.map((choice) => [choice.id, choice]));
-  await tx.execute(sql`set constraints ${choicePositionConstraint} deferred`);
-  for (const choice of after.choices) {
-    const previous = stored.get(choice.id);
-    if (previous && previous.position !== choice.position)
-      await tx
-        .update(questionnaireFieldChoices)
-        .set({ position: choice.position })
-        .where(eq(questionnaireFieldChoices.id, choice.id));
-  }
-  await insertChoices(
+  await positionService.withDeferredPositions(
     tx,
-    after.id,
-    after.choices.filter((choice) => !stored.has(choice.id)),
+    QuestionnaireFieldChoicesConstraintName.PositionUnique,
+    async () => {
+      for (const choice of after.choices) {
+        const previous = stored.get(choice.id);
+        if (previous && previous.position !== choice.position)
+          await tx
+            .update(questionnaireFieldChoices)
+            .set({ position: choice.position })
+            .where(eq(questionnaireFieldChoices.id, choice.id));
+      }
+      await insertChoices(
+        tx,
+        after.id,
+        after.choices.filter((choice) => !stored.has(choice.id)),
+      );
+    },
   );
-  await tx.execute(sql`set constraints ${choicePositionConstraint} immediate`);
 
   const keptIds = after.choices
     .filter((choice) => stored.has(choice.id))
@@ -336,14 +296,14 @@ async function createBlock(
     status: QuestionnaireCatalogStatus.Active,
     version: 1,
   });
-  await tx.insert(questionnaireBlockTranslations).values(
-    texts.map(([locale, text]) => ({
-      block_id: id,
-      locale: locale as Locale,
-      title: text.title,
-      intro: text.intro,
-    })),
-  );
+  await tx
+    .insert(questionnaireBlockTranslations)
+    .values(
+      questionnaireMappingService.mapBlockTranslationsToRows(
+        id,
+        input.translations,
+      ),
+    );
   return { ok: true, value: (await readService.findBlock(tx, id, owner))! };
 }
 
@@ -390,14 +350,14 @@ async function updateBlock(
   await tx
     .delete(questionnaireBlockTranslations)
     .where(eq(questionnaireBlockTranslations.block_id, blockId));
-  await tx.insert(questionnaireBlockTranslations).values(
-    Object.entries(input.translations).map(([locale, text]) => ({
-      block_id: blockId,
-      locale: locale as Locale,
-      title: text.title,
-      intro: text.intro,
-    })),
-  );
+  await tx
+    .insert(questionnaireBlockTranslations)
+    .values(
+      questionnaireMappingService.mapBlockTranslationsToRows(
+        blockId,
+        input.translations,
+      ),
+    );
   return finishBlock(tx, opened.block, owner, {
     key: input.key,
     carry_over: input.carryOver,
@@ -453,7 +413,7 @@ async function createField(
     position: field.position,
     type: field.type,
     version: field.version,
-    ...fieldColumns(field),
+    ...questionnaireMappingService.mapFieldDtoToColumns(field),
   });
   await insertChoices(tx, field.id, field.choices);
   await insertTexts(tx, field, field.choices);
@@ -495,7 +455,7 @@ async function updateField(
       table: questionnaireFields,
       id: fieldId,
       expectedVersion: before.version,
-      patch: fieldColumns(after),
+      patch: questionnaireMappingService.mapFieldDtoToColumns(after),
     },
     "Questionnaire field changed while its block was locked",
   );
@@ -592,22 +552,26 @@ async function moveField(
   );
   if (code) return invalid(code);
 
-  await tx.execute(sql`set constraints ${fieldPositionConstraint} deferred`);
-  for (const [moved, position] of [
-    [field, neighbour.position],
-    [neighbour, field.position],
-  ] as const)
-    await updateLockedVersioned(
-      {
-        tx,
-        table: questionnaireFields,
-        id: moved.id,
-        expectedVersion: moved.version,
-        patch: { position },
-      },
-      "Questionnaire field changed while its block was locked",
-    );
-  await tx.execute(sql`set constraints ${fieldPositionConstraint} immediate`);
+  await positionService.withDeferredPositions(
+    tx,
+    QuestionnaireFieldsConstraintName.PositionUnique,
+    async () => {
+      for (const [moved, position] of [
+        [field, neighbour.position],
+        [neighbour, field.position],
+      ] as const)
+        await updateLockedVersioned(
+          {
+            tx,
+            table: questionnaireFields,
+            id: moved.id,
+            expectedVersion: moved.version,
+            patch: { position },
+          },
+          "Questionnaire field changed while its block was locked",
+        );
+    },
+  );
   return finishBlock(tx, block, owner);
 }
 

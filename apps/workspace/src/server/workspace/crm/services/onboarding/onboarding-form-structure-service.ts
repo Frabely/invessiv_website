@@ -1,10 +1,9 @@
 import "server-only";
 
-import { and, asc, eq, gt, ne, notInArray, sql } from "drizzle-orm";
+import { and, eq, ne, notInArray } from "drizzle-orm";
 
 import { OnboardingErrorCode } from "@invessiv/common/constants/crm/errors/onboarding-error-codes";
 import { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
-import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
 import type { OnboardingCommandResult } from "@invessiv/common/contracts/crm/onboarding/results/onboarding-command-result";
 import type { QuestionnaireCommandResult } from "@invessiv/common/contracts/crm/questionnaire/results/questionnaire-command-result";
@@ -21,6 +20,8 @@ import {
 } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { onboardingFormReadService } from "@/server/shared/services/onboarding/onboarding-form-read-service";
+import { onboardingReviewService } from "@/server/shared/services/onboarding/onboarding-review-service";
+import { positionService } from "@/server/shared/services/position-service";
 import type {
   OnboardingFormBlockRow,
   OnboardingFormRow,
@@ -29,6 +30,7 @@ import { fileAccessService } from "@/server/workspace/crm/services/files/file-ac
 import { questionnaireCommandSupport } from "@/server/workspace/crm/services/questionnaire/questionnaire-command-support";
 import { questionnaireDefinitionWriteService } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-write-service";
 import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
+import { versionConflict } from "@/server/workspace/shared/version-conflict";
 import { onboardingFormAccessService } from "./onboarding-form-access-service";
 import { onboardingFormSchemas } from "./onboarding-form-schemas";
 
@@ -43,10 +45,6 @@ const BLOCK_NOT_FOUND = {
   ok: false,
   code: QuestionnaireErrorCode.BlockNotFound,
 } as const;
-
-const stepPositionConstraint = sql.identifier(
-  OnboardingFormBlocksConstraintName.PositionUnique,
-);
 
 /** The form version is what parallel editors of the block list compare; every structure change bumps it. */
 function bumpVersion(
@@ -126,30 +124,11 @@ async function runBlockListCommand(
         fileAccessService.readableCondition(actor),
       );
     if (locked.form.version !== expectedFormVersion)
-      return {
-        ok: false,
-        code: ConcurrencyErrorCode.VersionConflict,
-        conflict: {
-          code: ConcurrencyErrorCode.VersionConflict,
-          currentVersion: locked.form.version,
-          current: await toDto(locked.form),
-        },
-      };
+      return versionConflict(locked.form.version, await toDto(locked.form));
     const rejection = await command(tx, locked.form);
     if (rejection) return rejection;
     return { ok: true, value: await toDto(await bumpVersion(tx, locked.form)) };
   });
-}
-
-function listSteps(
-  tx: ContactDatabaseTransaction,
-  formId: string,
-): Promise<OnboardingFormBlockRow[]> {
-  return tx
-    .select()
-    .from(onboardingFormBlocks)
-    .where(eq(onboardingFormBlocks.form_id, formId))
-    .orderBy(asc(onboardingFormBlocks.position));
 }
 
 function setStepPosition(
@@ -179,17 +158,21 @@ async function moveStep(
   blockId: string,
   direction: -1 | 1,
 ): Promise<Rejection | null> {
-  const steps = await listSteps(tx, formId);
+  const steps = await onboardingReviewService.listSteps(tx, formId);
   const index = steps.findIndex((step) => step.block_id === blockId);
   if (index === -1) return BLOCK_NOT_FOUND;
   const step = steps[index];
   const neighbour = steps[index + direction];
   if (!neighbour) return null;
 
-  await tx.execute(sql`set constraints ${stepPositionConstraint} deferred`);
-  await setStepPosition(tx, step, neighbour.position);
-  await setStepPosition(tx, neighbour, step.position);
-  await tx.execute(sql`set constraints ${stepPositionConstraint} immediate`);
+  await positionService.withDeferredPositions(
+    tx,
+    OnboardingFormBlocksConstraintName.PositionUnique,
+    async () => {
+      await setStepPosition(tx, step, neighbour.position);
+      await setStepPosition(tx, neighbour, step.position);
+    },
+  );
   return null;
 }
 
@@ -259,16 +242,7 @@ async function removeStep(
   blockId: string,
 ): Promise<Rejection | null> {
   const formId = form.id;
-  const [step] = await tx
-    .select()
-    .from(onboardingFormBlocks)
-    .where(
-      and(
-        eq(onboardingFormBlocks.form_id, formId),
-        eq(onboardingFormBlocks.block_id, blockId),
-      ),
-    )
-    .limit(1);
+  const step = await onboardingReviewService.findStep(tx, formId, blockId);
   const block = step
     ? await questionnaireDefinitionWriteService.lockBlock(tx, blockId, formId)
     : null;
@@ -287,21 +261,17 @@ async function removeStep(
   );
   if (!deleted.ok)
     throw new Error("Onboarding form block changed while its form was locked");
-  await tx
-    .update(onboardingFormBlocks)
-    .set({ position: sql`${onboardingFormBlocks.position} - 1` })
-    .where(
-      and(
-        eq(onboardingFormBlocks.form_id, formId),
-        gt(onboardingFormBlocks.position, step.position),
-      ),
-    );
+  await positionService.closeGap(
+    tx,
+    onboardingFormBlocks,
+    eq(onboardingFormBlocks.form_id, formId),
+    step.position,
+  );
   return null;
 }
 
 export const onboardingFormStructureService = {
   dropsAnsweredChoice,
-  listSteps,
   moveStep,
   removeStep,
   runBlockListCommand,

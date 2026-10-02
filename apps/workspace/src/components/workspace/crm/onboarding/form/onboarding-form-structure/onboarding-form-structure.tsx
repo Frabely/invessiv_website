@@ -18,10 +18,12 @@ import { isOnboardingStructureEditable } from "@invessiv/common/patterns/crm/onb
 import { flattenQuestionnaireFields } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-block-structure";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl, ConfirmDialog } from "@invessiv/ui";
+import { VersionedMutationOutcomeKind } from "@/common/constants/client/versioned-mutation-outcome-kinds";
 import { onboardingFormApiService } from "@/client/crm/onboarding-form-api-service";
 import { OnboardingBlockListChangeKind } from "@/common/constants/crm/onboarding/onboarding-block-list-change-kinds";
-import type { OnboardingFormClientResult } from "@/common/contracts/crm/onboarding/onboarding-form-client-result";
+import type { VersionedMutationOutcome } from "@/common/contracts/client/versioned-mutation-outcome";
 import type { OnboardingFormErrorTexts } from "@/common/contracts/crm/onboarding/onboarding-form-error-texts";
+import type { OnboardingFormClientErrorCode } from "@/common/constants/crm/onboarding/onboarding-form-client-error-codes";
 import type { QuestionnaireBlockIdentity } from "@/common/contracts/crm/questionnaire/questionnaire-block-identity";
 import type { QuestionnaireFixedChoiceLabels } from "@/common/contracts/crm/questionnaire/questionnaire-fixed-choice-labels";
 import { detectOnboardingBlockListChange } from "@/common/patterns/crm/onboarding/onboarding-block-list-change";
@@ -35,6 +37,7 @@ import { OrderedBlockListEditor } from "@/components/workspace/crm/questionnaire
 import { QuestionnaireBlockPickerDialog } from "@/components/workspace/crm/questionnaire/block-list/questionnaire-block-picker-dialog/questionnaire-block-picker-dialog";
 import { QuestionnaireBlockEditor } from "@/components/workspace/crm/questionnaire/editor/questionnaire-block-editor/questionnaire-block-editor";
 import type { Locale } from "@/config/i18n";
+import { useVersionedCommand } from "@/hooks/workspace/use-versioned-command";
 import type {
   CrmOnboardingDictionary,
   CrmQuestionnaireDictionary,
@@ -96,7 +99,7 @@ export function OnboardingFormStructure({
   const versionRef = useRef(initialForm.version);
   // Shown while a move is on its way, so focus can follow the moved row at once.
   const [pendingOrder, setPendingOrder] = useState<string[] | null>(null);
-  const [busy, setBusy] = useState(false);
+  const { busy, run } = useVersionedCommand();
   const [failure, setFailure] = useState<string | null>(null);
   const [announcement, setAnnouncement] = useState("");
   const [dialog, setDialog] = useState<OpenDialog>(null);
@@ -135,22 +138,25 @@ export function OnboardingFormStructure({
 
   /** Shared answer handling of every block list command; null means it did not go through. */
   function settle(
-    result: OnboardingFormClientResult<OnboardingFormDto>,
+    outcome: VersionedMutationOutcome<
+      OnboardingFormDto,
+      OnboardingFormClientErrorCode
+    >,
   ): OnboardingFormDto | null {
-    setBusy(false);
     setPendingOrder(null);
-    if (result.ok) {
-      setFailure(null);
-      adopt(result.value);
-      return result.value;
+    switch (outcome.kind) {
+      case VersionedMutationOutcomeKind.Saved:
+        setFailure(null);
+        adopt(outcome.value);
+        return outcome.value;
+      case VersionedMutationOutcomeKind.Conflict:
+        adopt(outcome.current);
+        setFailure(text.editor.conflict);
+        return null;
+      case VersionedMutationOutcomeKind.Failure:
+        setFailure(onboardingFormErrorText(outcome.code, errorTexts));
+        return null;
     }
-    if ("current" in result) {
-      adopt(result.current);
-      setFailure(text.editor.conflict);
-      return null;
-    }
-    setFailure(onboardingFormErrorText(result.code, errorTexts));
-    return null;
   }
 
   async function handleListChange(nextIds: string[]) {
@@ -163,24 +169,24 @@ export function OnboardingFormStructure({
       return;
     }
     setPendingOrder(nextIds);
-    setBusy(true);
     settle(
-      await onboardingFormApiService.moveBlock(form.id, change.blockId, {
-        direction: change.direction,
-        expectedFormVersion: form.version,
-      }),
+      await run(() =>
+        onboardingFormApiService.moveBlock(form.id, change.blockId, {
+          direction: change.direction,
+          expectedFormVersion: form.version,
+        }),
+      ),
     );
   }
 
   async function removeBlock(block: QuestionnaireBlockDto) {
-    setBusy(true);
-    const result = await onboardingFormApiService.removeBlock(
-      form.id,
-      block.id,
-      { expectedFormVersion: form.version },
+    const outcome = await run(() =>
+      onboardingFormApiService.removeBlock(form.id, block.id, {
+        expectedFormVersion: form.version,
+      }),
     );
     setDialog(null);
-    if (!settle(result)) return;
+    if (!settle(outcome)) return;
     setAnnouncement(
       formatMessage(text.blocks.removed, { name: nameOf(block) }),
     );
@@ -192,12 +198,14 @@ export function OnboardingFormStructure({
 
   async function addCatalogBlock(source: QuestionnaireBlockSummaryDto) {
     if (busy) return;
-    setBusy(true);
-    const result = await onboardingFormApiService.addBlock(form.id, {
-      catalogBlockId: source.id,
-      expectedFormVersion: form.version,
-    });
-    const next = settle(result);
+    const next = settle(
+      await run(() =>
+        onboardingFormApiService.addBlock(form.id, {
+          catalogBlockId: source.id,
+          expectedFormVersion: form.version,
+        }),
+      ),
+    );
     if (!next) {
       // The reason is shown on the page, behind the picker.
       setDialog(null);
@@ -214,29 +222,30 @@ export function OnboardingFormStructure({
   }
 
   async function addOwnBlock(identity: QuestionnaireBlockIdentity) {
-    setBusy(true);
-    const result = await onboardingFormApiService.addBlock(form.id, {
-      key: identity.key,
-      translations: { [locale]: { title: identity.title, intro: null } },
-      expectedFormVersion: form.version,
-    });
-    setBusy(false);
-    if (!result.ok) {
+    const outcome = await run(() =>
+      onboardingFormApiService.addBlock(form.id, {
+        key: identity.key,
+        translations: { [locale]: { title: identity.title, intro: null } },
+        expectedFormVersion: form.version,
+      }),
+    );
+    if (outcome.kind !== VersionedMutationOutcomeKind.Saved) {
       // A conflict loads the current form; the input stays for the next attempt.
-      if ("current" in result) adopt(result.current);
+      if (outcome.kind === VersionedMutationOutcomeKind.Conflict)
+        adopt(outcome.current);
       setDialog({
         kind: DialogKind.Own,
         failure:
-          "current" in result
+          outcome.kind === VersionedMutationOutcomeKind.Conflict
             ? text.editor.conflict
-            : onboardingFormErrorText(result.code, errorTexts),
+            : onboardingFormErrorText(outcome.code, errorTexts),
       });
       return;
     }
-    adopt(result.value);
+    adopt(outcome.value);
     setFailure(null);
     setDialog(null);
-    const added = result.value.blocks.at(-1);
+    const added = outcome.value.blocks.at(-1);
     if (!added) return;
     setAnnouncement(
       formatMessage(text.blocks.added, {

@@ -2,7 +2,6 @@ import "server-only";
 
 import { OnboardingErrorCode } from "@invessiv/common/constants/crm/errors/onboarding-error-codes";
 import { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
-import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
 import type { OnboardingCommandResult } from "@invessiv/common/contracts/crm/onboarding/results/onboarding-command-result";
 import type { ReviewOnboardingBlockRequestDto } from "@invessiv/common/contracts/crm/onboarding/review-onboarding-block-request.dto";
@@ -14,6 +13,7 @@ import { onboardingReviewService } from "@/server/shared/services/onboarding/onb
 import { fileAccessService } from "@/server/workspace/crm/services/files/file-access-service";
 import { onboardingFormAccessService } from "@/server/workspace/crm/services/onboarding/onboarding-form-access-service";
 import { onboardingFormSchemas } from "@/server/workspace/crm/services/onboarding/onboarding-form-schemas";
+import { versionConflict } from "@/server/workspace/shared/version-conflict";
 
 /**
  * Sets the team's review of one block under the form lock. The review is only open while the form
@@ -58,15 +58,7 @@ export async function reviewOnboardingBlock(
         fileAccessService.readableCondition(actor),
       );
     if (step.version !== parsed.data.expectedVersion)
-      return {
-        ok: false,
-        code: ConcurrencyErrorCode.VersionConflict,
-        conflict: {
-          code: ConcurrencyErrorCode.VersionConflict,
-          currentVersion: step.version,
-          current: await toDto(),
-        },
-      };
+      return versionConflict(step.version, await toDto());
 
     await onboardingReviewService.writeReview(
       tx,

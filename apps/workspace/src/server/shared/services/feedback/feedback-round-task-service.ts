@@ -3,7 +3,6 @@ import "server-only";
 import { eq } from "drizzle-orm";
 
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
-import { TaskActionSide } from "@invessiv/common/constants/crm/task-action-sides";
 import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import type { ActivityActor } from "@invessiv/common/contracts/activity/activity-actor";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
@@ -12,10 +11,12 @@ import { tasks } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { getCrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { DEFAULT_LOCALE } from "@/lib/site-metadata";
-import { projectResponsibleMemberService } from "@/server/shared/services/project-responsible-member-service";
-import { taskActivityService } from "@/server/shared/services/task-activity-service";
-import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
+import { collectingTaskService } from "@/server/shared/services/collecting-task-service";
 import type { FeedbackRoundRef } from "./feedback-service-types";
+
+function scopeOf(round: FeedbackRoundRef) {
+  return { customerId: round.customer_id, projectId: round.project_id };
+}
 
 async function lockRoundTask(tx: ContactDatabaseTransaction, roundId: string) {
   const [task] = await tx
@@ -39,37 +40,19 @@ async function moveTask(
 ): Promise<void> {
   const task = await lockRoundTask(tx, round.id);
   if (!task || task.status !== change.from) return;
-  const becomesDone = change.to === TaskStatus.Done;
-  await updateLockedVersioned(
-    {
-      tx,
-      table: tasks,
-      id: task.id,
-      expectedVersion: task.version,
-      patch: {
-        status: change.to,
-        completed_at: becomesDone ? new Date() : null,
-        completed_by_member_id: becomesDone ? completedByMemberId : null,
-        completed_by_portal_membership_id: null,
-      },
-    },
-    "Locked feedback round task changed",
-  );
-  await taskActivityService.recordStatusChange(
-    tx,
-    {
-      customerId: round.customer_id,
-      projectId: round.project_id,
-      taskId: task.id,
-    },
+  await collectingTaskService.move(tx, {
+    task,
+    scope: scopeOf(round),
+    to: change.to,
     actor,
-    { previous: change.from, next: change.to },
-  );
+    completedByMemberId,
+    failure: "Locked feedback round task changed",
+  });
 }
 
 /**
  * Creates the one internal task of a submitted round, or reopens it after the team handed the round
- * back. Without an active owner there is no task: submitting must never fail on internal staffing.
+ * back.
  */
 async function ensureOpenForSubmission(
   tx: ContactDatabaseTransaction,
@@ -86,42 +69,15 @@ async function ensureOpenForSubmission(
     );
     return;
   }
-  const assigneeMemberId =
-    await projectResponsibleMemberService.findActiveMemberId(
-      tx,
-      round.project_id,
-    );
-  if (!assigneeMemberId) {
-    console.warn("[feedback-round] no active owner for the collecting task", {
-      feedbackRoundId: round.id,
-    });
-    return;
-  }
-  const taskId = crypto.randomUUID();
-  await tx.insert(tasks).values({
-    id: taskId,
-    project_id: round.project_id,
+  await collectingTaskService.create(tx, {
+    origin: { feedbackRoundId: round.id },
+    scope: scopeOf(round),
     title: formatMessage(
       getCrmTasksDictionary(DEFAULT_LOCALE).feedbackRound.title,
       { roundNumber: round.round_number },
     ),
-    description: "",
-    status: TaskStatus.Open,
-    action_side: TaskActionSide.Internal,
-    visible_to_customer: false,
-    assignee_member_id: assigneeMemberId,
-    due_on: null,
-    completed_at: null,
-    completed_by_member_id: null,
-    completed_by_portal_membership_id: null,
-    feedback_round_id: round.id,
-    version: 1,
-  });
-  await taskActivityService.recordCreated(
-    tx,
-    { customerId: round.customer_id, projectId: round.project_id, taskId },
     actor,
-  );
+  });
 }
 
 function memberActor(actor: WorkspaceActor): ActivityActor {

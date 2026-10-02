@@ -2,30 +2,32 @@ import "server-only";
 
 import { and, asc, eq, gt, type SQL } from "drizzle-orm";
 
+import type { ContactDatabaseReader } from "@invessiv/db/core";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import type { OnboardingFormServiceDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form-service.dto";
 import type { OnboardingFormSummaryDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form-summary.dto";
+import type { OnboardingReviewSummary } from "@invessiv/common/contracts/crm/onboarding/onboarding-review-summary";
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
 import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block.dto";
 import type { QuestionnaireCompleteness } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-completeness";
 import type { QuestionnaireFieldDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-field.dto";
+import { summarizeOnboardingReview } from "@invessiv/common/patterns/crm/onboarding/onboarding-review";
 import { findQuestionnaireField } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-block-structure";
 import { getQuestionnaireCompleteness } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
 import {
   files,
   onboardingAnswerFiles,
   onboardingAnswers,
-  onboardingFormBlocks,
   onboardingGroupEntries,
   projectLineItems,
 } from "@invessiv/db/record-configuration";
 import { questionnaireDefinitionReadService } from "@/server/shared/services/questionnaire/questionnaire-definition-read-service";
-import type { QuestionnaireReadExecutor } from "@/server/shared/services/questionnaire/questionnaire-definition-types";
 import { onboardingFormMappingService } from "./onboarding-form-mapping-service";
 import type {
   OnboardingFormBlockRow,
   OnboardingFormRow,
 } from "./onboarding-form-types";
+import { onboardingReviewService } from "./onboarding-review-service";
 import { onboardingServicesSnapshotService } from "./onboarding-services-snapshot-service";
 
 type Structure = {
@@ -35,14 +37,10 @@ type Structure = {
 
 /** The steps of a form with their block copies, both in form order. */
 async function loadStructure(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   formId: string,
 ): Promise<Structure> {
-  const steps = await executor
-    .select()
-    .from(onboardingFormBlocks)
-    .where(eq(onboardingFormBlocks.form_id, formId))
-    .orderBy(asc(onboardingFormBlocks.position));
+  const steps = await onboardingReviewService.listSteps(executor, formId);
   const blocks = await questionnaireDefinitionReadService.findBlocks(
     executor,
     steps.map((step) => step.block_id),
@@ -51,7 +49,7 @@ async function loadStructure(
   return { steps, blocks };
 }
 
-function loadAnswers(executor: QuestionnaireReadExecutor, formId: string) {
+function loadAnswers(executor: ContactDatabaseReader, formId: string) {
   return executor
     .select()
     .from(onboardingAnswers)
@@ -63,7 +61,7 @@ function loadAnswers(executor: QuestionnaireReadExecutor, formId: string) {
     );
 }
 
-function loadGroupEntries(executor: QuestionnaireReadExecutor, formId: string) {
+function loadGroupEntries(executor: ContactDatabaseReader, formId: string) {
   return executor
     .select()
     .from(onboardingGroupEntries)
@@ -75,10 +73,7 @@ function loadGroupEntries(executor: QuestionnaireReadExecutor, formId: string) {
 }
 
 /** Every file link of a form, whoever may open the file: what the completeness counts. */
-function loadAnswerFileRefs(
-  executor: QuestionnaireReadExecutor,
-  formId: string,
-) {
+function loadAnswerFileRefs(executor: ContactDatabaseReader, formId: string) {
   return executor
     .select({
       id: onboardingAnswerFiles.id,
@@ -94,7 +89,7 @@ function loadAnswerFileRefs(
  * project until completion, the frozen snapshot afterwards.
  */
 async function loadServices(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   form: OnboardingFormRow,
 ): Promise<OnboardingFormServiceDto[]> {
   const services =
@@ -113,7 +108,7 @@ async function loadServices(
  * form shows its frozen snapshot, which nothing changes anymore.
  */
 async function servicesChangedSinceConfirmation(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   form: OnboardingFormRow,
 ): Promise<boolean> {
   if (
@@ -139,7 +134,7 @@ async function servicesChangedSinceConfirmation(
  * portal release); a link to a file outside it comes without its file, only as the slot it fills.
  */
 async function toFormDto(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   form: OnboardingFormRow,
   fileVisibility: SQL,
 ): Promise<OnboardingFormDto> {
@@ -189,18 +184,19 @@ async function toFormDto(
  * requirement or progress lives here. Every file link counts, whoever may open the file: the
  * progress of a form must not depend on the viewer.
  */
-async function toCompleteness(
-  executor: QuestionnaireReadExecutor,
+async function completenessOf(
+  executor: ContactDatabaseReader,
   form: OnboardingFormRow,
+  structure: Structure | Promise<Structure>,
 ): Promise<QuestionnaireCompleteness> {
-  const [structure, answers, groupEntries, answerFiles] = await Promise.all([
-    loadStructure(executor, form.id),
+  const [loaded, answers, groupEntries, answerFiles] = await Promise.all([
+    structure,
     loadAnswers(executor, form.id),
     loadGroupEntries(executor, form.id),
     loadAnswerFileRefs(executor, form.id),
   ]);
   return getQuestionnaireCompleteness({
-    blocks: structure.blocks,
+    blocks: loaded.blocks,
     answers: answers.map(onboardingFormMappingService.toAnswerDto),
     answerFiles,
     groupEntries: groupEntries.map(
@@ -210,14 +206,18 @@ async function toCompleteness(
   });
 }
 
-async function toSummaryDto(
-  executor: QuestionnaireReadExecutor,
+function toCompleteness(
+  executor: ContactDatabaseReader,
   form: OnboardingFormRow,
-): Promise<OnboardingFormSummaryDto> {
-  const { answeredRequired, totalRequired, ratio } = await toCompleteness(
-    executor,
-    form,
-  );
+): Promise<QuestionnaireCompleteness> {
+  return completenessOf(executor, form, loadStructure(executor, form.id));
+}
+
+function toSummary(
+  form: OnboardingFormRow,
+  completeness: QuestionnaireCompleteness,
+) {
+  const { answeredRequired, totalRequired, ratio } = completeness;
   return onboardingFormMappingService.toSummaryDto(form, {
     answeredRequired,
     totalRequired,
@@ -225,9 +225,39 @@ async function toSummaryDto(
   });
 }
 
+async function toSummaryDto(
+  executor: ContactDatabaseReader,
+  form: OnboardingFormRow,
+): Promise<OnboardingFormSummaryDto> {
+  return toSummary(form, await toCompleteness(executor, form));
+}
+
+/**
+ * The summary together with the review counts, from one read of the steps; the project area shows
+ * both and must not load the steps twice.
+ */
+async function toProjectSummary(
+  executor: ContactDatabaseReader,
+  form: OnboardingFormRow,
+): Promise<{
+  summary: OnboardingFormSummaryDto;
+  review: OnboardingReviewSummary;
+}> {
+  const structure = await loadStructure(executor, form.id);
+  return {
+    summary: toSummary(form, await completenessOf(executor, form, structure)),
+    review: summarizeOnboardingReview(
+      structure.steps.map((step) => ({
+        reviewStatus: step.review_status,
+        clarificationMode: step.clarification_mode,
+      })),
+    ),
+  };
+}
+
 /** A field of one of the form's own blocks; a field of another form or of the catalog is null. */
 async function findField(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   formId: string,
   fieldId: string,
 ): Promise<QuestionnaireFieldDto | null> {
@@ -249,5 +279,6 @@ export const onboardingFormReadService = {
   findField,
   toCompleteness,
   toFormDto,
+  toProjectSummary,
   toSummaryDto,
 } as const;

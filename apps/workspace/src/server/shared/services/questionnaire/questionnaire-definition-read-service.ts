@@ -14,6 +14,7 @@ import {
   type SQL,
 } from "drizzle-orm";
 
+import type { ContactDatabaseReader } from "@invessiv/db/core";
 import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block.dto";
 import {
   questionnaireBlocks,
@@ -30,7 +31,6 @@ import { escapeLikePattern } from "@/common/patterns/crm/sql-like-escape";
 import type {
   QuestionnaireBlockOwner,
   QuestionnaireDefinitionRows,
-  QuestionnaireReadExecutor,
 } from "@/server/shared/services/questionnaire/questionnaire-definition-types";
 import { questionnaireMappingService } from "@/server/shared/services/questionnaire/questionnaire-mapping-service";
 
@@ -42,7 +42,7 @@ function ownerCondition(owner: QuestionnaireBlockOwner): SQL {
 
 /** Loads blocks with every translation, field and option in six queries, whatever the count. */
 async function loadRows(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   where: SQL,
   orderBy: SQL[] = [asc(questionnaireBlocks.key)],
 ): Promise<QuestionnaireDefinitionRows> {
@@ -118,7 +118,7 @@ async function loadRows(
 
 /** A block of another owner behaves like a missing one. */
 async function findBlock(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   blockId: string,
   owner: QuestionnaireBlockOwner,
 ): Promise<QuestionnaireBlockDto | null> {
@@ -131,7 +131,7 @@ async function findBlock(
 
 /** Blocks in the order of `blockIds`; ids of another owner or unknown ids are left out. */
 async function findBlocks(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   blockIds: readonly string[],
   owner: QuestionnaireBlockOwner,
 ): Promise<QuestionnaireBlockDto[]> {
@@ -150,7 +150,7 @@ async function findBlocks(
 
 /** The block a field belongs to, if that block has the given owner. */
 async function findFieldBlockId(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   fieldId: string,
   owner: QuestionnaireBlockOwner,
 ): Promise<string | null> {
@@ -168,7 +168,7 @@ async function findFieldBlockId(
 
 /** The search matches the key or a title in any locale. */
 function catalogFilterCondition(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   filters: QuestionnaireCatalogListFilters,
 ): SQL {
   const conditions: SQL[] = [ownerCondition(null)];
@@ -200,7 +200,7 @@ function catalogFilterCondition(
 }
 
 async function listCatalogBlocks(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   filters: QuestionnaireCatalogListFilters,
 ): Promise<QuestionnaireBlockDto[]> {
   const rows = await loadRows(
@@ -216,7 +216,7 @@ async function listCatalogBlocks(
  * A form's copy keeps the key of its origin, so it never collides with the catalog.
  */
 async function isBlockKeyTaken(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   owner: QuestionnaireBlockOwner,
   key: string,
 ): Promise<boolean> {
@@ -229,7 +229,7 @@ async function isBlockKeyTaken(
 }
 
 async function hasCatalogBlocks(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
 ): Promise<boolean> {
   const [row] = await executor
     .select({ id: questionnaireBlocks.id })
@@ -241,7 +241,7 @@ async function hasCatalogBlocks(
 
 /** How many templates use each block; blocks without a template are missing from the map. */
 async function countTemplateUsage(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   blockIds: readonly string[],
 ): Promise<Map<string, number>> {
   if (blockIds.length === 0) return new Map();

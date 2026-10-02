@@ -9,10 +9,8 @@ import type { PortalOnboardingFormDto } from "@invessiv/common/contracts/portal/
 import { portalOnboardingApiService } from "@/client/portal/portal-onboarding-api-service";
 import { DraftSaveState } from "@/common/constants/shared/draft-save-states";
 import { onboardingAnswerDrafts } from "@/common/patterns/portal/onboarding-answer-drafts";
+import { DRAFT_AUTOSAVE_DELAY_MS } from "@/common/constants/shared/draft-autosave-delay";
 import { useLeaveWarning } from "@/hooks/shared/use-leave-warning";
-
-// Same rhythm as the feedback sheet: not on every keystroke, but a reload rarely loses anything.
-const AUTOSAVE_DELAY_MS = 1_500;
 
 /**
  * Holds the answers of a form locally and saves them slot by slot: text debounced and when the
@@ -165,7 +163,7 @@ export function useOnboardingAutosave({
       if (timer) clearTimeout(timer);
       timersRef.current.set(
         fieldId,
-        setTimeout(() => void enqueue(fieldId), AUTOSAVE_DELAY_MS),
+        setTimeout(() => void enqueue(fieldId), DRAFT_AUTOSAVE_DELAY_MS),
       );
       syncPending();
     },

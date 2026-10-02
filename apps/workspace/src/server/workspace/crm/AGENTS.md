@@ -186,6 +186,12 @@ Plan: `apps/workspace/plans/crm/15-onboarding/65-bogen-anlegen-und-anpassen.md`.
   409). Kopf- und Feldbefehle laufen über `runDefinitionCommand`: sie rufen `questionnaireDefinitionWriteService` mit der
   Bogen-ID als Owner auf, vergleichen die Blockversion und antworten mit dem Block. Beide erhöhen bei Erfolg die
   Bogenversion über `updateLockedVersioned`. Kein Bogen-Handler enthält eigene Definitionslogik.
+- **Statusbefehle des Teams** (`release`, `requestChanges`, `complete`) laufen über
+  `onboardingFormCommandSupport.runFormTransition` (`services/onboarding/onboarding-form-command-support.ts`): Sperre über
+  `lockWritableForm`, Übergang **vor** der Version, Konfliktantwort mit dem ganzen Bogen. Der Handler parst mit
+  `onboardingFormCommandSupport.parse` (Bogen-ID zuerst) und liefert in `command` nur das Spezifische. Den
+  Projekttitel lädt `loadProjectTitle`. Die Prüfung eines Blocks (`reviewOnboardingBlock`) vergleicht die Schrittversion
+  und passt deshalb nicht in diesen Rahmen.
 - **Vorbefüllung nie raten:** Felder über `key` und Typ, Optionen über `key`, Werte nur, wenn sie die Prüfung des
   neuen Feldes bestehen. Quelle ist ausschließlich der jüngste Bogen desselben Kunden im Status `completed`.
   `confirmation` und `project_services` werden nie übernommen. CRM-Werte füllen nur Felder ohne übernommene Antwort;

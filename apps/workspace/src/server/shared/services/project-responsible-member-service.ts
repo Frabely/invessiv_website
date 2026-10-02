@@ -2,7 +2,10 @@ import "server-only";
 
 import { and, eq, inArray } from "drizzle-orm";
 
-import type { ContactDatabaseTransaction } from "@invessiv/db/core";
+import type {
+  ContactDatabaseReader,
+  ContactDatabaseTransaction,
+} from "@invessiv/db/core";
 import {
   customers,
   projects,
@@ -11,11 +14,9 @@ import {
 } from "@invessiv/db/record-configuration";
 import type { ProjectBookingContact } from "./project-responsible-member-types";
 
-type ReadExecutor = Pick<ContactDatabaseTransaction, "select">;
-
 /** Who answers for a project, in order: its owner, then the owner of its customer. */
 async function loadOwnerMemberIds(
-  executor: ReadExecutor,
+  executor: ContactDatabaseReader,
   projectId: string,
 ): Promise<string[]> {
   const [owners] = await executor
@@ -61,7 +62,7 @@ async function findActiveMemberId(
  * A pure read, so it takes no lock.
  */
 async function findBookingContact(
-  executor: ReadExecutor,
+  executor: ContactDatabaseReader,
   projectId: string,
 ): Promise<ProjectBookingContact | null> {
   const ownerMemberIds = await loadOwnerMemberIds(executor, projectId);

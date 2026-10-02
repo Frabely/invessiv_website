@@ -1,34 +1,18 @@
 import "server-only";
 
-import { eq } from "drizzle-orm";
-
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { OnboardingErrorCode } from "@invessiv/common/constants/crm/errors/onboarding-error-codes";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
-import { OnboardingTransitionSide } from "@invessiv/common/constants/crm/onboarding/onboarding-transition-sides";
-import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { CompleteOnboardingFormRequestDto } from "@invessiv/common/contracts/crm/onboarding/complete-onboarding-form-request.dto";
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
 import type { OnboardingCommandResult } from "@invessiv/common/contracts/crm/onboarding/results/onboarding-command-result";
-import {
-  canTransitionOnboardingForm,
-  isOnboardingCallDateAcceptable,
-} from "@invessiv/common/patterns/crm/onboarding/onboarding-form-state";
-import { getDrizzleDatabaseClient } from "@invessiv/db/core";
-import { projects } from "@invessiv/db/record-configuration";
+import { isOnboardingCallDateAcceptable } from "@invessiv/common/patterns/crm/onboarding/onboarding-form-state";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { businessToday } from "@/common/patterns/time/business-today";
 import { onboardingFormReadService } from "@/server/shared/services/onboarding/onboarding-form-read-service";
 import { onboardingFormTransitionService } from "@/server/shared/services/onboarding/onboarding-form-transition-service";
-import type { OnboardingFormRow } from "@/server/shared/services/onboarding/onboarding-form-types";
-import { fileAccessService } from "@/server/workspace/crm/services/files/file-access-service";
-import { onboardingFormAccessService } from "@/server/workspace/crm/services/onboarding/onboarding-form-access-service";
+import { onboardingFormCommandSupport } from "@/server/workspace/crm/services/onboarding/onboarding-form-command-support";
 import { onboardingFormSchemas } from "@/server/workspace/crm/services/onboarding/onboarding-form-schemas";
-
-const FORM_NOT_FOUND = {
-  ok: false,
-  code: OnboardingErrorCode.FormNotFound,
-} as const;
 
 /**
  * Completes a submitted form under the form lock. Two things must hold: no visible required
@@ -41,78 +25,45 @@ export async function completeOnboardingForm(
   input: CompleteOnboardingFormRequestDto,
   actor: WorkspaceActor,
 ): Promise<OnboardingCommandResult<OnboardingFormDto>> {
-  if (!onboardingFormSchemas.entityId.safeParse(formId).success)
-    return FORM_NOT_FOUND;
-  const parsed = onboardingFormSchemas.complete.safeParse(input);
-  if (!parsed.success)
-    return {
-      ok: false,
-      code: OnboardingErrorCode.ValidationError,
-      errors: parsed.error.issues,
-    };
+  const parsed = onboardingFormCommandSupport.parse(
+    formId,
+    onboardingFormSchemas.complete,
+    input,
+  );
+  if (!parsed.ok) return parsed.result;
   const { expectedVersion, callHeldOn, advancePhase } = parsed.data;
 
-  return getDrizzleDatabaseClient().transaction(async (tx) => {
-    const form = await onboardingFormAccessService.lockWritableForm(
-      tx,
-      formId,
-      actor,
-    );
-    if (!form) return FORM_NOT_FOUND;
-    // Checked before the version: a completed form stays so whatever the client read.
-    if (
-      !canTransitionOnboardingForm(
-        form.status,
-        OnboardingFormStatus.Completed,
-        OnboardingTransitionSide.Internal,
-      )
-    )
-      return { ok: false, code: OnboardingErrorCode.InvalidTransition };
-
-    const toDto = (row: OnboardingFormRow) =>
-      onboardingFormReadService.toFormDto(
+  return onboardingFormCommandSupport.runFormTransition({
+    formId,
+    actor,
+    target: OnboardingFormStatus.Completed,
+    expectedVersion,
+    command: async (tx, form) => {
+      if (!isOnboardingCallDateAcceptable(callHeldOn, businessToday()))
+        return { ok: false, code: OnboardingErrorCode.CallDateRequired };
+      const { missing } = await onboardingFormReadService.toCompleteness(
         tx,
-        row,
-        fileAccessService.readableCondition(actor),
+        form,
       );
-    if (form.version !== expectedVersion)
+      if (missing.length > 0)
+        return {
+          ok: false,
+          code: OnboardingErrorCode.RequiredMissing,
+          missing: [...missing],
+        };
+
       return {
-        ok: false,
-        code: ConcurrencyErrorCode.VersionConflict,
-        conflict: {
-          code: ConcurrencyErrorCode.VersionConflict,
-          currentVersion: form.version,
-          current: await toDto(form),
-        },
+        next: await onboardingFormTransitionService.complete(tx, form, {
+          actor: { type: ActorType.User, userId: actor.userId },
+          memberId: actor.workspaceMemberId,
+          projectTitle: await onboardingFormCommandSupport.loadProjectTitle(
+            tx,
+            form,
+          ),
+          callHeldOn,
+          advancePhase,
+        }),
       };
-
-    if (!isOnboardingCallDateAcceptable(callHeldOn, businessToday()))
-      return { ok: false, code: OnboardingErrorCode.CallDateRequired };
-    const { missing } = await onboardingFormReadService.toCompleteness(
-      tx,
-      form,
-    );
-    if (missing.length > 0)
-      return {
-        ok: false,
-        code: OnboardingErrorCode.RequiredMissing,
-        missing: [...missing],
-      };
-
-    const [project] = await tx
-      .select({ title: projects.title })
-      .from(projects)
-      .where(eq(projects.id, form.project_id))
-      .limit(1);
-    if (!project) throw new Error("Onboarding form without its project");
-
-    const completed = await onboardingFormTransitionService.complete(tx, form, {
-      actor: { type: ActorType.User, userId: actor.userId },
-      memberId: actor.workspaceMemberId,
-      projectTitle: project.title,
-      callHeldOn,
-      advancePhase,
-    });
-    return { ok: true, value: await toDto(completed) };
+    },
   });
 }

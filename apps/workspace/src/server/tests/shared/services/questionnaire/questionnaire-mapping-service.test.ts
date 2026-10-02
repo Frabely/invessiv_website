@@ -283,3 +283,74 @@ describe("questionnaireMappingService template mapping", () => {
     });
   });
 });
+
+describe("questionnaireMappingService definition rows", () => {
+  it("maps the settings of a field to its columns", () => {
+    expect(
+      questionnaireMappingService.mapFieldDtoToColumns({
+        key: "company",
+        requirement: QuestionnaireFieldRequirement.Required,
+        maxLength: 80,
+        minItems: null,
+        maxItems: null,
+        acceptedAssetKinds: null,
+        prefillSource: QuestionnairePrefillSource.CustomerCompanyName,
+        conditionFieldId: "f-has_team",
+        conditionChoiceId: "c-yes",
+      }),
+    ).toEqual({
+      key: "company",
+      requirement: QuestionnaireFieldRequirement.Required,
+      max_length: 80,
+      min_items: null,
+      max_items: null,
+      accepted_asset_kinds: null,
+      prefill_source: QuestionnairePrefillSource.CustomerCompanyName,
+      condition_field_id: "f-has_team",
+      condition_choice_id: "c-yes",
+    });
+  });
+
+  it("maps an option to its row under the given field", () => {
+    expect(
+      questionnaireMappingService.mapChoiceDtoToRow("f-1", {
+        id: "c-1",
+        key: "yes",
+        position: 2,
+        version: 5,
+      }),
+    ).toEqual({
+      id: "c-1",
+      field_id: "f-1",
+      key: "yes",
+      position: 2,
+      version: 5,
+    });
+  });
+
+  it("maps every maintained language of a block, field and option to one row each", () => {
+    expect(
+      questionnaireMappingService.mapBlockTranslationsToRows("b-1", {
+        de: { title: "Unternehmen", intro: null },
+        en: { title: "Company", intro: "Tell us" },
+      }),
+    ).toEqual([
+      { block_id: "b-1", locale: "de", title: "Unternehmen", intro: null },
+      { block_id: "b-1", locale: "en", title: "Company", intro: "Tell us" },
+    ]);
+    expect(
+      questionnaireMappingService.mapFieldTranslationsToRows("f-1", {
+        de: { label: "Firma", help: null },
+      }),
+    ).toEqual([{ field_id: "f-1", locale: "de", label: "Firma", help: null }]);
+    expect(
+      questionnaireMappingService.mapChoiceLabelsToRows("c-1", {
+        de: "Ja",
+        en: "Yes",
+      }),
+    ).toEqual([
+      { choice_id: "c-1", locale: "de", label: "Ja" },
+      { choice_id: "c-1", locale: "en", label: "Yes" },
+    ]);
+  });
+});

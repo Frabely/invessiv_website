@@ -3,12 +3,14 @@ import "server-only";
 import { and, asc, eq, inArray, isNull, or } from "drizzle-orm";
 
 import { ONBOARDING_VISIBLE_LINE_ITEM_STATUS_VALUES } from "@invessiv/common/constants/crm/onboarding/onboarding-visible-line-item-statuses";
-import type { ContactDatabaseTransaction } from "@invessiv/db/core";
+import type {
+  ContactDatabaseTransaction,
+  ContactDatabaseReader,
+} from "@invessiv/db/core";
 import {
   onboardingFormServices,
   projectLineItems,
 } from "@invessiv/db/record-configuration";
-import type { QuestionnaireReadExecutor } from "@/server/shared/services/questionnaire/questionnaire-definition-types";
 import type {
   OnboardingFormRow,
   OnboardingServiceSource,
@@ -16,7 +18,7 @@ import type {
 
 /** The booked services of a project as a form lists them, in the order they were booked. */
 async function listLive(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   projectId: string,
 ): Promise<OnboardingServiceSource[]> {
   const rows = await executor
@@ -42,7 +44,7 @@ async function listLive(
 }
 
 async function listFrozen(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   formId: string,
 ): Promise<OnboardingServiceSource[]> {
   const rows = await executor

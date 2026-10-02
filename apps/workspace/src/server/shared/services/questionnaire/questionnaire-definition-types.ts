@@ -1,4 +1,3 @@
-import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import type {
   questionnaireBlocks,
   questionnaireBlockTranslations,
@@ -8,12 +7,6 @@ import type {
   questionnaireFieldTranslations,
   questionnaireTemplates,
 } from "@invessiv/db/record-configuration";
-
-/** Reads run on the pooled client or inside a command's transaction alike. */
-export type QuestionnaireReadExecutor = Pick<
-  ContactDatabaseTransaction,
-  "select"
->;
 
 export type QuestionnaireBlockRow = typeof questionnaireBlocks.$inferSelect;
 export type QuestionnaireBlockTranslationRow =

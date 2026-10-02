@@ -6,7 +6,6 @@ import {
   QuestionnaireFieldType,
 } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
 import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
-import { PortalOnboardingErrorCode } from "@invessiv/common/constants/portal/portal-onboarding-error-codes";
 import type { QuestionnaireFieldDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-field.dto";
 import type { PortalOnboardingAnswerSavedDto } from "@invessiv/common/contracts/portal/portal-onboarding-answer-saved.dto";
 import type { PortalOnboardingResult } from "@invessiv/common/contracts/portal/results/portal-onboarding-result";
@@ -22,11 +21,6 @@ import { onboardingAnswerWriteService } from "@/server/shared/services/onboardin
 import type { OnboardingSlotContent } from "@/server/shared/services/onboarding/onboarding-form-types";
 
 type Result = PortalOnboardingResult<PortalOnboardingAnswerSavedDto>;
-
-const VALIDATION = {
-  ok: false,
-  code: PortalOnboardingErrorCode.Validation,
-} as const;
 
 const CHOICE_ANSWER_TYPES: readonly QuestionnaireFieldType[] =
   QUESTIONNAIRE_CHOICE_ANSWER_TYPE_VALUES;
@@ -74,7 +68,7 @@ export async function savePortalOnboardingAnswer(
   input: SavePortalOnboardingAnswerRequestDto,
 ): Promise<Result> {
   const parsed = portalOnboardingSchemas.answer.safeParse(input);
-  if (!parsed.success) return VALIDATION;
+  if (!parsed.success) return portalOnboardingService.validation();
   const slot = {
     fieldId: parsed.data.fieldId,
     groupEntryId: parsed.data.groupEntryId,
@@ -93,7 +87,7 @@ export async function savePortalOnboardingAnswer(
       );
       if (!field.ok) return field;
       const content = toContent(field.value, parsed.data);
-      if (!content) return VALIDATION;
+      if (!content) return portalOnboardingService.validation();
 
       await onboardingAnswerWriteService.replaceSlot(
         tx,

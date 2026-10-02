@@ -24,9 +24,11 @@ import {
   PrimaryCtaButton,
 } from "@invessiv/ui";
 import { questionnaireCatalogApiService } from "@/client/crm/questionnaire-catalog-api-service";
+import { VersionedMutationOutcomeKind } from "@/common/constants/client/versioned-mutation-outcome-kinds";
 import { QuestionnaireSaveOutcomeKind } from "@/common/constants/crm/questionnaire/questionnaire-save-outcome-kinds";
 import type { QuestionnaireSaveOutcome } from "@/common/contracts/crm/questionnaire/questionnaire-save-outcome";
 import { QuestionnaireFormValidationCode } from "@/common/constants/crm/questionnaire/questionnaire-form-validation-codes";
+import { useVersionedCommand } from "@/hooks/workspace/use-versioned-command";
 import type { CrmQuestionnaireDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { crmQuestionnaireBlockPathFor } from "@/lib/auth/routes";
 import { QuestionnaireCatalogStatusBadge } from "../../catalog/questionnaire-catalog-status-badge/questionnaire-catalog-status-badge";
@@ -90,7 +92,7 @@ export function QuestionnaireTemplateEditor({
     useState<QuestionnaireFormValidationCode | null>(null);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [announcement, setAnnouncement] = useState("");
-  const [busy, setBusy] = useState(false);
+  const { busy, run } = useVersionedCommand();
   const [outcome, setOutcome] = useState<QuestionnaireSaveOutcome>(null);
   const text = content.templateEditor;
   const byId = new Map(blocks.map((block) => [block.id, block]));
@@ -113,35 +115,33 @@ export function QuestionnaireTemplateEditor({
       return;
     }
     setTitleError(null);
-    setBusy(true);
     setOutcome(null);
-    const result = await questionnaireCatalogApiService.updateTemplate(
-      template.id,
-      {
+    const result = await run(() =>
+      questionnaireCatalogApiService.updateTemplate(template.id, {
         title: draft.title.trim(),
         description: draft.description.trim() || null,
         status: draft.status,
         blockIds: draft.blockIds,
         version: template.version,
-      },
+      }),
     );
-    setBusy(false);
-    if (result.ok) {
-      setTemplate(result.value);
-      setDraft(draftOf(result.value));
-      setOutcome({ kind: QuestionnaireSaveOutcomeKind.Saved });
-      router.refresh();
-      return;
+    switch (result.kind) {
+      case VersionedMutationOutcomeKind.Saved:
+        setTemplate(result.value);
+        setDraft(draftOf(result.value));
+        setOutcome({ kind: QuestionnaireSaveOutcomeKind.Saved });
+        router.refresh();
+        return;
+      case VersionedMutationOutcomeKind.Conflict:
+        setTemplate(result.current);
+        setOutcome({ kind: QuestionnaireSaveOutcomeKind.Conflict });
+        return;
+      case VersionedMutationOutcomeKind.Failure:
+        setOutcome({
+          kind: QuestionnaireSaveOutcomeKind.Failure,
+          code: result.code,
+        });
     }
-    if ("current" in result) {
-      setTemplate(result.current);
-      setOutcome({ kind: QuestionnaireSaveOutcomeKind.Conflict });
-      return;
-    }
-    setOutcome({
-      kind: QuestionnaireSaveOutcomeKind.Failure,
-      code: result.code,
-    });
   }
 
   const blockCount = draft.blockIds.length;

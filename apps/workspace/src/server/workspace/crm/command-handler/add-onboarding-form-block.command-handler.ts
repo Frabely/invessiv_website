@@ -10,6 +10,7 @@ import type { OnboardingCommandResult } from "@invessiv/common/contracts/crm/onb
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { onboardingFormCreateService } from "@/server/workspace/crm/services/onboarding/onboarding-form-create-service";
 import { onboardingFormSchemas } from "@/server/workspace/crm/services/onboarding/onboarding-form-schemas";
+import { onboardingReviewService } from "@/server/shared/services/onboarding/onboarding-review-service";
 import { onboardingFormStructureService } from "@/server/workspace/crm/services/onboarding/onboarding-form-structure-service";
 import { onboardingPrefillService } from "@/server/workspace/crm/services/onboarding/onboarding-prefill-service";
 import { questionnaireDefinitionReadService } from "@/server/shared/services/questionnaire/questionnaire-definition-read-service";
@@ -40,7 +41,7 @@ export async function addOnboardingFormBlock(
     data.expectedFormVersion,
     actor,
     async (tx, form) => {
-      const steps = await onboardingFormStructureService.listSteps(tx, form.id);
+      const steps = await onboardingReviewService.listSteps(tx, form.id);
       if (steps.length >= QUESTIONNAIRE_LIMITS.blocksPerOwner)
         return { ok: false, code: QuestionnaireErrorCode.LimitReached };
 

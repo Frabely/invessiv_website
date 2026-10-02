@@ -87,6 +87,31 @@ Layering-Bruch `shared → workspace`, und viel von Hand wiederholtes Gerüst (H
 >   weil er deren Fixtures nutzt. Der Editor prüft noch nicht vorab damit.
 > - **A9:** Nur die Barrel-Importe (`from "@invessiv/common"`) waren die Abweichung und sind ersetzt.
 >   `@invessiv/common/...`-Subpfade sind im Paket der übliche Stil (rund 320 Stellen); der Befund war dort falsch.
+>
+> **Danach ebenfalls behoben (ungecommittet): D1–D5, D8–D10, D12** (D6, D7, D11 waren mit A7 und L5 erledigt).
+>
+> - **D1:** `onboardingFormCommandSupport` (`services/onboarding/onboarding-form-command-support.ts`) mit `parse`,
+>   `loadProjectTitle` und `runFormTransition`; Freigeben, Nachfordern und Abschließen liefern nur noch ihr Spezifisches.
+>   Die Blockprüfung bleibt eigen, weil sie die Schrittversion vergleicht.
+> - **D2:** `versionConflict(currentVersion, current)` unter `server/workspace/shared/`; genutzt von `updateVersioned`,
+>   dem Struktur-Rahmen, den Statusbefehlen, der Blockprüfung, dem Vorlagen-Handler und dem Definitions-Write-Service.
+>   Nicht angefasst: gleichartige Objekte in anderen Domänen (Kunde, Datei, Mitglieder, Feedbackrunde, Aufgabe).
+> - **D3:** `useVersionedCommand` (Busy-Zustand, räumt auch bei einem Wurf auf) und `settleVersionedResult` sortieren die
+>   Antwort in `Saved`/`Conflict`/`Failure`. Umgestellt: Prüf-Steuerung, Aufbau (Verschieben, Entfernen, beide
+>   Hinzufügen-Wege), Listenaktionen und Löschen im Block-Editor, Kopf-Formular, Vorlagen-Editor. Die vier Dialoge bleiben
+>   bei `useVersionedMutation`.
+> - **D4:** `collectingTaskService` (`create`, `move`); Feedback- und Onboarding-Aufgabenservice liefern Titel und
+>   Ausgangsstatus. Die Warnung ohne aktiven Owner ist jetzt für beide dieselbe.
+> - **D5:** DTO → Zeile als `mapFieldDtoToColumns`, `mapChoiceDtoToRow`, `map…TranslationsToRows` im
+>   `questionnaireMappingService`; Write- und Kopierdienst nutzen sie.
+> - **D8:** Ein Typ `ContactDatabaseReader` in `@invessiv/db/core`; die fünf lokalen `ReadExecutor` sowie
+>   `QuestionnaireReadExecutor`, `FeedbackReadExecutor` und `CrmDatabaseExecutor` sind weg.
+> - **D9:** Schritte liest nur noch `onboardingReviewService.listSteps`/`findStep`. `getProjectOnboarding` bekommt
+>   Zusammenfassung und Prüfstand über `toProjectSummary` aus einem Lesen.
+> - **D10:** `positionService.closeGap` und `withDeferredPositions` für Löschen-und-Aufrücken sowie Nachbartausch (auch
+>   die Optionen eines Felds).
+> - **D12:** `groupBy` und `compareByPosition` in `packages/common/src/patterns/collections/`,
+>   `DRAFT_AUTOSAVE_DELAY_MS`, `recordStatusChange` im Transition-Service, `portalOnboardingService.validation()`.
 
 ### L1 (H) — Ungültiger Entwurf in einem ausgeblendeten Feld blockiert das Absenden
 

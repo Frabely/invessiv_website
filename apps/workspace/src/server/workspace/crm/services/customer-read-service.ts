@@ -13,6 +13,7 @@ import {
   sql,
 } from "drizzle-orm";
 
+import type { ContactDatabaseReader } from "@invessiv/db/core";
 import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
 import { CustomerSort } from "@invessiv/common/constants/crm/list/customer-sort";
 import type { CustomerDetailDto } from "@invessiv/common/contracts/crm/customer-detail.dto";
@@ -34,7 +35,6 @@ import {
   canReadCustomerInScope,
 } from "@/common/patterns/auth/access-scope";
 import { escapeLikePattern } from "@/common/patterns/crm/sql-like-escape";
-import type { CrmDatabaseExecutor } from "@/server/workspace/crm/crm-types";
 import { customersMapperService } from "@/server/workspace/crm/services/customers-mapper-service";
 import { crmAccessCondition } from "@/server/workspace/shared/services/crm-access-condition";
 
@@ -145,7 +145,7 @@ function getListOrder(sort: CustomerSort) {
 }
 
 async function countSummaries(
-  executor: CrmDatabaseExecutor,
+  executor: ContactDatabaseReader,
   filters: CustomerListFilters,
   scope?: AccessScope,
   baseCustomerIds?: ReadonlySet<string>,
@@ -159,7 +159,7 @@ async function countSummaries(
 }
 
 async function listSummaries(
-  executor: CrmDatabaseExecutor,
+  executor: ContactDatabaseReader,
   filters: CustomerListFilters,
   limit: number,
   scope?: AccessScope,
@@ -201,7 +201,7 @@ async function listSummaries(
 }
 
 async function findDetailById(
-  executor: CrmDatabaseExecutor,
+  executor: ContactDatabaseReader,
   customerId: string,
   includeSourceLeads = false,
   scope?: AccessScope,
@@ -250,7 +250,7 @@ async function findDetailById(
 }
 
 async function findStatusById(
-  executor: CrmDatabaseExecutor,
+  executor: ContactDatabaseReader,
   customerId: string,
 ) {
   const [row] = await executor

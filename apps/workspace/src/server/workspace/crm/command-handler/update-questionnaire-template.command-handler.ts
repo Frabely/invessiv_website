@@ -4,7 +4,6 @@ import { and, inArray, isNull } from "drizzle-orm";
 
 import { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
 import { QuestionnaireCatalogStatus } from "@invessiv/common/constants/crm/questionnaire/questionnaire-catalog-statuses";
-import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { QuestionnaireTemplateDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-template.dto";
 import type { QuestionnaireCommandResult } from "@invessiv/common/contracts/crm/questionnaire/results/questionnaire-command-result";
 import type { UpdateQuestionnaireTemplateRequestDto } from "@invessiv/common/contracts/crm/questionnaire/update-questionnaire-template-request.dto";
@@ -17,6 +16,7 @@ import { questionnaireCommandSupport } from "@/server/workspace/crm/services/que
 import { questionnaireSchemas } from "@/server/workspace/crm/services/questionnaire/questionnaire-schemas";
 import { questionnaireTemplateService } from "@/server/workspace/crm/services/questionnaire/questionnaire-template-service";
 import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
+import { versionConflict } from "@/server/workspace/shared/version-conflict";
 
 type TemplateResult = QuestionnaireCommandResult<QuestionnaireTemplateDto>;
 
@@ -88,15 +88,7 @@ export async function updateQuestionnaireTemplate(
         return { ok: false, code: QuestionnaireErrorCode.TemplateNotFound };
       const current = await questionnaireTemplateService.toDto(tx, row);
       if (row.version !== data.version)
-        return {
-          ok: false,
-          code: ConcurrencyErrorCode.VersionConflict,
-          conflict: {
-            code: ConcurrencyErrorCode.VersionConflict,
-            currentVersion: row.version,
-            current,
-          },
-        };
+        return versionConflict(row.version, current);
       const rejected = await checkBlocks(tx, data.blockIds, current);
       if (rejected) return rejected;
 

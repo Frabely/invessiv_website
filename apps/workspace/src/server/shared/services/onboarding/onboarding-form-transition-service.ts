@@ -6,6 +6,7 @@ import {
   SystemMessageKey,
   SystemMessageParam,
 } from "@invessiv/common/constants/crm/system-message-keys";
+import type { ActivityActor } from "@invessiv/common/contracts/activity/activity-actor";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import { onboardingForms } from "@invessiv/db/record-configuration";
 import { ONBOARDING_FORM_ACTIVITY_ENTITY } from "@/common/constants/crm/onboarding-form-activity-metadata";
@@ -23,6 +24,30 @@ import { onboardingProjectStepService } from "./onboarding-project-step-service"
 import { onboardingReviewService } from "./onboarding-review-service";
 import { onboardingServicesSnapshotService } from "./onboarding-services-snapshot-service";
 import { onboardingTaskService } from "./onboarding-task-service";
+
+/** The one `status_change` entry of a step; answers never enter the log, `extra` stays small. */
+async function recordStatusChange(
+  tx: ContactDatabaseTransaction,
+  previous: OnboardingFormRow,
+  next: OnboardingFormRow,
+  actor: ActivityActor,
+  extra: Record<string, unknown> = {},
+): Promise<void> {
+  await activityService.createActivity(tx, {
+    customerId: next.customer_id,
+    projectId: next.project_id,
+    type: ActivityType.StatusChange,
+    body: `${previous.status} → ${next.status}`,
+    metadata: {
+      entity: ONBOARDING_FORM_ACTIVITY_ENTITY,
+      onboarding_form_id: next.id,
+      previous_status: previous.status,
+      next_status: next.status,
+      ...extra,
+    },
+    actor,
+  });
+}
 
 /**
  * Status changes of a form the handler has locked, with every side effect in the same transaction.
@@ -93,19 +118,7 @@ async function release(
     },
     "Locked onboarding form changed",
   );
-  await activityService.createActivity(tx, {
-    customerId: released.customer_id,
-    projectId: released.project_id,
-    type: ActivityType.StatusChange,
-    body: `${form.status} → ${released.status}`,
-    metadata: {
-      entity: ONBOARDING_FORM_ACTIVITY_ENTITY,
-      onboarding_form_id: released.id,
-      previous_status: form.status,
-      next_status: released.status,
-    },
-    actor: context.actor,
-  });
+  await recordStatusChange(tx, form, released, context.actor);
   await announceSystemMessage(
     tx,
     released.customer_id,
@@ -134,22 +147,11 @@ async function requestChanges(
     },
     "Locked onboarding form changed",
   );
-  await activityService.createActivity(tx, {
-    customerId: requested.customer_id,
-    projectId: requested.project_id,
-    type: ActivityType.StatusChange,
-    body: `${form.status} → ${requested.status}`,
-    metadata: {
-      entity: ONBOARDING_FORM_ACTIVITY_ENTITY,
-      onboarding_form_id: requested.id,
-      previous_status: form.status,
-      next_status: requested.status,
-      clarifications: context.requested.map((block) => ({
-        block_id: block.blockId,
-        note: block.note,
-      })),
-    },
-    actor: context.actor,
+  await recordStatusChange(tx, form, requested, context.actor, {
+    clarifications: context.requested.map((block) => ({
+      block_id: block.blockId,
+      note: block.note,
+    })),
   });
   await announceSystemMessage(
     tx,
@@ -197,19 +199,7 @@ async function complete(
     context.actor,
     context.memberId,
   );
-  await activityService.createActivity(tx, {
-    customerId: completed.customer_id,
-    projectId: completed.project_id,
-    type: ActivityType.StatusChange,
-    body: `${form.status} → ${completed.status}`,
-    metadata: {
-      entity: ONBOARDING_FORM_ACTIVITY_ENTITY,
-      onboarding_form_id: completed.id,
-      previous_status: form.status,
-      next_status: completed.status,
-    },
-    actor: context.actor,
-  });
+  await recordStatusChange(tx, form, completed, context.actor);
   await announceSystemMessage(
     tx,
     completed.customer_id,

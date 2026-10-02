@@ -40,6 +40,8 @@ korrekt aus und ist in fast allen Läufen unauffällig.
 Verbindlich:
 
 - Kein Command-Handler schreibt `version` selbst, und keiner baut sein eigenes Konflikt-Handling.
+- Die Ablehnung wegen veralteter Version baut ausschließlich `versionConflict(currentVersion, current)`
+  (`version-conflict.ts`); kein Handler schreibt das Konflikt-Objekt von Hand.
 - Kein Datenbank-Trigger erhöht `version` — sonst springt sie für Aufrufer dieses Helpers um zwei.
 - `not_found` und `version_conflict` bleiben unterscheidbar. Eine gelöschte Zeile darf der UI nicht
   als „jemand war schneller" erscheinen.

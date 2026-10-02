@@ -17,7 +17,10 @@ import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/quest
 import type { QuestionnaireFieldDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-field.dto";
 import { flattenQuestionnaireFields } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-block-structure";
 import { validateQuestionnaireValue } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-field-value";
-import type { ContactDatabaseTransaction } from "@invessiv/db/core";
+import type {
+  ContactDatabaseTransaction,
+  ContactDatabaseReader,
+} from "@invessiv/db/core";
 import {
   customerContactAssignments,
   customers,
@@ -47,7 +50,6 @@ import type {
 } from "@/server/shared/services/onboarding/onboarding-form-types";
 import { onboardingGroupEntryService } from "@/server/shared/services/onboarding/onboarding-group-entry-service";
 import { questionnaireDefinitionReadService } from "@/server/shared/services/questionnaire/questionnaire-definition-read-service";
-import type { QuestionnaireReadExecutor } from "@/server/shared/services/questionnaire/questionnaire-definition-types";
 import { crmAccessCondition } from "@/server/workspace/shared/services/crm-access-condition";
 
 type PrefillTarget = {
@@ -89,7 +91,7 @@ const NEVER_CARRIED_TYPES: readonly QuestionnaireFieldType[] = [
  * never a source. A role bound to one project must not receive the answers of a sibling project.
  */
 async function findSourceForm(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   customerId: string,
   actor: WorkspaceActor,
 ): Promise<{ id: string } | null> {
@@ -115,7 +117,7 @@ async function findSourceForm(
 }
 
 async function hasSource(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   customerId: string,
   actor: WorkspaceActor,
 ): Promise<boolean> {

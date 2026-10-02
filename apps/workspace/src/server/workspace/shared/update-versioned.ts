@@ -10,6 +10,7 @@ import type {
   VersionedPatch,
   VersionedTable,
 } from "@/server/workspace/shared/update-versioned-types";
+import { versionConflict } from "@/server/workspace/shared/version-conflict";
 
 type VersionedRow<TTable extends VersionedTable> = TTable["$inferSelect"] & {
   version: number;
@@ -73,15 +74,7 @@ export async function updateVersioned<
 
   const current = currentRows[0];
 
-  return {
-    ok: false,
-    code: ConcurrencyErrorCode.VersionConflict,
-    conflict: {
-      code: ConcurrencyErrorCode.VersionConflict,
-      currentVersion: current.version,
-      current: toDto(current),
-    },
-  };
+  return versionConflict(current.version, toDto(current));
 }
 
 /**

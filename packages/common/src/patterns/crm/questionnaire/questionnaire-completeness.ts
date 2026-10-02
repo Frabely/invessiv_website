@@ -8,6 +8,8 @@ import type { QuestionnaireCompletenessInput } from "../../../contracts/crm/ques
 import type { QuestionnaireCompletenessField } from "../../../contracts/crm/questionnaire/questionnaire-completeness-field";
 import type { QuestionnaireGroupEntryDto } from "../../../contracts/crm/questionnaire/questionnaire-group-entry.dto";
 import type { QuestionnaireMissingField } from "../../../contracts/crm/questionnaire/questionnaire-missing-field";
+import { compareByPosition } from "../../collections/compare-by-position";
+import { groupBy } from "../../collections/group-by";
 import { questionnaireSlotKey as slotKey } from "./questionnaire-answer-slot";
 
 type CompletenessIndex = {
@@ -20,20 +22,6 @@ type CompletenessIndex = {
 };
 
 type FieldEvaluation = { counts: boolean; answered: boolean };
-
-function byPosition<T extends { position: number }>(items: readonly T[]): T[] {
-  return [...items].sort((left, right) => left.position - right.position);
-}
-
-function groupBy<T>(items: readonly T[], key: (item: T) => string) {
-  const groups = new Map<string, T[]>();
-  for (const item of items) {
-    const group = groups.get(key(item));
-    if (group) group.push(item);
-    else groups.set(key(item), [item]);
-  }
-  return groups;
-}
 
 function buildIndex(input: QuestionnaireCompletenessInput): CompletenessIndex {
   const fields = new Map<string, QuestionnaireCompletenessField>();
@@ -49,7 +37,7 @@ function buildIndex(input: QuestionnaireCompletenessInput): CompletenessIndex {
   }
   const entries = groupBy(input.groupEntries, (entry) => entry.fieldId);
   for (const [fieldId, group] of entries)
-    entries.set(fieldId, byPosition(group));
+    entries.set(fieldId, [...group].sort(compareByPosition));
   return {
     fields,
     answers: groupBy(input.answers, (answer) =>
@@ -210,10 +198,10 @@ export function getQuestionnaireCompleteness(
         missing.push({ blockId: block.id, fieldId: field.id, groupEntryId });
       return true;
     };
-    for (const field of byPosition(block.fields)) {
+    for (const field of [...block.fields].sort(compareByPosition)) {
       if (!visit(field, null) || field.type !== QuestionnaireFieldType.Group)
         continue;
-      const children = byPosition(field.children);
+      const children = [...field.children].sort(compareByPosition);
       for (const entry of index.entries.get(field.id) ?? [])
         for (const child of children) visit(child, entry.id);
     }

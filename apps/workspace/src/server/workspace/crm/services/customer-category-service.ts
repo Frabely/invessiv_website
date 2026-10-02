@@ -2,13 +2,13 @@ import "server-only";
 
 import { and, asc, eq } from "drizzle-orm";
 
+import type { ContactDatabaseReader } from "@invessiv/db/core";
 import type { LeadCategoryDto } from "@invessiv/common/contracts/leads/lead-category.dto";
 import { leadCategories } from "@invessiv/db/record-configuration";
-import type { CrmDatabaseExecutor } from "@/server/workspace/crm/crm-types";
 
 /** The foreign key accepts inactive categories, the dialog only offers active ones. */
 async function isActive(
-  executor: CrmDatabaseExecutor,
+  executor: ContactDatabaseReader,
   categoryId: string,
 ): Promise<boolean> {
   const [row] = await executor
@@ -26,7 +26,7 @@ async function isActive(
 }
 
 async function listActive(
-  executor: CrmDatabaseExecutor,
+  executor: ContactDatabaseReader,
 ): Promise<LeadCategoryDto[]> {
   const rows = await executor
     .select({

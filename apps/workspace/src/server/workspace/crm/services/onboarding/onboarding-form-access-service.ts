@@ -5,13 +5,15 @@ import { and, eq } from "drizzle-orm";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { OnboardingErrorCode } from "@invessiv/common/constants/crm/errors/onboarding-error-codes";
 import { isOnboardingStructureEditable } from "@invessiv/common/patterns/crm/onboarding/onboarding-form-state";
-import type { ContactDatabaseTransaction } from "@invessiv/db/core";
+import type {
+  ContactDatabaseTransaction,
+  ContactDatabaseReader,
+} from "@invessiv/db/core";
 import { onboardingForms, projects } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessScope } from "@/common/patterns/auth/access-scope";
 import { canOn } from "@/common/patterns/auth/can-on";
 import type { OnboardingFormRow } from "@/server/shared/services/onboarding/onboarding-form-types";
-import type { QuestionnaireReadExecutor } from "@/server/shared/services/questionnaire/questionnaire-definition-types";
 import { crmAccessCondition } from "@/server/workspace/shared/services/crm-access-condition";
 import type { OnboardingProjectRef } from "./onboarding-form-access-types";
 
@@ -20,7 +22,7 @@ type ProjectPermission =
 
 /** A form outside the actor's `projects.read` scope behaves like a missing one. */
 async function findReadableForm(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   formId: string,
   actor: WorkspaceActor,
 ): Promise<OnboardingFormRow | null> {
@@ -44,7 +46,7 @@ async function findReadableForm(
 }
 
 async function findFormOfProject(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   projectId: string,
 ): Promise<OnboardingFormRow | null> {
   const [form] = await executor
@@ -56,7 +58,7 @@ async function findFormOfProject(
 }
 
 function selectProject(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   projectId: string,
   actor: WorkspaceActor,
   permission: ProjectPermission,
@@ -81,7 +83,7 @@ function selectProject(
 }
 
 async function findReadableProject(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   projectId: string,
   actor: WorkspaceActor,
 ): Promise<OnboardingProjectRef | null> {

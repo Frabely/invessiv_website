@@ -19,6 +19,7 @@ import type { PortalOnboardingFormDto } from "@invessiv/common/contracts/portal/
 import type { PortalOnboardingResult } from "@invessiv/common/contracts/portal/results/portal-onboarding-result";
 import { listCustomerEditableOnboardingBlockIds } from "@invessiv/common/patterns/crm/onboarding/onboarding-form-state";
 import {
+  type ContactDatabaseReader,
   type ContactDatabaseTransaction,
   getDrizzleDatabaseClient,
 } from "@invessiv/db/core";
@@ -48,8 +49,6 @@ import { onboardingGroupEntryService } from "@/server/shared/services/onboarding
 import { portalOnboardingMappingService } from "./portal-onboarding-mapping-service";
 import { portalOnboardingSchemas } from "./portal-onboarding-schemas";
 import type { PortalVisibleOnboardingForm } from "./portal-onboarding-types";
-
-type ReadExecutor = Pick<ContactDatabaseTransaction, "select">;
 
 const CUSTOMER_EDITABLE_STATUSES: readonly OnboardingFormStatus[] =
   ONBOARDING_CUSTOMER_EDITABLE_STATUS_VALUES;
@@ -88,6 +87,10 @@ function notFound(): PortalOnboardingResult<never> {
   return { ok: false, code: PortalOnboardingErrorCode.NotFound };
 }
 
+function validation(): PortalOnboardingResult<never> {
+  return { ok: false, code: PortalOnboardingErrorCode.Validation };
+}
+
 /**
  * The single definition of "a form the portal shows to this reader": released, of the reader's
  * company and on a project the portal shows. Expects `projects` joined to the form.
@@ -102,7 +105,7 @@ function visibleCondition(reader: PortalReader): SQL {
   )!;
 }
 
-function selectVisibleForms(executor: ReadExecutor, condition: SQL) {
+function selectVisibleForms(executor: ContactDatabaseReader, condition: SQL) {
   return executor
     .select({ form: onboardingForms, projectTitle: projects.title })
     .from(onboardingForms)
@@ -112,7 +115,7 @@ function selectVisibleForms(executor: ReadExecutor, condition: SQL) {
 
 /** Newest first; a company usually has one, a follow-up project adds another. */
 function listVisibleForms(
-  executor: ReadExecutor,
+  executor: ContactDatabaseReader,
   reader: PortalReader,
 ): Promise<PortalVisibleOnboardingForm[]> {
   return selectVisibleForms(executor, visibleCondition(reader)).orderBy(
@@ -122,7 +125,7 @@ function listVisibleForms(
 
 /** Every miss — guessed id, foreign company, draft, hidden project, missing permission — is null. */
 async function findVisibleForm(
-  executor: ReadExecutor,
+  executor: ContactDatabaseReader,
   reader: PortalReader,
   formId: string,
 ): Promise<PortalVisibleOnboardingForm | null> {
@@ -172,7 +175,7 @@ function editableBlockIds(
 }
 
 async function loadReviewRefs(
-  executor: ReadExecutor,
+  executor: ContactDatabaseReader,
   formId: string,
 ): Promise<OnboardingBlockReviewRef[]> {
   return executor
@@ -267,7 +270,7 @@ async function findWritableGroupEntry(
 
 /** The entries of a group in display order, as every group command answers. */
 async function listGroupEntryDtos(
-  executor: ReadExecutor,
+  executor: ContactDatabaseReader,
   formId: string,
   fieldId: string,
 ): Promise<QuestionnaireGroupEntryDto[]> {
@@ -281,7 +284,7 @@ async function listGroupEntryDtos(
 
 /** What every write answers with, for the status line of the form. */
 async function toSavedDto(
-  executor: ReadExecutor,
+  executor: ContactDatabaseReader,
   actor: PortalActor,
 ): Promise<PortalOnboardingAnswerSavedDto> {
   const names = await loadPortalContactNames(executor, [actor.membershipId]);
@@ -292,7 +295,7 @@ async function toSavedDto(
 }
 
 /** The newest answer row stands for "last edited"; the form head is not touched by autosaves. */
-async function loadLastAnswer(executor: ReadExecutor, formId: string) {
+async function loadLastAnswer(executor: ContactDatabaseReader, formId: string) {
   const [row] = await executor
     .select({
       at: onboardingAnswers.updated_at,
@@ -312,7 +315,7 @@ async function loadLastAnswer(executor: ReadExecutor, formId: string) {
  * application clock, `updated_at` from the database.
  */
 async function loadPrefilledBlockIds(
-  executor: ReadExecutor,
+  executor: ContactDatabaseReader,
   form: OnboardingFormRow,
 ): Promise<Set<string>> {
   const rows = await executor
@@ -334,7 +337,7 @@ async function loadPrefilledBlockIds(
 
 /** The whole form for one reader; attached files follow the portal's own file visibility. */
 async function toFormDto(
-  executor: ReadExecutor,
+  executor: ContactDatabaseReader,
   reader: PortalReader,
   { form, projectTitle }: PortalVisibleOnboardingForm,
   locale: Locale,
@@ -377,7 +380,7 @@ async function toFormDto(
 }
 
 async function toSummaryDto(
-  executor: ReadExecutor,
+  executor: ContactDatabaseReader,
   reader: PortalReader,
   { form, projectTitle }: PortalVisibleOnboardingForm,
 ): Promise<PortalOnboardingFormSummaryDto> {
@@ -407,4 +410,5 @@ export const portalOnboardingService = {
   toSavedDto,
   toFormDto,
   toSummaryDto,
+  validation,
 } as const;

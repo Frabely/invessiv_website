@@ -41,6 +41,9 @@ export type ContactDatabaseTransaction = Parameters<
   Parameters<ContactDatabase["transaction"]>[0]
 >[0];
 
+/** What a read needs: the pooled client and a transaction both qualify. */
+export type ContactDatabaseReader = Pick<ContactDatabaseTransaction, "select">;
+
 export function getDrizzleDatabaseClient() {
   const databaseUrl = getDatabaseUrl();
 

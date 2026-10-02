@@ -1,6 +1,5 @@
 import "server-only";
 
-import type { Locale } from "@invessiv/common";
 import { QuestionnaireCatalogStatus } from "@invessiv/common/constants/crm/questionnaire/questionnaire-catalog-statuses";
 import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block.dto";
 import { flattenQuestionnaireFields } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-block-structure";
@@ -15,6 +14,7 @@ import {
   questionnaireFieldTranslations,
 } from "@invessiv/db/record-configuration";
 import type { QuestionnaireBlockOwner } from "@/server/shared/services/questionnaire/questionnaire-definition-types";
+import { questionnaireMappingService } from "@/server/shared/services/questionnaire/questionnaire-mapping-service";
 
 type CopyTarget = {
   /** Null copies into the catalog, otherwise into that form. */
@@ -82,13 +82,9 @@ async function copyBlock(
     status: QuestionnaireCatalogStatus.Active,
     version: 1,
   });
-  const blockTexts = Object.entries(source.translations).map(
-    ([locale, text]) => ({
-      block_id: blockId,
-      locale: locale as Locale,
-      title: text.title,
-      intro: text.intro,
-    }),
+  const blockTexts = questionnaireMappingService.mapBlockTranslationsToRows(
+    blockId,
+    source.translations,
   );
   if (blockTexts.length > 0)
     await tx.insert(questionnaireBlockTranslations).values(blockTexts);
@@ -102,50 +98,43 @@ async function copyBlock(
         id: fieldIds.get(field.id)!,
         block_id: blockId,
         parent_field_id: newId(fieldIds, field.parentFieldId),
-        key: field.key,
         position: field.position,
         type: field.type,
-        requirement: field.requirement,
-        max_length: field.maxLength,
-        min_items: field.minItems,
-        max_items: field.maxItems,
-        accepted_asset_kinds: field.acceptedAssetKinds,
-        prefill_source: field.prefillSource,
-        condition_field_id: newId(fieldIds, field.conditionFieldId),
-        condition_choice_id: newId(choiceIds, field.conditionChoiceId),
+        ...questionnaireMappingService.mapFieldDtoToColumns({
+          ...field,
+          conditionFieldId: newId(fieldIds, field.conditionFieldId),
+          conditionChoiceId: newId(choiceIds, field.conditionChoiceId),
+        }),
         version: 1,
       })),
     );
     const choices = batch.flatMap((field) =>
-      field.choices.map((choice) => ({
-        id: choiceIds.get(choice.id)!,
-        field_id: fieldIds.get(field.id)!,
-        key: choice.key,
-        position: choice.position,
-        version: 1,
-      })),
+      field.choices.map((choice) =>
+        questionnaireMappingService.mapChoiceDtoToRow(fieldIds.get(field.id)!, {
+          ...choice,
+          id: choiceIds.get(choice.id)!,
+          version: 1,
+        }),
+      ),
     );
     if (choices.length > 0)
       await tx.insert(questionnaireFieldChoices).values(choices);
   }
 
   const fieldTexts = fields.flatMap((field) =>
-    Object.entries(field.translations).map(([locale, text]) => ({
-      field_id: fieldIds.get(field.id)!,
-      locale: locale as Locale,
-      label: text.label,
-      help: text.help,
-    })),
+    questionnaireMappingService.mapFieldTranslationsToRows(
+      fieldIds.get(field.id)!,
+      field.translations,
+    ),
   );
   if (fieldTexts.length > 0)
     await tx.insert(questionnaireFieldTranslations).values(fieldTexts);
   const choiceTexts = fields.flatMap((field) =>
     field.choices.flatMap((choice) =>
-      Object.entries(choice.labels).map(([locale, label]) => ({
-        choice_id: choiceIds.get(choice.id)!,
-        locale: locale as Locale,
-        label,
-      })),
+      questionnaireMappingService.mapChoiceLabelsToRows(
+        choiceIds.get(choice.id)!,
+        choice.labels,
+      ),
     ),
   );
   if (choiceTexts.length > 0)

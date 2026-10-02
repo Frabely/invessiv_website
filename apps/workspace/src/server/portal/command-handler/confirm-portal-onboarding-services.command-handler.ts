@@ -50,8 +50,7 @@ export async function confirmPortalOnboardingServices(
   input: ConfirmPortalOnboardingServicesRequestDto,
 ): Promise<PortalOnboardingResult<PortalOnboardingAnswerSavedDto>> {
   const parsed = portalOnboardingSchemas.confirmServices.safeParse(input);
-  if (!parsed.success)
-    return { ok: false, code: PortalOnboardingErrorCode.Validation };
+  if (!parsed.success) return portalOnboardingService.validation();
 
   return portalOnboardingService.withLockedForm(
     actor,
@@ -66,7 +65,7 @@ export async function confirmPortalOnboardingServices(
         return { ok: false, code: PortalOnboardingErrorCode.Locked };
       const servicesBlockIds = await listServicesBlockIds(tx, form.id);
       if (servicesBlockIds.length === 0)
-        return { ok: false, code: PortalOnboardingErrorCode.Validation };
+        return portalOnboardingService.validation();
       if (!servicesBlockIds.some((blockId) => editable.includes(blockId)))
         return { ok: false, code: PortalOnboardingErrorCode.Locked };
 

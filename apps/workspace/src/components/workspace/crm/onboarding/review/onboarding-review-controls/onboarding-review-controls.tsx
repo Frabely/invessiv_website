@@ -17,8 +17,10 @@ import type { ReviewOnboardingBlockRequestDto } from "@invessiv/common/contracts
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl, FormField } from "@invessiv/ui";
 import { onboardingFormApiService } from "@/client/crm/onboarding-form-api-service";
+import { VersionedMutationOutcomeKind } from "@/common/constants/client/versioned-mutation-outcome-kinds";
 import type { OnboardingFormErrorTexts } from "@/common/contracts/crm/onboarding/onboarding-form-error-texts";
 import { onboardingFormErrorText } from "@/common/patterns/crm/onboarding/onboarding-form-error-text";
+import { useVersionedCommand } from "@/hooks/workspace/use-versioned-command";
 import type { CrmOnboardingDictionary } from "@/i18n/dictionaries/workspace/crm";
 import styles from "./onboarding-review-controls.module.css";
 
@@ -55,7 +57,7 @@ export function OnboardingReviewControls({
     step.clarificationMode ?? OnboardingClarificationMode.Customer,
   );
   const [note, setNote] = useState(step.reviewNote ?? "");
-  const [busy, setBusy] = useState(false);
+  const { busy, run } = useVersionedCommand();
   const [failure, setFailure] = useState<string | null>(null);
   const [noteError, setNoteError] = useState<string | null>(null);
   const texts = content.controls;
@@ -66,36 +68,33 @@ export function OnboardingReviewControls({
     step.reviewNote === note.trim();
 
   async function save(request: ReviewOnboardingBlockRequestDto) {
-    setBusy(true);
     setFailure(null);
-    const result = await onboardingFormApiService.reviewBlock(
-      formId,
-      step.block.id,
-      request,
+    const result = await run(() =>
+      onboardingFormApiService.reviewBlock(formId, step.block.id, request),
     );
-    setBusy(false);
-    if (result.ok) {
-      onReviewedAction(
-        result.value,
-        formatMessage(texts.saved, { block: blockName }),
-      );
-      return;
-    }
-    if ("current" in result) {
-      // A typed question stays for a second try; a plain result follows what the server holds.
-      if (!("note" in request))
-        setStatus(
-          result.current.blocks.find(
-            (candidate) => candidate.block.id === step.block.id,
-          )?.reviewStatus ?? step.reviewStatus,
+    switch (result.kind) {
+      case VersionedMutationOutcomeKind.Saved:
+        onReviewedAction(
+          result.value,
+          formatMessage(texts.saved, { block: blockName }),
         );
-      setFailure(texts.conflict);
-      onConflictAction(result.current);
-      return;
+        return;
+      case VersionedMutationOutcomeKind.Conflict:
+        // A typed question stays for a second try; a plain result follows what the server holds.
+        if (!("note" in request))
+          setStatus(
+            result.current.blocks.find(
+              (candidate) => candidate.block.id === step.block.id,
+            )?.reviewStatus ?? step.reviewStatus,
+          );
+        setFailure(texts.conflict);
+        onConflictAction(result.current);
+        return;
+      case VersionedMutationOutcomeKind.Failure:
+        // The stored state stays what it was; the selection must not claim otherwise.
+        setStatus(step.reviewStatus);
+        setFailure(onboardingFormErrorText(result.code, errorTexts));
     }
-    // The stored state stays what it was; the selection must not claim otherwise.
-    setStatus(step.reviewStatus);
-    setFailure(onboardingFormErrorText(result.code, errorTexts));
   }
 
   function select(next: OnboardingBlockReviewStatus) {

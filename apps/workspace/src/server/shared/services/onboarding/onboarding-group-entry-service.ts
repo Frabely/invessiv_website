@@ -1,24 +1,22 @@
 import "server-only";
 
-import { and, asc, eq, gt, sql } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 
 import { OnboardingGroupEntriesConstraintName } from "@invessiv/db/constraint-names/crm/onboarding-group-entries-constraint-names";
-import type { ContactDatabaseTransaction } from "@invessiv/db/core";
+import type {
+  ContactDatabaseReader,
+  ContactDatabaseTransaction,
+} from "@invessiv/db/core";
 import { onboardingGroupEntries } from "@invessiv/db/record-configuration";
+import { positionService } from "@/server/shared/services/position-service";
 import type {
   OnboardingGroupEntryRow,
   OnboardingGroupEntryWrite,
 } from "./onboarding-form-types";
 
-type ReadExecutor = Pick<ContactDatabaseTransaction, "select">;
-
-const positionConstraint = sql.identifier(
-  OnboardingGroupEntriesConstraintName.PositionUnique,
-);
-
 /** The entries of one group field in display order. */
 function listOfField(
-  executor: ReadExecutor,
+  executor: ContactDatabaseReader,
   formId: string,
   fieldId: string,
 ): Promise<OnboardingGroupEntryRow[]> {
@@ -36,7 +34,7 @@ function listOfField(
 
 /** Looked up across all forms: the id comes from the client and may belong to anything. */
 async function find(
-  executor: ReadExecutor,
+  executor: ContactDatabaseReader,
   id: string,
 ): Promise<OnboardingGroupEntryRow | null> {
   const [entry] = await executor
@@ -87,15 +85,12 @@ async function remove(
   await tx
     .delete(onboardingGroupEntries)
     .where(eq(onboardingGroupEntries.id, entry.id));
-  await tx
-    .update(onboardingGroupEntries)
-    .set({ position: sql`${onboardingGroupEntries.position} - 1` })
-    .where(
-      and(
-        eq(onboardingGroupEntries.field_id, entry.field_id),
-        gt(onboardingGroupEntries.position, entry.position),
-      ),
-    );
+  await positionService.closeGap(
+    tx,
+    onboardingGroupEntries,
+    eq(onboardingGroupEntries.field_id, entry.field_id),
+    entry.position,
+  );
 }
 
 function setPosition(
@@ -123,10 +118,14 @@ async function move(
   const neighbour = entries[index + direction];
   if (index === -1 || !neighbour) return;
 
-  await tx.execute(sql`set constraints ${positionConstraint} deferred`);
-  await setPosition(tx, entry, neighbour.position);
-  await setPosition(tx, neighbour, entry.position);
-  await tx.execute(sql`set constraints ${positionConstraint} immediate`);
+  await positionService.withDeferredPositions(
+    tx,
+    OnboardingGroupEntriesConstraintName.PositionUnique,
+    async () => {
+      await setPosition(tx, entry, neighbour.position);
+      await setPosition(tx, neighbour, entry.position);
+    },
+  );
 }
 
 export const onboardingGroupEntryService = {

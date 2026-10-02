@@ -18,11 +18,6 @@ import { onboardingAttachmentService } from "@/server/shared/services/onboarding
 import { onboardingFormMappingService } from "@/server/shared/services/onboarding/onboarding-form-mapping-service";
 import type { OnboardingFormRow } from "@/server/shared/services/onboarding/onboarding-form-types";
 
-const VALIDATION = {
-  ok: false,
-  code: PortalOnboardingErrorCode.Validation,
-} as const;
-
 /**
  * Only a finished own upload or link of the form's project, of a kind the field accepts. A file
  * taken over from an earlier form may belong to another project; it stays where the pre-fill put
@@ -54,7 +49,7 @@ export async function attachPortalOnboardingFile(
   input: AttachPortalOnboardingFileRequestDto,
 ): Promise<PortalOnboardingResult<QuestionnaireAnswerFileDto>> {
   const parsed = portalOnboardingSchemas.attachFile.safeParse(input);
-  if (!parsed.success) return VALIDATION;
+  if (!parsed.success) return portalOnboardingService.validation();
   if (!portalOnboardingService.canAttach(actor))
     return portalOnboardingService.notFound();
   const { fieldId, groupEntryId, fileId } = parsed.data;
@@ -71,7 +66,8 @@ export async function attachPortalOnboardingFile(
         slot,
       );
       if (!field.ok) return field;
-      if (field.value.type !== QuestionnaireFieldType.Files) return VALIDATION;
+      if (field.value.type !== QuestionnaireFieldType.Files)
+        return portalOnboardingService.validation();
 
       const file = await portalFileService.lockVisible(tx, actor, fileId);
       if (!file) return portalOnboardingService.notFound();

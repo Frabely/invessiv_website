@@ -9,19 +9,13 @@ import type { QuestionnaireAnswerFileDto } from "@invessiv/common/contracts/crm/
 import type { QuestionnaireGroupEntryDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-group-entry.dto";
 import type { PortalFileDto } from "@invessiv/common/contracts/portal/portal-file.dto";
 import type { PortalOnboardingFormDto } from "@invessiv/common/contracts/portal/portal-onboarding-form.dto";
+import { compareByPosition } from "@invessiv/common/patterns/collections/compare-by-position";
 import type { PortalOnboardingResult } from "@invessiv/common/contracts/portal/results/portal-onboarding-result";
 import { portalOnboardingApiService } from "@/client/portal/portal-onboarding-api-service";
 import { useLeaveWarning } from "@/hooks/shared/use-leave-warning";
 
 /** Key under which a failed confirmation of the booked services is reported. */
 const SERVICES_ERROR_KEY = "services";
-
-function byPosition(
-  left: QuestionnaireGroupEntryDto,
-  right: QuestionnaireGroupEntryDto,
-) {
-  return left.position - right.position;
-}
 
 /**
  * What a form holds besides its answers while it is filled in: group entries, attached files and
@@ -42,7 +36,7 @@ export function useOnboardingFormState({
   onLockedAction: () => void;
 }) {
   const [groupEntries, setGroupEntries] = useState(() =>
-    [...form.groupEntries].sort(byPosition),
+    [...form.groupEntries].sort(compareByPosition),
   );
   const [answerFiles, setAnswerFiles] = useState(form.answerFiles);
   const [servicesConfirmed, setServicesConfirmed] = useState(
@@ -138,7 +132,7 @@ export function useOnboardingFormState({
   const replaceGroup = useCallback(
     (fieldId: string, entries: readonly QuestionnaireGroupEntryDto[]) =>
       writeEntries((current) => {
-        const confirmed = [...entries].sort(byPosition);
+        const confirmed = [...entries].sort(compareByPosition);
         const known = new Set(confirmed.map((entry) => entry.id));
         const pending = current
           .filter(
@@ -147,7 +141,7 @@ export function useOnboardingFormState({
               !known.has(entry.id) &&
               creatingRef.current.has(entry.id),
           )
-          .sort(byPosition)
+          .sort(compareByPosition)
           .map((entry, index) => ({
             ...entry,
             position: confirmed.length + index,

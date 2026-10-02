@@ -27,8 +27,10 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 - **Versionierte Writes über `useVersionedMutation`:** Ein Konflikt übernimmt den aktuellen Stand und behält die
   Eingaben; nichts wird still verworfen. Der Hook gehört zu **Dialogen**: Er schließt nach Erfolg und ruft
   `router.refresh()`. Flächen, die nach dem Schreiben offen bleiben (Listen mit Verschieben/Entfernen, Formulare
-  auf der Seite, Sofort-Schalter), behandeln die Antwort selbst nach derselben Regel: Konflikt übernimmt `current`
-  und nennt ihn, jeder andere Fehler erscheint als Text, Eingaben bleiben.
+  auf der Seite, Sofort-Schalter) nutzen `useVersionedCommand` (`src/hooks/workspace/`): Er hält den Busy-Zustand und
+  sortiert die Antwort in `Saved`, `Conflict` (mit `current`) und `Failure` (`VersionedMutationOutcome`); was jedes Ergebnis
+  zeigt, entscheidet die Fläche. Ein Konflikt übernimmt `current` und nennt ihn, jeder andere Fehler erscheint als Text,
+  Eingaben bleiben.
 - **Schreibaktionen erscheinen nur, wenn die Page ein Ziel übergibt.** Kein deaktivierter Platzhalter.
 - **Texte ausschließlich aus `src/i18n/dictionaries/workspace/crm/**`**, DE und EN parallel. Statuswerte werden über
   den Enum-Wert im Dictionary aufgelöst. **Ausnahme:** Systemrollen-Labels (`SystemRoleKey` → übersetzter Name) kommen
@@ -201,7 +203,7 @@ Plan: `apps/workspace/plans/crm/15-onboarding/64-baustein-katalog-und-vorlagen.m
 - **Der Feld-Dialog schreibt selbst** (`useVersionedMutation` mit der `api` des Owners) und meldet den gespeicherten
   Block über `onSavedAction`, einen Konflikt über `onConflictAction`; der Block-Editor übernimmt nur noch den Block
   und kündigt an. Listenaktionen, Löschen, Kopf-Formular und Vorlagen-Editor bleiben auf der Seite offen und
-  behandeln ihre Antwort selbst (`settleListResult`, `QuestionnaireSaveOutcome`).
+  laufen über `useVersionedCommand` (`QuestionnaireSaveOutcome` ist nur die Zeile neben dem Speichern-Knopf).
 - **Die Schreibzugriffe des Editors baut `questionnaireDefinitionApiService.forEndpoints(...)`** (`src/client/crm/`)
   aus den Pfaden des Owners. Katalog und Bogen übergeben nur ihre Pfade (`QuestionnaireDefinitionEndpoints`); Anfragen,
   Antwortprüfung und Konfliktbehandlung gibt es einmal. Ein Bogen schreibt keinen eigenen Client für dieselben Aufrufe.

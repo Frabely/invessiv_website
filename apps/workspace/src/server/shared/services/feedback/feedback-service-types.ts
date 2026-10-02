@@ -1,15 +1,11 @@
 import type { FeedbackItemKind } from "@invessiv/common/constants/crm/feedback-item-kinds";
 import type { ActivityActor } from "@invessiv/common/contracts/activity/activity-actor";
 import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
-import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import type {
   feedbackRoundItems,
   feedbackRounds,
 } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
-
-/** Reads run on the pooled client or inside a command's transaction alike. */
-export type FeedbackReadExecutor = Pick<ContactDatabaseTransaction, "select">;
 
 export type FeedbackRoundRow = typeof feedbackRounds.$inferSelect;
 export type FeedbackRoundItemRow = typeof feedbackRoundItems.$inferSelect;

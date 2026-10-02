@@ -2,7 +2,10 @@ import "server-only";
 
 import { and, asc, eq, inArray, ne, type SQL, sql } from "drizzle-orm";
 
-import type { ContactDatabaseTransaction } from "@invessiv/db/core";
+import type {
+  ContactDatabaseTransaction,
+  ContactDatabaseReader,
+} from "@invessiv/db/core";
 import { FeedbackRoundItemsConstraintName } from "@invessiv/db/constraint-names/crm/feedback-round-items-constraint-names";
 import { feedbackRoundItems, files } from "@invessiv/db/record-configuration";
 import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
@@ -11,7 +14,6 @@ import { FeedbackItemIdTakenError } from "./feedback-item-id-taken-error.class";
 import { feedbackMappingService } from "./feedback-mapping-service";
 import type {
   FeedbackDraftItemInput,
-  FeedbackReadExecutor,
   FeedbackRoundItemRow,
   FeedbackRoundRef,
   LoadedFeedbackItem,
@@ -26,7 +28,7 @@ const positionConstraint = sql.identifier(
  * (portal release or internal scope); an attachment outside it is left out entirely.
  */
 async function loadByRound(
-  tx: FeedbackReadExecutor,
+  tx: ContactDatabaseReader,
   roundIds: readonly string[],
   visibility: SQL,
 ): Promise<Map<string, LoadedFeedbackItem[]>> {

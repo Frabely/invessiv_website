@@ -10,6 +10,7 @@ import {
 import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
 import type { PortalFeedbackRoundDto } from "@invessiv/common/contracts/portal/portal-feedback-round.dto";
 import { portalFeedbackApiService } from "@/client/portal/portal-feedback-api-service";
+import { DRAFT_AUTOSAVE_DELAY_MS } from "@/common/constants/shared/draft-autosave-delay";
 import {
   DraftSaveState,
   type DraftSaveState as DraftSaveStateValue,
@@ -17,9 +18,6 @@ import {
 import type { FeedbackDraftItem } from "@/common/contracts/portal/feedback-draft-item";
 import { feedbackDraftItems } from "@/common/patterns/portal/feedback-draft-items";
 import { useLeaveWarning } from "@/hooks/shared/use-leave-warning";
-
-// Long enough to not save on every keystroke, short enough that a reload rarely loses anything.
-const AUTOSAVE_DELAY_MS = 1_500;
 
 type DraftItemPatch = Partial<Omit<FeedbackDraftItem, "id" | "attachments">>;
 
@@ -177,7 +175,7 @@ export function useFeedbackDraft({
       clearTimer();
       timerRef.current = setTimeout(() => {
         void flushRef.current();
-      }, AUTOSAVE_DELAY_MS);
+      }, DRAFT_AUTOSAVE_DELAY_MS);
     },
     [],
   );

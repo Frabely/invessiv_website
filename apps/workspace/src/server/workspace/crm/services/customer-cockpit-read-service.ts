@@ -2,6 +2,7 @@ import "server-only";
 
 import { and, eq, inArray, or } from "drizzle-orm";
 
+import type { ContactDatabaseReader } from "@invessiv/db/core";
 import { AccessScopeKind } from "@invessiv/common/constants/auth/access-scope-types";
 import type { CustomerCockpitDto } from "@invessiv/common/contracts/crm/customer-cockpit.dto";
 import {
@@ -11,7 +12,6 @@ import {
   users,
   workspaceMembers,
 } from "@invessiv/db/record-configuration";
-import type { CrmDatabaseExecutor } from "@/server/workspace/crm/crm-types";
 import {
   type AccessScope,
   canReadCustomerInScope,
@@ -20,7 +20,7 @@ import { crmAccessCondition } from "@/server/workspace/shared/services/crm-acces
 import { customerCockpitMappingService } from "./customer-cockpit-mapping-service";
 
 async function findById(
-  executor: CrmDatabaseExecutor,
+  executor: ContactDatabaseReader,
   customerId: string,
   scope: AccessScope,
   baseCustomerIds: ReadonlySet<string>,

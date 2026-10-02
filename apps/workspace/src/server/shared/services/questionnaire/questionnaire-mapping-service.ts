@@ -7,6 +7,8 @@ import type { QuestionnaireFieldDto } from "@invessiv/common/contracts/crm/quest
 import type { QuestionnaireFieldTranslationDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-field-translation.dto";
 import type { QuestionnaireTemplateDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-template.dto";
 import type { QuestionnaireTemplateSummaryDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-template-summary.dto";
+import { compareByPosition } from "@invessiv/common/patterns/collections/compare-by-position";
+import { groupBy } from "@invessiv/common/patterns/collections/group-by";
 import { missingQuestionnaireLocales } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-translation";
 import type {
   QuestionnaireChoiceRow,
@@ -14,19 +16,6 @@ import type {
   QuestionnaireFieldRow,
   QuestionnaireTemplateRow,
 } from "@/server/shared/services/questionnaire/questionnaire-definition-types";
-
-function groupBy<T>(rows: readonly T[], keyOf: (row: T) => string) {
-  const groups = new Map<string, T[]>();
-  for (const row of rows) {
-    const key = keyOf(row);
-    groups.set(key, [...(groups.get(key) ?? []), row]);
-  }
-  return groups;
-}
-
-function byPosition(left: { position: number }, right: { position: number }) {
-  return left.position - right.position;
-}
 
 function toChoiceDto(
   row: QuestionnaireChoiceRow,
@@ -103,10 +92,10 @@ function toBlockDtos(
       conditionChoiceId: row.condition_choice_id,
       translations: fieldTexts.get(row.id) ?? {},
       choices: (choicesByField.get(row.id) ?? [])
-        .sort(byPosition)
+        .sort(compareByPosition)
         .map((choice) => toChoiceDto(choice, choiceLabels)),
       children: (childrenByParent.get(row.id) ?? [])
-        .sort(byPosition)
+        .sort(compareByPosition)
         .map(toFieldDto),
       version: row.version,
     };
@@ -120,7 +109,7 @@ function toBlockDtos(
     sourceBlockId: block.source_block_id,
     translations: blockTexts.get(block.id) ?? {},
     fields: (topFieldsByBlock.get(block.id) ?? [])
-      .sort(byPosition)
+      .sort(compareByPosition)
       .map(toFieldDto),
     version: block.version,
   }));
@@ -162,7 +151,7 @@ function toTemplateDto(
     description: row.description,
     status: row.status,
     blocks: [...blocks]
-      .sort(byPosition)
+      .sort(compareByPosition)
       .map((block) => ({ blockId: block.block_id, position: block.position })),
     version: row.version,
   };
@@ -182,7 +171,88 @@ function toTemplateSummaryDto(
   };
 }
 
+/** Columns a field has besides its identity and place; the caller adds id, block and position. */
+function mapFieldDtoToColumns(
+  field: Pick<
+    QuestionnaireFieldDto,
+    | "key"
+    | "requirement"
+    | "maxLength"
+    | "minItems"
+    | "maxItems"
+    | "acceptedAssetKinds"
+    | "prefillSource"
+    | "conditionFieldId"
+    | "conditionChoiceId"
+  >,
+) {
+  return {
+    key: field.key,
+    requirement: field.requirement,
+    max_length: field.maxLength,
+    min_items: field.minItems,
+    max_items: field.maxItems,
+    accepted_asset_kinds: field.acceptedAssetKinds,
+    prefill_source: field.prefillSource,
+    condition_field_id: field.conditionFieldId,
+    condition_choice_id: field.conditionChoiceId,
+  };
+}
+
+function mapChoiceDtoToRow(
+  fieldId: string,
+  choice: Pick<QuestionnaireChoiceDto, "id" | "key" | "position" | "version">,
+) {
+  return {
+    id: choice.id,
+    field_id: fieldId,
+    key: choice.key,
+    position: choice.position,
+    version: choice.version,
+  };
+}
+
+function mapBlockTranslationsToRows(
+  blockId: string,
+  translations: QuestionnaireBlockDto["translations"],
+) {
+  return Object.entries(translations).map(([locale, text]) => ({
+    block_id: blockId,
+    locale: locale as Locale,
+    title: text.title,
+    intro: text.intro,
+  }));
+}
+
+function mapFieldTranslationsToRows(
+  fieldId: string,
+  translations: QuestionnaireFieldDto["translations"],
+) {
+  return Object.entries(translations).map(([locale, text]) => ({
+    field_id: fieldId,
+    locale: locale as Locale,
+    label: text.label,
+    help: text.help,
+  }));
+}
+
+function mapChoiceLabelsToRows(
+  choiceId: string,
+  labels: QuestionnaireChoiceDto["labels"],
+) {
+  return Object.entries(labels).map(([locale, label]) => ({
+    choice_id: choiceId,
+    locale: locale as Locale,
+    label,
+  }));
+}
+
 export const questionnaireMappingService = {
+  mapBlockTranslationsToRows,
+  mapChoiceDtoToRow,
+  mapChoiceLabelsToRows,
+  mapFieldDtoToColumns,
+  mapFieldTranslationsToRows,
   toBlockDtos,
   toBlockSummaryDto,
   toTemplateDto,

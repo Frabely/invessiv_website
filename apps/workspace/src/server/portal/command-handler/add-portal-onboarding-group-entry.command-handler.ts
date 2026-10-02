@@ -11,11 +11,6 @@ import { portalOnboardingSchemas } from "@/server/portal/services/onboarding/por
 import { portalOnboardingService } from "@/server/portal/services/onboarding/portal-onboarding-service";
 import { onboardingGroupEntryService } from "@/server/shared/services/onboarding/onboarding-group-entry-service";
 
-const VALIDATION = {
-  ok: false,
-  code: PortalOnboardingErrorCode.Validation,
-} as const;
-
 /**
  * Appends an entry to a group of a form the customer may edit. The id comes from the client, so
  * sub-field autosaves can address the entry at once: repeating the same add is a success, an id
@@ -27,7 +22,7 @@ export async function addPortalOnboardingGroupEntry(
   input: AddPortalOnboardingGroupEntryRequestDto,
 ): Promise<PortalOnboardingResult<QuestionnaireGroupEntryDto[]>> {
   const parsed = portalOnboardingSchemas.groupEntry.safeParse(input);
-  if (!parsed.success) return VALIDATION;
+  if (!parsed.success) return portalOnboardingService.validation();
   const { id, fieldId } = parsed.data;
 
   return portalOnboardingService.withLockedForm(
@@ -41,7 +36,8 @@ export async function addPortalOnboardingGroupEntry(
         { formId: form.id, fieldId, groupEntryId: null },
       );
       if (!field.ok) return field;
-      if (field.value.type !== QuestionnaireFieldType.Group) return VALIDATION;
+      if (field.value.type !== QuestionnaireFieldType.Group)
+        return portalOnboardingService.validation();
 
       const entries = await onboardingGroupEntryService.listOfField(
         tx,
@@ -49,7 +45,8 @@ export async function addPortalOnboardingGroupEntry(
         fieldId,
       );
       if (!entries.some((entry) => entry.id === id)) {
-        if (await onboardingGroupEntryService.find(tx, id)) return VALIDATION;
+        if (await onboardingGroupEntryService.find(tx, id))
+          return portalOnboardingService.validation();
         const limit =
           field.value.maxItems ?? QUESTIONNAIRE_LIMITS.groupEntriesPerField;
         if (entries.length >= limit)

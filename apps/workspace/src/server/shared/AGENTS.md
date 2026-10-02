@@ -106,12 +106,24 @@ Transaktion um.
 geloggt (Name, Key, kein Text). Ein Fachwrite scheitert nie an seiner Systemnachricht. Neue Ereignisse rufen diesen
 Helfer auf, statt Savepoint und Logging zu kopieren.
 
+## Gemeinsame Bausteine (Review Ordner 15)
+
+- **Lese-Executor:** Reine Lesefunktionen nehmen `ContactDatabaseReader` (`@invessiv/db/core`), nie einen lokal neu
+  definierten `Pick<ContactDatabaseTransaction, "select">`.
+- `services/collecting-task-service.ts` legt die eine interne Sammelaufgabe je Feedbackrunde bzw. Onboarding-Bogen an
+  (`create`, Herkunft als `CollectingTaskOrigin`, ohne aktiven Owner nur eine Warnung) und verschiebt sie (`move`).
+  Ob und woraus verschoben wird, entscheidet der Aufrufer (`feedback-round-task-service`, `onboarding-task-service`);
+  der Titel kommt immer von dort.
+- `services/position-service.ts` hält die zwei Positionsmuster: `closeGap` (nach dem Löschen rücken die Zeilen dahinter in
+  einem Statement auf) und `withDeferredPositions` (Tausch zweier Nachbarn mit kurz aufgeschobenem Unique-Index).
+  Nutzer: Datei-Verknüpfungen, Gruppeneinträge, Bogenschritte, Felder und Optionen.
+
 ## Fragebogen-Baukasten lesen
 
 `services/questionnaire/` hält, was beide Welten zum Lesen von Baustein-Definitionen brauchen:
 `questionnaire-definition-read-service.ts` (Blöcke samt Feldern, Optionen und Übersetzungen laden, Owner in der
-`WHERE`-Klausel), `questionnaire-mapping-service.ts` (Zeilen → DTOs) und `questionnaire-definition-types.ts`
-(Zeilentypen, `QuestionnaireReadExecutor`, `QuestionnaireBlockOwner`). Der Bogen-Read-Service unten baut darauf auf;
+`WHERE`-Klausel), `questionnaire-mapping-service.ts` (Zeilen → DTOs und DTOs → Zeilen für die Schreibwege) und `questionnaire-definition-types.ts`
+(Zeilentypen, `QuestionnaireBlockOwner`). Der Bogen-Read-Service unten baut darauf auf;
 kein Service hier importiert aus `server/workspace/crm/services/questionnaire/**`. Schreibwege, Validierung,
 Kopierdienst und Vorlagen bleiben im Workspace-Pfad, weil nur das Team Definitionen ändert.
 

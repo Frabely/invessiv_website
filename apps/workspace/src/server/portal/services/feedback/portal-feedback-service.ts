@@ -11,6 +11,7 @@ import type { PortalFeedbackRoundDto } from "@invessiv/common/contracts/portal/p
 import type { PortalFeedbackResult } from "@invessiv/common/contracts/portal/results/portal-feedback-result";
 import { canTransition } from "@invessiv/common/patterns/crm/feedback-round-state";
 import {
+  type ContactDatabaseReader,
   type ContactDatabaseTransaction,
   getDrizzleDatabaseClient,
 } from "@invessiv/db/core";
@@ -27,10 +28,7 @@ import { portalProjectCondition } from "@/server/portal/shared/portal-project-co
 import { portalFileService } from "@/server/portal/services/files/portal-file-service";
 import { feedbackRoundItemService } from "@/server/shared/services/feedback/feedback-round-item-service";
 import { loadPortalContactNames } from "@/server/shared/services/load-portal-contact-names";
-import type {
-  FeedbackReadExecutor,
-  FeedbackRoundRow,
-} from "@/server/shared/services/feedback/feedback-service-types";
+import type { FeedbackRoundRow } from "@/server/shared/services/feedback/feedback-service-types";
 import { portalFeedbackMappingService } from "./portal-feedback-mapping-service";
 import { portalFeedbackSchemas } from "./portal-feedback-schemas";
 
@@ -121,7 +119,7 @@ function withLockedRound<T>(
 
 /** Rounds with their items; attachments follow the portal's own file visibility. */
 async function toRoundDtos(
-  executor: FeedbackReadExecutor,
+  executor: ContactDatabaseReader,
   reader: PortalReader,
   rounds: readonly FeedbackRoundRow[],
 ): Promise<PortalFeedbackRoundDto[]> {
@@ -146,7 +144,7 @@ async function toRoundDtos(
 }
 
 async function toRoundDto(
-  executor: FeedbackReadExecutor,
+  executor: ContactDatabaseReader,
   reader: PortalReader,
   round: FeedbackRoundRow,
 ): Promise<PortalFeedbackRoundDto> {
@@ -183,7 +181,7 @@ async function rejectUnlessAllowed(
 
 /** Whether the item belongs to this round; attaching needs nothing else from it. */
 async function hasItem(
-  tx: FeedbackReadExecutor,
+  tx: ContactDatabaseReader,
   roundId: string,
   itemId: string,
 ): Promise<boolean> {
@@ -202,7 +200,7 @@ async function hasItem(
 
 /** Id and text of every item in display order; the submit and approve checks need them. */
 function listItemHeads(
-  tx: FeedbackReadExecutor,
+  tx: ContactDatabaseReader,
   roundId: string,
 ): Promise<{ id: string; body: string }[]> {
   return tx

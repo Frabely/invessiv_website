@@ -1,6 +1,5 @@
 import "server-only";
 
-import { PortalOnboardingErrorCode } from "@invessiv/common/constants/portal/portal-onboarding-error-codes";
 import type { QuestionnaireGroupEntryDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-group-entry.dto";
 import type { MovePortalOnboardingGroupEntryRequestDto } from "@invessiv/common/contracts/portal/move-portal-onboarding-group-entry-request.dto";
 import type { PortalOnboardingResult } from "@invessiv/common/contracts/portal/results/portal-onboarding-result";
@@ -16,8 +15,7 @@ export async function movePortalOnboardingGroupEntry(
   input: MovePortalOnboardingGroupEntryRequestDto,
 ): Promise<PortalOnboardingResult<QuestionnaireGroupEntryDto[]>> {
   const parsed = portalOnboardingSchemas.moveGroupEntry.safeParse(input);
-  if (!parsed.success)
-    return { ok: false, code: PortalOnboardingErrorCode.Validation };
+  if (!parsed.success) return portalOnboardingService.validation();
 
   return portalOnboardingService.withLockedForm(
     actor,

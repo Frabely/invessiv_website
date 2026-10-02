@@ -4,7 +4,10 @@ import { and, count, desc, eq, ilike, type SQL } from "drizzle-orm";
 
 import type { QuestionnaireTemplateDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-template.dto";
 import type { QuestionnaireTemplateListDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-template-list.dto";
-import type { ContactDatabaseTransaction } from "@invessiv/db/core";
+import type {
+  ContactDatabaseTransaction,
+  ContactDatabaseReader,
+} from "@invessiv/db/core";
 import {
   questionnaireTemplateBlocks,
   questionnaireTemplates,
@@ -12,14 +15,11 @@ import {
 import { QuestionnaireCatalogStatusFilter } from "@/common/constants/crm/questionnaire/questionnaire-catalog-status-filters";
 import type { QuestionnaireCatalogListFilters } from "@/common/contracts/crm/questionnaire/questionnaire-catalog-list-filters";
 import { escapeLikePattern } from "@/common/patterns/crm/sql-like-escape";
-import type {
-  QuestionnaireReadExecutor,
-  QuestionnaireTemplateRow,
-} from "@/server/shared/services/questionnaire/questionnaire-definition-types";
+import type { QuestionnaireTemplateRow } from "@/server/shared/services/questionnaire/questionnaire-definition-types";
 import { questionnaireMappingService } from "@/server/shared/services/questionnaire/questionnaire-mapping-service";
 
 async function toDto(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   row: QuestionnaireTemplateRow,
 ): Promise<QuestionnaireTemplateDto> {
   const blocks = await executor
@@ -33,7 +33,7 @@ async function toDto(
 }
 
 async function findTemplate(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   templateId: string,
 ): Promise<QuestionnaireTemplateDto | null> {
   const [row] = await executor
@@ -59,7 +59,7 @@ async function lockTemplate(
 }
 
 async function listTemplates(
-  executor: QuestionnaireReadExecutor,
+  executor: ContactDatabaseReader,
   filters: QuestionnaireCatalogListFilters,
 ): Promise<QuestionnaireTemplateListDto> {
   const conditions: SQL[] = [];

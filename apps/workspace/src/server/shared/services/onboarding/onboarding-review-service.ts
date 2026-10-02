@@ -5,7 +5,10 @@ import { and, asc, eq } from "drizzle-orm";
 import { OnboardingBlockReviewStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-block-review-statuses";
 import { OnboardingClarificationMode } from "@invessiv/common/constants/crm/onboarding/onboarding-clarification-modes";
 import type { ReviewOnboardingBlockRequestDto } from "@invessiv/common/contracts/crm/onboarding/review-onboarding-block-request.dto";
-import type { ContactDatabaseTransaction } from "@invessiv/db/core";
+import type {
+  ContactDatabaseReader,
+  ContactDatabaseTransaction,
+} from "@invessiv/db/core";
 import { onboardingFormBlocks } from "@invessiv/db/record-configuration";
 import {
   updateLockedVersionedBy,
@@ -13,11 +16,9 @@ import {
 } from "@/server/workspace/shared/update-versioned";
 import type { OnboardingFormBlockRow } from "./onboarding-form-types";
 
-type ReadExecutor = Pick<ContactDatabaseTransaction, "select">;
-
 /** The steps of a form with their review, in form order. */
 function listSteps(
-  executor: ReadExecutor,
+  executor: ContactDatabaseReader,
   formId: string,
 ): Promise<OnboardingFormBlockRow[]> {
   return executor
@@ -28,7 +29,7 @@ function listSteps(
 }
 
 async function findStep(
-  executor: ReadExecutor,
+  executor: ContactDatabaseReader,
   formId: string,
   blockId: string,
 ): Promise<OnboardingFormBlockRow | null> {

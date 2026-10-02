@@ -1,19 +1,21 @@
 import "server-only";
 
-import { and, asc, eq, gt, isNull, sql } from "drizzle-orm";
+import { and, asc, eq, isNull } from "drizzle-orm";
 
 import type { QuestionnaireAnswerFileDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-answer-file.dto";
-import type { ContactDatabaseTransaction } from "@invessiv/db/core";
+import type {
+  ContactDatabaseReader,
+  ContactDatabaseTransaction,
+} from "@invessiv/db/core";
 import { onboardingAnswerFiles } from "@invessiv/db/record-configuration";
 import type { FileRow } from "@/server/shared/files/file-object-service-types";
+import { positionService } from "@/server/shared/services/position-service";
 import { onboardingFormMappingService } from "./onboarding-form-mapping-service";
 import type {
   OnboardingAnswerFileRow,
   OnboardingAnswerFileWrite,
   OnboardingAnswerSlot,
 } from "./onboarding-form-types";
-
-type ReadExecutor = Pick<ContactDatabaseTransaction, "select">;
 
 function slotCondition(slot: OnboardingAnswerSlot) {
   return and(
@@ -27,7 +29,7 @@ function slotCondition(slot: OnboardingAnswerSlot) {
 
 /** The links of one files slot in display order. */
 function listOfSlot(
-  executor: ReadExecutor,
+  executor: ContactDatabaseReader,
   slot: OnboardingAnswerSlot,
 ): Promise<OnboardingAnswerFileRow[]> {
   return executor
@@ -38,7 +40,7 @@ function listOfSlot(
 }
 
 async function find(
-  executor: ReadExecutor,
+  executor: ContactDatabaseReader,
   id: string,
 ): Promise<OnboardingAnswerFileRow | null> {
   const [link] = await executor
@@ -51,7 +53,7 @@ async function find(
 
 /** Whether a file hangs on any form; such a file must not be deleted from under it. */
 async function isBound(
-  executor: ReadExecutor,
+  executor: ContactDatabaseReader,
   fileId: string,
 ): Promise<boolean> {
   const [link] = await executor
@@ -116,19 +118,16 @@ async function detach(
   await tx
     .delete(onboardingAnswerFiles)
     .where(eq(onboardingAnswerFiles.id, link.id));
-  await tx
-    .update(onboardingAnswerFiles)
-    .set({ position: sql`${onboardingAnswerFiles.position} - 1` })
-    .where(
-      and(
-        slotCondition({
-          formId: link.form_id,
-          fieldId: link.field_id,
-          groupEntryId: link.group_entry_id,
-        }),
-        gt(onboardingAnswerFiles.position, link.position),
-      ),
-    );
+  await positionService.closeGap(
+    tx,
+    onboardingAnswerFiles,
+    slotCondition({
+      formId: link.form_id,
+      fieldId: link.field_id,
+      groupEntryId: link.group_entry_id,
+    }),
+    link.position,
+  );
 }
 
 export const onboardingAttachmentService = {

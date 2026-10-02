@@ -3,6 +3,7 @@
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { faListUl, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import type { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
 import { QuestionnaireFieldType } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
 import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
 import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block.dto";
@@ -15,12 +16,14 @@ import {
 } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-block-structure";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl, ConfirmDialog, EmptyState } from "@invessiv/ui";
+import { VersionedMutationOutcomeKind } from "@/common/constants/client/versioned-mutation-outcome-kinds";
 import { QuestionnaireEditorDialogKind } from "@/common/constants/crm/questionnaire/questionnaire-editor-dialog-kinds";
-import type { QuestionnaireClientResult } from "@/common/contracts/crm/questionnaire/questionnaire-client-result";
+import type { VersionedMutationOutcome } from "@/common/contracts/client/versioned-mutation-outcome";
 import type { QuestionnaireDefinitionClientApi } from "@/common/contracts/crm/questionnaire/questionnaire-definition-client-api";
 import type { QuestionnaireFieldDeleteDialog } from "@/common/contracts/crm/questionnaire/questionnaire-field-delete-dialog";
 import type { QuestionnaireFixedChoiceLabels } from "@/common/contracts/crm/questionnaire/questionnaire-fixed-choice-labels";
 import { questionnaireFieldName } from "@/common/patterns/crm/questionnaire/questionnaire-display-name";
+import { useVersionedCommand } from "@/hooks/workspace/use-versioned-command";
 import { useQuestionnaireEditorDialog } from "@/hooks/workspace/crm/use-questionnaire-editor-dialog";
 import type { CrmQuestionnaireDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { QuestionnaireBlockHeadForm } from "../questionnaire-block-head-form/questionnaire-block-head-form";
@@ -64,8 +67,7 @@ export function QuestionnaireBlockEditor({
   showStatus,
 }: QuestionnaireBlockEditorProps) {
   const [block, setBlock] = useState(initialBlock);
-  const [deleting, setDeleting] = useState(false);
-  const [listBusy, setListBusy] = useState(false);
+  const { busy: listBusy, run } = useVersionedCommand();
   const [listFailure, setListFailure] = useState<string | null>(null);
   const [announcement, setAnnouncement] = useState("");
   const pendingFocusRef = useRef<{ fieldId: string; control: string } | null>(
@@ -103,38 +105,37 @@ export function QuestionnaireBlockEditor({
     onBlockChangeAction?.(next);
   }
 
-  function closeDialog() {
-    setDeleting(false);
-    close();
-  }
-
   /** Shared answer handling of every list action; the dialog keeps its own. */
-  function settleListResult(
-    result: QuestionnaireClientResult<QuestionnaireBlockDto>,
+  function settleListOutcome(
+    outcome: VersionedMutationOutcome<
+      QuestionnaireBlockDto,
+      QuestionnaireErrorCode
+    >,
     success: (next: QuestionnaireBlockDto) => void,
   ) {
-    setListBusy(false);
-    if (result.ok) {
-      setListFailure(null);
-      adopt(result.value);
-      success(result.value);
-      return;
+    switch (outcome.kind) {
+      case VersionedMutationOutcomeKind.Saved:
+        setListFailure(null);
+        adopt(outcome.value);
+        success(outcome.value);
+        return;
+      case VersionedMutationOutcomeKind.Conflict:
+        adopt(outcome.current);
+        setListFailure(content.editor.conflict);
+        return;
+      case VersionedMutationOutcomeKind.Failure:
+        setListFailure(content.errors[outcome.code]);
     }
-    if ("current" in result) {
-      adopt(result.current);
-      setListFailure(content.editor.conflict);
-      return;
-    }
-    setListFailure(content.errors[result.code]);
   }
 
   async function move(field: QuestionnaireFieldDto, direction: -1 | 1) {
-    setListBusy(true);
-    const result = await api.moveField(field.id, {
-      direction,
-      expectedBlockVersion: block.version,
-    });
-    settleListResult(result, (next) => {
+    const outcome = await run(() =>
+      api.moveField(field.id, {
+        direction,
+        expectedBlockVersion: block.version,
+      }),
+    );
+    settleListOutcome(outcome, (next) => {
       const moved = findQuestionnaireField(next, field.id);
       if (!moved) return;
       setAnnouncement(
@@ -151,12 +152,11 @@ export function QuestionnaireBlockEditor({
   }
 
   async function removeField(field: QuestionnaireFieldDto) {
-    setDeleting(true);
-    const result = await api.deleteField(field.id, {
-      expectedBlockVersion: block.version,
-    });
-    closeDialog();
-    settleListResult(result, () =>
+    const outcome = await run(() =>
+      api.deleteField(field.id, { expectedBlockVersion: block.version }),
+    );
+    close();
+    settleListOutcome(outcome, () =>
       setAnnouncement(formatMessage(text.removed, { name: name(field) })),
     );
   }
@@ -303,7 +303,7 @@ export function QuestionnaireBlockEditor({
           fixedChoiceLabels={fixedChoiceLabels}
           key={editField?.id ?? `new-${createParent ?? "block"}`}
           locale={locale}
-          onCloseAction={closeDialog}
+          onCloseAction={close}
           onConflictAction={adopt}
           onSavedAction={(next) =>
             handleFieldSaved(
@@ -320,14 +320,14 @@ export function QuestionnaireBlockEditor({
         ? renderDeleteDialogAction({
             field: deleteField,
             name: name(deleteField),
-            busy: deleting,
-            onCancelAction: closeDialog,
+            busy: listBusy,
+            onCancelAction: close,
             onConfirmAction: () => void removeField(deleteField),
           })
         : null}
       {canWrite && deleteField && !renderDeleteDialogAction ? (
         <ConfirmDialog
-          busy={deleting}
+          busy={listBusy}
           cancelLabel={content.editor.deleteDialog.cancel}
           closeLabel={content.catalog.dialog.close}
           confirmLabel={content.editor.deleteDialog.confirm}
@@ -337,7 +337,7 @@ export function QuestionnaireBlockEditor({
               : content.editor.deleteDialog.description,
             { name: name(deleteField) },
           )}
-          onCancelAction={closeDialog}
+          onCancelAction={close}
           onConfirmAction={() => void removeField(deleteField)}
           title={content.editor.deleteDialog.title}
           tone="danger"

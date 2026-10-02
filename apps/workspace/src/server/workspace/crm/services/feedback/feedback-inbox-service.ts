@@ -18,7 +18,11 @@ import {
   INTERNAL_QUEUE_FEEDBACK_ROUND_STATUS_VALUES,
 } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import type { FeedbackInboxCustomerDto } from "@invessiv/common/contracts/crm/feedback-inbox-customer.dto";
-import { type ContactDatabaseTransaction, sqlCheckIn } from "@invessiv/db/core";
+import {
+  type ContactDatabaseTransaction,
+  sqlCheckIn,
+  type ContactDatabaseReader,
+} from "@invessiv/db/core";
 import {
   customers,
   feedbackRoundItems,
@@ -29,7 +33,6 @@ import {
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import type { FeedbackInboxFilters } from "@/common/contracts/crm/feedback-inbox-filters";
 import { accessScope } from "@/common/patterns/auth/access-scope";
-import type { FeedbackReadExecutor } from "@/server/shared/services/feedback/feedback-service-types";
 import { fileAccessService } from "@/server/workspace/crm/services/files/file-access-service";
 import { crmAccessCondition } from "@/server/workspace/shared/services/crm-access-condition";
 import type { FeedbackInboxRow } from "./feedback-round-types";
@@ -69,7 +72,7 @@ function queueCondition(actor: WorkspaceActor): SQL {
  * come from correlated subqueries, so the list never issues a query per round.
  */
 async function list(
-  executor: FeedbackReadExecutor,
+  executor: ContactDatabaseReader,
   filters: FeedbackInboxFilters,
   actor: WorkspaceActor,
 ): Promise<FeedbackInboxRow[]> {
@@ -130,7 +133,7 @@ async function list(
 
 /** Filter options come from the unfiltered queue, so choosing a customer never hides the others. */
 async function listCustomers(
-  executor: FeedbackReadExecutor,
+  executor: ContactDatabaseReader,
   actor: WorkspaceActor,
 ): Promise<FeedbackInboxCustomerDto[]> {
   return executor
@@ -143,7 +146,7 @@ async function listCustomers(
 }
 
 async function countUnread(
-  executor: FeedbackReadExecutor,
+  executor: ContactDatabaseReader,
   actor: WorkspaceActor,
 ): Promise<number> {
   const [result] = await executor
@@ -155,7 +158,7 @@ async function countUnread(
 
 /** The round must be readable for the member; unknown and foreign rounds answer the same. */
 async function findReadable(
-  executor: FeedbackReadExecutor,
+  executor: ContactDatabaseReader,
   roundId: string,
   actor: WorkspaceActor,
 ): Promise<{ id: string; customerId: string; projectId: string } | null> {

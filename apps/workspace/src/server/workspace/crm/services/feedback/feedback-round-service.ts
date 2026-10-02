@@ -2,6 +2,7 @@ import "server-only";
 
 import { and, desc, eq, type SQL, sql } from "drizzle-orm";
 
+import type { ContactDatabaseReader } from "@invessiv/db/core";
 import type { FeedbackHandOverBlocker } from "@invessiv/common/constants/crm/feedback-hand-over-blockers";
 import { findFeedbackHandOverBlocker } from "@invessiv/common/patterns/crm/feedback-hand-over-blocker";
 import {
@@ -12,10 +13,7 @@ import {
 import type { FeedbackRoundDto } from "@invessiv/common/contracts/crm/feedback-round.dto";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { feedbackRoundItemService } from "@/server/shared/services/feedback/feedback-round-item-service";
-import type {
-  FeedbackReadExecutor,
-  FeedbackRoundRow,
-} from "@/server/shared/services/feedback/feedback-service-types";
+import type { FeedbackRoundRow } from "@/server/shared/services/feedback/feedback-service-types";
 import { loadPortalContactNames } from "@/server/shared/services/load-portal-contact-names";
 import { fileAccessService } from "@/server/workspace/crm/services/files/file-access-service";
 import { feedbackInboxService } from "./feedback-inbox-service";
@@ -43,7 +41,7 @@ const trackColumns = {
  * same row lock the project editor takes, so the track cannot move while a round is created.
  */
 async function findProjectTrack(
-  executor: FeedbackReadExecutor,
+  executor: ContactDatabaseReader,
   projectId: string,
   access: SQL | undefined,
   options: { lock: boolean } = { lock: false },
@@ -59,7 +57,7 @@ async function findProjectTrack(
 
 /** All rounds of a project, newest first, with their item count for the list. */
 async function listRounds(
-  executor: FeedbackReadExecutor,
+  executor: ContactDatabaseReader,
   projectId: string,
 ): Promise<CountedFeedbackRound[]> {
   return executor
@@ -98,7 +96,7 @@ function findHandOverBlocker(
  * so `projects.read` without `files.read` shows the items but no files.
  */
 async function toRoundDto(
-  executor: FeedbackReadExecutor,
+  executor: ContactDatabaseReader,
   round: FeedbackRoundRow,
   actor: WorkspaceActor,
 ): Promise<FeedbackRoundDto> {

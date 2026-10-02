@@ -15,10 +15,12 @@ import {
   type Locale,
 } from "@invessiv/common/contracts/i18n/locale";
 import { CustomSelect, FormField, PrimaryCtaButton } from "@invessiv/ui";
+import { VersionedMutationOutcomeKind } from "@/common/constants/client/versioned-mutation-outcome-kinds";
 import { QuestionnaireSaveOutcomeKind } from "@/common/constants/crm/questionnaire/questionnaire-save-outcome-kinds";
 import type { QuestionnaireSaveOutcome } from "@/common/contracts/crm/questionnaire/questionnaire-save-outcome";
 import { QuestionnaireFormValidationCode } from "@/common/constants/crm/questionnaire/questionnaire-form-validation-codes";
 import type { QuestionnaireDefinitionClientApi } from "@/common/contracts/crm/questionnaire/questionnaire-definition-client-api";
+import { useVersionedCommand } from "@/hooks/workspace/use-versioned-command";
 import type { CrmQuestionnaireDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { QuestionnaireCheckboxField } from "../questionnaire-checkbox-field/questionnaire-checkbox-field";
 import { QuestionnaireLocaleTabs } from "../questionnaire-locale-tabs/questionnaire-locale-tabs";
@@ -110,7 +112,7 @@ export function QuestionnaireBlockHeadForm({
     title?: QuestionnaireFormValidationCode;
     key?: QuestionnaireFormValidationCode;
   }>({});
-  const [busy, setBusy] = useState(false);
+  const { busy, run } = useVersionedCommand();
   const [outcome, setOutcome] = useState<QuestionnaireSaveOutcome>(null);
   const text = content.editor.head;
   const validation = content.catalog.validation;
@@ -153,30 +155,31 @@ export function QuestionnaireBlockHeadForm({
           intro: texts[candidate].intro.trim() || null,
         };
 
-    setBusy(true);
     setOutcome(null);
-    const result = await api.updateBlock(block.id, {
-      key,
-      carryOver,
-      status,
-      translations,
-      version: block.version,
-    });
-    setBusy(false);
-    if (result.ok) {
-      onBlockAction(result.value);
-      setOutcome({ kind: QuestionnaireSaveOutcomeKind.Saved });
-      return;
+    const result = await run(() =>
+      api.updateBlock(block.id, {
+        key,
+        carryOver,
+        status,
+        translations,
+        version: block.version,
+      }),
+    );
+    switch (result.kind) {
+      case VersionedMutationOutcomeKind.Saved:
+        onBlockAction(result.value);
+        setOutcome({ kind: QuestionnaireSaveOutcomeKind.Saved });
+        return;
+      case VersionedMutationOutcomeKind.Conflict:
+        onBlockAction(result.current);
+        setOutcome({ kind: QuestionnaireSaveOutcomeKind.Conflict });
+        return;
+      case VersionedMutationOutcomeKind.Failure:
+        setOutcome({
+          kind: QuestionnaireSaveOutcomeKind.Failure,
+          code: result.code,
+        });
     }
-    if ("current" in result) {
-      onBlockAction(result.current);
-      setOutcome({ kind: QuestionnaireSaveOutcomeKind.Conflict });
-      return;
-    }
-    setOutcome({
-      kind: QuestionnaireSaveOutcomeKind.Failure,
-      code: result.code,
-    });
   }
 
   return (
