@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { type FormEvent, useId, useState } from "react";
+import { type SubmitEvent, useId, useState } from "react";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
 import { isOnboardingCallDateAcceptable } from "@invessiv/common/patterns/crm/onboarding/onboarding-form-state";
@@ -112,7 +112,7 @@ export function OnboardingCompleteDialog({
     });
   }
 
-  async function complete(event: FormEvent<HTMLFormElement>) {
+  async function complete(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     if (busy || missingFieldIds.length > 0) return;
     setFailure(null);
