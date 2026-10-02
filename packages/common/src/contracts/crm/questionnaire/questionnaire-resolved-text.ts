@@ -1,4 +1,4 @@
-import type { Locale } from "@invessiv/common";
+import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 
 /** A translated text picked for a viewer; `isFallback` drives the "not available in your language" hint. */
 export interface QuestionnaireResolvedText<T> {

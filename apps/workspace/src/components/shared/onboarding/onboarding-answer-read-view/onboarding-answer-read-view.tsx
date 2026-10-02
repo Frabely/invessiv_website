@@ -2,25 +2,31 @@ import type { ReactNode } from "react";
 import { QuestionnaireFieldRequirement } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-requirements";
 import { QuestionnaireFieldType } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
 import type { FilePreviewKind } from "@invessiv/common/constants/files/file-preview-kind";
-import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
+import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
 import type { QuestionnaireAnswerFileRefDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-answer-file-ref.dto";
 import type { QuestionnaireAnswerFileDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-answer-file.dto";
 import type { QuestionnaireCompletenessInput } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-completeness-input";
 import type { QuestionnaireResolvedBlock } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-resolved-block";
 import type { QuestionnaireResolvedField } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-resolved-field";
-import type { PortalOnboardingServiceDto } from "@invessiv/common/contracts/portal/portal-onboarding-service.dto";
+import type { OnboardingFormServiceDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form-service.dto";
 import {
   getQuestionnaireCompleteness,
   isQuestionnaireFieldVisible,
 } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
+import { questionnaireSlotKey } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-answer-slot";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { LinkedText } from "@invessiv/ui";
-import type { FeedbackAttachmentTexts } from "@/common/contracts/files/feedback-attachment-texts";
+import type { FileAttachmentTexts } from "@/common/contracts/files/file-attachment-texts";
 import type { OnboardingReadTexts } from "@/common/contracts/shared/onboarding-read-texts";
-import { onboardingAnswerDrafts } from "@/common/patterns/portal/onboarding-answer-drafts";
-import { FeedbackAttachmentList } from "@/components/shared/feedback/feedback-attachment-list/feedback-attachment-list";
+import { FileAttachmentList } from "@/components/shared/files/file-attachment-list/file-attachment-list";
 import { OnboardingReadValue } from "../onboarding-read-value/onboarding-read-value";
 import styles from "./onboarding-answer-read-view.module.css";
+
+/** What the view shows of a booked service; the CRM's entry and the portal's reduced one both fit. */
+type ServiceLine = Pick<
+  OnboardingFormServiceDto,
+  "title" | "description" | "position"
+>;
 
 export type OnboardingAnswerReadViewProps = Omit<
   QuestionnaireCompletenessInput,
@@ -38,17 +44,17 @@ export type OnboardingAnswerReadViewProps = Omit<
    */
   files?: {
     loadPreviewAction: (
-      file: FeedbackAttachmentDto,
+      file: FileAttachmentDto,
       kind: FilePreviewKind,
     ) => Promise<string | null>;
     locale: string;
-    onDownloadAction: (file: FeedbackAttachmentDto) => void;
-    texts: FeedbackAttachmentTexts;
+    onDownloadAction: (file: FileAttachmentDto) => void;
+    texts: FileAttachmentTexts;
   };
   /** Where files hang that the viewer may not open; they count, and their field says so. */
   hiddenAnswerFiles?: readonly QuestionnaireAnswerFileRefDto[];
   /** The booked services a `project_services` field shows, never with a price. */
-  services: readonly PortalOnboardingServiceDto[];
+  services: readonly ServiceLine[];
   /** Remark the customer left with the confirmation of the services. */
   servicesNote: string | null;
   /** False where the block title already stands above the view, as in a single step. */
@@ -81,7 +87,7 @@ export function OnboardingAnswerReadView({
   };
   const missing = new Set(
     getQuestionnaireCompleteness(input).missing.map((entry) =>
-      onboardingAnswerDrafts.slotKey(entry.fieldId, entry.groupEntryId),
+      questionnaireSlotKey(entry.fieldId, entry.groupEntryId),
     ),
   );
 
@@ -101,7 +107,7 @@ export function OnboardingAnswerReadView({
     field: QuestionnaireResolvedField,
     groupEntryId: string | null,
   ): ReactNode {
-    const slotKey = onboardingAnswerDrafts.slotKey(field.id, groupEntryId);
+    const slotKey = questionnaireSlotKey(field.id, groupEntryId);
 
     if (field.type === QuestionnaireFieldType.Files) {
       const attached = answerFiles
@@ -120,7 +126,7 @@ export function OnboardingAnswerReadView({
       return (
         <>
           {attached.length === 0 ? null : files ? (
-            <FeedbackAttachmentList
+            <FileAttachmentList
               attachments={attached}
               label={label}
               loadPreviewAction={files.loadPreviewAction}

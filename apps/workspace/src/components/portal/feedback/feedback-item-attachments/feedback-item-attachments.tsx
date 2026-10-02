@@ -1,7 +1,7 @@
 "use client";
 
 import { FEEDBACK_LIMITS } from "@invessiv/common/constants/crm/feedback-limits";
-import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
+import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { portalFeedbackApiService } from "@/client/portal/portal-feedback-api-service";
 import { portalFilesApiService } from "@/client/portal/portal-files-api-service";
@@ -28,7 +28,7 @@ export type FeedbackItemAttachmentsProps = {
   number: number;
   onAnnounceAction: (message: string) => void;
   onChangeAction: (
-    update: (current: FeedbackAttachmentDto[]) => FeedbackAttachmentDto[],
+    update: (current: FileAttachmentDto[]) => FileAttachmentDto[],
   ) => void;
   onActivityChangeAction: (itemId: string, active: boolean) => void;
   /** Uploads land in the round's project, like a file sent from the files page. */

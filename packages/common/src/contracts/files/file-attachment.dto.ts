@@ -3,11 +3,11 @@ import type { FileSource } from "../../constants/files/file-source";
 import type { UploadExtension } from "../../constants/files/upload-extension";
 
 /**
- * A customer upload or link hung on one feedback item. The shape matches the shared file row and
- * lightbox, so both sides show attachments with the same building blocks; downloads go through the
- * file endpoints of the viewer's side.
+ * A file or link hung on something else: a feedback item, a field of a form. The shape matches the
+ * shared file row and lightbox, so every side shows attachments with the same building blocks;
+ * downloads go through the file endpoints of the viewer's side.
  */
-export interface FeedbackAttachmentDto {
+export interface FileAttachmentDto {
   /** File entry id; download, preview and detaching address this value. */
   id: string;
   /** Original filename or link title shown in the row. */
@@ -22,7 +22,7 @@ export interface FeedbackAttachmentDto {
   sizeBytes: number | null;
   /** HTTPS target of a link; null for uploads. */
   url: string | null;
-  /** Plain-text note the customer added when uploading; null when left empty. */
+  /** Plain-text note the uploader added; null when left empty. */
   note: string | null;
   /** When the file entry was created, not when it was attached. */
   createdAt: string;

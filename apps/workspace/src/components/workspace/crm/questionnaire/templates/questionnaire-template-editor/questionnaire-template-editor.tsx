@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { type SubmitEvent, useId, useState } from "react";
 import { faArrowLeft, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import type { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
 import {
   QUESTIONNAIRE_CATALOG_STATUS_VALUES,
   QuestionnaireCatalogStatus,
@@ -25,6 +24,8 @@ import {
   PrimaryCtaButton,
 } from "@invessiv/ui";
 import { questionnaireCatalogApiService } from "@/client/crm/questionnaire-catalog-api-service";
+import { QuestionnaireSaveOutcomeKind } from "@/common/constants/crm/questionnaire/questionnaire-save-outcome-kinds";
+import type { QuestionnaireSaveOutcome } from "@/common/contracts/crm/questionnaire/questionnaire-save-outcome";
 import { QuestionnaireFormValidationCode } from "@/common/constants/crm/questionnaire/questionnaire-form-validation-codes";
 import type { CrmQuestionnaireDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { crmQuestionnaireBlockPathFor } from "@/lib/auth/routes";
@@ -49,12 +50,6 @@ type Draft = {
   status: QuestionnaireCatalogStatus;
   blockIds: string[];
 };
-
-type Outcome =
-  | { kind: "saved" }
-  | { kind: "conflict" }
-  | { kind: "failure"; code: QuestionnaireErrorCode }
-  | null;
 
 function draftOf(template: QuestionnaireTemplateDto): Draft {
   return {
@@ -96,7 +91,7 @@ export function QuestionnaireTemplateEditor({
   const [pickerOpen, setPickerOpen] = useState(false);
   const [announcement, setAnnouncement] = useState("");
   const [busy, setBusy] = useState(false);
-  const [outcome, setOutcome] = useState<Outcome>(null);
+  const [outcome, setOutcome] = useState<QuestionnaireSaveOutcome>(null);
   const text = content.templateEditor;
   const byId = new Map(blocks.map((block) => [block.id, block]));
   const dirty = !sameDraft(draft, draftOf(template));
@@ -134,16 +129,19 @@ export function QuestionnaireTemplateEditor({
     if (result.ok) {
       setTemplate(result.value);
       setDraft(draftOf(result.value));
-      setOutcome({ kind: "saved" });
+      setOutcome({ kind: QuestionnaireSaveOutcomeKind.Saved });
       router.refresh();
       return;
     }
     if ("current" in result) {
       setTemplate(result.current);
-      setOutcome({ kind: "conflict" });
+      setOutcome({ kind: QuestionnaireSaveOutcomeKind.Conflict });
       return;
     }
-    setOutcome({ kind: "failure", code: result.code });
+    setOutcome({
+      kind: QuestionnaireSaveOutcomeKind.Failure,
+      code: result.code,
+    });
   }
 
   const blockCount = draft.blockIds.length;
@@ -287,9 +285,13 @@ export function QuestionnaireTemplateEditor({
               className={styles.outcome}
               data-kind={outcome?.kind}
             >
-              {outcome?.kind === "saved" ? text.saved : null}
-              {outcome?.kind === "conflict" ? text.conflict : null}
-              {outcome?.kind === "failure"
+              {outcome?.kind === QuestionnaireSaveOutcomeKind.Saved
+                ? text.saved
+                : null}
+              {outcome?.kind === QuestionnaireSaveOutcomeKind.Conflict
+                ? text.conflict
+                : null}
+              {outcome?.kind === QuestionnaireSaveOutcomeKind.Failure
                 ? content.errors[outcome.code]
                 : null}
               {!outcome && dirty ? text.unsaved : null}

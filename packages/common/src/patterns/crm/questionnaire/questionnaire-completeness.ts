@@ -8,6 +8,7 @@ import type { QuestionnaireCompletenessInput } from "../../../contracts/crm/ques
 import type { QuestionnaireCompletenessField } from "../../../contracts/crm/questionnaire/questionnaire-completeness-field";
 import type { QuestionnaireGroupEntryDto } from "../../../contracts/crm/questionnaire/questionnaire-group-entry.dto";
 import type { QuestionnaireMissingField } from "../../../contracts/crm/questionnaire/questionnaire-missing-field";
+import { questionnaireSlotKey as slotKey } from "./questionnaire-answer-slot";
 
 type CompletenessIndex = {
   fields: ReadonlyMap<string, QuestionnaireCompletenessField>;
@@ -19,10 +20,6 @@ type CompletenessIndex = {
 };
 
 type FieldEvaluation = { counts: boolean; answered: boolean };
-
-function slotKey(fieldId: string, groupEntryId: string | null): string {
-  return `${fieldId}|${groupEntryId ?? ""}`;
-}
 
 function byPosition<T extends { position: number }>(items: readonly T[]): T[] {
   return [...items].sort((left, right) => left.position - right.position);

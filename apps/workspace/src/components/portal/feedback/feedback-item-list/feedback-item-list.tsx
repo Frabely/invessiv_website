@@ -1,9 +1,9 @@
 "use client";
 
 import type { PortalFeedbackItemDto } from "@invessiv/common/contracts/portal/portal-feedback-item.dto";
-import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
+import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { FeedbackAttachmentList } from "@/components/shared/feedback/feedback-attachment-list/feedback-attachment-list";
+import { FileAttachmentList } from "@/components/shared/files/file-attachment-list/file-attachment-list";
 import { FeedbackItemResult } from "@/components/shared/feedback/feedback-item-result/feedback-item-result";
 import { FeedbackReadOnlyItemContent } from "@/components/shared/feedback/feedback-read-only-item-content/feedback-read-only-item-content";
 import type { Locale } from "@/config/i18n";
@@ -30,7 +30,7 @@ export function FeedbackItemList({
   items,
   locale,
 }: FeedbackItemListProps) {
-  const downloads = usePortalFileDownloads<FeedbackAttachmentDto>(
+  const downloads = usePortalFileDownloads<FileAttachmentDto>(
     customerId,
     filesContent.errors,
   );
@@ -62,7 +62,7 @@ export function FeedbackItemList({
               }}
               attachments={
                 item.attachments.length > 0 ? (
-                  <FeedbackAttachmentList
+                  <FileAttachmentList
                     attachments={item.attachments}
                     label={formatMessage(content.attachments.label, {
                       number: index + 1,

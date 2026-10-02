@@ -1,15 +1,16 @@
 "use client";
 
-import { useState } from "react";
 import { OnboardingClarificationMode } from "@invessiv/common/constants/crm/onboarding/onboarding-clarification-modes";
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
 import { listOnboardingClarificationBlocks } from "@invessiv/common/patterns/crm/onboarding/onboarding-review";
 import { ConfirmDialog, LinkedText } from "@invessiv/ui";
 import { onboardingFormApiService } from "@/client/crm/onboarding-form-api-service";
+import type { OnboardingFormClientErrorCode } from "@/common/constants/crm/onboarding/onboarding-form-client-error-codes";
 import type { OnboardingFormErrorTexts } from "@/common/contracts/crm/onboarding/onboarding-form-error-texts";
 import { onboardingFormErrorText } from "@/common/patterns/crm/onboarding/onboarding-form-error-text";
 import { questionnaireBlockName } from "@/common/patterns/crm/questionnaire/questionnaire-display-name";
 import type { Locale } from "@/config/i18n";
+import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import type { CrmOnboardingDictionary } from "@/i18n/dictionaries/workspace/crm";
 import styles from "./onboarding-request-changes-dialog.module.css";
 
@@ -38,8 +39,16 @@ export function OnboardingRequestChangesDialog({
   onConflictAction,
   onRequestedAction,
 }: OnboardingRequestChangesDialogProps) {
-  const [busy, setBusy] = useState(false);
-  const [failure, setFailure] = useState<string | null>(null);
+  const mutation = useVersionedMutation<
+    OnboardingFormDto,
+    OnboardingFormClientErrorCode
+  >(form, onCloseAction, { onConflictAction });
+  const busy = mutation.isSubmitting;
+  const failure = mutation.hasConflict
+    ? content.conflict
+    : mutation.errorCode
+      ? onboardingFormErrorText(mutation.errorCode, errorTexts)
+      : null;
   const requested = listOnboardingClarificationBlocks(
     form.blocks,
     OnboardingClarificationMode.Customer,
@@ -47,22 +56,14 @@ export function OnboardingRequestChangesDialog({
 
   async function request() {
     if (busy) return;
-    setBusy(true);
-    setFailure(null);
-    const result = await onboardingFormApiService.requestChanges(form.id, {
-      expectedVersion: form.version,
-    });
-    setBusy(false);
-    if (result.ok) {
+    await mutation.submit(async (current) => {
+      const result = await onboardingFormApiService.requestChanges(current.id, {
+        expectedVersion: current.version,
+      });
+      if (!result.ok) return result;
       onRequestedAction(result.value);
-      return;
-    }
-    if ("current" in result) {
-      setFailure(content.conflict);
-      onConflictAction(result.current);
-      return;
-    }
-    setFailure(onboardingFormErrorText(result.code, errorTexts));
+      return { ok: true, current: result.value };
+    });
   }
 
   return (
@@ -72,7 +73,7 @@ export function OnboardingRequestChangesDialog({
       closeLabel={content.close}
       confirmLabel={content.confirm}
       description={content.description}
-      onCancelAction={onCloseAction}
+      onCancelAction={mutation.close}
       onConfirmAction={() => void request()}
       title={content.title}
     >

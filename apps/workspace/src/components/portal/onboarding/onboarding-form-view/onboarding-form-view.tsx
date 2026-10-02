@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
-import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
+import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
 import type { PortalOnboardingCallDto } from "@invessiv/common/contracts/portal/portal-onboarding-call.dto";
 import type { PortalOnboardingFormDto } from "@invessiv/common/contracts/portal/portal-onboarding-form.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
@@ -75,7 +75,7 @@ export function OnboardingFormView({
     setStaleForm(null);
     setRevision(revision + 1);
   }
-  const downloads = usePortalFileDownloads<FeedbackAttachmentDto>(
+  const downloads = usePortalFileDownloads<FileAttachmentDto>(
     customerId,
     filesContent.errors,
   );

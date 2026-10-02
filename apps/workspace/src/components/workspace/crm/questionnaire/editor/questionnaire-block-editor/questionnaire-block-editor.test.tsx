@@ -9,6 +9,7 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -16,6 +17,7 @@ import { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/qu
 import { QuestionnaireFieldType } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block.dto";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import type { QuestionnaireDefinitionClientApi } from "@/common/contracts/crm/questionnaire/questionnaire-definition-client-api";
 import { getCrmQuestionnaireDictionary } from "@/i18n/dictionaries/workspace/crm";
 import {
@@ -204,6 +206,64 @@ describe("QuestionnaireBlockEditor", () => {
     expect(await screen.findByDisplayValue("Team neu")).toBeInTheDocument();
     expect(screen.getByDisplayValue("own_key")).toBeInTheDocument();
     expect(screen.queryByDisplayValue("team_renamed")).not.toBeInTheDocument();
+  });
+
+  it("follows a field the dialog saved: new block, announcement, dialog closed", async () => {
+    const saved = block();
+    saved.version = 4;
+    saved.fields = [
+      ...saved.fields,
+      fieldFixture("budget", QuestionnaireFieldType.ShortText, {
+        position: 2,
+        translations: withLabels("Budget"),
+      }),
+    ];
+    const onBlockChangeAction = vi.fn();
+    const fake = api({
+      createField: vi.fn().mockResolvedValue({ ok: true, value: saved }),
+    });
+    navigation.params = new URLSearchParams("questionnaireField=new");
+    render(
+      <QuestionnaireBlockEditor
+        api={fake}
+        block={block()}
+        canWrite
+        content={content}
+        fixedChoiceLabels={LABELS}
+        locale="de"
+        onBlockChangeAction={onBlockChangeAction}
+        showStatus
+      />,
+    );
+
+    const dialog = within(screen.getByRole("dialog"));
+    fireEvent.change(
+      dialog.getByLabelText(new RegExp(`^${content.editor.fieldDialog.label}`)),
+      { target: { value: "Budget" } },
+    );
+    fireEvent.click(
+      dialog.getByRole("button", {
+        name: content.editor.fieldDialog.submitCreate,
+      }),
+    );
+
+    await waitFor(() =>
+      expect(
+        screen.getByText(
+          formatMessage(content.editor.fields.added, { name: "Budget" }),
+        ),
+      ).toBeInTheDocument(),
+    );
+    expect(fake.createField).toHaveBeenCalledWith(
+      saved.id,
+      expect.objectContaining({ key: "budget", expectedBlockVersion: 3 }),
+    );
+    expect(onBlockChangeAction).toHaveBeenCalledWith(saved);
+    // Closing removes the dialog parameter from the URL.
+    expect(navigation.replace).toHaveBeenCalledWith(
+      "/de/crm/questionnaire-templates/blocks/b-1",
+      { scroll: false },
+    );
   });
 
   it("opens the add dialog through the URL", () => {

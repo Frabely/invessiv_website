@@ -19,6 +19,7 @@ import { flattenQuestionnaireFields } from "@invessiv/common/patterns/crm/questi
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl, ConfirmDialog } from "@invessiv/ui";
 import { onboardingFormApiService } from "@/client/crm/onboarding-form-api-service";
+import { OnboardingBlockListChangeKind } from "@/common/constants/crm/onboarding/onboarding-block-list-change-kinds";
 import type { OnboardingFormClientResult } from "@/common/contracts/crm/onboarding/onboarding-form-client-result";
 import type { OnboardingFormErrorTexts } from "@/common/contracts/crm/onboarding/onboarding-form-error-texts";
 import type { QuestionnaireBlockIdentity } from "@/common/contracts/crm/questionnaire/questionnaire-block-identity";
@@ -57,10 +58,16 @@ export type OnboardingFormStructureProps = {
   questionnaireContent: CrmQuestionnaireDictionary;
 };
 
+const DialogKind = {
+  Picker: "picker",
+  Own: "own",
+  Remove: "remove",
+} as const;
+
 type OpenDialog =
-  | { kind: "picker" }
-  | { kind: "own"; failure: string | null }
-  | { kind: "remove"; blockId: string }
+  | { kind: typeof DialogKind.Picker }
+  | { kind: typeof DialogKind.Own; failure: string | null }
+  | { kind: typeof DialogKind.Remove; blockId: string }
   | null;
 
 /**
@@ -148,10 +155,11 @@ export function OnboardingFormStructure({
 
   async function handleListChange(nextIds: string[]) {
     const change = detectOnboardingBlockListChange(ids, nextIds);
-    announceListChangeRef.current = change?.kind === "move";
+    announceListChangeRef.current =
+      change?.kind === OnboardingBlockListChangeKind.Move;
     if (!change || busy) return;
-    if (change.kind === "remove") {
-      setDialog({ kind: "remove", blockId: change.blockId });
+    if (change.kind === OnboardingBlockListChangeKind.Remove) {
+      setDialog({ kind: DialogKind.Remove, blockId: change.blockId });
       return;
     }
     setPendingOrder(nextIds);
@@ -217,7 +225,7 @@ export function OnboardingFormStructure({
       // A conflict loads the current form; the input stays for the next attempt.
       if ("current" in result) adopt(result.current);
       setDialog({
-        kind: "own",
+        kind: DialogKind.Own,
         failure:
           "current" in result
             ? text.editor.conflict
@@ -253,7 +261,7 @@ export function OnboardingFormStructure({
   }
 
   const removing =
-    dialog?.kind === "remove" ? blocks.get(dialog.blockId) : undefined;
+    dialog?.kind === DialogKind.Remove ? blocks.get(dialog.blockId) : undefined;
   const blockCount = form.blocks.length;
 
   return (
@@ -283,7 +291,7 @@ export function OnboardingFormStructure({
                 disabled={
                   busy || blockCount >= QUESTIONNAIRE_LIMITS.blocksPerOwner
                 }
-                onClick={() => setDialog({ kind: "picker" })}
+                onClick={() => setDialog({ kind: DialogKind.Picker })}
                 type="button"
                 variant="ghost"
               >
@@ -295,7 +303,9 @@ export function OnboardingFormStructure({
                 disabled={
                   busy || blockCount >= QUESTIONNAIRE_LIMITS.blocksPerOwner
                 }
-                onClick={() => setDialog({ kind: "own", failure: null })}
+                onClick={() =>
+                  setDialog({ kind: DialogKind.Own, failure: null })
+                }
                 type="button"
                 variant="ghost"
               >
@@ -407,7 +417,7 @@ export function OnboardingFormStructure({
         )}
       </section>
 
-      {editable && dialog?.kind === "picker" ? (
+      {editable && dialog?.kind === DialogKind.Picker ? (
         <QuestionnaireBlockPickerDialog
           blocks={catalogBlocks}
           chosenIds={form.blocks.flatMap(
@@ -419,7 +429,7 @@ export function OnboardingFormStructure({
           onCloseAction={() => setDialog(null)}
         />
       ) : null}
-      {editable && dialog?.kind === "own" ? (
+      {editable && dialog?.kind === DialogKind.Own ? (
         <OnboardingOwnBlockDialog
           busy={busy}
           content={text.ownDialog}

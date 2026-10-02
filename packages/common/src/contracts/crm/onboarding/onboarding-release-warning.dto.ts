@@ -1,5 +1,5 @@
 import type { OnboardingReleaseWarningKind } from "../../../constants/crm/onboarding/onboarding-release-warning-kinds";
-import type { Locale } from "@invessiv/common";
+import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 
 /** One reason to pause before a release; the team may acknowledge it and release anyway. */
 export type OnboardingReleaseWarningDto =

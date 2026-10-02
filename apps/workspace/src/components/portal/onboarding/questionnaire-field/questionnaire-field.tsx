@@ -3,26 +3,12 @@
 import React, { useEffect } from "react";
 import { QUESTIONNAIRE_CONFIRMED_VALUE } from "@invessiv/common/constants/crm/questionnaire/questionnaire-confirmed-value";
 import { QuestionnaireFieldType } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
-import type { QuestionnaireValueErrorCode } from "@invessiv/common/constants/crm/questionnaire/questionnaire-value-error-codes";
-import type { PortalOnboardingErrorCode } from "@invessiv/common/constants/portal/portal-onboarding-error-codes";
-import type { QuestionnaireAnswerFileRefDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-answer-file-ref.dto";
-import type { QuestionnaireAnswerFileDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-answer-file.dto";
-import type { QuestionnaireCompletenessInput } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-completeness-input";
-import type { QuestionnaireGroupEntryDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-group-entry.dto";
 import type { QuestionnaireResolvedField } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-resolved-field";
-import type { PortalFileDto } from "@invessiv/common/contracts/portal/portal-file.dto";
-import type { PortalOnboardingServiceDto } from "@invessiv/common/contracts/portal/portal-onboarding-service.dto";
-import type { PortalOnboardingResult } from "@invessiv/common/contracts/portal/results/portal-onboarding-result";
 import { isQuestionnaireFieldVisible } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import type { OnboardingAnswerDrafts } from "@/common/contracts/portal/onboarding-answer-drafts";
+import type { OnboardingFieldFormContext } from "@/common/contracts/portal/onboarding-field-form-context";
 import { onboardingAnswerDrafts } from "@/common/patterns/portal/onboarding-answer-drafts";
 import { onboardingFieldDomId } from "@/common/patterns/portal/onboarding-field-dom-id";
-import type { Locale } from "@/config/i18n";
-import type {
-  PortalFilesDictionary,
-  PortalOnboardingDictionary,
-} from "@/i18n/dictionaries/portal";
 import { OnboardingChoiceField } from "../fields/onboarding-choice-field/onboarding-choice-field";
 import { OnboardingColorField } from "../fields/onboarding-color-field/onboarding-color-field";
 import { OnboardingConfirmationField } from "../fields/onboarding-confirmation-field/onboarding-confirmation-field";
@@ -33,63 +19,10 @@ import { OnboardingProjectServicesField } from "../fields/onboarding-project-ser
 import { OnboardingScaleField } from "../fields/onboarding-scale-field/onboarding-scale-field";
 import { OnboardingTextField } from "../fields/onboarding-text-field/onboarding-text-field";
 
-type Slot = { fieldId: string; groupEntryId: string | null };
-
 export type QuestionnaireFieldProps = {
   field: QuestionnaireResolvedField;
   /** Everything a field reads from and writes to the form it sits in; the same for every field. */
-  form: {
-    /** Attached files of the whole form; a files field shows those of its own slot. */
-    answerFiles: readonly QuestionnaireAnswerFileDto[];
-    /** Where files hang that the contact may not open; a read-only block says so. */
-    hiddenAnswerFiles: readonly QuestionnaireAnswerFileRefDto[];
-    /** True while a group, file or services command is on its way. */
-    busy: boolean;
-    canAttach: boolean;
-    canUpload: boolean;
-    content: PortalOnboardingDictionary;
-    customerId: string;
-    /** Typed text and selections by slot key. */
-    drafts: OnboardingAnswerDrafts;
-    /** Why the last command of a group failed, by field id. */
-    errors: ReadonlyMap<string, PortalOnboardingErrorCode>;
-    filesContent: PortalFilesDictionary;
-    /** The live state of the whole form; conditions are evaluated against it. */
-    input: QuestionnaireCompletenessInput;
-    /** Slots whose text cannot be saved, by slot key. */
-    invalid: ReadonlyMap<string, QuestionnaireValueErrorCode>;
-    locale: Locale;
-    onAddEntryAction: (fieldId: string) => string;
-    onAnnounceAction: (message: string) => void;
-    onAttachFileAction: (
-      slot: Slot,
-      file: PortalFileDto,
-    ) => Promise<PortalOnboardingResult<QuestionnaireAnswerFileDto>>;
-    onChangeAction: (
-      slotKey: string,
-      entries: readonly string[],
-      options?: { immediate?: boolean },
-    ) => void;
-    onCommitAction: (slotKey: string) => void;
-    onConfirmServicesAction: (note: string | null) => Promise<boolean>;
-    /** The customer chose to leave a remark on the services but has not written it yet. */
-    onOpenServicesRemarkAction: () => void;
-    servicesRemarkOpen: boolean;
-    onDetachFileAction: (
-      link: QuestionnaireAnswerFileDto,
-    ) => Promise<PortalOnboardingResult<unknown>>;
-    onMoveEntryAction: (
-      entry: QuestionnaireGroupEntryDto,
-      direction: -1 | 1,
-    ) => void;
-    onRemoveEntryAction: (entry: QuestionnaireGroupEntryDto) => void;
-    /** A slot started or finished uploading; the form holds its submission meanwhile. */
-    onUploadActivityAction: (slotKey: string, active: boolean) => void;
-    projectId: string;
-    services: readonly PortalOnboardingServiceDto[];
-    servicesError: PortalOnboardingErrorCode | null;
-    servicesNote: string | null;
-  };
+  form: OnboardingFieldFormContext;
   /** Entry a sub-field is answered for; null on block level. */
   groupEntryId: string | null;
 };

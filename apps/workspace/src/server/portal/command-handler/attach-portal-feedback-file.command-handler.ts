@@ -7,7 +7,7 @@ import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-rou
 import { FileStatus } from "@invessiv/common/constants/files/file-status";
 import { UploadSide } from "@invessiv/common/constants/files/upload-side";
 import { PortalFeedbackErrorCode } from "@invessiv/common/constants/portal/portal-feedback-error-codes";
-import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
+import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
 import type { AttachPortalFeedbackFileRequestDto } from "@invessiv/common/contracts/portal/attach-portal-feedback-file-request.dto";
 import type { PortalFeedbackResult } from "@invessiv/common/contracts/portal/results/portal-feedback-result";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
@@ -21,7 +21,7 @@ import { feedbackAttachmentService } from "@/server/shared/services/feedback/fee
 import { feedbackMappingService } from "@/server/shared/services/feedback/feedback-mapping-service";
 import type { FeedbackRoundRow } from "@/server/shared/services/feedback/feedback-service-types";
 
-type Result = PortalFeedbackResult<FeedbackAttachmentDto>;
+type Result = PortalFeedbackResult<FileAttachmentDto>;
 
 /** Only a finished own upload or link that is still free and fits the round's project. */
 function isAttachable(file: FileRow, round: FeedbackRoundRow): boolean {

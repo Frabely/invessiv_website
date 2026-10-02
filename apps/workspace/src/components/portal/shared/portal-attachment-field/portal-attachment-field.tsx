@@ -3,11 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { UploadQueueItemStatus } from "@invessiv/common/constants/files/upload-queue-item-status";
 import { FileDropZoneVariant } from "@invessiv/common/constants/ui/file-drop-zone-variants";
-import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
+import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
 import type { PortalFileDto } from "@invessiv/common/contracts/portal/portal-file.dto";
 import { FileDropZone, UploadQueueRow } from "@invessiv/ui";
 import type { UploadQueueTransport } from "@/common/contracts/files/upload-queue-transport";
-import { FeedbackAttachmentList } from "@/components/shared/feedback/feedback-attachment-list/feedback-attachment-list";
+import { FileAttachmentList } from "@/components/shared/files/file-attachment-list/file-attachment-list";
 import type { Locale } from "@/config/i18n";
 import { usePortalFileDownloads } from "@/hooks/portal/use-portal-file-downloads";
 import { useUploadQueue } from "@/hooks/shared/use-upload-queue";
@@ -21,25 +21,24 @@ export type PortalAttachmentFieldProps = {
   attachAction: (
     file: PortalFileDto,
   ) => Promise<
-    | { ok: true; attachment: FeedbackAttachmentDto }
-    | { ok: false; message: string }
+    { ok: true; attachment: FileAttachmentDto } | { ok: false; message: string }
   >;
-  attachments: readonly FeedbackAttachmentDto[];
+  attachments: readonly FileAttachmentDto[];
   /** Detach; without it the files are only listed. */
   canAttach: boolean;
   /** Upload as well, which needs `portal.files.write` on top. */
   canUpload: boolean;
   customerId: string;
   detachAction: (
-    file: FeedbackAttachmentDto,
+    file: FileAttachmentDto,
   ) => Promise<{ ok: true } | { ok: false; message: string }>;
   filesContent: PortalFilesDictionary;
   locale: Locale;
   /** Most files the target takes; the upload zone goes away once it is reached. */
   maxFiles: number;
   onActivityChangeAction?: (active: boolean) => void;
-  onAttachedAction: (attachment: FeedbackAttachmentDto) => void;
-  onDetachedAction: (attachment: FeedbackAttachmentDto) => void;
+  onAttachedAction: (attachment: FileAttachmentDto) => void;
+  onDetachedAction: (attachment: FileAttachmentDto) => void;
   /** Runs before an upload starts, e.g. to save the target first; false keeps the files out. */
   prepareAction?: () => Promise<boolean>;
   texts: {
@@ -104,7 +103,7 @@ export function PortalAttachmentField({
     maxFiles: Math.max(0, maxFiles - attachments.length - (attaching ? 1 : 0)),
     leaveWarning: filesContent.upload.leaveWarning,
   });
-  const downloads = usePortalFileDownloads<FeedbackAttachmentDto>(
+  const downloads = usePortalFileDownloads<FileAttachmentDto>(
     customerId,
     filesContent.errors,
   );
@@ -154,7 +153,7 @@ export function PortalAttachmentField({
     queue.start();
   }
 
-  async function detach(file: FeedbackAttachmentDto) {
+  async function detach(file: FileAttachmentDto) {
     setError(null);
     const result = await detachAction(file);
     if (!result.ok) {
@@ -173,7 +172,7 @@ export function PortalAttachmentField({
   return (
     <div className={styles.attachments}>
       {attachments.length > 0 ? (
-        <FeedbackAttachmentList
+        <FileAttachmentList
           attachments={attachments}
           detach={
             canAttach

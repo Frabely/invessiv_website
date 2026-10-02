@@ -19,6 +19,7 @@ import {
   PrimaryCtaButton,
 } from "@invessiv/ui";
 import { onboardingFormApiService } from "@/client/crm/onboarding-form-api-service";
+import type { OnboardingFormClientErrorCode } from "@/common/constants/crm/onboarding/onboarding-form-client-error-codes";
 import type { OnboardingFormErrorTexts } from "@/common/contracts/crm/onboarding/onboarding-form-error-texts";
 import { onboardingFormErrorText } from "@/common/patterns/crm/onboarding/onboarding-form-error-text";
 import {
@@ -27,6 +28,7 @@ import {
 } from "@/common/patterns/crm/questionnaire/questionnaire-display-name";
 import { businessToday } from "@/common/patterns/time/business-today";
 import type { Locale } from "@/config/i18n";
+import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import type { CrmOnboardingDictionary } from "@/i18n/dictionaries/workspace/crm";
 import styles from "./onboarding-complete-dialog.module.css";
 
@@ -65,11 +67,19 @@ export function OnboardingCompleteDialog({
 }: OnboardingCompleteDialogProps) {
   const formId = useId();
   const advanceId = useId();
-  const [busy, setBusy] = useState(false);
+  const mutation = useVersionedMutation<
+    OnboardingFormDto,
+    OnboardingFormClientErrorCode
+  >(form, onCloseAction, { onConflictAction });
   const [callHeldOn, setCallHeldOn] = useState("");
   const [advancePhase, setAdvancePhase] = useState(true);
   const [dateError, setDateError] = useState<string | null>(null);
-  const [failure, setFailure] = useState<string | null>(null);
+  const busy = mutation.isSubmitting;
+  const failure = mutation.hasConflict
+    ? content.conflict
+    : mutation.errorCode
+      ? onboardingFormErrorText(mutation.errorCode, errorTexts)
+      : null;
   const today = businessToday();
   const blocks = form.blocks.map((step) => step.block);
   const { missing } = getQuestionnaireCompleteness(
@@ -112,7 +122,6 @@ export function OnboardingCompleteDialog({
   async function complete(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     if (busy || missingFieldIds.length > 0) return;
-    setFailure(null);
     if (!isOnboardingCallDateAcceptable(callHeldOn, today)) {
       setDateError(
         callHeldOn === ""
@@ -121,23 +130,16 @@ export function OnboardingCompleteDialog({
       );
       return;
     }
-    setBusy(true);
-    const result = await onboardingFormApiService.complete(form.id, {
-      expectedVersion: form.version,
-      callHeldOn,
-      advancePhase: phaseAdvanceable && advancePhase,
-    });
-    setBusy(false);
-    if (result.ok) {
+    await mutation.submit(async (current) => {
+      const result = await onboardingFormApiService.complete(current.id, {
+        expectedVersion: current.version,
+        callHeldOn,
+        advancePhase: phaseAdvanceable && advancePhase,
+      });
+      if (!result.ok) return result;
       onCompletedAction(result.value);
-      return;
-    }
-    if ("current" in result) {
-      setFailure(content.conflict);
-      onConflictAction(result.current);
-      return;
-    }
-    setFailure(onboardingFormErrorText(result.code, errorTexts));
+      return { ok: true, current: result.value };
+    });
   }
 
   return (
@@ -149,7 +151,7 @@ export function OnboardingCompleteDialog({
         <>
           <ButtonControl
             disabled={busy}
-            onClick={onCloseAction}
+            onClick={mutation.close}
             type="button"
             variant="ghost"
           >
@@ -164,7 +166,7 @@ export function OnboardingCompleteDialog({
           </PrimaryCtaButton>
         </>
       }
-      onCloseAction={onCloseAction}
+      onCloseAction={mutation.close}
       size={DialogSize.Narrow}
       title={content.title}
     >
@@ -186,7 +188,7 @@ export function OnboardingCompleteDialog({
             <Link
               className={styles.link}
               href={answersHref}
-              onClick={onCloseAction}
+              onClick={mutation.close}
             >
               {content.missingLink}
             </Link>

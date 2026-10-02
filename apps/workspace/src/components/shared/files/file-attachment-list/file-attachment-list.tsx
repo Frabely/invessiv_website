@@ -3,23 +3,23 @@
 import { useState } from "react";
 import { faLinkSlash } from "@fortawesome/free-solid-svg-icons";
 import type { FilePreviewKind } from "@invessiv/common/constants/files/file-preview-kind";
-import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
+import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
 import { filePresentation } from "@invessiv/common/patterns/files/file-presentation";
 import { filePreviewSelection } from "@/common/patterns/files/file-preview-selection";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { FileEntryRow, FileLightbox } from "@invessiv/ui";
-import type { FeedbackAttachmentTexts } from "@/common/contracts/files/feedback-attachment-texts";
-import styles from "./feedback-attachment-list.module.css";
+import type { FileAttachmentTexts } from "@/common/contracts/files/file-attachment-texts";
+import styles from "./file-attachment-list.module.css";
 
-export type FeedbackAttachmentListProps = {
-  attachments: readonly FeedbackAttachmentDto[];
+export type FileAttachmentListProps = {
+  attachments: readonly FileAttachmentDto[];
   /** Names the list, e.g. "Attachments of item 2". */
   label: string;
   locale: string;
-  texts: FeedbackAttachmentTexts;
-  onDownloadAction: (file: FeedbackAttachmentDto) => void;
+  texts: FileAttachmentTexts;
+  onDownloadAction: (file: FileAttachmentDto) => void;
   loadPreviewAction: (
-    file: FeedbackAttachmentDto,
+    file: FileAttachmentDto,
     kind: FilePreviewKind,
   ) => Promise<string | null>;
   /** Present only where the viewer may unhook files; the file itself is never deleted here. */
@@ -27,15 +27,15 @@ export type FeedbackAttachmentListProps = {
     label: string;
     title: string;
     disabled: boolean;
-    onDetachAction: (file: FeedbackAttachmentDto) => void;
+    onDetachAction: (file: FileAttachmentDto) => void;
   };
 };
 
 /**
- * Attachments of one feedback item with the shared file row and preview, so the CRM and the
- * portal show the same thing; only texts and API calls differ.
+ * Files hung on something else (a feedback item, a field of a form) with the shared file row and
+ * preview, so the CRM and the portal show the same thing; only texts and API calls differ.
  */
-export function FeedbackAttachmentList({
+export function FileAttachmentList({
   attachments,
   label,
   locale,
@@ -43,7 +43,7 @@ export function FeedbackAttachmentList({
   onDownloadAction,
   loadPreviewAction,
   detach,
-}: FeedbackAttachmentListProps) {
+}: FileAttachmentListProps) {
   const [previewId, setPreviewId] = useState<string | null>(null);
   const previewable = filePreviewSelection.list(attachments);
   const previewIndex = filePreviewSelection.indexOf(previewable, previewId);

@@ -1,4 +1,7 @@
-import { type Locale, SUPPORTED_LOCALES } from "@invessiv/common";
+import {
+  type Locale,
+  SUPPORTED_LOCALES,
+} from "@invessiv/common/contracts/i18n/locale";
 import { OnboardingReleaseWarningKind } from "../../../constants/crm/onboarding/onboarding-release-warning-kinds";
 import { QuestionnaireFieldType } from "../../../constants/crm/questionnaire/questionnaire-field-types";
 import type { OnboardingReleaseWarningDto } from "../../../contracts/crm/onboarding/onboarding-release-warning.dto";

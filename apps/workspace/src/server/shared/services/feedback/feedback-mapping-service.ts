@@ -1,11 +1,11 @@
 import "server-only";
 
-import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
+import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
 import type { FileRow } from "@/server/shared/files/file-object-service-types";
 import { filePresentationMappingService } from "@/server/shared/files/file-presentation-mapping-service";
 
 /** Attachments keep the shape of the shared file row, so both sides render them alike. */
-function toAttachmentDto(row: FileRow): FeedbackAttachmentDto {
+function toAttachmentDto(row: FileRow): FileAttachmentDto {
   return filePresentationMappingService.toFields(row);
 }
 

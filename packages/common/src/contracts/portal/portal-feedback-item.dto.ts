@@ -1,6 +1,6 @@
 import type { FeedbackItemKind } from "../../constants/crm/feedback-item-kinds";
 import type { FeedbackItemResult } from "../../constants/crm/feedback-item-results";
-import type { FeedbackAttachmentDto } from "../crm/feedback-attachment.dto";
+import type { FileAttachmentDto } from "../files/file-attachment.dto";
 
 /** One feedback item as the customer sees it; who set the result stays internal. */
 export interface PortalFeedbackItemDto {
@@ -19,5 +19,5 @@ export interface PortalFeedbackItemDto {
   /** Reply of the team; null under the same rule as `result`. */
   resultNote: string | null;
   /** Uploads on this item in upload order. */
-  attachments: FeedbackAttachmentDto[];
+  attachments: FileAttachmentDto[];
 }

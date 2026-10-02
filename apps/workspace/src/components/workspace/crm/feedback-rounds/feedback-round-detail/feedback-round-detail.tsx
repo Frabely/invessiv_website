@@ -15,7 +15,7 @@ import type { FeedbackRoundDto } from "@invessiv/common/contracts/crm/feedback-r
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl, LinkedText } from "@invessiv/ui";
 import { filesApiService } from "@/client/crm/files-api-service";
-import { FeedbackAttachmentList } from "@/components/shared/feedback/feedback-attachment-list/feedback-attachment-list";
+import { FileAttachmentList } from "@/components/shared/files/file-attachment-list/file-attachment-list";
 import { FeedbackRoundStatusBadge } from "@/components/shared/feedback/feedback-round-status-badge/feedback-round-status-badge";
 import type { Locale } from "@/config/i18n";
 import { useFileDownloads } from "@/hooks/shared/use-file-downloads";
@@ -213,7 +213,7 @@ export function FeedbackRoundDetail({
               <FeedbackItemRow
                 attachments={
                   canReadFiles && item.attachments.length > 0 ? (
-                    <FeedbackAttachmentList
+                    <FileAttachmentList
                       attachments={item.attachments}
                       label={formatMessage(texts.attachments, {
                         number: index + 1,

@@ -36,6 +36,10 @@ const api = vi.hoisted(() => ({
   requestChanges: vi.fn(),
 }));
 
+// The change request dialog refreshes the page behind it once the request went through.
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: vi.fn() }),
+}));
 vi.mock("@/client/crm/onboarding-form-api-service", () => ({
   onboardingFormApiService: api,
 }));

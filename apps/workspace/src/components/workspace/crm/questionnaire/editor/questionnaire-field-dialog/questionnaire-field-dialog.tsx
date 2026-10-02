@@ -25,6 +25,7 @@ import {
 import { resolveQuestionnaireText } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-translation";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { CustomSelect, FormDialog, FormField } from "@invessiv/ui";
+import type { QuestionnaireDefinitionClientApi } from "@/common/contracts/crm/questionnaire/questionnaire-definition-client-api";
 import type { QuestionnaireFieldFormErrors } from "@/common/contracts/crm/questionnaire/questionnaire-field-form-errors";
 import type { QuestionnaireFieldFormValues } from "@/common/contracts/crm/questionnaire/questionnaire-field-form-values";
 import type { QuestionnaireFixedChoiceLabels } from "@/common/contracts/crm/questionnaire/questionnaire-fixed-choice-labels";
@@ -32,9 +33,11 @@ import {
   changeQuestionnaireFieldType,
   createQuestionnaireFieldFormValues,
   hasQuestionnaireChoices,
+  toQuestionnaireFieldInput,
   validateQuestionnaireFieldForm,
   withQuestionnaireFieldLabel,
 } from "@/common/patterns/crm/questionnaire/questionnaire-field-form";
+import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import type { CrmQuestionnaireDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { QuestionnaireCheckboxField } from "../questionnaire-checkbox-field/questionnaire-checkbox-field";
 import { QuestionnaireChoiceEditor } from "../questionnaire-choice-editor/questionnaire-choice-editor";
@@ -44,18 +47,20 @@ import { QuestionnaireLocaleTabs } from "../questionnaire-locale-tabs/questionna
 import styles from "./questionnaire-field-dialog.module.css";
 
 export type QuestionnaireFieldDialogProps = {
-  /** The current block; after a conflict it is the fresh one, so candidates and version are right. */
+  /** The owner's writes; the dialog itself knows neither the catalog nor forms. */
+  api: QuestionnaireDefinitionClientApi;
+  /** The block as the editor holds it; its version guards the write. */
   block: QuestionnaireBlockDto;
-  busy: boolean;
-  conflict: boolean;
   content: CrmQuestionnaireDictionary;
-  failure: QuestionnaireErrorCode | null;
   /** Null creates a field; the type is chosen here and fixed afterwards. */
   field: QuestionnaireFieldDto | null;
   fixedChoiceLabels: QuestionnaireFixedChoiceLabels;
   locale: Locale;
   onCloseAction: () => void;
-  onSubmitAction: (values: QuestionnaireFieldFormValues) => void;
+  /** A stale block version came back with the current block; the editor adopts it, the input stays. */
+  onConflictAction: (current: QuestionnaireBlockDto) => void;
+  /** The write went through; the answer is the whole block. */
+  onSavedAction: (block: QuestionnaireBlockDto) => void;
   parentFieldId: string | null;
 };
 
@@ -78,18 +83,26 @@ function typesFor(
 }
 
 export function QuestionnaireFieldDialog({
-  block,
-  busy,
-  conflict,
+  api,
+  block: initialBlock,
   content,
-  failure,
   field,
   fixedChoiceLabels,
   locale,
   onCloseAction,
-  onSubmitAction,
+  onConflictAction,
+  onSavedAction,
   parentFieldId,
 }: QuestionnaireFieldDialogProps) {
+  // After a conflict the hook holds the fresh block, so candidates and version are right.
+  const mutation = useVersionedMutation<
+    QuestionnaireBlockDto,
+    QuestionnaireErrorCode
+  >(initialBlock, onCloseAction, { onConflictAction });
+  const block = mutation.current;
+  const busy = mutation.isSubmitting;
+  const conflict = mutation.hasConflict;
+  const failure = mutation.errorCode;
   const formId = useId();
   const tabPrefix = useId();
   const panelId = useId();
@@ -135,7 +148,23 @@ export function QuestionnaireFieldDialog({
       firstRef.current?.focus();
       return;
     }
-    onSubmitAction({ ...values, ...condition });
+    const input = toQuestionnaireFieldInput({ ...values, ...condition });
+    void mutation.submit(async (current) => {
+      const result = field
+        ? await api.updateField(field.id, {
+            ...input,
+            expectedBlockVersion: current.version,
+          })
+        : await api.createField(current.id, {
+            ...input,
+            type: values.type,
+            parentFieldId,
+            expectedBlockVersion: current.version,
+          });
+      if (!result.ok) return result;
+      onSavedAction(result.value);
+      return { ok: true, current: result.value };
+    });
   }
 
   const missing = SUPPORTED_LOCALES.filter(
@@ -149,7 +178,7 @@ export function QuestionnaireFieldDialog({
       closeLabel={content.catalog.dialog.close}
       formId={formId}
       initialFocusRef={firstRef}
-      onCloseAction={onCloseAction}
+      onCloseAction={mutation.close}
       size={DialogSize.Wide}
       submitLabel={field ? text.submitEdit : text.submitCreate}
       submittingLabel={text.submitting}

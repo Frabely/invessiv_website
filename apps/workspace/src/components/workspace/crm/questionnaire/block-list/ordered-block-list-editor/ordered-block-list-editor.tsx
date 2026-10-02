@@ -15,14 +15,14 @@ import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl } from "@invessiv/ui";
 import styles from "./ordered-block-list-editor.module.css";
 
-export type OrderedBlockListItem = {
+type OrderedBlockListItem = {
   id: string;
   name: string;
   /** Extra line under the name, such as the key or an archived badge. */
   detail?: ReactNode;
 };
 
-export type OrderedBlockListEditorLabels = {
+type OrderedBlockListEditorLabels = {
   moveUp: string;
   moveDown: string;
   remove: string;

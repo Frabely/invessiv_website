@@ -5,6 +5,7 @@ import { QUESTIONNAIRE_ERROR_CODE_VALUES } from "@invessiv/common/constants/crm/
 import { ONBOARDING_FORM_STATUS_VALUES } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import de from "@/i18n/dictionaries/workspace/crm/onboarding/de.json";
 import en from "@/i18n/dictionaries/workspace/crm/onboarding/en.json";
+import { OnboardingBlockListChangeKind } from "./onboarding-block-list-change-kinds";
 import { ONBOARDING_FORM_CLIENT_ERROR_CODE_VALUES } from "./onboarding-form-client-error-codes";
 import { OnboardingFormQueryParam } from "./onboarding-form-query-params";
 import { ONBOARDING_FORM_STATUS_BADGES } from "./onboarding-form-status-badges";
@@ -21,6 +22,13 @@ function keyPaths(value: unknown, prefix = ""): string[] {
 }
 
 describe("onboarding form constants", () => {
+  it("names the block list changes exactly once", () => {
+    expect(Object.values(OnboardingBlockListChangeKind)).toEqual([
+      "move",
+      "remove",
+    ]);
+  });
+
   it("lists every tab exactly once", () => {
     expect([...ONBOARDING_FORM_TAB_VALUES]).toEqual(
       Object.values(OnboardingFormTab),

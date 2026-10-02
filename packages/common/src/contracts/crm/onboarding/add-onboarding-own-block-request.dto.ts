@@ -1,4 +1,4 @@
-import type { Locale } from "@invessiv/common";
+import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 import type { QuestionnaireBlockTranslationDto } from "../questionnaire/questionnaire-block-translation.dto";
 
 /** Appends an empty block that exists only in this form; it has no origin and is never pre-filled. */

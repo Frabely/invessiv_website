@@ -1,4 +1,7 @@
-import { type Locale, SUPPORTED_LOCALES } from "@invessiv/common";
+import {
+  type Locale,
+  SUPPORTED_LOCALES,
+} from "@invessiv/common/contracts/i18n/locale";
 import type { QuestionnaireBlockDto } from "../../../contracts/crm/questionnaire/questionnaire-block.dto";
 import type { QuestionnaireFieldDto } from "../../../contracts/crm/questionnaire/questionnaire-field.dto";
 import type { QuestionnaireResolvedText } from "../../../contracts/crm/questionnaire/questionnaire-resolved-text";

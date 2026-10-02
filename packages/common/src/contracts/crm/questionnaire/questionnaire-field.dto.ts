@@ -2,7 +2,7 @@ import type { QuestionnaireFieldRequirement } from "../../../constants/crm/quest
 import type { QuestionnaireFieldType } from "../../../constants/crm/questionnaire/questionnaire-field-types";
 import type { QuestionnairePrefillSource } from "../../../constants/crm/questionnaire/questionnaire-prefill-sources";
 import type { AssetKind } from "../../../constants/files/asset-kind";
-import type { Locale } from "@invessiv/common";
+import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 import type { QuestionnaireChoiceDto } from "./questionnaire-choice.dto";
 import type { QuestionnaireFieldTranslationDto } from "./questionnaire-field-translation.dto";
 

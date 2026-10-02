@@ -1,4 +1,4 @@
-import type { Locale } from "@invessiv/common";
+import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 import type { QuestionnaireBlockDto } from "../../../contracts/crm/questionnaire/questionnaire-block.dto";
 import type { QuestionnaireFieldDto } from "../../../contracts/crm/questionnaire/questionnaire-field.dto";
 import type { QuestionnaireResolvedBlock } from "../../../contracts/crm/questionnaire/questionnaire-resolved-block";

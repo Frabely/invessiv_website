@@ -3,11 +3,11 @@ import { FeedbackItemKind } from "@invessiv/common/constants/crm/feedback-item-k
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
 import { FileSource } from "@invessiv/common/constants/files/file-source";
-import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
+import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
 import type { PortalFeedbackRoundDto } from "@invessiv/common/contracts/portal/portal-feedback-round.dto";
 import { feedbackDraftItems } from "@/common/patterns/portal/feedback-draft-items";
 
-const FILE: FeedbackAttachmentDto = {
+const FILE: FileAttachmentDto = {
   id: "file-1",
   displayName: "hero.png",
   assetKind: AssetKind.Image,

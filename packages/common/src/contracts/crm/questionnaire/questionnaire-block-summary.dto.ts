@@ -1,5 +1,5 @@
 import type { QuestionnaireCatalogStatus } from "../../../constants/crm/questionnaire/questionnaire-catalog-statuses";
-import type { Locale } from "@invessiv/common";
+import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 
 /** A catalog block as the list and the block picker show it. */
 export interface QuestionnaireBlockSummaryDto {

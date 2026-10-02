@@ -11,6 +11,7 @@ import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
 import { portalOnboardingApiService } from "@/client/portal/portal-onboarding-api-service";
 import { PORTAL_ONBOARDING_REVIEW_SECTION } from "@/common/constants/portal/portal-onboarding-query-params";
 import { DraftSaveState } from "@/common/constants/shared/draft-save-states";
+import type { OnboardingFieldFormContext } from "@/common/contracts/portal/onboarding-field-form-context";
 import type { OnboardingMissingAnswer } from "@/common/contracts/portal/onboarding-missing-answer";
 import type { PortalOnboardingStepTarget } from "@/common/contracts/portal/portal-onboarding-step-target";
 import { onboardingAnswerDrafts } from "@/common/patterns/portal/onboarding-answer-drafts";
@@ -27,7 +28,6 @@ import type {
 import { OnboardingBlockStep } from "../onboarding-block-step/onboarding-block-step";
 import { OnboardingStepTrack } from "../onboarding-step-track/onboarding-step-track";
 import { OnboardingSubmitStep } from "../onboarding-submit-step/onboarding-submit-step";
-import type { QuestionnaireFieldProps } from "../questionnaire-field/questionnaire-field";
 import styles from "./onboarding-form-editor.module.css";
 
 // Codes after which the form on screen is no longer what the server holds.
@@ -220,7 +220,7 @@ export function OnboardingFormEditor({
     if (STALE_CODES.includes(result.code)) onStaleAction();
   }
 
-  const fieldForm: QuestionnaireFieldProps["form"] = {
+  const fieldForm: OnboardingFieldFormContext = {
     answerFiles: state.answerFiles,
     busy: state.busy,
     hiddenAnswerFiles: form.hiddenAnswerFiles,

@@ -14,7 +14,7 @@ import type { CrmQuestionnaireDictionary } from "@/i18n/dictionaries/workspace/c
 import { QuestionnaireFieldRow } from "../questionnaire-field-row/questionnaire-field-row";
 import styles from "./questionnaire-field-list.module.css";
 
-export type QuestionnaireFieldListActions = {
+type QuestionnaireFieldListActions = {
   busy: boolean;
   onAddChildAction: (group: QuestionnaireFieldDto) => void;
   onDeleteAction: (field: QuestionnaireFieldDto) => void;

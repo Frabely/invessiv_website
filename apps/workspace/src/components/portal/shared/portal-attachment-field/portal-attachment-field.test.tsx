@@ -12,7 +12,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
 import { FileSource } from "@invessiv/common/constants/files/file-source";
 import { UploadQueueItemStatus } from "@invessiv/common/constants/files/upload-queue-item-status";
-import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
+import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
 import type { UploadQueueItem } from "@invessiv/common/contracts/files/upload-queue-item";
 import type { PortalFileDto } from "@invessiv/common/contracts/portal/portal-file.dto";
 import type { UploadQueueTransport } from "@/common/contracts/files/upload-queue-transport";
@@ -68,10 +68,7 @@ const TRANSPORT = {
   complete: vi.fn(),
 } satisfies UploadQueueTransport<PortalFileDto>;
 
-function attachment(
-  id: string,
-  displayName = `${id}.png`,
-): FeedbackAttachmentDto {
+function attachment(id: string, displayName = `${id}.png`): FileAttachmentDto {
   return {
     id,
     displayName,

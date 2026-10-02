@@ -2,7 +2,7 @@ import "server-only";
 
 import { inArray } from "drizzle-orm";
 
-import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
+import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import { files } from "@invessiv/db/record-configuration";
 import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
@@ -23,7 +23,7 @@ async function writeBinding(
     typeof files.$inferInsert,
     "feedback_round_id" | "feedback_item_id" | "project_id"
   >,
-): Promise<FeedbackAttachmentDto> {
+): Promise<FileAttachmentDto> {
   const row = await updateLockedVersioned(
     { tx, table: files, id: file.id, expectedVersion: file.version, patch },
     "Locked feedback file changed",
@@ -36,7 +36,7 @@ function attachFile(
   tx: ContactDatabaseTransaction,
   file: LockedFeedbackFile,
   target: { round: FeedbackRoundRef; itemId: string },
-): Promise<FeedbackAttachmentDto> {
+): Promise<FileAttachmentDto> {
   return writeBinding(tx, file, {
     feedback_round_id: target.round.id,
     feedback_item_id: target.itemId,
@@ -48,7 +48,7 @@ function attachFile(
 function detachFile(
   tx: ContactDatabaseTransaction,
   file: LockedFeedbackFile,
-): Promise<FeedbackAttachmentDto> {
+): Promise<FileAttachmentDto> {
   return writeBinding(tx, file, {
     feedback_round_id: null,
     feedback_item_id: null,

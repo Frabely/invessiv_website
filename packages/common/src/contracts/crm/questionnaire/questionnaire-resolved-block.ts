@@ -1,4 +1,4 @@
-import type { Locale } from "@invessiv/common";
+import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 import type { QuestionnaireResolvedField } from "./questionnaire-resolved-field";
 
 /** A block with its texts resolved for a reader, as form and read view show it. */

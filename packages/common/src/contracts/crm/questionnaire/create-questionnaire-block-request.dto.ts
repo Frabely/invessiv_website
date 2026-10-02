@@ -1,4 +1,4 @@
-import type { Locale } from "@invessiv/common";
+import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 import type { QuestionnaireBlockTranslationDto } from "./questionnaire-block-translation.dto";
 
 /** Creates an empty catalog block; fields follow in the block editor. */

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { OnboardingErrorCode } from "@invessiv/common/constants/crm/errors/onboarding-error-codes";
 import { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
 import { OnboardingReleaseWarningKind } from "@invessiv/common/constants/crm/onboarding/onboarding-release-warning-kinds";
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
@@ -10,10 +11,12 @@ import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { languageName } from "@invessiv/common/patterns/i18n/language-name";
 import { ConfirmDialog, Dialog, DialogSize } from "@invessiv/ui";
 import { onboardingFormApiService } from "@/client/crm/onboarding-form-api-service";
+import type { OnboardingFormClientErrorCode } from "@/common/constants/crm/onboarding/onboarding-form-client-error-codes";
 import type { OnboardingFormErrorTexts } from "@/common/contracts/crm/onboarding/onboarding-form-error-texts";
 import { onboardingFormErrorText } from "@/common/patterns/crm/onboarding/onboarding-form-error-text";
 import { questionnaireBlockName } from "@/common/patterns/crm/questionnaire/questionnaire-display-name";
 import type { Locale } from "@/config/i18n";
+import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import type { CrmOnboardingDictionary } from "@/i18n/dictionaries/workspace/crm";
 import styles from "./onboarding-release-dialog.module.css";
 
@@ -43,8 +46,11 @@ export function OnboardingReleaseDialog({
   onConflictAction,
   onReleasedAction,
 }: OnboardingReleaseDialogProps) {
-  const [busy, setBusy] = useState(false);
-  const [failure, setFailure] = useState<string | null>(null);
+  const mutation = useVersionedMutation<
+    OnboardingFormDto,
+    OnboardingFormClientErrorCode
+  >(form, onCloseAction, { onConflictAction });
+  const busy = mutation.isSubmitting;
   /** Null until the server named warnings; from then on the confirmation acknowledges them. */
   const [warnings, setWarnings] = useState<
     readonly OnboardingReleaseWarningDto[] | null
@@ -65,34 +71,35 @@ export function OnboardingReleaseDialog({
 
   async function release() {
     if (busy) return;
-    setBusy(true);
-    setFailure(null);
-    const result = await onboardingFormApiService.release(form.id, {
-      expectedVersion: form.version,
-      acknowledgeWarnings: warnings !== null,
-    });
-    setBusy(false);
-    if (result.ok) {
-      onReleasedAction(result.value);
-      return;
-    }
-    if ("warnings" in result) {
-      setWarnings(result.warnings);
-      return;
-    }
-    if ("current" in result) {
+    await mutation.submit(async (current) => {
+      const result = await onboardingFormApiService.release(current.id, {
+        expectedVersion: current.version,
+        acknowledgeWarnings: warnings !== null,
+      });
+      if (result.ok) {
+        onReleasedAction(result.value);
+        return { ok: true, current: result.value };
+      }
+      if ("warnings" in result) {
+        setWarnings(result.warnings);
+        return { ok: false, code: result.code };
+      }
       // What was acknowledged belonged to the old version; the new one is checked afresh.
-      setWarnings(null);
-      setFailure(content.conflict);
-      onConflictAction(result.current);
-      return;
-    }
-    setFailure(
-      // The server found the form empty after all, e.g. after a colleague removed a field.
-      result.code === QuestionnaireErrorCode.InvalidFieldConfig
-        ? content.notReleasable
-        : onboardingFormErrorText(result.code, errorTexts),
-    );
+      if ("current" in result) setWarnings(null);
+      return result;
+    });
+  }
+
+  function describeFailure(): string | null {
+    if (mutation.hasConflict) return content.conflict;
+    const code = mutation.errorCode;
+    // Warnings wait for their acknowledgement in the list above; they are no failure.
+    if (code === null || code === OnboardingErrorCode.ReleaseWarnings)
+      return null;
+    // The server found the form empty after all, e.g. after a colleague removed a field.
+    return code === QuestionnaireErrorCode.InvalidFieldConfig
+      ? content.notReleasable
+      : onboardingFormErrorText(code, errorTexts);
   }
 
   function describe(warning: OnboardingReleaseWarningDto): string {
@@ -107,6 +114,8 @@ export function OnboardingReleaseDialog({
     });
   }
 
+  const failure = describeFailure();
+
   return (
     <ConfirmDialog
       busy={busy}
@@ -114,7 +123,7 @@ export function OnboardingReleaseDialog({
       closeLabel={content.close}
       confirmLabel={warnings ? content.confirmAnyway : content.confirm}
       description={content.description}
-      onCancelAction={onCloseAction}
+      onCancelAction={mutation.close}
       onConfirmAction={() => void release()}
       title={content.title}
     >

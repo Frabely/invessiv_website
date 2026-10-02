@@ -67,6 +67,26 @@ Layering-Bruch `shared → workspace`, und viel von Hand wiederholtes Gerüst (H
 >   `server/shared/services/questionnaire/`. Kein Import mehr von `shared`/`portal` in den CRM-Baukasten.
 > - **A2:** Die Vorbefüllung schreibt Gruppeneinträge und Datei-Verknüpfungen über
 >   `onboardingGroupEntryService.insertEntries` und `onboardingAttachmentService.insertLinks`.
+>
+> **Danach ebenfalls behoben (ungecommittet): A3–A9, dabei D6 und D7.**
+>
+> - **A3 (teilweise, D3 bleibt offen):** Die vier echten Dialoge laufen über `useVersionedMutation`: Freigabe,
+>   Abschluss, Nachforderung und der Feld-Dialog (der jetzt selbst schreibt, statt den Editor schreiben zu lassen).
+>   Der Hook schließt nach Erfolg und passt deshalb nicht auf Flächen, die offen bleiben: Aufbau, Prüf-Steuerung,
+>   Listenaktionen und Löschen im Block-Editor, Kopf-Formular, Vorlagen-Editor. Die Grenze steht in
+>   `components/workspace/crm/AGENTS.md`; ein gemeinsamer Helfer für diese Inline-Flächen ist D3.
+> - **A4:** `OnboardingBlockListChangeKind`, `QuestionnaireSaveOutcomeKind` (+ Contract `QuestionnaireSaveOutcome`,
+>   der doppelte `Outcome`-Typ ist weg), lokales `DialogKind` im Aufbau.
+> - **A5:** `export` an den drei Typen gestrichen.
+> - **A6:** `OnboardingFieldFormContext` und `OnboardingAnswerSlotRef` unter `common/contracts/portal/`.
+> - **A7 / D6 / D7:** Slot-Schlüssel und Auswahl-Typ-Prüfung einmal in
+>   `@invessiv/common/patterns/crm/questionnaire/questionnaire-answer-slot`; `FileAttachmentDto` ist die eine
+>   Datei-Form (`FeedbackAttachmentDto` und `QuestionnaireAttachment` sind Aliase); die Kachelliste heißt
+>   `FileAttachmentList` unter `components/shared/files/`, ihre Texte `FileAttachmentTexts`.
+> - **A8:** `questionnaireDefinitionValidation` liegt als Pattern in `packages/common`. Der Test bleibt in der App,
+>   weil er deren Fixtures nutzt. Der Editor prüft noch nicht vorab damit.
+> - **A9:** Nur die Barrel-Importe (`from "@invessiv/common"`) waren die Abweichung und sind ersetzt.
+>   `@invessiv/common/...`-Subpfade sind im Paket der übliche Stil (rund 320 Stellen); der Befund war dort falsch.
 
 ### L1 (H) — Ungültiger Entwurf in einem ausgeblendeten Feld blockiert das Absenden
 

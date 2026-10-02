@@ -3,7 +3,6 @@
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { faListUl, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import type { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
 import { QuestionnaireFieldType } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
 import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
 import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block.dto";
@@ -20,10 +19,8 @@ import { QuestionnaireEditorDialogKind } from "@/common/constants/crm/questionna
 import type { QuestionnaireClientResult } from "@/common/contracts/crm/questionnaire/questionnaire-client-result";
 import type { QuestionnaireDefinitionClientApi } from "@/common/contracts/crm/questionnaire/questionnaire-definition-client-api";
 import type { QuestionnaireFieldDeleteDialog } from "@/common/contracts/crm/questionnaire/questionnaire-field-delete-dialog";
-import type { QuestionnaireFieldFormValues } from "@/common/contracts/crm/questionnaire/questionnaire-field-form-values";
 import type { QuestionnaireFixedChoiceLabels } from "@/common/contracts/crm/questionnaire/questionnaire-fixed-choice-labels";
 import { questionnaireFieldName } from "@/common/patterns/crm/questionnaire/questionnaire-display-name";
-import { toQuestionnaireFieldInput } from "@/common/patterns/crm/questionnaire/questionnaire-field-form";
 import { useQuestionnaireEditorDialog } from "@/hooks/workspace/crm/use-questionnaire-editor-dialog";
 import type { CrmQuestionnaireDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { QuestionnaireBlockHeadForm } from "../questionnaire-block-head-form/questionnaire-block-head-form";
@@ -51,14 +48,6 @@ export type QuestionnaireBlockEditorProps = {
   showStatus: boolean;
 };
 
-type DialogState = {
-  busy: boolean;
-  conflict: boolean;
-  failure: QuestionnaireErrorCode | null;
-};
-
-const IDLE: DialogState = { busy: false, conflict: false, failure: null };
-
 /**
  * Edits one block: its head and its fields. Every write answers with the whole block, which
  * replaces the local one; a conflict adopts the current block and keeps the dialog's input.
@@ -75,7 +64,7 @@ export function QuestionnaireBlockEditor({
   showStatus,
 }: QuestionnaireBlockEditorProps) {
   const [block, setBlock] = useState(initialBlock);
-  const [dialogState, setDialogState] = useState<DialogState>(IDLE);
+  const [deleting, setDeleting] = useState(false);
   const [listBusy, setListBusy] = useState(false);
   const [listFailure, setListFailure] = useState<string | null>(null);
   const [announcement, setAnnouncement] = useState("");
@@ -115,7 +104,7 @@ export function QuestionnaireBlockEditor({
   }
 
   function closeDialog() {
-    setDialogState(IDLE);
+    setDeleting(false);
     close();
   }
 
@@ -162,7 +151,7 @@ export function QuestionnaireBlockEditor({
   }
 
   async function removeField(field: QuestionnaireFieldDto) {
-    setDialogState({ ...IDLE, busy: true });
+    setDeleting(true);
     const result = await api.deleteField(field.id, {
       expectedBlockVersion: block.version,
     });
@@ -172,44 +161,20 @@ export function QuestionnaireBlockEditor({
     );
   }
 
-  async function submitField(
-    values: QuestionnaireFieldFormValues,
+  /** The field dialog wrote the block; the list follows and says what happened. */
+  function handleFieldSaved(
+    next: QuestionnaireBlockDto,
     field: QuestionnaireFieldDto | null,
     parentFieldId: string | null,
   ) {
-    setDialogState({ ...IDLE, busy: true });
-    const input = toQuestionnaireFieldInput(values);
-    const result = field
-      ? await api.updateField(field.id, {
-          ...input,
-          expectedBlockVersion: block.version,
-        })
-      : await api.createField(block.id, {
-          ...input,
-          type: values.type,
-          parentFieldId,
-          expectedBlockVersion: block.version,
-        });
-    if (result.ok) {
-      adopt(result.value);
-      const saved = field
-        ? findQuestionnaireField(result.value, field.id)
-        : questionnaireFieldLevel(result.value, parentFieldId).at(-1);
-      if (saved)
-        setAnnouncement(
-          formatMessage(field ? text.updated : text.added, {
-            name: name(saved),
-          }),
-        );
-      closeDialog();
-      return;
-    }
-    if ("current" in result) {
-      adopt(result.current);
-      setDialogState({ ...IDLE, conflict: true });
-      return;
-    }
-    setDialogState({ ...IDLE, failure: result.code });
+    adopt(next);
+    const saved = field
+      ? findQuestionnaireField(next, field.id)
+      : questionnaireFieldLevel(next, parentFieldId).at(-1);
+    if (saved)
+      setAnnouncement(
+        formatMessage(field ? text.updated : text.added, { name: name(saved) }),
+      );
   }
 
   const editField =
@@ -331,19 +296,18 @@ export function QuestionnaireBlockEditor({
 
       {showCreate || (canWrite && editField) ? (
         <QuestionnaireFieldDialog
+          api={api}
           block={block}
-          busy={dialogState.busy}
-          conflict={dialogState.conflict}
           content={content}
-          failure={dialogState.failure}
           field={editField ?? null}
           fixedChoiceLabels={fixedChoiceLabels}
           key={editField?.id ?? `new-${createParent ?? "block"}`}
           locale={locale}
           onCloseAction={closeDialog}
-          onSubmitAction={(values) =>
-            submitField(
-              values,
+          onConflictAction={adopt}
+          onSavedAction={(next) =>
+            handleFieldSaved(
+              next,
               editField ?? null,
               editField ? editField.parentFieldId : createParent,
             )
@@ -356,14 +320,14 @@ export function QuestionnaireBlockEditor({
         ? renderDeleteDialogAction({
             field: deleteField,
             name: name(deleteField),
-            busy: dialogState.busy,
+            busy: deleting,
             onCancelAction: closeDialog,
             onConfirmAction: () => void removeField(deleteField),
           })
         : null}
       {canWrite && deleteField && !renderDeleteDialogAction ? (
         <ConfirmDialog
-          busy={dialogState.busy}
+          busy={deleting}
           cancelLabel={content.editor.deleteDialog.cancel}
           closeLabel={content.catalog.dialog.close}
           confirmLabel={content.editor.deleteDialog.confirm}

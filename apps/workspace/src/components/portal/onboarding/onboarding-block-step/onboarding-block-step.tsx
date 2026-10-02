@@ -5,6 +5,7 @@ import type { PortalOnboardingBlockDto } from "@invessiv/common/contracts/portal
 import { isQuestionnaireFieldVisible } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { languageName } from "@invessiv/common/patterns/i18n/language-name";
+import type { OnboardingFieldFormContext } from "@/common/contracts/portal/onboarding-field-form-context";
 import { onboardingFieldDomId } from "@/common/patterns/portal/onboarding-field-dom-id";
 import {
   OnboardingAnswerReadView,
@@ -12,10 +13,7 @@ import {
 } from "@/components/shared/onboarding/onboarding-answer-read-view/onboarding-answer-read-view";
 import type { Locale } from "@/config/i18n";
 import type { PortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
-import {
-  QuestionnaireField,
-  type QuestionnaireFieldProps,
-} from "../questionnaire-field/questionnaire-field";
+import { QuestionnaireField } from "../questionnaire-field/questionnaire-field";
 import styles from "./onboarding-block-step.module.css";
 
 export type OnboardingBlockStepProps = {
@@ -28,7 +26,7 @@ export type OnboardingBlockStepProps = {
   /** Slot to focus instead of the heading, after a jump from the list of missing answers. */
   focusFieldId: string | null;
   /** What every field of the step reads from and writes to. */
-  form: QuestionnaireFieldProps["form"];
+  form: OnboardingFieldFormContext;
   locale: Locale;
   /** Whether the step was reached by navigating; a fresh page load leaves the focus alone. */
   moveFocus: boolean;

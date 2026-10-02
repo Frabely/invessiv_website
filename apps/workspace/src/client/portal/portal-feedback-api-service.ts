@@ -4,7 +4,7 @@ import {
   PORTAL_FEEDBACK_ERROR_CODE_VALUES,
   PortalFeedbackErrorCode,
 } from "@invessiv/common/constants/portal/portal-feedback-error-codes";
-import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
+import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
 import type { PortalFeedbackRoundDto } from "@invessiv/common/contracts/portal/portal-feedback-round.dto";
 import type { SavePortalFeedbackDraftRequestDto } from "@invessiv/common/contracts/portal/save-portal-feedback-draft-request.dto";
 import { versionedJsonMutationService } from "@/client/shared/versioned-json-mutation-service";
@@ -33,7 +33,7 @@ function isRound(value: unknown): value is PortalFeedbackRoundDto {
   );
 }
 
-function isAttachment(value: unknown): value is FeedbackAttachmentDto {
+function isAttachment(value: unknown): value is FileAttachmentDto {
   return (
     isRecord(value) &&
     typeof value.id === "string" &&

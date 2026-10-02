@@ -1,6 +1,6 @@
 "use client";
 
-import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
+import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
 import { filesApiService } from "@/client/crm/files-api-service";
 import { useFileDownloads } from "@/hooks/shared/use-file-downloads";
 import type { CrmFilesDictionary } from "@/i18n/dictionaries/workspace/crm";
@@ -13,7 +13,7 @@ export function useOnboardingFileDownloads(
   customerId: string,
   errors: CrmFilesDictionary["errors"],
 ) {
-  return useFileDownloads<FeedbackAttachmentDto>({
+  return useFileDownloads<FileAttachmentDto>({
     archiveFilename: "",
     errors,
     selectedIds: [],

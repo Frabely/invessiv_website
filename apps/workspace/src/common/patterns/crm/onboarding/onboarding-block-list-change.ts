@@ -1,3 +1,4 @@
+import { OnboardingBlockListChangeKind } from "@/common/constants/crm/onboarding/onboarding-block-list-change-kinds";
 import type { OnboardingBlockListChange } from "@/common/contracts/crm/onboarding/onboarding-block-list-change";
 
 /**
@@ -15,7 +16,7 @@ export function detectOnboardingBlockListChange(
     const rest = before.filter((_, position) => position !== index);
     return removed !== undefined &&
       rest.every((id, position) => after[position] === id)
-      ? { kind: "remove", blockId: removed }
+      ? { kind: OnboardingBlockListChangeKind.Remove, blockId: removed }
       : null;
   }
   if (after.length !== before.length) return null;
@@ -31,5 +32,9 @@ export function detectOnboardingBlockListChange(
     after[second] !== before[first]
   )
     return null;
-  return { kind: "move", blockId: before[first], direction: 1 };
+  return {
+    kind: OnboardingBlockListChangeKind.Move,
+    blockId: before[first],
+    direction: 1,
+  };
 }

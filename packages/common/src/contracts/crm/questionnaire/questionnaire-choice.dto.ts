@@ -1,4 +1,4 @@
-import type { Locale } from "@invessiv/common";
+import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 
 /** One option of a choice, yes/no or scale field. */
 export interface QuestionnaireChoiceDto {

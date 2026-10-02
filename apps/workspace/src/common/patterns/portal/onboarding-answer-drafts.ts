@@ -1,27 +1,26 @@
-import {
-  QUESTIONNAIRE_CHOICE_ANSWER_TYPE_VALUES,
-  type QuestionnaireFieldType,
-} from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
 import type { QuestionnaireValueErrorCode } from "@invessiv/common/constants/crm/questionnaire/questionnaire-value-error-codes";
 import type { QuestionnaireAnswerDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-answer.dto";
 import type { QuestionnaireResolvedBlock } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-resolved-block";
 import type { QuestionnaireResolvedField } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-resolved-field";
 import type { SavePortalOnboardingAnswerRequestDto } from "@invessiv/common/contracts/portal/save-portal-onboarding-answer-request.dto";
+import {
+  isQuestionnaireChoiceAnswerType,
+  parseQuestionnaireSlotKey,
+  questionnaireSlotKey,
+} from "@invessiv/common/patterns/crm/questionnaire/questionnaire-answer-slot";
 import { flattenQuestionnaireFields } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-block-structure";
 import { isQuestionnaireFieldVisible } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
 import { validateQuestionnaireValue } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-field-value";
 import type { OnboardingAnswerDrafts } from "@/common/contracts/portal/onboarding-answer-drafts";
 
-const CHOICE_ANSWER_TYPES: readonly QuestionnaireFieldType[] =
-  QUESTIONNAIRE_CHOICE_ANSWER_TYPE_VALUES;
-
-// Neither a uuid nor a field key contains it, so a key splits back into its two parts.
-const ENTRY_SEPARATOR = "@";
-
 type Field = Pick<QuestionnaireResolvedField, "id" | "type" | "maxLength">;
 
+// The slot key is the kit's; the form only goes by it.
+const slotKey = questionnaireSlotKey;
+const parseSlotKey = parseQuestionnaireSlotKey;
+
 function isChoiceField(field: Pick<Field, "type">): boolean {
-  return CHOICE_ANSWER_TYPES.includes(field.type);
+  return isQuestionnaireChoiceAnswerType(field.type);
 }
 
 function indexFields(
@@ -32,26 +31,6 @@ function indexFields(
       .flatMap((block) => flattenQuestionnaireFields(block.fields))
       .map((field) => [field.id, field]),
   );
-}
-
-/**
- * The key of one slot: the field id on block level, field and entry for a sub-field within a
- * group entry. Drafts, save states and DOM ids of a form all go by it.
- */
-function slotKey(fieldId: string, groupEntryId: string | null): string {
-  return groupEntryId === null
-    ? fieldId
-    : `${fieldId}${ENTRY_SEPARATOR}${groupEntryId}`;
-}
-
-function parseSlotKey(key: string): {
-  fieldId: string;
-  groupEntryId: string | null;
-} {
-  const at = key.indexOf(ENTRY_SEPARATOR);
-  return at === -1
-    ? { fieldId: key, groupEntryId: null }
-    : { fieldId: key.slice(0, at), groupEntryId: key.slice(at + 1) };
 }
 
 /** The stored answers as drafts, one list per slot in stored order. */

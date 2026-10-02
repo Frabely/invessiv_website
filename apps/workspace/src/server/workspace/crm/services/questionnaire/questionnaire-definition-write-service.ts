@@ -35,7 +35,7 @@ import type {
   QuestionnaireBlockOwner,
   QuestionnaireBlockRow,
 } from "@/server/shared/services/questionnaire/questionnaire-definition-types";
-import { questionnaireDefinitionValidation } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-validation";
+import { questionnaireDefinitionValidation } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-definition-validation";
 import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
 
 type BlockResult = QuestionnaireCommandResult<QuestionnaireBlockDto>;

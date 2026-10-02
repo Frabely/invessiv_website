@@ -2,10 +2,10 @@ import { QuestionnaireFieldType } from "@invessiv/common/constants/crm/questionn
 import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
 import type { QuestionnaireAnswerDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-answer.dto";
 import type { QuestionnaireResolvedField } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-resolved-field";
+import { isQuestionnaireChoiceAnswerType } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-answer-slot";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { LinkedText } from "@invessiv/ui";
 import type { OnboardingReadTexts } from "@/common/contracts/shared/onboarding-read-texts";
-import { onboardingAnswerDrafts } from "@/common/patterns/portal/onboarding-answer-drafts";
 import styles from "./onboarding-read-value.module.css";
 
 export type OnboardingReadValueProps = {
@@ -25,7 +25,7 @@ export function OnboardingReadValue({
   field,
   texts,
 }: OnboardingReadValueProps) {
-  if (onboardingAnswerDrafts.isChoiceField(field)) {
+  if (isQuestionnaireChoiceAnswerType(field.type)) {
     const selected = new Set(answers.map((answer) => answer.choiceId));
     const chosen = field.choices
       .filter((choice) => selected.has(choice.id))

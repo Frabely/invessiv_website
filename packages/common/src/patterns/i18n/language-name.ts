@@ -1,4 +1,4 @@
-import type { Locale } from "@invessiv/common";
+import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 
 /**
  * The name of a content locale in the language of the interface ("Englisch" in a German UI).

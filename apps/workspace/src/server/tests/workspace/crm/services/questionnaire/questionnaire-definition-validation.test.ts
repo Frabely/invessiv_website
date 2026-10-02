@@ -5,7 +5,7 @@ import { QuestionnaireFieldType } from "@invessiv/common/constants/crm/questionn
 import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
 import { QuestionnairePrefillSource } from "@invessiv/common/constants/crm/questionnaire/questionnaire-prefill-sources";
 import type { QuestionnaireFieldDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-field.dto";
-import { questionnaireDefinitionValidation } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-validation";
+import { questionnaireDefinitionValidation } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-definition-validation";
 import {
   blockFixture,
   choicesFixture,

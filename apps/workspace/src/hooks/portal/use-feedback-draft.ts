@@ -7,7 +7,7 @@ import {
   PortalFeedbackErrorCode,
   type PortalFeedbackErrorCode as PortalFeedbackErrorCodeValue,
 } from "@invessiv/common/constants/portal/portal-feedback-error-codes";
-import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
+import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
 import type { PortalFeedbackRoundDto } from "@invessiv/common/contracts/portal/portal-feedback-round.dto";
 import { portalFeedbackApiService } from "@/client/portal/portal-feedback-api-service";
 import {
@@ -218,7 +218,7 @@ export function useFeedbackDraft({
   /** Files change through their own endpoint; the draft itself stays saved. */
   function setAttachments(
     itemId: string,
-    update: (current: FeedbackAttachmentDto[]) => FeedbackAttachmentDto[],
+    update: (current: FileAttachmentDto[]) => FileAttachmentDto[],
   ) {
     const next = itemsRef.current.map((item) =>
       item.id === itemId

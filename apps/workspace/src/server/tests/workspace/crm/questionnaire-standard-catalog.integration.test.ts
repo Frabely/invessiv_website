@@ -11,7 +11,7 @@ import {
   questionnaireTemplates,
 } from "@invessiv/db/record-configuration";
 import { questionnaireDefinitionReadService } from "@/server/shared/services/questionnaire/questionnaire-definition-read-service";
-import { questionnaireDefinitionValidation } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-validation";
+import { questionnaireDefinitionValidation } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-definition-validation";
 import { questionnaireTemplateService } from "@/server/workspace/crm/services/questionnaire/questionnaire-template-service";
 
 vi.mock("server-only", () => ({}));

@@ -153,7 +153,9 @@ Plan: `apps/workspace/plans/crm/15-onboarding/64-baustein-katalog-und-vorlagen.m
 - **Jeder Schreibweg an einem Block** sperrt die Blockzeile, vergleicht die Blockversion unter der Sperre und erhöht sie
   über `updateLockedVersioned`. Antwort ist immer der ganze Block (`QuestionnaireCommandResult<QuestionnaireBlockDto>`).
 - **Invarianten ausschließlich über `questionnaireDefinitionValidation.validateBlock`** auf dem Block nach der Änderung;
-  kein Handler prüft Typ-Konfiguration, Bedingungen, Gruppen, Limits oder Übersetzungen selbst.
+  kein Handler prüft Typ-Konfiguration, Bedingungen, Gruppen, Limits oder Übersetzungen selbst. Die Prüfung ist
+  seiteneffektfrei und liegt als Pattern in
+  `@invessiv/common/patterns/crm/questionnaire/questionnaire-definition-validation`, nicht unter `server/`.
 - **Blockkopien ausschließlich über `questionnaireBlockCopyService.copyBlock`** (in der Transaktion des Aufrufers, neue IDs,
   Bedingungen auf die Kopien umgehängt, `source_block_id` nur bei Kopien in einen Bogen).
 - Katalogrechte workspace-weit (`questionnaire_templates.read/write`, kein `canOn`); Endpunkte über

@@ -15,6 +15,7 @@ import {
   QUESTIONNAIRE_FORM_VALIDATION_CODE_VALUES,
   QuestionnaireFormValidationCode,
 } from "@/common/constants/crm/questionnaire/questionnaire-form-validation-codes";
+import { QuestionnaireSaveOutcomeKind } from "@/common/constants/crm/questionnaire/questionnaire-save-outcome-kinds";
 import de from "@/i18n/dictionaries/workspace/crm/questionnaire/de.json";
 import en from "@/i18n/dictionaries/workspace/crm/questionnaire/en.json";
 import { QuestionnaireCatalogQueryParam } from "@/common/constants/crm/questionnaire/questionnaire-catalog-query-params";
@@ -72,6 +73,14 @@ describe("questionnaire editor constants", () => {
       "createField",
       "editField",
       "deleteField",
+    ]);
+  });
+
+  it("names the outcomes of an inline save exactly once", () => {
+    expect(Object.values(QuestionnaireSaveOutcomeKind)).toEqual([
+      "saved",
+      "conflict",
+      "failure",
     ]);
   });
 

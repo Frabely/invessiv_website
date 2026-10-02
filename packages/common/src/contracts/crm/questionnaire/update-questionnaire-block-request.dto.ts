@@ -1,5 +1,5 @@
 import type { QuestionnaireCatalogStatus } from "../../../constants/crm/questionnaire/questionnaire-catalog-statuses";
-import type { Locale } from "@invessiv/common";
+import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 import type { QuestionnaireBlockTranslationDto } from "./questionnaire-block-translation.dto";
 
 /** Replaces the head of a block; fields are written through their own requests. */

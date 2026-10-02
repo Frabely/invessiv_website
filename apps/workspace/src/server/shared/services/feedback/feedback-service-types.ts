@@ -1,6 +1,6 @@
 import type { FeedbackItemKind } from "@invessiv/common/constants/crm/feedback-item-kinds";
 import type { ActivityActor } from "@invessiv/common/contracts/activity/activity-actor";
-import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
+import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import type {
   feedbackRoundItems,
@@ -47,5 +47,5 @@ export type LockedFeedbackFile = { id: string; version: number };
 /** An item with the attachments the viewer may see, in upload order. */
 export type LoadedFeedbackItem = {
   item: FeedbackRoundItemRow;
-  attachments: FeedbackAttachmentDto[];
+  attachments: FileAttachmentDto[];
 };

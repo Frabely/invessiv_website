@@ -148,13 +148,16 @@ Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-le
 
 - **Ein Slot statt eines Felds.** Entwürfe, Speicherzustände, ungültige Eingaben und DOM-IDs laufen über den
   Slot-Schlüssel `onboardingAnswerDrafts.slotKey(fieldId, groupEntryId)`: auf Blockebene die Feld-ID, im Unterfeld
-  Feld plus Gruppeneintrag. Wer ein Feld adressiert, baut nie selbst einen Schlüssel.
+  Feld plus Gruppeneintrag. Wer ein Feld adressiert, baut nie selbst einen Schlüssel. Das Format selbst liegt einmal
+  in `@invessiv/common/patterns/crm/questionnaire/questionnaire-answer-slot`; die Vollständigkeitsprüfung und die
+  geteilte Leseansicht nutzen es direkt, das Portal über `onboardingAnswerDrafts`.
 - **Was der Bogen neben Antworten hält**, liegt in `useOnboardingFormState` (`src/hooks/portal/`): Gruppeneinträge,
   Datei-Verknüpfungen und die Leistungsbestätigung. Gruppenbefehle laufen nacheinander; ein neuer Eintrag erscheint
   sofort unter einer hier erzeugten ID, und `useOnboardingAutosave` wartet über `waitForEntryAction`, bis er auf dem
   Server existiert, bevor es ein Unterfeld speichert. Ein Fehler erscheint am Feld, zu dem er gehört. Beim Absenden
   wartet der Editor `settle()` und `flush()` ab und sendet nicht, solange ein Upload läuft.
-- **Felder bekommen alles über `QuestionnaireFieldProps["form"]`** (Entwürfe, Live-Zustand, Aktionen, Texte). Eine
+- **Felder bekommen alles über `OnboardingFieldFormContext`** (`common/contracts/portal/`, die `form`-Prop von
+  `questionnaire-field`: Entwürfe, Live-Zustand, Aktionen, Texte). Eine
   Gruppe rendert ihre Unterfelder über eine Render-Prop durch dieselbe `questionnaire-field`, genau eine Ebene tief;
   Bedingungen von Unterfeldern werden je Eintrag ausgewertet.
 - **Gruppen** (`fields/onboarding-group-field`): Einträge sind linierte Abschnitte, keine Karten im Schritt. Der Fokus

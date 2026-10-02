@@ -1,8 +1,8 @@
 import type { AssetKind } from "@invessiv/common/constants/files/asset-kind";
 import type { FileLightboxLabels } from "@invessiv/common/contracts/ui/file-lightbox-labels";
 
-/** The part of a files dictionary (CRM or portal) that the feedback attachment list needs. */
-export type FeedbackAttachmentTexts = {
+/** The part of a files dictionary (CRM or portal) that the attachment list needs. */
+export type FileAttachmentTexts = {
   row: {
     opensInNewTab: string;
     actionsLabel: string;

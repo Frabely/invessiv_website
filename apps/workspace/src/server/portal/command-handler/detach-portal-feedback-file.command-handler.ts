@@ -3,7 +3,7 @@ import "server-only";
 import { and, eq } from "drizzle-orm";
 
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
-import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
+import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
 import type { PortalFeedbackResult } from "@invessiv/common/contracts/portal/results/portal-feedback-result";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import { files } from "@invessiv/db/record-configuration";
@@ -12,7 +12,7 @@ import { portalFeedbackSchemas } from "@/server/portal/services/feedback/portal-
 import { portalFeedbackService } from "@/server/portal/services/feedback/portal-feedback-service";
 import { feedbackAttachmentService } from "@/server/shared/services/feedback/feedback-attachment-service";
 
-type Result = PortalFeedbackResult<FeedbackAttachmentDto>;
+type Result = PortalFeedbackResult<FileAttachmentDto>;
 
 /** Only a file bound to exactly this item of this round; anything else looks absent. */
 async function lockBoundFile(

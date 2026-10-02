@@ -1,7 +1,6 @@
 "use client";
 
 import { type SubmitEvent, useId, useState } from "react";
-import type { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
 import {
   QUESTIONNAIRE_CATALOG_STATUS_VALUES,
   type QuestionnaireCatalogStatus,
@@ -16,6 +15,8 @@ import {
   type Locale,
 } from "@invessiv/common/contracts/i18n/locale";
 import { CustomSelect, FormField, PrimaryCtaButton } from "@invessiv/ui";
+import { QuestionnaireSaveOutcomeKind } from "@/common/constants/crm/questionnaire/questionnaire-save-outcome-kinds";
+import type { QuestionnaireSaveOutcome } from "@/common/contracts/crm/questionnaire/questionnaire-save-outcome";
 import { QuestionnaireFormValidationCode } from "@/common/constants/crm/questionnaire/questionnaire-form-validation-codes";
 import type { QuestionnaireDefinitionClientApi } from "@/common/contracts/crm/questionnaire/questionnaire-definition-client-api";
 import type { CrmQuestionnaireDictionary } from "@/i18n/dictionaries/workspace/crm";
@@ -74,12 +75,6 @@ function mergeTexts(
   ) as HeadTexts;
 }
 
-type Outcome =
-  | { kind: "saved" }
-  | { kind: "conflict" }
-  | { kind: "failure"; code: QuestionnaireErrorCode }
-  | null;
-
 /** Title and note per language, key, company-wide flag and status; saved in one versioned write. */
 export function QuestionnaireBlockHeadForm({
   api,
@@ -116,7 +111,7 @@ export function QuestionnaireBlockHeadForm({
     key?: QuestionnaireFormValidationCode;
   }>({});
   const [busy, setBusy] = useState(false);
-  const [outcome, setOutcome] = useState<Outcome>(null);
+  const [outcome, setOutcome] = useState<QuestionnaireSaveOutcome>(null);
   const text = content.editor.head;
   const validation = content.catalog.validation;
   const missing = SUPPORTED_LOCALES.filter(
@@ -170,15 +165,18 @@ export function QuestionnaireBlockHeadForm({
     setBusy(false);
     if (result.ok) {
       onBlockAction(result.value);
-      setOutcome({ kind: "saved" });
+      setOutcome({ kind: QuestionnaireSaveOutcomeKind.Saved });
       return;
     }
     if ("current" in result) {
       onBlockAction(result.current);
-      setOutcome({ kind: "conflict" });
+      setOutcome({ kind: QuestionnaireSaveOutcomeKind.Conflict });
       return;
     }
-    setOutcome({ kind: "failure", code: result.code });
+    setOutcome({
+      kind: QuestionnaireSaveOutcomeKind.Failure,
+      code: result.code,
+    });
   }
 
   return (
@@ -293,9 +291,15 @@ export function QuestionnaireBlockHeadForm({
             className={styles.outcome}
             data-kind={outcome?.kind}
           >
-            {outcome?.kind === "saved" ? text.saved : null}
-            {outcome?.kind === "conflict" ? content.editor.conflict : null}
-            {outcome?.kind === "failure" ? content.errors[outcome.code] : null}
+            {outcome?.kind === QuestionnaireSaveOutcomeKind.Saved
+              ? text.saved
+              : null}
+            {outcome?.kind === QuestionnaireSaveOutcomeKind.Conflict
+              ? content.editor.conflict
+              : null}
+            {outcome?.kind === QuestionnaireSaveOutcomeKind.Failure
+              ? content.errors[outcome.code]
+              : null}
           </p>
           <PrimaryCtaButton disabled={busy} type="submit">
             {busy ? text.saving : text.save}
