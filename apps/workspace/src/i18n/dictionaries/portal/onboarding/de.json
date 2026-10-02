@@ -185,6 +185,7 @@
     "entry": "Eintrag {number}",
     "noEntries": "Keine Einträge",
     "filesLabel": "Dateien zu „{field}“",
+    "filesHidden": "Hier hängen Dateien, die du nicht öffnen kannst.",
     "servicesConfirmed": "Von dir bestätigt",
     "servicesNotConfirmed": "Noch nicht bestätigt",
     "servicesNote": "Deine Anmerkung",

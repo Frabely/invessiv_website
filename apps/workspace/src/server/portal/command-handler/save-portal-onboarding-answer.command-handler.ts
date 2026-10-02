@@ -11,7 +11,10 @@ import type { QuestionnaireFieldDto } from "@invessiv/common/contracts/crm/quest
 import type { PortalOnboardingAnswerSavedDto } from "@invessiv/common/contracts/portal/portal-onboarding-answer-saved.dto";
 import type { PortalOnboardingResult } from "@invessiv/common/contracts/portal/results/portal-onboarding-result";
 import type { SavePortalOnboardingAnswerRequestDto } from "@invessiv/common/contracts/portal/save-portal-onboarding-answer-request.dto";
-import { validateQuestionnaireValue } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-field-value";
+import {
+  normalizeQuestionnaireValue,
+  validateQuestionnaireValue,
+} from "@invessiv/common/patterns/crm/questionnaire/questionnaire-field-value";
 import type { PortalActor } from "@/server/portal/auth/portal-actor";
 import { portalOnboardingSchemas } from "@/server/portal/services/onboarding/portal-onboarding-schemas";
 import { portalOnboardingService } from "@/server/portal/services/onboarding/portal-onboarding-service";
@@ -58,9 +61,7 @@ function toContent(
   const raw = input.values[0] ?? "";
   if (raw.trim() === "") return { values: [] };
   if (!validateQuestionnaireValue(field, raw).ok) return null;
-  return {
-    values: [field.type === QuestionnaireFieldType.LongText ? raw : raw.trim()],
-  };
+  return { values: [normalizeQuestionnaireValue(field, raw)] };
 }
 
 /**

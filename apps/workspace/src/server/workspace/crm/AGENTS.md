@@ -168,6 +168,9 @@ Plan: `apps/workspace/plans/crm/15-onboarding/65-bogen-anlegen-und-anpassen.md`.
   `WHERE`-Klausel und `canOn`. Ein Bogen außerhalb des Zugriffsbereichs antwortet `ONBOARDING_FORM_NOT_FOUND`.
 - **Start nur unter Projektsperre** (`lockWritableProject`, dieselbe Sperre wie der Projekt-Editor): Status aus
   `isOnboardingProjectEligible`, ein Bogen je Projekt, Kopien, Vorbefüllung und Activity `created` in einer Transaktion.
+- **Eine Vorlage mit archiviertem Baustein startet nichts:** `onboardingFormCreateService.createForm` antwortet
+  `ONBOARDING_TEMPLATE_BLOCK_ARCHIVED` (409). Ein archivierter Baustein kommt weder über die Vorlage noch von Hand
+  (`addOnboardingFormBlock`, `BLOCK_NOT_FOUND`) in einen Bogen.
 - **Jede Strukturänderung hält die Bogenzeile `FOR UPDATE`** (`lockForStructure`) und prüft darunter Zugriff und
   `isOnboardingStructureEditable` (`draft`, `open`; sonst `ONBOARDING_NOT_EDITABLE`). Deshalb ist die Schlüsselprüfung
   `isBlockKeyTaken` im Bogen ohne Unique-Index sicher: derselbe Katalogbaustein lässt sich nicht zweimal hinzufügen

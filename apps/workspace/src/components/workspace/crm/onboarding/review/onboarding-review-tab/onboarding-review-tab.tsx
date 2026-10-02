@@ -133,6 +133,7 @@ export function OnboardingReviewTab({
               answers={
                 <OnboardingAnswerReadView
                   answerFiles={form.answerFiles}
+                  hiddenAnswerFiles={form.hiddenAnswerFiles}
                   answers={form.answers}
                   blocks={[resolveQuestionnaireBlock(step.block, locale)]}
                   files={{

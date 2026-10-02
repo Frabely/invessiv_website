@@ -2,6 +2,8 @@ import "server-only";
 
 import { and, asc, eq } from "drizzle-orm";
 
+import { OnboardingErrorCode } from "@invessiv/common/constants/crm/errors/onboarding-error-codes";
+import { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
 import { OnboardingBlockReviewStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-block-review-statuses";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { QuestionnaireCatalogStatus } from "@invessiv/common/constants/crm/questionnaire/questionnaire-catalog-statuses";
@@ -19,6 +21,15 @@ import { questionnaireBlockCopyService } from "@/server/workspace/crm/services/q
 import { questionnaireDefinitionReadService } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-read-service";
 import type { OnboardingProjectRef } from "./onboarding-form-access-types";
 import { onboardingPrefillService } from "./onboarding-prefill-service";
+
+type CreatedForm =
+  | { ok: true; form: OnboardingFormRow }
+  | {
+      ok: false;
+      code:
+        | typeof QuestionnaireErrorCode.TemplateNotFound
+        | typeof OnboardingErrorCode.TemplateBlockArchived;
+    };
 
 /** The catalog blocks of an active template in template order; null for an unknown or archived one. */
 async function findTemplateBlocks(
@@ -85,9 +96,10 @@ async function appendCatalogBlock(
 }
 
 /**
- * The draft of a project with one copy per template block and the pre-fill of those copies. Null
- * means the template is not available. Runs in the caller's transaction: a failing copy leaves no
- * form behind.
+ * The draft of a project with one copy per template block and the pre-fill of those copies. A
+ * template that is gone or archived is refused, and so is one that still lists an archived block:
+ * a retired block must not come back through a template, as it cannot be added by hand either.
+ * Runs in the caller's transaction: a failing copy leaves no form behind.
  */
 async function createForm(
   tx: ContactDatabaseTransaction,
@@ -96,11 +108,16 @@ async function createForm(
     templateId: string | null;
     actor: WorkspaceActor;
   },
-): Promise<OnboardingFormRow | null> {
+): Promise<CreatedForm> {
   const sources = input.templateId
     ? await findTemplateBlocks(tx, input.templateId)
     : [];
-  if (!sources) return null;
+  if (!sources)
+    return { ok: false, code: QuestionnaireErrorCode.TemplateNotFound };
+  if (
+    sources.some((block) => block.status !== QuestionnaireCatalogStatus.Active)
+  )
+    return { ok: false, code: OnboardingErrorCode.TemplateBlockArchived };
 
   const [form] = await tx
     .insert(onboardingForms)
@@ -133,7 +150,7 @@ async function createForm(
     blockIds,
     actor: input.actor,
   });
-  return form;
+  return { ok: true, form };
 }
 
 export const onboardingFormCreateService = {

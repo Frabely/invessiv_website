@@ -3,6 +3,7 @@ export const OnboardingErrorCode = {
   ProjectNotFound: "ONBOARDING_PROJECT_NOT_FOUND",
   ProjectNotEligible: "ONBOARDING_PROJECT_NOT_ELIGIBLE",
   FormExists: "ONBOARDING_FORM_EXISTS",
+  TemplateBlockArchived: "ONBOARDING_TEMPLATE_BLOCK_ARCHIVED",
   InvalidTransition: "ONBOARDING_INVALID_TRANSITION",
   NotEditable: "ONBOARDING_NOT_EDITABLE",
   EmptyForm: "ONBOARDING_EMPTY_FORM",

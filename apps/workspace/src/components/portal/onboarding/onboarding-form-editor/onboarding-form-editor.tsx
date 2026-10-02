@@ -49,6 +49,8 @@ export type OnboardingFormEditorProps = {
   form: PortalOnboardingFormDto;
   locale: Locale;
   onAnnounceAction: (message: string) => void;
+  /** The server no longer holds what the form shows; the view reloads and starts the form over. */
+  onStaleAction: () => void;
 };
 
 /**
@@ -66,20 +68,20 @@ export function OnboardingFormEditor({
   form,
   locale,
   onAnnounceAction,
+  onStaleAction,
 }: OnboardingFormEditorProps) {
   const router = useRouter();
-  const refresh = () => router.refresh();
   const state = useOnboardingFormState({
     customerId,
     form,
     leaveWarning: content.draft.leaveWarning,
-    onLockedAction: refresh,
+    onLockedAction: onStaleAction,
   });
   const autosave = useOnboardingAutosave({
     customerId,
     form,
     leaveWarning: content.draft.leaveWarning,
-    onLockedAction: refresh,
+    onLockedAction: onStaleAction,
     waitForEntryAction: state.whenEntryReady,
   });
   const sections = useMemo(
@@ -104,13 +106,15 @@ export function OnboardingFormEditor({
     () => ({
       blocks: form.blocks,
       answers: autosave.answers,
-      answerFiles: state.answerFiles,
+      // Files the contact may not open count as well, exactly as the server counts them.
+      answerFiles: [...state.answerFiles, ...form.hiddenAnswerFiles],
       groupEntries: state.groupEntries,
       servicesConfirmed: state.servicesConfirmed,
     }),
     [
       autosave.answers,
       form.blocks,
+      form.hiddenAnswerFiles,
       state.answerFiles,
       state.groupEntries,
       state.servicesConfirmed,
@@ -213,12 +217,13 @@ export function OnboardingFormEditor({
       return;
     }
     setSubmitError(content.errors[result.code]);
-    if (STALE_CODES.includes(result.code)) router.refresh();
+    if (STALE_CODES.includes(result.code)) onStaleAction();
   }
 
   const fieldForm: QuestionnaireFieldProps["form"] = {
     answerFiles: state.answerFiles,
     busy: state.busy,
+    hiddenAnswerFiles: form.hiddenAnswerFiles,
     canAttach: form.canAttach,
     canUpload,
     content,

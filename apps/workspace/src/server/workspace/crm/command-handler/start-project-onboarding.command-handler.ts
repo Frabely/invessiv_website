@@ -3,7 +3,6 @@ import "server-only";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { OnboardingErrorCode } from "@invessiv/common/constants/crm/errors/onboarding-error-codes";
-import { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
 import type { OnboardingCommandResult } from "@invessiv/common/contracts/crm/onboarding/results/onboarding-command-result";
 import type { StartProjectOnboardingRequestDto } from "@invessiv/common/contracts/crm/onboarding/start-project-onboarding-request.dto";
@@ -55,13 +54,13 @@ export async function startProjectOnboarding(
     if (await onboardingFormAccessService.findFormOfProject(tx, project.id))
       return { ok: false, code: OnboardingErrorCode.FormExists };
 
-    const form = await onboardingFormCreateService.createForm(tx, {
+    const created = await onboardingFormCreateService.createForm(tx, {
       project,
       templateId: parsed.data.templateId,
       actor,
     });
-    if (!form)
-      return { ok: false, code: QuestionnaireErrorCode.TemplateNotFound };
+    if (!created.ok) return created;
+    const { form } = created;
 
     await activityService.createActivity(tx, {
       customerId: form.customer_id,

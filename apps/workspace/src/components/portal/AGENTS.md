@@ -127,6 +127,11 @@ Plan: `apps/workspace/plans/crm/15-onboarding/66-portal-formular.md`.
 - **Ein Schrittwechsel während eines Uploads fragt nach** (`upload.leaveWarning` der Dateitexte). Ein abgebautes
   `portal-attachment-field` bricht seine laufenden Uploads ab und hängt nichts mehr an: Hinter einem Feld, das weder
   Fortschritt noch Fehler zeigen kann, läuft nichts weiter.
+- **Veralteter Stand startet den Editor neu.** Meldet der Server `locked`, `not_found` oder beim Absenden
+  `required_missing`, ruft der Editor `onStaleAction`; `onboarding-form-view` lädt neu und mountet den Editor mit dem
+  nächsten Bogen der Seite frisch. Ein Refresh aus anderem Anlass tut das nicht, damit getippter Text bleibt.
+- **Dateien, die der Kontakt nicht öffnen darf, zählen mit** (`hiddenAnswerFiles` im DTO), damit Fortschritt und
+  fehlende Angaben zum Server passen. Die Leseansicht nennt sie mit `read.filesHidden`.
 - **Sichtbarkeit, Pflicht und Fortschritt kommen ausschließlich aus `getQuestionnaireCompleteness` bzw.
   `isQuestionnaireFieldVisible`** (`@invessiv/common`), gefüttert mit den lokalen Antworten
   (`onboardingAnswerDrafts.toAnswers`). Keine Komponente entscheidet selbst, ob ein Feld sichtbar oder Pflicht ist.

@@ -17,6 +17,7 @@ import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboardin
 import type { QuestionnaireBlockSummaryDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block-summary.dto";
 import { canTransitionOnboardingForm } from "@invessiv/common/patterns/crm/onboarding/onboarding-form-state";
 import { summarizeOnboardingReview } from "@invessiv/common/patterns/crm/onboarding/onboarding-review";
+import { toOnboardingCompletenessInput } from "@invessiv/common/patterns/crm/onboarding/onboarding-completeness-input";
 import { getQuestionnaireCompleteness } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { PrimaryCtaButton, TabList } from "@invessiv/ui";
@@ -194,13 +195,9 @@ export function OnboardingFormPageView({
         {released && form.blocks.length > 0 ? (
           <div className={styles.progress}>
             <OnboardingProgressBar
-              progress={getQuestionnaireCompleteness({
-                blocks: form.blocks.map((step) => step.block),
-                answers: form.answers,
-                answerFiles: form.answerFiles,
-                groupEntries: form.groupEntries,
-                servicesConfirmed: form.servicesConfirmedAt !== null,
-              })}
+              progress={getQuestionnaireCompleteness(
+                toOnboardingCompletenessInput(form),
+              )}
               texts={content.answers.progress}
             />
           </div>

@@ -7,6 +7,7 @@ import { QUESTIONNAIRE_LIMITS } from "../../../constants/crm/questionnaire/quest
 import { QuestionnaireValueErrorCode } from "../../../constants/crm/questionnaire/questionnaire-value-error-codes";
 import {
   getQuestionnaireValueMaxLength,
+  normalizeQuestionnaireValue,
   validateQuestionnaireValue,
 } from "./questionnaire-field-value";
 
@@ -72,12 +73,38 @@ describe("validateQuestionnaireValue", () => {
     expect(check(T.ShortText, "abc", 3)).toEqual({ ok: true });
   });
 
+  it("judges a single-line value as it is stored, without the space around it", () => {
+    expect(check(T.ShortText, " abc\n", 3)).toEqual({ ok: true });
+    expect(check(T.Color, " #1A2b3C ")).toEqual({ ok: true });
+    expect(check(T.Scale, "3 ")).toEqual({ ok: true });
+    expect(check(T.Confirmation, " true")).toEqual({ ok: true });
+  });
+
+  it("counts the space around a long text, which is stored as typed", () => {
+    expect(check(T.LongText, "abc\n", 3)).toEqual({
+      ok: false,
+      code: E.TooLong,
+    });
+  });
+
   it("falls back to the type default length", () => {
     const short = "x".repeat(
       QUESTIONNAIRE_LIMITS.shortTextDefaultMaxLength + 1,
     );
     expect(check(T.ShortText, short)).toEqual({ ok: false, code: E.TooLong });
     expect(check(T.LongText, short)).toEqual({ ok: true });
+  });
+});
+
+describe("normalizeQuestionnaireValue", () => {
+  it("trims every value but a long text", () => {
+    const normalize = (
+      type: (typeof QUESTIONNAIRE_FIELD_TYPE_VALUES)[number],
+    ) => normalizeQuestionnaireValue({ type, maxLength: null }, " a \n");
+
+    expect(normalize(T.ShortText)).toBe("a");
+    expect(normalize(T.Email)).toBe("a");
+    expect(normalize(T.LongText)).toBe(" a \n");
   });
 });
 

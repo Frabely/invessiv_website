@@ -55,6 +55,7 @@ function form(blocks: OnboardingFormBlockDto[]): OnboardingFormDto {
     blocks,
     answers: [],
     answerFiles: [],
+    hiddenAnswerFiles: [],
     groupEntries: [],
     services: [],
     version: 3,
@@ -152,6 +153,7 @@ describe("portalOnboardingMappingService.toFormDto", () => {
       lastEditedByName: "Grace",
     });
     input.form.answers = [answer];
+    input.form.hiddenAnswerFiles = [{ fieldId: "logo", groupEntryId: null }];
     input.form.servicesConfirmedAt = "2026-10-01T09:00:00.000Z";
 
     expect(portalOnboardingMappingService.toFormDto(input)).toMatchObject({
@@ -165,6 +167,7 @@ describe("portalOnboardingMappingService.toFormDto", () => {
       answers: [answer],
       groupEntries: [],
       answerFiles: [],
+      hiddenAnswerFiles: [{ fieldId: "logo", groupEntryId: null }],
       servicesConfirmed: true,
       editableBlockIds: [bilingual.id],
       lastEditedAt: "2026-10-01T09:30:00.000Z",

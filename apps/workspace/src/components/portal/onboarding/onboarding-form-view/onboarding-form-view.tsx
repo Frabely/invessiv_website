@@ -2,6 +2,7 @@
 
 import { useId, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
@@ -46,7 +47,8 @@ export type OnboardingFormViewProps = {
 /**
  * The onboarding of one project. Whoever may write right now gets the form, everyone else and
  * every later status the read view. Mount it with `key={customerId}`; the form itself is keyed by
- * its status, so a submission elsewhere replaces it instead of editing a locked form.
+ * its status, so a submission elsewhere replaces it instead of editing a locked form, and by a
+ * revision that moves on once the form reported itself stale and the reload has arrived.
  */
 export function OnboardingFormView({
   backHref,
@@ -61,7 +63,18 @@ export function OnboardingFormView({
   form,
   locale,
 }: OnboardingFormViewProps) {
+  const router = useRouter();
   const [announcement, setAnnouncement] = useState("");
+  // The editor keeps its own copy of the answers. Once it reports that the server holds something
+  // else, the next form the reload brings starts it over; any other refresh leaves it alone.
+  const [staleForm, setStaleForm] = useState<PortalOnboardingFormDto | null>(
+    null,
+  );
+  const [revision, setRevision] = useState(0);
+  if (staleForm !== null && staleForm !== form) {
+    setStaleForm(null);
+    setRevision(revision + 1);
+  }
   const downloads = usePortalFileDownloads<FeedbackAttachmentDto>(
     customerId,
     filesContent.errors,
@@ -99,9 +112,13 @@ export function OnboardingFormView({
           files={files}
           filesContent={filesContent}
           form={form}
-          key={`${form.id}:${form.status}`}
+          key={`${form.id}:${form.status}:${revision}`}
           locale={locale}
           onAnnounceAction={setAnnouncement}
+          onStaleAction={() => {
+            setStaleForm(form);
+            router.refresh();
+          }}
         />
       ) : (
         <>
@@ -184,6 +201,7 @@ export function OnboardingFormView({
             </h2>
             <OnboardingAnswerReadView
               answerFiles={form.answerFiles}
+              hiddenAnswerFiles={form.hiddenAnswerFiles}
               answers={form.answers}
               blocks={form.blocks}
               emptyText={content.block.empty}

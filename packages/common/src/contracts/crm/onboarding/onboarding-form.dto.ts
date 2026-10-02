@@ -1,4 +1,5 @@
 import type { OnboardingFormStatus } from "../../../constants/crm/onboarding/onboarding-form-statuses";
+import type { QuestionnaireAnswerFileRefDto } from "../questionnaire/questionnaire-answer-file-ref.dto";
 import type { QuestionnaireAnswerFileDto } from "../questionnaire/questionnaire-answer-file.dto";
 import type { QuestionnaireAnswerDto } from "../questionnaire/questionnaire-answer.dto";
 import type { OnboardingFormBlockDto } from "./onboarding-form-block.dto";
@@ -48,8 +49,13 @@ export interface OnboardingFormDto {
   blocks: OnboardingFormBlockDto[];
   /** All answer rows of the form. */
   answers: QuestionnaireAnswerDto[];
-  /** All attached files of the form. */
+  /** Attached files this viewer may open; the rest only appears in `hiddenAnswerFiles`. */
   answerFiles: QuestionnaireAnswerFileDto[];
+  /**
+   * Where files hang that this viewer may not open. They count for completeness like any other
+   * file, so the viewer's progress matches the server's; nothing else about them is given away.
+   */
+  hiddenAnswerFiles: QuestionnaireAnswerFileRefDto[];
   /** All group entries of the form. */
   groupEntries: QuestionnaireGroupEntryDto[];
   /** Current project line items; the frozen snapshot once the form is completed. */

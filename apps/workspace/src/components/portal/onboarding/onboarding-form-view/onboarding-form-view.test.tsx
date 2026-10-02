@@ -15,6 +15,8 @@ import { QuestionnaireFieldRequirement } from "@invessiv/common/constants/crm/qu
 import { QuestionnaireFieldType as T } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
 import { PortalOnboardingErrorCode as E } from "@invessiv/common/constants/portal/portal-onboarding-error-codes";
 import type { PortalOnboardingFormDto } from "@invessiv/common/contracts/portal/portal-onboarding-form.dto";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
+import { PORTAL_ONBOARDING_REVIEW_SECTION } from "@/common/constants/portal/portal-onboarding-query-params";
 import {
   portalOnboardingAnswer as answer,
   portalOnboardingBlock as block,
@@ -320,6 +322,55 @@ describe("OnboardingFormView", () => {
       "form-1",
     );
     expect(mocks.refresh).toHaveBeenCalledOnce();
+  });
+
+  it("starts over from the server's answers when a submission is refused as incomplete", async () => {
+    const stored = [
+      answer("Name", { value: "Acme" }),
+      answer("Claim", { value: "Bold" }),
+    ];
+    mocks.submit.mockResolvedValue({
+      ok: false,
+      code: E.RequiredMissing,
+      missing: [{ blockId: "Brand", fieldId: "Claim", groupEntryId: null }],
+    });
+    open(`?section=${PORTAL_ONBOARDING_REVIEW_SECTION}`);
+    const view = renderView(form({ answers: stored }));
+    // Another contact cleared the claim meanwhile; the reload brings what the server holds.
+    mocks.refresh.mockImplementation(() =>
+      view.rerender(
+        <OnboardingFormView
+          backHref="/en/portal/customer-1"
+          canUpload
+          cockpitHref={null}
+          content={content}
+          customerId="customer-1"
+          filesContent={filesContent}
+          form={form({ answers: [stored[0]] })}
+          locale="en"
+        />,
+      ),
+    );
+    expect(screen.getByText(content.submit.complete)).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: content.submit.action }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: content.submitDialog.confirm }),
+    );
+    await settle();
+
+    expect(mocks.refresh).toHaveBeenCalledOnce();
+    expect(screen.queryByText(content.submit.complete)).toBeNull();
+    expect(
+      screen.getByRole("button", {
+        name: formatMessage(content.submit.missingItem, {
+          field: "Claim",
+          block: "Brand",
+        }),
+      }),
+    ).toBeInTheDocument();
   });
 
   it("does not submit when a save fails", async () => {

@@ -3,6 +3,7 @@ import { QuestionnaireFieldRequirement } from "@invessiv/common/constants/crm/qu
 import { QuestionnaireFieldType } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
 import type { FilePreviewKind } from "@invessiv/common/constants/files/file-preview-kind";
 import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
+import type { QuestionnaireAnswerFileRefDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-answer-file-ref.dto";
 import type { QuestionnaireAnswerFileDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-answer-file.dto";
 import type { QuestionnaireCompletenessInput } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-completeness-input";
 import type { QuestionnaireResolvedBlock } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-resolved-block";
@@ -44,6 +45,8 @@ export type OnboardingAnswerReadViewProps = Omit<
     onDownloadAction: (file: FeedbackAttachmentDto) => void;
     texts: FeedbackAttachmentTexts;
   };
+  /** Where files hang that the viewer may not open; they count, and their field says so. */
+  hiddenAnswerFiles?: readonly QuestionnaireAnswerFileRefDto[];
   /** The booked services a `project_services` field shows, never with a price. */
   services: readonly PortalOnboardingServiceDto[];
   /** Remark the customer left with the confirmation of the services. */
@@ -64,13 +67,18 @@ export function OnboardingAnswerReadView({
   blocks,
   emptyText,
   files,
+  hiddenAnswerFiles = [],
   services,
   servicesNote,
   showBlockTitles = true,
   texts,
   ...content
 }: OnboardingAnswerReadViewProps) {
-  const input = { blocks, answerFiles, ...content };
+  const input = {
+    blocks,
+    answerFiles: [...answerFiles, ...hiddenAnswerFiles],
+    ...content,
+  };
   const missing = new Set(
     getQuestionnaireCompleteness(input).missing.map((entry) =>
       onboardingAnswerDrafts.slotKey(entry.fieldId, entry.groupEntryId),
@@ -103,23 +111,36 @@ export function OnboardingAnswerReadView({
         )
         .sort((left, right) => left.position - right.position)
         .map((link) => link.file);
-      if (attached.length === 0) return none(slotKey);
+      const hidden = hiddenAnswerFiles.some(
+        (link) =>
+          link.fieldId === field.id && link.groupEntryId === groupEntryId,
+      );
+      if (attached.length === 0 && !hidden) return none(slotKey);
       const label = formatMessage(texts.filesLabel, { field: field.label });
-      return files ? (
-        <FeedbackAttachmentList
-          attachments={attached}
-          label={label}
-          loadPreviewAction={files.loadPreviewAction}
-          locale={files.locale}
-          onDownloadAction={files.onDownloadAction}
-          texts={files.texts}
-        />
-      ) : (
-        <ul aria-label={label} className={styles.names}>
-          {attached.map((file) => (
-            <li key={file.id}>{file.displayName}</li>
-          ))}
-        </ul>
+      return (
+        <>
+          {attached.length === 0 ? null : files ? (
+            <FeedbackAttachmentList
+              attachments={attached}
+              label={label}
+              loadPreviewAction={files.loadPreviewAction}
+              locale={files.locale}
+              onDownloadAction={files.onDownloadAction}
+              texts={files.texts}
+            />
+          ) : (
+            <ul aria-label={label} className={styles.names}>
+              {attached.map((file) => (
+                <li key={file.id}>{file.displayName}</li>
+              ))}
+            </ul>
+          )}
+          {hidden ? (
+            <span className={styles.none} data-state="empty">
+              {texts.filesHidden}
+            </span>
+          ) : null}
+        </>
       );
     }
 

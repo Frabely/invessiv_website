@@ -5,6 +5,7 @@ import { QUESTIONNAIRE_CONFIRMED_VALUE } from "@invessiv/common/constants/crm/qu
 import { QuestionnaireFieldType } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
 import type { QuestionnaireValueErrorCode } from "@invessiv/common/constants/crm/questionnaire/questionnaire-value-error-codes";
 import type { PortalOnboardingErrorCode } from "@invessiv/common/constants/portal/portal-onboarding-error-codes";
+import type { QuestionnaireAnswerFileRefDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-answer-file-ref.dto";
 import type { QuestionnaireAnswerFileDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-answer-file.dto";
 import type { QuestionnaireCompletenessInput } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-completeness-input";
 import type { QuestionnaireGroupEntryDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-group-entry.dto";
@@ -40,6 +41,8 @@ export type QuestionnaireFieldProps = {
   form: {
     /** Attached files of the whole form; a files field shows those of its own slot. */
     answerFiles: readonly QuestionnaireAnswerFileDto[];
+    /** Where files hang that the contact may not open; a read-only block says so. */
+    hiddenAnswerFiles: readonly QuestionnaireAnswerFileRefDto[];
     /** True while a group, file or services command is on its way. */
     busy: boolean;
     canAttach: boolean;

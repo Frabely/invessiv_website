@@ -23,6 +23,7 @@ import {
 } from "@invessiv/db/record-configuration";
 import { ONBOARDING_FORM_ACTIVITY_ENTITY } from "@/common/constants/crm/onboarding-form-activity-metadata";
 import { startProjectOnboarding } from "@/server/workspace/crm/command-handler/start-project-onboarding.command-handler";
+import { updateQuestionnaireBlock } from "@/server/workspace/crm/command-handler/update-questionnaire-block.command-handler";
 import { updateQuestionnaireField } from "@/server/workspace/crm/command-handler/update-questionnaire-field.command-handler";
 import { getOnboardingFormContext } from "@/server/workspace/crm/query-handler/get-onboarding-form-context.query-handler";
 import { getOnboardingForm } from "@/server/workspace/crm/query-handler/get-onboarding-form.query-handler";
@@ -192,6 +193,34 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
           ok: false,
           code: QuestionnaireErrorCode.TemplateNotFound,
         });
+    });
+
+    it("rejects a template that still lists an archived block and leaves no form behind", async () => {
+      const kept = await f.catalogBlock([{ key: "name", type: T.ShortText }]);
+      const retired = await f.catalogBlock([{ key: "old", type: T.ShortText }]);
+      const template = await f.template([kept.id, retired.id]);
+      f.value(
+        await updateQuestionnaireBlock(retired.id, {
+          key: retired.key,
+          carryOver: retired.carryOver,
+          status: QuestionnaireCatalogStatus.Archived,
+          translations: retired.translations,
+          version: retired.version,
+        }),
+      );
+      const projectId = await f.project();
+
+      expect(
+        await startProjectOnboarding(
+          projectId,
+          { templateId: template.id },
+          f.member(),
+        ),
+      ).toEqual({
+        ok: false,
+        code: OnboardingErrorCode.TemplateBlockArchived,
+      });
+      expect(await f.formOfProject(projectId)).toBeUndefined();
     });
 
     it("rejects a second form for the same project", async () => {

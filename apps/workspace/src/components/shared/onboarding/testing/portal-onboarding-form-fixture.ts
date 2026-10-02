@@ -95,6 +95,7 @@ export function portalOnboardingForm(
     answers: [],
     groupEntries: [],
     answerFiles: [],
+    hiddenAnswerFiles: [],
     services: [],
     servicesConfirmed: false,
     servicesNote: null,

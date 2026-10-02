@@ -27,6 +27,7 @@ const texts = {
   entry: "Entry {number}",
   noEntries: "No entries",
   filesLabel: "Files for {field}",
+  filesHidden: "Files you may not open",
   servicesConfirmed: "Confirmed by the customer",
   servicesNotConfirmed: "Not confirmed yet",
   servicesNote: "Remark",
@@ -240,6 +241,18 @@ describe("OnboardingAnswerReadView", () => {
       screen.getByRole("list", { name: "Files for Logo" }),
     ).toHaveTextContent("logo.png");
     expect(screen.queryByRole("button")).toBeNull();
+  });
+
+  it("says that files are attached when the viewer may not open them", () => {
+    renderView({
+      blocks: [
+        block("Company", [field("Logo", { type: T.Files, ...REQUIRED })]),
+      ],
+      hiddenAnswerFiles: [{ fieldId: "Logo", groupEntryId: null }],
+    });
+
+    expect(valueOf("Logo")).toHaveTextContent(texts.filesHidden);
+    expect(valueOf("Logo")).not.toHaveTextContent(texts.unanswered);
   });
 
   it("shows the booked services with the confirmation and the remark as text", () => {

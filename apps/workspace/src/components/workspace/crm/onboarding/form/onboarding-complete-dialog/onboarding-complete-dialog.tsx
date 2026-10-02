@@ -7,6 +7,7 @@ import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboardin
 import { isOnboardingCallDateAcceptable } from "@invessiv/common/patterns/crm/onboarding/onboarding-form-state";
 import { summarizeOnboardingReview } from "@invessiv/common/patterns/crm/onboarding/onboarding-review";
 import { findQuestionnaireField } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-block-structure";
+import { toOnboardingCompletenessInput } from "@invessiv/common/patterns/crm/onboarding/onboarding-completeness-input";
 import { getQuestionnaireCompleteness } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import {
@@ -71,13 +72,9 @@ export function OnboardingCompleteDialog({
   const [failure, setFailure] = useState<string | null>(null);
   const today = businessToday();
   const blocks = form.blocks.map((step) => step.block);
-  const { missing } = getQuestionnaireCompleteness({
-    blocks,
-    answers: form.answers,
-    answerFiles: form.answerFiles,
-    groupEntries: form.groupEntries,
-    servicesConfirmed: form.servicesConfirmedAt !== null,
-  });
+  const { missing } = getQuestionnaireCompleteness(
+    toOnboardingCompletenessInput(form),
+  );
   // A sub-field missing in several group entries is one thing to ask for, not several.
   const missingFieldIds = [...new Set(missing.map((entry) => entry.fieldId))];
   const review = summarizeOnboardingReview(form.blocks);

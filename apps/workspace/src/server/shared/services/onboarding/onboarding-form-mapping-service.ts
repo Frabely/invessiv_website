@@ -78,10 +78,14 @@ function toServiceDto(
   };
 }
 
-/** Steps come out in form order; a step whose block is missing from `blocks` is left out. */
+/**
+ * Steps come out in form order; a step whose block is missing from `blocks` is left out. A link
+ * whose file the viewer may not open is reduced to its slot.
+ */
 function toFormDto(parts: OnboardingFormParts): OnboardingFormDto {
   const { form } = parts;
   const blocks = new Map(parts.blocks.map((block) => [block.id, block]));
+  const visibleLinkIds = new Set(parts.answerFiles.map(({ link }) => link.id));
   return {
     id: form.id,
     customerId: form.customer_id,
@@ -109,6 +113,9 @@ function toFormDto(parts: OnboardingFormParts): OnboardingFormDto {
       }),
     answers: parts.answers.map(toAnswerDto),
     answerFiles: parts.answerFiles.map(toAnswerFileDto),
+    hiddenAnswerFiles: parts.answerFileRefs
+      .filter((ref) => !visibleLinkIds.has(ref.id))
+      .map(({ fieldId, groupEntryId }) => ({ fieldId, groupEntryId })),
     groupEntries: parts.groupEntries.map(toGroupEntryDto),
     services: [...parts.services],
     version: form.version,

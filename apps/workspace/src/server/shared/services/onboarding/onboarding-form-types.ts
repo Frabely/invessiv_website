@@ -1,5 +1,6 @@
 import type { ActivityActor } from "@invessiv/common/contracts/activity/activity-actor";
 import type { OnboardingFormServiceDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form-service.dto";
+import type { QuestionnaireAnswerFileRefDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-answer-file-ref.dto";
 import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block.dto";
 import type {
   onboardingAnswerFiles,
@@ -21,6 +22,11 @@ export type OnboardingAnswerFileRow = typeof onboardingAnswerFiles.$inferSelect;
 export type OnboardingAnswerFileWithFile = {
   link: OnboardingAnswerFileRow;
   file: FileRow;
+};
+
+/** A file link without its file: enough to count it, whatever the viewer may open. */
+export type OnboardingAnswerFileRef = QuestionnaireAnswerFileRefDto & {
+  id: string;
 };
 
 /** What a service entry is built from, whether it is a live line item or a snapshot row. */
@@ -89,6 +95,8 @@ export type OnboardingFormParts = {
   answers: readonly OnboardingAnswerRow[];
   groupEntries: readonly OnboardingGroupEntryRow[];
   answerFiles: readonly OnboardingAnswerFileWithFile[];
+  /** Every link of the form, whoever may open its file. */
+  answerFileRefs: readonly OnboardingAnswerFileRef[];
   services: readonly OnboardingFormServiceDto[];
   servicesChangedSinceConfirmation: boolean;
 };

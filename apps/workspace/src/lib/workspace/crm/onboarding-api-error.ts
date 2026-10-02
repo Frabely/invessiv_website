@@ -11,6 +11,7 @@ const STATUS: Record<E, H> = {
   [E.ProjectNotFound]: H.NotFound,
   [E.ProjectNotEligible]: H.Conflict,
   [E.FormExists]: H.Conflict,
+  [E.TemplateBlockArchived]: H.Conflict,
   [E.InvalidTransition]: H.Conflict,
   [E.NotEditable]: H.Conflict,
   [E.EmptyForm]: H.Conflict,
@@ -29,6 +30,7 @@ const MESSAGES: Record<E, string> = {
   [E.ProjectNotEligible]:
     "An onboarding can only be started for a planned or active project",
   [E.FormExists]: "The project already has a form",
+  [E.TemplateBlockArchived]: "The template lists an archived block",
   [E.InvalidTransition]: "This status change is not possible",
   [E.NotEditable]: "The form can no longer be edited",
   [E.EmptyForm]: "A released form must keep a block that asks something",

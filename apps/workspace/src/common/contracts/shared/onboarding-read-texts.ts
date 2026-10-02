@@ -16,6 +16,8 @@ export interface OnboardingReadTexts {
   noEntries: string;
   /** Names the file list of a field; takes `{field}`. */
   filesLabel: string;
+  /** Shown at a files field that holds files the viewer may not open. */
+  filesHidden: string;
   /** Shown once the customer confirmed the booked services. */
   servicesConfirmed: string;
   /** Shown while the booked services are not confirmed. */

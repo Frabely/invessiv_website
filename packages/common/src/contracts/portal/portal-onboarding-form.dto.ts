@@ -1,4 +1,5 @@
 import type { OnboardingFormStatus } from "../../constants/crm/onboarding/onboarding-form-statuses";
+import type { QuestionnaireAnswerFileRefDto } from "../crm/questionnaire/questionnaire-answer-file-ref.dto";
 import type { QuestionnaireAnswerFileDto } from "../crm/questionnaire/questionnaire-answer-file.dto";
 import type { QuestionnaireAnswerDto } from "../crm/questionnaire/questionnaire-answer.dto";
 import type { QuestionnaireGroupEntryDto } from "../crm/questionnaire/questionnaire-group-entry.dto";
@@ -29,6 +30,11 @@ export interface PortalOnboardingFormDto {
   groupEntries: QuestionnaireGroupEntryDto[];
   /** Attached files the contact may open. */
   answerFiles: QuestionnaireAnswerFileDto[];
+  /**
+   * Where files hang that the contact may not open, e.g. taken over from a project the portal
+   * does not show. They count for completeness, so the form judges itself as the server does.
+   */
+  hiddenAnswerFiles: QuestionnaireAnswerFileRefDto[];
   /** Booked services a `project_services` field shows: live line items, the snapshot once completed. */
   services: PortalOnboardingServiceDto[];
   /** Whether the booked services are confirmed; answers a `project_services` field. */

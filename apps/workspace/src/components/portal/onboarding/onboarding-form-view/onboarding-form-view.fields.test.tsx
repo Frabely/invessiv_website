@@ -557,6 +557,18 @@ describe("OnboardingFormView field types of the full form", () => {
       expect(screen.getByText(content.submit.complete)).toBeInTheDocument();
     });
 
+    it("counts a required file the contact may not open, as the server does", async () => {
+      renderView(
+        formOf([{ ...LOGO, ...REQUIRED }], {
+          hiddenAnswerFiles: [{ fieldId: "Logo", groupEntryId: null }],
+        }),
+      );
+
+      await click(screen.getByRole("button", { name: content.steps.next }));
+
+      expect(screen.getByText(content.submit.complete)).toBeInTheDocument();
+    });
+
     it("asks before a step change would cut off a running upload", async () => {
       mocks.queueActive = true;
       const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);

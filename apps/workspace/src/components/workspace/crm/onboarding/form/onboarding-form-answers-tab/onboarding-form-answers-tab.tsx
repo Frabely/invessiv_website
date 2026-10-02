@@ -1,6 +1,7 @@
 "use client";
 
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
+import { toOnboardingCompletenessInput } from "@invessiv/common/patterns/crm/onboarding/onboarding-completeness-input";
 import { getQuestionnaireCompleteness } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
 import { resolveQuestionnaireBlock } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-resolved-block";
 import { OnboardingAnswerReadView } from "@/components/shared/onboarding/onboarding-answer-read-view/onboarding-answer-read-view";
@@ -44,6 +45,7 @@ export function OnboardingFormAnswersTab({
     ),
     answers: form.answers,
     answerFiles: form.answerFiles,
+    hiddenAnswerFiles: form.hiddenAnswerFiles,
     groupEntries: form.groupEntries,
     servicesConfirmed: form.servicesConfirmedAt !== null,
     services: form.services,
@@ -54,7 +56,9 @@ export function OnboardingFormAnswersTab({
     <div className={styles.tab}>
       {input.blocks.length > 0 ? (
         <OnboardingProgressBar
-          progress={getQuestionnaireCompleteness(input)}
+          progress={getQuestionnaireCompleteness(
+            toOnboardingCompletenessInput(form),
+          )}
           texts={texts.progress}
         />
       ) : null}

@@ -107,6 +107,7 @@ function form(
     })),
     answers: [],
     answerFiles: [],
+    hiddenAnswerFiles: [],
     groupEntries: [],
     services: [],
     version: 3,

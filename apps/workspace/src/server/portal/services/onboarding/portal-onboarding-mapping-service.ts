@@ -50,6 +50,7 @@ function toFormDto(parts: PortalOnboardingFormParts): PortalOnboardingFormDto {
     answers: form.answers,
     groupEntries: form.groupEntries,
     answerFiles: form.answerFiles,
+    hiddenAnswerFiles: form.hiddenAnswerFiles,
     // Without the line item id: the portal confirms what was agreed, it never addresses a service.
     services: form.services.map(({ title, description, position }) => ({
       title,

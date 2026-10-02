@@ -77,6 +77,7 @@ function renderPage(
           blocks: [],
           answers: [],
           answerFiles: [],
+          hiddenAnswerFiles: [],
           groupEntries: [],
           services: [],
           servicesConfirmedAt: null,

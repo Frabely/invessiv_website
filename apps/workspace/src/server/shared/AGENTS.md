@@ -117,6 +117,9 @@ das Mapping liegt in `onboarding-form-mapping-service.ts`, die Zeilentypen in `o
   eine nicht sichtbare Datei entfällt.
 - **Keine Regel zu Sichtbarkeit, Pflicht oder Fortschritt.** `toSummaryDto` beschafft nur die Eingaben und ruft
   `getQuestionnaireCompleteness` auf. Der Fortschritt zählt jede Datei-Verknüpfung, unabhängig vom Betrachter.
+  Damit ein Client genauso zählt, liefert `toFormDto` die Verknüpfungen, deren Datei der Betrachter nicht öffnen darf,
+  als `hiddenAnswerFiles` (nur Feld und Eintrag). Wer aus einem Bogen-DTO die Vollständigkeit berechnet, nimmt
+  `toOnboardingCompletenessInput` (`@invessiv/common`) bzw. hängt `hiddenAnswerFiles` an `answerFiles` an.
 - Die Quelle der Projektleistungen (aktuelle `project_line_items` außer `rejected`, nach Abschluss der Snapshot
   `onboarding_form_services`) wird ausschließlich in `loadServices` gewählt.
 

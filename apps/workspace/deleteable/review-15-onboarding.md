@@ -44,6 +44,18 @@ Layering-Bruch `shared → workspace`, und viel von Hand wiederholtes Gerüst (H
 > - **L4:** Freigegebener Bogen behält das letzte Feld je Baustein/Gruppe (`QUESTIONNAIRE_LAST_FIELD`) und den letzten
 >   Baustein mit Feld (`ONBOARDING_EMPTY_FORM`). Leere **neue** Bausteine/Gruppen bleiben erlaubt, sonst ließe sich ein
 >   freigegebener Bogen nicht mehr erweitern.
+>
+> **Danach ebenfalls behoben (ungecommittet): L5–L8.**
+>
+> - **L5:** `OnboardingFormDto` und `PortalOnboardingFormDto` tragen `hiddenAnswerFiles` (nur Feld und Eintrag der
+>   Verknüpfungen, deren Datei der Betrachter nicht öffnen darf). Alle Clients rechnen die Vollständigkeit damit;
+>   CRM über `toOnboardingCompletenessInput` (erledigt D11 dort mit). Die Leseansicht nennt solche Felder mit
+>   `filesHidden` statt „nicht beantwortet“.
+> - **L6:** Start aus einer Vorlage mit archiviertem Baustein antwortet `ONBOARDING_TEMPLATE_BLOCK_ARCHIVED` (409).
+> - **L7:** Der Editor meldet „veraltet“ an die Ansicht; sie lädt neu und startet den Editor mit dem frischen Stand.
+>   Andere Refreshes lassen ihn in Ruhe.
+> - **L8:** `normalizeQuestionnaireValue` ist die eine Definition des gespeicherten Werts; Prüfung und Schreibweg
+>   nutzen sie.
 
 ### L1 (H) — Ungültiger Entwurf in einem ausgeblendeten Feld blockiert das Absenden
 

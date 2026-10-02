@@ -117,6 +117,7 @@ function form(overrides: Partial<OnboardingFormDto> = {}): OnboardingFormDto {
     blocks: [step()],
     answers: [ANSWER],
     answerFiles: [],
+    hiddenAnswerFiles: [],
     groupEntries: [],
     services: [],
     version: 6,
@@ -322,6 +323,23 @@ describe("OnboardingFormPageView completion", () => {
     expect(
       within(dialog).getByRole("link", { name: dialogTexts.missingLink }),
     ).toHaveAttribute("href", "/de/crm/onboarding/f-1?tab=answers");
+  });
+
+  it("counts a required file the member may not open, as the server does", async () => {
+    const logo = fieldFixture("logo", QuestionnaireFieldType.Files, {
+      requirement: QuestionnaireFieldRequirement.Required,
+    });
+    renderPage(
+      form({
+        blocks: [step({ block: blockFixture([NAME, logo]) })],
+        hiddenAnswerFiles: [{ fieldId: logo.id, groupEntryId: null }],
+      }),
+    );
+
+    const dialog = await openDialog();
+
+    expect(dialog).not.toHaveTextContent(dialogTexts.missingHeading);
+    expect(confirmButton(dialog)).toBeEnabled();
   });
 
   it("adopts the current form of a conflict and keeps the dialog open", async () => {

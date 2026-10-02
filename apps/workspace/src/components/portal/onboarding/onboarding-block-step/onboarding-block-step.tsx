@@ -107,6 +107,7 @@ export function OnboardingBlockStep({
           <p className={styles.note}>{texts.locked}</p>
           <OnboardingAnswerReadView
             answerFiles={form.answerFiles}
+            hiddenAnswerFiles={form.hiddenAnswerFiles}
             answers={input.answers}
             blocks={[block]}
             files={files}

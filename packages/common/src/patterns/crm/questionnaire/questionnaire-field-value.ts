@@ -45,6 +45,17 @@ function isScaleStep(value: string): boolean {
 }
 
 /**
+ * The value as it is stored: a long text exactly as typed, every other value without the space
+ * around it. Validation and the write path both go by this, so neither judges what the other drops.
+ */
+export function normalizeQuestionnaireValue(
+  field: ValueField,
+  raw: string,
+): string {
+  return field.type === QuestionnaireFieldType.LongText ? raw : raw.trim();
+}
+
+/**
  * Validates one raw value before it is stored in `onboarding_answers.value`. Shared by the request
  * schemas on the server and the field components on the client, so both reject the same input.
  * An empty value is never stored: the caller deletes the answer row instead.
@@ -53,7 +64,7 @@ export function validateQuestionnaireValue(
   field: ValueField,
   raw: string,
 ): QuestionnaireValueValidationResult {
-  const value = raw.trim();
+  const value = normalizeQuestionnaireValue(field, raw);
   const maxLength = getQuestionnaireValueMaxLength(field);
 
   switch (field.type) {
@@ -69,8 +80,8 @@ export function validateQuestionnaireValue(
     default:
       return fail(QuestionnaireValueErrorCode.NotAValueField);
   }
-  if (!value) return fail(QuestionnaireValueErrorCode.Empty);
-  if (maxLength !== null && raw.length > maxLength)
+  if (!value.trim()) return fail(QuestionnaireValueErrorCode.Empty);
+  if (maxLength !== null && value.length > maxLength)
     return fail(QuestionnaireValueErrorCode.TooLong);
 
   switch (field.type) {
@@ -87,15 +98,15 @@ export function validateQuestionnaireValue(
         ? OK
         : fail(QuestionnaireValueErrorCode.InvalidUrl);
     case QuestionnaireFieldType.Color:
-      return COLOR_PATTERN.test(raw)
+      return COLOR_PATTERN.test(value)
         ? OK
         : fail(QuestionnaireValueErrorCode.InvalidColor);
     case QuestionnaireFieldType.Scale:
-      return isScaleStep(raw)
+      return isScaleStep(value)
         ? OK
         : fail(QuestionnaireValueErrorCode.InvalidScale);
     case QuestionnaireFieldType.Confirmation:
-      return raw === QUESTIONNAIRE_CONFIRMED_VALUE
+      return value === QUESTIONNAIRE_CONFIRMED_VALUE
         ? OK
         : fail(QuestionnaireValueErrorCode.NotConfirmed);
     default:

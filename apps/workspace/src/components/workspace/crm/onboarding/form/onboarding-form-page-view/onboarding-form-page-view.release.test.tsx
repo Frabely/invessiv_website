@@ -101,6 +101,7 @@ function form(overrides: Partial<OnboardingFormDto> = {}): OnboardingFormDto {
     blocks: [step(COMPANY)],
     answers: [],
     answerFiles: [],
+    hiddenAnswerFiles: [],
     groupEntries: [],
     services: [],
     version: 4,

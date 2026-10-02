@@ -53,6 +53,7 @@ function parts(
     answers: [],
     groupEntries: [],
     answerFiles: [],
+    answerFileRefs: [],
     services: [],
     servicesChangedSinceConfirmation: false,
     ...overrides,
@@ -94,6 +95,7 @@ describe("onboardingFormMappingService.toFormDto", () => {
       blocks: [],
       answers: [],
       answerFiles: [],
+      hiddenAnswerFiles: [],
       groupEntries: [],
       services: [],
       version: 3,
@@ -276,6 +278,36 @@ describe("onboardingFormMappingService.toFormDto", () => {
         description: null,
         position: 0,
       },
+    ]);
+  });
+});
+
+describe("onboardingFormMappingService.toFormDto hidden files", () => {
+  it("names the slot of every link whose file the viewer may not open", () => {
+    const link = {
+      id: "link-1",
+      form_id: "form-1",
+      field_id: "field-files",
+      group_entry_id: null,
+      file_id: "file-1",
+      position: 0,
+      created_at: NOW,
+    };
+
+    const dto = onboardingFormMappingService.toFormDto(
+      parts({
+        answerFiles: [
+          { link, file: { id: "file-1", created_at: NOW } as FileRow },
+        ],
+        answerFileRefs: [
+          { id: "link-1", fieldId: "field-files", groupEntryId: null },
+          { id: "link-2", fieldId: "field-files", groupEntryId: "entry-1" },
+        ],
+      }),
+    );
+
+    expect(dto.hiddenAnswerFiles).toEqual([
+      { fieldId: "field-files", groupEntryId: "entry-1" },
     ]);
   });
 });

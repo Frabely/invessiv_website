@@ -764,6 +764,23 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         ).toMatchObject({ ok: true });
       });
 
+      it("gives a member without files.read the slot of an attached file, not the file", async () => {
+        const { form, block } = await draft();
+        const logo = fieldByKey(block, "logo");
+        await f.answerFile(form, logo.id, 0);
+
+        expect(
+          await getOnboardingForm(form.id, f.member([Permission.ProjectsRead])),
+        ).toMatchObject({
+          answerFiles: [],
+          hiddenAnswerFiles: [{ fieldId: logo.id, groupEntryId: null }],
+        });
+        expect(await reread(form.id)).toMatchObject({
+          answerFiles: [{ fieldId: logo.id }],
+          hiddenAnswerFiles: [],
+        });
+      });
+
       it("keeps an option of a released form that already has an answer", async () => {
         const option = (key: string) => ({ key, labels: { de: key } });
         const source = await f.catalogBlock([

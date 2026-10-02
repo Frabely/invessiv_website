@@ -74,6 +74,21 @@ function loadGroupEntries(executor: QuestionnaireReadExecutor, formId: string) {
     );
 }
 
+/** Every file link of a form, whoever may open the file: what the completeness counts. */
+function loadAnswerFileRefs(
+  executor: QuestionnaireReadExecutor,
+  formId: string,
+) {
+  return executor
+    .select({
+      id: onboardingAnswerFiles.id,
+      fieldId: onboardingAnswerFiles.field_id,
+      groupEntryId: onboardingAnswerFiles.group_entry_id,
+    })
+    .from(onboardingAnswerFiles)
+    .where(eq(onboardingAnswerFiles.form_id, formId));
+}
+
 /**
  * The single place that picks the source of the booked services: the live line items of the
  * project until completion, the frozen snapshot afterwards.
@@ -121,40 +136,49 @@ async function servicesChangedSinceConfirmation(
 
 /**
  * The whole form for one viewer. `fileVisibility` is the caller's file filter (internal scope or
- * portal release); a link to a file outside it is left out, as in the chat and in feedback rounds.
+ * portal release); a link to a file outside it comes without its file, only as the slot it fills.
  */
 async function toFormDto(
   executor: QuestionnaireReadExecutor,
   form: OnboardingFormRow,
   fileVisibility: SQL,
 ): Promise<OnboardingFormDto> {
-  const [structure, answers, groupEntries, answerFiles, services, changed] =
-    await Promise.all([
-      loadStructure(executor, form.id),
-      loadAnswers(executor, form.id),
-      loadGroupEntries(executor, form.id),
-      executor
-        .select({ link: onboardingAnswerFiles, file: files })
-        .from(onboardingAnswerFiles)
-        .innerJoin(
-          files,
-          and(eq(files.id, onboardingAnswerFiles.file_id), fileVisibility),
-        )
-        .where(eq(onboardingAnswerFiles.form_id, form.id))
-        .orderBy(
-          asc(onboardingAnswerFiles.field_id),
-          asc(onboardingAnswerFiles.position),
-          asc(onboardingAnswerFiles.id),
-        ),
-      loadServices(executor, form),
-      servicesChangedSinceConfirmation(executor, form),
-    ]);
+  const [
+    structure,
+    answers,
+    groupEntries,
+    answerFiles,
+    answerFileRefs,
+    services,
+    changed,
+  ] = await Promise.all([
+    loadStructure(executor, form.id),
+    loadAnswers(executor, form.id),
+    loadGroupEntries(executor, form.id),
+    executor
+      .select({ link: onboardingAnswerFiles, file: files })
+      .from(onboardingAnswerFiles)
+      .innerJoin(
+        files,
+        and(eq(files.id, onboardingAnswerFiles.file_id), fileVisibility),
+      )
+      .where(eq(onboardingAnswerFiles.form_id, form.id))
+      .orderBy(
+        asc(onboardingAnswerFiles.field_id),
+        asc(onboardingAnswerFiles.position),
+        asc(onboardingAnswerFiles.id),
+      ),
+    loadAnswerFileRefs(executor, form.id),
+    loadServices(executor, form),
+    servicesChangedSinceConfirmation(executor, form),
+  ]);
   return onboardingFormMappingService.toFormDto({
     form,
     ...structure,
     answers,
     groupEntries,
     answerFiles,
+    answerFileRefs,
     services,
     servicesChangedSinceConfirmation: changed,
   });
@@ -173,13 +197,7 @@ async function toCompleteness(
     loadStructure(executor, form.id),
     loadAnswers(executor, form.id),
     loadGroupEntries(executor, form.id),
-    executor
-      .select({
-        fieldId: onboardingAnswerFiles.field_id,
-        groupEntryId: onboardingAnswerFiles.group_entry_id,
-      })
-      .from(onboardingAnswerFiles)
-      .where(eq(onboardingAnswerFiles.form_id, form.id)),
+    loadAnswerFileRefs(executor, form.id),
   ]);
   return getQuestionnaireCompleteness({
     blocks: structure.blocks,
