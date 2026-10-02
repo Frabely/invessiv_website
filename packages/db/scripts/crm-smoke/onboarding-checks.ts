@@ -13,6 +13,7 @@ import { QuestionnaireBlocksConstraintName as B } from "@invessiv/db/constraint-
 import { QuestionnaireFieldsConstraintName as F } from "@invessiv/db/constraint-names/crm/questionnaire-fields-constraint-names";
 import { OnboardingFormBlocksConstraintName as FB } from "@invessiv/db/constraint-names/crm/onboarding-form-blocks-constraint-names";
 import { OnboardingFormsConstraintName as O } from "@invessiv/db/constraint-names/crm/onboarding-forms-constraint-names";
+import { TasksConstraintName as TK } from "@invessiv/db/constraint-names/crm/tasks-constraint-names";
 
 type Sql = ReturnType<typeof getDatabaseClient>;
 
@@ -588,6 +589,48 @@ export async function runOnboardingChecks(context: OnboardingSmokeContext) {
       INSERT INTO onboarding_form_services (id, form_id, title)
       VALUES (${randomUUID()}, ${formId}, 'Landingpage')
     `,
+  );
+
+  const insertFormTask = (args: {
+    projectId?: string;
+    formId: string;
+    actionSide?: string;
+    feedbackRoundId?: string;
+  }) => sql`
+    INSERT INTO tasks (id, project_id, title, description, status, action_side, visible_to_customer,
+                       assignee_member_id, feedback_round_id, onboarding_form_id, version)
+    VALUES (${randomUUID()}, ${args.projectId ?? projectId}, ${name("Onboarding task")}, '', 'open',
+            ${args.actionSide ?? "internal"}, ${args.actionSide === "customer"}, ${memberId},
+            ${args.feedbackRoundId ?? null}, ${args.formId}, 1)
+  `;
+  await expectRejected(
+    "customer-side task with a form is rejected",
+    () => insertFormTask({ formId, actionSide: "customer" }),
+    TK.OnboardingFormSideCheck,
+  );
+  await expectRejected(
+    "task with a form of another project is rejected",
+    () => insertFormTask({ projectId: otherProjectId, formId }),
+    TK.OnboardingFormProjectForeignKey,
+  );
+  const roundId = randomUUID();
+  await sql`
+    INSERT INTO feedback_rounds (id, project_id, customer_id, round_number, status, area_options,
+                                 handed_over_by_member_id, handed_over_at, version)
+    VALUES (${roundId}, ${projectId}, ${customerId}, 1, 'open', ARRAY ['Startseite'], ${memberId}, NOW(), 1)
+  `;
+  await expectRejected(
+    "task that collects for a round and a form at once is rejected",
+    () => insertFormTask({ formId, feedbackRoundId: roundId }),
+    TK.SingleOriginCheck,
+  );
+  await expectAccepted("collecting task of a form is accepted", () =>
+    insertFormTask({ formId }),
+  );
+  await expectRejected(
+    "a second task for the same form is rejected",
+    () => insertFormTask({ formId }),
+    TK.OnboardingFormUnique,
   );
 }
 

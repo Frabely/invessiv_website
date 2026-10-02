@@ -25,6 +25,7 @@ import {
 import { TasksConstraintName } from "@invessiv/db/constraint-names/crm/tasks-constraint-names";
 import { sqlCheckIn } from "@invessiv/db/core";
 import { feedbackRounds } from "./feedback-rounds";
+import { onboardingForms } from "./onboarding-forms";
 import { projects } from "./projects";
 import { portalMemberships } from "./portal-memberships";
 import { workspaceMembers } from "./workspace-members";
@@ -63,6 +64,8 @@ export const tasks = pgTable(
     ),
     // Marks the one collecting task of a feedback round; never inferred from the title.
     feedback_round_id: uuid("feedback_round_id"),
+    // Marks the one collecting task of a submitted onboarding form.
+    onboarding_form_id: uuid("onboarding_form_id"),
     version: integer("version").notNull(),
     created_at: timestamp("created_at", { withTimezone: true })
       .notNull()
@@ -154,5 +157,21 @@ export const tasks = pgTable(
     uniqueIndex(TasksConstraintName.FeedbackRoundUnique)
       .on(t.feedback_round_id)
       .where(sql`${t.feedback_round_id} is not null`),
+    foreignKey({
+      name: TasksConstraintName.OnboardingFormProjectForeignKey,
+      columns: [t.onboarding_form_id, t.project_id],
+      foreignColumns: [onboardingForms.id, onboardingForms.project_id],
+    }),
+    check(
+      TasksConstraintName.OnboardingFormSideCheck,
+      sql`${t.onboarding_form_id} is null or ${t.action_side} = ${TaskActionSide.Internal}`,
+    ),
+    check(
+      TasksConstraintName.SingleOriginCheck,
+      sql`num_nonnulls(${t.feedback_round_id}, ${t.onboarding_form_id}) <= 1`,
+    ),
+    uniqueIndex(TasksConstraintName.OnboardingFormUnique)
+      .on(t.onboarding_form_id)
+      .where(sql`${t.onboarding_form_id} is not null`),
   ],
 );

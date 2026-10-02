@@ -1,14 +1,12 @@
 "use client";
 
-import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
 import { getQuestionnaireCompleteness } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
 import { resolveQuestionnaireBlock } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-resolved-block";
-import { filesApiService } from "@/client/crm/files-api-service";
 import { OnboardingAnswerReadView } from "@/components/shared/onboarding/onboarding-answer-read-view/onboarding-answer-read-view";
 import { OnboardingProgressBar } from "@/components/shared/onboarding/onboarding-progress-bar/onboarding-progress-bar";
 import type { Locale } from "@/config/i18n";
-import { useFileDownloads } from "@/hooks/shared/use-file-downloads";
+import { useOnboardingFileDownloads } from "@/hooks/workspace/use-onboarding-file-downloads";
 import type {
   CrmFilesDictionary,
   CrmOnboardingDictionary,
@@ -36,15 +34,10 @@ export function OnboardingFormAnswersTab({
   locale,
 }: OnboardingFormAnswersTabProps) {
   const texts = content.answers;
-  const downloads = useFileDownloads<FeedbackAttachmentDto>({
-    archiveFilename: "",
-    errors: filesContent.errors,
-    selectedIds: [],
-    clearSelection: () => undefined,
-    getDownloadUrl: filesApiService.getDownloadUrl,
-    readText: filesApiService.readText,
-    getArchive: (ids) => filesApiService.downloadArchive(form.customerId, ids),
-  });
+  const downloads = useOnboardingFileDownloads(
+    form.customerId,
+    filesContent.errors,
+  );
   const input = {
     blocks: form.blocks.map((step) =>
       resolveQuestionnaireBlock(step.block, locale),

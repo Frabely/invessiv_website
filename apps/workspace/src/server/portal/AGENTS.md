@@ -121,3 +121,11 @@ Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-le
   die ID der Projektleistung), `servicesNote` und `canAttach` (`portal.onboarding.submit` und `portal.files.read`,
   nie die Owner-Sicht). Das Dashboard-Widget liest dieselbe Zusammenfassung wie die Übersicht
   (`listPortalOnboardingForms`); es gibt dafür keine zweite Abfrage und kein Feld im `PortalDashboardDto`.
+
+Ab Task 68 (`apps/workspace/plans/crm/15-onboarding/68-pruefung-und-nachforderung.md`):
+
+- **Die Rückfrage des Teams erscheint erst mit der Nachforderung.** `portalOnboardingMappingService` gibt
+  `reviewNote` nur im Status `changes_requested` und nur bei `clarification_mode = customer` heraus. Solange das
+  Team noch prüft (`submitted`), bleibt eine bereits geschriebene Rückfrage intern.
+- **Erneutes Absenden** läuft über denselben Befehl wie das erste. `onboardingFormTransitionService.submit` setzt
+  dabei die nachgeforderten Blöcke auf `pending` zurück und legt keine zweite Sammelaufgabe an.

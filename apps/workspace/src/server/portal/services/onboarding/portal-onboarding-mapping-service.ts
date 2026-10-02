@@ -1,4 +1,5 @@
 import { OnboardingClarificationMode } from "@invessiv/common/constants/crm/onboarding/onboarding-clarification-modes";
+import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import type { OnboardingFormBlockDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form-block.dto";
 import type { OnboardingFormSummaryDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form-summary.dto";
 import type { PortalOnboardingBlockDto } from "@invessiv/common/contracts/portal/portal-onboarding-block.dto";
@@ -12,7 +13,8 @@ import type {
 
 /**
  * The resolved block carries no keys, versions or other locales. The review of the team stays
- * internal as well, unless the block was handed back to the customer.
+ * internal as well, unless the block was handed back to the customer: a question the team wrote
+ * but has not sent yet is still its own.
  */
 function toBlockDto(
   step: OnboardingFormBlockDto,
@@ -24,6 +26,7 @@ function toBlockDto(
     prefilled:
       step.block.carryOver && parts.prefilledBlockIds.has(step.block.id),
     reviewNote:
+      parts.form.status === OnboardingFormStatus.ChangesRequested &&
       step.clarificationMode === OnboardingClarificationMode.Customer
         ? step.reviewNote
         : null,

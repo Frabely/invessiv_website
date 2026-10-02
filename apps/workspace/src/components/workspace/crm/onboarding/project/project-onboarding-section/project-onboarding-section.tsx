@@ -13,6 +13,7 @@ import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { PrimaryCtaButton, PrimaryCtaLink } from "@invessiv/ui";
 import type { OnboardingFormErrorTexts } from "@/common/contracts/crm/onboarding/onboarding-form-error-texts";
 import type { OnboardingViewModel } from "@/common/contracts/crm/onboarding/onboarding-view-model";
+import { describeOnboardingReviewSummary } from "@/common/patterns/crm/onboarding/onboarding-review-summary-text";
 import { CollapsibleSection } from "@/components/workspace/crm/shared/collapsible-section/collapsible-section";
 import { SectionEmptyState } from "@/components/workspace/crm/shared/section-empty-state/section-empty-state";
 import type { Locale } from "@/config/i18n";
@@ -48,6 +49,11 @@ export function ProjectOnboardingSection({
   const { state, formHref } = viewModel;
   const { form } = state;
   const text = content.project;
+  // The review only says something once the customer has submitted.
+  const review =
+    form?.submittedAt && state.review
+      ? describeOnboardingReviewSummary(state.review, content.review.summary)
+      : null;
 
   return (
     <CollapsibleSection
@@ -124,6 +130,12 @@ export function ProjectOnboardingSection({
           ) : (
             <p className={styles.hint}>{text.progressNone}</p>
           )}
+          {review ? (
+            <p className={styles.review}>
+              <span>{review.reviewed}</span>
+              <span>{review.clarifications}</span>
+            </p>
+          ) : null}
           {form.status === OnboardingFormStatus.Draft ? (
             <p className={styles.hint}>
               <FontAwesomeIcon aria-hidden="true" icon={faCircleInfo} />

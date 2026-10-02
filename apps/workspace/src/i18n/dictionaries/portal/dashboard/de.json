@@ -25,7 +25,7 @@
       "viewNamed": "Onboarding für {project} ansehen",
       "turn": {
         "open": "Du bist dran",
-        "changes_requested": "Wir haben eine Rückfrage",
+        "changes_requested": "Wir haben Rückfragen",
         "submitted": "Wir sind dran",
         "completed": "Abgeschlossen"
       },
@@ -35,7 +35,9 @@
         "label": "{answered} von {total} Pflichtangaben",
         "none": "Keine Pflichtangaben",
         "barLabel": "Fortschritt im Onboarding"
-      }
+      },
+      "amend": "Jetzt ergänzen",
+      "amendNamed": "Onboarding für {project} jetzt ergänzen"
     },
     "project": {
       "title": "Dein Projekt",

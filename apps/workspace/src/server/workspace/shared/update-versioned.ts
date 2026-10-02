@@ -1,7 +1,7 @@
 import "server-only";
 
-import { and, eq, sql } from "drizzle-orm";
-import type { PgTable } from "drizzle-orm/pg-core";
+import { and, eq, sql, type SQL } from "drizzle-orm";
+import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
 
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { VersionedWriteResult } from "@invessiv/common/contracts/concurrency/version-conflict.dto";
@@ -14,6 +14,10 @@ import type {
 type VersionedRow<TTable extends VersionedTable> = TTable["$inferSelect"] & {
   version: number;
 };
+
+type LockedVersionedTable = PgTable & { version: PgColumn };
+type LockedVersionedRow<TTable extends LockedVersionedTable> =
+  TTable["$inferSelect"] & { version: number };
 
 /**
  * The **only** way to update a versioned row.
@@ -97,4 +101,50 @@ export async function updateLockedVersioned<TTable extends VersionedTable>(
   const write = await updateVersioned({ ...args, toDto: (row) => row });
   if (!write.ok) throw new Error(failure);
   return write.value;
+}
+
+/**
+ * Updates a versioned row whose identity is a composite key, after the caller locked its
+ * aggregate. The predicate and version check share one atomic UPDATE, just like `updateVersioned`.
+ */
+export async function updateLockedVersionedBy<
+  TTable extends LockedVersionedTable,
+>(
+  args: {
+    tx: ContactDatabaseTransaction;
+    table: TTable;
+    where: SQL | undefined;
+    expectedVersion: number;
+    patch: VersionedPatch<TTable>;
+  },
+  failure: string,
+): Promise<LockedVersionedRow<TTable>> {
+  const [written] = (await args.tx
+    .update(args.table)
+    .set({
+      ...args.patch,
+      version: sql`${args.table.version} + 1`,
+    })
+    .where(and(args.where, eq(args.table.version, args.expectedVersion)))
+    .returning()) as unknown as LockedVersionedRow<TTable>[];
+  if (!written) throw new Error(failure);
+  return written;
+}
+
+/** Bumps versions for a locked set of rows changed by one aggregate operation. */
+export async function updateLockedVersionedSet<
+  TTable extends LockedVersionedTable,
+>(args: {
+  tx: ContactDatabaseTransaction;
+  table: TTable;
+  where: SQL | undefined;
+  patch: VersionedPatch<TTable>;
+}): Promise<void> {
+  await args.tx
+    .update(args.table)
+    .set({
+      ...args.patch,
+      version: sql`${args.table.version} + 1`,
+    })
+    .where(args.where);
 }

@@ -59,17 +59,17 @@ describe("PortalOnboardingWidget", () => {
     ).toHaveAttribute("href", HREF);
   });
 
-  it("keeps a change request the customer's turn", () => {
+  it("asks for additions, not for filling in again, during a change request", () => {
     const widget = renderWidget(
       form({ status: OnboardingFormStatus.ChangesRequested }),
     );
 
     expect(widget).toHaveTextContent(content.turn.changes_requested);
-    expect(
-      within(widget).getByRole("link", {
-        name: "Continue the onboarding for Relaunch",
-      }),
-    ).toBeInTheDocument();
+    const link = within(widget).getByRole("link", {
+      name: "Complete the onboarding for Relaunch now",
+    });
+    expect(link).toHaveTextContent(content.amend);
+    expect(link).toHaveAttribute("href", HREF);
   });
 
   it("offers only a look to a contact who may not fill the form in", () => {

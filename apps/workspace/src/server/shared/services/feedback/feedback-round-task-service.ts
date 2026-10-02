@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { TaskActionSide } from "@invessiv/common/constants/crm/task-action-sides";
@@ -8,15 +8,11 @@ import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import type { ActivityActor } from "@invessiv/common/contracts/activity/activity-actor";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
-import {
-  customers,
-  projects,
-  tasks,
-  workspaceMembers,
-} from "@invessiv/db/record-configuration";
+import { tasks } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { getCrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { DEFAULT_LOCALE } from "@/lib/site-metadata";
+import { projectResponsibleMemberService } from "@/server/shared/services/project-responsible-member-service";
 import { taskActivityService } from "@/server/shared/services/task-activity-service";
 import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
 import type { FeedbackRoundRef } from "./feedback-service-types";
@@ -28,36 +24,6 @@ async function lockRoundTask(tx: ContactDatabaseTransaction, roundId: string) {
     .where(eq(tasks.feedback_round_id, roundId))
     .for("update");
   return task ?? null;
-}
-
-/** Project owner first, customer owner second; the member row stays shared-locked until commit. */
-async function findActiveAssignee(
-  tx: ContactDatabaseTransaction,
-  projectId: string,
-): Promise<string | null> {
-  const [owners] = await tx
-    .select({
-      projectOwner: projects.owner_member_id,
-      customerOwner: customers.owner_member_id,
-    })
-    .from(projects)
-    .innerJoin(customers, eq(customers.id, projects.customer_id))
-    .where(eq(projects.id, projectId));
-  if (!owners) return null;
-  for (const memberId of [owners.projectOwner, owners.customerOwner]) {
-    const [member] = await tx
-      .select({ id: workspaceMembers.id })
-      .from(workspaceMembers)
-      .where(
-        and(
-          eq(workspaceMembers.id, memberId),
-          eq(workspaceMembers.active, true),
-        ),
-      )
-      .for("share");
-    if (member) return member.id;
-  }
-  return null;
 }
 
 /**
@@ -120,7 +86,11 @@ async function ensureOpenForSubmission(
     );
     return;
   }
-  const assigneeMemberId = await findActiveAssignee(tx, round.project_id);
+  const assigneeMemberId =
+    await projectResponsibleMemberService.findActiveMemberId(
+      tx,
+      round.project_id,
+    );
   if (!assigneeMemberId) {
     console.warn("[feedback-round] no active owner for the collecting task", {
       feedbackRoundId: round.id,

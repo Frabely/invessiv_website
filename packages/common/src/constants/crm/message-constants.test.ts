@@ -65,12 +65,14 @@ describe("system message constants", () => {
       FeedbackApproved: "feedbackApproved",
       OnboardingSubmitted: "onboardingSubmitted",
       OnboardingReleased: "onboardingReleased",
+      OnboardingChangesRequested: "onboardingChangesRequested",
     });
     expect(SYSTEM_MESSAGE_KEY_VALUES).toEqual(Object.values(SystemMessageKey));
     expect(SystemMessageParam).toEqual({
       ProjectTitle: "projectTitle",
       Phase: "phase",
       RoundNumber: "roundNumber",
+      BlockTitles: "blockTitles",
     });
     const params = Object.values(SystemMessageParam);
     expect(new Set(params).size).toBe(params.length);

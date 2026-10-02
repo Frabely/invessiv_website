@@ -137,6 +137,7 @@ describe("CustomerProjectsSection", () => {
       state: {
         projectId,
         form: null,
+        review: null,
         canStart: true,
         projectEligible: true,
         prefillAvailable: false,

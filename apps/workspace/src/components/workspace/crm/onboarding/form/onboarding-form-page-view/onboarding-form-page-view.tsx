@@ -9,6 +9,7 @@ import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/
 import type { OnboardingFormContextDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form-context.dto";
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
 import type { QuestionnaireBlockSummaryDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block-summary.dto";
+import { summarizeOnboardingReview } from "@invessiv/common/patterns/crm/onboarding/onboarding-review";
 import { getQuestionnaireCompleteness } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { PrimaryCtaButton, TabList } from "@invessiv/ui";
@@ -21,6 +22,7 @@ import {
   readOnboardingFormTab,
 } from "@/common/patterns/crm/onboarding/onboarding-form-query";
 import type { QuestionnaireFixedChoiceLabels } from "@/common/contracts/crm/questionnaire/questionnaire-fixed-choice-labels";
+import { describeOnboardingReviewSummary } from "@/common/patterns/crm/onboarding/onboarding-review-summary-text";
 import { OnboardingProgressBar } from "@/components/shared/onboarding/onboarding-progress-bar/onboarding-progress-bar";
 import type { Locale } from "@/config/i18n";
 import type {
@@ -29,6 +31,7 @@ import type {
   CrmQuestionnaireDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
 import { OnboardingStatusBadge } from "../../project/onboarding-status-badge/onboarding-status-badge";
+import { OnboardingReviewTab } from "../../review/onboarding-review-tab/onboarding-review-tab";
 import { OnboardingFormAnswersTab } from "../onboarding-form-answers-tab/onboarding-form-answers-tab";
 import { OnboardingFormStructure } from "../onboarding-form-structure/onboarding-form-structure";
 import { OnboardingReleaseDialog } from "../onboarding-release-dialog/onboarding-release-dialog";
@@ -51,8 +54,8 @@ export type OnboardingFormPageViewProps = {
 
 /**
  * The internal page of one form: where it belongs, its status, the release of a draft and its tabs.
- * The tab is URL state, so a reload and a shared link open the same view; the review joins with its
- * task. Once released, the head shows how far the customer has got.
+ * The tab is URL state, so a reload and a shared link open the same view. Once released, the head
+ * shows how far the customer has got; once submitted, how far the review is.
  */
 export function OnboardingFormPageView({
   backHref,
@@ -85,6 +88,17 @@ export function OnboardingFormPageView({
   const [announcement, setAnnouncement] = useState("");
   const text = content.form;
   const released = form.status !== OnboardingFormStatus.Draft;
+  const reviewSummary =
+    form.submittedAt === null
+      ? null
+      : describeOnboardingReviewSummary(
+          summarizeOnboardingReview(form.blocks),
+          content.review.summary,
+        );
+  const errorTexts = {
+    onboarding: content.errors,
+    questionnaire: questionnaireContent.errors,
+  };
 
   /** Takes over a form the release answered with, in the head and in the structure editor. */
   function adopt(next: OnboardingFormDto) {
@@ -143,6 +157,12 @@ export function OnboardingFormPageView({
             />
           </div>
         ) : null}
+        {reviewSummary ? (
+          <p className={styles.review}>
+            <span>{reviewSummary.reviewed}</span>
+            <span>{reviewSummary.clarifications}</span>
+          </p>
+        ) : null}
       </header>
       <div className={styles.tabs}>
         <TabList
@@ -175,6 +195,19 @@ export function OnboardingFormPageView({
             locale={locale}
           />
         ) : null}
+        {activeTab === OnboardingFormTab.Review ? (
+          <OnboardingReviewTab
+            canWrite={canWrite}
+            content={content}
+            errorTexts={errorTexts}
+            filesContent={filesContent}
+            form={form}
+            locale={locale}
+            onAnnounceAction={setAnnouncement}
+            onFormChangeAction={adopt}
+            projectTitle={context.projectTitle}
+          />
+        ) : null}
         <div hidden={activeTab !== OnboardingFormTab.Structure}>
           <OnboardingFormStructure
             canWrite={canWrite}
@@ -192,10 +225,7 @@ export function OnboardingFormPageView({
       {releasing ? (
         <OnboardingReleaseDialog
           content={content.release.dialog}
-          errorTexts={{
-            onboarding: content.errors,
-            questionnaire: questionnaireContent.errors,
-          }}
+          errorTexts={errorTexts}
           form={form}
           locale={locale}
           onCloseAction={() => setReleasing(false)}

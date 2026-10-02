@@ -1,5 +1,8 @@
 import { z } from "zod";
 
+import { OnboardingBlockReviewStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-block-review-statuses";
+import { ONBOARDING_CLARIFICATION_MODE_VALUES } from "@invessiv/common/constants/crm/onboarding/onboarding-clarification-modes";
+import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
 import { questionnaireSchemas } from "@/server/workspace/crm/services/questionnaire/questionnaire-schemas";
 
 // Requests of the form itself. Block heads and fields of a form are validated by
@@ -26,4 +29,21 @@ export const onboardingFormSchemas = {
     expectedVersion: expectedFormVersion,
     acknowledgeWarnings: z.boolean(),
   }),
+  // A question needs its way and its text; the other two results carry neither.
+  review: z.discriminatedUnion("reviewStatus", [
+    z.strictObject({
+      reviewStatus: z.enum([
+        OnboardingBlockReviewStatus.Pending,
+        OnboardingBlockReviewStatus.Complete,
+      ]),
+      expectedVersion: expectedFormVersion,
+    }),
+    z.strictObject({
+      reviewStatus: z.literal(OnboardingBlockReviewStatus.Clarification),
+      clarificationMode: z.enum(ONBOARDING_CLARIFICATION_MODE_VALUES),
+      note: z.string().trim().min(1).max(QUESTIONNAIRE_LIMITS.noteMaxLength),
+      expectedVersion: expectedFormVersion,
+    }),
+  ]),
+  requestChanges: z.strictObject({ expectedVersion: expectedFormVersion }),
 } as const;

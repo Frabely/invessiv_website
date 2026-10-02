@@ -89,7 +89,12 @@ export function OnboardingFormEditor({
     ],
     [form.blocks],
   );
-  const step = usePortalOnboardingStep(sections);
+  // During a change request the first block is usually read-only; the form opens on the first
+  // one the customer can work on.
+  const step = usePortalOnboardingStep(
+    sections,
+    form.blocks.find((block) => form.editableBlockIds.includes(block.id))?.id,
+  );
   const [navigated, setNavigated] = useState(false);
   const [busy, setBusy] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);

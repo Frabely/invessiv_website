@@ -25,7 +25,7 @@
       "viewNamed": "View the onboarding for {project}",
       "turn": {
         "open": "It’s your turn",
-        "changes_requested": "We have a question",
+        "changes_requested": "We have questions",
         "submitted": "It’s our turn",
         "completed": "Completed"
       },
@@ -35,7 +35,9 @@
         "label": "{answered} of {total} required answers",
         "none": "No required answers",
         "barLabel": "Onboarding progress"
-      }
+      },
+      "amend": "Complete now",
+      "amendNamed": "Complete the onboarding for {project} now"
     },
     "project": {
       "title": "Your project",

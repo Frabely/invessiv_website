@@ -74,6 +74,12 @@ export function OnboardingFormView({
       <h1 className={styles.heading}>
         {formatMessage(content.page.heading, { project: form.projectTitle })}
       </h1>
+      {editable && state === OnboardingFormStatus.ChangesRequested ? (
+        <div className={styles.state}>
+          <h2>{content.states.changes_requested.title}</h2>
+          <p>{content.states.changes_requested.editable}</p>
+        </div>
+      ) : null}
       {editable ? (
         <OnboardingFormEditor
           canUpload={canUpload}

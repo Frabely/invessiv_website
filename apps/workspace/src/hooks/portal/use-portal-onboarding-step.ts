@@ -23,9 +23,13 @@ function currentSearch() {
 /**
  * The step of a form as URL state, so a reload and the back button land where the customer was.
  * A step change writes the history without a server round trip: the form holds its answers
- * locally, a re-render from the server would only be discarded. An unknown step is the first one.
+ * locally, a re-render from the server would only be discarded. An unknown step is the first
+ * one, or `initialSection` where the form should open elsewhere.
  */
-export function usePortalOnboardingStep(sections: readonly string[]) {
+export function usePortalOnboardingStep(
+  sections: readonly string[],
+  initialSection: string = sections[0],
+) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const search = useSyncExternalStore(
@@ -50,7 +54,7 @@ export function usePortalOnboardingStep(sections: readonly string[]) {
   );
 
   return {
-    section: known ? requested : sections[0],
+    section: known ? requested : initialSection,
     /** Field to focus after a jump; only meaningful together with its own step. */
     fieldId: known ? params.get(PortalOnboardingQueryParam.Field) : null,
     goTo,

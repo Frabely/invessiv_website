@@ -138,6 +138,19 @@ export function crmOnboardingFormReleaseEndpoint(formId: string): string {
   return `${crmOnboardingFormEndpoint(formId)}/${OnboardingApiPath.Release}`;
 }
 
+export function crmOnboardingFormRequestChangesEndpoint(
+  formId: string,
+): string {
+  return `${crmOnboardingFormEndpoint(formId)}/${OnboardingApiPath.RequestChanges}`;
+}
+
+export function crmOnboardingFormBlockReviewEndpoint(
+  formId: string,
+  blockId: string,
+): string {
+  return `${crmOnboardingFormBlockEndpoint(formId, blockId)}/${OnboardingApiPath.Review}`;
+}
+
 export function crmProjectLineItemsEndpoint(projectId: string): string {
   return `${crmProjectEndpoint(projectId)}/${LINE_ITEMS_PATH}`;
 }

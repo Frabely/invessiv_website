@@ -37,7 +37,8 @@ Der Test gibt den Bogen nie selbst frei. Den Kernablauf „Starten → Freigeben
 Die Portalsuite läuft mit echten Clerk-Development-Sitzungen gegen die Development-Datenbank. Sie
 prüft Einladungsdialog, Vorschau, Einlösung, zweiten Tokenversuch, Rollenänderung,
 Firmenisolation, Firmenwechsel, Widerruf, parallele Einlösung und konkrete API-Fehler, dazu Dashboard,
-Dateien, Feedbackrunden und den Kernablauf des Onboardings (Freigeben, Ausfüllen mit Gruppe und Upload, Absenden).
+Dateien, Feedbackrunden und den Kernablauf des Onboardings (Freigeben, Ausfüllen mit Gruppe und Upload, Absenden, Rückfrage an den Kunden,
+Ergänzen, erneutes Absenden, Block vollständig).
 
 Start aus der Repository-Wurzel:
 

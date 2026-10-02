@@ -28,6 +28,7 @@ describe("onboarding form constants", () => {
     expect(OnboardingFormTab).toEqual({
       Structure: "structure",
       Answers: "answers",
+      Review: "review",
     });
   });
 

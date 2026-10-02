@@ -150,3 +150,24 @@ Ab Task 67:
 - `onboardingFormTransitionService.release` öffnet einen gesperrten Entwurf (`released_*`, Activity `status_change`
   mit `previous_status`/`next_status`, Systemnachricht `onboardingReleased`). Ob freigegeben werden darf und welche
   Warnungen offen sind, entscheidet der Workspace-Handler.
+
+Ab Task 68 (`apps/workspace/plans/crm/15-onboarding/68-pruefung-und-nachforderung.md`):
+
+- `services/project-responsible-member-service.ts` — `findActiveMemberId` liefert den Zuständigen eines Projekts:
+  Projekt-Owner, sonst Kunden-Owner, jeweils nur aktiv; die Mitgliedszeile bleibt `FOR SHARE` gesperrt. Aus
+  `feedback-round-task-service` extrahiert; Feedbackrunden und Onboarding nutzen ihn, Task 69 ebenfalls. Bewusst ein
+  Service mit einer Methode (Planvorgabe), weil er als eigener Fachkontext weitere Abfragen bekommt.
+- `onboarding-task-service.ts` — die eine interne Sammelaufgabe je Bogen (`tasks.onboarding_form_id`, nie über den
+  Titel erkannt). `ensureForSubmission` legt sie beim ersten Absenden an (Titel aus dem Workspace-Dictionary in
+  `DEFAULT_LOCALE`) und fasst eine bestehende nie an: Nachforderung und erneutes Absenden ändern nichts, eine von Hand
+  geänderte Aufgabe bleibt. Ohne aktiven Owner entsteht keine Aufgabe und kein Fehler (`assignee_member_id` ist
+  `NOT NULL`, wie bei den Feedbackrunden). Den Abschluss (`done`) ergänzt Task 70.
+- `onboarding-review-service.ts` ist der einzige Schreibweg der Prüfspalten an `onboarding_form_blocks`:
+  `writeReview` (ein atomares `UPDATE … WHERE form_id, block_id, version`, weil die Tabelle weder `id` noch
+  `updated_at` hat und `updateVersioned` deshalb nicht passt; der Aufrufer hält die Bogensperre, ein Fehlgriff wirft)
+  und `reopenRequested` (setzt beim erneuten Absenden genau die Blöcke mit `clarification` + `customer` auf
+  `pending` und leert Notiz und Prüfer). `listSteps`/`findStep` lesen die Schritte.
+- `onboardingFormTransitionService.submit` ruft zusätzlich `reopenRequested` und `ensureForSubmission` auf;
+  `requestChanges` setzt `changes_requested`, schreibt die Activity `status_change` mit
+  `metadata.clarifications` (`block_id`, `note` — der einzige Ort, an dem die Rückfrage nach dem erneuten Absenden
+  noch steht) und die Systemnachricht `onboardingChangesRequested` mit den Blocktiteln in `DEFAULT_LOCALE`.

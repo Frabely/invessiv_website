@@ -6,7 +6,7 @@
 > [`67-portal-gruppen-dateien-leistungen.md`](./67-portal-gruppen-dateien-leistungen.md), `../00-entscheidungen.md`,
 > `../AGENTS.md`, `plans/crm/16-feedbackrunden/README.md` (Muster Sammelaufgabe), scoped `AGENTS.md` am Zielcode.
 
-> **Status:** offen · **Teil-PR:** 15.6 · **Branch:** `feat/crm-onboarding-6-pruefung`
+> **Status:** im Review · **Teil-PR:** 15.6 · **Branch:** `feat/crm-onboarding-6-pruefung`
 > **Abhängigkeiten:** Task 67 (15.5) gemerged · **Aufwand:** 2–3 T. · **Dateien:** 60–80
 > **Migration:** ja, eine (`tasks.onboarding_form_id`; Nummer im Repo ermitteln)
 
@@ -122,3 +122,53 @@ Portal-UI (Ergänzung)
 - [ ] Sammelaufgabe entsteht genau einmal; Feedback-Aufgaben unverändert.
 - [ ] Alle neuen Endpunkte in `CRM_ENDPOINT_ACCESS_RULES` mit Negativtests.
 - [ ] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, DB-Smokes, Workspace-Build grün.
+
+## Umsetzungsnotizen (Abweichungen vom Plan, 02.10.2026)
+
+Bei der Umsetzung nachgezogen; der Plan oben bleibt als Entstehungsstand stehen, maßgeblich ist der Code.
+
+### T1 — Migration, Zuständigen-Service, Sammelaufgabe
+
+- **Migration `0049_add_task_onboarding_form.sql`.** Constraint-Namen in `TasksConstraintName`
+  (`OnboardingFormProjectForeignKey`, `OnboardingFormSideCheck`, `OnboardingFormUnique`, `SingleOriginCheck`), Test
+  `tasks-constraint-names.test.ts` gleicht Modell und Migration ab.
+- **„Sonst niemand“ heißt: keine Aufgabe.** `tasks.assignee_member_id` ist `NOT NULL`. Ohne aktiven Projekt- oder
+  Kunden-Owner entsteht deshalb wie bei den Feedbackrunden keine Sammelaufgabe (Warnung im Log, Absenden gelingt).
+  Eine Aufgabe ohne Zuständigen bräuchte eine nullbare Spalte samt Aufgaben-UI und ist nicht Teil dieses Tasks.
+- **Die Sammelaufgabe wird nach dem Anlegen nie mehr angefasst.** Es gibt hier kein `moveTask`: Nachforderung und
+  erneutes Absenden ändern nichts, also kann auch nichts überschrieben werden. `open`/`in_progress` → `done`
+  ergänzt Task 70.
+- **Kein Seed-Zuwachs.** Der Beispielbogen bleibt `open`, damit das Portal-Formular ausfüllbar bleibt; Prüfstände
+  entstehen durch Absenden im Portal. Ein zweiter Bogen bräuchte ein zweites Seed-Projekt.
+
+### T2 — Prüfen und Nachfordern (Server)
+
+- **Schreibweg der Prüfung:** `updateVersioned` verlangt `id` und `updated_at`; `onboarding_form_blocks` hat einen
+  zusammengesetzten Schlüssel und kein `updated_at`. `onboardingReviewService.writeReview` führt deshalb dieselbe
+  atomare Anweisung selbst aus (Version im `WHERE`, Erhöhung im selben Statement), immer unter der Bogensperre.
+- **Antwort beider Endpunkte ist der ganze `OnboardingFormDto`**, auch im 409 (`currentVersion` ist dort die
+  Version des Schritts). Die Prüfung eines Blocks erhöht die Bogenversion nicht.
+- **`ONBOARDING_REVIEW_INCOMPLETE` antwortet 422** (Task 63 nannte 409) und heißt „Kein Block hat eine Rückfrage an
+  den Kunden“. Task 70 blockiert nicht auf ungeprüfte Blöcke, der Code hat also nur diesen einen Einsatz.
+- **Die Rückfrage steht in der Activity der Nachforderung** (`metadata.clarifications`), nicht in einer zweiten
+  Activity beim erneuten Absenden. Der Text stammt vom Team, nicht vom Kunden.
+- **Blocktitel in der Systemnachricht** in `DEFAULT_LOCALE` (Parameter `blockTitles`): Eine Nachricht bedient alle
+  Kontakte, die Parameter sind fertiger Text.
+- **Portal zeigt die Rückfrage erst ab `changes_requested`.** Vorher hätte ein Kontakt eine noch nicht gesendete
+  Rückfrage in der Leseansicht gesehen.
+- **`ProjectOnboardingDto.review`** trägt den Prüfstand für den Projektbereich; `OnboardingFormSummaryDto` bleibt
+  unverändert, weil das Portal es durchreicht.
+- **`listOnboardingClarificationBlocks`** (neben `summarizeOnboardingReview`) ist die eine Definition von „Rückfrage
+  dieser Art“ für Nachforderung, Dialog und Agenda; `isOnboardingReviewOpen` die für „Prüfung offen“.
+
+### T3 — Prüf-Tab, Agenda, Portal-Nachforderung
+
+- **„Offen“ und „Vollständig“ speichern mit dem Klick**, nur die Rückfrage hat einen Speichern-Knopf. Ein Knopf je
+  Block für ein Ergebnis ohne weitere Angabe wäre bei 20 Blöcken reine Klickarbeit.
+- **Zusätzliche Bausteine:** `useOnboardingFileDownloads` (der Tab „Antworten“ nutzt ihn jetzt auch),
+  `describeOnboardingReviewSummary`, `buildOnboardingCallAgenda`/`formatOnboardingCallAgenda`.
+- **Portal:** Der Hinweis je Block und die Sperre der übrigen Blöcke stammen aus Task 66; neu sind der Start auf dem
+  ersten nachgeforderten Block, der Hinweis über dem Formular und der Widget-Zustand „Wir haben Rückfragen · Jetzt
+  ergänzen“.
+- **E2E:** `e2e/portal-onboarding.e2e.ts` läuft nach dem Absenden weiter: Rückfrage an den Kunden, Nachforderung,
+  Ergänzen im Portal, erneutes Absenden, „Vollständig“, genau eine Sammelaufgabe.

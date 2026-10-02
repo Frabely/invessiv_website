@@ -12,12 +12,14 @@ import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-
 import { MediaType } from "@invessiv/common/constants/http/media-types";
 import * as blockFieldsRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/blocks/[blockId]/fields/route";
 import * as blockMoveRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/blocks/[blockId]/move/route";
+import * as blockReviewRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/blocks/[blockId]/review/route";
 import * as blockRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/blocks/[blockId]/route";
 import * as blocksRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/blocks/route";
 import * as fieldMoveRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/fields/[fieldId]/move/route";
 import * as fieldRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/fields/[fieldId]/route";
 import * as fieldUsageRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/fields/[fieldId]/usage/route";
 import * as releaseRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/release/route";
+import * as requestChangesRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/request-changes/route";
 import * as formRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/route";
 import * as projectOnboardingRoute from "@/app/api/workspace/crm/projects/[projectId]/onboarding/route";
 import {
@@ -49,6 +51,8 @@ const mocks = vi.hoisted(() => ({
   deleteOnboardingFormField: vi.fn(),
   moveOnboardingFormField: vi.fn(),
   releaseOnboardingForm: vi.fn(),
+  reviewOnboardingBlock: vi.fn(),
+  requestOnboardingChanges: vi.fn(),
 }));
 
 vi.mock("@/lib/auth/workspace-authentication", () => ({
@@ -105,6 +109,14 @@ vi.mock(
 vi.mock(
   "@/server/workspace/crm/command-handler/release-onboarding-form.command-handler",
   () => ({ releaseOnboardingForm: mocks.releaseOnboardingForm }),
+);
+vi.mock(
+  "@/server/workspace/crm/command-handler/review-onboarding-block.command-handler",
+  () => ({ reviewOnboardingBlock: mocks.reviewOnboardingBlock }),
+);
+vi.mock(
+  "@/server/workspace/crm/command-handler/request-onboarding-changes.command-handler",
+  () => ({ requestOnboardingChanges: mocks.requestOnboardingChanges }),
 );
 
 type Call = (request: NextRequest) => Promise<Response>;
@@ -199,6 +211,18 @@ const WRITES: [string, Call, keyof typeof mocks, unknown[]][] = [
     "POST release",
     (r) => releaseRoute.POST(r, formContext),
     "releaseOnboardingForm",
+    [ID],
+  ],
+  [
+    "PATCH block review",
+    (r) => blockReviewRoute.PATCH(r, blockContext),
+    "reviewOnboardingBlock",
+    [ID, BLOCK_ID],
+  ],
+  [
+    "POST request changes",
+    (r) => requestChangesRoute.POST(r, formContext),
+    "requestOnboardingChanges",
     [ID],
   ],
 ];
@@ -409,7 +433,10 @@ describe("CRM onboarding form routes", () => {
       OnboardingErrorCode.RequiredMissing,
       HttpResponseCode.UnprocessableContent,
     ],
-    [OnboardingErrorCode.ReviewIncomplete, HttpResponseCode.Conflict],
+    [
+      OnboardingErrorCode.ReviewIncomplete,
+      HttpResponseCode.UnprocessableContent,
+    ],
     [
       OnboardingErrorCode.CallDateRequired,
       HttpResponseCode.UnprocessableContent,
@@ -469,6 +496,40 @@ describe("CRM onboarding form routes", () => {
     );
     expect(response.status).toBe(HttpResponseCode.Ok);
     expect(await response.json()).toEqual(form);
+  });
+
+  it("answers a stale review with 409 and the current form", async () => {
+    const conflict = {
+      code: ConcurrencyErrorCode.VersionConflict,
+      currentVersion: 3,
+      current: { id: ID, version: 7, blocks: [] },
+    };
+    mocks.reviewOnboardingBlock.mockResolvedValue({
+      ok: false,
+      code: ConcurrencyErrorCode.VersionConflict,
+      conflict,
+    });
+    const response = await blockReviewRoute.PATCH(
+      request(BASE, HttpMethod.Patch, "{}"),
+      blockContext,
+    );
+    expect(response.status).toBe(HttpResponseCode.Conflict);
+    expect(await response.json()).toEqual(conflict);
+  });
+
+  it("answers a change request without a question for the customer with 422", async () => {
+    mocks.requestOnboardingChanges.mockResolvedValue({
+      ok: false,
+      code: OnboardingErrorCode.ReviewIncomplete,
+    });
+    const response = await requestChangesRoute.POST(
+      request(BASE, HttpMethod.Post, "{}"),
+      formContext,
+    );
+    expect(response.status).toBe(HttpResponseCode.UnprocessableContent);
+    expect(await response.json()).toMatchObject({
+      error: OnboardingErrorCode.ReviewIncomplete,
+    });
   });
 
   it("passes validation details through with 422", async () => {

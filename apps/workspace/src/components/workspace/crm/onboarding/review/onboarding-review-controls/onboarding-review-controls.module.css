@@ -1,0 +1,151 @@
+.controls {
+  display: grid;
+  gap: 0.9rem;
+  min-width: 0;
+}
+
+.group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+/* Three results of one decision: one bar, the chosen one filled in its own colour. */
+.segments {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.segment {
+  --review-color: var(--color-text-muted);
+
+  position: relative;
+  display: inline-flex;
+  cursor: pointer;
+}
+
+.segment[data-review="complete"] {
+  --review-color: var(--color-success);
+}
+
+.segment[data-review="clarification"] {
+  --review-color: var(--color-accent-warm);
+}
+
+.input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  cursor: pointer;
+  opacity: 0;
+}
+
+.segmentLabel {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.4rem 0.95rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.input:hover + .segmentLabel {
+  border-color: var(--review-color);
+}
+
+.input:checked + .segmentLabel {
+  border-color: var(--review-color);
+  background: color-mix(in srgb, var(--review-color) 16%, transparent);
+  box-shadow: inset 0 0 0 1px var(--review-color);
+}
+
+.input:focus-visible + .segmentLabel {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.group:disabled .segment,
+.group:disabled .input {
+  cursor: progress;
+}
+
+.group:disabled .segmentLabel {
+  opacity: 0.6;
+}
+
+.question {
+  display: grid;
+  gap: 0.85rem;
+  max-width: 40rem;
+  padding-left: 0.9rem;
+  border-left: 2px solid
+    color-mix(in srgb, var(--color-accent-warm) 60%, transparent);
+}
+
+.legend {
+  margin-bottom: 0.4rem;
+  padding: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+}
+
+.modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.25rem;
+}
+
+.mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  cursor: pointer;
+}
+
+.radio {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: 0;
+  accent-color: var(--color-cta);
+}
+
+.radio:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.hint {
+  max-width: 62ch;
+  margin: 0.2rem 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+.save {
+  justify-self: start;
+}
+
+.failure {
+  max-width: 62ch;
+  margin: 0;
+  padding: 0.65rem 0.8rem;
+  border-left: 3px solid var(--color-danger);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}

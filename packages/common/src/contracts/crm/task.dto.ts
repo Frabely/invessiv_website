@@ -32,6 +32,8 @@ export interface TaskDto {
   completedByCustomer: boolean;
   /** Set on the collecting task of a feedback round, which the round creates and keeps in sync. */
   feedbackRoundId: string | null;
+  /** Set on the collecting task of an onboarding form, created with its first submission. */
+  onboardingFormId: string | null;
   /** Optimistic-concurrency counter; every update request must echo the value it read. */
   version: number;
   /** Creation timestamp supplied by the database for chronological list ordering. */

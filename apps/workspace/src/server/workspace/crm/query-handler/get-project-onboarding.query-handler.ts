@@ -2,9 +2,11 @@ import "server-only";
 
 import type { ProjectOnboardingDto } from "@invessiv/common/contracts/crm/onboarding/project-onboarding.dto";
 import { isOnboardingProjectEligible } from "@invessiv/common/patterns/crm/onboarding/onboarding-form-state";
+import { summarizeOnboardingReview } from "@invessiv/common/patterns/crm/onboarding/onboarding-review";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { onboardingFormReadService } from "@/server/shared/services/onboarding/onboarding-form-read-service";
+import { onboardingReviewService } from "@/server/shared/services/onboarding/onboarding-review-service";
 import { onboardingFormAccessService } from "@/server/workspace/crm/services/onboarding/onboarding-form-access-service";
 import { onboardingFormSchemas } from "@/server/workspace/crm/services/onboarding/onboarding-form-schemas";
 import { onboardingPrefillService } from "@/server/workspace/crm/services/onboarding/onboarding-prefill-service";
@@ -32,10 +34,21 @@ export async function getProjectOnboarding(
     onboardingPrefillService.hasSource(db, project.customerId, actor),
   ]);
   const projectEligible = isOnboardingProjectEligible(project.status);
+  const steps = form
+    ? await onboardingReviewService.listSteps(db, form.id)
+    : [];
 
   return {
     projectId: project.id,
     form: form ? await onboardingFormReadService.toSummaryDto(db, form) : null,
+    review: form
+      ? summarizeOnboardingReview(
+          steps.map((step) => ({
+            reviewStatus: step.review_status,
+            clarificationMode: step.clarification_mode,
+          })),
+        )
+      : null,
     canStart:
       form === null &&
       projectEligible &&

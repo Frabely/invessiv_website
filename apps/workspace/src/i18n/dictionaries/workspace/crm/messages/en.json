@@ -40,7 +40,8 @@
     "feedbackRoundCompleted": "Feedback round {roundNumber} for “{projectTitle}” is completed.",
     "feedbackApproved": "The customer approved “{projectTitle}” in feedback round {roundNumber}.",
     "onboardingSubmitted": "The customer submitted the onboarding for “{projectTitle}”.",
-    "onboardingReleased": "The onboarding for “{projectTitle}” was released to the customer."
+    "onboardingReleased": "The onboarding for “{projectTitle}” was released to the customer.",
+    "onboardingChangesRequested": "The onboarding for “{projectTitle}” went back to the customer with questions on: {blockTitles}."
   },
   "dock": {
     "unread": "{count} unread"

@@ -17,7 +17,7 @@
     "ONBOARDING_INVALID_TRANSITION": "Dieser Statuswechsel ist nicht möglich.",
     "ONBOARDING_NOT_EDITABLE": "Der Aufbau ist inzwischen fest und lässt sich nicht mehr ändern.",
     "ONBOARDING_REQUIRED_MISSING": "Es fehlen Pflichtangaben.",
-    "ONBOARDING_REVIEW_INCOMPLETE": "Die Prüfung ist noch nicht abgeschlossen.",
+    "ONBOARDING_REVIEW_INCOMPLETE": "Kein Block hat eine Rückfrage an den Kunden.",
     "ONBOARDING_CALL_DATE_REQUIRED": "Das Datum des Onboarding-Calls fehlt.",
     "ONBOARDING_FILE_NOT_ATTACHABLE": "Die Datei kann nicht angehängt werden.",
     "ONBOARDING_RELEASE_WARNINGS": "Vor der Freigabe gibt es Hinweise. Prüfe sie und bestätige die Freigabe.",
@@ -64,7 +64,8 @@
     "tabs": {
       "ariaLabel": "Bereiche des Bogens",
       "structure": "Aufbau",
-      "answers": "Antworten"
+      "answers": "Antworten",
+      "review": "Prüfung"
     }
   },
   "release": {
@@ -194,6 +195,76 @@
       "released": "Der Bogen ist freigegeben. Der Kunde sieht jede Änderung am Aufbau sofort.",
       "readOnly": "Du kannst diesen Bogen ansehen, aber nicht ändern.",
       "conflict": "Jemand hat den Bogen inzwischen geändert. Der aktuelle Stand ist geladen, bitte wiederhole deine Änderung."
+    }
+  },
+  "review": {
+    "summary": {
+      "reviewed": "{reviewed} von {total} Blöcken geprüft",
+      "clarifications": "{count} Rückfragen",
+      "clarificationsOne": "1 Rückfrage",
+      "clarificationsNone": "keine Rückfragen"
+    },
+    "states": {
+      "notSubmitted": {
+        "title": "Noch nichts zu prüfen",
+        "description": "Die Prüfung beginnt, sobald der Kunde den Bogen abgesendet hat. Dann gehst du Block für Block durch: vollständig oder Rückfrage."
+      },
+      "changesRequested": "Die Nachforderung liegt beim Kunden. Bis er erneut absendet, ist die Prüfung gesperrt.",
+      "completed": "Das Onboarding ist abgeschlossen. Die Prüfung bleibt als Verlauf stehen.",
+      "readOnly": "Du kannst die Prüfung ansehen, aber nicht ändern."
+    },
+    "status": {
+      "pending": "Offen",
+      "complete": "Vollständig",
+      "clarification": "Rückfrage"
+    },
+    "mode": {
+      "customer": "An den Kunden",
+      "call": "Im Call klären"
+    },
+    "modeHint": {
+      "customer": "Der Kunde liest die Rückfrage im Portal und kann diesen Block wieder bearbeiten, sobald du die Nachforderung sendest.",
+      "call": "Die Rückfrage kommt auf die Agenda für den Onboarding-Call. Der Kunde sieht sie nicht."
+    },
+    "controls": {
+      "legend": "Prüfung von „{block}“",
+      "modeLegend": "Wie klären wir das?",
+      "note": "Rückfrage",
+      "noteRequired": "Schreib, was fehlt oder unklar ist.",
+      "noteTooLong": "Die Rückfrage darf höchstens {max} Zeichen haben.",
+      "save": "Rückfrage speichern",
+      "saving": "Wird gespeichert …",
+      "saved": "Prüfung von „{block}“ gespeichert.",
+      "conflict": "Jemand hat diesen Block inzwischen geprüft. Der aktuelle Stand ist geladen.",
+      "reviewedAt": "Zuletzt geprüft am {date}"
+    },
+    "blocks": {
+      "heading": "Blöcke in der Reihenfolge des Bogens",
+      "noAnswers": "Dieser Block hat keine Felder."
+    },
+    "request": {
+      "action": "Nachforderung senden",
+      "hint": "Senden kannst du, sobald mindestens ein Block eine Rückfrage an den Kunden hat.",
+      "sent": "Die Nachforderung ist gesendet. Der Kunde kann die Blöcke jetzt im Portal ergänzen.",
+      "dialog": {
+        "title": "Nachforderung senden?",
+        "description": "Der Kunde bekommt eine Nachricht im Chat und kann nur diese Blöcke wieder bearbeiten. Bis er erneut absendet, ist die Prüfung gesperrt.",
+        "listHeading": "Diese Rückfragen gehen an den Kunden",
+        "confirm": "Nachforderung senden",
+        "cancel": "Abbrechen",
+        "close": "Schließen",
+        "conflict": "Jemand hat den Bogen inzwischen geändert. Der aktuelle Stand ist geladen. Prüf die Liste und sende dann."
+      }
+    },
+    "agenda": {
+      "title": "Agenda für den Onboarding-Call",
+      "empty": "Noch keine Punkte. Rückfragen, die du im Call klären willst, landen hier.",
+      "servicesChanged": "Leistungen wurden geändert, nachdem der Kunde sie bestätigt hat",
+      "servicesNote": "Anmerkung des Kunden zu den Leistungen",
+      "copy": "Agenda kopieren",
+      "copied": "Agenda kopiert.",
+      "copyFailed": "Kopieren hat nicht geklappt. Markier die Punkte und kopier sie von Hand.",
+      "textHeading": "Agenda Onboarding-Call: {project}"
     }
   }
 }
