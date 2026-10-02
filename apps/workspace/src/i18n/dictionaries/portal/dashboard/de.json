@@ -41,14 +41,14 @@
       "call": {
         "heading": "Onboarding-Call",
         "booking": {
-          "text": "Im Onboarding-Call gehen wir deine Angaben gemeinsam durch. Such dir einen Termin bei {name} aus.",
+          "text": "Wir haben deine Angaben geprüft. Im Onboarding-Call gehen wir sie gemeinsam durch. Such dir einen Termin bei {name} aus.",
           "noticeNamed": "Der Kalender läuft über {provider}. Er öffnet sich in einem neuen Tab; erst dann erhält {provider} Daten von dir.",
           "noticeOther": "Der Kalender läuft über einen externen Terminanbieter. Er öffnet sich in einem neuen Tab; erst dann erhält der Anbieter Daten von dir.",
           "action": "Termin aussuchen",
           "newTab": "öffnet in neuem Tab"
         },
         "fallback": {
-          "text": "Wir melden uns bei dir für einen Termin.",
+          "text": "Wir haben deine Angaben geprüft und melden uns bei dir für einen Termin.",
           "chat": "Nachricht schreiben"
         }
       }

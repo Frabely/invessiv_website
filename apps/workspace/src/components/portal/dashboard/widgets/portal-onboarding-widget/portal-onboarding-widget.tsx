@@ -4,9 +4,8 @@ import Link from "next/link";
 import { faRocket } from "@fortawesome/free-solid-svg-icons";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
-import type { PortalOnboardingBookingDto } from "@invessiv/common/contracts/portal/portal-onboarding-booking.dto";
+import type { PortalOnboardingCallDto } from "@invessiv/common/contracts/portal/portal-onboarding-call.dto";
 import type { PortalOnboardingFormSummaryDto } from "@invessiv/common/contracts/portal/portal-onboarding-form-summary.dto";
-import { isOnboardingCallBookable } from "@invessiv/common/patterns/crm/onboarding/onboarding-form-state";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { Widget } from "@invessiv/ui";
 import { buildPortalOnboardingPath } from "@/common/patterns/portal/portal-onboarding-path";
@@ -18,8 +17,8 @@ import { formatMomentDay } from "@/lib/i18n/format-moment-day";
 import styles from "./portal-onboarding-widget.module.css";
 
 export type PortalOnboardingWidgetProps = {
-  /** Where the call of this form is booked; null when the team gets in touch instead. */
-  booking?: PortalOnboardingBookingDto | null;
+  /** The call of this form once the team has reviewed it; null until then and afterwards. */
+  call?: PortalOnboardingCallDto | null;
   /** The company's chat page for the hint without a link; null without `portal.messages.read`. */
   chatHref?: string | null;
   content: PortalDashboardDictionary["widgets"]["onboarding"];
@@ -35,7 +34,7 @@ export type PortalOnboardingWidgetProps = {
  * completed. The progress is the one the form and the CRM show, computed by the same function.
  */
 export function PortalOnboardingWidget({
-  booking = null,
+  call = null,
   chatHref = null,
   content,
   customerId,
@@ -111,13 +110,11 @@ export function PortalOnboardingWidget({
         >
           {linkLabel}
         </Link>
-        {isOnboardingCallBookable(form.status) ? (
+        {call ? (
           <OnboardingBookingCard
-            booking={booking}
+            booking={call.booking}
             chatHref={chatHref}
             compact
-            // While the customer has additions to make, those come before the call.
-            primary={!proceed}
             texts={content.call}
           />
         ) : null}

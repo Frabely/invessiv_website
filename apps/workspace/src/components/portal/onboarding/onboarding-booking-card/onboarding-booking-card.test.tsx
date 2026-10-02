@@ -24,7 +24,6 @@ function renderCard(
     <OnboardingBookingCard
       booking={booking}
       chatHref={chatHref}
-      primary
       texts={texts}
     />,
   );

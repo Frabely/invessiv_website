@@ -161,14 +161,14 @@
   "call": {
     "heading": "Onboarding call",
     "booking": {
-      "text": "In the onboarding call we go through your answers together. Pick a time with {name}.",
+      "text": "We’ve reviewed your answers. In the onboarding call we go through them together. Pick a time with {name}.",
       "noticeNamed": "The calendar runs on {provider}. It opens in a new tab; only then does {provider} receive data from you.",
       "noticeOther": "The calendar runs on an external scheduling provider. It opens in a new tab; only then does the provider receive data from you.",
       "action": "Pick a time",
       "newTab": "opens in a new tab"
     },
     "fallback": {
-      "text": "We'll get in touch with you to arrange a time.",
+      "text": "We’ve reviewed your answers and will get in touch with you to arrange a time.",
       "chat": "Send a message"
     }
   },

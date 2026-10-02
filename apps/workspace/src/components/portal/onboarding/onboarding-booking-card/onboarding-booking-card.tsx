@@ -18,8 +18,6 @@ export type OnboardingBookingCardProps = {
   chatHref: string | null;
   /** Inside a dashboard widget: a line under the status instead of a section of the page. */
   compact?: boolean;
-  /** Booking is the next thing to do; false while something else comes first. */
-  primary: boolean;
   texts: PortalOnboardingDictionary["call"];
 };
 
@@ -27,13 +25,12 @@ export type OnboardingBookingCardProps = {
  * How the customer gets to the onboarding call. With a link the provider and the purpose are
  * named first and the calendar opens in a new tab on the click — nothing of the provider is
  * loaded before that, no script and no frame. Without a link the card says that the team will
- * get in touch. The caller decides when the call is due; this card only shows it.
+ * get in touch. The server decides when the call is due; this card only shows it.
  */
 export function OnboardingBookingCard({
   booking,
   chatHref,
   compact = false,
-  primary,
   texts,
 }: OnboardingBookingCardProps) {
   const headingId = useId();
@@ -66,7 +63,7 @@ export function OnboardingBookingCard({
           <a
             aria-describedby={noticeId}
             className={styles.action}
-            data-primary={primary ? "true" : undefined}
+            data-primary="true"
             href={booking.bookingUrl}
             rel="noopener noreferrer"
             target="_blank"

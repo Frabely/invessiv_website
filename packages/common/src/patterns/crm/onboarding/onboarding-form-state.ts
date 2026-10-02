@@ -2,7 +2,6 @@ import { OnboardingBlockReviewStatus } from "../../../constants/crm/onboarding/o
 import { OnboardingClarificationMode } from "../../../constants/crm/onboarding/onboarding-clarification-modes";
 import { ONBOARDING_ELIGIBLE_PROJECT_STATUS_VALUES } from "../../../constants/crm/onboarding/onboarding-eligible-project-statuses";
 import {
-  ONBOARDING_CALL_BOOKABLE_STATUS_VALUES,
   ONBOARDING_STRUCTURE_EDITABLE_STATUS_VALUES,
   OnboardingFormStatus,
 } from "../../../constants/crm/onboarding/onboarding-form-statuses";
@@ -35,13 +34,27 @@ export function isOnboardingReviewOpen(status: OnboardingFormStatus): boolean {
   return status === OnboardingFormStatus.Submitted;
 }
 
-/** Whether the portal offers the booking of the onboarding call for a form in this status. */
+/**
+ * Whether the portal offers the onboarding call: the form lies with the team, every block is
+ * reviewed and nothing has to go back to the customer first. A question kept for the call does
+ * not hold it up, it is what the call is for. During a change request and after a new submission
+ * the call waits again until the team has looked at the additions.
+ */
 export function isOnboardingCallBookable(
   status: OnboardingFormStatus,
+  blocks: readonly OnboardingBlockReviewRef[],
 ): boolean {
   return (
-    ONBOARDING_CALL_BOOKABLE_STATUS_VALUES as readonly OnboardingFormStatus[]
-  ).includes(status);
+    status === OnboardingFormStatus.Submitted &&
+    blocks.every(
+      (block) =>
+        block.reviewStatus !== OnboardingBlockReviewStatus.Pending &&
+        !(
+          block.reviewStatus === OnboardingBlockReviewStatus.Clarification &&
+          block.clarificationMode === OnboardingClarificationMode.Customer
+        ),
+    )
+  );
 }
 
 export function canTransitionOnboardingForm(

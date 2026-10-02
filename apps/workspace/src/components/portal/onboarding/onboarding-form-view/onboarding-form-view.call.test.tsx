@@ -6,7 +6,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { BookingProvider } from "@invessiv/common/constants/portal/booking-providers";
 import type { PortalOnboardingBookingDto } from "@invessiv/common/contracts/portal/portal-onboarding-booking.dto";
-import type { PortalOnboardingFormDto } from "@invessiv/common/contracts/portal/portal-onboarding-form.dto";
+import type { PortalOnboardingCallDto } from "@invessiv/common/contracts/portal/portal-onboarding-call.dto";
 import {
   portalOnboardingBlock as block,
   portalOnboardingField as field,
@@ -31,31 +31,27 @@ const BOOKING: PortalOnboardingBookingDto = {
   bookingUrl: "https://calendly.com/anna/onboarding",
   provider: BookingProvider.Calendly,
 };
+const SUBMITTED = portalOnboardingForm(
+  [block("Company", [field("Name")]), block("Brand", [field("Claim")])],
+  {
+    status: OnboardingFormStatus.Submitted,
+    submittedAt: "2026-10-01T10:00:00.000Z",
+    editableBlockIds: [],
+  },
+);
 
-function form(
-  overrides: Partial<PortalOnboardingFormDto>,
-): PortalOnboardingFormDto {
-  return portalOnboardingForm(
-    [block("Company", [field("Name")]), block("Brand", [field("Claim")])],
-    { submittedAt: "2026-10-01T10:00:00.000Z", ...overrides },
-  );
-}
-
-function renderView(
-  dto: PortalOnboardingFormDto,
-  booking: PortalOnboardingBookingDto | null = BOOKING,
-) {
+function renderView(call: PortalOnboardingCallDto | null) {
   return render(
     <OnboardingFormView
       backHref="/en/portal/customer-1"
-      booking={booking}
+      call={call}
       canUpload
       chatHref={CHAT}
       cockpitHref={null}
       content={content}
       customerId="customer-1"
       filesContent={getPortalFilesDictionary("en")}
-      form={dto}
+      form={SUBMITTED}
       locale="en"
     />,
   );
@@ -68,10 +64,18 @@ function callSection() {
 describe("OnboardingFormView onboarding call", () => {
   afterEach(cleanup);
 
-  it("offers the booking link above the answers once the form was submitted", () => {
-    const { container } = renderView(
-      form({ status: OnboardingFormStatus.Submitted, editableBlockIds: [] }),
-    );
+  it("shows only that the team reviews the answers until the call is due", () => {
+    renderView(null);
+
+    expect(
+      screen.getByText(content.states.submitted.description),
+    ).toBeInTheDocument();
+    expect(callSection()).toBeNull();
+    expect(screen.queryByRole("link", { name: /Pick a time/ })).toBeNull();
+  });
+
+  it("offers the booking link above the answers once the call is due", () => {
+    const { container } = renderView({ booking: BOOKING });
 
     expect(callSection()).toHaveTextContent("Anna Beispiel");
     const link = screen.getByRole("link", { name: /Pick a time/ });
@@ -85,48 +89,12 @@ describe("OnboardingFormView onboarding call", () => {
     ).toBeTruthy();
   });
 
-  it("keeps the call available, but quiet, while the customer answers a change request", () => {
-    renderView(
-      form({
-        status: OnboardingFormStatus.ChangesRequested,
-        editableBlockIds: ["Brand"],
-      }),
-    );
-
-    expect(
-      screen.getByRole("link", { name: /Pick a time/ }),
-    ).not.toHaveAttribute("data-primary");
-    expect(screen.getByRole("textbox", { name: /Claim/ })).toBeEnabled();
-  });
-
   it("shows the hint and the way into the chat when nobody offers a link", () => {
-    renderView(
-      form({ status: OnboardingFormStatus.Submitted, editableBlockIds: [] }),
-      null,
-    );
+    renderView({ booking: null });
 
     expect(callSection()).toHaveTextContent(content.call.fallback.text);
     expect(
       screen.getByRole("link", { name: content.call.fallback.chat }),
     ).toHaveAttribute("href", CHAT);
-  });
-
-  it.each([
-    [OnboardingFormStatus.Open, ["Company", "Brand"]],
-    [OnboardingFormStatus.Completed, []],
-  ])("shows no call while the form is %s", (status, editableBlockIds) => {
-    renderView(
-      form({
-        status,
-        editableBlockIds,
-        completedAt:
-          status === OnboardingFormStatus.Completed
-            ? "2026-10-05T10:00:00.000Z"
-            : null,
-      }),
-    );
-
-    expect(callSection()).toBeNull();
-    expect(screen.queryByRole("link", { name: /Pick a time/ })).toBeNull();
   });
 });

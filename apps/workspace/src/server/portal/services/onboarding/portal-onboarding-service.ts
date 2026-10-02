@@ -400,6 +400,7 @@ export const portalOnboardingService = {
   findVisibleForm,
   withLockedForm,
   listEditableBlockIds,
+  loadReviewRefs,
   findWritableField,
   findWritableGroupEntry,
   listGroupEntryDtos,

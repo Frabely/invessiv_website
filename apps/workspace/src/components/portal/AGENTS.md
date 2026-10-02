@@ -175,8 +175,10 @@ Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-le
 
 - **Onboarding-Call (ab Task 69):** `onboarding/onboarding-booking-card` zeigt den Buchungslink des zuständigen
   Mitglieds oder, ohne Link, den Hinweis „Wir melden uns bei dir für einen Termin“ samt Chat-Link (nur mit
-  `portal.messages.read`). Wann der Abschnitt erscheint, entscheidet ausschließlich `isOnboardingCallBookable`
-  (`submitted`, `changes_requested`); Seite und Widget (`compact`) nutzen dieselbe Komponente. **Nichts vom Anbieter
+  `portal.messages.read`). Wann der Abschnitt erscheint, entscheidet ausschließlich der Server: Seite und Widget
+  bekommen `call: PortalOnboardingCallDto | null` und zeigen den Abschnitt genau dann, wenn er nicht `null` ist (erst
+  nach der Prüfung durch das Team, nie schon mit dem Absenden). Keine Komponente leitet das aus dem Status ab; Seite
+  und Widget (`compact`) nutzen dieselbe Komponente. **Nichts vom Anbieter
   wird vor dem Klick geladen:** kein Skript, kein `iframe`, kein Bild. Der Kalender öffnet sich als Link in einem neuen
   Tab (`rel="noopener noreferrer"`), der Anbieterhinweis steht davor. Eine Einbettung wäre eine neue Entscheidung
   (Consent), kein Detail dieser Komponente.

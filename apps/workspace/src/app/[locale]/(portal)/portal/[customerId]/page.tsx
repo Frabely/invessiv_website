@@ -20,10 +20,9 @@ import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { requirePortalReader } from "@/server/portal/auth/require-portal-reader";
 import { getPortalConversation } from "@/server/portal/query-handler/get-portal-conversation.query-handler";
 import { getPortalDashboard } from "@/server/portal/query-handler/get-portal-dashboard.query-handler";
-import { getPortalOnboardingBooking } from "@/server/portal/query-handler/get-portal-onboarding-booking.query-handler";
+import { getPortalOnboardingCall } from "@/server/portal/query-handler/get-portal-onboarding-call.query-handler";
 import { portalCanOn } from "@/server/portal/shared/portal-can-on";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
-import { isOnboardingCallBookable } from "@invessiv/common/patterns/crm/onboarding/onboarding-form-state";
 import { pickPortalOnboardingWidgetForm } from "@/common/patterns/portal/pick-portal-onboarding-widget-form";
 import { listPortalOnboardingForms } from "@/server/portal/query-handler/list-portal-onboarding-forms.query-handler";
 
@@ -75,12 +74,11 @@ export default async function PortalCustomerPage({
       // Empty without `portal.onboarding.read`; the widget then has no content and stays away.
       listPortalOnboardingForms(reader),
     ]);
-  // The widget shows one form; only that one needs its booking link, and only once it went out.
+  // The widget shows one form; only that one can have a call to offer.
   const widgetForm = pickPortalOnboardingWidgetForm(onboarding);
-  const onboardingBooking =
-    widgetForm && isOnboardingCallBookable(widgetForm.status)
-      ? await getPortalOnboardingBooking(reader, widgetForm.id)
-      : null;
+  const onboardingCall = widgetForm
+    ? await getPortalOnboardingCall(reader, widgetForm.id)
+    : null;
   const content = getPortalDashboardDictionary(activeLocale);
   const keysWithContent = new Set<PortalWidgetKey>([
     PortalWidgetKey.Project,
@@ -140,7 +138,7 @@ export default async function PortalCustomerPage({
             : null
         }
         onboarding={onboarding}
-        onboardingBooking={onboardingBooking}
+        onboardingCall={onboardingCall}
         today={today}
         viewerUserId={reader.userId}
         widgets={listVisiblePortalWidgets(reader.permissions, keysWithContent)}

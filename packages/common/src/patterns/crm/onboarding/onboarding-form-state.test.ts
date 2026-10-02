@@ -33,10 +33,57 @@ describe("isOnboardingReviewOpen", () => {
 });
 
 describe("isOnboardingCallBookable", () => {
-  it("offers the call from the submission until the form is completed", () => {
+  const reviewed = [
+    {
+      blockId: "a",
+      reviewStatus: OnboardingBlockReviewStatus.Complete,
+      clarificationMode: null,
+    },
+    {
+      blockId: "b",
+      reviewStatus: OnboardingBlockReviewStatus.Clarification,
+      clarificationMode: OnboardingClarificationMode.Call,
+    },
+  ];
+
+  it("offers the call only while a fully reviewed form lies with the team", () => {
     expect(
-      ONBOARDING_FORM_STATUS_VALUES.filter(isOnboardingCallBookable),
-    ).toEqual(["submitted", "changes_requested"]);
+      ONBOARDING_FORM_STATUS_VALUES.filter((status) =>
+        isOnboardingCallBookable(status, reviewed),
+      ),
+    ).toEqual(["submitted"]);
+  });
+
+  it("waits while a block is still unreviewed", () => {
+    expect(
+      isOnboardingCallBookable(OnboardingFormStatus.Submitted, [
+        ...reviewed,
+        {
+          blockId: "c",
+          reviewStatus: OnboardingBlockReviewStatus.Pending,
+          clarificationMode: null,
+        },
+      ]),
+    ).toBe(false);
+  });
+
+  it("waits while a question still has to go back to the customer", () => {
+    expect(
+      isOnboardingCallBookable(OnboardingFormStatus.Submitted, [
+        ...reviewed,
+        {
+          blockId: "c",
+          reviewStatus: OnboardingBlockReviewStatus.Clarification,
+          clarificationMode: OnboardingClarificationMode.Customer,
+        },
+      ]),
+    ).toBe(false);
+  });
+
+  it("treats a question kept for the call as reviewed", () => {
+    expect(
+      isOnboardingCallBookable(OnboardingFormStatus.Submitted, reviewed),
+    ).toBe(true);
   });
 });
 

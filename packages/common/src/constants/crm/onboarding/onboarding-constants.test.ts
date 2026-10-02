@@ -14,7 +14,6 @@ import {
 import { PROJECT_LINE_ITEM_STATUS_VALUES } from "../project-line-item-statuses";
 import { ONBOARDING_ELIGIBLE_PROJECT_STATUS_VALUES } from "./onboarding-eligible-project-statuses";
 import {
-  ONBOARDING_CALL_BOOKABLE_STATUS_VALUES,
   ONBOARDING_CUSTOMER_EDITABLE_STATUS_VALUES,
   ONBOARDING_FORM_STATUS_VALUES,
   ONBOARDING_PORTAL_VISIBLE_STATUS_VALUES,
@@ -82,13 +81,6 @@ describe("onboarding form statuses", () => {
         (status) => status !== OnboardingFormStatus.Draft,
       ),
     );
-  });
-
-  it("offers the onboarding call between the submission and the completion", () => {
-    expect(ONBOARDING_CALL_BOOKABLE_STATUS_VALUES).toEqual([
-      "submitted",
-      "changes_requested",
-    ]);
   });
 
   it("treats every status after the first submission as submitted", () => {

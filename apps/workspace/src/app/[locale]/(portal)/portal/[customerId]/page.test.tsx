@@ -20,8 +20,14 @@ const mocks = vi.hoisted(() => ({
   getPortalConversation: vi.fn(),
   listPortalFiles: vi.fn(),
   listPortalOnboardingForms: vi.fn(),
+  getPortalOnboardingCall: vi.fn(),
   dashboardProps: vi.fn(),
 }));
+
+vi.mock(
+  "@/server/portal/query-handler/get-portal-onboarding-call.query-handler",
+  () => ({ getPortalOnboardingCall: mocks.getPortalOnboardingCall }),
+);
 
 vi.mock(
   "@/server/portal/query-handler/list-portal-onboarding-forms.query-handler",
@@ -127,6 +133,7 @@ describe("PortalCustomerPage", () => {
   it("shows the onboarding widget only to a reader with the right and a form", async () => {
     const forms = [{ id: "form-1", projectTitle: "Relaunch" }];
     mocks.listPortalOnboardingForms.mockResolvedValue(forms);
+    mocks.getPortalOnboardingCall.mockResolvedValue({ booking: null });
 
     const blind = await renderPage();
     expect(blind.widgets.map((entry) => entry.key)).not.toContain(
@@ -145,12 +152,21 @@ describe("PortalCustomerPage", () => {
       expect.objectContaining({ customerId: "customer-1" }),
     );
     expect(reader.onboarding).toEqual(forms);
+    // Whether the call of the widget's form is due is the server's answer, passed on as it is.
+    expect(mocks.getPortalOnboardingCall).toHaveBeenLastCalledWith(
+      expect.objectContaining({ customerId: "customer-1" }),
+      "form-1",
+    );
+    expect(reader.onboardingCall).toEqual({ booking: null });
     expect(reader.widgets.map((entry) => entry.key)).toContain(
       PortalWidgetKey.Onboarding,
     );
 
     mocks.listPortalOnboardingForms.mockResolvedValue([]);
+    mocks.getPortalOnboardingCall.mockClear();
     const empty = await renderPage();
+    expect(mocks.getPortalOnboardingCall).not.toHaveBeenCalled();
+    expect(empty.onboardingCall).toBeNull();
     expect(empty.widgets.map((entry) => entry.key)).not.toContain(
       PortalWidgetKey.Onboarding,
     );

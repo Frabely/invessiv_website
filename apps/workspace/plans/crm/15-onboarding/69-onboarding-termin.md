@@ -126,14 +126,22 @@ Bei der Umsetzung nachgezogen; der Plan oben bleibt als Entstehungsstand stehen,
 
 ### T2 — Terminkarte im Portal
 
-- **Kein neuer Portal-Endpunkt.** Dashboard- und Bogenseite rufen `getPortalOnboardingBooking` serverseitig auf; das
+- **Kein neuer Portal-Endpunkt.** Dashboard- und Bogenseite rufen `getPortalOnboardingCall` serverseitig auf; das
   Projekt kommt aus dem für den Leser sichtbaren Bogen, nie aus der Anfrage.
 - **`projectResponsibleMemberService.findBookingContact`** ist eine zweite Methode neben `findActiveMemberId`: Sie
   liest ohne Sperre und überspringt ein aktives Mitglied ohne Link (Projekt-Owner ohne Link → Kunden-Owner).
-- **Wann die Karte erscheint**, steht genau einmal: `isOnboardingCallBookable`
-  (`ONBOARDING_CALL_BOOKABLE_STATUS_VALUES`: `submitted`, `changes_requested`).
-- **Eine Komponente für Seite und Widget** (`onboarding-booking-card`, im Widget `compact`). Solange der Kunde eine
-  Nachforderung bearbeitet, ist „Termin aussuchen“ die ruhige Schaltfläche; die Ergänzung bleibt die Hauptaktion.
+- **Der Call ist erst nach der Prüfung buchbar** (02.10.2026, mit dem Owner abgestimmt; weicht von „ab dem
+  Absenden“ und von der Akzeptanz „Karte nur in `submitted`/`changes_requested`“ ab). Die Regel steht genau einmal in
+  `isOnboardingCallBookable(status, blocks)`: Status `submitted`, kein Block mehr `pending` und keine Rückfrage an den
+  Kunden (`clarification` + `customer`), die noch rausgehen müsste. Eine Rückfrage für den Call hält nichts auf. In
+  `changes_requested` und nach dem erneuten Absenden wartet der Call wieder, bis die ergänzten Blöcke geprüft sind.
+  Es gibt bewusst keinen eigenen Freigabe-Klick: Mit dem letzten geprüften Block ist der Abschnitt beim Kunden
+  sichtbar. Ein eigener Knopf bräuchte eine Spalte samt Migration.
+- **Das Portal erfährt den Prüfstand nicht.** `getPortalOnboardingCall` antwortet `PortalOnboardingCallDto | null`:
+  `null` heißt „kein Abschnitt“ (auch während der Prüfung), `{ booking: null }` heißt „Call fällig, aber niemand
+  bietet einen Link an“ (Kontakt-Hinweis). Widget und Bogenseite zeigen nur, was der Server liefert.
+- **Eine Komponente für Seite und Widget** (`onboarding-booking-card`, im Widget `compact`). „Termin aussuchen“ ist
+  immer die Hauptaktion, weil der Kunde zu diesem Zeitpunkt nichts anderes zu tun hat.
 - **Klick-zum-Öffnen** ist ein gewöhnlicher Link mit `target="_blank"` und `rel="noopener noreferrer"`; der
   Anbieterhinweis steht davor und ist per `aria-describedby` mit dem Link verbunden.
 - **Anbieternamen** stehen als `BOOKING_PROVIDER_NAMES` neben `BOOKING_PROVIDERS` (Markennamen sind in jeder Sprache
@@ -141,5 +149,5 @@ Bei der Umsetzung nachgezogen; der Plan oben bleibt als Entstehungsstand stehen,
   `resolveBookingProvider` (Subdomains zählen, `calendly.com.example.org` nicht).
 - **Chat-Link im Fallback** führt auf die Nachrichtenseite des Portals und erscheint nur mit `portal.messages.read`.
 - **Seed:** Der Fixture-Owner trägt einen Beispiel-Link, die übrigen Fixture-Mitglieder keinen.
-- **E2E:** `e2e/portal-onboarding.e2e.ts` prüft nach dem Absenden, dass der Abschnitt „Onboarding-Call“ erscheint und
-  kein `iframe` eingebettet ist.
+- **E2E:** `e2e/portal-onboarding.e2e.ts` prüft direkt nach dem Absenden, dass der Abschnitt „Onboarding-Call“ noch
+  nicht erscheint und kein `iframe` eingebettet ist.

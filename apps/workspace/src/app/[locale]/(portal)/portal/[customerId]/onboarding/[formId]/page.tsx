@@ -11,7 +11,7 @@ import {
 import { crmOnboardingFormPathFor, portalPathFor } from "@/lib/auth/routes";
 import { isPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
 import { requirePortalReader } from "@/server/portal/auth/require-portal-reader";
-import { getPortalOnboardingBooking } from "@/server/portal/query-handler/get-portal-onboarding-booking.query-handler";
+import { getPortalOnboardingCall } from "@/server/portal/query-handler/get-portal-onboarding-call.query-handler";
 import { getPortalOnboardingForm } from "@/server/portal/query-handler/get-portal-onboarding-form.query-handler";
 import { portalCanOn } from "@/server/portal/shared/portal-can-on";
 
@@ -55,13 +55,13 @@ export default async function PortalOnboardingFormPage({
   if (!form) notFound();
   const isOwnerView = isPortalOwnerView(reader);
   const target = { customerId: reader.customerId };
-  // Null before the submission, after the completion and when nobody offers a link.
-  const booking = await getPortalOnboardingBooking(reader, form.id);
+  // Null until the team has reviewed the form, and again once the onboarding is completed.
+  const call = await getPortalOnboardingCall(reader, form.id);
 
   return (
     <OnboardingFormView
       backHref={portalPathFor(activeLocale, reader.customerId)}
-      booking={booking}
+      call={call}
       canUpload={
         !isOwnerView &&
         portalCanOn.forReader(reader, Permission.PortalFilesWrite, target)

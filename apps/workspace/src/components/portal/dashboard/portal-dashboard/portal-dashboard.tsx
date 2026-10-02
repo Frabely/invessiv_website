@@ -7,7 +7,7 @@ import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes"
 import type { PortalConversationDto } from "@invessiv/common/contracts/portal/portal-conversation.dto";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
 import type { PortalFilesOverviewDto } from "@invessiv/common/contracts/portal/portal-files-overview.dto";
-import type { PortalOnboardingBookingDto } from "@invessiv/common/contracts/portal/portal-onboarding-booking.dto";
+import type { PortalOnboardingCallDto } from "@invessiv/common/contracts/portal/portal-onboarding-call.dto";
 import type { PortalOnboardingFormSummaryDto } from "@invessiv/common/contracts/portal/portal-onboarding-form-summary.dto";
 import { ChatDock, WidgetGrid } from "@invessiv/ui";
 import type { PortalDashboardNavigationMode as PortalDashboardNavigationModeType } from "@/common/constants/portal/portal-dashboard-navigation-modes";
@@ -65,8 +65,8 @@ export type PortalDashboardProps = {
   messagesHref?: string | null;
   /** The released forms of the company, newest first; empty without `portal.onboarding.read`. */
   onboarding: readonly PortalOnboardingFormSummaryDto[];
-  /** Where the call of the widget's form is booked; null when there is no link to offer. */
-  onboardingBooking?: PortalOnboardingBookingDto | null;
+  /** The call of the widget's form once the team has reviewed it; null until then. */
+  onboardingCall?: PortalOnboardingCallDto | null;
   /** Business day (`YYYY-MM-DD`) decided once on the server. */
   today: string;
   /** Already filtered on the server by permission and content. */
@@ -92,7 +92,7 @@ export function PortalDashboard({
   messagesContent,
   messagesHref = null,
   onboarding,
-  onboardingBooking = null,
+  onboardingCall = null,
   today,
   widgets,
   viewerUserId,
@@ -184,7 +184,7 @@ export function PortalDashboard({
   const slots: Partial<Record<PortalWidgetKey, ReactNode>> = {
     [PortalWidgetKey.Onboarding]: onboardingForm ? (
       <PortalOnboardingWidget
-        booking={onboardingBooking}
+        call={onboardingCall}
         chatHref={messagesHref}
         content={content.widgets.onboarding}
         customerId={customerId}

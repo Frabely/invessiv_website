@@ -40,15 +40,6 @@ export const ONBOARDING_STRUCTURE_EDITABLE_STATUS_VALUES = [
   OnboardingFormStatus.Open,
 ] as const;
 
-/**
- * The onboarding call is booked here: from the first submission until the team completes the
- * form. Before that the answers are not in, afterwards the call is over.
- */
-export const ONBOARDING_CALL_BOOKABLE_STATUS_VALUES = [
-  OnboardingFormStatus.Submitted,
-  OnboardingFormStatus.ChangesRequested,
-] as const;
-
 /** Every status after the first submission; a CHECK requires `submitted_at` for them. */
 export const ONBOARDING_SUBMITTED_STATUS_VALUES = [
   OnboardingFormStatus.Submitted,

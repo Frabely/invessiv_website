@@ -2,15 +2,18 @@ import { eq, inArray } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
+import { OnboardingBlockReviewStatus as R } from "@invessiv/common/constants/crm/onboarding/onboarding-block-review-statuses";
+import { OnboardingClarificationMode as M } from "@invessiv/common/constants/crm/onboarding/onboarding-clarification-modes";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { QuestionnaireFieldType as T } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
 import { BookingProvider } from "@invessiv/common/constants/portal/booking-providers";
 import {
+  onboardingFormBlocks,
   projects,
   users,
   workspaceMembers,
 } from "@invessiv/db/record-configuration";
-import { getPortalOnboardingBooking } from "@/server/portal/query-handler/get-portal-onboarding-booking.query-handler";
+import { getPortalOnboardingCall } from "@/server/portal/query-handler/get-portal-onboarding-call.query-handler";
 import { createPortalSessionFixture } from "@/server/tests/support/portal-session-fixture";
 import { startProjectOnboarding } from "@/server/workspace/crm/command-handler/start-project-onboarding.command-handler";
 import { createOnboardingIntegrationFixture } from "../../workspace/crm/support/onboarding-integration-fixture";
@@ -23,10 +26,10 @@ const CUSTOMER_OWNER_LINK = "https://calendly.com/integration-owner/call";
 const PROJECT_OWNER_LINK = "https://cal.com/integration-project/call";
 
 describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
-  "portal onboarding booking link with real portal sessions",
+  "portal onboarding call with real portal sessions",
   () => {
     const f = createOnboardingIntegrationFixture();
-    const PREFIX = `integration:onboarding-booking:${crypto.randomUUID()}:`;
+    const PREFIX = `integration:onboarding-call:${crypto.randomUUID()}:`;
     const sessions = createPortalSessionFixture(
       () => f.database(),
       f.memberId,
@@ -73,6 +76,26 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         .where(eq(workspaceMembers.id, f.memberId));
     }
 
+    /** Writes the review of every block of a form, as the review tab would. */
+    async function review(
+      formId: string,
+      status: R,
+      mode: M | null = null,
+    ): Promise<void> {
+      const pending = status === R.Pending;
+      await f
+        .database()
+        .update(onboardingFormBlocks)
+        .set({
+          review_status: status,
+          clarification_mode: mode,
+          review_note: mode ? "Bitte ergänzen" : null,
+          reviewed_by_member_id: pending ? null : f.memberId,
+          reviewed_at: pending ? null : new Date(),
+        })
+        .where(eq(onboardingFormBlocks.form_id, formId));
+    }
+
     /** A form on a fresh project of the given customer, owned by the given member. */
     async function form(
       status: OnboardingFormStatus,
@@ -91,6 +114,15 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       }
       await f.setFormStatus(started.id, status);
       return started.id;
+    }
+
+    /** A submitted form whose blocks the team has all marked complete. */
+    async function reviewedForm(
+      options: { ownerMemberId?: string; customerId?: string } = {},
+    ): Promise<string> {
+      const formId = await form(OnboardingFormStatus.Submitted, options);
+      await review(formId, R.Complete);
+      return formId;
     }
 
     beforeAll(async () => {
@@ -119,86 +151,110 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       );
     }, 60_000);
 
+    it("offers no call before the team has reviewed the submitted form", async () => {
+      const contact = await sessions.session(f.customerId);
+      const formId = await form(OnboardingFormStatus.Submitted);
+
+      // Submitted, nothing reviewed yet.
+      expect(await getPortalOnboardingCall(contact, formId)).toBeNull();
+
+      // A question that still has to go back to the customer keeps the call waiting.
+      await review(formId, R.Clarification, M.Customer);
+      expect(await getPortalOnboardingCall(contact, formId)).toBeNull();
+
+      // A question kept for the call is what the call is for.
+      await review(formId, R.Clarification, M.Call);
+      expect(await getPortalOnboardingCall(contact, formId)).toMatchObject({
+        booking: { bookingUrl: CUSTOMER_OWNER_LINK },
+      });
+
+      await review(formId, R.Complete);
+      expect(await getPortalOnboardingCall(contact, formId)).toMatchObject({
+        booking: { bookingUrl: CUSTOMER_OWNER_LINK },
+      });
+    });
+
+    it("offers the call only while the reviewed form lies with the team", async () => {
+      const contact = await sessions.session(f.customerId);
+      const formId = await form(OnboardingFormStatus.Draft);
+      await review(formId, R.Complete);
+      const expected: [OnboardingFormStatus, boolean][] = [
+        [OnboardingFormStatus.Draft, false],
+        [OnboardingFormStatus.Open, false],
+        [OnboardingFormStatus.Submitted, true],
+        [OnboardingFormStatus.ChangesRequested, false],
+        [OnboardingFormStatus.Completed, false],
+      ];
+
+      for (const [status, offered] of expected) {
+        await f.setFormStatus(formId, status);
+        const call = await getPortalOnboardingCall(contact, formId);
+        expect(call !== null, status).toBe(offered);
+      }
+    });
+
     it("shows each customer the link of the member who owns its project", async () => {
       const projectOwner = await member("Petra Projekt", PROJECT_OWNER_LINK);
-      const ownForm = await form(OnboardingFormStatus.Submitted);
-      const foreignForm = await form(OnboardingFormStatus.Submitted, {
+      const ownForm = await reviewedForm();
+      const foreignForm = await reviewedForm({
         customerId: f.foreignCustomerId,
         ownerMemberId: projectOwner,
       });
       const contact = await sessions.session(f.customerId);
       const foreignContact = await sessions.session(f.foreignCustomerId);
 
-      expect(await getPortalOnboardingBooking(contact, ownForm)).toMatchObject({
-        bookingUrl: CUSTOMER_OWNER_LINK,
-        provider: BookingProvider.Calendly,
+      expect(await getPortalOnboardingCall(contact, ownForm)).toMatchObject({
+        booking: {
+          bookingUrl: CUSTOMER_OWNER_LINK,
+          provider: BookingProvider.Calendly,
+        },
       });
       expect(
-        await getPortalOnboardingBooking(foreignContact, foreignForm),
+        await getPortalOnboardingCall(foreignContact, foreignForm),
       ).toEqual({
-        memberDisplayName: "Petra Projekt",
-        bookingUrl: PROJECT_OWNER_LINK,
-        provider: BookingProvider.CalCom,
+        booking: {
+          memberDisplayName: "Petra Projekt",
+          bookingUrl: PROJECT_OWNER_LINK,
+          provider: BookingProvider.CalCom,
+        },
       });
 
       // A form of the other company yields nothing, whoever offers a link there.
-      expect(await getPortalOnboardingBooking(contact, foreignForm)).toBeNull();
-      expect(
-        await getPortalOnboardingBooking(foreignContact, ownForm),
-      ).toBeNull();
+      expect(await getPortalOnboardingCall(contact, foreignForm)).toBeNull();
+      expect(await getPortalOnboardingCall(foreignContact, ownForm)).toBeNull();
     });
 
     it("falls back to the customer owner when the project owner offers no link", async () => {
       const withoutLink = await member("Ohne Link", null);
-      const formId = await form(OnboardingFormStatus.Submitted, {
-        ownerMemberId: withoutLink,
-      });
+      const formId = await reviewedForm({ ownerMemberId: withoutLink });
       const contact = await sessions.session(f.customerId);
 
-      expect(await getPortalOnboardingBooking(contact, formId)).toMatchObject({
-        bookingUrl: CUSTOMER_OWNER_LINK,
+      expect(await getPortalOnboardingCall(contact, formId)).toMatchObject({
+        booking: { bookingUrl: CUSTOMER_OWNER_LINK },
       });
     });
 
-    it("never offers the link of an inactive member and answers nothing when no link is left", async () => {
+    it("never offers the link of an inactive member and announces a call without a link when none is left", async () => {
       const inactive = await member("Inaktiv", PROJECT_OWNER_LINK, false);
-      const formId = await form(OnboardingFormStatus.Submitted, {
-        ownerMemberId: inactive,
-      });
+      const formId = await reviewedForm({ ownerMemberId: inactive });
       const contact = await sessions.session(f.customerId);
 
-      expect(await getPortalOnboardingBooking(contact, formId)).toMatchObject({
-        bookingUrl: CUSTOMER_OWNER_LINK,
+      expect(await getPortalOnboardingCall(contact, formId)).toMatchObject({
+        booking: { bookingUrl: CUSTOMER_OWNER_LINK },
       });
 
       await setCustomerOwnerLink(null);
       try {
-        expect(await getPortalOnboardingBooking(contact, formId)).toBeNull();
+        expect(await getPortalOnboardingCall(contact, formId)).toEqual({
+          booking: null,
+        });
       } finally {
         await setCustomerOwnerLink(CUSTOMER_OWNER_LINK);
       }
     });
 
-    it("offers the link from the submission until the completion, not before and not after", async () => {
-      const contact = await sessions.session(f.customerId);
-      const expected: [OnboardingFormStatus, boolean][] = [
-        [OnboardingFormStatus.Open, false],
-        [OnboardingFormStatus.Submitted, true],
-        [OnboardingFormStatus.ChangesRequested, true],
-        [OnboardingFormStatus.Completed, false],
-      ];
-      const formId = await form(OnboardingFormStatus.Draft);
-      expect(await getPortalOnboardingBooking(contact, formId)).toBeNull();
-
-      for (const [status, offered] of expected) {
-        await f.setFormStatus(formId, status);
-        const booking = await getPortalOnboardingBooking(contact, formId);
-        expect(booking !== null, status).toBe(offered);
-      }
-    });
-
     it("needs portal.onboarding.read and a real form id", async () => {
-      const formId = await form(OnboardingFormStatus.Submitted);
+      const formId = await reviewedForm();
       const withoutOnboarding = f.contact([
         Permission.PortalAccess,
         Permission.PortalProjectsRead,
@@ -206,12 +262,12 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       const contact = await sessions.session(f.customerId);
 
       expect(
-        await getPortalOnboardingBooking(withoutOnboarding, formId),
+        await getPortalOnboardingCall(withoutOnboarding, formId),
       ).toBeNull();
       expect(
-        await getPortalOnboardingBooking(contact, crypto.randomUUID()),
+        await getPortalOnboardingCall(contact, crypto.randomUUID()),
       ).toBeNull();
-      expect(await getPortalOnboardingBooking(contact, "no-uuid")).toBeNull();
+      expect(await getPortalOnboardingCall(contact, "no-uuid")).toBeNull();
     });
   },
 );
