@@ -7,18 +7,20 @@ export function describeOnboardingReviewSummary(
   summary: OnboardingReviewSummary,
   texts: OnboardingReviewSummaryTexts,
 ): { reviewed: string; clarifications: string } {
+  let clarifications = texts.clarificationsNone;
+  if (summary.clarifications === 1) {
+    clarifications = texts.clarificationsOne;
+  } else if (summary.clarifications > 1) {
+    clarifications = formatMessage(texts.clarifications, {
+      count: summary.clarifications,
+    });
+  }
+
   return {
     reviewed: formatMessage(texts.reviewed, {
       reviewed: summary.reviewed,
       total: summary.total,
     }),
-    clarifications:
-      summary.clarifications === 0
-        ? texts.clarificationsNone
-        : summary.clarifications === 1
-          ? texts.clarificationsOne
-          : formatMessage(texts.clarifications, {
-              count: summary.clarifications,
-            }),
+    clarifications,
   };
 }

@@ -82,14 +82,14 @@ export function OnboardingReviewTab({
   const editable = open && canWrite;
   const summary = summarizeOnboardingReview(form.blocks);
   const summaryText = describeOnboardingReviewSummary(summary, texts.summary);
-  const notice =
-    form.status === OnboardingFormStatus.ChangesRequested
-      ? texts.states.changesRequested
-      : form.status === OnboardingFormStatus.Completed
-        ? texts.states.completed
-        : canWrite
-          ? null
-          : texts.states.readOnly;
+  let notice: string | null = null;
+  if (form.status === OnboardingFormStatus.ChangesRequested) {
+    notice = texts.states.changesRequested;
+  } else if (form.status === OnboardingFormStatus.Completed) {
+    notice = texts.states.completed;
+  } else if (!canWrite) {
+    notice = texts.states.readOnly;
+  }
 
   return (
     <div className={styles.tab}>
