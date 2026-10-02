@@ -129,12 +129,33 @@ export function useOnboardingFormState({
     [track],
   );
 
+  /**
+   * Entries added here but not yet answered by the server stay on screen behind the server's list;
+   * otherwise an earlier answer would drop them together with the fields being filled in.
+   */
   const replaceGroup = useCallback(
     (fieldId: string, entries: readonly QuestionnaireGroupEntryDto[]) =>
-      writeEntries((current) => [
-        ...current.filter((entry) => entry.fieldId !== fieldId),
-        ...[...entries].sort(byPosition),
-      ]),
+      writeEntries((current) => {
+        const confirmed = [...entries].sort(byPosition);
+        const known = new Set(confirmed.map((entry) => entry.id));
+        const pending = current
+          .filter(
+            (entry) =>
+              entry.fieldId === fieldId &&
+              !known.has(entry.id) &&
+              creatingRef.current.has(entry.id),
+          )
+          .sort(byPosition)
+          .map((entry, index) => ({
+            ...entry,
+            position: confirmed.length + index,
+          }));
+        return [
+          ...current.filter((entry) => entry.fieldId !== fieldId),
+          ...confirmed,
+          ...pending,
+        ];
+      }),
     [writeEntries],
   );
 
@@ -221,6 +242,9 @@ export function useOnboardingFormState({
       slot: { fieldId: string; groupEntryId: string | null },
       file: PortalFileDto,
     ): Promise<PortalOnboardingResult<QuestionnaireAnswerFileDto>> => {
+      // An upload can finish before the entry it belongs to exists on the server.
+      if (slot.groupEntryId && !(await whenEntryReady(slot.groupEntryId)))
+        return { ok: false, code: PortalOnboardingErrorCode.NotFound };
       const result = await track(slot.fieldId, () =>
         portalOnboardingApiService.attachFile(customerId, form.id, {
           ...slot,
@@ -235,7 +259,7 @@ export function useOnboardingFormState({
         );
       return result;
     },
-    [customerId, form.id, track],
+    [customerId, form.id, track, whenEntryReady],
   );
 
   const detachFile = useCallback(

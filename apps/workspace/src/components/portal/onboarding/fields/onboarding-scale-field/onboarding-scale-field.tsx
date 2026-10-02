@@ -89,10 +89,9 @@ export function OnboardingScaleField({
           <span>{high}</span>
         </div>
       ) : null}
-      {/* The poles are read once, after the group name, instead of on every level. */}
       {low || high ? (
         <span className="sr-only">
-          {low} – {high}
+          {[low, high].filter(Boolean).join(" – ")}
         </span>
       ) : null}
       {!required && value !== "" ? (

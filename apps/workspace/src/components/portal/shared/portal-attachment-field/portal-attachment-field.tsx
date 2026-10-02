@@ -98,7 +98,7 @@ export function PortalAttachmentField({
 
   const queue = useUploadQueue<PortalFileDto>(transport, {
     onUploadedAction: (file) => void attach(file),
-    maxFiles: maxFiles - attachments.length,
+    maxFiles: Math.max(0, maxFiles - attachments.length - (attaching ? 1 : 0)),
     leaveWarning: filesContent.upload.leaveWarning,
   });
   const downloads = usePortalFileDownloads<FeedbackAttachmentDto>(
@@ -118,8 +118,12 @@ export function PortalAttachmentField({
     setError(null);
     if (prepareAction) {
       setBusy(true);
-      const prepared = await prepareAction();
-      setBusy(false);
+      let prepared = false;
+      try {
+        prepared = await prepareAction();
+      } finally {
+        setBusy(false);
+      }
       if (!prepared) return;
     }
     queue.stage(files);
