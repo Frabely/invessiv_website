@@ -5,6 +5,8 @@ const MEMBER_ROLES_PATH_SEGMENT = "roles";
 const MEMBER_ROLE_ASSIGNMENTS_PATH_SEGMENT = "role-assignments";
 const MEMBER_OWNER_PATH_SEGMENT = "owner";
 const ACCESS_SCOPES_PATH_SEGMENT = "access-scopes";
+const BOOKING_URL_PATH_SEGMENT = "booking-url";
+const OWN_MEMBER_PATH_SEGMENT = "me";
 
 export function workspaceMemberEndpoint(memberId: string): string {
   return `${WorkspaceApiEndpoint.Members}/${encodeURIComponent(memberId)}`;
@@ -22,6 +24,15 @@ export function workspaceMemberRoleAssignmentsEndpoint(
 
 export function workspaceMemberOwnerEndpoint(memberId: string): string {
   return `${workspaceMemberEndpoint(memberId)}/${MEMBER_OWNER_PATH_SEGMENT}`;
+}
+
+export function workspaceMemberBookingUrlEndpoint(memberId: string): string {
+  return `${workspaceMemberEndpoint(memberId)}/${BOOKING_URL_PATH_SEGMENT}`;
+}
+
+/** The signed-in member's own link; the server takes the member from the session. */
+export function ownBookingUrlEndpoint(): string {
+  return `${WorkspaceApiEndpoint.Members}/${OWN_MEMBER_PATH_SEGMENT}/${BOOKING_URL_PATH_SEGMENT}`;
 }
 
 export function workspaceMemberAccessScopesEndpoint(memberId: string): string {

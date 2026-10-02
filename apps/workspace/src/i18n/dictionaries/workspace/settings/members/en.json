@@ -20,7 +20,8 @@
       "grantOwner": "Make owner",
       "revokeOwner": "Remove owner role",
       "activate": "Activate",
-      "deactivate": "Deactivate"
+      "deactivate": "Deactivate",
+      "bookingUrl": "Booking link"
     }
   },
   "addDialog": {
@@ -97,6 +98,26 @@
     "openTasks": "Open tasks: {count}. Assign them to another assignee first.",
     "openConversations": "Assigned customer conversations: {count}. Assign them to another member first.",
     "done": "Close",
+    "submitting": "Saving …",
+    "cancel": "Cancel",
+    "close": "Close dialog"
+  },
+  "bookingUrlDialog": {
+    "title": "Booking link of {name}",
+    "description": "Customers whose projects {name} looks after book their onboarding call through this link. They see it in the portal once they have submitted the onboarding. Your change is logged.",
+    "label": "Link to the booking calendar",
+    "placeholder": "https://calendly.com/name/onboarding-call",
+    "hint": "https links only, for example from Calendly or Cal.com. Leave empty to remove the link.",
+    "submit": "Save link",
+    "issues": {
+      "invalid": "This is not a complete link. Paste it starting with https://.",
+      "not_https": "The link has to start with https://.",
+      "too_long": "The link is too long. The limit is 2,048 characters."
+    },
+    "conflict": "The link was just changed elsewhere. Save again if your entry should apply.",
+    "conflictCurrent": "Currently stored: {url}",
+    "conflictCurrentEmpty": "No link is stored at the moment.",
+    "error": "That didn't work. Try again.",
     "submitting": "Saving …",
     "cancel": "Cancel",
     "close": "Close dialog"

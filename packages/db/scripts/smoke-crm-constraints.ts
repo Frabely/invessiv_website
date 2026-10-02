@@ -18,6 +18,7 @@ import { ConversationReadsConstraintName } from "@invessiv/db/constraint-names/c
 import { FeedbackRoundItemsConstraintName } from "@invessiv/db/constraint-names/crm/feedback-round-items-constraint-names";
 import { FeedbackRoundsConstraintName } from "@invessiv/db/constraint-names/crm/feedback-rounds-constraint-names";
 import { FilesConstraintName } from "@invessiv/db/constraint-names/crm/files-constraint-names";
+import { WorkspaceMembersConstraintName } from "@invessiv/db/constraint-names/crm/workspace-members-constraint-names";
 import {
   cleanupQuestionnaireFixtures,
   runOnboardingChecks,
@@ -1470,6 +1471,30 @@ async function runMissingDefaultChecks(
             INSERT INTO workspace_members (id, user_id, version)
             SELECT ${randomUUID()}, new_user.id, 1 FROM new_user
         `,
+  );
+
+  await expectRejected(
+    "member booking link without https is rejected",
+    () => sql`
+            UPDATE workspace_members SET booking_url = 'http://calendly.com/smoke' WHERE id = ${memberId}
+        `,
+    WorkspaceMembersConstraintName.BookingUrlCheck,
+  );
+
+  await expectRejected(
+    "member booking link above 2048 characters is rejected",
+    () => sql`
+            UPDATE workspace_members SET booking_url = ${`https://calendly.com/${"a".repeat(2048)}`} WHERE id = ${memberId}
+        `,
+    WorkspaceMembersConstraintName.BookingUrlCheck,
+  );
+
+  await expectAccepted(
+    "member booking link with https is accepted and can be cleared",
+    async () => {
+      await sql`UPDATE workspace_members SET booking_url = 'https://calendly.com/smoke' WHERE id = ${memberId}`;
+      await sql`UPDATE workspace_members SET booking_url = NULL WHERE id = ${memberId}`;
+    },
   );
 
   await expectRejected(

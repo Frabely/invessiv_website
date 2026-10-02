@@ -9,6 +9,7 @@ export type WorkspaceMemberRoleRow = {
   member_active: boolean;
   member_version: number;
   member_created_at: Date;
+  member_booking_url: string | null;
   role_id: string | null;
   role_name: string | null;
   role_system_key: SystemRoleKey | null;

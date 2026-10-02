@@ -26,6 +26,8 @@ import type { CreateRoleRequestDto } from "@invessiv/common/contracts/auth/creat
 import type { ListClerkCandidatesRequestDto } from "@invessiv/common/contracts/auth/list-clerk-candidates-request.dto";
 import type { ReplaceWorkspaceMemberRolesRequestDto } from "@invessiv/common/contracts/auth/replace-workspace-member-roles-request.dto";
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
+import type { OwnBookingUrlDto } from "@invessiv/common/contracts/auth/own-booking-url.dto";
+import type { UpdateMemberBookingUrlRequestDto } from "@invessiv/common/contracts/auth/update-member-booking-url-request.dto";
 import type { UpdateRoleRequestDto } from "@invessiv/common/contracts/auth/update-role-request.dto";
 import type { UpdateWorkspaceMemberStatusRequestDto } from "@invessiv/common/contracts/auth/update-workspace-member-status-request.dto";
 import { OwnableEntity } from "@invessiv/common/constants/crm/ownable-entities";
@@ -39,6 +41,8 @@ import type {
   ClerkCandidatesClientResult,
   MemberMutationClientResult,
   MemberStatusMutationClientResult,
+  OwnBookingUrlClientResult,
+  OwnBookingUrlMutationClientResult,
   RoleMutationClientResult,
 } from "@/common/contracts/access/access-client-results";
 import {
@@ -46,8 +50,10 @@ import {
   accessCustomerProjectsEndpoint,
   accessCustomersEndpoint,
   crmCustomerAccessScopesEndpoint,
+  ownBookingUrlEndpoint,
   workspaceMemberAccessScopeEndpoint,
   workspaceMemberAccessScopesEndpoint,
+  workspaceMemberBookingUrlEndpoint,
   workspaceMemberEndpoint,
   workspaceMemberOwnerEndpoint,
   workspaceMemberRoleAssignmentsEndpoint,
@@ -237,6 +243,54 @@ async function updateMemberStatus(
   };
 }
 
+function isOwnBookingUrl(payload: unknown): payload is OwnBookingUrlDto {
+  return (
+    isRecord(payload) &&
+    typeof payload.version === "number" &&
+    (payload.bookingUrl === null || typeof payload.bookingUrl === "string")
+  );
+}
+
+function readMemberErrorCode(payload: unknown): WorkspaceMemberErrorCode {
+  return readErrorCode(
+    payload,
+    WORKSPACE_MEMBER_ERROR_CODE_VALUES,
+    WorkspaceMemberErrorCode.Internal,
+  );
+}
+
+async function getOwnBookingUrl(): Promise<OwnBookingUrlClientResult> {
+  const response = await send(ownBookingUrlEndpoint(), HttpMethod.Get);
+  if (!response) {
+    return { ok: false, code: WorkspaceMemberErrorCode.Internal };
+  }
+  if (response.ok && isOwnBookingUrl(response.payload)) {
+    return { ok: true, own: response.payload };
+  }
+  return { ok: false, code: readMemberErrorCode(response.payload) };
+}
+
+async function updateOwnBookingUrl(
+  request: UpdateMemberBookingUrlRequestDto,
+): Promise<OwnBookingUrlMutationClientResult> {
+  const response = await send(
+    ownBookingUrlEndpoint(),
+    HttpMethod.Patch,
+    request,
+  );
+  if (!response) {
+    return { ok: false, code: WorkspaceMemberErrorCode.Internal };
+  }
+  if (response.ok && isOwnBookingUrl(response.payload)) {
+    return { ok: true, own: response.payload };
+  }
+  const current = readConflict<OwnBookingUrlDto>(response);
+  if (current) {
+    return { ok: false, code: ConcurrencyErrorCode.VersionConflict, current };
+  }
+  return { ok: false, code: readMemberErrorCode(response.payload) };
+}
+
 async function mutateRole(
   url: string,
   method: HttpMethod,
@@ -298,6 +352,17 @@ export const accessApiService = {
   addMember: (request: AddWorkspaceMemberRequestDto) =>
     mutateMember(WorkspaceApiEndpoint.Members, HttpMethod.Post, request),
   updateMemberStatus,
+  updateMemberBookingUrl: (
+    memberId: string,
+    request: UpdateMemberBookingUrlRequestDto,
+  ) =>
+    mutateMember(
+      workspaceMemberBookingUrlEndpoint(memberId),
+      HttpMethod.Patch,
+      request,
+    ),
+  getOwnBookingUrl,
+  updateOwnBookingUrl,
   replaceMemberRoles: (
     memberId: string,
     request: ReplaceWorkspaceMemberRolesRequestDto,

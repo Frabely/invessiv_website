@@ -129,3 +129,12 @@ Ab Task 68 (`apps/workspace/plans/crm/15-onboarding/68-pruefung-und-nachforderun
   Team noch prüft (`submitted`), bleibt eine bereits geschriebene Rückfrage intern.
 - **Erneutes Absenden** läuft über denselben Befehl wie das erste. `onboardingFormTransitionService.submit` setzt
   dabei die nachgeforderten Blöcke auf `pending` zurück und legt keine zweite Sammelaufgabe an.
+
+Ab Task 69 (`apps/workspace/plans/crm/15-onboarding/69-onboarding-termin.md`):
+
+- **Buchungslink.** `getPortalOnboardingBooking(reader, formId)` liefert `PortalOnboardingBookingDto | null`. Das
+  Projekt stammt aus dem Bogen, den `portalOnboardingService.findVisibleForm` diesem Leser zeigt; ein fremder oder
+  geratener Bogen, ein Status außerhalb von `isOnboardingCallBookable` und „niemand bietet einen Link an“ sind
+  ununterscheidbar `null`. Wessen Link es ist, entscheidet `projectResponsibleMemberService.findBookingContact`
+  (`server/shared/`). Das DTO baut `portalOnboardingMappingService.toBookingDto`; es trägt Anzeigename, Link und
+  Anbieter, keine Mitglieds-ID und keine E-Mail.

@@ -67,3 +67,18 @@ Command- und Query-Handler für Mitglieder, Rollen und den Owner-Flow. Die Actor
 
 - Deaktivierung, Übergabe und Ownership-Registry → Ordner 03c.
 - Rollen löschen: Rollen werden deaktiviert, nicht gelöscht.
+
+## Buchungslink (ab Task 69)
+
+Plan: `apps/workspace/plans/crm/15-onboarding/69-onboarding-termin.md`.
+
+- `workspace_members.booking_url` schreibt ausschließlich `updateMemberBookingUrl` über
+  `workspaceMemberVersionService.updateBookingUrl` (`updateVersioned`). Was ein gültiger Link ist, steht genau einmal
+  in `parseBookingUrl` (`src/common/patterns/access/`); gespeichert wird die normalisierte Form.
+- **Zwei Routen, ein Command.** `PATCH /members/[id]/booking-url` verlangt `members.manage`;
+  `GET`/`PATCH /members/me/booking-url` gelten für jedes aktive Mitglied und nehmen das Mitglied ausschließlich aus
+  der Session. Die „me“-Route antwortet mit `OwnBookingUrlDto`, nie mit `WorkspaceMemberDto`.
+- **Bewusste Ausnahme von „ein Security-Event je Änderung“:** Nur eine Fremdänderung schreibt
+  `workspace_member_booking_url_changed`. Der eigene Link ist Pflege des eigenen Kalenders und ändert nichts am
+  Zugriff. Die Metadaten nennen nur Feld und `cleared`, nie den Link.
+- Ein unveränderter Link ist kein Write: kein Versionssprung, kein Event.

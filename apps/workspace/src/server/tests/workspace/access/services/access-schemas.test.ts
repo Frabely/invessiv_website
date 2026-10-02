@@ -38,6 +38,46 @@ describe("accessSchemas.listAccessCustomers", () => {
   });
 });
 
+describe("accessSchemas.updateMemberBookingUrl", () => {
+  it("normalizes an https link and turns blank input into null", () => {
+    expect(
+      accessSchemas.updateMemberBookingUrl.parse({
+        bookingUrl: " https://Cal.com/anna ",
+        version: 2,
+      }),
+    ).toEqual({ bookingUrl: "https://cal.com/anna", version: 2 });
+    for (const bookingUrl of [null, "", "  "]) {
+      expect(
+        accessSchemas.updateMemberBookingUrl.parse({ bookingUrl, version: 2 }),
+      ).toEqual({ bookingUrl: null, version: 2 });
+    }
+  });
+
+  it("rejects a link that is not https, too long or missing", () => {
+    for (const bookingUrl of [
+      "http://cal.com/anna",
+      "javascript:alert(1)",
+      `https://cal.com/${"a".repeat(2048)}`,
+      undefined,
+      42,
+    ]) {
+      expect(
+        accessSchemas.updateMemberBookingUrl.safeParse({
+          bookingUrl,
+          version: 2,
+        }).success,
+      ).toBe(false);
+    }
+  });
+
+  it("requires the version", () => {
+    expect(
+      accessSchemas.updateMemberBookingUrl.safeParse({ bookingUrl: null })
+        .success,
+    ).toBe(false);
+  });
+});
+
 const ROLE_ID = "0b0f1d8e-6a7c-4a44-9c3e-2f3f8f2b7a10";
 const CUSTOMER_ID = "1c1f1d8e-6a7c-4a44-9c3e-2f3f8f2b7a11";
 

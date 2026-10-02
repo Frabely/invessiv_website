@@ -2,6 +2,7 @@ import type { RoleErrorCode } from "@invessiv/common/constants/auth/errors/role-
 import type { WorkspaceMemberErrorCode } from "@invessiv/common/constants/auth/errors/workspace-member-error-codes";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { ClerkCandidateDto } from "@invessiv/common/contracts/auth/clerk-candidate.dto";
+import type { OwnBookingUrlDto } from "@invessiv/common/contracts/auth/own-booking-url.dto";
 import type { RoleDto } from "@invessiv/common/contracts/auth/role.dto";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import type { WorkspaceMemberAccessScopeDto } from "@invessiv/common/contracts/auth/workspace-member-access-scope.dto";
@@ -32,6 +33,20 @@ export type MemberStatusMutationClientResult =
       code: WorkspaceMemberErrorCode;
       responsibilityCounts?: OwnershipResponsibilityCountsDto;
     };
+
+/** Reading the own booking link; the dialog needs the version before it can write. */
+export type OwnBookingUrlClientResult =
+  | { ok: true; own: OwnBookingUrlDto }
+  | { ok: false; code: WorkspaceMemberErrorCode };
+
+export type OwnBookingUrlMutationClientResult =
+  | { ok: true; own: OwnBookingUrlDto }
+  | {
+      ok: false;
+      code: typeof ConcurrencyErrorCode.VersionConflict;
+      current: OwnBookingUrlDto;
+    }
+  | { ok: false; code: WorkspaceMemberErrorCode };
 
 export type RoleMutationClientResult =
   | { ok: true; role: RoleDto }

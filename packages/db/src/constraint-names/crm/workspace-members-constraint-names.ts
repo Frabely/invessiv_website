@@ -2,6 +2,7 @@
 export const WorkspaceMembersConstraintName = {
   VersionCheck: "workspace_members_version_check",
   UserIdUnique: "workspace_members_user_id_uidx",
+  BookingUrlCheck: "workspace_members_booking_url_check",
 } as const;
 
 export type WorkspaceMembersConstraintName =
@@ -10,4 +11,5 @@ export type WorkspaceMembersConstraintName =
 export const WORKSPACE_MEMBERS_CONSTRAINT_NAME_VALUES = [
   WorkspaceMembersConstraintName.VersionCheck,
   WorkspaceMembersConstraintName.UserIdUnique,
+  WorkspaceMembersConstraintName.BookingUrlCheck,
 ] as const;

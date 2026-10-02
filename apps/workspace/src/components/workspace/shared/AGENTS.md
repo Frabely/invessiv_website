@@ -32,3 +32,9 @@ mindestens zwei fachlichen Workspace-Bereichen nutzbar sein.
 Die im CRM-Plan `03d-geteilte-ui-bausteine` ausdrücklich benannten Altbausteine dürfen bis zu ihrem jeweiligen
 Umzugsschritt vorübergehend in diesem Scope bleiben. Sie erhalten keine neuen fachlichen Abhängigkeiten. Nach Task
 `02e-10` gelten die Regeln dieses Scopes ohne Übergangsausnahme.
+
+## Bausteine mit zwei Nutzern
+
+- `booking-url-dialog/` (ab Task 69): ein Feld für einen `https`-Link mit Prüfung über `parseBookingUrl`,
+  Konfliktanzeige und erneutem Speichern gegen die aktuelle Version. Texte und Speicherweg kommen als Props; genutzt
+  von der Mitgliederverwaltung (fremder Link) und der Sidebar (eigener Link).

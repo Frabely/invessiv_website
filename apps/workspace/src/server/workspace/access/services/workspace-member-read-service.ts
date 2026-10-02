@@ -27,6 +27,7 @@ async function load(
       member_active: workspaceMembers.active,
       member_version: workspaceMembers.version,
       member_created_at: workspaceMembers.created_at,
+      member_booking_url: workspaceMembers.booking_url,
       role_id: roles.id,
       role_name: roles.name,
       role_system_key: roles.system_key,

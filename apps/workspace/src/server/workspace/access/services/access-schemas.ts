@@ -8,6 +8,7 @@ import { AccessScopeType } from "@invessiv/common/constants/auth/access-scope-ty
 import { PERMISSION_VALUES } from "@invessiv/common/constants/auth/permissions";
 import { AccessFieldLimits } from "@/common/constants/access/access-field-limits";
 import { accessScopeAssignmentKey } from "@/common/patterns/access/access-scope-tree";
+import { parseBookingUrl } from "@/common/patterns/access/booking-url";
 
 function hasNoDuplicates(values: readonly string[]): boolean {
   return new Set(values).size === values.length;
@@ -57,6 +58,23 @@ const accessLookupSearchSchema = z
   .max(AccessFieldLimits.AccessLookupQueryMaxLength)
   .default("");
 
+/** Parses to the value that is stored: the normalized link, or null when the input clears it. */
+const bookingUrlSchema = z
+  .string()
+  .nullable()
+  .transform((value, context) => {
+    const parsed = parseBookingUrl(value);
+    if (!parsed.ok) {
+      context.issues.push({
+        code: "custom",
+        message: `Booking link rejected: ${parsed.issue}`,
+        input: value,
+      });
+      return z.NEVER;
+    }
+    return parsed.value;
+  });
+
 export const accessSchemas = {
   entityId: z.uuid(),
   listAccessCustomers: z.object({ search: accessLookupSearchSchema }),
@@ -92,6 +110,10 @@ export const accessSchemas = {
   }),
   updateWorkspaceMemberStatus: z.object({
     active: z.boolean(),
+    version: versionSchema,
+  }),
+  updateMemberBookingUrl: z.object({
+    bookingUrl: bookingUrlSchema,
     version: versionSchema,
   }),
   createRole: z.object({

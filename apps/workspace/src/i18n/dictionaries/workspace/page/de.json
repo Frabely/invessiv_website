@@ -97,7 +97,33 @@
       "unreadFeedbackRounds": {
         "one": "1 neu eingereichte Feedbackrunde",
         "many": "{count} neu eingereichte Feedbackrunden"
+      },
+      "account": {
+        "label": "Dein Bereich",
+        "bookingUrl": "Mein Buchungslink"
       }
+    },
+    "bookingUrlDialog": {
+      "title": "Mein Buchungslink",
+      "description": "Kunden deiner Projekte buchen über diesen Link ihren Onboarding-Call. Sie sehen ihn im Portal, sobald sie das Onboarding abgesendet haben.",
+      "label": "Link zum Buchungskalender",
+      "placeholder": "https://calendly.com/name/onboarding-call",
+      "hint": "Nur https-Links, zum Beispiel von Calendly oder Cal.com. Leer lassen, um den Link zu entfernen.",
+      "submit": "Link speichern",
+      "issues": {
+        "invalid": "Das ist kein vollständiger Link. Füge ihn mit https:// am Anfang ein.",
+        "not_https": "Der Link muss mit https:// beginnen.",
+        "too_long": "Der Link ist zu lang. Erlaubt sind höchstens 2.048 Zeichen."
+      },
+      "conflict": "Der Link wurde gerade an anderer Stelle geändert. Speichere erneut, wenn deine Eingabe gelten soll.",
+      "conflictCurrent": "Aktuell gespeichert: {url}",
+      "conflictCurrentEmpty": "Aktuell ist kein Link gespeichert.",
+      "error": "Das hat nicht geklappt. Versuche es erneut.",
+      "submitting": "Wird gespeichert …",
+      "cancel": "Abbrechen",
+      "close": "Dialog schließen",
+      "loading": "Link wird geladen …",
+      "loadError": "Dein Link konnte nicht geladen werden. Schließe den Dialog und versuche es erneut."
     },
     "main": {
       "ariaLabel": "Workspace-Inhalt"

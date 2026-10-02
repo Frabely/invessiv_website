@@ -1,5 +1,10 @@
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
-import { faUserCheck, faUserSlash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCalendarCheck,
+  faCalendarPlus,
+  faUserCheck,
+  faUserSlash,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ButtonControl } from "@invessiv/ui";
 import type {
@@ -16,6 +21,7 @@ type MemberRowProps = {
   content: SettingsMembersDictionary;
   isCurrentActor: boolean;
   member: WorkspaceMemberDto;
+  onEditBookingUrlAction: () => void;
   onManageRolesAction: () => void;
   onOpenAccessIssueAction: () => void;
   onToggleOwnerAction: () => void;
@@ -29,6 +35,7 @@ export function MemberRow({
   content,
   isCurrentActor,
   member,
+  onEditBookingUrlAction,
   onManageRolesAction,
   onOpenAccessIssueAction,
   onToggleOwnerAction,
@@ -128,6 +135,20 @@ export function MemberRow({
           variant="ghost"
         >
           {content.list.actions.manageRoles}
+        </ButtonControl>
+        <ButtonControl
+          aria-label={`${content.list.actions.bookingUrl}: ${member.displayName}`}
+          className={styles.actionButton}
+          onClick={onEditBookingUrlAction}
+          type="button"
+          variant="ghost"
+        >
+          <FontAwesomeIcon
+            aria-hidden="true"
+            className={styles.actionIcon}
+            icon={member.bookingUrl ? faCalendarCheck : faCalendarPlus}
+          />
+          {content.list.actions.bookingUrl}
         </ButtonControl>
         {isCurrentActor ? null : (
           <>

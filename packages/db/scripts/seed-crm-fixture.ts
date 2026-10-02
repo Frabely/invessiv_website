@@ -358,6 +358,7 @@ async function resetFixtureRows(tx: ContactDatabaseTransaction) {
 async function createFixtureMember(
   tx: ContactDatabaseTransaction,
   key: string,
+  bookingUrl: string | null = null,
 ) {
   const userId = randomUUID();
   const memberId = randomUUID();
@@ -378,6 +379,7 @@ async function createFixtureMember(
     user_id: userId,
     active: true,
     version: 1,
+    booking_url: bookingUrl,
   });
 
   await tx.insert(workspaceMemberRoles).values({
@@ -597,7 +599,12 @@ async function run() {
 
     await tx.insert(lineItemTemplates).values([...LINE_ITEM_TEMPLATE_FIXTURES]);
 
-    const owner = await createFixtureMember(tx, "owner");
+    // Only the owner offers a booking link: customers of the other members see the fallback hint.
+    const owner = await createFixtureMember(
+      tx,
+      "owner",
+      "https://calendly.com/invessiv-fixture/onboarding-call",
+    );
     const customerMember = await createFixtureMember(tx, "customer-member");
     const projectMember = await createFixtureMember(tx, "project-member");
     const categoryIds = await resolveCategoryIds(tx);

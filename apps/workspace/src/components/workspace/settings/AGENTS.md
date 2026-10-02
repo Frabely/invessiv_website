@@ -39,3 +39,7 @@ Jede Komponente lebt in `<group>/<component-name>/<component-name>.tsx` mit eige
 - Interaktive Komponenten (Dialoge) bekommen co-located Tests.
 - Im Zugriffsbaum ist jeder direkte Haken eine sofortige Mutation. Vererbte Haken sind reine Darstellung und nie eine
   Zugriffsentscheidung; die Wurzelzeile „Alle Kunden“ bleibt lesend.
+- **Buchungslink (ab Task 69):** `members/member-booking-url-dialog` bindet den geteilten
+  `shared/booking-url-dialog` an `accessApiService.updateMemberBookingUrl`. Die Aktion steht in jeder Zeile, auch in
+  der eigenen. Der eigene Link ohne `members.manage` wird über den Nutzerbereich der Sidebar gepflegt
+  (`workspace-sidebar/own-booking-url-dialog`), nicht hier.

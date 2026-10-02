@@ -30,6 +30,11 @@ export interface WorkspaceMemberDto extends VersionedDto {
    */
   accessScopeCount: number;
   /**
+   * Booking link the member offers for the onboarding call; null when none is set. The portal
+   * shows it to the customers of the projects this member answers for.
+   */
+  bookingUrl: string | null;
+  /**
    * Assigned roles without the owner role, ordered system roles first, then by name. Inactive
    * roles are included and flagged, because they are still assigned.
    */

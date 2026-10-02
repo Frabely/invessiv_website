@@ -6,7 +6,7 @@
 > `src/server/workspace/access/`, `src/components/workspace/settings/`, `src/components/portal/`.
 > Ersetzt den früheren Task 47 (Ordner 15c).
 
-> **Status:** offen · **Teil-PR:** 15.7 · **Branch:** `feat/crm-onboarding-7-termin`
+> **Status:** im Review · **Teil-PR:** 15.7 · **Branch:** `feat/crm-onboarding-7-termin`
 > **Abhängigkeiten:** Task 68 (15.6) gemerged · **Aufwand:** 1–2 T. · **Dateien:** 35–50
 > **Migration:** ja, eine (`workspace_members.booking_url`; Nummer im Repo ermitteln)
 
@@ -95,3 +95,51 @@ UI
 - [ ] Richtiger Link je Kunde, Kontakt-Fallback ohne Link, kein Fremdskript.
 - [ ] Rechte-Negativtests für fremde Links; `security_events` bei Fremdänderung.
 - [ ] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, DB-Smokes, Workspace-Build grün.
+
+## Umsetzungsnotizen (Abweichungen vom Plan, 02.10.2026)
+
+Bei der Umsetzung nachgezogen; der Plan oben bleibt als Entstehungsstand stehen, maßgeblich ist der Code.
+
+### T1 — Buchungslink am Mitglied
+
+- **Migration `0050_add_workspace_member_booking_url.sql`** enthält zusätzlich den neuen Security-Event-Typ
+  `workspace_member_booking_url_changed` (CHECK `security_events_type_check` erweitert). Ohne ihn ließe sich die
+  Fremdänderung nicht protokollieren; es bleibt bei einer Migration.
+- **Gespeichert wird die normalisierte URL** (`new URL(…).href`): Schema und Dialoge prüfen über dieselbe Funktion
+  `parseBookingUrl` (https, absoluter Link, keine eingebetteten Zugangsdaten, höchstens 2 048 Zeichen). So sieht der
+  DB-CHECK genau den Wert, der geprüft wurde (`HTTPS://…` würde sonst am `LIKE 'https://%'` scheitern).
+- **Eigener Link ohne Mitglieds-DTO.** `GET`/`PATCH /api/workspace/members/me/booking-url` antworten mit
+  `OwnBookingUrlDto` (`bookingUrl`, `version`), auch im 409. Das volle `WorkspaceMemberDto` verlässt den Server weiter
+  nur mit `members.manage`. Das `GET` ist neu gegenüber dem Plan: Der Dialog lädt Link und Version beim Öffnen, damit
+  das Layout nicht bei jeder Navigation eine weitere Abfrage macht.
+- **Unveränderter Link** schreibt nichts: kein Versionssprung, kein Event.
+- **Event-Metadaten** enthalten `changedFields: ["bookingUrl"]` und `cleared`, nie den Link selbst.
+- **Dialog-Zuschnitt:** Der geteilte Baustein heißt `components/workspace/shared/booking-url-dialog/` und ist
+  fachneutral (Texte und Speicherweg als Props, keine Dictionary- oder API-Bindung), wie es die Regeln des
+  `shared`-Ordners verlangen. Die beiden Nutzer binden ihn an: `settings/members/member-booking-url-dialog/`
+  (fremd, `members.manage`) und `workspace-sidebar/own-booking-url-dialog/` (eigener Link). Der Plan nannte
+  `shared/own-booking-url-dialog/`; ein Baustein mit API-Aufruf dürfte dort nicht liegen.
+- **Nutzerbereich der Sidebar:** Die Sidebar hatte keinen; neu ist der Abschnitt „Dein Bereich“ unter der Navigation
+  mit dem Eintrag „Mein Buchungslink“.
+- **Aktion „Buchungslink“ auch in der eigenen Zeile** der Mitgliederverwaltung; die eigene Änderung dort schreibt
+  ebenfalls kein Event.
+
+### T2 — Terminkarte im Portal
+
+- **Kein neuer Portal-Endpunkt.** Dashboard- und Bogenseite rufen `getPortalOnboardingBooking` serverseitig auf; das
+  Projekt kommt aus dem für den Leser sichtbaren Bogen, nie aus der Anfrage.
+- **`projectResponsibleMemberService.findBookingContact`** ist eine zweite Methode neben `findActiveMemberId`: Sie
+  liest ohne Sperre und überspringt ein aktives Mitglied ohne Link (Projekt-Owner ohne Link → Kunden-Owner).
+- **Wann die Karte erscheint**, steht genau einmal: `isOnboardingCallBookable`
+  (`ONBOARDING_CALL_BOOKABLE_STATUS_VALUES`: `submitted`, `changes_requested`).
+- **Eine Komponente für Seite und Widget** (`onboarding-booking-card`, im Widget `compact`). Solange der Kunde eine
+  Nachforderung bearbeitet, ist „Termin aussuchen“ die ruhige Schaltfläche; die Ergänzung bleibt die Hauptaktion.
+- **Klick-zum-Öffnen** ist ein gewöhnlicher Link mit `target="_blank"` und `rel="noopener noreferrer"`; der
+  Anbieterhinweis steht davor und ist per `aria-describedby` mit dem Link verbunden.
+- **Anbieternamen** stehen als `BOOKING_PROVIDER_NAMES` neben `BOOKING_PROVIDERS` (Markennamen sind in jeder Sprache
+  gleich); nur der unbenannte Fall ist Dictionary-Text. Die Zuordnung Domain → Anbieter ist das Pattern
+  `resolveBookingProvider` (Subdomains zählen, `calendly.com.example.org` nicht).
+- **Chat-Link im Fallback** führt auf die Nachrichtenseite des Portals und erscheint nur mit `portal.messages.read`.
+- **Seed:** Der Fixture-Owner trägt einen Beispiel-Link, die übrigen Fixture-Mitglieder keinen.
+- **E2E:** `e2e/portal-onboarding.e2e.ts` prüft nach dem Absenden, dass der Abschnitt „Onboarding-Call“ erscheint und
+  kein `iframe` eingebettet ist.

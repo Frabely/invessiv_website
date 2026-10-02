@@ -4,10 +4,13 @@ import Link from "next/link";
 import { faRocket } from "@fortawesome/free-solid-svg-icons";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
+import type { PortalOnboardingBookingDto } from "@invessiv/common/contracts/portal/portal-onboarding-booking.dto";
 import type { PortalOnboardingFormSummaryDto } from "@invessiv/common/contracts/portal/portal-onboarding-form-summary.dto";
+import { isOnboardingCallBookable } from "@invessiv/common/patterns/crm/onboarding/onboarding-form-state";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { Widget } from "@invessiv/ui";
 import { buildPortalOnboardingPath } from "@/common/patterns/portal/portal-onboarding-path";
+import { OnboardingBookingCard } from "@/components/portal/onboarding/onboarding-booking-card/onboarding-booking-card";
 import { OnboardingProgressBar } from "@/components/shared/onboarding/onboarding-progress-bar/onboarding-progress-bar";
 import type { Locale } from "@/config/i18n";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
@@ -15,6 +18,10 @@ import { formatMomentDay } from "@/lib/i18n/format-moment-day";
 import styles from "./portal-onboarding-widget.module.css";
 
 export type PortalOnboardingWidgetProps = {
+  /** Where the call of this form is booked; null when the team gets in touch instead. */
+  booking?: PortalOnboardingBookingDto | null;
+  /** The company's chat page for the hint without a link; null without `portal.messages.read`. */
+  chatHref?: string | null;
   content: PortalDashboardDictionary["widgets"]["onboarding"];
   customerId: string;
   /** The form the widget shows; `pickPortalOnboardingWidgetForm` chooses it. */
@@ -28,6 +35,8 @@ export type PortalOnboardingWidgetProps = {
  * completed. The progress is the one the form and the CRM show, computed by the same function.
  */
 export function PortalOnboardingWidget({
+  booking = null,
+  chatHref = null,
   content,
   customerId,
   form,
@@ -102,6 +111,16 @@ export function PortalOnboardingWidget({
         >
           {linkLabel}
         </Link>
+        {isOnboardingCallBookable(form.status) ? (
+          <OnboardingBookingCard
+            booking={booking}
+            chatHref={chatHref}
+            compact
+            // While the customer has additions to make, those come before the call.
+            primary={!proceed}
+            texts={content.call}
+          />
+        ) : null}
       </div>
     </Widget>
   );

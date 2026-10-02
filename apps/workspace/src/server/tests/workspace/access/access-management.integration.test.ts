@@ -46,6 +46,7 @@ import { GET, POST } from "@/app/api/workspace/leads/route";
 import { addWorkspaceMember } from "@/server/workspace/access/command-handler/add-workspace-member.command-handler";
 import { createRole } from "@/server/workspace/access/command-handler/create-role.command-handler";
 import { replaceWorkspaceMemberRoles } from "@/server/workspace/access/command-handler/replace-workspace-member-roles.command-handler";
+import { updateMemberBookingUrl } from "@/server/workspace/access/command-handler/update-member-booking-url.command-handler";
 import { updateWorkspaceMemberStatus } from "@/server/workspace/access/command-handler/update-workspace-member-status.command-handler";
 import { memberRoleAssignmentService } from "@/server/workspace/access/services/member-role-assignment-service";
 import { workspaceOwnerInvariantService } from "@/server/workspace/auth/services/workspace-owner-invariant-service";
@@ -619,6 +620,106 @@ describe.skipIf(!RUN_INTEGRATION)(
       }
 
       expect(concurrentWriteWasBlocked).toBe(true);
+    }, 60_000);
+
+    it("stores a booking link, logs only a change by someone else and lets the link be cleared", async () => {
+      const manager = await createOwner();
+      const target = await createOwner();
+      const link = "https://calendly.com/integration/onboarding";
+      const bookingEvents = () =>
+        db
+          .select({
+            actorUserId: securityEvents.actor_user_id,
+            subjectId: securityEvents.subject_id,
+            metadata: securityEvents.metadata,
+          })
+          .from(securityEvents)
+          .where(
+            and(
+              eq(
+                securityEvents.type,
+                SecurityEventType.WorkspaceMemberBookingUrlChanged,
+              ),
+              inArray(securityEvents.subject_id, [
+                manager.memberId,
+                target.memberId,
+              ]),
+            ),
+          )
+          .orderBy(asc(securityEvents.occurred_at));
+
+      const own = await updateMemberBookingUrl(
+        target.memberId,
+        { bookingUrl: link, version: 1 },
+        target.actor,
+      );
+      expect(own).toMatchObject({
+        ok: true,
+        member: { bookingUrl: link, version: 2 },
+      });
+      expect(await bookingEvents()).toEqual([]);
+
+      const unchanged = await updateMemberBookingUrl(
+        target.memberId,
+        { bookingUrl: link, version: 2 },
+        manager.actor,
+      );
+      expect(unchanged).toMatchObject({ ok: true, member: { version: 2 } });
+      expect(await bookingEvents()).toEqual([]);
+
+      const stale = await updateMemberBookingUrl(
+        target.memberId,
+        { bookingUrl: null, version: 1 },
+        manager.actor,
+      );
+      expect(stale).toMatchObject({
+        ok: false,
+        code: ConcurrencyErrorCode.VersionConflict,
+        conflict: { currentVersion: 2, current: { bookingUrl: link } },
+      });
+      expect(await bookingEvents()).toEqual([]);
+
+      const cleared = await updateMemberBookingUrl(
+        target.memberId,
+        { bookingUrl: null, version: 2 },
+        manager.actor,
+      );
+      expect(cleared).toMatchObject({
+        ok: true,
+        member: { bookingUrl: null, version: 3 },
+      });
+      expect(await bookingEvents()).toEqual([
+        {
+          actorUserId: manager.userId,
+          subjectId: target.memberId,
+          metadata: { changedFields: ["bookingUrl"], cleared: true },
+        },
+      ]);
+
+      // The schema is the first line; the CHECK is the second one for every other writer.
+      for (const invalid of [
+        "http://calendly.com/integration",
+        `https://calendly.com/${"a".repeat(2048)}`,
+      ]) {
+        expect(
+          await updateMemberBookingUrl(
+            target.memberId,
+            { bookingUrl: invalid, version: 3 },
+            manager.actor,
+          ),
+        ).toMatchObject({
+          ok: false,
+          code: WorkspaceMemberErrorCode.ValidationError,
+        });
+        await expect(
+          db
+            .update(workspaceMembers)
+            .set({ booking_url: invalid })
+            .where(eq(workspaceMembers.id, target.memberId)),
+        ).rejects.toSatisfy((error: unknown) =>
+          hasErrorCode(error, PostgresErrorCode.CheckViolation),
+        );
+      }
     }, 60_000);
   },
 );

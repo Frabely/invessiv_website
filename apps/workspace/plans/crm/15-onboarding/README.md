@@ -1,6 +1,6 @@
 # Ordner 15 — Onboarding
 
-> **Status:** läuft (15.1–15.5 gemergt, 15.6 im Review) · **Abhängigkeiten:** 07 (Projekte, Projektleistungen), 08 (Aufgaben), 12a/12b/13 (Portal), 13a
+> **Status:** läuft (15.1–15.6 gemergt, 15.7 im Review) · **Abhängigkeiten:** 07 (Projekte, Projektleistungen), 08 (Aufgaben), 12a/12b/13 (Portal), 13a
 > (Chat, Systemnachrichten), 14 (Dateien), 16 (Feedbackrunden, deren Bausteine hier verallgemeinert werden) — alle
 > gemerged · **Aufwand:** 16–21 Tage gesamt · **Reviewziel:** acht Teil-PRs mit je 30–110 Dateien
 
@@ -89,8 +89,8 @@ deploybar. Reine Fundamente bleiben unsichtbar; sichtbare Funktionen werden vert
 | 15.3 | 65   | `feat/crm-onboarding-3-bogen-intern` | [`65-bogen-anlegen-und-anpassen.md`](./65-bogen-anlegen-und-anpassen.md)                                           | Intern: Onboarding je Projekt starten und anpassen (Entwurf)                               |   70–90 | gemergt   |
 | 15.4 | 66   | `feat/crm-onboarding-4-portal-form`  | [`66-portal-formular.md`](./66-portal-formular.md)                                                                 | nichts für Kunden (Portal-Seite existiert, ist aber ohne freigegebenen Bogen unerreichbar) |  80–100 | gemergt   |
 | 15.5 | 67   | `feat/crm-onboarding-5-portal-voll`  | [`67-portal-gruppen-dateien-leistungen.md`](./67-portal-gruppen-dateien-leistungen.md)                             | Freigeben, Portal-Navigation, Widget, vollständiger Bogen inkl. Gruppen und Uploads        |  80–105 | gemergt   |
-| 15.6 | 68   | `feat/crm-onboarding-6-pruefung`     | [`68-pruefung-und-nachforderung.md`](./68-pruefung-und-nachforderung.md)                                           | Intern: Prüfung je Block, Nachforderung, Call-Agenda. Portal: Nachforderung bearbeiten     |   60–80 | im Review |
-| 15.7 | 69   | `feat/crm-onboarding-7-termin`       | [`69-onboarding-termin.md`](./69-onboarding-termin.md)                                                             | Buchungslink im Profil, Terminkarte im Onboarding-Widget                                   |   35–50 | offen     |
+| 15.6 | 68   | `feat/crm-onboarding-6-pruefung`     | [`68-pruefung-und-nachforderung.md`](./68-pruefung-und-nachforderung.md)                                           | Intern: Prüfung je Block, Nachforderung, Call-Agenda. Portal: Nachforderung bearbeiten     |   60–80 | gemergt   |
+| 15.7 | 69   | `feat/crm-onboarding-7-termin`       | [`69-onboarding-termin.md`](./69-onboarding-termin.md)                                                             | Buchungslink im Profil, Terminkarte im Onboarding-Widget                                   |   35–50 | im Review |
 | 15.8 | 70   | `feat/crm-onboarding-8-abschluss`    | [`70-abschluss-und-leseansicht.md`](./70-abschluss-und-leseansicht.md)                                             | Onboarding abschließen, dauerhafte Leseansicht, Vorbefüllung für Folgeprojekte aktiv       |   45–65 | offen     |
 
 **Reihenfolge ist zwingend:** 15.1 → 15.2 → 15.3 → 15.4 → 15.5 → 15.6 → 15.7 → 15.8. Jede Einheit setzt die

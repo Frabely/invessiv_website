@@ -172,3 +172,11 @@ Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-le
   `editableBlockIds` (`usePortalOnboardingStep` nimmt dafür einen Startabschnitt), zeigt über dem Formular, was zu
   tun ist, und an jedem nachgeforderten Block die Rückfrage des Teams (`reviewNote`). Alle anderen Blöcke bleiben
   lesend. Das Widget heißt dann „Wir haben Rückfragen“ und führt mit „Jetzt ergänzen“ in den Bogen.
+
+- **Onboarding-Call (ab Task 69):** `onboarding/onboarding-booking-card` zeigt den Buchungslink des zuständigen
+  Mitglieds oder, ohne Link, den Hinweis „Wir melden uns bei dir für einen Termin“ samt Chat-Link (nur mit
+  `portal.messages.read`). Wann der Abschnitt erscheint, entscheidet ausschließlich `isOnboardingCallBookable`
+  (`submitted`, `changes_requested`); Seite und Widget (`compact`) nutzen dieselbe Komponente. **Nichts vom Anbieter
+  wird vor dem Klick geladen:** kein Skript, kein `iframe`, kein Bild. Der Kalender öffnet sich als Link in einem neuen
+  Tab (`rel="noopener noreferrer"`), der Anbieterhinweis steht davor. Eine Einbettung wäre eine neue Entscheidung
+  (Consent), kein Detail dieser Komponente.

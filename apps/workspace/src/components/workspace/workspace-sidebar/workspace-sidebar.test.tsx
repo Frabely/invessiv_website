@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import "@testing-library/jest-dom/vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
@@ -10,6 +10,13 @@ import { WorkspaceSidebar } from "./workspace-sidebar";
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/de/crm/feedback",
+}));
+
+vi.mock("@/client/access/access-api-service", () => ({
+  accessApiService: {
+    getOwnBookingUrl: () =>
+      Promise.resolve({ ok: true, own: { bookingUrl: null, version: 1 } }),
+  },
 }));
 
 const content = getWorkspacePageContent("de");
@@ -43,6 +50,27 @@ function renderSidebar(
 }
 
 afterEach(cleanup);
+
+describe("WorkspaceSidebar account area", () => {
+  it("opens the own booking link for every member, whatever the areas", async () => {
+    renderSidebar({ canOpenCrmFeedback: false });
+    const account = screen.getByRole("region", {
+      name: content.shell.sidebar.account.label,
+    });
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: content.shell.sidebar.account.bookingUrl,
+      }),
+    );
+
+    expect(account).toBeInTheDocument();
+    expect(
+      await screen.findByLabelText(content.shell.bookingUrlDialog.label),
+    ).toHaveValue("");
+  });
+});
 
 describe("WorkspaceSidebar feedback entry", () => {
   it("links the inbox and marks it as the current page", () => {

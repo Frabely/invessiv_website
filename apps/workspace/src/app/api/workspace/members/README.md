@@ -21,14 +21,16 @@ autorisiert. Fachliche Grundlage:
 Jeder Handler ist mit `withPermission(Permission.X, handler)` gewrappt: ohne Session `401 UNAUTHORIZED`, ohne aktive
 Mitgliedschaft `404 NOT_FOUND`, DB-Fehler bei der Auflösung `503 UNAVAILABLE`, fehlende Permission `403 FORBIDDEN`.
 
-| Route                                  | Permission       |
-| -------------------------------------- | ---------------- |
-| `GET /members`                         | `members.read`   |
-| `POST /members`                        | `members.manage` |
-| `PATCH /members/[id]`                  | `members.manage` |
-| `POST /members/clerk-candidates`       | `members.manage` |
-| `PUT /members/[id]/roles`              | `members.manage` |
-| `POST /members/[id]/owner`, `DELETE …` | `members.manage` |
+| Route                                  | Permission                           |
+| -------------------------------------- | ------------------------------------ |
+| `GET /members`                         | `members.read`                       |
+| `POST /members`                        | `members.manage`                     |
+| `PATCH /members/[id]`                  | `members.manage`                     |
+| `POST /members/clerk-candidates`       | `members.manage`                     |
+| `PUT /members/[id]/roles`              | `members.manage`                     |
+| `POST /members/[id]/owner`, `DELETE …` | `members.manage`                     |
+| `PATCH /members/[id]/booking-url`      | `members.manage`                     |
+| `GET`/`PATCH /members/me/booking-url`  | keine (aktive Mitgliedschaft genügt) |
 
 ## Fehlerformat
 
@@ -101,6 +103,21 @@ Body `UpdateWorkspaceMemberStatusRequestDto`: `{ "active": boolean, "version": n
 `workspace_member_deactivated`. Selbstdeaktivierung und die Deaktivierung des letzten aktiven Owners werden
 abgewiesen. Bei offenen Zuständigkeiten enthält `details.responsibilityCounts` die vollständigen Anzahlen je
 `OwnableEntity`; es findet kein Teil-Write statt.
+
+## `PATCH /api/workspace/members/[id]/booking-url`
+
+Body `UpdateMemberBookingUrlRequestDto`: `{ "bookingUrl": "https://…" | null, "version": n }`. Der Link muss ein
+absoluter `https`-Link ohne eingebettete Zugangsdaten mit höchstens 2 048 Zeichen sein; `null` oder ein leerer Text
+entfernt ihn. Erfolg `200 { "member": WorkspaceMemberDto }`. Ändert jemand den Link eines **anderen** Mitglieds,
+entsteht genau ein Security-Event `workspace_member_booking_url_changed` (Metadaten: Feldname und `cleared`, nie der
+Link). Ein unveränderter Link schreibt nichts. Ungültiger Link: `400 VALIDATION_ERROR`.
+
+## `GET` / `PATCH /api/workspace/members/me/booking-url`
+
+Der eigene Buchungslink. Das Mitglied stammt ausschließlich aus der Session; eine ID im Body wird ignoriert. `GET`
+antwortet `200 OwnBookingUrlDto` (`{ "bookingUrl": string | null, "version": n }`). `PATCH` nimmt denselben Body wie
+oben und antwortet ebenfalls mit `OwnBookingUrlDto`; im 409 ist `current` ebenfalls ein `OwnBookingUrlDto`. Die eigene
+Änderung schreibt kein Security-Event.
 
 ## `PUT /api/workspace/members/[id]/roles`
 

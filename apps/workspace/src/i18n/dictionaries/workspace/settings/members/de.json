@@ -20,7 +20,8 @@
       "grantOwner": "Zum Owner machen",
       "revokeOwner": "Owner-Rolle entziehen",
       "activate": "Aktivieren",
-      "deactivate": "Deaktivieren"
+      "deactivate": "Deaktivieren",
+      "bookingUrl": "Buchungslink"
     }
   },
   "addDialog": {
@@ -97,6 +98,26 @@
     "openTasks": "Offene Aufgaben: {count}. Weise sie zuerst einem anderen Bearbeiter zu.",
     "openConversations": "Kundenchats in Zuständigkeit: {count}. Weise sie zuerst einem anderen Mitglied zu.",
     "done": "Schließen",
+    "submitting": "Wird gespeichert …",
+    "cancel": "Abbrechen",
+    "close": "Dialog schließen"
+  },
+  "bookingUrlDialog": {
+    "title": "Buchungslink von {name}",
+    "description": "Kunden, deren Projekte {name} betreut, buchen über diesen Link ihren Onboarding-Call. Sie sehen ihn im Portal, sobald sie das Onboarding abgesendet haben. Deine Änderung wird protokolliert.",
+    "label": "Link zum Buchungskalender",
+    "placeholder": "https://calendly.com/name/onboarding-call",
+    "hint": "Nur https-Links, zum Beispiel von Calendly oder Cal.com. Leer lassen, um den Link zu entfernen.",
+    "submit": "Link speichern",
+    "issues": {
+      "invalid": "Das ist kein vollständiger Link. Füge ihn mit https:// am Anfang ein.",
+      "not_https": "Der Link muss mit https:// beginnen.",
+      "too_long": "Der Link ist zu lang. Erlaubt sind höchstens 2.048 Zeichen."
+    },
+    "conflict": "Der Link wurde gerade an anderer Stelle geändert. Speichere erneut, wenn deine Eingabe gelten soll.",
+    "conflictCurrent": "Aktuell gespeichert: {url}",
+    "conflictCurrentEmpty": "Aktuell ist kein Link gespeichert.",
+    "error": "Das hat nicht geklappt. Versuche es erneut.",
     "submitting": "Wird gespeichert …",
     "cancel": "Abbrechen",
     "close": "Dialog schließen"

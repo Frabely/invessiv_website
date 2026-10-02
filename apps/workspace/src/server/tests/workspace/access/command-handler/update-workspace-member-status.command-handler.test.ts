@@ -71,6 +71,7 @@ const MEMBER: WorkspaceMemberDto = {
   isOwner: false,
   hasActiveRole: true,
   accessScopeCount: 0,
+  bookingUrl: null,
   roles: [],
   version: 3,
   createdAt: "2026-09-13T10:00:00.000Z",

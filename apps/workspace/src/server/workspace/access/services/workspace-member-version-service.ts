@@ -69,7 +69,19 @@ function updateStatus(
   return writeVersioned(tx, memberId, expectedVersion, { active });
 }
 
+function updateBookingUrl(
+  tx: ContactDatabaseTransaction,
+  memberId: string,
+  expectedVersion: number,
+  bookingUrl: string | null,
+): Promise<MemberVersionBumpResult> {
+  return writeVersioned(tx, memberId, expectedVersion, {
+    booking_url: bookingUrl,
+  });
+}
+
 export const workspaceMemberVersionService = {
   bump,
+  updateBookingUrl,
   updateStatus,
 } as const;

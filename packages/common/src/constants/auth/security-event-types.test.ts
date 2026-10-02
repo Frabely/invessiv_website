@@ -30,6 +30,7 @@ describe("SecurityEventType", () => {
       "portal_membership_revoked",
       "portal_membership_roles_replaced",
       "portal_owner_view_opened",
+      "workspace_member_booking_url_changed",
     ]);
     expect(SECURITY_EVENT_TYPE_VALUES).toEqual(
       Object.values(SecurityEventType),

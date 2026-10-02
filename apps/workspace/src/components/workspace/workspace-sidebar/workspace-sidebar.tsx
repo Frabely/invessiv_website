@@ -1,10 +1,12 @@
 "use client";
 
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
   faAddressBook,
+  faCalendarCheck,
   faClipboardList,
   faChartColumn,
   faComments,
@@ -31,6 +33,7 @@ import {
   crmTasksPathFor,
   workspaceAreaPathFor,
 } from "@/lib/auth/routes";
+import { OwnBookingUrlDialog } from "./own-booking-url-dialog/own-booking-url-dialog";
 import styles from "./workspace-sidebar.module.css";
 
 type WorkspaceSidebarProps = {
@@ -118,6 +121,13 @@ export function WorkspaceSidebar({
   const headerContent = content.shell.header;
   const dataOpen = isOpen ? "true" : "false";
   const pathname = usePathname();
+  const [isBookingUrlOpen, setIsBookingUrlOpen] = useState(false);
+  const bookingUrlButtonRef = useRef<HTMLButtonElement>(null);
+
+  function closeBookingUrl() {
+    setIsBookingUrlOpen(false);
+    queueMicrotask(() => bookingUrlButtonRef.current?.focus());
+  }
 
   return (
     <>
@@ -273,7 +283,37 @@ export function WorkspaceSidebar({
             })}
           </ul>
         </nav>
+        <section
+          aria-label={sidebarContent.account.label}
+          className={styles.account}
+        >
+          <button
+            className={styles.link}
+            data-active="false"
+            onClick={() => {
+              // The mobile drawer would otherwise stay open behind the dialog.
+              onCloseAction();
+              setIsBookingUrlOpen(true);
+            }}
+            ref={bookingUrlButtonRef}
+            title={sidebarContent.account.bookingUrl}
+            type="button"
+          >
+            <span aria-hidden="true" className={styles.linkIcon}>
+              <FontAwesomeIcon icon={faCalendarCheck} />
+            </span>
+            <span className={styles.linkLabel}>
+              {sidebarContent.account.bookingUrl}
+            </span>
+          </button>
+        </section>
       </aside>
+      {isBookingUrlOpen ? (
+        <OwnBookingUrlDialog
+          content={content.shell.bookingUrlDialog}
+          onCloseAction={closeBookingUrl}
+        />
+      ) : null}
     </>
   );
 }

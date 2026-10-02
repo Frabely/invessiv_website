@@ -1,4 +1,5 @@
 import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
+import type { OwnBookingUrlDto } from "@invessiv/common/contracts/auth/own-booking-url.dto";
 import type { RoleSummaryDto } from "@invessiv/common/contracts/auth/role-summary.dto";
 import type { WorkspaceMemberRoleRow } from "@invessiv/common/contracts/auth/rows/workspace-member-role-row";
 import type { WorkspaceMemberScopedRoleRow } from "@invessiv/common/contracts/auth/rows/workspace-member-scoped-role-row";
@@ -44,6 +45,7 @@ function mapRowsToMembers(
         isOwner: false,
         hasActiveRole: scoped?.hasActiveRole ?? false,
         accessScopeCount: scoped?.count ?? 0,
+        bookingUrl: row.member_booking_url,
         roles: [],
         version: row.member_version,
         createdAt: row.member_created_at.toISOString(),
@@ -77,6 +79,14 @@ function mapRowsToMembers(
   }));
 }
 
+/** Narrows a member to what the own-link endpoints answer with. */
+function mapMemberToOwnBookingUrl(
+  member: WorkspaceMemberDto,
+): OwnBookingUrlDto {
+  return { bookingUrl: member.bookingUrl, version: member.version };
+}
+
 export const workspaceMemberMappingService = {
+  mapMemberToOwnBookingUrl,
   mapRowsToMembers,
 } as const;

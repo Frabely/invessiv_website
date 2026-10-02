@@ -6,7 +6,7 @@
 > [`67-portal-gruppen-dateien-leistungen.md`](./67-portal-gruppen-dateien-leistungen.md), `../00-entscheidungen.md`,
 > `../AGENTS.md`, `plans/crm/16-feedbackrunden/README.md` (Muster Sammelaufgabe), scoped `AGENTS.md` am Zielcode.
 
-> **Status:** im Review · **Teil-PR:** 15.6 · **Branch:** `feat/crm-onboarding-6-pruefung`
+> **Status:** gemergt · **Teil-PR:** 15.6 · **Branch:** `feat/crm-onboarding-6-pruefung`
 > **Abhängigkeiten:** Task 67 (15.5) gemerged · **Aufwand:** 2–3 T. · **Dateien:** 60–80
 > **Migration:** ja, eine (`tasks.onboarding_form_id`; Nummer im Repo ermitteln)
 

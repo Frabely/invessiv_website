@@ -171,3 +171,10 @@ Ab Task 68 (`apps/workspace/plans/crm/15-onboarding/68-pruefung-und-nachforderun
   `requestChanges` setzt `changes_requested`, schreibt die Activity `status_change` mit
   `metadata.clarifications` (`block_id`, `note` — der einzige Ort, an dem die Rückfrage nach dem erneuten Absenden
   noch steht) und die Systemnachricht `onboardingChangesRequested` mit den Blocktiteln in `DEFAULT_LOCALE`.
+
+Ab Task 69 (`apps/workspace/plans/crm/15-onboarding/69-onboarding-termin.md`):
+
+- `projectResponsibleMemberService.findBookingContact` liefert, in wessen Kalender der Kunde eines Projekts bucht:
+  der erste aus Projekt-Owner und Kunden-Owner, der aktiv ist **und** einen Buchungslink hat. Anders als
+  `findActiveMemberId` gibt ein aktiver Projekt-Owner ohne Link die Frage an den Kunden-Owner weiter. Reine
+  Leseabfrage ohne Sperre; ein inaktives Mitglied liefert nie einen Link.

@@ -18,6 +18,7 @@ function row(
     member_active: true,
     member_version: 4,
     member_created_at: CREATED_AT,
+    member_booking_url: null,
     role_id: null,
     role_name: null,
     role_system_key: null,
@@ -25,6 +26,17 @@ function row(
     ...overrides,
   };
 }
+
+describe("workspaceMemberMappingService.mapMemberToOwnBookingUrl", () => {
+  it("keeps only the link and the version of a member", () => {
+    const [member] = workspaceMemberMappingService.mapRowsToMembers([
+      row({ member_booking_url: "https://cal.com/moritz" }),
+    ]);
+    expect(
+      workspaceMemberMappingService.mapMemberToOwnBookingUrl(member!),
+    ).toEqual({ bookingUrl: "https://cal.com/moritz", version: 4 });
+  });
+});
 
 describe("workspaceMemberMappingService.mapRowsToMembers", () => {
   it("maps a member without any role assignment", () => {
@@ -38,6 +50,7 @@ describe("workspaceMemberMappingService.mapRowsToMembers", () => {
         isOwner: false,
         hasActiveRole: false,
         accessScopeCount: 0,
+        bookingUrl: null,
         roles: [],
         version: 4,
         createdAt: "2026-09-13T10:00:00.000Z",

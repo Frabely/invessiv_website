@@ -347,3 +347,78 @@ describe("accessApiService", () => {
     ]);
   });
 });
+
+describe("accessApiService booking link", () => {
+  const link = "https://calendly.com/anna/onboarding";
+
+  it("patches someone else's link on the member endpoint", async () => {
+    const member = { id: "member-1", bookingUrl: link };
+    const fetchMock = stubFetch(HttpResponseCode.Ok, { member });
+
+    const result = await accessApiService.updateMemberBookingUrl("member-1", {
+      bookingUrl: link,
+      version: 3,
+    });
+
+    expect(result).toEqual({ ok: true, member });
+    expect(fetchMock).toHaveBeenCalledWith(
+      "/api/workspace/members/member-1/booking-url",
+      expect.objectContaining({
+        method: HttpMethod.Patch,
+        body: JSON.stringify({ bookingUrl: link, version: 3 }),
+      }),
+    );
+  });
+
+  it("reads and writes the own link without naming a member", async () => {
+    const own = { bookingUrl: link, version: 4 };
+    const readMock = stubFetch(HttpResponseCode.Ok, own);
+
+    expect(await accessApiService.getOwnBookingUrl()).toEqual({
+      ok: true,
+      own,
+    });
+    // A response body is read once, so the write gets its own stub.
+    const writeMock = stubFetch(HttpResponseCode.Ok, own);
+    expect(
+      await accessApiService.updateOwnBookingUrl({
+        bookingUrl: null,
+        version: 4,
+      }),
+    ).toEqual({ ok: true, own });
+    expect([readMock, writeMock].map((mock) => mock.mock.calls[0]![0])).toEqual(
+      [
+        "/api/workspace/members/me/booking-url",
+        "/api/workspace/members/me/booking-url",
+      ],
+    );
+  });
+
+  it("returns the current own link of a version conflict", async () => {
+    const current = { bookingUrl: null, version: 5 };
+    stubFetch(HttpResponseCode.Conflict, {
+      code: ConcurrencyErrorCode.VersionConflict,
+      currentVersion: 5,
+      current,
+    });
+
+    expect(
+      await accessApiService.updateOwnBookingUrl({
+        bookingUrl: link,
+        version: 4,
+      }),
+    ).toEqual({
+      ok: false,
+      code: ConcurrencyErrorCode.VersionConflict,
+      current,
+    });
+  });
+
+  it("answers internal for a malformed own-link payload", async () => {
+    stubFetch(HttpResponseCode.Ok, { bookingUrl: 42 });
+    expect(await accessApiService.getOwnBookingUrl()).toEqual({
+      ok: false,
+      code: WorkspaceMemberErrorCode.Internal,
+    });
+  });
+});

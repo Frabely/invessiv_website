@@ -16,6 +16,7 @@ import type {
   SettingsPermissionsDictionary,
 } from "@/i18n/dictionaries/workspace/settings";
 import { AddMemberDialog } from "../add-member-dialog/add-member-dialog";
+import { MemberBookingUrlDialog } from "../member-booking-url-dialog/member-booking-url-dialog";
 import { MemberRolesDialog } from "../member-roles-dialog/member-roles-dialog";
 import { MemberRow } from "../member-row/member-row";
 import { OwnerChangeDialog } from "../owner-change-dialog/owner-change-dialog";
@@ -63,6 +64,8 @@ export function MembersList({
   const [statusMember, setStatusMember] = useState<WorkspaceMemberDto | null>(
     null,
   );
+  const [bookingUrlMember, setBookingUrlMember] =
+    useState<WorkspaceMemberDto | null>(null);
   const rolesTriggerRef = useRef<HTMLElement | null>(null);
 
   function openRolesDialog(member: WorkspaceMemberDto, tab: MemberRolesTab) {
@@ -110,6 +113,7 @@ export function MembersList({
             isCurrentActor={member.id === currentMemberId}
             key={member.id}
             member={member}
+            onEditBookingUrlAction={() => setBookingUrlMember(member)}
             onManageRolesAction={() =>
               openRolesDialog(member, MemberRolesTab.Global)
             }
@@ -153,6 +157,13 @@ export function MembersList({
           content={content}
           member={ownerMember}
           onCloseAction={() => setOwnerMember(null)}
+        />
+      ) : null}
+      {bookingUrlMember ? (
+        <MemberBookingUrlDialog
+          content={content}
+          member={bookingUrlMember}
+          onCloseAction={() => setBookingUrlMember(null)}
         />
       ) : null}
       {statusMember ? (

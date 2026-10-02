@@ -23,12 +23,14 @@ const OWNER: WorkspaceMemberDto = {
   isOwner: true,
   hasActiveRole: true,
   accessScopeCount: 0,
+  bookingUrl: null,
   roles: [],
   version: 2,
   createdAt: "2026-09-13T10:00:00.000Z",
 };
 
 function renderRow(isCurrentActor: boolean) {
+  const onEditBookingUrlAction = vi.fn();
   const onManageRolesAction = vi.fn();
   const onOpenAccessIssueAction = vi.fn();
   const onToggleOwnerAction = vi.fn();
@@ -40,6 +42,7 @@ function renderRow(isCurrentActor: boolean) {
         content={content}
         isCurrentActor={isCurrentActor}
         member={OWNER}
+        onEditBookingUrlAction={onEditBookingUrlAction}
         onManageRolesAction={onManageRolesAction}
         onOpenAccessIssueAction={onOpenAccessIssueAction}
         onToggleOwnerAction={onToggleOwnerAction}
@@ -49,6 +52,7 @@ function renderRow(isCurrentActor: boolean) {
     </ul>,
   );
   return {
+    onEditBookingUrlAction,
     onManageRolesAction,
     onOpenAccessIssueAction,
     onToggleOwnerAction,
@@ -92,6 +96,7 @@ describe("MemberRow", () => {
           content={content}
           isCurrentActor={false}
           member={{ ...OWNER, isOwner: false, hasActiveRole: false }}
+          onEditBookingUrlAction={vi.fn()}
           onManageRolesAction={vi.fn()}
           onOpenAccessIssueAction={vi.fn()}
           onToggleOwnerAction={vi.fn()}
@@ -109,6 +114,7 @@ describe("MemberRow", () => {
           content={content}
           isCurrentActor={false}
           member={OWNER}
+          onEditBookingUrlAction={vi.fn()}
           onManageRolesAction={vi.fn()}
           onOpenAccessIssueAction={vi.fn()}
           onToggleOwnerAction={vi.fn()}
@@ -139,6 +145,7 @@ describe("MemberRow", () => {
           content={content}
           isCurrentActor={false}
           member={{ ...inactive, isOwner: false }}
+          onEditBookingUrlAction={vi.fn()}
           onManageRolesAction={vi.fn()}
           onOpenAccessIssueAction={vi.fn()}
           onToggleOwnerAction={vi.fn()}
@@ -165,6 +172,7 @@ describe("MemberRow", () => {
           content={content}
           isCurrentActor={false}
           member={inactive}
+          onEditBookingUrlAction={vi.fn()}
           onManageRolesAction={vi.fn()}
           onOpenAccessIssueAction={vi.fn()}
           onToggleOwnerAction={vi.fn()}
@@ -175,6 +183,20 @@ describe("MemberRow", () => {
     );
     expect(
       screen.getByRole("button", { name: revokeButtonName }),
+    ).toBeInTheDocument();
+  });
+
+  it("offers the booking link for every member, the signed-in one included", () => {
+    const bookingUrlName = `${content.list.actions.bookingUrl}: ${OWNER.displayName}`;
+    const { onEditBookingUrlAction } = renderRow(true);
+
+    fireEvent.click(screen.getByRole("button", { name: bookingUrlName }));
+    expect(onEditBookingUrlAction).toHaveBeenCalledTimes(1);
+
+    cleanup();
+    renderRow(false);
+    expect(
+      screen.getByRole("button", { name: bookingUrlName }),
     ).toBeInTheDocument();
   });
 
@@ -201,6 +223,7 @@ describe("MemberRow", () => {
           content={content}
           isCurrentActor={false}
           member={{ ...OWNER, accessScopeCount: 2 }}
+          onEditBookingUrlAction={vi.fn()}
           onManageRolesAction={vi.fn()}
           onOpenAccessIssueAction={vi.fn()}
           onToggleOwnerAction={vi.fn()}
@@ -219,6 +242,7 @@ describe("MemberRow", () => {
           content={content}
           isCurrentActor={false}
           member={{ ...OWNER, accessScopeCount: 2 }}
+          onEditBookingUrlAction={vi.fn()}
           onManageRolesAction={vi.fn()}
           onOpenAccessIssueAction={vi.fn()}
           onToggleOwnerAction={vi.fn()}
@@ -240,6 +264,7 @@ describe("MemberRow", () => {
           content={content}
           isCurrentActor={false}
           member={OWNER}
+          onEditBookingUrlAction={vi.fn()}
           onManageRolesAction={vi.fn()}
           onOpenAccessIssueAction={onOpenAccessIssueAction}
           onToggleOwnerAction={vi.fn()}

@@ -6,7 +6,9 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
+import type { PortalOnboardingBookingDto } from "@invessiv/common/contracts/portal/portal-onboarding-booking.dto";
 import type { PortalOnboardingFormDto } from "@invessiv/common/contracts/portal/portal-onboarding-form.dto";
+import { isOnboardingCallBookable } from "@invessiv/common/patterns/crm/onboarding/onboarding-form-state";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { PortalOwnerNotice } from "@/components/portal/portal-owner-notice/portal-owner-notice";
 import { OnboardingAnswerReadView } from "@/components/shared/onboarding/onboarding-answer-read-view/onboarding-answer-read-view";
@@ -17,12 +19,17 @@ import type {
   PortalOnboardingDictionary,
 } from "@/i18n/dictionaries/portal";
 import { formatMomentDay } from "@/lib/i18n/format-moment-day";
+import { OnboardingBookingCard } from "../onboarding-booking-card/onboarding-booking-card";
 import { OnboardingFormEditor } from "../onboarding-form-editor/onboarding-form-editor";
 import styles from "./onboarding-form-view.module.css";
 
 export type OnboardingFormViewProps = {
   /** Where the back link leads: the dashboard of the company. */
   backHref: string;
+  /** Where the onboarding call is booked; null when the team gets in touch instead. */
+  booking?: PortalOnboardingBookingDto | null;
+  /** The company's chat page; null without `portal.messages.read`. */
+  chatHref?: string | null;
   /** Upload files as well, which needs `portal.files.write` and never the owner view. */
   canUpload: boolean;
   /** CRM link for the owner view; null for customer contacts. */
@@ -42,6 +49,8 @@ export type OnboardingFormViewProps = {
  */
 export function OnboardingFormView({
   backHref,
+  booking = null,
+  chatHref = null,
   canUpload,
   cockpitHref,
   content,
@@ -64,6 +73,15 @@ export function OnboardingFormView({
   const ownerNoticeId = useId();
   const editable = form.editableBlockIds.length > 0;
   const state = form.status === OnboardingFormStatus.Open ? null : form.status;
+  // While the customer has additions to make, those come before the call.
+  const call = isOnboardingCallBookable(form.status) ? (
+    <OnboardingBookingCard
+      booking={booking}
+      chatHref={chatHref}
+      primary={!editable}
+      texts={content.call}
+    />
+  ) : null;
 
   return (
     <div className={styles.page}>
@@ -80,6 +98,7 @@ export function OnboardingFormView({
           <p>{content.states.changes_requested.editable}</p>
         </div>
       ) : null}
+      {editable ? call : null}
       {editable ? (
         <OnboardingFormEditor
           canUpload={canUpload}
@@ -119,6 +138,7 @@ export function OnboardingFormView({
               <p>{content.states[state].description}</p>
             </div>
           ) : null}
+          {call}
           {cockpitHref ? (
             <PortalOwnerNotice
               cockpitHref={cockpitHref}

@@ -1,3 +1,5 @@
+import { BookingUrlLimits } from "@invessiv/common/constants/auth/booking-url-limits";
+
 /** Input limits shared by the access schemas on the server and the settings forms in the client. */
 export const AccessFieldLimits = {
   RoleNameMaxLength: 80,
@@ -8,4 +10,5 @@ export const AccessFieldLimits = {
   AccessLookupQueryMaxLength: 100,
   AccessLookupResultLimit: 25,
   AccessScopeAssignmentsMax: 500,
+  BookingUrlMaxLength: BookingUrlLimits.MaxLength,
 } as const;

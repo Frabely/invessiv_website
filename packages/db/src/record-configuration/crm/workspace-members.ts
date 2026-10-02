@@ -4,6 +4,7 @@ import {
   check,
   integer,
   pgTable,
+  text,
   timestamp,
   uniqueIndex,
   uuid,
@@ -25,6 +26,7 @@ export const workspaceMembers = pgTable(
       .references(() => users.id, { onDelete: "restrict" }),
     active: boolean("active").notNull(),
     version: integer("version").notNull(),
+    booking_url: text("booking_url"),
     created_at: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -37,6 +39,10 @@ export const workspaceMembers = pgTable(
       WorkspaceMembersConstraintName.VersionCheck,
       sql`${table.version}
         > 0`,
+    ),
+    check(
+      WorkspaceMembersConstraintName.BookingUrlCheck,
+      sql`${table.booking_url} IS NULL OR (${table.booking_url} LIKE 'https://%' AND length(${table.booking_url}) <= 2048)`,
     ),
     uniqueIndex(WorkspaceMembersConstraintName.UserIdUnique).on(table.user_id),
   ],

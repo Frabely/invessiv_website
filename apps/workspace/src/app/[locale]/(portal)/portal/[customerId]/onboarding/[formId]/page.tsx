@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
+import { PortalSection } from "@/common/constants/portal/portal-sections";
 import { OnboardingFormView } from "@/components/portal/onboarding/onboarding-form-view/onboarding-form-view";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import {
@@ -10,6 +11,7 @@ import {
 import { crmOnboardingFormPathFor, portalPathFor } from "@/lib/auth/routes";
 import { isPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
 import { requirePortalReader } from "@/server/portal/auth/require-portal-reader";
+import { getPortalOnboardingBooking } from "@/server/portal/query-handler/get-portal-onboarding-booking.query-handler";
 import { getPortalOnboardingForm } from "@/server/portal/query-handler/get-portal-onboarding-form.query-handler";
 import { portalCanOn } from "@/server/portal/shared/portal-can-on";
 
@@ -52,15 +54,26 @@ export default async function PortalOnboardingFormPage({
   );
   if (!form) notFound();
   const isOwnerView = isPortalOwnerView(reader);
+  const target = { customerId: reader.customerId };
+  // Null before the submission, after the completion and when nobody offers a link.
+  const booking = await getPortalOnboardingBooking(reader, form.id);
 
   return (
     <OnboardingFormView
       backHref={portalPathFor(activeLocale, reader.customerId)}
+      booking={booking}
       canUpload={
         !isOwnerView &&
-        portalCanOn.forReader(reader, Permission.PortalFilesWrite, {
-          customerId: reader.customerId,
-        })
+        portalCanOn.forReader(reader, Permission.PortalFilesWrite, target)
+      }
+      chatHref={
+        portalCanOn.forReader(reader, Permission.PortalMessagesRead, target)
+          ? portalPathFor(
+              activeLocale,
+              reader.customerId,
+              PortalSection.Messages,
+            )
+          : null
       }
       cockpitHref={
         isOwnerView ? crmOnboardingFormPathFor(activeLocale, form.id) : null

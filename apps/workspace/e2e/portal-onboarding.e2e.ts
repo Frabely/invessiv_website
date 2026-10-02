@@ -266,6 +266,12 @@ test.describe.serial("portal onboarding", () => {
       await expect(contact.getByText(/Abgesendet am/)).toBeVisible();
       await expect(contact.getByRole("textbox")).toHaveCount(0);
       await expect(contact.getByText(`Ada ${suffix}`)).toBeVisible();
+      // From the submission on the call is offered: the owner's booking link, or the hint that
+      // the team gets in touch. Nothing of a provider is embedded either way.
+      await expect(
+        contact.getByRole("region", { name: "Onboarding-Call" }),
+      ).toBeVisible();
+      await expect(contact.locator("iframe")).toHaveCount(0);
 
       // A contact of another company gets nothing, whatever it guesses.
       const foreign = await contact.goto(

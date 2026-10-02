@@ -66,6 +66,7 @@ const CREATED_MEMBER: WorkspaceMemberDto = {
   isOwner: false,
   hasActiveRole: true,
   accessScopeCount: 0,
+  bookingUrl: null,
   roles: [{ id: ROLE_ID, name: "Sales", systemKey: null, active: true }],
   version: 1,
   createdAt: "2026-09-14T10:00:00.000Z",

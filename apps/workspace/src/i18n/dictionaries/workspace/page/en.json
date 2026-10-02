@@ -97,7 +97,33 @@
       "unreadFeedbackRounds": {
         "one": "1 newly submitted feedback round",
         "many": "{count} newly submitted feedback rounds"
+      },
+      "account": {
+        "label": "Your area",
+        "bookingUrl": "My booking link"
       }
+    },
+    "bookingUrlDialog": {
+      "title": "My booking link",
+      "description": "Customers of your projects book their onboarding call through this link. They see it in the portal once they have submitted the onboarding.",
+      "label": "Link to the booking calendar",
+      "placeholder": "https://calendly.com/name/onboarding-call",
+      "hint": "https links only, for example from Calendly or Cal.com. Leave empty to remove the link.",
+      "submit": "Save link",
+      "issues": {
+        "invalid": "This is not a complete link. Paste it starting with https://.",
+        "not_https": "The link has to start with https://.",
+        "too_long": "The link is too long. The limit is 2,048 characters."
+      },
+      "conflict": "The link was just changed elsewhere. Save again if your entry should apply.",
+      "conflictCurrent": "Currently stored: {url}",
+      "conflictCurrentEmpty": "No link is stored at the moment.",
+      "error": "That didn't work. Try again.",
+      "submitting": "Saving …",
+      "cancel": "Cancel",
+      "close": "Close dialog",
+      "loading": "Loading link …",
+      "loadError": "Your link could not be loaded. Close the dialog and try again."
     },
     "main": {
       "ariaLabel": "Workspace content"

@@ -2,6 +2,7 @@ import { OnboardingBlockReviewStatus } from "../../../constants/crm/onboarding/o
 import { OnboardingClarificationMode } from "../../../constants/crm/onboarding/onboarding-clarification-modes";
 import { ONBOARDING_ELIGIBLE_PROJECT_STATUS_VALUES } from "../../../constants/crm/onboarding/onboarding-eligible-project-statuses";
 import {
+  ONBOARDING_CALL_BOOKABLE_STATUS_VALUES,
   ONBOARDING_STRUCTURE_EDITABLE_STATUS_VALUES,
   OnboardingFormStatus,
 } from "../../../constants/crm/onboarding/onboarding-form-statuses";
@@ -32,6 +33,15 @@ export function isOnboardingProjectEligible(status: ProjectStatus): boolean {
  */
 export function isOnboardingReviewOpen(status: OnboardingFormStatus): boolean {
   return status === OnboardingFormStatus.Submitted;
+}
+
+/** Whether the portal offers the booking of the onboarding call for a form in this status. */
+export function isOnboardingCallBookable(
+  status: OnboardingFormStatus,
+): boolean {
+  return (
+    ONBOARDING_CALL_BOOKABLE_STATUS_VALUES as readonly OnboardingFormStatus[]
+  ).includes(status);
 }
 
 export function canTransitionOnboardingForm(

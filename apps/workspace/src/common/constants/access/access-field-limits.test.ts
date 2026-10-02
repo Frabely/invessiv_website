@@ -13,6 +13,7 @@ describe("AccessFieldLimits", () => {
       AccessLookupQueryMaxLength: 100,
       AccessLookupResultLimit: 25,
       AccessScopeAssignmentsMax: 500,
+      BookingUrlMaxLength: 2048,
     });
   });
 });

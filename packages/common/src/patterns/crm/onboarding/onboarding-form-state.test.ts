@@ -9,6 +9,7 @@ import { OnboardingTransitionSide } from "../../../constants/crm/onboarding/onbo
 import { PROJECT_STATUS_VALUES } from "../../../constants/crm/project-statuses";
 import {
   canTransitionOnboardingForm,
+  isOnboardingCallBookable,
   isOnboardingProjectEligible,
   isOnboardingReviewOpen,
   isOnboardingStructureEditable,
@@ -28,6 +29,14 @@ describe("isOnboardingReviewOpen", () => {
     expect(
       ONBOARDING_FORM_STATUS_VALUES.filter(isOnboardingReviewOpen),
     ).toEqual(["submitted"]);
+  });
+});
+
+describe("isOnboardingCallBookable", () => {
+  it("offers the call from the submission until the form is completed", () => {
+    expect(
+      ONBOARDING_FORM_STATUS_VALUES.filter(isOnboardingCallBookable),
+    ).toEqual(["submitted", "changes_requested"]);
   });
 });
 

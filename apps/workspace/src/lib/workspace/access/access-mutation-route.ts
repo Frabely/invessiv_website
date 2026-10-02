@@ -11,6 +11,7 @@ import type { AddWorkspaceMemberResult } from "@invessiv/common/contracts/auth/r
 import type { ChangeWorkspaceOwnerResult } from "@invessiv/common/contracts/auth/results/change-workspace-owner-result";
 import type { CreateRoleResult } from "@invessiv/common/contracts/auth/results/create-role-result";
 import type { ReplaceWorkspaceMemberRolesResult } from "@invessiv/common/contracts/auth/results/replace-workspace-member-roles-result";
+import type { UpdateMemberBookingUrlResult } from "@invessiv/common/contracts/auth/results/update-member-booking-url-result";
 import type { UpdateRoleResult } from "@invessiv/common/contracts/auth/results/update-role-result";
 import type { UpdateWorkspaceMemberStatusResult } from "@invessiv/common/contracts/auth/results/update-workspace-member-status-result";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
@@ -41,6 +42,7 @@ type MemberMutationResult =
   | ReplaceWorkspaceMemberRolesResult
   | ChangeWorkspaceOwnerResult
   | UpdateWorkspaceMemberStatusResult
+  | UpdateMemberBookingUrlResult
   | { ok: true; member: WorkspaceMemberDto }
   | { ok: false; code: WorkspaceMemberErrorCode; errors?: unknown }
   | {
