@@ -18,7 +18,7 @@ import {
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import type { OnboardingFormRow } from "@/server/shared/services/onboarding/onboarding-form-types";
 import { questionnaireBlockCopyService } from "@/server/workspace/crm/services/questionnaire/questionnaire-block-copy-service";
-import { questionnaireDefinitionReadService } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-read-service";
+import { questionnaireDefinitionReadService } from "@/server/shared/services/questionnaire/questionnaire-definition-read-service";
 import type { OnboardingProjectRef } from "./onboarding-form-access-types";
 import { onboardingPrefillService } from "./onboarding-prefill-service";
 

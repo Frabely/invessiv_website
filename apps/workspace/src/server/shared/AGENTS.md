@@ -106,6 +106,15 @@ Transaktion um.
 geloggt (Name, Key, kein Text). Ein Fachwrite scheitert nie an seiner Systemnachricht. Neue Ereignisse rufen diesen
 Helfer auf, statt Savepoint und Logging zu kopieren.
 
+## Fragebogen-Baukasten lesen
+
+`services/questionnaire/` hält, was beide Welten zum Lesen von Baustein-Definitionen brauchen:
+`questionnaire-definition-read-service.ts` (Blöcke samt Feldern, Optionen und Übersetzungen laden, Owner in der
+`WHERE`-Klausel), `questionnaire-mapping-service.ts` (Zeilen → DTOs) und `questionnaire-definition-types.ts`
+(Zeilentypen, `QuestionnaireReadExecutor`, `QuestionnaireBlockOwner`). Der Bogen-Read-Service unten baut darauf auf;
+kein Service hier importiert aus `server/workspace/crm/services/questionnaire/**`. Schreibwege, Validierung,
+Kopierdienst und Vorlagen bleiben im Workspace-Pfad, weil nur das Team Definitionen ändert.
+
 ## Onboarding-Bogen (ab Task 65)
 
 `services/onboarding/onboarding-form-read-service.ts` baut `OnboardingFormDto` und `OnboardingFormSummaryDto`;
@@ -140,11 +149,12 @@ Ab Task 66:
 
 Ab Task 67:
 
-- `onboarding-group-entry-service.ts` ist der einzige Schreibweg für `onboarding_group_entries`: `append`, `remove`
+- `onboarding-group-entry-service.ts` ist der einzige Schreibweg für `onboarding_group_entries`: `append`,
+  `insertEntries` (Vorbefüllung), `remove`
   (Antworten und Datei-Verknüpfungen fallen über die zusammengesetzten Fremdschlüssel weg, die Dateien bleiben; die
   Einträge dahinter rücken in einem Statement auf) und `move` (Tausch mit kurz aufgeschobenem Positionsindex).
 - `onboarding-attachment-service.ts` ist der einzige Schreibweg für `onboarding_answer_files` (`attach`, `detach` mit
-  Aufrücken der Positionen im Slot). `isBound` beantwortet dem internen Datei-Löschpfad, ob eine Datei an einem Bogen
+  Aufrücken der Positionen im Slot, `insertLinks` für die Vorbefüllung). `isBound` beantwortet dem internen Datei-Löschpfad, ob eine Datei an einem Bogen
   hängt. Ob Feld, Art, Grenze und Besitz passen, entscheidet der Handler, der Bogen und Datei gesperrt hält.
 - `onboardingFormReadService.toFormDto` setzt `servicesChangedSinceConfirmation`: wahr, wenn eine Projektleistung
   (jeder Status, auch `rejected`) nach `services_confirmed_at` geändert wurde; immer falsch ohne Bestätigung und nach

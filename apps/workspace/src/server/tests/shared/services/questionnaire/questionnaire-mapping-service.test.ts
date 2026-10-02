@@ -9,8 +9,8 @@ import type {
   QuestionnaireDefinitionRows,
   QuestionnaireFieldRow,
   QuestionnaireTemplateRow,
-} from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-types";
-import { questionnaireMappingService } from "@/server/workspace/crm/services/questionnaire/questionnaire-mapping-service";
+} from "@/server/shared/services/questionnaire/questionnaire-definition-types";
+import { questionnaireMappingService } from "@/server/shared/services/questionnaire/questionnaire-mapping-service";
 
 const CREATED = new Date("2026-09-01T10:00:00.000Z");
 const UPDATED = new Date("2026-09-02T11:00:00.000Z");

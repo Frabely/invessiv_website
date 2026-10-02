@@ -27,11 +27,22 @@ function describeUsage(
 ): string {
   if (usage === null) return content.usageLoading;
   if (usage === "failed") return content.usageFailed;
-  if (usage.answers === 0 && usage.files === 0) return content.usageNone;
-  return formatMessage(content.usage, {
-    answers: formatCountMessage(usage.answers, content.answers),
-    files: formatCountMessage(usage.files, content.files),
-  });
+  const sentences: string[] = [];
+  if (usage.answers > 0 || usage.files > 0)
+    sentences.push(
+      formatMessage(content.usage, {
+        answers: formatCountMessage(usage.answers, content.answers),
+        files: formatCountMessage(usage.files, content.files),
+      }),
+    );
+  // Entries go with their group even while nobody has filled them in.
+  if (usage.entries > 0)
+    sentences.push(
+      formatMessage(content.usageEntries, {
+        entries: formatCountMessage(usage.entries, content.entries),
+      }),
+    );
+  return sentences.length > 0 ? sentences.join(" ") : content.usageNone;
 }
 
 /**

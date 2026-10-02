@@ -30,6 +30,10 @@ export type OnboardingProjectServicesFieldProps = {
   note: string | null;
   /** `note` null confirms the services as shown. */
   onConfirmAction: (note: string | null) => Promise<boolean>;
+  /** A remark was chosen but has no text yet; until it has, the services do not count as confirmed. */
+  onRemarkOpenAction: () => void;
+  /** The form still waits for the text of an announced remark. */
+  remarkOpen: boolean;
   services: readonly PortalOnboardingServiceDto[];
   texts: PortalOnboardingDictionary["field"]["services"];
 };
@@ -45,27 +49,43 @@ export function OnboardingProjectServicesField({
   id,
   note,
   onConfirmAction,
+  onRemarkOpenAction,
+  remarkOpen,
   services,
   texts,
 }: OnboardingProjectServicesFieldProps) {
   const [choice, setChoice] = useState<Choice | null>(
-    note !== null ? Choice.Remark : confirmed ? Choice.Fits : null,
+    remarkOpen || note !== null
+      ? Choice.Remark
+      : confirmed
+        ? Choice.Fits
+        : null,
   );
   const [text, setText] = useState(note ?? "");
   const [noteMissing, setNoteMissing] = useState(false);
   const required = field.requirement === QuestionnaireFieldRequirement.Required;
 
+  /**
+   * Sends the remark, or announces it while there is no text yet. An earlier "it fits" would
+   * otherwise stay in force, although the customer has just said something else.
+   */
+  function saveRemark() {
+    const trimmed = text.trim();
+    if (trimmed === "") onRemarkOpenAction();
+    else if (trimmed !== note || remarkOpen) void onConfirmAction(trimmed);
+    return trimmed;
+  }
+
   function choose(next: Choice) {
     setChoice(next);
     setNoteMissing(false);
     if (next === Choice.Fits) void onConfirmAction(null);
+    else saveRemark();
   }
 
   /** A remark is saved when its field is left, like every other text of the form. */
   function saveNote() {
-    const trimmed = text.trim();
-    setNoteMissing(trimmed === "");
-    if (trimmed !== "" && trimmed !== note) void onConfirmAction(trimmed);
+    setNoteMissing(saveRemark() === "");
   }
 
   return (

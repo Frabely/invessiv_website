@@ -353,7 +353,11 @@ describe("CRM onboarding form routes", () => {
     const state = { projectId: ID, form: null, canStart: true };
     mocks.getProjectOnboarding.mockResolvedValue(state);
     mocks.getOnboardingForm.mockResolvedValue({ id: ID, blocks: [] });
-    mocks.getOnboardingFieldUsage.mockResolvedValue({ answers: 2, files: 1 });
+    mocks.getOnboardingFieldUsage.mockResolvedValue({
+      answers: 2,
+      files: 1,
+      entries: 0,
+    });
 
     const project = await projectOnboardingRoute.GET(
       request(BASE, HttpMethod.Get),
@@ -374,7 +378,7 @@ describe("CRM onboarding form routes", () => {
       await (
         await fieldUsageRoute.GET(request(BASE, HttpMethod.Get), fieldContext)
       ).json(),
-    ).toEqual({ answers: 2, files: 1 });
+    ).toEqual({ answers: 2, files: 1, entries: 0 });
     expect(mocks.getOnboardingFieldUsage).toHaveBeenCalledWith(
       ID,
       FIELD_ID,

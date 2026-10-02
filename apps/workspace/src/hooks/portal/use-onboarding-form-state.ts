@@ -49,6 +49,8 @@ export function useOnboardingFormState({
     form.servicesConfirmed,
   );
   const [servicesNote, setServicesNote] = useState(form.servicesNote);
+  // Held here, not in the field: the field unmounts with its step, the announcement must not.
+  const [servicesRemarkOpen, setServicesRemarkOpen] = useState(false);
   const [errors, setErrors] = useState<
     ReadonlyMap<string, PortalOnboardingErrorCodeValue>
   >(new Map());
@@ -285,6 +287,7 @@ export function useOnboardingFormState({
       if (!result.ok) return false;
       setServicesConfirmed(true);
       setServicesNote(note);
+      setServicesRemarkOpen(false);
       return true;
     },
     [customerId, form.id, track],
@@ -302,8 +305,14 @@ export function useOnboardingFormState({
   return {
     groupEntries,
     answerFiles,
-    servicesConfirmed,
+    /**
+     * False while the customer announced a remark and has not written it yet: what the server
+     * holds from before is then no longer what the customer means, so it must not count.
+     */
+    servicesConfirmed: servicesConfirmed && !servicesRemarkOpen,
     servicesNote,
+    servicesRemarkOpen,
+    openServicesRemark: useCallback(() => setServicesRemarkOpen(true), []),
     /** Why the last command of a field failed, by field id; the services under their own key. */
     errors,
     servicesError: errors.get(SERVICES_ERROR_KEY) ?? null,

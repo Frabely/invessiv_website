@@ -140,6 +140,10 @@ Plan: `apps/workspace/plans/crm/15-onboarding/64-baustein-katalog-und-vorlagen.m
 - Services unter `services/questionnaire/`. **Owner-neutral:** `questionnaireDefinitionWriteService` und
   `questionnaireDefinitionReadService` nehmen einen `QuestionnaireBlockOwner` (`null` = Katalog, sonst Bogen-ID) und filtern
   ihn in der `WHERE`-Klausel; ein Block oder Feld eines anderen Owners verhält sich wie nicht vorhanden (404).
+- **Lesen liegt unter `server/shared/`:** `questionnaireDefinitionReadService`, `questionnaireMappingService` und die
+  Zeilentypen (`questionnaire-definition-types.ts`) stehen in `server/shared/services/questionnaire/`, weil der
+  geteilte Bogen-Read-Service und damit das Portal sie brauchen. Hier bleiben Schreibwege, Validierung, Kopierdienst,
+  Vorlagen und Schemas.
 - **Alle Schreibwege an Bausteinen und Feldern sind im Service, nicht in den Handlern.**
   `questionnaireDefinitionWriteService` kennt `createBlock`, `updateBlock`, `deleteBlock` und die Feldoperationen, jeweils
   mit dem `QuestionnaireBlockOwner`. Ein Handler parst, ruft den Service mit seinem Owner auf und gibt das Ergebnis
@@ -183,9 +187,10 @@ Plan: `apps/workspace/plans/crm/15-onboarding/65-bogen-anlegen-und-anpassen.md`.
 - **Vorbefüllung nie raten:** Felder über `key` und Typ, Optionen über `key`, Werte nur, wenn sie die Prüfung des
   neuen Feldes bestehen. Quelle ist ausschließlich der jüngste Bogen desselben Kunden im Status `completed`.
   `confirmation` und `project_services` werden nie übernommen. CRM-Werte füllen nur Felder ohne übernommene Antwort;
-  nichts wird ins CRM zurückgeschrieben. Im Bogen selbst angelegte Bausteine werden nie vorbefüllt. Die Antwortzeilen
-  schreibt die Vorbefüllung über `onboardingAnswerWriteService.insertSlots` (`server/shared/services/onboarding/`),
-  denselben Schreibweg wie das Portal.
+  nichts wird ins CRM zurückgeschrieben. Im Bogen selbst angelegte Bausteine werden nie vorbefüllt. Die Vorbefüllung
+  schreibt ausschließlich über die Schreibwege unter `server/shared/services/onboarding/`: Antworten über
+  `onboardingAnswerWriteService.insertSlots`, Gruppeneinträge über `onboardingGroupEntryService.insertEntries`,
+  Datei-Verknüpfungen über `onboardingAttachmentService.insertLinks` — kein eigenes `tx.insert` auf diese Tabellen.
 - **Die Vorbefüllung überschreitet nie die Rechte des Aufrufers.** Quelle ist der jüngste abgeschlossene Bogen, den
   der Aufrufer mit `projects.read` lesen darf (eine projektgebundene Rolle bekommt nichts aus dem Schwesterprojekt, und
   `prefillAvailable` verrät es auch nicht); CRM-Stammdaten kopiert nur, wer `customers.read` am Kunden hat. Beides

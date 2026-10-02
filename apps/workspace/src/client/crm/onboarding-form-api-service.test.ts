@@ -158,10 +158,10 @@ describe("onboardingFormApiService", () => {
   });
 
   it("reads the usage of a field and rejects another shape", async () => {
-    respondWith(HttpResponseCode.Ok, { answers: 3, files: 1 });
+    respondWith(HttpResponseCode.Ok, { answers: 3, files: 1, entries: 2 });
     expect(await onboardingFormApiService.getFieldUsage("f-1", "q-1")).toEqual({
       ok: true,
-      value: { answers: 3, files: 1 },
+      value: { answers: 3, files: 1, entries: 2 },
     });
 
     respondWith(HttpResponseCode.Ok, { answers: "3" });

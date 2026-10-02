@@ -19,8 +19,8 @@ import {
   onboardingGroupEntries,
   projectLineItems,
 } from "@invessiv/db/record-configuration";
-import { questionnaireDefinitionReadService } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-read-service";
-import type { QuestionnaireReadExecutor } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-types";
+import { questionnaireDefinitionReadService } from "@/server/shared/services/questionnaire/questionnaire-definition-read-service";
+import type { QuestionnaireReadExecutor } from "@/server/shared/services/questionnaire/questionnaire-definition-types";
 import { onboardingFormMappingService } from "./onboarding-form-mapping-service";
 import type {
   OnboardingFormBlockRow,

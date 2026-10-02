@@ -51,6 +51,21 @@ export type OnboardingSlotWrite = {
   content: OnboardingSlotContent;
 };
 
+/** A group entry to write at a known position. */
+export type OnboardingGroupEntryWrite = {
+  id: string;
+  formId: string;
+  fieldId: string;
+  position: number;
+};
+
+/** A file to link to a slot at a known position. */
+export type OnboardingAnswerFileWrite = {
+  slot: OnboardingAnswerSlot;
+  fileId: string;
+  position: number;
+};
+
 /** Who wrote an answer: a contact in the portal, or a member through the pre-fill. */
 export type OnboardingAnswerAuthor =
   { portalMembershipId: string } | { memberId: string };

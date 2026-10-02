@@ -8,7 +8,7 @@ import {
   onboardingFormServices,
   projectLineItems,
 } from "@invessiv/db/record-configuration";
-import type { QuestionnaireReadExecutor } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-types";
+import type { QuestionnaireReadExecutor } from "@/server/shared/services/questionnaire/questionnaire-definition-types";
 import type {
   OnboardingFormRow,
   OnboardingServiceSource,

@@ -20,6 +20,7 @@ import type { QuestionnaireAnswerFileDto } from "@invessiv/common/contracts/crm/
 import type { QuestionnaireAnswerDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-answer.dto";
 import type { PortalFileDto } from "@invessiv/common/contracts/portal/portal-file.dto";
 import type { PortalOnboardingFormDto } from "@invessiv/common/contracts/portal/portal-onboarding-form.dto";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import {
   portalOnboardingBlock as block,
   portalOnboardingChoices as choices,
@@ -569,6 +570,21 @@ describe("OnboardingFormView field types of the full form", () => {
       expect(screen.getByText(content.submit.complete)).toBeInTheDocument();
     });
 
+    it("counts files the contact may not open towards the limit of a field", () => {
+      const uploadInput = () => document.querySelector('input[type="file"]');
+      const { unmount } = renderView(formOf([{ ...LOGO, maxItems: 1 }]));
+      expect(uploadInput()).not.toBeNull();
+      unmount();
+
+      renderView(
+        formOf([{ ...LOGO, maxItems: 1 }], {
+          hiddenAnswerFiles: [{ fieldId: "Logo", groupEntryId: null }],
+        }),
+      );
+
+      expect(uploadInput()).toBeNull();
+    });
+
     it("asks before a step change would cut off a running upload", async () => {
       mocks.queueActive = true;
       const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
@@ -759,6 +775,37 @@ describe("OnboardingFormView field types of the full form", () => {
         "form-1",
         "Please add a blog.",
       );
+    });
+
+    it("holds the form back while a remark is announced but not written", async () => {
+      mocks.confirmServices.mockResolvedValue(SAVED);
+      renderView(formOf([SERVICES], { ...booked, servicesConfirmed: true }));
+      const missingItem = formatMessage(content.submit.missingItem, {
+        field: "Your booked services",
+        block: "Company",
+      });
+
+      await click(
+        screen.getByRole("radio", { name: content.field.services.remark }),
+      );
+      await click(screen.getByRole("button", { name: content.steps.next }));
+      expect(screen.queryByText(content.submit.complete)).toBeNull();
+
+      // Back in the step the choice still stands, although the field was unmounted meanwhile.
+      await click(screen.getByRole("button", { name: missingItem }));
+      expect(
+        screen.getByRole("radio", { name: content.field.services.remark }),
+      ).toBeChecked();
+
+      const note = screen.getByRole("textbox", {
+        name: new RegExp(content.field.services.noteLabel),
+      });
+      fireEvent.change(note, { target: { value: "Please add a blog." } });
+      fireEvent.blur(note);
+      await settle();
+      await click(screen.getByRole("button", { name: content.steps.next }));
+
+      expect(screen.getByText(content.submit.complete)).toBeInTheDocument();
     });
 
     it("opens with the stored confirmation and remark", () => {

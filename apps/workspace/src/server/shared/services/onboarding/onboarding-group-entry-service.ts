@@ -5,7 +5,10 @@ import { and, asc, eq, gt, sql } from "drizzle-orm";
 import { OnboardingGroupEntriesConstraintName } from "@invessiv/db/constraint-names/crm/onboarding-group-entries-constraint-names";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import { onboardingGroupEntries } from "@invessiv/db/record-configuration";
-import type { OnboardingGroupEntryRow } from "./onboarding-form-types";
+import type {
+  OnboardingGroupEntryRow,
+  OnboardingGroupEntryWrite,
+} from "./onboarding-form-types";
 
 type ReadExecutor = Pick<ContactDatabaseTransaction, "select">;
 
@@ -44,18 +47,32 @@ async function find(
   return entry ?? null;
 }
 
+/**
+ * Writes entries at the positions given, as the pre-fill of new blocks does for groups that hold
+ * nothing yet. Whether field, form and positions fit decides the caller.
+ */
+async function insertEntries(
+  tx: ContactDatabaseTransaction,
+  entries: readonly OnboardingGroupEntryWrite[],
+): Promise<void> {
+  if (entries.length === 0) return;
+  await tx.insert(onboardingGroupEntries).values(
+    entries.map((entry) => ({
+      id: entry.id,
+      form_id: entry.formId,
+      field_id: entry.fieldId,
+      position: entry.position,
+    })),
+  );
+}
+
 /** Appends behind the last entry. Whether the field is a group of the form decides the caller. */
 async function append(
   tx: ContactDatabaseTransaction,
   entry: { id: string; formId: string; fieldId: string },
   position: number,
 ): Promise<void> {
-  await tx.insert(onboardingGroupEntries).values({
-    id: entry.id,
-    form_id: entry.formId,
-    field_id: entry.fieldId,
-    position,
-  });
+  await insertEntries(tx, [{ ...entry, position }]);
 }
 
 /**
@@ -115,6 +132,7 @@ async function move(
 export const onboardingGroupEntryService = {
   append,
   find,
+  insertEntries,
   listOfField,
   move,
   remove,

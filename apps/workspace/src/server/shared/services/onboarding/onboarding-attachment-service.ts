@@ -9,6 +9,7 @@ import type { FileRow } from "@/server/shared/files/file-object-service-types";
 import { onboardingFormMappingService } from "./onboarding-form-mapping-service";
 import type {
   OnboardingAnswerFileRow,
+  OnboardingAnswerFileWrite,
   OnboardingAnswerSlot,
 } from "./onboarding-form-types";
 
@@ -86,6 +87,27 @@ async function attach(
   return onboardingFormMappingService.toAnswerFileDto({ link, file });
 }
 
+/**
+ * Links files to slots at the positions given, as the pre-fill of new blocks does with the files
+ * of an earlier form. Whether slot, file and position fit decides the caller.
+ */
+async function insertLinks(
+  tx: ContactDatabaseTransaction,
+  links: readonly OnboardingAnswerFileWrite[],
+): Promise<void> {
+  if (links.length === 0) return;
+  await tx.insert(onboardingAnswerFiles).values(
+    links.map(({ slot, fileId, position }) => ({
+      id: crypto.randomUUID(),
+      form_id: slot.formId,
+      field_id: slot.fieldId,
+      group_entry_id: slot.groupEntryId,
+      file_id: fileId,
+      position,
+    })),
+  );
+}
+
 /** Removes the link only; the file stays in the customer's files. The links behind it move up. */
 async function detach(
   tx: ContactDatabaseTransaction,
@@ -113,6 +135,7 @@ export const onboardingAttachmentService = {
   attach,
   detach,
   find,
+  insertLinks,
   isBound,
   listOfSlot,
 } as const;

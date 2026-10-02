@@ -14,7 +14,7 @@ import {
   questionnaireFields,
   questionnaireFieldTranslations,
 } from "@invessiv/db/record-configuration";
-import type { QuestionnaireBlockOwner } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-types";
+import type { QuestionnaireBlockOwner } from "@/server/shared/services/questionnaire/questionnaire-definition-types";
 
 type CopyTarget = {
   /** Null copies into the catalog, otherwise into that form. */

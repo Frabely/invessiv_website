@@ -6,7 +6,7 @@ import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/quest
 import type { QuestionnaireCommandResult } from "@invessiv/common/contracts/crm/questionnaire/results/questionnaire-command-result";
 import { questionnaireBlockCopyService } from "@/server/workspace/crm/services/questionnaire/questionnaire-block-copy-service";
 import { questionnaireCommandSupport } from "@/server/workspace/crm/services/questionnaire/questionnaire-command-support";
-import { questionnaireDefinitionReadService } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-read-service";
+import { questionnaireDefinitionReadService } from "@/server/shared/services/questionnaire/questionnaire-definition-read-service";
 import { questionnaireSchemas } from "@/server/workspace/crm/services/questionnaire/questionnaire-schemas";
 
 /** A deep copy under a new key; archived blocks can be duplicated, the copy starts active. */

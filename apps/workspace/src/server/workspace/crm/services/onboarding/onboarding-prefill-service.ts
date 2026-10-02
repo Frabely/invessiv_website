@@ -34,16 +34,20 @@ import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessScope } from "@/common/patterns/auth/access-scope";
 import { canOn } from "@/common/patterns/auth/can-on";
 import { onboardingAnswerWriteService } from "@/server/shared/services/onboarding/onboarding-answer-write-service";
+import { onboardingAttachmentService } from "@/server/shared/services/onboarding/onboarding-attachment-service";
 import type {
   OnboardingAnswerFileRow,
+  OnboardingAnswerFileWrite,
   OnboardingAnswerRow,
   OnboardingFormRow,
   OnboardingGroupEntryRow,
+  OnboardingGroupEntryWrite,
   OnboardingSlotContent,
   OnboardingSlotWrite,
 } from "@/server/shared/services/onboarding/onboarding-form-types";
-import { questionnaireDefinitionReadService } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-read-service";
-import type { QuestionnaireReadExecutor } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-types";
+import { onboardingGroupEntryService } from "@/server/shared/services/onboarding/onboarding-group-entry-service";
+import { questionnaireDefinitionReadService } from "@/server/shared/services/questionnaire/questionnaire-definition-read-service";
+import type { QuestionnaireReadExecutor } from "@/server/shared/services/questionnaire/questionnaire-definition-types";
 import { crmAccessCondition } from "@/server/workspace/shared/services/crm-access-condition";
 
 type PrefillTarget = {
@@ -63,8 +67,8 @@ type SourceContent = {
 
 type NewRows = {
   answers: OnboardingSlotWrite[];
-  entries: (typeof onboardingGroupEntries.$inferInsert)[];
-  files: (typeof onboardingAnswerFiles.$inferInsert)[];
+  entries: OnboardingGroupEntryWrite[];
+  files: OnboardingAnswerFileWrite[];
 };
 
 /** One slot of a form: a field on block level, or a sub-field within one group entry. */
@@ -249,11 +253,12 @@ function carrySlot(
       .slice(0, field.maxItems ?? L.filesPerField)
       .forEach(({ link }, position) =>
         rows.files.push({
-          id: crypto.randomUUID(),
-          form_id: target.form.id,
-          field_id: field.id,
-          group_entry_id: to.entryId,
-          file_id: link.file_id,
+          slot: {
+            formId: target.form.id,
+            fieldId: field.id,
+            groupEntryId: to.entryId,
+          },
+          fileId: link.file_id,
           position,
         }),
       );
@@ -324,8 +329,8 @@ function carryBlock(
       const entryId = crypto.randomUUID();
       rows.entries.push({
         id: entryId,
-        form_id: target.form.id,
-        field_id: field.id,
+        formId: target.form.id,
+        fieldId: field.id,
         position,
       });
       for (const child of field.children) {
@@ -488,14 +493,13 @@ async function prefillBlocks(
   await carryOver(tx, target, blocks, rows);
   await fillFromCrm(tx, target, blocks, rows);
 
-  if (rows.entries.length > 0)
-    await tx.insert(onboardingGroupEntries).values(rows.entries);
+  // Entries first: answers and file links of a sub-field point at them.
+  await onboardingGroupEntryService.insertEntries(tx, rows.entries);
   // The actor marks every pre-filled answer as written by the team.
   await onboardingAnswerWriteService.insertSlots(tx, rows.answers, {
     memberId: target.actor.workspaceMemberId,
   });
-  if (rows.files.length > 0)
-    await tx.insert(onboardingAnswerFiles).values(rows.files);
+  await onboardingAttachmentService.insertLinks(tx, rows.files);
 }
 
 export const onboardingPrefillService = { hasSource, prefillBlocks } as const;

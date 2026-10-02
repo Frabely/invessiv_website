@@ -208,7 +208,13 @@
       "usageLoading": "Betroffene Antworten werden gezählt …",
       "usageNone": "Zu diesem Feld gibt es noch keine Antworten und keine Dateien.",
       "usage": "Betroffen sind {answers} und {files}. Die Antworten gehen verloren. Die Dateien bleiben im Dateibereich des Kunden, nur ihre Verknüpfung zum Bogen entfällt.",
+      "usageEntries": "Die Gruppe hat {entries}; sie werden mit gelöscht.",
       "usageFailed": "Die Zahl der betroffenen Antworten ließ sich nicht laden. Vorhandene Antworten zu diesem Feld gehen beim Löschen verloren.",
+      "entries": {
+        "none": "keine Einträge",
+        "one": "1 Eintrag",
+        "many": "{count} Einträge"
+      },
       "answers": {
         "none": "keine Antworten",
         "one": "1 Antwort",

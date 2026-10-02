@@ -29,7 +29,7 @@ import { getOnboardingFormContext } from "@/server/workspace/crm/query-handler/g
 import { getOnboardingForm } from "@/server/workspace/crm/query-handler/get-onboarding-form.query-handler";
 import { getProjectOnboarding } from "@/server/workspace/crm/query-handler/get-project-onboarding.query-handler";
 import { questionnaireBlockCopyService } from "@/server/workspace/crm/services/questionnaire/questionnaire-block-copy-service";
-import { questionnaireDefinitionReadService } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-read-service";
+import { questionnaireDefinitionReadService } from "@/server/shared/services/questionnaire/questionnaire-definition-read-service";
 import { createOnboardingIntegrationFixture } from "./support/onboarding-integration-fixture";
 import {
   fieldByKey,

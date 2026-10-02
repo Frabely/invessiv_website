@@ -240,6 +240,8 @@ export function OnboardingFormEditor({
     onChangeAction: autosave.change,
     onCommitAction: autosave.commit,
     onConfirmServicesAction: state.confirmServices,
+    onOpenServicesRemarkAction: state.openServicesRemark,
+    servicesRemarkOpen: state.servicesRemarkOpen,
     onDetachFileAction: state.detachFile,
     onMoveEntryAction: (entry, direction) => void moveEntry(entry, direction),
     onRemoveEntryAction: (entry) => void removeEntry(entry),

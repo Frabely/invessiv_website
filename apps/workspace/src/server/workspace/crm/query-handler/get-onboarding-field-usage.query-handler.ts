@@ -10,14 +10,16 @@ import {
   questionnaireFields,
 } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
+import { onboardingGroupEntryService } from "@/server/shared/services/onboarding/onboarding-group-entry-service";
 import { onboardingFormAccessService } from "@/server/workspace/crm/services/onboarding/onboarding-form-access-service";
 import { onboardingFormSchemas } from "@/server/workspace/crm/services/onboarding/onboarding-form-schemas";
-import { questionnaireDefinitionReadService } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-read-service";
+import { questionnaireDefinitionReadService } from "@/server/shared/services/questionnaire/questionnaire-definition-read-service";
 
 /**
  * What deleting a field of a form would take along; null when the form is out of reach or the
- * field is not one of its own. A group counts for its sub-fields. An answer is one answered slot:
- * the several rows of a multi choice count once.
+ * field is not one of its own. A group counts for its sub-fields and names its entries, which go
+ * with it whether or not anyone filled them in. An answer is one answered slot: the several rows
+ * of a multi choice count once.
  */
 export async function getOnboardingFieldUsage(
   formId: string,
@@ -55,7 +57,7 @@ export async function getOnboardingFieldUsage(
       ),
     );
   const fieldIds = fields.map((field) => field.id);
-  const [slots, [links]] = await Promise.all([
+  const [slots, [links], entries] = await Promise.all([
     db
       .selectDistinct({
         fieldId: onboardingAnswers.field_id,
@@ -77,6 +79,11 @@ export async function getOnboardingFieldUsage(
           inArray(onboardingAnswerFiles.field_id, fieldIds),
         ),
       ),
+    onboardingGroupEntryService.listOfField(db, form.id, fieldId),
   ]);
-  return { answers: slots.length, files: links.files };
+  return {
+    answers: slots.length,
+    files: links.files,
+    entries: entries.length,
+  };
 }

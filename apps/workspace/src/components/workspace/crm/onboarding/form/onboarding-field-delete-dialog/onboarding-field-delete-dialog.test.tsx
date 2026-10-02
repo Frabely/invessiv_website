@@ -44,7 +44,7 @@ describe("OnboardingFieldDeleteDialog", () => {
   it("names the answers and files that go with the field", async () => {
     api.getFieldUsage.mockResolvedValue({
       ok: true,
-      value: { answers: 3, files: 1 },
+      value: { answers: 3, files: 1, entries: 0 },
     });
     const onConfirm = renderDialog();
 
@@ -63,7 +63,7 @@ describe("OnboardingFieldDeleteDialog", () => {
   it("says so when nothing is lost and words a group as a group", async () => {
     api.getFieldUsage.mockResolvedValue({
       ok: true,
-      value: { answers: 0, files: 0 },
+      value: { answers: 0, files: 0, entries: 0 },
     });
     renderDialog(QuestionnaireFieldType.Group);
 
@@ -73,6 +73,21 @@ describe("OnboardingFieldDeleteDialog", () => {
       ),
     ).toBeInTheDocument();
     expect(await screen.findByText(text.usageNone)).toBeInTheDocument();
+  });
+
+  it("names the entries of a group even when none of them holds an answer", async () => {
+    api.getFieldUsage.mockResolvedValue({
+      ok: true,
+      value: { answers: 0, files: 0, entries: 2 },
+    });
+    renderDialog(QuestionnaireFieldType.Group);
+
+    expect(
+      await screen.findByText(
+        "Die Gruppe hat 2 Einträge; sie werden mit gelöscht.",
+      ),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(text.usageNone)).toBeNull();
   });
 
   it("warns instead of guessing when the usage cannot be loaded", async () => {

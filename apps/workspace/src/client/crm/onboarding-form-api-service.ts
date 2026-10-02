@@ -73,7 +73,8 @@ function isUsage(value: unknown): value is OnboardingFieldUsageDto {
   return (
     isRecord(value) &&
     typeof value.answers === "number" &&
-    typeof value.files === "number"
+    typeof value.files === "number" &&
+    typeof value.entries === "number"
   );
 }
 

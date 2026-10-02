@@ -11,7 +11,7 @@ import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessScope } from "@/common/patterns/auth/access-scope";
 import { canOn } from "@/common/patterns/auth/can-on";
 import type { OnboardingFormRow } from "@/server/shared/services/onboarding/onboarding-form-types";
-import type { QuestionnaireReadExecutor } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-types";
+import type { QuestionnaireReadExecutor } from "@/server/shared/services/questionnaire/questionnaire-definition-types";
 import { crmAccessCondition } from "@/server/workspace/shared/services/crm-access-condition";
 import type { OnboardingProjectRef } from "./onboarding-form-access-types";
 

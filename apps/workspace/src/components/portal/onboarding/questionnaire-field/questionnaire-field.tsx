@@ -72,6 +72,9 @@ export type QuestionnaireFieldProps = {
     ) => void;
     onCommitAction: (slotKey: string) => void;
     onConfirmServicesAction: (note: string | null) => Promise<boolean>;
+    /** The customer chose to leave a remark on the services but has not written it yet. */
+    onOpenServicesRemarkAction: () => void;
+    servicesRemarkOpen: boolean;
     onDetachFileAction: (
       link: QuestionnaireAnswerFileDto,
     ) => Promise<PortalOnboardingResult<unknown>>;
@@ -204,6 +207,12 @@ export function QuestionnaireField({
           customerId={form.customerId}
           field={field}
           filesContent={form.filesContent}
+          hiddenCount={
+            form.hiddenAnswerFiles.filter(
+              (link) =>
+                link.fieldId === field.id && link.groupEntryId === groupEntryId,
+            ).length
+          }
           id={id}
           links={form.answerFiles
             .filter(
@@ -232,6 +241,8 @@ export function QuestionnaireField({
           field={field}
           id={id}
           note={form.servicesNote}
+          onRemarkOpenAction={form.onOpenServicesRemarkAction}
+          remarkOpen={form.servicesRemarkOpen}
           onConfirmAction={async (note) => {
             const confirmed = await form.onConfirmServicesAction(note);
             if (confirmed)

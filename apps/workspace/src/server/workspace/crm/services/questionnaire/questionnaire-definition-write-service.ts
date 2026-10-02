@@ -30,11 +30,11 @@ import {
   questionnaireFields,
   questionnaireFieldTranslations,
 } from "@invessiv/db/record-configuration";
-import { questionnaireDefinitionReadService as readService } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-read-service";
+import { questionnaireDefinitionReadService as readService } from "@/server/shared/services/questionnaire/questionnaire-definition-read-service";
 import type {
   QuestionnaireBlockOwner,
   QuestionnaireBlockRow,
-} from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-types";
+} from "@/server/shared/services/questionnaire/questionnaire-definition-types";
 import { questionnaireDefinitionValidation } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-validation";
 import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
 

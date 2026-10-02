@@ -10,7 +10,7 @@ import {
   questionnaireBlocks,
   questionnaireTemplates,
 } from "@invessiv/db/record-configuration";
-import { questionnaireDefinitionReadService } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-read-service";
+import { questionnaireDefinitionReadService } from "@/server/shared/services/questionnaire/questionnaire-definition-read-service";
 import { questionnaireDefinitionValidation } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-validation";
 import { questionnaireTemplateService } from "@/server/workspace/crm/services/questionnaire/questionnaire-template-service";
 

@@ -27,7 +27,7 @@ import { updateQuestionnaireField } from "@/server/workspace/crm/command-handler
 import { updateQuestionnaireTemplate } from "@/server/workspace/crm/command-handler/update-questionnaire-template.command-handler";
 import { listQuestionnaireBlocks } from "@/server/workspace/crm/query-handler/list-questionnaire-blocks.query-handler";
 import { questionnaireBlockCopyService } from "@/server/workspace/crm/services/questionnaire/questionnaire-block-copy-service";
-import { questionnaireDefinitionReadService } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-read-service";
+import { questionnaireDefinitionReadService } from "@/server/shared/services/questionnaire/questionnaire-definition-read-service";
 import { questionnaireDefinitionWriteService } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-write-service";
 import { createFileTestFixture } from "../../shared/files/file-test-fixture";
 import {

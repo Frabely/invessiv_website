@@ -4,4 +4,6 @@ export interface OnboardingFieldUsageDto {
   answers: number;
   /** File links of the field and its sub-fields; the files themselves stay with the customer. */
   files: number;
+  /** Entries of a group, filled in or not; always 0 for any other field and for a sub-field. */
+  entries: number;
 }

@@ -56,6 +56,17 @@ Layering-Bruch `shared → workspace`, und viel von Hand wiederholtes Gerüst (H
 >   Andere Refreshes lassen ihn in Ruhe.
 > - **L8:** `normalizeQuestionnaireValue` ist die eine Definition des gespeicherten Werts; Prüfung und Schreibweg
 >   nutzen sie.
+>
+> **Danach ebenfalls behoben (ungecommittet): L9, L10, A1, A2 und die Restlücke aus L5.**
+>
+> - **L5-Rest:** Das Dateifeld im Portal zählt versteckte Dateien bei Obergrenze und Mindestzahl mit (`hiddenCount`).
+> - **L9:** Eine angekündigte, aber noch nicht geschriebene Anmerkung zu den Leistungen (`servicesRemarkOpen` in
+>   `useOnboardingFormState`) lässt die Leistungen als unbestätigt zählen, auch nach einem Schrittwechsel.
+> - **L10:** `OnboardingFieldUsageDto.entries` zählt die Einträge einer Gruppe; der Löschdialog nennt sie.
+> - **A1:** `questionnaireDefinitionReadService`, `questionnaireMappingService` und die Zeilentypen liegen jetzt unter
+>   `server/shared/services/questionnaire/`. Kein Import mehr von `shared`/`portal` in den CRM-Baukasten.
+> - **A2:** Die Vorbefüllung schreibt Gruppeneinträge und Datei-Verknüpfungen über
+>   `onboardingGroupEntryService.insertEntries` und `onboardingAttachmentService.insertLinks`.
 
 ### L1 (H) — Ungültiger Entwurf in einem ausgeblendeten Feld blockiert das Absenden
 

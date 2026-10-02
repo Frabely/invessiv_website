@@ -28,6 +28,8 @@ export type OnboardingFilesFieldProps = {
   customerId: string;
   field: QuestionnaireResolvedField;
   filesContent: PortalFilesDictionary;
+  /** Files of this slot the contact may not open; they fill its limit and its minimum as well. */
+  hiddenCount: number;
   /** DOM id of the field frame; a jump to this field focuses it. */
   id: string;
   /** The file links of this slot in display order. */
@@ -57,6 +59,7 @@ export function OnboardingFilesField({
   customerId,
   field,
   filesContent,
+  hiddenCount,
   id,
   links,
   locale,
@@ -70,6 +73,7 @@ export function OnboardingFilesField({
   const helpId = useId();
   const texts = content.field.files;
   const named = { field: field.label };
+  const attachedCount = links.length + hiddenCount;
 
   return (
     <div
@@ -115,7 +119,10 @@ export function OnboardingFilesField({
         }}
         filesContent={filesContent}
         locale={locale}
-        maxFiles={field.maxItems ?? QUESTIONNAIRE_LIMITS.filesPerField}
+        maxFiles={Math.max(
+          0,
+          (field.maxItems ?? QUESTIONNAIRE_LIMITS.filesPerField) - hiddenCount,
+        )}
         onActivityChangeAction={onActivityChangeAction}
         onAttachedAction={(file) =>
           onAnnounceAction(
@@ -147,10 +154,10 @@ export function OnboardingFilesField({
       {field.minItems !== null && field.minItems > 1 ? (
         <p className={styles.note}>
           {formatMessage(
-            links.length >= field.minItems
+            attachedCount >= field.minItems
               ? texts.minimumReached
               : texts.minimum,
-            { min: field.minItems, count: links.length },
+            { min: field.minItems, count: attachedCount },
           )}
         </p>
       ) : null}

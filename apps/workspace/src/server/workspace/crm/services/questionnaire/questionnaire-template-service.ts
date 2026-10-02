@@ -15,8 +15,8 @@ import { escapeLikePattern } from "@/common/patterns/crm/sql-like-escape";
 import type {
   QuestionnaireReadExecutor,
   QuestionnaireTemplateRow,
-} from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-types";
-import { questionnaireMappingService } from "@/server/workspace/crm/services/questionnaire/questionnaire-mapping-service";
+} from "@/server/shared/services/questionnaire/questionnaire-definition-types";
+import { questionnaireMappingService } from "@/server/shared/services/questionnaire/questionnaire-mapping-service";
 
 async function toDto(
   executor: QuestionnaireReadExecutor,

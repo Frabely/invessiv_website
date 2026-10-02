@@ -13,7 +13,7 @@ import type {
   QuestionnaireDefinitionRows,
   QuestionnaireFieldRow,
   QuestionnaireTemplateRow,
-} from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-types";
+} from "@/server/shared/services/questionnaire/questionnaire-definition-types";
 
 function groupBy<T>(rows: readonly T[], keyOf: (row: T) => string) {
   const groups = new Map<string, T[]>();

@@ -208,7 +208,13 @@
       "usageLoading": "Counting affected answers …",
       "usageNone": "This field has no answers and no files yet.",
       "usage": "This affects {answers} and {files}. The answers are lost. The files stay in the customer's file area; only their link to the form is removed.",
+      "usageEntries": "The group has {entries}; they are deleted with it.",
       "usageFailed": "The number of affected answers could not be loaded. Existing answers to this field are lost when you delete it.",
+      "entries": {
+        "none": "no entries",
+        "one": "1 entry",
+        "many": "{count} entries"
+      },
       "answers": {
         "none": "no answers",
         "one": "1 answer",

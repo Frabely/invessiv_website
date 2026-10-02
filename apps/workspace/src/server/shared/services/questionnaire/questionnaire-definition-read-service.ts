@@ -31,8 +31,8 @@ import type {
   QuestionnaireBlockOwner,
   QuestionnaireDefinitionRows,
   QuestionnaireReadExecutor,
-} from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-types";
-import { questionnaireMappingService } from "@/server/workspace/crm/services/questionnaire/questionnaire-mapping-service";
+} from "@/server/shared/services/questionnaire/questionnaire-definition-types";
+import { questionnaireMappingService } from "@/server/shared/services/questionnaire/questionnaire-mapping-service";
 
 function ownerCondition(owner: QuestionnaireBlockOwner): SQL {
   return owner === null

@@ -3,8 +3,8 @@ import "server-only";
 import type { QuestionnaireBlockListDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block-list.dto";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import type { QuestionnaireCatalogListFilters } from "@/common/contracts/crm/questionnaire/questionnaire-catalog-list-filters";
-import { questionnaireDefinitionReadService } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-read-service";
-import { questionnaireMappingService } from "@/server/workspace/crm/services/questionnaire/questionnaire-mapping-service";
+import { questionnaireDefinitionReadService } from "@/server/shared/services/questionnaire/questionnaire-definition-read-service";
+import { questionnaireMappingService } from "@/server/shared/services/questionnaire/questionnaire-mapping-service";
 
 /**
  * The catalog is small and the missing-locale badge needs every text of a block, so the list

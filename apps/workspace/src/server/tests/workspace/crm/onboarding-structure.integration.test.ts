@@ -33,7 +33,7 @@ import { updateOnboardingFormField } from "@/server/workspace/crm/command-handle
 import { updateQuestionnaireBlock } from "@/server/workspace/crm/command-handler/update-questionnaire-block.command-handler";
 import { getOnboardingFieldUsage } from "@/server/workspace/crm/query-handler/get-onboarding-field-usage.query-handler";
 import { getOnboardingForm } from "@/server/workspace/crm/query-handler/get-onboarding-form.query-handler";
-import { questionnaireDefinitionReadService } from "@/server/workspace/crm/services/questionnaire/questionnaire-definition-read-service";
+import { questionnaireDefinitionReadService } from "@/server/shared/services/questionnaire/questionnaire-definition-read-service";
 import { createOnboardingIntegrationFixture } from "./support/onboarding-integration-fixture";
 import {
   fieldByKey,
@@ -701,13 +701,31 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
             value: name,
             groupEntryId: await f.groupEntry(form, field("team").id, position),
           });
+        // An entry nobody has filled in yet is lost with its group all the same.
+        await f.groupEntry(form, field("team").id, 2);
 
         const usage = (key: string) =>
           getOnboardingFieldUsage(form.id, field(key).id, f.member());
-        expect(await usage("name")).toEqual({ answers: 1, files: 0 });
-        expect(await usage("logo")).toEqual({ answers: 0, files: 2 });
-        expect(await usage("team")).toEqual({ answers: 2, files: 0 });
-        expect(await usage("member_name")).toEqual({ answers: 2, files: 0 });
+        expect(await usage("name")).toEqual({
+          answers: 1,
+          files: 0,
+          entries: 0,
+        });
+        expect(await usage("logo")).toEqual({
+          answers: 0,
+          files: 2,
+          entries: 0,
+        });
+        expect(await usage("team")).toEqual({
+          answers: 2,
+          files: 0,
+          entries: 3,
+        });
+        expect(await usage("member_name")).toEqual({
+          answers: 2,
+          files: 0,
+          entries: 0,
+        });
 
         const fileIds = (
           await f
@@ -980,7 +998,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         ).toBeNull();
         expect(
           await getOnboardingFieldUsage(form.id, field.id, reader),
-        ).toEqual({ answers: 0, files: 0 });
+        ).toEqual({ answers: 0, files: 0, entries: 0 });
         expect(await reread(form.id)).toEqual(form);
         expect(await reread(foreign.form.id)).toEqual(foreign.form);
       });
