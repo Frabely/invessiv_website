@@ -4,6 +4,18 @@ Gilt für die gesamte Workspace-App. Ergänzt die Repo-Root-`AGENTS.md`; spezifi
 weiter unten im Baum (`src/server/`, `src/common/`, `src/lib/`, `src/hooks/`,
 `src/components/workspace/leads/`, …) haben Vorrang.
 
+## Reviews (verbindlich)
+
+- Bei jedem Review der Workspace-App den globalen Skill `invessiv-workspace-review` laden und befolgen.
+  Das gilt für Codex und Claude sowie für Datei-, Feature-, Änderungs- und vollständige App-Reviews.
+- Skill-Datei für Codex: `~/.codex/skills/invessiv-workspace-review/SKILL.md`;
+  für Claude: `~/.claude/skills/invessiv-workspace-review/SKILL.md`.
+- Vollständige Dateien und relevante Zusammenhänge prüfen: Logikfehler, Lesbarkeit, Wartbarkeit,
+  Dateigröße, Duplikate, sinnvolle Services sowie die regelkonforme und zum übrigen Code passende Ablage.
+- Beim Review nichts am Code beheben. Alle Findings kurz, verständlich und mit Fundstelle, Auswirkung
+  und Empfehlung in einer neuen Markdown-Datei unter `apps/workspace/deleteable/` dokumentieren.
+- Ist der Skill nicht verfügbar, dies ausdrücklich melden; kein Review nach diesem Skill behaupten.
+
 ## Sprachregel (verbindlich)
 
 Zwei getrennte Sprachen, und die Trennung ist bewusst:
