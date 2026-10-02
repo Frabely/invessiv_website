@@ -24,6 +24,7 @@ describe("listVisiblePortalWidgets", () => {
         Permission.PortalTasksRead,
         Permission.PortalFilesRead,
         Permission.PortalFeedbackRead,
+        Permission.PortalOnboardingRead,
       ]),
     ).toHaveLength(Object.values(PortalWidgetKey).length);
   });
@@ -46,7 +47,6 @@ describe("listVisiblePortalWidgets", () => {
 
   it("keeps mocks regardless of permissions, since they show no data", () => {
     expect(keys([])).toEqual([
-      PortalWidgetKey.Onboarding,
       PortalWidgetKey.ServiceRequest,
       PortalWidgetKey.Hours,
     ]);
@@ -59,6 +59,21 @@ describe("listVisiblePortalWidgets", () => {
     expect(
       keys([Permission.PortalAccess, Permission.PortalFeedbackRead]),
     ).toContain(PortalWidgetKey.Feedback);
+  });
+
+  it("shows the onboarding widget only with portal.onboarding.read and a form to show", () => {
+    const withRight = [
+      Permission.PortalAccess,
+      Permission.PortalOnboardingRead,
+    ];
+
+    expect(keys([Permission.PortalAccess])).not.toContain(
+      PortalWidgetKey.Onboarding,
+    );
+    expect(keys(withRight, new Set())).not.toContain(
+      PortalWidgetKey.Onboarding,
+    );
+    expect(keys(withRight)).toContain(PortalWidgetKey.Onboarding);
   });
 
   it("shows the files widget only with portal.files.read", () => {

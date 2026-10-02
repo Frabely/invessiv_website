@@ -1,0 +1,141 @@
+.group {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.legend {
+  padding: 0;
+  color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
+  font-size: var(--font-size-label-md);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.help,
+.limit,
+.empty {
+  max-width: 62ch;
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 52%, var(--color-text-muted) 48%);
+  font-size: var(--font-size-caption);
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.help {
+  white-space: pre-line;
+}
+
+.entries {
+  display: grid;
+  gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
+ * An entry is a ruled section, not a card inside the step: one accent line down its left edge
+ * ties its questions together, the way a margin rule groups lines on a sheet.
+ */
+.entry {
+  min-width: 0;
+  padding-left: 1rem;
+  border-left: 2px solid color-mix(in srgb, var(--color-cta) 55%, transparent);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.number {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-heading-sm);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+}
+
+.tools {
+  display: flex;
+  gap: 0.15rem;
+}
+
+.tools .tool {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 400;
+  line-height: 1;
+  box-shadow: none;
+  transform: none;
+  transition: none;
+}
+
+.tools .tool:hover:not(:disabled, [aria-disabled="true"]) {
+  background: color-mix(in srgb, var(--color-surface-2) 80%, transparent);
+  color: var(--color-text);
+  box-shadow: none;
+  transform: none;
+}
+
+.tools .tool:disabled {
+  opacity: 0.35;
+  cursor: default;
+  filter: none;
+}
+
+/* A running command lasts a moment; dimming the buttons for it would only flicker. */
+.tools .tool[aria-disabled="true"] {
+  cursor: progress;
+}
+
+.tools .tool:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  transform: none;
+}
+
+.fields {
+  display: grid;
+  gap: 1.1rem;
+  padding-top: 0.35rem;
+}
+
+.add {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+}
+
+.error {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: var(--font-size-ui-xs);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tools .tool {
+    transition:
+      background-color 120ms ease,
+      color 120ms ease;
+  }
+}

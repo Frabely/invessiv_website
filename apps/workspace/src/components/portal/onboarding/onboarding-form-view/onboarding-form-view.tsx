@@ -5,12 +5,17 @@ import Link from "next/link";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
+import type { FeedbackAttachmentDto } from "@invessiv/common/contracts/crm/feedback-attachment.dto";
 import type { PortalOnboardingFormDto } from "@invessiv/common/contracts/portal/portal-onboarding-form.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { PortalOwnerNotice } from "@/components/portal/portal-owner-notice/portal-owner-notice";
 import { OnboardingAnswerReadView } from "@/components/shared/onboarding/onboarding-answer-read-view/onboarding-answer-read-view";
 import type { Locale } from "@/config/i18n";
-import type { PortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
+import { usePortalFileDownloads } from "@/hooks/portal/use-portal-file-downloads";
+import type {
+  PortalFilesDictionary,
+  PortalOnboardingDictionary,
+} from "@/i18n/dictionaries/portal";
 import { formatMomentDay } from "@/lib/i18n/format-moment-day";
 import { OnboardingFormEditor } from "../onboarding-form-editor/onboarding-form-editor";
 import styles from "./onboarding-form-view.module.css";
@@ -18,10 +23,14 @@ import styles from "./onboarding-form-view.module.css";
 export type OnboardingFormViewProps = {
   /** Where the back link leads: the dashboard of the company. */
   backHref: string;
+  /** Upload files as well, which needs `portal.files.write` and never the owner view. */
+  canUpload: boolean;
   /** CRM link for the owner view; null for customer contacts. */
   cockpitHref: string | null;
   content: PortalOnboardingDictionary;
   customerId: string;
+  /** File texts and errors for uploads, downloads and previews of attached files. */
+  filesContent: PortalFilesDictionary;
   form: PortalOnboardingFormDto;
   locale: Locale;
 };
@@ -33,13 +42,25 @@ export type OnboardingFormViewProps = {
  */
 export function OnboardingFormView({
   backHref,
+  canUpload,
   cockpitHref,
   content,
   customerId,
+  filesContent,
   form,
   locale,
 }: OnboardingFormViewProps) {
   const [announcement, setAnnouncement] = useState("");
+  const downloads = usePortalFileDownloads<FeedbackAttachmentDto>(
+    customerId,
+    filesContent.errors,
+  );
+  const files = {
+    loadPreviewAction: downloads.loadPreview,
+    locale,
+    onDownloadAction: downloads.download,
+    texts: filesContent,
+  };
   const ownerNoticeId = useId();
   const editable = form.editableBlockIds.length > 0;
   const state = form.status === OnboardingFormStatus.Open ? null : form.status;
@@ -55,8 +76,11 @@ export function OnboardingFormView({
       </h1>
       {editable ? (
         <OnboardingFormEditor
+          canUpload={canUpload}
           content={content}
           customerId={customerId}
+          files={files}
+          filesContent={filesContent}
           form={form}
           key={`${form.id}:${form.status}`}
           locale={locale}
@@ -111,13 +135,21 @@ export function OnboardingFormView({
               answers={form.answers}
               blocks={form.blocks}
               emptyText={content.block.empty}
+              files={files}
               groupEntries={form.groupEntries}
+              services={form.services}
               servicesConfirmed={form.servicesConfirmed}
+              servicesNote={form.servicesNote}
               texts={content.read}
             />
           </section>
         </>
       )}
+      {downloads.actionError ? (
+        <p className={styles.error} role="alert">
+          {downloads.actionError}
+        </p>
+      ) : null}
       <p aria-live="polite" className="sr-only" role="status">
         {announcement}
       </p>

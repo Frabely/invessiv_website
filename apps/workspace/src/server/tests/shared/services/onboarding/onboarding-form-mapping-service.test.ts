@@ -54,11 +54,24 @@ function parts(
     groupEntries: [],
     answerFiles: [],
     services: [],
+    servicesChangedSinceConfirmation: false,
     ...overrides,
   };
 }
 
 describe("onboardingFormMappingService.toFormDto", () => {
+  it("passes on whether the services changed after the customer confirmed them", () => {
+    expect(
+      onboardingFormMappingService.toFormDto(parts())
+        .servicesChangedSinceConfirmation,
+    ).toBe(false);
+    expect(
+      onboardingFormMappingService.toFormDto(
+        parts({ servicesChangedSinceConfirmation: true }),
+      ).servicesChangedSinceConfirmation,
+    ).toBe(true);
+  });
+
   it("maps an empty draft with null for everything that has not happened yet", () => {
     expect(onboardingFormMappingService.toFormDto(parts())).toEqual({
       id: "form-1",
@@ -74,6 +87,7 @@ describe("onboardingFormMappingService.toFormDto", () => {
       servicesConfirmedAt: null,
       servicesConfirmedByPortalMembershipId: null,
       servicesNote: null,
+      servicesChangedSinceConfirmation: false,
       callHeldOn: null,
       completedAt: null,
       completedByMemberId: null,
@@ -238,6 +252,7 @@ describe("onboardingFormMappingService.toFormDto", () => {
     ]);
     expect(dto.answerFiles).toEqual([
       {
+        id: "link-1",
         fieldId: "field-files",
         groupEntryId: null,
         position: 1,

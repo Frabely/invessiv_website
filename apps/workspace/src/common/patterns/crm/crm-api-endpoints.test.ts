@@ -13,6 +13,7 @@ import {
   crmOnboardingFormFieldEndpoint,
   crmOnboardingFormFieldMoveEndpoint,
   crmOnboardingFormFieldUsageEndpoint,
+  crmOnboardingFormReleaseEndpoint,
   crmProjectOnboardingEndpoint,
   crmQuestionnaireBlockDuplicateEndpoint,
   crmQuestionnaireBlockEndpoint,
@@ -80,6 +81,14 @@ describe("crm onboarding catalog endpoints", () => {
     );
     expect(crmQuestionnaireTemplateEndpoint("t/1")).toBe(
       "/api/workspace/crm/questionnaire/templates/t%2F1",
+    );
+  });
+});
+
+describe("crm onboarding release endpoint", () => {
+  it("puts the release below the encoded form", () => {
+    expect(crmOnboardingFormReleaseEndpoint("f 1")).toBe(
+      "/api/workspace/crm/onboarding/forms/f%201/release",
     );
   });
 });

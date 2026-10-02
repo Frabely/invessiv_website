@@ -17,6 +17,7 @@ import { fileSchemas } from "../services/files/file-schemas";
 import { fileAccessService } from "../services/files/file-access-service";
 import { fileActivityService } from "../services/files/file-activity-service";
 import { fileObjectService } from "@/server/shared/files/file-object-service";
+import { onboardingAttachmentService } from "@/server/shared/services/onboarding/onboarding-attachment-service";
 import { fileService } from "../services/files/file-service";
 
 /**
@@ -79,6 +80,10 @@ export async function deleteFile(
       return fileService.conflict(row);
     if (round.roundId && round.status !== FeedbackRoundStatus.Open)
       return { ok: false, code: E.FeedbackBound };
+    // Checked under the file lock: an attachment locks the file as well, so it either is visible
+    // here or finds the file gone.
+    if (await onboardingAttachmentService.isBound(tx, row.id))
+      return { ok: false, code: E.OnboardingBound };
     if (!(await fileObjectService.remove(tx, row)))
       return { ok: false, code: E.StorageUnavailable };
     await fileActivityService.record(tx, row, actor, ActivityType.FieldChange, [

@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, asc, eq, inArray, isNull, or, type SQL } from "drizzle-orm";
+import { and, asc, eq, gt, inArray, isNull, or, type SQL } from "drizzle-orm";
 
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { ONBOARDING_VISIBLE_LINE_ITEM_STATUS_VALUES } from "@invessiv/common/constants/crm/onboarding/onboarding-visible-line-item-statuses";
@@ -128,6 +128,33 @@ async function loadServices(
 }
 
 /**
+ * Whether a line item of the project changed after the customer confirmed the services. Every
+ * status of a line item counts, a rejected one as well: rejecting is such a change. A completed
+ * form shows its frozen snapshot, which nothing changes anymore.
+ */
+async function servicesChangedSinceConfirmation(
+  executor: QuestionnaireReadExecutor,
+  form: OnboardingFormRow,
+): Promise<boolean> {
+  if (
+    form.services_confirmed_at === null ||
+    form.status === OnboardingFormStatus.Completed
+  )
+    return false;
+  const [changed] = await executor
+    .select({ id: projectLineItems.id })
+    .from(projectLineItems)
+    .where(
+      and(
+        eq(projectLineItems.project_id, form.project_id),
+        gt(projectLineItems.updated_at, form.services_confirmed_at),
+      ),
+    )
+    .limit(1);
+  return !!changed;
+}
+
+/**
  * The whole form for one viewer. `fileVisibility` is the caller's file filter (internal scope or
  * portal release); a link to a file outside it is left out, as in the chat and in feedback rounds.
  */
@@ -136,7 +163,7 @@ async function toFormDto(
   form: OnboardingFormRow,
   fileVisibility: SQL,
 ): Promise<OnboardingFormDto> {
-  const [structure, answers, groupEntries, answerFiles, services] =
+  const [structure, answers, groupEntries, answerFiles, services, changed] =
     await Promise.all([
       loadStructure(executor, form.id),
       loadAnswers(executor, form.id),
@@ -155,6 +182,7 @@ async function toFormDto(
           asc(onboardingAnswerFiles.id),
         ),
       loadServices(executor, form),
+      servicesChangedSinceConfirmation(executor, form),
     ]);
   return onboardingFormMappingService.toFormDto({
     form,
@@ -163,6 +191,7 @@ async function toFormDto(
     groupEntries,
     answerFiles,
     services,
+    servicesChangedSinceConfirmation: changed,
   });
 }
 

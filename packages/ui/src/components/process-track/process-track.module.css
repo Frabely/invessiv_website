@@ -19,6 +19,12 @@
   list-style: none;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .track {
+    scroll-behavior: smooth;
+  }
+}
+
 .step {
   flex: 1 1 0;
   min-width: 4.5rem;

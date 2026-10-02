@@ -142,6 +142,7 @@
     "FILE_PENDING_LIMIT": "Too many uploads are running. Wait a moment and try again.",
     "FILE_CUSTOMER_VISIBILITY": "This can't be changed here.",
     "FILE_FEEDBACK_BOUND": "This file is part of feedback you submitted, so it stays in place.",
+    "FILE_ONBOARDING_BOUND": "This file is part of your onboarding, so it stays in place.",
     "FILE_UPLOAD_OWNER": "Only the person who started this upload can finish it.",
     "FILE_NOT_UPLOAD": "This entry is a link, not a file.",
     "FILE_STORAGE_UNAVAILABLE": "File storage is unavailable right now. Try again in a moment.",

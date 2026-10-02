@@ -42,11 +42,23 @@ export function OnboardingMultiChoiceField({
   return (
     <OnboardingOptionGroup
       footer={
-        field.maxItems !== null ? (
-          <p className={styles.limit}>
-            {formatMessage(texts.maxChoices, { max: field.maxItems })}
-          </p>
-        ) : undefined
+        <>
+          {field.minItems !== null && field.minItems > 1 ? (
+            <p className={styles.limit}>
+              {formatMessage(
+                selected.length >= field.minItems
+                  ? texts.minChoicesReached
+                  : texts.minChoices,
+                { min: field.minItems, count: selected.length },
+              )}
+            </p>
+          ) : null}
+          {field.maxItems !== null ? (
+            <p className={styles.limit}>
+              {formatMessage(texts.maxChoices, { max: field.maxItems })}
+            </p>
+          ) : null}
+        </>
       }
       help={field.help}
       label={field.label}

@@ -20,7 +20,7 @@ import { onboardingGroupEntries } from "./onboarding-group-entries";
 /**
  * Links a file entry to a files field. A link table instead of columns on `files` because the
  * pre-fill attaches the same file to a second form. Deleting a bound file is blocked by the file
- * delete path while the form is not completed.
+ * delete path, whatever the status of the form: a completed form keeps its attachments for good.
  */
 export const onboardingAnswerFiles = pgTable(
   "onboarding_answer_files",

@@ -49,6 +49,8 @@
   "field": {
     "clearChoice": "Clear selection",
     "maxChoices": "Pick up to {max}",
+    "minChoices": "Pick at least {min} – {count} so far.",
+    "minChoicesReached": "Pick at least {min} – reached.",
     "characters": "{count} of {max} characters",
     "errors": {
       "empty": "Please fill in this field.",
@@ -60,6 +62,54 @@
       "invalid_scale": "Please pick a step.",
       "not_confirmed": "Please confirm this point.",
       "not_a_value_field": "This field can’t be filled in here."
+    },
+    "group": {
+      "add": "Add entry",
+      "entry": "Entry {number}",
+      "empty": "No entry yet.",
+      "moveUp": "Move entry {number} up",
+      "moveDown": "Move entry {number} down",
+      "remove": "Remove entry {number}",
+      "limit": "Maximum number of entries: {max}",
+      "minimum": "At least {min} entries – {count} so far.",
+      "minimumReached": "At least {min} entries – reached.",
+      "removeDialog": {
+        "title": "Remove this entry?",
+        "description": "The answers of this entry are lost. Attached files stay under “Files”.",
+        "confirm": "Remove",
+        "cancel": "Keep",
+        "close": "Close"
+      }
+    },
+    "files": {
+      "listLabel": "Files for “{field}”",
+      "queueLabel": "Uploads for “{field}”",
+      "dropLabel": "Upload file",
+      "dropHint": "Drag here or choose",
+      "detach": "Remove {name}",
+      "detachTitle": "Detach from the onboarding – the file stays in Files",
+      "limit": "Maximum number of files: {max}",
+      "minimum": "At least {min} files – {count} so far.",
+      "minimumReached": "At least {min} files – reached.",
+      "noUpload": "You can’t upload files here. Ask the person who looks after the project on your side."
+    },
+    "services": {
+      "listLabel": "Booked services",
+      "empty": "No services are recorded for this project yet.",
+      "question": "Does this fit?",
+      "fits": "Fits as shown",
+      "remark": "I have a remark",
+      "noteLabel": "Your remark",
+      "noteHint": "Tell us what is missing or should be different. We’ll sort it out with you before we start.",
+      "noteRequired": "Tell us briefly what doesn’t fit."
+    },
+    "color": {
+      "pickerAction": "Pick colour",
+      "pickerLabel": "Pick colour for “{field}”",
+      "placeholder": "#1A2B3C"
+    },
+    "scale": {
+      "step": "Level {step} of {max}"
     }
   },
   "draft": {
@@ -111,11 +161,26 @@
     "heading": "Your answers",
     "unanswered": "Not answered",
     "empty": "No answer",
-    "required": "Required"
+    "required": "Required",
+    "confirmed": "Confirmed",
+    "scale": "{step} of {max}",
+    "entry": "Entry {number}",
+    "noEntries": "No entries",
+    "filesLabel": "Files for “{field}”",
+    "servicesConfirmed": "Confirmed by you",
+    "servicesNotConfirmed": "Not confirmed yet",
+    "servicesNote": "Your remark",
+    "servicesEmpty": "No services recorded"
   },
   "announcements": {
     "submitted": "Onboarding submitted.",
-    "step": "Step {number} of {total}: {title}"
+    "step": "Step {number} of {total}: {title}",
+    "entryAdded": "Entry {number} added",
+    "entryRemoved": "Entry removed",
+    "entryMoved": "Entry moved to position {number}",
+    "attached": "{name} attached",
+    "detached": "{name} removed",
+    "servicesConfirmed": "Services confirmed"
   },
   "errors": {
     "not_found": "This onboarding no longer exists. Reload the page.",

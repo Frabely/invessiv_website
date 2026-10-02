@@ -48,6 +48,7 @@ function form(blocks: OnboardingFormBlockDto[]): OnboardingFormDto {
     servicesConfirmedAt: null,
     servicesConfirmedByPortalMembershipId: null,
     servicesNote: null,
+    servicesChangedSinceConfirmation: false,
     callHeldOn: null,
     completedAt: null,
     completedByMemberId: null,
@@ -72,6 +73,7 @@ function parts(
     projectTitle: "Website",
     editableBlockIds: [],
     canSubmit: false,
+    canAttach: false,
     prefilledBlockIds: new Set(),
     submittedByName: null,
     lastEditedAt: null,
@@ -102,6 +104,38 @@ const bilingual = blockFixture(
 );
 
 describe("portalOnboardingMappingService.toFormDto", () => {
+  it("shows the booked services without internal ids, the remark and the attach right", () => {
+    const input = parts([step(bilingual)], { canAttach: true });
+    input.form.services = [
+      {
+        projectLineItemId: "line-1",
+        title: "Landingpage",
+        description: "Eine Seite mit Kontaktformular",
+        position: 0,
+      },
+      {
+        projectLineItemId: null,
+        title: "Wartung",
+        description: null,
+        position: 1,
+      },
+    ];
+    input.form.servicesNote = "Bitte noch das Blog prüfen.";
+
+    const dto = portalOnboardingMappingService.toFormDto(input);
+
+    expect(dto.services).toEqual([
+      {
+        title: "Landingpage",
+        description: "Eine Seite mit Kontaktformular",
+        position: 0,
+      },
+      { title: "Wartung", description: null, position: 1 },
+    ]);
+    expect(dto.servicesNote).toBe("Bitte noch das Blog prüfen.");
+    expect(dto.canAttach).toBe(true);
+  });
+
   it("maps the head and passes answers through", () => {
     const answer = {
       fieldId: "f-pick",

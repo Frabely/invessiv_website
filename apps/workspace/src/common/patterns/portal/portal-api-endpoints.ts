@@ -141,3 +141,49 @@ export function portalOnboardingSubmitEndpoint(
 ): string {
   return `${portalOnboardingFormEndpoint(customerId, formId)}/${PortalOnboardingApiPath.Submit}`;
 }
+
+export function portalOnboardingGroupEntriesEndpoint(
+  customerId: string,
+  formId: string,
+): string {
+  return `${portalOnboardingFormEndpoint(customerId, formId)}/${PortalOnboardingApiPath.GroupEntries}`;
+}
+
+export function portalOnboardingGroupEntryEndpoint(
+  customerId: string,
+  formId: string,
+  entryId: string,
+): string {
+  return `${portalOnboardingGroupEntriesEndpoint(customerId, formId)}/${encodeURIComponent(entryId)}`;
+}
+
+export function portalOnboardingGroupEntryMoveEndpoint(
+  customerId: string,
+  formId: string,
+  entryId: string,
+): string {
+  return `${portalOnboardingGroupEntryEndpoint(customerId, formId, entryId)}/${PortalOnboardingApiPath.Move}`;
+}
+
+export function portalOnboardingFilesEndpoint(
+  customerId: string,
+  formId: string,
+): string {
+  return `${portalOnboardingFormEndpoint(customerId, formId)}/${PortalOnboardingApiPath.Files}`;
+}
+
+/** Addresses the link between form and file, not the file itself. */
+export function portalOnboardingFileEndpoint(
+  customerId: string,
+  formId: string,
+  answerFileId: string,
+): string {
+  return `${portalOnboardingFilesEndpoint(customerId, formId)}/${encodeURIComponent(answerFileId)}`;
+}
+
+export function portalOnboardingServicesConfirmationEndpoint(
+  customerId: string,
+  formId: string,
+): string {
+  return `${portalOnboardingFormEndpoint(customerId, formId)}/${PortalOnboardingApiPath.ServicesConfirmation}`;
+}

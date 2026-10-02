@@ -16,6 +16,7 @@ export type PortalOnboardingFormParts = {
   projectTitle: string;
   editableBlockIds: readonly string[];
   canSubmit: boolean;
+  canAttach: boolean;
   /** Blocks holding answers the team wrote before the release. */
   prefilledBlockIds: ReadonlySet<string>;
   submittedByName: string | null;

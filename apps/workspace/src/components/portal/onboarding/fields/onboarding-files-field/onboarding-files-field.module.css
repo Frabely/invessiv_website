@@ -1,0 +1,31 @@
+.field {
+  display: grid;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+/* The frame takes the focus after a jump from the review; it is no control, so it shows no ring. */
+.field:focus {
+  outline: none;
+}
+
+.label {
+  color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
+  font-size: var(--font-size-label-md);
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.help,
+.note {
+  max-width: 62ch;
+  margin: 0;
+  color: color-mix(in srgb, var(--color-text) 52%, var(--color-text-muted) 48%);
+  font-size: var(--font-size-caption);
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.help {
+  white-space: pre-line;
+}

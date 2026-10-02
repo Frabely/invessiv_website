@@ -134,6 +134,10 @@ export function crmOnboardingFormFieldUsageEndpoint(
   return `${crmOnboardingFormFieldEndpoint(formId, fieldId)}/${OnboardingApiPath.Usage}`;
 }
 
+export function crmOnboardingFormReleaseEndpoint(formId: string): string {
+  return `${crmOnboardingFormEndpoint(formId)}/${OnboardingApiPath.Release}`;
+}
+
 export function crmProjectLineItemsEndpoint(projectId: string): string {
   return `${crmProjectEndpoint(projectId)}/${LINE_ITEMS_PATH}`;
 }

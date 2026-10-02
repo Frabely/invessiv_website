@@ -41,6 +41,7 @@ function toAnswerFileDto({
   file,
 }: OnboardingAnswerFileWithFile): QuestionnaireAnswerFileDto {
   return {
+    id: link.id,
     fieldId: link.field_id,
     groupEntryId: link.group_entry_id,
     position: link.position,
@@ -96,6 +97,7 @@ function toFormDto(parts: OnboardingFormParts): OnboardingFormDto {
     servicesConfirmedByPortalMembershipId:
       form.services_confirmed_by_portal_membership_id,
     servicesNote: form.services_note,
+    servicesChangedSinceConfirmation: parts.servicesChangedSinceConfirmation,
     callHeldOn: form.call_held_on,
     completedAt: iso(form.completed_at),
     completedByMemberId: form.completed_by_member_id,
@@ -130,6 +132,7 @@ function toSummaryDto(
 
 export const onboardingFormMappingService = {
   toAnswerDto,
+  toAnswerFileDto,
   toFormDto,
   toGroupEntryDto,
   toServiceDto,

@@ -56,7 +56,7 @@ test.describe.serial("portal dashboard", () => {
       }
     }
 
-    await page.goto(`/de/portal/${fixture.customerA}?widget=onboarding`);
+    await page.goto(`/de/portal/${fixture.customerA}?widget=hours`);
     await expect(page.getByRole("dialog")).toBeVisible();
     await page.screenshot({
       path: testInfo.outputPath("portal-widget-dialog.png"),

@@ -20,6 +20,7 @@ import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { requirePortalReader } from "@/server/portal/auth/require-portal-reader";
 import { getPortalConversation } from "@/server/portal/query-handler/get-portal-conversation.query-handler";
 import { getPortalDashboard } from "@/server/portal/query-handler/get-portal-dashboard.query-handler";
+import { listPortalOnboardingForms } from "@/server/portal/query-handler/list-portal-onboarding-forms.query-handler";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -54,18 +55,21 @@ export default async function PortalCustomerPage({
     customerId.toLowerCase(),
   );
   const today = taskDueStateService.businessToday();
-  const [dashboard, conversationResult, fromUs, fromYou] = await Promise.all([
-    getPortalDashboard(reader, today),
-    getPortalConversation(reader, null),
-    listPortalFiles(reader, {
-      origin: PortalFileOrigin.FromUs,
-      pageSize: DASHBOARD_FILES_PREVIEW_SIZE,
-    }),
-    listPortalFiles(reader, {
-      origin: PortalFileOrigin.FromYou,
-      pageSize: DASHBOARD_FILES_PREVIEW_SIZE,
-    }),
-  ]);
+  const [dashboard, conversationResult, fromUs, fromYou, onboarding] =
+    await Promise.all([
+      getPortalDashboard(reader, today),
+      getPortalConversation(reader, null),
+      listPortalFiles(reader, {
+        origin: PortalFileOrigin.FromUs,
+        pageSize: DASHBOARD_FILES_PREVIEW_SIZE,
+      }),
+      listPortalFiles(reader, {
+        origin: PortalFileOrigin.FromYou,
+        pageSize: DASHBOARD_FILES_PREVIEW_SIZE,
+      }),
+      // Empty without `portal.onboarding.read`; the widget then has no content and stays away.
+      listPortalOnboardingForms(reader),
+    ]);
   const content = getPortalDashboardDictionary(activeLocale);
   const keysWithContent = new Set<PortalWidgetKey>([
     PortalWidgetKey.Project,
@@ -75,6 +79,7 @@ export default async function PortalCustomerPage({
   if (dashboard.contact) keysWithContent.add(PortalWidgetKey.Contact);
   if (dashboard.completedProjects.length > 0)
     keysWithContent.add(PortalWidgetKey.CompletedProjects);
+  if (onboarding.length > 0) keysWithContent.add(PortalWidgetKey.Onboarding);
 
   return (
     <>
@@ -112,6 +117,7 @@ export default async function PortalCustomerPage({
         key={reader.customerId}
         locale={activeLocale}
         messagesContent={getPortalMessagesDictionary(activeLocale)}
+        onboarding={onboarding}
         today={today}
         viewerUserId={reader.userId}
         widgets={listVisiblePortalWidgets(reader.permissions, keysWithContent)}

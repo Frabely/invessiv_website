@@ -95,11 +95,14 @@ export function portalOnboardingForm(
     answers: [],
     groupEntries: [],
     answerFiles: [],
+    services: [],
     servicesConfirmed: false,
+    servicesNote: null,
     editableBlockIds: blocks.map((block) => block.id),
     lastEditedAt: null,
     lastEditedByName: null,
     canSubmit: true,
+    canAttach: true,
     ...overrides,
   };
 }

@@ -1,25 +1,33 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PortalOnboardingErrorCode } from "@invessiv/common/constants/portal/portal-onboarding-error-codes";
+import type { QuestionnaireGroupEntryDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-group-entry.dto";
 import type { PortalOnboardingFormDto } from "@invessiv/common/contracts/portal/portal-onboarding-form.dto";
 import { getQuestionnaireCompleteness } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
 import { portalOnboardingApiService } from "@/client/portal/portal-onboarding-api-service";
 import { PORTAL_ONBOARDING_REVIEW_SECTION } from "@/common/constants/portal/portal-onboarding-query-params";
+import { DraftSaveState } from "@/common/constants/shared/draft-save-states";
 import type { OnboardingMissingAnswer } from "@/common/contracts/portal/onboarding-missing-answer";
 import type { PortalOnboardingStepTarget } from "@/common/contracts/portal/portal-onboarding-step-target";
 import { onboardingAnswerDrafts } from "@/common/patterns/portal/onboarding-answer-drafts";
 import { DraftSaveStatus } from "@/components/shared/draft-save-status/draft-save-status";
+import type { OnboardingAnswerReadViewProps } from "@/components/shared/onboarding/onboarding-answer-read-view/onboarding-answer-read-view";
 import type { Locale } from "@/config/i18n";
 import { useOnboardingAutosave } from "@/hooks/portal/use-onboarding-autosave";
+import { useOnboardingFormState } from "@/hooks/portal/use-onboarding-form-state";
 import { usePortalOnboardingStep } from "@/hooks/portal/use-portal-onboarding-step";
-import type { PortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
+import type {
+  PortalFilesDictionary,
+  PortalOnboardingDictionary,
+} from "@/i18n/dictionaries/portal";
 import { OnboardingBlockStep } from "../onboarding-block-step/onboarding-block-step";
 import { OnboardingStepTrack } from "../onboarding-step-track/onboarding-step-track";
 import { OnboardingSubmitStep } from "../onboarding-submit-step/onboarding-submit-step";
+import type { QuestionnaireFieldProps } from "../questionnaire-field/questionnaire-field";
 import styles from "./onboarding-form-editor.module.css";
 
 // Codes after which the form on screen is no longer what the server holds.
@@ -30,8 +38,13 @@ const STALE_CODES: readonly PortalOnboardingErrorCode[] = [
 ];
 
 export type OnboardingFormEditorProps = {
+  /** Upload as well as attach, which needs `portal.files.write` on top. */
+  canUpload: boolean;
   content: PortalOnboardingDictionary;
   customerId: string;
+  /** How attached files open in blocks the contact may only read right now. */
+  files: OnboardingAnswerReadViewProps["files"];
+  filesContent: PortalFilesDictionary;
   /** A form this contact may write into. */
   form: PortalOnboardingFormDto;
   locale: Locale;
@@ -39,23 +52,35 @@ export type OnboardingFormEditorProps = {
 };
 
 /**
- * The form while it is filled in: one block per step, answers saved as they are typed, the review
- * as the last step. Conditions and progress follow the local answers through the same function
- * the server runs again when the form is submitted.
+ * The form while it is filled in: one block per step, answers saved as they are typed, group
+ * entries, files and the confirmation of the services saved as they happen, the review as the
+ * last step. Conditions and progress follow the local state through the same function the server
+ * runs again when the form is submitted.
  */
 export function OnboardingFormEditor({
+  canUpload,
   content,
   customerId,
+  files,
+  filesContent,
   form,
   locale,
   onAnnounceAction,
 }: OnboardingFormEditorProps) {
   const router = useRouter();
+  const refresh = () => router.refresh();
+  const state = useOnboardingFormState({
+    customerId,
+    form,
+    leaveWarning: content.draft.leaveWarning,
+    onLockedAction: refresh,
+  });
   const autosave = useOnboardingAutosave({
     customerId,
     form,
     leaveWarning: content.draft.leaveWarning,
-    onLockedAction: () => router.refresh(),
+    onLockedAction: refresh,
+    waitForEntryAction: state.whenEntryReady,
   });
   const sections = useMemo(
     () => [
@@ -68,16 +93,23 @@ export function OnboardingFormEditor({
   const [navigated, setNavigated] = useState(false);
   const [busy, setBusy] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [uploading, setUploading] = useState<ReadonlySet<string>>(new Set());
 
   const input = useMemo(
     () => ({
       blocks: form.blocks,
       answers: autosave.answers,
-      answerFiles: form.answerFiles,
-      groupEntries: form.groupEntries,
-      servicesConfirmed: form.servicesConfirmed,
+      answerFiles: state.answerFiles,
+      groupEntries: state.groupEntries,
+      servicesConfirmed: state.servicesConfirmed,
     }),
-    [autosave.answers, form],
+    [
+      autosave.answers,
+      form.blocks,
+      state.answerFiles,
+      state.groupEntries,
+      state.servicesConfirmed,
+    ],
   );
   const completeness = useMemo(
     () => getQuestionnaireCompleteness(input),
@@ -94,12 +126,23 @@ export function OnboardingFormEditor({
               blockId: entry.blockId,
               blockTitle: titles.get(entry.blockId) ?? "",
               fieldId: entry.fieldId,
+              groupEntryId: entry.groupEntryId,
               fieldLabel: field.label,
             },
           ]
         : [];
     });
   }, [completeness.missing, form.blocks]);
+
+  const trackUpload = useCallback((slotKey: string, active: boolean) => {
+    setUploading((current) => {
+      if (current.has(slotKey) === active) return current;
+      const next = new Set(current);
+      if (active) next.add(slotKey);
+      else next.delete(slotKey);
+      return next;
+    });
+  }, []);
 
   const index = sections.indexOf(step.section);
   const block = form.blocks.find((entry) => entry.id === step.section);
@@ -119,11 +162,32 @@ export function OnboardingFormEditor({
     );
   }
 
+  async function removeEntry(entry: QuestionnaireGroupEntryDto) {
+    if (!(await state.removeEntry(entry))) return;
+    autosave.discardEntry(entry.id);
+    onAnnounceAction(content.announcements.entryRemoved);
+  }
+
+  async function moveEntry(
+    entry: QuestionnaireGroupEntryDto,
+    direction: -1 | 1,
+  ) {
+    const entries = await state.moveEntry(entry, direction);
+    const position = entries?.findIndex((moved) => moved.id === entry.id) ?? -1;
+    if (position >= 0)
+      onAnnounceAction(
+        formatMessage(content.announcements.entryMoved, {
+          number: position + 1,
+        }),
+      );
+  }
+
   /** Saves first, so what is submitted is exactly what the customer sees. */
   async function submit() {
-    if (busy) return;
+    if (busy || uploading.size > 0) return;
     setBusy(true);
     setSubmitError(null);
+    await state.settle();
     if (!(await autosave.flush())) {
       setBusy(false);
       setSubmitError(
@@ -144,40 +208,83 @@ export function OnboardingFormEditor({
     if (STALE_CODES.includes(result.code)) router.refresh();
   }
 
+  const fieldForm: QuestionnaireFieldProps["form"] = {
+    answerFiles: state.answerFiles,
+    busy: state.busy,
+    canAttach: form.canAttach,
+    canUpload,
+    content,
+    customerId,
+    drafts: autosave.drafts,
+    errors: state.errors,
+    filesContent,
+    input,
+    invalid: autosave.invalid,
+    locale,
+    onAddEntryAction: state.addEntry,
+    onAnnounceAction,
+    onAttachFileAction: state.attachFile,
+    onChangeAction: autosave.change,
+    onCommitAction: autosave.commit,
+    onConfirmServicesAction: state.confirmServices,
+    onDetachFileAction: state.detachFile,
+    onMoveEntryAction: (entry, direction) => void moveEntry(entry, direction),
+    onRemoveEntryAction: (entry) => void removeEntry(entry),
+    onUploadActivityAction: trackUpload,
+    projectId: form.projectId,
+    services: form.services,
+    servicesError: state.servicesError,
+    servicesNote: state.servicesNote,
+  };
+
+  // One status line for the whole form: a group, file or services command counts like a save.
+  const saveState = state.busy
+    ? DraftSaveState.Saving
+    : autosave.saveState === DraftSaveState.Idle && state.savedAt
+      ? DraftSaveState.Saved
+      : autosave.saveState;
+  const savedAt =
+    state.savedAt && (!autosave.savedAt || state.savedAt > autosave.savedAt)
+      ? state.savedAt
+      : autosave.savedAt;
+
   return (
     <div className={styles.editor}>
       <OnboardingStepTrack
-        answers={autosave.answers}
         blocks={form.blocks}
         completeness={completeness}
         content={content}
         current={step.section}
+        input={input}
         onSelectAction={(section) => goTo({ section })}
       />
       {block ? (
         <OnboardingBlockStep
           block={block}
           content={content}
-          drafts={autosave.drafts}
           editable={form.editableBlockIds.includes(block.id)}
+          files={files}
           focusFieldId={step.fieldId}
-          input={input}
-          invalid={autosave.invalid}
+          form={fieldForm}
           key={block.id}
           locale={locale}
           moveFocus={navigated}
-          onChangeAction={autosave.change}
-          onCommitAction={autosave.commit}
         />
       ) : (
         <OnboardingSubmitStep
-          busy={busy}
+          busy={busy || state.busy || uploading.size > 0}
           content={content}
           error={submitError}
           missing={missing}
           moveFocus={navigated}
           onJumpAction={(answer) =>
-            goTo({ section: answer.blockId, fieldId: answer.fieldId })
+            goTo({
+              section: answer.blockId,
+              fieldId: onboardingAnswerDrafts.slotKey(
+                answer.fieldId,
+                answer.groupEntryId,
+              ),
+            })
           }
           onSubmitAction={submit}
           progress={completeness}
@@ -190,8 +297,8 @@ export function OnboardingFormEditor({
           }
           locale={locale}
           onRetryAction={autosave.retry}
-          saveState={autosave.saveState}
-          savedAt={autosave.savedAt}
+          saveState={saveState}
+          savedAt={savedAt}
           savedByName={autosave.savedByName}
           texts={content.draft}
         />

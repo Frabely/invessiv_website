@@ -6,7 +6,7 @@
 > erweitert), `../00-entscheidungen.md`, `../AGENTS.md`, `plans/crm/14-dateien/README.md` (Upload-Ablauf),
 > scoped `AGENTS.md` unter `src/components/portal/`, `src/server/portal/`, `src/server/shared/`.
 
-> **Status:** offen · **Teil-PR:** 15.5 · **Branch:** `feat/crm-onboarding-5-portal-voll`
+> **Status:** im Review · **Teil-PR:** 15.5 · **Branch:** `feat/crm-onboarding-5-portal-voll`
 > **Abhängigkeiten:** Task 66 (15.4) gemerged · **Aufwand:** 3–4 T. · **Dateien:** 80–105
 > **Migration:** keine
 
@@ -137,3 +137,99 @@ CRM-UI
 - [ ] Widget und Navigation hinter `portal.onboarding.read`; ohne Bogen kein Widget.
 - [ ] A11y-Smoke für den Portal-Bogen (Tastatur, Fokusreihenfolge, Kontrast).
 - [ ] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, DB-Smokes, Workspace-Build grün.
+
+## Umsetzungsnotizen (Abweichungen vom Plan, 01.10.2026)
+
+Bei der Umsetzung nachgezogen; der Plan oben bleibt als Entstehungsstand stehen, maßgeblich ist der Code.
+
+### T1 — Upload-Baustein
+
+- `PortalAttachmentField` nimmt `FeedbackAttachmentDto` als Dateiform; `QuestionnaireAttachment` hat dieselben
+  Felder. `maxFiles` ist eine Pflichtzahl.
+
+### T2 — Server
+
+- **Antworten der neuen Portal-Endpunkte:** Die drei Gruppenbefehle antworten mit allen Einträgen der Gruppe
+  (`QuestionnaireGroupEntryDto[]`, weil sich Positionen verschieben), Anhängen mit der Verknüpfung
+  (`QuestionnaireAnswerFileDto`), Lösen und die Leistungsbestätigung mit `{ savedAt, savedByName }` für die Statuszeile.
+- **`QuestionnaireAnswerFileDto.id`** ergänzt (ID der Verknüpfung): `DELETE …/files/[answerFileId]` adressiert sie,
+  nicht die Datei.
+- **Anhängen und Lösen verlangen zusätzlich `portal.files.read`** (wie bei den Feedbackrunden); ohne das Recht
+  antworten beide 404. Sonst könnte ein Kontakt Dateien anhängen, die er danach nicht sieht.
+- **„Desselben Projekts“ gilt streng:** Eine Kundendatei ohne Projekt ist `not_attachable` (anders als bei den
+  Feedbackrunden, die sie ins Projekt ziehen). Der Portal-Upload aus T3 setzt das Projekt.
+- **Gruppeneintrag mit fremder ID:** eine ID, die schon zu einem anderen Feld oder Bogen gehört, ist `validation`
+  (422); dieselbe ID am selben Feld erneut ist ein Erfolg (Wiederholung eines Requests).
+- **Leistungsbestätigung** erhöht die Bogenversion (`updateLockedVersioned`, einziger versionierter Schreibweg). Ohne
+  `project_services`-Feld im Bogen antwortet sie 422, liegt das Feld in keinem für den Kunden offenen Block 409.
+  `note: null` heißt „Passt so“; eine Anmerkung wird getrimmt gespeichert.
+- **Freigeben:** Der Übergang wird vor der Version geprüft, damit ein zweites Freigeben mit veralteter Version
+  `ONBOARDING_INVALID_TRANSITION` antwortet und keinen Versionskonflikt. Die Warnungen stehen in der 409-Antwort unter
+  `details.warnings` (`OnboardingReleaseWarningDto`: `missing_translation` mit `blockId` und `locale`,
+  `no_portal_access`). Ohne Portalkontakt entfällt die Sprachwarnung: Es gibt niemanden, dessen Sprache fehlen könnte.
+  „Aktives Portalmitglied“ heißt: Mitgliedschaft ohne `revoked_at`.
+- **Regeln als Pattern:** `isOnboardingFormReleasable` und `listOnboardingReleaseWarnings`
+  (`packages/common/src/patterns/crm/onboarding/onboarding-release-check.ts`), damit T4 dieselben Regeln lesen kann.
+- **`FILE_ONBOARDING_BOUND` gilt unabhängig vom Bogenstatus.** Task 63 nannte „solange der Bogen nicht `completed`
+  ist“; die README verlangt aber, dass ein abgeschlossener Bogen dauerhaft mit allen Anhängen lesbar bleibt. Der
+  Löschpfad lehnt deshalb jede verknüpfte Datei ab; erst nach dem Lösen ist sie löschbar.
+- **Systemnachricht `onboardingReleased`** (Portal: „Dein Onboarding für … ist bereit. Du bist dran.“) und der
+  Fehlertext `FILE_ONBOARDING_BOUND` sind in allen vier Dictionaries gepflegt.
+- **Nicht in T2:** `PortalOnboardingFormDto` trägt weiter nur `servicesConfirmed`; die Leistungsliste, die Anmerkung
+  und der interne Hinweis „Leistungen seit Bestätigung geändert“ gehören zu den Feldkomponenten in T3/T4. Kein
+  Seed-Zuwachs (kein neues Schema).
+
+### T3 — Portal-Felder, Navigation, Widget
+
+- **Portal-DTO erweitert:** `services` (`PortalOnboardingServiceDto`, ohne Preis und ohne ID der Projektleistung),
+  `servicesNote` und `canAttach`. `canUpload` berechnet die Seite wie beim Feedbackbogen (`portal.files.write`, nie
+  die Owner-Sicht).
+- **Slot-Schlüssel statt Feld-ID:** Entwürfe, Speicherzustände und DOM-IDs laufen über
+  `onboardingAnswerDrafts.slotKey(fieldId, groupEntryId)`. Der Sprung aus der Liste fehlender Angaben trägt den
+  Slot-Schlüssel im bestehenden URL-Parameter `field`, damit er auch ein Unterfeld in einem bestimmten Eintrag trifft.
+- **Zweiter Hook `useOnboardingFormState`** für Gruppeneinträge, Datei-Verknüpfungen und Leistungsbestätigung. Er
+  meldet Fehler je Feld; die Statuszeile des Bogens fasst ihn mit dem Autosave zusammen.
+- **Neuer Eintrag vor der Serverantwort:** Der Eintrag erscheint sofort; das Speichern seiner Unterfelder wartet, bis
+  der Server ihn angelegt hat. Verschieben und Entfernen zeigen sich erst mit der Serverantwort.
+- **`moveListItem` wird nicht gebraucht:** Die Reihenfolge kommt aus der Serverantwort, der Client tauscht nicht
+  selbst.
+- **Leistungsbestätigung ohne eigenen Knopf:** „Passt so“ speichert beim Auswählen, eine Anmerkung beim Verlassen des
+  Textfelds (wie jedes andere Textfeld des Bogens). Ohne Text bleibt die Bestätigung unverändert und das Feld nennt den
+  Grund.
+- **Grenzen neutral formuliert** („Maximale Anzahl an Einträgen: 1“), weil der Wert 1 sonst falsche Mehrzahl ergäbe.
+- **Farbvorschau** ist der native Farbwähler selbst (mit Rahmen); in der Leseansicht ein SVG mit `fill`-Attribut,
+  weil Inline-Styles nicht erlaubt sind.
+- **Widget-Daten:** Die Dashboard-Seite ruft `listPortalOnboardingForms` auf und reicht die Liste durch; der
+  `PortalDashboardDto` bleibt unverändert. Das Widget zeigt genau einen Bogen (`pickPortalOnboardingWidgetForm`).
+  Der Zustand „abgeschlossen“ ist schon gebaut, entsteht aber erst mit Task 70.
+- **Upload-Auswahl:** `uploadAcceptForKinds` (`packages/common`) schränkt den Dateidialog auf die Endungen der
+  zugelassenen Arten ein; entschieden wird weiter auf dem Server.
+- **Schrittleiste:** Ein Schritt zählt auch als angefangen, wenn er nur eine Datei oder einen Gruppeneintrag enthält.
+- **CRM-Tab „Antworten“** zeigt die Dateien mit Download und Vorschau (`useFileDownloads`, `filesApiService`); die
+  Seite reicht dafür das Datei-Dictionary durch.
+- **Nicht in T3:** der interne Hinweis „Leistungen seit Bestätigung geändert“ (braucht ein Feld im internen DTO,
+  gehört zur Bogenseite in T4), der E2E-Kernablauf (braucht „Freigeben“ aus T4) und eine Sichtprüfung im Browser.
+
+### T4 — Freigeben im CRM
+
+- **Dialog in zwei Stufen:** „Freigeben“ öffnet immer zuerst eine Rückfrage. Nennt der Server Warnungen, bleibt der
+  Dialog offen, listet sie einzeln und der Knopf heißt „Trotzdem freigeben“; erst dieser zweite Klick sendet
+  `acknowledgeWarnings: true`.
+- **Leerer Bogen ohne Serveraufruf:** `isOnboardingFormReleasable` (dieselbe Funktion wie im Handler) erklärt im
+  Dialog, was fehlt; es gibt dann keinen Freigeben-Knopf. Meldet der Server es trotzdem (ein Kollege hat inzwischen
+  ein Feld entfernt), erscheint derselbe Text.
+- **Status `open` heißt intern „Beim Kunden“** (vorher „Freigegeben“), wie in der Tabelle „Intern sichtbar“.
+- **Fortschritt im Seitenkopf** ab der Freigabe, aus `getQuestionnaireCompleteness`; der Projektbereich zeigte den
+  Fortschritt bereits aus derselben Zusammenfassung.
+- **Hinweis im Aufbau** nach der Freigabe: „Der Kunde sieht jede Änderung am Aufbau sofort.“
+- **`servicesChangedSinceConfirmation`** im internen `OnboardingFormDto` (aus T2/T3 hierher verschoben); der Tab
+  „Antworten“ zeigt dazu einen Hinweis. Jede Statusänderung einer Projektleistung zählt, auch eine Ablehnung.
+- **E2E:** `e2e/portal-onboarding.e2e.ts` spielt den Kernablauf durch (Entwurf über die API, Freigeben im CRM,
+  Widget, Ausfüllen mit Gruppeneintrag und Upload, Reload, Absenden, Antworten im CRM) auf einem eigenen
+  Fixture-Projekt `onboardingProject`. Zwei bestehende E2E-Stellen waren durch Task 67 überholt und sind angepasst:
+  `onboarding.e2e.ts` erwartete „kein Freigeben“, `portal-dashboard.e2e.ts` öffnete den früheren Mock-Dialog des
+  Onboarding-Widgets (jetzt der des Stundenkontingents).
+- **Entwurf im Portal: 404 nur über die API prüfbar.** Die Bogenseite liegt unter `portal/[customerId]/loading.tsx`
+  und wird gestreamt; ihr `notFound()` kommt erst nach dem Statuscode an (200 mit Not-Found-Inhalt, seit Task 66).
+  Der E2E prüft den Entwurf deshalb über `GET /api/portal/…/onboarding/{id}` (404) und den fehlenden Seiteninhalt;
+  ein fremder Kunde scheitert weiterhin schon im Layout mit echtem 404.

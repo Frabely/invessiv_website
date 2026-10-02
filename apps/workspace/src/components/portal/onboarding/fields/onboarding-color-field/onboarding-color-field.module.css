@@ -1,0 +1,64 @@
+/* A button with a text, so it reads as something to press; its swatch is the preview. */
+.picker {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 0.85rem 0 0.5rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 12px;
+  background: var(--color-surface-1);
+  color: var(--color-text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.picker:hover {
+  border-color: var(--color-accent-warm);
+}
+
+.picker:focus-within {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.swatch {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.swatch::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.swatch::-webkit-color-swatch {
+  border: 1px solid var(--color-border-strong);
+  border-radius: 8px;
+}
+
+.swatch::-moz-color-swatch {
+  border: 1px solid var(--color-border-strong);
+  border-radius: 8px;
+}
+
+/* Without a valid colour the swatch would show the fallback black as if it were the answer. */
+.swatch[data-empty="true"]::-webkit-color-swatch {
+  border-style: dashed;
+  background: transparent;
+}
+
+.swatch[data-empty="true"]::-moz-color-swatch {
+  border-style: dashed;
+  background: transparent;
+}
+
+.swatch:focus-visible {
+  outline: none;
+}

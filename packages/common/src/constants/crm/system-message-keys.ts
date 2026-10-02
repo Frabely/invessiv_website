@@ -8,6 +8,7 @@ export const SystemMessageKey = {
   FeedbackRoundCompleted: "feedbackRoundCompleted",
   FeedbackApproved: "feedbackApproved",
   OnboardingSubmitted: "onboardingSubmitted",
+  OnboardingReleased: "onboardingReleased",
 } as const;
 export type SystemMessageKey =
   (typeof SystemMessageKey)[keyof typeof SystemMessageKey];
@@ -20,6 +21,7 @@ export const SYSTEM_MESSAGE_KEY_VALUES = [
   SystemMessageKey.FeedbackRoundCompleted,
   SystemMessageKey.FeedbackApproved,
   SystemMessageKey.OnboardingSubmitted,
+  SystemMessageKey.OnboardingReleased,
 ] as const;
 
 /** Parameter names stored in `messages.metadata` of a system event. */

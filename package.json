@@ -25,7 +25,7 @@
     "build:workspace": "pnpm --filter @invessiv/workspace build",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
-    "test": "pnpm -r test",
+    "test": "pnpm -r --workspace-concurrency=1 test",
     "prepare": "husky"
   },
   "lint-staged": {

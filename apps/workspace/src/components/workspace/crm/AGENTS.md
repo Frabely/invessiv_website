@@ -236,3 +236,16 @@ Plan: `apps/workspace/plans/crm/15-onboarding/65-bogen-anlegen-und-anpassen.md`.
   löst die Blocktexte mit `resolveQuestionnaireBlock` in der Oberflächensprache auf und zeigt sie über den geteilten
   `OnboardingAnswerReadView` (`components/shared/onboarding/`) — derselbe Renderer wie die Portal-Leseansicht, nur
   lesend. Der Aufbau bleibt beim Tabwechsel gemountet.
+- **Freigeben (ab Task 67):** Der Knopf steht im Seitenkopf, nur im Status `draft` und nur mit `canWrite`. Den Ablauf
+  hält `onboarding-release-dialog`: Ein Bogen, der nichts abfragt, wird über `isOnboardingFormReleasable`
+  (`@invessiv/common`) erklärt statt gesendet. Warnungen des Servers (`OnboardingReleaseWarningDto`) nennt der Dialog
+  einzeln — welcher Baustein in welcher Sprache Texte vermisst, kein Portalzugang — und erst eine zweite, bewusste
+  Bestätigung sendet `acknowledgeWarnings`. Ein Versionskonflikt lädt den aktuellen Bogen und verwirft die
+  Bestätigung. Die Bausteinregeln baut der Client nie nach; welche Sprachen fehlen, weiß nur der Server.
+- Nach der Freigabe übernimmt die Seite den Bogen der Antwort in Kopf **und** Aufbau (der Aufbau wird dafür neu
+  gemountet, weil er eine eigene Kopie samt Version hält), zeigt im Kopf den Fortschritt aus
+  `getQuestionnaireCompleteness` und im Aufbau den Hinweis, dass der Kunde Änderungen sofort sieht. Der Status `open`
+  heißt intern „Beim Kunden“.
+- Der Tab „Antworten“ zeigt die Dateien mit Download und Vorschau (`useFileDownloads`, `filesApiService`) und, wenn
+  `servicesChangedSinceConfirmation` gesetzt ist, den Hinweis, dass die Projektleistungen nach der Bestätigung des
+  Kunden geändert wurden.

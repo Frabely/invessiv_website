@@ -171,6 +171,7 @@
     "FILE_PENDING_LIMIT": "Zu viele offene Uploads. Warte einen Moment und versuch es erneut.",
     "FILE_CUSTOMER_VISIBILITY": "Uploads des Kunden bleiben für ihn sichtbar.",
     "FILE_FEEDBACK_BOUND": "Diese Datei gehört zu eingereichtem Feedback und bleibt deshalb erhalten.",
+    "FILE_ONBOARDING_BOUND": "Diese Datei hängt an einem Onboarding-Bogen und bleibt deshalb erhalten.",
     "FILE_UPLOAD_OWNER": "Nur wer den Upload gestartet hat, kann ihn abschließen.",
     "FILE_NOT_UPLOAD": "Dieser Eintrag ist ein Link und keine Datei.",
     "FILE_STORAGE_UNAVAILABLE": "Der Dateispeicher ist gerade nicht erreichbar. Versuch es gleich noch einmal.",

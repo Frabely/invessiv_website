@@ -18,14 +18,24 @@
   },
   "widgets": {
     "onboarding": {
-      "title": "Getting started",
-      "open": "See the steps",
-      "teaser": "Soon you will see here which steps are left before your project starts and when your kick-off call takes place.",
-      "upcoming": [
-        "Your onboarding progress at a glance",
-        "The date of your kick-off call",
-        "What we still need from you before we start"
-      ]
+      "title": "Onboarding",
+      "continue": "Continue",
+      "continueNamed": "Continue the onboarding for {project}",
+      "view": "View",
+      "viewNamed": "View the onboarding for {project}",
+      "turn": {
+        "open": "It’s your turn",
+        "changes_requested": "We have a question",
+        "submitted": "It’s our turn",
+        "completed": "Completed"
+      },
+      "submitted": "Submitted on {date}. We’re reviewing your answers.",
+      "completed": "Completed on {date}.",
+      "progress": {
+        "label": "{answered} of {total} required answers",
+        "none": "No required answers",
+        "barLabel": "Onboarding progress"
+      }
     },
     "project": {
       "title": "Your project",

@@ -23,4 +23,9 @@ export const PORTAL_NAV_ITEMS: readonly PortalNavItem[] = [
     labelKey: PortalSection.Files,
     requiredPermission: Permission.PortalFilesRead,
   },
+  {
+    section: PortalSection.Onboarding,
+    labelKey: PortalSection.Onboarding,
+    requiredPermission: Permission.PortalOnboardingRead,
+  },
 ];

@@ -49,6 +49,8 @@
   "field": {
     "clearChoice": "Auswahl entfernen",
     "maxChoices": "Höchstens {max} auswählbar",
+    "minChoices": "Mindestens {min} auswählen – bisher {count}.",
+    "minChoicesReached": "Mindestens {min} auswählen – erreicht.",
     "characters": "{count} von {max} Zeichen",
     "errors": {
       "empty": "Bitte füll dieses Feld aus.",
@@ -60,6 +62,54 @@
       "invalid_scale": "Bitte wähl eine Stufe aus.",
       "not_confirmed": "Bitte bestätig diesen Punkt.",
       "not_a_value_field": "Dieses Feld kann hier nicht ausgefüllt werden."
+    },
+    "group": {
+      "add": "Eintrag hinzufügen",
+      "entry": "Eintrag {number}",
+      "empty": "Noch kein Eintrag.",
+      "moveUp": "Eintrag {number} nach oben",
+      "moveDown": "Eintrag {number} nach unten",
+      "remove": "Eintrag {number} entfernen",
+      "limit": "Maximale Anzahl an Einträgen: {max}",
+      "minimum": "Mindestens {min} Einträge – bisher {count}.",
+      "minimumReached": "Mindestens {min} Einträge – erreicht.",
+      "removeDialog": {
+        "title": "Eintrag entfernen?",
+        "description": "Die Angaben dieses Eintrags gehen verloren. Angehängte Dateien bleiben unter „Dateien“ erhalten.",
+        "confirm": "Entfernen",
+        "cancel": "Behalten",
+        "close": "Schließen"
+      }
+    },
+    "files": {
+      "listLabel": "Dateien zu „{field}“",
+      "queueLabel": "Uploads zu „{field}“",
+      "dropLabel": "Datei hochladen",
+      "dropHint": "Hierher ziehen oder auswählen",
+      "detach": "{name} entfernen",
+      "detachTitle": "Vom Onboarding lösen – die Datei bleibt unter Dateien",
+      "limit": "Maximale Anzahl an Dateien: {max}",
+      "minimum": "Mindestens {min} Dateien – bisher {count}.",
+      "minimumReached": "Mindestens {min} Dateien – erreicht.",
+      "noUpload": "Du kannst hier keine Dateien hochladen. Frag die Person, die bei euch das Projekt betreut."
+    },
+    "services": {
+      "listLabel": "Gebuchte Leistungen",
+      "empty": "Für dieses Projekt sind noch keine Leistungen hinterlegt.",
+      "question": "Passt das so?",
+      "fits": "Passt so",
+      "remark": "Ich habe eine Anmerkung",
+      "noteLabel": "Deine Anmerkung",
+      "noteHint": "Sag uns, was fehlt oder anders sein soll. Wir klären das mit dir, bevor es losgeht.",
+      "noteRequired": "Schreib kurz, was nicht passt."
+    },
+    "color": {
+      "pickerAction": "Farbe wählen",
+      "pickerLabel": "Farbe wählen für „{field}“",
+      "placeholder": "#1A2B3C"
+    },
+    "scale": {
+      "step": "Stufe {step} von {max}"
     }
   },
   "draft": {
@@ -111,11 +161,26 @@
     "heading": "Deine Angaben",
     "unanswered": "Nicht beantwortet",
     "empty": "Keine Angabe",
-    "required": "Pflichtangabe"
+    "required": "Pflichtangabe",
+    "confirmed": "Bestätigt",
+    "scale": "{step} von {max}",
+    "entry": "Eintrag {number}",
+    "noEntries": "Keine Einträge",
+    "filesLabel": "Dateien zu „{field}“",
+    "servicesConfirmed": "Von dir bestätigt",
+    "servicesNotConfirmed": "Noch nicht bestätigt",
+    "servicesNote": "Deine Anmerkung",
+    "servicesEmpty": "Keine Leistungen hinterlegt"
   },
   "announcements": {
     "submitted": "Onboarding abgesendet.",
-    "step": "Schritt {number} von {total}: {title}"
+    "step": "Schritt {number} von {total}: {title}",
+    "entryAdded": "Eintrag {number} hinzugefügt",
+    "entryRemoved": "Eintrag entfernt",
+    "entryMoved": "Eintrag auf Position {number} verschoben",
+    "attached": "{name} angehängt",
+    "detached": "{name} entfernt",
+    "servicesConfirmed": "Leistungen bestätigt"
   },
   "errors": {
     "not_found": "Dieses Onboarding gibt es nicht mehr. Lade die Seite neu.",

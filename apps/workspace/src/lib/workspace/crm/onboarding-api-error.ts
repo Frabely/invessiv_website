@@ -17,6 +17,7 @@ const STATUS: Record<E, H> = {
   [E.ReviewIncomplete]: H.Conflict,
   [E.CallDateRequired]: H.UnprocessableContent,
   [E.FileNotAttachable]: H.UnprocessableContent,
+  [E.ReleaseWarnings]: H.Conflict,
   [E.ValidationError]: H.UnprocessableContent,
   [E.Internal]: H.InternalServerError,
 };
@@ -33,6 +34,7 @@ const MESSAGES: Record<E, string> = {
   [E.ReviewIncomplete]: "The review is not finished yet",
   [E.CallDateRequired]: "The date of the onboarding call is missing",
   [E.FileNotAttachable]: "The file cannot be attached",
+  [E.ReleaseWarnings]: "The release waits for acknowledged warnings",
   [E.ValidationError]: "Validation failed",
   [E.Internal]: "Unexpected server error",
 };

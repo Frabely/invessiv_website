@@ -35,6 +35,12 @@
   overflow-wrap: anywhere;
 }
 
+.error {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: var(--font-size-ui-sm);
+}
+
 .hint {
   max-width: 62ch;
   margin: 0;

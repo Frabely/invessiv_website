@@ -4,7 +4,7 @@
   },
   "status": {
     "draft": "Entwurf",
-    "open": "Freigegeben",
+    "open": "Beim Kunden",
     "submitted": "Abgesendet",
     "changes_requested": "Nachforderung offen",
     "completed": "Abgeschlossen"
@@ -20,6 +20,7 @@
     "ONBOARDING_REVIEW_INCOMPLETE": "Die Prüfung ist noch nicht abgeschlossen.",
     "ONBOARDING_CALL_DATE_REQUIRED": "Das Datum des Onboarding-Calls fehlt.",
     "ONBOARDING_FILE_NOT_ATTACHABLE": "Die Datei kann nicht angehängt werden.",
+    "ONBOARDING_RELEASE_WARNINGS": "Vor der Freigabe gibt es Hinweise. Prüfe sie und bestätige die Freigabe.",
     "VALIDATION_ERROR": "Die Eingaben sind unvollständig oder ungültig.",
     "INTERNAL": "Das hat nicht geklappt. Versuch es gleich noch einmal."
   },
@@ -66,8 +67,29 @@
       "answers": "Antworten"
     }
   },
+  "release": {
+    "action": "Freigeben",
+    "released": "Der Bogen ist freigegeben. Der Kunde kann ihn jetzt im Portal ausfüllen.",
+    "dialog": {
+      "title": "Bogen freigeben?",
+      "description": "Der Kunde sieht den Bogen danach im Portal und kann ihn ausfüllen. Den Aufbau kannst du weiter ändern, bis er absendet.",
+      "confirm": "Freigeben",
+      "confirmAnyway": "Trotzdem freigeben",
+      "cancel": "Abbrechen",
+      "close": "Schließen",
+      "warningsHeading": "Das solltest du vorher wissen",
+      "warnings": {
+        "missing_translation": "„{block}“ hat nicht alle Texte auf {language}. Kontakte mit dieser Sprache sehen den Baustein in einer anderen Sprache.",
+        "no_portal_access": "Der Kunde hat noch keinen Portalzugang. Niemand kann den Bogen öffnen, bis du einen Kontakt einlädst."
+      },
+      "unknownBlock": "Ein Baustein",
+      "notReleasable": "Der Bogen fragt noch nichts ab. Er braucht mindestens einen Baustein, jeder Baustein mindestens ein Feld und jede Gruppe mindestens ein Unterfeld.",
+      "conflict": "Jemand hat den Bogen inzwischen geändert. Der aktuelle Stand ist geladen. Prüf ihn und gib dann frei."
+    }
+  },
   "answers": {
     "empty": "Dieser Bogen hat noch keine Bausteine. Sobald er welche hat, stehen hier die Antworten des Kunden.",
+    "servicesChanged": "Die Projektleistungen wurden geändert, nachdem der Kunde sie bestätigt hat. Klär das mit ihm, bevor du das Onboarding abschließt.",
     "progress": {
       "barLabel": "Beantwortete Pflichtangaben",
       "label": "{answered} von {total} Pflichtangaben beantwortet",
@@ -76,7 +98,16 @@
     "read": {
       "unanswered": "Nicht beantwortet",
       "empty": "Keine Angabe",
-      "required": "Pflichtangabe"
+      "required": "Pflichtangabe",
+      "confirmed": "Bestätigt",
+      "scale": "{step} von {max}",
+      "entry": "Eintrag {number}",
+      "noEntries": "Keine Einträge",
+      "filesLabel": "Dateien zu „{field}“",
+      "servicesConfirmed": "Vom Kunden bestätigt",
+      "servicesNotConfirmed": "Noch nicht bestätigt",
+      "servicesNote": "Anmerkung des Kunden",
+      "servicesEmpty": "Keine Leistungen hinterlegt"
     }
   },
   "structure": {
@@ -160,6 +191,7 @@
       "heading": "Baustein bearbeiten",
       "select": "Wähl einen Baustein aus der Liste, um seine Texte und Felder zu bearbeiten.",
       "locked": "Nach dem Absenden ist der Aufbau fest. Fehlendes forderst du in der Prüfung nach.",
+      "released": "Der Bogen ist freigegeben. Der Kunde sieht jede Änderung am Aufbau sofort.",
       "readOnly": "Du kannst diesen Bogen ansehen, aber nicht ändern.",
       "conflict": "Jemand hat den Bogen inzwischen geändert. Der aktuelle Stand ist geladen, bitte wiederhole deine Änderung."
     }

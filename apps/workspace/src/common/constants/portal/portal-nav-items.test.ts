@@ -17,6 +17,11 @@ describe("PORTAL_NAV_ITEMS", () => {
         labelKey: PortalSection.Files,
         requiredPermission: Permission.PortalFilesRead,
       },
+      {
+        section: PortalSection.Onboarding,
+        labelKey: PortalSection.Onboarding,
+        requiredPermission: Permission.PortalOnboardingRead,
+      },
     ]);
   });
 

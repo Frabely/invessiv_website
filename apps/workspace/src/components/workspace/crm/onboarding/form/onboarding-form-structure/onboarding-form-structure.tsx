@@ -9,6 +9,7 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
 import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block.dto";
@@ -310,6 +311,12 @@ export function OnboardingFormStructure({
             {canWrite ? text.editor.locked : text.editor.readOnly}
           </p>
         )}
+        {editable && form.status === OnboardingFormStatus.Open ? (
+          <p className={styles.notice}>
+            <FontAwesomeIcon aria-hidden="true" icon={faCircleInfo} />
+            {text.editor.released}
+          </p>
+        ) : null}
         {failure ? (
           <p className={styles.failure} role="alert">
             {failure}

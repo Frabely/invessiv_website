@@ -18,14 +18,24 @@
   },
   "widgets": {
     "onboarding": {
-      "title": "Dein Start mit uns",
-      "open": "Ablauf ansehen",
-      "teaser": "Hier siehst du bald, welche Schritte bis zum Projektstart offen sind und wann dein Kennenlerntermin stattfindet.",
-      "upcoming": [
-        "Deinen Fortschritt im Onboarding auf einen Blick",
-        "Den Termin für dein Kennenlerngespräch",
-        "Was wir vor dem Start noch von dir brauchen"
-      ]
+      "title": "Onboarding",
+      "continue": "Weiter ausfüllen",
+      "continueNamed": "Onboarding für {project} weiter ausfüllen",
+      "view": "Ansehen",
+      "viewNamed": "Onboarding für {project} ansehen",
+      "turn": {
+        "open": "Du bist dran",
+        "changes_requested": "Wir haben eine Rückfrage",
+        "submitted": "Wir sind dran",
+        "completed": "Abgeschlossen"
+      },
+      "submitted": "Abgesendet am {date}. Wir prüfen deine Angaben.",
+      "completed": "Abgeschlossen am {date}.",
+      "progress": {
+        "label": "{answered} von {total} Pflichtangaben",
+        "none": "Keine Pflichtangaben",
+        "barLabel": "Fortschritt im Onboarding"
+      }
     },
     "project": {
       "title": "Dein Projekt",

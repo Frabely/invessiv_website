@@ -36,6 +36,8 @@ export type PortalE2eFixture = {
   feedbackProject: string;
   /** Second project for the approval without changes. */
   feedbackApprovalProject: string;
+  /** Active project of the feedback customer without a form; the onboarding flow starts one. */
+  onboardingProject: string;
   assignmentA: string;
   assignmentB: string;
   assignmentOther: string;

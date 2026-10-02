@@ -3,6 +3,7 @@ import type { QuestionnaireAnswerFileDto } from "../crm/questionnaire/questionna
 import type { QuestionnaireAnswerDto } from "../crm/questionnaire/questionnaire-answer.dto";
 import type { QuestionnaireGroupEntryDto } from "../crm/questionnaire/questionnaire-group-entry.dto";
 import type { PortalOnboardingBlockDto } from "./portal-onboarding-block.dto";
+import type { PortalOnboardingServiceDto } from "./portal-onboarding-service.dto";
 
 /** The onboarding form of one project as a contact sees it; a draft never reaches the portal. */
 export interface PortalOnboardingFormDto {
@@ -28,8 +29,12 @@ export interface PortalOnboardingFormDto {
   groupEntries: QuestionnaireGroupEntryDto[];
   /** Attached files the contact may open. */
   answerFiles: QuestionnaireAnswerFileDto[];
+  /** Booked services a `project_services` field shows: live line items, the snapshot once completed. */
+  services: PortalOnboardingServiceDto[];
   /** Whether the booked services are confirmed; answers a `project_services` field. */
   servicesConfirmed: boolean;
+  /** Remark the customer left with the confirmation; null when the services fit as shown. */
+  servicesNote: string | null;
   /** Blocks this reader may write answers into right now; empty when the form is locked or read-only. */
   editableBlockIds: string[];
   /** Newest answer of the form; null while nothing was answered. */
@@ -38,4 +43,6 @@ export interface PortalOnboardingFormDto {
   lastEditedByName: string | null;
   /** Whether this reader may save answers and submit; the owner view never may. */
   canSubmit: boolean;
+  /** Whether this reader may attach and detach files, which needs `portal.files.read` on top. */
+  canAttach: boolean;
 }

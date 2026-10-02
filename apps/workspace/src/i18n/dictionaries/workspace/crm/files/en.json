@@ -171,6 +171,7 @@
     "FILE_PENDING_LIMIT": "Too many open uploads. Wait a moment and try again.",
     "FILE_CUSTOMER_VISIBILITY": "Customer uploads stay visible to the customer.",
     "FILE_FEEDBACK_BOUND": "This file belongs to submitted feedback, so it stays in place.",
+    "FILE_ONBOARDING_BOUND": "This file is attached to an onboarding form, so it stays in place.",
     "FILE_UPLOAD_OWNER": "Only whoever started the upload can finish it.",
     "FILE_NOT_UPLOAD": "This entry is a link, not a file.",
     "FILE_STORAGE_UNAVAILABLE": "File storage is unavailable right now. Try again in a moment.",

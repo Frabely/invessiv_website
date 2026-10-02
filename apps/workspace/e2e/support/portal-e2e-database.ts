@@ -269,6 +269,7 @@ export async function preparePortalE2eDatabase(
     const feedbackCustomer = randomUUID();
     const feedbackProject = randomUUID();
     const feedbackApprovalProject = randomUUID();
+    const onboardingProject = randomUUID();
     const personFeedback = randomUUID();
     const personA = randomUUID();
     const personB = randomUUID();
@@ -346,22 +347,32 @@ export async function preparePortalE2eDatabase(
         version: 1,
       },
     ]);
-    await tx
-      .insert(projects)
-      .values([
-        feedbackProjectRow(
-          feedbackProject,
+    await tx.insert(projects).values([
+      feedbackProjectRow(
+        feedbackProject,
+        feedbackCustomer,
+        managerMemberId,
+        "Feedback-Website",
+      ),
+      feedbackProjectRow(
+        feedbackApprovalProject,
+        feedbackCustomer,
+        managerMemberId,
+        "Feedback-Freigabe",
+      ),
+      // No round steps: the project stays out of the feedback widget and its tests.
+      {
+        ...feedbackProjectRow(
+          onboardingProject,
           feedbackCustomer,
           managerMemberId,
-          "Feedback-Website",
+          "Onboarding-Website",
         ),
-        feedbackProjectRow(
-          feedbackApprovalProject,
-          feedbackCustomer,
-          managerMemberId,
-          "Feedback-Freigabe",
-        ),
-      ]);
+        included_feedback_rounds: 0,
+        feedback_round_positions: null,
+        feedback_areas: [],
+      },
+    ]);
     // Customer B: one feedback round after the design and two before the launch.
     await tx.insert(projects).values({
       id: randomUUID(),
@@ -524,6 +535,7 @@ export async function preparePortalE2eDatabase(
       feedbackCustomer,
       feedbackProject,
       feedbackApprovalProject,
+      onboardingProject,
       assignmentA,
       assignmentB,
       assignmentOther,

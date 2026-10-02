@@ -22,6 +22,10 @@ import {
   OnboardingFormStatus,
 } from "./onboarding-form-statuses";
 import { ONBOARDING_FORM_TRANSITIONS } from "./onboarding-form-transitions";
+import {
+  ONBOARDING_RELEASE_WARNING_KIND_VALUES,
+  OnboardingReleaseWarningKind,
+} from "./onboarding-release-warning-kinds";
 import { ONBOARDING_VISIBLE_LINE_ITEM_STATUS_VALUES } from "./onboarding-visible-line-item-statuses";
 import {
   ONBOARDING_TRANSITION_SIDE_VALUES,
@@ -35,6 +39,7 @@ describe("onboarding const objects", () => {
     [OnboardingBlockReviewStatus, ONBOARDING_BLOCK_REVIEW_STATUS_VALUES],
     [OnboardingClarificationMode, ONBOARDING_CLARIFICATION_MODE_VALUES],
     [PortalOnboardingErrorCode, PORTAL_ONBOARDING_ERROR_CODE_VALUES],
+    [OnboardingReleaseWarningKind, ONBOARDING_RELEASE_WARNING_KIND_VALUES],
   ] as const)("lists every value exactly once", (constObject, values) => {
     expect([...values]).toEqual(Object.values(constObject));
     expect(new Set(values).size).toBe(values.length);
@@ -91,6 +96,15 @@ describe("onboarding form statuses", () => {
       "draft",
       "open",
     ]);
+  });
+});
+
+describe("onboarding release warnings", () => {
+  it("knows a missing translation and a customer without portal access", () => {
+    expect(OnboardingReleaseWarningKind).toEqual({
+      MissingTranslation: "missing_translation",
+      NoPortalAccess: "no_portal_access",
+    });
   });
 });
 

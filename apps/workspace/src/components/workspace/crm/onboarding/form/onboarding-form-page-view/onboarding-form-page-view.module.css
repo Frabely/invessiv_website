@@ -53,6 +53,20 @@
   overflow-wrap: anywhere;
 }
 
+/* The heading takes the focus after a release; it is no control, so it shows no ring. */
+.title:focus {
+  outline: none;
+}
+
+.release {
+  margin-left: auto;
+}
+
+.progress {
+  flex: 1 1 100%;
+  max-width: 28rem;
+}
+
 .meta {
   display: flex;
   flex-wrap: wrap;

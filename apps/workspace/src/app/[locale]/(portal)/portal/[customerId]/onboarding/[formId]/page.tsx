@@ -1,12 +1,17 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { OnboardingFormView } from "@/components/portal/onboarding/onboarding-form-view/onboarding-form-view";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
-import { getPortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
+import {
+  getPortalFilesDictionary,
+  getPortalOnboardingDictionary,
+} from "@/i18n/dictionaries/portal";
 import { crmOnboardingFormPathFor, portalPathFor } from "@/lib/auth/routes";
 import { isPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
 import { requirePortalReader } from "@/server/portal/auth/require-portal-reader";
 import { getPortalOnboardingForm } from "@/server/portal/query-handler/get-portal-onboarding-form.query-handler";
+import { portalCanOn } from "@/server/portal/shared/portal-can-on";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -46,17 +51,23 @@ export default async function PortalOnboardingFormPage({
     activeLocale,
   );
   if (!form) notFound();
+  const isOwnerView = isPortalOwnerView(reader);
 
   return (
     <OnboardingFormView
       backHref={portalPathFor(activeLocale, reader.customerId)}
+      canUpload={
+        !isOwnerView &&
+        portalCanOn.forReader(reader, Permission.PortalFilesWrite, {
+          customerId: reader.customerId,
+        })
+      }
       cockpitHref={
-        isPortalOwnerView(reader)
-          ? crmOnboardingFormPathFor(activeLocale, form.id)
-          : null
+        isOwnerView ? crmOnboardingFormPathFor(activeLocale, form.id) : null
       }
       content={getPortalOnboardingDictionary(activeLocale)}
       customerId={reader.customerId}
+      filesContent={getPortalFilesDictionary(activeLocale)}
       form={form}
       key={reader.customerId}
       locale={activeLocale}
