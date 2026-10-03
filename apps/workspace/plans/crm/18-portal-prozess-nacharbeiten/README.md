@@ -27,16 +27,16 @@ und keine doppelten Fragen hat.
 
 ## Reihenfolge und Aufwand
 
-| Paket                                        | Inhalt                                                            | bugs.txt                       | Aufwand      | Branch                                | Status             |
-| -------------------------------------------- | ----------------------------------------------------------------- | ------------------------------ | ------------ | ------------------------------------- | ------------------ |
-| [A](./A-feedbackrunden-projektschritt.md)    | Feedbackrunden und Projektschritt                                 | High Prio                      | 1–1,5 Tage   | `fix/crm-feedback-projektschritt`     | done (Merge offen) |
-| [B](./B-cockpit-kleinteile.md)               | Kleine Cockpit-Korrekturen                                        | 1, 4, 7 (5 bleibt, wie es ist) | 1 Tag        | `fix/crm-cockpit-kleinteile`          | im Review          |
-| [C](./C-onboarding-bogen-bearbeiten.md)      | Onboarding intern: Vorlage nachträglich, Bausteine mehrfach       | 2, 3                           | 1,5–2 Tage   | `fix/crm-onboarding-bogen-bearbeiten` | offen              |
-| [D](./D-standardbogen-website-onboarding.md) | Standardbogen „Website-Onboarding“                                | Todo-Block                     | 1,5–2 Tage   | `feat/crm-onboarding-standardbogen`   | offen              |
-| [E](./E-portal-navigation-und-termin.md)     | Kleine Portal-Korrekturen: Logo, Zurück-Link, Buchungslink        | 8, 10, 11, 14                  | 1–1,5 Tage   | `fix/portal-navigation-und-termin`    | offen              |
-| [F](./F-portal-projektwechsel.md)            | Projektwechsel im Portal und projektbezogene Widgets              | 6, 9                           | 3–4 Tage     | `feat/portal-projektwechsel`          | offen              |
-| [G](./G-portal-aufgaben.md)                  | Portal-Aufgaben: erledigte sichtbar, zurücknehmen, selbst anlegen | 12, 13                         | 3–4 Tage     | `feat/portal-aufgaben`                | offen              |
-| [H](./H-grosse-arbeiten.md)                  | Große Arbeiten (nur vorgemerkt)                                   | „Große Arbeiten“               | eigener Plan | —                                     | offen              |
+| Paket                                        | Inhalt                                                            | bugs.txt                       | Aufwand      | Branch                                | Status                   |
+| -------------------------------------------- | ----------------------------------------------------------------- | ------------------------------ | ------------ | ------------------------------------- | ------------------------ |
+| [A](./A-feedbackrunden-projektschritt.md)    | Feedbackrunden und Projektschritt                                 | High Prio                      | 1–1,5 Tage   | `fix/crm-feedback-projektschritt`     | done (Merge offen)       |
+| [B](./B-cockpit-kleinteile.md)               | Kleine Cockpit-Korrekturen                                        | 1, 4, 7 (5 bleibt, wie es ist) | 1 Tag        | `fix/crm-cockpit-kleinteile`          | B3 done; Paket im Review |
+| [C](./C-onboarding-bogen-bearbeiten.md)      | Onboarding intern: Vorlage nachträglich, Bausteine mehrfach       | 2, 3                           | 1,5–2 Tage   | `fix/crm-onboarding-bogen-bearbeiten` | offen                    |
+| [D](./D-standardbogen-website-onboarding.md) | Standardbogen „Website-Onboarding“                                | Todo-Block                     | 1,5–2 Tage   | `feat/crm-onboarding-standardbogen`   | offen                    |
+| [E](./E-portal-navigation-und-termin.md)     | Kleine Portal-Korrekturen: Logo, Zurück-Link, Buchungslink        | 8, 10, 11, 14                  | 1–1,5 Tage   | `fix/portal-navigation-und-termin`    | offen                    |
+| [F](./F-portal-projektwechsel.md)            | Projektwechsel im Portal und projektbezogene Widgets              | 6, 9                           | 3–4 Tage     | `feat/portal-projektwechsel`          | offen                    |
+| [G](./G-portal-aufgaben.md)                  | Portal-Aufgaben: erledigte sichtbar, zurücknehmen, selbst anlegen | 12, 13                         | 3–4 Tage     | `feat/portal-aufgaben`                | offen                    |
+| [H](./H-grosse-arbeiten.md)                  | Große Arbeiten (nur vorgemerkt)                                   | „Große Arbeiten“               | eigener Plan | —                                     | offen                    |
 
 A bis E sind voneinander unabhängig. G baut auf F auf (eine neue Kundenaufgabe gehört zum gewählten Projekt).
 E3 sollte vor F4 liegen, weil F4 das Ansprechpartner-Widget auf den Projektbetreuer umstellt.

@@ -12,10 +12,11 @@
   `defaultExpanded` entfernen in `project-tasks-section.tsx`, `project-feedback-section.tsx`,
   `project-onboarding-section.tsx`, `customer-files-section.tsx`. Ausnahme, damit kein Link ins Leere führt: Der
   Feedback-Bereich öffnet sich, wenn die URL `feedbackRoundId` trägt oder gerade übergeben wurde.
-- **B3 — Prüfung filtern (bugs 4).**
-  `onboarding-review-tab.tsx` bekommt eine Filterleiste „Alle / Offen / Vollständig / Rückfrage“ mit Anzahl je Status
-  (Zahlen aus `summarizeOnboardingReview`, Labels aus `review.status` sind vorhanden). Filter als URL-Parameter
-  (Regel „URL-State statt React-State“). Zwei Leerzustände: „noch nichts zu prüfen“ und „kein Block in diesem Status“.
+- [x] **B3 — Prüfung filtern (bugs 4).**
+      `onboarding-review-tab.tsx` bekommt eine Filterleiste „Alle / Offen / Vollständig / Rückfrage“ mit Anzahl je Status
+      (Zahlen aus `summarizeOnboardingReview`, Labels aus `review.status` sind vorhanden). Filter als URL-Parameter
+      (Regel „URL-State statt React-State“). Zwei Leerzustände: „noch nichts zu prüfen“ und „kein Block in diesem Status“.
+      Filter und Statusoptionen je Block nutzen die gemeinsame Badge-Komponente mit passenden Font-Awesome-Icons.
 - **B4 — Projektwerte im Cockpit (bugs 5): keine Änderung.**
   Vom Owner am 03.10.2026 bestätigt: Das Verhalten ist richtig und bleibt. Die Summe zählt nur bestätigte Leistungen
   (`project-line-item-value.ts`); neue Leistungen entstehen als `planned` und zählen erst nach der Bestätigung. Der
