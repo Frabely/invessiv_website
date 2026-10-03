@@ -74,6 +74,9 @@ einzigen regulären Aufrufer.
 
 Plan: `apps/workspace/plans/crm/15-onboarding/66-portal-formular.md`.
 
+- `portalOnboardingService` ist die Fassade der Portal-Handler und teilt sich in `portal-onboarding-access-service`
+  (Sichtbarkeit, Rechte, Sperre, offene Blöcke), `portal-onboarding-write-guard-service` (welcher Slot darf beschrieben
+  werden) und den DTO-Bau in der Fassade selbst. Neue Regeln kommen in den passenden Teil.
 - „Bogen im Portal sichtbar“ ist genau einmal definiert: `portalOnboardingService` (`services/onboarding/`) —
   Status in `ONBOARDING_PORTAL_VISIBLE_STATUS_VALUES` (nie `draft`), Firma des Lesers und Projekt laut
   `portalProjectCondition` mit `portal.onboarding.read`. Jeder Fehlgriff (fremde Firma, geratene ID, Entwurf,

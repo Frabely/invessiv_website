@@ -1,29 +1,23 @@
 "use client";
 
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { type ReactNode, useRef } from "react";
 import { faListUl, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import type { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
 import { QuestionnaireFieldType } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
 import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
 import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block.dto";
-import type { QuestionnaireFieldDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-field.dto";
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 import {
   findQuestionnaireField,
   flattenQuestionnaireFields,
-  questionnaireFieldLevel,
 } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-block-structure";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl, ConfirmDialog, EmptyState } from "@invessiv/ui";
-import { VersionedMutationOutcomeKind } from "@/common/constants/client/versioned-mutation-outcome-kinds";
 import { QuestionnaireEditorDialogKind } from "@/common/constants/crm/questionnaire/questionnaire-editor-dialog-kinds";
-import type { VersionedMutationOutcome } from "@/common/contracts/client/versioned-mutation-outcome";
 import type { QuestionnaireDefinitionClientApi } from "@/common/contracts/crm/questionnaire/questionnaire-definition-client-api";
 import type { QuestionnaireFieldDeleteDialog } from "@/common/contracts/crm/questionnaire/questionnaire-field-delete-dialog";
 import type { QuestionnaireFixedChoiceLabels } from "@/common/contracts/crm/questionnaire/questionnaire-fixed-choice-labels";
-import { questionnaireFieldName } from "@/common/patterns/crm/questionnaire/questionnaire-display-name";
-import { useVersionedCommand } from "@/hooks/workspace/use-versioned-command";
+import { useQuestionnaireBlockCommands } from "@/hooks/workspace/crm/use-questionnaire-block-commands";
 import { useQuestionnaireEditorDialog } from "@/hooks/workspace/crm/use-questionnaire-editor-dialog";
 import type { CrmQuestionnaireDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { QuestionnaireBlockHeadForm } from "../questionnaire-block-head-form/questionnaire-block-head-form";
@@ -66,116 +60,29 @@ export function QuestionnaireBlockEditor({
   renderDeleteDialogAction,
   showStatus,
 }: QuestionnaireBlockEditorProps) {
-  const [block, setBlock] = useState(initialBlock);
-  const { busy: listBusy, run } = useVersionedCommand();
-  const [listFailure, setListFailure] = useState<string | null>(null);
-  const [announcement, setAnnouncement] = useState("");
-  const pendingFocusRef = useRef<{ fieldId: string; control: string } | null>(
-    null,
-  );
   const listRef = useRef<HTMLDivElement>(null);
   const { dialog, open, close } = useQuestionnaireEditorDialog();
+  const {
+    adopt,
+    announcement,
+    block,
+    busy: listBusy,
+    failure: listFailure,
+    handleFieldSaved,
+    move,
+    name,
+    removeField,
+  } = useQuestionnaireBlockCommands({
+    api,
+    initialBlock,
+    content,
+    locale,
+    listRef,
+    onBlockChangeAction,
+    onDeleteAnsweredAction: close,
+  });
   const text = content.editor.fields;
   const fieldCount = flattenQuestionnaireFields(block.fields).length;
-  const name = (field: QuestionnaireFieldDto) =>
-    questionnaireFieldName(field, locale, text.untitled);
-
-  // Focus follows a moved row, so keyboard users can keep moving it.
-  useEffect(() => {
-    const pending = pendingFocusRef.current;
-    if (!pending) return;
-    pendingFocusRef.current = null;
-    const row = listRef.current?.querySelector(
-      `[data-field-id="${pending.fieldId}"]`,
-    );
-    const buttons = [
-      ...(row?.querySelectorAll<HTMLButtonElement>("button[data-control]") ??
-        []),
-    ];
-    (
-      buttons.find(
-        (button) =>
-          button.dataset.control === pending.control && !button.disabled,
-      ) ?? buttons.find((button) => !button.disabled)
-    )?.focus();
-  });
-
-  function adopt(next: QuestionnaireBlockDto) {
-    setBlock(next);
-    onBlockChangeAction?.(next);
-  }
-
-  /** Shared answer handling of every list action; the dialog keeps its own. */
-  function settleListOutcome(
-    outcome: VersionedMutationOutcome<
-      QuestionnaireBlockDto,
-      QuestionnaireErrorCode
-    >,
-    success: (next: QuestionnaireBlockDto) => void,
-  ) {
-    switch (outcome.kind) {
-      case VersionedMutationOutcomeKind.Saved:
-        setListFailure(null);
-        adopt(outcome.value);
-        success(outcome.value);
-        return;
-      case VersionedMutationOutcomeKind.Conflict:
-        adopt(outcome.current);
-        setListFailure(content.editor.conflict);
-        return;
-      case VersionedMutationOutcomeKind.Failure:
-        setListFailure(content.errors[outcome.code]);
-    }
-  }
-
-  async function move(field: QuestionnaireFieldDto, direction: -1 | 1) {
-    const outcome = await run(() =>
-      api.moveField(field.id, {
-        direction,
-        expectedBlockVersion: block.version,
-      }),
-    );
-    settleListOutcome(outcome, (next) => {
-      const moved = findQuestionnaireField(next, field.id);
-      if (!moved) return;
-      setAnnouncement(
-        formatMessage(text.moved, {
-          name: name(moved),
-          position: moved.position + 1,
-        }),
-      );
-      pendingFocusRef.current = {
-        fieldId: field.id,
-        control: direction === -1 ? "up" : "down",
-      };
-    });
-  }
-
-  async function removeField(field: QuestionnaireFieldDto) {
-    const outcome = await run(() =>
-      api.deleteField(field.id, { expectedBlockVersion: block.version }),
-    );
-    close();
-    settleListOutcome(outcome, () =>
-      setAnnouncement(formatMessage(text.removed, { name: name(field) })),
-    );
-  }
-
-  /** The field dialog wrote the block; the list follows and says what happened. */
-  function handleFieldSaved(
-    next: QuestionnaireBlockDto,
-    field: QuestionnaireFieldDto | null,
-    parentFieldId: string | null,
-  ) {
-    adopt(next);
-    const saved = field
-      ? findQuestionnaireField(next, field.id)
-      : questionnaireFieldLevel(next, parentFieldId).at(-1);
-    if (saved)
-      setAnnouncement(
-        formatMessage(field ? text.updated : text.added, { name: name(saved) }),
-      );
-  }
 
   const editField =
     dialog?.kind === QuestionnaireEditorDialogKind.EditField

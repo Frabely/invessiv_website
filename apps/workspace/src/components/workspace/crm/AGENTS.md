@@ -224,6 +224,9 @@ Plan: `apps/workspace/plans/crm/15-onboarding/65-bogen-anlegen-und-anpassen.md`.
 - **Keine Fachlogik im Client.** Ob gestartet werden darf, kommt als `canStart` und `projectEligible` vom Server. Ob
   der Aufbau änderbar ist, entscheidet `isOnboardingStructureEditable` aus `@invessiv/common`; ohne Recht oder nach
   dem Absenden fehlen die Aktionen und ein Hinweis erklärt warum.
+- **Befehle liegen in Hooks, die Komponente rendert.** Die Blocklisten-Befehle des Aufbaus stehen in
+  `useOnboardingFormStructure`, die Listenbefehle des Block-Editors in `useQuestionnaireBlockCommands`
+  (`src/hooks/workspace/crm/`). Wohin die Seite danach geht (Auswahl, Fokus), reicht die Komponente als Callback herein.
 - **Der Baukasten wird eingebunden, nicht kopiert** (Test in `onboarding-form-structure.test.tsx`):
   `QuestionnaireBlockEditor`, `OrderedBlockListEditor`, `QuestionnaireBlockPickerDialog` und
   `QuestionnaireBlockIdentityFields`. Die Schreibzugriffe des Editors baut

@@ -112,6 +112,20 @@ Layering-Bruch `shared → workspace`, und viel von Hand wiederholtes Gerüst (H
 >   die Optionen eines Felds).
 > - **D12:** `groupBy` und `compareByPosition` in `packages/common/src/patterns/collections/`,
 >   `DRAFT_AUTOSAVE_DELAY_MS`, `recordStatusChange` im Transition-Service, `portalOnboardingService.validation()`.
+>
+> **Danach ebenfalls behoben (ungecommittet): Abschnitt 5, Dateigröße.**
+>
+> - `questionnaire-definition-write-service.ts` (588 Z.) ist eine Fassade von 27 Zeilen; Blockkopf, Felder, Optionen/Texte
+>   und die Sperre samt Antwortform liegen in vier Dateien (`questionnaire-block-write-service`,
+>   `questionnaire-field-write-service`, `questionnaire-field-persistence-service`, `questionnaire-block-session`).
+> - `onboarding-prefill-service.ts` (507 Z.) teilt sich in Ablauf, `…-carry-service` (Übernahme aus dem Vorbogen) und
+>   `…-crm-service` (CRM-Vorbelegung).
+> - `portal-onboarding-service.ts` (410 Z.) teilt sich in `…-access-service` (Sichtbarkeit, Rechte, Sperre),
+>   `…-write-guard-service` (beschreibbares Feld/Eintrag) und den DTO-Bau; der Name `portalOnboardingService` bleibt.
+> - `onboarding-form-structure.tsx` (469 → 331 Z.): Befehle, Dialogzustand und Ansagen in `useOnboardingFormStructure`.
+> - `questionnaire-block-editor.tsx` (348 → 255 Z.): Listenbefehle in `useQuestionnaireBlockCommands`.
+> - Bewusst nicht angefasst: die drei „grenzwertigen“ Dateien (Feld-Dialog, Vorlagen-Editor, Bogen-Editor), die sechs
+>   großen Testdateien und die beiden Performance-Hinweise (unkritisch bei heutiger Größe).
 
 ### L1 (H) — Ungültiger Entwurf in einem ausgeblendeten Feld blockiert das Absenden
 

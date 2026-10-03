@@ -150,6 +150,10 @@ Plan: `apps/workspace/plans/crm/15-onboarding/64-baustein-katalog-und-vorlagen.m
   zurück. Schlüssel sind je Owner eindeutig (`isBlockKeyTaken`): im Katalog global, im Bogen innerhalb des Bogens.
   Die Bogen-Handler aus Task 65 rufen dieselben Methoden mit der Bogen-ID auf und ergänzen nur ihre Zugriffs- und
   Statusprüfung; eine zweite Fassung der Logik gibt es nicht.
+- **Der Schreibzugang ist eine Fassade.** `questionnaireDefinitionWriteService` leitet nur weiter: Blockkopf in
+  `questionnaire-block-write-service`, Felder in `questionnaire-field-write-service`, Optionen und Texte eines Felds in
+  `questionnaire-field-persistence-service`, Sperre, Antwortform und `withSiblings` in `questionnaire-block-session`.
+  Neue Befehle kommen in den passenden Teil, nicht in die Fassade.
 - **Jeder Schreibweg an einem Block** sperrt die Blockzeile, vergleicht die Blockversion unter der Sperre und erhöht sie
   über `updateLockedVersioned`. Antwort ist immer der ganze Block (`QuestionnaireCommandResult<QuestionnaireBlockDto>`).
 - **Invarianten ausschließlich über `questionnaireDefinitionValidation.validateBlock`** auf dem Block nach der Änderung;
@@ -167,7 +171,8 @@ Plan: `apps/workspace/plans/crm/15-onboarding/65-bogen-anlegen-und-anpassen.md`.
 
 - Services unter `services/onboarding/`: `onboarding-form-access-service.ts` (Bogen und Projekt mit Zugriffsbedingung
   laden, `lockForStructure`), `onboarding-form-create-service.ts` (Bogen anlegen, Katalogblock als Schritt kopieren),
-  `onboarding-prefill-service.ts` (Übernahme aus dem letzten abgeschlossenen Bogen, CRM-Vorbelegung),
+  `onboarding-prefill-service.ts` (Ablauf; Übernahme aus dem letzten abgeschlossenen Bogen in `onboarding-prefill-carry-service.ts`,
+  CRM-Vorbelegung in `onboarding-prefill-crm-service.ts`),
   `onboarding-form-structure-service.ts` (Rahmen für Strukturbefehle, Schritte verschieben und entfernen),
   `onboarding-form-schemas.ts`. Das DTO baut `onboardingFormReadService` unter `server/shared/services/onboarding/`.
 - Lesen über `projects.read`, alles Schreibende über `projects.write`, jeweils mit `crmAccessCondition` in der
