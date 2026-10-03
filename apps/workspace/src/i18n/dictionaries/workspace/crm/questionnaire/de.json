@@ -281,6 +281,7 @@
       "remove": "„{name}“ entfernen",
       "moved": "„{name}“ steht jetzt an Position {position}.",
       "added": "„{name}“ wurde an Position {position} hinzugefügt.",
+      "addedMany": "{count} Bausteine wurden hinzugefügt.",
       "removed": "„{name}“ wurde entfernt.",
       "archived": "Archiviert",
       "archivedHint": "Bleibt in der Vorlage, kann aber nicht neu hinzugefügt werden.",
@@ -293,6 +294,9 @@
       "searchPlaceholder": "Titel oder Schlüssel",
       "add": "Hinzufügen",
       "addNamed": "„{name}“ hinzufügen",
+      "selectedCount": "{count} ausgewählt",
+      "addSelected": "Auswahl hinzufügen",
+      "adding": "Wird hinzugefügt …",
       "empty": "Alle aktiven Bausteine sind schon in der Vorlage.",
       "noResults": "Kein Baustein passt zur Suche.",
       "close": "Fertig"

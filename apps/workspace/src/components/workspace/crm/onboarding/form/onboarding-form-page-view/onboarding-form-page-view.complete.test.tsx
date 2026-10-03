@@ -144,6 +144,7 @@ function renderPage(
       backHref="/de/crm?cockpit=c-1&project=p-1"
       canWrite={options.canWrite ?? true}
       catalogBlocks={[]}
+      templates={[]}
       content={content}
       context={{
         customerId: "c-1",

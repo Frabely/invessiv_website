@@ -51,6 +51,7 @@ export const CrmEndpointAccessRule = {
   FeedbackRoundRead: "feedback_round_read",
   OnboardingForm: "onboarding_form",
   OnboardingFormWrite: "onboarding_form_write",
+  OnboardingFormTemplateApply: "onboarding_form_template_apply",
 } as const;
 
 export type CrmEndpointAccessRule =
@@ -234,6 +235,10 @@ export const CRM_ENDPOINT_ACCESS_RULES = {
     scope: "project",
   },
   [CrmEndpointAccessRule.OnboardingFormWrite]: {
+    permission: Permission.ProjectsWrite,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.OnboardingFormTemplateApply]: {
     permission: Permission.ProjectsWrite,
     scope: "project",
   },

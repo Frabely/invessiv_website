@@ -4,6 +4,7 @@ export const OnboardingErrorCode = {
   ProjectNotEligible: "ONBOARDING_PROJECT_NOT_ELIGIBLE",
   FormExists: "ONBOARDING_FORM_EXISTS",
   TemplateBlockArchived: "ONBOARDING_TEMPLATE_BLOCK_ARCHIVED",
+  TemplateApplyUnavailable: "ONBOARDING_TEMPLATE_APPLY_UNAVAILABLE",
   InvalidTransition: "ONBOARDING_INVALID_TRANSITION",
   NotEditable: "ONBOARDING_NOT_EDITABLE",
   EmptyForm: "ONBOARDING_EMPTY_FORM",

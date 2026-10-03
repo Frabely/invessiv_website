@@ -4,6 +4,7 @@ import { OnboardingErrorCode } from "@invessiv/common/constants/crm/errors/onboa
 import { QuestionnaireErrorCode } from "@invessiv/common/constants/crm/errors/questionnaire-error-codes";
 import { QuestionnaireCatalogStatus } from "@invessiv/common/constants/crm/questionnaire/questionnaire-catalog-statuses";
 import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
+import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block.dto";
 import type { AddOnboardingFormBlockRequestDto } from "@invessiv/common/contracts/crm/onboarding/add-onboarding-form-block-request.dto";
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
 import type { OnboardingCommandResult } from "@invessiv/common/contracts/crm/onboarding/results/onboarding-command-result";
@@ -42,39 +43,57 @@ export async function addOnboardingFormBlock(
     actor,
     async (tx, form) => {
       const steps = await onboardingReviewService.listSteps(tx, form.id);
-      if (steps.length >= QUESTIONNAIRE_LIMITS.blocksPerOwner)
+      const requestedCatalogIds =
+        "catalogBlockIds" in data ? data.catalogBlockIds : null;
+      const additions = requestedCatalogIds?.length ?? 1;
+      if (steps.length + additions > QUESTIONNAIRE_LIMITS.blocksPerOwner)
         return { ok: false, code: QuestionnaireErrorCode.LimitReached };
 
-      if ("catalogBlockId" in data) {
-        const source = await questionnaireDefinitionReadService.findBlock(
-          tx,
-          data.catalogBlockId,
-          null,
-        );
-        if (!source || source.status !== QuestionnaireCatalogStatus.Active)
-          return { ok: false, code: QuestionnaireErrorCode.BlockNotFound };
-        if (
-          await questionnaireDefinitionReadService.isBlockKeyTaken(
+      if (requestedCatalogIds) {
+        const sources: QuestionnaireBlockDto[] = [];
+        const sourceKeys = new Set<string>();
+        for (const catalogBlockId of requestedCatalogIds) {
+          const source = await questionnaireDefinitionReadService.findBlock(
             tx,
-            form.id,
-            source.key,
+            catalogBlockId,
+            null,
+          );
+          if (!source || source.status !== QuestionnaireCatalogStatus.Active)
+            return { ok: false, code: QuestionnaireErrorCode.BlockNotFound };
+          if (sourceKeys.has(source.key))
+            return { ok: false, code: QuestionnaireErrorCode.KeyTaken };
+          sourceKeys.add(source.key);
+          if (
+            await questionnaireDefinitionReadService.isBlockKeyTaken(
+              tx,
+              form.id,
+              source.key,
+            )
           )
-        )
-          return { ok: false, code: QuestionnaireErrorCode.KeyTaken };
-        const blockId = await onboardingFormCreateService.appendCatalogBlock(
-          tx,
-          form.id,
-          source,
-          steps.length,
-        );
+            return { ok: false, code: QuestionnaireErrorCode.KeyTaken };
+          sources.push(source);
+        }
+
+        const blockIds: string[] = [];
+        for (const [index, source] of sources.entries())
+          blockIds.push(
+            await onboardingFormCreateService.appendCatalogBlock(
+              tx,
+              form.id,
+              source,
+              steps.length + index,
+            ),
+          );
         await onboardingPrefillService.prefillBlocks(tx, {
           form,
-          blockIds: [blockId],
+          blockIds,
           actor,
         });
         return null;
       }
 
+      if (!("key" in data))
+        return { ok: false, code: QuestionnaireErrorCode.BlockNotFound };
       const created = await questionnaireDefinitionWriteService.createBlock(
         tx,
         form.id,

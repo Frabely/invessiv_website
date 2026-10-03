@@ -9,6 +9,7 @@ import {
   crmOnboardingFormBlockFieldsEndpoint,
   crmOnboardingFormBlockMoveEndpoint,
   crmOnboardingFormBlocksEndpoint,
+  crmOnboardingFormTemplateEndpoint,
   crmOnboardingFormEndpoint,
   crmOnboardingFormFieldEndpoint,
   crmOnboardingFormFieldMoveEndpoint,
@@ -104,6 +105,9 @@ describe("crm onboarding form endpoints", () => {
   });
 
   it("addresses blocks and fields below their form", () => {
+    expect(crmOnboardingFormTemplateEndpoint("f-1")).toBe(
+      "/api/workspace/crm/onboarding/forms/f-1/template",
+    );
     expect(crmOnboardingFormBlocksEndpoint("f-1")).toBe(
       "/api/workspace/crm/onboarding/forms/f-1/blocks",
     );

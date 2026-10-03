@@ -541,7 +541,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
           () =>
             addOnboardingFormBlock(
               target.id,
-              { catalogBlockId: extra.id, expectedFormVersion: row.version },
+              { catalogBlockIds: [extra.id], expectedFormVersion: row.version },
               actor,
             ),
           () =>

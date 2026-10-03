@@ -38,6 +38,7 @@ const navigation = vi.hoisted(() => ({
 }));
 const api = vi.hoisted(() => ({
   addBlock: vi.fn(),
+  applyTemplate: vi.fn(),
   moveBlock: vi.fn(),
   removeBlock: vi.fn(),
   getForm: vi.fn(),
@@ -146,6 +147,7 @@ function renderStructure(
         summary("cat-company", "Unternehmen"),
         summary("cat-legal", "Rechtliches"),
       ]}
+      templates={[]}
       content={content}
       fixedChoiceLabels={{
         de: { yes: "Ja", no: "Nein" },
@@ -295,17 +297,22 @@ describe("OnboardingFormStructure", () => {
     );
     const dialog = screen.getByRole("dialog");
     expect(
-      within(dialog).queryByRole("button", {
+      within(dialog).queryByRole("checkbox", {
         name: "„Unternehmen“ hinzufügen",
       }),
     ).not.toBeInTheDocument();
     fireEvent.click(
-      within(dialog).getByRole("button", { name: "„Rechtliches“ hinzufügen" }),
+      within(dialog).getByRole("checkbox", {
+        name: "„Rechtliches“ hinzufügen",
+      }),
+    );
+    fireEvent.click(
+      within(dialog).getByRole("button", { name: text.picker.addSelected }),
     );
 
     await waitFor(() =>
       expect(api.addBlock).toHaveBeenCalledWith("f-1", {
-        catalogBlockId: "cat-legal",
+        catalogBlockIds: ["cat-legal"],
         expectedFormVersion: 3,
       }),
     );

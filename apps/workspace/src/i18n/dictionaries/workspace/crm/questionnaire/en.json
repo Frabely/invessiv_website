@@ -281,6 +281,7 @@
       "remove": "Remove “{name}”",
       "moved": "“{name}” is now at position {position}.",
       "added": "“{name}” was added at position {position}.",
+      "addedMany": "{count} blocks were added.",
       "removed": "“{name}” was removed.",
       "archived": "Archived",
       "archivedHint": "Stays in the template but cannot be added again.",
@@ -293,6 +294,9 @@
       "searchPlaceholder": "Title or key",
       "add": "Add",
       "addNamed": "Add “{name}”",
+      "selectedCount": "{count} selected",
+      "addSelected": "Add selection",
+      "adding": "Adding …",
       "empty": "All active blocks are already in the template.",
       "noResults": "No block matches the search.",
       "close": "Done"

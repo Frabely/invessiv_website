@@ -6,6 +6,7 @@ import { useMemo, useRef } from "react";
 import {
   faBookOpen,
   faCircleInfo,
+  faLayerGroup,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,6 +14,7 @@ import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/
 import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
 import type { QuestionnaireBlockSummaryDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block-summary.dto";
+import type { QuestionnaireTemplateSummaryDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-template-summary.dto";
 import { isOnboardingStructureEditable } from "@invessiv/common/patterns/crm/onboarding/onboarding-form-state";
 import { flattenQuestionnaireFields } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-block-structure";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
@@ -36,6 +38,7 @@ import type {
 } from "@/i18n/dictionaries/workspace/crm";
 import { OnboardingFieldDeleteDialog } from "../onboarding-field-delete-dialog/onboarding-field-delete-dialog";
 import { OnboardingOwnBlockDialog } from "../onboarding-own-block-dialog/onboarding-own-block-dialog";
+import { OnboardingStartDialog } from "../../project/onboarding-start-dialog/onboarding-start-dialog";
 import styles from "./onboarding-form-structure.module.css";
 
 export type OnboardingFormStructureProps = {
@@ -51,6 +54,7 @@ export type OnboardingFormStructureProps = {
   onFormChangeAction?: (form: OnboardingFormDto) => void;
   /** Texts of the embedded block editor and of the kit's error codes. */
   questionnaireContent: CrmQuestionnaireDictionary;
+  templates: readonly QuestionnaireTemplateSummaryDto[];
 };
 
 /**
@@ -67,6 +71,7 @@ export function OnboardingFormStructure({
   locale,
   onFormChangeAction,
   questionnaireContent,
+  templates,
 }: OnboardingFormStructureProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -86,7 +91,8 @@ export function OnboardingFormStructure({
   }
 
   const {
-    addCatalogBlock,
+    addCatalogBlocks,
+    applyTemplate,
     addOwnBlock,
     announceListMessage,
     announcement,
@@ -154,13 +160,35 @@ export function OnboardingFormStructure({
           </h2>
           {editable ? (
             <div className={styles.listActions}>
+              {form.status === OnboardingFormStatus.Draft &&
+              blockCount === 0 &&
+              templates.length > 0 ? (
+                <ButtonControl
+                  className={styles.addButton}
+                  disabled={busy}
+                  onClick={() =>
+                    setDialog({
+                      kind: OnboardingStructureDialogKind.Template,
+                      failure: null,
+                    })
+                  }
+                  type="button"
+                  variant="ghost"
+                >
+                  <FontAwesomeIcon aria-hidden="true" icon={faLayerGroup} />
+                  {text.blocks.chooseTemplate}
+                </ButtonControl>
+              ) : null}
               <ButtonControl
                 className={styles.addButton}
                 disabled={
                   busy || blockCount >= QUESTIONNAIRE_LIMITS.blocksPerOwner
                 }
                 onClick={() =>
-                  setDialog({ kind: OnboardingStructureDialogKind.Picker })
+                  setDialog({
+                    kind: OnboardingStructureDialogKind.Picker,
+                    failure: null,
+                  })
                 }
                 type="button"
                 variant="ghost"
@@ -290,14 +318,40 @@ export function OnboardingFormStructure({
 
       {editable && dialog?.kind === OnboardingStructureDialogKind.Picker ? (
         <QuestionnaireBlockPickerDialog
+          busy={busy}
           blocks={catalogBlocks}
           chosenIds={form.blocks.flatMap(
             (step) => step.block.sourceBlockId ?? [],
           )}
           content={text.picker}
+          failure={dialog.failure}
           locale={locale}
-          onAddAction={(block) => void addCatalogBlock(block)}
-          onCloseAction={() => setDialog(null)}
+          maxSelection={Math.min(
+            QUESTIONNAIRE_LIMITS.catalogBlocksPerAdd,
+            QUESTIONNAIRE_LIMITS.blocksPerOwner - blockCount,
+          )}
+          onAddAction={addCatalogBlocks}
+          onCloseAction={() => {
+            if (!busy) setDialog(null);
+          }}
+        />
+      ) : null}
+      {editable && dialog?.kind === OnboardingStructureDialogKind.Template ? (
+        <OnboardingStartDialog
+          busy={busy}
+          content={content.project.dialog}
+          failure={dialog.failure}
+          mode="apply"
+          onApplyAction={async (templateId) => {
+            const applied = await applyTemplate(templateId);
+            if (applied) router.refresh();
+            return applied;
+          }}
+          onCloseAction={() => {
+            if (!busy) setDialog(null);
+          }}
+          templates={templates}
+          applyTexts={text.templateDialog}
         />
       ) : null}
       {editable && dialog?.kind === OnboardingStructureDialogKind.Own ? (

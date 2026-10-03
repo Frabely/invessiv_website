@@ -92,6 +92,10 @@ export function crmOnboardingFormBlocksEndpoint(formId: string): string {
   return `${crmOnboardingFormEndpoint(formId)}/${OnboardingApiPath.Blocks}`;
 }
 
+export function crmOnboardingFormTemplateEndpoint(formId: string): string {
+  return `${crmOnboardingFormEndpoint(formId)}/${OnboardingApiPath.Template}`;
+}
+
 export function crmOnboardingFormBlockEndpoint(
   formId: string,
   blockId: string,

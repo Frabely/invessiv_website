@@ -50,6 +50,7 @@ const BLOCK_NOT_FOUND = {
 function bumpVersion(
   tx: ContactDatabaseTransaction,
   form: OnboardingFormRow,
+  patch: Partial<Pick<OnboardingFormRow, "source_template_id">> = {},
 ): Promise<OnboardingFormRow> {
   return updateLockedVersioned(
     {
@@ -57,7 +58,7 @@ function bumpVersion(
       table: onboardingForms,
       id: form.id,
       expectedVersion: form.version,
-      patch: {},
+      patch,
     },
     "Onboarding form changed while it was locked",
   );
@@ -106,7 +107,11 @@ async function runBlockListCommand(
   command: (
     tx: ContactDatabaseTransaction,
     form: OnboardingFormRow,
-  ) => Promise<Rejection | null>,
+  ) => Promise<
+    | Rejection
+    | { formPatch: Partial<Pick<OnboardingFormRow, "source_template_id">> }
+    | null
+  >,
 ): Promise<FormResult> {
   if (!onboardingFormSchemas.entityId.safeParse(formId).success)
     return FORM_NOT_FOUND;
@@ -125,9 +130,14 @@ async function runBlockListCommand(
       );
     if (locked.form.version !== expectedFormVersion)
       return versionConflict(locked.form.version, await toDto(locked.form));
-    const rejection = await command(tx, locked.form);
-    if (rejection) return rejection;
-    return { ok: true, value: await toDto(await bumpVersion(tx, locked.form)) };
+    const commandResult = await command(tx, locked.form);
+    if (commandResult && "ok" in commandResult) return commandResult;
+    return {
+      ok: true,
+      value: await toDto(
+        await bumpVersion(tx, locked.form, commandResult?.formPatch),
+      ),
+    };
   });
 }
 

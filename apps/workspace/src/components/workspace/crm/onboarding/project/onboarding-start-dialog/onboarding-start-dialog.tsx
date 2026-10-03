@@ -16,6 +16,7 @@ import { crmOnboardingFormPathFor } from "@/lib/auth/routes";
 import styles from "./onboarding-start-dialog.module.css";
 
 export type OnboardingStartDialogProps = {
+  mode?: "start";
   content: CrmOnboardingDictionary["project"]["dialog"];
   errorTexts: OnboardingFormErrorTexts;
   locale: Locale;
@@ -27,62 +28,86 @@ export type OnboardingStartDialogProps = {
   templates: readonly QuestionnaireTemplateSummaryDto[];
 };
 
+export type OnboardingTemplateApplyDialogProps = {
+  applyTexts: CrmOnboardingDictionary["structure"]["templateDialog"];
+  busy: boolean;
+  content: CrmOnboardingDictionary["project"]["dialog"];
+  failure: string | null;
+  mode: "apply";
+  onApplyAction: (templateId: string) => Promise<boolean>;
+  onCloseAction: () => void;
+  templates: readonly QuestionnaireTemplateSummaryDto[];
+};
+
 // Stands for "no template" in the select; template ids are UUIDs and never collide with it.
 const BLANK = "blank";
 
 /** Picks a template or an empty start; the new draft opens on its own page for adjusting. */
-export function OnboardingStartDialog({
-  content,
-  errorTexts,
-  locale,
-  onCloseAction,
-  prefillAvailable,
-  projectId,
-  templates,
-}: OnboardingStartDialogProps) {
+export function OnboardingStartDialog(
+  props: OnboardingStartDialogProps | OnboardingTemplateApplyDialogProps,
+) {
+  const { content, onCloseAction, templates } = props;
+  const applying = props.mode === "apply";
   const router = useRouter();
   const formId = useId();
   const selectId = useId();
-  const [choice, setChoice] = useState(templates[0]?.id ?? BLANK);
-  const [busy, setBusy] = useState(false);
-  const [failure, setFailure] = useState<string | null>(null);
+  const [choice, setChoice] = useState(
+    applying ? "" : (templates[0]?.id ?? BLANK),
+  );
+  const [submitting, setSubmitting] = useState(false);
+  const [startFailure, setStartFailure] = useState<string | null>(null);
+  const busy = submitting || (applying && props.busy);
+  const failure = applying ? props.failure : startFailure;
   const blank = choice === BLANK;
 
-  async function start(event: SubmitEvent<HTMLFormElement>) {
+  async function submit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (busy) return;
-    setBusy(true);
-    setFailure(null);
-    const result = await onboardingFormApiService.start(projectId, {
+    if (busy || (applying && !choice)) return;
+    setSubmitting(true);
+    if (applying) {
+      await props.onApplyAction(choice);
+      setSubmitting(false);
+      return;
+    }
+    setStartFailure(null);
+    const result = await onboardingFormApiService.start(props.projectId, {
       templateId: blank ? null : choice,
     });
     if (result.ok) {
-      router.push(crmOnboardingFormPathFor(locale, result.value.id));
+      router.push(crmOnboardingFormPathFor(props.locale, result.value.id));
       return;
     }
-    setBusy(false);
+    setSubmitting(false);
     // Starting compares no version, so a conflict can only be an unexpected answer.
-    setFailure(
+    setStartFailure(
       onboardingFormErrorText(
         "current" in result ? OnboardingErrorCode.Internal : result.code,
-        errorTexts,
+        props.errorTexts,
       ),
     );
   }
 
+  const submitLabel = applying ? props.applyTexts.apply : content.submit;
+  const submittingLabel = applying
+    ? props.applyTexts.applying
+    : content.submitting;
+
   return (
     <FormDialog
       busy={busy}
-      cancelLabel={content.cancel}
-      closeLabel={content.close}
-      description={content.description}
+      cancelLabel={applying ? props.applyTexts.cancel : content.cancel}
+      closeLabel={applying ? props.applyTexts.cancel : content.close}
+      description={
+        applying ? props.applyTexts.description : content.description
+      }
       formId={formId}
       onCloseAction={onCloseAction}
-      submitLabel={content.submit}
-      submittingLabel={content.submitting}
-      title={content.title}
+      submitDisabled={applying && !choice}
+      submitLabel={submitLabel}
+      submittingLabel={submittingLabel}
+      title={applying ? props.applyTexts.title : content.title}
     >
-      <form className={styles.form} id={formId} noValidate onSubmit={start}>
+      <form className={styles.form} id={formId} noValidate onSubmit={submit}>
         {failure ? (
           <p className={styles.failure} role="alert">
             {failure}
@@ -91,11 +116,13 @@ export function OnboardingStartDialog({
         <FormField
           controlId={selectId}
           hint={
-            templates.length === 0
-              ? content.noTemplates
-              : blank
-                ? content.blankHint
-                : content.templateHint
+            applying
+              ? content.templateHint
+              : templates.length === 0
+                ? content.noTemplates
+                : blank
+                  ? content.blankHint
+                  : content.templateHint
           }
           kind={FormFieldKind.Custom}
           label={content.template}
@@ -106,6 +133,9 @@ export function OnboardingStartDialog({
               id={id}
               onChange={setChoice}
               options={[
+                ...(applying
+                  ? [{ label: props.applyTexts.placeholder, value: "" }]
+                  : []),
                 ...templates.map((template) => ({
                   label: formatMessage(
                     template.blockCount === 1
@@ -115,13 +145,13 @@ export function OnboardingStartDialog({
                   ),
                   value: template.id,
                 })),
-                { label: content.blank, value: BLANK },
+                ...(!applying ? [{ label: content.blank, value: BLANK }] : []),
               ]}
               value={choice}
             />
           )}
         />
-        {prefillAvailable && !blank ? (
+        {!applying && props.prefillAvailable && !blank ? (
           <p className={styles.note}>{content.prefillHint}</p>
         ) : null}
       </form>

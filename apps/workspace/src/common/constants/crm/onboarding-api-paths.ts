@@ -2,6 +2,7 @@
 export const OnboardingApiPath = {
   Onboarding: "onboarding",
   Blocks: "blocks",
+  Template: "template",
   Fields: "fields",
   Move: "move",
   Usage: "usage",

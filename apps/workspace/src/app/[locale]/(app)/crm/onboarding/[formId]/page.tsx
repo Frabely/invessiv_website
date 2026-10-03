@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
+import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { isOnboardingStructureEditable } from "@invessiv/common/patterns/crm/onboarding/onboarding-form-state";
+import type { QuestionnaireTemplateSummaryDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-template-summary.dto";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import { QuestionnaireCatalogStatusFilter } from "@/common/constants/crm/questionnaire/questionnaire-catalog-status-filters";
 import { canOn } from "@/common/patterns/auth/can-on";
@@ -21,6 +23,7 @@ import { buildQuestionnaireFixedChoiceLabels } from "@/lib/workspace/crm/questio
 import { getOnboardingFormContext } from "@/server/workspace/crm/query-handler/get-onboarding-form-context.query-handler";
 import { getOnboardingForm } from "@/server/workspace/crm/query-handler/get-onboarding-form.query-handler";
 import { listQuestionnaireBlocks } from "@/server/workspace/crm/query-handler/list-questionnaire-blocks.query-handler";
+import { listQuestionnaireTemplates } from "@/server/workspace/crm/query-handler/list-questionnaire-templates.query-handler";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -60,15 +63,26 @@ export default async function OnboardingFormPage({
     projectId: form.projectId,
   });
   // Adding a catalog block needs `projects.write` here, not the catalog permission.
-  const catalogBlocks =
-    canWrite && isOnboardingStructureEditable(form.status)
-      ? (
-          await listQuestionnaireBlocks({
-            status: QuestionnaireCatalogStatusFilter.Active,
-            search: "",
-          })
-        ).rows
-      : [];
+  const canEditStructure =
+    canWrite && isOnboardingStructureEditable(form.status);
+  const canApplyTemplate =
+    canEditStructure &&
+    form.status === OnboardingFormStatus.Draft &&
+    form.blocks.length === 0;
+  const [catalogBlocks, templates] = await Promise.all([
+    canEditStructure
+      ? listQuestionnaireBlocks({
+          status: QuestionnaireCatalogStatusFilter.Active,
+          search: "",
+        }).then((result) => result.rows)
+      : Promise.resolve([]),
+    canApplyTemplate
+      ? listQuestionnaireTemplates({
+          status: QuestionnaireCatalogStatusFilter.Active,
+          search: "",
+        }).then((result) => result.rows)
+      : Promise.resolve([] as QuestionnaireTemplateSummaryDto[]),
+  ]);
 
   return (
     <WorkspaceScrollablePageShell pageId="crm-onboarding-form">
@@ -88,6 +102,7 @@ export default async function OnboardingFormPage({
         form={form}
         locale={locale}
         questionnaireContent={getCrmQuestionnaireDictionary(locale)}
+        templates={templates}
       />
     </WorkspaceScrollablePageShell>
   );

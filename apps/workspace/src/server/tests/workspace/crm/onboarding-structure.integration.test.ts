@@ -22,6 +22,7 @@ import {
 } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { addOnboardingFormBlock } from "@/server/workspace/crm/command-handler/add-onboarding-form-block.command-handler";
+import { applyOnboardingFormTemplate } from "@/server/workspace/crm/command-handler/apply-onboarding-form-template.command-handler";
 import { createOnboardingFormField } from "@/server/workspace/crm/command-handler/create-onboarding-form-field.command-handler";
 import { deleteOnboardingFormField } from "@/server/workspace/crm/command-handler/delete-onboarding-form-field.command-handler";
 import { moveOnboardingFormBlock } from "@/server/workspace/crm/command-handler/move-onboarding-form-block.command-handler";
@@ -92,9 +93,15 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       const expectedFormVersion = form.version;
       return [
         () =>
+          applyOnboardingFormTemplate(
+            form.id,
+            { templateId: catalogBlockId, expectedFormVersion },
+            actor,
+          ),
+        () =>
           addOnboardingFormBlock(
             form.id,
-            { catalogBlockId, expectedFormVersion },
+            { catalogBlockIds: [catalogBlockId], expectedFormVersion },
             actor,
           ),
         () =>
@@ -170,16 +177,62 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
     }, 60_000);
 
     describe("block list", () => {
+      it("applies an active template to an empty draft and rejects a draft with blocks", async () => {
+        const sourceA = await f.catalogBlock([
+          { key: "apply_name", type: T.ShortText },
+        ]);
+        const sourceB = await f.catalogBlock([
+          { key: "apply_goal", type: T.LongText },
+        ]);
+        const template = await f.template([sourceA.id, sourceB.id]);
+        const empty = f.value(
+          await startProjectOnboarding(
+            await f.project(),
+            { templateId: null },
+            f.member(),
+          ),
+        );
+
+        const applied = f.value(
+          await applyOnboardingFormTemplate(
+            empty.id,
+            { templateId: template.id, expectedFormVersion: empty.version },
+            f.member(),
+          ),
+        );
+        expect(applied.sourceTemplateId).toBe(template.id);
+        expect(applied.blocks.map((step) => step.block.sourceBlockId)).toEqual([
+          sourceA.id,
+          sourceB.id,
+        ]);
+
+        const rejected = await applyOnboardingFormTemplate(
+          applied.id,
+          { templateId: template.id, expectedFormVersion: applied.version },
+          f.member(),
+        );
+        expect(rejected).toEqual({
+          ok: false,
+          code: OnboardingErrorCode.TemplateApplyUnavailable,
+        });
+      });
+
       it("appends a copy of a catalog block as the last pending step", async () => {
         const { form, source } = await draft();
         const extra = await f.catalogBlock([
           { key: "claim", type: T.LongText },
         ]);
+        const secondExtra = await f.catalogBlock([
+          { key: "audience", type: T.ShortText },
+        ]);
 
         const updated = f.value(
           await addOnboardingFormBlock(
             form.id,
-            { catalogBlockId: extra.id, expectedFormVersion: form.version },
+            {
+              catalogBlockIds: [extra.id, secondExtra.id],
+              expectedFormVersion: form.version,
+            },
             f.member(),
           ),
         );
@@ -194,10 +247,14 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         ).toEqual([
           [0, OnboardingBlockReviewStatus.Pending, source.id],
           [1, OnboardingBlockReviewStatus.Pending, extra.id],
+          [2, OnboardingBlockReviewStatus.Pending, secondExtra.id],
         ]);
         expect(
           updated.blocks[1]!.block.fields.map((field) => field.key),
         ).toEqual(["claim"]);
+        expect(
+          updated.blocks[2]!.block.fields.map((field) => field.key),
+        ).toEqual(["audience"]);
         expect(await reread(form.id)).toEqual(updated);
       });
 
@@ -224,7 +281,10 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         const updated = f.value(
           await addOnboardingFormBlock(
             form.id,
-            { catalogBlockId: carried.id, expectedFormVersion: form.version },
+            {
+              catalogBlockIds: [carried.id],
+              expectedFormVersion: form.version,
+            },
             f.member(),
           ),
         );
@@ -242,7 +302,10 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         const add = (catalogBlockId: string) =>
           addOnboardingFormBlock(
             form.id,
-            { catalogBlockId, expectedFormVersion: form.version },
+            {
+              catalogBlockIds: [catalogBlockId],
+              expectedFormVersion: form.version,
+            },
             f.member(),
           );
         expect(await add(source.id)).toEqual({
@@ -1015,7 +1078,10 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         expect(
           await addOnboardingFormBlock(
             form.id,
-            { catalogBlockId: "not-a-uuid", expectedFormVersion: form.version },
+            {
+              catalogBlockIds: ["not-a-uuid"],
+              expectedFormVersion: form.version,
+            },
             f.member(),
           ),
         ).toMatchObject({

@@ -157,4 +157,5 @@ export const onboardingFormCreateService = {
   appendCatalogBlock,
   appendStep,
   createForm,
+  findTemplateBlocks,
 } as const;

@@ -117,6 +117,7 @@ function renderPage(dto: OnboardingFormDto = form(), canWrite = true) {
       backHref="/de/crm?cockpit=c-1&project=p-1"
       canWrite={canWrite}
       catalogBlocks={[]}
+      templates={[]}
       content={content}
       context={{
         customerId: "c-1",

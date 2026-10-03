@@ -318,18 +318,32 @@ export function QuestionnaireTemplateEditor({
 
       {pickerOpen ? (
         <QuestionnaireBlockPickerDialog
+          maxSelection={Math.min(
+            QUESTIONNAIRE_LIMITS.catalogBlocksPerAdd,
+            QUESTIONNAIRE_LIMITS.blocksPerOwner - blockCount,
+          )}
           blocks={blocks}
           chosenIds={draft.blockIds}
           content={text.picker}
           locale={locale}
-          onAddAction={(block) => {
-            change({ blockIds: [...draft.blockIds, block.id] });
+          onAddAction={(selectedBlocks) => {
+            change({
+              blockIds: [
+                ...draft.blockIds,
+                ...selectedBlocks.map((block) => block.id),
+              ],
+            });
             setAnnouncement(
-              formatMessage(text.blocks.added, {
-                name: titleOf(block),
-                position: draft.blockIds.length + 1,
-              }),
+              selectedBlocks.length === 1
+                ? formatMessage(text.blocks.added, {
+                    name: titleOf(selectedBlocks[0]),
+                    position: draft.blockIds.length + 1,
+                  })
+                : formatMessage(text.blocks.addedMany, {
+                    count: selectedBlocks.length,
+                  }),
             );
+            return true;
           }}
           onCloseAction={() => setPickerOpen(false)}
         />

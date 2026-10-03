@@ -22,6 +22,7 @@ import * as fieldUsageRoute from "@/app/api/workspace/crm/onboarding/forms/[form
 import * as releaseRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/release/route";
 import * as requestChangesRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/request-changes/route";
 import * as formRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/route";
+import * as templateRoute from "@/app/api/workspace/crm/onboarding/forms/[formId]/template/route";
 import * as projectOnboardingRoute from "@/app/api/workspace/crm/projects/[projectId]/onboarding/route";
 import {
   authorizedWorkspaceRequest,
@@ -44,6 +45,7 @@ const mocks = vi.hoisted(() => ({
   getOnboardingFieldUsage: vi.fn(),
   startProjectOnboarding: vi.fn(),
   addOnboardingFormBlock: vi.fn(),
+  applyOnboardingFormTemplate: vi.fn(),
   removeOnboardingFormBlock: vi.fn(),
   moveOnboardingFormBlock: vi.fn(),
   updateOnboardingFormBlock: vi.fn(),
@@ -79,6 +81,10 @@ vi.mock(
 vi.mock(
   "@/server/workspace/crm/command-handler/add-onboarding-form-block.command-handler",
   () => ({ addOnboardingFormBlock: mocks.addOnboardingFormBlock }),
+);
+vi.mock(
+  "@/server/workspace/crm/command-handler/apply-onboarding-form-template.command-handler",
+  () => ({ applyOnboardingFormTemplate: mocks.applyOnboardingFormTemplate }),
 );
 vi.mock(
   "@/server/workspace/crm/command-handler/remove-onboarding-form-block.command-handler",
@@ -169,6 +175,12 @@ const WRITES: [string, Call, keyof typeof mocks, unknown[]][] = [
     "POST blocks",
     (r) => blocksRoute.POST(r, formContext),
     "addOnboardingFormBlock",
+    [ID],
+  ],
+  [
+    "POST form template",
+    (r) => templateRoute.POST(r, formContext),
+    "applyOnboardingFormTemplate",
     [ID],
   ],
   [

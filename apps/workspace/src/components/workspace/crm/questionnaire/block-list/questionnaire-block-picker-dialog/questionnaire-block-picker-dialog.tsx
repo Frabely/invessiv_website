@@ -1,8 +1,6 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { QuestionnaireCatalogStatus } from "@invessiv/common/constants/crm/questionnaire/questionnaire-catalog-statuses";
 import { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";
 import type { QuestionnaireBlockSummaryDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block-summary.dto";
@@ -18,7 +16,12 @@ export type QuestionnaireBlockPickerDialogProps = {
   chosenIds: readonly string[];
   content: CrmQuestionnaireDictionary["templateEditor"]["picker"];
   locale: Locale;
-  onAddAction: (block: QuestionnaireBlockSummaryDto) => void;
+  busy?: boolean;
+  failure?: string | null;
+  maxSelection: number;
+  onAddAction: (
+    blocks: readonly QuestionnaireBlockSummaryDto[],
+  ) => boolean | Promise<boolean>;
   onCloseAction: () => void;
 };
 
@@ -32,12 +35,17 @@ export function QuestionnaireBlockPickerDialog({
   chosenIds,
   content,
   locale,
+  busy = false,
+  failure = null,
+  maxSelection,
   onAddAction,
   onCloseAction,
 }: QuestionnaireBlockPickerDialogProps) {
+  const id = useId();
   const searchId = useId();
   const searchRef = useRef<HTMLInputElement>(null);
   const [search, setSearch] = useState("");
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const available = blocks.filter(
     (block) =>
       block.status === QuestionnaireCatalogStatus.Active &&
@@ -51,18 +59,48 @@ export function QuestionnaireBlockPickerDialog({
           titleOf(block, locale).toLocaleLowerCase(locale).includes(needle),
       )
     : available;
+  const selectedBlocks = selectedIds.flatMap((selectedId) => {
+    const block = available.find((candidate) => candidate.id === selectedId);
+    return block ? [block] : [];
+  });
+
+  async function addSelected() {
+    if (busy || selectedBlocks.length === 0) return;
+    if (await onAddAction(selectedBlocks)) setSelectedIds([]);
+  }
 
   return (
     <Dialog
       closeLabel={content.close}
       description={content.description}
       footer={
-        <PrimaryCtaButton onClick={onCloseAction} type="button">
-          {content.close}
-        </PrimaryCtaButton>
+        <div className={styles.footer}>
+          <p className={styles.selectedCount}>
+            {formatMessage(content.selectedCount, {
+              count: selectedBlocks.length,
+            })}
+          </p>
+          <div className={styles.footerActions}>
+            <ButtonControl
+              disabled={busy}
+              onClick={onCloseAction}
+              type="button"
+              variant="ghost"
+            >
+              {content.close}
+            </ButtonControl>
+            <PrimaryCtaButton
+              disabled={busy || selectedBlocks.length === 0}
+              onClick={() => void addSelected()}
+              type="button"
+            >
+              {busy ? content.adding : content.addSelected}
+            </PrimaryCtaButton>
+          </div>
+        </div>
       }
       initialFocusRef={searchRef}
-      onCloseAction={onCloseAction}
+      onCloseAction={busy ? () => undefined : onCloseAction}
       size={DialogSize.Narrow}
       title={content.title}
     >
@@ -73,12 +111,18 @@ export function QuestionnaireBlockPickerDialog({
         <input
           className={styles.search}
           id={searchId}
+          disabled={busy}
           onChange={(event) => setSearch(event.target.value)}
           placeholder={content.searchPlaceholder}
           ref={searchRef}
           type="search"
           value={search}
         />
+        {failure ? (
+          <p className={styles.failure} role="alert">
+            {failure}
+          </p>
+        ) : null}
         {matches.length === 0 ? (
           <p className={styles.empty}>
             {available.length === 0 ? content.empty : content.noResults}
@@ -93,18 +137,35 @@ export function QuestionnaireBlockPickerDialog({
                     <span className={styles.optionTitle}>{title}</span>
                     <span className={styles.optionKey}>{block.key}</span>
                   </span>
-                  <ButtonControl
-                    aria-label={formatMessage(content.addNamed, {
-                      name: title,
-                    })}
-                    className={styles.add}
-                    onClick={() => onAddAction(block)}
-                    type="button"
-                    variant="ghost"
+                  <label
+                    className={styles.checkboxLabel}
+                    htmlFor={`${id}-${block.id}`}
+                    title={formatMessage(content.addNamed, { name: title })}
                   >
-                    <FontAwesomeIcon aria-hidden="true" icon={faPlus} />
-                    {content.add}
-                  </ButtonControl>
+                    <input
+                      aria-label={formatMessage(content.addNamed, {
+                        name: title,
+                      })}
+                      checked={selectedIds.includes(block.id)}
+                      disabled={
+                        busy ||
+                        (!selectedIds.includes(block.id) &&
+                          selectedIds.length >= maxSelection)
+                      }
+                      id={`${id}-${block.id}`}
+                      onChange={(event) =>
+                        setSelectedIds((current) =>
+                          event.target.checked
+                            ? [...current, block.id]
+                            : current.filter(
+                                (selectedId) => selectedId !== block.id,
+                              ),
+                        )
+                      }
+                      type="checkbox"
+                    />
+                    <span>{content.add}</span>
+                  </label>
                 </li>
               );
             })}

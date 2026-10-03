@@ -13,8 +13,19 @@ const expectedFormVersion = z.int().positive();
 export const onboardingFormSchemas = {
   entityId: z.uuid(),
   start: z.strictObject({ templateId: z.uuid().nullable() }),
+  applyTemplate: z.strictObject({
+    templateId: z.uuid(),
+    expectedFormVersion,
+  }),
   addBlock: z.union([
-    z.strictObject({ catalogBlockId: z.uuid(), expectedFormVersion }),
+    z.strictObject({
+      catalogBlockIds: z
+        .array(z.uuid())
+        .min(1)
+        .max(QUESTIONNAIRE_LIMITS.catalogBlocksPerAdd)
+        .refine((ids) => new Set(ids).size === ids.length),
+      expectedFormVersion,
+    }),
     // An own block is never company-wide, so the request carries no such flag.
     questionnaireSchemas.createBlock
       .omit({ carryOver: true })

@@ -53,7 +53,7 @@ describe("onboardingFormApiService", () => {
     const fetchMock = respondWith(HttpResponseCode.Ok, form);
 
     await onboardingFormApiService.addBlock("f-1", {
-      catalogBlockId: "c-1",
+      catalogBlockIds: ["c-1", "c-2"],
       expectedFormVersion: 2,
     });
     await onboardingFormApiService.moveBlock("f-1", "b-1", {
@@ -141,7 +141,7 @@ describe("onboardingFormApiService", () => {
     });
     expect(
       await onboardingFormApiService.addBlock("f-1", {
-        catalogBlockId: "c-1",
+        catalogBlockIds: ["c-1"],
         expectedFormVersion: 2,
       }),
     ).toEqual({ ok: false, code: OnboardingErrorCode.NotEditable });
@@ -151,7 +151,7 @@ describe("onboardingFormApiService", () => {
     });
     expect(
       await onboardingFormApiService.addBlock("f-1", {
-        catalogBlockId: "c-1",
+        catalogBlockIds: ["c-1"],
         expectedFormVersion: 2,
       }),
     ).toEqual({ ok: false, code: QuestionnaireErrorCode.KeyTaken });

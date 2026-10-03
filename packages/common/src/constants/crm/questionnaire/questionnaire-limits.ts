@@ -6,6 +6,7 @@
  */
 export const QUESTIONNAIRE_LIMITS = {
   blocksPerOwner: 60,
+  catalogBlocksPerAdd: 30,
   fieldsPerBlock: 60,
   childFieldsPerGroup: 30,
   choicesPerField: 30,

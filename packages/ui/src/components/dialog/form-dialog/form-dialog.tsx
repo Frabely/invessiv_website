@@ -16,6 +16,7 @@ export type FormDialogProps = {
   size?: DialogSize;
   submitLabel: string;
   submittingLabel: string;
+  submitDisabled?: boolean;
   title: string;
   children: ReactNode;
 };
@@ -32,6 +33,7 @@ export function FormDialog({
   size = DialogSize.Narrow,
   submitLabel,
   submittingLabel,
+  submitDisabled = false,
   title,
   children,
 }: FormDialogProps) {
@@ -50,7 +52,11 @@ export function FormDialog({
           >
             {cancelLabel}
           </ButtonControl>
-          <PrimaryCtaButton disabled={busy} form={formId} type="submit">
+          <PrimaryCtaButton
+            disabled={busy || submitDisabled}
+            form={formId}
+            type="submit"
+          >
             {busy ? submittingLabel : submitLabel}
           </PrimaryCtaButton>
         </>

@@ -4,6 +4,7 @@ import { ONBOARDING_RELEASE_WARNING_KIND_VALUES } from "@invessiv/common/constan
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import type { AddOnboardingFormBlockRequestDto } from "@invessiv/common/contracts/crm/onboarding/add-onboarding-form-block-request.dto";
+import type { ApplyOnboardingFormTemplateRequestDto } from "@invessiv/common/contracts/crm/onboarding/apply-onboarding-form-template-request.dto";
 import type { CompleteOnboardingFormRequestDto } from "@invessiv/common/contracts/crm/onboarding/complete-onboarding-form-request.dto";
 import type { MoveOnboardingFormBlockRequestDto } from "@invessiv/common/contracts/crm/onboarding/move-onboarding-form-block-request.dto";
 import type { OnboardingFieldUsageDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-field-usage.dto";
@@ -34,6 +35,7 @@ import {
   crmOnboardingFormFieldUsageEndpoint,
   crmOnboardingFormReleaseEndpoint,
   crmOnboardingFormRequestChangesEndpoint,
+  crmOnboardingFormTemplateEndpoint,
   crmProjectOnboardingEndpoint,
 } from "@/common/patterns/crm/crm-api-endpoints";
 
@@ -119,6 +121,17 @@ function getForm(formId: string) {
 function addBlock(formId: string, request: AddOnboardingFormBlockRequestDto) {
   return mutateForm(
     crmOnboardingFormBlocksEndpoint(formId),
+    HttpMethod.Post,
+    request,
+  );
+}
+
+function applyTemplate(
+  formId: string,
+  request: ApplyOnboardingFormTemplateRequestDto,
+) {
+  return mutateForm(
+    crmOnboardingFormTemplateEndpoint(formId),
     HttpMethod.Post,
     request,
   );
@@ -244,6 +257,7 @@ function definitionApi(formId: string): QuestionnaireDefinitionClientApi {
 
 export const onboardingFormApiService = {
   addBlock,
+  applyTemplate,
   complete,
   definitionApi,
   getFieldUsage,

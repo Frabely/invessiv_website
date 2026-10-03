@@ -15,6 +15,7 @@ import { ProjectPhase } from "@invessiv/common/constants/crm/project-phases";
 import type { OnboardingFormContextDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form-context.dto";
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
 import type { QuestionnaireBlockSummaryDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block-summary.dto";
+import type { QuestionnaireTemplateSummaryDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-template-summary.dto";
 import { canTransitionOnboardingForm } from "@invessiv/common/patterns/crm/onboarding/onboarding-form-state";
 import { summarizeOnboardingReview } from "@invessiv/common/patterns/crm/onboarding/onboarding-review";
 import { toOnboardingCompletenessInput } from "@invessiv/common/patterns/crm/onboarding/onboarding-completeness-input";
@@ -62,6 +63,7 @@ export type OnboardingFormPageViewProps = {
   form: OnboardingFormDto;
   locale: Locale;
   questionnaireContent: CrmQuestionnaireDictionary;
+  templates: readonly QuestionnaireTemplateSummaryDto[];
 };
 
 /**
@@ -81,6 +83,7 @@ export function OnboardingFormPageView({
   form: initialForm,
   locale,
   questionnaireContent,
+  templates,
 }: OnboardingFormPageViewProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -257,6 +260,7 @@ export function OnboardingFormPageView({
             locale={locale}
             onFormChangeAction={setForm}
             questionnaireContent={questionnaireContent}
+            templates={templates}
           />
         </div>
       </div>

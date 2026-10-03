@@ -147,22 +147,68 @@ export function useOnboardingFormStructure(options: {
     onRemovedAction(block);
   }
 
-  async function addCatalogBlock(source: QuestionnaireBlockSummaryDto) {
-    if (busy) return;
-    const next = settle(
-      await run(() =>
-        onboardingFormApiService.addBlock(form.id, {
-          catalogBlockId: source.id,
-          expectedFormVersion: form.version,
-        }),
-      ),
+  async function addCatalogBlocks(
+    sources: readonly QuestionnaireBlockSummaryDto[],
+  ): Promise<boolean> {
+    if (busy || sources.length === 0) return false;
+    const outcome = await run(() =>
+      onboardingFormApiService.addBlock(form.id, {
+        catalogBlockIds: sources.map((source) => source.id),
+        expectedFormVersion: form.version,
+      }),
     );
-    if (!next) {
-      // The reason is shown on the page, behind the picker.
-      setDialog(null);
-      return;
+    if (outcome.kind !== VersionedMutationOutcomeKind.Saved) {
+      if (outcome.kind === VersionedMutationOutcomeKind.Conflict)
+        adopt(outcome.current);
+      setDialog({
+        kind: OnboardingStructureDialogKind.Picker,
+        failure:
+          outcome.kind === VersionedMutationOutcomeKind.Conflict
+            ? text.editor.conflict
+            : onboardingFormErrorText(outcome.code, errorTexts),
+      });
+      return false;
     }
-    announceAdded(next);
+    adopt(outcome.value);
+    setFailure(null);
+    setDialog(null);
+    if (sources.length === 1) announceAdded(outcome.value);
+    else
+      setAnnouncement(
+        formatMessage(text.blocks.addedMany, { count: sources.length }),
+      );
+    return true;
+  }
+
+  async function applyTemplate(templateId: string): Promise<boolean> {
+    if (busy) return false;
+    const outcome = await run(() =>
+      onboardingFormApiService.applyTemplate(form.id, {
+        templateId,
+        expectedFormVersion: form.version,
+      }),
+    );
+    if (outcome.kind !== VersionedMutationOutcomeKind.Saved) {
+      if (outcome.kind === VersionedMutationOutcomeKind.Conflict)
+        adopt(outcome.current);
+      setDialog({
+        kind: OnboardingStructureDialogKind.Template,
+        failure:
+          outcome.kind === VersionedMutationOutcomeKind.Conflict
+            ? text.editor.conflict
+            : onboardingFormErrorText(outcome.code, errorTexts),
+      });
+      return false;
+    }
+    adopt(outcome.value);
+    setFailure(null);
+    setDialog(null);
+    setAnnouncement(
+      formatMessage(text.blocks.addedMany, {
+        count: outcome.value.blocks.length,
+      }),
+    );
+    return true;
   }
 
   async function addOwnBlock(identity: QuestionnaireBlockIdentity) {
@@ -207,7 +253,8 @@ export function useOnboardingFormStructure(options: {
   }
 
   return {
-    addCatalogBlock,
+    addCatalogBlocks,
+    applyTemplate,
     addOwnBlock,
     announceListMessage,
     announcement,
