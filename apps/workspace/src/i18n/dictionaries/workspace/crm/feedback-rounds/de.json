@@ -244,6 +244,7 @@
     "close": "Schließen",
     "doneTitle": "Feedbackrunde {number} ist abgeschlossen",
     "nextDescription": "Im Projekt sind noch {remaining} von {included} Runden offen. Übergib Runde {next} direkt, wenn der nächste Stand bereitliegt.",
+    "continueWithStep": "Weiter mit „{step}“. Runde {next} kannst du übergeben, sobald der Projektschritt davor erreicht ist.",
     "handOverNext": "Runde {next} übergeben",
     "later": "Später",
     "approvalHint": "Das war die letzte Runde. Der Kunde kann das Projekt jetzt im Portal abnehmen."

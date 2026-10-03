@@ -72,9 +72,10 @@ Transaktion um.
   Entwurf gegen den gespeicherten Stand ab (Listenreihenfolge = Position); vor dem Löschen eines Punkts werden seine
   Dateien gelöst, die Datei selbst bleibt. Positionen dürfen sich innerhalb der Transaktion tauschen: der Unique-Index
   `(round_id, position)` ist `DEFERRABLE` und wird nur dort kurz aufgeschoben.
-- `feedback-project-step-service.ts` — `advancePastFeedbackRound` setzt nach einer Abnahme `current_process_step` auf den
-  Schritt direkt hinter der Runde (unter Projektsperre, über `updateVersioned`); eine Runde hinter dem letzten Schritt
-  ändert nichts.
+- `feedback-project-step-service.ts` — `advancePastFeedbackRound` setzt nach Abnahme oder internem Abschluss
+  `current_process_step` auf den Schritt direkt hinter der Runde (unter Projektsperre, über `updateVersioned`).
+  Beim Abschluss bleibt der Schritt stehen, wenn die nächste Runde direkt an derselben Position folgt;
+  eine Runde hinter dem letzten Schritt ändert nichts.
 - `feedback-round-activity-service.ts` — Activities nur mit bestehenden Typen (Übergabe `created`, Einreichen
   `submission_received`, jeder weitere Statuswechsel `field_change` mit Feld `status`). Die Runde steht in `metadata`
   (`entity: FEEDBACK_ROUND_ACTIVITY_ENTITY`, `feedback_round_id`, `round_number`); Feedbacktext kommt nie ins Log.

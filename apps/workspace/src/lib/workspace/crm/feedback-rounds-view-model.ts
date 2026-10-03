@@ -41,5 +41,7 @@ export async function buildFeedbackRoundsViewModel(options: {
     }),
     defaultPreviewUrl: overview.rounds[0]?.previewUrl ?? project.previewUrl,
     roundProgress: feedbackRoundProgress(overview.rounds),
+    processSteps: project.processSteps,
+    feedbackRoundPositions: project.feedbackRoundPositions ?? [],
   };
 }

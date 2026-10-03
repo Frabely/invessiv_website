@@ -20,4 +20,7 @@ export type FeedbackRoundsViewModel = {
   defaultPreviewUrl: string | null;
   /** Running, completed and approved round for the process track. */
   roundProgress: ProjectFeedbackRoundProgress;
+  /** Process track read with the project, for the completion dialog. */
+  processSteps: readonly string[];
+  feedbackRoundPositions: readonly number[];
 };

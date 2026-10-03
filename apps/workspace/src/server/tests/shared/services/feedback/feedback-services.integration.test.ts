@@ -423,6 +423,68 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       expect(await readStep()).toBe(ProjectPhase.Launch);
     });
 
+    it("advances on completion except when another round follows immediately", async () => {
+      const projectId = await project({
+        processSteps: [
+          "Onboarding",
+          "Design",
+          "Development",
+          "Launch",
+          "Maintenance",
+        ],
+        currentProcessStep: "Design",
+        positions: [2, 3, 3],
+      });
+      const complete = (roundNumber: number) =>
+        f
+          .database()
+          .transaction((tx) =>
+            feedbackProjectStepService.advancePastFeedbackRound(
+              tx,
+              projectId,
+              roundNumber,
+              true,
+            ),
+          );
+      const step = async () =>
+        (
+          await f
+            .database()
+            .select({ value: projects.current_process_step })
+            .from(projects)
+            .where(eq(projects.id, projectId))
+        )[0].value;
+
+      await complete(1);
+      expect(await step()).toBe("Development");
+      await complete(2);
+      expect(await step()).toBe("Development");
+      await complete(3);
+      expect(await step()).toBe("Launch");
+
+      const lastProject = await project({
+        processSteps: ["Onboarding", "Design"],
+        currentProcessStep: "Design",
+        positions: [2],
+      });
+      await f
+        .database()
+        .transaction((tx) =>
+          feedbackProjectStepService.advancePastFeedbackRound(
+            tx,
+            lastProject,
+            1,
+            true,
+          ),
+        );
+      const [last] = await f
+        .database()
+        .select()
+        .from(projects)
+        .where(eq(projects.id, lastProject));
+      expect(last.current_process_step).toBe("Design");
+    });
+
     it("logs round activities with the round in metadata and no feedback text", async () => {
       const target = await round(await project());
       await f.database().transaction(async (tx) => {

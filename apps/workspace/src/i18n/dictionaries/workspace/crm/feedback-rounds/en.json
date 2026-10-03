@@ -244,6 +244,7 @@
     "close": "Close",
     "doneTitle": "Feedback round {number} is completed",
     "nextDescription": "The project still has {remaining} of {included} rounds open. Hand over round {next} as soon as the next version is ready.",
+    "continueWithStep": "Continue with “{step}”. You can hand over round {next} once the project reaches the step before it.",
     "handOverNext": "Hand over round {next}",
     "later": "Later",
     "approvalHint": "That was the last round. The customer can now approve the project in the portal."

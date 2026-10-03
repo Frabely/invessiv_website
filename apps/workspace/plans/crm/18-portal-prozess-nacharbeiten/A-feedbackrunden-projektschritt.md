@@ -1,6 +1,6 @@
 # Paket A — Feedbackrunden und Projektschritt (High Prio)
 
-> Teil von [README.md](./README.md) (Ziel, Entscheidungen, Reihenfolge, gemeinsame Regeln, Abnahme). **Status: im Review.**
+> Teil von [README.md](./README.md) (Ziel, Entscheidungen, Reihenfolge, gemeinsame Regeln, Abnahme). **Status: done; Merge offen.**
 
 **Ursache:** `feedbackRoundWriteService.complete`
 (`src/server/shared/services/feedback/feedback-round-write-service.ts`) lässt `current_process_step` stehen. Nur die

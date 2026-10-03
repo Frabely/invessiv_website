@@ -2,20 +2,24 @@ import "server-only";
 
 import { eq } from "drizzle-orm";
 
-import { feedbackRoundStepPosition } from "@invessiv/common/patterns/crm/feedback-round-state";
+import {
+  feedbackRoundStepPosition,
+  isNextFeedbackRoundAdjacent,
+} from "@invessiv/common/patterns/crm/feedback-round-state";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import { projects } from "@invessiv/db/record-configuration";
 import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
 
 /**
- * After an approval the project moves to the step right behind the approved round. A round behind
- * the last step leaves the track where it is. The project lock is the same one the handover and the
- * project editor take, so the step list cannot change underneath.
+ * Moves the project behind a finished round. Completion keeps the step when the next round sits
+ * immediately after it; approval always advances. A round after the last step leaves it unchanged.
+ * The project lock also protects the handover and project editor against a changed step list.
  */
 async function advancePastFeedbackRound(
   tx: ContactDatabaseTransaction,
   projectId: string,
   roundNumber: number,
+  forCompletion = false,
 ): Promise<void> {
   const [project] = await tx
     .select({
@@ -28,6 +32,15 @@ async function advancePastFeedbackRound(
     .where(eq(projects.id, projectId))
     .for("update");
   if (!project) throw new Error("Feedback round project is missing");
+  if (
+    forCompletion &&
+    isNextFeedbackRoundAdjacent(
+      project.feedbackRoundPositions ?? [],
+      project.processSteps.length,
+      roundNumber,
+    )
+  )
+    return;
   const position = feedbackRoundStepPosition(
     project.feedbackRoundPositions ?? [],
     project.processSteps.length,

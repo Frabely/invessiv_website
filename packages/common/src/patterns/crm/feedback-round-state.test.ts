@@ -15,6 +15,7 @@ import {
   feedbackRoundStepPosition,
   isActiveFeedbackRound,
   isAtFeedbackStep,
+  isNextFeedbackRoundAdjacent,
 } from "./feedback-round-state";
 
 const S = FeedbackRoundStatus;
@@ -212,5 +213,17 @@ describe("feedbackRoundStepPosition", () => {
   it("clamps positions into the steps like the track does", () => {
     expect(feedbackRoundStepPosition([9], 4, 1)).toBe(4);
     expect(feedbackRoundStepPosition([2], 4, 2)).toBeNull();
+  });
+});
+
+describe("isNextFeedbackRoundAdjacent", () => {
+  it("finds consecutive rounds at the same position after normalization", () => {
+    expect(isNextFeedbackRoundAdjacent([3, 2, 3], 5, 1)).toBe(false);
+    expect(isNextFeedbackRoundAdjacent([3, 2, 3], 5, 2)).toBe(true);
+  });
+
+  it("does not report a missing next round as adjacent", () => {
+    expect(isNextFeedbackRoundAdjacent([2], 5, 1)).toBe(false);
+    expect(isNextFeedbackRoundAdjacent([], 5, 1)).toBe(false);
   });
 });

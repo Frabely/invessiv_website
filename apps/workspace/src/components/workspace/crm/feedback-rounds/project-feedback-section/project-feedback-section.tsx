@@ -160,11 +160,13 @@ export function ProjectFeedbackSection({
           content={content}
           customerId={customerId}
           filesContent={filesContent}
+          feedbackRoundPositions={viewModel.feedbackRoundPositions}
           included={overview.quota.included}
           locale={locale}
           onAnnounceAction={setAnnouncement}
           onHandOverNextAction={() => setDialogOpen(true)}
           round={detail}
+          processSteps={viewModel.processSteps}
         />
       ) : overview.rounds.length === 0 ? (
         <>

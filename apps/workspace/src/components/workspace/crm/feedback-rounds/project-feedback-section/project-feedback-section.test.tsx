@@ -1,20 +1,29 @@
 // @vitest-environment jsdom
 
 import "@testing-library/jest-dom/vitest";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { FeedbackHandOverBlocker } from "@invessiv/common/constants/crm/feedback-hand-over-blockers";
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
+import { FeedbackItemResult } from "@invessiv/common/constants/crm/feedback-item-results";
 import type { FeedbackRoundDto } from "@invessiv/common/contracts/crm/feedback-round.dto";
 import type { FeedbackRoundSummaryDto } from "@invessiv/common/contracts/crm/feedback-round-summary.dto";
 import type { FeedbackRoundsViewModel } from "@/common/contracts/crm/feedback-rounds-view-model";
+import { feedbackRoundsApiService } from "@/client/crm/feedback-rounds-api-service";
 import {
   getCrmFeedbackRoundsDictionary,
   getCrmFilesDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
 import { ProjectFeedbackSection } from "./project-feedback-section";
 
-const navigation = vi.hoisted(() => ({ replace: vi.fn() }));
+const navigation = vi.hoisted(() => ({ replace: vi.fn(), refresh: vi.fn() }));
 
 vi.mock("next/navigation", () => ({
   useRouter: () => navigation,
@@ -31,6 +40,7 @@ vi.mock("@/client/crm/feedback-rounds-api-service", async (importOriginal) => {
     feedbackRoundsApiService: {
       ...original.feedbackRoundsApiService,
       markRead: vi.fn().mockResolvedValue(false),
+      changeStatus: vi.fn(),
     },
   };
 });
@@ -128,6 +138,8 @@ function viewModel(
       completedRoundNumber: null,
       approvedRoundNumber: null,
     },
+    processSteps: ["Design", "Development", "Launch"],
+    feedbackRoundPositions: [1, 2],
     ...overrides,
   };
 }
@@ -221,4 +233,62 @@ describe("ProjectFeedbackSection", () => {
     expect(document.querySelector("script")).toBeNull();
     expect(screen.getByText(/Submitted by Anna/)).toBeInTheDocument();
   });
+
+  it.each([
+    { positions: [1, 2], next: false },
+    { positions: [1, 1], next: true },
+  ])(
+    "offers direct handover only for adjacent rounds: $positions",
+    async ({ positions, next }) => {
+      const round: FeedbackRoundDto = {
+        ...DETAIL,
+        status: FeedbackRoundStatus.InProgress,
+        items: [
+          { ...DETAIL.items[0]!, result: FeedbackItemResult.Implemented },
+        ],
+      };
+      vi.mocked(feedbackRoundsApiService.changeStatus).mockResolvedValue({
+        ok: true,
+        value: { ...round, status: FeedbackRoundStatus.Completed },
+      });
+      renderSection(
+        viewModel(
+          { detail: round, feedbackRoundPositions: positions },
+          { rounds: [SUMMARY], canHandOver: false },
+        ),
+      );
+
+      fireEvent.click(screen.getByRole("button", { name: "Complete round" }));
+      fireEvent.click(
+        within(screen.getByRole("dialog")).getByRole("button", {
+          name: "Complete round",
+        }),
+      );
+      await waitFor(() =>
+        expect(
+          screen.getByText("Feedback round 1 is completed"),
+        ).toBeInTheDocument(),
+      );
+      if (next) {
+        expect(
+          screen.getByRole("button", { name: "Hand over round 2" }),
+        ).toBeInTheDocument();
+        expect(
+          screen.getByRole("button", { name: "Later" }),
+        ).toBeInTheDocument();
+      } else {
+        expect(
+          screen.getByText(/Continue with “Development”/),
+        ).toBeInTheDocument();
+        expect(
+          within(screen.getByRole("dialog")).getAllByRole("button", {
+            name: "Close",
+          }),
+        ).toHaveLength(2);
+        expect(
+          screen.queryByRole("button", { name: "Hand over round 2" }),
+        ).not.toBeInTheDocument();
+      }
+    },
+  );
 });

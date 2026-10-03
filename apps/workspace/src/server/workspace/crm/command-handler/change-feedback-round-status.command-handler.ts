@@ -121,7 +121,8 @@ function takeStep(
 /**
  * The team's steps on a running round: ask for a call, start the work, hand the round back or
  * complete it. Only steps of `FEEDBACK_ROUND_TRANSITIONS` pass; the version is compared under the
- * round lock, so a stale tab gets the current round with its 409. Phase and track stay untouched.
+ * round lock, so a stale tab gets the current round with its 409. The project phase stays untouched;
+ * completion advances the process step unless another round follows directly.
  */
 export async function changeFeedbackRoundStatus(
   roundId: string,

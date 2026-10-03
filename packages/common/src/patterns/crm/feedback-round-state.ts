@@ -87,6 +87,25 @@ export function feedbackRoundStepPosition(
   );
 }
 
+/** Consecutive rounds at the same track position can be handed over without moving the project. */
+export function isNextFeedbackRoundAdjacent(
+  feedbackRoundPositions: readonly number[],
+  stepCount: number,
+  roundNumber: number,
+): boolean {
+  const current = feedbackRoundStepPosition(
+    feedbackRoundPositions,
+    stepCount,
+    roundNumber,
+  );
+  const next = feedbackRoundStepPosition(
+    feedbackRoundPositions,
+    stepCount,
+    roundNumber + 1,
+  );
+  return current !== null && next !== null && current === next;
+}
+
 /**
  * The project is ready for round n when the current step is the last free-text step before that
  * round; a round in front of every step counts from the first step. Steps are compared by label,

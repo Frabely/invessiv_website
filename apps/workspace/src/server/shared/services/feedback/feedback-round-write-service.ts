@@ -246,6 +246,12 @@ async function complete(
     completed_at: new Date(),
     completed_by_member_id: context.actor.workspaceMemberId,
   });
+  await feedbackProjectStepService.advancePastFeedbackRound(
+    tx,
+    changed.project_id,
+    changed.round_number,
+    true,
+  );
   await feedbackRoundTaskService.completeForRound(tx, changed, context.actor);
   await feedbackRoundActivityService.recordStatusChange(
     tx,

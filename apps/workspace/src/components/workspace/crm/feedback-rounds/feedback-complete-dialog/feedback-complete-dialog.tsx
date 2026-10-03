@@ -7,6 +7,10 @@ import { FEEDBACK_ITEM_RESULT_VALUES } from "@invessiv/common/constants/crm/feed
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { FeedbackRoundDto } from "@invessiv/common/contracts/crm/feedback-round.dto";
+import {
+  feedbackRoundStepPosition,
+  isNextFeedbackRoundAdjacent,
+} from "@invessiv/common/patterns/crm/feedback-round-state";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import {
   ButtonControl,
@@ -27,6 +31,8 @@ type FeedbackCompleteDialogProps = {
   round: FeedbackRoundDto;
   /** Round steps in the track; decides whether a next round can follow. */
   included: number;
+  processSteps: readonly string[];
+  feedbackRoundPositions: readonly number[];
   onCloseAction: () => void;
   onCompletedAction: (round: FeedbackRoundDto) => void;
   /** Opens the prefilled handover of the next round. */
@@ -41,6 +47,8 @@ export function FeedbackCompleteDialog({
   content,
   round,
   included,
+  processSteps,
+  feedbackRoundPositions,
   onCloseAction,
   onCompletedAction,
   onHandOverNextAction,
@@ -54,6 +62,19 @@ export function FeedbackCompleteDialog({
   const total = round.items.length;
   const nextNumber = round.roundNumber + 1;
   const hasNextRound = nextNumber <= included;
+  const nextRoundAdjacent =
+    hasNextRound &&
+    isNextFeedbackRoundAdjacent(
+      feedbackRoundPositions,
+      processSteps.length,
+      round.roundNumber,
+    );
+  const position = feedbackRoundStepPosition(
+    feedbackRoundPositions,
+    processSteps.length,
+    round.roundNumber,
+  );
+  const nextStep = position === null ? null : (processSteps[position] ?? null);
 
   async function complete() {
     if (busy) return;
@@ -84,16 +105,21 @@ export function FeedbackCompleteDialog({
       <Dialog
         closeLabel={texts.close}
         description={
-          hasNextRound
+          nextRoundAdjacent
             ? formatMessage(texts.nextDescription, {
                 next: nextNumber,
                 remaining: included - round.roundNumber,
                 included,
               })
-            : texts.approvalHint
+            : hasNextRound && nextStep
+              ? formatMessage(texts.continueWithStep, {
+                  step: nextStep,
+                  next: nextNumber,
+                })
+              : texts.approvalHint
         }
         footer={
-          hasNextRound ? (
+          nextRoundAdjacent ? (
             <>
               <ButtonControl
                 onClick={onCloseAction}

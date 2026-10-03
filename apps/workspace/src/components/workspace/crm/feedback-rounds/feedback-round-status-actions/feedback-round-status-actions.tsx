@@ -33,6 +33,8 @@ type FeedbackRoundStatusActionsProps = {
   content: CrmFeedbackRoundsDictionary;
   round: FeedbackRoundDto;
   included: number;
+  processSteps: readonly string[];
+  feedbackRoundPositions: readonly number[];
   onAnnounceAction: (message: string) => void;
   onHandOverNextAction: () => void;
 };
@@ -59,6 +61,8 @@ export function FeedbackRoundStatusActions({
   content,
   round,
   included,
+  processSteps,
+  feedbackRoundPositions,
   onAnnounceAction,
   onHandOverNextAction,
 }: FeedbackRoundStatusActionsProps) {
@@ -194,6 +198,8 @@ export function FeedbackRoundStatusActions({
         <FeedbackCompleteDialog
           content={content}
           included={included}
+          processSteps={processSteps}
+          feedbackRoundPositions={feedbackRoundPositions}
           onCloseAction={() => setDialog(null)}
           onCompletedAction={(changed) => {
             announce(changed.status);

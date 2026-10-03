@@ -44,6 +44,8 @@ type FeedbackRoundDetailProps = {
   canWrite: boolean;
   /** Round steps in the track; the completion offers the next round only below it. */
   included: number;
+  processSteps: readonly string[];
+  feedbackRoundPositions: readonly number[];
   onAnnounceAction: (message: string) => void;
   onHandOverNextAction: () => void;
 };
@@ -78,6 +80,8 @@ export function FeedbackRoundDetail({
   round,
   canWrite,
   included,
+  processSteps,
+  feedbackRoundPositions,
   onAnnounceAction,
   onHandOverNextAction,
 }: FeedbackRoundDetailProps) {
@@ -174,6 +178,8 @@ export function FeedbackRoundDetail({
         <FeedbackRoundStatusActions
           content={content}
           included={included}
+          processSteps={processSteps}
+          feedbackRoundPositions={feedbackRoundPositions}
           onAnnounceAction={onAnnounceAction}
           onHandOverNextAction={onHandOverNextAction}
           round={round}

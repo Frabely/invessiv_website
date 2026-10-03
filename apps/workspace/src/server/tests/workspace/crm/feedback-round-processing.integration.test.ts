@@ -189,6 +189,54 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       expect(after.current_process_step).toBe(before.current_process_step);
     });
 
+    it("advances after a round with an intervening step and allows the next handover", async () => {
+      const projectId = await f.project({
+        processSteps: [
+          "Onboarding",
+          "Design",
+          "Development",
+          "Launch",
+          "Maintenance",
+        ],
+        currentProcessStep: "Design",
+        positions: [2, 3, 3],
+      });
+      const handed = await handOverFeedbackRound(
+        projectId,
+        { areaOptions: [] },
+        f.member(),
+      );
+      if (!handed.ok) throw new Error("Expected a handed-over round");
+      const itemId = crypto.randomUUID();
+      await savePortalFeedbackDraft(f.contact(), handed.round.id, {
+        version: 1,
+        items: [{ id: itemId, areaLabel: null, kind: null, body: "Check" }],
+      });
+      await submitPortalFeedbackRound(f.contact(), handed.round.id, {
+        version: 2,
+      });
+      await change(handed.round.id, {
+        version: 3,
+        to: FeedbackRoundStatus.InProgress,
+      });
+      await implementAll([itemId]);
+      expect(
+        await change(handed.round.id, {
+          version: 4,
+          to: FeedbackRoundStatus.Completed,
+        }),
+      ).toMatchObject({ ok: true });
+      expect((await f.readProject(projectId)).current_process_step).toBe(
+        "Development",
+      );
+      expect(
+        await handOverFeedbackRound(projectId, { areaOptions: [] }, f.member()),
+      ).toMatchObject({
+        ok: true,
+        round: { roundNumber: 2 },
+      });
+    });
+
     it("refuses steps outside the transition table and an incomplete completion", async () => {
       const { roundId, itemIds } = await submittedRound();
       expect(

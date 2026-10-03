@@ -110,10 +110,12 @@ function renderDetail(
       content={content}
       customerId="customer-1"
       filesContent={filesContent}
+      feedbackRoundPositions={[1, 1]}
       included={options.included ?? 2}
       locale="en"
       onAnnounceAction={vi.fn()}
       onHandOverNextAction={onHandOverNextAction}
+      processSteps={["Design", "Development"]}
       round={detail}
     />,
   );
