@@ -412,20 +412,35 @@ Performance-Hinweise (unkritisch bei heutiger Größe):
 
 ## 7. Kleinigkeiten
 
-- Tote Codes: `OnboardingErrorCode.FileNotAttachable` liefert kein Handler. `QuestionnaireErrorCode.NotEditable`
-  entsteht nur im Client (`OWNER_CODES`), Status und Text im Server-Mapper sind unerreichbar.
-- `runQuestionnaireRoute` / `withQuestionnaireBody` (`lib/workspace/crm/questionnaire-api-response.ts`) werden von
-  allen Onboarding-Routen genutzt; der Name passt nicht mehr.
-- `onboarding-form-schemas.ts:39, 45`: die Schritt-Version heißt im Schema `expectedFormVersion`.
-- `questionnaire-template-service.ts:89`: Variable `any`.
-- `count-questionnaire-block-templates.query-handler.ts`: `isUuid`, alle anderen `entityId.safeParse`.
-- `ONBOARDING_ERROR_CODE_VALUES` / `QUESTIONNAIRE_ERROR_CODE_VALUES` über `Object.values`, sonst explizite Arrays.
-- Feste DOM-IDs statt `useId`: `onboarding-answers`, `onboarding-blocks-heading`, `onboarding-block-editor-heading`,
-  `questionnaire-fields-heading`.
-- `components/shared/onboarding/testing/portal-onboarding-form-fixture.ts`: Test-Fixture im Produktivbaum, einziger
-  `testing/`-Ordner in `src`.
-- `components/portal/onboarding/questionnaire-field/` neben `fields/onboarding-*-field`: gemischte Benennung.
-- `usePortalFileDownloads<FeedbackAttachmentDto>` für Onboarding-Dateien (`onboarding-form-view.tsx:66`).
+> **Stand 03.10.2026: Prüfung der offenen Kleinigkeiten.** Der einzige direkt sinnvolle Code-Aufräumpunkt war der
+> missverständliche lokale Bezeichner `any` im Template-Service; er heißt nun `existingTemplate`.
+
+- **Keine toten Error-Codes:** `OnboardingErrorCode.FileNotAttachable` ist in `onboarding-api-error.ts` abgebildet und
+  durch den Route-Test abgesichert. `QuestionnaireErrorCode.NotEditable` ist der kanonische Client-Code für den
+  Owner-Fehler `OWNER_LOCKED`; der Server liefert im Onboarding-Kontext den eigenen Code `OnboardingErrorCode.NotEditable`,
+  den der Client darauf abbildet. Die serverseitigen Questionnaire-Maps bleiben vollständige `Record`s für das
+  Questionnaire-Protokoll.
+- **Route-Helfer:** `runQuestionnaireRoute` und `withQuestionnaireBody` liegen in `questionnaire-api-response.ts` und
+  werden sowohl von Katalog- als auch Onboarding-Routen verwendet. Sie zentralisieren Logging, JSON-Fehler und
+  Command-Antworten des wiederverwendeten Questionnaire-Baukastens; das ist hier eine bewusste gemeinsame Nutzung.
+- **Versionsnamen:** `expectedFormVersion` benennt die erwartete Bogen-Version für Strukturbefehle. `expectedVersion`
+  wird für Bogenstatus und einzelne Schrittprüfungen verwendet; die unterschiedlichen Request-Felder sind absichtlich
+  an ihre jeweiligen Versionen gebunden.
+- `count-questionnaire-block-templates.query-handler.ts` nutzt `isUuid`, ebenso `get-questionnaire-block` und
+  `get-questionnaire-template`; eine abweichende Validierung besteht nicht.
+- **Konstantenlisten:** `ONBOARDING_ERROR_CODE_VALUES` und `QUESTIONNAIRE_ERROR_CODE_VALUES` leiten sich von ihren
+  Const-Objekten ab. Andere explizite Arrays im Review vergleichen fachliche Werte oder halten gezielt Reihenfolgen
+  fest; kein Onboarding-spezifischer Fehler.
+- **Stabile DOM-IDs:** Die vier IDs bezeichnen je eine feste Überschrift in den jeweiligen Einzelansichten und werden
+  nicht dynamisch in wiederholten Listen gerendert. Kein belegter ID-Konflikt im geprüften Aufbau.
+- **Test-Fixture:** `portal-onboarding-form-fixture.ts` liegt im Komponentenbaum, wird aber ausschließlich aus Tests
+  importiert (Portal-Komponenten, Hooks und Pattern). Das erzeugt derzeit keinen Produktivimport.
+- **Feldordner und Dateien:** Der Ordner `questionnaire-field/` enthält den Portal-Feldrenderer; `fields/` gruppiert
+  die konkreten Feldtypen. Die unterschiedliche Granularität ist durch ihre Aufgaben erklärbar. Die Portalansicht
+  nutzt bereits `FileAttachmentDto` mit `usePortalFileDownloads`; der im alten Finding genannte Feedback-DTO ist
+  nicht mehr aktuell.
+
+Es bleiben aus Abschnitt 7 keine bestätigten offenen Punkte.
 
 ---
 

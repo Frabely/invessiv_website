@@ -86,7 +86,7 @@ async function listTemplates(
     .where(and(...conditions))
     .groupBy(questionnaireTemplates.id)
     .orderBy(desc(questionnaireTemplates.updated_at));
-  const [any] =
+  const [existingTemplate] =
     rows.length > 0
       ? rows
       : await executor
@@ -95,7 +95,7 @@ async function listTemplates(
           .limit(1);
 
   return {
-    hasTemplates: any !== undefined,
+    hasTemplates: existingTemplate !== undefined,
     rows: rows.map((row) =>
       questionnaireMappingService.toTemplateSummaryDto(
         row.template,
