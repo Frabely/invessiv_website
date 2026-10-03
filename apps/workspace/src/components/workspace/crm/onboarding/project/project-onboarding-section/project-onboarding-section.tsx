@@ -98,7 +98,6 @@ export function ProjectOnboardingSection({
           />
         ) : null
       }
-      defaultExpanded
       labelCollapse={labelCollapse}
       labelExpand={labelExpand}
       meta={

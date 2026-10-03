@@ -46,7 +46,6 @@ import styles from "./customer-files-section.module.css";
 type CustomerFilesSectionProps = {
   content: CrmFilesDictionary;
   customerId: string;
-  defaultExpanded?: boolean;
   locale: Locale;
   /** Pins the section to one project; filters by project and the project column disappear. */
   projectId?: string;
@@ -70,7 +69,6 @@ type FileOverlay =
 export function CustomerFilesSection({
   content,
   customerId,
-  defaultExpanded = true,
   locale,
   projectId,
   revision,
@@ -299,7 +297,6 @@ export function CustomerFilesSection({
                 })
             : undefined
         }
-        defaultExpanded={defaultExpanded}
         labelCollapse={content.section.collapseLabel}
         labelExpand={content.section.expandLabel}
         title={content.section.title}

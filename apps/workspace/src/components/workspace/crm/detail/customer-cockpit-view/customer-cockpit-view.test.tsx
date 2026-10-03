@@ -92,6 +92,9 @@ describe("CustomerCockpitView", () => {
     expect(
       screen.getByRole("heading", { name: filesContent.section.title }),
     ).toBeVisible();
+    fireEvent.click(
+      screen.getByRole("button", { name: filesContent.section.expandLabel }),
+    );
     expect(await screen.findByText(filesContent.empty.title)).toBeVisible();
   });
 

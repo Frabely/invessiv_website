@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { faCircleInfo, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FeedbackHandOverBlocker } from "@invessiv/common/constants/crm/feedback-hand-over-blockers";
@@ -9,6 +10,7 @@ import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { formatCountMessage } from "@invessiv/common/patterns/i18n/format-count-message";
 import { PrimaryCtaButton } from "@invessiv/ui";
 import { StatusRowTone } from "@/common/constants/ui/status-row-tones";
+import { CustomerListQueryParam } from "@/common/constants/crm/list/customer-list-query-params";
 import type { FeedbackRoundsViewModel } from "@/common/contracts/crm/feedback-rounds-view-model";
 import { FeedbackRoundStatusBadge } from "@/components/shared/feedback/feedback-round-status-badge/feedback-round-status-badge";
 import { CollapsibleSection } from "@/components/workspace/crm/shared/collapsible-section/collapsible-section";
@@ -70,6 +72,9 @@ export function ProjectFeedbackSection({
   viewModel,
 }: ProjectFeedbackSectionProps) {
   const { overview, detail, projectId } = viewModel;
+  const requestedRoundId = useSearchParams().get(
+    CustomerListQueryParam.FeedbackRound,
+  );
   const selection = useCockpitSelection(customerId);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [announcement, setAnnouncement] = useState("");
@@ -147,7 +152,8 @@ export function ProjectFeedbackSection({
           : content.section.countNone,
         { used: overview.quota.used, included: overview.quota.included },
       )}
-      defaultExpanded
+      defaultExpanded={requestedRoundId !== null || announcement !== ""}
+      expandOn={requestedRoundId ?? (announcement || null)}
       labelCollapse={content.section.collapseLabel}
       labelExpand={content.section.expandLabel}
       title={content.section.title}

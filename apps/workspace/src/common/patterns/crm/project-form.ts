@@ -7,6 +7,11 @@ import type { UpdateProjectRequestDto } from "@invessiv/common/contracts/crm/upd
 import type { ProjectFormValues } from "@/common/contracts/crm/project-form-values";
 import type { ProjectProcessPlan } from "@/common/contracts/crm/project-process-plan";
 
+/** The project editor validates required fields before sending a request. */
+export function validateProjectForm(values: ProjectFormValues) {
+  return values.title.trim() ? {} : { title: true };
+}
+
 export function createProjectFormValues(
   project: ProjectDto | null,
   defaultPlan: ProjectProcessPlan,

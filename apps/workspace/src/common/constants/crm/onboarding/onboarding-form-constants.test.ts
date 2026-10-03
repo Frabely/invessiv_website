@@ -41,7 +41,11 @@ describe("onboarding form constants", () => {
   });
 
   it("names the query params of the form page", () => {
-    expect(OnboardingFormQueryParam).toEqual({ Tab: "tab", Block: "block" });
+    expect(OnboardingFormQueryParam).toEqual({
+      Tab: "tab",
+      Block: "block",
+      ReviewFilter: "reviewFilter",
+    });
   });
 
   it("knows every code a form endpoint answers with, each once", () => {

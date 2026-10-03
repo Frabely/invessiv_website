@@ -12,9 +12,11 @@ import { onboardingFormErrorText } from "./onboarding-form-error-text";
 import {
   buildOnboardingFormHref,
   buildOnboardingFormTabHref,
+  buildOnboardingReviewFilterHref,
   defaultOnboardingFormTab,
   readOnboardingFormBlockId,
   readOnboardingFormTab,
+  readOnboardingReviewFilter,
 } from "./onboarding-form-query";
 
 describe("detectOnboardingBlockListChange", () => {
@@ -36,6 +38,34 @@ describe("detectOnboardingBlockListChange", () => {
       detectOnboardingBlockListChange(["a", "b", "c"], ["c", "b", "a"]),
     ).toBeNull();
     expect(detectOnboardingBlockListChange(["a"], ["a", "b"])).toBeNull();
+  });
+});
+
+describe("onboarding review filter query", () => {
+  it("reads known filters and defaults unknown values to all", () => {
+    expect(
+      readOnboardingReviewFilter(new URLSearchParams("reviewFilter=pending")),
+    ).toBe("pending");
+    expect(
+      readOnboardingReviewFilter(new URLSearchParams("reviewFilter=unknown")),
+    ).toBe("all");
+  });
+
+  it("preserves other params and removes the default filter", () => {
+    expect(
+      buildOnboardingReviewFilterHref(
+        "/de/crm/onboarding/f-1",
+        "tab=review&block=b-1",
+        "complete",
+      ),
+    ).toBe("/de/crm/onboarding/f-1?tab=review&block=b-1&reviewFilter=complete");
+    expect(
+      buildOnboardingReviewFilterHref(
+        "/de/crm/onboarding/f-1",
+        "tab=review&reviewFilter=complete",
+        "all",
+      ),
+    ).toBe("/de/crm/onboarding/f-1?tab=review");
   });
 });
 

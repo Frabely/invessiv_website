@@ -35,10 +35,17 @@ const api = vi.hoisted(() => ({
   reviewBlock: vi.fn(),
   requestChanges: vi.fn(),
 }));
+const navigation = vi.hoisted(() => ({
+  search: "",
+  replace: vi.fn(),
+  refresh: vi.fn(),
+}));
 
 // The change request dialog refreshes the page behind it once the request went through.
 vi.mock("next/navigation", () => ({
-  useRouter: () => ({ refresh: vi.fn() }),
+  useRouter: () => navigation,
+  usePathname: () => "/de/crm/onboarding/f-1",
+  useSearchParams: () => new URLSearchParams(navigation.search),
 }));
 vi.mock("@/client/crm/onboarding-form-api-service", () => ({
   onboardingFormApiService: api,
@@ -165,6 +172,8 @@ describe("OnboardingReviewTab", () => {
   beforeEach(() => {
     api.reviewBlock.mockReset();
     api.requestChanges.mockReset();
+    navigation.search = "";
+    navigation.replace.mockReset();
   });
   afterEach(() => {
     cleanup();
@@ -196,6 +205,74 @@ describe("OnboardingReviewTab", () => {
     expect(screen.getByText("1 Rückfrage")).toBeInTheDocument();
     expect(card("Unternehmen")).toHaveAttribute("data-review", S.Clarification);
     expect(card("Technik")).toHaveAttribute("data-review", S.Pending);
+    for (const [name, tone] of [
+      [texts.status.pending, "warning"],
+      [texts.status.complete, "success"],
+      [texts.status.clarification, "info"],
+    ]) {
+      const badge = option("Technik", name).nextElementSibling?.querySelector(
+        "[data-tone]",
+      );
+      expect(badge).toHaveAttribute("data-tone", tone);
+      expect(badge?.querySelector("svg")).toBeInTheDocument();
+    }
+  });
+
+  it("filters blocks by URL status and shows counts for each result", () => {
+    navigation.search = "tab=review&reviewFilter=clarification";
+    renderTab(
+      form({
+        blocks: [
+          step("b-1", "Unternehmen", forCustomer),
+          step("b-2", "Marke", { reviewStatus: S.Complete }),
+          step("b-3", "Technik"),
+        ],
+      }),
+    );
+
+    const filters = screen.getByRole("group", { name: texts.filter.label });
+    expect(
+      within(filters).getByRole("button", { name: "Alle 3" }),
+    ).toBeInTheDocument();
+    expect(
+      within(filters).getByRole("button", { name: "Offen 1" }),
+    ).toBeInTheDocument();
+    expect(
+      within(filters).getByRole("button", { name: "Vollständig 1" }),
+    ).toBeInTheDocument();
+    expect(
+      within(filters).getByRole("button", { name: "Rückfrage 1" }),
+    ).toHaveAttribute("aria-pressed", "true");
+    for (const [name, tone] of [
+      ["Alle 3", "neutral"],
+      ["Offen 1", "warning"],
+      ["Vollständig 1", "success"],
+      ["Rückfrage 1", "info"],
+    ]) {
+      const badge = within(filters)
+        .getByRole("button", { name })
+        .querySelector("[data-tone]");
+      expect(badge).toHaveAttribute("data-tone", tone);
+      expect(badge?.querySelector("svg")).toBeInTheDocument();
+    }
+    expect(card("Unternehmen")).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "Marke" })).toBeNull();
+    fireEvent.click(
+      within(filters).getByRole("button", { name: "Vollständig 1" }),
+    );
+    expect(navigation.replace).toHaveBeenCalledWith(
+      "/de/crm/onboarding/f-1?tab=review&reviewFilter=complete",
+      { scroll: false },
+    );
+  });
+
+  it("distinguishes a missing status match from a form without blocks", () => {
+    navigation.search = "reviewFilter=complete";
+    renderTab();
+    expect(screen.getByText(texts.empty.noMatches.title)).toBeInTheDocument();
+    cleanup();
+    renderTab(form({ blocks: [] }));
+    expect(screen.getByText(texts.empty.noBlocks.title)).toBeInTheDocument();
   });
 
   it("saves complete with the click and adopts the answered form", async () => {

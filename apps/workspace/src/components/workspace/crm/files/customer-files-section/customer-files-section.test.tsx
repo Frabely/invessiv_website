@@ -86,8 +86,9 @@ function viewModel(overrides: Partial<FilesViewModel> = {}): FilesViewModel {
 function renderSection(
   model: FilesViewModel = viewModel(),
   projectId?: string,
+  expand = true,
 ) {
-  return render(
+  const result = render(
     <CustomerFilesSection
       content={content}
       customerId={CUSTOMER_ID}
@@ -98,6 +99,11 @@ function renderSection(
       viewModel={model}
     />,
   );
+  if (expand)
+    fireEvent.click(
+      screen.getByRole("button", { name: content.section.expandLabel }),
+    );
+  return result;
 }
 
 beforeEach(() => {
@@ -139,6 +145,15 @@ afterEach(() => {
 });
 
 describe("CustomerFilesSection", () => {
+  it("starts closed with its actions in the header", () => {
+    renderSection(viewModel(), undefined, false);
+    expect(
+      screen.getByRole("button", { name: content.section.expandLabel }),
+    ).toHaveAttribute("aria-expanded", "false");
+    expect(
+      screen.queryByRole("list", { name: content.section.listLabel }),
+    ).toBeNull();
+  });
   it("stores a selected file in customer-scoped URL state", async () => {
     renderSection();
     const checkbox = await screen.findByRole("checkbox", {

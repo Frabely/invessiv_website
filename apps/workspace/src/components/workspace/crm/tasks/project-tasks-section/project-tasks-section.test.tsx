@@ -64,8 +64,9 @@ function task(overrides: Partial<TaskDto> = {}): TaskDto {
 
 function renderSection(
   props: Partial<Parameters<typeof ProjectTasksSection>[0]> = {},
+  expand = true,
 ) {
-  return render(
+  const result = render(
     <ProjectTasksSection
       canWrite
       content={content}
@@ -77,6 +78,11 @@ function renderSection(
       {...props}
     />,
   );
+  if (expand)
+    fireEvent.click(
+      screen.getByRole("button", { name: content.section.expandLabel }),
+    );
+  return result;
 }
 
 describe("ProjectTasksSection", () => {
@@ -95,21 +101,20 @@ describe("ProjectTasksSection", () => {
     expect(screen.queryByRole("textbox")).toBeNull();
   });
 
-  it("starts open and folds away the body while the header keeps the add action", () => {
-    renderSection({ tasks: [task()] });
+  it("starts closed and opens while the header keeps the add action", () => {
+    renderSection({ tasks: [task()] }, false);
 
     const toggle = screen.getByRole("button", {
-      name: content.section.collapseLabel,
+      name: content.section.expandLabel,
     });
-    expect(toggle).toHaveAttribute("aria-expanded", "true");
-    expect(screen.getByText("Provide hosting access")).toBeInTheDocument();
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByText("Provide hosting access")).toBeNull();
 
     fireEvent.click(toggle);
-
-    expect(screen.queryByText("Provide hosting access")).toBeNull();
+    expect(screen.getByText("Provide hosting access")).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: content.section.expandLabel }),
-    ).toHaveAttribute("aria-expanded", "false");
+      screen.getByRole("button", { name: content.section.collapseLabel }),
+    ).toHaveAttribute("aria-expanded", "true");
     fireEvent.click(
       screen.getByRole("button", { name: content.section.addAction }),
     );

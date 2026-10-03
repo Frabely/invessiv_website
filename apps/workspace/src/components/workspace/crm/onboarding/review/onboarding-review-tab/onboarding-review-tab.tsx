@@ -3,14 +3,24 @@
 import { useState } from "react";
 import { faRotateLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
 import { isOnboardingReviewOpen } from "@invessiv/common/patterns/crm/onboarding/onboarding-form-state";
 import { summarizeOnboardingReview } from "@invessiv/common/patterns/crm/onboarding/onboarding-review";
 import { resolveQuestionnaireBlock } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-resolved-block";
-import { PrimaryCtaButton } from "@invessiv/ui";
+import { Badge, PrimaryCtaButton } from "@invessiv/ui";
+import { ONBOARDING_REVIEW_BADGES } from "@/common/constants/crm/onboarding/onboarding-review-badges";
+import {
+  ONBOARDING_REVIEW_FILTER_VALUES,
+  OnboardingReviewFilter,
+} from "@/common/constants/crm/onboarding/onboarding-review-filters";
 import type { OnboardingFormErrorTexts } from "@/common/contracts/crm/onboarding/onboarding-form-error-texts";
 import { buildOnboardingCallAgenda } from "@/common/patterns/crm/onboarding/onboarding-call-agenda";
+import {
+  buildOnboardingReviewFilterHref,
+  readOnboardingReviewFilter,
+} from "@/common/patterns/crm/onboarding/onboarding-form-query";
 import { describeOnboardingReviewSummary } from "@/common/patterns/crm/onboarding/onboarding-review-summary-text";
 import { questionnaireBlockName } from "@/common/patterns/crm/questionnaire/questionnaire-display-name";
 import { OnboardingAnswerReadView } from "@/components/shared/onboarding/onboarding-answer-read-view/onboarding-answer-read-view";
@@ -58,6 +68,10 @@ export function OnboardingReviewTab({
   onFormChangeAction,
   projectTitle,
 }: OnboardingReviewTabProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const filter = readOnboardingReviewFilter(searchParams);
   const [requesting, setRequesting] = useState(false);
   const downloads = useOnboardingFileDownloads(
     form.customerId,
@@ -81,6 +95,17 @@ export function OnboardingReviewTab({
   const open = isOnboardingReviewOpen(form.status);
   const editable = open && canWrite;
   const summary = summarizeOnboardingReview(form.blocks);
+  const filterCounts: Record<OnboardingReviewFilter, number> = {
+    [OnboardingReviewFilter.All]: summary.total,
+    [OnboardingReviewFilter.Pending]: summary.total - summary.reviewed,
+    [OnboardingReviewFilter.Complete]:
+      summary.reviewed - summary.clarifications,
+    [OnboardingReviewFilter.Clarification]: summary.clarifications,
+  };
+  const visibleBlocks =
+    filter === OnboardingReviewFilter.All
+      ? form.blocks
+      : form.blocks.filter((step) => step.reviewStatus === filter);
   const summaryText = describeOnboardingReviewSummary(summary, texts.summary);
   let notice: string | null = null;
   if (form.status === OnboardingFormStatus.ChangesRequested) {
@@ -125,56 +150,98 @@ export function OnboardingReviewTab({
           {downloads.actionError}
         </p>
       ) : null}
-      <ol aria-label={texts.blocks.heading} className={styles.blocks}>
-        {form.blocks.map((step) => {
-          const blockName = questionnaireBlockName(step.block, locale);
-          return (
-            <OnboardingReviewBlockCard
-              answers={
-                <OnboardingAnswerReadView
-                  answerFiles={form.answerFiles}
-                  hiddenAnswerFiles={form.hiddenAnswerFiles}
-                  answers={form.answers}
-                  blocks={[resolveQuestionnaireBlock(step.block, locale)]}
-                  files={{
-                    loadPreviewAction: downloads.loadPreview,
-                    locale,
-                    onDownloadAction: downloads.download,
-                    texts: filesContent,
-                  }}
-                  groupEntries={form.groupEntries}
-                  services={form.services}
-                  servicesConfirmed={form.servicesConfirmedAt !== null}
-                  servicesNote={form.servicesNote}
-                  showBlockTitles={false}
-                  texts={content.answers.read}
-                />
-              }
-              blockName={blockName}
-              content={texts}
-              controls={
-                editable ? (
-                  <OnboardingReviewControls
-                    blockName={blockName}
-                    content={texts}
-                    errorTexts={errorTexts}
-                    formId={form.id}
-                    onConflictAction={onFormChangeAction}
-                    onReviewedAction={(next, announcement) => {
-                      onFormChangeAction(next);
-                      onAnnounceAction(announcement);
-                    }}
-                    step={step}
-                  />
-                ) : null
-              }
-              key={step.block.id}
-              locale={locale}
-              step={step}
+      <div
+        aria-label={texts.filter.label}
+        className={styles.filters}
+        role="group"
+      >
+        {ONBOARDING_REVIEW_FILTER_VALUES.map((choice) => (
+          <button
+            aria-pressed={filter === choice}
+            className={styles.filter}
+            key={choice}
+            onClick={() =>
+              router.replace(
+                buildOnboardingReviewFilterHref(
+                  pathname,
+                  searchParams.toString(),
+                  choice,
+                ),
+                { scroll: false },
+              )
+            }
+            type="button"
+          >
+            <Badge
+              icon={ONBOARDING_REVIEW_BADGES[choice].icon}
+              label={`${choice === OnboardingReviewFilter.All ? texts.filter.all : texts.status[choice]} ${filterCounts[choice]}`}
+              tone={ONBOARDING_REVIEW_BADGES[choice].tone}
             />
-          );
-        })}
-      </ol>
+          </button>
+        ))}
+      </div>
+      {form.blocks.length === 0 ? (
+        <SectionEmptyState
+          description={texts.empty.noBlocks.description}
+          title={texts.empty.noBlocks.title}
+        />
+      ) : visibleBlocks.length === 0 ? (
+        <SectionEmptyState
+          description={texts.empty.noMatches.description}
+          title={texts.empty.noMatches.title}
+        />
+      ) : (
+        <ol aria-label={texts.blocks.heading} className={styles.blocks}>
+          {visibleBlocks.map((step) => {
+            const blockName = questionnaireBlockName(step.block, locale);
+            return (
+              <OnboardingReviewBlockCard
+                answers={
+                  <OnboardingAnswerReadView
+                    answerFiles={form.answerFiles}
+                    hiddenAnswerFiles={form.hiddenAnswerFiles}
+                    answers={form.answers}
+                    blocks={[resolveQuestionnaireBlock(step.block, locale)]}
+                    files={{
+                      loadPreviewAction: downloads.loadPreview,
+                      locale,
+                      onDownloadAction: downloads.download,
+                      texts: filesContent,
+                    }}
+                    groupEntries={form.groupEntries}
+                    services={form.services}
+                    servicesConfirmed={form.servicesConfirmedAt !== null}
+                    servicesNote={form.servicesNote}
+                    showBlockTitles={false}
+                    texts={content.answers.read}
+                  />
+                }
+                blockName={blockName}
+                content={texts}
+                controls={
+                  editable ? (
+                    <OnboardingReviewControls
+                      blockName={blockName}
+                      content={texts}
+                      errorTexts={errorTexts}
+                      formId={form.id}
+                      onConflictAction={onFormChangeAction}
+                      onReviewedAction={(next, announcement) => {
+                        onFormChangeAction(next);
+                        onAnnounceAction(announcement);
+                      }}
+                      step={step}
+                    />
+                  ) : null
+                }
+                key={step.block.id}
+                locale={locale}
+                step={step}
+              />
+            );
+          })}
+        </ol>
+      )}
       {requesting ? (
         <OnboardingRequestChangesDialog
           content={texts.request.dialog}

@@ -13,6 +13,7 @@ type CollapsibleSectionProps = {
   count?: string;
   defaultExpanded?: boolean;
   description?: string;
+  expandOn?: string | null;
   labelCollapse: string;
   labelExpand: string;
   meta?: ReactNode;
@@ -28,15 +29,26 @@ export function CollapsibleSection({
   count,
   defaultExpanded = false,
   description,
+  expandOn,
   labelCollapse,
   labelExpand,
   meta,
   summary,
   title,
 }: CollapsibleSectionProps) {
-  const [expanded, setExpanded] = useState(defaultExpanded);
+  const [expansion, setExpansion] = useState({
+    expanded: defaultExpanded,
+    expandOn,
+  });
   const headingId = useId();
   const bodyId = useId();
+  if (expansion.expandOn !== expandOn) {
+    setExpansion({
+      expanded: expandOn ? true : expansion.expanded,
+      expandOn,
+    });
+  }
+  const expanded = expansion.expanded;
 
   return (
     <section
@@ -55,7 +67,12 @@ export function CollapsibleSection({
             expanded={expanded}
             labelCollapse={labelCollapse}
             labelExpand={labelExpand}
-            onToggleAction={() => setExpanded((current) => !current)}
+            onToggleAction={() =>
+              setExpansion((current) => ({
+                ...current,
+                expanded: !current.expanded,
+              }))
+            }
           />
         </div>
       </header>

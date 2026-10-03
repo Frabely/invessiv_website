@@ -259,6 +259,20 @@
       "complete": "Complete",
       "clarification": "Question"
     },
+    "filter": {
+      "label": "Filter review by status",
+      "all": "All"
+    },
+    "empty": {
+      "noBlocks": {
+        "title": "Nothing to review yet",
+        "description": "This form has no blocks yet. Once blocks are added and submitted, you can review them here."
+      },
+      "noMatches": {
+        "title": "No blocks with this status",
+        "description": "Choose another status or “All” to see the remaining blocks."
+      }
+    },
     "mode": {
       "customer": "Ask the customer",
       "call": "Clarify in the call"

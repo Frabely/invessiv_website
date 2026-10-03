@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { faClipboardList } from "@fortawesome/free-solid-svg-icons";
@@ -119,7 +119,6 @@ export function ProjectTasksSection({
             : content.section.countNone
           : undefined
       }
-      defaultExpanded
       labelCollapse={content.section.collapseLabel}
       labelExpand={content.section.expandLabel}
       title={content.section.title}

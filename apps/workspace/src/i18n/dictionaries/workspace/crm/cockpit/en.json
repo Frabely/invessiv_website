@@ -33,6 +33,7 @@
     "saveConflict": "Someone just changed this project, for example by handing over a feedback round. We loaded the current version; your input is still here. Save again to apply it.",
     "cancel": "Cancel",
     "title": "Project name",
+    "titleRequired": "Enter a project name.",
     "statusLabel": "Status",
     "processSteps": "Process steps",
     "processStepsHint": "Free-text steps are labels only. “Add round” adds exactly one feedback round after a step – every round counts on its own.",

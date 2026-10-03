@@ -2,6 +2,7 @@
 export const OnboardingFormQueryParam = {
   Tab: "tab",
   Block: "block",
+  ReviewFilter: "reviewFilter",
 } as const;
 
 export type OnboardingFormQueryParam =

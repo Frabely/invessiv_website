@@ -1,6 +1,6 @@
 # Paket B — Kleine Cockpit-Korrekturen
 
-> Teil von [README.md](./README.md) (Ziel, Entscheidungen, Reihenfolge, gemeinsame Regeln, Abnahme). Nur Plan, nichts umgesetzt.
+> Teil von [README.md](./README.md) (Ziel, Entscheidungen, Reihenfolge, gemeinsame Regeln, Abnahme). **Status: im Review (Merge offen).**
 
 - **B1 — Projekt anlegen: Fehler am Namensfeld (bugs 1).**
   `project-editor-dialog.tsx` bricht bei leerem Titel still ab. Neu nach dem Muster von

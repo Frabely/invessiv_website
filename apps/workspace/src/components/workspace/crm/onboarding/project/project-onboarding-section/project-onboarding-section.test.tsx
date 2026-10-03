@@ -48,7 +48,10 @@ function state(
   };
 }
 
-function renderSection(overrides: Partial<OnboardingViewModel> = {}) {
+function renderSection(
+  overrides: Partial<OnboardingViewModel> = {},
+  expand = true,
+) {
   const viewModel: OnboardingViewModel = {
     projectId: "p-1",
     state: state(),
@@ -65,7 +68,7 @@ function renderSection(overrides: Partial<OnboardingViewModel> = {}) {
     formHref: null,
     ...overrides,
   };
-  return render(
+  const result = render(
     <ProjectOnboardingSection
       content={content}
       kitErrors={getCrmQuestionnaireDictionary("de").errors}
@@ -75,6 +78,11 @@ function renderSection(overrides: Partial<OnboardingViewModel> = {}) {
       viewModel={viewModel}
     />,
   );
+  if (expand)
+    fireEvent.click(
+      screen.getByRole("button", { name: "Onboarding aufklappen" }),
+    );
+  return result;
 }
 
 describe("ProjectOnboardingSection", () => {
@@ -83,6 +91,15 @@ describe("ProjectOnboardingSection", () => {
     api.start.mockReset();
   });
   afterEach(cleanup);
+
+  it("starts closed while the start action stays visible", () => {
+    renderSection({}, false);
+    expect(
+      screen.getByRole("button", { name: "Onboarding aufklappen" }),
+    ).toHaveAttribute("aria-expanded", "false");
+    expect(screen.getByRole("button", { name: text.start })).toBeVisible();
+    expect(screen.queryByText(text.empty.title)).toBeNull();
+  });
 
   it("explains the purpose and offers the start while there is no form", () => {
     renderSection();

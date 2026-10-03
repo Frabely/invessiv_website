@@ -15,9 +15,10 @@ import type { OnboardingFormBlockDto } from "@invessiv/common/contracts/crm/onbo
 import type { OnboardingFormDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form.dto";
 import type { ReviewOnboardingBlockRequestDto } from "@invessiv/common/contracts/crm/onboarding/review-onboarding-block-request.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { ButtonControl, FormField } from "@invessiv/ui";
+import { Badge, ButtonControl, FormField } from "@invessiv/ui";
 import { onboardingFormApiService } from "@/client/crm/onboarding-form-api-service";
 import { VersionedMutationOutcomeKind } from "@/common/constants/client/versioned-mutation-outcome-kinds";
+import { ONBOARDING_REVIEW_BADGES } from "@/common/constants/crm/onboarding/onboarding-review-badges";
 import type { OnboardingFormErrorTexts } from "@/common/contracts/crm/onboarding/onboarding-form-error-texts";
 import { onboardingFormErrorText } from "@/common/patterns/crm/onboarding/onboarding-form-error-text";
 import { useVersionedCommand } from "@/hooks/workspace/use-versioned-command";
@@ -152,7 +153,11 @@ export function OnboardingReviewControls({
                 value={value}
               />
               <span className={styles.segmentLabel}>
-                {content.status[value]}
+                <Badge
+                  icon={ONBOARDING_REVIEW_BADGES[value].icon}
+                  label={content.status[value]}
+                  tone={ONBOARDING_REVIEW_BADGES[value].tone}
+                />
               </span>
             </label>
           ))}

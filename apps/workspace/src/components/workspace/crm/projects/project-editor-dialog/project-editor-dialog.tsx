@@ -12,9 +12,11 @@ import {
   createProjectFormValues,
   toCreateProjectRequest,
   toUpdateProjectRequest,
+  validateProjectForm,
 } from "@/common/patterns/crm/project-form";
 import { createDefaultProcessPlan } from "@/common/patterns/crm/project-process-plan";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
+import { useFocusFirstInvalidField } from "@/hooks/workspace/use-focus-first-invalid-field";
 import type { CrmCockpitDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { ProcessStepEditor } from "@/components/workspace/crm/projects/process-step-editor/process-step-editor";
 import styles from "./project-editor-dialog.module.css";
@@ -45,6 +47,8 @@ export function ProjectEditorDialog({
   const formId = useId();
   const currentStepId = useId();
   const currentStepHintId = useId();
+  const { formRef, focusFirstInvalidField } = useFocusFirstInvalidField();
+  const [errors, setErrors] = useState<{ title?: boolean }>({});
   const [values, setValues] = useState(() =>
     createProjectFormValues(
       project,
@@ -60,7 +64,13 @@ export function ProjectEditorDialog({
 
   async function saveProject(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!values.title.trim() || mutation.isSubmitting) return;
+    if (mutation.isSubmitting) return;
+    const validation = validateProjectForm(values);
+    setErrors(validation);
+    if (validation.title) {
+      focusFirstInvalidField();
+      return;
+    }
     await mutation.submit(async (stored) => {
       const result = stored
         ? await projectsApiService.updateProject(
@@ -92,17 +102,21 @@ export function ProjectEditorDialog({
         id={formId}
         noValidate
         onSubmit={saveProject}
+        ref={formRef}
       >
         <FormField
+          errorMessage={errors.title ? content.titleRequired : undefined}
           kind="text"
           label={content.title}
           inputProps={{
             autoFocus: true,
-            onChange: (event) =>
+            onChange: (event) => {
+              setErrors({});
               setValues((current) => ({
                 ...current,
                 title: event.target.value,
-              })),
+              }));
+            },
             required: true,
             value: values.title,
           }}

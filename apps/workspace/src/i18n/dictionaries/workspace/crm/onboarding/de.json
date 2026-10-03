@@ -259,6 +259,20 @@
       "complete": "Vollständig",
       "clarification": "Rückfrage"
     },
+    "filter": {
+      "label": "Prüfung nach Status filtern",
+      "all": "Alle"
+    },
+    "empty": {
+      "noBlocks": {
+        "title": "Noch nichts zu prüfen",
+        "description": "Dieser Bogen hat noch keine Blöcke. Sobald welche vorhanden und abgesendet sind, kannst du sie hier prüfen."
+      },
+      "noMatches": {
+        "title": "Keine Blöcke mit diesem Status",
+        "description": "Wähle einen anderen Status oder „Alle“, um die übrigen Blöcke zu sehen."
+      }
+    },
     "mode": {
       "customer": "An den Kunden",
       "call": "Im Call klären"

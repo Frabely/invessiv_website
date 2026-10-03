@@ -23,12 +23,16 @@ import {
 } from "@/i18n/dictionaries/workspace/crm";
 import { ProjectFeedbackSection } from "./project-feedback-section";
 
-const navigation = vi.hoisted(() => ({ replace: vi.fn(), refresh: vi.fn() }));
+const navigation = vi.hoisted(() => ({
+  replace: vi.fn(),
+  refresh: vi.fn(),
+  search: "cockpit=customer-1",
+}));
 
 vi.mock("next/navigation", () => ({
   useRouter: () => navigation,
   usePathname: () => "/en/crm",
-  useSearchParams: () => new URLSearchParams("cockpit=customer-1"),
+  useSearchParams: () => new URLSearchParams(navigation.search),
 }));
 
 vi.mock("@/client/crm/feedback-rounds-api-service", async (importOriginal) => {
@@ -144,8 +148,8 @@ function viewModel(
   };
 }
 
-function renderSection(model: FeedbackRoundsViewModel) {
-  return render(
+function renderSection(model: FeedbackRoundsViewModel, expand = true) {
+  const result = render(
     <ProjectFeedbackSection
       content={content}
       customerId="customer-1"
@@ -154,11 +158,36 @@ function renderSection(model: FeedbackRoundsViewModel) {
       viewModel={model}
     />,
   );
+  if (
+    expand &&
+    screen.queryByRole("button", { name: content.section.expandLabel })
+  )
+    fireEvent.click(
+      screen.getByRole("button", { name: content.section.expandLabel }),
+    );
+  return result;
 }
 
 describe("ProjectFeedbackSection", () => {
-  beforeEach(() => navigation.replace.mockReset());
+  beforeEach(() => {
+    navigation.replace.mockReset();
+    navigation.search = "cockpit=customer-1";
+  });
   afterEach(cleanup);
+
+  it("starts closed and opens a deep-linked feedback round", () => {
+    renderSection(viewModel(), false);
+    expect(
+      screen.getByRole("button", { name: content.section.expandLabel }),
+    ).toHaveAttribute("aria-expanded", "false");
+    cleanup();
+    navigation.search = "cockpit=customer-1&feedbackRound=round-1";
+    renderSection(viewModel({ detail: DETAIL }), false);
+    expect(
+      screen.getByRole("button", { name: content.section.collapseLabel }),
+    ).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByText("<script>alert(1)</script>")).toBeInTheDocument();
+  });
 
   it("explains the purpose while no round was handed over and offers the first", () => {
     renderSection(viewModel());

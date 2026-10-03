@@ -45,6 +45,7 @@ import {
   validateCustomerForm,
 } from "@/common/patterns/crm/customer-form";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
+import { useFocusFirstInvalidField } from "@/hooks/workspace/use-focus-first-invalid-field";
 import { useLeadCustomerConversion } from "@/hooks/workspace/use-lead-customer-conversion";
 import { buildLeadDetailHref } from "@/common/patterns/leads/lead-detail-query";
 import type { CrmFormDictionary } from "@/i18n/dictionaries/workspace/crm";
@@ -125,7 +126,7 @@ export function CustomerFormDialog({
   const customerHeadingId = useId();
   const addressHeadingId = useId();
   const detailsHeadingId = useId();
-  const formRef = useRef<HTMLFormElement>(null);
+  const { formRef, focusFirstInvalidField } = useFocusFirstInvalidField();
   const displayNameInputRef = useRef<HTMLInputElement>(null);
   const mode = customer
     ? CustomerFormDialogMode.Edit
@@ -205,11 +206,7 @@ export function CustomerFormDialog({
       if (invalidTab === CustomerFormTab.Contacts) {
         setContactEditorOpen(true);
       }
-      requestAnimationFrame(() =>
-        formRef.current
-          ?.querySelector<HTMLElement>('[aria-invalid="true"]')
-          ?.focus(),
-      );
+      focusFirstInvalidField();
       return;
     }
 

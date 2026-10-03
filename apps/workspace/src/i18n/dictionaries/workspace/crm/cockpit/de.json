@@ -33,6 +33,7 @@
     "saveConflict": "Jemand hat dieses Projekt gerade geändert, zum Beispiel beim Übergeben einer Feedbackrunde. Wir haben den aktuellen Stand geladen; deine Eingaben sind noch da. Speichere erneut, um sie zu übernehmen.",
     "cancel": "Abbrechen",
     "title": "Projektname",
+    "titleRequired": "Gib einen Projektnamen ein.",
     "statusLabel": "Status",
     "processSteps": "Prozessschritte",
     "processStepsHint": "Freitext-Schritte sind reine Beschriftungen. Mit „Runde“ fügst du nach einem Schritt genau eine Feedbackrunde ein – jede Runde zählt einzeln.",

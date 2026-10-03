@@ -1,6 +1,10 @@
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { OnboardingFormQueryParam } from "@/common/constants/crm/onboarding/onboarding-form-query-params";
 import {
+  ONBOARDING_REVIEW_FILTER_VALUES,
+  OnboardingReviewFilter,
+} from "@/common/constants/crm/onboarding/onboarding-review-filters";
+import {
   ONBOARDING_FORM_TAB_VALUES,
   OnboardingFormTab,
 } from "@/common/constants/crm/onboarding/onboarding-form-tabs";
@@ -58,6 +62,31 @@ export function buildOnboardingFormHref(
   const params = new URLSearchParams(queryString);
   if (blockId) params.set(OnboardingFormQueryParam.Block, blockId);
   else params.delete(OnboardingFormQueryParam.Block);
+  const query = params.toString();
+  return query ? `${pathname}?${query}` : pathname;
+}
+
+/** An unknown filter falls back to the complete review. */
+export function readOnboardingReviewFilter(
+  params: URLSearchParams,
+): OnboardingReviewFilter {
+  const requested = params.get(OnboardingFormQueryParam.ReviewFilter);
+  return (
+    ONBOARDING_REVIEW_FILTER_VALUES.find((filter) => filter === requested) ??
+    OnboardingReviewFilter.All
+  );
+}
+
+/** Keeps the form tab and block selection while changing the review filter. */
+export function buildOnboardingReviewFilterHref(
+  pathname: string,
+  queryString: string,
+  filter: OnboardingReviewFilter,
+): string {
+  const params = new URLSearchParams(queryString);
+  if (filter === OnboardingReviewFilter.All)
+    params.delete(OnboardingFormQueryParam.ReviewFilter);
+  else params.set(OnboardingFormQueryParam.ReviewFilter, filter);
   const query = params.toString();
   return query ? `${pathname}?${query}` : pathname;
 }

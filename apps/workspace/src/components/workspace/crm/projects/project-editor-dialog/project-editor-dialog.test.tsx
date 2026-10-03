@@ -50,6 +50,27 @@ describe("ProjectEditorDialog", () => {
   });
   afterEach(cleanup);
 
+  it("shows an inline error and focuses the empty project name", async () => {
+    render(
+      <ProjectEditorDialog
+        content={content}
+        customerId="customer-1"
+        onCloseAction={vi.fn()}
+        project={null}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: content.save }));
+    const title = screen.getByRole("textbox", { name: content.title });
+    expect(title).toHaveAttribute("aria-invalid", "true");
+    expect(screen.getByText(content.titleRequired)).toBeVisible();
+    await waitFor(() => expect(title).toHaveFocus());
+    expect(mocks.createProject).not.toHaveBeenCalled();
+
+    fireEvent.change(title, { target: { value: "Neues Projekt" } });
+    expect(title).not.toHaveAttribute("aria-invalid", "true");
+  });
+
   it("keeps the stored phase when editing a project", async () => {
     const project = projectFixture({
       phase: ProjectPhase.Development,
