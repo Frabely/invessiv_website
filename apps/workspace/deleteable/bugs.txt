@@ -1,0 +1,53 @@
+1.Projekt anlegen -> wenn name fehlt kann man nicht speicher -> krreokt -> aber man sieht es nicht in der UI es sollte zum namenfeld gesprungen werden und validierungsfehler angezeigt werden
+2.Onboarding starten leer -> man kann nicht mehr eine Vorlage wählen
+3. Bausteine hinzufügen lange warten -> multi select sollte möglich sein bzw mindesten bis gespeichert loading indikator an dem element was hinzugefügt wird
+4. die prüfung filtern nach offen vollständig rückfrage -> vor allem nach nachfrage
+5. bei 2. projekt werden im cokpit die korrekten zahlen nicht angezeigt eine elistung ist beim preis vom tempalte abweichend die andere das tempalte copiert?
+6. Bei mehreren Projekten sollte man irgendwo Zentral das Projekt wechseln können im Portal -> der Nutzer sieht dann bei den Widgets daten passend zum Projekt (wenn kein Projekt dann ist die auswahl invisible)
+7. tabs im cockpit alle zugeklappt default
+8. Wir möchten dein Feedback kurz besprechen
+   Bevor wir loslegen, klären wir ein paar Punkte am besten kurz gemeinsam. Schreib uns im Chat, wann es dir passt.
+
+   Nachricht von uns
+   testset
+   wenn hier ein Calendly hinterlegt ist soll man direkt hier buchen können
+9 bei allen widget wird nur das angezeigt was für das projekt relevant ist -> aktuell mischzustand betrifft 6 -> auch bei bildenr werden immer alle angezeigt -> alle soll man im widget nicht seheh maximalk in der gesamtansicht zB http://localhost:3001/de/portal/0861af59-3489-4a0a-94ae-2bab9ebbc77d/files?tab=fromYou
+10 bei manchen widgetseiten fehlte in zurück zum dashboard
+11 dashboard logo soll überall anklickbar sein auch TExt dahinter -> und zu home führen
+12 im widget sollen abgeschlossene aufgaben vom kunde auch angezeigt werden bzw gecheckt sein -> überlegen ob das zurücknehmen des chekens sinnvoll ist falls das ausversehen apssiert
+13 Kunde kann keine aufgaben für uns anlegen auf dem Dashboard -.> fehlt gänzlich -> wäre zB relevant für Wartung oder in der projektlaufzeit
+14 bei ansprechpartner fehlt der calendly link wenn konfiguriert außerdem auch wenn man beim Feedback geben als owner oder betreuer ein gespräch anfordert -> wichtig der calendly link der jeweils hinterlegt ist soll der vom Betreuer des projektes sein
+
+High prio:
+
+wenn man eine Feedbackrunde abschließ darf man nur die nächste öffnen können wenn der nächste step im Projekt state ein Feedabck ist -> wie gehen wir damit u wenn Feddback -> Step x -> Feedback -> Feedback
+alsto so:
+Entwicklung
+Schritt 4 von 8
+Onboarding
+Design
+Feedbackrunde 1
+Entwicklung
+Feedbackrunde 2
+Feedbackrunde 3
+Launch
+Wartung
+
+aktuell kann nach feedback 1 die neue rudne starten (klignt falsch weil ja erst entwicklugn startet) und auf später drücken -> wenn man auf später drückt kann man keine 2. feedbackrunde starten bzw in die 2. übergehen
+verhatlen prüfen und ux fixen
+ein bug ist nur schlechte ux -> der status nach feedbackrunde 1 ändert sich zu Enwicklung in der UI aber wenn ich auf bearbeiten gehen -> Design ausgewählt -> ändere ich das zu entwicklung ist es korrekt und ich kann eine weitere starten
+
+Todo
+default fragebogen fehlt -> nochmal ausghiebig prüfen sauber strukturieren und dann einmal als vorlage anlegen
+prüfen ob wirklich pflicht
+Welche typischen Probleme haben diese Kunden? *
+Was wollen diese Kunden erreichen? *
+Warum suchen Kunden nach eurer Leistung? *
+Welche Bedenken oder Einwände hört ihr häufig? *
+Welche Fragen stellen Kunden vor einer Zusammenarbeit? *
+Telefon * beim ansprechpartner nicht required?
+bei Farben -> Mehrere hinzufügbar machen mit utnerschiedlichen titeln -> sollte mit baukasten gehen aktuell nur primär udn sekundär -> cta farbe zB nicht genannt
+
+Große Arbeiten
+UX und UI Cockpit
+Dashboard Widget für Portal schöner machen (prio low)
