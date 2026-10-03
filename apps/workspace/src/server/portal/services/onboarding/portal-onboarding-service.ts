@@ -168,7 +168,7 @@ export const portalOnboardingService = {
   canAttach: access.canAttach,
   notFound: access.notFound,
   validation: access.validation,
-  listVisibleForms: access.listVisibleForms,
+  findVisibleFormForProject: access.findVisibleFormForProject,
   findVisibleForm: access.findVisibleForm,
   withLockedForm: access.withLockedForm,
   listEditableBlockIds: access.listEditableBlockIds,

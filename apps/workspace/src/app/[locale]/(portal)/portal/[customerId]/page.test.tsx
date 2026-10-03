@@ -19,7 +19,7 @@ const mocks = vi.hoisted(() => ({
   getPortalDashboard: vi.fn(),
   getPortalConversation: vi.fn(),
   listPortalFiles: vi.fn(),
-  listPortalOnboardingForms: vi.fn(),
+  getPortalOnboardingWidgetForm: vi.fn(),
   getPortalOnboardingCall: vi.fn(),
   dashboardProps: vi.fn(),
 }));
@@ -30,8 +30,10 @@ vi.mock(
 );
 
 vi.mock(
-  "@/server/portal/query-handler/list-portal-onboarding-forms.query-handler",
-  () => ({ listPortalOnboardingForms: mocks.listPortalOnboardingForms }),
+  "@/server/portal/query-handler/get-portal-onboarding-widget-form.query-handler",
+  () => ({
+    getPortalOnboardingWidgetForm: mocks.getPortalOnboardingWidgetForm,
+  }),
 );
 
 vi.mock(
@@ -108,7 +110,7 @@ describe("PortalCustomerPage", () => {
       ok: false,
       code: FileApiErrorCode.NotFound,
     });
-    mocks.listPortalOnboardingForms.mockResolvedValue([]);
+    mocks.getPortalOnboardingWidgetForm.mockResolvedValue(null);
   });
 
   afterEach(cleanup);
@@ -131,6 +133,7 @@ describe("PortalCustomerPage", () => {
     });
     expect(props.filesOverview).toEqual({ fromUs: page, fromYou: page });
     expect(props.filesHref).toBe("/de/portal/customer-1/files");
+    expect(mocks.getPortalOnboardingWidgetForm).not.toHaveBeenCalled();
   });
 
   it("uses the selected project for files and onboarding", async () => {
@@ -142,10 +145,10 @@ describe("PortalCustomerPage", () => {
         projects: [project, { ...project, id: "project-2" }],
       }),
     );
-    mocks.listPortalOnboardingForms.mockResolvedValue([
-      { id: "form-1", projectId: "project-1" },
-      { id: "form-2", projectId: "project-2" },
-    ]);
+    mocks.getPortalOnboardingWidgetForm.mockResolvedValue({
+      id: "form-2",
+      projectId: "project-2",
+    });
     const props = await renderPage("customer-1", "project-2");
     expect(mocks.getPortalDashboard).toHaveBeenCalledWith(
       ACTOR,
@@ -156,9 +159,14 @@ describe("PortalCustomerPage", () => {
       ACTOR,
       expect.objectContaining({ projectId: "project-2" }),
     );
-    expect(props.onboarding).toEqual([
-      { id: "form-2", projectId: "project-2" },
-    ]);
+    expect(mocks.getPortalOnboardingWidgetForm).toHaveBeenCalledWith(
+      ACTOR,
+      "project-2",
+    );
+    expect(props.onboarding).toEqual({
+      id: "form-2",
+      projectId: "project-2",
+    });
     expect(props.filesHref).toBe(
       "/de/portal/customer-1/files?project=project-2",
     );
@@ -176,12 +184,27 @@ describe("PortalCustomerPage", () => {
       ACTOR,
       expect.objectContaining({ projectId: "project-1" }),
     );
+    expect(mocks.getPortalOnboardingWidgetForm).toHaveBeenCalledWith(
+      ACTOR,
+      "project-1",
+    );
     expect(props.selectedProjectId).toBe("project-1");
   });
 
   it("shows the onboarding widget only to a reader with the right and a form", async () => {
-    const forms = [{ id: "form-1", projectTitle: "Relaunch" }];
-    mocks.listPortalOnboardingForms.mockResolvedValue(forms);
+    const form = {
+      id: "form-1",
+      projectId: "project-1",
+      projectTitle: "Relaunch",
+    };
+    mocks.getPortalDashboard.mockResolvedValue(
+      dashboard({
+        projects: [
+          { id: "project-1" } as PortalDashboardDto["projects"][number],
+        ],
+      }),
+    );
+    mocks.getPortalOnboardingWidgetForm.mockResolvedValue(form);
     mocks.getPortalOnboardingCall.mockResolvedValue({ booking: null });
 
     const blind = await renderPage();
@@ -197,10 +220,11 @@ describe("PortalCustomerPage", () => {
       ]),
     });
     const reader = await renderPage();
-    expect(mocks.listPortalOnboardingForms).toHaveBeenLastCalledWith(
+    expect(mocks.getPortalOnboardingWidgetForm).toHaveBeenLastCalledWith(
       expect.objectContaining({ customerId: "customer-1" }),
+      "project-1",
     );
-    expect(reader.onboarding).toEqual(forms);
+    expect(reader.onboarding).toEqual(form);
     // Whether the call of the widget's form is due is the server's answer, passed on as it is.
     expect(mocks.getPortalOnboardingCall).toHaveBeenLastCalledWith(
       expect.objectContaining({ customerId: "customer-1" }),
@@ -211,7 +235,7 @@ describe("PortalCustomerPage", () => {
       PortalWidgetKey.Onboarding,
     );
 
-    mocks.listPortalOnboardingForms.mockResolvedValue([]);
+    mocks.getPortalOnboardingWidgetForm.mockResolvedValue(null);
     mocks.getPortalOnboardingCall.mockClear();
     const empty = await renderPage();
     expect(mocks.getPortalOnboardingCall).not.toHaveBeenCalled();

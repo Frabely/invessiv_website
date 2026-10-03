@@ -176,9 +176,8 @@ Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-le
   herein (Portal: `usePortalFileDownloads`, CRM: `useFileDownloads` mit `filesApiService`); ohne `files` stehen nur
   die Dateinamen da.
 - **Onboarding-Widget:** Es steht in `PORTAL_WIDGET_LAYOUT` hinter `portal.onboarding.read` und ist echt
-  (`onlyWithContent`): Die Seite lädt `listPortalOnboardingForms` und meldet Inhalt
-  nur, wenn es einen Bogen gibt. Welchen Bogen es zeigt, entscheidet `pickPortalOnboardingWidgetForm` (der, bei dem
-  der Kunde dran ist, sonst der jüngste); der Fortschritt kommt aus derselben Zusammenfassung wie im CRM.
+  (`onlyWithContent`): Die Seite lädt mit `getPortalOnboardingWidgetForm` nur den Bogen des gewählten Projekts
+  und meldet Inhalt nur, wenn es diesen Bogen gibt. Der Fortschritt kommt aus derselben Zusammenfassung wie im CRM.
 
 - **Nachforderung (ab Task 68):** Im Status `changes_requested` öffnet der Bogen auf dem ersten Block aus
   `editableBlockIds` (`usePortalOnboardingStep` nimmt dafür einen Startabschnitt), zeigt über dem Formular, was zu

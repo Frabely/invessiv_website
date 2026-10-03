@@ -23,8 +23,7 @@ import { getPortalDashboard } from "@/server/portal/query-handler/get-portal-das
 import { getPortalOnboardingCall } from "@/server/portal/query-handler/get-portal-onboarding-call.query-handler";
 import { portalCanOn } from "@/server/portal/shared/portal-can-on";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
-import { pickPortalOnboardingWidgetForm } from "@/common/patterns/portal/pick-portal-onboarding-widget-form";
-import { listPortalOnboardingForms } from "@/server/portal/query-handler/list-portal-onboarding-forms.query-handler";
+import { getPortalOnboardingWidgetForm } from "@/server/portal/query-handler/get-portal-onboarding-widget-form.query-handler";
 import { PortalDashboardQueryParam } from "@/common/constants/portal/portal-dashboard-query-params";
 import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
 
@@ -75,7 +74,7 @@ export default async function PortalCustomerPage({
     dashboard.projects.find((project) => project.id === projectParam)?.id ??
     dashboard.projects[0]?.id ??
     null;
-  const [conversationResult, fromUs, fromYou, onboarding] = await Promise.all([
+  const [conversationResult, fromUs, fromYou, widgetForm] = await Promise.all([
     getPortalConversation(reader, null),
     listPortalFiles(reader, {
       origin: PortalFileOrigin.FromUs,
@@ -87,15 +86,11 @@ export default async function PortalCustomerPage({
       pageSize: DASHBOARD_FILES_PREVIEW_SIZE,
       projectId: selectedProjectId ?? undefined,
     }),
-    // Empty without `portal.onboarding.read`; the widget then has no content and stays away.
-    listPortalOnboardingForms(reader),
-  ]);
-  // The widget shows one form; only that one can have a call to offer.
-  const widgetForm = pickPortalOnboardingWidgetForm(
+    // Without a current project, the onboarding widget has no form to show.
     selectedProjectId
-      ? onboarding.filter((form) => form.projectId === selectedProjectId)
-      : onboarding,
-  );
+      ? getPortalOnboardingWidgetForm(reader, selectedProjectId)
+      : Promise.resolve(null),
+  ]);
   const onboardingCall = widgetForm
     ? await getPortalOnboardingCall(reader, widgetForm.id)
     : null;
@@ -161,7 +156,7 @@ export default async function PortalCustomerPage({
               )
             : null
         }
-        onboarding={widgetForm ? [widgetForm] : []}
+        onboarding={widgetForm}
         onboardingCall={onboardingCall}
         today={today}
         viewerUserId={reader.userId}

@@ -122,8 +122,8 @@ Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-le
   Stand; die Bogen-`version` vergleicht keiner von ihnen.
 - Das Portal-DTO trägt `services` (`PortalOnboardingServiceDto`: Titel, Beschreibung, Position — ohne Preis und ohne
   die ID der Projektleistung), `servicesNote` und `canAttach` (`portal.onboarding.submit` und `portal.files.read`,
-  nie die Owner-Sicht). Das Dashboard-Widget liest die Zusammenfassung über `listPortalOnboardingForms`;
-  es gibt dafür keine zweite Abfrage und kein Feld im `PortalDashboardDto`.
+  nie die Owner-Sicht). Das Dashboard-Widget liest nur den Bogen des gewählten Projekts über
+  `getPortalOnboardingWidgetForm`; es gibt dafür kein Feld im `PortalDashboardDto`.
 
 Ab Task 68 (`apps/workspace/plans/crm/15-onboarding/68-pruefung-und-nachforderung.md`):
 

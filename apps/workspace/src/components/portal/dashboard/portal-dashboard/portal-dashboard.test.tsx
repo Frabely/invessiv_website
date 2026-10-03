@@ -200,7 +200,7 @@ function renderDashboard(
   cockpitHref: string | null = null,
   conversation: PortalConversationDto | null = CONVERSATION,
   filesOverview: PortalFilesOverviewDto | null = FILES,
-  onboarding: PortalOnboardingFormSummaryDto[] = [],
+  onboarding: PortalOnboardingFormSummaryDto | null = null,
   selectedProjectId?: string | null,
 ) {
   const keys = new Set<PortalWidgetKey>([
@@ -209,7 +209,7 @@ function renderDashboard(
     PortalWidgetKey.OurTasks,
     PortalWidgetKey.Contact,
   ]);
-  if (onboarding.length > 0) keys.add(PortalWidgetKey.Onboarding);
+  if (onboarding) keys.add(PortalWidgetKey.Onboarding);
   return render(
     <PortalDashboard
       cockpitHref={cockpitHref}
@@ -273,18 +273,16 @@ describe("PortalDashboard", () => {
   });
 
   it("shows the onboarding of the company with its progress and the way into the form", () => {
-    renderDashboard(undefined, undefined, null, CONVERSATION, FILES, [
-      {
-        id: "form-1",
-        projectId: "project-1",
-        projectTitle: "Relaunch",
-        status: OnboardingFormStatus.Open,
-        progress: { answeredRequired: 1, totalRequired: 4, ratio: 0.25 },
-        submittedAt: null,
-        completedAt: null,
-        canEdit: true,
-      },
-    ]);
+    renderDashboard(undefined, undefined, null, CONVERSATION, FILES, {
+      id: "form-1",
+      projectId: "project-1",
+      projectTitle: "Relaunch",
+      status: OnboardingFormStatus.Open,
+      progress: { answeredRequired: 1, totalRequired: 4, ratio: 0.25 },
+      submittedAt: null,
+      completedAt: null,
+      canEdit: true,
+    });
 
     const widget = screen.getByRole("region", {
       name: content.widgets.onboarding.title,
@@ -597,7 +595,7 @@ describe("PortalDashboard", () => {
         locale="en"
         filesContent={getPortalFilesDictionary("en")}
         messagesContent={messagesContent}
-        onboarding={[]}
+        onboarding={null}
         today={TODAY}
         viewerUserId="user-1"
         widgets={listVisiblePortalWidgets(
@@ -643,7 +641,7 @@ describe("PortalDashboard", () => {
       null,
       CONVERSATION,
       FILES,
-      [],
+      null,
       "project-2",
     );
 

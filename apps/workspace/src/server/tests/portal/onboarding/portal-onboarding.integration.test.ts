@@ -25,7 +25,7 @@ import { createPortalActor } from "@/server/portal/auth/portal-actor";
 import { savePortalOnboardingAnswer } from "@/server/portal/command-handler/save-portal-onboarding-answer.command-handler";
 import { submitPortalOnboarding } from "@/server/portal/command-handler/submit-portal-onboarding.command-handler";
 import { getPortalOnboardingForm } from "@/server/portal/query-handler/get-portal-onboarding-form.query-handler";
-import { listPortalOnboardingForms } from "@/server/portal/query-handler/list-portal-onboarding-forms.query-handler";
+import { getPortalOnboardingWidgetForm } from "@/server/portal/query-handler/get-portal-onboarding-widget-form.query-handler";
 import { messageService } from "@/server/shared/services/message/message-service";
 import { createPortalSessionFixture } from "@/server/tests/support/portal-session-fixture";
 import { startProjectOnboarding } from "@/server/workspace/crm/command-handler/start-project-onboarding.command-handler";
@@ -135,8 +135,8 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         await getPortalOnboardingForm(contact, form.id, Locale.De),
       ).toBeNull();
       expect(
-        (await listPortalOnboardingForms(contact)).map((entry) => entry.id),
-      ).not.toContain(form.id);
+        await getPortalOnboardingWidgetForm(contact, form.projectId),
+      ).toBeNull();
       expect(await saveText(contact, form, "name", "Acme")).toEqual(NOT_FOUND);
       expect(await submitPortalOnboarding(contact, form.id)).toEqual(NOT_FOUND);
     });
@@ -166,10 +166,9 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         ],
       });
       expect(
-        (await listPortalOnboardingForms(contact)).find(
-          (entry) => entry.id === form.id,
-        ),
+        await getPortalOnboardingWidgetForm(contact, form.projectId),
       ).toMatchObject({
+        id: form.id,
         status: OnboardingFormStatus.Open,
         progress: { answeredRequired: 0, totalRequired: 1 },
       });
@@ -183,7 +182,9 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       expect(
         await getPortalOnboardingForm(stranger, form.id, Locale.De),
       ).toBeNull();
-      expect(await listPortalOnboardingForms(stranger)).toEqual([]);
+      expect(
+        await getPortalOnboardingWidgetForm(stranger, form.projectId),
+      ).toBeNull();
       expect(await saveText(stranger, form, "name", "Acme")).toEqual(NOT_FOUND);
       expect(await submitPortalOnboarding(stranger, form.id)).toEqual(
         NOT_FOUND,
@@ -239,7 +240,9 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       expect(
         await getPortalOnboardingForm(blind, form.id, Locale.De),
       ).toBeNull();
-      expect(await listPortalOnboardingForms(blind)).toEqual([]);
+      expect(
+        await getPortalOnboardingWidgetForm(blind, form.projectId),
+      ).toBeNull();
       expect(await saveText(blind, form, "name", "Acme")).toEqual(NOT_FOUND);
 
       expect(

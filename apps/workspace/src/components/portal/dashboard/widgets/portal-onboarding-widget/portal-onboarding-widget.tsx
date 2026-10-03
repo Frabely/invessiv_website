@@ -24,7 +24,7 @@ export type PortalOnboardingWidgetProps = {
   chatHref?: string | null;
   content: PortalDashboardDictionary["widgets"]["onboarding"];
   customerId: string;
-  /** The form the widget shows; `pickPortalOnboardingWidgetForm` chooses it. */
+  /** The released form of the selected project. */
   form: PortalOnboardingFormSummaryDto;
   locale: Locale;
 };

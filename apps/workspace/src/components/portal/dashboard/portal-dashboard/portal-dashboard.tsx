@@ -19,7 +19,6 @@ import {
   readPortalDashboardProject,
   readPortalDashboardWidget,
 } from "@/common/patterns/portal/portal-dashboard-query";
-import { pickPortalOnboardingWidgetForm } from "@/common/patterns/portal/pick-portal-onboarding-widget-form";
 import { buildPortalFeedbackPath } from "@/common/patterns/portal/portal-feedback-path";
 import { describeUnreadBadge } from "@/common/patterns/crm/describe-unread-badge";
 import type { Locale } from "@/config/i18n";
@@ -64,8 +63,8 @@ export type PortalDashboardProps = {
   messagesContent: PortalMessagesDictionary;
   /** The company's chat page; null without `portal.messages.read`. */
   messagesHref?: string | null;
-  /** The released forms of the company, newest first; empty without `portal.onboarding.read`. */
-  onboarding: readonly PortalOnboardingFormSummaryDto[];
+  /** The released form of the selected project, if visible to the reader. */
+  onboarding: PortalOnboardingFormSummaryDto | null;
   /** The call of the widget's form once the team has reviewed it; null until then. */
   onboardingCall?: PortalOnboardingCallDto | null;
   /** Business day (`YYYY-MM-DD`) decided once on the server. */
@@ -160,7 +159,6 @@ export function PortalDashboard({
   };
   const ourTasks = dashboard.ourTasks;
 
-  const onboardingForm = pickPortalOnboardingWidgetForm(onboarding);
   const mockBadge = content.mock.badge;
   const mockDialog = (
     key: typeof PortalWidgetKey.Hours | typeof PortalWidgetKey.ServiceRequest,
@@ -178,13 +176,13 @@ export function PortalDashboard({
   );
 
   const slots: Partial<Record<PortalWidgetKey, ReactNode>> = {
-    [PortalWidgetKey.Onboarding]: onboardingForm ? (
+    [PortalWidgetKey.Onboarding]: onboarding ? (
       <PortalOnboardingWidget
         call={onboardingCall}
         chatHref={messagesHref}
         content={content.widgets.onboarding}
         customerId={customerId}
-        form={onboardingForm}
+        form={onboarding}
         locale={locale}
       />
     ) : null,

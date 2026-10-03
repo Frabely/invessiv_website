@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, desc, eq, inArray, type SQL } from "drizzle-orm";
+import { and, eq, inArray, type SQL } from "drizzle-orm";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { ONBOARDING_PORTAL_VISIBLE_STATUS_VALUES } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
@@ -88,14 +88,19 @@ function selectVisibleForms(executor: ContactDatabaseReader, condition: SQL) {
     .where(condition);
 }
 
-/** Newest first; a company usually has one, a follow-up project adds another. */
-function listVisibleForms(
+/** The released form of one visible project, if present. */
+async function findVisibleFormForProject(
   executor: ContactDatabaseReader,
   reader: PortalReader,
-): Promise<PortalVisibleOnboardingForm[]> {
-  return selectVisibleForms(executor, visibleCondition(reader)).orderBy(
-    desc(onboardingForms.created_at),
-  );
+  projectId: string,
+): Promise<PortalVisibleOnboardingForm | null> {
+  const id = portalOnboardingSchemas.id.safeParse(projectId);
+  if (!id.success) return null;
+  const [row] = await selectVisibleForms(
+    executor,
+    and(eq(onboardingForms.project_id, id.data), visibleCondition(reader))!,
+  ).limit(1);
+  return row ?? null;
 }
 
 /** Every miss — guessed id, foreign company, draft, hidden project, missing permission — is null. */
@@ -183,7 +188,7 @@ export const portalOnboardingAccessService = {
   editableBlockIds,
   findVisibleForm,
   listEditableBlockIds,
-  listVisibleForms,
+  findVisibleFormForProject,
   loadReviewRefs,
   notFound,
   validation,
