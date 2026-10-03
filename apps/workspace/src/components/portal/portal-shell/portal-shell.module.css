@@ -23,7 +23,7 @@
   padding: 0.6rem clamp(0.75rem, 1.5vw, 1.25rem);
 }
 
-/* Logo-only home link; the customer's name follows directly in the switcher slot. */
+/* The customer's name shares the home link; the company switcher stays a separate control. */
 .brand {
   display: inline-flex;
   flex: 0 0 auto;
@@ -32,6 +32,13 @@
   min-width: 44px;
   min-height: 44px;
   border-radius: 10px;
+}
+
+.brandName {
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .brand:focus-visible {

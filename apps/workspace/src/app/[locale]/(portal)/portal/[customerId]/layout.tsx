@@ -43,16 +43,24 @@ export default async function PortalCustomerLayout({
   const ownerCompanyName = isOwnerView
     ? ((await getPortalCustomerDisplayName(reader)) ?? "")
     : null;
+  const memberships =
+    ownerCompanyName === null
+      ? await listPortalMembershipsForUserId(reader.userId)
+      : [{ customerId: reader.customerId, displayName: ownerCompanyName }];
+  const activeCompanyName =
+    memberships.find((company) => company.customerId === reader.customerId)
+      ?.displayName ?? "";
 
   return (
     <PortalShell
       content={content}
+      homeHref={portalPathFor(activeLocale, reader.customerId)}
+      brandName={activeCompanyName}
       greeting={
         greetingName
           ? formatMessage(content.header.greeting, { name: greetingName })
           : null
       }
-      locale={activeLocale}
       nav={
         visibleNavItems.length > 0 ? (
           <>
@@ -86,17 +94,7 @@ export default async function PortalCustomerLayout({
       switcher={
         <CustomerSwitcher
           activeCustomerId={reader.customerId}
-          companies={
-            ownerCompanyName === null
-              ? await listPortalMembershipsForUserId(reader.userId)
-              : // The owner has no memberships to switch between; only the name is shown.
-                [
-                  {
-                    customerId: reader.customerId,
-                    displayName: ownerCompanyName,
-                  },
-                ]
-          }
+          companies={memberships}
           content={content.switcher}
           locale={activeLocale}
         />

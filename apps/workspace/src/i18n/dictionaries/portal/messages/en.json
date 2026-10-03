@@ -4,6 +4,7 @@
     "description": "Your direct line to us: ask questions, give feedback and find everything about your project in one place."
   },
   "page": {
+    "back": "Back to overview",
     "heading": "Messages",
     "intro": "Write to us right here. Everyone on your team with portal access sees the same conversation."
   },

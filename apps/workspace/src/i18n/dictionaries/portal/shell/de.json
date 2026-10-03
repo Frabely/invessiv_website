@@ -1,7 +1,7 @@
 {
   "header": {
     "greeting": "Hallo {name}",
-    "brandHomeAriaLabel": "Zur Firmenauswahl",
+    "brandHomeAriaLabel": "Zum Überblick",
     "userMenuLabel": "Konto und Abmelden",
     "localeMenuLabel": "Sprache wählen",
     "localeSwitchLabel": "Sprache wechseln",

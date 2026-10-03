@@ -4,6 +4,7 @@
     "description": "Dein direkter Draht zu uns: Fragen stellen, Rückmeldung geben und alles zu deinem Projekt an einem Ort nachlesen."
   },
   "page": {
+    "back": "Zurück zum Überblick",
     "heading": "Nachrichten",
     "intro": "Schreib uns direkt hier. Alle aus deinem Team, die Zugang zum Portal haben, sehen denselben Verlauf."
   },

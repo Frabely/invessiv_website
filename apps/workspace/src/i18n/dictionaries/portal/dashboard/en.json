@@ -128,7 +128,13 @@
     "contact": {
       "title": "Your contact",
       "mail": "Send an email",
-      "mailLabel": "Send an email to {name}"
+      "mailLabel": "Send an email to {name}",
+      "booking": {
+        "action": "Book an appointment",
+        "noticeNamed": "The calendar is hosted by {provider}. It opens in a new tab; the provider only receives your data then.",
+        "noticeOther": "The calendar is hosted by an external provider. It opens in a new tab; the provider only receives your data then.",
+        "newTab": "opens in a new tab"
+      }
     },
     "messages": {
       "title": "Messages",

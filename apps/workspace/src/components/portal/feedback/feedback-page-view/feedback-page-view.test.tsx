@@ -95,6 +95,7 @@ function feedback(
     history: [],
     canSubmit: true,
     canAttach: false,
+    booking: null,
     ...overrides,
   };
 }

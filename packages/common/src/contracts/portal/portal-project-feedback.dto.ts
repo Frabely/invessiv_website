@@ -1,5 +1,6 @@
 import type { FeedbackQuotaDto } from "../crm/feedback-quota.dto";
 import type { PortalFeedbackRoundDto } from "./portal-feedback-round.dto";
+import type { PortalBookingDto } from "./portal-booking.dto";
 
 /** Everything the portal feedback page of one project shows. */
 export interface PortalProjectFeedbackDto {
@@ -20,4 +21,6 @@ export interface PortalProjectFeedbackDto {
    * right, because attachments are shown through the portal's file visibility.
    */
   canAttach: boolean;
+  /** Optional meeting link offered while the team has requested a discussion. */
+  booking: PortalBookingDto | null;
 }

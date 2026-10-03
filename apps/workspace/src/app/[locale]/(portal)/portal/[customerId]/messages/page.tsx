@@ -8,7 +8,7 @@ import {
   getPortalFilesDictionary,
   getPortalMessagesDictionary,
 } from "@/i18n/dictionaries/portal";
-import { workspaceAreaPathFor } from "@/lib/auth/routes";
+import { portalPathFor, workspaceAreaPathFor } from "@/lib/auth/routes";
 import { isPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
 import { requirePortalReader } from "@/server/portal/auth/require-portal-reader";
 import { getPortalConversation } from "@/server/portal/query-handler/get-portal-conversation.query-handler";
@@ -55,6 +55,7 @@ export default async function PortalMessagesPage({
 
   return (
     <PortalMessagesView
+      dashboardHref={portalPathFor(activeLocale, reader.customerId)}
       cockpitHref={
         isPortalOwnerView(reader)
           ? buildCustomerCockpitHref(

@@ -4,20 +4,20 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { BookingProvider } from "@invessiv/common/constants/portal/booking-providers";
-import type { PortalOnboardingBookingDto } from "@invessiv/common/contracts/portal/portal-onboarding-booking.dto";
+import type { PortalBookingDto } from "@invessiv/common/contracts/portal/portal-booking.dto";
 import { getPortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
 import { OnboardingBookingCard } from "./onboarding-booking-card";
 
 const texts = getPortalOnboardingDictionary("en").call;
 const CHAT = "/en/portal/customer-1/messages";
-const BOOKING: PortalOnboardingBookingDto = {
+const BOOKING: PortalBookingDto = {
   memberDisplayName: "Anna Beispiel",
   bookingUrl: "https://calendly.com/anna/onboarding",
   provider: BookingProvider.Calendly,
 };
 
 function renderCard(
-  booking: PortalOnboardingBookingDto | null,
+  booking: PortalBookingDto | null,
   chatHref: string | null = CHAT,
 ) {
   return render(

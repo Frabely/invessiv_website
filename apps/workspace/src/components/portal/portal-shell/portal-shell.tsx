@@ -7,10 +7,8 @@ import { useLanguage } from "@/components/providers/language-provider";
 import { useTheme } from "@/components/providers/theme-provider";
 import { LocaleSwitch } from "@/components/shared/locale-switch/locale-switch";
 import { ThemeSwitch } from "@/components/shared/theme-switch/theme-switch";
-import type { Locale } from "@/config/i18n";
 import type { PortalShellDictionary } from "@/i18n/dictionaries/portal";
 import { createLocalePathname } from "@/lib/navigation/locale-pathname";
-import { portalEntryPathFor } from "@/lib/auth/routes";
 import styles from "./portal-shell.module.css";
 
 type PortalShellProps = {
@@ -18,7 +16,8 @@ type PortalShellProps = {
   content: PortalShellDictionary;
   /** Already formatted greeting of the contact; null in the owner view or without a first name. */
   greeting?: string | null;
-  locale: Locale;
+  homeHref: string;
+  brandName: string;
   /** Rendered only once a portal module registers an entry in `PORTAL_NAV_ITEMS`. */
   nav?: ReactNode | null;
   /** Optional notice shown inline in the header, e.g. the owner's read-only banner. */
@@ -39,7 +38,8 @@ export function PortalShell({
   children,
   content,
   greeting = null,
-  locale,
+  homeHref,
+  brandName,
   nav = null,
   notice = null,
   switcher,
@@ -47,7 +47,6 @@ export function PortalShell({
   const headerContent = content.header;
   const { locale: activeLocale } = useLanguage();
   const { theme, toggleTheme } = useTheme();
-  const entryHref = portalEntryPathFor(locale);
   const themeSwitchCopy =
     theme === "dark"
       ? { actionLabel: headerContent.themeSwitch.actionLabel.dark }
@@ -63,7 +62,7 @@ export function PortalShell({
           <a
             aria-label={headerContent.brandHomeAriaLabel}
             className={styles.brand}
-            href={entryHref}
+            href={homeHref}
           >
             <Image
               alt=""
@@ -72,6 +71,7 @@ export function PortalShell({
               src="/brand/icon.png"
               width={28}
             />
+            <span className={styles.brandName}>{brandName}</span>
           </a>
           <div className={styles.switcherSlot}>{switcher}</div>
           {notice ? <div className={styles.noticeSlot}>{notice}</div> : null}

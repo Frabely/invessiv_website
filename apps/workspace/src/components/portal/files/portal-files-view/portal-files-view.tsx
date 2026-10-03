@@ -29,6 +29,7 @@ import { fileArchiveSelection } from "@/common/patterns/files/file-archive-selec
 import { readPortalFilesTab } from "@/common/patterns/portal/portal-files-tab";
 import type { Locale } from "@/config/i18n";
 import { PortalOwnerNotice } from "@/components/portal/portal-owner-notice/portal-owner-notice";
+import { PortalBackLink } from "@/components/portal/portal-back-link/portal-back-link";
 import { useFileSelection } from "@/hooks/shared/use-file-selection";
 import { usePortalFileDownloads } from "@/hooks/portal/use-portal-file-downloads";
 import { usePortalFiles } from "@/hooks/portal/use-portal-files";
@@ -39,6 +40,7 @@ import { PortalFileUploadDialog } from "../portal-file-upload-dialog/portal-file
 import styles from "./portal-files-view.module.css";
 
 export type PortalFilesViewProps = {
+  dashboardHref: string;
   /** Only a contact with `portal.files.write` uploads; the owner view never does. */
   canUpload: boolean;
   /** CRM link for the owner view's notice; null for customer contacts. */
@@ -78,6 +80,7 @@ function currentSearch() {
  */
 export function PortalFilesView({
   canUpload,
+  dashboardHref,
   cockpitHref,
   content,
   customerId,
@@ -162,6 +165,7 @@ export function PortalFilesView({
 
   return (
     <div className={styles.page}>
+      <PortalBackLink href={dashboardHref} label={content.page.back} />
       <header className={styles.header}>
         <h1>{content.page.heading}</h1>
         <p>{content.page.intro}</p>

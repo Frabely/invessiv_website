@@ -1,4 +1,4 @@
-import type { PortalOnboardingBookingDto } from "./portal-onboarding-booking.dto";
+import type { PortalBookingDto } from "./portal-booking.dto";
 
 /**
  * The onboarding call of a form, once the team has reviewed it. Its mere presence tells the
@@ -6,5 +6,5 @@ import type { PortalOnboardingBookingDto } from "./portal-onboarding-booking.dto
  */
 export interface PortalOnboardingCallDto {
   /** Where the call is booked; null when nobody offers a link and the team gets in touch. */
-  booking: PortalOnboardingBookingDto | null;
+  booking: PortalBookingDto | null;
 }

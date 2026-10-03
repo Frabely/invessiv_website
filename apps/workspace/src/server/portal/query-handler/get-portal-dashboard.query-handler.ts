@@ -3,6 +3,7 @@ import "server-only";
 import { and, desc, eq, inArray, ne } from "drizzle-orm";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
+import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
@@ -21,10 +22,13 @@ import { portalAccessCondition } from "@/server/portal/shared/portal-access-cond
 import { portalProjectCondition } from "@/server/portal/shared/portal-project-condition";
 import { portalDashboardMappingService } from "@/server/portal/services/portal-dashboard-mapping-service";
 import { portalFeedbackService } from "@/server/portal/services/feedback/portal-feedback-service";
+import { projectResponsibleMemberService } from "@/server/shared/services/project-responsible-member-service";
+import { portalBookingMappingService } from "@/server/portal/services/portal-booking-mapping-service";
 
 /**
- * Reads only explicitly released dashboard columns in at most four queries. Round states feed the
- * track of every visible project; due dates and the widget need `portal.feedback.read` as well.
+ * Reads explicitly released dashboard columns. Round states feed the track of every visible
+ * project; due dates and the widget need `portal.feedback.read` as well. Booking resolves against
+ * the newest non-completed project visible to this reader.
  */
 export async function getPortalDashboard(
   reader: PortalReader,
@@ -103,6 +107,15 @@ export async function getPortalDashboard(
         )
     : [];
   const canReadFeedback = portalFeedbackService.canRead(reader);
+  const bookingProject = projectRows.find(
+    (project) => project.status !== ProjectStatus.Completed,
+  );
+  const bookingContact = bookingProject
+    ? await projectResponsibleMemberService.findBookingContact(
+        db,
+        bookingProject.id,
+      )
+    : null;
 
   const taskRows = portalCanOn.forReader(
     reader,
@@ -134,7 +147,12 @@ export async function getPortalDashboard(
     : [];
 
   return portalDashboardMappingService.mapRowsToDto({
-    customer,
+    customer: {
+      ...customer,
+      booking: bookingContact
+        ? portalBookingMappingService.toDto(bookingContact)
+        : null,
+    },
     projects: projectRows,
     tasks: taskRows,
     feedbackRounds: canReadFeedback ? roundRows : null,

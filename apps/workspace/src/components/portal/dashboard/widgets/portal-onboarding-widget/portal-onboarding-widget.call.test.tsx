@@ -5,7 +5,7 @@ import { cleanup, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { BookingProvider } from "@invessiv/common/constants/portal/booking-providers";
-import type { PortalOnboardingBookingDto } from "@invessiv/common/contracts/portal/portal-onboarding-booking.dto";
+import type { PortalBookingDto } from "@invessiv/common/contracts/portal/portal-booking.dto";
 import type { PortalOnboardingCallDto } from "@invessiv/common/contracts/portal/portal-onboarding-call.dto";
 import type { PortalOnboardingFormSummaryDto } from "@invessiv/common/contracts/portal/portal-onboarding-form-summary.dto";
 import { getPortalDashboardDictionary } from "@/i18n/dictionaries/portal";
@@ -13,7 +13,7 @@ import { PortalOnboardingWidget } from "./portal-onboarding-widget";
 
 const content = getPortalDashboardDictionary("en").widgets.onboarding;
 const CHAT = "/en/portal/customer-1/messages";
-const BOOKING: PortalOnboardingBookingDto = {
+const BOOKING: PortalBookingDto = {
   memberDisplayName: "Anna Beispiel",
   bookingUrl: "https://cal.com/anna/onboarding",
   provider: BookingProvider.CalCom,

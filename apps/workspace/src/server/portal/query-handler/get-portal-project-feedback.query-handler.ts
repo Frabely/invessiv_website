@@ -14,6 +14,8 @@ import type { PortalReader } from "@/server/portal/auth/portal-reader";
 import { portalProjectCondition } from "@/server/portal/shared/portal-project-condition";
 import { portalFeedbackSchemas } from "@/server/portal/services/feedback/portal-feedback-schemas";
 import { portalFeedbackService } from "@/server/portal/services/feedback/portal-feedback-service";
+import { projectResponsibleMemberService } from "@/server/shared/services/project-responsible-member-service";
+import { portalBookingMappingService } from "@/server/portal/services/portal-booking-mapping-service";
 
 /**
  * The feedback page of one project. `null` covers every miss alike — guessed id, foreign company,
@@ -51,6 +53,8 @@ export async function getPortalProjectFeedback(
   const rounds = await portalFeedbackService.toRoundDtos(db, reader, rows);
   const activeRound =
     rounds.find((round) => isActiveFeedbackRound(round.status)) ?? null;
+  const bookingContact =
+    await projectResponsibleMemberService.findBookingContact(db, project.id);
 
   return {
     projectId: project.id,
@@ -60,5 +64,8 @@ export async function getPortalProjectFeedback(
     history: rounds.filter((round) => round !== activeRound),
     canSubmit: portalFeedbackService.canSubmit(reader),
     canAttach: portalFeedbackService.canAttach(reader),
+    booking: bookingContact
+      ? portalBookingMappingService.toDto(bookingContact)
+      : null,
   };
 }

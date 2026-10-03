@@ -3,12 +3,10 @@ import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/
 import type { OnboardingFormBlockDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form-block.dto";
 import type { OnboardingFormSummaryDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form-summary.dto";
 import type { PortalOnboardingBlockDto } from "@invessiv/common/contracts/portal/portal-onboarding-block.dto";
-import type { PortalOnboardingBookingDto } from "@invessiv/common/contracts/portal/portal-onboarding-booking.dto";
 import type { PortalOnboardingFormSummaryDto } from "@invessiv/common/contracts/portal/portal-onboarding-form-summary.dto";
 import type { PortalOnboardingFormDto } from "@invessiv/common/contracts/portal/portal-onboarding-form.dto";
 import { resolveQuestionnaireBlock } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-resolved-block";
-import { resolveBookingProvider } from "@invessiv/common/patterns/portal/resolve-booking-provider";
-import type { ProjectBookingContact } from "@/server/shared/services/project-responsible-member-types";
+import { portalBookingMappingService } from "@/server/portal/services/portal-booking-mapping-service";
 import type {
   PortalOnboardingFormParts,
   PortalOnboardingSummaryContext,
@@ -75,18 +73,8 @@ function toSummaryDto(
 }
 
 /** The provider is derived here, so no caller can name one the link does not belong to. */
-function toBookingDto(
-  contact: ProjectBookingContact,
-): PortalOnboardingBookingDto {
-  return {
-    memberDisplayName: contact.displayName,
-    bookingUrl: contact.bookingUrl,
-    provider: resolveBookingProvider(contact.bookingUrl),
-  };
-}
-
 export const portalOnboardingMappingService = {
-  toBookingDto,
+  toBookingDto: portalBookingMappingService.toDto,
   toFormDto,
   toSummaryDto,
 } as const;

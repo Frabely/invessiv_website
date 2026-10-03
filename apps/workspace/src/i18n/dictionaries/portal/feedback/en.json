@@ -60,7 +60,13 @@
     "discussion": {
       "title": "We'd like to talk through your feedback",
       "description": "Before we start, a few points are easiest to clear up together. Let us know in the chat when it suits you.",
-      "chatLink": "Find a time in the chat"
+      "chatLink": "Find a time in the chat",
+      "booking": {
+        "action": "Book an appointment",
+        "noticeNamed": "The calendar is hosted by {provider}. It opens in a new tab; the provider only receives your data then.",
+        "noticeOther": "The calendar is hosted by an external provider. It opens in a new tab; the provider only receives your data then.",
+        "newTab": "opens in a new tab"
+      }
     },
     "completed": {
       "title": "Round {number} is implemented",

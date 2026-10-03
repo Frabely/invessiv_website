@@ -5,7 +5,7 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { BookingProvider } from "@invessiv/common/constants/portal/booking-providers";
-import type { PortalOnboardingBookingDto } from "@invessiv/common/contracts/portal/portal-onboarding-booking.dto";
+import type { PortalBookingDto } from "@invessiv/common/contracts/portal/portal-booking.dto";
 import type { PortalOnboardingCallDto } from "@invessiv/common/contracts/portal/portal-onboarding-call.dto";
 import {
   portalOnboardingBlock as block,
@@ -26,7 +26,7 @@ vi.mock("next/navigation", () => ({
 
 const content = getPortalOnboardingDictionary("en");
 const CHAT = "/en/portal/customer-1/messages";
-const BOOKING: PortalOnboardingBookingDto = {
+const BOOKING: PortalBookingDto = {
   memberDisplayName: "Anna Beispiel",
   bookingUrl: "https://calendly.com/anna/onboarding",
   provider: BookingProvider.Calendly,

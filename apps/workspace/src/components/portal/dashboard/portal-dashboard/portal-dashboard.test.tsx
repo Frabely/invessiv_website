@@ -162,7 +162,11 @@ function customerTask(
 function dto(overrides: Partial<PortalDashboardDto> = {}): PortalDashboardDto {
   return {
     customer: { displayName: "Nordlicht Coaching" },
-    contact: { displayName: "Anna Example", email: "anna@example.test" },
+    contact: {
+      displayName: "Anna Example",
+      email: "anna@example.test",
+      booking: null,
+    },
     projects: [
       {
         id: "project-1",

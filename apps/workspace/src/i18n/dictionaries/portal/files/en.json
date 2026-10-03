@@ -4,6 +4,7 @@
     "description": "Everything we shared with you and everything you sent us, in one place."
   },
   "page": {
+    "back": "Back to overview",
     "heading": "Files",
     "intro": "Find drafts and documents from us here. Upload logos, photos, copy or videos for your project right on this page."
   },

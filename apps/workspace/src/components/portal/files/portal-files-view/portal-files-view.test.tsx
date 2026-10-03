@@ -70,6 +70,7 @@ function renderView(
   return render(
     <PortalFilesView
       canUpload
+      dashboardHref="/en/portal/customer-1"
       cockpitHref={null}
       content={content}
       customerId="customer-1"
@@ -186,6 +187,7 @@ describe("PortalFilesView", () => {
     view.rerender(
       <PortalFilesView
         canUpload
+        dashboardHref="/en/portal/customer-1"
         cockpitHref={null}
         content={content}
         customerId="customer-1"

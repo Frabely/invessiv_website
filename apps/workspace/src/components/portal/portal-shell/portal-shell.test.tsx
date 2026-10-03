@@ -41,16 +41,18 @@ describe("PortalShell", () => {
     render(
       <PortalShell
         content={CONTENT}
-        locale="de"
+        homeHref="/de/portal/customer-a"
+        brandName="Firma A"
         switcher={<span>Switcher slot</span>}
       >
         <p>Portal content</p>
       </PortalShell>,
     );
 
-    expect(
-      screen.getByRole("link", { name: "Zur Firmenauswahl" }),
-    ).toHaveAttribute("href", "/de/portal");
+    expect(screen.getByRole("link", { name: "Zum Überblick" })).toHaveAttribute(
+      "href",
+      "/",
+    );
     expect(screen.getByText("Switcher slot")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "User menu" })).toBeTruthy();
     expect(screen.getByText("Portal content")).toBeInTheDocument();
@@ -60,8 +62,9 @@ describe("PortalShell", () => {
     const { rerender } = render(
       <PortalShell
         content={CONTENT}
+        homeHref="/de/portal/customer-a"
+        brandName="Firma A"
         greeting="Hallo Sam"
-        locale="de"
         switcher={<span />}
       >
         <p>Portal content</p>
@@ -70,7 +73,12 @@ describe("PortalShell", () => {
     expect(screen.getByText("Hallo Sam")).toBeInTheDocument();
 
     rerender(
-      <PortalShell content={CONTENT} locale="de" switcher={<span />}>
+      <PortalShell
+        content={CONTENT}
+        homeHref="/de/portal/customer-a"
+        brandName="Firma A"
+        switcher={<span />}
+      >
         <p>Portal content</p>
       </PortalShell>,
     );
@@ -79,7 +87,12 @@ describe("PortalShell", () => {
 
   it("renders no nav element when there are no permitted nav items", () => {
     render(
-      <PortalShell content={CONTENT} locale="de" switcher={<span />}>
+      <PortalShell
+        content={CONTENT}
+        homeHref="/de/portal/customer-a"
+        brandName="Firma A"
+        switcher={<span />}
+      >
         <p>Portal content</p>
       </PortalShell>,
     );
@@ -91,7 +104,8 @@ describe("PortalShell", () => {
     render(
       <PortalShell
         content={CONTENT}
-        locale="de"
+        homeHref="/de/portal/customer-a"
+        brandName="Firma A"
         nav={<a href="#projects">Projects</a>}
         switcher={<span />}
       >

@@ -16,6 +16,9 @@ type CustomerRow = {
   ownerMemberId: string;
   contactName: string | null;
   contactEmail: string | null;
+  booking?:
+    | import("@invessiv/common/contracts/portal/portal-booking.dto").PortalBookingDto
+    | null;
 };
 
 type ProjectRow = {
@@ -173,6 +176,7 @@ function mapRowsToDto({
         ? {
             displayName: customer.contactName,
             email: customer.contactEmail,
+            booking: customer.booking ?? null,
           }
         : null,
     projects: currentProjects,

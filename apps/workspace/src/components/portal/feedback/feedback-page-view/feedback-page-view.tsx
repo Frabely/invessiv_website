@@ -1,15 +1,13 @@
 "use client";
 
 import { useId, useState } from "react";
-import Link from "next/link";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import type { PortalProjectFeedbackDto } from "@invessiv/common/contracts/portal/portal-project-feedback.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { PortalFeedbackPageState } from "@/common/constants/portal/portal-feedback-page-states";
 import { portalFeedbackPageState } from "@/common/patterns/portal/portal-feedback-page-state";
 import { PortalOwnerNotice } from "@/components/portal/portal-owner-notice/portal-owner-notice";
+import { PortalBackLink } from "@/components/portal/portal-back-link/portal-back-link";
 import type { Locale } from "@/config/i18n";
 import type {
   PortalFeedbackDictionary,
@@ -106,10 +104,7 @@ export function FeedbackPageView({
 
   return (
     <div className={styles.page}>
-      <Link className={styles.back} href={dashboardHref}>
-        <FontAwesomeIcon aria-hidden="true" icon={faArrowLeft} />
-        {content.page.back}
-      </Link>
+      <PortalBackLink href={dashboardHref} label={content.page.back} />
       <h1 className={styles.heading}>
         {formatMessage(content.page.heading, {
           project: feedback.projectTitle,
@@ -165,6 +160,8 @@ export function FeedbackPageView({
       {state === PortalFeedbackPageState.Discussion && round ? (
         <>
           <FeedbackTeamNotice
+            booking={feedback.booking}
+            bookingCopy={content.states.discussion.booking}
             chat={
               messagesHref
                 ? {

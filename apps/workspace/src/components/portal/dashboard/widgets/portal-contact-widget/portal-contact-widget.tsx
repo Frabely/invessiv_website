@@ -6,6 +6,7 @@ import { Widget } from "@invessiv/ui";
 import { getMemberInitials } from "@/common/patterns/access/member-initials";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
+import { BookingLink } from "@/components/portal/booking-link/booking-link";
 import styles from "./portal-contact-widget.module.css";
 
 export type PortalContactWidgetProps = {
@@ -42,6 +43,9 @@ export function PortalContactWidget({
         <FontAwesomeIcon aria-hidden="true" icon={faEnvelope} />
         {content.mail}
       </a>
+      {contact.booking ? (
+        <BookingLink booking={contact.booking} texts={content.booking} />
+      ) : null}
     </Widget>
   );
 }

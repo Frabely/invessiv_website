@@ -8,7 +8,7 @@ import { readPortalFilesTab } from "@/common/patterns/portal/portal-files-tab";
 import { PortalFilesView } from "@/components/portal/files/portal-files-view/portal-files-view";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { getPortalFilesDictionary } from "@/i18n/dictionaries/portal";
-import { workspaceAreaPathFor } from "@/lib/auth/routes";
+import { portalPathFor, workspaceAreaPathFor } from "@/lib/auth/routes";
 import { isPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
 import { requirePortalReader } from "@/server/portal/auth/require-portal-reader";
 import { listPortalFileProjects } from "@/server/portal/query-handler/list-portal-file-projects.query-handler";
@@ -60,6 +60,7 @@ export default async function PortalFilesPage({
 
   return (
     <PortalFilesView
+      dashboardHref={portalPathFor(activeLocale, reader.customerId)}
       canUpload={
         !isOwnerView &&
         portalCanOn.forReader(reader, Permission.PortalFilesWrite, {

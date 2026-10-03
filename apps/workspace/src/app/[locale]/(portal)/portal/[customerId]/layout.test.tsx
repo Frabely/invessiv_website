@@ -38,18 +38,23 @@ vi.mock("@/common/patterns/portal/list-permitted-portal-nav-items", () => ({
 vi.mock("@/components/portal/portal-shell/portal-shell", () => ({
   PortalShell: ({
     children,
+    brandName,
+    homeHref,
     greeting,
     nav,
     notice,
     switcher,
   }: {
     children: ReactNode;
+    brandName: string;
+    homeHref: string;
     greeting: string | null;
     nav: ReactNode;
     notice: ReactNode;
     switcher: ReactNode;
   }) => (
     <div>
+      <div data-brand-name={brandName} data-home-href={homeHref} />
       <div data-testid="greeting-slot">{greeting}</div>
       <div data-testid="notice-slot">{notice}</div>
       <div data-testid="switcher-slot">{switcher}</div>
@@ -102,6 +107,17 @@ describe("PortalCustomerLayout", () => {
       "user-uuid-1",
     );
     expect(screen.getByText("Nordlicht Coaching")).toBeInTheDocument();
+    expect(screen.getByTestId("switcher-slot")).toHaveTextContent(
+      "Nordlicht Coaching",
+    );
+    expect(document.querySelector("[data-brand-name]")).toHaveAttribute(
+      "data-home-href",
+      "/de/portal/customer-1",
+    );
+    expect(document.querySelector("[data-brand-name]")).toHaveAttribute(
+      "data-brand-name",
+      "Nordlicht Coaching",
+    );
     expect(screen.getByText("Company content")).toBeInTheDocument();
   });
 
