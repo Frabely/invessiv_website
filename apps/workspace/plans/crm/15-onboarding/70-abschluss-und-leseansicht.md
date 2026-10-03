@@ -6,8 +6,8 @@
 > Lese-Renderer), [`68-pruefung-und-nachforderung.md`](./68-pruefung-und-nachforderung.md) (Sammelaufgabe,
 > Call-Agenda), `../00-entscheidungen.md`, `../AGENTS.md`, scoped `AGENTS.md` am Zielcode.
 
-> **Status:** im Review · **Teil-PR:** 15.8 · **Branch:** `feat/crm-onboarding-8-abschluss`
-> **Abhängigkeiten:** Task 69 (15.7) gemerged · **Aufwand:** 1–2 T. · **Dateien:** 45–65
+> **Status:** auf `master` (direkte Commits `6425fdb4`, `ceacc151`; kein Merge-Commit) · **Teil-PR:** 15.8 · **Geplanter Branch:** `feat/crm-onboarding-8-abschluss`
+> **Abhängigkeiten:** Task 69 (15.7) auf `master` · **Aufwand:** 1–2 T. · **Dateien:** 45–65
 > **Migration:** keine
 
 ## Ziel

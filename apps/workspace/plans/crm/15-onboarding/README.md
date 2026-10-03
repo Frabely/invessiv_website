@@ -1,6 +1,6 @@
 # Ordner 15 — Onboarding
 
-> **Status:** läuft (15.1–15.6 gemergt, 15.7 und 15.8 im Review) · **Abhängigkeiten:** 07 (Projekte, Projektleistungen), 08 (Aufgaben), 12a/12b/13 (Portal), 13a
+> **Status:** auf `master` (15.1–15.6 gemergt, 15.7 und 15.8 direkt committet; Review-Nacharbeiten auf `fix/crm-onboarding-cr-fixes`) · **Abhängigkeiten:** 07 (Projekte, Projektleistungen), 08 (Aufgaben), 12a/12b/13 (Portal), 13a
 > (Chat, Systemnachrichten), 14 (Dateien), 16 (Feedbackrunden, deren Bausteine hier verallgemeinert werden) — alle
 > gemerged · **Aufwand:** 16–21 Tage gesamt · **Reviewziel:** acht Teil-PRs mit je 30–110 Dateien
 
@@ -82,16 +82,20 @@ Wie `14-dateien` und `16-feedbackrunden` liegt das Onboarding in **einem** Ordne
 geliefert. Jede Teil-Einheit hat einen eigenen Branch, einen eigenen PR, einen eigenen Status und hält `master`
 deploybar. Reine Fundamente bleiben unsichtbar; sichtbare Funktionen werden vertikal vollständig geliefert.
 
-| PR   | Task | Branch                               | Datei                                                                                                              | Nach Merge sichtbar                                                                        | Dateien | Status    |
-| ---- | ---- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------: | --------- |
-| 15.1 | 63   | `feat/crm-onboarding-1-datenmodell`  | [`63-datenmodell-und-regeln.md`](./63-datenmodell-und-regeln.md)                                                   | nichts                                                                                     |   55–75 | gemergt   |
-| 15.2 | 64   | `feat/crm-onboarding-2-katalog`      | [`64-baustein-katalog-und-vorlagen.md`](./64-baustein-katalog-und-vorlagen.md) + [`64a`](./64a-standardkatalog.md) | CRM-Seite „Onboarding-Vorlagen“ mit Bausteinen und Vorlagen, Standardkatalog               |  90–110 | gemergt   |
-| 15.3 | 65   | `feat/crm-onboarding-3-bogen-intern` | [`65-bogen-anlegen-und-anpassen.md`](./65-bogen-anlegen-und-anpassen.md)                                           | Intern: Onboarding je Projekt starten und anpassen (Entwurf)                               |   70–90 | gemergt   |
-| 15.4 | 66   | `feat/crm-onboarding-4-portal-form`  | [`66-portal-formular.md`](./66-portal-formular.md)                                                                 | nichts für Kunden (Portal-Seite existiert, ist aber ohne freigegebenen Bogen unerreichbar) |  80–100 | gemergt   |
-| 15.5 | 67   | `feat/crm-onboarding-5-portal-voll`  | [`67-portal-gruppen-dateien-leistungen.md`](./67-portal-gruppen-dateien-leistungen.md)                             | Freigeben, Portal-Navigation, Widget, vollständiger Bogen inkl. Gruppen und Uploads        |  80–105 | gemergt   |
-| 15.6 | 68   | `feat/crm-onboarding-6-pruefung`     | [`68-pruefung-und-nachforderung.md`](./68-pruefung-und-nachforderung.md)                                           | Intern: Prüfung je Block, Nachforderung, Call-Agenda. Portal: Nachforderung bearbeiten     |   60–80 | gemergt   |
-| 15.7 | 69   | `feat/crm-onboarding-7-termin`       | [`69-onboarding-termin.md`](./69-onboarding-termin.md)                                                             | Buchungslink im Profil, Terminkarte im Onboarding-Widget                                   |   35–50 | im Review |
-| 15.8 | 70   | `feat/crm-onboarding-8-abschluss`    | [`70-abschluss-und-leseansicht.md`](./70-abschluss-und-leseansicht.md)                                             | Onboarding abschließen, dauerhafte Leseansicht, Vorbefüllung für Folgeprojekte aktiv       |   45–65 | im Review |
+| PR   | Task | Branch                               | Datei                                                                                                              | Nach Merge sichtbar                                                                        | Dateien | Status                |
+| ---- | ---- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ------: | --------------------- |
+| 15.1 | 63   | `feat/crm-onboarding-1-datenmodell`  | [`63-datenmodell-und-regeln.md`](./63-datenmodell-und-regeln.md)                                                   | nichts                                                                                     |   55–75 | gemergt               |
+| 15.2 | 64   | `feat/crm-onboarding-2-katalog`      | [`64-baustein-katalog-und-vorlagen.md`](./64-baustein-katalog-und-vorlagen.md) + [`64a`](./64a-standardkatalog.md) | CRM-Seite „Onboarding-Vorlagen“ mit Bausteinen und Vorlagen, Standardkatalog               |  90–110 | gemergt               |
+| 15.3 | 65   | `feat/crm-onboarding-3-bogen-intern` | [`65-bogen-anlegen-und-anpassen.md`](./65-bogen-anlegen-und-anpassen.md)                                           | Intern: Onboarding je Projekt starten und anpassen (Entwurf)                               |   70–90 | gemergt               |
+| 15.4 | 66   | `feat/crm-onboarding-4-portal-form`  | [`66-portal-formular.md`](./66-portal-formular.md)                                                                 | nichts für Kunden (Portal-Seite existiert, ist aber ohne freigegebenen Bogen unerreichbar) |  80–100 | gemergt               |
+| 15.5 | 67   | `feat/crm-onboarding-5-portal-voll`  | [`67-portal-gruppen-dateien-leistungen.md`](./67-portal-gruppen-dateien-leistungen.md)                             | Freigeben, Portal-Navigation, Widget, vollständiger Bogen inkl. Gruppen und Uploads        |  80–105 | gemergt               |
+| 15.6 | 68   | `feat/crm-onboarding-6-pruefung`     | [`68-pruefung-und-nachforderung.md`](./68-pruefung-und-nachforderung.md)                                           | Intern: Prüfung je Block, Nachforderung, Call-Agenda. Portal: Nachforderung bearbeiten     |   60–80 | gemergt               |
+| 15.7 | 69   | `feat/crm-onboarding-7-termin`       | [`69-onboarding-termin.md`](./69-onboarding-termin.md)                                                             | Buchungslink im Profil, Terminkarte im Onboarding-Widget                                   |   35–50 | auf `master` (direkt) |
+| 15.8 | 70   | `feat/crm-onboarding-8-abschluss`    | [`70-abschluss-und-leseansicht.md`](./70-abschluss-und-leseansicht.md)                                             | Onboarding abschließen, dauerhafte Leseansicht, Vorbefüllung für Folgeprojekte aktiv       |   45–65 | auf `master` (direkt) |
+
+**Historischer Ablauf:** 15.7 kam mit `43d36c87` und `31a76e72`, 15.8 mit `6425fdb4` und `ceacc151` direkt auf
+`master`. Das weicht vom geplanten PR-/Merge-Ablauf ab; der Status belegt keine abgeschlossenen Reviews oder grünen
+Merge-Gates. Review-Nacharbeiten werden auf `fix/crm-onboarding-cr-fixes` geführt.
 
 **Reihenfolge ist zwingend:** 15.1 → 15.2 → 15.3 → 15.4 → 15.5 → 15.6 → 15.7 → 15.8. Jede Einheit setzt die
 vorherige als gemerged voraus.
@@ -133,7 +137,12 @@ Tests und Seeds erzeugen freigegebene Bögen direkt.
 - **Bedingung** = „Feld sichtbar, wenn Feld X die Option Y hat“ (eine Ebene, im selben Block, nur Auswahl- und Ja/Nein-Felder als
   Auslöser). Unsichtbare Pflichtfelder sind nicht Pflicht.
 - **Übersetzungen** liegen in eigenen Lokalisierungstabellen je übersetzbarem Element (Block, Feld, Option). Pflicht ist
-  **mindestens eine** Sprache; weitere Sprachen sind reine Datenpflege.
+  **mindestens eine** Sprache; zusätzliche Übersetzungen innerhalb von `SUPPORTED_LOCALES` sind reine Datenpflege.
+  Eine neue unterstützte Locale benötigt zusätzlich zu Code und Dictionaries eine neue Migration, die die
+  Locale-CHECKs aller drei Übersetzungstabellen erweitert. Die registrierte Migration `0047` bleibt unverändert.
+  `onboarding-constraint-names.test.ts` gleicht die Locale-Werte der Modelle und der Migration mit
+  `SUPPORTED_LOCALES` ab; bei einer Erweiterung muss der Test den resultierenden Stand einschließlich der neuen
+  Migration prüfen.
 - **Vorlagen** sind geordnete Listen von Katalogblöcken („Landingpage kompakt“, „Landingpage ausführlich“).
 - **Katalog und Bogen teilen dieselben Definitionstabellen.** Ein Block gehört entweder dem Katalog
   (`owner_form_id IS NULL`) oder genau einem Bogen. Beim Start und beim Ergänzen wird tief kopiert (Snapshot);

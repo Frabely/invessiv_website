@@ -96,6 +96,12 @@ Const-Objekt — nicht zusätzlich im DDL-Text und nicht im Modell.
   `workspace_members` hinter einem Leerheits-Preflight (Begründung: `plans/crm/03-mitglieder-und-auth/README.md`).
 - Idempotent: `CREATE … IF NOT EXISTS`, `--> statement-breakpoint` zwischen den Statements, ein
   zweiter Lauf ist folgenlos.
+  **Bewusste Ausnahme:** `0048_seed_onboarding_standard_catalog.sql` liefert den produktiven Standardkatalog
+  einmalig mit festen IDs aus. Ein direkter zweiter SQL-Lauf scheitert absichtlich an Eindeutigkeitskonflikten;
+  `ON CONFLICT DO NOTHING` würde inkonsistente Teilbestände verdecken, ein Upsert könnte gepflegte Inhalte
+  überschreiben. Der Migrationsrunner führt Datei und Registrierung in `schema_migrations` in einer Transaktion
+  aus und überspringt registrierte Dateien. Weitere Katalogkorrekturen erhalten eine neue Migration; `0048`
+  wird weder erneut ausgeführt noch nachträglich geändert. Diese Ausnahme gilt nicht für optionale Fixture-Seeds.
 - Eine bereits in `schema_migrations` registrierte Datei wird **niemals** verändert oder umbenannt.
   Eine Korrektur ist eine neue Migration. Ausnahme nur, solange die Migration ausschließlich lokal
   in `development` angewendet und nirgends committet ist — dann wird sie zurückgenommen und neu

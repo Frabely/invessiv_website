@@ -6,7 +6,7 @@
 > `src/server/workspace/access/`, `src/components/workspace/settings/`, `src/components/portal/`.
 > Ersetzt den früheren Task 47 (Ordner 15c).
 
-> **Status:** im Review · **Teil-PR:** 15.7 · **Branch:** `feat/crm-onboarding-7-termin`
+> **Status:** auf `master` (direkte Commits `43d36c87`, `31a76e72`; kein Merge-Commit) · **Teil-PR:** 15.7 · **Geplanter Branch:** `feat/crm-onboarding-7-termin`
 > **Abhängigkeiten:** Task 68 (15.6) gemerged · **Aufwand:** 1–2 T. · **Dateien:** 35–50
 > **Migration:** ja, eine (`workspace_members.booking_url`; Nummer im Repo ermitteln)
 

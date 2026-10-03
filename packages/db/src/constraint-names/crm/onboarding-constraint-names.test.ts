@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { getTableConfig, type PgTable } from "drizzle-orm/pg-core";
+import { getTableConfig, PgDialect, type PgTable } from "drizzle-orm/pg-core";
 import { describe, expect, it, vi } from "vitest";
+import { SUPPORTED_LOCALES } from "@invessiv/common/contracts/i18n/locale";
 import {
   onboardingAnswerFiles,
   onboardingAnswers,
@@ -75,6 +76,45 @@ function tableSection(tableName: string): string {
 }
 
 describe("onboarding models", () => {
+  it.each([
+    [
+      questionnaireBlockTranslations,
+      QuestionnaireBlockTranslationsConstraintName,
+    ],
+    [
+      questionnaireFieldTranslations,
+      QuestionnaireFieldTranslationsConstraintName,
+    ],
+    [
+      questionnaireChoiceTranslations,
+      QuestionnaireChoiceTranslationsConstraintName,
+    ],
+  ] as const)(
+    "keeps locale values aligned between the translation model, migration and supported locales (%#)",
+    (table, names) => {
+      const configuration = getTableConfig(table);
+      const constraint = configuration.checks.find(
+        (check) => check.name === names.LocaleCheck,
+      );
+      expect(constraint).toBeDefined();
+      const modelSql = new PgDialect().sqlToQuery(constraint!.value).sql;
+      const migrationCheck = tableSection(configuration.name).match(
+        new RegExp(
+          `CONSTRAINT ${names.LocaleCheck} CHECK \\(locale IN \\(([^)]+)\\)\\)`,
+        ),
+      );
+      expect(migrationCheck).not.toBeNull();
+      const expected = [...SUPPORTED_LOCALES].sort();
+      for (const sql of [modelSql, migrationCheck![1]]) {
+        const locales = [...sql.matchAll(/'([^']*)'/g)].map(
+          (match) => match[1],
+        );
+        expect(locales.sort()).toEqual(expected);
+      }
+      expect([...table.locale.enumValues!].sort()).toEqual(expected);
+    },
+  );
+
   it.each(
     TABLES.map(
       ([table, names]) => [getTableConfig(table).name, table, names] as const,

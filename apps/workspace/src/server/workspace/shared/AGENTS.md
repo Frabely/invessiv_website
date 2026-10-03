@@ -28,14 +28,33 @@ dem Umzug in Ordner 02 stillgelegt und wird in Ordner 22 abgebaut.
   `{ type: system, systemActorKey }`. `actor_id` und `actor_label` sind Legacy und werden nie mehr geschrieben; der
   fachliche Lead- oder Kunden-Owner ist nie der Actor.
 
-## `updateVersioned` ist der einzige Weg
+## `update-versioned.ts` ist der einzige Weg für versionierte Updates
 
-`update-versioned.ts` kapselt genau ein atomares
+`updateVersioned` kapselt genau ein atomares
 `UPDATE … SET version = version + 1 WHERE id = $1 AND version = $2`.
 
 Der Grund für die Kapselung: die naheliegende Alternative — lesen, Version vergleichen, schreiben —
 hat ein Race-Fenster zwischen den beiden Anweisungen und verliert dort still Daten. Sie sieht
 korrekt aus und ist in fast allen Läufen unauffällig.
+
+Das Modul bietet zusätzlich Varianten für bereits gesperrte Zeilen bzw. Aggregate:
+
+- `updateLockedVersioned`: nutzt `updateVersioned` für eine ID mit erwarteter Version. Der Aufrufer hält in
+  derselben Transaktion die Zeilen- oder zuständige Aggregatsperre und liest die Version unter dieser Sperre.
+  Ein Fehlschlag ist eine verletzte Invariante und wirft einen Fehler zum Transaktionsabbruch statt einer 409.
+- `updateLockedVersionedBy`: für einen zusammengesetzten Schlüssel, etwa `(form_id, block_id)` am Bogenschritt.
+  Der Aufrufer hält die Aggregatsperre und übergibt ein eindeutiges, vollständiges `where` sowie die unter der
+  Sperre gelesene `expectedVersion`. Schlüssel und Version werden atomar im `UPDATE` geprüft; kein Treffer wirft
+  einen Fehler. Anders als `updateVersioned` setzt diese Variante `updated_at` nicht automatisch.
+- `updateLockedVersionedSet`: ändert eine gezielt gefilterte Zeilenmenge innerhalb eines gesperrten Aggregats und
+  erhöht jede betroffene Version **ohne Einzelversionsvergleich**. Nur für interne Folgeänderungen, deren
+  konkurrierende Schreibwege dieselbe Aggregatsperre beachten, z. B. das Zurücksetzen angeforderter Blockprüfungen
+  beim erneuten Absenden. Kein Ersatz für den Versionsvergleich eines Nutzerbefehls. Ein leeres Ergebnis ist
+  zulässig; `updated_at` wird nicht automatisch gesetzt.
+
+Die Sperrvarianten erwerben selbst keine Sperre. Bei `By` und `Set` muss der Aufrufer immer ein konkretes,
+fachlich begrenztes `where` übergeben, niemals `undefined`. Fachliche Berechtigungs-, Status- und gegebenenfalls
+Nutzer-Versionsprüfungen bleiben beim Aufrufer und erfolgen unter der zuständigen Sperre.
 
 Verbindlich:
 

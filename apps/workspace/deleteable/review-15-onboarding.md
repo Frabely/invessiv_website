@@ -382,6 +382,22 @@ Performance-Hinweise (unkritisch bei heutiger Größe):
 
 ## 6. Datenbank und Doku
 
+> **Stand 03.10.2026: DB1, DB2, DOC1 und DOC2 behoben (lokale Änderungen).**
+>
+> - **DB1:** Locale-Abgleich zwischen den drei Übersetzungsmodellen, Migration `0047` und `SUPPORTED_LOCALES`
+>   in `onboarding-constraint-names.test.ts`. README unterscheidet Übersetzungspflege von einer neuen Locale,
+>   die eine zusätzliche Migration zur Erweiterung der CHECKs benötigt.
+> - **DB2:** Die einmalige, absichtlich bei Konflikten abbrechende Katalogmigration `0048` ist in
+>   `packages/db/AGENTS.md` als Ausnahme dokumentiert; registrierte SQL-Dateien bleiben unverändert.
+> - **DOC1:** README, Task 69/70 und die Übersicht in `00-entscheidungen.md` nennen den tatsächlichen Stand
+>   auf `master`, einschließlich direkter Commits ohne Merge-Commit und laufender Review-Nacharbeiten.
+> - **DOC2:** `server/workspace/shared/AGENTS.md` beschreibt alle vier Varianten aus `update-versioned.ts`,
+>   ihre Sperrvoraussetzungen, Versionsprüfung und die Grenzen des Mengenupdates ohne Einzelversionsvergleich.
+>
+> **Geprüft:** 35 Tests (Constraint-/Locale-Abgleich und Migrationslimits), DB-Paket-Typecheck und ESLint der
+> geänderten Testdatei erfolgreich; ESLint meldet nur Konfigurationswarnungen zu React/Next im DB-Paket.
+> Keine Datenbankmigration ausgeführt, keine vollständigen Monorepo-/Build-Gates durchgeführt.
+
 - **DB1 (N)** `0047_create_onboarding.sql:119, 192, 233`: `locale IN ('de', 'en')` als Literal, das Modell nutzt
   `SUPPORTED_LOCALES`. Eine neue Sprache braucht eine Migration (README sagt „reine Datenpflege“), und Modell und
   Datenbank laufen dabei still auseinander. Für die Limits gibt es einen Abgleichstest, für die Locales nicht.
