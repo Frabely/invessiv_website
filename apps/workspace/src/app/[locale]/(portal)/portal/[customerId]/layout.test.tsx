@@ -5,7 +5,6 @@ import { cleanup, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
-import { PortalSection } from "@/common/constants/portal/portal-sections";
 import { createPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
 import PortalCustomerLayout from "./layout";
 
@@ -23,6 +22,13 @@ vi.mock(
 );
 
 const mockListPortalMembershipsForUserId = vi.hoisted(() => vi.fn());
+const mockListPortalCurrentProjects = vi.hoisted(() => vi.fn());
+vi.mock(
+  "@/server/portal/query-handler/list-portal-current-projects.query-handler",
+  () => ({
+    listPortalCurrentProjects: mockListPortalCurrentProjects,
+  }),
+);
 vi.mock(
   "@/server/portal/query-handler/list-portal-memberships-for-user-id.query-handler",
   () => ({
@@ -30,35 +36,25 @@ vi.mock(
   }),
 );
 
-const mockListPermittedPortalNavItems = vi.hoisted(() => vi.fn());
-vi.mock("@/common/patterns/portal/list-permitted-portal-nav-items", () => ({
-  listPermittedPortalNavItems: mockListPermittedPortalNavItems,
-}));
-
 vi.mock("@/components/portal/portal-shell/portal-shell", () => ({
   PortalShell: ({
     children,
-    brandName,
     homeHref,
     greeting,
-    nav,
     notice,
     switcher,
   }: {
     children: ReactNode;
-    brandName: string;
     homeHref: string;
     greeting: string | null;
-    nav: ReactNode;
     notice: ReactNode;
     switcher: ReactNode;
   }) => (
     <div>
-      <div data-brand-name={brandName} data-home-href={homeHref} />
+      <div data-home-href={homeHref} />
       <div data-testid="greeting-slot">{greeting}</div>
       <div data-testid="notice-slot">{notice}</div>
       <div data-testid="switcher-slot">{switcher}</div>
-      <div data-testid="nav-slot">{nav}</div>
       {children}
     </div>
   ),
@@ -89,7 +85,7 @@ describe("PortalCustomerLayout", () => {
     mockListPortalMembershipsForUserId.mockResolvedValue([
       { customerId: "customer-1", displayName: "Nordlicht Coaching" },
     ]);
-    mockListPermittedPortalNavItems.mockReturnValue([]);
+    mockListPortalCurrentProjects.mockResolvedValue([]);
   });
 
   afterEach(cleanup);
@@ -110,51 +106,11 @@ describe("PortalCustomerLayout", () => {
     expect(screen.getByTestId("switcher-slot")).toHaveTextContent(
       "Nordlicht Coaching",
     );
-    expect(document.querySelector("[data-brand-name]")).toHaveAttribute(
+    expect(document.querySelector("[data-home-href]")).toHaveAttribute(
       "data-home-href",
       "/de/portal/customer-1",
     );
-    expect(document.querySelector("[data-brand-name]")).toHaveAttribute(
-      "data-brand-name",
-      "Nordlicht Coaching",
-    );
     expect(screen.getByText("Company content")).toBeInTheDocument();
-  });
-
-  it("renders no nav slot content while nothing is permitted", async () => {
-    render(
-      await PortalCustomerLayout({
-        children: <p>Company content</p>,
-        params: Promise.resolve({ locale: "de", customerId: "customer-1" }),
-      }),
-    );
-
-    expect(screen.getByTestId("nav-slot")).toBeEmptyDOMElement();
-  });
-
-  it("renders a link for every permitted nav item", async () => {
-    mockListPermittedPortalNavItems.mockReturnValue([
-      {
-        section: PortalSection.Projects,
-        labelKey: "projects",
-        requiredPermission: Permission.PortalAccess,
-      },
-    ]);
-
-    render(
-      await PortalCustomerLayout({
-        children: <p>Company content</p>,
-        params: Promise.resolve({ locale: "de", customerId: "customer-1" }),
-      }),
-    );
-
-    expect(mockListPermittedPortalNavItems).toHaveBeenCalledWith(
-      ACTOR.permissions,
-    );
-    expect(screen.getByRole("link", { name: "Projekte" })).toHaveAttribute(
-      "href",
-      "/de/portal/customer-1/projects",
-    );
   });
 
   it("normalizes the customerId case before resolving the actor", async () => {

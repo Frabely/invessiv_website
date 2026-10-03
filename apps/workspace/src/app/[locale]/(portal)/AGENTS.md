@@ -29,11 +29,8 @@ gesamte Gruppe. Jede geschützte Portalseite prüft die Mitgliedschaft selbst.
 - **`/portal` bestätigt nie eine fremde Mitgliedschaft.** Die Firmenweiche antwortet bei keiner
   aktiven Mitgliedschaft 404, bei genau einer redirectet sie dorthin, bei mehreren zeigt sie die
   Auswahl — nie einen stillen Default.
-- **`PORTAL_NAV_ITEMS` ist die einzige Registrierungsstelle für Navigationspunkte.** Ein neues
-  Portal-Modul ergänzt dort seinen Eintrag mit `requiredPermission`. `portal/[customerId]/layout.tsx`
-  filtert über `listPermittedPortalNavItems(actor.permissions)` und reicht das Ergebnis als
-  `nav`-Slot an `PortalShell`; ohne passende Einträge bleibt der Slot `null` und es entsteht keine
-  leere Navigationsleiste.
+- **Portal-Navigation erfolgt über Dashboard-Widgets.** `PortalShell` hat keine separate Navigationsleiste.
+  Neue Portal-Module registrieren ihre Widgets in `PORTAL_WIDGET_LAYOUT` mit `requiredPermission`.
 - **Eigene Portal-DTOs.** Daten kommen aus `packages/common/src/contracts/portal/`, nie aus einem
   Workspace- oder Cockpit-DTO.
 - **i18n ausschließlich aus** `src/i18n/dictionaries/portal/<modul>/{de,en}.json`. Keine

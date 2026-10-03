@@ -1,6 +1,6 @@
 # Paket F — Projektwechsel im Portal
 
-> Teil von [README.md](./README.md) (Ziel, Entscheidungen, Reihenfolge, gemeinsame Regeln, Abnahme). Nur Plan, nichts umgesetzt.
+> Teil von [README.md](./README.md) (Ziel, Entscheidungen, Reihenfolge, gemeinsame Regeln, Abnahme). Umsetzung im Review, Merge offen.
 
 **Stand:** Die Projektwahl gibt es nur als Tab im Projekt-Widget und als `?project=` auf dem Dashboard. Der Server
 kennt sie nicht; Aufgaben „Von dir benötigt“, Feedback, Dateien, Onboarding und Ansprechpartner sind kundenweit. Die
@@ -8,8 +8,8 @@ Widget-Registry (`portal-widget-layout.ts`) trägt je Widget schon `scope: Custo
 nirgends gelesen.
 
 - **F1 — Zentraler Projektumschalter.**
-  Neuer `ProjectSwitcher` im Kopf des Portals (Slot neben dem `CustomerSwitcher`, gleiches Muster: einfache Links,
-  kein Client-State). Sichtbar nur bei mehr als einem laufenden Projekt. Die Auswahl steht als `?project=<id>` in der
+  Neuer `ProjectSwitcher` rechts im Kopf des Portals neben dem Theme-Switch mit `CustomSelect` aus `@invessiv/ui`.
+  Sichtbar nur bei mehr als einem laufenden Projekt. Die Auswahl steht als `?project=<id>` in der
   URL; `buildPortalDashboardHref` wird zu einem allgemeinen Portal-Pfadhelfer, und die Navigation (Dateien,
   Onboarding, Nachrichten, Zurück-Link) reicht den Parameter weiter. Der Tab im Projekt-Widget entfällt.
 - **F2 — Server kennt das Projekt.**

@@ -1,4 +1,4 @@
-/** Whether a widget shows company-wide data or follows the selected project tab. */
+/** Whether a widget shows company-wide data or follows the selected project. */
 export const PortalWidgetScope = {
   Customer: "customer",
   Project: "project",

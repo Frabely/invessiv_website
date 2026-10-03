@@ -8,6 +8,7 @@ import type { PortalFeedbackSummaryDto } from "@invessiv/common/contracts/portal
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { Widget } from "@invessiv/ui";
 import { buildPortalFeedbackPath } from "@/common/patterns/portal/portal-feedback-path";
+import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
 import { FeedbackRoundStatusBadge } from "@/components/shared/feedback/feedback-round-status-badge/feedback-round-status-badge";
 import type { Locale } from "@/config/i18n";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
@@ -78,11 +79,15 @@ export function PortalFeedbackWidget({
             const yourTurn =
               entry.status === FeedbackRoundStatus.Open || isApprovalDue(entry);
             const link = linkLabels(entry, content);
-            const href = buildPortalFeedbackPath({
-              locale,
-              customerId,
-              projectId: entry.projectId,
-            });
+            const href = buildPortalHref(
+              buildPortalFeedbackPath({
+                locale,
+                customerId,
+                projectId: entry.projectId,
+              }),
+              "",
+              { project: entry.projectId },
+            );
             return (
               <li
                 className={styles.item}

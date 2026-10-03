@@ -55,8 +55,6 @@
     },
     "project": {
       "title": "Your project",
-      "tabsLabel": "Your projects",
-      "plannedBadge": "starting soon",
       "pausedNote": "This project is paused right now. We will get in touch before it continues.",
       "plannedNote": "This project starts soon. You will see its progress here once we begin.",
       "trackLabel": "Project progress",

@@ -28,6 +28,33 @@
   font-size: var(--font-size-ui-sm);
   line-height: 1.5;
 }
+.scope {
+  display: inline-flex;
+  width: fit-content;
+  gap: 0.25rem;
+  padding: 0.2rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background: var(--color-surface-2);
+}
+.scope a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.55rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+.scope a[aria-current="page"] {
+  background: var(--color-surface-1);
+  color: var(--color-text);
+  font-weight: 600;
+}
+.scope a:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
 
 .intake {
   display: grid;

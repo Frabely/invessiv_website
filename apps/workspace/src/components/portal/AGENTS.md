@@ -20,8 +20,8 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   um (`mock: false` + `requiredPermission`), statt eine zweite Karte zu bauen.
 - **Mock-Widgets** tragen das Badge „Bald verfügbar“ (`mock`-Prop am `Widget`) und zeigen **keine erfundenen Werte** —
   nur Skeleton-/Illustrationsinhalt und eine Beschreibung, was dort entstehen wird.
-- **Öffnen nur über explizite Buttons** (`Widget`-`openMode`). Dialoge hängen am URL-Parameter `?widget=<key>`,
-  Projekt-Tabs an `?project=<id>` (`portal-dashboard-query.ts`); Schließen entfernt den Parameter.
+- **Öffnen nur über explizite Buttons** (`Widget`-`openMode`). Dialoge hängen am URL-Parameter `?widget=<key>`;
+  Schließen entfernt ihn. Der Projektwechsel im Header nutzt `?project=<id>`.
 - **Owner-Sicht** (`capabilities.isOwnerView`): jede Schreibaktion ist deaktiviert und verweist mit Link ins CRM.
 - **Texte** ausschließlich aus `src/i18n/dictionaries/portal/<modul>/{de,en}.json`, Anrede „du“ (wie im restlichen
   Portal), freundlich, kein
@@ -110,8 +110,7 @@ Plan: `apps/workspace/plans/crm/15-onboarding/66-portal-formular.md`.
 
 - Komponenten liegen unter `onboarding/`; Orchestrator ist `onboarding/onboarding-form-view`. Wer gerade schreiben
   darf (`editableBlockIds` nicht leer), bekommt `onboarding-form-editor`, alle anderen und jeder spätere Status die
-  Leseansicht. Die Übersicht `onboarding-overview` sieht nur, wer mehrere Bögen hat; bei genau einem leitet die Seite
-  direkt dorthin.
+  Leseansicht. Das Dashboard-Widget verlinkt direkt auf den Bogen des gewählten Projekts.
 - **Ein Block = ein Schritt.** Der Schritt steht in der URL (`?section=<blockId>` bzw. `review`, optional
   `&field=<fieldId>`) und wird ausschließlich über `usePortalOnboardingStep` gelesen und geschrieben
   (`history.pushState`, kein Server-Roundtrip). Pflichtfelder blockieren den Schrittwechsel nie. Nach einem Wechsel
@@ -141,7 +140,7 @@ Plan: `apps/workspace/plans/crm/15-onboarding/66-portal-formular.md`.
   (Konsolenwarnung nur in der Entwicklung).
 - Die Leseansicht ist der geteilte `OnboardingAnswerReadView` (`components/shared/onboarding/`), derselbe Baustein wie
   im CRM-Tab „Antworten“. Antworttext läuft ausschließlich über `LinkedText`, nie als HTML.
-- Links auf Übersicht, Bogen und Schritt entstehen nur über `buildPortalOnboardingPath` bzw.
+- Links auf Bogen und Schritt entstehen nur über `buildPortalOnboardingPath` bzw.
   `buildPortalOnboardingStepSearch`.
 
 Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-leistungen.md`):
@@ -176,10 +175,10 @@ Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-le
   Bestätigung und Anmerkung, Bestätigung, Farbe und Skala. Download und Vorschau reicht der Aufrufer als `files`
   herein (Portal: `usePortalFileDownloads`, CRM: `useFileDownloads` mit `filesApiService`); ohne `files` stehen nur
   die Dateinamen da.
-- **Navigation und Widget:** Der Eintrag „Onboarding“ steht in `PORTAL_NAV_ITEMS` hinter `portal.onboarding.read`.
-  Das Widget `onboarding` ist echt (`onlyWithContent`): Die Seite lädt `listPortalOnboardingForms` und meldet Inhalt
+- **Onboarding-Widget:** Es steht in `PORTAL_WIDGET_LAYOUT` hinter `portal.onboarding.read` und ist echt
+  (`onlyWithContent`): Die Seite lädt `listPortalOnboardingForms` und meldet Inhalt
   nur, wenn es einen Bogen gibt. Welchen Bogen es zeigt, entscheidet `pickPortalOnboardingWidgetForm` (der, bei dem
-  der Kunde dran ist, sonst der jüngste); der Fortschritt kommt aus derselben Zusammenfassung wie Übersicht und CRM.
+  der Kunde dran ist, sonst der jüngste); der Fortschritt kommt aus derselben Zusammenfassung wie im CRM.
 
 - **Nachforderung (ab Task 68):** Im Status `changes_requested` öffnet der Bogen auf dem ersten Block aus
   `editableBlockIds` (`usePortalOnboardingStep` nimmt dafür einen Startabschnitt), zeigt über dem Formular, was zu

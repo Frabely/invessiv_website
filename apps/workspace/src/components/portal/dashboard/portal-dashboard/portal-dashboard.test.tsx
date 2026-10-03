@@ -201,6 +201,7 @@ function renderDashboard(
   conversation: PortalConversationDto | null = CONVERSATION,
   filesOverview: PortalFilesOverviewDto | null = FILES,
   onboarding: PortalOnboardingFormSummaryDto[] = [],
+  selectedProjectId?: string | null,
 ) {
   const keys = new Set<PortalWidgetKey>([
     PortalWidgetKey.Project,
@@ -216,6 +217,7 @@ function renderDashboard(
       conversation={conversation}
       customerId="customer-1"
       dashboard={dashboard}
+      selectedProjectId={selectedProjectId}
       filesHref="/en/portal/customer-1/files"
       filesOverview={filesOverview}
       locale="en"
@@ -292,7 +294,10 @@ describe("PortalDashboard", () => {
       within(widget).getByRole("link", {
         name: "Continue the onboarding for Relaunch",
       }),
-    ).toHaveAttribute("href", "/en/portal/customer-1/onboarding/form-1");
+    ).toHaveAttribute(
+      "href",
+      "/en/portal/customer-1/onboarding/form-1?project=project-1",
+    );
   });
 
   it("has no onboarding widget while the company has no form", () => {
@@ -371,13 +376,13 @@ describe("PortalDashboard", () => {
       within(widget).getByRole("link", { name: "Give feedback on Relaunch" }),
     ).toHaveAttribute(
       "href",
-      "/en/portal/customer-1/projects/project-1/feedback",
+      "/en/portal/customer-1/projects/project-1/feedback?project=project-1",
     );
     expect(
       screen.getByRole("link", { name: content.widgets.feedback.projectLink }),
     ).toHaveAttribute(
       "href",
-      "/en/portal/customer-1/projects/project-1/feedback",
+      "/en/portal/customer-1/projects/project-1/feedback?project=project-1",
     );
   });
 
@@ -622,7 +627,7 @@ describe("PortalDashboard", () => {
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
-  it("switches projects through the URL and falls back to the first one", () => {
+  it("shows the server-selected project without a widget tab", () => {
     const projects = [
       dto().projects[0]!,
       {
@@ -632,18 +637,18 @@ describe("PortalDashboard", () => {
         status: ProjectStatus.Planned,
       },
     ];
-    mocks.search.value = "project=foreign";
-    renderDashboard(dto({ projects }));
+    renderDashboard(
+      dto({ projects }),
+      FULL_READ,
+      null,
+      CONVERSATION,
+      FILES,
+      [],
+      "project-2",
+    );
 
-    expect(screen.getByRole("tab", { name: "Relaunch" })).toHaveAttribute(
-      "aria-selected",
-      "true",
-    );
-    fireEvent.click(screen.getByRole("tab", { name: /Shop/ }));
-    expect(mocks.replace).toHaveBeenCalledWith(
-      "/en/portal/customer-1?project=project-2",
-      { scroll: false },
-    );
+    expect(screen.getByText("Shop")).toBeInTheDocument();
+    expect(screen.queryByRole("tab", { name: /Relaunch|Shop/ })).toBeNull();
   });
 
   it("shows the friendly empty state for a customer without projects", () => {

@@ -1,0 +1,9 @@
+.root {
+  width: clamp(9rem, 18vw, 15rem);
+  min-width: 0;
+}
+@media (max-width: 767px) {
+  .root {
+    width: 10rem;
+  }
+}

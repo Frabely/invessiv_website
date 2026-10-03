@@ -11,6 +11,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { PortalAccessDto } from "@invessiv/common/contracts/crm/portal-access.dto";
 import { PortalAccessErrorCode } from "@invessiv/common/constants/crm/errors/portal-access-error-codes";
 import { AuthErrorCode } from "@invessiv/common/constants/auth/auth-error-codes";
+import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { getCrmPortalAccessDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { getSettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import { PortalInviteDialog } from "./invite-portal-contact-dialog";
@@ -129,6 +130,39 @@ describe("PortalInviteDialog", () => {
         invitation: { id: "invitation", expiresAt: "2026-10-01" },
       },
     });
+  });
+
+  it("shows portal areas in the invitation preview even without header navigation", () => {
+    render(
+      <PortalInviteDialog
+        access={{
+          ...access,
+          roles: [
+            {
+              ...access.roles[0],
+              permissions: [
+                Permission.PortalAccess,
+                Permission.PortalMessagesRead,
+                Permission.PortalFilesRead,
+                Permission.PortalOnboardingRead,
+              ],
+            },
+          ],
+        }}
+        content={getCrmPortalAccessDictionary("de")}
+        permissionsContent={getSettingsPermissionsDictionary("de")}
+        locale="de"
+        initialAssignmentId={access.contacts[0].assignmentId}
+        onCloseAction={() => {}}
+      />,
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: "Einladung vorbereiten" }),
+    );
+    expect(screen.getByText("Nachrichten")).toBeInTheDocument();
+    expect(screen.getByText("Dateien")).toBeInTheDocument();
+    expect(screen.getByText("Onboarding")).toBeInTheDocument();
   });
 
   it("requires a preview confirmation before returning the one-time link", async () => {

@@ -9,6 +9,7 @@ type CustomerSwitcherProps = {
   companies: readonly PortalMembershipOptionDto[];
   content: PortalShellDictionary["switcher"];
   locale: Locale;
+  homeHref?: string;
 };
 
 /**
@@ -20,52 +21,61 @@ export function CustomerSwitcher({
   companies,
   content,
   locale,
+  homeHref,
 }: CustomerSwitcherProps) {
   const activeCompany = companies.find(
     (company) => company.customerId === activeCustomerId,
   );
   const activeName = activeCompany?.displayName ?? "";
+  const overviewHref = homeHref ?? portalPathFor(locale, activeCustomerId);
 
   if (companies.length <= 1) {
-    return <span className={styles.current}>{activeName}</span>;
+    return (
+      <a className={styles.current} href={overviewHref}>
+        {activeName}
+      </a>
+    );
   }
 
   return (
-    <details className={styles.root}>
-      <summary className={styles.summary}>
-        {/* The visible company name stays the accessible name (WCAG 2.5.3); this only adds
-            context for assistive tech, it never replaces it. */}
-        <span className="sr-only">{content.menuLabel}: </span>
-        <span className={styles.current}>{activeName}</span>
-      </summary>
-      <div
-        aria-label={content.groupLabel}
-        className={styles.popover}
-        role="group"
-      >
-        {companies.map((company) => {
-          const isActive = company.customerId === activeCustomerId;
-          return (
-            <span className={styles.option} key={company.customerId}>
-              {isActive ? (
-                <span className={styles.optionActive}>
-                  {company.displayName}
-                  <span className={styles.currentBadge}>
-                    {content.currentBadge}
+    <div className={styles.root}>
+      <a className={styles.current} href={overviewHref}>
+        {activeName}
+      </a>
+      <details>
+        <summary className={styles.summary}>
+          <span className="sr-only">{content.menuLabel}: </span>
+          <span aria-hidden="true">▾</span>
+        </summary>
+        <div
+          aria-label={content.groupLabel}
+          className={styles.popover}
+          role="group"
+        >
+          {companies.map((company) => {
+            const isActive = company.customerId === activeCustomerId;
+            return (
+              <span className={styles.option} key={company.customerId}>
+                {isActive ? (
+                  <span className={styles.optionActive}>
+                    {company.displayName}
+                    <span className={styles.currentBadge}>
+                      {content.currentBadge}
+                    </span>
                   </span>
-                </span>
-              ) : (
-                <a
-                  className={styles.optionLink}
-                  href={portalPathFor(locale, company.customerId)}
-                >
-                  {company.displayName}
-                </a>
-              )}
-            </span>
-          );
-        })}
-      </div>
-    </details>
+                ) : (
+                  <a
+                    className={styles.optionLink}
+                    href={portalPathFor(locale, company.customerId)}
+                  >
+                    {company.displayName}
+                  </a>
+                )}
+              </span>
+            );
+          })}
+        </div>
+      </details>
+    </div>
   );
 }

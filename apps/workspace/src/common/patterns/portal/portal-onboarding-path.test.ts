@@ -7,15 +7,6 @@ import {
 } from "@/common/patterns/portal/portal-onboarding-path";
 
 describe("buildPortalOnboardingPath", () => {
-  it("builds the localized overview of a company", () => {
-    expect(
-      buildPortalOnboardingPath({ locale: "de", customerId: "customer-1" }),
-    ).toBe("/de/portal/customer-1/onboarding");
-    expect(
-      buildPortalOnboardingPath({ locale: "en", customerId: "customer-1" }),
-    ).toBe("/en/portal/customer-1/onboarding");
-  });
-
   it("builds a form, a step of it and a jump to a field", () => {
     const base = {
       locale: "de",

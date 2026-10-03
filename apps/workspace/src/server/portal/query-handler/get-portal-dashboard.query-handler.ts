@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, desc, eq, inArray, ne } from "drizzle-orm";
+import { and, desc, eq, ne } from "drizzle-orm";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
@@ -24,6 +24,7 @@ import { portalDashboardMappingService } from "@/server/portal/services/portal-d
 import { portalFeedbackService } from "@/server/portal/services/feedback/portal-feedback-service";
 import { projectResponsibleMemberService } from "@/server/shared/services/project-responsible-member-service";
 import { portalBookingMappingService } from "@/server/portal/services/portal-booking-mapping-service";
+import { comparePortalCurrentProjects } from "@/common/patterns/portal/compare-portal-current-projects";
 
 /**
  * Reads explicitly released dashboard columns. Round states feed the track of every visible
@@ -33,6 +34,7 @@ import { portalBookingMappingService } from "@/server/portal/services/portal-boo
 export async function getPortalDashboard(
   reader: PortalReader,
   today: string,
+  requestedProjectId?: string | null,
 ): Promise<PortalDashboardDto> {
   const db = getDrizzleDatabaseClient();
   const target = { customerId: reader.customerId };
@@ -78,6 +80,8 @@ export async function getPortalDashboard(
           previewUrl: projects.preview_url,
           ownerMemberId: projects.owner_member_id,
           ownerName: users.display_name,
+          ownerEmail: users.primary_email,
+          ownerActive: workspaceMembers.active,
         })
         .from(projects)
         .leftJoin(
@@ -89,7 +93,15 @@ export async function getPortalDashboard(
         .orderBy(desc(projects.created_at))
     : [];
 
-  const roundRows = projectRows.length
+  const currentProjectRows = projectRows
+    .filter((project) => project.status !== ProjectStatus.Completed)
+    .sort(comparePortalCurrentProjects);
+  const selectedProjectId =
+    currentProjectRows.find((project) => project.id === requestedProjectId)
+      ?.id ??
+    currentProjectRows[0]?.id ??
+    null;
+  const roundRows = selectedProjectId
     ? await db
         .select({
           projectId: feedbackRounds.project_id,
@@ -99,17 +111,18 @@ export async function getPortalDashboard(
           approvedAt: feedbackRounds.approved_at,
         })
         .from(feedbackRounds)
-        .where(
-          inArray(
-            feedbackRounds.project_id,
-            projectRows.map((row) => row.id),
-          ),
-        )
+        .where(eq(feedbackRounds.project_id, selectedProjectId))
     : [];
   const canReadFeedback = portalFeedbackService.canRead(reader);
-  const bookingProject = projectRows.find(
-    (project) => project.status !== ProjectStatus.Completed,
+  const bookingProject = currentProjectRows.find(
+    (project) => project.id === selectedProjectId,
   );
+  const projectContact =
+    bookingProject?.ownerActive &&
+    bookingProject.ownerName &&
+    bookingProject.ownerEmail
+      ? { name: bookingProject.ownerName, email: bookingProject.ownerEmail }
+      : null;
   const bookingContact = bookingProject
     ? await projectResponsibleMemberService.findBookingContact(
         db,
@@ -140,6 +153,9 @@ export async function getPortalDashboard(
         .where(
           and(
             portalProjectCondition(reader, Permission.PortalTasksRead),
+            selectedProjectId
+              ? eq(tasks.project_id, selectedProjectId)
+              : undefined,
             eq(tasks.visible_to_customer, true),
             ne(tasks.status, TaskStatus.Cancelled),
           ),
@@ -149,6 +165,8 @@ export async function getPortalDashboard(
   return portalDashboardMappingService.mapRowsToDto({
     customer: {
       ...customer,
+      contactName: projectContact?.name ?? customer.contactName,
+      contactEmail: projectContact?.email ?? customer.contactEmail,
       booking: bookingContact
         ? portalBookingMappingService.toDto(bookingContact)
         : null,
@@ -156,6 +174,7 @@ export async function getPortalDashboard(
     projects: projectRows,
     tasks: taskRows,
     feedbackRounds: canReadFeedback ? roundRows : null,
+    selectedProjectId,
     roundStates: roundRows.map(({ projectId, roundNumber, status }) => ({
       projectId,
       roundNumber,

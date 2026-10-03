@@ -10,24 +10,6 @@
     "ownerLink": "Im CRM ansehen",
     "readOnlyHint": "Du kannst das Onboarding lesen, aber nicht ausfüllen. Frag die Person, die bei euch das Projekt betreut."
   },
-  "overview": {
-    "heading": "Onboarding",
-    "intro": "Hier sammeln wir alles, was wir für dein Projekt brauchen. Du musst nicht alles auf einmal ausfüllen: Jede Angabe wird sofort gespeichert.",
-    "listLabel": "Deine Onboardings",
-    "continue": "Weiter ausfüllen",
-    "view": "Ansehen",
-    "empty": {
-      "title": "Noch kein Onboarding für dich",
-      "description": "Sobald wir ein Projekt mit dir starten, findest du hier den Fragebogen dazu: Texte, Bilder, Ansprechpersonen und alles Weitere an einem Ort."
-    }
-  },
-  "status": {
-    "draft": "In Vorbereitung",
-    "open": "Offen",
-    "submitted": "Abgesendet",
-    "changes_requested": "Rückfrage",
-    "completed": "Abgeschlossen"
-  },
   "progress": {
     "label": "{answered} von {total} Pflichtangaben",
     "none": "Keine Pflichtangaben",

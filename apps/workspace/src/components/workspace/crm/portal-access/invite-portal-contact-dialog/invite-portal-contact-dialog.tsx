@@ -11,7 +11,7 @@ import type { Locale } from "@/config/i18n";
 import type { CrmPortalAccessDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { getPortalShellDictionary } from "@/i18n/dictionaries/portal";
 import type { SettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
-import { PORTAL_NAV_ITEMS } from "@/common/constants/portal/portal-nav-items";
+import { PORTAL_ACCESS_PREVIEW_AREAS } from "@/common/constants/portal/portal-access-preview-areas";
 import { portalAccessErrorMessage } from "@/common/patterns/crm/portal-access-error-message";
 import { PortalInviteStepContent } from "../portal-invite-step-content/portal-invite-step-content";
 import styles from "./invite-portal-contact-dialog.module.css";
@@ -59,8 +59,8 @@ export function PortalInviteDialog({
   const chosenRoles = access.roles.filter(
     (role) => role.active && roleIds.includes(role.id),
   );
-  const portalLabels = getPortalShellDictionary(locale).nav.items;
-  const permittedAreas = PORTAL_NAV_ITEMS.filter((item) =>
+  const portalLabels = getPortalShellDictionary(locale).accessAreas;
+  const permittedAreas = PORTAL_ACCESS_PREVIEW_AREAS.filter((item) =>
     chosenRoles.some((role) =>
       role.permissions.includes(item.requiredPermission),
     ),

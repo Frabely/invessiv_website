@@ -164,6 +164,7 @@ describe("PortalFilesView", () => {
       "customer-1",
       PortalFileOrigin.FromYou,
       1,
+      null,
     );
   });
 

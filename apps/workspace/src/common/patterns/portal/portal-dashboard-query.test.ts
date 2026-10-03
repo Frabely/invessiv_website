@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
+import { buildPortalHref } from "./build-portal-href";
 import {
-  buildPortalDashboardHref,
   readPortalDashboardProject,
   readPortalDashboardWidget,
 } from "./portal-dashboard-query";
@@ -45,25 +45,25 @@ describe("readPortalDashboardProject", () => {
   });
 });
 
-describe("buildPortalDashboardHref", () => {
+describe("buildPortalHref", () => {
   it("sets, keeps and removes parameters", () => {
     expect(
-      buildPortalDashboardHref("/de/portal/c", "project=a", {
+      buildPortalHref("/de/portal/c", "project=a", {
         widget: PortalWidgetKey.Files,
       }),
     ).toBe("/de/portal/c?project=a&widget=files");
     expect(
-      buildPortalDashboardHref("/de/portal/c", "project=a&widget=files", {
+      buildPortalHref("/de/portal/c", "project=a&widget=files", {
         widget: null,
       }),
     ).toBe("/de/portal/c?project=a");
     expect(
-      buildPortalDashboardHref("/de/portal/c", "widget=files", {
+      buildPortalHref("/de/portal/c", "widget=files", {
         widget: null,
         project: "b",
       }),
     ).toBe("/de/portal/c?project=b");
-    expect(buildPortalDashboardHref("/de/portal/c", "", { widget: null })).toBe(
+    expect(buildPortalHref("/de/portal/c", "", { widget: null })).toBe(
       "/de/portal/c",
     );
   });

@@ -14,8 +14,8 @@ import type { PortalDashboardNavigationMode as PortalDashboardNavigationModeType
 import { PortalDashboardNavigationMode } from "@/common/constants/portal/portal-dashboard-navigation-modes";
 import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import type { PortalWidgetDefinition } from "@/common/contracts/portal/portal-widget-definition";
+import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
 import {
-  buildPortalDashboardHref,
   readPortalDashboardProject,
   readPortalDashboardWidget,
 } from "@/common/patterns/portal/portal-dashboard-query";
@@ -53,6 +53,7 @@ export type PortalDashboardProps = {
   conversation: PortalConversationDto | null;
   customerId: string;
   dashboard: PortalDashboardDto;
+  selectedProjectId?: string | null;
   /** Files page of this customer, for the files widget. */
   filesHref: string;
   /** Null without `portal.files.read`; the files widget is then not rendered. */
@@ -76,7 +77,7 @@ export type PortalDashboardProps = {
 };
 
 /**
- * Orchestrates the widget grid, the dialog named in `?widget`, the project tab in `?project` and
+ * Orchestrates the widget grid, the dialog named in `?widget`, the selected project in `?project` and
  * the chat dock. Mount it with `key={customerId}` so no client state crosses companies.
  */
 export function PortalDashboard({
@@ -85,6 +86,7 @@ export function PortalDashboard({
   conversation,
   customerId,
   dashboard,
+  selectedProjectId,
   filesHref,
   filesOverview,
   filesContent,
@@ -116,20 +118,16 @@ export function PortalDashboard({
       ? requestedWidget
       : null;
   const selectedProject = readPortalDashboardProject(
-    searchParams,
+    { get: () => selectedProjectId ?? null },
     dashboard.projects,
   );
   const { canCompleteTasks, isOwnerView } = dashboard.capabilities;
 
   function navigate(
-    change: Parameters<typeof buildPortalDashboardHref>[2],
+    change: Parameters<typeof buildPortalHref>[2],
     mode: PortalDashboardNavigationModeType,
   ) {
-    const href = buildPortalDashboardHref(
-      pathname,
-      searchParams.toString(),
-      change,
-    );
+    const href = buildPortalHref(pathname, searchParams.toString(), change);
     router[mode](href, { scroll: false });
   }
 
@@ -160,9 +158,7 @@ export function PortalDashboard({
     onCompleteAction: completion.complete,
     today,
   };
-  const ourTasks = selectedProject
-    ? dashboard.ourTasks.filter((task) => task.projectId === selectedProject.id)
-    : dashboard.ourTasks;
+  const ourTasks = dashboard.ourTasks;
 
   const onboardingForm = pickPortalOnboardingWidgetForm(onboarding);
   const mockBadge = content.mock.badge;
@@ -200,19 +196,19 @@ export function PortalDashboard({
             (entry) =>
               entry.projectId === selectedProject.id && entry.status !== null,
           )
-            ? buildPortalFeedbackPath({
-                locale,
-                customerId,
-                projectId: selectedProject.id,
-              })
+            ? buildPortalHref(
+                buildPortalFeedbackPath({
+                  locale,
+                  customerId,
+                  projectId: selectedProject.id,
+                }),
+                "",
+                { project: selectedProject.id },
+              )
             : null
         }
         feedbackLinkLabel={content.widgets.feedback.projectLink}
         locale={locale}
-        onSelectProjectAction={(project) =>
-          navigate({ project }, PortalDashboardNavigationMode.Replace)
-        }
-        projects={dashboard.projects}
         selectedProject={selectedProject}
       />
     ) : (

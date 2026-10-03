@@ -17,6 +17,7 @@ export type PortalFileUploadDialogProps = {
   initialFiles: readonly File[];
   locale: Locale;
   projects: readonly PortalFileProjectOptionDto[];
+  initialProjectId?: string | null;
   onCloseAction: () => void;
   onUploadedAction: (file: PortalFileDto) => void;
 };
@@ -28,10 +29,11 @@ export function PortalFileUploadDialog({
   initialFiles,
   locale,
   projects,
+  initialProjectId = null,
   onCloseAction,
   onUploadedAction,
 }: PortalFileUploadDialogProps) {
-  const [projectId, setProjectId] = useState<string | null>(null);
+  const [projectId, setProjectId] = useState<string | null>(initialProjectId);
   const [note, setNote] = useState("");
   const queue = useUploadQueue<PortalFileDto>(
     portalFilesApiService.uploadTransport(customerId, {

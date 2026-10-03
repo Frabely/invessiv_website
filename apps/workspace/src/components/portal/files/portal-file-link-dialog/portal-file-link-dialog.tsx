@@ -12,6 +12,7 @@ export type PortalFileLinkDialogProps = {
   content: PortalFilesDictionary;
   customerId: string;
   projects: readonly PortalFileProjectOptionDto[];
+  initialProjectId?: string | null;
   onCloseAction: () => void;
   onCreatedAction: (file: PortalFileDto) => void;
 };
@@ -20,10 +21,11 @@ export function PortalFileLinkDialog({
   content,
   customerId,
   projects,
+  initialProjectId = null,
   onCloseAction,
   onCreatedAction,
 }: PortalFileLinkDialogProps) {
-  const [projectId, setProjectId] = useState<string | null>(null);
+  const [projectId, setProjectId] = useState<string | null>(initialProjectId);
   const [note, setNote] = useState("");
 
   return (

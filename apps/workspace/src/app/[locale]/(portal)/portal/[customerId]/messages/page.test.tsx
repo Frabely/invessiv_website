@@ -14,6 +14,7 @@ vi.mock("server-only", () => ({}));
 const mocks = vi.hoisted(() => ({
   requirePortalReader: vi.fn(),
   getPortalConversation: vi.fn(),
+  listPortalCurrentProjects: vi.fn(),
   isPortalOwnerView: vi.fn(),
   notFound: vi.fn(() => {
     throw new Error("NEXT_NOT_FOUND");
@@ -31,6 +32,12 @@ vi.mock("@/server/portal/auth/portal-owner-view", () => ({
 vi.mock(
   "@/server/portal/query-handler/get-portal-conversation.query-handler",
   () => ({ getPortalConversation: mocks.getPortalConversation }),
+);
+vi.mock(
+  "@/server/portal/query-handler/list-portal-current-projects.query-handler",
+  () => ({
+    listPortalCurrentProjects: mocks.listPortalCurrentProjects,
+  }),
 );
 vi.mock(
   "@/components/portal/messages/portal-messages-view/portal-messages-view",
@@ -80,6 +87,7 @@ describe("PortalMessagesPage", () => {
       conversation: CONVERSATION,
     });
     mocks.isPortalOwnerView.mockReturnValue(false);
+    mocks.listPortalCurrentProjects.mockResolvedValue([]);
   });
 
   afterEach(cleanup);

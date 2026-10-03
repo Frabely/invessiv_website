@@ -9,6 +9,7 @@ import type { PortalOnboardingFormSummaryDto } from "@invessiv/common/contracts/
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { Widget } from "@invessiv/ui";
 import { buildPortalOnboardingPath } from "@/common/patterns/portal/portal-onboarding-path";
+import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
 import { OnboardingBookingCard } from "@/components/portal/onboarding/onboarding-booking-card/onboarding-booking-card";
 import { OnboardingProgressBar } from "@/components/shared/onboarding/onboarding-progress-bar/onboarding-progress-bar";
 import type { Locale } from "@/config/i18n";
@@ -102,11 +103,15 @@ export function PortalOnboardingWidget({
           aria-label={formatMessage(linkLabelNamed, named)}
           className={styles.link}
           data-primary={proceed ? "true" : undefined}
-          href={buildPortalOnboardingPath({
-            locale,
-            customerId,
-            formId: form.id,
-          })}
+          href={buildPortalHref(
+            buildPortalOnboardingPath({
+              locale,
+              customerId,
+              formId: form.id,
+            }),
+            "",
+            { project: form.projectId },
+          )}
         >
           {linkLabel}
         </Link>

@@ -45,6 +45,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
     const f = createFileTestFixture();
     const memory = createInMemoryStorage();
     const archivedProjectId = crypto.randomUUID();
+    const secondProjectId = crypto.randomUUID();
 
     function contact(
       permissions: Permission[] = [
@@ -157,6 +158,23 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
           included_feedback_rounds: 2,
           version: 1,
         });
+      await f
+        .database()
+        .insert(projects)
+        .values({
+          id: secondProjectId,
+          customer_id: f.customerId,
+          title: "second project",
+          owner_member_id: f.memberId,
+          status: ProjectStatus.Active,
+          phase: ProjectPhase.Onboarding,
+          process_steps: [ProjectPhase.Onboarding],
+          current_process_step: ProjectPhase.Onboarding,
+          workflow_key: ProjectWorkflowKey.StandardWebV1,
+          billing_model: ProjectBillingModel.FixedPrice,
+          included_feedback_rounds: 2,
+          version: 1,
+        });
       vi.spyOn(storageService, "getAdapter").mockReturnValue(memory.adapter);
     }, 60_000);
 
@@ -189,6 +207,30 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
           }),
         ),
       ).not.toContain(shared);
+    });
+
+    it("limits a project view to its files and company-wide files", async () => {
+      const own = await internalLink({ displayName: "project-selected" });
+      const general = await internalLink({
+        displayName: "company-wide",
+        projectId: null,
+      });
+      const other = await internalLink({
+        displayName: "other-project",
+        projectId: secondProjectId,
+      });
+      const selected = await listPortalFiles(contact(), {
+        projectId: f.projectId,
+      });
+      expect(ids(selected)).toContain(own);
+      expect(ids(selected)).toContain(general);
+      expect(ids(selected)).not.toContain(other);
+      expect(
+        await listPortalFiles(contact(), { projectId: f.foreignProjectId }),
+      ).toMatchObject({ code: E.NotFound });
+      expect(
+        await listPortalFiles(contact(), { projectId: crypto.randomUUID() }),
+      ).toMatchObject({ code: E.NotFound });
     });
 
     it("shows project titles only with portal.projects.read", async () => {

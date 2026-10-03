@@ -10,24 +10,6 @@
     "ownerLink": "Open in CRM",
     "readOnlyHint": "You can read the onboarding, but not fill it in. Ask the person who looks after the project on your side."
   },
-  "overview": {
-    "heading": "Onboarding",
-    "intro": "This is where we collect everything we need for your project. You don’t have to finish in one go: every answer is saved right away.",
-    "listLabel": "Your onboardings",
-    "continue": "Continue",
-    "view": "View",
-    "empty": {
-      "title": "No onboarding for you yet",
-      "description": "As soon as we start a project with you, you’ll find its questionnaire here: texts, images, contacts and everything else in one place."
-    }
-  },
-  "status": {
-    "draft": "In preparation",
-    "open": "Open",
-    "submitted": "Submitted",
-    "changes_requested": "Question from us",
-    "completed": "Completed"
-  },
   "progress": {
     "label": "{answered} of {total} required answers",
     "none": "No required answers",

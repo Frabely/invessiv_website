@@ -43,10 +43,19 @@ export function usePortalOnboardingStep(
 
   const goTo = useCallback(
     (target: PortalOnboardingStepTarget) => {
+      const params = new URLSearchParams(window.location.search);
+      params.delete(PortalOnboardingQueryParam.Section);
+      params.delete(PortalOnboardingQueryParam.Field);
+      for (const [key, value] of new URLSearchParams(
+        buildPortalOnboardingStepSearch(target),
+      )) {
+        params.set(key, value);
+      }
+      const query = params.toString();
       window.history.pushState(
         null,
         "",
-        `${pathname}${buildPortalOnboardingStepSearch(target)}`,
+        `${pathname}${query ? `?${query}` : ""}`,
       );
       window.dispatchEvent(new Event(PortalOnboardingEvent.StepChanged));
     },

@@ -9,7 +9,7 @@ import { getPortalDashboardDictionary } from "@/i18n/dictionaries/portal";
 import { PortalOnboardingWidget } from "./portal-onboarding-widget";
 
 const content = getPortalDashboardDictionary("en").widgets.onboarding;
-const HREF = "/en/portal/customer-1/onboarding/form-1";
+const HREF = "/en/portal/customer-1/onboarding/form-1?project=project-1";
 
 function form(
   overrides: Partial<PortalOnboardingFormSummaryDto> = {},

@@ -12,6 +12,9 @@ import { portalPathFor, workspaceAreaPathFor } from "@/lib/auth/routes";
 import { isPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
 import { requirePortalReader } from "@/server/portal/auth/require-portal-reader";
 import { getPortalConversation } from "@/server/portal/query-handler/get-portal-conversation.query-handler";
+import { listPortalCurrentProjects } from "@/server/portal/query-handler/list-portal-current-projects.query-handler";
+import { PortalDashboardQueryParam } from "@/common/constants/portal/portal-dashboard-query-params";
+import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -25,6 +28,7 @@ export const viewport: Viewport = {
 
 type PortalMessagesPageProps = {
   params: Promise<{ locale: string; customerId: string }>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
 export async function generateMetadata({
@@ -43,6 +47,7 @@ export async function generateMetadata({
 
 export default async function PortalMessagesPage({
   params,
+  searchParams,
 }: PortalMessagesPageProps) {
   const { locale, customerId } = await params;
   const activeLocale = locale as Locale;
@@ -52,10 +57,22 @@ export default async function PortalMessagesPage({
   );
   const result = await getPortalConversation(reader, null);
   if (!result.ok) notFound();
+  const projects = await listPortalCurrentProjects(reader);
+  const requestedProject = (await searchParams)?.[
+    PortalDashboardQueryParam.Project
+  ];
+  const selectedProjectId =
+    projects.find((project) => project.id === requestedProject)?.id ??
+    projects[0]?.id ??
+    null;
 
   return (
     <PortalMessagesView
-      dashboardHref={portalPathFor(activeLocale, reader.customerId)}
+      dashboardHref={buildPortalHref(
+        portalPathFor(activeLocale, reader.customerId),
+        "",
+        { project: selectedProjectId },
+      )}
       cockpitHref={
         isPortalOwnerView(reader)
           ? buildCustomerCockpitHref(

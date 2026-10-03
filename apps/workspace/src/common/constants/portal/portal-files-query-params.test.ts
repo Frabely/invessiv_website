@@ -7,6 +7,7 @@ describe("PortalFilesQueryParam", () => {
     expect(PortalFilesQueryParam).toEqual({
       Tab: "tab",
       Selected: "selected",
+      Scope: "scope",
     });
   });
 

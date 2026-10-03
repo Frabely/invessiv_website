@@ -1,13 +1,13 @@
 import type { OnboardingFormStatus } from "../../constants/crm/onboarding/onboarding-form-statuses";
 import type { QuestionnaireProgressDto } from "../crm/questionnaire/questionnaire-progress.dto";
 
-/** One form in the portal's onboarding overview. */
+/** Summary of one released onboarding form for the portal widget and submit response. */
 export interface PortalOnboardingFormSummaryDto {
   /** Form id; the link to the form addresses this value. */
   id: string;
   /** Project the form belongs to. */
   projectId: string;
-  /** Project title shown in the overview. */
+  /** Project title shown in the widget. */
   projectTitle: string;
   /** Lifecycle state; never `draft`. */
   status: OnboardingFormStatus;

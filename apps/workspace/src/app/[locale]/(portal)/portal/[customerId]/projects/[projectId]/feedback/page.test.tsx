@@ -103,8 +103,10 @@ describe("PortalFeedbackPage", () => {
     expect(props.feedback).toBe(FEEDBACK);
     expect(props.canUpload).toBe(true);
     expect(props.cockpitHref).toBeNull();
-    expect(props.dashboardHref).toBe("/de/portal/customer-1");
-    expect(props.messagesHref).toBe("/de/portal/customer-1/messages");
+    expect(props.dashboardHref).toBe("/de/portal/customer-1?project=project-1");
+    expect(props.messagesHref).toBe(
+      "/de/portal/customer-1/messages?project=project-1",
+    );
   });
 
   it("answers 404 for a foreign, guessed or hidden project", async () => {

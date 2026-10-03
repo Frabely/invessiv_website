@@ -22,6 +22,7 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
         origin: query.get(Q.Origin) ?? undefined,
         page: query.get(Q.Page) ?? undefined,
         pageSize: query.get(Q.PageSize) ?? undefined,
+        projectId: query.get(Q.ProjectId) ?? undefined,
       });
       if (!parsed.success)
         return fileApiResponse({

@@ -2,6 +2,7 @@
 export const PortalFilesQueryParam = {
   Tab: "tab",
   Selected: "selected",
+  Scope: "scope",
 } as const;
 
 export type PortalFilesQueryParam =

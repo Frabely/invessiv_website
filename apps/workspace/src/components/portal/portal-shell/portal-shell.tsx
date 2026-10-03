@@ -17,14 +17,11 @@ type PortalShellProps = {
   /** Already formatted greeting of the contact; null in the owner view or without a first name. */
   greeting?: string | null;
   homeHref: string;
-  brandName: string;
-  /** Rendered only once a portal module registers an entry in `PORTAL_NAV_ITEMS`. */
-  nav?: ReactNode | null;
+  projectSwitcher?: ReactNode;
   /** Optional notice shown inline in the header, e.g. the owner's read-only banner. */
   notice?: ReactNode | null;
   /**
-   * The customer's name next to the logo: the company switcher for contacts, the plain name in
-   * the owner view. Built by the caller — kept out of this client shell.
+   * The company link and optional company switcher, built by the caller.
    */
   switcher: ReactNode;
 };
@@ -39,8 +36,7 @@ export function PortalShell({
   content,
   greeting = null,
   homeHref,
-  brandName,
-  nav = null,
+  projectSwitcher,
   notice = null,
   switcher,
 }: PortalShellProps) {
@@ -71,15 +67,21 @@ export function PortalShell({
               src="/brand/icon.png"
               width={28}
             />
-            <span className={styles.brandName}>{brandName}</span>
           </a>
           <div className={styles.switcherSlot}>{switcher}</div>
           {notice ? <div className={styles.noticeSlot}>{notice}</div> : null}
-          {greeting ? <p className={styles.greeting}>{greeting}</p> : null}
+          {greeting ? (
+            <a className={styles.greeting} href={homeHref}>
+              {greeting}
+            </a>
+          ) : null}
           <div
             aria-label={headerContent.userMenuLabel}
             className={styles.actions}
           >
+            {projectSwitcher ? (
+              <div className={styles.projectSlot}>{projectSwitcher}</div>
+            ) : null}
             <ThemeSwitch
               copy={themeSwitchCopy}
               onToggle={toggleTheme}
@@ -106,11 +108,6 @@ export function PortalShell({
           </div>
         </div>
       </header>
-      {nav ? (
-        <nav aria-label={content.nav.ariaLabel} className={styles.nav}>
-          {nav}
-        </nav>
-      ) : null}
       <main className={styles.main} id="main-content">
         {children}
       </main>

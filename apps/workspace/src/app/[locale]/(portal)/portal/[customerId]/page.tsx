@@ -25,12 +25,15 @@ import { portalCanOn } from "@/server/portal/shared/portal-can-on";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { pickPortalOnboardingWidgetForm } from "@/common/patterns/portal/pick-portal-onboarding-widget-form";
 import { listPortalOnboardingForms } from "@/server/portal/query-handler/list-portal-onboarding-forms.query-handler";
+import { PortalDashboardQueryParam } from "@/common/constants/portal/portal-dashboard-query-params";
+import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 type PortalCustomerPageProps = {
   params: Promise<{ locale: string; customerId: string }>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
 export async function generateMetadata({
@@ -51,6 +54,7 @@ export async function generateMetadata({
 
 export default async function PortalCustomerPage({
   params,
+  searchParams,
 }: PortalCustomerPageProps) {
   const { locale, customerId } = await params;
   const activeLocale = locale as Locale;
@@ -59,23 +63,39 @@ export default async function PortalCustomerPage({
     customerId.toLowerCase(),
   );
   const today = taskDueStateService.businessToday();
-  const [dashboard, conversationResult, fromUs, fromYou, onboarding] =
-    await Promise.all([
-      getPortalDashboard(reader, today),
-      getPortalConversation(reader, null),
-      listPortalFiles(reader, {
-        origin: PortalFileOrigin.FromUs,
-        pageSize: DASHBOARD_FILES_PREVIEW_SIZE,
-      }),
-      listPortalFiles(reader, {
-        origin: PortalFileOrigin.FromYou,
-        pageSize: DASHBOARD_FILES_PREVIEW_SIZE,
-      }),
-      // Empty without `portal.onboarding.read`; the widget then has no content and stays away.
-      listPortalOnboardingForms(reader),
-    ]);
+  const projectParam = (await searchParams)?.[
+    PortalDashboardQueryParam.Project
+  ];
+  const dashboard = await getPortalDashboard(
+    reader,
+    today,
+    typeof projectParam === "string" ? projectParam : null,
+  );
+  const selectedProjectId =
+    dashboard.projects.find((project) => project.id === projectParam)?.id ??
+    dashboard.projects[0]?.id ??
+    null;
+  const [conversationResult, fromUs, fromYou, onboarding] = await Promise.all([
+    getPortalConversation(reader, null),
+    listPortalFiles(reader, {
+      origin: PortalFileOrigin.FromUs,
+      pageSize: DASHBOARD_FILES_PREVIEW_SIZE,
+      projectId: selectedProjectId ?? undefined,
+    }),
+    listPortalFiles(reader, {
+      origin: PortalFileOrigin.FromYou,
+      pageSize: DASHBOARD_FILES_PREVIEW_SIZE,
+      projectId: selectedProjectId ?? undefined,
+    }),
+    // Empty without `portal.onboarding.read`; the widget then has no content and stays away.
+    listPortalOnboardingForms(reader),
+  ]);
   // The widget shows one form; only that one can have a call to offer.
-  const widgetForm = pickPortalOnboardingWidgetForm(onboarding);
+  const widgetForm = pickPortalOnboardingWidgetForm(
+    selectedProjectId
+      ? onboarding.filter((form) => form.projectId === selectedProjectId)
+      : onboarding,
+  );
   const onboardingCall = widgetForm
     ? await getPortalOnboardingCall(reader, widgetForm.id)
     : null;
@@ -88,7 +108,7 @@ export default async function PortalCustomerPage({
   if (dashboard.contact) keysWithContent.add(PortalWidgetKey.Contact);
   if (dashboard.completedProjects.length > 0)
     keysWithContent.add(PortalWidgetKey.CompletedProjects);
-  if (onboarding.length > 0) keysWithContent.add(PortalWidgetKey.Onboarding);
+  if (widgetForm) keysWithContent.add(PortalWidgetKey.Onboarding);
 
   return (
     <>
@@ -112,10 +132,10 @@ export default async function PortalCustomerPage({
         }
         customerId={reader.customerId}
         dashboard={dashboard}
-        filesHref={portalPathFor(
-          activeLocale,
-          reader.customerId,
-          PortalSection.Files,
+        filesHref={buildPortalHref(
+          portalPathFor(activeLocale, reader.customerId, PortalSection.Files),
+          "",
+          { project: selectedProjectId },
         )}
         filesContent={getPortalFilesDictionary(activeLocale)}
         filesOverview={
@@ -130,18 +150,23 @@ export default async function PortalCustomerPage({
           portalCanOn.forReader(reader, Permission.PortalMessagesRead, {
             customerId: reader.customerId,
           })
-            ? portalPathFor(
-                activeLocale,
-                reader.customerId,
-                PortalSection.Messages,
+            ? buildPortalHref(
+                portalPathFor(
+                  activeLocale,
+                  reader.customerId,
+                  PortalSection.Messages,
+                ),
+                "",
+                { project: selectedProjectId },
               )
             : null
         }
-        onboarding={onboarding}
+        onboarding={widgetForm ? [widgetForm] : []}
         onboardingCall={onboardingCall}
         today={today}
         viewerUserId={reader.userId}
         widgets={listVisiblePortalWidgets(reader.permissions, keysWithContent)}
+        selectedProjectId={selectedProjectId}
       />
     </>
   );

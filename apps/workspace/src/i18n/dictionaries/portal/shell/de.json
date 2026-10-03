@@ -17,16 +17,11 @@
     "groupLabel": "Deine Firmen",
     "currentBadge": "Aktuell"
   },
-  "nav": {
-    "ariaLabel": "Portal-Navigation",
-    "items": {
-      "projects": "Projekte",
-      "files": "Dateien",
-      "assets": "Materialien",
-      "messages": "Nachrichten",
-      "onboarding": "Onboarding",
-      "services": "Leistungen"
-    }
+  "projectSwitcher": { "label": "Projekt wechseln" },
+  "accessAreas": {
+    "files": "Dateien",
+    "messages": "Nachrichten",
+    "onboarding": "Onboarding"
   },
   "ownerView": {
     "label": "Portalansicht von",

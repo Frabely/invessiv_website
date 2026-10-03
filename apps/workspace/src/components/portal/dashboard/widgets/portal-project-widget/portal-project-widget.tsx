@@ -1,6 +1,5 @@
 "use client";
 
-import { useId } from "react";
 import Link from "next/link";
 import {
   faArrowUpRightFromSquare,
@@ -12,7 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
 import type { PortalProjectDto } from "@invessiv/common/contracts/portal/portal-project.dto";
-import { ProcessTrack, TabList, Widget } from "@invessiv/ui";
+import { ProcessTrack, Widget } from "@invessiv/ui";
 import type { Locale } from "@/config/i18n";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
 import { formatCalendarDay } from "@/lib/i18n/format-calendar-day";
@@ -29,8 +28,6 @@ export type PortalProjectWidgetProps = {
   feedbackHref: string | null;
   feedbackLinkLabel: string;
   locale: Locale;
-  onSelectProjectAction: (projectId: string) => void;
-  projects: readonly PortalProjectDto[];
   selectedProject: PortalProjectDto;
 };
 
@@ -39,14 +36,8 @@ export function PortalProjectWidget({
   feedbackHref,
   feedbackLinkLabel,
   locale,
-  onSelectProjectAction,
-  projects,
   selectedProject: project,
 }: PortalProjectWidgetProps) {
-  const baseId = useId();
-  const panelId = `${baseId}-panel`;
-  const tabId = (projectId: string) => `${baseId}-tab-${projectId}`;
-  const hasTabs = projects.length > 1;
   const track = buildProjectProcessTrack({
     processSteps: project.processSteps,
     currentProcessStep: project.currentProcessStep,
@@ -67,38 +58,11 @@ export function PortalProjectWidget({
     <Widget
       className={styles.widget}
       icon={faDiagramProject}
-      meta={hasTabs ? undefined : project.title}
+      meta={project.title}
       openMode={WidgetOpenMode.None}
       title={content.title}
     >
-      {hasTabs ? (
-        <TabList
-          activeValue={project.id}
-          ariaLabel={content.tabsLabel}
-          className={styles.tabs}
-          items={projects.map((candidate) => ({
-            value: candidate.id,
-            id: tabId(candidate.id),
-            panelId,
-            label:
-              candidate.status === ProjectStatus.Planned ? (
-                <span className={styles.tabLabel}>
-                  {candidate.title}
-                  <span className={styles.soon}>{content.plannedBadge}</span>
-                </span>
-              ) : (
-                candidate.title
-              ),
-          }))}
-          onSelectAction={onSelectProjectAction}
-        />
-      ) : null}
-      <div
-        aria-labelledby={hasTabs ? tabId(project.id) : undefined}
-        className={styles.panel}
-        id={panelId}
-        role={hasTabs ? "tabpanel" : undefined}
-      >
+      <div className={styles.panel}>
         {note ? <p className={styles.note}>{note}</p> : null}
         {!isPlanned && track.currentIndex >= 0 ? (
           <ProcessTrack

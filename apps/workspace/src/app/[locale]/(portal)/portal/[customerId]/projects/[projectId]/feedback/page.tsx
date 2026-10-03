@@ -15,6 +15,7 @@ import { isPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
 import { requirePortalReader } from "@/server/portal/auth/require-portal-reader";
 import { getPortalProjectFeedback } from "@/server/portal/query-handler/get-portal-project-feedback.query-handler";
 import { portalCanOn } from "@/server/portal/shared/portal-can-on";
+import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -72,17 +73,25 @@ export default async function PortalFeedbackPage({
       }
       content={getPortalFeedbackDictionary(activeLocale)}
       customerId={reader.customerId}
-      dashboardHref={portalPathFor(activeLocale, reader.customerId)}
+      dashboardHref={buildPortalHref(
+        portalPathFor(activeLocale, reader.customerId),
+        "",
+        { project: feedback.projectId },
+      )}
       feedback={feedback}
       filesContent={getPortalFilesDictionary(activeLocale)}
       key={reader.customerId}
       locale={activeLocale}
       messagesHref={
         portalCanOn.forReader(reader, Permission.PortalMessagesRead, target)
-          ? portalPathFor(
-              activeLocale,
-              reader.customerId,
-              PortalSection.Messages,
+          ? buildPortalHref(
+              portalPathFor(
+                activeLocale,
+                reader.customerId,
+                PortalSection.Messages,
+              ),
+              "",
+              { project: feedback.projectId },
             )
           : null
       }

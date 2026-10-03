@@ -21,8 +21,7 @@ export function buildPortalOnboardingStepSearch({
 }
 
 /**
- * The onboarding overview of a company, or one of its forms. Overview, redirects and jump links go
- * through here, so the URL shape exists once.
+ * Builds the URL of a released onboarding form and optional jump to a step or field.
  */
 export function buildPortalOnboardingPath({
   locale,
@@ -32,14 +31,14 @@ export function buildPortalOnboardingPath({
 }: {
   locale: Locale;
   customerId: string;
-  formId?: string;
+  formId: string;
   step?: PortalOnboardingStepTarget;
 }): string {
-  const overview = [
+  const formPath = [
     createLocalePathname(SITE_ROUTES.PORTAL, locale),
     encodeURIComponent(customerId),
     PortalSection.Onboarding,
+    encodeURIComponent(formId),
   ].join("/");
-  if (!formId) return overview;
-  return `${overview}/${encodeURIComponent(formId)}${buildPortalOnboardingStepSearch(step)}`;
+  return `${formPath}${buildPortalOnboardingStepSearch(step)}`;
 }

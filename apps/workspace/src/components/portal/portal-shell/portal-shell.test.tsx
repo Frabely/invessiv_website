@@ -42,7 +42,6 @@ describe("PortalShell", () => {
       <PortalShell
         content={CONTENT}
         homeHref="/de/portal/customer-a"
-        brandName="Firma A"
         switcher={<span>Switcher slot</span>}
       >
         <p>Portal content</p>
@@ -51,7 +50,7 @@ describe("PortalShell", () => {
 
     expect(screen.getByRole("link", { name: "Zum Überblick" })).toHaveAttribute(
       "href",
-      "/",
+      "/de/portal/customer-a",
     );
     expect(screen.getByText("Switcher slot")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "User menu" })).toBeTruthy();
@@ -63,7 +62,6 @@ describe("PortalShell", () => {
       <PortalShell
         content={CONTENT}
         homeHref="/de/portal/customer-a"
-        brandName="Firma A"
         greeting="Hallo Sam"
         switcher={<span />}
       >
@@ -76,7 +74,6 @@ describe("PortalShell", () => {
       <PortalShell
         content={CONTENT}
         homeHref="/de/portal/customer-a"
-        brandName="Firma A"
         switcher={<span />}
       >
         <p>Portal content</p>
@@ -85,12 +82,11 @@ describe("PortalShell", () => {
     expect(screen.queryByText("Hallo Sam")).toBeNull();
   });
 
-  it("renders no nav element when there are no permitted nav items", () => {
+  it("does not render a separate header navigation", () => {
     render(
       <PortalShell
         content={CONTENT}
         homeHref="/de/portal/customer-a"
-        brandName="Firma A"
         switcher={<span />}
       >
         <p>Portal content</p>
@@ -98,24 +94,5 @@ describe("PortalShell", () => {
     );
 
     expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
-  });
-
-  it("renders the nav slot when provided", () => {
-    render(
-      <PortalShell
-        content={CONTENT}
-        homeHref="/de/portal/customer-a"
-        brandName="Firma A"
-        nav={<a href="#projects">Projects</a>}
-        switcher={<span />}
-      >
-        <p>Portal content</p>
-      </PortalShell>,
-    );
-
-    expect(
-      screen.getByRole("navigation", { name: "Portal-Navigation" }),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Projects" })).toBeInTheDocument();
   });
 });

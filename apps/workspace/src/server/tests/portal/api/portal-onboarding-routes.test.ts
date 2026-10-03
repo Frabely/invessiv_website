@@ -16,7 +16,6 @@ import { POST as addEntry } from "@/app/api/portal/[customerId]/onboarding/[form
 import { GET as form } from "@/app/api/portal/[customerId]/onboarding/[formId]/route";
 import { POST as confirmServices } from "@/app/api/portal/[customerId]/onboarding/[formId]/services-confirmation/route";
 import { POST as submit } from "@/app/api/portal/[customerId]/onboarding/[formId]/submit/route";
-import { GET as list } from "@/app/api/portal/[customerId]/onboarding/route";
 import { PortalAuthStatus } from "@/common/constants/auth/portal-auth-statuses";
 import { PortalOnboardingQueryParam } from "@/common/constants/portal/portal-onboarding-query-params";
 import { createPortalActor } from "@/server/portal/auth/portal-actor";
@@ -26,7 +25,6 @@ vi.mock("server-only", () => ({}));
 const mocks = vi.hoisted(() => ({
   authenticateRequest: vi.fn(),
   authenticateReader: vi.fn(),
-  listPortalOnboardingForms: vi.fn(),
   getPortalOnboardingForm: vi.fn(),
   savePortalOnboardingAnswer: vi.fn(),
   submitPortalOnboarding: vi.fn(),
@@ -44,10 +42,6 @@ vi.mock("@/server/portal/auth/portal-authentication-service", () => ({
     authenticateReader: mocks.authenticateReader,
   },
 }));
-vi.mock(
-  "@/server/portal/query-handler/list-portal-onboarding-forms.query-handler",
-  () => ({ listPortalOnboardingForms: mocks.listPortalOnboardingForms }),
-);
 vi.mock(
   "@/server/portal/query-handler/get-portal-onboarding-form.query-handler",
   () => ({ getPortalOnboardingForm: mocks.getPortalOnboardingForm }),
@@ -122,7 +116,7 @@ const ACTOR = createPortalActor({
 });
 const ANSWER = { fieldId: FIELD_ID, groupEntryId: null, values: ["Acme"] };
 
-const readRoutes = [list, form] as const;
+const readRoutes = [form] as const;
 const ENTRY = { id: ENTRY_ID, fieldId: FIELD_ID };
 const ATTACHMENT = { fieldId: FIELD_ID, groupEntryId: null, fileId: FILE_ID };
 const CONFIRMATION = { confirmed: true, note: null };
@@ -202,7 +196,6 @@ describe("portal onboarding routes", () => {
       expect(response.status).toBe(H.NotFound);
       expectPrivate(response);
       for (const handler of [
-        mocks.listPortalOnboardingForms,
         mocks.getPortalOnboardingForm,
         mocks.savePortalOnboardingAnswer,
         mocks.submitPortalOnboarding,
@@ -216,15 +209,6 @@ describe("portal onboarding routes", () => {
         expect(handler).not.toHaveBeenCalled();
     },
   );
-
-  it("lists the forms of the reader's company", async () => {
-    mocks.listPortalOnboardingForms.mockResolvedValue([{ id: FORM_ID }]);
-    const response = await list(request(HttpMethod.Get), context);
-    expect(response.status).toBe(H.Ok);
-    expect(await response.json()).toEqual([{ id: FORM_ID }]);
-    expect(mocks.listPortalOnboardingForms).toHaveBeenCalledWith(ACTOR);
-    expectPrivate(response);
-  });
 
   it("reads a form in the requested locale and hides a missing one", async () => {
     mocks.getPortalOnboardingForm.mockResolvedValue(null);

@@ -10,6 +10,7 @@ import type { PortalFeedbackSummaryDto } from "@invessiv/common/contracts/portal
 import type { PortalTaskDto } from "@invessiv/common/contracts/portal/portal-task.dto";
 import { feedbackRoundProgress } from "@invessiv/common/patterns/crm/feedback-round-state";
 import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
+import { comparePortalCurrentProjects } from "@/common/patterns/portal/compare-portal-current-projects";
 
 type CustomerRow = {
   displayName: string;
@@ -34,6 +35,8 @@ type ProjectRow = {
   previewUrl: string | null;
   ownerMemberId: string;
   ownerName: string | null;
+  ownerEmail?: string | null;
+  ownerActive?: boolean | null;
 };
 
 type TaskRow = {
@@ -58,6 +61,7 @@ type RoundRow = {
 };
 
 type DashboardRows = {
+  selectedProjectId?: string | null;
   customer: CustomerRow;
   projects: ProjectRow[];
   tasks: TaskRow[];
@@ -117,14 +121,11 @@ function mapRowsToDto({
   today,
   canCompleteTasks,
   isOwnerView,
+  selectedProjectId,
 }: DashboardRows): PortalDashboardDto {
   const currentRows = projects
     .filter((row) => row.status !== ProjectStatus.Completed)
-    .sort((a, b) => {
-      const rank = (status: ProjectStatus) =>
-        status === ProjectStatus.Planned ? 1 : 0;
-      return rank(a.status) - rank(b.status);
-    });
+    .sort(comparePortalCurrentProjects);
   const currentProjects = currentRows.map((row) => ({
     id: row.id,
     title: row.title,
@@ -192,6 +193,7 @@ function mapRowsToDto({
       .map((row) => mapTask(row, today)),
     feedback: feedbackRounds
       ? currentRows
+          .filter((row) => !selectedProjectId || row.id === selectedProjectId)
           .map((row) => mapFeedbackSummary(row, feedbackRounds))
           .filter((entry) => entry !== null)
       : null,

@@ -23,7 +23,6 @@
   padding: 0.6rem clamp(0.75rem, 1.5vw, 1.25rem);
 }
 
-/* The customer's name shares the home link; the company switcher stays a separate control. */
 .brand {
   display: inline-flex;
   flex: 0 0 auto;
@@ -32,13 +31,6 @@
   min-width: 44px;
   min-height: 44px;
   border-radius: 10px;
-}
-
-.brandName {
-  color: var(--color-text);
-  font-size: var(--font-size-ui-sm);
-  font-weight: 600;
-  white-space: nowrap;
 }
 
 .brand:focus-visible {
@@ -50,6 +42,9 @@
   flex: 0 1 auto;
   min-width: 0;
 }
+.projectSlot {
+  min-width: 0;
+}
 
 .noticeSlot {
   flex: 1 1 16rem;
@@ -57,7 +52,7 @@
 }
 
 .greeting {
-  display: none;
+  display: block;
   flex: 0 1 auto;
   min-width: 0;
   margin: 0;
@@ -66,6 +61,10 @@
   font-size: var(--font-size-ui-sm);
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.greeting:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
 }
 
 .actions {
@@ -84,12 +83,6 @@
   min-height: 40px;
 }
 
-.nav {
-  border-bottom: 1px solid
-    color-mix(in srgb, var(--color-border) 84%, transparent);
-  padding: 0.5rem clamp(0.75rem, 1.5vw, 1.25rem);
-}
-
 .main {
   flex: 1 1 auto;
   width: calc(100% - 4.25rem);
@@ -101,10 +94,6 @@
 }
 
 @media (min-width: 768px) {
-  .greeting {
-    display: block;
-  }
-
   .inner {
     padding: 0.75rem 1.5rem;
   }

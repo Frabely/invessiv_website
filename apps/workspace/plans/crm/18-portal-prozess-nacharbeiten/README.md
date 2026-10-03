@@ -34,7 +34,7 @@ und keine doppelten Fragen hat.
 | [C](./C-onboarding-bogen-bearbeiten.md)      | Onboarding intern: Vorlage nachträglich, Bausteine mehrfach       | 2, 3                           | 1,5–2 Tage   | `fix/crm-onboarding-bogen-bearbeiten` | done                     |
 | [D](./D-standardbogen-website-onboarding.md) | Standardbogen „Website-Onboarding“                                | Todo-Block                     | 1,5–2 Tage   | `feat/crm-onboarding-standardbogen`   | offen                    |
 | [E](./E-portal-navigation-und-termin.md)     | Kleine Portal-Korrekturen: Logo, Zurück-Link, Buchungslink        | 8, 10, 11, 14                  | 1–1,5 Tage   | `fix/portal-navigation-und-termin`    | im Review                |
-| [F](./F-portal-projektwechsel.md)            | Projektwechsel im Portal und projektbezogene Widgets              | 6, 9                           | 3–4 Tage     | `feat/portal-projektwechsel`          | offen                    |
+| [F](./F-portal-projektwechsel.md)            | Projektwechsel im Portal und projektbezogene Widgets              | 6, 9                           | 3–4 Tage     | `feat/portal-projektwechsel`          | im Review                |
 | [G](./G-portal-aufgaben.md)                  | Portal-Aufgaben: erledigte sichtbar, zurücknehmen, selbst anlegen | 12, 13                         | 3–4 Tage     | `feat/portal-aufgaben`                | offen                    |
 | [H](./H-grosse-arbeiten.md)                  | Große Arbeiten (nur vorgemerkt)                                   | „Große Arbeiten“               | eigener Plan | —                                     | offen                    |
 

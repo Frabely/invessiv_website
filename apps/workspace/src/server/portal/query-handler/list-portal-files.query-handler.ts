@@ -1,5 +1,5 @@
 import "server-only";
-import { and, count, desc, eq } from "drizzle-orm";
+import { and, count, desc, eq, isNull, or } from "drizzle-orm";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { FileApiErrorCode as E } from "@invessiv/common/constants/files/file-api-error-code";
 import type { FileResult } from "@invessiv/common/contracts/files/file-result";
@@ -12,6 +12,7 @@ import { portalCanOn } from "@/server/portal/shared/portal-can-on";
 import { portalFileMappingService } from "@/server/portal/services/files/portal-file-mapping-service";
 import { portalFileSchemas } from "@/server/portal/services/files/portal-file-schemas";
 import { portalFileService } from "@/server/portal/services/files/portal-file-service";
+import { portalProjectCondition } from "@/server/portal/shared/portal-project-condition";
 
 /**
  * Visible entries, newest first: one tab, or both origins for the chat's file picker. Without
@@ -29,11 +30,27 @@ export async function listPortalFiles(
     return { ok: false, code: E.NotFound };
   const parsed = portalFileSchemas.list.safeParse(input);
   if (!parsed.success) return { ok: false, code: E.Validation };
-  const { origin, page, pageSize } = parsed.data;
+  const { origin, page, pageSize, projectId } = parsed.data;
   const db = getDrizzleDatabaseClient();
+  if (projectId) {
+    const [project] = await db
+      .select({ id: projects.id })
+      .from(projects)
+      .where(
+        and(
+          eq(projects.id, projectId),
+          portalProjectCondition(reader, Permission.PortalProjectsRead),
+        ),
+      )
+      .limit(1);
+    if (!project) return { ok: false, code: E.NotFound };
+  }
   const condition = and(
     portalFileService.visibleCondition(reader),
     origin ? portalFileService.originCondition(origin) : undefined,
+    projectId
+      ? or(eq(files.project_id, projectId), isNull(files.project_id))
+      : undefined,
   );
   const [rows, [total]] = await Promise.all([
     db

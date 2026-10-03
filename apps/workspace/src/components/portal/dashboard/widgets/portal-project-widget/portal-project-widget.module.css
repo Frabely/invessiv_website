@@ -16,26 +16,6 @@
     );
 }
 
-.tabs {
-  margin-bottom: 0.25rem;
-}
-
-.tabLabel {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-}
-
-.soon {
-  padding: 0.05rem 0.45rem;
-  border: 1px dashed var(--color-border-strong);
-  border-radius: 999px;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-badge);
-  font-weight: 500;
-  white-space: nowrap;
-}
-
 .panel {
   display: grid;
   gap: 1.25rem;

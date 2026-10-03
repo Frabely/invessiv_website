@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import { buildCustomerCockpitHref } from "@/common/patterns/crm/customer-dialog-query";
-import { listPermittedPortalNavItems } from "@/common/patterns/portal/list-permitted-portal-nav-items";
 import { CustomerSwitcher } from "@/components/portal/customer-switcher/customer-switcher";
 import { PortalOwnerBanner } from "@/components/portal/portal-owner-banner/portal-owner-banner";
 import { PortalShell } from "@/components/portal/portal-shell/portal-shell";
+import { ProjectSwitcher } from "@/components/portal/project-switcher/project-switcher";
 import type { Locale } from "@/config/i18n";
 import { getPortalShellDictionary } from "@/i18n/dictionaries/portal";
 import { portalPathFor, workspaceAreaPathFor } from "@/lib/auth/routes";
@@ -13,6 +13,7 @@ import { isPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
 import { requirePortalReader } from "@/server/portal/auth/require-portal-reader";
 import { getPortalCustomerDisplayName } from "@/server/portal/query-handler/get-portal-customer-display-name.query-handler";
 import { listPortalMembershipsForUserId } from "@/server/portal/query-handler/list-portal-memberships-for-user-id.query-handler";
+import { listPortalCurrentProjects } from "@/server/portal/query-handler/list-portal-current-projects.query-handler";
 
 type PortalCustomerLayoutProps = {
   children: ReactNode;
@@ -20,9 +21,8 @@ type PortalCustomerLayoutProps = {
 };
 
 /**
- * Resolves the portal reader for this render. Filters `PORTAL_NAV_ITEMS` through
- * `listPermittedPortalNavItems`, so a portal module only has to append its entry. The owner's
- * read-only view has no memberships to switch between: it shows only the name, plus a banner.
+ * Resolves the portal reader for this render. The owner's read-only view has no memberships to
+ * switch between: it shows only the company name, plus a banner.
  */
 export default async function PortalCustomerLayout({
   children,
@@ -37,7 +37,6 @@ export default async function PortalCustomerLayout({
     customerId.toLowerCase(),
   );
   const content = getPortalShellDictionary(activeLocale);
-  const visibleNavItems = listPermittedPortalNavItems(reader.permissions);
   const isOwnerView = isPortalOwnerView(reader);
   const greetingName = isOwnerView ? null : reader.firstName;
   const ownerCompanyName = isOwnerView
@@ -47,37 +46,23 @@ export default async function PortalCustomerLayout({
     ownerCompanyName === null
       ? await listPortalMembershipsForUserId(reader.userId)
       : [{ customerId: reader.customerId, displayName: ownerCompanyName }];
-  const activeCompanyName =
-    memberships.find((company) => company.customerId === reader.customerId)
-      ?.displayName ?? "";
+  const currentProjects = await listPortalCurrentProjects(reader);
 
   return (
     <PortalShell
       content={content}
       homeHref={portalPathFor(activeLocale, reader.customerId)}
-      brandName={activeCompanyName}
       greeting={
         greetingName
           ? formatMessage(content.header.greeting, { name: greetingName })
           : null
       }
-      nav={
-        visibleNavItems.length > 0 ? (
-          <>
-            {visibleNavItems.map((item) => (
-              <a
-                href={portalPathFor(
-                  activeLocale,
-                  reader.customerId,
-                  item.section,
-                )}
-                key={item.section}
-              >
-                {content.nav.items[item.labelKey]}
-              </a>
-            ))}
-          </>
-        ) : null
+      projectSwitcher={
+        <ProjectSwitcher
+          dashboardHref={portalPathFor(activeLocale, reader.customerId)}
+          label={content.projectSwitcher.label}
+          projects={currentProjects}
+        />
       }
       notice={
         isOwnerView ? (
@@ -97,6 +82,7 @@ export default async function PortalCustomerLayout({
           companies={memberships}
           content={content.switcher}
           locale={activeLocale}
+          homeHref={portalPathFor(activeLocale, reader.customerId)}
         />
       }
     >

@@ -1,6 +1,6 @@
 /**
  * The English path segments every portal module renders under `/portal/[customerId]/…`. Fixed
- * here so a module's route and its `PORTAL_NAV_ITEMS` entry can never drift onto different slugs.
+ * here so links to portal modules cannot drift onto different slugs.
  */
 export const PortalSection = {
   Projects: "projects",

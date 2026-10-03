@@ -15,6 +15,7 @@ const mocks = vi.hoisted(() => ({
   requirePortalReader: vi.fn(),
   listPortalFiles: vi.fn(),
   listPortalFileProjects: vi.fn(),
+  listPortalCurrentProjects: vi.fn(),
   isPortalOwnerView: vi.fn(),
   notFound: vi.fn(() => {
     throw new Error("NEXT_NOT_FOUND");
@@ -36,6 +37,12 @@ vi.mock(
 vi.mock(
   "@/server/portal/query-handler/list-portal-file-projects.query-handler",
   () => ({ listPortalFileProjects: mocks.listPortalFileProjects }),
+);
+vi.mock(
+  "@/server/portal/query-handler/list-portal-current-projects.query-handler",
+  () => ({
+    listPortalCurrentProjects: mocks.listPortalCurrentProjects,
+  }),
 );
 vi.mock(
   "@/components/portal/files/portal-files-view/portal-files-view",
@@ -62,11 +69,20 @@ const READER = {
 
 const PAGE = { files: [], total: 0, page: 1, pageSize: 25 };
 
-async function renderPage(tab?: string, customerId = "customer-1") {
+async function renderPage(
+  tab?: string,
+  customerId = "customer-1",
+  project?: string,
+  scope?: string,
+) {
   render(
     await PortalFilesPage({
       params: Promise.resolve({ locale: "de", customerId }),
-      searchParams: Promise.resolve(tab ? { tab } : {}),
+      searchParams: Promise.resolve({
+        ...(tab ? { tab } : {}),
+        ...(project ? { project } : {}),
+        ...(scope ? { scope } : {}),
+      }),
     }),
   );
   return mocks.viewProps.mock.calls.at(-1)![0] as PortalFilesViewProps;
@@ -80,6 +96,7 @@ describe("PortalFilesPage", () => {
     mocks.listPortalFileProjects.mockResolvedValue([
       { id: "project-1", title: "Relaunch" },
     ]);
+    mocks.listPortalCurrentProjects.mockResolvedValue([]);
     mocks.isPortalOwnerView.mockReturnValue(false);
   });
 
@@ -91,6 +108,7 @@ describe("PortalFilesPage", () => {
     expect(mocks.requirePortalReader).toHaveBeenCalledWith("de", "customer-1");
     expect(mocks.listPortalFiles).toHaveBeenCalledWith(READER, {
       origin: PortalFileOrigin.FromYou,
+      projectId: undefined,
     });
     expect(props.initialTab).toBe(PortalFileOrigin.FromYou);
     expect(props.initialPage).toBe(PAGE);
@@ -103,6 +121,37 @@ describe("PortalFilesPage", () => {
     const props = await renderPage("internal");
 
     expect(props.initialTab).toBe(PortalFileOrigin.FromUs);
+  });
+
+  it("scopes files to the selected project including the default", async () => {
+    mocks.listPortalCurrentProjects.mockResolvedValue([
+      { id: "project-1", title: "Relaunch" },
+      { id: "project-2", title: "Shop" },
+    ]);
+    const props = await renderPage(undefined, "customer-1", "project-2");
+    expect(mocks.listPortalFiles).toHaveBeenCalledWith(READER, {
+      origin: PortalFileOrigin.FromUs,
+      projectId: "project-2",
+    });
+    expect(props.selectedProjectId).toBe("project-2");
+    const fallback = await renderPage(
+      undefined,
+      "customer-1",
+      "foreign-project",
+    );
+    expect(fallback.selectedProjectId).toBe("project-1");
+  });
+
+  it("lists all projects only when requested", async () => {
+    mocks.listPortalCurrentProjects.mockResolvedValue([
+      { id: "project-1", title: "Relaunch" },
+    ]);
+    const props = await renderPage(undefined, "customer-1", "project-1", "all");
+    expect(mocks.listPortalFiles).toHaveBeenCalledWith(READER, {
+      origin: PortalFileOrigin.FromUs,
+      projectId: undefined,
+    });
+    expect(props.allProjects).toBe(true);
   });
 
   it("answers 404 without portal.files.read", async () => {

@@ -25,6 +25,7 @@ import {
 } from "@invessiv/ui";
 import { MAX_ARCHIVE_FILES } from "@/common/constants/files/file-archive-limits";
 import { PortalFilesQueryParam } from "@/common/constants/portal/portal-files-query-params";
+import { PortalDashboardQueryParam } from "@/common/constants/portal/portal-dashboard-query-params";
 import { fileArchiveSelection } from "@/common/patterns/files/file-archive-selection";
 import { readPortalFilesTab } from "@/common/patterns/portal/portal-files-tab";
 import type { Locale } from "@/config/i18n";
@@ -40,6 +41,8 @@ import { PortalFileUploadDialog } from "../portal-file-upload-dialog/portal-file
 import styles from "./portal-files-view.module.css";
 
 export type PortalFilesViewProps = {
+  allProjects?: boolean;
+  selectedProjectId?: string | null;
   dashboardHref: string;
   /** Only a contact with `portal.files.write` uploads; the owner view never does. */
   canUpload: boolean;
@@ -79,6 +82,8 @@ function currentSearch() {
  * `key={customerId}` so no list or selection state crosses companies.
  */
 export function PortalFilesView({
+  allProjects = false,
+  selectedProjectId = null,
   canUpload,
   dashboardHref,
   cockpitHref,
@@ -101,10 +106,17 @@ export function PortalFilesView({
     new URLSearchParams(search).get(PortalFilesQueryParam.Tab),
   );
   const [revision, setRevision] = useState(0);
-  const list = usePortalFiles(customerId, tab, revision, {
-    origin: initialTab,
-    page: initialPage,
-  });
+  const projectId = allProjects ? null : selectedProjectId;
+  const list = usePortalFiles(
+    customerId,
+    tab,
+    revision,
+    {
+      origin: initialTab,
+      page: initialPage,
+    },
+    projectId,
+  );
   const selection = useFileSelection(
     customerId,
     PortalFilesQueryParam.Selected,
@@ -129,6 +141,16 @@ export function PortalFilesView({
     overlay?.kind === "preview" ? overlay.fileId : null,
   );
   const panelId = `${baseId}-panel`;
+
+  function scopeHref(showAll: boolean) {
+    const params = new URLSearchParams(search);
+    if (selectedProjectId)
+      params.set(PortalDashboardQueryParam.Project, selectedProjectId);
+    params.delete(PortalFilesQueryParam.Selected);
+    if (showAll) params.set(PortalFilesQueryParam.Scope, "all");
+    else params.delete(PortalFilesQueryParam.Scope);
+    return `${pathname}?${params.toString()}`;
+  }
 
   // No server round trip: the list hook loads the tab itself, a re-render would be discarded.
   function selectTab(next: PortalFileOrigin) {
@@ -169,6 +191,22 @@ export function PortalFilesView({
       <header className={styles.header}>
         <h1>{content.page.heading}</h1>
         <p>{content.page.intro}</p>
+        {selectedProjectId ? (
+          <nav aria-label={content.scope.label} className={styles.scope}>
+            <a
+              aria-current={!allProjects ? "page" : undefined}
+              href={scopeHref(false)}
+            >
+              {content.scope.project}
+            </a>
+            <a
+              aria-current={allProjects ? "page" : undefined}
+              href={scopeHref(true)}
+            >
+              {content.scope.all}
+            </a>
+          </nav>
+        ) : null}
       </header>
 
       {canUpload ? (
@@ -280,6 +318,7 @@ export function PortalFilesView({
             )
           }
           projects={projects}
+          initialProjectId={projectId}
         />
       ) : null}
       {overlay?.kind === "link" ? (
@@ -295,6 +334,7 @@ export function PortalFilesView({
             )
           }
           projects={projects}
+          initialProjectId={projectId}
         />
       ) : null}
       {previewIndex >= 0 ? (

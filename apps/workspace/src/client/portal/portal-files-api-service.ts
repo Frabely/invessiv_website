@@ -35,9 +35,11 @@ function listFiles(
   customerId: string,
   origin: PortalFileOrigin | null,
   page: number,
+  projectId?: string | null,
 ): Promise<FileClientResult<PortalFileListPageDto>> {
   const params = new URLSearchParams({ [FileQueryParam.Page]: String(page) });
   if (origin) params.set(FileQueryParam.Origin, origin);
+  if (projectId) params.set(FileQueryParam.ProjectId, projectId);
   return transport.request(
     `${portalFilesEndpoint(customerId)}?${params.toString()}`,
     HttpMethod.Get,

@@ -21,7 +21,7 @@ const COMPANY_B: PortalMembershipOptionDto = {
 describe("CustomerSwitcher", () => {
   afterEach(cleanup);
 
-  it("shows the company name as plain text with only one membership", () => {
+  it("links the single company name to the overview", () => {
     render(
       <CustomerSwitcher
         activeCustomerId={COMPANY_A.customerId}
@@ -31,11 +31,13 @@ describe("CustomerSwitcher", () => {
       />,
     );
 
-    expect(screen.getByText("Nordlicht Coaching")).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Nordlicht Coaching" }),
+    ).toHaveAttribute("href", "/de/portal/customer-a");
     expect(screen.queryByRole("group")).not.toBeInTheDocument();
   });
 
-  it("keeps the visible company name in the disclosure's accessible name", () => {
+  it("names the disclosure by its action", () => {
     const { container } = render(
       <CustomerSwitcher
         activeCustomerId={COMPANY_A.customerId}
@@ -46,7 +48,7 @@ describe("CustomerSwitcher", () => {
     );
 
     expect(container.querySelector("summary")).toHaveAccessibleName(
-      /Nordlicht Coaching/,
+      /Firma wechseln/,
     );
   });
 
@@ -64,7 +66,7 @@ describe("CustomerSwitcher", () => {
     expect(link).toHaveAttribute("href", "/de/portal/customer-b");
   });
 
-  it("marks the active company and does not link it to itself", () => {
+  it("links the active company name to its overview", () => {
     render(
       <CustomerSwitcher
         activeCustomerId={COMPANY_A.customerId}
@@ -75,8 +77,8 @@ describe("CustomerSwitcher", () => {
     );
 
     expect(
-      screen.queryByRole("link", { name: /Nordlicht Coaching/ }),
-    ).not.toBeInTheDocument();
+      screen.getByRole("link", { name: "Nordlicht Coaching" }),
+    ).toHaveAttribute("href", "/de/portal/customer-a");
     expect(screen.getAllByText("Nordlicht Coaching").length).toBeGreaterThan(0);
   });
 });

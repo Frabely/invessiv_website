@@ -279,10 +279,10 @@ describe.skipIf(!RUN_INTEGRATION)(
       if (userId) await db.delete(users).where(inArray(users.id, [userId]));
     }, 60_000);
 
-    it("returns only released rows of the selected customer in three queries", async () => {
+    it("returns only released rows of the selected customer", async () => {
       const select = vi.spyOn(db, "select");
       const dto = await getPortalDashboard(actor(customerA, fullRead), TODAY);
-      expect(select).toHaveBeenCalledTimes(3);
+      expect(select).toHaveBeenCalledTimes(6);
       select.mockRestore();
 
       expect(dto.customer.displayName).toBe(`${PREFIX}A`);
@@ -365,6 +365,28 @@ describe.skipIf(!RUN_INTEGRATION)(
       expect(dto.customerTasks.map((row) => row.title)).toEqual([
         `${PREFIX}foreign`,
       ]);
+    });
+
+    it("scopes tasks to a chosen project and ignores a foreign project id", async () => {
+      const reader = actor(customerA, fullRead);
+      const chosen = await getPortalDashboard(reader, TODAY, projectA);
+      expect(chosen.customerTasks.map((task) => task.projectId)).toEqual([
+        projectA,
+      ]);
+      expect(chosen.ourTasks.map((task) => task.projectId)).toEqual([projectA]);
+
+      const defaultView = await getPortalDashboard(reader, TODAY);
+      const foreignView = await getPortalDashboard(reader, TODAY, projectB);
+      expect(foreignView.customerTasks).toEqual(defaultView.customerTasks);
+      expect(foreignView.ourTasks).toEqual(defaultView.ourTasks);
+      expect(JSON.stringify(foreignView)).not.toContain(`${PREFIX}foreign`);
+
+      const singleProject = await getPortalDashboard(
+        actor(customerB, fullRead),
+        TODAY,
+      );
+      expect(singleProject.projects).toHaveLength(1);
+      expect(singleProject.customerTasks[0]?.projectId).toBe(projectB);
     });
 
     it("returns empty sections without the corresponding read permissions", async () => {

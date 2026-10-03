@@ -85,10 +85,11 @@ function dashboard(
   };
 }
 
-async function renderPage(customerId = "customer-1") {
+async function renderPage(customerId = "customer-1", project?: string) {
   render(
     await PortalCustomerPage({
       params: Promise.resolve({ locale: "de", customerId }),
+      searchParams: Promise.resolve(project ? { project } : {}),
     }),
   );
   return mocks.dashboardProps.mock.calls.at(-1)![0] as PortalDashboardProps;
@@ -121,13 +122,61 @@ describe("PortalCustomerPage", () => {
     expect(mocks.listPortalFiles).toHaveBeenCalledWith(ACTOR, {
       origin: PortalFileOrigin.FromUs,
       pageSize: 3,
+      projectId: undefined,
     });
     expect(mocks.listPortalFiles).toHaveBeenCalledWith(ACTOR, {
       origin: PortalFileOrigin.FromYou,
       pageSize: 3,
+      projectId: undefined,
     });
     expect(props.filesOverview).toEqual({ fromUs: page, fromYou: page });
     expect(props.filesHref).toBe("/de/portal/customer-1/files");
+  });
+
+  it("uses the selected project for files and onboarding", async () => {
+    const project = {
+      id: "project-1",
+    } as PortalDashboardDto["projects"][number];
+    mocks.getPortalDashboard.mockResolvedValue(
+      dashboard({
+        projects: [project, { ...project, id: "project-2" }],
+      }),
+    );
+    mocks.listPortalOnboardingForms.mockResolvedValue([
+      { id: "form-1", projectId: "project-1" },
+      { id: "form-2", projectId: "project-2" },
+    ]);
+    const props = await renderPage("customer-1", "project-2");
+    expect(mocks.getPortalDashboard).toHaveBeenCalledWith(
+      ACTOR,
+      expect.any(String),
+      "project-2",
+    );
+    expect(mocks.listPortalFiles).toHaveBeenCalledWith(
+      ACTOR,
+      expect.objectContaining({ projectId: "project-2" }),
+    );
+    expect(props.onboarding).toEqual([
+      { id: "form-2", projectId: "project-2" },
+    ]);
+    expect(props.filesHref).toBe(
+      "/de/portal/customer-1/files?project=project-2",
+    );
+  });
+
+  it("falls back to the first permitted project for a foreign id", async () => {
+    const project = {
+      id: "project-1",
+    } as PortalDashboardDto["projects"][number];
+    mocks.getPortalDashboard.mockResolvedValue(
+      dashboard({ projects: [project] }),
+    );
+    const props = await renderPage("customer-1", "foreign-project");
+    expect(mocks.listPortalFiles).toHaveBeenCalledWith(
+      ACTOR,
+      expect.objectContaining({ projectId: "project-1" }),
+    );
+    expect(props.selectedProjectId).toBe("project-1");
   });
 
   it("shows the onboarding widget only to a reader with the right and a form", async () => {

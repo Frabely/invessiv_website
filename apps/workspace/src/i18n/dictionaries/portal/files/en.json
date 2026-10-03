@@ -8,6 +8,11 @@
     "heading": "Files",
     "intro": "Find drafts and documents from us here. Upload logos, photos, copy or videos for your project right on this page."
   },
+  "scope": {
+    "label": "Files by project",
+    "project": "This project",
+    "all": "All projects"
+  },
   "tabs": {
     "label": "Files by origin",
     "fromUs": "From us",

@@ -14,6 +14,7 @@ import { requirePortalReader } from "@/server/portal/auth/require-portal-reader"
 import { getPortalOnboardingCall } from "@/server/portal/query-handler/get-portal-onboarding-call.query-handler";
 import { getPortalOnboardingForm } from "@/server/portal/query-handler/get-portal-onboarding-form.query-handler";
 import { portalCanOn } from "@/server/portal/shared/portal-can-on";
+import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -60,7 +61,11 @@ export default async function PortalOnboardingFormPage({
 
   return (
     <OnboardingFormView
-      backHref={portalPathFor(activeLocale, reader.customerId)}
+      backHref={buildPortalHref(
+        portalPathFor(activeLocale, reader.customerId),
+        "",
+        { project: form.projectId },
+      )}
       call={call}
       canUpload={
         !isOwnerView &&
@@ -68,10 +73,14 @@ export default async function PortalOnboardingFormPage({
       }
       chatHref={
         portalCanOn.forReader(reader, Permission.PortalMessagesRead, target)
-          ? portalPathFor(
-              activeLocale,
-              reader.customerId,
-              PortalSection.Messages,
+          ? buildPortalHref(
+              portalPathFor(
+                activeLocale,
+                reader.customerId,
+                PortalSection.Messages,
+              ),
+              "",
+              { project: form.projectId },
             )
           : null
       }
@@ -83,7 +92,15 @@ export default async function PortalOnboardingFormPage({
       filesContent={getPortalFilesDictionary(activeLocale)}
       filesHref={
         portalCanOn.forReader(reader, Permission.PortalFilesRead, target)
-          ? portalPathFor(activeLocale, reader.customerId, PortalSection.Files)
+          ? buildPortalHref(
+              portalPathFor(
+                activeLocale,
+                reader.customerId,
+                PortalSection.Files,
+              ),
+              "",
+              { project: form.projectId },
+            )
           : null
       }
       form={form}

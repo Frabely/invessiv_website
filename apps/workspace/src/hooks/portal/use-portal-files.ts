@@ -15,10 +15,12 @@ export function usePortalFiles(
   origin: PortalFileOrigin,
   revision: number,
   initial: { origin: PortalFileOrigin; page: PortalFileListPageDto },
+  projectId?: string | null,
 ) {
   return usePagedFiles<PortalFileDto>(
-    JSON.stringify([customerId, origin, revision]),
-    (page) => portalFilesApiService.listFiles(customerId, origin, page),
+    JSON.stringify([customerId, origin, revision, projectId]),
+    (page) =>
+      portalFilesApiService.listFiles(customerId, origin, page, projectId),
     initial.origin === origin && revision === 0 ? initial.page : undefined,
   );
 }
