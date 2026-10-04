@@ -89,7 +89,7 @@ type DashboardRows = {
   isOwnerView: boolean;
 };
 
-/** Open work first, then the latest customer-created tasks the team declined. */
+/** Active work first, then recent completions and customer requests the team declined. */
 function listOurTaskRows(rows: readonly TaskRow[]): TaskRow[] {
   const internal = rows.filter(
     (row) => row.actionSide === TaskActionSide.Internal,
@@ -102,8 +102,19 @@ function listOurTaskRows(rows: readonly TaskRow[]): TaskRow[] {
     )
     .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
     .slice(0, PortalTaskRequestLimits.RejectedShown);
+  const completed = internal
+    .filter((row) => row.status === TaskStatus.Done)
+    .sort(
+      (a, b) =>
+        (b.completedAt?.getTime() ?? 0) - (a.completedAt?.getTime() ?? 0),
+    )
+    .slice(0, PortalTaskRequestLimits.CompletedShown);
   return [
-    ...internal.filter((row) => row.status !== TaskStatus.Cancelled),
+    ...internal.filter(
+      (row) =>
+        row.status === TaskStatus.Open || row.status === TaskStatus.InProgress,
+    ),
+    ...completed,
     ...rejected,
   ];
 }
@@ -200,7 +211,7 @@ function mapRowsToDto({
       (a, b) =>
         (b.completedAt?.getTime() ?? 0) - (a.completedAt?.getTime() ?? 0),
     )
-    .slice(0, 20);
+    .slice(0, PortalTaskRequestLimits.CustomerCompletedShown);
 
   return {
     customer: { displayName: customer.displayName },
@@ -236,8 +247,8 @@ function mapRowsToDto({
     ),
     ourTasks: listOurTaskRows(tasks).map((row): PortalOurTaskDto => ({
       ...mapTask(row, today),
+      status: row.status,
       requestedByCustomer: row.createdByPortalMembershipId !== null,
-      rejected: row.status === TaskStatus.Cancelled,
     })),
     feedback:
       canReadFeedback && feedbackProject

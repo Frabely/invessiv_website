@@ -351,8 +351,8 @@ describe.skipIf(!RUN_INTEGRATION)(
         "dueState",
         "done",
         "completedAt",
+        "status",
         "requestedByCustomer",
-        "rejected",
       ]);
     });
 
@@ -385,7 +385,7 @@ describe.skipIf(!RUN_INTEGRATION)(
         );
         expect(
           dto.ourTasks
-            .filter((task) => task.rejected)
+            .filter((task) => task.status === TaskStatus.Cancelled)
             .map((task) => task.title),
         ).toEqual([
           `${PREFIX}rejected 7`,
@@ -400,6 +400,77 @@ describe.skipIf(!RUN_INTEGRATION)(
           inArray(
             tasks.id,
             rejectedRows.map((row) => row.id),
+          ),
+        );
+      }
+    });
+
+    it("bounds completed customer and team tasks to the latest entries", async () => {
+      const completedRows = [
+        ...Array.from(
+          { length: PortalTaskRequestLimits.CompletedShown + 2 },
+          (_, index) => ({
+            id: randomUUID(),
+            project_id: projectA,
+            title: `${PREFIX}team done ${index}`,
+            description: "",
+            status: TaskStatus.Done,
+            action_side: TaskActionSide.Internal,
+            visible_to_customer: true,
+            assignee_member_id: memberId,
+            completed_at: new Date(Date.UTC(2026, 8, 26, 12, 0, index)),
+            completed_by_member_id: memberId,
+            version: 1,
+          }),
+        ),
+        ...Array.from(
+          { length: PortalTaskRequestLimits.CustomerCompletedShown + 2 },
+          (_, index) => ({
+            id: randomUUID(),
+            project_id: projectA,
+            title: `${PREFIX}customer done ${index}`,
+            description: "",
+            status: TaskStatus.Done,
+            action_side: TaskActionSide.Customer,
+            visible_to_customer: true,
+            assignee_member_id: memberId,
+            completed_at: new Date(Date.UTC(2026, 8, 26, 13, 0, index)),
+            completed_by_member_id: memberId,
+            version: 1,
+          }),
+        ),
+      ];
+      await db.insert(tasks).values(completedRows);
+      try {
+        const dto = await getPortalDashboard(
+          actor(customerA, fullRead),
+          TODAY,
+          projectA,
+        );
+        expect(
+          dto.ourTasks
+            .filter((task) => task.status === TaskStatus.Done)
+            .map((task) => task.title),
+        ).toEqual([
+          `${PREFIX}team done 6`,
+          `${PREFIX}team done 5`,
+          `${PREFIX}team done 4`,
+          `${PREFIX}team done 3`,
+          `${PREFIX}team done 2`,
+        ]);
+        expect(dto.customerTasks.filter((task) => task.done)).toHaveLength(
+          PortalTaskRequestLimits.CustomerCompletedShown,
+        );
+        expect(
+          dto.customerTasks.find(
+            (task) => task.title === `${PREFIX}customer done 0`,
+          ),
+        ).toBeUndefined();
+      } finally {
+        await db.delete(tasks).where(
+          inArray(
+            tasks.id,
+            completedRows.map((row) => row.id),
           ),
         );
       }

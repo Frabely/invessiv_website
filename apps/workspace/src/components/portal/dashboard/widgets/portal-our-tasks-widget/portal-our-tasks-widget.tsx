@@ -4,8 +4,11 @@ import type { ReactNode } from "react";
 import { faPersonDigging, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
+import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import type { PortalOurTaskDto } from "@invessiv/common/contracts/portal/portal-our-task.dto";
-import { ButtonControl, Widget } from "@invessiv/ui";
+import { Badge, ButtonControl, Widget } from "@invessiv/ui";
+import { TASK_STATUS_BADGE_TONES } from "@/common/constants/crm/badges/task-status-badge-tones";
+import { TASK_STATUS_ICONS } from "@/common/constants/crm/badges/task-status-icons";
 import type { Locale } from "@/config/i18n";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
 import { PortalDueHint } from "../../portal-due-hint/portal-due-hint";
@@ -25,8 +28,8 @@ export type PortalOurTasksWidgetProps = {
 };
 
 /**
- * The customer sees what we work on, never who or with which status detail. What they asked for
- * themselves is marked, and a request the team declined stays listed instead of vanishing.
+ * The customer sees a clear workflow status for visible team tasks, without internal ownership.
+ * Recent completions and declined customer requests remain visible below active work.
  */
 export function PortalOurTasksWidget({
   content,
@@ -37,39 +40,39 @@ export function PortalOurTasksWidget({
   today,
 }: PortalOurTasksWidgetProps) {
   const labels = content.widgets.ourTasks;
-  const openTasks = tasks.filter((task) => !task.done && !task.rejected);
-  const listed = [...openTasks, ...tasks.filter((task) => task.rejected)];
+  const openTasks = tasks.filter(
+    (task) =>
+      task.status === TaskStatus.Open || task.status === TaskStatus.InProgress,
+  );
+  const listed = tasks;
 
   function renderList(items: readonly PortalOurTaskDto[]) {
     return (
       <ul className={styles.list}>
         {items.map((task) => (
-          <li
-            className={styles.item}
-            data-rejected={task.rejected || undefined}
-            key={task.id}
-          >
-            <span aria-hidden="true" className={styles.marker} />
+          <li className={styles.item} data-status={task.status} key={task.id}>
             <span className={styles.text}>
               <span className={styles.title}>{task.title}</span>
-              {task.rejected || task.requestedByCustomer || task.dueOn ? (
-                <span className={styles.meta}>
-                  {task.rejected ? (
-                    <span className={styles.rejected}>{labels.rejected}</span>
-                  ) : null}
-                  {task.requestedByCustomer ? (
-                    <span className={styles.origin}>{labels.fromYou}</span>
-                  ) : null}
-                  {task.rejected ? null : (
-                    <PortalDueHint
-                      content={content.due}
-                      locale={locale}
-                      task={task}
-                      today={today}
-                    />
-                  )}
-                </span>
-              ) : null}
+              <span className={styles.meta}>
+                <Badge
+                  icon={TASK_STATUS_ICONS[task.status]}
+                  kind="status"
+                  label={labels.status[task.status]}
+                  tone={TASK_STATUS_BADGE_TONES[task.status]}
+                />
+                {task.requestedByCustomer ? (
+                  <span className={styles.origin}>{labels.fromYou}</span>
+                ) : null}
+                {task.status === TaskStatus.Open ||
+                task.status === TaskStatus.InProgress ? (
+                  <PortalDueHint
+                    content={content.due}
+                    locale={locale}
+                    task={task}
+                    today={today}
+                  />
+                ) : null}
+              </span>
             </span>
           </li>
         ))}

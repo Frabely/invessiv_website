@@ -91,7 +91,12 @@
       "empty": "Gerade steht bei uns für dieses Projekt nichts Sichtbares an. Wir melden uns, sobald es weitergeht.",
       "create": "Aufgabe für uns anlegen",
       "fromYou": "von dir",
-      "rejected": "Abgelehnt",
+      "status": {
+        "open": "Offen",
+        "in_progress": "In Arbeit",
+        "done": "Erledigt",
+        "cancelled": "Abgelehnt"
+      },
       "ownerHint": "In der Portalansicht kannst du keine Aufgabe anlegen.",
       "ownerLink": "Im CRM anlegen"
     },

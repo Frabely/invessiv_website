@@ -6,6 +6,8 @@ describe("PortalTaskRequestLimits", () => {
     expect(PortalTaskRequestLimits).toEqual({
       OpenPerProject: 20,
       RejectedShown: 5,
+      CompletedShown: 5,
+      CustomerCompletedShown: 20,
     });
   });
 });

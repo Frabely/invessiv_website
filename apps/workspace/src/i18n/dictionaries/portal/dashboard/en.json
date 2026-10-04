@@ -91,7 +91,12 @@
       "empty": "Nothing visible is on our list for this project right now. We will be in touch as soon as things move on.",
       "create": "Create a task for us",
       "fromYou": "from you",
-      "rejected": "Declined",
+      "status": {
+        "open": "Open",
+        "in_progress": "In progress",
+        "done": "Done",
+        "cancelled": "Declined"
+      },
       "ownerHint": "No task can be created in the portal view.",
       "ownerLink": "Create in the CRM"
     },

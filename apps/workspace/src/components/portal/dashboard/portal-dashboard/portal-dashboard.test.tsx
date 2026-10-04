@@ -16,6 +16,7 @@ import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-rou
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import { TaskDueState } from "@invessiv/common/constants/crm/task-due-states";
+import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import { PortalTaskErrorCode } from "@invessiv/common/constants/portal/portal-task-error-codes";
 import type { PortalConversationDto } from "@invessiv/common/contracts/portal/portal-conversation.dto";
 import type { PortalCustomerTaskDto } from "@invessiv/common/contracts/portal/portal-customer-task.dto";
@@ -28,6 +29,7 @@ import { FileSource } from "@invessiv/common/constants/files/file-source";
 import { UploadExtension } from "@invessiv/common/constants/files/upload-extension";
 import { PortalFileOrigin } from "@invessiv/common/constants/portal/portal-file-origin";
 import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
+import { TASK_STATUS_BADGE_TONES } from "@/common/constants/crm/badges/task-status-badge-tones";
 import { listVisiblePortalWidgets } from "@/common/patterns/portal/list-visible-portal-widgets";
 import {
   getPortalDashboardDictionary,
@@ -260,8 +262,8 @@ function ourTask(
     dueState: TaskDueState.None,
     done: false,
     completedAt: null,
+    status: TaskStatus.Open,
     requestedByCustomer: false,
-    rejected: false,
     ...overrides,
   };
 }
@@ -687,23 +689,51 @@ describe("PortalDashboard", () => {
     expect(dialog.querySelector("details")).toBeNull();
   });
 
-  it("marks own requests and keeps a declined one visible", () => {
+  it("labels every team task state and keeps completed and declined work visible", () => {
     renderDashboard(
       dto({
         ourTasks: [
           ourTask("x"),
-          ourTask("y", { requestedByCustomer: true }),
-          ourTask("z", { requestedByCustomer: true, rejected: true }),
+          ourTask("y", {
+            status: TaskStatus.InProgress,
+            requestedByCustomer: true,
+          }),
+          ourTask("w", {
+            status: TaskStatus.Done,
+            done: true,
+            completedAt: "2026-09-26T10:00:00.000Z",
+            requestedByCustomer: true,
+          }),
+          ourTask("z", {
+            status: TaskStatus.Cancelled,
+            requestedByCustomer: true,
+          }),
         ],
       }),
     );
 
+    fireEvent.click(
+      within(ourTasksWidget()).getByRole("button", { name: "Show more" }),
+    );
     const items = within(ourTasksWidget()).getAllByRole("listitem");
-    expect(items).toHaveLength(3);
+    expect(items).toHaveLength(4);
+    expect(within(items[0]!).getByText("Open")).toBeInTheDocument();
     expect(within(items[0]!).queryByText("from you")).toBeNull();
+    expect(within(items[1]!).getByText("In progress")).toBeInTheDocument();
     expect(within(items[1]!).getByText("from you")).toBeInTheDocument();
-    expect(within(items[2]!).getByText("Declined")).toBeInTheDocument();
-    expect(items[2]).toHaveAttribute("data-rejected", "true");
+    expect(within(items[2]!).getByText("Done")).toBeInTheDocument();
+    expect(within(items[3]!).getByText("Declined")).toBeInTheDocument();
+    expect(items[3]).toHaveAttribute("data-status", TaskStatus.Cancelled);
+    for (const [item, status] of items
+      .map((item) => item.getAttribute("data-status"))
+      .entries()) {
+      const badge = items[item]?.querySelector("[data-kind='status']");
+      expect(badge).toHaveAttribute(
+        "data-tone",
+        TASK_STATUS_BADGE_TONES[status as TaskStatus],
+      );
+      expect(badge?.querySelector("svg")).toBeInTheDocument();
+    }
   });
 
   it("offers no task request without the create right", () => {

@@ -185,20 +185,30 @@ describe("portalDashboardMappingService portal task origins", () => {
         task(2, TaskStatus.Cancelled, TaskActionSide.Internal),
         task(3, TaskStatus.Cancelled, TaskActionSide.Customer),
         task(4, TaskStatus.InProgress, TaskActionSide.Internal),
+        task(5, TaskStatus.Done, TaskActionSide.Internal),
       ],
       { canReopenTasks: true, canCreateTasks: true },
     );
 
     expect(
-      dto.ourTasks.map(({ id, requestedByCustomer, rejected }) => ({
+      dto.ourTasks.map(({ id, requestedByCustomer, status }) => ({
         id,
         requestedByCustomer,
-        rejected,
+        status,
       })),
     ).toEqual([
-      { id: "task-0", requestedByCustomer: true, rejected: false },
-      { id: "task-4", requestedByCustomer: false, rejected: false },
-      { id: "task-1", requestedByCustomer: true, rejected: true },
+      { id: "task-0", requestedByCustomer: true, status: TaskStatus.Open },
+      {
+        id: "task-4",
+        requestedByCustomer: false,
+        status: TaskStatus.InProgress,
+      },
+      { id: "task-5", requestedByCustomer: false, status: TaskStatus.Done },
+      {
+        id: "task-1",
+        requestedByCustomer: true,
+        status: TaskStatus.Cancelled,
+      },
     ]);
     expect(dto.customerTasks).toEqual([]);
   });
@@ -210,6 +220,25 @@ describe("portalDashboardMappingService portal task origins", () => {
     }));
 
     const dto = map(declined, { canReopenTasks: false, canCreateTasks: false });
+
+    expect(dto.ourTasks.map((entry) => entry.id)).toEqual([
+      "task-6",
+      "task-5",
+      "task-4",
+      "task-3",
+      "task-2",
+    ]);
+  });
+
+  it("keeps only the most recently completed team tasks", () => {
+    const completed = Array.from({ length: 7 }, (_, index) =>
+      task(index, TaskStatus.Done, TaskActionSide.Internal),
+    );
+
+    const dto = map(completed, {
+      canReopenTasks: false,
+      canCreateTasks: false,
+    });
 
     expect(dto.ourTasks.map((entry) => entry.id)).toEqual([
       "task-6",

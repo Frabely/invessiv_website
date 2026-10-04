@@ -1,9 +1,12 @@
 import "server-only";
 
-import { and, desc, eq, isNotNull, ne, type SQL } from "drizzle-orm";
+import { and, desc, eq, inArray, isNotNull, type SQL } from "drizzle-orm";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
-import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
+import {
+  OPEN_TASK_STATUS_VALUES,
+  TaskStatus,
+} from "@invessiv/common/constants/crm/task-statuses";
 import { TaskActionSide } from "@invessiv/common/constants/crm/task-action-sides";
 import { PortalTaskRequestLimits } from "@invessiv/common/constants/portal/portal-task-request-limits";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
@@ -28,7 +31,7 @@ import { projectResponsibleMemberService } from "@/server/shared/services/projec
 import { portalBookingMappingService } from "@/server/portal/services/portal-booking-mapping-service";
 import { selectPortalCurrentProject } from "@/common/patterns/portal/select-portal-current-project";
 
-/** Fetch current work and only the latest declined customer requests for one project. */
+/** Fetch active work and bounded completed/declined histories for one project. */
 async function loadPortalTaskRows(reader: PortalReader, projectId: string) {
   const db = getDrizzleDatabaseClient();
   const columns = {
@@ -58,19 +61,36 @@ async function loadPortalTaskRows(reader: PortalReader, projectId: string) {
       .innerJoin(projects, eq(projects.id, tasks.project_id))
       .where(and(scope, condition));
 
-  const [current, rejected] = await Promise.all([
-    select(ne(tasks.status, TaskStatus.Cancelled)),
-    select(
-      and(
-        eq(tasks.status, TaskStatus.Cancelled),
-        eq(tasks.action_side, TaskActionSide.Internal),
-        isNotNull(tasks.created_by_portal_membership_id),
-      ),
-    )
-      .orderBy(desc(tasks.updated_at), desc(tasks.id))
-      .limit(PortalTaskRequestLimits.RejectedShown),
-  ]);
-  return [...current, ...rejected];
+  const [active, customerCompleted, teamCompleted, rejected] =
+    await Promise.all([
+      select(inArray(tasks.status, OPEN_TASK_STATUS_VALUES)),
+      select(
+        and(
+          eq(tasks.status, TaskStatus.Done),
+          eq(tasks.action_side, TaskActionSide.Customer),
+        ),
+      )
+        .orderBy(desc(tasks.completed_at), desc(tasks.id))
+        .limit(PortalTaskRequestLimits.CustomerCompletedShown),
+      select(
+        and(
+          eq(tasks.status, TaskStatus.Done),
+          eq(tasks.action_side, TaskActionSide.Internal),
+        ),
+      )
+        .orderBy(desc(tasks.completed_at), desc(tasks.id))
+        .limit(PortalTaskRequestLimits.CompletedShown),
+      select(
+        and(
+          eq(tasks.status, TaskStatus.Cancelled),
+          eq(tasks.action_side, TaskActionSide.Internal),
+          isNotNull(tasks.created_by_portal_membership_id),
+        ),
+      )
+        .orderBy(desc(tasks.updated_at), desc(tasks.id))
+        .limit(PortalTaskRequestLimits.RejectedShown),
+    ]);
+  return [...active, ...customerCompleted, ...teamCompleted, ...rejected];
 }
 
 /**
