@@ -215,7 +215,17 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       });
       expect(
         pending.ok && (await attach(first.id, pending.value.file.id)),
-      ).toEqual({ ok: false, code: E.NotAttachable });
+      ).toEqual({ ok: false, code: E.NotFound });
+      const orphaned = await customerLink();
+      await f
+        .database()
+        .update(files)
+        .set({ orphaned_at: new Date() })
+        .where(eq(files.id, orphaned));
+      expect(await attach(first.id, orphaned)).toEqual({
+        ok: false,
+        code: E.NotFound,
+      });
       expect(
         await attach(first.id, await customerLink(f.siblingProjectId)),
       ).toEqual({ ok: false, code: E.NotAttachable });
@@ -403,12 +413,11 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       });
     });
 
-    it("hides everything without the feedback permissions or for another company", async () => {
+    it("hides feedback without its own permission or for another company", async () => {
       const { projectId, roundId } = await openRound();
       const reader = f.contact([
         Permission.PortalAccess,
         Permission.PortalProjectsRead,
-        Permission.PortalFeedbackSubmit,
       ]);
       expect(await getPortalProjectFeedback(reader, projectId)).toBeNull();
       expect(
@@ -448,7 +457,31 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       ).toEqual({ ok: false, code: E.NotFound });
     });
 
-    it("needs project, file and feedback rights for the matching step", async () => {
+    it("allows feedback read and submit independently of project and feedback read grants", async () => {
+      const { projectId, roundId } = await openRound();
+      const reader = f.contact([
+        Permission.PortalAccess,
+        Permission.PortalFeedbackRead,
+      ]);
+      expect(await getPortalProjectFeedback(reader, projectId)).toMatchObject({
+        activeRound: { id: roundId },
+        canSubmit: false,
+      });
+
+      const writer = f.contact([
+        Permission.PortalAccess,
+        Permission.PortalFeedbackSubmit,
+      ]);
+      expect(await getPortalProjectFeedback(writer, projectId)).toBeNull();
+      expect(
+        await savePortalFeedbackDraft(writer, roundId, {
+          version: 1,
+          items: [item("Standalone write")],
+        }),
+      ).toMatchObject({ ok: true });
+    });
+
+    it("needs file visibility only for attachments", async () => {
       const { projectId, roundId } = await openRound();
       const target = item("mit Datei");
       await save(roundId, [target]);
@@ -462,9 +495,9 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       expect(
         await savePortalFeedbackDraft(withoutProjects, roundId, {
           version: 2,
-          items: [],
+          items: [target],
         }),
-      ).toEqual({ ok: false, code: E.NotFound });
+      ).toMatchObject({ ok: true });
 
       const withoutFiles = f.contact([
         Permission.PortalAccess,
@@ -484,7 +517,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       ).toEqual({ ok: false, code: E.NotFound });
       expect(
         await savePortalFeedbackDraft(withoutFiles, roundId, {
-          version: 2,
+          version: 3,
           items: [target],
         }),
       ).toMatchObject({ ok: true });

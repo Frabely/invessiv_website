@@ -147,6 +147,7 @@
       "fromUs": "Von uns",
       "emptyFromUs": "Sobald wir etwas für dich freigeben, liegt es hier.",
       "emptyFromYou": "Logos, Fotos oder Texte für dein Projekt lädst du unter „Alle Dateien“ hoch.",
+      "previewUnavailable": "Die Vorschau konnte nicht geladen werden. Öffne „Alle Dateien“, um es dort erneut zu versuchen.",
       "more": "und {count} weitere",
       "moreOne": "und 1 weitere"
     },

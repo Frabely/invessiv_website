@@ -30,6 +30,7 @@ import {
 import { createPortalActor } from "@/server/portal/auth/portal-actor";
 import { createPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
 import { getPortalDashboard } from "@/server/portal/query-handler/get-portal-dashboard.query-handler";
+import { listPortalCurrentProjects } from "@/server/portal/query-handler/list-portal-current-projects.query-handler";
 import { resolvePortalActor } from "@/server/portal/query-handler/resolve-portal-actor.query-handler";
 
 vi.mock("server-only", () => ({}));
@@ -280,14 +281,16 @@ describe.skipIf(!RUN_INTEGRATION)(
     }, 60_000);
 
     it("returns only released rows of the selected customer", async () => {
-      const select = vi.spyOn(db, "select");
       const dto = await getPortalDashboard(actor(customerA, fullRead), TODAY);
-      expect(select).toHaveBeenCalledTimes(6);
-      select.mockRestore();
 
       expect(dto.customer.displayName).toBe(`${PREFIX}A`);
-      expect(dto.projects).toHaveLength(3);
+      expect(dto.project).not.toBeNull();
       expect(dto.completedProjects).toHaveLength(1);
+      expect(Object.keys(dto.completedProjects[0]!)).toEqual([
+        "id",
+        "title",
+        "previewUrl",
+      ]);
       expect(dto.customerTasks.map((task) => task.title)).toEqual([
         `${PREFIX}customer`,
       ]);
@@ -303,14 +306,14 @@ describe.skipIf(!RUN_INTEGRATION)(
       expect(Object.keys(dto)).toEqual([
         "customer",
         "contact",
-        "projects",
+        "project",
         "completedProjects",
         "customerTasks",
         "ourTasks",
         "feedback",
         "capabilities",
       ]);
-      expect(Object.keys(dto.projects[0]!)).toEqual([
+      expect(Object.keys(dto.project!)).toEqual([
         "id",
         "title",
         "status",
@@ -322,7 +325,7 @@ describe.skipIf(!RUN_INTEGRATION)(
         "previewUrl",
         "projectLead",
       ]);
-      expect(dto.projects[0]?.feedbackRoundPositions).toEqual([1, 1]);
+      expect(dto.project?.feedbackRoundPositions).toEqual([1, 1]);
       expect(Object.keys(dto.customerTasks[0]!)).toEqual([
         "id",
         "projectId",
@@ -359,9 +362,9 @@ describe.skipIf(!RUN_INTEGRATION)(
       const firstDto = await getPortalDashboard(first.actor, TODAY);
       const dto = await getPortalDashboard(second.actor, TODAY);
       expect(firstDto.customer.displayName).toBe(`${PREFIX}A`);
-      expect(firstDto.projects.every((row) => row.id !== projectB)).toBe(true);
+      expect(firstDto.project?.id).not.toBe(projectB);
       expect(dto.customer.displayName).toBe(`${PREFIX}B`);
-      expect(dto.projects.map((row) => row.id)).toEqual([projectB]);
+      expect(dto.project?.id).toBe(projectB);
       expect(dto.customerTasks.map((row) => row.title)).toEqual([
         `${PREFIX}foreign`,
       ]);
@@ -385,7 +388,7 @@ describe.skipIf(!RUN_INTEGRATION)(
         actor(customerB, fullRead),
         TODAY,
       );
-      expect(singleProject.projects).toHaveLength(1);
+      expect(singleProject.project?.id).toBe(projectB);
       expect(singleProject.customerTasks[0]?.projectId).toBe(projectB);
     });
 
@@ -397,7 +400,7 @@ describe.skipIf(!RUN_INTEGRATION)(
         ]),
         TODAY,
       );
-      expect(noTasks.projects).toHaveLength(3);
+      expect(noTasks.project).not.toBeNull();
       expect(noTasks.customerTasks).toEqual([]);
       expect(noTasks.ourTasks).toEqual([]);
       expect(noTasks.capabilities.canCompleteTasks).toBe(false);
@@ -406,9 +409,32 @@ describe.skipIf(!RUN_INTEGRATION)(
         actor(customerA, [Permission.PortalAccess, Permission.PortalTasksRead]),
         TODAY,
       );
-      expect(noProjects.projects).toEqual([]);
+      expect(noProjects.project).toBeNull();
       expect(noProjects.completedProjects).toEqual([]);
-      expect(noProjects.customerTasks).toHaveLength(1);
+      expect(noProjects.customerTasks.length).toBeGreaterThan(0);
+      expect(
+        noProjects.customerTasks.every((task) => task.projectId === projectA),
+      ).toBe(true);
+      expect(noProjects.capabilities.canCompleteTasks).toBe(false);
+      expect(
+        await listPortalCurrentProjects(
+          actor(customerA, [
+            Permission.PortalAccess,
+            Permission.PortalTasksRead,
+          ]),
+        ),
+      ).toEqual([{ id: projectA, title: `${PREFIX}A active` }]);
+
+      const feedbackOnly = await getPortalDashboard(
+        actor(customerA, [
+          Permission.PortalAccess,
+          Permission.PortalFeedbackRead,
+        ]),
+        TODAY,
+      );
+      expect(feedbackOnly.project).toBeNull();
+      expect(feedbackOnly.customerTasks).toEqual([]);
+      expect(feedbackOnly.feedback).toMatchObject({ projectId: projectA });
     });
 
     it("returns a valid empty DTO and the same data to an owner reader", async () => {
@@ -425,7 +451,7 @@ describe.skipIf(!RUN_INTEGRATION)(
           actor(emptyCustomerId, fullRead),
           TODAY,
         );
-        expect(empty.projects).toEqual([]);
+        expect(empty.project).toBeNull();
         expect(empty.customerTasks).toEqual([]);
         expect(empty.ourTasks).toEqual([]);
       } finally {

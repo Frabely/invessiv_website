@@ -15,10 +15,7 @@ import { PortalDashboardNavigationMode } from "@/common/constants/portal/portal-
 import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import type { PortalWidgetDefinition } from "@/common/contracts/portal/portal-widget-definition";
 import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
-import {
-  readPortalDashboardProject,
-  readPortalDashboardWidget,
-} from "@/common/patterns/portal/portal-dashboard-query";
+import { readPortalDashboardWidget } from "@/common/patterns/portal/portal-dashboard-query";
 import { buildPortalFeedbackPath } from "@/common/patterns/portal/portal-feedback-path";
 import { describeUnreadBadge } from "@/common/patterns/crm/describe-unread-badge";
 import type { Locale } from "@/config/i18n";
@@ -52,7 +49,6 @@ export type PortalDashboardProps = {
   conversation: PortalConversationDto | null;
   customerId: string;
   dashboard: PortalDashboardDto;
-  selectedProjectId?: string | null;
   /** Files page of this customer, for the files widget. */
   filesHref: string;
   /** Null without `portal.files.read`; the files widget is then not rendered. */
@@ -76,8 +72,8 @@ export type PortalDashboardProps = {
 };
 
 /**
- * Orchestrates the widget grid, the dialog named in `?widget`, the selected project in `?project` and
- * the chat dock. Mount it with `key={customerId}` so no client state crosses companies.
+ * Orchestrates the widget grid, the dialog named in `?widget` and the chat dock; the project is
+ * selected on the server. Mount it with `key={customerId}` so no client state crosses companies.
  */
 export function PortalDashboard({
   cockpitHref,
@@ -85,7 +81,6 @@ export function PortalDashboard({
   conversation,
   customerId,
   dashboard,
-  selectedProjectId,
   filesHref,
   filesOverview,
   filesContent,
@@ -116,10 +111,7 @@ export function PortalDashboard({
     requestedWidget && visibleKeys.has(requestedWidget)
       ? requestedWidget
       : null;
-  const selectedProject = readPortalDashboardProject(
-    { get: () => selectedProjectId ?? null },
-    dashboard.projects,
-  );
+  const selectedProject = dashboard.project;
   const { canCompleteTasks, isOwnerView } = dashboard.capabilities;
 
   function navigate(
@@ -190,10 +182,7 @@ export function PortalDashboard({
       <PortalProjectWidget
         content={content.widgets.project}
         feedbackHref={
-          dashboard.feedback?.some(
-            (entry) =>
-              entry.projectId === selectedProject.id && entry.status !== null,
-          )
+          dashboard.feedback?.status
             ? buildPortalHref(
                 buildPortalFeedbackPath({
                   locale,
@@ -225,19 +214,18 @@ export function PortalDashboard({
       <PortalOurTasksWidget
         content={content}
         locale={locale}
-        showProject={!selectedProject}
         tasks={ourTasks}
         today={today}
       />
     ),
-    [PortalWidgetKey.Feedback]: dashboard.feedback ? (
+    [PortalWidgetKey.Feedback]: (
       <PortalFeedbackWidget
         content={content.widgets.feedback}
         customerId={customerId}
-        entries={dashboard.feedback}
+        entry={dashboard.feedback}
         locale={locale}
       />
-    ) : null,
+    ),
     [PortalWidgetKey.Hours]: mockDialog(PortalWidgetKey.Hours, faClock),
     [PortalWidgetKey.Contact]: dashboard.contact ? (
       <PortalContactWidget
@@ -245,14 +233,14 @@ export function PortalDashboard({
         content={content.widgets.contact}
       />
     ) : null,
-    [PortalWidgetKey.Files]: filesOverview ? (
+    [PortalWidgetKey.Files]: (
       <PortalFilesWidget
         content={content.widgets.files}
         filesHref={filesHref}
         locale={locale}
         overview={filesOverview}
       />
-    ) : null,
+    ),
     [PortalWidgetKey.ServiceRequest]: mockDialog(
       PortalWidgetKey.ServiceRequest,
       faCirclePlus,

@@ -55,7 +55,8 @@ describe("portalDashboardMappingService.mapRowsToDto", () => {
   it("separates completed projects, hides matching leads, and maps public fields only", () => {
     const dto = portalDashboardMappingService.mapRowsToDto({
       customer,
-      projects: [
+      selectedProject: project(ProjectStatus.Active, "member-2"),
+      projectSummaries: [
         project(ProjectStatus.Planned),
         project(ProjectStatus.Active, "member-2"),
         project(ProjectStatus.Completed),
@@ -64,19 +65,15 @@ describe("portalDashboardMappingService.mapRowsToDto", () => {
         task(0, TaskStatus.Open, TaskActionSide.Customer),
         task(1, TaskStatus.InProgress, TaskActionSide.Internal),
       ],
-      feedbackRounds: [],
-      roundStates: [],
+      rounds: [],
+      canReadFeedback: true,
       today: "2026-09-26",
       canCompleteTasks: true,
       isOwnerView: false,
     });
 
-    expect(dto.projects.map((row) => row.status)).toEqual([
-      ProjectStatus.Active,
-      ProjectStatus.Planned,
-    ]);
-    expect(dto.projects[0]?.projectLead).toEqual({ displayName: "Other lead" });
-    expect(dto.projects[1]?.projectLead).toBeNull();
+    expect(dto.project?.status).toBe(ProjectStatus.Active);
+    expect(dto.project?.projectLead).toEqual({ displayName: "Other lead" });
     expect(dto.completedProjects).toEqual([
       { id: "completed-project", title: "completed", previewUrl: null },
     ]);
@@ -103,10 +100,11 @@ describe("portalDashboardMappingService.mapRowsToDto", () => {
     );
     const dto = portalDashboardMappingService.mapRowsToDto({
       customer,
-      projects: [],
+      selectedProject: null,
+      projectSummaries: [],
       tasks,
-      feedbackRounds: null,
-      roundStates: [],
+      rounds: [],
+      canReadFeedback: false,
       today: "2026-09-26",
       canCompleteTasks: false,
       isOwnerView: true,
@@ -122,10 +120,14 @@ describe("portalDashboardMappingService feedback rounds", () => {
   function map(feedbackRoundPositions: number[] | null) {
     return portalDashboardMappingService.mapRowsToDto({
       customer,
-      projects: [{ ...project(ProjectStatus.Active), feedbackRoundPositions }],
+      selectedProject: {
+        ...project(ProjectStatus.Active),
+        feedbackRoundPositions,
+      },
+      projectSummaries: [],
       tasks: [],
-      feedbackRounds: null,
-      roundStates: [],
+      rounds: [],
+      canReadFeedback: false,
       today: "2026-09-26",
       canCompleteTasks: false,
       isOwnerView: false,
@@ -133,27 +135,23 @@ describe("portalDashboardMappingService feedback rounds", () => {
   }
 
   it("exposes the round positions", () => {
-    expect(map([0, 1, 1]).projects[0]?.feedbackRoundPositions).toEqual([
-      0, 1, 1,
-    ]);
+    expect(map([0, 1, 1]).project?.feedbackRoundPositions).toEqual([0, 1, 1]);
   });
 
   it("maps a project from before the rounds column to no rounds", () => {
-    expect(map(null).projects[0]?.feedbackRoundPositions).toEqual([]);
+    expect(map(null).project?.feedbackRoundPositions).toEqual([]);
   });
 });
 
 describe("portalDashboardMappingService feedback summary", () => {
   const rounds = [
     {
-      projectId: "active-project",
       roundNumber: 1,
       status: FeedbackRoundStatus.Completed,
       dueOn: "2026-09-10",
       approvedAt: null,
     },
     {
-      projectId: "active-project",
       roundNumber: 2,
       status: FeedbackRoundStatus.Open,
       dueOn: "2026-10-14",
@@ -161,51 +159,69 @@ describe("portalDashboardMappingService feedback summary", () => {
     },
   ];
 
+  it("maps feedback and tasks without a project detail grant", () => {
+    const dto = portalDashboardMappingService.mapRowsToDto({
+      customer,
+      selectedProject: null,
+      feedbackProject: {
+        id: "active-project",
+        title: "Active project",
+        includedFeedbackRounds: 2,
+      },
+      projectSummaries: [],
+      tasks: [task(0, TaskStatus.Open, TaskActionSide.Customer)],
+      rounds,
+      canReadFeedback: true,
+      today: "2026-09-26",
+      canCompleteTasks: false,
+      isOwnerView: false,
+    });
+
+    expect(dto.project).toBeNull();
+    expect(dto.customerTasks).toHaveLength(1);
+    expect(dto.feedback?.projectId).toBe("active-project");
+  });
+
   function map(
-    feedbackRounds: Parameters<
+    roundRows: Parameters<
       typeof portalDashboardMappingService.mapRowsToDto
-    >[0]["feedbackRounds"],
+    >[0]["rounds"],
+    canReadFeedback = true,
+    selected = project(ProjectStatus.Active),
   ) {
     return portalDashboardMappingService.mapRowsToDto({
       customer,
-      projects: [
-        project(ProjectStatus.Active),
-        { ...project(ProjectStatus.Planned), includedFeedbackRounds: 0 },
-        { ...project(ProjectStatus.Paused), feedbackRoundPositions: [1] },
-        project(ProjectStatus.Completed),
-      ],
+      selectedProject: selected,
+      projectSummaries: [],
       tasks: [],
-      feedbackRounds,
-      roundStates: rounds,
+      rounds: roundRows,
+      canReadFeedback,
       today: "2026-09-26",
       canCompleteTasks: false,
       isOwnerView: false,
     });
   }
 
-  it("summarizes the latest round of every current project with round steps", () => {
-    expect(map(rounds).feedback).toEqual([
-      {
-        projectId: "active-project",
-        projectTitle: "active",
-        roundNumber: 2,
-        status: FeedbackRoundStatus.Open,
-        dueOn: "2026-10-14",
-        approvedAt: null,
-        included: 2,
-        used: 2,
-      },
-      {
-        projectId: "paused-project",
-        projectTitle: "paused",
-        roundNumber: null,
-        status: null,
-        dueOn: null,
-        approvedAt: null,
-        included: 2,
-        used: 0,
-      },
-    ]);
+  it("summarizes the latest round of the selected project", () => {
+    expect(map(rounds).feedback).toEqual({
+      projectId: "active-project",
+      projectTitle: "active",
+      roundNumber: 2,
+      status: FeedbackRoundStatus.Open,
+      dueOn: "2026-10-14",
+      approvedAt: null,
+      included: 2,
+      used: 2,
+    });
+  });
+
+  it("has no summary for a project without round steps", () => {
+    expect(
+      map([], true, {
+        ...project(ProjectStatus.Active),
+        includedFeedbackRounds: 0,
+      }).feedback,
+    ).toBeNull();
   });
 
   it("carries the approval date of an approved latest round", () => {
@@ -217,27 +233,22 @@ describe("portalDashboardMappingService feedback summary", () => {
         approvedAt,
       },
     ];
-    expect(map(approved).feedback?.[0]).toMatchObject({
+    expect(map(approved).feedback).toMatchObject({
       roundNumber: 1,
       status: FeedbackRoundStatus.Approved,
       approvedAt: approvedAt.toISOString(),
     });
   });
 
-  it("has no feedback entries without the read permission", () => {
-    expect(map(null).feedback).toBeNull();
+  it("has no feedback summary without the read permission", () => {
+    expect(map(rounds, false).feedback).toBeNull();
   });
 
-  it("derives the track progress from the round states alone", () => {
-    const dto = map(null);
-    expect(dto.projects[0]?.roundProgress).toEqual({
+  it("derives the track progress even without the read permission", () => {
+    const dto = map(rounds, false);
+    expect(dto.project?.roundProgress).toEqual({
       activeRoundNumber: 2,
       completedRoundNumber: 1,
-      approvedRoundNumber: null,
-    });
-    expect(dto.projects[1]?.roundProgress).toEqual({
-      activeRoundNumber: null,
-      completedRoundNumber: null,
       approvedRoundNumber: null,
     });
   });

@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 
 import type { MovePortalOnboardingGroupEntryRequestDto } from "@invessiv/common/contracts/portal/move-portal-onboarding-group-entry-request.dto";
 import {
-  portalOnboardingApiResponse,
+  portalOnboardingWriteResponse,
   privatePortalOnboardingResponse,
   withPortalOnboardingBody,
 } from "@/lib/portal/portal-onboarding-api-error";
@@ -24,7 +24,8 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
       withPortalOnboardingBody<MovePortalOnboardingGroupEntryRequestDto>(
         authorized,
         async (body) =>
-          portalOnboardingApiResponse(
+          portalOnboardingWriteResponse(
+            actor,
             await movePortalOnboardingGroupEntry(
               actor,
               {

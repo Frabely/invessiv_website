@@ -46,9 +46,27 @@ einzigen regulären Aufrufer.
   `projectPermissions`, das heute immer leer ist.
 - Logs enthalten keine E-Mail-Adressen, Namen oder Clerk-Kennungen.
 
+## Portal-Dashboard
+
+- `portalProjectService.listSummaries` liest die schmale sichtbare Projektliste. Layout, Seiten und Dashboard-Handler
+  verwenden dieselbe Reader-Instanz; `react/cache` dedupliziert die Liste innerhalb eines Renders.
+- `selectPortalCurrentProject` wählt aus den laufenden Projekten die angefragte ID oder das erste sichtbare Projekt.
+  Die Liste wird vorher mit `portalProjectService.toCurrent` gefiltert und sortiert.
+- Portal-Fachrechte bleiben unabhängig. `portal.access` ist das ausdrücklich vergebene Eintrittsrecht;
+  `portal.tasks.read` zeigt Aufgaben ohne `portal.projects.read`, und `portal.tasks.complete` erlaubt den Abschluss
+  einer bekannten sichtbaren Aufgabe ohne zusätzliches Lese- oder Projekt-Recht. Projektzugehörigkeit,
+  Kundenbindung und Freigabestatus werden weiterhin geprüft. Projekt-Titel dürfen als Navigation zu einem
+  ausdrücklich lesbaren projektbezogenen Bereich erscheinen, die Projekt-Detailkarte bleibt hinter
+  `portal.projects.read`.
+- Reine Schreibrollen dürfen ihre eigene Fachaktion über die API ausführen. Die Schreibantwort enthält ohne
+  zugehöriges Leserecht nur eine Bestätigung beziehungsweise einen Fehlercode, keine vollständigen Bogen- oder
+  Feedbackdaten. Bestehende Leseansichten bleiben unabhängig davon durch ihr eigenes Leserecht geschützt.
+- `portal.files.write` darf Dateien und Links auch einem eigenen sichtbaren Projekt zuordnen, ohne
+  `portal.projects.read` zu verlangen; fremde, archivierte und abgesagte Projekte bleiben ausgeschlossen.
+
 ## Feedbackrunden (ab Task 59)
 
-- Lesen verlangt `portal.feedback.read` **und** `portal.projects.read`, Schreiben zusätzlich `portal.feedback.submit`;
+- Lesen verlangt `portal.feedback.read`, Schreiben `portal.feedback.submit` ohne zusätzliches Leserecht;
   das Projekt muss in `PORTAL_VISIBLE_PROJECT_STATUS_VALUES` liegen. Jeder Fehlgriff (fremde Firma, geratene ID,
   fehlendes Recht, archiviertes Projekt) ist `not_found`.
 - Jede Mutation läuft in `portalFeedbackService.withLockedRound` (Transaktion, Rundensperre, Fehlgriff = `not_found`)
@@ -81,7 +99,7 @@ Plan: `apps/workspace/plans/crm/15-onboarding/66-portal-formular.md`.
   Status in `ONBOARDING_PORTAL_VISIBLE_STATUS_VALUES` (nie `draft`), Firma des Lesers und Projekt laut
   `portalProjectCondition` mit `portal.onboarding.read`. Jeder Fehlgriff (fremde Firma, geratene ID, Entwurf,
   archiviertes Projekt, fehlendes Recht) ist `null` bzw. `not_found`.
-- Schreiben verlangt zusätzlich `portal.onboarding.submit` und nie die Owner-Sicht; ohne das Recht antwortet jeder
+- Schreiben verlangt `portal.onboarding.submit` und nie die Owner-Sicht, unabhängig vom Leserecht; ohne das Recht antwortet jeder
   Schreibpfad `not_found` (wie bei den Feedbackrunden).
 - Jede Mutation läuft in `portalOnboardingService.withLockedForm` (Transaktion, Bogenzeile `FOR UPDATE`). Speichern
   und Absenden eines Bogens laufen dadurch nacheinander: Nach dem Absenden schreibt kein Autosave mehr hinein.

@@ -124,6 +124,10 @@ describe("PortalFilesPage", () => {
   });
 
   it("scopes files to the selected project including the default", async () => {
+    mocks.listPortalFileProjects.mockResolvedValue([
+      { id: "project-1", title: "Relaunch" },
+      { id: "project-2", title: "Shop" },
+    ]);
     mocks.listPortalCurrentProjects.mockResolvedValue([
       { id: "project-1", title: "Relaunch" },
       { id: "project-2", title: "Shop" },
@@ -140,6 +144,43 @@ describe("PortalFilesPage", () => {
       "foreign-project",
     );
     expect(fallback.selectedProjectId).toBe("project-1");
+  });
+
+  it("keeps a completed project's file link scoped to that project", async () => {
+    mocks.listPortalFileProjects.mockResolvedValue([
+      { id: "project-current", title: "Current" },
+      { id: "project-completed", title: "Completed" },
+    ]);
+    mocks.listPortalCurrentProjects.mockResolvedValue([
+      { id: "project-current", title: "Current" },
+    ]);
+
+    const props = await renderPage(
+      undefined,
+      "customer-1",
+      "project-completed",
+    );
+
+    expect(props.selectedProjectId).toBe("project-completed");
+    expect(mocks.listPortalFiles).toHaveBeenCalledWith(READER, {
+      origin: PortalFileOrigin.FromUs,
+      projectId: "project-completed",
+    });
+  });
+
+  it("does not send a task-only project filter to the files query", async () => {
+    mocks.listPortalFileProjects.mockResolvedValue([]);
+    mocks.listPortalCurrentProjects.mockResolvedValue([
+      { id: "task-project", title: "Tasks" },
+    ]);
+
+    const props = await renderPage();
+
+    expect(props.selectedProjectId).toBeNull();
+    expect(mocks.listPortalFiles).toHaveBeenCalledWith(READER, {
+      origin: PortalFileOrigin.FromUs,
+      projectId: undefined,
+    });
   });
 
   it("lists all projects only when requested", async () => {

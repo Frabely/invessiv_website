@@ -4,7 +4,6 @@ import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes"
 import type { WidgetResponsiveSpan } from "@invessiv/common/contracts/ui/widget-layout";
 import type { PortalWidgetDefinition } from "@/common/contracts/portal/portal-widget-definition";
 import { PortalWidgetKey } from "./portal-widget-keys";
-import { PortalWidgetScope } from "./portal-widget-scopes";
 
 const COMPACT_ROW: WidgetResponsiveSpan = {
   mobile: WidgetColumnSpan.Full,
@@ -28,7 +27,6 @@ export const PORTAL_WIDGET_LAYOUT: readonly PortalWidgetDefinition[] = [
     order: 10,
     span: COMPACT_ROW,
     openMode: WidgetOpenMode.None,
-    scope: PortalWidgetScope.Project,
     mock: false,
     requiredPermission: Permission.PortalOnboardingRead,
     onlyWithContent: true,
@@ -38,7 +36,6 @@ export const PORTAL_WIDGET_LAYOUT: readonly PortalWidgetDefinition[] = [
     order: 20,
     span: COMPACT_ROW,
     openMode: WidgetOpenMode.None,
-    scope: PortalWidgetScope.Project,
     mock: false,
     requiredPermission: Permission.PortalProjectsRead,
     onlyWithContent: false,
@@ -48,7 +45,6 @@ export const PORTAL_WIDGET_LAYOUT: readonly PortalWidgetDefinition[] = [
     order: 30,
     span: COMPACT_ROW,
     openMode: WidgetOpenMode.Dialog,
-    scope: PortalWidgetScope.Customer,
     mock: true,
     onlyWithContent: false,
   },
@@ -57,7 +53,6 @@ export const PORTAL_WIDGET_LAYOUT: readonly PortalWidgetDefinition[] = [
     order: 40,
     span: COMPACT_ROW,
     openMode: WidgetOpenMode.Dialog,
-    scope: PortalWidgetScope.Project,
     mock: false,
     requiredPermission: Permission.PortalTasksRead,
     onlyWithContent: false,
@@ -67,7 +62,6 @@ export const PORTAL_WIDGET_LAYOUT: readonly PortalWidgetDefinition[] = [
     order: 50,
     span: COMPACT_ROW,
     openMode: WidgetOpenMode.Expand,
-    scope: PortalWidgetScope.Project,
     mock: false,
     requiredPermission: Permission.PortalTasksRead,
     onlyWithContent: false,
@@ -77,7 +71,6 @@ export const PORTAL_WIDGET_LAYOUT: readonly PortalWidgetDefinition[] = [
     order: 60,
     span: COMPACT_ROW,
     openMode: WidgetOpenMode.None,
-    scope: PortalWidgetScope.Project,
     mock: false,
     requiredPermission: Permission.PortalFeedbackRead,
     onlyWithContent: false,
@@ -87,7 +80,6 @@ export const PORTAL_WIDGET_LAYOUT: readonly PortalWidgetDefinition[] = [
     order: 80,
     span: QUARTER_ROW,
     openMode: WidgetOpenMode.None,
-    scope: PortalWidgetScope.Project,
     mock: false,
     requiredPermission: Permission.PortalAccess,
     onlyWithContent: true,
@@ -97,7 +89,6 @@ export const PORTAL_WIDGET_LAYOUT: readonly PortalWidgetDefinition[] = [
     order: 90,
     span: QUARTER_ROW,
     openMode: WidgetOpenMode.None,
-    scope: PortalWidgetScope.Project,
     mock: false,
     requiredPermission: Permission.PortalFilesRead,
     onlyWithContent: false,
@@ -107,7 +98,6 @@ export const PORTAL_WIDGET_LAYOUT: readonly PortalWidgetDefinition[] = [
     order: 100,
     span: QUARTER_ROW,
     openMode: WidgetOpenMode.Dialog,
-    scope: PortalWidgetScope.Customer,
     mock: true,
     onlyWithContent: false,
   },
@@ -116,7 +106,6 @@ export const PORTAL_WIDGET_LAYOUT: readonly PortalWidgetDefinition[] = [
     order: 110,
     span: QUARTER_ROW,
     openMode: WidgetOpenMode.Expand,
-    scope: PortalWidgetScope.Customer,
     mock: false,
     requiredPermission: Permission.PortalProjectsRead,
     onlyWithContent: true,

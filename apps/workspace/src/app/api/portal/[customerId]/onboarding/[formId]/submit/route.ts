@@ -3,7 +3,7 @@ import "server-only";
 import type { NextRequest } from "next/server";
 
 import {
-  portalOnboardingApiResponse,
+  portalOnboardingWriteResponse,
   privatePortalOnboardingResponse,
 } from "@/lib/portal/portal-onboarding-api-error";
 import { withPortalActor } from "@/server/portal/auth/with-portal-actor";
@@ -20,7 +20,8 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
   const { customerId, formId } = await params;
   return privatePortalOnboardingResponse(() =>
     withPortalActor(customerId.toLowerCase(), async (_authorized, actor) =>
-      portalOnboardingApiResponse(
+      portalOnboardingWriteResponse(
+        actor,
         await submitPortalOnboarding(actor, formId.toLowerCase()),
       ),
     )(request),

@@ -4,39 +4,45 @@ import type { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedbac
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import { TaskActionSide } from "@invessiv/common/constants/crm/task-action-sides";
 import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
+import type { PortalBookingDto } from "@invessiv/common/contracts/portal/portal-booking.dto";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
 import type { PortalCustomerTaskDto } from "@invessiv/common/contracts/portal/portal-customer-task.dto";
 import type { PortalFeedbackSummaryDto } from "@invessiv/common/contracts/portal/portal-feedback-summary.dto";
+import type { PortalProjectDto } from "@invessiv/common/contracts/portal/portal-project.dto";
 import type { PortalTaskDto } from "@invessiv/common/contracts/portal/portal-task.dto";
 import { feedbackRoundProgress } from "@invessiv/common/patterns/crm/feedback-round-state";
 import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
-import { comparePortalCurrentProjects } from "@/common/patterns/portal/compare-portal-current-projects";
 
 type CustomerRow = {
   displayName: string;
   ownerMemberId: string;
   contactName: string | null;
   contactEmail: string | null;
-  booking?:
-    | import("@invessiv/common/contracts/portal/portal-booking.dto").PortalBookingDto
-    | null;
+  booking?: PortalBookingDto | null;
 };
 
-type ProjectRow = {
+type ProjectSummaryRow = {
   id: string;
   title: string;
   status: ProjectStatus;
+  previewUrl: string | null;
+};
+
+type ProjectRow = ProjectSummaryRow & {
   processSteps: string[];
   currentProcessStep: string;
   feedbackRoundPositions: number[] | null;
   includedFeedbackRounds: number;
   nextStepLabel: string | null;
   nextStepDueOn: string | null;
-  previewUrl: string | null;
   ownerMemberId: string;
   ownerName: string | null;
-  ownerEmail?: string | null;
-  ownerActive?: boolean | null;
+};
+
+type FeedbackProjectRow = {
+  id: string;
+  title: string;
+  includedFeedbackRounds: number;
 };
 
 type TaskRow = {
@@ -53,7 +59,6 @@ type TaskRow = {
 };
 
 type RoundRow = {
-  projectId: string;
   roundNumber: number;
   status: FeedbackRoundStatus;
   dueOn: string | null;
@@ -61,14 +66,15 @@ type RoundRow = {
 };
 
 type DashboardRows = {
-  selectedProjectId?: string | null;
   customer: CustomerRow;
-  projects: ProjectRow[];
+  selectedProject: ProjectRow | null;
+  feedbackProject?: FeedbackProjectRow | null;
+  /** Every visible project; only the completed ones are listed in the DTO. */
+  projectSummaries: readonly ProjectSummaryRow[];
   tasks: TaskRow[];
-  /** Rounds of the listed projects; null without `portal.feedback.read`. */
-  feedbackRounds: RoundRow[] | null;
-  /** Round states only, for the track; loaded with the projects. */
-  roundStates: Omit<RoundRow, "dueOn" | "approvedAt">[];
+  /** Rounds of the selected project; the track needs them even without `portal.feedback.read`. */
+  rounds: RoundRow[];
+  canReadFeedback: boolean;
   today: string;
   canCompleteTasks: boolean;
   isOwnerView: boolean;
@@ -88,14 +94,38 @@ function mapTask(row: TaskRow, today: string): PortalTaskDto {
   };
 }
 
-/** The latest round decides whose turn it is; a project without round steps has no entry. */
+function mapProject(
+  row: ProjectRow,
+  customer: CustomerRow,
+  rounds: readonly RoundRow[],
+): PortalProjectDto {
+  return {
+    id: row.id,
+    title: row.title,
+    status: row.status,
+    processSteps: row.processSteps,
+    currentProcessStep: row.currentProcessStep,
+    feedbackRoundPositions: row.feedbackRoundPositions ?? [],
+    roundProgress: feedbackRoundProgress(rounds),
+    nextStep:
+      row.nextStepLabel !== null || row.nextStepDueOn !== null
+        ? { label: row.nextStepLabel, dueOn: row.nextStepDueOn }
+        : null,
+    previewUrl: row.previewUrl,
+    projectLead:
+      row.ownerMemberId !== customer.ownerMemberId && row.ownerName !== null
+        ? { displayName: row.ownerName }
+        : null,
+  };
+}
+
+/** The latest round decides whose turn it is; a project without round steps has no summary. */
 function mapFeedbackSummary(
-  project: ProjectRow,
+  project: FeedbackProjectRow,
   rounds: readonly RoundRow[],
 ): PortalFeedbackSummaryDto | null {
-  const own = rounds.filter((round) => round.projectId === project.id);
-  if (project.includedFeedbackRounds === 0 && own.length === 0) return null;
-  const latest = own.reduce<RoundRow | null>(
+  if (project.includedFeedbackRounds === 0 && rounds.length === 0) return null;
+  const latest = rounds.reduce<RoundRow | null>(
     (highest, round) =>
       !highest || round.roundNumber > highest.roundNumber ? round : highest,
     null,
@@ -114,47 +144,16 @@ function mapFeedbackSummary(
 
 function mapRowsToDto({
   customer,
-  projects,
+  selectedProject,
+  feedbackProject = selectedProject,
+  projectSummaries,
   tasks,
-  feedbackRounds,
-  roundStates,
+  rounds,
+  canReadFeedback,
   today,
   canCompleteTasks,
   isOwnerView,
-  selectedProjectId,
 }: DashboardRows): PortalDashboardDto {
-  const currentRows = projects
-    .filter((row) => row.status !== ProjectStatus.Completed)
-    .sort(comparePortalCurrentProjects);
-  const currentProjects = currentRows.map((row) => ({
-    id: row.id,
-    title: row.title,
-    status: row.status,
-    processSteps: row.processSteps,
-    currentProcessStep: row.currentProcessStep,
-    feedbackRoundPositions: row.feedbackRoundPositions ?? [],
-    roundProgress: feedbackRoundProgress(
-      roundStates.filter((round) => round.projectId === row.id),
-    ),
-    nextStep:
-      row.nextStepLabel !== null || row.nextStepDueOn !== null
-        ? { label: row.nextStepLabel, dueOn: row.nextStepDueOn }
-        : null,
-    previewUrl: row.previewUrl,
-    projectLead:
-      row.ownerMemberId !== customer.ownerMemberId && row.ownerName !== null
-        ? { displayName: row.ownerName }
-        : null,
-  }));
-
-  const completedProjects = projects
-    .filter((row) => row.status === ProjectStatus.Completed)
-    .map((row) => ({
-      id: row.id,
-      title: row.title,
-      previewUrl: row.previewUrl,
-    }));
-
   const customerRows = tasks.filter(
     (row) => row.actionSide === TaskActionSide.Customer,
   );
@@ -180,8 +179,16 @@ function mapRowsToDto({
             booking: customer.booking ?? null,
           }
         : null,
-    projects: currentProjects,
-    completedProjects,
+    project: selectedProject
+      ? mapProject(selectedProject, customer, rounds)
+      : null,
+    completedProjects: projectSummaries
+      .filter((row) => row.status === ProjectStatus.Completed)
+      .map((row) => ({
+        id: row.id,
+        title: row.title,
+        previewUrl: row.previewUrl,
+      })),
     customerTasks: [...openCustomerTasks, ...completedCustomerTasks].map(
       (row): PortalCustomerTaskDto => ({
         ...mapTask(row, today),
@@ -191,12 +198,10 @@ function mapRowsToDto({
     ourTasks: tasks
       .filter((row) => row.actionSide === TaskActionSide.Internal)
       .map((row) => mapTask(row, today)),
-    feedback: feedbackRounds
-      ? currentRows
-          .filter((row) => !selectedProjectId || row.id === selectedProjectId)
-          .map((row) => mapFeedbackSummary(row, feedbackRounds))
-          .filter((entry) => entry !== null)
-      : null,
+    feedback:
+      canReadFeedback && feedbackProject
+        ? mapFeedbackSummary(feedbackProject, rounds)
+        : null,
     capabilities: { canCompleteTasks, isOwnerView },
   };
 }

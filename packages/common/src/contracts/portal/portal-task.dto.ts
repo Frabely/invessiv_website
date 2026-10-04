@@ -5,7 +5,7 @@ export interface PortalTaskDto {
   id: string;
   /** Parent project identifier for project selection. */
   projectId: string;
-  /** Parent project label, needed in the cross-project task list. */
+  /** Parent project label shown on the task row. */
   projectTitle: string;
   /** Customer-visible task title. */
   title: string;

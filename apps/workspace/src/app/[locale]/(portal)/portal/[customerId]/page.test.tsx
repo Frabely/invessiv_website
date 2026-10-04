@@ -21,8 +21,14 @@ const mocks = vi.hoisted(() => ({
   listPortalFiles: vi.fn(),
   getPortalOnboardingWidgetForm: vi.fn(),
   getPortalOnboardingCall: vi.fn(),
+  listPortalCurrentProjects: vi.fn(),
   dashboardProps: vi.fn(),
 }));
+
+vi.mock(
+  "@/server/portal/query-handler/list-portal-current-projects.query-handler",
+  () => ({ listPortalCurrentProjects: mocks.listPortalCurrentProjects }),
+);
 
 vi.mock(
   "@/server/portal/query-handler/get-portal-onboarding-call.query-handler",
@@ -77,7 +83,7 @@ function dashboard(
   return {
     customer: { displayName: "Nordlicht Coaching" },
     contact: null,
-    projects: [],
+    project: null,
     completedProjects: [],
     customerTasks: [],
     ourTasks: [],
@@ -111,6 +117,7 @@ describe("PortalCustomerPage", () => {
       code: FileApiErrorCode.NotFound,
     });
     mocks.getPortalOnboardingWidgetForm.mockResolvedValue(null);
+    mocks.listPortalCurrentProjects.mockResolvedValue([]);
   });
 
   afterEach(cleanup);
@@ -133,18 +140,19 @@ describe("PortalCustomerPage", () => {
     });
     expect(props.filesOverview).toEqual({ fromUs: page, fromYou: page });
     expect(props.filesHref).toBe("/de/portal/customer-1/files");
+    expect(mocks.getPortalDashboard).toHaveBeenCalledWith(
+      ACTOR,
+      expect.any(String),
+      null,
+    );
     expect(mocks.getPortalOnboardingWidgetForm).not.toHaveBeenCalled();
   });
 
-  it("uses the selected project for files and onboarding", async () => {
-    const project = {
-      id: "project-1",
-    } as PortalDashboardDto["projects"][number];
-    mocks.getPortalDashboard.mockResolvedValue(
-      dashboard({
-        projects: [project, { ...project, id: "project-2" }],
-      }),
-    );
+  it("uses the selected project for onboarding without granting project file filtering", async () => {
+    mocks.listPortalCurrentProjects.mockResolvedValue([
+      { id: "project-1", title: "Relaunch" },
+      { id: "project-2", title: "Shop" },
+    ]);
     mocks.getPortalOnboardingWidgetForm.mockResolvedValue({
       id: "form-2",
       projectId: "project-2",
@@ -157,7 +165,7 @@ describe("PortalCustomerPage", () => {
     );
     expect(mocks.listPortalFiles).toHaveBeenCalledWith(
       ACTOR,
-      expect.objectContaining({ projectId: "project-2" }),
+      expect.objectContaining({ projectId: undefined }),
     );
     expect(mocks.getPortalOnboardingWidgetForm).toHaveBeenCalledWith(
       ACTOR,
@@ -167,28 +175,28 @@ describe("PortalCustomerPage", () => {
       id: "form-2",
       projectId: "project-2",
     });
-    expect(props.filesHref).toBe(
-      "/de/portal/customer-1/files?project=project-2",
-    );
+    expect(props.filesHref).toBe("/de/portal/customer-1/files");
   });
 
   it("falls back to the first permitted project for a foreign id", async () => {
-    const project = {
-      id: "project-1",
-    } as PortalDashboardDto["projects"][number];
-    mocks.getPortalDashboard.mockResolvedValue(
-      dashboard({ projects: [project] }),
-    );
+    mocks.listPortalCurrentProjects.mockResolvedValue([
+      { id: "project-1", title: "Relaunch" },
+    ]);
     const props = await renderPage("customer-1", "foreign-project");
+    expect(mocks.getPortalDashboard).toHaveBeenCalledWith(
+      ACTOR,
+      expect.any(String),
+      "project-1",
+    );
     expect(mocks.listPortalFiles).toHaveBeenCalledWith(
       ACTOR,
-      expect.objectContaining({ projectId: "project-1" }),
+      expect.objectContaining({ projectId: undefined }),
     );
     expect(mocks.getPortalOnboardingWidgetForm).toHaveBeenCalledWith(
       ACTOR,
       "project-1",
     );
-    expect(props.selectedProjectId).toBe("project-1");
+    expect(props.filesHref).toBe("/de/portal/customer-1/files");
   });
 
   it("shows the onboarding widget only to a reader with the right and a form", async () => {
@@ -197,13 +205,9 @@ describe("PortalCustomerPage", () => {
       projectId: "project-1",
       projectTitle: "Relaunch",
     };
-    mocks.getPortalDashboard.mockResolvedValue(
-      dashboard({
-        projects: [
-          { id: "project-1" } as PortalDashboardDto["projects"][number],
-        ],
-      }),
-    );
+    mocks.listPortalCurrentProjects.mockResolvedValue([
+      { id: "project-1", title: "Relaunch" },
+    ]);
     mocks.getPortalOnboardingWidgetForm.mockResolvedValue(form);
     mocks.getPortalOnboardingCall.mockResolvedValue({ booking: null });
 
@@ -267,6 +271,7 @@ describe("PortalCustomerPage", () => {
     const keys = props.widgets.map((entry) => entry.key);
 
     expect(keys).toContain(PortalWidgetKey.CustomerTasks);
+    expect(keys).toContain(PortalWidgetKey.OurTasks);
     expect(keys).not.toContain(PortalWidgetKey.Project);
     expect(keys).not.toContain(PortalWidgetKey.Contact);
     expect(keys).not.toContain(PortalWidgetKey.CompletedProjects);

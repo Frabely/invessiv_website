@@ -1,6 +1,6 @@
 import type { FeedbackRoundStatus } from "../../constants/crm/feedback-round-statuses";
 
-/** One project entry of the dashboard feedback widget: every current project with round steps. */
+/** The dashboard feedback widget's view of the selected project's rounds. */
 export interface PortalFeedbackSummaryDto {
   /** Project the entry links to. */
   projectId: string;

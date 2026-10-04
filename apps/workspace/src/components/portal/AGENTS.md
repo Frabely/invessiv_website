@@ -18,6 +18,9 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 - **Widgets registrieren sich ausschließlich in `PORTAL_WIDGET_LAYOUT`** (`src/common/constants/portal/`). Sichtbarkeit
   läuft über `listVisiblePortalWidgets` (Permission + `onlyWithContent`). Ein neuer Folge-Ordner stellt sein Mock-Widget
   um (`mock: false` + `requiredPermission`), statt eine zweite Karte zu bauen.
+- Die Projekt-Auswahl darf den Titel eines sichtbaren Projekts als Navigation für unabhängig lesbare Aufgaben,
+  Feedback oder Onboarding zeigen. Projektdetails und abgeschlossene Projekte bleiben an `portal.projects.read`
+  gebunden; die Fach-Widgets prüfen nur ihr eigenes Leserecht.
 - **Mock-Widgets** tragen das Badge „Bald verfügbar“ (`mock`-Prop am `Widget`) und zeigen **keine erfundenen Werte** —
   nur Skeleton-/Illustrationsinhalt und eine Beschreibung, was dort entstehen wird.
 - **Öffnen nur über explizite Buttons** (`Widget`-`openMode`). Dialoge hängen am URL-Parameter `?widget=<key>`;
@@ -102,7 +105,7 @@ Plan: `apps/workspace/plans/crm/16-feedbackrunden/60-ui-uebergabe-und-kundenboge
   (`finalApproveDialog`). Sprachregel: Die Abkürzung aus einer leeren Runde heißt „freigeben“, die Abnahme nach der
   letzten Runde „abnehmen“; der Endzustand heißt überall „Abgenommen am …“.
 - Links auf die Seite entstehen nur über `buildPortalFeedbackPath`. Das Dashboard-Widget `feedback` erscheint nur
-  mit `portal.feedback.read` (`dashboard.feedback !== null`).
+  mit `portal.feedback.read` (Widget-Registry); `dashboard.feedback` ist der Stand des gewählten Projekts oder `null`.
 
 ## Onboarding-Bogen (ab Task 66)
 

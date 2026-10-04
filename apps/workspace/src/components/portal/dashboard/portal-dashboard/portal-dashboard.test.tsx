@@ -167,24 +167,22 @@ function dto(overrides: Partial<PortalDashboardDto> = {}): PortalDashboardDto {
       email: "anna@example.test",
       booking: null,
     },
-    projects: [
-      {
-        id: "project-1",
-        title: "Relaunch",
-        status: ProjectStatus.Active,
-        processSteps: ["Design", "Build", "Launch"],
-        currentProcessStep: "Build",
-        feedbackRoundPositions: [1, 2],
-        roundProgress: {
-          activeRoundNumber: null,
-          completedRoundNumber: null,
-          approvedRoundNumber: null,
-        },
-        nextStep: { label: "First version", dueOn: "2026-10-16" },
-        previewUrl: "https://preview.example.test",
-        projectLead: null,
+    project: {
+      id: "project-1",
+      title: "Relaunch",
+      status: ProjectStatus.Active,
+      processSteps: ["Design", "Build", "Launch"],
+      currentProcessStep: "Build",
+      feedbackRoundPositions: [1, 2],
+      roundProgress: {
+        activeRoundNumber: null,
+        completedRoundNumber: null,
+        approvedRoundNumber: null,
       },
-    ],
+      nextStep: { label: "First version", dueOn: "2026-10-16" },
+      previewUrl: "https://preview.example.test",
+      projectLead: null,
+    },
     completedProjects: [],
     customerTasks: [customerTask("a")],
     ourTasks: [],
@@ -201,7 +199,6 @@ function renderDashboard(
   conversation: PortalConversationDto | null = CONVERSATION,
   filesOverview: PortalFilesOverviewDto | null = FILES,
   onboarding: PortalOnboardingFormSummaryDto | null = null,
-  selectedProjectId?: string | null,
 ) {
   const keys = new Set<PortalWidgetKey>([
     PortalWidgetKey.Project,
@@ -217,7 +214,6 @@ function renderDashboard(
       conversation={conversation}
       customerId="customer-1"
       dashboard={dashboard}
-      selectedProjectId={selectedProjectId}
       filesHref="/en/portal/customer-1/files"
       filesOverview={filesOverview}
       locale="en"
@@ -323,17 +319,15 @@ describe("PortalDashboard", () => {
     const base = dto();
     renderDashboard(
       dto({
-        projects: [
-          {
-            ...base.projects[0]!,
-            currentProcessStep: "Design",
-            roundProgress: {
-              activeRoundNumber: 1,
-              completedRoundNumber: null,
-              approvedRoundNumber: null,
-            },
+        project: {
+          ...base.project!,
+          currentProcessStep: "Design",
+          roundProgress: {
+            activeRoundNumber: 1,
+            completedRoundNumber: null,
+            approvedRoundNumber: null,
           },
-        ],
+        },
       }),
     );
 
@@ -343,21 +337,19 @@ describe("PortalDashboard", () => {
     );
   });
 
-  it("shows whose turn it is per project and links to the feedback page", () => {
+  it("shows whose turn it is and links to the feedback page", () => {
     renderDashboard(
       dto({
-        feedback: [
-          {
-            projectId: "project-1",
-            projectTitle: "Relaunch",
-            roundNumber: 1,
-            status: FeedbackRoundStatus.Open,
-            dueOn: "2026-10-14",
-            approvedAt: null,
-            included: 2,
-            used: 1,
-          },
-        ],
+        feedback: {
+          projectId: "project-1",
+          projectTitle: "Relaunch",
+          roundNumber: 1,
+          status: FeedbackRoundStatus.Open,
+          dueOn: "2026-10-14",
+          approvedAt: null,
+          included: 2,
+          used: 1,
+        },
       }),
       new Set([...FULL_READ, Permission.PortalFeedbackRead]),
     );
@@ -384,31 +376,19 @@ describe("PortalDashboard", () => {
     );
   });
 
-  it("asks for the approval after the last round and dates it afterwards", () => {
+  it("asks for the approval after the last round", () => {
     renderDashboard(
       dto({
-        feedback: [
-          {
-            projectId: "project-1",
-            projectTitle: "Relaunch",
-            roundNumber: 2,
-            status: FeedbackRoundStatus.Completed,
-            dueOn: null,
-            approvedAt: null,
-            included: 2,
-            used: 2,
-          },
-          {
-            projectId: "project-2",
-            projectTitle: "Shop",
-            roundNumber: 1,
-            status: FeedbackRoundStatus.Approved,
-            dueOn: null,
-            approvedAt: "2026-09-25T09:00:00.000Z",
-            included: 2,
-            used: 1,
-          },
-        ],
+        feedback: {
+          projectId: "project-1",
+          projectTitle: "Relaunch",
+          roundNumber: 2,
+          status: FeedbackRoundStatus.Completed,
+          dueOn: null,
+          approvedAt: null,
+          included: 2,
+          used: 2,
+        },
       }),
       new Set([...FULL_READ, Permission.PortalFeedbackRead]),
     );
@@ -422,15 +402,37 @@ describe("PortalDashboard", () => {
     expect(
       within(widget).getByRole("link", { name: "Approve Relaunch" }),
     ).toHaveAttribute("data-primary", "true");
+  });
+
+  it("dates the approval once the project is approved", () => {
+    renderDashboard(
+      dto({
+        feedback: {
+          projectId: "project-1",
+          projectTitle: "Relaunch",
+          roundNumber: 1,
+          status: FeedbackRoundStatus.Approved,
+          dueOn: null,
+          approvedAt: "2026-09-25T09:00:00.000Z",
+          included: 2,
+          used: 1,
+        },
+      }),
+      new Set([...FULL_READ, Permission.PortalFeedbackRead]),
+    );
+
+    const widget = screen.getByRole("region", {
+      name: content.widgets.feedback.title,
+    });
     expect(within(widget).getByText(/^Approved on /)).toBeInTheDocument();
     expect(
-      within(widget).getByRole("link", { name: "View feedback on Shop" }),
+      within(widget).getByRole("link", { name: "View feedback on Relaunch" }),
     ).toBeInTheDocument();
   });
 
-  it("explains the feedback area while no project has round steps", () => {
+  it("explains the feedback area while the project has no round steps", () => {
     renderDashboard(
-      dto({ feedback: [] }),
+      dto({ feedback: null }),
       new Set([...FULL_READ, Permission.PortalFeedbackRead]),
     );
 
@@ -471,8 +473,26 @@ describe("PortalDashboard", () => {
     ).toBeInTheDocument();
   });
 
+  it("keeps the files page reachable when the preview is unavailable", () => {
+    renderDashboard(dto(), FULL_READ, null, null, null);
+    const widget = screen.getByRole("region", { name: FILES_WIDGET_NAME });
+    expect(
+      within(widget).getByRole("link", { name: content.widgets.files.all }),
+    ).toHaveAttribute("href", "/en/portal/customer-1/files");
+    expect(within(widget).queryByRole("tab")).not.toBeInTheDocument();
+    expect(within(widget).getByRole("status")).toHaveTextContent(
+      content.widgets.files.previewUnavailable,
+    );
+  });
+
   it("omits the files widget without portal.files.read", () => {
-    renderDashboard(dto(), FULL_READ, null, CONVERSATION, null);
+    renderDashboard(
+      dto(),
+      new Set([Permission.PortalAccess, Permission.PortalProjectsRead]),
+      null,
+      CONVERSATION,
+      null,
+    );
 
     expect(
       screen.queryByRole("region", { name: FILES_WIDGET_NAME }),
@@ -626,23 +646,19 @@ describe("PortalDashboard", () => {
   });
 
   it("shows the server-selected project without a widget tab", () => {
-    const projects = [
-      dto().projects[0]!,
-      {
-        ...dto().projects[0]!,
-        id: "project-2",
-        title: "Shop",
-        status: ProjectStatus.Planned,
-      },
-    ];
+    const project = {
+      ...dto().project!,
+      id: "project-2",
+      title: "Shop",
+      status: ProjectStatus.Planned,
+    };
     renderDashboard(
-      dto({ projects }),
+      dto({ project }),
       FULL_READ,
       null,
       CONVERSATION,
       FILES,
       null,
-      "project-2",
     );
 
     expect(screen.getByText("Shop")).toBeInTheDocument();
@@ -650,7 +666,7 @@ describe("PortalDashboard", () => {
   });
 
   it("shows the friendly empty state for a customer without projects", () => {
-    renderDashboard(dto({ projects: [] }));
+    renderDashboard(dto({ project: null }));
 
     expect(
       screen.getByRole("heading", {

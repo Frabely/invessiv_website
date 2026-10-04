@@ -39,10 +39,12 @@ describe("listVisiblePortalWidgets", () => {
     expect(visible).toContain(PortalWidgetKey.Project);
   });
 
-  it("drops the project widgets without portal.projects.read", () => {
+  it("keeps task widgets independently of portal.projects.read", () => {
     const visible = keys([Permission.PortalAccess, Permission.PortalTasksRead]);
     expect(visible).not.toContain(PortalWidgetKey.Project);
     expect(visible).not.toContain(PortalWidgetKey.CompletedProjects);
+    expect(visible).toContain(PortalWidgetKey.CustomerTasks);
+    expect(visible).toContain(PortalWidgetKey.OurTasks);
   });
 
   it("keeps mocks regardless of permissions, since they show no data", () => {

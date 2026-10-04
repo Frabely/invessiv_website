@@ -5,7 +5,7 @@ import type { NextRequest } from "next/server";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import type { AttachPortalFeedbackFileRequestDto } from "@invessiv/common/contracts/portal/attach-portal-feedback-file-request.dto";
 import {
-  portalFeedbackApiResponse,
+  portalFeedbackWriteResponse,
   privatePortalFeedbackResponse,
   withPortalFeedbackBody,
 } from "@/lib/portal/portal-feedback-api-error";
@@ -26,7 +26,8 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
       withPortalFeedbackBody<AttachPortalFeedbackFileRequestDto>(
         authorized,
         async (body) =>
-          portalFeedbackApiResponse(
+          portalFeedbackWriteResponse(
+            actor,
             await attachPortalFeedbackFile(
               actor,
               { roundId: roundId.toLowerCase(), itemId },

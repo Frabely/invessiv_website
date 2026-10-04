@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 
 import type { SubmitPortalFeedbackRoundRequestDto } from "@invessiv/common/contracts/portal/submit-portal-feedback-round-request.dto";
 import {
-  portalFeedbackApiResponse,
+  portalFeedbackWriteResponse,
   privatePortalFeedbackResponse,
   withPortalFeedbackBody,
 } from "@/lib/portal/portal-feedback-api-error";
@@ -24,7 +24,8 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
       withPortalFeedbackBody<SubmitPortalFeedbackRoundRequestDto>(
         authorized,
         async (body) =>
-          portalFeedbackApiResponse(
+          portalFeedbackWriteResponse(
+            actor,
             await submitPortalFeedbackRound(actor, roundId.toLowerCase(), body),
           ),
       ),

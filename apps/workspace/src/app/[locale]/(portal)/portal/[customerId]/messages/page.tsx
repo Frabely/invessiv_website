@@ -12,6 +12,7 @@ import { portalPathFor, workspaceAreaPathFor } from "@/lib/auth/routes";
 import { isPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
 import { requirePortalReader } from "@/server/portal/auth/require-portal-reader";
 import { getPortalConversation } from "@/server/portal/query-handler/get-portal-conversation.query-handler";
+import { selectPortalCurrentProject } from "@/common/patterns/portal/select-portal-current-project";
 import { listPortalCurrentProjects } from "@/server/portal/query-handler/list-portal-current-projects.query-handler";
 import { PortalDashboardQueryParam } from "@/common/constants/portal/portal-dashboard-query-params";
 import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
@@ -62,9 +63,10 @@ export default async function PortalMessagesPage({
     PortalDashboardQueryParam.Project
   ];
   const selectedProjectId =
-    projects.find((project) => project.id === requestedProject)?.id ??
-    projects[0]?.id ??
-    null;
+    selectPortalCurrentProject(
+      projects,
+      typeof requestedProject === "string" ? requestedProject : null,
+    )?.id ?? null;
 
   return (
     <PortalMessagesView

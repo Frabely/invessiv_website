@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 
 import type { AttachPortalOnboardingFileRequestDto } from "@invessiv/common/contracts/portal/attach-portal-onboarding-file-request.dto";
 import {
-  portalOnboardingApiResponse,
+  portalOnboardingWriteResponse,
   privatePortalOnboardingResponse,
   withPortalOnboardingBody,
 } from "@/lib/portal/portal-onboarding-api-error";
@@ -24,7 +24,8 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
       withPortalOnboardingBody<AttachPortalOnboardingFileRequestDto>(
         authorized,
         async (body) =>
-          portalOnboardingApiResponse(
+          portalOnboardingWriteResponse(
+            actor,
             await attachPortalOnboardingFile(actor, formId.toLowerCase(), body),
           ),
       ),

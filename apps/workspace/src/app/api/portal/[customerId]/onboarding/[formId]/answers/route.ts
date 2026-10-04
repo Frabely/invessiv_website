@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 
 import type { SavePortalOnboardingAnswerRequestDto } from "@invessiv/common/contracts/portal/save-portal-onboarding-answer-request.dto";
 import {
-  portalOnboardingApiResponse,
+  portalOnboardingWriteResponse,
   privatePortalOnboardingResponse,
   withPortalOnboardingBody,
 } from "@/lib/portal/portal-onboarding-api-error";
@@ -24,7 +24,8 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
       withPortalOnboardingBody<SavePortalOnboardingAnswerRequestDto>(
         authorized,
         async (body) =>
-          portalOnboardingApiResponse(
+          portalOnboardingWriteResponse(
+            actor,
             await savePortalOnboardingAnswer(actor, formId.toLowerCase(), body),
           ),
       ),

@@ -6,6 +6,8 @@ import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurre
 import { HttpResponseCode as H } from "@invessiv/common/constants/http/http-response-codes";
 import { PortalFeedbackErrorCode as E } from "@invessiv/common/constants/portal/portal-feedback-error-codes";
 import type { PortalFeedbackResult } from "@invessiv/common/contracts/portal/results/portal-feedback-result";
+import type { PortalActor } from "@/server/portal/auth/portal-actor";
+import { portalFeedbackService } from "@/server/portal/services/feedback/portal-feedback-service";
 import { privateResponse } from "@/lib/http/private-no-store";
 import { withJsonBody } from "@/lib/http/with-json-body";
 
@@ -61,13 +63,41 @@ function errorResponse(
 export function portalFeedbackApiResponse<T>(
   result: PortalFeedbackResult<T>,
   successStatus: H = H.Ok,
+  canReadResponse = true,
 ): Response {
-  if (result.ok) return Response.json(result.value, { status: successStatus });
+  if (result.ok)
+    return Response.json(canReadResponse ? result.value : { accepted: true }, {
+      status: successStatus,
+    });
   if (result.code === ConcurrencyErrorCode.VersionConflict)
-    return Response.json(result.conflict, { status: H.Conflict });
+    return Response.json(
+      canReadResponse
+        ? result.conflict
+        : {
+            code: result.conflict.code,
+            currentVersion: result.conflict.currentVersion,
+          },
+      { status: H.Conflict },
+    );
   if (result.code === E.ItemTextRequired)
-    return errorResponse(result.code, { itemIds: result.itemIds });
+    return errorResponse(
+      result.code,
+      canReadResponse ? { itemIds: result.itemIds } : {},
+    );
   return errorResponse(result.code);
+}
+
+/** A write grant never implies that its full feedback response may be read. */
+export function portalFeedbackWriteResponse<T>(
+  actor: PortalActor,
+  result: PortalFeedbackResult<T>,
+  successStatus: H = H.Ok,
+): Response {
+  return portalFeedbackApiResponse(
+    result,
+    successStatus,
+    portalFeedbackService.canRead(actor),
+  );
 }
 
 export function portalFeedbackNotFound(): Response {

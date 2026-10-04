@@ -147,6 +147,7 @@
       "fromUs": "From us",
       "emptyFromUs": "As soon as we share something with you, it appears here.",
       "emptyFromYou": "Upload logos, photos or copy for your project under “All files”.",
+      "previewUnavailable": "The preview could not be loaded. Open “All files” to try again there.",
       "more": "and {count} more",
       "moreOne": "and 1 more"
     },

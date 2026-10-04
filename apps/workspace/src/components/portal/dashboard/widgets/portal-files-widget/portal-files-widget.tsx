@@ -22,7 +22,7 @@ export type PortalFilesWidgetProps = {
   /** Link to the files page; the tab of the newest entries is kept. */
   filesHref: string;
   locale: Locale;
-  overview: PortalFilesOverviewDto;
+  overview: PortalFilesOverviewDto | null;
 };
 
 /** The newest entries per origin; everything else, including uploads, lives on the files page. */
@@ -35,12 +35,14 @@ export function PortalFilesWidget({
   const [tab, setTab] = useState<PortalFileOrigin>(PortalFileOrigin.FromUs);
   const baseId = useId();
   const panelId = `${baseId}-panel`;
-  const page = overview[tab];
-  const rest = page.total - page.files.length;
+  const page = overview?.[tab];
+  const rest = page ? page.total - page.files.length : 0;
 
   return (
     <Widget
-      count={overview.fromUs.total + overview.fromYou.total}
+      count={
+        overview ? overview.fromUs.total + overview.fromYou.total : undefined
+      }
       footer={
         <Link className={styles.all} href={filesHref}>
           {content.all}
@@ -51,54 +53,62 @@ export function PortalFilesWidget({
       openMode={WidgetOpenMode.None}
       title={content.title}
     >
-      <TabList
-        activeValue={tab}
-        ariaLabel={content.tabsLabel}
-        items={PORTAL_FILE_ORIGIN_VALUES.map((origin) => ({
-          value: origin,
-          id: `${baseId}-${origin}`,
-          panelId,
-          label: `${content[origin]} (${overview[origin].total})`,
-          accessibleName: content[origin],
-        }))}
-        onSelectAction={setTab}
-      />
-      <div
-        aria-labelledby={`${baseId}-${tab}`}
-        className={styles.panel}
-        id={panelId}
-        role="tabpanel"
-      >
-        {page.files.length === 0 ? (
-          <p className={styles.empty}>
-            {tab === PortalFileOrigin.FromUs
-              ? content.emptyFromUs
-              : content.emptyFromYou}
-          </p>
-        ) : (
-          <ul className={styles.list}>
-            {page.files.map((file) => (
-              <li className={styles.item} key={file.id}>
-                <FileKindIcon
-                  assetKind={file.assetKind}
-                  extension={file.extension}
-                />
-                <span className={styles.name}>{file.displayName}</span>
-                <time className={styles.date} dateTime={file.createdAt}>
-                  {filePresentation.formatDate(file.createdAt, locale)}
-                </time>
-              </li>
-            ))}
-          </ul>
-        )}
-        {rest > 0 ? (
-          <p className={styles.more}>
-            {rest === 1
-              ? content.moreOne
-              : formatMessage(content.more, { count: String(rest) })}
-          </p>
-        ) : null}
-      </div>
+      {overview && page ? (
+        <>
+          <TabList
+            activeValue={tab}
+            ariaLabel={content.tabsLabel}
+            items={PORTAL_FILE_ORIGIN_VALUES.map((origin) => ({
+              value: origin,
+              id: `${baseId}-${origin}`,
+              panelId,
+              label: `${content[origin]} (${overview[origin].total})`,
+              accessibleName: content[origin],
+            }))}
+            onSelectAction={setTab}
+          />
+          <div
+            aria-labelledby={`${baseId}-${tab}`}
+            className={styles.panel}
+            id={panelId}
+            role="tabpanel"
+          >
+            {page.files.length === 0 ? (
+              <p className={styles.empty}>
+                {tab === PortalFileOrigin.FromUs
+                  ? content.emptyFromUs
+                  : content.emptyFromYou}
+              </p>
+            ) : (
+              <ul className={styles.list}>
+                {page.files.map((file) => (
+                  <li className={styles.item} key={file.id}>
+                    <FileKindIcon
+                      assetKind={file.assetKind}
+                      extension={file.extension}
+                    />
+                    <span className={styles.name}>{file.displayName}</span>
+                    <time className={styles.date} dateTime={file.createdAt}>
+                      {filePresentation.formatDate(file.createdAt, locale)}
+                    </time>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {rest > 0 ? (
+              <p className={styles.more}>
+                {rest === 1
+                  ? content.moreOne
+                  : formatMessage(content.more, { count: String(rest) })}
+              </p>
+            ) : null}
+          </div>
+        </>
+      ) : (
+        <p className={styles.empty} role="status">
+          {content.previewUnavailable}
+        </p>
+      )}
     </Widget>
   );
 }

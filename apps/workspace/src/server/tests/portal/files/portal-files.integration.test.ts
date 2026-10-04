@@ -467,7 +467,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
           contact([Permission.PortalAccess, Permission.PortalFilesWrite]),
           { ...link, projectId: f.projectId },
         ),
-      ).toMatchObject({ code: E.NotFound });
+      ).toMatchObject({ ok: true });
       expect(
         await createPortalFileLink(contact([Permission.PortalFilesRead]), link),
       ).toMatchObject({ code: E.NotFound });

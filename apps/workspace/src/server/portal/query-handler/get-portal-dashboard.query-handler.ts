@@ -1,9 +1,8 @@
 import "server-only";
 
-import { and, desc, eq, ne } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
-import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
@@ -22,14 +21,14 @@ import { portalAccessCondition } from "@/server/portal/shared/portal-access-cond
 import { portalProjectCondition } from "@/server/portal/shared/portal-project-condition";
 import { portalDashboardMappingService } from "@/server/portal/services/portal-dashboard-mapping-service";
 import { portalFeedbackService } from "@/server/portal/services/feedback/portal-feedback-service";
+import { portalProjectService } from "@/server/portal/services/portal-project-service";
 import { projectResponsibleMemberService } from "@/server/shared/services/project-responsible-member-service";
 import { portalBookingMappingService } from "@/server/portal/services/portal-booking-mapping-service";
-import { comparePortalCurrentProjects } from "@/common/patterns/portal/compare-portal-current-projects";
+import { selectPortalCurrentProject } from "@/common/patterns/portal/select-portal-current-project";
 
 /**
- * Reads explicitly released dashboard columns. Round states feed the track of every visible
- * project; due dates and the widget need `portal.feedback.read` as well. Booking resolves against
- * the newest non-completed project visible to this reader.
+ * Reads project summaries for selection and completed work, then details, rounds, tasks and the
+ * booking contact only for the selected project.
  */
 export async function getPortalDashboard(
   reader: PortalReader,
@@ -38,152 +37,175 @@ export async function getPortalDashboard(
 ): Promise<PortalDashboardDto> {
   const db = getDrizzleDatabaseClient();
   const target = { customerId: reader.customerId };
-  const customerRows = await db
-    .select({
-      displayName: customers.display_name,
-      ownerMemberId: customers.owner_member_id,
-      contactName: users.display_name,
-      contactEmail: users.primary_email,
-    })
-    .from(customers)
-    .leftJoin(
-      workspaceMembers,
-      eq(workspaceMembers.id, customers.owner_member_id),
-    )
-    .leftJoin(users, eq(users.id, workspaceMembers.user_id))
-    .where(
-      portalAccessCondition.forReader(reader, Permission.PortalAccess, {
-        customerId: customers.id,
-      }),
-    )
-    .limit(1);
+  const canReadProjects = portalCanOn.forReader(
+    reader,
+    Permission.PortalProjectsRead,
+    target,
+  );
+  const canReadFeedback = portalFeedbackService.canRead(reader);
+  const [customerRows, selectableSummaries] = await Promise.all([
+    db
+      .select({
+        displayName: customers.display_name,
+        ownerMemberId: customers.owner_member_id,
+        contactName: users.display_name,
+        contactEmail: users.primary_email,
+      })
+      .from(customers)
+      .leftJoin(
+        workspaceMembers,
+        eq(workspaceMembers.id, customers.owner_member_id),
+      )
+      .leftJoin(users, eq(users.id, workspaceMembers.user_id))
+      .where(
+        portalAccessCondition.forReader(reader, Permission.PortalAccess, {
+          customerId: customers.id,
+        }),
+      )
+      .limit(1),
+    portalProjectService.listSelectableSummaries(reader),
+  ]);
 
   const customer = customerRows[0];
   if (!customer) throw new Error("Portal customer is unavailable.");
 
-  const projectRows = portalCanOn.forReader(
-    reader,
-    Permission.PortalProjectsRead,
-    target,
-  )
-    ? await db
-        .select({
-          id: projects.id,
-          title: projects.title,
-          status: projects.status,
-          processSteps: projects.process_steps,
-          currentProcessStep: projects.current_process_step,
-          feedbackRoundPositions: projects.feedback_round_positions,
-          includedFeedbackRounds: projects.included_feedback_rounds,
-          nextStepLabel: projects.next_step_label,
-          nextStepDueOn: projects.next_step_due_on,
-          previewUrl: projects.preview_url,
-          ownerMemberId: projects.owner_member_id,
-          ownerName: users.display_name,
-          ownerEmail: users.primary_email,
-          ownerActive: workspaceMembers.active,
-        })
-        .from(projects)
-        .leftJoin(
-          workspaceMembers,
-          eq(workspaceMembers.id, projects.owner_member_id),
-        )
-        .leftJoin(users, eq(users.id, workspaceMembers.user_id))
-        .where(portalProjectCondition(reader, Permission.PortalProjectsRead))
-        .orderBy(desc(projects.created_at))
-    : [];
-
-  const currentProjectRows = projectRows
-    .filter((project) => project.status !== ProjectStatus.Completed)
-    .sort(comparePortalCurrentProjects);
   const selectedProjectId =
-    currentProjectRows.find((project) => project.id === requestedProjectId)
-      ?.id ??
-    currentProjectRows[0]?.id ??
-    null;
-  const roundRows = selectedProjectId
-    ? await db
-        .select({
-          projectId: feedbackRounds.project_id,
-          roundNumber: feedbackRounds.round_number,
-          status: feedbackRounds.status,
-          dueOn: feedbackRounds.due_on,
-          approvedAt: feedbackRounds.approved_at,
-        })
-        .from(feedbackRounds)
-        .where(eq(feedbackRounds.project_id, selectedProjectId))
-    : [];
-  const canReadFeedback = portalFeedbackService.canRead(reader);
-  const bookingProject = currentProjectRows.find(
-    (project) => project.id === selectedProjectId,
-  );
-  const projectContact =
-    bookingProject?.ownerActive &&
-    bookingProject.ownerName &&
-    bookingProject.ownerEmail
-      ? { name: bookingProject.ownerName, email: bookingProject.ownerEmail }
-      : null;
-  const bookingContact = bookingProject
-    ? await projectResponsibleMemberService.findBookingContact(
-        db,
-        bookingProject.id,
-      )
-    : null;
+    selectPortalCurrentProject(
+      portalProjectService.toCurrent(selectableSummaries),
+      requestedProjectId,
+    )?.id ?? null;
+  const projectSummaries = canReadProjects ? selectableSummaries : [];
 
-  const taskRows = portalCanOn.forReader(
-    reader,
-    Permission.PortalTasksRead,
-    target,
-  )
-    ? await db
-        .select({
-          id: tasks.id,
-          projectId: tasks.project_id,
-          projectTitle: projects.title,
-          title: tasks.title,
-          description: tasks.description,
-          status: tasks.status,
-          actionSide: tasks.action_side,
-          dueOn: tasks.due_on,
-          completedAt: tasks.completed_at,
-          version: tasks.version,
-        })
-        .from(tasks)
-        .innerJoin(projects, eq(projects.id, tasks.project_id))
-        .where(
-          and(
-            portalProjectCondition(reader, Permission.PortalTasksRead),
-            selectedProjectId
-              ? eq(tasks.project_id, selectedProjectId)
-              : undefined,
-            eq(tasks.visible_to_customer, true),
-            ne(tasks.status, TaskStatus.Cancelled),
-          ),
-        )
+  const [
+    selectedProjectRows = [],
+    feedbackProjectRows = [],
+    roundRows = [],
+    bookingContact = null,
+    taskRows = [],
+  ] = selectedProjectId
+    ? await Promise.all([
+        canReadProjects
+          ? db
+              .select({
+                id: projects.id,
+                title: projects.title,
+                status: projects.status,
+                processSteps: projects.process_steps,
+                currentProcessStep: projects.current_process_step,
+                feedbackRoundPositions: projects.feedback_round_positions,
+                includedFeedbackRounds: projects.included_feedback_rounds,
+                nextStepLabel: projects.next_step_label,
+                nextStepDueOn: projects.next_step_due_on,
+                previewUrl: projects.preview_url,
+                ownerMemberId: projects.owner_member_id,
+                ownerName: users.display_name,
+                ownerEmail: users.primary_email,
+                ownerActive: workspaceMembers.active,
+              })
+              .from(projects)
+              .leftJoin(
+                workspaceMembers,
+                eq(workspaceMembers.id, projects.owner_member_id),
+              )
+              .leftJoin(users, eq(users.id, workspaceMembers.user_id))
+              .where(
+                and(
+                  portalProjectCondition(reader, Permission.PortalProjectsRead),
+                  eq(projects.id, selectedProjectId),
+                ),
+              )
+              .limit(1)
+          : [],
+        canReadFeedback && !canReadProjects
+          ? db
+              .select({
+                id: projects.id,
+                title: projects.title,
+                includedFeedbackRounds: projects.included_feedback_rounds,
+              })
+              .from(projects)
+              .where(
+                and(
+                  portalProjectCondition(reader, Permission.PortalFeedbackRead),
+                  eq(projects.id, selectedProjectId),
+                ),
+              )
+              .limit(1)
+          : [],
+        canReadProjects || canReadFeedback
+          ? db
+              .select({
+                roundNumber: feedbackRounds.round_number,
+                status: feedbackRounds.status,
+                dueOn: feedbackRounds.due_on,
+                approvedAt: feedbackRounds.approved_at,
+              })
+              .from(feedbackRounds)
+              .where(eq(feedbackRounds.project_id, selectedProjectId))
+          : [],
+        canReadProjects
+          ? projectResponsibleMemberService.findBookingContact(
+              db,
+              selectedProjectId,
+            )
+          : null,
+        portalCanOn.forReader(reader, Permission.PortalTasksRead, target)
+          ? db
+              .select({
+                id: tasks.id,
+                projectId: tasks.project_id,
+                projectTitle: projects.title,
+                title: tasks.title,
+                description: tasks.description,
+                status: tasks.status,
+                actionSide: tasks.action_side,
+                dueOn: tasks.due_on,
+                completedAt: tasks.completed_at,
+                version: tasks.version,
+              })
+              .from(tasks)
+              .innerJoin(projects, eq(projects.id, tasks.project_id))
+              .where(
+                and(
+                  portalProjectCondition(reader, Permission.PortalTasksRead),
+                  eq(tasks.project_id, selectedProjectId),
+                  eq(tasks.visible_to_customer, true),
+                  ne(tasks.status, TaskStatus.Cancelled),
+                ),
+              )
+          : [],
+      ])
     : [];
+  // The project can vanish between the list and its detail; nothing of it is shown then.
+  const selectedProject = selectedProjectRows[0] ?? null;
+  const feedbackProject = selectedProject ?? feedbackProjectRows[0] ?? null;
+  const projectContact =
+    selectedProject?.ownerActive &&
+    selectedProject.ownerName &&
+    selectedProject.ownerEmail
+      ? { name: selectedProject.ownerName, email: selectedProject.ownerEmail }
+      : null;
 
   return portalDashboardMappingService.mapRowsToDto({
     customer: {
       ...customer,
       contactName: projectContact?.name ?? customer.contactName,
       contactEmail: projectContact?.email ?? customer.contactEmail,
-      booking: bookingContact
-        ? portalBookingMappingService.toDto(bookingContact)
-        : null,
+      booking:
+        selectedProject && bookingContact
+          ? portalBookingMappingService.toDto(bookingContact)
+          : null,
     },
-    projects: projectRows,
-    tasks: taskRows,
-    feedbackRounds: canReadFeedback ? roundRows : null,
-    selectedProjectId,
-    roundStates: roundRows.map(({ projectId, roundNumber, status }) => ({
-      projectId,
-      roundNumber,
-      status,
-    })),
+    selectedProject,
+    projectSummaries,
+    tasks: selectedProjectId ? taskRows : [],
+    rounds: selectedProjectId ? roundRows : [],
+    feedbackProject,
+    canReadFeedback,
     today,
     canCompleteTasks:
       !isPortalOwnerView(reader) &&
-      portalCanOn.forReader(reader, Permission.PortalTasksRead, target) &&
+      selectedProjectId !== null &&
       portalCanOn.forReader(reader, Permission.PortalTasksComplete, target),
     isOwnerView: isPortalOwnerView(reader),
   });

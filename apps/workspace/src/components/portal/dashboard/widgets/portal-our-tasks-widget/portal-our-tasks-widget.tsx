@@ -14,8 +14,6 @@ const SUMMARY_LIMIT = 3;
 export type PortalOurTasksWidgetProps = {
   content: PortalDashboardDictionary;
   locale: Locale;
-  /** Project label on each row only when the list spans several projects. */
-  showProject: boolean;
   tasks: readonly PortalTaskDto[];
   today: string;
 };
@@ -24,7 +22,6 @@ export type PortalOurTasksWidgetProps = {
 export function PortalOurTasksWidget({
   content,
   locale,
-  showProject,
   tasks,
   today,
 }: PortalOurTasksWidgetProps) {
@@ -39,11 +36,8 @@ export function PortalOurTasksWidget({
             <span aria-hidden="true" className={styles.marker} />
             <span className={styles.text}>
               <span className={styles.title}>{task.title}</span>
-              {showProject || task.dueOn ? (
+              {task.dueOn ? (
                 <span className={styles.meta}>
-                  {showProject ? (
-                    <span className={styles.project}>{task.projectTitle}</span>
-                  ) : null}
                   <PortalDueHint
                     content={content.due}
                     locale={locale}

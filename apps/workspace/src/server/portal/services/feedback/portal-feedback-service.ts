@@ -34,20 +34,16 @@ import { portalFeedbackSchemas } from "./portal-feedback-schemas";
 
 type LockedRound = { round: FeedbackRoundRow; projectTitle: string };
 
-/** Feedback hangs on a project, so the portal shows it only together with the project itself. */
 function canRead(reader: PortalReader): boolean {
-  const target = { customerId: reader.customerId };
-  return (
-    portalCanOn.forReader(reader, Permission.PortalFeedbackRead, target) &&
-    portalCanOn.forReader(reader, Permission.PortalProjectsRead, target)
-  );
+  return portalCanOn.forReader(reader, Permission.PortalFeedbackRead, {
+    customerId: reader.customerId,
+  });
 }
 
 /** The owner view reads but never writes, whatever it holds. */
 function canSubmit(reader: PortalReader): boolean {
   return (
     !isPortalOwnerView(reader) &&
-    canRead(reader) &&
     portalCanOn.forActor(reader, Permission.PortalFeedbackSubmit, {
       customerId: reader.customerId,
     })
@@ -90,7 +86,7 @@ async function lockRound(
       and(
         eq(feedbackRounds.id, id.data),
         eq(feedbackRounds.customer_id, actor.customerId),
-        portalProjectCondition(actor, Permission.PortalFeedbackRead),
+        portalProjectCondition(actor, Permission.PortalFeedbackSubmit),
       ),
     )
     .limit(1)

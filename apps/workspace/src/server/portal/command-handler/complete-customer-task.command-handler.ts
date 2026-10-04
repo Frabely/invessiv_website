@@ -42,7 +42,6 @@ export async function completeCustomerTask(
   taskId: string,
 ): Promise<CompleteCustomerTaskResult> {
   if (!taskIdSchema.safeParse(taskId).success) return NOT_FOUND;
-
   const db = getDrizzleDatabaseClient();
   const releasedToActor = and(
     eq(tasks.id, taskId),
@@ -53,7 +52,7 @@ export async function completeCustomerTask(
       db
         .select({ id: projects.id })
         .from(projects)
-        .where(portalProjectCondition(actor, Permission.PortalTasksRead)),
+        .where(portalProjectCondition(actor, Permission.PortalTasksComplete)),
     ),
   );
 
@@ -72,11 +71,6 @@ export async function completeCustomerTask(
     if (
       !target ||
       target.status === TaskStatus.Cancelled ||
-      !portalCanOn.forActor(
-        actor,
-        Permission.PortalTasksRead,
-        permissionTarget,
-      ) ||
       !portalCanOn.forActor(
         actor,
         Permission.PortalTasksComplete,

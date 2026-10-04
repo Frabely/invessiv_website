@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 
 import type { ApprovePortalFeedbackRequestDto } from "@invessiv/common/contracts/portal/approve-portal-feedback-request.dto";
 import {
-  portalFeedbackApiResponse,
+  portalFeedbackWriteResponse,
   privatePortalFeedbackResponse,
   withPortalFeedbackBody,
 } from "@/lib/portal/portal-feedback-api-error";
@@ -24,7 +24,8 @@ export async function POST(request: NextRequest, { params }: RouteContext) {
       withPortalFeedbackBody<ApprovePortalFeedbackRequestDto>(
         authorized,
         async (body) =>
-          portalFeedbackApiResponse(
+          portalFeedbackWriteResponse(
+            actor,
             await approvePortalFeedback(actor, roundId.toLowerCase(), body),
           ),
       ),

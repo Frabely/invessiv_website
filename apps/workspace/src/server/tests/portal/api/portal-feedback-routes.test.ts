@@ -195,6 +195,36 @@ describe("portal feedback routes", () => {
     expectPrivate(response);
   });
 
+  it("lets a submit-only actor write without returning round contents", async () => {
+    const writer = createPortalActor({
+      userId: ACTOR.userId,
+      membershipId: ACTOR.membershipId,
+      customerId: CUSTOMER_ID,
+      personId: ACTOR.personId,
+      firstName: null,
+      permissions: new Set([
+        Permission.PortalAccess,
+        Permission.PortalFeedbackSubmit,
+      ]),
+      projectPermissions: new Map(),
+    });
+    mocks.authenticateRequest.mockResolvedValue({
+      status: PortalAuthStatus.Authorized,
+      actor: writer,
+    });
+    mocks.savePortalFeedbackDraft.mockResolvedValue({
+      ok: true,
+      value: { id: ROUND_ID, items: [{ body: "Private feedback" }] },
+    });
+
+    const response = await draft(
+      request(HttpMethod.Put, { version: 1, items: [] }),
+      context,
+    );
+    expect(response.status).toBe(H.Ok);
+    expect(await response.json()).toEqual({ accepted: true });
+  });
+
   it("names the empty items when submitting", async () => {
     mocks.submitPortalFeedbackRound.mockResolvedValue({
       ok: false,

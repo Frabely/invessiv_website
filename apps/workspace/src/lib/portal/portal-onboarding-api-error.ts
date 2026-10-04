@@ -5,6 +5,8 @@ import type { NextRequest } from "next/server";
 import { HttpResponseCode as H } from "@invessiv/common/constants/http/http-response-codes";
 import { PortalOnboardingErrorCode as E } from "@invessiv/common/constants/portal/portal-onboarding-error-codes";
 import type { PortalOnboardingResult } from "@invessiv/common/contracts/portal/results/portal-onboarding-result";
+import type { PortalActor } from "@/server/portal/auth/portal-actor";
+import { portalOnboardingService } from "@/server/portal/services/onboarding/portal-onboarding-service";
 import { privateResponse } from "@/lib/http/private-no-store";
 import { withJsonBody } from "@/lib/http/with-json-body";
 
@@ -46,11 +48,29 @@ function errorResponse(
 
 export function portalOnboardingApiResponse<T>(
   result: PortalOnboardingResult<T>,
+  canReadResponse = true,
 ): Response {
-  if (result.ok) return Response.json(result.value, { status: H.Ok });
+  if (result.ok)
+    return Response.json(canReadResponse ? result.value : { accepted: true }, {
+      status: H.Ok,
+    });
   if (result.code === E.RequiredMissing)
-    return errorResponse(result.code, { missing: result.missing });
+    return errorResponse(
+      result.code,
+      canReadResponse ? { missing: result.missing } : {},
+    );
   return errorResponse(result.code);
+}
+
+/** A write grant never implies that its form response may be read. */
+export function portalOnboardingWriteResponse<T>(
+  actor: PortalActor,
+  result: PortalOnboardingResult<T>,
+): Response {
+  return portalOnboardingApiResponse(
+    result,
+    portalOnboardingService.canRead(actor),
+  );
 }
 
 export function portalOnboardingNotFound(): Response {

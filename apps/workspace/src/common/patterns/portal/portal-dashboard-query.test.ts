@@ -2,12 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import { buildPortalHref } from "./build-portal-href";
-import {
-  readPortalDashboardProject,
-  readPortalDashboardWidget,
-} from "./portal-dashboard-query";
-
-const projects = [{ id: "first" }, { id: "second" }];
+import { readPortalDashboardWidget } from "./portal-dashboard-query";
 
 describe("readPortalDashboardWidget", () => {
   it("opens registered dialog widgets only", () => {
@@ -21,27 +16,6 @@ describe("readPortalDashboardWidget", () => {
       readPortalDashboardWidget(new URLSearchParams("widget=unknown")),
     ).toBeNull();
     expect(readPortalDashboardWidget(new URLSearchParams())).toBeNull();
-  });
-});
-
-describe("readPortalDashboardProject", () => {
-  it("selects the requested project", () => {
-    expect(
-      readPortalDashboardProject(
-        new URLSearchParams("project=second"),
-        projects,
-      ),
-    ).toEqual({ id: "second" });
-  });
-
-  it("falls back to the first project for an unknown id", () => {
-    expect(
-      readPortalDashboardProject(
-        new URLSearchParams("project=foreign"),
-        projects,
-      ),
-    ).toEqual({ id: "first" });
-    expect(readPortalDashboardProject(new URLSearchParams(), [])).toBeNull();
   });
 });
 

@@ -38,7 +38,6 @@ function canRead(reader: PortalReader): boolean {
 function canSubmit(reader: PortalReader): boolean {
   return (
     !isPortalOwnerView(reader) &&
-    canRead(reader) &&
     portalCanOn.forActor(reader, Permission.PortalOnboardingSubmit, {
       customerId: reader.customerId,
     })
@@ -70,13 +69,13 @@ function validation(): PortalOnboardingResult<never> {
  * The single definition of "a form the portal shows to this reader": released, of the reader's
  * company and on a project the portal shows. Expects `projects` joined to the form.
  */
-function visibleCondition(reader: PortalReader): SQL {
+function visibleCondition(reader: PortalReader, permission: Permission): SQL {
   return and(
     eq(onboardingForms.customer_id, reader.customerId),
     inArray(onboardingForms.status, [
       ...ONBOARDING_PORTAL_VISIBLE_STATUS_VALUES,
     ]),
-    portalProjectCondition(reader, Permission.PortalOnboardingRead),
+    portalProjectCondition(reader, permission),
   )!;
 }
 
@@ -98,7 +97,10 @@ async function findVisibleFormForProject(
   if (!id.success) return null;
   const [row] = await selectVisibleForms(
     executor,
-    and(eq(onboardingForms.project_id, id.data), visibleCondition(reader))!,
+    and(
+      eq(onboardingForms.project_id, id.data),
+      visibleCondition(reader, Permission.PortalOnboardingRead),
+    )!,
   ).limit(1);
   return row ?? null;
 }
@@ -113,7 +115,10 @@ async function findVisibleForm(
   if (!id.success) return null;
   const [row] = await selectVisibleForms(
     executor,
-    and(eq(onboardingForms.id, id.data), visibleCondition(reader))!,
+    and(
+      eq(onboardingForms.id, id.data),
+      visibleCondition(reader, Permission.PortalOnboardingRead),
+    )!,
   ).limit(1);
   return row ?? null;
 }
@@ -136,7 +141,10 @@ function withLockedForm<T>(
   return getDrizzleDatabaseClient().transaction(async (tx) => {
     const [locked] = await selectVisibleForms(
       tx,
-      and(eq(onboardingForms.id, id.data), visibleCondition(actor))!,
+      and(
+        eq(onboardingForms.id, id.data),
+        visibleCondition(actor, Permission.PortalOnboardingSubmit),
+      )!,
     )
       .limit(1)
       .for("update", { of: onboardingForms });

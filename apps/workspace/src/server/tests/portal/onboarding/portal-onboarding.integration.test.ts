@@ -243,7 +243,9 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       expect(
         await getPortalOnboardingWidgetForm(blind, form.projectId),
       ).toBeNull();
-      expect(await saveText(blind, form, "name", "Acme")).toEqual(NOT_FOUND);
+      expect(await saveText(blind, form, "name", "Acme")).toMatchObject({
+        ok: true,
+      });
 
       expect(
         await getPortalOnboardingForm(reader, form.id, Locale.De),

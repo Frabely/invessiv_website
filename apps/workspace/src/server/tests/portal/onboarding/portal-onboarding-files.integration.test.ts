@@ -270,6 +270,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         ...imageUpload(),
         status: FileStatus.Pending,
       });
+      const orphaned = await customerFile(form, { orphaned_at: new Date() });
       const elsewhere = await customerFile(form, {
         project_id: f.siblingProjectId,
       });
@@ -277,7 +278,9 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       const link = await customerFile(form);
       const image = await customerFile(form, imageUpload());
 
-      for (const fileId of [internal, pending, elsewhere, general])
+      expect(await attach(contact, form, pending)).toEqual(NOT_FOUND);
+      expect(await attach(contact, form, orphaned)).toEqual(NOT_FOUND);
+      for (const fileId of [internal, elsewhere, general])
         expect(await attach(contact, form, fileId)).toEqual(NOT_ATTACHABLE);
       expect(await attach(contact, form, link, "photos")).toEqual(
         NOT_ATTACHABLE,

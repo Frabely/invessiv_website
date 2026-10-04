@@ -84,14 +84,13 @@ async function targetExists(
   projectId: string | null,
 ): Promise<boolean> {
   if (!projectId) return true;
-  if (!canSeeProjects(actor)) return false;
   const [row] = await tx
     .select({ id: projects.id })
     .from(projects)
     .where(
       and(
         eq(projects.id, projectId),
-        portalProjectCondition(actor, Permission.PortalProjectsRead),
+        portalProjectCondition(actor, Permission.PortalFilesWrite),
       ),
     )
     .limit(1)
@@ -142,10 +141,7 @@ async function lockOwnUpload(
   return row ?? null;
 }
 
-/**
- * Any entry of the company that the contact may see, not only own uploads; a hidden internal entry
- * answers like a missing one. The caller decides what the entry may be used for.
- */
+/** Any openable entry of the company; the caller decides what it may be used for. */
 async function lockVisible(
   tx: ContactDatabaseTransaction,
   actor: PortalActor,
@@ -155,13 +151,7 @@ async function lockVisible(
   const [row] = await tx
     .select()
     .from(files)
-    .where(
-      and(
-        eq(files.id, id),
-        eq(files.customer_id, actor.customerId),
-        eq(files.visible_to_customer, true),
-      ),
-    )
+    .where(and(eq(files.id, id), visibleCondition(actor)))
     .limit(1)
     .for("update");
   return row ?? null;

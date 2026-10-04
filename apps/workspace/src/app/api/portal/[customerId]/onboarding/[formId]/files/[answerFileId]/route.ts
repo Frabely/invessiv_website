@@ -3,7 +3,7 @@ import "server-only";
 import type { NextRequest } from "next/server";
 
 import {
-  portalOnboardingApiResponse,
+  portalOnboardingWriteResponse,
   privatePortalOnboardingResponse,
 } from "@/lib/portal/portal-onboarding-api-error";
 import { withPortalActor } from "@/server/portal/auth/with-portal-actor";
@@ -24,7 +24,8 @@ export async function DELETE(request: NextRequest, { params }: RouteContext) {
   const { customerId, formId, answerFileId } = await params;
   return privatePortalOnboardingResponse(() =>
     withPortalActor(customerId.toLowerCase(), async (_authorized, actor) =>
-      portalOnboardingApiResponse(
+      portalOnboardingWriteResponse(
+        actor,
         await detachPortalOnboardingFile(actor, {
           formId: formId.toLowerCase(),
           answerFileId: answerFileId.toLowerCase(),

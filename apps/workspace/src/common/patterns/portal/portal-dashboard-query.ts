@@ -16,17 +16,3 @@ export function readPortalDashboardWidget(
   );
   return entry?.key ?? null;
 }
-
-/**
- * The selected project of the dashboard. An unknown or foreign id falls back to the first project
- * without an error, so a guessed id confirms nothing.
- */
-export function readPortalDashboardProject<Project extends { id: string }>(
-  searchParams: SearchParamsReader,
-  projects: readonly Project[],
-): Project | null {
-  const value = searchParams.get(PortalDashboardQueryParam.Project);
-  return (
-    projects.find((project) => project.id === value) ?? projects[0] ?? null
-  );
-}

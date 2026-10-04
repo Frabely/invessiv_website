@@ -58,6 +58,7 @@ describe.skipIf(!RUN_INTEGRATION)(
 
     const fullRights = [
       Permission.PortalAccess,
+      Permission.PortalProjectsRead,
       Permission.PortalTasksRead,
       Permission.PortalTasksComplete,
     ];
@@ -300,6 +301,17 @@ describe.skipIf(!RUN_INTEGRATION)(
         ),
       ).resolves.toEqual({ ok: false, code: PortalTaskErrorCode.NotFound });
       expect((await readTask(taskId)).status).toBe(TaskStatus.Open);
+    });
+
+    it("completes a task with only the completion permission", async () => {
+      const taskId = await insertTask(projectA, TaskActionSide.Customer, true);
+      const result = await completeCustomerTask(
+        actorFor([Permission.PortalAccess, Permission.PortalTasksComplete]),
+        taskId,
+      );
+
+      expect(result).toEqual({ ok: true, alreadyDone: false });
+      expect((await readTask(taskId)).status).toBe(TaskStatus.Done);
     });
 
     it("clears the portal origin when the team reopens the task in the CRM", async () => {

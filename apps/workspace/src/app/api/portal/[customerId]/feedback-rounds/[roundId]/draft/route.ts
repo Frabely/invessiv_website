@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 
 import type { SavePortalFeedbackDraftRequestDto } from "@invessiv/common/contracts/portal/save-portal-feedback-draft-request.dto";
 import {
-  portalFeedbackApiResponse,
+  portalFeedbackWriteResponse,
   privatePortalFeedbackResponse,
   withPortalFeedbackBody,
 } from "@/lib/portal/portal-feedback-api-error";
@@ -24,7 +24,8 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
       withPortalFeedbackBody<SavePortalFeedbackDraftRequestDto>(
         authorized,
         async (body) =>
-          portalFeedbackApiResponse(
+          portalFeedbackWriteResponse(
+            actor,
             await savePortalFeedbackDraft(actor, roundId.toLowerCase(), body),
           ),
       ),

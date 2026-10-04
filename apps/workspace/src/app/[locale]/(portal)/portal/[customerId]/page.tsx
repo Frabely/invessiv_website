@@ -21,11 +21,13 @@ import { requirePortalReader } from "@/server/portal/auth/require-portal-reader"
 import { getPortalConversation } from "@/server/portal/query-handler/get-portal-conversation.query-handler";
 import { getPortalDashboard } from "@/server/portal/query-handler/get-portal-dashboard.query-handler";
 import { getPortalOnboardingCall } from "@/server/portal/query-handler/get-portal-onboarding-call.query-handler";
-import { portalCanOn } from "@/server/portal/shared/portal-can-on";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { getPortalOnboardingWidgetForm } from "@/server/portal/query-handler/get-portal-onboarding-widget-form.query-handler";
 import { PortalDashboardQueryParam } from "@/common/constants/portal/portal-dashboard-query-params";
 import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
+import { selectPortalCurrentProject } from "@/common/patterns/portal/select-portal-current-project";
+import { listPortalCurrentProjects } from "@/server/portal/query-handler/list-portal-current-projects.query-handler";
+import { portalCanOn } from "@/server/portal/shared/portal-can-on";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -61,36 +63,45 @@ export default async function PortalCustomerPage({
     activeLocale,
     customerId.toLowerCase(),
   );
+  const canReadProjects = portalCanOn.forReader(
+    reader,
+    Permission.PortalProjectsRead,
+    { customerId: reader.customerId },
+  );
   const today = taskDueStateService.businessToday();
   const projectParam = (await searchParams)?.[
     PortalDashboardQueryParam.Project
   ];
-  const dashboard = await getPortalDashboard(
-    reader,
-    today,
-    typeof projectParam === "string" ? projectParam : null,
-  );
+  // The layout already read this list in the same render, so selecting here costs no query and
+  // lets everything below load at once.
   const selectedProjectId =
-    dashboard.projects.find((project) => project.id === projectParam)?.id ??
-    dashboard.projects[0]?.id ??
-    null;
-  const [conversationResult, fromUs, fromYou, widgetForm] = await Promise.all([
-    getPortalConversation(reader, null),
-    listPortalFiles(reader, {
-      origin: PortalFileOrigin.FromUs,
-      pageSize: DASHBOARD_FILES_PREVIEW_SIZE,
-      projectId: selectedProjectId ?? undefined,
-    }),
-    listPortalFiles(reader, {
-      origin: PortalFileOrigin.FromYou,
-      pageSize: DASHBOARD_FILES_PREVIEW_SIZE,
-      projectId: selectedProjectId ?? undefined,
-    }),
-    // Without a current project, the onboarding widget has no form to show.
-    selectedProjectId
-      ? getPortalOnboardingWidgetForm(reader, selectedProjectId)
-      : Promise.resolve(null),
-  ]);
+    selectPortalCurrentProject(
+      await listPortalCurrentProjects(reader),
+      typeof projectParam === "string" ? projectParam : null,
+    )?.id ?? null;
+  const [dashboard, conversationResult, fromUs, fromYou, widgetForm] =
+    await Promise.all([
+      getPortalDashboard(reader, today, selectedProjectId),
+      getPortalConversation(reader, null),
+      listPortalFiles(reader, {
+        origin: PortalFileOrigin.FromUs,
+        pageSize: DASHBOARD_FILES_PREVIEW_SIZE,
+        projectId: canReadProjects
+          ? (selectedProjectId ?? undefined)
+          : undefined,
+      }),
+      listPortalFiles(reader, {
+        origin: PortalFileOrigin.FromYou,
+        pageSize: DASHBOARD_FILES_PREVIEW_SIZE,
+        projectId: canReadProjects
+          ? (selectedProjectId ?? undefined)
+          : undefined,
+      }),
+      // Without a current project, the onboarding widget has no form to show.
+      selectedProjectId
+        ? getPortalOnboardingWidgetForm(reader, selectedProjectId)
+        : null,
+    ]);
   const onboardingCall = widgetForm
     ? await getPortalOnboardingCall(reader, widgetForm.id)
     : null;
@@ -130,7 +141,7 @@ export default async function PortalCustomerPage({
         filesHref={buildPortalHref(
           portalPathFor(activeLocale, reader.customerId, PortalSection.Files),
           "",
-          { project: selectedProjectId },
+          { project: canReadProjects ? selectedProjectId : null },
         )}
         filesContent={getPortalFilesDictionary(activeLocale)}
         filesOverview={
@@ -161,7 +172,6 @@ export default async function PortalCustomerPage({
         today={today}
         viewerUserId={reader.userId}
         widgets={listVisiblePortalWidgets(reader.permissions, keysWithContent)}
-        selectedProjectId={selectedProjectId}
       />
     </>
   );

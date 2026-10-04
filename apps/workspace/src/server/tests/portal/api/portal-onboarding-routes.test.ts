@@ -264,6 +264,33 @@ describe("portal onboarding routes", () => {
     expectPrivate(response);
   });
 
+  it("lets a submit-only actor save without returning form details", async () => {
+    const writer = createPortalActor({
+      userId: ACTOR.userId,
+      membershipId: ACTOR.membershipId,
+      customerId: CUSTOMER_ID,
+      personId: ACTOR.personId,
+      firstName: null,
+      permissions: new Set([
+        Permission.PortalAccess,
+        Permission.PortalOnboardingSubmit,
+      ]),
+      projectPermissions: new Map(),
+    });
+    mocks.authenticateRequest.mockResolvedValue({
+      status: PortalAuthStatus.Authorized,
+      actor: writer,
+    });
+    mocks.savePortalOnboardingAnswer.mockResolvedValue({
+      ok: true,
+      value: SAVED,
+    });
+
+    const response = await answers(request(HttpMethod.Put, ANSWER), context);
+    expect(response.status).toBe(H.Ok);
+    expect(await response.json()).toEqual({ accepted: true });
+  });
+
   it("rejects a body that is not JSON without reaching the command", async () => {
     const response = await answers(request(HttpMethod.Put, "{"), context);
     expect(response.status).toBe(H.UnprocessableContent);

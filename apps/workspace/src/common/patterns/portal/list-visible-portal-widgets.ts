@@ -14,7 +14,12 @@ export function listVisiblePortalWidgets(
 ): readonly PortalWidgetDefinition[] {
   return layout.filter(
     (entry) =>
-      (entry.mock || permissions.has(entry.requiredPermission)) &&
+      (entry.mock ||
+        (permissions.has(entry.requiredPermission) &&
+          (entry.additionalPermissions?.every((permission) =>
+            permissions.has(permission),
+          ) ??
+            true))) &&
       (!entry.onlyWithContent || keysWithContent.has(entry.key)),
   );
 }

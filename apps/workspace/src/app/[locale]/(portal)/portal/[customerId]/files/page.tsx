@@ -15,6 +15,7 @@ import { isPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
 import { requirePortalReader } from "@/server/portal/auth/require-portal-reader";
 import { listPortalFileProjects } from "@/server/portal/query-handler/list-portal-file-projects.query-handler";
 import { listPortalFiles } from "@/server/portal/query-handler/list-portal-files.query-handler";
+import { selectPortalCurrentProject } from "@/common/patterns/portal/select-portal-current-project";
 import { listPortalCurrentProjects } from "@/server/portal/query-handler/list-portal-current-projects.query-handler";
 import { portalCanOn } from "@/server/portal/shared/portal-can-on";
 
@@ -60,9 +61,15 @@ export default async function PortalFilesPage({
     listPortalCurrentProjects(reader),
   ]);
   const projectParam = query[PortalDashboardQueryParam.Project];
+  const requestedProjectId =
+    typeof projectParam === "string" ? projectParam : null;
+  const selectableFileProjects = currentProjects.filter((current) =>
+    projects.some((project) => project.id === current.id),
+  );
   const selectedProjectId =
-    currentProjects.find((project) => project.id === projectParam)?.id ??
-    currentProjects[0]?.id ??
+    (requestedProjectId &&
+      projects.find((project) => project.id === requestedProjectId)?.id) ||
+    selectPortalCurrentProject(selectableFileProjects, null)?.id ||
     null;
   const allProjects = query[PortalFilesQueryParam.Scope] === "all";
   const page = await listPortalFiles(reader, {

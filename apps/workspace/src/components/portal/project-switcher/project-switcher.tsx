@@ -5,6 +5,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { CustomSelect } from "@invessiv/ui";
 import { PortalDashboardQueryParam } from "@/common/constants/portal/portal-dashboard-query-params";
 import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
+import { selectPortalCurrentProject } from "@/common/patterns/portal/select-portal-current-project";
 import styles from "./project-switcher.module.css";
 
 export type ProjectSwitcherProps = {
@@ -21,11 +22,11 @@ export function ProjectSwitcher({
   const pathname = usePathname();
   const search = useSearchParams();
   const id = useId();
-  if (projects.length <= 1) return null;
-  const selected =
-    projects.find(
-      (project) => project.id === search.get(PortalDashboardQueryParam.Project),
-    )?.id ?? projects[0].id;
+  const selected = selectPortalCurrentProject(
+    projects,
+    search.get(PortalDashboardQueryParam.Project),
+  );
+  if (!selected || projects.length <= 1) return null;
   return (
     <div className={styles.root}>
       <CustomSelect
@@ -44,7 +45,7 @@ export function ProjectSwitcher({
           value: project.id,
           label: project.title,
         }))}
-        value={selected}
+        value={selected.id}
       />
     </div>
   );

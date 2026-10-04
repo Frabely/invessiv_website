@@ -19,7 +19,8 @@ import styles from "./portal-feedback-widget.module.css";
 export type PortalFeedbackWidgetProps = {
   content: PortalDashboardDictionary["widgets"]["feedback"];
   customerId: string;
-  entries: readonly PortalFeedbackSummaryDto[];
+  /** Null while the selected project has no round steps, or without a project. */
+  entry: PortalFeedbackSummaryDto | null;
   locale: Locale;
 };
 
@@ -55,88 +56,81 @@ function linkLabels(entry: PortalFeedbackSummaryDto, content: Content) {
   return { text: content.view, named: content.viewNamed };
 }
 
-/** Per project with round steps: which round, whose turn, until when, and the way to the sheet. */
+/** For the selected project: which round, whose turn, until when, and the way to the sheet. */
 export function PortalFeedbackWidget({
   content,
   customerId,
-  entries,
+  entry,
   locale,
 }: PortalFeedbackWidgetProps) {
+  const yourTurn =
+    entry !== null &&
+    (entry.status === FeedbackRoundStatus.Open || isApprovalDue(entry));
+  const link = entry ? linkLabels(entry, content) : null;
+
   return (
     <Widget
       icon={faHandHoldingHeart}
       openMode={WidgetOpenMode.None}
       title={content.title}
     >
-      {entries.length === 0 ? (
+      {!entry || !link ? (
         <div className={styles.empty}>
           <p className={styles.emptyTitle}>{content.emptyTitle}</p>
           <p>{content.emptyDescription}</p>
         </div>
       ) : (
-        <ul className={styles.list}>
-          {entries.map((entry) => {
-            const yourTurn =
-              entry.status === FeedbackRoundStatus.Open || isApprovalDue(entry);
-            const link = linkLabels(entry, content);
-            const href = buildPortalHref(
-              buildPortalFeedbackPath({
-                locale,
-                customerId,
-                projectId: entry.projectId,
-              }),
-              "",
-              { project: entry.projectId },
-            );
-            return (
-              <li
-                className={styles.item}
-                data-your-turn={yourTurn ? "true" : undefined}
-                key={entry.projectId}
-              >
-                <div className={styles.text}>
-                  <span className={styles.project}>{entry.projectTitle}</span>
-                  <span className={styles.meta}>
-                    {entry.roundNumber
-                      ? formatMessage(content.roundOf, {
-                          number: entry.roundNumber,
-                          included: Math.max(entry.included, entry.used),
-                        })
-                      : content.noRound}
-                    {entry.dueOn &&
-                    entry.status === FeedbackRoundStatus.Open ? (
-                      <time dateTime={entry.dueOn}>
-                        {formatMessage(content.due, {
-                          date: formatCalendarDay(entry.dueOn, locale),
-                        })}
-                      </time>
-                    ) : null}
-                  </span>
-                </div>
-                {entry.status ? (
-                  <FeedbackRoundStatusBadge
-                    label={turnLabel(entry, content, locale)}
-                    status={entry.status}
-                  />
-                ) : (
-                  <span className={styles.none}>{content.turn.none}</span>
-                )}
-                {entry.status ? (
-                  <Link
-                    aria-label={formatMessage(link.named, {
-                      project: entry.projectTitle,
-                    })}
-                    className={styles.link}
-                    data-primary={yourTurn ? "true" : undefined}
-                    href={href}
-                  >
-                    {link.text}
-                  </Link>
-                ) : null}
-              </li>
-            );
-          })}
-        </ul>
+        <div
+          className={styles.item}
+          data-your-turn={yourTurn ? "true" : undefined}
+        >
+          <div className={styles.text}>
+            <span className={styles.project}>{entry.projectTitle}</span>
+            <span className={styles.meta}>
+              {entry.roundNumber
+                ? formatMessage(content.roundOf, {
+                    number: entry.roundNumber,
+                    included: Math.max(entry.included, entry.used),
+                  })
+                : content.noRound}
+              {entry.dueOn && entry.status === FeedbackRoundStatus.Open ? (
+                <time dateTime={entry.dueOn}>
+                  {formatMessage(content.due, {
+                    date: formatCalendarDay(entry.dueOn, locale),
+                  })}
+                </time>
+              ) : null}
+            </span>
+          </div>
+          {entry.status ? (
+            <FeedbackRoundStatusBadge
+              label={turnLabel(entry, content, locale)}
+              status={entry.status}
+            />
+          ) : (
+            <span className={styles.none}>{content.turn.none}</span>
+          )}
+          {entry.status ? (
+            <Link
+              aria-label={formatMessage(link.named, {
+                project: entry.projectTitle,
+              })}
+              className={styles.link}
+              data-primary={yourTurn ? "true" : undefined}
+              href={buildPortalHref(
+                buildPortalFeedbackPath({
+                  locale,
+                  customerId,
+                  projectId: entry.projectId,
+                }),
+                "",
+                { project: entry.projectId },
+              )}
+            >
+              {link.text}
+            </Link>
+          ) : null}
+        </div>
       )}
     </Widget>
   );
