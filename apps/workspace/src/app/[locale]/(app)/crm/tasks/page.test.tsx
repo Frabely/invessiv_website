@@ -112,6 +112,7 @@ function listWith(...projectIds: string[]): TaskListResult {
         completedAt: null,
         completedByMemberId: null,
         completedByCustomer: false,
+        createdByCustomer: false,
         feedbackRoundId: null,
         onboardingFormId: null,
         version: 1,

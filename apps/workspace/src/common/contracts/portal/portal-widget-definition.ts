@@ -14,6 +14,11 @@ export type PortalWidgetDefinition = WidgetLayoutEntry<PortalWidgetKey> &
   PortalWidgetDataSource & {
     /** How the widget opens its detail: dialog, in-place expansion, the chat dock or not at all. */
     openMode: WidgetOpenMode;
+    /**
+     * True when an action inside the widget opens a dialog of its own (e.g. a form) although the
+     * widget itself opens differently. The dialog then hangs on the same `?widget` parameter.
+     */
+    actionDialog?: boolean;
     /** Additional permissions required for a widget tied to another readable resource. */
     additionalPermissions?: readonly Permission[];
     /** Hidden entirely while its data part is empty instead of showing an empty state. */

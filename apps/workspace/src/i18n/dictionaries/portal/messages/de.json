@@ -47,7 +47,8 @@
     "onboardingSubmitted": "Dein Onboarding für „{projectTitle}“ ist abgesendet. Wir prüfen deine Angaben und melden uns.",
     "onboardingReleased": "Dein Onboarding für „{projectTitle}“ ist bereit. Du bist dran.",
     "onboardingChangesRequested": "Für dein Onboarding zu „{projectTitle}“ brauchen wir noch etwas zu: {blockTitles}. Du kannst es jetzt ergänzen.",
-    "onboardingCompleted": "Dein Onboarding für „{projectTitle}“ ist abgeschlossen. Deine Angaben sind jetzt die Grundlage für dein Projekt."
+    "onboardingCompleted": "Dein Onboarding für „{projectTitle}“ ist abgeschlossen. Deine Angaben sind jetzt die Grundlage für dein Projekt.",
+    "customerTaskRequested": "Deine Aufgabe „{taskTitle}“ für „{projectTitle}“ ist bei uns angekommen. Wir kümmern uns darum."
   },
   "phases": {
     "onboarding": "Onboarding",

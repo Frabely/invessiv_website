@@ -143,6 +143,14 @@
       "label": "Complete customer tasks in the portal",
       "description": "Mark tasks for the company as completed in the portal."
     },
+    "portal.tasks.reopen": {
+      "label": "Undo own completions in the portal",
+      "description": "Reopen tasks the company itself completed in the portal."
+    },
+    "portal.tasks.create": {
+      "label": "Create tasks for the team",
+      "description": "Create a task for the team on a project in the portal."
+    },
     "portal.messages.read": {
       "label": "Read portal messages",
       "description": "See the company's shared message history."

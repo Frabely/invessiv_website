@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { type ReactNode, useId } from "react";
 import type { PortalCustomerTaskDto } from "@invessiv/common/contracts/portal/portal-customer-task.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { PortalAllDoneNote } from "../../portal-all-done-note/portal-all-done-note";
@@ -16,7 +16,7 @@ export type PortalCustomerTasksDialogContentProps = PortalTaskListBaseProps & {
   ownerNotice: ReactNode;
 };
 
-/** Every open item with its detail; completed ones stay folded away as a record. */
+/** Every open item with its detail, then the completed ones in plain sight as a record. */
 export function PortalCustomerTasksDialogContent({
   doneTasks,
   openTasks,
@@ -24,6 +24,7 @@ export function PortalCustomerTasksDialogContent({
   ...listProps
 }: PortalCustomerTasksDialogContentProps) {
   const content = listProps.content.widgets.customerTasks;
+  const doneHeadingId = useId();
 
   return (
     <div className={styles.content}>
@@ -34,16 +35,16 @@ export function PortalCustomerTasksDialogContent({
       ) : (
         <PortalAllDoneNote text={content.empty} />
       )}
-      <details className={styles.done}>
-        <summary className={styles.doneSummary}>
+      <section aria-labelledby={doneHeadingId} className={styles.done}>
+        <h3 className={styles.doneHeading} id={doneHeadingId}>
           {formatMessage(content.done, { count: doneTasks.length })}
-        </summary>
+        </h3>
         {doneTasks.length > 0 ? (
           <PortalTaskList {...listProps} tasks={doneTasks} />
         ) : (
           <p className={styles.doneEmpty}>{content.doneEmpty}</p>
         )}
-      </details>
+      </section>
     </div>
   );
 }

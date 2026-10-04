@@ -62,6 +62,7 @@ export const PORTAL_WIDGET_LAYOUT: readonly PortalWidgetDefinition[] = [
     order: 50,
     span: COMPACT_ROW,
     openMode: WidgetOpenMode.Expand,
+    actionDialog: true,
     mock: false,
     requiredPermission: Permission.PortalTasksRead,
     onlyWithContent: false,

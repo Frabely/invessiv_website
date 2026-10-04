@@ -8,8 +8,9 @@ import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 
 /**
- * Ticks a customer task off right away and rolls back with an announcement when the server
- * refuses. Completing is one-way in the portal, so the only value ever submitted is `true`.
+ * Ticks a customer task off or takes the tick back right away and rolls back with an announcement
+ * when the server refuses. Whether a tick may be taken back is the server's call (`canReopen`);
+ * this hook only sends what the list lets through.
  */
 export function usePortalTaskCompletion(
   customerId: string,
@@ -18,10 +19,15 @@ export function usePortalTaskCompletion(
   const router = useRouter();
   const optimistic = useOptimisticChange<boolean, PortalCustomerTaskDto>({
     valueOf: (task) => task.done,
-    submit: (task) => portalTasksApiService.completeTask(customerId, task.id),
+    submit: (task, done) =>
+      done
+        ? portalTasksApiService.completeTask(customerId, task.id)
+        : portalTasksApiService.reopenTask(customerId, task.id),
     announce: {
-      success: (task) =>
-        formatMessage(announce.completed, { name: task.title }),
+      success: (task, done) =>
+        formatMessage(done ? announce.completed : announce.reopened, {
+          name: task.title,
+        }),
       failure: (task) => formatMessage(announce.failed, { name: task.title }),
     },
     onSettled: () => router.refresh(),
@@ -29,7 +35,8 @@ export function usePortalTaskCompletion(
 
   return {
     announcement: optimistic.announcement,
-    complete: (task: PortalCustomerTaskDto) => optimistic.change(task, true),
+    toggle: (task: PortalCustomerTaskDto, done: boolean) =>
+      optimistic.change(task, done),
     isDone: optimistic.valueOf,
     isPending: optimistic.isPending,
   };

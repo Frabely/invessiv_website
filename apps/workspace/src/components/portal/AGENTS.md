@@ -41,6 +41,21 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   `accept` und Texte; der Baustein kennt weder Endpunkte noch Fachbegriffe. Kein zweiter Upload-Baustein je Bereich.
   Unter `shared/` liegt nur, was mehrere Portal-Bereiche nutzen.
 
+## Aufgaben im Dashboard (Paket G, Ordner 18)
+
+Plan: `apps/workspace/plans/crm/18-portal-prozess-nacharbeiten/G-portal-aufgaben.md`.
+
+- „Von dir benötigt“ zeigt offene Aufgaben zuerst und darunter die zuletzt erledigten abgehakt; im Dialog steht
+  „Erledigt“ offen da, nichts ist eingeklappt.
+- Ob ein Haken zurückgenommen werden kann, entscheidet ausschließlich `canReopen` aus dem DTO. Ein eben gesetzter
+  Haken bleibt bis zum Refresh gesperrt. Abhaken und Zurücknehmen laufen über `usePortalTaskCompletion`.
+- „Aufgabe für uns anlegen“ erscheint nur mit `capabilities.canCreateTasks` und hängt als Dialog an
+  `?widget=ourTasks` (`actionDialog` in `PORTAL_WIDGET_LAYOUT`). Die Owner-Sicht bekommt stattdessen den
+  Owner-Hinweis mit CRM-Link. Der Dialog (`dashboard/portal-task-request-dialog`) schickt die
+  `selectedProjectId` des Dashboards, nie eine selbst gewählte Kunden-ID.
+- Eigene Aufgaben tragen „von dir“ (`requestedByCustomer`), abgelehnte eigene bleiben als „Abgelehnt“
+  (`rejected`) in der Liste.
+
 ## Kundenchat (ab Task 26)
 
 Plan: `apps/workspace/plans/crm/13a-kundenchat/26-chat-im-portal.md`.

@@ -54,6 +54,7 @@ function taskRow(projectId: string, title: string, dueOn: string | null) {
       completedAt: null,
       completedByMemberId: null,
       completedByCustomer: false,
+      createdByCustomer: false,
       feedbackRoundId: null,
       onboardingFormId: null,
       version: 1,

@@ -250,6 +250,20 @@ export const PERMISSION_DEFINITIONS = {
     assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
     description: "Complete customer-side tasks in this customer's portal.",
   },
+  [Permission.PortalTasksReopen]: {
+    realm: AuthRealm.Portal,
+    delegable: true,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description: "Reopen tasks this customer completed in the portal.",
+  },
+  [Permission.PortalTasksCreate]: {
+    realm: AuthRealm.Portal,
+    delegable: true,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description: "Create tasks for the team in this customer's portal.",
+  },
   [Permission.PortalMessagesRead]: {
     realm: AuthRealm.Portal,
     delegable: true,

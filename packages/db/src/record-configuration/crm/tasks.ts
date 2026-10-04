@@ -62,6 +62,8 @@ export const tasks = pgTable(
     completed_by_portal_membership_id: uuid(
       "completed_by_portal_membership_id",
     ),
+    // Set when a customer contact created the task in the portal; internal tasks keep null.
+    created_by_portal_membership_id: uuid("created_by_portal_membership_id"),
     // Marks the one collecting task of a feedback round; never inferred from the title.
     feedback_round_id: uuid("feedback_round_id"),
     // Marks the one collecting task of a submitted onboarding form.
@@ -78,6 +80,11 @@ export const tasks = pgTable(
     foreignKey({
       name: TasksConstraintName.CompletedByPortalMembershipForeignKey,
       columns: [t.completed_by_portal_membership_id],
+      foreignColumns: [portalMemberships.id],
+    }),
+    foreignKey({
+      name: TasksConstraintName.CreatedByPortalMembershipForeignKey,
+      columns: [t.created_by_portal_membership_id],
       foreignColumns: [portalMemberships.id],
     }),
     check(

@@ -116,6 +116,7 @@ export async function seedPortalDashboard(
       completed_at: null,
       completed_by_member_id: null,
       completed_by_portal_membership_id: null,
+      created_by_portal_membership_id: null,
       version: 1,
     };
     await tx.insert(tasks).values([
@@ -165,6 +166,27 @@ export async function seedPortalDashboard(
         action_side: TaskActionSide.Internal,
         visible_to_customer: true,
         due_on: dateOffsetFromToday(5),
+      },
+      {
+        ...taskBase,
+        id: randomUUID(),
+        title: "Öffnungszeiten im Footer ergänzen",
+        description: "Montag bis Freitag, 9 bis 17 Uhr.",
+        status: TaskStatus.Open,
+        action_side: TaskActionSide.Internal,
+        visible_to_customer: true,
+        due_on: dateOffsetFromToday(10),
+        created_by_portal_membership_id: membershipId,
+      },
+      {
+        ...taskBase,
+        id: randomUUID(),
+        title: "Zweite Sprachversion der Startseite",
+        status: TaskStatus.Cancelled,
+        action_side: TaskActionSide.Internal,
+        visible_to_customer: true,
+        due_on: null,
+        created_by_portal_membership_id: membershipId,
       },
       {
         ...taskBase,

@@ -15,6 +15,7 @@ import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import { ProjectWorkflowKey } from "@invessiv/common/constants/crm/project-workflows";
 import { TaskActionSide } from "@invessiv/common/constants/crm/task-action-sides";
 import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
+import { PortalTaskRequestLimits } from "@invessiv/common/constants/portal/portal-task-request-limits";
 import { findWorkspaceRoot, getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
   customerContactAssignments,
@@ -306,6 +307,7 @@ describe.skipIf(!RUN_INTEGRATION)(
       expect(Object.keys(dto)).toEqual([
         "customer",
         "contact",
+        "selectedProjectId",
         "project",
         "completedProjects",
         "customerTasks",
@@ -337,6 +339,7 @@ describe.skipIf(!RUN_INTEGRATION)(
         "done",
         "completedAt",
         "version",
+        "canReopen",
       ]);
       expect(Object.keys(dto.ourTasks[0]!)).toEqual([
         "id",
@@ -348,7 +351,58 @@ describe.skipIf(!RUN_INTEGRATION)(
         "dueState",
         "done",
         "completedAt",
+        "requestedByCustomer",
+        "rejected",
       ]);
+    });
+
+    it("returns only the five latest declined customer requests for the selected project", async () => {
+      const membershipId = membershipIds[0];
+      if (!membershipId)
+        throw new Error("Portal membership fixture is missing.");
+      const rejectedRows = Array.from(
+        { length: PortalTaskRequestLimits.RejectedShown + 3 },
+        (_, index) => ({
+          id: randomUUID(),
+          project_id: projectA,
+          title: `${PREFIX}rejected ${index}`,
+          description: "",
+          status: TaskStatus.Cancelled,
+          action_side: TaskActionSide.Internal,
+          visible_to_customer: true,
+          assignee_member_id: memberId,
+          created_by_portal_membership_id: membershipId,
+          updated_at: new Date(Date.UTC(2026, 8, 26, 12, 0, index)),
+          version: 1,
+        }),
+      );
+      await db.insert(tasks).values(rejectedRows);
+      try {
+        const dto = await getPortalDashboard(
+          actor(customerA, fullRead),
+          TODAY,
+          projectA,
+        );
+        expect(
+          dto.ourTasks
+            .filter((task) => task.rejected)
+            .map((task) => task.title),
+        ).toEqual([
+          `${PREFIX}rejected 7`,
+          `${PREFIX}rejected 6`,
+          `${PREFIX}rejected 5`,
+          `${PREFIX}rejected 4`,
+          `${PREFIX}rejected 3`,
+        ]);
+        expect(dto.ourTasks[0]?.title).toBe(`${PREFIX}internal`);
+      } finally {
+        await db.delete(tasks).where(
+          inArray(
+            tasks.id,
+            rejectedRows.map((row) => row.id),
+          ),
+        );
+      }
     });
 
     it("keeps a second company's dashboard isolated for the same person", async () => {
@@ -479,6 +533,7 @@ describe.skipIf(!RUN_INTEGRATION)(
       expect({ ...owner, capabilities: contact.capabilities }).toEqual(contact);
       expect(owner.capabilities).toEqual({
         canCompleteTasks: false,
+        canCreateTasks: false,
         isOwnerView: true,
       });
     });

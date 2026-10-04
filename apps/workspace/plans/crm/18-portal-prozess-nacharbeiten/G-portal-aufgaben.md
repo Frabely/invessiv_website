@@ -1,6 +1,7 @@
 # Paket G — Portal-Aufgaben
 
-> Teil von [README.md](./README.md) (Ziel, Entscheidungen, Reihenfolge, gemeinsame Regeln, Abnahme). Nur Plan, nichts umgesetzt.
+> Teil von [README.md](./README.md) (Ziel, Entscheidungen, Reihenfolge, gemeinsame Regeln, Abnahme). Umgesetzt am 04.10.2026 auf
+> `fix/nacharbeit` (Migration `0051`), im Review.
 
 - **G1 — Erledigte Aufgaben bleiben sichtbar (bugs 12).**
   `portal-customer-tasks-widget.tsx` zeigt offene Aufgaben zuerst und darunter die zuletzt erledigten abgehakt (die

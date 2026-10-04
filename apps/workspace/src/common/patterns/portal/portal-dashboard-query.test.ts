@@ -11,6 +11,9 @@ describe("readPortalDashboardWidget", () => {
     ).toBe(PortalWidgetKey.CustomerTasks);
     expect(
       readPortalDashboardWidget(new URLSearchParams("widget=ourTasks")),
+    ).toBe(PortalWidgetKey.OurTasks);
+    expect(
+      readPortalDashboardWidget(new URLSearchParams("widget=feedback")),
     ).toBeNull();
     expect(
       readPortalDashboardWidget(new URLSearchParams("widget=unknown")),

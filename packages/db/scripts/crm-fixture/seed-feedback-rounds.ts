@@ -146,6 +146,7 @@ async function seedRunningProject(
     completed_at: completedAt,
     completed_by_member_id: memberId,
     completed_by_portal_membership_id: null,
+    created_by_portal_membership_id: null,
     feedback_round_id: completedRoundId,
     version: 1,
   });

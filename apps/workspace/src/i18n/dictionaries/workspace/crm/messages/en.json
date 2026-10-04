@@ -42,7 +42,8 @@
     "onboardingSubmitted": "The customer submitted the onboarding for “{projectTitle}”.",
     "onboardingReleased": "The onboarding for “{projectTitle}” was released to the customer.",
     "onboardingChangesRequested": "The onboarding for “{projectTitle}” went back to the customer with questions on: {blockTitles}.",
-    "onboardingCompleted": "The onboarding for “{projectTitle}” was completed."
+    "onboardingCompleted": "The onboarding for “{projectTitle}” was completed.",
+    "customerTaskRequested": "The customer created the task “{taskTitle}” for “{projectTitle}”."
   },
   "dock": {
     "unread": "{count} unread"

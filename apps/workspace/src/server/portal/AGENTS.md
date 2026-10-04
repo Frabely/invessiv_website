@@ -64,6 +64,31 @@ einzigen regulären Aufrufer.
 - `portal.files.write` darf Dateien und Links auch einem eigenen sichtbaren Projekt zuordnen, ohne
   `portal.projects.read` zu verlangen; fremde, archivierte und abgesagte Projekte bleiben ausgeschlossen.
 
+## Portal-Aufgaben (Paket G, Ordner 18)
+
+Plan: `apps/workspace/plans/crm/18-portal-prozess-nacharbeiten/G-portal-aufgaben.md`.
+
+- „Für diesen Kontakt freigegebene Kundenaufgabe“ ist genau einmal definiert:
+  `shared/portal-customer-task-condition.ts` (sichtbares Projekt der Firma, `action_side = customer`, sichtbar).
+  Abhaken und Zurücknehmen wiederholen die Bedingung im UPDATE.
+- **Zurücknehmen** (`reopenCustomerTask`, `portal.tasks.reopen`) öffnet nur eine Aufgabe, die ein Kontakt derselben
+  Firma im Portal abgehakt hat (`completed_by_portal_membership_id` gehört zum Kunden). Ein Haken des Teams bleibt:
+  Er antwortet `not_found` wie jeder andere Fehlgriff. Der Befehl ist idempotent (`alreadyOpen`) und schreibt eine
+  `StatusChange`-Aktivität über `taskActivityService`.
+- **Anlegen** (`createCustomerRequestTask`, `portal.tasks.create`) erzeugt eine interne, für den Kunden sichtbare
+  Aufgabe mit `created_by_portal_membership_id` in einem laufenden Projekt der Firma (abgeschlossene, archivierte
+  und abgesagte Projekte sind `not_found`). Bearbeiter ist `projectResponsibleMemberService.findActiveMemberId`;
+  ohne aktiven Betreuer antwortet der Befehl `no_assignee`. Die Projektzeile wird gesperrt, damit die Grenze
+  `PortalTaskRequestLimits.OpenPerProject` nicht durch parallele Anfragen überschritten wird (`limit_reached`).
+  Ein Wunschtermin in der Vergangenheit ist `validation`. Activity über `taskActivityService`, Systemnachricht
+  `customerTaskRequested` über `announceSystemMessage`. Die Route bestätigt nur (`{ created: true }`).
+- Das Dashboard liefert `canReopen` je Kundenaufgabe (Recht und Portal-Herkunft, nie die Owner-Sicht),
+  `capabilities.canCreateTasks` und `selectedProjectId`. Abgelehnte eigene Aufgaben (`cancelled` mit
+  `created_by_portal_membership_id`) bleiben als `rejected` in `ourTasks`, begrenzt auf
+  `PortalTaskRequestLimits.RejectedShown`; alle anderen abgebrochenen Aufgaben bleiben unsichtbar.
+- Fehlercodes sind `PortalTaskErrorCode`; Statuscodes und Texte stehen ausschließlich in
+  `src/lib/portal/portal-task-api-error.ts`.
+
 ## Feedbackrunden (ab Task 59)
 
 - Lesen verlangt `portal.feedback.read`, Schreiben `portal.feedback.submit` ohne zusätzliches Leserecht;

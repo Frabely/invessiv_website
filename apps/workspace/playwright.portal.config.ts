@@ -34,7 +34,8 @@ export default defineConfig({
     { name: "portal-setup", testMatch: /portal\.setup\.ts/ },
     {
       name: "portal-chromium",
-      testMatch: /portal-(access|dashboard|files|feedback|onboarding)\.e2e\.ts/,
+      testMatch:
+        /portal-(access|dashboard|files|feedback|onboarding|tasks)\.e2e\.ts/,
       dependencies: ["portal-setup"],
       use: { ...devices["Desktop Chrome"] },
     },

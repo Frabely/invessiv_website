@@ -15,7 +15,7 @@ export type PortalTaskListBaseProps = {
   isOwnerView: boolean;
   isPendingAction: (taskId: string) => boolean;
   locale: Locale;
-  onCompleteAction: (task: PortalCustomerTaskDto) => void;
+  onToggleAction: (task: PortalCustomerTaskDto, done: boolean) => void;
   ownerHintId?: string;
   today: string;
 };
@@ -32,7 +32,7 @@ export function PortalTaskList({
   isOwnerView,
   isPendingAction,
   locale,
-  onCompleteAction,
+  onToggleAction,
   ownerHintId,
   showDescription = false,
   tasks,
@@ -44,14 +44,20 @@ export function PortalTaskList({
     <ul className={styles.list}>
       {tasks.map((task) => {
         const done = isDoneAction(task);
+        // The server decides which ticks may be taken back; a tick set a moment ago stays locked
+        // until the refresh delivers that decision.
+        const enabled = done ? task.canReopen : canComplete;
         return (
           <li className={styles.item} data-done={done} key={task.id}>
             <PortalTaskCheckbox
               checked={done}
               describedById={isOwnerView ? ownerHintId : undefined}
-              enabled={canComplete}
-              label={formatMessage(labels.checkboxLabel, { name: task.title })}
-              onCompleteAction={() => onCompleteAction(task)}
+              enabled={enabled}
+              label={formatMessage(
+                done ? labels.reopenLabel : labels.checkboxLabel,
+                { name: task.title },
+              )}
+              onToggleAction={(checked) => onToggleAction(task, checked)}
               pending={isPendingAction(task.id)}
               statusLabel={formatMessage(
                 done ? labels.doneLabel : labels.openLabel,

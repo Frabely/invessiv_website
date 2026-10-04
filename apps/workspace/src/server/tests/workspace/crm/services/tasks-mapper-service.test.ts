@@ -18,6 +18,7 @@ const OPEN_ROW: TaskRow = {
   completed_at: null,
   completed_by_member_id: null,
   completed_by_portal_membership_id: null,
+  created_by_portal_membership_id: null,
   feedback_round_id: null,
   onboarding_form_id: null,
   version: 3,
@@ -40,6 +41,7 @@ describe("tasksMapperService.toDto", () => {
       completedAt: null,
       completedByMemberId: null,
       completedByCustomer: false,
+      createdByCustomer: false,
       feedbackRoundId: null,
       onboardingFormId: null,
       version: 3,
@@ -76,6 +78,19 @@ describe("tasksMapperService.toDto", () => {
     expect(JSON.stringify(dto)).not.toContain(
       "88888888-8888-4888-8888-888888888888",
     );
+  });
+});
+
+describe("tasksMapperService.toDto portal origin", () => {
+  it("flags a task a contact created without exposing the membership id", () => {
+    const membershipId = "88888888-8888-4888-8888-888888888888";
+    const dto = tasksMapperService.toDto({
+      ...OPEN_ROW,
+      created_by_portal_membership_id: membershipId,
+    });
+
+    expect(dto.createdByCustomer).toBe(true);
+    expect(JSON.stringify(dto)).not.toContain(membershipId);
   });
 });
 

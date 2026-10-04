@@ -30,6 +30,8 @@ export interface TaskDto {
   completedByMemberId: string | null;
   /** True when a customer contact completed the task in the portal; which contact stays internal. */
   completedByCustomer: boolean;
+  /** True when a customer contact created the task in the portal; which contact stays internal. */
+  createdByCustomer: boolean;
   /** Set on the collecting task of a feedback round, which the round creates and keeps in sync. */
   feedbackRoundId: string | null;
   /** Set on the collecting task of an onboarding form, created with its first submission. */

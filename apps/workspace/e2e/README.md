@@ -39,6 +39,8 @@ prüft Einladungsdialog, Vorschau, Einlösung, zweiten Tokenversuch, Rollenände
 Firmenisolation, Firmenwechsel, Widerruf, parallele Einlösung und konkrete API-Fehler, dazu Dashboard,
 Dateien, Feedbackrunden und den Kernablauf des Onboardings (Freigeben, Ausfüllen mit Gruppe und Upload, Absenden, Rückfrage an den Kunden,
 Ergänzen, erneutes Absenden, Block vollständig).
+`portal-tasks.e2e.ts` prüft außerdem das Anlegen einer Kundenanfrage im Dialog sowie das Abhaken und Wiederöffnen einer
+Kundenaufgabe; ein vom Team gesetzter Haken bleibt gesperrt. Das Setup legt dafür ein eigenes aktives Projekt an.
 
 Start aus der Repository-Wurzel:
 

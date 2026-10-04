@@ -12,6 +12,7 @@ import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { TaskActionSideBadge } from "../../task-action-side-badge/task-action-side-badge";
 import { TaskDueLabel } from "../../task-due-label/task-due-label";
+import { TaskOriginNote } from "../../task-origin-note/task-origin-note";
 import { TaskStatusBadge } from "../../task-status-badge/task-status-badge";
 import { TaskStatusSelect } from "../../task-status-select/task-status-select";
 import styles from "./task-overview-row.module.css";
@@ -71,6 +72,9 @@ export function TaskOverviewRow({
         scope="row"
       >
         <span className={styles.title}>{task.title}</span>
+        {task.createdByCustomer ? (
+          <TaskOriginNote label={content.row.createdByCustomer} />
+        ) : null}
       </DataTableHeaderCell>
       <DataTableCell mobileCardSlot="secondary">
         {canWrite ? (

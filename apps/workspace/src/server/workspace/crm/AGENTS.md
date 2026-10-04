@@ -91,8 +91,11 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   Projekt. Es gibt keinen Löschpfad, `cancelled` ersetzt ihn.
 - **Abschlussdaten schreibt intern nur `changeTaskStatus`** (`done` setzt Zeitpunkt und Mitglied, jeder andere Status
   löscht beide; die Portal-Herkunft `completed_by_portal_membership_id` wird bei jedem internen Wechsel geleert, damit
-  genau eine Herkunft bleibt). Einziger weiterer Schreiber ist der Portal-Command `completeCustomerTask`
-  (`src/server/portal/`). `updateTask` fasst Status und Abschlussdaten nie an.
+  genau eine Herkunft bleibt). Weitere Schreiber sind nur die Portal-Commands `completeCustomerTask` und
+  `reopenCustomerTask` (`src/server/portal/`). `updateTask` fasst Status und Abschlussdaten nie an.
+- **Vom Kunden angelegte Aufgaben** (`created_by_portal_membership_id`, DTO `createdByCustomer`) entstehen nur über
+  den Portal-Command `createCustomerRequestTask`. Annehmen, Bearbeiten und Ablehnen (`cancelled`) laufen über die
+  bestehenden Befehle `changeTaskStatus` und `updateTask`; es gibt keinen zweiten Weg.
 - **Kundenaufgabe heißt sichtbar.** Handler und DB-CHECK verlangen `visible_to_customer`, sobald `action_side` =
   `customer`; ein Widerspruch wird abgewiesen, nicht korrigiert.
 - **Activities enthalten nie Titel oder Beschreibung**, nur Ids und die geänderten Werte (`task-activity-service`).

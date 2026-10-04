@@ -13,13 +13,16 @@ import { ProjectPhase } from "@invessiv/common/constants/crm/project-phases";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import { ProjectWorkflowKey } from "@invessiv/common/constants/crm/project-workflows";
 import { TaskActionSide } from "@invessiv/common/constants/crm/task-action-sides";
+import { SystemMessageKey } from "@invessiv/common/constants/crm/system-message-keys";
 import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import { PortalTaskErrorCode } from "@invessiv/common/constants/portal/portal-task-error-codes";
+import { PortalTaskRequestLimits } from "@invessiv/common/constants/portal/portal-task-request-limits";
 import { findWorkspaceRoot, getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
   activities,
   customerContactAssignments,
   customers,
+  messages,
   people,
   portalMemberships,
   projects,
@@ -29,6 +32,8 @@ import {
 } from "@invessiv/db/record-configuration";
 import { createPortalActor } from "@/server/portal/auth/portal-actor";
 import { completeCustomerTask } from "@/server/portal/command-handler/complete-customer-task.command-handler";
+import { createCustomerRequestTask } from "@/server/portal/command-handler/create-customer-request-task.command-handler";
+import { reopenCustomerTask } from "@/server/portal/command-handler/reopen-customer-task.command-handler";
 import { resolvePortalActor } from "@/server/portal/query-handler/resolve-portal-actor.query-handler";
 import { insertStandardPortalMembership } from "@/server/tests/support/portal-membership-fixture";
 import { workspaceActorWith } from "@/server/tests/support/workspace-auth-fixtures";
@@ -61,6 +66,8 @@ describe.skipIf(!RUN_INTEGRATION)(
       Permission.PortalProjectsRead,
       Permission.PortalTasksRead,
       Permission.PortalTasksComplete,
+      Permission.PortalTasksReopen,
+      Permission.PortalTasksCreate,
     ];
 
     function actorFor(permissions: Permission[] = fullRights) {
@@ -331,6 +338,257 @@ describe.skipIf(!RUN_INTEGRATION)(
       const row = await readTask(taskId);
       expect(row.completed_by_portal_membership_id).toBeNull();
       expect(row.completed_by_member_id).toBeNull();
+    });
+
+    it("takes back a portal completion once and logs it as the customer", async () => {
+      const taskId = await insertTask(projectA, TaskActionSide.Customer, true);
+      await completeCustomerTask(actorFor(), taskId);
+
+      const results = await Promise.all([
+        reopenCustomerTask(actorFor(), taskId),
+        reopenCustomerTask(actorFor(), taskId),
+      ]);
+
+      expect(results).toEqual(
+        expect.arrayContaining([
+          { ok: true, alreadyOpen: false },
+          { ok: true, alreadyOpen: true },
+        ]),
+      );
+      const row = await readTask(taskId);
+      expect(row).toMatchObject({
+        status: TaskStatus.Open,
+        completed_at: null,
+        completed_by_member_id: null,
+        completed_by_portal_membership_id: null,
+        version: 3,
+      });
+      const logged = await db
+        .select({
+          actorType: activities.actor_type,
+          metadata: activities.metadata,
+        })
+        .from(activities)
+        .where(
+          and(
+            eq(activities.project_id, projectA),
+            eq(activities.type, ActivityType.StatusChange),
+          ),
+        );
+      const reopened = logged.filter((entry) => {
+        const metadata = entry.metadata as Record<string, unknown> | null;
+        return (
+          metadata?.task_id === taskId &&
+          metadata.next_status === TaskStatus.Open
+        );
+      });
+      expect(reopened).toHaveLength(1);
+      expect(reopened[0]?.actorType).toBe(ActorType.Customer);
+    });
+
+    it("never reopens a task the team completed, a foreign task or without the grant", async () => {
+      const teamDone = await insertTask(
+        projectA,
+        TaskActionSide.Customer,
+        true,
+      );
+      await changeTaskStatus(
+        teamDone,
+        { status: TaskStatus.Done, version: 1 },
+        { ...workspaceActorWith(), userId, workspaceMemberId: memberId },
+      );
+      const foreign = await insertTask(projectB, TaskActionSide.Customer, true);
+      await db
+        .update(tasks)
+        .set({
+          status: TaskStatus.Done,
+          completed_at: new Date(),
+          completed_by_portal_membership_id: membershipB,
+        })
+        .where(eq(tasks.id, foreign));
+      const ownDone = await insertTask(projectA, TaskActionSide.Customer, true);
+      await completeCustomerTask(actorFor(), ownDone);
+
+      for (const taskId of [teamDone, foreign, randomUUID(), "not-a-uuid"]) {
+        await expect(reopenCustomerTask(actorFor(), taskId)).resolves.toEqual({
+          ok: false,
+          code: PortalTaskErrorCode.NotFound,
+        });
+      }
+      await expect(
+        reopenCustomerTask(
+          actorFor([
+            Permission.PortalAccess,
+            Permission.PortalTasksRead,
+            Permission.PortalTasksComplete,
+          ]),
+          ownDone,
+        ),
+      ).resolves.toEqual({ ok: false, code: PortalTaskErrorCode.NotFound });
+
+      expect((await readTask(teamDone)).status).toBe(TaskStatus.Done);
+      expect((await readTask(foreign)).status).toBe(TaskStatus.Done);
+      expect((await readTask(ownDone)).status).toBe(TaskStatus.Done);
+    });
+
+    it("creates a customer request as a visible internal task for the responsible member", async () => {
+      const result = await createCustomerRequestTask(actorFor(), {
+        projectId: projectA,
+        title: `  ${PREFIX}request  `,
+        description: "Monday to Friday",
+        dueOn: null,
+      });
+
+      if (!result.ok) throw new Error("Customer request was refused.");
+      const row = await readTask(result.taskId);
+      expect(row).toMatchObject({
+        project_id: projectA,
+        title: `${PREFIX}request`,
+        description: "Monday to Friday",
+        status: TaskStatus.Open,
+        action_side: TaskActionSide.Internal,
+        visible_to_customer: true,
+        assignee_member_id: memberId,
+        created_by_portal_membership_id: membershipA,
+        version: 1,
+      });
+      expect(tasksMapperService.toDto(row).createdByCustomer).toBe(true);
+
+      const created = await db
+        .select({
+          actorType: activities.actor_type,
+          metadata: activities.metadata,
+        })
+        .from(activities)
+        .where(
+          and(
+            eq(activities.project_id, projectA),
+            eq(activities.type, ActivityType.Created),
+          ),
+        );
+      const forTask = created.filter(
+        (entry) =>
+          (entry.metadata as Record<string, unknown> | null)?.task_id ===
+          result.taskId,
+      );
+      expect(forTask).toHaveLength(1);
+      expect(forTask[0]?.actorType).toBe(ActorType.Customer);
+      expect(JSON.stringify(forTask[0]?.metadata)).not.toContain(PREFIX);
+
+      const announced = await db
+        .select({ body: messages.body, metadata: messages.metadata })
+        .from(messages)
+        .where(
+          and(
+            eq(messages.customer_id, customerA),
+            eq(messages.body, SystemMessageKey.CustomerTaskRequested),
+          ),
+        );
+      expect(announced).toHaveLength(1);
+    });
+
+    it("refuses a request for a foreign or archived project, without the grant and with invalid input", async () => {
+      const request = {
+        projectId: projectA,
+        title: `${PREFIX}refused`,
+        description: "",
+        dueOn: null,
+      };
+
+      for (const projectId of [projectB, archivedProject, randomUUID()]) {
+        await expect(
+          createCustomerRequestTask(actorFor(), { ...request, projectId }),
+        ).resolves.toEqual({ ok: false, code: PortalTaskErrorCode.NotFound });
+      }
+      await expect(
+        createCustomerRequestTask(
+          actorFor([Permission.PortalAccess, Permission.PortalTasksRead]),
+          request,
+        ),
+      ).resolves.toEqual({ ok: false, code: PortalTaskErrorCode.NotFound });
+      for (const invalid of [
+        { ...request, title: "   " },
+        { ...request, dueOn: "2000-01-01" },
+        { ...request, projectId: "not-a-uuid" },
+      ]) {
+        await expect(
+          createCustomerRequestTask(actorFor(), invalid),
+        ).resolves.toEqual({
+          ok: false,
+          code: PortalTaskErrorCode.Validation,
+        });
+      }
+
+      const leaked = await db
+        .select({ id: tasks.id })
+        .from(tasks)
+        .where(eq(tasks.title, request.title));
+      expect(leaked).toEqual([]);
+    });
+
+    it("refuses a request once the project holds the maximum of open customer requests", async () => {
+      const limitProject = await insertProject(
+        customerA,
+        ProjectStatus.Planned,
+      );
+      try {
+        await db.insert(tasks).values(
+          Array.from(
+            { length: PortalTaskRequestLimits.OpenPerProject },
+            () => ({
+              id: randomUUID(),
+              project_id: limitProject,
+              title: `${PREFIX}queued`,
+              description: "",
+              status: TaskStatus.Open,
+              action_side: TaskActionSide.Internal,
+              visible_to_customer: true,
+              assignee_member_id: memberId,
+              created_by_portal_membership_id: membershipA,
+              version: 1,
+            }),
+          ),
+        );
+
+        await expect(
+          createCustomerRequestTask(actorFor(), {
+            projectId: limitProject,
+            title: `${PREFIX}one too many`,
+            description: "",
+            dueOn: null,
+          }),
+        ).resolves.toEqual({
+          ok: false,
+          code: PortalTaskErrorCode.LimitReached,
+        });
+      } finally {
+        await db.delete(projects).where(eq(projects.id, limitProject));
+      }
+    });
+
+    it("refuses a request when nobody active answers for the project", async () => {
+      await db
+        .update(workspaceMembers)
+        .set({ active: false })
+        .where(eq(workspaceMembers.id, memberId));
+      try {
+        await expect(
+          createCustomerRequestTask(actorFor(), {
+            projectId: projectA,
+            title: `${PREFIX}nobody`,
+            description: "",
+            dueOn: null,
+          }),
+        ).resolves.toEqual({
+          ok: false,
+          code: PortalTaskErrorCode.NoAssignee,
+        });
+      } finally {
+        await db
+          .update(workspaceMembers)
+          .set({ active: true })
+          .where(eq(workspaceMembers.id, memberId));
+      }
     });
 
     it("resolves no actor for a revoked membership, so the route answers 404", async () => {

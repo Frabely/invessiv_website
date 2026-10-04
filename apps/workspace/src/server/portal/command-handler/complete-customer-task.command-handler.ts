@@ -1,11 +1,10 @@
 import "server-only";
 
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, inArray, sql } from "drizzle-orm";
 import { z } from "zod";
 
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
-import { TaskActionSide } from "@invessiv/common/constants/crm/task-action-sides";
 import {
   OPEN_TASK_STATUS_VALUES,
   TaskStatus,
@@ -13,12 +12,12 @@ import {
 import { PortalTaskErrorCode } from "@invessiv/common/constants/portal/portal-task-error-codes";
 import type { CompleteCustomerTaskResult } from "@invessiv/common/contracts/portal/results/complete-customer-task-result";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
-import { projects, tasks } from "@invessiv/db/record-configuration";
+import { tasks } from "@invessiv/db/record-configuration";
 import { TASK_ACTIVITY_ENTITY } from "@/common/constants/crm/task-activity-metadata";
 import type { PortalActor } from "@/server/portal/auth/portal-actor";
 import { portalActivityActor } from "@/server/portal/auth/portal-activity-actor";
 import { portalCanOn } from "@/server/portal/shared/portal-can-on";
-import { portalProjectCondition } from "@/server/portal/shared/portal-project-condition";
+import { portalCustomerTaskCondition } from "@/server/portal/shared/portal-customer-task-condition";
 import { activityService } from "@/server/shared/services/activity-service";
 
 const taskIdSchema = z.uuid();
@@ -43,17 +42,10 @@ export async function completeCustomerTask(
 ): Promise<CompleteCustomerTaskResult> {
   if (!taskIdSchema.safeParse(taskId).success) return NOT_FOUND;
   const db = getDrizzleDatabaseClient();
-  const releasedToActor = and(
-    eq(tasks.id, taskId),
-    eq(tasks.action_side, TaskActionSide.Customer),
-    eq(tasks.visible_to_customer, true),
-    inArray(
-      tasks.project_id,
-      db
-        .select({ id: projects.id })
-        .from(projects)
-        .where(portalProjectCondition(actor, Permission.PortalTasksComplete)),
-    ),
+  const releasedToActor = portalCustomerTaskCondition(
+    actor,
+    taskId,
+    Permission.PortalTasksComplete,
   );
 
   return db.transaction(async (tx): Promise<CompleteCustomerTaskResult> => {

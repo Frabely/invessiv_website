@@ -37,3 +37,21 @@ it("keeps the onboarding form link of tasks aligned between model and migration"
   // The form outlives no purge order: the link must not cascade.
   expect(migration).not.toMatch(/ON DELETE/i);
 });
+
+it("keeps the portal creation origin of tasks aligned between model and migration", () => {
+  const configuration = getTableConfig(tasks);
+  const migration = readFileSync(
+    resolve(process.cwd(), "migrations", "0051_add_portal_task_requests.sql"),
+    "utf8",
+  );
+  expect(configuration.foreignKeys.map((key) => key.getName())).toContain(
+    N.CreatedByPortalMembershipForeignKey,
+  );
+  expect(migration).toContain(N.CreatedByPortalMembershipForeignKey);
+  const column = configuration.columns.find(
+    (candidate) => candidate.name === "created_by_portal_membership_id",
+  );
+  expect(column).toMatchObject({ notNull: false, hasDefault: false });
+  // Membership history stays referenceable: the link must not cascade.
+  expect(migration).not.toMatch(/ON DELETE/i);
+});

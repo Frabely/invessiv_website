@@ -7,24 +7,26 @@ export type PortalTaskCheckboxProps = {
   checked: boolean;
   /** Visible hint that explains a disabled checkbox, e.g. in the owner view. */
   describedById?: string;
-  /** False in the owner view: the checkbox shows but cannot write. */
+  /**
+   * False when this state cannot be changed here: the owner view, a missing grant, or a tick the
+   * team set. The checkbox still shows the state.
+   */
   enabled: boolean;
+  /** Names the action the next click performs: completing or taking the tick back. */
   label: string;
-  onCompleteAction: () => void;
+  onToggleAction: (checked: boolean) => void;
   pending: boolean;
+  /** Read out instead of `label` while the checkbox is locked. */
   statusLabel: string;
 };
 
-/**
- * A 44px hit area around the visual box. A completed task stays checked and locked: reopening is
- * the team's decision in the CRM, not a portal action.
- */
+/** A 44px hit area around the visual box. */
 export function PortalTaskCheckbox({
   checked,
   describedById,
   enabled,
   label,
-  onCompleteAction,
+  onToggleAction,
   pending,
   statusLabel,
 }: PortalTaskCheckboxProps) {
@@ -33,12 +35,10 @@ export function PortalTaskCheckbox({
       <CheckboxControl
         aria-busy={pending || undefined}
         aria-describedby={describedById}
-        aria-label={checked || !enabled ? statusLabel : label}
+        aria-label={enabled ? label : statusLabel}
         checked={checked}
-        disabled={!enabled || checked || pending}
-        onChange={(event) => {
-          if (event.target.checked) onCompleteAction();
-        }}
+        disabled={!enabled || pending}
+        onChange={(event) => onToggleAction(event.target.checked)}
       />
     </label>
   );

@@ -83,12 +83,17 @@ function dashboard(
   return {
     customer: { displayName: "Nordlicht Coaching" },
     contact: null,
+    selectedProjectId: null,
     project: null,
     completedProjects: [],
     customerTasks: [],
     ourTasks: [],
     feedback: null,
-    capabilities: { canCompleteTasks: false, isOwnerView: false },
+    capabilities: {
+      canCompleteTasks: false,
+      canCreateTasks: false,
+      isOwnerView: false,
+    },
     ...overrides,
   };
 }
@@ -281,7 +286,11 @@ describe("PortalCustomerPage", () => {
   it("gives the owner view a cockpit link for disabled actions", async () => {
     mocks.getPortalDashboard.mockResolvedValue(
       dashboard({
-        capabilities: { canCompleteTasks: false, isOwnerView: true },
+        capabilities: {
+          canCompleteTasks: false,
+          canCreateTasks: false,
+          isOwnerView: true,
+        },
       }),
     );
 

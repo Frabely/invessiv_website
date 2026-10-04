@@ -7,12 +7,24 @@ import { PortalOnboardingApiPath } from "@/common/constants/portal/portal-onboar
 
 const TASKS_PATH = "tasks";
 const TASK_COMPLETE_PATH = "complete";
+const TASK_REOPEN_PATH = "reopen";
+
+export function portalTasksEndpoint(customerId: string): string {
+  return `${WorkspaceApiEndpoint.Portal}/${encodeURIComponent(customerId)}/${TASKS_PATH}`;
+}
 
 export function portalTaskCompleteEndpoint(
   customerId: string,
   taskId: string,
 ): string {
-  return `${WorkspaceApiEndpoint.Portal}/${encodeURIComponent(customerId)}/${TASKS_PATH}/${encodeURIComponent(taskId)}/${TASK_COMPLETE_PATH}`;
+  return `${portalTasksEndpoint(customerId)}/${encodeURIComponent(taskId)}/${TASK_COMPLETE_PATH}`;
+}
+
+export function portalTaskReopenEndpoint(
+  customerId: string,
+  taskId: string,
+): string {
+  return `${portalTasksEndpoint(customerId)}/${encodeURIComponent(taskId)}/${TASK_REOPEN_PATH}`;
 }
 
 export function portalConversationEndpoint(customerId: string): string {

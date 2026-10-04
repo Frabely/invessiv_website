@@ -25,6 +25,7 @@ const TASK: TaskDto = {
   completedAt: null,
   completedByMemberId: null,
   completedByCustomer: false,
+  createdByCustomer: false,
   feedbackRoundId: null,
   onboardingFormId: null,
   version: 4,

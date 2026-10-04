@@ -70,7 +70,9 @@
     "customerTasks": {
       "title": "Needed from you",
       "open": "See all",
-      "dialogDescription": "We need these items from you to keep things moving. Tick off what is done – we see it right away.",
+      "dialogDescription": "We need these items from you to keep things moving. Tick off what is done – we see it right away. You can undo a tick you set yourself.",
+      "recentlyDone": "Recently done",
+      "reopenLabel": "Undo the tick on “{name}”",
       "empty": "All done. We don't need anything from you right now.",
       "moreOpen": "and {count} more",
       "moreOpenOne": "and 1 more item",
@@ -86,7 +88,12 @@
       "title": "What we're working on",
       "more": "Show more",
       "less": "Show less",
-      "empty": "Nothing visible is on our list for this project right now. We will be in touch as soon as things move on."
+      "empty": "Nothing visible is on our list for this project right now. We will be in touch as soon as things move on.",
+      "create": "Create a task for us",
+      "fromYou": "from you",
+      "rejected": "Declined",
+      "ownerHint": "No task can be created in the portal view.",
+      "ownerLink": "Create in the CRM"
     },
     "feedback": {
       "title": "Feedback",
@@ -171,7 +178,33 @@
   "tasks": {
     "announce": {
       "completed": "“{name}” is done. Thank you.",
-      "failed": "“{name}” could not be saved. Please try again."
+      "reopened": "“{name}” is open again.",
+      "failed": "“{name}” could not be saved. Please try again.",
+      "requested": "“{name}” has reached us. You will find the task under “What we're working on”."
+    },
+    "request": {
+      "title": "Create a task for us",
+      "description": "Tell us what to do for “{project}”. The task then appears under “What we're working on”.",
+      "descriptionNoProject": "Tell us what to do for your project. The task then appears under “What we're working on”.",
+      "titleLabel": "What should we do?",
+      "titlePlaceholder": "e.g. add opening hours to the footer",
+      "titleRequired": "Briefly describe what we should do.",
+      "detailsLabel": "Details",
+      "detailsHint": "Optional: copy, links or anything that makes the work easier for us.",
+      "dueLabel": "Preferred date",
+      "dueHint": "Optional. We will let you know if we cannot make it by then.",
+      "duePast": "The preferred date is in the past.",
+      "submit": "Create task",
+      "submitting": "Creating …",
+      "cancel": "Cancel",
+      "close": "Close",
+      "errors": {
+        "not_found": "This project is no longer available. Reload the page and try again.",
+        "validation": "We could not save this. Please check your entries.",
+        "no_assignee": "We cannot assign the task to anyone right now. Please message us in the chat.",
+        "limit_reached": "You already have many open tasks for this project. Once we have finished some, you can create new ones.",
+        "unavailable": "That did not work just now. Please try again."
+      }
     }
   },
   "chat": {

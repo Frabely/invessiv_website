@@ -11,6 +11,8 @@ export type PortalWidgetDialogHostProps = {
   /** Full content of the customer task dialog, built by the dashboard that owns the task state. */
   customerTasksContent: ReactNode;
   onCloseAction: () => void;
+  /** The complete request dialog of the "our tasks" widget; null when the reader may not create. */
+  taskRequestDialog: ReactNode;
   /** The dialog widget named in `?widget`; null keeps every dialog closed. */
   widgetKey: PortalWidgetKey | null;
 };
@@ -20,8 +22,11 @@ export function PortalWidgetDialogHost({
   content,
   customerTasksContent,
   onCloseAction,
+  taskRequestDialog,
   widgetKey,
 }: PortalWidgetDialogHostProps) {
+  if (widgetKey === PortalWidgetKey.OurTasks) return taskRequestDialog;
+
   if (widgetKey === PortalWidgetKey.CustomerTasks) {
     return (
       <Dialog

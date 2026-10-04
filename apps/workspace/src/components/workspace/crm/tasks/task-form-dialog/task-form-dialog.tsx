@@ -37,6 +37,7 @@ import {
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
+import { TaskOriginNote } from "../task-origin-note/task-origin-note";
 import styles from "./task-form-dialog.module.css";
 
 type TaskFormDialogProps = {
@@ -175,6 +176,9 @@ export function TaskFormDialog({
         noValidate
         onSubmit={handleSubmit}
       >
+        {task?.createdByCustomer ? (
+          <TaskOriginNote label={content.row.createdByCustomer} />
+        ) : null}
         <div className={styles.grid}>
           <FormField
             className={styles.fullWidth}

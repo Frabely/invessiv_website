@@ -11,6 +11,7 @@ export const SystemMessageKey = {
   OnboardingReleased: "onboardingReleased",
   OnboardingChangesRequested: "onboardingChangesRequested",
   OnboardingCompleted: "onboardingCompleted",
+  CustomerTaskRequested: "customerTaskRequested",
 } as const;
 export type SystemMessageKey =
   (typeof SystemMessageKey)[keyof typeof SystemMessageKey];
@@ -26,6 +27,7 @@ export const SYSTEM_MESSAGE_KEY_VALUES = [
   SystemMessageKey.OnboardingReleased,
   SystemMessageKey.OnboardingChangesRequested,
   SystemMessageKey.OnboardingCompleted,
+  SystemMessageKey.CustomerTaskRequested,
 ] as const;
 
 /** Parameter names stored in `messages.metadata` of a system event. */
@@ -34,6 +36,7 @@ export const SystemMessageParam = {
   Phase: "phase",
   RoundNumber: "roundNumber",
   BlockTitles: "blockTitles",
+  TaskTitle: "taskTitle",
 } as const;
 export type SystemMessageParam =
   (typeof SystemMessageParam)[keyof typeof SystemMessageParam];

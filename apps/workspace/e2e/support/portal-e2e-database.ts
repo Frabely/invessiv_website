@@ -7,6 +7,8 @@ import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses
 import { ProjectBillingModel } from "@invessiv/common/constants/crm/project-billing-models";
 import { ProjectPhase } from "@invessiv/common/constants/crm/project-phases";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
+import { TaskActionSide } from "@invessiv/common/constants/crm/task-action-sides";
+import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import { ProjectWorkflowKey } from "@invessiv/common/constants/crm/project-workflows";
 import {
   type ContactDatabaseTransaction,
@@ -23,6 +25,7 @@ import {
   portalMembershipRoles,
   portalMemberships,
   projects,
+  tasks,
   roles,
   users,
   workspaceMemberRoles,
@@ -270,6 +273,8 @@ export async function preparePortalE2eDatabase(
     const feedbackProject = randomUUID();
     const feedbackApprovalProject = randomUUID();
     const onboardingProject = randomUUID();
+    const taskProject = randomUUID();
+    const customerTaskId = randomUUID();
     const personFeedback = randomUUID();
     const personA = randomUUID();
     const personB = randomUUID();
@@ -371,6 +376,43 @@ export async function preparePortalE2eDatabase(
         included_feedback_rounds: 0,
         feedback_round_positions: null,
         feedback_areas: [],
+      },
+      {
+        ...feedbackProjectRow(
+          taskProject,
+          feedbackCustomer,
+          managerMemberId,
+          "Portal-Aufgaben-Test",
+        ),
+        included_feedback_rounds: 0,
+        feedback_round_positions: null,
+        feedback_areas: [],
+      },
+    ]);
+    await tx.insert(tasks).values([
+      {
+        id: customerTaskId,
+        project_id: taskProject,
+        title: "E2E customer task",
+        description: "Customer completion and reopening flow",
+        status: TaskStatus.Open,
+        action_side: TaskActionSide.Customer,
+        visible_to_customer: true,
+        assignee_member_id: managerMemberId,
+        version: 1,
+      },
+      {
+        id: randomUUID(),
+        project_id: taskProject,
+        title: "E2E team-completed task",
+        description: "The customer must not reopen this completion",
+        status: TaskStatus.Done,
+        action_side: TaskActionSide.Customer,
+        visible_to_customer: true,
+        assignee_member_id: managerMemberId,
+        completed_at: new Date(),
+        completed_by_member_id: managerMemberId,
+        version: 1,
       },
     ]);
     // Customer B: one feedback round after the design and two before the launch.
@@ -536,6 +578,8 @@ export async function preparePortalE2eDatabase(
       feedbackProject,
       feedbackApprovalProject,
       onboardingProject,
+      taskProject,
+      customerTaskId,
       assignmentA,
       assignmentB,
       assignmentOther,

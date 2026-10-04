@@ -9,6 +9,7 @@ import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/porta
 import type { PortalFilesOverviewDto } from "@invessiv/common/contracts/portal/portal-files-overview.dto";
 import type { PortalOnboardingCallDto } from "@invessiv/common/contracts/portal/portal-onboarding-call.dto";
 import type { PortalOnboardingFormSummaryDto } from "@invessiv/common/contracts/portal/portal-onboarding-form-summary.dto";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ChatDock, WidgetGrid } from "@invessiv/ui";
 import type { PortalDashboardNavigationMode as PortalDashboardNavigationModeType } from "@/common/constants/portal/portal-dashboard-navigation-modes";
 import { PortalDashboardNavigationMode } from "@/common/constants/portal/portal-dashboard-navigation-modes";
@@ -28,6 +29,7 @@ import type {
 } from "@/i18n/dictionaries/portal";
 import { PortalDashboardEmptyState } from "../portal-dashboard-empty-state/portal-dashboard-empty-state";
 import { PortalOwnerNotice } from "@/components/portal/portal-owner-notice/portal-owner-notice";
+import { PortalTaskRequestDialog } from "../portal-task-request-dialog/portal-task-request-dialog";
 import { PortalWidgetDialogHost } from "../portal-widget-dialog-host/portal-widget-dialog-host";
 import { PortalCompletedProjectsWidget } from "../widgets/portal-completed-projects-widget/portal-completed-projects-widget";
 import { PortalContactWidget } from "../widgets/portal-contact-widget/portal-contact-widget";
@@ -100,6 +102,8 @@ export function PortalDashboard({
   const dockId = useId();
   const ownerNoticeId = useId();
   const dialogOwnerNoticeId = useId();
+  const requestOwnerNoticeId = useId();
+  const [requestAnnouncement, setRequestAnnouncement] = useState("");
   const completion = usePortalTaskCompletion(
     customerId,
     content.tasks.announce,
@@ -112,7 +116,9 @@ export function PortalDashboard({
       ? requestedWidget
       : null;
   const selectedProject = dashboard.project;
-  const { canCompleteTasks, isOwnerView } = dashboard.capabilities;
+  const { canCompleteTasks, canCreateTasks, isOwnerView } =
+    dashboard.capabilities;
+  const requestProjectId = canCreateTasks ? dashboard.selectedProjectId : null;
 
   function navigate(
     change: Parameters<typeof buildPortalHref>[2],
@@ -124,6 +130,8 @@ export function PortalDashboard({
 
   const openDialog = (widget: PortalWidgetKey) =>
     navigate({ widget }, PortalDashboardNavigationMode.Push);
+  const closeDialog = () =>
+    navigate({ widget: null }, PortalDashboardNavigationMode.Replace);
 
   const ownerNotice = (id: string): ReactNode =>
     isOwnerView && cockpitHref ? (
@@ -146,7 +154,14 @@ export function PortalDashboard({
     isOwnerView,
     isPendingAction: completion.isPending,
     locale,
-    onCompleteAction: completion.complete,
+    onToggleAction: (
+      task: Parameters<typeof completion.toggle>[0],
+      done: boolean,
+    ) => {
+      // One live region announces both flows; the newer event replaces the older one.
+      setRequestAnnouncement("");
+      void completion.toggle(task, done);
+    },
     today,
   };
   const ourTasks = dashboard.ourTasks;
@@ -204,6 +219,7 @@ export function PortalDashboard({
     [PortalWidgetKey.CustomerTasks]: (
       <PortalCustomerTasksWidget
         {...taskListProps}
+        doneTasks={doneCustomerTasks}
         onOpenAction={() => openDialog(PortalWidgetKey.CustomerTasks)}
         openTasks={openCustomerTasks}
         ownerHintId={ownerNoticeId}
@@ -214,6 +230,19 @@ export function PortalDashboard({
       <PortalOurTasksWidget
         content={content}
         locale={locale}
+        onCreateAction={
+          requestProjectId ? () => openDialog(PortalWidgetKey.OurTasks) : null
+        }
+        ownerNotice={
+          isOwnerView && cockpitHref ? (
+            <PortalOwnerNotice
+              cockpitHref={cockpitHref}
+              hint={content.widgets.ourTasks.ownerHint}
+              id={requestOwnerNoticeId}
+              linkLabel={content.widgets.ourTasks.ownerLink}
+            />
+          ) : null
+        }
         tasks={ourTasks}
         today={today}
       />
@@ -305,13 +334,32 @@ export function PortalDashboard({
             ownerNotice={ownerNotice(dialogOwnerNoticeId)}
           />
         }
-        onCloseAction={() =>
-          navigate({ widget: null }, PortalDashboardNavigationMode.Replace)
+        onCloseAction={closeDialog}
+        taskRequestDialog={
+          requestProjectId ? (
+            <PortalTaskRequestDialog
+              content={content.tasks.request}
+              customerId={customerId}
+              onCloseAction={closeDialog}
+              onCreatedAction={(title) => {
+                setRequestAnnouncement(
+                  formatMessage(content.tasks.announce.requested, {
+                    name: title,
+                  }),
+                );
+                closeDialog();
+                router.refresh();
+              }}
+              projectId={requestProjectId}
+              projectTitle={selectedProject?.title ?? null}
+              today={today}
+            />
+          ) : null
         }
         widgetKey={openWidget}
       />
       <p aria-live="polite" className="sr-only" role="status">
-        {completion.announcement}
+        {requestAnnouncement || completion.announcement}
       </p>
     </div>
   );

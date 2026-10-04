@@ -38,6 +38,10 @@ export type PortalE2eFixture = {
   feedbackApprovalProject: string;
   /** Active project of the feedback customer without a form; the onboarding flow starts one. */
   onboardingProject: string;
+  /** Dedicated active project for the customer task browser flow. */
+  taskProject: string;
+  /** Released customer-side task the portal contact can complete and reopen. */
+  customerTaskId: string;
   assignmentA: string;
   assignmentB: string;
   assignmentOther: string;

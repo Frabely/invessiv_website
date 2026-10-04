@@ -69,3 +69,6 @@ questionnaire_field_choices (id, field_id)`: Er bindet die Option an das Auslös
   Migration `0049`), abgesichert durch `tasks_single_origin_check`. Beide sind immer intern
   (`*_side_check`), je Runde bzw. Bogen einmalig (partieller Unique-Index) und über einen zusammengesetzten
   Schlüssel an dasselbe Projekt gebunden. Der Fremdschlüssel auf den Bogen kaskadiert nicht.
+- `created_by_portal_membership_id` (Migration `0051`) markiert eine Aufgabe, die ein Kundenkontakt im Portal
+  angelegt hat. Sie ist keine Sammelaufgabe und fällt nicht unter `tasks_single_origin_check`; der Fremdschlüssel
+  kaskadiert nicht, damit die Mitgliedschaftshistorie referenzierbar bleibt.

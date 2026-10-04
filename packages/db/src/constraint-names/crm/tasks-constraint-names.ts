@@ -5,6 +5,8 @@ export const TasksConstraintName = {
   CompletedByForeignKey: "tasks_completed_by_member_id_fkey",
   CompletedByPortalMembershipForeignKey:
     "tasks_completed_by_portal_membership_id_fkey",
+  CreatedByPortalMembershipForeignKey:
+    "tasks_created_by_portal_membership_id_fkey",
   TitleCheck: "tasks_title_check",
   StatusCheck: "tasks_status_check",
   ActionSideCheck: "tasks_action_side_check",
@@ -32,6 +34,7 @@ export const TASKS_CONSTRAINT_NAME_VALUES = [
   TasksConstraintName.AssigneeForeignKey,
   TasksConstraintName.CompletedByForeignKey,
   TasksConstraintName.CompletedByPortalMembershipForeignKey,
+  TasksConstraintName.CreatedByPortalMembershipForeignKey,
   TasksConstraintName.TitleCheck,
   TasksConstraintName.StatusCheck,
   TasksConstraintName.ActionSideCheck,

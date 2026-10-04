@@ -31,7 +31,8 @@
     "statusLabel": "Status von „{name}“",
     "statusSelectLabel": "Status von „{name}“: {status}",
     "assignee": "Bearbeiter: {name}",
-    "completedByCustomer": "Vom Kunden erledigt"
+    "completedByCustomer": "Vom Kunden erledigt",
+    "createdByCustomer": "Vom Kunden angelegt"
   },
   "status": {
     "open": "Offen",

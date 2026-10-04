@@ -83,6 +83,8 @@ describe("Permission", () => {
       Permission.PortalProjectsRead,
       Permission.PortalTasksRead,
       Permission.PortalTasksComplete,
+      Permission.PortalTasksReopen,
+      Permission.PortalTasksCreate,
       Permission.PortalMessagesRead,
       Permission.PortalMessagesWrite,
       Permission.PortalFilesRead,
@@ -118,6 +120,12 @@ describe("Permission", () => {
     );
     expect(PORTAL_READ_PERMISSION_VALUES).not.toContain(
       Permission.PortalTasksComplete,
+    );
+    expect(PORTAL_READ_PERMISSION_VALUES).not.toContain(
+      Permission.PortalTasksReopen,
+    );
+    expect(PORTAL_READ_PERMISSION_VALUES).not.toContain(
+      Permission.PortalTasksCreate,
     );
     expect(PORTAL_READ_PERMISSION_VALUES).not.toContain(
       Permission.PortalMessagesWrite,

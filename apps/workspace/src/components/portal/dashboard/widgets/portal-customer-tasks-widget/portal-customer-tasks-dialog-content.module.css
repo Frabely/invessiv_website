@@ -11,27 +11,15 @@
 }
 
 .done {
+  padding-top: 0.9rem;
   border-top: 1px solid var(--color-border);
 }
 
-.doneSummary {
-  display: flex;
-  align-items: center;
-  min-height: 2.75rem;
+.doneHeading {
+  margin: 0 0 0.25rem;
   color: var(--color-text-muted);
   font-size: var(--font-size-ui-sm);
   font-weight: 600;
-  cursor: pointer;
-}
-
-.doneSummary:hover {
-  color: var(--color-text);
-}
-
-.doneSummary:focus-visible {
-  border-radius: 6px;
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
 }
 
 .doneEmpty {

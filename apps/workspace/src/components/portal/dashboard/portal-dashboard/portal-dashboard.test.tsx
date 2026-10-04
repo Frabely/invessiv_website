@@ -19,6 +19,7 @@ import { TaskDueState } from "@invessiv/common/constants/crm/task-due-states";
 import { PortalTaskErrorCode } from "@invessiv/common/constants/portal/portal-task-error-codes";
 import type { PortalConversationDto } from "@invessiv/common/contracts/portal/portal-conversation.dto";
 import type { PortalCustomerTaskDto } from "@invessiv/common/contracts/portal/portal-customer-task.dto";
+import type { PortalOurTaskDto } from "@invessiv/common/contracts/portal/portal-our-task.dto";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
 import type { PortalFilesOverviewDto } from "@invessiv/common/contracts/portal/portal-files-overview.dto";
 import type { PortalOnboardingFormSummaryDto } from "@invessiv/common/contracts/portal/portal-onboarding-form-summary.dto";
@@ -37,6 +38,8 @@ import { PortalDashboard } from "./portal-dashboard";
 
 const mocks = vi.hoisted(() => ({
   completeTask: vi.fn(),
+  reopenTask: vi.fn(),
+  createTask: vi.fn(),
   getConversation: vi.fn(),
   markRead: vi.fn(),
   push: vi.fn(),
@@ -55,7 +58,11 @@ vi.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(mocks.search.value),
 }));
 vi.mock("@/client/portal/portal-tasks-api-service", () => ({
-  portalTasksApiService: { completeTask: mocks.completeTask },
+  portalTasksApiService: {
+    completeTask: mocks.completeTask,
+    reopenTask: mocks.reopenTask,
+    createTask: mocks.createTask,
+  },
 }));
 vi.mock("@/client/portal/portal-messages-api-service", () => ({
   portalMessagesApiService: {
@@ -155,6 +162,7 @@ function customerTask(
     done: false,
     completedAt: null,
     version: 1,
+    canReopen: false,
     ...overrides,
   };
 }
@@ -167,6 +175,7 @@ function dto(overrides: Partial<PortalDashboardDto> = {}): PortalDashboardDto {
       email: "anna@example.test",
       booking: null,
     },
+    selectedProjectId: "project-1",
     project: {
       id: "project-1",
       title: "Relaunch",
@@ -187,7 +196,11 @@ function dto(overrides: Partial<PortalDashboardDto> = {}): PortalDashboardDto {
     customerTasks: [customerTask("a")],
     ourTasks: [],
     feedback: null,
-    capabilities: { canCompleteTasks: true, isOwnerView: false },
+    capabilities: {
+      canCompleteTasks: true,
+      canCreateTasks: false,
+      isOwnerView: false,
+    },
     ...overrides,
   };
 }
@@ -226,6 +239,38 @@ function renderDashboard(
     />,
   );
 }
+
+function ourTasksWidget() {
+  return screen.getByRole("region", {
+    name: new RegExp(content.widgets.ourTasks.title),
+  });
+}
+
+function ourTask(
+  id: string,
+  overrides: Partial<PortalOurTaskDto> = {},
+): PortalOurTaskDto {
+  return {
+    id,
+    projectId: "project-1",
+    projectTitle: "Relaunch",
+    title: `Our task ${id}`,
+    description: null,
+    dueOn: null,
+    dueState: TaskDueState.None,
+    done: false,
+    completedAt: null,
+    requestedByCustomer: false,
+    rejected: false,
+    ...overrides,
+  };
+}
+
+const CAN_CREATE = {
+  canCompleteTasks: true,
+  canCreateTasks: true,
+  isOwnerView: false,
+};
 
 function customerTasksWidget() {
   return screen.getByRole("region", { name: /Needed from you/ });
@@ -563,9 +608,217 @@ describe("PortalDashboard", () => {
     expect(checkbox).toBeEnabled();
   });
 
+  it("keeps recently completed tasks ticked below the open ones", () => {
+    renderDashboard(
+      dto({
+        customerTasks: [
+          customerTask("a"),
+          customerTask("b", {
+            done: true,
+            completedAt: "2026-09-25T10:00:00Z",
+          }),
+        ],
+      }),
+    );
+
+    const widget = customerTasksWidget();
+    expect(
+      within(widget).getByText(content.widgets.customerTasks.recentlyDone),
+    ).toBeInTheDocument();
+    const boxes = within(widget).getAllByRole("checkbox");
+    expect(boxes).toHaveLength(2);
+    expect(boxes[0]).not.toBeChecked();
+    expect(boxes[1]).toBeChecked();
+  });
+
+  it("takes an own tick back and announces it", async () => {
+    mocks.reopenTask.mockResolvedValue({ ok: true, alreadyOpen: false });
+    renderDashboard(
+      dto({
+        customerTasks: [customerTask("b", { done: true, canReopen: true })],
+      }),
+    );
+
+    const checkbox = within(customerTasksWidget()).getByRole("checkbox", {
+      name: "Undo the tick on “Task b”",
+    });
+    fireEvent.click(checkbox);
+
+    expect(checkbox).not.toBeChecked();
+    await waitFor(() =>
+      expect(screen.getByRole("status")).toHaveTextContent(
+        "“Task b” is open again.",
+      ),
+    );
+    expect(mocks.reopenTask).toHaveBeenCalledWith("customer-1", "b");
+    expect(mocks.completeTask).not.toHaveBeenCalled();
+  });
+
+  it("locks a tick the team set", () => {
+    renderDashboard(
+      dto({
+        customerTasks: [customerTask("b", { done: true, canReopen: false })],
+      }),
+    );
+
+    expect(
+      within(customerTasksWidget()).getByRole("checkbox", {
+        name: "“Task b” is done",
+      }),
+    ).toBeDisabled();
+  });
+
+  it("lists completed tasks in the dialog without unfolding anything", () => {
+    mocks.search.value = "widget=customerTasks";
+    renderDashboard(
+      dto({
+        customerTasks: [
+          customerTask("a"),
+          customerTask("b", { done: true, canReopen: true }),
+        ],
+      }),
+    );
+
+    const dialog = screen.getByRole("dialog", { name: "Needed from you" });
+    expect(
+      within(dialog).getByRole("heading", { name: "Done (1)" }),
+    ).toBeInTheDocument();
+    expect(within(dialog).getByText("Task b")).toBeInTheDocument();
+    expect(dialog.querySelector("details")).toBeNull();
+  });
+
+  it("marks own requests and keeps a declined one visible", () => {
+    renderDashboard(
+      dto({
+        ourTasks: [
+          ourTask("x"),
+          ourTask("y", { requestedByCustomer: true }),
+          ourTask("z", { requestedByCustomer: true, rejected: true }),
+        ],
+      }),
+    );
+
+    const items = within(ourTasksWidget()).getAllByRole("listitem");
+    expect(items).toHaveLength(3);
+    expect(within(items[0]!).queryByText("from you")).toBeNull();
+    expect(within(items[1]!).getByText("from you")).toBeInTheDocument();
+    expect(within(items[2]!).getByText("Declined")).toBeInTheDocument();
+    expect(items[2]).toHaveAttribute("data-rejected", "true");
+  });
+
+  it("offers no task request without the create right", () => {
+    mocks.search.value = "widget=ourTasks";
+    renderDashboard();
+
+    expect(
+      within(ourTasksWidget()).queryByRole("button", {
+        name: "Create a task for us",
+      }),
+    ).toBeNull();
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  it("opens the request dialog through the URL", () => {
+    renderDashboard(dto({ capabilities: CAN_CREATE }));
+
+    fireEvent.click(
+      within(ourTasksWidget()).getByRole("button", {
+        name: "Create a task for us",
+      }),
+    );
+
+    expect(mocks.push).toHaveBeenCalledWith(
+      "/en/portal/customer-1?widget=ourTasks",
+      { scroll: false },
+    );
+  });
+
+  it("creates a task for the selected project, closes and announces it", async () => {
+    mocks.createTask.mockResolvedValue({ ok: true });
+    mocks.search.value = "widget=ourTasks";
+    renderDashboard(dto({ capabilities: CAN_CREATE }));
+
+    const dialog = screen.getByRole("dialog", { name: "Create a task for us" });
+    fireEvent.change(within(dialog).getByLabelText(/What should we do/), {
+      target: { value: "  Add opening hours  " },
+    });
+    fireEvent.click(
+      within(dialog).getByRole("button", { name: "Create task" }),
+    );
+
+    await waitFor(() =>
+      expect(mocks.createTask).toHaveBeenCalledWith("customer-1", {
+        projectId: "project-1",
+        title: "Add opening hours",
+        description: "",
+        dueOn: null,
+      }),
+    );
+    await waitFor(() =>
+      expect(screen.getByRole("status")).toHaveTextContent(
+        "“Add opening hours” has reached us.",
+      ),
+    );
+    expect(mocks.replace).toHaveBeenCalledWith("/en/portal/customer-1", {
+      scroll: false,
+    });
+    expect(mocks.refresh).toHaveBeenCalled();
+  });
+
+  it("asks for a title and shows why the server refused", async () => {
+    mocks.createTask.mockResolvedValue({
+      ok: false,
+      code: PortalTaskErrorCode.NoAssignee,
+    });
+    mocks.search.value = "widget=ourTasks";
+    renderDashboard(dto({ capabilities: CAN_CREATE }));
+    const dialog = screen.getByRole("dialog", { name: "Create a task for us" });
+    const submit = within(dialog).getByRole("button", { name: "Create task" });
+
+    fireEvent.click(submit);
+    expect(
+      within(dialog).getByText(content.tasks.request.titleRequired),
+    ).toBeInTheDocument();
+    expect(mocks.createTask).not.toHaveBeenCalled();
+
+    fireEvent.change(within(dialog).getByLabelText(/What should we do/), {
+      target: { value: "Add opening hours" },
+    });
+    fireEvent.click(submit);
+
+    expect(
+      await within(dialog).findByText(content.tasks.request.errors.no_assignee),
+    ).toBeInTheDocument();
+    expect(mocks.replace).not.toHaveBeenCalled();
+  });
+
+  it("points the owner view to the CRM instead of the request button", () => {
+    renderDashboard(
+      dto({
+        capabilities: {
+          canCompleteTasks: false,
+          canCreateTasks: false,
+          isOwnerView: true,
+        },
+      }),
+      FULL_READ,
+      "/en/crm?cockpit=customer-1",
+    );
+
+    expect(
+      within(ourTasksWidget()).getByRole("link", { name: "Create in the CRM" }),
+    ).toHaveAttribute("href", "/en/crm?cockpit=customer-1");
+  });
+
   it("disables the checkboxes in the owner view and links to the CRM", () => {
     renderDashboard(
-      dto({ capabilities: { canCompleteTasks: false, isOwnerView: true } }),
+      dto({
+        capabilities: {
+          canCompleteTasks: false,
+          canCreateTasks: false,
+          isOwnerView: true,
+        },
+      }),
       FULL_READ,
       "/en/crm?cockpit=customer-1",
     );
@@ -581,7 +834,13 @@ describe("PortalDashboard", () => {
 
   it("shows a disabled checkbox without the completion right", () => {
     renderDashboard(
-      dto({ capabilities: { canCompleteTasks: false, isOwnerView: false } }),
+      dto({
+        capabilities: {
+          canCompleteTasks: false,
+          canCreateTasks: false,
+          isOwnerView: false,
+        },
+      }),
     );
 
     expect(

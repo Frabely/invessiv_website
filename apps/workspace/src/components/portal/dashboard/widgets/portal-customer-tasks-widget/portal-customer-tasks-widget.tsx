@@ -14,8 +14,11 @@ import {
 import styles from "./portal-customer-tasks-widget.module.css";
 
 const SUMMARY_LIMIT = 3;
+const DONE_SUMMARY_LIMIT = 2;
 
 export type PortalCustomerTasksWidgetProps = PortalTaskListBaseProps & {
+  /** Most recently completed first, as the server orders them. */
+  doneTasks: readonly PortalCustomerTaskDto[];
   /** Rendered below the list in the owner view; its id describes the disabled checkboxes. */
   ownerNotice: ReactNode;
   onOpenAction: () => void;
@@ -23,10 +26,11 @@ export type PortalCustomerTasksWidgetProps = PortalTaskListBaseProps & {
 };
 
 /**
- * Shows the first open items. A task ticked off here stays in place until the refresh, so the
- * list does not jump under the pointer.
+ * Shows the first open items and, below them, the latest completed ones still ticked. A task
+ * ticked off here stays in place until the refresh, so the list does not jump under the pointer.
  */
 export function PortalCustomerTasksWidget({
+  doneTasks,
   onOpenAction,
   openTasks,
   ownerNotice,
@@ -35,6 +39,7 @@ export function PortalCustomerTasksWidget({
   const content = listProps.content.widgets.customerTasks;
   const summary = openTasks.slice(0, SUMMARY_LIMIT);
   const remaining = openTasks.length - summary.length;
+  const recentlyDone = doneTasks.slice(0, DONE_SUMMARY_LIMIT);
   const openCount = openTasks.filter(
     (task) => !listProps.isDoneAction(task),
   ).length;
@@ -62,6 +67,12 @@ export function PortalCustomerTasksWidget({
           ) : null}
         </>
       )}
+      {recentlyDone.length > 0 ? (
+        <div className={styles.done}>
+          <p className={styles.doneLabel}>{content.recentlyDone}</p>
+          <PortalTaskList {...listProps} tasks={recentlyDone} />
+        </div>
+      ) : null}
       {ownerNotice}
     </Widget>
   );

@@ -4,10 +4,12 @@ import type { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedbac
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import { TaskActionSide } from "@invessiv/common/constants/crm/task-action-sides";
 import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
+import { PortalTaskRequestLimits } from "@invessiv/common/constants/portal/portal-task-request-limits";
 import type { PortalBookingDto } from "@invessiv/common/contracts/portal/portal-booking.dto";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
 import type { PortalCustomerTaskDto } from "@invessiv/common/contracts/portal/portal-customer-task.dto";
 import type { PortalFeedbackSummaryDto } from "@invessiv/common/contracts/portal/portal-feedback-summary.dto";
+import type { PortalOurTaskDto } from "@invessiv/common/contracts/portal/portal-our-task.dto";
 import type { PortalProjectDto } from "@invessiv/common/contracts/portal/portal-project.dto";
 import type { PortalTaskDto } from "@invessiv/common/contracts/portal/portal-task.dto";
 import { feedbackRoundProgress } from "@invessiv/common/patterns/crm/feedback-round-state";
@@ -55,6 +57,9 @@ type TaskRow = {
   actionSide: TaskActionSide;
   dueOn: string | null;
   completedAt: Date | null;
+  completedByPortalMembershipId: string | null;
+  createdByPortalMembershipId: string | null;
+  updatedAt: Date;
   version: number;
 };
 
@@ -68,6 +73,8 @@ type RoundRow = {
 type DashboardRows = {
   customer: CustomerRow;
   selectedProject: ProjectRow | null;
+  /** The selection itself; it exists without the project read grant, unlike `selectedProject`. */
+  selectedProjectId?: string | null;
   feedbackProject?: FeedbackProjectRow | null;
   /** Every visible project; only the completed ones are listed in the DTO. */
   projectSummaries: readonly ProjectSummaryRow[];
@@ -77,8 +84,29 @@ type DashboardRows = {
   canReadFeedback: boolean;
   today: string;
   canCompleteTasks: boolean;
+  canReopenTasks: boolean;
+  canCreateTasks: boolean;
   isOwnerView: boolean;
 };
+
+/** Open work first, then the latest customer-created tasks the team declined. */
+function listOurTaskRows(rows: readonly TaskRow[]): TaskRow[] {
+  const internal = rows.filter(
+    (row) => row.actionSide === TaskActionSide.Internal,
+  );
+  const rejected = internal
+    .filter(
+      (row) =>
+        row.status === TaskStatus.Cancelled &&
+        row.createdByPortalMembershipId !== null,
+    )
+    .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+    .slice(0, PortalTaskRequestLimits.RejectedShown);
+  return [
+    ...internal.filter((row) => row.status !== TaskStatus.Cancelled),
+    ...rejected,
+  ];
+}
 
 function mapTask(row: TaskRow, today: string): PortalTaskDto {
   return {
@@ -145,6 +173,7 @@ function mapFeedbackSummary(
 function mapRowsToDto({
   customer,
   selectedProject,
+  selectedProjectId = selectedProject?.id ?? null,
   feedbackProject = selectedProject,
   projectSummaries,
   tasks,
@@ -152,10 +181,14 @@ function mapRowsToDto({
   canReadFeedback,
   today,
   canCompleteTasks,
+  canReopenTasks,
+  canCreateTasks,
   isOwnerView,
 }: DashboardRows): PortalDashboardDto {
   const customerRows = tasks.filter(
-    (row) => row.actionSide === TaskActionSide.Customer,
+    (row) =>
+      row.actionSide === TaskActionSide.Customer &&
+      row.status !== TaskStatus.Cancelled,
   );
   const openCustomerTasks = customerRows.filter(
     (row) => row.status !== TaskStatus.Done,
@@ -179,6 +212,7 @@ function mapRowsToDto({
             booking: customer.booking ?? null,
           }
         : null,
+    selectedProjectId,
     project: selectedProject
       ? mapProject(selectedProject, customer, rounds)
       : null,
@@ -193,16 +227,23 @@ function mapRowsToDto({
       (row): PortalCustomerTaskDto => ({
         ...mapTask(row, today),
         version: row.version,
+        // Only a completion made in the portal can be taken back there; the team's stays.
+        canReopen:
+          canReopenTasks &&
+          row.status === TaskStatus.Done &&
+          row.completedByPortalMembershipId !== null,
       }),
     ),
-    ourTasks: tasks
-      .filter((row) => row.actionSide === TaskActionSide.Internal)
-      .map((row) => mapTask(row, today)),
+    ourTasks: listOurTaskRows(tasks).map((row): PortalOurTaskDto => ({
+      ...mapTask(row, today),
+      requestedByCustomer: row.createdByPortalMembershipId !== null,
+      rejected: row.status === TaskStatus.Cancelled,
+    })),
     feedback:
       canReadFeedback && feedbackProject
         ? mapFeedbackSummary(feedbackProject, rounds)
         : null,
-    capabilities: { canCompleteTasks, isOwnerView },
+    capabilities: { canCompleteTasks, canCreateTasks, isOwnerView },
   };
 }
 

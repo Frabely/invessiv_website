@@ -1,9 +1,11 @@
 import "server-only";
 
-import { and, eq, ne } from "drizzle-orm";
+import { and, desc, eq, isNotNull, ne, type SQL } from "drizzle-orm";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
+import { TaskActionSide } from "@invessiv/common/constants/crm/task-action-sides";
+import { PortalTaskRequestLimits } from "@invessiv/common/constants/portal/portal-task-request-limits";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
@@ -25,6 +27,51 @@ import { portalProjectService } from "@/server/portal/services/portal-project-se
 import { projectResponsibleMemberService } from "@/server/shared/services/project-responsible-member-service";
 import { portalBookingMappingService } from "@/server/portal/services/portal-booking-mapping-service";
 import { selectPortalCurrentProject } from "@/common/patterns/portal/select-portal-current-project";
+
+/** Fetch current work and only the latest declined customer requests for one project. */
+async function loadPortalTaskRows(reader: PortalReader, projectId: string) {
+  const db = getDrizzleDatabaseClient();
+  const columns = {
+    id: tasks.id,
+    projectId: tasks.project_id,
+    projectTitle: projects.title,
+    title: tasks.title,
+    description: tasks.description,
+    status: tasks.status,
+    actionSide: tasks.action_side,
+    dueOn: tasks.due_on,
+    completedAt: tasks.completed_at,
+    completedByPortalMembershipId: tasks.completed_by_portal_membership_id,
+    createdByPortalMembershipId: tasks.created_by_portal_membership_id,
+    updatedAt: tasks.updated_at,
+    version: tasks.version,
+  };
+  const scope = and(
+    portalProjectCondition(reader, Permission.PortalTasksRead),
+    eq(tasks.project_id, projectId),
+    eq(tasks.visible_to_customer, true),
+  );
+  const select = (condition: SQL | undefined) =>
+    db
+      .select(columns)
+      .from(tasks)
+      .innerJoin(projects, eq(projects.id, tasks.project_id))
+      .where(and(scope, condition));
+
+  const [current, rejected] = await Promise.all([
+    select(ne(tasks.status, TaskStatus.Cancelled)),
+    select(
+      and(
+        eq(tasks.status, TaskStatus.Cancelled),
+        eq(tasks.action_side, TaskActionSide.Internal),
+        isNotNull(tasks.created_by_portal_membership_id),
+      ),
+    )
+      .orderBy(desc(tasks.updated_at), desc(tasks.id))
+      .limit(PortalTaskRequestLimits.RejectedShown),
+  ]);
+  return [...current, ...rejected];
+}
 
 /**
  * Reads project summaries for selection and completed work, then details, rounds, tasks and the
@@ -150,32 +197,15 @@ export async function getPortalDashboard(
             )
           : null,
         portalCanOn.forReader(reader, Permission.PortalTasksRead, target)
-          ? db
-              .select({
-                id: tasks.id,
-                projectId: tasks.project_id,
-                projectTitle: projects.title,
-                title: tasks.title,
-                description: tasks.description,
-                status: tasks.status,
-                actionSide: tasks.action_side,
-                dueOn: tasks.due_on,
-                completedAt: tasks.completed_at,
-                version: tasks.version,
-              })
-              .from(tasks)
-              .innerJoin(projects, eq(projects.id, tasks.project_id))
-              .where(
-                and(
-                  portalProjectCondition(reader, Permission.PortalTasksRead),
-                  eq(tasks.project_id, selectedProjectId),
-                  eq(tasks.visible_to_customer, true),
-                  ne(tasks.status, TaskStatus.Cancelled),
-                ),
-              )
+          ? loadPortalTaskRows(reader, selectedProjectId)
           : [],
       ])
     : [];
+  // Task writes need a selected project and a contact; the owner view never writes.
+  const canWrite = (permission: Permission) =>
+    !isPortalOwnerView(reader) &&
+    selectedProjectId !== null &&
+    portalCanOn.forReader(reader, permission, target);
   // The project can vanish between the list and its detail; nothing of it is shown then.
   const selectedProject = selectedProjectRows[0] ?? null;
   const feedbackProject = selectedProject ?? feedbackProjectRows[0] ?? null;
@@ -197,16 +227,16 @@ export async function getPortalDashboard(
           : null,
     },
     selectedProject,
+    selectedProjectId,
     projectSummaries,
     tasks: selectedProjectId ? taskRows : [],
     rounds: selectedProjectId ? roundRows : [],
     feedbackProject,
     canReadFeedback,
     today,
-    canCompleteTasks:
-      !isPortalOwnerView(reader) &&
-      selectedProjectId !== null &&
-      portalCanOn.forReader(reader, Permission.PortalTasksComplete, target),
+    canCompleteTasks: canWrite(Permission.PortalTasksComplete),
+    canReopenTasks: canWrite(Permission.PortalTasksReopen),
+    canCreateTasks: canWrite(Permission.PortalTasksCreate),
     isOwnerView: isPortalOwnerView(reader),
   });
 }

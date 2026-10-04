@@ -70,7 +70,9 @@
     "customerTasks": {
       "title": "Von dir benötigt",
       "open": "Alle ansehen",
-      "dialogDescription": "Diese Punkte brauchen wir von dir, damit es weitergeht. Hak ab, was erledigt ist – wir sehen es sofort.",
+      "dialogDescription": "Diese Punkte brauchen wir von dir, damit es weitergeht. Hak ab, was erledigt ist – wir sehen es sofort. Einen eigenen Haken kannst du wieder zurücknehmen.",
+      "recentlyDone": "Zuletzt erledigt",
+      "reopenLabel": "Haken bei „{name}“ zurücknehmen",
       "empty": "Alles erledigt. Gerade brauchen wir nichts von dir.",
       "moreOpen": "und {count} weitere",
       "moreOpenOne": "und 1 weiterer Punkt",
@@ -86,7 +88,12 @@
       "title": "Daran arbeiten wir",
       "more": "Mehr anzeigen",
       "less": "Weniger anzeigen",
-      "empty": "Gerade steht bei uns für dieses Projekt nichts Sichtbares an. Wir melden uns, sobald es weitergeht."
+      "empty": "Gerade steht bei uns für dieses Projekt nichts Sichtbares an. Wir melden uns, sobald es weitergeht.",
+      "create": "Aufgabe für uns anlegen",
+      "fromYou": "von dir",
+      "rejected": "Abgelehnt",
+      "ownerHint": "In der Portalansicht kannst du keine Aufgabe anlegen.",
+      "ownerLink": "Im CRM anlegen"
     },
     "feedback": {
       "title": "Feedback",
@@ -171,7 +178,33 @@
   "tasks": {
     "announce": {
       "completed": "„{name}“ ist erledigt. Danke dir.",
-      "failed": "„{name}“ konnte nicht gespeichert werden. Bitte versuch es noch einmal."
+      "reopened": "„{name}“ ist wieder offen.",
+      "failed": "„{name}“ konnte nicht gespeichert werden. Bitte versuch es noch einmal.",
+      "requested": "„{name}“ ist bei uns angekommen. Du findest die Aufgabe unter „Daran arbeiten wir“."
+    },
+    "request": {
+      "title": "Aufgabe für uns anlegen",
+      "description": "Sag uns, was wir für „{project}“ erledigen sollen. Die Aufgabe steht danach unter „Daran arbeiten wir“.",
+      "descriptionNoProject": "Sag uns, was wir für dein Projekt erledigen sollen. Die Aufgabe steht danach unter „Daran arbeiten wir“.",
+      "titleLabel": "Was sollen wir tun?",
+      "titlePlaceholder": "z. B. Öffnungszeiten im Footer ergänzen",
+      "titleRequired": "Schreib kurz, was wir tun sollen.",
+      "detailsLabel": "Details",
+      "detailsHint": "Optional: Texte, Links oder alles, was uns die Arbeit leichter macht.",
+      "dueLabel": "Wunschtermin",
+      "dueHint": "Optional. Wir melden uns, falls wir es bis dahin nicht schaffen.",
+      "duePast": "Der Wunschtermin liegt in der Vergangenheit.",
+      "submit": "Aufgabe anlegen",
+      "submitting": "Wird angelegt …",
+      "cancel": "Abbrechen",
+      "close": "Schließen",
+      "errors": {
+        "not_found": "Dieses Projekt ist nicht mehr verfügbar. Lade die Seite neu und versuch es noch einmal.",
+        "validation": "Das konnten wir so nicht speichern. Prüf bitte deine Angaben.",
+        "no_assignee": "Gerade können wir die Aufgabe niemandem zuordnen. Schreib uns bitte im Chat.",
+        "limit_reached": "Für dieses Projekt sind schon viele Aufgaben von dir offen. Sobald wir einige erledigt haben, kannst du neue anlegen.",
+        "unavailable": "Das hat gerade nicht geklappt. Bitte versuch es noch einmal."
+      }
     }
   },
   "chat": {

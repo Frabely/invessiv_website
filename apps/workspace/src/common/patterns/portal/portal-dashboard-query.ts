@@ -5,14 +5,16 @@ import type { PortalWidgetKey } from "@/common/constants/portal/portal-widget-ke
 
 type SearchParamsReader = { get(name: string): string | null };
 
-/** Only a registered dialog widget opens from the URL; anything else is ignored. */
+/** Only a widget registered with a dialog opens from the URL; anything else is ignored. */
 export function readPortalDashboardWidget(
   searchParams: SearchParamsReader,
 ): PortalWidgetKey | null {
   const value = searchParams.get(PortalDashboardQueryParam.Widget);
   const entry = PORTAL_WIDGET_LAYOUT.find(
     (candidate) =>
-      candidate.key === value && candidate.openMode === WidgetOpenMode.Dialog,
+      candidate.key === value &&
+      (candidate.openMode === WidgetOpenMode.Dialog ||
+        candidate.actionDialog === true),
   );
   return entry?.key ?? null;
 }

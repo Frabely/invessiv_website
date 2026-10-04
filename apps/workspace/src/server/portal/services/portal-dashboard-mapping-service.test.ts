@@ -47,6 +47,11 @@ function task(index: number, status: TaskStatus, actionSide: TaskActionSide) {
       status === TaskStatus.Done
         ? new Date(`2026-09-${String(index + 1).padStart(2, "0")}T10:00:00Z`)
         : null,
+    completedByPortalMembershipId: null as string | null,
+    createdByPortalMembershipId: null as string | null,
+    updatedAt: new Date(
+      `2026-09-${String(index + 1).padStart(2, "0")}T12:00:00Z`,
+    ),
     version: 3,
   };
 }
@@ -69,6 +74,8 @@ describe("portalDashboardMappingService.mapRowsToDto", () => {
       canReadFeedback: true,
       today: "2026-09-26",
       canCompleteTasks: true,
+      canReopenTasks: true,
+      canCreateTasks: true,
       isOwnerView: false,
     });
 
@@ -88,6 +95,7 @@ describe("portalDashboardMappingService.mapRowsToDto", () => {
       done: false,
       completedAt: null,
       version: 3,
+      canReopen: false,
     });
     expect(dto.ourTasks[0]).not.toHaveProperty("version");
     expect(dto).not.toHaveProperty("ownerMemberId");
@@ -107,12 +115,109 @@ describe("portalDashboardMappingService.mapRowsToDto", () => {
       canReadFeedback: false,
       today: "2026-09-26",
       canCompleteTasks: false,
+      canReopenTasks: false,
+      canCreateTasks: false,
       isOwnerView: true,
     });
 
     expect(dto.customerTasks).toHaveLength(20);
     expect(dto.customerTasks[0]?.id).toBe("task-21");
     expect(dto.customerTasks.at(-1)?.id).toBe("task-2");
+  });
+});
+
+describe("portalDashboardMappingService portal task origins", () => {
+  const MEMBERSHIP_ID = "membership-1";
+
+  function map(
+    tasks: ReturnType<typeof task>[],
+    rights: { canReopenTasks: boolean; canCreateTasks: boolean },
+  ) {
+    return portalDashboardMappingService.mapRowsToDto({
+      customer,
+      selectedProject: null,
+      projectSummaries: [],
+      tasks,
+      rounds: [],
+      canReadFeedback: false,
+      today: "2026-09-26",
+      canCompleteTasks: true,
+      isOwnerView: false,
+      ...rights,
+    });
+  }
+
+  it("lets a contact take back only a completion made in the portal", () => {
+    const rows = [
+      {
+        ...task(0, TaskStatus.Done, TaskActionSide.Customer),
+        completedByPortalMembershipId: MEMBERSHIP_ID,
+      },
+      task(1, TaskStatus.Done, TaskActionSide.Customer),
+      task(2, TaskStatus.Open, TaskActionSide.Customer),
+    ];
+
+    const allowed = map(rows, { canReopenTasks: true, canCreateTasks: true });
+    const denied = map(rows, { canReopenTasks: false, canCreateTasks: false });
+
+    expect(
+      Object.fromEntries(
+        allowed.customerTasks.map((entry) => [entry.id, entry.canReopen]),
+      ),
+    ).toEqual({ "task-0": true, "task-1": false, "task-2": false });
+    expect(denied.customerTasks.every((entry) => !entry.canReopen)).toBe(true);
+    expect(allowed.capabilities.canCreateTasks).toBe(true);
+    expect(denied.capabilities.canCreateTasks).toBe(false);
+    expect(JSON.stringify(allowed)).not.toContain(MEMBERSHIP_ID);
+  });
+
+  it("marks customer-created tasks and keeps declined ones as rejected", () => {
+    const dto = map(
+      [
+        {
+          ...task(0, TaskStatus.Open, TaskActionSide.Internal),
+          createdByPortalMembershipId: MEMBERSHIP_ID,
+        },
+        {
+          ...task(1, TaskStatus.Cancelled, TaskActionSide.Internal),
+          createdByPortalMembershipId: MEMBERSHIP_ID,
+        },
+        task(2, TaskStatus.Cancelled, TaskActionSide.Internal),
+        task(3, TaskStatus.Cancelled, TaskActionSide.Customer),
+        task(4, TaskStatus.InProgress, TaskActionSide.Internal),
+      ],
+      { canReopenTasks: true, canCreateTasks: true },
+    );
+
+    expect(
+      dto.ourTasks.map(({ id, requestedByCustomer, rejected }) => ({
+        id,
+        requestedByCustomer,
+        rejected,
+      })),
+    ).toEqual([
+      { id: "task-0", requestedByCustomer: true, rejected: false },
+      { id: "task-4", requestedByCustomer: false, rejected: false },
+      { id: "task-1", requestedByCustomer: true, rejected: true },
+    ]);
+    expect(dto.customerTasks).toEqual([]);
+  });
+
+  it("keeps only the most recently declined customer-created tasks", () => {
+    const declined = Array.from({ length: 7 }, (_, index) => ({
+      ...task(index, TaskStatus.Cancelled, TaskActionSide.Internal),
+      createdByPortalMembershipId: MEMBERSHIP_ID,
+    }));
+
+    const dto = map(declined, { canReopenTasks: false, canCreateTasks: false });
+
+    expect(dto.ourTasks.map((entry) => entry.id)).toEqual([
+      "task-6",
+      "task-5",
+      "task-4",
+      "task-3",
+      "task-2",
+    ]);
   });
 });
 
@@ -130,6 +235,8 @@ describe("portalDashboardMappingService feedback rounds", () => {
       canReadFeedback: false,
       today: "2026-09-26",
       canCompleteTasks: false,
+      canReopenTasks: false,
+      canCreateTasks: false,
       isOwnerView: false,
     });
   }
@@ -174,6 +281,8 @@ describe("portalDashboardMappingService feedback summary", () => {
       canReadFeedback: true,
       today: "2026-09-26",
       canCompleteTasks: false,
+      canReopenTasks: false,
+      canCreateTasks: false,
       isOwnerView: false,
     });
 
@@ -198,6 +307,8 @@ describe("portalDashboardMappingService feedback summary", () => {
       canReadFeedback,
       today: "2026-09-26",
       canCompleteTasks: false,
+      canReopenTasks: false,
+      canCreateTasks: false,
       isOwnerView: false,
     });
   }

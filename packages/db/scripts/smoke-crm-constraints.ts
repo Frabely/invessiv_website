@@ -1103,16 +1103,18 @@ async function runTaskChecks(
     completedAt?: Date | null;
     completedByMemberId?: string | null;
     completedByPortalMembershipId?: string | null;
+    createdByPortalMembershipId?: string | null;
     version?: number;
   }) => sql`
     INSERT INTO tasks (id, project_id, title, description, status, action_side, visible_to_customer,
                        assignee_member_id, due_on, completed_at, completed_by_member_id,
-                       completed_by_portal_membership_id, version)
+                       completed_by_portal_membership_id, created_by_portal_membership_id, version)
     VALUES (${randomUUID()}, ${args.projectId ?? projectId}, ${args.title ?? name("Task")}, '',
             ${args.status ?? "open"}, ${args.actionSide ?? "internal"},
             ${args.visibleToCustomer ?? false}, ${args.assigneeMemberId ?? memberId},
             ${args.dueOn ?? null}, ${args.completedAt ?? null}, ${args.completedByMemberId ?? null},
-            ${args.completedByPortalMembershipId ?? null}, ${args.version ?? 1})
+            ${args.completedByPortalMembershipId ?? null}, ${args.createdByPortalMembershipId ?? null},
+            ${args.version ?? 1})
   `;
 
   // A real contact membership makes these constraint checks independent of missing-reference failures.
@@ -1170,6 +1172,15 @@ async function runTaskChecks(
         completedByPortalMembershipId: randomUUID(),
       }),
     TasksConstraintName.CompletedByPortalMembershipForeignKey,
+  );
+  await expectRejected(
+    "task created by an unknown portal membership is rejected",
+    () =>
+      insertTask({
+        visibleToCustomer: true,
+        createdByPortalMembershipId: randomUUID(),
+      }),
+    TasksConstraintName.CreatedByPortalMembershipForeignKey,
   );
   await expectRejected(
     "referenced completion membership cannot be deleted",

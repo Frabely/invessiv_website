@@ -13,6 +13,7 @@ import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { TaskActionSideBadge } from "../task-action-side-badge/task-action-side-badge";
 import { TaskDueLabel } from "../task-due-label/task-due-label";
+import { TaskOriginNote } from "../task-origin-note/task-origin-note";
 import styles from "./task-row-details.module.css";
 
 type TaskRowDetailsProps = {
@@ -44,6 +45,9 @@ export function TaskRowDetails({
         </span>
         {task.description ? (
           <span className={styles.description}>{task.description}</span>
+        ) : null}
+        {task.createdByCustomer ? (
+          <TaskOriginNote label={content.row.createdByCustomer} />
         ) : null}
         {status === TaskStatus.Done && task.completedByCustomer ? (
           <span className={styles.completedByCustomer}>

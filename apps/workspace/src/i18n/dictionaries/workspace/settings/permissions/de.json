@@ -143,6 +143,14 @@
       "label": "Kundenaufgaben im Portal erledigen",
       "description": "Aufgaben für das Unternehmen im Portal als erledigt markieren."
     },
+    "portal.tasks.reopen": {
+      "label": "Eigene Haken im Portal zurücknehmen",
+      "description": "Aufgaben wieder öffnen, die das Unternehmen selbst im Portal abgehakt hat."
+    },
+    "portal.tasks.create": {
+      "label": "Aufgaben für das Team anlegen",
+      "description": "Im Portal eine Aufgabe für das Team zu einem Projekt anlegen."
+    },
     "portal.messages.read": {
       "label": "Nachrichten im Portal lesen",
       "description": "Den gemeinsamen Nachrichtenverlauf des Unternehmens sehen."

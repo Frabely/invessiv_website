@@ -53,6 +53,7 @@ function task(overrides: Partial<TaskDto> = {}): TaskDto {
     completedAt: null,
     completedByMemberId: null,
     completedByCustomer: false,
+    createdByCustomer: false,
     feedbackRoundId: null,
     onboardingFormId: null,
     version: 1,
@@ -121,6 +122,20 @@ describe("ProjectTasksSection", () => {
     expect(screen.getByRole("dialog")).toBeInTheDocument();
   });
 
+  it("marks a task the customer created in the portal", () => {
+    renderSection({
+      tasks: [
+        task({ visibleToCustomer: true, createdByCustomer: true }),
+        task({
+          id: "99999999-9999-4999-8999-999999999999",
+          title: "Team task",
+        }),
+      ],
+    });
+
+    expect(screen.getAllByText(content.row.createdByCustomer)).toHaveLength(1);
+  });
+
   it("marks a task the customer completed in the portal", () => {
     renderSection({
       tasks: [
@@ -130,6 +145,7 @@ describe("ProjectTasksSection", () => {
           status: TaskStatus.Done,
           completedAt: "2026-09-20T10:00:00.000Z",
           completedByCustomer: true,
+          createdByCustomer: false,
         }),
         task({
           id: "99999999-9999-4999-8999-999999999999",

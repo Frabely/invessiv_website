@@ -3,3 +3,16 @@
   color: var(--color-text-muted);
   font-size: var(--font-size-ui-sm);
 }
+
+.done {
+  margin-top: 0.75rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.doneLabel {
+  margin: 0 0 0.1rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 600;
+}
