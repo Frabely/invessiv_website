@@ -58,6 +58,7 @@ describe("CrmOperation", () => {
       "onboarding-forms.start",
       "onboarding-forms.get",
       "onboarding-form-blocks.add",
+      "onboarding-forms.apply-template",
       "onboarding-form-blocks.update",
       "onboarding-form-blocks.remove",
       "onboarding-form-blocks.move",

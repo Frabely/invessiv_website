@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -24,9 +25,11 @@ export function BookingLink({
   texts,
   primary = false,
 }: BookingLinkProps) {
+  const noticeId = useId();
+
   return (
     <div className={styles.root}>
-      <p className={styles.notice}>
+      <p className={styles.notice} id={noticeId}>
         {booking.provider === BookingProvider.Other
           ? texts.noticeOther
           : formatMessage(texts.noticeNamed, {
@@ -34,6 +37,7 @@ export function BookingLink({
             })}
       </p>
       <a
+        aria-describedby={noticeId}
         className={styles.action}
         data-primary={primary ? "true" : undefined}
         href={booking.bookingUrl}
