@@ -87,9 +87,14 @@ export function OnboardingFormView({
   const ownerNoticeId = useId();
   const editable = form.editableBlockIds.length > 0;
   const state = form.status === OnboardingFormStatus.Open ? null : form.status;
+  const downloadError = downloads.actionError ? (
+    <p className={styles.error} role="alert">
+      {downloads.actionError}
+    </p>
+  ) : null;
 
   return (
-    <div className={styles.page}>
+    <div className={styles.page} data-portal-fixed-head>
       {editable ? (
         <OnboardingFormEditor
           backHref={backHref}
@@ -102,12 +107,15 @@ export function OnboardingFormView({
           key={`${form.id}:${form.status}:${revision}`}
           locale={locale}
           notice={
-            state === OnboardingFormStatus.ChangesRequested ? (
-              <div className={styles.state}>
-                <h2>{content.states.changes_requested.title}</h2>
-                <p>{content.states.changes_requested.editable}</p>
-              </div>
-            ) : null
+            <>
+              {downloadError}
+              {state === OnboardingFormStatus.ChangesRequested ? (
+                <div className={styles.state}>
+                  <h2>{content.states.changes_requested.title}</h2>
+                  <p>{content.states.changes_requested.editable}</p>
+                </div>
+              ) : null}
+            </>
           }
           onAnnounceAction={setAnnouncement}
           onStaleAction={() => {
@@ -125,108 +133,108 @@ export function OnboardingFormView({
               project: form.projectTitle,
             })}
           />
-          <div className={styles.read}>
-            <div className={styles.aside}>
-              {state === OnboardingFormStatus.Submitted && form.submittedAt ? (
-                <div className={styles.state}>
-                  <h2>
-                    {formatMessage(content.states.submitted.title, {
-                      date: formatMomentDay(form.submittedAt, locale),
-                    })}
-                    {form.submittedByName ? (
-                      <span className={styles.by}>
-                        {" "}
-                        {formatMessage(content.states.submitted.by, {
-                          name: form.submittedByName,
-                        })}
-                      </span>
+          <div className={styles.scroll}>
+            {downloadError}
+            <div className={styles.read}>
+              <div className={styles.aside}>
+                {state === OnboardingFormStatus.Submitted &&
+                form.submittedAt ? (
+                  <div className={styles.state}>
+                    <h2>
+                      {formatMessage(content.states.submitted.title, {
+                        date: formatMomentDay(form.submittedAt, locale),
+                      })}
+                      {form.submittedByName ? (
+                        <span className={styles.by}>
+                          {" "}
+                          {formatMessage(content.states.submitted.by, {
+                            name: form.submittedByName,
+                          })}
+                        </span>
+                      ) : null}
+                    </h2>
+                    <p>{content.states.submitted.description}</p>
+                  </div>
+                ) : null}
+                {state === OnboardingFormStatus.ChangesRequested ? (
+                  <div className={styles.state}>
+                    <h2>{content.states.changes_requested.title}</h2>
+                    <p>{content.states.changes_requested.description}</p>
+                  </div>
+                ) : null}
+                {state === OnboardingFormStatus.Completed &&
+                form.completedAt ? (
+                  <div className={styles.state}>
+                    <h2>
+                      {formatMessage(content.states.completed.title, {
+                        date: formatMomentDay(form.completedAt, locale),
+                      })}
+                    </h2>
+                    <p>{content.states.completed.description}</p>
+                    <p>{content.states.completed.more}</p>
+                    {filesHref || chatHref ? (
+                      <ul className={styles.links}>
+                        {filesHref ? (
+                          <li>
+                            <Link href={filesHref}>
+                              {content.states.completed.filesLink}
+                            </Link>
+                          </li>
+                        ) : null}
+                        {chatHref ? (
+                          <li>
+                            <Link href={chatHref}>
+                              {content.states.completed.chatLink}
+                            </Link>
+                          </li>
+                        ) : null}
+                      </ul>
                     ) : null}
-                  </h2>
-                  <p>{content.states.submitted.description}</p>
-                </div>
-              ) : null}
-              {state === OnboardingFormStatus.ChangesRequested ? (
-                <div className={styles.state}>
-                  <h2>{content.states.changes_requested.title}</h2>
-                  <p>{content.states.changes_requested.description}</p>
-                </div>
-              ) : null}
-              {state === OnboardingFormStatus.Completed && form.completedAt ? (
-                <div className={styles.state}>
-                  <h2>
-                    {formatMessage(content.states.completed.title, {
-                      date: formatMomentDay(form.completedAt, locale),
-                    })}
-                  </h2>
-                  <p>{content.states.completed.description}</p>
-                  <p>{content.states.completed.more}</p>
-                  {filesHref || chatHref ? (
-                    <ul className={styles.links}>
-                      {filesHref ? (
-                        <li>
-                          <Link href={filesHref}>
-                            {content.states.completed.filesLink}
-                          </Link>
-                        </li>
-                      ) : null}
-                      {chatHref ? (
-                        <li>
-                          <Link href={chatHref}>
-                            {content.states.completed.chatLink}
-                          </Link>
-                        </li>
-                      ) : null}
-                    </ul>
-                  ) : null}
-                </div>
-              ) : null}
-              {call ? (
-                <OnboardingBookingCard
-                  booking={call.booking}
-                  chatHref={chatHref}
-                  texts={content.call}
+                  </div>
+                ) : null}
+                {call ? (
+                  <OnboardingBookingCard
+                    booking={call.booking}
+                    chatHref={chatHref}
+                    texts={content.call}
+                  />
+                ) : null}
+                {cockpitHref ? (
+                  <PortalOwnerNotice
+                    cockpitHref={cockpitHref}
+                    hint={content.page.ownerHint}
+                    id={ownerNoticeId}
+                    linkLabel={content.page.ownerLink}
+                  />
+                ) : state === null ? (
+                  <p className={styles.hint}>{content.page.readOnlyHint}</p>
+                ) : null}
+              </div>
+              <section
+                aria-labelledby="onboarding-answers"
+                className={styles.answers}
+              >
+                <h2 className={styles.answersHeading} id="onboarding-answers">
+                  {content.read.heading}
+                </h2>
+                <OnboardingAnswerReadView
+                  answerFiles={form.answerFiles}
+                  hiddenAnswerFiles={form.hiddenAnswerFiles}
+                  answers={form.answers}
+                  blocks={form.blocks}
+                  emptyText={content.block.empty}
+                  files={files}
+                  groupEntries={form.groupEntries}
+                  services={form.services}
+                  servicesConfirmed={form.servicesConfirmed}
+                  servicesNote={form.servicesNote}
+                  texts={content.read}
                 />
-              ) : null}
-              {cockpitHref ? (
-                <PortalOwnerNotice
-                  cockpitHref={cockpitHref}
-                  hint={content.page.ownerHint}
-                  id={ownerNoticeId}
-                  linkLabel={content.page.ownerLink}
-                />
-              ) : state === null ? (
-                <p className={styles.hint}>{content.page.readOnlyHint}</p>
-              ) : null}
+              </section>
             </div>
-            <section
-              aria-labelledby="onboarding-answers"
-              className={styles.answers}
-            >
-              <h2 className={styles.answersHeading} id="onboarding-answers">
-                {content.read.heading}
-              </h2>
-              <OnboardingAnswerReadView
-                answerFiles={form.answerFiles}
-                hiddenAnswerFiles={form.hiddenAnswerFiles}
-                answers={form.answers}
-                blocks={form.blocks}
-                emptyText={content.block.empty}
-                files={files}
-                groupEntries={form.groupEntries}
-                services={form.services}
-                servicesConfirmed={form.servicesConfirmed}
-                servicesNote={form.servicesNote}
-                texts={content.read}
-              />
-            </section>
           </div>
         </>
       )}
-      {downloads.actionError ? (
-        <p className={styles.error} role="alert">
-          {downloads.actionError}
-        </p>
-      ) : null}
       <p aria-live="polite" className="sr-only" role="status">
         {announcement}
       </p>

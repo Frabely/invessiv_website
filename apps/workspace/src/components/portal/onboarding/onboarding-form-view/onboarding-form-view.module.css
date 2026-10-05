@@ -1,9 +1,29 @@
-/* The page takes the width it is given; lines of text keep their own measure inside it. */
+/*
+ * The page fills the portal's main area: the header rests on top, the content scrolls below it.
+ * Lines of text keep their own measure inside the width the page is given.
+ */
 .page {
-  display: grid;
-  gap: 1.5rem;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
   width: 100%;
   min-width: 0;
+  min-height: 0;
+}
+
+/* The scroll area of the read view; the editor brings its own. */
+.scroll {
+  display: grid;
+  flex: 1 1 auto;
+  align-content: start;
+  gap: 1.5rem;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 1.5rem var(--portal-main-pad-inline, 0px)
+    var(--portal-main-pad-block, 1rem);
 }
 
 .error {

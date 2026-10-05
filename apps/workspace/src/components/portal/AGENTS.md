@@ -215,9 +215,12 @@ Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-le
 
 - **Layout und Fortschritt (Paket I, Ordner 18):** Plan
   `apps/workspace/plans/crm/18-portal-prozess-nacharbeiten/I-portal-onboarding-layout.md`.
-  - **Sticky Bogen-Kopf** (`onboarding/onboarding-form-header`): Zurück-Link, `h1` und Gesamtstand in einer Zeile,
+  - **Fester Bogen-Kopf** (`onboarding/onboarding-form-header`): Zurück-Link, `h1` und Gesamtstand in einer Zeile,
     darunter die Schrittleiste. Der Editor rendert ihn selbst (er kennt den Stand), die Leseansicht ohne Leiste. Der
-    Kopf läuft über `--portal-main-pad-*` der `PortalShell` bündig bis an den Rand des Scrollbereichs.
+    Kopf ist **nicht** `position: sticky`: Die Seite markiert sich mit `data-portal-fixed-head`, `.main` der
+    `PortalShell` scrollt dann nicht mehr selbst, und der Inhalt scrollt unter dem Kopf in einem eigenen Bereich
+    (`.body` im Editor, `.scroll` in der Leseansicht). So kann zwischen Portal-Header und Kopf nichts durchscheinen.
+    Die Abstände kommen weiter aus `--portal-main-pad-*`.
   - **Füllung und Gültigkeit sind zwei Aussagen.** Die Füllung ist `answered/total` aller sichtbaren Fragen aus
     `getQuestionnaireCompleteness` (Gruppe zählt einmal, dazu ihre Unterfelder je Eintrag). Farben: unberührt
     neutral-warm, begonnen blau, alles beantwortet grün. Rot bei ungültiger Eingabe oder wenn ein begonnener oder
@@ -238,9 +241,8 @@ Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-le
     Kachel-Stile selbst. Eingaben, Kacheln, Skala und Buttons im Formular sind `--control-height` hoch (Token in
     `globals.css`). Der Hinweis steht unter dem Control; nur die Gruppe zeigt ihn über den Einträgen. Langtext startet
     einzeilig und wächst mit dem Inhalt.
-  - **Fußleiste:** schwebend, sticky, eine Zeile mit Speicherstatus und Zurück/Weiter; „Weiter“ nennt den nächsten
-    Schritt. Ein Schrittwechsel scrollt den Editor an den Anfang (`scrollIntoView`), nicht `window`: Das Portal
-    scrollt in `.main` der Shell.
+  - **Fußleiste:** fest unter dem Scrollbereich (weder `sticky` noch `fixed`), auf allen Breiten randlos über die volle Breite, eine Zeile mit Speicherstatus und Zurück/Weiter; „Weiter“ nennt den nächsten
+    Schritt. Ein Schrittwechsel setzt den Scrollbereich des Editors (`.body`) an den Anfang, nicht `window`.
   - **Shell mobil:** unter 768 px zeigt der Header nur Logo, Theme, Sprache, Profil und Menü-Button; Firma, Projekt,
     Begrüßung und Owner-Hinweis stehen im Menü-Dialog. Platz für den Chat-Dock reserviert `.main` nur, wenn die Seite
     einen rendert (`data-portal-dock`).

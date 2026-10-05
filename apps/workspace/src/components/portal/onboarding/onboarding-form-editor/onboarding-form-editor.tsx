@@ -79,7 +79,7 @@ export function OnboardingFormEditor({
   onStaleAction,
 }: OnboardingFormEditorProps) {
   const router = useRouter();
-  const editorRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
   const state = useOnboardingFormState({
     customerId,
     form,
@@ -184,8 +184,8 @@ export function OnboardingFormEditor({
     setNavigated(true);
     setSubmitError(null);
     step.goTo(target);
-    // The portal scrolls inside its shell, not the window; the editor starts at the top of it.
-    editorRef.current?.scrollIntoView?.({ block: "start" });
+    // The form scrolls below its header, not the window; a new step starts at the top.
+    if (bodyRef.current) bodyRef.current.scrollTop = 0;
     onAnnounceAction(
       formatMessage(content.announcements.step, {
         number: position + 1,
@@ -288,7 +288,7 @@ export function OnboardingFormEditor({
   const nextBlock = form.blocks.find((entry) => entry.id === nextSection);
 
   return (
-    <div className={styles.editor} ref={editorRef}>
+    <div className={styles.editor}>
       <OnboardingFormHeader
         backHref={backHref}
         backLabel={content.page.back}
@@ -314,39 +314,41 @@ export function OnboardingFormEditor({
           onSelectAction={(section) => goTo({ section })}
         />
       </OnboardingFormHeader>
-      {notice}
-      {block ? (
-        <OnboardingBlockStep
-          block={block}
-          content={content}
-          editable={form.editableBlockIds.includes(block.id)}
-          files={files}
-          focusFieldId={step.fieldId}
-          form={fieldForm}
-          key={block.id}
-          locale={locale}
-          moveFocus={navigated}
-        />
-      ) : (
-        <OnboardingSubmitStep
-          busy={busy || state.busy || uploading.size > 0}
-          content={content}
-          error={submitError}
-          missing={missing}
-          moveFocus={navigated}
-          onJumpAction={(answer) =>
-            goTo({
-              section: answer.blockId,
-              fieldId: onboardingAnswerDrafts.slotKey(
-                answer.fieldId,
-                answer.groupEntryId,
-              ),
-            })
-          }
-          onSubmitAction={submit}
-          progress={completeness}
-        />
-      )}
+      <div className={styles.body} ref={bodyRef}>
+        {notice}
+        {block ? (
+          <OnboardingBlockStep
+            block={block}
+            content={content}
+            editable={form.editableBlockIds.includes(block.id)}
+            files={files}
+            focusFieldId={step.fieldId}
+            form={fieldForm}
+            key={block.id}
+            locale={locale}
+            moveFocus={navigated}
+          />
+        ) : (
+          <OnboardingSubmitStep
+            busy={busy || state.busy || uploading.size > 0}
+            content={content}
+            error={submitError}
+            missing={missing}
+            moveFocus={navigated}
+            onJumpAction={(answer) =>
+              goTo({
+                section: answer.blockId,
+                fieldId: onboardingAnswerDrafts.slotKey(
+                  answer.fieldId,
+                  answer.groupEntryId,
+                ),
+              })
+            }
+            onSubmitAction={submit}
+            progress={completeness}
+          />
+        )}
+      </div>
       <div className={styles.bar}>
         <DraftSaveStatus
           errorText={
