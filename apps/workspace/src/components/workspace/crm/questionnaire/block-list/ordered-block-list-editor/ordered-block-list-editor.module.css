@@ -13,6 +13,7 @@
 }
 
 .row {
+  position: relative;
   display: grid;
   grid-template-columns: 2rem minmax(0, 1fr) auto;
   align-items: center;
@@ -22,6 +23,26 @@
   border: 1px solid var(--color-border);
   border-radius: 10px;
   background: var(--color-surface-1);
+}
+
+.selectButton {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.selectButton:hover {
+  background: color-mix(in srgb, var(--color-text) 4%, transparent);
+}
+
+.selectButton:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
 }
 
 /* The position is the step number the customer will see in the portal. */
@@ -47,6 +68,9 @@
 }
 
 .detail {
+  position: relative;
+  z-index: 2;
+  justify-self: start;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -56,6 +80,8 @@
 }
 
 .actions {
+  position: relative;
+  z-index: 2;
   display: inline-flex;
   gap: 0.1rem;
 }

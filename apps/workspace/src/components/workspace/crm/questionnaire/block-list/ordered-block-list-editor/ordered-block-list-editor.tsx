@@ -36,6 +36,8 @@ export type OrderedBlockListEditorProps = {
   items: readonly OrderedBlockListItem[];
   labels: OrderedBlockListEditorLabels;
   onChangeAction: (ids: string[]) => void;
+  /** Optional navigation target for a block row; editing controls keep their own actions. */
+  onSelectAction?: (id: string) => void;
   /** Receives what a screen reader should hear; the owner renders one live region for all changes. */
   onAnnounceAction: (message: string) => void;
   /** Shows the order only: without the right to change it the controls are absent, not disabled. */
@@ -53,6 +55,7 @@ export function OrderedBlockListEditor({
   labels,
   onAnnounceAction,
   onChangeAction,
+  onSelectAction,
   readOnly = false,
 }: OrderedBlockListEditorProps) {
   const listRef = useRef<HTMLOListElement>(null);
@@ -118,6 +121,14 @@ export function OrderedBlockListEditor({
             });
             return (
               <li className={styles.row} key={item.id}>
+                {onSelectAction ? (
+                  <button
+                    aria-label={item.name}
+                    className={styles.selectButton}
+                    onClick={() => onSelectAction(item.id)}
+                    type="button"
+                  />
+                ) : null}
                 <span aria-hidden="true" className={styles.position}>
                   {index + 1}
                 </span>

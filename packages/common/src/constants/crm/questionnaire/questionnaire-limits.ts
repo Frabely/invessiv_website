@@ -11,7 +11,7 @@ export const QUESTIONNAIRE_LIMITS = {
   childFieldsPerGroup: 30,
   choicesPerField: 30,
   groupEntriesPerField: 50,
-  filesPerField: 30,
+  filesPerField: 100,
   shortTextDefaultMaxLength: 300,
   longTextDefaultMaxLength: 5_000,
   keyMaxLength: 63,

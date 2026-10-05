@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { type SubmitEvent, useId, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { type SubmitEvent, useEffect, useId, useRef, useState } from "react";
 import { faArrowLeft, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -12,10 +12,12 @@ import {
 import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import type { QuestionnaireBlockSummaryDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block-summary.dto";
+import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block.dto";
 import type { QuestionnaireTemplateDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-template.dto";
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 import { sameSequence } from "@invessiv/common/patterns/collections/same-sequence";
 import { resolveQuestionnaireText } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-translation";
+import { resolveQuestionnaireBlock } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-resolved-block";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import {
   ButtonControl,
@@ -28,18 +30,24 @@ import { VersionedMutationOutcomeKind } from "@/common/constants/client/versione
 import { QuestionnaireSaveOutcomeKind } from "@/common/constants/crm/questionnaire/questionnaire-save-outcome-kinds";
 import type { QuestionnaireSaveOutcome } from "@/common/contracts/crm/questionnaire/questionnaire-save-outcome";
 import { QuestionnaireFormValidationCode } from "@/common/constants/crm/questionnaire/questionnaire-form-validation-codes";
+import { QuestionnaireEditorQueryParam } from "@/common/constants/crm/questionnaire/questionnaire-editor-query-params";
+import type { QuestionnaireFixedChoiceLabels } from "@/common/contracts/crm/questionnaire/questionnaire-fixed-choice-labels";
+import { writeQuestionnaireEditorDialog } from "@/common/patterns/crm/questionnaire/questionnaire-editor-query";
 import { useVersionedCommand } from "@/hooks/workspace/use-versioned-command";
 import type { CrmQuestionnaireDictionary } from "@/i18n/dictionaries/workspace/crm";
-import { crmQuestionnaireBlockPathFor } from "@/lib/auth/routes";
 import { QuestionnaireCatalogStatusBadge } from "../../catalog/questionnaire-catalog-status-badge/questionnaire-catalog-status-badge";
 import { QuestionnaireBlockPickerDialog } from "../../block-list/questionnaire-block-picker-dialog/questionnaire-block-picker-dialog";
 import { OrderedBlockListEditor } from "../../block-list/ordered-block-list-editor/ordered-block-list-editor";
+import { QuestionnaireTemplateBlockDialog } from "../questionnaire-template-block-dialog/questionnaire-template-block-dialog";
+import { QuestionnaireTemplatePreview } from "../questionnaire-template-preview/questionnaire-template-preview";
 import styles from "./questionnaire-template-editor.module.css";
 
 export type QuestionnaireTemplateEditorProps = {
   backHref: string;
   /** Every catalog block, archived ones too: a template may still hold an archived block. */
   blocks: QuestionnaireBlockSummaryDto[];
+  initialBlocks: QuestionnaireBlockDto[];
+  fixedChoiceLabels: QuestionnaireFixedChoiceLabels;
   canWrite: boolean;
   content: CrmQuestionnaireDictionary;
   locale: Locale;
@@ -78,15 +86,27 @@ function sameDraft(left: Draft, right: Draft): boolean {
 export function QuestionnaireTemplateEditor({
   backHref,
   blocks,
+  initialBlocks,
+  fixedChoiceLabels,
   canWrite,
   content,
   locale,
   template: initialTemplate,
 }: QuestionnaireTemplateEditorProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const openLinkRef = useRef<HTMLAnchorElement>(null);
+  const previewScrollRef = useRef<HTMLDivElement>(null);
+  const pendingPreviewIdRef = useRef<string | null>(null);
   const formId = useId();
   const statusId = useId();
   const [template, setTemplate] = useState(initialTemplate);
+  const [fullBlocks, setFullBlocks] = useState<
+    Record<string, QuestionnaireBlockDto>
+  >(() => Object.fromEntries(initialBlocks.map((block) => [block.id, block])));
+  const [catalogBlocks, setCatalogBlocks] = useState(blocks);
+  const [loadErrors, setLoadErrors] = useState<string[]>([]);
   const [draft, setDraft] = useState<Draft>(() => draftOf(initialTemplate));
   const [titleError, setTitleError] =
     useState<QuestionnaireFormValidationCode | null>(null);
@@ -95,7 +115,117 @@ export function QuestionnaireTemplateEditor({
   const { busy, run } = useVersionedCommand();
   const [outcome, setOutcome] = useState<QuestionnaireSaveOutcome>(null);
   const text = content.templateEditor;
-  const byId = new Map(blocks.map((block) => [block.id, block]));
+  const byId = new Map(catalogBlocks.map((block) => [block.id, block]));
+  const requestedBlockId = searchParams.get(
+    QuestionnaireEditorQueryParam.TemplateBlock,
+  );
+  const selectedBlock =
+    requestedBlockId && draft.blockIds.includes(requestedBlockId)
+      ? fullBlocks[requestedBlockId]
+      : null;
+  const missingIds = draft.blockIds.filter(
+    (id) => !fullBlocks[id] && !loadErrors.includes(id),
+  );
+  const missingKey = missingIds.join(",");
+  const previewBlocks = draft.blockIds.flatMap((id) =>
+    fullBlocks[id] ? [resolveQuestionnaireBlock(fullBlocks[id], locale)] : [],
+  );
+
+  useEffect(() => {
+    if (!missingKey) return;
+    let active = true;
+    void Promise.all(
+      missingKey.split(",").map(async (id) => ({
+        id,
+        block: await questionnaireCatalogApiService.getBlock(id),
+      })),
+    ).then((results) => {
+      if (!active) return;
+      setFullBlocks((current) => ({
+        ...current,
+        ...Object.fromEntries(
+          results.flatMap(({ id, block }) => (block ? [[id, block]] : [])),
+        ),
+      }));
+      setLoadErrors((current) => [
+        ...current,
+        ...results.filter(({ block }) => !block).map(({ id }) => id),
+      ]);
+    });
+    return () => {
+      active = false;
+    };
+  }, [missingKey]);
+
+  function scrollToPreviewBlock(id: string) {
+    const container = previewScrollRef.current;
+    const target = Array.from(
+      container?.querySelectorAll<HTMLElement>("[data-block-id]") ?? [],
+    ).find((element) => element.dataset.blockId === id);
+    if (!container || !target) {
+      pendingPreviewIdRef.current = id;
+      return;
+    }
+    pendingPreviewIdRef.current = null;
+    const behavior = window.matchMedia?.("(prefers-reduced-motion: reduce)")
+      .matches
+      ? "auto"
+      : "smooth";
+    if (window.getComputedStyle(container).overflowY === "auto") {
+      const top =
+        container.scrollTop +
+        target.getBoundingClientRect().top -
+        container.getBoundingClientRect().top -
+        16;
+      container.scrollTo({ top: Math.max(0, top), behavior });
+    } else {
+      target.scrollIntoView({ behavior, block: "start" });
+    }
+  }
+
+  useEffect(() => {
+    if (pendingPreviewIdRef.current) {
+      scrollToPreviewBlock(pendingPreviewIdRef.current);
+    }
+  }, [fullBlocks]);
+
+  function blockHref(id: string | null) {
+    const params = writeQuestionnaireEditorDialog(
+      new URLSearchParams(searchParams.toString()),
+      null,
+    );
+    if (id) params.set(QuestionnaireEditorQueryParam.TemplateBlock, id);
+    else params.delete(QuestionnaireEditorQueryParam.TemplateBlock);
+    const query = params.toString();
+    return query ? `${pathname}?${query}` : pathname;
+  }
+
+  function closeBlock() {
+    const trigger = openLinkRef.current;
+    router.replace(blockHref(null), { scroll: false });
+    requestAnimationFrame(() => trigger?.focus());
+  }
+
+  function adoptBlock(block: QuestionnaireBlockDto) {
+    setFullBlocks((current) => ({ ...current, [block.id]: block }));
+    setCatalogBlocks((current) =>
+      current.map((summary) =>
+        summary.id === block.id
+          ? {
+              ...summary,
+              key: block.key,
+              status: block.status,
+              titles: Object.fromEntries(
+                Object.entries(block.translations).map(([locale, value]) => [
+                  locale,
+                  value.title,
+                ]),
+              ),
+            }
+          : summary,
+      ),
+    );
+  }
   const dirty = !sameDraft(draft, draftOf(template));
 
   function change(patch: Partial<Draft>) {
@@ -215,68 +345,94 @@ export function QuestionnaireTemplateEditor({
           />
         </fieldset>
 
-        <section aria-labelledby={`${formId}-blocks`} className={styles.blocks}>
-          <header className={styles.blocksHeader}>
-            <h2 className={styles.blocksTitle} id={`${formId}-blocks`}>
-              {text.blocks.legend}
-              <span className={styles.count}>
-                {blockCount === 1
-                  ? text.blocks.countOne
-                  : formatMessage(text.blocks.count, { count: blockCount })}
-              </span>
-            </h2>
-            {canWrite ? (
-              <ButtonControl
-                className={styles.addButton}
-                disabled={
-                  busy || blockCount >= QUESTIONNAIRE_LIMITS.blocksPerOwner
-                }
-                onClick={() => setPickerOpen(true)}
-                type="button"
-                variant="ghost"
-              >
-                <FontAwesomeIcon aria-hidden="true" icon={faPlus} />
-                {text.blocks.add}
-              </ButtonControl>
-            ) : null}
-          </header>
-          <OrderedBlockListEditor
-            disabled={!canWrite || busy}
-            empty={<p className={styles.empty}>{text.blocks.empty}</p>}
-            items={draft.blockIds.map((id) => {
-              const block = byId.get(id);
-              return {
-                id,
-                name: block ? titleOf(block) : id,
-                detail: (
-                  <>
-                    <span>{block?.key}</span>
-                    {block?.status === QuestionnaireCatalogStatus.Archived ? (
-                      <span
-                        className={styles.archived}
-                        title={text.blocks.archivedHint}
+        <div className={styles.columns}>
+          <section
+            aria-labelledby={`${formId}-blocks`}
+            className={styles.blocks}
+          >
+            <header className={styles.blocksHeader}>
+              <h2 className={styles.blocksTitle} id={`${formId}-blocks`}>
+                {text.blocks.legend}
+                <span className={styles.count}>
+                  {blockCount === 1
+                    ? text.blocks.countOne
+                    : formatMessage(text.blocks.count, { count: blockCount })}
+                </span>
+              </h2>
+              {canWrite ? (
+                <ButtonControl
+                  className={styles.addButton}
+                  disabled={
+                    busy || blockCount >= QUESTIONNAIRE_LIMITS.blocksPerOwner
+                  }
+                  onClick={() => setPickerOpen(true)}
+                  type="button"
+                  variant="ghost"
+                >
+                  <FontAwesomeIcon aria-hidden="true" icon={faPlus} />
+                  {text.blocks.add}
+                </ButtonControl>
+              ) : null}
+            </header>
+            <OrderedBlockListEditor
+              disabled={!canWrite || busy}
+              empty={<p className={styles.empty}>{text.blocks.empty}</p>}
+              items={draft.blockIds.map((id) => {
+                const block = byId.get(id);
+                return {
+                  id,
+                  name: fullBlocks[id]
+                    ? resolveQuestionnaireBlock(fullBlocks[id], locale).title
+                    : block
+                      ? titleOf(block)
+                      : id,
+                  detail: (
+                    <>
+                      <span>{fullBlocks[id]?.key ?? block?.key}</span>
+                      {(fullBlocks[id]?.status ?? block?.status) ===
+                      QuestionnaireCatalogStatus.Archived ? (
+                        <span
+                          className={styles.archived}
+                          title={text.blocks.archivedHint}
+                        >
+                          {text.blocks.archived}
+                        </span>
+                      ) : null}
+                      <Link
+                        className={styles.open}
+                        href={blockHref(id)}
+                        ref={requestedBlockId === id ? openLinkRef : undefined}
                       >
-                        {text.blocks.archived}
-                      </span>
-                    ) : null}
-                    <Link
-                      className={styles.open}
-                      href={crmQuestionnaireBlockPathFor(locale, id)}
-                    >
-                      {text.blocks.open}
-                    </Link>
-                  </>
-                ),
-              };
-            })}
-            labels={text.blocks}
-            onAnnounceAction={setAnnouncement}
-            onChangeAction={(blockIds) => change({ blockIds })}
+                        {text.blocks.open}
+                      </Link>
+                    </>
+                  ),
+                };
+              })}
+              labels={text.blocks}
+              onAnnounceAction={setAnnouncement}
+              onChangeAction={(blockIds) => change({ blockIds })}
+              onSelectAction={scrollToPreviewBlock}
+            />
+            <p aria-live="polite" className="sr-only">
+              {announcement}
+            </p>
+          </section>
+
+          <QuestionnaireTemplatePreview
+            blocks={previewBlocks}
+            content={content}
+            hasLoadError={draft.blockIds.some((id) => loadErrors.includes(id))}
+            loading={missingIds.length > 0}
+            onRetryAction={() =>
+              setLoadErrors((current) =>
+                current.filter((id) => !draft.blockIds.includes(id)),
+              )
+            }
+            scrollRef={previewScrollRef}
+            titleId={`${formId}-preview`}
           />
-          <p aria-live="polite" className="sr-only">
-            {announcement}
-          </p>
-        </section>
+        </div>
 
         {canWrite ? (
           <footer className={styles.footer}>
@@ -316,13 +472,25 @@ export function QuestionnaireTemplateEditor({
         ) : null}
       </form>
 
+      {selectedBlock ? (
+        <QuestionnaireTemplateBlockDialog
+          block={selectedBlock}
+          canWrite={canWrite}
+          content={content}
+          fixedChoiceLabels={fixedChoiceLabels}
+          locale={locale}
+          onBlockChangeAction={adoptBlock}
+          onCloseAction={closeBlock}
+        />
+      ) : null}
+
       {pickerOpen ? (
         <QuestionnaireBlockPickerDialog
           maxSelection={Math.min(
             QUESTIONNAIRE_LIMITS.catalogBlocksPerAdd,
             QUESTIONNAIRE_LIMITS.blocksPerOwner - blockCount,
           )}
-          blocks={blocks}
+          blocks={catalogBlocks}
           chosenIds={draft.blockIds}
           content={text.picker}
           locale={locale}

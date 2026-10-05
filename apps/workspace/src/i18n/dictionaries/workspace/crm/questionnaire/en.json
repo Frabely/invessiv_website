@@ -263,6 +263,24 @@
     "conflict": "Someone changed this block in the meantime. The current state is loaded; please repeat your change."
   },
   "templateEditor": {
+    "preview": {
+      "title": "Preview",
+      "description": "The questions in the currently selected blocks appear here.",
+      "empty": "No blocks selected yet. Add a block on the left to see its questions.",
+      "loading": "Loading block …",
+      "loadError": "The block could not be loaded. Try again.",
+      "retry": "Try again",
+      "maxLength": "max. {count} characters",
+      "minItems": "min. {count}",
+      "maxItems": "max. {count}",
+      "acceptedKinds": "File types: {kinds}",
+      "options": "Options: {options}",
+      "condition": "Only if “{trigger}” = “{choice}”",
+      "required": "Required field"
+    },
+    "blockDialog": {
+      "close": "Close"
+    },
     "head": {
       "legend": "Template",
       "title": "Title",

@@ -263,6 +263,24 @@
     "conflict": "Jemand hat diesen Baustein inzwischen geändert. Der aktuelle Stand ist geladen, bitte wiederhole deine Änderung."
   },
   "templateEditor": {
+    "preview": {
+      "title": "Vorschau",
+      "description": "So sind die Fragen der aktuell ausgewählten Bausteine aufgebaut.",
+      "empty": "Noch keine Bausteine ausgewählt. Füge links einen Baustein hinzu, um seine Fragen zu sehen.",
+      "loading": "Baustein wird geladen …",
+      "loadError": "Der Baustein konnte nicht geladen werden. Versuche es erneut.",
+      "retry": "Erneut laden",
+      "maxLength": "max. {count} Zeichen",
+      "minItems": "mind. {count}",
+      "maxItems": "max. {count}",
+      "acceptedKinds": "Dateiarten: {kinds}",
+      "options": "Optionen: {options}",
+      "condition": "Nur wenn „{trigger}“ = „{choice}“",
+      "required": "Pflichtfeld"
+    },
+    "blockDialog": {
+      "close": "Schließen"
+    },
     "head": {
       "legend": "Vorlage",
       "title": "Titel",

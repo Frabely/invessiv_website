@@ -17,6 +17,8 @@ import {
   OnboardingAnswerReadView,
   type OnboardingAnswerReadViewProps,
 } from "./onboarding-answer-read-view";
+import { OnboardingTemplateReadView } from "../onboarding-template-read-view/onboarding-template-read-view";
+import { getCrmQuestionnaireDictionary } from "@/i18n/dictionaries/workspace/crm";
 
 const texts = {
   unanswered: "Not answered",
@@ -319,5 +321,68 @@ describe("OnboardingAnswerReadView", () => {
     renderView({ blocks: [], emptyText: "Nothing here" });
 
     expect(screen.getByText("Nothing here")).toBeInTheDocument();
+  });
+});
+
+describe("OnboardingAnswerReadView template mode", () => {
+  afterEach(cleanup);
+
+  const dictionary = getCrmQuestionnaireDictionary("en");
+  const templateTexts = {
+    ...dictionary.templateEditor.preview,
+    fieldTypes: dictionary.fieldTypes,
+    assetKinds: dictionary.assetKinds,
+  };
+
+  it("shows the empty template state without answer markers", () => {
+    render(
+      <OnboardingTemplateReadView
+        blocks={[]}
+        emptyText="No blocks"
+        texts={templateTexts}
+      />,
+    );
+    expect(screen.getByText("No blocks")).toBeVisible();
+    expect(screen.queryByText("Not answered")).not.toBeInTheDocument();
+  });
+
+  it("shows every field in block order, including conditional children and limits", () => {
+    const trigger = field("Choice", {
+      type: T.Choice,
+      choices: choices("Choice", "Yes", "No"),
+    });
+    render(
+      <OnboardingTemplateReadView
+        blocks={[
+          block("First", [
+            trigger,
+            field("Conditional", {
+              conditionFieldId: trigger.id,
+              conditionChoiceId: trigger.choices[0].id,
+              maxLength: 200,
+            }),
+            field("Group", {
+              type: T.Group,
+              children: [
+                field("Child", {
+                  type: T.Files,
+                  acceptedAssetKinds: [AssetKind.Image],
+                }),
+              ],
+            }),
+          ]),
+          block("Second", [field("Last")]),
+        ]}
+        texts={templateTexts}
+      />,
+    );
+    expect(
+      screen.getAllByRole("heading").map((item) => item.textContent),
+    ).toEqual(["First", "Second"]);
+    expect(valueOf("Conditional")).toHaveTextContent("max. 200 characters");
+    expect(valueOf("Conditional")).toHaveTextContent("Only if");
+    expect(valueOf("Child")).toHaveTextContent("File types: Images");
+    expect(valueOf("Choice")).toHaveTextContent("Options: Yes, No");
+    expect(screen.queryByText("Not answered")).not.toBeInTheDocument();
   });
 });

@@ -1,5 +1,6 @@
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import type { CreateQuestionnaireBlockRequestDto } from "@invessiv/common/contracts/crm/questionnaire/create-questionnaire-block-request.dto";
+import type { QuestionnaireBlockDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-block.dto";
 import type { CreateQuestionnaireTemplateRequestDto } from "@invessiv/common/contracts/crm/questionnaire/create-questionnaire-template-request.dto";
 import type { DeleteQuestionnaireBlockRequestDto } from "@invessiv/common/contracts/crm/questionnaire/delete-questionnaire-block-request.dto";
 import type { DuplicateQuestionnaireBlockRequestDto } from "@invessiv/common/contracts/crm/questionnaire/duplicate-questionnaire-block-request.dto";
@@ -37,6 +38,21 @@ function createBlock(request: CreateQuestionnaireBlockRequestDto) {
     request,
     isBlock,
   );
+}
+
+async function getBlock(
+  blockId: string,
+): Promise<QuestionnaireBlockDto | null> {
+  try {
+    const response = await fetch(crmQuestionnaireBlockEndpoint(blockId), {
+      cache: "no-store",
+    });
+    if (!response.ok) return null;
+    const payload: unknown = await response.json();
+    return isBlock(payload) ? payload : null;
+  } catch {
+    return null;
+  }
 }
 
 function deleteBlock(
@@ -96,6 +112,7 @@ export const questionnaireCatalogApiService = {
   createBlock,
   createTemplate,
   definitionApi,
+  getBlock,
   deleteBlock,
   duplicateBlock,
   updateTemplate,

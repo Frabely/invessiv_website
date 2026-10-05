@@ -7,14 +7,12 @@ import type { QuestionnaireAnswerFileRefDto } from "@invessiv/common/contracts/c
 import type { QuestionnaireAnswerFileDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-answer-file.dto";
 import type { QuestionnaireCompletenessInput } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-completeness-input";
 import type { QuestionnaireResolvedBlock } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-resolved-block";
-import type { QuestionnaireResolvedField } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-resolved-field";
 import type { OnboardingFormServiceDto } from "@invessiv/common/contracts/crm/onboarding/onboarding-form-service.dto";
 import {
   getQuestionnaireCompleteness,
   isQuestionnaireFieldVisible,
 } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
 import { questionnaireSlotKey } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-answer-slot";
-import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { LinkedText } from "@invessiv/ui";
 import type { FileAttachmentTexts } from "@/common/contracts/files/file-attachment-texts";
 import type { OnboardingReadTexts } from "@/common/contracts/shared/onboarding-read-texts";

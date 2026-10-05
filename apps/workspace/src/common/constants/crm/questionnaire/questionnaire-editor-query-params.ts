@@ -7,6 +7,7 @@ export const QuestionnaireEditorQueryParam = {
   Parent: "questionnaireParent",
   DeleteField: "questionnaireDeleteField",
   Dialog: "questionnaireDialog",
+  TemplateBlock: "questionnaireBlock",
 } as const;
 
 export type QuestionnaireEditorQueryParam =

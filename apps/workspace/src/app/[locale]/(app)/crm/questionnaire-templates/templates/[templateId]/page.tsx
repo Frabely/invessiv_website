@@ -14,6 +14,8 @@ import { requireWorkspacePermission } from "@/lib/auth/permissions";
 import { crmQuestionnaireTemplatesPathFor } from "@/lib/auth/routes";
 import { getQuestionnaireTemplate } from "@/server/workspace/crm/query-handler/get-questionnaire-template.query-handler";
 import { listQuestionnaireBlocks } from "@/server/workspace/crm/query-handler/list-questionnaire-blocks.query-handler";
+import { buildQuestionnaireFixedChoiceLabels } from "@/lib/workspace/crm/questionnaire-fixed-choice-labels";
+import { getQuestionnaireTemplateBlocks } from "@/server/workspace/crm/query-handler/get-questionnaire-template-blocks.query-handler";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -48,10 +50,15 @@ export default async function QuestionnaireTemplatePage({
   const template = await getQuestionnaireTemplate(templateId);
   if (!template) notFound();
   // Every status: a template may still hold a block that was archived after it was chosen.
-  const blocks = await listQuestionnaireBlocks({
-    status: QuestionnaireCatalogStatusFilter.All,
-    search: "",
-  });
+  const [blocks, templateBlocks] = await Promise.all([
+    listQuestionnaireBlocks({
+      status: QuestionnaireCatalogStatusFilter.All,
+      search: "",
+    }),
+    getQuestionnaireTemplateBlocks(
+      template.blocks.map((entry) => entry.blockId),
+    ),
+  ]);
 
   return (
     <WorkspaceScrollablePageShell pageId="crm-questionnaire-template">
@@ -65,6 +72,8 @@ export default async function QuestionnaireTemplatePage({
           },
         )}
         blocks={blocks.rows}
+        initialBlocks={templateBlocks}
+        fixedChoiceLabels={buildQuestionnaireFixedChoiceLabels()}
         canWrite={can(actor, Permission.QuestionnaireTemplatesWrite)}
         content={getCrmQuestionnaireDictionary(locale)}
         locale={locale}

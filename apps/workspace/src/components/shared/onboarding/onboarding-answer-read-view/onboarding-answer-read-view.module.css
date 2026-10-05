@@ -9,6 +9,10 @@
   gap: 0.25rem;
 }
 
+[data-mode="template"] .block {
+  scroll-margin-top: 1rem;
+}
+
 .title {
   margin: 0;
   padding-bottom: 0.6rem;
