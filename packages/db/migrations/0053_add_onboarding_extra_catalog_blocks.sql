@@ -4,10 +4,10 @@
 INSERT INTO questionnaire_blocks (id, owner_form_id, source_block_id, key, carry_over, status, version)
 VALUES ('ebe16265-e5e2-506d-a3ba-d47fd4a8117b', NULL, NULL, 'blog_news', FALSE, 'active', 1),
        ('235ed36b-aefc-563e-a367-5728833c51f3', NULL, NULL, 'careers', FALSE, 'active', 1),
-       ('7ed17f07-2459-5b73-86af-5c251de90800', NULL, NULL, 'products_pricing', TRUE, 'active', 1),
+       ('7ed17f07-2459-5b73-86af-5c251de90800', NULL, NULL, 'products_pricing', FALSE, 'active', 1),
        ('1831fa5f-9a87-59fb-8461-ff6ea0e2446f', NULL, NULL, 'events', FALSE, 'active', 1),
-       ('04e9c54a-37e2-52d8-a3a3-bf3e3cab6b1e', NULL, NULL, 'downloads', TRUE, 'active', 1),
-       ('f684afa4-6240-58ae-b064-285b218cc75f', NULL, NULL, 'newsletter', TRUE, 'active', 1),
+       ('04e9c54a-37e2-52d8-a3a3-bf3e3cab6b1e', NULL, NULL, 'downloads', FALSE, 'active', 1),
+       ('f684afa4-6240-58ae-b064-285b218cc75f', NULL, NULL, 'newsletter', FALSE, 'active', 1),
        ('bc93a0db-0c59-52ec-a5c8-543de26a4e52', NULL, NULL, 'inquiry_forms', FALSE, 'active', 1),
        ('0c38f16e-fcda-50e2-99a0-37f73d5210d1', NULL, NULL, 'campaign_ads', FALSE, 'active', 1),
        ('13002f10-39c1-50d7-919b-f2bf9e5a9d0b', NULL, NULL, 'languages', FALSE, 'active', 1)
