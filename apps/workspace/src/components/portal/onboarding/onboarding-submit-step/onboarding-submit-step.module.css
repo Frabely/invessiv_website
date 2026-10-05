@@ -15,6 +15,13 @@
   outline: none;
 }
 
+/* Same size as the title of a block step. */
+@media (min-width: 1024px) {
+  .title {
+    font-size: 1.75rem;
+  }
+}
+
 .text {
   max-width: 62ch;
   margin: 0;

@@ -5,7 +5,7 @@
 
 .label {
   color: color-mix(in srgb, var(--color-text) 88%, var(--color-text-muted) 12%);
-  font-size: var(--font-size-label-md);
+  font-size: var(--form-label-size, var(--font-size-label-md));
   font-weight: 700;
   line-height: 1.4;
 }
@@ -91,7 +91,7 @@
 
 @media (min-width: 1100px) {
   .label {
-    font-size: 0.95rem;
+    font-size: var(--form-label-size, 0.95rem);
   }
 
   .control :global(input),

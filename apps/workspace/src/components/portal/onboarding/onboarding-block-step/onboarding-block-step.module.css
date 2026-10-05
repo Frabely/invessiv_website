@@ -66,3 +66,17 @@
 .fields {
   padding-top: 0.5rem;
 }
+
+/*
+ * With room to spare the step title leads the page and the questions read as headings of their
+ * fields, a step above the input text.
+ */
+@media (min-width: 1024px) {
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .fields {
+    --form-label-size: 1.2rem;
+  }
+}

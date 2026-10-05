@@ -29,6 +29,9 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   richten sich danach. Kein Control setzt eine eigene feste Höhe.
 - **Gleiches Gerüst:** Label, Abstand Label → Control, Hinweis (`FormHint`) und Fehler sehen in `FormField` und
   `FormFieldset` gleich aus. Ein neuer Formular-Baustein übernimmt diese Werte, statt eigene zu wählen.
+- **Label-Größe über Token:** `FormField` und `FormFieldset` lesen die Schriftgröße ihres Labels aus
+  `--form-label-size`. Ohne Token gelten die bisherigen Werte. Ein Formular, dessen Fragen größer stehen sollen, setzt
+  das Token in seinem Scope (z. B. der Portal-Bogen ab 1024 px), statt Label-Klassen zu überschreiben.
 - **Radio und Checkbox** kommen aus `RadioControl` bzw. `CheckboxControl`; als Option einer Frage über `OptionTile`.
   Kein natives `<input type="radio|checkbox">` mit eigenem Stil in den Apps.
 - **Buttons:** `variant` wählt das Aussehen (`primary`, `ghost`, `quiet`), `size` die Größe (`default`, `control` in
