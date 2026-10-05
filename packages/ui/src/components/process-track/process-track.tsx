@@ -4,6 +4,7 @@ import { type ReactNode, useEffect, useRef } from "react";
 import {
   faCheck,
   faCircleExclamation,
+  faCommentDots,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ProcessStepProgress } from "@invessiv/common/constants/ui/process-step-progress";
@@ -104,6 +105,11 @@ export function ProcessTrack({
                 ) : null}
               </span>
               <span className={styles.label}>
+                {step.flagged ? (
+                  <span aria-hidden="true" className={styles.flag}>
+                    <FontAwesomeIcon icon={faCommentDots} />
+                  </span>
+                ) : null}
                 {alert ? (
                   <FontAwesomeIcon
                     aria-hidden="true"
@@ -138,6 +144,7 @@ export function ProcessTrack({
               }
               className={styles.step}
               data-progress={measured ? undefined : step.progress}
+              data-flagged={step.flagged ? "true" : undefined}
               data-state={state}
               data-tone={tone}
               data-variant={step.variant ?? ProcessStepVariant.Default}

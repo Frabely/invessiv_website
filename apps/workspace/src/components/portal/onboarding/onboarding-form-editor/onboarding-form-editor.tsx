@@ -2,6 +2,7 @@
 
 import { type ReactNode, useCallback, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { PortalOnboardingErrorCode } from "@invessiv/common/constants/portal/portal-onboarding-error-codes";
 import type { QuestionnaireGroupEntryDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-group-entry.dto";
 import type { PortalOnboardingFormDto } from "@invessiv/common/contracts/portal/portal-onboarding-form.dto";
@@ -105,6 +106,16 @@ export function OnboardingFormEditor({
   const step = usePortalOnboardingStep(
     sections,
     form.blocks.find((block) => form.editableBlockIds.includes(block.id))?.id,
+  );
+  // During a change request the editable blocks are exactly the ones the team asked about.
+  const requestedBlockIds = useMemo(
+    () =>
+      new Set(
+        form.status === OnboardingFormStatus.ChangesRequested
+          ? form.editableBlockIds
+          : [],
+      ),
+    [form.editableBlockIds, form.status],
   );
   const [navigated, setNavigated] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -312,6 +323,7 @@ export function OnboardingFormEditor({
           invalidBlockIds={invalidBlockIds}
           leftSections={step.leftSections}
           onSelectAction={(section) => goTo({ section })}
+          requestedBlockIds={requestedBlockIds}
         />
       </OnboardingFormHeader>
       <div className={styles.body} ref={bodyRef}>

@@ -6,6 +6,7 @@ import { isQuestionnaireChoiceAnswerType } from "@invessiv/common/patterns/crm/q
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { LinkedText } from "@invessiv/ui";
 import type { OnboardingReadTexts } from "@/common/contracts/shared/onboarding-read-texts";
+import { OnboardingScaleTrack } from "../onboarding-scale-track/onboarding-scale-track";
 import styles from "./onboarding-read-value.module.css";
 
 export type OnboardingReadValueProps = {
@@ -62,19 +63,20 @@ export function OnboardingReadValue({
     const poles = [...field.choices].sort(
       (left, right) => left.position - right.position,
     );
+    const low = poles[0]?.label ?? null;
+    const high = poles.length > 1 ? poles[poles.length - 1].label : null;
     return (
-      <p className={styles.text}>
-        {formatMessage(texts.scale, {
-          step: value,
-          max: QUESTIONNAIRE_LIMITS.scaleSteps,
-        })}
-        {poles.length > 1 ? (
-          <span className={styles.poles}>
-            {" "}
-            ({poles[0].label} – {poles[poles.length - 1].label})
-          </span>
-        ) : null}
-      </p>
+      <div>
+        {/* The track is the picture of the answer; the sentence below carries it for screen readers. */}
+        <OnboardingScaleTrack compact high={high} low={low} value={value} />
+        <p className="sr-only">
+          {formatMessage(texts.scale, {
+            step: value,
+            max: QUESTIONNAIRE_LIMITS.scaleSteps,
+          })}
+          {low && high ? ` (${low} – ${high})` : null}
+        </p>
+      </div>
     );
   }
 

@@ -201,7 +201,13 @@ Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-le
 - **Nachforderung (ab Task 68):** Im Status `changes_requested` öffnet der Bogen auf dem ersten Block aus
   `editableBlockIds` (`usePortalOnboardingStep` nimmt dafür einen Startabschnitt), zeigt über dem Formular, was zu
   tun ist, und an jedem nachgeforderten Block die Rückfrage des Teams (`reviewNote`). Alle anderen Blöcke bleiben
-  lesend. Das Widget heißt dann „Wir haben Rückfragen“ und führt mit „Jetzt ergänzen“ in den Bogen.
+  lesend. Das Widget heißt dann „Wir haben Rückfragen“ und führt mit „Jetzt ergänzen“ in den Bogen. In der
+  Schrittleiste trägt jeder nachgeforderte Block eine warme Sprechblasen-Marke (`flagged` am `ProcessTrackStep`),
+  unabhängig von Füllung, Farbe und Haken; der Screenreader-Status nennt die Rückfrage (`steps.statusRequested`).
+  Welche Blöcke das sind, kommt aus `editableBlockIds` im Status `changes_requested`.
+- **Skala:** Bogen und Leseansicht zeigen sie über denselben Baustein
+  `components/shared/onboarding/onboarding-scale-track` (mit `onChangeAction` als Radios, ohne als Bild, `compact`
+  für die Leseansicht). Kein zweiter Skalen-Stil.
 
 - **Onboarding-Call (ab Task 69):** `onboarding/onboarding-booking-card` zeigt den Buchungslink des zuständigen
   Mitglieds oder, ohne Link, den Hinweis „Wir melden uns bei dir für einen Termin“ samt Chat-Link (nur mit

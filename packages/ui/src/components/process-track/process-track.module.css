@@ -329,6 +329,28 @@
   }
 }
 
+/*
+ * A flagged step carries a message for the reader. The warm chip belongs to no fill and no tone,
+ * so it reads next to any of them, and the label stays as strong as that of the open step.
+ */
+.flag {
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent-warm) 22%, transparent);
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--color-accent-warm) 62%, transparent);
+  color: var(--color-accent-warm);
+  font-size: 0.68rem;
+}
+
+.step[data-flagged]:not([data-state="current"]) {
+  color: var(--color-text);
+}
+
 /* Compact: no frame of its own and one line per label, for a track inside a sticky header. */
 .progress[data-density="compact"] {
   gap: 0.4rem;

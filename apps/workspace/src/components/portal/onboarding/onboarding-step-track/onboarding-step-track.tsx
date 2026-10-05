@@ -30,6 +30,8 @@ export type OnboardingStepTrackProps = {
   /** Sections visited and left in the current editor session. */
   leftSections: ReadonlySet<string>;
   onSelectAction: (section: string) => void;
+  /** Blocks the team sent back with a question; empty outside a change request. */
+  requestedBlockIds: ReadonlySet<string>;
 };
 
 /**
@@ -44,6 +46,7 @@ export function OnboardingStepTrack({
   invalidBlockIds,
   leftSections,
   onSelectAction,
+  requestedBlockIds,
 }: OnboardingStepTrackProps) {
   const texts = content.steps;
   const invalid = invalidBlockIds.size > 0;
@@ -59,20 +62,25 @@ export function OnboardingStepTrack({
         left: leftSections.has(block.id),
       });
       const statusText = texts.status[status.kind];
+      const statusLabel =
+        status.valid && status.kind !== OnboardingStepStatusKind.Complete
+          ? formatMessage(texts.statusValid, { status: statusText })
+          : statusText;
+      const requested = requestedBlockIds.has(block.id);
       return {
         key: block.id,
         label: block.title,
         ratio: status.ratio,
         tone: TONES[status.kind],
         valid: status.valid,
+        flagged: requested,
         detail:
           progress.total > 0
             ? `${progress.answered}/${progress.total}`
             : undefined,
-        statusLabel:
-          status.valid && status.kind !== OnboardingStepStatusKind.Complete
-            ? formatMessage(texts.statusValid, { status: statusText })
-            : statusText,
+        statusLabel: requested
+          ? formatMessage(texts.statusRequested, { status: statusLabel })
+          : statusLabel,
       };
     }),
     // Optional invalid input also prevents submission, even when nothing required is missing.

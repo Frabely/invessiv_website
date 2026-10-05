@@ -241,4 +241,32 @@ describe("ProcessTrack measured steps", () => {
       items[2].querySelector('[data-icon="circle-exclamation"]'),
     ).not.toBeNull();
   });
+
+  it("flags a step next to its fill and tick without changing either", () => {
+    render(
+      <ProcessTrack
+        currentIndex={1}
+        label="Steps"
+        steps={[
+          {
+            key: "a",
+            label: "Company",
+            ratio: 1,
+            tone: ProcessStepTone.Success,
+            valid: true,
+            flagged: true,
+          },
+          { key: "b", label: "Goals", ratio: 0 },
+        ]}
+      />,
+    );
+
+    const items = screen.getAllByRole("listitem");
+    expect(items[0]).toHaveAttribute("data-flagged", "true");
+    expect(items[0].querySelector('[data-icon="comment-dots"]')).not.toBeNull();
+    expect(items[0].querySelector('[data-icon="check"]')).not.toBeNull();
+    expect(items[0].dataset.tone).toBe("success");
+    expect(items[1]).not.toHaveAttribute("data-flagged");
+    expect(items[1].querySelector('[data-icon="comment-dots"]')).toBeNull();
+  });
 });

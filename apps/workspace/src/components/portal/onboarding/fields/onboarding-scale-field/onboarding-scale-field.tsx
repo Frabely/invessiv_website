@@ -7,12 +7,8 @@ import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonSize } from "@invessiv/common/constants/ui/button-sizes";
 import { FormFieldset, SecondaryCtaButton } from "@invessiv/ui";
 import type { PortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
+import { OnboardingScaleTrack } from "@/components/shared/onboarding/onboarding-scale-track/onboarding-scale-track";
 import styles from "./onboarding-scale-field.module.css";
-
-const STEPS = Array.from(
-  { length: QUESTIONNAIRE_LIMITS.scaleSteps },
-  (_, index) => String(index + 1),
-);
 
 export type OnboardingScaleFieldProps = {
   field: QuestionnaireResolvedField;
@@ -65,34 +61,19 @@ export function OnboardingScaleField({
       required={required}
       role="radiogroup"
     >
-      <div className={styles.track}>
-        {STEPS.map((step, index) => (
-          <label
-            className={styles.step}
-            data-checked={value === step ? "true" : undefined}
-            key={step}
-          >
-            <input
-              aria-label={formatMessage(texts.scale.step, {
-                step,
-                max: STEPS.length,
-              })}
-              checked={value === step}
-              id={index === 0 ? id : undefined}
-              name={id}
-              onChange={() => onChangeAction(step)}
-              type="radio"
-            />
-            <span aria-hidden="true">{step}</span>
-          </label>
-        ))}
-      </div>
-      {low || high ? (
-        <div aria-hidden="true" className={styles.poles}>
-          <span>{low}</span>
-          <span>{high}</span>
-        </div>
-      ) : null}
+      <OnboardingScaleTrack
+        high={high}
+        id={id}
+        low={low}
+        onChangeAction={onChangeAction}
+        stepLabel={(step) =>
+          formatMessage(texts.scale.step, {
+            step,
+            max: QUESTIONNAIRE_LIMITS.scaleSteps,
+          })
+        }
+        value={value}
+      />
       {low || high ? (
         <span className="sr-only">
           {[low, high].filter(Boolean).join(" – ")}

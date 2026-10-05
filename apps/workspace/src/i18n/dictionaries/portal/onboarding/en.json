@@ -34,7 +34,8 @@
       "complete": "complete",
       "attention": "needs a look"
     },
-    "statusValid": "{status}, required answers complete"
+    "statusValid": "{status}, required answers complete",
+    "statusRequested": "{status}, we have a question here"
   },
   "block": {
     "fallback": "This section is only available in {language}.",

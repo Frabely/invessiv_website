@@ -34,7 +34,8 @@
       "complete": "vollständig",
       "attention": "bitte prüfen"
     },
-    "statusValid": "{status}, Pflichtangaben vollständig"
+    "statusValid": "{status}, Pflichtangaben vollständig",
+    "statusRequested": "{status}, wir haben hier eine Rückfrage"
   },
   "block": {
     "fallback": "Dieser Abschnitt ist nur auf {language} verfügbar.",

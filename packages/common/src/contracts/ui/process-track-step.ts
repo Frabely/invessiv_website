@@ -21,4 +21,6 @@ export interface ProcessTrackStep {
   statusLabel?: string;
   /** Ticks the step off as acceptable as it is, even while its fill is not full. Only read together with `ratio`. */
   valid?: boolean;
+  /** Marks the step as carrying a message for the reader. Independent of fill, tone and tick; say what it is in `statusLabel`. */
+  flagged?: boolean;
 }

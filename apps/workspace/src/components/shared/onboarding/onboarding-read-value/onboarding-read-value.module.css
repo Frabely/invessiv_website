@@ -48,7 +48,3 @@
   border: 1px solid var(--color-border-strong);
   border-radius: 6px;
 }
-
-.poles {
-  color: var(--color-text-muted);
-}
