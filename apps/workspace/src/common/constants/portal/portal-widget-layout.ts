@@ -11,6 +11,12 @@ const COMPACT_ROW: WidgetResponsiveSpan = {
   desktop: WidgetColumnSpan.Four,
 };
 
+const WIDE_ROW: WidgetResponsiveSpan = {
+  mobile: WidgetColumnSpan.Full,
+  tablet: WidgetColumnSpan.Full,
+  desktop: WidgetColumnSpan.Eight,
+};
+
 const QUARTER_ROW: WidgetResponsiveSpan = {
   mobile: WidgetColumnSpan.Full,
   tablet: WidgetColumnSpan.Six,
@@ -34,7 +40,7 @@ export const PORTAL_WIDGET_LAYOUT: readonly PortalWidgetDefinition[] = [
   {
     key: PortalWidgetKey.Project,
     order: 20,
-    span: COMPACT_ROW,
+    span: WIDE_ROW,
     openMode: WidgetOpenMode.None,
     mock: false,
     requiredPermission: Permission.PortalProjectsRead,
@@ -70,7 +76,7 @@ export const PORTAL_WIDGET_LAYOUT: readonly PortalWidgetDefinition[] = [
   {
     key: PortalWidgetKey.Feedback,
     order: 60,
-    span: COMPACT_ROW,
+    span: QUARTER_ROW,
     openMode: WidgetOpenMode.None,
     mock: false,
     requiredPermission: Permission.PortalFeedbackRead,

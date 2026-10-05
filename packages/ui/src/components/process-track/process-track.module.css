@@ -42,6 +42,8 @@
 
 .stepButton.stepButton {
   display: grid;
+  /* The button base centres its content, which would shrink the bar to the width of the label. */
+  justify-content: stretch;
   gap: 0.55rem;
   width: 100%;
   min-height: 0;
@@ -327,6 +329,28 @@
   .step[data-tone] .stepButton:hover .segment {
     box-shadow: inset 0 0 0 1px var(--color-text-muted);
   }
+}
+
+/*
+ * Accent steps keep their own colour in a measured track, whatever their tone: fill, plate and
+ * tick stay warm, so the group still reads as one among steps coloured by state.
+ */
+.step[data-tone][data-variant="accent"] {
+  --step-tone: var(--color-accent-warm);
+}
+
+.step[data-tone][data-variant="accent"][data-state] .segment {
+  background: color-mix(
+    in srgb,
+    var(--color-accent-warm) 26%,
+    var(--color-surface-2)
+  );
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--color-accent-warm) 72%, transparent);
+}
+
+.step[data-tone][data-variant="accent"] .check {
+  color: var(--color-accent-warm);
 }
 
 /*

@@ -72,6 +72,12 @@
     "empty": "No projects have been created for this customer yet.",
     "phase": "Phase",
     "phaseProgress": "Step {current} of {total}",
+    "phaseStatus": {
+      "complete": "completed",
+      "current": "in progress",
+      "upcoming": "open",
+      "feedbackRunning": "feedback round in progress"
+    },
     "owner": "Owner",
     "status": {
       "planned": "Planned",

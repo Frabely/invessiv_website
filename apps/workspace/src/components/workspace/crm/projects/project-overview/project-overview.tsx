@@ -17,6 +17,7 @@ import {
   BadgeTone,
   type BadgeTone as BadgeToneValue,
 } from "@invessiv/common/constants/ui/badge-tones";
+import { ProcessTrackDensity } from "@invessiv/common/constants/ui/process-track-densities";
 import type { ProjectDto } from "@invessiv/common/contracts/crm/project.dto";
 import type { ProjectFeedbackRoundProgress } from "@invessiv/common/contracts/crm/project-feedback-round-progress";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
@@ -95,38 +96,6 @@ export function ProjectOverview({
             />
           ) : null}
         </div>
-        {project ? (
-          <ProcessTrack
-            currentIndex={currentIndex}
-            label={content.projects.phase}
-            onStepAction={
-              onEditAction
-                ? (_, index) => {
-                    const item = track?.items[index];
-                    // Rounds are not selectable as current step; they open the editor unchanged.
-                    onEditAction(
-                      project,
-                      item?.kind === ProcessTrackItemKind.Custom
-                        ? item.label
-                        : undefined,
-                    );
-                  }
-                : undefined
-            }
-            steps={toProcessTrackSteps(track?.items ?? [])}
-            summary={
-              <p className={styles.progressSummary}>
-                <strong>{currentItem?.label}</strong>
-                <span>
-                  {formatMessage(content.projects.phaseProgress, {
-                    current: Math.min(currentIndex + 1, total),
-                    total,
-                  })}
-                </span>
-              </p>
-            }
-          />
-        ) : null}
         <div className={styles.actions}>
           {owner ? (
             <div className={styles.owner}>
@@ -160,6 +129,45 @@ export function ProjectOverview({
             >
               <FontAwesomeIcon aria-hidden="true" icon={faPen} />
             </ButtonControl>
+          ) : null}
+        </div>
+        <div className={styles.track}>
+          {project ? (
+            <ProcessTrack
+              currentIndex={currentIndex}
+              density={ProcessTrackDensity.Compact}
+              label={content.projects.phase}
+              onStepAction={
+                onEditAction
+                  ? (_, index) => {
+                      const item = track?.items[index];
+                      // Rounds are not selectable as current step; they open the editor unchanged.
+                      onEditAction(
+                        project,
+                        item?.kind === ProcessTrackItemKind.Custom
+                          ? item.label
+                          : undefined,
+                      );
+                    }
+                  : undefined
+              }
+              steps={toProcessTrackSteps(
+                track?.items ?? [],
+                currentIndex,
+                content.projects.phaseStatus,
+              )}
+              summary={
+                <p className={styles.progressSummary}>
+                  <strong>{currentItem?.label}</strong>
+                  <span>
+                    {formatMessage(content.projects.phaseProgress, {
+                      current: Math.min(currentIndex + 1, total),
+                      total,
+                    })}
+                  </span>
+                </p>
+              }
+            />
           ) : null}
         </div>
       </div>

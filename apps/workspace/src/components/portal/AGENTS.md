@@ -21,6 +21,11 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 - Die Projekt-Auswahl darf den Titel eines sichtbaren Projekts als Navigation für unabhängig lesbare Aufgaben,
   Feedback oder Onboarding zeigen. Projektdetails und abgeschlossene Projekte bleiben an `portal.projects.read`
   gebunden; die Fach-Widgets prüfen nur ihr eigenes Leserecht.
+- **Projekt-Widget:** Am Desktop zwei Drittel der Zeile (`WIDE_ROW`), am Tablet die volle Breite. Die Prozessleiste
+  ist dieselbe wie im Onboarding-Bogen (`ProcessTrack` kompakt); Füllung, Farbe, Haken und die Marke der laufenden
+  Feedbackrunde kommen ausschließlich aus `toProcessTrackSteps` (`@invessiv/common`), die Statuswörter aus
+  `widgets.project.stepStatus`. Schrittnamen, „Nächster Schritt“, Projektleitung und Buttons stehen je auf einer
+  Zeile und brechen erst um, wenn die Karte zu schmal wird.
 - **Mock-Widgets** tragen das Badge „Bald verfügbar“ (`mock`-Prop am `Widget`) und zeigen **keine erfundenen Werte** —
   nur Skeleton-/Illustrationsinhalt und eine Beschreibung, was dort entstehen wird.
 - **Öffnen nur über explizite Buttons** (`Widget`-`openMode`). Dialoge hängen am URL-Parameter `?widget=<key>`;

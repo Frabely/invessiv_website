@@ -59,6 +59,12 @@
       "plannedNote": "Dieses Projekt startet bald. Den Fortschritt siehst du hier, sobald wir loslegen.",
       "trackLabel": "Projektfortschritt",
       "stepSummary": "Schritt {current} von {total}",
+      "stepStatus": {
+        "complete": "abgeschlossen",
+        "current": "läuft gerade",
+        "upcoming": "steht noch an",
+        "feedbackRunning": "Feedback läuft gerade"
+      },
       "feedbackRound": "Feedbackrunde {number}",
       "nextStep": "Nächster Schritt",
       "preview": "Vorschau öffnen",

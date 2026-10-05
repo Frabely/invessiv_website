@@ -305,7 +305,9 @@ describe("PortalDashboard", () => {
 
     const track = screen.getByRole("list", { name: "Project progress" });
     expect(
-      [...track.querySelectorAll("li")].map((item) => item.textContent),
+      [...track.querySelectorAll("li")].map(
+        (item) => item.querySelector("[title]")?.textContent,
+      ),
     ).toEqual([
       "Design",
       "Feedback round 1",

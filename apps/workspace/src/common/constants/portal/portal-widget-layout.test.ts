@@ -22,13 +22,17 @@ describe("PORTAL_WIDGET_LAYOUT", () => {
     }
   });
 
-  it("stacks widgets on phones and uses a compact project card on larger screens", () => {
+  it("stacks widgets on phones and gives the project card two thirds on desktop", () => {
     for (const entry of PORTAL_WIDGET_LAYOUT) {
       expect(entry.span.mobile).toBe(12);
     }
     const project = PORTAL_WIDGET_LAYOUT.find(
       (entry) => entry.key === PortalWidgetKey.Project,
     );
-    expect(project?.span).toEqual({ mobile: 12, tablet: 6, desktop: 4 });
+    expect(project?.span).toEqual({ mobile: 12, tablet: 12, desktop: 8 });
+    const feedback = PORTAL_WIDGET_LAYOUT.find(
+      (entry) => entry.key === PortalWidgetKey.Feedback,
+    );
+    expect(feedback?.span).toEqual({ mobile: 12, tablet: 6, desktop: 3 });
   });
 });

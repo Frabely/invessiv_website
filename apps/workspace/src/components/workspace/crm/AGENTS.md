@@ -67,6 +67,12 @@ Plan: `apps/workspace/plans/crm/16-feedbackrunden/57-feedbackblock-und-kontingen
 - Editor-Operationen laufen ausschließlich über `common/patterns/crm/project-process-plan.ts`, die Anzeige in CRM und
   Portal ausschließlich über `buildProjectProcessTrack` + `toProcessTrackSteps` aus `@invessiv/common`. Kein zweiter
   Weg, Positionen oder Rundennummern in einer Komponente zu berechnen.
+- **Darstellung wie im Onboarding-Bogen:** `ProcessTrack` läuft kompakt (`density="compact"`), und
+  `toProcessTrackSteps(items, currentIndex, statusLabels)` liefert je Schritt Füllung, Farbe, Haken und den
+  ausgeschriebenen Status: beendet grün mit Haken, laufend blau auf getönter Fläche, offen neutral. Rundenschritte
+  bleiben warm (Akzent-Variante); nur die laufende Runde trägt die Sprechblasen-Marke (`flagged`). Die Statuswörter
+  kommen aus `projects.phaseStatus` (CRM) bzw. `widgets.project.stepStatus` (Portal). Keine Komponente setzt Farbe
+  oder Marke selbst.
 - Es gibt keine Label-Erkennung: Ein Freitext-Schritt „Feedback“ ist ein normaler Schritt.
 - Rundenschritte sind im Select „Aktueller Prozessschritt“ nicht wählbar; ein Klick auf eine Runde in der Leiste öffnet
   den Editor ohne Vorauswahl.

@@ -72,6 +72,12 @@
     "empty": "Für diesen Kunden sind noch keine Projekte angelegt.",
     "phase": "Phase",
     "phaseProgress": "Schritt {current} von {total}",
+    "phaseStatus": {
+      "complete": "abgeschlossen",
+      "current": "läuft",
+      "upcoming": "offen",
+      "feedbackRunning": "Feedbackrunde läuft"
+    },
     "owner": "Zuständig",
     "status": {
       "planned": "Geplant",

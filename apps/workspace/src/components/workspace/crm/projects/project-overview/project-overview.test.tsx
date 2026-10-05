@@ -41,6 +41,18 @@ describe("ProjectOverview", () => {
       "upcoming",
     ]);
     expect(items[2]).toHaveAttribute("aria-current", "step");
+    expect(items.map((item) => item.dataset.tone)).toEqual([
+      "success",
+      "success",
+      "info",
+      "neutral",
+    ]);
+    expect(items.map((item) => item.textContent)).toEqual([
+      "Onboarding, abgeschlossen",
+      "Design, abgeschlossen",
+      "Entwicklung, läuft",
+      "Launch, offen",
+    ]);
     expect(screen.getByText("Schritt 3 von 4")).toBeVisible();
     expect(screen.queryByRole("button")).toBeNull();
   });
@@ -81,7 +93,7 @@ describe("ProjectOverview", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Launch" }));
+    fireEvent.click(screen.getByRole("button", { name: /^Launch/ }));
     expect(onEditAction).toHaveBeenCalledWith(project, "Launch");
 
     fireEvent.click(
@@ -115,7 +127,9 @@ describe("ProjectOverview feedback rounds", () => {
     );
 
     const items = screen.getAllByRole("listitem");
-    expect(items.map((item) => item.textContent)).toEqual([
+    expect(
+      items.map((item) => item.querySelector("[title]")?.textContent),
+    ).toEqual([
       "Onboarding",
       "Design",
       "Feedbackrunde 1",
@@ -148,9 +162,33 @@ describe("ProjectOverview feedback rounds", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Feedbackrunde 2" }));
+    fireEvent.click(screen.getByRole("button", { name: /^Feedbackrunde 2/ }));
     expect(onEditAction).toHaveBeenCalledWith(withBlock, undefined);
-    fireEvent.click(screen.getByRole("button", { name: "Launch" }));
+    fireEvent.click(screen.getByRole("button", { name: /^Launch/ }));
     expect(onEditAction).toHaveBeenLastCalledWith(withBlock, "Launch");
+  });
+
+  it("flags the running round and names it for screen readers", () => {
+    render(
+      <ProjectOverview
+        content={content}
+        ownerWithoutAccess={false}
+        project={withBlock}
+        roundProgress={{
+          activeRoundNumber: 1,
+          completedRoundNumber: null,
+          approvedRoundNumber: null,
+        }}
+        title="Website"
+      />,
+    );
+
+    const flagged = screen
+      .getAllByRole("listitem")
+      .filter((item) => item.dataset.flagged === "true");
+    expect(flagged.map((item) => item.textContent)).toEqual([
+      "Feedbackrunde 1, Feedbackrunde läuft",
+    ]);
+    expect(flagged[0]).toHaveAttribute("aria-current", "step");
   });
 });

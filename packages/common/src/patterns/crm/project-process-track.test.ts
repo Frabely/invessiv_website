@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ProcessTrackItemKind } from "@invessiv/common/constants/crm/process-track-item-kinds";
+import { ProcessStepTone } from "@invessiv/common/constants/ui/process-step-tones";
 import { ProcessStepVariant } from "@invessiv/common/constants/ui/process-step-variants";
 import type { ProjectProcessTrackInput } from "@invessiv/common/contracts/crm/project-process-track-input";
 import {
@@ -169,18 +170,104 @@ describe("buildProjectProcessTrack", () => {
 });
 
 describe("toProcessTrackSteps", () => {
-  it("accents feedback rounds and keeps the item keys", () => {
-    const steps = toProcessTrackSteps(build().items);
+  const statusLabels = {
+    complete: "done",
+    current: "running",
+    upcoming: "open",
+    feedbackRunning: "feedback running",
+  };
 
-    expect(steps[0]).toEqual({
+  it("accents feedback rounds and keeps the item keys", () => {
+    const track = build();
+    const steps = toProcessTrackSteps(
+      track.items,
+      track.currentIndex,
+      statusLabels,
+    );
+
+    expect(steps[0]).toMatchObject({
       key: "step-0",
       label: "Onboarding",
       variant: ProcessStepVariant.Default,
     });
-    expect(steps[3]).toEqual({
+    expect(steps[3]).toMatchObject({
       key: "feedback-round-1",
       label: R(1),
       variant: ProcessStepVariant.Accent,
     });
+  });
+
+  it("fills, tones and names each step by its position to the current one", () => {
+    const track = build({ feedbackRoundPositions: [] });
+    const steps = toProcessTrackSteps(
+      track.items,
+      track.currentIndex,
+      statusLabels,
+    );
+
+    expect(
+      steps.map(({ ratio, tone, valid, statusLabel }) => ({
+        ratio,
+        tone,
+        valid,
+        statusLabel,
+      })),
+    ).toEqual([
+      {
+        ratio: 1,
+        tone: ProcessStepTone.Success,
+        valid: true,
+        statusLabel: "done",
+      },
+      {
+        ratio: 0.5,
+        tone: ProcessStepTone.Info,
+        valid: false,
+        statusLabel: "running",
+      },
+      {
+        ratio: 0,
+        tone: ProcessStepTone.Neutral,
+        valid: false,
+        statusLabel: "open",
+      },
+      {
+        ratio: 0,
+        tone: ProcessStepTone.Neutral,
+        valid: false,
+        statusLabel: "open",
+      },
+    ]);
+    expect(steps.some((step) => step.flagged)).toBe(false);
+  });
+
+  it("flags only the running feedback round", () => {
+    const track = build({
+      feedbackRoundPositions: [2, 3],
+      roundProgress: { ...noProgress, activeRoundNumber: 1 },
+    });
+    const steps = toProcessTrackSteps(
+      track.items,
+      track.currentIndex,
+      statusLabels,
+    );
+
+    expect(steps.filter((step) => step.flagged)).toEqual([
+      expect.objectContaining({
+        key: "feedback-round-1",
+        statusLabel: "feedback running",
+      }),
+    ]);
+  });
+
+  it("marks every step done once the track is past its end", () => {
+    const track = build({ feedbackRoundPositions: [] });
+    const steps = toProcessTrackSteps(
+      track.items,
+      track.items.length,
+      statusLabels,
+    );
+
+    expect(steps.every((step) => step.valid && step.ratio === 1)).toBe(true);
   });
 });

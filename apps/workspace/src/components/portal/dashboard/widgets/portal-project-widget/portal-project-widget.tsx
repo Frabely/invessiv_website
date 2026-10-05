@@ -9,6 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
+import { ProcessTrackDensity } from "@invessiv/common/constants/ui/process-track-densities";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
 import type { PortalProjectDto } from "@invessiv/common/contracts/portal/portal-project.dto";
 import { ProcessTrack, Widget } from "@invessiv/ui";
@@ -67,14 +68,24 @@ export function PortalProjectWidget({
         {!isPlanned && track.currentIndex >= 0 ? (
           <ProcessTrack
             currentIndex={track.currentIndex}
+            density={ProcessTrackDensity.Compact}
             label={content.trackLabel}
-            steps={toProcessTrackSteps(track.items)}
+            steps={toProcessTrackSteps(
+              track.items,
+              track.currentIndex,
+              content.stepStatus,
+            )}
             summary={
               <p className={styles.stepSummary}>
-                {formatMessage(content.stepSummary, {
-                  current: Math.min(track.currentIndex + 1, total),
-                  total,
-                })}
+                <strong>
+                  {track.items[Math.min(track.currentIndex, total - 1)]?.label}
+                </strong>
+                <span>
+                  {formatMessage(content.stepSummary, {
+                    current: Math.min(track.currentIndex + 1, total),
+                    total,
+                  })}
+                </span>
               </p>
             }
           />
