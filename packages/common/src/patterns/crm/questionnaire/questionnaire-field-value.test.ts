@@ -23,6 +23,20 @@ const T = QuestionnaireFieldType;
 const E = QuestionnaireValueErrorCode;
 
 describe("validateQuestionnaireValue", () => {
+  it("accepts URLs up to 2048 characters and rejects longer URLs", () => {
+    const prefix = "https://example.com/maps?location=";
+    const url = prefix + "a".repeat(2048 - prefix.length);
+    expect(check(T.Url, url)).toEqual({ ok: true });
+    expect(check(T.Url, url + "a")).toEqual({
+      ok: false,
+      code: E.TooLong,
+    });
+    expect(check(T.Url, "x".repeat(400))).toEqual({
+      ok: false,
+      code: E.InvalidUrl,
+    });
+  });
+
   it.each([
     [T.ShortText, "Nordlicht GmbH"],
     [T.LongText, "Wir bauen Häuser.\nSeit 1990."],
@@ -109,6 +123,17 @@ describe("normalizeQuestionnaireValue", () => {
 });
 
 describe("getQuestionnaireValueMaxLength", () => {
+  it("separates URL limits from short text and contact limits", () => {
+    expect(
+      getQuestionnaireValueMaxLength({ type: T.Url, maxLength: null }),
+    ).toBe(2048);
+    for (const type of [T.ShortText, T.Email, T.Phone]) {
+      expect(getQuestionnaireValueMaxLength({ type, maxLength: null })).toBe(
+        300,
+      );
+    }
+  });
+
   it("bounds only free text", () => {
     expect(
       getQuestionnaireValueMaxLength({ type: T.LongText, maxLength: null }),

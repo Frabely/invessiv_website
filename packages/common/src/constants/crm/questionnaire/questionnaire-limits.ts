@@ -14,6 +14,7 @@ export const QUESTIONNAIRE_LIMITS = {
   filesPerField: 100,
   shortTextDefaultMaxLength: 300,
   longTextDefaultMaxLength: 5_000,
+  urlMaxLength: 2_048,
   keyMaxLength: 63,
   titleMaxLength: 120,
   labelMaxLength: 300,

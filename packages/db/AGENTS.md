@@ -102,6 +102,17 @@ Const-Objekt — nicht zusätzlich im DDL-Text und nicht im Modell.
   überschreiben. Der Migrationsrunner führt Datei und Registrierung in `schema_migrations` in einer Transaktion
   aus und überspringt registrierte Dateien. Weitere Katalogkorrekturen erhalten eine neue Migration; `0048`
   wird weder erneut ausgeführt noch nachträglich geändert. Diese Ausnahme gilt nicht für optionale Fixture-Seeds.
+  **Zweite bewusste Ausnahme:** `0052_replace_onboarding_standard_catalog.sql` löscht alle Vorlagen und
+  Katalog-Bausteine (`owner_form_id IS NULL`) und liefert den neuen Standardkatalog einmalig mit festen IDs aus. Das
+  `DELETE` ist zulässig, weil der Katalog aus `0048` in Produktion nie benutzt wurde und Bögen ihre Bausteine als
+  eigene Kopien halten (`source_block_id` und `source_template_id` fallen über die Fremdschlüssel auf `NULL`). Ein
+  zweiter direkter Lauf scheitert wie bei `0048` an Eindeutigkeitskonflikten. Weitere Katalog-Bausteine kommen
+  additiv in einer neuen Migration und löschen nichts.
+  **Additive Katalog-Migrationen:** `0053_add_onboarding_extra_catalog_blocks.sql` ergänzt neun Zusatz-Bausteine mit
+  festen IDs, ausschließlich per `INSERT` und ohne Vorlagen-Zeilen. Auch sie scheitert bei einem zweiten direkten
+  Lauf bewusst an Eindeutigkeitskonflikten. Jede Katalog-Migration wird in die Liste von
+  `src/record-configuration/crm/onboarding-catalog-migrations.test.ts` aufgenommen; der Test liest die SQL-Datei und
+  prüft die gemeinsamen Katalog-Regeln.
 - Eine bereits in `schema_migrations` registrierte Datei wird **niemals** verändert oder umbenannt.
   Eine Korrektur ist eine neue Migration. Ausnahme nur, solange die Migration ausschließlich lokal
   in `development` angewendet und nirgends committet ist — dann wird sie zurückgenommen und neu

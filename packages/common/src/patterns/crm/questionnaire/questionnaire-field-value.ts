@@ -32,8 +32,9 @@ export function getQuestionnaireValueMaxLength(
       return field.maxLength ?? QUESTIONNAIRE_LIMITS.longTextDefaultMaxLength;
     case QuestionnaireFieldType.Email:
     case QuestionnaireFieldType.Phone:
-    case QuestionnaireFieldType.Url:
       return QUESTIONNAIRE_LIMITS.shortTextDefaultMaxLength;
+    case QuestionnaireFieldType.Url:
+      return QUESTIONNAIRE_LIMITS.urlMaxLength;
     default:
       return null;
   }

@@ -1,5 +1,10 @@
 # Task 64a — Standardkatalog und Vorlagen (Seed-Inhalt)
 
+> **Abgelöst am 04.10.2026.** Migration `0052_replace_onboarding_standard_catalog.sql` löscht diesen Katalog samt
+> beiden Vorlagen und liefert einen neuen. Die gültige inhaltliche Fassung steht in
+> [`D-standardbogen-website-onboarding.md`](../../18-portal-prozess-nacharbeiten/D-standardbogen-website-onboarding.md).
+> Diese Datei bleibt nur als Beschreibung des Stands von `0048`.
+
 > **Teil von:** Teil-PR 15.2, Ticket CRM-64-T5 ([`64-baustein-katalog-und-vorlagen.md`](./64-baustein-katalog-und-vorlagen.md)).
 > **Vor dem Start lesen:** [`63-datenmodell-und-regeln.md`](./63-datenmodell-und-regeln.md) (Feldtypen, Bedingungen,
 > Gruppen, Prefill-Quellen). Diese Datei ist die **verbindliche inhaltliche Fassung** des Katalogs; sie ersetzt die
