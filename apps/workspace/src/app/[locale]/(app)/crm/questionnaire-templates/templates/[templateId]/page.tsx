@@ -7,7 +7,7 @@ import { QuestionnaireCatalogStatusFilter } from "@/common/constants/crm/questio
 import { QuestionnaireCatalogTab } from "@/common/constants/crm/questionnaire/questionnaire-catalog-tabs";
 import { buildQuestionnaireCatalogHref } from "@/common/patterns/crm/questionnaire/questionnaire-catalog-query";
 import { QuestionnaireTemplateEditor } from "@/components/workspace/crm/questionnaire/templates/questionnaire-template-editor/questionnaire-template-editor";
-import { WorkspaceScrollablePageShell } from "@/components/workspace/shared/workspace-scrollable-page-shell/workspace-scrollable-page-shell";
+import { WorkspacePageShell } from "@/components/workspace/workspace-page-shell/workspace-page-shell";
 import { isSupportedLocale } from "@/config/i18n";
 import { getCrmQuestionnaireDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { requireWorkspacePermission } from "@/lib/auth/permissions";
@@ -61,7 +61,7 @@ export default async function QuestionnaireTemplatePage({
   ]);
 
   return (
-    <WorkspaceScrollablePageShell pageId="crm-questionnaire-template">
+    <WorkspacePageShell pageId="crm-questionnaire-template">
       <QuestionnaireTemplateEditor
         backHref={buildQuestionnaireCatalogHref(
           crmQuestionnaireTemplatesPathFor(locale),
@@ -79,6 +79,6 @@ export default async function QuestionnaireTemplatePage({
         locale={locale}
         template={template}
       />
-    </WorkspaceScrollablePageShell>
+    </WorkspacePageShell>
   );
 }

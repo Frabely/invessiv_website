@@ -1,11 +1,8 @@
 .page {
   display: grid;
-  flex: 1 1 auto;
+  align-content: start;
   gap: 1rem;
-  min-height: 0;
   min-width: 0;
-  overflow-y: auto;
-  overscroll-behavior-y: contain;
   padding-top: var(--workspace-app-header-hover-buffer, 0.35rem);
 }
 
@@ -152,39 +149,80 @@
 
 .footer {
   position: sticky;
-  bottom: 0;
+  bottom: var(--mobile-safe-bottom, 0px);
+  /* Rows of the block list stack up to z-index 2; the bar has to stay above them. */
+  z-index: 5;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
-  gap: 0.75rem;
-  padding: 0.75rem 0;
-  border-top: 1px solid var(--color-border);
-  background: var(--color-bg);
+  gap: 0.5rem 0.75rem;
+  padding: 0.6rem 0.7rem 0.6rem 1.1rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 14px;
+  background: var(--color-surface-2);
+  transition: border-color 160ms ease;
+}
+
+.footer[data-dirty="true"] {
+  border-color: color-mix(
+    in srgb,
+    var(--color-accent-warm) 55%,
+    var(--color-border-strong)
+  );
 }
 
 .outcome {
+  display: flex;
   flex: 1;
+  align-items: center;
+  gap: 0.55rem;
   min-width: 12rem;
   margin: 0;
-  color: var(--color-text-muted);
+  color: var(--color-text);
   font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+  line-height: 1.4;
 }
 
-.outcome[data-kind="saved"] {
-  color: var(--color-success);
+/* The dot repeats the state that the text already names. */
+.outcome:not(:empty)::before {
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--color-accent-warm);
+  content: "";
 }
 
-.outcome[data-kind="conflict"] {
-  color: var(--color-accent-warm);
+.outcome[data-kind="saved"]::before {
+  background: var(--color-success);
 }
 
-.outcome[data-kind="failure"] {
-  color: var(--color-danger);
+.outcome[data-kind="failure"]::before {
+  background: var(--color-danger);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer {
+    transition: none;
+  }
 }
 
 @media (max-width: 560px) {
   .headRow {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .footer {
+    padding: 0.7rem;
+  }
+
+  .outcome {
+    flex-basis: 100%;
+  }
+
+  .footer > :not(.outcome) {
+    flex: 1 1 auto;
   }
 }

@@ -435,7 +435,7 @@ export function QuestionnaireTemplateEditor({
         </div>
 
         {canWrite ? (
-          <footer className={styles.footer}>
+          <footer className={styles.footer} data-dirty={dirty}>
             <p
               aria-live="polite"
               className={styles.outcome}
