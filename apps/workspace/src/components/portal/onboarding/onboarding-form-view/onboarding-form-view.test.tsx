@@ -106,7 +106,8 @@ function open(search = "") {
 function stepButton(name: string) {
   return within(
     screen.getByRole("list", { name: content.steps.label }),
-  ).getByRole("button", { name });
+    // The accessible name goes on with the state of the step.
+  ).getByRole("button", { name: (label) => label.startsWith(name) });
 }
 
 async function settle() {
@@ -143,6 +144,147 @@ describe("OnboardingFormView", () => {
     expect(screen.queryByRole("textbox", { name: /Claim/ })).toBeNull();
   });
 
+  it("says in the header how much is answered and whether the form could be sent", () => {
+    const { unmount } = renderView();
+    expect(screen.getByText("0 of 3 answered")).toBeInTheDocument();
+    expect(screen.getByText("2 required answers open")).toBeInTheDocument();
+    unmount();
+
+    renderView(
+      form({
+        answers: [
+          answer("Name", { value: "Acme" }),
+          answer("Claim", { value: "Bold" }),
+        ],
+      }),
+    );
+    // The optional question is still open, yet nothing required is missing.
+    expect(screen.getByText("2 of 3 answered")).toBeInTheDocument();
+    expect(screen.getByText(content.overview.ready)).toBeInTheDocument();
+    expect(stepButton("Company").closest("li")).toHaveAttribute(
+      "data-tone",
+      "info",
+    );
+    expect(stepButton("Brand").closest("li")).toHaveAttribute(
+      "data-tone",
+      "success",
+    );
+  });
+
+  it("flags a started step with a missing required answer only once it was left", () => {
+    const started = form({
+      answers: [answer("Shop", { choiceId: "Shop-No" })],
+    });
+    const { unmount } = renderView(started);
+    expect(stepButton("Company").closest("li")).toHaveAttribute(
+      "data-tone",
+      "info",
+    );
+    unmount();
+
+    open("?section=Brand");
+    renderView(started);
+    expect(stepButton("Company").closest("li")).toHaveAttribute(
+      "data-tone",
+      "danger",
+    );
+    // An untouched step stays calm, whatever it requires.
+    expect(stepButton("Brand").closest("li")).toHaveAttribute(
+      "data-tone",
+      "neutral",
+    );
+  });
+
+  it("marks empty required steps after leaving them through the track and clears attention after answering", async () => {
+    renderView();
+    expect(stepButton("Brand").closest("li")).toHaveAttribute(
+      "data-tone",
+      "neutral",
+    );
+    fireEvent.click(stepButton("Brand"));
+    expect(stepButton("Company").closest("li")).toHaveAttribute(
+      "data-tone",
+      "danger",
+    );
+    expect(stepButton("Brand").closest("li")).toHaveAttribute(
+      "data-tone",
+      "neutral",
+    );
+    fireEvent.click(stepButton("Company"));
+    expect(stepButton("Brand").closest("li")).toHaveAttribute(
+      "data-tone",
+      "danger",
+    );
+
+    fireEvent.click(stepButton("Brand"));
+    fireEvent.change(screen.getByRole("textbox", { name: /Claim/ }), {
+      target: { value: "Bold" },
+    });
+    fireEvent.blur(screen.getByRole("textbox", { name: /Claim/ }));
+    await settle();
+    fireEvent.click(stepButton("Company"));
+    expect(stepButton("Brand").closest("li")).toHaveAttribute(
+      "data-tone",
+      "success",
+    );
+  });
+
+  it("keeps an unvisited required step neutral when jumping straight to review", () => {
+    renderView();
+    fireEvent.click(stepButton(content.steps.review));
+    expect(stepButton("Company").closest("li")).toHaveAttribute(
+      "data-tone",
+      "danger",
+    );
+    expect(stepButton("Brand").closest("li")).toHaveAttribute(
+      "data-tone",
+      "neutral",
+    );
+  });
+
+  it("marks the review as needing attention for an invalid optional answer and recovers when cleared", async () => {
+    renderView(
+      portalOnboardingForm(
+        [
+          block("Company", [
+            field("Name", REQUIRED),
+            field("Website", { type: T.Url }),
+          ]),
+        ],
+        { answers: [answer("Name", { value: "Acme" })] },
+      ),
+    );
+    const review = () => stepButton(content.steps.review).closest("li");
+    expect(review()).toHaveAttribute("data-tone", "success");
+    const website = screen.getByRole("textbox", { name: "Website" });
+    fireEvent.change(website, { target: { value: "invalid" } });
+    fireEvent.blur(website);
+    await settle();
+    expect(review()).toHaveAttribute("data-tone", "danger");
+    expect(stepButton(content.steps.review)).toHaveAccessibleName(
+      `${content.steps.review}, ${content.steps.status.attention}`,
+    );
+    expect(screen.queryByText(content.overview.ready)).toBeNull();
+
+    fireEvent.click(stepButton(content.steps.review));
+    fireEvent.click(
+      screen.getByRole("button", { name: content.submit.action }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: content.submitDialog.confirm }),
+    );
+    await settle();
+    expect(mocks.submit).not.toHaveBeenCalled();
+    expect(screen.getByRole("alert")).toHaveTextContent(content.submit.invalid);
+
+    fireEvent.click(stepButton("Company"));
+    const reopened = screen.getByRole("textbox", { name: "Website" });
+    fireEvent.change(reopened, { target: { value: "" } });
+    fireEvent.blur(reopened);
+    await settle();
+    expect(review()).toHaveAttribute("data-tone", "success");
+  });
+
   it("lands on the step of the URL after a reload", () => {
     open("?section=Brand");
     renderView(form({ answers: [answer("Claim", { value: "Bold" })] }));
@@ -156,7 +298,9 @@ describe("OnboardingFormView", () => {
   it("moves between steps without blocking on missing answers and focuses the new heading", () => {
     renderView();
 
-    fireEvent.click(screen.getByRole("button", { name: content.steps.next }));
+    fireEvent.click(
+      screen.getByRole("button", { name: /^(Next: |Go to review)/ }),
+    );
 
     const heading = screen.getByRole("heading", { level: 2, name: "Brand" });
     expect(heading).toHaveFocus();

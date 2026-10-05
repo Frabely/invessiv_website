@@ -6,6 +6,7 @@
 .line {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 0.2rem 0.6rem;
   min-height: 1.4em;
   margin: 0;
@@ -13,8 +14,44 @@
   font-size: var(--font-size-ui-xs);
 }
 
+/* A dot in front of the wording, so the state reads at a glance; the text still says it. */
+.line:not(:empty)::before {
+  flex: 0 0 auto;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--color-success);
+  content: "";
+}
+
+.line[data-state="unsaved"]::before,
+.line[data-state="saving"]::before {
+  background: var(--color-accent-warm);
+}
+
 .line[data-state="failed"] {
   color: var(--color-danger);
+}
+
+.line[data-state="failed"]::before,
+.line[data-state="conflict"]::before {
+  background: var(--color-danger);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .line[data-state="saving"]::before {
+    animation: save-pulse 1s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes save-pulse {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0.35;
+  }
 }
 
 .by::before {

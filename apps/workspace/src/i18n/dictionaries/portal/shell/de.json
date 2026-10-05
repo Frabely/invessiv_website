@@ -5,6 +5,9 @@
     "userMenuLabel": "Konto und Abmelden",
     "localeMenuLabel": "Sprache wählen",
     "localeSwitchLabel": "Sprache wechseln",
+    "menuOpenLabel": "Menü öffnen",
+    "menuCloseLabel": "Menü schließen",
+    "menuTitle": "Menü",
     "themeSwitch": {
       "actionLabel": {
         "dark": "Hellen Modus aktivieren",

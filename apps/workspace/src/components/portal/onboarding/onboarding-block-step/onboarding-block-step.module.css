@@ -63,9 +63,6 @@
   white-space: pre-wrap;
 }
 
-/* Generous air between questions: this form is filled in over days, not scanned. */
 .fields {
-  display: grid;
-  gap: 1.35rem;
   padding-top: 0.5rem;
 }

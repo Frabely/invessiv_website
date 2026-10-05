@@ -13,6 +13,16 @@
 
 /* Theme tokens */
 :root {
+  /* One height for text inputs, option tiles and form buttons; 44px is the smallest touch target. */
+  --control-height: 44px;
+  /* Corner radius of the same controls. */
+  --control-radius: 10px;
+  /* Frame of those controls at rest. */
+  --control-border-color: color-mix(
+    in srgb,
+    var(--color-border) 76%,
+    transparent
+  );
   color-scheme: light dark;
   --color-bg: #1d1a18;
   --color-surface-1: #282320;
@@ -89,8 +99,8 @@
   --measure-compact: 58ch;
   --measure-panel: 76ch;
   --font-family-base: "Plus Jakarta Sans", "Segoe UI", sans-serif;
-  --button-disabled-opacity: 1;
-  --button-disabled-filter: none;
+  --button-disabled-opacity: 0.5;
+  --button-disabled-filter: saturate(0.55);
   --font-size-hero-title: clamp(2.35rem, 5.4vw, 4.1rem);
   --font-size-hero-title-wide: clamp(3.5rem, 4vw, 4rem);
   --font-size-section-title: clamp(2.05rem, 3.35vw, 2.85rem);

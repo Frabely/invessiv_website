@@ -6,6 +6,7 @@
   "page": {
     "heading": "Onboarding for {project}",
     "back": "Back to overview",
+    "backShort": "Overview",
     "ownerHint": "In the portal view you can only read the onboarding.",
     "ownerLink": "Open in CRM",
     "readOnlyHint": "You can read the onboarding, but not fill it in. Ask the person who looks after the project on your side."
@@ -15,11 +16,25 @@
     "none": "No required answers",
     "barLabel": "Progress"
   },
+  "overview": {
+    "answered": "{answered} of {total} answered",
+    "ready": "Ready to submit",
+    "missingOne": "1 required answer open",
+    "missingMany": "{count} required answers open"
+  },
   "steps": {
     "label": "Steps of the onboarding",
     "review": "Review & submit",
-    "next": "Next",
-    "back": "Back"
+    "nextTo": "Next: {step}",
+    "toReview": "Go to review",
+    "back": "Back",
+    "status": {
+      "untouched": "not started",
+      "incomplete": "in progress",
+      "complete": "complete",
+      "attention": "needs a look"
+    },
+    "statusValid": "{status}, required answers complete"
   },
   "block": {
     "fallback": "This section is only available in {language}.",

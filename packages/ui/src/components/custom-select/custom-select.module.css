@@ -9,11 +9,15 @@
   align-items: center;
   gap: 0.55rem;
   width: 100%;
-  min-height: 44px;
+  /* Opt into uniform controls through tokens; existing consumers keep their original dimensions. */
+  min-height: var(--control-height, 44px);
   padding: 0.45rem 2rem 0.45rem 0.65rem;
   border: 1px solid
-    color-mix(in srgb, var(--color-border-strong) 56%, transparent);
-  border-radius: 10px;
+    var(
+      --control-border-color,
+      color-mix(in srgb, var(--color-border-strong) 56%, transparent)
+    );
+  border-radius: var(--control-radius, 10px);
   background: color-mix(
     in srgb,
     var(--color-surface-2) 64%,

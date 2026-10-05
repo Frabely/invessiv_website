@@ -9,6 +9,7 @@ import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import type { OnboardingFieldFormContext } from "@/common/contracts/portal/onboarding-field-form-context";
 import { onboardingAnswerDrafts } from "@/common/patterns/portal/onboarding-answer-drafts";
 import { onboardingFieldDomId } from "@/common/patterns/portal/onboarding-field-dom-id";
+import { onboardingFieldSpan } from "@/common/patterns/portal/onboarding-field-span";
 import { OnboardingChoiceField } from "../fields/onboarding-choice-field/onboarding-choice-field";
 import { OnboardingColorField } from "../fields/onboarding-color-field/onboarding-color-field";
 import { OnboardingConfirmationField } from "../fields/onboarding-confirmation-field/onboarding-confirmation-field";
@@ -18,6 +19,7 @@ import { OnboardingMultiChoiceField } from "../fields/onboarding-multi-choice-fi
 import { OnboardingProjectServicesField } from "../fields/onboarding-project-services-field/onboarding-project-services-field";
 import { OnboardingScaleField } from "../fields/onboarding-scale-field/onboarding-scale-field";
 import { OnboardingTextField } from "../fields/onboarding-text-field/onboarding-text-field";
+import { OnboardingFieldCell } from "../onboarding-field-grid/onboarding-field-grid";
 
 export type QuestionnaireFieldProps = {
   field: QuestionnaireResolvedField;
@@ -220,12 +222,16 @@ export function QuestionnaireField({
           onRemoveAction={form.onRemoveEntryAction}
           renderFieldAction={(child, entry) =>
             isQuestionnaireFieldVisible(child, form.input, entry.id) ? (
-              <QuestionnaireField
-                field={child}
-                form={form}
-                groupEntryId={entry.id}
+              <OnboardingFieldCell
                 key={child.id}
-              />
+                span={onboardingFieldSpan(child)}
+              >
+                <QuestionnaireField
+                  field={child}
+                  form={form}
+                  groupEntryId={entry.id}
+                />
+              </OnboardingFieldCell>
             ) : null
           }
           texts={texts.group}

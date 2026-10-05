@@ -6,6 +6,7 @@
   "page": {
     "heading": "Onboarding für {project}",
     "back": "Zurück zum Überblick",
+    "backShort": "Überblick",
     "ownerHint": "In der Portalansicht kannst du das Onboarding nur lesen.",
     "ownerLink": "Im CRM ansehen",
     "readOnlyHint": "Du kannst das Onboarding lesen, aber nicht ausfüllen. Frag die Person, die bei euch das Projekt betreut."
@@ -15,11 +16,25 @@
     "none": "Keine Pflichtangaben",
     "barLabel": "Fortschritt"
   },
+  "overview": {
+    "answered": "{answered} von {total} beantwortet",
+    "ready": "Bereit zum Absenden",
+    "missingOne": "1 Pflichtangabe offen",
+    "missingMany": "{count} Pflichtangaben offen"
+  },
   "steps": {
     "label": "Schritte des Onboardings",
     "review": "Prüfen & absenden",
-    "next": "Weiter",
-    "back": "Zurück"
+    "nextTo": "Weiter: {step}",
+    "toReview": "Zur Prüfung",
+    "back": "Zurück",
+    "status": {
+      "untouched": "noch offen",
+      "incomplete": "angefangen",
+      "complete": "vollständig",
+      "attention": "bitte prüfen"
+    },
+    "statusValid": "{status}, Pflichtangaben vollständig"
   },
   "block": {
     "fallback": "Dieser Abschnitt ist nur auf {language} verfügbar.",

@@ -1,6 +1,5 @@
 "use client";
 
-import { useId } from "react";
 import { QuestionnaireFieldRequirement } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-requirements";
 import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
 import type { QuestionnaireAnswerFileDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-answer-file.dto";
@@ -9,7 +8,7 @@ import type { PortalFileDto } from "@invessiv/common/contracts/portal/portal-fil
 import type { PortalOnboardingResult } from "@invessiv/common/contracts/portal/results/portal-onboarding-result";
 import { uploadAcceptForKinds } from "@invessiv/common/patterns/files/upload-accept-for-kinds";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { FormFieldLabel } from "@invessiv/ui";
+import { FormFieldset } from "@invessiv/ui";
 import { portalFilesApiService } from "@/client/portal/portal-files-api-service";
 import { PortalAttachmentField } from "@/components/portal/shared/portal-attachment-field/portal-attachment-field";
 import type { Locale } from "@/config/i18n";
@@ -69,34 +68,19 @@ export function OnboardingFilesField({
   onDetachAction,
   projectId,
 }: OnboardingFilesFieldProps) {
-  const labelId = useId();
-  const helpId = useId();
   const texts = content.field.files;
   const named = { field: field.label };
   const attachedCount = links.length + hiddenCount;
 
   return (
-    <div
-      aria-describedby={field.help ? helpId : undefined}
-      aria-labelledby={labelId}
+    <FormFieldset
       className={styles.field}
+      hint={field.help ?? undefined}
       id={id}
-      role="group"
+      label={field.label}
+      required={field.requirement === QuestionnaireFieldRequirement.Required}
       tabIndex={-1}
     >
-      <span className={styles.label} id={labelId}>
-        <FormFieldLabel
-          label={field.label}
-          required={
-            field.requirement === QuestionnaireFieldRequirement.Required
-          }
-        />
-      </span>
-      {field.help ? (
-        <p className={styles.help} id={helpId}>
-          {field.help}
-        </p>
-      ) : null}
       <PortalAttachmentField
         accept={uploadAcceptForKinds(field.acceptedAssetKinds)}
         attachAction={async (file) => {
@@ -169,6 +153,6 @@ export function OnboardingFilesField({
       {canAttach && !canUpload ? (
         <p className={styles.note}>{texts.noUpload}</p>
       ) : null}
-    </div>
+    </FormFieldset>
   );
 }

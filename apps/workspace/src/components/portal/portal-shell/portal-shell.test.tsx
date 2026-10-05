@@ -1,7 +1,13 @@
 // @vitest-environment jsdom
 
 import "@testing-library/jest-dom/vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  within,
+} from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { getPortalShellDictionary } from "@/i18n/dictionaries/portal";
 import { PortalShell } from "./portal-shell";
@@ -80,6 +86,32 @@ describe("PortalShell", () => {
       </PortalShell>,
     );
     expect(screen.queryByText("Hallo Sam")).toBeNull();
+  });
+
+  it("offers company, project and greeting again in a menu for narrow screens", () => {
+    render(
+      <PortalShell
+        content={CONTENT}
+        greeting="Hallo Sam"
+        homeHref="/de/portal/customer-a"
+        projectSwitcher={<span>Project slot</span>}
+        switcher={<span>Switcher slot</span>}
+      >
+        <p>Portal content</p>
+      </PortalShell>,
+    );
+    expect(screen.queryByRole("dialog")).toBeNull();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: CONTENT.header.menuOpenLabel }),
+    );
+
+    const menu = within(
+      screen.getByRole("dialog", { name: CONTENT.header.menuTitle }),
+    );
+    expect(menu.getByText("Hallo Sam")).toBeInTheDocument();
+    expect(menu.getByText("Switcher slot")).toBeInTheDocument();
+    expect(menu.getByText("Project slot")).toBeInTheDocument();
   });
 
   it("does not render a separate header navigation", () => {

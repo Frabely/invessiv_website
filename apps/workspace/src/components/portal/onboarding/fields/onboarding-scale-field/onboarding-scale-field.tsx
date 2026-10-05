@@ -1,11 +1,11 @@
 "use client";
 
-import { useId } from "react";
 import { QuestionnaireFieldRequirement } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-requirements";
 import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
 import type { QuestionnaireResolvedField } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-resolved-field";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { ButtonControl, FormFieldLabel } from "@invessiv/ui";
+import { ButtonSize } from "@invessiv/common/constants/ui/button-sizes";
+import { FormFieldset, SecondaryCtaButton } from "@invessiv/ui";
 import type { PortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
 import styles from "./onboarding-scale-field.module.css";
 
@@ -36,8 +36,6 @@ export function OnboardingScaleField({
   texts,
   value,
 }: OnboardingScaleFieldProps) {
-  const labelId = useId();
-  const helpId = useId();
   const required = field.requirement === QuestionnaireFieldRequirement.Required;
   const poles = [...field.choices].sort(
     (left, right) => left.position - right.position,
@@ -46,21 +44,27 @@ export function OnboardingScaleField({
   const high = poles.length > 1 ? poles[poles.length - 1].label : null;
 
   return (
-    <div
-      aria-describedby={field.help ? helpId : undefined}
-      aria-labelledby={labelId}
+    <FormFieldset
       aria-required={required}
       className={styles.field}
+      footer={
+        !required && value !== "" ? (
+          <div>
+            <SecondaryCtaButton
+              onClick={() => onChangeAction("")}
+              size={ButtonSize.Control}
+              type="button"
+            >
+              {texts.clearChoice}
+            </SecondaryCtaButton>
+          </div>
+        ) : null
+      }
+      hint={field.help ?? undefined}
+      label={field.label}
+      required={required}
       role="radiogroup"
     >
-      <span className={styles.label} id={labelId}>
-        <FormFieldLabel label={field.label} required={required} />
-      </span>
-      {field.help ? (
-        <p className={styles.help} id={helpId}>
-          {field.help}
-        </p>
-      ) : null}
       <div className={styles.track}>
         {STEPS.map((step, index) => (
           <label
@@ -94,17 +98,6 @@ export function OnboardingScaleField({
           {[low, high].filter(Boolean).join(" – ")}
         </span>
       ) : null}
-      {!required && value !== "" ? (
-        <div>
-          <ButtonControl
-            onClick={() => onChangeAction("")}
-            type="button"
-            variant="ghost"
-          >
-            {texts.clearChoice}
-          </ButtonControl>
-        </div>
-      ) : null}
-    </div>
+    </FormFieldset>
   );
 }

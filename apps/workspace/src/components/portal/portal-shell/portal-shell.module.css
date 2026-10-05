@@ -1,4 +1,6 @@
 .shell {
+  --portal-header-height: 3.5rem;
+
   display: flex;
   flex-direction: column;
   height: 100dvh;
@@ -20,7 +22,8 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.6rem clamp(0.75rem, 1.5vw, 1.25rem);
+  min-height: var(--portal-header-height);
+  padding: 0.25rem clamp(0.75rem, 1.5vw, 1.25rem);
 }
 
 .brand {
@@ -83,43 +86,69 @@
   min-height: 40px;
 }
 
+/* Only phones get the menu; showing or hiding it is the shell's layout, not the button's look. */
+.actions .menuButton {
+  display: none;
+}
+
+.menu {
+  display: grid;
+  justify-items: start;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.menuGreeting {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+}
+
+/* Pages that stick something to the edges of the scroll area read the padding from here. */
 .main {
+  --portal-main-pad-block: 1rem;
+  --portal-main-pad-inline: clamp(0.75rem, 1.5vw, 1.25rem);
+
   flex: 1 1 auto;
-  width: calc(100% - 4.25rem);
+  width: 100%;
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: touch;
-  padding: 1rem clamp(0.75rem, 1.5vw, 1.25rem);
+  padding: var(--portal-main-pad-block) var(--portal-main-pad-inline);
+}
+
+/* Only a page with the chat rail gives up room for it. */
+.main:has([data-portal-dock]) {
+  width: calc(100% - 4.25rem);
 }
 
 @media (min-width: 768px) {
   .inner {
-    padding: 0.75rem 1.5rem;
+    padding-inline: 1.5rem;
   }
 }
 
 @media (max-width: 767px) {
-  .main {
+  .main:has([data-portal-dock]) {
     width: 100%;
     padding-bottom: 4.25rem;
   }
 
-  .inner {
-    flex-wrap: wrap;
+  .switcherSlot,
+  .noticeSlot,
+  .greeting,
+  .projectSlot {
+    display: none;
   }
 
-  .inner[data-has-notice="true"] .switcherSlot {
-    flex: 1 1 auto;
+  .actions {
+    gap: 0.25rem;
   }
 
-  .inner[data-has-notice="true"] .noticeSlot {
-    order: 3;
-    flex: 1 0 100%;
-  }
-
-  .inner[data-has-notice="true"] .actions {
-    order: 4;
-    margin-left: auto;
+  .actions .menuButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 }

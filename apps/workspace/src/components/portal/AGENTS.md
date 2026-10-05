@@ -152,8 +152,9 @@ Plan: `apps/workspace/plans/crm/15-onboarding/66-portal-formular.md`.
 - **Sichtbarkeit, Pflicht und Fortschritt kommen ausschließlich aus `getQuestionnaireCompleteness` bzw.
   `isQuestionnaireFieldVisible`** (`@invessiv/common`), gefüttert mit den lokalen Antworten
   (`onboardingAnswerDrafts.toAnswers`). Keine Komponente entscheidet selbst, ob ein Feld sichtbar oder Pflicht ist.
-  Die Schrittleiste (`ProcessTrack` mit `progress` je Schritt) zeigt je Block offen, angefangen oder vollständig
-  (`onboardingStepProgress`), nie einen Haken nur fürs Durchklicken.
+  Die Schrittleiste (`ProcessTrack` kompakt, mit `ratio`/`tone`/`valid` je Schritt) zeigt je Block, wie viel
+  beantwortet ist und ob er so absendbar wäre; die Entscheidung trifft allein `onboardingStepProgress`
+  (Regeln unten unter „Layout und Fortschritt“), nie einen Haken nur fürs Durchklicken.
 - `questionnaire-field` schaltet je Feldtyp und kennt ab Task 67 alle 14 Typen; ein unbekannter Typ rendert nichts
   (Konsolenwarnung nur in der Entwicklung).
 - Die Leseansicht ist der geteilte `OnboardingAnswerReadView` (`components/shared/onboarding/`), derselbe Baustein wie
@@ -211,6 +212,38 @@ Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-le
   wird vor dem Klick geladen:** kein Skript, kein `iframe`, kein Bild. Der Kalender öffnet sich als Link in einem neuen
   Tab (`rel="noopener noreferrer"`), der Anbieterhinweis steht davor. Eine Einbettung wäre eine neue Entscheidung
   (Consent), kein Detail dieser Komponente.
+
+- **Layout und Fortschritt (Paket I, Ordner 18):** Plan
+  `apps/workspace/plans/crm/18-portal-prozess-nacharbeiten/I-portal-onboarding-layout.md`.
+  - **Sticky Bogen-Kopf** (`onboarding/onboarding-form-header`): Zurück-Link, `h1` und Gesamtstand in einer Zeile,
+    darunter die Schrittleiste. Der Editor rendert ihn selbst (er kennt den Stand), die Leseansicht ohne Leiste. Der
+    Kopf läuft über `--portal-main-pad-*` der `PortalShell` bündig bis an den Rand des Scrollbereichs.
+  - **Füllung und Gültigkeit sind zwei Aussagen.** Die Füllung ist `answered/total` aller sichtbaren Fragen aus
+    `getQuestionnaireCompleteness` (Gruppe zählt einmal, dazu ihre Unterfelder je Eintrag). Farben: unberührt
+    neutral-warm, begonnen blau, alles beantwortet grün. Rot bei ungültiger Eingabe oder wenn ein begonnener oder
+    besuchter Schritt mit fehlender Pflichtangabe verlassen wurde, auch ohne Eingabe. `usePortalOnboardingStep`
+    erfasst dafür tatsächliche Abschnittswechsel einschließlich direkter Schrittklicks und Browser-Zurück/Vorwärts
+    innerhalb der Editor-Sitzung. Unbesuchte leere Schritte und der offene Schritt bleiben bei lediglich fehlenden
+    Pflichtangaben neutral bzw. blau; ungültige Eingaben werden auch im offenen Schritt rot. Der Prüfschritt wird
+    nur ohne fehlende Pflichtangaben und ohne ungültige Eingaben grün. Der Haken
+    (`valid`) steht, sobald keine Pflichtangabe fehlt, auch bei halber Füllung. Farbe ist nie das einzige Signal:
+    Icon, Zähler `3/10` und ein ausgeschriebener Status für Screenreader gehören dazu.
+  - **Der offene Schritt** liegt auf einer in seiner Statusfarbe getönten Fläche mit Rahmen und fettem Titel.
+  - **Spalten** kommen aus `onboarding/onboarding-field-grid` (Container Queries: eine Spalte, ab 40rem eigener
+    Breite zwei) und `onboardingFieldSpan` (`narrow` teilt sich die Zeile, `wide` und `full` nehmen sie ganz). Block und Gruppeneintrag nutzen
+    dasselbe Raster; die DOM-Reihenfolge bleibt die Fragenreihenfolge. Keine Komponente setzt eigene Spaltenbreiten.
+  - **Felder aus einem Guss:** Jede Frage nutzt die Formular-Bausteine aus `@invessiv/ui`: `FormField` (Text, mit
+    `reserveErrorSpace={false}`), `FormFieldset` (Frage über mehreren Controls), `OptionTile` mit `RadioControl` bzw.
+    `CheckboxControl` (Auswahl, Mehrfachauswahl, Bestätigung) und `FormHint`. Kein Feld definiert Label-, Hinweis- oder
+    Kachel-Stile selbst. Eingaben, Kacheln, Skala und Buttons im Formular sind `--control-height` hoch (Token in
+    `globals.css`). Der Hinweis steht unter dem Control; nur die Gruppe zeigt ihn über den Einträgen. Langtext startet
+    einzeilig und wächst mit dem Inhalt.
+  - **Fußleiste:** schwebend, sticky, eine Zeile mit Speicherstatus und Zurück/Weiter; „Weiter“ nennt den nächsten
+    Schritt. Ein Schrittwechsel scrollt den Editor an den Anfang (`scrollIntoView`), nicht `window`: Das Portal
+    scrollt in `.main` der Shell.
+  - **Shell mobil:** unter 768 px zeigt der Header nur Logo, Theme, Sprache, Profil und Menü-Button; Firma, Projekt,
+    Begrüßung und Owner-Hinweis stehen im Menü-Dialog. Platz für den Chat-Dock reserviert `.main` nur, wenn die Seite
+    einen rendert (`data-portal-dock`).
 
 - **Abschluss (ab Task 70):** Ein abgeschlossener Bogen zeigt „Abgeschlossen am …“, den Satz, dass er die Grundlage
   des Projekts ist, und den Hinweis, dass Nachträge nicht mehr über das Onboarding laufen. Die Links in den

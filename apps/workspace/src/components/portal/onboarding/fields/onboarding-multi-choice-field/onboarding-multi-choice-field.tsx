@@ -3,7 +3,8 @@
 import { QuestionnaireFieldRequirement } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-requirements";
 import type { QuestionnaireResolvedField } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-resolved-field";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { CheckboxControl } from "@invessiv/ui";
+import { OptionTileKind } from "@invessiv/common/constants/ui/option-tile-kinds";
+import { OptionTile } from "@invessiv/ui";
 import type { PortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
 import { OnboardingOptionGroup } from "../onboarding-option-group/onboarding-option-group";
 import styles from "./onboarding-multi-choice-field.module.css";
@@ -67,15 +68,16 @@ export function OnboardingMultiChoiceField({
       {field.choices.map((choice, index) => {
         const checked = selected.includes(choice.id);
         return (
-          <label key={choice.id}>
-            <CheckboxControl
-              checked={checked}
-              disabled={full && !checked}
-              id={index === 0 ? id : undefined}
-              onChange={() => toggle(choice.id)}
-            />
-            <span>{choice.label}</span>
-          </label>
+          <OptionTile
+            checked={checked}
+            disabled={full && !checked}
+            id={index === 0 ? id : undefined}
+            key={choice.id}
+            kind={OptionTileKind.Checkbox}
+            onChange={() => toggle(choice.id)}
+          >
+            {choice.label}
+          </OptionTile>
         );
       })}
     </OnboardingOptionGroup>

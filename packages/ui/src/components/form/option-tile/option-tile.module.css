@@ -1,0 +1,45 @@
+/* Frame, surface and height of a text input, so options and inputs read as one family. */
+.tile {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 0;
+  min-height: var(--control-height);
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--control-border-color);
+  border-radius: var(--control-radius);
+  background: color-mix(
+    in srgb,
+    var(--color-surface-2) 64%,
+    var(--color-surface-1) 36%
+  );
+  color: var(--color-text);
+  font-size: var(--font-size-body-md);
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.tile:has(input:checked) {
+  border-color: color-mix(in srgb, var(--color-cta) 60%, transparent);
+  background: color-mix(in srgb, var(--color-cta) 12%, var(--color-surface-1));
+}
+
+.tile:has(input:disabled) {
+  color: var(--color-text-muted);
+  cursor: default;
+}
+
+.tile:has(input:focus-visible) {
+  outline: 2px solid color-mix(in srgb, var(--color-cta) 60%, #ffffff 18%);
+  outline-offset: 2px;
+}
+
+/* The tile shows the focus; a second ring around the small control would only double it. */
+.tile.tile :global(input:focus-visible) + * {
+  outline: none;
+}

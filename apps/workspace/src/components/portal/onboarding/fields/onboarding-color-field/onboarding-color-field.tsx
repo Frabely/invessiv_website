@@ -81,6 +81,7 @@ export function OnboardingColorField({
       kind={FormFieldKind.Text}
       label={field.label}
       required={required}
+      reserveErrorSpace={false}
     />
   );
 }

@@ -29,14 +29,6 @@
   transform: translateY(-50%);
 }
 
-.hint {
-  margin: 0;
-  color: color-mix(in srgb, var(--color-text) 52%, var(--color-text-muted) 48%);
-  font-size: var(--font-size-caption);
-  font-weight: 500;
-  line-height: 1.45;
-}
-
 .error {
   margin: -2px 0 0;
   color: color-mix(in srgb, #f88f8f 84%, var(--color-text) 16%);
@@ -51,10 +43,12 @@
 
 .control :global(input),
 .control :global(textarea) {
+  /* Block level: as an inline box the control would sit on a text line and make its row taller. */
+  display: block;
   width: 100%;
-  min-height: 50px;
-  border-radius: 15px;
-  border: 1px solid color-mix(in srgb, var(--color-border) 76%, transparent);
+  min-height: var(--control-height);
+  border-radius: var(--control-radius);
+  border: 1px solid var(--control-border-color);
   background: color-mix(
     in srgb,
     var(--color-surface-2) 64%,
@@ -63,7 +57,7 @@
   color: var(--color-text);
   font-size: var(--font-size-body-md);
   line-height: 1.55;
-  padding: 0.9rem 1rem;
+  padding: 0.45rem 0.5rem;
 }
 
 .inputShell :global(input) {
@@ -73,6 +67,14 @@
 .control :global(textarea) {
   resize: vertical;
   min-height: 164px;
+}
+
+/* One line high like an input, its first line centred the same way; then it follows the text. */
+.control :global(textarea).autoGrow {
+  min-height: var(--control-height);
+  max-height: 28rem;
+  padding-block: calc((var(--control-height) - 2px - 1.55em) / 2);
+  field-sizing: content;
 }
 
 .control :global(input::placeholder),
@@ -94,8 +96,7 @@
 
   .control :global(input),
   .control :global(textarea) {
-    min-height: 54px;
-    padding: 0.96rem 1.06rem;
+    padding: 0.48rem 0.53rem;
   }
 
   .control :global(textarea) {

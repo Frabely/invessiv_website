@@ -2,7 +2,9 @@
 
 import { QuestionnaireFieldRequirement } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-requirements";
 import type { QuestionnaireResolvedField } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-resolved-field";
-import { ButtonControl } from "@invessiv/ui";
+import { OptionTileKind } from "@invessiv/common/constants/ui/option-tile-kinds";
+import { ButtonSize } from "@invessiv/common/constants/ui/button-sizes";
+import { OptionTile, SecondaryCtaButton } from "@invessiv/ui";
 import type { PortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
 import { OnboardingOptionGroup } from "../onboarding-option-group/onboarding-option-group";
 
@@ -31,13 +33,13 @@ export function OnboardingChoiceField({
       footer={
         !required && selected.length > 0 ? (
           <div>
-            <ButtonControl
+            <SecondaryCtaButton
               onClick={() => onChangeAction([])}
+              size={ButtonSize.Control}
               type="button"
-              variant="ghost"
             >
               {texts.clearChoice}
-            </ButtonControl>
+            </SecondaryCtaButton>
           </div>
         ) : undefined
       }
@@ -46,17 +48,17 @@ export function OnboardingChoiceField({
       required={required}
     >
       {field.choices.map((choice, index) => (
-        <label key={choice.id}>
-          <input
-            checked={selected.includes(choice.id)}
-            id={index === 0 ? id : undefined}
-            name={id}
-            onChange={() => onChangeAction([choice.id])}
-            required={required}
-            type="radio"
-          />
-          <span>{choice.label}</span>
-        </label>
+        <OptionTile
+          checked={selected.includes(choice.id)}
+          id={index === 0 ? id : undefined}
+          key={choice.id}
+          kind={OptionTileKind.Radio}
+          name={id}
+          onChange={() => onChangeAction([choice.id])}
+          required={required}
+        >
+          {choice.label}
+        </OptionTile>
       ))}
     </OnboardingOptionGroup>
   );

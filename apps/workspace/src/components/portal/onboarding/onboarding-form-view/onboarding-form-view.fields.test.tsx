@@ -472,7 +472,9 @@ describe("OnboardingFormView field types of the full form", () => {
         ),
       );
 
-      await click(screen.getByRole("button", { name: content.steps.next }));
+      await click(
+        screen.getByRole("button", { name: /^(Next: |Go to review)/ }),
+      );
       await click(
         screen.getByRole("button", { name: "Member name in “Company”" }),
       );
@@ -553,7 +555,9 @@ describe("OnboardingFormView field types of the full form", () => {
       renderView(formOf([{ ...LOGO, ...REQUIRED }]));
 
       await finishUpload("file-1");
-      await click(screen.getByRole("button", { name: content.steps.next }));
+      await click(
+        screen.getByRole("button", { name: /^(Next: |Go to review)/ }),
+      );
 
       expect(screen.getByText(content.submit.complete)).toBeInTheDocument();
     });
@@ -565,7 +569,9 @@ describe("OnboardingFormView field types of the full form", () => {
         }),
       );
 
-      await click(screen.getByRole("button", { name: content.steps.next }));
+      await click(
+        screen.getByRole("button", { name: /^(Next: |Go to review)/ }),
+      );
 
       expect(screen.getByText(content.submit.complete)).toBeInTheDocument();
     });
@@ -590,7 +596,9 @@ describe("OnboardingFormView field types of the full form", () => {
       const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
       renderView(formOf([LOGO]));
 
-      await click(screen.getByRole("button", { name: content.steps.next }));
+      await click(
+        screen.getByRole("button", { name: /^(Next: |Go to review)/ }),
+      );
 
       expect(confirm).toHaveBeenCalledExactlyOnceWith(
         filesContent.upload.leaveWarning,
@@ -600,7 +608,9 @@ describe("OnboardingFormView field types of the full form", () => {
       ).toBeNull();
 
       confirm.mockReturnValue(true);
-      await click(screen.getByRole("button", { name: content.steps.next }));
+      await click(
+        screen.getByRole("button", { name: /^(Next: |Go to review)/ }),
+      );
 
       expect(
         screen.getByRole("heading", { name: content.submit.heading }),
@@ -642,10 +652,10 @@ describe("OnboardingFormView field types of the full form", () => {
     it("counts a step as started once it holds a file or a group entry", () => {
       const step = () =>
         within(screen.getByRole("list", { name: content.steps.label }))
-          .getByRole("button", { name: "Company" })
+          .getByRole("button", { name: /^Company/ })
           .closest("li");
       const { unmount } = renderView(formOf([LOGO, TEAM]));
-      expect(step()).toHaveAttribute("data-progress", "empty");
+      expect(step()).toHaveAttribute("data-tone", "neutral");
       unmount();
 
       renderView(
@@ -653,11 +663,11 @@ describe("OnboardingFormView field types of the full form", () => {
           answerFiles: [link("link-1", "file-1", "logo.png")],
         }),
       );
-      expect(step()).toHaveAttribute("data-progress", "complete");
+      expect(step()).toHaveAttribute("data-tone", "info");
       cleanup();
 
       renderView(formOf([LOGO, TEAM], { groupEntries: [entry("e-1", 0)] }));
-      expect(step()).toHaveAttribute("data-progress", "complete");
+      expect(step()).toHaveAttribute("data-tone", "info");
     });
 
     it("offers no upload without the right to upload and says so", () => {
@@ -745,7 +755,9 @@ describe("OnboardingFormView field types of the full form", () => {
         "form-1",
         null,
       );
-      await click(screen.getByRole("button", { name: content.steps.next }));
+      await click(
+        screen.getByRole("button", { name: /^(Next: |Go to review)/ }),
+      );
       expect(screen.getByText(content.submit.complete)).toBeInTheDocument();
     });
 
@@ -788,7 +800,9 @@ describe("OnboardingFormView field types of the full form", () => {
       await click(
         screen.getByRole("radio", { name: content.field.services.remark }),
       );
-      await click(screen.getByRole("button", { name: content.steps.next }));
+      await click(
+        screen.getByRole("button", { name: /^(Next: |Go to review)/ }),
+      );
       expect(screen.queryByText(content.submit.complete)).toBeNull();
 
       // Back in the step the choice still stands, although the field was unmounted meanwhile.
@@ -803,7 +817,9 @@ describe("OnboardingFormView field types of the full form", () => {
       fireEvent.change(note, { target: { value: "Please add a blog." } });
       fireEvent.blur(note);
       await settle();
-      await click(screen.getByRole("button", { name: content.steps.next }));
+      await click(
+        screen.getByRole("button", { name: /^(Next: |Go to review)/ }),
+      );
 
       expect(screen.getByText(content.submit.complete)).toBeInTheDocument();
     });
@@ -841,7 +857,9 @@ describe("OnboardingFormView field types of the full form", () => {
       expect(screen.getByRole("alert")).toHaveTextContent(
         content.errors.unavailable,
       );
-      await click(screen.getByRole("button", { name: content.steps.next }));
+      await click(
+        screen.getByRole("button", { name: /^(Next: |Go to review)/ }),
+      );
       expect(screen.queryByText(content.submit.complete)).toBeNull();
     });
   });

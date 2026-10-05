@@ -1,11 +1,16 @@
 "use client";
 
 import { type ReactNode, useEffect, useRef } from "react";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheck,
+  faCircleExclamation,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ProcessStepProgress } from "@invessiv/common/constants/ui/process-step-progress";
 import { ProcessStepState } from "@invessiv/common/constants/ui/process-step-states";
+import { ProcessStepTone } from "@invessiv/common/constants/ui/process-step-tones";
 import { ProcessStepVariant } from "@invessiv/common/constants/ui/process-step-variants";
+import { ProcessTrackDensity } from "@invessiv/common/constants/ui/process-track-densities";
 import type { ProcessTrackStep } from "@invessiv/common/contracts/ui/process-track-step";
 import { ButtonControl } from "../button/button";
 import styles from "./process-track.module.css";
@@ -18,22 +23,17 @@ export type ProcessTrackProps = {
   summary?: ReactNode;
   onStepAction?: (step: string, index: number) => void;
   scrollCurrentIntoView?: boolean;
+  /** `compact` for a track that sits inside another frame, e.g. a sticky page header. */
+  density?: ProcessTrackDensity;
 };
 
-function toStep(step: string | ProcessTrackStep, index: number) {
+function toStep(
+  step: string | ProcessTrackStep,
+  index: number,
+): ProcessTrackStep {
   return typeof step === "string"
-    ? {
-        key: `${step}-${index}`,
-        label: step,
-        variant: ProcessStepVariant.Default,
-        progress: undefined,
-      }
-    : {
-        key: step.key,
-        label: step.label,
-        variant: step.variant ?? ProcessStepVariant.Default,
-        progress: step.progress,
-      };
+    ? { key: `${step}-${index}`, label: step }
+    : step;
 }
 
 export function ProcessTrack({
@@ -43,6 +43,7 @@ export function ProcessTrack({
   summary,
   onStepAction,
   scrollCurrentIntoView = true,
+  density = ProcessTrackDensity.Default,
 }: ProcessTrackProps) {
   const trackRef = useRef<HTMLOListElement>(null);
   const currentStepRef = useRef<HTMLLIElement>(null);
@@ -64,7 +65,7 @@ export function ProcessTrack({
   }, [currentIndex, scrollCurrentIntoView]);
 
   return (
-    <div className={styles.progress}>
+    <div className={styles.progress} data-density={density}>
       {summary}
       <ol aria-label={label} className={styles.track} ref={trackRef}>
         {steps.map((rawStep, index) => {
@@ -75,22 +76,58 @@ export function ProcessTrack({
               : index === currentIndex
                 ? ProcessStepState.Current
                 : ProcessStepState.Upcoming;
-          // A step with its own progress is ticked off when it is done, not when it was passed.
-          const done = step.progress
-            ? step.progress === ProcessStepProgress.Complete
-            : state === ProcessStepState.Complete;
+          const measured = step.ratio !== undefined;
+          const tone = measured
+            ? (step.tone ?? ProcessStepTone.Neutral)
+            : undefined;
+          const alert = tone === ProcessStepTone.Danger;
+          // A step with its own state is ticked off when it says so, not when it was passed.
+          const done = measured
+            ? step.valid === true && !alert
+            : step.progress
+              ? step.progress === ProcessStepProgress.Complete
+              : state === ProcessStepState.Complete;
           const body = (
             <>
-              <span aria-hidden="true" className={styles.segment} />
+              <span aria-hidden="true" className={styles.segment}>
+                {measured ? (
+                  <svg
+                    className={styles.fill}
+                    preserveAspectRatio="none"
+                    viewBox="0 0 100 1"
+                  >
+                    <rect
+                      height="1"
+                      width={Math.min(1, Math.max(0, step.ratio ?? 0)) * 100}
+                    />
+                  </svg>
+                ) : null}
+              </span>
               <span className={styles.label}>
-                {done ? (
+                {alert ? (
+                  <FontAwesomeIcon
+                    aria-hidden="true"
+                    className={styles.alert}
+                    icon={faCircleExclamation}
+                  />
+                ) : done ? (
                   <FontAwesomeIcon
                     aria-hidden="true"
                     className={styles.check}
                     icon={faCheck}
                   />
                 ) : null}
-                {step.label}
+                <span className={styles.text} title={step.label}>
+                  {step.label}
+                </span>
+                {step.detail ? (
+                  <span aria-hidden="true" className={styles.detail}>
+                    {step.detail}
+                  </span>
+                ) : null}
+                {step.statusLabel ? (
+                  <span className={styles.srOnly}>, {step.statusLabel}</span>
+                ) : null}
               </span>
             </>
           );
@@ -100,9 +137,10 @@ export function ProcessTrack({
                 state === ProcessStepState.Current ? "step" : undefined
               }
               className={styles.step}
-              data-progress={step.progress}
+              data-progress={measured ? undefined : step.progress}
               data-state={state}
-              data-variant={step.variant}
+              data-tone={tone}
+              data-variant={step.variant ?? ProcessStepVariant.Default}
               key={step.key}
               ref={
                 state === ProcessStepState.Current ? currentStepRef : undefined

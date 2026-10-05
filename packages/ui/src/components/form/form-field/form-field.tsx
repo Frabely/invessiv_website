@@ -13,6 +13,7 @@ import {
   type FormFieldKind as FormFieldKindType,
 } from "@invessiv/common/constants/form/form-field-kinds";
 import { FormFieldLabel } from "../form-field-label/form-field-label";
+import { FormHint } from "../form-hint/form-hint";
 import styles from "./form-field.module.css";
 
 type BaseFormFieldProps = {
@@ -25,6 +26,11 @@ type BaseFormFieldProps = {
   hintId?: string;
   label: string;
   required?: boolean;
+  /**
+   * Keeps an empty line below the control for an error, so it does not push the form when it
+   * appears. Switch it off where fields sit in rows and must end at the same height.
+   */
+  reserveErrorSpace?: boolean;
 };
 
 type TextInputKind = Exclude<
@@ -43,6 +49,11 @@ type TextFieldProps = BaseFormFieldProps & {
 };
 
 type TextareaFieldProps = BaseFormFieldProps & {
+  /**
+   * Opens as high as a one-line input and grows with what is typed, instead of reserving a tall
+   * box up front. Browsers that cannot size a field by its content keep the drag handle.
+   */
+  autoGrow?: boolean;
   kind: typeof FormFieldKind.Textarea;
   textareaProps?: TextareaHTMLAttributes<HTMLTextAreaElement>;
 };
@@ -69,6 +80,7 @@ export function FormField(props: FormFieldProps) {
     hintId,
     label,
     required = false,
+    reserveErrorSpace = true,
   } = props;
 
   const controlId = getControlId(props, generatedControlId);
@@ -109,19 +121,17 @@ export function FormField(props: FormFieldProps) {
             )
           : null}
       </div>
-      {hint ? (
-        <small className={styles.hint} id={resolvedHintId}>
-          {hint}
+      {hint ? <FormHint id={resolvedHintId}>{hint}</FormHint> : null}
+      {errorMessage || reserveErrorSpace ? (
+        <small
+          aria-hidden={errorMessage ? undefined : "true"}
+          className={`${styles.error}${errorMessage ? "" : ` ${styles.errorHidden}`}`}
+          id={resolvedErrorId}
+          role={errorMessage ? "alert" : undefined}
+        >
+          {errorMessage ?? "\u00A0"}
         </small>
       ) : null}
-      <small
-        aria-hidden={errorMessage ? undefined : "true"}
-        className={`${styles.error}${errorMessage ? "" : ` ${styles.errorHidden}`}`}
-        id={resolvedErrorId}
-        role={errorMessage ? "alert" : undefined}
-      >
-        {errorMessage ?? "\u00A0"}
-      </small>
     </div>
   );
 }
@@ -214,12 +224,17 @@ function renderTextarea(
   ]
     .filter(Boolean)
     .join(" ");
-  const className = [props.textareaProps?.className, controlClassName]
+  const className = [
+    props.textareaProps?.className,
+    controlClassName,
+    props.autoGrow ? styles.autoGrow : undefined,
+  ]
     .filter(Boolean)
     .join(" ");
 
   return (
     <textarea
+      rows={props.autoGrow ? 1 : undefined}
       {...props.textareaProps}
       aria-describedby={describedBy || undefined}
       aria-invalid={

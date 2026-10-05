@@ -1,0 +1,83 @@
+.root {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.root[data-disabled="true"] {
+  cursor: default;
+}
+
+.input {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.dot {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border: 1px solid
+    color-mix(in srgb, var(--color-border) 72%, var(--color-text-muted) 28%);
+  border-radius: 50%;
+  background: color-mix(
+    in srgb,
+    var(--color-cta) 7%,
+    var(--color-surface-1) 93%
+  );
+  pointer-events: none;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+/* The filled centre is painted, not a second element, so it scales with the ring. */
+.input:checked + .dot {
+  border-color: color-mix(in srgb, var(--color-cta) 54%, transparent);
+  background: radial-gradient(
+    circle,
+    var(--color-on-cta) 0 32%,
+    var(--color-cta) 36% 100%
+  );
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-cta) 16%, transparent);
+}
+
+.input:focus-visible + .dot {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.root[data-disabled="true"] .dot {
+  border-color: color-mix(in srgb, var(--color-border) 80%, transparent);
+  background: color-mix(in srgb, var(--color-surface-1) 84%, transparent);
+  box-shadow: none;
+}
+
+.root[data-disabled="true"] .input:checked + .dot {
+  border-color: color-mix(in srgb, var(--color-border) 80%, transparent);
+  background: radial-gradient(
+    circle,
+    var(--color-surface-1) 0 32%,
+    color-mix(in srgb, var(--color-cta) 44%, var(--color-surface-2) 56%) 36%
+      100%
+  );
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot {
+    transition: none;
+  }
+}

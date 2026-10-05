@@ -74,6 +74,7 @@ export function OnboardingTextField({
     hint,
     label: field.label,
     required,
+    reserveErrorSpace: false,
   };
   const control = {
     "aria-required": required,
@@ -95,6 +96,7 @@ export function OnboardingTextField({
   ) : (
     <FormField
       {...shared}
+      autoGrow
       kind={FormFieldKind.Textarea}
       textareaProps={{
         ...control,

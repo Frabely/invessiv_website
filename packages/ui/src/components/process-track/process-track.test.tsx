@@ -3,6 +3,7 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { ProcessStepProgress } from "@invessiv/common/constants/ui/process-step-progress";
+import { ProcessStepTone } from "@invessiv/common/constants/ui/process-step-tones";
 import { ProcessStepVariant } from "@invessiv/common/constants/ui/process-step-variants";
 import { ProcessTrack } from "@invessiv/ui";
 
@@ -188,5 +189,56 @@ describe("ProcessTrack scrolling", () => {
     );
 
     expect(trackScroll).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("ProcessTrack measured steps", () => {
+  afterEach(cleanup);
+
+  it("fills a step by its ratio and ticks it off only when it is valid", () => {
+    render(
+      <ProcessTrack
+        currentIndex={1}
+        label="Steps"
+        scrollCurrentIntoView={false}
+        steps={[
+          {
+            key: "a",
+            label: "Company",
+            ratio: 0.3,
+            tone: ProcessStepTone.Info,
+            detail: "3/10",
+            statusLabel: "in progress",
+            valid: true,
+          },
+          { key: "b", label: "Brand", ratio: 0 },
+          {
+            key: "c",
+            label: "Content",
+            ratio: 0.5,
+            tone: ProcessStepTone.Danger,
+            valid: true,
+          },
+        ]}
+      />,
+    );
+
+    const items = screen.getAllByRole("listitem");
+    expect(items.map((item) => item.dataset.tone)).toEqual([
+      "info",
+      "neutral",
+      "danger",
+    ]);
+    expect(items[0].querySelector("rect")).toHaveAttribute("width", "30");
+    expect(items[0].querySelector('[data-icon="check"]')).not.toBeNull();
+    expect(items[0]).toHaveTextContent("3/10");
+    expect(items[0]).toHaveTextContent("in progress");
+    expect(items[0]).toHaveTextContent("Company3/10, in progress");
+    expect(items[1].querySelector('[data-icon="check"]')).toBeNull();
+    // A step that needs attention never shows a tick, whatever else it reports.
+    expect(items[2].querySelector('[data-icon="check"]')).toBeNull();
+    expect(
+      items[2].querySelector('[data-icon="circle-exclamation"]'),
+    ).not.toBeNull();
   });
 });

@@ -1,9 +1,9 @@
-import { type ReactNode, useId } from "react";
-import { FormFieldLabel } from "@invessiv/ui";
+import type { ReactNode } from "react";
+import { FormFieldset } from "@invessiv/ui";
 import styles from "./onboarding-option-group.module.css";
 
 export type OnboardingOptionGroupProps = {
-  /** The options, each a label wrapping its own input. */
+  /** The options, each an `OptionTile`. */
   children: ReactNode;
   /** Shown below the options, e.g. a way to clear the selection. */
   footer?: ReactNode;
@@ -12,7 +12,10 @@ export type OnboardingOptionGroupProps = {
   required: boolean;
 };
 
-/** The frame every choice question shares: the question as legend, its help, then the options. */
+/**
+ * The frame every choice question shares: the question, the options side by side where there is
+ * room, then its help, below the control like the hint of a text input.
+ */
 export function OnboardingOptionGroup({
   children,
   footer,
@@ -20,23 +23,14 @@ export function OnboardingOptionGroup({
   label,
   required,
 }: OnboardingOptionGroupProps) {
-  const helpId = useId();
-
   return (
-    <fieldset
-      aria-describedby={help ? helpId : undefined}
-      className={styles.group}
+    <FormFieldset
+      footer={footer ? <div className={styles.footer}>{footer}</div> : null}
+      hint={help ?? undefined}
+      label={label}
+      required={required}
     >
-      <legend className={styles.legend}>
-        <FormFieldLabel label={label} required={required} />
-      </legend>
-      {help ? (
-        <p className={styles.help} id={helpId}>
-          {help}
-        </p>
-      ) : null}
       <div className={styles.options}>{children}</div>
-      {footer}
-    </fieldset>
+    </FormFieldset>
   );
 }

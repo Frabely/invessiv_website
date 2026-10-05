@@ -296,6 +296,7 @@ export function PortalDashboard({
         <div
           className={styles.dock}
           data-owner-view={cockpitHref ? "true" : undefined}
+          data-portal-dock
           id={dockId}
         >
           <ChatDock

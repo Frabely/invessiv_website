@@ -9,7 +9,6 @@ import type { PortalOnboardingCallDto } from "@invessiv/common/contracts/portal/
 import type { PortalOnboardingFormDto } from "@invessiv/common/contracts/portal/portal-onboarding-form.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { PortalOwnerNotice } from "@/components/portal/portal-owner-notice/portal-owner-notice";
-import { PortalBackLink } from "@/components/portal/portal-back-link/portal-back-link";
 import { OnboardingAnswerReadView } from "@/components/shared/onboarding/onboarding-answer-read-view/onboarding-answer-read-view";
 import type { Locale } from "@/config/i18n";
 import { usePortalFileDownloads } from "@/hooks/portal/use-portal-file-downloads";
@@ -20,6 +19,7 @@ import type {
 import { formatMomentDay } from "@/lib/i18n/format-moment-day";
 import { OnboardingBookingCard } from "../onboarding-booking-card/onboarding-booking-card";
 import { OnboardingFormEditor } from "../onboarding-form-editor/onboarding-form-editor";
+import { OnboardingFormHeader } from "../onboarding-form-header/onboarding-form-header";
 import styles from "./onboarding-form-view.module.css";
 
 export type OnboardingFormViewProps = {
@@ -90,18 +90,9 @@ export function OnboardingFormView({
 
   return (
     <div className={styles.page}>
-      <PortalBackLink href={backHref} label={content.page.back} />
-      <h1 className={styles.heading}>
-        {formatMessage(content.page.heading, { project: form.projectTitle })}
-      </h1>
-      {editable && state === OnboardingFormStatus.ChangesRequested ? (
-        <div className={styles.state}>
-          <h2>{content.states.changes_requested.title}</h2>
-          <p>{content.states.changes_requested.editable}</p>
-        </div>
-      ) : null}
       {editable ? (
         <OnboardingFormEditor
+          backHref={backHref}
           canUpload={canUpload}
           content={content}
           customerId={customerId}
@@ -110,6 +101,14 @@ export function OnboardingFormView({
           form={form}
           key={`${form.id}:${form.status}:${revision}`}
           locale={locale}
+          notice={
+            state === OnboardingFormStatus.ChangesRequested ? (
+              <div className={styles.state}>
+                <h2>{content.states.changes_requested.title}</h2>
+                <p>{content.states.changes_requested.editable}</p>
+              </div>
+            ) : null
+          }
           onAnnounceAction={setAnnouncement}
           onStaleAction={() => {
             setStaleForm(form);
@@ -118,97 +117,109 @@ export function OnboardingFormView({
         />
       ) : (
         <>
-          {state === OnboardingFormStatus.Submitted && form.submittedAt ? (
-            <div className={styles.state}>
-              <h2>
-                {formatMessage(content.states.submitted.title, {
-                  date: formatMomentDay(form.submittedAt, locale),
-                })}
-                {form.submittedByName ? (
-                  <span className={styles.by}>
-                    {" "}
-                    {formatMessage(content.states.submitted.by, {
-                      name: form.submittedByName,
+          <OnboardingFormHeader
+            backHref={backHref}
+            backLabel={content.page.back}
+            backShortLabel={content.page.backShort}
+            title={formatMessage(content.page.heading, {
+              project: form.projectTitle,
+            })}
+          />
+          <div className={styles.read}>
+            <div className={styles.aside}>
+              {state === OnboardingFormStatus.Submitted && form.submittedAt ? (
+                <div className={styles.state}>
+                  <h2>
+                    {formatMessage(content.states.submitted.title, {
+                      date: formatMomentDay(form.submittedAt, locale),
                     })}
-                  </span>
-                ) : null}
-              </h2>
-              <p>{content.states.submitted.description}</p>
-            </div>
-          ) : null}
-          {state === OnboardingFormStatus.ChangesRequested ? (
-            <div className={styles.state}>
-              <h2>{content.states.changes_requested.title}</h2>
-              <p>{content.states.changes_requested.description}</p>
-            </div>
-          ) : null}
-          {state === OnboardingFormStatus.Completed && form.completedAt ? (
-            <div className={styles.state}>
-              <h2>
-                {formatMessage(content.states.completed.title, {
-                  date: formatMomentDay(form.completedAt, locale),
-                })}
-              </h2>
-              <p>{content.states.completed.description}</p>
-              <p>{content.states.completed.more}</p>
-              {filesHref || chatHref ? (
-                <ul className={styles.links}>
-                  {filesHref ? (
-                    <li>
-                      <Link href={filesHref}>
-                        {content.states.completed.filesLink}
-                      </Link>
-                    </li>
+                    {form.submittedByName ? (
+                      <span className={styles.by}>
+                        {" "}
+                        {formatMessage(content.states.submitted.by, {
+                          name: form.submittedByName,
+                        })}
+                      </span>
+                    ) : null}
+                  </h2>
+                  <p>{content.states.submitted.description}</p>
+                </div>
+              ) : null}
+              {state === OnboardingFormStatus.ChangesRequested ? (
+                <div className={styles.state}>
+                  <h2>{content.states.changes_requested.title}</h2>
+                  <p>{content.states.changes_requested.description}</p>
+                </div>
+              ) : null}
+              {state === OnboardingFormStatus.Completed && form.completedAt ? (
+                <div className={styles.state}>
+                  <h2>
+                    {formatMessage(content.states.completed.title, {
+                      date: formatMomentDay(form.completedAt, locale),
+                    })}
+                  </h2>
+                  <p>{content.states.completed.description}</p>
+                  <p>{content.states.completed.more}</p>
+                  {filesHref || chatHref ? (
+                    <ul className={styles.links}>
+                      {filesHref ? (
+                        <li>
+                          <Link href={filesHref}>
+                            {content.states.completed.filesLink}
+                          </Link>
+                        </li>
+                      ) : null}
+                      {chatHref ? (
+                        <li>
+                          <Link href={chatHref}>
+                            {content.states.completed.chatLink}
+                          </Link>
+                        </li>
+                      ) : null}
+                    </ul>
                   ) : null}
-                  {chatHref ? (
-                    <li>
-                      <Link href={chatHref}>
-                        {content.states.completed.chatLink}
-                      </Link>
-                    </li>
-                  ) : null}
-                </ul>
+                </div>
+              ) : null}
+              {call ? (
+                <OnboardingBookingCard
+                  booking={call.booking}
+                  chatHref={chatHref}
+                  texts={content.call}
+                />
+              ) : null}
+              {cockpitHref ? (
+                <PortalOwnerNotice
+                  cockpitHref={cockpitHref}
+                  hint={content.page.ownerHint}
+                  id={ownerNoticeId}
+                  linkLabel={content.page.ownerLink}
+                />
+              ) : state === null ? (
+                <p className={styles.hint}>{content.page.readOnlyHint}</p>
               ) : null}
             </div>
-          ) : null}
-          {call ? (
-            <OnboardingBookingCard
-              booking={call.booking}
-              chatHref={chatHref}
-              texts={content.call}
-            />
-          ) : null}
-          {cockpitHref ? (
-            <PortalOwnerNotice
-              cockpitHref={cockpitHref}
-              hint={content.page.ownerHint}
-              id={ownerNoticeId}
-              linkLabel={content.page.ownerLink}
-            />
-          ) : state === null ? (
-            <p className={styles.hint}>{content.page.readOnlyHint}</p>
-          ) : null}
-          <section
-            aria-labelledby="onboarding-answers"
-            className={styles.answers}
-          >
-            <h2 className={styles.answersHeading} id="onboarding-answers">
-              {content.read.heading}
-            </h2>
-            <OnboardingAnswerReadView
-              answerFiles={form.answerFiles}
-              hiddenAnswerFiles={form.hiddenAnswerFiles}
-              answers={form.answers}
-              blocks={form.blocks}
-              emptyText={content.block.empty}
-              files={files}
-              groupEntries={form.groupEntries}
-              services={form.services}
-              servicesConfirmed={form.servicesConfirmed}
-              servicesNote={form.servicesNote}
-              texts={content.read}
-            />
-          </section>
+            <section
+              aria-labelledby="onboarding-answers"
+              className={styles.answers}
+            >
+              <h2 className={styles.answersHeading} id="onboarding-answers">
+                {content.read.heading}
+              </h2>
+              <OnboardingAnswerReadView
+                answerFiles={form.answerFiles}
+                hiddenAnswerFiles={form.hiddenAnswerFiles}
+                answers={form.answers}
+                blocks={form.blocks}
+                emptyText={content.block.empty}
+                files={files}
+                groupEntries={form.groupEntries}
+                services={form.services}
+                servicesConfirmed={form.servicesConfirmed}
+                servicesNote={form.servicesNote}
+                texts={content.read}
+              />
+            </section>
+          </div>
         </>
       )}
       {downloads.actionError ? (

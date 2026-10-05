@@ -13,8 +13,15 @@ import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnai
 import type { QuestionnaireGroupEntryDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-group-entry.dto";
 import type { QuestionnaireResolvedField } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-resolved-field";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { ButtonControl, ConfirmDialog, FormFieldLabel } from "@invessiv/ui";
+import { ButtonSize } from "@invessiv/common/constants/ui/button-sizes";
+import {
+  ButtonControl,
+  ConfirmDialog,
+  FormFieldset,
+  FormHint,
+} from "@invessiv/ui";
 import type { PortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
+import { OnboardingFieldGrid } from "../../onboarding-field-grid/onboarding-field-grid";
 import styles from "./onboarding-group-field.module.css";
 
 // What the focus lands on inside a new entry: its first control, whatever type it is.
@@ -144,24 +151,14 @@ export function OnboardingGroupField({
   }
 
   return (
-    <fieldset
+    <FormFieldset
       aria-describedby={field.help ? helpId : undefined}
-      className={styles.group}
+      errorMessage={errorMessage}
+      label={field.label}
       ref={frameRef}
+      required={field.requirement === QuestionnaireFieldRequirement.Required}
     >
-      <legend className={styles.legend}>
-        <FormFieldLabel
-          label={field.label}
-          required={
-            field.requirement === QuestionnaireFieldRequirement.Required
-          }
-        />
-      </legend>
-      {field.help ? (
-        <p className={styles.help} id={helpId}>
-          {field.help}
-        </p>
-      ) : null}
+      {field.help ? <FormHint id={helpId}>{field.help}</FormHint> : null}
       {entries.length === 0 ? (
         <p className={styles.empty}>{texts.empty}</p>
       ) : (
@@ -176,29 +173,28 @@ export function OnboardingGroupField({
                     <h3 className={styles.number} id={entryHeadingId}>
                       {formatMessage(texts.entry, { number })}
                     </h3>
-                    {/* While a command runs the buttons stay focusable and only ignore clicks. */}
                     <div className={styles.tools}>
                       <ButtonControl
                         aria-disabled={busy || undefined}
                         aria-label={formatMessage(texts.moveUp, { number })}
-                        className={styles.tool}
                         data-move="-1"
                         disabled={index === 0}
                         onClick={() => move(entry, -1)}
                         type="button"
-                        variant="ghost"
+                        size={ButtonSize.Icon}
+                        variant="quiet"
                       >
                         <FontAwesomeIcon aria-hidden="true" icon={faArrowUp} />
                       </ButtonControl>
                       <ButtonControl
                         aria-disabled={busy || undefined}
                         aria-label={formatMessage(texts.moveDown, { number })}
-                        className={styles.tool}
                         data-move="1"
                         disabled={index === entries.length - 1}
                         onClick={() => move(entry, 1)}
                         type="button"
-                        variant="ghost"
+                        size={ButtonSize.Icon}
+                        variant="quiet"
                       >
                         <FontAwesomeIcon
                           aria-hidden="true"
@@ -208,23 +204,25 @@ export function OnboardingGroupField({
                       <ButtonControl
                         aria-disabled={busy || undefined}
                         aria-label={formatMessage(texts.remove, { number })}
-                        className={styles.tool}
                         onClick={() => {
                           if (busy) return;
                           if (hasContentAction(entry)) setRemoving(entry);
                           else remove(entry);
                         }}
                         type="button"
-                        variant="ghost"
+                        size={ButtonSize.Icon}
+                        variant="quiet"
                       >
                         <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
                       </ButtonControl>
                     </div>
                   </div>
                   <div className={styles.fields} data-fields>
-                    {field.children.map((child) =>
-                      renderFieldAction(child, entry),
-                    )}
+                    <OnboardingFieldGrid>
+                      {field.children.map((child) =>
+                        renderFieldAction(child, entry),
+                      )}
+                    </OnboardingFieldGrid>
                   </div>
                 </div>
               </li>
@@ -243,6 +241,7 @@ export function OnboardingGroupField({
               entryId: onAddAction(),
             };
           }}
+          size={ButtonSize.Control}
           type="button"
           variant="ghost"
         >
@@ -265,11 +264,6 @@ export function OnboardingGroupField({
           </p>
         ) : null}
       </div>
-      {errorMessage ? (
-        <p className={styles.error} role="alert">
-          {errorMessage}
-        </p>
-      ) : null}
       {removing ? (
         <ConfirmDialog
           cancelLabel={texts.removeDialog.cancel}
@@ -285,6 +279,6 @@ export function OnboardingGroupField({
           tone="danger"
         />
       ) : null}
-    </fieldset>
+    </FormFieldset>
   );
 }

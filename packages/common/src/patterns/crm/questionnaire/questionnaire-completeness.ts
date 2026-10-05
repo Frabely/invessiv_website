@@ -161,6 +161,16 @@ function evaluate(
   return { counts: false, answered: false };
 }
 
+/** Whether a question holds anything at all, whatever it requires; only feeds the progress display. */
+function isAnswered(
+  field: QuestionnaireCompletenessField,
+  groupEntryId: string | null,
+  index: CompletenessIndex,
+): boolean {
+  const items = countItems(field, groupEntryId, index);
+  return items === null ? hasAnswer(field, groupEntryId, index) : items > 0;
+}
+
 export function isQuestionnaireFieldVisible(
   field: QuestionnaireCompletenessField,
   input: QuestionnaireCompletenessInput,
@@ -185,6 +195,8 @@ export function getQuestionnaireCompleteness(
       blockId: block.id,
       answeredRequired: 0,
       totalRequired: 0,
+      answered: 0,
+      total: 0,
     };
     const visit = (
       field: QuestionnaireCompletenessField,
@@ -192,6 +204,8 @@ export function getQuestionnaireCompleteness(
     ) => {
       if (!isVisible(field, groupEntryId, index, new Set())) return false;
       const { counts, answered } = evaluate(field, groupEntryId, index);
+      progress.total += 1;
+      if (isAnswered(field, groupEntryId, index)) progress.answered += 1;
       if (counts) progress.totalRequired += 1;
       if (counts && answered) progress.answeredRequired += 1;
       if (counts && !answered)

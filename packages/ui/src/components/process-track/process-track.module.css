@@ -200,3 +200,176 @@
 .step[data-progress="complete"]:not([data-state="current"]) {
   color: var(--color-text);
 }
+
+.text {
+  min-width: 0;
+}
+
+/*
+ * Keeps the hidden status text inside its step. Without a positioned ancestor in the track it
+ * would be laid out against the page and widen it by every step that is scrolled out of view.
+ */
+.label {
+  position: relative;
+}
+
+.detail {
+  flex: 0 0 auto;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+.alert {
+  flex: 0 0 auto;
+  color: var(--color-danger);
+  font-size: 0.8rem;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/*
+ * Measured steps: the fill is the share that is done, its colour what that share is worth. The
+ * position before or after the current step says nothing here, so those looks are switched off.
+ */
+.step[data-tone] {
+  --step-tone: var(--color-cta);
+}
+
+.step[data-tone="success"] {
+  --step-tone: var(--color-success);
+}
+
+.step[data-tone="danger"] {
+  --step-tone: var(--color-danger);
+}
+
+.step[data-tone][data-state] .segment {
+  background: var(--color-surface-2);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.step[data-tone][data-state] .segment::after {
+  content: none;
+}
+
+.step[data-tone="neutral"][data-state] .segment {
+  background: color-mix(
+    in srgb,
+    var(--color-accent-warm) 12%,
+    var(--color-surface-2)
+  );
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--color-accent-warm) 34%, transparent);
+}
+
+.step[data-tone="danger"][data-state] .segment {
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--color-danger) 60%, transparent);
+}
+
+.fill {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.fill rect {
+  fill: var(--step-tone);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .fill rect {
+    transition: width 260ms ease;
+  }
+}
+
+/*
+ * The open step sits on a tinted plate in the colour of its own state, framed and set in bold.
+ * The fill keeps meaning "how far", so the plate is what says "you are here".
+ */
+.step[data-tone] .stepBody,
+.step[data-tone] .stepButton.stepButton {
+  padding: 0.4rem 0.5rem 0.35rem;
+  border-radius: 10px;
+}
+
+.step[data-tone][data-state="current"] .stepBody,
+.step[data-tone][data-state="current"] .stepButton.stepButton,
+.step[data-tone][data-state="current"] .stepButton.stepButton:hover {
+  background: color-mix(in srgb, var(--step-tone) 14%, transparent);
+  box-shadow: inset 0 0 0 1.5px
+    color-mix(in srgb, var(--step-tone) 70%, transparent);
+}
+
+.step[data-tone][data-state="current"] .segment {
+  box-shadow: inset 0 0 0 1px var(--step-tone);
+}
+
+.step[data-tone]:not([data-state="current"]) {
+  color: var(--color-text-muted);
+}
+
+.step[data-tone] .check {
+  color: var(--color-success);
+}
+
+@media (hover: hover) {
+  .step[data-tone] .stepButton:hover .segment {
+    box-shadow: inset 0 0 0 1px var(--color-text-muted);
+  }
+}
+
+/* Compact: no frame of its own and one line per label, for a track inside a sticky header. */
+.progress[data-density="compact"] {
+  gap: 0.4rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.progress[data-density="compact"] .track {
+  padding: 0 0 0.2rem;
+}
+
+.progress[data-density="compact"] .step {
+  min-width: 6.75rem;
+}
+
+.progress[data-density="compact"] .stepButton.stepButton {
+  min-height: 44px;
+}
+
+/* On touch the track is swiped; a scrollbar would only cost height. */
+@media (hover: none) {
+  .progress[data-density="compact"] .track {
+    scrollbar-width: none;
+  }
+}
+
+.progress[data-density="compact"] .stepBody,
+.progress[data-density="compact"] .stepButton.stepButton {
+  gap: 0.4rem;
+}
+
+.progress[data-density="compact"] .label {
+  display: flex;
+  min-width: 0;
+  overflow-wrap: normal;
+}
+
+.progress[data-density="compact"] .text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

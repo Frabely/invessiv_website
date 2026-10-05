@@ -1,27 +1,93 @@
+/*
+ * At least as tall as the visible area of the portal, so the action bar rests on the bottom edge
+ * on a short step exactly where it sticks on a long one.
+ */
 .editor {
-  display: grid;
-  gap: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   min-width: 0;
+  min-height: calc(
+    100dvh - var(--portal-header-height, 3.5rem) - 2 *
+      var(--portal-main-pad-block, 1rem) - 1px
+  );
 }
 
 /*
- * Save state and step buttons stay in reach on a long step; on phones the bar sits above the safe
- * area so the buttons never hide behind the browser chrome.
+ * Save state and step buttons float above the page on a long step, set off from it by their own
+ * surface. On phones the bar keeps clear of the safe area so the buttons never hide behind the
+ * browser chrome.
  */
 .bar {
   position: sticky;
-  bottom: 0;
-  z-index: 1;
-  display: grid;
-  gap: 0.75rem;
-  padding: 0.9rem 0 calc(0.9rem + var(--mobile-safe-bottom, 0px));
-  border-top: 1px solid var(--color-border);
-  background: var(--color-bg);
+  bottom: calc(
+    var(--portal-main-pad-block, 1rem) + var(--mobile-safe-bottom, 0px)
+  );
+  z-index: 4;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1.25rem;
+  margin-top: auto;
+  padding: 0.5rem 0.6rem 0.5rem 1.1rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 16px;
+  background: var(--color-surface-2);
+  box-shadow: 0 10px 28px -14px var(--color-shadow);
 }
 
 .actions {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  flex: 0 1 auto;
   gap: 0.5rem;
+  min-width: 0;
+  margin-left: auto;
+}
+
+.actions .next {
+  min-width: 0;
+  max-width: 22rem;
+}
+
+.nextLabel {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/*
+ * On a phone the bar is part of the screen, not of the page: fixed to the bottom edge at full
+ * width, also on a short step. The editor keeps room below its last field so nothing hides
+ * behind it.
+ */
+@media (max-width: 767px) {
+  .editor {
+    min-height: 0;
+    padding-bottom: 7rem;
+  }
+
+  .bar {
+    position: fixed;
+    inset: auto 0 0;
+    margin: 0;
+    padding: 0.6rem 0.75rem calc(0.7rem + var(--mobile-safe-bottom, 0px));
+    border-width: 1px 0 0;
+    border-radius: 0;
+    box-shadow: 0 -8px 24px -16px var(--color-shadow);
+  }
+
+  .actions {
+    flex: 1 0 100%;
+  }
+
+  .actions > * {
+    flex: 1 1 0;
+  }
+
+  .actions .next {
+    max-width: none;
+  }
 }

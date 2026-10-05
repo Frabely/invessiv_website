@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useSyncExternalStore } from "react";
+import { useCallback, useState, useSyncExternalStore } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { PortalOnboardingEvent } from "@/common/constants/portal/portal-onboarding-events";
 import { PortalOnboardingQueryParam } from "@/common/constants/portal/portal-onboarding-query-params";
@@ -40,6 +40,17 @@ export function usePortalOnboardingStep(
   const params = new URLSearchParams(search);
   const requested = params.get(PortalOnboardingQueryParam.Section);
   const known = requested !== null && sections.includes(requested);
+  const section = known ? requested : initialSection;
+  const [history, setHistory] = useState(() => ({
+    section,
+    leftSections: new Set<string>(),
+  }));
+  if (history.section !== section) {
+    setHistory({
+      section,
+      leftSections: new Set([...history.leftSections, history.section]),
+    });
+  }
 
   const goTo = useCallback(
     (target: PortalOnboardingStepTarget) => {
@@ -63,7 +74,9 @@ export function usePortalOnboardingStep(
   );
 
   return {
-    section: known ? requested : initialSection,
+    section,
+    /** Sections visited and left during this editor session, even without answering a question. */
+    leftSections: history.leftSections,
     /** Field to focus after a jump; only meaningful together with its own step. */
     fieldId: known ? params.get(PortalOnboardingQueryParam.Field) : null,
     goTo,

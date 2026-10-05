@@ -1,38 +1,9 @@
-/* One reading column, like the feedback sheet: this is a questionnaire, not a shrunken CRM. */
+/* The page takes the width it is given; lines of text keep their own measure inside it. */
 .page {
   display: grid;
   gap: 1.5rem;
   width: 100%;
-  max-width: 48rem;
-  margin-inline: auto;
-}
-
-.back {
-  display: inline-flex;
-  align-items: center;
-  justify-self: start;
-  gap: 0.5rem;
-  min-height: 44px;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-ui-sm);
-  text-decoration: none;
-}
-
-.back:hover {
-  color: var(--color-text);
-}
-
-.back:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
-}
-
-.heading {
-  margin: 0;
-  color: var(--color-text);
-  font-size: var(--font-size-heading-md);
-  line-height: 1.2;
-  overflow-wrap: anywhere;
+  min-width: 0;
 }
 
 .error {
@@ -49,11 +20,32 @@
   line-height: 1.5;
 }
 
+/* Reading a sent form: what happens next on the left, the answers beside it. */
+.read {
+  display: grid;
+  gap: 1.5rem 3rem;
+  min-width: 0;
+}
+
+.aside {
+  display: grid;
+  align-content: start;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+@media (min-width: 1024px) {
+  .read {
+    grid-template-columns: minmax(18rem, 26rem) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
 .state {
   display: grid;
   gap: 0.4rem;
-  padding: 1.1rem 0;
-  border-top: 1px solid var(--color-border);
+  padding-left: 1rem;
+  border-left: 2px solid var(--color-accent-warm);
 }
 
 .state h2 {
@@ -106,6 +98,7 @@
 .answers {
   display: grid;
   gap: 1.25rem;
+  min-width: 0;
 }
 
 .answersHeading {

@@ -5,6 +5,9 @@
     "userMenuLabel": "Account and sign out",
     "localeMenuLabel": "Select language",
     "localeSwitchLabel": "Switch language",
+    "menuOpenLabel": "Open menu",
+    "menuCloseLabel": "Close menu",
+    "menuTitle": "Menu",
     "themeSwitch": {
       "actionLabel": {
         "dark": "Enable light mode",

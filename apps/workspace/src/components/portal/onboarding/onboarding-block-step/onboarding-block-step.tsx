@@ -7,12 +7,17 @@ import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { languageName } from "@invessiv/common/patterns/i18n/language-name";
 import type { OnboardingFieldFormContext } from "@/common/contracts/portal/onboarding-field-form-context";
 import { onboardingFieldDomId } from "@/common/patterns/portal/onboarding-field-dom-id";
+import { onboardingFieldSpan } from "@/common/patterns/portal/onboarding-field-span";
 import {
   OnboardingAnswerReadView,
   type OnboardingAnswerReadViewProps,
 } from "@/components/shared/onboarding/onboarding-answer-read-view/onboarding-answer-read-view";
 import type { Locale } from "@/config/i18n";
 import type { PortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
+import {
+  OnboardingFieldCell,
+  OnboardingFieldGrid,
+} from "../onboarding-field-grid/onboarding-field-grid";
 import { QuestionnaireField } from "../questionnaire-field/questionnaire-field";
 import styles from "./onboarding-block-step.module.css";
 
@@ -88,14 +93,20 @@ export function OnboardingBlockStep({
       {editable ? (
         fields.length > 0 ? (
           <div className={styles.fields}>
-            {fields.map((field) => (
-              <QuestionnaireField
-                field={field}
-                form={form}
-                groupEntryId={null}
-                key={field.id}
-              />
-            ))}
+            <OnboardingFieldGrid>
+              {fields.map((field) => (
+                <OnboardingFieldCell
+                  key={field.id}
+                  span={onboardingFieldSpan(field)}
+                >
+                  <QuestionnaireField
+                    field={field}
+                    form={form}
+                    groupEntryId={null}
+                  />
+                </OnboardingFieldCell>
+              ))}
+            </OnboardingFieldGrid>
           </div>
         ) : (
           <p className={styles.note}>{texts.empty}</p>

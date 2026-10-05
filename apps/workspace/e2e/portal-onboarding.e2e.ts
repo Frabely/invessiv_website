@@ -252,7 +252,7 @@ test.describe.serial("portal onboarding", () => {
       }
 
       await contact
-        .getByRole("button", { name: "Weiter", exact: true })
+        .getByRole("button", { name: /^(Weiter: |Zur Prüfung)/ })
         .click();
       await expect(
         contact.getByText("Alle Pflichtangaben sind da. Du kannst absenden."),
@@ -366,7 +366,7 @@ test.describe.serial("portal onboarding", () => {
       expect((await saved).ok()).toBe(true);
 
       await contact
-        .getByRole("button", { name: "Weiter", exact: true })
+        .getByRole("button", { name: /^(Weiter: |Zur Prüfung)/ })
         .click();
       await contact
         .getByRole("button", { name: "Onboarding absenden" })

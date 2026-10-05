@@ -6,7 +6,8 @@ import { QuestionnaireFieldRequirement } from "@invessiv/common/constants/crm/qu
 import { QUESTIONNAIRE_LIMITS } from "@invessiv/common/constants/crm/questionnaire/questionnaire-limits";
 import type { QuestionnaireResolvedField } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-resolved-field";
 import type { PortalOnboardingServiceDto } from "@invessiv/common/contracts/portal/portal-onboarding-service.dto";
-import { FormField } from "@invessiv/ui";
+import { OptionTileKind } from "@invessiv/common/constants/ui/option-tile-kinds";
+import { FormField, OptionTile } from "@invessiv/ui";
 import type { PortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
 import { OnboardingOptionGroup } from "../onboarding-option-group/onboarding-option-group";
 import styles from "./onboarding-project-services-field.module.css";
@@ -112,25 +113,23 @@ export function OnboardingProjectServicesField({
           )}
         </ul>
         <p className={styles.question}>{texts.question}</p>
-        <label>
-          <input
-            checked={choice === Choice.Fits}
-            id={id}
-            name={id}
-            onChange={() => choose(Choice.Fits)}
-            type="radio"
-          />
-          <span>{texts.fits}</span>
-        </label>
-        <label>
-          <input
-            checked={choice === Choice.Remark}
-            name={id}
-            onChange={() => choose(Choice.Remark)}
-            type="radio"
-          />
-          <span>{texts.remark}</span>
-        </label>
+        <OptionTile
+          checked={choice === Choice.Fits}
+          id={id}
+          kind={OptionTileKind.Radio}
+          name={id}
+          onChange={() => choose(Choice.Fits)}
+        >
+          {texts.fits}
+        </OptionTile>
+        <OptionTile
+          checked={choice === Choice.Remark}
+          kind={OptionTileKind.Radio}
+          name={id}
+          onChange={() => choose(Choice.Remark)}
+        >
+          {texts.remark}
+        </OptionTile>
       </OnboardingOptionGroup>
       {choice === Choice.Remark ? (
         <FormField

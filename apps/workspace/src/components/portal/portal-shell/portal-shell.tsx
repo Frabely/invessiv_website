@@ -2,7 +2,11 @@
 
 import { UserButton } from "@clerk/nextjs";
 import Image from "next/image";
-import type { ReactNode } from "react";
+import { type ReactNode, useState } from "react";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ButtonSize } from "@invessiv/common/constants/ui/button-sizes";
+import { ButtonControl, Dialog, DialogSize } from "@invessiv/ui";
 import { useLanguage } from "@/components/providers/language-provider";
 import { useTheme } from "@/components/providers/theme-provider";
 import { LocaleSwitch } from "@/components/shared/locale-switch/locale-switch";
@@ -43,6 +47,7 @@ export function PortalShell({
   const headerContent = content.header;
   const { locale: activeLocale } = useLanguage();
   const { theme, toggleTheme } = useTheme();
+  const [menuOpen, setMenuOpen] = useState(false);
   const themeSwitchCopy =
     theme === "dark"
       ? { actionLabel: headerContent.themeSwitch.actionLabel.dark }
@@ -105,9 +110,38 @@ export function PortalShell({
             <div className={styles.userButton}>
               <UserButton />
             </div>
+            <ButtonControl
+              aria-expanded={menuOpen}
+              aria-haspopup="dialog"
+              aria-label={headerContent.menuOpenLabel}
+              className={styles.menuButton}
+              onClick={() => setMenuOpen(true)}
+              size={ButtonSize.Icon}
+              type="button"
+              variant="quiet"
+            >
+              <FontAwesomeIcon aria-hidden="true" icon={faBars} />
+            </ButtonControl>
           </div>
         </div>
       </header>
+      {menuOpen ? (
+        <Dialog
+          closeLabel={headerContent.menuCloseLabel}
+          onCloseAction={() => setMenuOpen(false)}
+          size={DialogSize.Narrow}
+          title={headerContent.menuTitle}
+        >
+          <div className={styles.menu}>
+            {greeting ? (
+              <p className={styles.menuGreeting}>{greeting}</p>
+            ) : null}
+            {switcher}
+            {projectSwitcher}
+            {notice}
+          </div>
+        </Dialog>
+      ) : null}
       <main className={styles.main} id="main-content">
         {children}
       </main>

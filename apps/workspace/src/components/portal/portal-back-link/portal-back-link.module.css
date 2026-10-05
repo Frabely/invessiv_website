@@ -16,3 +16,8 @@
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
+
+.link {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}

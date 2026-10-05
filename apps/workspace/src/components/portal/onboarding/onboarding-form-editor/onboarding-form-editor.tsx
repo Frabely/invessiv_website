@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { type ReactNode, useCallback, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { PortalOnboardingErrorCode } from "@invessiv/common/constants/portal/portal-onboarding-error-codes";
 import type { QuestionnaireGroupEntryDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-group-entry.dto";
@@ -26,6 +26,8 @@ import type {
   PortalOnboardingDictionary,
 } from "@/i18n/dictionaries/portal";
 import { OnboardingBlockStep } from "../onboarding-block-step/onboarding-block-step";
+import { OnboardingFormHeader } from "../onboarding-form-header/onboarding-form-header";
+import { OnboardingFormSummary } from "../onboarding-form-summary/onboarding-form-summary";
 import { OnboardingStepTrack } from "../onboarding-step-track/onboarding-step-track";
 import { OnboardingSubmitStep } from "../onboarding-submit-step/onboarding-submit-step";
 import styles from "./onboarding-form-editor.module.css";
@@ -38,6 +40,8 @@ const STALE_CODES: readonly PortalOnboardingErrorCode[] = [
 ];
 
 export type OnboardingFormEditorProps = {
+  /** Where the back link in the header leads: the dashboard of the company. */
+  backHref: string;
   /** Upload as well as attach, which needs `portal.files.write` on top. */
   canUpload: boolean;
   content: PortalOnboardingDictionary;
@@ -48,6 +52,8 @@ export type OnboardingFormEditorProps = {
   /** A form this contact may write into. */
   form: PortalOnboardingFormDto;
   locale: Locale;
+  /** Shown between the header and the step, e.g. what a change request asks for. */
+  notice?: ReactNode;
   onAnnounceAction: (message: string) => void;
   /** The server no longer holds what the form shows; the view reloads and starts the form over. */
   onStaleAction: () => void;
@@ -60,6 +66,7 @@ export type OnboardingFormEditorProps = {
  * runs again when the form is submitted.
  */
 export function OnboardingFormEditor({
+  backHref,
   canUpload,
   content,
   customerId,
@@ -67,10 +74,12 @@ export function OnboardingFormEditor({
   filesContent,
   form,
   locale,
+  notice,
   onAnnounceAction,
   onStaleAction,
 }: OnboardingFormEditorProps) {
   const router = useRouter();
+  const editorRef = useRef<HTMLDivElement>(null);
   const state = useOnboardingFormState({
     customerId,
     form,
@@ -142,6 +151,17 @@ export function OnboardingFormEditor({
         : [];
     });
   }, [completeness.missing, form.blocks]);
+  const invalidBlockIds = useMemo(() => {
+    const fields = onboardingAnswerDrafts.indexFields(form.blocks);
+    const ids = new Set<string>();
+    for (const key of autosave.invalid.keys()) {
+      const field = fields.get(
+        onboardingAnswerDrafts.parseSlotKey(key).fieldId,
+      );
+      if (field) ids.add(field.blockId);
+    }
+    return ids;
+  }, [autosave.invalid, form.blocks]);
 
   const trackUpload = useCallback((slotKey: string, active: boolean) => {
     setUploading((current) => {
@@ -164,7 +184,8 @@ export function OnboardingFormEditor({
     setNavigated(true);
     setSubmitError(null);
     step.goTo(target);
-    window.scrollTo({ top: 0 });
+    // The portal scrolls inside its shell, not the window; the editor starts at the top of it.
+    editorRef.current?.scrollIntoView?.({ block: "start" });
     onAnnounceAction(
       formatMessage(content.announcements.step, {
         number: position + 1,
@@ -263,16 +284,37 @@ export function OnboardingFormEditor({
       ? state.savedAt
       : autosave.savedAt;
 
+  const nextSection = sections[index + 1];
+  const nextBlock = form.blocks.find((entry) => entry.id === nextSection);
+
   return (
-    <div className={styles.editor}>
-      <OnboardingStepTrack
-        blocks={form.blocks}
-        completeness={completeness}
-        content={content}
-        current={step.section}
-        input={input}
-        onSelectAction={(section) => goTo({ section })}
-      />
+    <div className={styles.editor} ref={editorRef}>
+      <OnboardingFormHeader
+        backHref={backHref}
+        backLabel={content.page.back}
+        backShortLabel={content.page.backShort}
+        summary={
+          <OnboardingFormSummary
+            completeness={completeness}
+            invalid={autosave.invalid.size > 0}
+            texts={content.overview}
+          />
+        }
+        title={formatMessage(content.page.heading, {
+          project: form.projectTitle,
+        })}
+      >
+        <OnboardingStepTrack
+          blocks={form.blocks}
+          completeness={completeness}
+          content={content}
+          current={step.section}
+          invalidBlockIds={invalidBlockIds}
+          leftSections={step.leftSections}
+          onSelectAction={(section) => goTo({ section })}
+        />
+      </OnboardingFormHeader>
+      {notice}
       {block ? (
         <OnboardingBlockStep
           block={block}
@@ -326,15 +368,20 @@ export function OnboardingFormEditor({
             >
               {content.steps.back}
             </ButtonControl>
-          ) : (
-            <span />
-          )}
-          {index < sections.length - 1 ? (
+          ) : null}
+          {nextSection ? (
             <PrimaryCtaButton
-              onClick={() => goTo({ section: sections[index + 1] })}
+              className={styles.next}
+              onClick={() => goTo({ section: nextSection })}
               type="button"
             >
-              {content.steps.next}
+              <span className={styles.nextLabel}>
+                {nextBlock
+                  ? formatMessage(content.steps.nextTo, {
+                      step: nextBlock.title,
+                    })
+                  : content.steps.toReview}
+              </span>
             </PrimaryCtaButton>
           ) : null}
         </div>

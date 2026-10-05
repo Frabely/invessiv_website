@@ -38,6 +38,7 @@ und keine doppelten Fragen hat.
 | [F](./F-portal-projektwechsel.md)            | Projektwechsel im Portal und projektbezogene Widgets              | 6, 9                           | 3–4 Tage     | `feat/portal-projektwechsel`          | im Review                |
 | [G](./G-portal-aufgaben.md)                  | Portal-Aufgaben: erledigte sichtbar, zurücknehmen, selbst anlegen | 12, 13                         | 3–4 Tage     | `feat/portal-aufgaben`                | im Review                |
 | [H](./H-grosse-arbeiten.md)                  | Große Arbeiten (nur vorgemerkt)                                   | „Große Arbeiten“               | eigener Plan | —                                     | offen                    |
+| [I](./I-portal-onboarding-layout.md)         | Portal-Bogen: volle Breite, Spalten, Fortschritt, Mobil-Header    | —                              | 2–3 Tage     | `feat/portal-onboarding-layout`       | im Review                |
 
 A bis E sind voneinander unabhängig. G baut auf F auf (eine neue Kundenaufgabe gehört zum gewählten Projekt).
 E3 sollte vor F4 liegen, weil F4 das Ansprechpartner-Widget auf den Projektbetreuer umstellt.

@@ -145,10 +145,55 @@ describe("getQuestionnaireCompleteness totals", () => {
       }),
     );
     expect(result.blocks).toEqual([
-      { blockId: "block-2", answeredRequired: 1, totalRequired: 2 },
-      { blockId: "block-1", answeredRequired: 0, totalRequired: 1 },
+      {
+        blockId: "block-2",
+        answeredRequired: 1,
+        totalRequired: 2,
+        answered: 1,
+        total: 2,
+      },
+      {
+        blockId: "block-1",
+        answeredRequired: 0,
+        totalRequired: 1,
+        answered: 0,
+        total: 1,
+      },
     ]);
     expect(result.ratio).toBeCloseTo(1 / 3);
+  });
+
+  it("counts every visible question, optional ones and group sub-fields included", () => {
+    const group = field("team", QuestionnaireFieldType.Group, {
+      ...optional,
+      children: [
+        field("member", QuestionnaireFieldType.ShortText, {
+          ...optional,
+          parentFieldId: "team",
+        }),
+      ],
+    });
+    const result = getQuestionnaireCompleteness(
+      input({
+        blocks: [
+          block([
+            field("name", QuestionnaireFieldType.ShortText, optional),
+            field("note", QuestionnaireFieldType.LongText, optional),
+            group,
+          ]),
+        ],
+        answers: [value("name", "Anna"), value("member", "Ben", "e1")],
+        groupEntries: [
+          { id: "e1", fieldId: "team", position: 0 },
+          { id: "e2", fieldId: "team", position: 1 },
+        ],
+      }),
+    );
+    expect(result.blocks[0]).toMatchObject({
+      totalRequired: 0,
+      answered: 3,
+      total: 5,
+    });
   });
 
   it("orders missing fields by position, not by input order", () => {
