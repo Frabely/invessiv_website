@@ -47,6 +47,7 @@ baubar, migrierbar und produktiv nutzbar bleiben. Dafür gilt je Ordner:
   keiner benutzerdefinierten Rolle zugewiesen werden.
 - `credentials.reveal` ist eine normale Permission. Sie liegt in der Owner-Rolle und in der gezielt zuweisbaren
   Systemrolle `workspace_credentials_manager`; ein separates `credentials_access`-Autorisierungsflag entfällt.
+  Das Portal-Gegenstück `portal.credentials.reveal` liegt in der Systemrolle `portal_credentials` (Ordner 19).
 - Fehlende Permission, unvollständige Identität und DB-Fehler lehnen den Zugriff fail-closed ab.
 - Es gibt kein `customers.delete`: in Version 1 existiert kein Löschbutton, nur der Owner-Purge.
 - Permissions kommen ausschließlich über Rollen; direkte User-Permissions gibt es nicht. Bereiche kennen nur ihre
@@ -237,7 +238,8 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
   Rollen-Engine, werden intern definiert (`roles.manage`) und je Mitgliedschaft zugewiesen (`portal.manage`).
   Kontakte derselben Firma dürfen verschiedene Rollen haben. Der Kunde verwaltet in Version 1 nichts selbst.
 - Jeder Portal-Ordner führt die Portal-Permissions seines Moduls selbst ein und ergänzt die Systemrolle
-  `portal_standard`. Das Fundament (Ordner 12a) bringt nur `portal.access`.
+  `portal_standard`. Das Fundament (Ordner 12a) bringt nur `portal.access`. **Ausnahme (06.10.2026):** Die
+  `portal.credentials.*`-Rechte aus Ordner 19 liegen nur in der Systemrolle `portal_credentials`.
 - Portalrollen gelten vorerst für die ganze Firma. Der Projektbezug ist vorbereitet: Jede Portal-Query filtert über
   `portalAccessCondition`, jede Portal-Mutation prüft `portalCanOn`; projektgebundene Portalrollen kommen später
   additiv, ohne fertige Module umzubauen. Firmenweite Module (Chat, Onboarding-Bogen) verlangen dann eine
@@ -408,15 +410,24 @@ Neuzuschnitt 28.09.2026 (mit dem Owner abgestimmt); die vollständige Spezifikat
 
 ### Zugangsdaten
 
-- Felder: Titel, Login-URL, Benutzername, Passwort, verschlüsselte Notiz.
-- AES-256-GCM mit zufälligem Nonce, Auth-Tag, Schlüsselversion und AAD aus Kunde, Credential-ID,
-  Feldname und Formatversion.
-- Master-Key serverseitig in Vercel und identisch offline im Passwortmanager gesichert.
-- Schlüsselrotation entschlüsselt mit alter und verschlüsselt mit neuer Version; ein Adapter hält
-  späteren Wechsel zu einem externen Secret-Manager offen.
-- Listen und Exporte entschlüsseln nie. Klartext nur über Einzel-Reveal.
-- Anzeigen, Kopieren und Ändern werden ohne Geheimwert protokolliert.
-- Keine TOTP-Secrets und niemals Portalzugriff.
+Neuzuschnitt 06.10.2026 (mit dem Owner abgestimmt); vollständige Spezifikation in `19-credentials/README.md`
+(Task 17, 18 und 71). Ersetzt „nur kundenweit“ und „niemals Portalzugriff“.
+
+- Ein Zugang gehört immer zu einem Kunden und optional zu einem Projekt (`customer_credentials.project_id`, Muster
+  `files`). Die Projektzuordnung ist intern änderbar.
+- Felder: Titel, Typ, URL, Benutzername, ein Geheimnis (Passwort oder API-Key), verschlüsselte Notiz.
+- AES-256-GCM je Feld direkt mit dem aktiven Hauptschlüssel, zufälliger Nonce, Auth-Tag, Schlüsselversion und AAD aus
+  Formatversion, Kunde, Credential-ID und Feldname. Kein Datenschlüssel je Datensatz.
+- Schlüsselring `CRM_CREDENTIALS_KEYRING` serverseitig in Vercel und identisch offline im Passwortmanager gesichert.
+- Schlüsselwechsel: neue Version anhängen, Rekey-Skript schreibt alle Zeilen um, fortsetzbar und idempotent.
+- Listen und Exporte entschlüsseln nie. Klartext nur über Einzel-Reveal, je Anfrage genau ein Feld.
+- Anlegen, Ändern, Löschen, Freigabe, Aufdecken und abgewiesenes Aufdecken stehen ohne Geheimwert in
+  `security_events`; `activities` bekommt keine Credential-Einträge.
+- **Portal:** Der Kunde sieht nur intern freigegebene Einträge (`visible_to_customer`) und eigene, legt Zugänge an,
+  ändert sichtbare und darf sie einzeln aufdecken. Er löscht nichts. Voraussetzung ist die gezielt zugewiesene
+  Systemrolle `portal_credentials`; `portal_standard` enthält die Rechte bewusst nicht.
+- Das Risiko „Portal-Aufdecken ohne erzwungene MFA“ ist akzeptiert und in `19-credentials/README.md` beschrieben.
+- Keine TOTP-Secrets, keine frei benennbaren Geheimfelder.
 
 ### Renewals, Stunden und Aufbewahrung
 
@@ -554,7 +565,7 @@ people
                                       │                  └── onboarding_form_services (Leistungs-Snapshot)
                                       ├── portal_memberships ── conversation_reads
                                       ├── conversations ── messages ── message_files
-                                      ├── customer_credentials
+                                      ├── customer_credentials (optional je Projekt, Ordner 19)
                                       ├── customer_renewals
                                       ├── customer_tags
                                       └── retainers ── time_entries
@@ -665,8 +676,8 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12b erreicht:
   gelassen kann jeder ein Konto anlegen. Danach entstehen **alle** Konten über eine Einladung:
   Portalkontakte über den Token-Flow aus Ordner 12b, interne Mitglieder über eine Einladung im
   Clerk-Dashboard.
-- **Master-Key für die Zugangsdaten** zusätzlich offline im eigenen Passwortmanager sichern, **bevor**
-  der erste Datensatz entsteht. Der Plan kann Schlüssel rotieren, aber nicht verlieren: eine geleerte
+- **Schlüsselring für die Zugangsdaten** (`CRM_CREDENTIALS_KEYRING`) zusätzlich offline im eigenen Passwortmanager
+  sichern, **bevor** der erste Datensatz entsteht. Der Plan kann Schlüssel rotieren, aber nicht verlieren: eine geleerte
   Vercel-Env macht alle Zugangsdaten dauerhaft unlesbar.
 - **`PORTAL_DIGEST_WINDOW_HOURS`** und die Absenderadresse für Systemmails in allen
   Deployment-Umgebungen gesetzt und in `.env.example` dokumentiert.
@@ -722,7 +733,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12b erreicht:
 | 14  | läuft        | `14-dateien`                             | Dateien, Links, ZIP, Portal-Dateien, Chat-Anhänge; sechs Teil-PRs (14.1–14.6), 14.1/14.3/14.4 gemerged, 14.2, 14.5 und 14.6 im Review                                                                                        | 290–425 | 12–16 T. |
 | 15  | auf `master` | `15-onboarding`                          | Onboarding-Baukasten (Katalog, Vorlagen), Bogen je Projekt, Portal-Formular, Prüfung, Nachforderung, Termin, Abschluss; 15.1–15.6 gemergt, 15.7/15.8 direkt committet; Review-Nacharbeiten auf `fix/crm-onboarding-cr-fixes` | 495–675 | 16–21 T. |
 | 16  | läuft        | `16-feedbackrunden`                      | Rundenschritte, Übergabe, Feedback-Punkte, Bearbeitung, Abnahme und Eingang; sechs Teil-PRs (16.1–16.6), 16.1 gemerged, 16.2 läuft, 16.6 im Review                                                                           | 315–430 | 13–16 T. |
-| 19  | offen        | `19-credentials`                         | Verschlüsselte Zugangsdaten und Security-Audit vollständig nutzbar                                                                                                                                                           |   50–80 |   3–4 T. |
+| 19  | offen        | `19-credentials`                         | Verschlüsselte Zugangsdaten je Kunde/Projekt mit Security-Audit, im Portal freigebbar, pflegbar und aufdeckbar; zwei Teil-PRs (19.1 intern, 19.2 Portal)                                                                     | 100–140 |   6–8 T. |
 | 20  | offen        | `20-stunden-und-history`                 | Kontingente, Buchungen und konsolidierte Timeline vollständig nutzbar                                                                                                                                                        |  60–100 |   3–4 T. |
 | 20a | offen        | `20a-kundenzustaendigkeit`               | Kundenverantwortung ist auswählbar, sichtbar und versioniert änderbar                                                                                                                                                        |   25–45 |   1–2 T. |
 | 20b | offen        | `20b-aufgabenserien-und-reminder`        | Wiederholungen, Fälligkeit und Überfälligkeit zuverlässig aktiv                                                                                                                                                              |   50–90 |   3–4 T. |
@@ -752,7 +763,8 @@ mergebarer Ordner. Zusammenlegen allein zum Erreichen des Zielkorridors ist nich
 - Freies CRM-Mailmodul, Mail-Eingang, Trackingpixel.
 - Dateiordner, Dateiversionen, Bildannotation, Kommentare pro Datei, serverseitige Bild- oder
   Videokonvertierung. Bilder, Video und Schriften als Upload sind seit Ordner 14 enthalten.
-- Malware-Scanner, TOTP oder Credential-Freigabe im Portal.
+- Malware-Scanner und TOTP. Die Credential-Freigabe im Portal ist seit dem Neuzuschnitt vom 06.10.2026 Teil von
+  Ordner 19.
 - Frei konfigurierbare Workflows oder Aufgabenhierarchien.
 - Attributbasierte Regeln, explizite Deny-Regeln und Enterprise-IdP-/SCIM-Synchronisation. Die Zugriffsbereiche aus
   Ordner 07a–07c sind keine Attributregeln, sondern gebundene Rollenzuweisungen.

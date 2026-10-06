@@ -36,7 +36,7 @@ Details und Abnahmekriterien stehen in den aktiven geordneten Merge-Einheiten.
 - Explizite atomare Gesamtübergabe aller offenen Zuständigkeiten eines Mitglieds nach dem vollständigen CRM-Ausbau.
 - Renewals für Domain, Hosting, SSL, Lizenz und sonstige Laufzeiten.
 - Informative Kunden-Stundenkontingente mit vollständig kundensichtbaren Buchungen.
-- Verschlüsselte Standard-Zugangsdaten mit explizitem Reveal und Security-Audit.
+- Verschlüsselte Zugangsdaten je Kunde, optional je Projekt, mit explizitem Reveal und Security-Audit.
 
 ## Kundenportal
 
@@ -56,6 +56,8 @@ Details und Abnahmekriterien stehen in den aktiven geordneten Merge-Einheiten.
   sammelt Feedback-Punkte mit Bereich und Dateien, speichert zwischen und reicht ein; danach Ergebnisse je Punkt und
   am Ende die Freigabe (Abnahme) im Portal. Zusatzrunden über die Leistungsanfragen.
 - Upload erlaubter Dokumente und Download nur explizit freigegebener Dateien.
+- Zugangsdaten: freigegebene Zugänge einsehen, eigene hinterlegen und nach einem Passwortwechsel ändern — nur für
+  Kontakte mit der gezielt zugewiesenen Zugangsdaten-Rolle.
 - Deutsch und Englisch mit persönlicher Sprachpräferenz.
 
 ## Betrieb und Sicherheit

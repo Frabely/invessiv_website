@@ -1,153 +1,156 @@
 # Task 17 — Credentials Crypto
 
-> **Merge-Einheit:** Ordner 19 · **Branch:** `feat/crm-credentials`
-> **Aufwand:** M · **Abhängigkeiten:** keine (kann parallel laufen)
+> **Merge-Einheit:** Ordner 19, PR 19.1 · **Branch:** `feat/crm-credentials-1-intern`
+> **Aufwand:** M · **Abhängigkeiten:** keine
 > **Migration:** keine
 
-- Felder ausschließlich Titel, Login-URL, Benutzername, Passwort und verschlüsselte Notiz.
-- AES-256-GCM mit zufälligem Nonce, Auth-Tag, Schlüsselversion und AAD aus Kunde, Credential-ID,
-  Feldname und Formatversion.
-- Master-Key aus Vercel-Environment plus offline Passwortmanager-Backup; fehlender/ungültiger Key
-  schlägt geschlossen fehl.
-- Keyring/Rotation ist resumierbar und idempotent; Adapter hält späteren Secret-Manager offen.
-- Kein TOTP, keine frei benannten Geheimfelder, kein Portalendpunkt und kein Klartext in Listen,
-  Exports, Logs oder Activities.
+- Ein Service verschlüsselt und entschlüsselt einzelne Feldwerte mit AES-256-GCM.
+- Der Schlüsselring kommt aus einer server-only Umgebungsvariable und kennt mehrere Versionen.
+- Jedes Chiffrat ist an Kunde, Datensatz und Feld gebunden.
+- Kein Klartext und kein Schlüsselmaterial in Fehlern oder Logs.
 
 ## Context
 
-Bevor irgendein Kundenpasswort in die Datenbank geschrieben wird, muss der Verschlüsselungsteil
-stehen und geprüft sein. Deshalb ist er ein eigener Task **ohne Tabelle und ohne Oberfläche** — nur
-ein Service und seine Tests. Ein Fehler an dieser Stelle fällt in der Oberfläche nicht auf, sondern
-erst bei einem Leak.
-
-Verfahren ist Envelope-Verschlüsselung mit AES-256-GCM: Jeder Datensatz bekommt einen eigenen
-zufälligen Datenschlüssel, der Nutzdaten verschlüsselt. Dieser Datenschlüssel wird selbst mit einem
-Hauptschlüssel aus der Umgebung verschlüsselt und zusammen mit den Daten gespeichert. Der Vorteil
-gegenüber „alles mit einem Schlüssel": Der Hauptschlüssel lässt sich später wechseln, ohne jeden
-Datensatz neu zu verschlüsseln, und ein kompromittierter Datensatz gibt keine anderen preis.
-
-GCM liefert dabei Verschlüsselung und Integritätsprüfung in einem Schritt — eine manipulierte Zeile
-lässt sich nicht unbemerkt entschlüsseln, sondern schlägt fehl.
+Bevor ein Kundenpasswort in die Datenbank geschrieben wird, muss die Verschlüsselung stehen und geprüft sein. Der Task
+hat deshalb weder Tabelle noch Oberfläche, nur zwei Services und ihre Tests. Ein Fehler an dieser Stelle fällt nicht in
+der Oberfläche auf, sondern erst bei einem Leck.
 
 ## Entscheidungen
 
-| Bereich                | Entscheidung                                                                                                                                                                                            |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Verfahren              | AES-256-GCM, Envelope-Pattern                                                                                                                                                                           |
-| Bibliothek             | Node `crypto` aus der Standardbibliothek. **Keine** neue Abhängigkeit                                                                                                                                   |
-| Hauptschlüssel         | `CRM_CREDENTIALS_MASTER_KEY`, 32 Byte base64-kodiert, ausschließlich serverseitig                                                                                                                       |
-| Schlüsselwechsel       | `keyVersion` wird je Datensatz gespeichert; mehrere Hauptschlüssel können parallel gültig sein (`…_MASTER_KEY_V2`)                                                                                      |
-| Speicherform           | Ein `jsonb`-Feld mit `{ ciphertext, iv, authTag, wrappedDek, wrappedDekIv, wrappedDekAuthTag, keyVersion }`, alles base64                                                                               |
-| Initialisierungsvektor | Je Verschlüsselung neu zufällig, 12 Byte (GCM-Standard) — nie wiederverwendet                                                                                                                           |
-| Fehlerverhalten        | Fehler enthalten nie Klartext, nie den Schlüssel, nie Teile des Geheimnisses. Auch nicht in Stack-Traces                                                                                                |
-| Protokollierung        | Der Service schreibt selbst **nichts** ins Log. Das Protokollieren von Aufdeckungen macht der aufrufende Handler (Task 18)                                                                              |
-| Fehlender Schlüssel    | Verschlüsseln wirft einen klaren Konfigurationsfehler. Die Anwendung startet trotzdem — nur der Zugangsdatenbereich ist dann nicht nutzbar                                                              |
-| **Schlüsselverlust**   | Der Plan kann Schlüssel rotieren, aber nicht verlieren: eine geleerte oder neu angelegte Vercel-Umgebung macht **alle** gespeicherten Zugangsdaten dauerhaft unlesbar — es gibt keine Wiederherstellung |
-| Konsequenz             | Der Hauptschlüssel wird zusätzlich im eigenen Passwortmanager hinterlegt, bevor der erste Datensatz geschrieben wird. Das ist ein Betriebsschritt, kein Codeschritt                                     |
+| Bereich             | Entscheidung                                                                                                                                                                                   |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Verfahren           | AES-256-GCM je Feldwert, direkt mit dem aktiven Hauptschlüssel. Nonce 12 Byte, je Vorgang neu zufällig. Auth-Tag 16 Byte                                                                       |
+| Kein Datenschlüssel | Der frühere Entwurf mit einem Datenschlüssel je Datensatz entfällt. Bei wenigen hundert Zeilen bringt er keinen Vorteil; ein Schlüsselwechsel muss ohnehin jede Zeile anfassen                 |
+| Bibliothek          | `node:crypto`. Keine neue Abhängigkeit                                                                                                                                                         |
+| AAD                 | `v1` + Kunden-ID + Credential-ID + Feldname (`secret` \| `note`), eindeutig getrennt. Ein Chiffrat lässt sich damit nicht in ein anderes Feld, einen anderen Datensatz oder Kunden verschieben |
+| Nicht in der AAD    | Die Projekt-ID, weil die Projektzuordnung änderbar ist                                                                                                                                         |
+| Speicherform        | Ein Text: `v1.<keyVersion>.<nonce>.<ciphertext+tag>`, die letzten beiden Teile base64url. Kein `jsonb`                                                                                         |
+| Schlüsselring       | `CRM_CREDENTIALS_KEYRING="1:<base64>,2:<base64>"`. Jeder Schlüssel exakt 32 Byte. Verschlüsselt wird mit der höchsten Version, entschlüsselt mit der im Chiffrat vermerkten                    |
+| Fehlender Schlüssel | Die Anwendung startet. `isConfigured()` ist `false`, jeder Verschlüsselungs- oder Entschlüsselungsversuch liefert einen Konfigurationsfehler. Der Bereich ist dann schreibgeschützt (Task 18)  |
+| Fehlerverhalten     | Typisierte Fehler mit Code, ohne Klartext, Chiffrat oder Schlüsselanteil. Der ursprüngliche `crypto`-Fehler wird nicht als `cause` weitergereicht                                              |
+| Protokollierung     | Die Services loggen nichts. Audit schreibt der aufrufende Handler                                                                                                                              |
+| Ablage              | `server/shared/services/credential/`, weil Workspace- und Portal-Handler (Task 71) denselben Dienst brauchen                                                                                   |
+| Schlüsselverlust    | Nicht behebbar. Der Schlüsselring wird vor dem ersten Datensatz offline gesichert (Betriebsschritt)                                                                                            |
 
 ## Contract
 
 ```ts
-// apps/workspace/src/common/contracts/crm/encrypted-payload.ts
-export interface EncryptedPayload {
-  ciphertext: string;
-  iv: string;
-  authTag: string;
-  wrappedDek: string;
-  wrappedDekIv: string;
-  wrappedDekAuthTag: string;
-  keyVersion: number;
-}
+// apps/workspace/src/server/shared/services/credential/credential-crypto-types.ts
+export type CredentialCryptoContext = {
+  customerId: string;
+  credentialId: string;
+  field: CredentialSecretField; // "secret" | "note"
+};
 ```
 
 ```ts
-// apps/workspace/src/server/crm/services/credential-crypto-service.ts
+// apps/workspace/src/server/shared/services/credential/credential-crypto-service.ts
 export const credentialCryptoService = {
-  encrypt(plaintext: string): EncryptedPayload,
-  decrypt(payload: EncryptedPayload): string,
   isConfigured(): boolean,
+  encrypt(plaintext: string, context: CredentialCryptoContext): string,
+  decrypt(ciphertext: string, context: CredentialCryptoContext): string,
+  /** Key version a stored value was written with; the rekey script skips current ones. */
+  readKeyVersion(ciphertext: string): number,
+  activeKeyVersion(): number,
 } as const;
 ```
 
 ## Verzeichnisstruktur
 
 ```txt
-apps/workspace/src/common/contracts/crm/encrypted-payload.ts
-apps/workspace/src/common/constants/crm/errors/credential-error-codes.ts
-apps/workspace/src/server/crm/services/
+packages/common/src/constants/crm/credentials/
+  credential-secret-fields.ts               CredentialSecretField + _VALUES, mit Test
+  errors/credential-crypto-error-codes.ts   KeyringMissing, KeyringInvalid, UnknownKeyVersion,
+                                            MalformedCiphertext, DecryptionFailed
+apps/workspace/src/server/shared/services/credential/
+  credential-keyring-service.ts             liest und prüft den Schlüsselring
   credential-crypto-service.ts
-  credential-master-key-service.ts        liest und validiert Schlüssel aus der Umgebung
-apps/workspace/src/server/tests/crm/services/
+  credential-crypto-types.ts
+  credential-crypto-error.class.ts
+apps/workspace/src/server/tests/shared/services/credential/
+  credential-keyring-service.test.ts
   credential-crypto-service.test.ts
-  credential-master-key-service.test.ts
-apps/workspace/src/server/config/env.ts   + CRM_CREDENTIALS_MASTER_KEY
-apps/workspace/.env.example               + Variable mit Erzeugungshinweis
-.env.example                              dito
+apps/workspace/scripts/rekey-credentials.ts  ab Task 18 lauffähig (braucht die Tabelle)
+apps/workspace/.env.example                 + CRM_CREDENTIALS_KEYRING mit Erzeugungsbefehl
 ```
+
+Der genaue Ort des Skripts wird bei der Umsetzung geprüft: `apps/workspace` hat bisher keinen `scripts/`-Ordner, und
+der Krypto-Dienst darf nicht nach `packages/db` wandern. Das Skript importiert den Dienst und das Drizzle-Modell.
 
 ## Tickets
 
-### CRM-17-T1 — Hauptschlüssel-Verwaltung
+### CRM-17-T1 — Schlüsselring
 
-- **Files:** `credential-master-key-service.ts` + Test, `env.ts`, beide `.env.example`
-- **Skills:** `best-practices`
+- **Files:** `credential-keyring-service.ts` + Test, `credential-crypto-error-codes.ts`, `.env.example`
 - **Inhalt:**
-  - Schlüssel aus der Umgebung lesen, base64 dekodieren, auf exakt 32 Byte prüfen
-  - Mehrere Versionen unterstützen: `CRM_CREDENTIALS_MASTER_KEY` ist Version 1,
-    `CRM_CREDENTIALS_MASTER_KEY_V2` Version 2 und so weiter. Verschlüsselt wird immer mit der höchsten,
-    entschlüsselt mit der im Datensatz vermerkten
-  - `.env.example` enthält den Erzeugungsbefehl als Kommentar
-    (`node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`)
-  - Der Schlüssel wird zwischengespeichert, aber bei Änderung der Umgebungsvariable neu gelesen (Muster:
-    `allowlist.ts`)
+  - `CRM_CREDENTIALS_KEYRING` parsen: Einträge `version:base64`, Version positive Ganzzahl, keine doppelte Version,
+    jeder Schlüssel nach dem Dekodieren exakt 32 Byte
+  - Höchste Version ist die aktive
+  - Ergebnis wird je Variablenwert zwischengespeichert; ändert sich der Wert, wird neu gelesen
+  - `.env.example` nennt den Erzeugungsbefehl
+    (`node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"`) und den Hinweis auf die
+    Offline-Sicherung
 - **Akzeptanz:**
-  - Tests: fehlender Schlüssel, falsche Länge, kein gültiges base64 ergeben je einen eigenen,
-    klaren Fehler
+  - Fehlende Variable, leerer Wert, falsche Länge, ungültiges base64, doppelte Version und Version ≤ 0 ergeben je einen
+    klaren Fehlercode
   - Keine Fehlermeldung enthält den Schlüssel oder Teile davon
-  - Zwei konfigurierte Versionen werden korrekt erkannt, die höchste ist die aktive
+  - Zwei Versionen werden erkannt, die höhere ist aktiv
 
 ### CRM-17-T2 — Verschlüsselungsdienst
 
-- **Files:** `credential-crypto-service.ts`, `constants/crm/errors/credential-error-codes.ts`
-- **Skills:** `best-practices`
+- **Files:** `credential-crypto-service.ts`, `credential-crypto-types.ts`, `credential-crypto-error.class.ts`,
+  `credential-secret-fields.ts` + Tests
 - **Inhalt:**
-  - `encrypt`: Datenschlüssel erzeugen, Nutzdaten mit ihm verschlüsseln, Datenschlüssel mit dem
-    Hauptschlüssel verschlüsseln, alles als `EncryptedPayload` zurückgeben
-  - `decrypt`: Datenschlüssel mit der passenden Hauptschlüsselversion entpacken, dann Nutzdaten
-  - Beide werfen typisierte Fehler ohne Klartextanteil
-  - Nach dem Entschlüsseln werden keine Zwischenwerte in Variablen mit längerer Lebensdauer gehalten
+  - `encrypt` und `decrypt` wie im Contract; AAD wird aus dem Kontext gebildet, nie vom Aufrufer übergeben
+  - Strenges Parsen des Speicherformats: genau vier Teile, bekannte Formatversion, Nonce 12 Byte
+  - Unbekannte Schlüsselversion ist ein eigener Fehlercode (Hinweis auf einen fehlenden alten Schlüssel im Ring)
 - **Akzeptanz:**
-  - Rundlauf-Test: verschlüsseln und entschlüsseln ergibt exakt den Ausgangswert, auch bei Umlauten,
-    Emoji, sehr langen Werten und leerem String
-  - Zweimaliges Verschlüsseln desselben Werts ergibt **unterschiedliche** Chiffrate (neuer
-    Initialisierungsvektor je Vorgang)
-  - Manipulationstest: ein um ein Byte verändertes `authTag`, `ciphertext` oder `wrappedDek` führt
-    zu einem Fehler, nicht zu falschem Klartext
-  - Ein mit Version 1 verschlüsselter Wert bleibt nach Hinzufügen von Version 2 entschlüsselbar
-  - Test prüft ausdrücklich, dass keine Fehlermeldung den Klartext enthält
+  - Rundlauf verlustfrei bei Umlauten, Emoji, Zeilenumbrüchen, 10 000 Zeichen und leerem String
+  - Zweimal derselbe Wert ergibt unterschiedliche Chiffrate
+  - Ein verändertes Byte in Nonce, Chiffrat oder Tag führt zu `DecryptionFailed`, nie zu falschem Klartext
+  - Entschlüsseln mit anderem Kunden, anderer Credential-ID oder anderem Feld schlägt fehl
+  - Ein mit Version 1 verschlüsselter Wert bleibt lesbar, nachdem Version 2 ergänzt wurde; neue Werte tragen Version 2
+  - Test prüft ausdrücklich, dass keine Fehlermeldung und kein `cause` Klartext enthält
+
+### CRM-17-T3 — Rekey-Skript
+
+Wird im selben PR nach Task 18 T1 fertig, weil es die Tabelle braucht.
+
+- **Files:** `rekey-credentials.ts` + Test der Kernfunktion
+- **Inhalt:**
+  - Liest alle Zeilen, deren `secret_ciphertext` oder `note_ciphertext` nicht die aktive Version trägt
+  - Je Zeile eine Transaktion: entschlüsseln, neu verschlüsseln, schreiben. `version` und `secret_changed_at` bleiben
+    unverändert (technischer Vorgang, keine fachliche Änderung)
+  - Gibt nur Zahlen aus (geprüft, umgeschrieben, fehlgeschlagen), nie IDs mit Werten
+  - Läuft gegen jedes Ziel, verlangt für `production` ein ausdrückliches Argument
+- **Akzeptanz:**
+  - Zweiter Lauf schreibt nichts
+  - Abbruch nach der Hälfte, danach erneuter Lauf: alle Zeilen tragen die aktive Version
+  - Eine nicht entschlüsselbare Zeile bricht den Lauf nicht ab, wird gezählt und führt zu Exit-Code ≠ 0
+
+## Schlüsselwechsel (Betrieb)
+
+1. Neuen Schlüssel erzeugen, als nächste Version **anhängen**, alten behalten. Offline-Sicherung aktualisieren.
+2. Deployen. Neue Werte tragen die neue Version.
+3. Rekey-Skript ausführen, bis es null Zeilen meldet.
+4. Alten Schlüssel frühestens entfernen, wenn kein Backup mit alten Chiffraten mehr wiederhergestellt werden soll
+   (Aufbewahrung aus Ordner 21). Im Zweifel bleibt er im Ring.
 
 ## Deploy-Sicherheit
 
-1. **Live sichtbar:** nichts. Keine Tabelle, keine Route, keine Oberfläche.
-2. **Bricht nichts:** ein neuer Service ohne Aufrufer, eine erweiterte Env-Konfiguration. Ohne
-   gesetzten Schlüssel startet die Anwendung unverändert — `isConfigured()` gibt dann `false` zurück,
-   und in Task 18 wird der Bereich damit sauber deaktiviert statt abzustürzen.
-3. **Offen:** Tabelle und Oberfläche (Task 18). Weil hier noch nichts geschrieben wird, gibt es auch
-   keine Daten, die bei einem späteren Fund eines Fehlers migriert werden müssten — genau deshalb
-   steht dieser Task vor der Tabelle.
-
-**Betriebsschritt vor Task 18 (verbindlich):** Den erzeugten Hauptschlüssel in der Vercel-Umgebung
-setzen **und** im eigenen Passwortmanager hinterlegen. Ohne diese Kopie ist ein Verlust der
-Umgebungsvariable gleichbedeutend mit dem Totalverlust aller Kundenzugänge. Im PR wird bestätigt,
-dass das erfolgt ist.
+1. **Live sichtbar:** nichts.
+2. **Bricht nichts:** zwei Services ohne Aufrufer, eine dokumentierte Variable. Ohne Schlüsselring startet die
+   Anwendung unverändert.
+3. **Betriebsschritt vor dem ersten Eintrag (verbindlich):** Schlüsselring in allen Vercel-Umgebungen setzen (je
+   Umgebung ein eigener Schlüssel) **und** im Passwortmanager hinterlegen. Im PR wird das bestätigt.
 
 ## End-to-End-Akzeptanz
 
 1. Ein Schlüssel lässt sich mit dem dokumentierten Befehl erzeugen und wird akzeptiert.
-2. Rundlauf über alle Zeichenarten funktioniert verlustfrei.
+2. Rundlauf über alle Zeichenarten ist verlustfrei.
 3. Gleicher Eingabewert ergibt nie dasselbe Chiffrat.
-4. Jede Manipulation am gespeicherten Payload führt zum Fehlschlag.
-5. Ein Schlüsselwechsel lässt alte Datensätze lesbar.
+4. Jede Manipulation und jede Vertauschung von Kunde, Datensatz oder Feld schlägt fehl.
+5. Ein Schlüsselwechsel lässt alte Datensätze lesbar; Rekey ist fortsetzbar.
 6. Kein Fehler und kein Log enthält Klartext oder Schlüsselmaterial.
-7. Die Anwendung startet ohne konfigurierten Schlüssel.
-8. `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm build:workspace` grün.
+7. Die Anwendung startet ohne konfigurierten Schlüsselring.
+8. `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm --filter @invessiv/workspace build` grün.

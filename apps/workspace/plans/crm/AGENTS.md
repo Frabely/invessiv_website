@@ -24,8 +24,8 @@ und Abhängigkeitsaussagen die **Ordner**-Nummer.
 ## Mergebarer Master ist Pflicht
 
 - Ein Ordner entspricht einem Branch `feat/crm-<ordner-slug>`, einem PR und einem Merge.
-  **Ausnahme:** Die Ordner `14-dateien` (14.1–14.6), `15-onboarding` (15.1–15.8) und `16-feedbackrunden` (16.1–16.6)
-  werden bewusst in mehreren Teil-PRs mit eigenen Branches geliefert; Regeln und Status stehen in der jeweiligen README.
+  **Ausnahme:** Die Ordner `14-dateien` (14.1–14.6), `15-onboarding` (15.1–15.8), `16-feedbackrunden` (16.1–16.6) und
+  `19-credentials` (19.1–19.2) werden bewusst in mehreren Teil-PRs mit eigenen Branches geliefert; Regeln und Status stehen in der jeweiligen README.
 - Nach jedem Ordner sind Migration, Tests und App-Build grün; `master` ist produktiv deploybar.
 - Kein Ordner darf eine UI auf unvollständige Handler, fehlende Tabellen oder spätere Ordner zeigen.
 - Reine Fundamente bleiben unsichtbar. Sichtbare Funktionen werden vertikal vollständig geliefert.
@@ -64,7 +64,9 @@ und Abhängigkeitsaussagen die **Ordner**-Nummer.
   CRM-Schreibpfad prüft `canOn`, jeder CRM-Endpunkt steht in `CRM_ENDPOINT_ACCESS_RULES`. Jede neue CRM-Permission
   wird bei Einführung als `scopable` oder workspace-weit eingeordnet; jede neue besitzbare Entität deklariert
   `requiredPermission`. Jede CRM-Einheit enthält Negativtests für fremden Kunden und fremdes Projekt.
-- Zugangsdaten haben keinen Portalpfad und werden in Listen nie entschlüsselt.
+- Zugangsdaten werden in Listen und Exporten nie entschlüsselt; Klartext verlässt den Server nur über den
+  Einzel-Reveal für genau ein Feld. Das Portal erreicht ausschließlich intern freigegebene oder vom Kunden angelegte
+  Einträge und verlangt dafür die eigenen `portal.credentials.*`-Rechte, die nie in `portal_standard` liegen.
 - Externer Text wird weder als HTML noch ungefiltertes Markdown gerendert.
 - Blob-Löschung erfolgt vor dem endgültigen Entfernen der DB-Zuordnung und ist wiederholbar.
 - Logs, Analytics, Activities und Jobfehler enthalten keine Secrets und keine unnötige PII.
