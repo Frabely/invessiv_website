@@ -421,8 +421,9 @@ Neuzuschnitt 06.10.2026 (mit dem Owner abgestimmt); vollständige Spezifikation 
 - Schlüsselring `CRM_CREDENTIALS_KEYRING` serverseitig in Vercel und identisch offline im Passwortmanager gesichert.
 - Schlüsselwechsel: neue Version anhängen, Rekey-Skript schreibt alle Zeilen um, fortsetzbar und idempotent.
 - Listen und Exporte entschlüsseln nie. Klartext nur über Einzel-Reveal, je Anfrage genau ein Feld.
-- Anlegen, Ändern, Löschen, Freigabe, Aufdecken und abgewiesenes Aufdecken stehen ohne Geheimwert in
-  `security_events`; `activities` bekommt keine Credential-Einträge.
+- Anlegen, Ändern, Löschen, Freigabe und Aufdecken stehen ohne Geheimwert und ohne Titel in `security_events`;
+  `activities` bekommt keine Credential-Einträge. Abgewiesene Versuche werden wie bei allen CRM-Endpunkten nicht
+  gespeichert.
 - **Portal:** Der Kunde sieht nur intern freigegebene Einträge (`visible_to_customer`) und eigene, legt Zugänge an,
   ändert sichtbare und darf sie einzeln aufdecken. Er löscht nichts. Voraussetzung ist die gezielt zugewiesene
   Systemrolle `portal_credentials`; `portal_standard` enthält die Rechte bewusst nicht.
