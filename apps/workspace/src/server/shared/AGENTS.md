@@ -101,6 +101,25 @@ Transaktion um.
   - Gesperrte Zeilen werden über `updateLockedVersioned` geschrieben (wirft statt 409, weil ein Versionsverlust unter
     Sperre ein Fehler ist).
 
+## Zugangsdaten (ab Task 17)
+
+`services/credential/credential-crypto-service.ts` ist der einzige Weg, auf dem App-Code Geheimwerte von Zugangsdaten
+ver- und entschlüsselt. Er liest `CRM_CREDENTIALS_KEYRING`, hält den geparsten Schlüsselring je Variablenwert im
+Modul-Scope und reicht an die reinen Funktionen in `@invessiv/db/credentials/**` weiter (Begründung für den Ablageort
+dort: `packages/db/AGENTS.md`). Er liegt hier, weil Workspace-Handler (Task 18) und Portal-Handler (Task 71) ihn
+aufrufen.
+
+- **Kein Handler ruft `credentialCipher` direkt auf** und keiner liest die Umgebungsvariable selbst.
+- **Der Kontext kommt aus der gelesenen Zeile**, nie aus der Anfrage: `customerId` und `credentialId` sind die Werte
+  des Datensatzes, den der Handler nach seiner Zugriffsprüfung geladen hat. Die AAD bildet ausschließlich der Cipher.
+- **Ohne Schlüsselring startet die Anwendung.** `isConfigured()` ist dann `false`; `encrypt`/`decrypt` werfen
+  `CredentialCipherError` mit `keyring_missing` bzw. `keyring_invalid`. Der Aufrufer prüft `isConfigured()` vorab und
+  antwortet mit seinem eigenen „nicht eingerichtet“-Fehler.
+- **Der Service loggt nichts** und schreibt kein Audit; Security-Events schreibt der aufrufende Handler.
+  `CredentialCipherError` trägt nur einen Code — ein gefangener Fehler wird nie um Klartext, Chiffrat oder den
+  ursprünglichen `crypto`-Fehler ergänzt, auch nicht als `cause`.
+- Entschlüsselt wird nur im Einzel-Reveal für genau ein Feld. Listen, Exporte und Mapper rufen `decrypt` nie auf.
+
 ## Systemnachrichten (ab Task 59)
 
 `services/message/announce-system-message.ts` ist der einzige Weg für fachliche Chat-Hinweise: Savepoint, Fehler nur

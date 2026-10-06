@@ -1,6 +1,6 @@
 # Ordner 19 — Verschlüsselte Zugangsdaten
 
-> **Status:** offen · **Abhängigkeiten:** 03, 04, 07, 07b, 12a, 12b, 13 (alle im Code vorhanden)
+> **Status:** läuft · **Abhängigkeiten:** 03, 04, 07, 07b, 12a, 12b, 13 (alle im Code vorhanden)
 > **Aufwand:** 6–8 Tage · **Reviewziel:** 19.1 ≈ 70–90 Dateien, 19.2 ≈ 45–65 Dateien
 >
 > **Neuzuschnitt 06.10.2026 (mit dem Owner abgestimmt).** Ersetzt den früheren Stand „nur kundenweit, niemals Portal“.
@@ -24,7 +24,7 @@ Bisher liegen sie in Mails und Chats. Künftig:
 
 | PR   | Status | Branch                          | Tasks in dieser Reihenfolge                                                   | Nach dem Merge nutzbar                                    |
 | ---- | ------ | ------------------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------- |
-| 19.1 | offen  | `feat/crm-credentials-1-intern` | [Task 17](./17-credentials-crypto.md), dann [Task 18](./18-credentials-ui.md) | Zugänge intern anlegen, ändern, löschen, aufdecken; Audit |
+| 19.1 | läuft  | `feat/crm-credentials-1-intern` | [Task 17](./17-credentials-crypto.md), dann [Task 18](./18-credentials-ui.md) | Zugänge intern anlegen, ändern, löschen, aufdecken; Audit |
 | 19.2 | offen  | `feat/crm-credentials-2-portal` | [Task 71](./71-credentials-portal.md)                                         | Freigabe je Eintrag, Portal-Seite und Dashboard-Widget    |
 
 Nach jedem PR ist `master` deploybar. Das Schema entsteht vollständig in 19.1, einschließlich `visible_to_customer`

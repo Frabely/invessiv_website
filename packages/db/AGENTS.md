@@ -118,6 +118,28 @@ Const-Objekt — nicht zusätzlich im DDL-Text und nicht im Modell.
   in `development` angewendet und nirgends committet ist — dann wird sie zurückgenommen und neu
   angewendet, statt eine Korrektur-Migration in die Historie zu schreiben.
 
+## Zugangsdaten-Verschlüsselung (`src/credentials/`)
+
+Hier liegen die reinen Funktionen, die einen einzelnen Feldwert von `customer_credentials` verschlüsseln:
+`parseCredentialKeyring` und `credentialCipher` (AES-256-GCM über `node:crypto`, keine zusätzliche Abhängigkeit).
+
+**Warum im DB-Paket:** Das Speicherformat einer Spalte (`v1.<keyVersion>.<nonce>.<ciphertext+tag>`) ist DB-nah, und
+zwei Skripte brauchen es außerhalb der App — der CRM-Seed und das Rekey-Skript. `packages/**` darf keinen App-Code
+importieren, und App-Services importieren `server-only`, was außerhalb von Next.js bricht.
+
+- Die Funktionen lesen **kein** `process.env` und importieren **kein** `server-only`. Schlüsselring und Kontext sind
+  Argumente; die Umgebungsvariable liest in der App `credentialCryptoService`
+  (`apps/workspace/src/server/shared/AGENTS.md`), in Skripten das Skript selbst.
+- Die AAD (`v1\n<customerId>\n<credentialId>\n<field>`) entsteht immer aus dem Kontext und wird nie vom Aufrufer
+  übergeben. Die IDs müssen UUIDs sein und werden klein geschrieben; die Projekt-ID gehört bewusst nicht dazu, weil
+  die Projektzuordnung änderbar ist.
+- Fehler sind ausschließlich `CredentialCipherError` mit einem Code aus `CredentialCipherErrorCode`. Die Meldung
+  enthält weder Klartext noch Chiffrat noch Schlüsselanteile, und der ursprüngliche `crypto`-Fehler wird nicht als
+  `cause` weitergereicht. Die Bausteine loggen nichts.
+- Eine Änderung am Format ist eine neue Formatversion (`v2`), die `v1` weiterhin liest — nie eine stille Änderung an
+  `v1`. Bestehende Zeilen wären sonst unlesbar.
+- Jede Änderung hier braucht einen Test für die Manipulations- und Vertauschungsfälle in `credential-cipher.test.ts`.
+
 ## Skripte
 
 - Dedizierte Constraint-Smokes dürfen Raw SQL verwenden, wenn sie absichtlich ungültige Zeilen, Trigger oder
