@@ -1,14 +1,14 @@
 "use client";
 
 import { FileNoteField } from "@invessiv/ui";
-import type { FilesProjectOption } from "@/common/contracts/crm/files/files-project-option";
+import type { CrmProjectOption } from "@/common/contracts/crm/crm-project-option";
 import type { CrmFilesDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { FileTargetSelect } from "../file-target-select/file-target-select";
 import { FileVisibilityField } from "../file-visibility-field/file-visibility-field";
 
 export type FileMetadataFieldsProps = {
   content: CrmFilesDictionary;
-  projects: readonly FilesProjectOption[];
+  projects: readonly CrmProjectOption[];
   targets: readonly (string | null)[];
   target: string | null;
   visibleToCustomer: boolean;

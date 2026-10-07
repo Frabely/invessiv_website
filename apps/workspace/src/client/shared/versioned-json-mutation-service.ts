@@ -4,6 +4,8 @@ import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import { MediaType } from "@invessiv/common/constants/http/media-types";
 import type { VersionedJsonMutationResult } from "@/common/contracts/client/versioned-json-mutation-result";
+import type { JsonClientResult } from "@/common/contracts/client/json-client-result";
+import type { VersionedJsonDeleteResult } from "@/common/contracts/client/versioned-json-delete-result";
 
 type JsonApiResponse = { ok: boolean; status: number; payload: unknown };
 
@@ -66,6 +68,8 @@ async function mutate<TValue, TErrorCode extends string>(
   isCurrent: (value: unknown) => value is TValue,
   knownErrorCodes: readonly TErrorCode[],
   fallbackErrorCode: TErrorCode,
+  decodeError = (payload: unknown) =>
+    readErrorCode(payload, knownErrorCodes, fallbackErrorCode),
 ): Promise<VersionedJsonMutationResult<TValue, TErrorCode>> {
   const response = await send(url, method, body);
   if (!response) {
@@ -77,6 +81,14 @@ async function mutate<TValue, TErrorCode extends string>(
     return { ok: true, value };
   }
 
+  return readWriteFailure(response, isCurrent, decodeError);
+}
+
+function readWriteFailure<TCurrent, TCode extends string>(
+  response: JsonApiResponse,
+  isCurrent: (value: unknown) => value is TCurrent,
+  decodeError: (payload: unknown) => TCode,
+): Exclude<VersionedJsonMutationResult<TCurrent, TCode>, { ok: true }> {
   const current = readVersionConflict(response, isCurrent);
   if (current !== null) {
     return {
@@ -88,8 +100,38 @@ async function mutate<TValue, TErrorCode extends string>(
 
   return {
     ok: false,
-    code: readErrorCode(response.payload, knownErrorCodes, fallbackErrorCode),
+    code: decodeError(response.payload),
   };
+}
+
+async function remove<TCurrent, TCode extends string>(
+  url: string,
+  body: unknown,
+  isCurrent: (value: unknown) => value is TCurrent,
+  decodeError: (payload: unknown) => TCode,
+  fallback: TCode,
+): Promise<VersionedJsonDeleteResult<TCurrent, TCode>> {
+  const response = await send(url, HttpMethod.Delete, body);
+  if (!response) return { ok: false, code: fallback };
+  return response.ok
+    ? { ok: true }
+    : readWriteFailure(response, isCurrent, decodeError);
+}
+
+async function request<TValue, TCode extends string>(
+  url: string,
+  method: HttpMethod,
+  body: unknown,
+  readSuccessValue: (payload: unknown) => TValue | null,
+  decodeError: (payload: unknown) => TCode,
+  fallback: TCode,
+): Promise<JsonClientResult<TValue, TCode>> {
+  const response = await send(url, method, body);
+  if (!response) return { ok: false, code: fallback };
+  const value = response.ok ? readSuccessValue(response.payload) : null;
+  return value === null
+    ? { ok: false, code: decodeError(response.payload) }
+    : { ok: true, value };
 }
 
 /**
@@ -143,20 +185,14 @@ async function read<TValue, TErrorCode extends string>(
   knownErrorCodes: readonly TErrorCode[],
   fallbackErrorCode: TErrorCode,
 ): Promise<{ ok: true; value: TValue } | { ok: false; code: TErrorCode }> {
-  const response = await send(url, HttpMethod.Get, undefined);
-  if (!response) {
-    return { ok: false, code: fallbackErrorCode };
-  }
-
-  const value = readSuccessValue(response.payload);
-  if (response.ok && value !== null) {
-    return { ok: true, value };
-  }
-
-  return {
-    ok: false,
-    code: readErrorCode(response.payload, knownErrorCodes, fallbackErrorCode),
-  };
+  return request(
+    url,
+    HttpMethod.Get,
+    undefined,
+    readSuccessValue,
+    (payload) => readErrorCode(payload, knownErrorCodes, fallbackErrorCode),
+    fallbackErrorCode,
+  );
 }
 
 /** Same as `read`, but wraps the success value under `key` — see `mutateNamed`. */
@@ -196,5 +232,7 @@ export const versionedJsonMutationService = {
   readErrorCode,
   readNamed,
   readVersionConflict,
+  request,
+  remove,
   send,
 } as const;

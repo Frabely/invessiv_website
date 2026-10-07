@@ -5,7 +5,7 @@ import { filePresentation } from "@invessiv/common/patterns/files/file-presentat
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl, FileListFrame } from "@invessiv/ui";
 import { FileListLoadStatus } from "@/common/constants/files/file-list-load-status";
-import type { FilesProjectOption } from "@/common/contracts/crm/files/files-project-option";
+import type { CrmProjectOption } from "@/common/contracts/crm/crm-project-option";
 import { fileArchiveSelection } from "@/common/patterns/files/file-archive-selection";
 import { SectionEmptyState } from "@/components/workspace/crm/shared/section-empty-state/section-empty-state";
 import type { Locale } from "@/config/i18n";
@@ -21,7 +21,7 @@ export type CustomerFilesListProps = {
   filterIsActive: boolean;
   canWrite: boolean;
   projectId?: string;
-  projects: readonly FilesProjectOption[];
+  projects: readonly CrmProjectOption[];
   memberNames: ReadonlyMap<string, string>;
   locale: Locale;
   onResetAction: () => void;

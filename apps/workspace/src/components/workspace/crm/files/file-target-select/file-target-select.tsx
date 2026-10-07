@@ -1,13 +1,13 @@
 "use client";
 
 import { FileProjectSelect } from "@invessiv/ui";
-import type { FilesProjectOption } from "@/common/contracts/crm/files/files-project-option";
+import type { CrmProjectOption } from "@/common/contracts/crm/crm-project-option";
 import type { CrmFilesDictionary } from "@/i18n/dictionaries/workspace/crm";
 
 type FileTargetSelectProps = {
   content: CrmFilesDictionary;
   disabled?: boolean;
-  projects: readonly FilesProjectOption[];
+  projects: readonly CrmProjectOption[];
   /** Writable targets, null for customer-wide. With one target there is nothing to choose. */
   targets: readonly (string | null)[];
   value: string | null;

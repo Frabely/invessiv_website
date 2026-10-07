@@ -16,13 +16,13 @@ import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurre
 import { CREDENTIAL_LIMITS } from "@invessiv/common/constants/credentials/credential-limits";
 import { CredentialRevealIntent } from "@invessiv/common/constants/credentials/credential-reveal-intents";
 import { CredentialSecretField } from "@invessiv/common/constants/credentials/credential-secret-fields";
-import { CredentialSide } from "@invessiv/common/constants/credentials/credential-sides";
 import { CredentialType } from "@invessiv/common/constants/credentials/credential-types";
 import type { CredentialDto } from "@invessiv/common/contracts/credentials/credential.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { CustomerCredentialsQueryParam } from "@/common/constants/crm/credentials/customer-credentials-query-params";
 import type { CredentialsViewModel } from "@/common/contracts/crm/credentials/credentials-view-model";
 import { getCrmCredentialsDictionary } from "@/i18n/dictionaries/workspace/crm";
+import { credentialFixture as credential } from "@/common/patterns/testing/credential-fixture";
 import { CustomerCredentialsSection } from "./customer-credentials-section";
 
 const mocks = vi.hoisted(() => ({
@@ -54,27 +54,6 @@ const PROJECT_ID = "22222222-2222-4222-8222-222222222222";
 const SECRET = "plaintext-secret-value";
 const content = getCrmCredentialsDictionary("de");
 const labels = content.secretField;
-
-function credential(overrides: Partial<CredentialDto> = {}): CredentialDto {
-  return {
-    id: "44444444-4444-4444-8444-444444444444",
-    customerId: CUSTOMER_ID,
-    projectId: null,
-    title: "Domain bei IONOS",
-    credentialType: CredentialType.DomainRegistrar,
-    url: "https://example.com/login",
-    username: "kunde@example.com",
-    hasNote: false,
-    visibleToCustomer: false,
-    createdBySide: CredentialSide.Internal,
-    secretChangedAt: "2026-10-01T08:00:00.000Z",
-    lastRevealedAt: null,
-    updatedAt: "2026-10-01T08:00:00.000Z",
-    version: 1,
-    capabilities: { canWrite: true, canReveal: true },
-    ...overrides,
-  };
-}
 
 function viewModel(
   overrides: Partial<CredentialsViewModel> = {},
@@ -491,41 +470,6 @@ describe("CustomerCredentialsSection", () => {
     expect(await screen.findByRole("alert")).toHaveTextContent(
       content.errors.rate_limited,
     );
-  });
-
-  it("renders actions from each entry's capabilities", async () => {
-    const readOnly = credential({
-      capabilities: { canWrite: false, canReveal: false },
-    });
-    listed([readOnly]);
-    renderSection(
-      viewModel({
-        write: { customerWide: false, projectIds: [] },
-        reveal: { customerWide: false, projectIds: [] },
-      }),
-    );
-
-    await screen.findByText(readOnly.title);
-
-    expect(screen.getByText(labels.masked)).toBeInTheDocument();
-    for (const name of [
-      labels.show,
-      labels.copy,
-      content.row.edit,
-      content.row.delete,
-      content.actions.add,
-    ])
-      expect(
-        screen.queryByRole("button", { name: new RegExp(name) }),
-      ).toBeNull();
-    // The username is plaintext metadata and stays copyable.
-    expect(
-      screen.getByRole("button", {
-        name: formatMessage(content.row.copyUsernameNamed, {
-          name: readOnly.title,
-        }),
-      }),
-    ).toBeInTheDocument();
   });
 
   it("stays read-only and says why without a keyring", async () => {

@@ -13,7 +13,7 @@ import type { FileClientResult } from "@/common/contracts/files/file-client-resu
 import type { PagedFiles } from "@/common/contracts/files/paged-files";
 import type { UploadQueueTransport } from "@/common/contracts/files/upload-queue-transport";
 
-const { isRecord, send } = versionedJsonMutationService;
+const { isRecord } = versionedJsonMutationService;
 const KNOWN_CODES: readonly FileClientErrorCode[] = [
   ...Object.values(FileApiErrorCode),
   ...Object.values(FileErrorCode),
@@ -40,12 +40,14 @@ async function request<T>(
   body: unknown,
   read: (payload: unknown) => T | null,
 ): Promise<FileClientResult<T>> {
-  const response = await send(url, method, body);
-  if (!response) return { ok: false, code: FileApiErrorCode.Internal };
-  const value = response.ok ? read(response.payload) : null;
-  return value === null
-    ? { ok: false, code: readCode(response.payload) }
-    : { ok: true, value };
+  return versionedJsonMutationService.request(
+    url,
+    method,
+    body,
+    read,
+    readCode,
+    FileApiErrorCode.Internal,
+  );
 }
 
 function readOne<TFile>(

@@ -13,7 +13,7 @@ import { CredentialListLoadStatus } from "@/common/constants/credentials/credent
 import type { CredentialRevealOutcome } from "@/common/contracts/credentials/credential-reveal-outcome";
 import type { CredentialsViewModel } from "@/common/contracts/crm/credentials/credentials-view-model";
 import { groupCredentials } from "@/common/patterns/crm/credentials/credential-groups";
-import { filesScopeRights as scopeRights } from "@/common/patterns/crm/files/files-scope-rights";
+import { crmScopeRights as scopeRights } from "@/common/patterns/crm/crm-scope-rights";
 import { CollapsibleSection } from "@/components/workspace/crm/shared/collapsible-section/collapsible-section";
 import { SectionEmptyState } from "@/components/workspace/crm/shared/section-empty-state/section-empty-state";
 import type { Locale } from "@/config/i18n";

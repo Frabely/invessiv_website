@@ -2,7 +2,7 @@
 
 import { useId } from "react";
 import { CustomSelect } from "@invessiv/ui";
-import type { CredentialsProjectOption } from "@/common/contracts/crm/credentials/credentials-project-option";
+import type { CrmProjectOption } from "@/common/contracts/crm/crm-project-option";
 import { credentialProjectFilter } from "@/common/patterns/crm/credentials/credential-project-filter";
 import type { CrmCredentialsDictionary } from "@/i18n/dictionaries/workspace/crm";
 import styles from "./credential-project-filter.module.css";
@@ -10,7 +10,7 @@ import styles from "./credential-project-filter.module.css";
 type CredentialProjectFilterProps = {
   content: CrmCredentialsDictionary["filter"];
   customerWide: boolean;
-  projects: readonly CredentialsProjectOption[];
+  projects: readonly CrmProjectOption[];
   projectId: string | null | undefined;
   onChangeAction: (projectId: string | null | undefined) => void;
 };

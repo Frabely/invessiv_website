@@ -7,7 +7,7 @@ import type { FileDto } from "@invessiv/common/contracts/files/file.dto";
 import { FormDialog } from "@invessiv/ui";
 import { filesApiService } from "@/client/crm/files-api-service";
 import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
-import type { FilesProjectOption } from "@/common/contracts/crm/files/files-project-option";
+import type { CrmProjectOption } from "@/common/contracts/crm/crm-project-option";
 import type { FileClientErrorCode } from "@/common/contracts/files/file-client-error-code";
 import { fileEditRequest } from "@/common/patterns/crm/files/file-edit-request";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
@@ -18,7 +18,7 @@ import styles from "./file-edit-dialog.module.css";
 type FileEditDialogProps = {
   content: CrmFilesDictionary;
   file: FileDto;
-  projects: readonly FilesProjectOption[];
+  projects: readonly CrmProjectOption[];
   /** Writable targets the entry may move to; the current scope is always among them. */
   targets: readonly (string | null)[];
   onCloseAction: () => void;

@@ -24,7 +24,7 @@ import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
 import type { CredentialFormError } from "@/common/contracts/crm/credentials/credential-form-error";
 import type { CredentialFormErrors } from "@/common/contracts/crm/credentials/credential-form-errors";
 import type { CredentialFormValues } from "@/common/contracts/crm/credentials/credential-form-values";
-import type { CredentialsProjectOption } from "@/common/contracts/crm/credentials/credentials-project-option";
+import type { CrmProjectOption } from "@/common/contracts/crm/crm-project-option";
 import { credentialFormRequest } from "@/common/patterns/crm/credentials/credential-form-request";
 import { useFocusFirstInvalidField } from "@/hooks/workspace/use-focus-first-invalid-field";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
@@ -38,7 +38,7 @@ type CredentialFormDialogProps = {
   credential?: CredentialDto;
   customerId: string;
   defaultTarget: string | null;
-  projects: readonly CredentialsProjectOption[];
+  projects: readonly CrmProjectOption[];
   /** Scopes the entry may live in, null for customer-wide. Only writable ones. */
   targets: readonly (string | null)[];
   onCloseAction: () => void;

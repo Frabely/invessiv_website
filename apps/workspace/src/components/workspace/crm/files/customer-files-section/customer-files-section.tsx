@@ -24,7 +24,7 @@ import { filesApiService } from "@/client/crm/files-api-service";
 import { FileListLoadStatus } from "@/common/constants/files/file-list-load-status";
 import type { FilesViewModel } from "@/common/contracts/crm/files/files-view-model";
 import { customerFilesFilter } from "@/common/patterns/crm/files/customer-files-filter";
-import { filesScopeRights } from "@/common/patterns/crm/files/files-scope-rights";
+import { crmScopeRights } from "@/common/patterns/crm/crm-scope-rights";
 import { fileArchiveSelection } from "@/common/patterns/files/file-archive-selection";
 import { CollapsibleSection } from "@/components/workspace/crm/shared/collapsible-section/collapsible-section";
 import type { Locale } from "@/config/i18n";
@@ -100,11 +100,11 @@ export function CustomerFilesSection({
     });
 
   const writeTargets = projectId
-    ? filesScopeRights.allows(viewModel.write, projectId)
+    ? crmScopeRights.allows(viewModel.write, projectId)
       ? [projectId]
       : []
-    : filesScopeRights.targets(viewModel.write, viewModel.projects);
-  const moveTargets = filesScopeRights.targets(
+    : crmScopeRights.targets(viewModel.write, viewModel.projects);
+  const moveTargets = crmScopeRights.targets(
     viewModel.write,
     viewModel.projects,
   );
@@ -358,10 +358,10 @@ export function CustomerFilesSection({
           ) : null}
           <CustomerFilesList
             canDeleteAction={(file) =>
-              filesScopeRights.allows(viewModel.remove, file.projectId)
+              crmScopeRights.allows(viewModel.remove, file.projectId)
             }
             canEditAction={(file) =>
-              filesScopeRights.allows(viewModel.write, file.projectId)
+              crmScopeRights.allows(viewModel.write, file.projectId)
             }
             canWrite={canWrite}
             content={content}

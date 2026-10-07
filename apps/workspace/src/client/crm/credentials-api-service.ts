@@ -4,11 +4,11 @@ import {
 } from "@invessiv/common/constants/credentials/credential-api-error-code";
 import type { CredentialRevealIntent } from "@invessiv/common/constants/credentials/credential-reveal-intents";
 import type { CredentialSecretField } from "@invessiv/common/constants/credentials/credential-secret-fields";
-import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import type { CreateCredentialRequestDto } from "@invessiv/common/contracts/credentials/create-credential-request.dto";
 import type { CredentialDto } from "@invessiv/common/contracts/credentials/credential.dto";
 import type { UpdateCredentialRequestDto } from "@invessiv/common/contracts/credentials/update-credential-request.dto";
+import { readApiErrorCode } from "@/common/patterns/client/read-api-error-code";
 import { versionedJsonMutationService } from "@/client/shared/versioned-json-mutation-service";
 import {
   CREDENTIAL_CUSTOMER_WIDE_QUERY_VALUE,
@@ -23,14 +23,11 @@ import {
   crmCustomerCredentialsEndpoint,
 } from "@/common/patterns/crm/crm-api-endpoints";
 
-const { isRecord, readVersionConflict, send } = versionedJsonMutationService;
-type JsonResponse = NonNullable<Awaited<ReturnType<typeof send>>>;
+const { isRecord } = versionedJsonMutationService;
 type CredentialMutationResult = VersionedJsonMutationResult<
   CredentialDto,
   CredentialApiErrorCode
 >;
-
-const INTERNAL = { ok: false, code: CredentialApiErrorCode.Internal } as const;
 
 function isCredential(value: unknown): value is CredentialDto {
   return (
@@ -43,23 +40,31 @@ function isCredential(value: unknown): value is CredentialDto {
 }
 
 function readCode(payload: unknown): CredentialApiErrorCode {
-  const code = isRecord(payload) ? payload.code : undefined;
-  return (
-    CREDENTIAL_API_ERROR_CODE_VALUES.find((known) => known === code) ??
-    CredentialApiErrorCode.Internal
+  return readApiErrorCode(
+    payload,
+    CREDENTIAL_API_ERROR_CODE_VALUES,
+    CredentialApiErrorCode.Internal,
   );
 }
 
-function readWriteFailure(response: JsonResponse) {
-  const current = readVersionConflict(response, isCredential);
-  return current
-    ? ({
-        ok: false,
-        code: ConcurrencyErrorCode.VersionConflict,
-        current,
-      } as const)
-    : ({ ok: false, code: readCode(response.payload) } as const);
+function request<T>(
+  url: string,
+  method: HttpMethod,
+  body: unknown,
+  read: (payload: unknown) => T | null,
+) {
+  return versionedJsonMutationService.request(
+    url,
+    method,
+    body,
+    read,
+    readCode,
+    CredentialApiErrorCode.Internal,
+  );
 }
+
+const readCredential = (payload: unknown) =>
+  isCredential(payload) ? payload : null;
 
 /** `projectId` undefined lists everything readable, null only customer-wide entries. */
 async function list(
@@ -74,63 +79,58 @@ async function list(
     );
   const query = params.toString();
   const endpoint = crmCustomerCredentialsEndpoint(customerId);
-  const response = await send(
+  return request(
     query ? `${endpoint}?${query}` : endpoint,
     HttpMethod.Get,
     undefined,
+    (payload) => {
+      const credentials = isRecord(payload) ? payload.credentials : undefined;
+      return Array.isArray(credentials) && credentials.every(isCredential)
+        ? credentials
+        : null;
+    },
   );
-  if (!response) return INTERNAL;
-  const credentials = isRecord(response.payload)
-    ? response.payload.credentials
-    : undefined;
-  return response.ok &&
-    Array.isArray(credentials) &&
-    credentials.every(isCredential)
-    ? { ok: true, value: credentials }
-    : { ok: false, code: readCode(response.payload) };
 }
 
 async function create(
   customerId: string,
   input: CreateCredentialRequestDto,
 ): Promise<CredentialClientResult<CredentialDto>> {
-  const response = await send(
+  return request(
     crmCustomerCredentialsEndpoint(customerId),
     HttpMethod.Post,
     input,
+    readCredential,
   );
-  if (!response) return INTERNAL;
-  return response.ok && isCredential(response.payload)
-    ? { ok: true, value: response.payload }
-    : { ok: false, code: readCode(response.payload) };
 }
 
 async function update(
   credentialId: string,
   input: UpdateCredentialRequestDto,
 ): Promise<CredentialMutationResult> {
-  const response = await send(
+  return versionedJsonMutationService.mutate(
     crmCredentialEndpoint(credentialId),
     HttpMethod.Patch,
     input,
+    readCredential,
+    isCredential,
+    CREDENTIAL_API_ERROR_CODE_VALUES,
+    CredentialApiErrorCode.Internal,
+    readCode,
   );
-  if (!response) return INTERNAL;
-  return response.ok && isCredential(response.payload)
-    ? { ok: true, value: response.payload }
-    : readWriteFailure(response);
 }
 
 async function remove(
   credentialId: string,
   version: number,
 ): Promise<CredentialDeleteClientResult> {
-  const response = await send(
+  return versionedJsonMutationService.remove(
     crmCredentialEndpoint(credentialId),
-    HttpMethod.Delete,
     { version },
+    isCredential,
+    readCode,
+    CredentialApiErrorCode.Internal,
   );
-  if (!response) return INTERNAL;
-  return response.ok ? { ok: true } : readWriteFailure(response);
 }
 
 /** One field per call. The value goes straight to the caller and is kept nowhere in between. */
@@ -139,16 +139,15 @@ async function reveal(
   field: CredentialSecretField,
   intent: CredentialRevealIntent,
 ): Promise<CredentialClientResult<string>> {
-  const response = await send(
+  return request(
     crmCredentialRevealEndpoint(credentialId),
     HttpMethod.Post,
     { field, intent },
+    (payload) =>
+      isRecord(payload) && typeof payload.value === "string"
+        ? payload.value
+        : null,
   );
-  if (!response) return INTERNAL;
-  const value = isRecord(response.payload) ? response.payload.value : undefined;
-  return response.ok && typeof value === "string"
-    ? { ok: true, value }
-    : { ok: false, code: readCode(response.payload) };
 }
 
 export const credentialsApiService = {

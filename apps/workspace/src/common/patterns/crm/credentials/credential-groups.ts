@@ -1,5 +1,5 @@
 import type { CredentialDto } from "@invessiv/common/contracts/credentials/credential.dto";
-import type { CredentialsProjectOption } from "@/common/contracts/crm/credentials/credentials-project-option";
+import type { CrmProjectOption } from "@/common/contracts/crm/crm-project-option";
 
 type CredentialGroup = {
   /** Null is the customer-wide group. */
@@ -14,7 +14,7 @@ type CredentialGroup = {
  */
 export function groupCredentials(
   credentials: readonly CredentialDto[],
-  projects: readonly CredentialsProjectOption[],
+  projects: readonly CrmProjectOption[],
   filter: string | null | undefined,
 ): CredentialGroup[] {
   const of = (projectId: string | null): CredentialGroup => ({

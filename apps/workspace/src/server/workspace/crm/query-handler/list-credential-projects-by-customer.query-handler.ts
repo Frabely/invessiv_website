@@ -5,7 +5,7 @@ import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import { projects } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
-import type { CredentialsProjectOption } from "@/common/contracts/crm/credentials/credentials-project-option";
+import type { CrmProjectOption } from "@/common/contracts/crm/crm-project-option";
 import { accessScope, canAnywhere } from "@/common/patterns/auth/access-scope";
 import { crmAccessCondition } from "@/server/workspace/shared/services/crm-access-condition";
 import { credentialSchemas } from "../services/credentials/credential-schemas";
@@ -14,7 +14,7 @@ import { credentialSchemas } from "../services/credentials/credential-schemas";
 export async function listCredentialProjectsByCustomer(
   customerId: string,
   actor: WorkspaceActor,
-): Promise<CredentialsProjectOption[]> {
+): Promise<CrmProjectOption[]> {
   if (!credentialSchemas.id.safeParse(customerId).success) return [];
   if (
     !canAnywhere(actor, Permission.CredentialsRead) &&

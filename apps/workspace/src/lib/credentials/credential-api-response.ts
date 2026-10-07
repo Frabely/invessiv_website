@@ -5,7 +5,8 @@ import { HttpHeaderName } from "@invessiv/common/constants/http/http-header-name
 import { HttpResponseCode as H } from "@invessiv/common/constants/http/http-response-codes";
 import type { CredentialResult } from "@invessiv/common/contracts/credentials/credential-result";
 import { privateResponse } from "@/lib/http/private-no-store";
-import { withJsonBody } from "@/lib/http/with-json-body";
+import type { JsonBodySchema } from "@/common/contracts/http/json-body-schema";
+import { withValidatedJsonBody } from "@/lib/http/with-json-body";
 import { credentialErrorResponse } from "./credential-api-error";
 
 export function credentialApiResponse<T>(
@@ -37,21 +38,14 @@ export async function privateCredentialResponse(
 
 export async function parseCredentialBody<T>(
   request: NextRequest,
-  schema: {
-    safeParse: (
-      body: unknown,
-    ) => { success: true; data: T } | { success: false };
-  },
+  schema: JsonBodySchema<T>,
   run: (input: T) => Promise<Response>,
 ): Promise<Response> {
-  return withJsonBody(
+  return withValidatedJsonBody(
     request,
-    (body) => {
-      const parsed = schema.safeParse(body);
-      return parsed.success
-        ? run(parsed.data)
-        : Promise.resolve(credentialErrorResponse(E.Validation));
-    },
+    schema,
+    run,
     () => credentialErrorResponse(E.Validation, { status: H.BadRequest }),
+    () => credentialErrorResponse(E.Validation),
   );
 }

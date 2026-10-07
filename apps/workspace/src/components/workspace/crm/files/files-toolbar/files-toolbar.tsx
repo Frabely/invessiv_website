@@ -8,7 +8,7 @@ import { FILE_ORIGIN_VALUES } from "@invessiv/common/constants/files/file-origin
 import { CUSTOMER_WIDE_FILES_FILTER } from "@/common/constants/crm/files/customer-files-query-params";
 import { ButtonControl, CustomSelect } from "@invessiv/ui";
 import type { CustomerFilesFilter } from "@/common/contracts/crm/files/customer-files-filter";
-import type { FilesProjectOption } from "@/common/contracts/crm/files/files-project-option";
+import type { CrmProjectOption } from "@/common/contracts/crm/crm-project-option";
 import { ListSearchField } from "@/components/workspace/shared/toolbar/list-search-field/list-search-field";
 import type { CrmFilesDictionary } from "@/i18n/dictionaries/workspace/crm";
 import styles from "./files-toolbar.module.css";
@@ -17,7 +17,7 @@ type FilesToolbarProps = {
   content: CrmFilesDictionary;
   filter: CustomerFilesFilter;
   /** Undefined hides the project filter, e.g. inside a project. */
-  projects?: readonly FilesProjectOption[];
+  projects?: readonly CrmProjectOption[];
   /** Offers "customer-wide" only when that scope is readable. */
   showCustomerWide: boolean;
   onFilterChangeAction: (next: Omit<CustomerFilesFilter, "search">) => void;

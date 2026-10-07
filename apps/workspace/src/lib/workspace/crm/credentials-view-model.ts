@@ -2,10 +2,9 @@ import "server-only";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
-import type { CredentialsProjectOption } from "@/common/contracts/crm/credentials/credentials-project-option";
-import type { CredentialsScopeRights } from "@/common/contracts/crm/credentials/credentials-scope-rights";
+import type { CrmProjectOption } from "@/common/contracts/crm/crm-project-option";
 import type { CredentialsViewModel } from "@/common/contracts/crm/credentials/credentials-view-model";
-import { canOn } from "@/common/patterns/auth/can-on";
+import { crmScopeRights } from "@/common/patterns/crm/crm-scope-rights";
 import { credentialCryptoService } from "@/server/shared/services/credential/credential-crypto-service";
 
 /**
@@ -15,29 +14,19 @@ import { credentialCryptoService } from "@/server/shared/services/credential/cre
 export function buildCredentialsViewModel(options: {
   actor: WorkspaceActor;
   customerId: string;
-  projects: readonly CredentialsProjectOption[];
+  projects: readonly CrmProjectOption[];
 }): CredentialsViewModel | null {
   const { actor, customerId, projects } = options;
-  const rights = (permission: Permission): CredentialsScopeRights => ({
-    customerWide: canOn(actor, permission, { customerId }),
-    projectIds: projects
-      .filter((project) =>
-        canOn(actor, permission, { customerId, projectId: project.id }),
-      )
-      .map((project) => project.id),
-  });
+  const rights = (permission: Permission) =>
+    crmScopeRights.forPermission(actor, permission, customerId, projects);
 
   const read = rights(Permission.CredentialsRead);
-  if (!read.customerWide && read.projectIds.length === 0) return null;
+  if (!crmScopeRights.any(read)) return null;
 
   const write = rights(Permission.CredentialsWrite);
-  // A write-only project still has to appear as a target for new or moved entries.
-  const knownProjectIds = new Set([...read.projectIds, ...write.projectIds]);
 
   return {
-    projects: projects
-      .filter((project) => knownProjectIds.has(project.id))
-      .map((project) => ({ id: project.id, title: project.title })),
+    projects: crmScopeRights.projectsFor(read, write, projects),
     read,
     write,
     reveal: rights(Permission.CredentialsReveal),

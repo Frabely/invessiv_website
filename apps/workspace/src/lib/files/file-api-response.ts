@@ -13,7 +13,8 @@ import {
 import { StorageError } from "@invessiv/storage";
 import { FileQueryParam } from "@/common/constants/files/file-query-params";
 import { privateResponse } from "@/lib/http/private-no-store";
-import { withJsonBody } from "@/lib/http/with-json-body";
+import type { JsonBodySchema } from "@/common/contracts/http/json-body-schema";
+import { withValidatedJsonBody } from "@/lib/http/with-json-body";
 import type { FileDownload } from "@/server/shared/files/file-object-service-types";
 import { fileRequestSchemas } from "@/server/shared/files/file-request-schemas";
 import { fileErrorResponse } from "./file-api-error";
@@ -45,22 +46,15 @@ export async function privateFileResponse(
 
 export async function parseFileBody<T>(
   request: NextRequest,
-  schema: {
-    safeParse: (
-      body: unknown,
-    ) => { success: true; data: T } | { success: false };
-  },
+  schema: JsonBodySchema<T>,
   run: (input: T) => Promise<Response>,
 ): Promise<Response> {
-  return withJsonBody(
+  return withValidatedJsonBody(
     request,
-    (body) => {
-      const parsed = schema.safeParse(body);
-      return parsed.success
-        ? run(parsed.data)
-        : Promise.resolve(fileApiResponse({ ok: false, code: E.Validation }));
-    },
+    schema,
+    run,
     () => fileErrorResponse(E.Validation, H.BadRequest),
+    () => fileApiResponse({ ok: false, code: E.Validation }),
   );
 }
 

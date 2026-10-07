@@ -1,4 +1,3 @@
-import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { FileApiErrorCode } from "@invessiv/common/constants/files/file-api-error-code";
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import type { StorageDisposition } from "@invessiv/common/constants/storage/storage-options";
@@ -28,9 +27,6 @@ import {
   crmFileEndpoint,
 } from "@/common/patterns/crm/crm-api-endpoints";
 
-const { readVersionConflict, send } = versionedJsonMutationService;
-type JsonResponse = NonNullable<Awaited<ReturnType<typeof send>>>;
-
 function isFile(value: unknown): value is FileDto {
   return (
     transport.isFileEntry(value) &&
@@ -39,17 +35,6 @@ function isFile(value: unknown): value is FileDto {
 }
 
 const readFile = transport.readOne(isFile);
-
-function readWriteFailure(response: JsonResponse) {
-  const current = readVersionConflict(response, isFile);
-  return current
-    ? ({
-        ok: false,
-        code: ConcurrencyErrorCode.VersionConflict,
-        current,
-      } as const)
-    : ({ ok: false, code: transport.readCode(response.payload) } as const);
-}
 
 function listFiles(
   customerId: string,
@@ -136,22 +121,30 @@ async function updateFile(
   fileId: string,
   input: UpdateFileRequestDto,
 ): Promise<FileMutationClientResult> {
-  const response = await send(crmFileEndpoint(fileId), HttpMethod.Patch, input);
-  if (!response) return { ok: false, code: FileApiErrorCode.Internal };
-  return response.ok && isFile(response.payload)
-    ? { ok: true, file: response.payload }
-    : readWriteFailure(response);
+  const result = await versionedJsonMutationService.mutate(
+    crmFileEndpoint(fileId),
+    HttpMethod.Patch,
+    input,
+    readFile,
+    isFile,
+    [],
+    FileApiErrorCode.Internal,
+    transport.readCode,
+  );
+  return result.ok ? { ok: true, file: result.value } : result;
 }
 
 async function deleteFile(
   fileId: string,
   version: number,
 ): Promise<FileDeleteClientResult> {
-  const response = await send(crmFileEndpoint(fileId), HttpMethod.Delete, {
-    version,
-  });
-  if (!response) return { ok: false, code: FileApiErrorCode.Internal };
-  return response.ok ? { ok: true } : readWriteFailure(response);
+  return versionedJsonMutationService.remove(
+    crmFileEndpoint(fileId),
+    { version },
+    isFile,
+    transport.readCode,
+    FileApiErrorCode.Internal,
+  );
 }
 
 function readText(fileId: string): Promise<FileClientResult<string>> {

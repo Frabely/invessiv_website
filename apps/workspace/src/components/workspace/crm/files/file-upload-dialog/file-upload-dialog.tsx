@@ -4,7 +4,7 @@ import { useState } from "react";
 import type { FileDto } from "@invessiv/common/contracts/files/file.dto";
 import { FileUploadDialogFrame } from "@invessiv/ui";
 import { filesApiService } from "@/client/crm/files-api-service";
-import type { FilesProjectOption } from "@/common/contracts/crm/files/files-project-option";
+import type { CrmProjectOption } from "@/common/contracts/crm/crm-project-option";
 import type { Locale } from "@/config/i18n";
 import { useInitialUploadFiles } from "@/hooks/shared/use-initial-upload-files";
 import { useUploadQueue } from "@/hooks/shared/use-upload-queue";
@@ -16,7 +16,7 @@ type FileUploadDialogProps = {
   customerId: string;
   initialFiles?: readonly File[];
   locale: Locale;
-  projects: readonly FilesProjectOption[];
+  projects: readonly CrmProjectOption[];
   targets: readonly (string | null)[];
   defaultTarget: string | null;
   onCloseAction: () => void;

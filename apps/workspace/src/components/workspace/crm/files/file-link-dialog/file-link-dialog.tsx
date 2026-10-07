@@ -4,14 +4,14 @@ import { useState } from "react";
 import type { FileDto } from "@invessiv/common/contracts/files/file.dto";
 import { FileLinkDialogFrame } from "@invessiv/ui";
 import { filesApiService } from "@/client/crm/files-api-service";
-import type { FilesProjectOption } from "@/common/contracts/crm/files/files-project-option";
+import type { CrmProjectOption } from "@/common/contracts/crm/crm-project-option";
 import type { CrmFilesDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { FileMetadataFields } from "../file-metadata-fields/file-metadata-fields";
 
 type FileLinkDialogProps = {
   content: CrmFilesDictionary;
   customerId: string;
-  projects: readonly FilesProjectOption[];
+  projects: readonly CrmProjectOption[];
   targets: readonly (string | null)[];
   defaultTarget: string | null;
   onCloseAction: () => void;
