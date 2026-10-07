@@ -18,6 +18,11 @@ export const SecurityEventType = {
   PortalMembershipRolesReplaced: "portal_membership_roles_replaced",
   PortalOwnerViewOpened: "portal_owner_view_opened",
   WorkspaceMemberBookingUrlChanged: "workspace_member_booking_url_changed",
+  CredentialCreated: "credential_created",
+  CredentialUpdated: "credential_updated",
+  CredentialDeleted: "credential_deleted",
+  CredentialRevealed: "credential_revealed",
+  CredentialPortalVisibilityChanged: "credential_portal_visibility_changed",
 } as const;
 
 export type SecurityEventType =
@@ -43,4 +48,9 @@ export const SECURITY_EVENT_TYPE_VALUES = [
   SecurityEventType.PortalMembershipRolesReplaced,
   SecurityEventType.PortalOwnerViewOpened,
   SecurityEventType.WorkspaceMemberBookingUrlChanged,
+  SecurityEventType.CredentialCreated,
+  SecurityEventType.CredentialUpdated,
+  SecurityEventType.CredentialDeleted,
+  SecurityEventType.CredentialRevealed,
+  SecurityEventType.CredentialPortalVisibilityChanged,
 ] as const;

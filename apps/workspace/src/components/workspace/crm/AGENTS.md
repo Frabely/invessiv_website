@@ -296,3 +296,32 @@ Plan: `apps/workspace/plans/crm/15-onboarding/65-bogen-anlegen-und-anpassen.md`.
   Standard-Tab, `readOnboardingFormTab` und `buildOnboardingFormTabHref` bekommen ihn übergeben (der Standard-Tab
   hinterlässt keinen Parameter). Der Kopf zeigt Call-Datum (`formatCalendarDay`) und Abschluss (`formatMomentDay`),
   der Projektbereich „Abgeschlossen am …“. Aufbau und Prüfung bleiben lesend mit ihren bestehenden Hinweisen.
+
+## Zugangsdaten (ab Task 18)
+
+Plan: `apps/workspace/plans/crm/19-credentials/18-credentials-ui.md`.
+
+- Komponenten liegen unter `credentials/`; Orchestrator ist `credentials/customer-credentials-section` im Cockpit
+  direkt nach den Dateien. Der Bereich existiert nur, wenn die Page ein `CredentialsViewModel` übergibt
+  (`buildCredentialsViewModel`, `canOn` je Scope).
+- **Der Klartext kommt nie mit der Seite.** Die Liste lädt über `useCustomerCredentials` nur Metadaten aus der API.
+  Passwort und Notiz fordert ausschließlich `CredentialSecretField` (`components/shared/credentials/`) an, je Klick ein
+  Feld. Den Wert hält nur `useRevealedSecret` (`src/hooks/shared/`): 30 Sekunden, bis zum Tab-Wechsel oder bis zum
+  Unmount. Kopieren fordert den Wert mit eigenem Intent neu an und legt ihn nie in den State.
+- `components/shared/credentials/**` kennt weder Endpunkt noch Dictionary; Texte (`CredentialSecretFieldLabels`) und
+  `onRevealAction` kommen als Props, damit das Portal (Task 71) die Bausteine unverändert nutzt.
+- **Aktionen je Zeile aus `capabilities`:** ohne `canReveal` fehlen Anzeigen und Kopieren vollständig, ohne `canWrite`
+  Bearbeiten und Löschen. „Zugang hinzufügen“ erscheint nur mit einem Schreibziel. Der Benutzername ist Klartext und
+  bleibt immer kopierbar.
+- **Ausnahme zu „kein deaktivierter Platzhalter“:** Ohne Schlüsselring (`configured === false`) bleiben Hinzufügen,
+  Bearbeiten und Anzeigen sichtbar, aber gesperrt, und ein Hinweisblock nennt den Grund. Löschen bleibt möglich.
+- Projektfilter ist URL-State unter `CustomerCredentialsQueryParam.Project` (`useCredentialProjectFilter`), getrennt
+  vom Dateifilter. Ein Projektfilter zeigt das Projekt **und** die kundenweiten Einträge, getrennt gruppiert
+  (`groupCredentials`); ein leeres Projekt bleibt als Gruppe mit Hinweis stehen.
+- Formularwerte ↔ Request nur über `common/patterns/crm/credentials/credential-form-request.ts`. Beim Bearbeiten wird
+  das Geheimnis nie geladen (leer = unverändert); die Notiz bleibt zugeklappt, bis jemand „Aufdecken und bearbeiten“
+  (zählt als Aufdeckung), „Ersetzen“ oder „Entfernen“ wählt.
+- Das Geheimnisfeld im Formular läuft über `FormFieldKind.Password` mit `autocomplete="new-password"`, der
+  Benutzername mit `autocomplete="off"`.
+- Die Live-Region nennt den Zustand („… sichtbar, wird in 30 Sekunden verborgen“), nie den Wert.
+- Adressen werden nur über `toCredentialLink` zum Link (http/https), immer mit `rel="noopener noreferrer"`.

@@ -29,3 +29,4 @@ export * from "./onboarding-group-entries";
 export * from "./onboarding-answers";
 export * from "./onboarding-answer-files";
 export * from "./onboarding-form-services";
+export * from "./customer-credentials";

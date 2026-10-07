@@ -50,8 +50,9 @@ function getTargetEnvFile(target: DatabaseTarget): string | null {
   return envFileByTarget[target];
 }
 
-function readDatabaseUrlFromTargetEnvFile(
+export function readTargetEnvValue(
   target: DatabaseTarget,
+  key: string,
 ): string | null {
   const envFile = getTargetEnvFile(target);
   if (!envFile) {
@@ -64,7 +65,7 @@ function readDatabaseUrlFromTargetEnvFile(
   }
 
   const parsed = parseDotenv(fs.readFileSync(envFilePath, "utf8"));
-  return parsed.DATABASE_URL?.trim() || null;
+  return parsed[key]?.trim() || null;
 }
 
 export function configureDatabaseUrlFromTarget(target: DatabaseTarget | null) {
@@ -75,7 +76,7 @@ export function configureDatabaseUrlFromTarget(target: DatabaseTarget | null) {
   }
 
   const inheritedDatabaseUrl = process.env.DATABASE_URL?.trim() || null;
-  const targetEnvDatabaseUrl = readDatabaseUrlFromTargetEnvFile(target);
+  const targetEnvDatabaseUrl = readTargetEnvValue(target, "DATABASE_URL");
 
   const databaseUrl =
     targetEnvDatabaseUrl ||

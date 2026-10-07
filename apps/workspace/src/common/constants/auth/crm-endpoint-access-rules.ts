@@ -16,6 +16,11 @@ export const CrmEndpointAccessRule = {
   FileDelete: "file_delete",
   FileDownloadUrl: "file_download_url",
   FileDownload: "file_download",
+  CredentialsList: "credentials_list",
+  CredentialCreate: "credential_create",
+  CredentialUpdate: "credential_update",
+  CredentialDelete: "credential_delete",
+  CredentialReveal: "credential_reveal",
   CustomerAccessScopes: "customer_access_scopes",
   PortalInvitationCreate: "portal_invitation_create",
   CustomerCreate: "customer_create",
@@ -96,6 +101,27 @@ export const CRM_ENDPOINT_ACCESS_RULES = {
   },
   [CrmEndpointAccessRule.FileDownload]: {
     permission: Permission.FilesRead,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.CredentialsList]: {
+    permission: Permission.CredentialsRead,
+    scope: "list",
+  },
+  [CrmEndpointAccessRule.CredentialCreate]: {
+    permission: Permission.CredentialsWrite,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.CredentialUpdate]: {
+    permission: Permission.CredentialsWrite,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.CredentialDelete]: {
+    permission: Permission.CredentialsWrite,
+    scope: "project",
+  },
+  // Reveal has its own permission: reading the list never implies seeing a secret.
+  [CrmEndpointAccessRule.CredentialReveal]: {
+    permission: Permission.CredentialsReveal,
     scope: "project",
   },
   [CrmEndpointAccessRule.CustomerAccessScopes]: {

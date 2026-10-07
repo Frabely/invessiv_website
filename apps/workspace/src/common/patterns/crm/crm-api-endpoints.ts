@@ -1,5 +1,6 @@
 import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
 import { ConversationApiPath } from "@/common/constants/crm/conversation-api-paths";
+import { CredentialApiPath } from "@/common/constants/credentials/credential-api-paths";
 import { OnboardingApiPath } from "@/common/constants/crm/onboarding-api-paths";
 import { QuestionnaireApiPath } from "@/common/constants/crm/questionnaire/questionnaire-api-paths";
 import { ProjectApiPath } from "@/common/constants/crm/project-api-paths";
@@ -239,4 +240,16 @@ export function crmFileCancelEndpoint(fileId: string): string {
 
 export function crmFileDownloadUrlEndpoint(fileId: string): string {
   return `${crmFileEndpoint(fileId)}/${FileApiPath.DownloadUrl}`;
+}
+
+export function crmCustomerCredentialsEndpoint(customerId: string): string {
+  return `${crmCustomerEndpoint(customerId)}/${CredentialApiPath.Credentials}`;
+}
+
+export function crmCredentialEndpoint(credentialId: string): string {
+  return `${WorkspaceApiEndpoint.CrmCredentials}/${encodeURIComponent(credentialId)}`;
+}
+
+export function crmCredentialRevealEndpoint(credentialId: string): string {
+  return `${crmCredentialEndpoint(credentialId)}/${CredentialApiPath.Reveal}`;
 }

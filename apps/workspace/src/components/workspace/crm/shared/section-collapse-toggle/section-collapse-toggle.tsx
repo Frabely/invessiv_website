@@ -1,5 +1,6 @@
 "use client";
 
+import type { Ref } from "react";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -11,6 +12,7 @@ type SectionCollapseToggleProps = {
   labelCollapse: string;
   labelExpand: string;
   onToggleAction: () => void;
+  buttonRef?: Ref<HTMLButtonElement>;
 };
 
 export function SectionCollapseToggle({
@@ -19,10 +21,12 @@ export function SectionCollapseToggle({
   labelCollapse,
   labelExpand,
   onToggleAction,
+  buttonRef,
 }: SectionCollapseToggleProps) {
   const label = expanded ? labelCollapse : labelExpand;
   return (
     <button
+      ref={buttonRef}
       aria-controls={controls}
       aria-expanded={expanded}
       aria-label={label}

@@ -1,5 +1,6 @@
 export const WorkspaceApiEndpoint = {
   CrmFiles: "/api/workspace/crm/files",
+  CrmCredentials: "/api/workspace/crm/credentials",
   CrmFeedbackRounds: "/api/workspace/crm/feedback-rounds",
   CrmFeedbackRoundItems: "/api/workspace/crm/feedback-round-items",
   AccessCustomers: "/api/workspace/access/customers",

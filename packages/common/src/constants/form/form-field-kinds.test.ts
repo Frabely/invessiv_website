@@ -11,6 +11,7 @@ describe("FormFieldKind", () => {
       Date: "date",
       Email: "email",
       Number: "number",
+      Password: "password",
       Select: "select",
       Tel: "tel",
       Text: "text",

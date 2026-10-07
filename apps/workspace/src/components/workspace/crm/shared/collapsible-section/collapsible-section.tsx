@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useId, useState } from "react";
+import { type ReactNode, type Ref, useId, useState } from "react";
 
 import { SectionCollapseToggle } from "../section-collapse-toggle/section-collapse-toggle";
 import styles from "./collapsible-section.module.css";
@@ -18,6 +18,7 @@ type CollapsibleSectionProps = {
   labelExpand: string;
   meta?: ReactNode;
   summary?: ReactNode;
+  toggleRef?: Ref<HTMLButtonElement>;
   title: string;
 };
 
@@ -34,6 +35,7 @@ export function CollapsibleSection({
   labelExpand,
   meta,
   summary,
+  toggleRef,
   title,
 }: CollapsibleSectionProps) {
   const [expansion, setExpansion] = useState({
@@ -63,6 +65,7 @@ export function CollapsibleSection({
           {meta}
           {action}
           <SectionCollapseToggle
+            buttonRef={toggleRef}
             controls={bodyId}
             expanded={expanded}
             labelCollapse={labelCollapse}

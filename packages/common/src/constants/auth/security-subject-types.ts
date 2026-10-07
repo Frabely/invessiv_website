@@ -4,6 +4,7 @@ export const SecuritySubjectType = {
   PortalInvitation: "portal_invitation",
   PortalMembership: "portal_membership",
   Customer: "customer",
+  Credential: "credential",
 } as const;
 
 export type SecuritySubjectType =
@@ -15,4 +16,5 @@ export const SECURITY_SUBJECT_TYPE_VALUES = [
   SecuritySubjectType.PortalInvitation,
   SecuritySubjectType.PortalMembership,
   SecuritySubjectType.Customer,
+  SecuritySubjectType.Credential,
 ] as const;

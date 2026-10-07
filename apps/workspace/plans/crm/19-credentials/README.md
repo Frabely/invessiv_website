@@ -22,10 +22,10 @@ Bisher liegen sie in Mails und Chats. Künftig:
 
 ## Lesereihenfolge und Lieferung
 
-| PR   | Status | Branch                          | Tasks in dieser Reihenfolge                                                   | Nach dem Merge nutzbar                                    |
-| ---- | ------ | ------------------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------- |
-| 19.1 | läuft  | `feat/crm-credentials-1-intern` | [Task 17](./17-credentials-crypto.md), dann [Task 18](./18-credentials-ui.md) | Zugänge intern anlegen, ändern, löschen, aufdecken; Audit |
-| 19.2 | offen  | `feat/crm-credentials-2-portal` | [Task 71](./71-credentials-portal.md)                                         | Freigabe je Eintrag, Portal-Seite und Dashboard-Widget    |
+| PR   | Status    | Branch                          | Tasks in dieser Reihenfolge                                                   | Nach dem Merge nutzbar                                    |
+| ---- | --------- | ------------------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------- |
+| 19.1 | im Review | `feat/crm-credentials-1-intern` | [Task 17](./17-credentials-crypto.md), dann [Task 18](./18-credentials-ui.md) | Zugänge intern anlegen, ändern, löschen, aufdecken; Audit |
+| 19.2 | offen     | `feat/crm-credentials-2-portal` | [Task 71](./71-credentials-portal.md)                                         | Freigabe je Eintrag, Portal-Seite und Dashboard-Widget    |
 
 Nach jedem PR ist `master` deploybar. Das Schema entsteht vollständig in 19.1, einschließlich `visible_to_customer`
 und der Herkunftsspalten. Bis 19.2 schreibt der interne Pfad `visible_to_customer = false`; Freigabe-Schalter und

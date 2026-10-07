@@ -120,6 +120,18 @@ aufrufen.
   ursprünglichen `crypto`-Fehler ergänzt, auch nicht als `cause`.
 - Entschlüsselt wird nur im Einzel-Reveal für genau ein Feld. Listen, Exporte und Mapper rufen `decrypt` nie auf.
 
+Ab Task 18 liegen hier zwei weitere Bausteine, bewusst schon vor dem zweiten Aufrufer (Portal, Task 71), damit in
+19.2 kein Umzug entsteht (Planvorgabe wie beim Bogen-Read-Service):
+
+- `credential-event-service.ts` — `record` ist der einzige Schreibweg für Credential-Security-Events
+  (`subject_type = credential`). Die Metadaten sind je Eventtyp typisiert (`credential-event-types.ts`): immer
+  `customer_id` und `project_id`, dazu nur `changed_fields`, `field` + `intent` oder `visible`. Nie Titel, nie Werte.
+  Den Actor übergibt der Handler seiner Welt.
+- `credential-reveal-limit-service.ts` — `findRetryAfter` sperrt die eigene `users`-Zeile (`FOR NO KEY UPDATE`,
+  serialisiert parallele Aufdeckungen desselben Menschen, ohne fremde Event-Inserts zu blockieren) und zählt die
+  `credential_revealed`-Events im Fenster. Das Limit übergibt der Aufrufer, weil Workspace und Portal verschiedene
+  Grenzen haben. Gezählt werden nur gelungene Aufdeckungen, weil nur sie ein Event schreiben.
+
 ## Systemnachrichten (ab Task 59)
 
 `services/message/announce-system-message.ts` ist der einzige Weg für fachliche Chat-Hinweise: Savepoint, Fehler nur

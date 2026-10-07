@@ -156,3 +156,8 @@ importieren, und App-Services importieren `server-only`, was außerhalb von Next
   auch wenn eine Prüfung fehlschlägt.
 - Seeds sind wiederholbar: jeder Lauf setzt die eigenen Zeilen zurück und legt sie neu an.
 - Seeds bleiben optional aufrufbar, damit Empty-States der Anwendung weiterhin prüfbar sind.
+- `db:seed:crm` legt Zugangsdaten nur an, wenn `CRM_CREDENTIALS_KEYRING` gesetzt ist; sonst überspringt es sie mit
+  einer Konsolenzeile. Ein Seed mit einem Wegwerf-Schlüssel hinterlässt Zeilen, die die App nicht lesen kann.
+- `db:credentials:rekey <ziel>` läuft gegen jedes Ziel, auch `production`. Es schreibt ausschließlich die beiden
+  Chiffrat-Spalten von `customer_credentials` (je Zeile eine Transaktion, `version` und Zeitstempel bleiben), liest
+  den Schlüsselring nur aus der Umgebung des Aufrufs (nie aus einer `.env.*.local`) und gibt nur Zahlen aus.

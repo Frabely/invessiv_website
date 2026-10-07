@@ -36,6 +36,7 @@
     "db:smoke:rbac:prod": "tsx scripts/smoke-rbac.ts production",
     "db:seed:leads": "tsx scripts/seed-leads-fixture.ts",
     "db:seed:crm": "tsx scripts/seed-crm-fixture.ts",
+    "db:credentials:rekey": "tsx scripts/rekey-credentials.ts",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests"

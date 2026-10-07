@@ -253,3 +253,41 @@ Plan: `apps/workspace/plans/crm/15-onboarding/65-bogen-anlegen-und-anpassen.md`.
   `onboardingFormTransitionService.complete`; ein Fehler darin rollt den ganzen Abschluss zurück.
 - `getOnboardingFormContext` liefert zusätzlich `projectPhase`, damit der Abschlussdialog den Phasenwechsel nur
   anbietet, solange das Projekt in `onboarding` steht. Die Entscheidung trifft trotzdem der Server.
+
+## Zugangsdaten (ab Task 18)
+
+Plan: `apps/workspace/plans/crm/19-credentials/18-credentials-ui.md`.
+
+- Services unter `services/credentials/`: `credential-access-service.ts` (`condition`, `targetExists`, `lock`,
+  `metadataColumns`), `credential-mapping-service.ts`, `credential-schemas.ts`, `credential-types.ts`. Der Aufbau folgt
+  dem Dateien-Modul (`services/files/`).
+- **Listen entschlüsseln nie.** `listCustomerCredentials` selektiert ausschließlich `metadataColumns`; beide
+  Chiffrat-Spalten gehören nicht dazu, `hasNote` entsteht als `note_ciphertext IS NOT NULL`. `CredentialDto` hat kein
+  Feld für Geheimnis oder Notiztext (Typtest in `packages/common`). Wer eine Spalte ergänzt, ergänzt sie in
+  `metadataColumns` — nie über `select()` ohne Spaltenliste.
+- **Die ID entsteht vor dem Verschlüsseln.** Sie ist Teil der AAD (`customerId`, `credentialId`, `field`). Der Kontext
+  kommt immer aus der gesperrten Zeile bzw. der frisch erzeugten ID, nie aus der Anfrage. Die Projekt-ID gehört nicht
+  dazu; ein Projektwechsel lässt beide Chiffrate gültig.
+- **Ver- und Entschlüsseln nur über `credentialCryptoService`** (`server/shared/services/credential/`). Ohne
+  Schlüsselring antworten Anlegen, Ändern mit neuem Geheimnis oder Notiztext und Aufdecken mit `not_configured` (503);
+  Liste, Metadaten-Änderung und Löschen funktionieren weiter.
+- **Aufdecken** (`revealCredential`) ist der einzige Weg, auf dem Klartext den Server verlässt, immer für genau ein
+  Feld: Zeile mit `credentials.reveal` sperren → fehlende Notiz ist `not_found` → Rate-Limit
+  (`credentialRevealLimitService`) → entschlüsseln → `last_revealed_at` setzen → Event → Wert. Alles in einer
+  Transaktion; scheitert das Event, verlässt kein Klartext den Server. Ein Cipher-Fehler wird zu `internal` und loggt
+  nur den Code.
+- `last_revealed_at` wird **bewusst ohne `updateVersioned`** geschrieben: Ein Aufdecken ist keine Bearbeitung, `version`
+  und `updated_at` bleiben, und ein offener Editor läuft nicht in einen Konflikt. Jede andere Änderung geht über
+  `updateVersioned`.
+- **Einziger Event-Schreibweg ist `credentialEventService.record`.** Die Metadaten sind je Eventtyp typisiert
+  (`CredentialEventDetail`); es gibt kein freies Feld, in das Titel oder Wert geraten könnten. `activities` bekommt
+  keine Credential-Einträge.
+- `updateCredential` schreibt nur, was sich unterscheidet. Ändert sich nichts, gibt es weder Write noch Event. Das
+  Geheimnis wird nur ersetzt, wenn es gesendet wird; die Notiz ist dreiwertig (weggelassen, Text, `null`).
+- Zugriff: `crmAccessCondition.forScope` mit Kunden- **und** Projektspalte. Eine Projektbindung zeigt keine
+  kundenweiten Einträge. Ein Projektwechsel prüft `targetExists` am neuen Ziel. Ein Kunde außerhalb des
+  Zugriffsbereichs ergibt eine leere Liste, kein 404.
+- Routen bauen ihre Antwort über `lib/credentials/` (`privateCredentialResponse` setzt `no-store` auch auf abgewiesene
+  Antworten; der Fehler-Callback loggt nie den Fehler selbst). Die Helfer liegen dort, weil die Portal-Routen aus
+  Task 71 sie mitnutzen.
+- `visible_to_customer` schreibt der interne Pfad bis Task 71 ausschließlich als `false`.

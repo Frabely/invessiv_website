@@ -23,6 +23,7 @@ import { formatCustomerNumber } from "@invessiv/common/patterns/crm/format-custo
 import type {
   CrmAccessDictionary,
   CrmCockpitDictionary,
+  CrmCredentialsDictionary,
   CrmFilesDictionary,
   CrmMessagesDictionary,
   CrmPortalAccessDictionary,
@@ -37,7 +38,9 @@ import type { ProjectLineItemsViewModel } from "@/common/contracts/crm/project-l
 import type { FeedbackRoundsViewModel } from "@/common/contracts/crm/feedback-rounds-view-model";
 import type { OnboardingViewModel } from "@/common/contracts/crm/onboarding/onboarding-view-model";
 import type { TasksViewModel } from "@/common/contracts/crm/tasks-view-model";
+import type { CredentialsViewModel } from "@/common/contracts/crm/credentials/credentials-view-model";
 import type { FilesViewModel } from "@/common/contracts/crm/files/files-view-model";
+import { CustomerCredentialsSection } from "@/components/workspace/crm/credentials/customer-credentials-section/customer-credentials-section";
 import { CustomerFilesSection } from "@/components/workspace/crm/files/customer-files-section/customer-files-section";
 import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
 import type { Locale } from "@/config/i18n";
@@ -63,6 +66,9 @@ type CustomerCockpitViewProps = {
   messagesContent?: CrmMessagesDictionary;
   viewerMemberId: string;
   customer: CustomerCockpitDto;
+  /** Absent without `credentials.read` in any scope of the customer; the area then does not exist. */
+  credentials?: CredentialsViewModel;
+  credentialsContent?: CrmCredentialsDictionary;
   /** Absent without `files.read` in any scope of the customer; the area then does not exist. */
   files?: FilesViewModel;
   filesContent?: CrmFilesDictionary;
@@ -108,6 +114,8 @@ export function CustomerCockpitView({
   messagesContent,
   viewerMemberId,
   customer,
+  credentials,
+  credentialsContent,
   files,
   filesContent,
   isWorkspaceOwner = false,
@@ -345,6 +353,14 @@ export function CustomerCockpitView({
                   viewModel={files}
                 />
               ) : null}
+              {credentials && credentialsContent ? (
+                <CustomerCredentialsSection
+                  content={credentialsContent}
+                  customerId={customer.id}
+                  locale={locale}
+                  viewModel={credentials}
+                />
+              ) : null}
               {renderMock("hours")}
             </div>
             <div
@@ -390,7 +406,6 @@ export function CustomerCockpitView({
                   }
                 />
               ) : null}
-              {renderMock("credentials")}
             </div>
           </div>
         </div>

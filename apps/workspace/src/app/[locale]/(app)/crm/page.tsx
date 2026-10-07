@@ -29,6 +29,7 @@ import { isSupportedLocale, type Locale } from "@/config/i18n";
 import {
   getCrmAccessDictionary,
   getCrmCockpitDictionary,
+  getCrmCredentialsDictionary,
   getCrmFeedbackRoundsDictionary,
   getCrmFilesDictionary,
   getCrmFormDictionary,
@@ -62,6 +63,8 @@ import { listCustomers } from "@/server/workspace/crm/query-handler/list-custome
 import { listCockpitProjectsByCustomer } from "@/server/workspace/crm/query-handler/list-projects-by-customer.query-handler";
 import { buildProjectLineItemsViewModel } from "@/lib/workspace/crm/project-line-items-view-model";
 import { buildTasksViewModel } from "@/lib/workspace/crm/tasks-view-model";
+import { buildCredentialsViewModel } from "@/lib/workspace/crm/credentials-view-model";
+import { listCredentialProjectsByCustomer } from "@/server/workspace/crm/query-handler/list-credential-projects-by-customer.query-handler";
 import { buildFilesViewModel } from "@/lib/workspace/crm/files-view-model";
 import { buildFeedbackRoundsViewModel } from "@/lib/workspace/crm/feedback-rounds-view-model";
 import { buildOnboardingViewModel } from "@/lib/workspace/crm/onboarding-view-model";
@@ -233,6 +236,16 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
           projects: cockpitProjects,
         })
       : null;
+  const credentialsViewModel = cockpitCustomer
+    ? buildCredentialsViewModel({
+        actor,
+        customerId: cockpitCustomer.id,
+        projects: await listCredentialProjectsByCustomer(
+          cockpitCustomer.id,
+          actor,
+        ),
+      })
+    : null;
   // Only the open tab loads its rounds; an unknown or foreign project id falls back to the first.
   const requestedProjectId = readCockpitProjectId(resolvedSearchParams);
   const selectedCockpitProject =
@@ -385,6 +398,12 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
           }
           viewerMemberId={actor.workspaceMemberId}
           customer={cockpitCustomer}
+          credentials={credentialsViewModel ?? undefined}
+          credentialsContent={
+            credentialsViewModel
+              ? getCrmCredentialsDictionary(activeLocale)
+              : undefined
+          }
           files={filesViewModel ?? undefined}
           filesContent={
             // The chat and the feedback attachments need the file labels even without the files area.

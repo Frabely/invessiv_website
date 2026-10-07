@@ -18,6 +18,7 @@ import {
   conversationReads,
   conversations,
   customerContactAssignments,
+  customerCredentials,
   customers,
   files,
   leadCategories,
@@ -56,6 +57,10 @@ import { BillingInterval } from "@invessiv/common/constants/crm/billing-interval
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { LineItemTemplateStatus } from "@invessiv/common/constants/crm/line-item-template-statuses";
 import { seedPortalDashboard } from "./crm-fixture/seed-portal-dashboard";
+import {
+  readCredentialFixtureKeyring,
+  seedCredentials,
+} from "./crm-fixture/seed-credentials";
 import { seedFiles } from "./crm-fixture/seed-files";
 import { seedFeedbackRounds } from "./crm-fixture/seed-feedback-rounds";
 import { seedOnboarding } from "./crm-fixture/seed-onboarding";
@@ -310,6 +315,10 @@ async function resetFixtureRows(tx: ContactDatabaseTransaction) {
       .delete(conversations)
       .where(inArray(conversations.customer_id, customerIds));
     await tx.delete(files).where(inArray(files.customer_id, customerIds));
+    // Credentials reference projects without a cascade, so they go before the projects.
+    await tx
+      .delete(customerCredentials)
+      .where(inArray(customerCredentials.customer_id, customerIds));
     await tx.delete(projects).where(inArray(projects.customer_id, customerIds));
     await tx
       .delete(customerContactAssignments)
@@ -590,6 +599,8 @@ async function run() {
     );
   }
 
+  // Resolve before generic env loading can introduce another target's keyring.
+  const credentialKeyring = readCredentialFixtureKeyring(target);
   configureDatabaseUrlFromTarget(target);
 
   const db = getDrizzleDatabaseClient();
@@ -782,6 +793,16 @@ async function run() {
     });
     const projectId = activeProjectIds.get(nordlichtId) as string;
     await seedFiles(tx, nordlichtId, projectId, owner.memberId);
+    const credentialCount = await seedCredentials(
+      tx,
+      [...activeProjectIds].map(([customerId, activeProjectId]) => ({
+        customerId,
+        projectId: activeProjectId,
+      })),
+      owner.memberId,
+      credentialKeyring,
+    );
+    console.log(`Seeded ${credentialCount} credentials.`);
     const feedbackProject = (customerKey: string) => {
       const customerId = customerIds.get(customerKey) as string;
       const membership = portalMembershipFixtures.find(

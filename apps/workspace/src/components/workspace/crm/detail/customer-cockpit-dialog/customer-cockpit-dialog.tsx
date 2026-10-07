@@ -15,6 +15,7 @@ import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspa
 import type {
   CrmAccessDictionary,
   CrmCockpitDictionary,
+  CrmCredentialsDictionary,
   CrmFilesDictionary,
   CrmMessagesDictionary,
   CrmPortalAccessDictionary,
@@ -29,6 +30,7 @@ import type { ProjectLineItemsViewModel } from "@/common/contracts/crm/project-l
 import type { FeedbackRoundsViewModel } from "@/common/contracts/crm/feedback-rounds-view-model";
 import type { OnboardingViewModel } from "@/common/contracts/crm/onboarding/onboarding-view-model";
 import type { TasksViewModel } from "@/common/contracts/crm/tasks-view-model";
+import type { CredentialsViewModel } from "@/common/contracts/crm/credentials/credentials-view-model";
 import type { FilesViewModel } from "@/common/contracts/crm/files/files-view-model";
 import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
 import type { Locale } from "@/config/i18n";
@@ -47,6 +49,8 @@ type CustomerCockpitDialogProps = {
   messagesContent?: CrmMessagesDictionary;
   viewerMemberId: string;
   customer: CustomerCockpitDto;
+  credentials?: CredentialsViewModel;
+  credentialsContent?: CrmCredentialsDictionary;
   files?: FilesViewModel;
   filesContent?: CrmFilesDictionary;
   isWorkspaceOwner?: boolean;
@@ -89,6 +93,8 @@ export function CustomerCockpitDialog({
   messagesContent,
   viewerMemberId,
   customer,
+  credentials,
+  credentialsContent,
   files,
   filesContent,
   isWorkspaceOwner,
@@ -142,6 +148,8 @@ export function CustomerCockpitDialog({
         messagesContent={messagesContent}
         viewerMemberId={viewerMemberId}
         customer={customer}
+        credentials={credentials}
+        credentialsContent={credentialsContent}
         files={files}
         filesContent={filesContent}
         isWorkspaceOwner={isWorkspaceOwner}

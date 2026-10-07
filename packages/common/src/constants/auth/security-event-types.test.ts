@@ -31,6 +31,11 @@ describe("SecurityEventType", () => {
       "portal_membership_roles_replaced",
       "portal_owner_view_opened",
       "workspace_member_booking_url_changed",
+      "credential_created",
+      "credential_updated",
+      "credential_deleted",
+      "credential_revealed",
+      "credential_portal_visibility_changed",
     ]);
     expect(SECURITY_EVENT_TYPE_VALUES).toEqual(
       Object.values(SecurityEventType),
@@ -49,6 +54,7 @@ describe("SecuritySubjectType", () => {
       "portal_invitation",
       "portal_membership",
       "customer",
+      "credential",
     ]);
     expect(SECURITY_SUBJECT_TYPE_VALUES).toEqual(
       Object.values(SecuritySubjectType),
