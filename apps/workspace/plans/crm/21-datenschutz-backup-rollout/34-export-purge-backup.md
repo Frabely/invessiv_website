@@ -30,7 +30,7 @@ getesteten Owner-Command.
 - Strukturierte Manifestversion und Exportzeitpunkt.
 - Kundenstamm, Personen und Zuordnungen, Projekte, Aufgaben und Serien, Feedback (`feedback_rounds`,
   `feedback_round_items` samt Ergebnissen; Feedbackdateien als normale `files`-Zeilen), Chat,
-  freigegebene und interne Dateien, Renewals, Retainer, Stunden und Activities.
+  freigegebene und interne Dateien, Renewals, Stunden (`customer_hour_purchases`, `project_hour_allocations`, `project_time_entries`) und Activities.
 - Credential-Metadaten: Titel, URL und Änderungsdatum; keine verschlüsselten Envelopes im
   benutzerlesbaren Export und kein Klartext.
 - Dateien mit stabiler relativer Struktur und SHA-256 im Manifest.

@@ -51,6 +51,21 @@ service_requests
 - **CRM-50-T3** — Intern: Katalog-Freigabe im Templatedialog, Anfrageliste in der Kundenakte, Statuspflege,
   Übernahme als Projektleistung, Hinweis im Dashboard-Block.
 
+## Anschluss an die Stundenkontingente (Ordner 20, ergänzt 08.10.2026)
+
+Stunden sollen später auch über eine Leistungsanfrage gebucht werden können. Ordner 20 ist dafür vorbereitet, dieser
+Ordner liefert den Anschluss — er ist **keine** Voraussetzung für Ordner 20:
+
+- Eine Katalogleistung kann ein Stundenpaket sein. Dafür braucht `line_item_templates` eine Angabe der enthaltenen
+  Minuten (Vielfaches von 15); die Spalte entsteht in diesem Ordner, nicht in Ordner 20.
+- Die interne Übernahme einer angenommenen Anfrage legt genau eine Kaufbuchung an: über
+  `hoursLedgerService.insertPurchase` (`apps/workspace/src/server/workspace/crm/services/hours/`) unter der
+  Kundensperre `lockCustomer`, mit `source = service_request`. Dazu erweitert eine Migration den CHECK an
+  `customer_hour_purchases.source` und `HourPurchaseSource` um diesen Wert.
+- Idempotenz: Der `idempotency_key` der Kaufbuchung wird aus der Anfrage abgeleitet (z. B. die Anfrage-ID), damit
+  eine doppelte Übernahme keine Stunden verdoppelt.
+- Das Portal zeigt die Gutschrift danach ohne weiteres Zutun in der Kaufhistorie des Stunden-Widgets.
+
 ## Offene Fragen vor Beginn
 
 - Reicht das Statusmodell, oder braucht es einen Freitext „Angebot versendet am“?

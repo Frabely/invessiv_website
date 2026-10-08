@@ -1,8 +1,10 @@
 # Task 29 — Aktivität und History
 
-> **Merge-Einheit:** Ordner 20 · **Branch:** `feat/crm-stunden-und-history`
+> **Merge-Einheit:** Ordner 20e · **Branch:** `feat/crm-kundenverlauf`
 > **Aufwand:** M · **Abhängigkeiten:** Task 05 (Slot); inhaltlich profitiert er von allen vorherigen Tasks
 > **Migration:** keine
+> **Status des Plans:** Skizze, am 08.10.2026 unverändert aus Ordner 20 ausgelagert. Vor Beginn die Punkte unter
+> „Vor Beginn zu klären“ in der [README](./README.md) abarbeiten.
 
 - Timeline liest die gemeinsame `activities`-Tabelle aus Task 01a mit stabiler Cursor-Pagination.
 - Automatische Activities sind unveränderlich; manuelle Notizen dürfen nur über protokollierte
