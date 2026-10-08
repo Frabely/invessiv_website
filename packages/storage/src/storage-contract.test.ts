@@ -286,4 +286,34 @@ describe("Vercel private adapter", () => {
     vi.stubEnv("BLOB_READ_WRITE_TOKEN", "test-only");
     expect(createStorage()).toHaveProperty("readRange");
   });
+  it("delegates upload signing to the SDK without an OIDC environment token", async () => {
+    vi.stubEnv("STORAGE_PROVIDER", "vercel-blob");
+    vi.stubEnv("BLOB_READ_WRITE_TOKEN", "");
+    vi.stubEnv("BLOB_STORE_ID", "store_test");
+    vi.stubEnv("VERCEL_OIDC_TOKEN", "");
+
+    const ticket = await createStorage().createUploadUrl(key, upload());
+
+    expect(ticket.method).toBe(HttpMethod.Put);
+    expect(state.issue).toHaveBeenCalledWith({
+      operations: ["get", "put"],
+      validUntil: expect.any(Number),
+    });
+    expect(state.sign).toHaveBeenCalledTimes(1);
+  });
+  it("rejects uploads when SDK authentication fails for a configured store", async () => {
+    vi.stubEnv("STORAGE_PROVIDER", "vercel-blob");
+    vi.stubEnv("BLOB_READ_WRITE_TOKEN", "");
+    vi.stubEnv("BLOB_STORE_ID", "store_test");
+    vi.stubEnv("VERCEL_OIDC_TOKEN", "");
+    state.issue.mockRejectedValueOnce(new Error("secret provider credentials"));
+
+    await expect(
+      createStorage().createUploadUrl(key, upload()),
+    ).rejects.toMatchObject({
+      code: StorageErrorCode.Unavailable,
+      message: "Storage operation failed.",
+    });
+    expect(state.sign).not.toHaveBeenCalled();
+  });
 });
