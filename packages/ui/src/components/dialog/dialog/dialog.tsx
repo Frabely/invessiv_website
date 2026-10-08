@@ -4,6 +4,7 @@ import {
   type KeyboardEvent,
   type MouseEvent,
   type ReactNode,
+  type Ref,
   type RefObject,
   type SyntheticEvent,
   useId,
@@ -22,6 +23,8 @@ export type DialogProps = {
   busy?: boolean;
   children?: ReactNode;
   closeLabel: string;
+  /** Focus fallback when a dialog's original trigger no longer exists. */
+  closeButtonRef?: Ref<HTMLButtonElement>;
   closeOnBackdropClick?: boolean;
   className?: string;
   description?: string;
@@ -39,6 +42,7 @@ export function Dialog({
   busy = false,
   children,
   closeLabel,
+  closeButtonRef,
   closeOnBackdropClick = true,
   className,
   description,
@@ -156,6 +160,7 @@ export function Dialog({
               ) : null}
             </div>
             <ButtonControl
+              ref={closeButtonRef}
               aria-label={closeLabel}
               className={styles.closeButton}
               disabled={busy}

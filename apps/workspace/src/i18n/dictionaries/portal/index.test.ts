@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 
+import credentialsDe from "./credentials/de.json";
+import credentialsEn from "./credentials/en.json";
 import dashboardDe from "./dashboard/de.json";
 import dashboardEn from "./dashboard/en.json";
 import filesDe from "./files/de.json";
@@ -30,6 +32,7 @@ function keyPaths(value: unknown, prefix = ""): string[] {
 describe("portal dictionaries", () => {
   it.each([
     ["dashboard", dashboardDe, dashboardEn],
+    ["credentials", credentialsDe, credentialsEn],
     ["files", filesDe, filesEn],
     ["feedback", feedbackDe, feedbackEn],
     ["onboarding", onboardingDe, onboardingEn],
@@ -44,6 +47,7 @@ describe("portal dictionaries", () => {
 
   it.each([
     ["dashboard", dashboardDe, dashboardEn],
+    ["credentials", credentialsDe, credentialsEn],
     ["files", filesDe, filesEn],
     ["feedback", feedbackDe, feedbackEn],
     ["onboarding", onboardingDe, onboardingEn],

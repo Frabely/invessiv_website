@@ -21,6 +21,7 @@ export const CrmEndpointAccessRule = {
   CredentialUpdate: "credential_update",
   CredentialDelete: "credential_delete",
   CredentialReveal: "credential_reveal",
+  CredentialPortalVisibility: "credential_portal_visibility",
   CustomerAccessScopes: "customer_access_scopes",
   PortalInvitationCreate: "portal_invitation_create",
   CustomerCreate: "customer_create",
@@ -122,6 +123,10 @@ export const CRM_ENDPOINT_ACCESS_RULES = {
   // Reveal has its own permission: reading the list never implies seeing a secret.
   [CrmEndpointAccessRule.CredentialReveal]: {
     permission: Permission.CredentialsReveal,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.CredentialPortalVisibility]: {
+    permission: Permission.CredentialsWrite,
     scope: "project",
   },
   [CrmEndpointAccessRule.CustomerAccessScopes]: {

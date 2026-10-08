@@ -1,4 +1,6 @@
 import type { Locale } from "@/config/i18n";
+import credentialsDe from "./credentials/de.json";
+import credentialsEn from "./credentials/en.json";
 import dashboardDe from "./dashboard/de.json";
 import dashboardEn from "./dashboard/en.json";
 import metaDe from "./meta/de.json";
@@ -27,6 +29,7 @@ export type PortalMessagesDictionary = typeof messagesDe;
 export type PortalFilesDictionary = typeof filesDe;
 export type PortalFeedbackDictionary = typeof feedbackDe;
 export type PortalOnboardingDictionary = typeof onboardingDe;
+export type PortalCredentialsDictionary = typeof credentialsDe;
 
 const PORTAL_META: Record<Locale, PortalMetaDictionary> = {
   de: metaDe,
@@ -122,4 +125,15 @@ export function getPortalOnboardingDictionary(
   locale: Locale,
 ): PortalOnboardingDictionary {
   return PORTAL_ONBOARDING[locale];
+}
+
+const PORTAL_CREDENTIALS: Record<Locale, PortalCredentialsDictionary> = {
+  de: credentialsDe,
+  en: credentialsEn,
+};
+
+export function getPortalCredentialsDictionary(
+  locale: Locale,
+): PortalCredentialsDictionary {
+  return PORTAL_CREDENTIALS[locale];
 }

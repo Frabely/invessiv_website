@@ -4,10 +4,8 @@ import { CredentialSide } from "@invessiv/common/constants/credentials/credentia
 import { CredentialType } from "@invessiv/common/constants/credentials/credential-types";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { credentialMappingService } from "@/server/workspace/crm/services/credentials/credential-mapping-service";
-import type {
-  CredentialMetadataRow,
-  CredentialRow,
-} from "@/server/workspace/crm/services/credentials/credential-types";
+import type { CredentialRow } from "@/server/shared/services/credential/credential-row-types";
+import type { CredentialMetadataRow } from "@/server/workspace/crm/services/credentials/credential-types";
 
 const customerId = "11111111-1111-4111-8111-111111111111";
 const projectId = "22222222-2222-4222-8222-222222222222";

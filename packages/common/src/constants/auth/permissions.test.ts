@@ -93,6 +93,9 @@ describe("Permission", () => {
       Permission.PortalFeedbackSubmit,
       Permission.PortalOnboardingRead,
       Permission.PortalOnboardingSubmit,
+      Permission.PortalCredentialsRead,
+      Permission.PortalCredentialsReveal,
+      Permission.PortalCredentialsWrite,
     ]);
     for (const permission of PORTAL_PERMISSION_VALUES) {
       expect(WORKSPACE_PERMISSION_VALUES).not.toContain(permission);
@@ -114,6 +117,7 @@ describe("Permission", () => {
       Permission.PortalFilesRead,
       Permission.PortalFeedbackRead,
       Permission.PortalOnboardingRead,
+      Permission.PortalCredentialsRead,
     ]);
     expect(new Set(PORTAL_READ_PERMISSION_VALUES).size).toBe(
       PORTAL_READ_PERMISSION_VALUES.length,
@@ -138,6 +142,12 @@ describe("Permission", () => {
     );
     expect(PORTAL_READ_PERMISSION_VALUES).not.toContain(
       Permission.PortalOnboardingSubmit,
+    );
+    expect(PORTAL_READ_PERMISSION_VALUES).not.toContain(
+      Permission.PortalCredentialsReveal,
+    );
+    expect(PORTAL_READ_PERMISSION_VALUES).not.toContain(
+      Permission.PortalCredentialsWrite,
     );
     for (const permission of PORTAL_READ_PERMISSION_VALUES) {
       expect(PERMISSION_DEFINITIONS[permission].realm).toBe(AuthRealm.Portal);

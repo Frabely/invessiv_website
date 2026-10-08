@@ -2,7 +2,8 @@ import { Permission } from "@invessiv/common/constants/auth/permissions";
 import type { CredentialDto } from "@invessiv/common/contracts/credentials/credential.dto";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { canOn } from "@/common/patterns/auth/can-on";
-import type { CredentialMetadataRow, CredentialRow } from "./credential-types";
+import type { CredentialRow } from "@/server/shared/services/credential/credential-row-types";
+import type { CredentialMetadataRow } from "./credential-types";
 
 function toDto(
   row: CredentialMetadataRow,

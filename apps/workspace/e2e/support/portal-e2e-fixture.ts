@@ -30,6 +30,13 @@ export type PortalE2eFixture = {
   customerA: string;
   customerB: string;
   filesCustomer: string;
+  /** Isolated customer for credential grants, releases and revocation. */
+  credentialsCustomer: string;
+  credentialsProject: string;
+  credentialsHiddenProject: string;
+  credentialsMembership: string;
+  credentialsRole: string;
+  standardRole: string;
   /** Shared by the files contact (A) and the feedback contact (B). */
   feedbackCustomer: string;
   /** Active project right before its first round step. */

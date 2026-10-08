@@ -43,7 +43,9 @@
     "onboardingReleased": "Das Onboarding für „{projectTitle}“ wurde für den Kunden freigegeben.",
     "onboardingChangesRequested": "Das Onboarding für „{projectTitle}“ ging mit Rückfragen zurück an den Kunden: {blockTitles}.",
     "onboardingCompleted": "Das Onboarding für „{projectTitle}“ wurde abgeschlossen.",
-    "customerTaskRequested": "Der Kunde hat für „{projectTitle}“ die Aufgabe „{taskTitle}“ angelegt."
+    "customerTaskRequested": "Der Kunde hat für „{projectTitle}“ die Aufgabe „{taskTitle}“ angelegt.",
+    "credentialAddedByCustomer": "Der Kunde hat im Portal einen neuen Zugang hinterlegt. Du findest ihn im Cockpit unter Zugangsdaten.",
+    "credentialSecretChangedByCustomer": "Der Kunde hat im Portal das Passwort eines Zugangs geändert."
   },
   "dock": {
     "unread": "{count} ungelesen"

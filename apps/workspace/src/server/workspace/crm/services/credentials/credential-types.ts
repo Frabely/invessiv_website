@@ -1,6 +1,4 @@
-import type { customerCredentials } from "@invessiv/db/record-configuration";
-
-export type CredentialRow = typeof customerCredentials.$inferSelect;
+import type { CredentialRow } from "@/server/shared/services/credential/credential-row-types";
 
 /**
  * What lists and mappers work with: the row without either ciphertext. A value that is never

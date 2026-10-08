@@ -48,7 +48,9 @@
     "onboardingReleased": "Dein Onboarding für „{projectTitle}“ ist bereit. Du bist dran.",
     "onboardingChangesRequested": "Für dein Onboarding zu „{projectTitle}“ brauchen wir noch etwas zu: {blockTitles}. Du kannst es jetzt ergänzen.",
     "onboardingCompleted": "Dein Onboarding für „{projectTitle}“ ist abgeschlossen. Deine Angaben sind jetzt die Grundlage für dein Projekt.",
-    "customerTaskRequested": "Deine Aufgabe „{taskTitle}“ für „{projectTitle}“ ist bei uns angekommen. Wir kümmern uns darum."
+    "customerTaskRequested": "Deine Aufgabe „{taskTitle}“ für „{projectTitle}“ ist bei uns angekommen. Wir kümmern uns darum.",
+    "credentialAddedByCustomer": "Dein neuer Zugang ist bei uns angekommen. Danke dir.",
+    "credentialSecretChangedByCustomer": "Das geänderte Passwort ist bei uns angekommen. Wir arbeiten ab jetzt damit."
   },
   "phases": {
     "onboarding": "Onboarding",

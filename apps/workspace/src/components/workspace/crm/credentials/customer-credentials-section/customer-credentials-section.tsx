@@ -19,11 +19,12 @@ import { SectionEmptyState } from "@/components/workspace/crm/shared/section-emp
 import type { Locale } from "@/config/i18n";
 import { useCredentialProjectFilter } from "@/hooks/workspace/crm/use-credential-project-filter";
 import { useCustomerCredentials } from "@/hooks/workspace/crm/use-customer-credentials";
-import { useDialogReturnFocus } from "@/hooks/workspace/use-dialog-return-focus";
+import { useDialogReturnFocus } from "@/hooks/shared/use-dialog-return-focus";
 import type { CrmCredentialsDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { CredentialDeleteDialog } from "../credential-delete-dialog/credential-delete-dialog";
 import { CredentialFormDialog } from "../credential-form-dialog/credential-form-dialog";
 import { CredentialGroup } from "../credential-group/credential-group";
+import { CredentialPortalVisibilityDialog } from "../credential-portal-visibility-dialog/credential-portal-visibility-dialog";
 import { CredentialProjectFilter } from "../credential-project-filter/credential-project-filter";
 import { CredentialRow } from "../credential-row/credential-row";
 import styles from "./customer-credentials-section.module.css";
@@ -39,10 +40,15 @@ const CredentialOverlayKind = {
   Create: "create",
   Edit: "edit",
   Delete: "delete",
+  PortalVisibility: "portalVisibility",
 } as const;
 
 type CredentialOverlay =
   | { kind: typeof CredentialOverlayKind.Create }
+  | {
+      kind: typeof CredentialOverlayKind.PortalVisibility;
+      credential: CredentialDto;
+    }
   | { kind: typeof CredentialOverlayKind.Edit; credential: CredentialDto }
   | { kind: typeof CredentialOverlayKind.Delete; credential: CredentialDto };
 
@@ -182,6 +188,23 @@ export function CustomerCredentialsSection({
               }
             />
           ) : null}
+          {overlay?.kind === CredentialOverlayKind.PortalVisibility ? (
+            <CredentialPortalVisibilityDialog
+              content={content}
+              credential={overlay.credential}
+              key={overlay.credential.id}
+              onChangedAction={(credential) =>
+                changed(
+                  credential.visibleToCustomer
+                    ? content.announcements.released
+                    : content.announcements.withdrawn,
+                  credential,
+                )
+              }
+              onCloseAction={close}
+              onConflictAction={list.replace}
+            />
+          ) : null}
         </>
       }
       count={
@@ -301,7 +324,16 @@ export function CustomerCredentialsSection({
                         credential: entry,
                       })
                     }
+                    onPortalVisibilityAction={(entry) =>
+                      open({
+                        kind: CredentialOverlayKind.PortalVisibility,
+                        credential: entry,
+                      })
+                    }
                     onRevealAction={reveal}
+                    portalVisibilityButtonRef={focus.targetRef(
+                      `${credential.id}:${CredentialOverlayKind.PortalVisibility}`,
+                    )}
                   />
                 ))}
               </CredentialGroup>

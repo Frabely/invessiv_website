@@ -1,4 +1,5 @@
 import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
+import { CredentialApiPath } from "@/common/constants/credentials/credential-api-paths";
 import { ConversationApiPath } from "@/common/constants/crm/conversation-api-paths";
 import { ProjectApiPath } from "@/common/constants/crm/project-api-paths";
 import { FeedbackApiPath } from "@/common/constants/feedback/feedback-api-paths";
@@ -198,4 +199,22 @@ export function portalOnboardingServicesConfirmationEndpoint(
   formId: string,
 ): string {
   return `${portalOnboardingFormEndpoint(customerId, formId)}/${PortalOnboardingApiPath.ServicesConfirmation}`;
+}
+
+export function portalCredentialsEndpoint(customerId: string): string {
+  return `${WorkspaceApiEndpoint.Portal}/${encodeURIComponent(customerId)}/${CredentialApiPath.Credentials}`;
+}
+
+export function portalCredentialEndpoint(
+  customerId: string,
+  credentialId: string,
+): string {
+  return `${portalCredentialsEndpoint(customerId)}/${encodeURIComponent(credentialId)}`;
+}
+
+export function portalCredentialRevealEndpoint(
+  customerId: string,
+  credentialId: string,
+): string {
+  return `${portalCredentialEndpoint(customerId, credentialId)}/${CredentialApiPath.Reveal}`;
 }

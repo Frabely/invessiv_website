@@ -24,10 +24,12 @@ import {
   DELETE,
   PATCH,
 } from "@/app/api/workspace/crm/credentials/[credentialId]/route";
+import { PATCH as portalVisibility } from "@/app/api/workspace/crm/credentials/[credentialId]/portal-visibility/route";
 import { POST as reveal } from "@/app/api/workspace/crm/credentials/[credentialId]/reveal/route";
 import { createCredential } from "@/server/workspace/crm/command-handler/create-credential.command-handler";
 import { deleteCredential } from "@/server/workspace/crm/command-handler/delete-credential.command-handler";
 import { revealCredential } from "@/server/workspace/crm/command-handler/reveal-credential.command-handler";
+import { setCredentialPortalVisibility } from "@/server/workspace/crm/command-handler/set-credential-portal-visibility.command-handler";
 import { updateCredential } from "@/server/workspace/crm/command-handler/update-credential.command-handler";
 import { listCustomerCredentials } from "@/server/workspace/crm/query-handler/list-customer-credentials.query-handler";
 
@@ -50,6 +52,10 @@ vi.mock(
 vi.mock(
   "@/server/workspace/crm/command-handler/delete-credential.command-handler",
   () => ({ deleteCredential: vi.fn() }),
+);
+vi.mock(
+  "@/server/workspace/crm/command-handler/set-credential-portal-visibility.command-handler",
+  () => ({ setCredentialPortalVisibility: vi.fn() }),
 );
 vi.mock(
   "@/server/workspace/crm/command-handler/reveal-credential.command-handler",
@@ -75,6 +81,7 @@ const revealBody = {
   field: CredentialSecretField.Secret,
   intent: CredentialRevealIntent.Show,
 };
+const visibilityBody = { version: 1, visibleToCustomer: true };
 const dto: CredentialDto = {
   id,
   customerId: id,
@@ -99,6 +106,7 @@ const routes = [
   [PATCH, HttpMethod.Patch, { version: 1, title: "Renamed" }],
   [DELETE, HttpMethod.Delete, { version: 1 }],
   [reveal, HttpMethod.Post, revealBody],
+  [portalVisibility, HttpMethod.Patch, visibilityBody],
 ] as const;
 
 function authorize(permissions: Permission[]) {
@@ -165,6 +173,7 @@ describe("credential HTTP authorization", () => {
         updateCredential,
         deleteCredential,
         revealCredential,
+        setCredentialPortalVisibility,
       ])
         expect(vi.mocked(handler)).not.toHaveBeenCalled();
     },
@@ -205,10 +214,15 @@ describe("credential HTTP request parsing", () => {
   it("rejects mass assignment, missing versions and malformed JSON", async () => {
     authorize([Permission.CredentialsWrite, Permission.CredentialsReveal]);
 
+    // The origin of an entry is never part of an edit.
     expect(
       (
-        await create(
-          request(HttpMethod.Post, { ...createBody, visibleToCustomer: true }),
+        await PATCH(
+          request(HttpMethod.Patch, {
+            version: 1,
+            title: "Renamed",
+            createdBySide: CredentialSide.Customer,
+          }),
           context,
         )
       ).status,
@@ -342,6 +356,82 @@ describe("credential HTTP responses", () => {
     expect(response.status).toBe(status);
     expect(await response.json()).toMatchObject({ code });
   });
+
+  it("accepts the release flag on create and nothing but a boolean for it", async () => {
+    authorize([Permission.CredentialsWrite]);
+    vi.mocked(createCredential).mockResolvedValue({ ok: true, value: dto });
+
+    const released = await create(
+      request(HttpMethod.Post, { ...createBody, visibleToCustomer: true }),
+      context,
+    );
+    expect(released.status).toBe(H.Created);
+    expect(vi.mocked(createCredential)).toHaveBeenCalledWith(
+      id,
+      { ...createBody, visibleToCustomer: true },
+      expect.objectContaining({ userId: id }),
+    );
+
+    expect(
+      (
+        await create(
+          request(HttpMethod.Post, { ...createBody, visibleToCustomer: "yes" }),
+          context,
+        )
+      ).status,
+    ).toBe(H.UnprocessableContent);
+    expect(vi.mocked(createCredential)).toHaveBeenCalledOnce();
+  });
+
+  it("releases with the write permission and rejects anything but version and flag", async () => {
+    authorize([Permission.CredentialsWrite]);
+    vi.mocked(setCredentialPortalVisibility).mockResolvedValue({
+      ok: true,
+      value: { ...dto, visibleToCustomer: true },
+    });
+
+    const released = await portalVisibility(
+      request(HttpMethod.Patch, visibilityBody),
+      context,
+    );
+    expect(released.status).toBe(H.Ok);
+    expect(vi.mocked(setCredentialPortalVisibility)).toHaveBeenCalledWith(
+      id,
+      visibilityBody,
+      expect.objectContaining({ userId: id }),
+    );
+
+    for (const body of [
+      { version: 1 },
+      { visibleToCustomer: true },
+      { ...visibilityBody, title: "Renamed" },
+      { version: 1, visibleToCustomer: "yes" },
+    ])
+      expect(
+        (await portalVisibility(request(HttpMethod.Patch, body), context))
+          .status,
+      ).toBe(H.UnprocessableContent);
+    expect(vi.mocked(setCredentialPortalVisibility)).toHaveBeenCalledOnce();
+  });
+
+  it.each([E.CustomerOwned, E.ProjectHidden] as const)(
+    "answers %s with 409 and its code, not with a version conflict",
+    async (code) => {
+      authorize([Permission.CredentialsWrite]);
+      vi.mocked(setCredentialPortalVisibility).mockResolvedValue({
+        ok: false,
+        code,
+      });
+
+      const response = await portalVisibility(
+        request(HttpMethod.Patch, visibilityBody),
+        context,
+      );
+
+      expect(response.status).toBe(H.Conflict);
+      expect(await response.json()).toMatchObject({ code });
+    },
+  );
 
   it("answers a stale version with 409 and the current metadata", async () => {
     authorize([Permission.CredentialsWrite]);

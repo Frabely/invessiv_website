@@ -727,6 +727,14 @@ async function run() {
         assigned_at: activatedAt,
       })),
     );
+    // Only the first contact handles credentials; every other one shows the portal without them.
+    await tx.insert(portalMembershipRoles).values({
+      portal_membership_id: portalMembershipFixtures[0].id,
+      role_id: SYSTEM_ROLE_DEFINITIONS[SystemRoleKey.PortalCredentials].id,
+      role_realm: AuthRealm.Portal,
+      assigned_by_member_id: owner.memberId,
+      assigned_at: activatedAt,
+    });
 
     await seedConversationThreads(
       tx,

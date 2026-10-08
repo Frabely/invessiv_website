@@ -22,6 +22,7 @@
   },
   "projectSwitcher": { "label": "Projekt wechseln" },
   "accessAreas": {
+    "credentials": "Zugangsdaten",
     "files": "Dateien",
     "messages": "Nachrichten",
     "onboarding": "Onboarding"

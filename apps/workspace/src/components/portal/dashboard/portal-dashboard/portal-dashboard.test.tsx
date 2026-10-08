@@ -19,6 +19,7 @@ import { TaskDueState } from "@invessiv/common/constants/crm/task-due-states";
 import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import { PortalTaskErrorCode } from "@invessiv/common/constants/portal/portal-task-error-codes";
 import type { PortalConversationDto } from "@invessiv/common/contracts/portal/portal-conversation.dto";
+import type { PortalCredentialsSummaryDto } from "@invessiv/common/contracts/portal/portal-credentials-summary.dto";
 import type { PortalCustomerTaskDto } from "@invessiv/common/contracts/portal/portal-customer-task.dto";
 import type { PortalOurTaskDto } from "@invessiv/common/contracts/portal/portal-our-task.dto";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
@@ -33,6 +34,7 @@ import { TASK_STATUS_BADGE_TONES } from "@/common/constants/crm/badges/task-stat
 import { listVisiblePortalWidgets } from "@/common/patterns/portal/list-visible-portal-widgets";
 import {
   getPortalDashboardDictionary,
+  getPortalCredentialsDictionary,
   getPortalFilesDictionary,
   getPortalMessagesDictionary,
 } from "@/i18n/dictionaries/portal";
@@ -214,6 +216,7 @@ function renderDashboard(
   conversation: PortalConversationDto | null = CONVERSATION,
   filesOverview: PortalFilesOverviewDto | null = FILES,
   onboarding: PortalOnboardingFormSummaryDto | null = null,
+  credentials: PortalCredentialsSummaryDto | null = null,
 ) {
   const keys = new Set<PortalWidgetKey>([
     PortalWidgetKey.Project,
@@ -227,6 +230,8 @@ function renderDashboard(
       cockpitHref={cockpitHref}
       content={content}
       conversation={conversation}
+      credentials={credentials}
+      credentialsContent={getPortalCredentialsDictionary("en")}
       customerId="customer-1"
       dashboard={dashboard}
       filesHref="/en/portal/customer-1/files"
@@ -348,6 +353,88 @@ describe("PortalDashboard", () => {
 
     expect(
       screen.queryByRole("region", { name: content.widgets.onboarding.title }),
+    ).toBeNull();
+  });
+
+  it("shows the credentials widget as a number with its two ways into the dialog", () => {
+    renderDashboard(
+      dto(),
+      new Set([...FULL_READ, Permission.PortalCredentialsRead]),
+      null,
+      CONVERSATION,
+      FILES,
+      null,
+      { count: 3, canWrite: true, configured: true },
+    );
+
+    const widget = screen.getByRole("region", {
+      name: content.widgets.credentials.title,
+    });
+    expect(
+      within(widget).getByText("3 credentials stored"),
+    ).toBeInTheDocument();
+    // A dialog on the dashboard, not a page: there is nothing to navigate to.
+    expect(within(widget).queryByRole("link")).toBeNull();
+
+    fireEvent.click(
+      within(widget).getByRole("button", {
+        name: content.widgets.credentials.open,
+      }),
+    );
+    expect(mocks.push).toHaveBeenLastCalledWith(
+      expect.stringContaining("widget=credentials"),
+      { scroll: false },
+    );
+    fireEvent.click(
+      within(widget).getByRole("button", {
+        name: content.widgets.credentials.add,
+      }),
+    );
+    expect(mocks.push).toHaveBeenCalledTimes(2);
+  });
+
+  it("offers no add action without the write right and none while encryption is missing", () => {
+    renderDashboard(
+      dto(),
+      new Set([...FULL_READ, Permission.PortalCredentialsRead]),
+      null,
+      CONVERSATION,
+      FILES,
+      null,
+      { count: 0, canWrite: false, configured: true },
+    );
+    const readOnly = screen.getByRole("region", {
+      name: content.widgets.credentials.title,
+    });
+    expect(
+      within(readOnly).getByText(content.widgets.credentials.empty),
+    ).toBeInTheDocument();
+    expect(
+      within(readOnly).queryByRole("button", {
+        name: content.widgets.credentials.add,
+      }),
+    ).toBeNull();
+    cleanup();
+
+    renderDashboard(
+      dto(),
+      new Set([...FULL_READ, Permission.PortalCredentialsRead]),
+      null,
+      CONVERSATION,
+      FILES,
+      null,
+      { count: 0, canWrite: true, configured: false },
+    );
+    expect(
+      screen.getByRole("button", { name: content.widgets.credentials.add }),
+    ).toBeDisabled();
+  });
+
+  it("shows no credentials widget to the standard role", () => {
+    renderDashboard(dto(), FULL_READ);
+
+    expect(
+      screen.queryByRole("region", { name: content.widgets.credentials.title }),
     ).toBeNull();
   });
 
@@ -901,6 +988,7 @@ describe("PortalDashboard", () => {
         conversation={CONVERSATION}
         customerId="customer-1"
         dashboard={dto()}
+        credentialsContent={getPortalCredentialsDictionary("en")}
         filesHref="/en/portal/customer-1/files"
         filesOverview={FILES}
         locale="en"

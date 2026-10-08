@@ -1,21 +1,23 @@
 "use client";
 
-import { type Ref, useEffect, useRef, useState } from "react";
+import type { Ref } from "react";
 import {
-  faCheck,
-  faCopy,
+  faEye,
+  faEyeSlash,
   faPen,
   faTrashCan,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CREDENTIAL_LIMITS } from "@invessiv/common/constants/credentials/credential-limits";
+import { CredentialSide } from "@invessiv/common/constants/credentials/credential-sides";
+import { BadgeTone } from "@invessiv/common/constants/ui/badge-tones";
+import { Badge } from "@invessiv/ui";
 import type { CredentialRevealIntent } from "@invessiv/common/constants/credentials/credential-reveal-intents";
-import { CredentialSecretField as SecretField } from "@invessiv/common/constants/credentials/credential-secret-fields";
+import type { CredentialSecretField as SecretField } from "@invessiv/common/constants/credentials/credential-secret-fields";
 import type { CredentialDto } from "@invessiv/common/contracts/credentials/credential.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import type { CredentialRevealOutcome } from "@/common/contracts/credentials/credential-reveal-outcome";
-import { toCredentialLink } from "@/common/patterns/credentials/credential-link";
-import { CredentialSecretField } from "@/components/shared/credentials/credential-secret-field/credential-secret-field";
+import { CredentialFacts } from "@/components/shared/credentials/credential-facts/credential-facts";
 import { CredentialTypeIcon } from "@/components/shared/credentials/credential-type-icon/credential-type-icon";
 import type { Locale } from "@/config/i18n";
 import type { CrmCredentialsDictionary } from "@/i18n/dictionaries/workspace/crm";
@@ -30,7 +32,9 @@ type CredentialRowProps = {
   locale: Locale;
   editButtonRef?: Ref<HTMLButtonElement>;
   deleteButtonRef?: Ref<HTMLButtonElement>;
+  portalVisibilityButtonRef?: Ref<HTMLButtonElement>;
   onDeleteAction: (credential: CredentialDto) => void;
+  onPortalVisibilityAction: (credential: CredentialDto) => void;
   onEditAction: (credential: CredentialDto) => void;
   onRevealAction: (
     credential: CredentialDto,
@@ -38,15 +42,6 @@ type CredentialRowProps = {
     intent: CredentialRevealIntent,
   ) => Promise<CredentialRevealOutcome>;
 };
-
-const COPIED_FEEDBACK_MS = 2000;
-const UsernameCopyStatus = {
-  Idle: "idle",
-  Copied: "copied",
-  Failed: "failed",
-} as const;
-type UsernameCopyStatus =
-  (typeof UsernameCopyStatus)[keyof typeof UsernameCopyStatus];
 
 /**
  * One credential as metadata. Password and note are masks until requested; which actions exist
@@ -59,52 +54,19 @@ export function CredentialRow({
   locale,
   editButtonRef,
   deleteButtonRef,
+  portalVisibilityButtonRef,
   onDeleteAction,
   onEditAction,
+  onPortalVisibilityAction,
   onRevealAction,
 }: CredentialRowProps) {
-  const [usernameCopy, setUsernameCopy] = useState<UsernameCopyStatus>(
-    UsernameCopyStatus.Idle,
-  );
-  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(
-    () => () => {
-      if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
-    },
-    [],
-  );
-
   const { canReveal, canWrite } = credential.capabilities;
   const named = { name: credential.title };
-  const link = toCredentialLink(credential.url);
-
-  async function copyUsername() {
-    if (!credential.username) return;
-    try {
-      await navigator.clipboard.writeText(credential.username);
-      setUsernameCopy(UsernameCopyStatus.Copied);
-    } catch {
-      setUsernameCopy(UsernameCopyStatus.Failed);
-    }
-    if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
-    copyTimerRef.current = setTimeout(
-      () => setUsernameCopy(UsernameCopyStatus.Idle),
-      COPIED_FEEDBACK_MS,
-    );
-  }
-
-  const secretField = (field: SecretField, name: string, multiline = false) => (
-    <CredentialSecretField
-      key={`${credential.id}:${credential.version}:${canReveal}:${configured}:${field}`}
-      autoHideSeconds={CREDENTIAL_LIMITS.autoHideSeconds}
-      canReveal={canReveal}
-      disabled={!configured}
-      labels={content.secretField}
-      multiline={multiline}
-      name={formatMessage(name, named)}
-      onRevealAction={(intent) => onRevealAction(credential, field, intent)}
-    />
-  );
+  const createdByCustomer =
+    credential.createdBySide === CredentialSide.Customer;
+  const releaseLabel = credential.visibleToCustomer
+    ? content.row.withdraw
+    : content.row.release;
 
   return (
     <li className={styles.row}>
@@ -117,6 +79,26 @@ export function CredentialRow({
           <p className={styles.type}>
             {content.types[credential.credentialType]}
           </p>
+          {credential.visibleToCustomer || createdByCustomer ? (
+            <p className={styles.badges}>
+              {createdByCustomer ? (
+                <Badge
+                  icon={faUser}
+                  kind="origin"
+                  label={content.row.badgeCustomer}
+                  tone={BadgeTone.Info}
+                />
+              ) : null}
+              {credential.visibleToCustomer ? (
+                <Badge
+                  icon={faEye}
+                  kind="visibility"
+                  label={content.row.badgePortal}
+                  tone={BadgeTone.Warning}
+                />
+              ) : null}
+            </p>
+          ) : null}
         </div>
         {canWrite ? (
           <div
@@ -124,6 +106,26 @@ export function CredentialRow({
             className={styles.rowActions}
             role="group"
           >
+            {createdByCustomer ? null : (
+              <button
+                ref={portalVisibilityButtonRef}
+                aria-label={formatMessage(
+                  credential.visibleToCustomer
+                    ? content.row.withdrawNamed
+                    : content.row.releaseNamed,
+                  named,
+                )}
+                className={styles.iconButton}
+                onClick={() => onPortalVisibilityAction(credential)}
+                title={releaseLabel}
+                type="button"
+              >
+                <FontAwesomeIcon
+                  aria-hidden="true"
+                  icon={credential.visibleToCustomer ? faEyeSlash : faEye}
+                />
+              </button>
+            )}
             <button
               ref={editButtonRef}
               aria-label={formatMessage(content.row.editNamed, named)}
@@ -149,83 +151,15 @@ export function CredentialRow({
           </div>
         ) : null}
       </div>
-      <dl className={styles.facts}>
-        {credential.url ? (
-          <div className={styles.fact}>
-            <dt>{content.row.url}</dt>
-            <dd className={styles.text}>
-              {link ? (
-                <a
-                  className={styles.link}
-                  href={link}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  {credential.url}
-                  <span className="sr-only">
-                    {` (${content.row.opensInNewTab})`}
-                  </span>
-                </a>
-              ) : (
-                credential.url
-              )}
-            </dd>
-          </div>
-        ) : null}
-        {credential.username ? (
-          <div className={styles.fact}>
-            <dt>{content.row.username}</dt>
-            <dd className={styles.username}>
-              <span className={styles.text}>{credential.username}</span>
-              <button
-                aria-label={formatMessage(content.row.copyUsernameNamed, named)}
-                className={styles.copyButton}
-                data-copied={
-                  usernameCopy === UsernameCopyStatus.Copied ? "true" : "false"
-                }
-                onClick={copyUsername}
-                type="button"
-              >
-                <FontAwesomeIcon
-                  aria-hidden="true"
-                  icon={
-                    usernameCopy === UsernameCopyStatus.Copied
-                      ? faCheck
-                      : faCopy
-                  }
-                />
-                <span>
-                  {usernameCopy === UsernameCopyStatus.Copied
-                    ? content.row.usernameCopied
-                    : content.row.copyUsername}
-                </span>
-              </button>
-              <span aria-live="polite" className="sr-only" role="status">
-                {usernameCopy === UsernameCopyStatus.Copied
-                  ? content.row.usernameCopiedAnnouncement
-                  : ""}
-              </span>
-              {usernameCopy === UsernameCopyStatus.Failed ? (
-                <span className={styles.copyError} role="alert">
-                  {content.secretField.clipboardFailed}
-                </span>
-              ) : null}
-            </dd>
-          </div>
-        ) : null}
-        <div className={styles.fact}>
-          <dt>{content.row.secret}</dt>
-          <dd>{secretField(SecretField.Secret, content.row.secretNamed)}</dd>
-        </div>
-        {credential.hasNote ? (
-          <div className={styles.fact}>
-            <dt>{content.row.note}</dt>
-            <dd>
-              {secretField(SecretField.Note, content.row.noteNamed, true)}
-            </dd>
-          </div>
-        ) : null}
-      </dl>
+      <CredentialFacts
+        canReveal={canReveal}
+        configured={configured}
+        entry={credential}
+        labels={content}
+        onRevealAction={(field, intent) =>
+          onRevealAction(credential, field, intent)
+        }
+      />
       <p className={styles.meta}>
         <span>
           {formatMessage(content.row.secretChanged, {

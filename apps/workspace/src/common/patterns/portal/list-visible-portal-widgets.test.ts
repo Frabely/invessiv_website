@@ -25,8 +25,22 @@ describe("listVisiblePortalWidgets", () => {
         Permission.PortalFilesRead,
         Permission.PortalFeedbackRead,
         Permission.PortalOnboardingRead,
+        Permission.PortalCredentialsRead,
       ]),
     ).toHaveLength(Object.values(PortalWidgetKey).length);
+  });
+
+  it("hides the credentials widget from the standard role", () => {
+    expect(
+      keys([
+        Permission.PortalAccess,
+        Permission.PortalProjectsRead,
+        Permission.PortalTasksRead,
+        Permission.PortalFilesRead,
+        Permission.PortalFeedbackRead,
+        Permission.PortalOnboardingRead,
+      ]),
+    ).not.toContain(PortalWidgetKey.Credentials);
   });
 
   it("drops both task widgets without portal.tasks.read", () => {

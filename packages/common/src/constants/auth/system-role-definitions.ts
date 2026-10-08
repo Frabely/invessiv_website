@@ -1,6 +1,7 @@
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import {
   PORTAL_PERMISSION_VALUES,
+  PORTAL_STANDARD_EXCLUDED_PERMISSION_VALUES,
   WORKSPACE_PERMISSION_VALUES,
 } from "@invessiv/common/constants/auth/permission-definitions";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
@@ -55,7 +56,20 @@ export const SYSTEM_ROLE_DEFINITIONS = {
     id: "7d0c2a52-3f4b-4c3e-9a51-0b6f1e2d7a04",
     realm: AuthRealm.Portal,
     name: "Portal standard",
-    // Derived, not listed: a new portal permission must never be missing from the default role.
-    permissions: PORTAL_PERMISSION_VALUES,
+    // Derived, minus the permissions that are only ever granted on purpose (customer credentials).
+    permissions: PORTAL_PERMISSION_VALUES.filter(
+      (permission) =>
+        !PORTAL_STANDARD_EXCLUDED_PERMISSION_VALUES.includes(permission),
+    ),
+  },
+  [SystemRoleKey.PortalCredentials]: {
+    id: "7d0c2a52-3f4b-4c3e-9a51-0b6f1e2d7a05",
+    realm: AuthRealm.Portal,
+    name: "Portal credentials",
+    permissions: [
+      Permission.PortalCredentialsRead,
+      Permission.PortalCredentialsReveal,
+      Permission.PortalCredentialsWrite,
+    ],
   },
 } as const satisfies Record<SystemRoleKey, SystemRoleDefinition>;

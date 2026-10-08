@@ -290,4 +290,16 @@ Plan: `apps/workspace/plans/crm/19-credentials/18-credentials-ui.md`.
 - Routen bauen ihre Antwort über `lib/credentials/` (`privateCredentialResponse` setzt `no-store` auch auf abgewiesene
   Antworten; der Fehler-Callback loggt nie den Fehler selbst). Die Helfer liegen dort, weil die Portal-Routen aus
   Task 71 sie mitnutzen.
-- `visible_to_customer` schreibt der interne Pfad bis Task 71 ausschließlich als `false`.
+- **Freigabe (ab Task 71):** Drei interne Wege schreiben `visible_to_customer`, alle mit denselben Regeln und
+  demselben Event: der Befehl `setCredentialPortalVisibility`, **Anlegen** mit `visibleToCustomer: true` (sonst
+  intern) und **Bearbeiten** mit `visibleToCustomer` (weggelassen = unverändert). Regeln: Rücknahme bei
+  `created_by_side = customer` ist `customer_owned`; Freigabe an einem im Portal nicht sichtbaren Projekt ist
+  `project_hidden` — beim Bearbeiten zählt das Projekt **nach** der Änderung; in beiden Fällen wird nichts
+  geschrieben. Jede tatsächliche Änderung der Freigabe schreibt ein eigenes
+  `credential_portal_visibility_changed` neben `credential_created` bzw. `credential_updated`; ein Bearbeiten,
+  das nur die Freigabe ändert, schreibt nur dieses eine Event. Der gleiche Wert wie gespeichert ist auf jedem Weg
+  ein Erfolg ohne Write und ohne Event. Die Projektprüfung läuft über `credentialPortalProjectService`; beide
+  Ablehnungen antworten 409.
+- **Anlegen, Patch und Aufdecken teilen sich die Logik mit dem Portal:** `credentialWriteService.insert` und
+  `.buildPatch`, `credentialRevealService.reveal` und die Feldregeln `credentialRequestSchemas` liegen unter
+  `server/shared/services/credential/`. Die Handler hier behalten Zugriff, Zielprüfung, Version und Event-Actor.

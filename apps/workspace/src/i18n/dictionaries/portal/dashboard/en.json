@@ -169,6 +169,15 @@
       "more": "and {count} more",
       "moreOne": "and 1 more"
     },
+    "credentials": {
+      "title": "Credentials",
+      "count": "{count} credentials stored",
+      "countOne": "1 credential stored",
+      "empty": "No credential stored yet.",
+      "hint": "Passwords are stored encrypted with us and only appear when you open them.",
+      "open": "Open credentials",
+      "add": "Add credential"
+    },
     "serviceRequest": {
       "title": "Request a service",
       "open": "Learn more",

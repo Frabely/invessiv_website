@@ -42,6 +42,13 @@ Ergänzen, erneutes Absenden, Block vollständig).
 `portal-tasks.e2e.ts` prüft außerdem das Anlegen einer Kundenanfrage im Dialog sowie das Abhaken und Wiederöffnen einer
 Kundenaufgabe; ein vom Team gesetzter Haken bleibt gesperrt. Das Setup legt dafür ein eigenes aktives Projekt an.
 
+`portal-credentials.e2e.ts` prüft auf einer separaten Testfirma interne Freigabe, Metadaten ohne Klartext,
+Aufdecken von Passwort und Notiz, Kopieren, Anlegen und Ändern im Browser, Versionskonflikte, Rücknahme der
+Freigabe, Rollenentzug beim nächsten Request und Fremdzugriffe. Der Standardkontakt erhält dort keine
+Credential-Rolle. Die Owner-Sicht wird in DE/EN, Dark/Light und auf Desktop/Mobil geprüft; sie erlaubt weder
+Aufdecken noch Schreiben. Escape schließt den per Tastatur fokussierten Dialog. Screenshots entstehen im
+ignorierten Test-Ausgabeordner. `CRM_CREDENTIALS_KEYRING` muss in der Development-Konfiguration gültig sein.
+
 Start aus der Repository-Wurzel:
 
 ```powershell
@@ -56,13 +63,13 @@ Zusätzlich muss der Development-Endpunkt zur fest hinterlegten Kennung in
 Endpunkt ersetzt, muss diese Kennung bewusst aktualisiert werden.
 Danach führt er die
 Migrationen aus, baut die Workspace-App mit den Development-Werten und startet Playwright. Das
-Playwright-Setup legt drei synthetische Clerk-Nutzer mit `+clerk_test`-Adressen bei Bedarf an,
-erzeugt zwei Kunden und ihre Kontaktzuordnungen neu und speichert frische Sitzungen unter
+Playwright-Setup legt fünf synthetische Clerk-Nutzer mit `+clerk_test`-Adressen bei Bedarf an,
+erzeugt seine Testkunden und Kontaktzuordnungen neu und speichert frische Sitzungen unter
 `apps/workspace/.playwright/`. Es werden keine echten Postfächer benötigt. Der abgelaufene
 Einladungstoken liegt an einem separaten Kontakt, damit spätere Tests ihn nicht widerrufen.
 
 Das Fixture löscht beim nächsten Lauf nur seine eigenen Kunden und Kontakte anhand des
-`Invessiv Portal E2E`-Präfixes. Die drei Clerk-Testnutzer bleiben zur Wiederverwendung bestehen.
+`Invessiv Portal E2E`-Präfixes. Die fünf Clerk-Testnutzer bleiben zur Wiederverwendung bestehen.
 Security-Events bleiben als Audit-Historie erhalten. `.playwright/` ist ignoriert und darf nie
 committet werden. Die Suite läuft über `playwright.portal.config.ts` verbindlich; ein fehlgeschlagenes
 Setup führt zu roten Tests statt Skips. Das normale `test:e2e` enthält weiterhin die bestehenden

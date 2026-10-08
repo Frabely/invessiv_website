@@ -18,4 +18,6 @@ export interface UpdateCredentialRequestDto {
   secret?: string;
   /** Three states: omitted keeps the note, text replaces it, null removes it. */
   note?: string | null;
+  /** Releases the entry to the portal or takes the release back, audited like the release command. Omitted leaves it as it is. */
+  visibleToCustomer?: boolean;
 }

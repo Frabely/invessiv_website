@@ -68,6 +68,8 @@ describe("system message constants", () => {
       OnboardingChangesRequested: "onboardingChangesRequested",
       OnboardingCompleted: "onboardingCompleted",
       CustomerTaskRequested: "customerTaskRequested",
+      CredentialAddedByCustomer: "credentialAddedByCustomer",
+      CredentialSecretChangedByCustomer: "credentialSecretChangedByCustomer",
     });
     expect(SYSTEM_MESSAGE_KEY_VALUES).toEqual(Object.values(SystemMessageKey));
     expect(SystemMessageParam).toEqual({

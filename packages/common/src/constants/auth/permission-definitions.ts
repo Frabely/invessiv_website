@@ -320,6 +320,27 @@ export const PERMISSION_DEFINITIONS = {
     assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
     description: "Fill in, attach files to and submit onboarding forms.",
   },
+  [Permission.PortalCredentialsRead]: {
+    realm: AuthRealm.Portal,
+    delegable: true,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description: "See released credentials without their secret values.",
+  },
+  [Permission.PortalCredentialsReveal]: {
+    realm: AuthRealm.Portal,
+    delegable: true,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description: "Reveal and copy a single released credential secret.",
+  },
+  [Permission.PortalCredentialsWrite]: {
+    realm: AuthRealm.Portal,
+    delegable: true,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description: "Add own credentials and change released ones.",
+  },
   [Permission.RolesManage]: {
     realm: AuthRealm.Workspace,
     delegable: false,
@@ -370,6 +391,17 @@ export const PORTAL_PERMISSION_VALUES: readonly Permission[] =
       PERMISSION_DEFINITIONS[permission].realm === AuthRealm.Portal,
   );
 
+/**
+ * Portal permissions that are only ever granted on purpose, through `portal_credentials`. They
+ * never reach a contact through the default role.
+ */
+export const PORTAL_STANDARD_EXCLUDED_PERMISSION_VALUES: readonly Permission[] =
+  [
+    Permission.PortalCredentialsRead,
+    Permission.PortalCredentialsReveal,
+    Permission.PortalCredentialsWrite,
+  ];
+
 /** Explicit allowlist: adding a portal permission must never grant owner views a write capability. */
 export const PORTAL_READ_PERMISSION_VALUES = [
   Permission.PortalAccess,
@@ -379,4 +411,5 @@ export const PORTAL_READ_PERMISSION_VALUES = [
   Permission.PortalFilesRead,
   Permission.PortalFeedbackRead,
   Permission.PortalOnboardingRead,
+  Permission.PortalCredentialsRead,
 ] as const satisfies readonly Permission[];

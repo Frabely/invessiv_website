@@ -12,6 +12,8 @@ export const SystemMessageKey = {
   OnboardingChangesRequested: "onboardingChangesRequested",
   OnboardingCompleted: "onboardingCompleted",
   CustomerTaskRequested: "customerTaskRequested",
+  CredentialAddedByCustomer: "credentialAddedByCustomer",
+  CredentialSecretChangedByCustomer: "credentialSecretChangedByCustomer",
 } as const;
 export type SystemMessageKey =
   (typeof SystemMessageKey)[keyof typeof SystemMessageKey];
@@ -28,6 +30,8 @@ export const SYSTEM_MESSAGE_KEY_VALUES = [
   SystemMessageKey.OnboardingChangesRequested,
   SystemMessageKey.OnboardingCompleted,
   SystemMessageKey.CustomerTaskRequested,
+  SystemMessageKey.CredentialAddedByCustomer,
+  SystemMessageKey.CredentialSecretChangedByCustomer,
 ] as const;
 
 /** Parameter names stored in `messages.metadata` of a system event. */

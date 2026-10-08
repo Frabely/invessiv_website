@@ -153,6 +153,43 @@ describe("credentialFormRequest", () => {
     });
   });
 
+  it("sends the release only when it was chosen", () => {
+    expect(credentialFormRequest.toCreateRequest(filled)).not.toHaveProperty(
+      "visibleToCustomer",
+    );
+    expect(
+      credentialFormRequest.toCreateRequest({
+        ...filled,
+        visibleToCustomer: true,
+      }),
+    ).toMatchObject({ visibleToCustomer: true });
+  });
+
+  it("sends a release change on an edit only where the form offers it and it differs", () => {
+    const stored = {
+      id: "entry-1",
+      title: "Domain",
+      credentialType: CredentialType.Other,
+      projectId: null,
+      url: null,
+      username: null,
+      hasNote: false,
+      version: 3,
+    };
+    const values = {
+      ...credentialFormRequest.valuesOf(stored),
+      visibleToCustomer: true,
+    };
+
+    expect(credentialFormRequest.toUpdateRequest(values, stored)).toBeNull();
+    expect(
+      credentialFormRequest.toUpdateRequest(values, stored, true),
+    ).toBeNull();
+    expect(
+      credentialFormRequest.toUpdateRequest(values, stored, false),
+    ).toEqual({ version: 3, visibleToCustomer: true });
+  });
+
   it("requires title and, for a new entry, the secret", () => {
     const empty = credentialFormRequest.emptyValues(null);
 

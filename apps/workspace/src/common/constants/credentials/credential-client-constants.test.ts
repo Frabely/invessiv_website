@@ -10,7 +10,14 @@ import { RevealedSecretStatus } from "./revealed-secret-status";
 
 describe("credential client constants", () => {
   it.each([
-    [CredentialApiPath, { Credentials: "credentials", Reveal: "reveal" }],
+    [
+      CredentialApiPath,
+      {
+        Credentials: "credentials",
+        Reveal: "reveal",
+        PortalVisibility: "portal-visibility",
+      },
+    ],
     [
       CredentialListLoadStatus,
       { Loading: "loading", Ready: "ready", Error: "error" },

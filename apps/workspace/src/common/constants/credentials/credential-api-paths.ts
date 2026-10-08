@@ -2,6 +2,7 @@
 export const CredentialApiPath = {
   Credentials: "credentials",
   Reveal: "reveal",
+  PortalVisibility: "portal-visibility",
 } as const;
 
 export type CredentialApiPath =

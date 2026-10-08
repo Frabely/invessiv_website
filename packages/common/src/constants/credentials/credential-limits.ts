@@ -6,5 +6,7 @@ export const CREDENTIAL_LIMITS = {
   noteMax: 4000,
   revealWindowSeconds: 60,
   revealsPerWindowInternal: 20,
+  revealsPerWindowPortal: 10,
+  maxPortalCreatedPerCustomer: 100,
   autoHideSeconds: 30,
 } as const;

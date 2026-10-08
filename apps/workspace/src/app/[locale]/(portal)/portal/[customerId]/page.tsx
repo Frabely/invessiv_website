@@ -7,6 +7,7 @@ import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
 import { PortalDashboard } from "@/components/portal/dashboard/portal-dashboard/portal-dashboard";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import {
+  getPortalCredentialsDictionary,
   getPortalDashboardDictionary,
   getPortalFilesDictionary,
   getPortalMessagesDictionary,
@@ -18,6 +19,7 @@ import { PortalSection } from "@/common/constants/portal/portal-sections";
 import { listPortalFiles } from "@/server/portal/query-handler/list-portal-files.query-handler";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { requirePortalReader } from "@/server/portal/auth/require-portal-reader";
+import { getPortalCredentialsSummary } from "@/server/portal/query-handler/get-portal-credentials-summary.query-handler";
 import { getPortalConversation } from "@/server/portal/query-handler/get-portal-conversation.query-handler";
 import { getPortalDashboard } from "@/server/portal/query-handler/get-portal-dashboard.query-handler";
 import { getPortalOnboardingCall } from "@/server/portal/query-handler/get-portal-onboarding-call.query-handler";
@@ -79,29 +81,37 @@ export default async function PortalCustomerPage({
       await listPortalCurrentProjects(reader),
       typeof projectParam === "string" ? projectParam : null,
     )?.id ?? null;
-  const [dashboard, conversationResult, fromUs, fromYou, widgetForm] =
-    await Promise.all([
-      getPortalDashboard(reader, today, selectedProjectId),
-      getPortalConversation(reader, null),
-      listPortalFiles(reader, {
-        origin: PortalFileOrigin.FromUs,
-        pageSize: DASHBOARD_FILES_PREVIEW_SIZE,
-        projectId: canReadProjects
-          ? (selectedProjectId ?? undefined)
-          : undefined,
-      }),
-      listPortalFiles(reader, {
-        origin: PortalFileOrigin.FromYou,
-        pageSize: DASHBOARD_FILES_PREVIEW_SIZE,
-        projectId: canReadProjects
-          ? (selectedProjectId ?? undefined)
-          : undefined,
-      }),
-      // Without a current project, the onboarding widget has no form to show.
-      selectedProjectId
-        ? getPortalOnboardingWidgetForm(reader, selectedProjectId)
-        : null,
-    ]);
+  // Asked up front: credentials are only counted when their widget is shown to this reader.
+  const showsCredentials = listVisiblePortalWidgets(
+    reader.permissions,
+    new Set(),
+  ).some((entry) => entry.key === PortalWidgetKey.Credentials);
+  const [
+    dashboard,
+    conversationResult,
+    fromUs,
+    fromYou,
+    widgetForm,
+    credentials,
+  ] = await Promise.all([
+    getPortalDashboard(reader, today, selectedProjectId),
+    getPortalConversation(reader, null),
+    listPortalFiles(reader, {
+      origin: PortalFileOrigin.FromUs,
+      pageSize: DASHBOARD_FILES_PREVIEW_SIZE,
+      projectId: canReadProjects ? (selectedProjectId ?? undefined) : undefined,
+    }),
+    listPortalFiles(reader, {
+      origin: PortalFileOrigin.FromYou,
+      pageSize: DASHBOARD_FILES_PREVIEW_SIZE,
+      projectId: canReadProjects ? (selectedProjectId ?? undefined) : undefined,
+    }),
+    // Without a current project, the onboarding widget has no form to show.
+    selectedProjectId
+      ? getPortalOnboardingWidgetForm(reader, selectedProjectId)
+      : null,
+    showsCredentials ? getPortalCredentialsSummary(reader) : null,
+  ]);
   const onboardingCall = widgetForm
     ? await getPortalOnboardingCall(reader, widgetForm.id)
     : null;
@@ -133,6 +143,8 @@ export default async function PortalCustomerPage({
             : null
         }
         content={content}
+        credentials={credentials}
+        credentialsContent={getPortalCredentialsDictionary(activeLocale)}
         conversation={
           conversationResult.ok ? conversationResult.conversation : null
         }

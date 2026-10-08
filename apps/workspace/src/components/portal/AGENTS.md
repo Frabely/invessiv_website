@@ -264,3 +264,31 @@ Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-le
   `portal.messages.read`) reicht die Seite herein; ohne Recht fehlt der Link, der Satz bleibt wahr. Antworten und
   Anhänge stehen im geteilten `OnboardingAnswerReadView`, es gibt keine Schreibaktion. Das Widget zeigt
   „Abgeschlossen am …“ mit „Ansehen“; die Terminkarte entfällt, weil der Server keinen `call` mehr liefert.
+
+## Zugangsdaten (ab Task 71)
+
+Plan: `apps/workspace/plans/crm/19-credentials/71-credentials-portal.md`.
+
+- **Keine eigene Seite.** Zugangsdaten sind ein Dialog des Dashboards, wie die Sektion im CRM-Cockpit
+  (Entscheidung 07.10.2026). Das Widget `credentials` steht mit `openMode: Dialog` in `PORTAL_WIDGET_LAYOUT`; der
+  Dialog hängt an `?widget=credentials`.
+- Komponenten liegen unter `credentials/`; Orchestrator ist `credentials/portal-credentials-dialog`. Er lädt die
+  Liste über `usePortalCredentials` (`src/hooks/portal/`) erst beim Öffnen — nie mit dem Dashboard — und nach
+  jedem Speichern neu.
+- **Das Dashboard kennt nur `PortalCredentialsSummaryDto`** (Zahl, `canWrite`, `configured`), nie Titel,
+  Benutzernamen oder Werte. Die Seite lädt es über `getPortalCredentialsSummary` nur, wenn das Widget für den
+  Leser sichtbar ist; ohne `portal.credentials.read` gibt es weder Widget noch Dialog.
+- **Zwei Wege hinein:** „Zugangsdaten öffnen“ zeigt die Liste, „Zugang hinterlegen“ (nur mit `canWrite`) öffnet
+  direkt das Formular und schließt beim Abbrechen oder Speichern wieder zum Dashboard.
+- **Nie zwei Dialoge übereinander.** Hinterlegen und Ändern ersetzen die Liste durch das Formular und kehren danach
+  zu ihr zurück.
+- **Aktionen nur aus `capabilities` der Liste:** Anzeigen und Kopieren mit `canReveal`, „Zugang hinterlegen“ und
+  „Ändern“ mit `canWrite`. Es gibt keinen Lösch-, Projekt- oder Freigabeweg. Die Owner-Sicht bekommt den
+  Owner-Hinweis mit CRM-Link.
+- **Geteilte Bausteine statt Kopien:** Geheimnisfeld, Typ-Symbol, Faktenliste (`credential-facts`) und der
+  Formular-Dialog (`credential-form-dialog`) kommen aus `components/shared/credentials/` — dieselben wie im
+  Cockpit. Das Portal bindet nur Endpunkte, Texte und Projekte an (`portal-credential-form-dialog`). Feldregeln und
+  Request-Bau laufen über `credentialFormRequest`.
+- Der Formular-Dialog nennt über den Feldern, wer die Werte lesen kann (`form.notice`). Beim Ändern gibt es keine
+  Projektwahl.
+- Fehlertexte nur über `portalCredentialErrorText` (`common/patterns/portal/`).

@@ -318,6 +318,18 @@ Plan: `apps/workspace/plans/crm/19-credentials/18-credentials-ui.md`.
 - Projektfilter ist URL-State unter `CustomerCredentialsQueryParam.Project` (`useCredentialProjectFilter`), getrennt
   vom Dateifilter. Ein Projektfilter zeigt das Projekt **und** die kundenweiten Einträge, getrennt gruppiert
   (`groupCredentials`); ein leeres Projekt bleibt als Gruppe mit Hinweis stehen.
+- **Freigabe (ab Task 71):** Die Zeile zeigt „Im Portal sichtbar“ und bei Kundeneinträgen „Vom Kunden“ (`Badge`).
+  „Für Portal freigeben“ bzw. „Freigabe zurücknehmen“ öffnet `credential-portal-visibility-dialog`
+  (`useVersionedMutation`); er nennt ausdrücklich Benutzername, Passwort **und Notiz**. Bei Kundeneinträgen fehlt
+  die Aktion, weil ihre Freigabe nicht zurücknehmbar ist. Die Richtung steht beim Öffnen fest und kippt bei einem
+  Konflikt nicht.
+- **Freigabe im Formular:** Anlegen- und Bearbeiten-Dialog bieten den Haken „Für das Kundenportal freigeben“
+  (`release` und `releasedAction` am geteilten Formular; neu: Standard aus, beim Bearbeiten der gespeicherte
+  Stand). Der Hinweis darunter nennt Benutzername, Passwort und Notiz. Bei Kundeneinträgen fehlt der Haken; das
+  Portal-Formular bietet ihn nie. Das Augen-Symbol in der Zeile bleibt der schnelle Weg ohne Formular.
+- **Formular-Dialog und Faktenliste sind geteilt:** `credential-form-dialog` hier ist nur die Bindung an
+  CRM-Endpunkte, Texte und Projekt-Scopes; Formular und Faktenliste (`credential-facts`) liegen unter
+  `components/shared/credentials/`, weil das Portal sie unverändert nutzt.
 - Formularwerte ↔ Request nur über `common/patterns/crm/credentials/credential-form-request.ts`. Beim Bearbeiten wird
   das Geheimnis nie geladen (leer = unverändert); die Notiz bleibt zugeklappt, bis jemand „Aufdecken und bearbeiten“
   (zählt als Aufdeckung), „Ersetzen“ oder „Entfernen“ wählt.

@@ -101,6 +101,15 @@ export const PORTAL_WIDGET_LAYOUT: readonly PortalWidgetDefinition[] = [
     onlyWithContent: false,
   },
   {
+    key: PortalWidgetKey.Credentials,
+    order: 95,
+    span: QUARTER_ROW,
+    openMode: WidgetOpenMode.Dialog,
+    mock: false,
+    requiredPermission: Permission.PortalCredentialsRead,
+    onlyWithContent: false,
+  },
+  {
     key: PortalWidgetKey.Hours,
     order: 100,
     span: QUARTER_ROW,

@@ -20,14 +20,17 @@ import { CredentialSide } from "@invessiv/common/constants/credentials/credentia
 import { CredentialType } from "@invessiv/common/constants/credentials/credential-types";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { CreateCredentialRequestDto } from "@invessiv/common/contracts/credentials/create-credential-request.dto";
+import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import {
   customerCredentials,
+  projects,
   securityEvents,
 } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { createCredential } from "@/server/workspace/crm/command-handler/create-credential.command-handler";
 import { deleteCredential } from "@/server/workspace/crm/command-handler/delete-credential.command-handler";
 import { revealCredential } from "@/server/workspace/crm/command-handler/reveal-credential.command-handler";
+import { setCredentialPortalVisibility } from "@/server/workspace/crm/command-handler/set-credential-portal-visibility.command-handler";
 import { updateCredential } from "@/server/workspace/crm/command-handler/update-credential.command-handler";
 import { listCustomerCredentials } from "@/server/workspace/crm/query-handler/list-customer-credentials.query-handler";
 import { createFileTestFixture } from "../../../shared/files/file-test-fixture";
@@ -638,6 +641,324 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         code: E.NotFound,
       });
       expect(await events()).toHaveLength(1);
+    });
+
+    it("creates internal by default and audits a release at creation as its own event", async () => {
+      const internal = await create({ projectId: null });
+      expect(internal.visibleToCustomer).toBe(false);
+      expect(await events()).toHaveLength(1);
+      await clearEvents();
+
+      const released = await create({
+        projectId: null,
+        visibleToCustomer: true,
+      });
+
+      expect(released).toMatchObject({ visibleToCustomer: true, version: 1 });
+      expect((await storedRow(released.id)).visible_to_customer).toBe(true);
+      const written = await events();
+      expect(written.map((event) => event.type).sort()).toEqual(
+        [
+          SecurityEventType.CredentialCreated,
+          SecurityEventType.CredentialPortalVisibilityChanged,
+        ].sort(),
+      );
+      expect(
+        written.find(
+          (event) =>
+            event.type === SecurityEventType.CredentialPortalVisibilityChanged,
+        )?.metadata,
+      ).toMatchObject({ visible: true });
+    });
+
+    it("refuses a release at creation on a project the portal does not show and writes nothing", async () => {
+      await f
+        .database()
+        .update(projects)
+        .set({ status: ProjectStatus.Archived })
+        .where(eq(projects.id, f.projectId));
+      try {
+        expect(
+          await createCredential(
+            f.customerId,
+            input({ visibleToCustomer: true }),
+            admin(),
+          ),
+        ).toEqual({ ok: false, code: E.ProjectHidden });
+        // Internal stays possible on the same project.
+        expect(await create()).toMatchObject({ visibleToCustomer: false });
+      } finally {
+        await f
+          .database()
+          .update(projects)
+          .set({ status: ProjectStatus.Active })
+          .where(eq(projects.id, f.projectId));
+      }
+      expect((await events()).map((event) => event.type)).toEqual([
+        SecurityEventType.CredentialCreated,
+      ]);
+    });
+
+    it("releases and withdraws through an edit, audited next to the edit", async () => {
+      const created = await create({ projectId: null });
+      await clearEvents();
+
+      const released = await updateCredential(
+        created.id,
+        { version: 1, title: "Renamed-marker", visibleToCustomer: true },
+        admin(),
+      );
+      expect(released).toMatchObject({
+        ok: true,
+        value: { visibleToCustomer: true, version: 2 },
+      });
+      expect((await events()).map((event) => event.type).sort()).toEqual(
+        [
+          SecurityEventType.CredentialPortalVisibilityChanged,
+          SecurityEventType.CredentialUpdated,
+        ].sort(),
+      );
+      await clearEvents();
+
+      // Asking for what already holds is not a change.
+      expect(
+        await updateCredential(
+          created.id,
+          { version: 2, visibleToCustomer: true },
+          admin(),
+        ),
+      ).toMatchObject({ ok: true, value: { version: 2 } });
+      expect(await events()).toHaveLength(0);
+
+      // The release alone writes only the release event.
+      expect(
+        await updateCredential(
+          created.id,
+          { version: 2, visibleToCustomer: false },
+          admin(),
+        ),
+      ).toMatchObject({
+        ok: true,
+        value: { visibleToCustomer: false, version: 3 },
+      });
+      const written = await events();
+      expect(written.map((event) => event.type)).toEqual([
+        SecurityEventType.CredentialPortalVisibilityChanged,
+      ]);
+      expect(written[0].metadata).toMatchObject({ visible: false });
+    });
+
+    it("refuses a release through an edit on a hidden project and a withdrawal of a customer entry", async () => {
+      const onProject = await create();
+      const customerWide = await create({ projectId: null });
+      await clearEvents();
+      await f
+        .database()
+        .update(projects)
+        .set({ status: ProjectStatus.Archived })
+        .where(eq(projects.id, f.projectId));
+      try {
+        expect(
+          await updateCredential(
+            onProject.id,
+            { version: 1, title: "Renamed", visibleToCustomer: true },
+            admin(),
+          ),
+        ).toEqual({ ok: false, code: E.ProjectHidden });
+        // The project after the edit counts: moving there and releasing is refused as well.
+        expect(
+          await updateCredential(
+            customerWide.id,
+            { version: 1, projectId: f.projectId, visibleToCustomer: true },
+            admin(),
+          ),
+        ).toEqual({ ok: false, code: E.ProjectHidden });
+      } finally {
+        await f
+          .database()
+          .update(projects)
+          .set({ status: ProjectStatus.Active })
+          .where(eq(projects.id, f.projectId));
+      }
+      expect((await storedRow(onProject.id)).title).toBe(TITLE);
+
+      const customerEntryId = crypto.randomUUID();
+      await f.database().insert(customerCredentials).values({
+        id: customerEntryId,
+        customer_id: f.customerId,
+        project_id: null,
+        title: TITLE,
+        credential_type: CredentialType.Email,
+        url: null,
+        username: null,
+        secret_ciphertext: "v1.1.fixture.fixture",
+        note_ciphertext: null,
+        visible_to_customer: true,
+        created_by_side: CredentialSide.Customer,
+        created_by_member_id: null,
+        created_by_portal_membership_id: f.membershipId,
+        secret_changed_at: new Date(),
+        version: 1,
+      });
+      expect(
+        await updateCredential(
+          customerEntryId,
+          { version: 1, visibleToCustomer: false },
+          admin(),
+        ),
+      ).toEqual({ ok: false, code: E.CustomerOwned });
+      expect(await events()).toHaveLength(0);
+    });
+
+    it("keeps both release paths idempotent after the project becomes hidden", async () => {
+      const created = await create({ visibleToCustomer: true });
+      await clearEvents();
+      await f
+        .database()
+        .update(projects)
+        .set({ status: ProjectStatus.Archived })
+        .where(eq(projects.id, f.projectId));
+      try {
+        const expected = {
+          ok: true,
+          value: { visibleToCustomer: true, version: created.version },
+        };
+        expect(
+          await setCredentialPortalVisibility(
+            created.id,
+            { version: created.version, visibleToCustomer: true },
+            admin(),
+          ),
+        ).toMatchObject(expected);
+        expect(
+          await updateCredential(
+            created.id,
+            { version: created.version, visibleToCustomer: true },
+            admin(),
+          ),
+        ).toMatchObject(expected);
+        expect(await events()).toHaveLength(0);
+        expect((await storedRow(created.id)).version).toBe(created.version);
+      } finally {
+        await f
+          .database()
+          .update(projects)
+          .set({ status: ProjectStatus.Active })
+          .where(eq(projects.id, f.projectId));
+      }
+    });
+
+    it("releases and withdraws with one event per change", async () => {
+      const created = await create({ projectId: null });
+      await clearEvents();
+      const set = (version: number, visibleToCustomer: boolean) =>
+        setCredentialPortalVisibility(
+          created.id,
+          { version, visibleToCustomer },
+          admin(),
+        );
+
+      expect(await set(1, true)).toMatchObject({
+        ok: true,
+        value: { visibleToCustomer: true, version: 2 },
+      });
+      // Already released: no write, no version bump, no second event.
+      expect(await set(2, true)).toMatchObject({
+        ok: true,
+        value: { version: 2 },
+      });
+      expect(await set(1, false)).toMatchObject({
+        ok: false,
+        code: ConcurrencyErrorCode.VersionConflict,
+        conflict: { currentVersion: 2, current: { visibleToCustomer: true } },
+      });
+      expect(await set(2, false)).toMatchObject({
+        ok: true,
+        value: { visibleToCustomer: false, version: 3 },
+      });
+
+      const written = await events();
+      expect(written.map((event) => event.type)).toEqual([
+        SecurityEventType.CredentialPortalVisibilityChanged,
+        SecurityEventType.CredentialPortalVisibilityChanged,
+      ]);
+      expect(
+        written.map(
+          (event) => (event.metadata as { visible: boolean }).visible,
+        ),
+      ).toEqual(expect.arrayContaining([true, false]));
+      expect(JSON.stringify(written)).not.toContain(TITLE);
+    });
+
+    it("refuses a release outside the scope, on a hidden project and a withdrawal of a customer entry", async () => {
+      const onProject = await create();
+      await clearEvents();
+      const change = (
+        id: string,
+        actor: WorkspaceActor = admin(),
+        visibleToCustomer = true,
+      ) =>
+        setCredentialPortalVisibility(
+          id,
+          { version: 1, visibleToCustomer },
+          actor,
+        );
+
+      expect(await change(onProject.id, bound(f.siblingProjectId))).toEqual({
+        ok: false,
+        code: E.NotFound,
+      });
+      expect(
+        await change(
+          onProject.id,
+          bound(f.projectId, [Permission.CredentialsRead]),
+        ),
+      ).toEqual({ ok: false, code: E.NotFound });
+
+      await f
+        .database()
+        .update(projects)
+        .set({ status: ProjectStatus.Archived })
+        .where(eq(projects.id, f.projectId));
+      try {
+        expect(await change(onProject.id)).toEqual({
+          ok: false,
+          code: E.ProjectHidden,
+        });
+      } finally {
+        await f
+          .database()
+          .update(projects)
+          .set({ status: ProjectStatus.Active })
+          .where(eq(projects.id, f.projectId));
+      }
+
+      const customerEntryId = crypto.randomUUID();
+      await f.database().insert(customerCredentials).values({
+        id: customerEntryId,
+        customer_id: f.customerId,
+        project_id: null,
+        title: TITLE,
+        credential_type: CredentialType.Email,
+        url: null,
+        username: null,
+        secret_ciphertext: "v1.1.fixture.fixture",
+        note_ciphertext: null,
+        visible_to_customer: true,
+        created_by_side: CredentialSide.Customer,
+        created_by_member_id: null,
+        created_by_portal_membership_id: f.membershipId,
+        secret_changed_at: new Date(),
+        version: 1,
+      });
+      expect(await change(customerEntryId, admin(), false)).toEqual({
+        ok: false,
+        code: E.CustomerOwned,
+      });
+
+      expect(await events()).toHaveLength(0);
+      expect((await storedRow(onProject.id)).visible_to_customer).toBe(false);
+      expect((await storedRow(customerEntryId)).visible_to_customer).toBe(true);
     });
 
     it("fails closed on a modified ciphertext", async () => {

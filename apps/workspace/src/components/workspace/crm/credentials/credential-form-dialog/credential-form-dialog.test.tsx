@@ -283,6 +283,47 @@ describe("CredentialFormDialog (create)", () => {
     expect(onSavedAction).toHaveBeenCalledExactlyOnceWith(created, true);
   });
 
+  it("keeps a new entry internal unless the release is ticked", async () => {
+    api.create.mockResolvedValue({
+      ok: true,
+      value: credential({ visibleToCustomer: true, version: 1 }),
+    });
+    renderDialog();
+    const release = screen.getByRole("checkbox", { name: form.release.label });
+
+    expect(release).not.toBeChecked();
+    expect(release).toHaveAccessibleDescription(
+      /Benutzername|username, password and note/,
+    );
+    fireEvent.click(release);
+    type(form.fields.title, "Hosting");
+    type(form.fields.secret, "secret");
+    submit(form.submitCreate);
+
+    await waitFor(() => expect(api.create).toHaveBeenCalledOnce());
+    expect(api.create).toHaveBeenCalledWith(
+      CUSTOMER_ID,
+      expect.objectContaining({ title: "Hosting", visibleToCustomer: true }),
+    );
+  });
+
+  it("explains a release refused for a project the portal does not show", async () => {
+    api.create.mockResolvedValue({
+      ok: false,
+      code: CredentialApiErrorCode.ProjectHidden,
+    });
+    const { onCloseAction } = renderDialog();
+    fireEvent.click(screen.getByRole("checkbox", { name: form.release.label }));
+    type(form.fields.title, "Hosting");
+    type(form.fields.secret, "secret");
+    submit(form.submitCreate);
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      content.errors.project_hidden,
+    );
+    expect(onCloseAction).not.toHaveBeenCalled();
+  });
+
   it("says when encryption is not set up and keeps the input", async () => {
     api.create.mockResolvedValue({
       ok: false,
@@ -310,6 +351,45 @@ describe("CredentialFormDialog (edit)", () => {
     expect(screen.getByText(form.hints.secretKeep)).toBeInTheDocument();
     expect(screen.getByText(form.note.exists)).toBeInTheDocument();
     expect(api.reveal).not.toHaveBeenCalled();
+  });
+
+  it("shows the stored release and changes it together with the edit", async () => {
+    const entry = credential({ visibleToCustomer: false });
+    api.update.mockResolvedValue({
+      ok: true,
+      value: { ...entry, visibleToCustomer: true, version: 4 },
+    });
+    renderDialog(entry);
+    const release = screen.getByRole("checkbox", { name: form.release.label });
+
+    expect(release).not.toBeChecked();
+    fireEvent.click(release);
+    submit(form.submitEdit);
+
+    await waitFor(() => expect(api.update).toHaveBeenCalledOnce());
+    expect(api.update).toHaveBeenCalledWith(entry.id, {
+      version: 3,
+      visibleToCustomer: true,
+    });
+    cleanup();
+
+    renderDialog(credential({ visibleToCustomer: true }));
+    expect(
+      screen.getByRole("checkbox", { name: form.release.label }),
+    ).toBeChecked();
+  });
+
+  it("offers no release choice for an entry the customer created", () => {
+    renderDialog(
+      credential({
+        createdBySide: CredentialSide.Customer,
+        visibleToCustomer: true,
+      }),
+    );
+
+    expect(
+      screen.queryByRole("checkbox", { name: form.release.label }),
+    ).toBeNull();
   });
 
   it("closes without a request when nothing changed", async () => {

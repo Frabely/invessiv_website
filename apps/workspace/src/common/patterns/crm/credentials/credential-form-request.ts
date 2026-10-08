@@ -1,7 +1,7 @@
 import { CREDENTIAL_LIMITS as L } from "@invessiv/common/constants/credentials/credential-limits";
 import { CredentialType } from "@invessiv/common/constants/credentials/credential-types";
 import type { CreateCredentialRequestDto } from "@invessiv/common/contracts/credentials/create-credential-request.dto";
-import type { CredentialDto } from "@invessiv/common/contracts/credentials/credential.dto";
+import type { CredentialFormSource } from "@/common/contracts/crm/credentials/credential-form-source";
 import type { UpdateCredentialRequestDto } from "@invessiv/common/contracts/credentials/update-credential-request.dto";
 import { CredentialNoteMode } from "@/common/constants/crm/credentials/credential-note-modes";
 import { CredentialFormErrorKind } from "@/common/constants/crm/credentials/credential-form-error-kinds";
@@ -23,11 +23,12 @@ function emptyValues(projectId: string | null): CredentialFormValues {
     secret: "",
     noteMode: CredentialNoteMode.Edit,
     note: "",
+    visibleToCustomer: false,
   };
 }
 
 /** Secret and note are never part of the DTO, so both start empty; an existing note is kept. */
-function valuesOf(credential: CredentialDto): CredentialFormValues {
+function valuesOf(credential: CredentialFormSource): CredentialFormValues {
   return {
     title: credential.title,
     credentialType: credential.credentialType,
@@ -39,6 +40,7 @@ function valuesOf(credential: CredentialDto): CredentialFormValues {
       ? CredentialNoteMode.Keep
       : CredentialNoteMode.Edit,
     note: "",
+    visibleToCustomer: false,
   };
 }
 
@@ -80,14 +82,16 @@ function toCreateRequest(
     // Not trimmed: spaces can be part of a password.
     secret: values.secret,
     note: optional(values.note),
+    // Sent only when chosen, so a form that never offers the release sends no such field.
+    ...(values.visibleToCustomer ? { visibleToCustomer: true } : {}),
   };
 }
 
 /** Retains edits but adopts concurrent changes to fields the user left untouched. */
 function rebaseValues(
   values: CredentialFormValues,
-  previous: CredentialDto,
-  current: CredentialDto,
+  previous: CredentialFormSource,
+  current: CredentialFormSource,
 ): CredentialFormValues {
   const fresh = valuesOf(current);
   const noteUntouched =
@@ -118,7 +122,7 @@ function rebaseValues(
 /** Three-valued: undefined keeps the stored note, text replaces it, null removes it. */
 function noteChange(
   values: CredentialFormValues,
-  current: CredentialDto,
+  current: CredentialFormSource,
 ): string | null | undefined {
   if (values.noteMode === CredentialNoteMode.Keep) return undefined;
   if (values.noteMode === CredentialNoteMode.Remove)
@@ -127,10 +131,14 @@ function noteChange(
   return note === null && !current.hasNote ? undefined : note;
 }
 
-/** Only what differs from the stored entry; null when there is nothing to save. */
+/**
+ * Only what differs from the stored entry; null when there is nothing to save. `released` is the
+ * entry's current portal release, or null where the form does not offer to change it.
+ */
 function toUpdateRequest(
   values: CredentialFormValues,
-  current: CredentialDto,
+  current: CredentialFormSource,
+  released: boolean | null = null,
 ): UpdateCredentialRequestDto | null {
   const title = values.title.trim();
   const url = optional(values.url);
@@ -148,6 +156,9 @@ function toUpdateRequest(
     ...(username !== current.username ? { username } : {}),
     ...(values.secret ? { secret: values.secret } : {}),
     ...(note !== undefined ? { note } : {}),
+    ...(released !== null && values.visibleToCustomer !== released
+      ? { visibleToCustomer: values.visibleToCustomer }
+      : {}),
   };
   return Object.keys(changes).length > 0
     ? { ...changes, version: current.version }

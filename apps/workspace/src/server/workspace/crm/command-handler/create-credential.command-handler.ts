@@ -3,20 +3,24 @@ import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { SecurityEventType } from "@invessiv/common/constants/auth/security-event-types";
 import { CredentialApiErrorCode as E } from "@invessiv/common/constants/credentials/credential-api-error-code";
-import { CredentialSecretField } from "@invessiv/common/constants/credentials/credential-secret-fields";
-import { CredentialSide } from "@invessiv/common/constants/credentials/credential-sides";
 import type { CreateCredentialRequestDto } from "@invessiv/common/contracts/credentials/create-credential-request.dto";
 import type { CredentialResult } from "@invessiv/common/contracts/credentials/credential-result";
 import type { CredentialDto } from "@invessiv/common/contracts/credentials/credential.dto";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
-import { customerCredentials } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { credentialCryptoService } from "@/server/shared/services/credential/credential-crypto-service";
 import { credentialEventService } from "@/server/shared/services/credential/credential-event-service";
+import { CredentialSide } from "@invessiv/common/constants/credentials/credential-sides";
+import { credentialWriteService } from "@/server/shared/services/credential/credential-write-service";
 import { credentialAccessService } from "../services/credentials/credential-access-service";
 import { credentialMappingService } from "../services/credentials/credential-mapping-service";
 import { credentialSchemas } from "../services/credentials/credential-schemas";
 
+/**
+ * An entry is internal unless the request releases it. A release at creation follows the same
+ * rule and leaves the same audit trail as a later one: a project the portal does not show is
+ * refused, and the release gets its own event next to the creation.
+ */
 export async function createCredential(
   customerId: string,
   input: CreateCredentialRequestDto,
@@ -40,44 +44,40 @@ export async function createCredential(
       ))
     )
       return { ok: false, code: E.NotFound };
-    // The id is part of the cipher context, so it exists before anything is encrypted.
-    const id = crypto.randomUUID();
-    const now = new Date();
-    const encrypt = (plaintext: string, field: CredentialSecretField) =>
-      credentialCryptoService.encrypt(plaintext, {
-        customerId,
-        credentialId: id,
-        field,
-      });
-    const [row] = await tx
-      .insert(customerCredentials)
-      .values({
-        id,
-        customer_id: customerId,
-        project_id: data.projectId,
-        title: data.title,
-        credential_type: data.credentialType,
-        url: data.url,
-        username: data.username,
-        secret_ciphertext: encrypt(data.secret, CredentialSecretField.Secret),
-        note_ciphertext:
-          data.note === null
-            ? null
-            : encrypt(data.note, CredentialSecretField.Note),
-        // Release to the portal is a separate, audited step (Task 71).
-        visible_to_customer: false,
+    const visibleToCustomer = data.visibleToCustomer === true;
+    const visibilityError = await credentialAccessService.portalVisibilityError(
+      tx,
+      {
         created_by_side: CredentialSide.Internal,
-        created_by_member_id: actor.workspaceMemberId,
-        secret_changed_at: now,
-        version: 1,
-      })
-      .returning();
+        visible_to_customer: false,
+        project_id: data.projectId,
+      },
+      visibleToCustomer,
+    );
+    if (visibilityError) return { ok: false, code: visibilityError };
+    const now = new Date();
+    const eventActor = { type: ActorType.User, userId: actor.userId } as const;
+    const row = await credentialWriteService.insert(tx, {
+      ...data,
+      customerId,
+      visibleToCustomer,
+      origin: { memberId: actor.workspaceMemberId },
+      now,
+    });
     await credentialEventService.record(tx, {
       type: SecurityEventType.CredentialCreated,
-      actor: { type: ActorType.User, userId: actor.userId },
+      actor: eventActor,
       credential: row,
       occurredAt: now,
     });
+    if (visibleToCustomer)
+      await credentialEventService.record(tx, {
+        type: SecurityEventType.CredentialPortalVisibilityChanged,
+        actor: eventActor,
+        credential: row,
+        visible: true,
+        occurredAt: now,
+      });
     return { ok: true, value: credentialMappingService.fromRow(row, actor) };
   });
 }

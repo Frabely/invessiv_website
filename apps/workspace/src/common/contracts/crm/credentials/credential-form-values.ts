@@ -12,4 +12,6 @@ export type CredentialFormValues = {
   secret: string;
   noteMode: CredentialNoteMode;
   note: string;
+  /** Only offered while creating in the CRM; an existing entry is released through its own command. */
+  visibleToCustomer: boolean;
 };

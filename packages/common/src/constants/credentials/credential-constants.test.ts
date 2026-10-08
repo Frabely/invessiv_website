@@ -55,6 +55,8 @@ describe("credential const objects", () => {
       noteMax: 4000,
       revealWindowSeconds: 60,
       revealsPerWindowInternal: 20,
+      revealsPerWindowPortal: 10,
+      maxPortalCreatedPerCustomer: 100,
       autoHideSeconds: 30,
     });
   });

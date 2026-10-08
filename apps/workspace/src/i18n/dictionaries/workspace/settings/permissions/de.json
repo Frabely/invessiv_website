@@ -183,6 +183,18 @@
       "label": "Onboarding im Portal ausfüllen",
       "description": "Onboarding-Bögen ausfüllen, Dateien anhängen und absenden."
     },
+    "portal.credentials.read": {
+      "label": "Zugangsdaten im Portal ansehen",
+      "description": "Freigegebene Zugänge ohne Passwort und Notiz sehen."
+    },
+    "portal.credentials.reveal": {
+      "label": "Zugangsdaten im Portal aufdecken",
+      "description": "Passwort oder Notiz eines freigegebenen Zugangs einzeln anzeigen und kopieren."
+    },
+    "portal.credentials.write": {
+      "label": "Zugangsdaten im Portal hinterlegen",
+      "description": "Eigene Zugänge hinterlegen und freigegebene Zugänge ändern."
+    },
     "roles.manage": {
       "label": "Rollen verwalten",
       "description": "Rollen anlegen und ändern."
@@ -220,6 +232,10 @@
     "portal_standard": {
       "label": "Portal-Standard",
       "description": "Vorbelegte Rolle für neu eingeladene Portalkontakte."
+    },
+    "portal_credentials": {
+      "label": "Portal-Zugangsdaten",
+      "description": "Darf freigegebene Zugangsdaten im Portal sehen, aufdecken, hinterlegen und ändern. Nur gezielt vergeben."
     }
   },
   "ownerOnly": "Nur Owner",

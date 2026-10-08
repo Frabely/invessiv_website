@@ -15,4 +15,6 @@ export interface CreateCredentialRequestDto {
   secret: string;
   /** Optional note in plaintext; encrypted like the secret. */
   note: string | null;
+  /** True releases the new entry to the portal right away, audited like a later release. Omitted means internal. */
+  visibleToCustomer?: boolean;
 }

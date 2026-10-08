@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   PERMISSION_DEFINITIONS,
   PORTAL_PERMISSION_VALUES,
+  PORTAL_STANDARD_EXCLUDED_PERMISSION_VALUES,
   WORKSPACE_PERMISSION_VALUES,
 } from "@invessiv/common/constants/auth/permission-definitions";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
@@ -19,6 +20,7 @@ describe("SystemRoleKey", () => {
       "workspace_member",
       "workspace_credentials_manager",
       "portal_standard",
+      "portal_credentials",
     ]);
     expect(SYSTEM_ROLE_KEY_VALUES).toEqual(Object.values(SystemRoleKey));
     expect(new Set(SYSTEM_ROLE_KEY_VALUES).size).toBe(
@@ -47,12 +49,17 @@ describe("SYSTEM_ROLE_DEFINITIONS", () => {
     ).toEqual([...WORKSPACE_PERMISSION_VALUES].sort());
   });
 
-  it("gives portal standard every portal permission", () => {
+  it("gives portal standard every portal permission except the excluded ones", () => {
     expect(
       [
         ...SYSTEM_ROLE_DEFINITIONS[SystemRoleKey.PortalStandard].permissions,
       ].sort(),
-    ).toEqual([...PORTAL_PERMISSION_VALUES].sort());
+    ).toEqual(
+      PORTAL_PERMISSION_VALUES.filter(
+        (permission) =>
+          !PORTAL_STANDARD_EXCLUDED_PERMISSION_VALUES.includes(permission),
+      ).sort(),
+    );
     expect(
       SYSTEM_ROLE_DEFINITIONS[SystemRoleKey.PortalStandard].permissions,
     ).toContain(Permission.PortalTasksComplete);
@@ -66,6 +73,27 @@ describe("SYSTEM_ROLE_DEFINITIONS", () => {
         Permission.PortalOnboardingSubmit,
       ]),
     );
+  });
+
+  it("keeps customer credentials out of portal standard", () => {
+    const permissions: readonly Permission[] =
+      SYSTEM_ROLE_DEFINITIONS[SystemRoleKey.PortalStandard].permissions;
+
+    expect(
+      permissions.filter((permission) =>
+        permission.startsWith("portal.credentials."),
+      ),
+    ).toEqual([]);
+  });
+
+  it("grants portal credentials exactly the three credential permissions", () => {
+    expect(
+      SYSTEM_ROLE_DEFINITIONS[SystemRoleKey.PortalCredentials].permissions,
+    ).toEqual([
+      Permission.PortalCredentialsRead,
+      Permission.PortalCredentialsReveal,
+      Permission.PortalCredentialsWrite,
+    ]);
   });
 
   it("keeps the member role operational without deleting or revealing", () => {

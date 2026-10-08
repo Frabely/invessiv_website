@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { faCirclePlus, faClock } from "@fortawesome/free-solid-svg-icons";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
 import type { PortalConversationDto } from "@invessiv/common/contracts/portal/portal-conversation.dto";
+import type { PortalCredentialsSummaryDto } from "@invessiv/common/contracts/portal/portal-credentials-summary.dto";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
 import type { PortalFilesOverviewDto } from "@invessiv/common/contracts/portal/portal-files-overview.dto";
 import type { PortalOnboardingCallDto } from "@invessiv/common/contracts/portal/portal-onboarding-call.dto";
@@ -23,6 +24,7 @@ import type { Locale } from "@/config/i18n";
 import { PortalConversation } from "@/components/portal/messages/portal-conversation/portal-conversation";
 import { usePortalTaskCompletion } from "@/hooks/portal/use-portal-task-completion";
 import type {
+  PortalCredentialsDictionary,
   PortalDashboardDictionary,
   PortalFilesDictionary,
   PortalMessagesDictionary,
@@ -34,6 +36,8 @@ import { PortalWidgetDialogHost } from "../portal-widget-dialog-host/portal-widg
 import { PortalCompletedProjectsWidget } from "../widgets/portal-completed-projects-widget/portal-completed-projects-widget";
 import { PortalContactWidget } from "../widgets/portal-contact-widget/portal-contact-widget";
 import { PortalCustomerTasksDialogContent } from "../widgets/portal-customer-tasks-widget/portal-customer-tasks-dialog-content";
+import { PortalCredentialsDialog } from "@/components/portal/credentials/portal-credentials-dialog/portal-credentials-dialog";
+import { PortalCredentialsWidget } from "../widgets/portal-credentials-widget/portal-credentials-widget";
 import { PortalCustomerTasksWidget } from "../widgets/portal-customer-tasks-widget/portal-customer-tasks-widget";
 import { PortalFeedbackWidget } from "../widgets/portal-feedback-widget/portal-feedback-widget";
 import { PortalFilesWidget } from "../widgets/portal-files-widget/portal-files-widget";
@@ -51,6 +55,10 @@ export type PortalDashboardProps = {
   conversation: PortalConversationDto | null;
   customerId: string;
   dashboard: PortalDashboardDto;
+  /** What the credentials widget may show and offer; null without `portal.credentials.read`. */
+  credentials?: PortalCredentialsSummaryDto | null;
+  /** Texts of the credentials dialog the widget opens. */
+  credentialsContent: PortalCredentialsDictionary;
   /** Files page of this customer, for the files widget. */
   filesHref: string;
   /** Null without `portal.files.read`; the files widget is then not rendered. */
@@ -82,6 +90,8 @@ export function PortalDashboard({
   content,
   conversation,
   customerId,
+  credentials = null,
+  credentialsContent,
   dashboard,
   filesHref,
   filesOverview,
@@ -104,6 +114,8 @@ export function PortalDashboard({
   const dialogOwnerNoticeId = useId();
   const requestOwnerNoticeId = useId();
   const [requestAnnouncement, setRequestAnnouncement] = useState("");
+  // Which way the credentials dialog was entered; the URL only says that it is open.
+  const [credentialsCreate, setCredentialsCreate] = useState(false);
   const completion = usePortalTaskCompletion(
     customerId,
     content.tasks.announce,
@@ -132,6 +144,10 @@ export function PortalDashboard({
     navigate({ widget }, PortalDashboardNavigationMode.Push);
   const closeDialog = () =>
     navigate({ widget: null }, PortalDashboardNavigationMode.Replace);
+  const openCredentials = (create: boolean) => {
+    setCredentialsCreate(create);
+    openDialog(PortalWidgetKey.Credentials);
+  };
 
   const ownerNotice = (id: string): ReactNode =>
     isOwnerView && cockpitHref ? (
@@ -270,6 +286,14 @@ export function PortalDashboard({
         overview={filesOverview}
       />
     ),
+    [PortalWidgetKey.Credentials]: credentials ? (
+      <PortalCredentialsWidget
+        content={content.widgets.credentials}
+        onAddAction={credentials.canWrite ? () => openCredentials(true) : null}
+        onOpenAction={() => openCredentials(false)}
+        summary={credentials}
+      />
+    ) : null,
     [PortalWidgetKey.ServiceRequest]: mockDialog(
       PortalWidgetKey.ServiceRequest,
       faCirclePlus,
@@ -326,6 +350,19 @@ export function PortalDashboard({
       ) : null}
       <PortalWidgetDialogHost
         content={content}
+        credentialsDialog={
+          credentials ? (
+            <PortalCredentialsDialog
+              cockpitHref={cockpitHref}
+              content={credentialsContent}
+              customerId={customerId}
+              locale={locale}
+              onCloseAction={closeDialog}
+              onSavedAction={setRequestAnnouncement}
+              startWithCreate={credentialsCreate && credentials.canWrite}
+            />
+          ) : null
+        }
         customerTasksContent={
           <PortalCustomerTasksDialogContent
             {...taskListProps}

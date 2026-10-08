@@ -183,6 +183,18 @@
       "label": "Fill in portal onboarding",
       "description": "Fill in onboarding forms, attach files and submit them."
     },
+    "portal.credentials.read": {
+      "label": "View portal credentials",
+      "description": "See released credentials without password and note."
+    },
+    "portal.credentials.reveal": {
+      "label": "Reveal portal credentials",
+      "description": "Show and copy the password or note of a single released credential."
+    },
+    "portal.credentials.write": {
+      "label": "Add portal credentials",
+      "description": "Add own credentials and change released ones."
+    },
     "roles.manage": {
       "label": "Manage roles",
       "description": "Create and change roles."
@@ -220,6 +232,10 @@
     "portal_standard": {
       "label": "Portal standard",
       "description": "Default role for newly invited portal contacts."
+    },
+    "portal_credentials": {
+      "label": "Portal credentials",
+      "description": "May view, reveal, add and change released credentials in the portal. Assign deliberately."
     }
   },
   "ownerOnly": "Owner only",

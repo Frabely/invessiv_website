@@ -8,6 +8,8 @@ import { PortalMockDialogContent } from "../portal-mock-dialog-content/portal-mo
 
 export type PortalWidgetDialogHostProps = {
   content: PortalDashboardDictionary;
+  /** The complete credentials dialog; null when the reader may not see credentials. */
+  credentialsDialog: ReactNode;
   /** Full content of the customer task dialog, built by the dashboard that owns the task state. */
   customerTasksContent: ReactNode;
   onCloseAction: () => void;
@@ -20,12 +22,14 @@ export type PortalWidgetDialogHostProps = {
 /** Renders the one dialog the URL asks for. Closing removes the parameter, so Back closes too. */
 export function PortalWidgetDialogHost({
   content,
+  credentialsDialog,
   customerTasksContent,
   onCloseAction,
   taskRequestDialog,
   widgetKey,
 }: PortalWidgetDialogHostProps) {
   if (widgetKey === PortalWidgetKey.OurTasks) return taskRequestDialog;
+  if (widgetKey === PortalWidgetKey.Credentials) return credentialsDialog;
 
   if (widgetKey === PortalWidgetKey.CustomerTasks) {
     return (

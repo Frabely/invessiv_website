@@ -169,6 +169,15 @@
       "more": "und {count} weitere",
       "moreOne": "und 1 weitere"
     },
+    "credentials": {
+      "title": "Zugangsdaten",
+      "count": "{count} Zugänge hinterlegt",
+      "countOne": "1 Zugang hinterlegt",
+      "empty": "Noch kein Zugang hinterlegt.",
+      "hint": "Passwörter liegen verschlüsselt bei uns und erscheinen erst, wenn du sie öffnest.",
+      "open": "Zugangsdaten öffnen",
+      "add": "Zugang hinterlegen"
+    },
     "serviceRequest": {
       "title": "Leistung anfragen",
       "open": "Mehr erfahren",

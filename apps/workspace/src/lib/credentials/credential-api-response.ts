@@ -10,7 +10,7 @@ import { withValidatedJsonBody } from "@/lib/http/with-json-body";
 import { credentialErrorResponse } from "./credential-api-error";
 
 export function credentialApiResponse<T>(
-  result: CredentialResult<T>,
+  result: CredentialResult<T, unknown>,
   successStatus: H = H.Ok,
 ): Response {
   if (result.ok) return Response.json(result.value, { status: successStatus });

@@ -7,6 +7,7 @@ export const PortalWidgetKey = {
   Hours: "hours",
   Contact: "contact",
   Files: "files",
+  Credentials: "credentials",
   ServiceRequest: "serviceRequest",
   CompletedProjects: "completedProjects",
 } as const;
@@ -23,6 +24,7 @@ export const PORTAL_WIDGET_KEY_VALUES = [
   PortalWidgetKey.Hours,
   PortalWidgetKey.Contact,
   PortalWidgetKey.Files,
+  PortalWidgetKey.Credentials,
   PortalWidgetKey.ServiceRequest,
   PortalWidgetKey.CompletedProjects,
 ] as const;

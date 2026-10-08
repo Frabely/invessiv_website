@@ -8,7 +8,42 @@ import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { accessScope } from "@/common/patterns/auth/access-scope";
 import { canOn } from "@/common/patterns/auth/can-on";
 import { crmAccessCondition } from "@/server/workspace/shared/services/crm-access-condition";
-import type { CredentialRow } from "./credential-types";
+import type { CredentialRow } from "@/server/shared/services/credential/credential-row-types";
+import { CredentialApiErrorCode } from "@invessiv/common/constants/credentials/credential-api-error-code";
+import { CredentialSide } from "@invessiv/common/constants/credentials/credential-sides";
+import { credentialPortalProjectService } from "@/server/shared/services/credential/credential-portal-project-service";
+
+/** Validate a release transition against the destination project; unchanged releases are no-ops. */
+async function portalVisibilityError(
+  tx: ContactDatabaseTransaction,
+  row: Pick<
+    CredentialRow,
+    "created_by_side" | "visible_to_customer" | "project_id"
+  >,
+  visibleToCustomer: boolean | undefined,
+): Promise<
+  | typeof CredentialApiErrorCode.CustomerOwned
+  | typeof CredentialApiErrorCode.ProjectHidden
+  | null
+> {
+  if (
+    visibleToCustomer === undefined ||
+    visibleToCustomer === row.visible_to_customer
+  )
+    return null;
+  if (!visibleToCustomer && row.created_by_side === CredentialSide.Customer)
+    return CredentialApiErrorCode.CustomerOwned;
+  if (
+    visibleToCustomer &&
+    row.project_id !== null &&
+    !(await credentialPortalProjectService.isProjectPortalVisible(
+      tx,
+      row.project_id,
+    ))
+  )
+    return CredentialApiErrorCode.ProjectHidden;
+  return null;
+}
 
 /** Everything a list may read. Neither ciphertext column is part of it. */
 const metadataColumns = {
@@ -68,4 +103,5 @@ export const credentialAccessService = {
   condition,
   targetExists: crmTargetExists,
   lock,
+  portalVisibilityError,
 };

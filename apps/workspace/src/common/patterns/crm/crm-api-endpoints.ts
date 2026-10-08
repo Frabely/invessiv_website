@@ -253,3 +253,9 @@ export function crmCredentialEndpoint(credentialId: string): string {
 export function crmCredentialRevealEndpoint(credentialId: string): string {
   return `${crmCredentialEndpoint(credentialId)}/${CredentialApiPath.Reveal}`;
 }
+
+export function crmCredentialPortalVisibilityEndpoint(
+  credentialId: string,
+): string {
+  return `${crmCredentialEndpoint(credentialId)}/${CredentialApiPath.PortalVisibility}`;
+}

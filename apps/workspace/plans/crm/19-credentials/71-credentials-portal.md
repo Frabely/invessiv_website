@@ -23,6 +23,13 @@ Abschnitt „Risiken“.
 `apps/workspace/src/app/[locale]/(portal)/portal/[customerId]/files/page.tsx` und das Widget
 `apps/workspace/src/components/portal/dashboard/widgets/portal-files-widget/`.
 
+> **Änderung 07.10.2026 (Owner):** Es gibt **keine eigene Portal-Seite** für Zugangsdaten. Das Widget öffnet einen
+> Dialog im Dashboard (`?widget=credentials`), wie die Sektion im CRM-Cockpit; „Zugang hinterlegen“ öffnet direkt
+> das geteilte Formular. Das ersetzt unten die Zeile „Einstieg“, die Seite samt `PortalSection.Credentials` im
+> Abschnitt „Portal-Oberfläche“ und den Widget-Eintrag (`openMode: Dialog`). Die Liste wird erst beim Öffnen über
+> `GET /api/portal/[customerId]/credentials` geladen; das Dashboard bekommt nur Zahl, `canWrite` und `configured`
+> (`getPortalCredentialsSummary` statt `countPortalCredentials`).
+
 ## Entscheidungen
 
 | Bereich           | Entscheidung                                                                                                                                                                                 |

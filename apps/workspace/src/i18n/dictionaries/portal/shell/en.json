@@ -22,6 +22,7 @@
   },
   "projectSwitcher": { "label": "Switch project" },
   "accessAreas": {
+    "credentials": "Credentials",
     "files": "Files",
     "messages": "Messages",
     "onboarding": "Onboarding"

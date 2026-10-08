@@ -8,6 +8,7 @@ import {
   screen,
 } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { CredentialSide } from "@invessiv/common/constants/credentials/credential-sides";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { credentialFixture } from "@/common/patterns/testing/credential-fixture";
 import { getCrmCredentialsDictionary } from "@/i18n/dictionaries/workspace/crm";
@@ -28,10 +29,13 @@ afterEach(() => {
   else Reflect.deleteProperty(navigator, "clipboard");
 });
 
-function renderRow() {
-  const credential = credentialFixture({
+function renderRow(
+  overrides: Parameters<typeof credentialFixture>[0] = {
     capabilities: { canWrite: false, canReveal: false },
-  });
+  },
+  onPortalVisibilityAction = vi.fn(),
+) {
+  const credential = credentialFixture(overrides);
   render(
     <ul>
       <CredentialRow
@@ -41,6 +45,7 @@ function renderRow() {
         locale="de"
         onDeleteAction={vi.fn()}
         onEditAction={vi.fn()}
+        onPortalVisibilityAction={onPortalVisibilityAction}
         onRevealAction={vi.fn()}
       />
     </ul>,
@@ -68,6 +73,44 @@ describe("CredentialRow", () => {
           name: entry.title,
         }),
       }),
+    ).toBeEnabled();
+  });
+
+  it("offers the release, then the withdrawal, and shows the portal badge", () => {
+    const open = vi.fn();
+    const entry = renderRow({}, open);
+    expect(screen.queryByText(content.row.badgePortal)).toBeNull();
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: formatMessage(content.row.releaseNamed, { name: entry.title }),
+      }),
+    );
+    expect(open).toHaveBeenCalledWith(entry);
+    cleanup();
+
+    const released = renderRow({ visibleToCustomer: true });
+    expect(screen.getByText(content.row.badgePortal)).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", {
+        name: formatMessage(content.row.withdrawNamed, {
+          name: released.title,
+        }),
+      }),
+    ).toBeEnabled();
+  });
+
+  it("marks a customer entry and offers no release action for it", () => {
+    renderRow({
+      createdBySide: CredentialSide.Customer,
+      visibleToCustomer: true,
+    });
+    expect(screen.getByText(content.row.badgeCustomer)).toBeInTheDocument();
+    expect(screen.getByText(content.row.badgePortal)).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: new RegExp(content.row.withdraw) }),
+    ).toBeNull();
+    expect(
+      screen.getByRole("button", { name: new RegExp(content.row.edit, "i") }),
     ).toBeEnabled();
   });
 

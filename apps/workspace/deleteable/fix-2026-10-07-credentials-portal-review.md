@@ -1,0 +1,20 @@
+# Behebung — Credentials-Portal-Review
+
+Stand: 07.10.2026. Bezug: `review-2026-10-07-credentials-portal-changeset.md`. Umsetzung auf ausdrücklichen Auftrag „fixen“; der ursprüngliche Review-Bericht bleibt als historische Aufnahme erhalten.
+
+- **F01 behoben:** Der Portal-Client unterscheidet eine gültige Bestätigung mit `credential: null` von einer fehlerhaften Antwort. Versionskonflikte erhalten auch ohne Metadaten `currentVersion`. Das Formular behält bei einem solchen Konflikt den bekannten Datensatz und die Eingaben, aktualisiert die Version für den erneuten Versuch und bleibt im Bearbeitungsmodus. Nach Erfolg ohne DTO wird der eingegebene Titel angekündigt. Transport- und Komponententests sichern beide Fälle sowie den normalen DTO-Erfolg ab.
+- **F02 behoben:** `credentialAccessService.portalVisibilityError` bündelt die Prüfung für Anlegen, Bearbeiten und separate Freigabe. Unveränderte Freigaben bleiben auch nach Ausblenden des Projekts ohne Write, Versionsänderung oder Audit-Event erfolgreich. Neue Freigaben in verborgenen Projekten und Rücknahmen kundeneigener Einträge werden weiterhin abgewiesen. Unit- und PostgreSQL-Regressionstests sichern die Regeln ab.
+- **F03 behoben:** `e2e/portal-credentials.e2e.ts` verbindet echte Clerk-Development-Sessions, Rollenauflösung, HTTP-Endpunkte und Browser-Formulare auf einer isolierten Testfirma. Abgedeckt sind Standardkontakt ohne Credential-Rechte, fehlende Session, Fremdzugriffe, interne Freigabe, verstecktes Projekt, Metadaten ohne Klartext, Passwort-/Notizabruf, Kopieren, Anlegen, Passwortwechsel, Versionskonflikt, Schutz kunden eigener Einträge, Rücknahme der Freigabe und Rollenentzug beim nächsten Request. Fehlende Rechte verbergen die Ressource mit 404. Die Owner-Sicht hat keine Schreib-/Reveal-Aktion; DE/EN, Dark/Light, 360/1280 px, horizontaler Overflow und Schließen per Escape werden geprüft. Screenshots wurden erzeugt; Mobil/Light/DE und Desktop/Dark/EN zusätzlich visuell kontrolliert. Testbeschreibung unter `e2e/README.md` ergänzt.
+- **F04 behoben:** Freigabe-Labels und die eigenständigen Untercontracts für Formularfelder, Platzhalter, Hinweise, Notizaktionen, Validierung und Zeilenbeschriftungen haben jeweils eine eigene Datei. Die geteilten Labels importieren diese Contracts.
+
+## Verifikation
+
+- Breiter fokussierter Unit-/Komponentenlauf: 255 Tests grün; 45 DB-Tests im normalen Testmodus erwartungsgemäß übersprungen. Anschließend zusätzlicher DTO-Erfolgstest ergänzt; abschließender fokussierter Client-/Service-/Formularlauf: 29 Tests grün.
+- PostgreSQL: `credentials.integration.test.ts` und `portal-credentials.integration.test.ts` im Modus `crm-integration`: 38 Tests grün, keine Skips; einschließlich Idempotenz nach Ausblenden eines Projekts.
+- Playwright: `playwright.portal.config.ts portal-credentials.e2e.ts`: Setup und Credential-Flow grün (2 Tests), echte Development-Sessions, keine Auth-Mocks. Development-Datenbank durch vorhandenen Guard gegen Preview/Production und Allowlist abgegrenzt; Migrationen aktuell.
+- Workspace-Typecheck und App-Build grün. Lint ohne Fehler; bestehende Warnung zu `_omitted` in `update-project.command-handler.test.ts:189`. Build enthält die bestehende Turbopack-Warnung zum breiten Env-Dateimuster in `packages/db/src/core/env.ts`.
+- `git diff --check` ohne Fehler. Keine Änderung an lokalen Secret-Dateien, keine neuen Umgebungsvariablen, kein Commit/Merge/Deploy. Screenshots und Session-Dateien verbleiben in ignorierten Testordnern.
+
+## Offene Grenzen
+
+Der vollständige Portal-E2E-Lauf war nicht grün: Zusätzlich zur zunächst falschen 403-Erwartung im neuen Test scheiterten Dashboard-, Dateien-, Feedback- und Onboarding-Suites; abhängige Tests liefen teilweise nicht. Der Credential-Test wurde korrigiert und anschließend separat erfolgreich ausgeführt. Diese vier anderen Bereiche wurden im Rahmen der Credential-Findings nicht verändert; ihre Ursachen sind hier nicht abschließend untersucht. Die vollständigen Monorepo-Gates und die übrige manuelle Abnahme bleiben vor Merge erforderlich.

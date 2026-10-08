@@ -25,7 +25,7 @@ Bisher liegen sie in Mails und Chats. Künftig:
 | PR   | Status    | Branch                          | Tasks in dieser Reihenfolge                                                   | Nach dem Merge nutzbar                                    |
 | ---- | --------- | ------------------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------------- |
 | 19.1 | im Review | `feat/crm-credentials-1-intern` | [Task 17](./17-credentials-crypto.md), dann [Task 18](./18-credentials-ui.md) | Zugänge intern anlegen, ändern, löschen, aufdecken; Audit |
-| 19.2 | offen     | `feat/crm-credentials-2-portal` | [Task 71](./71-credentials-portal.md)                                         | Freigabe je Eintrag, Portal-Seite und Dashboard-Widget    |
+| 19.2 | im Review | `feat/crm-credentials-2-portal` | [Task 71](./71-credentials-portal.md)                                         | Freigabe je Eintrag, Dashboard-Widget mit Portal-Dialog   |
 
 Nach jedem PR ist `master` deploybar. Das Schema entsteht vollständig in 19.1, einschließlich `visible_to_customer`
 und der Herkunftsspalten. Bis 19.2 schreibt der interne Pfad `visible_to_customer = false`; Freigabe-Schalter und
@@ -120,6 +120,12 @@ fremde Projekte und nicht freigegebene Einträge verhalten sich wie nicht vorhan
    freigegebenen Zugänge dieses Kunden. Bewusst akzeptiert (Entscheidung des Owners). Gegenmaßnahmen: Rolle nur
    gezielt, Freigabe je Eintrag, Rate-Limit, Security-Event je Aufdeckung, „zuletzt aufgedeckt“ sichtbar im CRM.
    Kann-Ticket CRM-71-T7: erneute Anmeldung vor dem Aufdecken.
+   **Stand 07.10.2026 (nicht umgesetzt, kein Merge-Gate):** Technisch geht es mit `@clerk/nextjs` ^7. Serverseitig
+   prüft ein Route Handler `auth().has({ reverification: "strict" })` (Anmeldung jünger als 10 Minuten) und antwortet
+   sonst mit `reverificationErrorResponse("strict")` (403); clientseitig startet `useReverification()` den Clerk-Dialog
+   und wiederholt die Anfrage (Quelle: Clerk-Doku „Reverification“, über context7 geprüft). Offen ist Frage 2 des
+   Tickets: ob die Funktion im genutzten Clerk-Tarif enthalten ist. Das lässt sich nur im Clerk-Dashboard klären und
+   ist eine Entscheidung des Owners. Bis dahin gelten die Gegenmaßnahmen oben.
 2. **Schlüsselverlust ist Totalverlust.** Eine geleerte Vercel-Umgebung macht alle Zugänge dauerhaft unlesbar. Der
    Schlüsselring wird vor dem ersten Eintrag offline im Passwortmanager gesichert (Betriebsschritt, Merge-Gate 19.1).
 3. **Schlüssel und Datenbank beim selben Anbieter.** Wer Vercel-Env **und** einen DB-Abzug besitzt, liest alles.

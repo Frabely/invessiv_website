@@ -18,6 +18,8 @@ type CredentialFixture = {
   secret: string;
   note: string | null;
   onProject: boolean;
+  /** Released to the portal, so the credentials page has something to show. */
+  visibleToCustomer: boolean;
 };
 
 /** Obvious mock values; nothing here opens a real account. */
@@ -30,6 +32,7 @@ const CREDENTIAL_FIXTURES: CredentialFixture[] = [
     secret: "mock-domain-passwort",
     note: "Beispieldaten für die lokale Entwicklung",
     onProject: false,
+    visibleToCustomer: true,
   },
   {
     title: "Mailkonto (Mock)",
@@ -39,6 +42,7 @@ const CREDENTIAL_FIXTURES: CredentialFixture[] = [
     secret: "mock-mail-passwort",
     note: null,
     onProject: false,
+    visibleToCustomer: false,
   },
   {
     title: "Hosting (Mock)",
@@ -48,6 +52,7 @@ const CREDENTIAL_FIXTURES: CredentialFixture[] = [
     secret: "mock-hosting-token",
     note: "Zugang gilt nur für dieses Projekt",
     onProject: true,
+    visibleToCustomer: false,
   },
 ];
 
@@ -68,7 +73,8 @@ export function readCredentialFixtureKeyring(
 }
 
 /**
- * Two customer-wide entries and one project entry per customer, all internal and not released.
+ * Two customer-wide entries and one project entry per customer, all internal; one of the
+ * customer-wide entries is released to the portal.
  * Returns the number of rows written.
  */
 export async function seedCredentials(
@@ -111,7 +117,7 @@ export async function seedCredentials(
           fixture.note === null
             ? null
             : encrypt(fixture.note, CredentialSecretField.Note),
-        visible_to_customer: false,
+        visible_to_customer: fixture.visibleToCustomer,
         created_by_side: CredentialSide.Internal,
         created_by_member_id: memberId,
         secret_changed_at: now,

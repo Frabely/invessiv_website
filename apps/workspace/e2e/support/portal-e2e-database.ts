@@ -43,6 +43,7 @@ async function loadSystemRoles(tx: ContactDatabaseTransaction) {
       inArray(roles.system_key, [
         SystemRoleKey.WorkspaceOwner,
         SystemRoleKey.PortalStandard,
+        SystemRoleKey.PortalCredentials,
       ]),
     );
   const owner = found.find(
@@ -51,11 +52,18 @@ async function loadSystemRoles(tx: ContactDatabaseTransaction) {
   const portal = found.find(
     (role) => role.key === SystemRoleKey.PortalStandard && role.active,
   );
-  if (!owner || !portal)
+  const credentials = found.find(
+    (role) => role.key === SystemRoleKey.PortalCredentials && role.active,
+  );
+  if (!owner || !portal || !credentials)
     throw new Error(
-      "Portal E2E requires active workspace_owner and portal_standard roles.",
+      "Portal E2E requires active workspace_owner, portal_standard and portal_credentials roles.",
     );
-  return { ownerId: owner.id, portalId: portal.id };
+  return {
+    ownerId: owner.id,
+    portalId: portal.id,
+    credentialsId: credentials.id,
+  };
 }
 
 async function ensureManager(
@@ -218,6 +226,7 @@ async function insertPortalMember(
     assigned_by_member_id: input.managerMemberId,
     assigned_at: new Date(),
   });
+  return membershipId;
 }
 
 /** Both rounds sit before "Launch" and the project is at "Entwicklung", so round 2 follows round 1
@@ -258,7 +267,7 @@ export async function preparePortalE2eDatabase(
   feedbackContactClerkUserId: string,
 ): Promise<PortalE2eFixture> {
   return getDrizzleDatabaseClient().transaction(async (tx) => {
-    const { ownerId, portalId } = await loadSystemRoles(tx);
+    const { ownerId, portalId, credentialsId } = await loadSystemRoles(tx);
     const managerMemberId = await ensureManager(
       tx,
       managerClerkUserId,
@@ -269,6 +278,9 @@ export async function preparePortalE2eDatabase(
     const customerA = randomUUID();
     const customerB = randomUUID();
     const filesCustomer = randomUUID();
+    const credentialsCustomer = randomUUID();
+    const credentialsProject = randomUUID();
+    const credentialsHiddenProject = randomUUID();
     const feedbackCustomer = randomUUID();
     const feedbackProject = randomUUID();
     const feedbackApprovalProject = randomUUID();
@@ -324,6 +336,13 @@ export async function preparePortalE2eDatabase(
     ]);
     await tx.insert(customers).values([
       {
+        id: credentialsCustomer,
+        display_name: `${PREFIX} Credentials Customer`,
+        status: CustomerStatus.Active,
+        owner_member_id: managerMemberId,
+        version: 1,
+      },
+      {
         id: customerA,
         display_name: `${PREFIX} Customer A`,
         status: CustomerStatus.Active,
@@ -353,6 +372,29 @@ export async function preparePortalE2eDatabase(
       },
     ]);
     await tx.insert(projects).values([
+      {
+        ...feedbackProjectRow(
+          credentialsProject,
+          credentialsCustomer,
+          managerMemberId,
+          "Credentials visible",
+        ),
+        included_feedback_rounds: 0,
+        feedback_round_positions: null,
+        feedback_areas: [],
+      },
+      {
+        ...feedbackProjectRow(
+          credentialsHiddenProject,
+          credentialsCustomer,
+          managerMemberId,
+          "Credentials hidden",
+        ),
+        status: ProjectStatus.Archived,
+        included_feedback_rounds: 0,
+        feedback_round_positions: null,
+        feedback_areas: [],
+      },
       feedbackProjectRow(
         feedbackProject,
         feedbackCustomer,
@@ -444,6 +486,20 @@ export async function preparePortalE2eDatabase(
       version: 1,
     });
     await tx.insert(customerContactAssignments).values([
+      {
+        id: randomUUID(),
+        customer_id: credentialsCustomer,
+        person_id: personFiles,
+        is_primary: true,
+        version: 1,
+      },
+      {
+        id: randomUUID(),
+        customer_id: credentialsCustomer,
+        person_id: personFeedback,
+        is_primary: false,
+        version: 1,
+      },
       {
         id: assignmentA,
         customer_id: customerA,
@@ -553,6 +609,32 @@ export async function preparePortalE2eDatabase(
       managerMemberId,
     });
 
+    const credentialsMembership = await insertPortalMember(tx, {
+      clerkUserId: filesContactClerkUserId,
+      email: "invessiv-portal-files+clerk_test@example.com",
+      lastName: "Files Contact",
+      customerId: credentialsCustomer,
+      personId: personFiles,
+      portalRoleId: portalId,
+      managerMemberId,
+    });
+    await tx.insert(portalMembershipRoles).values({
+      portal_membership_id: credentialsMembership,
+      role_id: credentialsId,
+      role_realm: AuthRealm.Portal,
+      assigned_by_member_id: managerMemberId,
+      assigned_at: new Date(),
+    });
+    await insertPortalMember(tx, {
+      clerkUserId: feedbackContactClerkUserId,
+      email: "invessiv-portal-feedback+clerk_test@example.com",
+      lastName: "Feedback Contact",
+      customerId: credentialsCustomer,
+      personId: personFeedback,
+      portalRoleId: portalId,
+      managerMemberId,
+    });
+
     const expiredToken = randomBytes(32).toString("base64url");
     const invitationId = randomUUID();
     await tx.insert(portalInvitations).values({
@@ -574,6 +656,12 @@ export async function preparePortalE2eDatabase(
       customerA,
       customerB,
       filesCustomer,
+      credentialsCustomer,
+      credentialsProject,
+      credentialsHiddenProject,
+      credentialsMembership,
+      credentialsRole: credentialsId,
+      standardRole: portalId,
       feedbackCustomer,
       feedbackProject,
       feedbackApprovalProject,

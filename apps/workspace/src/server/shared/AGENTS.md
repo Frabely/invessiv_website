@@ -132,6 +132,20 @@ Ab Task 18 liegen hier zwei weitere Bausteine, bewusst schon vor dem zweiten Auf
   `credential_revealed`-Events im Fenster. Das Limit übergibt der Aufrufer, weil Workspace und Portal verschiedene
   Grenzen haben. Gezählt werden nur gelungene Aufdeckungen, weil nur sie ein Event schreiben.
 
+Ab Task 71 (zweiter Aufrufer: das Portal) liegen hier außerdem:
+
+- `credential-write-service.ts` — `insert` (ID vor dem Verschlüsseln, Herkunft als `CredentialOrigin`: genau ein
+  Mitglied **oder** eine Portal-Mitgliedschaft) und `buildPatch` (nur was sich unterscheidet; Geheimnis nur wenn
+  gesendet, Notiz dreiwertig). `needsEncryption` sagt dem Handler, ob er vorher `isConfigured()` prüfen muss.
+- `credential-reveal-service.ts` — `reveal` ist der eine Ablauf nach der Sperre: fehlende Notiz ist `not_found`,
+  Limit, Entschlüsseln, `last_revealed_at`, Event. Die Zeile sperrt der Handler seiner Welt nach seiner eigenen
+  Zugriffsprüfung; Limit und Actor übergibt er.
+- `credential-request-schemas.ts` — die Feldregeln (Längen, Trim, Geheimnis ungetrimmt), damit beide Welten exakt
+  dieselben Werte annehmen. Welche Felder eine Anfrage tragen darf, bestimmt das Schema der jeweiligen Welt.
+- `credential-portal-project-service.ts` — `isProjectPortalVisible` für die interne Freigabe. Bewusst ein Service
+  mit einer Methode (Planvorgabe Task 71).
+- `credential-row-types.ts` — Zeilen-, Eingabe- und Patch-Typen dieser Services.
+
 ## Systemnachrichten (ab Task 59)
 
 `services/message/announce-system-message.ts` ist der einzige Weg für fachliche Chat-Hinweise: Savepoint, Fehler nur

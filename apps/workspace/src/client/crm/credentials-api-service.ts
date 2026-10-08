@@ -7,6 +7,7 @@ import type { CredentialSecretField } from "@invessiv/common/constants/credentia
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import type { CreateCredentialRequestDto } from "@invessiv/common/contracts/credentials/create-credential-request.dto";
 import type { CredentialDto } from "@invessiv/common/contracts/credentials/credential.dto";
+import type { SetCredentialPortalVisibilityRequestDto } from "@invessiv/common/contracts/credentials/set-credential-portal-visibility-request.dto";
 import type { UpdateCredentialRequestDto } from "@invessiv/common/contracts/credentials/update-credential-request.dto";
 import { readApiErrorCode } from "@/common/patterns/client/read-api-error-code";
 import { versionedJsonMutationService } from "@/client/shared/versioned-json-mutation-service";
@@ -19,6 +20,7 @@ import type { CredentialClientResult } from "@/common/contracts/credentials/cred
 import type { CredentialDeleteClientResult } from "@/common/contracts/credentials/credential-delete-client-result";
 import {
   crmCredentialEndpoint,
+  crmCredentialPortalVisibilityEndpoint,
   crmCredentialRevealEndpoint,
   crmCustomerCredentialsEndpoint,
 } from "@/common/patterns/crm/crm-api-endpoints";
@@ -120,6 +122,22 @@ async function update(
   );
 }
 
+async function setPortalVisibility(
+  credentialId: string,
+  input: SetCredentialPortalVisibilityRequestDto,
+): Promise<CredentialMutationResult> {
+  return versionedJsonMutationService.mutate(
+    crmCredentialPortalVisibilityEndpoint(credentialId),
+    HttpMethod.Patch,
+    input,
+    readCredential,
+    isCredential,
+    CREDENTIAL_API_ERROR_CODE_VALUES,
+    CredentialApiErrorCode.Internal,
+    readCode,
+  );
+}
+
 async function remove(
   credentialId: string,
   version: number,
@@ -154,6 +172,7 @@ export const credentialsApiService = {
   list,
   create,
   update,
+  setPortalVisibility,
   remove,
   reveal,
 } as const;

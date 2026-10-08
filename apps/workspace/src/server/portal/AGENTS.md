@@ -186,3 +186,42 @@ Ab Task 69 (`apps/workspace/plans/crm/15-onboarding/69-onboarding-termin.md`):
   einen Link an. Wessen Link es ist, entscheidet `projectResponsibleMemberService.findBookingContact`
   (`server/shared/`). Das DTO baut `portalOnboardingMappingService.toBookingDto`; es trägt Anzeigename, Link und
   Anbieter, keine Mitglieds-ID und keine E-Mail.
+
+## Zugangsdaten (ab Task 71)
+
+Plan: `apps/workspace/plans/crm/19-credentials/71-credentials-portal.md`.
+
+- **„Eintrag im Portal sichtbar“ ist genau einmal definiert:** `portalCredentialService.visibleCondition`
+  (`services/credentials/`) — Firma des Lesers, `visible_to_customer`, und kundenweit oder an einem Projekt laut
+  `portalProjectCondition`. Jede Liste, Zählung, Sperre und jeder Schreibweg nutzt diese Bedingung; keine zweite
+  Fassung in einem Handler.
+- **Das Recht der Aktion steht in der Bedingung.** `visibleCondition(reader, permission)` bekommt
+  `portal.credentials.read`, `.reveal` oder `.write`; ohne das Recht ist sie `FALSE`. Fremde Firma, geratene ID,
+  nicht freigegebener Eintrag, archiviertes Projekt und fehlendes Recht sind deshalb ununterscheidbar `not_found`
+  und schreiben kein Event.
+- **Doppelte Schranke:** Die drei Rechte liegen nie in `portal_standard`, nur in der Systemrolle
+  `portal_credentials` (`PORTAL_STANDARD_EXCLUDED_PERMISSION_VALUES`). Zugriff braucht die Rolle am Kontakt **und**
+  die Freigabe am Eintrag.
+- **Nie löschen, nie verschieben, nie freigeben.** Das Portal ändert Titel, Typ, Adresse, Benutzername, Geheimnis
+  und Notiz. Die Schemas sind strikt: `projectId` beim Ändern, `visibleToCustomer` und jede `customerId` sind
+  unbekannte Felder (`validation`). Die Firma kommt immer aus dem `PortalActor`.
+- **Kundeneinträge** entstehen nur über `createPortalCredential`: `created_by_side = customer`,
+  `created_by_portal_membership_id`, immer `visible_to_customer = true` (DB-CHECK). Die Kundenzeile wird
+  `FOR NO KEY UPDATE` gesperrt, damit die Obergrenze `maxPortalCreatedPerCustomer` (gezählt werden alle Einträge
+  des Kunden) nicht durch parallele Anfragen fällt; darüber `validation`. Ein fremdes, archiviertes oder
+  unbekanntes Projekt ist ebenfalls `validation`.
+- **Antwort ohne Leserecht:** Wer `.write` ohne `.read` hat, bekommt `{ created: true, credential: null }` bzw.
+  `{ updated: true, credential: null }`; auch ein Versionskonflikt trägt dann `current: null`.
+- **Aufdecken** nimmt nur einen `PortalActor` (die Owner-Sicht erreicht es typseitig nicht), sperrt über
+  `lockVisible(…, PortalCredentialsReveal)` und läuft danach durch `credentialRevealService.reveal`
+  (`server/shared/`) mit dem Limit `revealsPerWindowPortal` und `portalActivityActor(actor)`.
+- **Geteilt mit dem Workspace** werden nur die Services unter `server/shared/services/credential/` (Krypto,
+  Schreiben, Aufdecken, Limit, Event, Feldregeln der Schemas). Kein Portal-Handler importiert einen
+  Workspace-Handler oder `credentialAccessService`.
+- **Systemnachrichten** über `announceSystemMessage`: `credentialAddedByCustomer` bei einem neuen Eintrag,
+  `credentialSecretChangedByCustomer` nur bei neuem Geheimnis. Beide ohne Parameter — weder Titel noch Wert.
+  Aufdecken und reine Metadaten-Änderungen erzeugen keine Nachricht.
+- Die Liste selektiert ausschließlich `portalCredentialService.metadataColumns` und entschlüsselt nie.
+  `PortalCredentialDto` trägt weder `lastRevealedAt` noch `visibleToCustomer`, `customerId` oder Ersteller-IDs.
+- Fehlercodes sind `CredentialApiErrorCode`; Statuscodes und Texte stehen ausschließlich in
+  `src/lib/credentials/` (dieselben Helfer wie die CRM-Routen, `validation` antwortet 422).

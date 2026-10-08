@@ -3,7 +3,8 @@ import type { ConcurrencyErrorCode } from "../../constants/errors/concurrency-er
 import type { VersionConflictDto } from "../concurrency/version-conflict.dto";
 import type { CredentialDto } from "./credential.dto";
 
-export type CredentialResult<T> =
+/** `TCurrent` is the entry a conflict hands back; the portal narrows it to its own view. */
+export type CredentialResult<T, TCurrent = CredentialDto> =
   | { ok: true; value: T }
   | {
       ok: false;
@@ -20,5 +21,5 @@ export type CredentialResult<T> =
   | {
       ok: false;
       code: typeof ConcurrencyErrorCode.VersionConflict;
-      conflict: VersionConflictDto<CredentialDto>;
+      conflict: VersionConflictDto<TCurrent>;
     };
