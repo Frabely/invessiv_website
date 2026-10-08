@@ -1,0 +1,12 @@
+.row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Durations are compared at a glance, so the figures line up like in the lists around the field. */
+.input {
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}

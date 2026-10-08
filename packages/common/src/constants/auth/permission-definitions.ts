@@ -215,6 +215,28 @@ export const PERMISSION_DEFINITIONS = {
     assignableScopeTypes: CUSTOMER_AND_PROJECT,
     description: "Create, change and delete credentials.",
   },
+  [Permission.HoursRead]: {
+    realm: AuthRealm.Workspace,
+    delegable: true,
+    scopeAssignable: true,
+    assignableScopeTypes: CUSTOMER_AND_PROJECT,
+    description: "View hour balances, purchases, allocations and time entries.",
+  },
+  [Permission.HoursWrite]: {
+    realm: AuthRealm.Workspace,
+    delegable: true,
+    scopeAssignable: true,
+    assignableScopeTypes: CUSTOMER_AND_PROJECT,
+    description: "Book, change and delete time entries.",
+  },
+  // The stock belongs to the customer, so managing it cannot be bound to a single project.
+  [Permission.HoursManage]: {
+    realm: AuthRealm.Workspace,
+    delegable: true,
+    scopeAssignable: true,
+    assignableScopeTypes: CUSTOMER_ONLY,
+    description: "Record purchased hours and allocate them to projects.",
+  },
   [Permission.PortalAccessManage]: {
     realm: AuthRealm.Workspace,
     delegable: true,

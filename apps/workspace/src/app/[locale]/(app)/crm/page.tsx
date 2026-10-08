@@ -30,6 +30,7 @@ import {
   getCrmAccessDictionary,
   getCrmCockpitDictionary,
   getCrmCredentialsDictionary,
+  getCrmHoursDictionary,
   getCrmFeedbackRoundsDictionary,
   getCrmFilesDictionary,
   getCrmFormDictionary,
@@ -64,6 +65,7 @@ import { listCockpitProjectsByCustomer } from "@/server/workspace/crm/query-hand
 import { buildProjectLineItemsViewModel } from "@/lib/workspace/crm/project-line-items-view-model";
 import { buildTasksViewModel } from "@/lib/workspace/crm/tasks-view-model";
 import { buildCredentialsViewModel } from "@/lib/workspace/crm/credentials-view-model";
+import { buildHoursViewModel } from "@/lib/workspace/crm/hours-view-model";
 import { listCredentialProjectsByCustomer } from "@/server/workspace/crm/query-handler/list-credential-projects-by-customer.query-handler";
 import { buildFilesViewModel } from "@/lib/workspace/crm/files-view-model";
 import { buildFeedbackRoundsViewModel } from "@/lib/workspace/crm/feedback-rounds-view-model";
@@ -246,6 +248,9 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
         ),
       })
     : null;
+  const hoursViewModel = cockpitCustomer
+    ? await buildHoursViewModel({ actor, customerId: cockpitCustomer.id })
+    : null;
   // Only the open tab loads its rounds; an unknown or foreign project id falls back to the first.
   const requestedProjectId = readCockpitProjectId(resolvedSearchParams);
   const selectedCockpitProject =
@@ -403,6 +408,10 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
             credentialsViewModel
               ? getCrmCredentialsDictionary(activeLocale)
               : undefined
+          }
+          hours={hoursViewModel ?? undefined}
+          hoursContent={
+            hoursViewModel ? getCrmHoursDictionary(activeLocale) : undefined
           }
           files={filesViewModel ?? undefined}
           filesContent={

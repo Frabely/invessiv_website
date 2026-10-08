@@ -26,6 +26,7 @@ describe("WorkspaceApiEndpoint", () => {
       CrmQuestionnaireTemplates: "/api/workspace/crm/questionnaire/templates",
       CrmOnboardingForms: "/api/workspace/crm/onboarding/forms",
       CrmTasks: "/api/workspace/crm/tasks",
+      CrmTimeEntries: "/api/workspace/crm/time-entries",
       Leads: "/api/workspace/leads",
       LeadsBulk: "/api/workspace/leads/bulk",
       LeadsImport: "/api/workspace/leads/import",

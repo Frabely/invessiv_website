@@ -303,3 +303,66 @@ Plan: `apps/workspace/plans/crm/19-credentials/18-credentials-ui.md`.
 - **Anlegen, Patch und Aufdecken teilen sich die Logik mit dem Portal:** `credentialWriteService.insert` und
   `.buildPatch`, `credentialRevealService.reveal` und die Feldregeln `credentialRequestSchemas` liegen unter
   `server/shared/services/credential/`. Die Handler hier behalten Zugriff, Zielprüfung, Version und Event-Actor.
+
+## Stunden (ab Task 27)
+
+Plan: `apps/workspace/plans/crm/20-stunden-und-history/27-kontingent-und-zuweisung.md`.
+
+- Services unter `services/hours/`: `hours-ledger-service.ts` (Kundensperre, Einfügen und Wiederfinden der
+  Buchungszeilen), `hours-mapping-service.ts`, `hours-schemas.ts`, `hours-activity-service.ts`. Die Summen liest
+  `hoursBalanceService` unter `server/shared/services/hours/`, weil das Portal sie ebenfalls braucht.
+- **Kein Stand wird gespeichert.** Jede Zahl entsteht aus den Zeilen über `computeCustomerHoursBalance` bzw.
+  `computeProjectHoursBalance` (`@invessiv/common/patterns/crm/hours/hours-balance`). Kein Handler rechnet selbst.
+- **Jede Kaufbuchung, Zuweisung und Freigabe sperrt zuerst die Kundenzeile** (`hoursLedgerService.lockCustomer`,
+  `FOR NO KEY UPDATE`) und liest die Summen erst danach. Nur so können zwei parallele Zuweisungen den freien Bestand
+  nicht gemeinsam überziehen.
+- **Kein automatischer Ausgleich.** Ein überzogenes Projekt bedient sich nie aus einem anderen Projekt oder aus dem
+  freien Bestand. Zuweisen zieht nur aus „Frei“ (`INSUFFICIENT_FREE_HOURS`), Freigeben gibt nur zurück, was das eigene
+  Projekt nicht verbraucht hat (`INSUFFICIENT_RELEASABLE_HOURS`), eine Korrektur fällt nie unter die zugewiesene Summe
+  (`BELOW_ALLOCATED_HOURS`). Alle drei antworten 409 und tragen die aktuellen Zahlen.
+- **Buchungszeilen sind unveränderlich.** Es gibt weder Update noch Delete für Kaufbuchungen und Zuweisungen; eine
+  Korrektur ist eine neue Zeile. Deshalb gibt es dort keine Version und kein `updateVersioned`.
+- **Idempotenz:** Derselbe `idempotencyKey` am selben Kunden (und Projekt) liefert die bestehende Zeile als Erfolg und
+  schreibt keine zweite Activity; an einem anderen Kunden ist er `VALIDATION_ERROR`.
+- Rechte: Lesen `hours.read` (Kunde oder Projekt), Kaufbuchung und Zuweisung `hours.manage` (nur am Kunden bindbar,
+  deshalb liegt auch die Zuweisung unter dem Kundenpfad und trägt `projectId` im Body). Ein Kunde außerhalb des
+  Zugriffsbereichs antwortet `CUSTOMER_NOT_FOUND`, ein fremdes Projekt `PROJECT_NOT_FOUND`.
+- Eine Projektbindung von `hours.read` zeigt nur die eigenen Projekte: `getCustomerHours` liefert dann
+  `balance: null` und keine Kaufbuchungen.
+- Zuweisen geht nicht an Projekte in `HOURS_CLOSED_PROJECT_STATUS_VALUES` (`PROJECT_CLOSED`); Freigeben geht immer.
+- **Activities enthalten nie die Notiz**, nur Ids und Minuten (`metadata.entity` = `hour_purchase` bzw.
+  `hour_allocation`). Es gibt keinen eigenen Activity-Typ.
+- `hoursLedgerService.insertPurchase` nimmt `source` als Argument: Leistungsanfragen (Ordner 13c) und die monatliche
+  Zubuchung (Ordner 20c) rufen später dieselbe Methode unter derselben Kundensperre auf.
+
+Ab Task 72 (`apps/workspace/plans/crm/20-stunden-und-history/72-zeitbuchungen-und-aufgaben.md`):
+
+- **Eine Zeitbuchung gehört zu genau einem Projekt und wechselt es nie.** Der Kunde kommt aus dem Projekt, der
+  Buchende ist immer der Aufrufer (`performed_by_member_id`); es gibt kein Buchen im Namen anderer. Wer falsch gebucht
+  hat, löscht und bucht neu.
+- **Keine Prüfung gegen die zugewiesenen Stunden.** `createTimeEntry` und `updateTimeEntry` vergleichen nichts mit
+  „Zugewiesen“ und sperren nichts: Überziehung ist erlaubt und wird nur angezeigt. Ein überzogenes Projekt gleicht
+  sich nie automatisch aus.
+- Buchen geht nicht auf Projekte in `HOURS_CLOSED_PROJECT_STATUS_VALUES` (`PROJECT_CLOSED`); Ändern und Löschen
+  bestehender Buchungen gehen immer, damit sich korrigieren lässt, was der Kunde liest.
+- **Aufgabe verknüpfen nur über `timeEntryAccessService.isTaskLinkable`:** dieselbe Projekt-ID und nicht `cancelled`,
+  sonst `TASK_NOT_LINKABLE`. Die Regel gilt im Moment des Verknüpfens: Eine später abgebrochene Aufgabe behält ihre
+  Buchungen, und eine unveränderte Verknüpfung bleibt beim Bearbeiten gültig. `tasks` bekommt keine Zeitspalte; eine
+  Aufgabe braucht nie eine Buchung.
+- Dauer 15 bis 1440 Minuten im 15-Minuten-Raster, Datum nie in der Zukunft (`businessToday()`), Beschreibung
+  Pflicht. Das Datum prüft der Handler, weil das Schema den Geschäftstag nicht kennt.
+- **Ändern über `updateVersioned`, Löschen unter Zeilensperre mit Versionsvergleich** (`timeEntryAccessService.lock`,
+  Muster `deleteFile`). Beide antworten bei veralteter Version 409 mit der aktuellen Buchung.
+- Zugriff über `timeEntryAccessService.condition` (`crmAccessCondition` mit Kunden- **und** Projektspalte): Eine
+  Projektbindung erreicht nur die Buchungen ihres Projekts. Lesen `hours.read`, Schreiben `hours.write`; jeder
+  Fehlgriff ist `PROJECT_NOT_FOUND` bzw. `TIME_ENTRY_NOT_FOUND`.
+- Jede Schreibantwort trägt die neuen Zahlen des Projekts (`hoursBalanceService.loadProjectBalance`).
+- **Activities enthalten nie die Beschreibung.** `created` beim Buchen, je geändertem Feld ein `field_change` mit
+  Vorher/Nachher (Dauer, Datum, Kulanz, Aufgabe); eine geänderte Beschreibung wird nur als Feldname vermerkt. Löschen
+  schreibt `field_change` mit Feld `deleted` und den Zahlen der gelöschten Zeile.
+- **Die Liste blättert per Keyset** (`listProjectTimeEntries`): Sortierung `performed_on`, Buchungszeitpunkt auf
+  Millisekunden gekürzt, `id` — jeweils absteigend. Der Cursor ist genau dieser Schlüssel
+  (`@invessiv/common/patterns/crm/hours/time-entry-cursor`); die Kürzung auf Millisekunden steht in Sortierung **und**
+  Vergleich, weil der Cursor als JS-Zeitstempel reist. Ein unlesbarer Cursor ist `VALIDATION_ERROR`.
+- `getTaskBookedMinutes` liefert die gebuchte Zeit je Aufgabe eines Kunden in einer gruppierten Abfrage, Kulanz
+  eingeschlossen: Die Zahl sagt, wie lange eine Aufgabe gedauert hat, nicht was berechnet wurde.

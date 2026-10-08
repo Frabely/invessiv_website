@@ -14,6 +14,7 @@ import type {
   CrmCockpitDictionary,
   CrmFeedbackRoundsDictionary,
   CrmFilesDictionary,
+  CrmHoursDictionary,
   CrmOnboardingDictionary,
   CrmProjectLineItemsDictionary,
   CrmQuestionnaireDictionary,
@@ -32,11 +33,23 @@ import { ProjectLineItemsSection } from "@/components/workspace/crm/projects/pro
 import { ProjectTasksSection } from "@/components/workspace/crm/tasks/project-tasks-section/project-tasks-section";
 import { CustomerFilesSection } from "@/components/workspace/crm/files/customer-files-section/customer-files-section";
 import type { FilesViewModel } from "@/common/contracts/crm/files/files-view-model";
+import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
+import type { TimeEntryDto } from "@invessiv/common/contracts/crm/hours/time-entry.dto";
+import type { HoursViewModel } from "@/common/contracts/crm/hours/hours-view-model";
+import { ProjectHoursSection } from "@/components/workspace/crm/hours/project-hours-section/project-hours-section";
+import { TimeEntryFormDialog } from "@/components/workspace/crm/hours/time-entry-form-dialog/time-entry-form-dialog";
 import styles from "./customer-projects-section.module.css";
 
 type EditorState = {
   project: ProjectDto | null;
   nextCurrentStep?: string;
+  key: number;
+};
+
+/** The one booking dialog of the canvas: opened from the hours section or from a task row. */
+type TimeEntryDialogState = {
+  entry: TimeEntryDto | null;
+  taskId: string | null;
   key: number;
 };
 
@@ -60,6 +73,9 @@ type CustomerProjectsSectionProps = {
   filesContent?: CrmFilesDictionary;
   filesRevision?: number;
   onFilesChangedAction?: () => void;
+  /** Absent without `hours.read` anywhere on the customer; a project outside its list shows no hours. */
+  hours?: HoursViewModel;
+  hoursContent?: CrmHoursDictionary;
   /** Project tab from the URL; an unknown or foreign id falls back to the first project. */
   selectedProjectId?: string | null;
   /** Rounds of the open tab; absent without `projects.read` there, the section then does not exist. */
@@ -90,6 +106,8 @@ export function CustomerProjectsSection({
   filesContent,
   filesRevision = 0,
   onFilesChangedAction,
+  hours,
+  hoursContent,
   selectedProjectId: requestedProjectId = null,
   feedback,
   feedbackContent,
@@ -98,6 +116,9 @@ export function CustomerProjectsSection({
   questionnaireErrors,
 }: CustomerProjectsSectionProps) {
   const [editor, setEditor] = useState<EditorState | null>(null);
+  const [timeEntryDialog, setTimeEntryDialog] =
+    useState<TimeEntryDialogState | null>(null);
+  const [timeEntriesRevision, setTimeEntriesRevision] = useState(0);
   const selection = useCockpitSelection(customerId);
   const selectedProjectId = requestedProjectId ?? projects[0]?.id ?? null;
   const activeProject =
@@ -119,6 +140,41 @@ export function CustomerProjectsSection({
     onboarding && onboarding.projectId === activeProject?.id
       ? onboarding
       : null;
+
+  const activeHoursProject =
+    hours && hoursContent && activeProject
+      ? (hours.hours.projects.find(
+          (project) => project.projectId === activeProject.id,
+        ) ?? null)
+      : null;
+  const canBookTime =
+    activeHoursProject !== null &&
+    hours !== undefined &&
+    hours.writableProjectIds.includes(activeHoursProject.projectId);
+  // Null without the right to read tasks there: the dialog then offers no task field.
+  const activeTaskOptions =
+    tasks &&
+    activeProject &&
+    tasks.readableProjectIds.includes(activeProject.id)
+      ? tasks.tasks
+          .filter((task) => task.projectId === activeProject.id)
+          .map((task) => ({
+            id: task.id,
+            title: task.title,
+            linkable: task.status !== TaskStatus.Cancelled,
+          }))
+      : null;
+
+  function openTimeEntryDialog(
+    entry: TimeEntryDto | null,
+    taskId: string | null = null,
+  ) {
+    setTimeEntryDialog({
+      entry,
+      taskId,
+      key: (timeEntryDialog?.key ?? 0) + 1,
+    });
+  }
 
   function selectProject(projectId: string) {
     selection.select({ projectId });
@@ -187,6 +243,36 @@ export function CustomerProjectsSection({
                 (task) => task.projectId === activeProject.id,
               )}
               today={tasks.today}
+              hours={
+                hours && hoursContent && activeHoursProject
+                  ? {
+                      bookedMinutesByTaskId: hours.bookedMinutesByTaskId,
+                      content: hoursContent.task,
+                      onBookTimeAction: canBookTime
+                        ? (task) => openTimeEntryDialog(null, task.id)
+                        : undefined,
+                    }
+                  : undefined
+              }
+            />
+          ) : null}
+          {hours && hoursContent && activeHoursProject ? (
+            <ProjectHoursSection
+              canManage={hours.canManage}
+              canWrite={canBookTime}
+              content={hoursContent}
+              customerId={customerId}
+              freeMinutes={hours.hours.balance?.freeMinutes ?? null}
+              key={`hours-${activeProject.id}`}
+              locale={locale}
+              onBookAction={() => openTimeEntryDialog(null)}
+              onChangedAction={() =>
+                setTimeEntriesRevision((current) => current + 1)
+              }
+              onEditAction={(entry) => openTimeEntryDialog(entry)}
+              project={activeHoursProject}
+              revision={timeEntriesRevision}
+              tasks={activeTaskOptions}
             />
           ) : null}
           {projectLineItems &&
@@ -256,6 +342,21 @@ export function CustomerProjectsSection({
       ) : (
         <p className={styles.empty}>{content.projects.empty}</p>
       )}
+      {timeEntryDialog && hours && hoursContent && activeHoursProject ? (
+        <TimeEntryFormDialog
+          content={hoursContent}
+          entry={timeEntryDialog.entry}
+          initialTaskId={timeEntryDialog.taskId}
+          key={`${activeHoursProject.projectId}-${timeEntryDialog.key}`}
+          locale={locale}
+          onCloseAction={() => setTimeEntryDialog(null)}
+          onSavedAction={() => setTimeEntriesRevision((current) => current + 1)}
+          project={activeHoursProject}
+          projectTitle={activeHoursProject.title}
+          tasks={activeTaskOptions}
+          today={hours.today}
+        />
+      ) : null}
       {editor ? (
         <ProjectEditorDialog
           content={content.projects}

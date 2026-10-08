@@ -123,6 +123,18 @@
       "label": "Edit credentials",
       "description": "Create, change and delete credentials."
     },
+    "hours.read": {
+      "label": "View hours",
+      "description": "See hour balances, purchases, allocations and time entries."
+    },
+    "hours.write": {
+      "label": "Book time",
+      "description": "Create, change and delete time entries."
+    },
+    "hours.manage": {
+      "label": "Manage hours",
+      "description": "Record purchased hours, allocate them to projects and release them again."
+    },
     "portal.manage": {
       "label": "Manage portal access",
       "description": "Invite customer contacts to the portal and revoke access."

@@ -1,0 +1,83 @@
+/*
+ * Three hues with three meanings instead of three shades of one: spent (warm), reserved for a
+ * project (blue), still free (green). The tokens are local so strip and swatches cannot drift.
+ */
+.summary {
+  --hours-used: var(--color-accent-warm);
+  --hours-allocated: var(--color-cta);
+  --hours-free: var(--color-success);
+
+  display: grid;
+  gap: 0.7rem;
+}
+
+.strip {
+  display: block;
+  width: 100%;
+  height: 0.625rem;
+  border-radius: 99px;
+}
+
+.used {
+  fill: var(--hours-used);
+}
+
+.unused {
+  fill: var(--hours-allocated);
+}
+
+.free {
+  fill: var(--hours-free);
+}
+
+.figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(5.5rem, 1fr));
+  gap: 0.6rem 1rem;
+  margin: 0;
+}
+
+.figure {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.figure dt {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+/* The swatch ties a figure to its part of the strip; the label still says what it is. */
+.figure[data-swatch] dt::before {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 99px;
+  content: "";
+}
+
+.figure[data-swatch="used"] dt::before {
+  background: var(--hours-used);
+}
+
+.figure[data-swatch="unused"] dt::before {
+  background: var(--hours-allocated);
+}
+
+.figure[data-swatch="free"] dt::before {
+  background: var(--hours-free);
+}
+
+.figure dd {
+  margin: 0;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+/* Not the warm tone: that one already means "used" here. */
+.figure[data-negative="true"] dd {
+  color: var(--color-danger);
+}

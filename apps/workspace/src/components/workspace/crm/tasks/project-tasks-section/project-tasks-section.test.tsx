@@ -15,7 +15,10 @@ import { TaskErrorCode } from "@invessiv/common/constants/crm/errors/task-error-
 import { TaskActionSide } from "@invessiv/common/constants/crm/task-action-sides";
 import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import type { TaskDto } from "@invessiv/common/contracts/crm/task.dto";
-import { getCrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
+import {
+  getCrmHoursDictionary,
+  getCrmTasksDictionary,
+} from "@/i18n/dictionaries/workspace/crm";
 import { ProjectTasksSection } from "./project-tasks-section";
 
 const mocks = vi.hoisted(() => ({
@@ -334,5 +337,132 @@ describe("ProjectTasksSection", () => {
     expect(
       screen.getByRole("dialog", { name: content.form.title.edit }),
     ).toBeInTheDocument();
+  });
+
+  describe("booking time for a task", () => {
+    const hoursContent = getCrmHoursDictionary("en").task;
+
+    it("looks exactly as before without hours", () => {
+      renderSection({ tasks: [task()] });
+
+      expect(
+        screen.queryByRole("button", { name: /^Book time/ }),
+      ).not.toBeInTheDocument();
+      expect(screen.queryByText(/booked$/)).not.toBeInTheDocument();
+    });
+
+    it("shows the booked time and offers booking on every task that is not cancelled", () => {
+      const onBookTimeAction = vi.fn();
+      const open = task();
+      const cancelled = task({
+        id: "99999999-9999-4999-8999-999999999999",
+        title: "Dropped idea",
+        status: TaskStatus.Cancelled,
+      });
+      renderSection({
+        tasks: [open, cancelled],
+        hours: {
+          bookedMinutesByTaskId: { [open.id]: 90 },
+          content: hoursContent,
+          onBookTimeAction,
+        },
+      });
+      fireEvent.click(
+        screen.getByRole("button", { name: content.section.showClosedOne }),
+      );
+
+      expect(screen.getByText("1:30 booked")).toBeVisible();
+      expect(
+        screen.queryByRole("button", { name: "Book time: Dropped idea" }),
+      ).not.toBeInTheDocument();
+      fireEvent.click(
+        screen.getByRole("button", {
+          name: "Book time: Provide hosting access",
+        }),
+      );
+      expect(onBookTimeAction).toHaveBeenCalledWith(open);
+      // The action sits above the row's own target and never opens the task editor.
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    });
+
+    it("shows booked time read-only when booking is not allowed", () => {
+      const open = task();
+      renderSection({
+        tasks: [open],
+        hours: {
+          bookedMinutesByTaskId: { [open.id]: 45 },
+          content: hoursContent,
+        },
+      });
+
+      expect(screen.getByText("0:45 booked")).toBeVisible();
+      expect(
+        screen.queryByRole("button", { name: /^Book time/ }),
+      ).not.toBeInTheDocument();
+    });
+
+    it("offers booking once after a task was marked done and lets it be ignored", async () => {
+      mocks.changeTaskStatus.mockResolvedValue({
+        ok: true,
+        task: task({ status: TaskStatus.Done, version: 2 }),
+      });
+      const onBookTimeAction = vi.fn();
+      renderSection({
+        tasks: [task()],
+        hours: {
+          bookedMinutesByTaskId: {},
+          content: hoursContent,
+          onBookTimeAction,
+        },
+      });
+
+      fireEvent.click(
+        screen.getByRole("button", {
+          name: "Status of “Provide hosting access”: Open",
+        }),
+      );
+      fireEvent.click(
+        screen.getByRole("option", { name: content.status.done }),
+      );
+
+      const hint = await screen.findByText(
+        hoursContent.doneHint.replace("{name}", "Provide hosting access"),
+      );
+      expect(hint).toBeVisible();
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+
+      fireEvent.click(
+        screen.getByRole("button", { name: hoursContent.dismiss }),
+      );
+      expect(hint).not.toBeInTheDocument();
+      expect(onBookTimeAction).not.toHaveBeenCalled();
+    });
+
+    it("makes no offer after a change to another status", async () => {
+      mocks.changeTaskStatus.mockResolvedValue({
+        ok: true,
+        task: task({ status: TaskStatus.InProgress, version: 2 }),
+      });
+      renderSection({
+        tasks: [task()],
+        hours: {
+          bookedMinutesByTaskId: {},
+          content: hoursContent,
+          onBookTimeAction: vi.fn(),
+        },
+      });
+
+      fireEvent.click(
+        screen.getByRole("button", {
+          name: "Status of “Provide hosting access”: Open",
+        }),
+      );
+      fireEvent.click(
+        screen.getByRole("option", { name: content.status.in_progress }),
+      );
+
+      await waitFor(() => expect(mocks.changeTaskStatus).toHaveBeenCalled());
+      expect(screen.queryByText(/Would you like to book time/)).toBeNull();
+    });
   });
 });

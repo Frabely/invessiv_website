@@ -123,6 +123,18 @@
       "label": "Zugangsdaten bearbeiten",
       "description": "Zugangsdaten anlegen, ändern und löschen."
     },
+    "hours.read": {
+      "label": "Stunden ansehen",
+      "description": "Stundenstand, Gutschriften, Zuweisungen und Zeitbuchungen sehen."
+    },
+    "hours.write": {
+      "label": "Zeit buchen",
+      "description": "Zeitbuchungen anlegen, ändern und löschen."
+    },
+    "hours.manage": {
+      "label": "Stunden verwalten",
+      "description": "Gekaufte Stunden gutschreiben, Projekten zuweisen und wieder freigeben."
+    },
     "portal.manage": {
       "label": "Portalzugänge verwalten",
       "description": "Kundenkontakte ins Portal einladen und Zugänge widerrufen."

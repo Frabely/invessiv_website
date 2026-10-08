@@ -16,7 +16,6 @@ import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspa
 import { CustomerProjectsSection } from "@/components/workspace/crm/projects/customer-projects-section/customer-projects-section";
 import { CustomerAccessSection } from "@/components/workspace/crm/detail/customer-access-section/customer-access-section";
 import { ChatDock } from "@invessiv/ui";
-import { MockSectionCard } from "@/components/workspace/crm/shared/mock-section-card/mock-section-card";
 import { OwnerWithoutAccessBadge } from "@/components/workspace/crm/shared/owner-without-access-badge/owner-without-access-badge";
 import { CustomerStatusBadge } from "@/components/workspace/crm/list/customer-status-badge/customer-status-badge";
 import { formatCustomerNumber } from "@invessiv/common/patterns/crm/format-customer-number";
@@ -24,6 +23,7 @@ import type {
   CrmAccessDictionary,
   CrmCockpitDictionary,
   CrmCredentialsDictionary,
+  CrmHoursDictionary,
   CrmFilesDictionary,
   CrmMessagesDictionary,
   CrmPortalAccessDictionary,
@@ -39,6 +39,9 @@ import type { FeedbackRoundsViewModel } from "@/common/contracts/crm/feedback-ro
 import type { OnboardingViewModel } from "@/common/contracts/crm/onboarding/onboarding-view-model";
 import type { TasksViewModel } from "@/common/contracts/crm/tasks-view-model";
 import type { CredentialsViewModel } from "@/common/contracts/crm/credentials/credentials-view-model";
+import type { HoursViewModel } from "@/common/contracts/crm/hours/hours-view-model";
+import { CustomerHoursSection } from "@/components/workspace/crm/hours/customer-hours-section/customer-hours-section";
+import { formatDuration } from "@invessiv/common/patterns/crm/hours/format-duration";
 import type { FilesViewModel } from "@/common/contracts/crm/files/files-view-model";
 import { CustomerCredentialsSection } from "@/components/workspace/crm/credentials/customer-credentials-section/customer-credentials-section";
 import { CustomerFilesSection } from "@/components/workspace/crm/files/customer-files-section/customer-files-section";
@@ -48,8 +51,6 @@ import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { formatEuroCents } from "@/lib/workspace/crm/format-service-price";
 import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
 import styles from "./customer-cockpit-view.module.css";
-
-type FutureCustomerSection = keyof CrmCockpitDictionary["futureSections"];
 
 type CustomerCockpitViewProps = {
   accessContent?: CrmAccessDictionary;
@@ -69,6 +70,9 @@ type CustomerCockpitViewProps = {
   /** Absent without `credentials.read` in any scope of the customer; the area then does not exist. */
   credentials?: CredentialsViewModel;
   credentialsContent?: CrmCredentialsDictionary;
+  /** Absent without `hours.read` anywhere on the customer; the area then does not exist. */
+  hours?: HoursViewModel;
+  hoursContent?: CrmHoursDictionary;
   /** Absent without `files.read` in any scope of the customer; the area then does not exist. */
   files?: FilesViewModel;
   filesContent?: CrmFilesDictionary;
@@ -116,6 +120,8 @@ export function CustomerCockpitView({
   customer,
   credentials,
   credentialsContent,
+  hours,
+  hoursContent,
   files,
   filesContent,
   isWorkspaceOwner = false,
@@ -168,24 +174,8 @@ export function CustomerCockpitView({
   const taskSummary = tasks
     ? taskDueStateService.summarize(tasks.tasks, tasks.today)
     : null;
-
-  function renderMock(section: FutureCustomerSection) {
-    const future = content.futureSections[section];
-    return (
-      <MockSectionCard
-        badgeLabel={content.mock.badge}
-        body={future.body}
-        key={section}
-        labelCollapse={formatMessage(content.collapse.collapse, {
-          section: future.title,
-        })}
-        labelExpand={formatMessage(content.collapse.expand, {
-          section: future.title,
-        })}
-        title={future.title}
-      />
-    );
-  }
+  // Null without customer-wide read access: a project-bound reader gets no customer figure.
+  const hoursBalance = hours?.hours.balance ?? null;
 
   return (
     <div className={styles.view}>
@@ -292,17 +282,35 @@ export function CustomerCockpitView({
                 ) : null}
               </li>
             ) : null}
-            {[content.kpis.hoursLeft, content.kpis.openFeedback].map(
-              (label) => (
-                <li className={styles.kpi} data-mock="true" key={label}>
-                  <span className={styles.kpiLabel}>{label}</span>
-                  <span className={styles.kpiValue}>
-                    {content.kpis.mockValue}
-                  </span>
-                  <span className={styles.kpiNote}>{content.mock.badge}</span>
-                </li>
-              ),
-            )}
+            {hoursBalance && hoursContent ? (
+              <li className={styles.kpi}>
+                <span className={styles.kpiLabel}>
+                  {content.kpis.hoursLeft}
+                </span>
+                <span className={styles.kpiValue}>
+                  {formatDuration(hoursBalance.remainingMinutes)}
+                </span>
+                <span
+                  className={styles.kpiNote}
+                  data-tone={
+                    hoursBalance.remainingMinutes < 0 ? "attention" : undefined
+                  }
+                >
+                  {hoursBalance.remainingMinutes < 0
+                    ? hoursContent.kpi.overdrawn
+                    : formatMessage(hoursContent.kpi.free, {
+                        duration: formatDuration(hoursBalance.freeMinutes),
+                      })}
+                </span>
+              </li>
+            ) : null}
+            <li className={styles.kpi} data-mock="true">
+              <span className={styles.kpiLabel}>
+                {content.kpis.openFeedback}
+              </span>
+              <span className={styles.kpiValue}>{content.kpis.mockValue}</span>
+              <span className={styles.kpiNote}>{content.mock.badge}</span>
+            </li>
           </ul>
         </header>
         <div className={styles.columns}>
@@ -317,6 +325,8 @@ export function CustomerCockpitView({
                 files={files}
                 filesContent={filesContent}
                 filesRevision={filesRevision}
+                hours={hours}
+                hoursContent={hoursContent}
                 onFilesChangedAction={bumpFilesRevision}
                 onGrantAccessAction={setRequestedAccessMemberId}
                 ownerHasAccess={projectOwnerHasAccess}
@@ -361,7 +371,14 @@ export function CustomerCockpitView({
                   viewModel={credentials}
                 />
               ) : null}
-              {renderMock("hours")}
+              {hours && hoursContent ? (
+                <CustomerHoursSection
+                  content={hoursContent}
+                  customerId={customer.id}
+                  locale={locale}
+                  viewModel={hours}
+                />
+              ) : null}
             </div>
             <div
               aria-labelledby={accessSecurityLabelId}

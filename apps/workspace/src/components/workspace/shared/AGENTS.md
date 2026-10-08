@@ -35,6 +35,10 @@ Umzugsschritt vorübergehend in diesem Scope bleiben. Sie erhalten keine neuen f
 
 ## Bausteine mit zwei Nutzern
 
+- `status-row/`: Listenzeile mit Statusfeld und einem Öffnen-Ziel über die ganze Zeile. Der optionale Slot `trailing`
+  (ab Task 72) trägt eigene Bedienelemente am Zeilenende; er liegt wie das Statusfeld über dem Öffnen-Ziel, damit
+  beide getrennt erreichbar bleiben. Was dort steht, entscheidet der Nutzer der Zeile.
+
 - `booking-url-dialog/` (ab Task 69): ein Feld für einen `https`-Link mit Prüfung über `parseBookingUrl`,
   Konfliktanzeige und erneutem Speichern gegen die aktuelle Version. Texte und Speicherweg kommen als Props; genutzt
   von der Mitgliederverwaltung (fremder Link) und der Sidebar (eigener Link).

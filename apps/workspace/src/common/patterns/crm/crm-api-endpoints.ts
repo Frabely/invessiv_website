@@ -12,6 +12,9 @@ const LINE_ITEMS_PATH = "line-items";
 const TASKS_PATH = "tasks";
 const TASK_STATUS_PATH = "status";
 const MESSAGE_REDACT_PATH = "redact";
+const HOUR_PURCHASES_PATH = "hour-purchases";
+const HOUR_ALLOCATIONS_PATH = "hour-allocations";
+const TIME_ENTRIES_PATH = "time-entries";
 
 export function crmCustomerEndpoint(customerId: string): string {
   return `${WorkspaceApiEndpoint.CrmCustomers}/${encodeURIComponent(customerId)}`;
@@ -258,4 +261,20 @@ export function crmCredentialPortalVisibilityEndpoint(
   credentialId: string,
 ): string {
   return `${crmCredentialEndpoint(credentialId)}/${CredentialApiPath.PortalVisibility}`;
+}
+
+export function crmCustomerHourPurchasesEndpoint(customerId: string): string {
+  return `${crmCustomerEndpoint(customerId)}/${HOUR_PURCHASES_PATH}`;
+}
+
+export function crmCustomerHourAllocationsEndpoint(customerId: string): string {
+  return `${crmCustomerEndpoint(customerId)}/${HOUR_ALLOCATIONS_PATH}`;
+}
+
+export function crmProjectTimeEntriesEndpoint(projectId: string): string {
+  return `${crmProjectEndpoint(projectId)}/${TIME_ENTRIES_PATH}`;
+}
+
+export function crmTimeEntryEndpoint(timeEntryId: string): string {
+  return `${WorkspaceApiEndpoint.CrmTimeEntries}/${encodeURIComponent(timeEntryId)}`;
 }

@@ -12,6 +12,7 @@ import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
 import { StatusRowTone } from "@/common/constants/ui/status-row-tones";
 import { TaskDueState } from "@invessiv/common/constants/crm/task-due-states";
 import { StatusRow } from "@/components/workspace/shared/status-row/status-row";
+import { ButtonControl } from "@invessiv/ui";
 import { TaskRowDetails } from "../task-row-details/task-row-details";
 import { TaskStatusSelect } from "../task-status-select/task-status-select";
 import styles from "./task-row.module.css";
@@ -29,6 +30,10 @@ type TaskRowProps = {
   status: TaskStatus;
   task: TaskDto;
   today: string;
+  /** Time booked on this task as a finished phrase; absent without the right to read hours. */
+  bookedLabel?: string;
+  /** Present only where the actor may book time on the project of a task that is not cancelled. */
+  bookTime?: { label: string; namedLabel: string; onAction: () => void };
 };
 
 /** A task row keeps the status control separate from its edit target (layout: `StatusRow`). */
@@ -43,6 +48,8 @@ export function TaskRow({
   status,
   task,
   today,
+  bookedLabel,
+  bookTime,
 }: TaskRowProps) {
   const dueState = taskDueStateService.dueState(
     { dueOn: task.dueOn, status },
@@ -76,6 +83,25 @@ export function TaskRow({
             {content.status[status]}
           </span>
         )
+      }
+      trailing={
+        bookedLabel || bookTime ? (
+          <>
+            {bookedLabel ? (
+              <span className={styles.booked}>{bookedLabel}</span>
+            ) : null}
+            {bookTime ? (
+              <ButtonControl
+                aria-label={bookTime.namedLabel}
+                onClick={bookTime.onAction}
+                type="button"
+                variant="quiet"
+              >
+                {bookTime.label}
+              </ButtonControl>
+            ) : null}
+          </>
+        ) : undefined
       }
       tone={
         dueState === TaskDueState.Overdue

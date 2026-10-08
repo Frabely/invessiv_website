@@ -1,0 +1,84 @@
+.list {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.day {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.day h4 {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+}
+
+.entries {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The duration leads: it is the column that gets added up when reading down a day. */
+.entry {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr) auto auto;
+  gap: 0.2rem 0.8rem;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.35rem 0;
+}
+
+.entry + .entry {
+  border-top: 1px solid var(--color-border);
+}
+
+.duration {
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.text {
+  display: grid;
+  min-width: 0;
+}
+
+.description {
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+}
+
+.task {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  overflow-wrap: anywhere;
+}
+
+.goodwill {
+  padding: 0.1rem 0.4rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 99px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  white-space: nowrap;
+}
+
+.actions {
+  display: flex;
+  gap: 0.15rem;
+}
+
+@media (max-width: 640px) {
+  .entry {
+    grid-template-columns: 3.5rem minmax(0, 1fr) auto;
+  }
+
+  .actions {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+  }
+}

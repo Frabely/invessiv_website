@@ -58,6 +58,12 @@ export const CrmEndpointAccessRule = {
   OnboardingForm: "onboarding_form",
   OnboardingFormWrite: "onboarding_form_write",
   OnboardingFormTemplateApply: "onboarding_form_template_apply",
+  HourPurchaseCreate: "hour_purchase_create",
+  HourAllocationCreate: "hour_allocation_create",
+  TimeEntries: "time_entries",
+  TimeEntryCreate: "time_entry_create",
+  TimeEntryUpdate: "time_entry_update",
+  TimeEntryDelete: "time_entry_delete",
 } as const;
 
 export type CrmEndpointAccessRule =
@@ -271,6 +277,31 @@ export const CRM_ENDPOINT_ACCESS_RULES = {
   },
   [CrmEndpointAccessRule.OnboardingFormTemplateApply]: {
     permission: Permission.ProjectsWrite,
+    scope: "project",
+  },
+  // The stock belongs to the customer: both writes are admitted and checked at customer level.
+  [CrmEndpointAccessRule.HourPurchaseCreate]: {
+    permission: Permission.HoursManage,
+    scope: "customer",
+  },
+  [CrmEndpointAccessRule.HourAllocationCreate]: {
+    permission: Permission.HoursManage,
+    scope: "customer",
+  },
+  [CrmEndpointAccessRule.TimeEntries]: {
+    permission: Permission.HoursRead,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.TimeEntryCreate]: {
+    permission: Permission.HoursWrite,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.TimeEntryUpdate]: {
+    permission: Permission.HoursWrite,
+    scope: "project",
+  },
+  [CrmEndpointAccessRule.TimeEntryDelete]: {
+    permission: Permission.HoursWrite,
     scope: "project",
   },
 } as const satisfies Record<

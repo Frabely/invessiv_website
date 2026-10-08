@@ -119,16 +119,6 @@
     "collaboration": "Zusammenarbeit",
     "accessSecurity": "Zugänge & Sicherheit"
   },
-  "futureSections": {
-    "hours": {
-      "title": "Stunden & Verlauf",
-      "body": "Hier siehst du bald das Stundenkontingent, jede Buchung mit kurzer Notiz und wie viele Stunden übrig sind. Der Kunde sieht dasselbe im Portal."
-    },
-    "credentials": {
-      "title": "Zugangsdaten",
-      "body": "Hier speicherst du bald die Logins der Konten, die du für diesen Kunden betreust – verschlüsselt und nur für freigegebene Mitglieder sichtbar."
-    }
-  },
   "chat": {
     "title": "Kundenchat",
     "body": "Hier schreibst du bald direkt mit dem Kunden. Er antwortet aus dem Portal.",

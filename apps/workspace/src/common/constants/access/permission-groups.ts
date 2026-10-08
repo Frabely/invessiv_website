@@ -51,6 +51,9 @@ export const PERMISSION_GROUP_PERMISSIONS = {
     Permission.ProjectLineItemsWrite,
     Permission.TasksRead,
     Permission.TasksWrite,
+    Permission.HoursRead,
+    Permission.HoursWrite,
+    Permission.HoursManage,
   ],
   [PermissionGroup.Services]: [
     Permission.LineItemTemplatesRead,

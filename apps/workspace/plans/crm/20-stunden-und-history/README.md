@@ -1,6 +1,6 @@
 # Ordner 20 — Stundenkontingente
 
-> **Status:** offen · **Abhängigkeiten:** 03, 04, 07, 07b, 08, 12a, 12b, 13 (alle im Code vorhanden)
+> **Status:** läuft · **Abhängigkeiten:** 03, 04, 07, 07b, 08, 12a, 12b, 13 (alle im Code vorhanden)
 > **Aufwand:** 7–9 Tage · **Reviewziel:** 20.1 ≈ 70–85 Dateien, 20.2 ≈ 65–80 Dateien, 20.3 ≈ 45–60 Dateien
 >
 > **Neuzuschnitt 08.10.2026 (mit dem Owner abgestimmt).** Ersetzt den früheren Stand „`retainers` + `time_entries`,
@@ -51,11 +51,11 @@ berechnet. Angezeigt wird `h:mm` (z. B. `1:30`, negativ `−1:00`).
 
 ## Lesereihenfolge und Lieferung
 
-| PR   | Status | Branch                          | Task                                          | Nach dem Merge nutzbar                                                           |
-| ---- | ------ | ------------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------- |
-| 20.1 | offen  | `feat/crm-stunden-1-kontingent` | [Task 27](./27-kontingent-und-zuweisung.md)   | Stunden am Kunden gutschreiben und korrigieren, Projekten zuweisen und freigeben |
-| 20.2 | offen  | `feat/crm-stunden-2-buchungen`  | [Task 72](./72-zeitbuchungen-und-aufgaben.md) | Zeit auf Projekte buchen, ändern, löschen; Aufgabe verknüpfen; Kulanz            |
-| 20.3 | offen  | `feat/crm-stunden-3-portal`     | [Task 73](./73-stunden-im-portal.md)          | Portal-Widget „Stunden“ mit Stand je Projekt, Kaufhistorie und Buchungsliste     |
+| PR   | Status    | Branch                                                  | Task                                          | Nach dem Merge nutzbar                                                           |
+| ---- | --------- | ------------------------------------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------- |
+| 20.1 | im Review | `feat/crm-stunden-1-kontingent`                         | [Task 27](./27-kontingent-und-zuweisung.md)   | Stunden am Kunden gutschreiben und korrigieren, Projekten zuweisen und freigeben |
+| 20.2 | im Review | `feat/crm-stunden-1-kontingent` (noch nicht abgezweigt) | [Task 72](./72-zeitbuchungen-und-aufgaben.md) | Zeit auf Projekte buchen, ändern, löschen; Aufgabe verknüpfen; Kulanz            |
+| 20.3 | offen     | `feat/crm-stunden-3-portal`                             | [Task 73](./73-stunden-im-portal.md)          | Portal-Widget „Stunden“ mit Stand je Projekt, Kaufhistorie und Buchungsliste     |
 
 Nach jedem PR ist `master` deploybar. Das Schema aller drei Tabellen entsteht vollständig in 20.1; bis 20.2 bleibt
 `project_time_entries` leer und „Verbraucht“ ist überall 0:00. Bis 20.3 bleibt das Portal-Widget `hours` ein Mock.

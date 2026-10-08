@@ -4,12 +4,17 @@ import { useState } from "react";
 import { faClipboardList } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import type { TaskDto } from "@invessiv/common/contracts/crm/task.dto";
-import { PrimaryCtaButton } from "@invessiv/ui";
+import { formatDuration } from "@invessiv/common/patterns/crm/hours/format-duration";
+import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
 import type { TaskAssigneeOption } from "@/common/contracts/crm/tasks-view-model";
 import type { Locale } from "@/config/i18n";
 import { useTaskStatusChange } from "@/hooks/workspace/use-task-status-change";
-import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
+import type {
+  CrmHoursDictionary,
+  CrmTasksDictionary,
+} from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
 import { CollapsibleSection } from "@/components/workspace/crm/shared/collapsible-section/collapsible-section";
@@ -27,6 +32,15 @@ type ProjectTasksSectionProps = {
   tasks: readonly TaskDto[];
   /** The current business day (`YYYY-MM-DD`), decided once on the server. */
   today: string;
+  /**
+   * Present only with the right to read hours on this project; without it the rows look exactly
+   * as before. Booking is offered only when `onBookTimeAction` is passed as well.
+   */
+  hours?: {
+    bookedMinutesByTaskId: Readonly<Record<string, number>>;
+    content: CrmHoursDictionary["task"];
+    onBookTimeAction?: (task: TaskDto) => void;
+  };
 };
 
 /**
@@ -42,11 +56,14 @@ export function ProjectTasksSection({
   projectId,
   tasks,
   today,
+  hours,
 }: ProjectTasksSectionProps) {
   const statusChange = useTaskStatusChange(content);
   const [editing, setEditing] = useState<TaskDto | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [showClosed, setShowClosed] = useState(false);
+  // The task that was just marked done here; booking time for it is offered once, never forced.
+  const [justDoneTaskId, setJustDoneTaskId] = useState<string | null>(null);
 
   const isOpen = (task: TaskDto) =>
     taskDueStateService.isStillOpen(statusChange.statusOf(task));
@@ -61,7 +78,28 @@ export function ProjectTasksSection({
     setDialogOpen(true);
   }
 
+  function changeStatus(task: TaskDto, status: TaskStatus) {
+    setJustDoneTaskId(status === TaskStatus.Done ? task.id : null);
+    statusChange.changeStatus(task, status);
+  }
+
+  function bookTime(task: TaskDto) {
+    setJustDoneTaskId(null);
+    hours?.onBookTimeAction?.(task);
+  }
+
+  // A change that failed rolls the status back; the offer then no longer applies.
+  const justDoneTask =
+    hours?.onBookTimeAction && justDoneTaskId
+      ? (tasks.find(
+          (task) =>
+            task.id === justDoneTaskId &&
+            statusChange.statusOf(task) === TaskStatus.Done,
+        ) ?? null)
+      : null;
+
   function renderRow(task: TaskDto) {
+    const bookedMinutes = hours?.bookedMinutesByTaskId[task.id] ?? 0;
     return (
       <TaskRow
         assigneeName={memberNames.get(task.assigneeMemberId) ?? null}
@@ -70,7 +108,26 @@ export function ProjectTasksSection({
         key={task.id}
         locale={locale}
         onEditAction={openDialog}
-        onStatusChangeAction={statusChange.changeStatus}
+        bookedLabel={
+          hours && bookedMinutes > 0
+            ? formatMessage(hours.content.booked, {
+                duration: formatDuration(bookedMinutes),
+              })
+            : undefined
+        }
+        bookTime={
+          hours?.onBookTimeAction &&
+          statusChange.statusOf(task) !== TaskStatus.Cancelled
+            ? {
+                label: hours.content.bookAction,
+                namedLabel: formatMessage(hours.content.bookNamed, {
+                  name: task.title,
+                }),
+                onAction: () => bookTime(task),
+              }
+            : undefined
+        }
+        onStatusChangeAction={changeStatus}
         pending={statusChange.isPending(task.id)}
         status={statusChange.statusOf(task)}
         task={task}
@@ -134,6 +191,31 @@ export function ProjectTasksSection({
         />
       ) : (
         <>
+          {justDoneTask && hours ? (
+            <p className={styles.bookHint} role="status">
+              <span>
+                {formatMessage(hours.content.doneHint, {
+                  name: justDoneTask.title,
+                })}
+              </span>
+              <span className={styles.bookHintActions}>
+                <ButtonControl
+                  onClick={() => bookTime(justDoneTask)}
+                  type="button"
+                  variant="ghost"
+                >
+                  {hours.content.bookAction}
+                </ButtonControl>
+                <ButtonControl
+                  onClick={() => setJustDoneTaskId(null)}
+                  type="button"
+                  variant="quiet"
+                >
+                  {hours.content.dismiss}
+                </ButtonControl>
+              </span>
+            </p>
+          ) : null}
           {openTasks.length > 0 ? (
             <ul aria-label={content.section.ariaLabel} className={styles.list}>
               {openTasks.map(renderRow)}

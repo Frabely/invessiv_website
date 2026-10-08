@@ -49,6 +49,15 @@ describe("SYSTEM_ROLE_DEFINITIONS", () => {
     ).toEqual([...WORKSPACE_PERMISSION_VALUES].sort());
   });
 
+  it("lets members read and book hours but not manage the stock", () => {
+    const member: readonly Permission[] =
+      SYSTEM_ROLE_DEFINITIONS[SystemRoleKey.WorkspaceMember].permissions;
+
+    expect(member).toContain(Permission.HoursRead);
+    expect(member).toContain(Permission.HoursWrite);
+    expect(member).not.toContain(Permission.HoursManage);
+  });
+
   it("gives portal standard every portal permission except the excluded ones", () => {
     expect(
       [

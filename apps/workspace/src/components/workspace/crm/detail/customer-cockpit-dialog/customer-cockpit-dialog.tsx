@@ -16,6 +16,7 @@ import type {
   CrmAccessDictionary,
   CrmCockpitDictionary,
   CrmCredentialsDictionary,
+  CrmHoursDictionary,
   CrmFilesDictionary,
   CrmMessagesDictionary,
   CrmPortalAccessDictionary,
@@ -31,6 +32,7 @@ import type { FeedbackRoundsViewModel } from "@/common/contracts/crm/feedback-ro
 import type { OnboardingViewModel } from "@/common/contracts/crm/onboarding/onboarding-view-model";
 import type { TasksViewModel } from "@/common/contracts/crm/tasks-view-model";
 import type { CredentialsViewModel } from "@/common/contracts/crm/credentials/credentials-view-model";
+import type { HoursViewModel } from "@/common/contracts/crm/hours/hours-view-model";
 import type { FilesViewModel } from "@/common/contracts/crm/files/files-view-model";
 import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
 import type { Locale } from "@/config/i18n";
@@ -51,6 +53,8 @@ type CustomerCockpitDialogProps = {
   customer: CustomerCockpitDto;
   credentials?: CredentialsViewModel;
   credentialsContent?: CrmCredentialsDictionary;
+  hours?: HoursViewModel;
+  hoursContent?: CrmHoursDictionary;
   files?: FilesViewModel;
   filesContent?: CrmFilesDictionary;
   isWorkspaceOwner?: boolean;
@@ -95,6 +99,8 @@ export function CustomerCockpitDialog({
   customer,
   credentials,
   credentialsContent,
+  hours,
+  hoursContent,
   files,
   filesContent,
   isWorkspaceOwner,
@@ -150,6 +156,8 @@ export function CustomerCockpitDialog({
         customer={customer}
         credentials={credentials}
         credentialsContent={credentialsContent}
+        hours={hours}
+        hoursContent={hoursContent}
         files={files}
         filesContent={filesContent}
         isWorkspaceOwner={isWorkspaceOwner}
