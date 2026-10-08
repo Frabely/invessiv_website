@@ -44,7 +44,19 @@ test.describe.serial("portal dashboard", () => {
         await page.evaluate((value) => {
           document.documentElement.dataset.theme = value;
         }, theme);
-        await expect(page.getByText(/Portalansicht von/)).toBeVisible();
+        if (viewport.width < 768) {
+          await page
+            .getByRole("button", { name: "Menü öffnen", exact: true })
+            .click();
+          const menu = page.getByRole("dialog", { name: "Menü", exact: true });
+          await expect(menu.getByText(/Portalansicht von/)).toBeVisible();
+          await menu
+            .getByRole("button", { name: "Menü schließen", exact: true })
+            .click();
+          await expect(menu).toBeHidden();
+        } else {
+          await expect(page.getByText(/Portalansicht von/)).toBeVisible();
+        }
         const hasHorizontalOverflow = await page.evaluate(
           () => document.documentElement.scrollWidth > window.innerWidth,
         );
@@ -81,14 +93,14 @@ test.describe.serial("portal dashboard", () => {
     const track = page.getByRole("list", { name: "Projektfortschritt" });
     await expect(track).toBeVisible();
     await expect(track.getByRole("listitem")).toHaveText([
-      "Onboarding",
-      "Design",
-      "Feedbackrunde 1",
-      "Entwicklung",
-      "Feedbackrunde 2",
-      "Feedbackrunde 3",
-      "Launch",
-      "Wartung",
+      "Onboarding, abgeschlossen",
+      "Design, abgeschlossen",
+      "Feedbackrunde 1, abgeschlossen",
+      "Entwicklung, läuft gerade",
+      "Feedbackrunde 2, steht noch an",
+      "Feedbackrunde 3, steht noch an",
+      "Launch, steht noch an",
+      "Wartung, steht noch an",
     ]);
     await expect(
       track.getByRole("listitem").filter({ hasText: "Entwicklung" }),

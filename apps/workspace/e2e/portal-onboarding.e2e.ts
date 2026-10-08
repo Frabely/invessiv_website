@@ -1,5 +1,7 @@
 import { expect, type Page, test } from "@playwright/test";
 import { readFile } from "node:fs/promises";
+import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
+import { portalPathFor } from "@/lib/auth/routes";
 import {
   type PortalE2eFixture,
   portalE2ePaths,
@@ -126,6 +128,9 @@ test.describe.serial("portal onboarding", () => {
     test.slow();
     const suffix = Date.now().toString(36);
     const customer = fixture.feedbackCustomer;
+    const dashboardPath = buildPortalHref(portalPathFor("de", customer), "", {
+      project: fixture.onboardingProject,
+    });
     const formId = await startDraft(page, fixture.onboardingProject, suffix);
     const portalForm = `/de/portal/${customer}/onboarding/${formId}`;
 
@@ -146,7 +151,7 @@ test.describe.serial("portal onboarding", () => {
         contact.getByRole("heading", { name: `Unternehmen ${suffix}` }),
       ).toHaveCount(0);
       await expect(contact.getByRole("textbox")).toHaveCount(0);
-      await contact.goto(`/de/portal/${customer}`);
+      await contact.goto(dashboardPath);
       await expect(
         contact.getByRole("region", { name: "Onboarding" }),
       ).toHaveCount(0);
@@ -176,7 +181,7 @@ test.describe.serial("portal onboarding", () => {
       expect(again.status()).toBe(409);
 
       // The widget leads the contact into the form.
-      await contact.goto(`/de/portal/${customer}`);
+      await contact.goto(dashboardPath);
       const widget = contact.getByRole("region", { name: "Onboarding" });
       await expect(widget.getByText("Du bist dran")).toBeVisible();
       await widget.getByRole("link", { name: /weiter ausfüllen/ }).click();
@@ -349,7 +354,7 @@ test.describe.serial("portal onboarding", () => {
     });
     try {
       const contact = await returningContext.newPage();
-      await contact.goto(`/de/portal/${customer}`);
+      await contact.goto(dashboardPath);
       const widget = contact.getByRole("region", { name: "Onboarding" });
       await expect(widget.getByText("Wir haben Rückfragen")).toBeVisible();
       await widget.getByRole("link", { name: /jetzt ergänzen/ }).click();
@@ -459,7 +464,7 @@ test.describe.serial("portal onboarding", () => {
     });
     try {
       const contact = await closingContext.newPage();
-      await contact.goto(`/de/portal/${customer}`);
+      await contact.goto(dashboardPath);
       const widget = contact.getByRole("region", { name: "Onboarding" });
       await expect(widget.getByText(/Abgeschlossen am/)).toBeVisible();
       await widget.getByRole("link", { name: /ansehen/ }).click();

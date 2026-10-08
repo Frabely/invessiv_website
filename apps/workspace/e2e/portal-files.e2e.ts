@@ -27,6 +27,9 @@ test.describe.serial("portal files", () => {
     const internal = `Intern ${suffix}`;
 
     await page.goto(`/de/crm?cockpit=${fixture.filesCustomer}`);
+    await page
+      .getByRole("button", { name: "Dateien & Links ausklappen", exact: true })
+      .click();
     let internalId = "";
     for (const [name, visible] of [
       [released, true],
@@ -151,6 +154,9 @@ test.describe.serial("portal files", () => {
   }) => {
     const name = `Chat intern ${Date.now().toString(36)}`;
     await page.goto(`/de/crm?cockpit=${fixture.filesCustomer}`);
+    await page
+      .getByRole("button", { name: "Dateien & Links ausklappen", exact: true })
+      .click();
     await page.getByRole("button", { name: "Link hinzufügen" }).click();
     const linkDialog = page.getByRole("dialog", { name: "Link hinzufügen" });
     await linkDialog.getByLabel("Bezeichnung").fill(name);

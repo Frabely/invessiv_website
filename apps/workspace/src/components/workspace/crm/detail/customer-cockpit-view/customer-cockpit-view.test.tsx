@@ -232,7 +232,7 @@ describe("CustomerCockpitView", () => {
     );
   });
 
-  it("offers future customer areas as placeholders and hides the chat without chat.read", () => {
+  it("shows the remaining placeholder and hides credentials and chat without access", () => {
     const content = getCrmCockpitDictionary("de");
     render(
       <CustomerCockpitView
@@ -243,11 +243,14 @@ describe("CustomerCockpitView", () => {
       />,
     );
 
-    for (const section of Object.values(content.futureSections)) {
-      expect(
-        screen.getByRole("heading", { name: section.title }),
-      ).toBeVisible();
-    }
+    expect(
+      screen.getByRole("heading", { name: content.futureSections.hours.title }),
+    ).toBeVisible();
+    expect(
+      screen.queryByRole("heading", {
+        name: content.futureSections.credentials.title,
+      }),
+    ).toBeNull();
     expect(
       screen.queryByRole("button", { name: content.chat.expand }),
     ).toBeNull();

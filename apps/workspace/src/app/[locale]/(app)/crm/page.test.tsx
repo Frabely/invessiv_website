@@ -29,6 +29,7 @@ const mocks = vi.hoisted(() => ({
   listProjectLineItemsByCustomer: vi.fn(),
   getCustomerPortalAccess: vi.fn(),
   getCustomerConversation: vi.fn(),
+  listCredentialProjectsByCustomer: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
@@ -59,6 +60,12 @@ vi.mock(
 vi.mock(
   "@/server/workspace/crm/query-handler/get-customer-conversation.query-handler",
   () => ({ getCustomerConversation: mocks.getCustomerConversation }),
+);
+vi.mock(
+  "@/server/workspace/crm/query-handler/list-credential-projects-by-customer.query-handler",
+  () => ({
+    listCredentialProjectsByCustomer: mocks.listCredentialProjectsByCustomer,
+  }),
 );
 vi.mock(
   "@/server/workspace/crm/query-handler/list-active-customer-categories.query-handler",
@@ -173,6 +180,7 @@ describe("CrmPage", () => {
     Object.values(mocks).forEach((mock) => mock.mockReset());
     mocks.requireWorkspaceArea.mockResolvedValue(workspaceActorWith());
     mocks.getCustomerConversation.mockResolvedValue(null);
+    mocks.listCredentialProjectsByCustomer.mockResolvedValue([]);
     mocks.listCustomers.mockResolvedValue({
       hasCustomers: true,
       page: 1,

@@ -1,5 +1,7 @@
 import { expect, type Page, test } from "@playwright/test";
 import { readFile } from "node:fs/promises";
+import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
+import { portalPathFor } from "@/lib/auth/routes";
 import {
   type PortalE2eFixture,
   portalE2ePaths,
@@ -90,14 +92,21 @@ test.describe.serial("portal feedback", () => {
       );
 
       await a.goto(url);
-      await expect(a.getByText("Feedbackrunde 1 von 2")).toBeVisible();
-      await expect(a.getByText(`Erste Version ${suffix}`)).toBeVisible();
+      await expect(
+        a.getByRole("heading", { name: "Feedbackrunde 1 von 2", exact: true }),
+      ).toBeVisible();
+      await expect(
+        a.getByRole("main").getByText(`Erste Version ${suffix}`),
+      ).toBeVisible();
       await a.getByRole("button", { name: "Punkt hinzufügen" }).click();
-      await a.getByLabel("Bereich").first().selectOption("Startseite");
+      await a
+        .getByRole("button", { name: "Punkt 1: Bereich", exact: true })
+        .click();
+      await a.getByRole("option", { name: "Startseite", exact: true }).click();
       let saved = a.waitForResponse(isDraftSave(roundId));
       await a.getByRole("textbox").first().fill(`Hero zu dunkel ${suffix}`);
       expect((await saved).ok()).toBe(true);
-      await expect(a.getByText(/Gespeichert/)).toBeVisible();
+      await expect(a.getByRole("main").getByText(/Gespeichert/)).toBeVisible();
 
       await a.reload();
       await expect(a.getByRole("textbox").first()).toHaveValue(
@@ -134,7 +143,9 @@ test.describe.serial("portal feedback", () => {
         .getByRole("button", { name: "Jetzt einreichen" })
         .click();
       await expect(
-        a.getByText("Eingereicht – wir sichten dein Feedback"),
+        a
+          .getByRole("main")
+          .getByText("Eingereicht – wir sichten dein Feedback"),
       ).toBeVisible();
       await expect(a.getByRole("textbox")).toHaveCount(0);
 
@@ -204,6 +215,11 @@ test.describe.serial("portal feedback", () => {
         .fill(`Passt dir Donnerstag? ${suffix}`);
       await call.getByRole("button", { name: "Gespräch anfordern" }).click();
       await expect(call).toBeHidden();
+      await expect(
+        page
+          .getByRole("article", { name: "Feedbackrunde 1", exact: true })
+          .getByText("Im Gespräch", { exact: true }),
+      ).toBeVisible();
       await b.goto(url);
       await expect(
         b.getByRole("heading", {
@@ -211,7 +227,7 @@ test.describe.serial("portal feedback", () => {
         }),
       ).toBeVisible();
       await expect(
-        b.getByText(`Passt dir Donnerstag? ${suffix}`),
+        b.getByRole("main").getByText(`Passt dir Donnerstag? ${suffix}`),
       ).toBeVisible();
 
       // Start, rate both items (one as additional service with a reply), complete.
@@ -222,7 +238,9 @@ test.describe.serial("portal feedback", () => {
       await page
         .getByRole("button", { name: "Ergebnis für Punkt 1: Noch offen" })
         .click();
-      await page.getByRole("option", { name: "Umgesetzt" }).click();
+      await page
+        .getByRole("option", { name: "Umgesetzt", exact: true })
+        .click();
       await expect(page.getByText("1 von 2 Punkten bewertet")).toBeVisible();
       await page
         .getByRole("button", { name: "Ergebnis für Punkt 2: Noch offen" })
@@ -269,11 +287,18 @@ test.describe.serial("portal feedback", () => {
 
       // The customer sees the results of round 1 and fills round 2.
       await b.goto(url);
-      await expect(b.getByText("Feedbackrunde 2 von 2")).toBeVisible();
-      await b.getByText("Feedbackrunde 1", { exact: true }).click();
-      await expect(b.getByText("Zusatzleistung")).toBeVisible();
       await expect(
-        b.getByText(`Gern als Zusatzleistung ${suffix}`),
+        b.getByRole("heading", { name: "Feedbackrunde 2 von 2", exact: true }),
+      ).toBeVisible();
+      await b
+        .getByRole("main")
+        .getByText("Feedbackrunde 1", { exact: true })
+        .click();
+      await expect(
+        b.getByRole("main").getByText("Zusatzleistung", { exact: true }),
+      ).toBeVisible();
+      await expect(
+        b.getByRole("main").getByText(`Gern als Zusatzleistung ${suffix}`),
       ).toBeVisible();
       await b.getByRole("button", { name: "Punkt hinzufügen" }).click();
       const saved = b.waitForResponse(isDraftSave(roundTwoId));
@@ -285,7 +310,9 @@ test.describe.serial("portal feedback", () => {
         .getByRole("button", { name: "Jetzt einreichen" })
         .click();
       await expect(
-        b.getByText("Eingereicht – wir sichten dein Feedback"),
+        b
+          .getByRole("main")
+          .getByText("Eingereicht – wir sichten dein Feedback"),
       ).toBeVisible();
 
       // Hand round 2 back: the note shows up, the points stay editable.
@@ -306,7 +333,7 @@ test.describe.serial("portal feedback", () => {
         }),
       ).toBeVisible();
       await expect(
-        b.getByText(`Welche Adresse soll rein? ${suffix}`),
+        b.getByRole("main").getByText(`Welche Adresse soll rein? ${suffix}`),
       ).toBeVisible();
       await expect(b.getByRole("textbox").first()).toHaveValue(
         `Impressum ergänzen ${suffix}`,
@@ -317,7 +344,9 @@ test.describe.serial("portal feedback", () => {
         .getByRole("button", { name: "Jetzt einreichen" })
         .click();
       await expect(
-        b.getByText("Eingereicht – wir sichten dein Feedback"),
+        b
+          .getByRole("main")
+          .getByText("Eingereicht – wir sichten dein Feedback"),
       ).toBeVisible();
 
       // The team finishes round 2 through the API.
@@ -372,9 +401,18 @@ test.describe.serial("portal feedback", () => {
       await expect(confirm).toBeDisabled();
       await approval.getByRole("checkbox").check();
       await confirm.click();
-      await expect(b.getByText(/Abgenommen am/).first()).toBeVisible();
+      await expect(
+        b
+          .getByRole("main")
+          .getByText(/Abgenommen am/)
+          .first(),
+      ).toBeVisible();
 
-      await b.goto(`/de/portal/${fixture.feedbackCustomer}`);
+      await b.goto(
+        buildPortalHref(portalPathFor("de", fixture.feedbackCustomer), "", {
+          project: fixture.feedbackProject,
+        }),
+      );
       const widget = b.getByRole("region", { name: "Feedback" });
       await expect(widget.getByText(/Abgenommen am/).first()).toBeVisible();
     } finally {
@@ -408,9 +446,15 @@ test.describe.serial("portal feedback", () => {
         })
         .check();
       await confirm.click();
-      await expect(b.getByText(/Abgenommen am/)).toBeVisible();
+      await expect(
+        b.getByRole("main").getByText(/Abgenommen am/),
+      ).toBeVisible();
 
-      await b.goto(`/de/portal/${fixture.feedbackCustomer}`);
+      await b.goto(
+        buildPortalHref(portalPathFor("de", fixture.feedbackCustomer), "", {
+          project: fixture.feedbackApprovalProject,
+        }),
+      );
       const widget = b.getByRole("region", { name: "Feedback" });
       await expect(widget.getByText(/Abgenommen am/)).toBeVisible();
     } finally {

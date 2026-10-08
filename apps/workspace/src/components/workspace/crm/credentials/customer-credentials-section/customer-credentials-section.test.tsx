@@ -196,9 +196,11 @@ describe("CustomerCredentialsSection", () => {
     await screen.findByText(content.empty.title);
     expect(mocks.list).toHaveBeenCalledTimes(2);
     expect(screen.queryByText(entry.title)).toBeNull();
-    expect(
-      screen.getByRole("button", { name: content.section.collapseLabel }),
-    ).toHaveFocus();
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: content.section.collapseLabel }),
+      ).toHaveFocus(),
+    );
   });
 
   it("reloads concurrent metadata after dismissing an edit conflict", async () => {
@@ -247,9 +249,11 @@ describe("CustomerCredentialsSection", () => {
     );
     await screen.findByText(content.empty.title);
     expect(trigger.isConnected).toBe(false);
-    expect(
-      screen.getByRole("button", { name: content.section.collapseLabel }),
-    ).toHaveFocus();
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: content.section.collapseLabel }),
+      ).toHaveFocus(),
+    );
   });
 
   it("restores focus to the edit action after moving the row to another group", async () => {
@@ -403,12 +407,15 @@ describe("CustomerCredentialsSection", () => {
   });
 
   it("removes the value from the DOM after 30 seconds", async () => {
-    vi.useFakeTimers({ shouldAdvanceTime: true });
     const entry = credential();
     listed([entry]);
     const { container } = renderSection();
-    fireEvent.click(await waitFor(() => showButton(entry)));
-    await screen.findByText(SECRET);
+    const button = await waitFor(() => showButton(entry));
+    vi.useFakeTimers();
+    await act(async () => {
+      fireEvent.click(button);
+    });
+    expect(screen.getByText(SECRET)).toBeInTheDocument();
 
     act(() => vi.advanceTimersByTime(29_000));
     expect(screen.getByText(SECRET)).toBeInTheDocument();
