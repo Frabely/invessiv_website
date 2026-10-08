@@ -1102,6 +1102,40 @@ describe("PortalDashboard", () => {
     );
   });
 
+  it("arrives with the dock open for ?chat=open and drops the request when it is closed", () => {
+    mocks.getConversation.mockResolvedValue({ ok: true, value: CONVERSATION });
+    mocks.markRead.mockResolvedValue({ ok: true, value: true });
+    mocks.search.value = "project=project-1&chat=open";
+    const replaceState = vi.spyOn(window.history, "replaceState");
+    renderDashboard();
+
+    const trigger = screen.getByRole("button", {
+      name: `${content.chat.collapse} (2 unread)`,
+    });
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(
+      screen.getByRole("log", { name: messagesContent.thread.logLabel }),
+    ).toBeVisible();
+
+    fireEvent.click(trigger);
+    expect(replaceState).toHaveBeenCalledWith(
+      null,
+      "",
+      "/en/portal/customer-1?project=project-1",
+    );
+    expect(mocks.replace).not.toHaveBeenCalled();
+    replaceState.mockRestore();
+  });
+
+  it("ignores ?chat=open without message read permission", () => {
+    mocks.search.value = "chat=open";
+    renderDashboard(dto(), FULL_READ, null, null);
+
+    expect(
+      screen.queryByRole("log", { name: messagesContent.thread.logLabel }),
+    ).toBeNull();
+  });
+
   it("renders no chat dock without message read permission", () => {
     renderDashboard(dto(), FULL_READ, null, null);
 

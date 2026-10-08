@@ -114,7 +114,7 @@ function renderView(
       feedback={dto}
       filesContent={filesContent}
       locale="en"
-      messagesHref="/en/portal/customer-1/messages"
+      messagesHref="/en/portal/customer-1?chat=open"
     />,
   );
 }
@@ -493,7 +493,7 @@ describe("FeedbackPageView", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: content.states.exhausted.chatLink }),
-    ).toHaveAttribute("href", "/en/portal/customer-1/messages");
+    ).toHaveAttribute("href", "/en/portal/customer-1?chat=open");
   });
 
   it("only reads an open round without the submit right", () => {
@@ -533,7 +533,7 @@ describe("FeedbackPageView", () => {
     expect(screen.getByText("Does Thursday work?")).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: content.states.discussion.chatLink }),
-    ).toHaveAttribute("href", "/en/portal/customer-1/messages");
+    ).toHaveAttribute("href", "/en/portal/customer-1?chat=open");
     expect(screen.getByText("Bigger logo")).toBeInTheDocument();
   });
 

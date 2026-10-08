@@ -25,7 +25,7 @@ vi.mock("next/navigation", () => ({
 }));
 
 const content = getPortalOnboardingDictionary("en");
-const CHAT = "/en/portal/customer-1/messages";
+const CHAT = "/en/portal/customer-1?chat=open";
 const BOOKING: PortalBookingDto = {
   memberDisplayName: "Anna Beispiel",
   bookingUrl: "https://calendly.com/anna/onboarding",

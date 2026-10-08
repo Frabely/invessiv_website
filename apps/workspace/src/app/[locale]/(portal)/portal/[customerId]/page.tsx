@@ -169,13 +169,9 @@ export default async function PortalCustomerPage({
             customerId: reader.customerId,
           })
             ? buildPortalHref(
-                portalPathFor(
-                  activeLocale,
-                  reader.customerId,
-                  PortalSection.Messages,
-                ),
+                portalPathFor(activeLocale, reader.customerId),
                 "",
-                { project: selectedProjectId },
+                { project: selectedProjectId, chat: true },
               )
             : null
         }

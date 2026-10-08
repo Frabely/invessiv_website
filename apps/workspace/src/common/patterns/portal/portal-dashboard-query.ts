@@ -1,5 +1,8 @@
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
-import { PortalDashboardQueryParam } from "@/common/constants/portal/portal-dashboard-query-params";
+import {
+  PORTAL_DASHBOARD_CHAT_OPEN,
+  PortalDashboardQueryParam,
+} from "@/common/constants/portal/portal-dashboard-query-params";
 import { PORTAL_WIDGET_LAYOUT } from "@/common/constants/portal/portal-widget-layout";
 import type { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 
@@ -17,4 +20,14 @@ export function readPortalDashboardWidget(
         candidate.actionDialog === true),
   );
   return entry?.key ?? null;
+}
+
+/** Whether a link asked for the chat dock to arrive open. */
+export function readPortalDashboardChat(
+  searchParams: SearchParamsReader,
+): boolean {
+  return (
+    searchParams.get(PortalDashboardQueryParam.Chat) ===
+    PORTAL_DASHBOARD_CHAT_OPEN
+  );
 }

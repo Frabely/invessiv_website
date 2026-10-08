@@ -12,7 +12,7 @@ import { getPortalDashboardDictionary } from "@/i18n/dictionaries/portal";
 import { PortalOnboardingWidget } from "./portal-onboarding-widget";
 
 const content = getPortalDashboardDictionary("en").widgets.onboarding;
-const CHAT = "/en/portal/customer-1/messages";
+const CHAT = "/en/portal/customer-1?chat=open";
 const BOOKING: PortalBookingDto = {
   memberDisplayName: "Anna Beispiel",
   bookingUrl: "https://cal.com/anna/onboarding",

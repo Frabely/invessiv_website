@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
-import { PortalSection } from "@/common/constants/portal/portal-sections";
 import { buildCustomerCockpitHref } from "@/common/patterns/crm/customer-dialog-query";
 import { FeedbackPageView } from "@/components/portal/feedback/feedback-page-view/feedback-page-view";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
@@ -85,13 +84,9 @@ export default async function PortalFeedbackPage({
       messagesHref={
         portalCanOn.forReader(reader, Permission.PortalMessagesRead, target)
           ? buildPortalHref(
-              portalPathFor(
-                activeLocale,
-                reader.customerId,
-                PortalSection.Messages,
-              ),
+              portalPathFor(activeLocale, reader.customerId),
               "",
-              { project: feedback.projectId },
+              { project: feedback.projectId, chat: true },
             )
           : null
       }

@@ -2,7 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import { buildPortalHref } from "./build-portal-href";
-import { readPortalDashboardWidget } from "./portal-dashboard-query";
+import {
+  readPortalDashboardChat,
+  readPortalDashboardWidget,
+} from "./portal-dashboard-query";
 
 describe("readPortalDashboardWidget", () => {
   it("opens registered dialog widgets only", () => {
@@ -19,6 +22,16 @@ describe("readPortalDashboardWidget", () => {
       readPortalDashboardWidget(new URLSearchParams("widget=unknown")),
     ).toBeNull();
     expect(readPortalDashboardWidget(new URLSearchParams())).toBeNull();
+  });
+});
+
+describe("readPortalDashboardChat", () => {
+  it("opens the dock for the exact value only", () => {
+    expect(readPortalDashboardChat(new URLSearchParams("chat=open"))).toBe(
+      true,
+    );
+    expect(readPortalDashboardChat(new URLSearchParams("chat=1"))).toBe(false);
+    expect(readPortalDashboardChat(new URLSearchParams())).toBe(false);
   });
 });
 
@@ -43,5 +56,11 @@ describe("buildPortalHref", () => {
     expect(buildPortalHref("/de/portal/c", "", { widget: null })).toBe(
       "/de/portal/c",
     );
+    expect(
+      buildPortalHref("/de/portal/c", "", { project: "a", chat: true }),
+    ).toBe("/de/portal/c?project=a&chat=open");
+    expect(
+      buildPortalHref("/de/portal/c", "project=a&chat=open", { chat: null }),
+    ).toBe("/de/portal/c?project=a");
   });
 });

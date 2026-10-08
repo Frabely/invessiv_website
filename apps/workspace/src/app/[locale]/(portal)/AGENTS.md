@@ -38,6 +38,10 @@ gesamte Gruppe. Jede geschützte Portalseite prüft die Mitgliedschaft selbst.
 - **`noindex`/`force-dynamic`** auf jeder Seite, wie im gesamten geschützten Bereich.
 - **Routen-Slugs englisch** (`projects`, `files`, `assets`, `messages`, `onboarding`, `services`),
   über `portalPathFor(locale, customerId, section?)` — nie String-Konkatenation.
+- **Der Chat hat keine eigene Route.** Er lebt im Dock des Dashboards; Links dorthin öffnen ihn über `?chat=open`
+  (Details in `components/portal/AGENTS.md`). `PortalSection.Messages` bleibt nur als Bereichsname der
+  Zugriffsvorschau bestehen. Der Viewport (`interactiveWidget: "resizes-content"`) steht deshalb im Layout
+  `portal/[customerId]/layout.tsx` und gilt für jede Portalseite.
 - **Negativtests Pflicht:** fremde/geratene `customerId`, fehlende `portal.access` und widerrufene
   Mitgliedschaft.
 

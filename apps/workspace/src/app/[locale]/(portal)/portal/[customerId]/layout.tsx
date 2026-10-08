@@ -1,3 +1,4 @@
+import type { Viewport } from "next";
 import type { ReactNode } from "react";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import { buildCustomerCockpitHref } from "@/common/patterns/crm/customer-dialog-query";
@@ -14,6 +15,13 @@ import { requirePortalReader } from "@/server/portal/auth/require-portal-reader"
 import { getPortalCustomerDisplayName } from "@/server/portal/query-handler/get-portal-customer-display-name.query-handler";
 import { listPortalMembershipsForUserId } from "@/server/portal/query-handler/list-portal-memberships-for-user-id.query-handler";
 import { listPortalCurrentProjects } from "@/server/portal/query-handler/list-portal-current-projects.query-handler";
+
+// The on-screen keyboard shrinks the layout instead of covering the chat composer.
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  interactiveWidget: "resizes-content",
+};
 
 type PortalCustomerLayoutProps = {
   children: ReactNode;

@@ -105,7 +105,7 @@ describe("PortalFeedbackPage", () => {
     expect(props.cockpitHref).toBeNull();
     expect(props.dashboardHref).toBe("/de/portal/customer-1?project=project-1");
     expect(props.messagesHref).toBe(
-      "/de/portal/customer-1/messages?project=project-1",
+      "/de/portal/customer-1?project=project-1&chat=open",
     );
   });
 

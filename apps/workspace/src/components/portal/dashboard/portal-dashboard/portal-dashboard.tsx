@@ -17,7 +17,10 @@ import { PortalDashboardNavigationMode } from "@/common/constants/portal/portal-
 import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import type { PortalWidgetDefinition } from "@/common/contracts/portal/portal-widget-definition";
 import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
-import { readPortalDashboardWidget } from "@/common/patterns/portal/portal-dashboard-query";
+import {
+  readPortalDashboardChat,
+  readPortalDashboardWidget,
+} from "@/common/patterns/portal/portal-dashboard-query";
 import { buildPortalFeedbackPath } from "@/common/patterns/portal/portal-feedback-path";
 import { describeUnreadBadge } from "@/common/patterns/crm/describe-unread-badge";
 import type { Locale } from "@/config/i18n";
@@ -67,7 +70,7 @@ export type PortalDashboardProps = {
   filesContent: PortalFilesDictionary;
   locale: Locale;
   messagesContent: PortalMessagesDictionary;
-  /** The company's chat page; null without `portal.messages.read`. */
+  /** This dashboard with the chat dock open; null without `portal.messages.read`. */
   messagesHref?: string | null;
   /** The released form of the selected project, if visible to the reader. */
   onboarding: PortalOnboardingFormSummaryDto | null;
@@ -82,8 +85,8 @@ export type PortalDashboardProps = {
 };
 
 /**
- * Orchestrates the widget grid, the dialog named in `?widget` and the chat dock; the project is
- * selected on the server. Mount it with `key={customerId}` so no client state crosses companies.
+ * Orchestrates the widget grid, the dialog named in `?widget` and the chat dock, which a link can
+ * open with `?chat=open`; the project is selected on the server. Mount it with `key={customerId}` so no client state crosses companies.
  */
 export function PortalDashboard({
   cockpitHref,
@@ -108,7 +111,7 @@ export function PortalDashboard({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [dockExpanded, setDockExpanded] = useState(false);
+  const [dockOpen, setDockOpen] = useState(false);
   const dockId = useId();
   const ownerNoticeId = useId();
   const dialogOwnerNoticeId = useId();
@@ -127,6 +130,8 @@ export function PortalDashboard({
     requestedWidget && visibleKeys.has(requestedWidget)
       ? requestedWidget
       : null;
+  const chatRequested = readPortalDashboardChat(searchParams);
+  const dockExpanded = dockOpen || chatRequested;
   const selectedProject = dashboard.project;
   const { canCompleteTasks, canCreateTasks, isOwnerView } =
     dashboard.capabilities;
@@ -138,6 +143,17 @@ export function PortalDashboard({
   ) {
     const href = buildPortalHref(pathname, searchParams.toString(), change);
     router[mode](href, { scroll: false });
+  }
+
+  function setDockExpanded(expanded: boolean) {
+    setDockOpen(expanded);
+    if (!chatRequested) return;
+    // The link's request is spent on the first toggle; dropping it needs no server roundtrip.
+    window.history.replaceState(
+      null,
+      "",
+      buildPortalHref(pathname, searchParams.toString(), { chat: null }),
+    );
   }
 
   const openDialog = (widget: PortalWidgetKey) =>

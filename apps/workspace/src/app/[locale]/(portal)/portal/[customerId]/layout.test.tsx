@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { createPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
-import PortalCustomerLayout from "./layout";
+import PortalCustomerLayout, { viewport } from "./layout";
 
 vi.mock("server-only", () => ({}));
 
@@ -111,6 +111,10 @@ describe("PortalCustomerLayout", () => {
       "/de/portal/customer-1",
     );
     expect(screen.getByText("Company content")).toBeInTheDocument();
+  });
+
+  it("lets the on-screen keyboard resize the layout on every portal page", () => {
+    expect(viewport.interactiveWidget).toBe("resizes-content");
   });
 
   it("normalizes the customerId case before resolving the actor", async () => {

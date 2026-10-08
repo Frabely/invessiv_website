@@ -9,7 +9,7 @@ import { getPortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
 import { OnboardingBookingCard } from "./onboarding-booking-card";
 
 const texts = getPortalOnboardingDictionary("en").call;
-const CHAT = "/en/portal/customer-1/messages";
+const CHAT = "/en/portal/customer-1?chat=open";
 const BOOKING: PortalBookingDto = {
   memberDisplayName: "Anna Beispiel",
   bookingUrl: "https://calendly.com/anna/onboarding",

@@ -24,7 +24,7 @@ vi.mock("next/navigation", () => ({
 
 const content = getPortalOnboardingDictionary("en");
 const texts = content.states.completed;
-const CHAT = "/en/portal/customer-1/messages";
+const CHAT = "/en/portal/customer-1?chat=open";
 const FILES = "/en/portal/customer-1/files";
 const COMPLETED = portalOnboardingForm(
   [block("Company", [field("Name")]), block("Brand", [field("Claim")])],

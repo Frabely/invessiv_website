@@ -74,13 +74,9 @@ export default async function PortalOnboardingFormPage({
       chatHref={
         portalCanOn.forReader(reader, Permission.PortalMessagesRead, target)
           ? buildPortalHref(
-              portalPathFor(
-                activeLocale,
-                reader.customerId,
-                PortalSection.Messages,
-              ),
+              portalPathFor(activeLocale, reader.customerId),
               "",
-              { project: form.projectId },
+              { project: form.projectId, chat: true },
             )
           : null
       }

@@ -73,6 +73,12 @@ Plan: `apps/workspace/plans/crm/13a-kundenchat/26-chat-im-portal.md`.
   bekommt nie `canWrite` und zeigt stattdessen den Owner-Hinweis mit CRM-Link.
 - Im Dashboard gibt es **kein** Nachrichten-Widget: Der `ChatDock` ist der Einstieg und zeigt Ungelesenes am Rail
   (`unreadCount`). Ohne `portal.messages.read` wird der Dock nicht gerendert.
+- **Keine eigene Chat-Seite.** Der Dock im Dashboard ist der einzige Ort des Chats (Entscheidung 08.10.2026). Wer
+  von einer anderen Portalseite in den Chat verlinkt, baut den Link über
+  `buildPortalHref(portalPathFor(locale, customerId), "", { project, chat: true })`: Das Dashboard kommt mit
+  `?chat=open` und geöffnetem Dock an. Gelesen wird der Parameter nur über `readPortalDashboardChat`; beim ersten
+  Auf- oder Zuklappen entfernt das Dashboard ihn ohne Server-Roundtrip (`history.replaceState`). Ohne Leserecht
+  bleibt der Parameter wirkungslos.
 - Drafts und fehlgeschlagene Sendungen sind je Nutzer und Firma gebunden (`viewerUserId:customerId`).
 - **Anhänge (ab Task 56):** 📎 erscheint nur, wenn die Seite `filesContent` übergibt und der Server
   `attachmentAccess` im `PortalConversationDto` setzt (Owner-Sicht nie). Datei-Zugriff läuft über
