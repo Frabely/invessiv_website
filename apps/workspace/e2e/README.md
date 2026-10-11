@@ -11,6 +11,15 @@ Die IDs stammen aus einem isolierten E2E-Fixture. Ohne vollständige Konfigurati
 explizit übersprungen; der Runner findet die Suite trotzdem und kann nicht mehr aufgrund fehlender Testdateien grün
 werden. Session-Dateien enthalten Secrets und dürfen nicht committed werden.
 
+## Stunden-Flow im Kunden-Cockpit
+
+`hours.e2e.ts` benötigt `E2E_HOURS_MANAGER_STORAGE_STATE`, `E2E_HOURS_CUSTOMER_ID` und
+`E2E_HOURS_PROJECT_TITLE`. Die Sitzung braucht `hours.read`, `hours.write`, `hours.manage` und
+`tasks.read`. Das isolierte Projekt muss mindestens eine nicht abgebrochene Aufgabe haben und darf
+vor Testbeginn nicht überzogen sein. Ohne diese Sitzung-/Fixture-Konfiguration wird der Test übersprungen.
+Der Ablauf bedient die Stunden-/Minuten-Spinbuttons, schreibt zwei Stunden gut, weist sie zu, bucht
+mit Aufgabe, prüft konkrete Restwerte, ändert und löscht die Buchung und gibt die zwei Stunden wieder frei.
+
 ## Aufgaben-Flow im Kunden-Cockpit
 
 - `E2E_TASK_WRITER_STORAGE_STATE`: JSON-Datei einer Clerk-Session mit `tasks.read` und `tasks.write`

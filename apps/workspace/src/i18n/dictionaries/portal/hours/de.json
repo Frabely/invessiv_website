@@ -16,7 +16,7 @@
     "projectsTitle": "Je Projekt",
     "projectOver": "Dieses Projekt hat {duration} mehr verbraucht als zugewiesen.",
     "earlier": "Frühere Projekte",
-    "earlierHint": "Projekte, die abgeschlossen und nicht mehr einzeln aufgeführt sind.",
+    "earlierHint": "Projekte, die nicht mehr einzeln im Portal angezeigt werden.",
     "earlierOver": "Diese Projekte haben {duration} mehr verbraucht als zugewiesen."
   },
   "purchases": {

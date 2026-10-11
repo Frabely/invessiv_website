@@ -65,12 +65,13 @@ export function HourAllocationDialog({
     0,
     isRelease ? limits.releasableMinutes : limits.freeMinutes,
   );
+  const maxMinutes = Math.min(availableMinutes, HoursLimits.MaxLedgerMinutes);
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     if (submitting) return;
 
-    const read = readDurationInput(duration, availableMinutes);
+    const read = readDurationInput(duration, maxMinutes);
     setDurationError(read.ok ? null : read.error);
     if (!read.ok) {
       durationRef.current?.focus();
@@ -142,11 +143,11 @@ export function HourAllocationDialog({
           </strong>
           {availableMinutes > 0 ? (
             <ButtonControl
-              onClick={() => setDuration(formatDuration(availableMinutes))}
+              onClick={() => setDuration(formatDuration(maxMinutes))}
               type="button"
               variant="quiet"
             >
-              {text.useAll}
+              {availableMinutes > maxMinutes ? text.useMaximum : text.useAll}
             </ButtonControl>
           ) : null}
         </p>
@@ -159,7 +160,7 @@ export function HourAllocationDialog({
           errorMessage={
             durationError
               ? formatMessage(content.duration[durationError], {
-                  duration: formatDuration(availableMinutes),
+                  duration: formatDuration(maxMinutes),
                 })
               : undefined
           }
@@ -167,7 +168,7 @@ export function HourAllocationDialog({
           increaseLabel={content.duration.increase}
           focusRef={durationRef}
           label={text.minutes}
-          maxMinutes={availableMinutes}
+          maxMinutes={maxMinutes}
           name="hour-allocation-duration"
           onChangeAction={setDuration}
           value={duration}

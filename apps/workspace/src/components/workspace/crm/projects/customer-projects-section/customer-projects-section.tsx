@@ -4,6 +4,7 @@ import { useId, useState } from "react";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { ProjectDto } from "@invessiv/common/contracts/crm/project.dto";
+import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
 import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspace-member.dto";
 import { PrimaryCtaButton } from "@invessiv/ui";
@@ -147,10 +148,14 @@ export function CustomerProjectsSection({
           (project) => project.projectId === activeProject.id,
         ) ?? null)
       : null;
-  const canBookTime =
+  const canWriteTime =
     activeHoursProject !== null &&
     hours !== undefined &&
     hours.writableProjectIds.includes(activeHoursProject.projectId);
+  const canBookTime =
+    canWriteTime &&
+    activeHoursProject.status !== ProjectStatus.Cancelled &&
+    activeHoursProject.status !== ProjectStatus.Archived;
   // Null without the right to read tasks there: the dialog then offers no task field.
   const activeTaskOptions =
     tasks &&
@@ -259,7 +264,7 @@ export function CustomerProjectsSection({
           {hours && hoursContent && activeHoursProject ? (
             <ProjectHoursSection
               canManage={hours.canManage}
-              canWrite={canBookTime}
+              canWrite={canWriteTime}
               content={hoursContent}
               customerId={customerId}
               freeMinutes={hours.hours.balance?.freeMinutes ?? null}

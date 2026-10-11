@@ -16,7 +16,7 @@
     "projectsTitle": "By project",
     "projectOver": "This project used {duration} more than it was assigned.",
     "earlier": "Earlier projects",
-    "earlierHint": "Projects that are finished and no longer listed one by one.",
+    "earlierHint": "Projects that are no longer shown individually in the portal.",
     "earlierOver": "These projects used {duration} more than they were assigned."
   },
   "purchases": {

@@ -107,7 +107,8 @@ export function TimeEntryFormDialog({
   const remainingAfter = remainingAfterTimeEntry(
     project,
     { minutes: typedMinutes ?? 0, goodwill },
-    mutation.current,
+    // The balance prop includes this entry snapshot, not the newer conflict response.
+    entry,
   );
 
   function selectTask(next: string) {

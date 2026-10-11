@@ -1,12 +1,15 @@
 import { randomUUID } from "node:crypto";
+import { and, eq, ne } from "drizzle-orm";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import {
   customerHourPurchases,
   projectHourAllocations,
   projectTimeEntries,
+  tasks,
 } from "@invessiv/db/record-configuration";
 import { HourPurchaseKind } from "@invessiv/common/constants/crm/hour-purchase-kinds";
 import { HourPurchaseSource } from "@invessiv/common/constants/crm/hour-purchase-sources";
+import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 
 type HoursFixtureProject = { customerId: string; projectId: string };
 
@@ -23,6 +26,20 @@ export async function seedHours(
     overdrawn: HoursFixtureProject;
   },
 ) {
+  const [healthyTask] = await tx
+    .select({ id: tasks.id })
+    .from(tasks)
+    .where(
+      and(
+        eq(tasks.project_id, input.healthy.projectId),
+        ne(tasks.status, TaskStatus.Cancelled),
+      ),
+    )
+    .limit(1);
+  if (!healthyTask)
+    throw new Error(
+      "Hours fixture requires a linkable task on the healthy project.",
+    );
   const purchase = (
     customerId: string,
     minutes: number,
@@ -58,11 +75,12 @@ export async function seedHours(
     durationMinutes: number,
     description: string,
     billable = true,
+    taskId: string | null = null,
   ) => ({
     id: randomUUID(),
     customer_id: project.customerId,
     project_id: project.projectId,
-    task_id: null,
+    task_id: taskId,
     performed_on: performedOn,
     duration_minutes: durationMinutes,
     description,
@@ -102,7 +120,14 @@ export async function seedHours(
     ]);
 
   await tx.insert(projectTimeEntries).values([
-    entry(input.healthy, "2026-09-10", 60, "Umbau Hero-Section"),
+    entry(
+      input.healthy,
+      "2026-09-10",
+      60,
+      "Umbau Hero-Section",
+      true,
+      healthyTask.id,
+    ),
     entry(input.healthy, "2026-09-10", 15, "Impressum aktualisiert"),
     entry(input.healthy, "2026-09-18", 90, "Kontaktformular erweitert"),
     entry(input.healthy, "2026-09-22", 30, "Rückfragen am Telefon", false),

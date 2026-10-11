@@ -64,7 +64,7 @@ export function HourPurchaseDialog({
   // Only hours that are not allocated to a project can be taken away again.
   const deductibleMinutes = Math.max(0, current.freeMinutes);
   const maxMinutes = isCorrection
-    ? deductibleMinutes
+    ? Math.min(deductibleMinutes, HoursLimits.MaxLedgerMinutes)
     : HoursLimits.MaxLedgerMinutes;
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
@@ -128,7 +128,7 @@ export function HourPurchaseDialog({
         noValidate
         onSubmit={handleSubmit}
       >
-        {deductibleMinutes > 0 ? (
+        {deductibleMinutes > 0 || isCorrection ? (
           <FormField
             kind={FormFieldKind.Custom}
             label={text.kind}
@@ -166,7 +166,7 @@ export function HourPurchaseDialog({
           hint={
             isCorrection
               ? formatMessage(text.correctionLimit, {
-                  duration: formatDuration(deductibleMinutes),
+                  duration: formatDuration(maxMinutes),
                 })
               : content.duration.hint
           }

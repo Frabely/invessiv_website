@@ -5,14 +5,18 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import type { CockpitProjectDto } from "@/common/contracts/crm/cockpit-project.dto";
+import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import type { OnboardingViewModel } from "@/common/contracts/crm/onboarding/onboarding-view-model";
 import {
   getCrmCockpitDictionary,
   getCrmOnboardingDictionary,
   getCrmQuestionnaireDictionary,
+  getCrmHoursDictionary,
+  getCrmTasksDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
 import {
   projectFixture,
+  taskFixture,
   TEST_CUSTOMER_ID,
 } from "@/server/tests/workspace/crm/support/crm-fixtures";
 import { CustomerProjectsSection } from "./customer-projects-section";
@@ -48,6 +52,63 @@ function renderSection(canWrite: boolean) {
 }
 
 describe("CustomerProjectsSection", () => {
+  it.each([
+    ProjectStatus.Active,
+    ProjectStatus.Completed,
+    ProjectStatus.Archived,
+    ProjectStatus.Cancelled,
+  ])("offers task booking only on bookable projects: %s", (status) => {
+    const hoursContent = getCrmHoursDictionary("de");
+    const tasksContent = getCrmTasksDictionary("de");
+    render(
+      <CustomerProjectsSection
+        canWrite={false}
+        content={content}
+        customerId={TEST_CUSTOMER_ID}
+        locale="de"
+        projects={[{ ...projects[0], project: { ...website, status } }]}
+        hoursContent={hoursContent}
+        hours={{
+          canManage: false,
+          writableProjectIds: [website.id],
+          bookedMinutesByTaskId: {},
+          today: "2026-10-11",
+          hours: {
+            balance: null,
+            purchases: [],
+            allocations: [],
+            projects: [
+              {
+                projectId: website.id,
+                title: website.title,
+                status,
+                allocatedMinutes: 60,
+                usedMinutes: 0,
+                goodwillMinutes: 0,
+                remainingMinutes: 60,
+                releasableMinutes: 60,
+              },
+            ],
+          },
+        }}
+        tasksContent={tasksContent}
+        tasks={{
+          tasks: [taskFixture({ projectId: website.id })],
+          readableProjectIds: [website.id],
+          writableProjectIds: [],
+          members: [],
+          today: "2026-10-11",
+        }}
+      />,
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: tasksContent.section.expandLabel }),
+    );
+    const action = screen.queryByRole("button", { name: /Zeit buchen:/ });
+    if (status === ProjectStatus.Archived || status === ProjectStatus.Cancelled)
+      expect(action).toBeNull();
+    else expect(action).toBeVisible();
+  });
   beforeAll(() => {
     // jsdom has no layout; the phase scale scrolls its current step into view.
     Element.prototype.scrollIntoView = vi.fn();

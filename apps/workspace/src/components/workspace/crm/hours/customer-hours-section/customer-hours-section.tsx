@@ -54,7 +54,11 @@ export function CustomerHoursSection({
   const { balance } = hours;
   const hasLedger = hours.purchases.length > 0 || hours.allocations.length > 0;
   const isEmpty =
-    balance !== null && balance.purchasedMinutes === 0 && !hasLedger;
+    balance !== null &&
+    balance.purchasedMinutes === 0 &&
+    balance.usedMinutes === 0 &&
+    balance.goodwillMinutes === 0 &&
+    !hasLedger;
 
   return (
     <CollapsibleSection

@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 const SEPARATOR = "~";
 const CURSOR_PATTERN =
   /^(\d{4}-\d{2}-\d{2})~(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z)~([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/;
@@ -21,6 +23,11 @@ export function encodeTimeEntryCursor(cursor: TimeEntryCursor): string {
 /** Null for anything that is not a cursor this module wrote; callers answer with a validation error. */
 export function decodeTimeEntryCursor(value: string): TimeEntryCursor | null {
   const match = CURSOR_PATTERN.exec(value);
-  if (!match) return null;
+  if (
+    !match ||
+    !z.iso.date().safeParse(match[1]).success ||
+    !z.iso.datetime({ precision: 3 }).safeParse(match[2]).success
+  )
+    return null;
   return { performedOn: match[1], createdAt: match[2], id: match[3] };
 }

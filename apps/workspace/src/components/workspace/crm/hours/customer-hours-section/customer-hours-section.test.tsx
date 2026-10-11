@@ -14,6 +14,7 @@ import { HoursErrorCode } from "@invessiv/common/constants/crm/errors/hours-erro
 import { HourPurchaseKind } from "@invessiv/common/constants/crm/hour-purchase-kinds";
 import { HourPurchaseSource } from "@invessiv/common/constants/crm/hour-purchase-sources";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
+import { HoursLimits } from "@invessiv/common/constants/crm/hours-limits";
 import type { CustomerHoursProjectDto } from "@invessiv/common/contracts/crm/hours/customer-hours-project.dto";
 import type { HoursViewModel } from "@/common/contracts/crm/hours/hours-view-model";
 import { getCrmHoursDictionary } from "@/i18n/dictionaries/workspace/crm";
@@ -102,6 +103,195 @@ function durationInput() {
 }
 
 describe("CustomerHoursSection", () => {
+  it.each([true, false])(
+    "shows time without a purchase ledger (billable: %s)",
+    (billable) => {
+      const usedMinutes = billable ? 60 : 0;
+      const goodwillMinutes = billable ? 0 : 60;
+      renderSection(
+        viewModel({
+          hours: {
+            balance: {
+              purchasedMinutes: 0,
+              allocatedMinutes: 0,
+              freeMinutes: 0,
+              usedMinutes,
+              goodwillMinutes,
+              remainingMinutes: -usedMinutes,
+            },
+            projects: [
+              project({
+                allocatedMinutes: 0,
+                usedMinutes,
+                goodwillMinutes,
+                remainingMinutes: -usedMinutes,
+                releasableMinutes: 0,
+              }),
+            ],
+            purchases: [],
+            allocations: [],
+          },
+        }),
+      );
+      expect(screen.queryByText(content.empty.title)).not.toBeInTheDocument();
+      expect(screen.getByLabelText(content.balance.label)).toBeVisible();
+      expect(screen.getByText("Relaunch")).toBeVisible();
+      if (billable)
+        expect(screen.getByText("1:00 über dem Kontingent")).toBeVisible();
+    },
+  );
+
+  it("lets a rejected correction switch back to a purchase when no free hours remain", async () => {
+    api.createPurchase.mockResolvedValueOnce({
+      ok: false,
+      code: HoursErrorCode.BelowAllocatedHours,
+      balance: { ...viewModel().hours.balance, freeMinutes: 0 },
+    });
+    api.createPurchase.mockResolvedValueOnce({ ok: true });
+    renderSection();
+    fireEvent.click(
+      screen.getByRole("button", { name: content.section.purchaseAction }),
+    );
+    fireEvent.click(screen.getByLabelText(content.purchaseDialog.kind));
+    fireEvent.click(
+      screen.getByRole("option", {
+        name: content.purchaseDialog.kindCorrection,
+      }),
+    );
+    fillDurationInput(
+      new RegExp(content.purchaseDialog.minutes),
+      content.duration.minutes,
+      "1",
+      "00",
+    );
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: content.purchaseDialog.submitCorrection,
+      }),
+    );
+    await screen.findByText(content.errors.BELOW_ALLOCATED_HOURS);
+    fireEvent.click(screen.getByLabelText(content.purchaseDialog.kind));
+    fireEvent.click(
+      screen.getByRole("option", {
+        name: content.purchaseDialog.kindPurchase,
+      }),
+    );
+    fireEvent.click(
+      screen
+        .getAllByRole("button", { name: content.purchaseDialog.submitPurchase })
+        .at(-1)!,
+    );
+    await waitFor(() => expect(api.createPurchase).toHaveBeenCalledTimes(2));
+    expect(api.createPurchase.mock.calls[1][1]).toMatchObject({
+      kind: HourPurchaseKind.Purchase,
+      minutes: 60,
+    });
+  });
+
+  it.each([false, true])(
+    "caps one ledger transfer while showing the full stock (release: %s)",
+    async (release) => {
+      api.createAllocation.mockResolvedValue({ ok: true });
+      renderSection(
+        viewModel({
+          hours: {
+            ...viewModel().hours,
+            balance: {
+              ...viewModel().hours.balance!,
+              freeMinutes: HoursLimits.MaxLedgerMinutes * 2,
+            },
+            projects: [
+              project({ releasableMinutes: HoursLimits.MaxLedgerMinutes * 2 }),
+            ],
+          },
+        }),
+      );
+      fireEvent.click(
+        screen.getByRole("button", {
+          name: release ? "Freigeben: Relaunch" : "Zuweisen: Relaunch",
+        }),
+      );
+      expect(
+        screen.getByText(release ? "Freigebbar: 20000:00" : "Frei: 20000:00"),
+      ).toBeVisible();
+      fireEvent.click(
+        screen.getByRole("button", {
+          name: content.allocationDialog.useMaximum,
+        }),
+      );
+      fireEvent.click(
+        screen.getByRole("button", {
+          name: release
+            ? content.allocationDialog.submitRelease
+            : content.allocationDialog.submitAllocate,
+        }),
+      );
+      await waitFor(() => expect(api.createAllocation).toHaveBeenCalled());
+      expect(api.createAllocation.mock.calls[0][1]).toMatchObject({
+        minutes: release
+          ? -HoursLimits.MaxLedgerMinutes
+          : HoursLimits.MaxLedgerMinutes,
+      });
+    },
+  );
+
+  it("bounds a correction by the per-entry ledger limit even with more free stock", async () => {
+    api.createPurchase.mockResolvedValue({ ok: true });
+    renderSection(
+      viewModel({
+        hours: {
+          ...viewModel().hours,
+          balance: {
+            ...viewModel().hours.balance!,
+            freeMinutes: HoursLimits.MaxLedgerMinutes * 2,
+          },
+        },
+      }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: content.section.purchaseAction }),
+    );
+    fireEvent.click(screen.getByLabelText(content.purchaseDialog.kind));
+    fireEvent.click(
+      screen.getByRole("option", {
+        name: content.purchaseDialog.kindCorrection,
+      }),
+    );
+    fireEvent.keyDown(
+      screen.getByRole("spinbutton", { name: /Stunden Stunden/ }),
+      { key: "End" },
+    );
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: content.purchaseDialog.submitCorrection,
+      }),
+    );
+    await waitFor(() => expect(api.createPurchase).toHaveBeenCalled());
+    expect(api.createPurchase.mock.calls[0][1]).toMatchObject({
+      minutes: -HoursLimits.MaxLedgerMinutes,
+    });
+  });
+
+  it("shows allocation instants on the Berlin calendar day", () => {
+    renderSection(
+      viewModel({
+        hours: {
+          ...viewModel().hours,
+          allocations: [
+            {
+              id: "allocation-1",
+              projectId: project().projectId,
+              minutes: 60,
+              note: "Mitternacht",
+              createdByMemberId: "member-1",
+              createdAt: "2026-10-10T22:30:00.000Z",
+            },
+          ],
+        },
+      }),
+    );
+    expect(screen.getByText(/11\. Okt/)).toBeVisible();
+  });
   beforeEach(() => {
     refresh.mockReset();
     api.createPurchase.mockReset();

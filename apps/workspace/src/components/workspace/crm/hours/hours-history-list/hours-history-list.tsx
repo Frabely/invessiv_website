@@ -8,6 +8,7 @@ import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import type { Locale } from "@/config/i18n";
 import type { CrmHoursDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatCalendarDay } from "@/lib/i18n/format-calendar-day";
+import { formatMomentDay } from "@/lib/i18n/format-moment-day";
 import styles from "./hours-history-list.module.css";
 
 export type HoursHistoryListProps = {
@@ -74,7 +75,7 @@ export function HoursHistoryList({
             {allocations.map((allocation) => (
               <li className={styles.line} key={allocation.id}>
                 <span className={styles.date}>
-                  {formatCalendarDay(allocation.createdAt.slice(0, 10), locale)}
+                  {formatMomentDay(allocation.createdAt, locale)}
                 </span>
                 <span className={styles.text}>
                   {[

@@ -273,6 +273,9 @@ describe("TimeEntryFormDialog", () => {
     await screen.findByRole("alert");
     expect(screen.getByRole("alert")).toHaveTextContent("0:45");
     expect(durationInput()).toHaveAttribute("aria-valuenow", "2");
+    expect(
+      screen.getByText(text.remainingAfter.replace("{duration}", "1:00")),
+    ).toBeVisible();
     expect(onSaved).not.toHaveBeenCalled();
 
     submit(text.submitEdit);
@@ -287,5 +290,25 @@ describe("TimeEntryFormDialog", () => {
     renderDialog({ tasks: null });
 
     expect(screen.queryByText(text.task)).not.toBeInTheDocument();
+  });
+
+  it("keeps the balance snapshot consistent when a conflict changes billability", async () => {
+    api.updateTimeEntry.mockResolvedValue({
+      ok: false,
+      code: ConcurrencyErrorCode.VersionConflict,
+      current: entry({ version: 4, billable: false }),
+    });
+    renderDialog({ entry: entry() });
+    fillDurationInput(
+      new RegExp(text.minutes),
+      content.duration.minutes,
+      "2",
+      "00",
+    );
+    submit(text.submitEdit);
+    await screen.findByRole("alert");
+    expect(
+      screen.getByText(text.remainingAfter.replace("{duration}", "1:00")),
+    ).toBeVisible();
   });
 });
