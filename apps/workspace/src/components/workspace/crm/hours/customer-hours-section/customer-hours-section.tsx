@@ -8,6 +8,7 @@ import type { CustomerHoursProjectDto } from "@invessiv/common/contracts/crm/hou
 import { formatDuration } from "@invessiv/common/patterns/crm/hours/format-duration";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { PrimaryCtaButton } from "@invessiv/ui";
+import { CustomerHoursDialogKind } from "@/common/constants/crm/customer-hours-dialog-kinds";
 import type { HourAllocationDirection } from "@/common/constants/crm/hour-allocation-directions";
 import type { HoursViewModel } from "@/common/contracts/crm/hours/hours-view-model";
 import { CollapsibleSection } from "@/components/workspace/crm/shared/collapsible-section/collapsible-section";
@@ -29,9 +30,9 @@ export type CustomerHoursSectionProps = {
 };
 
 type OpenDialog =
-  | { kind: "purchase" }
+  | { kind: typeof CustomerHoursDialogKind.Purchase }
   | {
-      kind: "allocation";
+      kind: typeof CustomerHoursDialogKind.Allocation;
       project: CustomerHoursProjectDto;
       direction: HourAllocationDirection;
     }
@@ -61,7 +62,9 @@ export function CustomerHoursSection({
         canManage && balance ? (
           <PrimaryCtaButton
             className={styles.actionButton}
-            onClick={() => setDialog({ kind: "purchase" })}
+            onClick={() =>
+              setDialog({ kind: CustomerHoursDialogKind.Purchase })
+            }
             type="button"
           >
             <FontAwesomeIcon aria-hidden="true" icon={faClock} />
@@ -70,7 +73,7 @@ export function CustomerHoursSection({
         ) : null
       }
       after={
-        dialog?.kind === "purchase" && balance ? (
+        dialog?.kind === CustomerHoursDialogKind.Purchase && balance ? (
           <HourPurchaseDialog
             balance={balance}
             content={content}
@@ -78,7 +81,7 @@ export function CustomerHoursSection({
             onCloseAction={() => setDialog(null)}
             today={today}
           />
-        ) : dialog?.kind === "allocation" ? (
+        ) : dialog?.kind === CustomerHoursDialogKind.Allocation ? (
           <HourAllocationDialog
             content={content}
             customerId={customerId}
@@ -129,7 +132,11 @@ export function CustomerHoursSection({
               content={content.projects}
               freeMinutes={balance?.freeMinutes ?? 0}
               onMoveAction={(project, direction) =>
-                setDialog({ kind: "allocation", project, direction })
+                setDialog({
+                  kind: CustomerHoursDialogKind.Allocation,
+                  project,
+                  direction,
+                })
               }
               projects={hours.projects}
             />

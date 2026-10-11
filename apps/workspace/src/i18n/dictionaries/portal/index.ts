@@ -13,6 +13,8 @@ import invitationDe from "./invitation/de.json";
 import invitationEn from "./invitation/en.json";
 import messagesDe from "./messages/de.json";
 import messagesEn from "./messages/en.json";
+import hoursDe from "./hours/de.json";
+import hoursEn from "./hours/en.json";
 import filesDe from "./files/de.json";
 import filesEn from "./files/en.json";
 import feedbackDe from "./feedback/de.json";
@@ -30,6 +32,7 @@ export type PortalFilesDictionary = typeof filesDe;
 export type PortalFeedbackDictionary = typeof feedbackDe;
 export type PortalOnboardingDictionary = typeof onboardingDe;
 export type PortalCredentialsDictionary = typeof credentialsDe;
+export type PortalHoursDictionary = typeof hoursDe;
 
 const PORTAL_META: Record<Locale, PortalMetaDictionary> = {
   de: metaDe,
@@ -136,4 +139,15 @@ export function getPortalCredentialsDictionary(
   locale: Locale,
 ): PortalCredentialsDictionary {
   return PORTAL_CREDENTIALS[locale];
+}
+
+const PORTAL_HOURS: Record<Locale, PortalHoursDictionary> = {
+  de: hoursDe,
+  en: hoursEn,
+};
+
+export function getPortalHoursDictionary(
+  locale: Locale,
+): PortalHoursDictionary {
+  return PORTAL_HOURS[locale];
 }

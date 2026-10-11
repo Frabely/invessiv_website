@@ -1,15 +1,12 @@
 import "server-only";
 
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { HoursErrorCode } from "@invessiv/common/constants/crm/errors/hours-error-codes";
 import { TimeEntryListLimits } from "@invessiv/common/constants/crm/time-entry-list-limits";
 import type { TimeEntryPageDto } from "@invessiv/common/contracts/crm/hours/time-entry-page.dto";
-import {
-  decodeTimeEntryCursor,
-  encodeTimeEntryCursor,
-} from "@invessiv/common/patterns/crm/hours/time-entry-cursor";
+import { decodeTimeEntryCursor } from "@invessiv/common/patterns/crm/hours/time-entry-cursor";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
   projects,
@@ -17,12 +14,10 @@ import {
 } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { canOn } from "@/common/patterns/auth/can-on";
+import { timeEntryPageService } from "@/server/shared/services/hours/time-entry-page-service";
 import { hoursMappingService } from "@/server/workspace/crm/services/hours/hours-mapping-service";
 import { hoursSchemas } from "@/server/workspace/crm/services/hours/hours-schemas";
 import { timeEntryAccessService } from "@/server/workspace/crm/services/hours/time-entry-access-service";
-
-/** Postgres keeps microseconds, the cursor travels as a JS timestamp: both sides compare in milliseconds. */
-const bookedAt = sql`date_trunc('milliseconds', ${projectTimeEntries.created_at})`;
 
 /**
  * One page of a project's time entries, newest first, paged by keyset so that an entry booked or
@@ -73,35 +68,23 @@ export async function listProjectTimeEntries(
       and(
         eq(projectTimeEntries.project_id, projectId),
         timeEntryAccessService.condition(actor, Permission.HoursRead),
-        cursor
-          ? sql`(${projectTimeEntries.performed_on}, ${bookedAt}, ${projectTimeEntries.id}) < (${cursor.performedOn}::date, ${cursor.createdAt}::timestamptz, ${cursor.id}::uuid)`
-          : undefined,
+        timeEntryPageService.after(cursor),
       ),
     )
-    .orderBy(
-      desc(projectTimeEntries.performed_on),
-      desc(bookedAt),
-      desc(projectTimeEntries.id),
-    )
+    .orderBy(...timeEntryPageService.newestFirst)
     // One row beyond the page tells whether an older entry exists.
     .limit(TimeEntryListLimits.PageSize + 1);
 
-  const entries = rows
-    .slice(0, TimeEntryListLimits.PageSize)
-    .map(hoursMappingService.toTimeEntryDto);
-  const last = entries.at(-1);
   return {
     ok: true,
     page: {
-      entries,
-      nextCursor:
-        rows.length > TimeEntryListLimits.PageSize && last
-          ? encodeTimeEntryCursor({
-              performedOn: last.performedOn,
-              createdAt: last.createdAt,
-              id: last.id,
-            })
-          : null,
+      entries: rows
+        .slice(0, TimeEntryListLimits.PageSize)
+        .map(hoursMappingService.toTimeEntryDto),
+      nextCursor: timeEntryPageService.nextCursor(
+        rows,
+        TimeEntryListLimits.PageSize,
+      ),
     },
   };
 }

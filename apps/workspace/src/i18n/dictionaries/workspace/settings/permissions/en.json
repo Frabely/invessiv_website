@@ -207,6 +207,14 @@
       "label": "Add portal credentials",
       "description": "Add own credentials and change released ones."
     },
+    "portal.hours.read": {
+      "label": "View portal hours",
+      "description": "See purchased, used and remaining hours overall and per project."
+    },
+    "portal.hours.entries.read": {
+      "label": "View portal time entries",
+      "description": "See each time entry with date, duration and description."
+    },
     "roles.manage": {
       "label": "Manage roles",
       "description": "Create and change roles."

@@ -24,6 +24,7 @@
   "accessAreas": {
     "credentials": "Credentials",
     "files": "Files",
+    "hours": "Hours",
     "messages": "Messages",
     "onboarding": "Onboarding"
   },

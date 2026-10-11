@@ -4,6 +4,8 @@ import type { PortalWidgetKey } from "@/common/constants/portal/portal-widget-ke
 type PortalQueryChange = {
   widget?: PortalWidgetKey | null;
   project?: string | null;
+  /** Only ever cleared here; the hours dialog sets its own filter without a navigation. */
+  hoursProject?: null;
 };
 
 /** Preserve unrelated URL state while changing the portal project or dashboard dialog. */
@@ -16,6 +18,7 @@ export function buildPortalHref(
   for (const [name, value] of [
     [PortalDashboardQueryParam.Widget, change.widget],
     [PortalDashboardQueryParam.Project, change.project],
+    [PortalDashboardQueryParam.HoursProject, change.hoursProject],
   ] as const) {
     if (value === null) params.delete(name);
     else if (value !== undefined) params.set(name, value);

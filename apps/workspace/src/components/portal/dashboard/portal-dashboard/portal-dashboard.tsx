@@ -2,12 +2,13 @@
 
 import { type ReactNode, useId, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { faCirclePlus, faClock } from "@fortawesome/free-solid-svg-icons";
+import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
 import type { PortalConversationDto } from "@invessiv/common/contracts/portal/portal-conversation.dto";
 import type { PortalCredentialsSummaryDto } from "@invessiv/common/contracts/portal/portal-credentials-summary.dto";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
 import type { PortalFilesOverviewDto } from "@invessiv/common/contracts/portal/portal-files-overview.dto";
+import type { PortalHoursDto } from "@invessiv/common/contracts/portal/portal-hours.dto";
 import type { PortalOnboardingCallDto } from "@invessiv/common/contracts/portal/portal-onboarding-call.dto";
 import type { PortalOnboardingFormSummaryDto } from "@invessiv/common/contracts/portal/portal-onboarding-form-summary.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
@@ -27,6 +28,7 @@ import type {
   PortalCredentialsDictionary,
   PortalDashboardDictionary,
   PortalFilesDictionary,
+  PortalHoursDictionary,
   PortalMessagesDictionary,
 } from "@/i18n/dictionaries/portal";
 import { PortalDashboardEmptyState } from "../portal-dashboard-empty-state/portal-dashboard-empty-state";
@@ -41,6 +43,8 @@ import { PortalCredentialsWidget } from "../widgets/portal-credentials-widget/po
 import { PortalCustomerTasksWidget } from "../widgets/portal-customer-tasks-widget/portal-customer-tasks-widget";
 import { PortalFeedbackWidget } from "../widgets/portal-feedback-widget/portal-feedback-widget";
 import { PortalFilesWidget } from "../widgets/portal-files-widget/portal-files-widget";
+import { PortalHoursDialog } from "@/components/portal/hours/portal-hours-dialog/portal-hours-dialog";
+import { PortalHoursWidget } from "../widgets/portal-hours-widget/portal-hours-widget";
 import { PortalMockWidget } from "../widgets/portal-mock-widget/portal-mock-widget";
 import { PortalOnboardingWidget } from "../widgets/portal-onboarding-widget/portal-onboarding-widget";
 import { PortalOurTasksWidget } from "../widgets/portal-our-tasks-widget/portal-our-tasks-widget";
@@ -65,6 +69,10 @@ export type PortalDashboardProps = {
   filesOverview: PortalFilesOverviewDto | null;
   /** Upload labels and file errors for attachments in the chat dock. */
   filesContent: PortalFilesDictionary;
+  /** Balance and purchases; null without `portal.hours.read` or without any hours to show. */
+  hours?: PortalHoursDto | null;
+  /** Texts of the hours dialog the widget opens. */
+  hoursContent: PortalHoursDictionary;
   locale: Locale;
   messagesContent: PortalMessagesDictionary;
   /** The company's chat page; null without `portal.messages.read`. */
@@ -96,6 +104,8 @@ export function PortalDashboard({
   filesHref,
   filesOverview,
   filesContent,
+  hours = null,
+  hoursContent,
   locale,
   messagesContent,
   messagesHref = null,
@@ -143,7 +153,10 @@ export function PortalDashboard({
   const openDialog = (widget: PortalWidgetKey) =>
     navigate({ widget }, PortalDashboardNavigationMode.Push);
   const closeDialog = () =>
-    navigate({ widget: null }, PortalDashboardNavigationMode.Replace);
+    navigate(
+      { widget: null, hoursProject: null },
+      PortalDashboardNavigationMode.Replace,
+    );
   const openCredentials = (create: boolean) => {
     setCredentialsCreate(create);
     openDialog(PortalWidgetKey.Credentials);
@@ -184,7 +197,7 @@ export function PortalDashboard({
 
   const mockBadge = content.mock.badge;
   const mockDialog = (
-    key: typeof PortalWidgetKey.Hours | typeof PortalWidgetKey.ServiceRequest,
+    key: typeof PortalWidgetKey.ServiceRequest,
     icon: Parameters<typeof PortalMockWidget>[0]["icon"],
   ) => (
     <PortalMockWidget
@@ -271,7 +284,14 @@ export function PortalDashboard({
         locale={locale}
       />
     ),
-    [PortalWidgetKey.Hours]: mockDialog(PortalWidgetKey.Hours, faClock),
+    [PortalWidgetKey.Hours]: hours ? (
+      <PortalHoursWidget
+        content={content.widgets.hours}
+        hours={hours}
+        onOpenAction={() => openDialog(PortalWidgetKey.Hours)}
+        selectedProjectId={dashboard.selectedProjectId}
+      />
+    ) : null,
     [PortalWidgetKey.Contact]: dashboard.contact ? (
       <PortalContactWidget
         contact={dashboard.contact}
@@ -360,6 +380,17 @@ export function PortalDashboard({
               onCloseAction={closeDialog}
               onSavedAction={setRequestAnnouncement}
               startWithCreate={credentialsCreate && credentials.canWrite}
+            />
+          ) : null
+        }
+        hoursDialog={
+          hours ? (
+            <PortalHoursDialog
+              content={hoursContent}
+              customerId={customerId}
+              hours={hours}
+              locale={locale}
+              onCloseAction={closeDialog}
             />
           ) : null
         }

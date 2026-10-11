@@ -26,6 +26,7 @@ describe("listVisiblePortalWidgets", () => {
         Permission.PortalFeedbackRead,
         Permission.PortalOnboardingRead,
         Permission.PortalCredentialsRead,
+        Permission.PortalHoursRead,
       ]),
     ).toHaveLength(Object.values(PortalWidgetKey).length);
   });
@@ -62,10 +63,25 @@ describe("listVisiblePortalWidgets", () => {
   });
 
   it("keeps mocks regardless of permissions, since they show no data", () => {
-    expect(keys([])).toEqual([
-      PortalWidgetKey.ServiceRequest,
+    expect(keys([])).toEqual([PortalWidgetKey.ServiceRequest]);
+  });
+
+  it("shows the hours widget only with portal.hours.read and hours to show", () => {
+    expect(keys([Permission.PortalAccess])).not.toContain(
       PortalWidgetKey.Hours,
-    ]);
+    );
+    expect(
+      keys(
+        [Permission.PortalAccess, Permission.PortalHoursRead],
+        new Set<PortalWidgetKey>(),
+      ),
+    ).not.toContain(PortalWidgetKey.Hours);
+    expect(
+      keys(
+        [Permission.PortalAccess, Permission.PortalHoursRead],
+        new Set<PortalWidgetKey>([PortalWidgetKey.Hours]),
+      ),
+    ).toContain(PortalWidgetKey.Hours);
   });
 
   it("shows the feedback widget only with portal.feedback.read", () => {

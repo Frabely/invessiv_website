@@ -49,6 +49,12 @@ export type PortalE2eFixture = {
   taskProject: string;
   /** Released customer-side task the portal contact can complete and reopen. */
   customerTaskId: string;
+  /** Customer of the hours worked example: 10:00 bought, 8:30 used, project B overdrawn. */
+  hoursCustomer: string;
+  /** Second customer with its own hours, for the isolation checks. */
+  hoursOtherCustomer: string;
+  hoursProjectA: string;
+  hoursProjectB: string;
   assignmentA: string;
   assignmentB: string;
   assignmentOther: string;

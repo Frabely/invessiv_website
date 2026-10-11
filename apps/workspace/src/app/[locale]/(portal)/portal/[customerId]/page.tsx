@@ -10,6 +10,7 @@ import {
   getPortalCredentialsDictionary,
   getPortalDashboardDictionary,
   getPortalFilesDictionary,
+  getPortalHoursDictionary,
   getPortalMessagesDictionary,
 } from "@/i18n/dictionaries/portal";
 import { portalPathFor, workspaceAreaPathFor } from "@/lib/auth/routes";
@@ -22,6 +23,7 @@ import { requirePortalReader } from "@/server/portal/auth/require-portal-reader"
 import { getPortalCredentialsSummary } from "@/server/portal/query-handler/get-portal-credentials-summary.query-handler";
 import { getPortalConversation } from "@/server/portal/query-handler/get-portal-conversation.query-handler";
 import { getPortalDashboard } from "@/server/portal/query-handler/get-portal-dashboard.query-handler";
+import { getPortalHours } from "@/server/portal/query-handler/get-portal-hours.query-handler";
 import { getPortalOnboardingCall } from "@/server/portal/query-handler/get-portal-onboarding-call.query-handler";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { getPortalOnboardingWidgetForm } from "@/server/portal/query-handler/get-portal-onboarding-widget-form.query-handler";
@@ -86,6 +88,12 @@ export default async function PortalCustomerPage({
     reader.permissions,
     new Set(),
   ).some((entry) => entry.key === PortalWidgetKey.Credentials);
+  // Hours are only summed for a reader who may see them; whether there is anything to show is
+  // known once they are loaded.
+  const showsHours = listVisiblePortalWidgets(
+    reader.permissions,
+    new Set([PortalWidgetKey.Hours]),
+  ).some((entry) => entry.key === PortalWidgetKey.Hours);
   const [
     dashboard,
     conversationResult,
@@ -93,6 +101,7 @@ export default async function PortalCustomerPage({
     fromYou,
     widgetForm,
     credentials,
+    hours,
   ] = await Promise.all([
     getPortalDashboard(reader, today, selectedProjectId),
     getPortalConversation(reader, null),
@@ -111,6 +120,7 @@ export default async function PortalCustomerPage({
       ? getPortalOnboardingWidgetForm(reader, selectedProjectId)
       : null,
     showsCredentials ? getPortalCredentialsSummary(reader) : null,
+    showsHours ? getPortalHours(reader) : null,
   ]);
   const onboardingCall = widgetForm
     ? await getPortalOnboardingCall(reader, widgetForm.id)
@@ -125,6 +135,7 @@ export default async function PortalCustomerPage({
   if (dashboard.completedProjects.length > 0)
     keysWithContent.add(PortalWidgetKey.CompletedProjects);
   if (widgetForm) keysWithContent.add(PortalWidgetKey.Onboarding);
+  if (hours) keysWithContent.add(PortalWidgetKey.Hours);
 
   return (
     <>
@@ -156,6 +167,8 @@ export default async function PortalCustomerPage({
           { project: canReadProjects ? selectedProjectId : null },
         )}
         filesContent={getPortalFilesDictionary(activeLocale)}
+        hours={hours}
+        hoursContent={getPortalHoursDictionary(activeLocale)}
         filesOverview={
           fromUs.ok && fromYou.ok
             ? { fromUs: fromUs.value, fromYou: fromYou.value }

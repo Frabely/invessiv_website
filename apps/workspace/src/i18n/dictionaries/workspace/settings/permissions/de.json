@@ -207,6 +207,14 @@
       "label": "Zugangsdaten im Portal hinterlegen",
       "description": "Eigene Zugänge hinterlegen und freigegebene Zugänge ändern."
     },
+    "portal.hours.read": {
+      "label": "Stunden im Portal ansehen",
+      "description": "Gekaufte, verbrauchte und übrige Stunden gesamt und je Projekt sehen."
+    },
+    "portal.hours.entries.read": {
+      "label": "Zeitbuchungen im Portal ansehen",
+      "description": "Jede Zeitbuchung mit Datum, Dauer und Beschreibung sehen."
+    },
     "roles.manage": {
       "label": "Rollen verwalten",
       "description": "Rollen anlegen und ändern."

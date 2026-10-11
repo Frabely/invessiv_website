@@ -39,6 +39,19 @@ describe("PORTAL_WIDGET_LAYOUT", () => {
     });
   });
 
+  it("shows hours as a real widget behind its read permission, only with content", () => {
+    expect(
+      PORTAL_WIDGET_LAYOUT.find((entry) => entry.key === PortalWidgetKey.Hours),
+    ).toMatchObject({
+      order: 100,
+      openMode: WidgetOpenMode.Dialog,
+      mock: false,
+      onlyWithContent: true,
+      requiredPermission: Permission.PortalHoursRead,
+      span: { mobile: 12, tablet: 6, desktop: 3 },
+    });
+  });
+
   it("stacks widgets on phones and gives the project card two thirds on desktop", () => {
     for (const entry of PORTAL_WIDGET_LAYOUT) {
       expect(entry.span.mobile).toBe(12);

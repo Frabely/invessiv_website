@@ -114,8 +114,9 @@ export const PORTAL_WIDGET_LAYOUT: readonly PortalWidgetDefinition[] = [
     order: 100,
     span: QUARTER_ROW,
     openMode: WidgetOpenMode.Dialog,
-    mock: true,
-    onlyWithContent: false,
+    mock: false,
+    requiredPermission: Permission.PortalHoursRead,
+    onlyWithContent: true,
   },
   {
     key: PortalWidgetKey.CompletedProjects,

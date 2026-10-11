@@ -1,5 +1,6 @@
 import type { CustomerHoursBalanceDto } from "@invessiv/common/contracts/crm/hours/customer-hours-balance.dto";
 import { formatDuration } from "@invessiv/common/patterns/crm/hours/format-duration";
+import { HoursBalanceFigureKind } from "@/common/constants/crm/hours-balance-figure-kinds";
 import type { CrmHoursDictionary } from "@/i18n/dictionaries/workspace/crm";
 import styles from "./hours-balance-summary.module.css";
 
@@ -24,14 +25,31 @@ export function HoursBalanceSummary({
   const unusedWidth = total > 0 ? (unused / total) * 100 : 0;
 
   const figures = [
-    { key: "purchased", value: balance.purchasedMinutes },
-    { key: "used", value: balance.usedMinutes, swatch: "used" },
-    { key: "allocated", value: balance.allocatedMinutes, swatch: "unused" },
-    { key: "free", value: balance.freeMinutes, swatch: "free" },
+    { key: HoursBalanceFigureKind.Purchased, value: balance.purchasedMinutes },
+    {
+      key: HoursBalanceFigureKind.Used,
+      value: balance.usedMinutes,
+      swatch: HoursBalanceFigureKind.Used,
+    },
+    {
+      key: HoursBalanceFigureKind.Allocated,
+      value: balance.allocatedMinutes,
+      swatch: HoursBalanceFigureKind.Allocated,
+    },
+    {
+      key: HoursBalanceFigureKind.Free,
+      value: balance.freeMinutes,
+      swatch: HoursBalanceFigureKind.Free,
+    },
     ...(balance.goodwillMinutes > 0
-      ? [{ key: "goodwill", value: balance.goodwillMinutes } as const]
+      ? [
+          {
+            key: HoursBalanceFigureKind.Goodwill,
+            value: balance.goodwillMinutes,
+          } as const,
+        ]
       : []),
-    { key: "remaining", value: balance.remainingMinutes },
+    { key: HoursBalanceFigureKind.Remaining, value: balance.remainingMinutes },
   ] as const;
 
   return (
@@ -44,7 +62,7 @@ export function HoursBalanceSummary({
       >
         <rect className={styles.free} height="4" width="100" x="0" y="0" />
         <rect
-          className={styles.unused}
+          className={styles.allocated}
           height="4"
           width={usedWidth + unusedWidth}
           x="0"

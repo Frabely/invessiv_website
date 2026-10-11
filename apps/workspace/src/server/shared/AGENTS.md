@@ -285,3 +285,9 @@ dieselben Zahlen, und beide Welten müssen sie aus derselben Abfrage bekommen (P
   er als Bedingung an `loadProjectSums`.
 - `toCustomerBalance` braucht die Summen **aller** Projekte des Kunden; mit einer eingeschränkten Liste wäre der
   Kundenstand falsch.
+
+Ab Task 73 (zweiter Aufrufer: das Portal):
+
+- `services/hours/time-entry-page-service.ts` hält das Keyset-Paging der Buchungslisten: `newestFirst`
+  (Tag, Buchungszeitpunkt auf Millisekunden, ID), `after(cursor)` und `nextCursor(rows, pageSize)`. Cockpit und
+  Portal blättern damit identisch; welche Zeilen ein Aufrufer sieht, bestimmt weiter seine eigene Bedingung.

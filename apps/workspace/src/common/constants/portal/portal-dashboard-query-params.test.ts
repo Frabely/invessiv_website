@@ -6,6 +6,7 @@ describe("PortalDashboardQueryParam", () => {
     expect(PortalDashboardQueryParam).toEqual({
       Widget: "widget",
       Project: "project",
+      HoursProject: "hoursProject",
     });
   });
 });

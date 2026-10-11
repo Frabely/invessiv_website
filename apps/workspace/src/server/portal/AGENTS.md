@@ -225,3 +225,36 @@ Plan: `apps/workspace/plans/crm/19-credentials/71-credentials-portal.md`.
   `PortalCredentialDto` trägt weder `lastRevealedAt` noch `visibleToCustomer`, `customerId` oder Ersteller-IDs.
 - Fehlercodes sind `CredentialApiErrorCode`; Statuscodes und Texte stehen ausschließlich in
   `src/lib/credentials/` (dieselben Helfer wie die CRM-Routen, `validation` antwortet 422).
+
+## Stunden (ab Task 73)
+
+Plan: `apps/workspace/plans/crm/20-stunden-und-history/73-stunden-im-portal.md`.
+
+- **Das Portal schreibt bei Stunden nie.** Es gibt zwei Lese-Handler und keinen Command-Handler:
+  `getPortalHours` (Stand, Projekte, Kaufhistorie; lädt mit dem Dashboard) und `listPortalTimeEntries`
+  (Buchungen seitenweise; lädt erst der Dialog).
+- **Wer was liest, steht genau einmal in `portalHoursService`** (`services/hours/`): `can`, `condition`
+  (`portalAccessCondition.forReader`, ohne Recht `FALSE`) und `visibleProjectIds`. Kein Handler wiederholt
+  diese Regeln.
+- **Zwei Rechte:** `portal.hours.read` zeigt Stand und Kaufhistorie, `portal.hours.entries.read` zusätzlich jede
+  Buchung. Beide liegen in `portal_standard` und in `PORTAL_READ_PERMISSION_VALUES` (Owner-Sicht). Ohne das
+  Detailrecht antwortet die Liste `not_found`; `canReadEntries` im DTO sagt der UI, ob sie überhaupt fragt.
+- **Summen zählen alle Projekte des Kunden**, unabhängig vom Status, über `hoursBalanceService`
+  (`server/shared/`) — dieselben Abfragen wie im Cockpit, damit beide Seiten dieselben Zahlen zeigen. Kein
+  Import aus `server/workspace/**`.
+- **Einzeln mit Titel erscheinen nur portal-sichtbare Projekte** (`portalProjectCondition`, bewusst ohne
+  `portal.projects.read`: der Titel ist Navigation für einen eigenständig lesbaren Bereich). Alle übrigen Projekte
+  mit Zuweisung oder Buchung werden zu **einer** Summe `earlierProjects` ohne Titel und ohne ID.
+- **Jede Zeitbuchung ist sichtbar**, auch die nicht berechnete (`billable: false`) und die eines nicht sichtbaren
+  Projekts; letztere trägt `projectId: null`. Ein Projektfilter muss ein sichtbares Projekt der Firma nennen,
+  sonst `validation` — nie eine leere Seite, die eine fremde ID bestätigen würde.
+- **Aufgabentitel** nur bei `tasks.visible_to_customer` **und** `portal.tasks.read`.
+- **Inhalt** hat ein Kunde, sobald es eine Kaufzeile oder eine Zeitbuchung gibt (auch Kulanz, auch eine voll
+  korrigierte Gutschrift). Ohne Inhalt antwortet `getPortalHours` `null`, und das Widget fehlt.
+- Das DTO baut ausschließlich `portalHoursMappingService`. Nie darin: Mitglieds-IDs, Namen von Mitarbeitern,
+  Zuweisungsnotizen, einzelne Zuweisungs- oder Freigabezeilen, Versionen, Kaufzeilen-IDs, Stundensatz, Budget.
+  Die Kaufhistorie selektiert dafür nur die vier Spalten, die sie zeigt.
+- Sortierung und Cursor der Buchungsliste kommen aus `timeEntryPageService` (`server/shared/services/hours/`),
+  dieselben wie im Cockpit.
+- Fehlercodes sind `PortalHoursErrorCode`; Statuscodes und Texte stehen ausschließlich in
+  `src/lib/portal/portal-hours-api-error.ts` (`validation` antwortet 422).

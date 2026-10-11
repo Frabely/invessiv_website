@@ -133,13 +133,13 @@
       "approveNamed": "Approve {project}"
     },
     "hours": {
-      "title": "Hour budget",
-      "open": "Learn more",
-      "teaser": "Soon you will see here how many hours of your budget are used and how many are left.",
-      "upcoming": [
-        "Used and remaining hours",
-        "Every booking with date and description"
-      ]
+      "title": "Hours",
+      "open": "Open hours",
+      "remaining": "left",
+      "over": "over your hours",
+      "used": "{used} of {purchased} used",
+      "project": "In this project: {duration} left",
+      "projectOver": "In this project: {duration} more used than assigned"
     },
     "contact": {
       "title": "Your contact",

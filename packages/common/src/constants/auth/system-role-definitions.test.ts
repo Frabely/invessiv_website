@@ -80,6 +80,8 @@ describe("SYSTEM_ROLE_DEFINITIONS", () => {
         Permission.PortalFeedbackSubmit,
         Permission.PortalOnboardingRead,
         Permission.PortalOnboardingSubmit,
+        Permission.PortalHoursRead,
+        Permission.PortalHoursEntriesRead,
       ]),
     );
   });

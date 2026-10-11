@@ -24,6 +24,7 @@ import type { PortalCustomerTaskDto } from "@invessiv/common/contracts/portal/po
 import type { PortalOurTaskDto } from "@invessiv/common/contracts/portal/portal-our-task.dto";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
 import type { PortalFilesOverviewDto } from "@invessiv/common/contracts/portal/portal-files-overview.dto";
+import type { PortalHoursDto } from "@invessiv/common/contracts/portal/portal-hours.dto";
 import type { PortalOnboardingFormSummaryDto } from "@invessiv/common/contracts/portal/portal-onboarding-form-summary.dto";
 import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
 import { FileSource } from "@invessiv/common/constants/files/file-source";
@@ -36,6 +37,7 @@ import {
   getPortalDashboardDictionary,
   getPortalCredentialsDictionary,
   getPortalFilesDictionary,
+  getPortalHoursDictionary,
   getPortalMessagesDictionary,
 } from "@/i18n/dictionaries/portal";
 import { PortalDashboard } from "./portal-dashboard";
@@ -151,6 +153,28 @@ const FULL_READ = new Set([
   Permission.PortalOnboardingRead,
 ]);
 
+const HOURS_READ = new Set([...FULL_READ, Permission.PortalHoursRead]);
+const HOURS: PortalHoursDto = {
+  balance: {
+    purchasedMinutes: 600,
+    usedMinutes: 510,
+    remainingMinutes: 90,
+    unassignedMinutes: 0,
+  },
+  projects: [
+    {
+      projectId: "project-1",
+      title: "Relaunch",
+      allocatedMinutes: 300,
+      usedMinutes: 150,
+      remainingMinutes: 150,
+    },
+  ],
+  earlierProjects: null,
+  purchases: [],
+  canReadEntries: true,
+};
+
 function customerTask(
   id: string,
   overrides: Partial<PortalCustomerTaskDto> = {},
@@ -217,6 +241,7 @@ function renderDashboard(
   filesOverview: PortalFilesOverviewDto | null = FILES,
   onboarding: PortalOnboardingFormSummaryDto | null = null,
   credentials: PortalCredentialsSummaryDto | null = null,
+  hours: PortalHoursDto | null = null,
 ) {
   const keys = new Set<PortalWidgetKey>([
     PortalWidgetKey.Project,
@@ -225,12 +250,14 @@ function renderDashboard(
     PortalWidgetKey.Contact,
   ]);
   if (onboarding) keys.add(PortalWidgetKey.Onboarding);
+  if (hours) keys.add(PortalWidgetKey.Hours);
   return render(
     <PortalDashboard
       cockpitHref={cockpitHref}
       content={content}
       conversation={conversation}
       credentials={credentials}
+      hours={hours}
       credentialsContent={getPortalCredentialsDictionary("en")}
       customerId="customer-1"
       dashboard={dashboard}
@@ -238,6 +265,7 @@ function renderDashboard(
       filesOverview={filesOverview}
       locale="en"
       filesContent={getPortalFilesDictionary("en")}
+      hoursContent={getPortalHoursDictionary("en")}
       messagesContent={messagesContent}
       onboarding={onboarding}
       today={TODAY}
@@ -441,14 +469,76 @@ describe("PortalDashboard", () => {
   it("marks every mock widget as coming soon", () => {
     renderDashboard();
 
-    for (const title of [
-      content.widgets.hours.title,
-      content.widgets.serviceRequest.title,
-    ]) {
-      const widget = screen.getByRole("region", { name: title });
-      expect(widget).toHaveAttribute("data-mock", "true");
-      expect(within(widget).getByText(content.mock.badge)).toBeInTheDocument();
-    }
+    const widget = screen.getByRole("region", {
+      name: content.widgets.serviceRequest.title,
+    });
+    expect(widget).toHaveAttribute("data-mock", "true");
+    expect(within(widget).getByText(content.mock.badge)).toBeInTheDocument();
+  });
+
+  it("has no hours widget without hours to show", () => {
+    renderDashboard();
+
+    expect(
+      screen.queryByRole("region", { name: content.widgets.hours.title }),
+    ).toBeNull();
+  });
+
+  it("shows the remaining hours as a real widget, with the selected project", () => {
+    renderDashboard(dto(), HOURS_READ, null, null, null, null, null, HOURS);
+
+    const widget = screen.getByRole("region", {
+      name: content.widgets.hours.title,
+    });
+    expect(widget).not.toHaveAttribute("data-mock");
+    expect(within(widget).queryByText(content.mock.badge)).toBeNull();
+    expect(within(widget).getByText("1:30")).toBeInTheDocument();
+    expect(within(widget).getByText("8:30 of 10:00 used")).toBeInTheDocument();
+    expect(
+      within(widget).getByText("In this project: 2:30 left"),
+    ).toBeInTheDocument();
+  });
+
+  it("names an overdrawn balance in words, not only by colour", () => {
+    renderDashboard(dto(), HOURS_READ, null, null, null, null, null, {
+      ...HOURS,
+      balance: {
+        purchasedMinutes: 600,
+        usedMinutes: 660,
+        remainingMinutes: -60,
+        unassignedMinutes: 0,
+      },
+      projects: [{ ...HOURS.projects[0]!, remainingMinutes: -60 }],
+    });
+
+    const widget = screen.getByRole("region", {
+      name: content.widgets.hours.title,
+    });
+    expect(widget).toHaveTextContent("1:00 over your hours");
+    expect(
+      within(widget).getByText("In this project: 1:00 more used than assigned"),
+    ).toBeInTheDocument();
+  });
+
+  it("opens the hours dialog from the URL and clears its filter when closing", () => {
+    mocks.search.value = "widget=hours&hoursProject=project-1";
+    renderDashboard(dto(), HOURS_READ, null, null, null, null, null, {
+      ...HOURS,
+      canReadEntries: false,
+    });
+
+    const dialog = screen.getByRole("dialog", {
+      name: getPortalHoursDictionary("en").dialog.title,
+    });
+    fireEvent.click(
+      within(dialog).getByRole("button", {
+        name: getPortalHoursDictionary("en").dialog.close,
+      }),
+    );
+
+    expect(mocks.replace).toHaveBeenLastCalledWith("/en/portal/customer-1", {
+      scroll: false,
+    });
   });
 
   it("marks the running round as the current step of the track", () => {
@@ -993,6 +1083,7 @@ describe("PortalDashboard", () => {
         filesOverview={FILES}
         locale="en"
         filesContent={getPortalFilesDictionary("en")}
+        hoursContent={getPortalHoursDictionary("en")}
         messagesContent={messagesContent}
         onboarding={null}
         today={TODAY}

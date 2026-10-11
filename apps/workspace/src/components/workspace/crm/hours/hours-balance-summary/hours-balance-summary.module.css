@@ -22,7 +22,7 @@
   fill: var(--hours-used);
 }
 
-.unused {
+.allocated {
   fill: var(--hours-allocated);
 }
 
@@ -62,7 +62,7 @@
   background: var(--hours-used);
 }
 
-.figure[data-swatch="unused"] dt::before {
+.figure[data-swatch="allocated"] dt::before {
   background: var(--hours-allocated);
 }
 

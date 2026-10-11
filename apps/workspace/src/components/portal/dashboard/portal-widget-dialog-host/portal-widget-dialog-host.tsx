@@ -12,6 +12,8 @@ export type PortalWidgetDialogHostProps = {
   credentialsDialog: ReactNode;
   /** Full content of the customer task dialog, built by the dashboard that owns the task state. */
   customerTasksContent: ReactNode;
+  /** The complete hours dialog; null when the reader may not see hours or there are none. */
+  hoursDialog: ReactNode;
   onCloseAction: () => void;
   /** The complete request dialog of the "our tasks" widget; null when the reader may not create. */
   taskRequestDialog: ReactNode;
@@ -24,12 +26,14 @@ export function PortalWidgetDialogHost({
   content,
   credentialsDialog,
   customerTasksContent,
+  hoursDialog,
   onCloseAction,
   taskRequestDialog,
   widgetKey,
 }: PortalWidgetDialogHostProps) {
   if (widgetKey === PortalWidgetKey.OurTasks) return taskRequestDialog;
   if (widgetKey === PortalWidgetKey.Credentials) return credentialsDialog;
+  if (widgetKey === PortalWidgetKey.Hours) return hoursDialog;
 
   if (widgetKey === PortalWidgetKey.CustomerTasks) {
     return (
@@ -45,7 +49,6 @@ export function PortalWidgetDialogHost({
   }
 
   const mock =
-    widgetKey === PortalWidgetKey.Hours ||
     widgetKey === PortalWidgetKey.ServiceRequest
       ? content.widgets[widgetKey]
       : null;

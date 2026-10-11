@@ -11,6 +11,7 @@ import {
   portalFileLinksEndpoint,
   portalFilesArchiveEndpoint,
   portalFilesEndpoint,
+  portalHoursEntriesEndpoint,
   portalOnboardingAnswersEndpoint,
   portalOnboardingFileEndpoint,
   portalOnboardingFilesEndpoint,
@@ -151,6 +152,14 @@ describe("portal onboarding endpoints", () => {
     );
     expect(portalOnboardingServicesConfirmationEndpoint("c-1", "f-1")).toBe(
       "/api/portal/c-1/onboarding/f-1/services-confirmation",
+    );
+  });
+});
+
+describe("portal hours endpoints", () => {
+  it("builds the time entry list path", () => {
+    expect(portalHoursEntriesEndpoint("c 1")).toBe(
+      "/api/portal/c%201/hours/entries",
     );
   });
 });

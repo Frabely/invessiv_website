@@ -363,6 +363,20 @@ export const PERMISSION_DEFINITIONS = {
     assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
     description: "Add own credentials and change released ones.",
   },
+  [Permission.PortalHoursRead]: {
+    realm: AuthRealm.Portal,
+    delegable: true,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description: "See purchased, used and remaining hours per project.",
+  },
+  [Permission.PortalHoursEntriesRead]: {
+    realm: AuthRealm.Portal,
+    delegable: true,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description: "See each time entry with date, duration and description.",
+  },
   [Permission.RolesManage]: {
     realm: AuthRealm.Workspace,
     delegable: false,
@@ -434,4 +448,6 @@ export const PORTAL_READ_PERMISSION_VALUES = [
   Permission.PortalFeedbackRead,
   Permission.PortalOnboardingRead,
   Permission.PortalCredentialsRead,
+  Permission.PortalHoursRead,
+  Permission.PortalHoursEntriesRead,
 ] as const satisfies readonly Permission[];

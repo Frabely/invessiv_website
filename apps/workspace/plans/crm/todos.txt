@@ -1,1 +1,2 @@
 -footer in feedbackbereich für kunde nicht schön
+- CustomerCockpitView ist mittlerweile zu groß und hat zu viele Properties. Refactoring: Verantwortlichkeiten in fachlich abgegrenzte Komponenten aufteilen und die Props-Schnittstelle vereinfachen. Datei: apps/workspace/src/components/workspace/crm/detail/customer-cockpit-view/customer-cockpit-view.tsx.

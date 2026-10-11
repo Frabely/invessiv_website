@@ -2,6 +2,8 @@ import "server-only";
 
 import { eq } from "drizzle-orm";
 
+import type { InsertHourAllocationInput } from "@invessiv/common/contracts/crm/hours/insert-hour-allocation-input";
+import type { InsertHourPurchaseInput } from "@invessiv/common/contracts/crm/hours/insert-hour-purchase-input";
 import type { HourAllocationRow } from "@invessiv/common/contracts/crm/rows/hour-allocation-row";
 import type { HourPurchaseRow } from "@invessiv/common/contracts/crm/rows/hour-purchase-row";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
@@ -10,10 +12,6 @@ import {
   customers,
   projectHourAllocations,
 } from "@invessiv/db/record-configuration";
-import type {
-  InsertHourAllocationInput,
-  InsertHourPurchaseInput,
-} from "@/server/workspace/crm/services/hours/hours-ledger-types";
 
 /**
  * Serializes every purchase, allocation and release of one customer: the rules compare sums over

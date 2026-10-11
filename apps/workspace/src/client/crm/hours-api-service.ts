@@ -6,10 +6,7 @@ import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurre
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import type { CreateHourAllocationRequestDto } from "@invessiv/common/contracts/crm/hours/create-hour-allocation-request.dto";
 import type { CreateHourPurchaseRequestDto } from "@invessiv/common/contracts/crm/hours/create-hour-purchase-request.dto";
-import type { CustomerHoursBalanceDto } from "@invessiv/common/contracts/crm/hours/customer-hours-balance.dto";
-import type { HourAllocationDto } from "@invessiv/common/contracts/crm/hours/hour-allocation.dto";
-import type { HourPurchaseDto } from "@invessiv/common/contracts/crm/hours/hour-purchase.dto";
-import type { ProjectHoursBalanceDto } from "@invessiv/common/contracts/crm/hours/project-hours-balance.dto";
+import type { z } from "zod";
 import type { CreateTimeEntryRequestDto } from "@invessiv/common/contracts/crm/hours/create-time-entry-request.dto";
 import type { TimeEntryDto } from "@invessiv/common/contracts/crm/hours/time-entry.dto";
 import type { TimeEntryPageDto } from "@invessiv/common/contracts/crm/hours/time-entry-page.dto";
@@ -22,36 +19,25 @@ import { versionedJsonMutationService as json } from "@/client/shared/versioned-
 import type { HourAllocationClientResult } from "@/common/contracts/crm/hours/hour-allocation-client-result";
 import type { HourPurchaseClientResult } from "@/common/contracts/crm/hours/hour-purchase-client-result";
 import {
+  customerHoursBalanceSchema,
+  projectHoursBalanceSchema,
+  hourPurchaseResponseSchema,
+  hourAllocationResponseSchema,
+  timeEntrySchema,
+  timeEntryWriteResponseSchema,
+  timeEntryDeleteResponseSchema,
+  timeEntryPageSchema,
+} from "@/common/patterns/crm/hours/hours-response-schemas";
+import {
   crmCustomerHourAllocationsEndpoint,
   crmCustomerHourPurchasesEndpoint,
   crmProjectTimeEntriesEndpoint,
   crmTimeEntryEndpoint,
 } from "@/common/patterns/crm/crm-api-endpoints";
 
-function isCustomerBalance(value: unknown): value is CustomerHoursBalanceDto {
-  return (
-    json.isRecord(value) &&
-    typeof value.purchasedMinutes === "number" &&
-    typeof value.freeMinutes === "number" &&
-    typeof value.remainingMinutes === "number"
-  );
-}
-
-function isProjectBalance(value: unknown): value is ProjectHoursBalanceDto {
-  return (
-    json.isRecord(value) &&
-    typeof value.projectId === "string" &&
-    typeof value.allocatedMinutes === "number" &&
-    typeof value.releasableMinutes === "number"
-  );
-}
-
-function isLedgerRow(value: unknown): value is { id: string; minutes: number } {
-  return (
-    json.isRecord(value) &&
-    typeof value.id === "string" &&
-    typeof value.minutes === "number"
-  );
+function parseValue<T>(schema: z.ZodType<T>, value: unknown): T | null {
+  const result = schema.safeParse(value);
+  return result.success ? result.data : null;
 }
 
 /** The figures a rejected write carries under `details`; null when the answer has none. */
@@ -75,18 +61,8 @@ async function createPurchase(
   }
 
   const payload = response.payload;
-  if (
-    response.ok &&
-    json.isRecord(payload) &&
-    isLedgerRow(payload.purchase) &&
-    isCustomerBalance(payload.balance)
-  ) {
-    return {
-      ok: true,
-      purchase: payload.purchase as HourPurchaseDto,
-      balance: payload.balance,
-    };
-  }
+  const success = parseValue(hourPurchaseResponseSchema, payload);
+  if (response.ok && success) return { ok: true, ...success };
 
   const balance = readDetails(payload)?.balance;
   return {
@@ -99,7 +75,7 @@ async function createPurchase(
           HOURS_ERROR_CODE_VALUES,
           HoursErrorCode.Internal,
         ),
-    balance: isCustomerBalance(balance) ? balance : null,
+    balance: parseValue(customerHoursBalanceSchema, balance),
   };
 }
 
@@ -122,20 +98,8 @@ async function createAllocation(
   }
 
   const payload = response.payload;
-  if (
-    response.ok &&
-    json.isRecord(payload) &&
-    isLedgerRow(payload.allocation) &&
-    isCustomerBalance(payload.balance) &&
-    isProjectBalance(payload.project)
-  ) {
-    return {
-      ok: true,
-      allocation: payload.allocation as HourAllocationDto,
-      balance: payload.balance,
-      project: payload.project,
-    };
-  }
+  const success = parseValue(hourAllocationResponseSchema, payload);
+  if (response.ok && success) return { ok: true, ...success };
 
   const details = readDetails(payload);
   return {
@@ -147,18 +111,13 @@ async function createAllocation(
           HOURS_ERROR_CODE_VALUES,
           HoursErrorCode.Internal,
         ),
-    balance: isCustomerBalance(details?.balance) ? details.balance : null,
-    project: isProjectBalance(details?.project) ? details.project : null,
+    balance: parseValue(customerHoursBalanceSchema, details?.balance),
+    project: parseValue(projectHoursBalanceSchema, details?.project),
   };
 }
 
 function isTimeEntry(value: unknown): value is TimeEntryDto {
-  return (
-    json.isRecord(value) &&
-    typeof value.id === "string" &&
-    typeof value.version === "number" &&
-    typeof value.durationMinutes === "number"
-  );
+  return timeEntrySchema.safeParse(value).success;
 }
 
 function readErrorCode(payload: unknown): HoursErrorCode {
@@ -179,16 +138,17 @@ async function writeTimeEntry(
   if (!response) return { ok: false, code: HoursErrorCode.Internal };
 
   const payload = response.payload;
-  if (
-    response.ok &&
-    json.isRecord(payload) &&
-    isProjectBalance(payload.project)
-  ) {
-    return {
-      ok: true,
-      timeEntry: isTimeEntry(payload.timeEntry) ? payload.timeEntry : null,
-      project: payload.project,
-    };
+  if (response.ok) {
+    if (method === HttpMethod.Delete) {
+      const success = parseValue(timeEntryDeleteResponseSchema, payload);
+      if (success) {
+        return { ok: true, timeEntry: null, project: success.project };
+      }
+    } else {
+      const success = parseValue(timeEntryWriteResponseSchema, payload);
+      if (success) return { ok: true, ...success };
+    }
+    return { ok: false, code: HoursErrorCode.Internal };
   }
 
   const current = json.readVersionConflict(response, isTimeEntry);
@@ -197,7 +157,7 @@ async function writeTimeEntry(
   }
   return {
     ok: false,
-    code: response.ok ? HoursErrorCode.Internal : readErrorCode(payload),
+    code: readErrorCode(payload),
   };
 }
 
@@ -243,18 +203,7 @@ function listTimeEntries(
     : "";
   return json.read(
     `${crmProjectTimeEntriesEndpoint(projectId)}${query}`,
-    (payload) =>
-      json.isRecord(payload) &&
-      Array.isArray(payload.entries) &&
-      payload.entries.every(isTimeEntry)
-        ? {
-            entries: payload.entries,
-            nextCursor:
-              typeof payload.nextCursor === "string"
-                ? payload.nextCursor
-                : null,
-          }
-        : null,
+    (payload) => parseValue(timeEntryPageSchema, payload),
     HOURS_ERROR_CODE_VALUES,
     HoursErrorCode.Internal,
   );

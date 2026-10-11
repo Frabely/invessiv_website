@@ -1,0 +1,194 @@
+.entries {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.heading {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  font-weight: 700;
+}
+
+.filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.chip {
+  min-height: 2.75rem;
+  max-width: 100%;
+  padding: 0 0.9rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--font-size-ui-sm);
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease-out,
+    border-color 0.15s ease-out;
+}
+
+.chip:hover {
+  background: var(--color-surface-2);
+}
+
+.chip:focus-visible {
+  outline: 2px solid var(--color-accent-gold);
+  outline-offset: 2px;
+}
+
+.chip[aria-pressed="true"] {
+  border-color: var(--color-text);
+  background: var(--color-surface-2);
+  font-weight: 700;
+}
+
+.hint {
+  max-width: 60ch;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+.loadError {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+}
+
+.loadError p {
+  margin: 0;
+}
+
+.months {
+  display: grid;
+  gap: 1.1rem;
+  min-width: 0;
+}
+
+.month {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.monthHeading {
+  margin: 0;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--color-border-strong);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+}
+
+.list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The duration leads the eye down the right edge; the description may take as many lines as it needs. */
+.row {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr) auto;
+  gap: 0.2rem 1rem;
+  align-items: baseline;
+  padding: 0.55rem 0;
+  font-size: var(--font-size-ui-sm);
+}
+
+.row + .row {
+  border-top: 1px solid var(--color-border);
+}
+
+.date {
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.text {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.description {
+  color: var(--color-text);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+.meta {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  overflow-wrap: anywhere;
+}
+
+.amount {
+  display: grid;
+  justify-items: end;
+  gap: 0.1rem;
+}
+
+.duration {
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Goodwill counts against nothing, so its duration steps back; the words next to it say why. */
+.duration[data-goodwill="true"] {
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.goodwill {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  white-space: nowrap;
+}
+
+.more {
+  display: flex;
+}
+
+.announcement {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+.announcement:empty {
+  display: none;
+}
+
+@media (max-width: 30rem) {
+  .row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .text {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chip {
+    transition: none;
+  }
+}

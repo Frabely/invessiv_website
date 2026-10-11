@@ -49,6 +49,13 @@ Credential-Rolle. Die Owner-Sicht wird in DE/EN, Dark/Light und auf Desktop/Mobi
 Aufdecken noch Schreiben. Escape schließt den per Tastatur fokussierten Dialog. Screenshots entstehen im
 ignorierten Test-Ausgabeordner. `CRM_CREDENTIALS_KEYRING` muss in der Development-Konfiguration gültig sein.
 
+`portal-hours.e2e.ts` prüft auf einer eigenen Testfirma das Rechenbeispiel der Stunden (10:00 gekauft, 8:30
+verbraucht, ein Projekt überzogen): Widget und Dialog des Standardkontakts mit Buchungsliste, Projektfilter in der URL
+und Kulanz-Hinweis; einen Kontakt mit eigener Rolle ohne `portal.hours.entries.read` (Stand ja, Liste und Endpunkt
+nein); denselben Menschen bei einer zweiten Firma mit deren eigenen Zahlen; die Owner-Sicht; und eine Firma ohne
+Stunden, die kein Widget hat. Das Setup legt dafür Kauf-, Zuweisungs- und Zeitbuchungen sowie eine eigene Portalrolle
+an und räumt die Rolle beim nächsten Lauf wieder ab.
+
 Start aus der Repository-Wurzel:
 
 ```powershell

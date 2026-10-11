@@ -1,0 +1,46 @@
+{
+  "dialog": {
+    "title": "Hours",
+    "intro": "See how many hours you bought, how many are used and what they were used for.",
+    "close": "Close"
+  },
+  "summary": {
+    "title": "Your balance",
+    "purchased": "Purchased",
+    "used": "Used",
+    "remaining": "Left",
+    "allocated": "Assigned",
+    "project": "Project",
+    "over": "{duration} over your hours",
+    "unassigned": "{duration} of these are not assigned to a project yet.",
+    "projectsTitle": "By project",
+    "projectOver": "This project used {duration} more than it was assigned.",
+    "earlier": "Earlier projects",
+    "earlierHint": "Projects that are finished and no longer listed one by one.",
+    "earlierOver": "These projects used {duration} more than they were assigned."
+  },
+  "purchases": {
+    "title": "Your hours",
+    "empty": "No hours have been credited to you yet.",
+    "correction": "Correction",
+    "capped": "You see the latest {count} entries."
+  },
+  "entries": {
+    "title": "What the time was used for",
+    "filterLabel": "Time entries by project",
+    "allProjects": "All projects",
+    "earlier": "Earlier projects",
+    "task": "Task: {title}",
+    "goodwill": "not charged",
+    "empty": "No time has been booked yet. Once we work for you, you will see here what for.",
+    "emptyFiltered": "No time has been booked for this project yet.",
+    "loading": "Loading time entries …",
+    "loadError": "The time entries could not be loaded.",
+    "retry": "Try again",
+    "more": "Load more",
+    "loadingMore": "Loading …",
+    "loaded": "{count} more time entries loaded.",
+    "loadedOne": "1 more time entry loaded.",
+    "moreError": "More time entries could not be loaded. Please try again."
+  }
+}
