@@ -187,4 +187,72 @@ describe("buildProjectLineItemsViewModel", () => {
       },
     });
   });
+
+  it("prioritizes missing hours permission over a closed project", async () => {
+    const result = await buildProjectLineItemsViewModel({
+      actor: actor([
+        Permission.ProjectLineItemsRead,
+        Permission.ProjectLineItemsWrite,
+      ]),
+      catalogHref: null,
+      customerId: CUSTOMER_ID,
+      projects: [
+        {
+          id: project.id,
+          title: project.title,
+          project: { ...project, status: ProjectStatus.Archived },
+        },
+      ],
+    });
+
+    expect(result?.assignmentBlockersByProjectId).toEqual({
+      [PROJECT_ID]: {
+        hours: "missing_hours_permission",
+        feedbackRound: "missing_project_permission",
+      },
+    });
+  });
+
+  it("does not inspect a hidden process track even with project write access", async () => {
+    const result = await buildProjectLineItemsViewModel({
+      actor: actor([
+        Permission.ProjectLineItemsRead,
+        Permission.ProjectLineItemsWrite,
+        Permission.HoursManage,
+        Permission.ProjectsWrite,
+      ]),
+      catalogHref: null,
+      customerId: CUSTOMER_ID,
+      projects: [{ id: project.id, title: project.title, project: null }],
+    });
+
+    expect(mocks.listExtraFeedbackRoundBlockers).toHaveBeenCalledWith([]);
+    expect(result?.assignmentBlockersByProjectId).toEqual({
+      [PROJECT_ID]: {
+        hours: null,
+        feedbackRound: "missing_project_permission",
+      },
+    });
+  });
+
+  it("reports the extra-round limit for an otherwise writable project", async () => {
+    mocks.listExtraFeedbackRoundBlockers.mockResolvedValue(
+      new Map([[PROJECT_ID, "limit_reached"]]),
+    );
+    const result = await buildProjectLineItemsViewModel({
+      actor: actor([
+        Permission.ProjectLineItemsRead,
+        Permission.ProjectLineItemsWrite,
+        Permission.HoursManage,
+        Permission.ProjectsWrite,
+      ]),
+      catalogHref: null,
+      customerId: CUSTOMER_ID,
+      projects: [{ id: project.id, title: project.title, project }],
+    });
+
+    expect(result?.assignmentBlockersByProjectId).toEqual({
+      [PROJECT_ID]: { hours: null, feedbackRound: "limit_reached" },
+    });
+  });
 });

@@ -185,6 +185,28 @@ const ROUND_BLOCKER: Record<
     LineItemAssignmentBlocker.LimitReached,
 };
 
+function resolveHoursBlocker(
+  canManageHours: boolean,
+  project: LineItemAssignmentProject,
+): LineItemAssignmentBlocker | null {
+  if (!canManageHours) return LineItemAssignmentBlocker.MissingHoursPermission;
+  if (
+    project.status !== null &&
+    HOURS_CLOSED_PROJECT_STATUS_VALUES.includes(project.status)
+  )
+    return LineItemAssignmentBlocker.ProjectClosed;
+  return null;
+}
+
+function resolveFeedbackRoundBlocker(
+  blocker: ExtraFeedbackRoundBlocker | null | undefined,
+): LineItemAssignmentBlocker | null {
+  if (blocker === undefined)
+    return LineItemAssignmentBlocker.MissingProjectPermission;
+  if (blocker === null) return null;
+  return ROUND_BLOCKER[blocker];
+}
+
 /**
  * What stands in the way of the two template kinds that act on a project, per writable project.
  * A project the actor cannot read as a whole is treated as not writable for a further round: its
@@ -212,20 +234,11 @@ async function listBlockers(
   );
   return Object.fromEntries(
     projects.map((candidate) => {
-      const roundBlocker = roundBlockers.get(candidate.id);
       const blockers: LineItemAssignmentBlockers = {
-        hours: !canManageHours
-          ? LineItemAssignmentBlocker.MissingHoursPermission
-          : candidate.status !== null &&
-              HOURS_CLOSED_PROJECT_STATUS_VALUES.includes(candidate.status)
-            ? LineItemAssignmentBlocker.ProjectClosed
-            : null,
-        feedbackRound:
-          roundBlocker === undefined
-            ? LineItemAssignmentBlocker.MissingProjectPermission
-            : roundBlocker
-              ? ROUND_BLOCKER[roundBlocker]
-              : null,
+        hours: resolveHoursBlocker(canManageHours, candidate),
+        feedbackRound: resolveFeedbackRoundBlocker(
+          roundBlockers.get(candidate.id),
+        ),
       };
       return [candidate.id, blockers];
     }),
