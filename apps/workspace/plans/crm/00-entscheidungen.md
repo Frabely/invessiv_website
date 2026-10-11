@@ -437,11 +437,25 @@ Neuzuschnitt 06.10.2026 (mit dem Owner abgestimmt); vollständige Spezifikation 
 - In-App-Erinnerung bei 30, 14 und 7 Tagen sowie einmalig bei Überfälligkeit; keine normalen
   internen Reminder-Mails.
 - Renewals sind rein intern; es gibt kein Portal-Widget dafür (bestätigt 26.09.2026).
-- Stundenkontingent gehört zum Kunden; eine Buchung kann optional ein Projekt referenzieren.
+- **Stunden (Neuzuschnitt 08.10.2026, Details in `20-stunden-und-history/README.md`):** Gekaufte Stunden gehören zum
+  Kunden und entstehen als unveränderliche Kaufbuchungen (`customer_hour_purchases`); verringert wird nur über eine
+  Korrekturzeile und nie unter die zugewiesene Summe. Es gibt keinen Zeitraum und keinen Verfall.
+- Freie Stunden werden Projekten zugewiesen (`project_hour_allocations`) und sind damit für andere Projekte geblockt.
+  Nicht verbrauchte Stunden lassen sich jederzeit ausdrücklich freigeben; ein überzogenes Projekt bedient sich nie
+  automatisch aus einem anderen Projekt oder aus dem freien Rest.
+- Zeitbuchungen (`project_time_entries`) gehen immer auf genau ein Projekt, in 15-Minuten-Schritten, optional mit
+  einer Aufgabe desselben Projekts. Überziehung ist erlaubt und sichtbar. Eine Aufgabe braucht nie eine Buchung.
+- Eine Buchung kann als Kulanz markiert sein (`billable = false`): sichtbar, aber nicht angerechnet.
+- Interne Rechte: `hours.read`, `hours.write` (Zeit buchen) und `hours.manage` (gutschreiben, zuweisen, freigeben;
+  nur Owner und eigene Rollen).
 - Stunden sind informativ, keine Rechnungsgrundlage und keine Lexware-Schnittstelle.
-- Alle Buchungen sind portalöffentlich — ohne Sichtbarkeitsschalter je Buchung (bestätigt 26.09.2026). Das Formular
-  weist ausdrücklich darauf hin. Änderungen und Löschungen werden mit Vorher-/Nachher-Werten protokolliert. Das
-  Portal-Widget „Stunden“ erscheint nur bei laufendem Kontingent und zeigt verbraucht, übrig und alle Buchungen.
+- Alle Kauf- und Zeitbuchungen sind portalöffentlich — ohne Sichtbarkeitsschalter je Buchung (bestätigt 26.09.2026).
+  Das Formular weist ausdrücklich darauf hin. Änderungen und Löschungen von Zeitbuchungen werden mit
+  Vorher-/Nachher-Werten protokolliert. Im Portal trennen zwei Rechte den Stand (`portal.hours.read`) von den
+  einzelnen Buchungen (`portal.hours.entries.read`); beide liegen in `portal_standard`. Das Widget „Stunden“
+  erscheint, sobald der Kunde eine Kauf- oder Zeitbuchung hat.
+- Später additiv: Stunden über eine Leistungsanfrage (Ordner 13c) und monatliche Zubuchung aus Wartungsverträgen
+  (Ordner 20c), jeweils als Kaufbuchung mit eigener `source`.
 - Pausierte Kunden nach 180 Tagen, archivierte nach 90 Tagen zur manuellen Aufbewahrungsprüfung
   vorschlagen. Frist pro Kunde überschreibbar; keine automatische Löschung.
 - Kein Purge-Button. Ein getesteter Owner-Command bietet Vorschau, widerruft Zugriffe, entfernt
@@ -557,6 +571,8 @@ people
   ├── preferred_locale
   └── customer_contact_assignments ── customers
                                       ├── projects ──┬── tasks / task_series
+                                      │              ├── project_hour_allocations    (Ordner 20)
+                                      │              ├── project_time_entries ── tasks (optional, Ordner 20)
                                       │              ├── feedback_rounds
                                       │              │   └── feedback_round_items ── files
                                       │              └── onboarding_forms            (Ordner 15)
@@ -569,7 +585,7 @@ people
                                       ├── customer_credentials (optional je Projekt, Ordner 19)
                                       ├── customer_renewals
                                       ├── customer_tags
-                                      └── retainers ── time_entries
+                                      └── customer_hour_purchases                    (Ordner 20)
 
 line_item_templates ── pflegbarer globaler Katalog
 projects ── project_line_items (vollständige Template-Snapshots, Ordner 07)
@@ -587,14 +603,15 @@ outbox_jobs ── zuverlässige asynchrone Seiteneffekte
 Kindtabellen eines Aggregats tragen den Aggregatnamen als Präfix — wie die bestehenden
 `lead_activities`, `lead_categories`, `lead_submissions` und `lead_email_contacts` in
 `packages/db/src/record-configuration/`. Verbindlich sind damit `customer_contact_assignments`,
-`customer_credentials`, `customer_renewals` und `customer_tags`. Links liegen seit dem Neuzuschnitt
+`customer_credentials`, `customer_renewals`, `customer_tags`, `customer_hour_purchases`,
+`project_hour_allocations` und `project_time_entries` (Ordner 20). Links liegen seit dem Neuzuschnitt
 von Ordner 14 in `files`; eine Tabelle `customer_asset_links` entsteht nicht.
 
 Präfixfrei bleiben eigenständige und querschnittliche Tabellen: `users`, `workspace_members`, `permissions`, `roles`,
 `role_permissions`, `workspace_member_roles`, `workspace_member_scoped_roles`, `people`,
 `customers`, `projects`, `tasks`, `task_series`, `portal_memberships`, `portal_invitations`,
 `conversations`, `messages`, `message_files`, `conversation_reads`, `feedback_rounds`,
-`onboarding_forms`, `retainers`, `time_entries`, `files`, `activities`, `security_events`, `outbox_jobs`,
+`onboarding_forms`, `files`, `activities`, `security_events`, `outbox_jobs`,
 `notifications`, `line_item_templates`, `project_line_items`.
 
 `onboarding_forms` ist präfixfrei, weil der Bogen am Projekt hängt und kein Kindobjekt des
@@ -735,11 +752,12 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12b erreicht:
 | 15  | auf `master` | `15-onboarding`                          | Onboarding-Baukasten (Katalog, Vorlagen), Bogen je Projekt, Portal-Formular, Prüfung, Nachforderung, Termin, Abschluss; 15.1–15.6 gemergt, 15.7/15.8 direkt committet; Review-Nacharbeiten auf `fix/crm-onboarding-cr-fixes` | 495–675 | 16–21 T. |
 | 16  | läuft        | `16-feedbackrunden`                      | Rundenschritte, Übergabe, Feedback-Punkte, Bearbeitung, Abnahme und Eingang; sechs Teil-PRs (16.1–16.6), 16.1 gemerged, 16.2 läuft, 16.6 im Review                                                                           | 315–430 | 13–16 T. |
 | 19  | läuft        | `19-credentials`                         | Verschlüsselte Zugangsdaten je Kunde/Projekt mit Security-Audit, im Portal freigebbar, pflegbar und aufdeckbar; zwei Teil-PRs (19.1 intern, 19.2 Portal)                                                                     | 100–140 |   6–8 T. |
-| 20  | offen        | `20-stunden-und-history`                 | Kontingente, Buchungen und konsolidierte Timeline vollständig nutzbar                                                                                                                                                        |  60–100 |   3–4 T. |
+| 20  | läuft        | `20-stunden-und-history`                 | Stunden gutschreiben, Projekten zuweisen, Zeit buchen, im Portal sichtbar; drei Teil-PRs (20.1 Kontingent, 20.2 Buchungen, 20.3 Portal)                                                                                      | 180–225 |   7–9 T. |
 | 20a | offen        | `20a-kundenzustaendigkeit`               | Kundenverantwortung ist auswählbar, sichtbar und versioniert änderbar                                                                                                                                                        |   25–45 |   1–2 T. |
 | 20b | offen        | `20b-aufgabenserien-und-reminder`        | Wiederholungen, Fälligkeit und Überfälligkeit zuverlässig aktiv                                                                                                                                                              |   50–90 |   3–4 T. |
 | 20c | offen        | `20c-jobs-und-benachrichtigungen`        | Outbox-Runner, Glocke, Retry und kritische Fehlerbenachrichtigung aktiv                                                                                                                                                      |  70–100 |   4–5 T. |
 | 20d | offen        | `20d-renewals`                           | Renewal-Verwaltung und 30/14/7-Erinnerungen vollständig nutzbar                                                                                                                                                              |   40–70 |   2–3 T. |
+| 20e | offen        | `20e-kundenverlauf`                      | Konsolidierte interne Timeline mit Feldänderungen und Notizen in der Kundenakte (Skizze, aus Ordner 20 ausgelagert)                                                                                                          |   40–60 |   2–3 T. |
 | 21  | offen        | `21-datenschutz-backup-rollout`          | Export, Owner-Purge, Backup/Restore und Produktivabnahme nachgewiesen                                                                                                                                                        |  60–100 |   4–5 T. |
 | 22  | offen        | `22-activity-cleanup`                    | `lead_activities` abgebaut, genau eine Activity-Tabelle                                                                                                                                                                      |    5–15 |     1 T. |
 | 22a | offen        | `22a-kundenorganisation-und-uebergabe`   | Suche, Filter, Tags und globale Zuständigkeitsübergabe vollständig nutzbar                                                                                                                                                   |  70–110 |   4–6 T. |

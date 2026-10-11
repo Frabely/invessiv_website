@@ -22,6 +22,8 @@ export type StatusRowProps = {
   tone?: StatusRowToneValue;
   /** Pins the status slot to the top for rows whose content can run over several lines. */
   alignStart?: boolean;
+  /** Controls of their own at the end of the row; like the status slot they sit above the open target. */
+  trailing?: ReactNode;
 };
 
 /**
@@ -37,6 +39,7 @@ export function StatusRow({
   pending = false,
   tone = StatusRowTone.Default,
   alignStart = false,
+  trailing,
 }: StatusRowProps) {
   const detailsClass = detailsClassName
     ? `${styles.details} ${detailsClassName}`
@@ -47,6 +50,7 @@ export function StatusRow({
       data-align={alignStart ? "start" : undefined}
       data-pending={pending ? "true" : "false"}
       data-tone={tone}
+      data-trailing={trailing ? "true" : undefined}
     >
       <div className={styles.status}>{status}</div>
       {onOpenAction ? (
@@ -61,6 +65,7 @@ export function StatusRow({
       ) : (
         <div className={detailsClass}>{children}</div>
       )}
+      {trailing ? <div className={styles.trailing}>{trailing}</div> : null}
     </li>
   );
 }

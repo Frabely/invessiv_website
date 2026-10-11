@@ -1,9 +1,12 @@
 import { createHash, randomBytes, randomUUID } from "node:crypto";
-import { eq, inArray, like, or } from "drizzle-orm";
+import { and, eq, inArray, like, or } from "drizzle-orm";
 import { BlobNotFoundError, del } from "@vercel/blob";
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
+import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { SystemRoleKey } from "@invessiv/common/constants/auth/system-role-keys";
 import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
+import { HourPurchaseKind } from "@invessiv/common/constants/crm/hour-purchase-kinds";
+import { HourPurchaseSource } from "@invessiv/common/constants/crm/hour-purchase-sources";
 import { ProjectBillingModel } from "@invessiv/common/constants/crm/project-billing-models";
 import { ProjectPhase } from "@invessiv/common/constants/crm/project-phases";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
@@ -17,6 +20,7 @@ import {
 import {
   activities,
   customerContactAssignments,
+  customerHourPurchases,
   customers,
   files,
   people,
@@ -24,7 +28,10 @@ import {
   portalInvitations,
   portalMembershipRoles,
   portalMemberships,
+  projectHourAllocations,
   projects,
+  projectTimeEntries,
+  rolePermissions,
   tasks,
   roles,
   users,
@@ -175,6 +182,164 @@ async function removeOldCustomers(tx: ContactDatabaseTransaction) {
       ),
     );
   }
+  // Custom roles of an earlier run; their memberships went with the customers above.
+  await tx
+    .delete(roles)
+    .where(and(like(roles.name, `${PREFIX}%`), eq(roles.is_system, false)));
+}
+
+/** A project that only has to exist and be visible in the portal. */
+function plainProjectRow(
+  id: string,
+  customerId: string,
+  ownerMemberId: string,
+  title: string,
+) {
+  return {
+    ...feedbackProjectRow(id, customerId, ownerMemberId, title),
+    included_feedback_rounds: 0,
+    feedback_round_positions: null,
+    feedback_areas: [],
+  };
+}
+
+/**
+ * The worked example of the hours plan on its own customer: 10:00 bought, 5:00 for each of two
+ * projects, 2:30 and 6:00 booked, plus one goodwill entry that counts against nothing. A second
+ * customer holds different numbers, and a custom role without the detail right exists for the
+ * contact who may see the balance only.
+ */
+async function insertHoursFixture(
+  tx: ContactDatabaseTransaction,
+  input: {
+    hoursCustomer: string;
+    hoursOtherCustomer: string;
+    hoursProjectA: string;
+    hoursProjectB: string;
+    hoursOtherProject: string;
+    managerMemberId: string;
+  },
+): Promise<string> {
+  const { hoursCustomer, hoursOtherCustomer, managerMemberId } = input;
+  const yesterday = new Date(Date.now() - 86_400_000)
+    .toISOString()
+    .slice(0, 10);
+
+  await tx.insert(customers).values(
+    [
+      [hoursCustomer, "Hours Customer"],
+      [hoursOtherCustomer, "Hours Other Customer"],
+    ].map(([id, name]) => ({
+      id,
+      display_name: `${PREFIX} ${name}`,
+      status: CustomerStatus.Active,
+      owner_member_id: managerMemberId,
+      version: 1,
+    })),
+  );
+  await tx
+    .insert(projects)
+    .values([
+      plainProjectRow(
+        input.hoursProjectA,
+        hoursCustomer,
+        managerMemberId,
+        "Hours Website",
+      ),
+      plainProjectRow(
+        input.hoursProjectB,
+        hoursCustomer,
+        managerMemberId,
+        "Hours Shop",
+      ),
+      plainProjectRow(
+        input.hoursOtherProject,
+        hoursOtherCustomer,
+        managerMemberId,
+        "Hours Other",
+      ),
+    ]);
+
+  await tx.insert(customerHourPurchases).values(
+    [
+      [hoursCustomer, 600],
+      [hoursOtherCustomer, 120],
+    ].map(([customerId, minutes]) => ({
+      id: randomUUID(),
+      customer_id: customerId as string,
+      kind: HourPurchaseKind.Purchase,
+      source: HourPurchaseSource.Manual,
+      minutes: minutes as number,
+      purchased_on: yesterday,
+      note: "Betreuung nach dem Launch",
+      idempotency_key: randomUUID(),
+      created_by_member_id: managerMemberId,
+    })),
+  );
+  await tx.insert(projectHourAllocations).values(
+    [input.hoursProjectA, input.hoursProjectB].map((projectId) => ({
+      id: randomUUID(),
+      customer_id: hoursCustomer,
+      project_id: projectId,
+      minutes: 300,
+      note: "E2E internal allocation note",
+      idempotency_key: randomUUID(),
+      created_by_member_id: managerMemberId,
+    })),
+  );
+  await tx.insert(projectTimeEntries).values(
+    (
+      [
+        [hoursCustomer, input.hoursProjectA, 60, "Umbau Hero-Section", true],
+        [hoursCustomer, input.hoursProjectA, 90, "Kontaktformular", true],
+        [hoursCustomer, input.hoursProjectA, 30, "Kleine Textkorrektur", false],
+        [hoursCustomer, input.hoursProjectB, 360, "Produktseiten", true],
+        [
+          hoursOtherCustomer,
+          input.hoursOtherProject,
+          15,
+          "Fremde Buchung",
+          true,
+        ],
+      ] as const
+    ).map(([customerId, projectId, minutes, description, billable]) => ({
+      id: randomUUID(),
+      customer_id: customerId,
+      project_id: projectId,
+      task_id: null,
+      performed_on: yesterday,
+      duration_minutes: minutes,
+      description,
+      billable,
+      performed_by_member_id: managerMemberId,
+      version: 1,
+    })),
+  );
+
+  const summaryRoleId = randomUUID();
+  await tx.insert(roles).values({
+    id: summaryRoleId,
+    realm: AuthRealm.Portal,
+    system_key: null,
+    name: `${PREFIX} Hours summary only`,
+    description: null,
+    is_system: false,
+    active: true,
+    scope_assignable: false,
+    version: 1,
+  });
+  await tx.insert(rolePermissions).values(
+    [Permission.PortalAccess, Permission.PortalHoursRead].map((key) => ({
+      role_id: summaryRoleId,
+      realm: AuthRealm.Portal,
+      role_is_system: false,
+      role_scope_assignable: false,
+      permission_key: key,
+      permission_delegable: true,
+      permission_scope_assignable: false,
+    })),
+  );
+  return summaryRoleId;
 }
 
 /** A contact with an active standard portal membership, created without the invitation flow. */
@@ -287,6 +452,10 @@ export async function preparePortalE2eDatabase(
     const onboardingProject = randomUUID();
     const taskProject = randomUUID();
     const customerTaskId = randomUUID();
+    const hoursCustomer = randomUUID();
+    const hoursOtherCustomer = randomUUID();
+    const hoursProjectA = randomUUID();
+    const hoursProjectB = randomUUID();
     const personFeedback = randomUUID();
     const personA = randomUUID();
     const personB = randomUUID();
@@ -635,6 +804,66 @@ export async function preparePortalE2eDatabase(
       managerMemberId,
     });
 
+    const hoursSummaryRole = await insertHoursFixture(tx, {
+      hoursCustomer,
+      hoursOtherCustomer,
+      hoursProjectA,
+      hoursProjectB,
+      hoursOtherProject: randomUUID(),
+      managerMemberId,
+    });
+    await tx.insert(customerContactAssignments).values([
+      {
+        id: randomUUID(),
+        customer_id: hoursCustomer,
+        person_id: personFiles,
+        is_primary: true,
+        version: 1,
+      },
+      {
+        id: randomUUID(),
+        customer_id: hoursCustomer,
+        person_id: personFeedback,
+        is_primary: false,
+        version: 1,
+      },
+      {
+        id: randomUUID(),
+        customer_id: hoursOtherCustomer,
+        person_id: personFeedback,
+        is_primary: true,
+        version: 1,
+      },
+    ]);
+    await insertPortalMember(tx, {
+      clerkUserId: filesContactClerkUserId,
+      email: "invessiv-portal-files+clerk_test@example.com",
+      lastName: "Files Contact",
+      customerId: hoursCustomer,
+      personId: personFiles,
+      portalRoleId: portalId,
+      managerMemberId,
+    });
+    // Same person, two companies: the summary-only role here, the standard role at the other one.
+    await insertPortalMember(tx, {
+      clerkUserId: feedbackContactClerkUserId,
+      email: "invessiv-portal-feedback+clerk_test@example.com",
+      lastName: "Feedback Contact",
+      customerId: hoursCustomer,
+      personId: personFeedback,
+      portalRoleId: hoursSummaryRole,
+      managerMemberId,
+    });
+    await insertPortalMember(tx, {
+      clerkUserId: feedbackContactClerkUserId,
+      email: "invessiv-portal-feedback+clerk_test@example.com",
+      lastName: "Feedback Contact",
+      customerId: hoursOtherCustomer,
+      personId: personFeedback,
+      portalRoleId: portalId,
+      managerMemberId,
+    });
+
     const expiredToken = randomBytes(32).toString("base64url");
     const invitationId = randomUUID();
     await tx.insert(portalInvitations).values({
@@ -668,6 +897,10 @@ export async function preparePortalE2eDatabase(
       onboardingProject,
       taskProject,
       customerTaskId,
+      hoursCustomer,
+      hoursOtherCustomer,
+      hoursProjectA,
+      hoursProjectB,
       assignmentA,
       assignmentB,
       assignmentOther,

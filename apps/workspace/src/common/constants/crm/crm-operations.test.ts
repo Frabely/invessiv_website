@@ -71,6 +71,12 @@ describe("CrmOperation", () => {
       "onboarding-form-blocks.review",
       "onboarding-forms.request-changes",
       "onboarding-forms.complete",
+      "hour-purchases.create",
+      "hour-allocations.create",
+      "time-entries.list",
+      "time-entries.create",
+      "time-entries.update",
+      "time-entries.delete",
     ]);
     expect(CRM_OPERATION_VALUES).toEqual(Object.values(CrmOperation));
     expect(new Set(CRM_OPERATION_VALUES).size).toBe(

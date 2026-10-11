@@ -180,5 +180,7 @@ export const tasks = pgTable(
     uniqueIndex(TasksConstraintName.OnboardingFormUnique)
       .on(t.onboarding_form_id)
       .where(sql`${t.onboarding_form_id} is not null`),
+    // Target of the composite key that binds a time entry to a task of its own project.
+    uniqueIndex(TasksConstraintName.IdProjectUnique).on(t.id, t.project_id),
   ],
 );

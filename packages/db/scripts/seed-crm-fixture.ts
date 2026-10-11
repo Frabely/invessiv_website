@@ -62,6 +62,7 @@ import {
   seedCredentials,
 } from "./crm-fixture/seed-credentials";
 import { seedFiles } from "./crm-fixture/seed-files";
+import { seedHours } from "./crm-fixture/seed-hours";
 import { seedFeedbackRounds } from "./crm-fixture/seed-feedback-rounds";
 import { seedOnboarding } from "./crm-fixture/seed-onboarding";
 import { Locale } from "@invessiv/common/contracts/i18n/locale";
@@ -811,6 +812,15 @@ async function run() {
       credentialKeyring,
     );
     console.log(`Seeded ${credentialCount} credentials.`);
+    const overdrawnCustomerId = customerIds.get("kluge-bau") as string;
+    await seedHours(tx, {
+      memberId: owner.memberId,
+      healthy: { customerId: nordlichtId, projectId },
+      overdrawn: {
+        customerId: overdrawnCustomerId,
+        projectId: activeProjectIds.get(overdrawnCustomerId) as string,
+      },
+    });
     const feedbackProject = (customerKey: string) => {
       const customerId = customerIds.get(customerKey) as string;
       const membership = portalMembershipFixtures.find(

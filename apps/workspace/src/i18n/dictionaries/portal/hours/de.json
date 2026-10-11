@@ -1,0 +1,46 @@
+{
+  "dialog": {
+    "title": "Stunden",
+    "intro": "Hier siehst du, wie viele Stunden du gekauft hast, wie viele verbraucht sind und wofür.",
+    "close": "Schließen"
+  },
+  "summary": {
+    "title": "Dein Stand",
+    "purchased": "Gekauft",
+    "used": "Verbraucht",
+    "remaining": "Übrig",
+    "allocated": "Zugewiesen",
+    "project": "Projekt",
+    "over": "{duration} über dem Kontingent",
+    "unassigned": "{duration} davon sind noch keinem Projekt zugewiesen.",
+    "projectsTitle": "Je Projekt",
+    "projectOver": "Dieses Projekt hat {duration} mehr verbraucht als zugewiesen.",
+    "earlier": "Frühere Projekte",
+    "earlierHint": "Projekte, die nicht mehr einzeln im Portal angezeigt werden.",
+    "earlierOver": "Diese Projekte haben {duration} mehr verbraucht als zugewiesen."
+  },
+  "purchases": {
+    "title": "Deine Stunden",
+    "empty": "Bisher wurden dir keine Stunden gutgeschrieben.",
+    "correction": "Korrektur",
+    "capped": "Du siehst die letzten {count} Einträge."
+  },
+  "entries": {
+    "title": "Wofür die Zeit verwendet wurde",
+    "filterLabel": "Buchungen nach Projekt",
+    "allProjects": "Alle Projekte",
+    "earlier": "Frühere Projekte",
+    "task": "Aufgabe: {title}",
+    "goodwill": "nicht berechnet",
+    "empty": "Bisher wurde keine Zeit gebucht. Sobald wir für dich arbeiten, steht hier, wofür.",
+    "emptyFiltered": "Für dieses Projekt wurde bisher keine Zeit gebucht.",
+    "loading": "Buchungen werden geladen …",
+    "loadError": "Die Buchungen konnten nicht geladen werden.",
+    "retry": "Erneut versuchen",
+    "more": "Weitere laden",
+    "loadingMore": "Lädt …",
+    "loaded": "{count} weitere Buchungen geladen.",
+    "loadedOne": "1 weitere Buchung geladen.",
+    "moreError": "Weitere Buchungen konnten nicht geladen werden. Versuch es noch einmal."
+  }
+}

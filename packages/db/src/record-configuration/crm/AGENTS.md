@@ -72,3 +72,25 @@ questionnaire_field_choices (id, field_id)`: Er bindet die Option an das Auslös
 - `created_by_portal_membership_id` (Migration `0051`) markiert eine Aufgabe, die ein Kundenkontakt im Portal
   angelegt hat. Sie ist keine Sammelaufgabe und fällt nicht unter `tasks_single_origin_check`; der Fremdschlüssel
   kaskadiert nicht, damit die Mitgliedschaftshistorie referenzierbar bleibt.
+
+## Stunden (Ordner 20)
+
+Plan: `apps/workspace/plans/crm/20-stunden-und-history/README.md`.
+
+- Drei Tabellen: `customer_hour_purchases` (gekaufte Stunden, Korrekturen negativ), `project_hour_allocations`
+  (positiv = zugewiesen, negativ = freigegeben) und `project_time_entries` (Zeitbuchungen). Stände werden nie
+  gespeichert, sondern immer als Summe über diese Zeilen berechnet.
+- **Die beiden Buchungstabellen sind unveränderlich:** keine `version`, kein `updated_at`, kein Update- und kein
+  Löschpfad. Ein Fehler wird durch eine Gegenzeile ausgeglichen. Nur `project_time_entries` ist versioniert.
+- Alle drei tragen `customer_id`; Zuweisungen und Zeitbuchungen hängen zusätzlich über
+  `(project_id, customer_id) → projects (id, customer_id)` am Projekt. Eine Zeile an einem fremden Projekt ist damit
+  in der Datenbank unmöglich.
+- `project_time_entries.task_id` bindet über `(task_id, project_id) → tasks (id, project_id)` an eine Aufgabe
+  desselben Projekts; das Ziel ist der Unique-Index `tasks_id_project_uidx`. Der Schlüssel kaskadiert nicht: Aufgaben
+  verschwinden nur mit ihrem Projekt, und dann fällt die Buchung über ihren eigenen Projektschlüssel weg.
+- **Regeln über mehrere Zeilen sichert der Schreibpfad**, nicht die Datenbank: Zuweisen höchstens bis zum freien
+  Bestand, Freigeben höchstens bis zum unverbrauchten Teil, Korrektur nie unter die zugewiesene Summe. Der Schreibpfad
+  sperrt dafür die Kundenzeile. Was die Datenbank selbst erzwingt, deckt `scripts/crm-smoke/hours-checks.ts` ab.
+- `idempotency_key` (unique) an beiden Buchungstabellen: Ein wiederholter Request ist dieselbe Zeile, keine zweite.
+- `source` an der Kaufbuchung ist heute immer `manual`. Weitere Herkünfte (Leistungsanfrage, monatliche Zubuchung)
+  erweitern Const-Objekt und CHECK in einer eigenen additiven Migration.

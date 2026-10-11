@@ -1,13 +1,10 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { can } from "@invessiv/common/patterns/auth/can";
 import { canOn } from "@/common/patterns/auth/can-on";
 import { canAnywhere } from "@/common/patterns/auth/access-scope";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
-import { SettingsTab } from "@/common/constants/access/settings-tabs";
-import { buildSettingsTabHref } from "@/common/patterns/access/settings-tab";
 import { CustomerFormDialogMode } from "@/common/constants/crm/forms/customer-form-dialog-modes";
 import {
   buildCustomerCockpitCloseHref,
@@ -21,36 +18,19 @@ import {
 } from "@/common/patterns/crm/customer-dialog-query";
 import { parseCustomerListFilters } from "@/common/patterns/crm/customer-list-search-params";
 import { CustomerFormDialog } from "@/components/workspace/crm/form/customer-form-dialog/customer-form-dialog";
-import { CustomerCockpitDialog } from "@/components/workspace/crm/detail/customer-cockpit-dialog/customer-cockpit-dialog";
 import { CustomersBasicList } from "@/components/workspace/crm/list/customers-basic-list/customers-basic-list";
 import { CustomersPageHeader } from "@/components/workspace/crm/shell/customers-page-header/customers-page-header";
 import { WorkspaceScrollablePageShell } from "@/components/workspace/shared/workspace-scrollable-page-shell/workspace-scrollable-page-shell";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import {
-  getCrmAccessDictionary,
-  getCrmCockpitDictionary,
-  getCrmCredentialsDictionary,
-  getCrmFeedbackRoundsDictionary,
-  getCrmFilesDictionary,
   getCrmFormDictionary,
   getCrmListDictionary,
-  getCrmMessagesDictionary,
   getCrmMetaDictionary,
-  getCrmOnboardingDictionary,
-  getCrmPortalAccessDictionary,
-  getCrmProjectLineItemsDictionary,
-  getCrmQuestionnaireDictionary,
   getCrmShellDictionary,
-  getCrmTasksDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
-import { getSettingsPermissionsDictionary } from "@/i18n/dictionaries/workspace/settings";
 import { getLeadsSharedDictionary } from "@/i18n/dictionaries/workspace/leads";
 import { requireWorkspaceArea } from "@/lib/auth/permissions";
-import {
-  crmLineItemTemplatesPathFor,
-  portalPathFor,
-  workspaceAreaPathFor,
-} from "@/lib/auth/routes";
+import { workspaceAreaPathFor } from "@/lib/auth/routes";
 import { resolveCustomerCategoryOptions } from "@/lib/workspace/crm/customer-category-options";
 import {
   buildCustomerListHref,
@@ -60,26 +40,9 @@ import { getCustomerById } from "@/server/workspace/crm/query-handler/get-custom
 import { getCustomerCockpitById } from "@/server/workspace/crm/query-handler/get-customer-cockpit-by-id.query-handler";
 import { listActiveCustomerCategories } from "@/server/workspace/crm/query-handler/list-active-customer-categories.query-handler";
 import { listCustomers } from "@/server/workspace/crm/query-handler/list-customers.query-handler";
-import { listCockpitProjectsByCustomer } from "@/server/workspace/crm/query-handler/list-projects-by-customer.query-handler";
-import { buildProjectLineItemsViewModel } from "@/lib/workspace/crm/project-line-items-view-model";
-import { buildTasksViewModel } from "@/lib/workspace/crm/tasks-view-model";
-import { buildCredentialsViewModel } from "@/lib/workspace/crm/credentials-view-model";
-import { listCredentialProjectsByCustomer } from "@/server/workspace/crm/query-handler/list-credential-projects-by-customer.query-handler";
-import { buildFilesViewModel } from "@/lib/workspace/crm/files-view-model";
-import { buildFeedbackRoundsViewModel } from "@/lib/workspace/crm/feedback-rounds-view-model";
-import { buildOnboardingViewModel } from "@/lib/workspace/crm/onboarding-view-model";
-import { calculateProjectLineItemValue } from "@invessiv/common/patterns/crm/project-line-item-value";
-import { listProjectLineItemsByCustomer } from "@/server/workspace/crm/query-handler/list-project-line-items-by-customer.query-handler";
-import { listCustomerAccessScopes } from "@/server/workspace/access/query-handler/list-customer-access-scopes.query-handler";
-import { listAccessCustomerProjects } from "@/server/workspace/access/query-handler/list-access-customer-projects.query-handler";
-import { listRoleAssignmentOptions } from "@/server/workspace/access/query-handler/list-role-assignment-options.query-handler";
-import { listWorkspaceMembers } from "@/server/workspace/access/query-handler/list-workspace-members.query-handler";
-import { responsibilityAccessService } from "@/server/workspace/shared/services/responsibility-access-service";
-import { getCustomerPortalAccess } from "@/server/workspace/crm/query-handler/get-customer-portal-access.query-handler";
-import { getCustomerConversation } from "@/server/workspace/crm/query-handler/get-customer-conversation.query-handler";
-import { CrmOperation } from "@/common/constants/crm/crm-operations";
-import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
-import { logCrmFailure } from "@/lib/workspace/crm/log-crm-failure";
+import { buildCustomerListViewModel } from "@/lib/workspace/crm/customer-list-view-model";
+import { loadCustomerCockpit } from "@/lib/workspace/crm/load-customer-cockpit";
+import { CustomerCockpitContent } from "@/components/workspace/crm/detail/customer-cockpit-content/customer-cockpit-content";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -88,20 +51,6 @@ type CrmPageProps = {
   params: Promise<{ locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
-
-// The chat is a side panel: a failure shows its reload state instead of breaking the cockpit.
-async function loadCockpitConversation(
-  customerId: string,
-  actor: WorkspaceActor,
-) {
-  try {
-    const result = await getCustomerConversation(customerId, actor, null);
-    return result.ok ? result.conversation : null;
-  } catch (error) {
-    logCrmFailure(CrmOperation.GetConversation, error);
-    return null;
-  }
-}
 
 export async function generateMetadata({
   params,
@@ -133,8 +82,6 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
   const leadsBasePath = workspaceAreaPathFor(activeLocale, WorkspaceArea.Leads);
   const canWrite = canAnywhere(actor, Permission.CustomersWrite);
   const canReadLeads = can(actor, Permission.LeadsRead);
-  const canReadLineItemTemplates = can(actor, Permission.LineItemTemplatesRead);
-  const canManageAccess = can(actor, Permission.MembersManage);
   const dialogRequest = canWrite
     ? readCustomerDialogRequest(resolvedSearchParams)
     : null;
@@ -160,140 +107,17 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
   if (cockpitCustomerId && !cockpitCustomer) {
     notFound();
   }
-  const customerListWithValues = {
-    ...customerList,
-    rows: await Promise.all(
-      customerList.rows.map(async (customer) => {
-        const canReadProjectLineItems =
-          can(actor, Permission.ProjectLineItemsRead) ||
-          actor.customerPermissions
-            .get(customer.id)
-            ?.has(Permission.ProjectLineItemsRead) ||
-          [...actor.projectPermissions.values()].some(
-            (scope) =>
-              scope.customerId === customer.id &&
-              scope.permissions.has(Permission.ProjectLineItemsRead),
-          );
-        if (!canReadProjectLineItems) return customer;
-        return {
-          ...customer,
-          projectLineItemValue: calculateProjectLineItemValue(
-            await listProjectLineItemsByCustomer(customer.id, actor),
-          ),
-        };
-      }),
-    ),
-  };
-  const writableCustomerIds = new Set(
-    customerList.rows
-      .filter((row) =>
-        canOn(actor, Permission.CustomersWrite, { customerId: row.id }),
-      )
-      .map((row) => row.id),
-  );
-  const canReadConversation =
-    cockpitCustomer !== null &&
-    canOn(actor, Permission.ChatRead, { customerId: cockpitCustomer.id });
-
-  const cockpitConversation =
-    cockpitCustomer && canReadConversation
-      ? await loadCockpitConversation(cockpitCustomer.id, actor)
-      : undefined;
-  const cockpitProjects = cockpitCustomer
-    ? await listCockpitProjectsByCustomer(cockpitCustomer.id, actor)
-    : null;
-  const portalAccess =
-    cockpitCustomer &&
-    canOn(actor, Permission.PortalAccessManage, {
-      customerId: cockpitCustomer.id,
-    })
-      ? await getCustomerPortalAccess(cockpitCustomer.id, actor)
-      : null;
-  const projectLineItemsViewModel =
-    cockpitCustomer && cockpitProjects
-      ? await buildProjectLineItemsViewModel({
-          actor,
-          catalogHref: canReadLineItemTemplates
-            ? crmLineItemTemplatesPathFor(activeLocale)
-            : null,
-          customerId: cockpitCustomer.id,
-          projects: cockpitProjects,
-        })
-      : null;
-  const tasksViewModel =
-    cockpitCustomer && cockpitProjects
-      ? await buildTasksViewModel({
-          actor,
-          customerId: cockpitCustomer.id,
-          projects: cockpitProjects,
-        })
-      : null;
-  const filesViewModel =
-    cockpitCustomer && cockpitProjects
-      ? await buildFilesViewModel({
-          actor,
-          customerId: cockpitCustomer.id,
-          projects: cockpitProjects,
-        })
-      : null;
-  const credentialsViewModel = cockpitCustomer
-    ? buildCredentialsViewModel({
+  const { customerListWithValues, writableCustomerIds } =
+    await buildCustomerListViewModel(customerList, actor);
+  const cockpitViewModel = cockpitCustomer
+    ? await loadCustomerCockpit({
         actor,
-        customerId: cockpitCustomer.id,
-        projects: await listCredentialProjectsByCustomer(
-          cockpitCustomer.id,
-          actor,
-        ),
-      })
-    : null;
-  // Only the open tab loads its rounds; an unknown or foreign project id falls back to the first.
-  const requestedProjectId = readCockpitProjectId(resolvedSearchParams);
-  const selectedCockpitProject =
-    cockpitProjects?.find((project) => project.id === requestedProjectId) ??
-    cockpitProjects?.[0] ??
-    null;
-  const feedbackViewModel = selectedCockpitProject
-    ? await buildFeedbackRoundsViewModel({
-        actor,
-        project: selectedCockpitProject.project,
+        customer: cockpitCustomer,
+        locale: activeLocale,
+        requestedProjectId: readCockpitProjectId(resolvedSearchParams),
         requestedRoundId: readCockpitFeedbackRoundId(resolvedSearchParams),
       })
     : null;
-  const onboardingViewModel = selectedCockpitProject
-    ? await buildOnboardingViewModel({
-        actor,
-        locale: activeLocale,
-        project: selectedCockpitProject.project,
-      })
-    : null;
-  const customerAccessData =
-    cockpitCustomer && canManageAccess
-      ? await Promise.all([
-          listCustomerAccessScopes(cockpitCustomer.id),
-          listAccessCustomerProjects(cockpitCustomer.id),
-          listWorkspaceMembers(),
-          listRoleAssignmentOptions(),
-          responsibilityAccessService.evaluate({
-            customerId: cockpitCustomer.id,
-            projectIds: cockpitProjects?.map((project) => project.id),
-          }),
-        ]).then(([scopes, projects, members, roles, responsibilityAccess]) => ({
-          scopes,
-          projects,
-          members,
-          roles,
-          responsibilityAccess,
-        }))
-      : null;
-  const isWorkspaceOwner = Boolean(
-    customerAccessData?.members.some(
-      (member) => member.id === actor.workspaceMemberId && member.isOwner,
-    ),
-  );
-  const rolesHref = buildSettingsTabHref(
-    workspaceAreaPathFor(activeLocale, WorkspaceArea.Settings),
-    SettingsTab.Roles,
-  );
   const filters = { ...requestedFilters, page: customerList.page };
   const queryString = buildCustomerListQueryString(filters);
   const createHref = canWrite
@@ -361,117 +185,11 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
           }
         />
       ) : null}
-      {cockpitCustomer ? (
-        <CustomerCockpitDialog
-          accessContent={
-            customerAccessData
-              ? getCrmAccessDictionary(activeLocale)
-              : undefined
-          }
-          accessMembers={customerAccessData?.members}
-          accessProjects={customerAccessData?.projects}
-          accessRoles={customerAccessData?.roles}
-          accessScopes={customerAccessData?.scopes}
-          customerOwnerMemberId={
-            customerAccessData?.responsibilityAccess.targets.find(
-              (target) => target.entityId === `customer:${cockpitCustomer.id}`,
-            )?.ownerMemberId
-          }
-          customerOwnerHasAccess={
-            customerAccessData
-              ? !customerAccessData.responsibilityAccess.inaccessibleEntityIds.has(
-                  `customer:${cockpitCustomer.id}`,
-                )
-              : undefined
-          }
-          closeHref={cockpitCloseHref}
-          content={getCrmCockpitDictionary(activeLocale)}
-          conversation={cockpitConversation}
-          canRedactConversation={can(actor, Permission.ChatRedact)}
-          canWriteConversation={canOn(actor, Permission.ChatWrite, {
-            customerId: cockpitCustomer.id,
-          })}
-          messagesContent={
-            canReadConversation
-              ? getCrmMessagesDictionary(activeLocale)
-              : undefined
-          }
-          viewerMemberId={actor.workspaceMemberId}
-          customer={cockpitCustomer}
-          credentials={credentialsViewModel ?? undefined}
-          credentialsContent={
-            credentialsViewModel
-              ? getCrmCredentialsDictionary(activeLocale)
-              : undefined
-          }
-          files={filesViewModel ?? undefined}
-          filesContent={
-            // The chat and the feedback attachments need the file labels even without the files area.
-            filesViewModel || canReadConversation || feedbackViewModel
-              ? getCrmFilesDictionary(activeLocale)
-              : undefined
-          }
-          isWorkspaceOwner={isWorkspaceOwner}
-          portalHref={
-            isWorkspaceOwner
-              ? portalPathFor(activeLocale, cockpitCustomer.id)
-              : undefined
-          }
-          canWriteProjects={canAnywhere(actor, Permission.ProjectsWrite)}
+      {cockpitViewModel ? (
+        <CustomerCockpitContent
+          viewModel={cockpitViewModel}
           locale={activeLocale}
-          projectLineItems={projectLineItemsViewModel ?? undefined}
-          projectLineItemsContent={
-            projectLineItemsViewModel
-              ? getCrmProjectLineItemsDictionary(activeLocale)
-              : undefined
-          }
-          projects={cockpitProjects}
-          selectedProjectId={selectedCockpitProject?.id ?? null}
-          feedback={feedbackViewModel ?? undefined}
-          feedbackContent={
-            feedbackViewModel
-              ? getCrmFeedbackRoundsDictionary(activeLocale)
-              : undefined
-          }
-          onboarding={onboardingViewModel ?? undefined}
-          onboardingContent={
-            onboardingViewModel
-              ? getCrmOnboardingDictionary(activeLocale)
-              : undefined
-          }
-          questionnaireErrors={
-            onboardingViewModel
-              ? getCrmQuestionnaireDictionary(activeLocale).errors
-              : undefined
-          }
-          projectOwnerHasAccess={
-            customerAccessData && cockpitProjects
-              ? Object.fromEntries(
-                  cockpitProjects.map((project) => [
-                    project.id,
-                    !customerAccessData.responsibilityAccess.inaccessibleEntityIds.has(
-                      `project:${project.id}`,
-                    ),
-                  ]),
-                )
-              : undefined
-          }
-          permissionsContent={
-            customerAccessData || portalAccess
-              ? getSettingsPermissionsDictionary(activeLocale)
-              : undefined
-          }
-          rolesHref={customerAccessData ? rolesHref : undefined}
-          tasks={tasksViewModel ?? undefined}
-          tasksContent={
-            tasksViewModel ? getCrmTasksDictionary(activeLocale) : undefined
-          }
-          portalAccess={portalAccess ?? undefined}
-          portalAccessContent={
-            portalAccess
-              ? getCrmPortalAccessDictionary(activeLocale)
-              : undefined
-          }
+          closeHref={cockpitCloseHref}
         />
       ) : null}
     </WorkspaceScrollablePageShell>

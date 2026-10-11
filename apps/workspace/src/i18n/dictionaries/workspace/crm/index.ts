@@ -27,6 +27,8 @@ import messagesDe from "./messages/de.json";
 import messagesEn from "./messages/en.json";
 import credentialsDe from "./credentials/de.json";
 import credentialsEn from "./credentials/en.json";
+import hoursDe from "./hours/de.json";
+import hoursEn from "./hours/en.json";
 import filesDe from "./files/de.json";
 import filesEn from "./files/en.json";
 import feedbackRoundsDe from "./feedback-rounds/de.json";
@@ -46,6 +48,7 @@ export type CrmAccessDictionary = typeof accessDe;
 export type CrmPortalAccessDictionary = typeof portalAccessDe;
 export type CrmFilesDictionary = typeof filesDe;
 export type CrmCredentialsDictionary = typeof credentialsDe;
+export type CrmHoursDictionary = typeof hoursDe;
 export type CrmFeedbackRoundsDictionary = typeof feedbackRoundsDe;
 /** Phase names come from the cockpit, so the CRM names a phase the same way everywhere. */
 export type CrmMessagesDictionary = typeof messagesDe & {
@@ -203,4 +206,13 @@ export function getCrmCredentialsDictionary(
   locale: Locale,
 ): CrmCredentialsDictionary {
   return CRM_CREDENTIALS[locale];
+}
+
+const CRM_HOURS: Record<Locale, CrmHoursDictionary> = {
+  de: hoursDe,
+  en: hoursEn,
+};
+
+export function getCrmHoursDictionary(locale: Locale): CrmHoursDictionary {
+  return CRM_HOURS[locale];
 }

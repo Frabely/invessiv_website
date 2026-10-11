@@ -1,0 +1,75 @@
+.remaining,
+.used,
+.project {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.remaining {
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  font-weight: 600;
+}
+
+/* The one number the card exists for. */
+.value {
+  font-size: var(--font-size-heading-md);
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.remaining[data-over="true"] .value {
+  color: var(--color-accent-warm);
+}
+
+.used,
+.project {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.used {
+  margin-top: 0.2rem;
+}
+
+.project {
+  margin-top: 0.6rem;
+  color: var(--color-text);
+}
+
+.meter {
+  display: block;
+  width: 100%;
+  height: 0.3rem;
+  margin-top: 0.55rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-border);
+  color: var(--color-text);
+  overflow: hidden;
+  appearance: none;
+}
+
+.meter::-webkit-progress-bar {
+  background: var(--color-border);
+}
+
+.meter::-webkit-progress-value {
+  border-radius: 999px;
+  background: var(--color-text);
+}
+
+.meter::-moz-progress-bar {
+  border-radius: 999px;
+  background: var(--color-text);
+}
+
+.meter[data-over="true"]::-webkit-progress-value {
+  background: var(--color-accent-warm);
+}
+
+.meter[data-over="true"]::-moz-progress-bar {
+  background: var(--color-accent-warm);
+}

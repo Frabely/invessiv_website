@@ -8,6 +8,8 @@ import type { WorkspaceMemberDto } from "@invessiv/common/contracts/auth/workspa
 import {
   getCrmAccessDictionary,
   getCrmCockpitDictionary,
+  getCrmCredentialsDictionary,
+  getCrmHoursDictionary,
   getCrmFilesDictionary,
   getCrmMessagesDictionary,
 } from "@/i18n/dictionaries/workspace/crm";
@@ -203,7 +205,8 @@ describe("CustomerCockpitView", () => {
       screen.getByRole("list", { name: content.kpis.label });
 
     expect(figures()).not.toHaveTextContent(content.kpis.openTasks);
-    expect(figures()).toHaveTextContent(content.kpis.hoursLeft);
+    // Hours are real since Task 27: without a view model the figure does not exist at all.
+    expect(figures()).not.toHaveTextContent(content.kpis.hoursLeft);
     expect(figures()).toHaveTextContent(content.kpis.openFeedback);
     expect(figures()).not.toHaveTextContent(/\d/);
 
@@ -232,7 +235,7 @@ describe("CustomerCockpitView", () => {
     );
   });
 
-  it("shows the remaining placeholder and hides credentials and chat without access", () => {
+  it("hides hours, credentials and chat without access", () => {
     const content = getCrmCockpitDictionary("de");
     render(
       <CustomerCockpitView
@@ -243,17 +246,64 @@ describe("CustomerCockpitView", () => {
       />,
     );
 
-    expect(
-      screen.getByRole("heading", { name: content.futureSections.hours.title }),
-    ).toBeVisible();
+    // Without the view models neither area exists: no section, no mock card, no figure.
     expect(
       screen.queryByRole("heading", {
-        name: content.futureSections.credentials.title,
+        name: getCrmHoursDictionary("de").section.title,
+      }),
+    ).toBeNull();
+    expect(screen.queryByText(content.kpis.hoursLeft)).toBeNull();
+    expect(
+      screen.queryByRole("heading", {
+        name: getCrmCredentialsDictionary("de").section.title,
       }),
     ).toBeNull();
     expect(
       screen.queryByRole("button", { name: content.chat.expand }),
     ).toBeNull();
+  });
+
+  it("replaces the hours placeholder with the section and a real figure", () => {
+    const content = getCrmCockpitDictionary("de");
+    const hoursContent = getCrmHoursDictionary("de");
+    render(
+      <CustomerCockpitView
+        viewerMemberId="member-1"
+        content={content}
+        customer={customerDetailFixture()}
+        hours={{
+          canManage: false,
+          writableProjectIds: [],
+          bookedMinutesByTaskId: {},
+          today: "2026-10-08",
+          hours: {
+            balance: {
+              purchasedMinutes: 600,
+              allocatedMinutes: 300,
+              freeMinutes: 300,
+              usedMinutes: 90,
+              goodwillMinutes: 0,
+              remainingMinutes: 510,
+            },
+            projects: [],
+            purchases: [],
+            allocations: [],
+          },
+        }}
+        hoursContent={hoursContent}
+        locale="de"
+      />,
+    );
+
+    expect(
+      screen.getByRole("heading", { name: hoursContent.section.title }),
+    ).toBeVisible();
+    const figures = screen.getByRole("list", { name: content.kpis.label });
+    expect(figures).toHaveTextContent(content.kpis.hoursLeft);
+    expect(figures).toHaveTextContent("8:30");
+    expect(figures).toHaveTextContent(
+      hoursContent.kpi.free.replace("{duration}", "5:00"),
+    );
   });
 
   describe("customer chat dock", () => {

@@ -298,3 +298,30 @@ Plan: `apps/workspace/plans/crm/19-credentials/71-credentials-portal.md`.
 - Der Formular-Dialog nennt über den Feldern, wer die Werte lesen kann (`form.notice`). Beim Ändern gibt es keine
   Projektwahl.
 - Fehlertexte nur über `portalCredentialErrorText` (`common/patterns/portal/`).
+
+## Stunden (ab Task 73)
+
+Plan: `apps/workspace/plans/crm/20-stunden-und-history/73-stunden-im-portal.md`.
+
+- **Keine eigene Seite.** Stunden sind ein Dialog des Dashboards (`?widget=hours`), wie die Zugangsdaten. Das
+  Widget `hours` steht mit `requiredPermission: portal.hours.read` und `onlyWithContent` in
+  `PORTAL_WIDGET_LAYOUT`: Ohne Recht und ohne Kauf- oder Zeitbuchung gibt es weder Karte noch Dialog.
+- Komponenten liegen unter `hours/`; Orchestrator ist `hours/portal-hours-dialog` mit `portal-hours-summary`
+  (Stand gesamt und je Projekt), `portal-hours-purchases` (Kaufhistorie) und `portal-time-entry-list`
+  (Buchungen). Die Karte ist `dashboard/widgets/portal-hours-widget`.
+- **Stand und Kaufhistorie kommen mit dem Dashboard** (`PortalHoursDto` als Prop), **die Buchungen erst beim
+  Öffnen** über `usePortalTimeEntries` (`src/hooks/portal/`) und `portalHoursApiService`. Die Liste wird nur
+  mit `canReadEntries` gemountet; ohne das Recht fehlt der Abschnitt vollständig, ohne Hinweis und ohne Request.
+- **Nachladen** läuft über den geteilten `useCursorPagedList` (`src/hooks/shared/`), denselben wie im Cockpit.
+  „Weitere laden“ meldet das Ergebnis in einer Live-Region.
+- **Projektfilter ist URL-State:** `?hoursProject=<id>`, geschrieben über `history.replaceState` (kein
+  Server-Roundtrip). Eine ID, die nicht in `hours.projects` steht, zählt als kein Filter. Schließen entfernt den
+  Parameter zusammen mit `widget`.
+- **Überziehung ist immer Text**, nie nur Farbe: „1:00 über dem Kontingent“ bzw. „Dieses Projekt hat 1:00 mehr
+  verbraucht als zugewiesen.“ Sachlich, ohne Warnton und ohne Handlungsaufforderung. Der Balken im Widget ist ein
+  natives `<progress aria-hidden>` (kein Inline-Style) und wiederholt nur, was daneben als Text steht.
+- **Zwei Empty-States in der Buchungsliste:** noch nichts gebucht und kein Treffer im Projektfilter.
+- Zahlen über `formatDuration`, `tabular-nums`, rechtsbündig. Die Projekttabelle hat `<th scope>` und wird
+  unter 40rem eigener Breite (Container Query) zur gestapelten Liste. Beschreibungen, Notizen und Aufgabentitel
+  werden nur als Text gerendert.
+- Keine Schreibaktion, deshalb auch kein Owner-Hinweis.

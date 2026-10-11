@@ -9,6 +9,8 @@ type PortalQueryChange = {
   project?: string | null;
   /** `true` opens the dashboard's chat dock on arrival; `null` drops the request again. */
   chat?: true | null;
+  /** Only ever cleared here; the hours dialog sets its own filter without a navigation. */
+  hoursProject?: null;
 };
 
 /** Preserve unrelated URL state while changing the portal project, dashboard dialog or chat dock. */
@@ -25,6 +27,7 @@ export function buildPortalHref(
       PortalDashboardQueryParam.Chat,
       change.chat === true ? PORTAL_DASHBOARD_CHAT_OPEN : change.chat,
     ],
+    [PortalDashboardQueryParam.HoursProject, change.hoursProject],
   ] as const) {
     if (value === null) params.delete(name);
     else if (value !== undefined) params.set(name, value);

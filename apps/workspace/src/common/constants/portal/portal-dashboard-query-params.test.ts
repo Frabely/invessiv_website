@@ -10,6 +10,7 @@ describe("PortalDashboardQueryParam", () => {
       Widget: "widget",
       Project: "project",
       Chat: "chat",
+      HoursProject: "hoursProject",
     });
     expect(PORTAL_DASHBOARD_CHAT_OPEN).toBe("open");
   });

@@ -3,8 +3,8 @@ import { PortalSection } from "@/common/constants/portal/portal-sections";
 import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 
 /**
- * Portal areas shown in the invitation preview, regardless of header navigation. Credentials have
- * no page of their own, so they are named by their dashboard widget.
+ * Portal areas shown in the invitation preview, regardless of header navigation. Credentials and
+ * hours have no page of their own, so they are named by their dashboard widget.
  */
 export const PORTAL_ACCESS_PREVIEW_AREAS = [
   {
@@ -22,5 +22,9 @@ export const PORTAL_ACCESS_PREVIEW_AREAS = [
   {
     labelKey: PortalWidgetKey.Credentials,
     requiredPermission: Permission.PortalCredentialsRead,
+  },
+  {
+    labelKey: PortalWidgetKey.Hours,
+    requiredPermission: Permission.PortalHoursRead,
   },
 ] as const;

@@ -36,6 +36,17 @@ describe("readPortalDashboardChat", () => {
 });
 
 describe("buildPortalHref", () => {
+  it("clears the hours filter while preserving or opening the chat dock", () => {
+    expect(
+      buildPortalHref("/de/portal/c", "chat=open&hoursProject=p", {
+        hoursProject: null,
+      }),
+    ).toBe("/de/portal/c?chat=open");
+    expect(
+      buildPortalHref("/de/portal/c", "hoursProject=p", { chat: true }),
+    ).toBe("/de/portal/c?hoursProject=p&chat=open");
+  });
+
   it("sets, keeps and removes parameters", () => {
     expect(
       buildPortalHref("/de/portal/c", "project=a", {

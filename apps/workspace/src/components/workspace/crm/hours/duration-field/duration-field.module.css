@@ -1,0 +1,22 @@
+.touchHint,
+.desktopHint {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  .touchHint {
+    display: inline;
+  }
+  .fallbackHint {
+    display: none;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .desktopHint {
+    display: inline;
+  }
+  .fallbackHint {
+    display: none;
+  }
+}

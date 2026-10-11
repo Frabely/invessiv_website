@@ -119,16 +119,6 @@
     "collaboration": "Collaboration",
     "accessSecurity": "Access & security"
   },
-  "futureSections": {
-    "hours": {
-      "title": "Hours & history",
-      "body": "Soon you will see the hour allowance here, every booking with a short note and how many hours are left. The customer sees the same on the portal."
-    },
-    "credentials": {
-      "title": "Credentials",
-      "body": "Soon you can store the logins for the accounts you manage for this customer here – encrypted and visible only to approved members."
-    }
-  },
   "chat": {
     "title": "Customer chat",
     "body": "Soon you can write to the customer directly here. They reply from the portal.",

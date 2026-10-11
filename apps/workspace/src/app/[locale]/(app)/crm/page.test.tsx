@@ -30,8 +30,18 @@ const mocks = vi.hoisted(() => ({
   getCustomerPortalAccess: vi.fn(),
   getCustomerConversation: vi.fn(),
   listCredentialProjectsByCustomer: vi.fn(),
+  getCustomerHours: vi.fn(),
+  getTaskBookedMinutes: vi.fn(),
 }));
 
+vi.mock(
+  "@/server/workspace/crm/query-handler/get-customer-hours.query-handler",
+  () => ({ getCustomerHours: mocks.getCustomerHours }),
+);
+vi.mock(
+  "@/server/workspace/crm/query-handler/get-task-booked-minutes.query-handler",
+  () => ({ getTaskBookedMinutes: mocks.getTaskBookedMinutes }),
+);
 vi.mock("next/navigation", () => ({
   notFound: vi.fn(() => {
     throw new Error("notFound called");
@@ -181,6 +191,8 @@ describe("CrmPage", () => {
     mocks.requireWorkspaceArea.mockResolvedValue(workspaceActorWith());
     mocks.getCustomerConversation.mockResolvedValue(null);
     mocks.listCredentialProjectsByCustomer.mockResolvedValue([]);
+    mocks.getCustomerHours.mockResolvedValue(null);
+    mocks.getTaskBookedMinutes.mockResolvedValue({});
     mocks.listCustomers.mockResolvedValue({
       hasCustomers: true,
       page: 1,

@@ -337,3 +337,61 @@ Plan: `apps/workspace/plans/crm/19-credentials/18-credentials-ui.md`.
   Benutzername mit `autocomplete="off"`.
 - Die Live-Region nennt den Zustand („… sichtbar, wird in 30 Sekunden verborgen“), nie den Wert.
 - Adressen werden nur über `toCredentialLink` zum Link (http/https), immer mit `rel="noopener noreferrer"`.
+
+## Stunden (ab Task 27)
+
+Plan: `apps/workspace/plans/crm/20-stunden-und-history/27-kontingent-und-zuweisung.md`.
+
+- Komponenten liegen unter `hours/`; Orchestrator ist `hours/customer-hours-section` im Cockpit direkt nach den
+  Zugangsdaten. Der Bereich existiert nur, wenn die Page ein `HoursViewModel` übergibt (`buildHoursViewModel`); er
+  ersetzt die frühere Mock-Karte „Stunden & Verlauf“.
+- **Keine Rechnung im Client.** Alle Zahlen kommen fertig aus dem View-Model (`CustomerHoursDto`). Angezeigt wird über
+  `formatDuration`, gelesen über `readDurationInput` (`common/patterns/crm/hours/`); keine Komponente rundet oder
+  addiert Minuten selbst.
+- **Aktionen nur mit `canManage`:** ohne das Recht fehlen „Stunden gutschreiben“, „Zuweisen“ und „Freigeben“
+  vollständig. „Zuweisen“ fehlt außerdem ohne freie Stunden und an abgebrochenen oder archivierten Projekten,
+  „Freigeben“ ohne unverbrauchten Rest.
+- Mit `balance: null` (nur Projektrechte) zeigt die Sektion die eigenen Projekte und einen Hinweis statt des
+  Kundenstands; die Kennzahl „Stunden übrig“ im Kopf entfällt dann.
+- **Jede Aussage steht als Text.** Der Streifen in `hours-balance-summary` ist dekorativ (`aria-hidden`), ein
+  überzogenes Projekt heißt „überzogen um 1:00“, nie nur farbig. Breiten des Streifens sind SVG-Attribute, kein
+  Inline-Style.
+- **Dauer immer über `hours/duration-field`:** Der app-spezifische Adapter bindet das allgemeine `DurationInput`
+  aus `packages/ui` an Labels, Hinweise, Buchungsschritt und technische Grenze. Stunden und Minuten werden getrennt
+  bedient; es gibt keine 24-Stunden-Grenze. Ob die Dauer gilt, prüft der Dialog über `readDurationInput`.
+- **Dialoge:** `hour-purchase-dialog` (Gutschrift oder Korrektur) und `hour-allocation-dialog` (Projekt und Richtung
+  stehen beim Öffnen fest und kippen nie). Beide erzeugen ihren `idempotencyKey` einmal beim Öffnen, bauen den Request
+  über `common/patterns/crm/hours/hours-form-request.ts` und rufen nach Erfolg `router.refresh()`. Eine Ablehnung
+  übernimmt die Zahlen aus der Antwort, nennt den Grund und behält die Eingabe. Es gibt keine Version und deshalb kein
+  `useVersionedMutation`.
+- Die Notiz einer Gutschrift ist kundensichtbar und so gekennzeichnet; die Notiz einer Zuweisung ist intern.
+
+Ab Task 72 (`apps/workspace/plans/crm/20-stunden-und-history/72-zeitbuchungen-und-aufgaben.md`):
+
+- `hours/project-hours-section` steht im Projekt-Canvas direkt nach den Aufgaben und **nur**, wenn das Projekt in
+  `hours.hours.projects` vorkommt. „Zeit buchen“, „Ändern“ und „Löschen“ gibt es nur für Projekte in
+  `writableProjectIds`; „Zeit buchen“ fehlt außerdem an abgebrochenen und archivierten Projekten.
+- **Die Liste lädt über `useProjectTimeEntries`** (`src/hooks/workspace/crm/`) seitenweise aus der API, nicht über die
+  Page. Nach jedem Schreiben erhöht der Canvas `timeEntriesRevision`; der Hook lädt dann die erste Seite neu, statt zu
+  raten, wo eine geänderte Buchung jetzt einsortiert ist. Zahlen und Kennzahl folgen über `router.refresh()`.
+- **Ein Buchungsdialog für den ganzen Canvas:** `hours/project-hours-canvas` bündelt Stunden-Sektion und
+  `hours/time-entry-form-dialog`, den die Stunden-Sektion **und** die Aufgabenzeilen öffnen. Der Hook
+  `useProjectHoursCanvas` hält Dialog und Listenrevision je aktivem Projekt; der Kontext und die Aktionsregeln
+  liegen unter `common/patterns/crm/hours/`. Der Dialog bucht und ändert; Ändern läuft über
+  `useVersionedMutation` (Konflikt übernimmt den aktuellen Stand und behält die Eingaben).
+- **Kundensichtbar heißt gekennzeichnet:** Der Hinweis an der Beschreibung („Für den Kunden sichtbar“) ist Pflicht und
+  bleibt auch beim Bearbeiten stehen.
+- **Der Dialog rechnet nicht selbst.** „Rest danach“ bzw. „Überzieht das Projekt um …“ kommt aus
+  `remainingAfterTimeEntry` (`common/patterns/crm/hours/time-entry-form-request.ts`); der Request entsteht über
+  `toTimeEntryRequest`. Überziehung wird angezeigt und nie verhindert.
+- **Aufgabe als Vorschlag:** Wird eine Aufgabe gewählt, füllt ihr Titel eine leere Beschreibung vor; getippter Text
+  wird nie überschrieben. Ohne `tasks.read` am Projekt fehlt das Aufgabenfeld. Eine abgebrochene Aufgabe bleibt nur an
+  der Buchung wählbar, die sie schon nennt.
+- **Abkürzung an der Aufgabe:** `project-tasks-section` bekommt optional `hours`. Ohne die Prop sieht die Sektion aus
+  wie vorher. Mit ihr zeigt die Zeile „1:30 gebucht“ und, wenn gebucht werden darf, „Zeit buchen“ an jeder nicht
+  abgebrochenen Aufgabe (über den `trailing`-Slot von `StatusRow`, damit die Aktion nicht im Bearbeiten-Ziel der
+  Zeile liegt). Nach einem Wechsel auf „Erledigt“ erscheint einmal ein Hinweis mit „Zeit buchen“ und „Nicht jetzt“;
+  es öffnet sich nie von selbst ein Dialog. Die globale Aufgabenübersicht bekommt keine Stunden.
+- Hat ein abgeschlossenes, abgebrochenes oder archiviertes Projekt noch unverbrauchte Stunden, nennt die Sektion sie
+  und bietet mit `canManage` „Freigeben“ an. Freigegeben wird nie automatisch.
+- Löschen fragt über `hours/time-entry-delete-dialog` nach und trägt die Version der Buchung mit.

@@ -44,6 +44,8 @@ export const SYSTEM_ROLE_DEFINITIONS = {
       Permission.FilesRead,
       Permission.FilesWrite,
       Permission.CredentialsRead,
+      Permission.HoursRead,
+      Permission.HoursWrite,
     ],
   },
   [SystemRoleKey.WorkspaceCredentialsManager]: {

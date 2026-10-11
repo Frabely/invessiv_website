@@ -24,6 +24,7 @@ export const TasksConstraintName = {
   OnboardingFormSideCheck: "tasks_onboarding_form_side_check",
   OnboardingFormUnique: "tasks_onboarding_form_uidx",
   SingleOriginCheck: "tasks_single_origin_check",
+  IdProjectUnique: "tasks_id_project_uidx",
 } as const;
 
 export type TasksConstraintName =
@@ -51,4 +52,5 @@ export const TASKS_CONSTRAINT_NAME_VALUES = [
   TasksConstraintName.OnboardingFormSideCheck,
   TasksConstraintName.OnboardingFormUnique,
   TasksConstraintName.SingleOriginCheck,
+  TasksConstraintName.IdProjectUnique,
 ] as const;

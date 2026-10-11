@@ -273,3 +273,21 @@ Ab Task 70 (`apps/workspace/plans/crm/15-onboarding/70-abschluss-und-leseansicht
   schließen `completed` bereits aus (`isOnboardingStructureEditable`, `isOnboardingReviewOpen`,
   `canTransitionOnboardingForm`, `listCustomerEditableOnboardingBlockIds`). Ein neuer Schreibpfad am Bogen muss durch
   eine dieser Funktionen laufen; `onboarding-complete.integration.test.ts` prüft jede Endpunkt-Gruppe.
+
+## Stunden (ab Task 27)
+
+`services/hours/hours-balance-service.ts` liest die Summen der Stundentabellen: `loadPurchasedMinutes` (Kaufbuchungen
+eines Kunden), `loadProjectSums` (eine Zeile je Projekt in einem Statement, auch für Projekte ohne Buchung) und
+`toCustomerBalance`. Er liegt bewusst schon hier, obwohl bis Task 73 nur Workspace-Handler ihn nutzen: Das Portal zeigt
+dieselben Zahlen, und beide Welten müssen sie aus derselben Abfrage bekommen (Planvorgabe Task 27).
+
+- Reine Leseabfragen über `ContactDatabaseReader`; keine Autorisierung. Welche Projekte ein Aufrufer sieht, übergibt
+  er als Bedingung an `loadProjectSums`.
+- `toCustomerBalance` braucht die Summen **aller** Projekte des Kunden; mit einer eingeschränkten Liste wäre der
+  Kundenstand falsch.
+
+Ab Task 73 (zweiter Aufrufer: das Portal):
+
+- `services/hours/time-entry-page-service.ts` hält das Keyset-Paging der Buchungslisten: `newestFirst`
+  (Tag, Buchungszeitpunkt auf Millisekunden, ID), `after(cursor)` und `nextCursor(rows, pageSize)`. Cockpit und
+  Portal blättern damit identisch; welche Zeilen ein Aufrufer sieht, bestimmt weiter seine eigene Bedingung.

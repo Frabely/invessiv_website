@@ -27,6 +27,10 @@
   align-items: start;
 }
 
+.row[data-trailing="true"] {
+  grid-template-columns: minmax(7.5rem, 8.5rem) minmax(0, 1fr) auto;
+}
+
 .row[data-pending="true"] {
   opacity: 0.65;
 }
@@ -36,6 +40,15 @@
   z-index: 1;
   display: flex;
   align-items: center;
+  min-width: 0;
+}
+
+.trailing {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   min-width: 0;
 }
 
@@ -72,6 +85,10 @@ button.details:focus-visible {
   .row {
     grid-template-columns: minmax(0, 1fr);
     gap: 0.25rem;
+  }
+
+  .row[data-trailing="true"] {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .status {

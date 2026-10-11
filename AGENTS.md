@@ -93,6 +93,9 @@ Scope- und detailspezifische Regeln stehen in der jeweils nächstgelegenen `AGEN
 
 ## Design & Branding (verbindlich)
 
+- **Icons:** Font-Awesome-Icons immer priorisieren. Gibt es kein inhaltlich passendes Font-Awesome-Icon, den Nutzer
+  ausdrücklich fragen, ob ein eigenes Icon erstellt werden soll; eigene Icons nicht ohne Zustimmung erstellen.
+
 - Logo ist Pflichtinput; Farbgebung optional (ohne Vorgabe kontraststarke, thematisch passende Palette).
 - Aktiv individuelles Design mit Wiedererkennungswert einbringen, Default-/Generic-Implementierungen vermeiden;
   Conversion- und Performance-orientiert arbeiten.
@@ -128,6 +131,14 @@ Detailregeln stehen in den scope-spezifischen Dateien (siehe Index). Global gilt
   `contracts/` für Typen/DTOs/Shapes, `constants/` für String-Unions/Werte/Maps, `defaults/` für Defaults,
   `patterns/` für seiteneffektfreie Helfer. String-Unions/Enums ausschließlich per **Const-Objekt + abgeleitetem Type**
   (kein `enum`). Details & Beispiele: `apps/web/src/components/AGENTS.md`, `packages/common/AGENTS.md`.
+- **Benannte Typen statt Property-Typzugriffen.** Konkrete Untertypen dürfen nicht per Indexed Access wie
+  `CrmHoursDictionary["task"]` oder `SomeDto["details"]` verwendet werden — auch nicht über verschachtelte
+  Zugriffe oder einen Alias, der nur denselben Zugriff versteckt. Contract-/Props-Felder, Parameter und Rückgaben
+  verwenden einen fachlich benannten Typ. Geteilte Untertypen erhalten eine eigene Datei unter `common/contracts/`
+  gemäß der Export-Regel. Dictionary-Untertypen werden dort ohne Feldduplikation aus der Quelle abgeleitet,
+  etwa `export type CrmHoursTaskDictionary = typeof hoursDe.task` mit einem `import type` der Dictionary-Datei.
+  Das vorgeschriebene Const-Objekt-Pattern `(typeof Values)[keyof typeof Values]` und generische Typwerkzeuge
+  mit variablen Schlüsseln bleiben erlaubt; sie beschreiben keine konkreten fachlichen Untertypen.
 - **Keine Logik-Duplikate.** Taucht dieselbe Funktion, derselbe Unwrap-/Mapping-Block oder dieselbe bedingte
   Darstellung in einer zweiten Datei praktisch unverändert auf, wird sie in einen gemeinsamen, benannten Helfer
   extrahiert statt kopiert — unabhängig davon, ob der Baustein exportiert wird oder lokal bleibt.

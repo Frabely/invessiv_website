@@ -1,0 +1,32 @@
+/* Shared by the two hours dialogs: same form rhythm, same message block. */
+.form {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.55rem 0.7rem;
+}
+
+.available {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.9rem;
+  margin: 0 0 0.9rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.available strong {
+  color: var(--color-text);
+}
+
+.message {
+  margin: 0.4rem 0 0;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid color-mix(in srgb, var(--color-danger) 45%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}

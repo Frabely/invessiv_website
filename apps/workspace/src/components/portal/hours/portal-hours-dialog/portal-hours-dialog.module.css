@@ -1,0 +1,6 @@
+/* Three sections, separated by space alone: each one draws its own rules where the data needs them. */
+.body {
+  display: grid;
+  gap: 2rem;
+  min-width: 0;
+}

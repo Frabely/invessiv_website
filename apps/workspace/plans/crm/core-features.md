@@ -35,7 +35,8 @@ Details und Abnahmekriterien stehen in den aktiven geordneten Merge-Einheiten.
 - Workspace-Glocke für Zuweisungen, Fälligkeiten, Portalereignisse, Renewals und Jobfehler.
 - Explizite atomare Gesamtübergabe aller offenen Zuständigkeiten eines Mitglieds nach dem vollständigen CRM-Ausbau.
 - Renewals für Domain, Hosting, SSL, Lizenz und sonstige Laufzeiten.
-- Informative Kunden-Stundenkontingente mit vollständig kundensichtbaren Buchungen.
+- Informative Stundenkontingente: Kaufbuchungen am Kunden, Zuweisung an Projekte, Zeitbuchungen in
+  15-Minuten-Schritten mit optionaler Aufgabe; alle Buchungen kundensichtbar.
 - Verschlüsselte Zugangsdaten je Kunde, optional je Projekt, mit explizitem Reveal und Security-Audit.
 
 ## Kundenportal

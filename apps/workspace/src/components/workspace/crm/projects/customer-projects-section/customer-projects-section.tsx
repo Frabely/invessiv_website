@@ -14,6 +14,7 @@ import type {
   CrmCockpitDictionary,
   CrmFeedbackRoundsDictionary,
   CrmFilesDictionary,
+  CrmHoursDictionary,
   CrmOnboardingDictionary,
   CrmProjectLineItemsDictionary,
   CrmQuestionnaireDictionary,
@@ -32,6 +33,8 @@ import { ProjectLineItemsSection } from "@/components/workspace/crm/projects/pro
 import { ProjectTasksSection } from "@/components/workspace/crm/tasks/project-tasks-section/project-tasks-section";
 import { CustomerFilesSection } from "@/components/workspace/crm/files/customer-files-section/customer-files-section";
 import type { FilesViewModel } from "@/common/contracts/crm/files/files-view-model";
+import type { HoursViewModel } from "@/common/contracts/crm/hours/hours-view-model";
+import { ProjectHoursCanvas } from "@/components/workspace/crm/hours/project-hours-canvas/project-hours-canvas";
 import styles from "./customer-projects-section.module.css";
 
 type EditorState = {
@@ -60,6 +63,9 @@ type CustomerProjectsSectionProps = {
   filesContent?: CrmFilesDictionary;
   filesRevision?: number;
   onFilesChangedAction?: () => void;
+  /** Absent without `hours.read` anywhere on the customer; a project outside its list shows no hours. */
+  hours?: HoursViewModel;
+  hoursContent?: CrmHoursDictionary;
   /** Project tab from the URL; an unknown or foreign id falls back to the first project. */
   selectedProjectId?: string | null;
   /** Rounds of the open tab; absent without `projects.read` there, the section then does not exist. */
@@ -90,6 +96,8 @@ export function CustomerProjectsSection({
   filesContent,
   filesRevision = 0,
   onFilesChangedAction,
+  hours,
+  hoursContent,
   selectedProjectId: requestedProjectId = null,
   feedback,
   feedbackContent,
@@ -119,6 +127,10 @@ export function CustomerProjectsSection({
     onboarding && onboarding.projectId === activeProject?.id
       ? onboarding
       : null;
+
+  const canShowTasks = Boolean(
+    activeProject && tasks?.readableProjectIds.includes(activeProject.id),
+  );
 
   function selectProject(projectId: string) {
     selection.select({ projectId });
@@ -173,22 +185,31 @@ export function CustomerProjectsSection({
             roundProgress={activeFeedback?.roundProgress}
             title={activeProject.title}
           />
-          {tasks &&
-          tasksContent &&
-          tasks.readableProjectIds.includes(activeProject.id) ? (
-            <ProjectTasksSection
-              canWrite={tasks.writableProjectIds.includes(activeProject.id)}
-              content={tasksContent}
-              key={`tasks-${activeProject.id}`}
-              locale={locale}
-              members={tasks.members}
-              projectId={activeProject.id}
-              tasks={tasks.tasks.filter(
-                (task) => task.projectId === activeProject.id,
-              )}
-              today={tasks.today}
-            />
-          ) : null}
+          <ProjectHoursCanvas
+            content={hoursContent}
+            customerId={customerId}
+            hours={hours}
+            key={activeProject.id}
+            locale={locale}
+            projectId={activeProject.id}
+            tasks={tasks}
+            renderTasksAction={(taskHours) =>
+              canShowTasks && tasks && tasksContent ? (
+                <ProjectTasksSection
+                  canWrite={tasks.writableProjectIds.includes(activeProject.id)}
+                  content={tasksContent}
+                  locale={locale}
+                  members={tasks.members}
+                  projectId={activeProject.id}
+                  tasks={tasks.tasks.filter(
+                    (task) => task.projectId === activeProject.id,
+                  )}
+                  today={tasks.today}
+                  hours={taskHours}
+                />
+              ) : null
+            }
+          />
           {projectLineItems &&
           projectLineItemsContent &&
           projectLineItems.readableProjectIds.includes(activeProject.id) ? (

@@ -215,6 +215,28 @@ export const PERMISSION_DEFINITIONS = {
     assignableScopeTypes: CUSTOMER_AND_PROJECT,
     description: "Create, change and delete credentials.",
   },
+  [Permission.HoursRead]: {
+    realm: AuthRealm.Workspace,
+    delegable: true,
+    scopeAssignable: true,
+    assignableScopeTypes: CUSTOMER_AND_PROJECT,
+    description: "View hour balances, purchases, allocations and time entries.",
+  },
+  [Permission.HoursWrite]: {
+    realm: AuthRealm.Workspace,
+    delegable: true,
+    scopeAssignable: true,
+    assignableScopeTypes: CUSTOMER_AND_PROJECT,
+    description: "Book, change and delete time entries.",
+  },
+  // The stock belongs to the customer, so managing it cannot be bound to a single project.
+  [Permission.HoursManage]: {
+    realm: AuthRealm.Workspace,
+    delegable: true,
+    scopeAssignable: true,
+    assignableScopeTypes: CUSTOMER_ONLY,
+    description: "Record purchased hours and allocate them to projects.",
+  },
   [Permission.PortalAccessManage]: {
     realm: AuthRealm.Workspace,
     delegable: true,
@@ -341,6 +363,20 @@ export const PERMISSION_DEFINITIONS = {
     assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
     description: "Add own credentials and change released ones.",
   },
+  [Permission.PortalHoursRead]: {
+    realm: AuthRealm.Portal,
+    delegable: true,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description: "See purchased, used and remaining hours per project.",
+  },
+  [Permission.PortalHoursEntriesRead]: {
+    realm: AuthRealm.Portal,
+    delegable: true,
+    scopeAssignable: false,
+    assignableScopeTypes: NOT_SCOPE_ASSIGNABLE,
+    description: "See each time entry with date, duration and description.",
+  },
   [Permission.RolesManage]: {
     realm: AuthRealm.Workspace,
     delegable: false,
@@ -412,4 +448,6 @@ export const PORTAL_READ_PERMISSION_VALUES = [
   Permission.PortalFeedbackRead,
   Permission.PortalOnboardingRead,
   Permission.PortalCredentialsRead,
+  Permission.PortalHoursRead,
+  Permission.PortalHoursEntriesRead,
 ] as const satisfies readonly Permission[];

@@ -133,13 +133,13 @@
       "approveNamed": "{project} abnehmen"
     },
     "hours": {
-      "title": "Stundenkontingent",
-      "open": "Mehr erfahren",
-      "teaser": "Hier siehst du bald, wie viele Stunden deines Kontingents verbraucht sind und wie viele übrig bleiben.",
-      "upcoming": [
-        "Verbrauchte und verbleibende Stunden",
-        "Alle Buchungen mit Datum und Beschreibung"
-      ]
+      "title": "Stunden",
+      "open": "Stunden öffnen",
+      "remaining": "übrig",
+      "over": "über dem Kontingent",
+      "used": "{used} von {purchased} verbraucht",
+      "project": "In diesem Projekt: {duration} übrig",
+      "projectOver": "In diesem Projekt: {duration} mehr verbraucht als zugewiesen"
     },
     "contact": {
       "title": "Dein Ansprechpartner",

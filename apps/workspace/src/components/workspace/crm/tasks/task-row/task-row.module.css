@@ -30,3 +30,10 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.booked {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}

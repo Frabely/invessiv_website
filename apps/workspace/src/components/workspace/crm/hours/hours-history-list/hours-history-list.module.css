@@ -1,0 +1,72 @@
+.history {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.group {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.group h4 {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+}
+
+.lines {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Date, what happened, how much — the amount column is what gets scanned and never wraps. */
+.line {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.2rem 0.8rem;
+  align-items: baseline;
+  padding: 0.35rem 0;
+  font-size: var(--font-size-ui-sm);
+}
+
+.line + .line {
+  border-top: 1px solid var(--color-border);
+}
+
+.date {
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.text {
+  min-width: 0;
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+}
+
+.note {
+  display: block;
+  color: var(--color-text-muted);
+}
+
+.amount {
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.amount[data-negative="true"] {
+  color: var(--color-text-muted);
+}
+
+.capped {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}

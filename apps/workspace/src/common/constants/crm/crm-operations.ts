@@ -63,6 +63,12 @@ export const CrmOperation = {
   ReviewOnboardingBlock: "onboarding-form-blocks.review",
   RequestOnboardingChanges: "onboarding-forms.request-changes",
   CompleteOnboardingForm: "onboarding-forms.complete",
+  CreateHourPurchase: "hour-purchases.create",
+  CreateHourAllocation: "hour-allocations.create",
+  ListTimeEntries: "time-entries.list",
+  CreateTimeEntry: "time-entries.create",
+  UpdateTimeEntry: "time-entries.update",
+  DeleteTimeEntry: "time-entries.delete",
 } as const;
 
 export type CrmOperation = (typeof CrmOperation)[keyof typeof CrmOperation];
@@ -131,4 +137,10 @@ export const CRM_OPERATION_VALUES = [
   CrmOperation.ReviewOnboardingBlock,
   CrmOperation.RequestOnboardingChanges,
   CrmOperation.CompleteOnboardingForm,
+  CrmOperation.CreateHourPurchase,
+  CrmOperation.CreateHourAllocation,
+  CrmOperation.ListTimeEntries,
+  CrmOperation.CreateTimeEntry,
+  CrmOperation.UpdateTimeEntry,
+  CrmOperation.DeleteTimeEntry,
 ] as const;

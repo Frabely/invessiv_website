@@ -51,6 +51,9 @@ export const PERMISSION_GROUP_PERMISSIONS = {
     Permission.ProjectLineItemsWrite,
     Permission.TasksRead,
     Permission.TasksWrite,
+    Permission.HoursRead,
+    Permission.HoursWrite,
+    Permission.HoursManage,
   ],
   [PermissionGroup.Services]: [
     Permission.LineItemTemplatesRead,
@@ -87,6 +90,8 @@ export const PERMISSION_GROUP_PERMISSIONS = {
     Permission.PortalCredentialsRead,
     Permission.PortalCredentialsReveal,
     Permission.PortalCredentialsWrite,
+    Permission.PortalHoursRead,
+    Permission.PortalHoursEntriesRead,
   ],
   [PermissionGroup.Administration]: [
     Permission.MembersRead,

@@ -32,11 +32,12 @@ describe("Permission", () => {
     expect(new Set(PERMISSION_VALUES).size).toBe(PERMISSION_VALUES.length);
   });
 
-  // Workspace keys have two segments; portal module keys add the portal namespace.
+  // Workspace keys have two segments; portal module keys add the portal namespace and may name a
+  // sub-resource (portal.hours.entries.read).
   it("uses dotted lowercase keys", () => {
     for (const permission of PERMISSION_VALUES) {
       expect(permission).toMatch(
-        /^(?:portal\.)?[a-z]+(?:_[a-z]+)*\.[a-z]+(?:_[a-z]+)*$/,
+        /^(?:[a-z]+(?:_[a-z]+)*|portal(?:\.[a-z]+(?:_[a-z]+)*){1,2})\.[a-z]+(?:_[a-z]+)*$/,
       );
     }
   });
@@ -96,6 +97,8 @@ describe("Permission", () => {
       Permission.PortalCredentialsRead,
       Permission.PortalCredentialsReveal,
       Permission.PortalCredentialsWrite,
+      Permission.PortalHoursRead,
+      Permission.PortalHoursEntriesRead,
     ]);
     for (const permission of PORTAL_PERMISSION_VALUES) {
       expect(WORKSPACE_PERMISSION_VALUES).not.toContain(permission);
@@ -118,6 +121,8 @@ describe("Permission", () => {
       Permission.PortalFeedbackRead,
       Permission.PortalOnboardingRead,
       Permission.PortalCredentialsRead,
+      Permission.PortalHoursRead,
+      Permission.PortalHoursEntriesRead,
     ]);
     expect(new Set(PORTAL_READ_PERMISSION_VALUES).size).toBe(
       PORTAL_READ_PERMISSION_VALUES.length,

@@ -24,6 +24,7 @@
   "accessAreas": {
     "credentials": "Zugangsdaten",
     "files": "Dateien",
+    "hours": "Stunden",
     "messages": "Nachrichten",
     "onboarding": "Onboarding"
   },

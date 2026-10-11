@@ -4,6 +4,7 @@ import { ConversationApiPath } from "@/common/constants/crm/conversation-api-pat
 import { ProjectApiPath } from "@/common/constants/crm/project-api-paths";
 import { FeedbackApiPath } from "@/common/constants/feedback/feedback-api-paths";
 import { FileApiPath } from "@/common/constants/files/file-api-paths";
+import { PortalHoursApiPath } from "@/common/constants/portal/portal-hours-api-paths";
 import { PortalOnboardingApiPath } from "@/common/constants/portal/portal-onboarding-api-paths";
 
 const TASKS_PATH = "tasks";
@@ -217,4 +218,9 @@ export function portalCredentialRevealEndpoint(
   credentialId: string,
 ): string {
   return `${portalCredentialEndpoint(customerId, credentialId)}/${CredentialApiPath.Reveal}`;
+}
+
+/** The time entry list of the hours dialog; the balance itself comes with the dashboard page. */
+export function portalHoursEntriesEndpoint(customerId: string): string {
+  return `${WorkspaceApiEndpoint.Portal}/${encodeURIComponent(customerId)}/${PortalHoursApiPath.Hours}/${PortalHoursApiPath.Entries}`;
 }
