@@ -69,7 +69,7 @@ export function TimeEntryFormDialog({
   today,
 }: TimeEntryFormDialogProps) {
   const formId = useId();
-  const durationRef = useRef<HTMLInputElement>(null);
+  const durationRef = useRef<HTMLDivElement>(null);
   const startTaskId = entry ? entry.taskId : initialTaskId;
   const [performedOn, setPerformedOn] = useState(entry?.performedOn ?? today);
   const [duration, setDuration] = useState(
@@ -104,14 +104,11 @@ export function TimeEntryFormDialog({
     : null;
 
   const typedMinutes = parseDuration(duration);
-  const remainingAfter =
-    typedMinutes === null || typedMinutes === 0
-      ? null
-      : remainingAfterTimeEntry(
-          project,
-          { minutes: typedMinutes, goodwill },
-          mutation.current,
-        );
+  const remainingAfter = remainingAfterTimeEntry(
+    project,
+    { minutes: typedMinutes ?? 0, goodwill },
+    mutation.current,
+  );
 
   function selectTask(next: string) {
     const previousTitle = tasks?.find((task) => task.id === taskId)?.title;
@@ -183,6 +180,10 @@ export function TimeEntryFormDialog({
         <div className={styles.row}>
           <DurationField
             decreaseLabel={content.duration.decrease}
+            decreaseHoursLabel={content.duration.decreaseHours}
+            increaseHoursLabel={content.duration.increaseHours}
+            hoursLabel={content.duration.hours}
+            minutesLabel={content.duration.minutes}
             errorMessage={
               durationError
                 ? formatMessage(content.duration[durationError], {
@@ -192,7 +193,7 @@ export function TimeEntryFormDialog({
             }
             hint={content.duration.hint}
             increaseLabel={content.duration.increase}
-            inputRef={durationRef}
+            focusRef={durationRef}
             label={text.minutes}
             maxMinutes={HoursLimits.MaxEntryMinutes}
             name="time-entry-duration"
@@ -212,25 +213,21 @@ export function TimeEntryFormDialog({
             required
           />
         </div>
-        {remainingAfter !== null ? (
-          <p
-            aria-live="polite"
-            className={styles.forecast}
-            data-tone={
-              !goodwill && remainingAfter < 0 ? "attention" : undefined
-            }
-          >
-            {goodwill
-              ? text.goodwillNote
-              : remainingAfter < 0
-                ? formatMessage(text.overdrawsBy, {
-                    duration: formatDuration(-remainingAfter),
-                  })
-                : formatMessage(text.remainingAfter, {
-                    duration: formatDuration(remainingAfter),
-                  })}
-          </p>
-        ) : null}
+        <p
+          aria-live="polite"
+          className={styles.forecast}
+          data-tone={!goodwill && remainingAfter < 0 ? "attention" : undefined}
+        >
+          {goodwill
+            ? text.goodwillNote
+            : remainingAfter < 0
+              ? formatMessage(text.overdrawsBy, {
+                  duration: formatDuration(-remainingAfter),
+                })
+              : formatMessage(text.remainingAfter, {
+                  duration: formatDuration(remainingAfter),
+                })}
+        </p>
         {taskOptions ? (
           <FormField
             kind={FormFieldKind.Custom}

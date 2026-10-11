@@ -13,6 +13,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { TimeEntryDto } from "@invessiv/common/contracts/crm/hours/time-entry.dto";
 import { getCrmHoursDictionary } from "@/i18n/dictionaries/workspace/crm";
+import { fillDurationInput } from "@invessiv/ui/components/duration-input/duration-input.test-helper";
 import {
   TimeEntryFormDialog,
   type TimeEntryFormDialogProps,
@@ -84,7 +85,7 @@ function renderDialog(overrides: Partial<TimeEntryFormDialogProps> = {}) {
 }
 
 function durationInput() {
-  return screen.getByRole("textbox", { name: new RegExp(text.minutes) });
+  return screen.getByRole("spinbutton", { name: new RegExp(text.minutes) });
 }
 
 function descriptionInput() {
@@ -115,11 +116,41 @@ describe("TimeEntryFormDialog", () => {
     expect(screen.getByText(text.descriptionHint)).toBeVisible();
   });
 
+  it("shows the remaining balance on opening and after resetting the duration", () => {
+    renderDialog({ project: { ...project, remainingMinutes: 180 } });
+
+    const forecast = text.remainingAfter.replace("{duration}", "3:00");
+    expect(screen.getByText(forecast)).toBeVisible();
+
+    fillDurationInput(
+      new RegExp(text.minutes),
+      content.duration.minutes,
+      "1",
+      "00",
+    );
+    expect(
+      screen.getByText(text.remainingAfter.replace("{duration}", "2:00")),
+    ).toBeVisible();
+
+    fillDurationInput(
+      new RegExp(text.minutes),
+      content.duration.minutes,
+      "0",
+      "00",
+    );
+    expect(screen.getByText(forecast)).toBeVisible();
+  });
+
   it("books the typed time with today's date by default", async () => {
     api.createTimeEntry.mockResolvedValue({ ok: true });
     renderDialog();
 
-    fireEvent.change(durationInput(), { target: { value: "1,5" } });
+    fillDurationInput(
+      new RegExp(text.minutes),
+      content.duration.minutes,
+      "1",
+      "30",
+    );
     fireEvent.change(descriptionInput(), {
       target: { value: "Umbau Hero-Section" },
     });
@@ -136,6 +167,29 @@ describe("TimeEntryFormDialog", () => {
     expect(onClose).toHaveBeenCalledOnce();
   });
 
+  it("books more than 24 hours without capping the duration", async () => {
+    api.createTimeEntry.mockResolvedValue({ ok: true });
+    renderDialog();
+
+    fillDurationInput(
+      new RegExp(text.minutes),
+      content.duration.minutes,
+      "25",
+      "15",
+    );
+    expect(durationInput()).toHaveAttribute("aria-valuenow", "25");
+    fireEvent.change(descriptionInput(), {
+      target: { value: "Projektarbeit" },
+    });
+    submit(text.submitCreate);
+
+    await waitFor(() => expect(onSaved).toHaveBeenCalledOnce());
+    expect(api.createTimeEntry).toHaveBeenCalledWith(
+      PROJECT_ID,
+      expect.objectContaining({ durationMinutes: 1515 }),
+    );
+  });
+
   it("prefills the description from the task it was opened for", () => {
     renderDialog({ initialTaskId: TASK_ID });
 
@@ -145,12 +199,22 @@ describe("TimeEntryFormDialog", () => {
   it("says what is left, by how much it overdraws, and that goodwill does not count", () => {
     renderDialog();
 
-    fireEvent.change(durationInput(), { target: { value: "1:00" } });
+    fillDurationInput(
+      new RegExp(text.minutes),
+      content.duration.minutes,
+      "1",
+      "00",
+    );
     expect(
       screen.getByText(text.remainingAfter.replace("{duration}", "1:00")),
     ).toBeVisible();
 
-    fireEvent.change(durationInput(), { target: { value: "2:30" } });
+    fillDurationInput(
+      new RegExp(text.minutes),
+      content.duration.minutes,
+      "2",
+      "30",
+    );
     expect(
       screen.getByText(text.overdrawsBy.replace("{duration}", "0:30")),
     ).toBeVisible();
@@ -159,13 +223,18 @@ describe("TimeEntryFormDialog", () => {
     expect(screen.getByText(text.goodwillNote)).toBeVisible();
   });
 
-  it("asks for a duration on the booking step and a description before any request", () => {
+  it("requires a positive duration and description before any request", () => {
     renderDialog();
 
-    fireEvent.change(durationInput(), { target: { value: "0:10" } });
+    fillDurationInput(
+      new RegExp(text.minutes),
+      content.duration.minutes,
+      "0",
+      "00",
+    );
     submit(text.submitCreate);
 
-    expect(screen.getByText(content.duration.invalid)).toBeVisible();
+    expect(screen.getByText(content.duration.required)).toBeVisible();
     expect(screen.getByText(text.descriptionRequired)).toBeVisible();
     expect(api.createTimeEntry).not.toHaveBeenCalled();
   });
@@ -173,7 +242,10 @@ describe("TimeEntryFormDialog", () => {
   it("gives the old minutes back when an entry is edited", () => {
     renderDialog({ entry: entry() });
 
-    expect(durationInput()).toHaveValue("1:00");
+    expect(durationInput()).toHaveAttribute("aria-valuenow", "1");
+    expect(
+      screen.getByRole("spinbutton", { name: content.duration.minutes }),
+    ).toHaveAttribute("aria-valuenow", "0");
     expect(descriptionInput()).toHaveValue("Formular angepasst");
     // 2:00 left already include this entry's hour, so keeping it leaves 2:00.
     expect(
@@ -190,12 +262,17 @@ describe("TimeEntryFormDialog", () => {
     api.updateTimeEntry.mockResolvedValueOnce({ ok: true });
     renderDialog({ entry: entry() });
 
-    fireEvent.change(durationInput(), { target: { value: "2:00" } });
+    fillDurationInput(
+      new RegExp(text.minutes),
+      content.duration.minutes,
+      "2",
+      "00",
+    );
     submit(text.submitEdit);
 
     await screen.findByRole("alert");
     expect(screen.getByRole("alert")).toHaveTextContent("0:45");
-    expect(durationInput()).toHaveValue("2:00");
+    expect(durationInput()).toHaveAttribute("aria-valuenow", "2");
     expect(onSaved).not.toHaveBeenCalled();
 
     submit(text.submitEdit);

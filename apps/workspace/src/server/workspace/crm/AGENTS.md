@@ -349,7 +349,7 @@ Ab Task 72 (`apps/workspace/plans/crm/20-stunden-und-history/72-zeitbuchungen-un
   sonst `TASK_NOT_LINKABLE`. Die Regel gilt im Moment des Verknüpfens: Eine später abgebrochene Aufgabe behält ihre
   Buchungen, und eine unveränderte Verknüpfung bleibt beim Bearbeiten gültig. `tasks` bekommt keine Zeitspalte; eine
   Aufgabe braucht nie eine Buchung.
-- Dauer 15 bis 1440 Minuten im 15-Minuten-Raster, Datum nie in der Zukunft (`businessToday()`), Beschreibung
+- Dauer 15 bis 600000 Minuten im 15-Minuten-Raster (`HoursLimits.MaxEntryMinutes`), Datum nie in der Zukunft (`businessToday()`), Beschreibung
   Pflicht. Das Datum prüft der Handler, weil das Schema den Geschäftstag nicht kennt.
 - **Ändern über `updateVersioned`, Löschen unter Zeilensperre mit Versionsvergleich** (`timeEntryAccessService.lock`,
   Muster `deleteFile`). Beide antworten bei veralteter Version 409 mit der aktuellen Buchung.

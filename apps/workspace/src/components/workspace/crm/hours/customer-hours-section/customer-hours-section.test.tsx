@@ -17,6 +17,7 @@ import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import type { CustomerHoursProjectDto } from "@invessiv/common/contracts/crm/hours/customer-hours-project.dto";
 import type { HoursViewModel } from "@/common/contracts/crm/hours/hours-view-model";
 import { getCrmHoursDictionary } from "@/i18n/dictionaries/workspace/crm";
+import { fillDurationInput } from "@invessiv/ui/components/duration-input/duration-input.test-helper";
 import { CustomerHoursSection } from "./customer-hours-section";
 
 const refresh = vi.fn();
@@ -95,7 +96,7 @@ function renderSection(model: HoursViewModel = viewModel()) {
 }
 
 function durationInput() {
-  return screen.getByRole("textbox", {
+  return screen.getByRole("spinbutton", {
     name: new RegExp(content.allocationDialog.minutes),
   });
 }
@@ -208,7 +209,12 @@ describe("CustomerHoursSection", () => {
     fireEvent.click(
       screen.getByRole("button", { name: "Freigeben: Relaunch" }),
     );
-    fireEvent.change(durationInput(), { target: { value: "1,5" } });
+    fillDurationInput(
+      new RegExp(content.allocationDialog.minutes),
+      content.duration.minutes,
+      "1",
+      "30",
+    );
     const submit = screen.getByRole("button", {
       name: content.allocationDialog.submitRelease,
     });
@@ -238,7 +244,12 @@ describe("CustomerHoursSection", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Zuweisen: Relaunch" }));
     expect(screen.getByText("Frei: 5:00")).toBeVisible();
-    fireEvent.change(durationInput(), { target: { value: "2:00" } });
+    fillDurationInput(
+      new RegExp(content.allocationDialog.minutes),
+      content.duration.minutes,
+      "2",
+      "00",
+    );
     fireEvent.click(
       screen.getByRole("button", {
         name: content.allocationDialog.submitAllocate,
@@ -247,14 +258,19 @@ describe("CustomerHoursSection", () => {
 
     await screen.findByText(content.errors.INSUFFICIENT_FREE_HOURS);
     expect(screen.getByText("Frei: 1:00")).toBeVisible();
-    expect(durationInput()).toHaveValue("2:00");
+    expect(durationInput()).toHaveAttribute("aria-valuenow", "2");
   });
 
-  it("rejects a duration off the booking step before any request", () => {
+  it("requires a positive duration before allocating hours", () => {
     renderSection();
 
     fireEvent.click(screen.getByRole("button", { name: "Zuweisen: Relaunch" }));
-    fireEvent.change(durationInput(), { target: { value: "0:10" } });
+    fillDurationInput(
+      new RegExp(content.allocationDialog.minutes),
+      content.duration.minutes,
+      "0",
+      "00",
+    );
     fireEvent.click(
       screen.getByRole("button", {
         name: content.allocationDialog.submitAllocate,
@@ -262,7 +278,7 @@ describe("CustomerHoursSection", () => {
     );
 
     expect(screen.getByRole("alert")).toHaveTextContent(
-      content.duration.invalid,
+      content.duration.required,
     );
     expect(api.createAllocation).not.toHaveBeenCalled();
   });
@@ -281,7 +297,10 @@ describe("CustomerHoursSection", () => {
       screen.getByRole("button", { name: content.duration.decrease }),
     );
 
-    expect(durationInput()).toHaveValue("0:15");
+    expect(durationInput()).toHaveAttribute("aria-valuenow", "0");
+    expect(
+      screen.getByRole("spinbutton", { name: content.duration.minutes }),
+    ).toHaveAttribute("aria-valuenow", "15");
   });
 
   it("adds hours with the customer-visible note and today's date", async () => {
@@ -292,7 +311,12 @@ describe("CustomerHoursSection", () => {
       screen.getByRole("button", { name: content.section.purchaseAction }),
     );
     expect(screen.getByText(content.purchaseDialog.noteHint)).toBeVisible();
-    fireEvent.change(durationInput(), { target: { value: "10" } });
+    fillDurationInput(
+      new RegExp(content.purchaseDialog.minutes),
+      content.duration.minutes,
+      "10",
+      "00",
+    );
     fireEvent.change(
       screen.getByRole("textbox", { name: content.purchaseDialog.note }),
       { target: { value: "Paket" } },

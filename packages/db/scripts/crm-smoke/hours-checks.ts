@@ -5,6 +5,7 @@
  * Every row here hangs on a smoke customer and disappears with it through the cascades.
  */
 import { randomUUID } from "node:crypto";
+import { HoursLimits } from "@invessiv/common/constants/crm/hours-limits";
 
 import { CustomerHourPurchasesConstraintName as P } from "@invessiv/db/constraint-names/crm/customer-hour-purchases-constraint-names";
 import { ProjectHourAllocationsConstraintName as A } from "@invessiv/db/constraint-names/crm/project-hour-allocations-constraint-names";
@@ -195,7 +196,13 @@ export async function runHoursChecks(context: SmokeContext) {
   await expectAccepted("time entry of a full day is accepted", () =>
     insertEntry({ customerId, projectId, durationMinutes: 1440 }),
   );
-  for (const durationMinutes of [0, 20, 1455]) {
+  for (const durationMinutes of [1455, HoursLimits.MaxEntryMinutes]) {
+    await expectAccepted(
+      `time entry of ${durationMinutes} minutes is accepted`,
+      () => insertEntry({ customerId, projectId, durationMinutes }),
+    );
+  }
+  for (const durationMinutes of [0, 20, HoursLimits.MaxEntryMinutes + 15]) {
     await expectRejected(
       `time entry of ${durationMinutes} minutes is rejected`,
       () => insertEntry({ customerId, projectId, durationMinutes }),

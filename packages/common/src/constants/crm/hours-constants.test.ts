@@ -52,7 +52,7 @@ describe("hours constants", () => {
   it("keeps every limit a multiple of the booking step", () => {
     expect(HoursLimits).toEqual({
       StepMinutes: 15,
-      MaxEntryMinutes: 1440,
+      MaxEntryMinutes: 600000,
       MaxLedgerMinutes: 600000,
       NoteMaxLength: 200,
       DescriptionMaxLength: 500,

@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS project_time_entries
     CONSTRAINT project_time_entries_performed_by_member_fkey FOREIGN KEY (performed_by_member_id)
         REFERENCES workspace_members (id),
     CONSTRAINT project_time_entries_duration_check CHECK (
-        duration_minutes > 0 AND duration_minutes % 15 = 0 AND duration_minutes <= 1440
+        duration_minutes > 0 AND duration_minutes % 15 = 0 AND duration_minutes <= 600000
     ),
     CONSTRAINT project_time_entries_description_check CHECK (btrim(description) <> '' AND length(description) <= 500),
     CONSTRAINT project_time_entries_version_check CHECK (version > 0)

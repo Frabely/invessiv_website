@@ -48,7 +48,7 @@ export function HourAllocationDialog({
 }: HourAllocationDialogProps) {
   const router = useRouter();
   const formId = useId();
-  const durationRef = useRef<HTMLInputElement>(null);
+  const durationRef = useRef<HTMLDivElement>(null);
   const [idempotencyKey] = useState(() => crypto.randomUUID());
   const [duration, setDuration] = useState("");
   const [note, setNote] = useState("");
@@ -152,6 +152,10 @@ export function HourAllocationDialog({
         </p>
         <DurationField
           decreaseLabel={content.duration.decrease}
+          decreaseHoursLabel={content.duration.decreaseHours}
+          increaseHoursLabel={content.duration.increaseHours}
+          hoursLabel={content.duration.hours}
+          minutesLabel={content.duration.minutes}
           errorMessage={
             durationError
               ? formatMessage(content.duration[durationError], {
@@ -161,7 +165,7 @@ export function HourAllocationDialog({
           }
           hint={content.duration.hint}
           increaseLabel={content.duration.increase}
-          inputRef={durationRef}
+          focusRef={durationRef}
           label={text.minutes}
           maxMinutes={availableMinutes}
           name="hour-allocation-duration"

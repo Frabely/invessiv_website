@@ -44,7 +44,7 @@ export function HourPurchaseDialog({
 }: HourPurchaseDialogProps) {
   const router = useRouter();
   const formId = useId();
-  const durationRef = useRef<HTMLInputElement>(null);
+  const durationRef = useRef<HTMLDivElement>(null);
   const [idempotencyKey] = useState(() => crypto.randomUUID());
   const [kind, setKind] = useState<HourPurchaseKind>(HourPurchaseKind.Purchase);
   const [duration, setDuration] = useState("");
@@ -152,6 +152,10 @@ export function HourPurchaseDialog({
         ) : null}
         <DurationField
           decreaseLabel={content.duration.decrease}
+          decreaseHoursLabel={content.duration.decreaseHours}
+          increaseHoursLabel={content.duration.increaseHours}
+          hoursLabel={content.duration.hours}
+          minutesLabel={content.duration.minutes}
           errorMessage={
             durationError
               ? formatMessage(content.duration[durationError], {
@@ -167,7 +171,7 @@ export function HourPurchaseDialog({
               : content.duration.hint
           }
           increaseLabel={content.duration.increase}
-          inputRef={durationRef}
+          focusRef={durationRef}
           label={text.minutes}
           maxMinutes={maxMinutes}
           name="hour-purchase-duration"

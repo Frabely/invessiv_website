@@ -93,6 +93,9 @@ Scope- und detailspezifische Regeln stehen in der jeweils nächstgelegenen `AGEN
 
 ## Design & Branding (verbindlich)
 
+- **Icons:** Font-Awesome-Icons immer priorisieren. Gibt es kein inhaltlich passendes Font-Awesome-Icon, den Nutzer
+  ausdrücklich fragen, ob ein eigenes Icon erstellt werden soll; eigene Icons nicht ohne Zustimmung erstellen.
+
 - Logo ist Pflichtinput; Farbgebung optional (ohne Vorgabe kontraststarke, thematisch passende Palette).
 - Aktiv individuelles Design mit Wiedererkennungswert einbringen, Default-/Generic-Implementierungen vermeiden;
   Conversion- und Performance-orientiert arbeiten.

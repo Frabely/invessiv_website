@@ -2,7 +2,7 @@
 export interface CreateTimeEntryRequestDto {
   /** Calendar day (`YYYY-MM-DD`), never in the future. */
   performedOn: string;
-  /** Whole minutes in 15-minute steps, from 15 up to 1440. */
+  /** Whole minutes in 15-minute steps, bounded by HoursLimits.MaxEntryMinutes. */
   durationMinutes: number;
   /** Customer-visible text of what was done; required. */
   description: string;

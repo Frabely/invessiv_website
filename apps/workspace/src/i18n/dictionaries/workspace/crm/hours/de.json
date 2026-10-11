@@ -48,10 +48,18 @@
     "readOnlyDescription": "Hier steht, wie viele Stunden der Kunde gekauft hat und wie sie auf seine Projekte verteilt sind. Stunden gutschreiben kann, wer Stunden verwalten darf."
   },
   "duration": {
+    "hours": "Stunden",
+    "minutes": "Minuten",
+    "decreaseHours": "Eine Stunde weniger",
+    "increaseHours": "Eine Stunde mehr",
     "decrease": "15 Minuten weniger",
     "increase": "15 Minuten mehr",
-    "hint": "In 15-Minuten-Schritten, z. B. 1:30 oder 1,5",
-    "invalid": "Bitte in 15-Minuten-Schritten angeben, z. B. 1:30 oder 1,5.",
+    "hint": {
+      "touch": "Über der Zahl nach oben oder unten wischen oder die Pfeile nutzen. Minuten in 15-Minuten-Schritten.",
+      "desktop": "Mit dem Mausrad über der Zahl scrollen oder die Pfeile nutzen. Minuten in 15-Minuten-Schritten.",
+      "fallback": "Die Pfeile nutzen, um die Dauer anzupassen. Minuten in 15-Minuten-Schritten."
+    },
+    "invalid": "Bitte ganze Stunden und 00, 15, 30 oder 45 Minuten angeben.",
     "required": "Bitte eine Dauer größer als 0:00 angeben.",
     "tooMuch": "Höchstens {duration} möglich."
   },

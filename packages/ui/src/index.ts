@@ -1,5 +1,6 @@
 export * from "./components/button/button";
 export * from "./components/checkbox-control/checkbox-control";
+export * from "./components/duration-input/duration-input";
 export * from "./components/radio-control/radio-control";
 export * from "./components/custom-select/custom-select";
 export * from "./components/form/form-field/form-field";

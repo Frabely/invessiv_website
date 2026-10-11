@@ -48,10 +48,18 @@
     "readOnlyDescription": "This is where you see how many hours the customer bought and how they are split across projects. Members who may manage hours can add them."
   },
   "duration": {
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "decreaseHours": "One hour less",
+    "increaseHours": "One hour more",
     "decrease": "15 minutes less",
     "increase": "15 minutes more",
-    "hint": "In 15-minute steps, e.g. 1:30 or 1.5",
-    "invalid": "Enter the time in 15-minute steps, e.g. 1:30 or 1.5.",
+    "hint": {
+      "touch": "Swipe up or down over the number or use the arrows. Minutes move in 15-minute steps.",
+      "desktop": "Scroll over the number with the mouse wheel or use the arrows. Minutes move in 15-minute steps.",
+      "fallback": "Use the arrows to adjust the duration. Minutes move in 15-minute steps."
+    },
+    "invalid": "Enter whole hours and 00, 15, 30 or 45 minutes.",
     "required": "Enter a duration greater than 0:00.",
     "tooMuch": "At most {duration} possible."
   },

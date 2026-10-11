@@ -9,6 +9,7 @@ import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
 import { HoursErrorCode } from "@invessiv/common/constants/crm/errors/hours-error-codes";
 import { HourPurchaseKind } from "@invessiv/common/constants/crm/hour-purchase-kinds";
+import { HoursLimits } from "@invessiv/common/constants/crm/hours-limits";
 import { ProjectBillingModel } from "@invessiv/common/constants/crm/project-billing-models";
 import { ProjectPhase } from "@invessiv/common/constants/crm/project-phases";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
@@ -276,7 +277,12 @@ describe.skipIf(!RUN_INTEGRATION)("time entries PostgreSQL integration", () => {
     const customerId = await createCustomer("validation");
     const projectId = await createProject(customerId, "A");
 
-    for (const durationMinutes of [0, 10, 20, 1455]) {
+    for (const durationMinutes of [
+      0,
+      10,
+      20,
+      HoursLimits.MaxEntryMinutes + 15,
+    ]) {
       expect(
         await createTimeEntry(
           projectId,
@@ -285,7 +291,12 @@ describe.skipIf(!RUN_INTEGRATION)("time entries PostgreSQL integration", () => {
         ),
       ).toMatchObject({ ok: false, code: HoursErrorCode.ValidationError });
     }
-    for (const durationMinutes of [15, 1440]) {
+    for (const durationMinutes of [
+      15,
+      1440,
+      1455,
+      HoursLimits.MaxEntryMinutes,
+    ]) {
       expect(
         await createTimeEntry(
           projectId,
