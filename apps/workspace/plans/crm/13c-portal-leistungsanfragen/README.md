@@ -1,63 +1,188 @@
-# Ordner 13c — Leistungsanfragen im Portal
+# Ordner 13c — Leistungsanfragen (Portal und Cockpit)
 
-> **Status:** offen · **Abhängigkeiten:** 07, 12b, 13 · **Aufwand:** 3–4 Tage · **Reviewziel:** 60–80 Dateien
+> **Status:** läuft · **Abhängigkeiten:** 07, 12b, 13, 16, 20 · **Aufwand:** 9–12 Tage · **Reviewziel:** ≈ 220 Dateien
+> in drei Teil-PRs · **Plan neu geschnitten am 11.10.2026** (ersetzt die Skizze mit einem PR und 60–80 Dateien)
 
 ## Ziel und Stand nach Merge
 
-**Konkreter Task-Plan**
+Kunden fragen Zusatzleistungen heute per Mail oder Chat an; im CRM entsteht daraus von Hand eine Projektleistung,
+bei Stunden zusätzlich eine separate Gutschrift. Ordner 13c macht daraus einen durchgehenden Ablauf:
 
-- [`50-portal-leistungsanfragen.md`](./50-portal-leistungsanfragen.md) — Portal-Freigabe im Leistungskatalog,
-  Anfrage durch den Kunden, interne Bearbeitung.
+1. Der Kunde fragt im Portal an — aus freigegebenen Katalogleistungen **ohne Preis** oder als Freitext.
+2. Die Anfrage landet im Kunden-Cockpit und in einem globalen Eingang mit Sidebar-Zähler.
+3. Intern: „Angebot gesendet“ (optional), **Annehmen** oder **Ablehnen**. Annehmen weist die Leistung in einem
+   Schritt einem bestehenden oder im selben Dialog neu angelegten Projekt zu; aus einer Freitext-Anfrage entsteht
+   dabei auf Wunsch eine neue Katalogvorlage.
+4. Sonderfälle laufen automatisch mit der Zuweisung: **Stunden** (Menge → Gutschrift + Projektzuweisung) und
+   **Zusatz-Feedbackrunde** (ein Rundenschritt mehr).
 
-Kunden sehen im Portal einen freigegebenen Ausschnitt des Leistungskatalogs — **ohne Preise** — und können eine
-Leistung unverbindlich anfragen. Die Anfrage landet in der Kundenakte und wird intern mit Status bearbeitet. Das
-Angebot selbst entsteht weiterhin außerhalb (Lexware); die Anwendung dokumentiert nur Anfrage und Ausgang.
+Die frühere Skizze (ein PR, Statusmodell ohne Rückzug, Seite `/services`) ist durch diesen Stand ersetzt.
 
-## Umfang
+## Teil-PRs
 
-- `line_item_templates` bekommt eine Portal-Freigabe (`portal_requestable`) und einen kundentauglichen
-  Beschreibungstext. Preisfelder erreichen nie ein Portal-DTO.
-- Neue Tabelle `service_requests` mit Status `requested → offered → accepted | declined`, versioniert.
-- Portalseite `/[locale]/portal/[customerId]/services`: Katalog, Anfrage mit optionaler Notiz, eigene Anfragen mit
-  Status in Kundensprache.
-- Intern: Liste der Anfragen in der Kundenakte, Statuspflege, Übernahme einer angenommenen Anfrage als Projektleistung
-  (Task 41), Hinweis im Dashboard-Block.
-- Portal-Permissions `portal.services.read`, `portal.services.request`; interne Permissions
-  `service_requests.read`/`service_requests.write` (scopable, an Kunde bindbar). `portal_standard` wird ergänzt.
-- Navigationseintrag in `PORTAL_NAV_ITEMS`.
+Der Ordner wird bewusst in drei Teil-PRs mit eigenen Branches geliefert (Ausnahme in `plans/crm/AGENTS.md`).
+Intern kommt **vor** dem Portal: Kein Kunde kann anfragen, bevor die Bearbeitung existiert.
 
-## Portal-Widget (aus Ordner 13)
+| PR    | Task                                            | Branch                                 | Inhalt                                                                 | Dateien | Status    |
+| ----- | ----------------------------------------------- | -------------------------------------- | ---------------------------------------------------------------------- | ------: | --------- |
+| 13c.1 | [Task 74](./74-leistungsarten-und-zuweisung.md) | `feat/crm-leistungsanfragen-1-katalog` | Vorlagen-Arten, Projektbezug, Portal-Freigabe, Zuweisung mit Automatik |    ≈ 60 | im Review |
+| 13c.2 | [Task 75](./75-leistungsanfragen-intern.md)     | `feat/crm-leistungsanfragen-2-intern`  | Tabelle, Cockpit-Sektion, Eingang, Angebot / Ablehnen / Annehmen       |    ≈ 85 | offen     |
+| 13c.3 | [Task 76](./76-portal-leistungsanfragen.md)     | `feat/crm-leistungsanfragen-3-portal`  | Portal-Rechte, Widget, Dialog, Zurückziehen, Feedback-Verweis          |    ≈ 75 | offen     |
 
-Das Dashboard-Widget `serviceRequest` („Leistung anfragen“, `openMode: dialog`) existiert seit Ordner 13 als Mock in
-der Widget-Registry (`PORTAL_WIDGET_LAYOUT`). Dieser Ordner stellt es auf echte Daten um: freigegebene Leistungen nur
-mit Name und Beschreibung — **nie mit Preis** — plus eigene offene Anfragen; der Dialog führt zur Anfrage. Keine
-eigene Dashboard-Karte außerhalb der Registry.
+Statuswerte: `offen` → `läuft` → `im Review` → `gemerged`.
 
-## Auswirkung aus Ordner 16 (Feedbackrunden)
+## Entscheidungen des Nutzers (11.10.2026)
 
-- **Zusatzrunde als anfragbare Leistung:** Eine freigegebene Katalogleistung „Zusätzliche Feedbackrunde“ (ohne Preis
-  im Portal). Die Übernahme einer angenommenen Anfrage fügt im betroffenen Projekt genau einen
-  Rundenschritt direkt hinter dem letzten Rundenschritt ein (`feedback_round_positions`, damit Kontingent +1) —
-  höchstens bis 20, mit Activity und Actor, nie nach einer Abnahme (`approved`-Runde). Ohne bisherigen Rundenschritt
-  landet er am Ende der Leiste.
-- Die Portal-Feedbackseite (Task 60/61) verweist bei erschöpftem Kontingent ab diesem Ordner auf die Anfrage statt
-  auf den Chat; die Übergabe der zusätzlichen Runde bleibt eine interne Aktion.
-- Doppelte Übernahme erhöht das Kontingent nicht zweimal (Idempotenz über den Anfragestatus).
+| Bereich         | Entscheidung                                                                                                                                                                                                                                                                                                                                  |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Anfrageform     | **Hybrid:** freigegebene Katalogleistungen als Karten (Titel + Kundentext, nie Preis) und immer „Etwas anderes“ (Freitext)                                                                                                                                                                                                                    |
+| Projektbezug    | **Vorlage gibt vor, intern wird entschieden.** Vorlage trägt `existing_project` oder `new_project`. Kunde wählt bei `existing_project` das Projekt; Freitext: Projekt, „Neues Vorhaben“ oder „Weiß ich nicht“. Final entscheidet der Annahme-Dialog                                                                                           |
+| Status          | `requested → offered (optional) → accepted \| declined`, dazu `withdrawn` (Kunde, nur aus `requested`). Ablehnen verlangt einen kundensichtbaren Grund                                                                                                                                                                                        |
+| Stunden         | Vorlagen-Art `hours`: Preis = Stundensatz, Menge beim Zuweisen/Annehmen. **Eine Transaktion:** Projektleistung mit Menge + Kaufbuchung + Zuweisung an das Projekt — oder, per Haken abwählbar, ohne Zuweisung als freie Stunden des Kunden (Nachtrag in Task 74). Gilt im Cockpit **und** für Anfragen. Gutschrift erst nach interner Annahme |
+| Zusatzrunde     | Vorlagen-Art `feedback_round`: Zuweisung fügt genau einen Rundenschritt ein — hinter der letzten Runde, bzw. hinter dem aktuellen Schritt, wenn das Projekt schon weiter ist. Max. 20, nie nach einer Abnahme                                                                                                                                 |
+| Intern sichtbar | Sektion im Kunden-Cockpit **und** globaler Eingang `/crm/service-requests` mit Sidebar-Zähler                                                                                                                                                                                                                                                 |
+| Neues Projekt   | Direkt im Annahme-Dialog, in derselben Transaktion wie die Zuweisung                                                                                                                                                                                                                                                                          |
+| Branch-Basis    | `master` (enthält Ordner 20 vollständig; geprüft: `0056`/`0057`, `hoursLedgerService`, `portalHoursService` liegen auf `master`)                                                                                                                                                                                                              |
 
-## Merge-Gate
+## Weitere Festlegungen des Plans
 
-- [ ] Portal-Widget `serviceRequest` von Mock auf echte Daten umgestellt (Registry `mock: false` +
-      `requiredPermission: portal.services.read`); ohne Permission fehlt es vollständig.
+| Bereich            | Festlegung                                                                                                                                                                                                                                        |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Schnitt            | Drei Teil-PRs statt einem (≈ 220 Dateien gesamt, harte Grenze 200 je Ordner): **13c.1** Katalog-Arten + Zuweisung in einem Schritt, **13c.2** Anfragen intern, **13c.3** Portal                                                                   |
+| Reihenfolge        | Intern **vor** Portal: Kein Kunde kann anfragen, bevor die Bearbeitung existiert. 13c.2 ist über Seed und Integrationstests prüfbar                                                                                                               |
+| Task-Nummern       | Task 74 (13c.1), Task 75 (13c.2), Task 76 (13c.3) — aufsteigend in Umsetzungsreihenfolge. Die frühere Nummer 50 dieses Ordners entfällt (sie gehört dem Cockpit-Redesign, Ordner 12c)                                                             |
+| Kundentext         | `portal_description` ist **Pflicht**, sobald `portal_requestable` gesetzt wird. Kein Fallback auf die interne Beschreibung (die Skizze sah einen vor; interne Texte sollen nicht versehentlich ins Portal)                                        |
+| Sprache            | Katalogtitel und Kundentext sind einsprachig wie der interne Katalog. Übersetzungen kommen bei Bedarf additiv                                                                                                                                     |
+| Automatik-Ort      | Stunden- und Runden-Automatik hängt an der **Zuweisung** (`projectLineItemAssignmentService`), nicht an der Anfrage. Cockpit und Annahme rufen dieselbe Methode; doppelte Wirkung ist ausgeschlossen, weil je Zuweisung genau eine Zeile entsteht |
+| Stunden-Wert       | Eine `rate`-Leistung **mit** Menge zählt als Einmalwert (Satz × Stunden). Ohne Menge bleibt `rate` ein Konditionswert (ändert die Regel aus Task 42a nur für neue Stunden-Leistungen)                                                             |
+| Automatik = fest   | Leistungen der Arten `hours` und `feedback_round` entstehen immer mit Status `confirmed`; Status, Menge und Preisart sind danach nicht änderbar. Korrekturen laufen über „Stunden gutschreiben → Korrektur“ bzw. den Projekt-Editor               |
+| Runden-Position    | Folge der abgestimmten Regel: Sind die Runden vor „Launch“ verbraucht und steht das Projekt auf „Launch“, landet die Zusatzrunde **hinter** „Launch“. Sie ist im Projekt-Editor verschiebbar, solange sie nicht übergeben ist                     |
+| Zähler             | Sidebar zählt Anfragen im Status `requested` im Zugriffsbereich. Kein Lesestempel                                                                                                                                                                 |
+| Kein Portal-Slug   | Keine Seite `/services` und kein `PORTAL_NAV_ITEMS`-Eintrag (README-Altstand): Das Portal hat keine Navigation, Module sind Widget + Dialog (`app/[locale]/(portal)/AGENTS.md`)                                                                   |
+| Dashboard-Hinweis  | Der „Hinweis im Dashboard-Block“ aus der README entfällt zugunsten von Eingang + Zähler (das interne Dashboard ist vertagt)                                                                                                                       |
+| Ownership-Registry | `service_requests` ist keine besitzbare Entität (kein Zuständiger); die Registry bleibt unverändert                                                                                                                                               |
+
+## Datenmodell
+
+Regeln aus `packages/db/AGENTS.md` gelten: keine DB-Defaults außer Zeitstempeln, additiv und idempotent, Modell und
+Migration deckungsgleich, Constraint-Namen als Const-Objekt unter `packages/db/src/constraint-names/crm/`,
+CHECKs für String-Unions über `sqlCheckIn`. Migrationsnummer immer im Repository ermitteln (aktuell höchste: `0057`).
+
+**Neue Spalten an bestehenden Tabellen sind nullable** (die vorherige App-Version schreibt sie nicht). Der Mapper
+liest `NULL` als Standardwert; der Schreibpfad setzt ab jetzt immer einen Wert. Vorbild: `project_line_items.status`.
+
+```txt
+line_item_templates  (13c.1)
+  + kind text NULL                 standard | hours | feedback_round      NULL = standard
+  + project_mode text NULL         existing_project | new_project         NULL = existing_project
+  + portal_requestable boolean NULL                                       NULL = false
+  + portal_description text NULL   Länge ≤ 2000; Pflicht bei portal_requestable = true
+  CHECK kind = 'hours'          → pricing_mode = 'rate'
+  CHECK kind = 'feedback_round' → pricing_mode = 'one_time'
+  CHECK kind IN ('hours','feedback_round') → project_mode IS DISTINCT FROM 'new_project'
+  CHECK portal_requestable IS NOT TRUE OR btrim(portal_description) <> ''
+
+project_line_items  (13c.1)
+  + kind text NULL                 Snapshot der Vorlagen-Art               NULL = standard
+  + quantity_minutes integer NULL  > 0, % 15 = 0, ≤ 600000
+  CHECK (quantity_minutes IS NOT NULL) = (kind = 'hours')   -- NULL-kind zählt als „nicht hours“ (IS NOT DISTINCT FROM)
+
+customer_hour_purchases  (13c.1)
+  CHECK source IN ('manual', 'project_line_item')           -- DROP CONSTRAINT IF EXISTS + ADD, nur erweitert
+
+portal_memberships  (13c.2)
+  + UNIQUE INDEX portal_memberships_id_customer_uidx (id, customer_id)   Ziel des zusammengesetzten Schlüssels
+
+service_requests  (13c.2, präfixfrei)
+  id uuid PK
+  customer_id uuid NOT NULL → customers ON DELETE CASCADE
+  line_item_template_id uuid NULL → line_item_templates ON DELETE SET NULL      NULL = Freitext oder Vorlage gelöscht
+  kind text NOT NULL               Snapshot; Freitext = standard
+  title text NOT NULL              Snapshot des Vorlagentitels bzw. Titel des Kunden; btrim <> '', ≤ 160
+  note text NOT NULL               Kundentext, ≤ 2000, '' erlaubt bei Katalog-Anfragen
+  requested_minutes integer NULL   nur bei kind = hours (CHECK wie quantity_minutes)
+  project_wish text NOT NULL       existing | new | undecided
+  requested_project_id uuid NULL   FK (requested_project_id, customer_id) → projects (id, customer_id) ON DELETE CASCADE
+  requested_by_membership_id uuid NOT NULL
+                                   FK (requested_by_membership_id, customer_id) → portal_memberships (id, customer_id)
+  status text NOT NULL             requested | offered | accepted | declined | withdrawn
+  decline_reason text NULL         ≤ 500
+  offered_at timestamptz NULL
+  decided_at timestamptz NULL      Annahme, Ablehnung oder Rückzug
+  decided_by_member_id uuid NULL → workspace_members (ohne Cascade)
+  project_id uuid NULL             Zielprojekt nach Annahme; FK (project_id, customer_id) → projects ON DELETE CASCADE
+  project_line_item_id uuid NULL → project_line_items ON DELETE SET NULL
+  idempotency_key uuid NOT NULL UNIQUE
+  version integer NOT NULL CHECK (version > 0)
+  created_at / updated_at timestamptz NOT NULL DEFAULT now()
+  CHECK (project_wish = 'existing') = (requested_project_id IS NOT NULL)
+  CHECK (requested_minutes IS NOT NULL) = (kind = 'hours')
+  CHECK status <> 'accepted' OR (project_id IS NOT NULL AND decided_at IS NOT NULL AND decided_by_member_id IS NOT NULL)
+  CHECK status <> 'declined' OR (btrim(decline_reason) <> '' AND decided_by_member_id IS NOT NULL)
+  INDEX (customer_id, created_at DESC), INDEX (status, created_at DESC)
+```
+
+Permissions:
+
+| Key                       | Realm     | scopable      | PR    | Rollen                                          |
+| ------------------------- | --------- | ------------- | ----- | ----------------------------------------------- |
+| `service_requests.read`   | workspace | ja, nur Kunde | 13c.2 | Owner (`…7a01`), Member (`…7a02`)               |
+| `service_requests.write`  | workspace | ja, nur Kunde | 13c.2 | Owner, Member                                   |
+| `portal.services.read`    | portal    | nein          | 13c.3 | `portal_standard` (`…7a04`), Owner-Portalsicht  |
+| `portal.services.request` | portal    | nein          | 13c.3 | `portal_standard`; **nicht** in der Owner-Sicht |
+
+Annehmen verlangt zusätzlich die Rechte seiner Teilschritte (siehe Task 75, T3).
+
+## Merge-Gates
+
+Je PR: `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm --filter @invessiv/db db:smoke:crm`,
+`pnpm --filter @invessiv/db db:smoke:rbac`, `pnpm --filter @invessiv/workspace db:smoke:crm`,
+`pnpm --filter @invessiv/workspace build`; 13c.3 zusätzlich `pnpm --filter @invessiv/workspace test:e2e:portal`.
+Prettier nur auf die geänderten Dateien anwenden (CRLF, `autocrlf=true`).
+
 - [ ] Kein Portal-DTO, keine Portal-Antwort und kein Portal-Log enthält Preis, Preisart oder Intervall.
-- [ ] Nur freigegebene, aktive Templates sind im Portal sichtbar; Archivieren entzieht die Freigabe sofort.
-- [ ] Eine Anfrage entsteht nur mit `portal.services.request`; Firma aus dem `PortalActor`, nie aus der Anfrage.
-- [ ] Kontakt A sieht die Anfragen seiner Firma, nie die einer fremden Firma (Negativtests Query und Mutation).
-- [ ] Doppelklick erzeugt genau eine Anfrage (Idempotenzschlüssel).
-- [ ] Interne Statuswechsel sind versioniert; Konflikt liefert 409.
-- [ ] Empty-States erklären Zweck im Portal und intern; „nichts freigegeben“ und „noch nichts angefragt“ sind
-      unterscheidbar.
+- [ ] Nur aktive, freigegebene Vorlagen sind im Portal sichtbar; Archivieren entzieht die Freigabe sofort.
+- [ ] Eine Anfrage entsteht nur mit `portal.services.request`; die Firma kommt aus dem `PortalActor`.
+- [ ] Kontakt A sieht nie Anfragen einer fremden Firma (Negativtests Query und beide Mutationen).
+- [ ] Doppelklick erzeugt genau eine Anfrage; doppelte Annahme erzeugt nie eine zweite Gutschrift oder Runde.
+- [ ] Interne Statuswechsel sind versioniert; ein Konflikt liefert 409 mit aktuellem Stand.
+- [ ] Stunden-Zuweisung schreibt Leistung, Kaufzeile und Projektzuweisung gemeinsam oder gar nicht.
+- [ ] Zusatzrunde nie nach einer Abnahme, nie über 20, mit Activity.
+- [ ] Empty-States erklären den Zweck; „nichts freigegeben“ und „noch nichts angefragt“ sind unterscheidbar.
+- [ ] Widget `serviceRequest`: `mock: false` plus `requiredPermission`; ohne Recht fehlt es vollständig.
+
+## End-to-End-Abnahme (von Hand, nach 13c.3)
+
+1. Im Katalog „Unterseite“ mit Kundentext freigeben; „Stundensatz“ (Art Stunden) und „Zusätzliche Feedbackrunde“
+   ebenso.
+2. Als Kontakt im Portal: „Unterseite“ für Projekt A anfragen → Bestätigung, Eintrag „Eingegangen“.
+3. Intern: Sidebar-Zähler 1, Karte im Eingang und im Cockpit. „Angebot gesendet“ → Portal zeigt „Angebot unterwegs“.
+4. „Annehmen“ → Leistung steht in Projekt A; Portal zeigt „Bestätigt“; im Chat stehen drei Systemnachrichten.
+5. Freitext „Zweite Landingpage“ mit „Neues Vorhaben“ → intern annehmen mit „Neues Projekt“ und „Neue Vorlage“ →
+   neues Projekt mit Leistung, neue Vorlage im Katalog.
+6. 5 Stunden anfragen → intern annehmen → Stunden-Widget im Portal zeigt 5:00 mehr, Projekt A hat 5:00 zugewiesen.
+7. Zusatzrunde für ein Projekt mit verbrauchtem Kontingent anfragen (über den Verweis auf der Feedback-Seite) →
+   annehmen → Prozessleiste hat einen Rundenschritt mehr, „Runde übergeben“ ist möglich.
+8. Eine Anfrage ablehnen (Grund im Portal sichtbar), eine offene im Portal zurückziehen.
+9. Owner öffnet „Portal ansehen“: sieht Katalog und Anfragen, kann nichts senden.
 
 ## Rollback
 
-Navigationseintrag über die Permission entfernen (Permission aus `portal_standard` nehmen) und Freigaben
-zurücksetzen. Die Tabelle bleibt; bestehende Anfragen bleiben intern lesbar.
+Je PR im zugehörigen Task unter „Deploy-Sicherheit“. Grundsatz: Tabellen, Spalten und Permissions bleiben; zurück
+geht es über Code-Revert (13c.1, 13c.2) bzw. über das Zurückstellen des Widgets auf `mock: true` und das Entfernen
+der beiden Portal-Rechte aus `portal_standard` in Code **und** Migration (13c.3).
+
+## Risiken und offene Punkte
+
+- **Leistungen ohne Projekt** (Wartung über mehrere Websites, freie Stunden, Workshops) löst der Folgeplan
+  [`../13d-leistungen-am-kunden/`](../13d-leistungen-am-kunden/README.md). Bis dahin hängt jede Leistung an einem
+  Projekt; bei Stunden entscheidet der Haken aus Task 74 nur, ob sie dem Projekt zugewiesen werden.
+
+- **Preis der Zusatzrunden-Vorlage** ist in der Migration 0; vor der Freigabe pflegen.
+- **Runde hinter „Launch“** (siehe Festlegungen): fachlich so abgestimmt, optisch gewöhnungsbedürftig. Falls es
+  stört, ist die Alternative „an die letzte Rundenposition und Projekt einen Schritt zurück“ eine Änderung allein
+  in `nextExtraFeedbackRoundPosition` und `addExtraRoundStep`.
+- **13c.2 hat ≈ 85 Dateien:** Wächst der PR über 120, wird T3 (Schreiben) als eigener PR 13c.2b abgespalten;
+  T1 + T2 sind allein mergebar (reine Leseansicht).
+- **Benachrichtigung:** Bis Ordner 20c erfährt das Team von neuen Anfragen über Sidebar-Zähler und
+  Chat-Systemnachricht, der Kunde über Systemnachricht und Status im Widget. 20c ergänzt Glocke und Digest.

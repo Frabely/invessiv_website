@@ -53,7 +53,13 @@
     },
     "edit": "Bearbeiten",
     "archive": "Archivieren",
-    "activate": "Reaktivieren"
+    "activate": "Reaktivieren",
+    "kind": {
+      "standard": "Standard",
+      "hours": "Stunden",
+      "feedback_round": "Zusätzliche Feedbackrunde"
+    },
+    "portalBadge": "Im Portal anfragbar"
   },
   "form": {
     "title": {
@@ -72,11 +78,17 @@
       "priceCents": "Preis",
       "pricingMode": "Preisart",
       "recurringInterval": "Intervall",
-      "status": "Status"
+      "status": "Status",
+      "kind": "Art",
+      "projectMode": "Projektbezug",
+      "portalRequestable": "Im Kundenportal anfragbar",
+      "portalDescription": "Beschreibung für Kunden",
+      "hourlyRate": "Stundensatz"
     },
     "placeholders": {
       "title": "z. B. Landingpage",
-      "description": "Leistungsumfang kurz beschreiben"
+      "description": "Leistungsumfang kurz beschreiben",
+      "portalDescription": "Was der Kunde bekommt, in seinen Worten"
     },
     "currencySymbol": "€",
     "buttons": {
@@ -95,12 +107,24 @@
       "TITLE_REQUIRED": "Titel ist erforderlich",
       "PRICE_INVALID": "Bitte einen gültigen Preis angeben",
       "PRICE_OUT_OF_RANGE": "Preis ist zu groß, bitte einen kleineren Betrag angeben",
-      "RECURRING_INTERVAL_REQUIRED": "Bitte ein Intervall wählen"
+      "RECURRING_INTERVAL_REQUIRED": "Bitte ein Intervall wählen",
+      "PORTAL_DESCRIPTION_REQUIRED": "Bitte eine Beschreibung für Kunden eintragen"
     },
     "errors": {
       "LINE_ITEM_TEMPLATE_NOT_FOUND": "Template wurde nicht gefunden.",
       "VALIDATION_ERROR": "Eingabe konnte nicht gespeichert werden.",
       "INTERNAL": "Unerwarteter Fehler. Bitte erneut versuchen."
+    },
+    "projectMode": {
+      "existing_project": "Ergänzt ein bestehendes Projekt",
+      "new_project": "Wird ein eigenes Projekt"
+    },
+    "hints": {
+      "kindHours": "Beim Zuweisen gibst du die Menge an. Die Stunden werden dem Kunden gutgeschrieben und dem Projekt zugewiesen.",
+      "kindFeedbackRound": "Beim Zuweisen bekommt das Projekt eine weitere Feedbackrunde.",
+      "projectModeFixed": "Diese Art gehört immer zu einem bestehenden Projekt.",
+      "pricingModeFixed": "Die Art legt die Preisart fest.",
+      "portal": "Kunden sehen den Titel und diese Beschreibung, nie den Preis. Du kannst den Text vorbereiten, bevor du die Vorlage freigibst."
     }
   }
 }

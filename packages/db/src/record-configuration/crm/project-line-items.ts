@@ -9,6 +9,11 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
+import { HoursLimits } from "@invessiv/common/constants/crm/hours-limits";
+import {
+  LINE_ITEM_KIND_VALUES,
+  LineItemKind,
+} from "@invessiv/common/constants/crm/line-item-kinds";
 import { BILLING_INTERVAL_VALUES } from "@invessiv/common/constants/crm/billing-intervals";
 import {
   SERVICE_PRICING_MODE_VALUES,
@@ -25,6 +30,9 @@ import { lineItemTemplates } from "./line-item-templates";
  * is no customer column and no customer-wide position. Title, description, price, pricing mode
  * and interval are a full snapshot — `source_line_item_template_id` is provenance only, which is
  * why it is nullable and set to null instead of cascading when a template disappears.
+ *
+ * `kind` is the snapshot of the template's kind (NULL on rows written before Task 74 reads as
+ * standard). `quantity_minutes` exists exactly for purchased hours.
  */
 export const projectLineItems = pgTable(
   "project_line_items",
@@ -46,6 +54,8 @@ export const projectLineItems = pgTable(
       enum: BILLING_INTERVAL_VALUES,
     }),
     status: text("status", { enum: PROJECT_LINE_ITEM_STATUS_VALUES }),
+    kind: text("kind", { enum: LINE_ITEM_KIND_VALUES }),
+    quantity_minutes: integer("quantity_minutes"),
     version: integer("version").notNull(),
     created_at: timestamp("created_at", { withTimezone: true })
       .notNull()
@@ -80,8 +90,21 @@ export const projectLineItems = pgTable(
       sql`${table.version} > 0`,
     ),
     check(
-      "project_line_items_status_check",
+      ProjectLineItemsConstraintName.StatusCheck,
       sqlCheckIn(table.status, PROJECT_LINE_ITEM_STATUS_VALUES),
+    ),
+    check(
+      ProjectLineItemsConstraintName.KindCheck,
+      sql`${table.kind} is null or ${sqlCheckIn(table.kind, LINE_ITEM_KIND_VALUES)}`,
+    ),
+    check(
+      ProjectLineItemsConstraintName.QuantityMinutesCheck,
+      sql`${table.quantity_minutes} is null or (${table.quantity_minutes} > 0 and ${table.quantity_minutes} % ${sql.raw(String(HoursLimits.StepMinutes))} = 0 and ${table.quantity_minutes} <= ${sql.raw(String(HoursLimits.MaxLedgerMinutes))})`,
+    ),
+    // IS NOT DISTINCT FROM keeps a NULL kind on the "not hours" side instead of passing as NULL.
+    check(
+      ProjectLineItemsConstraintName.KindQuantityCheck,
+      sql`(${table.quantity_minutes} is not null) = (${table.kind} is not distinct from ${LineItemKind.Hours})`,
     ),
     index(ProjectLineItemsConstraintName.ProjectCreatedAtIndex).on(
       table.project_id,

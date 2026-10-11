@@ -15,6 +15,36 @@
   grid-column: 1 / -1;
 }
 
+/* Not released is the default; the release is a deliberate tick with its consequence spelled out. */
+.release {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 0.35rem;
+  margin-bottom: 0.9rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.6rem;
+  background: var(--color-surface-2);
+}
+
+.releaseLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.releaseHint {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
 .footerRequiredHint {
   margin: 0;
   margin-right: auto;

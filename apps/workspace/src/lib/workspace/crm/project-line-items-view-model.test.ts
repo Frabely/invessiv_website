@@ -14,6 +14,7 @@ vi.mock("server-only", () => ({}));
 const mocks = vi.hoisted(() => ({
   listProjectLineItemsByCustomer: vi.fn(),
   listAssignableLineItemTemplates: vi.fn(),
+  listExtraFeedbackRoundBlockers: vi.fn(),
 }));
 
 vi.mock(
@@ -26,6 +27,13 @@ vi.mock(
   "@/server/workspace/crm/query-handler/list-assignable-line-item-templates.query-handler",
   () => ({
     listAssignableLineItemTemplates: mocks.listAssignableLineItemTemplates,
+  }),
+);
+
+vi.mock(
+  "@/server/workspace/crm/query-handler/list-extra-feedback-round-blockers.query-handler",
+  () => ({
+    listExtraFeedbackRoundBlockers: mocks.listExtraFeedbackRoundBlockers,
   }),
 );
 
@@ -69,6 +77,9 @@ describe("buildProjectLineItemsViewModel", () => {
   beforeEach(() => {
     mocks.listProjectLineItemsByCustomer.mockReset().mockResolvedValue([]);
     mocks.listAssignableLineItemTemplates.mockReset().mockResolvedValue([]);
+    mocks.listExtraFeedbackRoundBlockers
+      .mockReset()
+      .mockResolvedValue(new Map());
   });
 
   it("does not disclose catalog templates to a project-line-item writer without catalog read access", async () => {
@@ -99,5 +110,81 @@ describe("buildProjectLineItemsViewModel", () => {
     });
 
     expect(mocks.listAssignableLineItemTemplates).toHaveBeenCalledWith();
+  });
+
+  it("names what keeps hours and a further round from a project the actor may only assign to", async () => {
+    const result = await buildProjectLineItemsViewModel({
+      actor: actor([
+        Permission.ProjectLineItemsRead,
+        Permission.ProjectLineItemsWrite,
+      ]),
+      catalogHref: null,
+      customerId: CUSTOMER_ID,
+      projects: [{ id: project.id, title: project.title, project }],
+    });
+
+    expect(mocks.listExtraFeedbackRoundBlockers).toHaveBeenCalledWith([]);
+    expect(result?.assignmentBlockersByProjectId).toEqual({
+      [PROJECT_ID]: {
+        hours: "missing_hours_permission",
+        feedbackRound: "missing_project_permission",
+      },
+    });
+  });
+
+  it("clears both blockers for a member who may manage hours and write the project", async () => {
+    mocks.listExtraFeedbackRoundBlockers.mockResolvedValue(
+      new Map([[PROJECT_ID, null]]),
+    );
+
+    const result = await buildProjectLineItemsViewModel({
+      actor: actor([
+        Permission.ProjectLineItemsRead,
+        Permission.ProjectLineItemsWrite,
+        Permission.HoursManage,
+        Permission.ProjectsWrite,
+      ]),
+      catalogHref: null,
+      customerId: CUSTOMER_ID,
+      projects: [{ id: project.id, title: project.title, project }],
+    });
+
+    expect(mocks.listExtraFeedbackRoundBlockers).toHaveBeenCalledWith([
+      { id: PROJECT_ID, positions: [] },
+    ]);
+    expect(result?.assignmentBlockersByProjectId).toEqual({
+      [PROJECT_ID]: { hours: null, feedbackRound: null },
+    });
+  });
+
+  it("passes on an approved project and a closed one as blockers", async () => {
+    mocks.listExtraFeedbackRoundBlockers.mockResolvedValue(
+      new Map([[PROJECT_ID, "project_approved"]]),
+    );
+
+    const result = await buildProjectLineItemsViewModel({
+      actor: actor([
+        Permission.ProjectLineItemsRead,
+        Permission.ProjectLineItemsWrite,
+        Permission.HoursManage,
+        Permission.ProjectsWrite,
+      ]),
+      catalogHref: null,
+      customerId: CUSTOMER_ID,
+      projects: [
+        {
+          id: project.id,
+          title: project.title,
+          project: { ...project, status: ProjectStatus.Archived },
+        },
+      ],
+    });
+
+    expect(result?.assignmentBlockersByProjectId).toEqual({
+      [PROJECT_ID]: {
+        hours: "project_closed",
+        feedbackRound: "project_approved",
+      },
+    });
   });
 });

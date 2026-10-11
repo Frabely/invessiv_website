@@ -16,4 +16,11 @@ export interface CreateProjectLineItemRequestDto {
   /** Required exactly when `pricingMode` is `recurring`; must stay null otherwise. */
   recurringInterval: BillingInterval | null;
   status?: ProjectLineItemStatus;
+  /** Required for a template of kind `hours` (multiple of 15); must be null or absent for every other kind. */
+  quantityMinutes?: number | null;
+  /**
+   * Only read for kind `hours`. True or absent allocates the purchased hours to this project;
+   * false credits them to the customer and leaves them free for any project.
+   */
+  allocateHoursToProject?: boolean;
 }

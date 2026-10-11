@@ -3,6 +3,14 @@
 import { type SubmitEvent, useId, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
+import {
+  LINE_ITEM_KIND_VALUES,
+  LineItemKind,
+} from "@invessiv/common/constants/crm/line-item-kinds";
+import {
+  LINE_ITEM_PROJECT_MODE_VALUES,
+  type LineItemProjectMode,
+} from "@invessiv/common/constants/crm/line-item-project-modes";
 import { LineItemTemplateFieldLimits } from "@invessiv/common/constants/crm/forms/line-item-template-field-limits";
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { LINE_ITEM_TEMPLATE_STATUS_VALUES } from "@invessiv/common/constants/crm/line-item-template-statuses";
@@ -13,20 +21,24 @@ import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 import { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";
 import {
   ButtonControl,
+  CheckboxControl,
   CustomSelect,
   Dialog,
   FormField,
   PrimaryCtaButton,
 } from "@invessiv/ui";
 import { lineItemTemplatesApiService } from "@/client/crm/line-item-templates-api-service";
-import { LineItemFieldsFormValidationCode } from "@/common/constants/crm/forms/line-item-fields-form-validation-codes";
+import type { LineItemFieldsFormValidationCode } from "@/common/constants/crm/forms/line-item-fields-form-validation-codes";
+import type { LineItemTemplateFormValidationCode } from "@/common/constants/crm/forms/line-item-template-form-validation-codes";
 import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
 import type {
   LineItemTemplateFormErrors,
   LineItemTemplateFormValues,
 } from "@/common/contracts/crm/line-item-template-form-values";
 import {
+  applyLineItemKindToFormValues,
   createLineItemTemplateFormValues,
+  pricingModeOfLineItemKind,
   toCreateLineItemTemplateRequest,
   toUpdateLineItemTemplateRequest,
   validateLineItemTemplateForm,
@@ -46,7 +58,10 @@ type LineItemTemplateFormDialogProps = {
 };
 
 function fieldError(
-  code: LineItemFieldsFormValidationCode | undefined,
+  code:
+    | LineItemFieldsFormValidationCode
+    | LineItemTemplateFormValidationCode
+    | undefined,
   content: CrmLineItemTemplatesDictionary,
 ): string | undefined {
   return code ? content.form.validation[code] : undefined;
@@ -60,6 +75,7 @@ export function LineItemTemplateFormDialog({
 }: LineItemTemplateFormDialogProps) {
   const router = useRouter();
   const formId = useId();
+  const portalHintId = useId();
   const titleInputRef = useRef<HTMLInputElement>(null);
   const [values, setValues] = useState<LineItemTemplateFormValues>(() =>
     createLineItemTemplateFormValues(lineItemTemplate, locale),
@@ -88,6 +104,14 @@ export function LineItemTemplateFormDialog({
       ),
     }));
   }
+
+  const kindFixesPricing = pricingModeOfLineItemKind(values.kind) !== null;
+  const kindHint =
+    values.kind === LineItemKind.Hours
+      ? content.form.hints.kindHours
+      : values.kind === LineItemKind.FeedbackRound
+        ? content.form.hints.kindFeedbackRound
+        : undefined;
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -196,6 +220,32 @@ export function LineItemTemplateFormDialog({
             }}
           />
           <FormField
+            className={styles.fullWidth}
+            hint={kindHint}
+            kind={FormFieldKind.Custom}
+            label={content.form.fields.kind}
+            renderControl={({ describedBy, id, invalid }) => (
+              <CustomSelect
+                describedBy={describedBy}
+                id={id}
+                invalid={invalid}
+                onChange={(next) =>
+                  setValues((current) =>
+                    applyLineItemKindToFormValues(
+                      current,
+                      next as LineItemKind,
+                    ),
+                  )
+                }
+                options={LINE_ITEM_KIND_VALUES.map((kind) => ({
+                  label: content.list.kind[kind],
+                  value: kind,
+                }))}
+                value={values.kind}
+              />
+            )}
+          />
+          <FormField
             errorMessage={fieldError(errors.priceInput, content)}
             inputProps={{
               inputMode: "decimal",
@@ -205,15 +255,23 @@ export function LineItemTemplateFormDialog({
             }}
             inputSuffix={content.form.currencySymbol}
             kind={FormFieldKind.Text}
-            label={content.form.fields.priceCents}
+            label={
+              values.kind === LineItemKind.Hours
+                ? content.form.fields.hourlyRate
+                : content.form.fields.priceCents
+            }
             required
           />
           <FormField
+            hint={
+              kindFixesPricing ? content.form.hints.pricingModeFixed : undefined
+            }
             kind={FormFieldKind.Custom}
             label={content.form.fields.pricingMode}
             renderControl={({ describedBy, id, invalid }) => (
               <CustomSelect
                 describedBy={describedBy}
+                disabled={kindFixesPricing}
                 id={id}
                 invalid={invalid}
                 onChange={(next) =>
@@ -267,6 +325,62 @@ export function LineItemTemplateFormDialog({
               )}
             />
           ) : null}
+          <FormField
+            className={styles.fullWidth}
+            hint={
+              kindFixesPricing ? content.form.hints.projectModeFixed : undefined
+            }
+            kind={FormFieldKind.Custom}
+            label={content.form.fields.projectMode}
+            renderControl={({ describedBy, id, invalid }) => (
+              <CustomSelect
+                describedBy={describedBy}
+                disabled={kindFixesPricing}
+                id={id}
+                invalid={invalid}
+                onChange={(next) =>
+                  update("projectMode", next as LineItemProjectMode)
+                }
+                options={LINE_ITEM_PROJECT_MODE_VALUES.map((mode) => ({
+                  label: content.form.projectMode[mode],
+                  value: mode,
+                }))}
+                value={values.projectMode}
+              />
+            )}
+          />
+          <div className={styles.release}>
+            <label className={styles.releaseLabel}>
+              <CheckboxControl
+                aria-describedby={portalHintId}
+                checked={values.portalRequestable}
+                name="line-item-template-portal-requestable"
+                onChange={(event) =>
+                  update("portalRequestable", event.target.checked)
+                }
+              />
+              {content.form.fields.portalRequestable}
+            </label>
+            <p className={styles.releaseHint} id={portalHintId}>
+              {content.form.hints.portal}
+            </p>
+            <FormField
+              errorMessage={fieldError(errors.portalDescription, content)}
+              kind={FormFieldKind.Textarea}
+              label={content.form.fields.portalDescription}
+              required={values.portalRequestable}
+              textareaProps={{
+                maxLength:
+                  LineItemTemplateFieldLimits.PortalDescriptionMaxLength,
+                name: "line-item-template-portal-description",
+                onChange: (event) =>
+                  update("portalDescription", event.target.value),
+                placeholder: content.form.placeholders.portalDescription,
+                rows: 3,
+                value: values.portalDescription,
+              }}
+            />
+          </div>
           {lineItemTemplate ? (
             <FormField
               kind={FormFieldKind.Custom}

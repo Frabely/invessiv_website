@@ -53,7 +53,13 @@
     },
     "edit": "Edit",
     "archive": "Archive",
-    "activate": "Reactivate"
+    "activate": "Reactivate",
+    "kind": {
+      "standard": "Standard",
+      "hours": "Hours",
+      "feedback_round": "Additional feedback round"
+    },
+    "portalBadge": "Requestable in the portal"
   },
   "form": {
     "title": {
@@ -72,11 +78,17 @@
       "priceCents": "Price",
       "pricingMode": "Pricing",
       "recurringInterval": "Interval",
-      "status": "Status"
+      "status": "Status",
+      "kind": "Kind",
+      "projectMode": "Project",
+      "portalRequestable": "Requestable in the customer portal",
+      "portalDescription": "Description for customers",
+      "hourlyRate": "Hourly rate"
     },
     "placeholders": {
       "title": "e.g. Landing page",
-      "description": "Briefly describe the scope"
+      "description": "Briefly describe the scope",
+      "portalDescription": "What the customer gets, in their words"
     },
     "currencySymbol": "€",
     "buttons": {
@@ -95,12 +107,24 @@
       "TITLE_REQUIRED": "Title is required",
       "PRICE_INVALID": "Please enter a valid price",
       "PRICE_OUT_OF_RANGE": "Price is too large, please enter a smaller amount",
-      "RECURRING_INTERVAL_REQUIRED": "Please select an interval"
+      "RECURRING_INTERVAL_REQUIRED": "Please select an interval",
+      "PORTAL_DESCRIPTION_REQUIRED": "Enter a description for customers"
     },
     "errors": {
       "LINE_ITEM_TEMPLATE_NOT_FOUND": "Template not found.",
       "VALIDATION_ERROR": "Could not save the input.",
       "INTERNAL": "Unexpected error. Please try again."
+    },
+    "projectMode": {
+      "existing_project": "Extends an existing project",
+      "new_project": "Becomes a project of its own"
+    },
+    "hints": {
+      "kindHours": "You enter the quantity when assigning. The hours are credited to the customer and allocated to the project.",
+      "kindFeedbackRound": "Assigning adds one more feedback round to the project.",
+      "projectModeFixed": "This kind always belongs to an existing project.",
+      "pricingModeFixed": "The kind determines the pricing.",
+      "portal": "Customers see the title and this description, never the price. You can prepare the text before you release the template."
     }
   }
 }

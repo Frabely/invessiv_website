@@ -34,7 +34,8 @@
       "confirmed": "Bestätigt",
       "rejected": "Abgelehnt"
     },
-    "templateRemoved": "Vorlage gelöscht"
+    "templateRemoved": "Vorlage gelöscht",
+    "hours": "{duration} zu {rate} pro Stunde"
   },
   "empty": {
     "title": "Noch keine Leistung zugewiesen",
@@ -61,7 +62,10 @@
       "priceCents": "Preis",
       "pricingMode": "Preisart",
       "recurringInterval": "Intervall",
-      "status": "Status"
+      "status": "Status",
+      "quantity": "Menge",
+      "hourlyRate": "Stundensatz",
+      "allocateHoursToProject": "Stunden diesem Projekt zuweisen"
     },
     "placeholders": {
       "sourceLineItemTemplateId": "Vorlage wählen",
@@ -103,8 +107,43 @@
       "PROJECT_LINE_ITEM_NOT_FOUND": "Die Leistung wurde nicht gefunden.",
       "PROJECT_NOT_FOUND": "Das Projekt wurde nicht gefunden.",
       "LINE_ITEM_TEMPLATE_NOT_ASSIGNABLE": "Diese Vorlage ist archiviert und kann nicht zugewiesen werden.",
+      "EFFECT_NOT_PERMITTED": "Dir fehlt das Recht für das, was diese Vorlage auslöst. Es wurde nichts gespeichert.",
+      "PROJECT_CLOSED": "Das Projekt nimmt keine Stunden mehr an. Es wurde nichts gespeichert.",
+      "FEEDBACK_ROUND_NOT_AVAILABLE": "Das Projekt kann keine weitere Feedbackrunde bekommen. Es wurde nichts gespeichert.",
       "VALIDATION_ERROR": "Eingabe konnte nicht gespeichert werden.",
       "INTERNAL": "Unerwarteter Fehler. Bitte erneut versuchen."
+    },
+    "quantity": {
+      "hours": "Stunden",
+      "minutes": "Minuten",
+      "decreaseHours": "Eine Stunde weniger",
+      "increaseHours": "Eine Stunde mehr",
+      "decrease": "15 Minuten weniger",
+      "increase": "15 Minuten mehr",
+      "hint": {
+        "touch": "Über der Zahl nach oben oder unten wischen oder die Pfeile nutzen. Minuten in 15-Minuten-Schritten.",
+        "desktop": "Mit dem Mausrad über der Zahl scrollen oder die Pfeile nutzen. Minuten in 15-Minuten-Schritten.",
+        "fallback": "Die Pfeile nutzen, um die Menge anzupassen. Minuten in 15-Minuten-Schritten."
+      },
+      "invalid": "Bitte ganze Stunden und 00, 15, 30 oder 45 Minuten angeben.",
+      "required": "Bitte eine Menge größer als 0:00 angeben.",
+      "tooMuch": "Höchstens {duration} möglich."
+    },
+    "effects": {
+      "hours": "Schreibt {duration} gut und weist sie diesem Projekt zu. Wert: {amount}.",
+      "hoursPending": "Die Menge wird dem Kunden gutgeschrieben und diesem Projekt zugewiesen.",
+      "hoursFixed": "{duration} wurden beim Zuweisen gutgeschrieben. Menge und Status stehen fest; eine Korrektur buchst du über „Stunden gutschreiben“, die Verteilung auf Projekte änderst du im Abschnitt „Stunden“.",
+      "feedbackRound": "Fügt diesem Projekt eine weitere Feedbackrunde hinzu.",
+      "feedbackRoundFixed": "Die Feedbackrunde wurde beim Zuweisen hinzugefügt. Der Status steht fest.",
+      "hoursFree": "Schreibt {duration} gut. Die Stunden bleiben frei und lassen sich später jedem Projekt des Kunden zuweisen. Wert: {amount}.",
+      "hoursFreePending": "Die Menge wird dem Kunden gutgeschrieben und bleibt frei für alle seine Projekte."
+    },
+    "blockers": {
+      "missing_hours_permission": "Diese Vorlage schreibt Stunden gut. Das darf nur, wer Stunden verwalten darf.",
+      "project_closed": "Dieses Projekt ist abgebrochen oder archiviert und nimmt keine Stunden mehr an.",
+      "missing_project_permission": "Diese Vorlage ändert die Prozessleiste. Dafür brauchst du Schreibrecht am Projekt.",
+      "project_approved": "Das Projekt ist abgenommen. Eine weitere Feedbackrunde ist nicht mehr möglich.",
+      "limit_reached": "Das Projekt hat bereits 20 Feedbackrunden."
     }
   }
 }

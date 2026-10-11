@@ -2,6 +2,8 @@
 export const LineItemTemplateFieldLimits = {
   TitleMaxLength: 200,
   DescriptionMaxLength: 4000,
+  /** The text customers read in the portal; shorter than the internal scope description. */
+  PortalDescriptionMaxLength: 2000,
   /** Not a business cap: `price_cents` is a Postgres 4-byte `integer` column; this is its ceiling. */
   PriceCentsMax: 2_147_483_647,
 } as const;

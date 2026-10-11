@@ -2,7 +2,18 @@ import "server-only";
 
 import { and, desc, eq, type SQL, sql } from "drizzle-orm";
 
-import type { ContactDatabaseReader } from "@invessiv/db/core";
+import type {
+  ContactDatabaseReader,
+  ContactDatabaseTransaction,
+} from "@invessiv/db/core";
+import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
+import { ActorType } from "@invessiv/common/constants/activity/actor-types";
+import type { ExtraFeedbackRoundBlocker } from "@invessiv/common/constants/crm/extra-feedback-round-blockers";
+import {
+  findExtraFeedbackRoundBlocker,
+  nextExtraFeedbackRoundPosition,
+} from "@invessiv/common/patterns/crm/extra-feedback-round";
+import { sortFeedbackRoundPositions } from "@invessiv/common/patterns/crm/feedback-round-positions";
 import type { FeedbackHandOverBlocker } from "@invessiv/common/constants/crm/feedback-hand-over-blockers";
 import { findFeedbackHandOverBlocker } from "@invessiv/common/patterns/crm/feedback-hand-over-blocker";
 import {
@@ -11,7 +22,13 @@ import {
   projects,
 } from "@invessiv/db/record-configuration";
 import type { FeedbackRoundDto } from "@invessiv/common/contracts/crm/feedback-round.dto";
+import {
+  FEEDBACK_QUOTA_ACTIVITY_ENTITY,
+  FEEDBACK_QUOTA_ACTIVITY_FIELD,
+} from "@/common/constants/crm/feedback-round-activity-metadata";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
+import { activityService } from "@/server/shared/services/activity-service";
+import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
 import { feedbackRoundItemService } from "@/server/shared/services/feedback/feedback-round-item-service";
 import type { FeedbackRoundRow } from "@/server/shared/services/feedback/feedback-service-types";
 import { loadPortalContactNames } from "@/server/shared/services/load-portal-contact-names";
@@ -118,7 +135,68 @@ async function toRoundDto(
   );
 }
 
+/**
+ * Adds one round step to the project's track and returns the reason when it cannot. The project
+ * row is locked like for a handover and the project editor, so the track cannot move in between.
+ * The step goes where `nextExtraFeedbackRoundPosition` puts it; rounds already handed over keep
+ * their place. The caller has checked `projects.write` on the project.
+ */
+async function addExtraRoundStep(
+  tx: ContactDatabaseTransaction,
+  projectId: string,
+  actor: WorkspaceActor,
+): Promise<ExtraFeedbackRoundBlocker | null> {
+  const project = await findProjectTrack(tx, projectId, undefined, {
+    lock: true,
+  });
+  if (!project)
+    throw new Error("Project of the extra feedback round is missing");
+  const positions = project.feedbackRoundPositions ?? [];
+  const rounds = await tx
+    .select({ status: feedbackRounds.status })
+    .from(feedbackRounds)
+    .where(eq(feedbackRounds.project_id, projectId));
+  const blocker = findExtraFeedbackRoundBlocker({ positions, rounds });
+  if (blocker) return blocker;
+
+  const nextPositions = sortFeedbackRoundPositions([
+    ...positions,
+    nextExtraFeedbackRoundPosition({
+      processSteps: project.processSteps,
+      currentProcessStep: project.currentProcessStep,
+      positions,
+    }),
+  ]);
+  await updateLockedVersioned(
+    {
+      tx,
+      table: projects,
+      id: projectId,
+      expectedVersion: project.version,
+      patch: {
+        feedback_round_positions: nextPositions,
+        included_feedback_rounds: nextPositions.length,
+      },
+    },
+    "Locked project changed while a feedback round was added",
+  );
+  await activityService.createActivity(tx, {
+    customerId: project.customerId,
+    projectId,
+    actor: { type: ActorType.User, userId: actor.userId },
+    type: ActivityType.FieldChange,
+    metadata: {
+      entity: FEEDBACK_QUOTA_ACTIVITY_ENTITY,
+      field: FEEDBACK_QUOTA_ACTIVITY_FIELD,
+      previous: positions.length,
+      next: nextPositions.length,
+    },
+  });
+  return null;
+}
+
 export const feedbackRoundService = {
+  addExtraRoundStep,
   findProjectTrack,
   listRounds,
   findHandOverBlocker,

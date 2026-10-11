@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 
+import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
+import { LineItemProjectMode } from "@invessiv/common/constants/crm/line-item-project-modes";
 import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { LineItemTemplateStatus } from "@invessiv/common/constants/crm/line-item-template-statuses";
@@ -27,6 +29,10 @@ const TEMPLATE: LineItemTemplateDto = {
   pricingMode: ServicePricingMode.Recurring,
   recurringInterval: BillingInterval.Monthly,
   status: LineItemTemplateStatus.Active,
+  kind: LineItemKind.Standard,
+  projectMode: LineItemProjectMode.ExistingProject,
+  portalRequestable: false,
+  portalDescription: "",
   version: 2,
   createdAt: "2026-01-01T00:00:00.000Z",
   updatedAt: "2026-01-01T00:00:00.000Z",
@@ -36,6 +42,8 @@ const PROJECT_LINE_ITEM: ProjectLineItemDto = {
   id: "55555555-5555-4555-8555-555555555555",
   projectId: "33333333-3333-4333-8333-333333333333",
   sourceLineItemTemplateId: TEMPLATE_ID,
+  kind: LineItemKind.Standard,
+  quantityMinutes: null,
   title: "Wartung klein",
   description: "",
   priceCents: 7500,
@@ -58,6 +66,9 @@ function values(
     pricingMode: ServicePricingMode.OneTime,
     recurringInterval: null,
     status: ProjectLineItemStatus.Planned,
+    kind: LineItemKind.Standard,
+    quantityInput: "",
+    allocateHoursToProject: true,
     ...overrides,
   };
 }
@@ -72,6 +83,9 @@ describe("createProjectLineItemFormValues", () => {
       pricingMode: ServicePricingMode.OneTime,
       recurringInterval: null,
       status: ProjectLineItemStatus.Planned,
+      kind: LineItemKind.Standard,
+      quantityInput: "",
+      allocateHoursToProject: true,
     });
   });
 
@@ -94,7 +108,97 @@ describe("applyLineItemTemplateToFormValues", () => {
       pricingMode: ServicePricingMode.Recurring,
       recurringInterval: BillingInterval.Monthly,
       status: ProjectLineItemStatus.Planned,
+      kind: LineItemKind.Standard,
+      quantityInput: "",
+      allocateHoursToProject: true,
     });
+  });
+
+  it("starts purchased hours as confirmed and without a quantity", () => {
+    expect(
+      applyLineItemTemplateToFormValues(
+        {
+          ...TEMPLATE,
+          kind: LineItemKind.Hours,
+          pricingMode: ServicePricingMode.Rate,
+          recurringInterval: null,
+        },
+        "de",
+      ),
+    ).toMatchObject({
+      kind: LineItemKind.Hours,
+      status: ProjectLineItemStatus.Confirmed,
+      quantityInput: "",
+    });
+  });
+});
+
+describe("quantity of purchased hours", () => {
+  const hours = () =>
+    values({
+      kind: LineItemKind.Hours,
+      pricingMode: ServicePricingMode.Rate,
+      quantityInput: "5:00",
+    });
+
+  it("is required when hours are assigned", () => {
+    expect(
+      validateProjectLineItemForm(
+        { ...hours(), quantityInput: "" },
+        { requiresTemplate: true },
+      ),
+    ).toEqual({ quantityInput: "required" });
+    expect(
+      validateProjectLineItemForm(
+        { ...hours(), quantityInput: "0:20" },
+        { requiresTemplate: true },
+      ),
+    ).toEqual({ quantityInput: "invalid" });
+  });
+
+  it("is not asked again when a stored hours item is edited", () => {
+    expect(
+      validateProjectLineItemForm(
+        { ...hours(), quantityInput: "" },
+        { requiresTemplate: false },
+      ),
+    ).toEqual({});
+  });
+
+  it("travels as minutes in the request and stays out of a standard one", () => {
+    expect(toCreateProjectLineItemRequest(hours()).quantityMinutes).toBe(300);
+    expect(
+      toCreateProjectLineItemRequest(values({ quantityInput: "5:00" }))
+        .quantityMinutes,
+    ).toBeNull();
+  });
+
+  it("says whether the hours go to the project or stay free, for hours only", () => {
+    expect(toCreateProjectLineItemRequest(hours())).toMatchObject({
+      allocateHoursToProject: true,
+    });
+    expect(
+      toCreateProjectLineItemRequest({
+        ...hours(),
+        allocateHoursToProject: false,
+      }),
+    ).toMatchObject({ allocateHoursToProject: false });
+    expect(toCreateProjectLineItemRequest(values())).not.toHaveProperty(
+      "allocateHoursToProject",
+    );
+  });
+
+  it("pre-fills the stored quantity for display", () => {
+    expect(
+      createProjectLineItemFormValues(
+        {
+          ...PROJECT_LINE_ITEM,
+          kind: LineItemKind.Hours,
+          quantityMinutes: 315,
+        },
+        "de",
+      ).quantityInput,
+    ).toBe("5:15");
   });
 });
 
@@ -179,6 +283,7 @@ describe("toCreateProjectLineItemRequest", () => {
       pricingMode: ServicePricingMode.OneTime,
       recurringInterval: null,
       status: ProjectLineItemStatus.Planned,
+      quantityMinutes: null,
     });
   });
 

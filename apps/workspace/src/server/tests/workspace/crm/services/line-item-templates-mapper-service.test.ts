@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 
+import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
+import { LineItemProjectMode } from "@invessiv/common/constants/crm/line-item-project-modes";
 import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { LineItemTemplateStatus } from "@invessiv/common/constants/crm/line-item-template-statuses";
@@ -17,6 +19,10 @@ function rowFixture(
     pricing_mode: ServicePricingMode.OneTime,
     recurring_interval: null,
     status: LineItemTemplateStatus.Active,
+    kind: null,
+    project_mode: null,
+    portal_requestable: null,
+    portal_description: null,
     version: 1,
     created_at: new Date("2026-01-01T10:00:00.000Z"),
     updated_at: new Date("2026-01-02T11:00:00.000Z"),
@@ -35,6 +41,10 @@ describe("lineItemTemplatesMapperService.toDto", () => {
       priceCents: 150000,
       pricingMode: ServicePricingMode.OneTime,
       recurringInterval: null,
+      kind: LineItemKind.Standard,
+      projectMode: LineItemProjectMode.ExistingProject,
+      portalRequestable: false,
+      portalDescription: "",
       status: LineItemTemplateStatus.Active,
       version: 1,
       createdAt: "2026-01-01T10:00:00.000Z",

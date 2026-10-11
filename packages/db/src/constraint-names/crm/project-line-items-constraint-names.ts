@@ -10,6 +10,10 @@ export const ProjectLineItemsConstraintName = {
   PricingModeIntervalConsistencyCheck:
     "project_line_items_pricing_mode_interval_consistency_check",
   VersionCheck: "project_line_items_version_check",
+  StatusCheck: "project_line_items_status_check",
+  KindCheck: "project_line_items_kind_check",
+  QuantityMinutesCheck: "project_line_items_quantity_minutes_check",
+  KindQuantityCheck: "project_line_items_kind_quantity_check",
   ProjectCreatedAtIndex: "project_line_items_project_created_at_idx",
 } as const;
 
@@ -25,5 +29,9 @@ export const PROJECT_LINE_ITEMS_CONSTRAINT_NAME_VALUES = [
   ProjectLineItemsConstraintName.RecurringIntervalCheck,
   ProjectLineItemsConstraintName.PricingModeIntervalConsistencyCheck,
   ProjectLineItemsConstraintName.VersionCheck,
+  ProjectLineItemsConstraintName.StatusCheck,
+  ProjectLineItemsConstraintName.KindCheck,
+  ProjectLineItemsConstraintName.QuantityMinutesCheck,
+  ProjectLineItemsConstraintName.KindQuantityCheck,
   ProjectLineItemsConstraintName.ProjectCreatedAtIndex,
 ] as const;

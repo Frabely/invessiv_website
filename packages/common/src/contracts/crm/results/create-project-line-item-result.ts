@@ -13,4 +13,12 @@ export type CreateProjectLineItemResult =
   | {
       ok: false;
       code: typeof ProjectLineItemErrorCode.LineItemTemplateNotAssignable;
+    }
+  // The assignment's effect on hours or the process track was refused; nothing was written.
+  | {
+      ok: false;
+      code:
+        | typeof ProjectLineItemErrorCode.EffectNotPermitted
+        | typeof ProjectLineItemErrorCode.ProjectClosed
+        | typeof ProjectLineItemErrorCode.FeedbackRoundNotAvailable;
     };

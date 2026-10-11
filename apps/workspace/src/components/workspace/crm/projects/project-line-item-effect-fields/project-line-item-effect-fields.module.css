@@ -1,0 +1,33 @@
+.quantity {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 0.35rem;
+}
+
+/* Allocating is the default; leaving the hours free is a deliberate untick. */
+.allocate {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* The effect is a consequence the member accepts with the click, so it reads as a statement. */
+.note {
+  grid-column: 1 / -1;
+  margin: 0 0 0.5rem;
+  padding: 0.5rem 0.7rem;
+  border-left: 2px solid var(--color-border-strong);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+.note[data-tone="error"] {
+  border-left-color: var(--color-danger);
+  color: var(--color-text);
+}

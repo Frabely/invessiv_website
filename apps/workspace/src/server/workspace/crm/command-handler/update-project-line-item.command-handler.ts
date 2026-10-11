@@ -3,6 +3,8 @@ import "server-only";
 import { eq } from "drizzle-orm";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
+import { AUTOMATED_LINE_ITEM_KIND_VALUES } from "@invessiv/common/constants/crm/line-item-kinds";
+import { ProjectLineItemStatus } from "@invessiv/common/constants/crm/project-line-item-statuses";
 import { ProjectLineItemErrorCode } from "@invessiv/common/constants/crm/errors/project-line-item-error-codes";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { UpdateProjectLineItemRequestDto } from "@invessiv/common/contracts/crm/update-project-line-item-request.dto";
@@ -17,7 +19,8 @@ import { updateVersioned } from "@/server/workspace/shared/update-versioned";
 
 /**
  * Editing a snapshot never touches its origin template and never reaches another project: the
- * write is scoped by the project the row already belongs to.
+ * write is scoped by the project the row already belongs to. Purchased hours and a sold feedback
+ * round already took effect when they were assigned, so their status and pricing mode stay.
  */
 export async function updateProjectLineItem(
   projectLineItemId: string,
@@ -46,6 +49,8 @@ export async function updateProjectLineItem(
     .select({
       customerId: projects.customer_id,
       projectId: projectLineItems.project_id,
+      kind: projectLineItems.kind,
+      pricingMode: projectLineItems.pricing_mode,
     })
     .from(projectLineItems)
     .innerJoin(projects, eq(projects.id, projectLineItems.project_id))
@@ -65,6 +70,25 @@ export async function updateProjectLineItem(
   }
 
   const data = validation.data;
+  const automated =
+    target.kind !== null &&
+    AUTOMATED_LINE_ITEM_KIND_VALUES.includes(target.kind);
+  // The schema fills in `planned` for an omitted status; for these kinds omitted means unchanged.
+  const status =
+    automated && input.status === undefined
+      ? ProjectLineItemStatus.Confirmed
+      : data.status;
+  if (
+    automated &&
+    (status !== ProjectLineItemStatus.Confirmed ||
+      data.pricingMode !== target.pricingMode)
+  ) {
+    return {
+      ok: false,
+      code: ProjectLineItemErrorCode.ValidationError,
+      errors: [],
+    };
+  }
   const write = await db.transaction((tx) =>
     updateVersioned({
       tx,
@@ -77,7 +101,7 @@ export async function updateProjectLineItem(
         price_cents: data.priceCents,
         pricing_mode: data.pricingMode,
         recurring_interval: data.recurringInterval,
-        status: data.status,
+        status,
       },
       toDto: projectLineItemsMapperService.toDto,
     }),

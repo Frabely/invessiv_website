@@ -1,3 +1,16 @@
 .titleCell {
   font-weight: 600;
 }
+
+/* What the entry does and where it is offered, read as part of its name. */
+.tag {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.4rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 99px;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 400;
+  white-space: nowrap;
+}

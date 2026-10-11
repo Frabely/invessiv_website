@@ -24,6 +24,8 @@ function service(
     id: "55555555-5555-4555-8555-555555555555",
     projectId: PROJECT_ID,
     sourceLineItemTemplateId: TEMPLATE_ID,
+    kind: "standard",
+    quantityMinutes: null,
     title: "Landingpage",
     description: "Einseitige Website inklusive Konzept und Umsetzung.",
     priceCents: 200000,

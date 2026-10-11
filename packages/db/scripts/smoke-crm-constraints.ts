@@ -24,6 +24,7 @@ import {
   runCredentialChecks,
 } from "./crm-smoke/credential-checks";
 import { runHoursChecks } from "./crm-smoke/hours-checks";
+import { runLineItemChecks } from "./crm-smoke/line-item-checks";
 import {
   cleanupQuestionnaireFixtures,
   runOnboardingChecks,
@@ -374,6 +375,15 @@ async function runChecks(sql: Sql) {
     expectAccepted,
   });
   await runHoursChecks({
+    sql,
+    memberId,
+    name,
+    insertCustomer: (displayName) =>
+      insertCustomer(sql, { ownerMemberId: memberId, displayName }),
+    expectRejected,
+    expectAccepted,
+  });
+  await runLineItemChecks({
     sql,
     memberId,
     name,

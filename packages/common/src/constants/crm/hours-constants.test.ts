@@ -24,7 +24,10 @@ describe("hours constants", () => {
   });
 
   it("lists every purchase source exactly once", () => {
-    expect(HOUR_PURCHASE_SOURCE_VALUES).toEqual(["manual"]);
+    expect(HOUR_PURCHASE_SOURCE_VALUES).toEqual([
+      "manual",
+      "project_line_item",
+    ]);
     expect(HOUR_PURCHASE_SOURCE_VALUES).toEqual(
       Object.values(HourPurchaseSource),
     );

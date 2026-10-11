@@ -10,7 +10,10 @@ import { ProjectLineItemStatus } from "@invessiv/common/constants/crm/project-li
 import type { ProjectLineItemDto } from "@invessiv/common/contracts/crm/project-line-item.dto";
 import type { LineItemTemplateDto } from "@invessiv/common/contracts/crm/line-item-template.dto";
 import type { ProjectLineItemValue } from "@invessiv/common/contracts/crm/project-line-item-value";
+import { hoursLineItemAmountCents } from "@invessiv/common/patterns/crm/project-line-item-value";
+import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import { ButtonLink, PrimaryCtaButton } from "@invessiv/ui";
+import type { LineItemAssignmentBlockers } from "@/common/contracts/crm/line-item-assignment-blockers";
 import type { Locale } from "@/config/i18n";
 import type { CrmProjectLineItemsDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
@@ -21,6 +24,8 @@ import { ProjectLineItemFormDialog } from "../project-line-item-form-dialog/proj
 import styles from "./project-line-items-section.module.css";
 
 export type ProjectLineItemsSectionProps = {
+  /** Absent without write access; then nothing can be assigned and nothing needs explaining. */
+  blockers?: LineItemAssignmentBlockers;
   canWrite: boolean;
   catalogHref: string | null;
   content: CrmProjectLineItemsDictionary;
@@ -29,6 +34,11 @@ export type ProjectLineItemsSectionProps = {
   services: readonly ProjectLineItemDto[];
   templates: readonly LineItemTemplateDto[];
   value?: ProjectLineItemValue;
+};
+
+const NO_BLOCKERS: LineItemAssignmentBlockers = {
+  hours: null,
+  feedbackRound: null,
 };
 
 /** How often the amount is due, as a phrase that reads under the price rather than beside it. */
@@ -53,6 +63,7 @@ function cadenceLabel(
  * order it was agreed. The same dialog assigns and edits.
  */
 export function ProjectLineItemsSection({
+  blockers = NO_BLOCKERS,
   canWrite,
   catalogHref,
   content,
@@ -89,10 +100,32 @@ export function ProjectLineItemsSection({
           </span>
         </span>
         <span className={styles.amount}>
-          {formatEuroCents(service.priceCents, locale)}
+          {formatEuroCents(
+            service.quantityMinutes !== null
+              ? hoursLineItemAmountCents(
+                  service.priceCents,
+                  service.quantityMinutes,
+                )
+              : service.priceCents,
+            locale,
+          )}
         </span>
-        <span className={styles.description}>{service.description}</span>
-        <span className={styles.cadence}>{cadenceLabel(service, content)}</span>
+        <span className={styles.description}>
+          {service.quantityMinutes !== null ? (
+            <span className={styles.quantity}>
+              {formatMessage(content.list.hours, {
+                duration: formatDuration(service.quantityMinutes),
+                rate: formatEuroCents(service.priceCents, locale),
+              })}
+            </span>
+          ) : null}
+          {service.description}
+        </span>
+        <span className={styles.cadence}>
+          {service.quantityMinutes !== null
+            ? content.list.cadence.one_time
+            : cadenceLabel(service, content)}
+        </span>
       </>
     );
   }
@@ -114,6 +147,7 @@ export function ProjectLineItemsSection({
       after={
         dialogOpen && canWrite ? (
           <ProjectLineItemFormDialog
+            blockers={blockers}
             catalogHref={catalogHref}
             content={content}
             key={editing?.id ?? "assign"}

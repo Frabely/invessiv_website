@@ -23,6 +23,12 @@ const migration = readFileSync(
   "utf8",
 );
 
+/** Task 74 widened the source CHECK; the current set of sources is the one written there. */
+const sourceMigration = readFileSync(
+  resolve(process.cwd(), "migrations", "0058_add_line_item_kinds.sql"),
+  "utf8",
+);
+
 /** Returns the CREATE TABLE block of one table, so column checks cannot match a sibling table. */
 function tableBlock(tableName: string): string {
   const start = migration.indexOf(`CREATE TABLE IF NOT EXISTS ${tableName}`);
@@ -78,11 +84,11 @@ describe.each([
 );
 
 it("writes every const value and limit into the migration", () => {
-  for (const value of [
-    ...HOUR_PURCHASE_KIND_VALUES,
-    ...HOUR_PURCHASE_SOURCE_VALUES,
-  ])
+  for (const value of HOUR_PURCHASE_KIND_VALUES)
     expect(migration).toContain(`'${value}'`);
+  expect(sourceMigration).toContain(
+    `CHECK (source IN (${HOUR_PURCHASE_SOURCE_VALUES.map((value) => `'${value}'`).join(", ")}))`,
+  );
 
   expect(migration).toContain(`minutes % ${HoursLimits.StepMinutes} = 0`);
   expect(migration).toContain(

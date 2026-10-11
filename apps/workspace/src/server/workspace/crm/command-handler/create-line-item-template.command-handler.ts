@@ -31,6 +31,10 @@ export async function createLineItemTemplate(
       price_cents: data.priceCents,
       pricing_mode: data.pricingMode,
       recurring_interval: data.recurringInterval,
+      kind: data.kind,
+      project_mode: data.projectMode,
+      portal_requestable: data.portalRequestable,
+      portal_description: data.portalDescription,
       status: LineItemTemplateStatus.Active,
       version: 1,
     })

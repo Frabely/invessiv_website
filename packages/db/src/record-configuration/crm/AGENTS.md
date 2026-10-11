@@ -92,5 +92,17 @@ Plan: `apps/workspace/plans/crm/20-stunden-und-history/README.md`.
   Bestand, Freigeben höchstens bis zum unverbrauchten Teil, Korrektur nie unter die zugewiesene Summe. Der Schreibpfad
   sperrt dafür die Kundenzeile. Was die Datenbank selbst erzwingt, deckt `scripts/crm-smoke/hours-checks.ts` ab.
 - `idempotency_key` (unique) an beiden Buchungstabellen: Ein wiederholter Request ist dieselbe Zeile, keine zweite.
-- `source` an der Kaufbuchung ist heute immer `manual`. Weitere Herkünfte (Leistungsanfrage, monatliche Zubuchung)
-  erweitern Const-Objekt und CHECK in einer eigenen additiven Migration.
+- `source` an der Kaufbuchung ist `manual` oder seit Task 74 `project_line_item` (siehe „Leistungsarten“). Weitere
+  Herkünfte (monatliche Zubuchung) erweitern Const-Objekt und CHECK in einer eigenen additiven Migration.
+
+## Leistungsarten (Ordner 13c, Task 74)
+
+- `line_item_templates` trägt `kind`, `project_mode`, `portal_requestable` und `portal_description`,
+  `project_line_items` trägt `kind` und `quantity_minutes`. **Alle sechs Spalten sind bewusst nullable:** Die
+  vorherige App-Version schreibt sie nicht. `NULL` heißt Standard, bestehendes Projekt bzw. nicht freigegeben; die
+  CHECKs sind deshalb NULL-sicher geschrieben (`IS DISTINCT FROM`, `IS NOT DISTINCT FROM`).
+- Eine Menge gibt es genau bei `kind = hours` (`project_line_items_kind_quantity_check`).
+- `customer_hour_purchases.source` kennt zusätzlich `project_line_item`: gutgeschrieben zusammen mit einer
+  Stunden-Leistung, deren ID der `idempotency_key` ist.
+- Was die Datenbank selbst erzwingt, deckt `scripts/crm-smoke/line-item-checks.ts` ab; die Regeln, die das Projekt
+  oder den Stundenbestand brauchen, sichert `projectLineItemAssignmentService`.

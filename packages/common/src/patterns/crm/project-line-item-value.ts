@@ -4,6 +4,16 @@ import { ServicePricingMode } from "@invessiv/common/constants/crm/service-prici
 import type { ProjectLineItemDto } from "@invessiv/common/contracts/crm/project-line-item.dto";
 import type { ProjectLineItemValue } from "@invessiv/common/contracts/crm/project-line-item-value";
 
+const MINUTES_PER_HOUR = 60;
+
+/** What purchased hours cost at an hourly rate, rounded to whole cents. */
+export function hoursLineItemAmountCents(
+  rateCents: number,
+  quantityMinutes: number,
+): number {
+  return Math.round((rateCents * quantityMinutes) / MINUTES_PER_HOUR);
+}
+
 export function calculateProjectLineItemValue(
   items: readonly ProjectLineItemDto[],
 ): ProjectLineItemValue {
@@ -18,6 +28,16 @@ export function calculateProjectLineItemValue(
         item.recurringInterval === BillingInterval.Monthly
       ) {
         value.monthlyCents += item.priceCents;
+      }
+      // A bare rate is a condition; purchased hours are revenue of rate times hours.
+      if (
+        item.pricingMode === ServicePricingMode.Rate &&
+        item.quantityMinutes !== null
+      ) {
+        value.oneTimeCents += hoursLineItemAmountCents(
+          item.priceCents,
+          item.quantityMinutes,
+        );
       }
       return value;
     },

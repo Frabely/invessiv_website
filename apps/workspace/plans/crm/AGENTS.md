@@ -13,7 +13,7 @@ Diese Datei regelt die Umsetzung des CRM-Plans unabhängig vom Zielordner. Spezi
 Frühere Planstände mit 16 Merge-Einheiten und 34 Tasks sind vollständig ersetzt. Keine erinnerte
 Altentscheidung darf übernommen werden, wenn sie nicht in den aktuellen Dateien steht.
 
-**Ordnernummer ≠ Task-Nummer.** Die Ordnernummer (01–03, 03b–03d, 04–06, 06b, 07, 07a–07c, 08, 12a–12b, 13, 13a, 13c,
+**Ordnernummer ≠ Task-Nummer.** Die Ordnernummer (01–03, 03b–03d, 04–06, 06b, 07, 07a–07c, 08, 12a–12b, 13, 13a, 13c, 13d,
 14, 15, 16, 19–20,
 20a–20e, 21–22, 22a, 23–24) ist die
 Merge-Reihenfolge und kann sich beim
@@ -24,8 +24,10 @@ und Abhängigkeitsaussagen die **Ordner**-Nummer.
 ## Mergebarer Master ist Pflicht
 
 - Ein Ordner entspricht einem Branch `feat/crm-<ordner-slug>`, einem PR und einem Merge.
-  **Ausnahme:** Die Ordner `14-dateien` (14.1–14.6), `15-onboarding` (15.1–15.8), `16-feedbackrunden` (16.1–16.6),
-  `19-credentials` (19.1–19.2) und `20-stunden-und-history` (20.1–20.3) werden bewusst in mehreren Teil-PRs mit eigenen Branches geliefert; Regeln und Status stehen in der jeweiligen README.
+  **Ausnahme:** Die Ordner `13c-portal-leistungsanfragen` (13c.1–13c.3), `13d-leistungen-am-kunden` (13d.1–13d.2),
+  `14-dateien` (14.1–14.6),
+  `15-onboarding` (15.1–15.8), `16-feedbackrunden` (16.1–16.6), `19-credentials` (19.1–19.2) und
+  `20-stunden-und-history` (20.1–20.3) werden bewusst in mehreren Teil-PRs mit eigenen Branches geliefert; Regeln und Status stehen in der jeweiligen README.
 - Nach jedem Ordner sind Migration, Tests und App-Build grün; `master` ist produktiv deploybar.
 - Kein Ordner darf eine UI auf unvollständige Handler, fehlende Tabellen oder spätere Ordner zeigen.
 - Reine Fundamente bleiben unsichtbar. Sichtbare Funktionen werden vertikal vollständig geliefert.

@@ -214,6 +214,9 @@ export function CustomerProjectsSection({
           projectLineItemsContent &&
           projectLineItems.readableProjectIds.includes(activeProject.id) ? (
             <ProjectLineItemsSection
+              blockers={
+                projectLineItems.assignmentBlockersByProjectId[activeProject.id]
+              }
               canWrite={projectLineItems.writableProjectIds.includes(
                 activeProject.id,
               )}

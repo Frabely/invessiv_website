@@ -366,3 +366,37 @@ Ab Task 72 (`apps/workspace/plans/crm/20-stunden-und-history/72-zeitbuchungen-un
   Vergleich, weil der Cursor als JS-Zeitstempel reist. Ein unlesbarer Cursor ist `VALIDATION_ERROR`.
 - `getTaskBookedMinutes` liefert die gebuchte Zeit je Aufgabe eines Kunden in einer gruppierten Abfrage, Kulanz
   eingeschlossen: Die Zahl sagt, wie lange eine Aufgabe gedauert hat, nicht was berechnet wurde.
+
+## Leistungsarten (ab Task 74)
+
+Plan: `apps/workspace/plans/crm/13c-portal-leistungsanfragen/74-leistungsarten-und-zuweisung.md`.
+
+- **Eine Vorlage hat eine Art** (`LineItemKind`: `standard`, `hours`, `feedback_round`), einen Projektbezug
+  (`LineItemProjectMode`) und eine Portal-Freigabe mit eigenem Kundentext. Die Regeln stehen genau einmal in
+  `lineItemTemplateSchemas` (`refineKind`) und als CHECK in der Datenbank: Stunden nur als `rate`, Zusatzrunde nur
+  `one_time`, beide nur an einem bestehenden Projekt, Freigabe nur mit Kundentext. Die interne Beschreibung ersetzt
+  den Kundentext nie.
+- **Die vier neueren Spalten sind nullable** (Zeilen von vor Task 74). `NULL` liest der Mapper als Standard,
+  bestehendes Projekt und nicht freigegeben; der Schreibpfad setzt immer einen Wert.
+- **Eine Projektleistung entsteht nur über `projectLineItemAssignmentService.assign`.** Der Aufrufer lädt das
+  Projekt, prüft `project_line_items.write` und dass die Vorlage aktiv ist; der Service prüft, was die Art
+  zusätzlich braucht, und schreibt alles in der Transaktion des Aufrufers. Kein Handler fügt selbst in
+  `project_line_items` ein. Die Annahme einer Leistungsanfrage (Task 75) ruft dieselbe Methode auf.
+- **Stunden:** Menge Pflicht (Vielfaches von 15), `hours.manage` am Kunden (sonst `EFFECT_NOT_PERMITTED`, 403),
+  kein abgebrochenes oder archiviertes Projekt (`PROJECT_CLOSED`, 409). Unter der Kundensperre
+  (`hoursLedgerService.lockCustomer`) entstehen Leistung, Kaufbuchung (`source = project_line_item`) und
+  Zuweisung an das Projekt gemeinsam; beide Buchungszeilen tragen die ID der Leistung als `idempotency_key`.
+  Mit `allocateHoursToProject: false` entfällt nur die Zuweisung: Die Stunden bleiben frei, die Leistung
+  dokumentiert weiter den Verkauf an ihrem Projekt, und `PROJECT_CLOSED` greift dann nicht.
+- **Zusatzrunde:** `projects.write` am Projekt (sonst `EFFECT_NOT_PERMITTED`), dann
+  `feedbackRoundService.addExtraRoundStep`: Projektsperre wie bei Übergabe und Projekt-Editor, Regel aus
+  `findExtraFeedbackRoundBlocker` und `nextExtraFeedbackRoundPosition` (`@invessiv/common`), Schreiben über
+  `updateLockedVersioned`, eine Activity `field_change` (`included_feedback_rounds`). Ein abgenommenes Projekt
+  oder 20 Runden antworten `FEEDBACK_ROUND_NOT_AVAILABLE` (409).
+- **Automatik-Arten entstehen als `confirmed` und bleiben es.** `updateProjectLineItem` lehnt einen anderen Status
+  oder eine andere Preisart ab; die Menge ist nicht Teil des Update-Schemas. Korrekturen laufen über „Stunden
+  gutschreiben → Korrektur“ bzw. den Projekt-Editor.
+- **Wert:** `rate` ohne Menge bleibt ein Konditionswert; eine Stunden-Leistung zählt über
+  `hoursLineItemAmountCents` als Einmalwert.
+- `listExtraFeedbackRoundBlockers` nimmt nur Projekte, die der Aufrufer über seinen eigenen Zugriffsbereich
+  gelesen hat; es ergänzt die Rundenstände und wendet dieselbe Regel wie die Zuweisung an.

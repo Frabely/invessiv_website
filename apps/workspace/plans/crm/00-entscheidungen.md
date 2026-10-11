@@ -166,6 +166,9 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
   Beschreibung, Preis in EUR-Cent, Preisart (`one_time`, `recurring`, `rate`), optionalem Intervall
   sowie Aktiv-/Archivstatus. Starttemplates sind Landingpage, Unterseite, zusätzliche Section,
   Wartung, SEO, Wartung + SEO und Stundensatz. Kombipakete sind eigene Templates.
+- **Folgeplan Ordner 13d (11.10.2026):** Der verpflichtende Projektbezug wird dort abgelöst — eine Leistung gehört
+  dann immer zu einem Kunden und höchstens zu einem Projekt (Wartung, freie Stunden, Workshops). Bis 13d gemergt
+  ist, gilt der folgende Punkt unverändert.
 - **Projektleistungen sind die einzige fachliche Heimat von Leistungen.** Jede gehört verpflichtend
   zu genau einem Projekt; der Kunde wird darüber abgeleitet. Kundenweite Positionen und
   `customer_packages` existieren nicht.
@@ -178,8 +181,14 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
 - `line_item_templates.read` und `line_item_templates.write` steuern den workspace-weiten Katalog und sind nicht bindbar.
   `project_line_items.read` und `project_line_items.write` sind bindbar: Kundenbindung vererbt auf alle
   Kundenprojekte; Projektbindung gilt nur für dieses Projekt.
+- **Leistungsarten (Neuzuschnitt Ordner 13c, 11.10.2026):** Eine Vorlage hat eine Art — `standard`, `hours`
+  (Preis = Stundensatz, Menge beim Zuweisen) oder `feedback_round` — und einen Projektbezug (`existing_project` oder
+  `new_project`). Die Zuweisung einer Stunden-Vorlage legt in einer Transaktion Projektleistung mit Menge,
+  Kaufbuchung (`source = project_line_item`) und Projektzuweisung an; die Zuweisung einer Zusatzrunden-Vorlage fügt
+  genau einen Rundenschritt ein. Beide entstehen immer als `confirmed` und sind in Status, Menge und Preisart fest.
 - Projekt- und Kundenwerte werden ausschließlich aus Projektleistungen berechnet, nie gespeichert.
-  `rate` ist ein Konditionswert und zählt nicht in die Umsatzsumme. Task 42a erweitert die bestehende
+  `rate` ohne Menge ist ein Konditionswert und zählt nicht in die Umsatzsumme; eine Stunden-Leistung mit Menge zählt
+  als Einmalwert (Satz × Stunden). Task 42a erweitert die bestehende
   Cockpit-View; eine zweite Kundenansicht entsteht nicht.
 - Die Projekt-UI zeigt Leistungen, Aufgaben und Chat bis zu deren jeweiliger Lieferung als sichtbare,
   nicht interaktive „Coming soon“-Slots ohne CTA.
@@ -247,8 +256,13 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
 - Portalrouten nutzen englische Slugs (`/portal/[customerId]/projects|files|assets|messages|onboarding|services`,
   `/portal/invite/[token]`); die Portal-Navigation ist eine Registry (`PORTAL_NAV_ITEMS`) mit `requiredPermission`.
 - Das Portal ist für eingeladene Kontakte aktiv; jede Anfrage prüft die Mitgliedschaft und die wirksamen Portalrollen.
-- Kunden können Leistungen aus einem freigegebenen Katalogausschnitt **preisfrei anfragen** (Ordner 13c). Das
-  Angebot entsteht weiter außerhalb; die Anwendung dokumentiert Anfrage und Ausgang.
+- Kunden können Leistungen **preisfrei anfragen** (Ordner 13c, Neuzuschnitt 11.10.2026): aus freigegebenen
+  Katalogvorlagen (Titel und eigener Kundentext, nie Preis) oder als Freitext. Status
+  `requested → offered (optional) → accepted | declined`, dazu `withdrawn` durch den Kunden aus `requested`.
+  Die Vorlage gibt den Projektbezug vor, final entscheidet das Team beim Annehmen (bestehendes oder im selben
+  Schritt neu angelegtes Projekt; aus Freitext auf Wunsch eine neue Vorlage). Das Angebot entsteht weiter außerhalb.
+  Es gibt keine Portalseite `services`: Das Modul ist Widget und Dialog. Details:
+  `13c-portal-leistungsanfragen/README.md`.
 - Widerruf wirkt sofort; historische Nachrichten und Audit-Einträge bleiben erhalten.
 - Vor der ersten Einladung bestätigt ein Mitarbeiter eine Vorschau aller sichtbaren Projekte,
   Aufgaben, Dateien und Stunden. Diese Vorschau ist die Owner-Portalsicht aus Ordner 13 (siehe unten), keine eigene
@@ -374,7 +388,9 @@ Neuzuschnitt 29.09.2026 (mit dem Owner abgestimmt); vollständige Spezifikation 
 - Das Rundenkontingent ergibt sich aus den Rundenschritten in der Prozessleiste (neue Projekte: 2 vor „Launch“), intern
   änderbar durch Einfügen oder Entfernen einzelner Rundenschritte. Frühes Feedback ist ein normaler Rundenschritt,
   z. B. hinter „Design“, und zählt ins Kontingent.
-- Zusatzrunden bucht der Kunde später über Leistungsanfragen (Ordner 13c); bis dahin fügt das Team intern einen Rundenschritt ein.
+- Zusatzrunden bucht der Kunde über Leistungsanfragen (Ordner 13c); bis dahin fügt das Team intern einen Rundenschritt ein.
+  Der neue Schritt landet hinter der letzten Runde bzw. hinter dem aktuellen Schritt, wenn das Projekt schon weiter
+  ist — höchstens 20, nie nach einer Abnahme.
   Das Portal nennt keinen Betrag.
 - Übergabe, Abschluss und Abnahme verändern die Projektphase niemals.
 - Benachrichtigung bis Ordner 20c ausschließlich über Chat-Systemnachrichten.
@@ -454,8 +470,9 @@ Neuzuschnitt 06.10.2026 (mit dem Owner abgestimmt); vollständige Spezifikation 
   Vorher-/Nachher-Werten protokolliert. Im Portal trennen zwei Rechte den Stand (`portal.hours.read`) von den
   einzelnen Buchungen (`portal.hours.entries.read`); beide liegen in `portal_standard`. Das Widget „Stunden“
   erscheint, sobald der Kunde eine Kauf- oder Zeitbuchung hat.
-- Später additiv: Stunden über eine Leistungsanfrage (Ordner 13c) und monatliche Zubuchung aus Wartungsverträgen
-  (Ordner 20c), jeweils als Kaufbuchung mit eigener `source`.
+- Additiv: Stunden über die Zuweisung einer Stunden-Vorlage — im Cockpit oder beim Annehmen einer Leistungsanfrage
+  (Ordner 13c, `source = project_line_item`, gutgeschrieben erst nach interner Annahme) — und später die monatliche
+  Zubuchung aus Wartungsverträgen (Ordner 20c), jeweils als Kaufbuchung mit eigener `source`.
 - Pausierte Kunden nach 180 Tagen, archivierte nach 90 Tagen zur manuellen Aufbewahrungsprüfung
   vorschlagen. Frist pro Kunde überschreibbar; keine automatische Löschung.
 - Kein Purge-Button. Ein getesteter Owner-Command bietet Vorschau, widerruft Zugriffe, entfernt
@@ -585,6 +602,7 @@ people
                                       ├── customer_credentials (optional je Projekt, Ordner 19)
                                       ├── customer_renewals
                                       ├── customer_tags
+                                      ├── service_requests ── line_item_templates / projects (Ordner 13c)
                                       └── customer_hour_purchases                    (Ordner 20)
 
 line_item_templates ── pflegbarer globaler Katalog
@@ -612,7 +630,7 @@ Präfixfrei bleiben eigenständige und querschnittliche Tabellen: `users`, `work
 `customers`, `projects`, `tasks`, `task_series`, `portal_memberships`, `portal_invitations`,
 `conversations`, `messages`, `message_files`, `conversation_reads`, `feedback_rounds`,
 `onboarding_forms`, `files`, `activities`, `security_events`, `outbox_jobs`,
-`notifications`, `line_item_templates`, `project_line_items`.
+`notifications`, `line_item_templates`, `project_line_items`, `service_requests`.
 
 `onboarding_forms` ist präfixfrei, weil der Bogen am Projekt hängt und kein Kindobjekt des
 Kunden ist; seine Kindtabellen tragen das Präfix `onboarding_` (`onboarding_form_blocks`, `onboarding_answers`, …).
@@ -747,7 +765,8 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12b erreicht:
 | 12b | läuft        | `12b-portal-zugang`                      | Einladung, Rollen je Kontakt, Widerruf und Mehrfirmenwechsel sicher nutzbar                                                                                                                                                  |   60–80 |   3–4 T. |
 | 13  | gemerged     | `13-portal-dashboard`                    | Widget-Dashboard mit Projekten, beiden Aufgabenseiten und Owner-Portalsicht                                                                                                                                                  |    ≈276 |   5–7 T. |
 | 13a | läuft        | `13a-kundenchat`                         | Kundenchat im CRM-Cockpit, Posteingang und Portal bidirektional nutzbar                                                                                                                                                      | 110–140 |   5–6 T. |
-| 13c | offen        | `13c-portal-leistungsanfragen`           | Preisfreie Leistungsanfragen im Portal, intern bearbeitbar                                                                                                                                                                   |   60–80 |   3–4 T. |
+| 13c | läuft        | `13c-portal-leistungsanfragen`           | Leistungsarten mit Stunden-/Runden-Automatik, Anfragen intern (Eingang, Annahme mit Projekt und Vorlage), preisfreie Anfrage im Portal; drei Teil-PRs (13c.1 Katalog, 13c.2 intern, 13c.3 Portal)                            |   ≈ 220 |  9–12 T. |
+| 13d | offen        | `13d-leistungen-am-kunden`               | Leistungen gehören zum Kunden und höchstens zu einem Projekt: Wartung, freie Stunden und Workshops ohne Projekt; zwei Teil-PRs (13d.1 Fundament, 13d.2 Cockpit)                                                              |  90–110 |   4–6 T. |
 | 14  | läuft        | `14-dateien`                             | Dateien, Links, ZIP, Portal-Dateien, Chat-Anhänge; sechs Teil-PRs (14.1–14.6), 14.1/14.3/14.4 gemerged, 14.2, 14.5 und 14.6 im Review                                                                                        | 290–425 | 12–16 T. |
 | 15  | auf `master` | `15-onboarding`                          | Onboarding-Baukasten (Katalog, Vorlagen), Bogen je Projekt, Portal-Formular, Prüfung, Nachforderung, Termin, Abschluss; 15.1–15.6 gemergt, 15.7/15.8 direkt committet; Review-Nacharbeiten auf `fix/crm-onboarding-cr-fixes` | 495–675 | 16–21 T. |
 | 16  | läuft        | `16-feedbackrunden`                      | Rundenschritte, Übergabe, Feedback-Punkte, Bearbeitung, Abnahme und Eingang; sechs Teil-PRs (16.1–16.6), 16.1 gemerged, 16.2 läuft, 16.6 im Review                                                                           | 315–430 | 13–16 T. |

@@ -2,6 +2,9 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { LineItemTemplateErrorCode } from "@invessiv/common/constants/crm/errors/line-item-template-error-codes";
+import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
+import { LineItemProjectMode } from "@invessiv/common/constants/crm/line-item-project-modes";
+import type { UpdateLineItemTemplateRequestDto } from "@invessiv/common/contracts/crm/update-line-item-template-request.dto";
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { LineItemTemplateStatus } from "@invessiv/common/constants/crm/line-item-template-statuses";
 import { updateLineItemTemplate } from "@/server/workspace/crm/command-handler/update-line-item-template.command-handler";
@@ -23,7 +26,9 @@ vi.mock("@/server/workspace/shared/update-versioned", () => ({
 
 const LINE_ITEM_TEMPLATE_ID = "9c8f1a10-1b1a-4a10-8e10-000000000001";
 
-function updateInput(overrides: Record<string, unknown> = {}) {
+function updateInput(
+  overrides: Partial<UpdateLineItemTemplateRequestDto> = {},
+): UpdateLineItemTemplateRequestDto {
   return {
     title: "Landingpage",
     description: "",
@@ -31,6 +36,10 @@ function updateInput(overrides: Record<string, unknown> = {}) {
     pricingMode: ServicePricingMode.OneTime,
     recurringInterval: null,
     status: LineItemTemplateStatus.Active,
+    kind: LineItemKind.Standard,
+    projectMode: LineItemProjectMode.ExistingProject,
+    portalRequestable: false,
+    portalDescription: "",
     version: 3,
     ...overrides,
   };

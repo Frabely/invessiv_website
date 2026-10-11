@@ -395,3 +395,27 @@ Ab Task 72 (`apps/workspace/plans/crm/20-stunden-und-history/72-zeitbuchungen-un
 - Hat ein abgeschlossenes, abgebrochenes oder archiviertes Projekt noch unverbrauchte Stunden, nennt die Sektion sie
   und bietet mit `canManage` „Freigeben“ an. Freigegeben wird nie automatisch.
 - Löschen fragt über `hours/time-entry-delete-dialog` nach und trägt die Version der Buchung mit.
+
+## Leistungsarten (ab Task 74)
+
+Plan: `apps/workspace/plans/crm/13c-portal-leistungsanfragen/74-leistungsarten-und-zuweisung.md`.
+
+- **Katalog-Dialog:** „Art“ legt Preisart und Projektbezug fest, sobald sie es vorgibt
+  (`applyLineItemKindToFormValues`); beide Felder sind dann gesperrt und erklären warum. „Im Kundenportal
+  anfragbar“ macht „Beschreibung für Kunden“ zum Pflichtfeld (das Feld ist immer sichtbar, damit sich der Text
+  vorbereiten lässt); der Hinweis nennt ausdrücklich, dass Kunden
+  nie den Preis sehen.
+- **Zuweisungs-Dialog:** Was eine Vorlage über die Leistung hinaus auslöst, steht in
+  `projects/project-line-item-effect-fields`: Stunden fragen die Menge über `hours/duration-field` ab und
+  nennen Gutschrift und Wert, eine Zusatzrunde nennt ihre Wirkung. Der Haken „Stunden diesem Projekt zuweisen“
+  (Standard an) entscheidet, ob die Stunden am Projekt landen oder frei beim Kunden bleiben; der Satz darunter
+  nennt genau diese Folge. Bei beiden Arten fehlt das Statusfeld, die
+  Preisart ist gesperrt.
+- **Keine Regel im Client.** Ob Stunden oder eine weitere Runde an diesem Projekt möglich sind, kommt als
+  `assignmentBlockersByProjectId` aus dem View-Model (`LineItemAssignmentBlocker`). Der Dialog zeigt den Grund als
+  Text und sendet dann nicht; entschieden wird trotzdem auf dem Server.
+- **Zahlen nur über die geteilten Helfer:** Menge über `readDurationInput` / `formatDuration`, Betrag über
+  `hoursLineItemAmountCents`. Die Leistungszeile zeigt bei Stunden „5:00 zu 110,00 € pro Stunde“ und rechts den
+  Gesamtbetrag.
+- Beim Bearbeiten einer Stunden- oder Zusatzrunden-Leistung steht die Wirkung als Text da; Menge und Status sind
+  nicht änderbar.

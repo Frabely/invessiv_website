@@ -2,6 +2,9 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 import { LineItemTemplateErrorCode } from "@invessiv/common/constants/crm/errors/line-item-template-error-codes";
+import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
+import { LineItemProjectMode } from "@invessiv/common/constants/crm/line-item-project-modes";
+import type { CreateLineItemTemplateRequestDto } from "@invessiv/common/contracts/crm/create-line-item-template-request.dto";
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { LineItemTemplateStatus } from "@invessiv/common/constants/crm/line-item-template-statuses";
 import { lineItemTemplates } from "@invessiv/db/record-configuration";
@@ -20,13 +23,19 @@ vi.mock("@invessiv/db/core", async (importOriginal) => ({
   getDrizzleDatabaseClient: mocks.getDatabase,
 }));
 
-function createInput(overrides: Record<string, unknown> = {}) {
+function createInput(
+  overrides: Partial<CreateLineItemTemplateRequestDto> = {},
+): CreateLineItemTemplateRequestDto {
   return {
     title: "Landingpage",
     description: "Einseitige Website.",
     priceCents: 150000,
     pricingMode: ServicePricingMode.OneTime,
     recurringInterval: null,
+    kind: LineItemKind.Standard,
+    projectMode: LineItemProjectMode.ExistingProject,
+    portalRequestable: false,
+    portalDescription: "",
     ...overrides,
   };
 }

@@ -6,6 +6,10 @@ const STATUS: Record<ProjectLineItemErrorCode, HttpResponseCode> = {
   [ProjectLineItemErrorCode.ProjectNotFound]: HttpResponseCode.NotFound,
   [ProjectLineItemErrorCode.LineItemTemplateNotAssignable]:
     HttpResponseCode.UnprocessableContent,
+  [ProjectLineItemErrorCode.EffectNotPermitted]: HttpResponseCode.Forbidden,
+  [ProjectLineItemErrorCode.ProjectClosed]: HttpResponseCode.Conflict,
+  [ProjectLineItemErrorCode.FeedbackRoundNotAvailable]:
+    HttpResponseCode.Conflict,
   [ProjectLineItemErrorCode.ValidationError]:
     HttpResponseCode.UnprocessableContent,
   [ProjectLineItemErrorCode.Internal]: HttpResponseCode.InternalServerError,
@@ -17,6 +21,12 @@ const MESSAGES: Record<ProjectLineItemErrorCode, string> = {
   [ProjectLineItemErrorCode.ProjectNotFound]: "Project not found",
   [ProjectLineItemErrorCode.LineItemTemplateNotAssignable]:
     "Line item template is archived or unknown",
+  [ProjectLineItemErrorCode.EffectNotPermitted]:
+    "Assigning this service needs a permission the caller lacks",
+  [ProjectLineItemErrorCode.ProjectClosed]:
+    "Hours cannot be allocated to a cancelled or archived project",
+  [ProjectLineItemErrorCode.FeedbackRoundNotAvailable]:
+    "The project cannot take a further feedback round",
   [ProjectLineItemErrorCode.ValidationError]: "Validation failed",
   [ProjectLineItemErrorCode.Internal]: "Unexpected server error",
 };

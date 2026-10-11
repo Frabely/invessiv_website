@@ -8,6 +8,8 @@ import {
   PROJECT_LINE_ITEM_STATUS_VALUES,
   ProjectLineItemStatus,
 } from "@invessiv/common/constants/crm/project-line-item-statuses";
+import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
+import { LineItemAssignmentBlocker } from "@/common/constants/crm/line-item-assignment-blockers";
 import type { ProjectLineItemErrorCode } from "@invessiv/common/constants/crm/errors/project-line-item-error-codes";
 import { ProjectLineItemFieldLimits } from "@invessiv/common/constants/crm/forms/project-line-item-field-limits";
 import {
@@ -28,6 +30,7 @@ import {
 } from "@invessiv/ui";
 import { projectLineItemsApiService } from "@/client/crm/project-line-items-api-service";
 import type { ProjectLineItemFormValidationCode } from "@/common/constants/crm/forms/project-line-item-form-validation-codes";
+import type { LineItemAssignmentBlockers } from "@/common/contracts/crm/line-item-assignment-blockers";
 import type { LineItemFieldsFormValidationCode } from "@/common/constants/crm/forms/line-item-fields-form-validation-codes";
 import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
 import type {
@@ -37,19 +40,25 @@ import type {
 import {
   applyLineItemTemplateToFormValues,
   createProjectLineItemFormValues,
+  isAutomatedLineItemKind,
+  readProjectLineItemQuantity,
   toCreateProjectLineItemRequest,
   toUpdateProjectLineItemRequest,
   validateProjectLineItemForm,
 } from "@/common/patterns/crm/project-line-item-form";
+import { parseEuroAmountToCents } from "@/common/patterns/crm/euro-cents";
 import { resolveRecurringIntervalFor } from "@/common/patterns/crm/line-item-fields-form";
 import type { Locale } from "@/config/i18n";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import type { CrmProjectLineItemsDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { formatEuroCents } from "@/lib/workspace/crm/format-service-price";
+import { ProjectLineItemEffectFields } from "../project-line-item-effect-fields/project-line-item-effect-fields";
 import styles from "./project-line-item-form-dialog.module.css";
 
 type ProjectLineItemFormDialogProps = {
+  /** What keeps an hours or feedback-round template from being assigned to this project. */
+  blockers: LineItemAssignmentBlockers;
   /** Null when the actor may not open the catalog; the no-template hint then has no link. */
   catalogHref: string | null;
   content: CrmProjectLineItemsDictionary;
@@ -72,6 +81,7 @@ function fieldError(
 }
 
 export function ProjectLineItemFormDialog({
+  blockers,
   catalogHref,
   content,
   locale,
@@ -166,6 +176,21 @@ export function ProjectLineItemFormDialog({
   }
 
   const canAssign = projectLineItem !== null || templates.length > 0;
+  const automated = isAutomatedLineItemKind(values.kind);
+  // A blocker only matters for a new assignment; an existing item already took effect.
+  const blocker =
+    projectLineItem !== null
+      ? null
+      : values.kind === LineItemKind.Hours
+        ? // A closed project only refuses the allocation, not hours that stay free.
+          blockers.hours === LineItemAssignmentBlocker.ProjectClosed &&
+          !values.allocateHoursToProject
+          ? null
+          : blockers.hours
+        : values.kind === LineItemKind.FeedbackRound
+          ? blockers.feedbackRound
+          : null;
+  const price = parseEuroAmountToCents(values.priceInput);
 
   return (
     <Dialog
@@ -194,7 +219,7 @@ export function ProjectLineItemFormDialog({
                 {content.form.buttons.cancel}
               </ButtonControl>
               <PrimaryCtaButton
-                disabled={mutation.isSubmitting}
+                disabled={mutation.isSubmitting || blocker !== null}
                 form={formId}
                 type="submit"
               >
@@ -283,25 +308,45 @@ export function ProjectLineItemFormDialog({
               label={content.form.fields.title}
               required
             />
-            <FormField
-              kind={FormFieldKind.Custom}
-              label={content.form.fields.status}
-              renderControl={({ describedBy, id, invalid }) => (
-                <CustomSelect
-                  describedBy={describedBy}
-                  id={id}
-                  invalid={invalid}
-                  onChange={(next) =>
-                    update("status", next as ProjectLineItemStatus)
-                  }
-                  options={PROJECT_LINE_ITEM_STATUS_VALUES.map((status) => ({
-                    label: content.list.status[status],
-                    value: status,
-                  }))}
-                  value={values.status ?? ProjectLineItemStatus.Planned}
-                />
-              )}
+            <ProjectLineItemEffectFields
+              allocateHoursToProject={values.allocateHoursToProject}
+              onAllocateChangeAction={(next) =>
+                update("allocateHoursToProject", next)
+              }
+              blocker={blocker}
+              content={content}
+              kind={values.kind}
+              locale={locale}
+              onQuantityChangeAction={(next) => update("quantityInput", next)}
+              quantityError={errors.quantityInput}
+              quantityInput={values.quantityInput}
+              quantityMinutes={readProjectLineItemQuantity(values)}
+              rateCents={price.ok ? price.cents : null}
+              storedQuantityMinutes={
+                projectLineItem ? projectLineItem.quantityMinutes : undefined
+              }
             />
+            {automated ? null : (
+              <FormField
+                kind={FormFieldKind.Custom}
+                label={content.form.fields.status}
+                renderControl={({ describedBy, id, invalid }) => (
+                  <CustomSelect
+                    describedBy={describedBy}
+                    id={id}
+                    invalid={invalid}
+                    onChange={(next) =>
+                      update("status", next as ProjectLineItemStatus)
+                    }
+                    options={PROJECT_LINE_ITEM_STATUS_VALUES.map((status) => ({
+                      label: content.list.status[status],
+                      value: status,
+                    }))}
+                    value={values.status ?? ProjectLineItemStatus.Planned}
+                  />
+                )}
+              />
+            )}
             <FormField
               className={styles.fullWidth}
               kind={FormFieldKind.Textarea}
@@ -325,7 +370,11 @@ export function ProjectLineItemFormDialog({
               }}
               inputSuffix={content.form.currencySymbol}
               kind={FormFieldKind.Text}
-              label={content.form.fields.priceCents}
+              label={
+                values.kind === LineItemKind.Hours
+                  ? content.form.fields.hourlyRate
+                  : content.form.fields.priceCents
+              }
               required
             />
             <FormField
@@ -334,6 +383,7 @@ export function ProjectLineItemFormDialog({
               renderControl={({ describedBy, id, invalid }) => (
                 <CustomSelect
                   describedBy={describedBy}
+                  disabled={automated}
                   id={id}
                   invalid={invalid}
                   onChange={(next) =>

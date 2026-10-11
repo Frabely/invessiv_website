@@ -1,3 +1,4 @@
+import type { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
 import type { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 import type { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import type { ProjectLineItemStatus } from "@invessiv/common/constants/crm/project-line-item-statuses";
@@ -13,6 +14,9 @@ export interface ProjectLineItemRow {
   pricing_mode: ServicePricingMode;
   recurring_interval: BillingInterval | null;
   status?: ProjectLineItemStatus | null;
+  /** Null on rows written before kinds existed; read as `standard`. */
+  kind: LineItemKind | null;
+  quantity_minutes: number | null;
   version: number;
   created_at: Date;
   updated_at: Date;

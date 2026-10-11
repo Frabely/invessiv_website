@@ -27,6 +27,8 @@ import {
   people,
   portalMembershipRoles,
   portalMemberships,
+  customerHourPurchases,
+  projectHourAllocations,
   projectLineItems,
   projects,
   rolePermissions,
@@ -55,6 +57,11 @@ import {
 import { ProjectPhase } from "@invessiv/common/constants/crm/project-phases";
 import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
+import { HourPurchaseKind } from "@invessiv/common/constants/crm/hour-purchase-kinds";
+import { HourPurchaseSource } from "@invessiv/common/constants/crm/hour-purchase-sources";
+import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
+import { LineItemProjectMode } from "@invessiv/common/constants/crm/line-item-project-modes";
+import { ProjectLineItemStatus } from "@invessiv/common/constants/crm/project-line-item-statuses";
 import { LineItemTemplateStatus } from "@invessiv/common/constants/crm/line-item-template-statuses";
 import { seedPortalDashboard } from "./crm-fixture/seed-portal-dashboard";
 import {
@@ -217,6 +224,9 @@ const CUSTOMERS: CustomerFixture[] = [
   },
 ];
 
+/** Five hours, sold together with the fixture's hours line item. */
+const HOURS_LINE_ITEM_MINUTES = 300;
+
 const LINE_ITEM_TEMPLATE_FIXTURES = [
   {
     id: "9c8f1a10-1b1a-4a10-8e10-00000000f001",
@@ -227,6 +237,11 @@ const LINE_ITEM_TEMPLATE_FIXTURES = [
     pricing_mode: ServicePricingMode.OneTime,
     recurring_interval: null,
     status: LineItemTemplateStatus.Active,
+    kind: LineItemKind.Standard,
+    project_mode: LineItemProjectMode.ExistingProject,
+    portal_requestable: true,
+    portal_description:
+      "Ein halber Tag, an dem wir gemeinsam klären, wen deine Seite ansprechen soll und was der nächste Schritt für Besucher ist.",
     version: 1,
   },
   {
@@ -238,6 +253,10 @@ const LINE_ITEM_TEMPLATE_FIXTURES = [
     pricing_mode: ServicePricingMode.Recurring,
     recurring_interval: BillingInterval.Monthly,
     status: LineItemTemplateStatus.Active,
+    kind: LineItemKind.Standard,
+    project_mode: LineItemProjectMode.ExistingProject,
+    portal_requestable: false,
+    portal_description: "",
     version: 1,
   },
   {
@@ -249,6 +268,40 @@ const LINE_ITEM_TEMPLATE_FIXTURES = [
     pricing_mode: ServicePricingMode.Rate,
     recurring_interval: null,
     status: LineItemTemplateStatus.Archived,
+    kind: LineItemKind.Standard,
+    project_mode: LineItemProjectMode.ExistingProject,
+    portal_requestable: false,
+    portal_description: "",
+    version: 1,
+  },
+  {
+    id: "9c8f1a10-1b1a-4a10-8e10-00000000f004",
+    title: "Stundenkontingent",
+    description: "Stunden für Änderungen und Erweiterungen nach Aufwand.",
+    price_cents: 11000,
+    pricing_mode: ServicePricingMode.Rate,
+    recurring_interval: null,
+    status: LineItemTemplateStatus.Active,
+    kind: LineItemKind.Hours,
+    project_mode: LineItemProjectMode.ExistingProject,
+    portal_requestable: true,
+    portal_description:
+      "Stunden für Änderungen und Erweiterungen an deiner Website. Du wählst, wie viele du brauchst.",
+    version: 1,
+  },
+  {
+    id: "9c8f1a10-1b1a-4a10-8e10-00000000f005",
+    title: "Weitere Feedbackrunde",
+    description: "Eine Feedbackrunde über das vereinbarte Kontingent hinaus.",
+    price_cents: 18000,
+    pricing_mode: ServicePricingMode.OneTime,
+    recurring_interval: null,
+    status: LineItemTemplateStatus.Active,
+    kind: LineItemKind.FeedbackRound,
+    project_mode: LineItemProjectMode.ExistingProject,
+    portal_requestable: true,
+    portal_description:
+      "Eine weitere Runde, in der du Änderungswünsche sammelst und wir sie umsetzen.",
     version: 1,
   },
 ] as const;
@@ -843,6 +896,7 @@ async function run() {
     });
     // Snapshots, not references: the workshop price is deliberately below its template price to
     // show that a project keeps what was agreed even after the catalog moves on.
+    const hoursLineItemId = randomUUID();
     await tx.insert(projectLineItems).values([
       {
         id: randomUUID(),
@@ -854,6 +908,8 @@ async function run() {
         price_cents: 39000,
         pricing_mode: ServicePricingMode.OneTime,
         recurring_interval: null,
+        kind: LineItemKind.Standard,
+        quantity_minutes: null,
         version: 1,
       },
       {
@@ -866,9 +922,47 @@ async function run() {
         price_cents: 25000,
         pricing_mode: ServicePricingMode.Recurring,
         recurring_interval: BillingInterval.Monthly,
+        kind: LineItemKind.Standard,
+        quantity_minutes: null,
+        version: 1,
+      },
+      {
+        id: hoursLineItemId,
+        project_id: projectId,
+        source_line_item_template_id: LINE_ITEM_TEMPLATE_FIXTURES[3].id,
+        title: "Stundenkontingent",
+        description: "Stunden für Änderungen nach dem Launch.",
+        price_cents: 11000,
+        pricing_mode: ServicePricingMode.Rate,
+        recurring_interval: null,
+        kind: LineItemKind.Hours,
+        quantity_minutes: HOURS_LINE_ITEM_MINUTES,
+        status: ProjectLineItemStatus.Confirmed,
         version: 1,
       },
     ]);
+    // Purchased hours never stand alone: the same assignment credited and allocated them, and
+    // both ledger rows carry the line item id as their idempotency key.
+    await tx.insert(customerHourPurchases).values({
+      id: randomUUID(),
+      customer_id: nordlichtId,
+      kind: HourPurchaseKind.Purchase,
+      source: HourPurchaseSource.ProjectLineItem,
+      minutes: HOURS_LINE_ITEM_MINUTES,
+      purchased_on: new Date().toISOString().slice(0, 10),
+      note: "Stundenkontingent",
+      idempotency_key: hoursLineItemId,
+      created_by_member_id: owner.memberId,
+    });
+    await tx.insert(projectHourAllocations).values({
+      id: randomUUID(),
+      customer_id: nordlichtId,
+      project_id: projectId,
+      minutes: HOURS_LINE_ITEM_MINUTES,
+      note: "",
+      idempotency_key: hoursLineItemId,
+      created_by_member_id: owner.memberId,
+    });
     await tx.insert(workspaceMemberScopedRoles).values([
       {
         id: randomUUID(),

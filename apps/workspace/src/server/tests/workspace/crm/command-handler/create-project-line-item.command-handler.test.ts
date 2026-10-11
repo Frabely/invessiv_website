@@ -79,7 +79,10 @@ describe("createProjectLineItem", () => {
     mocks.values.mockReset();
     mocks.returning.mockReset();
     mocks.values.mockReturnValue({ returning: mocks.returning });
-    stubSelects([[{ customerId: CUSTOMER_ID }], [{ id: TEMPLATE_ID }]]);
+    stubSelects([
+      [{ customerId: CUSTOMER_ID, status: "active" }],
+      [{ id: TEMPLATE_ID, kind: "standard" }],
+    ]);
     mocks.returning.mockResolvedValue([
       {
         id: "55555555-5555-4555-8555-555555555555",
@@ -90,18 +93,23 @@ describe("createProjectLineItem", () => {
         price_cents: 200000,
         pricing_mode: ServicePricingMode.OneTime,
         recurring_interval: null,
+        kind: "standard",
+        quantity_minutes: null,
         version: 1,
         created_at: new Date("2026-01-01T00:00:00.000Z"),
         updated_at: new Date("2026-01-01T00:00:00.000Z"),
       },
     ]);
+    const insert = vi.fn(() => ({ values: mocks.values }));
     mocks.getDatabase.mockReturnValue({
+      // The assignment runs in one transaction; the stub hands the same insert to it.
+      transaction: (callback: (tx: unknown) => unknown) => callback({ insert }),
       select: vi.fn(() => ({
         from: vi.fn(() => ({
           where: vi.fn(() => ({ limit: mocks.limit })),
         })),
       })),
-      insert: vi.fn(() => ({ values: mocks.values })),
+      insert,
     });
   });
 

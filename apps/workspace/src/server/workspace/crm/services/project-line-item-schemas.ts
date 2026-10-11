@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { HoursLimits } from "@invessiv/common/constants/crm/hours-limits";
 import { BILLING_INTERVAL_VALUES } from "@invessiv/common/constants/crm/billing-intervals";
 import { ProjectLineItemFieldLimits } from "@invessiv/common/constants/crm/forms/project-line-item-field-limits";
 import {
@@ -46,8 +47,19 @@ function refineIntervalConsistency(
 export const projectLineItemSchemas = {
   entityId: z.uuid(),
   // The origin template is mandatory on create: this build assigns from the catalog only.
+  // Whether a quantity belongs to the template's kind is decided where the kind is known.
   create: snapshotFieldsSchema
-    .extend({ sourceLineItemTemplateId: z.uuid() })
+    .extend({
+      sourceLineItemTemplateId: z.uuid(),
+      quantityMinutes: z
+        .int()
+        .positive()
+        .multipleOf(HoursLimits.StepMinutes)
+        .max(HoursLimits.MaxLedgerMinutes)
+        .nullish()
+        .transform((value) => value ?? null),
+      allocateHoursToProject: z.boolean().default(true),
+    })
     .superRefine(refineIntervalConsistency),
   update: snapshotFieldsSchema
     .extend({ version: z.int().positive() })

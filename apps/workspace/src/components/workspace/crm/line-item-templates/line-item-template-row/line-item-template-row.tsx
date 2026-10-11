@@ -5,6 +5,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import type { LineItemTemplateDto } from "@invessiv/common/contracts/crm/line-item-template.dto";
 import {
@@ -71,6 +72,14 @@ export function LineItemTemplateRow({
         scope="row"
       >
         {lineItemTemplate.title}
+        {lineItemTemplate.kind !== LineItemKind.Standard ? (
+          <span className={styles.tag}>
+            {content.list.kind[lineItemTemplate.kind]}
+          </span>
+        ) : null}
+        {lineItemTemplate.portalRequestable ? (
+          <span className={styles.tag}>{content.list.portalBadge}</span>
+        ) : null}
       </DataTableHeaderCell>
       <DataTableCell mobileCardSlot="secondary">
         {formatPrice(lineItemTemplate, locale, content)}

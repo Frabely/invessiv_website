@@ -1,3 +1,4 @@
+import type { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
 import type { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 import type { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import type { ProjectLineItemStatus } from "@invessiv/common/constants/crm/project-line-item-statuses";
@@ -13,6 +14,8 @@ export interface ProjectLineItemDto {
   projectId: string;
   /** Provenance only — null once the origin template was purged, never a live link to its values. */
   sourceLineItemTemplateId: string | null;
+  /** Snapshot of the template's kind. `hours` and `feedback_round` items are always `confirmed` and keep status and pricing mode. */
+  kind: LineItemKind;
   title: string;
   /** Longer explanation of the scope; empty string, never null, when nothing was filled in. */
   description: string;
@@ -21,6 +24,8 @@ export interface ProjectLineItemDto {
   pricingMode: ServicePricingMode;
   /** Set only when `pricingMode` is `recurring`, otherwise always null. */
   recurringInterval: BillingInterval | null;
+  /** Purchased time in minutes, set exactly for kind `hours`; the same amount was credited and allocated with the assignment. */
+  quantityMinutes: number | null;
   /** Commercial lifecycle. Only `confirmed` items contribute to project and customer values. */
   status?: ProjectLineItemStatus;
   /** Optimistic-concurrency counter; every update request must echo the value it read. */

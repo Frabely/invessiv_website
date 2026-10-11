@@ -103,6 +103,13 @@ button.row:focus-visible {
   white-space: nowrap;
 }
 
+/* Quantity and rate of purchased hours, on their own line above the description. */
+.quantity {
+  display: block;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
 .origin {
   padding: 0.1rem 0.4rem;
   border: 1px solid var(--color-border-strong);

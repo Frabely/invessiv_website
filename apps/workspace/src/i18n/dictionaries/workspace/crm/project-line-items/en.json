@@ -34,7 +34,8 @@
       "confirmed": "Confirmed",
       "rejected": "Rejected"
     },
-    "templateRemoved": "Template deleted"
+    "templateRemoved": "Template deleted",
+    "hours": "{duration} at {rate} per hour"
   },
   "empty": {
     "title": "No service assigned yet",
@@ -61,7 +62,10 @@
       "priceCents": "Price",
       "pricingMode": "Pricing",
       "recurringInterval": "Interval",
-      "status": "Status"
+      "status": "Status",
+      "quantity": "Quantity",
+      "hourlyRate": "Hourly rate",
+      "allocateHoursToProject": "Allocate the hours to this project"
     },
     "placeholders": {
       "sourceLineItemTemplateId": "Choose a template",
@@ -103,8 +107,43 @@
       "PROJECT_LINE_ITEM_NOT_FOUND": "The service was not found.",
       "PROJECT_NOT_FOUND": "The project was not found.",
       "LINE_ITEM_TEMPLATE_NOT_ASSIGNABLE": "This template is archived and cannot be assigned.",
+      "EFFECT_NOT_PERMITTED": "You lack the permission for what this template triggers. Nothing was saved.",
+      "PROJECT_CLOSED": "The project takes no more hours. Nothing was saved.",
+      "FEEDBACK_ROUND_NOT_AVAILABLE": "The project cannot take a further feedback round. Nothing was saved.",
       "VALIDATION_ERROR": "The input could not be saved.",
       "INTERNAL": "Unexpected error. Please try again."
+    },
+    "quantity": {
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "decreaseHours": "One hour less",
+      "increaseHours": "One hour more",
+      "decrease": "15 minutes less",
+      "increase": "15 minutes more",
+      "hint": {
+        "touch": "Swipe up or down over the number or use the arrows. Minutes in steps of 15.",
+        "desktop": "Scroll over the number with the mouse wheel or use the arrows. Minutes in steps of 15.",
+        "fallback": "Use the arrows to adjust the quantity. Minutes in steps of 15."
+      },
+      "invalid": "Enter whole hours and 00, 15, 30 or 45 minutes.",
+      "required": "Enter a quantity greater than 0:00.",
+      "tooMuch": "At most {duration} possible."
+    },
+    "effects": {
+      "hours": "Credits {duration} and allocates them to this project. Value: {amount}.",
+      "hoursPending": "The quantity is credited to the customer and allocated to this project.",
+      "hoursFixed": "{duration} were credited when this was assigned. Quantity and status are fixed; book a correction through “Credit hours” and change the distribution across projects in the “Hours” section.",
+      "feedbackRound": "Adds one more feedback round to this project.",
+      "feedbackRoundFixed": "The feedback round was added when this was assigned. The status is fixed.",
+      "hoursFree": "Credits {duration}. The hours stay free and can be allocated to any of the customer's projects later. Value: {amount}.",
+      "hoursFreePending": "The quantity is credited to the customer and stays free for all of their projects."
+    },
+    "blockers": {
+      "missing_hours_permission": "This template credits hours. Only members who may manage hours can do that.",
+      "project_closed": "This project is cancelled or archived and takes no more hours.",
+      "missing_project_permission": "This template changes the process track. You need write access to the project for that.",
+      "project_approved": "The project is approved. A further feedback round is no longer possible.",
+      "limit_reached": "The project already has 20 feedback rounds."
     }
   }
 }

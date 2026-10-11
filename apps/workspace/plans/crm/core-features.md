@@ -44,7 +44,9 @@ Details und Abnahmekriterien stehen in den aktiven geordneten Merge-Einheiten.
 - Explizite Clerk-Einladung; ein Konto kann mehrere Kundenfirmen sicher wechseln.
 - Eigener Login je Kundenkontakt; intern definierte Portalrollen je Kontakt steuern, welche Bereiche er sieht.
 - Dashboard mit freigegebenen Projektdaten, Aufgaben, Dokumenten und Stunden.
-- Preisfreie Leistungsanfragen aus einem freigegebenen Katalogausschnitt; Angebot folgt außerhalb.
+- Preisfreie Leistungsanfragen aus einem freigegebenen Katalogausschnitt oder als Freitext; Angebot folgt außerhalb.
+  Intern: Eingang mit Zähler, Angebot gesendet / Annehmen / Ablehnen; Annehmen weist die Leistung einem bestehenden
+  oder neu angelegten Projekt zu. Stunden (mit Menge) und Zusatz-Feedbackrunden wirken automatisch (Ordner 13c).
 - Strukturierter Onboarding-Bogen je Projekt aus einer pflegbaren Vorlage (Bausteine je Kunde anpassbar): Texte
   direkt ins Feld, Assets am zugehörigen Feld, Zwischenstand serverseitig gesichert, bereits Vereinbartes nur zur
   Bestätigung, firmenweite Angaben aus dem letzten Onboarding vorbefüllt. Nach dem Absenden Prüfung je Block mit

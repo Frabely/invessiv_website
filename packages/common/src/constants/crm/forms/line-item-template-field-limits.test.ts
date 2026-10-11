@@ -7,6 +7,7 @@ describe("LineItemTemplateFieldLimits", () => {
     expect(LineItemTemplateFieldLimits).toEqual({
       TitleMaxLength: 200,
       DescriptionMaxLength: 4000,
+      PortalDescriptionMaxLength: 2000,
       PriceCentsMax: 2_147_483_647,
     });
   });

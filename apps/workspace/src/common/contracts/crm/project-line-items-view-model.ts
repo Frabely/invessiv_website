@@ -1,5 +1,6 @@
 import type { ProjectLineItemDto } from "@invessiv/common/contracts/crm/project-line-item.dto";
 import type { LineItemTemplateDto } from "@invessiv/common/contracts/crm/line-item-template.dto";
+import type { LineItemAssignmentBlockers } from "@/common/contracts/crm/line-item-assignment-blockers";
 import type { ProjectLineItemValue } from "@invessiv/common/contracts/crm/project-line-item-value";
 
 /**
@@ -14,6 +15,10 @@ export type ProjectLineItemsViewModel = {
   writableProjectIds: readonly string[];
   /** Active catalog templates; the only source for a new assignment. */
   assignableTemplates: readonly LineItemTemplateDto[];
+  /** Per writable project: why an hours or feedback-round template cannot be assigned right now. */
+  assignmentBlockersByProjectId: Readonly<
+    Record<string, LineItemAssignmentBlockers>
+  >;
   /** Null when the actor may not open the catalog. */
   catalogHref: string | null;
   /** Values are calculated server-side from confirmed items only. */
