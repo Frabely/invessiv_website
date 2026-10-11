@@ -2,6 +2,7 @@ import { ProjectLineItemErrorCode } from "@invessiv/common/constants/crm/errors/
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 
 const STATUS: Record<ProjectLineItemErrorCode, HttpResponseCode> = {
+  [ProjectLineItemErrorCode.LineItemTemplateChanged]: HttpResponseCode.Conflict,
   [ProjectLineItemErrorCode.ProjectLineItemNotFound]: HttpResponseCode.NotFound,
   [ProjectLineItemErrorCode.ProjectNotFound]: HttpResponseCode.NotFound,
   [ProjectLineItemErrorCode.LineItemTemplateNotAssignable]:
@@ -16,6 +17,8 @@ const STATUS: Record<ProjectLineItemErrorCode, HttpResponseCode> = {
 };
 
 const MESSAGES: Record<ProjectLineItemErrorCode, string> = {
+  [ProjectLineItemErrorCode.LineItemTemplateChanged]:
+    "Line item template changed since it was selected",
   [ProjectLineItemErrorCode.ProjectLineItemNotFound]:
     "Project line item not found",
   [ProjectLineItemErrorCode.ProjectNotFound]: "Project not found",

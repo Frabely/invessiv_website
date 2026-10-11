@@ -1,48 +1,15 @@
+import { lineItemFieldsSchemas } from "./line-item-fields-schemas";
 import { z } from "zod";
 
 import { HoursLimits } from "@invessiv/common/constants/crm/hours-limits";
-import { BILLING_INTERVAL_VALUES } from "@invessiv/common/constants/crm/billing-intervals";
 import { ProjectLineItemFieldLimits } from "@invessiv/common/constants/crm/forms/project-line-item-field-limits";
-import {
-  SERVICE_PRICING_MODE_VALUES,
-  ServicePricingMode,
-} from "@invessiv/common/constants/crm/service-pricing-modes";
 import { PROJECT_LINE_ITEM_STATUS_VALUES } from "@invessiv/common/constants/crm/project-line-item-statuses";
 
-const snapshotFieldsSchema = z.object({
-  title: z
-    .string()
-    .trim()
-    .min(1)
-    .max(ProjectLineItemFieldLimits.TitleMaxLength),
-  description: z
-    .string()
-    .trim()
-    .max(ProjectLineItemFieldLimits.DescriptionMaxLength),
-  priceCents: z.int().min(0).max(ProjectLineItemFieldLimits.PriceCentsMax),
-  pricingMode: z.enum(SERVICE_PRICING_MODE_VALUES),
-  recurringInterval: z
-    .enum(BILLING_INTERVAL_VALUES)
-    .nullish()
-    .transform((value) => value ?? null),
-  status: z.enum(PROJECT_LINE_ITEM_STATUS_VALUES).default("planned"),
-});
-
-/** A recurring service must carry an interval; every other pricing mode must not. */
-function refineIntervalConsistency(
-  data: { pricingMode: ServicePricingMode; recurringInterval: unknown },
-  context: z.RefinementCtx,
-) {
-  const requiresInterval = data.pricingMode === ServicePricingMode.Recurring;
-  const hasInterval = data.recurringInterval !== null;
-  if (requiresInterval !== hasInterval) {
-    context.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ["recurringInterval"],
-      message: "Recurring interval is required only for recurring pricing",
-    });
-  }
-}
+const snapshotFieldsSchema = lineItemFieldsSchemas
+  .fields(ProjectLineItemFieldLimits)
+  .extend({
+    status: z.enum(PROJECT_LINE_ITEM_STATUS_VALUES).default("planned"),
+  });
 
 export const projectLineItemSchemas = {
   entityId: z.uuid(),
@@ -51,6 +18,8 @@ export const projectLineItemSchemas = {
   create: snapshotFieldsSchema
     .extend({
       sourceLineItemTemplateId: z.uuid(),
+      sourceLineItemTemplateVersion: z.int().positive().optional(),
+      idempotencyKey: z.uuid().optional(),
       quantityMinutes: z
         .int()
         .positive()
@@ -60,8 +29,8 @@ export const projectLineItemSchemas = {
         .transform((value) => value ?? null),
       allocateHoursToProject: z.boolean().default(true),
     })
-    .superRefine(refineIntervalConsistency),
+    .superRefine(lineItemFieldsSchemas.refineIntervalConsistency),
   update: snapshotFieldsSchema
     .extend({ version: z.int().positive() })
-    .superRefine(refineIntervalConsistency),
+    .superRefine(lineItemFieldsSchemas.refineIntervalConsistency),
 } as const;

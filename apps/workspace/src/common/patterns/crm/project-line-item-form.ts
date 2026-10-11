@@ -1,3 +1,5 @@
+import { LineItemAssignmentBlocker } from "@/common/constants/crm/line-item-assignment-blockers";
+import type { LineItemAssignmentBlockers } from "@/common/contracts/crm/line-item-assignment-blockers";
 import { ProjectLineItemFieldLimits } from "@invessiv/common/constants/crm/forms/project-line-item-field-limits";
 import {
   AUTOMATED_LINE_ITEM_KIND_VALUES,
@@ -33,6 +35,7 @@ export function createProjectLineItemFormValues(
   return {
     ...createLineItemFieldsFormValues(projectLineItem, locale),
     sourceLineItemTemplateId: projectLineItem?.sourceLineItemTemplateId ?? null,
+    sourceLineItemTemplateVersion: undefined,
     status: projectLineItem?.status ?? ProjectLineItemStatus.Planned,
     kind: projectLineItem?.kind ?? LineItemKind.Standard,
     quantityInput:
@@ -55,6 +58,7 @@ export function applyLineItemTemplateToFormValues(
   return {
     ...createLineItemFieldsFormValues(template, locale),
     sourceLineItemTemplateId: template.id,
+    sourceLineItemTemplateVersion: template.version,
     status: isAutomatedLineItemKind(template.kind)
       ? ProjectLineItemStatus.Confirmed
       : ProjectLineItemStatus.Planned,
@@ -96,10 +100,13 @@ export function readProjectLineItemQuantity(
 /** Only reachable once `validateProjectLineItemForm` accepted the template, hence the empty fallback. */
 export function toCreateProjectLineItemRequest(
   values: ProjectLineItemFormValues,
+  idempotencyKey?: string,
 ): CreateProjectLineItemRequestDto {
   return {
     ...toLineItemFieldsRequestFields(values),
     sourceLineItemTemplateId: values.sourceLineItemTemplateId ?? "",
+    sourceLineItemTemplateVersion: values.sourceLineItemTemplateVersion,
+    ...(idempotencyKey ? { idempotencyKey } : {}),
     status: values.status,
     quantityMinutes: readProjectLineItemQuantity(values),
     // Sent only where it means something, so a standard request stays as it was.
@@ -118,4 +125,22 @@ export function toUpdateProjectLineItemRequest(
     status: values.status,
     version,
   };
+}
+
+/** A closed project blocks allocation only; free stock can still be purchased. */
+export function resolveProjectLineItemFormBlocker(
+  kind: LineItemKind,
+  blockers: LineItemAssignmentBlockers,
+  allocateHoursToProject: boolean,
+  editing = false,
+): LineItemAssignmentBlocker | null {
+  if (editing) return null;
+  if (kind === LineItemKind.FeedbackRound) return blockers.feedbackRound;
+  if (kind !== LineItemKind.Hours) return null;
+  if (
+    blockers.hours === LineItemAssignmentBlocker.ProjectClosed &&
+    !allocateHoursToProject
+  )
+    return null;
+  return blockers.hours;
 }

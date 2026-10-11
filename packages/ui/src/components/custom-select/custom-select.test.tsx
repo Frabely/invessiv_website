@@ -113,3 +113,42 @@ describe("CustomSelect single-select keyboard interaction", () => {
     expect(onChange).not.toHaveBeenCalled();
   });
 });
+
+describe("CustomSelect disabled options", () => {
+  it("shows the reason, refuses click and Enter, and skips the option with arrow keys", () => {
+    const onChange = vi.fn();
+    render(
+      <CustomSelect
+        ariaLabel="Service"
+        id="service"
+        value="standard"
+        onChange={onChange}
+        options={[
+          { value: "standard", label: "Standard" },
+          {
+            value: "hours",
+            label: "Hours",
+            disabled: true,
+            description: "Missing permission",
+          },
+          { value: "round", label: "Round" },
+        ]}
+      />,
+    );
+    fireEvent.keyDown(screen.getByRole("button", { name: "Service" }), {
+      key: "ArrowDown",
+    });
+    const blocked = screen.getByRole("option", {
+      name: /Hours\s*Missing permission/,
+    });
+    expect(blocked).toHaveAttribute("aria-disabled", "true");
+    fireEvent.click(blocked);
+    expect(onChange).not.toHaveBeenCalled();
+    fireEvent.keyDown(screen.getByRole("option", { name: "Standard" }), {
+      key: "ArrowDown",
+    });
+    expect(screen.getByRole("option", { name: "Round" })).toHaveFocus();
+    fireEvent.keyDown(blocked, { key: "Enter" });
+    expect(onChange).not.toHaveBeenCalled();
+  });
+});

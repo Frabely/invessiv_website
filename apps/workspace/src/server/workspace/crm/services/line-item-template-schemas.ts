@@ -1,6 +1,7 @@
+import { lineItemFieldsSchemas } from "./line-item-fields-schemas";
+import type { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 import { z } from "zod";
 
-import { BILLING_INTERVAL_VALUES } from "@invessiv/common/constants/crm/billing-intervals";
 import {
   LINE_ITEM_KIND_VALUES,
   LineItemKind,
@@ -10,52 +11,20 @@ import {
   LineItemProjectMode,
 } from "@invessiv/common/constants/crm/line-item-project-modes";
 import { LineItemTemplateFieldLimits } from "@invessiv/common/constants/crm/forms/line-item-template-field-limits";
-import {
-  SERVICE_PRICING_MODE_VALUES,
-  ServicePricingMode,
-} from "@invessiv/common/constants/crm/service-pricing-modes";
+import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { LINE_ITEM_TEMPLATE_STATUS_VALUES } from "@invessiv/common/constants/crm/line-item-template-statuses";
 
-const baseFieldsSchema = z.object({
-  title: z
-    .string()
-    .trim()
-    .min(1)
-    .max(LineItemTemplateFieldLimits.TitleMaxLength),
-  description: z
-    .string()
-    .trim()
-    .max(LineItemTemplateFieldLimits.DescriptionMaxLength),
-  priceCents: z.int().min(0).max(LineItemTemplateFieldLimits.PriceCentsMax),
-  pricingMode: z.enum(SERVICE_PRICING_MODE_VALUES),
-  recurringInterval: z
-    .enum(BILLING_INTERVAL_VALUES)
-    .nullish()
-    .transform((value) => value ?? null),
-  kind: z.enum(LINE_ITEM_KIND_VALUES),
-  projectMode: z.enum(LINE_ITEM_PROJECT_MODE_VALUES),
-  portalRequestable: z.boolean(),
-  portalDescription: z
-    .string()
-    .trim()
-    .max(LineItemTemplateFieldLimits.PortalDescriptionMaxLength),
-});
-
-/** A recurring template must carry an interval; every other pricing mode must not. */
-function refineIntervalConsistency(
-  data: { pricingMode: ServicePricingMode; recurringInterval: unknown },
-  context: z.RefinementCtx,
-) {
-  const requiresInterval = data.pricingMode === ServicePricingMode.Recurring;
-  const hasInterval = data.recurringInterval !== null;
-  if (requiresInterval !== hasInterval) {
-    context.addIssue({
-      code: z.ZodIssueCode.custom,
-      path: ["recurringInterval"],
-      message: "Recurring interval is required only for recurring pricing",
-    });
-  }
-}
+const baseFieldsSchema = lineItemFieldsSchemas
+  .fields(LineItemTemplateFieldLimits)
+  .extend({
+    kind: z.enum(LINE_ITEM_KIND_VALUES),
+    projectMode: z.enum(LINE_ITEM_PROJECT_MODE_VALUES),
+    portalRequestable: z.boolean(),
+    portalDescription: z
+      .string()
+      .trim()
+      .max(LineItemTemplateFieldLimits.PortalDescriptionMaxLength),
+  });
 
 type KindFields = {
   kind: LineItemKind;
@@ -104,10 +73,10 @@ function refineKind(data: KindFields, context: z.RefinementCtx) {
 }
 
 function refineTemplate(
-  data: KindFields & { recurringInterval: unknown },
+  data: KindFields & { recurringInterval: BillingInterval | null },
   context: z.RefinementCtx,
 ) {
-  refineIntervalConsistency(data, context);
+  lineItemFieldsSchemas.refineIntervalConsistency(data, context);
   refineKind(data, context);
 }
 

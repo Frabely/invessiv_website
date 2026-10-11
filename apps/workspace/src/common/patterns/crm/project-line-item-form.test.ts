@@ -1,3 +1,5 @@
+import { LineItemAssignmentBlocker } from "@/common/constants/crm/line-item-assignment-blockers";
+import { resolveProjectLineItemFormBlocker } from "./project-line-item-form";
 import { describe, expect, it } from "vitest";
 
 import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
@@ -102,6 +104,7 @@ describe("applyLineItemTemplateToFormValues", () => {
   it("replaces the whole snapshot and records the origin", () => {
     expect(applyLineItemTemplateToFormValues(TEMPLATE, "de")).toEqual({
       sourceLineItemTemplateId: TEMPLATE_ID,
+      sourceLineItemTemplateVersion: TEMPLATE.version,
       title: "Wartung",
       description: "Laufende technische Pflege.",
       priceInput: "100",
@@ -302,5 +305,30 @@ describe("toUpdateProjectLineItemRequest", () => {
 
     expect(request.version).toBe(4);
     expect(request).not.toHaveProperty("sourceLineItemTemplateId");
+  });
+});
+
+describe("resolveProjectLineItemFormBlocker", () => {
+  it("allows free hours on a closed project but never bypasses missing hours permission", () => {
+    const closed = {
+      hours: LineItemAssignmentBlocker.ProjectClosed,
+      feedbackRound: null,
+    };
+    expect(
+      resolveProjectLineItemFormBlocker(LineItemKind.Hours, closed, true),
+    ).toBe(LineItemAssignmentBlocker.ProjectClosed);
+    expect(
+      resolveProjectLineItemFormBlocker(LineItemKind.Hours, closed, false),
+    ).toBeNull();
+    const denied = {
+      hours: LineItemAssignmentBlocker.MissingHoursPermission,
+      feedbackRound: null,
+    };
+    expect(
+      resolveProjectLineItemFormBlocker(LineItemKind.Hours, denied, false),
+    ).toBe(LineItemAssignmentBlocker.MissingHoursPermission);
+    expect(
+      resolveProjectLineItemFormBlocker(LineItemKind.Hours, denied, true, true),
+    ).toBeNull();
   });
 });

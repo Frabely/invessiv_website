@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import "@testing-library/jest-dom/vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
@@ -121,5 +121,24 @@ describe("ProjectLineItemEffectFields", () => {
     expect(
       screen.getByText(content.form.effects.feedbackRound),
     ).toBeInTheDocument();
+  });
+  it("keeps the free-stock choice usable when project allocation is blocked", () => {
+    const onAllocateChangeAction = vi.fn();
+    renderFields({
+      blocker: LineItemAssignmentBlocker.ProjectClosed,
+      onAllocateChangeAction,
+    });
+    expect(screen.getByRole("alert")).toHaveTextContent(
+      content.form.blockers.project_closed,
+    );
+    expect(
+      screen.getByRole("group", { name: content.form.fields.quantity }),
+    ).toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole("checkbox", {
+        name: content.form.fields.allocateHoursToProject,
+      }),
+    );
+    expect(onAllocateChangeAction).toHaveBeenCalledWith(false);
   });
 });

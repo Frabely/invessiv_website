@@ -1,3 +1,4 @@
+import { MINUTES_PER_HOUR } from "@invessiv/common/constants/time/time-units";
 const MINUS_SIGN = "−";
 
 /**
@@ -11,7 +12,7 @@ export function formatDuration(minutes: number): string {
     );
   }
   const absolute = Math.abs(minutes);
-  const hours = Math.floor(absolute / 60);
-  const rest = String(absolute % 60).padStart(2, "0");
+  const hours = Math.floor(absolute / MINUTES_PER_HOUR);
+  const rest = String(absolute % MINUTES_PER_HOUR).padStart(2, "0");
   return `${minutes < 0 ? MINUS_SIGN : ""}${hours}:${rest}`;
 }

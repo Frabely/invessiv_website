@@ -12,7 +12,9 @@ export type CreateProjectLineItemResult =
   | { ok: false; code: typeof ProjectLineItemErrorCode.ProjectNotFound }
   | {
       ok: false;
-      code: typeof ProjectLineItemErrorCode.LineItemTemplateNotAssignable;
+      code:
+        | typeof ProjectLineItemErrorCode.LineItemTemplateNotAssignable
+        | typeof ProjectLineItemErrorCode.LineItemTemplateChanged;
     }
   // The assignment's effect on hours or the process track was refused; nothing was written.
   | {

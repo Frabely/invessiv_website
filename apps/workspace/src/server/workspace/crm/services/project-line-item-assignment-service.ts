@@ -1,4 +1,10 @@
 import "server-only";
+import { ExtraFeedbackRoundBlocker } from "@invessiv/common/constants/crm/extra-feedback-round-blockers";
+import { LineItemAssignmentBlocker } from "@/common/constants/crm/line-item-assignment-blockers";
+import type { LineItemAssignmentBlockers } from "@/common/contracts/crm/line-item-assignment-blockers";
+import type { LineItemAssignmentProject } from "@/common/contracts/crm/line-item-assignment-project";
+import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
+import { listExtraFeedbackRoundBlockers } from "@/server/workspace/crm/query-handler/list-extra-feedback-round-blockers.query-handler";
 
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
@@ -19,12 +25,10 @@ import { businessToday } from "@/common/patterns/time/business-today";
 import { feedbackRoundService } from "@/server/workspace/crm/services/feedback/feedback-round-service";
 import { hoursActivityService } from "@/server/workspace/crm/services/hours/hours-activity-service";
 import { hoursLedgerService } from "@/server/workspace/crm/services/hours/hours-ledger-service";
-import type {
-  AssignmentFields,
-  AssignProjectLineItemFailureCode,
-  AssignProjectLineItemInput,
-  AssignProjectLineItemResult,
-} from "./project-line-item-assignment-types";
+import type { AssignmentFields } from "@/common/contracts/crm/assignment-fields";
+import type { AssignProjectLineItemFailureCode } from "@/common/contracts/crm/assign-project-line-item-failure-code";
+import type { AssignProjectLineItemInput } from "@/common/contracts/crm/assign-project-line-item-input";
+import type { AssignProjectLineItemResult } from "@/common/contracts/crm/assign-project-line-item-result";
 
 function failure(
   code: AssignProjectLineItemFailureCode,
@@ -40,7 +44,7 @@ async function insertLineItem(
   const [row] = await tx
     .insert(projectLineItems)
     .values({
-      id: crypto.randomUUID(),
+      id: input.idempotencyKey ?? crypto.randomUUID(),
       project_id: input.project.id,
       source_line_item_template_id: input.template.id,
       kind: input.template.kind,
@@ -171,4 +175,64 @@ async function assign(
   return { ok: true, row: await insertLineItem(tx, input, input.fields) };
 }
 
-export const projectLineItemAssignmentService = { assign } as const;
+const ROUND_BLOCKER: Record<
+  ExtraFeedbackRoundBlocker,
+  LineItemAssignmentBlocker
+> = {
+  [ExtraFeedbackRoundBlocker.ProjectApproved]:
+    LineItemAssignmentBlocker.ProjectApproved,
+  [ExtraFeedbackRoundBlocker.LimitReached]:
+    LineItemAssignmentBlocker.LimitReached,
+};
+
+/**
+ * What stands in the way of the two template kinds that act on a project, per writable project.
+ * A project the actor cannot read as a whole is treated as not writable for a further round: its
+ * track is unknown here, and the command would refuse it anyway.
+ */
+async function listBlockers(
+  actor: WorkspaceActor,
+  customerId: string,
+  projects: readonly LineItemAssignmentProject[],
+): Promise<Record<string, LineItemAssignmentBlockers>> {
+  const canManageHours = canOn(actor, Permission.HoursManage, { customerId });
+  const roundCandidates = projects.filter(
+    (candidate) =>
+      candidate.hasReadableTrack &&
+      canOn(actor, Permission.ProjectsWrite, {
+        customerId,
+        projectId: candidate.id,
+      }),
+  );
+  const roundBlockers = await listExtraFeedbackRoundBlockers(
+    roundCandidates.map((candidate) => ({
+      id: candidate.id,
+      positions: [...candidate.feedbackRoundPositions],
+    })),
+  );
+  return Object.fromEntries(
+    projects.map((candidate) => {
+      const roundBlocker = roundBlockers.get(candidate.id);
+      const blockers: LineItemAssignmentBlockers = {
+        hours: !canManageHours
+          ? LineItemAssignmentBlocker.MissingHoursPermission
+          : candidate.status !== null &&
+              HOURS_CLOSED_PROJECT_STATUS_VALUES.includes(candidate.status)
+            ? LineItemAssignmentBlocker.ProjectClosed
+            : null,
+        feedbackRound:
+          roundBlocker === undefined
+            ? LineItemAssignmentBlocker.MissingProjectPermission
+            : roundBlocker
+              ? ROUND_BLOCKER[roundBlocker]
+              : null,
+      };
+      return [candidate.id, blockers];
+    }),
+  );
+}
+
+export const projectLineItemAssignmentService = {
+  assign,
+  listBlockers,
+} as const;

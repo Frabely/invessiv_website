@@ -1,0 +1,19 @@
+.footerRequiredHint {
+  margin: 0;
+  margin-right: auto;
+  color: var(--color-cta);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 700;
+}
+
+.footerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+@media (max-width: 640px) {
+  .footerRequiredHint {
+    flex-basis: 100%;
+  }
+}

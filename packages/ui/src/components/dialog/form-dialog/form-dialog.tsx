@@ -4,6 +4,7 @@ import type { ReactNode, RefObject } from "react";
 import { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";
 import { ButtonControl, PrimaryCtaButton } from "../../button/button";
 import { Dialog } from "../dialog/dialog";
+import styles from "./form-dialog.module.css";
 
 export type FormDialogProps = {
   busy: boolean;
@@ -11,6 +12,8 @@ export type FormDialogProps = {
   closeLabel: string;
   description?: string;
   formId: string;
+  footerHint?: string;
+  footer?: ReactNode;
   initialFocusRef?: RefObject<HTMLElement | null>;
   onCloseAction: () => void;
   size?: DialogSize;
@@ -28,6 +31,8 @@ export function FormDialog({
   closeLabel,
   description,
   formId,
+  footerHint,
+  footer,
   initialFocusRef,
   onCloseAction,
   size = DialogSize.Narrow,
@@ -43,23 +48,30 @@ export function FormDialog({
       closeLabel={closeLabel}
       description={description}
       footer={
-        <>
-          <ButtonControl
-            disabled={busy}
-            onClick={onCloseAction}
-            type="button"
-            variant="ghost"
-          >
-            {cancelLabel}
-          </ButtonControl>
-          <PrimaryCtaButton
-            disabled={busy || submitDisabled}
-            form={formId}
-            type="submit"
-          >
-            {busy ? submittingLabel : submitLabel}
-          </PrimaryCtaButton>
-        </>
+        footer ?? (
+          <>
+            {footerHint ? (
+              <p className={styles.footerRequiredHint}>{footerHint}</p>
+            ) : null}
+            <div className={styles.footerActions}>
+              <ButtonControl
+                disabled={busy}
+                onClick={onCloseAction}
+                type="button"
+                variant="ghost"
+              >
+                {cancelLabel}
+              </ButtonControl>
+              <PrimaryCtaButton
+                disabled={busy || submitDisabled}
+                form={formId}
+                type="submit"
+              >
+                {busy ? submittingLabel : submitLabel}
+              </PrimaryCtaButton>
+            </div>
+          </>
+        )
       }
       initialFocusRef={initialFocusRef}
       onCloseAction={onCloseAction}

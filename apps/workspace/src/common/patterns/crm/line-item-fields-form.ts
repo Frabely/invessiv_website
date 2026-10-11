@@ -1,3 +1,4 @@
+import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { LineItemFieldsFormValidationCode } from "@/common/constants/crm/forms/line-item-fields-form-validation-codes";
 import type {
@@ -68,14 +69,29 @@ export function toLineItemFieldsRequestFields(
 }
 
 /**
- * True when the pricing mode no longer allows an interval, or when switching to `recurring`
- * leaves the form without one. The dialogs use it to keep the pair consistent while typing.
+ * Clears the interval outside recurring pricing and supplies a default when switching to it.
  */
 export function resolveRecurringIntervalFor(
   pricingMode: ServicePricingMode,
-  current: LineItemFieldsFormValues["recurringInterval"],
-  fallback: NonNullable<LineItemFieldsFormValues["recurringInterval"]>,
-): LineItemFieldsFormValues["recurringInterval"] {
+  current: BillingInterval | null,
+  fallback: BillingInterval,
+): BillingInterval | null {
   if (pricingMode !== ServicePricingMode.Recurring) return null;
   return current ?? fallback;
+}
+
+/** Keeps the pricing pair consistent without replacing the rest of either form. */
+export function applyLineItemPricingMode<T extends LineItemFieldsFormValues>(
+  values: T,
+  pricingMode: ServicePricingMode,
+): T {
+  return {
+    ...values,
+    pricingMode,
+    recurringInterval: resolveRecurringIntervalFor(
+      pricingMode,
+      values.recurringInterval,
+      BillingInterval.Monthly,
+    ),
+  };
 }

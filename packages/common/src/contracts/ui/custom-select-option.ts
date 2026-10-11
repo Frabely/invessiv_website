@@ -5,6 +5,8 @@ export type CustomSelectOption<TValue extends string = string> = {
   value: TValue;
   label: string;
   description?: string;
+  /** Visible with its explanation, but cannot be selected. */
+  disabled?: boolean;
   ariaLabel?: string;
   leading?: ReactNode;
 };

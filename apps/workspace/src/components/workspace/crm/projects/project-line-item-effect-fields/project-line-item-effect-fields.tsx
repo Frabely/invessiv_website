@@ -6,7 +6,7 @@ import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { hoursLineItemAmountCents } from "@invessiv/common/patterns/crm/project-line-item-value";
 import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import type { DurationInputError } from "@/common/constants/crm/forms/duration-input-errors";
-import type { LineItemAssignmentBlocker } from "@/common/constants/crm/line-item-assignment-blockers";
+import { LineItemAssignmentBlocker } from "@/common/constants/crm/line-item-assignment-blockers";
 import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
 import { CheckboxControl } from "@invessiv/ui";
 import { DurationField } from "@/components/workspace/crm/hours/duration-field/duration-field";
@@ -58,7 +58,7 @@ export function ProjectLineItemEffectFields({
   const editing = storedQuantityMinutes !== undefined;
   const text = content.form.effects;
 
-  if (blocker) {
+  if (blocker && blocker !== LineItemAssignmentBlocker.ProjectClosed) {
     return (
       <p
         className={styles.note}
@@ -95,6 +95,15 @@ export function ProjectLineItemEffectFields({
     : text.hoursFreePending;
   return (
     <div className={styles.quantity}>
+      {blocker === LineItemAssignmentBlocker.ProjectClosed ? (
+        <p
+          className={styles.note}
+          data-tone={DialogMessageTone.Error}
+          role="alert"
+        >
+          {content.form.blockers[blocker]}
+        </p>
+      ) : null}
       <DurationField
         decreaseHoursLabel={quantity.decreaseHours}
         decreaseLabel={quantity.decrease}

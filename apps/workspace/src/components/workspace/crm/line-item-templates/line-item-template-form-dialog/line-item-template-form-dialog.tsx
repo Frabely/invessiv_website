@@ -1,8 +1,9 @@
 "use client";
 
+import type { LineItemFieldsFormValues } from "@/common/contracts/crm/line-item-fields-form-values";
+
 import { type SubmitEvent, useId, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 import {
   LINE_ITEM_KIND_VALUES,
   LineItemKind,
@@ -12,25 +13,22 @@ import {
   type LineItemProjectMode,
 } from "@invessiv/common/constants/crm/line-item-project-modes";
 import { LineItemTemplateFieldLimits } from "@invessiv/common/constants/crm/forms/line-item-template-field-limits";
-import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
-import { LINE_ITEM_TEMPLATE_STATUS_VALUES } from "@invessiv/common/constants/crm/line-item-template-statuses";
+import {
+  LINE_ITEM_TEMPLATE_STATUS_VALUES,
+  type LineItemTemplateStatus,
+} from "@invessiv/common/constants/crm/line-item-template-statuses";
 import type { LineItemTemplateErrorCode } from "@invessiv/common/constants/crm/errors/line-item-template-error-codes";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import type { LineItemTemplateDto } from "@invessiv/common/contracts/crm/line-item-template.dto";
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
 import { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";
 import {
-  ButtonControl,
   CheckboxControl,
   CustomSelect,
-  Dialog,
+  FormDialog,
   FormField,
-  PrimaryCtaButton,
 } from "@invessiv/ui";
 import { lineItemTemplatesApiService } from "@/client/crm/line-item-templates-api-service";
-import type { LineItemFieldsFormValidationCode } from "@/common/constants/crm/forms/line-item-fields-form-validation-codes";
-import type { LineItemTemplateFormValidationCode } from "@/common/constants/crm/forms/line-item-template-form-validation-codes";
-import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
 import type {
   LineItemTemplateFormErrors,
   LineItemTemplateFormValues,
@@ -43,10 +41,15 @@ import {
   toUpdateLineItemTemplateRequest,
   validateLineItemTemplateForm,
 } from "@/common/patterns/crm/line-item-template-form";
-import { resolveRecurringIntervalFor } from "@/common/patterns/crm/line-item-fields-form";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import type { CrmLineItemTemplatesDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
+import {
+  LineItemIdentityFields,
+  LineItemPricingFields,
+} from "@/components/workspace/crm/shared/line-item-fields/line-item-fields";
+import { LineItemFormMessages } from "@/components/workspace/crm/shared/line-item-form-messages/line-item-form-messages";
+import layout from "@/components/workspace/crm/shared/line-item-fields/line-item-form-layout.module.css";
 import styles from "./line-item-template-form-dialog.module.css";
 
 type LineItemTemplateFormDialogProps = {
@@ -56,16 +59,6 @@ type LineItemTemplateFormDialogProps = {
   /** Null creates a template; an existing one opens edit mode with the status field shown. */
   lineItemTemplate: LineItemTemplateDto | null;
 };
-
-function fieldError(
-  code:
-    | LineItemFieldsFormValidationCode
-    | LineItemTemplateFormValidationCode
-    | undefined,
-  content: CrmLineItemTemplatesDictionary,
-): string | undefined {
-  return code ? content.form.validation[code] : undefined;
-}
 
 export function LineItemTemplateFormDialog({
   closeHref,
@@ -91,18 +84,6 @@ export function LineItemTemplateFormDialog({
     value: LineItemTemplateFormValues[K],
   ) {
     setValues((current) => ({ ...current, [key]: value }));
-  }
-
-  function selectPricingMode(next: ServicePricingMode) {
-    setValues((current) => ({
-      ...current,
-      pricingMode: next,
-      recurringInterval: resolveRecurringIntervalFor(
-        next,
-        current.recurringInterval,
-        BillingInterval.Monthly,
-      ),
-    }));
   }
 
   const kindFixesPricing = pricingModeOfLineItemKind(values.kind) !== null;
@@ -138,8 +119,21 @@ export function LineItemTemplateFormDialog({
     );
   }
 
+  const sharedFields = {
+    content: {
+      ...content.form,
+      pricingMode: content.list.pricingMode,
+      interval: content.list.interval,
+    },
+    errors,
+    namePrefix: "line-item-template",
+    onChangeAction: (patch: Partial<LineItemFieldsFormValues>) =>
+      setValues((current) => ({ ...current, ...patch })),
+    values,
+  };
+
   return (
-    <Dialog
+    <FormDialog
       busy={mutation.isSubmitting}
       closeLabel={content.form.buttons.close}
       description={
@@ -149,34 +143,15 @@ export function LineItemTemplateFormDialog({
             })
           : undefined
       }
-      footer={
-        <>
-          <p className={styles.footerRequiredHint}>
-            {content.form.requiredHint}
-          </p>
-          <div className={styles.footerActions}>
-            <ButtonControl
-              disabled={mutation.isSubmitting}
-              onClick={mutation.close}
-              type="button"
-              variant="ghost"
-            >
-              {content.form.buttons.cancel}
-            </ButtonControl>
-            <PrimaryCtaButton
-              disabled={mutation.isSubmitting}
-              form={formId}
-              type="submit"
-            >
-              {mutation.isSubmitting
-                ? content.form.buttons.submitting
-                : lineItemTemplate
-                  ? content.form.buttons.submitEdit
-                  : content.form.buttons.submitCreate}
-            </PrimaryCtaButton>
-          </div>
-        </>
+      cancelLabel={content.form.buttons.cancel}
+      formId={formId}
+      footerHint={content.form.requiredHint}
+      submitLabel={
+        lineItemTemplate
+          ? content.form.buttons.submitEdit
+          : content.form.buttons.submitCreate
       }
+      submittingLabel={content.form.buttons.submitting}
       initialFocusRef={titleInputRef}
       onCloseAction={mutation.close}
       size={DialogSize.Narrow}
@@ -185,42 +160,19 @@ export function LineItemTemplateFormDialog({
       }
     >
       <form
-        className={styles.form}
+        className={layout.form}
         id={formId}
         noValidate
         onSubmit={handleSubmit}
       >
-        <div className={styles.grid}>
-          <FormField
-            className={styles.fullWidth}
-            errorMessage={fieldError(errors.title, content)}
-            inputRef={titleInputRef}
-            inputProps={{
-              maxLength: LineItemTemplateFieldLimits.TitleMaxLength,
-              name: "line-item-template-title",
-              onChange: (event) => update("title", event.target.value),
-              placeholder: content.form.placeholders.title,
-              value: values.title,
-            }}
-            kind={FormFieldKind.Text}
-            label={content.form.fields.title}
-            required
+        <div className={layout.grid}>
+          <LineItemIdentityFields
+            {...sharedFields}
+            limits={LineItemTemplateFieldLimits}
+            titleInputRef={titleInputRef}
           />
           <FormField
-            className={styles.fullWidth}
-            kind={FormFieldKind.Textarea}
-            label={content.form.fields.description}
-            textareaProps={{
-              maxLength: LineItemTemplateFieldLimits.DescriptionMaxLength,
-              name: "line-item-template-description",
-              onChange: (event) => update("description", event.target.value),
-              placeholder: content.form.placeholders.description,
-              rows: 3,
-              value: values.description,
-            }}
-          />
-          <FormField
-            className={styles.fullWidth}
+            className={layout.fullWidth}
             hint={kindHint}
             kind={FormFieldKind.Custom}
             label={content.form.fields.kind}
@@ -245,88 +197,16 @@ export function LineItemTemplateFormDialog({
               />
             )}
           />
-          <FormField
-            errorMessage={fieldError(errors.priceInput, content)}
-            inputProps={{
-              inputMode: "decimal",
-              name: "line-item-template-price",
-              onChange: (event) => update("priceInput", event.target.value),
-              value: values.priceInput,
-            }}
-            inputSuffix={content.form.currencySymbol}
-            kind={FormFieldKind.Text}
-            label={
-              values.kind === LineItemKind.Hours
-                ? content.form.fields.hourlyRate
-                : content.form.fields.priceCents
-            }
-            required
-          />
-          <FormField
-            hint={
+          <LineItemPricingFields
+            {...sharedFields}
+            kind={values.kind}
+            pricingDisabled={kindFixesPricing}
+            pricingHint={
               kindFixesPricing ? content.form.hints.pricingModeFixed : undefined
             }
-            kind={FormFieldKind.Custom}
-            label={content.form.fields.pricingMode}
-            renderControl={({ describedBy, id, invalid }) => (
-              <CustomSelect
-                describedBy={describedBy}
-                disabled={kindFixesPricing}
-                id={id}
-                invalid={invalid}
-                onChange={(next) =>
-                  selectPricingMode(next as ServicePricingMode)
-                }
-                options={[
-                  {
-                    label: content.list.pricingMode.one_time,
-                    value: ServicePricingMode.OneTime,
-                  },
-                  {
-                    label: content.list.pricingMode.recurring,
-                    value: ServicePricingMode.Recurring,
-                  },
-                  {
-                    label: content.list.pricingMode.rate,
-                    value: ServicePricingMode.Rate,
-                  },
-                ]}
-                value={values.pricingMode}
-              />
-            )}
           />
-          {values.pricingMode === ServicePricingMode.Recurring ? (
-            <FormField
-              errorMessage={fieldError(errors.recurringInterval, content)}
-              kind={FormFieldKind.Custom}
-              label={content.form.fields.recurringInterval}
-              renderControl={({ describedBy, id, invalid }) => (
-                <CustomSelect
-                  describedBy={describedBy}
-                  id={id}
-                  invalid={invalid}
-                  onChange={(next) =>
-                    update("recurringInterval", next as BillingInterval)
-                  }
-                  options={[
-                    {
-                      label: content.list.interval.monthly,
-                      value: BillingInterval.Monthly,
-                    },
-                    {
-                      label: content.list.interval.yearly,
-                      value: BillingInterval.Yearly,
-                    },
-                  ]}
-                  // Non-null by construction: the pricing-mode switch above sets a default the
-                  // moment this select becomes visible, so there is exactly one place deciding it.
-                  value={values.recurringInterval as BillingInterval}
-                />
-              )}
-            />
-          ) : null}
           <FormField
-            className={styles.fullWidth}
+            className={layout.fullWidth}
             hint={
               kindFixesPricing ? content.form.hints.projectModeFixed : undefined
             }
@@ -365,7 +245,11 @@ export function LineItemTemplateFormDialog({
               {content.form.hints.portal}
             </p>
             <FormField
-              errorMessage={fieldError(errors.portalDescription, content)}
+              errorMessage={
+                errors.portalDescription
+                  ? content.form.validation[errors.portalDescription]
+                  : undefined
+              }
               kind={FormFieldKind.Textarea}
               label={content.form.fields.portalDescription}
               required={values.portalRequestable}
@@ -391,10 +275,7 @@ export function LineItemTemplateFormDialog({
                   id={id}
                   invalid={invalid}
                   onChange={(next) =>
-                    update(
-                      "status",
-                      next as LineItemTemplateFormValues["status"],
-                    )
+                    update("status", next as LineItemTemplateStatus)
                   }
                   options={LINE_ITEM_TEMPLATE_STATUS_VALUES.map((status) => ({
                     label: content.list.status[status],
@@ -407,32 +288,26 @@ export function LineItemTemplateFormDialog({
           ) : null}
         </div>
 
-        {mutation.hasConflict && mutation.current ? (
-          <section
-            className={styles.message}
-            data-tone={DialogMessageTone.Conflict}
-            role="alert"
-          >
-            <p className={styles.messageText}>
-              {content.form.conflict.message}
-            </p>
-            <p className={styles.messageDetail}>
-              {formatMessage(content.form.conflict.currentTitle, {
-                name: mutation.current.title,
-              })}
-            </p>
-          </section>
-        ) : null}
-        {mutation.errorCode ? (
-          <p
-            className={styles.message}
-            data-tone={DialogMessageTone.Error}
-            role="alert"
-          >
-            {content.form.errors[mutation.errorCode]}
-          </p>
-        ) : null}
+        <LineItemFormMessages
+          conflictMessage={
+            mutation.hasConflict && mutation.current
+              ? content.form.conflict.message
+              : undefined
+          }
+          conflictDetail={
+            mutation.hasConflict && mutation.current
+              ? formatMessage(content.form.conflict.currentTitle, {
+                  name: mutation.current.title,
+                })
+              : undefined
+          }
+          errorMessage={
+            mutation.errorCode
+              ? content.form.errors[mutation.errorCode]
+              : undefined
+          }
+        />
       </form>
-    </Dialog>
+    </FormDialog>
   );
 }

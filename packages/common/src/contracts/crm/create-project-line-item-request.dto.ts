@@ -8,13 +8,23 @@ import type { ProjectLineItemStatus } from "@invessiv/common/constants/crm/proje
  * before saving.
  */
 export interface CreateProjectLineItemRequestDto {
+  /** Active source for this snapshot. */
   sourceLineItemTemplateId: string;
+  /** Selected catalog version; omitted only by clients deployed before replay protection. */
+  sourceLineItemTemplateVersion?: number;
+  /** Stable per assignment attempt; also used as the new line item ID. */
+  idempotencyKey?: string;
+  /** Project-specific title copied from the selected template and editable before assigning. */
   title: string;
+  /** Project-specific scope description, independent of subsequent catalog changes. */
   description: string;
+  /** Price in whole cents; an hourly rate for purchased hours. */
   priceCents: number;
+  /** Billing mode of the snapshot; automated kinds require their matching mode. */
   pricingMode: ServicePricingMode;
   /** Required exactly when `pricingMode` is `recurring`; must stay null otherwise. */
   recurringInterval: BillingInterval | null;
+  /** Standard snapshots default to planned; automated kinds always become confirmed. */
   status?: ProjectLineItemStatus;
   /** Required for a template of kind `hours` (multiple of 15); must be null or absent for every other kind. */
   quantityMinutes?: number | null;

@@ -1,21 +1,16 @@
 "use client";
 
+import type { LineItemFieldsFormValues } from "@/common/contracts/crm/line-item-fields-form-values";
+
 import { type SubmitEvent, useId, useRef, useState } from "react";
 import Link from "next/link";
 
-import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 import {
   PROJECT_LINE_ITEM_STATUS_VALUES,
   ProjectLineItemStatus,
 } from "@invessiv/common/constants/crm/project-line-item-statuses";
-import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
-import { LineItemAssignmentBlocker } from "@/common/constants/crm/line-item-assignment-blockers";
 import type { ProjectLineItemErrorCode } from "@invessiv/common/constants/crm/errors/project-line-item-error-codes";
 import { ProjectLineItemFieldLimits } from "@invessiv/common/constants/crm/forms/project-line-item-field-limits";
-import {
-  SERVICE_PRICING_MODE_VALUES,
-  ServicePricingMode,
-} from "@invessiv/common/constants/crm/service-pricing-modes";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";
 import type { ProjectLineItemDto } from "@invessiv/common/contracts/crm/project-line-item.dto";
@@ -24,15 +19,11 @@ import {
   ButtonControl,
   ButtonLink,
   CustomSelect,
-  Dialog,
+  FormDialog,
   FormField,
-  PrimaryCtaButton,
 } from "@invessiv/ui";
 import { projectLineItemsApiService } from "@/client/crm/project-line-items-api-service";
-import type { ProjectLineItemFormValidationCode } from "@/common/constants/crm/forms/project-line-item-form-validation-codes";
 import type { LineItemAssignmentBlockers } from "@/common/contracts/crm/line-item-assignment-blockers";
-import type { LineItemFieldsFormValidationCode } from "@/common/constants/crm/forms/line-item-fields-form-validation-codes";
-import { DialogMessageTone } from "@/common/constants/ui/dialog-message-tones";
 import type {
   ProjectLineItemFormErrors,
   ProjectLineItemFormValues,
@@ -42,18 +33,24 @@ import {
   createProjectLineItemFormValues,
   isAutomatedLineItemKind,
   readProjectLineItemQuantity,
+  resolveProjectLineItemFormBlocker,
   toCreateProjectLineItemRequest,
   toUpdateProjectLineItemRequest,
   validateProjectLineItemForm,
 } from "@/common/patterns/crm/project-line-item-form";
 import { parseEuroAmountToCents } from "@/common/patterns/crm/euro-cents";
-import { resolveRecurringIntervalFor } from "@/common/patterns/crm/line-item-fields-form";
 import type { Locale } from "@/config/i18n";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import type { CrmProjectLineItemsDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { formatEuroCents } from "@/lib/workspace/crm/format-service-price";
 import { ProjectLineItemEffectFields } from "../project-line-item-effect-fields/project-line-item-effect-fields";
+import {
+  LineItemIdentityFields,
+  LineItemPricingFields,
+} from "@/components/workspace/crm/shared/line-item-fields/line-item-fields";
+import { LineItemFormMessages } from "@/components/workspace/crm/shared/line-item-form-messages/line-item-form-messages";
+import layout from "@/components/workspace/crm/shared/line-item-fields/line-item-form-layout.module.css";
 import styles from "./project-line-item-form-dialog.module.css";
 
 type ProjectLineItemFormDialogProps = {
@@ -70,16 +67,6 @@ type ProjectLineItemFormDialogProps = {
   templates: readonly LineItemTemplateDto[];
 };
 
-function fieldError(
-  code:
-    | ProjectLineItemFormValidationCode
-    | LineItemFieldsFormValidationCode
-    | undefined,
-  content: CrmProjectLineItemsDictionary,
-): string | undefined {
-  return code ? content.form.validation[code] : undefined;
-}
-
 export function ProjectLineItemFormDialog({
   blockers,
   catalogHref,
@@ -91,6 +78,7 @@ export function ProjectLineItemFormDialog({
   templates,
 }: ProjectLineItemFormDialogProps) {
   const formId = useId();
+  const [idempotencyKey] = useState(() => crypto.randomUUID());
   const titleInputRef = useRef<HTMLInputElement>(null);
   const [values, setValues] = useState<ProjectLineItemFormValues>(() =>
     createProjectLineItemFormValues(projectLineItem, locale),
@@ -115,10 +103,20 @@ export function ProjectLineItemFormDialog({
             value: "",
           },
         ]),
-    ...templates.map((template) => ({
-      label: `${template.title} · ${formatEuroCents(template.priceCents, locale)}`,
-      value: template.id,
-    })),
+    ...templates.map((template) => {
+      // Closed projects still allow hours credited to free stock.
+      const reason = resolveProjectLineItemFormBlocker(
+        template.kind,
+        blockers,
+        false,
+      );
+      return {
+        label: `${template.title} · ${formatEuroCents(template.priceCents, locale)}`,
+        value: template.id,
+        disabled: reason !== null,
+        description: reason ? content.form.blockers[reason] : undefined,
+      };
+    }),
   ];
 
   function update<K extends keyof ProjectLineItemFormValues>(
@@ -130,26 +128,25 @@ export function ProjectLineItemFormDialog({
 
   function selectTemplate(templateId: string) {
     const template = templates.find((candidate) => candidate.id === templateId);
-    if (template) {
+    if (
+      template &&
+      resolveProjectLineItemFormBlocker(template.kind, blockers, false) === null
+    ) {
       setValues(applyLineItemTemplateToFormValues(template, locale));
     }
   }
 
-  function selectPricingMode(next: ServicePricingMode) {
-    setValues((current) => ({
-      ...current,
-      pricingMode: next,
-      recurringInterval: resolveRecurringIntervalFor(
-        next,
-        current.recurringInterval,
-        BillingInterval.Monthly,
-      ),
-    }));
-  }
-
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (mutation.isSubmitting) {
+    if (
+      mutation.isSubmitting ||
+      resolveProjectLineItemFormBlocker(
+        values.kind,
+        blockers,
+        values.allocateHoursToProject,
+        projectLineItem !== null,
+      )
+    ) {
       return;
     }
 
@@ -170,7 +167,7 @@ export function ProjectLineItemFormDialog({
           )
         : projectLineItemsApiService.createProjectLineItem(
             projectId,
-            toCreateProjectLineItemRequest(values),
+            toCreateProjectLineItemRequest(values, idempotencyKey),
           ),
     );
   }
@@ -178,22 +175,29 @@ export function ProjectLineItemFormDialog({
   const canAssign = projectLineItem !== null || templates.length > 0;
   const automated = isAutomatedLineItemKind(values.kind);
   // A blocker only matters for a new assignment; an existing item already took effect.
-  const blocker =
-    projectLineItem !== null
-      ? null
-      : values.kind === LineItemKind.Hours
-        ? // A closed project only refuses the allocation, not hours that stay free.
-          blockers.hours === LineItemAssignmentBlocker.ProjectClosed &&
-          !values.allocateHoursToProject
-          ? null
-          : blockers.hours
-        : values.kind === LineItemKind.FeedbackRound
-          ? blockers.feedbackRound
-          : null;
+  const blocker = resolveProjectLineItemFormBlocker(
+    values.kind,
+    blockers,
+    values.allocateHoursToProject,
+    projectLineItem !== null,
+  );
   const price = parseEuroAmountToCents(values.priceInput);
 
+  const sharedFields = {
+    content: {
+      ...content.form,
+      pricingMode: content.list.pricingMode,
+      interval: content.form.interval,
+    },
+    errors,
+    namePrefix: "project-line-item",
+    onChangeAction: (patch: Partial<LineItemFieldsFormValues>) =>
+      setValues((current) => ({ ...current, ...patch })),
+    values,
+  };
+
   return (
-    <Dialog
+    <FormDialog
       busy={mutation.isSubmitting}
       closeLabel={content.form.buttons.close}
       description={
@@ -203,35 +207,18 @@ export function ProjectLineItemFormDialog({
             })
           : content.form.description.create
       }
+      cancelLabel={content.form.buttons.cancel}
+      formId={formId}
+      footerHint={content.form.requiredHint}
+      submitLabel={
+        projectLineItem
+          ? content.form.buttons.submitEdit
+          : content.form.buttons.submitCreate
+      }
+      submittingLabel={content.form.buttons.submitting}
+      submitDisabled={blocker !== null}
       footer={
-        canAssign ? (
-          <>
-            <p className={styles.footerRequiredHint}>
-              {content.form.requiredHint}
-            </p>
-            <div className={styles.footerActions}>
-              <ButtonControl
-                disabled={mutation.isSubmitting}
-                onClick={mutation.close}
-                type="button"
-                variant="ghost"
-              >
-                {content.form.buttons.cancel}
-              </ButtonControl>
-              <PrimaryCtaButton
-                disabled={mutation.isSubmitting || blocker !== null}
-                form={formId}
-                type="submit"
-              >
-                {mutation.isSubmitting
-                  ? content.form.buttons.submitting
-                  : projectLineItem
-                    ? content.form.buttons.submitEdit
-                    : content.form.buttons.submitCreate}
-              </PrimaryCtaButton>
-            </div>
-          </>
-        ) : (
+        !canAssign ? (
           <div className={styles.footerActions}>
             <ButtonControl
               onClick={mutation.close}
@@ -246,7 +233,7 @@ export function ProjectLineItemFormDialog({
               </ButtonLink>
             ) : null}
           </div>
-        )
+        ) : undefined
       }
       initialFocusRef={titleInputRef}
       onCloseAction={mutation.close}
@@ -257,12 +244,12 @@ export function ProjectLineItemFormDialog({
     >
       {canAssign ? (
         <form
-          className={styles.form}
+          className={layout.form}
           id={formId}
           noValidate
           onSubmit={handleSubmit}
         >
-          <div className={styles.grid}>
+          <div className={layout.grid}>
             {projectLineItem ? (
               <p className={styles.origin}>
                 {originTemplate
@@ -273,11 +260,12 @@ export function ProjectLineItemFormDialog({
               </p>
             ) : (
               <FormField
-                className={styles.fullWidth}
-                errorMessage={fieldError(
-                  errors.sourceLineItemTemplateId,
-                  content,
-                )}
+                className={layout.fullWidth}
+                errorMessage={
+                  errors.sourceLineItemTemplateId
+                    ? content.form.validation[errors.sourceLineItemTemplateId]
+                    : undefined
+                }
                 kind={FormFieldKind.Custom}
                 label={content.form.fields.sourceLineItemTemplateId}
                 renderControl={({ describedBy, id, invalid }) => (
@@ -293,167 +281,86 @@ export function ProjectLineItemFormDialog({
                 required
               />
             )}
-            <FormField
-              className={styles.fullWidth}
-              errorMessage={fieldError(errors.title, content)}
-              inputRef={titleInputRef}
-              inputProps={{
-                maxLength: ProjectLineItemFieldLimits.TitleMaxLength,
-                name: "project-line-item-title",
-                onChange: (event) => update("title", event.target.value),
-                placeholder: content.form.placeholders.title,
-                value: values.title,
-              }}
-              kind={FormFieldKind.Text}
-              label={content.form.fields.title}
-              required
-            />
-            <ProjectLineItemEffectFields
-              allocateHoursToProject={values.allocateHoursToProject}
-              onAllocateChangeAction={(next) =>
-                update("allocateHoursToProject", next)
+            <LineItemIdentityFields
+              {...sharedFields}
+              limits={ProjectLineItemFieldLimits}
+              titleInputRef={titleInputRef}
+              afterTitle={
+                <>
+                  <ProjectLineItemEffectFields
+                    allocateHoursToProject={values.allocateHoursToProject}
+                    onAllocateChangeAction={(next) =>
+                      update("allocateHoursToProject", next)
+                    }
+                    blocker={blocker}
+                    content={content}
+                    kind={values.kind}
+                    locale={locale}
+                    onQuantityChangeAction={(next) =>
+                      update("quantityInput", next)
+                    }
+                    quantityError={errors.quantityInput}
+                    quantityInput={values.quantityInput}
+                    quantityMinutes={readProjectLineItemQuantity(values)}
+                    rateCents={price.ok ? price.cents : null}
+                    storedQuantityMinutes={
+                      projectLineItem
+                        ? projectLineItem.quantityMinutes
+                        : undefined
+                    }
+                  />
+                  {automated ? null : (
+                    <FormField
+                      kind={FormFieldKind.Custom}
+                      label={content.form.fields.status}
+                      renderControl={({ describedBy, id, invalid }) => (
+                        <CustomSelect
+                          describedBy={describedBy}
+                          id={id}
+                          invalid={invalid}
+                          onChange={(next) =>
+                            update("status", next as ProjectLineItemStatus)
+                          }
+                          options={PROJECT_LINE_ITEM_STATUS_VALUES.map(
+                            (status) => ({
+                              label: content.list.status[status],
+                              value: status,
+                            }),
+                          )}
+                          value={values.status ?? ProjectLineItemStatus.Planned}
+                        />
+                      )}
+                    />
+                  )}
+                </>
               }
-              blocker={blocker}
-              content={content}
+            />
+            <LineItemPricingFields
+              {...sharedFields}
               kind={values.kind}
-              locale={locale}
-              onQuantityChangeAction={(next) => update("quantityInput", next)}
-              quantityError={errors.quantityInput}
-              quantityInput={values.quantityInput}
-              quantityMinutes={readProjectLineItemQuantity(values)}
-              rateCents={price.ok ? price.cents : null}
-              storedQuantityMinutes={
-                projectLineItem ? projectLineItem.quantityMinutes : undefined
-              }
+              pricingDisabled={automated}
             />
-            {automated ? null : (
-              <FormField
-                kind={FormFieldKind.Custom}
-                label={content.form.fields.status}
-                renderControl={({ describedBy, id, invalid }) => (
-                  <CustomSelect
-                    describedBy={describedBy}
-                    id={id}
-                    invalid={invalid}
-                    onChange={(next) =>
-                      update("status", next as ProjectLineItemStatus)
-                    }
-                    options={PROJECT_LINE_ITEM_STATUS_VALUES.map((status) => ({
-                      label: content.list.status[status],
-                      value: status,
-                    }))}
-                    value={values.status ?? ProjectLineItemStatus.Planned}
-                  />
-                )}
-              />
-            )}
-            <FormField
-              className={styles.fullWidth}
-              kind={FormFieldKind.Textarea}
-              label={content.form.fields.description}
-              textareaProps={{
-                maxLength: ProjectLineItemFieldLimits.DescriptionMaxLength,
-                name: "project-line-item-description",
-                onChange: (event) => update("description", event.target.value),
-                placeholder: content.form.placeholders.description,
-                rows: 3,
-                value: values.description,
-              }}
-            />
-            <FormField
-              errorMessage={fieldError(errors.priceInput, content)}
-              inputProps={{
-                inputMode: "decimal",
-                name: "project-line-item-price",
-                onChange: (event) => update("priceInput", event.target.value),
-                value: values.priceInput,
-              }}
-              inputSuffix={content.form.currencySymbol}
-              kind={FormFieldKind.Text}
-              label={
-                values.kind === LineItemKind.Hours
-                  ? content.form.fields.hourlyRate
-                  : content.form.fields.priceCents
-              }
-              required
-            />
-            <FormField
-              kind={FormFieldKind.Custom}
-              label={content.form.fields.pricingMode}
-              renderControl={({ describedBy, id, invalid }) => (
-                <CustomSelect
-                  describedBy={describedBy}
-                  disabled={automated}
-                  id={id}
-                  invalid={invalid}
-                  onChange={(next) =>
-                    selectPricingMode(next as ServicePricingMode)
-                  }
-                  options={SERVICE_PRICING_MODE_VALUES.map((mode) => ({
-                    label: content.list.pricingMode[mode],
-                    value: mode,
-                  }))}
-                  value={values.pricingMode}
-                />
-              )}
-            />
-            {values.pricingMode === ServicePricingMode.Recurring ? (
-              <FormField
-                errorMessage={fieldError(errors.recurringInterval, content)}
-                kind={FormFieldKind.Custom}
-                label={content.form.fields.recurringInterval}
-                renderControl={({ describedBy, id, invalid }) => (
-                  <CustomSelect
-                    describedBy={describedBy}
-                    id={id}
-                    invalid={invalid}
-                    onChange={(next) =>
-                      update("recurringInterval", next as BillingInterval)
-                    }
-                    options={[
-                      {
-                        label: content.form.interval.monthly,
-                        value: BillingInterval.Monthly,
-                      },
-                      {
-                        label: content.form.interval.yearly,
-                        value: BillingInterval.Yearly,
-                      },
-                    ]}
-                    // Non-null by construction: the pricing-mode switch above sets a default the
-                    // moment this select becomes visible, so one place decides it.
-                    value={values.recurringInterval as BillingInterval}
-                  />
-                )}
-              />
-            ) : null}
           </div>
 
-          {mutation.hasConflict && mutation.current ? (
-            <section
-              className={styles.message}
-              data-tone={DialogMessageTone.Conflict}
-              role="alert"
-            >
-              <p className={styles.messageText}>
-                {content.form.conflict.message}
-              </p>
-              <p className={styles.messageDetail}>
-                {formatMessage(content.form.conflict.currentTitle, {
-                  name: mutation.current.title,
-                })}
-              </p>
-            </section>
-          ) : null}
-          {mutation.errorCode ? (
-            <p
-              className={styles.message}
-              data-tone={DialogMessageTone.Error}
-              role="alert"
-            >
-              {content.form.errors[mutation.errorCode]}
-            </p>
-          ) : null}
+          <LineItemFormMessages
+            conflictMessage={
+              mutation.hasConflict && mutation.current
+                ? content.form.conflict.message
+                : undefined
+            }
+            conflictDetail={
+              mutation.hasConflict && mutation.current
+                ? formatMessage(content.form.conflict.currentTitle, {
+                    name: mutation.current.title,
+                  })
+                : undefined
+            }
+            errorMessage={
+              mutation.errorCode
+                ? content.form.errors[mutation.errorCode]
+                : undefined
+            }
+          />
         </form>
       ) : (
         <div className={styles.noTemplates}>
@@ -465,6 +372,6 @@ export function ProjectLineItemFormDialog({
           </p>
         </div>
       )}
-    </Dialog>
+    </FormDialog>
   );
 }

@@ -101,14 +101,20 @@ describe("createProjectLineItem", () => {
       },
     ]);
     const insert = vi.fn(() => ({ values: mocks.values }));
-    mocks.getDatabase.mockReturnValue({
-      // The assignment runs in one transaction; the stub hands the same insert to it.
-      transaction: (callback: (tx: unknown) => unknown) => callback({ insert }),
-      select: vi.fn(() => ({
-        from: vi.fn(() => ({
-          where: vi.fn(() => ({ limit: mocks.limit })),
+    const select = vi.fn(() => ({
+      from: vi.fn(() => ({
+        where: vi.fn(() => ({
+          limit: () => {
+            const result = mocks.limit();
+            return Object.assign(result, { for: vi.fn(() => result) });
+          },
         })),
       })),
+    }));
+    mocks.getDatabase.mockReturnValue({
+      transaction: (callback: (tx: unknown) => unknown) =>
+        callback({ insert, select }),
+      select,
       insert,
     });
   });
@@ -300,6 +306,53 @@ describe("createProjectLineItem", () => {
     expect(result).toEqual({
       ok: false,
       code: ProjectLineItemErrorCode.LineItemTemplateNotAssignable,
+    });
+    expect(mocks.values).not.toHaveBeenCalled();
+  });
+  it("rejects a template changed since selection without inserting a line item", async () => {
+    stubSelects([
+      [{ customerId: CUSTOMER_ID, status: "active" }],
+      [{ id: TEMPLATE_ID, kind: "feedback_round", version: 2 }],
+    ]);
+    const result = await createProjectLineItem(
+      PROJECT_ID,
+      createInput({ sourceLineItemTemplateVersion: 1 }),
+      workspaceActorWith([Permission.ProjectLineItemsWrite]),
+    );
+    expect(result).toEqual({
+      ok: false,
+      code: ProjectLineItemErrorCode.LineItemTemplateChanged,
+    });
+    expect(mocks.values).not.toHaveBeenCalled();
+  });
+
+  it("returns a replay before consulting an archived template or applying effects", async () => {
+    const [row] = await mocks.returning();
+    stubSelects([[{ customerId: CUSTOMER_ID, status: "archived" }], [row]]);
+    const result = await createProjectLineItem(
+      PROJECT_ID,
+      createInput({ idempotencyKey: row.id }),
+      workspaceActorWith([Permission.ProjectLineItemsWrite]),
+    );
+    expect(result).toMatchObject({ ok: true, projectLineItem: { id: row.id } });
+    expect(mocks.limit).toHaveBeenCalledTimes(2);
+    expect(mocks.values).not.toHaveBeenCalled();
+  });
+
+  it("does not return a replay from another project", async () => {
+    stubSelects([
+      [{ customerId: CUSTOMER_ID, status: "active" }],
+      [{ project_id: OTHER_PROJECT_ID }],
+    ]);
+    const result = await createProjectLineItem(
+      PROJECT_ID,
+      createInput({ idempotencyKey: OTHER_PROJECT_ID }),
+      workspaceActorWith([Permission.ProjectLineItemsWrite]),
+    );
+    expect(result).toEqual({
+      ok: false,
+      code: ProjectLineItemErrorCode.ValidationError,
+      errors: [],
     });
     expect(mocks.values).not.toHaveBeenCalled();
   });

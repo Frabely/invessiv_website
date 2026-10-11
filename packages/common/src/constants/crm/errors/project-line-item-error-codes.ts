@@ -1,6 +1,7 @@
 export const ProjectLineItemErrorCode = {
   ProjectLineItemNotFound: "PROJECT_LINE_ITEM_NOT_FOUND",
   ProjectNotFound: "PROJECT_NOT_FOUND",
+  LineItemTemplateChanged: "LINE_ITEM_TEMPLATE_CHANGED",
   LineItemTemplateNotAssignable: "LINE_ITEM_TEMPLATE_NOT_ASSIGNABLE",
   /** The assignment would act on hours or the process track, and the actor may not do that. */
   EffectNotPermitted: "EFFECT_NOT_PERMITTED",

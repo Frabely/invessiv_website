@@ -14,6 +14,7 @@ import type {
  */
 export type ProjectLineItemFormValues = LineItemFieldsFormValues & {
   sourceLineItemTemplateId: string | null;
+  sourceLineItemTemplateVersion?: number;
   status?: ProjectLineItemStatus;
   kind: LineItemKind;
   /** Purchased time as typed (`h:mm`); read to minutes on submit and only for kind `hours`. */

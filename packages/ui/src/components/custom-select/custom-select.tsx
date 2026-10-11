@@ -98,12 +98,15 @@ export function CustomSelect<TValue extends string = string>(
       return;
     }
     if (!props.multiple) {
-      const nextIndex = Math.max(
-        props.options.findIndex((option) => option.value === props.value),
-        0,
+      const selectedIndex = props.options.findIndex(
+        (option) => option.value === props.value && !option.disabled,
       );
-      setActiveIndex(nextIndex);
-      pendingFocusIndexRef.current = nextIndex;
+      const nextIndex =
+        selectedIndex >= 0
+          ? selectedIndex
+          : props.options.findIndex((option) => !option.disabled);
+      setActiveIndex(nextIndex >= 0 ? nextIndex : null);
+      pendingFocusIndexRef.current = nextIndex >= 0 ? nextIndex : null;
     }
   }
 
@@ -234,7 +237,10 @@ export function CustomSelect<TValue extends string = string>(
                     data-has-leading={Boolean(option.leading) || undefined}
                     data-state={option.state}
                     key={option.value}
-                    onClick={() => onToggleOption(option.value)}
+                    aria-disabled={option.disabled || undefined}
+                    onClick={() => {
+                      if (!option.disabled) onToggleOption(option.value);
+                    }}
                     type="button"
                   >
                     {option.leading ? (
@@ -262,10 +268,13 @@ export function CustomSelect<TValue extends string = string>(
   const hasSelectedLeading = Boolean(selected?.leading);
 
   function handleSingleTriggerKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
-    const selectedIndex = Math.max(
-      options.findIndex((option) => option.value === value),
-      0,
+    const currentIndex = options.findIndex(
+      (option) => option.value === value && !option.disabled,
     );
+    const selectedIndex =
+      currentIndex >= 0
+        ? currentIndex
+        : options.findIndex((option) => !option.disabled);
 
     if (
       event.key === "ArrowDown" ||
@@ -273,15 +282,16 @@ export function CustomSelect<TValue extends string = string>(
       event.key === " "
     ) {
       event.preventDefault();
-      setActiveIndex(selectedIndex);
-      pendingFocusIndexRef.current = selectedIndex;
+      setActiveIndex(selectedIndex >= 0 ? selectedIndex : null);
+      pendingFocusIndexRef.current = selectedIndex >= 0 ? selectedIndex : null;
       setIsOpen(true);
       return;
     }
     if (event.key === "ArrowUp") {
       event.preventDefault();
-      setActiveIndex(options.length - 1);
-      pendingFocusIndexRef.current = options.length - 1;
+      const lastIndex = options.findLastIndex((option) => !option.disabled);
+      setActiveIndex(lastIndex >= 0 ? lastIndex : null);
+      pendingFocusIndexRef.current = lastIndex >= 0 ? lastIndex : null;
       setIsOpen(true);
     }
   }
@@ -307,7 +317,7 @@ export function CustomSelect<TValue extends string = string>(
     } else if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       const option = options[index];
-      if (option) {
+      if (option && !option.disabled) {
         onChange(option.value);
       }
       setIsOpen(false);
@@ -317,7 +327,15 @@ export function CustomSelect<TValue extends string = string>(
 
     if (nextIndex !== undefined) {
       event.preventDefault();
-      setActiveIndex(nextIndex);
+      const step = event.key === "ArrowUp" || event.key === "End" ? -1 : 1;
+      for (
+        let count = 0;
+        count < options.length && options[nextIndex]?.disabled;
+        count++
+      ) {
+        nextIndex = (nextIndex + step + options.length) % options.length;
+      }
+      setActiveIndex(options[nextIndex]?.disabled ? null : nextIndex);
     }
   }
 
@@ -372,10 +390,12 @@ export function CustomSelect<TValue extends string = string>(
               <button
                 aria-label={option.ariaLabel}
                 aria-selected={value === option.value}
+                aria-disabled={option.disabled || undefined}
                 className={styles.option}
                 data-has-leading={Boolean(option.leading) || undefined}
                 key={option.value}
                 onClick={() => {
+                  if (option.disabled) return;
                   onChange(option.value);
                   setIsOpen(false);
                   triggerRef.current?.focus({ preventScroll: true });

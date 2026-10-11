@@ -1,10 +1,9 @@
+import { MINUTES_PER_HOUR } from "@invessiv/common/constants/time/time-units";
 import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 import { ProjectLineItemStatus } from "@invessiv/common/constants/crm/project-line-item-statuses";
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import type { ProjectLineItemDto } from "@invessiv/common/contracts/crm/project-line-item.dto";
 import type { ProjectLineItemValue } from "@invessiv/common/contracts/crm/project-line-item-value";
-
-const MINUTES_PER_HOUR = 60;
 
 /** What purchased hours cost at an hourly rate, rounded to whole cents. */
 export function hoursLineItemAmountCents(

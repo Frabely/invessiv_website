@@ -301,6 +301,42 @@ describe.skipIf(!RUN_INTEGRATION)(
       expect(logged).toHaveLength(2);
     });
 
+    it("credits one purchase and allocation for concurrent retries of the same request", async () => {
+      const customerId = await createCustomer();
+      const projectId = await createProject(customerId);
+      const owner = actor(
+        Permission.ProjectLineItemsWrite,
+        Permission.HoursManage,
+      );
+      const request = { ...hoursInput(300), idempotencyKey: randomUUID() };
+      const results = await Promise.all([
+        createProjectLineItem(projectId, request, owner),
+        createProjectLineItem(projectId, request, owner),
+      ]);
+      expect(results.every((result) => result.ok)).toBe(true);
+      expect(await countRows(customerId, projectId)).toEqual({
+        items: 1,
+        purchases: 1,
+        allocations: 1,
+      });
+    });
+
+    it("adds only one round for concurrent retries", async () => {
+      const customerId = await createCustomer();
+      const projectId = await createProject(customerId);
+      const owner = actor(
+        Permission.ProjectLineItemsWrite,
+        Permission.ProjectsWrite,
+      );
+      const request = { ...roundInput(), idempotencyKey: randomUUID() };
+      const results = await Promise.all([
+        createProjectLineItem(projectId, request, owner),
+        createProjectLineItem(projectId, request, owner),
+      ]);
+      expect(results.every((result) => result.ok)).toBe(true);
+      expect((await readTrack(projectId))?.included).toBe(3);
+      expect((await countRows(customerId, projectId)).items).toBe(1);
+    });
     it("leaves purchased hours free when they are not allocated to the project", async () => {
       const customerId = await createCustomer();
       const projectId = await createProject(customerId, {

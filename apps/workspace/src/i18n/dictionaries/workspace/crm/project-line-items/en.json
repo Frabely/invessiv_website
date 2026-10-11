@@ -111,7 +111,8 @@
       "PROJECT_CLOSED": "The project takes no more hours. Nothing was saved.",
       "FEEDBACK_ROUND_NOT_AVAILABLE": "The project cannot take a further feedback round. Nothing was saved.",
       "VALIDATION_ERROR": "The input could not be saved.",
-      "INTERNAL": "Unexpected error. Please try again."
+      "INTERNAL": "Unexpected error. Please try again.",
+      "LINE_ITEM_TEMPLATE_CHANGED": "The template has changed. Close the dialog and select the current template again."
     },
     "quantity": {
       "hours": "Hours",

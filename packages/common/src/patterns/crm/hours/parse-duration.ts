@@ -1,3 +1,4 @@
+import { MINUTES_PER_HOUR } from "@invessiv/common/constants/time/time-units";
 import { HoursLimits } from "@invessiv/common/constants/crm/hours-limits";
 
 const CLOCK_PATTERN = /^(\d{1,5}):([0-5]\d)$/;
@@ -14,9 +15,9 @@ export function parseDuration(input: string): number | null {
 
   const clock = CLOCK_PATTERN.exec(text);
   if (clock) {
-    minutes = Number(clock[1]) * 60 + Number(clock[2]);
+    minutes = Number(clock[1]) * MINUTES_PER_HOUR + Number(clock[2]);
   } else if (DECIMAL_PATTERN.test(text)) {
-    minutes = Number(text.replace(",", ".")) * 60;
+    minutes = Number(text.replace(",", ".")) * MINUTES_PER_HOUR;
   } else {
     return null;
   }

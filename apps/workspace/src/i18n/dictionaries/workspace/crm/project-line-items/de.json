@@ -111,7 +111,8 @@
       "PROJECT_CLOSED": "Das Projekt nimmt keine Stunden mehr an. Es wurde nichts gespeichert.",
       "FEEDBACK_ROUND_NOT_AVAILABLE": "Das Projekt kann keine weitere Feedbackrunde bekommen. Es wurde nichts gespeichert.",
       "VALIDATION_ERROR": "Eingabe konnte nicht gespeichert werden.",
-      "INTERNAL": "Unerwarteter Fehler. Bitte erneut versuchen."
+      "INTERNAL": "Unerwarteter Fehler. Bitte erneut versuchen.",
+      "LINE_ITEM_TEMPLATE_CHANGED": "Die Vorlage wurde geändert. Schließe den Dialog und wähle die aktuelle Vorlage erneut."
     },
     "quantity": {
       "hours": "Stunden",
