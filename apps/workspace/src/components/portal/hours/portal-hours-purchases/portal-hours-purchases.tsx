@@ -1,7 +1,7 @@
 import { useId } from "react";
 import { HoursLimits } from "@invessiv/common/constants/crm/hours-limits";
 import type { PortalHourPurchaseDto } from "@invessiv/common/contracts/portal/portal-hour-purchase.dto";
-import { formatDuration } from "@invessiv/common/patterns/crm/hours/format-duration";
+import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import type { Locale } from "@/config/i18n";
 import type { PortalHoursDictionary } from "@/i18n/dictionaries/portal";

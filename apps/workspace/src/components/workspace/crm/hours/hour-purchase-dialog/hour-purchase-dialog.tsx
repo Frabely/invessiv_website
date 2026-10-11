@@ -11,7 +11,7 @@ import {
 import { HoursLimits } from "@invessiv/common/constants/crm/hours-limits";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import type { CustomerHoursBalanceDto } from "@invessiv/common/contracts/crm/hours/customer-hours-balance.dto";
-import { formatDuration } from "@invessiv/common/patterns/crm/hours/format-duration";
+import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { CustomSelect, FormDialog, FormField } from "@invessiv/ui";
 import { hoursApiService } from "@/client/crm/hours-api-service";

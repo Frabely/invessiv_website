@@ -49,13 +49,13 @@ Für die Sperre und den Kunden-Scope zusätzlich das Zugangsdaten-Modul
 packages/common/src/constants/crm/hour-purchase-kinds.ts        HourPurchaseKind { Purchase: "purchase", Correction: "correction" }
                                                                 + HOUR_PURCHASE_KIND_VALUES
 packages/common/src/constants/crm/hour-purchase-sources.ts      HourPurchaseSource { Manual: "manual" } + HOUR_PURCHASE_SOURCE_VALUES
-packages/common/src/constants/crm/hours-limits.ts               HoursLimits { StepMinutes: 15, MaxEntryMinutes: 1440,
+packages/common/src/constants/crm/hours-limits.ts               HoursLimits { StepMinutes: 15, MaxEntryMinutes: 600000,
                                                                   MaxLedgerMinutes: 600000, NoteMaxLength: 200,
                                                                   DescriptionMaxLength: 500, HistoryPreviewSize: 20 }
 packages/common/src/constants/crm/errors/hours-error-codes.ts   HoursErrorCode (siehe T3) + HOURS_ERROR_CODE_VALUES
 packages/common/src/constants/crm/hours-constants.test.ts       toEqual + Duplikat-Check je Gruppe
 
-packages/common/src/patterns/crm/hours/format-duration.ts       formatDuration(minutes: number): string
+packages/common/src/patterns/time/format-duration.ts            formatDuration(minutes: number): string
 packages/common/src/patterns/crm/hours/parse-duration.ts        parseDuration(input: string): number | null
 packages/common/src/patterns/crm/hours/hours-balance.ts         computeCustomerHoursBalance, computeProjectHoursBalance
 packages/common/src/patterns/crm/hours/*.test.ts                je Pattern ein Test
@@ -347,7 +347,7 @@ apps/workspace/src/components/workspace/crm/hours/hours-project-list/        Zei
 apps/workspace/src/components/workspace/crm/hours/hour-purchase-dialog/      Gutschreiben / Korrigieren
 apps/workspace/src/components/workspace/crm/hours/hour-allocation-dialog/    Zuweisen / Freigeben
 apps/workspace/src/components/workspace/crm/hours/hours-history-list/        Kaufbuchungen und Zuweisungen
-apps/workspace/src/components/workspace/crm/hours/duration-field/            Eingabe h:mm mit ±15-Schritten
+apps/workspace/src/components/workspace/crm/hours/duration-field/            Adapter für DurationInput aus packages/ui
 apps/workspace/src/common/patterns/crm/hours/hours-error-text.ts             hoursErrorText(code, content, balances)
 apps/workspace/src/i18n/dictionaries/workspace/crm/hours/{de,en}.json
 apps/workspace/src/i18n/dictionaries/workspace/crm/index.ts                  + getCrmHoursDictionary, CrmHoursDictionary
@@ -409,9 +409,10 @@ HoursViewModel {
 - `hour-allocation-dialog`: Projekt steht fest (aus der Zeile), Richtung steht fest (aus dem Knopf), Dauer, interne
   Notiz. Zeigt „Frei: 3:00“ bzw. „Freigebbar: 2:30“ und bietet „Alles“ als Abkürzung. Ein 409 übernimmt die Balances
   aus `details`, zeigt den Text aus `hoursErrorText` und behält die Eingabe.
-- `duration-field`: Textfeld über `FormField` aus `@invessiv/ui`, zwei Knöpfe −15/+15 (≥ 44 px, `aria-label` aus dem
-  Dictionary), Parsing über `parseDuration`, Fehlertext bei `null` („Bitte in 15-Minuten-Schritten, z. B. 1:30“).
-  Bewusst unter `crm/hours/`, bis ein zweiter Bereich es braucht.
+- `duration-field`: App-spezifischer Adapter über `FormField` für das allgemeine `DurationInput` aus `packages/ui`.
+  Stunden und Minuten werden getrennt per Tastatur, Buttons, Mausrad oder Touch bedient. Labels kommen aus dem
+  Dictionary; `minuteStep` und `maxMinutes` sind Props. Die Dialoge validieren über `readDurationInput`; es gibt
+  keine 24-Stunden-Grenze, sondern nur die technische Grenze aus `HoursLimits`.
 - Beide Dialoge schreiben über `hoursApiService` und nach Erfolg `router.refresh()`. Vorlage für Aufbau und
   Fehleranzeige: `projects/project-line-item-form-dialog/` (Anlegen-Zweig). Es gibt keine Version und deshalb keinen
   Konfliktzweig.
@@ -419,7 +420,7 @@ HoursViewModel {
 - **Akzeptanz (jsdom-Tests je Komponente):**
   - ohne `hours`-Prop rendert das Cockpit weder Sektion noch Kennzahl noch Mock-Karte
   - ohne `canManage` fehlen alle drei Aktionen; mit Projektbindung fehlen Kundenstand und Gutschriften
-  - `duration-field`: `1,5` → 90, `0:10` → Fehlertext, +15/−15 per Tastatur
+  - `DurationInput`: unabhängige Stunden-/Minutenschritte und technische Grenze; `readDurationInput`: `1,5` → 90, `0:10` → Fehlertext
   - Dialog sendet bei „Freigeben“ negative Minuten und bei zwei Klicks denselben `idempotencyKey`
   - ein 409 zeigt die neuen Zahlen und lässt die Eingabe stehen
   - Texte DE und EN vollständig; keine Inline-Strings
@@ -441,7 +442,7 @@ zugewiesen, 2:00 frei; ein Kunde mit Gutschrift und Korrektur; ein Kunde ohne St
 Smoke (Vorlage `crm-smoke/credential-checks.ts`) prüft mindestens: `minutes` 0 und 20 abgelehnt; Kauf mit negativen
 und Korrektur mit positiven Minuten abgelehnt; unbekannter `kind`/`source` abgelehnt; doppelter `idempotency_key`
 abgelehnt; Zuweisung an ein Projekt eines anderen Kunden abgelehnt (zusammengesetzter FK); Zeitbuchung mit Aufgabe
-eines anderen Projekts abgelehnt; `duration_minutes` 0, 20, 1455 abgelehnt; leere Beschreibung abgelehnt; fehlendes
+eines anderen Projekts abgelehnt; `duration_minutes` 0, 20, 600015 abgelehnt; leere Beschreibung abgelehnt; fehlendes
 `billable`, fehlende `version`, fehlende `note` abgelehnt (kein Default).
 
 ## Deploy-Sicherheit

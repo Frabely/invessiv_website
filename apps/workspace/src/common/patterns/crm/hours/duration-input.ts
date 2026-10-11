@@ -1,5 +1,4 @@
 import { HoursLimits } from "@invessiv/common/constants/crm/hours-limits";
-import { formatDuration } from "@invessiv/common/patterns/crm/hours/format-duration";
 import { parseDuration } from "@invessiv/common/patterns/crm/hours/parse-duration";
 import { DurationInputError } from "@/common/constants/crm/forms/duration-input-errors";
 
@@ -22,18 +21,4 @@ export function readDurationInput(
     return { ok: false, error: DurationInputError.TooMuch };
   }
   return { ok: true, minutes };
-}
-
-/**
- * Moves a typed duration by whole booking steps and returns it as `h:mm`. Unreadable text counts
- * as zero, so the buttons always lead somewhere; the result never leaves `0…maxMinutes`.
- */
-export function stepDurationInput(
-  text: string,
-  steps: number,
-  maxMinutes: number = HoursLimits.MaxLedgerMinutes,
-): string {
-  const current = parseDuration(text) ?? 0;
-  const next = current + steps * HoursLimits.StepMinutes;
-  return formatDuration(Math.min(Math.max(next, 0), maxMinutes));
 }

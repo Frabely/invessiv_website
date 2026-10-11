@@ -8,7 +8,7 @@ import {
   faGift,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { formatDuration } from "@invessiv/common/patterns/crm/hours/format-duration";
+import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import { HoursBalanceFigureKind } from "@/common/constants/crm/hours-balance-figure-kinds";
 import type { CrmHoursDictionary } from "@/i18n/dictionaries/workspace/crm";
 import styles from "./hours-balance-summary.module.css";

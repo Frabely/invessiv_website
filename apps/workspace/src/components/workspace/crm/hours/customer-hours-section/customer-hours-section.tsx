@@ -5,7 +5,7 @@ import { faClock } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import type { CustomerHoursProjectDto } from "@invessiv/common/contracts/crm/hours/customer-hours-project.dto";
-import { formatDuration } from "@invessiv/common/patterns/crm/hours/format-duration";
+import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { PrimaryCtaButton } from "@invessiv/ui";
 import { CustomerHoursDialogKind } from "@/common/constants/crm/customer-hours-dialog-kinds";

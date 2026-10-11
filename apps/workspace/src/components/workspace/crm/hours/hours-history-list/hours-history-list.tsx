@@ -3,7 +3,7 @@ import { HoursLimits } from "@invessiv/common/constants/crm/hours-limits";
 import type { CustomerHoursProjectDto } from "@invessiv/common/contracts/crm/hours/customer-hours-project.dto";
 import type { HourAllocationDto } from "@invessiv/common/contracts/crm/hours/hour-allocation.dto";
 import type { HourPurchaseDto } from "@invessiv/common/contracts/crm/hours/hour-purchase.dto";
-import { formatDuration } from "@invessiv/common/patterns/crm/hours/format-duration";
+import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import type { Locale } from "@/config/i18n";
 import type { CrmHoursDictionary } from "@/i18n/dictionaries/workspace/crm";

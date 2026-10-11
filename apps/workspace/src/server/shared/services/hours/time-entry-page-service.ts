@@ -1,11 +1,9 @@
 import "server-only";
+import type { TimeEntryCursor } from "@invessiv/common/contracts/crm/hours/time-entry-cursor";
 
 import { desc, sql, type SQL } from "drizzle-orm";
 
-import {
-  encodeTimeEntryCursor,
-  type TimeEntryCursor,
-} from "@invessiv/common/patterns/crm/hours/time-entry-cursor";
+import { encodeTimeEntryCursor } from "@invessiv/common/patterns/crm/hours/time-entry-cursor";
 import { projectTimeEntries } from "@invessiv/db/record-configuration";
 
 /** Postgres keeps microseconds, the cursor travels as a JS timestamp: both sides compare in milliseconds. */

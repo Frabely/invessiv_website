@@ -4,24 +4,21 @@ import { useState } from "react";
 import { faStopwatch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { HOURS_CLOSED_PROJECT_STATUS_VALUES } from "@invessiv/common/constants/crm/hours-closed-project-statuses";
-import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import type { CustomerHoursProjectDto } from "@invessiv/common/contracts/crm/hours/customer-hours-project.dto";
 import type { TimeEntryDto } from "@invessiv/common/contracts/crm/hours/time-entry.dto";
-import { formatDuration } from "@invessiv/common/patterns/crm/hours/format-duration";
+import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
 import { HourAllocationDirection } from "@/common/constants/crm/hour-allocation-directions";
-import { TimeEntryListLoadStatus } from "@/common/constants/crm/time-entry-list-load-status";
 import type { TimeEntryTaskOption } from "@/common/contracts/crm/hours/time-entry-task-option";
 import { CollapsibleSection } from "@/components/workspace/crm/shared/collapsible-section/collapsible-section";
-import { SectionEmptyState } from "@/components/workspace/crm/shared/section-empty-state/section-empty-state";
 import type { Locale } from "@/config/i18n";
 import { useProjectTimeEntries } from "@/hooks/workspace/crm/use-project-time-entries";
 import type { CrmHoursDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { HourAllocationDialog } from "../hour-allocation-dialog/hour-allocation-dialog";
 import { TimeEntryDeleteDialog } from "../time-entry-delete-dialog/time-entry-delete-dialog";
-import { TimeEntryList } from "../time-entry-list/time-entry-list";
+import { ProjectTimeEntryContent } from "./project-time-entry-content";
+import { projectHoursActions } from "@/common/patterns/crm/hours/project-hours-actions";
 import styles from "./project-hours-section.module.css";
 
 export type ProjectHoursSectionProps = {
@@ -45,12 +42,6 @@ export type ProjectHoursSectionProps = {
   /** Null without the right to read tasks: entries then show no task line. */
   tasks: readonly TimeEntryTaskOption[] | null;
 };
-
-/** Statuses after which nothing more is booked, so hours still allocated are worth pointing out. */
-const FINISHED_PROJECT_STATUSES: readonly ProjectStatus[] = [
-  ProjectStatus.Completed,
-  ...HOURS_CLOSED_PROJECT_STATUS_VALUES,
-];
 
 /**
  * The hours of one project: what it was given, what is used, and every entry behind the figure.
@@ -79,17 +70,10 @@ export function ProjectHoursSection({
   const [announcement, setAnnouncement] = useState("");
 
   const text = content.project;
-  const closed = HOURS_CLOSED_PROJECT_STATUS_VALUES.includes(project.status);
+  const { canBook, canAllocate, canRelease, showFinishedHint } =
+    projectHoursActions({ project, canWrite, canManage, freeMinutes });
   const overdrawn = project.remainingMinutes < 0;
-  const canBook = canWrite && !closed;
-  const canAllocate = canManage && !closed && (freeMinutes ?? 0) > 0;
-  const canRelease = canManage && project.releasableMinutes > 0;
-  const showFinishedHint =
-    FINISHED_PROJECT_STATUSES.includes(project.status) &&
-    project.releasableMinutes > 0;
-  const taskTitles = new Map(
-    (tasks ?? []).map((task) => [task.id, task.title]),
-  );
+  const showInlineRelease = canRelease && !showFinishedHint;
 
   const figures = [
     { label: text.allocated, value: project.allocatedMinutes },
@@ -173,7 +157,7 @@ export function ProjectHoursSection({
               </div>
             ))}
           </dl>
-          {canAllocate || (canRelease && !showFinishedHint) ? (
+          {canAllocate || showInlineRelease ? (
             <div className={styles.moves}>
               {canAllocate ? (
                 <ButtonControl
@@ -184,7 +168,7 @@ export function ProjectHoursSection({
                   {content.projects.allocateAction}
                 </ButtonControl>
               ) : null}
-              {canRelease && !showFinishedHint ? (
+              {showInlineRelease ? (
                 <ButtonControl
                   onClick={() => setDirection(HourAllocationDirection.Release)}
                   type="button"
@@ -214,51 +198,18 @@ export function ProjectHoursSection({
             ) : null}
           </p>
         ) : null}
-        {list.status === TimeEntryListLoadStatus.Loading ? (
-          <p className={styles.state}>{text.loading}</p>
-        ) : list.status === TimeEntryListLoadStatus.Error ? (
-          <p className={styles.state} role="alert">
-            {text.loadError}{" "}
-            <ButtonControl onClick={list.retry} type="button" variant="quiet">
-              {text.retry}
-            </ButtonControl>
-          </p>
-        ) : list.entries.length === 0 ? (
-          <SectionEmptyState
-            description={
-              !canBook
-                ? text.emptyReadOnlyDescription
-                : project.allocatedMinutes === 0
-                  ? `${text.emptyDescription} ${text.emptyUnallocated}`
-                  : text.emptyDescription
-            }
-            title={text.emptyTitle}
-          />
-        ) : (
-          <>
-            <TimeEntryList
-              canWrite={canWrite}
-              content={content.entry}
-              entries={list.entries}
-              label={text.listLabel}
-              locale={locale}
-              onDeleteAction={setDeleting}
-              onEditAction={onEditAction}
-              taskTitles={taskTitles}
-            />
-            {list.hasMore ? (
-              <ButtonControl
-                className={styles.more}
-                disabled={list.loadingMore}
-                onClick={() => void loadMore()}
-                type="button"
-                variant="ghost"
-              >
-                {text.loadMore}
-              </ButtonControl>
-            ) : null}
-          </>
-        )}
+        <ProjectTimeEntryContent
+          list={list}
+          canBook={canBook}
+          canWrite={canWrite}
+          allocatedMinutes={project.allocatedMinutes}
+          content={content}
+          locale={locale}
+          tasks={tasks}
+          onDeleteAction={setDeleting}
+          onEditAction={onEditAction}
+          onLoadMoreAction={() => void loadMore()}
+        />
       </div>
     </CollapsibleSection>
   );

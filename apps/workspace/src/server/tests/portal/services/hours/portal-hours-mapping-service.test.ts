@@ -5,7 +5,7 @@ import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import type { PortalTimeEntryRow } from "@invessiv/common/contracts/portal/rows/portal-time-entry-row";
 import { computeCustomerHoursBalance } from "@invessiv/common/patterns/crm/hours/hours-balance";
 import { portalHoursMappingService } from "@/server/portal/services/hours/portal-hours-mapping-service";
-import type { ProjectHoursSums } from "@/server/shared/services/hours/hours-balance-types";
+import type { ProjectHoursSums } from "@invessiv/common/contracts/crm/hours/project-hours-sums";
 
 function sums(overrides: Partial<ProjectHoursSums>): ProjectHoursSums {
   return {

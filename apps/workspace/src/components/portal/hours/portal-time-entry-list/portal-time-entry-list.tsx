@@ -2,7 +2,7 @@
 
 import { useId, useState } from "react";
 import type { PortalProjectHoursDto } from "@invessiv/common/contracts/portal/portal-project-hours.dto";
-import { formatDuration } from "@invessiv/common/patterns/crm/hours/format-duration";
+import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl } from "@invessiv/ui";
 import { TimeEntryListLoadStatus } from "@/common/constants/crm/time-entry-list-load-status";

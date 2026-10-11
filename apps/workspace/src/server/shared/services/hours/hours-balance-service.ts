@@ -15,7 +15,7 @@ import {
   projectTimeEntries,
   projects,
 } from "@invessiv/db/record-configuration";
-import type { ProjectHoursSums } from "@/server/shared/services/hours/hours-balance-types";
+import type { ProjectHoursSums } from "@invessiv/common/contracts/crm/hours/project-hours-sums";
 
 /** Sum of every purchase row of the customer; corrections are negative and already included. */
 async function loadPurchasedMinutes(

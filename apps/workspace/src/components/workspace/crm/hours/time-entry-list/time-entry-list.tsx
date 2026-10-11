@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { ButtonSize } from "@invessiv/common/constants/ui/button-sizes";
 import type { TimeEntryDto } from "@invessiv/common/contracts/crm/hours/time-entry.dto";
-import { formatDuration } from "@invessiv/common/patterns/crm/hours/format-duration";
+import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl } from "@invessiv/ui";
 import type { Locale } from "@/config/i18n";

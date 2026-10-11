@@ -1,6 +1,6 @@
-import { HOURS_CLOSED_PROJECT_STATUS_VALUES } from "@invessiv/common/constants/crm/hours-closed-project-statuses";
+import { projectHoursActions } from "@/common/patterns/crm/hours/project-hours-actions";
 import type { CustomerHoursProjectDto } from "@invessiv/common/contracts/crm/hours/customer-hours-project.dto";
-import { formatDuration } from "@invessiv/common/patterns/crm/hours/format-duration";
+import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl } from "@invessiv/ui";
 import { HourAllocationDirection } from "@/common/constants/crm/hour-allocation-directions";
@@ -31,11 +31,12 @@ export function HoursProjectList({
   return (
     <ul aria-label={content.title} className={styles.list}>
       {projects.map((project) => {
-        const closed = HOURS_CLOSED_PROJECT_STATUS_VALUES.includes(
-          project.status,
-        );
-        const canAllocate = canManage && !closed && freeMinutes > 0;
-        const canRelease = canManage && project.releasableMinutes > 0;
+        const { closed, canAllocate, canRelease } = projectHoursActions({
+          project,
+          canManage,
+          canWrite: false,
+          freeMinutes,
+        });
 
         return (
           <li className={styles.item} key={project.projectId}>

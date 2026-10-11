@@ -1,5 +1,5 @@
 import { expect, test, type Locator } from "@playwright/test";
-import { formatDuration } from "@invessiv/common/patterns/crm/hours/format-duration";
+import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import { parseDuration } from "@invessiv/common/patterns/crm/hours/parse-duration";
 
 const emptyStorageState = { cookies: [], origins: [] };

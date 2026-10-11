@@ -6,15 +6,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import type { TaskDto } from "@invessiv/common/contracts/crm/task.dto";
-import { formatDuration } from "@invessiv/common/patterns/crm/hours/format-duration";
+import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
 import type { TaskAssigneeOption } from "@/common/contracts/crm/tasks-view-model";
+import type { TaskHoursContext } from "@/common/contracts/crm/hours/task-hours-context";
 import type { Locale } from "@/config/i18n";
 import { useTaskStatusChange } from "@/hooks/workspace/use-task-status-change";
-import type {
-  CrmHoursDictionary,
-  CrmTasksDictionary,
-} from "@/i18n/dictionaries/workspace/crm";
+import type { CrmTasksDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { taskDueStateService } from "@/common/patterns/tasks/task-due-state";
 import { CollapsibleSection } from "@/components/workspace/crm/shared/collapsible-section/collapsible-section";
@@ -36,11 +34,7 @@ type ProjectTasksSectionProps = {
    * Present only with the right to read hours on this project; without it the rows look exactly
    * as before. Booking is offered only when `onBookTimeAction` is passed as well.
    */
-  hours?: {
-    bookedMinutesByTaskId: Readonly<Record<string, number>>;
-    content: CrmHoursDictionary["task"];
-    onBookTimeAction?: (task: TaskDto) => void;
-  };
+  hours?: TaskHoursContext;
 };
 
 /**

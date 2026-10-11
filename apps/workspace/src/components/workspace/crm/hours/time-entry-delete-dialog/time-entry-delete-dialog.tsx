@@ -2,7 +2,7 @@
 
 import type { HoursErrorCode } from "@invessiv/common/constants/crm/errors/hours-error-codes";
 import type { TimeEntryDto } from "@invessiv/common/contracts/crm/hours/time-entry.dto";
-import { formatDuration } from "@invessiv/common/patterns/crm/hours/format-duration";
+import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ConfirmDialog } from "@invessiv/ui";
 import { hoursApiService } from "@/client/crm/hours-api-service";

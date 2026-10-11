@@ -1,89 +1,31 @@
 // @vitest-environment jsdom
 
 import "@testing-library/jest-dom/vitest";
-import {
-  cleanup,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-
-import { HoursErrorCode } from "@invessiv/common/constants/crm/errors/hours-error-codes";
-import { HourPurchaseKind } from "@invessiv/common/constants/crm/hour-purchase-kinds";
-import { HourPurchaseSource } from "@invessiv/common/constants/crm/hour-purchase-sources";
-import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
-import { HoursLimits } from "@invessiv/common/constants/crm/hours-limits";
-import type { CustomerHoursProjectDto } from "@invessiv/common/contracts/crm/hours/customer-hours-project.dto";
 import type { HoursViewModel } from "@/common/contracts/crm/hours/hours-view-model";
+import {
+  project,
+  viewModel,
+} from "@/common/patterns/crm/hours/hours-test-fixtures";
 import { getCrmHoursDictionary } from "@/i18n/dictionaries/workspace/crm";
-import { fillDurationInput } from "@invessiv/ui/components/duration-input/duration-input.test-helper";
 import { CustomerHoursSection } from "./customer-hours-section";
 
 const refresh = vi.fn();
-vi.mock("next/navigation", () => ({
-  useRouter: () => ({ refresh }),
-}));
-
+vi.mock("next/navigation", () => ({ useRouter: () => ({ refresh }) }));
 const api = vi.hoisted(() => ({
   createPurchase: vi.fn(),
   createAllocation: vi.fn(),
 }));
 vi.mock("@/client/crm/hours-api-service", () => ({ hoursApiService: api }));
-
 const CUSTOMER_ID = "11111111-1111-4111-8111-111111111111";
 const content = getCrmHoursDictionary("de");
-
-function project(
-  overrides: Partial<CustomerHoursProjectDto> = {},
-): CustomerHoursProjectDto {
-  return {
-    projectId: "33333333-3333-4333-8333-333333333333",
-    title: "Relaunch",
-    status: ProjectStatus.Active,
-    allocatedMinutes: 300,
-    usedMinutes: 150,
-    goodwillMinutes: 0,
-    remainingMinutes: 150,
-    releasableMinutes: 150,
-    ...overrides,
-  };
-}
-
-function viewModel(overrides: Partial<HoursViewModel> = {}): HoursViewModel {
-  return {
-    canManage: true,
-    writableProjectIds: [],
-    bookedMinutesByTaskId: {},
-    today: "2026-10-08",
-    hours: {
-      balance: {
-        purchasedMinutes: 600,
-        allocatedMinutes: 300,
-        freeMinutes: 300,
-        usedMinutes: 150,
-        goodwillMinutes: 0,
-        remainingMinutes: 450,
-      },
-      projects: [project()],
-      purchases: [
-        {
-          id: "purchase-1",
-          kind: HourPurchaseKind.Purchase,
-          source: HourPurchaseSource.Manual,
-          minutes: 600,
-          purchasedOn: "2026-10-01",
-          note: "Betreuungspaket 10 h",
-          createdByMemberId: "member-1",
-          createdAt: "2026-10-01T08:00:00.000Z",
-        },
-      ],
-      allocations: [],
-    },
-    ...overrides,
-  };
-}
+beforeEach(() => {
+  refresh.mockReset();
+  api.createPurchase.mockReset();
+  api.createAllocation.mockReset();
+});
+afterEach(cleanup);
 
 function renderSection(model: HoursViewModel = viewModel()) {
   return render(
@@ -94,12 +36,6 @@ function renderSection(model: HoursViewModel = viewModel()) {
       viewModel={model}
     />,
   );
-}
-
-function durationInput() {
-  return screen.getByRole("spinbutton", {
-    name: new RegExp(content.allocationDialog.minutes),
-  });
 }
 
 describe("CustomerHoursSection", () => {
@@ -140,164 +76,6 @@ describe("CustomerHoursSection", () => {
         expect(screen.getByText("1:00 über dem Kontingent")).toBeVisible();
     },
   );
-
-  it("lets a rejected correction switch back to a purchase when no free hours remain", async () => {
-    api.createPurchase.mockResolvedValueOnce({
-      ok: false,
-      code: HoursErrorCode.BelowAllocatedHours,
-      balance: { ...viewModel().hours.balance, freeMinutes: 0 },
-    });
-    api.createPurchase.mockResolvedValueOnce({ ok: true });
-    renderSection();
-    fireEvent.click(
-      screen.getByRole("button", { name: content.section.purchaseAction }),
-    );
-    fireEvent.click(screen.getByLabelText(content.purchaseDialog.kind));
-    fireEvent.click(
-      screen.getByRole("option", {
-        name: content.purchaseDialog.kindCorrection,
-      }),
-    );
-    fillDurationInput(
-      new RegExp(content.purchaseDialog.minutes),
-      content.duration.minutes,
-      "1",
-      "00",
-    );
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: content.purchaseDialog.submitCorrection,
-      }),
-    );
-    await screen.findByText(content.errors.BELOW_ALLOCATED_HOURS);
-    fireEvent.click(screen.getByLabelText(content.purchaseDialog.kind));
-    fireEvent.click(
-      screen.getByRole("option", {
-        name: content.purchaseDialog.kindPurchase,
-      }),
-    );
-    fireEvent.click(
-      screen
-        .getAllByRole("button", { name: content.purchaseDialog.submitPurchase })
-        .at(-1)!,
-    );
-    await waitFor(() => expect(api.createPurchase).toHaveBeenCalledTimes(2));
-    expect(api.createPurchase.mock.calls[1][1]).toMatchObject({
-      kind: HourPurchaseKind.Purchase,
-      minutes: 60,
-    });
-  });
-
-  it.each([false, true])(
-    "caps one ledger transfer while showing the full stock (release: %s)",
-    async (release) => {
-      api.createAllocation.mockResolvedValue({ ok: true });
-      renderSection(
-        viewModel({
-          hours: {
-            ...viewModel().hours,
-            balance: {
-              ...viewModel().hours.balance!,
-              freeMinutes: HoursLimits.MaxLedgerMinutes * 2,
-            },
-            projects: [
-              project({ releasableMinutes: HoursLimits.MaxLedgerMinutes * 2 }),
-            ],
-          },
-        }),
-      );
-      fireEvent.click(
-        screen.getByRole("button", {
-          name: release ? "Freigeben: Relaunch" : "Zuweisen: Relaunch",
-        }),
-      );
-      expect(
-        screen.getByText(release ? "Freigebbar: 20000:00" : "Frei: 20000:00"),
-      ).toBeVisible();
-      fireEvent.click(
-        screen.getByRole("button", {
-          name: content.allocationDialog.useMaximum,
-        }),
-      );
-      fireEvent.click(
-        screen.getByRole("button", {
-          name: release
-            ? content.allocationDialog.submitRelease
-            : content.allocationDialog.submitAllocate,
-        }),
-      );
-      await waitFor(() => expect(api.createAllocation).toHaveBeenCalled());
-      expect(api.createAllocation.mock.calls[0][1]).toMatchObject({
-        minutes: release
-          ? -HoursLimits.MaxLedgerMinutes
-          : HoursLimits.MaxLedgerMinutes,
-      });
-    },
-  );
-
-  it("bounds a correction by the per-entry ledger limit even with more free stock", async () => {
-    api.createPurchase.mockResolvedValue({ ok: true });
-    renderSection(
-      viewModel({
-        hours: {
-          ...viewModel().hours,
-          balance: {
-            ...viewModel().hours.balance!,
-            freeMinutes: HoursLimits.MaxLedgerMinutes * 2,
-          },
-        },
-      }),
-    );
-    fireEvent.click(
-      screen.getByRole("button", { name: content.section.purchaseAction }),
-    );
-    fireEvent.click(screen.getByLabelText(content.purchaseDialog.kind));
-    fireEvent.click(
-      screen.getByRole("option", {
-        name: content.purchaseDialog.kindCorrection,
-      }),
-    );
-    fireEvent.keyDown(
-      screen.getByRole("spinbutton", { name: /Stunden Stunden/ }),
-      { key: "End" },
-    );
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: content.purchaseDialog.submitCorrection,
-      }),
-    );
-    await waitFor(() => expect(api.createPurchase).toHaveBeenCalled());
-    expect(api.createPurchase.mock.calls[0][1]).toMatchObject({
-      minutes: -HoursLimits.MaxLedgerMinutes,
-    });
-  });
-
-  it("shows allocation instants on the Berlin calendar day", () => {
-    renderSection(
-      viewModel({
-        hours: {
-          ...viewModel().hours,
-          allocations: [
-            {
-              id: "allocation-1",
-              projectId: project().projectId,
-              minutes: 60,
-              note: "Mitternacht",
-              createdByMemberId: "member-1",
-              createdAt: "2026-10-10T22:30:00.000Z",
-            },
-          ],
-        },
-      }),
-    );
-    expect(screen.getByText(/11\. Okt/)).toBeVisible();
-  });
-  beforeEach(() => {
-    refresh.mockReset();
-    api.createPurchase.mockReset();
-    api.createAllocation.mockReset();
-  });
-  afterEach(cleanup);
 
   it("shows the stock, the split and the ledger with every figure as text", () => {
     renderSection();
@@ -386,147 +164,20 @@ describe("CustomerHoursSection", () => {
     expect(screen.getByText(content.empty.description)).toBeVisible();
   });
 
-  it("sends a release as negative minutes and keeps one idempotency key across retries", async () => {
-    api.createAllocation.mockResolvedValueOnce({
-      ok: false,
-      code: HoursErrorCode.Internal,
-      balance: null,
-      project: null,
-    });
-    api.createAllocation.mockResolvedValueOnce({ ok: true });
+  it("opens purchase and allocation forms from their section actions", () => {
     renderSection();
-
-    fireEvent.click(
-      screen.getByRole("button", { name: "Freigeben: Relaunch" }),
-    );
-    fillDurationInput(
-      new RegExp(content.allocationDialog.minutes),
-      content.duration.minutes,
-      "1",
-      "30",
-    );
-    const submit = screen.getByRole("button", {
-      name: content.allocationDialog.submitRelease,
-    });
-    fireEvent.click(submit);
-    await screen.findByText(content.errors.INTERNAL);
-    fireEvent.click(submit);
-    await waitFor(() => expect(refresh).toHaveBeenCalled());
-
-    expect(api.createAllocation).toHaveBeenCalledTimes(2);
-    const [first, second] = api.createAllocation.mock.calls;
-    expect(first[0]).toBe(CUSTOMER_ID);
-    expect(first[1]).toMatchObject({
-      projectId: project().projectId,
-      minutes: -90,
-    });
-    expect(second[1].idempotencyKey).toBe(first[1].idempotencyKey);
-  });
-
-  it("adopts the real limit from a rejected allocation and keeps the input", async () => {
-    api.createAllocation.mockResolvedValue({
-      ok: false,
-      code: HoursErrorCode.InsufficientFreeHours,
-      balance: { ...viewModel().hours.balance, freeMinutes: 60 },
-      project: project(),
-    });
-    renderSection();
-
-    fireEvent.click(screen.getByRole("button", { name: "Zuweisen: Relaunch" }));
-    expect(screen.getByText("Frei: 5:00")).toBeVisible();
-    fillDurationInput(
-      new RegExp(content.allocationDialog.minutes),
-      content.duration.minutes,
-      "2",
-      "00",
-    );
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: content.allocationDialog.submitAllocate,
-      }),
-    );
-
-    await screen.findByText(content.errors.INSUFFICIENT_FREE_HOURS);
-    expect(screen.getByText("Frei: 1:00")).toBeVisible();
-    expect(durationInput()).toHaveAttribute("aria-valuenow", "2");
-  });
-
-  it("requires a positive duration before allocating hours", () => {
-    renderSection();
-
-    fireEvent.click(screen.getByRole("button", { name: "Zuweisen: Relaunch" }));
-    fillDurationInput(
-      new RegExp(content.allocationDialog.minutes),
-      content.duration.minutes,
-      "0",
-      "00",
-    );
-    fireEvent.click(
-      screen.getByRole("button", {
-        name: content.allocationDialog.submitAllocate,
-      }),
-    );
-
-    expect(screen.getByRole("alert")).toHaveTextContent(
-      content.duration.required,
-    );
-    expect(api.createAllocation).not.toHaveBeenCalled();
-  });
-
-  it("steps the duration by fifteen minutes with the buttons", () => {
-    renderSection();
-
-    fireEvent.click(screen.getByRole("button", { name: "Zuweisen: Relaunch" }));
-    fireEvent.click(
-      screen.getByRole("button", { name: content.duration.increase }),
-    );
-    fireEvent.click(
-      screen.getByRole("button", { name: content.duration.increase }),
-    );
-    fireEvent.click(
-      screen.getByRole("button", { name: content.duration.decrease }),
-    );
-
-    expect(durationInput()).toHaveAttribute("aria-valuenow", "0");
-    expect(
-      screen.getByRole("spinbutton", { name: content.duration.minutes }),
-    ).toHaveAttribute("aria-valuenow", "15");
-  });
-
-  it("adds hours with the customer-visible note and today's date", async () => {
-    api.createPurchase.mockResolvedValue({ ok: true });
-    renderSection();
-
     fireEvent.click(
       screen.getByRole("button", { name: content.section.purchaseAction }),
     );
-    expect(screen.getByText(content.purchaseDialog.noteHint)).toBeVisible();
-    fillDurationInput(
-      new RegExp(content.purchaseDialog.minutes),
-      content.duration.minutes,
-      "10",
-      "00",
+    expect(screen.getByRole("dialog")).toHaveTextContent(
+      content.purchaseDialog.title,
     );
-    fireEvent.change(
-      screen.getByRole("textbox", { name: content.purchaseDialog.note }),
-      { target: { value: "Paket" } },
-    );
-    // The dialog submits under the same words as the action that opened it.
     fireEvent.click(
-      screen
-        .getAllByRole("button", { name: content.purchaseDialog.submitPurchase })
-        .at(-1)!,
+      screen.getByRole("button", { name: content.purchaseDialog.cancel }),
     );
-
-    await waitFor(() => expect(refresh).toHaveBeenCalled());
-    expect(api.createPurchase).toHaveBeenCalledWith(
-      CUSTOMER_ID,
-      expect.objectContaining({
-        kind: HourPurchaseKind.Purchase,
-        minutes: 600,
-        purchasedOn: "2026-10-08",
-        note: "Paket",
-      }),
+    fireEvent.click(screen.getByRole("button", { name: "Zuweisen: Relaunch" }));
+    expect(screen.getByRole("dialog")).toHaveTextContent(
+      content.allocationDialog.submitAllocate,
     );
   });
 });

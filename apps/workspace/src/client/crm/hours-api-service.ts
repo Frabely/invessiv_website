@@ -68,13 +68,7 @@ async function createPurchase(
   return {
     ok: false,
     // A 2xx answer of an unexpected shape is a failure too, never a silent success.
-    code: response.ok
-      ? HoursErrorCode.Internal
-      : json.readErrorCode(
-          payload,
-          HOURS_ERROR_CODE_VALUES,
-          HoursErrorCode.Internal,
-        ),
+    code: response.ok ? HoursErrorCode.Internal : readErrorCode(payload),
     balance: parseValue(customerHoursBalanceSchema, balance),
   };
 }
@@ -104,13 +98,7 @@ async function createAllocation(
   const details = readDetails(payload);
   return {
     ok: false,
-    code: response.ok
-      ? HoursErrorCode.Internal
-      : json.readErrorCode(
-          payload,
-          HOURS_ERROR_CODE_VALUES,
-          HoursErrorCode.Internal,
-        ),
+    code: response.ok ? HoursErrorCode.Internal : readErrorCode(payload),
     balance: parseValue(customerHoursBalanceSchema, details?.balance),
     project: parseValue(projectHoursBalanceSchema, details?.project),
   };

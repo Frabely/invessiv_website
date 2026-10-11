@@ -35,7 +35,7 @@ ohne Buchung; nach dem Launch bucht das Team auf dieselben Aufgaben, wenn es abr
 | Ziel          | Immer genau ein Projekt. Die Buchung ändert ihr Projekt nie; wer falsch gebucht hat, löscht und bucht neu                                                                                             |
 | Projektstatus | Buchen nur auf Projekte, die nicht `cancelled` oder `archived` sind (`PROJECT_CLOSED`). Ändern und Löschen bestehender Buchungen geht immer                                                           |
 | Überziehung   | Keine Prüfung gegen „Zugewiesen“. Das Formular zeigt vor dem Speichern, um wie viel die Buchung überzieht; gespeichert wird trotzdem                                                                  |
-| Dauer         | 15 bis 1440 Minuten, Vielfaches von 15 (DB-CHECK und Schema). Eingabe über `duration-field` aus Task 27                                                                                               |
+| Dauer         | 15 bis 600000 Minuten, Vielfaches von 15 (DB-CHECK und Schema). Eingabe über `duration-field` aus Task 27                                                                                             |
 | Datum         | `performed_on` ≤ heute (`taskDueStateService.businessToday()`), vorbelegt mit heute                                                                                                                   |
 | Aufgabe       | Optional. Zulässig ist jede Aufgabe **desselben Projekts** außer `cancelled`. Wird eine verknüpfte Aufgabe später abgebrochen, bleibt die Buchung unverändert                                         |
 | Beschreibung  | Pflicht, 1–500 Zeichen, kundensichtbar. Wählt der Nutzer eine Aufgabe und das Feld ist leer, übernimmt der Client den Aufgabentitel als Vorschlag                                                     |
@@ -56,6 +56,7 @@ packages/common/src/contracts/crm/results/create-time-entry-result.ts
 packages/common/src/contracts/crm/results/update-time-entry-result.ts
 packages/common/src/contracts/crm/results/delete-time-entry-result.ts
 packages/common/src/contracts/crm/rows/time-entry-row.ts
+packages/common/src/contracts/crm/hours/time-entry-cursor.ts                TimeEntryCursor
 packages/common/src/patterns/crm/hours/time-entry-cursor.ts                  encodeTimeEntryCursor, decodeTimeEntryCursor (+ Test)
 
 apps/workspace/src/server/workspace/crm/services/hours/time-entry-access-service.ts     timeEntryAccessService
@@ -114,7 +115,7 @@ timeEntryAccessService.isTaskLinkable(reader, taskId, projectId): Promise<boolea
 
 **`createTimeEntry(projectId, input, actor)`**:
 
-1. `projectId` als uuid, sonst `PROJECT_NOT_FOUND`. Schema: `durationMinutes` ganzzahlig, 15…1440, `% 15 === 0`;
+1. `projectId` als uuid, sonst `PROJECT_NOT_FOUND`. Schema: `durationMinutes` ganzzahlig, 15…600000, `% 15 === 0`;
    `performedOn` Kalendertag ≤ `businessToday()`; `description` getrimmt 1…500; `billable` boolean;
    `taskId` uuid oder `null`. Sonst `VALIDATION_ERROR`.
 2. Projekt laden (`customer_id`, `status`). Fehlt es oder `!canOn(actor, Permission.HoursWrite, { customerId, projectId })`
@@ -144,7 +145,7 @@ Sortierung und Cursor wie in der Tabelle oben, `limit 31` (das 31. Element entsc
 
 - **Akzeptanz (Integrationstests, Datei `…/tests/workspace/crm/hours/time-entries.integration.test.ts`):**
   - Rechenbeispiel Schritt 3 und 4; nach Schritt 3 ist B überzogen und bleibt es, bis freigegeben und zugewiesen wird
-  - Dauer 0, 10, 20, 1455 → `VALIDATION_ERROR`; 15 und 1440 → Erfolg; Datum morgen → `VALIDATION_ERROR`
+  - Dauer 0, 10, 20, 600015 → `VALIDATION_ERROR`; 15 und 600000 → Erfolg; Datum morgen → `VALIDATION_ERROR`
   - Aufgabe eines anderen Projekts, abgebrochene Aufgabe, unbekannte Aufgabe → `TASK_NOT_LINKABLE`
   - Kulanzbuchung: `usedMinutes` unverändert, `goodwillMinutes` steigt
   - Update mit alter Version → Konflikt mit `current`; Delete mit alter Version → Konflikt; nichts gelöscht

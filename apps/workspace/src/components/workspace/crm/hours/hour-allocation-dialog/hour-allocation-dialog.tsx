@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import type { HoursErrorCode } from "@invessiv/common/constants/crm/errors/hours-error-codes";
 import { HoursLimits } from "@invessiv/common/constants/crm/hours-limits";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
-import { formatDuration } from "@invessiv/common/patterns/crm/hours/format-duration";
+import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl, FormDialog, FormField } from "@invessiv/ui";
 import { hoursApiService } from "@/client/crm/hours-api-service";

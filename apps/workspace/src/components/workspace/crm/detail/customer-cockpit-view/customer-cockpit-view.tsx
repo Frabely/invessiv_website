@@ -41,7 +41,7 @@ import type { TasksViewModel } from "@/common/contracts/crm/tasks-view-model";
 import type { CredentialsViewModel } from "@/common/contracts/crm/credentials/credentials-view-model";
 import type { HoursViewModel } from "@/common/contracts/crm/hours/hours-view-model";
 import { CustomerHoursSection } from "@/components/workspace/crm/hours/customer-hours-section/customer-hours-section";
-import { formatDuration } from "@invessiv/common/patterns/crm/hours/format-duration";
+import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import type { FilesViewModel } from "@/common/contracts/crm/files/files-view-model";
 import { CustomerCredentialsSection } from "@/components/workspace/crm/credentials/customer-credentials-section/customer-credentials-section";
 import { CustomerFilesSection } from "@/components/workspace/crm/files/customer-files-section/customer-files-section";

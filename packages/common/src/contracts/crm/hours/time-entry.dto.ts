@@ -8,7 +8,7 @@ export interface TimeEntryDto {
   taskId: string | null;
   /** Calendar day (`YYYY-MM-DD`) the work was done, never in the future. */
   performedOn: string;
-  /** Whole minutes, a multiple of the booking step, at most one day. */
+  /** Whole minutes, a multiple of the booking step, bounded by HoursLimits.MaxEntryMinutes. */
   durationMinutes: number;
   /** Customer-visible text of what was done. Required: it is the line the customer reads. */
   description: string;

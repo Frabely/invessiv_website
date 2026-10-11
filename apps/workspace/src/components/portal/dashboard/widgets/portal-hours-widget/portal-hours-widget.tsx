@@ -1,7 +1,7 @@
 import { faClock } from "@fortawesome/free-solid-svg-icons";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
 import type { PortalHoursDto } from "@invessiv/common/contracts/portal/portal-hours.dto";
-import { formatDuration } from "@invessiv/common/patterns/crm/hours/format-duration";
+import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { Widget } from "@invessiv/ui";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";

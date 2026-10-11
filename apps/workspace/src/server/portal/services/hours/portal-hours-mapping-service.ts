@@ -9,7 +9,7 @@ import type { PortalHourPurchaseRow } from "@invessiv/common/contracts/portal/ro
 import type { PortalTimeEntryRow } from "@invessiv/common/contracts/portal/rows/portal-time-entry-row";
 import { computeProjectHoursBalance } from "@invessiv/common/patterns/crm/hours/hours-balance";
 import { comparePortalCurrentProjects } from "@/common/patterns/portal/compare-portal-current-projects";
-import type { ProjectHoursSums } from "@/server/shared/services/hours/hours-balance-types";
+import type { ProjectHoursSums } from "@invessiv/common/contracts/crm/hours/project-hours-sums";
 
 type PortalHoursSource = {
   balance: CustomerHoursBalanceDto;

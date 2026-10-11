@@ -1,15 +1,9 @@
 import { z } from "zod";
+import type { TimeEntryCursor } from "@invessiv/common/contracts/crm/hours/time-entry-cursor";
 
 const SEPARATOR = "~";
 const CURSOR_PATTERN =
   /^(\d{4}-\d{2}-\d{2})~(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z)~([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/;
-
-/** The sort position of one time entry: day, booking instant (to the millisecond) and id. */
-export type TimeEntryCursor = {
-  performedOn: string;
-  createdAt: string;
-  id: string;
-};
 
 /**
  * Lists of time entries page by keyset, not by offset: an entry booked or deleted while someone

@@ -4,6 +4,19 @@ import type { HourAllocationRow } from "@invessiv/common/contracts/crm/rows/hour
 import type { HourPurchaseRow } from "@invessiv/common/contracts/crm/rows/hour-purchase-row";
 import type { TimeEntryDto } from "@invessiv/common/contracts/crm/hours/time-entry.dto";
 import type { TimeEntryRow } from "@invessiv/common/contracts/crm/rows/time-entry-row";
+import type { ProjectHoursSums } from "@invessiv/common/contracts/crm/hours/project-hours-sums";
+import type { CustomerHoursProjectDto } from "@invessiv/common/contracts/crm/hours/customer-hours-project.dto";
+import { computeProjectHoursBalance } from "@invessiv/common/patterns/crm/hours/hours-balance";
+
+function toCustomerProjectDto(
+  project: ProjectHoursSums,
+): CustomerHoursProjectDto {
+  return {
+    ...computeProjectHoursBalance(project),
+    title: project.title,
+    status: project.status,
+  };
+}
 
 function toPurchaseDto(row: HourPurchaseRow): HourPurchaseDto {
   return {
@@ -46,6 +59,7 @@ function toTimeEntryDto(row: TimeEntryRow): TimeEntryDto {
 }
 
 export const hoursMappingService = {
+  toCustomerProjectDto,
   toPurchaseDto,
   toAllocationDto,
   toTimeEntryDto,

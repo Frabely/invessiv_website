@@ -5,7 +5,6 @@ import { and, desc, eq, inArray } from "drizzle-orm";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { HoursLimits } from "@invessiv/common/constants/crm/hours-limits";
 import type { CustomerHoursDto } from "@invessiv/common/contracts/crm/hours/customer-hours.dto";
-import { computeProjectHoursBalance } from "@invessiv/common/patterns/crm/hours/hours-balance";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
   customerHourPurchases,
@@ -81,11 +80,7 @@ export async function getCustomerHours(
       purchasedMinutes === null
         ? null
         : hoursBalanceService.toCustomerBalance(purchasedMinutes, projectSums),
-    projects: projectSums.map((project) => ({
-      ...computeProjectHoursBalance(project),
-      title: project.title,
-      status: project.status,
-    })),
+    projects: projectSums.map(hoursMappingService.toCustomerProjectDto),
     purchases: purchaseRows.map(hoursMappingService.toPurchaseDto),
     allocations: allocationRows.map(hoursMappingService.toAllocationDto),
   };

@@ -356,8 +356,9 @@ Plan: `apps/workspace/plans/crm/20-stunden-und-history/27-kontingent-und-zuweisu
 - **Jede Aussage steht als Text.** Der Streifen in `hours-balance-summary` ist dekorativ (`aria-hidden`), ein
   überzogenes Projekt heißt „überzogen um 1:00“, nie nur farbig. Breiten des Streifens sind SVG-Attribute, kein
   Inline-Style.
-- **Dauer immer über `hours/duration-field`:** Textfeld für `1:30` oder `1,5` mit −15/+15-Knöpfen. Das Feld hält den
-  getippten Text; ob er gilt, prüft der Dialog über `readDurationInput`.
+- **Dauer immer über `hours/duration-field`:** Der app-spezifische Adapter bindet das allgemeine `DurationInput`
+  aus `packages/ui` an Labels, Hinweise, Buchungsschritt und technische Grenze. Stunden und Minuten werden getrennt
+  bedient; es gibt keine 24-Stunden-Grenze. Ob die Dauer gilt, prüft der Dialog über `readDurationInput`.
 - **Dialoge:** `hour-purchase-dialog` (Gutschrift oder Korrektur) und `hour-allocation-dialog` (Projekt und Richtung
   stehen beim Öffnen fest und kippen nie). Beide erzeugen ihren `idempotencyKey` einmal beim Öffnen, bauen den Request
   über `common/patterns/crm/hours/hours-form-request.ts` und rufen nach Erfolg `router.refresh()`. Eine Ablehnung
@@ -373,8 +374,10 @@ Ab Task 72 (`apps/workspace/plans/crm/20-stunden-und-history/72-zeitbuchungen-un
 - **Die Liste lädt über `useProjectTimeEntries`** (`src/hooks/workspace/crm/`) seitenweise aus der API, nicht über die
   Page. Nach jedem Schreiben erhöht der Canvas `timeEntriesRevision`; der Hook lädt dann die erste Seite neu, statt zu
   raten, wo eine geänderte Buchung jetzt einsortiert ist. Zahlen und Kennzahl folgen über `router.refresh()`.
-- **Ein Buchungsdialog für den ganzen Canvas:** `hours/time-entry-form-dialog` wird in `customer-projects-section`
-  gerendert, weil ihn die Stunden-Sektion **und** die Aufgabenzeilen öffnen. Er bucht und ändert; Ändern läuft über
+- **Ein Buchungsdialog für den ganzen Canvas:** `hours/project-hours-canvas` bündelt Stunden-Sektion und
+  `hours/time-entry-form-dialog`, den die Stunden-Sektion **und** die Aufgabenzeilen öffnen. Der Hook
+  `useProjectHoursCanvas` hält Dialog und Listenrevision je aktivem Projekt; der Kontext und die Aktionsregeln
+  liegen unter `common/patterns/crm/hours/`. Der Dialog bucht und ändert; Ändern läuft über
   `useVersionedMutation` (Konflikt übernimmt den aktuellen Stand und behält die Eingaben).
 - **Kundensichtbar heißt gekennzeichnet:** Der Hinweis an der Beschreibung („Für den Kunden sichtbar“) ist Pflicht und
   bleibt auch beim Bearbeiten stehen.

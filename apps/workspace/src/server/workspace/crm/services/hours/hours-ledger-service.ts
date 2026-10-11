@@ -2,8 +2,8 @@ import "server-only";
 
 import { eq } from "drizzle-orm";
 
-import type { InsertHourAllocationInput } from "@invessiv/common/contracts/crm/hours/insert-hour-allocation-input";
-import type { InsertHourPurchaseInput } from "@invessiv/common/contracts/crm/hours/insert-hour-purchase-input";
+import type { InsertHourAllocationInput } from "@invessiv/db/contracts/crm/hours/insert-hour-allocation-input";
+import type { InsertHourPurchaseInput } from "@invessiv/db/contracts/crm/hours/insert-hour-purchase-input";
 import type { HourAllocationRow } from "@invessiv/common/contracts/crm/rows/hour-allocation-row";
 import type { HourPurchaseRow } from "@invessiv/common/contracts/crm/rows/hour-purchase-row";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";

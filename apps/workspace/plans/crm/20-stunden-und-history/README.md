@@ -124,7 +124,7 @@ project_time_entries                          versioniert
   project_id uuid NOT NULL                    (project_id, customer_id) → projects (id, customer_id) ON DELETE CASCADE
   task_id uuid NULL                           (task_id, project_id) → tasks (id, project_id), kein Cascade
   performed_on date NOT NULL
-  duration_minutes integer NOT NULL           CHECK > 0 AND % 15 = 0 AND <= 1440
+  duration_minutes integer NOT NULL           CHECK > 0 AND % 15 = 0 AND <= 600000
   description text NOT NULL                   kundensichtbar, CHECK btrim(description) <> '' AND length <= 500
   billable boolean NOT NULL
   performed_by_member_id uuid NOT NULL        → workspace_members.id
@@ -224,7 +224,7 @@ Eine Projektbindung von `hours.read` zeigt nur den Stand und die Buchungen diese
 ## Merge-Gate 20.2
 
 - [ ] Rechenbeispiel Schritt 3 und 4 als Integrationstest grün; kein Schreibpfad gleicht ein überzogenes Projekt automatisch aus.
-- [ ] Dauer 0, 10, 20 und 1455 Minuten werden abgelehnt; 15 und 1440 angenommen. Datum von morgen wird abgelehnt.
+- [ ] Dauer 0, 10, 20 und 600015 Minuten werden abgelehnt; 15 und 600000 angenommen. Datum von morgen wird abgelehnt.
 - [ ] Aufgabe eines anderen Projekts und abgebrochene Aufgabe: `TASK_NOT_LINKABLE`. Aufgabe ohne Buchung bleibt gültig.
 - [ ] Kulanzbuchung ändert „Verbraucht“ und alle Reste nicht.
 - [ ] Ändern und Löschen mit veralteter Version: 409 mit `VersionConflictDto`.
