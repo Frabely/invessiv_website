@@ -33,6 +33,19 @@ describe("StatusRow", () => {
     ).toBeInTheDocument();
   });
 
+  it("marks the selected row for styling and assistive technology", () => {
+    const { container } = renderRow({ selected: true });
+
+    expect(container.querySelector("li")).toHaveAttribute(
+      "data-selected",
+      "true",
+    );
+    expect(container.querySelector("li")).toHaveAttribute(
+      "aria-current",
+      "true",
+    );
+  });
+
   it("renders plain content without an open target when nothing opens", () => {
     renderRow();
 

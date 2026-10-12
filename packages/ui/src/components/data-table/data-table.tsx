@@ -215,11 +215,15 @@ export function DataTableHeaderCell({
 
 export type DataTableCellProps = TdHTMLAttributes<HTMLTableCellElement> & {
   mobileCardSlot?: DataTableMobileCardSlot;
+  /** Column name above the value once the row collapses into a card and the header row is hidden. */
+  mobileLabel?: string;
 };
 
 export function DataTableCell({
+  children,
   className,
   mobileCardSlot,
+  mobileLabel,
   ...props
 }: DataTableCellProps) {
   return (
@@ -227,6 +231,12 @@ export function DataTableCell({
       {...props}
       className={getClassName(styles.cell, className)}
       data-mobile-card-slot={mobileCardSlot}
-    />
+      data-mobile-label={mobileLabel ? "true" : undefined}
+    >
+      {mobileLabel ? (
+        <span className={styles.mobileLabel}>{mobileLabel}</span>
+      ) : null}
+      {children}
+    </td>
   );
 }

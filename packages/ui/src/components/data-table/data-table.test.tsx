@@ -59,7 +59,9 @@ describe("DataTable", () => {
               Nordlicht Coaching
             </DataTableCell>
             <DataTableCell mobileCardSlot="secondary">Active</DataTableCell>
-            <DataTableCell mobileCardSlot="detail">Details</DataTableCell>
+            <DataTableCell mobileCardSlot="detail" mobileLabel="Notes">
+              Details
+            </DataTableCell>
           </DataTableRow>
         </DataTableBody>
       </DataTable>,
@@ -69,6 +71,10 @@ describe("DataTable", () => {
     expect(
       screen.getByRole("cell", { name: "Nordlicht Coaching" }),
     ).toHaveAttribute("data-mobile-card-slot", "primary");
+    expect(screen.getByText("Notes").closest("td")).toHaveAttribute(
+      "data-mobile-label",
+      "true",
+    );
   });
 
   it("marks frames that fill a surrounding scrollable table area", () => {

@@ -1,0 +1,6 @@
+/* The request being answered, quoted above the form like the preview of a customer text. */
+.request {
+  padding: 0.75rem 0.85rem;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: 0.6rem;
+}

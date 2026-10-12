@@ -426,9 +426,23 @@ Plan: `apps/workspace/plans/crm/13c-portal-leistungsanfragen/74-leistungsarten-u
   direkt vor den Dateien und existiert nur mit Lese-View-Model und mindestens einer Anfrage.
 - Offene Anfragen stehen oben; erledigte sind zunächst eingeklappt. `serviceRequest` und
   `serviceRequestAction` sind URL-State. Nur IDs aus den bereits autorisierten Anfragen öffnen
-  Karten oder Dialoge. Der Eingang verlinkt ins Cockpit und bietet keine Schreibaktionen.
-- Karten zeigen Kundentext vollständig als Text, Kontakt, Datum, Art und Status mit Symbol und
-  Wort. Ergebnisprojekte verlinken über `buildCustomerCockpitHref`.
+  Zeilen oder Dialoge. Der Eingang verlinkt ins Cockpit und bietet keine Schreibaktionen.
+- **Keine eigenen Karten.** Der Eingang ist eine Listenseite wie die Aufgabenübersicht:
+  `shared/list-page-header` (derselbe Kopf wie Aufgabenübersicht und Feedback-Eingang), Filterleiste mit `FacetFilter` (`service-request-inbox-toolbar`) und
+  `DataTableLayout` (`service-request-inbox-table` + `service-request-inbox-row`). Der Titel der
+  Zeile ist der Link ins Cockpit; der Kundentext steht dort gekürzt. Geblättert wird über die
+  `pagination` des `DataTableLayout`; Seite und Gesamtzahl kommen aus `ServiceRequestInboxDto`, die
+  Seitenlinks behalten den Filter (`buildServiceRequestInboxQueryString`). Spaltennamen der
+  Mobilkarte kommen über `mobileLabel` an `DataTableCell`, nicht über eigenes CSS.
+- Im Cockpit ist jede Anfrage eine `StatusRow` (`alignStart`): Status-Badge im Statusfeld,
+  `service-request-details` als Inhalt, Aktionen im `trailing`-Slot und nur an offenen Anfragen.
+  Die per URL gewählte Anfrage trägt `selected`. `service-request-details` zeigt den Kundentext
+  vollständig als Text, dazu Kontakt, Datum, Art und Projektwunsch; der Annahme-Dialog zitiert
+  damit die Anfrage. Ergebnisprojekte verlinken über `buildCustomerCockpitHref`.
+- Die Wahl „bestehend oder neu“ im Annahme-Dialog läuft über `FormFieldset` + `OptionTile` aus
+  `@invessiv/ui` und erscheint nur, wenn es wirklich zwei Wege gibt
+  (`canChooseServiceRequestProject` bzw. `…Template`, dieselben Helfer setzen den Startwert); Hinweise und Sperrgründe
+  stehen als `hint` bzw. `errorMessage` am Feld.
 - Dialoge nutzen `useVersionedMutation`, direkte Angebotsmarkierung `useVersionedCommand`.
   Konflikte behalten Eingaben und übernehmen die aktuelle Version. Ablehnungsgründe sind
   ausdrücklich als kundensichtbar gekennzeichnet.

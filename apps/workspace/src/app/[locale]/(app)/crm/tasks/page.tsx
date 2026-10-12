@@ -9,8 +9,8 @@ import { TasksEmptyStateVariant } from "@/common/constants/crm/list/tasks-empty-
 import { canAnywhere } from "@/common/patterns/auth/access-scope";
 import { canOn } from "@/common/patterns/auth/can-on";
 import { parseTaskListFilters } from "@/common/patterns/crm/task-list-search-params";
+import { ListPageHeader } from "@/components/workspace/crm/shared/list-page-header/list-page-header";
 import { TasksOverviewEmptyState } from "@/components/workspace/crm/tasks/overview/tasks-overview-empty-state/tasks-overview-empty-state";
-import { TasksOverviewHeader } from "@/components/workspace/crm/tasks/overview/tasks-overview-header/tasks-overview-header";
 import { TasksOverviewTable } from "@/components/workspace/crm/tasks/overview/tasks-overview-table/tasks-overview-table";
 import { TasksOverviewToolbar } from "@/components/workspace/crm/tasks/overview/tasks-overview-toolbar/tasks-overview-toolbar";
 import { WorkspaceScrollablePageShell } from "@/components/workspace/shared/workspace-scrollable-page-shell/workspace-scrollable-page-shell";
@@ -115,7 +115,10 @@ export default async function TasksPage({
 
   return (
     <WorkspaceScrollablePageShell pageId="crm-tasks">
-      <TasksOverviewHeader content={content} />
+      <ListPageHeader
+        description={content.overview.shell.description}
+        title={content.overview.shell.title}
+      />
       <TasksOverviewToolbar
         basePath={basePath}
         content={content}

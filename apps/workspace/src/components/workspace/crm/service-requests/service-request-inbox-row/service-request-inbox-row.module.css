@@ -1,0 +1,84 @@
+.receivedCell {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.requestCell {
+  min-width: 0;
+  font-weight: inherit;
+}
+
+.title {
+  display: block;
+  color: var(--color-text);
+  font-weight: 650;
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-decoration-color: var(--color-border-strong);
+  text-underline-offset: 3px;
+}
+
+.title:hover {
+  text-decoration-color: var(--color-cta);
+}
+
+.title:focus-visible {
+  outline: 2px solid var(--color-cta);
+  outline-offset: 2px;
+}
+
+.quantity {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The customer text is shortened here; the cockpit shows it in full. */
+.note {
+  display: -webkit-box;
+  overflow: hidden;
+  margin-top: 0.15rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.customer {
+  display: block;
+  color: var(--color-text);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.customerNumber {
+  display: block;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 720px) {
+  .receivedCell {
+    order: 1;
+  }
+
+  .kindCell {
+    order: 2;
+  }
+
+  .customerCell {
+    order: 3;
+  }
+
+  .contactCell {
+    order: 4;
+  }
+
+  .wishCell {
+    order: 5;
+  }
+}

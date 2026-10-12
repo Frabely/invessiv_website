@@ -105,6 +105,10 @@
   text-align: left;
 }
 
+.mobileLabel {
+  display: none;
+}
+
 [data-theme="light"] .frame {
   box-shadow:
     0 20px 42px rgba(28, 41, 67, 0.08),
@@ -247,6 +251,22 @@
     grid-column: 1 / -1;
     justify-self: stretch;
     text-align: start;
+  }
+
+  .frame[data-responsive-mode="cards"]
+    .row[data-mobile-card]:has([data-mobile-card-slot])
+    > [data-mobile-label] {
+    display: grid;
+    gap: 0.12rem;
+  }
+
+  .frame[data-responsive-mode="cards"] .mobileLabel {
+    display: block;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-ui-xs);
+    font-weight: 650;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 
   .frame[data-responsive-mode="scroll"] .scroll {

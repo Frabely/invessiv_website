@@ -6,9 +6,7 @@ export async function listCustomerServiceRequests(
   customerId: string,
   actor: WorkspaceActor,
 ) {
-  return serviceRequestAccessService.list(
-    getDrizzleDatabaseClient(),
-    actor,
+  return serviceRequestAccessService.list(getDrizzleDatabaseClient(), actor, {
     customerId,
-  );
+  });
 }

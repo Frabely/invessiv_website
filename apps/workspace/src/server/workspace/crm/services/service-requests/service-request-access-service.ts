@@ -22,6 +22,7 @@ import { accessScope } from "@/common/patterns/auth/access-scope";
 import { crmAccessCondition } from "@/server/workspace/shared/services/crm-access-condition";
 import { loadPortalContactNames } from "@/server/shared/services/load-portal-contact-names";
 import { serviceRequestMappingService } from "./service-request-mapping-service";
+import type { ServiceRequestListFilter } from "./service-request-types";
 const requestedProjects = alias(projects, "service_request_requested_project");
 
 function condition(
@@ -31,6 +32,14 @@ function condition(
   return crmAccessCondition.forScope(accessScope(actor, permission), {
     customerId: serviceRequests.customer_id,
   });
+}
+function inboxCondition(actor: WorkspaceActor, openOnly: boolean) {
+  return and(
+    condition(actor),
+    openOnly
+      ? inArray(serviceRequests.status, OPEN_SERVICE_REQUEST_STATUS_VALUES)
+      : undefined,
+  );
 }
 async function lock(
   tx: ContactDatabaseTransaction,
@@ -53,11 +62,14 @@ async function lock(
 async function list(
   executor: ContactDatabaseReader,
   actor: WorkspaceActor,
-  customerId?: string,
-  openOnly = false,
-  requestId?: string,
+  {
+    customerId,
+    openOnly = false,
+    requestId,
+    window,
+  }: ServiceRequestListFilter = {},
 ): Promise<ServiceRequestDto[]> {
-  const rows = await executor
+  const query = executor
     .select({
       request: serviceRequests,
       customerDisplayName: customers.display_name,
@@ -81,11 +93,8 @@ async function list(
     )
     .where(
       and(
-        condition(actor),
+        inboxCondition(actor, openOnly),
         customerId ? eq(serviceRequests.customer_id, customerId) : undefined,
-        openOnly
-          ? inArray(serviceRequests.status, OPEN_SERVICE_REQUEST_STATUS_VALUES)
-          : undefined,
         requestId ? eq(serviceRequests.id, requestId) : undefined,
       ),
     )
@@ -94,6 +103,9 @@ async function list(
       desc(serviceRequests.created_at),
       desc(serviceRequests.id),
     );
+  const rows = await (window
+    ? query.limit(window.limit).offset(window.offset)
+    : query);
   const names = await loadPortalContactNames(
     executor,
     rows.map((r) => r.request.requested_by_membership_id),
@@ -162,6 +174,18 @@ async function countRequested(
     );
   return row?.value ?? 0;
 }
+/** Counts what `list` returns for the same filter, so the inbox can page. */
+async function countInbox(
+  executor: ContactDatabaseReader,
+  actor: WorkspaceActor,
+  openOnly: boolean,
+): Promise<number> {
+  const [row] = await executor
+    .select({ value: count() })
+    .from(serviceRequests)
+    .where(inboxCondition(actor, openOnly));
+  return row?.value ?? 0;
+}
 async function hasRequests(
   executor: ContactDatabaseReader,
   actor: WorkspaceActor,
@@ -179,5 +203,6 @@ export const serviceRequestAccessService = {
   list,
   toDto,
   countRequested,
+  countInbox,
   hasRequests,
 } as const;

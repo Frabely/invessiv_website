@@ -37,7 +37,7 @@ import {
 } from "@/components/workspace/crm/shared/line-item-fields/line-item-fields";
 import { LineItemFormMessages } from "@/components/workspace/crm/shared/line-item-form-messages/line-item-form-messages";
 import { ProjectLineItemEffectFields } from "@/components/workspace/crm/projects/project-line-item-effect-fields/project-line-item-effect-fields";
-import { ServiceRequestCard } from "../service-request-card/service-request-card";
+import { ServiceRequestDetails } from "../service-request-details/service-request-details";
 import { workspaceAreaPathFor } from "@/lib/auth/routes";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import layout from "@/components/workspace/crm/shared/line-item-fields/line-item-form-layout.module.css";
@@ -45,6 +45,7 @@ import {
   ServiceRequestProjectFields,
   ServiceRequestTemplateFields,
 } from "../service-request-target-fields/service-request-target-fields";
+import styles from "./service-request-accept-dialog.module.css";
 
 export type ServiceRequestAcceptDialogProps = {
   request: ServiceRequestDto;
@@ -150,12 +151,14 @@ export function ServiceRequestAcceptDialog({
       footerHint={content.form.required}
     >
       <form className={layout.form} id={formId} onSubmit={submit} noValidate>
-        <ServiceRequestCard
-          request={mutation.current}
-          content={content}
-          locale={locale}
-          crmPath={workspaceAreaPathFor(locale, WorkspaceArea.Crm)}
-        />
+        <section aria-label={content.form.request} className={styles.request}>
+          <ServiceRequestDetails
+            request={mutation.current}
+            content={content}
+            locale={locale}
+            crmPath={workspaceAreaPathFor(locale, WorkspaceArea.Crm)}
+          />
+        </section>
         <ServiceRequestProjectFields
           request={request}
           viewModel={viewModel}
@@ -176,58 +179,55 @@ export function ServiceRequestAcceptDialog({
             setValues((current) => ({ ...current, ...patch }))
           }
           onSelectTemplateAction={selectTemplate}
-        >
-          <div className={layout.grid}>
-            <LineItemIdentityFields
-              {...shared}
-              limits={ProjectLineItemFieldLimits}
-              titleInputRef={titleRef}
+        />
+        <div className={layout.grid}>
+          <LineItemIdentityFields
+            {...shared}
+            limits={ProjectLineItemFieldLimits}
+            titleInputRef={titleRef}
+          />
+          <ProjectLineItemEffectFields
+            allocateHoursToProject={values.allocateHoursToProject}
+            onAllocateChangeAction={(next) =>
+              update("allocateHoursToProject", next)
+            }
+            blocker={blocker}
+            content={sharedContent}
+            kind={request.kind}
+            locale={locale}
+            onQuantityChangeAction={(next) => update("quantityInput", next)}
+            quantityError={invalid && !quantity.ok ? quantity.error : undefined}
+            quantityInput={values.quantityInput}
+            quantityMinutes={quantity.ok ? quantity.minutes : null}
+            rateCents={price.ok ? price.cents : null}
+            storedQuantityMinutes={undefined}
+          />
+          <LineItemPricingFields
+            {...shared}
+            kind={request.kind}
+            pricingDisabled={request.kind !== LineItemKind.Standard}
+          />
+          {request.kind === LineItemKind.Standard ? (
+            <FormField
+              kind={FormFieldKind.Custom}
+              label={sharedContent.form.fields.status}
+              renderControl={({ id, describedBy }) => (
+                <CustomSelect
+                  id={id}
+                  describedBy={describedBy}
+                  value={values.status}
+                  onChange={(next) =>
+                    update("status", next as ProjectLineItemStatus)
+                  }
+                  options={PROJECT_LINE_ITEM_STATUS_VALUES.map((status) => ({
+                    value: status,
+                    label: sharedContent.list.status[status],
+                  }))}
+                />
+              )}
             />
-            <ProjectLineItemEffectFields
-              allocateHoursToProject={values.allocateHoursToProject}
-              onAllocateChangeAction={(next) =>
-                update("allocateHoursToProject", next)
-              }
-              blocker={blocker}
-              content={sharedContent}
-              kind={request.kind}
-              locale={locale}
-              onQuantityChangeAction={(next) => update("quantityInput", next)}
-              quantityError={
-                invalid && !quantity.ok ? quantity.error : undefined
-              }
-              quantityInput={values.quantityInput}
-              quantityMinutes={quantity.ok ? quantity.minutes : null}
-              rateCents={price.ok ? price.cents : null}
-              storedQuantityMinutes={undefined}
-            />
-            <LineItemPricingFields
-              {...shared}
-              kind={request.kind}
-              pricingDisabled={request.kind !== LineItemKind.Standard}
-            />
-            {request.kind === LineItemKind.Standard ? (
-              <FormField
-                kind={FormFieldKind.Custom}
-                label={sharedContent.form.fields.status}
-                renderControl={({ id, describedBy }) => (
-                  <CustomSelect
-                    id={id}
-                    describedBy={describedBy}
-                    value={values.status}
-                    onChange={(next) =>
-                      update("status", next as ProjectLineItemStatus)
-                    }
-                    options={PROJECT_LINE_ITEM_STATUS_VALUES.map((status) => ({
-                      value: status,
-                      label: sharedContent.list.status[status],
-                    }))}
-                  />
-                )}
-              />
-            ) : null}
-          </div>
-        </ServiceRequestTemplateFields>
+          ) : null}
+        </div>
         <LineItemFormMessages
           conflictMessage={
             mutation.hasConflict ? content.form.conflict : undefined

@@ -20,6 +20,24 @@ import {
 import { readDurationInput } from "@/common/patterns/crm/hours/duration-input";
 import { ProjectLineItemFieldLimits } from "@invessiv/common/constants/crm/forms/project-line-item-field-limits";
 
+/** A new project is only a choice for a standard service and with the right to create one. */
+export function canChooseServiceRequestProject(
+  request: ServiceRequestDto,
+  viewModel: ServiceRequestsViewModel,
+): boolean {
+  return viewModel.canCreateProject && request.kind === LineItemKind.Standard;
+}
+/** Only free text may pick or create a template; a catalog request keeps its own. */
+export function canChooseServiceRequestTemplate(
+  request: ServiceRequestDto,
+  viewModel: ServiceRequestsViewModel,
+): boolean {
+  return (
+    !request.lineItemTemplateId &&
+    viewModel.canCreateTemplate &&
+    request.kind === LineItemKind.Standard
+  );
+}
 export function createServiceRequestAcceptForm(
   request: ServiceRequestDto,
   viewModel: ServiceRequestsViewModel,
@@ -28,17 +46,12 @@ export function createServiceRequestAcceptForm(
   const template = viewModel.templates.find(
     (t) => t.id === request.lineItemTemplateId && t.kind === request.kind,
   );
-  const newTemplate =
-    !request.lineItemTemplateId &&
-    viewModel.canCreateTemplate &&
-    request.kind === LineItemKind.Standard;
   return {
     ...createLineItemFieldsFormValues(template ?? null, locale),
     title: template?.title ?? request.title,
     description: template?.description ?? request.note,
     projectMode:
-      viewModel.canCreateProject &&
-      request.kind === LineItemKind.Standard &&
+      canChooseServiceRequestProject(request, viewModel) &&
       (request.projectWish === Mode.New ||
         template?.projectMode === LineItemProjectMode.NewProject)
         ? Mode.New
@@ -48,7 +61,9 @@ export function createServiceRequestAcceptForm(
       viewModel.projects[0]?.id ??
       "",
     projectTitle: request.title,
-    templateMode: newTemplate ? Mode.New : Mode.Existing,
+    templateMode: canChooseServiceRequestTemplate(request, viewModel)
+      ? Mode.New
+      : Mode.Existing,
     templateId: template?.id ?? "",
     quantityInput:
       request.requestedMinutes !== null

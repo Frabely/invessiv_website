@@ -6,6 +6,7 @@ import {
 } from "@invessiv/common/constants/crm/service-request-statuses";
 import { ServiceRequestTransitionSide } from "@invessiv/common/constants/crm/service-request-transition-sides";
 import { canTransitionServiceRequest } from "@invessiv/common/patterns/crm/service-request-state";
+import type { ServiceRequestDto } from "@invessiv/common/contracts/crm/service-requests/service-request.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import type { ServiceRequestsViewModel } from "@/common/contracts/crm/service-requests-view-model";
 import type { CrmServiceRequestsDictionary } from "@/i18n/dictionaries/workspace/crm";
@@ -16,7 +17,9 @@ import {
 } from "@/common/constants/crm/service-request-inbox-query-params";
 import { buildServiceRequestActionHref } from "@/common/patterns/crm/service-request-inbox-query";
 import { CollapsibleSection } from "@/components/workspace/crm/shared/collapsible-section/collapsible-section";
-import { ServiceRequestCard } from "../service-request-card/service-request-card";
+import { StatusRow } from "@/components/workspace/shared/status-row/status-row";
+import { ServiceRequestDetails } from "../service-request-details/service-request-details";
+import { ServiceRequestStatusBadge } from "../service-request-status-badge/service-request-status-badge";
 import { ServiceRequestActions } from "../service-request-actions/service-request-actions";
 import { ServiceRequestAcceptDialog } from "../service-request-accept-dialog/service-request-accept-dialog";
 import { ServiceRequestDeclineDialog } from "../service-request-decline-dialog/service-request-decline-dialog";
@@ -55,22 +58,39 @@ export function CustomerServiceRequestsSection({
         { scroll: false },
       );
   };
-  const cards = (requests: typeof viewModel.requests) =>
-    requests.map((request) => (
-      <ServiceRequestCard
-        key={request.id + ":" + request.version}
-        request={request}
-        content={content}
-        locale={locale}
-        crmPath={pathname}
-        highlighted={selected?.id === request.id}
-        actions={
-          viewModel.canWrite ? (
-            <ServiceRequestActions request={request} content={content} />
-          ) : undefined
-        }
-      />
-    ));
+  // Completed requests allow no transition, so they get no action column at all.
+  const rows = (
+    requests: readonly ServiceRequestDto[],
+    withActions: boolean,
+  ) => (
+    <ul className={styles.list}>
+      {requests.map((request) => (
+        <StatusRow
+          alignStart
+          key={request.id + ":" + request.version}
+          selected={selected?.id === request.id}
+          status={
+            <ServiceRequestStatusBadge
+              label={content.status[request.status]}
+              status={request.status}
+            />
+          }
+          trailing={
+            withActions ? (
+              <ServiceRequestActions request={request} content={content} />
+            ) : undefined
+          }
+        >
+          <ServiceRequestDetails
+            content={content}
+            crmPath={pathname}
+            locale={locale}
+            request={request}
+          />
+        </StatusRow>
+      ))}
+    </ul>
+  );
   if (!viewModel.requests.length) return null;
   const canAccept =
     selected &&
@@ -116,7 +136,7 @@ export function CustomerServiceRequestsSection({
         ) : null
       }
     >
-      <div className={styles.list}>{cards(open)}</div>
+      {open.length ? rows(open, viewModel.canWrite) : null}
       {done.length ? (
         <CollapsibleSection
           title={formatMessage(content.section.completed, {
@@ -129,7 +149,7 @@ export function CustomerServiceRequestsSection({
           labelExpand={content.section.expandCompleted}
           labelCollapse={content.section.collapseCompleted}
         >
-          <div className={styles.list}>{cards(done)}</div>
+          {rows(done, false)}
         </CollapsibleSection>
       ) : null}
     </CollapsibleSection>

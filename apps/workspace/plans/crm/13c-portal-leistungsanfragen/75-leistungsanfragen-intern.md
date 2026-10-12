@@ -117,7 +117,11 @@ apps/workspace/src/lib/workspace/crm/service-requests-view-model.ts             
 apps/workspace/src/lib/workspace/crm/load-customer-cockpit.ts                         + serviceRequestsViewModel
 apps/workspace/src/common/patterns/crm/customer-dialog-query.ts                       + readCockpitServiceRequestId, Href-Parameter
 apps/workspace/src/components/workspace/crm/service-requests/customer-service-requests-section/
-apps/workspace/src/components/workspace/crm/service-requests/service-request-card/
+apps/workspace/src/components/workspace/crm/service-requests/service-request-details/        Inhalt einer Anfrage (StatusRow im Cockpit, Zitat im Annahme-Dialog)
+apps/workspace/src/components/workspace/crm/service-requests/service-request-kind-badge/
+apps/workspace/src/components/workspace/crm/service-requests/service-request-inbox-table/    DataTableLayout
+apps/workspace/src/components/workspace/crm/service-requests/service-request-inbox-row/
+apps/workspace/src/components/workspace/crm/shared/list-page-header/
 apps/workspace/src/components/workspace/crm/service-requests/service-request-status-badge/
 apps/workspace/src/components/workspace/crm/service-requests/service-request-inbox/
 apps/workspace/src/components/workspace/crm/service-requests/service-request-inbox-toolbar/
@@ -135,11 +139,11 @@ apps/workspace/src/common/constants/access/permission-groups.ts                 
   offener Anfragen · Toggle über `shared/section-collapse-toggle`). Sie wird nur gerendert, wenn die Page ein
   View-Model übergibt (Leserecht) **und** der Kunde mindestens eine Anfrage hat. Offene Anfragen oben, erledigte
   darunter eingeklappt („Erledigt (n)“).
-- **Karte:** Titel, Art-Badge, Status-Badge (Text + Symbol), Kontakt und Datum, Kundentext (nur als Text),
+- **Zeile im Cockpit (`StatusRow` + `service-request-details`):** Titel, Art-Badge, Status-Badge (Text + Symbol), Kontakt und Datum, Kundentext (nur als Text),
   Wunsch: Projekt-Titel / „Neues Vorhaben“ / „Noch offen“, bei Stunden „5:00 angefragt“. Erledigt: Ergebnis mit
   Link zum Projekt (`buildCustomerCockpitHref`) bzw. Ablehnungsgrund.
-- **Eingang:** Liste über alle Kunden im Zugriffsbereich, Kundenname und -nummer (`formatCustomerNumber`) je Karte,
-  Filter als URL-State, Karte verlinkt ins Cockpit mit `serviceRequest=<id>` (Sektion aufgeklappt, Karte markiert).
+- **Eingang:** Liste über alle Kunden im Zugriffsbereich, Kundenname und -nummer (`formatCustomerNumber`) je Tabellenzeile (`DataTableLayout`),
+  Filter und Seite (`page`, 25 je Seite, serverseitig geblättert) als URL-State, der Titel der Zeile verlinkt ins Cockpit mit `serviceRequest=<id>` (Sektion aufgeklappt, Zeile markiert).
   Bearbeitet wird ausschließlich im Cockpit. Zwei Empty-States: „Noch keine Anfrage“ (erklärt: Kunden fragen im
   Portal an) und „Keine offene Anfrage“ (Link „Alle anzeigen“).
 
@@ -216,7 +220,7 @@ Runde entstehen deshalb nie doppelt.
 **Annahme-Dialog** (`DialogSize.Wide`, `useVersionedMutation`; Skills `frontend-design`, `impeccable`,
 `copywriting`):
 
-1. **Kopf (lesend):** Anfrage wie auf der Karte, Kundentext vollständig.
+1. **Kopf (lesend):** Anfrage wie in der Cockpit-Zeile, Kundentext vollständig.
 2. **Projekt:** Radiogruppe „Bestehendes Projekt“ (Select der beschreibbaren Projekte, vorbelegt mit dem
    Wunschprojekt) / „Neues Projekt anlegen“ (Feld Titel, vorbelegt mit dem Anfragetitel; Hinweis
    „Standard-Ablauf mit zwei Feedbackrunden, später im Projekt-Editor änderbar“). Vorauswahl: `projectWish = new`
@@ -232,7 +236,7 @@ Runde entstehen deshalb nie doppelt.
 4. **Fuß:** „Annehmen und zuweisen“. Ein Konflikt übernimmt den aktuellen Stand und behält die Eingaben; jeder
    Fehlercode erscheint als Text über `service-request-error-text.ts`. Nach Erfolg `router.refresh()`.
 
-**Aktionen an der Karte** (`service-request-actions`, nur mit Schreibrecht und nur die Ziele aus
+**Aktionen an der Zeile** (`service-request-actions`, nur mit Schreibrecht und nur die Ziele aus
 `canTransitionServiceRequest`): „Angebot gesendet“ (direkt, `useVersionedCommand`), „Annehmen“, „Ablehnen“.
 Der Ablehnen-Dialog verlangt den Grund und kennzeichnet ihn: „Der Kunde sieht diesen Text.“
 

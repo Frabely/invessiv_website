@@ -1,5 +1,6 @@
 export const ServiceRequestInboxQueryParam = {
   Filter: "filter",
+  Page: "page",
   Request: "serviceRequest",
   Action: "serviceRequestAction",
 } as const;

@@ -22,6 +22,8 @@ export type StatusRowProps = {
   tone?: StatusRowToneValue;
   /** Pins the status slot to the top for rows whose content can run over several lines. */
   alignStart?: boolean;
+  /** Marks the row a link or a dialog currently points at, for assistive technology as well. */
+  selected?: boolean;
   /** Controls of their own at the end of the row; like the status slot they sit above the open target. */
   trailing?: ReactNode;
 };
@@ -39,6 +41,7 @@ export function StatusRow({
   pending = false,
   tone = StatusRowTone.Default,
   alignStart = false,
+  selected = false,
   trailing,
 }: StatusRowProps) {
   const detailsClass = detailsClassName
@@ -46,9 +49,11 @@ export function StatusRow({
     : styles.details;
   return (
     <li
+      aria-current={selected ? "true" : undefined}
       className={styles.row}
       data-align={alignStart ? "start" : undefined}
       data-pending={pending ? "true" : "false"}
+      data-selected={selected ? "true" : undefined}
       data-tone={tone}
       data-trailing={trailing ? "true" : undefined}
     >

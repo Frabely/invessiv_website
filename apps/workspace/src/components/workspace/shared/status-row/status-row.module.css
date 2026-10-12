@@ -19,6 +19,11 @@
   border-left-color: var(--color-danger);
 }
 
+.row[data-selected="true"] {
+  border-left-color: var(--color-cta);
+  background: color-mix(in srgb, var(--color-cta) 8%, transparent);
+}
+
 .row[data-tone="muted"] {
   color: var(--color-text-muted);
 }

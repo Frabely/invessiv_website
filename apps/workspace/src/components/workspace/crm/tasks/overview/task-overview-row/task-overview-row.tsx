@@ -55,10 +55,10 @@ export function TaskOverviewRow({
       mobileCard
     >
       <DataTableCell
-        className={`${styles.dueCell} ${styles.metaCell}`}
+        className={styles.dueCell}
         mobileCardSlot="supportingPrimary"
+        mobileLabel={overview.columns.due}
       >
-        <span className={styles.mobileLabel}>{overview.columns.due}</span>
         <TaskDueLabel
           content={content}
           locale={locale}
@@ -90,24 +90,24 @@ export function TaskOverviewRow({
         )}
       </DataTableCell>
       <DataTableCell
-        className={`${styles.sideCell} ${styles.metaCell}`}
+        className={styles.sideCell}
         mobileCardSlot="supportingSecondary"
+        mobileLabel={overview.columns.side}
       >
-        <span className={styles.mobileLabel}>{overview.columns.side}</span>
         <TaskActionSideBadge actionSide={task.actionSide} content={content} />
       </DataTableCell>
       <DataTableCell
-        className={`${styles.assigneeCell} ${styles.metaCell}`}
+        className={styles.assigneeCell}
         mobileCardSlot="supportingPrimary"
+        mobileLabel={overview.columns.assignee}
       >
-        <span className={styles.mobileLabel}>{overview.columns.assignee}</span>
         <span>{assigneeName ?? overview.noAssignee}</span>
       </DataTableCell>
       <DataTableCell
-        className={`${styles.contextCell} ${styles.customerCell} ${styles.metaCell}`}
+        className={`${styles.contextCell} ${styles.customerCell}`}
         mobileCardSlot="supportingPrimary"
+        mobileLabel={overview.columns.customer}
       >
-        <span className={styles.mobileLabel}>{overview.columns.customer}</span>
         {customerHref ? (
           <Link
             aria-label={formatMessage(overview.openCustomerNamed, {
@@ -124,19 +124,17 @@ export function TaskOverviewRow({
         )}
       </DataTableCell>
       <DataTableCell
-        className={`${styles.contextCell} ${styles.projectCell} ${styles.metaCell}`}
+        className={`${styles.contextCell} ${styles.projectCell}`}
         mobileCardSlot="supportingSecondary"
+        mobileLabel={overview.columns.project}
       >
-        <span className={styles.mobileLabel}>{overview.columns.project}</span>
         <span className={styles.project}>{row.projectTitle}</span>
       </DataTableCell>
       <DataTableCell
-        className={`${styles.visibilityCell} ${styles.metaCell}`}
+        className={styles.visibilityCell}
         mobileCardSlot="supportingSecondary"
+        mobileLabel={overview.columns.visibility}
       >
-        <span className={styles.mobileLabel}>
-          {overview.columns.visibility}
-        </span>
         {task.visibleToCustomer ? (
           <span className={styles.visibility}>
             <FontAwesomeIcon aria-hidden="true" icon={faEye} />

@@ -8,6 +8,7 @@ import type { FeedbackInboxDto } from "@invessiv/common/contracts/crm/feedback-i
 import { EmptyState, PrimaryCtaLink } from "@invessiv/ui";
 import type { FeedbackInboxFilters } from "@/common/contracts/crm/feedback-inbox-filters";
 import { buildCustomerCockpitHref } from "@/common/patterns/crm/customer-dialog-query";
+import { ListPageHeader } from "@/components/workspace/crm/shared/list-page-header/list-page-header";
 import type { Locale } from "@/config/i18n";
 import type { CrmFeedbackRoundsDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { FeedbackInboxCard } from "../feedback-inbox-card/feedback-inbox-card";
@@ -44,10 +45,7 @@ export function FeedbackInbox({
 
   return (
     <>
-      <header className={styles.header}>
-        <h1 className={styles.title}>{texts.title}</h1>
-        <p className={styles.description}>{texts.description}</p>
-      </header>
+      <ListPageHeader description={texts.description} title={texts.title} />
       <FeedbackInboxToolbar
         basePath={basePath}
         content={content}

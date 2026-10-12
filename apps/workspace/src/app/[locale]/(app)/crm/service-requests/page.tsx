@@ -4,7 +4,10 @@ import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { canAnywhere } from "@/common/patterns/auth/access-scope";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import { ServiceRequestInboxFilter } from "@/common/constants/crm/service-request-inbox-query-params";
-import { readServiceRequestInboxFilter } from "@/common/patterns/crm/service-request-inbox-query";
+import {
+  readServiceRequestInboxFilter,
+  readServiceRequestInboxPage,
+} from "@/common/patterns/crm/service-request-inbox-query";
 import { ServiceRequestInbox } from "@/components/workspace/crm/service-requests/service-request-inbox/service-request-inbox";
 import { WorkspaceScrollablePageShell } from "@/components/workspace/shared/workspace-scrollable-page-shell/workspace-scrollable-page-shell";
 import { isSupportedLocale } from "@/config/i18n";
@@ -36,10 +39,12 @@ export default async function ServiceRequestsPage({
   if (!isSupportedLocale(locale)) notFound();
   const actor = await requireWorkspaceActor(locale);
   if (!canAnywhere(actor, Permission.ServiceRequestsRead)) notFound();
-  const filter = readServiceRequestInboxFilter(await searchParams);
+  const query = await searchParams;
+  const filter = readServiceRequestInboxFilter(query);
   const inbox = await listServiceRequestInbox(
     filter === ServiceRequestInboxFilter.Open,
     actor,
+    readServiceRequestInboxPage(query),
   );
   return (
     <WorkspaceScrollablePageShell pageId="crm-service-requests">

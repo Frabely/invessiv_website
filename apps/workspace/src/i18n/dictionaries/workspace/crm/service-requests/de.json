@@ -5,10 +5,38 @@
   },
   "title": "Leistungsanfragen",
   "description": "Zusätzliche Leistungen klären und dem passenden Projekt zuweisen.",
-  "filters": {
-    "label": "Anfragen filtern",
-    "open": "Offen",
-    "all": "Alle"
+  "toolbar": {
+    "ariaLabel": "Anfragen filtern",
+    "status": {
+      "label": "Status",
+      "ariaLabel": "Anfragen nach Status filtern",
+      "open": "Offen",
+      "all": "Alle"
+    },
+    "clear": "Auswahl zurücksetzen",
+    "reset": "Filter zurücksetzen"
+  },
+  "table": {
+    "caption": "Leistungsanfragen",
+    "openNamed": "{name} im Kunden-Cockpit öffnen",
+    "columns": {
+      "received": "Eingang",
+      "request": "Anfrage",
+      "kind": "Art",
+      "status": "Status",
+      "customer": "Kunde",
+      "contact": "Angefragt von",
+      "wish": "Projektwunsch"
+    },
+    "pagination": {
+      "ariaLabel": "Seiten der Leistungsanfragen",
+      "showing": "{from}–{to} von {total} Anfragen",
+      "page": "Seite {page}",
+      "first": "Erste",
+      "previous": "Zurück",
+      "next": "Weiter",
+      "last": "Letzte"
+    }
   },
   "empty": {
     "title": "Noch keine Leistungsanfrage",
@@ -45,11 +73,10 @@
     "undecided": "Noch offen",
     "existing": "Bestehendes Projekt"
   },
-  "card": {
+  "details": {
     "by": "Angefragt von {name}",
     "quantity": "{duration} angefragt",
     "project": "Zum Projekt",
-    "open": "Im Kunden-Cockpit bearbeiten",
     "unknownContact": "Kontakt",
     "projectUnavailable": "Projekt nicht sichtbar"
   },
@@ -85,7 +112,8 @@
     "validation": "Bitte prüfe die Pflichtfelder und den Preis.",
     "conflict": "Die Anfrage wurde inzwischen geändert. Deine Eingaben bleiben erhalten. Prüfe den aktuellen Stand vor dem erneuten Speichern.",
     "noProject": "Du kannst derzeit keine Leistung einem Projekt zuweisen.",
-    "noTemplate": "Es ist keine passende aktive Vorlage verfügbar."
+    "noTemplate": "Es ist keine passende aktive Vorlage verfügbar.",
+    "request": "Anfrage"
   },
   "errors": {
     "SERVICE_REQUEST_NOT_FOUND": "Die Anfrage ist nicht verfügbar.",

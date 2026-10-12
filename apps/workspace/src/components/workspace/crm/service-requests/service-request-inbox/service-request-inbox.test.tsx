@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 import "@testing-library/jest-dom/vitest";
-import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { cleanup, render, screen, within } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { SERVICE_REQUEST_STATUS_VALUES } from "@invessiv/common/constants/crm/service-request-statuses";
 import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
 import { ServiceRequestInboxFilter as F } from "@/common/constants/crm/service-request-inbox-query-params";
@@ -10,6 +11,9 @@ import { getCrmServiceRequestsDictionary } from "@/i18n/dictionaries/workspace/c
 import { ServiceRequestInbox } from "./service-request-inbox";
 import { ServiceRequestStatusBadge } from "../service-request-status-badge/service-request-status-badge";
 
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: vi.fn() }),
+}));
 const content = getCrmServiceRequestsDictionary("en");
 const props = {
   basePath: "/en/crm/service-requests",
@@ -18,13 +22,14 @@ const props = {
   locale: "en" as const,
   content,
 };
+const page = { page: 1, perPage: 25, total: 0 };
 afterEach(cleanup);
 describe("ServiceRequestInbox", () => {
   it("explains the first empty inbox and distinguishes it from an empty open filter", () => {
     render(
       <ServiceRequestInbox
         {...props}
-        inbox={{ items: [], hasRequests: false }}
+        inbox={{ ...page, items: [], hasRequests: false }}
       />,
     );
     expect(
@@ -38,7 +43,7 @@ describe("ServiceRequestInbox", () => {
     render(
       <ServiceRequestInbox
         {...props}
-        inbox={{ items: [], hasRequests: true }}
+        inbox={{ ...page, items: [], hasRequests: true }}
       />,
     );
     expect(
@@ -48,7 +53,7 @@ describe("ServiceRequestInbox", () => {
       screen.getByRole("link", { name: content.noOpen.action }),
     ).toHaveAttribute("href", "/en/crm/service-requests?filter=all");
   });
-  it("shows full customer text safely, hours and contact, and links the highlighted request into the cockpit", () => {
+  it("lists customer text safely, hours and contact in the table, and links the request into the cockpit", () => {
     const request = serviceRequestFixture({
       kind: LineItemKind.Hours,
       requestedMinutes: 300,
@@ -56,7 +61,7 @@ describe("ServiceRequestInbox", () => {
     render(
       <ServiceRequestInbox
         {...props}
-        inbox={{ items: [request], hasRequests: true }}
+        inbox={{ ...page, items: [request], hasRequests: true, total: 1 }}
       />,
     );
     expect(screen.getByText(request.note)).toBeVisible();
@@ -64,7 +69,9 @@ describe("ServiceRequestInbox", () => {
     expect(screen.getByText(/Anna Berger/)).toBeVisible();
     expect(screen.getByText(/5:00/)).toBeVisible();
     const href = screen
-      .getByRole("link", { name: content.card.open })
+      .getByRole("link", {
+        name: formatMessage(content.table.openNamed, { name: request.title }),
+      })
       .getAttribute("href")!;
     const url = new URL(href, "https://example.test");
     expect(Object.fromEntries(url.searchParams)).toEqual({
@@ -73,8 +80,38 @@ describe("ServiceRequestInbox", () => {
     });
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
     expect(
+      screen.getByRole("table", { name: content.table.caption }),
+    ).toBeVisible();
+    expect(
+      screen.getByRole("button", { name: content.toolbar.reset }),
+    ).toBeDisabled();
+    expect(
       screen.queryByRole("button", { name: content.actions.accept }),
     ).not.toBeInTheDocument();
+  });
+  it("pages through the inbox without dropping the filter", () => {
+    render(
+      <ServiceRequestInbox
+        {...props}
+        filter={F.All}
+        inbox={{
+          hasRequests: true,
+          items: [serviceRequestFixture()],
+          page: 2,
+          perPage: 25,
+          total: 60,
+        }}
+      />,
+    );
+    const pagination = within(
+      screen.getByRole("navigation", {
+        name: content.table.pagination.ariaLabel,
+      }),
+    );
+    expect(pagination.getByText("26–50 of 60 requests")).toBeVisible();
+    expect(
+      pagination.getByRole("link", { name: content.table.pagination.next }),
+    ).toHaveAttribute("href", "/en/crm/service-requests?filter=all&page=3");
   });
   it("represents every status with a word and a decorative icon", () => {
     for (const status of SERVICE_REQUEST_STATUS_VALUES) {

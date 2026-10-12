@@ -28,10 +28,6 @@
   min-width: 0;
 }
 
-.mobileLabel {
-  display: none;
-}
-
 .customer {
   display: block;
   color: var(--color-text);
@@ -86,21 +82,6 @@
 
   .visibilityCell {
     order: 6;
-  }
-
-  .metaCell {
-    display: grid;
-    gap: 0.12rem;
-    min-width: 0;
-  }
-
-  .mobileLabel {
-    display: block;
-    color: var(--color-text-muted);
-    font-size: var(--font-size-ui-xs);
-    font-weight: 650;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
   }
 
   .customer,

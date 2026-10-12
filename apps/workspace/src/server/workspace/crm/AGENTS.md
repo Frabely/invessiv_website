@@ -406,6 +406,10 @@ Plan: `apps/workspace/plans/crm/13c-portal-leistungsanfragen/74-leistungsarten-u
 - Lesen und Sperren laufen über `serviceRequestAccessService` mit
   `service_requests.customer_id` und dem jeweiligen unabhängigen Lese-/Schreibrecht.
   Der Sidebar-Zähler zählt nur `requested`; der offene Eingang zusätzlich `offered`.
+- Der Eingang blättert serverseitig (`SERVICE_REQUEST_INBOX_PAGE_SIZE`): `countInbox` zählt mit
+  derselben Bedingung wie `list`, `resolveListPage` klemmt eine zu hohe Seite auf die letzte.
+  Die Cockpit-Liste eines Kunden bleibt ungeblättert. `list` nimmt seine Eingrenzung als
+  `ServiceRequestListFilter`, nie als Positionsparameter.
 - Angebot, Ablehnung und Annahme sperren zuerst die Anfrage, prüfen dann den Übergang und erst
   danach die Version. Terminale Wiederholungen sind `INVALID_TRANSITION`, auch mit alter Version.
 - Annahme legt Vorlage, Projekt, Projektleistung und Stunden-/Rundenwirkung in **einer**

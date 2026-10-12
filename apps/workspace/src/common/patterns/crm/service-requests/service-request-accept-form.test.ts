@@ -11,6 +11,8 @@ import {
 } from "@/server/tests/support/service-request-fixtures";
 import { getCrmServiceRequestsDictionary } from "@/i18n/dictionaries/workspace/crm";
 import {
+  canChooseServiceRequestProject,
+  canChooseServiceRequestTemplate,
   createServiceRequestAcceptForm,
   applyServiceRequestTemplate,
   validateServiceRequestAcceptForm,
@@ -40,6 +42,30 @@ describe("service request acceptance form", () => {
       },
       lineItem: { priceCents: 12500, quantityMinutes: null },
     });
+  });
+  it("offers the choice between existing and new only where both ways exist", () => {
+    const vm = serviceRequestsViewModelFixture();
+    const free = serviceRequestFixture({ lineItemTemplateId: null });
+    expect(canChooseServiceRequestProject(free, vm)).toBe(true);
+    expect(
+      canChooseServiceRequestProject(free, { ...vm, canCreateProject: false }),
+    ).toBe(false);
+    expect(
+      canChooseServiceRequestProject(
+        serviceRequestFixture({ kind: LineItemKind.Hours }),
+        vm,
+      ),
+    ).toBe(false);
+    expect(canChooseServiceRequestTemplate(free, vm)).toBe(true);
+    expect(canChooseServiceRequestTemplate(serviceRequestFixture(), vm)).toBe(
+      false,
+    );
+    expect(
+      canChooseServiceRequestTemplate(free, {
+        ...vm,
+        canCreateTemplate: false,
+      }),
+    ).toBe(false);
   });
   it("honors new-project preference from the customer or the template only with permission", () => {
     const request = serviceRequestFixture({ projectWish: Mode.New });

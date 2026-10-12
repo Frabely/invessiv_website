@@ -5,10 +5,38 @@
   },
   "title": "Service requests",
   "description": "Clarify additional services and assign them to the right project.",
-  "filters": {
-    "label": "Filter requests",
-    "open": "Open",
-    "all": "All"
+  "toolbar": {
+    "ariaLabel": "Filter requests",
+    "status": {
+      "label": "Status",
+      "ariaLabel": "Filter requests by status",
+      "open": "Open",
+      "all": "All"
+    },
+    "clear": "Clear selection",
+    "reset": "Reset filters"
+  },
+  "table": {
+    "caption": "Service requests",
+    "openNamed": "{name}, open in customer cockpit",
+    "columns": {
+      "received": "Received",
+      "request": "Request",
+      "kind": "Type",
+      "status": "Status",
+      "customer": "Customer",
+      "contact": "Requested by",
+      "wish": "Project preference"
+    },
+    "pagination": {
+      "ariaLabel": "Service request pagination",
+      "showing": "{from}–{to} of {total} requests",
+      "page": "Page {page}",
+      "first": "First",
+      "previous": "Previous",
+      "next": "Next",
+      "last": "Last"
+    }
   },
   "empty": {
     "title": "No service requests yet",
@@ -45,11 +73,10 @@
     "undecided": "Undecided",
     "existing": "Existing project"
   },
-  "card": {
+  "details": {
     "by": "Requested by {name}",
     "quantity": "{duration} requested",
     "project": "Open project",
-    "open": "Manage in customer cockpit",
     "unknownContact": "Contact",
     "projectUnavailable": "Project not visible"
   },
@@ -85,7 +112,8 @@
     "validation": "Check the required fields and price.",
     "conflict": "The request has changed. Your input is preserved. Check the current status before saving again.",
     "noProject": "You cannot currently assign a service to a project.",
-    "noTemplate": "No matching active template is available."
+    "noTemplate": "No matching active template is available.",
+    "request": "Request"
   },
   "errors": {
     "SERVICE_REQUEST_NOT_FOUND": "The request is unavailable.",

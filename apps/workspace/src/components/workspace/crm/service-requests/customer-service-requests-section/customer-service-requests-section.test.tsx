@@ -91,9 +91,7 @@ describe("CustomerServiceRequestsSection", () => {
       />,
     );
     expect(screen.getByRole("dialog")).toBeVisible();
-    expect(
-      container.querySelector('article[data-highlighted="true"]'),
-    ).not.toBeNull();
+    expect(container.querySelector('li[data-selected="true"]')).not.toBeNull();
     cleanup();
     render(
       <CustomerServiceRequestsSection

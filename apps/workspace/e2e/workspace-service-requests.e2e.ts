@@ -1,7 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { and, eq, inArray } from "drizzle-orm";
-import { expect, test } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
 import { LineItemProjectMode } from "@invessiv/common/constants/crm/line-item-project-modes";
 import { LineItemTemplateStatus } from "@invessiv/common/constants/crm/line-item-template-statuses";
@@ -29,6 +30,14 @@ import {
 } from "./support/portal-e2e-fixture";
 
 test.use({ storageState: portalE2ePaths.managerState });
+
+/** The row of one request inside the cockpit section; the title alone also appears as a project service. */
+function requestRow(page: Page, sectionTitle: string, name: string): Locator {
+  return page
+    .getByRole("region", { name: sectionTitle, exact: true })
+    .getByRole("listitem")
+    .filter({ has: page.getByText(name, { exact: true }) });
+}
 
 test("offers, declines with a conflict, and assigns a request in the customer cockpit", async ({
   page,
@@ -87,17 +96,18 @@ test("offers, declines with a conflict, and assigns a request in the customer co
         { key: THEME_STORAGE_KEY, theme: variant.theme },
       );
       await page.goto(crmServiceRequestsPathFor(variant.locale));
-      const inboxCard = page.getByRole("article", { name: title, exact: true });
-      await expect(inboxCard).toBeVisible();
+      const inboxLink = page.getByRole("link", {
+        name: formatMessage(variant.content.table.openNamed, { name: title }),
+        exact: true,
+      });
+      await expect(inboxLink).toBeVisible();
       await expect(page.locator("html")).toHaveAttribute(
         "data-theme",
         variant.theme,
       );
-      await inboxCard
-        .getByRole("link", { name: variant.content.card.open })
-        .click();
-      const card = page.getByRole("article", { name: title, exact: true });
-      await expect(card).toHaveAttribute("data-highlighted", "true");
+      await inboxLink.click();
+      const card = requestRow(page, variant.content.section.title, title);
+      await expect(card).toHaveAttribute("data-selected", "true");
       await expect(
         card.getByText("<b>Synthetic customer text</b>"),
       ).toBeVisible();
@@ -136,7 +146,7 @@ test("offers, declines with a conflict, and assigns a request in the customer co
         serviceRequestId: acceptedId,
       }),
     );
-    const card = page.getByRole("article", { name: title, exact: true });
+    const card = requestRow(page, de.section.title, title);
     const offer = page.waitForResponse(
       (r) =>
         r.url().endsWith("/" + acceptedId + "/status") &&
@@ -161,7 +171,7 @@ test("offers, declines with a conflict, and assigns a request in the customer co
       .click();
     await expect(accept).not.toBeVisible();
     await expect(
-      page.getByRole("link", { name: de.card.project, exact: true }),
+      page.getByRole("link", { name: de.details.project, exact: true }),
     ).toBeVisible();
     const [accepted] = await db
       .select()
@@ -178,8 +188,7 @@ test("offers, declines with a conflict, and assigns a request in the customer co
         serviceRequestId: declinedId,
       }),
     );
-    await page
-      .getByRole("article", { name: declineTitle })
+    await requestRow(page, de.section.title, declineTitle)
       .getByRole("link", { name: de.actions.decline })
       .click();
     const decline = page.getByRole("dialog", {

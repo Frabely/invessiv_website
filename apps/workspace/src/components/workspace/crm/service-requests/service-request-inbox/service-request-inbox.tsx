@@ -1,75 +1,80 @@
 import Link from "next/link";
-import { faBellConcierge } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBellConcierge,
+  faCircleCheck,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { EmptyState, ButtonLink } from "@invessiv/ui";
 import type { ServiceRequestInboxDto } from "@invessiv/common/contracts/crm/service-requests/service-request-inbox.dto";
-import type { CrmServiceRequestsDictionary } from "@/i18n/dictionaries/workspace/crm";
+import { EmptyState, PrimaryCtaLink } from "@invessiv/ui";
 import { ServiceRequestInboxFilter as F } from "@/common/constants/crm/service-request-inbox-query-params";
 import { buildServiceRequestInboxHref } from "@/common/patterns/crm/service-request-inbox-query";
-import { buildCustomerCockpitHref } from "@/common/patterns/crm/customer-dialog-query";
+import { ListPageHeader } from "@/components/workspace/crm/shared/list-page-header/list-page-header";
 import type { Locale } from "@/config/i18n";
+import type { CrmServiceRequestsDictionary } from "@/i18n/dictionaries/workspace/crm";
+import { ServiceRequestInboxTable } from "../service-request-inbox-table/service-request-inbox-table";
 import { ServiceRequestInboxToolbar } from "../service-request-inbox-toolbar/service-request-inbox-toolbar";
-import { ServiceRequestCard } from "../service-request-card/service-request-card";
-import styles from "./service-request-inbox.module.css";
-export function ServiceRequestInbox({
-  basePath,
-  crmPath,
-  filter,
-  inbox,
-  locale,
-  content,
-}: {
+
+type ServiceRequestInboxProps = {
   basePath: string;
+  content: CrmServiceRequestsDictionary;
   crmPath: string;
   filter: F;
   inbox: ServiceRequestInboxDto;
   locale: Locale;
-  content: CrmServiceRequestsDictionary;
-}) {
-  const empty = inbox.hasRequests ? content.noOpen : content.empty;
+};
+
+/**
+ * Every request the actor may see. The two empty screens say different things: nothing was ever
+ * requested (explain what lands here), or nothing is open (good news, with the way to the rest).
+ */
+export function ServiceRequestInbox({
+  basePath,
+  content,
+  crmPath,
+  filter,
+  inbox,
+  locale,
+}: ServiceRequestInboxProps) {
   return (
     <>
-      <header className={styles.header}>
-        <h1>{content.title}</h1>
-        <p>{content.description}</p>
-      </header>
-      <ServiceRequestInboxToolbar
-        basePath={basePath}
-        filter={filter}
-        content={content}
-      />
-      {inbox.items.length === 0 ? (
+      <ListPageHeader description={content.description} title={content.title} />
+      {inbox.hasRequests ? (
+        <ServiceRequestInboxToolbar
+          basePath={basePath}
+          content={content}
+          filter={filter}
+        />
+      ) : null}
+      {inbox.items.length > 0 ? (
+        <ServiceRequestInboxTable
+          basePath={basePath}
+          content={content}
+          crmPath={crmPath}
+          filter={filter}
+          inbox={inbox}
+          locale={locale}
+        />
+      ) : inbox.hasRequests ? (
         <EmptyState
-          title={empty.title}
-          description={empty.description}
-          icon={<FontAwesomeIcon icon={faBellConcierge} />}
           action={
-            inbox.hasRequests ? (
-              <ButtonLink
-                href={buildServiceRequestInboxHref(basePath, F.All)}
-                linkComponent={Link}
-              >
-                {content.noOpen.action}
-              </ButtonLink>
-            ) : undefined
+            <PrimaryCtaLink
+              href={buildServiceRequestInboxHref(basePath, F.All)}
+              linkComponent={Link}
+              linkComponentProps={{ scroll: false }}
+            >
+              {content.noOpen.action}
+            </PrimaryCtaLink>
           }
+          description={content.noOpen.description}
+          icon={<FontAwesomeIcon icon={faCircleCheck} />}
+          title={content.noOpen.title}
         />
       ) : (
-        <ul className={styles.list}>
-          {inbox.items.map((r) => (
-            <li key={r.id}>
-              <ServiceRequestCard
-                request={r}
-                locale={locale}
-                content={content}
-                crmPath={crmPath}
-                href={buildCustomerCockpitHref(crmPath, r.customerId, "", {
-                  serviceRequestId: r.id,
-                })}
-              />
-            </li>
-          ))}
-        </ul>
+        <EmptyState
+          description={content.empty.description}
+          icon={<FontAwesomeIcon icon={faBellConcierge} />}
+          title={content.empty.title}
+        />
       )}
     </>
   );

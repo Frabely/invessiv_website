@@ -1,36 +1,11 @@
-.group {
-  min-width: 0;
-  margin: 0;
-  padding: 1rem;
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-}
-.group legend {
-  padding: 0 0.4rem;
-  font-size: var(--font-size-ui-sm);
-  font-weight: 700;
-  color: var(--color-text);
-}
 .choices {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem 1.25rem;
-  margin-bottom: 0.8rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.6rem;
 }
-.choices label {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-height: 2.75rem;
-  cursor: pointer;
-}
-.hint {
-  font-size: var(--font-size-ui-sm);
-  color: var(--color-text-muted);
-  line-height: 1.5;
-  margin: 0 0 0.75rem;
-}
-.fixedSource {
-  margin: 0 0 0.8rem;
-  font-weight: 600;
+
+@media (max-width: 640px) {
+  .choices {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }

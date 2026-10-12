@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { SERVICE_REQUEST_INBOX_PAGE_SIZE } from "@/common/constants/crm/service-request-inbox-page-size";
 import {
   ServiceRequestInboxFilter as F,
   ServiceRequestInboxQueryParam as Q,
@@ -6,7 +7,9 @@ import {
 } from "@/common/constants/crm/service-request-inbox-query-params";
 import {
   buildServiceRequestInboxHref,
+  buildServiceRequestInboxQueryString,
   readServiceRequestInboxFilter,
+  readServiceRequestInboxPage,
   buildServiceRequestActionHref,
 } from "./service-request-inbox-query";
 import {
@@ -23,6 +26,7 @@ describe("service request URL state", () => {
   it("keeps query names explicit and defaults unsupported filters to open", () => {
     expect(Q).toEqual({
       Filter: "filter",
+      Page: "page",
       Request: "serviceRequest",
       Action: "serviceRequestAction",
     });
@@ -34,6 +38,17 @@ describe("service request URL state", () => {
     expect(
       buildServiceRequestInboxHref("/en/crm/service-requests", F.All),
     ).toBe("/en/crm/service-requests?filter=all");
+    expect(
+      buildServiceRequestInboxHref("/en/crm/service-requests", F.Open),
+    ).toBe("/en/crm/service-requests");
+  });
+  it("reads the page defensively and keeps only a non-default filter in the paging query", () => {
+    expect(SERVICE_REQUEST_INBOX_PAGE_SIZE).toBe(25);
+    for (const page of [undefined, "0", "-2", "1.5", "x", ["3"]])
+      expect(readServiceRequestInboxPage({ page })).toBe(1);
+    expect(readServiceRequestInboxPage({ page: "3" })).toBe(3);
+    expect(buildServiceRequestInboxQueryString(F.Open)).toBe("");
+    expect(buildServiceRequestInboxQueryString(F.All)).toBe("filter=all");
   });
   it("preserves list state and clears customer-bound request state on cockpit close or customer change", () => {
     const href = buildCustomerCockpitHref("/de/crm", "c", "q=test", {

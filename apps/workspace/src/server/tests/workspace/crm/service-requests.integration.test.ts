@@ -28,6 +28,7 @@ import {
 import { acceptServiceRequest } from "@/server/workspace/crm/command-handler/accept-service-request.command-handler";
 import { changeServiceRequestStatus } from "@/server/workspace/crm/command-handler/change-service-request-status.command-handler";
 import { listCustomerServiceRequests } from "@/server/workspace/crm/query-handler/list-customer-service-requests.query-handler";
+import { SERVICE_REQUEST_INBOX_PAGE_SIZE } from "@/common/constants/crm/service-request-inbox-page-size";
 import { listServiceRequestInbox } from "@/server/workspace/crm/query-handler/list-service-request-inbox.query-handler";
 import { countOpenServiceRequests } from "@/server/workspace/crm/query-handler/count-open-service-requests.query-handler";
 import {
@@ -245,6 +246,9 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       expect(await listServiceRequestInbox(false, denied)).toEqual({
         items: [],
         hasRequests: false,
+        page: 1,
+        perPage: SERVICE_REQUEST_INBOX_PAGE_SIZE,
+        total: 0,
       });
       expect(await countOpenServiceRequests(denied)).toBe(0);
       expect(
@@ -260,6 +264,9 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       expect(await listServiceRequestInbox(false, actor([]))).toEqual({
         items: [],
         hasRequests: false,
+        page: 1,
+        perPage: SERVICE_REQUEST_INBOX_PAGE_SIZE,
+        total: 0,
       });
       expect(await countOpenServiceRequests(actor([]))).toBe(0);
     });
@@ -615,6 +622,35 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         ok: true,
         request: { status: S.Accepted },
       });
+    });
+
+    // Stays last: it fills the inbox beyond one page, which would push the rows of other tests off page one.
+    it("pages the inbox in a stable order and clamps a page beyond the end", async () => {
+      const perPage = SERVICE_REQUEST_INBOX_PAGE_SIZE;
+      for (let index = 0; index <= perPage; index += 1) await request();
+
+      const first = await listServiceRequestInbox(true, reader(), 1);
+      expect(first).toMatchObject({ page: 1, perPage, hasRequests: true });
+      expect(first.total).toBeGreaterThan(perPage);
+      expect(first.items).toHaveLength(perPage);
+
+      const lastPage = Math.ceil(first.total / perPage);
+      const pages = [first];
+      for (let page = 2; page <= lastPage; page += 1)
+        pages.push(await listServiceRequestInbox(true, reader(), page));
+      const ids = pages.flatMap((page) => page.items.map((item) => item.id));
+      expect(ids).toHaveLength(first.total);
+      expect(new Set(ids).size).toBe(first.total);
+
+      const beyond = await listServiceRequestInbox(true, reader(), 999);
+      expect(beyond.page).toBe(lastPage);
+      expect(beyond.items.map((item) => item.id)).toEqual(
+        pages[lastPage - 1].items.map((item) => item.id),
+      );
+
+      const all = await listServiceRequestInbox(false, reader(), 1);
+      expect(all.total).toBeGreaterThan(first.total);
+      expect(all.items).toHaveLength(perPage);
     });
   },
 );
