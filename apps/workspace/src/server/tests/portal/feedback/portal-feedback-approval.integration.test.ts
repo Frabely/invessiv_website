@@ -104,7 +104,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       });
     });
 
-    it("approves the latest completed round only with confirmation and moves the track", async () => {
+    it("approves the latest completed round only with confirmation and advances the track once", async () => {
       const projectId = await f.project();
       const first = await completedRound(projectId);
       const handedTwo = await handOverFeedbackRound(
@@ -145,6 +145,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         { version: 1, result: FeedbackItemResult.Implemented },
         f.member(),
       );
+      const beforeCompletion = await f.readProject(projectId);
       await changeFeedbackRoundStatus(
         handedTwo.round.id,
         { version: 4, to: FeedbackRoundStatus.Completed },
@@ -161,6 +162,8 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       });
 
       const before = await f.readProject(projectId);
+      expect(before.current_process_step).toBe("Launch");
+      expect(before.version).toBe(beforeCompletion.version + 1);
       expect(await approve(handedTwo.round.id)).toMatchObject({
         ok: true,
         value: {
@@ -171,9 +174,8 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       const after = await f.readProject(projectId);
       expect(after.current_process_step).toBe("Launch");
       expect(after.phase).toBe(before.phase);
-      // The project editor writes through `updateVersioned` with the version it read, so the bump
-      // turns a save from an editor opened before the approval into a 409.
-      expect(after.version).toBe(before.version + 1);
+      // Completion already advanced the track. Approval must not write the same project step again.
+      expect(after.version).toBe(before.version);
 
       expect(await approve(handedTwo.round.id)).toEqual({
         ok: false,

@@ -15,6 +15,8 @@ type WorkspaceShellProps = {
   canOpenCrmCustomers?: boolean;
   canOpenCrmTasks?: boolean;
   canOpenCrmFeedback?: boolean;
+  canOpenCrmServiceRequests?: boolean;
+  openServiceRequestCount?: number;
   canOpenCrmMessages?: boolean;
   canReadCrmLineItemTemplates?: boolean;
   canReadCrmQuestionnaireTemplates?: boolean;
@@ -31,6 +33,8 @@ export function WorkspaceShell({
   canOpenCrmCustomers = false,
   canOpenCrmTasks = false,
   canOpenCrmFeedback = false,
+  canOpenCrmServiceRequests = false,
+  openServiceRequestCount = 0,
   canOpenCrmMessages = false,
   canReadCrmLineItemTemplates = false,
   canReadCrmQuestionnaireTemplates = false,
@@ -71,6 +75,8 @@ export function WorkspaceShell({
             canOpenCrmCustomers={canOpenCrmCustomers}
             canOpenCrmTasks={canOpenCrmTasks}
             canOpenCrmFeedback={canOpenCrmFeedback}
+            canOpenCrmServiceRequests={canOpenCrmServiceRequests}
+            openServiceRequestCount={openServiceRequestCount}
             canOpenCrmMessages={canOpenCrmMessages}
             canReadCrmLineItemTemplates={canReadCrmLineItemTemplates}
             canReadCrmQuestionnaireTemplates={canReadCrmQuestionnaireTemplates}

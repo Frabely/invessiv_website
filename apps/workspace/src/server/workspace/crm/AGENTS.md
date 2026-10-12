@@ -400,3 +400,19 @@ Plan: `apps/workspace/plans/crm/13c-portal-leistungsanfragen/74-leistungsarten-u
   `hoursLineItemAmountCents` als Einmalwert.
 - `listExtraFeedbackRoundBlockers` nimmt nur Projekte, die der Aufrufer über seinen eigenen Zugriffsbereich
   gelesen hat; es ergänzt die Rundenstände und wendet dieselbe Regel wie die Zuweisung an.
+
+## Leistungsanfragen intern (ab Task 75)
+
+- Lesen und Sperren laufen über `serviceRequestAccessService` mit
+  `service_requests.customer_id` und dem jeweiligen unabhängigen Lese-/Schreibrecht.
+  Der Sidebar-Zähler zählt nur `requested`; der offene Eingang zusätzlich `offered`.
+- Angebot, Ablehnung und Annahme sperren zuerst die Anfrage, prüfen dann den Übergang und erst
+  danach die Version. Terminale Wiederholungen sind `INVALID_TRANSITION`, auch mit alter Version.
+- Annahme legt Vorlage, Projekt, Projektleistung und Stunden-/Rundenwirkung in **einer**
+  Transaktion an. Ein erwarteter Fehler aus der Zuweisung wird intern zum Rollback-Signal und
+  außerhalb der Transaktion wieder zum Result-Union; keine halben Neuanlagen.
+- `insertProject` und `insertLineItemTemplate` sind geteilte Insert-Helfer ohne Rechteprüfung.
+  Rechte, Kundenzugehörigkeit, aktive Vorlage und Art prüft der aufrufende Handler.
+  Neue Projekte übernehmen den Kunden-Owner; neue Vorlagen bleiben im Portal unveröffentlicht.
+- Statusübergänge kommen ausschließlich aus `canTransitionServiceRequest`; die fachliche
+  Zuweisung nutzt unverändert `projectLineItemAssignmentService` aus Task 74.

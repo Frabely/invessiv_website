@@ -61,4 +61,5 @@ await run([
   "test",
   "--config",
   "playwright.portal.config.ts",
+  ...process.argv.slice(2),
 ]);

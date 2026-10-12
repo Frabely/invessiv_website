@@ -291,3 +291,13 @@ Ab Task 73 (zweiter Aufrufer: das Portal):
 - `services/hours/time-entry-page-service.ts` hält das Keyset-Paging der Buchungslisten: `newestFirst`
   (Tag, Buchungszeitpunkt auf Millisekunden, ID), `after(cursor)` und `nextCursor(rows, pageSize)`. Cockpit und
   Portal blättern damit identisch; welche Zeilen ein Aufrufer sieht, bestimmt weiter seine eigene Bedingung.
+
+## Leistungsanfragen-Ereignisse (ab Task 75)
+
+- `services/service-request/service-request-event-service.ts` ist bereits gemeinsam abgelegt,
+  weil Task 76 dieselben Ereignisse aus Portal-Handlern auslöst.
+- Activities tragen nur Entität, Anfrage-ID und vorherigen/nächsten Status; weder Titel,
+  Kundentext noch Ablehnungsgrund. Erstellen nutzt `created`, Übergänge `status_change`.
+- Systemnachrichten laufen über `announceSystemMessage` mit `SystemMessageParam.ServiceTitle`.
+  Die bestehenden Savepoints verhindern, dass ein Fehler der Chatankündigung die fachliche
+  Entscheidung rückgängig macht.

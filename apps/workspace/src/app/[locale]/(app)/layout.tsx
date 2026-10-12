@@ -1,3 +1,4 @@
+import { countOpenServiceRequests } from "@/server/workspace/crm/query-handler/count-open-service-requests.query-handler";
 import { notFound, redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
@@ -105,7 +106,12 @@ export default async function WorkspaceLayout({
     authentication.actor,
     Permission.ProjectsRead,
   );
+  const canOpenCrmServiceRequests = canAnywhere(
+    authentication.actor,
+    Permission.ServiceRequestsRead,
+  );
   const hasCrmNavigation =
+    canOpenCrmServiceRequests ||
     canOpenCrmCustomers ||
     canOpenCrmTasks ||
     canOpenCrmFeedback ||
@@ -125,20 +131,29 @@ export default async function WorkspaceLayout({
   const content = getWorkspacePageContent(activeLocale);
 
   const actor = authentication.actor;
-  const [portalHref, unreadConversationCount, unreadFeedbackRoundCount] =
-    await Promise.all([
-      resolvePortalHref(activeLocale, actor.userId),
-      canOpenCrmMessages
-        ? resolveCount(CrmOperation.CountUnreadConversations, () =>
-            countUnreadConversations(actor),
-          )
-        : 0,
-      canOpenCrmFeedback
-        ? resolveCount(CrmOperation.CountUnreadFeedbackRounds, () =>
-            countUnreadFeedbackRounds(actor),
-          )
-        : 0,
-    ]);
+  const [
+    portalHref,
+    unreadConversationCount,
+    unreadFeedbackRoundCount,
+    openServiceRequestCount,
+  ] = await Promise.all([
+    resolvePortalHref(activeLocale, actor.userId),
+    canOpenCrmMessages
+      ? resolveCount(CrmOperation.CountUnreadConversations, () =>
+          countUnreadConversations(actor),
+        )
+      : 0,
+    canOpenCrmFeedback
+      ? resolveCount(CrmOperation.CountUnreadFeedbackRounds, () =>
+          countUnreadFeedbackRounds(actor),
+        )
+      : 0,
+    canOpenCrmServiceRequests
+      ? resolveCount(CrmOperation.CountOpenServiceRequests, () =>
+          countOpenServiceRequests(actor),
+        )
+      : 0,
+  ]);
 
   return (
     <WorkspaceShell
@@ -146,6 +161,8 @@ export default async function WorkspaceLayout({
       canOpenCrmCustomers={canOpenCrmCustomers}
       canOpenCrmTasks={canOpenCrmTasks}
       canOpenCrmFeedback={canOpenCrmFeedback}
+      canOpenCrmServiceRequests={canOpenCrmServiceRequests}
+      openServiceRequestCount={openServiceRequestCount}
       canOpenCrmMessages={canOpenCrmMessages}
       canReadCrmLineItemTemplates={canReadCrmLineItemTemplates}
       canReadCrmQuestionnaireTemplates={canReadCrmQuestionnaireTemplates}

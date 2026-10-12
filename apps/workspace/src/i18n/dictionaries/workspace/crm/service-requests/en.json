@@ -1,0 +1,103 @@
+{
+  "meta": {
+    "title": "Service requests | Invessiv",
+    "description": "Manage service requests from the customer portal."
+  },
+  "title": "Service requests",
+  "description": "Clarify additional services and assign them to the right project.",
+  "filters": {
+    "label": "Filter requests",
+    "open": "Open",
+    "all": "All"
+  },
+  "empty": {
+    "title": "No service requests yet",
+    "description": "Additional services customers request in the portal appear here. Send an offer, decline a request or assign it to a project."
+  },
+  "noOpen": {
+    "title": "No open service requests",
+    "description": "Previous requests have been resolved. You can still view them.",
+    "action": "Show all"
+  },
+  "section": {
+    "title": "Service requests",
+    "expand": "Expand service requests",
+    "collapse": "Collapse service requests",
+    "expandCompleted": "Expand completed service requests",
+    "collapseCompleted": "Collapse completed service requests",
+    "completed": "Completed ({count})",
+    "open": "{count} open"
+  },
+  "status": {
+    "requested": "Received",
+    "offered": "Offer sent",
+    "accepted": "Accepted",
+    "declined": "Declined",
+    "withdrawn": "Withdrawn"
+  },
+  "kind": {
+    "standard": "Service",
+    "hours": "Hours",
+    "feedback_round": "Extra round"
+  },
+  "wish": {
+    "new": "New project",
+    "undecided": "Undecided",
+    "existing": "Existing project"
+  },
+  "card": {
+    "by": "Requested by {name}",
+    "quantity": "{duration} requested",
+    "project": "Open project",
+    "open": "Manage in customer cockpit",
+    "unknownContact": "Contact",
+    "projectUnavailable": "Project not visible"
+  },
+  "actions": {
+    "offered": "Offer sent",
+    "accept": "Accept",
+    "decline": "Decline",
+    "busy": "Saving …"
+  },
+  "form": {
+    "acceptTitle": "Accept request",
+    "declineTitle": "Decline request",
+    "accept": "Accept and assign",
+    "decline": "Decline request",
+    "cancel": "Cancel",
+    "close": "Close dialog",
+    "busy": "Saving …",
+    "required": "* Required fields",
+    "project": "Project",
+    "existingProject": "Existing project",
+    "newProject": "Create new project",
+    "projectTitle": "Project title",
+    "projectHint": "Standard process with two feedback rounds. You can change it later in the project editor.",
+    "template": "Service",
+    "existingTemplate": "Existing template",
+    "newTemplate": "Create a new catalog template",
+    "selectProject": "Choose project",
+    "selectTemplate": "Choose template",
+    "templateUnavailable": "The original template is no longer available. Choose an active template of the same kind.",
+    "reason": "Reason for declining",
+    "reasonHint": "The customer will see this text.",
+    "reasonRequired": "Enter a reason for declining.",
+    "validation": "Check the required fields and price.",
+    "conflict": "The request has changed. Your input is preserved. Check the current status before saving again.",
+    "noProject": "You cannot currently assign a service to a project.",
+    "noTemplate": "No matching active template is available."
+  },
+  "errors": {
+    "SERVICE_REQUEST_NOT_FOUND": "The request is unavailable.",
+    "VALIDATION_ERROR": "Check your input.",
+    "INVALID_TRANSITION": "The request has already been processed. Reload the current status.",
+    "VERSION_CONFLICT": "The request has changed.",
+    "KIND_MISMATCH": "The template must match the requested kind.",
+    "TEMPLATE_NOT_ASSIGNABLE": "The template is no longer active. Choose another.",
+    "PROJECT_NOT_FOUND": "The project is unavailable.",
+    "EFFECT_NOT_PERMITTED": "You lack permission for this assignment.",
+    "PROJECT_CLOSED": "Closed projects cannot receive hours. You can credit the hours to free stock instead.",
+    "FEEDBACK_ROUND_NOT_AVAILABLE": "This project cannot receive another feedback round.",
+    "INTERNAL": "The request could not be saved. Try again."
+  }
+}

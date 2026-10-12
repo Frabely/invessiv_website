@@ -1,5 +1,8 @@
-﻿"use client";
+"use client";
 
+import { CustomerServiceRequestsSection } from "@/components/workspace/crm/service-requests/customer-service-requests-section/customer-service-requests-section";
+import type { ServiceRequestsViewModel } from "@/common/contracts/crm/service-requests-view-model";
+import type { CrmServiceRequestsDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { useId, useState } from "react";
 import { faEnvelope, faUserTie } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -73,6 +76,8 @@ type CustomerCockpitViewProps = {
   /** Absent without `hours.read` anywhere on the customer; the area then does not exist. */
   hours?: HoursViewModel;
   hoursContent?: CrmHoursDictionary;
+  serviceRequests?: ServiceRequestsViewModel;
+  serviceRequestsContent?: CrmServiceRequestsDictionary;
   /** Absent without `files.read` in any scope of the customer; the area then does not exist. */
   files?: FilesViewModel;
   filesContent?: CrmFilesDictionary;
@@ -122,6 +127,8 @@ export function CustomerCockpitView({
   credentialsContent,
   hours,
   hoursContent,
+  serviceRequests,
+  serviceRequestsContent,
   files,
   filesContent,
   isWorkspaceOwner = false,
@@ -353,6 +360,13 @@ export function CustomerCockpitView({
               <p className={styles.groupLabel} id={collaborationLabelId}>
                 {content.groups.collaboration}
               </p>
+              {serviceRequests && serviceRequestsContent ? (
+                <CustomerServiceRequestsSection
+                  viewModel={serviceRequests}
+                  content={serviceRequestsContent}
+                  locale={locale}
+                />
+              ) : null}
               {files && filesContent ? (
                 <CustomerFilesSection
                   content={filesContent}

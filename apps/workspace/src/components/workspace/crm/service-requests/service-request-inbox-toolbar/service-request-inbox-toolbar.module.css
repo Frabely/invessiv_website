@@ -1,0 +1,21 @@
+.toolbar {
+  display: flex;
+  gap: 0.4rem;
+  margin: 1.4rem 0;
+}
+.toolbar a {
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  border: 1px solid var(--color-border);
+}
+.toolbar a[aria-current="page"] {
+  color: var(--color-text);
+  border-color: var(--color-cta);
+  background: var(--color-surface-2);
+}
+.toolbar a:focus-visible {
+  outline: 2px solid var(--color-cta);
+  outline-offset: 3px;
+}

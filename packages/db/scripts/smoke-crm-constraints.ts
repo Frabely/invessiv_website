@@ -25,6 +25,7 @@ import {
 } from "./crm-smoke/credential-checks";
 import { runHoursChecks } from "./crm-smoke/hours-checks";
 import { runLineItemChecks } from "./crm-smoke/line-item-checks";
+import { runServiceRequestChecks } from "./crm-smoke/service-request-checks";
 import {
   cleanupQuestionnaireFixtures,
   runOnboardingChecks,
@@ -393,6 +394,15 @@ async function runChecks(sql: Sql) {
     expectAccepted,
   });
   await runConcurrencyChecks(sql, memberId, name);
+  await runServiceRequestChecks({
+    sql,
+    memberId,
+    name,
+    insertCustomer: (displayName) =>
+      insertCustomer(sql, { ownerMemberId: memberId, displayName }),
+    expectRejected,
+    expectAccepted,
+  });
 }
 
 /**
@@ -1791,6 +1801,7 @@ async function runConcurrencyChecks(
 
 async function cleanup(sql: Sql) {
   const pattern = `${FIXTURE_PREFIX}%`;
+  await sql`DELETE FROM service_requests WHERE customer_id IN (SELECT id FROM customers WHERE display_name LIKE ${pattern})`;
   await cleanupQuestionnaireFixtures(sql, pattern);
   await cleanupCredentialFixtures(sql, pattern);
   // Files reference projects and feedback items without a cascade, so they go first.

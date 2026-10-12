@@ -8,6 +8,9 @@ import {
 describe("CrmOperation", () => {
   it("contains the exact operations without duplicates", () => {
     expect(CRM_OPERATION_VALUES).toEqual([
+      "service-requests.change-status",
+      "service-requests.accept",
+      "service-requests.count-open",
       "leads.convert",
       "customers.list",
       "customers.create",

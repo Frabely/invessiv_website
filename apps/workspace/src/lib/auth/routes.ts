@@ -98,6 +98,9 @@ export function crmMessagesPathFor(locale: Locale): string {
 export function crmFeedbackPathFor(locale: Locale): string {
   return createLocalePathname(SITE_ROUTES.CRM_FEEDBACK, locale);
 }
+export function crmServiceRequestsPathFor(locale: Locale): string {
+  return createLocalePathname(SITE_ROUTES.CRM_SERVICE_REQUESTS, locale);
+}
 
 export function signInPathWithRedirect(
   locale: Locale,

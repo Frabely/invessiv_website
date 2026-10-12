@@ -1,5 +1,6 @@
 /** Constraint and index names of `portal_memberships`, declared once for the model and the migration. */
 export const PortalMembershipsConstraintName = {
+  IdCustomerUnique: "portal_memberships_id_customer_uidx",
   CustomerForeignKey: "portal_memberships_customer_id_fkey",
   PersonForeignKey: "portal_memberships_person_id_fkey",
   UserForeignKey: "portal_memberships_user_id_fkey",
@@ -14,6 +15,7 @@ export type PortalMembershipsConstraintName =
   (typeof PortalMembershipsConstraintName)[keyof typeof PortalMembershipsConstraintName];
 
 export const PORTAL_MEMBERSHIPS_CONSTRAINT_NAME_VALUES = [
+  PortalMembershipsConstraintName.IdCustomerUnique,
   PortalMembershipsConstraintName.CustomerForeignKey,
   PortalMembershipsConstraintName.PersonForeignKey,
   PortalMembershipsConstraintName.UserForeignKey,

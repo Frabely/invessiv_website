@@ -1,4 +1,11 @@
 import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
+import { ServiceRequestApiPath } from "@/common/constants/crm/service-request-api-paths";
+export function crmServiceRequestStatusEndpoint(id: string): string {
+  return `${WorkspaceApiEndpoint.CrmServiceRequests}/${encodeURIComponent(id)}/${ServiceRequestApiPath.Status}`;
+}
+export function crmServiceRequestAcceptEndpoint(id: string): string {
+  return `${WorkspaceApiEndpoint.CrmServiceRequests}/${encodeURIComponent(id)}/${ServiceRequestApiPath.Accept}`;
+}
 import { ConversationApiPath } from "@/common/constants/crm/conversation-api-paths";
 import { CredentialApiPath } from "@/common/constants/credentials/credential-api-paths";
 import { OnboardingApiPath } from "@/common/constants/crm/onboarding-api-paths";

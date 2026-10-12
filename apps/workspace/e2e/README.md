@@ -90,3 +90,18 @@ Security-Events bleiben als Audit-Historie erhalten. `.playwright/` ist ignorier
 committet werden. Die Suite läuft über `playwright.portal.config.ts` verbindlich; ein fehlgeschlagenes
 Setup führt zu roten Tests statt Skips. Das normale `test:e2e` enthält weiterhin die bestehenden
 Aufgaben- und Access-Scope-Suiten.
+
+## Interne Leistungsanfragen (Task 75)
+
+`workspace-service-requests.e2e.ts` läuft mit der bestehenden echten Manager-Sitzung über
+`playwright.portal.config.ts`; keine zusätzlichen Zugangsdaten oder Umgebungsvariablen.
+Der Test legt eigene synthetische Anfragen und eine Vorlage an und entfernt sie danach.
+Er prüft Eingang → Cockpit, Angebot, Annahme mit Ergebnisverweisen, Ablehnung mit Pflichtgrund
+und Versionskonflikt sowie eine fremde Cockpit-ID. DE/Dark/Desktop und EN/Light/Mobil werden
+zusammen geprüft und als Screenshots im ignorierten Test-Ausgabeordner gespeichert.
+
+Gezielter Lauf mit Migration, Development-Build und Clerk-Setup:
+
+```powershell
+pnpm --filter @invessiv/workspace test:e2e:portal workspace-service-requests.e2e.ts
+```

@@ -1,3 +1,4 @@
+import { ServiceRequestInboxQueryParam } from "@/common/constants/crm/service-request-inbox-query-params";
 import { CustomerFormDialogMode } from "@/common/constants/crm/forms/customer-form-dialog-modes";
 import { CustomerListQueryParam } from "@/common/constants/crm/list/customer-list-query-params";
 import type { CockpitSelection } from "@/common/contracts/crm/cockpit-selection";
@@ -28,6 +29,8 @@ function listParams(queryString = ""): URLSearchParams {
 
 /** Project tab and round detail belong to one cockpit; they never outlive it. */
 function deleteCockpitParams(params: URLSearchParams) {
+  params.delete(ServiceRequestInboxQueryParam.Request);
+  params.delete(ServiceRequestInboxQueryParam.Action);
   params.delete(CustomerListQueryParam.Cockpit);
   params.delete(CustomerListQueryParam.Project);
   params.delete(CustomerListQueryParam.FeedbackRound);
@@ -98,6 +101,11 @@ export function buildCustomerCockpitHref(
     params.set(CustomerListQueryParam.Project, selection.projectId);
   if (selection.projectId && selection.feedbackRoundId)
     params.set(CustomerListQueryParam.FeedbackRound, selection.feedbackRoundId);
+  if (selection.serviceRequestId)
+    params.set(
+      ServiceRequestInboxQueryParam.Request,
+      selection.serviceRequestId,
+    );
   return buildHref(basePath, params);
 }
 
@@ -108,4 +116,10 @@ export function buildCustomerCockpitCloseHref(
   const params = new URLSearchParams(queryString);
   deleteCockpitParams(params);
   return buildHref(basePath, params);
+}
+
+export function readCockpitServiceRequestId(
+  searchParams: SearchParamsInput,
+): string | null {
+  return readSingle(searchParams, ServiceRequestInboxQueryParam.Request);
 }

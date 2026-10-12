@@ -1,0 +1,103 @@
+{
+  "meta": {
+    "title": "Leistungsanfragen | Invessiv",
+    "description": "Leistungsanfragen aus dem Kundenportal bearbeiten."
+  },
+  "title": "Leistungsanfragen",
+  "description": "Zusätzliche Leistungen klären und dem passenden Projekt zuweisen.",
+  "filters": {
+    "label": "Anfragen filtern",
+    "open": "Offen",
+    "all": "Alle"
+  },
+  "empty": {
+    "title": "Noch keine Leistungsanfrage",
+    "description": "Hier landen zusätzliche Leistungen, die Kunden im Portal anfragen. Du kannst sie anbieten, ablehnen oder einem Projekt zuweisen."
+  },
+  "noOpen": {
+    "title": "Keine offene Leistungsanfrage",
+    "description": "Die bisherigen Anfragen sind erledigt. Du kannst sie weiterhin ansehen.",
+    "action": "Alle anzeigen"
+  },
+  "section": {
+    "title": "Leistungsanfragen",
+    "expand": "Leistungsanfragen aufklappen",
+    "collapse": "Leistungsanfragen einklappen",
+    "expandCompleted": "Erledigte Leistungsanfragen aufklappen",
+    "collapseCompleted": "Erledigte Leistungsanfragen einklappen",
+    "completed": "Erledigt ({count})",
+    "open": "{count} offen"
+  },
+  "status": {
+    "requested": "Eingegangen",
+    "offered": "Angebot gesendet",
+    "accepted": "Angenommen",
+    "declined": "Abgelehnt",
+    "withdrawn": "Zurückgezogen"
+  },
+  "kind": {
+    "standard": "Leistung",
+    "hours": "Stunden",
+    "feedback_round": "Zusatzrunde"
+  },
+  "wish": {
+    "new": "Neues Vorhaben",
+    "undecided": "Noch offen",
+    "existing": "Bestehendes Projekt"
+  },
+  "card": {
+    "by": "Angefragt von {name}",
+    "quantity": "{duration} angefragt",
+    "project": "Zum Projekt",
+    "open": "Im Kunden-Cockpit bearbeiten",
+    "unknownContact": "Kontakt",
+    "projectUnavailable": "Projekt nicht sichtbar"
+  },
+  "actions": {
+    "offered": "Angebot gesendet",
+    "accept": "Annehmen",
+    "decline": "Ablehnen",
+    "busy": "Wird gespeichert …"
+  },
+  "form": {
+    "acceptTitle": "Anfrage annehmen",
+    "declineTitle": "Anfrage ablehnen",
+    "accept": "Annehmen und zuweisen",
+    "decline": "Anfrage ablehnen",
+    "cancel": "Abbrechen",
+    "close": "Dialog schließen",
+    "busy": "Wird gespeichert …",
+    "required": "* Pflichtfelder",
+    "project": "Projekt",
+    "existingProject": "Bestehendes Projekt",
+    "newProject": "Neues Projekt anlegen",
+    "projectTitle": "Projekttitel",
+    "projectHint": "Standard-Ablauf mit zwei Feedbackrunden, später im Projekt-Editor änderbar.",
+    "template": "Leistung",
+    "existingTemplate": "Bestehende Vorlage",
+    "newTemplate": "Neue Vorlage im Katalog anlegen",
+    "selectProject": "Projekt auswählen",
+    "selectTemplate": "Vorlage auswählen",
+    "templateUnavailable": "Die ursprüngliche Vorlage ist nicht mehr verfügbar. Wähle eine aktive Vorlage derselben Art.",
+    "reason": "Ablehnungsgrund",
+    "reasonHint": "Der Kunde sieht diesen Text.",
+    "reasonRequired": "Bitte gib einen Ablehnungsgrund an.",
+    "validation": "Bitte prüfe die Pflichtfelder und den Preis.",
+    "conflict": "Die Anfrage wurde inzwischen geändert. Deine Eingaben bleiben erhalten. Prüfe den aktuellen Stand vor dem erneuten Speichern.",
+    "noProject": "Du kannst derzeit keine Leistung einem Projekt zuweisen.",
+    "noTemplate": "Es ist keine passende aktive Vorlage verfügbar."
+  },
+  "errors": {
+    "SERVICE_REQUEST_NOT_FOUND": "Die Anfrage ist nicht verfügbar.",
+    "VALIDATION_ERROR": "Bitte prüfe deine Eingaben.",
+    "INVALID_TRANSITION": "Die Anfrage wurde bereits bearbeitet. Lade den aktuellen Stand.",
+    "VERSION_CONFLICT": "Die Anfrage wurde inzwischen geändert.",
+    "KIND_MISMATCH": "Die Vorlage muss dieselbe Art wie die Anfrage haben.",
+    "TEMPLATE_NOT_ASSIGNABLE": "Die Vorlage ist nicht mehr aktiv. Wähle eine andere.",
+    "PROJECT_NOT_FOUND": "Das Projekt ist nicht verfügbar.",
+    "EFFECT_NOT_PERMITTED": "Dir fehlt ein Recht für diese Zuweisung.",
+    "PROJECT_CLOSED": "Geschlossene Projekte können keine Stunden erhalten. Du kannst die Stunden stattdessen frei gutschreiben.",
+    "FEEDBACK_ROUND_NOT_AVAILABLE": "Für dieses Projekt ist keine weitere Feedbackrunde möglich.",
+    "INTERNAL": "Die Anfrage konnte nicht gespeichert werden. Bitte versuche es erneut."
+  }
+}

@@ -26,7 +26,7 @@ Intern kommt **vor** dem Portal: Kein Kunde kann anfragen, bevor die Bearbeitung
 | PR    | Task                                            | Branch                                 | Inhalt                                                                 | Dateien | Status    |
 | ----- | ----------------------------------------------- | -------------------------------------- | ---------------------------------------------------------------------- | ------: | --------- |
 | 13c.1 | [Task 74](./74-leistungsarten-und-zuweisung.md) | `feat/crm-leistungsanfragen-1-katalog` | Vorlagen-Arten, Projektbezug, Portal-Freigabe, Zuweisung mit Automatik |    ≈ 60 | im Review |
-| 13c.2 | [Task 75](./75-leistungsanfragen-intern.md)     | `feat/crm-leistungsanfragen-2-intern`  | Tabelle, Cockpit-Sektion, Eingang, Angebot / Ablehnen / Annehmen       |    ≈ 85 | offen     |
+| 13c.2 | [Task 75](./75-leistungsanfragen-intern.md)     | `feat/crm-leistungsanfragen-1-katalog` | Tabelle, Cockpit-Sektion, Eingang, Angebot / Ablehnen / Annehmen       |   ≈ 138 | im Review |
 | 13c.3 | [Task 76](./76-portal-leistungsanfragen.md)     | `feat/crm-leistungsanfragen-3-portal`  | Portal-Rechte, Widget, Dialog, Zurückziehen, Feedback-Verweis          |    ≈ 75 | offen     |
 
 Statuswerte: `offen` → `läuft` → `im Review` → `gemerged`.
@@ -182,7 +182,48 @@ der beiden Portal-Rechte aus `portal_standard` in Code **und** Migration (13c.3)
 - **Runde hinter „Launch“** (siehe Festlegungen): fachlich so abgestimmt, optisch gewöhnungsbedürftig. Falls es
   stört, ist die Alternative „an die letzte Rundenposition und Projekt einen Schritt zurück“ eine Änderung allein
   in `nextExtraFeedbackRoundPosition` und `addExtraRoundStep`.
-- **13c.2 hat ≈ 85 Dateien:** Wächst der PR über 120, wird T3 (Schreiben) als eigener PR 13c.2b abgespalten;
-  T1 + T2 sind allein mergebar (reine Leseansicht).
+- **13c.2 umfasst 138 geänderte und neue Dateien:** Auf ausdrücklichen Wunsch wird Task 75 zusammen mit
+  Task 74 auf dem bestehenden Branch `feat/crm-leistungsanfragen-1-katalog` umgesetzt. Die ursprünglich
+  vorgesehene Abspaltung von T3 bei mehr als 120 Dateien wird damit für diese Umsetzung nicht vorgenommen.
+  Der zusätzliche Umfang entsteht vor allem durch benannte Contracts, Komponenten mit eigenen CSS-Modulen
+  sowie Unit-, API-, Integrations- und Browserprüfungen. Lesen und Schreiben sollten im Review getrennt geprüft werden.
 - **Benachrichtigung:** Bis Ordner 20c erfährt das Team von neuen Anfragen über Sidebar-Zähler und
   Chat-Systemnachricht, der Kunde über Systemnachricht und Status im Widget. 20c ergänzt Glocke und Digest.
+
+## Umsetzungsstand Task 75 — 11.10.2026
+
+T1–T3 sind umgesetzt. Der Eingang liegt unter `/[locale]/crm/service-requests`; die Kundensektion steht vor
+„Dateien“. Anfragen lassen sich als Angebot markieren, ablehnen und atomar mit Projektleistung annehmen.
+Stunden und Zusatzrunden nutzen die Zuweisung aus Task 74. Rechte, Versionskonflikte, parallele Annahmen,
+Rollback sowie Activity- und Systemnachrichten werden auf Serverebene geprüft. Kundentext wird als Text gerendert;
+Activity-Metadaten enthalten weder Titel noch Notiz noch Ablehnungsgrund. DE und EN sind parallel gepflegt.
+
+Migration `0059_create_service_requests.sql` ist in Development angewandt. Der CRM-Seed erzeugt alle fünf
+Statuswerte mit Katalog-, Freitext-, Stunden- und Zusatzrundenbeispielen und nutzt ausschließlich seine eigenen
+Vorlagen. Neue Dependencies oder Umgebungsvariablen werden nicht benötigt. Die Credentials-Fixtures werden
+bei fehlendem gültigem Keyring weiterhin übersprungen; Leistungsanfragen benötigen diesen Keyring nicht.
+
+Prüfungen:
+
+- `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test` und Workspace-Build.
+- `pnpm db:smoke:crm`: 304 Constraints und 443 Integrationstests in 39 Dateien bestanden.
+- `pnpm db:smoke:rbac`: Datenbank- und Handler-Prüfungen bestanden.
+- `pnpm db:seed:crm development`: bestanden, bestehende Credentials-Skip-Regel bleibt sichtbar.
+- Task-75-Browserablauf mit echter Clerk-Manager-Sitzung: Angebot, Annahme, Ablehnung mit Pflichtgrund,
+  Versionskonflikt mit erhaltenen Eingaben und fremde Cockpit-ID bestanden. DE/Dark/Desktop und EN/Light/Mobil
+  visuell geprüft; Dialog per Escape geschlossen und horizontale Überläufe ausgeschlossen.
+
+Der gezielte Browserlauf wurde mit
+`pnpm --filter @invessiv/workspace test:e2e:portal workspace-service-requests.e2e.ts --no-deps`
+ausgeführt. Dabei erfolgen Migration und Build; die bereits vorhandene authentifizierte Testfixture wird
+wiederverwendet. Ein frischer globaler Portal-Setup-Lauf scheitert in dieser lokalen Umgebung an der
+Blob-Bereinigung wegen fehlender Development-OIDC-Konfiguration. Das bleibt ein offenes Setup-Thema für die
+vollständige Portal-Suite; der neue Feature-Test wurde erfolgreich ausgeführt und der Setup-Fehler wird nicht übersprungen.
+
+Zwei veraltete bestehende Integrationsprüfungen wurden an den aktuellen Website-Onboarding-Katalog
+(Migrationen 0052/0053) und den bereits beim Rundenabschluss erfolgenden Launch-Fortschritt angepasst.
+Die Fachlogik dieser Bereiche wurde nicht geändert. Die CRM-Integration nutzt vier Worker und ein eigenes
+Zeitbudget für echte Datenbank-Roundtrips.
+
+Task 76 bleibt offen; neue Portal-Anfragen entstehen bis dahin nur durch Seed und Tests. Für Rollback gelten
+die Vorgaben in Task 75: Code zurücknehmen, additive Tabelle und Berechtigungskatalog erhalten.

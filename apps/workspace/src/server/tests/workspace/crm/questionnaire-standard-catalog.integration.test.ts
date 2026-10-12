@@ -16,52 +16,48 @@ import { questionnaireTemplateService } from "@/server/workspace/crm/services/qu
 
 vi.mock("server-only", () => ({}));
 
-// Plans/crm/15-questionnaire/64a-standardkatalog.md, section "Vorlagen".
-const COMPACT = [
-  "contacts_approvals",
-  "project_services",
-  "company_profile_compact",
-  "offers_compact",
-  "brand_compact",
-  "design_compact",
-  "images_assets",
-  "contact_social",
-  "domain_access",
-  "legal",
-  "rights_consent",
-  "texts_misc_compact",
-];
-const FULL = [
-  "contacts_approvals",
+// The catalog introduced by 0048 was replaced in 0052 and extended in 0053.
+const STANDARD = [
+  "project_contacts",
   "project_services",
   "company_profile",
   "target_audience",
   "offers",
+  "about_us",
+  "team",
+  "testimonials_references",
+  "trust_signals",
+  "faq",
+  "texts_tone",
   "brand_assets",
   "brand_colors_fonts",
   "design_direction",
   "reference_websites",
-  "images_assets",
-  "team",
-  "social_proof",
-  "about_us",
-  "faq",
-  "contact_social",
+  "media_assets",
   "existing_website",
-  "seo_basics",
-  "domain_access",
-  "integrations",
+  "search_visibility",
+  "domain_services",
+  "contact_social",
   "legal",
-  "rights_consent",
-  "texts_tone",
-  "other_wishes",
+  "closing",
 ];
-const ALL_KEYS = [...new Set([...COMPACT, ...FULL])];
+const EXTRA = [
+  "blog_news",
+  "careers",
+  "products_pricing",
+  "events",
+  "downloads",
+  "newsletter",
+  "inquiry_forms",
+  "campaign_ads",
+  "languages",
+];
+const ALL_KEYS = [...STANDARD, ...EXTRA];
 
 type Database = ReturnType<typeof getDrizzleDatabaseClient>;
 
 describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
-  "questionnaire standard catalog seed (migration 0048)",
+  "questionnaire standard catalog seed (migrations 0052 and 0053)",
   () => {
     let db: Database;
 
@@ -117,10 +113,9 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       }
     });
 
-    it.each([
-      ["Landingpage kompakt", COMPACT],
-      ["Landingpage ausführlich", FULL],
-    ])("has the template %s in the planned order", async (title, keys) => {
+    it("has the current Website-Onboarding template in the planned order without add-on blocks", async () => {
+      const title = "Website-Onboarding";
+      const keys = STANDARD;
       const ids = await catalogBlocks();
       const [row] = await db
         .select()

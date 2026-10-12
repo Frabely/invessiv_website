@@ -419,3 +419,19 @@ Plan: `apps/workspace/plans/crm/13c-portal-leistungsanfragen/74-leistungsarten-u
   Gesamtbetrag.
 - Beim Bearbeiten einer Stunden- oder Zusatzrunden-Leistung steht die Wirkung als Text da; Menge und Status sind
   nicht änderbar.
+
+## Leistungsanfragen intern (ab Task 75)
+
+- Komponenten liegen unter `service-requests/`. Die Cockpit-Sektion steht in der Kundenspalte
+  direkt vor den Dateien und existiert nur mit Lese-View-Model und mindestens einer Anfrage.
+- Offene Anfragen stehen oben; erledigte sind zunächst eingeklappt. `serviceRequest` und
+  `serviceRequestAction` sind URL-State. Nur IDs aus den bereits autorisierten Anfragen öffnen
+  Karten oder Dialoge. Der Eingang verlinkt ins Cockpit und bietet keine Schreibaktionen.
+- Karten zeigen Kundentext vollständig als Text, Kontakt, Datum, Art und Status mit Symbol und
+  Wort. Ergebnisprojekte verlinken über `buildCustomerCockpitHref`.
+- Dialoge nutzen `useVersionedMutation`, direkte Angebotsmarkierung `useVersionedCommand`.
+  Konflikte behalten Eingaben und übernehmen die aktuelle Version. Ablehnungsgründe sind
+  ausdrücklich als kundensichtbar gekennzeichnet.
+- Der Annahme-Dialog verwendet die bestehenden `LineItemFields` und Wirkungseingaben aus
+  Task 74. Neue Projekte haben den zentralen Standardplan mit zwei Feedbackrunden.
+  Preise werden bei Freitext nicht vorgegeben; Stunden dürfen in den freien Bestand gehen.

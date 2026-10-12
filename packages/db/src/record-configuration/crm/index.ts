@@ -33,3 +33,4 @@ export * from "./customer-credentials";
 export * from "./customer-hour-purchases";
 export * from "./project-hour-allocations";
 export * from "./project-time-entries";
+export { serviceRequests } from "./service-requests";

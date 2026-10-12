@@ -1,3 +1,4 @@
+import { buildServiceRequestsViewModel } from "./service-requests-view-model";
 import "server-only";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { can } from "@invessiv/common/patterns/auth/can";
@@ -42,6 +43,7 @@ export async function loadCustomerCockpit(options: {
   locale: Locale;
   requestedProjectId: string | null;
   requestedRoundId: string | null;
+  requestedServiceRequestId?: string | null;
 }) {
   const {
     actor,
@@ -90,6 +92,12 @@ export async function loadCustomerCockpit(options: {
     customerId: cockpitCustomer.id,
     projects: await listCredentialProjectsByCustomer(cockpitCustomer.id, actor),
   });
+  const serviceRequestsViewModel = await buildServiceRequestsViewModel(
+    actor,
+    cockpitCustomer.id,
+    activeLocale,
+    options.requestedServiceRequestId,
+  );
   const hoursViewModel = await buildHoursViewModel({
     actor,
     customerId: cockpitCustomer.id,
@@ -130,6 +138,7 @@ export async function loadCustomerCockpit(options: {
     filesViewModel,
     credentialsViewModel,
     hoursViewModel,
+    serviceRequestsViewModel,
     selectedCockpitProject,
     feedbackViewModel,
     onboardingViewModel,

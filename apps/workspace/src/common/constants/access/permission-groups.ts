@@ -45,6 +45,8 @@ export const PERMISSION_GROUP_PERMISSIONS = {
     Permission.ChatRedact,
   ],
   [PermissionGroup.Projects]: [
+    Permission.ServiceRequestsRead,
+    Permission.ServiceRequestsWrite,
     Permission.ProjectsRead,
     Permission.ProjectsWrite,
     Permission.ProjectLineItemsRead,

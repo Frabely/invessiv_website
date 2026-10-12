@@ -56,6 +56,11 @@ describe("message constants", () => {
 describe("system message constants", () => {
   it("exposes the exact event keys and parameters without duplicates", () => {
     expect(SystemMessageKey).toEqual({
+      ServiceRequested: "serviceRequested",
+      ServiceRequestOffered: "serviceRequestOffered",
+      ServiceRequestAccepted: "serviceRequestAccepted",
+      ServiceRequestDeclined: "serviceRequestDeclined",
+      ServiceRequestWithdrawn: "serviceRequestWithdrawn",
       ProjectPhaseChanged: "projectPhaseChanged",
       FeedbackRoundHandedOver: "feedbackRoundHandedOver",
       FeedbackRoundSubmitted: "feedbackRoundSubmitted",
@@ -73,6 +78,7 @@ describe("system message constants", () => {
     });
     expect(SYSTEM_MESSAGE_KEY_VALUES).toEqual(Object.values(SystemMessageKey));
     expect(SystemMessageParam).toEqual({
+      ServiceTitle: "serviceTitle",
       ProjectTitle: "projectTitle",
       Phase: "phase",
       RoundNumber: "roundNumber",

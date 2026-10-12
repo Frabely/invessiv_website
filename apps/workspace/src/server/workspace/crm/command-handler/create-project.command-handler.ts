@@ -1,12 +1,12 @@
+import { insertProject } from "@/server/workspace/crm/services/insert-project";
 import "server-only";
 
 import type { CreateProjectRequestDto } from "@invessiv/common/contracts/crm/create-project-request.dto";
 import type { ProjectDto } from "@invessiv/common/contracts/crm/project.dto";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import { ProjectErrorCode } from "@invessiv/common/constants/crm/errors/project-error-codes";
-import { ProjectWorkflowKey } from "@invessiv/common/constants/crm/project-workflows";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
-import { customers, projects } from "@invessiv/db/record-configuration";
+import { customers } from "@invessiv/db/record-configuration";
 import { eq } from "drizzle-orm";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
@@ -37,29 +37,6 @@ export async function createProject(
   if (customer.status === ProjectStatus.Archived)
     return ProjectErrorCode.ValidationError;
   const data = parsed.data;
-  const [row] = await db
-    .insert(projects)
-    .values({
-      id: crypto.randomUUID(),
-      customer_id: customerId,
-      owner_member_id: customer.ownerMemberId,
-      title: data.title,
-      status: data.status,
-      phase: data.phase,
-      process_steps: data.processSteps,
-      current_process_step: data.currentProcessStep,
-      workflow_key: ProjectWorkflowKey.StandardWebV1,
-      billing_model: data.billingModel,
-      included_feedback_rounds: data.feedbackRoundPositions.length,
-      feedback_round_positions: data.feedbackRoundPositions,
-      preview_url: data.previewUrl,
-      next_step_label: data.nextStepLabel,
-      next_step_due_on: data.nextStepDueOn,
-      started_on: data.startedOn,
-      budget_cents: data.budgetCents,
-      hourly_rate_cents: data.hourlyRateCents,
-      version: 1,
-    })
-    .returning();
+  const row = await insertProject(db, customerId, customer.ownerMemberId, data);
   return row ? projectMappingService.toDto(row) : ProjectErrorCode.NotFound;
 }

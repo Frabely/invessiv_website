@@ -21,6 +21,8 @@ export const SYSTEM_ROLE_DEFINITIONS = {
     realm: AuthRealm.Workspace,
     name: "Workspace member",
     permissions: [
+      Permission.ServiceRequestsRead,
+      Permission.ServiceRequestsWrite,
       Permission.DashboardRead,
       Permission.LeadsRead,
       Permission.LeadsWrite,

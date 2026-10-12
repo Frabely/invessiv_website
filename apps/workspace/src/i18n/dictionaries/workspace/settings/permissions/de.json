@@ -234,6 +234,14 @@
     "security.audit": {
       "label": "Sicherheitsprotokoll lesen",
       "description": "Änderungen an Mitgliedern und Rollen nachvollziehen."
+    },
+    "service_requests.read": {
+      "label": "Leistungsanfragen lesen",
+      "description": "Zusätzliche Leistungen aus dem Kundenportal ansehen."
+    },
+    "service_requests.write": {
+      "label": "Leistungsanfragen bearbeiten",
+      "description": "Angebote markieren, Anfragen ablehnen oder mit Projektleistung annehmen."
     }
   },
   "systemRoles": {

@@ -6,6 +6,8 @@ import { Permission } from "@invessiv/common/constants/auth/permissions";
  * its query or command; `workspace` deliberately requires a global permission.
  */
 export const CrmEndpointAccessRule = {
+  ServiceRequestStatusChange: "service_request_status_change",
+  ServiceRequestAccept: "service_request_accept",
   FilesList: "files_list",
   FilesArchive: "files_archive",
   FileUpload: "file_upload",
@@ -70,6 +72,14 @@ export type CrmEndpointAccessRule =
   (typeof CrmEndpointAccessRule)[keyof typeof CrmEndpointAccessRule];
 
 export const CRM_ENDPOINT_ACCESS_RULES = {
+  [CrmEndpointAccessRule.ServiceRequestStatusChange]: {
+    permission: Permission.ServiceRequestsWrite,
+    scope: "customer",
+  },
+  [CrmEndpointAccessRule.ServiceRequestAccept]: {
+    permission: Permission.ServiceRequestsWrite,
+    scope: "customer",
+  },
   [CrmEndpointAccessRule.FilesList]: {
     permission: Permission.FilesRead,
     scope: "list",

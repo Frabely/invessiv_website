@@ -1,3 +1,5 @@
+import serviceRequestsDe from "./service-requests/de.json";
+import serviceRequestsEn from "./service-requests/en.json";
 import type { Locale } from "@/config/i18n";
 import formDe from "./form/de.json";
 import formEn from "./form/en.json";
@@ -35,6 +37,7 @@ import feedbackRoundsDe from "./feedback-rounds/de.json";
 import feedbackRoundsEn from "./feedback-rounds/en.json";
 
 export type CrmMetaDictionary = typeof metaDe;
+export type CrmServiceRequestsDictionary = typeof serviceRequestsDe;
 export type CrmShellDictionary = typeof shellDe;
 export type CrmListDictionary = typeof listDe;
 export type CrmFormDictionary = typeof formDe;
@@ -215,4 +218,14 @@ const CRM_HOURS: Record<Locale, CrmHoursDictionary> = {
 
 export function getCrmHoursDictionary(locale: Locale): CrmHoursDictionary {
   return CRM_HOURS[locale];
+}
+
+const CRM_SERVICE_REQUESTS: Record<Locale, CrmServiceRequestsDictionary> = {
+  de: serviceRequestsDe,
+  en: serviceRequestsEn,
+};
+export function getCrmServiceRequestsDictionary(
+  locale: Locale,
+): CrmServiceRequestsDictionary {
+  return CRM_SERVICE_REQUESTS[locale];
 }

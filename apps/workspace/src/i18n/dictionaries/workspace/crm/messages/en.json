@@ -45,7 +45,12 @@
     "onboardingCompleted": "The onboarding for “{projectTitle}” was completed.",
     "customerTaskRequested": "The customer created the task “{taskTitle}” for “{projectTitle}”.",
     "credentialAddedByCustomer": "The customer added a new credential in the portal. You’ll find it in the cockpit under credentials.",
-    "credentialSecretChangedByCustomer": "The customer changed the password of a credential in the portal."
+    "credentialSecretChangedByCustomer": "The customer changed the password of a credential in the portal.",
+    "serviceRequested": "The service “{serviceTitle}” was requested.",
+    "serviceRequestOffered": "The offer for “{serviceTitle}” was sent.",
+    "serviceRequestAccepted": "The request “{serviceTitle}” was accepted.",
+    "serviceRequestDeclined": "The request “{serviceTitle}” was declined.",
+    "serviceRequestWithdrawn": "The request “{serviceTitle}” was withdrawn."
   },
   "dock": {
     "unread": "{count} unread"

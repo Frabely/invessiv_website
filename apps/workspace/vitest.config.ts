@@ -61,6 +61,9 @@ export default defineConfig(({ mode }) => ({
   },
   test: {
     environment: "node",
+    // Real database round trips need a budget independent of local CPU contention.
+    testTimeout: mode === "crm-integration" ? 30_000 : 5_000,
+    maxWorkers: mode === "crm-integration" ? 4 : undefined,
     exclude: [".claude/**", "**/node_modules/**"],
   },
 }));

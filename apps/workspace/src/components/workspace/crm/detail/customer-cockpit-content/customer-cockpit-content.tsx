@@ -1,3 +1,4 @@
+import { getCrmServiceRequestsDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import { SettingsTab } from "@/common/constants/access/settings-tabs";
 import { buildSettingsTabHref } from "@/common/patterns/access/settings-tab";
@@ -43,6 +44,7 @@ export function CustomerCockpitContent({
     filesViewModel,
     credentialsViewModel,
     hoursViewModel,
+    serviceRequestsViewModel,
     selectedCockpitProject,
     feedbackViewModel,
     onboardingViewModel,
@@ -60,6 +62,12 @@ export function CustomerCockpitContent({
   );
   return (
     <CustomerCockpitDialog
+      serviceRequests={serviceRequestsViewModel ?? undefined}
+      serviceRequestsContent={
+        serviceRequestsViewModel
+          ? getCrmServiceRequestsDictionary(activeLocale)
+          : undefined
+      }
       accessContent={
         customerAccessData ? getCrmAccessDictionary(activeLocale) : undefined
       }

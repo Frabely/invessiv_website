@@ -41,7 +41,12 @@
     "onboardingCompleted": "Your onboarding for “{projectTitle}” is complete. Your answers are now the basis for your project.",
     "customerTaskRequested": "Your task “{taskTitle}” for “{projectTitle}” has reached us. We’ll take care of it.",
     "credentialAddedByCustomer": "Your new credential has reached us. Thank you.",
-    "credentialSecretChangedByCustomer": "The changed password has reached us. We’ll use it from now on."
+    "credentialSecretChangedByCustomer": "The changed password has reached us. We’ll use it from now on.",
+    "serviceRequested": "You requested “{serviceTitle}”. We will get back to you.",
+    "serviceRequestOffered": "The offer for “{serviceTitle}” was sent.",
+    "serviceRequestAccepted": "The request “{serviceTitle}” was accepted.",
+    "serviceRequestDeclined": "The request “{serviceTitle}” was declined.",
+    "serviceRequestWithdrawn": "The request “{serviceTitle}” was withdrawn."
   },
   "phases": {
     "onboarding": "onboarding",

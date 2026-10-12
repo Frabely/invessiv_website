@@ -234,6 +234,14 @@
     "security.audit": {
       "label": "Read security log",
       "description": "Trace changes to members and roles."
+    },
+    "service_requests.read": {
+      "label": "View service requests",
+      "description": "View additional services requested in the customer portal."
+    },
+    "service_requests.write": {
+      "label": "Manage service requests",
+      "description": "Mark offers as sent, decline requests or accept and assign a service."
     }
   },
   "systemRoles": {

@@ -91,7 +91,8 @@
         "questionnaireTemplates": "Fragebogen-Vorlagen",
         "leads": "Leads",
         "overview": "Übersicht",
-        "settings": "Einstellungen"
+        "settings": "Einstellungen",
+        "serviceRequests": "Leistungsanfragen"
       },
       "unreadConversations": "{count} Unterhaltungen mit ungelesenen Kundennachrichten",
       "unreadFeedbackRounds": {
@@ -101,7 +102,8 @@
       "account": {
         "label": "Dein Bereich",
         "bookingUrl": "Mein Buchungslink"
-      }
+      },
+      "openServiceRequests": "{count} neue Leistungsanfragen"
     },
     "bookingUrlDialog": {
       "title": "Mein Buchungslink",

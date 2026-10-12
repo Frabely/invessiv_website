@@ -91,7 +91,8 @@
         "questionnaireTemplates": "Questionnaire templates",
         "leads": "Leads",
         "overview": "Overview",
-        "settings": "Settings"
+        "settings": "Settings",
+        "serviceRequests": "Service requests"
       },
       "unreadConversations": "{count} conversations with unread customer messages",
       "unreadFeedbackRounds": {
@@ -101,7 +102,8 @@
       "account": {
         "label": "Your area",
         "bookingUrl": "My booking link"
-      }
+      },
+      "openServiceRequests": "{count} new service requests"
     },
     "bookingUrlDialog": {
       "title": "My booking link",

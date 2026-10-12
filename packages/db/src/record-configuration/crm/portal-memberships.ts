@@ -56,6 +56,10 @@ export const portalMemberships = pgTable(
       .defaultNow(),
   },
   (table) => [
+    uniqueIndex(PortalMembershipsConstraintName.IdCustomerUnique).on(
+      table.id,
+      table.customer_id,
+    ),
     // Cascade, not restrict: this mirrors the direct customer_id -> customers cascade. A purge
     // that deletes the customer (and with it the contact assignment) must not be blocked by a
     // membership that would otherwise need deleting first through a different FK path.

@@ -48,6 +48,9 @@ vi.mock("next/navigation", () => ({
   }),
 }));
 vi.mock("server-only", () => ({}));
+vi.mock("@/lib/workspace/crm/service-requests-view-model", () => ({
+  buildServiceRequestsViewModel: vi.fn().mockResolvedValue(null),
+}));
 vi.mock("@/lib/auth/permissions", () => ({
   requireWorkspaceArea: mocks.requireWorkspaceArea,
 }));

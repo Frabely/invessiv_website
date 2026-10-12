@@ -47,7 +47,6 @@ packages/common/src/contracts/crm/service-requests/accept-service-request-projec
 packages/common/src/contracts/crm/service-requests/accept-service-request-template-source.dto.ts
 packages/common/src/contracts/crm/service-requests/accept-service-request-line-item.dto.ts
 packages/common/src/contracts/crm/results/change-service-request-status-result.ts
-packages/common/src/contracts/crm/results/accept-service-request-result.ts
 packages/common/src/contracts/crm/rows/service-request-row.ts
 ```
 

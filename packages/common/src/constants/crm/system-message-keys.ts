@@ -14,6 +14,11 @@ export const SystemMessageKey = {
   CustomerTaskRequested: "customerTaskRequested",
   CredentialAddedByCustomer: "credentialAddedByCustomer",
   CredentialSecretChangedByCustomer: "credentialSecretChangedByCustomer",
+  ServiceRequested: "serviceRequested",
+  ServiceRequestOffered: "serviceRequestOffered",
+  ServiceRequestAccepted: "serviceRequestAccepted",
+  ServiceRequestDeclined: "serviceRequestDeclined",
+  ServiceRequestWithdrawn: "serviceRequestWithdrawn",
 } as const;
 export type SystemMessageKey =
   (typeof SystemMessageKey)[keyof typeof SystemMessageKey];
@@ -32,10 +37,16 @@ export const SYSTEM_MESSAGE_KEY_VALUES = [
   SystemMessageKey.CustomerTaskRequested,
   SystemMessageKey.CredentialAddedByCustomer,
   SystemMessageKey.CredentialSecretChangedByCustomer,
+  SystemMessageKey.ServiceRequested,
+  SystemMessageKey.ServiceRequestOffered,
+  SystemMessageKey.ServiceRequestAccepted,
+  SystemMessageKey.ServiceRequestDeclined,
+  SystemMessageKey.ServiceRequestWithdrawn,
 ] as const;
 
 /** Parameter names stored in `messages.metadata` of a system event. */
 export const SystemMessageParam = {
+  ServiceTitle: "serviceTitle",
   ProjectTitle: "projectTitle",
   Phase: "phase",
   RoundNumber: "roundNumber",

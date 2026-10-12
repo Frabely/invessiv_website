@@ -45,7 +45,12 @@
     "onboardingCompleted": "Das Onboarding für „{projectTitle}“ wurde abgeschlossen.",
     "customerTaskRequested": "Der Kunde hat für „{projectTitle}“ die Aufgabe „{taskTitle}“ angelegt.",
     "credentialAddedByCustomer": "Der Kunde hat im Portal einen neuen Zugang hinterlegt. Du findest ihn im Cockpit unter Zugangsdaten.",
-    "credentialSecretChangedByCustomer": "Der Kunde hat im Portal das Passwort eines Zugangs geändert."
+    "credentialSecretChangedByCustomer": "Der Kunde hat im Portal das Passwort eines Zugangs geändert.",
+    "serviceRequested": "Die Leistung „{serviceTitle}“ wurde angefragt.",
+    "serviceRequestOffered": "Das Angebot für „{serviceTitle}“ wurde gesendet.",
+    "serviceRequestAccepted": "Die Anfrage „{serviceTitle}“ wurde angenommen.",
+    "serviceRequestDeclined": "Die Anfrage „{serviceTitle}“ wurde abgelehnt.",
+    "serviceRequestWithdrawn": "Die Anfrage „{serviceTitle}“ wurde zurückgezogen."
   },
   "dock": {
     "unread": "{count} ungelesen"

@@ -27,6 +27,19 @@ describe("AuthRealm", () => {
 });
 
 describe("Permission", () => {
+  it("makes service request permissions delegable workspace rights bound only to customers", () => {
+    for (const permission of [
+      Permission.ServiceRequestsRead,
+      Permission.ServiceRequestsWrite,
+    ]) {
+      expect(PERMISSION_DEFINITIONS[permission]).toMatchObject({
+        realm: AuthRealm.Workspace,
+        delegable: true,
+        scopeAssignable: true,
+        assignableScopeTypes: [AccessScopeType.Customer],
+      });
+    }
+  });
   it("lists every const value exactly once", () => {
     expect(PERMISSION_VALUES).toEqual(Object.values(Permission));
     expect(new Set(PERMISSION_VALUES).size).toBe(PERMISSION_VALUES.length);

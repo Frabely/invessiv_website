@@ -1,4 +1,6 @@
 export const Permission = {
+  ServiceRequestsRead: "service_requests.read",
+  ServiceRequestsWrite: "service_requests.write",
   DashboardRead: "dashboard.read",
   LeadsRead: "leads.read",
   LeadsWrite: "leads.write",
@@ -60,6 +62,8 @@ export const Permission = {
 export type Permission = (typeof Permission)[keyof typeof Permission];
 
 export const PERMISSION_VALUES = [
+  Permission.ServiceRequestsRead,
+  Permission.ServiceRequestsWrite,
   Permission.DashboardRead,
   Permission.LeadsRead,
   Permission.LeadsWrite,

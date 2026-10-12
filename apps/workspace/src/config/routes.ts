@@ -1,4 +1,5 @@
 export const SITE_ROUTES = {
+  CRM_SERVICE_REQUESTS: "/crm/service-requests",
   WORKSPACE: "",
   DASHBOARD: "/dashboard",
   LEADS: "/leads",

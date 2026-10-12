@@ -1,3 +1,4 @@
+import { readCockpitServiceRequestId } from "@/common/patterns/crm/customer-dialog-query";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
@@ -116,6 +117,8 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
         locale: activeLocale,
         requestedProjectId: readCockpitProjectId(resolvedSearchParams),
         requestedRoundId: readCockpitFeedbackRoundId(resolvedSearchParams),
+        requestedServiceRequestId:
+          readCockpitServiceRequestId(resolvedSearchParams),
       })
     : null;
   const filters = { ...requestedFilters, page: customerList.page };

@@ -5,6 +5,7 @@ import { WorkspaceApiEndpoint } from "@/common/constants/api-endpoints";
 describe("WorkspaceApiEndpoint", () => {
   it("exposes the exact workspace api endpoints", () => {
     expect(WorkspaceApiEndpoint).toEqual({
+      CrmServiceRequests: "/api/workspace/crm/service-requests",
       CrmFiles: "/api/workspace/crm/files",
       CrmCredentials: "/api/workspace/crm/credentials",
       CrmFeedbackRounds: "/api/workspace/crm/feedback-rounds",

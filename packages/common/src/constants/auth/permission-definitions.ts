@@ -18,6 +18,20 @@ const CUSTOMER_AND_PROJECT: readonly AccessScopeType[] = [
  * `permissions`; `db:smoke:rbac` fails as soon as code and database diverge.
  */
 export const PERMISSION_DEFINITIONS = {
+  [Permission.ServiceRequestsRead]: {
+    realm: AuthRealm.Workspace,
+    delegable: true,
+    scopeAssignable: true,
+    assignableScopeTypes: CUSTOMER_ONLY,
+    description: "View customer service requests.",
+  },
+  [Permission.ServiceRequestsWrite]: {
+    realm: AuthRealm.Workspace,
+    delegable: true,
+    scopeAssignable: true,
+    assignableScopeTypes: CUSTOMER_ONLY,
+    description: "Offer, decline and accept customer service requests.",
+  },
   [Permission.DashboardRead]: {
     realm: AuthRealm.Workspace,
     delegable: true,

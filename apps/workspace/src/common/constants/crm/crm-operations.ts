@@ -1,5 +1,8 @@
 /** Stable operation names for CRM route logs; never contain ids, names or emails. */
 export const CrmOperation = {
+  ChangeServiceRequestStatus: "service-requests.change-status",
+  AcceptServiceRequest: "service-requests.accept",
+  CountOpenServiceRequests: "service-requests.count-open",
   ConvertLead: "leads.convert",
   ListCustomers: "customers.list",
   CreateCustomer: "customers.create",
@@ -74,6 +77,9 @@ export const CrmOperation = {
 export type CrmOperation = (typeof CrmOperation)[keyof typeof CrmOperation];
 
 export const CRM_OPERATION_VALUES = [
+  CrmOperation.ChangeServiceRequestStatus,
+  CrmOperation.AcceptServiceRequest,
+  CrmOperation.CountOpenServiceRequests,
   CrmOperation.ConvertLead,
   CrmOperation.ListCustomers,
   CrmOperation.CreateCustomer,

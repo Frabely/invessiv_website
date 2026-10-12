@@ -1,0 +1,14 @@
+.root {
+  margin-top: 0.9rem;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+.message {
+  color: var(--color-danger);
+  margin: 0.65rem 0 0;
+  font-size: var(--font-size-ui-sm);
+}

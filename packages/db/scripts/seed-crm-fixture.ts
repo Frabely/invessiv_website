@@ -9,12 +9,14 @@
  * in `plans/crm/AGENTS.md`).
  */
 import { randomUUID } from "node:crypto";
+import { seedServiceRequests } from "./crm-fixture/seed-service-requests";
 import { inArray, like, or } from "drizzle-orm";
 
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
   activities,
+  serviceRequests,
   conversationReads,
   conversations,
   customerContactAssignments,
@@ -374,6 +376,9 @@ async function resetFixtureRows(tx: ContactDatabaseTransaction) {
       .delete(customerCredentials)
       .where(inArray(customerCredentials.customer_id, customerIds));
     await tx.delete(projects).where(inArray(projects.customer_id, customerIds));
+    await tx
+      .delete(serviceRequests)
+      .where(inArray(serviceRequests.customer_id, customerIds));
     await tx
       .delete(customerContactAssignments)
       .where(inArray(customerContactAssignments.customer_id, customerIds));
@@ -892,6 +897,11 @@ async function run() {
     });
     await seedOnboarding(tx, {
       memberId: projectMember.memberId,
+      ...feedbackProject("nordlicht"),
+    });
+    await seedServiceRequests(tx, {
+      memberId: owner.memberId,
+      templateIds: LINE_ITEM_TEMPLATE_FIXTURES.map((template) => template.id),
       ...feedbackProject("nordlicht"),
     });
     // Snapshots, not references: the workshop price is deliberately below its template price to

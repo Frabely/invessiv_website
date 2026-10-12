@@ -1,5 +1,7 @@
 "use client";
 
+import { faBellConcierge } from "@fortawesome/free-solid-svg-icons";
+import { crmServiceRequestsPathFor } from "@/lib/auth/routes";
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -40,6 +42,8 @@ type WorkspaceSidebarProps = {
   canOpenCrmCustomers: boolean;
   canOpenCrmTasks: boolean;
   canOpenCrmFeedback: boolean;
+  canOpenCrmServiceRequests?: boolean;
+  openServiceRequestCount?: number;
   canOpenCrmMessages: boolean;
   canReadCrmLineItemTemplates: boolean;
   canReadCrmQuestionnaireTemplates: boolean;
@@ -106,6 +110,8 @@ export function WorkspaceSidebar({
   canOpenCrmCustomers,
   canOpenCrmTasks,
   canOpenCrmFeedback,
+  canOpenCrmServiceRequests = false,
+  openServiceRequestCount = 0,
   canOpenCrmMessages,
   canReadCrmLineItemTemplates,
   canReadCrmQuestionnaireTemplates,
@@ -224,6 +230,22 @@ export function WorkspaceSidebar({
                           label={sidebarContent.items.tasks}
                           onClickAction={onCloseAction}
                           pathname={pathname}
+                        />
+                      ) : null}
+                      {canOpenCrmServiceRequests ? (
+                        <CrmChildLink
+                          href={crmServiceRequestsPathFor(locale)}
+                          icon={faBellConcierge}
+                          label={sidebarContent.items.serviceRequests}
+                          onClickAction={onCloseAction}
+                          pathname={pathname}
+                          count={{
+                            value: openServiceRequestCount,
+                            description: formatMessage(
+                              sidebarContent.openServiceRequests,
+                              { count: openServiceRequestCount },
+                            ),
+                          }}
                         />
                       ) : null}
                       {canOpenCrmFeedback ? (

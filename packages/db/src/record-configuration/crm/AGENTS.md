@@ -106,3 +106,16 @@ Plan: `apps/workspace/plans/crm/20-stunden-und-history/README.md`.
   Stunden-Leistung, deren ID der `idempotency_key` ist.
 - Was die Datenbank selbst erzwingt, deckt `scripts/crm-smoke/line-item-checks.ts` ab; die Regeln, die das Projekt
   oder den Stundenbestand brauchen, sichert `projectLineItemAssignmentService`.
+
+## Leistungsanfragen (Ordner 13c, ab Task 75)
+
+- `service_requests` bindet Wunsch- und Ergebnisprojekt sowie die anfragende Portalmitgliedschaft
+  über zusammengesetzte Fremdschlüssel an denselben Kunden. `portal_memberships` besitzt dafür
+  zusätzlich den eindeutigen Schlüssel `(id, customer_id)`.
+- Fachwerte sind explizit: Art, Titel, Kundentext, Projektwunsch, Mitgliedschaft, Status,
+  Idempotenzschlüssel und Version haben keine DB-Defaults. Stundenmengen sind positiv, in
+  Viertelstunden und auf die Ledger-Grenze begrenzt; andere Arten tragen keine Menge.
+- Vorlagen und zugewiesene Leistungen dürfen als Herkunft entfallen (`ON DELETE SET NULL`).
+  Annahme benötigt Ergebnisprojekt und interne Entscheidung; Ablehnung einen nicht leeren Grund.
+- Die Migration ergänzt `service_requests.read/write` für Owner und Member.
+  Die Rechte sind intern und kundenbezogen bindbar.

@@ -1,5 +1,7 @@
 "use client";
 
+import type { ServiceRequestsViewModel } from "@/common/contracts/crm/service-requests-view-model";
+import type { CrmServiceRequestsDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { useRouter } from "next/navigation";
 
 import { Dialog, DialogSize } from "@invessiv/ui";
@@ -55,6 +57,8 @@ type CustomerCockpitDialogProps = {
   credentialsContent?: CrmCredentialsDictionary;
   hours?: HoursViewModel;
   hoursContent?: CrmHoursDictionary;
+  serviceRequests?: ServiceRequestsViewModel;
+  serviceRequestsContent?: CrmServiceRequestsDictionary;
   files?: FilesViewModel;
   filesContent?: CrmFilesDictionary;
   isWorkspaceOwner?: boolean;
@@ -101,6 +105,8 @@ export function CustomerCockpitDialog({
   credentialsContent,
   hours,
   hoursContent,
+  serviceRequests,
+  serviceRequestsContent,
   files,
   filesContent,
   isWorkspaceOwner,
@@ -141,6 +147,8 @@ export function CustomerCockpitDialog({
       title={customer.displayName}
     >
       <CustomerCockpitView
+        serviceRequests={serviceRequests}
+        serviceRequestsContent={serviceRequestsContent}
         accessContent={accessContent}
         accessMembers={accessMembers}
         accessProjects={accessProjects}
