@@ -105,6 +105,7 @@ describe("service request mutation routes", () => {
     [E.ValidationError, H.UnprocessableContent],
     [E.KindMismatch, H.UnprocessableContent],
     [E.InvalidTransition, H.Conflict],
+    [E.OfferRequired, H.Conflict],
     [E.VersionConflict, H.Conflict],
     [E.TemplateNotAssignable, H.Conflict],
     [E.ProjectClosed, H.Conflict],

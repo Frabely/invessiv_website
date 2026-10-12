@@ -1,4 +1,5 @@
 import { ServiceRequestProjectWish as Mode } from "@invessiv/common/constants/crm/service-request-project-wishes";
+import { ServiceRequestStatus } from "@invessiv/common/constants/crm/service-request-statuses";
 import { LineItemProjectMode } from "@invessiv/common/constants/crm/line-item-project-modes";
 import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
 import { ProjectLineItemStatus } from "@invessiv/common/constants/crm/project-line-item-statuses";
@@ -20,6 +21,12 @@ import {
 import { readDurationInput } from "@/common/patterns/crm/hours/duration-input";
 import { ProjectLineItemFieldLimits } from "@invessiv/common/constants/crm/forms/project-line-item-field-limits";
 
+/** Before an offer the customer knows no price, so accepting then needs a deliberate confirmation. */
+export function isServiceRequestWithoutOffer(
+  request: ServiceRequestDto,
+): boolean {
+  return request.status === ServiceRequestStatus.Requested;
+}
 /** A new project is only a choice for a standard service and with the right to create one. */
 export function canChooseServiceRequestProject(
   request: ServiceRequestDto,
@@ -71,6 +78,7 @@ export function createServiceRequestAcceptForm(
         : "",
     allocateHoursToProject: true,
     status: ProjectLineItemStatus.Planned,
+    confirmedWithoutOffer: false,
   };
 }
 export function applyServiceRequestTemplate(
@@ -117,6 +125,8 @@ export function toAcceptServiceRequest(
   const quantity = readDurationInput(values.quantityInput);
   return {
     version: request.version,
+    acceptWithoutOffer:
+      isServiceRequestWithoutOffer(request) && values.confirmedWithoutOffer,
     project:
       values.projectMode === Mode.New
         ? { mode: Mode.New, project: toCreateProjectRequest(projectValues) }

@@ -40,7 +40,7 @@
   },
   "empty": {
     "title": "No service requests yet",
-    "description": "Additional services customers request in the portal appear here. Send an offer, decline a request or assign it to a project."
+    "description": "Additional services customers request in the portal appear here. Send an offer and accept the request once the customer has agreed."
   },
   "noOpen": {
     "title": "No open service requests",
@@ -82,12 +82,17 @@
   },
   "actions": {
     "offered": "Offer sent",
-    "accept": "Accept",
+    "accept": "Customer agreed",
+    "acceptWithoutOffer": "Accept without offer",
     "decline": "Decline",
     "busy": "Saving …"
   },
   "form": {
     "acceptTitle": "Accept request",
+    "acceptWithoutOfferTitle": "Accept without offer",
+    "offeredNotice": "Accept the request only after the customer has agreed to the offer. They will then see it as confirmed in the portal.",
+    "withoutOfferNotice": "No offer has been sent for this request. The customer does not know the price and will still see the service as confirmed once you accept.",
+    "withoutOfferConfirm": "I am deliberately accepting without an offer, for example as a goodwill gesture.",
     "declineTitle": "Decline request",
     "accept": "Accept and assign",
     "decline": "Decline request",
@@ -120,6 +125,7 @@
     "VALIDATION_ERROR": "Check your input.",
     "INVALID_TRANSITION": "The request has already been processed. Reload the current status.",
     "VERSION_CONFLICT": "The request has changed.",
+    "OFFER_REQUIRED": "No offer has been sent for this request. Confirm that you want to accept without an offer.",
     "KIND_MISMATCH": "The template must match the requested kind.",
     "TEMPLATE_NOT_ASSIGNABLE": "The template is no longer active. Choose another.",
     "PROJECT_NOT_FOUND": "The project is unavailable.",

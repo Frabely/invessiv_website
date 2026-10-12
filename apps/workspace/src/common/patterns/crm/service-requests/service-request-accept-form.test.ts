@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
 import { LineItemProjectMode } from "@invessiv/common/constants/crm/line-item-project-modes";
 import { ServiceRequestProjectWish as Mode } from "@invessiv/common/constants/crm/service-request-project-wishes";
+import { ServiceRequestStatus } from "@invessiv/common/constants/crm/service-request-statuses";
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { SERVICE_REQUEST_ERROR_CODE_VALUES } from "@invessiv/common/constants/crm/errors/service-request-error-codes";
 import {
@@ -35,6 +36,7 @@ describe("service request acceptance form", () => {
     expect(validateServiceRequestAcceptForm(values, request)).toBe(true);
     expect(toAcceptServiceRequest(values, request, vm)).toMatchObject({
       version: 4,
+      acceptWithoutOffer: false,
       project: { mode: Mode.Existing, projectId: request.requestedProjectId },
       template: {
         mode: Mode.Existing,
@@ -42,6 +44,24 @@ describe("service request acceptance form", () => {
       },
       lineItem: { priceCents: 12500, quantityMinutes: null },
     });
+  });
+  it("states acceptance without an offer only when ticked and only before an offer", () => {
+    const vm = serviceRequestsViewModelFixture();
+    const request = serviceRequestFixture();
+    const values = {
+      ...createServiceRequestAcceptForm(request, vm, "de"),
+      confirmedWithoutOffer: true,
+    };
+    expect(toAcceptServiceRequest(values, request, vm).acceptWithoutOffer).toBe(
+      true,
+    );
+    expect(
+      toAcceptServiceRequest(
+        values,
+        serviceRequestFixture({ status: ServiceRequestStatus.Offered }),
+        vm,
+      ).acceptWithoutOffer,
+    ).toBe(false);
   });
   it("offers the choice between existing and new only where both ways exist", () => {
     const vm = serviceRequestsViewModelFixture();

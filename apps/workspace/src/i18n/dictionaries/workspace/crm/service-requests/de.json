@@ -40,7 +40,7 @@
   },
   "empty": {
     "title": "Noch keine Leistungsanfrage",
-    "description": "Hier landen zusätzliche Leistungen, die Kunden im Portal anfragen. Du kannst sie anbieten, ablehnen oder einem Projekt zuweisen."
+    "description": "Hier landen zusätzliche Leistungen, die Kunden im Portal anfragen. Du sendest ein Angebot und nimmst die Anfrage an, sobald der Kunde zugesagt hat."
   },
   "noOpen": {
     "title": "Keine offene Leistungsanfrage",
@@ -82,12 +82,17 @@
   },
   "actions": {
     "offered": "Angebot gesendet",
-    "accept": "Annehmen",
+    "accept": "Kunde hat zugesagt",
+    "acceptWithoutOffer": "Ohne Angebot annehmen",
     "decline": "Ablehnen",
     "busy": "Wird gespeichert …"
   },
   "form": {
     "acceptTitle": "Anfrage annehmen",
+    "acceptWithoutOfferTitle": "Ohne Angebot annehmen",
+    "offeredNotice": "Nimm die Anfrage erst an, wenn der Kunde dem Angebot zugestimmt hat. Danach sieht er sie im Portal als bestätigt.",
+    "withoutOfferNotice": "Für diese Anfrage wurde noch kein Angebot gesendet. Der Kunde kennt den Preis nicht und sieht die Leistung nach der Annahme trotzdem als bestätigt.",
+    "withoutOfferConfirm": "Ich nehme bewusst ohne Angebot an, zum Beispiel aus Kulanz.",
     "declineTitle": "Anfrage ablehnen",
     "accept": "Annehmen und zuweisen",
     "decline": "Anfrage ablehnen",
@@ -120,6 +125,7 @@
     "VALIDATION_ERROR": "Bitte prüfe deine Eingaben.",
     "INVALID_TRANSITION": "Die Anfrage wurde bereits bearbeitet. Lade den aktuellen Stand.",
     "VERSION_CONFLICT": "Die Anfrage wurde inzwischen geändert.",
+    "OFFER_REQUIRED": "Für diese Anfrage wurde noch kein Angebot gesendet. Bestätige, dass du ohne Angebot annehmen willst.",
     "KIND_MISMATCH": "Die Vorlage muss dieselbe Art wie die Anfrage haben.",
     "TEMPLATE_NOT_ASSIGNABLE": "Die Vorlage ist nicht mehr aktiv. Wähle eine andere.",
     "PROJECT_NOT_FOUND": "Das Projekt ist nicht verfügbar.",

@@ -22,6 +22,7 @@ export const serviceRequestSchemas = {
   ]),
   accept: z.object({
     version: z.int().positive(),
+    acceptWithoutOffer: z.boolean(),
     project: z.discriminatedUnion("mode", [
       z.object({ mode: z.literal(Mode.Existing), projectId: z.uuid() }),
       z.object({ mode: z.literal(Mode.New), project: projectSchemas.create }),

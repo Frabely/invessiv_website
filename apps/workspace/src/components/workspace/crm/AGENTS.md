@@ -443,6 +443,11 @@ Plan: `apps/workspace/plans/crm/13c-portal-leistungsanfragen/74-leistungsarten-u
   `@invessiv/ui` und erscheint nur, wenn es wirklich zwei Wege gibt
   (`canChooseServiceRequestProject` bzw. `…Template`, dieselben Helfer setzen den Startwert); Hinweise und Sperrgründe
   stehen als `hint` bzw. `errorMessage` am Feld.
+- **Angebot zuerst:** Der Kunde sieht im Portal keinen Preis. An einer eingegangenen Anfrage ist „Angebot
+  gesendet“ die Hauptaktion; „Ohne Angebot annehmen“ (Kulanz) ist eine Nebenaktion (`ghost`) und im Annahme-Dialog
+  erst nach dem Bestätigungshaken sendbar. Der Haken geht als `acceptWithoutOffer` an den Server, der ohne ihn mit
+  `OFFER_REQUIRED` ablehnt. Erst nach dem Angebot ist „Kunde hat zugesagt“ die Hauptaktion. Welche
+  Variante gilt, liest die UI über `isServiceRequestWithoutOffer` aus dem Status der Anfrage.
 - Dialoge nutzen `useVersionedMutation`, direkte Angebotsmarkierung `useVersionedCommand`.
   Konflikte behalten Eingaben und übernehmen die aktuelle Version. Ablehnungsgründe sind
   ausdrücklich als kundensichtbar gekennzeichnet.

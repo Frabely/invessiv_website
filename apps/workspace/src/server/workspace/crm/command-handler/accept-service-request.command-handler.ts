@@ -72,6 +72,9 @@ export async function acceptServiceRequest(
             current: await access.toDto(tx, request, actor),
           },
         };
+      // The customer has seen no price before an offer; skipping it must be stated, never implied.
+      if (request.status === S.Requested && !data.acceptWithoutOffer)
+        return { ok: false, code: E.OfferRequired };
       let template;
       if (data.template.mode === Mode.Existing) {
         const [found] = await tx

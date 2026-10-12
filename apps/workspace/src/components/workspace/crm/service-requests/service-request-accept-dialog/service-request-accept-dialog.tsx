@@ -1,6 +1,11 @@
 "use client";
 import { useId, useRef, useState, type SubmitEvent } from "react";
-import { FormDialog, FormField, CustomSelect } from "@invessiv/ui";
+import {
+  CheckboxControl,
+  FormDialog,
+  FormField,
+  CustomSelect,
+} from "@invessiv/ui";
 import { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
@@ -19,6 +24,7 @@ import type { LineItemFieldsFormValues } from "@/common/contracts/crm/line-item-
 import type { Locale } from "@/config/i18n";
 import {
   createServiceRequestAcceptForm,
+  isServiceRequestWithoutOffer,
   applyServiceRequestTemplate,
   validateServiceRequestAcceptForm,
   toAcceptServiceRequest,
@@ -72,6 +78,9 @@ export function ServiceRequestAcceptDialog({
     ServiceRequestErrorCode
   >(request, onCloseAction);
   const sharedContent = getCrmProjectLineItemsDictionary(locale);
+  // Without an offer the customer never saw a price, so accepting needs a deliberate tick.
+  const withoutOffer = isServiceRequestWithoutOffer(mutation.current);
+  const unconfirmed = withoutOffer && !values.confirmedWithoutOffer;
   const templates = viewModel.templates.filter((t) => t.kind === request.kind);
   const blockers = viewModel.blockers[values.projectId] ?? {
     hours: null,
@@ -102,7 +111,7 @@ export function ServiceRequestAcceptDialog({
   }
   async function submit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (mutation.isSubmitting || blocker) return;
+    if (mutation.isSubmitting || blocker || unconfirmed) return;
     if (!validateServiceRequestAcceptForm(values, mutation.current)) {
       setInvalid(true);
       titleRef.current?.focus();
@@ -140,14 +149,20 @@ export function ServiceRequestAcceptDialog({
     <FormDialog
       size={DialogSize.Wide}
       formId={formId}
-      title={content.form.acceptTitle}
+      title={
+        withoutOffer
+          ? content.form.acceptWithoutOfferTitle
+          : content.form.acceptTitle
+      }
       busy={mutation.isSubmitting}
       cancelLabel={content.form.cancel}
       closeLabel={content.form.close}
       onCloseAction={mutation.close}
       submitLabel={content.form.accept}
       submittingLabel={content.form.busy}
-      submitDisabled={blocker !== null || noProject || noTemplate}
+      submitDisabled={
+        blocker !== null || noProject || noTemplate || unconfirmed
+      }
       footerHint={content.form.required}
     >
       <form className={layout.form} id={formId} onSubmit={submit} noValidate>
@@ -159,6 +174,27 @@ export function ServiceRequestAcceptDialog({
             crmPath={workspaceAreaPathFor(locale, WorkspaceArea.Crm)}
           />
         </section>
+        {withoutOffer ? (
+          <div className={styles.notice} data-warning="true">
+            <p className={styles.noticeText}>
+              {content.form.withoutOfferNotice}
+            </p>
+            <label className={styles.confirm}>
+              <CheckboxControl
+                checked={values.confirmedWithoutOffer}
+                name="service-request-without-offer"
+                onChange={(event) =>
+                  update("confirmedWithoutOffer", event.target.checked)
+                }
+              />
+              {content.form.withoutOfferConfirm}
+            </label>
+          </div>
+        ) : (
+          <div className={styles.notice}>
+            <p className={styles.noticeText}>{content.form.offeredNotice}</p>
+          </div>
+        )}
         <ServiceRequestProjectFields
           request={request}
           viewModel={viewModel}

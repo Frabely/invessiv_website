@@ -62,7 +62,7 @@ packages/common/src/contracts/crm/rows/service-request-row.ts
 | `requested` | `withdrawn` | customer |
 
 Fehlercodes: `SERVICE_REQUEST_NOT_FOUND` (404), `VALIDATION_ERROR` (422), `INVALID_TRANSITION` (409),
-`VERSION_CONFLICT` (409 mit `VersionConflictDto`), `KIND_MISMATCH` (422), `TEMPLATE_NOT_ASSIGNABLE` (409),
+`VERSION_CONFLICT` (409 mit `VersionConflictDto`), `OFFER_REQUIRED` (409, Nachtrag 12.10.2026), `KIND_MISMATCH` (422), `TEMPLATE_NOT_ASSIGNABLE` (409),
 `PROJECT_NOT_FOUND` (404), `EFFECT_NOT_PERMITTED` (403), `PROJECT_CLOSED` (409),
 `FEEDBACK_ROUND_NOT_AVAILABLE` (409), `INTERNAL` (500).
 
@@ -237,7 +237,10 @@ Runde entstehen deshalb nie doppelt.
    Fehlercode erscheint als Text über `service-request-error-text.ts`. Nach Erfolg `router.refresh()`.
 
 **Aktionen an der Zeile** (`service-request-actions`, nur mit Schreibrecht und nur die Ziele aus
-`canTransitionServiceRequest`): „Angebot gesendet“ (direkt, `useVersionedCommand`), „Annehmen“, „Ablehnen“.
+`canTransitionServiceRequest`): Im Status `requested` ist „Angebot gesendet“ (direkt, `useVersionedCommand`) die
+Hauptaktion, „Ohne Angebot annehmen“ steht als Nebenaktion daneben und verlangt im Dialog eine ausdrückliche
+Bestätigung, die als `acceptWithoutOffer` an den Server geht (sonst `OFFER_REQUIRED`). Im Status `offered` ist „Kunde hat zugesagt“ die Hauptaktion. „Ablehnen“ gibt es in beiden
+(Nachtrag vom 12.10.2026, siehe README).
 Der Ablehnen-Dialog verlangt den Grund und kennzeichnet ihn: „Der Kunde sieht diesen Text.“
 
 - **Akzeptanz (Integration):**

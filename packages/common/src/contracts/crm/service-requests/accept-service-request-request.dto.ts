@@ -4,6 +4,8 @@ import type { AcceptServiceRequestLineItemDto } from "./accept-service-request-l
 export interface AcceptServiceRequestRequestDto {
   /** Expected request version. */
   version: number;
+  /** Deliberate acceptance before any offer was sent; required while the request is still `requested`. */
+  acceptWithoutOffer: boolean;
   /** Final assignment target. */
   project: AcceptServiceRequestProjectTargetDto;
   /** Active or newly created catalog source. */

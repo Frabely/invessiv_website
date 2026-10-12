@@ -106,6 +106,48 @@ describe("CustomerServiceRequestsSection", () => {
     );
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
+  it("leads with the offer and offers acceptance as the main step only afterwards", () => {
+    render(
+      <CustomerServiceRequestsSection
+        viewModel={serviceRequestsViewModelFixture()}
+        content={content}
+        locale="en"
+      />,
+    );
+    expect(
+      screen.getByRole("button", { name: content.actions.offered }),
+    ).toBeVisible();
+    expect(
+      screen.getByRole("link", { name: content.actions.acceptWithoutOffer }),
+    ).toBeVisible();
+    expect(
+      screen.queryByRole("link", { name: content.actions.accept }),
+    ).not.toBeInTheDocument();
+    cleanup();
+    render(
+      <CustomerServiceRequestsSection
+        viewModel={serviceRequestsViewModelFixture({
+          requests: [
+            serviceRequestFixture({
+              status: ServiceRequestStatus.Offered,
+              offeredAt: "2026-10-11T09:00:00.000Z",
+            }),
+          ],
+        })}
+        content={content}
+        locale="en"
+      />,
+    );
+    expect(
+      screen.getByRole("link", { name: content.actions.accept }),
+    ).toBeVisible();
+    expect(
+      screen.queryByRole("link", { name: content.actions.acceptWithoutOffer }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: content.actions.offered }),
+    ).not.toBeInTheDocument();
+  });
   it("keeps completed requests collapsed until the matching request is selected", () => {
     const done = serviceRequestFixture({
       id: "done",

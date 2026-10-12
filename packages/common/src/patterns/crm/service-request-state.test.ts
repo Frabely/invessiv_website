@@ -47,6 +47,7 @@ describe("service request transitions", () => {
       "VALIDATION_ERROR",
       "INVALID_TRANSITION",
       "VERSION_CONFLICT",
+      "OFFER_REQUIRED",
       "KIND_MISMATCH",
       "TEMPLATE_NOT_ASSIGNABLE",
       "PROJECT_NOT_FOUND",

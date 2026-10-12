@@ -4,3 +4,37 @@
   border: 1px dashed var(--color-border-strong);
   border-radius: 0.6rem;
 }
+
+/* States what accepting means for the customer before the form is filled in. */
+.notice {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.5rem 0.7rem;
+  border-left: 2px solid var(--color-border-strong);
+}
+
+.notice[data-warning="true"] {
+  border-left-color: var(--color-accent-warm);
+}
+
+.noticeText {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+.notice[data-warning="true"] .noticeText {
+  color: var(--color-text);
+}
+
+.confirm {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+  cursor: pointer;
+}

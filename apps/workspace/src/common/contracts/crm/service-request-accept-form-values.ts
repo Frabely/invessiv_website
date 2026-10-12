@@ -10,4 +10,6 @@ export type ServiceRequestAcceptFormValues = LineItemFieldsFormValues & {
   quantityInput: string;
   allocateHoursToProject: boolean;
   status: ProjectLineItemStatus;
+  /** Ticked on purpose to accept before any offer was sent. */
+  confirmedWithoutOffer: boolean;
 };

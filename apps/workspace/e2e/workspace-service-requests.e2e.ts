@@ -113,14 +113,21 @@ test("offers, declines with a conflict, and assigns a request in the customer co
       ).toBeVisible();
       await card
         .getByRole("link", {
-          name: variant.content.actions.accept,
+          name: variant.content.actions.acceptWithoutOffer,
           exact: true,
         })
         .click();
       const dialog = page.getByRole("dialog", {
-        name: variant.content.form.acceptTitle,
+        name: variant.content.form.acceptWithoutOfferTitle,
         exact: true,
       });
+      // Accepting before an offer stays locked until it is confirmed on purpose.
+      await expect(
+        dialog.getByRole("button", {
+          name: variant.content.form.accept,
+          exact: true,
+        }),
+      ).toBeDisabled();
       await expect(
         dialog.getByText(variant.content.form.project, { exact: true }).first(),
       ).toBeVisible();

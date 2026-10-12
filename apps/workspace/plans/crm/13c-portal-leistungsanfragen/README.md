@@ -10,9 +10,11 @@ bei Stunden zusätzlich eine separate Gutschrift. Ordner 13c macht daraus einen 
 
 1. Der Kunde fragt im Portal an — aus freigegebenen Katalogleistungen **ohne Preis** oder als Freitext.
 2. Die Anfrage landet im Kunden-Cockpit und in einem globalen Eingang mit Sidebar-Zähler.
-3. Intern: „Angebot gesendet“ (optional), **Annehmen** oder **Ablehnen**. Annehmen weist die Leistung in einem
-   Schritt einem bestehenden oder im selben Dialog neu angelegten Projekt zu; aus einer Freitext-Anfrage entsteht
-   dabei auf Wunsch eine neue Katalogvorlage.
+3. Intern: zuerst **„Angebot gesendet“** (der Kunde kennt bis dahin keinen Preis), sonst **Ablehnen**. Erst wenn
+   der Kunde dem Angebot zugestimmt hat (vorerst per Mail, später im Portal), wird mit **„Kunde hat zugesagt“**
+   angenommen. Annehmen weist die Leistung in einem Schritt einem bestehenden oder im selben Dialog neu angelegten
+   Projekt zu; aus einer Freitext-Anfrage entsteht dabei auf Wunsch eine neue Katalogvorlage. Für Kulanz bleibt
+   „Ohne Angebot annehmen“ als zurückhaltende Aktion mit ausdrücklicher Bestätigung (Nachtrag vom 12.10.2026).
 4. Sonderfälle laufen automatisch mit der Zuweisung: **Stunden** (Menge → Gutschrift + Projektzuweisung) und
    **Zusatz-Feedbackrunde** (ein Rundenschritt mehr).
 
@@ -37,7 +39,7 @@ Statuswerte: `offen` → `läuft` → `im Review` → `gemerged`.
 | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Anfrageform     | **Hybrid:** freigegebene Katalogleistungen als Karten (Titel + Kundentext, nie Preis) und immer „Etwas anderes“ (Freitext)                                                                                                                                                                                                                    |
 | Projektbezug    | **Vorlage gibt vor, intern wird entschieden.** Vorlage trägt `existing_project` oder `new_project`. Kunde wählt bei `existing_project` das Projekt; Freitext: Projekt, „Neues Vorhaben“ oder „Weiß ich nicht“. Final entscheidet der Annahme-Dialog                                                                                           |
-| Status          | `requested → offered (optional) → accepted \| declined`, dazu `withdrawn` (Kunde, nur aus `requested`). Ablehnen verlangt einen kundensichtbaren Grund                                                                                                                                                                                        |
+| Status          | `requested → offered (Regelweg, siehe Nachtrag vom 12.10.2026) → accepted \| declined`, dazu `withdrawn` (Kunde, nur aus `requested`). Ablehnen verlangt einen kundensichtbaren Grund                                                                                                                                                         |
 | Stunden         | Vorlagen-Art `hours`: Preis = Stundensatz, Menge beim Zuweisen/Annehmen. **Eine Transaktion:** Projektleistung mit Menge + Kaufbuchung + Zuweisung an das Projekt — oder, per Haken abwählbar, ohne Zuweisung als freie Stunden des Kunden (Nachtrag in Task 74). Gilt im Cockpit **und** für Anfragen. Gutschrift erst nach interner Annahme |
 | Zusatzrunde     | Vorlagen-Art `feedback_round`: Zuweisung fügt genau einen Rundenschritt ein — hinter der letzten Runde, bzw. hinter dem aktuellen Schritt, wenn das Projekt schon weiter ist. Max. 20, nie nach einer Abnahme                                                                                                                                 |
 | Intern sichtbar | Sektion im Kunden-Cockpit **und** globaler Eingang `/crm/service-requests` mit Sidebar-Zähler                                                                                                                                                                                                                                                 |
@@ -157,7 +159,7 @@ Prettier nur auf die geänderten Dateien anwenden (CRLF, `autocrlf=true`).
    ebenso.
 2. Als Kontakt im Portal: „Unterseite“ für Projekt A anfragen → Bestätigung, Eintrag „Eingegangen“.
 3. Intern: Sidebar-Zähler 1, Karte im Eingang und im Cockpit. „Angebot gesendet“ → Portal zeigt „Angebot unterwegs“.
-4. „Annehmen“ → Leistung steht in Projekt A; Portal zeigt „Bestätigt“; im Chat stehen drei Systemnachrichten.
+4. „Kunde hat zugesagt“ → Leistung steht in Projekt A; Portal zeigt „Bestätigt“; im Chat stehen drei Systemnachrichten.
 5. Freitext „Zweite Landingpage“ mit „Neues Vorhaben“ → intern annehmen mit „Neues Projekt“ und „Neue Vorlage“ →
    neues Projekt mit Leistung, neue Vorlage im Katalog.
 6. 5 Stunden anfragen → intern annehmen → Stunden-Widget im Portal zeigt 5:00 mehr, Projekt A hat 5:00 zugewiesen.
@@ -298,3 +300,22 @@ mit demselben Schlüssel, externe Navigation, alte offene Anfragen und einen erz
 firmenübergreifenden Insert. Die fokussierten Portal-/UI-Tests und alle 17 Portal-Service-Integrationstests gegen
 Development sind grün. Monorepo-Lint, Typecheck und Unit-Tests (5.285 bestanden, davon 3.772 im Workspace) sowie
 der Workspace-Build sind grün. Das oben dokumentierte Browser-E2E-Gate bleibt offen.
+
+### Nachtrag Ablauf „Angebot zuerst“ — 12.10.2026
+
+Der Kunde sieht im Portal nie einen Preis; eine Annahme direkt nach dem Eingang hätte ihn ohne Angebot gebunden.
+Die Aktionen im Cockpit folgen deshalb dem Status:
+
+- **Eingegangen:** Hauptaktion „Angebot gesendet“, daneben als Nebenaktionen (`ghost`) „Ohne Angebot annehmen“ und
+  „Ablehnen“.
+- **Angebot gesendet:** Hauptaktion „Kunde hat zugesagt“ (öffnet den Annahme-Dialog), daneben „Ablehnen“.
+- **Ohne Angebot annehmen** öffnet denselben Dialog mit eigenem Titel und einem Hinweis, dass der Kunde den Preis
+  nicht kennt. „Annehmen und zuweisen“ bleibt gesperrt, bis der Haken „Ich nehme bewusst ohne Angebot an“ gesetzt
+  ist.
+
+Der Server setzt das durch: `AcceptServiceRequestRequestDto.acceptWithoutOffer` ist Pflichtfeld. Steht die Anfrage
+noch auf `requested` und ist das Feld nicht `true`, antwortet `acceptServiceRequest` mit `OFFER_REQUIRED` (409)
+und schreibt nichts; nach einem Angebot wird das Feld nicht ausgewertet. Geprüft wird unter der Zeilensperre nach
+Übergang und Version. Übergangstabelle und Datenbank sind unverändert. Ob ohne Angebot angenommen wurde, zeigt
+`offered_at IS NULL` an einer angenommenen Anfrage. Die Zusage des Kunden kommt vorerst per Mail; eine Zusage im
+Portal ist ein späterer Ausbau (dann als Kundenübergang `offered → accepted`).

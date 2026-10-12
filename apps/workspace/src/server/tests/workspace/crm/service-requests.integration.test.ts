@@ -121,6 +121,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
     ): AcceptServiceRequestRequestDto {
       return {
         version: 1,
+        acceptWithoutOffer: true,
         project: { mode: Mode.Existing, projectId },
         template: { mode: Mode.Existing, lineItemTemplateId: templateId },
         lineItem: {
@@ -344,6 +345,32 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       ).toEqual({ ok: false, code: E.InvalidTransition });
     });
 
+    it("refuses acceptance before an offer unless it is stated on purpose", async () => {
+      const id = await request();
+      const projectId = await f.project();
+      const unconfirmed = {
+        ...acceptance(projectId),
+        acceptWithoutOffer: false,
+      };
+      expect(await acceptServiceRequest(id, unconfirmed, actor())).toEqual({
+        ok: false,
+        code: E.OfferRequired,
+      });
+      expect(await row(id)).toMatchObject({
+        status: S.Requested,
+        version: 1,
+        project_id: null,
+        project_line_item_id: null,
+      });
+      await changeServiceRequestStatus(
+        id,
+        { to: S.Offered, version: 1 },
+        actor(),
+      );
+      expect(
+        await acceptServiceRequest(id, { ...unconfirmed, version: 2 }, actor()),
+      ).toMatchObject({ ok: true, request: { status: S.Accepted } });
+    });
     it("creates a private template and a project with the customer's owner and two rounds", async () => {
       const id = await request({ line_item_template_id: null });
       const result = await acceptServiceRequest(id, newAcceptance(), actor());

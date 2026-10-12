@@ -3,6 +3,7 @@ export const ServiceRequestErrorCode = {
   ValidationError: "VALIDATION_ERROR",
   InvalidTransition: "INVALID_TRANSITION",
   VersionConflict: "VERSION_CONFLICT",
+  OfferRequired: "OFFER_REQUIRED",
   KindMismatch: "KIND_MISMATCH",
   TemplateNotAssignable: "TEMPLATE_NOT_ASSIGNABLE",
   ProjectNotFound: "PROJECT_NOT_FOUND",
