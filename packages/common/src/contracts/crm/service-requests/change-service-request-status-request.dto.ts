@@ -5,6 +5,10 @@ export type ChangeServiceRequestStatusRequestDto =
       to: typeof ServiceRequestStatus.Offered;
       /** Expected request version. */
       version: number;
+      /** Offered price in cents; the hourly rate for an hours request. Internal, never shown in the portal. */
+      priceCents: number;
+      /** Offered hours in minutes; set exactly for an hours request. */
+      minutes: number | null;
     }
   | {
       /** Reject the request. */
@@ -13,4 +17,10 @@ export type ChangeServiceRequestStatusRequestDto =
       version: number;
       /** Customer-visible rejection reason. */
       reason: string;
+    }
+  | {
+      /** Record that the customer turned the offer down. */
+      to: typeof ServiceRequestStatus.Withdrawn;
+      /** Expected request version. */
+      version: number;
     };

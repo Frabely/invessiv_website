@@ -18,8 +18,14 @@ function response(status: number, payload: unknown) {
   return fetch;
 }
 afterEach(() => vi.unstubAllGlobals());
+const OFFER = {
+  to: S.Offered,
+  version: 1,
+  priceCents: 12500,
+  minutes: null,
+};
 describe("serviceRequestsApiService", () => {
-  it("uses a PATCH for status changes and returns current data for the decline dialog", async () => {
+  it("uses a PATCH for status changes and returns current data for the status dialogs", async () => {
     const current = serviceRequestFixture({ status: S.Declined, version: 2 });
     const fetch = response(200, current);
     const input = {
@@ -27,7 +33,9 @@ describe("serviceRequestsApiService", () => {
       version: 1,
       reason: "Customer-visible reason",
     };
-    expect(await serviceRequestsApiService.decline(current.id, input)).toEqual({
+    expect(
+      await serviceRequestsApiService.changeStatus(current.id, input),
+    ).toEqual({
       ok: true,
       current,
     });
@@ -39,11 +47,8 @@ describe("serviceRequestsApiService", () => {
       }),
     );
     expect(
-      await serviceRequestsApiService.changeStatus(current.id, {
-        to: S.Offered,
-        version: 1,
-      }),
-    ).toEqual({ ok: true, value: current });
+      await serviceRequestsApiService.changeStatus(current.id, OFFER),
+    ).toEqual({ ok: true, current });
   });
   it("distinguishes a real version conflict from a terminal transition failure", async () => {
     const current = serviceRequestFixture({ status: S.Offered, version: 2 });
@@ -53,7 +58,7 @@ describe("serviceRequestsApiService", () => {
       current,
     });
     expect(
-      await serviceRequestsApiService.decline(current.id, {
+      await serviceRequestsApiService.changeStatus(current.id, {
         to: S.Declined,
         version: 1,
         reason: "Reason",
@@ -65,10 +70,7 @@ describe("serviceRequestsApiService", () => {
     });
     response(409, { error: E.InvalidTransition });
     expect(
-      await serviceRequestsApiService.changeStatus(current.id, {
-        to: S.Offered,
-        version: 1,
-      }),
+      await serviceRequestsApiService.changeStatus(current.id, OFFER),
     ).toEqual({
       ok: false,
       code: E.InvalidTransition,
@@ -78,25 +80,16 @@ describe("serviceRequestsApiService", () => {
     for (const code of SERVICE_REQUEST_ERROR_CODE_VALUES) {
       response(422, { error: code });
       expect(
-        await serviceRequestsApiService.changeStatus("request", {
-          to: S.Offered,
-          version: 1,
-        }),
+        await serviceRequestsApiService.changeStatus("request", OFFER),
       ).toEqual({ ok: false, code });
     }
     response(200, { success: true });
     expect(
-      await serviceRequestsApiService.changeStatus("request", {
-        to: S.Offered,
-        version: 1,
-      }),
+      await serviceRequestsApiService.changeStatus("request", OFFER),
     ).toEqual({ ok: false, code: E.Internal });
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new Error("offline")));
     expect(
-      await serviceRequestsApiService.changeStatus("request", {
-        to: S.Offered,
-        version: 1,
-      }),
+      await serviceRequestsApiService.changeStatus("request", OFFER),
     ).toEqual({ ok: false, code: E.Internal });
   });
 });

@@ -63,6 +63,27 @@ describe("service request acceptance form", () => {
       ).acceptWithoutOffer,
     ).toBe(false);
   });
+  it("starts the acceptance from the offered price and hours instead of the catalog", () => {
+    const vm = serviceRequestsViewModelFixture();
+    expect(
+      createServiceRequestAcceptForm(
+        serviceRequestFixture({ offeredPriceCents: 99000 }),
+        vm,
+        "de",
+      ).priceInput,
+    ).toBe("990");
+    expect(
+      createServiceRequestAcceptForm(
+        serviceRequestFixture({
+          kind: LineItemKind.Hours,
+          requestedMinutes: 300,
+          offeredMinutes: 240,
+        }),
+        vm,
+        "de",
+      ).quantityInput,
+    ).toBe("4:00");
+  });
   it("offers the choice between existing and new only where both ways exist", () => {
     const vm = serviceRequestsViewModelFixture();
     const free = serviceRequestFixture({ lineItemTemplateId: null });

@@ -25,7 +25,7 @@ const migration = readFileSync(
 
 /** Task 74 widened the source CHECK; the current set of sources is the one written there. */
 const sourceMigration = readFileSync(
-  resolve(process.cwd(), "migrations", "0058_add_line_item_kinds.sql"),
+  resolve(process.cwd(), "migrations", "0058_add_service_requests.sql"),
   "utf8",
 );
 

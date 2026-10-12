@@ -13,10 +13,13 @@ import {
 } from "../../constants/crm/errors/service-request-error-codes";
 import { ServiceRequestFieldLimits } from "../../constants/crm/forms/service-request-field-limits";
 import { SERVICE_REQUEST_TRANSITIONS } from "../../constants/crm/service-request-transitions";
-import { canTransitionServiceRequest } from "./service-request-state";
+import {
+  canTransitionServiceRequest,
+  isServiceRequestWithoutOffer,
+} from "./service-request-state";
 
 describe("service request transitions", () => {
-  it("allows only the six specified side-specific transitions, including no self transitions", () => {
+  it("allows only the eight specified side-specific transitions, including no self transitions", () => {
     const allowed = [
       [S.Requested, S.Offered, Side.Internal],
       [S.Requested, S.Accepted, Side.Internal],
@@ -24,8 +27,10 @@ describe("service request transitions", () => {
       [S.Offered, S.Accepted, Side.Internal],
       [S.Offered, S.Declined, Side.Internal],
       [S.Requested, S.Withdrawn, Side.Customer],
+      [S.Offered, S.Withdrawn, Side.Customer],
+      [S.Offered, S.Withdrawn, Side.Internal],
     ];
-    expect(SERVICE_REQUEST_TRANSITIONS).toHaveLength(6);
+    expect(SERVICE_REQUEST_TRANSITIONS).toHaveLength(8);
     for (const from of SERVICE_REQUEST_STATUS_VALUES)
       for (const to of SERVICE_REQUEST_STATUS_VALUES)
         for (const side of SERVICE_REQUEST_TRANSITION_SIDE_VALUES)
@@ -35,6 +40,11 @@ describe("service request transitions", () => {
           ).toBe(
             allowed.some(([a, b, c]) => a === from && b === to && c === side),
           );
+  });
+  it("needs the deliberate confirmation only before an offer", () => {
+    expect(
+      SERVICE_REQUEST_STATUS_VALUES.filter(isServiceRequestWithoutOffer),
+    ).toEqual([S.Requested]);
   });
   it("keeps boundary limits and public error codes explicit and unique", () => {
     expect(ServiceRequestFieldLimits).toEqual({
@@ -48,6 +58,7 @@ describe("service request transitions", () => {
       "INVALID_TRANSITION",
       "VERSION_CONFLICT",
       "OFFER_REQUIRED",
+      "CATALOG_NOT_READABLE",
       "KIND_MISMATCH",
       "TEMPLATE_NOT_ASSIGNABLE",
       "PROJECT_NOT_FOUND",

@@ -1,0 +1,12 @@
+.form {
+  display: grid;
+  gap: 0.9rem;
+  padding: 0.55rem 0.7rem;
+}
+
+.notice {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.55;
+}

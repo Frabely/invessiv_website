@@ -160,7 +160,12 @@ test("offers, declines with a conflict, and assigns a request in the customer co
         r.request().method() === "PATCH",
     );
     await card
-      .getByRole("button", { name: de.actions.offered, exact: true })
+      .getByRole("link", { name: de.actions.offered, exact: true })
+      .click();
+    // The offer dialog starts from the catalog price of the requested service.
+    await page
+      .getByRole("dialog", { name: de.form.offerTitle, exact: true })
+      .getByRole("button", { name: de.form.offer, exact: true })
       .click();
     expect((await offer).status()).toBe(200);
     await expect(
@@ -212,7 +217,7 @@ test("offers, declines with a conflict, and assigns a request in the customer co
     expect(
       (
         await page.request.patch(crmServiceRequestStatusEndpoint(declinedId), {
-          data: { to: S.Offered, version: 1 },
+          data: { to: S.Offered, version: 1, priceCents: 9900, minutes: null },
         })
       ).status(),
     ).toBe(200);

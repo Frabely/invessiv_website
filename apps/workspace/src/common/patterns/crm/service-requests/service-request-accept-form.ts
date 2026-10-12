@@ -1,8 +1,8 @@
 import { ServiceRequestProjectWish as Mode } from "@invessiv/common/constants/crm/service-request-project-wishes";
-import { ServiceRequestStatus } from "@invessiv/common/constants/crm/service-request-statuses";
 import { LineItemProjectMode } from "@invessiv/common/constants/crm/line-item-project-modes";
 import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
 import { ProjectLineItemStatus } from "@invessiv/common/constants/crm/project-line-item-statuses";
+import { isServiceRequestWithoutOffer } from "@invessiv/common/patterns/crm/service-request-state";
 import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import type { LineItemTemplateDto } from "@invessiv/common/contracts/crm/line-item-template.dto";
 import type { ServiceRequestDto } from "@invessiv/common/contracts/crm/service-requests/service-request.dto";
@@ -18,15 +18,10 @@ import {
   createProjectFormValues,
   toCreateProjectRequest,
 } from "@/common/patterns/crm/project-form";
+import { formatCentsAsEuroInput } from "@/common/patterns/crm/euro-cents";
 import { readDurationInput } from "@/common/patterns/crm/hours/duration-input";
 import { ProjectLineItemFieldLimits } from "@invessiv/common/constants/crm/forms/project-line-item-field-limits";
 
-/** Before an offer the customer knows no price, so accepting then needs a deliberate confirmation. */
-export function isServiceRequestWithoutOffer(
-  request: ServiceRequestDto,
-): boolean {
-  return request.status === ServiceRequestStatus.Requested;
-}
 /** A new project is only a choice for a standard service and with the right to create one. */
 export function canChooseServiceRequestProject(
   request: ServiceRequestDto,
@@ -53,8 +48,15 @@ export function createServiceRequestAcceptForm(
   const template = viewModel.templates.find(
     (t) => t.id === request.lineItemTemplateId && t.kind === request.kind,
   );
+  const fields = createLineItemFieldsFormValues(template ?? null, locale);
+  // What was offered is what gets booked; the catalog only fills in when no offer recorded a value.
+  const quantityMinutes = request.offeredMinutes ?? request.requestedMinutes;
   return {
-    ...createLineItemFieldsFormValues(template ?? null, locale),
+    ...fields,
+    priceInput:
+      request.offeredPriceCents !== null
+        ? formatCentsAsEuroInput(request.offeredPriceCents, locale)
+        : fields.priceInput,
     title: template?.title ?? request.title,
     description: template?.description ?? request.note,
     projectMode:
@@ -73,9 +75,7 @@ export function createServiceRequestAcceptForm(
       : Mode.Existing,
     templateId: template?.id ?? "",
     quantityInput:
-      request.requestedMinutes !== null
-        ? formatDuration(request.requestedMinutes)
-        : "",
+      quantityMinutes !== null ? formatDuration(quantityMinutes) : "",
     allocateHoursToProject: true,
     status: ProjectLineItemStatus.Planned,
     confirmedWithoutOffer: false,
@@ -126,7 +126,8 @@ export function toAcceptServiceRequest(
   return {
     version: request.version,
     acceptWithoutOffer:
-      isServiceRequestWithoutOffer(request) && values.confirmedWithoutOffer,
+      isServiceRequestWithoutOffer(request.status) &&
+      values.confirmedWithoutOffer,
     project:
       values.projectMode === Mode.New
         ? { mode: Mode.New, project: toCreateProjectRequest(projectValues) }

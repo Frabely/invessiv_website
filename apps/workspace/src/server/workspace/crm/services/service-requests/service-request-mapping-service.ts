@@ -22,6 +22,8 @@ function toDto(
     status: r.status,
     declineReason: r.decline_reason,
     offeredAt: r.offered_at?.toISOString() ?? null,
+    offeredPriceCents: r.offered_price_cents,
+    offeredMinutes: r.offered_minutes,
     decidedAt: r.decided_at?.toISOString() ?? null,
     projectId: r.project_id,
     projectLineItemId: r.project_line_item_id,

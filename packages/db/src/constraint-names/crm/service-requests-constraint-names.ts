@@ -19,6 +19,8 @@ export const ServiceRequestsConstraintName = {
   AcceptedCheck: "service_requests_accepted_check",
   DeclinedCheck: "service_requests_declined_check",
   VersionCheck: "service_requests_version_check",
+  OfferedPriceCheck: "service_requests_offered_price_check",
+  OfferedMinutesCheck: "service_requests_offered_minutes_check",
   IdempotencyUnique: "service_requests_idempotency_key_uidx",
   CustomerCreatedIndex: "service_requests_customer_created_idx",
   StatusCreatedIndex: "service_requests_status_created_idx",

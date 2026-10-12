@@ -10,7 +10,7 @@ import {
   projects,
   roles,
 } from "@invessiv/db/record-configuration";
-import { PORTAL_E2E_PREFIX as PREFIX } from "@/common/constants/testing/portal-e2e-prefix";
+import { PORTAL_E2E_PREFIX as PREFIX } from "@/test/constants/portal-e2e-prefix";
 export async function removeOldCustomers(tx: ContactDatabaseTransaction) {
   const oldCustomers = await tx
     .select({ id: customers.id })

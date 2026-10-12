@@ -3,7 +3,7 @@ import { TaskActionSide } from "@invessiv/common/constants/crm/task-action-sides
 import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import { type ContactDatabaseTransaction } from "@invessiv/db/core";
 import { tasks } from "@invessiv/db/record-configuration";
-import type { PortalE2eSeed } from "@/common/contracts/testing/portal-e2e-seed";
+import type { PortalE2eSeed } from "@/test/contracts/portal-e2e-seed";
 export async function insertTasks(
   tx: ContactDatabaseTransaction,
   seed: PortalE2eSeed,

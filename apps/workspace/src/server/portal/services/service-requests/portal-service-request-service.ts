@@ -1,6 +1,6 @@
 import "server-only";
 import { and, desc, eq, inArray, isNotNull, type SQL } from "drizzle-orm";
-import type { Permission } from "@invessiv/common/constants/auth/permissions";
+import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { HOURS_CLOSED_PROJECT_STATUS_VALUES } from "@invessiv/common/constants/crm/hours-closed-project-statuses";
 import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
 import { LineItemTemplateStatus } from "@invessiv/common/constants/crm/line-item-template-statuses";
@@ -67,7 +67,11 @@ const PROJECT_STATUSES_BY_KIND: Record<LineItemKind, readonly ProjectStatus[]> =
     [LineItemKind.FeedbackRound]: [ProjectStatus.Active],
   };
 
-/** The read flow loads every candidate once; a command can restrict the query to its service kind. */
+/**
+ * The read flow loads every candidate once; a command can restrict the query to its service kind.
+ * Naming a project means reading its title, so without `portal.projects.read` there are no
+ * candidates: such a contact asks without a project, and services that need one are not offered.
+ */
 async function projectCandidates(
   executor: ContactDatabaseReader,
   reader: PortalReader,
@@ -85,6 +89,9 @@ async function projectCandidates(
     .where(
       and(
         portalProjectCondition(reader, permission),
+        portalAccessCondition.forReader(reader, Permission.PortalProjectsRead, {
+          customerId: projects.customer_id,
+        }),
         kind === undefined
           ? undefined
           : inArray(projects.status, [...PROJECT_STATUSES_BY_KIND[kind]]),

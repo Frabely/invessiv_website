@@ -26,6 +26,8 @@ describe("serviceRequestMappingService", () => {
           status: ServiceRequestStatus.Requested,
           decline_reason: null,
           offered_at: null,
+          offered_price_cents: null,
+          offered_minutes: null,
           decided_at: null,
           decided_by_member_id: null,
           project_id: null,

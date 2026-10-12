@@ -273,6 +273,12 @@ Plan: `apps/workspace/plans/crm/13c-portal-leistungsanfragen/76-portal-leistungs
   (`services/service-requests/`): `can`, `catalogCondition` (aktiv **und** freigegeben; Archivieren entzieht die
   Freigabe sofort), `requestCondition` (`portalAccessCondition.forReader` auf `service_requests.customer_id`, ohne
   Recht `FALSE`), `selectableProjects` und `openExtraRoundProjectIds`. Kein Handler wiederholt diese Regeln.
+- **Projektnamen nur mit `portal.projects.read`.** `projectCandidates` verlangt zusätzlich zum
+  Leistungsrecht das Projekt-Leserecht. Ohne es gibt es keine wählbaren Projekte: Der Kontakt fragt
+  ohne Projekt an, und eine Zusatzrunde (die ein Projekt braucht) wird nicht angeboten.
+- **Zurückziehen bis zur Entscheidung.** Der Kunde zieht aus `requested` und aus `offered` zurück
+  (ein abgelehntes Angebot). Anfragen gehören der Firma: Jeder Kontakt mit
+  `portal.services.request` darf auch die Anfrage eines Kollegen zurückziehen.
 - **Zwei Rechte:** `portal.services.read` zeigt Katalog und eigene Anfragen, `portal.services.request` erlaubt
   Anfragen und Zurückziehen. Beide liegen in `portal_standard`; nur das Leserecht steht in
   `PORTAL_READ_PERMISSION_VALUES`. Die Owner-Sicht liest also, `canRequest` ist für sie immer `false`.

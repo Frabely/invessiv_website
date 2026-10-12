@@ -2,7 +2,7 @@ import { ProjectBillingModel } from "@invessiv/common/constants/crm/project-bill
 import { ProjectPhase } from "@invessiv/common/constants/crm/project-phases";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import { ProjectWorkflowKey } from "@invessiv/common/constants/crm/project-workflows";
-import { PORTAL_E2E_PREFIX as PREFIX } from "@/common/constants/testing/portal-e2e-prefix";
+import { PORTAL_E2E_PREFIX as PREFIX } from "@/test/constants/portal-e2e-prefix";
 /** Both rounds sit before "Launch" and the project is at "Entwicklung", so round 2 follows round 1
  * without moving the track, and the approval moves it to "Launch". */
 export function feedbackProjectRow(

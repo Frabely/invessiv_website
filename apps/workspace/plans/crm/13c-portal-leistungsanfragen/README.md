@@ -59,7 +59,7 @@ Statuswerte: `offen` → `läuft` → `im Review` → `gemerged`.
 | Stunden-Wert       | Eine `rate`-Leistung **mit** Menge zählt als Einmalwert (Satz × Stunden). Ohne Menge bleibt `rate` ein Konditionswert (ändert die Regel aus Task 42a nur für neue Stunden-Leistungen)                                                             |
 | Automatik = fest   | Leistungen der Arten `hours` und `feedback_round` entstehen immer mit Status `confirmed`; Status, Menge und Preisart sind danach nicht änderbar. Korrekturen laufen über „Stunden gutschreiben → Korrektur“ bzw. den Projekt-Editor               |
 | Runden-Position    | Folge der abgestimmten Regel: Sind die Runden vor „Launch“ verbraucht und steht das Projekt auf „Launch“, landet die Zusatzrunde **hinter** „Launch“. Sie ist im Projekt-Editor verschiebbar, solange sie nicht übergeben ist                     |
-| Zähler             | Sidebar zählt Anfragen im Status `requested` im Zugriffsbereich. Kein Lesestempel                                                                                                                                                                 |
+| Zähler             | Sidebar zählt offene Anfragen (`requested` und `offered`) im Zugriffsbereich (Nachtrag 12.10.2026). Kein Lesestempel                                                                                                                              |
 | Kein Portal-Slug   | Keine Seite `/services` und kein `PORTAL_NAV_ITEMS`-Eintrag (README-Altstand): Das Portal hat keine Navigation, Module sind Widget + Dialog (`app/[locale]/(portal)/AGENTS.md`)                                                                   |
 | Dashboard-Hinweis  | Der „Hinweis im Dashboard-Block“ aus der README entfällt zugunsten von Eingang + Zähler (das interne Dashboard ist vertagt)                                                                                                                       |
 | Ownership-Registry | `service_requests` ist keine besitzbare Entität (kein Zuständiger); die Registry bleibt unverändert                                                                                                                                               |
@@ -200,7 +200,7 @@ Stunden und Zusatzrunden nutzen die Zuweisung aus Task 74. Rechte, Versionskonfl
 Rollback sowie Activity- und Systemnachrichten werden auf Serverebene geprüft. Kundentext wird als Text gerendert;
 Activity-Metadaten enthalten weder Titel noch Notiz noch Ablehnungsgrund. DE und EN sind parallel gepflegt.
 
-Migration `0059_create_service_requests.sql` ist in Development angewandt. Der CRM-Seed erzeugt alle fünf
+Die Migration des Ordners (`0058_add_service_requests.sql`, siehe unten) ist in Development angewandt. Der CRM-Seed erzeugt alle fünf
 Statuswerte mit Katalog-, Freitext-, Stunden- und Zusatzrundenbeispielen und nutzt ausschließlich seine eigenen
 Vorlagen. Neue Dependencies oder Umgebungsvariablen werden nicht benötigt. Die Credentials-Fixtures werden
 bei fehlendem gültigem Keyring weiterhin übersprungen; Leistungsanfragen benötigen diesen Keyring nicht.
@@ -238,7 +238,7 @@ immer „Etwas anderes“, zeigt die eigenen Anfragen mit Status als Text und l�
 Bei erschöpftem Feedback-Kontingent verweist die Feedback-Seite auf die Zusatzrunde dieses Projekts. Es gibt
 keinen Registry-Eintrag mit `mock: true` mehr; die drei Mock-Komponenten und ihre Texte sind entfernt.
 
-Migration `0060_add_portal_service_permissions.sql` ist in Development angewandt. Neue Dependencies oder
+Die Portal-Rechte stehen in derselben Migration `0058_add_service_requests.sql`. Neue Dependencies oder
 Umgebungsvariablen werden nicht benötigt.
 
 Abweichungen vom Plan (bewusst, jeweils die kleinere Änderung):
@@ -319,3 +319,53 @@ und schreibt nichts; nach einem Angebot wird das Feld nicht ausgewertet. Geprüf
 Übergang und Version. Übergangstabelle und Datenbank sind unverändert. Ob ohne Angebot angenommen wurde, zeigt
 `offered_at IS NULL` an einer angenommenen Anfrage. Die Zusage des Kunden kommt vorerst per Mail; eine Zusage im
 Portal ist ein späterer Ausbau (dann als Kundenübergang `offered → accepted`).
+
+### Review-Korrekturen gesamter Branch — 12.10.2026
+
+Die 14 Findings aus `deleteable/review-2026-10-12-branch-leistungsanfragen-gegen-master.md` sind umgesetzt.
+
+**Ablauf (F01, F02, F12)**
+
+- `offered → withdrawn` gibt es jetzt für beide Seiten: Der Kunde zieht im Portal auch nach dem Angebot zurück,
+  intern trägt „Kunde hat abgesagt“ die Absage ein (ohne Grund, mit Bestätigungsdialog). „Ablehnen“ bleibt die
+  Absage durch das Team mit kundensichtbarem Grund.
+- „Angebot gesendet“ öffnet einen Dialog und hält fest, was angeboten wurde: Preis, bei Stunden Stundensatz und
+  Menge (Spalten `offered_price_cents` / `offered_minutes`). Die Werte bleiben intern; das
+  Portal zeigt weiterhin keinen Preis. Der Annahme-Dialog startet mit ihnen statt mit dem Katalogpreis.
+- Der Sidebar-Zähler zählt alle offenen Anfragen, also auch Angebote ohne Antwort. Anfrage und Eingang zeigen
+  „Angebot vom {Datum}: {Betrag}“.
+
+**Rechte und Regeln (F03, F04, F05)**
+
+- Das Portal nennt Projekte nur noch mit `portal.projects.read`. Ohne das Recht fragt der Kontakt ohne Projekt
+  an; eine Zusatzrunde wird ihm nicht angeboten.
+- Die Annahme bindet eine Kataloganfrage an ihre Vorlage, solange die aktiv ist und dieselbe Art hat; eine neue
+  Vorlage gibt es nur für Freitext. Verstoß: `VALIDATION_ERROR`.
+- Annehmen verlangt `line_item_templates.read`. Ohne das Recht antwortet der Server mit `CATALOG_NOT_READABLE`
+  (403), der Dialog nennt den Grund statt „keine passende Vorlage“.
+
+**Struktur (F06–F11, F13, F14)**
+
+- `projectLineItemAssignmentService` ruft `loadExtraFeedbackRoundBlockers` direkt; der Hüllen-Handler
+  `list-extra-feedback-round-blockers` ist entfernt.
+- Der Annahme-Dialog bekommt die Texte der Leistungsfelder als Prop (`lineItemsContent`).
+- Test-Typen und -Konstanten liegen unter `src/test/contracts` und `src/test/constants` statt in `common`
+  (Regel in `apps/workspace/AGENTS.md`).
+- Eine Komponente je Ordner: `line-item-identity-fields`, `line-item-pricing-fields`,
+  `service-request-project-fields`, `service-request-template-fields`, dazu `service-request-mode-choice`.
+- `isServiceRequestWithoutOffer` liegt in `@invessiv/common` und gilt für Server und Client.
+- Fehlercodes der Zuweisung laufen über eine typisierte Map.
+- Server-, Portal-, UI- und DB-`AGENTS.md` beschreiben den neuen Stand, einschließlich der Löschregeln der
+  Fremdschlüssel.
+
+Zurückziehen fremder Anfragen derselben Firma ist bestätigt gewollt: Anfragen gehören der Firma.
+
+### Eine Migration für den Ordner — 12.10.2026
+
+Die vier Migrationen des Branches (`0058_add_line_item_kinds`, `0059_create_service_requests`,
+`0060_add_portal_service_permissions`, `0061_add_service_request_offer`) sind zu
+`0058_add_service_requests.sql` zusammengefasst; die Angebotsspalten stehen direkt im `CREATE TABLE`. Das war
+zulässig, weil die Einzeldateien nur in Development angewandt und nie gemergt waren. Preview und Produktion
+bekommen ausschließlich die zusammengefasste Datei. Eine Development-Datenbank, die die Einzeldateien schon
+kennt, nimmt die neue Datei folgenlos an (alle Statements sind idempotent); in `schema_migrations` bleiben dort
+vier verwaiste Einträge, die ein Reset entfernt.

@@ -36,6 +36,8 @@ export async function runServiceRequestChecks(context: CredentialSmokeContext) {
     requested_by_membership_id: membershipId,
     status: "requested",
     decline_reason: null as string | null,
+    offered_price_cents: null as number | null,
+    offered_minutes: null as number | null,
     decided_by_member_id: null as string | null,
     project_id: null as string | null,
     decided_at: null as Date | null,
@@ -106,6 +108,25 @@ export async function runServiceRequestChecks(context: CredentialSmokeContext) {
     "request rejects excessive hours",
     () => insert({ kind: "hours", requested_minutes: 600015 }),
     C.MinutesCheck,
+  );
+  await expectAccepted("offered hours request keeps the offer", () =>
+    insert({
+      kind: "hours",
+      requested_minutes: 300,
+      status: "offered",
+      offered_price_cents: 11000,
+      offered_minutes: 240,
+    }),
+  );
+  await expectRejected(
+    "request rejects a negative offered price",
+    () => insert({ status: "offered", offered_price_cents: -1 }),
+    C.OfferedPriceCheck,
+  );
+  await expectRejected(
+    "request refuses offered hours on a standard service",
+    () => insert({ status: "offered", offered_minutes: 60 }),
+    C.OfferedMinutesCheck,
   );
   await expectRejected(
     "request rejects blank title",

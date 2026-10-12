@@ -56,6 +56,8 @@ export const serviceRequests = pgTable(
     status: text("status", { enum: SERVICE_REQUEST_STATUS_VALUES }).notNull(),
     decline_reason: text("decline_reason"),
     offered_at: timestamp("offered_at", { withTimezone: true }),
+    offered_price_cents: integer("offered_price_cents"),
+    offered_minutes: integer("offered_minutes"),
     decided_at: timestamp("decided_at", { withTimezone: true }),
     decided_by_member_id: uuid("decided_by_member_id").references(
       () => workspaceMembers.id,
@@ -129,6 +131,14 @@ export const serviceRequests = pgTable(
       sql`${t.status} <> ${ServiceRequestStatus.Declined} or (${t.decline_reason} is not null and btrim(${t.decline_reason}) <> '' and ${t.decided_by_member_id} is not null)`,
     ),
     check(C.VersionCheck, sql`${t.version} > 0`),
+    check(
+      C.OfferedPriceCheck,
+      sql`${t.offered_price_cents} is null or ${t.offered_price_cents} >= 0`,
+    ),
+    check(
+      C.OfferedMinutesCheck,
+      sql`${t.offered_minutes} is null or (${t.kind} = ${LineItemKind.Hours} and ${t.offered_minutes} > 0 and ${t.offered_minutes} % ${sql.raw(String(HoursLimits.StepMinutes))} = 0 and ${t.offered_minutes} <= ${sql.raw(String(HoursLimits.MaxLedgerMinutes))})`,
+    ),
     uniqueIndex(C.IdempotencyUnique).on(t.idempotency_key),
     index(C.CustomerCreatedIndex).on(t.customer_id, t.created_at.desc()),
     index(C.StatusCreatedIndex).on(t.status, t.created_at.desc()),

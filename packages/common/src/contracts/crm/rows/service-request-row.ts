@@ -15,6 +15,8 @@ export interface ServiceRequestRow {
   status: ServiceRequestStatus;
   decline_reason: string | null;
   offered_at: Date | null;
+  offered_price_cents: number | null;
+  offered_minutes: number | null;
   decided_at: Date | null;
   decided_by_member_id: string | null;
   project_id: string | null;

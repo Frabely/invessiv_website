@@ -82,3 +82,11 @@
     order: 5;
   }
 }
+/* The date under the status makes an offer nobody answered stand out in the list. */
+.offer {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  font-variant-numeric: tabular-nums;
+}

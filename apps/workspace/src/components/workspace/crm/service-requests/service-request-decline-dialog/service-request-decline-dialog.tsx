@@ -38,7 +38,7 @@ export function ServiceRequestDeclineDialog({
       return;
     }
     await mutation.submit((current) =>
-      serviceRequestsApiService.decline(current.id, {
+      serviceRequestsApiService.changeStatus(current.id, {
         to: ServiceRequestStatus.Declined,
         version: current.version,
         reason: reason.trim(),

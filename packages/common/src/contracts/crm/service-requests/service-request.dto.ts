@@ -34,6 +34,10 @@ export interface ServiceRequestDto {
   declineReason: string | null;
   /** Time when an offer was marked sent. */
   offeredAt: string | null;
+  /** Offered price in cents (hourly rate for hours); null before an offer and on offers recorded without one. */
+  offeredPriceCents: number | null;
+  /** Offered hours in minutes; only on an offered hours request. */
+  offeredMinutes: number | null;
   /** Time of acceptance, rejection or withdrawal. */
   decidedAt: string | null;
   /** Final project after acceptance. */

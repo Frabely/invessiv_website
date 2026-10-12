@@ -23,8 +23,9 @@ export async function buildServiceRequestsViewModel(
   const canWrite = canOn(actor, Permission.ServiceRequestsWrite, {
     customerId,
   });
+  const canReadTemplates = can(actor, Permission.LineItemTemplatesRead);
   const [templates, assignment] = await Promise.all([
-    canWrite && can(actor, Permission.LineItemTemplatesRead)
+    canWrite && canReadTemplates
       ? listAssignableLineItemTemplates()
       : Promise.resolve([]),
     canWrite
@@ -41,6 +42,7 @@ export async function buildServiceRequestsViewModel(
       canOn(actor, Permission.ProjectLineItemsWrite, { customerId }),
     canCreateTemplate:
       canWrite && can(actor, Permission.LineItemTemplatesWrite),
+    canReadTemplates,
     projects: assignment.projects,
     blockers: assignment.blockers,
     templates,

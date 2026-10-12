@@ -16,7 +16,9 @@ import { serviceRequestEventService } from "@/server/shared/services/service-req
 import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
 
 /**
- * A contact takes back a request the team has not started on. Every miss — foreign company,
+ * A contact takes back a request that is not decided yet, also after an offer: turning the offer
+ * down is theirs to do. Requests belong to the company, so any contact with the right may withdraw
+ * a colleague's request. Every miss — foreign company,
  * guessed id, missing right — answers the same `not_found`. A second call on a withdrawn request
  * succeeds without writing, so a double click leaves one event.
  */

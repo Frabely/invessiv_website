@@ -31,7 +31,10 @@ import {
   messages,
   serviceRequests,
 } from "@invessiv/db/record-configuration";
-import type { PortalActor } from "@/server/portal/auth/portal-actor";
+import {
+  createPortalActor,
+  type PortalActor,
+} from "@/server/portal/auth/portal-actor";
 import { createPortalOwnerView } from "@/server/portal/auth/portal-owner-view";
 import { createPortalServiceRequest } from "@/server/portal/command-handler/create-portal-service-request.command-handler";
 import { withdrawPortalServiceRequest } from "@/server/portal/command-handler/withdraw-portal-service-request.command-handler";
@@ -465,7 +468,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       ).toMatchObject({ status: S.Requested, canWithdraw: true });
       expect(
         services?.requests.find((request) => request.id === offered),
-      ).toMatchObject({ status: S.Offered, canWithdraw: false });
+      ).toMatchObject({ status: S.Offered, canWithdraw: true });
       expect(services?.requests[0]?.id).toBe(closed.at(-1)!.id);
       expect((await getPortalServices(contactB))?.requests).toEqual([]);
       expect(
@@ -648,12 +651,27 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       });
     });
 
-    it("locks a request the team has already offered", async () => {
-      const id = await created(contactA, input());
+    it("lets the customer turn an offer down and locks a decided request", async () => {
+      const offered = await created(contactA, input());
       await f
         .database()
         .update(serviceRequests)
         .set({ status: S.Offered, offered_at: new Date() })
+        .where(eq(serviceRequests.id, offered));
+      expect(await withdrawPortalServiceRequest(contactA, offered)).toEqual({
+        ok: true,
+        alreadyWithdrawn: false,
+      });
+      const id = await created(contactA, input());
+      await f
+        .database()
+        .update(serviceRequests)
+        .set({
+          status: S.Declined,
+          decline_reason: "Not offered",
+          decided_at: new Date(),
+          decided_by_member_id: f.memberId,
+        })
         .where(eq(serviceRequests.id, id));
 
       expect(await withdrawPortalServiceRequest(contactA, id)).toEqual({
@@ -666,7 +684,34 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       expect(
         await withdrawPortalServiceRequest(contactA, "not-a-uuid"),
       ).toEqual({ ok: false, code: E.NotFound });
-      expect((await rowsOf(f.customerId))[0]?.status).toBe(S.Offered);
+      expect(
+        (await rowsOf(f.customerId)).find((row) => row.id === id)?.status,
+      ).toBe(S.Declined);
+    });
+
+    it("names no project to a contact without the project read permission", async () => {
+      const withoutProjects = createPortalActor({
+        ...contactA,
+        permissions: new Set([
+          Permission.PortalAccess,
+          Permission.PortalServicesRead,
+          Permission.PortalServicesRequest,
+        ]),
+      });
+
+      const services = await getPortalServices(withoutProjects);
+
+      expect(services?.projects).toEqual([]);
+      expect(
+        services?.services.find((service) => service.id === standard)
+          ?.projectIds,
+      ).toEqual([]);
+      expect(
+        services?.requests.every((request) => request.projectTitle === null),
+      ).toBe(true);
+      expect(
+        await createPortalServiceRequest(withoutProjects, input()),
+      ).toEqual({ ok: false, code: E.Validation });
     });
 
     it("lets the owner view read catalog and requests without the right to request", async () => {

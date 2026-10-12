@@ -11,7 +11,7 @@ import {
   workspaceMemberRoles,
   workspaceMembers,
 } from "@invessiv/db/record-configuration";
-import { PORTAL_E2E_PREFIX as PREFIX } from "@/common/constants/testing/portal-e2e-prefix";
+import { PORTAL_E2E_PREFIX as PREFIX } from "@/test/constants/portal-e2e-prefix";
 export async function loadSystemRoles(tx: ContactDatabaseTransaction) {
   const found = await tx
     .select({ id: roles.id, key: roles.system_key, active: roles.active })

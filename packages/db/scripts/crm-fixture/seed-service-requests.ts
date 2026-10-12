@@ -96,6 +96,11 @@ export async function seedServiceRequests(
           ? "Wir bieten dieses Vorhaben derzeit nicht an."
           : null,
       offered_at: example.status === S.Offered ? now : null,
+      offered_price_cents:
+        example.status === S.Offered
+          ? (example.template?.price_cents ?? null)
+          : null,
+      offered_minutes: null,
       decided_at: [S.Accepted, S.Declined, S.Withdrawn].some(
         (status) => status === example.status,
       )

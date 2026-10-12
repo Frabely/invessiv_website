@@ -78,6 +78,8 @@ type CustomerCockpitViewProps = {
   hoursContent?: CrmHoursDictionary;
   serviceRequests?: ServiceRequestsViewModel;
   serviceRequestsContent?: CrmServiceRequestsDictionary;
+  /** Shared line item labels for the request dialogs; passed together with `serviceRequests`. */
+  serviceRequestLineItemsContent?: CrmProjectLineItemsDictionary;
   /** Absent without `files.read` in any scope of the customer; the area then does not exist. */
   files?: FilesViewModel;
   filesContent?: CrmFilesDictionary;
@@ -129,6 +131,7 @@ export function CustomerCockpitView({
   hoursContent,
   serviceRequests,
   serviceRequestsContent,
+  serviceRequestLineItemsContent,
   files,
   filesContent,
   isWorkspaceOwner = false,
@@ -360,10 +363,13 @@ export function CustomerCockpitView({
               <p className={styles.groupLabel} id={collaborationLabelId}>
                 {content.groups.collaboration}
               </p>
-              {serviceRequests && serviceRequestsContent ? (
+              {serviceRequests &&
+              serviceRequestsContent &&
+              serviceRequestLineItemsContent ? (
                 <CustomerServiceRequestsSection
                   viewModel={serviceRequests}
                   content={serviceRequestsContent}
+                  lineItemsContent={serviceRequestLineItemsContent}
                   locale={locale}
                 />
               ) : null}

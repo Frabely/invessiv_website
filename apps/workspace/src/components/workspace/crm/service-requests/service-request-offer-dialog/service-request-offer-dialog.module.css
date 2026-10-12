@@ -1,0 +1,15 @@
+.form {
+  display: grid;
+  gap: 0.9rem;
+  padding: 0.55rem 0.7rem;
+}
+
+/* Says what the values are for before they are typed. */
+.notice {
+  margin: 0;
+  padding: 0.5rem 0.7rem;
+  border-left: 2px solid var(--color-border-strong);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}

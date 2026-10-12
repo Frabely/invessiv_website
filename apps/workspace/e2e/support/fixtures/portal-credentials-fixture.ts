@@ -1,7 +1,7 @@
 import { AuthRealm } from "@invessiv/common/constants/auth/auth-realms";
 import { type ContactDatabaseTransaction } from "@invessiv/db/core";
 import { portalMembershipRoles } from "@invessiv/db/record-configuration";
-import type { PortalE2eSeed } from "@/common/contracts/testing/portal-e2e-seed";
+import type { PortalE2eSeed } from "@/test/contracts/portal-e2e-seed";
 import { insertPortalMember } from "./portal-auth-fixture";
 export async function insertCredentialsFixture(
   tx: ContactDatabaseTransaction,

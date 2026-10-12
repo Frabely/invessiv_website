@@ -13,7 +13,11 @@ import { ServiceRequestProjectWish as Mode } from "@invessiv/common/constants/cr
 import { ServiceRequestTransitionSide } from "@invessiv/common/constants/crm/service-request-transition-sides";
 import type { AcceptServiceRequestRequestDto } from "@invessiv/common/contracts/crm/service-requests/accept-service-request-request.dto";
 import type { ChangeServiceRequestStatusResult } from "@invessiv/common/contracts/crm/results/change-service-request-status-result";
-import { canTransitionServiceRequest } from "@invessiv/common/patterns/crm/service-request-state";
+import { ProjectLineItemErrorCode as A } from "@invessiv/common/constants/crm/errors/project-line-item-error-codes";
+import {
+  canTransitionServiceRequest,
+  isServiceRequestWithoutOffer,
+} from "@invessiv/common/patterns/crm/service-request-state";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
 import {
   serviceRequests,
@@ -22,6 +26,7 @@ import {
   customers,
 } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
+import type { AssignProjectLineItemFailureCode } from "@/common/contracts/crm/assign-project-line-item-failure-code";
 import { canOn } from "@/common/patterns/auth/can-on";
 import { serviceRequestEventService } from "@/server/shared/services/service-request/service-request-event-service";
 import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
@@ -30,6 +35,15 @@ import { serviceRequestSchemas } from "../services/service-requests/service-requ
 import { projectLineItemAssignmentService } from "../services/project-line-item-assignment-service";
 import { insertProject } from "../services/insert-project";
 import { insertLineItemTemplate } from "../services/insert-line-item-template";
+
+/** What an assignment refuses keeps its meaning for the request; a new code fails to compile here. */
+const ASSIGNMENT_FAILURE: Record<AssignProjectLineItemFailureCode, E> = {
+  [A.ValidationError]: E.ValidationError,
+  [A.ProjectNotFound]: E.ProjectNotFound,
+  [A.EffectNotPermitted]: E.EffectNotPermitted,
+  [A.ProjectClosed]: E.ProjectClosed,
+  [A.FeedbackRoundNotAvailable]: E.FeedbackRoundNotAvailable,
+};
 
 class AcceptanceFailure extends Error {
   constructor(readonly result: ChangeServiceRequestStatusResult) {
@@ -73,8 +87,35 @@ export async function acceptServiceRequest(
           },
         };
       // The customer has seen no price before an offer; skipping it must be stated, never implied.
-      if (request.status === S.Requested && !data.acceptWithoutOffer)
+      if (
+        isServiceRequestWithoutOffer(request.status) &&
+        !data.acceptWithoutOffer
+      )
         return { ok: false, code: E.OfferRequired };
+      // Whoever cannot read the catalog cannot choose from it, so they do not assign from it either.
+      if (!can(actor, Permission.LineItemTemplatesRead))
+        return { ok: false, code: E.CatalogNotReadable };
+      // A catalog request keeps its template for as long as that one can still be assigned.
+      if (request.line_item_template_id !== null) {
+        if (data.template.mode !== Mode.Existing)
+          return { ok: false, code: E.ValidationError };
+        const [original] = await tx
+          .select({ id: lineItemTemplates.id, kind: lineItemTemplates.kind })
+          .from(lineItemTemplates)
+          .where(
+            and(
+              eq(lineItemTemplates.id, request.line_item_template_id),
+              eq(lineItemTemplates.status, LineItemTemplateStatus.Active),
+            ),
+          )
+          .limit(1);
+        if (
+          original &&
+          (original.kind ?? LineItemKind.Standard) === request.kind &&
+          data.template.lineItemTemplateId !== original.id
+        )
+          return { ok: false, code: E.ValidationError };
+      }
       let template;
       if (data.template.mode === Mode.Existing) {
         const [found] = await tx
@@ -166,13 +207,7 @@ export async function acceptServiceRequest(
         template: { id: template.id, kind },
         fields: { ...data.lineItem },
       });
-      if (!assignment.ok) {
-        // Assignment codes shared with Task 74 retain their API meaning here.
-        const code =
-          Object.values(E).find((value) => value === assignment.code) ??
-          E.Internal;
-        return fail(code);
-      }
+      if (!assignment.ok) return fail(ASSIGNMENT_FAILURE[assignment.code]);
       const changed = await updateLockedVersioned(
         {
           tx,

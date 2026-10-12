@@ -29,7 +29,7 @@ import {
   getPortalServiceRequestsDictionary,
 } from "@/i18n/dictionaries/portal";
 import { PortalDashboard } from "@/components/portal/dashboard/portal-dashboard/portal-dashboard";
-import type { PortalDashboardTestOptions } from "@/common/contracts/testing/portal-dashboard-test-options";
+import type { PortalDashboardTestOptions } from "@/test/contracts/portal-dashboard-test-options";
 import {
   portalServices,
   requestableService,

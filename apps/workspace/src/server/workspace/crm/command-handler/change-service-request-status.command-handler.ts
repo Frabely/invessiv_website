@@ -2,6 +2,7 @@ import "server-only";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { ServiceRequestErrorCode as E } from "@invessiv/common/constants/crm/errors/service-request-error-codes";
+import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
 import { ServiceRequestStatus as S } from "@invessiv/common/constants/crm/service-request-statuses";
 import { ServiceRequestTransitionSide } from "@invessiv/common/constants/crm/service-request-transition-sides";
 import type { ChangeServiceRequestStatusRequestDto } from "@invessiv/common/contracts/crm/service-requests/change-service-request-status-request.dto";
@@ -45,15 +46,28 @@ export async function changeServiceRequestStatus(
           current: await access.toDto(tx, request, actor),
         },
       };
+    const data = parsed.data;
+    // Offered hours belong to an hours request and to nothing else.
+    if (
+      data.to === S.Offered &&
+      (data.minutes !== null) !== (request.kind === LineItemKind.Hours)
+    )
+      return { ok: false, code: E.ValidationError };
+    const decision = {
+      decided_at: new Date(),
+      decided_by_member_id: actor.workspaceMemberId,
+    };
     const patch =
-      parsed.data.to === S.Offered
-        ? { status: S.Offered, offered_at: new Date() }
-        : {
-            status: S.Declined,
-            decline_reason: parsed.data.reason,
-            decided_at: new Date(),
-            decided_by_member_id: actor.workspaceMemberId,
-          };
+      data.to === S.Offered
+        ? {
+            status: S.Offered,
+            offered_at: new Date(),
+            offered_price_cents: data.priceCents,
+            offered_minutes: data.minutes,
+          }
+        : data.to === S.Declined
+          ? { status: S.Declined, decline_reason: data.reason, ...decision }
+          : { status: S.Withdrawn, ...decision };
     const changed = await updateLockedVersioned(
       {
         tx,

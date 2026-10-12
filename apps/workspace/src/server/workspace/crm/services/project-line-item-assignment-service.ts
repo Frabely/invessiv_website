@@ -1,14 +1,8 @@
 import "server-only";
-import { ExtraFeedbackRoundBlocker } from "@invessiv/common/constants/crm/extra-feedback-round-blockers";
-import { LineItemAssignmentBlocker } from "@/common/constants/crm/line-item-assignment-blockers";
-import type { LineItemAssignmentBlockers } from "@/common/contracts/crm/line-item-assignment-blockers";
-import type { LineItemAssignmentProject } from "@/common/contracts/crm/line-item-assignment-project";
-import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
-import { listExtraFeedbackRoundBlockers } from "@/server/workspace/crm/query-handler/list-extra-feedback-round-blockers.query-handler";
-
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { ProjectLineItemErrorCode } from "@invessiv/common/constants/crm/errors/project-line-item-error-codes";
+import { ExtraFeedbackRoundBlocker } from "@invessiv/common/constants/crm/extra-feedback-round-blockers";
 import { HourPurchaseKind } from "@invessiv/common/constants/crm/hour-purchase-kinds";
 import { HourPurchaseSource } from "@invessiv/common/constants/crm/hour-purchase-sources";
 import { HOURS_CLOSED_PROJECT_STATUS_VALUES } from "@invessiv/common/constants/crm/hours-closed-project-statuses";
@@ -18,10 +12,18 @@ import { ProjectLineItemStatus } from "@invessiv/common/constants/crm/project-li
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import type { ActivityActor } from "@invessiv/common/contracts/activity/activity-actor";
 import type { ProjectLineItemRow } from "@invessiv/common/contracts/crm/rows/project-line-item-row";
-import type { ContactDatabaseTransaction } from "@invessiv/db/core";
+import {
+  getDrizzleDatabaseClient,
+  type ContactDatabaseTransaction,
+} from "@invessiv/db/core";
 import { projectLineItems } from "@invessiv/db/record-configuration";
+import { LineItemAssignmentBlocker } from "@/common/constants/crm/line-item-assignment-blockers";
+import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
+import type { LineItemAssignmentBlockers } from "@/common/contracts/crm/line-item-assignment-blockers";
+import type { LineItemAssignmentProject } from "@/common/contracts/crm/line-item-assignment-project";
 import { canOn } from "@/common/patterns/auth/can-on";
 import { businessToday } from "@/common/patterns/time/business-today";
+import { loadExtraFeedbackRoundBlockers } from "@/server/shared/services/feedback/load-extra-feedback-round-blockers";
 import { feedbackRoundService } from "@/server/workspace/crm/services/feedback/feedback-round-service";
 import { hoursActivityService } from "@/server/workspace/crm/services/hours/hours-activity-service";
 import { hoursLedgerService } from "@/server/workspace/crm/services/hours/hours-ledger-service";
@@ -226,7 +228,8 @@ async function listBlockers(
         projectId: candidate.id,
       }),
   );
-  const roundBlockers = await listExtraFeedbackRoundBlockers(
+  const roundBlockers = await loadExtraFeedbackRoundBlockers(
+    getDrizzleDatabaseClient(),
     roundCandidates.map((candidate) => ({
       id: candidate.id,
       positions: [...candidate.feedbackRoundPositions],

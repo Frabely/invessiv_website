@@ -1,9 +1,11 @@
 import Link from "next/link";
+import { OPEN_SERVICE_REQUEST_STATUS_VALUES } from "@invessiv/common/constants/crm/service-request-statuses";
 import type { ServiceRequestDto } from "@invessiv/common/contracts/crm/service-requests/service-request.dto";
 import { formatCustomerNumber } from "@invessiv/common/patterns/crm/format-customer-number";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import { DataTableCell, DataTableHeaderCell, DataTableRow } from "@invessiv/ui";
+import { describeServiceRequestOffer } from "@/lib/workspace/crm/describe-service-request-offer";
 import { describeServiceRequestProjectWish } from "@/common/patterns/crm/service-requests/service-request-project-wish-label";
 import type { Locale } from "@/config/i18n";
 import type { CrmServiceRequestsDictionary } from "@/i18n/dictionaries/workspace/crm";
@@ -77,6 +79,12 @@ export function ServiceRequestInboxRow({
           label={content.status[request.status]}
           status={request.status}
         />
+        {request.offeredAt &&
+        OPEN_SERVICE_REQUEST_STATUS_VALUES.some((s) => s === request.status) ? (
+          <span className={styles.offer}>
+            {describeServiceRequestOffer(request, content, locale)}
+          </span>
+        ) : null}
       </DataTableCell>
       <DataTableCell
         className={styles.customerCell}

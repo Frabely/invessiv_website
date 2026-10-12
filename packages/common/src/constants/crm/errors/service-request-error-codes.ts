@@ -4,6 +4,8 @@ export const ServiceRequestErrorCode = {
   InvalidTransition: "INVALID_TRANSITION",
   VersionConflict: "VERSION_CONFLICT",
   OfferRequired: "OFFER_REQUIRED",
+  /** Accepting assigns from the catalog, which the actor may not read. */
+  CatalogNotReadable: "CATALOG_NOT_READABLE",
   KindMismatch: "KIND_MISMATCH",
   TemplateNotAssignable: "TEMPLATE_NOT_ASSIGNABLE",
   ProjectNotFound: "PROJECT_NOT_FOUND",

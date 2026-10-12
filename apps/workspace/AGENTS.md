@@ -73,3 +73,12 @@ Die Sprachregel beschreibt die Konvention des gesamten Repositories, nicht nur d
 gilt genauso in `packages/**` und `apps/web/**`. Sie steht hier, weil es für die Workspace-App
 bisher keine App-`AGENTS.md` gab. Wenn sie sich als Reibungspunkt erweist, gehört sie in die
 Repo-Root-`AGENTS.md` gehoben.
+
+## Testhelfer und Test-Typen
+
+- **Serverseitige** Fixtures und Datenbankhelfer liegen unter `src/server/tests/support/`.
+- **UI- und E2E-übergreifende** Helfer liegen unter `src/test/`: `fixtures/` (DTO-Fixtures), `portal/`
+  (Render-Helfer), `contracts/` und `constants/` (Typen und Konstanten, die nur Tests und E2E-Fixtures nutzen).
+- Test-Typen und -Konstanten gehören **nicht** nach `src/common/**`: `common` enthält ausschließlich, was
+  produktiver Code nutzt. Die Export-Regel („exportierte Typen nach `common`“) gilt für Tests sinngemäß mit
+  `src/test/contracts/` und `src/test/constants/` als Ziel.

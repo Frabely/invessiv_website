@@ -15,16 +15,19 @@ import {
   ProjectLineItemStatus,
 } from "@invessiv/common/constants/crm/project-line-item-statuses";
 import { ServiceRequestProjectWish as Mode } from "@invessiv/common/constants/crm/service-request-project-wishes";
+import { isServiceRequestWithoutOffer } from "@invessiv/common/patterns/crm/service-request-state";
 import type { ServiceRequestErrorCode } from "@invessiv/common/constants/crm/errors/service-request-error-codes";
 import type { ServiceRequestDto } from "@invessiv/common/contracts/crm/service-requests/service-request.dto";
-import type { CrmServiceRequestsDictionary } from "@/i18n/dictionaries/workspace/crm";
+import type {
+  CrmProjectLineItemsDictionary,
+  CrmServiceRequestsDictionary,
+} from "@/i18n/dictionaries/workspace/crm";
 import type { ServiceRequestsViewModel } from "@/common/contracts/crm/service-requests-view-model";
 import type { ServiceRequestAcceptFormValues } from "@/common/contracts/crm/service-request-accept-form-values";
 import type { LineItemFieldsFormValues } from "@/common/contracts/crm/line-item-fields-form-values";
 import type { Locale } from "@/config/i18n";
 import {
   createServiceRequestAcceptForm,
-  isServiceRequestWithoutOffer,
   applyServiceRequestTemplate,
   validateServiceRequestAcceptForm,
   toAcceptServiceRequest,
@@ -36,27 +39,24 @@ import { validateLineItemFieldsForm } from "@/common/patterns/crm/line-item-fiel
 import { resolveProjectLineItemFormBlocker } from "@/common/patterns/crm/project-line-item-form";
 import { serviceRequestsApiService } from "@/client/crm/service-requests-api-service";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
-import { getCrmProjectLineItemsDictionary } from "@/i18n/dictionaries/workspace/crm";
-import {
-  LineItemIdentityFields,
-  LineItemPricingFields,
-} from "@/components/workspace/crm/shared/line-item-fields/line-item-fields";
+import { LineItemIdentityFields } from "@/components/workspace/crm/shared/line-item-identity-fields/line-item-identity-fields";
+import { LineItemPricingFields } from "@/components/workspace/crm/shared/line-item-pricing-fields/line-item-pricing-fields";
 import { LineItemFormMessages } from "@/components/workspace/crm/shared/line-item-form-messages/line-item-form-messages";
 import { ProjectLineItemEffectFields } from "@/components/workspace/crm/projects/project-line-item-effect-fields/project-line-item-effect-fields";
 import { ServiceRequestDetails } from "../service-request-details/service-request-details";
 import { workspaceAreaPathFor } from "@/lib/auth/routes";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
-import layout from "@/components/workspace/crm/shared/line-item-fields/line-item-form-layout.module.css";
-import {
-  ServiceRequestProjectFields,
-  ServiceRequestTemplateFields,
-} from "../service-request-target-fields/service-request-target-fields";
+import layout from "@/components/workspace/crm/shared/line-item-form-layout/line-item-form-layout.module.css";
+import { ServiceRequestProjectFields } from "../service-request-project-fields/service-request-project-fields";
+import { ServiceRequestTemplateFields } from "../service-request-template-fields/service-request-template-fields";
 import styles from "./service-request-accept-dialog.module.css";
 
 export type ServiceRequestAcceptDialogProps = {
   request: ServiceRequestDto;
   viewModel: ServiceRequestsViewModel;
   content: CrmServiceRequestsDictionary;
+  /** Labels of the shared line item fields. */
+  lineItemsContent: CrmProjectLineItemsDictionary;
   locale: Locale;
   onCloseAction: () => void;
 };
@@ -64,6 +64,7 @@ export function ServiceRequestAcceptDialog({
   request,
   viewModel,
   content,
+  lineItemsContent: sharedContent,
   locale,
   onCloseAction,
 }: ServiceRequestAcceptDialogProps) {
@@ -77,9 +78,8 @@ export function ServiceRequestAcceptDialog({
     ServiceRequestDto,
     ServiceRequestErrorCode
   >(request, onCloseAction);
-  const sharedContent = getCrmProjectLineItemsDictionary(locale);
   // Without an offer the customer never saw a price, so accepting needs a deliberate tick.
-  const withoutOffer = isServiceRequestWithoutOffer(mutation.current);
+  const withoutOffer = isServiceRequestWithoutOffer(mutation.current.status);
   const unconfirmed = withoutOffer && !values.confirmedWithoutOffer;
   const templates = viewModel.templates.filter((t) => t.kind === request.kind);
   const blockers = viewModel.blockers[values.projectId] ?? {
@@ -144,7 +144,9 @@ export function ServiceRequestAcceptDialog({
   };
   const noProject =
     values.projectMode === Mode.Existing && !viewModel.projects.length;
-  const noTemplate = values.templateMode === Mode.Existing && !templates.length;
+  const noTemplate =
+    values.templateMode === Mode.Existing &&
+    (!templates.length || !viewModel.canReadTemplates);
   return (
     <FormDialog
       size={DialogSize.Wide}

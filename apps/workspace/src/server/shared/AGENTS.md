@@ -81,7 +81,7 @@ Transaktion um.
   (`entity: FEEDBACK_ROUND_ACTIVITY_ENTITY`, `feedback_round_id`, `round_number`); Feedbacktext kommt nie ins Log.
 - `load-extra-feedback-round-blockers.ts` — `loadExtraFeedbackRoundBlockers` sagt je Projekt, ob es eine weitere Runde
   aufnehmen kann (Rundenstände laden, `findExtraFeedbackRoundBlocker` anwenden). Benannter Helfer ohne
-  `Service`-Suffix; die Cockpit-Zuweisung (`listExtraFeedbackRoundBlockers`) und der Portal-Katalog (Task 76) rufen
+  `Service`-Suffix; die Cockpit-Zuweisung (`projectLineItemAssignmentService.listBlockers`) und der Portal-Katalog (Task 76) rufen
   ihn auf. Welche Projekte ein Aufrufer übergibt, bestimmt dessen eigene Zugriffsregel.
 - Zeilen- und Eingabetypen liegen in `feedback-service-types.ts`, das Anhangs-Mapping in `feedback-mapping-service.ts`.
 - Ab Task 59:

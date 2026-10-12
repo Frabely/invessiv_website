@@ -11,6 +11,7 @@ import { buildProjectLineItemsViewModel } from "./project-line-items-view-model"
 
 vi.mock("server-only", () => ({}));
 
+const DB = vi.hoisted(() => ({}));
 const mocks = vi.hoisted(() => ({
   listProjectLineItemsByCustomer: vi.fn(),
   listAssignableLineItemTemplates: vi.fn(),
@@ -31,11 +32,12 @@ vi.mock(
 );
 
 vi.mock(
-  "@/server/workspace/crm/query-handler/list-extra-feedback-round-blockers.query-handler",
+  "@/server/shared/services/feedback/load-extra-feedback-round-blockers",
   () => ({
-    listExtraFeedbackRoundBlockers: mocks.listExtraFeedbackRoundBlockers,
+    loadExtraFeedbackRoundBlockers: mocks.listExtraFeedbackRoundBlockers,
   }),
 );
+vi.mock("@invessiv/db/core", () => ({ getDrizzleDatabaseClient: () => DB }));
 
 const CUSTOMER_ID = "11111111-1111-4111-8111-111111111111";
 const PROJECT_ID = "22222222-2222-4222-8222-222222222222";
@@ -123,7 +125,7 @@ describe("buildProjectLineItemsViewModel", () => {
       projects: [{ id: project.id, title: project.title, project }],
     });
 
-    expect(mocks.listExtraFeedbackRoundBlockers).toHaveBeenCalledWith([]);
+    expect(mocks.listExtraFeedbackRoundBlockers).toHaveBeenCalledWith(DB, []);
     expect(result?.assignmentBlockersByProjectId).toEqual({
       [PROJECT_ID]: {
         hours: "missing_hours_permission",
@@ -149,7 +151,7 @@ describe("buildProjectLineItemsViewModel", () => {
       projects: [{ id: project.id, title: project.title, project }],
     });
 
-    expect(mocks.listExtraFeedbackRoundBlockers).toHaveBeenCalledWith([
+    expect(mocks.listExtraFeedbackRoundBlockers).toHaveBeenCalledWith(DB, [
       { id: PROJECT_ID, positions: [] },
     ]);
     expect(result?.assignmentBlockersByProjectId).toEqual({
@@ -226,7 +228,7 @@ describe("buildProjectLineItemsViewModel", () => {
       projects: [{ id: project.id, title: project.title, project: null }],
     });
 
-    expect(mocks.listExtraFeedbackRoundBlockers).toHaveBeenCalledWith([]);
+    expect(mocks.listExtraFeedbackRoundBlockers).toHaveBeenCalledWith(DB, []);
     expect(result?.assignmentBlockersByProjectId).toEqual({
       [PROJECT_ID]: {
         hours: null,

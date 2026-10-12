@@ -59,6 +59,7 @@ type CustomerCockpitDialogProps = {
   hoursContent?: CrmHoursDictionary;
   serviceRequests?: ServiceRequestsViewModel;
   serviceRequestsContent?: CrmServiceRequestsDictionary;
+  serviceRequestLineItemsContent?: CrmProjectLineItemsDictionary;
   files?: FilesViewModel;
   filesContent?: CrmFilesDictionary;
   isWorkspaceOwner?: boolean;
@@ -107,6 +108,7 @@ export function CustomerCockpitDialog({
   hoursContent,
   serviceRequests,
   serviceRequestsContent,
+  serviceRequestLineItemsContent,
   files,
   filesContent,
   isWorkspaceOwner,
@@ -149,6 +151,7 @@ export function CustomerCockpitDialog({
       <CustomerCockpitView
         serviceRequests={serviceRequests}
         serviceRequestsContent={serviceRequestsContent}
+        serviceRequestLineItemsContent={serviceRequestLineItemsContent}
         accessContent={accessContent}
         accessMembers={accessMembers}
         accessProjects={accessProjects}

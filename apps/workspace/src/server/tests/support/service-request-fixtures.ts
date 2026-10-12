@@ -30,6 +30,8 @@ export function serviceRequestFixture(
     status: ServiceRequestStatus.Requested,
     declineReason: null,
     offeredAt: null,
+    offeredPriceCents: null,
+    offeredMinutes: null,
     decidedAt: null,
     projectId: null,
     projectLineItemId: null,
@@ -68,6 +70,7 @@ export function serviceRequestsViewModelFixture(
     canWrite: true,
     canCreateProject: true,
     canCreateTemplate: true,
+    canReadTemplates: true,
     projects: [
       { id: serviceRequestFixture().requestedProjectId!, title: "Website" },
     ],

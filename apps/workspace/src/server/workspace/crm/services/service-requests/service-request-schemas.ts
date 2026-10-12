@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { ServiceRequestStatus as S } from "@invessiv/common/constants/crm/service-request-statuses";
 import { ServiceRequestProjectWish as Mode } from "@invessiv/common/constants/crm/service-request-project-wishes";
+import { HoursLimits } from "@invessiv/common/constants/crm/hours-limits";
+import { ProjectLineItemFieldLimits } from "@invessiv/common/constants/crm/forms/project-line-item-field-limits";
 import { ServiceRequestFieldLimits } from "@invessiv/common/constants/crm/forms/service-request-field-limits";
 import { projectSchemas } from "../project-schemas";
 import { lineItemTemplateSchemas } from "../line-item-template-schemas";
@@ -9,7 +11,18 @@ import { lineItemFieldsSchemas } from "../line-item-fields-schemas";
 export const serviceRequestSchemas = {
   entityId: z.uuid(),
   changeStatus: z.discriminatedUnion("to", [
-    z.object({ to: z.literal(S.Offered), version: z.int().positive() }),
+    z.object({
+      to: z.literal(S.Offered),
+      version: z.int().positive(),
+      priceCents: z.int().min(0).max(ProjectLineItemFieldLimits.PriceCentsMax),
+      minutes: z
+        .int()
+        .positive()
+        .multipleOf(HoursLimits.StepMinutes)
+        .max(HoursLimits.MaxLedgerMinutes)
+        .nullable(),
+    }),
+    z.object({ to: z.literal(S.Withdrawn), version: z.int().positive() }),
     z.object({
       to: z.literal(S.Declined),
       version: z.int().positive(),

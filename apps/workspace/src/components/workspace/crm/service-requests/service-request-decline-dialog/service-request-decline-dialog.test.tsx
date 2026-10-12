@@ -19,7 +19,7 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ refresh: mocks.refresh }),
 }));
 vi.mock("@/client/crm/service-requests-api-service", () => ({
-  serviceRequestsApiService: { decline: mocks.decline },
+  serviceRequestsApiService: { changeStatus: mocks.decline },
 }));
 const content = getCrmServiceRequestsDictionary("en");
 const request = serviceRequestFixture();

@@ -14,7 +14,7 @@ import {
   rolePermissions,
   roles,
 } from "@invessiv/db/record-configuration";
-import { PORTAL_E2E_PREFIX as PREFIX } from "@/common/constants/testing/portal-e2e-prefix";
+import { PORTAL_E2E_PREFIX as PREFIX } from "@/test/constants/portal-e2e-prefix";
 import { plainProjectRow } from "./portal-project-rows";
 /**
  * The worked example of the hours plan on its own customer: 10:00 bought, 5:00 for each of two

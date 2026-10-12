@@ -68,6 +68,11 @@ export function CustomerCockpitContent({
           ? getCrmServiceRequestsDictionary(activeLocale)
           : undefined
       }
+      serviceRequestLineItemsContent={
+        serviceRequestsViewModel
+          ? getCrmProjectLineItemsDictionary(activeLocale)
+          : undefined
+      }
       accessContent={
         customerAccessData ? getCrmAccessDictionary(activeLocale) : undefined
       }

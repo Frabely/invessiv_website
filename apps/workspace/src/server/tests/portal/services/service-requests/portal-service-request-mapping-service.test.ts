@@ -59,6 +59,8 @@ function requestRow(
     status: ServiceRequestStatus.Requested,
     decline_reason: null,
     offered_at: null,
+    offered_price_cents: null,
+    offered_minutes: null,
     decided_at: null,
     decided_by_member_id: null,
     project_id: null,
@@ -161,9 +163,15 @@ describe("portalServiceRequestMappingService.toRequestDto", () => {
     ).toBe("Website");
   });
 
-  it("allows withdrawing only from requested and only with the request right", () => {
+  it("allows withdrawing until the request is decided and only with the request right", () => {
     for (const status of [
+      ServiceRequestStatus.Requested,
       ServiceRequestStatus.Offered,
+    ])
+      expect(
+        mapping.toRequestDto(requestRow({ status }), view).canWithdraw,
+      ).toBe(true);
+    for (const status of [
       ServiceRequestStatus.Accepted,
       ServiceRequestStatus.Declined,
       ServiceRequestStatus.Withdrawn,

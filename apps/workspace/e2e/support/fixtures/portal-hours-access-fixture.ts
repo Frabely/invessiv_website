@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { type ContactDatabaseTransaction } from "@invessiv/db/core";
 import { customerContactAssignments } from "@invessiv/db/record-configuration";
-import type { PortalE2eSeed } from "@/common/contracts/testing/portal-e2e-seed";
+import type { PortalE2eSeed } from "@/test/contracts/portal-e2e-seed";
 import { insertHoursFixture } from "./portal-hours-fixture";
 import { insertPortalMember } from "./portal-auth-fixture";
 export async function insertHoursAccessFixture(

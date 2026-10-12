@@ -7,7 +7,10 @@ import {
   serviceRequestFixture,
   serviceRequestsViewModelFixture,
 } from "@/server/tests/support/service-request-fixtures";
-import { getCrmServiceRequestsDictionary } from "@/i18n/dictionaries/workspace/crm";
+import {
+  getCrmProjectLineItemsDictionary,
+  getCrmServiceRequestsDictionary,
+} from "@/i18n/dictionaries/workspace/crm";
 import { CustomerServiceRequestsSection } from "./customer-service-requests-section";
 
 const mocks = vi.hoisted(() => ({
@@ -26,6 +29,17 @@ vi.mock(
     ServiceRequestAcceptDialog: () => <div role="dialog">Accept request</div>,
   }),
 );
+vi.mock("../service-request-offer-dialog/service-request-offer-dialog", () => ({
+  ServiceRequestOfferDialog: () => <div role="dialog">Record offer</div>,
+}));
+vi.mock(
+  "../service-request-withdraw-dialog/service-request-withdraw-dialog",
+  () => ({
+    ServiceRequestWithdrawDialog: () => (
+      <div role="dialog">Customer declined</div>
+    ),
+  }),
+);
 vi.mock(
   "../service-request-decline-dialog/service-request-decline-dialog",
   () => ({
@@ -33,6 +47,7 @@ vi.mock(
   }),
 );
 const content = getCrmServiceRequestsDictionary("en");
+const lineItemsContent = getCrmProjectLineItemsDictionary("en");
 afterEach(cleanup);
 beforeEach(() => {
   mocks.query = "";
@@ -43,6 +58,7 @@ describe("CustomerServiceRequestsSection", () => {
       <CustomerServiceRequestsSection
         viewModel={serviceRequestsViewModelFixture({ requests: [] })}
         content={content}
+        lineItemsContent={lineItemsContent}
         locale="en"
       />,
     );
@@ -54,6 +70,7 @@ describe("CustomerServiceRequestsSection", () => {
       <CustomerServiceRequestsSection
         viewModel={serviceRequestsViewModelFixture()}
         content={content}
+        lineItemsContent={lineItemsContent}
         locale="en"
       />,
     );
@@ -67,12 +84,13 @@ describe("CustomerServiceRequestsSection", () => {
       <CustomerServiceRequestsSection
         viewModel={serviceRequestsViewModelFixture({ canWrite: false })}
         content={content}
+        lineItemsContent={lineItemsContent}
         locale="en"
       />,
     );
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     expect(
-      screen.queryByRole("button", { name: content.actions.offered }),
+      screen.queryByRole("link", { name: content.actions.offered }),
     ).not.toBeInTheDocument();
     expect(
       screen.queryByRole("link", { name: content.actions.accept }),
@@ -87,6 +105,7 @@ describe("CustomerServiceRequestsSection", () => {
       <CustomerServiceRequestsSection
         viewModel={serviceRequestsViewModelFixture()}
         content={content}
+        lineItemsContent={lineItemsContent}
         locale="en"
       />,
     );
@@ -101,6 +120,7 @@ describe("CustomerServiceRequestsSection", () => {
           ],
         })}
         content={content}
+        lineItemsContent={lineItemsContent}
         locale="en"
       />,
     );
@@ -111,12 +131,16 @@ describe("CustomerServiceRequestsSection", () => {
       <CustomerServiceRequestsSection
         viewModel={serviceRequestsViewModelFixture()}
         content={content}
+        lineItemsContent={lineItemsContent}
         locale="en"
       />,
     );
     expect(
-      screen.getByRole("button", { name: content.actions.offered }),
+      screen.getByRole("link", { name: content.actions.offered }),
     ).toBeVisible();
+    expect(
+      screen.queryByRole("link", { name: content.actions.customerDeclined }),
+    ).not.toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: content.actions.acceptWithoutOffer }),
     ).toBeVisible();
@@ -135,6 +159,7 @@ describe("CustomerServiceRequestsSection", () => {
           ],
         })}
         content={content}
+        lineItemsContent={lineItemsContent}
         locale="en"
       />,
     );
@@ -145,8 +170,39 @@ describe("CustomerServiceRequestsSection", () => {
       screen.queryByRole("link", { name: content.actions.acceptWithoutOffer }),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByRole("button", { name: content.actions.offered }),
+      screen.queryByRole("link", { name: content.actions.offered }),
     ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: content.actions.customerDeclined }),
+    ).toBeVisible();
+  });
+  it("opens the offer and the customer's decline only where the status allows them", () => {
+    const id = serviceRequestFixture().id;
+    const offered = serviceRequestsViewModelFixture({
+      requests: [
+        serviceRequestFixture({ status: ServiceRequestStatus.Offered }),
+      ],
+    });
+    const open = (
+      query: string,
+      viewModel = serviceRequestsViewModelFixture(),
+    ) => {
+      cleanup();
+      mocks.query = "serviceRequest=" + id + "&serviceRequestAction=" + query;
+      render(
+        <CustomerServiceRequestsSection
+          viewModel={viewModel}
+          content={content}
+          lineItemsContent={lineItemsContent}
+          locale="en"
+        />,
+      );
+      return screen.queryByRole("dialog");
+    };
+    expect(open("offer")).toHaveTextContent("Record offer");
+    expect(open("withdraw")).toBeNull();
+    expect(open("withdraw", offered)).toHaveTextContent("Customer declined");
+    expect(open("offer", offered)).toBeNull();
   });
   it("keeps completed requests collapsed until the matching request is selected", () => {
     const done = serviceRequestFixture({
@@ -162,6 +218,7 @@ describe("CustomerServiceRequestsSection", () => {
       <CustomerServiceRequestsSection
         viewModel={vm}
         content={content}
+        lineItemsContent={lineItemsContent}
         locale="en"
       />,
     );
@@ -172,6 +229,7 @@ describe("CustomerServiceRequestsSection", () => {
       <CustomerServiceRequestsSection
         viewModel={vm}
         content={content}
+        lineItemsContent={lineItemsContent}
         locale="en"
       />,
     );

@@ -31,7 +31,12 @@ describe("service request URL state", () => {
       Action: "serviceRequestAction",
     });
     expect(F).toEqual({ Open: "open", All: "all" });
-    expect(A).toEqual({ Accept: "accept", Decline: "decline" });
+    expect(A).toEqual({
+      Offer: "offer",
+      Accept: "accept",
+      Withdraw: "withdraw",
+      Decline: "decline",
+    });
     for (const filter of [undefined, "bogus", ["all"]])
       expect(readServiceRequestInboxFilter({ filter })).toBe(F.Open);
     expect(readServiceRequestInboxFilter({ filter: "all" })).toBe(F.All);

@@ -159,20 +159,12 @@ async function toDto(
     names.get(row.requested_by_membership_id) ?? "",
   );
 }
-async function countRequested(
+/** Open means unanswered by either side: an offer waiting for the customer still needs a follow-up. */
+async function countOpen(
   executor: ContactDatabaseReader,
   actor: WorkspaceActor,
 ): Promise<number> {
-  const [row] = await executor
-    .select({ value: count() })
-    .from(serviceRequests)
-    .where(
-      and(
-        condition(actor),
-        eq(serviceRequests.status, ServiceRequestStatus.Requested),
-      ),
-    );
-  return row?.value ?? 0;
+  return countInbox(executor, actor, true);
 }
 /** Counts what `list` returns for the same filter, so the inbox can page. */
 async function countInbox(
@@ -202,7 +194,7 @@ export const serviceRequestAccessService = {
   lock,
   list,
   toDto,
-  countRequested,
+  countOpen,
   countInbox,
   hasRequests,
 } as const;

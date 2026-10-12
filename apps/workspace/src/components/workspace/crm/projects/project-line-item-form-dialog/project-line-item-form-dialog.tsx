@@ -45,12 +45,10 @@ import type { CrmProjectLineItemsDictionary } from "@/i18n/dictionaries/workspac
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { formatEuroCents } from "@/lib/workspace/crm/format-service-price";
 import { ProjectLineItemEffectFields } from "../project-line-item-effect-fields/project-line-item-effect-fields";
-import {
-  LineItemIdentityFields,
-  LineItemPricingFields,
-} from "@/components/workspace/crm/shared/line-item-fields/line-item-fields";
+import { LineItemIdentityFields } from "@/components/workspace/crm/shared/line-item-identity-fields/line-item-identity-fields";
+import { LineItemPricingFields } from "@/components/workspace/crm/shared/line-item-pricing-fields/line-item-pricing-fields";
 import { LineItemFormMessages } from "@/components/workspace/crm/shared/line-item-form-messages/line-item-form-messages";
-import layout from "@/components/workspace/crm/shared/line-item-fields/line-item-form-layout.module.css";
+import layout from "@/components/workspace/crm/shared/line-item-form-layout/line-item-form-layout.module.css";
 import styles from "./project-line-item-form-dialog.module.css";
 
 type ProjectLineItemFormDialogProps = {

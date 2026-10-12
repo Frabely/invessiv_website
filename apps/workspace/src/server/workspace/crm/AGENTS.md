@@ -398,7 +398,7 @@ Plan: `apps/workspace/plans/crm/13c-portal-leistungsanfragen/74-leistungsarten-u
   gutschreiben → Korrektur“ bzw. den Projekt-Editor.
 - **Wert:** `rate` ohne Menge bleibt ein Konditionswert; eine Stunden-Leistung zählt über
   `hoursLineItemAmountCents` als Einmalwert.
-- `listExtraFeedbackRoundBlockers` nimmt nur Projekte, die der Aufrufer über seinen eigenen Zugriffsbereich
+- `loadExtraFeedbackRoundBlockers` (`server/shared/services/feedback/`) nimmt nur Projekte, die der Aufrufer über seinen eigenen Zugriffsbereich
   gelesen hat; es ergänzt die Rundenstände und wendet dieselbe Regel wie die Zuweisung an. Die Abfrage selbst
   liegt seit Task 76 als `loadExtraFeedbackRoundBlockers` unter `server/shared/services/feedback/`, weil das Portal
   sie für seinen Katalog ebenfalls braucht.
@@ -407,7 +407,8 @@ Plan: `apps/workspace/plans/crm/13c-portal-leistungsanfragen/74-leistungsarten-u
 
 - Lesen und Sperren laufen über `serviceRequestAccessService` mit
   `service_requests.customer_id` und dem jeweiligen unabhängigen Lese-/Schreibrecht.
-  Der Sidebar-Zähler zählt nur `requested`; der offene Eingang zusätzlich `offered`.
+  Sidebar-Zähler und offener Eingang zählen dasselbe: `requested` und `offered`
+  (`countOpen`). Ein Angebot ohne Antwort bleibt damit sichtbar, bis es entschieden ist.
 - Der Eingang blättert serverseitig (`SERVICE_REQUEST_INBOX_PAGE_SIZE`): `countInbox` zählt mit
   derselben Bedingung wie `list`, `resolveListPage` klemmt eine zu hohe Seite auf die letzte.
   Die Cockpit-Liste eines Kunden bleibt ungeblättert. `list` nimmt seine Eingrenzung als
@@ -417,6 +418,20 @@ Plan: `apps/workspace/plans/crm/13c-portal-leistungsanfragen/74-leistungsarten-u
 - Annahme legt Vorlage, Projekt, Projektleistung und Stunden-/Rundenwirkung in **einer**
   Transaktion an. Ein erwarteter Fehler aus der Zuweisung wird intern zum Rollback-Signal und
   außerhalb der Transaktion wieder zum Result-Union; keine halben Neuanlagen.
+- **Angebot zuerst:** `offered` verlangt den angebotenen Preis (`priceCents`, bei Stunden der
+  Stundensatz) und genau bei Stunden die Menge (`minutes`); beides steht danach in
+  `offered_price_cents` / `offered_minutes` und geht nie ins Portal. Aus `offered` führt intern
+  auch `withdrawn` heraus („Kunde hat abgesagt“, ohne Grund, mit `decided_by_member_id`).
+- Annahme prüft nach Sperre, Übergang und Version in dieser Reihenfolge: `OFFER_REQUIRED`, wenn
+  die Anfrage noch `requested` ist und `acceptWithoutOffer` fehlt
+  (`isServiceRequestWithoutOffer` aus `@invessiv/common`); `CATALOG_NOT_READABLE` ohne
+  `line_item_templates.read`; dann die Vorlagenbindung: Eine Kataloganfrage, deren Vorlage noch
+  aktiv ist und dieselbe Art hat, nimmt nur diese Vorlage und nie `mode: new`
+  (`VALIDATION_ERROR`).
+- Fehlercodes der Zuweisung werden über die Map `ASSIGNMENT_FAILURE` übersetzt, nie über
+  Stringvergleich.
+- `projectLineItemAssignmentService.listBlockers` liest die Rundenregel direkt über
+  `loadExtraFeedbackRoundBlockers`; ein Service importiert keinen Query-Handler.
 - `insertProject` und `insertLineItemTemplate` sind geteilte Insert-Helfer ohne Rechteprüfung.
   Rechte, Kundenzugehörigkeit, aktive Vorlage und Art prüft der aufrufende Handler.
   Neue Projekte übernehmen den Kunden-Owner; neue Vorlagen bleiben im Portal unveröffentlicht.

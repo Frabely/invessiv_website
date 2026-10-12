@@ -8,7 +8,9 @@ export const ServiceRequestInboxFilter = { Open: "open", All: "all" } as const;
 export type ServiceRequestInboxFilter =
   (typeof ServiceRequestInboxFilter)[keyof typeof ServiceRequestInboxFilter];
 export const ServiceRequestDialogAction = {
+  Offer: "offer",
   Accept: "accept",
+  Withdraw: "withdraw",
   Decline: "decline",
 } as const;
 export type ServiceRequestDialogAction =

@@ -69,3 +69,10 @@
   outline: 2px solid var(--color-cta);
   outline-offset: 2px;
 }
+/* What went out and when; internal, the customer never sees the amount. */
+.offer {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  font-variant-numeric: tabular-nums;
+}

@@ -7,7 +7,10 @@ import {
   serviceRequestFixture,
   serviceRequestsViewModelFixture,
 } from "@/server/tests/support/service-request-fixtures";
-import { getCrmServiceRequestsDictionary } from "@/i18n/dictionaries/workspace/crm";
+import {
+  getCrmProjectLineItemsDictionary,
+  getCrmServiceRequestsDictionary,
+} from "@/i18n/dictionaries/workspace/crm";
 import { ServiceRequestAcceptDialog } from "./service-request-accept-dialog";
 
 vi.mock("next/navigation", () => ({
@@ -16,12 +19,16 @@ vi.mock("next/navigation", () => ({
 const content = getCrmServiceRequestsDictionary("en");
 afterEach(cleanup);
 
-function renderDialog(status: ServiceRequestStatus) {
+function renderDialog(
+  status: ServiceRequestStatus,
+  viewModel = serviceRequestsViewModelFixture(),
+) {
   render(
     <ServiceRequestAcceptDialog
       request={serviceRequestFixture({ status })}
-      viewModel={serviceRequestsViewModelFixture()}
+      viewModel={viewModel}
       content={content}
+      lineItemsContent={getCrmProjectLineItemsDictionary("en")}
       locale="en"
       onCloseAction={vi.fn()}
     />,
@@ -43,6 +50,18 @@ describe("ServiceRequestAcceptDialog", () => {
       screen.getByRole("checkbox", { name: content.form.withoutOfferConfirm }),
     );
     expect(submit).toBeEnabled();
+  });
+  it("names the missing catalog right instead of an empty template list", () => {
+    const submit = renderDialog(
+      ServiceRequestStatus.Offered,
+      serviceRequestsViewModelFixture({
+        templates: [],
+        canReadTemplates: false,
+      }),
+    );
+    expect(screen.getByText(content.form.noCatalogAccess)).toBeVisible();
+    expect(screen.queryByText(content.form.noTemplate)).not.toBeInTheDocument();
+    expect(submit).toBeDisabled();
   });
   it("asks for no confirmation once an offer was sent", () => {
     const submit = renderDialog(ServiceRequestStatus.Offered);

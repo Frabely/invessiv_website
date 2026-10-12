@@ -8,6 +8,8 @@ export type ServiceRequestsViewModel = {
   canWrite: boolean;
   canCreateProject: boolean;
   canCreateTemplate: boolean;
+  /** Without the catalog there is nothing to assign from; the dialog then names that reason. */
+  canReadTemplates: boolean;
   projects: ServiceRequestProjectOption[];
   templates: LineItemTemplateDto[];
   blockers: Record<string, LineItemAssignmentBlockers>;

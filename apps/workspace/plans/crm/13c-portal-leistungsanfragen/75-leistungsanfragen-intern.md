@@ -60,6 +60,8 @@ packages/common/src/contracts/crm/rows/service-request-row.ts
 | `offered`   | `accepted`  | internal |
 | `offered`   | `declined`  | internal |
 | `requested` | `withdrawn` | customer |
+| `offered`   | `withdrawn` | customer |
+| `offered`   | `withdrawn` | internal |
 
 Fehlercodes: `SERVICE_REQUEST_NOT_FOUND` (404), `VALIDATION_ERROR` (422), `INVALID_TRANSITION` (409),
 `VERSION_CONFLICT` (409 mit `VersionConflictDto`), `OFFER_REQUIRED` (409, Nachtrag 12.10.2026), `KIND_MISMATCH` (422), `TEMPLATE_NOT_ASSIGNABLE` (409),

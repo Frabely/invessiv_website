@@ -446,9 +446,22 @@ Plan: `apps/workspace/plans/crm/13c-portal-leistungsanfragen/74-leistungsarten-u
 - **Angebot zuerst:** Der Kunde sieht im Portal keinen Preis. An einer eingegangenen Anfrage ist „Angebot
   gesendet“ die Hauptaktion; „Ohne Angebot annehmen“ (Kulanz) ist eine Nebenaktion (`ghost`) und im Annahme-Dialog
   erst nach dem Bestätigungshaken sendbar. Der Haken geht als `acceptWithoutOffer` an den Server, der ohne ihn mit
-  `OFFER_REQUIRED` ablehnt. Erst nach dem Angebot ist „Kunde hat zugesagt“ die Hauptaktion. Welche
-  Variante gilt, liest die UI über `isServiceRequestWithoutOffer` aus dem Status der Anfrage.
-- Dialoge nutzen `useVersionedMutation`, direkte Angebotsmarkierung `useVersionedCommand`.
+  `OFFER_REQUIRED` ablehnt. Nach dem Angebot ist „Kunde hat zugesagt“ die Hauptaktion, daneben „Kunde hat
+  abgesagt“ (schließt als zurückgezogen, ohne Grund) und „Ablehnen“. Welche Variante gilt, liest die UI über
+  `isServiceRequestWithoutOffer` (`@invessiv/common`) aus dem Status der Anfrage.
+- **Vier Dialoge, alle über die URL** (`ServiceRequestDialogAction`): `service-request-offer-dialog` hält fest,
+  was angeboten wurde (Preis, bei Stunden Satz und Menge; `service-request-offer-form`),
+  `service-request-accept-dialog` startet mit diesen Werten, `service-request-withdraw-dialog` fragt vor der
+  Absage nach, `service-request-decline-dialog` verlangt den Grund. Die Sektion öffnet einen Dialog nur für einen
+  Übergang, den der Status noch erlaubt. Alle nutzen `useVersionedMutation`; es gibt keine Sofort-Aktion mehr.
+- Der angebotene Betrag steht mit Datum an der Anfrage und im Eingang unter dem Status
+  (`describeServiceRequestOffer`), damit ein unbeantwortetes Angebot auffällt.
+- Ohne `line_item_templates.read` (`canReadTemplates`) nennt der Annahme-Dialog das fehlende Katalogrecht und
+  sendet nicht; der Server antwortet in dem Fall mit `CATALOG_NOT_READABLE`.
+- Texte der geteilten Leistungsfelder kommen als `lineItemsContent` von der Page; kein Dialog lädt ein
+  Dictionary selbst.
+- „Bestehend oder neu“ rendert `service-request-mode-choice`; Projekt- und Vorlagenfelder liegen in je einem
+  eigenen Ordner (`service-request-project-fields`, `service-request-template-fields`).
   Konflikte behalten Eingaben und übernehmen die aktuelle Version. Ablehnungsgründe sind
   ausdrücklich als kundensichtbar gekennzeichnet.
 - Der Annahme-Dialog verwendet die bestehenden `LineItemFields` und Wirkungseingaben aus

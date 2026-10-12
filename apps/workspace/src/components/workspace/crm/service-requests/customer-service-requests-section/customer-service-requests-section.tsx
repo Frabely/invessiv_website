@@ -9,7 +9,10 @@ import { canTransitionServiceRequest } from "@invessiv/common/patterns/crm/servi
 import type { ServiceRequestDto } from "@invessiv/common/contracts/crm/service-requests/service-request.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import type { ServiceRequestsViewModel } from "@/common/contracts/crm/service-requests-view-model";
-import type { CrmServiceRequestsDictionary } from "@/i18n/dictionaries/workspace/crm";
+import type {
+  CrmProjectLineItemsDictionary,
+  CrmServiceRequestsDictionary,
+} from "@/i18n/dictionaries/workspace/crm";
 import type { Locale } from "@/config/i18n";
 import {
   ServiceRequestInboxQueryParam as Q,
@@ -23,14 +26,19 @@ import { ServiceRequestStatusBadge } from "@/components/shared/service-requests/
 import { ServiceRequestActions } from "../service-request-actions/service-request-actions";
 import { ServiceRequestAcceptDialog } from "../service-request-accept-dialog/service-request-accept-dialog";
 import { ServiceRequestDeclineDialog } from "../service-request-decline-dialog/service-request-decline-dialog";
+import { ServiceRequestOfferDialog } from "../service-request-offer-dialog/service-request-offer-dialog";
+import { ServiceRequestWithdrawDialog } from "../service-request-withdraw-dialog/service-request-withdraw-dialog";
 import styles from "./customer-service-requests-section.module.css";
 export function CustomerServiceRequestsSection({
   viewModel,
   content,
+  lineItemsContent,
   locale,
 }: {
   viewModel: ServiceRequestsViewModel;
   content: CrmServiceRequestsDictionary;
+  /** Labels of the shared line item fields the offer and the acceptance dialog reuse. */
+  lineItemsContent: CrmProjectLineItemsDictionary;
   locale: Locale;
 }) {
   const router = useRouter();
@@ -92,20 +100,45 @@ export function CustomerServiceRequestsSection({
     </ul>
   );
   if (!viewModel.requests.length) return null;
-  const canAccept =
-    selected &&
-    canTransitionServiceRequest(
-      selected.status,
-      ServiceRequestStatus.Accepted,
-      ServiceRequestTransitionSide.Internal,
-    );
-  const canDecline =
-    selected &&
-    canTransitionServiceRequest(
-      selected.status,
-      ServiceRequestStatus.Declined,
-      ServiceRequestTransitionSide.Internal,
-    );
+  const dialog = viewModel.canWrite && selected ? openDialog(selected) : null;
+  // A dialog only opens for a transition the request still allows; a stale link opens nothing.
+  function openDialog(request: ServiceRequestDto) {
+    const allows = (to: ServiceRequestStatus) =>
+      canTransitionServiceRequest(
+        request.status,
+        to,
+        ServiceRequestTransitionSide.Internal,
+      );
+    const shared = {
+      key: request.id,
+      request,
+      content,
+      onCloseAction: close,
+    };
+    if (action === Action.Offer && allows(ServiceRequestStatus.Offered))
+      return (
+        <ServiceRequestOfferDialog
+          {...shared}
+          viewModel={viewModel}
+          lineItemsContent={lineItemsContent}
+          locale={locale}
+        />
+      );
+    if (action === Action.Accept && allows(ServiceRequestStatus.Accepted))
+      return (
+        <ServiceRequestAcceptDialog
+          {...shared}
+          viewModel={viewModel}
+          lineItemsContent={lineItemsContent}
+          locale={locale}
+        />
+      );
+    if (action === Action.Withdraw && allows(ServiceRequestStatus.Withdrawn))
+      return <ServiceRequestWithdrawDialog {...shared} />;
+    if (action === Action.Decline && allows(ServiceRequestStatus.Declined))
+      return <ServiceRequestDeclineDialog {...shared} />;
+    return null;
+  }
   return (
     <CollapsibleSection
       title={content.section.title}
@@ -114,27 +147,7 @@ export function CustomerServiceRequestsSection({
       expandOn={selected?.id}
       labelExpand={content.section.expand}
       labelCollapse={content.section.collapse}
-      after={
-        viewModel.canWrite && selected ? (
-          action === Action.Accept && canAccept ? (
-            <ServiceRequestAcceptDialog
-              key={selected.id}
-              request={selected}
-              viewModel={viewModel}
-              content={content}
-              locale={locale}
-              onCloseAction={close}
-            />
-          ) : action === Action.Decline && canDecline ? (
-            <ServiceRequestDeclineDialog
-              key={selected.id}
-              request={selected}
-              content={content}
-              onCloseAction={close}
-            />
-          ) : null
-        ) : null
-      }
+      after={dialog}
     >
       {open.length ? rows(open, viewModel.canWrite) : null}
       {done.length ? (

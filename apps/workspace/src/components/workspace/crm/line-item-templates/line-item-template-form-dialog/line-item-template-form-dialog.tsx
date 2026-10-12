@@ -44,12 +44,10 @@ import {
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import type { CrmLineItemTemplatesDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import {
-  LineItemIdentityFields,
-  LineItemPricingFields,
-} from "@/components/workspace/crm/shared/line-item-fields/line-item-fields";
+import { LineItemIdentityFields } from "@/components/workspace/crm/shared/line-item-identity-fields/line-item-identity-fields";
+import { LineItemPricingFields } from "@/components/workspace/crm/shared/line-item-pricing-fields/line-item-pricing-fields";
 import { LineItemFormMessages } from "@/components/workspace/crm/shared/line-item-form-messages/line-item-form-messages";
-import layout from "@/components/workspace/crm/shared/line-item-fields/line-item-form-layout.module.css";
+import layout from "@/components/workspace/crm/shared/line-item-form-layout/line-item-form-layout.module.css";
 import styles from "./line-item-template-form-dialog.module.css";
 
 type LineItemTemplateFormDialogProps = {

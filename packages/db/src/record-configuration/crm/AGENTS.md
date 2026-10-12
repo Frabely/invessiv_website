@@ -117,5 +117,13 @@ Plan: `apps/workspace/plans/crm/20-stunden-und-history/README.md`.
   Viertelstunden und auf die Ledger-Grenze begrenzt; andere Arten tragen keine Menge.
 - Vorlagen und zugewiesene Leistungen dürfen als Herkunft entfallen (`ON DELETE SET NULL`).
   Annahme benötigt Ergebnisprojekt und interne Entscheidung; Ablehnung einen nicht leeren Grund.
+- **Angebot:** `offered_price_cents` und `offered_minutes` sind nullable: Vor einem Angebot und bei einer
+  Annahme ohne Angebot gibt es keinen Wert. Der Preis ist nicht negativ; angebotene Stunden gibt es nur bei
+  Art `hours`, mit denselben Grenzen wie die angefragte Menge.
+- **Bewusste Löschregeln, heute ohne Löschpfad im Code:** Ein gelöschtes Projekt löscht per `CASCADE` alle
+  Anfragen, die es gewünscht oder erhalten haben, samt Verlauf. Eine Portalmitgliedschaft mit Anfragen lässt
+  sich dagegen nicht löschen (Fremdschlüssel ohne `ON DELETE`), ebenso wenig ein Mitglied, das entschieden hat.
+  Wer einen Löschpfad für Projekte, Mitgliedschaften oder Kontakte baut, entscheidet diese Regeln vorher neu
+  (Verlauf erhalten heißt: `SET NULL` statt `CASCADE`, bzw. Mitgliedschaft deaktivieren statt löschen).
 - Die Migration ergänzt `service_requests.read/write` für Owner und Member.
   Die Rechte sind intern und kundenbezogen bindbar.

@@ -6,8 +6,8 @@ import {
   portalInvitations,
 } from "@invessiv/db/record-configuration";
 import type { PortalE2eFixture } from "./portal-e2e-fixture";
-import { PORTAL_E2E_PREFIX as PREFIX } from "@/common/constants/testing/portal-e2e-prefix";
-import type { PortalE2eSeed } from "@/common/contracts/testing/portal-e2e-seed";
+import { PORTAL_E2E_PREFIX as PREFIX } from "@/test/constants/portal-e2e-prefix";
+import type { PortalE2eSeed } from "@/test/contracts/portal-e2e-seed";
 import {
   loadSystemRoles,
   ensureManager,

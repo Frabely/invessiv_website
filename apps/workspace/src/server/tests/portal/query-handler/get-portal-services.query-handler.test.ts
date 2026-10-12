@@ -28,6 +28,7 @@ const reader = createPortalActor({
   personId: "person-1",
   firstName: null,
   permissions: new Set([
+    Permission.PortalProjectsRead,
     Permission.PortalServicesRead,
     Permission.PortalServicesRequest,
   ]),
@@ -174,7 +175,7 @@ describe("getPortalServices query budget", () => {
     ).toEqual(["active", "waiting", "approved", "paused", "completed"]);
     expect(result?.requests[0]).toMatchObject({
       projectTitle: "Waiting",
-      canWithdraw: false,
+      canWithdraw: true,
     });
     const columns = recording.statements.find(
       (statement) => statement.table === serviceRequests,

@@ -51,9 +51,12 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       Permission.ProjectsRead,
       Permission.ProjectsWrite,
       Permission.ProjectLineItemsWrite,
+      Permission.LineItemTemplatesRead,
       Permission.LineItemTemplatesWrite,
       Permission.HoursManage,
     ];
+    const offer = (priceCents = 10000, minutes: number | null = null) =>
+      ({ to: S.Offered, version: 1, priceCents, minutes }) as const;
     const actor = (permissions = allPermissions) => f.member(permissions);
     const reader = () =>
       f.actor({
@@ -252,13 +255,10 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         total: 0,
       });
       expect(await countOpenServiceRequests(denied)).toBe(0);
-      expect(
-        await changeServiceRequestStatus(
-          id,
-          { to: S.Offered, version: 1 },
-          denied,
-        ),
-      ).toEqual({ ok: false, code: E.ServiceRequestNotFound });
+      expect(await changeServiceRequestStatus(id, offer(), denied)).toEqual({
+        ok: false,
+        code: E.ServiceRequestNotFound,
+      });
       expect(
         await acceptServiceRequest(id, acceptance(f.projectId), denied),
       ).toEqual({ ok: false, code: E.ServiceRequestNotFound });
@@ -362,14 +362,95 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         project_id: null,
         project_line_item_id: null,
       });
-      await changeServiceRequestStatus(
-        id,
-        { to: S.Offered, version: 1 },
-        actor(),
-      );
+      await changeServiceRequestStatus(id, offer(), actor());
       expect(
         await acceptServiceRequest(id, { ...unconfirmed, version: 2 }, actor()),
       ).toMatchObject({ ok: true, request: { status: S.Accepted } });
+    });
+    it("keeps what was offered, binds offered hours to an hours request and lets either side record a declined offer", async () => {
+      const id = await request();
+      expect(
+        await changeServiceRequestStatus(id, offer(10000, 60), actor()),
+      ).toEqual({ ok: false, code: E.ValidationError });
+      expect(
+        await changeServiceRequestStatus(id, offer(98000), actor()),
+      ).toMatchObject({
+        ok: true,
+        request: {
+          status: S.Offered,
+          offeredPriceCents: 98000,
+          offeredMinutes: null,
+        },
+      });
+      expect(
+        await changeServiceRequestStatus(
+          id,
+          { to: S.Withdrawn, version: 2 },
+          actor(),
+        ),
+      ).toMatchObject({ ok: true, request: { status: S.Withdrawn } });
+      expect(await row(id)).toMatchObject({
+        status: S.Withdrawn,
+        decline_reason: null,
+        decided_by_member_id: expect.any(String),
+      });
+      const fresh = await request();
+      expect(
+        await changeServiceRequestStatus(
+          fresh,
+          { to: S.Withdrawn, version: 1 },
+          actor(),
+        ),
+      ).toEqual({ ok: false, code: E.InvalidTransition });
+      const hoursId = await request({
+        kind: Kind.Hours,
+        line_item_template_id: hours,
+        requested_minutes: 300,
+      });
+      expect(
+        await changeServiceRequestStatus(hoursId, offer(11000), actor()),
+      ).toEqual({ ok: false, code: E.ValidationError });
+      expect(
+        await changeServiceRequestStatus(hoursId, offer(11000, 240), actor()),
+      ).toMatchObject({
+        ok: true,
+        request: { offeredPriceCents: 11000, offeredMinutes: 240 },
+      });
+    });
+    it("keeps a catalog request on its own template while that one is assignable", async () => {
+      const other = await template(Kind.Standard);
+      const id = await request();
+      expect(
+        await acceptServiceRequest(id, acceptance(f.projectId, other), actor()),
+      ).toEqual({ ok: false, code: E.ValidationError });
+      expect(
+        await acceptServiceRequest(
+          id,
+          { ...newAcceptance(), project: acceptance(f.projectId).project },
+          actor(),
+        ),
+      ).toEqual({ ok: false, code: E.ValidationError });
+      expect(await row(id)).toMatchObject({ status: S.Requested, version: 1 });
+      await f
+        .database()
+        .update(lineItemTemplates)
+        .set({ status: LineItemTemplateStatus.Archived })
+        .where(eq(lineItemTemplates.id, standard));
+      try {
+        expect(
+          await acceptServiceRequest(
+            id,
+            acceptance(f.projectId, other),
+            actor(),
+          ),
+        ).toMatchObject({ ok: true, request: { status: S.Accepted } });
+      } finally {
+        await f
+          .database()
+          .update(lineItemTemplates)
+          .set({ status: LineItemTemplateStatus.Active })
+          .where(eq(lineItemTemplates.id, standard));
+      }
     });
     it("creates a private template and a project with the customer's owner and two rounds", async () => {
       const id = await request({ line_item_template_id: null });
@@ -485,6 +566,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
           actor([
             Permission.ServiceRequestsWrite,
             Permission.ProjectLineItemsWrite,
+            Permission.LineItemTemplatesRead,
           ]),
         ),
       ).toEqual({ ok: false, code: E.EffectNotPermitted });
@@ -533,11 +615,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         ),
       ).toEqual({ ok: false, code: E.ValidationError });
       expect(
-        await changeServiceRequestStatus(
-          id,
-          { to: S.Offered, version: 1 },
-          actor(),
-        ),
+        await changeServiceRequestStatus(id, offer(), actor()),
       ).toMatchObject({
         ok: true,
         request: {
@@ -602,7 +680,8 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
     });
 
     it("rejects cross-customer projects, kind mismatch, archived templates and forbidden creation", async () => {
-      const id = await request();
+      // Free text: a catalog request would already be refused for leaving its own template.
+      const id = await request({ line_item_template_id: null });
       expect(
         await acceptServiceRequest(id, acceptance(f.foreignProjectId), actor()),
       ).toEqual({ ok: false, code: E.ProjectNotFound });
@@ -630,9 +709,22 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         await acceptServiceRequest(
           id,
           newAcceptance(),
-          actor([Permission.ServiceRequestsWrite]),
+          actor([
+            Permission.ServiceRequestsWrite,
+            Permission.LineItemTemplatesRead,
+          ]),
         ),
       ).toEqual({ ok: false, code: E.EffectNotPermitted });
+      expect(
+        await acceptServiceRequest(
+          id,
+          acceptance(f.projectId),
+          actor([
+            Permission.ServiceRequestsWrite,
+            Permission.ProjectLineItemsWrite,
+          ]),
+        ),
+      ).toEqual({ ok: false, code: E.CatalogNotReadable });
       expect(await row(id)).toMatchObject({ status: S.Requested, version: 1 });
     });
 

@@ -4,7 +4,7 @@ import { LineItemTemplateStatus } from "@invessiv/common/constants/crm/line-item
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { type ContactDatabaseTransaction } from "@invessiv/db/core";
 import { lineItemTemplates } from "@invessiv/db/record-configuration";
-import { PORTAL_E2E_PREFIX as PREFIX } from "@/common/constants/testing/portal-e2e-prefix";
+import { PORTAL_E2E_PREFIX as PREFIX } from "@/test/constants/portal-e2e-prefix";
 /**
  * Catalog entries released for the portal: one per kind and one that starts its own project. The
  * prices are set on purpose, so a test can prove that none of them reaches the portal.

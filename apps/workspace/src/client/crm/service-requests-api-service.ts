@@ -33,9 +33,6 @@ function mutate(
     E.Internal,
   );
 }
-function changeStatus(id: string, input: ChangeServiceRequestStatusRequestDto) {
-  return mutate(crmServiceRequestStatusEndpoint(id), HttpMethod.Patch, input);
-}
 async function dialogMutation(
   url: string,
   method: HttpMethod,
@@ -44,7 +41,8 @@ async function dialogMutation(
   const result = await mutate(url, method, input);
   return result.ok ? { ok: true as const, current: result.value } : result;
 }
-async function decline(
+/** Offer, decline and the customer's decline: one endpoint, told apart by `to`. */
+async function changeStatus(
   id: string,
   input: ChangeServiceRequestStatusRequestDto,
 ) {
@@ -63,6 +61,5 @@ async function accept(id: string, input: AcceptServiceRequestRequestDto) {
 }
 export const serviceRequestsApiService = {
   changeStatus,
-  decline,
   accept,
 } as const;
