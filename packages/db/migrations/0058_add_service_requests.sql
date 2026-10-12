@@ -150,7 +150,7 @@ CONSTRAINT service_requests_requested_project_customer_fkey FOREIGN KEY (request
 CONSTRAINT service_requests_project_customer_fkey FOREIGN KEY (project_id, customer_id) REFERENCES projects(id, customer_id) ON DELETE CASCADE,
 CONSTRAINT service_requests_membership_customer_fkey FOREIGN KEY (requested_by_membership_id, customer_id) REFERENCES portal_memberships(id, customer_id),
 CONSTRAINT service_requests_kind_check CHECK (kind IN ('standard','hours','feedback_round')),
-CONSTRAINT service_requests_title_check CHECK (btrim(title) <> '' AND length(title) <= 160),
+CONSTRAINT service_requests_title_check CHECK (btrim(title) <> '' AND length(title) <= 200),
 CONSTRAINT service_requests_note_check CHECK (length(note) <= 2000),
 CONSTRAINT service_requests_minutes_check CHECK (requested_minutes IS NULL OR (requested_minutes > 0 AND requested_minutes % 15 = 0 AND requested_minutes <= 600000)),
 CONSTRAINT service_requests_kind_minutes_check CHECK ((requested_minutes IS NOT NULL) = (kind = 'hours')),

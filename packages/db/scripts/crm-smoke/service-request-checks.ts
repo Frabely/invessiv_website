@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { CredentialSmokeContext } from "./credential-checks";
 import { ServiceRequestsConstraintName as C } from "@invessiv/db/constraint-names/crm/service-requests-constraint-names";
+import { ServiceRequestFieldLimits } from "@invessiv/common/constants/crm/forms/service-request-field-limits";
 
 /** Dedicated invalid-write smoke; all SQL below belongs to disposable fixture setup/checks. */
 export async function runServiceRequestChecks(context: CredentialSmokeContext) {
@@ -131,6 +132,17 @@ export async function runServiceRequestChecks(context: CredentialSmokeContext) {
   await expectRejected(
     "request rejects blank title",
     () => insert({ title: " " }),
+    C.TitleCheck,
+  );
+  await expectAccepted("request accepts the longest catalog title", () =>
+    insert({ title: "x".repeat(ServiceRequestFieldLimits.TitleMaxLength) }),
+  );
+  await expectRejected(
+    "request rejects a title beyond the catalog limit",
+    () =>
+      insert({
+        title: "x".repeat(ServiceRequestFieldLimits.TitleMaxLength + 1),
+      }),
     C.TitleCheck,
   );
   await expectRejected(

@@ -137,17 +137,6 @@ export async function createPortalServiceRequest(
       if ((data.requestedMinutes !== null) !== (kind === LineItemKind.Hours))
         return failure(E.Validation);
 
-      // Named before the project check: the project is one of the company's own, so saying that a
-      // round is already requested confirms nothing a contact could not see anyway.
-      if (
-        kind === LineItemKind.FeedbackRound &&
-        data.projectId !== null &&
-        (await services.openExtraRoundProjectIds(tx, actor.customerId)).has(
-          data.projectId,
-        )
-      )
-        return failure(E.DuplicateOpen);
-
       const selectable =
         service?.projectMode === LineItemProjectMode.NewProject
           ? []
@@ -156,6 +145,7 @@ export async function createPortalServiceRequest(
               actor,
               Permission.PortalServicesRequest,
               kind,
+              false,
             );
       const allowedWishes = listPortalServiceProjectWishes({
         service,
@@ -167,6 +157,16 @@ export async function createPortalServiceRequest(
           !selectable.some((project) => project.id === data.projectId))
       )
         return failure(E.Validation);
+
+      // Only an authorized, eligible project may reveal that another round was already requested.
+      if (
+        kind === LineItemKind.FeedbackRound &&
+        data.projectId !== null &&
+        (await services.openExtraRoundProjectIds(tx, actor.customerId)).has(
+          data.projectId,
+        )
+      )
+        return failure(E.DuplicateOpen);
 
       const [request] = await tx
         .insert(serviceRequests)

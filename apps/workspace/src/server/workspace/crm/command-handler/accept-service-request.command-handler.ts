@@ -1,5 +1,4 @@
 import "server-only";
-import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { and, eq } from "drizzle-orm";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
@@ -30,6 +29,7 @@ import type { AssignProjectLineItemFailureCode } from "@/common/contracts/crm/as
 import { canOn } from "@/common/patterns/auth/can-on";
 import { serviceRequestEventService } from "@/server/shared/services/service-request/service-request-event-service";
 import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
+import { versionConflict } from "@/server/workspace/shared/version-conflict";
 import { serviceRequestAccessService as access } from "../services/service-requests/service-request-access-service";
 import { serviceRequestSchemas } from "../services/service-requests/service-request-schemas";
 import { projectLineItemAssignmentService } from "../services/project-line-item-assignment-service";
@@ -78,13 +78,11 @@ export async function acceptServiceRequest(
         return { ok: false, code: E.InvalidTransition };
       if (request.version !== data.version)
         return {
-          ok: false,
+          ...versionConflict(
+            request.version,
+            await access.toDto(tx, request, actor),
+          ),
           code: E.VersionConflict,
-          conflict: {
-            code: ConcurrencyErrorCode.VersionConflict,
-            currentVersion: request.version,
-            current: await access.toDto(tx, request, actor),
-          },
         };
       // The customer has seen no price before an offer; skipping it must be stated, never implied.
       if (

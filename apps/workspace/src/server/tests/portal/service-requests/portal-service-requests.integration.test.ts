@@ -294,6 +294,20 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       });
     });
 
+    it("requests released catalog entries with titles above 160 characters up to the catalog limit", async () => {
+      for (const length of [161, 200]) {
+        const title = "x".repeat(length);
+        const templateId = await template(Kind.Standard, { title });
+        const id = await created(
+          contactA,
+          input({ lineItemTemplateId: templateId }),
+        );
+        expect(
+          (await rowsOf(f.customerId)).find((row) => row.id === id)?.title,
+        ).toBe(title);
+      }
+    });
+
     it("keeps companies apart for reading, requesting and withdrawing", async () => {
       const ofA = await created(contactA, input());
 
@@ -690,6 +704,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
     });
 
     it("names no project to a contact without the project read permission", async () => {
+      await created(contactA, input({ lineItemTemplateId: round }));
       const withoutProjects = createPortalActor({
         ...contactA,
         permissions: new Set([
@@ -712,6 +727,16 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       expect(
         await createPortalServiceRequest(withoutProjects, input()),
       ).toEqual({ ok: false, code: E.Validation });
+      const foreignProjectId = await f.project({
+        customerId: f.foreignCustomerId,
+      });
+      for (const projectId of [f.projectId, randomUUID(), foreignProjectId])
+        expect(
+          await createPortalServiceRequest(
+            withoutProjects,
+            input({ lineItemTemplateId: round, projectId }),
+          ),
+        ).toEqual({ ok: false, code: E.Validation });
     });
 
     it("lets the owner view read catalog and requests without the right to request", async () => {

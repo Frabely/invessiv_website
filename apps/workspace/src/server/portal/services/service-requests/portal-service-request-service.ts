@@ -162,6 +162,7 @@ async function selectableProjects(
   reader: PortalReader,
   permission: Permission,
   kind: LineItemKind,
+  excludeOpenExtraRounds = true,
 ): Promise<PortalServiceProjectOptionDto[]> {
   const rows = await projectCandidates(executor, reader, permission, kind);
   if (kind !== LineItemKind.FeedbackRound || rows.length === 0)
@@ -169,7 +170,10 @@ async function selectableProjects(
   return feedbackProjectOptions(
     executor,
     rows,
-    openExtraRoundProjectIds(executor, reader.customerId),
+    // Commands first authorize the project, then distinguish an open request from other failures.
+    excludeOpenExtraRounds
+      ? openExtraRoundProjectIds(executor, reader.customerId)
+      : new Set<string>(),
   );
 }
 

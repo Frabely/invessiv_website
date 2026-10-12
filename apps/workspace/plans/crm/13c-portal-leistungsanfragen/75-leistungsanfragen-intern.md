@@ -34,7 +34,7 @@ packages/common/src/constants/crm/service-request-statuses.ts        ServiceRequ
 packages/common/src/constants/crm/service-request-project-wishes.ts  ServiceRequestProjectWish { Existing, New, Undecided }
 packages/common/src/constants/crm/service-request-transition-sides.ts    { Internal, Customer }
 packages/common/src/constants/crm/service-request-transitions.ts     SERVICE_REQUEST_TRANSITIONS
-packages/common/src/constants/crm/forms/service-request-field-limits.ts  TitleMaxLength 160, NoteMaxLength 2000, DeclineReasonMaxLength 500
+packages/common/src/constants/crm/forms/service-request-field-limits.ts  TitleMaxLength 200 (Kataloglimit), NoteMaxLength 2000, DeclineReasonMaxLength 500
 packages/common/src/constants/crm/errors/service-request-error-codes.ts
 packages/common/src/constants/crm/system-message-keys.ts             + ServiceRequested, ServiceRequestOffered, ServiceRequestAccepted,
                                                                        ServiceRequestDeclined, ServiceRequestWithdrawn; Param ServiceTitle

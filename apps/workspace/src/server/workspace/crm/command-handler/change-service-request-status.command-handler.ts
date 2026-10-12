@@ -1,5 +1,4 @@
 import "server-only";
-import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { ServiceRequestErrorCode as E } from "@invessiv/common/constants/crm/errors/service-request-error-codes";
 import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
@@ -13,6 +12,7 @@ import { serviceRequests } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { serviceRequestEventService } from "@/server/shared/services/service-request/service-request-event-service";
 import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
+import { versionConflict } from "@/server/workspace/shared/version-conflict";
 import { serviceRequestAccessService as access } from "../services/service-requests/service-request-access-service";
 import { serviceRequestSchemas } from "../services/service-requests/service-request-schemas";
 
@@ -38,13 +38,11 @@ export async function changeServiceRequestStatus(
       return { ok: false, code: E.InvalidTransition };
     if (request.version !== parsed.data.version)
       return {
-        ok: false,
+        ...versionConflict(
+          request.version,
+          await access.toDto(tx, request, actor),
+        ),
         code: E.VersionConflict,
-        conflict: {
-          code: ConcurrencyErrorCode.VersionConflict,
-          currentVersion: request.version,
-          current: await access.toDto(tx, request, actor),
-        },
       };
     const data = parsed.data;
     // Offered hours belong to an hours request and to nothing else.

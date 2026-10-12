@@ -48,7 +48,7 @@ describe("service request transitions", () => {
   });
   it("keeps boundary limits and public error codes explicit and unique", () => {
     expect(ServiceRequestFieldLimits).toEqual({
-      TitleMaxLength: 160,
+      TitleMaxLength: 200,
       NoteMaxLength: 2000,
       DeclineReasonMaxLength: 500,
     });

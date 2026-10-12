@@ -100,7 +100,7 @@ service_requests  (13c.2, präfixfrei)
   customer_id uuid NOT NULL → customers ON DELETE CASCADE
   line_item_template_id uuid NULL → line_item_templates ON DELETE SET NULL      NULL = Freitext oder Vorlage gelöscht
   kind text NOT NULL               Snapshot; Freitext = standard
-  title text NOT NULL              Snapshot des Vorlagentitels bzw. Titel des Kunden; btrim <> '', ≤ 160
+  title text NOT NULL              Snapshot des Vorlagentitels bzw. Titel des Kunden; btrim <> '', ≤ 200
   note text NOT NULL               Kundentext, ≤ 2000, '' erlaubt bei Katalog-Anfragen
   requested_minutes integer NULL   nur bei kind = hours (CHECK wie quantity_minutes)
   project_wish text NOT NULL       existing | new | undecided
@@ -366,6 +366,17 @@ Die vier Migrationen des Branches (`0058_add_line_item_kinds`, `0059_create_serv
 `0060_add_portal_service_permissions`, `0061_add_service_request_offer`) sind zu
 `0058_add_service_requests.sql` zusammengefasst; die Angebotsspalten stehen direkt im `CREATE TABLE`. Das war
 zulässig, weil die Einzeldateien nur in Development angewandt und nie gemergt waren. Preview und Produktion
-bekommen ausschließlich die zusammengefasste Datei. Eine Development-Datenbank, die die Einzeldateien schon
-kennt, nimmt die neue Datei folgenlos an (alle Statements sind idempotent); in `schema_migrations` bleiben dort
-vier verwaiste Einträge, die ein Reset entfernt.
+bekommen ausschließlich die zusammengefasste Datei. **Development und Preview werden vor dem Anwenden
+zurückgesetzt**, falls dort die Einzeldateien oder eine frühere Fassung der zusammengefassten Datei bereits
+registriert sind. Das `CREATE TABLE IF NOT EXISTS` ergänzt eine bestehende Anfragetabelle nicht um neue Spalten
+oder geänderte CHECKs; der Runner überspringt bereits registrierte Dateinamen. Produktion darf keine frühere
+Migration dieses Branches enthalten. Für diese vereinbarte Ausgangslage ist keine zusätzliche Upgrade-Migration
+vorgesehen.
+
+### Weitere Review-Korrekturen — 12.10.2026
+
+- Anfragetitel übernehmen das Kataloglimit von 200 Zeichen; der CHECK ist direkt in der bestehenden Migration
+  angepasst. Freigegebene Katalogtitel mit 161–200 Zeichen lassen sich dadurch anfragen.
+- Eine Zusatzrunden-Anfrage prüft zuerst die Projektsichtbarkeit und Eignung, dann eine vorhandene offene Anfrage.
+  Ohne Projektleserecht, bei fremden oder unsichtbaren Projekten antwortet sie einheitlich mit `validation`.
+- Die beiden internen Statushandler erzeugen Versionskonflikte über den gemeinsamen `versionConflict`-Helfer.
