@@ -3,7 +3,6 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-
 import { TabList } from "./tab-list";
 
 describe("TabList", () => {
@@ -42,6 +41,32 @@ describe("TabList", () => {
     fireEvent.keyDown(second, { key: "Home" });
     expect(onSelectAction).toHaveBeenCalledWith("first");
     expect(first).toHaveFocus();
+  });
+
+  it("locks mouse and keyboard navigation until enabled again", () => {
+    const onSelectAction = vi.fn();
+    const props = {
+      activeValue: "first",
+      ariaLabel: "Sections",
+      items: [
+        { value: "first", id: "a", panelId: "pa", label: "First" },
+        { value: "second", id: "b", panelId: "pb", label: "Second" },
+      ],
+      onSelectAction,
+    };
+    const view = render(<TabList {...props} disabled />);
+    const first = screen.getByRole("tab", { name: "First" });
+    const second = screen.getByRole("tab", { name: "Second" });
+    expect(first).toBeDisabled();
+    expect(second).toBeDisabled();
+    fireEvent.click(second);
+    fireEvent.keyDown(first, { key: "ArrowRight" });
+    expect(onSelectAction).not.toHaveBeenCalled();
+
+    view.rerender(<TabList {...props} />);
+    fireEvent.keyDown(first, { key: "ArrowRight" });
+    expect(onSelectAction).toHaveBeenCalledWith("second");
+    expect(second).toHaveFocus();
   });
 
   it("marks only invalid tabs", () => {

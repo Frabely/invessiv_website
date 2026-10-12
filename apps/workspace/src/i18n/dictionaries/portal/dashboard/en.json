@@ -6,10 +6,8 @@
   "page": {
     "heading": "Overview – {company}"
   },
-  "mock": {
-    "badge": "Coming soon",
-    "dialogIntro": "This area is still being prepared. Once it is live, you will find here:",
-    "dialogClose": "Close"
+  "dialog": {
+    "close": "Close"
   },
   "due": {
     "overdue": "Due since {date}",
@@ -180,12 +178,13 @@
     },
     "serviceRequest": {
       "title": "Request a service",
-      "open": "Learn more",
-      "teaser": "Soon you can request additional services right here – for example a new page module.",
-      "upcoming": [
-        "Our services with a short description",
-        "A request in just a few clicks"
-      ]
+      "benefit": "Need more than planned? Request it here – you get a quote first.",
+      "open": "Request a service",
+      "openRequests": "{count} requests in progress",
+      "openRequestsOne": "1 request in progress",
+      "latest": "Latest: “{title}” – {status}",
+      "ownerHint": "You cannot request anything in the portal view.",
+      "ownerLink": "Handle in the CRM"
     },
     "completedProjects": {
       "title": "Completed projects",

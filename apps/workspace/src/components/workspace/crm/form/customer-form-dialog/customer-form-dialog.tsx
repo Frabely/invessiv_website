@@ -45,7 +45,7 @@ import {
   validateCustomerForm,
 } from "@/common/patterns/crm/customer-form";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
-import { useFocusFirstInvalidField } from "@/hooks/workspace/use-focus-first-invalid-field";
+import { useFocusFirstInvalidField } from "@/hooks/shared/use-focus-first-invalid-field";
 import { useLeadCustomerConversion } from "@/hooks/workspace/use-lead-customer-conversion";
 import { buildLeadDetailHref } from "@/common/patterns/leads/lead-detail-query";
 import type { CrmFormDictionary } from "@/i18n/dictionaries/workspace/crm";

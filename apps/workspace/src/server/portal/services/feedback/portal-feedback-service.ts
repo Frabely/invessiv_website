@@ -35,18 +35,14 @@ import { portalFeedbackSchemas } from "./portal-feedback-schemas";
 type LockedRound = { round: FeedbackRoundRow; projectTitle: string };
 
 function canRead(reader: PortalReader): boolean {
-  return portalCanOn.forReader(reader, Permission.PortalFeedbackRead, {
-    customerId: reader.customerId,
-  });
+  return portalCanOn.forCustomer(reader, Permission.PortalFeedbackRead);
 }
 
 /** The owner view reads but never writes, whatever it holds. */
 function canSubmit(reader: PortalReader): boolean {
   return (
     !isPortalOwnerView(reader) &&
-    portalCanOn.forActor(reader, Permission.PortalFeedbackSubmit, {
-      customerId: reader.customerId,
-    })
+    portalCanOn.forCustomer(reader, Permission.PortalFeedbackSubmit)
   );
 }
 
@@ -57,9 +53,7 @@ function canSubmit(reader: PortalReader): boolean {
 function canAttach(reader: PortalReader): boolean {
   return (
     canSubmit(reader) &&
-    portalCanOn.forReader(reader, Permission.PortalFilesRead, {
-      customerId: reader.customerId,
-    })
+    portalCanOn.forCustomer(reader, Permission.PortalFilesRead)
   );
 }
 

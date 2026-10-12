@@ -31,3 +31,10 @@ export function readPortalDashboardChat(
     PORTAL_DASHBOARD_CHAT_OPEN
   );
 }
+
+/** The service the request dialog should open on; the dialog checks it against what is offered. */
+export function readPortalDashboardService(
+  searchParams: SearchParamsReader,
+): string | null {
+  return searchParams.get(PortalDashboardQueryParam.Service) || null;
+}

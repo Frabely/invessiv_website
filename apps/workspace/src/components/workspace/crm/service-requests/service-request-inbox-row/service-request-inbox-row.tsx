@@ -9,7 +9,7 @@ import type { Locale } from "@/config/i18n";
 import type { CrmServiceRequestsDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMomentDay } from "@/lib/i18n/format-moment-day";
 import { ServiceRequestKindBadge } from "../service-request-kind-badge/service-request-kind-badge";
-import { ServiceRequestStatusBadge } from "../service-request-status-badge/service-request-status-badge";
+import { ServiceRequestStatusBadge } from "@/components/shared/service-requests/service-request-status-badge/service-request-status-badge";
 import styles from "./service-request-inbox-row.module.css";
 
 type ServiceRequestInboxRowProps = {

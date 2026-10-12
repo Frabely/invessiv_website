@@ -26,7 +26,8 @@
     "files": "Dateien",
     "hours": "Stunden",
     "messages": "Nachrichten",
-    "onboarding": "Onboarding"
+    "onboarding": "Onboarding",
+    "serviceRequest": "Leistungsanfragen"
   },
   "ownerView": {
     "label": "Portalansicht von",

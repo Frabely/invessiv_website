@@ -22,11 +22,7 @@ export async function listPortalFiles(
   reader: PortalReader,
   input: PortalFileListQueryDto,
 ): Promise<FileResult<PortalFileListPageDto>> {
-  if (
-    !portalCanOn.forReader(reader, Permission.PortalFilesRead, {
-      customerId: reader.customerId,
-    })
-  )
+  if (!portalCanOn.forCustomer(reader, Permission.PortalFilesRead))
     return { ok: false, code: E.NotFound };
   const parsed = portalFileSchemas.list.safeParse(input);
   if (!parsed.success) return { ok: false, code: E.Validation };

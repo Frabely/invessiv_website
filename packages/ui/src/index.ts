@@ -47,3 +47,4 @@ export * from "./components/files/file-archive-toolbar/file-archive-toolbar";
 export * from "./components/files/file-note-field/file-note-field";
 export * from "./components/files/file-project-select/file-project-select";
 export * from "./components/dialog/form-dialog/form-dialog";
+export * from "./components/form/form-notice/form-notice";

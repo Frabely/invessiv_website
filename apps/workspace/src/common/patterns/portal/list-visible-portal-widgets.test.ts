@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import { listVisiblePortalWidgets } from "./list-visible-portal-widgets";
@@ -27,6 +26,7 @@ describe("listVisiblePortalWidgets", () => {
         Permission.PortalOnboardingRead,
         Permission.PortalCredentialsRead,
         Permission.PortalHoursRead,
+        Permission.PortalServicesRead,
       ]),
     ).toHaveLength(Object.values(PortalWidgetKey).length);
   });
@@ -62,8 +62,17 @@ describe("listVisiblePortalWidgets", () => {
     expect(visible).toContain(PortalWidgetKey.OurTasks);
   });
 
-  it("keeps mocks regardless of permissions, since they show no data", () => {
-    expect(keys([])).toEqual([PortalWidgetKey.ServiceRequest]);
+  it("shows nothing without any permission", () => {
+    expect(keys([])).toEqual([]);
+  });
+
+  it("shows the service request widget with portal.services.read alone, even without requests", () => {
+    expect(keys([Permission.PortalAccess], new Set())).not.toContain(
+      PortalWidgetKey.ServiceRequest,
+    );
+    expect(
+      keys([Permission.PortalAccess, Permission.PortalServicesRead], new Set()),
+    ).toContain(PortalWidgetKey.ServiceRequest);
   });
 
   it("shows the hours widget only with portal.hours.read and hours to show", () => {

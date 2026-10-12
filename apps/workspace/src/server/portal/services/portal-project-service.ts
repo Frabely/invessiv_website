@@ -45,12 +45,11 @@ const listSummaries = cache(async (reader: PortalReader) =>
 
 /** Project names provide navigation for independently readable project-bound portal areas. */
 const listSelectableSummaries = cache(async (reader: PortalReader) => {
-  const target = { customerId: reader.customerId };
-  if (portalCanOn.forReader(reader, Permission.PortalProjectsRead, target))
+  if (portalCanOn.forCustomer(reader, Permission.PortalProjectsRead))
     return listSummaries(reader);
   const db = getDrizzleDatabaseClient();
   const readableAreas: SQL[] = [];
-  if (portalCanOn.forReader(reader, Permission.PortalTasksRead, target))
+  if (portalCanOn.forCustomer(reader, Permission.PortalTasksRead))
     readableAreas.push(
       exists(
         db
@@ -65,7 +64,7 @@ const listSelectableSummaries = cache(async (reader: PortalReader) => {
           ),
       ),
     );
-  if (portalCanOn.forReader(reader, Permission.PortalFeedbackRead, target))
+  if (portalCanOn.forCustomer(reader, Permission.PortalFeedbackRead))
     readableAreas.push(
       or(
         gt(projects.included_feedback_rounds, 0),
@@ -77,7 +76,7 @@ const listSelectableSummaries = cache(async (reader: PortalReader) => {
         ),
       )!,
     );
-  if (portalCanOn.forReader(reader, Permission.PortalOnboardingRead, target))
+  if (portalCanOn.forCustomer(reader, Permission.PortalOnboardingRead))
     readableAreas.push(
       exists(
         db

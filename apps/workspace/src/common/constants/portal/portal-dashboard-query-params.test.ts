@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   PORTAL_DASHBOARD_CHAT_OPEN,
+  PORTAL_SERVICE_REQUEST_CUSTOM,
   PortalDashboardQueryParam,
 } from "./portal-dashboard-query-params";
 
@@ -11,7 +12,9 @@ describe("PortalDashboardQueryParam", () => {
       Project: "project",
       Chat: "chat",
       HoursProject: "hoursProject",
+      Service: "service",
     });
     expect(PORTAL_DASHBOARD_CHAT_OPEN).toBe("open");
+    expect(PORTAL_SERVICE_REQUEST_CUSTOM).toBe("custom");
   });
 });

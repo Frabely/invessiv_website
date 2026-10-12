@@ -88,9 +88,7 @@ export default async function PortalFilesPage({
       )}
       canUpload={
         !isOwnerView &&
-        portalCanOn.forReader(reader, Permission.PortalFilesWrite, {
-          customerId: reader.customerId,
-        })
+        portalCanOn.forCustomer(reader, Permission.PortalFilesWrite)
       }
       cockpitHref={
         isOwnerView

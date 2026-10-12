@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-
 import {
   PERMISSION_DEFINITIONS,
   PORTAL_PERMISSION_VALUES,
@@ -82,6 +81,8 @@ describe("SYSTEM_ROLE_DEFINITIONS", () => {
         Permission.PortalOnboardingSubmit,
         Permission.PortalHoursRead,
         Permission.PortalHoursEntriesRead,
+        Permission.PortalServicesRead,
+        Permission.PortalServicesRequest,
       ]),
     );
   });

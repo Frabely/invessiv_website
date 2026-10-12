@@ -47,15 +47,11 @@ function originCondition(origin: PortalFileOrigin): SQL {
 }
 
 function canSeeProjects(reader: PortalReader): boolean {
-  return portalCanOn.forReader(reader, Permission.PortalProjectsRead, {
-    customerId: reader.customerId,
-  });
+  return portalCanOn.forCustomer(reader, Permission.PortalProjectsRead);
 }
 
 function canWrite(actor: PortalActor): boolean {
-  return portalCanOn.forActor(actor, Permission.PortalFilesWrite, {
-    customerId: actor.customerId,
-  });
+  return portalCanOn.forCustomer(actor, Permission.PortalFilesWrite);
 }
 
 async function findVisibleUpload(

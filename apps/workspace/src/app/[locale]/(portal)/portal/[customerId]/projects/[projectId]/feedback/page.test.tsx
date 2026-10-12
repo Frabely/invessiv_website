@@ -4,6 +4,8 @@ import "@testing-library/jest-dom/vitest";
 import { cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
+import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
+import { LineItemProjectMode } from "@invessiv/common/constants/crm/line-item-project-modes";
 import type { PortalProjectFeedbackDto } from "@invessiv/common/contracts/portal/portal-project-feedback.dto";
 import type { FeedbackPageViewProps } from "@/components/portal/feedback/feedback-page-view/feedback-page-view";
 import PortalFeedbackPage, { generateMetadata } from "./page";
@@ -13,6 +15,7 @@ vi.mock("server-only", () => ({}));
 const mocks = vi.hoisted(() => ({
   requirePortalReader: vi.fn(),
   getPortalProjectFeedback: vi.fn(),
+  getPortalServices: vi.fn(),
   isPortalOwnerView: vi.fn(),
   notFound: vi.fn(() => {
     throw new Error("NEXT_NOT_FOUND");
@@ -30,6 +33,10 @@ vi.mock("@/server/portal/auth/portal-owner-view", () => ({
 vi.mock(
   "@/server/portal/query-handler/get-portal-project-feedback.query-handler",
   () => ({ getPortalProjectFeedback: mocks.getPortalProjectFeedback }),
+);
+vi.mock(
+  "@/server/portal/query-handler/get-portal-services.query-handler",
+  () => ({ getPortalServices: mocks.getPortalServices }),
 );
 vi.mock(
   "@/components/portal/feedback/feedback-page-view/feedback-page-view",
@@ -88,6 +95,7 @@ describe("PortalFeedbackPage", () => {
     mocks.requirePortalReader.mockResolvedValue(READER);
     mocks.getPortalProjectFeedback.mockResolvedValue(FEEDBACK);
     mocks.isPortalOwnerView.mockReturnValue(false);
+    mocks.getPortalServices.mockResolvedValue(null);
   });
 
   afterEach(cleanup);
@@ -107,6 +115,54 @@ describe("PortalFeedbackPage", () => {
     expect(props.messagesHref).toBe(
       "/de/portal/customer-1?project=project-1&chat=open",
     );
+  });
+
+  it("loads no catalog while rounds are left", async () => {
+    const props = await renderPage();
+
+    expect(mocks.getPortalServices).not.toHaveBeenCalled();
+    expect(props.extraRoundRequestHref).toBeNull();
+  });
+
+  it("links an exhausted quota to the further round of this project", async () => {
+    mocks.getPortalProjectFeedback.mockResolvedValue({
+      ...FEEDBACK,
+      quota: { ...FEEDBACK.quota, used: 2, remaining: 0 },
+    });
+    mocks.getPortalServices.mockResolvedValue({
+      services: [
+        {
+          id: "service-round",
+          title: "Further feedback round",
+          description: "One more round",
+          kind: LineItemKind.FeedbackRound,
+          projectMode: LineItemProjectMode.ExistingProject,
+          projectIds: ["project-1"],
+        },
+      ],
+      projects: [{ id: "project-1", title: "Relaunch" }],
+      requests: [],
+      canRequest: true,
+    });
+
+    const props = await renderPage();
+
+    expect(mocks.getPortalServices).toHaveBeenCalledWith(READER);
+    expect(props.extraRoundRequestHref).toBe(
+      "/de/portal/customer-1?widget=serviceRequest&project=project-1&service=service-round",
+    );
+  });
+
+  it("keeps the chat link when no further round can be requested", async () => {
+    mocks.getPortalProjectFeedback.mockResolvedValue({
+      ...FEEDBACK,
+      quota: { ...FEEDBACK.quota, used: 2, remaining: 0 },
+    });
+
+    const props = await renderPage();
+
+    expect(props.extraRoundRequestHref).toBeNull();
+    expect(props.messagesHref).not.toBeNull();
   });
 
   it("answers 404 for a foreign, guessed or hidden project", async () => {

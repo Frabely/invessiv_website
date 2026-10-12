@@ -44,6 +44,12 @@ einzigen regulären Aufrufer.
 - **Zugriffsfilter sind Pflicht, nicht Empfehlung.** Ab Ordner 12b filtert jede Portal-Query über
   `portalAccessCondition` und jede Portal-Mutation prüft `portalCanOn` — beide firmenweit, vorbereitet für
   `projectPermissions`, das heute immer leer ist.
+- **Firmenweite Permission-Prüfungen** für die eigene Firma laufen über
+  `portalCanOn.forCustomer(reader, permission)`. Keine lokalen Kopien des Aufrufs mit
+  `{ customerId: reader.customerId }`; bestehende Fach-Service-Fassaden dürfen die Methode direkt
+  referenzieren. Schreibwege verlangen weiterhin einen `PortalActor` bzw. einen ausdrücklichen
+  Owner-Ausschluss. Prüfungen eines konkreten Kunden-/Projektziels bleiben bei `forActor`/`forReader`
+  mit explizitem Ziel; Projekt-Permissions werden nicht zu firmenweiten Rechten erweitert.
 - Logs enthalten keine E-Mail-Adressen, Namen oder Clerk-Kennungen.
 
 ## Portal-Dashboard
@@ -258,3 +264,54 @@ Plan: `apps/workspace/plans/crm/20-stunden-und-history/73-stunden-im-portal.md`.
   dieselben wie im Cockpit.
 - Fehlercodes sind `PortalHoursErrorCode`; Statuscodes und Texte stehen ausschließlich in
   `src/lib/portal/portal-hours-api-error.ts` (`validation` antwortet 422).
+
+## Leistungsanfragen (ab Task 76)
+
+Plan: `apps/workspace/plans/crm/13c-portal-leistungsanfragen/76-portal-leistungsanfragen.md`.
+
+- **Was das Portal anbietet, zeigt und annimmt, steht genau einmal in `portalServiceRequestService`**
+  (`services/service-requests/`): `can`, `catalogCondition` (aktiv **und** freigegeben; Archivieren entzieht die
+  Freigabe sofort), `requestCondition` (`portalAccessCondition.forReader` auf `service_requests.customer_id`, ohne
+  Recht `FALSE`), `selectableProjects` und `openExtraRoundProjectIds`. Kein Handler wiederholt diese Regeln.
+- **Zwei Rechte:** `portal.services.read` zeigt Katalog und eigene Anfragen, `portal.services.request` erlaubt
+  Anfragen und Zurückziehen. Beide liegen in `portal_standard`; nur das Leserecht steht in
+  `PORTAL_READ_PERMISSION_VALUES`. Die Owner-Sicht liest also, `canRequest` ist für sie immer `false`.
+- **`getPortalServices`** lädt mit dem Dashboard: Katalog, Projekt-Optionen, alle offenen Anfragen und die letzten
+  `PortalServiceRequestLimits.HistoryShown` abgeschlossenen Anfragen der Firma. Die Anfrage-Liste wird mit einem
+  gemeinsamen DB-Snapshot gelesen und insgesamt nach Anlagezeit sortiert. Ohne Leserecht `null`.
+- Der Leseflow lädt Projektkandidaten einmal für alle Leistungsarten (`projectCandidates`) und
+  bildet daraus die Auswahl (`projectOptionsByKind`). Offene Zusatzrunden-Projekte kommen aus
+  den bereits geladenen Anfragen; keine zweite Anfrage-Abfrage dafür. Rundenstände werden nur
+  bei einer entsprechenden Katalogleistung und vorhandenen Kandidaten geladen. Die Anfragen
+  selektieren ausschließlich die für Mapping und Auswahl benötigten Spalten.
+- **Wählbare Projekte je Art** (`selectableProjects`): immer `portalProjectCondition`; für `hours` zusätzlich nicht
+  in `HOURS_CLOSED_PROJECT_STATUS_VALUES`; für `feedback_round` nur `active`, ohne Blocker aus
+  `loadExtraFeedbackRoundBlockers` (`server/shared/services/feedback/`, dieselbe Regel wie Cockpit und Zuweisung)
+  und ohne offene Zusatzrunden-Anfrage am selben Projekt. Eine Zusatzrunde ohne wählbares Projekt wird nicht
+  angeboten.
+- **Welche Antwort auf die Projektfrage erlaubt ist**, entscheidet ausschließlich
+  `listPortalServiceProjectWishes` (`common/patterns/portal/`). Formular und Command nutzen dieselbe Funktion:
+  Freitext darf Projekt, „Neues Vorhaben“ oder „offen“ nennen; eine Vorlage mit `new_project` nur „neu“; Stunden
+  dürfen immer ohne Projekt angefragt werden (Nachtrag in Task 74); eine Zusatzrunde braucht ein Projekt.
+- **Anlegen** (`createPortalServiceRequest`): striktes Schema (`customerId`, Preis oder `kind` im Body sind
+  `validation`), ohne Recht `not_found`. Die Kundenzeile wird `FOR NO KEY UPDATE` gesperrt; darunter Idempotenz
+  (derselbe Schlüssel derselben Firma ist ein Erfolg mit der bestehenden Zeile, einer fremden Firma `validation`),
+  Obergrenze `OpenPerCustomer` (`limit_reached`), Vorlage laut `catalogCondition` (sonst `not_found`), Menge nur
+  und immer bei `hours`, Projektantwort. Titel und Art kommen aus der Vorlage, nie aus der Anfrage. Ein fremdes,
+  unsichtbares oder unbekanntes Projekt ist immer `validation`. Eine zweite offene Zusatzrunden-Anfrage am
+  selben Projekt ist `duplicate_open`.
+- Ein gleichzeitiger Insert mit demselben Idempotenzschlüssel einer anderen Firma wird über den Unique-Index
+  abgefangen und erneut nach derselben Firmenregel geprüft; er darf keinen technischen 500-Fehler erzeugen.
+- **Zurückziehen** (`withdrawPortalServiceRequest`): Zeile der eigenen Firma `FOR UPDATE`, sonst `not_found`;
+  bereits `withdrawn` ist ein Erfolg ohne Write; ohne erlaubten Übergang laut `canTransitionServiceRequest`
+  (`customer`) `locked`; sonst `updateLockedVersioned` (`status`, `decided_at`).
+- **Activity und Systemnachricht** schreibt ausschließlich `serviceRequestEventService` (`server/shared/`),
+  derselbe Baustein wie bei den internen Statuswechseln.
+- **Beide Routen bestätigen nur** (`{ created: true }`, `{ withdrawn: true }`); die Liste kommt mit dem nächsten
+  Laden des Dashboards.
+- Das DTO baut ausschließlich `portalServiceRequestMappingService`. Nie darin: Preis, Preisart, Intervall, interne
+  Beschreibung, Version, Mitglieds- und Mitgliedschafts-IDs, IDs von Vorlage oder Projektleistung an der Anfrage.
+  Der Katalog selektiert dafür nur fünf Spalten (`PortalServiceCatalogRow`).
+- Fehlercodes sind `PortalServiceRequestErrorCode`; Statuscodes und Texte stehen ausschließlich in
+  `src/lib/portal/portal-service-request-api-error.ts` (`validation` antwortet 422, `limit_reached`,
+  `duplicate_open` und `locked` 409).

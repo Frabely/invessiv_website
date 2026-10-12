@@ -1,0 +1,31 @@
+import type { PortalE2eServiceCatalogIds } from "./portal-e2e-service-catalog-ids";
+
+export type PortalE2eSeed = {
+  managerMemberId: string;
+  customerA: string;
+  customerB: string;
+  filesCustomer: string;
+  credentialsCustomer: string;
+  credentialsProject: string;
+  credentialsHiddenProject: string;
+  feedbackCustomer: string;
+  feedbackProject: string;
+  feedbackApprovalProject: string;
+  onboardingProject: string;
+  taskProject: string;
+  customerTaskId: string;
+  hoursCustomer: string;
+  hoursOtherCustomer: string;
+  hoursProjectA: string;
+  hoursProjectB: string;
+  serviceCatalog: PortalE2eServiceCatalogIds;
+  personFeedback: string;
+  personA: string;
+  personB: string;
+  personExpired: string;
+  personFiles: string;
+  assignmentA: string;
+  assignmentB: string;
+  assignmentOther: string;
+  expiredAssignment: string;
+};

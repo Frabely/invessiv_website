@@ -1,51 +1,16 @@
 import "server-only";
-
-import { inArray } from "drizzle-orm";
-
 import type { ExtraFeedbackRoundBlocker } from "@invessiv/common/constants/crm/extra-feedback-round-blockers";
-import type { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
-import { findExtraFeedbackRoundBlocker } from "@invessiv/common/patterns/crm/extra-feedback-round";
 import { getDrizzleDatabaseClient } from "@invessiv/db/core";
-import { feedbackRounds } from "@invessiv/db/record-configuration";
-import type { FeedbackRoundTrackInput } from "@/server/workspace/crm/services/feedback/feedback-round-types";
+import type { FeedbackRoundTrackInput } from "@/server/shared/services/feedback/feedback-service-types";
+import { loadExtraFeedbackRoundBlockers } from "@/server/shared/services/feedback/load-extra-feedback-round-blockers";
 
 /**
  * Says for each given project whether it can take a further feedback round. The caller passes
- * only projects it has already read through its own access scope; this handler adds the round
- * statuses and applies the one shared rule, so the dialog and the assignment never disagree.
+ * only projects it has already read through its own access scope; the rule itself is shared with
+ * the portal (`loadExtraFeedbackRoundBlockers`), so the dialog and the assignment never disagree.
  */
 export async function listExtraFeedbackRoundBlockers(
   projects: readonly FeedbackRoundTrackInput[],
 ): Promise<Map<string, ExtraFeedbackRoundBlocker | null>> {
-  if (projects.length === 0) return new Map();
-  const rounds = await getDrizzleDatabaseClient()
-    .select({
-      projectId: feedbackRounds.project_id,
-      status: feedbackRounds.status,
-    })
-    .from(feedbackRounds)
-    .where(
-      inArray(
-        feedbackRounds.project_id,
-        projects.map((project) => project.id),
-      ),
-    );
-  const statusesByProject = new Map<
-    string,
-    { status: FeedbackRoundStatus }[]
-  >();
-  for (const round of rounds) {
-    const statuses = statusesByProject.get(round.projectId) ?? [];
-    statuses.push({ status: round.status });
-    statusesByProject.set(round.projectId, statuses);
-  }
-  return new Map(
-    projects.map((project) => [
-      project.id,
-      findExtraFeedbackRoundBlocker({
-        positions: project.positions,
-        rounds: statusesByProject.get(project.id) ?? [],
-      }),
-    ]),
-  );
+  return loadExtraFeedbackRoundBlockers(getDrizzleDatabaseClient(), projects);
 }

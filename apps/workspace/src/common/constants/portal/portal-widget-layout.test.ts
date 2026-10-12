@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
-
 import {
   PORTAL_WIDGET_KEY_VALUES,
   PortalWidgetKey,
@@ -37,6 +36,22 @@ describe("PORTAL_WIDGET_LAYOUT", () => {
       requiredPermission: Permission.PortalCredentialsRead,
       span: { mobile: 12, tablet: 6, desktop: 3 },
     });
+  });
+
+  it("keeps the service request card in its slot, real and visible with the read permission alone", () => {
+    expect(
+      PORTAL_WIDGET_LAYOUT.find(
+        (entry) => entry.key === PortalWidgetKey.ServiceRequest,
+      ),
+    ).toMatchObject({
+      order: 30,
+      openMode: WidgetOpenMode.Dialog,
+      mock: false,
+      onlyWithContent: false,
+      requiredPermission: Permission.PortalServicesRead,
+      span: { mobile: 12, tablet: 6, desktop: 4 },
+    });
+    expect(PORTAL_WIDGET_LAYOUT.some((entry) => entry.mock)).toBe(false);
   });
 
   it("shows hours as a real widget behind its read permission, only with content", () => {

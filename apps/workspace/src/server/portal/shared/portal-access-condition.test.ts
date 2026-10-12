@@ -82,6 +82,40 @@ describe("portalCanOn.forReader", () => {
   });
 });
 
+describe("portalCanOn.forCustomer", () => {
+  it("checks company-wide permissions for contacts and the read-only owner view", () => {
+    expect(portalCanOn.forCustomer(actor, Permission.PortalAccess)).toBe(true);
+    expect(portalCanOn.forCustomer(actor, Permission.PortalFilesWrite)).toBe(
+      false,
+    );
+    expect(portalCanOn.forCustomer(ownerView, Permission.PortalTasksRead)).toBe(
+      true,
+    );
+    expect(
+      portalCanOn.forCustomer(ownerView, Permission.PortalTasksComplete),
+    ).toBe(false);
+  });
+
+  it("never promotes a project-only grant to a company-wide permission", () => {
+    const projectReader = createPortalActor({
+      ...actor,
+      permissions: new Set([Permission.PortalAccess]),
+      projectPermissions: new Map([
+        ["project-1", new Set([Permission.PortalFilesRead])],
+      ]),
+    });
+    expect(
+      portalCanOn.forCustomer(projectReader, Permission.PortalFilesRead),
+    ).toBe(false);
+    expect(
+      portalCanOn.forReader(projectReader, Permission.PortalFilesRead, {
+        customerId: projectReader.customerId,
+        projectId: "project-1",
+      }),
+    ).toBe(true);
+  });
+});
+
 describe("portalAccessCondition", () => {
   const columns = { customerId: customers.id };
 

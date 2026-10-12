@@ -55,7 +55,6 @@ export default async function PortalOnboardingFormPage({
   );
   if (!form) notFound();
   const isOwnerView = isPortalOwnerView(reader);
-  const target = { customerId: reader.customerId };
   // Null until the team has reviewed the form, and again once the onboarding is completed.
   const call = await getPortalOnboardingCall(reader, form.id);
 
@@ -69,10 +68,10 @@ export default async function PortalOnboardingFormPage({
       call={call}
       canUpload={
         !isOwnerView &&
-        portalCanOn.forReader(reader, Permission.PortalFilesWrite, target)
+        portalCanOn.forCustomer(reader, Permission.PortalFilesWrite)
       }
       chatHref={
-        portalCanOn.forReader(reader, Permission.PortalMessagesRead, target)
+        portalCanOn.forCustomer(reader, Permission.PortalMessagesRead)
           ? buildPortalHref(
               portalPathFor(activeLocale, reader.customerId),
               "",
@@ -87,7 +86,7 @@ export default async function PortalOnboardingFormPage({
       customerId={reader.customerId}
       filesContent={getPortalFilesDictionary(activeLocale)}
       filesHref={
-        portalCanOn.forReader(reader, Permission.PortalFilesRead, target)
+        portalCanOn.forCustomer(reader, Permission.PortalFilesRead)
           ? buildPortalHref(
               portalPathFor(
                 activeLocale,

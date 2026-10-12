@@ -55,6 +55,11 @@ export type PortalE2eFixture = {
   hoursOtherCustomer: string;
   hoursProjectA: string;
   hoursProjectB: string;
+  /** Catalog entries released for the portal, one per kind plus one that starts its own project. */
+  serviceStandard: string;
+  serviceHours: string;
+  serviceFeedbackRound: string;
+  serviceNewProject: string;
   assignmentA: string;
   assignmentB: string;
   assignmentOther: string;

@@ -94,6 +94,8 @@ export const PERMISSION_GROUP_PERMISSIONS = {
     Permission.PortalCredentialsWrite,
     Permission.PortalHoursRead,
     Permission.PortalHoursEntriesRead,
+    Permission.PortalServicesRead,
+    Permission.PortalServicesRequest,
   ],
   [PermissionGroup.Administration]: [
     Permission.MembersRead,

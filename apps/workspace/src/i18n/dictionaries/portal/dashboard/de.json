@@ -6,10 +6,8 @@
   "page": {
     "heading": "Übersicht – {company}"
   },
-  "mock": {
-    "badge": "Bald verfügbar",
-    "dialogIntro": "Dieser Bereich ist noch in Vorbereitung. Sobald er freigeschaltet ist, findest du hier:",
-    "dialogClose": "Schließen"
+  "dialog": {
+    "close": "Schließen"
   },
   "due": {
     "overdue": "Fällig seit {date}",
@@ -180,12 +178,13 @@
     },
     "serviceRequest": {
       "title": "Leistung anfragen",
-      "open": "Mehr erfahren",
-      "teaser": "Bald fragst du zusätzliche Leistungen direkt hier an – zum Beispiel ein neues Seitenmodul.",
-      "upcoming": [
-        "Unsere Leistungen mit kurzer Beschreibung",
-        "Eine Anfrage mit wenigen Klicks"
-      ]
+      "benefit": "Du brauchst mehr als geplant? Frag es hier an – du bekommst zuerst ein Angebot.",
+      "open": "Leistung anfragen",
+      "openRequests": "{count} Anfragen in Bearbeitung",
+      "openRequestsOne": "1 Anfrage in Bearbeitung",
+      "latest": "Zuletzt: „{title}“ – {status}",
+      "ownerHint": "In der Portalansicht kannst du nichts anfragen.",
+      "ownerLink": "Im CRM bearbeiten"
     },
     "completedProjects": {
       "title": "Abgeschlossene Projekte",

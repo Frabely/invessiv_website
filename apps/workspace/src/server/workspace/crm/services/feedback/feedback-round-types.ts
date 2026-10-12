@@ -15,12 +15,6 @@ export type FeedbackProjectTrack = {
   feedbackAreas: string[];
 };
 
-/** What deciding on a further round needs from a project the caller has already read. */
-export type FeedbackRoundTrackInput = {
-  id: string;
-  positions: readonly number[];
-};
-
 /** A round of the project list together with its number of items. */
 export type CountedFeedbackRound = {
   round: FeedbackRoundRow;

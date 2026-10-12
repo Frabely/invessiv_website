@@ -27,7 +27,7 @@ Intern kommt **vor** dem Portal: Kein Kunde kann anfragen, bevor die Bearbeitung
 | ----- | ----------------------------------------------- | -------------------------------------- | ---------------------------------------------------------------------- | ------: | --------- |
 | 13c.1 | [Task 74](./74-leistungsarten-und-zuweisung.md) | `feat/crm-leistungsanfragen-1-katalog` | Vorlagen-Arten, Projektbezug, Portal-Freigabe, Zuweisung mit Automatik |    ≈ 60 | im Review |
 | 13c.2 | [Task 75](./75-leistungsanfragen-intern.md)     | `feat/crm-leistungsanfragen-1-katalog` | Tabelle, Cockpit-Sektion, Eingang, Angebot / Ablehnen / Annehmen       |   ≈ 138 | im Review |
-| 13c.3 | [Task 76](./76-portal-leistungsanfragen.md)     | `feat/crm-leistungsanfragen-3-portal`  | Portal-Rechte, Widget, Dialog, Zurückziehen, Feedback-Verweis          |    ≈ 75 | offen     |
+| 13c.3 | [Task 76](./76-portal-leistungsanfragen.md)     | `feat/crm-leistungsanfragen-3-portal`  | Portal-Rechte, Widget, Dialog, Zurückziehen, Feedback-Verweis          |    ≈ 75 | im Review |
 
 Statuswerte: `offen` → `läuft` → `im Review` → `gemerged`.
 
@@ -225,5 +225,76 @@ Zwei veraltete bestehende Integrationsprüfungen wurden an den aktuellen Website
 Die Fachlogik dieser Bereiche wurde nicht geändert. Die CRM-Integration nutzt vier Worker und ein eigenes
 Zeitbudget für echte Datenbank-Roundtrips.
 
-Task 76 bleibt offen; neue Portal-Anfragen entstehen bis dahin nur durch Seed und Tests. Für Rollback gelten
+Für Rollback gelten
 die Vorgaben in Task 75: Code zurücknehmen, additive Tabelle und Berechtigungskatalog erhalten.
+
+## Umsetzungsstand Task 76 — 12.10.2026
+
+T1–T3 sind umgesetzt, T4 ist geschrieben, aber lokal nicht ausführbar (siehe unten). Das Widget „Leistung anfragen“
+ist echt (`mock: false`, `portal.services.read`); der Dialog bietet freigegebene Katalogleistungen ohne Preis und
+immer „Etwas anderes“, zeigt die eigenen Anfragen mit Status als Text und lässt eine offene Anfrage zurückziehen.
+Bei erschöpftem Feedback-Kontingent verweist die Feedback-Seite auf die Zusatzrunde dieses Projekts. Es gibt
+keinen Registry-Eintrag mit `mock: true` mehr; die drei Mock-Komponenten und ihre Texte sind entfernt.
+
+Migration `0060_add_portal_service_permissions.sql` ist in Development angewandt. Neue Dependencies oder
+Umgebungsvariablen werden nicht benötigt.
+
+Abweichungen vom Plan (bewusst, jeweils die kleinere Änderung):
+
+- **Stunden ohne Projekt:** Eine Stunden-Leistung darf immer mit „Kein bestimmtes Projekt“ angefragt werden, auch
+  wenn ein Projekt wählbar wäre. Das folgt dem Nachtrag vom 11.10. in Task 74 und geht über Schritt 7 von
+  `createPortalServiceRequest` hinaus. Die Regel steht einmal in `listPortalServiceProjectWishes`.
+- **Fehlercode `internal`** ergänzt `PortalServiceRequestErrorCode` (500 bei einem unerwarteten Fehler, wie bei den
+  Stunden); der Plan nannte nur die fünf Fachcodes.
+- **Anonymer POST antwortet 401**, nicht 404: Das ist die bestehende Antwort von `withPortalActor` für alle
+  Portal-Routen (so auch im Stunden-E2E). 404 bekommt, wer angemeldet ist, aber kein Recht an der Firma hat.
+- **Bereichsname der Einladungsvorschau** liegt in `dictionaries/portal/shell` (`accessAreas.serviceRequest`), weil
+  der Dialog seine Labels dort liest; `workspace/crm/portal-access` blieb unverändert.
+- **`portal-service-request-error-text.ts` entfällt:** Das Dictionary trägt für jeden Code einen Text
+  (`errors`, typgeprüft), ein Helfer hätte nur `texts[code]` zurückgegeben.
+- **`projectTitle` einer Anfrage** nennt das Projekt, in dem sie gelandet ist, sonst das gewünschte.
+
+Zentralisiert statt kopiert:
+
+- `loadExtraFeedbackRoundBlockers` (`server/shared/services/feedback/`): die Rundenprüfung aus
+  `listExtraFeedbackRoundBlockers`, jetzt von Cockpit und Portal genutzt; `FeedbackRoundTrackInput` zog mit.
+- `ServiceRequestStatusBadge` liegt unter `components/shared/service-requests/` (vorher im CRM-Ordner), damit
+  Portal und CRM dieselbe Symbol- und Farbzuordnung haben.
+- `listPortalServiceProjectWishes`: eine Regel für Formular und Command.
+- Der Client nutzt `versionedJsonMutationService.request` und `readApiErrorCode` statt eines eigenen `fetch`.
+
+Prüfungen:
+
+- `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test` (Workspace: 3766 Tests) und Workspace-Build.
+- `pnpm --filter @invessiv/db db:smoke:rbac` (119 Prüfungen) und `db:smoke:crm` (304 Constraints).
+- `pnpm --filter @invessiv/workspace db:smoke:crm`: 459 Integrationstests in 40 Dateien, darunter die 15 neuen
+  mit echten Portal-Sessions (`src/server/tests/portal/service-requests`).
+
+Offen:
+
+- **Browserlauf (T4):** `e2e/portal-services.e2e.ts` und die Katalog-Fixture sind geschrieben, liefen aber nicht.
+  Der globale Portal-Setup scheitert lokal weiter an der Blob-Bereinigung („OIDC is enabled for this project, but
+  not for the development environment“). Ein Lauf mit `--no-deps` hilft hier nicht, weil die Fixture neue
+  Katalogeinträge braucht. `test:e2e:portal` ist damit als Merge-Gate für 13c.3 noch offen.
+- **Sichtprüfung** von Widget, Dialog und Feedback-Verweis in beiden Themes und mobil.
+- **Vor der Freigabe im Katalog:** Kundentexte und der Preis der Zusatzrunden-Vorlage (in der Migration 0).
+- `db:seed:crm` gibt weiterhin keine Vorlage fürs Portal frei; zum Ausprobieren eine Vorlage im Katalog freigeben.
+
+### Review-Korrekturen Task 76 — 12.10.2026
+
+Die vier Findings aus `deleteable/review-2026-10-12-task76-logik-plan.md` sind umgesetzt:
+
+- Der Dialog hält den Pending-State beim Senden und sperrt Tabs, Auswahlwechsel und Schließen. Wiederholen nach
+  einem Fehler verwendet denselben Idempotenzschlüssel; späte Antworten nach externer Navigation werden ignoriert.
+- Die Anfrage-Liste zeigt alle offenen Anfragen und die letzten 20 abgeschlossenen, zusammen nach Anlagezeit
+  sortiert. Beide Teile werden in einem SQL-Statement gelesen, damit ein gleichzeitiger Statuswechsel weder
+  Duplikate noch Lücken erzeugt. Der Historienhinweis in DE/EN beschreibt die neue Grenze.
+- Ein firmenübergreifender gleichzeitiger Idempotenzschlüssel-Konflikt wird am Unique-Index abgefangen und
+  anschließend als `validation` beantwortet. Nur die tatsächlich eingefügte Anfrage erhält Events.
+- Der Owner-Anfrage-Button ist deaktiviert; der bestehende CRM-Verweis bleibt erreichbar.
+
+Zusätzliche Regressionstests prüfen verzögerte Antworten, Schließen/Tabwechsel während des Sendens, Wiederholen
+mit demselben Schlüssel, externe Navigation, alte offene Anfragen und einen erzwungenen gleichzeitigen
+firmenübergreifenden Insert. Die fokussierten Portal-/UI-Tests und alle 17 Portal-Service-Integrationstests gegen
+Development sind grün. Monorepo-Lint, Typecheck und Unit-Tests (5.285 bestanden, davon 3.772 im Workspace) sowie
+der Workspace-Build sind grün. Das oben dokumentierte Browser-E2E-Gate bleibt offen.

@@ -1,0 +1,33 @@
+.benefit,
+.count,
+.latest {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.benefit {
+  max-width: 44ch;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+}
+
+/* Only present with requests in progress; a hairline sets the status apart from the invitation. */
+.progress {
+  margin-top: 0.75rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.count {
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.latest {
+  margin-top: 0.15rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  overflow-wrap: anywhere;
+}

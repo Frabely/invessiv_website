@@ -1,0 +1,96 @@
+.picker {
+  display: grid;
+  gap: 0.9rem;
+  min-width: 0;
+}
+
+.heading {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-heading-sm);
+  font-weight: 700;
+}
+
+.empty {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+}
+
+/* One ruled list instead of a grid of cards: the dialog is the only frame. */
+.list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--color-border);
+  list-style: none;
+}
+
+.icon {
+  width: 1.15rem;
+  height: 1.15rem;
+  color: var(--color-cta);
+}
+
+/* Free text is the fallback, not one more product. */
+.option[data-custom="true"] .icon {
+  color: var(--color-accent-warm);
+}
+
+.text {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.15rem 0.6rem;
+  font-size: var(--font-size-body-md);
+  font-weight: 650;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.kind {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 500;
+}
+
+.description {
+  max-width: 68ch;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+.chevron {
+  width: 0.7rem;
+  height: 0.7rem;
+  color: var(--color-text-muted);
+  transition: transform 140ms ease-out;
+}
+
+@media (hover: hover) {
+  .option:hover .chevron {
+    transform: translateX(3px);
+    color: var(--color-text);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron {
+    transition: none;
+  }
+
+  .option:hover .chevron {
+    transform: none;
+  }
+}

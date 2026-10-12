@@ -79,6 +79,26 @@ describe("Widget", () => {
     expect(onOpenAction).toHaveBeenCalledTimes(1);
   });
 
+  it("keeps a disabled dialog trigger from opening while preserving the summary", () => {
+    const onOpenAction = vi.fn();
+    render(
+      <Widget
+        openMode={WidgetOpenMode.Dialog}
+        title="Tasks"
+        openLabel="View all"
+        onOpenAction={onOpenAction}
+        openDisabled
+      >
+        <p>Summary</p>
+      </Widget>,
+    );
+    const button = screen.getByRole("button", { name: "View all" });
+    expect(button).toBeDisabled();
+    fireEvent.click(button);
+    expect(onOpenAction).not.toHaveBeenCalled();
+    expect(screen.getByText("Summary")).toBeVisible();
+  });
+
   it("only stretches the trigger over the card when requested", () => {
     const { rerender } = render(
       <Widget

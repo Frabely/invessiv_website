@@ -16,6 +16,12 @@ export type FeedbackRoundRef = Pick<
   "id" | "project_id" | "customer_id" | "round_number"
 >;
 
+/** What deciding on a further round needs from a project the caller has already read. */
+export type FeedbackRoundTrackInput = {
+  id: string;
+  positions: readonly number[];
+};
+
 /** One draft item after the handler validated it; the order of the list becomes the position. */
 export type FeedbackDraftItemInput = {
   id: string;

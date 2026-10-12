@@ -1,13 +1,14 @@
 "use client";
 
 import { type KeyboardEvent, type ReactNode, useRef } from "react";
-
 import styles from "./tab-list.module.css";
 
 type TabListProps<Value extends string> = {
   activeValue: Value;
   ariaLabel: string;
   className?: string;
+  /** Locks tab navigation while the current panel finishes an operation. */
+  disabled?: boolean;
   items: readonly {
     value: Value;
     id: string;
@@ -25,6 +26,7 @@ export function TabList<Value extends string>({
   activeValue,
   ariaLabel,
   className,
+  disabled = false,
   items,
   onSelectAction,
 }: TabListProps<Value>) {
@@ -35,7 +37,7 @@ export function TabList<Value extends string>({
   );
 
   function handleKeyDown(event: KeyboardEvent<HTMLButtonElement>) {
-    if (items.length < 2) return;
+    if (disabled || items.length < 2) return;
     let nextIndex: number | null = null;
     if (event.key === "ArrowRight")
       nextIndex = (activeIndex + 1) % items.length;
@@ -67,6 +69,7 @@ export function TabList<Value extends string>({
             aria-selected={selected}
             className={styles.tab}
             data-invalid={item.invalid || undefined}
+            disabled={disabled}
             id={item.id}
             key={item.value}
             onClick={() => onSelectAction(item.value)}

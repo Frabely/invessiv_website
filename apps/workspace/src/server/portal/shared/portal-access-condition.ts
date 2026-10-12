@@ -18,12 +18,7 @@ function forReader(
   permission: Permission,
   columns: PortalAccessColumns,
 ): SQL {
-  if (
-    !portalCanOn.forReader(reader, permission, {
-      customerId: reader.customerId,
-    })
-  )
-    return sql`FALSE`;
+  if (!portalCanOn.forCustomer(reader, permission)) return sql`FALSE`;
   return eq(columns.customerId, reader.customerId);
 }
 

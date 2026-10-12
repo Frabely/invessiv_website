@@ -11,13 +11,6 @@ import type { PortalAccessColumns } from "@/server/portal/shared/portal-access-c
 import { portalCanOn } from "@/server/portal/shared/portal-can-on";
 import { portalProjectCondition } from "@/server/portal/shared/portal-project-condition";
 
-/** Company-wide check; hours rights are never bound to a single project. */
-function can(reader: PortalReader, permission: Permission): boolean {
-  return portalCanOn.forReader(reader, permission, {
-    customerId: reader.customerId,
-  });
-}
-
 /** Rows of the reader's own company; `FALSE` without the right, so a miss looks like no data. */
 function condition(
   reader: PortalReader,
@@ -45,7 +38,7 @@ async function visibleProjectIds(
 
 /** The single definition of who reads which hours in the portal; no handler repeats these rules. */
 export const portalHoursService = {
-  can,
+  can: portalCanOn.forCustomer,
   condition,
   visibleProjectIds,
 } as const;

@@ -29,18 +29,14 @@ import { portalOnboardingSchemas } from "./portal-onboarding-schemas";
 import type { PortalVisibleOnboardingForm } from "./portal-onboarding-types";
 
 function canRead(reader: PortalReader): boolean {
-  return portalCanOn.forReader(reader, Permission.PortalOnboardingRead, {
-    customerId: reader.customerId,
-  });
+  return portalCanOn.forCustomer(reader, Permission.PortalOnboardingRead);
 }
 
 /** The owner view reads but never writes, whatever it holds. */
 function canSubmit(reader: PortalReader): boolean {
   return (
     !isPortalOwnerView(reader) &&
-    portalCanOn.forActor(reader, Permission.PortalOnboardingSubmit, {
-      customerId: reader.customerId,
-    })
+    portalCanOn.forCustomer(reader, Permission.PortalOnboardingSubmit)
   );
 }
 
@@ -51,9 +47,7 @@ function canSubmit(reader: PortalReader): boolean {
 function canAttach(reader: PortalReader): boolean {
   return (
     canSubmit(reader) &&
-    portalCanOn.forReader(reader, Permission.PortalFilesRead, {
-      customerId: reader.customerId,
-    })
+    portalCanOn.forCustomer(reader, Permission.PortalFilesRead)
   );
 }
 

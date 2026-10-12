@@ -16,7 +16,7 @@ import {
 } from "@/common/patterns/crm/project-form";
 import { createDefaultProcessPlan } from "@/common/patterns/crm/project-process-plan";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
-import { useFocusFirstInvalidField } from "@/hooks/workspace/use-focus-first-invalid-field";
+import { useFocusFirstInvalidField } from "@/hooks/shared/use-focus-first-invalid-field";
 import type { CrmCockpitDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { ProcessStepEditor } from "@/components/workspace/crm/projects/process-step-editor/process-step-editor";
 import styles from "./project-editor-dialog.module.css";

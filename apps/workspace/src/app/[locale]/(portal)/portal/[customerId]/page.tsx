@@ -12,6 +12,7 @@ import {
   getPortalFilesDictionary,
   getPortalHoursDictionary,
   getPortalMessagesDictionary,
+  getPortalServiceRequestsDictionary,
 } from "@/i18n/dictionaries/portal";
 import { portalPathFor, workspaceAreaPathFor } from "@/lib/auth/routes";
 import { PortalFileOrigin } from "@invessiv/common/constants/portal/portal-file-origin";
@@ -24,6 +25,7 @@ import { getPortalCredentialsSummary } from "@/server/portal/query-handler/get-p
 import { getPortalConversation } from "@/server/portal/query-handler/get-portal-conversation.query-handler";
 import { getPortalDashboard } from "@/server/portal/query-handler/get-portal-dashboard.query-handler";
 import { getPortalHours } from "@/server/portal/query-handler/get-portal-hours.query-handler";
+import { getPortalServices } from "@/server/portal/query-handler/get-portal-services.query-handler";
 import { getPortalOnboardingCall } from "@/server/portal/query-handler/get-portal-onboarding-call.query-handler";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { getPortalOnboardingWidgetForm } from "@/server/portal/query-handler/get-portal-onboarding-widget-form.query-handler";
@@ -67,10 +69,9 @@ export default async function PortalCustomerPage({
     activeLocale,
     customerId.toLowerCase(),
   );
-  const canReadProjects = portalCanOn.forReader(
+  const canReadProjects = portalCanOn.forCustomer(
     reader,
     Permission.PortalProjectsRead,
-    { customerId: reader.customerId },
   );
   const today = taskDueStateService.businessToday();
   const projectParam = (await searchParams)?.[
@@ -94,6 +95,11 @@ export default async function PortalCustomerPage({
     reader.permissions,
     new Set([PortalWidgetKey.Hours]),
   ).some((entry) => entry.key === PortalWidgetKey.Hours);
+  // The request widget needs no content of its own; the read permission alone shows it.
+  const showsServices = listVisiblePortalWidgets(
+    reader.permissions,
+    new Set(),
+  ).some((entry) => entry.key === PortalWidgetKey.ServiceRequest);
   const [
     dashboard,
     conversationResult,
@@ -102,6 +108,7 @@ export default async function PortalCustomerPage({
     widgetForm,
     credentials,
     hours,
+    services,
   ] = await Promise.all([
     getPortalDashboard(reader, today, selectedProjectId),
     getPortalConversation(reader, null),
@@ -121,6 +128,7 @@ export default async function PortalCustomerPage({
       : null,
     showsCredentials ? getPortalCredentialsSummary(reader) : null,
     showsHours ? getPortalHours(reader) : null,
+    showsServices ? getPortalServices(reader) : null,
   ]);
   const onboardingCall = widgetForm
     ? await getPortalOnboardingCall(reader, widgetForm.id)
@@ -178,9 +186,7 @@ export default async function PortalCustomerPage({
         locale={activeLocale}
         messagesContent={getPortalMessagesDictionary(activeLocale)}
         messagesHref={
-          portalCanOn.forReader(reader, Permission.PortalMessagesRead, {
-            customerId: reader.customerId,
-          })
+          portalCanOn.forCustomer(reader, Permission.PortalMessagesRead)
             ? buildPortalHref(
                 portalPathFor(activeLocale, reader.customerId),
                 "",
@@ -190,6 +196,10 @@ export default async function PortalCustomerPage({
         }
         onboarding={widgetForm}
         onboardingCall={onboardingCall}
+        serviceRequestsContent={getPortalServiceRequestsDictionary(
+          activeLocale,
+        )}
+        services={services}
         today={today}
         viewerUserId={reader.userId}
         widgets={listVisiblePortalWidgets(reader.permissions, keysWithContent)}

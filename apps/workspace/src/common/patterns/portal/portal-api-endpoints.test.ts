@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-
 import {
   portalConversationEndpoint,
   portalConversationMessagesEndpoint,
@@ -20,6 +19,8 @@ import {
   portalOnboardingGroupEntryMoveEndpoint,
   portalOnboardingServicesConfirmationEndpoint,
   portalOnboardingSubmitEndpoint,
+  portalServiceRequestsEndpoint,
+  portalServiceRequestWithdrawEndpoint,
   portalFileUploadsEndpoint,
   portalFeedbackApproveEndpoint,
   portalFeedbackDraftEndpoint,
@@ -160,6 +161,17 @@ describe("portal hours endpoints", () => {
   it("builds the time entry list path", () => {
     expect(portalHoursEntriesEndpoint("c 1")).toBe(
       "/api/portal/c%201/hours/entries",
+    );
+  });
+});
+
+describe("portal service request endpoints", () => {
+  it("builds the create and the withdraw path", () => {
+    expect(portalServiceRequestsEndpoint("c 1")).toBe(
+      "/api/portal/c%201/service-requests",
+    );
+    expect(portalServiceRequestWithdrawEndpoint("c-1", "r 1")).toBe(
+      "/api/portal/c-1/service-requests/r%201/withdraw",
     );
   });
 });

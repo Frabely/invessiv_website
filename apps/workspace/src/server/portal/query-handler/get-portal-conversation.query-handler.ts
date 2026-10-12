@@ -24,9 +24,7 @@ import { messageService } from "@/server/shared/services/message/message-service
 function readerMayWrite(reader: PortalReader): boolean {
   return (
     !isPortalOwnerView(reader) &&
-    portalCanOn.forActor(reader, Permission.PortalMessagesWrite, {
-      customerId: reader.customerId,
-    })
+    portalCanOn.forCustomer(reader, Permission.PortalMessagesWrite)
   );
 }
 
@@ -39,12 +37,11 @@ function attachmentAccessOf(
 ): ConversationAttachmentAccessDto {
   if (isPortalOwnerView(reader) || !readerMayWrite(reader))
     return { pick: false, upload: false };
-  const scope = { customerId: reader.customerId };
-  const pick = portalCanOn.forActor(reader, Permission.PortalFilesRead, scope);
+  const pick = portalCanOn.forCustomer(reader, Permission.PortalFilesRead);
   return {
     pick,
     upload:
-      pick && portalCanOn.forActor(reader, Permission.PortalFilesWrite, scope),
+      pick && portalCanOn.forCustomer(reader, Permission.PortalFilesWrite),
   };
 }
 
@@ -108,11 +105,7 @@ export async function getPortalConversation(
   reader: PortalReader,
   cursor: string | null,
 ) {
-  if (
-    !portalCanOn.forReader(reader, Permission.PortalMessagesRead, {
-      customerId: reader.customerId,
-    })
-  )
+  if (!portalCanOn.forCustomer(reader, Permission.PortalMessagesRead))
     return { ok: false, code: MessageErrorCode.NotFound } as const;
   return getDrizzleDatabaseClient().transaction((tx) =>
     loadVisibleConversation(tx, reader, cursor),

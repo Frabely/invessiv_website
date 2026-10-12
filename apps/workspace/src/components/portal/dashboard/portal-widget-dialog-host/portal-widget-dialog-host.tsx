@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 import { Dialog, DialogSize } from "@invessiv/ui";
 import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
-import { PortalMockDialogContent } from "../portal-mock-dialog-content/portal-mock-dialog-content";
 
 export type PortalWidgetDialogHostProps = {
   content: PortalDashboardDictionary;
@@ -15,6 +14,8 @@ export type PortalWidgetDialogHostProps = {
   /** The complete hours dialog; null when the reader may not see hours or there are none. */
   hoursDialog: ReactNode;
   onCloseAction: () => void;
+  /** The complete service request dialog; null when the reader may not see services. */
+  serviceRequestDialog: ReactNode;
   /** The complete request dialog of the "our tasks" widget; null when the reader may not create. */
   taskRequestDialog: ReactNode;
   /** The dialog widget named in `?widget`; null keeps every dialog closed. */
@@ -28,43 +29,24 @@ export function PortalWidgetDialogHost({
   customerTasksContent,
   hoursDialog,
   onCloseAction,
+  serviceRequestDialog,
   taskRequestDialog,
   widgetKey,
 }: PortalWidgetDialogHostProps) {
   if (widgetKey === PortalWidgetKey.OurTasks) return taskRequestDialog;
   if (widgetKey === PortalWidgetKey.Credentials) return credentialsDialog;
   if (widgetKey === PortalWidgetKey.Hours) return hoursDialog;
-
-  if (widgetKey === PortalWidgetKey.CustomerTasks) {
-    return (
-      <Dialog
-        closeLabel={content.mock.dialogClose}
-        onCloseAction={onCloseAction}
-        size={DialogSize.Wide}
-        title={content.widgets.customerTasks.title}
-      >
-        {customerTasksContent}
-      </Dialog>
-    );
-  }
-
-  const mock =
-    widgetKey === PortalWidgetKey.ServiceRequest
-      ? content.widgets[widgetKey]
-      : null;
-  if (!mock) return null;
+  if (widgetKey === PortalWidgetKey.ServiceRequest) return serviceRequestDialog;
+  if (widgetKey !== PortalWidgetKey.CustomerTasks) return null;
 
   return (
     <Dialog
-      closeLabel={content.mock.dialogClose}
+      closeLabel={content.dialog.close}
       onCloseAction={onCloseAction}
-      size={DialogSize.Narrow}
-      title={mock.title}
+      size={DialogSize.Wide}
+      title={content.widgets.customerTasks.title}
     >
-      <PortalMockDialogContent
-        intro={content.mock.dialogIntro}
-        upcoming={mock.upcoming}
-      />
+      {customerTasksContent}
     </Dialog>
   );
 }

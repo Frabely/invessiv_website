@@ -34,4 +34,9 @@ function forReader(
   return target.customerId === reader.customerId && can(reader, permission);
 }
 
-export const portalCanOn = { forActor, forReader } as const;
+/** Checks a company-wide permission of the reader's own customer, without project grants. */
+function forCustomer(reader: PortalReader, permission: Permission): boolean {
+  return forReader(reader, permission, { customerId: reader.customerId });
+}
+
+export const portalCanOn = { forActor, forReader, forCustomer } as const;

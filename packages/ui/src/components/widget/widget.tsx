@@ -35,6 +35,8 @@ type WidgetDialogProps = WidgetBaseProps & {
   openMode: typeof WidgetOpenMode.Dialog;
   openLabel: string;
   onOpenAction: () => void;
+  /** Disables the dialog trigger while keeping its label and the summary visible. */
+  openDisabled?: boolean;
   /**
    * Stretches the open button over the whole card. Only for widgets without interactive children,
    * otherwise nested controls would sit on top of another control.
@@ -136,6 +138,7 @@ export function Widget(props: WidgetProps) {
           <ButtonControl
             aria-haspopup="dialog"
             className={styles.openButton}
+            disabled={props.openDisabled}
             onClick={props.onOpenAction}
             type="button"
             variant="ghost"

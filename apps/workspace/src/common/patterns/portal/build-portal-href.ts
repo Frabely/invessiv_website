@@ -2,16 +2,7 @@ import {
   PORTAL_DASHBOARD_CHAT_OPEN,
   PortalDashboardQueryParam,
 } from "@/common/constants/portal/portal-dashboard-query-params";
-import type { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
-
-type PortalQueryChange = {
-  widget?: PortalWidgetKey | null;
-  project?: string | null;
-  /** `true` opens the dashboard's chat dock on arrival; `null` drops the request again. */
-  chat?: true | null;
-  /** Only ever cleared here; the hours dialog sets its own filter without a navigation. */
-  hoursProject?: null;
-};
+import type { PortalQueryChange } from "@/common/contracts/portal/portal-query-change";
 
 /** Preserve unrelated URL state while changing the portal project, dashboard dialog or chat dock. */
 export function buildPortalHref(
@@ -28,6 +19,7 @@ export function buildPortalHref(
       change.chat === true ? PORTAL_DASHBOARD_CHAT_OPEN : change.chat,
     ],
     [PortalDashboardQueryParam.HoursProject, change.hoursProject],
+    [PortalDashboardQueryParam.Service, change.service],
   ] as const) {
     if (value === null) params.delete(name);
     else if (value !== undefined) params.set(name, value);

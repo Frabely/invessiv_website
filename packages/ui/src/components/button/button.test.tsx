@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { forwardRef } from "react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   ButtonControl,
   ButtonLink,
@@ -11,6 +11,26 @@ import {
 } from "./button";
 
 describe("shared button", () => {
+  it("keeps list-row actions accessible and respects the native disabled state", () => {
+    const onClick = vi.fn();
+    render(
+      <ButtonControl
+        aria-label="Choose service"
+        disabled
+        onClick={onClick}
+        type="button"
+        variant="row"
+      >
+        <span aria-hidden="true">+</span>
+        <span>Service</span>
+        <span aria-hidden="true">›</span>
+      </ButtonControl>,
+    );
+    const button = screen.getByRole("button", { name: "Choose service" });
+    expect(button.className).toContain("row");
+    fireEvent.click(button);
+    expect(onClick).not.toHaveBeenCalled();
+  });
   it("renders primary links and buttons through the shared CTA wrappers", () => {
     render(
       <>

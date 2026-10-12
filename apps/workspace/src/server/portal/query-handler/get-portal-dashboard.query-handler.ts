@@ -103,11 +103,9 @@ export async function getPortalDashboard(
   requestedProjectId?: string | null,
 ): Promise<PortalDashboardDto> {
   const db = getDrizzleDatabaseClient();
-  const target = { customerId: reader.customerId };
-  const canReadProjects = portalCanOn.forReader(
+  const canReadProjects = portalCanOn.forCustomer(
     reader,
     Permission.PortalProjectsRead,
-    target,
   );
   const canReadFeedback = portalFeedbackService.canRead(reader);
   const [customerRows, selectableSummaries] = await Promise.all([
@@ -216,7 +214,7 @@ export async function getPortalDashboard(
               selectedProjectId,
             )
           : null,
-        portalCanOn.forReader(reader, Permission.PortalTasksRead, target)
+        portalCanOn.forCustomer(reader, Permission.PortalTasksRead)
           ? loadPortalTaskRows(reader, selectedProjectId)
           : [],
       ])
@@ -225,7 +223,7 @@ export async function getPortalDashboard(
   const canWrite = (permission: Permission) =>
     !isPortalOwnerView(reader) &&
     selectedProjectId !== null &&
-    portalCanOn.forReader(reader, permission, target);
+    portalCanOn.forCustomer(reader, permission);
   // The project can vanish between the list and its detail; nothing of it is shown then.
   const selectedProject = selectedProjectRows[0] ?? null;
   const feedbackProject = selectedProject ?? feedbackProjectRows[0] ?? null;

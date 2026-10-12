@@ -26,7 +26,7 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   Feedbackrunde kommen ausschließlich aus `toProcessTrackSteps` (`@invessiv/common`), die Statuswörter aus
   `widgets.project.stepStatus`. Schrittnamen, „Nächster Schritt“, Projektleitung und Buttons stehen je auf einer
   Zeile und brechen erst um, wenn die Karte zu schmal wird.
-- **Mock-Widgets** tragen das Badge „Bald verfügbar“ (`mock`-Prop am `Widget`) und zeigen **keine erfundenen Werte** —
+- **Mock-Widgets** (seit Task 76 gibt es keines mehr) tragen das Badge „Bald verfügbar“ (`mock`-Prop am `Widget`) und zeigen **keine erfundenen Werte** —
   nur Skeleton-/Illustrationsinhalt und eine Beschreibung, was dort entstehen wird.
 - **Öffnen nur über explizite Buttons** (`Widget`-`openMode`). Dialoge hängen am URL-Parameter `?widget=<key>`;
   Schließen entfernt ihn. Der Projektwechsel im Header nutzt `?project=<id>`.
@@ -325,3 +325,49 @@ Plan: `apps/workspace/plans/crm/20-stunden-und-history/73-stunden-im-portal.md`.
   unter 40rem eigener Breite (Container Query) zur gestapelten Liste. Beschreibungen, Notizen und Aufgabentitel
   werden nur als Text gerendert.
 - Keine Schreibaktion, deshalb auch kein Owner-Hinweis.
+
+## Leistungsanfragen (ab Task 76)
+
+Plan: `apps/workspace/plans/crm/13c-portal-leistungsanfragen/76-portal-leistungsanfragen.md`.
+
+- **Keine eigene Seite.** Leistungsanfragen sind ein Dialog des Dashboards (`?widget=serviceRequest`). Das Widget
+  `serviceRequest` steht mit `requiredPermission: portal.services.read` und ohne `onlyWithContent` in
+  `PORTAL_WIDGET_LAYOUT`: Mit Leserecht ist es immer da, ohne fehlen Karte und Dialog.
+- **Es gibt kein Mock-Widget mehr.** `portal-mock-widget`, `portal-mock-dialog-content` und `portal-mock-preview`
+  sind entfernt. Ein künftiger Platzhalter bringt seine Bausteine wieder mit, statt eine echte Karte zu imitieren.
+- Komponenten liegen unter `service-requests/`; Orchestrator ist `service-requests/portal-service-request-dialog`
+  mit `portal-service-picker` (Auswahl), `portal-service-request-form` (eine Anfrage) und
+  `portal-service-request-list` (eigene Anfragen). Die Karte ist `dashboard/widgets/portal-service-request-widget`.
+- **Katalog, Projekte und Anfragen kommen mit dem Dashboard** (`PortalServicesDto` als Prop). Senden und
+  Zurückziehen laufen über `portalServiceRequestsApiService`; danach lädt das Dashboard neu (`router.refresh()`).
+- **Zwei Reiter, nie zwei Dialoge.** „Anfragen“ zeigt nacheinander Auswahl, Formular und Bestätigung; „Meine
+  Anfragen (n)“ die Liste. Zurückziehen ersetzt den Dialog durch die Rückfrage (`ConfirmDialog`).
+- **Die gewählte Leistung ist URL-State:** `?service=<id>` bzw. `custom` (`PORTAL_SERVICE_REQUEST_CUSTOM`),
+  geschrieben über `history.replaceState`. So öffnet ein Link direkt das Formular; eine ID, die nicht mehr
+  angeboten wird, fällt mit Hinweis auf die Auswahl zurück. Schließen entfernt den Parameter zusammen mit
+  `widget`. Vorbelegt wird das Projekt, das das Dashboard gerade zeigt (`?project`).
+- **Was das Formular fragt, entscheidet `portalServiceRequestForm`** (`common/patterns/portal/`): Projektfrage
+  (`projectQuestion`, auf Basis von `listPortalServiceProjectWishes`), Vorbelegung, Prüfung und Request-Bau. Keine
+  Komponente entscheidet selbst, ob nach dem Projekt gefragt wird: Bei genau einer möglichen Antwort steht sie als
+  Text da. Stunden werden in ganzen Stunden gewählt (Zahlenfeld plus Schnellwahl
+  `PORTAL_SERVICE_REQUEST_QUICK_HOURS`).
+- **Nie ein Preis.** Karten zeigen Titel und Kundentext, die Liste Titel, Datum, Projekt und Status. Kundentext und
+  Ablehnungsgrund werden nur als Text gerendert.
+- **Status ist immer Text mit Symbol**, über den geteilten `ServiceRequestStatusBadge`
+  (`components/shared/service-requests/`, derselbe wie im CRM). Die Wörter kommen aus dem Portal-Dictionary:
+  „Eingegangen“, „Angebot unterwegs“, „Bestätigt“, „Nicht umgesetzt“, „Zurückgezogen“.
+- **Drei unterscheidbare Empty-States:** nichts freigegeben (Erklärung plus „Etwas anderes“), noch nichts
+  angefragt, und die Owner-Sicht bzw. ein Leser ohne `portal.services.request` (Hinweis, Sende-Button deaktiviert).
+- „Zurückziehen“ erscheint nur mit `canWithdraw` aus dem DTO.
+- **Offene Anfragen bleiben vollständig erreichbar.** Nur die abgeschlossene Historie ist auf
+  `PortalServiceRequestLimits.HistoryShown` begrenzt; Widget-Zähler und Hinweistext beziehen sich entsprechend auf
+  offene Anfragen bzw. abgeschlossene Historie. Der Anfrage-Button im Owner-Widget ist deaktiviert und verweist ins CRM.
+- Der `idempotencyKey` entsteht einmal je Formular; der Dialog mountet das Formular je Auswahl neu (`key`).
+- **Während des Sendens sind Auswahlwechsel, Tabs und Schließen gesperrt.** Der Pending-State liegt im Dialog.
+  Nach einer Ablehnung wird entsperrt; Wiederholen im selben Formular verwendet denselben Schlüssel. Antworten eines
+  durch externe Navigation unmounteten Formulars lösen weder Bestätigung noch Dashboard-Navigation aus.
+- **Feedback-Seite:** Bei erschöpftem Kontingent verlinkt `FeedbackQuotaNotice` über `requestHref` auf
+  `?widget=serviceRequest&service=<id>&project=<projektId>`, wenn `findPortalExtraRoundService` für dieses Projekt
+  eine Zusatzrunde findet; sonst bleibt der Chat-Link. Die Seite lädt den Katalog nur in diesem Zustand.
+- Texte liegen in `dictionaries/portal/service-requests/`, die der Karte in `dashboard` unter
+  `widgets.serviceRequest`.

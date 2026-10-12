@@ -50,7 +50,9 @@
     "exhausted": {
       "title": "Du brauchst noch eine Runde?",
       "description": "Schreib uns im Chat, dann finden wir gemeinsam einen Weg.",
-      "chatLink": "Zum Chat"
+      "chatLink": "Zum Chat",
+      "requestDescription": "Deine Feedbackrunden sind aufgebraucht. Du kannst eine zusätzliche Runde anfragen und bekommst zuerst ein Angebot.",
+      "requestLink": "Zusätzliche Runde anfragen"
     },
     "noticeLabel": "Nachricht von uns",
     "returned": {

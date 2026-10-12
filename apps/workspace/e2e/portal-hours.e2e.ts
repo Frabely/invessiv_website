@@ -88,7 +88,6 @@ test("shows hours to contacts by right and company, read-only, with real Clerk s
     await expect(
       widget.getByText("8:30 von 10:00 verbraucht", { exact: true }),
     ).toBeVisible();
-    await expect(widget.getByText(dashboard.mock.badge)).toHaveCount(0);
 
     await widget
       .getByRole("button", { name: dashboard.widgets.hours.open })

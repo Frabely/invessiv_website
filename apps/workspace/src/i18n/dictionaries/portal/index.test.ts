@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-
 import credentialsDe from "./credentials/de.json";
 import credentialsEn from "./credentials/en.json";
 import dashboardDe from "./dashboard/de.json";
@@ -19,6 +18,8 @@ import onboardingEn from "./onboarding/en.json";
 import pickerDe from "./picker/de.json";
 import pickerEn from "./picker/en.json";
 import shellDe from "./shell/de.json";
+import serviceRequestsDe from "./service-requests/de.json";
+import serviceRequestsEn from "./service-requests/en.json";
 import shellEn from "./shell/en.json";
 
 function keyPaths(value: unknown, prefix = ""): string[] {
@@ -36,6 +37,7 @@ describe("portal dictionaries", () => {
     ["files", filesDe, filesEn],
     ["feedback", feedbackDe, feedbackEn],
     ["onboarding", onboardingDe, onboardingEn],
+    ["service-requests", serviceRequestsDe, serviceRequestsEn],
     ["invitation", invitationDe, invitationEn],
     ["messages", messagesDe, messagesEn],
     ["meta", metaDe, metaEn],

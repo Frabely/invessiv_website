@@ -26,7 +26,8 @@
     "files": "Files",
     "hours": "Hours",
     "messages": "Messages",
-    "onboarding": "Onboarding"
+    "onboarding": "Onboarding",
+    "serviceRequest": "Service requests"
   },
   "ownerView": {
     "label": "Portal view of",

@@ -19,7 +19,7 @@ import { buildServiceRequestActionHref } from "@/common/patterns/crm/service-req
 import { CollapsibleSection } from "@/components/workspace/crm/shared/collapsible-section/collapsible-section";
 import { StatusRow } from "@/components/workspace/shared/status-row/status-row";
 import { ServiceRequestDetails } from "../service-request-details/service-request-details";
-import { ServiceRequestStatusBadge } from "../service-request-status-badge/service-request-status-badge";
+import { ServiceRequestStatusBadge } from "@/components/shared/service-requests/service-request-status-badge/service-request-status-badge";
 import { ServiceRequestActions } from "../service-request-actions/service-request-actions";
 import { ServiceRequestAcceptDialog } from "../service-request-accept-dialog/service-request-accept-dialog";
 import { ServiceRequestDeclineDialog } from "../service-request-decline-dialog/service-request-decline-dialog";

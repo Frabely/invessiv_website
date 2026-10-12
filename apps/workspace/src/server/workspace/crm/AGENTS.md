@@ -399,7 +399,9 @@ Plan: `apps/workspace/plans/crm/13c-portal-leistungsanfragen/74-leistungsarten-u
 - **Wert:** `rate` ohne Menge bleibt ein Konditionswert; eine Stunden-Leistung zählt über
   `hoursLineItemAmountCents` als Einmalwert.
 - `listExtraFeedbackRoundBlockers` nimmt nur Projekte, die der Aufrufer über seinen eigenen Zugriffsbereich
-  gelesen hat; es ergänzt die Rundenstände und wendet dieselbe Regel wie die Zuweisung an.
+  gelesen hat; es ergänzt die Rundenstände und wendet dieselbe Regel wie die Zuweisung an. Die Abfrage selbst
+  liegt seit Task 76 als `loadExtraFeedbackRoundBlockers` unter `server/shared/services/feedback/`, weil das Portal
+  sie für seinen Katalog ebenfalls braucht.
 
 ## Leistungsanfragen intern (ab Task 75)
 

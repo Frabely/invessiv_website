@@ -68,8 +68,12 @@ test.describe.serial("portal dashboard", () => {
       }
     }
 
+    // The service request card is real: it opens its dialog and carries no placeholder badge.
+    await expect(page.getByText("Bald verfügbar")).toHaveCount(0);
     await page.goto(`/de/portal/${fixture.customerA}?widget=serviceRequest`);
-    await expect(page.getByRole("dialog")).toBeVisible();
+    await expect(
+      page.getByRole("dialog", { name: "Leistung anfragen", exact: true }),
+    ).toBeVisible();
     await page.screenshot({
       path: testInfo.outputPath("portal-widget-dialog.png"),
       fullPage: true,

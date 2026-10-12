@@ -1,9 +1,7 @@
 "use client";
 
-import { type ReactNode, useId, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
-import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
+import type { PortalServiceRequestsDictionary } from "@/common/contracts/portal/portal-service-requests-dictionary";
+import { useId, useState } from "react";
 import type { PortalConversationDto } from "@invessiv/common/contracts/portal/portal-conversation.dto";
 import type { PortalCredentialsSummaryDto } from "@invessiv/common/contracts/portal/portal-credentials-summary.dto";
 import type { PortalDashboardDto } from "@invessiv/common/contracts/portal/portal-dashboard.dto";
@@ -11,18 +9,9 @@ import type { PortalFilesOverviewDto } from "@invessiv/common/contracts/portal/p
 import type { PortalHoursDto } from "@invessiv/common/contracts/portal/portal-hours.dto";
 import type { PortalOnboardingCallDto } from "@invessiv/common/contracts/portal/portal-onboarding-call.dto";
 import type { PortalOnboardingFormSummaryDto } from "@invessiv/common/contracts/portal/portal-onboarding-form-summary.dto";
-import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { ChatDock, WidgetGrid } from "@invessiv/ui";
-import type { PortalDashboardNavigationMode as PortalDashboardNavigationModeType } from "@/common/constants/portal/portal-dashboard-navigation-modes";
-import { PortalDashboardNavigationMode } from "@/common/constants/portal/portal-dashboard-navigation-modes";
-import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
+import type { PortalServicesDto } from "@invessiv/common/contracts/portal/portal-services.dto";
+import { ChatDock } from "@invessiv/ui";
 import type { PortalWidgetDefinition } from "@/common/contracts/portal/portal-widget-definition";
-import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
-import {
-  readPortalDashboardChat,
-  readPortalDashboardWidget,
-} from "@/common/patterns/portal/portal-dashboard-query";
-import { buildPortalFeedbackPath } from "@/common/patterns/portal/portal-feedback-path";
 import { describeUnreadBadge } from "@/common/patterns/crm/describe-unread-badge";
 import type { Locale } from "@/config/i18n";
 import { PortalConversation } from "@/components/portal/messages/portal-conversation/portal-conversation";
@@ -34,24 +23,10 @@ import type {
   PortalHoursDictionary,
   PortalMessagesDictionary,
 } from "@/i18n/dictionaries/portal";
-import { PortalDashboardEmptyState } from "../portal-dashboard-empty-state/portal-dashboard-empty-state";
-import { PortalOwnerNotice } from "@/components/portal/portal-owner-notice/portal-owner-notice";
-import { PortalTaskRequestDialog } from "../portal-task-request-dialog/portal-task-request-dialog";
-import { PortalWidgetDialogHost } from "../portal-widget-dialog-host/portal-widget-dialog-host";
-import { PortalCompletedProjectsWidget } from "../widgets/portal-completed-projects-widget/portal-completed-projects-widget";
-import { PortalContactWidget } from "../widgets/portal-contact-widget/portal-contact-widget";
-import { PortalCustomerTasksDialogContent } from "../widgets/portal-customer-tasks-widget/portal-customer-tasks-dialog-content";
-import { PortalCredentialsDialog } from "@/components/portal/credentials/portal-credentials-dialog/portal-credentials-dialog";
-import { PortalCredentialsWidget } from "../widgets/portal-credentials-widget/portal-credentials-widget";
-import { PortalCustomerTasksWidget } from "../widgets/portal-customer-tasks-widget/portal-customer-tasks-widget";
-import { PortalFeedbackWidget } from "../widgets/portal-feedback-widget/portal-feedback-widget";
-import { PortalFilesWidget } from "../widgets/portal-files-widget/portal-files-widget";
-import { PortalHoursDialog } from "@/components/portal/hours/portal-hours-dialog/portal-hours-dialog";
-import { PortalHoursWidget } from "../widgets/portal-hours-widget/portal-hours-widget";
-import { PortalMockWidget } from "../widgets/portal-mock-widget/portal-mock-widget";
-import { PortalOnboardingWidget } from "../widgets/portal-onboarding-widget/portal-onboarding-widget";
-import { PortalOurTasksWidget } from "../widgets/portal-our-tasks-widget/portal-our-tasks-widget";
-import { PortalProjectWidget } from "../widgets/portal-project-widget/portal-project-widget";
+import { usePortalDashboardNavigation } from "@/hooks/portal/use-portal-dashboard-navigation";
+import type { PortalDashboardTaskActions } from "@/common/contracts/portal/portal-dashboard-task-actions";
+import { PortalDashboardWidgets } from "../portal-dashboard-widgets/portal-dashboard-widgets";
+import { PortalDashboardDialogs } from "../portal-dashboard-dialogs/portal-dashboard-dialogs";
 import styles from "./portal-dashboard.module.css";
 
 export type PortalDashboardProps = {
@@ -84,6 +59,10 @@ export type PortalDashboardProps = {
   onboarding: PortalOnboardingFormSummaryDto | null;
   /** The call of the widget's form once the team has reviewed it; null until then. */
   onboardingCall?: PortalOnboardingCallDto | null;
+  /** Catalog, project options and own requests; null without `portal.services.read`. */
+  services?: PortalServicesDto | null;
+  /** Texts of the service request dialog the widget opens. */
+  serviceRequestsContent: PortalServiceRequestsDictionary;
   /** Business day (`YYYY-MM-DD`) decided once on the server. */
   today: string;
   /** Already filtered on the server by permission and content. */
@@ -114,242 +93,52 @@ export function PortalDashboard({
   messagesHref = null,
   onboarding,
   onboardingCall = null,
+  services = null,
+  serviceRequestsContent,
   today,
   widgets,
   viewerUserId,
 }: PortalDashboardProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [dockOpen, setDockOpen] = useState(false);
+  const navigation = usePortalDashboardNavigation(widgets);
   const dockId = useId();
-  const ownerNoticeId = useId();
-  const dialogOwnerNoticeId = useId();
-  const requestOwnerNoticeId = useId();
   const [requestAnnouncement, setRequestAnnouncement] = useState("");
-  // Which way the credentials dialog was entered; the URL only says that it is open.
-  const [credentialsCreate, setCredentialsCreate] = useState(false);
   const completion = usePortalTaskCompletion(
     customerId,
     content.tasks.announce,
   );
-
-  const visibleKeys = new Set(widgets.map((entry) => entry.key));
-  const requestedWidget = readPortalDashboardWidget(searchParams);
-  const openWidget =
-    requestedWidget && visibleKeys.has(requestedWidget)
-      ? requestedWidget
-      : null;
-  const chatRequested = readPortalDashboardChat(searchParams);
-  const dockExpanded = dockOpen || chatRequested;
-  const selectedProject = dashboard.project;
-  const { canCompleteTasks, canCreateTasks, isOwnerView } =
-    dashboard.capabilities;
-  const requestProjectId = canCreateTasks ? dashboard.selectedProjectId : null;
-
-  function navigate(
-    change: Parameters<typeof buildPortalHref>[2],
-    mode: PortalDashboardNavigationModeType,
-  ) {
-    const href = buildPortalHref(pathname, searchParams.toString(), change);
-    router[mode](href, { scroll: false });
-  }
-
-  function setDockExpanded(expanded: boolean) {
-    setDockOpen(expanded);
-    if (!chatRequested) return;
-    // The link's request is spent on the first toggle; dropping it needs no server roundtrip.
-    window.history.replaceState(
-      null,
-      "",
-      buildPortalHref(pathname, searchParams.toString(), { chat: null }),
-    );
-  }
-
-  const openDialog = (widget: PortalWidgetKey) =>
-    navigate({ widget }, PortalDashboardNavigationMode.Push);
-  const closeDialog = () =>
-    navigate(
-      { widget: null, hoursProject: null },
-      PortalDashboardNavigationMode.Replace,
-    );
-  const openCredentials = (create: boolean) => {
-    setCredentialsCreate(create);
-    openDialog(PortalWidgetKey.Credentials);
-  };
-
-  const ownerNotice = (id: string): ReactNode =>
-    isOwnerView && cockpitHref ? (
-      <PortalOwnerNotice
-        cockpitHref={cockpitHref}
-        hint={content.widgets.customerTasks.ownerHint}
-        id={id}
-        linkLabel={content.widgets.customerTasks.ownerLink}
-      />
-    ) : null;
-
-  const openCustomerTasks = dashboard.customerTasks.filter(
-    (task) => !task.done,
-  );
-  const doneCustomerTasks = dashboard.customerTasks.filter((task) => task.done);
-  const taskListProps = {
-    canComplete: canCompleteTasks,
-    content,
+  const taskActions: PortalDashboardTaskActions = {
     isDoneAction: completion.isDone,
-    isOwnerView,
     isPendingAction: completion.isPending,
-    locale,
-    onToggleAction: (
-      task: Parameters<typeof completion.toggle>[0],
-      done: boolean,
-    ) => {
+    onToggleAction: (task, done) => {
       // One live region announces both flows; the newer event replaces the older one.
       setRequestAnnouncement("");
       void completion.toggle(task, done);
     },
-    today,
-  };
-  const ourTasks = dashboard.ourTasks;
-
-  const mockBadge = content.mock.badge;
-  const mockDialog = (
-    key: typeof PortalWidgetKey.ServiceRequest,
-    icon: Parameters<typeof PortalMockWidget>[0]["icon"],
-  ) => (
-    <PortalMockWidget
-      badgeLabel={mockBadge}
-      icon={icon}
-      onOpenAction={() => openDialog(key)}
-      openLabel={content.widgets[key].open}
-      openMode={WidgetOpenMode.Dialog}
-      teaser={content.widgets[key].teaser}
-      title={content.widgets[key].title}
-    />
-  );
-
-  const slots: Partial<Record<PortalWidgetKey, ReactNode>> = {
-    [PortalWidgetKey.Onboarding]: onboarding ? (
-      <PortalOnboardingWidget
-        call={onboardingCall}
-        chatHref={messagesHref}
-        content={content.widgets.onboarding}
-        customerId={customerId}
-        form={onboarding}
-        locale={locale}
-      />
-    ) : null,
-    [PortalWidgetKey.Project]: selectedProject ? (
-      <PortalProjectWidget
-        content={content.widgets.project}
-        feedbackHref={
-          dashboard.feedback?.status
-            ? buildPortalHref(
-                buildPortalFeedbackPath({
-                  locale,
-                  customerId,
-                  projectId: selectedProject.id,
-                }),
-                "",
-                { project: selectedProject.id },
-              )
-            : null
-        }
-        feedbackLinkLabel={content.widgets.feedback.projectLink}
-        locale={locale}
-        selectedProject={selectedProject}
-      />
-    ) : (
-      <PortalDashboardEmptyState content={content.widgets.project} />
-    ),
-    [PortalWidgetKey.CustomerTasks]: (
-      <PortalCustomerTasksWidget
-        {...taskListProps}
-        doneTasks={doneCustomerTasks}
-        onOpenAction={() => openDialog(PortalWidgetKey.CustomerTasks)}
-        openTasks={openCustomerTasks}
-        ownerHintId={ownerNoticeId}
-        ownerNotice={ownerNotice(ownerNoticeId)}
-      />
-    ),
-    [PortalWidgetKey.OurTasks]: (
-      <PortalOurTasksWidget
-        content={content}
-        locale={locale}
-        onCreateAction={
-          requestProjectId ? () => openDialog(PortalWidgetKey.OurTasks) : null
-        }
-        ownerNotice={
-          isOwnerView && cockpitHref ? (
-            <PortalOwnerNotice
-              cockpitHref={cockpitHref}
-              hint={content.widgets.ourTasks.ownerHint}
-              id={requestOwnerNoticeId}
-              linkLabel={content.widgets.ourTasks.ownerLink}
-            />
-          ) : null
-        }
-        tasks={ourTasks}
-        today={today}
-      />
-    ),
-    [PortalWidgetKey.Feedback]: (
-      <PortalFeedbackWidget
-        content={content.widgets.feedback}
-        customerId={customerId}
-        entry={dashboard.feedback}
-        locale={locale}
-      />
-    ),
-    [PortalWidgetKey.Hours]: hours ? (
-      <PortalHoursWidget
-        content={content.widgets.hours}
-        hours={hours}
-        onOpenAction={() => openDialog(PortalWidgetKey.Hours)}
-        selectedProjectId={dashboard.selectedProjectId}
-      />
-    ) : null,
-    [PortalWidgetKey.Contact]: dashboard.contact ? (
-      <PortalContactWidget
-        contact={dashboard.contact}
-        content={content.widgets.contact}
-      />
-    ) : null,
-    [PortalWidgetKey.Files]: (
-      <PortalFilesWidget
-        content={content.widgets.files}
-        filesHref={filesHref}
-        locale={locale}
-        overview={filesOverview}
-      />
-    ),
-    [PortalWidgetKey.Credentials]: credentials ? (
-      <PortalCredentialsWidget
-        content={content.widgets.credentials}
-        onAddAction={credentials.canWrite ? () => openCredentials(true) : null}
-        onOpenAction={() => openCredentials(false)}
-        summary={credentials}
-      />
-    ) : null,
-    [PortalWidgetKey.ServiceRequest]: mockDialog(
-      PortalWidgetKey.ServiceRequest,
-      faCirclePlus,
-    ),
-    [PortalWidgetKey.CompletedProjects]: (
-      <PortalCompletedProjectsWidget
-        content={content.widgets.completedProjects}
-        projects={dashboard.completedProjects}
-      />
-    ),
   };
 
   return (
     <div className={styles.frame}>
       <div className={styles.content}>
-        <WidgetGrid
-          layout={widgets}
-          slots={Object.fromEntries(
-            widgets.map((entry) => [entry.key, slots[entry.key]]),
-          )}
+        <PortalDashboardWidgets
+          cockpitHref={cockpitHref}
+          content={content}
+          customerId={customerId}
+          dashboard={dashboard}
+          credentials={credentials}
+          filesHref={filesHref}
+          filesOverview={filesOverview}
+          hours={hours}
+          locale={locale}
+          messagesHref={messagesHref}
+          onboarding={onboarding}
+          onboardingCall={onboardingCall}
+          services={services}
+          serviceRequestsContent={serviceRequestsContent}
+          today={today}
+          widgets={widgets}
+          taskActions={taskActions}
+          onOpenAction={navigation.openDialog}
+          onOpenCredentialsAction={navigation.openCredentials}
         />
       </div>
       {conversation ? (
@@ -366,13 +155,13 @@ export function PortalDashboard({
             )}
             className={styles.chat}
             content={content.chat}
-            expanded={dockExpanded}
-            onExpandedChangeAction={setDockExpanded}
+            expanded={navigation.dockExpanded}
+            onExpandedChangeAction={navigation.setDockExpanded}
             overlay
             unreadCount={conversation.unreadCount}
           >
             <PortalConversation
-              active={dockExpanded}
+              active={navigation.dockExpanded}
               cockpitHref={cockpitHref}
               content={messagesContent}
               customerId={customerId}
@@ -384,64 +173,22 @@ export function PortalDashboard({
           </ChatDock>
         </div>
       ) : null}
-      <PortalWidgetDialogHost
+      <PortalDashboardDialogs
+        cockpitHref={cockpitHref}
         content={content}
-        credentialsDialog={
-          credentials ? (
-            <PortalCredentialsDialog
-              cockpitHref={cockpitHref}
-              content={credentialsContent}
-              customerId={customerId}
-              locale={locale}
-              onCloseAction={closeDialog}
-              onSavedAction={setRequestAnnouncement}
-              startWithCreate={credentialsCreate && credentials.canWrite}
-            />
-          ) : null
-        }
-        hoursDialog={
-          hours ? (
-            <PortalHoursDialog
-              content={hoursContent}
-              customerId={customerId}
-              hours={hours}
-              locale={locale}
-              onCloseAction={closeDialog}
-            />
-          ) : null
-        }
-        customerTasksContent={
-          <PortalCustomerTasksDialogContent
-            {...taskListProps}
-            doneTasks={doneCustomerTasks}
-            openTasks={openCustomerTasks}
-            ownerHintId={dialogOwnerNoticeId}
-            ownerNotice={ownerNotice(dialogOwnerNoticeId)}
-          />
-        }
-        onCloseAction={closeDialog}
-        taskRequestDialog={
-          requestProjectId ? (
-            <PortalTaskRequestDialog
-              content={content.tasks.request}
-              customerId={customerId}
-              onCloseAction={closeDialog}
-              onCreatedAction={(title) => {
-                setRequestAnnouncement(
-                  formatMessage(content.tasks.announce.requested, {
-                    name: title,
-                  }),
-                );
-                closeDialog();
-                router.refresh();
-              }}
-              projectId={requestProjectId}
-              projectTitle={selectedProject?.title ?? null}
-              today={today}
-            />
-          ) : null
-        }
-        widgetKey={openWidget}
+        customerId={customerId}
+        credentials={credentials}
+        credentialsContent={credentialsContent}
+        dashboard={dashboard}
+        hours={hours}
+        hoursContent={hoursContent}
+        locale={locale}
+        services={services}
+        serviceRequestsContent={serviceRequestsContent}
+        today={today}
+        taskActions={taskActions}
+        navigation={navigation}
+        onAnnounceAction={setRequestAnnouncement}
       />
       <p aria-live="polite" className="sr-only" role="status">
         {requestAnnouncement || completion.announcement}

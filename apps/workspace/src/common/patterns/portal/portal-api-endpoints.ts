@@ -6,6 +6,7 @@ import { FeedbackApiPath } from "@/common/constants/feedback/feedback-api-paths"
 import { FileApiPath } from "@/common/constants/files/file-api-paths";
 import { PortalHoursApiPath } from "@/common/constants/portal/portal-hours-api-paths";
 import { PortalOnboardingApiPath } from "@/common/constants/portal/portal-onboarding-api-paths";
+import { PortalServiceRequestApiPath } from "@/common/constants/portal/portal-service-request-api-paths";
 
 const TASKS_PATH = "tasks";
 const TASK_COMPLETE_PATH = "complete";
@@ -223,4 +224,16 @@ export function portalCredentialRevealEndpoint(
 /** The time entry list of the hours dialog; the balance itself comes with the dashboard page. */
 export function portalHoursEntriesEndpoint(customerId: string): string {
   return `${WorkspaceApiEndpoint.Portal}/${encodeURIComponent(customerId)}/${PortalHoursApiPath.Hours}/${PortalHoursApiPath.Entries}`;
+}
+
+/** Creating a request; catalog and own requests come with the dashboard page. */
+export function portalServiceRequestsEndpoint(customerId: string): string {
+  return `${WorkspaceApiEndpoint.Portal}/${encodeURIComponent(customerId)}/${PortalServiceRequestApiPath.ServiceRequests}`;
+}
+
+export function portalServiceRequestWithdrawEndpoint(
+  customerId: string,
+  requestId: string,
+): string {
+  return `${portalServiceRequestsEndpoint(customerId)}/${encodeURIComponent(requestId)}/${PortalServiceRequestApiPath.Withdraw}`;
 }

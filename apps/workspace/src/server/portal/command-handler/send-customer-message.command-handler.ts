@@ -138,11 +138,7 @@ export async function sendCustomerMessage(
   actor: PortalActor,
   input: SendMessageData,
 ) {
-  if (
-    !portalCanOn.forActor(actor, Permission.PortalMessagesWrite, {
-      customerId: actor.customerId,
-    })
-  )
+  if (!portalCanOn.forCustomer(actor, Permission.PortalMessagesWrite))
     return { ok: false, code: MessageErrorCode.NotFound } as const;
   return getDrizzleDatabaseClient().transaction((tx) =>
     appendCustomerMessage(tx, actor, input),

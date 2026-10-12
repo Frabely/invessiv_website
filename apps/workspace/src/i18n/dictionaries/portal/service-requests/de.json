@@ -1,0 +1,110 @@
+{
+  "dialog": {
+    "title": "Leistung anfragen",
+    "intro": "Sag uns, was du zusätzlich brauchst. Du bekommst zuerst ein Angebot, vorher entstehen keine Kosten.",
+    "close": "Schließen",
+    "tabsLabel": "Anfragen und bisherige Anfragen",
+    "tabs": {
+      "request": "Anfragen",
+      "mine": "Meine Anfragen ({count})",
+      "mineName": "Meine Anfragen"
+    },
+    "ownerHint": "In der Portalansicht kannst du nichts anfragen oder zurückziehen.",
+    "ownerLink": "Im CRM bearbeiten",
+    "readOnlyHint": "Du kannst die Anfragen deiner Firma lesen, aber keine neue senden. Frag die Person, die bei euch das Projekt betreut."
+  },
+  "picker": {
+    "heading": "Was brauchst du?",
+    "customTitle": "Etwas anderes",
+    "customDescription": "Beschreib in deinen Worten, was du brauchst. Wir melden uns mit einem Angebot.",
+    "emptyCatalog": "Hier stehen bald unsere Leistungen zur Auswahl. Bis dahin beschreibst du einfach selbst, was du brauchst.",
+    "kind": {
+      "standard": "Leistung",
+      "hours": "Stunden",
+      "feedback_round": "Feedbackrunde"
+    }
+  },
+  "form": {
+    "back": "Andere Leistung wählen",
+    "unavailable": "Diese Leistung bieten wir gerade nicht mehr an. Wähl eine andere oder beschreib selbst, was du brauchst.",
+    "project": {
+      "label": "Für welches Projekt?",
+      "fixed": "Für dein Projekt „{project}“",
+      "newProject": "Das wird ein eigenes Projekt. Wir melden uns mit einem Angebot.",
+      "new": "Neues Vorhaben",
+      "undecided": "Weiß ich noch nicht",
+      "noProject": "Kein bestimmtes Projekt",
+      "required": "Wähl aus, wofür du die Leistung brauchst."
+    },
+    "hours": {
+      "label": "Wie viele Stunden?",
+      "unit": "Stunden",
+      "quickLabel": "Schnellwahl",
+      "quick": "{hours} Stunden",
+      "hint": "Die Stunden stehen dir zur Verfügung, sobald wir deine Anfrage bestätigt haben.",
+      "required": "Gib an, wie viele Stunden du brauchst.",
+      "range": "Möglich sind {min} bis {max} ganze Stunden."
+    },
+    "title": {
+      "label": "Worum geht es?",
+      "placeholder": "z. B. Zweite Landingpage für unser Sommerangebot",
+      "required": "Schreib kurz, worum es geht."
+    },
+    "description": {
+      "label": "Beschreibe kurz, was du brauchst",
+      "hint": "Ziel, Umfang und Wunschtermin helfen uns beim Angebot.",
+      "required": "Beschreib kurz, was du brauchst."
+    },
+    "note": {
+      "label": "Anmerkung",
+      "hint": "Optional: alles, was wir für das Angebot wissen sollten."
+    },
+    "nonBinding": "Unverbindlich – du bekommst zuerst ein Angebot.",
+    "submit": "Anfrage senden",
+    "submitting": "Wird gesendet …"
+  },
+  "sent": {
+    "title": "Deine Anfrage ist bei uns.",
+    "description": "Wir sehen sie uns an und melden uns mit einem Angebot. Den Stand findest du unter „Meine Anfragen“.",
+    "another": "Weitere Leistung anfragen",
+    "mine": "Meine Anfragen ansehen",
+    "announce": "Deine Anfrage „{title}“ ist bei uns angekommen."
+  },
+  "list": {
+    "empty": "Du hast noch nichts angefragt. Sobald du eine Anfrage sendest, siehst du hier ihren Stand.",
+    "capped": "Du siehst alle offenen und die letzten {count} abgeschlossenen Anfragen.",
+    "requestedOn": "Angefragt am {date}",
+    "project": "Projekt: {project}",
+    "wish": {
+      "new": "Neues Vorhaben",
+      "undecided": "Projekt noch offen"
+    },
+    "hours": "{duration} Stunden",
+    "noteLabel": "Deine Nachricht",
+    "declineReasonLabel": "Unsere Rückmeldung",
+    "withdraw": "Zurückziehen",
+    "withdrawLabel": "Anfrage „{title}“ zurückziehen",
+    "withdrawn": "„{title}“ ist zurückgezogen.",
+    "status": {
+      "requested": "Eingegangen",
+      "offered": "Angebot unterwegs",
+      "accepted": "Bestätigt",
+      "declined": "Nicht umgesetzt",
+      "withdrawn": "Zurückgezogen"
+    },
+    "confirm": {
+      "title": "Anfrage zurückziehen?",
+      "description": "„{title}“ wird nicht weiter bearbeitet. Du kannst die Leistung jederzeit neu anfragen.",
+      "confirm": "Anfrage zurückziehen",
+      "cancel": "Abbrechen"
+    }
+  },
+  "errors": {
+    "not_found": "Diese Leistung ist nicht mehr verfügbar. Lade die Seite neu und wähl eine andere.",
+    "validation": "Das konnten wir so nicht annehmen. Prüf bitte deine Angaben.",
+    "limit_reached": "Du hast schon viele offene Anfragen. Sobald wir einige beantwortet haben, kannst du neue senden.",
+    "duplicate_open": "Für dieses Projekt hast du schon eine zusätzliche Feedbackrunde angefragt. Wir melden uns dazu.",
+    "locked": "An dieser Anfrage arbeiten wir schon. Schreib uns im Chat, wenn sich etwas geändert hat.",
+    "internal": "Das hat gerade nicht geklappt. Bitte versuch es noch einmal."
+  }
+}

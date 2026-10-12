@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-
 import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import { buildPortalHref } from "./build-portal-href";
 import {
   readPortalDashboardChat,
+  readPortalDashboardService,
   readPortalDashboardWidget,
 } from "./portal-dashboard-query";
 
@@ -35,7 +35,35 @@ describe("readPortalDashboardChat", () => {
   });
 });
 
+describe("readPortalDashboardService", () => {
+  it("reads the named service and treats an empty value as none", () => {
+    expect(
+      readPortalDashboardService(new URLSearchParams("service=custom")),
+    ).toBe("custom");
+    expect(readPortalDashboardService(new URLSearchParams("service="))).toBe(
+      null,
+    );
+    expect(readPortalDashboardService(new URLSearchParams())).toBeNull();
+  });
+});
+
 describe("buildPortalHref", () => {
+  it("opens the service request dialog on a service and drops it again", () => {
+    expect(
+      buildPortalHref("/de/portal/c", "", {
+        widget: PortalWidgetKey.ServiceRequest,
+        service: "s-1",
+        project: "p-1",
+      }),
+    ).toBe("/de/portal/c?widget=serviceRequest&project=p-1&service=s-1");
+    expect(
+      buildPortalHref("/de/portal/c", "widget=serviceRequest&service=s-1", {
+        widget: null,
+        service: null,
+      }),
+    ).toBe("/de/portal/c");
+  });
+
   it("clears the hours filter while preserving or opening the chat dock", () => {
     expect(
       buildPortalHref("/de/portal/c", "chat=open&hoursProject=p", {

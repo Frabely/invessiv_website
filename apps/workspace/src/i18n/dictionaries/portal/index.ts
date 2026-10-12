@@ -1,4 +1,5 @@
 import type { Locale } from "@/config/i18n";
+import type { PortalServiceRequestsDictionary } from "@/common/contracts/portal/portal-service-requests-dictionary";
 import credentialsDe from "./credentials/de.json";
 import credentialsEn from "./credentials/en.json";
 import dashboardDe from "./dashboard/de.json";
@@ -21,6 +22,8 @@ import feedbackDe from "./feedback/de.json";
 import feedbackEn from "./feedback/en.json";
 import onboardingDe from "./onboarding/de.json";
 import onboardingEn from "./onboarding/en.json";
+import serviceRequestsDe from "./service-requests/de.json";
+import serviceRequestsEn from "./service-requests/en.json";
 
 export type PortalMetaDictionary = typeof metaDe;
 export type PortalPickerDictionary = typeof pickerDe;
@@ -150,4 +153,16 @@ export function getPortalHoursDictionary(
   locale: Locale,
 ): PortalHoursDictionary {
   return PORTAL_HOURS[locale];
+}
+
+const PORTAL_SERVICE_REQUESTS: Record<Locale, PortalServiceRequestsDictionary> =
+  {
+    de: serviceRequestsDe,
+    en: serviceRequestsEn,
+  };
+
+export function getPortalServiceRequestsDictionary(
+  locale: Locale,
+): PortalServiceRequestsDictionary {
+  return PORTAL_SERVICE_REQUESTS[locale];
 }

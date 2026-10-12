@@ -9,7 +9,7 @@ import { ServiceRequestInboxFilter as F } from "@/common/constants/crm/service-r
 import { serviceRequestFixture } from "@/server/tests/support/service-request-fixtures";
 import { getCrmServiceRequestsDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { ServiceRequestInbox } from "./service-request-inbox";
-import { ServiceRequestStatusBadge } from "../service-request-status-badge/service-request-status-badge";
+import { ServiceRequestStatusBadge } from "@/components/shared/service-requests/service-request-status-badge/service-request-status-badge";
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn() }),

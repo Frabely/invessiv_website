@@ -1,0 +1,110 @@
+{
+  "dialog": {
+    "title": "Request a service",
+    "intro": "Tell us what else you need. You get a quote first; nothing is charged before that.",
+    "close": "Close",
+    "tabsLabel": "Request and previous requests",
+    "tabs": {
+      "request": "Request",
+      "mine": "My requests ({count})",
+      "mineName": "My requests"
+    },
+    "ownerHint": "You cannot request or withdraw anything in the portal view.",
+    "ownerLink": "Handle in the CRM",
+    "readOnlyHint": "You can read your company's requests but not send a new one. Ask the person who looks after the project on your side."
+  },
+  "picker": {
+    "heading": "What do you need?",
+    "customTitle": "Something else",
+    "customDescription": "Describe what you need in your own words. We get back to you with a quote.",
+    "emptyCatalog": "Our services will be listed here soon. Until then, simply describe what you need.",
+    "kind": {
+      "standard": "Service",
+      "hours": "Hours",
+      "feedback_round": "Feedback round"
+    }
+  },
+  "form": {
+    "back": "Choose another service",
+    "unavailable": "We no longer offer this service at the moment. Choose another one or describe what you need.",
+    "project": {
+      "label": "For which project?",
+      "fixed": "For your project “{project}”",
+      "newProject": "This becomes a project of its own. We get back to you with a quote.",
+      "new": "A new venture",
+      "undecided": "I don't know yet",
+      "noProject": "No particular project",
+      "required": "Choose what you need the service for."
+    },
+    "hours": {
+      "label": "How many hours?",
+      "unit": "hours",
+      "quickLabel": "Quick pick",
+      "quick": "{hours} hours",
+      "hint": "The hours are available to you as soon as we have confirmed your request.",
+      "required": "Enter how many hours you need.",
+      "range": "You can request {min} to {max} whole hours."
+    },
+    "title": {
+      "label": "What is it about?",
+      "placeholder": "e.g. A second landing page for our summer offer",
+      "required": "Say briefly what it is about."
+    },
+    "description": {
+      "label": "Briefly describe what you need",
+      "hint": "Goal, scope and preferred date help us with the quote.",
+      "required": "Briefly describe what you need."
+    },
+    "note": {
+      "label": "Note",
+      "hint": "Optional: anything we should know for the quote."
+    },
+    "nonBinding": "No commitment – you get a quote first.",
+    "submit": "Send request",
+    "submitting": "Sending …"
+  },
+  "sent": {
+    "title": "We have your request.",
+    "description": "We will look at it and get back to you with a quote. You can follow its status under “My requests”.",
+    "another": "Request another service",
+    "mine": "View my requests",
+    "announce": "We have received your request “{title}”."
+  },
+  "list": {
+    "empty": "You have not requested anything yet. Once you send a request, you will see its status here.",
+    "capped": "You are seeing all open requests and your last {count} closed requests.",
+    "requestedOn": "Requested on {date}",
+    "project": "Project: {project}",
+    "wish": {
+      "new": "A new venture",
+      "undecided": "Project still open"
+    },
+    "hours": "{duration} hours",
+    "noteLabel": "Your message",
+    "declineReasonLabel": "Our reply",
+    "withdraw": "Withdraw",
+    "withdrawLabel": "Withdraw the request “{title}”",
+    "withdrawn": "“{title}” has been withdrawn.",
+    "status": {
+      "requested": "Received",
+      "offered": "Quote on its way",
+      "accepted": "Confirmed",
+      "declined": "Not carried out",
+      "withdrawn": "Withdrawn"
+    },
+    "confirm": {
+      "title": "Withdraw this request?",
+      "description": "We will stop working on “{title}”. You can request the service again at any time.",
+      "confirm": "Withdraw request",
+      "cancel": "Cancel"
+    }
+  },
+  "errors": {
+    "not_found": "This service is no longer available. Reload the page and choose another one.",
+    "validation": "We could not accept this as it is. Please check your details.",
+    "limit_reached": "You already have many open requests. Once we have answered some, you can send new ones.",
+    "duplicate_open": "You have already requested a further feedback round for this project. We will get back to you.",
+    "locked": "We are already working on this request. Message us in the chat if something has changed.",
+    "internal": "That did not work just now. Please try again."
+  }
+}

@@ -215,6 +215,14 @@
       "label": "Zeitbuchungen im Portal ansehen",
       "description": "Jede Zeitbuchung mit Datum, Dauer und Beschreibung sehen."
     },
+    "portal.services.read": {
+      "label": "Leistungen im Portal ansehen",
+      "description": "Freigegebene Leistungen ohne Preis und die Anfragen der eigenen Firma sehen."
+    },
+    "portal.services.request": {
+      "label": "Leistungen im Portal anfragen",
+      "description": "Eine Leistung anfragen und eine offene Anfrage zurückziehen."
+    },
     "roles.manage": {
       "label": "Rollen verwalten",
       "description": "Rollen anlegen und ändern."

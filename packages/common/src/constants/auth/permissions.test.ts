@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-
 import { AccessScopeType } from "@invessiv/common/constants/auth/access-scope-types";
 import {
   AUTH_REALM_VALUES,
@@ -112,6 +111,8 @@ describe("Permission", () => {
       Permission.PortalCredentialsWrite,
       Permission.PortalHoursRead,
       Permission.PortalHoursEntriesRead,
+      Permission.PortalServicesRead,
+      Permission.PortalServicesRequest,
     ]);
     for (const permission of PORTAL_PERMISSION_VALUES) {
       expect(WORKSPACE_PERMISSION_VALUES).not.toContain(permission);
@@ -136,6 +137,7 @@ describe("Permission", () => {
       Permission.PortalCredentialsRead,
       Permission.PortalHoursRead,
       Permission.PortalHoursEntriesRead,
+      Permission.PortalServicesRead,
     ]);
     expect(new Set(PORTAL_READ_PERMISSION_VALUES).size).toBe(
       PORTAL_READ_PERMISSION_VALUES.length,

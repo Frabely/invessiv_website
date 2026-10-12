@@ -60,13 +60,6 @@ function visibleCondition(reader: PortalReader, permission: Permission): SQL {
   )!;
 }
 
-/** Company-wide check for a right; an owner view never holds reveal or write. */
-function can(reader: PortalReader, permission: Permission): boolean {
-  return portalCanOn.forReader(reader, permission, {
-    customerId: reader.customerId,
-  });
-}
-
 /** The full row including both ciphertexts, locked. Null for everything the actor may not reach. */
 async function lockVisible(
   tx: ContactDatabaseTransaction,
@@ -111,7 +104,7 @@ async function targetExists(
 export const portalCredentialService = {
   metadataColumns,
   visibleCondition,
-  can,
+  can: portalCanOn.forCustomer,
   lockVisible,
   targetExists,
 };

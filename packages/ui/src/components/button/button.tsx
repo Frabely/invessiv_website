@@ -7,9 +7,8 @@ import {
   type Ref,
 } from "react";
 import { ButtonSize } from "@invessiv/common/constants/ui/button-sizes";
+import type { ButtonVariant } from "@invessiv/common/constants/ui/button-variants";
 import styles from "./button.module.css";
-
-type ButtonVariant = "primary" | "ghost" | "quiet";
 
 type ButtonBaseProps = {
   children: ReactNode;

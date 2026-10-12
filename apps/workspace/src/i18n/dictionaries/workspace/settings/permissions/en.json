@@ -215,6 +215,14 @@
       "label": "View portal time entries",
       "description": "See each time entry with date, duration and description."
     },
+    "portal.services.read": {
+      "label": "View portal services",
+      "description": "See released services without prices and the requests of the own company."
+    },
+    "portal.services.request": {
+      "label": "Request portal services",
+      "description": "Request a service and withdraw an open request."
+    },
     "roles.manage": {
       "label": "Manage roles",
       "description": "Create and change roles."

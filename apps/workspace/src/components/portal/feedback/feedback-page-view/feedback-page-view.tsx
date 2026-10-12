@@ -36,6 +36,8 @@ export type FeedbackPageViewProps = {
   locale: Locale;
   /** Chat page for calls and the exhausted quota; null without chat access. */
   messagesHref: string | null;
+  /** Request dialog for a further round on this project; null when none can be requested. */
+  extraRoundRequestHref?: string | null;
 };
 
 /**
@@ -52,6 +54,7 @@ export function FeedbackPageView({
   filesContent,
   locale,
   messagesHref,
+  extraRoundRequestHref = null,
 }: FeedbackPageViewProps) {
   const [announcement, setAnnouncement] = useState("");
   const ownerNoticeId = useId();
@@ -253,6 +256,7 @@ export function FeedbackPageView({
         <FeedbackQuotaNotice
           content={content.states.exhausted}
           messagesHref={messagesHref}
+          requestHref={extraRoundRequestHref}
         />
       ) : null}
       <FeedbackRoundHistory

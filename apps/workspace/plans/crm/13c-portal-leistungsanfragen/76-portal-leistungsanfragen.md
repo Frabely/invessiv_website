@@ -92,7 +92,8 @@ Nie im Portal-DTO: Preis, Preisart, Intervall, interne Beschreibung, Version, Mi
   `findExtraFeedbackRoundBlocker` und keine offene Zusatzrunden-Anfrage am selben Projekt.
 
 **`getPortalServices(reader): PortalServicesDto | null`** — `null` ohne `portal.services.read`. Lädt Katalog,
-Projekt-Optionen und die letzten `HistoryShown` Anfragen der Firma. Eine `feedback_round`-Leistung ohne wählbares
+Projekt-Optionen, alle offenen Anfragen und die letzten `HistoryShown` abgeschlossenen Anfragen der Firma
+(Review-Korrektur vom 12.10.2026). Eine `feedback_round`-Leistung ohne wählbares
 Projekt wird nicht angeboten. `canRequest` = Recht `portal.services.request` und keine Owner-Sicht.
 `canWithdraw` = `canRequest` und `canTransitionServiceRequest(status, withdrawn, customer)`.
 
@@ -101,6 +102,7 @@ Projekt wird nicht angeboten. `canRequest` = Recht `portal.services.request` und
 1. Striktes Schema: unbekannte Felder (`customerId`, `price…`) sind `validation`. Ohne Recht `not_found`.
 2. Transaktion; Kundenzeile `FOR NO KEY UPDATE` (Muster `createPortalCredential`).
 3. Idempotenz: bestehender Schlüssel derselben Firma → Erfolg mit der bestehenden Zeile; fremde Firma → `validation`.
+   Das gilt auch für gleichzeitige Inserts zweier Firmen; Unique-Konflikte werden gezielt abgefangen.
 4. Offene Anfragen der Firma ≥ `OpenPerCustomer` → `limit_reached`.
 5. Mit `lineItemTemplateId`: Vorlage laut `catalogCondition`, sonst `not_found`; `title` muss `null` sein und wird
    aus der Vorlage übernommen, `kind` ebenso. Ohne: `title` und `note` Pflicht, `kind = standard`.
@@ -184,6 +186,8 @@ prüfen, nicht annehmen).
        „Neues Vorhaben“ und „Weiß ich noch nicht“.
      - Immer: optionale Notiz (bei Freitext die Pflichtbeschreibung), Satz „Unverbindlich — du bekommst zuerst
        ein Angebot.“, Button „Anfrage senden“. Der `idempotencyKey` entsteht einmal beim Öffnen des Formulars.
+       Während des Sendens bleiben Auswahlwechsel, Tabs und Schließen gesperrt. Bei einem Fehler wird entsperrt;
+       Wiederholen im selben Formular behält den Schlüssel. Nach externer Navigation werden späte Antworten ignoriert.
   3. **Bestätigung:** „Deine Anfrage ist bei uns.“ mit „Weitere Leistung anfragen“ und „Meine Anfragen ansehen“;
      danach `router.refresh()`.
   4. **Meine Anfragen** (`portal-service-request-list`): Titel, Datum, Projekt, Status als Badge mit Text —

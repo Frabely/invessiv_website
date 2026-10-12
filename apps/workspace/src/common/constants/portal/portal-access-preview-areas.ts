@@ -27,4 +27,8 @@ export const PORTAL_ACCESS_PREVIEW_AREAS = [
     labelKey: PortalWidgetKey.Hours,
     requiredPermission: Permission.PortalHoursRead,
   },
+  {
+    labelKey: PortalWidgetKey.ServiceRequest,
+    requiredPermission: Permission.PortalServicesRead,
+  },
 ] as const;

@@ -32,7 +32,7 @@ import type { CredentialFormSource } from "@/common/contracts/crm/credentials/cr
 import type { CredentialFormValues } from "@/common/contracts/crm/credentials/credential-form-values";
 import { credentialFormRequest } from "@/common/patterns/crm/credentials/credential-form-request";
 import { useRevealedSecret } from "@/hooks/shared/use-revealed-secret";
-import { useFocusFirstInvalidField } from "@/hooks/workspace/use-focus-first-invalid-field";
+import { useFocusFirstInvalidField } from "@/hooks/shared/use-focus-first-invalid-field";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import styles from "./credential-form-dialog.module.css";
 

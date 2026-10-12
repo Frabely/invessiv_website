@@ -50,7 +50,9 @@
     "exhausted": {
       "title": "Need another round?",
       "description": "Write to us in the chat and we'll find a way together.",
-      "chatLink": "Go to chat"
+      "chatLink": "Go to chat",
+      "requestDescription": "Your feedback rounds are used up. You can request a further round and get a quote first.",
+      "requestLink": "Request a further round"
     },
     "noticeLabel": "Message from us",
     "returned": {

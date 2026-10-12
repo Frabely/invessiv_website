@@ -7,6 +7,7 @@ import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { FormDialog, FormField } from "@invessiv/ui";
 import { portalTasksApiService } from "@/client/portal/portal-tasks-api-service";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
+import { FormNotice } from "@invessiv/ui";
 import styles from "./portal-task-request-dialog.module.css";
 
 export type PortalTaskRequestDialogProps = {
@@ -130,9 +131,7 @@ export function PortalTaskRequestDialog({
           label={content.dueLabel}
         />
         {submitError ? (
-          <p className={styles.error} role="alert">
-            {submitError}
-          </p>
+          <FormNotice role="alert">{submitError}</FormNotice>
         ) : null}
       </form>
     </FormDialog>
