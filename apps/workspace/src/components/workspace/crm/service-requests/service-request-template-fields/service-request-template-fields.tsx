@@ -15,6 +15,7 @@ export type ServiceRequestTemplateFieldsProps = {
   content: CrmServiceRequestsDictionary;
   values: ServiceRequestAcceptFormValues;
   unavailable: boolean;
+  invalid: boolean;
   onChangeAction: (patch: Partial<ServiceRequestAcceptFormValues>) => void;
   onSelectTemplateAction: (id: string) => void;
 };
@@ -26,12 +27,21 @@ export function ServiceRequestTemplateFields({
   content,
   values,
   unavailable,
+  invalid,
   onChangeAction,
   onSelectTemplateAction,
 }: ServiceRequestTemplateFieldsProps) {
   const templates = viewModel.templates.filter((t) => t.kind === request.kind);
   const source = templates.find((t) => t.id === request.lineItemTemplateId);
   const canChoose = canChooseServiceRequestTemplate(request, viewModel);
+
+  function getTemplateErrorMessage(): string | undefined {
+    if (!viewModel.canReadTemplates) return content.form.noCatalogAccess;
+    if (unavailable) return content.form.noTemplate;
+    if (invalid && !values.templateId) return content.form.templateRequired;
+    return undefined;
+  }
+
   return (
     <>
       {canChoose ? (
@@ -49,7 +59,7 @@ export function ServiceRequestTemplateFields({
               templateMode: Mode.New,
               title: request.title,
               description: request.note,
-              priceInput: "",
+              ...(request.offeredPriceCents === null ? { priceInput: "" } : {}),
             })
           }
         />
@@ -72,16 +82,11 @@ export function ServiceRequestTemplateFields({
               ? content.form.templateUnavailable
               : undefined
           }
-          errorMessage={
-            !viewModel.canReadTemplates
-              ? content.form.noCatalogAccess
-              : unavailable
-                ? content.form.noTemplate
-                : undefined
-          }
-          renderControl={({ id, describedBy }) => (
+          errorMessage={getTemplateErrorMessage()}
+          renderControl={({ id, describedBy, invalid }) => (
             <CustomSelect
               id={id}
+              invalid={invalid}
               describedBy={describedBy}
               value={values.templateId}
               onChange={onSelectTemplateAction}

@@ -405,3 +405,14 @@ Die Findings F01–F08 aus dem Branch-Review sind umgesetzt:
 - `pnpm --filter @invessiv/db db:smoke:crm`: alle 313 Constraint-Prüfungen bestanden, einschließlich Angebotskonditionen und 200-Zeichen-Anfragetitel.
 - `pnpm --filter @invessiv/workspace build`: bestanden; bestehende Turbopack-Warnung zur dynamischen Env-Dateisuche.
 - Die beiden Browserabläufe wurden über `playwright.portal.config.ts` gestartet. Das gemeinsame Setup scheitert weiterhin an „Vercel Blob: OIDC is enabled for this project, but not for the development environment“. Beide Fachtests wurden deshalb nicht gestartet; Browser-/A11y-Smoke bleibt offen.
+
+### Abschlussreview-Nacharbeit vom 14.10.2026
+
+Die Findings F01–F04 aus `deleteable/review-2026-10-14-leistungsanfragen-abschluss.md` sind im Arbeitsbaum behoben:
+
+- Bei einem Versionskonflikt übernimmt die Annahme ein inzwischen erfasstes Angebot in unberührte Preis-/Intervall-/Mengenfelder. Bewusst geänderte Konditionen bleiben erhalten; weichen sie vom neuen Angebot ab, ist die Annahme bis zu einer ausdrücklichen Bestätigung gesperrt. Projektauswahl, Vorlage und sonstige Eingaben bleiben erhalten.
+- Bei angebotenen Freitextanfragen erhält auch der Rückwechsel von bestehender zu neuer Vorlage die Angebotskonditionen.
+- Fehlende Projekt- und Ersatzvorlagenauswahl zeigen eine eigene Feldmeldung. Die Selects verknüpfen die Meldung für Screenreader; der gemeinsame Fokushelfer berücksichtigt ihre bestehende `data-invalid`-Kennzeichnung.
+- Die deutschen Retry- und Legacy-Angebotshinweise enthalten wieder echte UTF-8-Umlaute. Neue Hinweistexte sind parallel in DE und EN gepflegt.
+
+Validierung: 264 fokussierte Workspace-Tests und 28 gemeinsame UI-Tests bestanden; 55 DB-Integrationstests im Standardmodus übersprungen. Typecheck und Lint für Workspace/UI bestanden, mit bestehenden Lint-Warnungen. Regressionen prüfen insbesondere Konflikt → neue Konditionen → Annahme, erhaltene Benutzeränderungen mit Bestätigung, angebotene Stundenmengen, Vorlagen-Rückwechsel und Feldmeldung/Fokus. Keine Migration, keine neuen Umgebungsvariablen und keine neue Dependency erforderlich. Die Projektpflicht bleibt bis Folgeplan 13d bestehen. Die oben dokumentierte Browser-/E2E-Prüfgrenze bleibt offen.

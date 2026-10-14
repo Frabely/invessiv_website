@@ -355,7 +355,7 @@ Plan: `apps/workspace/plans/crm/13c-portal-leistungsanfragen/76-portal-leistungs
   Ablehnungsgrund werden nur als Text gerendert.
 - **Status ist immer Text mit Symbol**, über den geteilten `ServiceRequestStatusBadge`
   (`components/shared/service-requests/`, derselbe wie im CRM). Die Wörter kommen aus dem Portal-Dictionary:
-  „Eingegangen“, „Angebot unterwegs“, „Bestätigt“, „Nicht umgesetzt“, „Zurückgezogen“.
+  „Eingegangen“, „Angebot unterwegs“, „Bestätigt“, „Abgelehnt“, „Zurückgezogen“.
 - **Drei unterscheidbare Empty-States:** nichts freigegeben (Erklärung plus „Etwas anderes“), noch nichts
   angefragt, und die Owner-Sicht bzw. ein Leser ohne `portal.services.request` (Hinweis, Sende-Button deaktiviert).
 - „Zurückziehen“ erscheint nur mit `canWithdraw` aus dem DTO.

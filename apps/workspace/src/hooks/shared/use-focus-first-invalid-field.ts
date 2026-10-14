@@ -10,7 +10,7 @@ export function useFocusFirstInvalidField() {
     requestAnimationFrame(() =>
       formRef.current
         ?.querySelector<HTMLElement>(
-          '[aria-invalid="true"], fieldset[data-invalid="true"] input:not(:disabled)',
+          '[aria-invalid="true"], button[data-invalid="true"], fieldset[data-invalid="true"] input:not(:disabled)',
         )
         ?.focus(),
     );

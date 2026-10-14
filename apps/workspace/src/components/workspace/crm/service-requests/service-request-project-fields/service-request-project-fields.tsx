@@ -55,10 +55,17 @@ export function ServiceRequestProjectFields({
             canChoose ? content.form.existingProject : content.form.project
           }
           required
-          errorMessage={unavailable ? content.form.noProject : undefined}
-          renderControl={({ id, describedBy }) => (
+          errorMessage={
+            unavailable
+              ? content.form.noProject
+              : invalid && !values.projectId
+                ? content.form.projectRequired
+                : undefined
+          }
+          renderControl={({ id, describedBy, invalid }) => (
             <CustomSelect
               id={id}
+              invalid={invalid}
               describedBy={describedBy}
               value={values.projectId}
               onChange={(next) => onChangeAction({ projectId: next })}

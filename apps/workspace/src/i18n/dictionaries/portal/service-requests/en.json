@@ -90,7 +90,7 @@
       "requested": "Received",
       "offered": "Quote on its way",
       "accepted": "Confirmed",
-      "declined": "Not carried out",
+      "declined": "Declined",
       "withdrawn": "Withdrawn"
     },
     "confirm": {

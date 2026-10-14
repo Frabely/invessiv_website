@@ -17,12 +17,114 @@ import {
   canChooseServiceRequestTemplate,
   createServiceRequestAcceptForm,
   applyServiceRequestTemplate,
+  reconcileServiceRequestOffer,
   validateServiceRequestAcceptForm,
   toAcceptServiceRequest,
 } from "./service-request-accept-form";
 import { serviceRequestErrorText } from "./service-request-error-text";
 
 describe("service request acceptance form", () => {
+  it("rebases untouched conditions on an offer received through a version conflict", () => {
+    const previous = serviceRequestFixture();
+    const vm = serviceRequestsViewModelFixture();
+    const current = serviceRequestFixture({
+      status: ServiceRequestStatus.Offered,
+      version: 2,
+      offeredPriceCents: 99000,
+      offeredPricingMode: ServicePricingMode.Recurring,
+      offeredRecurringInterval: BillingInterval.Monthly,
+    });
+    const result = reconcileServiceRequestOffer(
+      createServiceRequestAcceptForm(previous, vm, "en"),
+      previous,
+      current,
+      vm,
+      "en",
+    );
+    expect(result.requiresConfirmation).toBe(false);
+    expect(toAcceptServiceRequest(result.values, current, vm)).toMatchObject({
+      version: 2,
+      acceptWithoutOffer: false,
+      lineItem: {
+        priceCents: 99000,
+        pricingMode: ServicePricingMode.Recurring,
+        recurringInterval: BillingInterval.Monthly,
+      },
+    });
+  });
+  it("preserves edited prices but requires acknowledgement of the new offer", () => {
+    const previous = serviceRequestFixture();
+    const vm = serviceRequestsViewModelFixture();
+    const values = {
+      ...createServiceRequestAcceptForm(previous, vm, "en"),
+      priceInput: "250",
+    };
+    const current = serviceRequestFixture({
+      offeredPriceCents: 99000,
+      offeredPricingMode: ServicePricingMode.OneTime,
+    });
+    const result = reconcileServiceRequestOffer(
+      values,
+      previous,
+      current,
+      vm,
+      "en",
+    );
+    expect(result.values.priceInput).toBe("250");
+    expect(result.requiresConfirmation).toBe(true);
+  });
+  it.each([false, true])(
+    "reconciles offered hours while preserving edited quantities: %s",
+    (edited) => {
+      const previous = serviceRequestFixture({
+        kind: LineItemKind.Hours,
+        requestedMinutes: 300,
+      });
+      const vm = serviceRequestsViewModelFixture({
+        templates: [
+          serviceRequestTemplateFixture({
+            kind: LineItemKind.Hours,
+            pricingMode: ServicePricingMode.Rate,
+          }),
+        ],
+      });
+      const values = createServiceRequestAcceptForm(previous, vm, "en");
+      if (edited) values.quantityInput = "7:00";
+      const current = serviceRequestFixture({
+        ...previous,
+        offeredPriceCents: 11000,
+        offeredPricingMode: ServicePricingMode.Rate,
+        offeredMinutes: 600,
+      });
+      const result = reconcileServiceRequestOffer(
+        values,
+        previous,
+        current,
+        vm,
+        "en",
+      );
+      expect(result.values.priceInput).toBe("110");
+      expect(result.values.quantityInput).toBe(edited ? "7:00" : "10:00");
+      expect(result.requiresConfirmation).toBe(edited);
+    },
+  );
+  it("leaves form values alone when a conflict contains no changed offer", () => {
+    const request = serviceRequestFixture();
+    const vm = serviceRequestsViewModelFixture();
+    const values = {
+      ...createServiceRequestAcceptForm(request, vm, "en"),
+      priceInput: "250",
+    };
+    expect(
+      reconcileServiceRequestOffer(
+        values,
+        request,
+        { ...request, version: 2 },
+        vm,
+        "en",
+      ),
+    ).toEqual({ values, requiresConfirmation: false });
+  });
   it.each([null, serviceRequestFixture().lineItemTemplateId])(
     "preserves offered conditions when free text or an archived template needs a replacement: %s",
     (lineItemTemplateId) => {

@@ -19,6 +19,7 @@ import type { Locale } from "@/config/i18n";
 import {
   createServiceRequestAcceptForm,
   applyServiceRequestTemplate,
+  reconcileServiceRequestOffer,
   validateServiceRequestAcceptForm,
   toAcceptServiceRequest,
 } from "@/common/patterns/crm/service-requests/service-request-accept-form";
@@ -67,13 +68,32 @@ export function ServiceRequestAcceptDialog({
     createServiceRequestAcceptForm(request, viewModel, locale),
   );
   const [invalid, setInvalid] = useState(false);
+  const previousRequest = useRef(request);
+  const [offerConfirmationRequired, setOfferConfirmationRequired] =
+    useState(false);
+  const [offerChangesConfirmed, setOfferChangesConfirmed] = useState(false);
   const mutation = useVersionedMutation<
     ServiceRequestDto,
     ServiceRequestErrorCode
-  >(request, onCloseAction);
+  >(request, onCloseAction, {
+    onConflictAction: (current) => {
+      const reconciliation = reconcileServiceRequestOffer(
+        values,
+        previousRequest.current,
+        current,
+        viewModel,
+        locale,
+      );
+      previousRequest.current = current;
+      setValues(reconciliation.values);
+      setOfferConfirmationRequired(reconciliation.requiresConfirmation);
+      setOfferChangesConfirmed(false);
+    },
+  });
   // Without an offer the customer never saw a price, so accepting needs a deliberate tick.
   const withoutOffer = isServiceRequestWithoutOffer(mutation.current.status);
   const unconfirmed = withoutOffer && !values.confirmedWithoutOffer;
+  const offerUnconfirmed = offerConfirmationRequired && !offerChangesConfirmed;
   const templates = viewModel.templates.filter((t) => t.kind === request.kind);
   const blockers = viewModel.blockers[values.projectId] ?? {
     hours: null,
@@ -109,7 +129,8 @@ export function ServiceRequestAcceptDialog({
   }
   async function submit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (mutation.isSubmitting || blocker || unconfirmed) return;
+    if (mutation.isSubmitting || blocker || unconfirmed || offerUnconfirmed)
+      return;
     if (!validateServiceRequestAcceptForm(values, mutation.current)) {
       setInvalid(true);
       focusFirstInvalidField();
@@ -161,7 +182,11 @@ export function ServiceRequestAcceptDialog({
       submitLabel={content.form.accept}
       submittingLabel={content.form.busy}
       submitDisabled={
-        blocker !== null || noProject || noTemplate || unconfirmed
+        blocker !== null ||
+        noProject ||
+        noTemplate ||
+        unconfirmed ||
+        offerUnconfirmed
       }
       footerHint={content.form.required}
     >
@@ -206,8 +231,25 @@ export function ServiceRequestAcceptDialog({
             ) : null}
           </div>
         )}
+        {offerConfirmationRequired ? (
+          <div className={styles.notice} data-warning="true">
+            <p className={styles.noticeText}>
+              {content.form.offerConflictNotice}
+            </p>
+            <label className={styles.confirm}>
+              <CheckboxControl
+                checked={offerChangesConfirmed}
+                name="service-request-offer-changes"
+                onChange={(event) =>
+                  setOfferChangesConfirmed(event.target.checked)
+                }
+              />
+              {content.form.offerConflictConfirm}
+            </label>
+          </div>
+        ) : null}
         <ServiceRequestProjectFields
-          request={request}
+          request={mutation.current}
           viewModel={viewModel}
           content={content}
           values={values}
@@ -218,11 +260,12 @@ export function ServiceRequestAcceptDialog({
           }
         />
         <ServiceRequestTemplateFields
-          request={request}
+          request={mutation.current}
           viewModel={viewModel}
           content={content}
           values={values}
           unavailable={noTemplate}
+          invalid={invalid}
           onChangeAction={(patch) =>
             setValues((current) => ({ ...current, ...patch }))
           }

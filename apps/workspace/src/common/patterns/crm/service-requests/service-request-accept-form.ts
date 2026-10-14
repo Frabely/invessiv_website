@@ -9,6 +9,7 @@ import type { ServiceRequestDto } from "@invessiv/common/contracts/crm/service-r
 import type { AcceptServiceRequestRequestDto } from "@invessiv/common/contracts/crm/service-requests/accept-service-request-request.dto";
 import type { ServiceRequestsViewModel } from "@/common/contracts/crm/service-requests-view-model";
 import type { ServiceRequestAcceptFormValues } from "@/common/contracts/crm/service-request-accept-form-values";
+import type { ServiceRequestOfferReconciliation } from "@/common/contracts/crm/service-request-offer-reconciliation";
 import {
   createLineItemFieldsFormValues,
   toLineItemFieldsRequestFields,
@@ -106,6 +107,58 @@ export function applyServiceRequestTemplate(
     templateId: template.id,
   };
 }
+
+function hasDifferentPricing(
+  left: ServiceRequestAcceptFormValues,
+  right: ServiceRequestAcceptFormValues,
+): boolean {
+  return (
+    left.priceInput !== right.priceInput ||
+    left.pricingMode !== right.pricingMode ||
+    left.recurringInterval !== right.recurringInterval
+  );
+}
+
+/** Rebase untouched defaults on a new offer; deliberate deviations need acknowledgement. */
+export function reconcileServiceRequestOffer(
+  values: ServiceRequestAcceptFormValues,
+  previous: ServiceRequestDto,
+  current: ServiceRequestDto,
+  viewModel: ServiceRequestsViewModel,
+  locale: string,
+): ServiceRequestOfferReconciliation {
+  const offerChanged =
+    previous.offeredPriceCents !== current.offeredPriceCents ||
+    previous.offeredPricingMode !== current.offeredPricingMode ||
+    previous.offeredRecurringInterval !== current.offeredRecurringInterval ||
+    previous.offeredMinutes !== current.offeredMinutes;
+  if (!offerChanged || current.offeredPriceCents === null)
+    return { values, requiresConfirmation: false };
+
+  const baseline = createServiceRequestAcceptForm(previous, viewModel, locale);
+  const offered = createServiceRequestAcceptForm(current, viewModel, locale);
+  const pricingEdited = hasDifferentPricing(values, baseline);
+  const quantityEdited = values.quantityInput !== baseline.quantityInput;
+  const next = {
+    ...values,
+    ...(!pricingEdited
+      ? {
+          priceInput: offered.priceInput,
+          pricingMode: offered.pricingMode,
+          recurringInterval: offered.recurringInterval,
+        }
+      : {}),
+    ...(!quantityEdited ? { quantityInput: offered.quantityInput } : {}),
+  };
+  return {
+    values: next,
+    requiresConfirmation:
+      hasDifferentPricing(next, offered) ||
+      (current.kind === LineItemKind.Hours &&
+        next.quantityInput !== offered.quantityInput),
+  };
+}
+
 export function validateServiceRequestAcceptForm(
   values: ServiceRequestAcceptFormValues,
   request: ServiceRequestDto,

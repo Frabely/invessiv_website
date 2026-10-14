@@ -531,7 +531,7 @@ describe("PortalServiceRequestDialog", () => {
       within(rows[0]!).getByText("<b>Bitte bis Juni</b>"),
     ).toBeInTheDocument();
     expect(rows[0]!.querySelector("b")).toBeNull();
-    expect(within(rows[1]!).getByText("Nicht umgesetzt")).toBeInTheDocument();
+    expect(within(rows[1]!).getByText("Abgelehnt")).toBeInTheDocument();
     expect(
       within(rows[1]!).getByText("Dieses Jahr nicht mehr"),
     ).toBeInTheDocument();

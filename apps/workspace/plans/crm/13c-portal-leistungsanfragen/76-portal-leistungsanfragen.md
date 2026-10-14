@@ -191,7 +191,7 @@ prüfen, nicht annehmen).
   3. **Bestätigung:** „Deine Anfrage ist bei uns.“ mit „Weitere Leistung anfragen“ und „Meine Anfragen ansehen“;
      danach `router.refresh()`.
   4. **Meine Anfragen** (`portal-service-request-list`): Titel, Datum, Projekt, Status als Badge mit Text —
-     „Eingegangen“, „Angebot unterwegs“, „Bestätigt“, „Nicht umgesetzt“ (mit Grund), „Zurückgezogen“.
+     „Eingegangen“, „Angebot unterwegs“, „Bestätigt“, „Abgelehnt“ (mit Grund), „Zurückgezogen“.
      „Zurückziehen“ nur mit `canWithdraw`, mit Bestätigungsdialog.
 - **Empty-States (drei unterscheidbare Texte):** nichts freigegeben (nur „Etwas anderes“ plus Erklärung), noch
   nichts angefragt, Owner-Sicht ohne Schreibrecht.

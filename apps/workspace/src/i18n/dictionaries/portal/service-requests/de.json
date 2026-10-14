@@ -59,7 +59,7 @@
       "label": "Anmerkung",
       "hint": "Optional: alles, was wir für das Angebot wissen sollten."
     },
-    "retryNotice": "Die Antwort ist ausgeblieben. Deine Angaben bleiben f?r diesen Versuch unver?ndert. Sende erneut, um dieselbe Anfrage zu best?tigen.",
+    "retryNotice": "Die Antwort ist ausgeblieben. Deine Angaben bleiben für diesen Versuch unverändert. Sende erneut, um dieselbe Anfrage zu bestätigen.",
     "nonBinding": "Unverbindlich – du bekommst zuerst ein Angebot.",
     "submit": "Anfrage senden",
     "submitting": "Wird gesendet …"
@@ -90,7 +90,7 @@
       "requested": "Eingegangen",
       "offered": "Angebot unterwegs",
       "accepted": "Bestätigt",
-      "declined": "Nicht umgesetzt",
+      "declined": "Abgelehnt",
       "withdrawn": "Zurückgezogen"
     },
     "confirm": {
