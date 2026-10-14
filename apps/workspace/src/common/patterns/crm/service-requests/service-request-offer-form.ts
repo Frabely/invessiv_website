@@ -1,5 +1,7 @@
 import { ProjectLineItemFieldLimits } from "@invessiv/common/constants/crm/forms/project-line-item-field-limits";
 import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
+import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
+import { createLineItemFieldsFormValues } from "@/common/patterns/crm/line-item-fields-form";
 import { ServiceRequestStatus } from "@invessiv/common/constants/crm/service-request-statuses";
 import type { ChangeServiceRequestStatusRequestDto } from "@invessiv/common/contracts/crm/service-requests/change-service-request-status-request.dto";
 import type { LineItemTemplateDto } from "@invessiv/common/contracts/crm/line-item-template.dto";
@@ -22,7 +24,14 @@ export function createServiceRequestOfferForm(
     (t) => t.id === request.lineItemTemplateId && t.kind === request.kind,
   );
   return {
+    ...createLineItemFieldsFormValues(template ?? null, locale),
     priceInput: formatCentsAsEuroInput(template?.priceCents ?? null, locale),
+    pricingMode:
+      request.kind === LineItemKind.Hours
+        ? ServicePricingMode.Rate
+        : request.kind === LineItemKind.FeedbackRound
+          ? ServicePricingMode.OneTime
+          : (template?.pricingMode ?? ServicePricingMode.OneTime),
     quantityInput:
       request.requestedMinutes !== null
         ? formatDuration(request.requestedMinutes)
@@ -52,10 +61,30 @@ export function toOfferServiceRequest(
 ): ChangeServiceRequestStatusRequestDto | null {
   const priceCents = readOfferPrice(values);
   if (priceCents === null) return null;
+  if (
+    values.pricingMode === ServicePricingMode.Recurring &&
+    values.recurringInterval === null
+  )
+    return null;
+  if (
+    request.kind === LineItemKind.Hours &&
+    values.pricingMode !== ServicePricingMode.Rate
+  )
+    return null;
+  if (
+    request.kind === LineItemKind.FeedbackRound &&
+    values.pricingMode !== ServicePricingMode.OneTime
+  )
+    return null;
   const base = {
     to: ServiceRequestStatus.Offered,
     version: request.version,
     priceCents,
+    pricingMode: values.pricingMode,
+    recurringInterval:
+      values.pricingMode === ServicePricingMode.Recurring
+        ? values.recurringInterval
+        : null,
   };
   if (request.kind !== LineItemKind.Hours) return { ...base, minutes: null };
   const quantity = readDurationInput(values.quantityInput);

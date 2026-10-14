@@ -27,6 +27,8 @@ describe("serviceRequestMappingService", () => {
           decline_reason: null,
           offered_at: null,
           offered_price_cents: null,
+          offered_pricing_mode: null,
+          offered_recurring_interval: null,
           offered_minutes: null,
           decided_at: null,
           decided_by_member_id: null,

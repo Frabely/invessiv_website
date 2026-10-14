@@ -1,7 +1,6 @@
 "use client";
 import { useId, useRef, useState, type SubmitEvent } from "react";
-import { FormDialog, FormField } from "@invessiv/ui";
-import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
+import { FormDialog } from "@invessiv/ui";
 import { HoursLimits } from "@invessiv/common/constants/crm/hours-limits";
 import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
 import type { ServiceRequestErrorCode } from "@invessiv/common/constants/crm/errors/service-request-error-codes";
@@ -19,12 +18,16 @@ import { readDurationInput } from "@/common/patterns/crm/hours/duration-input";
 import { serviceRequestErrorText } from "@/common/patterns/crm/service-requests/service-request-error-text";
 import {
   createServiceRequestOfferForm,
-  isServiceRequestOfferPriceValid,
   toOfferServiceRequest,
 } from "@/common/patterns/crm/service-requests/service-request-offer-form";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
 import { DurationField } from "@/components/workspace/crm/hours/duration-field/duration-field";
 import { LineItemFormMessages } from "@/components/workspace/crm/shared/line-item-form-messages/line-item-form-messages";
+import { LineItemPricingFields } from "@/components/workspace/crm/shared/line-item-pricing-fields/line-item-pricing-fields";
+import { validateLineItemFieldsForm } from "@/common/patterns/crm/line-item-fields-form";
+import { ProjectLineItemFieldLimits } from "@invessiv/common/constants/crm/forms/project-line-item-field-limits";
+import type { LineItemFieldsFormValues } from "@/common/contracts/crm/line-item-fields-form-values";
+import { LineItemFieldsFormValidationCode } from "@/common/constants/crm/forms/line-item-fields-form-validation-codes";
 import styles from "./service-request-offer-dialog.module.css";
 
 export type ServiceRequestOfferDialogProps = {
@@ -92,28 +95,39 @@ export function ServiceRequestOfferDialog({
     >
       <form className={styles.form} id={formId} onSubmit={submit} noValidate>
         <p className={styles.notice}>{content.form.offerNotice}</p>
-        <FormField
-          kind={FormFieldKind.Text}
-          label={hours ? content.form.offerRate : content.form.offerPrice}
-          hint={content.form.offerPriceHint}
-          required
-          errorMessage={
-            invalid && !isServiceRequestOfferPriceValid(values)
-              ? content.form.offerPriceInvalid
-              : undefined
-          }
-          inputRef={priceRef}
-          inputSuffix={lineItemsContent.form.currencySymbol}
-          inputProps={{
-            inputMode: "decimal",
-            name: "service-request-offer-price",
-            value: values.priceInput,
-            onChange: (event) =>
-              setValues((current) => ({
-                ...current,
-                priceInput: event.target.value,
-              })),
+        <LineItemPricingFields
+          content={{
+            ...lineItemsContent.form,
+            validation: {
+              ...lineItemsContent.form.validation,
+              [LineItemFieldsFormValidationCode.PriceInvalid]:
+                content.form.offerPriceInvalid,
+            },
+            fields: {
+              ...lineItemsContent.form.fields,
+              priceCents: content.form.offerPrice,
+              hourlyRate: content.form.offerRate,
+            },
+            pricingMode: lineItemsContent.list.pricingMode,
+            interval: lineItemsContent.form.interval,
           }}
+          errors={
+            invalid
+              ? validateLineItemFieldsForm(
+                  values,
+                  ProjectLineItemFieldLimits.PriceCentsMax,
+                )
+              : {}
+          }
+          namePrefix="service-request-offer"
+          values={values}
+          kind={request.kind}
+          pricingDisabled={request.kind !== LineItemKind.Standard}
+          priceInputRef={priceRef}
+          priceHint={content.form.offerPriceHint}
+          onChangeAction={(patch: Partial<LineItemFieldsFormValues>) =>
+            setValues((current) => ({ ...current, ...patch }))
+          }
         />
         {hours ? (
           <DurationField

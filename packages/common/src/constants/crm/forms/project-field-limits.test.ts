@@ -5,6 +5,7 @@ import { ProjectFieldLimits } from "@invessiv/common/constants/crm/forms/project
 describe("ProjectFieldLimits", () => {
   it("mirrors the projects columns", () => {
     expect(ProjectFieldLimits).toEqual({
+      TitleMaxLength: 160,
       ProcessStepMaxLength: 80,
       ProcessStepsMaxCount: 30,
       FeedbackRoundsMax: 20,

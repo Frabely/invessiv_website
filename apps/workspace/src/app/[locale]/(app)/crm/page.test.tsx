@@ -11,6 +11,7 @@ import {
   TEST_CUSTOMER_ID,
 } from "@/server/tests/workspace/crm/support/crm-fixtures";
 import CrmPage from "./page";
+import { serviceRequestsViewModelFixture } from "@/server/tests/support/service-request-fixtures";
 
 const mocks = vi.hoisted(() => ({
   requireWorkspaceArea: vi.fn(),
@@ -32,6 +33,7 @@ const mocks = vi.hoisted(() => ({
   listCredentialProjectsByCustomer: vi.fn(),
   getCustomerHours: vi.fn(),
   getTaskBookedMinutes: vi.fn(),
+  buildServiceRequestsViewModel: vi.fn(),
 }));
 
 vi.mock(
@@ -49,7 +51,7 @@ vi.mock("next/navigation", () => ({
 }));
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/workspace/crm/service-requests-view-model", () => ({
-  buildServiceRequestsViewModel: vi.fn().mockResolvedValue(null),
+  buildServiceRequestsViewModel: mocks.buildServiceRequestsViewModel,
 }));
 vi.mock("@/lib/auth/permissions", () => ({
   requireWorkspaceArea: mocks.requireWorkspaceArea,
@@ -133,13 +135,16 @@ vi.mock(
       conversation,
       isWorkspaceOwner,
       portalHref,
+      serviceRequests,
     }: {
       conversation?: unknown;
       isWorkspaceOwner?: boolean;
       portalHref?: string;
+      serviceRequests?: { canWrite: boolean };
     }) => (
       <div
         data-chat={conversation === undefined ? "hidden" : "shown"}
+        data-requests-write={String(serviceRequests?.canWrite ?? false)}
         data-owner={String(Boolean(isWorkspaceOwner))}
         data-portal-href={portalHref ?? ""}
         data-testid="cockpit"
@@ -196,6 +201,7 @@ describe("CrmPage", () => {
     mocks.listCredentialProjectsByCustomer.mockResolvedValue([]);
     mocks.getCustomerHours.mockResolvedValue(null);
     mocks.getTaskBookedMinutes.mockResolvedValue({});
+    mocks.buildServiceRequestsViewModel.mockResolvedValue(null);
     mocks.listCustomers.mockResolvedValue({
       hasCustomers: true,
       page: 1,
@@ -313,6 +319,55 @@ describe("CrmPage", () => {
     );
     expect(mocks.getCustomerConversation).not.toHaveBeenCalled();
   });
+  it.each([false, true])(
+    "opens request actions without customer or project read rights, scoped: %s",
+    async (scoped) => {
+      const actor = workspaceActorWith([
+        Permission.ServiceRequestsRead,
+        Permission.ServiceRequestsWrite,
+      ]);
+      if (scoped) {
+        actor.customerPermissions = new Map([
+          [TEST_CUSTOMER_ID, new Set(actor.permissions)],
+        ]);
+        actor.permissions = new Set();
+      }
+      mocks.requireWorkspaceArea.mockResolvedValue(actor);
+      mocks.listCustomers.mockResolvedValue({
+        hasCustomers: false,
+        page: 1,
+        perPage: 25,
+        rows: [],
+        total: 0,
+      });
+      mocks.getCustomerCockpitById.mockResolvedValue({
+        id: TEST_CUSTOMER_ID,
+        ownerDisplayName: null,
+        primaryContactName: null,
+        primaryContactEmail: null,
+      });
+      mocks.buildServiceRequestsViewModel.mockResolvedValue(
+        serviceRequestsViewModelFixture({ canWrite: true }),
+      );
+      await renderPage({ cockpit: TEST_CUSTOMER_ID });
+      expect(screen.getByTestId("cockpit")).toHaveAttribute(
+        "data-requests-write",
+        "true",
+      );
+      expect(mocks.buildServiceRequestsViewModel).toHaveBeenCalledWith(
+        actor,
+        TEST_CUSTOMER_ID,
+        "de",
+        null,
+      );
+      expect(screen.getByTestId("header")).toHaveAttribute(
+        "data-create-href",
+        "",
+      );
+      expect(mocks.getCustomerById).not.toHaveBeenCalled();
+      expect(mocks.getCustomerConversation).not.toHaveBeenCalled();
+    },
+  );
 
   it("loads the conversation for the dock only with chat.read and survives its failure", async () => {
     mocks.requireWorkspaceArea.mockResolvedValue(

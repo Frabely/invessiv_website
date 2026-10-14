@@ -21,7 +21,7 @@ const feedbackRoundPositionsSchema = z
   .transform(sortFeedbackRoundPositions);
 
 const projectShape = z.object({
-  title: z.string().trim().min(1).max(160),
+  title: z.string().trim().min(1).max(ProjectFieldLimits.TitleMaxLength),
   status: z.enum(PROJECT_STATUS_VALUES),
   phase: z.enum(PROJECT_PHASE_SEQUENCE),
   processSteps: z

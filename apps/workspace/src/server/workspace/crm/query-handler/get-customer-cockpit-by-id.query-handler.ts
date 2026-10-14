@@ -23,5 +23,6 @@ export async function getCustomerCockpitById(
     customerId,
     accessScope(actor, Permission.CustomersRead),
     customerBaseVisibilityIds(actor),
+    accessScope(actor, Permission.ServiceRequestsRead),
   );
 }

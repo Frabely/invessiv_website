@@ -1,6 +1,14 @@
 // @vitest-environment jsdom
 import "@testing-library/jest-dom/vitest";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from "@testing-library/react";
+import { ServiceRequestProjectWish } from "@invessiv/common/constants/crm/service-request-project-wishes";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ServiceRequestStatus } from "@invessiv/common/constants/crm/service-request-statuses";
 import {
@@ -37,6 +45,38 @@ function renderDialog(
 }
 
 describe("ServiceRequestAcceptDialog", () => {
+  it("shows and focuses an oversized project title without truncating the customer request", async () => {
+    const request = serviceRequestFixture({
+      title: "x".repeat(200),
+      projectWish: ServiceRequestProjectWish.New,
+      status: ServiceRequestStatus.Offered,
+    });
+    render(
+      <ServiceRequestAcceptDialog
+        request={request}
+        viewModel={serviceRequestsViewModelFixture()}
+        content={content}
+        lineItemsContent={getCrmProjectLineItemsDictionary("en")}
+        locale="en"
+        onCloseAction={vi.fn()}
+      />,
+    );
+    const title = screen.getByRole("textbox", {
+      name: new RegExp(content.form.projectTitle),
+    });
+    expect(title).toHaveValue(request.title);
+    expect(title).toHaveAttribute("maxlength", "160");
+    expect(
+      screen.getByText(
+        formatMessage(content.form.projectTitleInvalid, { max: 160 }),
+      ),
+    ).toBeVisible();
+    fireEvent.click(screen.getByRole("button", { name: content.form.accept }));
+    await waitFor(() => expect(title).toHaveFocus());
+    fireEvent.change(title, { target: { value: "Short project title" } });
+    expect(title).not.toHaveAttribute("aria-invalid", "true");
+    expect(screen.getByText(request.title)).toBeVisible();
+  });
   it("locks accepting without an offer until it is confirmed on purpose", () => {
     const submit = renderDialog(ServiceRequestStatus.Requested);
     expect(

@@ -1,6 +1,8 @@
 import type { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
 import type { ServiceRequestStatus } from "@invessiv/common/constants/crm/service-request-statuses";
 import type { ServiceRequestProjectWish } from "@invessiv/common/constants/crm/service-request-project-wishes";
+import type { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
+import type { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 export interface ServiceRequestDto {
   /** Request identifier. */
   id: string;
@@ -36,6 +38,10 @@ export interface ServiceRequestDto {
   offeredAt: string | null;
   /** Offered price in cents (hourly rate for hours); null before an offer and on offers recorded without one. */
   offeredPriceCents: number | null;
+  /** Pricing mode captured with the offer; null for legacy offers without captured conditions. */
+  offeredPricingMode: ServicePricingMode | null;
+  /** Billing interval captured with a recurring offer; otherwise null. */
+  offeredRecurringInterval: BillingInterval | null;
   /** Offered hours in minutes; only on an offered hours request. */
   offeredMinutes: number | null;
   /** Time of acceptance, rejection or withdrawal. */

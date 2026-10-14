@@ -16,6 +16,7 @@ import {
 } from "@/common/patterns/crm/line-item-fields-form";
 import {
   createProjectFormValues,
+  isProjectTitleValid,
   toCreateProjectRequest,
 } from "@/common/patterns/crm/project-form";
 import { formatCentsAsEuroInput } from "@/common/patterns/crm/euro-cents";
@@ -57,6 +58,11 @@ export function createServiceRequestAcceptForm(
       request.offeredPriceCents !== null
         ? formatCentsAsEuroInput(request.offeredPriceCents, locale)
         : fields.priceInput,
+    pricingMode: request.offeredPricingMode ?? fields.pricingMode,
+    recurringInterval:
+      request.offeredPricingMode !== null
+        ? request.offeredRecurringInterval
+        : fields.recurringInterval,
     title: template?.title ?? request.title,
     description: template?.description ?? request.note,
     projectMode:
@@ -85,10 +91,18 @@ export function applyServiceRequestTemplate(
   values: ServiceRequestAcceptFormValues,
   template: LineItemTemplateDto,
   locale: string,
+  request: ServiceRequestDto,
 ): ServiceRequestAcceptFormValues {
   return {
     ...values,
     ...createLineItemFieldsFormValues(template, locale),
+    ...(request.offeredPriceCents !== null
+      ? {
+          priceInput: values.priceInput,
+          pricingMode: values.pricingMode,
+          recurringInterval: values.recurringInterval,
+        }
+      : {}),
     templateId: template.id,
   };
 }
@@ -106,7 +120,10 @@ export function validateServiceRequestAcceptForm(
   )
     return false;
   if (values.projectMode === Mode.Existing && !values.projectId) return false;
-  if (values.projectMode === Mode.New && !values.projectTitle.trim())
+  if (
+    values.projectMode === Mode.New &&
+    !isProjectTitleValid(values.projectTitle)
+  )
     return false;
   if (values.templateMode === Mode.Existing && !values.templateId) return false;
   return (

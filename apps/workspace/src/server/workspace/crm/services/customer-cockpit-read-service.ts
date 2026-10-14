@@ -24,6 +24,7 @@ async function findById(
   customerId: string,
   scope: AccessScope,
   baseCustomerIds: ReadonlySet<string>,
+  containerScope?: AccessScope,
 ): Promise<CustomerCockpitDto | null> {
   const [row] = await executor
     .select({
@@ -53,11 +54,17 @@ async function findById(
     .where(
       and(
         eq(customers.id, customerId),
-        scope.kind === AccessScopeKind.All
+        scope.kind === AccessScopeKind.All ||
+          containerScope?.kind === AccessScopeKind.All
           ? undefined
           : or(
               crmAccessCondition.forScope(scope, { customerId: customers.id }),
               inArray(customers.id, [...baseCustomerIds]),
+              containerScope
+                ? crmAccessCondition.forScope(containerScope, {
+                    customerId: customers.id,
+                  })
+                : undefined,
             ),
       ),
     )

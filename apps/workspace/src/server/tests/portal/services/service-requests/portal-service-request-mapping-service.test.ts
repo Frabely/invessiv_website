@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
+import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
+import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 import { LineItemProjectMode } from "@invessiv/common/constants/crm/line-item-project-modes";
 import { ServiceRequestProjectWish } from "@invessiv/common/constants/crm/service-request-project-wishes";
 import { ServiceRequestStatus } from "@invessiv/common/constants/crm/service-request-statuses";
@@ -21,6 +23,9 @@ const FORBIDDEN_KEYS = [
   "priceCents",
   "pricingMode",
   "recurringInterval",
+  "offeredPriceCents",
+  "offeredPricingMode",
+  "offeredRecurringInterval",
   "version",
   "membershipId",
   "decidedByMemberId",
@@ -60,6 +65,8 @@ function requestRow(
     decline_reason: null,
     offered_at: null,
     offered_price_cents: null,
+    offered_pricing_mode: null,
+    offered_recurring_interval: null,
     offered_minutes: null,
     decided_at: null,
     decided_by_member_id: null,
@@ -251,7 +258,13 @@ describe("portalServiceRequestMappingService.toServicesDto", () => {
     const serialised = JSON.stringify(
       mapping.toServicesDto({
         catalogRows: [catalogRow()],
-        requestRows: [requestRow()],
+        requestRows: [
+          requestRow({
+            offered_price_cents: 99000,
+            offered_pricing_mode: ServicePricingMode.Recurring,
+            offered_recurring_interval: BillingInterval.Monthly,
+          }),
+        ],
         selectableProjects: SELECTABLE,
         canRequest: true,
       }),

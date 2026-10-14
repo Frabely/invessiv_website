@@ -1,4 +1,5 @@
 import { ProjectBillingModel } from "@invessiv/common/constants/crm/project-billing-models";
+import { ProjectFieldLimits } from "@invessiv/common/constants/crm/forms/project-field-limits";
 import { ProjectPhase } from "@invessiv/common/constants/crm/project-phases";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import type { CreateProjectRequestDto } from "@invessiv/common/contracts/crm/create-project-request.dto";
@@ -10,6 +11,13 @@ import type { ProjectProcessPlan } from "@/common/contracts/crm/project-process-
 /** The project editor validates required fields before sending a request. */
 export function validateProjectForm(values: ProjectFormValues) {
   return values.title.trim() ? {} : { title: true };
+}
+
+export function isProjectTitleValid(title: string): boolean {
+  return (
+    title.trim().length > 0 &&
+    title.trim().length <= ProjectFieldLimits.TitleMaxLength
+  );
 }
 
 export function createProjectFormValues(

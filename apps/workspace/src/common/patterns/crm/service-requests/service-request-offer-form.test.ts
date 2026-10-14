@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
+import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
+import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { ServiceRequestStatus } from "@invessiv/common/constants/crm/service-request-statuses";
 import {
   serviceRequestFixture,
@@ -12,6 +14,26 @@ import {
 } from "./service-request-offer-form";
 
 describe("service request offer form", () => {
+  it("captures monthly conditions and requires an interval for recurring offers", () => {
+    const request = serviceRequestFixture();
+    const values = createServiceRequestOfferForm(
+      request,
+      [
+        serviceRequestTemplateFixture({
+          pricingMode: ServicePricingMode.Recurring,
+          recurringInterval: BillingInterval.Monthly,
+        }),
+      ],
+      "de",
+    );
+    expect(toOfferServiceRequest(values, request)).toMatchObject({
+      pricingMode: ServicePricingMode.Recurring,
+      recurringInterval: BillingInterval.Monthly,
+    });
+    expect(
+      toOfferServiceRequest({ ...values, recurringInterval: null }, request),
+    ).toBeNull();
+  });
   it("starts from the catalog price and sends the offered price with the current version", () => {
     const request = serviceRequestFixture({ version: 3 });
     const values = createServiceRequestOfferForm(
@@ -19,11 +41,18 @@ describe("service request offer form", () => {
       [serviceRequestTemplateFixture()],
       "de",
     );
-    expect(values).toEqual({ priceInput: "125", quantityInput: "" });
+    expect(values).toMatchObject({
+      priceInput: "125",
+      quantityInput: "",
+      pricingMode: ServicePricingMode.OneTime,
+      recurringInterval: null,
+    });
     expect(toOfferServiceRequest(values, request)).toEqual({
       to: ServiceRequestStatus.Offered,
       version: 3,
       priceCents: 12500,
+      pricingMode: ServicePricingMode.OneTime,
+      recurringInterval: null,
       minutes: null,
     });
   });

@@ -31,6 +31,8 @@ export function serviceRequestFixture(
     declineReason: null,
     offeredAt: null,
     offeredPriceCents: null,
+    offeredPricingMode: null,
+    offeredRecurringInterval: null,
     offeredMinutes: null,
     decidedAt: null,
     projectId: null,

@@ -59,6 +59,7 @@
       "label": "Note",
       "hint": "Optional: anything we should know for the quote."
     },
+    "retryNotice": "The response did not arrive. Your details are kept for this attempt. Send again to confirm the same request.",
     "nonBinding": "No commitment – you get a quote first.",
     "submit": "Send request",
     "submitting": "Sending …"

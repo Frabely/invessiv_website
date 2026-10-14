@@ -1,5 +1,5 @@
 import "server-only";
-import { projectLineItemAssignmentService } from "@/server/workspace/crm/services/project-line-item-assignment-service";
+import { listLineItemAssignmentProjects } from "@/server/workspace/crm/query-handler/list-line-item-assignment-projects.query-handler";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { can } from "@invessiv/common/patterns/auth/can";
@@ -43,25 +43,16 @@ export async function buildProjectLineItemsViewModel(options: {
 
   // The picker only ever offers active templates, and only catalog readers may receive them.
   // A project-scoped write grant must not disclose the workspace-wide catalog.
-  const [services, assignableTemplates, assignmentBlockersByProjectId] =
-    await Promise.all([
-      listProjectLineItemsByCustomer(customerId, actor),
-      writableProjectIds.length > 0 &&
-      can(actor, Permission.LineItemTemplatesRead)
-        ? listAssignableLineItemTemplates()
-        : Promise.resolve([]),
-      projectLineItemAssignmentService.listBlockers(
-        actor,
-        customerId,
-        writableProjects.map((candidate) => ({
-          id: candidate.id,
-          status: candidate.project?.status ?? null,
-          feedbackRoundPositions:
-            candidate.project?.feedbackRoundPositions ?? [],
-          hasReadableTrack: candidate.project !== null,
-        })),
-      ),
-    ]);
+  const [services, assignableTemplates, assignment] = await Promise.all([
+    listProjectLineItemsByCustomer(customerId, actor),
+    writableProjectIds.length > 0 &&
+    can(actor, Permission.LineItemTemplatesRead)
+      ? listAssignableLineItemTemplates()
+      : Promise.resolve([]),
+    writableProjectIds.length > 0
+      ? listLineItemAssignmentProjects(customerId, actor)
+      : Promise.resolve({ blockers: {} }),
+  ]);
   const valuesByProjectId = Object.fromEntries(
     readableProjectIds.map((projectId) => [
       projectId,
@@ -76,7 +67,7 @@ export async function buildProjectLineItemsViewModel(options: {
     readableProjectIds,
     writableProjectIds,
     assignableTemplates,
-    assignmentBlockersByProjectId,
+    assignmentBlockersByProjectId: assignment.blockers,
     catalogHref,
     customerValue: calculateProjectLineItemValue(services),
     valuesByProjectId,

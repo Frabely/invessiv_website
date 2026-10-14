@@ -8,7 +8,7 @@ import { accessScope } from "@/common/patterns/auth/access-scope";
 import { canOn } from "@/common/patterns/auth/can-on";
 import { crmAccessCondition } from "@/server/workspace/shared/services/crm-access-condition";
 import { projectLineItemAssignmentService } from "../services/project-line-item-assignment-service";
-export async function listServiceRequestAssignmentProjects(
+export async function listLineItemAssignmentProjects(
   customerId: string,
   actor: WorkspaceActor,
 ) {

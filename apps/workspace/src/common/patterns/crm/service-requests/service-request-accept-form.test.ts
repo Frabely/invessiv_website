@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
+import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 import { LineItemProjectMode } from "@invessiv/common/constants/crm/line-item-project-modes";
 import { ServiceRequestProjectWish as Mode } from "@invessiv/common/constants/crm/service-request-project-wishes";
 import { ServiceRequestStatus } from "@invessiv/common/constants/crm/service-request-statuses";
@@ -22,6 +23,80 @@ import {
 import { serviceRequestErrorText } from "./service-request-error-text";
 
 describe("service request acceptance form", () => {
+  it.each([null, serviceRequestFixture().lineItemTemplateId])(
+    "preserves offered conditions when free text or an archived template needs a replacement: %s",
+    (lineItemTemplateId) => {
+      const request = serviceRequestFixture({
+        lineItemTemplateId,
+        status: ServiceRequestStatus.Offered,
+        offeredPriceCents: 99000,
+        offeredPricingMode: ServicePricingMode.Recurring,
+        offeredRecurringInterval: BillingInterval.Monthly,
+      });
+      const vm = serviceRequestsViewModelFixture({ templates: [] });
+      const values = createServiceRequestAcceptForm(request, vm, "de");
+      const selected = applyServiceRequestTemplate(
+        values,
+        serviceRequestTemplateFixture({
+          pricingMode: ServicePricingMode.OneTime,
+          priceCents: 12500,
+        }),
+        "de",
+        request,
+      );
+      expect(
+        toAcceptServiceRequest(selected, request, vm).lineItem,
+      ).toMatchObject({
+        priceCents: 99000,
+        pricingMode: ServicePricingMode.Recurring,
+        recurringInterval: BillingInterval.Monthly,
+      });
+    },
+  );
+  it("keeps the monthly offer after the catalog changes to yearly pricing", () => {
+    const request = serviceRequestFixture({
+      offeredPriceCents: 99000,
+      offeredPricingMode: ServicePricingMode.Recurring,
+      offeredRecurringInterval: BillingInterval.Monthly,
+    });
+    const vm = serviceRequestsViewModelFixture({
+      templates: [
+        serviceRequestTemplateFixture({
+          pricingMode: ServicePricingMode.Recurring,
+          recurringInterval: BillingInterval.Yearly,
+        }),
+      ],
+    });
+    expect(
+      toAcceptServiceRequest(
+        createServiceRequestAcceptForm(request, vm, "en"),
+        request,
+        vm,
+      ).lineItem,
+    ).toMatchObject({
+      priceCents: 99000,
+      pricingMode: ServicePricingMode.Recurring,
+      recurringInterval: BillingInterval.Monthly,
+    });
+  });
+  it.each([160, 161, 200])(
+    "validates a new project title of %i characters while preserving the request title",
+    (length) => {
+      const request = serviceRequestFixture({
+        title: "x".repeat(length),
+        projectWish: Mode.New,
+      });
+      const vm = serviceRequestsViewModelFixture();
+      const values = createServiceRequestAcceptForm(request, vm, "en");
+      expect(values.projectTitle).toBe(request.title);
+      expect(validateServiceRequestAcceptForm(values, request)).toBe(
+        length <= 160,
+      );
+      values.projectTitle = "Short project title";
+      expect(validateServiceRequestAcceptForm(values, request)).toBe(true);
+      expect(request.title).toHaveLength(length);
+    },
+  );
   it("prefills catalog fields and the wished project and carries the current version", () => {
     const request = serviceRequestFixture({ version: 4 });
     const vm = serviceRequestsViewModelFixture();
@@ -206,6 +281,7 @@ describe("service request acceptance form", () => {
       values,
       serviceRequestTemplateFixture({ title: "Replacement" }),
       "en",
+      request,
     );
     expect(selected).toMatchObject({
       title: "Replacement",

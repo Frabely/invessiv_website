@@ -59,6 +59,7 @@
       "label": "Anmerkung",
       "hint": "Optional: alles, was wir für das Angebot wissen sollten."
     },
+    "retryNotice": "Die Antwort ist ausgeblieben. Deine Angaben bleiben f?r diesen Versuch unver?ndert. Sende erneut, um dieselbe Anfrage zu best?tigen.",
     "nonBinding": "Unverbindlich – du bekommst zuerst ein Angebot.",
     "submit": "Anfrage senden",
     "submitting": "Wird gesendet …"

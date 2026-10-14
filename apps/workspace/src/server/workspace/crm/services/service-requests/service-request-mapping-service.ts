@@ -23,6 +23,8 @@ function toDto(
     declineReason: r.decline_reason,
     offeredAt: r.offered_at?.toISOString() ?? null,
     offeredPriceCents: r.offered_price_cents,
+    offeredPricingMode: r.offered_pricing_mode,
+    offeredRecurringInterval: r.offered_recurring_interval,
     offeredMinutes: r.offered_minutes,
     decidedAt: r.decided_at?.toISOString() ?? null,
     projectId: r.project_id,

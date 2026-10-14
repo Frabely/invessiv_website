@@ -75,6 +75,8 @@ export function PortalServiceRequestDialog({
   const [selection, setSelection] = useState(initialSelection);
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
+  const [uncertain, setUncertain] = useState(false);
+  const navigationLocked = sending || uncertain;
   const [withdrawTarget, setWithdrawTarget] =
     useState<PortalServiceRequestDto | null>(null);
   const [withdrawing, setWithdrawing] = useState(false);
@@ -93,7 +95,7 @@ export function PortalServiceRequestDialog({
   const unavailable = selection !== null && !isCustom && service === null;
 
   function select(next: string | null) {
-    if (sending) return;
+    if (navigationLocked) return;
     setSelection(next);
     setSent(false);
     onSelectionChangeAction(next);
@@ -101,7 +103,7 @@ export function PortalServiceRequestDialog({
   }
 
   function showTab(next: Tab) {
-    if (sending) return;
+    if (navigationLocked) return;
     setTab(next);
     setWithdrawError(null);
     setStep((current) => current + 1);
@@ -158,7 +160,7 @@ export function PortalServiceRequestDialog({
 
   return (
     <Dialog
-      busy={sending}
+      busy={navigationLocked}
       closeLabel={content.dialog.close}
       description={content.dialog.intro}
       onCloseAction={onCloseAction}
@@ -169,7 +171,7 @@ export function PortalServiceRequestDialog({
         <TabList
           activeValue={tab}
           ariaLabel={content.dialog.tabsLabel}
-          disabled={sending}
+          disabled={navigationLocked}
           items={[
             {
               value: Tab.Request,
@@ -247,6 +249,7 @@ export function PortalServiceRequestDialog({
               key={selection}
               onBackAction={() => select(null)}
               onBusyChangeAction={setSending}
+              onUncertainChangeAction={setUncertain}
               onSentAction={(title) => {
                 setSent(true);
                 setStep((current) => current + 1);

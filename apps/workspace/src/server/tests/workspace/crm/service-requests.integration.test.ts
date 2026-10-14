@@ -12,6 +12,15 @@ import { ProjectLineItemStatus } from "@invessiv/common/constants/crm/project-li
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
+import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
+import { getCustomerCockpitById } from "@/server/workspace/crm/query-handler/get-customer-cockpit-by-id.query-handler";
+import { listCockpitProjectsByCustomer } from "@/server/workspace/crm/query-handler/list-projects-by-customer.query-handler";
+import { buildServiceRequestsViewModel } from "@/lib/workspace/crm/service-requests-view-model";
+import { buildProjectLineItemsViewModel } from "@/lib/workspace/crm/project-line-items-view-model";
+import {
+  createServiceRequestAcceptForm,
+  toAcceptServiceRequest,
+} from "@/common/patterns/crm/service-requests/service-request-accept-form";
 import { SystemMessageKey } from "@invessiv/common/constants/crm/system-message-keys";
 import type { AcceptServiceRequestRequestDto } from "@invessiv/common/contracts/crm/service-requests/accept-service-request-request.dto";
 import {
@@ -45,7 +54,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
     const f = createFeedbackIntegrationFixture();
     const newTemplateTitle = `integration:service-requests:${f.customerId}:template`;
     const templateIds: string[] = [];
-    const allPermissions = [
+    const allPermissions: Permission[] = [
       Permission.ServiceRequestsRead,
       Permission.ServiceRequestsWrite,
       Permission.ProjectsRead,
@@ -56,7 +65,17 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       Permission.HoursManage,
     ];
     const offer = (priceCents = 10000, minutes: number | null = null) =>
-      ({ to: S.Offered, version: 1, priceCents, minutes }) as const;
+      ({
+        to: S.Offered,
+        version: 1,
+        priceCents,
+        minutes,
+        pricingMode:
+          minutes === null
+            ? ServicePricingMode.OneTime
+            : ServicePricingMode.Rate,
+        recurringInterval: null,
+      }) as const;
     const actor = (permissions = allPermissions) => f.member(permissions);
     const reader = () =>
       f.actor({
@@ -215,6 +234,165 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       await f.cleanup();
     }, 60_000);
 
+    it.each([false, true])(
+      "allows standalone request actions through a minimal customer container, scoped: %s",
+      async (scoped) => {
+        const rights = [
+          Permission.ServiceRequestsRead,
+          Permission.ServiceRequestsWrite,
+        ];
+        const member = scoped
+          ? f.actor({
+              permissions: new Set(),
+              customerPermissions: new Map([[f.customerId, new Set(rights)]]),
+            })
+          : actor(rights);
+        const id = await request();
+        expect(
+          await getCustomerCockpitById(f.customerId, member),
+        ).toMatchObject({
+          id: f.customerId,
+          ownerDisplayName: null,
+          primaryContactName: null,
+          primaryContactEmail: null,
+        });
+        const vm = await buildServiceRequestsViewModel(
+          member,
+          f.customerId,
+          "en",
+          id,
+        );
+        expect(vm).toMatchObject({
+          canWrite: true,
+          selectedRequestId: id,
+          projects: [],
+          templates: [],
+        });
+        expect(
+          await changeServiceRequestStatus(id, offer(), member),
+        ).toMatchObject({ ok: true });
+        expect(
+          await changeServiceRequestStatus(
+            id,
+            { to: S.Declined, version: 2, reason: "No capacity" },
+            member,
+          ),
+        ).toMatchObject({ ok: true });
+        if (scoped)
+          expect(
+            await getCustomerCockpitById(f.foreignCustomerId, member),
+          ).toBeNull();
+        expect(
+          await getCustomerCockpitById(f.customerId, actor([])),
+        ).toBeNull();
+      },
+    );
+    it("gives both assignment previews the same track access without projects.read", async () => {
+      const projectId = await f.project();
+      const member = actor([
+        Permission.ServiceRequestsRead,
+        Permission.ServiceRequestsWrite,
+        Permission.ProjectLineItemsRead,
+        Permission.ProjectLineItemsWrite,
+        Permission.ProjectsWrite,
+        Permission.LineItemTemplatesRead,
+      ]);
+      const id = await request({
+        line_item_template_id: round,
+        kind: Kind.FeedbackRound,
+        project_wish: Mode.Existing,
+        requested_project_id: projectId,
+      });
+      const cockpitProjects = await listCockpitProjectsByCustomer(
+        f.customerId,
+        member,
+      );
+      expect(
+        cockpitProjects.find((p) => p.id === projectId)?.project,
+      ).toBeNull();
+      const items = await buildProjectLineItemsViewModel({
+        actor: member,
+        customerId: f.customerId,
+        catalogHref: null,
+        projects: cockpitProjects,
+      });
+      const requests = await buildServiceRequestsViewModel(
+        member,
+        f.customerId,
+        "en",
+        id,
+      );
+      expect(
+        items?.assignmentBlockersByProjectId[projectId].feedbackRound,
+      ).toBeNull();
+      expect(requests?.blockers[projectId].feedbackRound).toBeNull();
+      expect(
+        await changeServiceRequestStatus(
+          id,
+          { to: S.Declined, version: 1, reason: "Preview checked" },
+          member,
+        ),
+      ).toMatchObject({ ok: true });
+    });
+    it("books captured monthly offer conditions after the catalog changes to yearly", async () => {
+      const templateId = await template(Kind.Standard);
+      const id = await request({
+        line_item_template_id: templateId,
+        title: "Captured monthly offer",
+      });
+      const sent = await changeServiceRequestStatus(
+        id,
+        {
+          ...offer(99000),
+          pricingMode: ServicePricingMode.Recurring,
+          recurringInterval: BillingInterval.Monthly,
+        },
+        actor(),
+      );
+      expect(sent).toMatchObject({
+        ok: true,
+        request: {
+          offeredPriceCents: 99000,
+          offeredPricingMode: ServicePricingMode.Recurring,
+          offeredRecurringInterval: BillingInterval.Monthly,
+        },
+      });
+      await f
+        .database()
+        .update(lineItemTemplates)
+        .set({
+          pricing_mode: ServicePricingMode.Recurring,
+          recurring_interval: BillingInterval.Yearly,
+          price_cents: 12500,
+        })
+        .where(eq(lineItemTemplates.id, templateId));
+      const vm = await buildServiceRequestsViewModel(
+        actor(),
+        f.customerId,
+        "en",
+        id,
+      );
+      if (!vm || !sent.ok) throw new Error("Offer fixture unavailable");
+      const form = createServiceRequestAcceptForm(sent.request, vm, "en");
+      form.projectId = f.projectId;
+      const result = await acceptServiceRequest(
+        id,
+        toAcceptServiceRequest(form, sent.request, vm),
+        actor(),
+      );
+      expect(result).toMatchObject({ ok: true });
+      const accepted = await row(id);
+      const [item] = await f
+        .database()
+        .select()
+        .from(projectLineItems)
+        .where(eq(projectLineItems.id, accepted.project_line_item_id!));
+      expect(item).toMatchObject({
+        price_cents: 99000,
+        pricing_mode: ServicePricingMode.Recurring,
+        recurring_interval: BillingInterval.Monthly,
+      });
+    });
     it("scopes inbox, customer list and counter independently of project read access", async () => {
       const id = await request({
         project_wish: Mode.Existing,
@@ -324,7 +502,15 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
           conversations,
           eq(conversations.id, messages.conversation_id),
         )
-        .where(eq(conversations.customer_id, f.customerId));
+        .where(
+          and(
+            eq(conversations.customer_id, f.customerId),
+            eq(messages.body, SystemMessageKey.ServiceRequestAccepted),
+            eq(messages.metadata, {
+              serviceTitle: "Private requested service",
+            }),
+          ),
+        );
       expect(
         notices.filter(
           (n) => n.key === SystemMessageKey.ServiceRequestAccepted,

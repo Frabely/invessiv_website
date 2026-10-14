@@ -320,7 +320,7 @@ describe("PortalServiceRequestDialog", () => {
     expect(onChanged).toHaveBeenCalledTimes(1);
   });
 
-  it("unlocks a failed send and retries with the same idempotency key", async () => {
+  it("keeps an uncertain attempt locked and retries its unchanged payload", async () => {
     api.createRequest.mockResolvedValueOnce({
       ok: false,
       code: PortalServiceRequestErrorCode.Internal,
@@ -337,18 +337,79 @@ describe("PortalServiceRequestDialog", () => {
     );
     expect(
       screen.getByRole("button", { name: content.form.back }),
-    ).toBeEnabled();
+    ).toBeDisabled();
     expect(
       screen.getByRole("tab", { name: content.dialog.tabs.mineName }),
-    ).toBeEnabled();
+    ).toBeDisabled();
     expect(
       screen.getByRole("button", { name: content.dialog.close }),
-    ).toBeEnabled();
+    ).toBeDisabled();
     const firstKey = api.createRequest.mock.calls[0]![1].idempotencyKey;
 
     send();
     expect(await screen.findByText(content.sent.title)).toBeInTheDocument();
     expect(api.createRequest.mock.calls[1]![1].idempotencyKey).toBe(firstKey);
+  });
+  it("refuses edited hours after a lost response and confirms the original attempt", async () => {
+    api.createRequest.mockResolvedValueOnce({
+      ok: false,
+      code: PortalServiceRequestErrorCode.Internal,
+    });
+    api.createRequest.mockResolvedValueOnce({ ok: true, value: true });
+    renderDialog(services(), {
+      initialSelection: HOURS.id,
+      selectedProjectId: "project-a",
+    });
+    fireEvent.click(screen.getByRole("button", { name: "5 Stunden" }));
+    send();
+    await screen.findByRole("alert");
+    const hours = screen.getByRole("spinbutton");
+    expect(hours).toBeDisabled();
+    fireEvent.change(hours, { target: { value: "10" } });
+    fireEvent.click(screen.getByRole("button", { name: "10 Stunden" }));
+    send();
+    await screen.findByText(content.sent.title);
+    expect(api.createRequest.mock.calls[0]![1]).toMatchObject({
+      requestedMinutes: 300,
+    });
+    expect(api.createRequest.mock.calls[1]![1]).toEqual(
+      api.createRequest.mock.calls[0]![1],
+    );
+  });
+  it("announces the original free-text title after an uncertain retry", async () => {
+    api.createRequest.mockResolvedValueOnce({
+      ok: false,
+      code: PortalServiceRequestErrorCode.Internal,
+    });
+    api.createRequest.mockResolvedValueOnce({ ok: true, value: true });
+    renderDialog(services(), {
+      initialSelection: PORTAL_SERVICE_REQUEST_CUSTOM,
+    });
+    const title = screen.getByRole("textbox", {
+      name: new RegExp(content.form.title.label),
+    });
+    fireEvent.change(title, { target: { value: "Original request" } });
+    fireEvent.change(
+      screen.getByRole("textbox", {
+        name: new RegExp(content.form.description.label),
+      }),
+      { target: { value: "Original scope" } },
+    );
+    fireEvent.click(
+      screen.getByRole("radio", { name: content.form.project.new }),
+    );
+    send();
+    await screen.findByRole("alert");
+    expect(title).toBeDisabled();
+    fireEvent.change(title, { target: { value: "Changed request" } });
+    send();
+    await screen.findByText(content.sent.title);
+    expect(api.createRequest.mock.calls[1]![1]).toEqual(
+      api.createRequest.mock.calls[0]![1],
+    );
+    expect(onChanged).toHaveBeenCalledWith(
+      expect.stringContaining("Original request"),
+    );
   });
 
   it("ignores a late success after external navigation unmounts the form", async () => {

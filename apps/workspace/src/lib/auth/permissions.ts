@@ -70,7 +70,8 @@ export async function requireWorkspaceArea(
     area === WorkspaceArea.Crm
       ? canAnywhere(actor, Permission.CustomersRead) ||
         canAnywhere(actor, Permission.ProjectsRead) ||
-        canAnywhere(actor, Permission.ProjectLineItemsRead)
+        canAnywhere(actor, Permission.ProjectLineItemsRead) ||
+        canAnywhere(actor, Permission.ServiceRequestsRead)
       : can(actor, WORKSPACE_AREA_PERMISSIONS[area]);
 
   if (!permitted) {

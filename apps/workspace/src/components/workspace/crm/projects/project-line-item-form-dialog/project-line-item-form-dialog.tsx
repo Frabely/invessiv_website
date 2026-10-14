@@ -5,10 +5,7 @@ import type { LineItemFieldsFormValues } from "@/common/contracts/crm/line-item-
 import { type SubmitEvent, useId, useRef, useState } from "react";
 import Link from "next/link";
 
-import {
-  PROJECT_LINE_ITEM_STATUS_VALUES,
-  ProjectLineItemStatus,
-} from "@invessiv/common/constants/crm/project-line-item-statuses";
+import { ProjectLineItemStatus } from "@invessiv/common/constants/crm/project-line-item-statuses";
 import type { ProjectLineItemErrorCode } from "@invessiv/common/constants/crm/errors/project-line-item-error-codes";
 import { ProjectLineItemFieldLimits } from "@invessiv/common/constants/crm/forms/project-line-item-field-limits";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
@@ -49,6 +46,7 @@ import { LineItemIdentityFields } from "@/components/workspace/crm/shared/line-i
 import { LineItemPricingFields } from "@/components/workspace/crm/shared/line-item-pricing-fields/line-item-pricing-fields";
 import { LineItemFormMessages } from "@/components/workspace/crm/shared/line-item-form-messages/line-item-form-messages";
 import layout from "@/components/workspace/crm/shared/line-item-form-layout/line-item-form-layout.module.css";
+import { LineItemStatusField } from "@/components/workspace/crm/shared/line-item-status-field/line-item-status-field";
 import styles from "./project-line-item-form-dialog.module.css";
 
 type ProjectLineItemFormDialogProps = {
@@ -308,26 +306,11 @@ export function ProjectLineItemFormDialog({
                     }
                   />
                   {automated ? null : (
-                    <FormField
-                      kind={FormFieldKind.Custom}
+                    <LineItemStatusField
                       label={content.form.fields.status}
-                      renderControl={({ describedBy, id, invalid }) => (
-                        <CustomSelect
-                          describedBy={describedBy}
-                          id={id}
-                          invalid={invalid}
-                          onChange={(next) =>
-                            update("status", next as ProjectLineItemStatus)
-                          }
-                          options={PROJECT_LINE_ITEM_STATUS_VALUES.map(
-                            (status) => ({
-                              label: content.list.status[status],
-                              value: status,
-                            }),
-                          )}
-                          value={values.status ?? ProjectLineItemStatus.Planned}
-                        />
-                      )}
+                      labels={content.list.status}
+                      value={values.status ?? ProjectLineItemStatus.Planned}
+                      onChangeAction={(next) => update("status", next)}
                     />
                   )}
                 </>

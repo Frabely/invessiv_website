@@ -1,19 +1,9 @@
 "use client";
 import { useId, useRef, useState, type SubmitEvent } from "react";
-import {
-  CheckboxControl,
-  FormDialog,
-  FormField,
-  CustomSelect,
-} from "@invessiv/ui";
+import { CheckboxControl, FormDialog } from "@invessiv/ui";
 import { DialogSize } from "@invessiv/common/constants/ui/dialog-sizes";
-import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
 import { ProjectLineItemFieldLimits } from "@invessiv/common/constants/crm/forms/project-line-item-field-limits";
-import {
-  PROJECT_LINE_ITEM_STATUS_VALUES,
-  ProjectLineItemStatus,
-} from "@invessiv/common/constants/crm/project-line-item-statuses";
 import { ServiceRequestProjectWish as Mode } from "@invessiv/common/constants/crm/service-request-project-wishes";
 import { isServiceRequestWithoutOffer } from "@invessiv/common/patterns/crm/service-request-state";
 import type { ServiceRequestErrorCode } from "@invessiv/common/constants/crm/errors/service-request-error-codes";
@@ -39,6 +29,7 @@ import { validateLineItemFieldsForm } from "@/common/patterns/crm/line-item-fiel
 import { resolveProjectLineItemFormBlocker } from "@/common/patterns/crm/project-line-item-form";
 import { serviceRequestsApiService } from "@/client/crm/service-requests-api-service";
 import { useVersionedMutation } from "@/hooks/workspace/use-versioned-mutation";
+import { useFocusFirstInvalidField } from "@/hooks/shared/use-focus-first-invalid-field";
 import { LineItemIdentityFields } from "@/components/workspace/crm/shared/line-item-identity-fields/line-item-identity-fields";
 import { LineItemPricingFields } from "@/components/workspace/crm/shared/line-item-pricing-fields/line-item-pricing-fields";
 import { LineItemFormMessages } from "@/components/workspace/crm/shared/line-item-form-messages/line-item-form-messages";
@@ -49,6 +40,7 @@ import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
 import layout from "@/components/workspace/crm/shared/line-item-form-layout/line-item-form-layout.module.css";
 import { ServiceRequestProjectFields } from "../service-request-project-fields/service-request-project-fields";
 import { ServiceRequestTemplateFields } from "../service-request-template-fields/service-request-template-fields";
+import { LineItemStatusField } from "@/components/workspace/crm/shared/line-item-status-field/line-item-status-field";
 import styles from "./service-request-accept-dialog.module.css";
 
 export type ServiceRequestAcceptDialogProps = {
@@ -70,6 +62,7 @@ export function ServiceRequestAcceptDialog({
 }: ServiceRequestAcceptDialogProps) {
   const formId = useId();
   const titleRef = useRef<HTMLInputElement>(null);
+  const { formRef, focusFirstInvalidField } = useFocusFirstInvalidField();
   const [values, setValues] = useState(() =>
     createServiceRequestAcceptForm(request, viewModel, locale),
   );
@@ -106,7 +99,12 @@ export function ServiceRequestAcceptDialog({
     const template = templates.find((t) => t.id === id);
     if (template)
       setValues((current) =>
-        applyServiceRequestTemplate(current, template, locale),
+        applyServiceRequestTemplate(
+          current,
+          template,
+          locale,
+          mutation.current,
+        ),
       );
   }
   async function submit(event: SubmitEvent<HTMLFormElement>) {
@@ -114,7 +112,7 @@ export function ServiceRequestAcceptDialog({
     if (mutation.isSubmitting || blocker || unconfirmed) return;
     if (!validateServiceRequestAcceptForm(values, mutation.current)) {
       setInvalid(true);
-      titleRef.current?.focus();
+      focusFirstInvalidField();
       return;
     }
     setInvalid(false);
@@ -167,7 +165,13 @@ export function ServiceRequestAcceptDialog({
       }
       footerHint={content.form.required}
     >
-      <form className={layout.form} id={formId} onSubmit={submit} noValidate>
+      <form
+        className={layout.form}
+        id={formId}
+        onSubmit={submit}
+        noValidate
+        ref={formRef}
+      >
         <section aria-label={content.form.request} className={styles.request}>
           <ServiceRequestDetails
             request={mutation.current}
@@ -195,6 +199,11 @@ export function ServiceRequestAcceptDialog({
         ) : (
           <div className={styles.notice}>
             <p className={styles.noticeText}>{content.form.offeredNotice}</p>
+            {mutation.current.offeredPricingMode === null ? (
+              <p className={styles.noticeText}>
+                {content.form.legacyOfferNotice}
+              </p>
+            ) : null}
           </div>
         )}
         <ServiceRequestProjectFields
@@ -203,6 +212,7 @@ export function ServiceRequestAcceptDialog({
           content={content}
           values={values}
           unavailable={noProject}
+          invalid={invalid}
           onChangeAction={(patch) =>
             setValues((current) => ({ ...current, ...patch }))
           }
@@ -246,23 +256,11 @@ export function ServiceRequestAcceptDialog({
             pricingDisabled={request.kind !== LineItemKind.Standard}
           />
           {request.kind === LineItemKind.Standard ? (
-            <FormField
-              kind={FormFieldKind.Custom}
+            <LineItemStatusField
               label={sharedContent.form.fields.status}
-              renderControl={({ id, describedBy }) => (
-                <CustomSelect
-                  id={id}
-                  describedBy={describedBy}
-                  value={values.status}
-                  onChange={(next) =>
-                    update("status", next as ProjectLineItemStatus)
-                  }
-                  options={PROJECT_LINE_ITEM_STATUS_VALUES.map((status) => ({
-                    value: status,
-                    label: sharedContent.list.status[status],
-                  }))}
-                />
-              )}
+              labels={sharedContent.list.status}
+              value={values.status}
+              onChangeAction={(next) => update("status", next)}
             />
           ) : null}
         </div>

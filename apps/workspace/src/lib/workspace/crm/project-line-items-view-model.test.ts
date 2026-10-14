@@ -11,7 +11,7 @@ import { buildProjectLineItemsViewModel } from "./project-line-items-view-model"
 
 vi.mock("server-only", () => ({}));
 
-const DB = vi.hoisted(() => ({}));
+const DB = vi.hoisted(() => ({ select: vi.fn() }));
 const mocks = vi.hoisted(() => ({
   listProjectLineItemsByCustomer: vi.fn(),
   listAssignableLineItemTemplates: vi.fn(),
@@ -77,6 +77,20 @@ function actor(permissions: Permission[]): WorkspaceActor {
 
 describe("buildProjectLineItemsViewModel", () => {
   beforeEach(() => {
+    DB.select.mockReturnValue({
+      from: () => ({
+        where: () => ({
+          orderBy: async () => [
+            {
+              id: PROJECT_ID,
+              title: project.title,
+              status: project.status,
+              feedbackRoundPositions: [],
+            },
+          ],
+        }),
+      }),
+    });
     mocks.listProjectLineItemsByCustomer.mockReset().mockResolvedValue([]);
     mocks.listAssignableLineItemTemplates.mockReset().mockResolvedValue([]);
     mocks.listExtraFeedbackRoundBlockers
@@ -160,6 +174,20 @@ describe("buildProjectLineItemsViewModel", () => {
   });
 
   it("passes on an approved project and a closed one as blockers", async () => {
+    DB.select.mockReturnValue({
+      from: () => ({
+        where: () => ({
+          orderBy: async () => [
+            {
+              id: PROJECT_ID,
+              title: project.title,
+              status: ProjectStatus.Archived,
+              feedbackRoundPositions: [],
+            },
+          ],
+        }),
+      }),
+    });
     mocks.listExtraFeedbackRoundBlockers.mockResolvedValue(
       new Map([[PROJECT_ID, "project_approved"]]),
     );
@@ -215,7 +243,10 @@ describe("buildProjectLineItemsViewModel", () => {
     });
   });
 
-  it("does not inspect a hidden process track even with project write access", async () => {
+  it("loads only the assignment track even without project read access", async () => {
+    mocks.listExtraFeedbackRoundBlockers.mockResolvedValue(
+      new Map([[PROJECT_ID, null]]),
+    );
     const result = await buildProjectLineItemsViewModel({
       actor: actor([
         Permission.ProjectLineItemsRead,
@@ -228,11 +259,13 @@ describe("buildProjectLineItemsViewModel", () => {
       projects: [{ id: project.id, title: project.title, project: null }],
     });
 
-    expect(mocks.listExtraFeedbackRoundBlockers).toHaveBeenCalledWith(DB, []);
+    expect(mocks.listExtraFeedbackRoundBlockers).toHaveBeenCalledWith(DB, [
+      { id: PROJECT_ID, positions: [] },
+    ]);
     expect(result?.assignmentBlockersByProjectId).toEqual({
       [PROJECT_ID]: {
         hours: null,
-        feedbackRound: "missing_project_permission",
+        feedbackRound: null,
       },
     });
   });

@@ -2,6 +2,7 @@ import "server-only";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { ServiceRequestErrorCode as E } from "@invessiv/common/constants/crm/errors/service-request-error-codes";
 import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
+import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { ServiceRequestStatus as S } from "@invessiv/common/constants/crm/service-request-statuses";
 import { ServiceRequestTransitionSide } from "@invessiv/common/constants/crm/service-request-transition-sides";
 import type { ChangeServiceRequestStatusRequestDto } from "@invessiv/common/contracts/crm/service-requests/change-service-request-status-request.dto";
@@ -15,6 +16,20 @@ import { updateLockedVersioned } from "@/server/workspace/shared/update-versione
 import { versionConflict } from "@/server/workspace/shared/version-conflict";
 import { serviceRequestAccessService as access } from "../services/service-requests/service-request-access-service";
 import { serviceRequestSchemas } from "../services/service-requests/service-request-schemas";
+
+function isOfferPricingValid(
+  kind: LineItemKind,
+  pricingMode: ServicePricingMode,
+): boolean {
+  switch (kind) {
+    case LineItemKind.Hours:
+      return pricingMode === ServicePricingMode.Rate;
+    case LineItemKind.FeedbackRound:
+      return pricingMode === ServicePricingMode.OneTime;
+    default:
+      return true;
+  }
+}
 
 export async function changeServiceRequestStatus(
   id: string,
@@ -55,12 +70,19 @@ export async function changeServiceRequestStatus(
       decided_at: new Date(),
       decided_by_member_id: actor.workspaceMemberId,
     };
+    if (
+      data.to === S.Offered &&
+      !isOfferPricingValid(request.kind, data.pricingMode)
+    )
+      return { ok: false, code: E.ValidationError };
     const patch =
       data.to === S.Offered
         ? {
             status: S.Offered,
             offered_at: new Date(),
             offered_price_cents: data.priceCents,
+            offered_pricing_mode: data.pricingMode,
+            offered_recurring_interval: data.recurringInterval,
             offered_minutes: data.minutes,
           }
         : data.to === S.Declined

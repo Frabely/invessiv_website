@@ -2,6 +2,8 @@ import { randomUUID } from "node:crypto";
 import type { CredentialSmokeContext } from "./credential-checks";
 import { ServiceRequestsConstraintName as C } from "@invessiv/db/constraint-names/crm/service-requests-constraint-names";
 import { ServiceRequestFieldLimits } from "@invessiv/common/constants/crm/forms/service-request-field-limits";
+import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
+import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 
 /** Dedicated invalid-write smoke; all SQL below belongs to disposable fixture setup/checks. */
 export async function runServiceRequestChecks(context: CredentialSmokeContext) {
@@ -38,6 +40,8 @@ export async function runServiceRequestChecks(context: CredentialSmokeContext) {
     status: "requested",
     decline_reason: null as string | null,
     offered_price_cents: null as number | null,
+    offered_pricing_mode: null as ServicePricingMode | null,
+    offered_recurring_interval: null as BillingInterval | null,
     offered_minutes: null as number | null,
     decided_by_member_id: null as string | null,
     project_id: null as string | null,
@@ -123,6 +127,33 @@ export async function runServiceRequestChecks(context: CredentialSmokeContext) {
     "request rejects a negative offered price",
     () => insert({ status: "offered", offered_price_cents: -1 }),
     C.OfferedPriceCheck,
+  );
+  await expectAccepted("request captures monthly offer conditions", () =>
+    insert({
+      status: "offered",
+      offered_price_cents: 99000,
+      offered_pricing_mode: ServicePricingMode.Recurring,
+      offered_recurring_interval: BillingInterval.Monthly,
+    }),
+  );
+  await expectRejected(
+    "recurring offer requires an interval",
+    () => insert({ offered_pricing_mode: ServicePricingMode.Recurring }),
+    C.OfferedPricingPairCheck,
+  );
+  await expectRejected(
+    "one-time offer refuses an interval",
+    () =>
+      insert({
+        offered_pricing_mode: ServicePricingMode.OneTime,
+        offered_recurring_interval: BillingInterval.Yearly,
+      }),
+    C.OfferedPricingPairCheck,
+  );
+  await expectRejected(
+    "an interval without a pricing mode is rejected",
+    () => insert({ offered_recurring_interval: BillingInterval.Monthly }),
+    C.OfferedPricingPairCheck,
   );
   await expectRejected(
     "request refuses offered hours on a standard service",

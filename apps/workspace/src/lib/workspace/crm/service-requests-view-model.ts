@@ -9,7 +9,7 @@ import type { Locale } from "@/config/i18n";
 import { getCrmCockpitDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { listCustomerServiceRequests } from "@/server/workspace/crm/query-handler/list-customer-service-requests.query-handler";
 import { listAssignableLineItemTemplates } from "@/server/workspace/crm/query-handler/list-assignable-line-item-templates.query-handler";
-import { listServiceRequestAssignmentProjects } from "@/server/workspace/crm/query-handler/list-service-request-assignment-projects.query-handler";
+import { listLineItemAssignmentProjects } from "@/server/workspace/crm/query-handler/list-line-item-assignment-projects.query-handler";
 export async function buildServiceRequestsViewModel(
   actor: WorkspaceActor,
   customerId: string,
@@ -29,7 +29,7 @@ export async function buildServiceRequestsViewModel(
       ? listAssignableLineItemTemplates()
       : Promise.resolve([]),
     canWrite
-      ? listServiceRequestAssignmentProjects(customerId, actor)
+      ? listLineItemAssignmentProjects(customerId, actor)
       : Promise.resolve({ projects: [], blockers: {} }),
   ]);
   const phases = getCrmCockpitDictionary(locale).projects.phases;

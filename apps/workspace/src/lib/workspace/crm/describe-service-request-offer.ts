@@ -1,4 +1,6 @@
 import type { ServiceRequestDto } from "@invessiv/common/contracts/crm/service-requests/service-request.dto";
+import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
+import { getCrmProjectLineItemsDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import type { Locale } from "@/config/i18n";
@@ -21,6 +23,23 @@ export function describeServiceRequestOffer(
   if (request.offeredPriceCents === null)
     return formatMessage(content.details.offeredPlain, { date });
   const amount = formatEuroCents(request.offeredPriceCents, locale);
+  const pricing = getCrmProjectLineItemsDictionary(locale);
+  if (request.offeredMinutes === null && request.offeredPricingMode !== null) {
+    if (
+      request.offeredPricingMode === ServicePricingMode.Recurring &&
+      request.offeredRecurringInterval !== null
+    )
+      return formatMessage(content.details.offeredRecurring, {
+        date,
+        amount,
+        interval: pricing.form.interval[request.offeredRecurringInterval],
+      });
+    return formatMessage(content.details.offeredPriced, {
+      date,
+      amount,
+      mode: pricing.list.pricingMode[request.offeredPricingMode],
+    });
+  }
   return request.offeredMinutes !== null
     ? formatMessage(content.details.offeredHours, {
         date,

@@ -1,3 +1,5 @@
+import { HttpHeaderName } from "@invessiv/common/constants/http/http-header-names";
+import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import { randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { expect, test } from "@playwright/test";
@@ -54,11 +56,11 @@ test("lets a contact request services, follow and withdraw them, isolated by com
   try {
     expect(
       (await anonymous.request.post(endpoint, { data: freeText })).status(),
-    ).toBe(401);
+    ).toBe(HttpResponseCode.Unauthorized);
     // No request right on this company: the same answer as for a company that does not exist.
     expect(
       (await other.request.post(endpoint, { data: freeText })).status(),
-    ).toBe(404);
+    ).toBe(HttpResponseCode.NotFound);
     // A project of another company is rejected without confirming that it exists.
     const foreignProject = await other.request.post(
       portalServiceRequestsEndpoint(fixture.hoursOtherCustomer),
@@ -71,8 +73,10 @@ test("lets a contact request services, follow and withdraw them, isolated by com
         },
       },
     );
-    expect(foreignProject.status()).toBe(422);
-    expect(foreignProject.headers()["cache-control"]).toContain("no-store");
+    expect(foreignProject.status()).toBe(HttpResponseCode.UnprocessableContent);
+    expect(foreignProject.headers()[HttpHeaderName.CacheControl]).toContain(
+      "no-store",
+    );
 
     const page = await contact.newPage();
     await page.goto(portalPathFor("de", fixture.hoursCustomer));

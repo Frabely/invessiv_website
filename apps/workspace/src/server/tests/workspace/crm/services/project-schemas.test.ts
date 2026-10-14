@@ -29,6 +29,16 @@ const accepts = (feedbackRoundPositions: unknown) =>
     .success;
 
 describe("projectSchemas feedback rounds", () => {
+  it.each([160, 161, 200])(
+    "enforces the project title boundary for %i characters",
+    (length) => {
+      expect(
+        projectSchemas.create.safeParse(
+          createInput({ title: "x".repeat(length) }),
+        ).success,
+      ).toBe(length <= 160);
+    },
+  );
   it("accepts no rounds, rounds at the start, in several gaps and at the end", () => {
     expect(accepts([])).toBe(true);
     expect(accepts([0])).toBe(true);

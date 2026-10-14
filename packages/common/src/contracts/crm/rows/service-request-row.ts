@@ -1,6 +1,8 @@
 import type { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
 import type { ServiceRequestStatus } from "@invessiv/common/constants/crm/service-request-statuses";
 import type { ServiceRequestProjectWish } from "@invessiv/common/constants/crm/service-request-project-wishes";
+import type { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
+import type { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 export interface ServiceRequestRow {
   id: string;
   customer_id: string;
@@ -16,6 +18,10 @@ export interface ServiceRequestRow {
   decline_reason: string | null;
   offered_at: Date | null;
   offered_price_cents: number | null;
+  /** Captured offer pricing mode; null before an offer and for legacy offers. */
+  offered_pricing_mode: ServicePricingMode | null;
+  /** Captured recurring interval, otherwise null. */
+  offered_recurring_interval: BillingInterval | null;
   offered_minutes: number | null;
   decided_at: Date | null;
   decided_by_member_id: string | null;

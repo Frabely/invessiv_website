@@ -1,5 +1,10 @@
 import { sql } from "drizzle-orm";
 import {
+  SERVICE_PRICING_MODE_VALUES,
+  ServicePricingMode,
+} from "@invessiv/common/constants/crm/service-pricing-modes";
+import { BILLING_INTERVAL_VALUES } from "@invessiv/common/constants/crm/billing-intervals";
+import {
   check,
   foreignKey,
   index,
@@ -57,6 +62,12 @@ export const serviceRequests = pgTable(
     decline_reason: text("decline_reason"),
     offered_at: timestamp("offered_at", { withTimezone: true }),
     offered_price_cents: integer("offered_price_cents"),
+    offered_pricing_mode: text("offered_pricing_mode", {
+      enum: SERVICE_PRICING_MODE_VALUES,
+    }),
+    offered_recurring_interval: text("offered_recurring_interval", {
+      enum: BILLING_INTERVAL_VALUES,
+    }),
     offered_minutes: integer("offered_minutes"),
     decided_at: timestamp("decided_at", { withTimezone: true }),
     decided_by_member_id: uuid("decided_by_member_id").references(
@@ -140,6 +151,18 @@ export const serviceRequests = pgTable(
       sql`${t.offered_minutes} is null or (${t.kind} = ${LineItemKind.Hours} and ${t.offered_minutes} > 0 and ${t.offered_minutes} % ${sql.raw(String(HoursLimits.StepMinutes))} = 0 and ${t.offered_minutes} <= ${sql.raw(String(HoursLimits.MaxLedgerMinutes))})`,
     ),
     uniqueIndex(C.IdempotencyUnique).on(t.idempotency_key),
+    check(
+      C.OfferedPricingModeCheck,
+      sql`${t.offered_pricing_mode} is null or ${sqlCheckIn(t.offered_pricing_mode, SERVICE_PRICING_MODE_VALUES)}`,
+    ),
+    check(
+      C.OfferedIntervalCheck,
+      sql`${t.offered_recurring_interval} is null or ${sqlCheckIn(t.offered_recurring_interval, BILLING_INTERVAL_VALUES)}`,
+    ),
+    check(
+      C.OfferedPricingPairCheck,
+      sql`(${t.offered_pricing_mode} is null and ${t.offered_recurring_interval} is null) or (${t.offered_pricing_mode} is not null and (${t.offered_pricing_mode} = ${ServicePricingMode.Recurring}) = (${t.offered_recurring_interval} is not null))`,
+    ),
     index(C.CustomerCreatedIndex).on(t.customer_id, t.created_at.desc()),
     index(C.StatusCreatedIndex).on(t.status, t.created_at.desc()),
   ],

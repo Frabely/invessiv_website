@@ -1,3 +1,4 @@
+import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ServiceRequestStatus as S } from "@invessiv/common/constants/crm/service-request-statuses";
 import {
@@ -20,6 +21,8 @@ function response(status: number, payload: unknown) {
 afterEach(() => vi.unstubAllGlobals());
 const OFFER = {
   to: S.Offered,
+  pricingMode: ServicePricingMode.OneTime,
+  recurringInterval: null,
   version: 1,
   priceCents: 12500,
   minutes: null,

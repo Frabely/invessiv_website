@@ -8,6 +8,7 @@ import {
   waitFor,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { ServiceRequestStatus as S } from "@invessiv/common/constants/crm/service-request-statuses";
 import {
   serviceRequestFixture,
@@ -68,6 +69,8 @@ describe("ServiceRequestOfferDialog", () => {
       to: S.Offered,
       version: 1,
       priceCents: 99000,
+      pricingMode: ServicePricingMode.OneTime,
+      recurringInterval: null,
       minutes: null,
     });
   });

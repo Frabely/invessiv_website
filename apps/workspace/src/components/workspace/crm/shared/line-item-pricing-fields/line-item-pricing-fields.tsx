@@ -1,4 +1,5 @@
 "use client";
+import type { RefObject } from "react";
 
 import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
@@ -15,6 +16,8 @@ export type LineItemPricingFieldsProps = LineItemFieldsProps & {
   kind: LineItemKind;
   pricingDisabled: boolean;
   pricingHint?: string;
+  priceInputRef?: RefObject<HTMLInputElement | null>;
+  priceHint?: string;
 };
 
 export function LineItemPricingFields({
@@ -26,10 +29,14 @@ export function LineItemPricingFields({
   kind,
   pricingDisabled,
   pricingHint,
+  priceInputRef,
+  priceHint,
 }: LineItemPricingFieldsProps) {
   return (
     <>
       <FormField
+        inputRef={priceInputRef}
+        hint={priceHint}
         errorMessage={
           errors.priceInput ? content.validation[errors.priceInput] : undefined
         }

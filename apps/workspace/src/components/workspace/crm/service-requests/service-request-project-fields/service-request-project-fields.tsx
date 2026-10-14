@@ -1,13 +1,15 @@
 "use client";
 import { CustomSelect, FormField } from "@invessiv/ui";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
-import { ServiceRequestFieldLimits } from "@invessiv/common/constants/crm/forms/service-request-field-limits";
+import { ProjectFieldLimits } from "@invessiv/common/constants/crm/forms/project-field-limits";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ServiceRequestProjectWish as Mode } from "@invessiv/common/constants/crm/service-request-project-wishes";
 import type { ServiceRequestDto } from "@invessiv/common/contracts/crm/service-requests/service-request.dto";
 import type { CrmServiceRequestsDictionary } from "@/i18n/dictionaries/workspace/crm";
 import type { ServiceRequestsViewModel } from "@/common/contracts/crm/service-requests-view-model";
 import type { ServiceRequestAcceptFormValues } from "@/common/contracts/crm/service-request-accept-form-values";
 import { canChooseServiceRequestProject } from "@/common/patterns/crm/service-requests/service-request-accept-form";
+import { isProjectTitleValid } from "@/common/patterns/crm/project-form";
 import { ServiceRequestModeChoice } from "../service-request-mode-choice/service-request-mode-choice";
 
 export type ServiceRequestProjectFieldsProps = {
@@ -16,6 +18,7 @@ export type ServiceRequestProjectFieldsProps = {
   content: CrmServiceRequestsDictionary;
   values: ServiceRequestAcceptFormValues;
   unavailable: boolean;
+  invalid: boolean;
   onChangeAction: (patch: Partial<ServiceRequestAcceptFormValues>) => void;
 };
 
@@ -26,6 +29,7 @@ export function ServiceRequestProjectFields({
   content,
   values,
   unavailable,
+  invalid,
   onChangeAction,
 }: ServiceRequestProjectFieldsProps) {
   const canChoose = canChooseServiceRequestProject(request, viewModel);
@@ -74,10 +78,20 @@ export function ServiceRequestProjectFields({
           label={content.form.projectTitle}
           required
           hint={content.form.projectHint}
+          errorMessage={
+            (invalid ||
+              values.projectTitle.trim().length >
+                ProjectFieldLimits.TitleMaxLength) &&
+            !isProjectTitleValid(values.projectTitle)
+              ? formatMessage(content.form.projectTitleInvalid, {
+                  max: ProjectFieldLimits.TitleMaxLength,
+                })
+              : undefined
+          }
           inputProps={{
             value: values.projectTitle,
             onChange: (e) => onChangeAction({ projectTitle: e.target.value }),
-            maxLength: ServiceRequestFieldLimits.TitleMaxLength,
+            maxLength: ProjectFieldLimits.TitleMaxLength,
           }}
         />
       )}

@@ -134,6 +134,25 @@ describe("requireWorkspacePermission", () => {
 });
 
 describe("requireWorkspaceArea", () => {
+  it.each([false, true])(
+    "opens CRM for standalone service request rights, customer scoped: %s",
+    async (scoped) => {
+      const authentication = authorizedWith(
+        Permission.ServiceRequestsRead,
+        Permission.ServiceRequestsWrite,
+      );
+      if (scoped) {
+        authentication.actor.customerPermissions = new Map([
+          ["customer-1", new Set(authentication.actor.permissions)],
+        ]);
+        authentication.actor.permissions.clear();
+      }
+      mockAuthenticate.mockResolvedValue(authentication);
+      await expect(requireWorkspaceArea("de", WorkspaceArea.Crm)).resolves.toBe(
+        authentication.actor,
+      );
+    },
+  );
   beforeEach(() => {
     mockAuthenticate.mockReset();
     mockNotFound.mockClear();

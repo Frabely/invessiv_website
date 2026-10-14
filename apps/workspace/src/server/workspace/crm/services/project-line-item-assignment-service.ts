@@ -211,8 +211,8 @@ function resolveFeedbackRoundBlocker(
 
 /**
  * What stands in the way of the two template kinds that act on a project, per writable project.
- * A project the actor cannot read as a whole is treated as not writable for a further round: its
- * track is unknown here, and the command would refuse it anyway.
+ * Callers load only the track data needed for assignment, authorized by the project's write
+ * permission. Reading the full project is not required by either the preview or the command.
  */
 async function listBlockers(
   actor: WorkspaceActor,

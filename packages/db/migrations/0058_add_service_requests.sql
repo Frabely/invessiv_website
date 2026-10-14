@@ -119,7 +119,7 @@ ON CONFLICT (id) DO NOTHING;
 --> statement-breakpoint
 
 -- Service requests (Task 75). What was offered stays on the request, so the acceptance starts from
--- the offer instead of the catalog price; both offer columns are NULL until an offer is recorded.
+-- the offer instead of the catalog price; offer conditions are NULL until an offer is recorded.
 CREATE UNIQUE INDEX IF NOT EXISTS portal_memberships_id_customer_uidx ON portal_memberships (id, customer_id);
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS service_requests (
@@ -137,6 +137,8 @@ status TEXT NOT NULL,
 decline_reason TEXT,
 offered_at TIMESTAMPTZ,
 offered_price_cents INTEGER,
+offered_pricing_mode TEXT,
+offered_recurring_interval TEXT,
 offered_minutes INTEGER,
 decided_at TIMESTAMPTZ,
 decided_by_member_id UUID REFERENCES workspace_members(id),
@@ -162,6 +164,12 @@ CONSTRAINT service_requests_accepted_check CHECK (status <> 'accepted' OR (proje
 CONSTRAINT service_requests_declined_check CHECK (status <> 'declined' OR (decline_reason IS NOT NULL AND btrim(decline_reason) <> '' AND decided_by_member_id IS NOT NULL)),
 CONSTRAINT service_requests_version_check CHECK (version > 0),
 CONSTRAINT service_requests_offered_price_check CHECK (offered_price_cents IS NULL OR offered_price_cents >= 0),
+CONSTRAINT service_requests_offered_pricing_mode_check CHECK (offered_pricing_mode IS NULL OR offered_pricing_mode IN ('one_time', 'rate', 'recurring')),
+CONSTRAINT service_requests_offered_interval_check CHECK (offered_recurring_interval IS NULL OR offered_recurring_interval IN ('monthly', 'yearly')),
+CONSTRAINT service_requests_offered_pricing_pair_check CHECK (
+    (offered_pricing_mode IS NULL AND offered_recurring_interval IS NULL) OR
+    (offered_pricing_mode IS NOT NULL AND (offered_pricing_mode = 'recurring') = (offered_recurring_interval IS NOT NULL))
+),
 CONSTRAINT service_requests_offered_minutes_check CHECK (offered_minutes IS NULL OR (kind = 'hours' AND offered_minutes > 0 AND offered_minutes % 15 = 0 AND offered_minutes <= 600000))
 );
 --> statement-breakpoint

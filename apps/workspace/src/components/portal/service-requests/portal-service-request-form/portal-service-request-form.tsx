@@ -18,6 +18,8 @@ import { LineItemKind } from "@invessiv/common/constants/crm/line-item-kinds";
 import { ServiceRequestProjectWish as Wish } from "@invessiv/common/constants/crm/service-request-project-wishes";
 import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import { PortalServiceRequestLimits } from "@invessiv/common/constants/portal/portal-service-request-limits";
+import { PortalServiceRequestErrorCode } from "@invessiv/common/constants/portal/portal-service-request-error-codes";
+import type { CreatePortalServiceRequestDto } from "@invessiv/common/contracts/portal/create-portal-service-request.dto";
 import { MINUTES_PER_HOUR } from "@invessiv/common/constants/time/time-units";
 import { ButtonSize } from "@invessiv/common/constants/ui/button-sizes";
 import { OptionTileKind } from "@invessiv/common/constants/ui/option-tile-kinds";
@@ -55,6 +57,8 @@ export type PortalServiceRequestFormProps = {
   /** Back to the selection. */
   onBackAction: () => void;
   onBusyChangeAction: (busy: boolean) => void;
+  /** Keeps dialog navigation locked while a sent attempt has no definite answer. */
+  onUncertainChangeAction: (uncertain: boolean) => void;
   /** Called with the request's title once the server has accepted it. */
   onSentAction: (title: string) => void;
   /** The project the dashboard shows; preselected when the service can be requested for it. */
@@ -88,6 +92,7 @@ export function PortalServiceRequestForm({
   headingId,
   onBackAction,
   onBusyChangeAction,
+  onUncertainChangeAction,
   onSentAction,
   preferredProjectId,
   projects,
@@ -108,6 +113,8 @@ export function PortalServiceRequestForm({
   const [submitError, setSubmitError] = useState<string | null>(null);
   const { formRef, focusFirstInvalidField } = useFocusFirstInvalidField();
   const inFlight = useRef(false);
+  const attemptedPayload = useRef<CreatePortalServiceRequestDto | null>(null);
+  const [attemptLocked, setAttemptLocked] = useState(false);
   const quickLabelId = useId();
 
   useEffect(
@@ -127,8 +134,10 @@ export function PortalServiceRequestForm({
     : [];
   const errorFor = (field: Field, message: string) =>
     invalid.includes(field) ? message : undefined;
-  const change = (patch: Partial<PortalServiceRequestFormValues>) =>
+  const change = (patch: Partial<PortalServiceRequestFormValues>) => {
+    if (busy || inFlight.current || attemptLocked) return;
     setValues((current) => ({ ...current, ...patch }));
+  };
 
   const fixedProject =
     !question.asks && values.projectWish === Wish.Existing
@@ -157,25 +166,37 @@ export function PortalServiceRequestForm({
     inFlight.current = true;
     onBusyChangeAction(true);
     setSubmitError(null);
+    attemptedPayload.current ??= portalServiceRequestForm.toRequest(
+      values,
+      service,
+      idempotencyKey,
+    );
     const result = await portalServiceRequestsApiService.createRequest(
       customerId,
-      portalServiceRequestForm.toRequest(values, service, idempotencyKey),
+      attemptedPayload.current,
     );
     if (!inFlight.current) return;
     inFlight.current = false;
     onBusyChangeAction(false);
     if (!result.ok) {
+      const uncertain = result.code === PortalServiceRequestErrorCode.Internal;
+      setAttemptLocked(uncertain);
+      onUncertainChangeAction(uncertain);
+      if (!uncertain) attemptedPayload.current = null;
       setSubmitError(errorTexts[result.code]);
       return;
     }
-    onSentAction(service?.title ?? values.title.trim());
+    onUncertainChangeAction(false);
+    onSentAction(
+      service?.title ?? attemptedPayload.current.title ?? values.title.trim(),
+    );
   }
 
   return (
     <section aria-labelledby={headingId} className={styles.request}>
       <div className={styles.back}>
         <ButtonControl
-          disabled={busy}
+          disabled={busy || attemptLocked}
           onClick={onBackAction}
           type="button"
           variant="quiet"
@@ -202,6 +223,7 @@ export function PortalServiceRequestForm({
           <FormField
             errorMessage={errorFor(Field.Title, content.title.required)}
             inputProps={{
+              disabled: busy || attemptLocked,
               maxLength: ServiceRequestFieldLimits.TitleMaxLength,
               onChange: (event) => change({ title: event.target.value }),
               placeholder: content.title.placeholder,
@@ -224,6 +246,7 @@ export function PortalServiceRequestForm({
               {question.wishes.includes(Wish.Existing)
                 ? question.projects.map((project) => (
                     <OptionTile
+                      disabled={busy || attemptLocked}
                       checked={
                         values.projectWish === Wish.Existing &&
                         values.projectId === project.id
@@ -246,6 +269,7 @@ export function PortalServiceRequestForm({
                 .filter((wish) => question.wishes.includes(wish))
                 .map((wish) => (
                   <OptionTile
+                    disabled={busy || attemptLocked}
                     checked={values.projectWish === wish}
                     key={wish}
                     kind={OptionTileKind.Radio}
@@ -285,6 +309,7 @@ export function PortalServiceRequestForm({
               )}
               hint={content.hours.hint}
               inputProps={{
+                disabled: busy || attemptLocked,
                 inputMode: "numeric",
                 max: HOURS_MAX,
                 min: HOURS_MIN,
@@ -307,6 +332,7 @@ export function PortalServiceRequestForm({
               </span>
               {PORTAL_SERVICE_REQUEST_QUICK_HOURS.map((hours) => (
                 <ButtonControl
+                  disabled={busy || attemptLocked}
                   key={hours}
                   onClick={() => change({ hours: String(hours) })}
                   size={ButtonSize.Control}
@@ -328,6 +354,7 @@ export function PortalServiceRequestForm({
           label={service ? content.note.label : content.description.label}
           required={service === null}
           textareaProps={{
+            disabled: busy || attemptLocked,
             maxLength: ServiceRequestFieldLimits.NoteMaxLength,
             onChange: (event) => change({ note: event.target.value }),
             rows: service ? 2 : 4,
@@ -338,6 +365,7 @@ export function PortalServiceRequestForm({
         {submitError ? (
           <FormNotice role="alert">{submitError}</FormNotice>
         ) : null}
+        {attemptLocked ? <FormHint>{content.retryNotice}</FormHint> : null}
         {readOnlyNotice}
         <div className={styles.footer}>
           <FormHint>{content.nonBinding}</FormHint>

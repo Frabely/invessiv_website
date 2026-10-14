@@ -1,3 +1,5 @@
+import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
+import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import { randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { and, eq, inArray } from "drizzle-orm";
@@ -157,7 +159,7 @@ test("offers, declines with a conflict, and assigns a request in the customer co
     const offer = page.waitForResponse(
       (r) =>
         r.url().endsWith("/" + acceptedId + "/status") &&
-        r.request().method() === "PATCH",
+        r.request().method() === HttpMethod.Patch,
     );
     await card
       .getByRole("link", { name: de.actions.offered, exact: true })
@@ -167,7 +169,7 @@ test("offers, declines with a conflict, and assigns a request in the customer co
       .getByRole("dialog", { name: de.form.offerTitle, exact: true })
       .getByRole("button", { name: de.form.offer, exact: true })
       .click();
-    expect((await offer).status()).toBe(200);
+    expect((await offer).status()).toBe(HttpResponseCode.Ok);
     await expect(
       card.getByText(de.status.offered, { exact: true }),
     ).toBeVisible();
@@ -217,10 +219,17 @@ test("offers, declines with a conflict, and assigns a request in the customer co
     expect(
       (
         await page.request.patch(crmServiceRequestStatusEndpoint(declinedId), {
-          data: { to: S.Offered, version: 1, priceCents: 9900, minutes: null },
+          data: {
+            to: S.Offered,
+            pricingMode: ServicePricingMode.OneTime,
+            recurringInterval: null,
+            version: 1,
+            priceCents: 9900,
+            minutes: null,
+          },
         })
       ).status(),
-    ).toBe(200);
+    ).toBe(HttpResponseCode.Ok);
     await decline.getByRole("button", { name: de.form.decline }).click();
     await expect(decline.getByText(de.form.conflict)).toBeVisible();
     await expect(decline.getByRole("textbox")).toHaveValue(reason);

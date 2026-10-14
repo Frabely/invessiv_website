@@ -380,3 +380,28 @@ vorgesehen.
 - Eine Zusatzrunden-Anfrage prüft zuerst die Projektsichtbarkeit und Eignung, dann eine vorhandene offene Anfrage.
   Ohne Projektleserecht, bei fremden oder unsichtbaren Projekten antwortet sie einheitlich mit `validation`.
 - Die beiden internen Statushandler erzeugen Versionskonflikte über den gemeinsamen `versionConflict`-Helfer.
+
+### Review-Nacharbeit vom 13.10.2026
+
+Die Findings F01–F08 aus dem Branch-Review sind umgesetzt:
+
+- **F01/F06:** Ein Angebot erfasst Betrag, Preisart und Abrechnungsintervall gemeinsam. Die interne Anzeige und Annahme verwenden diesen Snapshot. Ein Vorlagenwechsel erhält die bereits eingetragenen Angebotskonditionen; ausdrückliche Änderungen bleiben in den Preisfeldern möglich. Bei älteren Angeboten ohne Konditions-Snapshot weist der Dialog auf die nötige Prüfung anhand des gesendeten Angebots hin. Historische Konditionen werden nicht aus heutigen Katalogwerten rückwirkend gespeichert.
+- **F02:** Ein ungeklärter Sendeversuch hält seinen Payload und Idempotenzschlüssel fest. Felder, Vorlagenwechsel, Tabs und Schließen bleiben bis zur Klärung gesperrt; der Sende-Button wiederholt denselben Versuch. Eine eindeutige fachliche Ablehnung gibt die Bearbeitung wieder frei.
+- **F03:** Das CRM-Gate akzeptiert eigenständige Anfrage-Leserechte. Der Cockpit-Leser ermöglicht dafür den minimalen Kundencontainer auch bei globalen Anfrage-Rechten; Ansprechpartner, E-Mail und Owner bleiben ohne Kundenleserecht verborgen. Angebote und Ablehnungen bleiben am kundenbezogenen Anfrage-Schreibrecht gebunden.
+- **F04:** Leistungsbereich und Anfrage-Annahme verwenden gemeinsam `listLineItemAssignmentProjects`. Die Zuweisungsprüfung lädt nur die nötigen Spurdaten und prüft dasselbe Projektschreibrecht wie der Command. Ein vollständiges Projekt-DTO wird dadurch nicht freigegeben.
+- **F05:** Das Projekttitellimit von 160 Zeichen ist zentral in `ProjectFieldLimits` definiert und wird in Schema, Annahmefeld und Clientprüfung verwendet. Eine längere Vorbelegung bleibt sichtbar, zeigt einen Feldfehler und erhält beim Absenden den Fokus; der ursprüngliche Anfragetitel bleibt erhalten.
+- **F07/F08:** Das Projektleistungs-Statusfeld ist ein gemeinsamer CRM-Baustein. Beide Browserabläufe verwenden die zentralen HTTP-Konstanten.
+
+**Migration und Deployment:** Die Nacharbeit ist auf ausdrücklichen Wunsch in die Branch-Migration `0058_add_service_requests.sql` integriert: nullable Angebotsspalten und Checks für Preisart/Intervall sowie das Titellimit von 200 Zeichen stehen direkt im `CREATE TABLE`. Die separaten Dateien `0059_capture_service_request_offer_pricing.sql` und `0060_expand_service_request_title_limit.sql` entfallen. In Development wurden beide Änderungen bereits angewendet; die Datenbank wird durch diese Dateikonsolidierung nicht verändert. Auf weiteren Zielumgebungen muss die konsolidierte `0058` vor Auslieferung der neuen App angewendet werden. Eine dort bereits registrierte ältere `0058` wird vom Runner übersprungen und benötigt einen gesonderten Schemaabgleich. Es gibt keine neuen Umgebungsvariablen.
+
+**Security/Privacy:** Anfrage- und Stammdatenrechte bleiben getrennt. Angebotskonditionen werden ausschließlich intern gelesen und geschrieben; Portal-DTOs erhalten keine Preisfelder. **Rollback:** App-Version zurücksetzen; die additiven Spalten und erweiterten Checks bleiben bestehen.
+
+**Validierung der Nacharbeit:**
+
+- `pnpm -r lint` und `pnpm -r typecheck`: bestanden; nur bestehende Lint-Warnungen.
+- `pnpm -r --workspace-concurrency=1 test`: 5.338 Tests bestanden, 473 standardmäßig deaktivierte Integrationstests übersprungen.
+- Abschließender fokussierter Workspace-Lauf: 219 Tests bestanden, 36 DB-Tests im Standardmodus übersprungen.
+- Drei fokussierte Suiten im Modus `crm-integration`: 48 echte DB-Integrationstests bestanden, einschließlich Anfrage-Rechten ohne Stammdatenrechte, beiden Zuweisungswegen ohne Projektleserecht und Monatsangebot nach Katalogänderung.
+- `pnpm --filter @invessiv/db db:smoke:crm`: alle 313 Constraint-Prüfungen bestanden, einschließlich Angebotskonditionen und 200-Zeichen-Anfragetitel.
+- `pnpm --filter @invessiv/workspace build`: bestanden; bestehende Turbopack-Warnung zur dynamischen Env-Dateisuche.
+- Die beiden Browserabläufe wurden über `playwright.portal.config.ts` gestartet. Das gemeinsame Setup scheitert weiterhin an „Vercel Blob: OIDC is enabled for this project, but not for the development environment“. Beide Fachtests wurden deshalb nicht gestartet; Browser-/A11y-Smoke bleibt offen.
