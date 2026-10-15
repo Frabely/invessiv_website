@@ -21,6 +21,7 @@ type PortalShellProps = {
   /** Already formatted greeting of the contact; null in the owner view or without a first name. */
   greeting?: string | null;
   homeHref: string;
+  /** Left out when there is no other project to switch to, so the menu shows no empty line. */
   projectSwitcher?: ReactNode;
   /** Optional notice shown inline in the header, e.g. the owner's read-only banner. */
   notice?: ReactNode | null;
@@ -28,6 +29,11 @@ type PortalShellProps = {
    * The company link and optional company switcher, built by the caller.
    */
   switcher: ReactNode;
+  /**
+   * More than one company to choose from. Only then does the phone menu repeat the switcher; with
+   * a single company it is just the name, and the logo already leads to the same overview.
+   */
+  switcherHasChoice?: boolean;
 };
 
 /**
@@ -43,6 +49,7 @@ export function PortalShell({
   projectSwitcher,
   notice = null,
   switcher,
+  switcherHasChoice = false,
 }: PortalShellProps) {
   const headerContent = content.header;
   const { locale: activeLocale } = useLanguage();
@@ -52,6 +59,24 @@ export function PortalShell({
     theme === "dark"
       ? { actionLabel: headerContent.themeSwitch.actionLabel.dark }
       : { actionLabel: headerContent.themeSwitch.actionLabel.light };
+  const themeSwitch = (
+    <ThemeSwitch copy={themeSwitchCopy} onToggle={toggleTheme} theme={theme} />
+  );
+  const localeSwitch = (
+    <LocaleSwitch
+      locale={activeLocale}
+      localeMenuLabel={headerContent.localeMenuLabel}
+      localeSwitchLabel={headerContent.localeSwitchLabel}
+      onSelectAction={(nextLocale) => {
+        const nextPathname = createLocalePathname(
+          window.location.pathname,
+          nextLocale,
+        );
+        window.location.assign(`${nextPathname}${window.location.search}`);
+      }}
+      variant="desktop"
+    />
+  );
 
   return (
     <div className={styles.shell}>
@@ -87,26 +112,10 @@ export function PortalShell({
             {projectSwitcher ? (
               <div className={styles.projectSlot}>{projectSwitcher}</div>
             ) : null}
-            <ThemeSwitch
-              copy={themeSwitchCopy}
-              onToggle={toggleTheme}
-              theme={theme}
-            />
-            <LocaleSwitch
-              locale={activeLocale}
-              localeMenuLabel={headerContent.localeMenuLabel}
-              localeSwitchLabel={headerContent.localeSwitchLabel}
-              onSelectAction={(nextLocale) => {
-                const nextPathname = createLocalePathname(
-                  window.location.pathname,
-                  nextLocale,
-                );
-                window.location.assign(
-                  `${nextPathname}${window.location.search}`,
-                );
-              }}
-              variant="desktop"
-            />
+            <div className={styles.preferences}>
+              {themeSwitch}
+              {localeSwitch}
+            </div>
             <div className={styles.userButton}>
               <UserButton />
             </div>
@@ -133,18 +142,33 @@ export function PortalShell({
           title={headerContent.menuTitle}
         >
           <div className={styles.menu}>
-            {greeting ? (
-              <p className={styles.menuGreeting}>{greeting}</p>
-            ) : null}
-            {switcher}
-            {projectSwitcher}
             {notice}
+            {switcherHasChoice ? (
+              <MenuRow label={headerContent.menuCompany}>{switcher}</MenuRow>
+            ) : null}
+            {projectSwitcher ? (
+              <MenuRow label={headerContent.menuProject}>
+                {projectSwitcher}
+              </MenuRow>
+            ) : null}
+            <MenuRow label={headerContent.menuTheme}>{themeSwitch}</MenuRow>
+            <MenuRow label={headerContent.menuLanguage}>{localeSwitch}</MenuRow>
           </div>
         </Dialog>
       ) : null}
       <main className={styles.main} id="main-content">
         {children}
       </main>
+    </div>
+  );
+}
+
+/** A labelled line in the phone menu: what it sets on the left, the control on the right. */
+function MenuRow({ children, label }: { children: ReactNode; label: string }) {
+  return (
+    <div className={styles.menuRow}>
+      <span>{label}</span>
+      {children}
     </div>
   );
 }

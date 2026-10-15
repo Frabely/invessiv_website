@@ -66,11 +66,13 @@ export default async function PortalCustomerLayout({
           : null
       }
       projectSwitcher={
-        <ProjectSwitcher
-          dashboardHref={portalPathFor(activeLocale, reader.customerId)}
-          label={content.projectSwitcher.label}
-          projects={currentProjects}
-        />
+        currentProjects.length > 1 ? (
+          <ProjectSwitcher
+            dashboardHref={portalPathFor(activeLocale, reader.customerId)}
+            label={content.projectSwitcher.label}
+            projects={currentProjects}
+          />
+        ) : undefined
       }
       notice={
         isOwnerView ? (
@@ -93,6 +95,7 @@ export default async function PortalCustomerLayout({
           homeHref={portalPathFor(activeLocale, reader.customerId)}
         />
       }
+      switcherHasChoice={memberships.length > 1}
     >
       {children}
     </PortalShell>

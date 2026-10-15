@@ -73,6 +73,9 @@ Plan: `apps/workspace/plans/crm/13a-kundenchat/26-chat-im-portal.md`.
   bekommt nie `canWrite` und zeigt stattdessen den Owner-Hinweis mit CRM-Link.
 - Im Dashboard gibt es **kein** Nachrichten-Widget: Der `ChatDock` ist der Einstieg und zeigt Ungelesenes am Rail
   (`unreadCount`). Ohne `portal.messages.read` wird der Dock nicht gerendert.
+- **Mobil (unter 768 px) ist der Dock ein runder Button unten rechts**, kein Balken am unteren Rand: iOS fängt Taps
+  direkt am Rand für die eigenen Gesten und die Safari-Leiste ab. Der Abstand zum Rand bleibt deshalb mindestens
+  1 rem plus `safe-area-inset-bottom`.
 - **Keine eigene Chat-Seite.** Der Dock im Dashboard ist der einzige Ort des Chats (Entscheidung 08.10.2026). Wer
   von einer anderen Portalseite in den Chat verlinkt, baut den Link über
   `buildPortalHref(portalPathFor(locale, customerId), "", { project, chat: true })`: Das Dashboard kommt mit
@@ -260,8 +263,11 @@ Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-le
     einzeilig und wächst mit dem Inhalt.
   - **Fußleiste:** fest unter dem Scrollbereich (weder `sticky` noch `fixed`), auf allen Breiten randlos über die volle Breite, eine Zeile mit Speicherstatus und Zurück/Weiter; „Weiter“ nennt den nächsten
     Schritt. Ein Schrittwechsel setzt den Scrollbereich des Editors (`.body`) an den Anfang, nicht `window`.
-  - **Shell mobil:** unter 768 px zeigt der Header nur Logo, Theme, Sprache, Profil und Menü-Button; Firma, Projekt,
-    Begrüßung und Owner-Hinweis stehen im Menü-Dialog. Platz für den Chat-Dock reserviert `.main` nur, wenn die Seite
+  - **Shell mobil:** unter 768 px zeigt der Header nur Logo, Begrüßung, Profil und Menü-Button. Der
+    Menü-Dialog zeigt den Owner-Hinweis und darunter beschriftete Zeilen ohne Trennlinie (`MenuRow`, Beschriftung
+    links, Control rechts): „Firma“ nur bei mehreren Firmen (`switcherHasChoice`), „Projekt“ nur bei mehreren
+    Projekten (das Layout lässt `projectSwitcher` sonst weg), dann „Darstellung“ und „Sprache“. Theme- und
+    Sprachschalter werden einmal gebaut und im Header und im Menü verwendet. Platz für den Chat-Dock reserviert `.main` nur, wenn die Seite
     einen rendert (`data-portal-dock`).
 
 - **Abschluss (ab Task 70):** Ein abgeschlossener Bogen zeigt „Abgeschlossen am …“, den Satz, dass er die Grundlage

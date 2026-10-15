@@ -8,6 +8,10 @@
     "menuOpenLabel": "Menü öffnen",
     "menuCloseLabel": "Menü schließen",
     "menuTitle": "Menü",
+    "menuCompany": "Firma",
+    "menuProject": "Projekt",
+    "menuTheme": "Darstellung",
+    "menuLanguage": "Sprache",
     "themeSwitch": {
       "actionLabel": {
         "dark": "Hellen Modus aktivieren",

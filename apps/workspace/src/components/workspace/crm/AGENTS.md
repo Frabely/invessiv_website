@@ -144,6 +144,8 @@ Plan: `apps/workspace/plans/crm/12c-cockpit-dashboard/50-cockpit-dashboard-redes
   derselben Stelle.
 - Mock-Kennzahlen zeigen „—“, nie eine erfundene Zahl. Der Chat-Dock zeigt ab Ordner 13a den echten Verlauf und
   als Badge nur die echte Ungelesen-Zahl; ohne `chat.read` am Kunden wird er gar nicht gerendert.
+- Unter 768 px ist der Chat-Dock wie im Portal ein runder Button unten rechts (`chatSlot`, mindestens 1 rem plus
+  `safe-area-inset-bottom` über dem Rand), das Panel öffnet sich darüber; der Inhalt lässt unten Platz dafür.
 - Der zugängliche Name eines Projekt-Tabs ist exakt der Projekttitel; der Status hängt über `aria-describedby`.
 - Offene und überfällige Aufgaben werden über `taskDueStateService.summarize` gezählt, nie in der Komponente.
 
