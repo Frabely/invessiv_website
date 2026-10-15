@@ -4,6 +4,7 @@ export * from "./components/duration-input/duration-input";
 export * from "./components/radio-control/radio-control";
 export * from "./components/custom-select/custom-select";
 export * from "./components/form/form-field/form-field";
+export * from "./components/form/color-field/color-field";
 export * from "./components/form/form-field-label/form-field-label";
 export * from "./components/form/form-fieldset/form-fieldset";
 export * from "./components/form/form-hint/form-hint";

@@ -21,7 +21,11 @@ type BaseFormFieldProps = {
   controlClassName?: string;
   errorMessage?: string;
   errorMessageId?: string;
+  /** Sits inside the input at its start, e.g. a preview of the value; the text moves aside. */
+  inputPrefix?: ReactNode;
   inputSuffix?: ReactNode;
+  /** A control-high action next to the input, outside its frame, e.g. a picker for the value. */
+  inputAction?: ReactNode;
   hint?: ReactNode;
   hintId?: string;
   label: string;
@@ -75,6 +79,8 @@ export function FormField(props: FormFieldProps) {
     controlClassName,
     errorMessage,
     errorMessageId,
+    inputAction,
+    inputPrefix,
     inputSuffix,
     hint,
     hintId,
@@ -117,7 +123,7 @@ export function FormField(props: FormFieldProps) {
               controlClassName,
               resolvedErrorId,
               resolvedHintId,
-              inputSuffix,
+              { action: inputAction, prefix: inputPrefix, suffix: inputSuffix },
             )
           : null}
       </div>
@@ -153,13 +159,19 @@ function getControlId(
   return props.inputProps?.id ?? props.inputProps?.name ?? generatedControlId;
 }
 
+type InputAdornments = {
+  action?: ReactNode;
+  prefix?: ReactNode;
+  suffix?: ReactNode;
+};
+
 function renderInput(
   props: TextFieldProps,
   controlId: string,
-  controlClassName?: string,
-  errorMessageId?: string,
-  hintId?: string,
-  inputSuffix?: ReactNode,
+  controlClassName: string | undefined,
+  errorMessageId: string | undefined,
+  hintId: string | undefined,
+  adornments: InputAdornments,
 ) {
   const describedBy = [
     props.inputProps?.["aria-describedby"],
@@ -172,8 +184,14 @@ function renderInput(
     .filter(Boolean)
     .join(" ");
 
-  return (
-    <span className={styles.inputShell}>
+  const shell = (
+    <span
+      className={styles.inputShell}
+      data-prefixed={adornments.prefix ? "true" : undefined}
+    >
+      {adornments.prefix ? (
+        <span className={styles.startAdornment}>{adornments.prefix}</span>
+      ) : null}
       <input
         {...props.inputProps}
         aria-describedby={describedBy || undefined}
@@ -189,9 +207,20 @@ function renderInput(
         }}
         type={props.kind}
       />
-      {inputSuffix ? (
-        <span className={styles.endAdornment}>{inputSuffix}</span>
+      {adornments.suffix ? (
+        <span className={styles.endAdornment}>{adornments.suffix}</span>
       ) : null}
+    </span>
+  );
+
+  if (!adornments.action) {
+    return shell;
+  }
+
+  return (
+    <span className={styles.inputRow}>
+      {shell}
+      {adornments.action}
     </span>
   );
 }

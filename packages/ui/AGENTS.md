@@ -34,6 +34,10 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   das Token in seinem Scope (z. B. der Portal-Bogen ab 1024 px), statt Label-Klassen zu überschreiben.
 - **Radio und Checkbox** kommen aus `RadioControl` bzw. `CheckboxControl`; als Option einer Frage über `OptionTile`.
   Kein natives `<input type="radio|checkbox">` mit eigenem Stil in den Apps.
+- **Farbe** kommt aus `ColorField`: Hex-Text mit Farb-Chip am Anfang (der native Farbwähler selbst, daher kein
+  Inline-Style) und „Farbe wählen“ daneben. Ohne gültigen Wert ist der Chip schraffiert. `FormField` nimmt
+  `type="color"` von seinen Texteingabe-Stilen aus; Start-Slot (`inputPrefix`) und Aktion neben dem Feld
+  (`inputAction`) sind allgemeine `FormField`-Props.
 - **Buttons:** `variant` wählt das Aussehen (`primary`, `ghost`, `quiet`), `size` die Größe (`default`, `control` in
   Formularen, `icon` für reine Icon-Buttons). Hover-Effekte gelten nur auf Geräten, die hovern können.
   `PrimaryCtaButton` ist die Hauptaktion, `SecondaryCtaButton` die zweite Aktion daneben oder eine einzelne Aktion,
