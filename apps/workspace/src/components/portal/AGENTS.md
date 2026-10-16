@@ -145,8 +145,13 @@ Plan: `apps/workspace/plans/crm/16-feedbackrunden/60-ui-uebergabe-und-kundenboge
 Plan: `apps/workspace/plans/crm/15-onboarding/66-portal-formular.md`.
 
 - Komponenten liegen unter `onboarding/`; Orchestrator ist `onboarding/onboarding-form-view`. Wer gerade schreiben
-  darf (`editableBlockIds` nicht leer), bekommt `onboarding-form-editor`, alle anderen und jeder spätere Status die
-  Leseansicht. Das Dashboard-Widget verlinkt direkt auf den Bogen des gewählten Projekts.
+  darf (`editableBlockIds` nicht leer), bekommt `onboarding-form-editor`, alle anderen und jeder spätere Status
+  `onboarding-form-reader`. Das Dashboard-Widget verlinkt direkt auf den Bogen des gewählten Projekts.
+- **Lesen im selben Schritt-Layout (Entscheidung 16.10.2026).** Der Reader hat denselben Kopf, dieselbe Schrittleiste
+  und dieselbe Fußleiste (`onboarding-step-bar`) wie der Editor. Erster Schritt ist `status`
+  (`PORTAL_ONBOARDING_STATUS_SECTION`) mit Stand, Terminkarte, Owner-Hinweis und nach dem Abschluss den Wegen in
+  Dateibereich und Chat; danach folgt je Block ein Schritt mit den Antworten als Text (`OnboardingAnswerReadView`),
+  nie als deaktivierte Eingaben. Es gibt keinen Prüfschritt und keinen Gesamtstand im Kopf.
 - **Ein Block = ein Schritt.** Der Schritt steht in der URL (`?section=<blockId>` bzw. `review`, optional
   `&field=<fieldId>`) und wird ausschließlich über `usePortalOnboardingStep` gelesen und geschrieben
   (`history.pushState`, kein Server-Roundtrip). Pflichtfelder blockieren den Schrittwechsel nie. Nach einem Wechsel
@@ -240,10 +245,10 @@ Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-le
 - **Layout und Fortschritt (Paket I, Ordner 18):** Plan
   `apps/workspace/plans/crm/18-portal-prozess-nacharbeiten/I-portal-onboarding-layout.md`.
   - **Fester Bogen-Kopf** (`onboarding/onboarding-form-header`): Zurück-Link, `h1` und Gesamtstand in einer Zeile,
-    darunter die Schrittleiste. Der Editor rendert ihn selbst (er kennt den Stand), die Leseansicht ohne Leiste. Der
+    darunter die Schrittleiste. Editor und Reader rendern ihn selbst; der Reader ohne Gesamtstand. Der
     Kopf ist **nicht** `position: sticky`: Die Seite markiert sich mit `data-portal-fixed-head`, `.main` der
     `PortalShell` scrollt dann nicht mehr selbst, und der Inhalt scrollt unter dem Kopf in einem eigenen Bereich
-    (`.body` im Editor, `.scroll` in der Leseansicht). So kann zwischen Portal-Header und Kopf nichts durchscheinen.
+    (`.body` in Editor und Reader). So kann zwischen Portal-Header und Kopf nichts durchscheinen.
     Die Abstände kommen weiter aus `--portal-main-pad-*`.
   - **Füllung und Gültigkeit sind zwei Aussagen.** Die Füllung ist `answered/total` aller sichtbaren Fragen aus
     `getQuestionnaireCompleteness` (Gruppe zählt einmal, dazu ihre Unterfelder je Eintrag). Farben: unberührt
@@ -274,11 +279,12 @@ Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-le
     Sprachschalter werden einmal gebaut und im Header und im Menü verwendet. Platz für den Chat-Dock reserviert `.main` nur, wenn die Seite
     einen rendert (`data-portal-dock`).
 
-- **Abschluss (ab Task 70):** Ein abgeschlossener Bogen zeigt „Abgeschlossen am …“, den Satz, dass er die Grundlage
-  des Projekts ist, und den Hinweis, dass Nachträge nicht mehr über das Onboarding laufen. Die Links in den
+- **Abschluss (ab Task 70):** Der Status-Schritt eines abgeschlossenen Bogens zeigt „Abgeschlossen am …“, den Satz,
+  dass er die Grundlage des Projekts ist, und, wenn es mindestens einen Weg gibt, den Hinweis, dass Nachträge nicht
+  mehr ins Onboarding gehören, mit den Wegen als `ButtonLink` (Ghost, Icon vor dem Text). Die Links in den
   Dateibereich (`filesHref`, nur mit `portal.files.read`) und in den Chat (`chatHref`, nur mit
-  `portal.messages.read`) reicht die Seite herein; ohne Recht fehlt der Link, der Satz bleibt wahr. Antworten und
-  Anhänge stehen im geteilten `OnboardingAnswerReadView`, es gibt keine Schreibaktion. Das Widget zeigt
+  `portal.messages.read`) reicht die Seite herein; ohne Recht fehlt der Button. Antworten und Anhänge stehen in den
+  Block-Schritten des Readers, es gibt keine Schreibaktion. Das Widget zeigt
   „Abgeschlossen am …“ mit „Ansehen“; die Terminkarte entfällt, weil der Server keinen `call` mehr liefert.
 
 ## Zugangsdaten (ab Task 71)

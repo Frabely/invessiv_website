@@ -1,31 +1,7 @@
-/* Fills the page: the header on top, the step scrolling in between, the action bar below. */
-.editor {
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  min-width: 0;
-  min-height: 0;
-}
-
-/* The scroll area of the form. Header and action bar rest outside it, so nothing hides behind them. */
-.body {
-  display: grid;
-  flex: 1 1 auto;
-  align-content: start;
-  gap: 1.5rem;
-  min-width: 0;
-  min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior-y: contain;
-  -webkit-overflow-scrolling: touch;
-  padding: 1.5rem var(--portal-main-pad-inline, 0px)
-    var(--portal-main-pad-block, 1rem);
-}
-
 /*
- * Save state and step buttons rest below the scroll area as part of the screen, not of the page:
- * full width on the bottom edge, in the same place on a short step as on a long one, and clear of
- * the safe area so the buttons never hide behind the browser chrome.
+ * Step buttons, and the save state while filling in, rest below the scroll area as part of the
+ * screen, not of the page: full width on the bottom edge, in the same place on a short step as on a
+ * long one, and clear of the safe area so the buttons never hide behind the browser chrome.
  */
 .bar {
   display: flex;

@@ -18,6 +18,7 @@ import {
   OnboardingFieldCell,
   OnboardingFieldGrid,
 } from "../onboarding-field-grid/onboarding-field-grid";
+import { OnboardingStepHeading } from "../onboarding-step-heading/onboarding-step-heading";
 import { QuestionnaireField } from "../questionnaire-field/questionnaire-field";
 import styles from "./onboarding-block-step.module.css";
 
@@ -70,9 +71,9 @@ export function OnboardingBlockStep({
 
   return (
     <section className={styles.step}>
-      <h2 className={styles.title} ref={headingRef} tabIndex={-1}>
+      <OnboardingStepHeading ref={headingRef}>
         {block.title}
-      </h2>
+      </OnboardingStepHeading>
       {block.intro ? <p className={styles.intro}>{block.intro}</p> : null}
       {block.reviewNote ? (
         <div className={styles.review}>

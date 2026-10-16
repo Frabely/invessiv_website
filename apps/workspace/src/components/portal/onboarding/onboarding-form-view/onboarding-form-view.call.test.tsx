@@ -74,7 +74,7 @@ describe("OnboardingFormView onboarding call", () => {
     expect(screen.queryByRole("link", { name: /Pick a time/ })).toBeNull();
   });
 
-  it("offers the booking link above the answers once the call is due", () => {
+  it("offers the booking link on the status step once the call is due", () => {
     const { container } = renderView({ booking: BOOKING });
 
     expect(callSection()).toHaveTextContent("Anna Beispiel");
@@ -83,10 +83,8 @@ describe("OnboardingFormView onboarding call", () => {
     expect(link).toHaveAttribute("data-primary", "true");
     expect(container.querySelector("script, iframe")).toBeNull();
     expect(
-      callSection()!.compareDocumentPosition(
-        screen.getByRole("heading", { name: content.read.heading }),
-      ) & Node.DOCUMENT_POSITION_FOLLOWING,
-    ).toBeTruthy();
+      screen.getByRole("heading", { level: 2, name: /Submitted on/ }),
+    ).toBeInTheDocument();
   });
 
   it("shows the hint and the way into the chat when nobody offers a link", () => {

@@ -25,6 +25,7 @@
   "steps": {
     "label": "Schritte des Onboardings",
     "review": "Prüfen & absenden",
+    "state": "Status",
     "nextTo": "Weiter: {step}",
     "toReview": "Zur Prüfung",
     "back": "Zurück",
@@ -141,6 +142,9 @@
     "close": "Schließen"
   },
   "states": {
+    "open": {
+      "title": "Noch nicht abgesendet"
+    },
     "submitted": {
       "title": "Abgesendet am {date}",
       "by": "von {name}",

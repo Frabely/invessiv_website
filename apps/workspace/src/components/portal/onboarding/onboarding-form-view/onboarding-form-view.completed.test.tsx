@@ -1,9 +1,10 @@
 // @vitest-environment jsdom
 
 import "@testing-library/jest-dom/vitest";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import {
   portalOnboardingAnswer as answer,
   portalOnboardingBlock as block,
@@ -59,7 +60,15 @@ function renderView(
 }
 
 describe("OnboardingFormView after completion", () => {
-  afterEach(cleanup);
+  afterEach(() => {
+    cleanup();
+    // A step change writes the URL; the next test opens the form on its status again.
+    window.history.replaceState(
+      null,
+      "",
+      "/en/portal/customer-1/onboarding/form-1",
+    );
+  });
 
   it("says when the onboarding was completed and what it is now", () => {
     renderView();
@@ -72,7 +81,15 @@ describe("OnboardingFormView after completion", () => {
 
   it("shows the answers read-only without any way to write", () => {
     renderView();
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: formatMessage(content.steps.nextTo, { step: "Company" }),
+      }),
+    );
 
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Company" }),
+    ).toHaveFocus();
     expect(screen.getByText("Nordlicht")).toBeVisible();
     expect(screen.queryByRole("textbox")).toBeNull();
     expect(screen.queryByRole("button", { name: content.submit.action })).toBe(

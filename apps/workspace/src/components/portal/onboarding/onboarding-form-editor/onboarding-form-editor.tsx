@@ -8,7 +8,6 @@ import type { QuestionnaireGroupEntryDto } from "@invessiv/common/contracts/crm/
 import type { PortalOnboardingFormDto } from "@invessiv/common/contracts/portal/portal-onboarding-form.dto";
 import { getQuestionnaireCompleteness } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
 import { portalOnboardingApiService } from "@/client/portal/portal-onboarding-api-service";
 import { PORTAL_ONBOARDING_REVIEW_SECTION } from "@/common/constants/portal/portal-onboarding-query-params";
 import { DraftSaveState } from "@/common/constants/shared/draft-save-states";
@@ -29,9 +28,10 @@ import type {
 import { OnboardingBlockStep } from "../onboarding-block-step/onboarding-block-step";
 import { OnboardingFormHeader } from "../onboarding-form-header/onboarding-form-header";
 import { OnboardingFormSummary } from "../onboarding-form-summary/onboarding-form-summary";
+import { OnboardingStepFrame } from "../onboarding-step-frame/onboarding-step-frame";
+import { OnboardingStepBar } from "../onboarding-step-bar/onboarding-step-bar";
 import { OnboardingStepTrack } from "../onboarding-step-track/onboarding-step-track";
 import { OnboardingSubmitStep } from "../onboarding-submit-step/onboarding-submit-step";
-import styles from "./onboarding-form-editor.module.css";
 
 // Codes after which the form on screen is no longer what the server holds.
 const STALE_CODES: readonly PortalOnboardingErrorCode[] = [
@@ -299,107 +299,99 @@ export function OnboardingFormEditor({
   const nextBlock = form.blocks.find((entry) => entry.id === nextSection);
 
   return (
-    <div className={styles.editor}>
-      <OnboardingFormHeader
-        backHref={backHref}
-        backLabel={content.page.back}
-        backShortLabel={content.page.backShort}
-        summary={
-          <OnboardingFormSummary
-            completeness={completeness}
-            invalid={autosave.invalid.size > 0}
-            texts={content.overview}
-          />
-        }
-        title={formatMessage(content.page.heading, {
-          project: form.projectTitle,
-        })}
-      >
-        <OnboardingStepTrack
-          blocks={form.blocks}
-          completeness={completeness}
-          content={content}
-          current={step.section}
-          invalidBlockIds={invalidBlockIds}
-          leftSections={step.leftSections}
-          onSelectAction={(section) => goTo({ section })}
-          requestedBlockIds={requestedBlockIds}
-        />
-      </OnboardingFormHeader>
-      <div className={styles.body} ref={bodyRef}>
-        {notice}
-        {block ? (
-          <OnboardingBlockStep
-            block={block}
-            content={content}
-            editable={form.editableBlockIds.includes(block.id)}
-            files={files}
-            focusFieldId={step.fieldId}
-            form={fieldForm}
-            key={block.id}
-            locale={locale}
-            moveFocus={navigated}
-          />
-        ) : (
-          <OnboardingSubmitStep
-            busy={busy || state.busy || uploading.size > 0}
-            content={content}
-            error={submitError}
-            missing={missing}
-            moveFocus={navigated}
-            onJumpAction={(answer) =>
-              goTo({
-                section: answer.blockId,
-                fieldId: onboardingAnswerDrafts.slotKey(
-                  answer.fieldId,
-                  answer.groupEntryId,
-                ),
-              })
-            }
-            onSubmitAction={submit}
-            progress={completeness}
-          />
-        )}
-      </div>
-      <div className={styles.bar}>
-        <DraftSaveStatus
-          errorText={
-            autosave.errorCode ? content.errors[autosave.errorCode] : null
+    <OnboardingStepFrame
+      bar={
+        <OnboardingStepBar
+          backLabel={content.steps.back}
+          nextLabel={
+            nextSection
+              ? nextBlock
+                ? formatMessage(content.steps.nextTo, { step: nextBlock.title })
+                : content.steps.toReview
+              : null
           }
-          locale={locale}
-          onRetryAction={autosave.retry}
-          saveState={saveState}
-          savedAt={savedAt}
-          savedByName={autosave.savedByName}
-          texts={content.draft}
+          onBackAction={
+            index > 0 ? () => goTo({ section: sections[index - 1] }) : null
+          }
+          onNextAction={() => goTo({ section: nextSection })}
+          status={
+            <DraftSaveStatus
+              errorText={
+                autosave.errorCode ? content.errors[autosave.errorCode] : null
+              }
+              locale={locale}
+              onRetryAction={autosave.retry}
+              saveState={saveState}
+              savedAt={savedAt}
+              savedByName={autosave.savedByName}
+              texts={content.draft}
+            />
+          }
         />
-        <div className={styles.actions}>
-          {index > 0 ? (
-            <ButtonControl
-              onClick={() => goTo({ section: sections[index - 1] })}
-              type="button"
-              variant="ghost"
-            >
-              {content.steps.back}
-            </ButtonControl>
-          ) : null}
-          {nextSection ? (
-            <PrimaryCtaButton
-              className={styles.next}
-              onClick={() => goTo({ section: nextSection })}
-              type="button"
-            >
-              <span className={styles.nextLabel}>
-                {nextBlock
-                  ? formatMessage(content.steps.nextTo, {
-                      step: nextBlock.title,
-                    })
-                  : content.steps.toReview}
-              </span>
-            </PrimaryCtaButton>
-          ) : null}
-        </div>
-      </div>
-    </div>
+      }
+      header={
+        <OnboardingFormHeader
+          backHref={backHref}
+          backLabel={content.page.back}
+          backShortLabel={content.page.backShort}
+          summary={
+            <OnboardingFormSummary
+              completeness={completeness}
+              invalid={autosave.invalid.size > 0}
+              texts={content.overview}
+            />
+          }
+          title={formatMessage(content.page.heading, {
+            project: form.projectTitle,
+          })}
+        >
+          <OnboardingStepTrack
+            blocks={form.blocks}
+            completeness={completeness}
+            content={content}
+            current={step.section}
+            invalidBlockIds={invalidBlockIds}
+            leftSections={step.leftSections}
+            onSelectAction={(section) => goTo({ section })}
+            requestedBlockIds={requestedBlockIds}
+          />
+        </OnboardingFormHeader>
+      }
+      ref={bodyRef}
+    >
+      {notice}
+      {block ? (
+        <OnboardingBlockStep
+          block={block}
+          content={content}
+          editable={form.editableBlockIds.includes(block.id)}
+          files={files}
+          focusFieldId={step.fieldId}
+          form={fieldForm}
+          key={block.id}
+          locale={locale}
+          moveFocus={navigated}
+        />
+      ) : (
+        <OnboardingSubmitStep
+          busy={busy || state.busy || uploading.size > 0}
+          content={content}
+          error={submitError}
+          missing={missing}
+          moveFocus={navigated}
+          onJumpAction={(answer) =>
+            goTo({
+              section: answer.blockId,
+              fieldId: onboardingAnswerDrafts.slotKey(
+                answer.fieldId,
+                answer.groupEntryId,
+              ),
+            })
+          }
+          onSubmitAction={submit}
+          progress={completeness}
+        />
+      )}
+    </OnboardingStepFrame>
   );
 }

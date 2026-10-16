@@ -985,7 +985,7 @@ describe("OnboardingFormView field types of the full form", () => {
   });
 
   describe("read view after the submission", () => {
-    it("shows entries, files, services, confirmation, colour and scale", () => {
+    it("shows entries, files, services, confirmation, colour and scale", async () => {
       renderView(
         formOf(
           [
@@ -1038,9 +1038,12 @@ describe("OnboardingFormView field types of the full form", () => {
           },
         ),
       );
-      const answers = screen.getByRole("region", {
-        name: content.read.heading,
-      });
+      await click(
+        screen.getByRole("button", {
+          name: formatMessage(content.steps.nextTo, { step: "Company" }),
+        }),
+      );
+      const answers = screen.getByRole("region", { name: "Company" });
 
       expect(answers).toHaveTextContent("Entry 1");
       expect(answers).toHaveTextContent("Ada");

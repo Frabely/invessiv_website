@@ -25,6 +25,7 @@
   "steps": {
     "label": "Steps of the onboarding",
     "review": "Review & submit",
+    "state": "Status",
     "nextTo": "Next: {step}",
     "toReview": "Go to review",
     "back": "Back",
@@ -141,6 +142,9 @@
     "close": "Close"
   },
   "states": {
+    "open": {
+      "title": "Not submitted yet"
+    },
     "submitted": {
       "title": "Submitted on {date}",
       "by": "by {name}",
