@@ -8,15 +8,32 @@
     "back": "Zurück zum Überblick",
     "ownerHint": "In der Portalansicht kannst du kein Feedback abgeben.",
     "ownerLink": "Im CRM ansehen",
-    "readOnlyHint": "Du kannst das Feedback lesen, aber nicht bearbeiten. Frag die Person, die bei euch das Projekt betreut."
+    "readOnlyHint": "Du kannst das Feedback lesen, aber nicht bearbeiten. Frag die Person, die bei euch das Projekt betreut.",
+    "backShort": "Überblick"
   },
-  "intro": {
-    "roundOf": "Feedbackrunde {number} von {included}",
-    "due": "bitte bis {date}",
+  "steps": {
+    "label": "Feedbackrunden",
+    "round": "Runde {number}",
+    "back": "Zurück",
+    "nextTo": "Weiter: Runde {number}",
+    "upcoming": "kommt noch",
+    "expired": "entfällt nach der Abnahme"
+  },
+  "summary": {
+    "remaining": "Noch {count} Runden",
+    "remainingOne": "Noch 1 Runde",
+    "remainingNone": "Keine weitere Runde",
+    "approved": "Abgenommen"
+  },
+  "round": {
+    "title": "Feedbackrunde {number}",
+    "due": "Feedback bitte bis {date}",
+    "submittedOn": "Eingereicht am {date}",
+    "completedOn": "Umgesetzt am {date}",
+    "approvedOn": "Abgenommen am {date}",
     "preview": "Vorschau öffnen",
     "previewNewTab": "öffnet in einem neuen Tab",
-    "handoverNote": "Was ist neu",
-    "draftVisible": "Dein Entwurf ist für unser Team schon sichtbar. Wir legen aber erst los, wenn du einreichst."
+    "handoverNote": "Was ist neu"
   },
   "status": {
     "open": "Du bist dran",
@@ -49,7 +66,7 @@
     },
     "exhausted": {
       "title": "Du brauchst noch eine Runde?",
-      "description": "Schreib uns im Chat, dann finden wir gemeinsam einen Weg.",
+      "description": "Meld dich bei uns – im Chat, per Termin oder per E-Mail. Dann finden wir gemeinsam einen Weg.",
       "chatLink": "Zum Chat",
       "requestDescription": "Deine Feedbackrunden sind aufgebraucht. Du kannst eine zusätzliche Runde anfragen und bekommst zuerst ein Angebot.",
       "requestLink": "Zusätzliche Runde anfragen"
@@ -62,13 +79,7 @@
     "discussion": {
       "title": "Wir möchten dein Feedback kurz besprechen",
       "description": "Bevor wir loslegen, klären wir ein paar Punkte am besten kurz gemeinsam. Schreib uns im Chat, wann es dir passt.",
-      "chatLink": "Termin im Chat abstimmen",
-      "booking": {
-        "action": "Termin buchen",
-        "noticeNamed": "Der Kalender läuft über {provider}. Er öffnet sich in einem neuen Tab; erst dann erhält {provider} Daten von dir.",
-        "noticeOther": "Der Kalender läuft über einen externen Terminanbieter. Er öffnet sich in einem neuen Tab; erst dann erhält der Anbieter Daten von dir.",
-        "newTab": "öffnet in neuem Tab"
-      }
+      "chatLink": "Termin im Chat abstimmen"
     },
     "completed": {
       "title": "Runde {number} ist umgesetzt",
@@ -77,7 +88,40 @@
     "approvalDue": {
       "title": "Die letzte Runde ist umgesetzt",
       "description": "Sieh dir an, was wir mit deinen Punkten gemacht haben, und nimm das Projekt ab, wenn alles passt."
+    },
+    "open": {
+      "title": "Du bist dran",
+      "description": "Schau dir die Vorschau an und schreib uns alles, was wir ändern sollen – ein Punkt pro Wunsch. Wir speichern deinen Entwurf automatisch und legen los, sobald du einreichst."
+    },
+    "readOnly": {
+      "title": "Diese Runde wartet auf euer Feedback"
+    },
+    "past": {
+      "title": "Runde {number} ist abgeschlossen",
+      "description": "Hier siehst du dein Feedback aus dieser Runde und was wir daraus gemacht haben."
+    },
+    "pastEmpty": {
+      "title": "Runde {number} ist abgeschlossen",
+      "description": "In dieser Runde hast du kein Feedback abgegeben."
     }
+  },
+  "contact": {
+    "booking": {
+      "action": "Termin buchen",
+      "noticeNamed": "Der Kalender läuft über {provider}. Er öffnet sich in einem neuen Tab; erst dann erhält {provider} Daten von dir.",
+      "noticeOther": "Der Kalender läuft über einen externen Terminanbieter. Er öffnet sich in einem neuen Tab; erst dann erhält der Anbieter Daten von dir.",
+      "newTab": "öffnet in neuem Tab"
+    },
+    "mail": "E-Mail schreiben",
+    "mailLabel": "E-Mail an {name} schreiben"
+  },
+  "items": {
+    "heading": "Deine Punkte",
+    "headingRead": "Dein Feedback",
+    "count": "{count} Punkte",
+    "countOne": "1 Punkt",
+    "showMore": "Mehr anzeigen",
+    "showLess": "Weniger anzeigen"
   },
   "editor": {
     "listLabel": "Deine Feedbackpunkte",
@@ -128,9 +172,11 @@
     }
   },
   "actions": {
-    "saveNow": "Zwischenspeichern",
     "submit": "Feedback einreichen",
-    "approveHint": "Keine Änderungen nötig?",
+    "approveTitle": "Keine Änderungen nötig?",
+    "approveHint": "Wenn dir der Stand so gefällt, kannst du das Projekt ohne Punkte freigeben. Danach ist es von deiner Seite abgeschlossen.",
+    "approveHintRounds": "Wenn dir der Stand so gefällt, kannst du das Projekt ohne Punkte freigeben. Deine übrigen {count} Feedbackrunden verfallen damit.",
+    "approveHintRoundsOne": "Wenn dir der Stand so gefällt, kannst du das Projekt ohne Punkte freigeben. Deine letzte übrige Feedbackrunde verfällt damit.",
     "approve": "Projekt ohne Änderungen freigeben"
   },
   "submitDialog": {
@@ -153,17 +199,6 @@
     "confirm": "Projekt freigeben",
     "cancel": "Abbrechen",
     "close": "Schließen"
-  },
-  "history": {
-    "title": "Frühere Runden",
-    "roundTitle": "Feedbackrunde {number}",
-    "submittedOn": "eingereicht am {date}",
-    "approvedOn": "abgenommen am {date}",
-    "items": "{count} Punkte",
-    "itemsOne": "1 Punkt",
-    "itemsNone": "ohne Punkte",
-    "showMore": "Mehr anzeigen",
-    "showLess": "Weniger anzeigen"
   },
   "announcements": {
     "submitted": "Dein Feedback ist eingereicht.",
@@ -196,7 +231,10 @@
   },
   "finalApproval": {
     "action": "Projekt abnehmen",
-    "earlyHint": "Passt schon alles? Dann kannst du das Projekt auch jetzt abnehmen. Die übrigen Runden verfallen damit.",
+    "earlyTitle": "Schon alles so, wie du es willst?",
+    "earlyHint": "Du kannst das Projekt auch jetzt abnehmen. Deine übrigen {count} Feedbackrunden verfallen dann.",
+    "earlyHintOne": "Du kannst das Projekt auch jetzt abnehmen. Deine letzte übrige Feedbackrunde verfällt dann.",
+    "lastTitle": "Alles so, wie es sein soll?",
     "lastHint": "Wenn alles passt, nimm das Projekt ab. Danach bereiten wir den Launch vor."
   },
   "finalApproveDialog": {

@@ -5,7 +5,6 @@ import {
   MAX_ARCHIVE_FILES,
 } from "./file-archive-limits";
 import { FileListLoadStatus } from "./file-list-load-status";
-import { FileSelectionEvent } from "./file-selection-events";
 import { FILES_PAGE_SIZE } from "./files-page-size";
 import { FileApiPath } from "./file-api-paths";
 import { FILE_ACTIVITY_ENTITY } from "./file-activity-metadata";
@@ -41,8 +40,5 @@ describe("shared files constants", () => {
     expect(MAX_ARCHIVE_FILES).toBe(100);
     expect(MAX_ARCHIVE_BYTES).toBe(300 * 1024 * 1024);
     expect(ARCHIVE_TIME_BUDGET_MS).toBe(96_000);
-    expect(FileSelectionEvent).toEqual({
-      Changed: "workspace:files-selection-changed",
-    });
   });
 });

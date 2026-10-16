@@ -116,6 +116,8 @@ Plan: `apps/workspace/plans/crm/18-portal-prozess-nacharbeiten/G-portal-aufgaben
   Runde (`not_latest` bzw. `locked`), immer mit `confirmFinal`. Für den Weg aus `completed` sperrt der Handler
   zusätzlich das Projekt (dieselbe Sperre wie die Übergabe), damit Abnahme und Übergabe der nächsten Runde nie
   gleichzeitig gelingen. Ergebnisse und Antworten enthält das Portal-DTO erst ab `completed`.
+- Das Seiten-DTO trägt `contact` (`PortalContactDto`: Name und E-Mail aus `findContact`, Buchungslink aus
+  `findBookingContact`), wie der Kontakt im Dashboard; ohne aktives zuständiges Mitglied `null`.
 - Fehlercodes sind `PortalFeedbackErrorCode`; Statuscodes und Texte stehen ausschließlich in
   `src/lib/portal/portal-feedback-api-error.ts`.
 

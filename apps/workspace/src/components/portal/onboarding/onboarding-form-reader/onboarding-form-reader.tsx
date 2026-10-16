@@ -40,10 +40,10 @@ import { usePortalOnboardingStep } from "@/hooks/portal/use-portal-onboarding-st
 import type { PortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
 import { formatMomentDay } from "@/lib/i18n/format-moment-day";
 import { OnboardingBookingCard } from "../onboarding-booking-card/onboarding-booking-card";
-import { OnboardingFormHeader } from "../onboarding-form-header/onboarding-form-header";
-import { OnboardingStepBar } from "../onboarding-step-bar/onboarding-step-bar";
-import { OnboardingStepFrame } from "../onboarding-step-frame/onboarding-step-frame";
-import { OnboardingStepHeading } from "../onboarding-step-heading/onboarding-step-heading";
+import { PortalStepHeader } from "@/components/portal/shared/portal-step-header/portal-step-header";
+import { PortalStepBar } from "@/components/portal/shared/portal-step-bar/portal-step-bar";
+import { PortalStepFrame } from "@/components/portal/shared/portal-step-frame/portal-step-frame";
+import { PortalStepHeading } from "@/components/portal/shared/portal-step-heading/portal-step-heading";
 import { OnboardingStepTrack } from "../onboarding-step-track/onboarding-step-track";
 import styles from "./onboarding-form-reader.module.css";
 
@@ -217,9 +217,9 @@ export function OnboardingFormReader({
         className={styles.step}
         key={shown.id}
       >
-        <OnboardingStepHeading id={blockHeadingId} ref={headingRef}>
+        <PortalStepHeading id={blockHeadingId} ref={headingRef}>
           {shown.title}
-        </OnboardingStepHeading>
+        </PortalStepHeading>
         <OnboardingAnswerReadView
           answerFiles={form.answerFiles}
           answers={form.answers}
@@ -245,9 +245,7 @@ export function OnboardingFormReader({
             <FontAwesomeIcon icon={STATUS_ICONS[form.status]} />
           </span>
           <div className={styles.statusText}>
-            <OnboardingStepHeading ref={headingRef}>
-              {title}
-            </OnboardingStepHeading>
+            <PortalStepHeading ref={headingRef}>{title}</PortalStepHeading>
             {showSubmittedBy && (
               <p className={styles.by}>
                 {formatMessage(states.submitted.by, {
@@ -307,9 +305,9 @@ export function OnboardingFormReader({
   }
 
   return (
-    <OnboardingStepFrame
+    <PortalStepFrame
       bar={
-        <OnboardingStepBar
+        <PortalStepBar
           backLabel={content.steps.back}
           nextLabel={nextLabel}
           onBackAction={goBack}
@@ -317,7 +315,7 @@ export function OnboardingFormReader({
         />
       }
       header={
-        <OnboardingFormHeader
+        <PortalStepHeader
           backHref={backHref}
           backLabel={content.page.back}
           backShortLabel={content.page.backShort}
@@ -344,12 +342,12 @@ export function OnboardingFormReader({
             requestedBlockIds={NONE}
             withReview={false}
           />
-        </OnboardingFormHeader>
+        </PortalStepHeader>
       }
       ref={bodyRef}
     >
       {notice}
       {block ? renderBlockStep(block) : renderStatusStep()}
-    </OnboardingStepFrame>
+    </PortalStepFrame>
   );
 }

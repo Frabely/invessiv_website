@@ -1,12 +1,15 @@
 "use client";
 
 import { type ReactNode, useId } from "react";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FormFieldKind } from "@invessiv/common/constants/form/form-field-kinds";
 import { FEEDBACK_ITEM_KIND_VALUES } from "@invessiv/common/constants/crm/feedback-item-kinds";
 import { FEEDBACK_LIMITS } from "@invessiv/common/constants/crm/feedback-limits";
+import { ButtonSize } from "@invessiv/common/constants/ui/button-sizes";
+import { ButtonVariant } from "@invessiv/common/constants/ui/button-variants";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { CustomSelect } from "@invessiv/ui";
+import { ButtonControl, CustomSelect, FormField } from "@invessiv/ui";
 import type { FeedbackDraftItem } from "@/common/contracts/portal/feedback-draft-item";
 import type { PortalFeedbackDictionary } from "@/i18n/dictionaries/portal";
 import styles from "./feedback-item-editor.module.css";
@@ -30,7 +33,7 @@ export type FeedbackItemEditorProps = {
   onRemoveAction: () => void;
 };
 
-/** One point of the sheet: where, what kind, the text and its files. */
+/** One point of the sheet as a card: its number, where and what kind, the text and its files. */
 export function FeedbackItemEditor({
   areaOptions,
   attachments,
@@ -42,23 +45,15 @@ export function FeedbackItemEditor({
   onRemoveAction,
 }: FeedbackItemEditorProps) {
   const baseId = useId();
-  const areaSelectId = `${baseId}-area`;
-  const kindSelectId = `${baseId}-kind`;
   const texts = content.editor;
   const itemLabel = formatMessage(texts.itemLabel, { number });
   const headingId = `${baseId}-heading`;
-  const counterId = `${baseId}-counter`;
-  const errorId = `${baseId}-error`;
-  const showCounter = item.body.length >= COUNTER_FROM;
+  const removeLabel = formatMessage(texts.remove, { number });
   // An area that left the snapshot still shows instead of silently jumping to "general".
   const areas =
     item.areaLabel && !areaOptions.includes(item.areaLabel)
       ? [...areaOptions, item.areaLabel]
       : areaOptions;
-  const describedBy =
-    [showCounter ? counterId : "", invalid ? errorId : ""]
-      .filter(Boolean)
-      .join(" ") || undefined;
 
   return (
     <li
@@ -66,19 +61,30 @@ export function FeedbackItemEditor({
       className={styles.item}
       data-invalid={invalid ? "true" : undefined}
     >
-      <span aria-hidden="true" className={styles.number}>
-        {number}
-      </span>
-      <div className={styles.body}>
-        <h3 className="sr-only" id={headingId}>
+      <div className={styles.head}>
+        <h3 className={styles.title} id={headingId}>
           {itemLabel}
         </h3>
-        <div className={styles.head}>
-          <label className={styles.field}>
-            <span>{texts.area}</span>
+        <ButtonControl
+          aria-label={removeLabel}
+          onClick={onRemoveAction}
+          size={ButtonSize.Icon}
+          title={removeLabel}
+          type="button"
+          variant={ButtonVariant.Quiet}
+        >
+          <FontAwesomeIcon aria-hidden="true" icon={faTrashCan} />
+        </ButtonControl>
+      </div>
+      <div className={styles.selects}>
+        <FormField
+          kind={FormFieldKind.Custom}
+          label={texts.area}
+          renderControl={({ id, describedBy }) => (
             <CustomSelect
               ariaLabel={`${itemLabel}: ${texts.area}`}
-              id={areaSelectId}
+              describedBy={describedBy}
+              id={id}
               onChange={(areaLabel) =>
                 onChangeAction({
                   areaLabel: areaLabel === NONE_VALUE ? null : areaLabel,
@@ -90,12 +96,17 @@ export function FeedbackItemEditor({
               ]}
               value={item.areaLabel ?? NONE_VALUE}
             />
-          </label>
-          <label className={styles.field}>
-            <span>{texts.kind}</span>
+          )}
+          reserveErrorSpace={false}
+        />
+        <FormField
+          kind={FormFieldKind.Custom}
+          label={texts.kind}
+          renderControl={({ id, describedBy }) => (
             <CustomSelect
               ariaLabel={`${itemLabel}: ${texts.kind}`}
-              id={kindSelectId}
+              describedBy={describedBy}
+              id={id}
               onChange={(kindValue) =>
                 onChangeAction({
                   kind:
@@ -113,46 +124,34 @@ export function FeedbackItemEditor({
               ]}
               value={item.kind ?? NONE_VALUE}
             />
-          </label>
-          <button
-            aria-label={formatMessage(texts.remove, { number })}
-            className={styles.remove}
-            onClick={onRemoveAction}
-            title={formatMessage(texts.remove, { number })}
-            type="button"
-          >
-            <FontAwesomeIcon aria-hidden="true" icon={faXmark} />
-          </button>
-        </div>
-        <label className={styles.textField}>
-          <span className="sr-only">
-            {itemLabel}: {texts.body}
-          </span>
-          <textarea
-            aria-describedby={describedBy}
-            aria-invalid={invalid || undefined}
-            maxLength={FEEDBACK_LIMITS.itemBodyMaxLength}
-            onChange={(event) => onChangeAction({ body: event.target.value })}
-            placeholder={texts.bodyPlaceholder}
-            rows={3}
-            value={item.body}
-          />
-        </label>
-        {invalid ? (
-          <p className={styles.error} id={errorId}>
-            {texts.bodyRequired}
-          </p>
-        ) : null}
-        {showCounter ? (
-          <p className={styles.counter} id={counterId}>
-            {formatMessage(texts.counter, {
-              count: item.body.length,
-              max: FEEDBACK_LIMITS.itemBodyMaxLength,
-            })}
-          </p>
-        ) : null}
-        {attachments}
+          )}
+          reserveErrorSpace={false}
+        />
       </div>
+      <FormField
+        autoGrow
+        errorMessage={invalid ? texts.bodyRequired : undefined}
+        hint={
+          item.body.length >= COUNTER_FROM
+            ? formatMessage(texts.counter, {
+                count: item.body.length,
+                max: FEEDBACK_LIMITS.itemBodyMaxLength,
+              })
+            : undefined
+        }
+        kind={FormFieldKind.Textarea}
+        label={texts.body}
+        reserveErrorSpace={false}
+        textareaProps={{
+          "aria-label": `${itemLabel}: ${texts.body}`,
+          maxLength: FEEDBACK_LIMITS.itemBodyMaxLength,
+          onChange: (event) => onChangeAction({ body: event.target.value }),
+          placeholder: texts.bodyPlaceholder,
+          rows: 3,
+          value: item.body,
+        }}
+      />
+      {attachments ? <div className={styles.files}>{attachments}</div> : null}
     </li>
   );
 }

@@ -1,0 +1,38 @@
+/* One round at reading width; the step frame scrolls it between the track and the bar. */
+.round {
+  display: grid;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 56rem;
+  min-width: 0;
+}
+
+.round[hidden] {
+  display: none;
+}
+
+.items {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.heading h3 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-heading-sm);
+}
+
+.count {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  font-variant-numeric: tabular-nums;
+}

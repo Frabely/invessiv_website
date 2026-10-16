@@ -1,69 +1,9 @@
-/* One reading column, like a proof sheet: intro, the points, the actions, then older rounds. */
+/* The page fills the portal's main area: the header rests on top, the round scrolls below it. */
 .page {
-  display: grid;
-  gap: 1.5rem;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
   width: 100%;
-  max-width: 48rem;
-  margin-inline: auto;
-}
-
-.back {
-  display: inline-flex;
-  align-items: center;
-  justify-self: start;
-  gap: 0.5rem;
-  min-height: 44px;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-ui-sm);
-  text-decoration: none;
-}
-
-.back:hover {
-  color: var(--color-text);
-}
-
-.back:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
-}
-
-.heading {
-  margin: 0;
-  color: var(--color-text);
-  font-size: var(--font-size-heading-md);
-  line-height: 1.2;
-  overflow-wrap: anywhere;
-}
-
-.hint {
-  margin: 0;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-ui-sm);
-  line-height: 1.5;
-}
-
-.state {
-  display: grid;
-  gap: 0.4rem;
-  padding: 1.1rem 0;
-  border-top: 1px solid var(--color-border);
-}
-
-.state h2 {
-  margin: 0;
-  color: var(--color-text);
-  font-size: var(--font-size-heading-sm);
-}
-
-.state p {
-  max-width: 60ch;
-  margin: 0;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-body-sm);
-  line-height: 1.55;
-}
-
-.results {
-  display: grid;
-  gap: 1rem;
+  min-width: 0;
+  min-height: 0;
 }

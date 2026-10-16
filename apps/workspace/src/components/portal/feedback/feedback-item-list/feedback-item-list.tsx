@@ -22,7 +22,10 @@ export type FeedbackItemListProps = {
   locale: Locale;
 };
 
-/** Points of a round that can no longer be edited: submitted, in the works or finished. */
+/**
+ * Points of a round that can no longer be edited, as the same cards as in the sheet: the
+ * customer's own words on top, and once the round is done, what we made of them below.
+ */
 export function FeedbackItemList({
   content,
   customerId,
@@ -39,26 +42,26 @@ export function FeedbackItemList({
     <>
       <ol aria-label={content.editor.listLabel} className={styles.list}>
         {items.map((item, index) => (
-          <li className={styles.item} key={item.id}>
-            <span aria-hidden="true" className={styles.number}>
-              {index + 1}
-            </span>
+          <li
+            className={styles.item}
+            data-result={item.result ?? undefined}
+            key={item.id}
+          >
             <FeedbackReadOnlyItemContent
-              compact
               generalLabel={content.editor.general}
               item={item}
               kindLabels={content.kinds}
               leading={
-                <span className="sr-only">
+                <span className={styles.number}>
                   {formatMessage(content.editor.itemLabel, {
                     number: index + 1,
                   })}
-                  :{" "}
+                  <span className="sr-only">: </span>
                 </span>
               }
               textLabels={{
-                showMore: content.history.showMore,
-                showLess: content.history.showLess,
+                showMore: content.items.showMore,
+                showLess: content.items.showLess,
               }}
               attachments={
                 item.attachments.length > 0 ? (

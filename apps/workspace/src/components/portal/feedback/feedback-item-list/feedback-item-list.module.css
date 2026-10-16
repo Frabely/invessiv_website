@@ -1,29 +1,31 @@
 .list {
   display: grid;
+  gap: 0.75rem;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
+/* The same card as in the sheet, without controls: reading needs no inputs. */
 .item {
   display: grid;
-  grid-template-columns: 2rem minmax(0, 1fr);
-  gap: 0.75rem;
-  padding: 0.85rem 0;
-  border-top: 1px solid var(--color-border);
+  gap: 0.85rem;
+  min-width: 0;
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-surface-1);
 }
 
 .number {
-  display: grid;
-  place-items: center;
-  width: 2rem;
-  height: 2rem;
-  border: 1px solid var(--color-border-strong);
-  border-radius: 999px;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-ui-xs);
-  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
   font-weight: 700;
+}
+
+/* Our answer to the point closes the card, set apart like a reply below a message. */
+.result {
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--color-border);
 }
 
 .error {
@@ -32,7 +34,8 @@
   font-size: var(--font-size-ui-xs);
 }
 
-/* The result belongs to the text column, under the customer's own point. */
-.result {
-  grid-column: 2;
+@media (max-width: 30rem) {
+  .item {
+    padding: 0.85rem 0.9rem;
+  }
 }

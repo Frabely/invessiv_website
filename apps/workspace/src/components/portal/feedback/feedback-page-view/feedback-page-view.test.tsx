@@ -7,6 +7,7 @@ import {
   fireEvent,
   render,
   screen,
+  waitFor,
   within,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -14,6 +15,7 @@ import { FeedbackItemKind } from "@invessiv/common/constants/crm/feedback-item-k
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { PortalFeedbackErrorCode } from "@invessiv/common/constants/portal/portal-feedback-error-codes";
+import { UploadQueueItemStatus } from "@invessiv/common/constants/files/upload-queue-item-status";
 import type { PortalFeedbackRoundDto } from "@invessiv/common/contracts/portal/portal-feedback-round.dto";
 import type { PortalProjectFeedbackDto } from "@invessiv/common/contracts/portal/portal-project-feedback.dto";
 import {
@@ -28,10 +30,13 @@ const mocks = vi.hoisted(() => ({
   submit: vi.fn(),
   approve: vi.fn(),
   uploadActive: false,
+  cancelUpload: vi.fn(),
 }));
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ refresh: mocks.refresh }),
+  usePathname: () => "/en/portal/customer-1/projects/project-1/feedback",
+  useSearchParams: () => new URLSearchParams(window.location.search),
 }));
 vi.mock("@/client/portal/portal-feedback-api-service", () => ({
   portalFeedbackApiService: {
@@ -44,11 +49,24 @@ vi.mock("@/client/portal/portal-feedback-api-service", () => ({
 }));
 vi.mock("@/hooks/shared/use-upload-queue", () => ({
   useUploadQueue: () => ({
-    items: [],
+    items: mocks.uploadActive
+      ? [
+          {
+            id: "upload-1",
+            name: "screenshot.png",
+            size: 1024,
+            assetKind: null,
+            status: UploadQueueItemStatus.Uploading,
+            progress: 0.5,
+            errorCode: null,
+            retryable: false,
+          },
+        ]
+      : [],
     isActive: mocks.uploadActive,
     stage: vi.fn(),
     start: vi.fn(),
-    cancel: vi.fn(),
+    cancel: mocks.cancelUpload,
     remove: vi.fn(),
     retry: vi.fn(),
   }),
@@ -95,7 +113,7 @@ function feedback(
     history: [],
     canSubmit: true,
     canAttach: false,
-    booking: null,
+    contact: null,
     ...overrides,
   };
 }
@@ -123,6 +141,43 @@ function textareas() {
   return screen.getAllByRole("textbox");
 }
 
+function secondRoundFeedback(canAttach = false) {
+  return feedback({
+    canAttach,
+    activeRound: round({
+      id: "round-2",
+      roundNumber: 2,
+      items: [
+        {
+          id: "item-2",
+          position: 0,
+          areaLabel: null,
+          kind: null,
+          body: "New point",
+          result: null,
+          resultNote: null,
+          attachments: [],
+        },
+      ],
+    }),
+    history: [round({ status: FeedbackRoundStatus.Completed })],
+    quota: {
+      included: 2,
+      used: 2,
+      remaining: 0,
+      activeRoundNumber: 2,
+      approvedRoundNumber: null,
+    },
+  });
+}
+
+function historyRound(number: number) {
+  act(() => {
+    window.history.replaceState(null, "", `?round=${number}`);
+    window.dispatchEvent(new PopStateEvent("popstate"));
+  });
+}
+
 describe("FeedbackPageView", () => {
   beforeEach(() => {
     mocks.refresh.mockReset();
@@ -130,25 +185,34 @@ describe("FeedbackPageView", () => {
     mocks.submit.mockReset();
     mocks.approve.mockReset();
     mocks.uploadActive = false;
+    mocks.cancelUpload.mockReset();
     vi.useFakeTimers({ shouldAdvanceTime: true });
   });
   afterEach(() => {
     cleanup();
     vi.useRealTimers();
+    window.history.replaceState(null, "", "/");
   });
 
-  it("introduces the round with its preview and what is new", () => {
+  it("introduces the round with its preview, what is new and the rounds still to come", () => {
     renderView();
 
     expect(
       screen.getByRole("heading", { level: 1, name: "Feedback on Relaunch" }),
     ).toBeInTheDocument();
-    expect(screen.getByText("Feedback round 1 of 2")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Feedback round 1" }),
+    ).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Open preview/ })).toHaveAttribute(
       "target",
       "_blank",
     );
     expect(screen.getByText("First complete version")).toBeInTheDocument();
+    const track = screen.getByRole("list", { name: content.steps.label });
+    const [current, upcoming] = within(track).getAllByRole("listitem");
+    expect(current).toHaveAttribute("aria-current", "step");
+    expect(upcoming).toHaveAttribute("data-disabled", "true");
+    expect(within(upcoming).queryByRole("button")).toBeNull();
   });
 
   it("saves the draft debounced and keeps the new version", async () => {
@@ -181,21 +245,244 @@ describe("FeedbackPageView", () => {
     expect(screen.getByText("last edited by Anna")).toBeInTheDocument();
   });
 
-  it("saves at once through the manual button", async () => {
+  it("reads an earlier round through the track and keeps the open draft", async () => {
     mocks.saveDraft.mockResolvedValue({
       ok: true,
-      round: round({ version: 2 }),
+      round: round({ id: "round-2", roundNumber: 2, version: 2 }),
     });
-    renderView();
-
+    renderView(
+      feedback({
+        activeRound: round({ id: "round-2", roundNumber: 2 }),
+        history: [
+          round({
+            status: FeedbackRoundStatus.Completed,
+            completedAt: "2026-09-30T09:00:00.000Z",
+            items: [
+              {
+                id: "old-item",
+                position: 0,
+                areaLabel: null,
+                kind: null,
+                body: "Old point",
+                result: "implemented",
+                resultNote: null,
+                attachments: [],
+              },
+            ],
+          }),
+        ],
+        quota: {
+          included: 2,
+          used: 2,
+          remaining: 0,
+          activeRoundNumber: 2,
+          approvedRoundNumber: null,
+        },
+      }),
+    );
     fireEvent.click(screen.getByRole("button", { name: content.editor.add }));
+    fireEvent.change(textareas()[0]!, { target: { value: "New point" } });
+
+    fireEvent.click(screen.getByRole("button", { name: /Round 1/ }));
+
+    expect(window.location.search).toBe("?round=1");
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Feedback round 1" }),
+    ).toHaveFocus();
+    expect(screen.getByText("Old point")).toBeInTheDocument();
+    expect(screen.queryAllByRole("textbox")).toHaveLength(0);
+    expect(
+      screen.queryByRole("button", { name: content.actions.submit }),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Next: round 2" }));
+
+    expect(textareas()[0]).toHaveValue("New point");
+    expect(
+      screen.queryByRole("button", { name: /save draft/i }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("focuses and resets the round on the first browser history change after mounting", async () => {
+    vi.useRealTimers();
+    window.history.replaceState(null, "", "?round=1");
+    window.history.pushState(null, "", "?round=2");
+    renderView(secondRoundFeedback());
+    const heading = screen.getByRole("heading", {
+      level: 2,
+      name: "Feedback round 2",
+    });
+    const body = heading.closest("section")!.parentElement!;
+    expect(heading).not.toHaveFocus();
+    body.scrollTop = 300;
+
+    act(() => {
+      window.history.back();
+    });
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { level: 2, name: "Feedback round 1" }),
+      ).toHaveFocus();
+    });
+    expect(body.scrollTop).toBe(0);
+    body.scrollTop = 250;
+    act(() => {
+      window.history.forward();
+    });
+    await waitFor(() => {
+      expect(heading).toHaveFocus();
+    });
+    expect(body.scrollTop).toBe(0);
+  });
+
+  it("keeps local history out of router restoration but allows server query and route changes", () => {
+    window.history.replaceState(
+      null,
+      "",
+      "/en/portal/customer-1/projects/project-1/feedback?round=2",
+    );
+    const routerHistory = vi.fn();
+    window.addEventListener("popstate", routerHistory);
+    try {
+      renderView(secondRoundFeedback());
+      historyRound(1);
+      expect(routerHistory).not.toHaveBeenCalled();
+      expect(
+        screen.getByRole("heading", { level: 2, name: "Feedback round 1" }),
+      ).toHaveFocus();
+      act(() => {
+        window.history.replaceState(null, "", "?round=1&locale=de");
+        window.dispatchEvent(new PopStateEvent("popstate"));
+      });
+      expect(routerHistory).toHaveBeenCalledTimes(1);
+      act(() => {
+        window.history.replaceState(null, "", "/en/portal/customer-1");
+        window.dispatchEvent(new PopStateEvent("popstate"));
+      });
+      expect(routerHistory).toHaveBeenCalledTimes(2);
+    } finally {
+      window.removeEventListener("popstate", routerHistory);
+    }
+  });
+
+  it("keeps uploads mounted and submission blocked across history and track navigation", () => {
+    mocks.uploadActive = true;
+    window.history.replaceState(null, "", "?round=1");
+    renderView(secondRoundFeedback(true), true);
+    fireEvent.click(screen.getByRole("button", { name: "Next: round 2" }));
+    const input = textareas()[0]!;
+    expect(
+      screen.getByRole("button", { name: content.actions.submit }),
+    ).toBeDisabled();
+
+    historyRound(1);
+    expect(input).toBeInTheDocument();
+    expect(input).not.toBeVisible();
+    expect(screen.queryByRole("textbox")).toBeNull();
+    expect(mocks.cancelUpload).not.toHaveBeenCalled();
+
+    historyRound(2);
+    expect(textareas()[0]).toBe(input);
+    expect(
+      screen.getByRole("button", { name: content.actions.submit }),
+    ).toBeDisabled();
+    fireEvent.click(screen.getByRole("button", { name: /Round 1/ }));
+    expect(input).not.toBeVisible();
+    expect(mocks.cancelUpload).not.toHaveBeenCalled();
+  });
+
+  it("shows and retries a failed autosave while an earlier round is read", async () => {
+    mocks.saveDraft
+      .mockResolvedValueOnce({
+        ok: false,
+        code: PortalFeedbackErrorCode.Unavailable,
+      })
+      .mockResolvedValueOnce({
+        ok: true,
+        round: round({ id: "round-2", roundNumber: 2, version: 2 }),
+      });
+    renderView(secondRoundFeedback());
+    fireEvent.change(textareas()[0]!, { target: { value: "Unsaved change" } });
+    fireEvent.click(screen.getByRole("button", { name: /Round 1/ }));
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1_600);
+    });
+
+    expect(screen.getByText(content.draft.failed)).toBeVisible();
+    expect(screen.getByText(content.errors.unavailable)).toBeVisible();
+    expect(
+      screen.getByText("Feedback round 2", { selector: "p" }),
+    ).toBeVisible();
     await act(async () => {
       fireEvent.click(
-        screen.getByRole("button", { name: content.actions.saveNow }),
+        screen.getByRole("button", { name: content.draft.retry }),
       );
     });
+    expect(mocks.saveDraft).toHaveBeenLastCalledWith(
+      "customer-1",
+      "round-2",
+      expect.objectContaining({
+        items: [expect.objectContaining({ body: "Unsaved change" })],
+      }),
+    );
+    expect(screen.queryByText(content.draft.failed)).toBeNull();
+    expect(
+      screen.getByRole("heading", { level: 2, name: "Feedback round 1" }),
+    ).toBeVisible();
+  });
 
-    expect(mocks.saveDraft).toHaveBeenCalledTimes(1);
+  it("restores a conflicting draft while an earlier round is read", async () => {
+    const theirs = round({
+      id: "round-2",
+      roundNumber: 2,
+      version: 3,
+      items: [
+        {
+          id: "item-2",
+          position: 0,
+          areaLabel: null,
+          kind: null,
+          body: "Their change",
+          result: null,
+          resultNote: null,
+          attachments: [],
+        },
+      ],
+    });
+    mocks.saveDraft
+      .mockResolvedValueOnce({
+        ok: false,
+        code: ConcurrencyErrorCode.VersionConflict,
+        current: theirs,
+      })
+      .mockResolvedValueOnce({ ok: true, round: { ...theirs, version: 4 } });
+    renderView(secondRoundFeedback());
+    fireEvent.change(textareas()[0]!, { target: { value: "My change" } });
+    fireEvent.click(screen.getByRole("button", { name: /Round 1/ }));
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1_600);
+    });
+
+    const alert = screen.getByRole("alert");
+    expect(alert).toBeVisible();
+    expect(alert.parentElement).toHaveAccessibleName("Feedback round 2");
+    await act(async () => {
+      fireEvent.click(
+        within(alert).getByRole("button", {
+          name: content.draft.conflict.restore,
+        }),
+      );
+    });
+    expect(mocks.saveDraft).toHaveBeenLastCalledWith(
+      "customer-1",
+      "round-2",
+      expect.objectContaining({
+        version: 3,
+        items: [expect.objectContaining({ body: "My change" })],
+      }),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Next: round 2" }));
+    expect(textareas()[0]).toHaveValue("My change");
   });
 
   it("shows the other contact's draft on conflict and restores the own text", async () => {
@@ -227,9 +514,7 @@ describe("FeedbackPageView", () => {
     fireEvent.click(screen.getByRole("button", { name: content.editor.add }));
     fireEvent.change(textareas()[0]!, { target: { value: "My text" } });
     await act(async () => {
-      fireEvent.click(
-        screen.getByRole("button", { name: content.actions.saveNow }),
-      );
+      await vi.advanceTimersByTimeAsync(1_600);
     });
 
     const alert = screen.getByRole("alert");
@@ -262,9 +547,6 @@ describe("FeedbackPageView", () => {
     renderView();
     fireEvent.click(screen.getByRole("button", { name: content.editor.add }));
     fireEvent.change(textareas()[0]!, { target: { value: "My text" } });
-    fireEvent.click(
-      screen.getByRole("button", { name: content.actions.saveNow }),
-    );
     fireEvent.click(
       screen.getByRole("button", { name: content.actions.submit }),
     );
@@ -361,9 +643,7 @@ describe("FeedbackPageView", () => {
     renderView();
     fireEvent.click(screen.getByRole("button", { name: content.editor.add }));
     await act(async () => {
-      fireEvent.click(
-        screen.getByRole("button", { name: content.actions.saveNow }),
-      );
+      await vi.advanceTimersByTimeAsync(1_600);
     });
     const itemId = mocks.saveDraft.mock.calls[0]![2].items[0].id as string;
     mocks.submit.mockResolvedValue({
@@ -638,7 +918,7 @@ describe("FeedbackPageView", () => {
       screen.getByRole("heading", { name: "Round 1 is implemented" }),
     ).toBeInTheDocument();
     expect(
-      screen.getByText(content.finalApproval.earlyHint),
+      screen.getByText(content.finalApproval.earlyHintOne),
     ).toBeInTheDocument();
     expect(
       screen.queryByRole("link", { name: content.states.exhausted.chatLink }),

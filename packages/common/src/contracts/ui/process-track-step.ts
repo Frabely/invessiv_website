@@ -23,4 +23,6 @@ export interface ProcessTrackStep {
   valid?: boolean;
   /** Marks the step as carrying a message for the reader. Independent of fill, tone and tick; say what it is in `statusLabel`. */
   flagged?: boolean;
+  /** A step that cannot be opened yet or any more, e.g. a round still to come. It stays visible for orientation. */
+  disabled?: boolean;
 }

@@ -12,6 +12,7 @@ import {
   users,
   workspaceMembers,
 } from "@invessiv/db/record-configuration";
+import type { ProjectResponsibleContact } from "@/common/contracts/crm/project-responsible-contact";
 import type { ProjectBookingContact } from "./project-responsible-member-types";
 
 /** Who answers for a project, in order: its owner, then the owner of its customer. */
@@ -55,22 +56,18 @@ async function findActiveMemberId(
   return null;
 }
 
-/**
- * Whose calendar the customer of a project books: the first of project owner and customer owner
- * who is active **and** has a booking link. An active project owner without a link passes the
- * question on to the customer owner; an inactive member never offers a link, even a stored one.
- * A pure read, so it takes no lock.
- */
-async function findBookingContact(
+/** The active ones of project owner and customer owner, in that order. A pure read without lock. */
+async function loadActiveOwners(
   executor: ContactDatabaseReader,
   projectId: string,
-): Promise<ProjectBookingContact | null> {
+) {
   const ownerMemberIds = await loadOwnerMemberIds(executor, projectId);
-  if (ownerMemberIds.length === 0) return null;
+  if (ownerMemberIds.length === 0) return [];
   const members = await executor
     .select({
       memberId: workspaceMembers.id,
       displayName: users.display_name,
+      email: users.primary_email,
       bookingUrl: workspaceMembers.booking_url,
     })
     .from(workspaceMembers)
@@ -81,16 +78,47 @@ async function findBookingContact(
         eq(workspaceMembers.active, true),
       ),
     );
-  for (const memberId of ownerMemberIds) {
-    const member = members.find((candidate) => candidate.memberId === memberId);
-    if (member?.bookingUrl) {
-      return { ...member, bookingUrl: member.bookingUrl };
-    }
+  return ownerMemberIds.flatMap((memberId) =>
+    members.filter((member) => member.memberId === memberId),
+  );
+}
+
+/**
+ * Whose calendar the customer of a project books: the first of project owner and customer owner
+ * who is active **and** has a booking link. An active project owner without a link passes the
+ * question on to the customer owner; an inactive member never offers a link, even a stored one.
+ */
+async function findBookingContact(
+  executor: ContactDatabaseReader,
+  projectId: string,
+): Promise<ProjectBookingContact | null> {
+  for (const member of await loadActiveOwners(executor, projectId)) {
+    if (member.bookingUrl)
+      return {
+        memberId: member.memberId,
+        displayName: member.displayName,
+        bookingUrl: member.bookingUrl,
+      };
   }
   return null;
+}
+
+/**
+ * Whom the customer of a project writes to: the first active member of project owner and customer
+ * owner. The address is master data shown to the customer; it never authorizes anything.
+ */
+async function findContact(
+  executor: ContactDatabaseReader,
+  projectId: string,
+): Promise<ProjectResponsibleContact | null> {
+  const [member] = await loadActiveOwners(executor, projectId);
+  return member
+    ? { displayName: member.displayName, email: member.email }
+    : null;
 }
 
 export const projectResponsibleMemberService = {
   findActiveMemberId,
   findBookingContact,
+  findContact,
 } as const;

@@ -1,0 +1,104 @@
+/*
+ * A tinted plate in the colour of the state: icon tile, title, what it means and, when the team
+ * wrote something, their words set apart on a plate of their own.
+ */
+.notice {
+  --notice-tone: var(--color-cta);
+
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 1rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid color-mix(in srgb, var(--notice-tone) 38%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--notice-tone) 8%, var(--color-surface-1));
+}
+
+.notice[data-tone="warm"] {
+  --notice-tone: var(--color-accent-warm);
+}
+
+.notice[data-tone="success"] {
+  --notice-tone: var(--color-success);
+}
+
+.notice[data-tone="neutral"] {
+  --notice-tone: var(--color-text-muted);
+}
+
+.icon {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--notice-tone) 18%, transparent);
+  color: var(--notice-tone);
+  font-size: 1.05rem;
+}
+
+.text {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+  padding-top: 0.15rem;
+}
+
+.title {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-heading-sm);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.description {
+  max-width: 65ch;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.55;
+}
+
+.quote {
+  display: grid;
+  gap: 0.25rem;
+  max-width: 65ch;
+  margin: 0.4rem 0 0;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-surface-1);
+}
+
+.quoteLabel {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 600;
+}
+
+.quote p {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.6;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+@media (max-width: 30rem) {
+  .notice {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.6rem;
+    padding: 0.9rem;
+  }
+}

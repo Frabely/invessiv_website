@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useId, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -32,6 +32,7 @@ import type { Locale } from "@/config/i18n";
 import { PortalOwnerNotice } from "@/components/portal/portal-owner-notice/portal-owner-notice";
 import { PortalBackLink } from "@/components/portal/portal-back-link/portal-back-link";
 import { useFileSelection } from "@/hooks/shared/use-file-selection";
+import { useUrlSearch } from "@/hooks/shared/use-url-search";
 import { usePortalFileDownloads } from "@/hooks/portal/use-portal-file-downloads";
 import { usePortalFiles } from "@/hooks/portal/use-portal-files";
 import type { PortalFilesDictionary } from "@/i18n/dictionaries/portal";
@@ -62,21 +63,6 @@ type Overlay =
   | { kind: "link" }
   | { kind: "preview"; fileId: string };
 
-const PORTAL_TAB_CHANGE_EVENT = "portal-files-tab-change";
-
-function subscribeToTabChange(onChange: () => void) {
-  window.addEventListener("popstate", onChange);
-  window.addEventListener(PORTAL_TAB_CHANGE_EVENT, onChange);
-  return () => {
-    window.removeEventListener("popstate", onChange);
-    window.removeEventListener(PORTAL_TAB_CHANGE_EVENT, onChange);
-  };
-}
-
-function currentSearch() {
-  return window.location.search;
-}
-
 /**
  * The customer's files page: intake on top, the two origins as tabs below. Mount it with
  * `key={customerId}` so no list or selection state crosses companies.
@@ -97,11 +83,11 @@ export function PortalFilesView({
   const pathname = usePathname();
   const baseId = useId();
   const ownerNoticeId = useId();
-  const search = useSyncExternalStore(
-    subscribeToTabChange,
-    currentSearch,
-    () => `?${PortalFilesQueryParam.Tab}=${initialTab}`,
-  );
+  const { search, replace } = useUrlSearch({
+    initialSearch: new URLSearchParams({
+      [PortalFilesQueryParam.Tab]: initialTab,
+    }).toString(),
+  });
   const tab = readPortalFilesTab(
     new URLSearchParams(search).get(PortalFilesQueryParam.Tab),
   );
@@ -154,14 +140,7 @@ export function PortalFilesView({
 
   // No server round trip: the list hook loads the tab itself, a re-render would be discarded.
   function selectTab(next: PortalFileOrigin) {
-    const params = new URLSearchParams(window.location.search);
-    params.set(PortalFilesQueryParam.Tab, next);
-    window.history.replaceState(
-      window.history.state,
-      "",
-      `${pathname}?${params.toString()}`,
-    );
-    window.dispatchEvent(new Event(PORTAL_TAB_CHANGE_EVENT));
+    replace((params) => params.set(PortalFilesQueryParam.Tab, next));
   }
 
   function open(next: Overlay) {

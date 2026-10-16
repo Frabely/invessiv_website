@@ -117,13 +117,36 @@ Plan: `apps/workspace/plans/crm/14-dateien/55-portal-dateien.md`.
 
 Plan: `apps/workspace/plans/crm/16-feedbackrunden/60-ui-uebergabe-und-kundenbogen.md`.
 
-- Komponenten liegen unter `feedback/`; Orchestrator ist `feedback/feedback-page-view`, der Bogen einer offenen Runde
-  `feedback/feedback-sheet`. Welcher Zustand gezeigt wird, entscheidet ausschließlich `portalFeedbackPageState`
-  (`common/patterns/portal/`).
+- Komponenten liegen unter `feedback/`; Orchestrator ist `feedback/feedback-page-view`. Wer die offene Runde
+  ausfüllen darf (Zustand `sheet`), bekommt `feedback-editor`, alle anderen und jeder andere Zustand `feedback-reader`.
+  Welcher Zustand gezeigt wird, entscheidet ausschließlich `portalFeedbackPageState` (`common/patterns/portal/`).
+- **Schritt-Layout wie das Onboarding (Paket J, Entscheidung 16.10.2026,
+  Plan `apps/workspace/plans/crm/25-portal-feedback-redesign/J-portal-feedback-layout.md`).** Editor und Reader rendern
+  `feedback-page-frame`: fester Kopf (`shared/portal-step-header`) mit Zurück-Link, Titel und übrigen Runden, darunter
+  der Stepper `feedback-round-track` (`ProcessTrack` kompakt), die Runde scrollt dazwischen, unten die Fußleiste
+  (`shared/portal-step-bar`). **Ein Schritt = eine Runde.** Der Stepper zeigt alle Runden aus
+  `listFeedbackRoundSteps`: übergebene sind wählbar, kommende und nach einer Abnahme entfallene stehen ausgegraut und
+  ohne Button da (`disabled` am `ProcessTrackStep`). Füllung nach Status (offen ¼, eingereicht/Gespräch ½, Umsetzung ¾,
+  umgesetzt/abgenommen voll und grün); zurückgegebene Runde und Gespräch tragen die Sprechblasen-Marke.
+- Die gewählte Runde steht in der URL (`?round=<nummer>`) und läuft ausschließlich über `useFeedbackRoundNavigation`
+  (auf dem geteilten `usePortalStepSearch`, derselbe wie im Onboarding). Ohne gültigen Parameter öffnet die laufende
+  bzw. neueste Runde (`initialFeedbackRoundNumber`). Ein Wechsel setzt den Scrollbereich an den Anfang und den Fokus
+  auf die Rundenüberschrift. Die offene Runde bleibt beim Lesen früherer Runden eingebunden, damit Uploads auch
+  bei Browser-Zurück/Vorwärts weiterlaufen; ihre ausgeblendeten Felder sind nicht bedienbar.
+- Jede Runde ist ein `feedback-round-step`: Kopf (`feedback-round-head`: Titel, Status-Badge, maßgebliches Datum,
+  „Was ist neu“ und Vorschau als `ButtonLink`), Stand (`feedback-round-notice` über `feedback-state-notice`), Punkte als
+  Karten. Frühere Runden sind nur lesbar. Der Entwurf lebt im Editor, ein Blick zurück verliert nichts.
+- **Kontaktwege** (`feedback-contact-ways`): Chat, Termin im Kalender der zuständigen Person und E-Mail an sie in einer
+  Zeile, der Anbieterhinweis zum Kalender darunter. Genutzt vom Gesprächs-Hinweis und vom Hinweis „Runden aufgebraucht“
+  (dort zuerst „Zusätzliche Runde anfragen“, wenn angeboten). Person, Adresse und Link kommen nur aus `contact` im DTO.
+- **Kein „Zwischenspeichern“.** Der Autosave speichert; die Fußleiste zeigt links `DraftSaveStatus`, rechts
+  „Feedback einreichen“. Auf früheren Runden zeigt sie Zurück/Weiter. Keine selbst gebauten Pillen-Links oder runden
+  Buttons: Links sind `ButtonLink`, Entfernen eines Punkts ist ein Icon-Button (`size="icon"`, `quiet`).
 - Entwurf, Autosave (≈ 1,5 s entprellt), Konflikt und Verlassen-Warnung laufen ausschließlich über `useFeedbackDraft`
   (`src/hooks/portal/`); API-Aufrufe nur über `portalFeedbackApiService`. Die Statuszeile ist der geteilte
-  `DraftSaveStatus` (`components/shared/draft-save-status/`), die Konfliktanzeige reicht der Bogen als Slot durch
-  (`feedback-draft-conflict`); die Verlassen-Warnung kommt aus `useLeaveWarning` (`src/hooks/shared/`). Vor Upload, Einreichen und Freigeben wird
+  `DraftSaveStatus` (`components/shared/draft-save-status/`), die Konfliktanzeige steht im Editor über den Punkten
+  (`feedback-draft-conflict`). Speicherstatus und Konflikte bleiben auch beim Lesen früherer Runden sichtbar und
+  nennen dort die betroffene offene Runde; die Verlassen-Warnung kommt aus `useLeaveWarning` (`src/hooks/shared/`). Vor Upload, Einreichen und Freigeben wird
   immer `flush()` abgewartet. Ein 409 zeigt den aktuellen Stand und bietet die eigene Fassung zum Wiederherstellen
   oder Kopieren an — nie stilles Überschreiben.
 - Bearbeiten nur mit `canSubmit`, Anhängen/Lösen nur mit `canAttach`, Upload zusätzlich mit `portal.files.write`
@@ -132,9 +155,10 @@ Plan: `apps/workspace/plans/crm/16-feedbackrunden/60-ui-uebergabe-und-kundenboge
   `shared/portal-attachment-field/`.
 - Freigeben ohne Änderungen erscheint nur ohne Punkte und nur über `feedback-approve-dialog` mit Pflicht-Haken.
 - Ab Task 61: Gespräch (`discussion`) und zurückgegebene Runde zeigen den Hinweis des Teams über
-  `feedback-team-notice`. Ergebnisse je Punkt zeigt `feedback-item-list` über das geteilte `FeedbackItemResult`.
-  Nach einer abgeschlossenen Runde stehen ihre Ergebnisse vorn; `feedback-final-approval` bietet die Abnahme an
-  (nach der letzten Runde prominent, vorher als ruhige Option) und nutzt `feedback-approve-dialog` mit eigenen Texten
+  `feedback-round-notice`. Ergebnisse je Punkt zeigt `feedback-item-list` über das geteilte `FeedbackItemResult`.
+  Nach einer abgeschlossenen Runde öffnet die Seite auf ihr; `feedback-final-approval` bietet die Abnahme an
+  (nach der letzten Runde als Hauptaktion in der Fußleiste, vorher als ruhiger Abschnitt, der die Zahl der verfallenden
+  Runden nennt) und nutzt `feedback-approve-dialog` mit eigenen Texten
   (`finalApproveDialog`). Sprachregel: Die Abkürzung aus einer leeren Runde heißt „freigeben“, die Abnahme nach der
   letzten Runde „abnehmen“; der Endzustand heißt überall „Abgenommen am …“.
 - Links auf die Seite entstehen nur über `buildPortalFeedbackPath`. Das Dashboard-Widget `feedback` erscheint nur
@@ -148,13 +172,13 @@ Plan: `apps/workspace/plans/crm/15-onboarding/66-portal-formular.md`.
   darf (`editableBlockIds` nicht leer), bekommt `onboarding-form-editor`, alle anderen und jeder spätere Status
   `onboarding-form-reader`. Das Dashboard-Widget verlinkt direkt auf den Bogen des gewählten Projekts.
 - **Lesen im selben Schritt-Layout (Entscheidung 16.10.2026).** Der Reader hat denselben Kopf, dieselbe Schrittleiste
-  und dieselbe Fußleiste (`onboarding-step-bar`) wie der Editor. Erster Schritt ist `status`
+  und dieselbe Fußleiste (`shared/portal-step-bar`) wie der Editor. Erster Schritt ist `status`
   (`PORTAL_ONBOARDING_STATUS_SECTION`) mit Stand, Terminkarte, Owner-Hinweis und nach dem Abschluss den Wegen in
   Dateibereich und Chat; danach folgt je Block ein Schritt mit den Antworten als Text (`OnboardingAnswerReadView`),
   nie als deaktivierte Eingaben. Es gibt keinen Prüfschritt und keinen Gesamtstand im Kopf.
 - **Ein Block = ein Schritt.** Der Schritt steht in der URL (`?section=<blockId>` bzw. `review`, optional
   `&field=<fieldId>`) und wird ausschließlich über `usePortalOnboardingStep` gelesen und geschrieben
-  (`history.pushState`, kein Server-Roundtrip). Pflichtfelder blockieren den Schrittwechsel nie. Nach einem Wechsel
+  (über `usePortalStepSearch`, `history.pushState`, kein Server-Roundtrip). Pflichtfelder blockieren den Schrittwechsel nie. Nach einem Wechsel
   liegt der Fokus auf der Blocküberschrift, nach einem Sprung aus der Liste fehlender Angaben auf dem Feld
   (`onboardingFieldDomId`).
 - **Speichern nur über `useOnboardingAutosave`** (`src/hooks/portal/`): Text entprellt (1,5 s) und beim Verlassen des
@@ -244,7 +268,7 @@ Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-le
 
 - **Layout und Fortschritt (Paket I, Ordner 18):** Plan
   `apps/workspace/plans/crm/18-portal-prozess-nacharbeiten/I-portal-onboarding-layout.md`.
-  - **Fester Bogen-Kopf** (`onboarding/onboarding-form-header`): Zurück-Link, `h1` und Gesamtstand in einer Zeile,
+  - **Fester Bogen-Kopf** (`shared/portal-step-header`, geteilt mit dem Feedback): Zurück-Link, `h1` und Gesamtstand in einer Zeile,
     darunter die Schrittleiste. Editor und Reader rendern ihn selbst; der Reader ohne Gesamtstand. Der
     Kopf ist **nicht** `position: sticky`: Die Seite markiert sich mit `data-portal-fixed-head`, `.main` der
     `PortalShell` scrollt dann nicht mehr selbst, und der Inhalt scrollt unter dem Kopf in einem eigenen Bereich

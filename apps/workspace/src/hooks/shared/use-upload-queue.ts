@@ -10,6 +10,8 @@ import type { UploadQueueItem } from "@invessiv/common/contracts/files/upload-qu
 import { uploadQueuePlan } from "@invessiv/common/patterns/files/upload-queue-plan";
 import { transferToStorage } from "@/client/shared/storage-transfer";
 import type { UploadQueueTransport } from "@/common/contracts/files/upload-queue-transport";
+import type { UrlHistoryChange } from "@/common/contracts/hooks/url-history-change";
+import { useUrlHistoryGuard } from "./use-url-search";
 
 /**
  * Runs one upload batch: the browser check on selection, at most three parallel transfers with
@@ -165,6 +167,20 @@ export function useUploadQueue<TFile extends { id: string } = FileDto>(
       item.status === Status.Finalizing,
   );
 
+  const historyWarning = useCallback(
+    ({ previousUrl, nextUrl, preservesFields }: UrlHistoryChange) => {
+      if (
+        preservesFields ||
+        (previousUrl.pathname === nextUrl.pathname &&
+          previousUrl.search === nextUrl.search)
+      )
+        return null;
+      return options.leaveWarning ?? null;
+    },
+    [options.leaveWarning],
+  );
+  useUrlHistoryGuard(isActive && options.leaveWarning ? historyWarning : null);
+
   useEffect(() => {
     if (!isActive) return;
 
@@ -181,7 +197,6 @@ export function useUploadQueue<TFile extends { id: string } = FileDto>(
   useEffect(() => {
     if (!isActive || !options.leaveWarning) return;
     const pathname = window.location.pathname;
-    const search = window.location.search;
 
     function guardLink(event: MouseEvent) {
       if (
@@ -215,20 +230,9 @@ export function useUploadQueue<TFile extends { id: string } = FileDto>(
       }
     }
 
-    function guardHistory() {
-      if (
-        window.location.pathname === pathname &&
-        window.location.search === search
-      )
-        return;
-      if (!window.confirm(options.leaveWarning!)) window.history.forward();
-    }
-
     document.addEventListener("click", guardLink, true);
-    window.addEventListener("popstate", guardHistory, true);
     return () => {
       document.removeEventListener("click", guardLink, true);
-      window.removeEventListener("popstate", guardHistory, true);
     };
   }, [isActive, options.leaveWarning]);
 

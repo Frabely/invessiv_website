@@ -18,7 +18,7 @@ import {
   OnboardingFieldCell,
   OnboardingFieldGrid,
 } from "../onboarding-field-grid/onboarding-field-grid";
-import { OnboardingStepHeading } from "../onboarding-step-heading/onboarding-step-heading";
+import { PortalStepHeading } from "@/components/portal/shared/portal-step-heading/portal-step-heading";
 import { QuestionnaireField } from "../questionnaire-field/questionnaire-field";
 import styles from "./onboarding-block-step.module.css";
 
@@ -71,9 +71,7 @@ export function OnboardingBlockStep({
 
   return (
     <section className={styles.step}>
-      <OnboardingStepHeading ref={headingRef}>
-        {block.title}
-      </OnboardingStepHeading>
+      <PortalStepHeading ref={headingRef}>{block.title}</PortalStepHeading>
       {block.intro ? <p className={styles.intro}>{block.intro}</p> : null}
       {block.reviewNote ? (
         <div className={styles.review}>

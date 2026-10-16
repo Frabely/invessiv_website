@@ -8,15 +8,32 @@
     "back": "Back to overview",
     "ownerHint": "You can't give feedback in the portal view.",
     "ownerLink": "View in the CRM",
-    "readOnlyHint": "You can read the feedback but not edit it. Ask the person who looks after the project on your side."
+    "readOnlyHint": "You can read the feedback but not edit it. Ask the person who looks after the project on your side.",
+    "backShort": "Overview"
   },
-  "intro": {
-    "roundOf": "Feedback round {number} of {included}",
-    "due": "please by {date}",
+  "steps": {
+    "label": "Feedback rounds",
+    "round": "Round {number}",
+    "back": "Back",
+    "nextTo": "Next: round {number}",
+    "upcoming": "still to come",
+    "expired": "dropped after approval"
+  },
+  "summary": {
+    "remaining": "{count} rounds left",
+    "remainingOne": "1 round left",
+    "remainingNone": "No further round",
+    "approved": "Approved"
+  },
+  "round": {
+    "title": "Feedback round {number}",
+    "due": "Feedback please by {date}",
+    "submittedOn": "Submitted on {date}",
+    "completedOn": "Implemented on {date}",
+    "approvedOn": "Approved on {date}",
     "preview": "Open preview",
     "previewNewTab": "opens in a new tab",
-    "handoverNote": "What's new",
-    "draftVisible": "Our team can already see your draft. We only get started once you submit."
+    "handoverNote": "What's new"
   },
   "status": {
     "open": "Your turn",
@@ -49,7 +66,7 @@
     },
     "exhausted": {
       "title": "Need another round?",
-      "description": "Write to us in the chat and we'll find a way together.",
+      "description": "Get in touch – in the chat, in a call or by email. Then we will find a way together.",
       "chatLink": "Go to chat",
       "requestDescription": "Your feedback rounds are used up. You can request a further round and get a quote first.",
       "requestLink": "Request a further round"
@@ -62,13 +79,7 @@
     "discussion": {
       "title": "We'd like to talk through your feedback",
       "description": "Before we start, a few points are easiest to clear up together. Let us know in the chat when it suits you.",
-      "chatLink": "Find a time in the chat",
-      "booking": {
-        "action": "Book an appointment",
-        "noticeNamed": "The calendar is hosted by {provider}. It opens in a new tab; the provider only receives your data then.",
-        "noticeOther": "The calendar is hosted by an external provider. It opens in a new tab; the provider only receives your data then.",
-        "newTab": "opens in a new tab"
-      }
+      "chatLink": "Find a time in the chat"
     },
     "completed": {
       "title": "Round {number} is implemented",
@@ -77,7 +88,40 @@
     "approvalDue": {
       "title": "The last round is implemented",
       "description": "Take a look at what we did with your points and approve the project if everything fits."
+    },
+    "open": {
+      "title": "Your turn",
+      "description": "Take a look at the preview and tell us everything we should change – one point per request. We save your draft automatically and get started once you submit."
+    },
+    "readOnly": {
+      "title": "This round is waiting for your team's feedback"
+    },
+    "past": {
+      "title": "Round {number} is complete",
+      "description": "Here you can see your feedback from this round and what we did with it."
+    },
+    "pastEmpty": {
+      "title": "Round {number} is complete",
+      "description": "You didn't give any feedback in this round."
     }
+  },
+  "contact": {
+    "booking": {
+      "action": "Book an appointment",
+      "noticeNamed": "The calendar is hosted by {provider}. It opens in a new tab; the provider only receives your data then.",
+      "noticeOther": "The calendar is hosted by an external provider. It opens in a new tab; the provider only receives your data then.",
+      "newTab": "opens in a new tab"
+    },
+    "mail": "Send an email",
+    "mailLabel": "Send an email to {name}"
+  },
+  "items": {
+    "heading": "Your points",
+    "headingRead": "Your feedback",
+    "count": "{count} points",
+    "countOne": "1 point",
+    "showMore": "Show more",
+    "showLess": "Show less"
   },
   "editor": {
     "listLabel": "Your feedback points",
@@ -128,9 +172,11 @@
     }
   },
   "actions": {
-    "saveNow": "Save draft",
     "submit": "Submit feedback",
-    "approveHint": "No changes needed?",
+    "approveTitle": "No changes needed?",
+    "approveHint": "If you like the current version, you can approve the project without any points. It is then complete from your side.",
+    "approveHintRounds": "If you like the current version, you can approve the project without any points. Your remaining {count} feedback rounds expire with it.",
+    "approveHintRoundsOne": "If you like the current version, you can approve the project without any points. Your last remaining feedback round expires with it.",
     "approve": "Approve project without changes"
   },
   "submitDialog": {
@@ -153,17 +199,6 @@
     "confirm": "Approve project",
     "cancel": "Cancel",
     "close": "Close"
-  },
-  "history": {
-    "title": "Earlier rounds",
-    "roundTitle": "Feedback round {number}",
-    "submittedOn": "submitted on {date}",
-    "approvedOn": "approved on {date}",
-    "items": "{count} points",
-    "itemsOne": "1 point",
-    "itemsNone": "no points",
-    "showMore": "Show more",
-    "showLess": "Show less"
   },
   "announcements": {
     "submitted": "Your feedback is submitted.",
@@ -196,7 +231,10 @@
   },
   "finalApproval": {
     "action": "Approve project",
-    "earlyHint": "Everything fits already? Then you can approve the project now. The remaining rounds expire with it.",
+    "earlyTitle": "Everything the way you want it already?",
+    "earlyHint": "You can also approve the project now. Your remaining {count} feedback rounds expire then.",
+    "earlyHintOne": "You can also approve the project now. Your last remaining feedback round expires then.",
+    "lastTitle": "Everything as it should be?",
     "lastHint": "If everything fits, approve the project. We'll then prepare the launch."
   },
   "finalApproveDialog": {

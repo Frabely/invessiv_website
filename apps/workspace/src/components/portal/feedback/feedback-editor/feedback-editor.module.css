@@ -1,0 +1,18 @@
+.draftStatus,
+.conflict {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.conflict {
+  width: 100%;
+  max-width: 56rem;
+}
+
+.roundLabel {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+}

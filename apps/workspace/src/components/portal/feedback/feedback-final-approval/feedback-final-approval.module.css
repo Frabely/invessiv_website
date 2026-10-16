@@ -1,26 +1,35 @@
+/*
+ * Approving early ends the remaining rounds, so it is offered, not pushed: a quiet section after
+ * the results, set apart by a rule, with the consequence spelled out next to the button.
+ */
 .approval {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem 1rem;
-  padding-top: 1rem;
+  gap: 0.75rem 1.5rem;
+  margin-top: 0.5rem;
+  padding-top: 1.25rem;
   border-top: 1px solid var(--color-border);
 }
 
-/* After the last round the approval is the one thing left to do, so it gets the frame. */
-.approval[data-prominent="true"] {
-  padding: 1.1rem 1.2rem;
-  border: 1px solid color-mix(in srgb, var(--color-success) 45%, transparent);
-  border-radius: 1rem;
-  background: color-mix(in srgb, var(--color-success) 8%, transparent);
+.text {
+  display: grid;
+  flex: 1 1 22rem;
+  gap: 0.3rem;
+  min-width: 0;
 }
 
-.text {
-  flex: 1 1 18rem;
-  max-width: 60ch;
+.text h3 {
   margin: 0;
   color: var(--color-text);
+  font-size: var(--font-size-body-md);
+}
+
+.text p {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--color-text-muted);
   font-size: var(--font-size-body-sm);
   line-height: 1.55;
 }

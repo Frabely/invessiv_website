@@ -1,0 +1,19 @@
+.ways {
+  display: grid;
+  flex: 1 1 100%;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+/* On a phone every way takes a row of its own, so no label is cut. */
+@media (max-width: 30rem) {
+  .row > * {
+    flex: 1 1 100%;
+  }
+}

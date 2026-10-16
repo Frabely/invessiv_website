@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useCallback, useMemo, useRef, useState } from "react";
+import { type ReactNode, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { PortalOnboardingErrorCode } from "@invessiv/common/constants/portal/portal-onboarding-error-codes";
@@ -21,15 +21,16 @@ import type { Locale } from "@/config/i18n";
 import { useOnboardingAutosave } from "@/hooks/portal/use-onboarding-autosave";
 import { useOnboardingFormState } from "@/hooks/portal/use-onboarding-form-state";
 import { usePortalOnboardingStep } from "@/hooks/portal/use-portal-onboarding-step";
+import { useActiveItems } from "@/hooks/shared/use-active-items";
 import type {
   PortalFilesDictionary,
   PortalOnboardingDictionary,
 } from "@/i18n/dictionaries/portal";
 import { OnboardingBlockStep } from "../onboarding-block-step/onboarding-block-step";
-import { OnboardingFormHeader } from "../onboarding-form-header/onboarding-form-header";
+import { PortalStepHeader } from "@/components/portal/shared/portal-step-header/portal-step-header";
 import { OnboardingFormSummary } from "../onboarding-form-summary/onboarding-form-summary";
-import { OnboardingStepFrame } from "../onboarding-step-frame/onboarding-step-frame";
-import { OnboardingStepBar } from "../onboarding-step-bar/onboarding-step-bar";
+import { PortalStepFrame } from "@/components/portal/shared/portal-step-frame/portal-step-frame";
+import { PortalStepBar } from "@/components/portal/shared/portal-step-bar/portal-step-bar";
 import { OnboardingStepTrack } from "../onboarding-step-track/onboarding-step-track";
 import { OnboardingSubmitStep } from "../onboarding-submit-step/onboarding-submit-step";
 
@@ -120,7 +121,7 @@ export function OnboardingFormEditor({
   const [navigated, setNavigated] = useState(false);
   const [busy, setBusy] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [uploading, setUploading] = useState<ReadonlySet<string>>(new Set());
+  const { isActive: uploading, track: trackUpload } = useActiveItems();
 
   const input = useMemo(
     () => ({
@@ -174,23 +175,12 @@ export function OnboardingFormEditor({
     return ids;
   }, [autosave.invalid, form.blocks]);
 
-  const trackUpload = useCallback((slotKey: string, active: boolean) => {
-    setUploading((current) => {
-      if (current.has(slotKey) === active) return current;
-      const next = new Set(current);
-      if (active) next.add(slotKey);
-      else next.delete(slotKey);
-      return next;
-    });
-  }, []);
-
   const index = sections.indexOf(step.section);
   const block = form.blocks.find((entry) => entry.id === step.section);
 
   function goTo(target: PortalOnboardingStepTarget) {
     // A step change unmounts the fields of the step, which cancels their running uploads.
-    if (uploading.size > 0 && !window.confirm(filesContent.upload.leaveWarning))
-      return;
+    if (uploading && !window.confirm(filesContent.upload.leaveWarning)) return;
     const position = sections.indexOf(target.section ?? sections[0]);
     setNavigated(true);
     setSubmitError(null);
@@ -228,7 +218,7 @@ export function OnboardingFormEditor({
 
   /** Saves first, so what is submitted is exactly what the customer sees. */
   async function submit() {
-    if (busy || uploading.size > 0) return;
+    if (busy || uploading) return;
     setBusy(true);
     setSubmitError(null);
     await state.settle();
@@ -299,9 +289,9 @@ export function OnboardingFormEditor({
   const nextBlock = form.blocks.find((entry) => entry.id === nextSection);
 
   return (
-    <OnboardingStepFrame
+    <PortalStepFrame
       bar={
-        <OnboardingStepBar
+        <PortalStepBar
           backLabel={content.steps.back}
           nextLabel={
             nextSection
@@ -330,7 +320,7 @@ export function OnboardingFormEditor({
         />
       }
       header={
-        <OnboardingFormHeader
+        <PortalStepHeader
           backHref={backHref}
           backLabel={content.page.back}
           backShortLabel={content.page.backShort}
@@ -355,7 +345,7 @@ export function OnboardingFormEditor({
             onSelectAction={(section) => goTo({ section })}
             requestedBlockIds={requestedBlockIds}
           />
-        </OnboardingFormHeader>
+        </PortalStepHeader>
       }
       ref={bodyRef}
     >
@@ -374,7 +364,7 @@ export function OnboardingFormEditor({
         />
       ) : (
         <OnboardingSubmitStep
-          busy={busy || state.busy || uploading.size > 0}
+          busy={busy || state.busy || uploading}
           content={content}
           error={submitError}
           missing={missing}
@@ -392,6 +382,6 @@ export function OnboardingFormEditor({
           progress={completeness}
         />
       )}
-    </OnboardingStepFrame>
+    </PortalStepFrame>
   );
 }

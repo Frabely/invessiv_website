@@ -1,0 +1,23 @@
+/* Fills the page: the header on top, the step scrolling in between, the action bar below. */
+.frame {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* The scroll area of the page. Header and action bar rest outside it, so nothing hides behind them. */
+.body {
+  display: grid;
+  flex: 1 1 auto;
+  align-content: start;
+  gap: 1.5rem;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: 1.5rem var(--portal-main-pad-inline, 0px)
+    var(--portal-main-pad-block, 1rem);
+}
