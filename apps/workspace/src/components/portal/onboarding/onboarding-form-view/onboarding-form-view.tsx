@@ -3,11 +3,16 @@
 import { useId, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { faComments, faFolderOpen } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ButtonSize } from "@invessiv/common/constants/ui/button-sizes";
+import { ButtonVariant } from "@invessiv/common/constants/ui/button-variants";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
 import type { PortalOnboardingCallDto } from "@invessiv/common/contracts/portal/portal-onboarding-call.dto";
 import type { PortalOnboardingFormDto } from "@invessiv/common/contracts/portal/portal-onboarding-form.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
+import { ButtonLink } from "@invessiv/ui";
 import { PortalOwnerNotice } from "@/components/portal/portal-owner-notice/portal-owner-notice";
 import { OnboardingAnswerReadView } from "@/components/shared/onboarding/onboarding-answer-read-view/onboarding-answer-read-view";
 import type { Locale } from "@/config/i18n";
@@ -171,24 +176,40 @@ export function OnboardingFormView({
                       })}
                     </h2>
                     <p>{content.states.completed.description}</p>
-                    <p>{content.states.completed.more}</p>
                     {filesHref || chatHref ? (
-                      <ul className={styles.links}>
-                        {filesHref ? (
-                          <li>
-                            <Link href={filesHref}>
+                      <>
+                        <p>{content.states.completed.more}</p>
+                        <div className={styles.links}>
+                          {filesHref ? (
+                            <ButtonLink
+                              href={filesHref}
+                              linkComponent={Link}
+                              size={ButtonSize.Control}
+                              variant={ButtonVariant.Ghost}
+                            >
+                              <FontAwesomeIcon
+                                aria-hidden="true"
+                                icon={faFolderOpen}
+                              />
                               {content.states.completed.filesLink}
-                            </Link>
-                          </li>
-                        ) : null}
-                        {chatHref ? (
-                          <li>
-                            <Link href={chatHref}>
+                            </ButtonLink>
+                          ) : null}
+                          {chatHref ? (
+                            <ButtonLink
+                              href={chatHref}
+                              linkComponent={Link}
+                              size={ButtonSize.Control}
+                              variant={ButtonVariant.Ghost}
+                            >
+                              <FontAwesomeIcon
+                                aria-hidden="true"
+                                icon={faComments}
+                              />
                               {content.states.completed.chatLink}
-                            </Link>
-                          </li>
-                        ) : null}
-                      </ul>
+                            </ButtonLink>
+                          ) : null}
+                        </div>
+                      </>
                     ) : null}
                   </div>
                 ) : null}

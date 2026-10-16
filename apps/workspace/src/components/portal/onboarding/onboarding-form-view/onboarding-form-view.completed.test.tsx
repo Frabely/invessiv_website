@@ -68,7 +68,6 @@ describe("OnboardingFormView after completion", () => {
       screen.getByRole("heading", { name: "Completed on Oct 5, 2026" }),
     ).toBeVisible();
     expect(screen.getByText(texts.description)).toBeVisible();
-    expect(screen.getByText(texts.more)).toBeVisible();
   });
 
   it("shows the answers read-only without any way to write", () => {
@@ -84,6 +83,7 @@ describe("OnboardingFormView after completion", () => {
 
   it("links to files and chat only for a contact who may open them", () => {
     renderView({ chatHref: CHAT, filesHref: FILES });
+    expect(screen.getByText(texts.more)).toBeVisible();
     expect(screen.getByRole("link", { name: texts.filesLink })).toHaveAttribute(
       "href",
       FILES,
@@ -97,5 +97,6 @@ describe("OnboardingFormView after completion", () => {
     renderView();
     expect(screen.queryByRole("link", { name: texts.filesLink })).toBeNull();
     expect(screen.queryByRole("link", { name: texts.chatLink })).toBeNull();
+    expect(screen.queryByText(texts.more)).toBeNull();
   });
 });

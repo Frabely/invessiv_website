@@ -154,7 +154,7 @@
     "completed": {
       "title": "Completed on {date}",
       "description": "This is the basis for your project. Your answers and files stay here for reference.",
-      "more": "Another file to add later, or something changes? From now on that no longer goes through the onboarding.",
+      "more": "New files or changes no longer go into the onboarding. Send them to us directly:",
       "filesLink": "Upload a file in the files area",
       "chatLink": "Write a message"
     }
