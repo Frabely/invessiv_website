@@ -18,6 +18,10 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 - **Widgets registrieren sich ausschließlich in `PORTAL_WIDGET_LAYOUT`** (`src/common/constants/portal/`). Sichtbarkeit
   läuft über `listVisiblePortalWidgets` (Permission + `onlyWithContent`). Ein neuer Folge-Ordner stellt sein Mock-Widget
   um (`mock: false` + `requiredPermission`), statt eine zweite Karte zu bauen.
+- **Jedes Widget hat seine eigene Farbe** aus `PORTAL_WIDGET_ACCENTS` (`src/common/constants/portal/`, ein Test
+  verhindert doppelte Farben) und übergibt sie als `accent` an `Widget`. Wege auf andere Seiten laufen über
+  `openMode="page"` mit `linkComponent={Link}`, nicht über eigene Links im Inhalt; ist der Kunde dran, setzt das
+  Widget `openProminent`. Details zur Aktionsleiste in `packages/ui/AGENTS.md`, Abschnitt „Widgets“.
 - Die Projekt-Auswahl darf den Titel eines sichtbaren Projekts als Navigation für unabhängig lesbare Aufgaben,
   Feedback oder Onboarding zeigen. Projektdetails und abgeschlossene Projekte bleiben an `portal.projects.read`
   gebunden; die Fach-Widgets prüfen nur ihr eigenes Leserecht.

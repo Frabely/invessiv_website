@@ -35,7 +35,7 @@
   font-size: var(--font-size-ui-sm);
   font-weight: 600;
   text-decoration: underline;
-  text-decoration-color: var(--color-cta);
+  text-decoration-color: var(--widget-accent);
   text-underline-offset: 0.25em;
 }
 

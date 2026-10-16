@@ -16,4 +16,14 @@
   .footerRequiredHint {
     flex-basis: 100%;
   }
+
+  /* Cancel and submit stay side by side and share the full width, each an easy thumb target. */
+  .footerActions {
+    flex: 1 1 100%;
+  }
+
+  .footerActions > * {
+    flex: 1 1 0;
+    min-width: 0;
+  }
 }

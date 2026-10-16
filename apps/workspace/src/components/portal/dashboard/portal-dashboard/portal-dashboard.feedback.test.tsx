@@ -81,12 +81,6 @@ describe("PortalDashboard feedback", () => {
       "href",
       "/en/portal/customer-1/projects/project-1/feedback?project=project-1",
     );
-    expect(
-      screen.getByRole("link", { name: content.widgets.feedback.projectLink }),
-    ).toHaveAttribute(
-      "href",
-      "/en/portal/customer-1/projects/project-1/feedback?project=project-1",
-    );
   });
   it("asks for the approval after the last round", () => {
     renderDashboard({
@@ -113,7 +107,8 @@ describe("PortalDashboard feedback", () => {
     ).toBeInTheDocument();
     expect(
       within(widget).getByRole("link", { name: "Approve Relaunch" }),
-    ).toHaveAttribute("data-primary", "true");
+    ).toBeInTheDocument();
+    expect(widget).toHaveAttribute("data-open-prominent", "true");
   });
   it("dates the approval once the project is approved", () => {
     renderDashboard({
@@ -149,11 +144,6 @@ describe("PortalDashboard feedback", () => {
     expect(
       screen.getByText(content.widgets.feedback.emptyTitle),
     ).toBeInTheDocument();
-    expect(
-      screen.queryByRole("link", {
-        name: content.widgets.feedback.projectLink,
-      }),
-    ).not.toBeInTheDocument();
   });
   it("renders no feedback widget without portal.feedback.read", () => {
     renderDashboard({ dashboard: dto({ feedback: null }) });

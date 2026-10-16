@@ -49,6 +49,25 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   10 px Radius und bisherige Rahmenfarbe), damit die Web-App unverändert bleibt. Die vereinheitlichten Tokens
   werden aktuell nur im Workspace gesetzt; dafür keine Änderungen an `apps/web/src/app/globals.css` vornehmen.
 
+## Widgets (verbindlich)
+
+- **Reiter statt Kopf-Icon:** Das Icon eines `Widget` sitzt auf einem farbigen Reiter, der über die obere Kartenkante
+  ragt. Die Karte ist flach (kein Verlauf); Farbe tragen nur Reiter, Zähler und Rahmen. Die Farbe kommt über
+  `accent` (`WidgetAccent`); die App definiert je Wert ein Token `--widget-accent-<wert>` pro Theme sowie
+  `--widget-on-accent`.
+- **Eine Aktionsleiste:** Jede Karte endet in derselben Zeile. Weitere Aktionen (`footer`) stehen vorn als
+  `ButtonControl` mit `variant="quiet"`, `size="control"` und Icon **vor** dem Text. Die Öffnen-Aktion steht immer
+  zuletzt, rechts, und ihr Icon **hinter** dem Text sagt, was passiert: `→` Seite (`openMode="page"`), `⤢` Dialog,
+  Spalten für ein Seitenpanel, `⌄` aufklappen; externe Links tragen `↗`.
+- **Buttons stehen beieinander:** Die Aktionsleiste richtet alle Buttons rechts als Gruppe aus. Reicht der Platz
+  einer schmalen Karte nicht für zwei beschriftete Buttons, wird die Nebenaktion ein Icon-Button
+  (`size="icon"`, `aria-label` und `title`) mit sprechendem Icon. Bricht die Zeile doch um (Aktionsleiste unter
+  28 rem), füllt jeder beschriftete Button seine Zeile; Icon-Buttons bleiben quadratisch.
+- **Viertel-Karten** (`desktop: 3`) laufen zwischen 1100 und 1439 px als Drittel, darunter ist ihre Aktionsleiste
+  zu schmal.
+- `openProminent` macht die Öffnen-Aktion zum Primary-Button, wenn der Leser dran ist; die Karte trägt dann
+  `data-open-prominent`. Keine eigenen Link- oder Pill-Buttons in Widgets, immer `ButtonControl`/`ButtonLink`.
+
 ## Bekannte Altlasten
 
 - `ProcessTrack` setzt die Stile seiner Schritt-Buttons zurück, statt eine eigene Schaltfläche zu nutzen.

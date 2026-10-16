@@ -3,6 +3,8 @@
 import type { ReactNode } from "react";
 import { faPersonDigging, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ButtonSize } from "@invessiv/common/constants/ui/button-sizes";
+import { ButtonVariant } from "@invessiv/common/constants/ui/button-variants";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
 import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import type { PortalOurTaskDto } from "@invessiv/common/contracts/portal/portal-our-task.dto";
@@ -12,6 +14,8 @@ import { TASK_STATUS_ICONS } from "@/common/constants/crm/badges/task-status-ico
 import type { Locale } from "@/config/i18n";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
 import { PortalDueHint } from "../../portal-due-hint/portal-due-hint";
+import { PORTAL_WIDGET_ACCENTS } from "@/common/constants/portal/portal-widget-accents";
+import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import styles from "./portal-our-tasks-widget.module.css";
 
 const SUMMARY_LIMIT = 3;
@@ -87,18 +91,19 @@ export function PortalOurTasksWidget({
       renderList(listed.slice(0, SUMMARY_LIMIT))
     );
   const common = {
+    accent: PORTAL_WIDGET_ACCENTS[PortalWidgetKey.OurTasks],
     count: openTasks.length,
     icon: faPersonDigging,
     title: labels.title,
     footer: onCreateAction ? (
       <ButtonControl
-        className={styles.create}
         onClick={onCreateAction}
+        size={ButtonSize.Control}
         type="button"
-        variant="ghost"
+        variant={ButtonVariant.Quiet}
       >
         <FontAwesomeIcon aria-hidden="true" icon={faPlus} />
-        {labels.create}
+        <span>{labels.create}</span>
       </ButtonControl>
     ) : undefined,
   };

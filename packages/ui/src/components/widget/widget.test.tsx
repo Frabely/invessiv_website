@@ -2,6 +2,8 @@
 import "@testing-library/jest-dom/vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { faFolderOpen } from "@fortawesome/free-solid-svg-icons";
+import { WidgetAccent } from "@invessiv/common/constants/ui/widget-accents";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
 import { Widget } from "./widget";
 
@@ -205,5 +207,48 @@ describe("Widget", () => {
     expect(
       screen.getByRole("region", { name: "Completed projects" }),
     ).toHaveAttribute("data-expanded", "false");
+  });
+
+  it("leads to a page through a link at the end of the action row", () => {
+    render(
+      <Widget
+        footer={<button type="button">Add</button>}
+        href="/files"
+        icon={faFolderOpen}
+        openAccessibleLabel="All files of Acme"
+        openLabel="All files"
+        openMode={WidgetOpenMode.Page}
+        openProminent
+        title="Files"
+      >
+        <p>Body</p>
+      </Widget>,
+    );
+
+    const link = screen.getByRole("link", { name: "All files of Acme" });
+    expect(link).toHaveAttribute("href", "/files");
+    expect(link).toHaveTextContent("All files");
+    const row = link.parentElement;
+    expect(row?.lastElementChild).toBe(link);
+    expect(row?.firstElementChild).toBe(
+      screen.getByRole("button", { name: "Add" }),
+    );
+  });
+
+  it("wears its accent and draws the icon on the tab", () => {
+    render(
+      <Widget
+        accent={WidgetAccent.Teal}
+        icon={faFolderOpen}
+        openMode={WidgetOpenMode.None}
+        title="Hours"
+      >
+        <p>Body</p>
+      </Widget>,
+    );
+
+    const section = screen.getByRole("region", { name: "Hours" });
+    expect(section).toHaveAttribute("data-accent", "teal");
+    expect(section).toHaveAttribute("data-tab", "true");
   });
 });

@@ -4,10 +4,10 @@ import {
   type ComponentType,
   forwardRef,
   type ReactNode,
-  type Ref,
 } from "react";
 import { ButtonSize } from "@invessiv/common/constants/ui/button-sizes";
 import type { ButtonVariant } from "@invessiv/common/constants/ui/button-variants";
+import type { ButtonLinkComponentProps } from "@invessiv/common/contracts/ui/button-link-component-props";
 import styles from "./button.module.css";
 
 type ButtonBaseProps = {
@@ -16,16 +16,6 @@ type ButtonBaseProps = {
   /** `control` inside forms, next to inputs; `icon` for a button that shows only an icon. */
   size?: ButtonSize;
   variant?: ButtonVariant;
-};
-
-type ButtonLinkComponentProps = Omit<
-  AnchorHTMLAttributes<HTMLAnchorElement>,
-  "children" | "className"
-> & {
-  children: ReactNode;
-  className?: string;
-  href: string;
-  ref?: Ref<HTMLAnchorElement>;
 };
 
 type ButtonLinkProps = ButtonBaseProps &

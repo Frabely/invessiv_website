@@ -19,9 +19,20 @@
 
 .text {
   display: grid;
+  flex: 1 1 auto;
   gap: 0.25rem;
   min-width: 0;
   padding-top: 0.05rem;
+}
+
+/* Title and due date share a line; the date moves below only where the title needs the room. */
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.2rem 0.9rem;
+  min-width: 0;
 }
 
 .title {
@@ -49,16 +60,12 @@
 
 .meta {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.25rem 0.9rem;
+  flex: 0 0 auto;
+  margin-left: auto;
 }
 
-.project {
-  min-width: 0;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-ui-xs);
-  overflow-wrap: anywhere;
+.meta:empty {
+  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -5,7 +5,7 @@ export type WidgetResponsiveSpan = {
   mobile: WidgetColumnSpan;
   /** Width used from 768px until the desktop breakpoint. */
   tablet: WidgetColumnSpan;
-  /** Width used from 1100px onward. */
+  /** Width used from 1100px onward; a quarter (3) stays a third until 1440px, where it fits. */
   desktop: WidgetColumnSpan;
 };
 

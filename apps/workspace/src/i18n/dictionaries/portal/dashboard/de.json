@@ -125,7 +125,6 @@
       "viewNamed": "Feedback zu {project} ansehen",
       "emptyTitle": "Hier gibst du uns Feedback",
       "emptyDescription": "Sobald wir dir einen Stand zeigen, sagst du uns hier Punkt für Punkt, was passt und was wir ändern sollen.",
-      "projectLink": "Zum Feedback",
       "approvedOn": "Abgenommen am {date}",
       "approve": "Projekt abnehmen",
       "approveNamed": "{project} abnehmen"

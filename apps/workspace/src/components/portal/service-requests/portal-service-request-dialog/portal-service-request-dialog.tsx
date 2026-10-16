@@ -12,6 +12,7 @@ import {
   ConfirmDialog,
   Dialog,
   DialogSize,
+  FormHint,
   TabList,
 } from "@invessiv/ui";
 import { portalServiceRequestsApiService } from "@/client/portal/portal-service-requests-api-service";
@@ -92,6 +93,8 @@ export function PortalServiceRequestDialog({
     services.services.find((candidate) => candidate.id === selection) ?? null;
   const isCustom = selection === PORTAL_SERVICE_REQUEST_CUSTOM;
   const showsForm = !sent && (isCustom || service !== null);
+  const formId = `${baseId}-form`;
+  const formOpen = showsForm && tab === Tab.Request;
   const unavailable = selection !== null && !isCustom && service === null;
 
   function select(next: string | null) {
@@ -163,6 +166,24 @@ export function PortalServiceRequestDialog({
       busy={navigationLocked}
       closeLabel={content.dialog.close}
       description={content.dialog.intro}
+      footer={
+        formOpen ? (
+          <>
+            <div className={styles.footerHint}>
+              <FormHint>{content.form.nonBinding}</FormHint>
+            </div>
+            <ButtonControl
+              aria-busy={sending}
+              disabled={sending || !services.canRequest}
+              form={formId}
+              type="submit"
+              variant="primary"
+            >
+              {sending ? content.form.submitting : content.form.submit}
+            </ButtonControl>
+          </>
+        ) : undefined
+      }
       onCloseAction={onCloseAction}
       size={DialogSize.Wide}
       title={content.dialog.title}
@@ -245,6 +266,7 @@ export function PortalServiceRequestDialog({
               content={content.form}
               customerId={customerId}
               errorTexts={content.errors}
+              formId={formId}
               headingId={headingId}
               key={selection}
               onBackAction={() => select(null)}

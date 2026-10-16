@@ -2,8 +2,7 @@
 
 import { useId, useState } from "react";
 import Link from "next/link";
-import { faArrowRight, faFolderOpen } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFolderOpen } from "@fortawesome/free-solid-svg-icons";
 import {
   PORTAL_FILE_ORIGIN_VALUES,
   PortalFileOrigin,
@@ -13,6 +12,8 @@ import type { PortalFilesOverviewDto } from "@invessiv/common/contracts/portal/p
 import { filePresentation } from "@invessiv/common/patterns/files/file-presentation";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { FileKindIcon, TabList, Widget } from "@invessiv/ui";
+import { PORTAL_WIDGET_ACCENTS } from "@/common/constants/portal/portal-widget-accents";
+import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import type { Locale } from "@/config/i18n";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
 import styles from "./portal-files-widget.module.css";
@@ -43,14 +44,12 @@ export function PortalFilesWidget({
       count={
         overview ? overview.fromUs.total + overview.fromYou.total : undefined
       }
-      footer={
-        <Link className={styles.all} href={filesHref}>
-          {content.all}
-          <FontAwesomeIcon aria-hidden="true" icon={faArrowRight} />
-        </Link>
-      }
+      accent={PORTAL_WIDGET_ACCENTS[PortalWidgetKey.Files]}
+      href={filesHref}
+      linkComponent={Link}
+      openLabel={content.all}
       icon={faFolderOpen}
-      openMode={WidgetOpenMode.None}
+      openMode={WidgetOpenMode.Page}
       title={content.title}
     >
       {overview && page ? (

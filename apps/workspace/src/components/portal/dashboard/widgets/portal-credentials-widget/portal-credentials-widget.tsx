@@ -1,10 +1,14 @@
 import { faKey, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { ButtonSize } from "@invessiv/common/constants/ui/button-sizes";
+import { ButtonVariant } from "@invessiv/common/constants/ui/button-variants";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
 import type { PortalCredentialsSummaryDto } from "@invessiv/common/contracts/portal/portal-credentials-summary.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl, Widget } from "@invessiv/ui";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
+import { PORTAL_WIDGET_ACCENTS } from "@/common/constants/portal/portal-widget-accents";
+import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import styles from "./portal-credentials-widget.module.css";
 
 export type PortalCredentialsWidgetProps = {
@@ -28,20 +32,19 @@ export function PortalCredentialsWidget({
   const { count } = summary;
   return (
     <Widget
+      accent={PORTAL_WIDGET_ACCENTS[PortalWidgetKey.Credentials]}
       footer={
         onAddAction ? (
           <ButtonControl
+            aria-label={content.add}
             disabled={!summary.configured}
             onClick={onAddAction}
+            size={ButtonSize.Icon}
+            title={content.add}
             type="button"
-            variant="ghost"
+            variant={ButtonVariant.Ghost}
           >
-            <FontAwesomeIcon
-              aria-hidden="true"
-              className={styles.addIcon}
-              icon={faPlus}
-            />
-            {content.add}
+            <FontAwesomeIcon aria-hidden="true" icon={faPlus} />
           </ButtonControl>
         ) : undefined
       }

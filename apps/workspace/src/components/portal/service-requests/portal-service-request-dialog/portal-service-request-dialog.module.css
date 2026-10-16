@@ -81,3 +81,16 @@
     animation: none;
   }
 }
+
+/* The non-binding note stands left of the submit button in the dialog footer, above it on phones. */
+.footerHint {
+  flex: 1 1 14rem;
+  min-width: 0;
+  margin-right: auto;
+}
+
+@media (max-width: 640px) {
+  .footerHint {
+    flex-basis: 100%;
+  }
+}

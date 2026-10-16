@@ -12,8 +12,6 @@ import type { PortalServicesDto } from "@invessiv/common/contracts/portal/portal
 import { WidgetGrid } from "@invessiv/ui";
 import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import type { PortalWidgetDefinition } from "@/common/contracts/portal/portal-widget-definition";
-import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
-import { buildPortalFeedbackPath } from "@/common/patterns/portal/portal-feedback-path";
 import type { Locale } from "@/config/i18n";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
 import { PortalDashboardEmptyState } from "../portal-dashboard-empty-state/portal-dashboard-empty-state";
@@ -101,20 +99,6 @@ export function PortalDashboardWidgets({
     [PortalWidgetKey.Project]: selectedProject ? (
       <PortalProjectWidget
         content={content.widgets.project}
-        feedbackHref={
-          dashboard.feedback?.status
-            ? buildPortalHref(
-                buildPortalFeedbackPath({
-                  locale,
-                  customerId,
-                  projectId: selectedProject.id,
-                }),
-                "",
-                { project: selectedProject.id },
-              )
-            : null
-        }
-        feedbackLinkLabel={content.widgets.feedback.projectLink}
         locale={locale}
         selectedProject={selectedProject}
       />

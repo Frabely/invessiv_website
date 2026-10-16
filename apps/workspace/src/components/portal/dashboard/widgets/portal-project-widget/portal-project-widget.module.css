@@ -1,21 +1,3 @@
-/* The project is why customers open the portal: it gets the most room and a quiet accent. */
-.widget.widget {
-  gap: 1.1rem;
-  padding: clamp(1.1rem, 2.4vw, 1.75rem);
-  border-color: color-mix(in srgb, var(--color-cta) 22%, var(--color-border));
-  background:
-    radial-gradient(
-      120% 140% at 100% 0%,
-      color-mix(in srgb, var(--color-cta) 9%, transparent) 0%,
-      transparent 55%
-    ),
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--color-surface-1) 94%, transparent) 0%,
-      color-mix(in srgb, var(--color-surface-1) 80%, transparent) 100%
-    );
-}
-
 .panel {
   display: grid;
   gap: 1.25rem;
@@ -64,8 +46,6 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 1rem 2rem;
-  padding-top: 1.1rem;
-  border-top: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
 }
 
 /* Label and step share one line; they only stack where the card is too narrow for both. */
@@ -123,44 +103,4 @@
 .lead strong {
   color: var(--color-text);
   font-weight: 600;
-}
-
-.preview {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-height: 2.75rem;
-  padding: 0 1.1rem;
-  border-radius: 999px;
-  background: var(--color-cta);
-  color: var(--color-on-cta);
-  font-size: var(--font-size-ui-sm);
-  font-weight: 650;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: background 160ms ease-out;
-}
-
-.preview svg {
-  width: 0.75rem;
-  height: 0.75rem;
-}
-
-.preview:hover {
-  background: var(--color-cta-hover);
-}
-
-.preview:active {
-  background: var(--color-cta-active);
-}
-
-.preview:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 3px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .preview {
-    transition: none;
-  }
 }
