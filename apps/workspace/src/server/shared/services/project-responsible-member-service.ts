@@ -12,8 +12,10 @@ import {
   users,
   workspaceMembers,
 } from "@invessiv/db/record-configuration";
-import type { ProjectResponsibleContact } from "@/common/contracts/crm/project-responsible-contact";
-import type { ProjectBookingContact } from "./project-responsible-member-types";
+import type {
+  ProjectBookingContact,
+  ProjectResponsibleContacts,
+} from "./project-responsible-member-types";
 
 /** Who answers for a project, in order: its owner, then the owner of its customer. */
 async function loadOwnerMemberIds(
@@ -92,33 +94,36 @@ async function findBookingContact(
   executor: ContactDatabaseReader,
   projectId: string,
 ): Promise<ProjectBookingContact | null> {
-  for (const member of await loadActiveOwners(executor, projectId)) {
-    if (member.bookingUrl)
-      return {
-        memberId: member.memberId,
-        displayName: member.displayName,
-        bookingUrl: member.bookingUrl,
-      };
-  }
-  return null;
+  return (await findContacts(executor, projectId)).bookingContact;
 }
 
 /**
- * Whom the customer of a project writes to: the first active member of project owner and customer
- * owner. The address is master data shown to the customer; it never authorizes anything.
+ * Loads owners once for the address and calendar choices. The first active owner answers email;
+ * the calendar may belong to the next one when the first has no booking link.
  */
-async function findContact(
+async function findContacts(
   executor: ContactDatabaseReader,
   projectId: string,
-): Promise<ProjectResponsibleContact | null> {
-  const [member] = await loadActiveOwners(executor, projectId);
-  return member
-    ? { displayName: member.displayName, email: member.email }
-    : null;
+): Promise<ProjectResponsibleContacts> {
+  const members = await loadActiveOwners(executor, projectId);
+  const [contact] = members;
+  const bookable = members.find((member) => member.bookingUrl);
+  return {
+    contact: contact
+      ? { displayName: contact.displayName, email: contact.email }
+      : null,
+    bookingContact: bookable?.bookingUrl
+      ? {
+          memberId: bookable.memberId,
+          displayName: bookable.displayName,
+          bookingUrl: bookable.bookingUrl,
+        }
+      : null,
+  };
 }
 
 export const projectResponsibleMemberService = {
   findActiveMemberId,
   findBookingContact,
-  findContact,
+  findContacts,
 } as const;

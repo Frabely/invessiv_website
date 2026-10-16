@@ -53,10 +53,8 @@ export async function getPortalProjectFeedback(
   const rounds = await portalFeedbackService.toRoundDtos(db, reader, rows);
   const activeRound =
     rounds.find((round) => isActiveFeedbackRound(round.status)) ?? null;
-  const [contact, bookingContact] = await Promise.all([
-    projectResponsibleMemberService.findContact(db, project.id),
-    projectResponsibleMemberService.findBookingContact(db, project.id),
-  ]);
+  const { contact, bookingContact } =
+    await projectResponsibleMemberService.findContacts(db, project.id);
 
   return {
     projectId: project.id,
