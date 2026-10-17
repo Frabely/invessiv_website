@@ -1,0 +1,37 @@
+/*
+ * Buttons and the state of the page rest below the scroll area as part of the screen, not of the
+ * page: full width on the bottom edge, in the same place on a short page as on a long one, and
+ * clear of the safe area so the buttons never hide behind the browser chrome.
+ */
+.bar {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1.25rem;
+  padding: 0.6rem var(--portal-main-pad-inline, 0.75rem)
+    calc(0.7rem + var(--mobile-safe-bottom, 0px));
+  border-top: 1px solid var(--color-border-strong);
+  background: var(--color-surface-2);
+  box-shadow: 0 -8px 24px -16px var(--color-shadow);
+}
+
+.actions {
+  display: flex;
+  flex: 0 1 auto;
+  gap: 0.5rem;
+  min-width: 0;
+  margin-left: auto;
+}
+
+/* On a phone the buttons take a row of their own and share it evenly. */
+@media (max-width: 767px) {
+  .actions {
+    flex: 1 0 100%;
+  }
+
+  .actions > * {
+    flex: 1 1 0;
+  }
+}

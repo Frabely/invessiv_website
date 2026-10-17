@@ -9,10 +9,6 @@
   margin-left: -0.6rem;
 }
 
-.back svg {
-  margin-right: 0.5rem;
-}
-
 .header {
   display: grid;
   gap: 0.35rem;

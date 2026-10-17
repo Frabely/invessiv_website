@@ -5,12 +5,11 @@
   },
   "page": {
     "back": "Back to overview",
-    "heading": "Files",
-    "intro": "Find drafts and documents from us here. Upload logos, photos, copy or videos for your project right on this page."
+    "backShort": "Overview",
+    "heading": "Files"
   },
   "scope": {
     "label": "Files by project",
-    "project": "This project",
     "all": "All projects"
   },
   "tabs": {
@@ -19,7 +18,8 @@
     "fromYou": "From you"
   },
   "actions": {
-    "upload": "Upload files",
+    "add": "Add file",
+    "upload": "Upload",
     "addLink": "Add link"
   },
   "intake": {
@@ -27,12 +27,19 @@
     "dropHint": "Photos, videos up to 200 MB, logos, fonts and documents · up to 20 files at once",
     "linkHint": "File too big or already in the cloud? Just send us the link."
   },
+  "add": {
+    "title": "Add file",
+    "modeLabel": "How would you like to add the file?",
+    "upload": "Upload file",
+    "link": "Add link",
+    "switchWarning": "Switching will discard your selection and unsaved details. Would you like to switch?"
+  },
   "upload": {
     "title": "Upload files",
     "description": "We see your files as soon as they are uploaded.",
-    "dropLabel": "Choose more files",
-    "dropHint": "Up to 20 files, 1 GB in total",
-    "largerHint": "Larger files? Add a link instead.",
+    "dropLabel": "Choose files or drop them here",
+    "dropHint": "Photos, videos up to 200 MB, logos, fonts and documents · up to 20 files, no more than 1 GB in total",
+    "largerHint": "File too big or already in the cloud? Choose “Add link” above.",
     "project": "What is this for?",
     "generalOption": "General",
     "note": "Note",
@@ -131,6 +138,11 @@
     "loading": "Loading preview …",
     "error": "The preview could not be loaded. Download the file instead.",
     "download": "Download"
+  },
+  "panel": {
+    "label": "Preview",
+    "empty": "Choose a file to see it here.",
+    "expand": "Full screen"
   },
   "announcements": {
     "uploaded": "{name} uploaded",

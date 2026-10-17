@@ -1,0 +1,115 @@
+.stage {
+  --preview-media-height: 70dvh;
+
+  display: grid;
+  place-items: center;
+  min-height: min(60dvh, 40rem);
+  background: color-mix(in srgb, var(--color-bg) 85%, transparent);
+}
+
+/*
+ * Next to a list there is no stage around the file: the media itself carries the rounded edge, so
+ * the frame is exactly as large as the picture. Only while loading or failing does a placeholder
+ * keep the room, so the panel does not jump.
+ */
+.stage[data-variant="panel"] {
+  --preview-media-height: 65dvh;
+
+  justify-items: start;
+  min-height: 0;
+  background: none;
+}
+
+.stage[data-variant="panel"]:has(.state) {
+  justify-items: center;
+  min-height: 14rem;
+  border: 1px dashed var(--color-border);
+  border-radius: 0.85rem;
+}
+
+.stage[data-variant="panel"] .image,
+.stage[data-variant="panel"] .video,
+.stage[data-variant="panel"] .frame,
+.stage[data-variant="panel"] .text {
+  border: 1px solid var(--color-border);
+  border-radius: 0.85rem;
+}
+
+.stage[data-variant="panel"] .image,
+.stage[data-variant="panel"] .video {
+  width: auto;
+  height: auto;
+}
+
+.image,
+.video {
+  display: block;
+  max-width: 100%;
+  max-height: var(--preview-media-height);
+  object-fit: contain;
+}
+
+/* A checkerboard shows transparent logos and SVGs against any theme; in the panel only behind the picture. */
+.stage[data-variant="dialog"][data-kind="image"],
+.stage[data-variant="panel"] .image {
+  background-color: var(--color-surface-1);
+  background-image:
+    linear-gradient(45deg, var(--color-surface-2) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--color-surface-2) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--color-surface-2) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--color-surface-2) 75%);
+  background-position:
+    0 0,
+    0 0.6rem,
+    0.6rem -0.6rem,
+    -0.6rem 0;
+  background-size: 1.2rem 1.2rem;
+}
+
+.frame {
+  width: 100%;
+  height: var(--preview-media-height);
+  border: 0;
+  background: var(--color-surface-1);
+}
+
+.text {
+  align-self: stretch;
+  justify-self: stretch;
+  max-height: var(--preview-media-height);
+  margin: 0;
+  padding: 1rem 1.25rem;
+  overflow: auto;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.state {
+  margin: 0;
+  padding: 2rem 1.25rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-sm);
+  text-align: center;
+}
+
+/* On a phone the lightbox is the whole screen; the preview fills it. */
+@media (max-width: 640px) {
+  .stage[data-variant="dialog"] {
+    min-height: 0;
+    height: 100%;
+  }
+
+  .stage[data-variant="dialog"] .image,
+  .stage[data-variant="dialog"] .video,
+  .stage[data-variant="dialog"] .frame,
+  .stage[data-variant="dialog"] .text {
+    max-height: none;
+  }
+
+  .stage[data-variant="dialog"] .frame {
+    height: 100%;
+  }
+}

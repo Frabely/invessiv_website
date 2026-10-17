@@ -15,6 +15,8 @@ import styles from "./file-link-dialog-frame.module.css";
 
 export type FileLinkDialogFrameProps = {
   fields: ReactNode;
+  /** Navigation above the form; pending work locks it, drafts may need a discard check. */
+  renderNavigation?: (busy: boolean, hasDraft: boolean) => ReactNode;
   labels: {
     title: string;
     description: string;
@@ -38,6 +40,7 @@ export type FileLinkDialogFrameProps = {
 /** Shared name, HTTPS URL and submit states for CRM and portal links. */
 export function FileLinkDialogFrame({
   fields,
+  renderNavigation,
   labels,
   cancelLabel,
   closeLabel,
@@ -86,47 +89,50 @@ export function FileLinkDialogFrame({
       submittingLabel={labels.submitting}
       title={labels.title}
     >
-      <form
-        className={styles.form}
-        id={formId}
-        noValidate
-        onSubmit={handleSubmit}
-      >
-        <FormField
-          errorMessage={errors.name}
-          inputProps={{
-            maxLength: 255,
-            onChange: (event) => setName(event.target.value),
-            placeholder: labels.namePlaceholder,
-            value: name,
-          }}
-          inputRef={nameRef}
-          kind={FormFieldKind.Text}
-          label={labels.name}
-          required
-        />
-        <FormField
-          errorMessage={errors.url}
-          hint={labels.urlHint}
-          inputProps={{
-            autoComplete: "url",
-            inputMode: "url",
-            maxLength: 2048,
-            onChange: (event) => setUrl(event.target.value),
-            placeholder: labels.urlPlaceholder,
-            value: url,
-          }}
-          kind={FormFieldKind.Url}
-          label={labels.url}
-          required
-        />
-        {fields}
-        {submitError ? (
-          <p className={styles.error} role="alert">
-            {submitError}
-          </p>
-        ) : null}
-      </form>
+      <div className={styles.body}>
+        {renderNavigation?.(busy, !!(name.trim() || url.trim()))}
+        <form
+          className={styles.form}
+          id={formId}
+          noValidate
+          onSubmit={handleSubmit}
+        >
+          <FormField
+            errorMessage={errors.name}
+            inputProps={{
+              maxLength: 255,
+              onChange: (event) => setName(event.target.value),
+              placeholder: labels.namePlaceholder,
+              value: name,
+            }}
+            inputRef={nameRef}
+            kind={FormFieldKind.Text}
+            label={labels.name}
+            required
+          />
+          <FormField
+            errorMessage={errors.url}
+            hint={labels.urlHint}
+            inputProps={{
+              autoComplete: "url",
+              inputMode: "url",
+              maxLength: 2048,
+              onChange: (event) => setUrl(event.target.value),
+              placeholder: labels.urlPlaceholder,
+              value: url,
+            }}
+            kind={FormFieldKind.Url}
+            label={labels.url}
+            required
+          />
+          {fields}
+          {submitError ? (
+            <p className={styles.error} role="alert">
+              {submitError}
+            </p>
+          ) : null}
+        </form>
+      </div>
     </FormDialog>
   );
 }

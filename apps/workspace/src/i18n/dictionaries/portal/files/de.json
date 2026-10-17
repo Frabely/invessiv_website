@@ -5,12 +5,11 @@
   },
   "page": {
     "back": "Zurück zum Überblick",
-    "heading": "Dateien",
-    "intro": "Hier findest du Entwürfe und Unterlagen von uns. Logos, Fotos, Texte oder Videos für dein Projekt lädst du direkt hier hoch."
+    "backShort": "Überblick",
+    "heading": "Dateien"
   },
   "scope": {
     "label": "Dateien nach Projekt",
-    "project": "Dieses Projekt",
     "all": "Alle Projekte"
   },
   "tabs": {
@@ -19,7 +18,8 @@
     "fromYou": "Von dir"
   },
   "actions": {
-    "upload": "Dateien hochladen",
+    "add": "Datei hinzufügen",
+    "upload": "Hochladen",
     "addLink": "Link hinzufügen"
   },
   "intake": {
@@ -27,12 +27,19 @@
     "dropHint": "Fotos, Videos bis 200 MB, Logos, Schriften und Dokumente · bis zu 20 Dateien auf einmal",
     "linkHint": "Datei zu groß oder schon in der Cloud? Schick uns einfach den Link."
   },
+  "add": {
+    "title": "Datei hinzufügen",
+    "modeLabel": "Wie möchtest du die Datei hinzufügen?",
+    "upload": "Datei hochladen",
+    "link": "Link hinzufügen",
+    "switchWarning": "Beim Wechsel werden deine Auswahl und ungespeicherten Angaben verworfen. Möchtest du wechseln?"
+  },
   "upload": {
     "title": "Dateien hochladen",
     "description": "Wir sehen deine Dateien, sobald sie hochgeladen sind.",
-    "dropLabel": "Weitere Dateien auswählen",
-    "dropHint": "Bis zu 20 Dateien, zusammen höchstens 1 GB",
-    "largerHint": "Größere Dateien? Füge stattdessen einen Link hinzu.",
+    "dropLabel": "Dateien auswählen oder hierher ziehen",
+    "dropHint": "Fotos, Videos bis 200 MB, Logos, Schriften und Dokumente · bis zu 20 Dateien, zusammen höchstens 1 GB",
+    "largerHint": "Datei zu groß oder schon in der Cloud? Wähle oben „Link hinzufügen“.",
     "project": "Wofür ist das?",
     "generalOption": "Allgemein",
     "note": "Notiz",
@@ -131,6 +138,11 @@
     "loading": "Vorschau wird geladen …",
     "error": "Die Vorschau konnte nicht geladen werden. Lade die Datei stattdessen herunter.",
     "download": "Herunterladen"
+  },
+  "panel": {
+    "label": "Vorschau",
+    "empty": "Wähle eine Datei, um sie hier anzusehen.",
+    "expand": "Vollbild"
   },
   "announcements": {
     "uploaded": "{name} hochgeladen",

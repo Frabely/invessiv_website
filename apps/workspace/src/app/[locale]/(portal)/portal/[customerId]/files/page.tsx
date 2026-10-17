@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
-import { PortalFilesQueryParam } from "@/common/constants/portal/portal-files-query-params";
+import {
+  PortalFilesQueryParam,
+  PortalFilesScope,
+} from "@/common/constants/portal/portal-files-query-params";
 import { PortalDashboardQueryParam } from "@/common/constants/portal/portal-dashboard-query-params";
 import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
 import { buildCustomerCockpitHref } from "@/common/patterns/crm/customer-dialog-query";
@@ -71,7 +74,8 @@ export default async function PortalFilesPage({
       projects.find((project) => project.id === requestedProjectId)?.id) ||
     selectPortalCurrentProject(selectableFileProjects, null)?.id ||
     null;
-  const allProjects = query[PortalFilesQueryParam.Scope] === "all";
+  const allProjects =
+    query[PortalFilesQueryParam.Scope] === PortalFilesScope.All;
   const page = await listPortalFiles(reader, {
     origin: tab,
     projectId: allProjects ? undefined : (selectedProjectId ?? undefined),

@@ -1,6 +1,4 @@
-"use client";
-
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import type { PortalFileDto } from "@invessiv/common/contracts/portal/portal-file.dto";
 import type { PortalFileProjectOptionDto } from "@invessiv/common/contracts/portal/portal-file-project-option.dto";
 import { FileLinkDialogFrame } from "@invessiv/ui";
@@ -13,6 +11,7 @@ export type PortalFileLinkDialogProps = {
   customerId: string;
   projects: readonly PortalFileProjectOptionDto[];
   initialProjectId?: string | null;
+  renderNavigation?: (busy: boolean, hasDraft: boolean) => ReactNode;
   onCloseAction: () => void;
   onCreatedAction: (file: PortalFileDto) => void;
 };
@@ -22,6 +21,7 @@ export function PortalFileLinkDialog({
   customerId,
   projects,
   initialProjectId = null,
+  renderNavigation,
   onCloseAction,
   onCreatedAction,
 }: PortalFileLinkDialogProps) {
@@ -42,7 +42,13 @@ export function PortalFileLinkDialog({
           projects={projects}
         />
       }
-      labels={content.link}
+      labels={{ ...content.link, title: content.add.title }}
+      renderNavigation={
+        renderNavigation
+          ? (busy, hasDraft) =>
+              renderNavigation(busy, hasDraft || !!note.trim())
+          : undefined
+      }
       onCloseAction={onCloseAction}
       onSubmitAction={async (displayName, url) => {
         const result = await portalFilesApiService.createLink(customerId, {

@@ -96,9 +96,10 @@ test.describe.serial("portal files", () => {
       expect(hiddenContact.status()).toBe(404);
 
       const customerLink = `Vom Kunden ${suffix}`;
-      await contact.getByRole("button", { name: "Link hinzufügen" }).click();
+      await contact.getByRole("button", { name: "Datei hinzufügen" }).click();
+      await contact.getByRole("radio", { name: "Link hinzufügen" }).click();
       const contactDialog = contact.getByRole("dialog", {
-        name: "Link hinzufügen",
+        name: "Datei hinzufügen",
       });
       await contactDialog.getByLabel("Bezeichnung").fill(customerLink);
       await contactDialog
@@ -343,6 +344,7 @@ test.describe.serial("portal files", () => {
         `Internal file ${suffix}`,
       );
 
+      await contact.getByRole("button", { name: "Datei hinzufügen" }).click();
       await contact
         .locator('input[type="file"]')
         .first()
@@ -352,7 +354,7 @@ test.describe.serial("portal files", () => {
           buffer: Buffer.from(`Customer file ${suffix}`, "utf8"),
         });
       const customerUploadDialog = contact.getByRole("dialog", {
-        name: "Dateien hochladen",
+        name: "Datei hinzufügen",
       });
       await customerUploadDialog
         .getByRole("button", { name: "1 Datei hochladen" })

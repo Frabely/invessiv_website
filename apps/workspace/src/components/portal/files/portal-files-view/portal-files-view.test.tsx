@@ -6,6 +6,7 @@ import {
   fireEvent,
   render,
   screen,
+  waitFor,
   within,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -37,6 +38,11 @@ vi.mock("@/client/portal/portal-files-api-service", () => ({
     createUpload: vi.fn(),
     completeUpload: vi.fn(),
     createLink: vi.fn(),
+    uploadTransport: () => ({
+      createTicket: vi.fn(),
+      complete: vi.fn(),
+      cancelPending: vi.fn(),
+    }),
   },
 }));
 
@@ -58,6 +64,18 @@ function file(overrides: Partial<PortalFileDto> = {}): PortalFileDto {
     createdAt: "2026-09-25T10:00:00.000Z",
     ...overrides,
   };
+}
+
+function stubWideScreen(matches: boolean) {
+  vi.stubGlobal(
+    "matchMedia",
+    vi.fn((query: string) => ({
+      matches,
+      media: query,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    })),
+  );
 }
 
 function page(files: PortalFileDto[]) {
@@ -91,6 +109,7 @@ describe("PortalFilesView", () => {
 
   afterEach(() => {
     cleanup();
+    vi.unstubAllGlobals();
     vi.clearAllMocks();
   });
 
@@ -107,19 +126,208 @@ describe("PortalFilesView", () => {
     expect(mocks.listFiles).not.toHaveBeenCalled();
   });
 
-  it("offers upload and link only to contacts who may upload", () => {
-    const { unmount } = renderView();
-    expect(screen.getByText(content.intake.dropLabel)).toBeInTheDocument();
+  it("keeps the bar at the bottom like the other step pages", () => {
+    const { container } = renderView();
+
     expect(
-      screen.getByRole("button", { name: content.actions.addLink }),
+      container.querySelector("[data-portal-fixed-head]"),
     ).toBeInTheDocument();
+  });
+
+  it("offers one add action only to contacts who may upload", () => {
+    const { unmount } = renderView();
+    expect(
+      screen.getByRole("button", { name: content.actions.add }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(content.intake.dropLabel)).toBeNull();
     unmount();
 
     renderView({ canUpload: false });
     expect(screen.queryByText(content.intake.dropLabel)).toBeNull();
     expect(
+      screen.queryByRole("button", { name: content.actions.add }),
+    ).toBeNull();
+    expect(
       screen.queryByRole("button", { name: content.actions.addLink }),
     ).toBeNull();
+  });
+
+  it("shows ZIP actions before the add action while files are selected", () => {
+    renderView();
+
+    fireEvent.click(
+      screen.getByRole("checkbox", { name: "Select Offer.pdf for the ZIP" }),
+    );
+
+    expect(screen.getByText("1 selected")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: content.archive.download }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: content.actions.add }),
+    ).toBeInTheDocument();
+
+    const clear = screen.getByRole("button", { name: content.archive.clear });
+    const download = screen.getByRole("button", {
+      name: content.archive.download,
+    });
+    const add = screen.getByRole("button", { name: content.actions.add });
+    expect(
+      clear.compareDocumentPosition(download) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(
+      download.compareDocumentPosition(add) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+
+    fireEvent.click(
+      screen.getByRole("button", { name: content.archive.clear }),
+    );
+
+    expect(
+      screen.getByRole("button", { name: content.actions.add }),
+    ).toBeInTheDocument();
+  });
+
+  it("opens a file from its row in the lightbox on a narrow screen, without an eye button", async () => {
+    mocks.getDownloadUrl.mockResolvedValue({
+      ok: true,
+      value: "https://blob.test/offer.pdf",
+    });
+    renderView();
+
+    expect(
+      screen.queryByRole("button", { name: "Preview Offer.pdf" }),
+    ).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Offer.pdf" }));
+
+    expect(await screen.findByRole("dialog")).toBeInTheDocument();
+  });
+
+  it("shows a chosen file next to the list on a wide screen instead of the lightbox", async () => {
+    stubWideScreen(true);
+    mocks.getDownloadUrl.mockResolvedValue({
+      ok: true,
+      value: "https://blob.test/logo.png",
+    });
+    renderView({
+      initialPage: page([
+        file({
+          id: "image-1",
+          assetKind: AssetKind.Image,
+          displayName: "Logo.png",
+          extension: UploadExtension.Png,
+        }),
+      ]),
+    });
+    const panel = screen.getByRole("complementary", {
+      name: content.panel.label,
+    });
+    expect(within(panel).getByText(content.panel.empty)).toBeInTheDocument();
+    expect(mocks.getDownloadUrl).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole("button", { name: "Logo.png" }));
+
+    expect(window.location.search).toBe("?file=image-1");
+    expect(
+      await within(panel).findByRole("img", { name: "Logo.png" }),
+    ).toBeInTheDocument();
+    expect(mocks.getDownloadUrl).toHaveBeenCalledOnce();
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(screen.getByRole("button", { name: "Logo.png" })).toHaveAttribute(
+      "aria-current",
+      "true",
+    );
+
+    fireEvent.click(screen.getByRole("tab", { name: content.tabs.fromYou }));
+
+    expect(window.location.search).toBe("?tab=fromYou");
+    expect(within(panel).getByText(content.panel.empty)).toBeInTheDocument();
+  });
+
+  it("keeps the lightbox and renders no panel on a narrow screen", () => {
+    stubWideScreen(false);
+    renderView();
+
+    expect(
+      screen.queryByRole("complementary", { name: content.panel.label }),
+    ).toBeNull();
+  });
+
+  it.each(["preview", "add"])(
+    "pauses the panel video while the %s dialog is open without restarting it on close",
+    async (dialogKind) => {
+      stubWideScreen(true);
+      mocks.getDownloadUrl.mockResolvedValue({
+        ok: true,
+        value: "https://blob.test/clip.mp4",
+      });
+      renderView({
+        initialPage: page([
+          file({
+            id: "video-1",
+            assetKind: AssetKind.Video,
+            displayName: "clip.mp4",
+            extension: UploadExtension.Mp4,
+          }),
+        ]),
+      });
+      fireEvent.click(screen.getByRole("button", { name: "clip.mp4" }));
+      const panel = screen.getByRole("complementary", {
+        name: content.panel.label,
+      });
+      await waitFor(() => expect(panel.querySelector("video")).not.toBeNull());
+      const video = panel.querySelector("video")!;
+      video.currentTime = 12;
+      const pause = vi
+        .spyOn(video, "pause")
+        .mockImplementation(() => undefined);
+      const play = vi.spyOn(video, "play").mockResolvedValue(undefined);
+
+      fireEvent.click(
+        screen.getByRole("button", {
+          name:
+            dialogKind === "preview"
+              ? content.panel.expand
+              : content.actions.add,
+        }),
+      );
+      const dialog = await screen.findByRole("dialog");
+      expect(pause).toHaveBeenCalledOnce();
+      expect(panel.querySelector("video")).toBe(video);
+      expect(video.currentTime).toBe(12);
+
+      fireEvent.keyDown(dialog, { key: "Escape" });
+      expect(screen.queryByRole("dialog")).toBeNull();
+      expect(video.currentTime).toBe(12);
+      expect(play).not.toHaveBeenCalled();
+      pause.mockRestore();
+      play.mockRestore();
+    },
+  );
+
+  it("switches between the project and all projects without a server navigation", async () => {
+    renderView({
+      projects: [{ id: "project-1", title: "Relaunch" }],
+      selectedProjectId: "project-1",
+    });
+    const list = screen.getByRole("list", { name: content.list.label });
+    expect(within(list).queryByText("Relaunch")).toBeNull();
+    expect(screen.getByRole("radio", { name: "Relaunch" })).toHaveAttribute(
+      "aria-checked",
+      "true",
+    );
+
+    fireEvent.click(screen.getByRole("radio", { name: content.scope.all }));
+
+    expect(window.location.search).toBe("?scope=all");
+    expect(mocks.replace).not.toHaveBeenCalled();
+    expect(mocks.listFiles).toHaveBeenCalledWith(
+      "customer-1",
+      PortalFileOrigin.FromUs,
+      1,
+      null,
+    );
   });
 
   it("shows the owner notice with a CRM link instead of the upload", () => {
@@ -159,6 +367,22 @@ describe("PortalFilesView", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText(content.empty.fromYou.description),
+    ).toBeInTheDocument();
+  });
+
+  it("explains the empty tabs by their purpose to read-only contacts", async () => {
+    window.history.replaceState(
+      null,
+      "",
+      "/en/portal/customer-1/files?tab=fromYou",
+    );
+    renderView({ canUpload: false, initialPage: page([]) });
+
+    expect(
+      await screen.findByText(content.empty.fromYou.title),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(content.empty.fromYou.readOnlyDescription),
     ).toBeInTheDocument();
     expect(mocks.listFiles).toHaveBeenCalledWith(
       "customer-1",
@@ -269,6 +493,12 @@ describe("PortalFilesView", () => {
     expect(
       screen.queryByRole("checkbox", { name: "Select clip.mp4 for the ZIP" }),
     ).toBeNull();
+    expect(screen.queryByText(content.archive.videoHint)).toBeNull();
+
+    fireEvent.click(
+      screen.getByRole("checkbox", { name: "Select Offer.pdf for the ZIP" }),
+    );
+
     expect(screen.getByText(content.archive.videoHint)).toBeInTheDocument();
   });
 });

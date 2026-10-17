@@ -1,0 +1,57 @@
+.panel {
+  display: grid;
+  align-content: start;
+  gap: 0.9rem;
+  min-width: 0;
+}
+
+.empty {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 0.6rem;
+  min-height: 14rem;
+  padding: 1.5rem;
+  border: 1px dashed var(--color-border);
+  border-radius: 0.85rem;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.empty p {
+  max-width: 22ch;
+  margin: 0;
+  font-size: var(--font-size-ui-sm);
+  line-height: 1.45;
+}
+
+.details {
+  display: grid;
+  justify-items: start;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.name {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  font-weight: 650;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.note {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-xs);
+  line-height: 1.45;
+  opacity: 0.85;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}

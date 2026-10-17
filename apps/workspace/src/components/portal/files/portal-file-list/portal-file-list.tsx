@@ -14,6 +14,8 @@ import type { PortalFilesDictionary } from "@/i18n/dictionaries/portal";
 import { PortalFileRow } from "../portal-file-row/portal-file-row";
 
 export type PortalFileListProps = {
+  /** The file shown in the side panel; null without a panel or a choice. */
+  activeFileId: string | null;
   canUpload: boolean;
   content: PortalFilesDictionary;
   files: readonly PortalFileDto[];
@@ -21,6 +23,7 @@ export type PortalFileListProps = {
   locale: Locale;
   origin: PortalFileOrigin;
   selectedIds: readonly string[];
+  showProject: boolean;
   status: FileListLoadStatus;
   total: number;
   onDownloadAction: (file: PortalFileDto) => void;
@@ -31,6 +34,7 @@ export type PortalFileListProps = {
 };
 
 export function PortalFileList({
+  activeFileId,
   canUpload,
   content,
   files,
@@ -38,6 +42,7 @@ export function PortalFileList({
   locale,
   origin,
   selectedIds,
+  showProject,
   status,
   total,
   onDownloadAction,
@@ -86,6 +91,7 @@ export function PortalFileList({
         const selected = selectedIds.includes(file.id);
         return (
           <PortalFileRow
+            active={file.id === activeFileId}
             content={content}
             file={file}
             key={file.id}
@@ -102,6 +108,7 @@ export function PortalFileList({
                 : undefined
             }
             selected={selected}
+            showProject={showProject}
           />
         );
       })}

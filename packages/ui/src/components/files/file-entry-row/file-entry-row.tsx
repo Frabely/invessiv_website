@@ -8,30 +8,29 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import type { AssetKind } from "@invessiv/common/constants/files/asset-kind";
 import { FileSource } from "@invessiv/common/constants/files/file-source";
-import type { FilePreviewItem } from "@invessiv/common/contracts/files/file-preview-item";
-import { filePresentation } from "@invessiv/common/patterns/files/file-presentation";
+import type { FileEntryItem } from "@invessiv/common/contracts/files/file-entry-item";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl } from "../../button/button";
 import { CheckboxControl } from "../../checkbox-control/checkbox-control";
+import { FileEntryMeta } from "../file-entry-meta/file-entry-meta";
 import { FileKindIcon } from "../file-kind-icon/file-kind-icon";
 import styles from "./file-entry-row.module.css";
 
-type FileEntry = FilePreviewItem & {
-  assetKind: AssetKind;
-  note: string | null;
-  url: string | null;
-  createdAt: string;
-};
-
-export type FileEntryRowProps<TFile extends FileEntry> = {
+export type FileEntryRowProps<TFile extends FileEntryItem> = {
   file: TFile;
   locale: string;
   kindLabel: string;
   metadata?: ReactNode;
   status?: ReactNode;
   compact?: boolean;
+  /** Marks the row whose file is shown next to the list. */
+  active?: boolean;
+  /**
+   * The whole row opens the file (preview or link) instead of an underlined name and an eye
+   * button; checkbox and actions stay separately clickable above it.
+   */
+  openOnRowClick?: boolean;
   origin?: string;
   selected: boolean;
   labels: {
@@ -58,13 +57,15 @@ export type FileEntryRowProps<TFile extends FileEntry> = {
 };
 
 /** Shared file identity and actions; callers supply only their extra metadata and rights. */
-export function FileEntryRow<TFile extends FileEntry>({
+export function FileEntryRow<TFile extends FileEntryItem>({
   file,
   locale,
   kindLabel,
   metadata,
   status,
   compact = false,
+  active = false,
+  openOnRowClick = false,
   origin,
   selected,
   labels,
@@ -75,14 +76,19 @@ export function FileEntryRow<TFile extends FileEntry>({
 }: FileEntryRowProps<TFile>) {
   const name = { name: file.displayName };
   const linkUrl = file.source === FileSource.Link ? file.url : null;
-  const host = linkUrl ? filePresentation.linkHost(linkUrl) : null;
+  const rowTarget = openOnRowClick && (linkUrl !== null || !!onPreviewAction);
+  const nameClassName = rowTarget
+    ? `${styles.name} ${styles.rowTarget}`
+    : styles.name;
 
   return (
     <li
       className={styles.row}
+      data-active={active ? "true" : "false"}
       data-compact={compact ? "true" : "false"}
       data-has-status={status ? "true" : "false"}
       data-origin={origin}
+      data-row-target={rowTarget ? "true" : "false"}
       data-selected={selected ? "true" : "false"}
     >
       <span className={styles.select}>
@@ -101,7 +107,7 @@ export function FileEntryRow<TFile extends FileEntry>({
         {linkUrl ? (
           <a
             aria-label={`${file.displayName} (${labels.opensInNewTab})`}
-            className={styles.name}
+            className={nameClassName}
             href={linkUrl}
             rel="noopener noreferrer"
             target="_blank"
@@ -110,7 +116,8 @@ export function FileEntryRow<TFile extends FileEntry>({
           </a>
         ) : onPreviewAction ? (
           <button
-            className={styles.name}
+            aria-current={active ? "true" : undefined}
+            className={nameClassName}
             onClick={() => onPreviewAction(file)}
             type="button"
           >
@@ -120,21 +127,12 @@ export function FileEntryRow<TFile extends FileEntry>({
           <span className={styles.name}>{file.displayName}</span>
         )}
         {file.note ? <p className={styles.note}>{file.note}</p> : null}
-        <p className={styles.meta}>
-          <span>
-            {host ??
-              (file.extension ? file.extension.toUpperCase() : kindLabel)}
-          </span>
-          {metadata}
-          {file.sizeBytes !== null ? (
-            <span className={styles.numeric}>
-              {filePresentation.formatSize(file.sizeBytes, locale)}
-            </span>
-          ) : null}
-          <time className={styles.numeric} dateTime={file.createdAt}>
-            {filePresentation.formatDate(file.createdAt, locale)}
-          </time>
-        </p>
+        <FileEntryMeta
+          file={file}
+          kindLabel={kindLabel}
+          locale={locale}
+          metadata={metadata}
+        />
       </div>
       {status ? <div className={styles.status}>{status}</div> : null}
       <div
@@ -142,7 +140,7 @@ export function FileEntryRow<TFile extends FileEntry>({
         className={styles.actions}
         role="group"
       >
-        {onPreviewAction ? (
+        {onPreviewAction && !openOnRowClick ? (
           <ButtonControl
             aria-label={formatMessage(labels.previewNamed, name)}
             className={styles.action}

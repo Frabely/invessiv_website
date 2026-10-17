@@ -7,20 +7,28 @@ import { portalFilesApiService } from "@/client/portal/portal-files-api-service"
 import { usePagedFiles } from "@/hooks/shared/use-paged-files";
 
 /**
- * One tab of the portal files page. The server-rendered first page is used only for the tab it
- * was rendered for; `revision` reloads after an upload or a new link.
+ * One tab of the portal files page. The server-rendered first page is used only for the tab and
+ * project it was rendered for; `revision` reloads after an upload or a new link.
  */
 export function usePortalFiles(
   customerId: string,
   origin: PortalFileOrigin,
   revision: number,
-  initial: { origin: PortalFileOrigin; page: PortalFileListPageDto },
-  projectId?: string | null,
+  initial: {
+    origin: PortalFileOrigin;
+    page: PortalFileListPageDto;
+    projectId: string | null;
+  },
+  projectId: string | null = null,
 ) {
   return usePagedFiles<PortalFileDto>(
     JSON.stringify([customerId, origin, revision, projectId]),
     (page) =>
       portalFilesApiService.listFiles(customerId, origin, page, projectId),
-    initial.origin === origin && revision === 0 ? initial.page : undefined,
+    initial.origin === origin &&
+      initial.projectId === projectId &&
+      revision === 0
+      ? initial.page
+      : undefined,
   );
 }

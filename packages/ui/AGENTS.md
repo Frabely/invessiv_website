@@ -38,6 +38,8 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   Inline-Style) und „Farbe wählen“ daneben. Ohne gültigen Wert ist der Chip schraffiert. `FormField` nimmt
   `type="color"` von seinen Texteingabe-Stilen aus; Start-Slot (`inputPrefix`) und Aktion neben dem Feld
   (`inputAction`) sind allgemeine `FormField`-Props.
+- **Icon und Text im Button:** `.button` setzt selbst `gap: 0.5rem`. Aufrufer geben Icons keinen eigenen Abstand
+  (`margin-right` o. Ä.).
 - **Buttons:** `variant` wählt das Aussehen (`primary`, `ghost`, `quiet`), `size` die Größe (`default`, `control` in
   Formularen, `icon` für reine Icon-Buttons). Hover-Effekte gelten nur auf Geräten, die hovern können.
   `PrimaryCtaButton` ist die Hauptaktion, `SecondaryCtaButton` die zweite Aktion daneben oder eine einzelne Aktion,
@@ -67,6 +69,19 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   zu schmal.
 - `openProminent` macht die Öffnen-Aktion zum Primary-Button, wenn der Leser dran ist; die Karte trägt dann
   `data-open-prominent`. Keine eigenen Link- oder Pill-Buttons in Widgets, immer `ButtonControl`/`ButtonLink`.
+
+## Datei-Vorschau (verbindlich)
+
+- `FileEntryRow` mit `openOnRowClick`: Die ganze Zeile öffnet Vorschau oder Link (der Name streckt seine Klickfläche
+  über die Zeile, Checkbox und Aktionen liegen darüber), der Name ist kein Textlink und es gibt keinen Auge-Button.
+  Ohne die Prop bleibt das bisherige Verhalten (CRM).
+- Wie eine Datei gezeigt wird (Bild, PDF, Video, Text, Laden, Fehler), steht nur in `files/file-preview-stage`; das
+  Laden und rechtzeitige Erneuern der signierten URL nur in `hooks/use-file-preview-source`. `FileLightbox`
+  (Vollbild, Variante `dialog`) und `FilePreviewPanel` (neben einer Liste, Variante `panel`) bauen darauf auf und
+  rendern keine eigene Vorschau.
+- Die Metazeile unter einem Dateinamen (Typ oder Link-Host, eigene Angaben, Größe, Datum) kommt nur aus
+  `files/file-entry-meta`; Zeile und Panel nutzen sie gemeinsam. Der gemeinsame Eintragstyp ist `FileEntryItem`
+  (`@invessiv/common/contracts/files/file-entry-item`).
 
 ## Bekannte Altlasten
 

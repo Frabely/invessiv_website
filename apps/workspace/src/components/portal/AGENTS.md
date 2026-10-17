@@ -100,13 +100,40 @@ Plan: `apps/workspace/plans/crm/14-dateien/55-portal-dateien.md`.
 - Komponenten liegen unter `files/`; Orchestrator ist `files/portal-files-view`. Typ-Symbol, Upload-Zeile, Lightbox
   und Formular-Dialog kommen aus `@invessiv/ui` (`FileKindIcon`, `UploadQueueRow`, `FileLightbox`, `FormDialog`) —
   dieselben Bausteine wie im CRM, nur mit Portal-Texten aus `dictionaries/portal/files/`.
-- Upload- und Link-Dialoge, Dateizeile, Listenrahmen und ZIP-Auswahlleiste nutzen die geteilten UI-Bausteine
-  `FileUploadDialogFrame`, `FileLinkDialogFrame`, `FileEntryRow`, `FileListFrame` und `FileArchiveToolbar`.
+- Upload- und Link-Dialoge, Dateizeile und Listenrahmen nutzen die geteilten UI-Bausteine
+  `FileUploadDialogFrame`, `FileLinkDialogFrame`, `FileEntryRow` und `FileListFrame`.
   Portal-Komponenten ergänzen ausschließlich ihre Portal-DTOs, erlaubten Projekte und API-Aufrufe.
+- **Layout wie Onboarding und Feedback (Paket K, Entscheidung 17.10.2026,
+  Plan `apps/workspace/plans/crm/26-portal-dateien-layout/K-portal-files-layout.md`).** Die Seite rendert
+  `shared/portal-step-frame` in einem Wrapper mit `data-portal-fixed-head` (ohne ihn scrollt die Shell selbst und
+  die Fußleiste wandert mit): fester Kopf (`shared/portal-step-header`, ohne Stepper) mit Zurück-Link, Titel und
+  dem Projekt-Umschalter, darunter scrollen Ablagefläche, Reiter und Liste, unten die Fußleiste
+  (`shared/portal-page-bar`). Keine Karte um die Liste.
+- **Projekt-Umschalter** ist ein `SegmentedControl` aus `@invessiv/ui` mit dem Titel des gewählten Projekts und
+  „Alle Projekte“; er erscheint nur mit gewähltem Projekt. Der Wechsel schreibt `scope=all` per `useUrlSearch`
+  ohne Server-Roundtrip und leert die ZIP-Auswahl. Der Projektname steht in den Zeilen nur unter „Alle Projekte“.
+- **Fußleiste:** „Datei hinzufügen“ ist der einzige primäre Einstieg. Ab einer ausgewählten Datei stehen
+  „Auswahl aufheben“ und „Als ZIP herunterladen“ davor; der Hinzufügen-Button bleibt sichtbar. Ohne Schreibrecht
+  erscheinen nur die ZIP-Aktionen. Die Seite nutzt `FileArchiveToolbar` nicht; der Baustein bleibt dem CRM.
+- **Ein Hinzufügen-Dialog:** `portal-file-add-dialog` startet mit Upload und wechselt über `SegmentedControl` zum
+  Link-Formular. Jeweils ein Dialog, gleicher Titel, passende Beschreibung und Aktionen. Beide Modi verwenden die
+  bestehenden Upload-/Link-Dialograhmen und Portal-Transporte. Während Upload oder Speichern ist der Wechsel
+  gesperrt; ungespeicherte Auswahl und Angaben werden nur nach Bestätigung verworfen. Keine Upload-Fläche auf der
+  Seite außerhalb des Dialogs.
+- **Ganze Zeile öffnet** (`openOnRowClick` an `FileEntryRow`): Der Name ist kein unterstrichener Textlink, ein Klick
+  irgendwo in die Zeile öffnet die Vorschau (bzw. den Link); Checkbox und Herunterladen bleiben eigene Klickziele. Kein
+  Auge-Button in den Zeilen.
+- **Vorschau-Panel ab 1100 px** (`PORTAL_FILES_PANEL_MEDIA_QUERY`, CSS wiederholt den Breakpoint): rechts neben der
+  Liste `FilePreviewPanel` aus `@invessiv/ui`, mitlaufend (`sticky`). Ein Klick auf die Zeile zeigt die Datei
+  dort (URL-Parameter `file`), die gezeigte Zeile ist `active`. „Vollbild“ öffnet die Lightbox. Nur die gewählte
+  Datei lädt, ohne Wahl nichts. Reiter- und Scope-Wechsel leeren das Panel. Unter 1100 px gibt es kein Panel, der
+  Klick öffnet wie bisher die Lightbox. Die Projektangabe kommt in Zeile und Panel aus `portal-file-project-label`.
+- **Vorschaubilder in der Liste** sind nicht umgesetzt; Plan `26-portal-dateien-layout/L-file-thumbnails.md`
+  (serverseitige Kleinversionen, private Originale bleiben ungeladen).
 - Laden nur über `usePortalFiles` (auf dem geteilten `usePagedFiles`), Uploads nur über `useUploadQueue` mit
   Portal-Transport, Auswahl für ZIP über `useFileSelection` (URL-Parameter `selected`, an die Kunden-ID gebunden).
   Reiter „Von uns“ / „Von dir“ im URL-Parameter `tab`.
-- Upload-Fläche und „Link hinzufügen“ erscheinen nur mit `canUpload` (Seite: `portal.files.write` und keine
+- „Datei hinzufügen“ erscheint nur mit `canUpload` (Seite: `portal.files.write` und keine
   Owner-Sicht). Die Owner-Sicht zeigt stattdessen den Owner-Hinweis mit CRM-Link. Es gibt keinen Lösch- oder
   Bearbeitungsweg im Portal.
 - Nach eigenem Upload oder Link springt die Ansicht auf „Von dir“, damit der Kunde sieht, was angekommen ist.

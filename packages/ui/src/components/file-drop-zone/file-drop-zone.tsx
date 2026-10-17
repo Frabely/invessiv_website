@@ -1,10 +1,11 @@
 "use client";
 
-import { type ChangeEvent, type ReactNode, useId } from "react";
+import { type ReactNode, useId } from "react";
 import { faArrowUpFromBracket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FileDropZoneVariant } from "@invessiv/common/constants/ui/file-drop-zone-variants";
 import { useFileDragTarget } from "../../hooks/use-file-drag-target";
+import { useFilePicker } from "../../hooks/use-file-picker";
 import styles from "./file-drop-zone.module.css";
 
 export type FileDropZoneProps = {
@@ -37,19 +38,8 @@ export function FileDropZone({
   const titleId = useId();
   const hintId = useId();
 
-  function emit(files: File[]) {
-    const selected = multiple ? files : files.slice(0, 1);
-    if (selected.length > 0) onFilesSelected(selected);
-  }
-
+  const { emit, handleChange } = useFilePicker(onFilesSelected, multiple);
   const drag = useFileDragTarget(emit, disabled);
-
-  function handleChange(event: ChangeEvent<HTMLInputElement>) {
-    const files = Array.from(event.target.files ?? []);
-    // Clearing lets the same file be chosen again after a rejection or a cancelled upload.
-    event.target.value = "";
-    emit(files);
-  }
 
   return (
     <div

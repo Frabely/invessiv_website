@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { ButtonVariant } from "@invessiv/common/constants/ui/button-variants";
 import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
+import { PortalPageBar } from "../portal-page-bar/portal-page-bar";
 import styles from "./portal-step-bar.module.css";
 
 export type PortalStepBarProps = {
@@ -25,32 +26,37 @@ export function PortalStepBar({
   onNextAction,
   status = null,
 }: PortalStepBarProps) {
-  if (!status && !action && !nextLabel && !onBackAction) return null;
+  const forward =
+    action ??
+    (nextLabel ? (
+      <PrimaryCtaButton
+        className={styles.next}
+        onClick={onNextAction}
+        type="button"
+      >
+        <span className={styles.nextLabel}>{nextLabel}</span>
+      </PrimaryCtaButton>
+    ) : null);
 
   return (
-    <div className={styles.bar}>
-      {status}
-      <div className={styles.actions}>
-        {onBackAction ? (
-          <ButtonControl
-            onClick={onBackAction}
-            type="button"
-            variant={ButtonVariant.Ghost}
-          >
-            {backLabel}
-          </ButtonControl>
-        ) : null}
-        {action ??
-          (nextLabel ? (
-            <PrimaryCtaButton
-              className={styles.next}
-              onClick={onNextAction}
-              type="button"
-            >
-              <span className={styles.nextLabel}>{nextLabel}</span>
-            </PrimaryCtaButton>
-          ) : null)}
-      </div>
-    </div>
+    <PortalPageBar
+      actions={
+        onBackAction || forward ? (
+          <>
+            {onBackAction ? (
+              <ButtonControl
+                onClick={onBackAction}
+                type="button"
+                variant={ButtonVariant.Ghost}
+              >
+                {backLabel}
+              </ButtonControl>
+            ) : null}
+            {forward}
+          </>
+        ) : null
+      }
+      status={status}
+    />
   );
 }
