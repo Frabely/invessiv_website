@@ -7,6 +7,7 @@ import {
 describe("lead conversion error codes", () => {
   it("contains the exact unique public values", () => {
     expect(LEAD_CONVERSION_ERROR_CODE_VALUES).toEqual([
+      "LEAD_CONVERSION_CUSTOMER_NUMBER_TAKEN",
       "LEAD_CONVERSION_DISPLAY_NAME_TAKEN",
       "LEAD_CONVERSION_INTERNAL",
       "LEAD_CONVERSION_LEAD_NOT_FOUND",

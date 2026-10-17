@@ -8,13 +8,17 @@ import {
   eq,
   ilike,
   inArray,
+  lt,
   ne,
+  notExists,
   or,
   sql,
 } from "drizzle-orm";
+import { alias } from "drizzle-orm/pg-core";
 
 import type { ContactDatabaseReader } from "@invessiv/db/core";
 import { CustomerStatus } from "@invessiv/common/constants/crm/customer-statuses";
+import { CustomerFieldLimits } from "@invessiv/common/constants/crm/forms/customer-field-limits";
 import { CustomerSort } from "@invessiv/common/constants/crm/list/customer-sort";
 import type { CustomerDetailDto } from "@invessiv/common/contracts/crm/customer-detail.dto";
 import type { CustomerSummaryDto } from "@invessiv/common/contracts/crm/customer-summary.dto";
@@ -262,9 +266,53 @@ async function findStatusById(
   return row?.status ?? null;
 }
 
+const followingCustomers = alias(customers, "following_customers");
+
+/**
+ * Deliberately unscoped: numbers are unique across every customer, so a suggestion from the
+ * actor's access scope could name a taken one. It reveals only that a number is in use.
+ * Candidates stay below the limit, which also keeps `+ 1` clear of the INTEGER maximum the
+ * production smoke gives its fixture customer. Null once every allowed number is taken.
+ */
+async function findLowestFreeCustomerNumber(
+  executor: ContactDatabaseReader,
+): Promise<number | null> {
+  const [first] = await executor
+    .select({ id: customers.id })
+    .from(customers)
+    .where(eq(customers.customer_number, 1))
+    .limit(1);
+  if (!first) return 1;
+
+  const [row] = await executor
+    .select({
+      value: sql<number | null>`min(${customers.customer_number}) + 1`,
+    })
+    .from(customers)
+    .where(
+      and(
+        lt(customers.customer_number, CustomerFieldLimits.CustomerNumberMax),
+        notExists(
+          executor
+            .select({ id: followingCustomers.id })
+            .from(followingCustomers)
+            .where(
+              eq(
+                followingCustomers.customer_number,
+                sql`${customers.customer_number} + 1`,
+              ),
+            ),
+        ),
+      ),
+    );
+
+  return row?.value == null ? null : Number(row.value);
+}
+
 export const customerReadService = {
   countSummaries,
   findDetailById,
+  findLowestFreeCustomerNumber,
   findStatusById,
   listSummaries,
 } as const;

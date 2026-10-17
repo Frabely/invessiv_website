@@ -5,6 +5,7 @@ const STATUS: Record<CustomerErrorCode, HttpResponseCode> = {
   [CustomerErrorCode.CustomerNotFound]: HttpResponseCode.NotFound,
   [CustomerErrorCode.ContactNotFound]: HttpResponseCode.NotFound,
   [CustomerErrorCode.DisplayNameTaken]: HttpResponseCode.Conflict,
+  [CustomerErrorCode.CustomerNumberTaken]: HttpResponseCode.Conflict,
   [CustomerErrorCode.OwnerInactive]: HttpResponseCode.Conflict,
   [CustomerErrorCode.ValidationError]: HttpResponseCode.UnprocessableContent,
   [CustomerErrorCode.Internal]: HttpResponseCode.InternalServerError,
@@ -15,6 +16,8 @@ const MESSAGES: Record<CustomerErrorCode, string> = {
   [CustomerErrorCode.ContactNotFound]: "Contact not found",
   [CustomerErrorCode.DisplayNameTaken]:
     "A customer with this display name already exists",
+  [CustomerErrorCode.CustomerNumberTaken]:
+    "A customer with this customer number already exists",
   [CustomerErrorCode.OwnerInactive]: "The owner is no longer an active member",
   [CustomerErrorCode.ValidationError]: "Validation failed",
   [CustomerErrorCode.Internal]: "Unexpected server error",

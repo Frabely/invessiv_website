@@ -23,6 +23,7 @@
   },
   "fields": {
     "displayName": "Display name",
+    "customerNumber": "Customer number",
     "companyName": "Company name",
     "category": "Category",
     "status": "Status",
@@ -43,6 +44,7 @@
   },
   "placeholders": {
     "displayName": "e.g. Nordlicht Coaching",
+    "customerNumber": "e.g. K0002",
     "companyName": "e.g. Nordlicht Coaching GmbH",
     "category": "No category",
     "street": "Ehrenstraße 12",
@@ -62,6 +64,8 @@
   "hints": {
     "displayName": "This is how the customer appears everywhere. Each display name can only be used once.",
     "hourlyRate": "In euros. Used as the default for new projects.",
+    "customerNumber": "Lowest free number: {number}. Can't be changed later.",
+    "customerNumberWithoutSuggestion": "Enter a free number. Can't be changed later.",
     "notesCounter": "{count} of {max} characters"
   },
   "currencySymbol": "€",
@@ -77,6 +81,8 @@
   "validation": {
     "displayNameRequired": "Enter a display name.",
     "displayNameTaken": "Another customer already uses this display name. Add something to it, such as the city.",
+    "customerNumberInvalid": "Enter a number like K0002 or 2.",
+    "customerNumberTaken": "Another customer already has this number, archived ones included. Pick a different one.",
     "contactLastNameRequired": "Enter a last name.",
     "emailInvalid": "Enter a valid email address, such as name@company.com.",
     "phoneInvalid": "Enter a valid phone number.",
@@ -87,9 +93,11 @@
     "CUSTOMER_NOT_FOUND": "This customer no longer exists. Close the dialog to refresh the list.",
     "CONTACT_NOT_FOUND": "This contact no longer exists. Close the dialog to refresh the list.",
     "CUSTOMER_DISPLAY_NAME_TAKEN": "Another customer already uses this display name.",
+    "CUSTOMER_NUMBER_TAKEN": "This customer number is already taken.",
     "CUSTOMER_OWNER_INACTIVE": "Your access was just deactivated. The customer was not added.",
     "VALIDATION_ERROR": "Some details don't fit. Check the fields and save again.",
     "INTERNAL": "Saving didn't work. Try again in a moment.",
+    "LEAD_CONVERSION_CUSTOMER_NUMBER_TAKEN": "This customer number is already taken.",
     "LEAD_CONVERSION_DISPLAY_NAME_TAKEN": "Another customer already uses this display name. Add a distinguishing detail such as the location.",
     "LEAD_CONVERSION_INTERNAL": "The conversion didn't work. Try again in a moment.",
     "LEAD_CONVERSION_LEAD_NOT_FOUND": "This lead no longer exists.",

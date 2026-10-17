@@ -19,6 +19,7 @@ const mocks = vi.hoisted(() => ({
   getCustomerById: vi.fn(),
   getCustomerCockpitById: vi.fn(),
   listCategories: vi.fn(),
+  getNextCustomerNumber: vi.fn(),
   listCockpitProjectsByCustomer: vi.fn(),
   listCustomerAccessScopes: vi.fn(),
   listAccessCustomerProjects: vi.fn(),
@@ -85,6 +86,10 @@ vi.mock(
 vi.mock(
   "@/server/workspace/crm/query-handler/list-active-customer-categories.query-handler",
   () => ({ listActiveCustomerCategories: mocks.listCategories }),
+);
+vi.mock(
+  "@/server/workspace/crm/query-handler/get-next-customer-number.query-handler",
+  () => ({ getNextCustomerNumber: mocks.getNextCustomerNumber }),
 );
 vi.mock(
   "@/server/workspace/crm/query-handler/list-projects-by-customer.query-handler",
@@ -178,8 +183,18 @@ vi.mock(
 vi.mock(
   "@/components/workspace/crm/form/customer-form-dialog/customer-form-dialog",
   () => ({
-    CustomerFormDialog: ({ customer }: { customer: { id: string } | null }) => (
-      <div data-customer={customer?.id ?? "new"} data-testid="dialog" />
+    CustomerFormDialog: ({
+      customer,
+      suggestedCustomerNumber,
+    }: {
+      customer: { id: string } | null;
+      suggestedCustomerNumber?: number | null;
+    }) => (
+      <div
+        data-customer={customer?.id ?? "new"}
+        data-suggested={String(suggestedCustomerNumber)}
+        data-testid="dialog"
+      />
     ),
   }),
 );
@@ -197,6 +212,7 @@ describe("CrmPage", () => {
   beforeEach(() => {
     Object.values(mocks).forEach((mock) => mock.mockReset());
     mocks.requireWorkspaceArea.mockResolvedValue(workspaceActorWith());
+    mocks.getNextCustomerNumber.mockResolvedValue(2);
     mocks.getCustomerConversation.mockResolvedValue(null);
     mocks.listCredentialProjectsByCustomer.mockResolvedValue([]);
     mocks.getCustomerHours.mockResolvedValue(null);
@@ -485,6 +501,7 @@ describe("CrmPage", () => {
       "data-customer",
       "new",
     );
+    expect(screen.getByTestId("dialog")).toHaveAttribute("data-suggested", "2");
     expect(mocks.listCategories).toHaveBeenCalled();
   });
 
@@ -500,6 +517,7 @@ describe("CrmPage", () => {
     await renderPage({ mode: "edit", edit: "unknown" });
     expect(screen.queryByTestId("dialog")).not.toBeInTheDocument();
     expect(mocks.listCategories).toHaveBeenCalledTimes(1);
+    expect(mocks.getNextCustomerNumber).not.toHaveBeenCalled();
   });
 
   it("opens nothing for an edit request on a customer the member cannot write to", async () => {

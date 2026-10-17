@@ -61,6 +61,11 @@ vi.mock("@/lib/auth/permissions", () => ({
 }));
 
 vi.mock(
+  "@/server/workspace/crm/query-handler/get-next-customer-number.query-handler",
+  () => ({ getNextCustomerNumber: vi.fn().mockResolvedValue(2) }),
+);
+
+vi.mock(
   "@/components/workspace/leads/shell/leads-page-header/leads-page-header",
   () => ({
     LeadsPageHeader: mockLeadsPageHeader,

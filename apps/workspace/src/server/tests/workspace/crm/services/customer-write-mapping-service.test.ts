@@ -30,6 +30,7 @@ describe("customerWriteMappingService", () => {
       ),
     ).toEqual({
       id: "customer-1",
+      customer_number: 2,
       display_name: "Nordlicht Coaching",
       company_name: "Nordlicht Coaching GmbH",
       category_id: TEST_CATEGORY_ID,
@@ -50,6 +51,7 @@ describe("customerWriteMappingService", () => {
 
   it("keeps nullable fields null", () => {
     const input = customerSchemas.create.parse({
+      customerNumber: 3,
       displayName: "Dario Lentz",
       primaryContact: {
         lastName: "Lentz",

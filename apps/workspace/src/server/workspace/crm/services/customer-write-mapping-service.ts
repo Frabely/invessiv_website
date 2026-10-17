@@ -36,6 +36,7 @@ function mapCreateCustomerApiToDb(
 ): typeof customers.$inferInsert {
   return {
     id: customerId,
+    customer_number: input.customerNumber,
     ...mapWriteFields(input),
     status: CustomerStatus.Active,
     owner_member_id: ownerMemberId,

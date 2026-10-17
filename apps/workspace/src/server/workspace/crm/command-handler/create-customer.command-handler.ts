@@ -58,6 +58,9 @@ export async function createCustomer(
     if (customerConstraintViolationService.isDisplayNameTaken(error)) {
       return { ok: false, code: CustomerErrorCode.DisplayNameTaken };
     }
+    if (customerConstraintViolationService.isCustomerNumberTaken(error)) {
+      return { ok: false, code: CustomerErrorCode.CustomerNumberTaken };
+    }
     throw error;
   }
 }

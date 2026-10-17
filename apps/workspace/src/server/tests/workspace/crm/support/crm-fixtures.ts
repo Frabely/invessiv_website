@@ -50,6 +50,7 @@ export function createCustomerRequestFixture(
   overrides: Partial<CreateCustomerRequestDto> = {},
 ): CreateCustomerRequestDto {
   return {
+    customerNumber: 2,
     displayName: "Nordlicht Coaching",
     companyName: "Nordlicht Coaching GmbH",
     categoryId: null,

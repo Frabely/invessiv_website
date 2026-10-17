@@ -40,8 +40,12 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 - **Zuweisen geht nur aus einem aktiven Template.** Archivierte oder unbekannte Templates werden im Command
   abgewiesen, nicht erst in der UI ausgeblendet.
 - **Kein Löschpfad für Projektleistungen.** Eine Position verschwindet nur mit ihrem Projekt (`ON DELETE CASCADE`).
-- Kundennummern haben Lücken. Das ist gültig; keine Nummer wird wiederverwendet, und es gibt keine
-  Logik, die Lücken „reparieren" will.
+- **Kundennummern vergibt der Anlegende (ab Ordner 29).** `CreateCustomerRequestDto.customerNumber` ist Pflicht und
+  wird ausdrücklich geschrieben; der Sequenz-Default greift im Produktivpfad nicht mehr (Abbau in 29.2). Den Vorschlag
+  liefert `customerReadService.findLowestFreeCustomerNumber` (kleinste freie Nummer, bewusst **ohne** Zugriffsbereich,
+  weil die Eindeutigkeit global gilt; preisgegeben wird nur die Belegung). Ob eine Nummer frei ist, entscheidet allein
+  der eindeutige Index: ein Treffer wird über `isCustomerNumberTaken` zu `CUSTOMER_NUMBER_TAKEN` bzw.
+  `LEAD_CONVERSION_CUSTOMER_NUMBER_TAKEN` (409), nie vorab per SELECT geprüft. Updates tragen keine Nummer.
 
 ## Schreibpfad
 

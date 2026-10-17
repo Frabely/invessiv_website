@@ -21,6 +21,7 @@ describe("CUSTOMER_ERROR_CODE_VALUES", () => {
     expect(CustomerErrorCode.DisplayNameTaken).toBe(
       "CUSTOMER_DISPLAY_NAME_TAKEN",
     );
+    expect(CustomerErrorCode.CustomerNumberTaken).toBe("CUSTOMER_NUMBER_TAKEN");
     expect(CustomerErrorCode.OwnerInactive).toBe("CUSTOMER_OWNER_INACTIVE");
   });
 

@@ -23,6 +23,7 @@
   },
   "fields": {
     "displayName": "Anzeigename",
+    "customerNumber": "Kundennummer",
     "companyName": "Firmenname",
     "category": "Kategorie",
     "status": "Status",
@@ -43,6 +44,7 @@
   },
   "placeholders": {
     "displayName": "z. B. Nordlicht Coaching",
+    "customerNumber": "z. B. K0002",
     "companyName": "z. B. Nordlicht Coaching GmbH",
     "category": "Keine Kategorie",
     "street": "Ehrenstraße 12",
@@ -62,6 +64,8 @@
   "hints": {
     "displayName": "So erscheint der Kunde überall. Jeder Anzeigename ist nur einmal vergeben.",
     "hourlyRate": "In Euro. Gilt als Vorgabe für neue Projekte.",
+    "customerNumber": "Kleinste freie Nummer: {number}. Später nicht mehr änderbar.",
+    "customerNumberWithoutSuggestion": "Gib eine freie Nummer ein. Später nicht mehr änderbar.",
     "notesCounter": "{count} von {max} Zeichen"
   },
   "currencySymbol": "€",
@@ -77,6 +81,8 @@
   "validation": {
     "displayNameRequired": "Gib einen Anzeigenamen ein.",
     "displayNameTaken": "Diesen Anzeigenamen hat schon ein Kunde. Ergänze ihn, zum Beispiel um den Ort.",
+    "customerNumberInvalid": "Gib eine Nummer wie K0002 oder 2 ein.",
+    "customerNumberTaken": "Diese Nummer hat schon ein Kunde, archivierte zählen mit. Nimm eine andere.",
     "contactLastNameRequired": "Gib einen Nachnamen ein.",
     "emailInvalid": "Gib eine gültige E-Mail-Adresse ein, zum Beispiel name@firma.de.",
     "phoneInvalid": "Gib eine gültige Telefonnummer ein.",
@@ -87,9 +93,11 @@
     "CUSTOMER_NOT_FOUND": "Diesen Kunden gibt es nicht mehr. Schließ den Dialog, um die Liste zu aktualisieren.",
     "CONTACT_NOT_FOUND": "Den Ansprechpartner gibt es nicht mehr. Schließ den Dialog, um die Liste zu aktualisieren.",
     "CUSTOMER_DISPLAY_NAME_TAKEN": "Diesen Anzeigenamen hat schon ein Kunde.",
+    "CUSTOMER_NUMBER_TAKEN": "Diese Kundennummer ist schon vergeben.",
     "CUSTOMER_OWNER_INACTIVE": "Dein Zugang wurde gerade deaktiviert. Der Kunde wurde nicht angelegt.",
     "VALIDATION_ERROR": "Einige Angaben passen nicht. Prüf die Felder und speichere erneut.",
     "INTERNAL": "Speichern hat nicht geklappt. Versuch es gleich noch einmal.",
+    "LEAD_CONVERSION_CUSTOMER_NUMBER_TAKEN": "Diese Kundennummer ist schon vergeben.",
     "LEAD_CONVERSION_DISPLAY_NAME_TAKEN": "Diesen Anzeigenamen hat schon ein Kunde. Ergänze ihn, zum Beispiel um den Ort.",
     "LEAD_CONVERSION_INTERNAL": "Die Konvertierung hat nicht geklappt. Versuch es gleich noch einmal.",
     "LEAD_CONVERSION_LEAD_NOT_FOUND": "Diesen Lead gibt es nicht mehr.",
