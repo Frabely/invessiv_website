@@ -24,13 +24,6 @@ export type FileEntryRowProps<TFile extends FileEntryItem> = {
   metadata?: ReactNode;
   status?: ReactNode;
   compact?: boolean;
-  /** Marks the row whose file is shown next to the list. */
-  active?: boolean;
-  /**
-   * The whole row opens the file (preview or link) instead of an underlined name and an eye
-   * button; checkbox and actions stay separately clickable above it.
-   */
-  openOnRowClick?: boolean;
   origin?: string;
   selected: boolean;
   labels: {
@@ -64,8 +57,6 @@ export function FileEntryRow<TFile extends FileEntryItem>({
   metadata,
   status,
   compact = false,
-  active = false,
-  openOnRowClick = false,
   origin,
   selected,
   labels,
@@ -76,19 +67,13 @@ export function FileEntryRow<TFile extends FileEntryItem>({
 }: FileEntryRowProps<TFile>) {
   const name = { name: file.displayName };
   const linkUrl = file.source === FileSource.Link ? file.url : null;
-  const rowTarget = openOnRowClick && (linkUrl !== null || !!onPreviewAction);
-  const nameClassName = rowTarget
-    ? `${styles.name} ${styles.rowTarget}`
-    : styles.name;
 
   return (
     <li
       className={styles.row}
-      data-active={active ? "true" : "false"}
       data-compact={compact ? "true" : "false"}
       data-has-status={status ? "true" : "false"}
       data-origin={origin}
-      data-row-target={rowTarget ? "true" : "false"}
       data-selected={selected ? "true" : "false"}
     >
       <span className={styles.select}>
@@ -107,7 +92,7 @@ export function FileEntryRow<TFile extends FileEntryItem>({
         {linkUrl ? (
           <a
             aria-label={`${file.displayName} (${labels.opensInNewTab})`}
-            className={nameClassName}
+            className={styles.name}
             href={linkUrl}
             rel="noopener noreferrer"
             target="_blank"
@@ -116,8 +101,7 @@ export function FileEntryRow<TFile extends FileEntryItem>({
           </a>
         ) : onPreviewAction ? (
           <button
-            aria-current={active ? "true" : undefined}
-            className={nameClassName}
+            className={styles.name}
             onClick={() => onPreviewAction(file)}
             type="button"
           >
@@ -140,7 +124,7 @@ export function FileEntryRow<TFile extends FileEntryItem>({
         className={styles.actions}
         role="group"
       >
-        {onPreviewAction && !openOnRowClick ? (
+        {onPreviewAction ? (
           <ButtonControl
             aria-label={formatMessage(labels.previewNamed, name)}
             className={styles.action}

@@ -12,20 +12,14 @@
     "label": "Files by project",
     "all": "All projects"
   },
-  "tabs": {
+  "origin": {
     "label": "Files by origin",
+    "all": "From us and you",
     "fromUs": "From us",
     "fromYou": "From you"
   },
   "actions": {
-    "add": "Add file",
-    "upload": "Upload",
-    "addLink": "Add link"
-  },
-  "intake": {
-    "dropLabel": "Choose files or drop them here",
-    "dropHint": "Photos, videos up to 200 MB, logos, fonts and documents · up to 20 files at once",
-    "linkHint": "File too big or already in the cloud? Just send us the link."
+    "add": "Add file"
   },
   "add": {
     "title": "Add file",
@@ -89,6 +83,18 @@
     "loadMore": "Load more",
     "shown": "Showing {shown} of {total}"
   },
+  "table": {
+    "selectAll": "Select all shown for the ZIP",
+    "columns": {
+      "name": "Name",
+      "origin": "From",
+      "project": "Project",
+      "type": "Type",
+      "size": "Size",
+      "added": "Added",
+      "actions": "Action"
+    }
+  },
   "kinds": {
     "document": "Document",
     "image": "Image",
@@ -108,6 +114,11 @@
     "openNamed": "Open {name}"
   },
   "empty": {
+    "all": {
+      "title": "No files yet",
+      "description": "Everything we share with you and everything you send us lands here – logos, photos, copy or videos.",
+      "readOnlyDescription": "Everything we share and everything your team sends us lands here."
+    },
     "fromUs": {
       "title": "Nothing from us yet",
       "description": "As soon as we share drafts, exports or documents with you, they are ready here to view and download."
@@ -119,9 +130,7 @@
     }
   },
   "archive": {
-    "groupLabel": "Select files for a ZIP",
     "selectNamed": "Select {name} for the ZIP",
-    "selectShown": "Select all shown",
     "selected": "{count} selected",
     "clear": "Clear selection",
     "download": "Download as ZIP",

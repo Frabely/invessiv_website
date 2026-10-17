@@ -72,16 +72,24 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 
 ## Datei-Vorschau (verbindlich)
 
-- `FileEntryRow` mit `openOnRowClick`: Die ganze Zeile öffnet Vorschau oder Link (der Name streckt seine Klickfläche
-  über die Zeile, Checkbox und Aktionen liegen darüber), der Name ist kein Textlink und es gibt keinen Auge-Button.
-  Ohne die Prop bleibt das bisherige Verhalten (CRM).
 - Wie eine Datei gezeigt wird (Bild, PDF, Video, Text, Laden, Fehler), steht nur in `files/file-preview-stage`; das
   Laden und rechtzeitige Erneuern der signierten URL nur in `hooks/use-file-preview-source`. `FileLightbox`
   (Vollbild, Variante `dialog`) und `FilePreviewPanel` (neben einer Liste, Variante `panel`) bauen darauf auf und
-  rendern keine eigene Vorschau.
+  rendern keine eigene Vorschau. Steht das Panel `sticky` in einem Scrollbereich, begrenzt die Seite es auf dessen
+  Höhe und setzt `--file-preview-panel-media-height` (Layout-Hook, Standard 65dvh), damit das Bild zuerst schrumpft.
 - Die Metazeile unter einem Dateinamen (Typ oder Link-Host, eigene Angaben, Größe, Datum) kommt nur aus
-  `files/file-entry-meta`; Zeile und Panel nutzen sie gemeinsam. Der gemeinsame Eintragstyp ist `FileEntryItem`
-  (`@invessiv/common/contracts/files/file-entry-item`).
+  `files/file-entry-meta`; Zeile und Panel nutzen sie gemeinsam. Das Typwort selbst (Link-Host, Endung, sonst
+  Typname) liefert `filePresentation.typeLabel` aus `@invessiv/common`, auch für Tabellen mit eigener Typ-Spalte.
+  Der gemeinsame Eintragstyp ist `FileEntryItem` (`@invessiv/common/contracts/files/file-entry-item`).
+
+## Tabellen und Mehrfachauswahl (verbindlich)
+
+- `DataTableLayout` trägt Seitenwechsel über `pagination` (Links) oder eigenes Nachladen über `footer` (z. B.
+  „Weitere laden“); beides steht unter dem Scrollbereich im Rahmen. Die Tabelle scrollt in ihrem Rahmen; Kopf (sticky)
+  und `pagination`/`footer` bleiben dabei stehen. Mobile-Cards über `mobileCard`/`mobileCardSlot`.
+- Eine Aktionsleiste für gewählte Einträge ist immer `SelectionActionBar`: Pille unten mittig mit Anzahl (fertiger
+  Text), optionalem Hinweis und den Aktionen des Aufrufers. Seiten mit eigener Leiste am unteren Rand heben sie über
+  `--selection-action-bar-offset` an (Layout, kein Override). Keine zweite Bulk-Leiste in einer App.
 
 ## Bekannte Altlasten
 

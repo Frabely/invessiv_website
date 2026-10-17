@@ -58,6 +58,16 @@ function linkHost(url: string): string | null {
   return parseHttpUrl(url)?.hostname.replace(/^www\./u, "") ?? null;
 }
 
+/** What a file is in one word: the link's host, the upload's extension, else the kind label. */
+function typeLabel(
+  file: Pick<FileDto, "source" | "url" | "extension">,
+  kindLabel: string,
+): string {
+  const host =
+    file.source === FileSource.Link && file.url ? linkHost(file.url) : null;
+  return host ?? (file.extension ? file.extension.toUpperCase() : kindLabel);
+}
+
 const dateFormatters = new Map<string, Intl.DateTimeFormat>();
 
 /** Short upload date for list rows, e.g. "28 Sept 2026". */
@@ -79,4 +89,5 @@ export const filePresentation = {
   formatSize,
   formatDate,
   linkHost,
+  typeLabel,
 };

@@ -1,6 +1,6 @@
-/** URL state of the portal files page: the open tab, the ZIP selection, the project scope and the shown file. */
+/** URL state of the portal files page: the origin filter, the ZIP selection, the project scope and the shown file. */
 export const PortalFilesQueryParam = {
-  Tab: "tab",
+  Origin: "origin",
   Selected: "selected",
   Scope: "scope",
   File: "file",

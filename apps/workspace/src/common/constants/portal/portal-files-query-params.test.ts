@@ -9,7 +9,7 @@ import {
 describe("PortalFilesQueryParam", () => {
   it("keeps the URL parameter names stable", () => {
     expect(PortalFilesQueryParam).toEqual({
-      Tab: "tab",
+      Origin: "origin",
       Selected: "selected",
       Scope: "scope",
       File: "file",
@@ -25,7 +25,7 @@ describe("PortalFilesQueryParam", () => {
     expect(PORTAL_FILES_PANEL_MEDIA_QUERY).toBe("(min-width: 1100px)");
   });
 
-  it("previews three entries per tab on the dashboard", () => {
+  it("previews three entries per origin on the dashboard", () => {
     expect(DASHBOARD_FILES_PREVIEW_SIZE).toBe(3);
   });
 });

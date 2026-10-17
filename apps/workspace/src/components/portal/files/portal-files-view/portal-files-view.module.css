@@ -8,39 +8,31 @@
   min-height: 0;
 }
 
-/* One quiet column at the reading width of the other step pages; no card around the list. */
+/* The floating ZIP bar rests above the page bar instead of covering "Add file". */
+.page[data-page-bar="true"] {
+  --selection-action-bar-offset: calc(4.5rem + var(--mobile-safe-bottom, 0px));
+}
+
+/*
+ * Exactly as tall as the visible scroll area of the step frame (`cqh` of its body), so the page
+ * itself never scrolls: only the table does, with its head and footer standing still.
+ */
 .content {
   display: grid;
+  grid-template-rows: minmax(0, 1fr);
   gap: 1.5rem;
   width: 100%;
-  max-width: 56rem;
+  max-width: 96rem;
+  height: 100cqh;
   min-width: 0;
 }
 
 .library {
-  display: grid;
-  align-content: start;
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
   min-width: 0;
-}
-
-.tabRow {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.25rem 1rem;
-  min-width: 0;
-}
-
-.tabs {
-  flex: 1 1 auto;
-}
-
-.panel {
-  display: grid;
-  gap: 0.75rem;
-  min-width: 0;
+  min-height: 0;
 }
 
 .actionError {
@@ -53,41 +45,25 @@
   font-size: var(--font-size-body-sm);
 }
 
-/* On a phone the scope fills the row below the title, both projects equally wide. */
-@media (max-width: 767px) {
-  .scope {
-    width: 100%;
-  }
-}
-
-@media (min-width: 768px) {
-  .scope {
-    max-width: 26rem;
-  }
-}
-
 /*
- * The list and the chosen file side by side. The panel rides along at the top of the scroll area
- * of the step frame, so it stays in view while the list scrolls. Same breakpoint as
- * PORTAL_FILES_PANEL_MEDIA_QUERY.
+ * The table takes at most two thirds, the chosen file the rest. A tall picture gives way before the
+ * panel outgrows its column; the room for name, note and buttons below it is an estimate, a long
+ * note scrolls inside the panel. Same breakpoint as PORTAL_FILES_PANEL_MEDIA_QUERY.
  */
 @media (min-width: 1100px) {
   .content {
-    grid-template-columns: minmax(0, 1fr) minmax(24rem, 34rem);
-    align-items: start;
-    max-width: 96rem;
+    grid-template-columns: minmax(0, 2fr) minmax(20rem, 1fr);
   }
 
   .aside {
-    position: sticky;
-    top: 0;
-    min-width: 0;
-  }
-}
+    --file-preview-panel-media-height: min(
+      65dvh,
+      max(12rem, calc(100cqh - 12rem))
+    );
 
-/* On a large screen the picture gets the room the list does not need. */
-@media (min-width: 1440px) {
-  .content {
-    grid-template-columns: minmax(0, 1fr) minmax(28rem, 42rem);
+    align-self: start;
+    min-width: 0;
+    max-height: 100%;
+    overflow-y: auto;
   }
 }

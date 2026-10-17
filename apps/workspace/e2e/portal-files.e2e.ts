@@ -61,7 +61,7 @@ test.describe.serial("portal files", () => {
 
     await page.goto(`/de/portal/${fixture.filesCustomer}/files`);
     await expect(page.getByRole("heading", { name: "Dateien" })).toBeVisible();
-    const list = page.getByRole("list", { name: "Dateien und Links" });
+    const list = page.getByRole("table", { name: "Dateien und Links" });
     await expect(
       list.getByRole("link", { name: new RegExp(released) }).first(),
     ).toBeVisible();
@@ -109,12 +109,11 @@ test.describe.serial("portal files", () => {
         .getByRole("button", { name: "Link speichern" })
         .click();
       await expect(contactDialog).toBeHidden();
-      await expect(
-        contact.getByRole("tab", { name: "Von dir" }),
-      ).toHaveAttribute("aria-selected", "true");
-      await expect(
-        contact.getByRole("link", { name: new RegExp(customerLink) }).first(),
-      ).toBeVisible();
+      const customerRow = contact.getByRole("row", {
+        name: new RegExp(customerLink),
+      });
+      await expect(customerRow).toBeVisible();
+      await expect(customerRow.getByText("Von dir")).toBeVisible();
 
       const internalList = await page.request.get(
         `/api/workspace/crm/customers/${fixture.filesCustomer}/files?origin=customer`,
@@ -145,8 +144,9 @@ test.describe.serial("portal files", () => {
       });
     }
 
-    await page.getByRole("tab", { name: "Von dir" }).click();
-    await expect(page).toHaveURL(/tab=fromYou/);
+    await page.getByRole("button", { name: "Dateien nach Herkunft" }).click();
+    await page.getByRole("option", { name: "Von dir" }).click();
+    await expect(page).toHaveURL(/origin=fromYou/);
   });
 
   test("confirms release when an internal file is attached to a message", async ({

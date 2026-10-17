@@ -12,8 +12,9 @@
  * the frame is exactly as large as the picture. Only while loading or failing does a placeholder
  * keep the room, so the panel does not jump.
  */
+/* The page next to the panel may cap the picture, so the whole panel fits its scroll area. */
 .stage[data-variant="panel"] {
-  --preview-media-height: 65dvh;
+  --preview-media-height: var(--file-preview-panel-media-height, 65dvh);
 
   justify-items: start;
   min-height: 0;

@@ -27,6 +27,7 @@ export * from "./components/skeleton/skeleton";
 export * from "./components/table-row-actions/table-row-actions";
 export * from "./components/tab-list/tab-list";
 export * from "./components/segmented-control/segmented-control";
+export * from "./components/selection-action-bar/selection-action-bar";
 export * from "./components/tree-view/tree-view";
 export * from "./components/widget-grid/widget-grid";
 export * from "./components/widget/widget";
@@ -47,7 +48,6 @@ export * from "./components/files/file-link-dialog-frame/file-link-dialog-frame"
 export * from "./components/files/file-entry-row/file-entry-row";
 export * from "./components/files/file-list-frame/file-list-frame";
 export * from "./components/files/file-archive-toolbar/file-archive-toolbar";
-export * from "./components/files/file-pick-button/file-pick-button";
 export * from "./components/files/file-note-field/file-note-field";
 export * from "./components/files/file-project-select/file-project-select";
 export * from "./components/dialog/form-dialog/form-dialog";

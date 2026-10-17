@@ -1,5 +1,8 @@
 # Paket K – Portal-Dateien im Layout von Onboarding/Feedback
 
+> Nachtrag 17.10.2026: Liste, Reiter, Projekt-Umschalter (`SegmentedControl`), Auswahl in der Fußleiste,
+> `FilePickButton` und `openOnRowClick` sind durch Paket M (`M-portal-files-table.md`) ersetzt bzw. entfernt.
+
 ## Context
 
 Die Portalseite „Dateien“ (`/portal/[customerId]/files`) sieht noch so aus wie vor Paket J. Oben stehen der Zurück-Link, H1 und Intro. Darunter folgen eine immer sichtbare große Upload-Box, ein selbst gebauter Pillen-Umschalter für Projekt/Alle und eine Karte mit Reitern, ZIP-Werkzeugleiste und Liste. Onboarding und Feedback nutzen inzwischen `PortalStepFrame`: fester Kopf, Inhalt scrollt dazwischen, feste Fußleiste unten.

@@ -65,6 +65,31 @@ describe("filePresentation", () => {
     ).toBe("drive.google.com");
     expect(filePresentation.linkHost("not a url")).toBeNull();
   });
+
+  it("names the type by link host, then extension, then kind", () => {
+    expect(
+      filePresentation.typeLabel(
+        {
+          source: FileSource.Link,
+          url: "https://www.dropbox.com/s/1",
+          extension: null,
+        },
+        "Link",
+      ),
+    ).toBe("dropbox.com");
+    expect(
+      filePresentation.typeLabel(
+        { source: FileSource.Upload, url: null, extension: "pdf" },
+        "Document",
+      ),
+    ).toBe("PDF");
+    expect(
+      filePresentation.typeLabel(
+        { source: FileSource.Link, url: "not a url", extension: null },
+        "Link",
+      ),
+    ).toBe("Link");
+  });
 });
 
 describe("uploadQueuePlan", () => {

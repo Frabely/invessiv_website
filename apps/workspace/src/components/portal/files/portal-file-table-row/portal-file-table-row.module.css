@@ -1,0 +1,146 @@
+.row td,
+.row th {
+  padding: 0.7rem 0.75rem;
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--color-border) 38%, transparent);
+  vertical-align: middle;
+}
+
+.row:last-child td,
+.row:last-child th {
+  border-bottom: none;
+}
+
+.row[data-opens="true"] {
+  cursor: pointer;
+}
+
+.row[data-selected="true"] {
+  background: color-mix(in srgb, var(--color-cta) 8%, transparent);
+}
+
+/* The file shown in the panel: an accent edge, so it still reads as chosen while selected. */
+.row[data-active="true"] {
+  background: color-mix(in srgb, var(--color-cta) 12%, transparent);
+  box-shadow: inset 3px 0 0 var(--color-cta);
+}
+
+@media (hover: hover) {
+  .row[data-opens="true"]:hover {
+    background: color-mix(in srgb, var(--color-surface-2) 65%, transparent);
+  }
+}
+
+.selectCell {
+  width: 2.75rem;
+  padding-inline: 0.5rem 0;
+}
+
+.nameCell {
+  min-width: 14rem;
+  font-weight: inherit;
+}
+
+.identity {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  min-width: 0;
+}
+
+.text {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.name {
+  justify-self: start;
+  max-width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--font-size-body-sm);
+  font-weight: 650;
+  line-height: 1.35;
+  text-align: left;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+button.name,
+a.name {
+  cursor: pointer;
+}
+
+.row[data-active="true"] .name {
+  color: var(--color-cta);
+}
+
+.name:focus-visible {
+  border-radius: 0.35rem;
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.note {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  overflow-wrap: anywhere;
+}
+
+.projectCell {
+  max-width: 11rem;
+  overflow: hidden;
+  color: var(--color-text-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.typeCell,
+.sizeCell,
+.dateCell {
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.actionCell {
+  width: 3.5rem;
+  text-align: right;
+}
+
+/* Only truncate once the side panel makes the full note available. */
+@media (min-width: 1100px) {
+  .note {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 720px) {
+  .projectCell {
+    max-width: none;
+    white-space: normal;
+  }
+
+  /* Type and size share the first line under the name, date and project the second. */
+  .typeCell {
+    order: 1;
+  }
+
+  .sizeCell {
+    order: 2;
+  }
+
+  .dateCell {
+    order: 3;
+  }
+
+  .projectCell {
+    order: 4;
+  }
+}

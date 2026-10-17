@@ -42,15 +42,6 @@
   background: color-mix(in srgb, var(--color-cta) 10%, transparent);
 }
 
-/* The file shown next to the list: an accent edge, so it still reads as chosen while selected. */
-.row[data-active="true"] {
-  box-shadow: inset 3px 0 0 var(--color-cta);
-}
-
-.row[data-active="true"] .name {
-  color: var(--color-cta);
-}
-
 .select {
   grid-area: select;
   display: grid;
@@ -99,48 +90,6 @@ a.name {
 button.name:hover,
 a.name:hover {
   color: var(--color-cta);
-}
-
-/*
- * The whole row opens the file: the name stretches its hit area over the row, while checkbox and
- * actions sit above it and keep their own clicks. Focus outlines the row, not the name.
- */
-.row[data-row-target="true"] {
-  position: relative;
-  cursor: pointer;
-}
-
-.row[data-row-target="true"] .select,
-.row[data-row-target="true"] .actions {
-  position: relative;
-  z-index: 1;
-}
-
-.row button.rowTarget,
-.row a.rowTarget {
-  color: var(--color-text);
-  text-decoration: none;
-}
-
-.rowTarget::after {
-  position: absolute;
-  inset: 0;
-  content: "";
-}
-
-@media (hover: hover) {
-  .row[data-row-target="true"]:hover {
-    background: color-mix(in srgb, var(--color-surface-2) 65%, transparent);
-  }
-}
-
-.row:has(.rowTarget:focus-visible) {
-  outline: 2px solid var(--color-focus);
-  outline-offset: -2px;
-}
-
-.row .rowTarget:focus-visible {
-  outline: none;
 }
 
 .name:focus-visible,

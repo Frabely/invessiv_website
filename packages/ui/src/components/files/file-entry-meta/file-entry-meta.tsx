@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { FileSource } from "@invessiv/common/constants/files/file-source";
 import type { FileEntryItem } from "@invessiv/common/contracts/files/file-entry-item";
 import { filePresentation } from "@invessiv/common/patterns/files/file-presentation";
 import styles from "./file-entry-meta.module.css";
@@ -19,16 +18,9 @@ export function FileEntryMeta({
   locale,
   metadata,
 }: FileEntryMetaProps) {
-  const host =
-    file.source === FileSource.Link && file.url
-      ? filePresentation.linkHost(file.url)
-      : null;
-
   return (
     <p className={styles.meta}>
-      <span>
-        {host ?? (file.extension ? file.extension.toUpperCase() : kindLabel)}
-      </span>
+      <span>{filePresentation.typeLabel(file, kindLabel)}</span>
       {metadata}
       {file.sizeBytes !== null ? (
         <span className={styles.numeric}>

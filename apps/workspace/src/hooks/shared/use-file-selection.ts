@@ -45,5 +45,16 @@ export function useFileSelection(customerId: string, queryParam: string) {
       replace(selectedIds.filter((selected) => selected !== id));
   }
 
-  return { selectedIds, toggle, add, remove, clear: () => replace([]) };
+  function removeMany(idsToRemove: readonly string[]) {
+    replace(selectedIds.filter((selected) => !idsToRemove.includes(selected)));
+  }
+
+  return {
+    selectedIds,
+    toggle,
+    add,
+    remove,
+    removeMany,
+    clear: () => replace([]),
+  };
 }

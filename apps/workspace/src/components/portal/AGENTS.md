@@ -100,43 +100,56 @@ Plan: `apps/workspace/plans/crm/14-dateien/55-portal-dateien.md`.
 - Komponenten liegen unter `files/`; Orchestrator ist `files/portal-files-view`. Typ-Symbol, Upload-Zeile, Lightbox
   und Formular-Dialog kommen aus `@invessiv/ui` (`FileKindIcon`, `UploadQueueRow`, `FileLightbox`, `FormDialog`) —
   dieselben Bausteine wie im CRM, nur mit Portal-Texten aus `dictionaries/portal/files/`.
-- Upload- und Link-Dialoge, Dateizeile und Listenrahmen nutzen die geteilten UI-Bausteine
-  `FileUploadDialogFrame`, `FileLinkDialogFrame`, `FileEntryRow` und `FileListFrame`.
+- Upload- und Link-Dialoge nutzen die geteilten UI-Bausteine `FileUploadDialogFrame` und `FileLinkDialogFrame`.
   Portal-Komponenten ergänzen ausschließlich ihre Portal-DTOs, erlaubten Projekte und API-Aufrufe.
 - **Layout wie Onboarding und Feedback (Paket K, Entscheidung 17.10.2026,
   Plan `apps/workspace/plans/crm/26-portal-dateien-layout/K-portal-files-layout.md`).** Die Seite rendert
   `shared/portal-step-frame` in einem Wrapper mit `data-portal-fixed-head` (ohne ihn scrollt die Shell selbst und
   die Fußleiste wandert mit): fester Kopf (`shared/portal-step-header`, ohne Stepper) mit Zurück-Link, Titel und
-  dem Projekt-Umschalter, darunter scrollen Ablagefläche, Reiter und Liste, unten die Fußleiste
-  (`shared/portal-page-bar`). Keine Karte um die Liste.
-- **Projekt-Umschalter** ist ein `SegmentedControl` aus `@invessiv/ui` mit dem Titel des gewählten Projekts und
-  „Alle Projekte“; er erscheint nur mit gewähltem Projekt. Der Wechsel schreibt `scope=all` per `useUrlSearch`
-  ohne Server-Roundtrip und leert die ZIP-Auswahl. Der Projektname steht in den Zeilen nur unter „Alle Projekte“.
-- **Fußleiste:** „Datei hinzufügen“ ist der einzige primäre Einstieg. Ab einer ausgewählten Datei stehen
-  „Auswahl aufheben“ und „Als ZIP herunterladen“ davor; der Hinzufügen-Button bleibt sichtbar. Ohne Schreibrecht
-  erscheinen nur die ZIP-Aktionen. Die Seite nutzt `FileArchiveToolbar` nicht; der Baustein bleibt dem CRM.
+  den Filtern, darunter scrollt die Tabelle, unten die Fußleiste (`shared/portal-page-bar`).
+- **Tabelle statt Liste (Paket M, Entscheidung 17.10.2026,
+  Plan `apps/workspace/plans/crm/26-portal-dateien-layout/M-portal-files-table.md`).** `files/portal-file-table`
+  rendert `DataTableLayout` aus `@invessiv/ui` mit `fillAvailableHeight`: Nur die Tabelle scrollt,
+  Kopf und Footer bleiben stehen, die Seite selbst scrollt nicht; dazu
+  Mobile-Cards unter 720 px; je Eintrag `files/portal-file-table-row`. Spalten: Auswahl, Name (Typ-Icon, Name,
+  Notiz einzeilig), Von (Badge), Projekt (nur unter „Alle Projekte“, aus `portal-file-project-label`), Typ
+  (`filePresentation.typeLabel`), Größe, Hinzugefügt, Aktion (Herunterladen bzw. Öffnen). Bis Plan L nur das
+  Typ-Icon, keine Vorschaubilder. „Weitere laden“ steht im `footer` der Tabelle, keine nummerierten Seiten:
+  Die ZIP-Auswahl darf alles Geladene umfassen.
+- **Filter** (`files/portal-files-filters`, zwei `CustomSelect`): Projekt (jedes freigegebene Projekt aus
+  `projects` oder „Alle Projekte“; erscheint nur mit mindestens einem Projekt) und Herkunft („Von uns und dir“,
+  „Von uns“, „Von dir“, `PortalFileOriginFilter`). Standard ist beides ungefiltert bzw. das aktuelle Projekt.
+  URL-State per `useUrlSearch` ohne Server-Roundtrip: `origin` (fehlt = alle), `project` (wie im Dashboard)
+  und `scope=all`. Ein Projektwechsel leert die ZIP-Auswahl; der Zurück-Link nimmt das gewählte Projekt mit.
+  Weitere Filter gibt es bewusst nicht.
+- **Ganze Zeile öffnet:** Ein Klick irgendwo in die Zeile wirkt wie ein Klick auf den Namen; Checkbox und Aktion
+  bleiben eigene Klickziele. Mit Panel zeigt jeder Eintrag (auch Links) sich im Panel; ohne Panel öffnen Vorschau-
+  fähige Dateien die Lightbox und Links einen neuen Tab, alles andere lädt nur über die Aktion herunter.
+- **Auswahl wie die Bulk-Leiste der Leads:** `files/portal-files-selection-bar` auf `SelectionActionBar` aus
+  `@invessiv/ui` schwebt ab einer gewählten Datei unten mittig über der Fußleiste (`--selection-action-bar-offset`
+  am Seitenwrapper) mit „Auswahl aufheben“ und „Als ZIP herunterladen“; Hinweise auf die Grenze bzw. Videos stehen
+  in der Leiste. Die Kopf-Checkbox wählt alle gezeigten Einträge außer Videos bzw. hebt sie wieder auf.
+- **Fußleiste:** nur „Datei hinzufügen“, immer sichtbar (mit `canUpload`). Die Seite nutzt `FileArchiveToolbar`
+  nicht; der Baustein bleibt dem CRM.
 - **Ein Hinzufügen-Dialog:** `portal-file-add-dialog` startet mit Upload und wechselt über `SegmentedControl` zum
   Link-Formular. Jeweils ein Dialog, gleicher Titel, passende Beschreibung und Aktionen. Beide Modi verwenden die
   bestehenden Upload-/Link-Dialograhmen und Portal-Transporte. Während Upload oder Speichern ist der Wechsel
   gesperrt; ungespeicherte Auswahl und Angaben werden nur nach Bestätigung verworfen. Keine Upload-Fläche auf der
   Seite außerhalb des Dialogs.
-- **Ganze Zeile öffnet** (`openOnRowClick` an `FileEntryRow`): Der Name ist kein unterstrichener Textlink, ein Klick
-  irgendwo in die Zeile öffnet die Vorschau (bzw. den Link); Checkbox und Herunterladen bleiben eigene Klickziele. Kein
-  Auge-Button in den Zeilen.
-- **Vorschau-Panel ab 1100 px** (`PORTAL_FILES_PANEL_MEDIA_QUERY`, CSS wiederholt den Breakpoint): rechts neben der
-  Liste `FilePreviewPanel` aus `@invessiv/ui`, mitlaufend (`sticky`). Ein Klick auf die Zeile zeigt die Datei
-  dort (URL-Parameter `file`), die gezeigte Zeile ist `active`. „Vollbild“ öffnet die Lightbox. Nur die gewählte
-  Datei lädt, ohne Wahl nichts. Reiter- und Scope-Wechsel leeren das Panel. Unter 1100 px gibt es kein Panel, der
-  Klick öffnet wie bisher die Lightbox. Die Projektangabe kommt in Zeile und Panel aus `portal-file-project-label`.
-- **Vorschaubilder in der Liste** sind nicht umgesetzt; Plan `26-portal-dateien-layout/L-file-thumbnails.md`
+- **Vorschau-Panel ab 1100 px** (`PORTAL_FILES_PANEL_MEDIA_QUERY`, CSS wiederholt den Breakpoint): Die Tabelle nimmt
+  höchstens zwei Drittel, rechts mitlaufend (`sticky`) `FilePreviewPanel` aus `@invessiv/ui`. Der Klick zeigt
+  den Eintrag dort (URL-Parameter `file`), die gezeigte Zeile ist `data-active`. „Vollbild“ öffnet die Lightbox.
+  Nur die gewählte Datei lädt, ohne Wahl nichts. Filterwechsel leeren das Panel.
+- **Vorschaubilder in der Tabelle** sind nicht umgesetzt; Plan `26-portal-dateien-layout/L-file-thumbnails.md`
   (serverseitige Kleinversionen, private Originale bleiben ungeladen).
-- Laden nur über `usePortalFiles` (auf dem geteilten `usePagedFiles`), Uploads nur über `useUploadQueue` mit
-  Portal-Transport, Auswahl für ZIP über `useFileSelection` (URL-Parameter `selected`, an die Kunden-ID gebunden).
-  Reiter „Von uns“ / „Von dir“ im URL-Parameter `tab`.
+- Laden nur über `usePortalFiles` (auf dem geteilten `usePagedFiles`; `origin` null lädt beide Herkünfte),
+  Uploads nur über `useUploadQueue` mit Portal-Transport, Auswahl für ZIP über `useFileSelection` (URL-Parameter
+  `selected`, an die Kunden-ID gebunden).
 - „Datei hinzufügen“ erscheint nur mit `canUpload` (Seite: `portal.files.write` und keine
   Owner-Sicht). Die Owner-Sicht zeigt stattdessen den Owner-Hinweis mit CRM-Link. Es gibt keinen Lösch- oder
   Bearbeitungsweg im Portal.
-- Nach eigenem Upload oder Link springt die Ansicht auf „Von dir“, damit der Kunde sieht, was angekommen ist.
+- Nach eigenem Upload oder Link springt nur ein Filter „Von uns“ auf „Von dir“, damit der Kunde sieht, was
+  angekommen ist; unter „Von uns und dir“ bleibt der Filter stehen.
 - Das Dashboard-Widget `files` zeigt je Reiter die drei neuesten Einträge und verlinkt die Seite; ohne
   `portal.files.read` wird es nicht gerendert.
 

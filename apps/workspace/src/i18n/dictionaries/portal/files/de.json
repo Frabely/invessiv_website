@@ -12,20 +12,14 @@
     "label": "Dateien nach Projekt",
     "all": "Alle Projekte"
   },
-  "tabs": {
+  "origin": {
     "label": "Dateien nach Herkunft",
+    "all": "Von uns und dir",
     "fromUs": "Von uns",
     "fromYou": "Von dir"
   },
   "actions": {
-    "add": "Datei hinzufügen",
-    "upload": "Hochladen",
-    "addLink": "Link hinzufügen"
-  },
-  "intake": {
-    "dropLabel": "Dateien auswählen oder hierher ziehen",
-    "dropHint": "Fotos, Videos bis 200 MB, Logos, Schriften und Dokumente · bis zu 20 Dateien auf einmal",
-    "linkHint": "Datei zu groß oder schon in der Cloud? Schick uns einfach den Link."
+    "add": "Datei hinzufügen"
   },
   "add": {
     "title": "Datei hinzufügen",
@@ -89,6 +83,18 @@
     "loadMore": "Weitere laden",
     "shown": "{shown} von {total} angezeigt"
   },
+  "table": {
+    "selectAll": "Alle angezeigten für das ZIP auswählen",
+    "columns": {
+      "name": "Name",
+      "origin": "Von",
+      "project": "Projekt",
+      "type": "Typ",
+      "size": "Größe",
+      "added": "Hinzugefügt",
+      "actions": "Aktion"
+    }
+  },
   "kinds": {
     "document": "Dokument",
     "image": "Bild",
@@ -108,6 +114,11 @@
     "openNamed": "{name} öffnen"
   },
   "empty": {
+    "all": {
+      "title": "Noch keine Dateien",
+      "description": "Hier landet alles, was wir für dich freigeben, und alles, was du uns schickst – Logos, Fotos, Texte oder Videos.",
+      "readOnlyDescription": "Hier landet alles, was wir freigeben und was dein Team uns schickt."
+    },
     "fromUs": {
       "title": "Noch nichts von uns",
       "description": "Sobald wir Entwürfe, Exporte oder Unterlagen für dich freigeben, liegen sie hier zum Ansehen und Herunterladen bereit."
@@ -119,9 +130,7 @@
     }
   },
   "archive": {
-    "groupLabel": "Dateien für ZIP auswählen",
     "selectNamed": "{name} für ZIP auswählen",
-    "selectShown": "Alle angezeigten auswählen",
     "selected": "{count} ausgewählt",
     "clear": "Auswahl aufheben",
     "download": "Als ZIP herunterladen",

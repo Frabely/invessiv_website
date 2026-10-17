@@ -2,7 +2,7 @@
   display: grid;
   gap: 1rem;
   width: 100%;
-  max-width: 56rem;
+  max-width: 96rem;
 }
 
 .heading.heading {
@@ -10,12 +10,12 @@
   height: 1.5rem;
 }
 
-.tabs.tabs {
-  width: 14rem;
+.filters.filters {
+  width: min(100%, 26.5rem);
   height: 2.75rem;
 }
 
 .row.row {
-  min-height: 4.5rem;
+  min-height: 3.25rem;
   border-radius: 0.85rem;
 }
