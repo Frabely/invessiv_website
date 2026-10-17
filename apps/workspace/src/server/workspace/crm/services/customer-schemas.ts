@@ -94,6 +94,7 @@ const writeFieldsSchema = z.object({
 export const customerSchemas = {
   entityId: z.uuid(),
   create: writeFieldsSchema.extend({
+    customerNumber: z.int().min(1).max(CustomerFieldLimits.CustomerNumberMax),
     primaryContact: primaryContactSchema,
     additionalContacts: z.array(primaryContactSchema).optional(),
   }),

@@ -15,6 +15,7 @@ describe("CustomerFieldLimits", () => {
       VatIdMaxLength: 64,
       NotesMaxLength: 20_000,
       HourlyRateCentsMax: 10_000_000,
+      CustomerNumberMax: 999_999,
       PersonNameMaxLength: 120,
       EmailMaxLength: 254,
       PhoneMaxLength: 40,
@@ -24,5 +25,9 @@ describe("CustomerFieldLimits", () => {
 
   it("keeps the hourly rate within a signed 32-bit integer column", () => {
     expect(CustomerFieldLimits.HourlyRateCentsMax).toBeLessThan(2 ** 31);
+  });
+
+  it("keeps chosen customer numbers below the fixture number of the production smoke", () => {
+    expect(CustomerFieldLimits.CustomerNumberMax).toBeLessThan(2 ** 31 - 1);
   });
 });

@@ -3,6 +3,7 @@ import { LeadConversionErrorCode } from "@invessiv/common/constants/crm/errors/l
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 
 const STATUS: Record<LeadConversionErrorCodeType, HttpResponseCode> = {
+  [LeadConversionErrorCode.CustomerNumberTaken]: HttpResponseCode.Conflict,
   [LeadConversionErrorCode.DisplayNameTaken]: HttpResponseCode.Conflict,
   [LeadConversionErrorCode.Internal]: HttpResponseCode.InternalServerError,
   [LeadConversionErrorCode.LeadNotFound]: HttpResponseCode.NotFound,
@@ -12,6 +13,8 @@ const STATUS: Record<LeadConversionErrorCodeType, HttpResponseCode> = {
 };
 
 const MESSAGES: Record<LeadConversionErrorCodeType, string> = {
+  [LeadConversionErrorCode.CustomerNumberTaken]:
+    "A customer with this customer number already exists",
   [LeadConversionErrorCode.DisplayNameTaken]:
     "A customer with this display name already exists",
   [LeadConversionErrorCode.Internal]: "Unexpected server error",

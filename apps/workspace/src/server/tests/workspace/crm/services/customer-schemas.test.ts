@@ -19,6 +19,7 @@ describe("customerSchemas.create", () => {
 
   it("accepts omitted optional customer fields as null", () => {
     const result = customerSchemas.create.parse({
+      customerNumber: 3,
       displayName: "Dario Lentz",
       primaryContact: {
         lastName: "Lentz",
@@ -72,6 +73,11 @@ describe("customerSchemas.create", () => {
     ["a negative hourly rate", { defaultHourlyRateCents: -1 }],
     ["a fractional hourly rate", { defaultHourlyRateCents: 12.5 }],
     ["a malformed category id", { categoryId: "sales" }],
+    ["a missing customer number", { customerNumber: undefined }],
+    ["customer number zero", { customerNumber: 0 }],
+    ["a fractional customer number", { customerNumber: 2.5 }],
+    ["a customer number above the limit", { customerNumber: 1_000_000 }],
+    ["a customer number as text", { customerNumber: "K0002" }],
   ])("rejects %s", (_case, overrides) => {
     expect(
       customerSchemas.create.safeParse({
@@ -119,5 +125,14 @@ describe("customerSchemas.update", () => {
     expect(result.version).toBe(2);
     expect(result.status).toBe("paused");
     expect(result).not.toHaveProperty("primaryContact");
+  });
+
+  it("never carries a customer number", () => {
+    const result = customerSchemas.update.parse({
+      ...createCustomerRequestFixture(),
+      status: "active",
+      version: 2,
+    });
+    expect(result).not.toHaveProperty("customerNumber");
   });
 });

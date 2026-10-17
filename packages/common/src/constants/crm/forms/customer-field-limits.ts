@@ -10,6 +10,7 @@ export const CustomerFieldLimits = {
   VatIdMaxLength: 64,
   NotesMaxLength: 20_000,
   HourlyRateCentsMax: 10_000_000,
+  CustomerNumberMax: 999_999,
   PersonNameMaxLength: 120,
   EmailMaxLength: 254,
   PhoneMaxLength: 40,

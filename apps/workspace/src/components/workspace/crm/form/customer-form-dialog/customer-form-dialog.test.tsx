@@ -13,6 +13,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { CustomerErrorCode } from "@invessiv/common/constants/crm/errors/customer-error-codes";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import type { CustomerContactAssignmentDto } from "@invessiv/common/contracts/crm/customer-contact.dto";
 import type { LeadDetailDto } from "@invessiv/common/contracts/leads/lead-detail.dto";
 import { getCrmFormDictionary } from "@/i18n/dictionaries/workspace/crm";
@@ -99,6 +100,7 @@ function customerContactFixture(
 
 function renderDialog(
   customer = null as ReturnType<typeof customerDetailFixture> | null,
+  suggestedCustomerNumber: number | null = 2,
 ) {
   return render(
     <CustomerFormDialog
@@ -107,8 +109,13 @@ function renderDialog(
       content={content}
       customer={customer}
       locale="de"
+      suggestedCustomerNumber={customer ? undefined : suggestedCustomerNumber}
     />,
   );
+}
+
+function suggestionHint(number: string) {
+  return formatMessage(content.hints.customerNumber, { number });
 }
 
 function input(label: RegExp) {
@@ -192,6 +199,83 @@ describe("CustomerFormDialog", () => {
     ).toBeInTheDocument();
   });
 
+  it("prefills the lowest free customer number and names it", () => {
+    renderDialog();
+
+    expect(input(/^Kundennummer/)).toHaveValue("K0002");
+    expect(screen.getByText(suggestionHint("K0002"))).toBeInTheDocument();
+  });
+
+  it("asks for a number when no suggestion is available", () => {
+    renderDialog(null, null);
+
+    expect(input(/^Kundennummer/)).toHaveValue("");
+    expect(
+      screen.getByText(content.hints.customerNumberWithoutSuggestion),
+    ).toBeInTheDocument();
+  });
+
+  it("rejects a malformed customer number without calling the API", async () => {
+    renderDialog();
+    fireEvent.change(input(/^Anzeigename/), { target: { value: "Kluge Bau" } });
+    fireEvent.change(input(/^Kundennummer/), { target: { value: "K12a" } });
+    fireEvent.change(input(/^Nachname/), { target: { value: "Kluge" } });
+
+    confirmContactDraft();
+    submit(content.buttons.submitCreate);
+
+    expect(
+      await screen.findByText(content.validation.customerNumberInvalid),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("tab", { name: content.sections.customer }),
+    ).toHaveAttribute("aria-selected", "true");
+    expect(mocks.createCustomer).not.toHaveBeenCalled();
+  });
+
+  it("explains a taken customer number and reloads the suggestion", async () => {
+    mocks.createCustomer.mockResolvedValue({
+      ok: false,
+      code: CustomerErrorCode.CustomerNumberTaken,
+    });
+    const view = renderDialog();
+    fireEvent.change(input(/^Anzeigename/), { target: { value: "Kluge Bau" } });
+    fireEvent.change(input(/^Nachname/), { target: { value: "Kluge" } });
+
+    confirmContactDraft();
+    submit(content.buttons.submitCreate);
+
+    expect(
+      await screen.findByText(content.validation.customerNumberTaken),
+    ).toBeInTheDocument();
+    expect(input(/^Kundennummer/)).toHaveAttribute("aria-invalid", "true");
+    expect(input(/^Kundennummer/)).toHaveFocus();
+    expect(mocks.refresh).toHaveBeenCalled();
+    expect(
+      screen.queryByText(content.errors.CUSTOMER_NUMBER_TAKEN),
+    ).not.toBeInTheDocument();
+
+    view.rerender(
+      <CustomerFormDialog
+        categories={CATEGORIES}
+        closeHref="/de/crm"
+        content={content}
+        customer={null}
+        locale="de"
+        suggestedCustomerNumber={3}
+      />,
+    );
+    expect(screen.getByText(suggestionHint("K0003"))).toBeInTheDocument();
+    expect(input(/^Kundennummer/)).toHaveValue("K0002");
+    expect(mocks.replace).not.toHaveBeenCalled();
+  });
+
+  it("shows no customer number field when editing", () => {
+    renderDialog(customerDetailFixture());
+
+    expect(screen.queryByLabelText(/^Kundennummer/)).not.toBeInTheDocument();
+  });
+
   it("always offers an optional company name", () => {
     renderDialog();
 
@@ -243,6 +327,7 @@ describe("CustomerFormDialog", () => {
     await waitFor(() => expect(mocks.replace).toHaveBeenCalled());
     expect(mocks.createCustomer).toHaveBeenCalledTimes(1);
     expect(mocks.createCustomer.mock.calls[0][0]).toMatchObject({
+      customerNumber: 2,
       displayName: "Kluge Bau",
       defaultHourlyRateCents: 8050,
       primaryContact: { lastName: "Kluge", preferredLocale: "de" },
@@ -263,6 +348,7 @@ describe("CustomerFormDialog", () => {
         customer={null}
         locale="de"
         conversionSource={toLeadCustomerConversionSource(SOURCE_LEAD)}
+        suggestedCustomerNumber={5}
       />,
     );
 
@@ -276,6 +362,7 @@ describe("CustomerFormDialog", () => {
     expect(mocks.convertLead).toHaveBeenCalledWith(
       "lead-1",
       expect.objectContaining({
+        customerNumber: 5,
         displayName: "Nordlicht Anfrage",
         primaryContact: expect.objectContaining({
           lastName: "Berger",

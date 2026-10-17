@@ -50,6 +50,7 @@ import { useLeadCustomerConversion } from "@/hooks/workspace/use-lead-customer-c
 import { buildLeadDetailHref } from "@/common/patterns/leads/lead-detail-query";
 import type { CrmFormDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
+import { formatCustomerNumber } from "@invessiv/common/patterns/crm/format-customer-number";
 import { CustomerContactSection } from "../../contacts/customer-contact-section/customer-contact-section";
 import styles from "./customer-form-dialog.module.css";
 
@@ -68,6 +69,8 @@ type CustomerFormDialogProps = {
   /** Present only when the create dialog converts a lead. */
   conversionSource?: LeadCustomerConversionSource;
   cockpitHref?: string;
+  /** Lowest free number, loaded by the page for the create and conversion dialogs only. */
+  suggestedCustomerNumber?: number | null;
 };
 
 type TextFieldKey = Exclude<
@@ -77,6 +80,10 @@ type TextFieldKey = Exclude<
 
 const NOTES_COUNTER_THRESHOLD = 0.8;
 const DISPLAY_NAME_INPUT_NAME = "customer-display-name";
+const CUSTOMER_NUMBER_INPUT_NAME = "customer-number";
+const CUSTOMER_NUMBER_INPUT_MAX_LENGTH = formatCustomerNumber(
+  CustomerFieldLimits.CustomerNumberMax,
+).length;
 const CustomerFormTab = {
   Customer: "customer",
   Contacts: "contacts",
@@ -88,6 +95,7 @@ type CustomerFormTab = (typeof CustomerFormTab)[keyof typeof CustomerFormTab];
 
 const CUSTOMER_TAB_FIELDS = [
   "displayName",
+  "customerNumber",
   "companyName",
   "categoryId",
   "status",
@@ -118,6 +126,7 @@ export function CustomerFormDialog({
   crmBasePath,
   leadsBasePath,
   cockpitHref,
+  suggestedCustomerNumber = null,
 }: CustomerFormDialogProps) {
   const router = useRouter();
   const formId = useId();
@@ -132,7 +141,12 @@ export function CustomerFormDialog({
     ? CustomerFormDialogMode.Edit
     : CustomerFormDialogMode.Create;
   const [values, setValues] = useState(() =>
-    createCustomerFormValues(customer, locale, conversionSource),
+    createCustomerFormValues(
+      customer,
+      locale,
+      conversionSource,
+      suggestedCustomerNumber,
+    ),
   );
   const [errors, setErrors] = useState<CustomerFormErrors>({});
   const [activeTab, setActiveTab] = useState<CustomerFormTab>(
@@ -166,6 +180,9 @@ export function CustomerFormDialog({
   const isNameTaken =
     mutation.errorCode === CustomerErrorCode.DisplayNameTaken ||
     conversion.errorCode === LeadConversionErrorCode.DisplayNameTaken;
+  const isNumberTaken =
+    mutation.errorCode === CustomerErrorCode.CustomerNumberTaken ||
+    conversion.errorCode === LeadConversionErrorCode.CustomerNumberTaken;
   const isSubmitting = mutation.isSubmitting || conversion.isSubmitting;
 
   useEffect(() => {
@@ -173,6 +190,24 @@ export function CustomerFormDialog({
       displayNameInputRef.current?.focus();
     }
   }, [isNameTaken]);
+
+  // Adjusted while rendering, not in an effect: the field must be on screen before it is focused.
+  const [shownNumberTaken, setShownNumberTaken] = useState(false);
+  if (isNumberTaken !== shownNumberTaken) {
+    setShownNumberTaken(isNumberTaken);
+    if (isNumberTaken) setActiveTab(CustomerFormTab.Customer);
+  }
+
+  // The page reloads the suggestion, so the hint names a number that is free now.
+  useEffect(() => {
+    if (isNumberTaken) {
+      const field = formRef.current?.elements.namedItem(
+        CUSTOMER_NUMBER_INPUT_NAME,
+      );
+      if (field instanceof HTMLInputElement) field.focus();
+      router.refresh();
+    }
+  }, [formRef, isNumberTaken, router]);
 
   function update<K extends keyof CustomerFormValues>(
     key: K,
@@ -274,7 +309,7 @@ export function CustomerFormDialog({
       autoComplete?: string;
       className?: string;
       hint?: string;
-      inputMode?: "decimal" | "email" | "tel" | "url";
+      inputMode?: "decimal" | "email" | "numeric" | "tel" | "url";
       inputRef?: Ref<HTMLInputElement>;
       kind?:
         | typeof FormFieldKind.Text
@@ -292,7 +327,9 @@ export function CustomerFormDialog({
     const errorMessage =
       key === "displayName" && isNameTaken && !errors.displayName
         ? content.validation.displayNameTaken
-        : errorFor(key);
+        : key === "customerNumber" && isNumberTaken && !errors.customerNumber
+          ? content.validation.customerNumberTaken
+          : errorFor(key);
 
     return (
       <FormField
@@ -320,9 +357,10 @@ export function CustomerFormDialog({
   const notesThreshold = Math.floor(
     CustomerFieldLimits.NotesMaxLength * NOTES_COUNTER_THRESHOLD,
   );
-  const statusErrorCode = !isNameTaken
-    ? (conversion.errorCode ?? mutation.errorCode)
-    : null;
+  const statusErrorCode =
+    !isNameTaken && !isNumberTaken
+      ? (conversion.errorCode ?? mutation.errorCode)
+      : null;
 
   return (
     <Dialog
@@ -486,6 +524,24 @@ export function CustomerFormDialog({
                   />
                 )}
               />
+              {customer
+                ? null
+                : renderTextField("customerNumber", {
+                    hint:
+                      suggestedCustomerNumber === null
+                        ? content.hints.customerNumberWithoutSuggestion
+                        : formatMessage(content.hints.customerNumber, {
+                            number: formatCustomerNumber(
+                              suggestedCustomerNumber,
+                            ),
+                          }),
+                    inputMode: "numeric",
+                    label: content.fields.customerNumber,
+                    maxLength: CUSTOMER_NUMBER_INPUT_MAX_LENGTH,
+                    name: CUSTOMER_NUMBER_INPUT_NAME,
+                    placeholder: content.placeholders.customerNumber,
+                    required: true,
+                  })}
               {customer ? (
                 <FormField
                   kind={FormFieldKind.Custom}

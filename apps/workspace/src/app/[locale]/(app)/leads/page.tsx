@@ -41,6 +41,7 @@ import { getCrmFormDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { getLeadCategories } from "@/server/workspace/leads/query-handler/list-lead-categories.query-handler";
 import { getLeadById } from "@/server/workspace/leads/query-handler/get-lead-by-id.query-handler";
 import { listLeads } from "@/server/workspace/leads/query-handler/list-leads.query-handler";
+import { getNextCustomerNumber } from "@/server/workspace/crm/query-handler/get-next-customer-number.query-handler";
 import { LEADS_BASE_PATH } from "./page-constants";
 import {
   buildLeadConversionCloseHref,
@@ -226,6 +227,9 @@ export default async function LeadsPage({
     Boolean(selectedLead) &&
     !selectedLead?.customerId &&
     convertLeadId === selectedLead?.id;
+  const suggestedCustomerNumber = conversionDialogOpen
+    ? await getNextCustomerNumber()
+    : null;
 
   return (
     <>
@@ -305,6 +309,7 @@ export default async function LeadsPage({
           customer={null}
           key={`convert-${selectedLead.id}`}
           locale={locale as Locale}
+          suggestedCustomerNumber={suggestedCustomerNumber}
         />
       ) : null}
     </>

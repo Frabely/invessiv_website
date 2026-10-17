@@ -5,6 +5,11 @@ import type { CustomerContactWriteDto } from "@invessiv/common/contracts/crm/cus
 import type { CustomerWriteFieldsDto } from "@invessiv/common/contracts/crm/customer-write-fields.dto";
 import type { UpdateCustomerRequestDto } from "@invessiv/common/contracts/crm/update-customer-request.dto";
 import type { Locale } from "@invessiv/common/contracts/i18n/locale";
+import { CustomerFieldLimits } from "@invessiv/common/constants/crm/forms/customer-field-limits";
+import {
+  formatCustomerNumber,
+  parseCustomerNumberInput,
+} from "@invessiv/common/patterns/crm/format-customer-number";
 import { formValidationService } from "@invessiv/common/patterns/validation/form-validation-service";
 import { CustomerFormDialogMode } from "@/common/constants/crm/forms/customer-form-dialog-modes";
 import { CustomerFormValidationCode } from "@/common/constants/crm/forms/customer-form-validation-codes";
@@ -27,9 +32,14 @@ export function createCustomerFormValues(
   customer: CustomerDetailDto | null,
   locale: Locale,
   conversionSource?: LeadCustomerConversionSource,
+  suggestedCustomerNumber: number | null = null,
 ): CustomerFormValues {
   return {
     displayName: customer?.displayName ?? conversionSource?.displayName ?? "",
+    customerNumber:
+      !customer && suggestedCustomerNumber !== null
+        ? formatCustomerNumber(suggestedCustomerNumber)
+        : "",
     companyName: customer?.companyName ?? conversionSource?.companyName ?? "",
     categoryId: customer?.categoryId ?? conversionSource?.categoryId ?? "",
     status: customer?.status ?? CustomerStatus.Active,
@@ -74,6 +84,13 @@ export function validateCustomerForm(
     errors.hourlyRate = CustomerFormValidationCode.HourlyRateInvalid;
   }
 
+  if (
+    mode === CustomerFormDialogMode.Create &&
+    readCustomerNumber(values) === null
+  ) {
+    errors.customerNumber = CustomerFormValidationCode.CustomerNumberInvalid;
+  }
+
   if (mode === CustomerFormDialogMode.Create && !hasContactDrafts) {
     Object.assign(errors, validateCustomerContact(values));
   }
@@ -97,6 +114,13 @@ export function validateCustomerContact(
     errors.contactPhone = CustomerFormValidationCode.PhoneInvalid;
   }
   return errors;
+}
+
+function readCustomerNumber(values: CustomerFormValues): number | null {
+  return parseCustomerNumberInput(
+    values.customerNumber,
+    CustomerFieldLimits.CustomerNumberMax,
+  );
 }
 
 function toWriteFields(values: CustomerFormValues): CustomerWriteFieldsDto {
@@ -126,6 +150,8 @@ export function toCreateCustomerRequest(
   const primary = drafts.find((contact) => contact.isPrimary) ?? drafts[0]!;
   return {
     ...toWriteFields(values),
+    // Validated before sending; 0 would only reach the server through a bypassed form and is rejected there.
+    customerNumber: readCustomerNumber(values) ?? 0,
     primaryContact: primary,
     ...(drafts.length > 1
       ? { additionalContacts: drafts.filter((contact) => contact !== primary) }

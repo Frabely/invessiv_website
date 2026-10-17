@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { config as loadDotenv } from "dotenv";
-import { and, count, eq, inArray } from "drizzle-orm";
+import { and, count, eq, inArray, lt } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
@@ -20,6 +20,7 @@ import {
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { convertLeadToCustomer } from "@/server/workspace/crm/command-handler/convert-lead-to-customer.command-handler";
 import { customerService } from "@/server/workspace/crm/services/customer/customer-service";
+import { customerReadService } from "@/server/workspace/crm/services/customer-read-service";
 import { createCustomerRequestFixture } from "@/server/tests/workspace/crm/support/crm-fixtures";
 import { leadService } from "@/server/workspace/leads/services/lead/lead-service";
 
@@ -48,6 +49,13 @@ describe.skipIf(!RUN_INTEGRATION)(
     };
     let db: Database | null = null;
     let convertedCustomerId: string | null = null;
+
+    async function freeCustomerNumber(database: Database): Promise<number> {
+      const value =
+        await customerReadService.findLowestFreeCustomerNumber(database);
+      if (value === null) throw new Error("No free customer number left.");
+      return value;
+    }
 
     beforeAll(async () => {
       const workspaceRoot = findWorkspaceRoot(process.cwd());
@@ -157,6 +165,7 @@ describe.skipIf(!RUN_INTEGRATION)(
     it("serializes parallel requests, links history and returns the same customer on retry", async () => {
       if (!db) throw new Error("Database was not initialized.");
       const request = createCustomerRequestFixture({
+        customerNumber: await freeCustomerNumber(db),
         displayName: parallelDisplayName,
         companyName: null,
         categoryId: null,
@@ -245,6 +254,7 @@ describe.skipIf(!RUN_INTEGRATION)(
     it("rolls back the person when the customer display name conflicts", async () => {
       if (!db) throw new Error("Database was not initialized.");
       const request = createCustomerRequestFixture({
+        customerNumber: await freeCustomerNumber(db),
         displayName: rollbackDisplayName,
         companyName: null,
         categoryId: null,
@@ -280,6 +290,50 @@ describe.skipIf(!RUN_INTEGRATION)(
         .from(leads)
         .where(eq(leads.id, rollbackLeadId));
       expect(lead).toEqual({ customerId: null, status: "qualified" });
+    }, 30_000);
+
+    it("suggests the lowest number no customer holds", async () => {
+      if (!db) throw new Error("Database was not initialized.");
+      const suggestion = await freeCustomerNumber(db);
+
+      const [holder] = await db
+        .select({ value: count() })
+        .from(customers)
+        .where(eq(customers.customer_number, suggestion));
+      const [below] = await db
+        .select({ value: count() })
+        .from(customers)
+        .where(lt(customers.customer_number, suggestion));
+      expect(holder?.value).toBe(0);
+      expect(below?.value).toBe(suggestion - 1);
+    }, 30_000);
+
+    it("refuses a number another customer holds without linking the lead", async () => {
+      if (!db) throw new Error("Database was not initialized.");
+      const [existing] = await db
+        .select({ number: customers.customer_number })
+        .from(customers)
+        .where(eq(customers.id, existingCustomerId));
+      if (!existing) throw new Error("Existing customer is missing.");
+
+      await expect(
+        convertLeadToCustomer(
+          rollbackLeadId,
+          createCustomerRequestFixture({
+            customerNumber: existing.number,
+            displayName: `${FIXTURE_PREFIX}taken-number`,
+          }),
+          actor,
+        ),
+      ).resolves.toEqual({
+        ok: false,
+        code: LeadConversionErrorCode.CustomerNumberTaken,
+      });
+      const [lead] = await db
+        .select({ customerId: leads.customer_id })
+        .from(leads)
+        .where(eq(leads.id, rollbackLeadId));
+      expect(lead?.customerId).toBeNull();
     }, 30_000);
   },
 );

@@ -40,6 +40,7 @@ import {
 import { getCustomerById } from "@/server/workspace/crm/query-handler/get-customer-by-id.query-handler";
 import { getCustomerCockpitById } from "@/server/workspace/crm/query-handler/get-customer-cockpit-by-id.query-handler";
 import { listActiveCustomerCategories } from "@/server/workspace/crm/query-handler/list-active-customer-categories.query-handler";
+import { getNextCustomerNumber } from "@/server/workspace/crm/query-handler/get-next-customer-number.query-handler";
 import { listCustomers } from "@/server/workspace/crm/query-handler/list-customers.query-handler";
 import { buildCustomerListViewModel } from "@/lib/workspace/crm/customer-list-view-model";
 import { loadCustomerCockpit } from "@/lib/workspace/crm/load-customer-cockpit";
@@ -145,7 +146,10 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
   const showDialog =
     dialogRequest?.mode === CustomerFormDialogMode.Create ||
     editCustomer !== null;
-  const categories = showDialog ? await listActiveCustomerCategories() : [];
+  const [categories, suggestedCustomerNumber] = await Promise.all([
+    showDialog ? listActiveCustomerCategories() : [],
+    showDialog && !editCustomer ? getNextCustomerNumber() : null,
+  ]);
 
   return (
     <WorkspaceScrollablePageShell pageId="crm">
@@ -177,6 +181,7 @@ export default async function CrmPage({ params, searchParams }: CrmPageProps) {
           key={editCustomer?.id ?? CustomerFormDialogMode.Create}
           locale={activeLocale}
           leadsBasePath={canReadLeads ? leadsBasePath : undefined}
+          suggestedCustomerNumber={suggestedCustomerNumber}
           cockpitHref={
             editCustomer
               ? buildCustomerCockpitHref(

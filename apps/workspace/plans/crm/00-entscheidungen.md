@@ -89,7 +89,10 @@ Umsetzung in Ordner 07a–07c (Task 36–38), nach Projekten und vor Aufgaben.
 - Kundenstatus: `active`, `paused`, `archived`.
 - Archiv ist reversibel und der einzige UI-Zustand zum Ausblenden; kein Papierkorb und kein
   Löschbutton in Version 1.
-- Kundennummer als Sequenz, Anzeige `K0001`; stabil und eindeutig, aber nicht lückenlos.
+- Kundennummer, Anzeige `K0001`; stabil und eindeutig über alle Status. Seit Ordner 29 (Entscheidung des Nutzers,
+  17.10.2026) wird sie beim Anlegen vergeben: Der Dialog schlägt die kleinste freie Nummer vor, der Vorschlag darf
+  durch jede freie Nummer bis 999 999 ersetzt werden, eine bestehende (auch archivierte) nie. Danach ist sie nicht
+  mehr änderbar. Plan: `29-kundennummer-vergabe/README.md`.
 - Kundentyp `company | individual`; `display_name` ist Pflicht.
 - **Der Anzeigename (`display_name`) ist eindeutig** — normalisiert über `lower(btrim(...))`, über alle Status
   einschließlich `archived`, erzwungen per Unique-Index (Migration in Ordner 04). Das ist der einzige Schutz gegen

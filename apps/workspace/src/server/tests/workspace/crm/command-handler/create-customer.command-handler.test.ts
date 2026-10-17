@@ -201,6 +201,39 @@ describe("createCustomer", () => {
     expect(mocks.createActivity).not.toHaveBeenCalled();
   });
 
+  it("answers a taken customer number, archived customers included", async () => {
+    mocks.insertValues.mockImplementation(async (table: unknown) => {
+      if (table === customers) {
+        throw new Error("duplicate", {
+          cause: {
+            code: PostgresErrorCode.UniqueViolation,
+            constraint: CustomersConstraintName.CustomerNumberUnique,
+          },
+        });
+      }
+    });
+
+    const result = await createCustomer(createCustomerRequestFixture(), actor);
+
+    expect(result).toEqual({
+      ok: false,
+      code: CustomerErrorCode.CustomerNumberTaken,
+    });
+    expect(mocks.createActivity).not.toHaveBeenCalled();
+  });
+
+  it("writes the chosen customer number instead of drawing from the sequence", async () => {
+    await createCustomer(
+      createCustomerRequestFixture({ customerNumber: 42 }),
+      actor,
+    );
+
+    expect(mocks.insertValues).toHaveBeenCalledWith(
+      customers,
+      expect.objectContaining({ customer_number: 42 }),
+    );
+  });
+
   it("aborts the transaction when the contact insert fails", async () => {
     mocks.insertValues.mockImplementation(async (table: unknown) => {
       if (table === customerContactAssignments) {
