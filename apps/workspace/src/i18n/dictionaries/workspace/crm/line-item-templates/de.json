@@ -123,7 +123,6 @@
       "kindHours": "Beim Zuweisen gibst du die Menge an. Die Stunden werden dem Kunden gutgeschrieben und dem Projekt zugewiesen.",
       "kindFeedbackRound": "Beim Zuweisen bekommt das Projekt eine weitere Feedbackrunde.",
       "projectModeFixed": "Diese Art gehört immer zu einem bestehenden Projekt.",
-      "pricingModeFixed": "Die Art legt die Preisart fest.",
       "portal": "Kunden sehen den Titel und diese Beschreibung, nie den Preis. Du kannst den Text vorbereiten, bevor du die Vorlage freigibst."
     }
   }
