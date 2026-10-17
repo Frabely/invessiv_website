@@ -1,7 +1,9 @@
 import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { getDatabaseClient } from "@invessiv/db/core";
+import { count, sql } from "drizzle-orm";
+import { getDatabaseClient, getDrizzleDatabaseClient } from "@invessiv/db/core";
+import { customers } from "@invessiv/db/record-configuration";
 import { configureDatabaseUrlFromTarget } from "./database-target";
 
 const RESETTABLE_DATABASE_TARGETS = ["development", "preview"] as const;
@@ -43,11 +45,11 @@ async function runReset() {
   const target = parseResettableDatabaseTarget(process.argv);
   configureDatabaseUrlFromTarget(target);
 
-  const sql = getDatabaseClient();
+  const client = getDatabaseClient();
 
   console.log(`Dropping ${target} schema public...`);
-  await sql.query("DROP SCHEMA IF EXISTS public CASCADE");
-  await sql.query("CREATE SCHEMA public");
+  await client.query("DROP SCHEMA IF EXISTS public CASCADE");
+  await client.query("CREATE SCHEMA public");
 
   console.log(`Re-running ${target} migrations...`);
   execFileSync(
@@ -57,6 +59,20 @@ async function runReset() {
       stdio: "inherit",
     },
   );
+
+  await getDrizzleDatabaseClient().transaction(async (tx) => {
+    await tx.execute(sql`LOCK TABLE ${customers} IN SHARE ROW EXCLUSIVE MODE`);
+    const [row] = await tx.select({ total: count() }).from(customers);
+    if (!row || row.total !== 0) {
+      throw new Error(
+        "Cannot restart customer numbering after reset: customers table is not empty.",
+      );
+    }
+    await tx.execute(
+      sql`ALTER SEQUENCE public.customers_customer_number_seq RESTART WITH 1`,
+    );
+  });
+  console.log(`Reset ${target} customer numbering: next customer is K0001.`);
 }
 
 runReset().catch((error: unknown) => {
