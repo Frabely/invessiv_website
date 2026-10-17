@@ -7,15 +7,11 @@ import { usePortalTimeEntries } from "./use-portal-time-entries";
 
 const api = vi.hoisted(() => ({ listTimeEntries: vi.fn() }));
 
-vi.mock("next/navigation", () => ({
-  useSearchParams: () => new URLSearchParams(window.location.search),
-}));
 vi.mock("@/client/portal/portal-hours-api-service", () => ({
   portalHoursApiService: api,
 }));
 
 beforeEach(() => {
-  window.history.replaceState(null, "", "?widget=hours&hoursProject=project-a");
   api.listTimeEntries.mockResolvedValue({
     ok: true,
     value: { entries: [], nextCursor: "next-page" },
@@ -25,26 +21,22 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
-  window.history.replaceState(null, "", "/");
 });
 
 describe("usePortalTimeEntries", () => {
-  it("reloads the first page when the URL filter changes without remounting", async () => {
-    const { result, rerender } = renderHook(() =>
-      usePortalTimeEntries("customer-1", ["project-a", "project-b"]),
+  it("reloads the first page when the project changes without remounting", async () => {
+    const { result, rerender } = renderHook(
+      ({ projectId }) => usePortalTimeEntries("customer-1", projectId),
+      { initialProps: { projectId: "project-a" as string | null } },
     );
     await waitFor(() =>
       expect(result.current.status).toBe(TimeEntryListLoadStatus.Ready),
     );
-    expect(result.current.projectId).toBe("project-a");
+    expect(api.listTimeEntries).toHaveBeenLastCalledWith("customer-1", {
+      projectId: "project-a",
+    });
 
-    window.history.replaceState(
-      null,
-      "",
-      "?widget=hours&hoursProject=project-b",
-    );
-    rerender();
-    expect(result.current.projectId).toBe("project-b");
+    rerender({ projectId: "project-b" });
     await waitFor(() =>
       expect(api.listTimeEntries).toHaveBeenLastCalledWith("customer-1", {
         projectId: "project-b",
@@ -54,9 +46,7 @@ describe("usePortalTimeEntries", () => {
       expect(result.current.status).toBe(TimeEntryListLoadStatus.Ready),
     );
 
-    window.history.replaceState(null, "", "?widget=hours");
-    rerender();
-    expect(result.current.projectId).toBeNull();
+    rerender({ projectId: null });
     await waitFor(() =>
       expect(api.listTimeEntries).toHaveBeenLastCalledWith("customer-1", {
         projectId: undefined,
@@ -64,55 +54,27 @@ describe("usePortalTimeEntries", () => {
     );
   });
 
-  it("drops a removed project filter for reload, pagination and retry", async () => {
-    const { result, rerender } = renderHook(
-      ({ projectIds }) => usePortalTimeEntries("customer-1", projectIds),
-      { initialProps: { projectIds: ["project-a", "project-b"] } },
+  it("keeps the project for pagination and retry", async () => {
+    const { result } = renderHook(() =>
+      usePortalTimeEntries("customer-1", "project-a"),
     );
     await waitFor(() =>
       expect(result.current.status).toBe(TimeEntryListLoadStatus.Ready),
     );
-    api.listTimeEntries.mockClear();
 
-    rerender({ projectIds: ["project-b"] });
-    expect(result.current.projectId).toBeNull();
-    await waitFor(() =>
-      expect(result.current.status).toBe(TimeEntryListLoadStatus.Ready),
-    );
-    expect(api.listTimeEntries).toHaveBeenLastCalledWith("customer-1", {
-      projectId: undefined,
-    });
     await act(async () => {
       await result.current.loadMore();
     });
     expect(api.listTimeEntries).toHaveBeenLastCalledWith("customer-1", {
-      projectId: undefined,
+      projectId: "project-a",
       cursor: "next-page",
     });
     act(() => result.current.retry());
     await waitFor(() =>
       expect(api.listTimeEntries).toHaveBeenLastCalledWith("customer-1", {
-        projectId: undefined,
+        projectId: "project-a",
       }),
     );
     expect(api.listTimeEntries).toHaveBeenCalledTimes(3);
-  });
-
-  it("treats a new unknown URL project as unfiltered without remounting", async () => {
-    const { result, rerender } = renderHook(() =>
-      usePortalTimeEntries("customer-1", ["project-a"]),
-    );
-    await waitFor(() =>
-      expect(result.current.status).toBe(TimeEntryListLoadStatus.Ready),
-    );
-
-    window.history.replaceState(null, "", "?widget=hours&hoursProject=foreign");
-    rerender();
-    expect(result.current.projectId).toBeNull();
-    await waitFor(() =>
-      expect(api.listTimeEntries).toHaveBeenLastCalledWith("customer-1", {
-        projectId: undefined,
-      }),
-    );
   });
 });

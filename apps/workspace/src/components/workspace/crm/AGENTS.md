@@ -370,6 +370,12 @@ Plan: `apps/workspace/plans/crm/20-stunden-und-history/27-kontingent-und-zuweisu
 
 Ab Task 72 (`apps/workspace/plans/crm/20-stunden-und-history/72-zeitbuchungen-und-aufgaben.md`):
 
+- **Gemeinsamer Stundenbalken mit dem Portal:** Gesamtübersicht, Projektliste und Projekt-Canvas verwenden
+  `HoursMeter` aus `@invessiv/ui`. Die Aufteilung kommt aus `hoursDistribution` (`@invessiv/common/patterns/time/`),
+  ohne Portal-Importe. Offene Reststunden und Projektüberzüge werden vor dem Summieren getrennt; Kulanz fließt nicht
+  in den Verbrauch ein. Die Gesamtübersicht zeigt beide Anteile auch als Text und bekommt alle Projekte nur bei
+  kundenweitem Leserecht. Farben: Verbrauch warm, offen blau, frei grün, Überzug rot. Keine eigenen Balken oder CSS-Overrides.
+
 - `hours/project-hours-section` steht im Projekt-Canvas direkt nach den Aufgaben und **nur**, wenn das Projekt in
   `hours.hours.projects` vorkommt. „Zeit buchen“, „Ändern“ und „Löschen“ gibt es nur für Projekte in
   `writableProjectIds`; „Zeit buchen“ fehlt außerdem an abgebrochenen und archivierten Projekten.

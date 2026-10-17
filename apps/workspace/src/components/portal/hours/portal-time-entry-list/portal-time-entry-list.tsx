@@ -1,50 +1,59 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useState } from "react";
+import { ButtonVariant } from "@invessiv/common/constants/ui/button-variants";
 import type { PortalProjectHoursDto } from "@invessiv/common/contracts/portal/portal-project-hours.dto";
-import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { ButtonControl } from "@invessiv/ui";
+import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
+import {
+  ButtonControl,
+  DataTableCell,
+  DataTableHeaderCell,
+  DataTableLayout,
+  DataTableRow,
+} from "@invessiv/ui";
 import { TimeEntryListLoadStatus } from "@/common/constants/crm/time-entry-list-load-status";
-import { groupTimeEntriesByMonth } from "@/common/patterns/portal/group-time-entries-by-month";
+import type { PortalHoursEntriesDictionary } from "@/common/contracts/portal/portal-hours-entries-dictionary";
 import type { Locale } from "@/config/i18n";
 import { usePortalTimeEntries } from "@/hooks/portal/use-portal-time-entries";
-import type { PortalHoursDictionary } from "@/i18n/dictionaries/portal";
 import { formatCalendarDay } from "@/lib/i18n/format-calendar-day";
-import { formatCalendarMonth } from "@/lib/i18n/format-calendar-month";
 import styles from "./portal-time-entry-list.module.css";
 
 export type PortalTimeEntryListProps = {
-  content: PortalHoursDictionary["entries"];
+  content: PortalHoursEntriesDictionary;
   customerId: string;
   locale: Locale;
-  /** The projects the filter offers; entries of any other project carry no project reference. */
+  /** The project the dialog shows; null lists every project with a project column. */
+  projectId: string | null;
+  /** Titles for the project column; entries of any other project carry no project reference. */
   projects: readonly PortalProjectHoursDto[];
 };
 
 /**
- * What the time was used for, newest first and grouped by month. It is only mounted for readers
- * who may see single entries, so its first request is also the first one for time entries at all.
+ * What the time was used for, newest first, in the shared table: the head
+ * and "load more" stay put while the rows scroll. It is only mounted for readers who may see
+ * single entries, so its first request is also the first one for time entries at all.
  * Descriptions and task titles are rendered as plain text.
  */
 export function PortalTimeEntryList({
   content,
   customerId,
   locale,
+  projectId,
   projects,
 }: PortalTimeEntryListProps) {
-  const headingId = useId();
-  const list = usePortalTimeEntries(
-    customerId,
-    projects.map((project) => project.projectId),
-  );
+  const list = usePortalTimeEntries(customerId, projectId);
   const [announcement, setAnnouncement] = useState("");
-  const filtered = list.projectId !== null;
-
-  function selectProject(projectId: string | null) {
-    setAnnouncement("");
-    list.selectProject(projectId);
-  }
+  const showProject = projectId === null;
+  const columns = [
+    { id: "date", header: content.columns.date, width: 112 },
+    { id: "description", header: content.columns.description },
+    { id: "task", header: content.columns.task, width: 150 },
+    ...(showProject
+      ? [{ id: "project", header: content.columns.project, width: 140 }]
+      : []),
+    { id: "duration", header: content.columns.duration, width: 96 },
+  ];
 
   async function loadMore() {
     setAnnouncement("");
@@ -55,133 +64,112 @@ export function PortalTimeEntryList({
       setAnnouncement(formatMessage(content.loaded, { count: String(count) }));
   }
 
-  /** Without a filter each entry says where it belongs; a hidden project has only a shared label. */
-  function projectLabel(projectId: string | null): string | null {
-    if (filtered) return null;
-    if (projectId === null) return content.earlier;
+  /** An entry on a project the portal hides has only the shared label. */
+  function projectLabel(entryProjectId: string | null): string {
+    if (entryProjectId === null) return content.earlier;
     return (
-      projects.find((project) => project.projectId === projectId)?.title ?? null
+      projects.find((project) => project.projectId === entryProjectId)?.title ??
+      content.earlier
     );
   }
 
   return (
-    <section
+    <div
       aria-busy={list.status === TimeEntryListLoadStatus.Loading}
-      aria-labelledby={headingId}
       className={styles.entries}
     >
-      <h3 className={styles.heading} id={headingId}>
-        {content.title}
-      </h3>
-
-      {projects.length > 0 ? (
-        <div
-          aria-label={content.filterLabel}
-          className={styles.filter}
-          role="group"
-        >
-          <button
-            aria-pressed={!filtered}
-            className={styles.chip}
-            onClick={() => selectProject(null)}
-            type="button"
-          >
-            {content.allProjects}
-          </button>
-          {projects.map((project) => (
-            <button
-              aria-pressed={list.projectId === project.projectId}
-              className={styles.chip}
-              key={project.projectId}
-              onClick={() => selectProject(project.projectId)}
-              type="button"
-            >
-              {project.title}
-            </button>
-          ))}
-        </div>
-      ) : null}
-
       {list.status === TimeEntryListLoadStatus.Loading ? (
         <p className={styles.hint}>{content.loading}</p>
       ) : list.status === TimeEntryListLoadStatus.Error ? (
         <div className={styles.loadError} role="alert">
           <p>{content.loadError}</p>
-          <ButtonControl onClick={list.retry} type="button" variant="ghost">
+          <ButtonControl
+            onClick={list.retry}
+            type="button"
+            variant={ButtonVariant.Ghost}
+          >
             {content.retry}
           </ButtonControl>
         </div>
       ) : list.entries.length === 0 ? (
         <p className={styles.hint}>
-          {filtered ? content.emptyFiltered : content.empty}
+          {showProject ? content.empty : content.emptyFiltered}
         </p>
       ) : (
-        <div className={styles.months}>
-          {groupTimeEntriesByMonth(list.entries).map((group) => (
-            <div className={styles.month} key={group.month}>
-              <h4 className={styles.monthHeading}>
-                {formatCalendarMonth(group.month, locale)}
-              </h4>
-              <ul className={styles.list}>
-                {group.entries.map((entry) => {
-                  const project = projectLabel(entry.projectId);
-                  return (
-                    <li className={styles.row} key={entry.id}>
-                      <span className={styles.date}>
-                        {formatCalendarDay(entry.performedOn, locale)}
+        <div className={styles.tableArea}>
+          <DataTableLayout
+            ariaLabel={content.tableLabel}
+            caption={content.tableLabel}
+            columns={columns}
+            fillAvailableHeight
+            footer={
+              list.hasMore ? (
+                <span className={styles.more}>
+                  <ButtonControl
+                    disabled={list.loadingMore}
+                    onClick={() => void loadMore()}
+                    type="button"
+                    variant={ButtonVariant.Ghost}
+                  >
+                    {list.loadingMore ? content.loadingMore : content.more}
+                  </ButtonControl>
+                </span>
+              ) : undefined
+            }
+            responsiveMode="cards"
+          >
+            {list.entries.map((entry) => (
+              <DataTableRow key={entry.id} mobileCard>
+                <DataTableCell mobileCardSlot="supportingPrimary">
+                  <span className={styles.date}>
+                    {formatCalendarDay(entry.performedOn, locale)}
+                  </span>
+                </DataTableCell>
+                <DataTableHeaderCell mobileCardSlot="primary" scope="row">
+                  <span className={styles.description}>
+                    {entry.description}
+                  </span>
+                </DataTableHeaderCell>
+                <DataTableCell
+                  mobileCardSlot="detail"
+                  mobileLabel={
+                    entry.taskTitle ? content.columns.task : undefined
+                  }
+                >
+                  {entry.taskTitle ? (
+                    <span className={styles.task}>{entry.taskTitle}</span>
+                  ) : null}
+                </DataTableCell>
+                {showProject ? (
+                  <DataTableCell mobileCardSlot="supportingSecondary">
+                    <span className={styles.project}>
+                      {projectLabel(entry.projectId)}
+                    </span>
+                  </DataTableCell>
+                ) : null}
+                <DataTableCell mobileCardSlot="secondary">
+                  <span className={styles.amount}>
+                    <span
+                      className={styles.duration}
+                      data-goodwill={entry.billable ? undefined : "true"}
+                    >
+                      {formatDuration(entry.durationMinutes)}
+                    </span>
+                    {entry.billable ? null : (
+                      <span className={styles.goodwill}>
+                        {content.goodwill}
                       </span>
-                      <span className={styles.text}>
-                        <span className={styles.description}>
-                          {entry.description}
-                        </span>
-                        {entry.taskTitle ? (
-                          <span className={styles.meta}>
-                            {formatMessage(content.task, {
-                              title: entry.taskTitle,
-                            })}
-                          </span>
-                        ) : null}
-                        {project ? (
-                          <span className={styles.meta}>{project}</span>
-                        ) : null}
-                      </span>
-                      <span className={styles.amount}>
-                        <span
-                          className={styles.duration}
-                          data-goodwill={entry.billable ? undefined : "true"}
-                        >
-                          {formatDuration(entry.durationMinutes)}
-                        </span>
-                        {entry.billable ? null : (
-                          <span className={styles.goodwill}>
-                            {content.goodwill}
-                          </span>
-                        )}
-                      </span>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          ))}
+                    )}
+                  </span>
+                </DataTableCell>
+              </DataTableRow>
+            ))}
+          </DataTableLayout>
         </div>
       )}
-
-      {list.hasMore ? (
-        <div className={styles.more}>
-          <ButtonControl
-            disabled={list.loadingMore}
-            onClick={() => void loadMore()}
-            type="button"
-            variant="ghost"
-          >
-            {list.loadingMore ? content.loadingMore : content.more}
-          </ButtonControl>
-        </div>
-      ) : null}
       <p aria-live="polite" className={styles.announcement} role="status">
         {announcement}
       </p>
-    </section>
+    </div>
   );
 }

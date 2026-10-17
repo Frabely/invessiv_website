@@ -1,0 +1,111 @@
+/* The cockpit's colours (hours-balance-summary); the same ones fill the bar below. */
+.figures {
+  display: grid;
+  gap: 0.85rem;
+  min-width: 0;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  background: var(--color-surface-1);
+  container: hours-figures / inline-size;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem 0;
+  margin: 0;
+}
+
+.list[data-count="4"] {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.figure {
+  display: grid;
+  align-content: start;
+  gap: 0.25rem;
+  min-width: 0;
+  padding-inline: 1rem;
+}
+
+.figure:first-child {
+  padding-inline-start: 0;
+}
+
+.figure + .figure {
+  border-inline-start: 1px solid var(--color-border);
+}
+
+.figure dt {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+.icon {
+  width: 1em;
+  height: 1em;
+  flex: 0 0 auto;
+}
+
+.figure[data-figure="used"] .icon {
+  color: var(--color-accent-warm);
+}
+
+.figure[data-figure="open"] .icon,
+.figure[data-figure="remaining"] .icon {
+  color: var(--color-cta);
+}
+
+.figure[data-figure="free"] .icon {
+  color: var(--color-success);
+}
+
+.figure dd {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-heading-md);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+/* Not the warm tone: that one already means "used". */
+.figure[data-over="true"] dd,
+.figure[data-over="true"] .icon {
+  color: var(--color-danger);
+}
+
+.note {
+  max-width: 60ch;
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-ui-sm);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* Two by two once four figures no longer fit next to each other. */
+@container hours-figures (max-width: 32rem) {
+  .list[data-count="4"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .list[data-count="4"] .figure:nth-child(3) {
+    padding-inline-start: 0;
+    border-inline-start: 0;
+  }
+
+  .figure dd {
+    font-size: var(--font-size-body-md);
+  }
+}
+
+@container hours-figures (max-width: 22rem) {
+  .figure {
+    padding-inline: 0.6rem;
+  }
+}

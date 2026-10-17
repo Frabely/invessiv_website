@@ -78,7 +78,7 @@ describe("CustomerHoursSection", () => {
   );
 
   it("shows the stock, the split and the ledger with every figure as text", () => {
-    renderSection();
+    const { container } = renderSection();
 
     expect(screen.getByText("7:30 übrig")).toBeVisible();
     const balance = screen.getByLabelText(content.balance.label);
@@ -88,6 +88,10 @@ describe("CustomerHoursSection", () => {
     expect(screen.getByText("Relaunch")).toBeVisible();
     expect(screen.getByText("Betreuungspaket 10 h")).toBeVisible();
     expect(screen.getByText("+10:00")).toBeVisible();
+    // Customer summary and project row use the same shared meter.
+    expect(container.querySelectorAll('svg[viewBox="0 0 100 1"]')).toHaveLength(
+      2,
+    );
   });
 
   it("names an overdrawn project in words, not only by colour", () => {

@@ -4,33 +4,47 @@
     "intro": "See how many hours you bought, how many are used and what they were used for.",
     "close": "Close"
   },
-  "summary": {
-    "title": "Your balance",
+  "tabs": {
+    "label": "Sections",
+    "entries": "Time entries",
+    "purchases": "Purchases"
+  },
+  "figures": {
+    "label": "Your balance",
+    "projectLabel": "Balance of {project}",
     "purchased": "Purchased",
     "used": "Used",
-    "remaining": "Left",
+    "open": "Open in projects",
+    "free": "Unassigned",
     "allocated": "Assigned",
-    "project": "Project",
+    "remaining": "Left",
     "over": "{duration} over your hours",
-    "unassigned": "{duration} of these are not assigned to a project yet.",
-    "projectsTitle": "By project",
+    "projectOver": "This project used {duration} more than it was assigned."
+  },
+  "projects": {
+    "title": "Projects",
+    "usage": "{used} of {allocated} used",
+    "back": "All projects",
     "projectOver": "This project used {duration} more than it was assigned.",
     "earlier": "Earlier projects",
     "earlierHint": "Projects that are no longer shown individually in the portal.",
-    "earlierOver": "These projects used {duration} more than they were assigned."
+    "earlierOver": "Individual earlier projects exceeded their assigned hours by {duration} in total."
   },
   "purchases": {
-    "title": "Your hours",
     "empty": "No hours have been credited to you yet.",
     "correction": "Correction",
     "capped": "You see the latest {count} entries."
   },
   "entries": {
-    "title": "What the time was used for",
-    "filterLabel": "Time entries by project",
-    "allProjects": "All projects",
+    "tableLabel": "Time entries",
+    "columns": {
+      "date": "Date",
+      "description": "Description",
+      "task": "Task",
+      "project": "Project",
+      "duration": "Duration"
+    },
     "earlier": "Earlier projects",
-    "task": "Task: {title}",
     "goodwill": "not charged",
     "empty": "No time has been booked yet. Once we work for you, you will see here what for.",
     "emptyFiltered": "No time has been booked for this project yet.",

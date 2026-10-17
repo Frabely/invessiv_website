@@ -386,24 +386,53 @@ Plan: `apps/workspace/plans/crm/20-stunden-und-history/73-stunden-im-portal.md`.
 - **Keine eigene Seite.** Stunden sind ein Dialog des Dashboards (`?widget=hours`), wie die Zugangsdaten. Das
   Widget `hours` steht mit `requiredPermission: portal.hours.read` und `onlyWithContent` in
   `PORTAL_WIDGET_LAYOUT`: Ohne Recht und ohne Kauf- oder Zeitbuchung gibt es weder Karte noch Dialog.
-- Komponenten liegen unter `hours/`; Orchestrator ist `hours/portal-hours-dialog` mit `portal-hours-summary`
-  (Stand gesamt und je Projekt), `portal-hours-purchases` (Kaufhistorie) und `portal-time-entry-list`
-  (Buchungen). Die Karte ist `dashboard/widgets/portal-hours-widget`.
-- **Stand und Kaufhistorie kommen mit dem Dashboard** (`PortalHoursDto` als Prop), **die Buchungen erst beim
-  Öffnen** über `usePortalTimeEntries` (`src/hooks/portal/`) und `portalHoursApiService`. Die Liste wird nur
-  mit `canReadEntries` gemountet; ohne das Recht fehlt der Abschnitt vollständig, ohne Hinweis und ohne Request.
+- Komponenten liegen unter `hours/`; Orchestrator ist `hours/portal-hours-dialog` mit `portal-hours-figures`
+  (Kennzahlen), `HoursMeter` aus `@invessiv/ui` (Balken), `portal-hours-projects` (Projektliste), `portal-hours-purchases`
+  (Kaufhistorie) und `portal-time-entry-list` (Buchungen). Die Karte ist `dashboard/widgets/portal-hours-widget`.
+- **Übersicht und Projekt (Paket N mit Nachtrag, 17.10.2026,
+  Plan `apps/workspace/plans/crm/27-portal-stunden-dialog/N-portal-hours-dialog.md`).** Es gibt kein Projekt-Select.
+  - **Übersicht:** Kennzahlen Gekauft, Verbraucht, In Projekten offen und Frei. `portalHoursBreakdown` passt die DTOs
+    an; die Berechnung liegt in `hoursDistribution` (`@invessiv/common/patterns/time/`).
+    Gekauft = Verbraucht + offen + frei − Überzug. „Offen“ zählt
+    nur, was Projekte noch haben; ein überzogenes Projekt erscheint als roter Überzug im Balken, nicht als Abzug bei
+    einem anderen. Darunter die Projekte, je Projekt ein Button (`ButtonControl` `variant="row"`) mit „x von y
+    verbraucht“, Mini-Balken und Chevron. „Frühere Projekte“ ist eine Summe ohne Button. Ganz unten die Reiter
+    „Buchungen“ (nur mit `canReadEntries`) und „Käufe“ (`portalHoursView.tabsFor`); bleibt einer übrig, entfällt die
+    Reiterleiste.
+  - **Projekt:** „← Alle Projekte“ (`ButtonControl` quiet), Projekttitel, Kennzahlen Zugewiesen, Verbraucht, Übrig
+    mit Balken, dann nur die Buchungen dieses Projekts. Kein Zusatzsatz zum Firmenstand und keine Käufe: Käufe
+    gehören der Firma und stehen nur in der Übersicht.
+  - **Fokus:** Ein Klick in ein Projekt setzt ihn auf dessen Überschrift, „Alle Projekte“ zurück auf die Zeile. Beim
+    Öffnen des Dialogs bleibt er, wo der Dialog ihn setzt.
+- **Farben wie im Cockpit** (`hours-balance-summary`): Verbraucht warm, offen bzw. im Projekt übrig blau
+  (`--color-cta`), frei grün, Überzug und negative Werte `--color-danger`. Die farbigen Icons der Kennzahlen sind die
+  Legende des Balkens. Der Balken ist das gemeinsame gestapelte SVG `HoursMeter` aus `@invessiv/ui` (Breiten als
+  SVG-Attribute, kein Inline-Style). Die Segmente kommen aus `hoursDistribution`, im Portal über den Adapter
+  `portalHoursBreakdown`. Dieselbe Komponente und Berechnung werden im Cockpit verwendet.
+- **Buchungen als `DataTableLayout`** (Entscheidung 17.10.2026): Spalten Datum, Beschreibung, Aufgabe,
+  Projekt (nur in der Übersicht) und Dauer, alle linksbündig; ohne Monatszeilen (das Datum steht in jeder Zeile), „Weitere laden“ im `footer`, Mobile-Cards unter
+  720 px. Der Rahmen bekommt im Dialog eine feste, kompakte Höhe (`min(22rem, 42dvh)`) und `fillAvailableHeight`, damit Kopf und
+  Footer stehen bleiben, während die Zeilen scrollen. Laden, Fehler und leere Liste stehen ohne Tabelle da. Keine
+  eigenen Chip- oder Pillen-Buttons, Aktionen nur über `ButtonControl`.
+- **Stand und Kaufhistorie kommen mit dem Dashboard** (`PortalHoursDto` als Prop), **die Buchungen erst, wenn
+  sie zu sehen sind** (Übersicht: Standard-Reiter, Projekt: immer), über `usePortalTimeEntries` (`src/hooks/portal/`) und
+  `portalHoursApiService`; ein Projektwechsel lädt ab Seite eins. Ohne `canReadEntries` fehlen Reiter und Abschnitt vollständig,
+  ohne Hinweis und ohne Request.
 - **Nachladen** läuft über den geteilten `useCursorPagedList` (`src/hooks/shared/`), denselben wie im Cockpit.
   „Weitere laden“ meldet das Ergebnis in einer Live-Region.
-- **Projektfilter ist URL-State:** `?hoursProject=<id>`, geschrieben über `history.replaceState` (kein
-  Server-Roundtrip). Eine ID, die nicht in `hours.projects` steht, zählt als kein Filter. Schließen entfernt den
-  Parameter zusammen mit `widget`.
+- **Gewähltes Projekt ist URL-State:** `?hoursProject=<id>` bzw. `all` (`PORTAL_HOURS_ALL_PROJECTS`), gelesen und
+  geschrieben nur über `usePortalHoursProject` (`history.replaceState`, kein Server-Roundtrip). Ohne Parameter öffnet
+  der Dialog auf dem Projekt des Dashboards (`selectedProjectId`), wenn es im Portal sichtbar ist, sonst auf „Alle“.
+  `portalHoursView.projectOf` entscheidet, eine unbekannte ID zählt nicht. „Alle“ schreibt ausdrücklich `all`, damit
+  das Dashboard-Projekt nicht zurückkommt. Schließen entfernt den Parameter zusammen mit `widget`.
 - **Überziehung ist immer Text**, nie nur Farbe: „1:00 über dem Kontingent“ bzw. „Dieses Projekt hat 1:00 mehr
   verbraucht als zugewiesen.“ Sachlich, ohne Warnton und ohne Handlungsaufforderung. Der Balken im Widget ist ein
   natives `<progress aria-hidden>` (kein Inline-Style) und wiederholt nur, was daneben als Text steht.
-- **Zwei Empty-States in der Buchungsliste:** noch nichts gebucht und kein Treffer im Projektfilter.
-- Zahlen über `formatDuration`, `tabular-nums`, rechtsbündig. Die Projekttabelle hat `<th scope>` und wird
-  unter 40rem eigener Breite (Container Query) zur gestapelten Liste. Beschreibungen, Notizen und Aufgabentitel
-  werden nur als Text gerendert.
+- **Zwei Empty-States in der Buchungsliste:** noch nichts gebucht und nichts für das gewählte Projekt.
+- **Projektauswahl:** Alle im Portal sichtbaren Projekte bleiben aufrufbar, auch ohne Zuweisung oder Buchung.
+  Kennzahlen und Balken erscheinen dann mit Nullwerten; die Buchungsliste zeigt ihren Empty-State.
+- Zahlen über `formatDuration`, `tabular-nums`. Beschreibungen, Notizen und Aufgabentitel werden nur als Text
+  gerendert.
 - Keine Schreibaktion, deshalb auch kein Owner-Hinweis.
 
 ## Leistungsanfragen (ab Task 76)

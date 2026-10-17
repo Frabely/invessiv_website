@@ -126,7 +126,11 @@ export function CustomerHoursSection({
       ) : (
         <div className={styles.body}>
           {balance ? (
-            <HoursBalanceSummary balance={balance} content={content.balance} />
+            <HoursBalanceSummary
+              balance={balance}
+              content={content.balance}
+              projects={hours.projects}
+            />
           ) : (
             <p className={styles.hint}>{content.balance.projectScopeHint}</p>
           )}

@@ -10,7 +10,7 @@ import type { PortalProjectHoursDto } from "./portal-project-hours.dto";
 export interface PortalHoursDto {
   /** Company-wide figures over all projects, including the ones the portal hides. */
   balance: PortalHoursBalanceDto;
-  /** Portal-visible projects that have an allocation or a time entry, in the dashboard's project order. */
+  /** All portal-visible projects, including those without hours, in the dashboard's project order. */
   projects: PortalProjectHoursDto[];
   /** Everything booked on projects the portal does not show; null when there is nothing. Keeps the sums honest. */
   earlierProjects: PortalEarlierProjectsHoursDto | null;

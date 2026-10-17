@@ -141,6 +141,10 @@ describe("ProjectHoursSection", () => {
     });
 
     expect(screen.getByText("1:00 überzogen")).toBeVisible();
+    const chart = document.querySelector('svg[viewBox="0 0 100 1"]');
+    expect(chart).toBeInTheDocument();
+    expect(chart?.querySelector('rect[data-kind="over"]')).toBeInTheDocument();
+    expect(chart?.querySelector('rect[data-kind="open"]')).toBeNull();
     await screen.findByText("Hero neu gebaut");
     expect(
       screen.queryByRole("button", { name: content.projects.releaseAction }),

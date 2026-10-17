@@ -4,33 +4,47 @@
     "intro": "Hier siehst du, wie viele Stunden du gekauft hast, wie viele verbraucht sind und wofür.",
     "close": "Schließen"
   },
-  "summary": {
-    "title": "Dein Stand",
+  "tabs": {
+    "label": "Bereiche",
+    "entries": "Buchungen",
+    "purchases": "Käufe"
+  },
+  "figures": {
+    "label": "Dein Stand",
+    "projectLabel": "Stand von {project}",
     "purchased": "Gekauft",
     "used": "Verbraucht",
-    "remaining": "Übrig",
+    "open": "In Projekten offen",
+    "free": "Frei",
     "allocated": "Zugewiesen",
-    "project": "Projekt",
+    "remaining": "Übrig",
     "over": "{duration} über dem Kontingent",
-    "unassigned": "{duration} davon sind noch keinem Projekt zugewiesen.",
-    "projectsTitle": "Je Projekt",
+    "projectOver": "Dieses Projekt hat {duration} mehr verbraucht als zugewiesen."
+  },
+  "projects": {
+    "title": "Projekte",
+    "usage": "{used} von {allocated} verbraucht",
+    "back": "Alle Projekte",
     "projectOver": "Dieses Projekt hat {duration} mehr verbraucht als zugewiesen.",
     "earlier": "Frühere Projekte",
     "earlierHint": "Projekte, die nicht mehr einzeln im Portal angezeigt werden.",
-    "earlierOver": "Diese Projekte haben {duration} mehr verbraucht als zugewiesen."
+    "earlierOver": "Einzelne frühere Projekte haben zusammen {duration} mehr verbraucht als zugewiesen."
   },
   "purchases": {
-    "title": "Deine Stunden",
     "empty": "Bisher wurden dir keine Stunden gutgeschrieben.",
     "correction": "Korrektur",
     "capped": "Du siehst die letzten {count} Einträge."
   },
   "entries": {
-    "title": "Wofür die Zeit verwendet wurde",
-    "filterLabel": "Buchungen nach Projekt",
-    "allProjects": "Alle Projekte",
+    "tableLabel": "Buchungen",
+    "columns": {
+      "date": "Datum",
+      "description": "Beschreibung",
+      "task": "Aufgabe",
+      "project": "Projekt",
+      "duration": "Dauer"
+    },
     "earlier": "Frühere Projekte",
-    "task": "Aufgabe: {title}",
     "goodwill": "nicht berechnet",
     "empty": "Bisher wurde keine Zeit gebucht. Sobald wir für dich arbeiten, steht hier, wofür.",
     "emptyFiltered": "Für dieses Projekt wurde bisher keine Zeit gebucht.",

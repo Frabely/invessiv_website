@@ -3,7 +3,7 @@
  */
 .summary {
   --hours-used: var(--color-accent-warm);
-  --hours-allocated: var(--color-cta);
+  --hours-open: var(--color-cta);
   --hours-free: var(--color-success);
 
   display: grid;
@@ -40,12 +40,16 @@
   color: var(--hours-used);
 }
 
-.figure[data-swatch="allocated"] .icon {
-  color: var(--hours-allocated);
+.figure[data-swatch="open"] .icon {
+  color: var(--hours-open);
 }
 
 .figure[data-swatch="free"] .icon {
   color: var(--hours-free);
+}
+
+.figure[data-swatch="over"] .icon {
+  color: var(--color-danger);
 }
 
 .figure dd {

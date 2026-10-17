@@ -1,0 +1,59 @@
+.projects {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.heading {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  font-weight: 700;
+}
+
+.list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The row button lays out leading, body and trailing; it has no leading icon here. */
+.body {
+  display: grid;
+  grid-column: 1 / 3;
+  gap: 0.2rem;
+  min-width: 0;
+  text-align: start;
+}
+
+.title {
+  color: var(--color-text);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.hint,
+.usage {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.45;
+}
+
+.over {
+  color: var(--color-text);
+  font-size: var(--font-size-ui-xs);
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.chevron {
+  color: var(--color-text-muted);
+}
+
+/* Looks like a row, opens nothing: those projects are no longer shown on their own. */
+.earlier {
+  padding: 0.85rem 0.6rem;
+  border-bottom: 1px solid var(--color-border);
+}
