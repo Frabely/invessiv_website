@@ -6,6 +6,7 @@ import {
 } from "@invessiv/common/constants/crm/feedback-item-results";
 import { FEEDBACK_LIMITS } from "@invessiv/common/constants/crm/feedback-limits";
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
+import type { SetFeedbackItemResultRequestDto } from "@invessiv/common/contracts/crm/set-feedback-item-result-request.dto";
 import { validateFileLink } from "@invessiv/common/patterns/files/validate-file-link";
 import { businessToday } from "@/common/patterns/time/business-today";
 
@@ -63,6 +64,10 @@ const changeStatus = z.discriminatedUnion("to", [
   }),
 ]);
 
+const RESULT_NOTE_PATH = [
+  "resultNote",
+] as const satisfies readonly (keyof SetFeedbackItemResultRequestDto)[];
+
 // Mirrors the reply CHECK on the item row, so the database never has to refuse it.
 const setItemResult = z
   .strictObject({
@@ -81,10 +86,10 @@ const setItemResult = z
       !(FEEDBACK_ITEM_RESULTS_REQUIRING_NOTE as readonly string[]).includes(
         result,
       ),
-    { path: ["resultNote"] },
+    { path: [...RESULT_NOTE_PATH] },
   )
   .refine(({ result, resultNote }) => result !== null || resultNote === null, {
-    path: ["resultNote"],
+    path: [...RESULT_NOTE_PATH],
   });
 
 export const feedbackRoundSchemas = {

@@ -16,6 +16,7 @@ import {
   workspaceMembers,
 } from "@invessiv/db/record-configuration";
 import { loadPortalContactNames } from "@/server/shared/services/load-portal-contact-names";
+import { FeedbackResultBaselineMissingError } from "./feedback-result-baseline-missing-error.class";
 import { feedbackResultHistoryMappingService } from "./feedback-result-history-mapping-service";
 import type {
   FeedbackResultHistoryActor,
@@ -59,7 +60,7 @@ async function recordChange(
       .limit(1);
     if (!existing) {
       if (!stored.result_set_at || !stored.result_set_by_member_id)
-        throw new Error("Result metadata missing for history baseline");
+        throw new FeedbackResultBaselineMissingError();
       await tx.insert(history).values({
         ...snapshot(stored),
         id: randomUUID(),

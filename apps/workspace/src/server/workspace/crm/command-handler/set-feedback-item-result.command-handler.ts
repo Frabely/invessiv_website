@@ -32,6 +32,8 @@ const ITEM_NOT_FOUND = {
   code: FeedbackRoundErrorCode.ItemNotFound,
 } as const;
 
+class FeedbackItemWriteConflictError extends Error {}
+
 /**
  * Sets the team's outcome for one item while the round is being worked on. The round is held
  * `FOR SHARE`: results of several items go in parallel, but the completion waits for them and then
@@ -142,8 +144,7 @@ export async function setFeedbackItemResult(
     )
       return { ok: true, item: await toDto(stored) };
 
-    // The sentinel aborts only this savepoint; no history can survive a failed versioned write.
-    const conflict = new Error("Locked feedback item write conflicted");
+    // The conflict aborts only this savepoint; no history can survive a failed versioned write.
     try {
       const next = await tx.transaction(async (savepoint) => {
         const write = await updateVersioned({
@@ -160,7 +161,7 @@ export async function setFeedbackItemResult(
           },
           toDto: (row) => row,
         });
-        if (!write.ok) throw conflict;
+        if (!write.ok) throw new FeedbackItemWriteConflictError();
         await feedbackResultHistoryService.recordChange(savepoint, {
           stored,
           next: write.value,
@@ -174,7 +175,7 @@ export async function setFeedbackItemResult(
       });
       return { ok: true, item: await toDto(next) };
     } catch (error) {
-      if (error !== conflict) throw error;
+      if (!(error instanceof FeedbackItemWriteConflictError)) throw error;
       const [current] = await tx
         .select()
         .from(feedbackRoundItems)
