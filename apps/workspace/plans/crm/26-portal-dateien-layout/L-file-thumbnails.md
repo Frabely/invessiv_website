@@ -1,6 +1,6 @@
 # Paket L – Vorschaubilder in Dateilisten (Portal und CRM)
 
-Stand: 17.10.2026. Folgt auf Paket K (`K-portal-files-layout.md`) und ist noch nicht umgesetzt.
+Stand: 17.10.2026. Folgt auf [Paket K](../done/26-portal-dateien-layout/K-portal-files-layout.md) und ist noch nicht umgesetzt.
 
 ## Ziel
 

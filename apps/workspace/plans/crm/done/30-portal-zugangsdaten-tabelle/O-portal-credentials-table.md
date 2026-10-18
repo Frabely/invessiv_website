@@ -1,5 +1,7 @@
 # Paket O – Portal-Zugangsdaten als Tabelle
 
+Status: **gemerged** am 18.10.2026 (`e1bd575d`). Die Nachträge bis einschließlich Nachtrag 4 beschreiben den Endstand.
+
 ## Context
 
 Der Zugangsdaten-Dialog im Portal (`?widget=credentials`) ist noch eine gruppierte Liste mit großen Faktenblöcken

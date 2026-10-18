@@ -2,6 +2,9 @@
 
 Stand: 16.10.2026 · Branch `feat/portal-ui-optimierung`
 
+Status: **gemerged** am 18.10.2026 (`e1bd575d`). Desktop-/Mobil-Screenshots sind im Portal-E2E enthalten;
+eine vollständige manuelle Sichtabnahme wird hier nicht als erledigt bestätigt.
+
 ## Ziel
 
 Der Kunde sieht jederzeit, in welcher Feedbackrunde das Projekt steht, wer dran ist und was als Nächstes passiert.
@@ -32,7 +35,7 @@ Frühere Runden sind über denselben Stepper wie im Onboarding erreichbar und nu
 - Entfallen: `feedback-round-history`, `feedback-round-intro`, `feedback-team-notice` (ersetzt durch
   `feedback-round-head` und `feedback-state-notice`).
 
-## Offen
+## Ergänzende manuelle Abnahme
 
 - Vollständige Sichtprüfung Desktop/Mobil.
 

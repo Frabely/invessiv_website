@@ -1,5 +1,7 @@
 # Paket K – Portal-Dateien im Layout von Onboarding/Feedback
 
+Status: **gemerged** am 18.10.2026 (`e1bd575d`). Der Endstand folgt den Nachträgen und Paket M.
+
 > Nachtrag 17.10.2026: Liste, Reiter, Projekt-Umschalter (`SegmentedControl`), Auswahl in der Fußleiste,
 > `FilePickButton` und `openOnRowClick` sind durch Paket M (`M-portal-files-table.md`) ersetzt bzw. entfernt.
 
@@ -104,7 +106,7 @@ Vorschaubilder in der Liste sind **nicht** Teil dieses Pakets (siehe Abschnitt �
 - **Vorschau-Panel ab 1100 px:** `FilePreviewPanel` (neu in `@invessiv/ui`) neben der Liste, gewählte Datei im
   URL-Parameter `file`, „Vollbild“ öffnet die Lightbox. Lightbox und Panel teilen `file-preview-stage` und
   `use-file-preview-source`.
-- Vorschaubilder in der Liste: eigener Plan `L-file-thumbnails.md`.
+- Vorschaubilder in der Liste: eigener [offener Plan L](../../26-portal-dateien-layout/L-file-thumbnails.md).
 
 ### Nachtrag 2 (17.10.2026)
 

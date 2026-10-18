@@ -1,5 +1,8 @@
 # Paket M – Portal-Dateien als Tabelle
 
+Status: **gemerged** am 18.10.2026 (`e1bd575d`). Vorschaubilder bleiben im
+[offenen Plan L](../../26-portal-dateien-layout/L-file-thumbnails.md).
+
 ## Context
 
 Paket K (Commit `b9692837`) hat die Dateiseite auf das Layout von Onboarding/Feedback gebracht, die Liste aber als

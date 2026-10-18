@@ -1,5 +1,8 @@
 # Paket N – Stunden-Dialog im Portal überarbeiten
 
+Status: **gemerged** am 18.10.2026 (`e1bd575d`). Maßgeblich sind die abschließenden Nachträge.
+Die dem Nutzer zugeordnete manuelle Sichtprüfung wird damit nicht als erledigt bestätigt.
+
 ## Context
 
 Der Stunden-Dialog (`?widget=hours`, `components/portal/hours/`) ist eine lange Seite mit drei gleichrangigen
