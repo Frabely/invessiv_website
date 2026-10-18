@@ -44,6 +44,23 @@ function companyUsage(
   };
 }
 
+/**
+ * The company split from its balance and every project that holds hours. Each project adds only
+ * its own open remainder, so an overrun elsewhere cannot hide it.
+ */
+function companyFromProjects(
+  balance: Omit<HoursBreakdown, "overMinutes" | "openMinutes">,
+  projects: readonly (ProjectHours | HoursProjectUsage)[],
+): HoursBreakdown {
+  return companyUsage({
+    ...balance,
+    openMinutes: projects.reduce(
+      (sum, project) => sum + projectUsage(project).openMinutes,
+      0,
+    ),
+  });
+}
+
 function usageSegments(usage: HoursProjectUsage): HoursMeterSegment[] {
   return [
     {
@@ -71,6 +88,7 @@ function projectSegments(
 export const hoursDistribution = {
   projectUsage,
   companyUsage,
+  companyFromProjects,
   companySegments,
   projectSegments,
 } as const;

@@ -18,6 +18,7 @@
     "free": "Unassigned",
     "allocated": "Assigned",
     "remaining": "Left",
+    "overrun": "Beyond assigned",
     "over": "{duration} over your hours",
     "projectOver": "This project used {duration} more than it was assigned."
   },

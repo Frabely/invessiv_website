@@ -48,7 +48,9 @@ describe("usePortalHoursProject", () => {
 
     act(() => result.current.selectProject(null));
 
-    expect(replaceState).toHaveBeenCalledWith(null, "", expect.any(URL));
+    const [state] = replaceState.mock.calls.at(-1) ?? [];
+    expect(state).not.toHaveProperty("__NA");
+    expect(state).toHaveProperty("__invessivUrlSession");
     replaceState.mockRestore();
   });
 

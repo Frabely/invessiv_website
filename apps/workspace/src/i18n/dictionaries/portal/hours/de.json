@@ -18,6 +18,7 @@
     "free": "Frei",
     "allocated": "Zugewiesen",
     "remaining": "Übrig",
+    "overrun": "Mehr als zugewiesen",
     "over": "{duration} über dem Kontingent",
     "projectOver": "Dieses Projekt hat {duration} mehr verbraucht als zugewiesen."
   },

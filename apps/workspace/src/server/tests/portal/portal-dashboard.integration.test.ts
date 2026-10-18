@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import path from "node:path";
 import { config as loadDotenv } from "dotenv";
-import { inArray } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { Permission } from "@invessiv/common/constants/auth/permissions";
@@ -473,6 +473,22 @@ describe.skipIf(!RUN_INTEGRATION)(
             completedRows.map((row) => row.id),
           ),
         );
+      }
+    });
+
+    it("never names an inactive owner as the contact, also not as the customer fallback", async () => {
+      await db
+        .update(workspaceMembers)
+        .set({ active: false })
+        .where(eq(workspaceMembers.id, memberId));
+      try {
+        const dto = await getPortalDashboard(actor(customerA, fullRead), TODAY);
+        expect(dto.contact).toBeNull();
+      } finally {
+        await db
+          .update(workspaceMembers)
+          .set({ active: true })
+          .where(eq(workspaceMembers.id, memberId));
       }
     });
 

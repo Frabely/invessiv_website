@@ -167,6 +167,8 @@ describe("PortalHoursDialog", () => {
       // Only Website has time left; the overdrawn Shop adds nothing.
       expect(totals).toHaveTextContent("In Projekten offen2:30");
       expect(totals).toHaveTextContent("Frei0:00");
+      // Shop's overrun is the red part of the bar and needs its own figure as legend.
+      expect(totals).toHaveTextContent(`${content.figures.overrun}1:00`);
       expect(projectRow("Website")).toHaveTextContent(
         "2:30 von 5:00 verbraucht",
       );
@@ -214,6 +216,33 @@ describe("PortalHoursDialog", () => {
       expect(
         screen.getByRole("group", { name: content.figures.label }),
       ).toHaveTextContent("Frei0:30");
+      await screen.findByText(content.entries.empty);
+    });
+
+    it("leaves out the overrun figure while no project is overdrawn", async () => {
+      renderDialog(
+        hours({
+          balance: {
+            purchasedMinutes: 600,
+            usedMinutes: 450,
+            remainingMinutes: 150,
+            unassignedMinutes: 0,
+          },
+          projects: [
+            {
+              projectId: "project-a",
+              title: "Website",
+              allocatedMinutes: 600,
+              usedMinutes: 450,
+              remainingMinutes: 150,
+            },
+          ],
+        }),
+      );
+
+      expect(
+        screen.getByRole("group", { name: content.figures.label }),
+      ).not.toHaveTextContent(content.figures.overrun);
       await screen.findByText(content.entries.empty);
     });
 

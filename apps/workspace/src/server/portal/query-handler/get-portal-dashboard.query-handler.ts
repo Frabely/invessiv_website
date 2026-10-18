@@ -115,6 +115,7 @@ export async function getPortalDashboard(
         ownerMemberId: customers.owner_member_id,
         contactName: users.display_name,
         contactEmail: users.primary_email,
+        contactActive: workspaceMembers.active,
       })
       .from(customers)
       .leftJoin(
@@ -234,11 +235,17 @@ export async function getPortalDashboard(
       ? { name: selectedProject.ownerName, email: selectedProject.ownerEmail }
       : null;
 
+  // Same choice as `projectResponsibleMemberService.findContacts`: an inactive owner is never shown.
+  const { contactActive, ...customerRow } = customer;
+  const customerContact = contactActive
+    ? { name: customer.contactName, email: customer.contactEmail }
+    : null;
+
   return portalDashboardMappingService.mapRowsToDto({
     customer: {
-      ...customer,
-      contactName: projectContact?.name ?? customer.contactName,
-      contactEmail: projectContact?.email ?? customer.contactEmail,
+      ...customerRow,
+      contactName: projectContact?.name ?? customerContact?.name ?? null,
+      contactEmail: projectContact?.email ?? customerContact?.email ?? null,
       booking:
         selectedProject && bookingContact
           ? portalBookingMappingService.toDto(bookingContact)

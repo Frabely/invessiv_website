@@ -12,42 +12,71 @@ type SearchSubscription = {
   preservesFields?: boolean;
 };
 
+/**
+ * Indices count from the entry where a store session started, so they only describe distances
+ * between entries of the same session. Another page starts its own session at 0.
+ */
+type HistoryPosition = { session: string; index: number };
+
 type HistorySnapshot = {
   url: URL;
   state: unknown;
-  index: number | null;
+  position: HistoryPosition | null;
 };
 
 type HistoryGuard = (change: UrlHistoryChange) => string | null;
 
 const HISTORY_INDEX = "__invessivUrlIndex";
+const HISTORY_SESSION = "__invessivUrlSession";
 const subscriptions = new Set<SearchSubscription>();
 const guards = new Set<HistoryGuard>();
 let previous: HistorySnapshot | null = null;
 let returning = false;
 let unsubscribeHistory: (() => void) | null = null;
 
-function historyIndex(state: unknown): number | null {
-  if (!state || typeof state !== "object" || !(HISTORY_INDEX in state))
-    return null;
-  const value = state[HISTORY_INDEX];
-  return typeof value === "number" && Number.isSafeInteger(value)
-    ? value
+function historyPosition(state: unknown): HistoryPosition | null {
+  if (!state || typeof state !== "object") return null;
+  const index = (state as Record<string, unknown>)[HISTORY_INDEX];
+  const session = (state as Record<string, unknown>)[HISTORY_SESSION];
+  return typeof index === "number" &&
+    Number.isSafeInteger(index) &&
+    typeof session === "string" &&
+    session.length > 0
+    ? { session, index }
     : null;
 }
 
-function withIndex(state: unknown, index: number | null) {
+function withPosition(state: unknown, position: HistoryPosition | null) {
   return {
     ...(state && typeof state === "object" ? state : {}),
-    ...(index === null ? {} : { [HISTORY_INDEX]: index }),
+    ...(position === null
+      ? {}
+      : {
+          [HISTORY_INDEX]: position.index,
+          [HISTORY_SESSION]: position.session,
+        }),
   };
+}
+
+function startSession(): HistoryPosition {
+  return { session: crypto.randomUUID(), index: 0 };
+}
+
+function samePosition(a: HistoryPosition | null, b: HistoryPosition | null) {
+  return a?.session === b?.session && a?.index === b?.index;
+}
+
+/** How far `history.go` must travel back to `from`; null when the two entries share no session. */
+function returnDelta(from: HistoryPosition | null, to: HistoryPosition | null) {
+  if (!from || !to || from.session !== to.session) return null;
+  return from.index - to.index || null;
 }
 
 function snapshot(): HistorySnapshot {
   return {
     url: new URL(window.location.href),
     state: window.history.state,
-    index: historyIndex(window.history.state),
+    position: historyPosition(window.history.state),
   };
 }
 
@@ -83,7 +112,10 @@ function onHistoryChange(event: PopStateEvent) {
   if (returning) {
     // The rejected traversal never reached React or Next; its return must not do so either.
     event.stopImmediatePropagation();
-    if (next.url.href === previous.url.href && next.index === previous.index) {
+    if (
+      next.url.href === previous.url.href &&
+      samePosition(next.position, previous.position)
+    ) {
       returning = false;
       notify();
     }
@@ -100,16 +132,13 @@ function onHistoryChange(event: PopStateEvent) {
   for (const warning of warnings) {
     if (warning === null || window.confirm(warning)) continue;
     event.stopImmediatePropagation();
-    const delta =
-      previous.index !== null && next.index !== null
-        ? previous.index - next.index
-        : null;
+    const delta = returnDelta(previous.position, next.position);
     if (delta) {
       returning = true;
       window.history.go(delta);
     } else {
-      // Entries created outside this store have no reliable direction. Restore the mounted
-      // URL in place rather than guessing forward and potentially leaving the page again.
+      // Entries of another session or created outside this store have no reliable distance.
+      // Restore the mounted URL in place rather than travelling to a wrong entry.
       window.history.replaceState(previous.state, "", previous.url);
       notify();
     }
@@ -120,19 +149,26 @@ function onHistoryChange(event: PopStateEvent) {
     // then synchronize its canonical URL through Next's patched History API.
     event.stopImmediatePropagation();
     window.history.replaceState(
-      withIndex(previous.state, next.index),
+      withPosition(previous.state, next.position),
       "",
       next.url,
     );
-    window.history.replaceState(withIndex(null, next.index), "", next.url);
+    window.history.replaceState(
+      withPosition(null, next.position),
+      "",
+      next.url,
+    );
   }
   notify();
 }
 
 function connect() {
   if (previous) return;
-  if (historyIndex(window.history.state) === null)
-    window.history.replaceState(withIndex(window.history.state, 0), "");
+  if (historyPosition(window.history.state) === null)
+    window.history.replaceState(
+      withPosition(window.history.state, startSession()),
+      "",
+    );
   previous = snapshot();
   unsubscribeHistory = subscribeUrlHistory(onHistoryChange);
   window.addEventListener(UrlSearchEvent.Changed, notify);
@@ -156,10 +192,15 @@ function write(update: (params: URLSearchParams) => void, push: boolean) {
   const params = new URLSearchParams(url.search);
   update(params);
   url.search = params.toString();
-  const index = historyIndex(window.history.state) ?? 0;
+  const position = historyPosition(window.history.state) ?? startSession();
   // Pass only our metadata; Next's History wrapper supplies its own router state.
-  if (push) window.history.pushState(withIndex(null, index + 1), "", url);
-  else window.history.replaceState(withIndex(null, index), "", url);
+  if (push)
+    window.history.pushState(
+      withPosition(null, { ...position, index: position.index + 1 }),
+      "",
+      url,
+    );
+  else window.history.replaceState(withPosition(null, position), "", url);
   window.dispatchEvent(new Event(UrlSearchEvent.Changed));
 }
 

@@ -79,4 +79,23 @@ describe("hoursDistribution", () => {
       overMinutes: 15,
     });
   });
+
+  it("sums only positive project remainders, including pre-aggregated ones", () => {
+    expect(
+      hoursDistribution.companyFromProjects(
+        { purchasedMinutes: 600, usedMinutes: 600, freeMinutes: 0 },
+        [
+          { allocatedMinutes: 300, usedMinutes: 360, remainingMinutes: -60 },
+          { allocatedMinutes: 200, usedMinutes: 170, remainingMinutes: 30 },
+          { usedMinutes: 70, openMinutes: 30, overMinutes: 0 },
+        ],
+      ),
+    ).toEqual({
+      purchasedMinutes: 600,
+      usedMinutes: 600,
+      freeMinutes: 0,
+      openMinutes: 60,
+      overMinutes: 60,
+    });
+  });
 });

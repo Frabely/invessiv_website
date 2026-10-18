@@ -74,9 +74,14 @@
 }
 
 /* Not the warm tone: that one already means "used". */
+.figure[data-figure="over"] .icon,
 .figure[data-over="true"] dd,
 .figure[data-over="true"] .icon {
   color: var(--color-danger);
+}
+
+.list[data-count="5"] {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 .note {
@@ -88,13 +93,32 @@
   line-height: 1.5;
 }
 
+/* Five figures wrap into rows of three before they get too narrow. */
+@container hours-figures (max-width: 44rem) {
+  .list[data-count="5"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .list[data-count="5"] .figure:nth-child(4) {
+    padding-inline-start: 0;
+    border-inline-start: 0;
+  }
+}
+
 /* Two by two once four figures no longer fit next to each other. */
 @container hours-figures (max-width: 32rem) {
-  .list[data-count="4"] {
+  .list[data-count="4"],
+  .list[data-count="5"] {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .list[data-count="4"] .figure:nth-child(3) {
+  .list[data-count="5"] .figure:nth-child(4) {
+    padding-inline-start: 1rem;
+    border-inline-start: 1px solid var(--color-border);
+  }
+
+  .list[data-count="4"] .figure:nth-child(3),
+  .list[data-count="5"] .figure:nth-child(odd) {
     padding-inline-start: 0;
     border-inline-start: 0;
   }

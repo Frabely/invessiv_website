@@ -4,16 +4,16 @@ import { hoursDistribution } from "@invessiv/common/patterns/time/hours-distribu
 
 /** Adapts the portal's anonymous earlier projects and company balance to the shared distribution. */
 function of(hours: PortalHoursDto): HoursBreakdown {
-  return hoursDistribution.companyUsage({
-    purchasedMinutes: hours.balance.purchasedMinutes,
-    usedMinutes: hours.balance.usedMinutes,
-    freeMinutes: hours.balance.unassignedMinutes,
-    openMinutes: hours.projects.reduce(
-      (sum, project) =>
-        sum + hoursDistribution.projectUsage(project).openMinutes,
-      hours.earlierProjects?.openMinutes ?? 0,
-    ),
-  });
+  return hoursDistribution.companyFromProjects(
+    {
+      purchasedMinutes: hours.balance.purchasedMinutes,
+      usedMinutes: hours.balance.usedMinutes,
+      freeMinutes: hours.balance.unassignedMinutes,
+    },
+    hours.earlierProjects
+      ? [...hours.projects, hours.earlierProjects]
+      : hours.projects,
+  );
 }
 
 export const portalHoursBreakdown = {

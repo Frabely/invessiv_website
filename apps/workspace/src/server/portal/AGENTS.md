@@ -56,6 +56,8 @@ einzigen regulären Aufrufer.
 
 - `portalProjectService.listSummaries` liest die schmale sichtbare Projektliste. Layout, Seiten und Dashboard-Handler
   verwenden dieselbe Reader-Instanz; `react/cache` dedupliziert die Liste innerhalb eines Renders.
+- Der Kontakt im Dashboard ist der Projekt-Owner des gewählten Projekts, sonst der Kunden-Owner, jeweils nur
+  solange das Mitglied aktiv ist (dieselbe Wahl wie `findContacts`). Ein inaktiver Owner wird nie genannt.
 - `selectPortalCurrentProject` wählt aus den laufenden Projekten die angefragte ID oder das erste sichtbare Projekt.
   Die Liste wird vorher mit `portalProjectService.toCurrent` gefiltert und sortiert.
 - Portal-Fachrechte bleiben unabhängig. `portal.access` ist das ausdrücklich vergebene Eintrittsrecht;
@@ -116,8 +118,9 @@ Plan: `apps/workspace/plans/crm/18-portal-prozess-nacharbeiten/G-portal-aufgaben
   Runde (`not_latest` bzw. `locked`), immer mit `confirmFinal`. Für den Weg aus `completed` sperrt der Handler
   zusätzlich das Projekt (dieselbe Sperre wie die Übergabe), damit Abnahme und Übergabe der nächsten Runde nie
   gleichzeitig gelingen. Ergebnisse und Antworten enthält das Portal-DTO erst ab `completed`.
-- Das Seiten-DTO trägt `contact` (`PortalContactDto`: Name und E-Mail aus `findContact`, Buchungslink aus
-  `findBookingContact`), wie der Kontakt im Dashboard; ohne aktives zuständiges Mitglied `null`.
+- Das Seiten-DTO trägt `contact` (`PortalContactDto`: Name, E-Mail und Buchungslink aus
+  `projectResponsibleMemberService.findContacts`), wie der Kontakt im Dashboard; ohne aktives zuständiges Mitglied
+  `null`.
 - Fehlercodes sind `PortalFeedbackErrorCode`; Statuscodes und Texte stehen ausschließlich in
   `src/lib/portal/portal-feedback-api-error.ts`.
 

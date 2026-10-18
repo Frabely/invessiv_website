@@ -84,7 +84,7 @@ Plan: `apps/workspace/plans/crm/13a-kundenchat/26-chat-im-portal.md`.
   von einer anderen Portalseite in den Chat verlinkt, baut den Link über
   `buildPortalHref(portalPathFor(locale, customerId), "", { project, chat: true })`: Das Dashboard kommt mit
   `?chat=open` und geöffnetem Dock an. Gelesen wird der Parameter nur über `readPortalDashboardChat`; beim ersten
-  Auf- oder Zuklappen entfernt das Dashboard ihn ohne Server-Roundtrip (`history.replaceState`). Ohne Leserecht
+  Auf- oder Zuklappen entfernt das Dashboard ihn ohne Server-Roundtrip (`useUrlSearch().replace`). Ohne Leserecht
   bleibt der Parameter wirkungslos.
 - Drafts und fehlgeschlagene Sendungen sind je Nutzer und Firma gebunden (`viewerUserId:customerId`).
 - **Anhänge (ab Task 56):** 📎 erscheint nur, wenn die Seite `filesContent` übergibt und der Server
@@ -218,7 +218,7 @@ Plan: `apps/workspace/plans/crm/15-onboarding/66-portal-formular.md`.
   nie als deaktivierte Eingaben. Es gibt keinen Prüfschritt und keinen Gesamtstand im Kopf.
 - **Ein Block = ein Schritt.** Der Schritt steht in der URL (`?section=<blockId>` bzw. `review`, optional
   `&field=<fieldId>`) und wird ausschließlich über `usePortalOnboardingStep` gelesen und geschrieben
-  (über `usePortalStepSearch`, `history.pushState`, kein Server-Roundtrip). Pflichtfelder blockieren den Schrittwechsel nie. Nach einem Wechsel
+  (über `usePortalStepSearch` auf `useUrlSearch`, neuer Verlaufseintrag, kein Server-Roundtrip). Pflichtfelder blockieren den Schrittwechsel nie. Nach einem Wechsel
   liegt der Fokus auf der Blocküberschrift, nach einem Sprung aus der Liste fehlender Angaben auf dem Feld
   (`onboardingFieldDomId`).
 - **Speichern nur über `useOnboardingAutosave`** (`src/hooks/portal/`): Text entprellt (1,5 s) und beim Verlassen des
@@ -417,7 +417,8 @@ Plan: `apps/workspace/plans/crm/20-stunden-und-history/73-stunden-im-portal.md`.
   Plan `apps/workspace/plans/crm/27-portal-stunden-dialog/N-portal-hours-dialog.md`).** Es gibt kein Projekt-Select.
   - **Übersicht:** Kennzahlen Gekauft, Verbraucht, In Projekten offen und Frei. `portalHoursBreakdown` passt die DTOs
     an; die Berechnung liegt in `hoursDistribution` (`@invessiv/common/patterns/time/`).
-    Gekauft = Verbraucht + offen + frei − Überzug. „Offen“ zählt
+    Gekauft = Verbraucht + offen + frei − Überzug. Gibt es einen Überzug, steht er als eigene Kennzahl „Mehr als
+    zugewiesen“ (`figures.overrun`) mit rotem Icon da, damit der rote Balkenteil eine Legende hat. „Offen“ zählt
     nur, was Projekte noch haben; ein überzogenes Projekt erscheint als roter Überzug im Balken, nicht als Abzug bei
     einem anderen. Darunter die Projekte, je Projekt ein Button (`ButtonControl` `variant="row"`) mit „x von y
     verbraucht“, Mini-Balken und Chevron. „Frühere Projekte“ ist eine Summe ohne Button. Ganz unten die Reiter
@@ -445,7 +446,7 @@ Plan: `apps/workspace/plans/crm/20-stunden-und-history/73-stunden-im-portal.md`.
 - **Nachladen** läuft über den geteilten `useCursorPagedList` (`src/hooks/shared/`), denselben wie im Cockpit.
   „Weitere laden“ meldet das Ergebnis in einer Live-Region.
 - **Gewähltes Projekt ist URL-State:** `?hoursProject=<id>` bzw. `all` (`PORTAL_HOURS_ALL_PROJECTS`), gelesen und
-  geschrieben nur über `usePortalHoursProject` (`history.replaceState`, kein Server-Roundtrip). Ohne Parameter öffnet
+  geschrieben nur über `usePortalHoursProject` (auf `useUrlSearch`, ersetzt den Eintrag, kein Server-Roundtrip). Ohne Parameter öffnet
   der Dialog auf dem Projekt des Dashboards (`selectedProjectId`), wenn es im Portal sichtbar ist, sonst auf „Alle“.
   `portalHoursView.projectOf` entscheidet, eine unbekannte ID zählt nicht. „Alle“ schreibt ausdrücklich `all`, damit
   das Dashboard-Projekt nicht zurückkommt. Schließen entfernt den Parameter zusammen mit `widget`.
@@ -476,7 +477,7 @@ Plan: `apps/workspace/plans/crm/13c-portal-leistungsanfragen/76-portal-leistungs
 - **Zwei Reiter, nie zwei Dialoge.** „Anfragen“ zeigt nacheinander Auswahl, Formular und Bestätigung; „Meine
   Anfragen (n)“ die Liste. Zurückziehen ersetzt den Dialog durch die Rückfrage (`ConfirmDialog`).
 - **Die gewählte Leistung ist URL-State:** `?service=<id>` bzw. `custom` (`PORTAL_SERVICE_REQUEST_CUSTOM`),
-  geschrieben über `history.replaceState`. So öffnet ein Link direkt das Formular; eine ID, die nicht mehr
+  geschrieben über `useUrlSearch().replace`. So öffnet ein Link direkt das Formular; eine ID, die nicht mehr
   angeboten wird, fällt mit Hinweis auf die Auswahl zurück. Schließen entfernt den Parameter zusammen mit
   `widget`. Vorbelegt wird das Projekt, das das Dashboard gerade zeigt (`?project`).
 - **Was das Formular fragt, entscheidet `portalServiceRequestForm`** (`common/patterns/portal/`): Projektfrage

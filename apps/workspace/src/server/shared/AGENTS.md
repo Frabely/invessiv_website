@@ -253,9 +253,10 @@ Ab Task 69 (`apps/workspace/plans/crm/15-onboarding/69-onboarding-termin.md`):
   der erste aus Projekt-Owner und Kunden-Owner, der aktiv ist **und** einen Buchungslink hat. Anders als
   `findActiveMemberId` gibt ein aktiver Projekt-Owner ohne Link die Frage an den Kunden-Owner weiter. Reine
   Leseabfrage ohne Sperre; ein inaktives Mitglied liefert nie einen Link.
-- `projectResponsibleMemberService.findContact` (Paket J) liefert Name und E-Mail des ersten aktiven Mitglieds aus
-  Projekt-Owner und Kunden-Owner, für die Kontaktwege der Portal-Feedbackseite. Beide Lesewege teilen eine Abfrage.
-  Die Adresse wird nur gezeigt und autorisiert nie.
+- `projectResponsibleMemberService.findContacts` (Paket J) liefert in einer Abfrage `contact` (Name und E-Mail des
+  ersten aktiven Mitglieds aus Projekt-Owner und Kunden-Owner) und `bookingContact` (wie `findBookingContact`), für
+  die Kontaktwege der Portal-Feedbackseite. `findBookingContact` ist nur noch der Buchungsteil davon. Die Adresse wird
+  nur gezeigt und autorisiert nie.
 
 Ab Task 70 (`apps/workspace/plans/crm/15-onboarding/70-abschluss-und-leseansicht.md`):
 

@@ -20,7 +20,12 @@ describe("useUrlSearch", () => {
     "synchronizes Next's URL on replace despite its existing %s marker",
     (marker) => {
       window.history.replaceState(
-        { [marker]: true, opaque: "caller-metadata", __invessivUrlIndex: 7 },
+        {
+          [marker]: true,
+          opaque: "caller-metadata",
+          __invessivUrlIndex: 7,
+          __invessivUrlSession: "session-a",
+        },
         "",
         "/files?project=one#files",
       );
@@ -45,6 +50,7 @@ describe("useUrlSearch", () => {
       expect(window.history.length).toBe(historyLength);
       expect(window.history.state).toMatchObject({
         __invessivUrlIndex: 7,
+        __invessivUrlSession: "session-a",
         [marker]: true,
       });
       expect(window.history.state).not.toHaveProperty("opaque");
@@ -78,7 +84,10 @@ describe("useUrlSearch", () => {
       "project-1",
     );
     expect(window.location.hash).toBe("#files");
-    expect(window.history.state).toEqual({ __invessivUrlIndex: 0 });
+    expect(window.history.state).toEqual({
+      __invessivUrlIndex: 0,
+      __invessivUrlSession: expect.any(String),
+    });
     expect(window.history.length).toBe(length);
   });
 
@@ -115,6 +124,49 @@ describe("useUrlSearch", () => {
     confirm.mockReturnValue(true);
     act(() => result.current.replace((params) => params.set("usable", "yes")));
     expect(result.current.search).toBe("usable=yes");
+  });
+
+  it("returns exactly to the rejected entry within one session", async () => {
+    vi.spyOn(window, "confirm").mockReturnValue(false);
+    const go = vi.spyOn(window.history, "go");
+    const warning = () => "Unsaved data";
+    const { result } = renderHook(() => {
+      const url = useUrlSearch();
+      useUrlHistoryGuard(warning);
+      return url;
+    });
+    act(() => result.current.push((params) => params.set("step", "two")));
+    act(() => result.current.push((params) => params.set("step", "three")));
+    act(() => window.history.go(-2));
+    await waitFor(() => expect(go).toHaveBeenLastCalledWith(2));
+    await waitFor(() => expect(window.location.search).toBe("?step=three"));
+    expect(result.current.search).toBe("step=three");
+  });
+
+  it("restores in place instead of travelling when the target belongs to another session", async () => {
+    const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
+    // An earlier page left its own session with a higher index behind.
+    window.history.replaceState(
+      { __invessivUrlIndex: 3, __invessivUrlSession: "earlier-page" },
+      "",
+      "/onboarding?section=b",
+    );
+    window.history.pushState(null, "", "/files");
+    const go = vi.spyOn(window.history, "go");
+    const warning = () => "Unsaved data";
+    const { result } = renderHook(() => {
+      const url = useUrlSearch();
+      useUrlHistoryGuard(warning);
+      return url;
+    });
+    act(() => window.history.back());
+    await waitFor(() => expect(confirm).toHaveBeenCalledOnce());
+    expect(window.location.pathname).toBe("/files");
+    expect(go).not.toHaveBeenCalled();
+    expect(result.current.search).toBe("");
+    // The store keeps working after the rollback.
+    act(() => result.current.push((params) => params.set("file", "one")));
+    expect(result.current.search).toBe("file=one");
   });
 
   it("disconnects history guards and subscriptions on unmount", async () => {

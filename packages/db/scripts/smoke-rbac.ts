@@ -46,14 +46,11 @@ import {
 import { findRbacCatalogMismatches } from "./rbac-catalog-check";
 
 const FIXTURE_PREFIX = "smoke:rbac:";
-// An explicit number keeps the column default from calling nextval, so a production run
-// consumes no real customer number. The sequence ends at INTEGER max and never hands it out.
+// Writing smokes never run against production; its schema gate is the read-only `db:smoke:prod`.
+const ALLOWED_TARGETS: DatabaseTarget[] = ["development", "preview"];
+// Customers need an explicit number once the column default is gone; INTEGER max lies above
+// every real number. Stale fixtures are cleared before a run, so the fixed value cannot collide.
 const FIXTURE_CUSTOMER_NUMBER = 2_147_483_647;
-const ALLOWED_TARGETS: DatabaseTarget[] = [
-  "development",
-  "preview",
-  "production",
-];
 
 type Sql = ReturnType<typeof getDatabaseClient>;
 
@@ -682,6 +679,8 @@ async function run() {
   const sql = getDatabaseClient();
   const db = getDrizzleDatabaseClient();
 
+  // An aborted earlier run can leave fixtures behind; the fixed customer number would collide.
+  await cleanup(sql);
   try {
     await runCatalogChecks(db);
     await runUserAndMemberChecks(sql);

@@ -31,16 +31,14 @@ export function HoursBalanceSummary({
   content,
   projects,
 }: HoursBalanceSummaryProps) {
-  const distribution = hoursDistribution.companyUsage({
-    purchasedMinutes: balance.purchasedMinutes,
-    usedMinutes: balance.usedMinutes,
-    freeMinutes: balance.freeMinutes,
-    openMinutes: projects.reduce(
-      (sum, project) =>
-        sum + hoursDistribution.projectUsage(project).openMinutes,
-      0,
-    ),
-  });
+  const distribution = hoursDistribution.companyFromProjects(
+    {
+      purchasedMinutes: balance.purchasedMinutes,
+      usedMinutes: balance.usedMinutes,
+      freeMinutes: balance.freeMinutes,
+    },
+    projects,
+  );
   const figures = [
     {
       key: HoursBalanceFigureKind.Purchased,

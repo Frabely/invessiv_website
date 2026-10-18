@@ -12,6 +12,7 @@ import type { PortalHoursDto } from "@invessiv/common/contracts/portal/portal-ho
 import type { PortalProjectHoursDto } from "@invessiv/common/contracts/portal/portal-project-hours.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
+import { HoursBalanceFigureKind } from "@/common/constants/crm/hours-balance-figure-kinds";
 import type { PortalHoursFiguresDictionary } from "@/common/contracts/portal/portal-hours-figures-dictionary";
 import { portalHoursBreakdown } from "@/common/patterns/portal/portal-hours-breakdown";
 import { HoursMeter } from "@invessiv/ui";
@@ -26,7 +27,7 @@ export type PortalHoursFiguresProps = {
 
 type Figure = {
   /** Picks the colour of the icon; matches the bar segment it stands for. */
-  key: string;
+  key: HoursBalanceFigureKind;
   label: string;
   minutes: number;
   icon: IconDefinition;
@@ -46,19 +47,19 @@ export function PortalHoursFigures({
   const figures: Figure[] = project
     ? [
         {
-          key: "allocated",
+          key: HoursBalanceFigureKind.Allocated,
           label: content.allocated,
           minutes: project.allocatedMinutes,
           icon: faFolder,
         },
         {
-          key: "used",
+          key: HoursBalanceFigureKind.Used,
           label: content.used,
           minutes: project.usedMinutes,
           icon: faClock,
         },
         {
-          key: "remaining",
+          key: HoursBalanceFigureKind.Remaining,
           label: content.remaining,
           minutes: project.remainingMinutes,
           icon: faHourglassHalf,
@@ -66,25 +67,36 @@ export function PortalHoursFigures({
       ]
     : [
         {
-          key: "purchased",
+          key: HoursBalanceFigureKind.Purchased,
           label: content.purchased,
           minutes: breakdown.purchasedMinutes,
           icon: faCoins,
         },
         {
-          key: "used",
+          key: HoursBalanceFigureKind.Used,
           label: content.used,
           minutes: breakdown.usedMinutes,
           icon: faClock,
         },
+        // The red part of the bar needs its legend, even while the company still has hours left.
+        ...(breakdown.overMinutes > 0
+          ? [
+              {
+                key: HoursBalanceFigureKind.Over,
+                label: content.overrun,
+                minutes: breakdown.overMinutes,
+                icon: faHourglassHalf,
+              },
+            ]
+          : []),
         {
-          key: "open",
+          key: HoursBalanceFigureKind.Open,
           label: content.open,
           minutes: breakdown.openMinutes,
           icon: faFolderOpen,
         },
         {
-          key: "free",
+          key: HoursBalanceFigureKind.Free,
           label: content.free,
           minutes: breakdown.freeMinutes,
           icon: faCircleCheck,
