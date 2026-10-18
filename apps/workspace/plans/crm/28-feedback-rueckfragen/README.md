@@ -1,11 +1,33 @@
 # Rückfragen pro Feedbackpunkt und reversible Ergebnisse
 
-Stand: 17.10.2026. Status: **offen – nur geplant, nicht umgesetzt**.
+Stand: 18.10.2026. Status: **offen – nur geplant, nicht umgesetzt**.
 
-Dieser Plan ist die eigenständige Umsetzungsspezifikation; der zugehörige Chat ist nicht erforderlich.
+Dieser Plan ist die eigenständige fachliche Umsetzungsspezifikation; der zugehörige Chat ist nicht erforderlich.
 Seine Ablage und Ergänzung beauftragen noch keine Implementierung. Bestehender Feature-Code, Datenbank und
 laufende Feedbackrunden bleiben unverändert. Alle Pfade in diesem Dokument beziehen sich auf die Repository-Wurzel,
 sofern sie nicht ausdrücklich als relative Dokumentverweise geschrieben sind.
+
+### Teilschritte
+
+Die Umsetzung ist in drei Task-Pläne geschnitten (Neuschnitt 18.10.2026, mit dem Owner abgestimmt). Alle drei
+werden nacheinander auf **einem** Branch `feat/crm-feedback-rueckfragen` umgesetzt. Jeder Teil hinterlässt einen
+eigenständig deploybaren Stand und ist – in dieser Reihenfolge – auch einzeln mergebar. Die Task-Pläne nennen
+Dateien, Abläufe und Tests konkret; die fachlichen Regeln stehen weiterhin in den Abschnitten 1–7 dieser README.
+
+| Teil | Task | Plan                                                                           | Inhalt                                                            | Sichtbar nach Merge     | Status |
+| ---- | ---- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------- | ----------------------- | ------ |
+| 28.1 | 78   | [78-ergebnishistorie-und-noch-offen.md](78-ergebnishistorie-und-noch-offen.md) | Ergebnishistorie, „Noch offen“ zurücksetzbar, Historie im Cockpit | ja, Cockpit             | offen  |
+| 28.2 | 79   | [79-rueckfragen-server.md](79-rueckfragen-server.md)                           | Rückfragen-Tabelle, Commands, Routen, Sperren, Chat-Ereignisse    | nein (kein UI-Einstieg) | offen  |
+| 28.3 | 80   | [80-rueckfragen-ui-und-abloesung.md](80-rueckfragen-ui-und-abloesung.md)       | Cockpit- und Portal-UI, globale Rückgabe entfernt, E2E, Doku      | ja, Cockpit und Portal  | offen  |
+
+**Abweichungen von der ursprünglichen Fassung (18.10.2026, verbindlich):**
+
+- **Kein Feature-Schalter.** Jeder Teil ist ab Merge verfügbar. Teil 28.2 bleibt unsichtbar, weil keine Oberfläche
+  auf die neuen Routen zeigt; Teil 28.3 schaltet die Funktion durch Auslieferung frei.
+- **Kein Backfill.** Bestehende Runden haben keine Rückfragen. Für die Ergebnishistorie genügt der Ausgangsstand
+  (`baseline`), den jeder Ergebnis-Schreibweg vor der ersten Änderung eines bereits bewerteten Punkts in derselben
+  Transaktion anlegt. Unveränderte Punkte zeigen ihr aktuelles Ergebnis ohnehin direkt; ein vorab angelegter
+  Ausgangseintrag würde keine zusätzliche Information liefern.
 
 ## 0. Einstieg ohne Gesprächskontext
 
@@ -91,9 +113,9 @@ Das vorhandene Datenmodell wird nicht vollständig umgebaut. Zwei neue Tabellen 
 Der aktuelle Ergebnisstand bleibt in der bestehenden Punkttabelle. Eine zusätzliche persistierte
 Punktstatus-Spalte ist unnötig: Die Anzeige ergibt sich aus offener Rückfrage und aktuellem Ergebnis.
 
-Vorhandene Ergebnisse werden durch den in Abschnitt 8 beschriebenen Backfill als Ausgangsstand übernommen.
-Frühere, bisher nicht gespeicherte Änderungen lassen sich nicht rekonstruieren. Der Backfill ist wiederholbar,
-ohne doppelte Einträge anzulegen.
+Vorhandene Ergebnisse werden erst bei ihrer ersten Änderung als Ausgangsstand (`baseline`) übernommen, in derselben
+Transaktion wie die Änderung. Frühere, bisher nicht gespeicherte Änderungen lassen sich nicht rekonstruieren. Ein
+separater Backfill entfällt (siehe „Teilschritte“).
 
 Fragen, Antworten und Schließungshinweise sind nach dem Absenden unveränderlich. Korrekturen erfolgen durch
 Schließen und gegebenenfalls eine neue Rückfrage. Die Ergebnishistorie bleibt ausschließlich intern sichtbar.
@@ -187,21 +209,17 @@ nicht Teil dieses Features.
 
 ### Geplante Reihenfolge
 
-1. **Migration und Contracts:** neue Tabellen, Constraints, DTOs und Const-Objekte; idempotenten Backfill vorhandener
-   Ergebnisse vorbereiten, aber erst gemäß Abschnitt 8 ausführen; DB-Smokes und realistische optionale Seed-Daten ergänzen. Die Migrationsnummer wird erst beim
-   Implementieren aus dem Repository ermittelt.
-2. **Serverabläufe:** gemeinsame Persistenz und Historisierung, getrennte interne und Portal-Commands, API-Routen,
-   Berechtigungsregistrierung, Konfliktbehandlung, Abschlussprüfung sowie einfache Chatmeldungen.
-3. **Cockpit und Portal:** Rückfragen, Antwort-/Schließungsformulare, Verläufe, Statusanzeigen, Fortschritt und DE/EN;
-   neue globale Rückgaben entfernen und Bestandsfälle erhalten.
-4. **Integration und Bereinigung:** E2E, Zugriffstests, Nebenläufigkeit, Dokumentation und ungenutzte bisherige
-   Rückgabe-Bausteine prüfen. Historisch benötigte Leser und Übersetzungen bleiben bestehen.
+1. **Task 78 (28.1):** Ergebnishistorie samt Migration, Historisierung aller Ergebnis-Schreibwege, „Noch offen“ als
+   zurücksetzende Ergebniswahl und einklappbare Historie im Cockpit.
+2. **Task 79 (28.2):** Rückfragen-Tabelle, Contracts, gemeinsame Persistenz, getrennte interne und Portal-Commands,
+   API-Routen, Berechtigungsregistrierung, Konfliktbehandlung, Abschluss-/Ergebnissperre und Chatereignisse – ohne UI.
+3. **Task 80 (28.3):** Cockpit und Portal (Rückfragen, Antwort-/Schließungsformulare, Verläufe, Statusanzeigen,
+   Fortschritt, DE/EN), globale Rückgabe entfernen, E2E-Kernablauf, Dokumentation und Bereinigung. Historisch
+   benötigte Leser und Übersetzungen bleiben bestehen.
 
-Diese Schritte sind Prüfabschnitte, keine Erlaubnis, unvollständige sichtbare Flows auszuliefern. Die additive
-Schemaerweiterung kommt vor neuen Lesern und Schreibern. Bestehende Ergebnisschreibpfade werden zunächst um
-Historisierung erweitert; vor dem Read-Cutover wird der Ausgangsstand unter abgesicherten Schreibbedingungen
-vervollständigt. Bis zur vollständigen vertikalen Umsetzung bleibt die neue Funktion unsichtbar. Der konkrete
-Release-Schnitt folgt den Expand-/Dual-Write-/Backfill-/Read-Cutover-Regeln des CRM-Plans.
+Die additive Schemaerweiterung kommt in jedem Teil vor neuen Lesern und Schreibern derselben Migration. Kein Teil
+liefert einen unvollständigen sichtbaren Flow aus: 28.1 ist vertikal vollständig, 28.2 hat keinen UI-Einstieg,
+28.3 macht Rückfragen sichtbar.
 
 ### Verbindliche Testfälle
 
@@ -234,7 +252,7 @@ mehrerer Einträge sowie zusätzliche Tests. Berechtigungen, Antwortformular, Be
 brauchen beide Varianten. Ein vollständiger Umbau des Feedbackmodells ist dafür nicht erforderlich.
 
 Zusätzlich zum Rückfragenverlauf gehört die **interne Ergebnishistorie** zum festgelegten Funktionsumfang. Deshalb enthält
-dieser Plan eine zweite Tabelle samt Backfill und Historisierung der bisherigen Ergebnis-Schreibwege. Dieser Umfang
+dieser Plan eine zweite Tabelle samt Historisierung der bisherigen Ergebnis-Schreibwege. Dieser Umfang
 geht über ein reines Rückfragenfeld hinaus und ist bei der späteren Aufwandsschätzung zu berücksichtigen.
 
 Nicht vorgesehen sind Anhänge an Antworten, Änderungen bereits abgesendeter Nachrichten, ein allgemeiner Chat pro
@@ -340,7 +358,7 @@ Punktdaten aufgerufen.
 
 Fehlerzuordnung, jeweils über benannte Fehler-/HTTP-Konstanten und lokalisierte Texte:
 
-- Ungültiger Body: 400 mit Feldfehlern; unbekannte oder fremde Entitäten und deaktivierte neue Routen: 404.
+- Ungültiger Body: 400 mit Feldfehlern; unbekannte oder fremde Entitäten: 404.
 - Abweichende Punktversion: 409 mit `VersionConflictDto` über dem aktuellen Punkt-DTO. Im Portal enthält auch
   dieser Fehlerkörper weder Ergebnishistorie noch unveröffentlichte Ergebnisdaten.
 - Bereits vorhandene offene Rückfrage, inzwischen beantwortete/geschlossene Frage oder gesperrte Runde:
@@ -411,7 +429,7 @@ Erfolg-/Konfliktantworten aktiv. Neue Pflichtfelder werden in allen Fixtures und
 Der Portal-Reader ist bisher weitgehend lesend. Er wird gezielt um Antwortaktionen erweitert, ohne die Runde in den
 Entwurfseditor (`FeedbackEditor`) umzuschalten. `FeedbackReader` und `FeedbackRoundStep` reichen Runde, aktuelle
 Punktversion und serverseitige Antwort-Capability bis zur Punktliste durch. In der Capability müssen Leserecht,
-`portal.feedback.submit`, Projektzugriff, Nicht-Owner, Featurefreigabe und erlaubter Rundenstatus zusammenkommen;
+`portal.feedback.submit`, Projektzugriff, Nicht-Owner und erlaubter Rundenstatus zusammenkommen;
 die konkrete offene Frage wird im Command erneut geprüft. Ein Kontakt ohne Schreibrecht sieht den Verlauf ohne Formular.
 
 - Interne Rückfrage-/Schließdialoge verwenden die vorhandenen `FormDialog`-/Versioned-Mutation-Muster.
@@ -452,55 +470,39 @@ Neuladehinweis. Der allgemeine Rundenstatus `open`, historische `customer_notice
 
 ## 8. Auslieferung, Bestandsdaten und Arbeitsübergabe
 
-### 8.1 Konkreter Release-Schnitt
+### 8.1 Release-Schnitt
 
-Es wird ein serverseitig ausgewerteter, typisierter Schalter `feedbackItemClarificationsEnabled` vorgesehen,
-standardmäßig `false`, ohne neue Umgebungsvariable. Der Server gibt die erlaubten UI-Aktionen als Capabilities weiter;
-ein ausgeblendeter Button allein schützt keine Route. Der Schalter steuert neue Rückfragen, Antworten, Schließungen
-und manuelles Zurücksetzen gemeinsam. Die globale Rückgabe wird beim Read-Cutover aus dem Code entfernt und durch
-späteres Deaktivieren des Schalters nicht wieder zugelassen. Historisierung bestehender Ergebnisänderungen ist ab
-dem zweiten Schritt immer aktiv.
+Es gibt **keinen Feature-Schalter** und **keinen Backfill** (Entscheidung 18.10.2026, siehe „Teilschritte“). Die drei
+Teile werden nacheinander auf `feat/crm-feedback-rueckfragen` umgesetzt; jeder Teil ist für sich deploybar und ab
+seinem Merge aktiv:
 
-1. **Expand:** Additive, idempotente Migrationen für beide Tabellen und Constraints ausliefern. Noch keine neuen
-   UI-/API-Funktionen freigeben; keine vorhandenen Tabellen/Spalten oder alten Chat-Schlüssel entfernen.
-2. **Dual-Write:** Bestehende Ergebnisschreibpfade schreiben zusätzlich Historie und bewahren vor der ersten Änderung
-   bei Bedarf den vorhandenen Ausgangsstand. Auch automatische Entwurfsrücknahmen werden erfasst. Der bestehende
-   Ergebnisrequest ohne `commandId` bleibt für alte Clients gültig; solche Altrequests erhalten serverseitig eine
-   neue Kennung und behalten ihre bisherige Konfliktsemantik. Neue Clients senden immer eine Kennung. Die neue
-   `result: null`-Variante und Rückfragenrouten sind bei deaktiviertem Schalter noch nicht nutzbar.
-3. **Backfill:** Erst ausführen, wenn keine alte App-Version mehr Ergebnisse ohne Historisierung überschreiben kann.
-   Ein wiederholbares DB-Skript bearbeitet bestehende bewertete Punkte in kurzen Transaktionen mit derselben
-   Sperrreihenfolge. Es legt nur für Punkte ohne jegliche Historie einen Ausgangseintrag aus dem dann gesperrten
-   Istzustand an. Online-Schreibpfade und Backfill können denselben Ausgangsstand nicht doppelt anlegen. Prüfen,
-   dass alle vorhandenen aktiven Ergebnisse durch passende Historie abgedeckt sind. Kein künstlicher Verlauf für
-   zuvor unbewertete Punkte und keine neue historische Chatmeldung durch den Backfill.
-4. **Read-Cutover:** Vollständige Backend-/UI-Version und Tests ausliefern, Rückfragen und Historien sichtbar machen
-   und den Schalter serverseitig aktivieren. Gleichzeitig neue globale Rückgaben abschalten. Die neue Version
-   muss bestehende Rückfragen auch bei einem später deaktivierten Schalter weiterhin sicher lesen und durch ihre
-   serverseitigen Ergebnis-/Abschlussschranken schützen.
-5. **Cleanup:** Erst nach dem letzten alten Leser/Schreiber nicht mehr benötigte Kompatibilitätszweige entfernen.
-   Historische Übersetzungen und notwendige Bestands-Leser bleiben dauerhaft. Kein Rückbau der neuen Datentabellen
-   als Teil des Cleanup.
+1. **28.1 (Task 78):** Additive Migration der Ergebnishistorie, danach Historisierung aller bestehenden
+   Ergebnis-Schreibwege einschließlich der automatischen Entwurfsrücknahme, „Noch offen“ im Cockpit und
+   einklappbare Historie. Der bestehende Ergebnisrequest ohne `commandId` bleibt für bereits geöffnete alte Tabs
+   gültig; solche Requests erhalten serverseitig eine neue Kennung und behalten ihre bisherige Konfliktsemantik.
+2. **28.2 (Task 79):** Additive Migration der Rückfragen, Commands und Routen samt Sperren für Ergebnisänderung und
+   Rundenabschluss bei offener Rückfrage. Keine Oberfläche zeigt auf die neuen Routen; in Produktion entstehen bis
+   28.3 keine Rückfragen.
+3. **28.3 (Task 80):** Cockpit- und Portal-UI, Entfernung der globalen Rückgabe, E2E und Dokumentation.
 
-Der Backfill ist ein expliziter Deployment-Schritt mit dokumentiertem Aufruf und Prüfung, kein versteckter
-Nebeneffekt einer Benutzeranfrage. Die Umsetzung ergänzt sein Package-Script und den realen Aufruf in diesem Plan;
-die konkrete Migrationsnummer wird erst dabei bestimmt. Bis zur Freigabe werden keine halbfertigen Rückfragen
-sichtbar. PR-/Branch-Schnitt und Status werden gemäß CRM-Plan dokumentiert; jeder ausgelieferte Stand bleibt
-deploybar. Bei wachsendem Scope gelten dessen Review- und Dateizahlgrenzen.
+Keine vorhandenen Tabellen, Spalten oder alten Chat-Schlüssel werden entfernt. Migrationsnummern werden beim
+Implementieren aus `packages/db/migrations/` ermittelt; die Task-Pläne nennen nur den Stand vom 18.10.2026.
 
 ### 8.2 Rollback und Beobachtbarkeit
 
-Bei Fehlern wird der Schalter deaktiviert; bestehende Rückfragen/Antworten und Historieneinträge werden nicht
-gelöscht. Ein App-Rollback ist nur auf einen kompatiblen Stand mit Historisierung und Schutz offener Rückfragen
-zulässig; neue globale Rückgaben müssen auch im Rollback ausgeschlossen bleiben. Ein älterer Stand, der trotz
-offener Frage Ergebnisse setzen, die ganze Runde zurückgeben oder die Runde abschließen könnte, ist
-kein sicherer Rollback. Bei deaktiviertem Schalter sind betroffene Punkte vorübergehend schreibgesperrt, bis der
-kompatible Stand korrigiert bzw. das Feature wieder freigegeben ist; keine automatische Schließung offener Fragen.
+Rollback heißt Revert des betroffenen Teils plus Deploy; Migrationen bleiben stehen, gespeicherte Rückfragen,
+Antworten und Historieneinträge werden nie gelöscht. Zulässig sind:
 
-Neue API-Operationen laufen durch die bestehenden privaten Fehler-/Monitoring-Wrapper. Fachaktionen und Fehler
-werden über benannte Operationen beobachtbar gehalten; Inhalte bleiben ausschließlich in ihren fachlichen Tabellen.
-Versionierung, Frage-/Antwort-/Schließungsmetadaten und interne Ergebnishistorie erlauben die fachliche
-Nachvollziehbarkeit. Es werden keine sensiblen Textinhalte zusätzlich in allgemeine Activity-/Analytics-Events kopiert.
+- **Revert von 28.1:** Die Historientabelle bleibt ungenutzt bestehen. Ergebnisse werden danach wieder ohne Historie
+  geschrieben; ein späteres erneutes Ausrollen legt bei der nächsten Änderung einen neuen Ausgangsstand an.
+- **Revert von 28.2:** Nur sicher, solange 28.3 nicht ausgeliefert war (dann existieren keine Rückfragen).
+- **Revert von 28.3:** Nicht empfohlen, weil er die globale Rückgabe zurückbrächte und offene Rückfragen nicht
+  mehr beantwortbar wären. Bei Fehlern in 28.3 wird vorwärts korrigiert (Fix-Forward). Die Server-Sperren aus 28.2
+  bleiben in jedem Fall aktiv, sodass offene Rückfragen weder überschrieben noch übergangen werden.
+
+Neue API-Operationen laufen durch die bestehenden privaten Fehler-/Monitoring-Wrapper (`privateFeedbackRoundResponse`
+bzw. `privatePortalFeedbackResponse`) mit benannten `CrmOperation`-Einträgen. Inhalte bleiben ausschließlich in ihren
+fachlichen Tabellen; keine Frage-, Antwort- oder Begründungstexte in Logs, Activities, Analytics oder Chat-Metadaten.
 
 ### 8.3 Konkrete Test-Anknüpfungspunkte und Abschlusscheckliste
 
@@ -511,20 +513,22 @@ Bestehende Tests werden erweitert statt parallele isolierte Ersatz-Testsysteme a
 - `apps/workspace/src/server/tests/portal/feedback/`: Kunden-/Projektgrenzen, Antwortrechte, Owner-Lesemodus und
   konkurrierende berechtigte Kundenkontakte; gemeinsame Fixtures unter `server/tests/shared/services/feedback/`.
 - Bestehende API-Routentests in `server/tests/workspace/crm/api/` und `server/tests/portal/api/`: genaue neue Bodies,
-  Punkt-Response, Konfliktkörper, Feature-Schalter und alte Requests während des Dual-Write.
+  Punkt-Response, Konfliktkörper und alte Ergebnisrequests ohne `commandId`.
 - Schema-/Mapper-Tests unter `server/tests/{workspace/crm,portal}/services/feedback/`: insbesondere keine internen
   Ergebnisdaten in Portal-Erfolg, Portal-Read oder Portal-Konfliktantworten.
 - Co-locatete Feedback-UI-Tests: bedienbare „Noch offen“-Option nach allen Ergebnissen, neue Rückfrage trotz
   bisherigem Ergebnis, Wiederholung/Schließung, Leser mit und ohne Antwortrecht, Fokus, Textentwürfe an mehreren
   Punkten und längere Verläufe. Neues Antwortformular auch in `submitted`, `in_discussion` und `in_progress` testen.
 - `apps/workspace/e2e/portal-feedback.e2e.ts`: bestehende Kernabläufe erhalten und den Flow aus Abschnitt 5 ergänzen.
-- `packages/db/scripts/smoke-crm-constraints.ts` und optionale Feedback-Seeds: neue Tabellen/Defaults/Constraints,
-  Zustandskombinationen, doppelte offene Frage, Autorentfernung und doppelt ausgeführter Backfill.
+- `packages/db/scripts/smoke-crm-constraints.ts` mit neuen Modulen unter `packages/db/scripts/crm-smoke/` und
+  optionale Feedback-Seeds (`packages/db/scripts/crm-fixture/seed-feedback-rounds.ts`): neue Tabellen, fehlende
+  Defaults, Constraints, Zustandskombinationen, doppelte offene Frage, Autorentfernung und Kaskade.
 
-DB-Integrationstests sind derzeit über `CRM_DB_INTEGRATION=true` aktiviert. Ein grüner Standard-Unit-Testlauf darf
-nicht als ausgeführter DB-Nebenläufigkeitstest ausgewiesen werden. Während der Umsetzung den tatsächlichen
-DB-/E2E-Aufruf anhand der aktuellen Package-Scripts und Testkonfiguration dokumentieren, ohne Secret-Werte aus
-lokalen Env-Dateien in Plan oder Logs zu übernehmen.
+DB-Integrationstests laufen nur mit `CRM_DB_INTEGRATION=true`, das `apps/workspace/vitest.config.ts` im Modus
+`crm-integration` setzt (`pnpm db:smoke:crm` an der Wurzel bzw. `pnpm --filter @invessiv/workspace db:smoke:crm`).
+Ein grüner Standard-Unit-Testlauf darf nicht als ausgeführter DB-Nebenläufigkeitstest ausgewiesen werden. Neue
+Integrationstestdateien außerhalb der in `db:smoke:crm` gelisteten Ordner werden dort ergänzt. Secret-Werte aus
+lokalen Env-Dateien gelangen weder in Plan noch Logs.
 
 Zusätzlich zu Abschnitt 5 müssen folgende Abnahmen explizit erfüllt sein:
 
@@ -533,11 +537,12 @@ Zusätzlich zu Abschnitt 5 müssen folgende Abnahmen explizit erfüllt sein:
 - [ ] Geänderte Nutzlast mit gleicher Command-Kennung scheitert; eine neue explizite Aktion kann mit neuer Kennung
       nach einem Versionskonflikt gesendet werden.
 - [ ] Fehler nach Historien-Insert, vor finalem Update oder beim Antwort-Update hinterlassen keine teilweise Mutation.
-- [ ] Backfill, Ergebnisänderung und automatischer Legacy-Entwurfsreset erzeugen einen konsistenten Verlauf ohne
-      doppelte Ausgangseinträge. Bestehende Entwurfs-Löschungen folgen der dokumentierten Kaskade.
+- [ ] Erste Ergebnisänderung eines bewerteten Punkts, weitere Änderungen und automatischer Legacy-Entwurfsreset
+      erzeugen einen konsistenten Verlauf mit genau einem Ausgangseintrag. Bestehende Entwurfs-Löschungen folgen der
+      dokumentierten Kaskade.
 - [ ] Anzahl erledigter/offener Punkte und Rückfragen ist nach Antwort/Schließung/Zurücksetzen korrekt; die
       Sammelaufgabe sowie die bestehende Ungelesen-Zählung ändern sich dadurch nicht.
-- [ ] Schrittweise Auslieferung, Schalterzustände und kompatibler Rollback sind getestet und im PR beschrieben.
+- [ ] Jeder der drei Teile ist für sich deploybar; Rollback-Regeln aus 8.2 stehen im PR.
 - [ ] Zentrale Entscheidungen, relevante Scope-Dokumentation und diese Plan-Checkliste sind mit dem tatsächlichen
       Ergebnis synchronisiert. Fachlich benötigte neue Dateien sind eingebunden; kein ungenutzter Ersatzcode bleibt.
 
