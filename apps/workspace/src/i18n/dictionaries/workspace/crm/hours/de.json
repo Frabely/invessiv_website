@@ -15,6 +15,8 @@
     "label": "Stundenstand des Kunden",
     "purchased": "Gekauft",
     "allocated": "Zugewiesen",
+    "open": "In Projekten offen",
+    "over": "Projektüberzug",
     "free": "Frei",
     "used": "Verbraucht",
     "goodwill": "Kulanz",

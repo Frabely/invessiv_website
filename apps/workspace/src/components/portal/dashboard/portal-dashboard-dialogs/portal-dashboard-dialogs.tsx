@@ -89,6 +89,7 @@ export function PortalDashboardDialogs({
           <PortalHoursDialog
             content={hoursContent}
             customerId={customerId}
+            dashboardProjectId={dashboard.selectedProjectId}
             hours={hours}
             locale={locale}
             onCloseAction={navigation.closeDialog}
@@ -119,6 +120,7 @@ export function PortalDashboardDialogs({
             }}
             onCloseAction={navigation.closeDialog}
             onSelectionChangeAction={navigation.selectService}
+            refreshing={navigation.servicesRefreshing}
             selectedProjectId={dashboard.selectedProjectId}
             services={services}
           />

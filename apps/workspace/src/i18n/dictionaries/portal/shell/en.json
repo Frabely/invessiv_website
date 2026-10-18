@@ -8,6 +8,10 @@
     "menuOpenLabel": "Open menu",
     "menuCloseLabel": "Close menu",
     "menuTitle": "Menu",
+    "menuCompany": "Company",
+    "menuProject": "Project",
+    "menuTheme": "Appearance",
+    "menuLanguage": "Language",
     "themeSwitch": {
       "actionLabel": {
         "dark": "Enable light mode",

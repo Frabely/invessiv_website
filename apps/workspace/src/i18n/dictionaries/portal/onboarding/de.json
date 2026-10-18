@@ -25,6 +25,7 @@
   "steps": {
     "label": "Schritte des Onboardings",
     "review": "Prüfen & absenden",
+    "state": "Status",
     "nextTo": "Weiter: {step}",
     "toReview": "Zur Prüfung",
     "back": "Zurück",
@@ -141,6 +142,9 @@
     "close": "Schließen"
   },
   "states": {
+    "open": {
+      "title": "Noch nicht abgesendet"
+    },
     "submitted": {
       "title": "Abgesendet am {date}",
       "by": "von {name}",
@@ -154,7 +158,7 @@
     "completed": {
       "title": "Abgeschlossen am {date}",
       "description": "Das ist die Grundlage für dein Projekt. Deine Angaben und Dateien bleiben hier zum Nachlesen.",
-      "more": "Kommt später noch eine Datei dazu oder ändert sich etwas? Das läuft ab jetzt nicht mehr über das Onboarding.",
+      "more": "Neue Dateien oder Änderungen gehören ab jetzt nicht mehr ins Onboarding. Schick sie uns direkt:",
       "filesLink": "Datei im Dateibereich hochladen",
       "chatLink": "Nachricht schreiben"
     }

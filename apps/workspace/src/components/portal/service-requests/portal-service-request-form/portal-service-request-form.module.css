@@ -9,10 +9,6 @@
   margin-left: -0.6rem;
 }
 
-.back svg {
-  margin-right: 0.5rem;
-}
-
 .header {
   display: grid;
   gap: 0.35rem;
@@ -75,14 +71,4 @@
   margin-right: 0.25rem;
   color: var(--color-text-muted);
   font-size: var(--font-size-ui-sm);
-}
-
-.footer {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem 1.5rem;
-  padding-top: 0.9rem;
-  border-top: 1px solid var(--color-border);
 }

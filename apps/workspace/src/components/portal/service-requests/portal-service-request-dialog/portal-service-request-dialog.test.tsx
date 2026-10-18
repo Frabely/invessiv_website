@@ -89,7 +89,7 @@ function renderDialog(
     selectedProjectId?: string | null;
   } = {},
 ) {
-  return render(
+  const view = (refreshing = false) => (
     <PortalServiceRequestDialog
       cockpitHref={options.cockpitHref ?? null}
       content={content}
@@ -100,9 +100,15 @@ function renderDialog(
       onCloseAction={onClose}
       onSelectionChangeAction={onSelectionChange}
       selectedProjectId={options.selectedProjectId ?? null}
+      refreshing={refreshing}
       services={dto}
-    />,
+    />
   );
+  const result = render(view());
+  return {
+    ...result,
+    setRefreshing: (refreshing: boolean) => result.rerender(view(refreshing)),
+  };
 }
 
 function choose(title: string) {
@@ -123,6 +129,30 @@ describe("PortalServiceRequestDialog", () => {
   });
 
   afterEach(cleanup);
+
+  it("locks the confirmation actions until the dashboard refresh has finished", async () => {
+    api.createRequest.mockResolvedValue({ ok: true, value: true });
+    const { setRefreshing } = renderDialog(services(), {
+      initialSelection: PAGE.id,
+      selectedProjectId: "project-a",
+    });
+    send();
+    await screen.findByText(content.sent.title);
+    setRefreshing(true);
+    const another = screen.getByRole("button", { name: content.sent.another });
+    expect(another).toBeDisabled();
+    expect(
+      screen.getByRole("button", { name: content.sent.mine }),
+    ).toBeDisabled();
+    fireEvent.click(another);
+    fireEvent.click(screen.getByRole("button", { name: content.dialog.close }));
+    expect(onSelectionChange).not.toHaveBeenCalled();
+    expect(onClose).not.toHaveBeenCalled();
+    setRefreshing(false);
+    expect(another).toBeEnabled();
+    fireEvent.click(another);
+    expect(onSelectionChange).toHaveBeenCalledWith(null);
+  });
 
   it("lists the released services with their customer text and free text last, never a price", () => {
     renderDialog();

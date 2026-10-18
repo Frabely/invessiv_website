@@ -40,7 +40,7 @@
 }
 
 .figures div[data-negative="true"] dd {
-  color: var(--color-accent-warm);
+  color: var(--color-danger);
 }
 
 .moves {

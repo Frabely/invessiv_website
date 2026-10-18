@@ -1,7 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { PortalDashboardNavigationMode } from "@/common/constants/portal/portal-dashboard-navigation-modes";
+import { PortalDashboardQueryParam } from "@/common/constants/portal/portal-dashboard-query-params";
 import type { PortalDashboardNavigationMode as NavigationMode } from "@/common/constants/portal/portal-dashboard-navigation-modes";
 import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import type { PortalWidgetDefinition } from "@/common/contracts/portal/portal-widget-definition";
@@ -13,6 +14,7 @@ import {
   readPortalDashboardService,
   readPortalDashboardWidget,
 } from "@/common/patterns/portal/portal-dashboard-query";
+import { useUrlSearch } from "@/hooks/shared/use-url-search";
 
 /** Owns URL transitions; choosing a service or toggling the chat deliberately avoids a server navigation. */
 export function usePortalDashboardNavigation(
@@ -21,8 +23,10 @@ export function usePortalDashboardNavigation(
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { replace: replaceSearch } = useUrlSearch();
   const [dockOpen, setDockOpen] = useState(false);
   const [credentialsCreate, setCredentialsCreate] = useState(false);
+  const [servicesRefreshing, startServicesRefresh] = useTransition();
   const requestedWidget = readPortalDashboardWidget(searchParams);
   const visibleKeys = new Set(widgets.map((entry) => entry.key));
   const openWidget =
@@ -40,11 +44,7 @@ export function usePortalDashboardNavigation(
     setDockOpen(expanded);
     if (!chatRequested) return;
     // The link's request is spent on the first toggle; dropping it needs no server roundtrip.
-    window.history.replaceState(
-      null,
-      "",
-      buildPortalHref(pathname, searchParams.toString(), { chat: null }),
-    );
+    replaceSearch((params) => params.delete(PortalDashboardQueryParam.Chat));
   }
 
   const openDialog = (widget: PortalWidgetKey) =>
@@ -60,16 +60,18 @@ export function usePortalDashboardNavigation(
   };
 
   function selectService(service: string | null) {
-    window.history.replaceState(
-      null,
-      "",
-      buildPortalHref(pathname, window.location.search, { service }),
-    );
+    replaceSearch((params) => {
+      if (service === null) params.delete(PortalDashboardQueryParam.Service);
+      else params.set(PortalDashboardQueryParam.Service, service);
+    });
   }
   function refreshServices() {
-    // The tree can still belong to the URL before a history-only selection. Navigate before refreshing it.
-    navigate({ service: null }, PortalDashboardNavigationMode.Replace);
-    router.refresh();
+    // Wait for both router actions before allowing the next history-only selection. Otherwise
+    // an unfinished refresh can reload the next form and abort its submission.
+    startServicesRefresh(() => {
+      navigate({ service: null }, PortalDashboardNavigationMode.Replace);
+      router.refresh();
+    });
   }
   function finishTaskRequest() {
     closeDialog();
@@ -79,6 +81,7 @@ export function usePortalDashboardNavigation(
     openWidget,
     dockExpanded,
     credentialsCreate,
+    servicesRefreshing,
     initialService: readPortalDashboardService(searchParams),
     openDialog,
     closeDialog,

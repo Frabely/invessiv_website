@@ -7,10 +7,10 @@ import type { QuestionnaireValueValidationResult } from "../../../contracts/crm/
 import { CONTACT_EMAIL_PATTERN } from "../../contact/contact-email";
 import { isValidContactPhone } from "../../contact/contact-phone";
 import { CONTACT_URL_PATTERN } from "../../contact/contact-url";
+import { isHexColor } from "../../validation/is-hex-color";
 
 type ValueField = Pick<QuestionnaireFieldDto, "type" | "maxLength">;
 
-const COLOR_PATTERN = /^#[0-9a-fA-F]{6}$/;
 const SCALE_STEP_PATTERN = /^[1-9][0-9]*$/;
 
 const OK: QuestionnaireValueValidationResult = { ok: true };
@@ -99,7 +99,7 @@ export function validateQuestionnaireValue(
         ? OK
         : fail(QuestionnaireValueErrorCode.InvalidUrl);
     case QuestionnaireFieldType.Color:
-      return COLOR_PATTERN.test(value)
+      return isHexColor(value)
         ? OK
         : fail(QuestionnaireValueErrorCode.InvalidColor);
     case QuestionnaireFieldType.Scale:

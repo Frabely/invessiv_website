@@ -58,12 +58,12 @@
 
 .meter::-webkit-progress-value {
   border-radius: 999px;
-  background: var(--color-text);
+  background: var(--widget-accent);
 }
 
 .meter::-moz-progress-bar {
   border-radius: 999px;
-  background: var(--color-text);
+  background: var(--widget-accent);
 }
 
 .meter[data-over="true"]::-webkit-progress-value {

@@ -1,9 +1,29 @@
 .sheet {
   display: grid;
   gap: 1rem;
+  min-width: 0;
 }
 
-.visible,
+.heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.heading h3 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-heading-sm);
+}
+
+.count {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+  font-variant-numeric: tabular-nums;
+}
+
 .empty,
 .hint {
   max-width: 62ch;
@@ -14,17 +34,19 @@
 }
 
 .empty {
-  padding: 1.25rem 0;
-  border-top: 1px solid var(--color-border);
+  padding: 1.25rem;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: 14px;
   color: var(--color-text);
+  font-size: var(--font-size-body-sm);
 }
 
 .items {
   display: grid;
+  gap: 0.85rem;
   margin: 0;
   padding: 0;
   list-style: none;
-  border-bottom: 1px solid var(--color-border);
 }
 
 .add {
@@ -41,33 +63,37 @@
 }
 
 /*
- * Save state and the two actions stay in reach while scrolling a long sheet; on phones the bar
- * sits above the safe area so the submit button never hides behind the browser chrome.
+ * The shortcut out of a round without points stays quiet: set apart by a rule at the end, so it
+ * is found when wanted and never competes with adding the first point.
  */
-.bar {
-  position: sticky;
-  bottom: 0;
-  z-index: 1;
-  display: grid;
-  gap: 0.75rem;
-  padding: 0.9rem 0 calc(0.9rem + var(--mobile-safe-bottom, 0px));
-  border-top: 1px solid var(--color-border);
-  background: var(--color-bg);
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-
 .approve {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.25rem 0.75rem;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  margin-top: 1rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.approveText {
+  display: grid;
+  flex: 1 1 22rem;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.approveText h3 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-md);
+}
+
+.approveText p {
+  max-width: 62ch;
   margin: 0;
   color: var(--color-text-muted);
-  font-size: var(--font-size-ui-sm);
+  font-size: var(--font-size-body-sm);
+  line-height: 1.55;
 }

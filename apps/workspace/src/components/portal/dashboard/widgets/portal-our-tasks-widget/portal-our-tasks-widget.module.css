@@ -58,27 +58,6 @@
 }
 
 .origin {
-  background: color-mix(in srgb, var(--color-cta) 12%, transparent);
+  background: color-mix(in srgb, var(--widget-accent) 16%, transparent);
   color: var(--color-text);
-}
-
-.create.create {
-  gap: 0.45rem;
-  min-height: 2.75rem;
-  margin-right: auto;
-  padding: 0.35rem 0.85rem;
-  border-radius: 999px;
-  font-size: var(--font-size-ui-xs);
-  font-weight: 600;
-}
-
-.create svg {
-  flex: 0 0 auto;
-  width: 0.8rem;
-  height: 0.8rem;
-}
-
-.create.create:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
 }

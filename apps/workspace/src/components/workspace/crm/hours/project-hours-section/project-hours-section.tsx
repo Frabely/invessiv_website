@@ -8,7 +8,8 @@ import type { CustomerHoursProjectDto } from "@invessiv/common/contracts/crm/hou
 import type { TimeEntryDto } from "@invessiv/common/contracts/crm/hours/time-entry.dto";
 import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
+import { ButtonControl, HoursMeter, PrimaryCtaButton } from "@invessiv/ui";
+import { hoursDistribution } from "@invessiv/common/patterns/time/hours-distribution";
 import { HourAllocationDirection } from "@/common/constants/crm/hour-allocation-directions";
 import type { TimeEntryTaskOption } from "@/common/contracts/crm/hours/time-entry-task-option";
 import { CollapsibleSection } from "@/components/workspace/crm/shared/collapsible-section/collapsible-section";
@@ -180,6 +181,7 @@ export function ProjectHoursSection({
             </div>
           ) : null}
         </div>
+        <HoursMeter segments={hoursDistribution.projectSegments(project)} />
         {showFinishedHint ? (
           <p className={styles.notice}>
             <span>

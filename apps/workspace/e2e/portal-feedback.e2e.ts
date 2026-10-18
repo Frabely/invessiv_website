@@ -93,7 +93,7 @@ test.describe.serial("portal feedback", () => {
 
       await a.goto(url);
       await expect(
-        a.getByRole("heading", { name: "Feedbackrunde 1 von 2", exact: true }),
+        a.getByRole("heading", { name: "Feedbackrunde 1", exact: true }),
       ).toBeVisible();
       await expect(
         a.getByRole("main").getByText(`Erste Version ${suffix}`),
@@ -288,11 +288,11 @@ test.describe.serial("portal feedback", () => {
       // The customer sees the results of round 1 and fills round 2.
       await b.goto(url);
       await expect(
-        b.getByRole("heading", { name: "Feedbackrunde 2 von 2", exact: true }),
+        b.getByRole("heading", { name: "Feedbackrunde 2", exact: true }),
       ).toBeVisible();
       await b
-        .getByRole("main")
-        .getByText("Feedbackrunde 1", { exact: true })
+        .getByRole("list", { name: "Feedbackrunden" })
+        .getByRole("button", { name: /Runde 1/ })
         .click();
       await expect(
         b.getByRole("main").getByText("Zusatzleistung", { exact: true }),
@@ -300,7 +300,19 @@ test.describe.serial("portal feedback", () => {
       await expect(
         b.getByRole("main").getByText(`Gern als Zusatzleistung ${suffix}`),
       ).toBeVisible();
+      await b.getByRole("button", { name: "Weiter: Runde 2" }).click();
+      await b.reload();
+      // An editable point confirms hydration before exercising the local history listener.
       await b.getByRole("button", { name: "Punkt hinzufügen" }).click();
+      await expect(b.getByRole("textbox")).toHaveCount(1);
+      await b.goBack();
+      await expect(
+        b.getByRole("heading", { name: "Feedbackrunde 1", exact: true }),
+      ).toBeFocused();
+      await b.goForward();
+      await expect(
+        b.getByRole("heading", { name: "Feedbackrunde 2", exact: true }),
+      ).toBeFocused();
       const saved = b.waitForResponse(isDraftSave(roundTwoId));
       await b.getByRole("textbox").first().fill(`Impressum ergänzen ${suffix}`);
       expect((await saved).ok()).toBe(true);
@@ -402,10 +414,7 @@ test.describe.serial("portal feedback", () => {
       await approval.getByRole("checkbox").check();
       await confirm.click();
       await expect(
-        b
-          .getByRole("main")
-          .getByText(/Abgenommen am/)
-          .first(),
+        b.getByRole("main").getByRole("heading", { name: /Abgenommen am/ }),
       ).toBeVisible();
 
       await b.goto(
@@ -447,7 +456,7 @@ test.describe.serial("portal feedback", () => {
         .check();
       await confirm.click();
       await expect(
-        b.getByRole("main").getByText(/Abgenommen am/),
+        b.getByRole("main").getByRole("heading", { name: /Abgenommen am/ }),
       ).toBeVisible();
 
       await b.goto(

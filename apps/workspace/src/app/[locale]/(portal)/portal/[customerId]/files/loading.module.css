@@ -1,9 +1,8 @@
 .frame {
   display: grid;
-  gap: 1.5rem;
+  gap: 1rem;
   width: 100%;
-  max-width: 52rem;
-  margin-inline: auto;
+  max-width: 96rem;
 }
 
 .heading.heading {
@@ -11,12 +10,12 @@
   height: 1.5rem;
 }
 
-.intake.intake {
-  min-height: 11rem;
-  border-radius: 1.1rem;
+.filters.filters {
+  width: min(100%, 26.5rem);
+  height: 2.75rem;
 }
 
-.panel.panel {
-  min-height: 16rem;
-  border-radius: 18px;
+.row.row {
+  min-height: 3.25rem;
+  border-radius: 0.85rem;
 }

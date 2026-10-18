@@ -41,8 +41,8 @@
 }
 
 .note[data-tone="attention"] {
-  border-color: color-mix(in srgb, var(--color-accent-warm) 55%, transparent);
-  color: var(--color-accent-warm);
+  border-color: color-mix(in srgb, var(--color-danger) 55%, transparent);
+  color: var(--color-danger);
   font-weight: 600;
 }
 
@@ -71,16 +71,27 @@
 }
 
 .figures div[data-negative="true"] dd {
-  color: var(--color-accent-warm);
+  color: var(--color-danger);
 }
 
 .actions {
   display: flex;
   gap: 0.4rem;
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.meter {
+  grid-column: 1 / -1;
 }
 
 @media (max-width: 640px) {
   .item {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .actions {
+    grid-column: 1;
+    grid-row: auto;
   }
 }

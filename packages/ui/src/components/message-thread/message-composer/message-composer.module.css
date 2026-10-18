@@ -56,9 +56,12 @@
 
 .field textarea,
 .field::after {
+  /* As high as the 44px send button with the frame's border; one line sits centred in it. */
+  --composer-line-box: calc(44px - 2px);
+
   grid-area: 1 / 1 / 2 / 2;
-  min-height: 2.5rem;
-  padding: 0.55rem 0.75rem;
+  min-height: var(--composer-line-box);
+  padding: calc((var(--composer-line-box) - 1.45em) / 2) 0.75rem;
   font: inherit;
   font-size: var(--font-size-ui-sm);
   line-height: 1.45;
@@ -85,17 +88,21 @@
   outline-offset: 1px;
 }
 
+/* Size and centring come from the button's `icon` size; this sets only its look. */
 .send.send {
-  display: grid;
-  place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
   border: 0;
   border-radius: 999px;
   background: var(--color-cta);
   color: var(--color-on-cta);
   box-shadow: none;
-  cursor: pointer;
+}
+
+/*
+ * The paper plane is centred by its box, but its tip leaves empty space top right, so it reads as
+ * sitting high and right. Nudged by its own size to look centred in the round button.
+ */
+.send svg {
+  translate: -0.08em 0.08em;
 }
 
 .send.send:hover,
@@ -108,7 +115,6 @@
 .send.send:disabled {
   background: var(--color-surface-2);
   color: var(--color-text-muted);
-  cursor: not-allowed;
 }
 
 .send.send:focus-visible {
@@ -134,20 +140,13 @@
   color: var(--color-danger);
 }
 
+/* Touch has no Enter-to-send hint; without a counter the line would be an empty row below the field. */
 @media (pointer: coarse) {
   .meta > span:first-child {
     display: none;
   }
-}
 
-@media (pointer: coarse) {
-  .send.send {
-    width: 2.75rem;
-    height: 2.75rem;
-  }
-
-  .field textarea,
-  .field::after {
-    min-height: 2.75rem;
+  .meta:not(:has(.counter)) {
+    display: none;
   }
 }

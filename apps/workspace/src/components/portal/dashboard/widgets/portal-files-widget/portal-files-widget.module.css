@@ -42,24 +42,3 @@
 .empty {
   line-height: 1.5;
 }
-
-.all {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  min-height: 2.75rem;
-  color: var(--color-cta);
-  font-size: var(--font-size-ui-sm);
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.all:hover {
-  text-decoration: underline;
-}
-
-.all:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
-  border-radius: 0.35rem;
-}

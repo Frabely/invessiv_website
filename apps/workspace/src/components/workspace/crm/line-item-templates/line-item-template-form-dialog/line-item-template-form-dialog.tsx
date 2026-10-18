@@ -199,9 +199,6 @@ export function LineItemTemplateFormDialog({
             {...sharedFields}
             kind={values.kind}
             pricingDisabled={kindFixesPricing}
-            pricingHint={
-              kindFixesPricing ? content.form.hints.pricingModeFixed : undefined
-            }
           />
           <FormField
             className={layout.fullWidth}

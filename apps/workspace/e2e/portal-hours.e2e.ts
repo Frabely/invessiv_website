@@ -1,13 +1,18 @@
 import { readFile } from "node:fs/promises";
 import { expect, test } from "@playwright/test";
 import type { PortalTimeEntryPageDto } from "@invessiv/common/contracts/portal/portal-time-entry-page.dto";
-import { PortalDashboardQueryParam } from "@/common/constants/portal/portal-dashboard-query-params";
+import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
+import {
+  PORTAL_HOURS_ALL_PROJECTS,
+  PortalDashboardQueryParam,
+} from "@/common/constants/portal/portal-dashboard-query-params";
 import { PortalHoursQueryParam } from "@/common/constants/portal/portal-hours-query-params";
 import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import { portalHoursEntriesEndpoint } from "@/common/patterns/portal/portal-api-endpoints";
 import dashboard from "@/i18n/dictionaries/portal/dashboard/de.json";
 import content from "@/i18n/dictionaries/portal/hours/de.json";
 import { portalPathFor } from "@/lib/auth/routes";
+import { PORTAL_E2E_PREFIX } from "@/test/constants/portal-e2e-prefix";
 import {
   type PortalE2eFixture,
   portalE2ePaths,
@@ -15,6 +20,8 @@ import {
 
 let fixture: PortalE2eFixture;
 const HOURS_DIALOG = `?${PortalDashboardQueryParam.Widget}=${PortalWidgetKey.Hours}`;
+// The dialog follows the dashboard project; the checks below read the company-wide view.
+const HOURS_DIALOG_ALL = `${HOURS_DIALOG}&${PortalDashboardQueryParam.HoursProject}=${PORTAL_HOURS_ALL_PROJECTS}`;
 
 test.beforeAll(async () => {
   fixture = JSON.parse(
@@ -96,23 +103,20 @@ test("shows hours to contacts by right and company, read-only, with real Clerk s
       name: content.dialog.title,
       exact: true,
     });
-    const totals = dialog.getByRole("group", { name: content.summary.title });
+    await expect(dialog).toBeVisible();
+    // The dialog follows the dashboard project; the overview is one step back.
+    const back = dialog.getByRole("button", { name: content.projects.back });
+    if (await back.isVisible()) await back.click();
+    const totals = dialog.getByRole("group", { name: content.figures.label });
     await expect(totals).toContainText("10:00");
     await expect(totals).toContainText("8:30");
-    await expect(totals).toContainText("1:30");
-    await expect(
-      dialog.getByRole("row", { name: /Hours Website/ }),
-    ).toContainText("2:30");
-    await expect(dialog.getByRole("row", { name: /Hours Shop/ })).toContainText(
-      "Dieses Projekt hat 1:00 mehr verbraucht als zugewiesen.",
-    );
-    await expect(
-      dialog.getByText("Betreuung nach dem Launch", { exact: true }),
-    ).toBeVisible();
-    await expect(dialog.getByText("+10:00", { exact: true })).toBeVisible();
+    // Website still has 2:30; the overdrawn Shop adds nothing, nothing is unassigned.
+    await expect(totals).toContainText(content.figures.open);
+    await expect(totals).toContainText("2:30");
+    await expect(totals).toContainText("0:00");
 
-    const entries = dialog.getByRole("region", {
-      name: content.entries.title,
+    const entries = dialog.getByRole("tabpanel", {
+      name: content.tabs.entries,
     });
     await expect(
       entries.getByText("Umbau Hero-Section", { exact: true }),
@@ -124,14 +128,41 @@ test("shows hours to contacts by right and company, read-only, with real Clerk s
       0,
     );
 
-    await entries
-      .getByRole("button", { name: /Hours Shop/, exact: false })
-      .click();
     await expect(
-      entries.getByText("Produktseiten", { exact: true }),
+      dialog.getByRole("button", {
+        name: new RegExp(`^${PORTAL_E2E_PREFIX} Hours Website`),
+      }),
+    ).toContainText("2:30");
+    await expect(
+      dialog.getByRole("button", {
+        name: new RegExp(`^${PORTAL_E2E_PREFIX} Hours Shop`),
+      }),
+    ).toContainText("Dieses Projekt hat 1:00 mehr verbraucht als zugewiesen.");
+
+    await dialog.getByRole("tab", { name: content.tabs.purchases }).click();
+    await expect(
+      dialog.getByText("Betreuung nach dem Launch", { exact: true }),
+    ).toBeVisible();
+    await expect(dialog.getByText("+10:00", { exact: true })).toBeVisible();
+
+    await dialog
+      .getByRole("button", {
+        name: new RegExp(`^${PORTAL_E2E_PREFIX} Hours Shop`),
+      })
+      .click();
+    const shopTotals = dialog.getByRole("group", {
+      name: formatMessage(content.figures.projectLabel, {
+        project: `${PORTAL_E2E_PREFIX} Hours Shop`,
+      }),
+    });
+    await expect(shopTotals).toBeVisible();
+    // Purchases belong to the company and stay in the overview.
+    await expect(dialog.getByText("Betreuung nach dem Launch")).toHaveCount(0);
+    await expect(
+      dialog.getByText("Produktseiten", { exact: true }),
     ).toBeVisible();
     await expect(
-      entries.getByText("Umbau Hero-Section", { exact: true }),
+      dialog.getByText("Umbau Hero-Section", { exact: true }),
     ).toHaveCount(0);
     expect(new URL(page.url()).searchParams.get("hoursProject")).toBe(
       fixture.hoursProjectB,
@@ -143,7 +174,7 @@ test("shows hours to contacts by right and company, read-only, with real Clerk s
       }, theme);
       for (const width of [360, 1280]) {
         await page.setViewportSize({ width, height: 900 });
-        await expect(totals).toBeVisible();
+        await expect(shopTotals).toBeVisible();
         expect(
           await page.evaluate(
             () => document.documentElement.scrollWidth > window.innerWidth,
@@ -164,16 +195,18 @@ test("shows hours to contacts by right and company, read-only, with real Clerk s
     // The balance without the detail right: no list, no heading, no hint that something is missing.
     const limitedPage = await limited.newPage();
     await limitedPage.goto(
-      portalPathFor("de", fixture.hoursCustomer) + HOURS_DIALOG,
+      portalPathFor("de", fixture.hoursCustomer) + HOURS_DIALOG_ALL,
     );
     const limitedDialog = limitedPage.getByRole("dialog", {
       name: content.dialog.title,
       exact: true,
     });
     await expect(
-      limitedDialog.getByRole("group", { name: content.summary.title }),
-    ).toContainText("1:30");
-    await expect(limitedDialog.getByText(content.entries.title)).toHaveCount(0);
+      limitedDialog.getByRole("group", { name: content.figures.label }),
+    ).toContainText("8:30");
+    await expect(
+      limitedDialog.getByRole("tab", { name: content.tabs.entries }),
+    ).toHaveCount(0);
     await expect(limitedDialog.getByText("Umbau Hero-Section")).toHaveCount(0);
 
     // The same person at a second company sees that company's numbers and entries only.
@@ -196,7 +229,7 @@ test("shows hours to contacts by right and company, read-only, with real Clerk s
     expect((await manager.request.get(endpoint)).status()).toBe(200);
     const ownerPage = await manager.newPage();
     await ownerPage.goto(
-      portalPathFor("de", fixture.hoursCustomer) + HOURS_DIALOG,
+      portalPathFor("de", fixture.hoursCustomer) + HOURS_DIALOG_ALL,
     );
     await expect(
       ownerPage

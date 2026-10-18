@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { faHandHoldingHeart } from "@fortawesome/free-solid-svg-icons";
+import { faHighlighter } from "@fortawesome/free-solid-svg-icons";
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
 import type { PortalFeedbackSummaryDto } from "@invessiv/common/contracts/portal/portal-feedback-summary.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { Widget } from "@invessiv/ui";
+import { PORTAL_WIDGET_ACCENTS } from "@/common/constants/portal/portal-widget-accents";
+import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import { buildPortalFeedbackPath } from "@/common/patterns/portal/portal-feedback-path";
 import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
 import { FeedbackRoundStatusBadge } from "@/components/shared/feedback/feedback-round-status-badge/feedback-round-status-badge";
@@ -67,71 +69,77 @@ export function PortalFeedbackWidget({
     entry !== null &&
     (entry.status === FeedbackRoundStatus.Open || isApprovalDue(entry));
   const link = entry ? linkLabels(entry, content) : null;
+  const common = {
+    accent: PORTAL_WIDGET_ACCENTS[PortalWidgetKey.Feedback],
+    icon: faHighlighter,
+    title: content.title,
+  };
+  const body =
+    !entry || !link ? (
+      <div className={styles.empty}>
+        <p className={styles.emptyTitle}>{content.emptyTitle}</p>
+        <p>{content.emptyDescription}</p>
+      </div>
+    ) : (
+      <div className={styles.item}>
+        <div className={styles.text}>
+          <span className={styles.project}>{entry.projectTitle}</span>
+          <span className={styles.meta}>
+            {entry.roundNumber
+              ? formatMessage(content.roundOf, {
+                  number: entry.roundNumber,
+                  included: Math.max(entry.included, entry.used),
+                })
+              : content.noRound}
+            {entry.dueOn && entry.status === FeedbackRoundStatus.Open ? (
+              <time dateTime={entry.dueOn}>
+                {formatMessage(content.due, {
+                  date: formatCalendarDay(entry.dueOn, locale),
+                })}
+              </time>
+            ) : null}
+          </span>
+        </div>
+        {entry.status ? (
+          <FeedbackRoundStatusBadge
+            label={turnLabel(entry, content, locale)}
+            status={entry.status}
+          />
+        ) : (
+          <span className={styles.none}>{content.turn.none}</span>
+        )}
+      </div>
+    );
+
+  if (!entry?.status || !link) {
+    return (
+      <Widget {...common} openMode={WidgetOpenMode.None}>
+        {body}
+      </Widget>
+    );
+  }
 
   return (
     <Widget
-      icon={faHandHoldingHeart}
-      openMode={WidgetOpenMode.None}
-      title={content.title}
-    >
-      {!entry || !link ? (
-        <div className={styles.empty}>
-          <p className={styles.emptyTitle}>{content.emptyTitle}</p>
-          <p>{content.emptyDescription}</p>
-        </div>
-      ) : (
-        <div
-          className={styles.item}
-          data-your-turn={yourTurn ? "true" : undefined}
-        >
-          <div className={styles.text}>
-            <span className={styles.project}>{entry.projectTitle}</span>
-            <span className={styles.meta}>
-              {entry.roundNumber
-                ? formatMessage(content.roundOf, {
-                    number: entry.roundNumber,
-                    included: Math.max(entry.included, entry.used),
-                  })
-                : content.noRound}
-              {entry.dueOn && entry.status === FeedbackRoundStatus.Open ? (
-                <time dateTime={entry.dueOn}>
-                  {formatMessage(content.due, {
-                    date: formatCalendarDay(entry.dueOn, locale),
-                  })}
-                </time>
-              ) : null}
-            </span>
-          </div>
-          {entry.status ? (
-            <FeedbackRoundStatusBadge
-              label={turnLabel(entry, content, locale)}
-              status={entry.status}
-            />
-          ) : (
-            <span className={styles.none}>{content.turn.none}</span>
-          )}
-          {entry.status ? (
-            <Link
-              aria-label={formatMessage(link.named, {
-                project: entry.projectTitle,
-              })}
-              className={styles.link}
-              data-primary={yourTurn ? "true" : undefined}
-              href={buildPortalHref(
-                buildPortalFeedbackPath({
-                  locale,
-                  customerId,
-                  projectId: entry.projectId,
-                }),
-                "",
-                { project: entry.projectId },
-              )}
-            >
-              {link.text}
-            </Link>
-          ) : null}
-        </div>
+      {...common}
+      href={buildPortalHref(
+        buildPortalFeedbackPath({
+          locale,
+          customerId,
+          projectId: entry.projectId,
+        }),
+        "",
+        { project: entry.projectId },
       )}
+      linkComponent={Link}
+      openAccessibleLabel={formatMessage(link.named, {
+        project: entry.projectTitle,
+      })}
+      openLabel={link.text}
+      openMode={WidgetOpenMode.Page}
+      openProminent={yourTurn}
+    >
+      {body}
     </Widget>
   );
 }

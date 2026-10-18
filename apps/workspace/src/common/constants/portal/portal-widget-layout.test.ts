@@ -44,12 +44,12 @@ describe("PORTAL_WIDGET_LAYOUT", () => {
         (entry) => entry.key === PortalWidgetKey.ServiceRequest,
       ),
     ).toMatchObject({
-      order: 30,
+      order: 60,
       openMode: WidgetOpenMode.Dialog,
       mock: false,
       onlyWithContent: false,
       requiredPermission: Permission.PortalServicesRead,
-      span: { mobile: 12, tablet: 6, desktop: 4 },
+      span: { mobile: 12, tablet: 6, desktop: 3 },
     });
     expect(PORTAL_WIDGET_LAYOUT.some((entry) => entry.mock)).toBe(false);
   });
@@ -78,6 +78,6 @@ describe("PORTAL_WIDGET_LAYOUT", () => {
     const feedback = PORTAL_WIDGET_LAYOUT.find(
       (entry) => entry.key === PortalWidgetKey.Feedback,
     );
-    expect(feedback?.span).toEqual({ mobile: 12, tablet: 6, desktop: 3 });
+    expect(feedback?.span).toEqual({ mobile: 12, tablet: 6, desktop: 4 });
   });
 });

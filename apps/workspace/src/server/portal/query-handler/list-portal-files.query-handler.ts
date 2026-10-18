@@ -15,8 +15,8 @@ import { portalFileService } from "@/server/portal/services/files/portal-file-se
 import { portalProjectCondition } from "@/server/portal/shared/portal-project-condition";
 
 /**
- * Visible entries, newest first: one tab, or both origins for the chat's file picker. Without
- * `portal.files.read` the page does not exist.
+ * Visible entries, newest first: one origin, or both for the files page and the chat picker.
+ * Without `portal.files.read` the page does not exist.
  */
 export async function listPortalFiles(
   reader: PortalReader,

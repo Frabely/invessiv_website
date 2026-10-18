@@ -59,6 +59,8 @@ export type DataTableLayoutProps = {
   }>;
   /** Pagination metadata. The layout renders the controls inside the table frame. */
   pagination?: ListPaginationProps;
+  /** Below the rows in place of pagination, such as a "load more" control. */
+  footer?: ReactNode;
   frameClassName?: string;
   /** Fills the height provided by a surrounding scrollable table area. */
   fillAvailableHeight?: boolean;
@@ -77,6 +79,7 @@ export function DataTableLayout({
   children,
   columns,
   pagination,
+  footer,
   frameClassName,
   fillAvailableHeight,
   overlay,
@@ -127,6 +130,7 @@ export function DataTableLayout({
           <ListPagination {...pagination} />
         </div>
       ) : null}
+      {footer ? <div className={styles.footer}>{footer}</div> : null}
     </DataTableFrame>
   );
 }

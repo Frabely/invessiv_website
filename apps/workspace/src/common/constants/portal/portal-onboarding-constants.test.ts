@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 
 import { PortalOnboardingApiPath } from "./portal-onboarding-api-paths";
-import { PortalOnboardingEvent } from "./portal-onboarding-events";
+import { PortalFeedbackQueryParam } from "./portal-feedback-query-params";
 import {
   PORTAL_ONBOARDING_REVIEW_SECTION,
+  PORTAL_ONBOARDING_STATUS_SECTION,
   PortalOnboardingQueryParam,
 } from "./portal-onboarding-query-params";
 
@@ -33,11 +34,10 @@ describe("portal onboarding constants", () => {
     });
     expectUnique(Object.values(PortalOnboardingQueryParam));
     expect(PORTAL_ONBOARDING_REVIEW_SECTION).toBe("review");
+    expect(PORTAL_ONBOARDING_STATUS_SECTION).toBe("status");
   });
 
-  it("names the step event", () => {
-    expect(PortalOnboardingEvent).toEqual({
-      StepChanged: "portal:onboarding-step-changed",
-    });
+  it("names the feedback round parameter", () => {
+    expect(PortalFeedbackQueryParam).toEqual({ Round: "round" });
   });
 });

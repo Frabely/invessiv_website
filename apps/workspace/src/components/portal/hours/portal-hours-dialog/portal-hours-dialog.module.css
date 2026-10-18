@@ -1,6 +1,43 @@
-/* Three sections, separated by space alone: each one draws its own rules where the data needs them. */
+/* Figures first, then what they split into, then the details: the order the questions come up. */
 .body {
   display: grid;
-  gap: 2rem;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+.projectHead {
+  display: grid;
+  justify-items: start;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.projectTitle {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-heading-md);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+/* Focus lands here after opening a project so a screen reader continues with it; no ring for it. */
+.projectTitle:focus {
+  outline: none;
+}
+
+.sections {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.sectionHeading {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--font-size-body-sm);
+  font-weight: 700;
+}
+
+.panel {
   min-width: 0;
 }

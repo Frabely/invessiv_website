@@ -47,12 +47,12 @@ export const PORTAL_WIDGET_LAYOUT: readonly PortalWidgetDefinition[] = [
     onlyWithContent: false,
   },
   {
-    key: PortalWidgetKey.ServiceRequest,
+    key: PortalWidgetKey.Feedback,
     order: 30,
     span: COMPACT_ROW,
-    openMode: WidgetOpenMode.Dialog,
+    openMode: WidgetOpenMode.None,
     mock: false,
-    requiredPermission: Permission.PortalServicesRead,
+    requiredPermission: Permission.PortalFeedbackRead,
     onlyWithContent: false,
   },
   {
@@ -75,12 +75,12 @@ export const PORTAL_WIDGET_LAYOUT: readonly PortalWidgetDefinition[] = [
     onlyWithContent: false,
   },
   {
-    key: PortalWidgetKey.Feedback,
+    key: PortalWidgetKey.ServiceRequest,
     order: 60,
     span: QUARTER_ROW,
-    openMode: WidgetOpenMode.None,
+    openMode: WidgetOpenMode.Dialog,
     mock: false,
-    requiredPermission: Permission.PortalFeedbackRead,
+    requiredPermission: Permission.PortalServicesRead,
     onlyWithContent: false,
   },
   {

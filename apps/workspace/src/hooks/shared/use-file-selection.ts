@@ -1,36 +1,14 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
 import { MAX_ARCHIVE_FILES } from "@/common/constants/files/file-archive-limits";
-import { FileSelectionEvent } from "@/common/constants/files/file-selection-events";
-
-function subscribeToUrlChanges(onChange: () => void) {
-  // replaceState does not emit popstate, so selection writes notify mounted file sections.
-  window.addEventListener(FileSelectionEvent.Changed, onChange);
-  window.addEventListener("popstate", onChange);
-  return () => {
-    window.removeEventListener(FileSelectionEvent.Changed, onChange);
-    window.removeEventListener("popstate", onChange);
-  };
-}
-
-function currentSearch() {
-  return window.location.search.slice(1);
-}
+import { useUrlSearch } from "./use-url-search";
 
 /**
  * Selection is URL state so pagination and rerenders preserve it. The value is bound to the
  * customer, so a link carried to another company selects nothing.
  */
 export function useFileSelection(customerId: string, queryParam: string) {
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const search = useSyncExternalStore(
-    subscribeToUrlChanges,
-    currentSearch,
-    () => searchParams.toString(),
-  );
+  const { search, replace: replaceSearch } = useUrlSearch();
   const raw = new URLSearchParams(search).get(queryParam);
   const ids = raw?.startsWith(`${customerId}:`)
     ? raw
@@ -41,17 +19,11 @@ export function useFileSelection(customerId: string, queryParam: string) {
   const selectedIds = [...new Set(ids)].slice(0, MAX_ARCHIVE_FILES);
 
   function replace(nextIds: readonly string[]) {
-    const params = new URLSearchParams(window.location.search);
-    if (nextIds.length)
-      params.set(queryParam, `${customerId}:${nextIds.join(",")}`);
-    else params.delete(queryParam);
-    const query = params.toString();
-    window.history.replaceState(
-      window.history.state,
-      "",
-      query ? `${pathname}?${query}` : pathname,
-    );
-    window.dispatchEvent(new Event(FileSelectionEvent.Changed));
+    replaceSearch((params) => {
+      if (nextIds.length)
+        params.set(queryParam, `${customerId}:${nextIds.join(",")}`);
+      else params.delete(queryParam);
+    });
   }
 
   function toggle(id: string) {
@@ -73,5 +45,16 @@ export function useFileSelection(customerId: string, queryParam: string) {
       replace(selectedIds.filter((selected) => selected !== id));
   }
 
-  return { selectedIds, toggle, add, remove, clear: () => replace([]) };
+  function removeMany(idsToRemove: readonly string[]) {
+    replace(selectedIds.filter((selected) => !idsToRemove.includes(selected)));
+  }
+
+  return {
+    selectedIds,
+    toggle,
+    add,
+    remove,
+    removeMany,
+    clear: () => replace([]),
+  };
 }

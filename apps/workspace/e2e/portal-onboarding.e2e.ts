@@ -269,15 +269,22 @@ test.describe.serial("portal onboarding", () => {
         .getByRole("dialog", { name: "Onboarding absenden?" })
         .getByRole("button", { name: "Jetzt absenden" })
         .click();
-      await expect(contact.getByText(/Abgesendet am/)).toBeVisible();
+      // The sent form opens on its status; the answers follow as steps to read.
+      await expect(
+        contact.getByRole("heading", { name: /Abgesendet am/ }),
+      ).toBeVisible();
       await expect(contact.getByRole("textbox")).toHaveCount(0);
-      await expect(contact.getByText(`Ada ${suffix}`)).toBeVisible();
       // The call is offered only after the team's review; right after the submission the
       // customer cannot book yet. Nothing of a provider is embedded either way.
       await expect(
         contact.getByRole("region", { name: "Onboarding-Call" }),
       ).toHaveCount(0);
       await expect(contact.locator("iframe")).toHaveCount(0);
+      await contact
+        .getByRole("button", { name: `Weiter: Unternehmen ${suffix}` })
+        .click();
+      await expect(contact.getByText(`Ada ${suffix}`)).toBeVisible();
+      await expect(contact.getByRole("textbox")).toHaveCount(0);
 
       // A contact of another company gets nothing, whatever it guesses.
       const foreign = await contact.goto(
@@ -380,7 +387,9 @@ test.describe.serial("portal onboarding", () => {
         .getByRole("dialog", { name: "Onboarding absenden?" })
         .getByRole("button", { name: "Jetzt absenden" })
         .click();
-      await expect(contact.getByText(/Abgesendet am/)).toBeVisible();
+      await expect(
+        contact.getByRole("heading", { name: /Abgesendet am/ }),
+      ).toBeVisible();
       await expect(contact.getByRole("textbox")).toHaveCount(0);
     } finally {
       await returningContext.close();
@@ -471,6 +480,9 @@ test.describe.serial("portal onboarding", () => {
       await expect(
         contact.getByRole("heading", { name: /Abgeschlossen am/ }),
       ).toBeVisible();
+      await contact
+        .getByRole("button", { name: `Weiter: Unternehmen ${suffix}` })
+        .click();
       await expect(
         contact.getByText(`Nordlicht Coaching GmbH ${suffix}`),
       ).toBeVisible();

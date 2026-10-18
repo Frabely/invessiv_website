@@ -8,16 +8,15 @@ import { languageName } from "@invessiv/common/patterns/i18n/language-name";
 import type { OnboardingFieldFormContext } from "@/common/contracts/portal/onboarding-field-form-context";
 import { onboardingFieldDomId } from "@/common/patterns/portal/onboarding-field-dom-id";
 import { onboardingFieldSpan } from "@/common/patterns/portal/onboarding-field-span";
-import {
-  OnboardingAnswerReadView,
-  type OnboardingAnswerReadViewProps,
-} from "@/components/shared/onboarding/onboarding-answer-read-view/onboarding-answer-read-view";
+import { OnboardingAnswerReadView } from "@/components/shared/onboarding/onboarding-answer-read-view/onboarding-answer-read-view";
+import type { OnboardingReadFiles } from "@/common/contracts/shared/onboarding-read-files";
 import type { Locale } from "@/config/i18n";
 import type { PortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
 import {
   OnboardingFieldCell,
   OnboardingFieldGrid,
 } from "../onboarding-field-grid/onboarding-field-grid";
+import { PortalStepHeading } from "@/components/portal/shared/portal-step-heading/portal-step-heading";
 import { QuestionnaireField } from "../questionnaire-field/questionnaire-field";
 import styles from "./onboarding-block-step.module.css";
 
@@ -27,7 +26,7 @@ export type OnboardingBlockStepProps = {
   /** False during a change request for blocks the team did not hand back. */
   editable: boolean;
   /** How attached files open while the block is read-only. */
-  files: OnboardingAnswerReadViewProps["files"];
+  files: OnboardingReadFiles | undefined;
   /** Slot to focus instead of the heading, after a jump from the list of missing answers. */
   focusFieldId: string | null;
   /** What every field of the step reads from and writes to. */
@@ -70,9 +69,7 @@ export function OnboardingBlockStep({
 
   return (
     <section className={styles.step}>
-      <h2 className={styles.title} ref={headingRef} tabIndex={-1}>
-        {block.title}
-      </h2>
+      <PortalStepHeading ref={headingRef}>{block.title}</PortalStepHeading>
       {block.intro ? <p className={styles.intro}>{block.intro}</p> : null}
       {block.reviewNote ? (
         <div className={styles.review}>

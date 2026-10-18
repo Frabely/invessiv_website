@@ -4,19 +4,6 @@
   min-width: 0;
 }
 
-.title {
-  margin: 0;
-  color: var(--color-text);
-  font-size: var(--font-size-heading-lg);
-  line-height: 1.2;
-  overflow-wrap: anywhere;
-}
-
-/* The heading takes the focus after a step change; it is no control, so it shows no ring. */
-.title:focus {
-  outline: none;
-}
-
 .intro {
   max-width: 62ch;
   margin: 0;
@@ -67,15 +54,8 @@
   padding-top: 0.5rem;
 }
 
-/*
- * With room to spare the step title leads the page and the questions read as headings of their
- * fields, a step above the input text.
- */
+/* With room to spare the questions read as headings of their fields, a step above the input text. */
 @media (min-width: 1024px) {
-  .title {
-    font-size: 1.75rem;
-  }
-
   .fields {
     --form-label-size: 1.2rem;
   }

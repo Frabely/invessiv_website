@@ -65,19 +65,20 @@ export function PortalTaskList({
               )}
             />
             <div className={styles.text}>
-              <span className={styles.title}>{task.title}</span>
+              <span className={styles.head}>
+                <span className={styles.title}>{task.title}</span>
+                <span className={styles.meta}>
+                  <PortalDueHint
+                    content={content.due}
+                    locale={locale}
+                    task={{ ...task, done }}
+                    today={today}
+                  />
+                </span>
+              </span>
               {showDescription && task.description ? (
                 <span className={styles.description}>{task.description}</span>
               ) : null}
-              <span className={styles.meta}>
-                <span className={styles.project}>{task.projectTitle}</span>
-                <PortalDueHint
-                  content={content.due}
-                  locale={locale}
-                  task={{ ...task, done }}
-                  today={today}
-                />
-              </span>
             </div>
           </li>
         );

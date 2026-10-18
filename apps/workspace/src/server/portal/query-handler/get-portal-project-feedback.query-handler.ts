@@ -53,8 +53,8 @@ export async function getPortalProjectFeedback(
   const rounds = await portalFeedbackService.toRoundDtos(db, reader, rows);
   const activeRound =
     rounds.find((round) => isActiveFeedbackRound(round.status)) ?? null;
-  const bookingContact =
-    await projectResponsibleMemberService.findBookingContact(db, project.id);
+  const { contact, bookingContact } =
+    await projectResponsibleMemberService.findContacts(db, project.id);
 
   return {
     projectId: project.id,
@@ -64,8 +64,13 @@ export async function getPortalProjectFeedback(
     history: rounds.filter((round) => round !== activeRound),
     canSubmit: portalFeedbackService.canSubmit(reader),
     canAttach: portalFeedbackService.canAttach(reader),
-    booking: bookingContact
-      ? portalBookingMappingService.toDto(bookingContact)
+    contact: contact
+      ? {
+          ...contact,
+          booking: bookingContact
+            ? portalBookingMappingService.toDto(bookingContact)
+            : null,
+        }
       : null,
   };
 }

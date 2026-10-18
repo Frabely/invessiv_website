@@ -5,34 +5,35 @@
   },
   "page": {
     "back": "Zurück zum Überblick",
-    "heading": "Dateien",
-    "intro": "Hier findest du Entwürfe und Unterlagen von uns. Logos, Fotos, Texte oder Videos für dein Projekt lädst du direkt hier hoch."
+    "backShort": "Überblick",
+    "heading": "Dateien"
   },
   "scope": {
     "label": "Dateien nach Projekt",
-    "project": "Dieses Projekt",
     "all": "Alle Projekte"
   },
-  "tabs": {
+  "origin": {
     "label": "Dateien nach Herkunft",
+    "all": "Von uns und dir",
     "fromUs": "Von uns",
     "fromYou": "Von dir"
   },
   "actions": {
-    "upload": "Dateien hochladen",
-    "addLink": "Link hinzufügen"
+    "add": "Datei hinzufügen"
   },
-  "intake": {
-    "dropLabel": "Dateien auswählen oder hierher ziehen",
-    "dropHint": "Fotos, Videos bis 200 MB, Logos, Schriften und Dokumente · bis zu 20 Dateien auf einmal",
-    "linkHint": "Datei zu groß oder schon in der Cloud? Schick uns einfach den Link."
+  "add": {
+    "title": "Datei hinzufügen",
+    "modeLabel": "Wie möchtest du die Datei hinzufügen?",
+    "upload": "Datei hochladen",
+    "link": "Link hinzufügen",
+    "switchWarning": "Beim Wechsel werden deine Auswahl und ungespeicherten Angaben verworfen. Möchtest du wechseln?"
   },
   "upload": {
     "title": "Dateien hochladen",
     "description": "Wir sehen deine Dateien, sobald sie hochgeladen sind.",
-    "dropLabel": "Weitere Dateien auswählen",
-    "dropHint": "Bis zu 20 Dateien, zusammen höchstens 1 GB",
-    "largerHint": "Größere Dateien? Füge stattdessen einen Link hinzu.",
+    "dropLabel": "Dateien auswählen oder hierher ziehen",
+    "dropHint": "Fotos, Videos bis 200 MB, Logos, Schriften und Dokumente · bis zu 20 Dateien, zusammen höchstens 1 GB",
+    "largerHint": "Datei zu groß oder schon in der Cloud? Wähle oben „Link hinzufügen“.",
     "project": "Wofür ist das?",
     "generalOption": "Allgemein",
     "note": "Notiz",
@@ -82,6 +83,18 @@
     "loadMore": "Weitere laden",
     "shown": "{shown} von {total} angezeigt"
   },
+  "table": {
+    "selectAll": "Alle angezeigten für das ZIP auswählen",
+    "columns": {
+      "name": "Name",
+      "origin": "Von",
+      "project": "Projekt",
+      "type": "Typ",
+      "size": "Größe",
+      "added": "Hinzugefügt",
+      "actions": "Aktion"
+    }
+  },
   "kinds": {
     "document": "Dokument",
     "image": "Bild",
@@ -101,6 +114,11 @@
     "openNamed": "{name} öffnen"
   },
   "empty": {
+    "all": {
+      "title": "Noch keine Dateien",
+      "description": "Hier landet alles, was wir für dich freigeben, und alles, was du uns schickst – Logos, Fotos, Texte oder Videos.",
+      "readOnlyDescription": "Hier landet alles, was wir freigeben und was dein Team uns schickt."
+    },
     "fromUs": {
       "title": "Noch nichts von uns",
       "description": "Sobald wir Entwürfe, Exporte oder Unterlagen für dich freigeben, liegen sie hier zum Ansehen und Herunterladen bereit."
@@ -112,9 +130,7 @@
     }
   },
   "archive": {
-    "groupLabel": "Dateien für ZIP auswählen",
     "selectNamed": "{name} für ZIP auswählen",
-    "selectShown": "Alle angezeigten auswählen",
     "selected": "{count} ausgewählt",
     "clear": "Auswahl aufheben",
     "download": "Als ZIP herunterladen",
@@ -131,6 +147,11 @@
     "loading": "Vorschau wird geladen …",
     "error": "Die Vorschau konnte nicht geladen werden. Lade die Datei stattdessen herunter.",
     "download": "Herunterladen"
+  },
+  "panel": {
+    "label": "Vorschau",
+    "empty": "Wähle eine Datei, um sie hier anzusehen.",
+    "expand": "Vollbild"
   },
   "announcements": {
     "uploaded": "{name} hochgeladen",

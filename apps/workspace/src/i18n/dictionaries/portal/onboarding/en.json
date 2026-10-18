@@ -25,6 +25,7 @@
   "steps": {
     "label": "Steps of the onboarding",
     "review": "Review & submit",
+    "state": "Status",
     "nextTo": "Next: {step}",
     "toReview": "Go to review",
     "back": "Back",
@@ -141,6 +142,9 @@
     "close": "Close"
   },
   "states": {
+    "open": {
+      "title": "Not submitted yet"
+    },
     "submitted": {
       "title": "Submitted on {date}",
       "by": "by {name}",
@@ -154,7 +158,7 @@
     "completed": {
       "title": "Completed on {date}",
       "description": "This is the basis for your project. Your answers and files stay here for reference.",
-      "more": "Another file to add later, or something changes? From now on that no longer goes through the onboarding.",
+      "more": "New files or changes no longer go into the onboarding. Send them to us directly:",
       "filesLink": "Upload a file in the files area",
       "chatLink": "Write a message"
     }

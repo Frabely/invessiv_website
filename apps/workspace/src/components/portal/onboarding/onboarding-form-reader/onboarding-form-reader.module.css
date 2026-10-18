@@ -1,0 +1,81 @@
+/* One step at reading width: answers and sentences keep a measure the eye can follow. */
+.step {
+  display: grid;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 56rem;
+  min-width: 0;
+}
+
+/*
+ * The status leads its step: a round mark in the colour of the status beside the heading, so the
+ * state reads at a glance and never by colour alone.
+ */
+.status {
+  --status-tone: var(--color-text-muted);
+
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 1rem;
+}
+
+.status[data-status="submitted"] {
+  --status-tone: var(--color-cta);
+}
+
+.status[data-status="changes_requested"] {
+  --status-tone: var(--color-accent-warm);
+}
+
+.status[data-status="completed"] {
+  --status-tone: var(--color-success);
+}
+
+.statusIcon {
+  display: inline-grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid
+    color-mix(in srgb, var(--status-tone) 40%, var(--color-border));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--status-tone) 14%, transparent);
+  color: var(--status-tone);
+  font-size: 1.15rem;
+}
+
+.statusText {
+  display: grid;
+  gap: 0.4rem;
+  min-width: 0;
+  padding-top: 0.2rem;
+}
+
+.by {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-sm);
+}
+
+.text {
+  max-width: 60ch;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-body-md);
+  line-height: 1.6;
+}
+
+/* Where later additions go: set apart by a rule, the ways out as buttons below the sentence. */
+.later {
+  display: grid;
+  gap: 0.85rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}

@@ -21,8 +21,6 @@
   flex: 1 1 auto;
   width: 3rem;
   min-height: 0;
-  border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
-  border-radius: 18px;
 }
 
 @media (min-width: 768px) and (max-width: 1099px) {
@@ -31,17 +29,13 @@
   }
 }
 
+/* The round chat button sits in the corner, lifted off the bottom edge iOS keeps for gestures. */
 @media (max-width: 767px) {
   .dock {
-    inset: auto 0.5rem 0.5rem 0.5rem;
+    inset: auto 0.75rem calc(1rem + env(safe-area-inset-bottom, 0px)) auto;
   }
 
   .chat {
-    width: 100%;
-  }
-
-  .chat.chat > :global(button[aria-controls]) {
-    width: 100%;
-    min-height: 3rem;
+    width: auto;
   }
 }

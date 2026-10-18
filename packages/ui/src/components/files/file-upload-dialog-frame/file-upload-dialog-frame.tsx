@@ -16,6 +16,8 @@ import styles from "./file-upload-dialog-frame.module.css";
 export type FileUploadDialogFrameProps = {
   /** Settings shared by the whole batch; without them the dialog shows no settings group. */
   fields?: ReactNode;
+  /** Navigation above the content; pending work locks it, drafts may need a discard check. */
+  renderNavigation?: (busy: boolean, hasDraft: boolean) => ReactNode;
   /** BCP 47 locale for file sizes. */
   locale: string;
   labels: {
@@ -54,6 +56,7 @@ export type FileUploadDialogFrameProps = {
 /** Shared presentation for the CRM and portal upload queues. */
 export function FileUploadDialogFrame({
   fields,
+  renderNavigation,
   locale,
   labels,
   rowLabels,
@@ -121,6 +124,7 @@ export function FileUploadDialogFrame({
       title={labels.title}
     >
       <div className={styles.body}>
+        {renderNavigation?.(queue.isActive, queue.items.length > 0)}
         {!queue.hasStarted ? (
           <>
             <FileDropZone

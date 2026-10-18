@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useCallback, useMemo, useRef, useState } from "react";
+import { type ReactNode, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { PortalOnboardingErrorCode } from "@invessiv/common/constants/portal/portal-onboarding-error-codes";
@@ -8,7 +8,6 @@ import type { QuestionnaireGroupEntryDto } from "@invessiv/common/contracts/crm/
 import type { PortalOnboardingFormDto } from "@invessiv/common/contracts/portal/portal-onboarding-form.dto";
 import { getQuestionnaireCompleteness } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-completeness";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
 import { portalOnboardingApiService } from "@/client/portal/portal-onboarding-api-service";
 import { PORTAL_ONBOARDING_REVIEW_SECTION } from "@/common/constants/portal/portal-onboarding-query-params";
 import { DraftSaveState } from "@/common/constants/shared/draft-save-states";
@@ -17,21 +16,23 @@ import type { OnboardingMissingAnswer } from "@/common/contracts/portal/onboardi
 import type { PortalOnboardingStepTarget } from "@/common/contracts/portal/portal-onboarding-step-target";
 import { onboardingAnswerDrafts } from "@/common/patterns/portal/onboarding-answer-drafts";
 import { DraftSaveStatus } from "@/components/shared/draft-save-status/draft-save-status";
-import type { OnboardingAnswerReadViewProps } from "@/components/shared/onboarding/onboarding-answer-read-view/onboarding-answer-read-view";
+import type { OnboardingReadFiles } from "@/common/contracts/shared/onboarding-read-files";
 import type { Locale } from "@/config/i18n";
 import { useOnboardingAutosave } from "@/hooks/portal/use-onboarding-autosave";
 import { useOnboardingFormState } from "@/hooks/portal/use-onboarding-form-state";
 import { usePortalOnboardingStep } from "@/hooks/portal/use-portal-onboarding-step";
+import { useActiveItems } from "@/hooks/shared/use-active-items";
 import type {
   PortalFilesDictionary,
   PortalOnboardingDictionary,
 } from "@/i18n/dictionaries/portal";
 import { OnboardingBlockStep } from "../onboarding-block-step/onboarding-block-step";
-import { OnboardingFormHeader } from "../onboarding-form-header/onboarding-form-header";
+import { PortalStepHeader } from "@/components/portal/shared/portal-step-header/portal-step-header";
 import { OnboardingFormSummary } from "../onboarding-form-summary/onboarding-form-summary";
+import { PortalStepFrame } from "@/components/portal/shared/portal-step-frame/portal-step-frame";
+import { PortalStepBar } from "@/components/portal/shared/portal-step-bar/portal-step-bar";
 import { OnboardingStepTrack } from "../onboarding-step-track/onboarding-step-track";
 import { OnboardingSubmitStep } from "../onboarding-submit-step/onboarding-submit-step";
-import styles from "./onboarding-form-editor.module.css";
 
 // Codes after which the form on screen is no longer what the server holds.
 const STALE_CODES: readonly PortalOnboardingErrorCode[] = [
@@ -48,7 +49,7 @@ export type OnboardingFormEditorProps = {
   content: PortalOnboardingDictionary;
   customerId: string;
   /** How attached files open in blocks the contact may only read right now. */
-  files: OnboardingAnswerReadViewProps["files"];
+  files: OnboardingReadFiles | undefined;
   filesContent: PortalFilesDictionary;
   /** A form this contact may write into. */
   form: PortalOnboardingFormDto;
@@ -120,7 +121,7 @@ export function OnboardingFormEditor({
   const [navigated, setNavigated] = useState(false);
   const [busy, setBusy] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [uploading, setUploading] = useState<ReadonlySet<string>>(new Set());
+  const { isActive: uploading, track: trackUpload } = useActiveItems();
 
   const input = useMemo(
     () => ({
@@ -174,23 +175,12 @@ export function OnboardingFormEditor({
     return ids;
   }, [autosave.invalid, form.blocks]);
 
-  const trackUpload = useCallback((slotKey: string, active: boolean) => {
-    setUploading((current) => {
-      if (current.has(slotKey) === active) return current;
-      const next = new Set(current);
-      if (active) next.add(slotKey);
-      else next.delete(slotKey);
-      return next;
-    });
-  }, []);
-
   const index = sections.indexOf(step.section);
   const block = form.blocks.find((entry) => entry.id === step.section);
 
   function goTo(target: PortalOnboardingStepTarget) {
     // A step change unmounts the fields of the step, which cancels their running uploads.
-    if (uploading.size > 0 && !window.confirm(filesContent.upload.leaveWarning))
-      return;
+    if (uploading && !window.confirm(filesContent.upload.leaveWarning)) return;
     const position = sections.indexOf(target.section ?? sections[0]);
     setNavigated(true);
     setSubmitError(null);
@@ -228,7 +218,7 @@ export function OnboardingFormEditor({
 
   /** Saves first, so what is submitted is exactly what the customer sees. */
   async function submit() {
-    if (busy || uploading.size > 0) return;
+    if (busy || uploading) return;
     setBusy(true);
     setSubmitError(null);
     await state.settle();
@@ -299,107 +289,99 @@ export function OnboardingFormEditor({
   const nextBlock = form.blocks.find((entry) => entry.id === nextSection);
 
   return (
-    <div className={styles.editor}>
-      <OnboardingFormHeader
-        backHref={backHref}
-        backLabel={content.page.back}
-        backShortLabel={content.page.backShort}
-        summary={
-          <OnboardingFormSummary
-            completeness={completeness}
-            invalid={autosave.invalid.size > 0}
-            texts={content.overview}
-          />
-        }
-        title={formatMessage(content.page.heading, {
-          project: form.projectTitle,
-        })}
-      >
-        <OnboardingStepTrack
-          blocks={form.blocks}
-          completeness={completeness}
-          content={content}
-          current={step.section}
-          invalidBlockIds={invalidBlockIds}
-          leftSections={step.leftSections}
-          onSelectAction={(section) => goTo({ section })}
-          requestedBlockIds={requestedBlockIds}
-        />
-      </OnboardingFormHeader>
-      <div className={styles.body} ref={bodyRef}>
-        {notice}
-        {block ? (
-          <OnboardingBlockStep
-            block={block}
-            content={content}
-            editable={form.editableBlockIds.includes(block.id)}
-            files={files}
-            focusFieldId={step.fieldId}
-            form={fieldForm}
-            key={block.id}
-            locale={locale}
-            moveFocus={navigated}
-          />
-        ) : (
-          <OnboardingSubmitStep
-            busy={busy || state.busy || uploading.size > 0}
-            content={content}
-            error={submitError}
-            missing={missing}
-            moveFocus={navigated}
-            onJumpAction={(answer) =>
-              goTo({
-                section: answer.blockId,
-                fieldId: onboardingAnswerDrafts.slotKey(
-                  answer.fieldId,
-                  answer.groupEntryId,
-                ),
-              })
-            }
-            onSubmitAction={submit}
-            progress={completeness}
-          />
-        )}
-      </div>
-      <div className={styles.bar}>
-        <DraftSaveStatus
-          errorText={
-            autosave.errorCode ? content.errors[autosave.errorCode] : null
+    <PortalStepFrame
+      bar={
+        <PortalStepBar
+          backLabel={content.steps.back}
+          nextLabel={
+            nextSection
+              ? nextBlock
+                ? formatMessage(content.steps.nextTo, { step: nextBlock.title })
+                : content.steps.toReview
+              : null
           }
-          locale={locale}
-          onRetryAction={autosave.retry}
-          saveState={saveState}
-          savedAt={savedAt}
-          savedByName={autosave.savedByName}
-          texts={content.draft}
+          onBackAction={
+            index > 0 ? () => goTo({ section: sections[index - 1] }) : null
+          }
+          onNextAction={() => goTo({ section: nextSection })}
+          status={
+            <DraftSaveStatus
+              errorText={
+                autosave.errorCode ? content.errors[autosave.errorCode] : null
+              }
+              locale={locale}
+              onRetryAction={autosave.retry}
+              saveState={saveState}
+              savedAt={savedAt}
+              savedByName={autosave.savedByName}
+              texts={content.draft}
+            />
+          }
         />
-        <div className={styles.actions}>
-          {index > 0 ? (
-            <ButtonControl
-              onClick={() => goTo({ section: sections[index - 1] })}
-              type="button"
-              variant="ghost"
-            >
-              {content.steps.back}
-            </ButtonControl>
-          ) : null}
-          {nextSection ? (
-            <PrimaryCtaButton
-              className={styles.next}
-              onClick={() => goTo({ section: nextSection })}
-              type="button"
-            >
-              <span className={styles.nextLabel}>
-                {nextBlock
-                  ? formatMessage(content.steps.nextTo, {
-                      step: nextBlock.title,
-                    })
-                  : content.steps.toReview}
-              </span>
-            </PrimaryCtaButton>
-          ) : null}
-        </div>
-      </div>
-    </div>
+      }
+      header={
+        <PortalStepHeader
+          backHref={backHref}
+          backLabel={content.page.back}
+          backShortLabel={content.page.backShort}
+          summary={
+            <OnboardingFormSummary
+              completeness={completeness}
+              invalid={autosave.invalid.size > 0}
+              texts={content.overview}
+            />
+          }
+          title={formatMessage(content.page.heading, {
+            project: form.projectTitle,
+          })}
+        >
+          <OnboardingStepTrack
+            blocks={form.blocks}
+            completeness={completeness}
+            content={content}
+            current={step.section}
+            invalidBlockIds={invalidBlockIds}
+            leftSections={step.leftSections}
+            onSelectAction={(section) => goTo({ section })}
+            requestedBlockIds={requestedBlockIds}
+          />
+        </PortalStepHeader>
+      }
+      ref={bodyRef}
+    >
+      {notice}
+      {block ? (
+        <OnboardingBlockStep
+          block={block}
+          content={content}
+          editable={form.editableBlockIds.includes(block.id)}
+          files={files}
+          focusFieldId={step.fieldId}
+          form={fieldForm}
+          key={block.id}
+          locale={locale}
+          moveFocus={navigated}
+        />
+      ) : (
+        <OnboardingSubmitStep
+          busy={busy || state.busy || uploading}
+          content={content}
+          error={submitError}
+          missing={missing}
+          moveFocus={navigated}
+          onJumpAction={(answer) =>
+            goTo({
+              section: answer.blockId,
+              fieldId: onboardingAnswerDrafts.slotKey(
+                answer.fieldId,
+                answer.groupEntryId,
+              ),
+            })
+          }
+          onSubmitAction={submit}
+          progress={completeness}
+        />
+      )}
+    </PortalStepFrame>
   );
 }

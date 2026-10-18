@@ -25,37 +25,3 @@
   color: var(--color-text);
   font-weight: 600;
 }
-
-.link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 44px;
-  padding: 0 1rem;
-  border: 1px solid var(--color-border-strong);
-  border-radius: 999px;
-  color: var(--color-text);
-  font-size: var(--font-size-ui-sm);
-  font-weight: 600;
-  text-decoration: none;
-}
-
-/* Only the customer's turn gets the loud button; everything else stays a quiet way in. */
-.link[data-primary="true"] {
-  border-color: var(--color-cta);
-  background: var(--color-cta);
-  color: var(--color-on-cta);
-}
-
-.link:hover {
-  border-color: var(--color-cta);
-}
-
-.link[data-primary="true"]:hover {
-  background: var(--color-cta-hover);
-}
-
-.link:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
-}

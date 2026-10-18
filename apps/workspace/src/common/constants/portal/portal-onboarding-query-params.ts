@@ -13,3 +13,6 @@ export type PortalOnboardingQueryParam =
 
 /** `section` value of the last step, where the customer reviews and submits. */
 export const PORTAL_ONBOARDING_REVIEW_SECTION = "review";
+
+/** `section` value of the first step of a form that is only read: where it stands and what comes next. */
+export const PORTAL_ONBOARDING_STATUS_SECTION = "status";

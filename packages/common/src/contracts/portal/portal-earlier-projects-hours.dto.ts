@@ -9,4 +9,8 @@ export interface PortalEarlierProjectsHoursDto {
   usedMinutes: number;
   /** Allocated minus used across those projects; may be negative. */
   remainingMinutes: number;
+  /** Sum of positive project remainders, before offsetting overdrawn projects. */
+  openMinutes: number;
+  /** Sum of individual project overruns, before offsetting other projects' remainders. */
+  overMinutes: number;
 }

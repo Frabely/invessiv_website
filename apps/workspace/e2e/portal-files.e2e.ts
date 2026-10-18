@@ -1,6 +1,10 @@
 import { expect, test } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import { unzipSync } from "fflate";
+import { PortalDashboardQueryParam } from "@/common/constants/portal/portal-dashboard-query-params";
+import { PortalSection } from "@/common/constants/portal/portal-sections";
+import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
+import { portalPathFor } from "@/lib/auth/routes";
 import {
   type PortalE2eFixture,
   portalE2ePaths,
@@ -16,6 +20,47 @@ test.describe.serial("portal files", () => {
     fixture = JSON.parse(
       await readFile(portalE2ePaths.fixture, "utf8"),
     ) as PortalE2eFixture;
+  });
+
+  test("keeps the file project filter and the header project switcher synchronized", async ({
+    browser,
+  }) => {
+    const context = await browser.newContext({
+      storageState: portalE2ePaths.filesContactState,
+    });
+    try {
+      const page = await context.newPage();
+      await page.goto(
+        buildPortalHref(
+          portalPathFor("de", fixture.hoursCustomer, PortalSection.Files),
+          "",
+          { project: fixture.hoursProjectA },
+        ),
+      );
+      const header = page.getByRole("button", { name: "Projekt wechseln" });
+      const filter = page.getByRole("button", { name: "Dateien nach Projekt" });
+      await expect(header).toContainText("Hours Website");
+      for (const [projectId, title] of [
+        [fixture.hoursProjectB, "Hours Shop"],
+        [fixture.hoursProjectA, "Hours Website"],
+      ]) {
+        await filter.click();
+        await page
+          .getByRole("option", { name: new RegExp(`${title}$`) })
+          .click();
+        await expect(filter).toContainText(title);
+        await expect(header).toContainText(title);
+        await expect
+          .poll(() =>
+            new URL(page.url()).searchParams.get(
+              PortalDashboardQueryParam.Project,
+            ),
+          )
+          .toBe(projectId);
+      }
+    } finally {
+      await context.close();
+    }
   });
 
   test("shares released links, hides the actual internal id, and receives a customer link", async ({
@@ -61,9 +106,9 @@ test.describe.serial("portal files", () => {
 
     await page.goto(`/de/portal/${fixture.filesCustomer}/files`);
     await expect(page.getByRole("heading", { name: "Dateien" })).toBeVisible();
-    const list = page.getByRole("list", { name: "Dateien und Links" });
+    const list = page.getByRole("table", { name: "Dateien und Links" });
     await expect(
-      list.getByRole("link", { name: new RegExp(released) }).first(),
+      list.getByRole("row", { name: new RegExp(released) }),
     ).toBeVisible();
     await expect(list.getByText(internal)).toHaveCount(0);
     // The owner view reads but never uploads.
@@ -87,7 +132,9 @@ test.describe.serial("portal files", () => {
       const contact = await contactContext.newPage();
       await contact.goto(`/de/portal/${fixture.filesCustomer}/files`);
       await expect(
-        contact.getByRole("link", { name: new RegExp(released) }).first(),
+        contact
+          .getByRole("table", { name: "Dateien und Links" })
+          .getByRole("row", { name: new RegExp(released) }),
       ).toBeVisible();
       await expect(contact.getByText(internal)).toHaveCount(0);
       const hiddenContact = await contact.request.get(
@@ -96,9 +143,10 @@ test.describe.serial("portal files", () => {
       expect(hiddenContact.status()).toBe(404);
 
       const customerLink = `Vom Kunden ${suffix}`;
-      await contact.getByRole("button", { name: "Link hinzufügen" }).click();
+      await contact.getByRole("button", { name: "Datei hinzufügen" }).click();
+      await contact.getByRole("radio", { name: "Link hinzufügen" }).click();
       const contactDialog = contact.getByRole("dialog", {
-        name: "Link hinzufügen",
+        name: "Datei hinzufügen",
       });
       await contactDialog.getByLabel("Bezeichnung").fill(customerLink);
       await contactDialog
@@ -108,12 +156,11 @@ test.describe.serial("portal files", () => {
         .getByRole("button", { name: "Link speichern" })
         .click();
       await expect(contactDialog).toBeHidden();
-      await expect(
-        contact.getByRole("tab", { name: "Von dir" }),
-      ).toHaveAttribute("aria-selected", "true");
-      await expect(
-        contact.getByRole("link", { name: new RegExp(customerLink) }).first(),
-      ).toBeVisible();
+      const customerRow = contact.getByRole("row", {
+        name: new RegExp(customerLink),
+      });
+      await expect(customerRow).toBeVisible();
+      await expect(customerRow.getByText("Von dir")).toBeVisible();
 
       const internalList = await page.request.get(
         `/api/workspace/crm/customers/${fixture.filesCustomer}/files?origin=customer`,
@@ -144,8 +191,9 @@ test.describe.serial("portal files", () => {
       });
     }
 
-    await page.getByRole("tab", { name: "Von dir" }).click();
-    await expect(page).toHaveURL(/tab=fromYou/);
+    await page.getByRole("button", { name: "Dateien nach Herkunft" }).click();
+    await page.getByRole("option", { name: "Von dir" }).click();
+    await expect(page).toHaveURL(/origin=fromYou/);
   });
 
   test("confirms release when an internal file is attached to a message", async ({
@@ -343,6 +391,7 @@ test.describe.serial("portal files", () => {
         `Internal file ${suffix}`,
       );
 
+      await contact.getByRole("button", { name: "Datei hinzufügen" }).click();
       await contact
         .locator('input[type="file"]')
         .first()
@@ -352,7 +401,7 @@ test.describe.serial("portal files", () => {
           buffer: Buffer.from(`Customer file ${suffix}`, "utf8"),
         });
       const customerUploadDialog = contact.getByRole("dialog", {
-        name: "Dateien hochladen",
+        name: "Datei hinzufügen",
       });
       await customerUploadDialog
         .getByRole("button", { name: "1 Datei hochladen" })

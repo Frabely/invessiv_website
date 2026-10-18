@@ -70,7 +70,8 @@
   bottom: 0;
   z-index: 2;
   display: grid;
-  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+  /* Only the third row is fixed; the mock's extra rows are implicit, so a real thread gets no empty gaps. */
+  grid-template-rows: auto auto minmax(0, 1fr);
   gap: 0.75rem;
   width: min(22rem, 85vw);
   padding: 1.1rem 1.1rem 1rem;
@@ -198,43 +199,52 @@
   }
 }
 
+/* Floating above the page: its own frame, since no layout edge borders it. */
+.dock[data-overlay="true"] {
+  border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+  border-radius: 18px;
+}
+
 .dock[data-overlay="true"] .panel {
-  position: absolute;
-  top: 0;
-  right: 100%;
-  bottom: 0;
-  left: auto;
   width: min(26rem, calc(100vw - 3rem));
-  height: auto;
   overflow-y: auto;
   overscroll-behavior: contain;
   border: 1px solid var(--color-border-strong);
-  box-shadow: -18px 0 40px
-    color-mix(in srgb, var(--color-shadow) 60%, transparent);
 }
 
+/*
+ * On phones the dock is a round button in either mode, not a bar along the bottom edge: iOS takes
+ * taps there for its own gestures and toolbar. The caller pins it to a corner clear of that edge;
+ * the panel opens above it. Doubled classes outrank the overlay rules above.
+ */
 @media (max-width: 767px) {
-  .dock {
+  .dock.dock {
     z-index: 3;
-    border-top: 1px solid var(--color-border-strong);
-    border-left: 0;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 999px;
+    box-shadow: 0 10px 28px
+      color-mix(in srgb, var(--color-shadow) 55%, transparent);
   }
 
-  .rail.rail {
-    width: 100%;
-    min-height: 3rem;
-    padding: 0.8rem 1rem;
+  .dock.dock .rail.rail {
+    width: 3.5rem;
+    min-height: 3.5rem;
+    padding: 0;
+    border-radius: 999px;
+    color: var(--color-text);
+    font-size: 1.15rem;
   }
 
-  .dock[data-overlay="true"] .panel {
+  .dock.dock .panel {
     top: auto;
     right: 0;
-    bottom: 100%;
-    left: 0;
-    width: auto;
+    bottom: calc(100% + 0.5rem);
+    width: min(26rem, calc(100vw - 1.5rem));
     height: min(70dvh, 32rem);
-    border: 1px solid var(--color-border-strong);
     overflow-y: auto;
+    overscroll-behavior: contain;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 18px;
     box-shadow: 0 -18px 40px
       color-mix(in srgb, var(--color-shadow) 60%, transparent);
   }

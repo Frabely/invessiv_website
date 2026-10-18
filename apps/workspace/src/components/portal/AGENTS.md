@@ -18,6 +18,10 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 - **Widgets registrieren sich ausschließlich in `PORTAL_WIDGET_LAYOUT`** (`src/common/constants/portal/`). Sichtbarkeit
   läuft über `listVisiblePortalWidgets` (Permission + `onlyWithContent`). Ein neuer Folge-Ordner stellt sein Mock-Widget
   um (`mock: false` + `requiredPermission`), statt eine zweite Karte zu bauen.
+- **Jedes Widget hat seine eigene Farbe** aus `PORTAL_WIDGET_ACCENTS` (`src/common/constants/portal/`, ein Test
+  verhindert doppelte Farben) und übergibt sie als `accent` an `Widget`. Wege auf andere Seiten laufen über
+  `openMode="page"` mit `linkComponent={Link}`, nicht über eigene Links im Inhalt; ist der Kunde dran, setzt das
+  Widget `openProminent`. Details zur Aktionsleiste in `packages/ui/AGENTS.md`, Abschnitt „Widgets“.
 - Die Projekt-Auswahl darf den Titel eines sichtbaren Projekts als Navigation für unabhängig lesbare Aufgaben,
   Feedback oder Onboarding zeigen. Projektdetails und abgeschlossene Projekte bleiben an `portal.projects.read`
   gebunden; die Fach-Widgets prüfen nur ihr eigenes Leserecht.
@@ -73,11 +77,14 @@ Plan: `apps/workspace/plans/crm/13a-kundenchat/26-chat-im-portal.md`.
   bekommt nie `canWrite` und zeigt stattdessen den Owner-Hinweis mit CRM-Link.
 - Im Dashboard gibt es **kein** Nachrichten-Widget: Der `ChatDock` ist der Einstieg und zeigt Ungelesenes am Rail
   (`unreadCount`). Ohne `portal.messages.read` wird der Dock nicht gerendert.
+- **Mobil (unter 768 px) ist der Dock ein runder Button unten rechts**, kein Balken am unteren Rand: iOS fängt Taps
+  direkt am Rand für die eigenen Gesten und die Safari-Leiste ab. Der Abstand zum Rand bleibt deshalb mindestens
+  1 rem plus `safe-area-inset-bottom`.
 - **Keine eigene Chat-Seite.** Der Dock im Dashboard ist der einzige Ort des Chats (Entscheidung 08.10.2026). Wer
   von einer anderen Portalseite in den Chat verlinkt, baut den Link über
   `buildPortalHref(portalPathFor(locale, customerId), "", { project, chat: true })`: Das Dashboard kommt mit
   `?chat=open` und geöffnetem Dock an. Gelesen wird der Parameter nur über `readPortalDashboardChat`; beim ersten
-  Auf- oder Zuklappen entfernt das Dashboard ihn ohne Server-Roundtrip (`history.replaceState`). Ohne Leserecht
+  Auf- oder Zuklappen entfernt das Dashboard ihn ohne Server-Roundtrip (`useUrlSearch().replace`). Ohne Leserecht
   bleibt der Parameter wirkungslos.
 - Drafts und fehlgeschlagene Sendungen sind je Nutzer und Firma gebunden (`viewerUserId:customerId`).
 - **Anhänge (ab Task 56):** 📎 erscheint nur, wenn die Seite `filesContent` übergibt und der Server
@@ -93,16 +100,56 @@ Plan: `apps/workspace/plans/crm/14-dateien/55-portal-dateien.md`.
 - Komponenten liegen unter `files/`; Orchestrator ist `files/portal-files-view`. Typ-Symbol, Upload-Zeile, Lightbox
   und Formular-Dialog kommen aus `@invessiv/ui` (`FileKindIcon`, `UploadQueueRow`, `FileLightbox`, `FormDialog`) —
   dieselben Bausteine wie im CRM, nur mit Portal-Texten aus `dictionaries/portal/files/`.
-- Upload- und Link-Dialoge, Dateizeile, Listenrahmen und ZIP-Auswahlleiste nutzen die geteilten UI-Bausteine
-  `FileUploadDialogFrame`, `FileLinkDialogFrame`, `FileEntryRow`, `FileListFrame` und `FileArchiveToolbar`.
+- Upload- und Link-Dialoge nutzen die geteilten UI-Bausteine `FileUploadDialogFrame` und `FileLinkDialogFrame`.
   Portal-Komponenten ergänzen ausschließlich ihre Portal-DTOs, erlaubten Projekte und API-Aufrufe.
-- Laden nur über `usePortalFiles` (auf dem geteilten `usePagedFiles`), Uploads nur über `useUploadQueue` mit
-  Portal-Transport, Auswahl für ZIP über `useFileSelection` (URL-Parameter `selected`, an die Kunden-ID gebunden).
-  Reiter „Von uns“ / „Von dir“ im URL-Parameter `tab`.
-- Upload-Fläche und „Link hinzufügen“ erscheinen nur mit `canUpload` (Seite: `portal.files.write` und keine
+- **Layout wie Onboarding und Feedback (Paket K, Entscheidung 17.10.2026,
+  Plan `apps/workspace/plans/crm/26-portal-dateien-layout/K-portal-files-layout.md`).** Die Seite rendert
+  `shared/portal-step-frame` in einem Wrapper mit `data-portal-fixed-head` (ohne ihn scrollt die Shell selbst und
+  die Fußleiste wandert mit): fester Kopf (`shared/portal-step-header`, ohne Stepper) mit Zurück-Link, Titel und
+  den Filtern, darunter scrollt die Tabelle, unten die Fußleiste (`shared/portal-page-bar`).
+- **Tabelle statt Liste (Paket M, Entscheidung 17.10.2026,
+  Plan `apps/workspace/plans/crm/26-portal-dateien-layout/M-portal-files-table.md`).** `files/portal-file-table`
+  rendert `DataTableLayout` aus `@invessiv/ui` mit `fillAvailableHeight`: Nur die Tabelle scrollt,
+  Kopf und Footer bleiben stehen, die Seite selbst scrollt nicht; dazu
+  Mobile-Cards unter 720 px; je Eintrag `files/portal-file-table-row`. Spalten: Auswahl, Name (Typ-Icon, Name,
+  Notiz einzeilig), Von (Badge), Projekt (nur unter „Alle Projekte“, aus `portal-file-project-label`), Typ
+  (`filePresentation.typeLabel`), Größe, Hinzugefügt, Aktion (Herunterladen bzw. Öffnen). Bis Plan L nur das
+  Typ-Icon, keine Vorschaubilder. „Weitere laden“ steht im `footer` der Tabelle, keine nummerierten Seiten:
+  Die ZIP-Auswahl darf alles Geladene umfassen.
+- **Filter** (`files/portal-files-filters`, zwei `CustomSelect`): Projekt (jedes freigegebene Projekt aus
+  `projects` oder „Alle Projekte“; erscheint nur mit mindestens einem Projekt) und Herkunft („Von uns und dir“,
+  „Von uns“, „Von dir“, `PortalFileOriginFilter`). Standard ist beides ungefiltert bzw. das aktuelle Projekt.
+  URL-State per `useUrlSearch` ohne Server-Roundtrip: `origin` (fehlt = alle), `project` (wie im Dashboard)
+  und `scope=all`. Ein Projektwechsel leert die ZIP-Auswahl; der Zurück-Link nimmt das gewählte Projekt mit.
+  Weitere Filter gibt es bewusst nicht.
+- **Ganze Zeile öffnet:** Ein Klick irgendwo in die Zeile wirkt wie ein Klick auf den Namen; Checkbox und Aktion
+  bleiben eigene Klickziele. Mit Panel zeigt jeder Eintrag (auch Links) sich im Panel; ohne Panel öffnen Vorschau-
+  fähige Dateien die Lightbox und Links einen neuen Tab, alles andere lädt nur über die Aktion herunter.
+- **Auswahl wie die Bulk-Leiste der Leads:** `files/portal-files-selection-bar` auf `SelectionActionBar` aus
+  `@invessiv/ui` schwebt ab einer gewählten Datei unten mittig über der Fußleiste (`--selection-action-bar-offset`
+  am Seitenwrapper) mit „Auswahl aufheben“ und „Als ZIP herunterladen“; Hinweise auf die Grenze bzw. Videos stehen
+  in der Leiste. Die Kopf-Checkbox wählt alle gezeigten Einträge außer Videos bzw. hebt sie wieder auf.
+- **Fußleiste:** nur „Datei hinzufügen“, immer sichtbar (mit `canUpload`). Die Seite nutzt `FileArchiveToolbar`
+  nicht; der Baustein bleibt dem CRM.
+- **Ein Hinzufügen-Dialog:** `portal-file-add-dialog` startet mit Upload und wechselt über `SegmentedControl` zum
+  Link-Formular. Jeweils ein Dialog, gleicher Titel, passende Beschreibung und Aktionen. Beide Modi verwenden die
+  bestehenden Upload-/Link-Dialograhmen und Portal-Transporte. Während Upload oder Speichern ist der Wechsel
+  gesperrt; ungespeicherte Auswahl und Angaben werden nur nach Bestätigung verworfen. Keine Upload-Fläche auf der
+  Seite außerhalb des Dialogs.
+- **Vorschau-Panel ab 1100 px** (`PORTAL_FILES_PANEL_MEDIA_QUERY`, CSS wiederholt den Breakpoint): Die Tabelle nimmt
+  höchstens zwei Drittel, rechts mitlaufend (`sticky`) `FilePreviewPanel` aus `@invessiv/ui`. Der Klick zeigt
+  den Eintrag dort (URL-Parameter `file`), die gezeigte Zeile ist `data-active`. „Vollbild“ öffnet die Lightbox.
+  Nur die gewählte Datei lädt, ohne Wahl nichts. Filterwechsel leeren das Panel.
+- **Vorschaubilder in der Tabelle** sind nicht umgesetzt; Plan `26-portal-dateien-layout/L-file-thumbnails.md`
+  (serverseitige Kleinversionen, private Originale bleiben ungeladen).
+- Laden nur über `usePortalFiles` (auf dem geteilten `usePagedFiles`; `origin` null lädt beide Herkünfte),
+  Uploads nur über `useUploadQueue` mit Portal-Transport, Auswahl für ZIP über `useFileSelection` (URL-Parameter
+  `selected`, an die Kunden-ID gebunden).
+- „Datei hinzufügen“ erscheint nur mit `canUpload` (Seite: `portal.files.write` und keine
   Owner-Sicht). Die Owner-Sicht zeigt stattdessen den Owner-Hinweis mit CRM-Link. Es gibt keinen Lösch- oder
   Bearbeitungsweg im Portal.
-- Nach eigenem Upload oder Link springt die Ansicht auf „Von dir“, damit der Kunde sieht, was angekommen ist.
+- Nach eigenem Upload oder Link springt nur ein Filter „Von uns“ auf „Von dir“, damit der Kunde sieht, was
+  angekommen ist; unter „Von uns und dir“ bleibt der Filter stehen.
 - Das Dashboard-Widget `files` zeigt je Reiter die drei neuesten Einträge und verlinkt die Seite; ohne
   `portal.files.read` wird es nicht gerendert.
 
@@ -110,13 +157,36 @@ Plan: `apps/workspace/plans/crm/14-dateien/55-portal-dateien.md`.
 
 Plan: `apps/workspace/plans/crm/16-feedbackrunden/60-ui-uebergabe-und-kundenbogen.md`.
 
-- Komponenten liegen unter `feedback/`; Orchestrator ist `feedback/feedback-page-view`, der Bogen einer offenen Runde
-  `feedback/feedback-sheet`. Welcher Zustand gezeigt wird, entscheidet ausschließlich `portalFeedbackPageState`
-  (`common/patterns/portal/`).
+- Komponenten liegen unter `feedback/`; Orchestrator ist `feedback/feedback-page-view`. Wer die offene Runde
+  ausfüllen darf (Zustand `sheet`), bekommt `feedback-editor`, alle anderen und jeder andere Zustand `feedback-reader`.
+  Welcher Zustand gezeigt wird, entscheidet ausschließlich `portalFeedbackPageState` (`common/patterns/portal/`).
+- **Schritt-Layout wie das Onboarding (Paket J, Entscheidung 16.10.2026,
+  Plan `apps/workspace/plans/crm/25-portal-feedback-redesign/J-portal-feedback-layout.md`).** Editor und Reader rendern
+  `feedback-page-frame`: fester Kopf (`shared/portal-step-header`) mit Zurück-Link, Titel und übrigen Runden, darunter
+  der Stepper `feedback-round-track` (`ProcessTrack` kompakt), die Runde scrollt dazwischen, unten die Fußleiste
+  (`shared/portal-step-bar`). **Ein Schritt = eine Runde.** Der Stepper zeigt alle Runden aus
+  `listFeedbackRoundSteps`: übergebene sind wählbar, kommende und nach einer Abnahme entfallene stehen ausgegraut und
+  ohne Button da (`disabled` am `ProcessTrackStep`). Füllung nach Status (offen ¼, eingereicht/Gespräch ½, Umsetzung ¾,
+  umgesetzt/abgenommen voll und grün); zurückgegebene Runde und Gespräch tragen die Sprechblasen-Marke.
+- Die gewählte Runde steht in der URL (`?round=<nummer>`) und läuft ausschließlich über `useFeedbackRoundNavigation`
+  (auf dem geteilten `usePortalStepSearch`, derselbe wie im Onboarding). Ohne gültigen Parameter öffnet die laufende
+  bzw. neueste Runde (`initialFeedbackRoundNumber`). Ein Wechsel setzt den Scrollbereich an den Anfang und den Fokus
+  auf die Rundenüberschrift. Die offene Runde bleibt beim Lesen früherer Runden eingebunden, damit Uploads auch
+  bei Browser-Zurück/Vorwärts weiterlaufen; ihre ausgeblendeten Felder sind nicht bedienbar.
+- Jede Runde ist ein `feedback-round-step`: Kopf (`feedback-round-head`: Titel, Status-Badge, maßgebliches Datum,
+  „Was ist neu“ und Vorschau als `ButtonLink`), Stand (`feedback-round-notice` über `feedback-state-notice`), Punkte als
+  Karten. Frühere Runden sind nur lesbar. Der Entwurf lebt im Editor, ein Blick zurück verliert nichts.
+- **Kontaktwege** (`feedback-contact-ways`): Chat, Termin im Kalender der zuständigen Person und E-Mail an sie in einer
+  Zeile, der Anbieterhinweis zum Kalender darunter. Genutzt vom Gesprächs-Hinweis und vom Hinweis „Runden aufgebraucht“
+  (dort zuerst „Zusätzliche Runde anfragen“, wenn angeboten). Person, Adresse und Link kommen nur aus `contact` im DTO.
+- **Kein „Zwischenspeichern“.** Der Autosave speichert; die Fußleiste zeigt links `DraftSaveStatus`, rechts
+  „Feedback einreichen“. Auf früheren Runden zeigt sie Zurück/Weiter. Keine selbst gebauten Pillen-Links oder runden
+  Buttons: Links sind `ButtonLink`, Entfernen eines Punkts ist ein Icon-Button (`size="icon"`, `quiet`).
 - Entwurf, Autosave (≈ 1,5 s entprellt), Konflikt und Verlassen-Warnung laufen ausschließlich über `useFeedbackDraft`
   (`src/hooks/portal/`); API-Aufrufe nur über `portalFeedbackApiService`. Die Statuszeile ist der geteilte
-  `DraftSaveStatus` (`components/shared/draft-save-status/`), die Konfliktanzeige reicht der Bogen als Slot durch
-  (`feedback-draft-conflict`); die Verlassen-Warnung kommt aus `useLeaveWarning` (`src/hooks/shared/`). Vor Upload, Einreichen und Freigeben wird
+  `DraftSaveStatus` (`components/shared/draft-save-status/`), die Konfliktanzeige steht im Editor über den Punkten
+  (`feedback-draft-conflict`). Speicherstatus und Konflikte bleiben auch beim Lesen früherer Runden sichtbar und
+  nennen dort die betroffene offene Runde; die Verlassen-Warnung kommt aus `useLeaveWarning` (`src/hooks/shared/`). Vor Upload, Einreichen und Freigeben wird
   immer `flush()` abgewartet. Ein 409 zeigt den aktuellen Stand und bietet die eigene Fassung zum Wiederherstellen
   oder Kopieren an — nie stilles Überschreiben.
 - Bearbeiten nur mit `canSubmit`, Anhängen/Lösen nur mit `canAttach`, Upload zusätzlich mit `portal.files.write`
@@ -125,9 +195,10 @@ Plan: `apps/workspace/plans/crm/16-feedbackrunden/60-ui-uebergabe-und-kundenboge
   `shared/portal-attachment-field/`.
 - Freigeben ohne Änderungen erscheint nur ohne Punkte und nur über `feedback-approve-dialog` mit Pflicht-Haken.
 - Ab Task 61: Gespräch (`discussion`) und zurückgegebene Runde zeigen den Hinweis des Teams über
-  `feedback-team-notice`. Ergebnisse je Punkt zeigt `feedback-item-list` über das geteilte `FeedbackItemResult`.
-  Nach einer abgeschlossenen Runde stehen ihre Ergebnisse vorn; `feedback-final-approval` bietet die Abnahme an
-  (nach der letzten Runde prominent, vorher als ruhige Option) und nutzt `feedback-approve-dialog` mit eigenen Texten
+  `feedback-round-notice`. Ergebnisse je Punkt zeigt `feedback-item-list` über das geteilte `FeedbackItemResult`.
+  Nach einer abgeschlossenen Runde öffnet die Seite auf ihr; `feedback-final-approval` bietet die Abnahme an
+  (nach der letzten Runde als Hauptaktion in der Fußleiste, vorher als ruhiger Abschnitt, der die Zahl der verfallenden
+  Runden nennt) und nutzt `feedback-approve-dialog` mit eigenen Texten
   (`finalApproveDialog`). Sprachregel: Die Abkürzung aus einer leeren Runde heißt „freigeben“, die Abnahme nach der
   letzten Runde „abnehmen“; der Endzustand heißt überall „Abgenommen am …“.
 - Links auf die Seite entstehen nur über `buildPortalFeedbackPath`. Das Dashboard-Widget `feedback` erscheint nur
@@ -138,11 +209,16 @@ Plan: `apps/workspace/plans/crm/16-feedbackrunden/60-ui-uebergabe-und-kundenboge
 Plan: `apps/workspace/plans/crm/15-onboarding/66-portal-formular.md`.
 
 - Komponenten liegen unter `onboarding/`; Orchestrator ist `onboarding/onboarding-form-view`. Wer gerade schreiben
-  darf (`editableBlockIds` nicht leer), bekommt `onboarding-form-editor`, alle anderen und jeder spätere Status die
-  Leseansicht. Das Dashboard-Widget verlinkt direkt auf den Bogen des gewählten Projekts.
+  darf (`editableBlockIds` nicht leer), bekommt `onboarding-form-editor`, alle anderen und jeder spätere Status
+  `onboarding-form-reader`. Das Dashboard-Widget verlinkt direkt auf den Bogen des gewählten Projekts.
+- **Lesen im selben Schritt-Layout (Entscheidung 16.10.2026).** Der Reader hat denselben Kopf, dieselbe Schrittleiste
+  und dieselbe Fußleiste (`shared/portal-step-bar`) wie der Editor. Erster Schritt ist `status`
+  (`PORTAL_ONBOARDING_STATUS_SECTION`) mit Stand, Terminkarte, Owner-Hinweis und nach dem Abschluss den Wegen in
+  Dateibereich und Chat; danach folgt je Block ein Schritt mit den Antworten als Text (`OnboardingAnswerReadView`),
+  nie als deaktivierte Eingaben. Es gibt keinen Prüfschritt und keinen Gesamtstand im Kopf.
 - **Ein Block = ein Schritt.** Der Schritt steht in der URL (`?section=<blockId>` bzw. `review`, optional
   `&field=<fieldId>`) und wird ausschließlich über `usePortalOnboardingStep` gelesen und geschrieben
-  (`history.pushState`, kein Server-Roundtrip). Pflichtfelder blockieren den Schrittwechsel nie. Nach einem Wechsel
+  (über `usePortalStepSearch` auf `useUrlSearch`, neuer Verlaufseintrag, kein Server-Roundtrip). Pflichtfelder blockieren den Schrittwechsel nie. Nach einem Wechsel
   liegt der Fokus auf der Blocküberschrift, nach einem Sprung aus der Liste fehlender Angaben auf dem Feld
   (`onboardingFieldDomId`).
 - **Speichern nur über `useOnboardingAutosave`** (`src/hooks/portal/`): Text entprellt (1,5 s) und beim Verlassen des
@@ -232,11 +308,11 @@ Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-le
 
 - **Layout und Fortschritt (Paket I, Ordner 18):** Plan
   `apps/workspace/plans/crm/18-portal-prozess-nacharbeiten/I-portal-onboarding-layout.md`.
-  - **Fester Bogen-Kopf** (`onboarding/onboarding-form-header`): Zurück-Link, `h1` und Gesamtstand in einer Zeile,
-    darunter die Schrittleiste. Der Editor rendert ihn selbst (er kennt den Stand), die Leseansicht ohne Leiste. Der
+  - **Fester Bogen-Kopf** (`shared/portal-step-header`, geteilt mit dem Feedback): Zurück-Link, `h1` und Gesamtstand in einer Zeile,
+    darunter die Schrittleiste. Editor und Reader rendern ihn selbst; der Reader ohne Gesamtstand. Der
     Kopf ist **nicht** `position: sticky`: Die Seite markiert sich mit `data-portal-fixed-head`, `.main` der
     `PortalShell` scrollt dann nicht mehr selbst, und der Inhalt scrollt unter dem Kopf in einem eigenen Bereich
-    (`.body` im Editor, `.scroll` in der Leseansicht). So kann zwischen Portal-Header und Kopf nichts durchscheinen.
+    (`.body` in Editor und Reader). So kann zwischen Portal-Header und Kopf nichts durchscheinen.
     Die Abstände kommen weiter aus `--portal-main-pad-*`.
   - **Füllung und Gültigkeit sind zwei Aussagen.** Die Füllung ist `answered/total` aller sichtbaren Fragen aus
     `getQuestionnaireCompleteness` (Gruppe zählt einmal, dazu ihre Unterfelder je Eintrag). Farben: unberührt
@@ -260,15 +336,19 @@ Ab Task 67 (`apps/workspace/plans/crm/15-onboarding/67-portal-gruppen-dateien-le
     einzeilig und wächst mit dem Inhalt.
   - **Fußleiste:** fest unter dem Scrollbereich (weder `sticky` noch `fixed`), auf allen Breiten randlos über die volle Breite, eine Zeile mit Speicherstatus und Zurück/Weiter; „Weiter“ nennt den nächsten
     Schritt. Ein Schrittwechsel setzt den Scrollbereich des Editors (`.body`) an den Anfang, nicht `window`.
-  - **Shell mobil:** unter 768 px zeigt der Header nur Logo, Theme, Sprache, Profil und Menü-Button; Firma, Projekt,
-    Begrüßung und Owner-Hinweis stehen im Menü-Dialog. Platz für den Chat-Dock reserviert `.main` nur, wenn die Seite
+  - **Shell mobil:** unter 768 px zeigt der Header nur Logo, Begrüßung, Profil und Menü-Button. Der
+    Menü-Dialog zeigt den Owner-Hinweis und darunter beschriftete Zeilen ohne Trennlinie (`MenuRow`, Beschriftung
+    links, Control rechts): „Firma“ nur bei mehreren Firmen (`switcherHasChoice`), „Projekt“ nur bei mehreren
+    Projekten (das Layout lässt `projectSwitcher` sonst weg), dann „Darstellung“ und „Sprache“. Theme- und
+    Sprachschalter werden einmal gebaut und im Header und im Menü verwendet. Platz für den Chat-Dock reserviert `.main` nur, wenn die Seite
     einen rendert (`data-portal-dock`).
 
-- **Abschluss (ab Task 70):** Ein abgeschlossener Bogen zeigt „Abgeschlossen am …“, den Satz, dass er die Grundlage
-  des Projekts ist, und den Hinweis, dass Nachträge nicht mehr über das Onboarding laufen. Die Links in den
+- **Abschluss (ab Task 70):** Der Status-Schritt eines abgeschlossenen Bogens zeigt „Abgeschlossen am …“, den Satz,
+  dass er die Grundlage des Projekts ist, und, wenn es mindestens einen Weg gibt, den Hinweis, dass Nachträge nicht
+  mehr ins Onboarding gehören, mit den Wegen als `ButtonLink` (Ghost, Icon vor dem Text). Die Links in den
   Dateibereich (`filesHref`, nur mit `portal.files.read`) und in den Chat (`chatHref`, nur mit
-  `portal.messages.read`) reicht die Seite herein; ohne Recht fehlt der Link, der Satz bleibt wahr. Antworten und
-  Anhänge stehen im geteilten `OnboardingAnswerReadView`, es gibt keine Schreibaktion. Das Widget zeigt
+  `portal.messages.read`) reicht die Seite herein; ohne Recht fehlt der Button. Antworten und Anhänge stehen in den
+  Block-Schritten des Readers, es gibt keine Schreibaktion. Das Widget zeigt
   „Abgeschlossen am …“ mit „Ansehen“; die Terminkarte entfällt, weil der Server keinen `call` mehr liefert.
 
 ## Zugangsdaten (ab Task 71)
@@ -291,10 +371,34 @@ Plan: `apps/workspace/plans/crm/19-credentials/71-credentials-portal.md`.
 - **Aktionen nur aus `capabilities` der Liste:** Anzeigen und Kopieren mit `canReveal`, „Zugang hinterlegen“ und
   „Ändern“ mit `canWrite`. Es gibt keinen Lösch-, Projekt- oder Freigabeweg. Die Owner-Sicht bekommt den
   Owner-Hinweis mit CRM-Link.
-- **Geteilte Bausteine statt Kopien:** Geheimnisfeld, Typ-Symbol, Faktenliste (`credential-facts`) und der
+- **Geteilte Bausteine statt Kopien:** Geheimnis-Anzeige (`credential-secret-value`), Typ-Symbol (im Kasten über
+  `framed`, wie im Cockpit), Benutzername kopieren (`credential-username-copy`, im Portal `compact`) und der
   Formular-Dialog (`credential-form-dialog`) kommen aus `components/shared/credentials/` — dieselben wie im
-  Cockpit. Das Portal bindet nur Endpunkte, Texte und Projekte an (`portal-credential-form-dialog`). Feldregeln und
-  Request-Bau laufen über `credentialFormRequest`.
+  Cockpit. Aufdecken, Kopieren und Ansagen laufen über `useCredentialSecret`, das Kopieren des Benutzernamens über
+  `useCopyFeedback` (`src/hooks/shared/`). Das Portal bindet nur Endpunkte, Texte und Projekte an
+  (`portal-credential-form-dialog`). Feldregeln und Request-Bau laufen über `credentialFormRequest`.
+- **Tabelle statt Liste (Paket O, Entscheidung 17.10.2026,
+  Plan `apps/workspace/plans/crm/30-portal-zugangsdaten-tabelle/O-portal-credentials-table.md`).**
+  Der Dialog ist `DialogSize.Large` (1080 px), damit die Spalten nicht gequetscht werden.
+  `credentials/portal-credential-table` rendert `DataTableLayout` mit `fillAvailableHeight` in einem Rahmen fester
+  Höhe (mobil füllt die Tabelle stattdessen den Dialog): Nur die Zeilen scrollen, nie zusätzlich der Dialog; je Eintrag `credentials/portal-credential-table-row`. Spalten: Zugang (Typ-Icon,
+  Bezeichnung, darunter Adresse als Link bzw. Art; höchstens zwei Zeilen), Von (`shared/portal-origin-badge`,
+  „Von uns“/„Von dir“, derselbe Baustein wie in der Dateitabelle), Benutzername, Passwort, Projekt (nur wenn ein
+  Eintrag projektgebunden ist; allgemeine heißen „Alle Projekte“), Geändert, Aktionen. Allgemeine Zugänge stehen
+  zuerst, keine Gruppenüberschriften.
+- **Feld-Aktionen gehören zum Feld:** Kopieren beim Benutzernamen, Anzeigen und Kopieren beim Passwort stehen als
+  Icon-Buttons (`ButtonControl` `size=Icon`, quiet, benanntes `aria-label` und `title`) direkt in der Zelle und
+  sind auch mobil immer sichtbar. „Anzeigen“ deckt Passwort und, wenn vorhanden, Notiz gemeinsam auf (zwei
+  protokollierte Abrufe, ein Countdown); „Kopieren“ kopiert nur das Passwort.
+- **Zeilen-Aktion ist nur „Ändern“** (mit `canWrite`), als direkt sichtbarer `ButtonControl` aus `@invessiv/ui`
+  mit `size=Icon`, `variant=Quiet` (44 px) in einer `DataTableCell`. Auch mobil kein Menü für die einzelne Aktion;
+  der Stift ist zugleich das Fokus-Rückkehrziel nach dem Formular. Keine Credentials-spezifische Erweiterung von
+  `TableRowActions`.
+- **Mobil (unter 720 px)** ist jede Zeile eine Karte: Kopf mit Zugang und Stift, darunter Benutzername, Passwort,
+  Projekt und Geändert (rechts neben dem Datum das Herkunfts-Badge, die Spalte „Von“ entfällt), jeweils mit
+  Beschriftung links und Wert rechts (eigene `fieldLabel`, nicht `mobileLabel`).
+- **„Zugang hinterlegen“ steht im Dialog-Footer** (`footer` am `Dialog`), nicht über der Liste. Laden, Fehler und
+  leere Liste stehen ohne Tabelle da.
 - Der Formular-Dialog nennt über den Feldern, wer die Werte lesen kann (`form.notice`). Beim Ändern gibt es keine
   Projektwahl.
 - Fehlertexte nur über `portalCredentialErrorText` (`common/patterns/portal/`).
@@ -306,24 +410,54 @@ Plan: `apps/workspace/plans/crm/20-stunden-und-history/73-stunden-im-portal.md`.
 - **Keine eigene Seite.** Stunden sind ein Dialog des Dashboards (`?widget=hours`), wie die Zugangsdaten. Das
   Widget `hours` steht mit `requiredPermission: portal.hours.read` und `onlyWithContent` in
   `PORTAL_WIDGET_LAYOUT`: Ohne Recht und ohne Kauf- oder Zeitbuchung gibt es weder Karte noch Dialog.
-- Komponenten liegen unter `hours/`; Orchestrator ist `hours/portal-hours-dialog` mit `portal-hours-summary`
-  (Stand gesamt und je Projekt), `portal-hours-purchases` (Kaufhistorie) und `portal-time-entry-list`
-  (Buchungen). Die Karte ist `dashboard/widgets/portal-hours-widget`.
-- **Stand und Kaufhistorie kommen mit dem Dashboard** (`PortalHoursDto` als Prop), **die Buchungen erst beim
-  Öffnen** über `usePortalTimeEntries` (`src/hooks/portal/`) und `portalHoursApiService`. Die Liste wird nur
-  mit `canReadEntries` gemountet; ohne das Recht fehlt der Abschnitt vollständig, ohne Hinweis und ohne Request.
+- Komponenten liegen unter `hours/`; Orchestrator ist `hours/portal-hours-dialog` mit `portal-hours-figures`
+  (Kennzahlen), `HoursMeter` aus `@invessiv/ui` (Balken), `portal-hours-projects` (Projektliste), `portal-hours-purchases`
+  (Kaufhistorie) und `portal-time-entry-list` (Buchungen). Die Karte ist `dashboard/widgets/portal-hours-widget`.
+- **Übersicht und Projekt (Paket N mit Nachtrag, 17.10.2026,
+  Plan `apps/workspace/plans/crm/27-portal-stunden-dialog/N-portal-hours-dialog.md`).** Es gibt kein Projekt-Select.
+  - **Übersicht:** Kennzahlen Gekauft, Verbraucht, In Projekten offen und Frei. `portalHoursBreakdown` passt die DTOs
+    an; die Berechnung liegt in `hoursDistribution` (`@invessiv/common/patterns/time/`).
+    Gekauft = Verbraucht + offen + frei − Überzug. Gibt es einen Überzug, steht er als eigene Kennzahl „Mehr als
+    zugewiesen“ (`figures.overrun`) mit rotem Icon da, damit der rote Balkenteil eine Legende hat. „Offen“ zählt
+    nur, was Projekte noch haben; ein überzogenes Projekt erscheint als roter Überzug im Balken, nicht als Abzug bei
+    einem anderen. Darunter die Projekte, je Projekt ein Button (`ButtonControl` `variant="row"`) mit „x von y
+    verbraucht“, Mini-Balken und Chevron. „Frühere Projekte“ ist eine Summe ohne Button. Ganz unten die Reiter
+    „Buchungen“ (nur mit `canReadEntries`) und „Käufe“ (`portalHoursView.tabsFor`); bleibt einer übrig, entfällt die
+    Reiterleiste.
+  - **Projekt:** „← Alle Projekte“ (`ButtonControl` quiet), Projekttitel, Kennzahlen Zugewiesen, Verbraucht, Übrig
+    mit Balken, dann nur die Buchungen dieses Projekts. Kein Zusatzsatz zum Firmenstand und keine Käufe: Käufe
+    gehören der Firma und stehen nur in der Übersicht.
+  - **Fokus:** Ein Klick in ein Projekt setzt ihn auf dessen Überschrift, „Alle Projekte“ zurück auf die Zeile. Beim
+    Öffnen des Dialogs bleibt er, wo der Dialog ihn setzt.
+- **Farben wie im Cockpit** (`hours-balance-summary`): Verbraucht warm, offen bzw. im Projekt übrig blau
+  (`--color-cta`), frei grün, Überzug und negative Werte `--color-danger`. Die farbigen Icons der Kennzahlen sind die
+  Legende des Balkens. Der Balken ist das gemeinsame gestapelte SVG `HoursMeter` aus `@invessiv/ui` (Breiten als
+  SVG-Attribute, kein Inline-Style). Die Segmente kommen aus `hoursDistribution`, im Portal über den Adapter
+  `portalHoursBreakdown`. Dieselbe Komponente und Berechnung werden im Cockpit verwendet.
+- **Buchungen als `DataTableLayout`** (Entscheidung 17.10.2026): Spalten Datum, Beschreibung, Aufgabe,
+  Projekt (nur in der Übersicht) und Dauer, alle linksbündig; ohne Monatszeilen (das Datum steht in jeder Zeile), „Weitere laden“ im `footer`, Mobile-Cards unter
+  720 px. Der Rahmen bekommt im Dialog eine feste, kompakte Höhe (`min(22rem, 42dvh)`) und `fillAvailableHeight`, damit Kopf und
+  Footer stehen bleiben, während die Zeilen scrollen. Laden, Fehler und leere Liste stehen ohne Tabelle da. Keine
+  eigenen Chip- oder Pillen-Buttons, Aktionen nur über `ButtonControl`.
+- **Stand und Kaufhistorie kommen mit dem Dashboard** (`PortalHoursDto` als Prop), **die Buchungen erst, wenn
+  sie zu sehen sind** (Übersicht: Standard-Reiter, Projekt: immer), über `usePortalTimeEntries` (`src/hooks/portal/`) und
+  `portalHoursApiService`; ein Projektwechsel lädt ab Seite eins. Ohne `canReadEntries` fehlen Reiter und Abschnitt vollständig,
+  ohne Hinweis und ohne Request.
 - **Nachladen** läuft über den geteilten `useCursorPagedList` (`src/hooks/shared/`), denselben wie im Cockpit.
   „Weitere laden“ meldet das Ergebnis in einer Live-Region.
-- **Projektfilter ist URL-State:** `?hoursProject=<id>`, geschrieben über `history.replaceState` (kein
-  Server-Roundtrip). Eine ID, die nicht in `hours.projects` steht, zählt als kein Filter. Schließen entfernt den
-  Parameter zusammen mit `widget`.
+- **Gewähltes Projekt ist URL-State:** `?hoursProject=<id>` bzw. `all` (`PORTAL_HOURS_ALL_PROJECTS`), gelesen und
+  geschrieben nur über `usePortalHoursProject` (auf `useUrlSearch`, ersetzt den Eintrag, kein Server-Roundtrip). Ohne Parameter öffnet
+  der Dialog auf dem Projekt des Dashboards (`selectedProjectId`), wenn es im Portal sichtbar ist, sonst auf „Alle“.
+  `portalHoursView.projectOf` entscheidet, eine unbekannte ID zählt nicht. „Alle“ schreibt ausdrücklich `all`, damit
+  das Dashboard-Projekt nicht zurückkommt. Schließen entfernt den Parameter zusammen mit `widget`.
 - **Überziehung ist immer Text**, nie nur Farbe: „1:00 über dem Kontingent“ bzw. „Dieses Projekt hat 1:00 mehr
   verbraucht als zugewiesen.“ Sachlich, ohne Warnton und ohne Handlungsaufforderung. Der Balken im Widget ist ein
   natives `<progress aria-hidden>` (kein Inline-Style) und wiederholt nur, was daneben als Text steht.
-- **Zwei Empty-States in der Buchungsliste:** noch nichts gebucht und kein Treffer im Projektfilter.
-- Zahlen über `formatDuration`, `tabular-nums`, rechtsbündig. Die Projekttabelle hat `<th scope>` und wird
-  unter 40rem eigener Breite (Container Query) zur gestapelten Liste. Beschreibungen, Notizen und Aufgabentitel
-  werden nur als Text gerendert.
+- **Zwei Empty-States in der Buchungsliste:** noch nichts gebucht und nichts für das gewählte Projekt.
+- **Projektauswahl:** Alle im Portal sichtbaren Projekte bleiben aufrufbar, auch ohne Zuweisung oder Buchung.
+  Kennzahlen und Balken erscheinen dann mit Nullwerten; die Buchungsliste zeigt ihren Empty-State.
+- Zahlen über `formatDuration`, `tabular-nums`. Beschreibungen, Notizen und Aufgabentitel werden nur als Text
+  gerendert.
 - Keine Schreibaktion, deshalb auch kein Owner-Hinweis.
 
 ## Leistungsanfragen (ab Task 76)
@@ -343,7 +477,7 @@ Plan: `apps/workspace/plans/crm/13c-portal-leistungsanfragen/76-portal-leistungs
 - **Zwei Reiter, nie zwei Dialoge.** „Anfragen“ zeigt nacheinander Auswahl, Formular und Bestätigung; „Meine
   Anfragen (n)“ die Liste. Zurückziehen ersetzt den Dialog durch die Rückfrage (`ConfirmDialog`).
 - **Die gewählte Leistung ist URL-State:** `?service=<id>` bzw. `custom` (`PORTAL_SERVICE_REQUEST_CUSTOM`),
-  geschrieben über `history.replaceState`. So öffnet ein Link direkt das Formular; eine ID, die nicht mehr
+  geschrieben über `useUrlSearch().replace`. So öffnet ein Link direkt das Formular; eine ID, die nicht mehr
   angeboten wird, fällt mit Hinweis auf die Auswahl zurück. Schließen entfernt den Parameter zusammen mit
   `widget`. Vorbelegt wird das Projekt, das das Dashboard gerade zeigt (`?project`).
 - **Was das Formular fragt, entscheidet `portalServiceRequestForm`** (`common/patterns/portal/`): Projektfrage

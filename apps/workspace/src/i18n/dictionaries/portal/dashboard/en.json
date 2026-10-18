@@ -125,7 +125,6 @@
       "viewNamed": "View feedback on {project}",
       "emptyTitle": "This is where you give us feedback",
       "emptyDescription": "As soon as we show you a version, you tell us here point by point what works and what we should change.",
-      "projectLink": "Go to feedback",
       "approvedOn": "Approved on {date}",
       "approve": "Approve project",
       "approveNamed": "Approve {project}"

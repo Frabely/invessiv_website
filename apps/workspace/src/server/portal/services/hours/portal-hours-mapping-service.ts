@@ -10,6 +10,7 @@ import type { PortalTimeEntryRow } from "@invessiv/common/contracts/portal/rows/
 import { computeProjectHoursBalance } from "@invessiv/common/patterns/crm/hours/hours-balance";
 import { comparePortalCurrentProjects } from "@/common/patterns/portal/compare-portal-current-projects";
 import type { ProjectHoursSums } from "@invessiv/common/contracts/crm/hours/project-hours-sums";
+import { hoursDistribution } from "@invessiv/common/patterns/time/hours-distribution";
 
 type PortalHoursSource = {
   balance: CustomerHoursBalanceDto;
@@ -51,18 +52,22 @@ function toEarlierProjectsDto(
   hidden: readonly ProjectHoursSums[],
 ): PortalEarlierProjectsHoursDto | null {
   if (hidden.length === 0) return null;
-  const allocatedMinutes = hidden.reduce(
-    (total, project) => total + project.allocatedMinutes,
-    0,
-  );
-  const usedMinutes = hidden.reduce(
-    (total, project) => total + project.usedMinutes,
-    0,
+  const totals = hidden.reduce(
+    (total, project) => {
+      const balance = computeProjectHoursBalance(project);
+      const current = hoursDistribution.projectUsage(balance);
+      return {
+        allocatedMinutes: total.allocatedMinutes + balance.allocatedMinutes,
+        usedMinutes: total.usedMinutes + current.usedMinutes,
+        openMinutes: total.openMinutes + current.openMinutes,
+        overMinutes: total.overMinutes + current.overMinutes,
+      };
+    },
+    { allocatedMinutes: 0, usedMinutes: 0, openMinutes: 0, overMinutes: 0 },
   );
   return {
-    allocatedMinutes,
-    usedMinutes,
-    remainingMinutes: allocatedMinutes - usedMinutes,
+    ...totals,
+    remainingMinutes: totals.allocatedMinutes - totals.usedMinutes,
   };
 }
 
@@ -76,7 +81,6 @@ function toPurchaseDto(row: PortalHourPurchaseRow): PortalHourPurchaseDto {
 }
 
 function toHoursDto(source: PortalHoursSource): PortalHoursDto {
-  const withHours = source.projectSums.filter(hasHours);
   return {
     balance: {
       purchasedMinutes: source.balance.purchasedMinutes,
@@ -85,14 +89,15 @@ function toHoursDto(source: PortalHoursSource): PortalHoursDto {
       unassignedMinutes: source.balance.freeMinutes,
     },
     // Match the dashboard's status groups, newest first within each group.
-    projects: withHours
+    projects: source.projectSums
       .filter((project) => source.visibleProjectIds.has(project.projectId))
       .reverse()
       .sort(comparePortalCurrentProjects)
       .map(toProjectDto),
     earlierProjects: toEarlierProjectsDto(
-      withHours.filter(
-        (project) => !source.visibleProjectIds.has(project.projectId),
+      source.projectSums.filter(
+        (project) =>
+          !source.visibleProjectIds.has(project.projectId) && hasHours(project),
       ),
     ),
     purchases: source.purchaseRows.map(toPurchaseDto),

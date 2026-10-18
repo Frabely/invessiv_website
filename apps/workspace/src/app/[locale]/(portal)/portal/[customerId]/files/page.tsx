@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { WorkspaceArea } from "@/common/constants/auth/workspace-areas";
-import { PortalFilesQueryParam } from "@/common/constants/portal/portal-files-query-params";
+import {
+  PortalFilesQueryParam,
+  PortalFilesScope,
+} from "@/common/constants/portal/portal-files-query-params";
 import { PortalDashboardQueryParam } from "@/common/constants/portal/portal-dashboard-query-params";
-import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
 import { buildCustomerCockpitHref } from "@/common/patterns/crm/customer-dialog-query";
-import { readPortalFilesTab } from "@/common/patterns/portal/portal-files-tab";
+import { portalFilesOriginFilter } from "@/common/patterns/portal/portal-files-origin-filter";
 import { PortalFilesView } from "@/components/portal/files/portal-files-view/portal-files-view";
 import { isSupportedLocale, type Locale } from "@/config/i18n";
 import { getPortalFilesDictionary } from "@/i18n/dictionaries/portal";
@@ -52,9 +54,9 @@ export default async function PortalFilesPage({
     customerId.toLowerCase(),
   );
   const query = await searchParams;
-  const tabParam = query[PortalFilesQueryParam.Tab];
-  const tab = readPortalFilesTab(
-    typeof tabParam === "string" ? tabParam : null,
+  const originParam = query[PortalFilesQueryParam.Origin];
+  const originFilter = portalFilesOriginFilter.read(
+    typeof originParam === "string" ? originParam : null,
   );
   const [projects, currentProjects] = await Promise.all([
     listPortalFileProjects(reader),
@@ -71,9 +73,10 @@ export default async function PortalFilesPage({
       projects.find((project) => project.id === requestedProjectId)?.id) ||
     selectPortalCurrentProject(selectableFileProjects, null)?.id ||
     null;
-  const allProjects = query[PortalFilesQueryParam.Scope] === "all";
+  const allProjects =
+    query[PortalFilesQueryParam.Scope] === PortalFilesScope.All;
   const page = await listPortalFiles(reader, {
-    origin: tab,
+    origin: portalFilesOriginFilter.originOf(originFilter) ?? undefined,
     projectId: allProjects ? undefined : (selectedProjectId ?? undefined),
   });
   if (!page.ok) notFound();
@@ -81,11 +84,7 @@ export default async function PortalFilesPage({
 
   return (
     <PortalFilesView
-      dashboardHref={buildPortalHref(
-        portalPathFor(activeLocale, reader.customerId),
-        "",
-        { project: selectedProjectId },
-      )}
+      dashboardPath={portalPathFor(activeLocale, reader.customerId)}
       canUpload={
         !isOwnerView &&
         portalCanOn.forCustomer(reader, Permission.PortalFilesWrite)
@@ -101,7 +100,7 @@ export default async function PortalFilesPage({
       content={getPortalFilesDictionary(activeLocale)}
       customerId={reader.customerId}
       initialPage={page.value}
-      initialTab={tab}
+      initialOriginFilter={originFilter}
       key={reader.customerId}
       locale={activeLocale}
       projects={projects}

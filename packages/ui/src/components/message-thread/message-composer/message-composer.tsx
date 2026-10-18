@@ -11,6 +11,7 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ButtonControl } from "@invessiv/ui";
 import { MESSAGE_BODY_MAX_LENGTH } from "@invessiv/common/constants/crm/message-limits";
+import { ButtonSize } from "@invessiv/common/constants/ui/button-sizes";
 import { AttachmentChipKind } from "@invessiv/common/constants/ui/attachment-chip-kinds";
 import type { ComposerAttachment } from "@invessiv/common/contracts/ui/composer-attachment";
 import type { MessageThreadLabels } from "@invessiv/common/contracts/ui/message-thread-labels";
@@ -169,6 +170,7 @@ export function MessageComposer({
       <ButtonControl
         aria-label={labels.send}
         className={styles.send}
+        size={ButtonSize.Icon}
         disabled={!canSend}
         title={labels.send}
         type="submit"

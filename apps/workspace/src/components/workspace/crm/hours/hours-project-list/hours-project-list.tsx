@@ -2,15 +2,16 @@ import { projectHoursActions } from "@/common/patterns/crm/hours/project-hours-a
 import type { CustomerHoursProjectDto } from "@invessiv/common/contracts/crm/hours/customer-hours-project.dto";
 import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { ButtonControl } from "@invessiv/ui";
+import { ButtonControl, HoursMeter } from "@invessiv/ui";
+import { hoursDistribution } from "@invessiv/common/patterns/time/hours-distribution";
 import { HourAllocationDirection } from "@/common/constants/crm/hour-allocation-directions";
-import type { CrmHoursDictionary } from "@/i18n/dictionaries/workspace/crm";
+import type { CrmHoursProjectsDictionary } from "@/common/contracts/crm/hours/crm-hours-projects-dictionary";
 import styles from "./hours-project-list.module.css";
 
 export type HoursProjectListProps = {
   /** False hides both actions; they are never shown disabled. */
   canManage: boolean;
-  content: CrmHoursDictionary["projects"];
+  content: CrmHoursProjectsDictionary;
   /** Free minutes of the customer; without any, nothing can be allocated. */
   freeMinutes: number;
   onMoveAction: (
@@ -71,6 +72,12 @@ export function HoursProjectList({
                 <dd>{formatDuration(project.remainingMinutes)}</dd>
               </div>
             </dl>
+            <div className={styles.meter}>
+              <HoursMeter
+                compact
+                segments={hoursDistribution.projectSegments(project)}
+              />
+            </div>
             {canAllocate || canRelease ? (
               <div className={styles.actions}>
                 {canAllocate ? (

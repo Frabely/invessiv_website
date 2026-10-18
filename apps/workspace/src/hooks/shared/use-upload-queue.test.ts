@@ -225,18 +225,14 @@ describe("useUploadQueue", () => {
     expect(queryChange.defaultPrevented).toBe(true);
 
     const originalUrl = window.location.href;
-    const forward = vi
-      .spyOn(window.history, "forward")
-      .mockImplementation(() => undefined);
     window.history.replaceState(
       null,
       "",
       `${window.location.pathname}?cockpit=another-customer`,
     );
     window.dispatchEvent(new PopStateEvent("popstate"));
-    expect(forward).toHaveBeenCalledOnce();
+    expect(window.location.href).toBe(originalUrl);
     window.history.replaceState(null, "", originalUrl);
-    forward.mockRestore();
 
     link.target = "_blank";
     const newTab = new MouseEvent("click", {

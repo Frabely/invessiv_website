@@ -10,6 +10,8 @@ import type { PortalCompletedProjectDto } from "@invessiv/common/contracts/porta
 import { Widget } from "@invessiv/ui";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
+import { PORTAL_WIDGET_ACCENTS } from "@/common/constants/portal/portal-widget-accents";
+import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import styles from "./portal-completed-projects-widget.module.css";
 
 export type PortalCompletedProjectsWidgetProps = {
@@ -24,6 +26,7 @@ export function PortalCompletedProjectsWidget({
 }: PortalCompletedProjectsWidgetProps) {
   return (
     <Widget
+      accent={PORTAL_WIDGET_ACCENTS[PortalWidgetKey.CompletedProjects]}
       closeLabel={content.close}
       count={projects.length}
       expandedContent={

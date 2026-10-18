@@ -4,6 +4,7 @@ import {
   CustomerCredentialsQueryParam,
 } from "../crm/credentials/customer-credentials-query-params";
 import { CredentialNoteMode } from "../crm/credentials/credential-note-modes";
+import { CopyFeedbackStatus } from "./copy-feedback-status";
 import { CredentialApiPath } from "./credential-api-paths";
 import { CredentialListLoadStatus } from "./credential-list-load-status";
 import { RevealedSecretStatus } from "./revealed-secret-status";
@@ -31,6 +32,7 @@ describe("credential client constants", () => {
         Failed: "failed",
       },
     ],
+    [CopyFeedbackStatus, { Idle: "idle", Copied: "copied", Failed: "failed" }],
     [CustomerCredentialsQueryParam, { Project: "credentialsProject" }],
     [CredentialNoteMode, { Keep: "keep", Edit: "edit", Remove: "remove" }],
   ])("contains the exact values without duplicates", (actual, expected) => {

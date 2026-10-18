@@ -1,13 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { faRocket } from "@fortawesome/free-solid-svg-icons";
+import { faClipboardQuestion } from "@fortawesome/free-solid-svg-icons";
 import { OnboardingFormStatus } from "@invessiv/common/constants/crm/onboarding/onboarding-form-statuses";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
 import type { PortalOnboardingCallDto } from "@invessiv/common/contracts/portal/portal-onboarding-call.dto";
 import type { PortalOnboardingFormSummaryDto } from "@invessiv/common/contracts/portal/portal-onboarding-form-summary.dto";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { Widget } from "@invessiv/ui";
+import { PORTAL_WIDGET_ACCENTS } from "@/common/constants/portal/portal-widget-accents";
+import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import { buildPortalOnboardingPath } from "@/common/patterns/portal/portal-onboarding-path";
 import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
 import { OnboardingBookingCard } from "@/components/portal/onboarding/onboarding-booking-card/onboarding-booking-card";
@@ -63,8 +65,22 @@ export function PortalOnboardingWidget({
 
   return (
     <Widget
-      icon={faRocket}
-      openMode={WidgetOpenMode.None}
+      accent={PORTAL_WIDGET_ACCENTS[PortalWidgetKey.Onboarding]}
+      href={buildPortalHref(
+        buildPortalOnboardingPath({
+          locale,
+          customerId,
+          formId: form.id,
+        }),
+        "",
+        { project: form.projectId },
+      )}
+      icon={faClipboardQuestion}
+      linkComponent={Link}
+      openAccessibleLabel={formatMessage(linkLabelNamed, named)}
+      openLabel={linkLabel}
+      openMode={WidgetOpenMode.Page}
+      openProminent={proceed}
       title={content.title}
     >
       <div
@@ -99,22 +115,6 @@ export function PortalOnboardingWidget({
             })}
           </p>
         ) : null}
-        <Link
-          aria-label={formatMessage(linkLabelNamed, named)}
-          className={styles.link}
-          data-primary={proceed ? "true" : undefined}
-          href={buildPortalHref(
-            buildPortalOnboardingPath({
-              locale,
-              customerId,
-              formId: form.id,
-            }),
-            "",
-            { project: form.projectId },
-          )}
-        >
-          {linkLabel}
-        </Link>
         {call ? (
           <OnboardingBookingCard
             booking={call.booking}

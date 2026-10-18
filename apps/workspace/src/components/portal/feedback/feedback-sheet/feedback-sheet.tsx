@@ -1,34 +1,23 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useId } from "react";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FEEDBACK_LIMITS } from "@invessiv/common/constants/crm/feedback-limits";
-import { PortalFeedbackErrorCode } from "@invessiv/common/constants/portal/portal-feedback-error-codes";
+import { ButtonSize } from "@invessiv/common/constants/ui/button-sizes";
+import { ButtonVariant } from "@invessiv/common/constants/ui/button-variants";
 import type { PortalFeedbackRoundDto } from "@invessiv/common/contracts/portal/portal-feedback-round.dto";
+import { formatCountMessage } from "@invessiv/common/patterns/i18n/format-count-message";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { ButtonControl, PrimaryCtaButton } from "@invessiv/ui";
-import { portalFeedbackApiService } from "@/client/portal/portal-feedback-api-service";
-import {
-  FeedbackOpenDialog,
-  type FeedbackOpenDialog as FeedbackOpenDialogValue,
-} from "@/common/constants/portal/feedback-open-dialog";
-import { PortalFeedbackRoundResultKind } from "@/common/constants/portal/portal-feedback-round-result-kinds";
-import type { PortalFeedbackRoundClientResult } from "@/common/contracts/portal/portal-feedback-client-result";
-import { portalFeedbackRoundResult } from "@/common/patterns/portal/portal-feedback-round-result";
-import { DraftSaveStatus } from "@/components/shared/draft-save-status/draft-save-status";
+import { ButtonControl } from "@invessiv/ui";
 import type { Locale } from "@/config/i18n";
-import { useFeedbackDraft } from "@/hooks/portal/use-feedback-draft";
+import type { useFeedbackDraft } from "@/hooks/portal/use-feedback-draft";
 import type {
   PortalFeedbackDictionary,
   PortalFilesDictionary,
 } from "@/i18n/dictionaries/portal";
-import { FeedbackApproveDialog } from "../feedback-approve-dialog/feedback-approve-dialog";
-import { FeedbackDraftConflict } from "../feedback-draft-conflict/feedback-draft-conflict";
 import { FeedbackItemAttachments } from "../feedback-item-attachments/feedback-item-attachments";
 import { FeedbackItemEditor } from "../feedback-item-editor/feedback-item-editor";
-import { FeedbackSubmitDialog } from "../feedback-submit-dialog/feedback-submit-dialog";
 import styles from "./feedback-sheet.module.css";
 
 export type FeedbackSheetProps = {
@@ -36,112 +25,62 @@ export type FeedbackSheetProps = {
   canUpload: boolean;
   content: PortalFeedbackDictionary;
   customerId: string;
+  /** The draft of the round; it lives in the editor, so it survives a look at an earlier round. */
+  draft: ReturnType<typeof useFeedbackDraft>;
   filesContent: PortalFilesDictionary;
-  /** Other rounds would expire on approval. */
-  hasRemainingRounds: boolean;
+  /** Shown below the points after a refused submission. */
+  formError: string | null;
+  /** Points the server found without text on submit. */
+  invalidIds: ReadonlySet<string>;
   locale: Locale;
   onAnnounceAction: (message: string) => void;
+  onApproveAction: () => void;
+  onAttachmentActivityAction: (itemId: string, active: boolean) => void;
   projectId: string;
-  /** An open round this contact may edit. */
+  /** Rounds that would expire with an approval without changes. */
+  remainingRounds: number;
   round: PortalFeedbackRoundDto;
+  /** Files are uploading; approving waits for them. */
+  uploading: boolean;
 };
 
-/** The feedback form of an open round: points, files, autosave, submit and approval. */
+/** The points of an open round as cards, the way to add one, and the approval when there are none. */
 export function FeedbackSheet({
   canAttach,
   canUpload,
   content,
   customerId,
+  draft,
   filesContent,
-  hasRemainingRounds,
+  formError,
+  invalidIds,
   locale,
   onAnnounceAction,
+  onApproveAction,
+  onAttachmentActivityAction,
   projectId,
+  remainingRounds,
   round,
+  uploading,
 }: FeedbackSheetProps) {
-  const router = useRouter();
-  const draft = useFeedbackDraft({
-    customerId,
-    round,
-    leaveWarning: content.draft.leaveWarning,
-    onLockedAction: () => router.refresh(),
-  });
-  const [dialog, setDialog] = useState<FeedbackOpenDialogValue | null>(null);
-  const [busy, setBusy] = useState(false);
-  const [dialogError, setDialogError] = useState<string | null>(null);
-  const [formError, setFormError] = useState<string | null>(null);
-  const [invalidIds, setInvalidIds] = useState<ReadonlySet<string>>(new Set());
-  const [activeAttachments, setActiveAttachments] = useState<
-    ReadonlySet<string>
-  >(new Set());
+  const headingId = useId();
   const full = draft.items.length >= FEEDBACK_LIMITS.itemsPerRound;
-
-  const trackAttachmentActivity = useCallback(
-    (itemId: string, active: boolean) => {
-      setActiveAttachments((current) => {
-        if (current.has(itemId) === active) return current;
-        const next = new Set(current);
-        if (active) next.add(itemId);
-        else next.delete(itemId);
-        return next;
-      });
-    },
-    [],
-  );
-
-  function open(next: FeedbackOpenDialogValue) {
-    setDialogError(null);
-    setFormError(null);
-    setDialog(next);
-  }
-
-  /** Saves first, so what is submitted or approved is exactly what the customer sees. */
-  async function finish(
-    send: (version: number) => Promise<PortalFeedbackRoundClientResult>,
-    announcement: string,
-  ) {
-    if (busy || activeAttachments.size > 0) return;
-    setBusy(true);
-    setDialogError(null);
-    const saved = await draft.flush();
-    if (!saved) {
-      setBusy(false);
-      setDialog(null);
-      return;
-    }
-    const outcome = portalFeedbackRoundResult(
-      await send(draft.currentVersion()),
-    );
-    setBusy(false);
-    if (outcome.kind === PortalFeedbackRoundResultKind.Success) {
-      setDialog(null);
-      onAnnounceAction(announcement);
-      router.refresh();
-      return;
-    }
-    if (outcome.kind === PortalFeedbackRoundResultKind.Conflict) {
-      setDialog(null);
-      draft.takeConflict(outcome.current);
-      return;
-    }
-    if (outcome.kind === PortalFeedbackRoundResultKind.ItemTextRequired) {
-      setDialog(null);
-      setInvalidIds(new Set(outcome.itemIds));
-      setFormError(content.errors[PortalFeedbackErrorCode.ItemTextRequired]);
-      return;
-    }
-    if (outcome.kind === PortalFeedbackRoundResultKind.Locked) {
-      setDialog(null);
-      router.refresh();
-      return;
-    }
-    setDialogError(content.errors[outcome.code]);
-  }
+  const empty = draft.items.length === 0;
 
   return (
-    <div className={styles.sheet}>
-      <p className={styles.visible}>{content.intro.draftVisible}</p>
-      {draft.items.length === 0 ? (
+    <section aria-labelledby={headingId} className={styles.sheet}>
+      <div className={styles.heading}>
+        <h3 id={headingId}>{content.items.heading}</h3>
+        {empty ? null : (
+          <span className={styles.count}>
+            {formatCountMessage(draft.items.length, {
+              one: content.items.countOne,
+              many: content.items.count,
+            })}
+          </span>
+        )}
+      </div>
+      {empty ? (
         <p className={styles.empty}>{content.editor.empty}</p>
       ) : (
         <ol aria-label={content.editor.listLabel} className={styles.items}>
@@ -164,7 +103,7 @@ export function FeedbackSheet({
                     onChangeAction={(update) =>
                       draft.setAttachments(item.id, update)
                     }
-                    onActivityChangeAction={trackAttachmentActivity}
+                    onActivityChangeAction={onAttachmentActivityAction}
                     projectId={projectId}
                     roundId={round.id}
                   />
@@ -185,8 +124,9 @@ export function FeedbackSheet({
         <ButtonControl
           disabled={full}
           onClick={draft.addItem}
+          size={ButtonSize.Control}
           type="button"
-          variant="ghost"
+          variant={empty ? ButtonVariant.Primary : ButtonVariant.Ghost}
         >
           <FontAwesomeIcon aria-hidden="true" icon={faPlus} />
           {content.editor.add}
@@ -204,91 +144,29 @@ export function FeedbackSheet({
           {formError}
         </p>
       ) : null}
-      <div className={styles.bar}>
-        <DraftSaveStatus
-          conflict={
-            draft.conflictItems ? (
-              <FeedbackDraftConflict
-                items={draft.conflictItems}
-                onDismissAction={draft.dismissConflict}
-                onRestoreAction={() => {
-                  draft.restoreConflict();
-                  onAnnounceAction(content.announcements.restored);
-                }}
-                texts={content.draft.conflict}
-              />
-            ) : undefined
-          }
-          errorText={draft.errorCode ? content.errors[draft.errorCode] : null}
-          locale={locale}
-          onRetryAction={() => void draft.flush()}
-          saveState={draft.saveState}
-          savedAt={draft.savedAt}
-          savedByName={draft.savedByName}
-          texts={content.draft}
-        />
-        <div className={styles.actions}>
+      {empty ? (
+        <div className={styles.approve}>
+          <div className={styles.approveText}>
+            <h3>{content.actions.approveTitle}</h3>
+            <p>
+              {formatCountMessage(remainingRounds, {
+                none: content.actions.approveHint,
+                one: content.actions.approveHintRoundsOne,
+                many: content.actions.approveHintRounds,
+              })}
+            </p>
+          </div>
           <ButtonControl
-            onClick={() => void draft.flush()}
+            disabled={uploading}
+            onClick={onApproveAction}
+            size={ButtonSize.Control}
             type="button"
-            variant="ghost"
-          >
-            {content.actions.saveNow}
-          </ButtonControl>
-          <PrimaryCtaButton
-            disabled={draft.items.length === 0 || activeAttachments.size > 0}
-            onClick={() => open(FeedbackOpenDialog.Submit)}
-            type="button"
-          >
-            {content.actions.submit}
-          </PrimaryCtaButton>
-        </div>
-      </div>
-      {draft.items.length === 0 ? (
-        <p className={styles.approve}>
-          <span>{content.actions.approveHint}</span>
-          <ButtonControl
-            disabled={activeAttachments.size > 0}
-            onClick={() => open(FeedbackOpenDialog.Approve)}
-            type="button"
-            variant="ghost"
+            variant={ButtonVariant.Ghost}
           >
             {content.actions.approve}
           </ButtonControl>
-        </p>
+        </div>
       ) : null}
-      {dialog === FeedbackOpenDialog.Submit ? (
-        <FeedbackSubmitDialog
-          busy={busy}
-          content={content}
-          error={dialogError}
-          items={draft.items}
-          onCancelAction={() => setDialog(null)}
-          onConfirmAction={() =>
-            void finish(
-              (version) =>
-                portalFeedbackApiService.submit(customerId, round.id, version),
-              content.announcements.submitted,
-            )
-          }
-        />
-      ) : null}
-      {dialog === FeedbackOpenDialog.Approve ? (
-        <FeedbackApproveDialog
-          busy={busy}
-          error={dialogError}
-          hasRemainingRounds={hasRemainingRounds}
-          onCancelAction={() => setDialog(null)}
-          texts={content.approveDialog}
-          onConfirmAction={() =>
-            void finish(
-              (version) =>
-                portalFeedbackApiService.approve(customerId, round.id, version),
-              content.announcements.approved,
-            )
-          }
-        />
-      ) : null}
-    </div>
+    </section>
   );
 }

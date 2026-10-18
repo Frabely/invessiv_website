@@ -2,6 +2,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  /* Space between a leading icon and the label; callers never pad the icon themselves. */
+  gap: 0.5rem;
   min-height: 46px;
   padding: 0 18px;
   border-radius: 12px;

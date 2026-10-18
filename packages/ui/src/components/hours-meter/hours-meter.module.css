@@ -1,0 +1,30 @@
+/* Semantic hour colours: used warm, open blue, free green, overdrawn red. */
+.meter {
+  display: block;
+  width: 100%;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: var(--color-border);
+  overflow: hidden;
+}
+
+.meter[data-compact="true"] {
+  height: 0.3rem;
+}
+
+.segment[data-kind="used"] {
+  fill: var(--color-accent-warm);
+}
+
+/* Not the warm tone: that one already means "used". */
+.segment[data-kind="over"] {
+  fill: var(--color-danger);
+}
+
+.segment[data-kind="open"] {
+  fill: var(--color-cta);
+}
+
+.segment[data-kind="free"] {
+  fill: var(--color-success);
+}

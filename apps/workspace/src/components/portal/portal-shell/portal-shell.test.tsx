@@ -88,7 +88,7 @@ describe("PortalShell", () => {
     expect(screen.queryByText("Hallo Sam")).toBeNull();
   });
 
-  it("offers company, project and greeting again in a menu for narrow screens", () => {
+  it("offers company, project, theme and language in a menu for narrow screens", () => {
     render(
       <PortalShell
         content={CONTENT}
@@ -96,6 +96,7 @@ describe("PortalShell", () => {
         homeHref="/de/portal/customer-a"
         projectSwitcher={<span>Project slot</span>}
         switcher={<span>Switcher slot</span>}
+        switcherHasChoice
       >
         <p>Portal content</p>
       </PortalShell>,
@@ -109,9 +110,44 @@ describe("PortalShell", () => {
     const menu = within(
       screen.getByRole("dialog", { name: CONTENT.header.menuTitle }),
     );
-    expect(menu.getByText("Hallo Sam")).toBeInTheDocument();
+    expect(menu.queryByText("Hallo Sam")).toBeNull();
     expect(menu.getByText("Switcher slot")).toBeInTheDocument();
     expect(menu.getByText("Project slot")).toBeInTheDocument();
+    expect(menu.getByText(CONTENT.header.menuCompany)).toBeInTheDocument();
+    expect(menu.getByText(CONTENT.header.menuProject)).toBeInTheDocument();
+    expect(menu.getByText(CONTENT.header.menuTheme)).toBeInTheDocument();
+    expect(
+      menu.getByRole("button", {
+        name: CONTENT.header.themeSwitch.actionLabel.dark,
+      }),
+    ).toBeInTheDocument();
+    expect(menu.getByText(CONTENT.header.menuLanguage)).toBeInTheDocument();
+    expect(
+      menu.getByLabelText(CONTENT.header.localeMenuLabel),
+    ).toBeInTheDocument();
+  });
+
+  it("leaves a single company's name out of the menu", () => {
+    render(
+      <PortalShell
+        content={CONTENT}
+        homeHref="/de/portal/customer-a"
+        switcher={<span>Switcher slot</span>}
+      >
+        <p>Portal content</p>
+      </PortalShell>,
+    );
+
+    fireEvent.click(
+      screen.getByRole("button", { name: CONTENT.header.menuOpenLabel }),
+    );
+
+    const menu = within(
+      screen.getByRole("dialog", { name: CONTENT.header.menuTitle }),
+    );
+    expect(menu.queryByText("Switcher slot")).toBeNull();
+    expect(menu.queryByText(CONTENT.header.menuCompany)).toBeNull();
+    expect(menu.queryByText(CONTENT.header.menuProject)).toBeNull();
   });
 
   it("does not render a separate header navigation", () => {

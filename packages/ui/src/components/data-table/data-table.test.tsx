@@ -122,6 +122,27 @@ describe("DataTableLayout", () => {
     ).toBeInTheDocument();
   });
 
+  it("renders a footer below the scroll area", () => {
+    render(
+      <DataTableLayout
+        ariaLabel="Files"
+        caption="Files"
+        columns={[{ id: "name", header: "Name" }]}
+        footer={<button type="button">Load more</button>}
+      >
+        <tr>
+          <td>Offer.pdf</td>
+        </tr>
+      </DataTableLayout>,
+    );
+
+    const footer = screen.getByRole("button", { name: "Load more" });
+    const scrollArea = screen.getByRole("table").parentElement;
+
+    expect(scrollArea?.contains(footer)).toBe(false);
+    expect(scrollArea?.parentElement?.contains(footer)).toBe(true);
+  });
+
   it("keeps pagination in the table frame outside the scroll area", () => {
     render(
       <DataTableLayout

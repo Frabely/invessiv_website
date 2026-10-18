@@ -71,9 +71,7 @@ export function CredentialRow({
   return (
     <li className={styles.row}>
       <div className={styles.head}>
-        <span className={styles.icon}>
-          <CredentialTypeIcon type={credential.credentialType} />
-        </span>
+        <CredentialTypeIcon framed type={credential.credentialType} />
         <div className={styles.heading}>
           <p className={styles.title}>{credential.title}</p>
           <p className={styles.type}>

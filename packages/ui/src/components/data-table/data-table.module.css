@@ -39,6 +39,18 @@
   background: color-mix(in srgb, var(--color-surface-1) 92%, transparent);
 }
 
+.footer {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  width: 100%;
+  padding: 0.65rem 1.1rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+}
+
 .table {
   width: 100%;
   border-collapse: separate;
@@ -136,6 +148,10 @@
     border-top-color: color-mix(in srgb, var(--color-border) 56%, transparent);
     background: color-mix(in srgb, var(--color-bg) 94%, transparent);
     backdrop-filter: blur(12px);
+  }
+
+  .footer {
+    padding-inline: 0;
   }
 
   .frame[data-responsive-mode="cards"] .table,

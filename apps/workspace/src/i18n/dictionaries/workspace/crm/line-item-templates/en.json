@@ -123,7 +123,6 @@
       "kindHours": "You enter the quantity when assigning. The hours are credited to the customer and allocated to the project.",
       "kindFeedbackRound": "Assigning adds one more feedback round to the project.",
       "projectModeFixed": "This kind always belongs to an existing project.",
-      "pricingModeFixed": "The kind determines the pricing.",
       "portal": "Customers see the title and this description, never the price. You can prepare the text before you release the template."
     }
   }

@@ -269,4 +269,26 @@ describe("ProcessTrack measured steps", () => {
     expect(items[1]).not.toHaveAttribute("data-flagged");
     expect(items[1].querySelector('[data-icon="comment-dots"]')).toBeNull();
   });
+
+  it("shows a disabled step without a button while the others stay selectable", () => {
+    const onStepAction = vi.fn();
+    render(
+      <ProcessTrack
+        currentIndex={0}
+        label="Rounds"
+        onStepAction={onStepAction}
+        steps={[
+          { key: "1", label: "Round 1", ratio: 1, tone: ProcessStepTone.Info },
+          { key: "2", label: "Round 2", ratio: 0, disabled: true },
+        ]}
+      />,
+    );
+
+    const items = screen.getAllByRole("listitem");
+    expect(items[1]).toHaveAttribute("data-disabled", "true");
+    expect(items[1].querySelector("button")).toBeNull();
+    expect(screen.getByText("Round 2")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /Round 1/ }));
+    expect(onStepAction).toHaveBeenCalledWith("Round 1", 0);
+  });
 });

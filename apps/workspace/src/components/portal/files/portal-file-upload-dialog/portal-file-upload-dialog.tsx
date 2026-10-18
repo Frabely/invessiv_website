@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import type { PortalFileDto } from "@invessiv/common/contracts/portal/portal-file.dto";
 import type { PortalFileProjectOptionDto } from "@invessiv/common/contracts/portal/portal-file-project-option.dto";
 import { FileUploadDialogFrame } from "@invessiv/ui";
@@ -18,6 +18,7 @@ export type PortalFileUploadDialogProps = {
   locale: Locale;
   projects: readonly PortalFileProjectOptionDto[];
   initialProjectId?: string | null;
+  renderNavigation?: (busy: boolean, hasDraft: boolean) => ReactNode;
   onCloseAction: () => void;
   onUploadedAction: (file: PortalFileDto) => void;
 };
@@ -30,6 +31,7 @@ export function PortalFileUploadDialog({
   locale,
   projects,
   initialProjectId = null,
+  renderNavigation,
   onCloseAction,
   onUploadedAction,
 }: PortalFileUploadDialogProps) {
@@ -57,8 +59,18 @@ export function PortalFileUploadDialog({
           projects={projects}
         />
       }
-      labels={content.upload}
+      labels={{ ...content.upload, title: content.add.title }}
       locale={locale}
+      renderNavigation={
+        renderNavigation
+          ? (busy, hasDraft) =>
+              renderNavigation(
+                busy,
+                (hasDraft && queue.doneCount < queue.items.length) ||
+                  (!queue.hasStarted && !!note.trim()),
+              )
+          : undefined
+      }
       onCloseAction={onCloseAction}
       queue={queue}
       rowLabels={{ ...content.upload, errors: content.errors }}

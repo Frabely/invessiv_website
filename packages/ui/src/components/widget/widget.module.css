@@ -1,71 +1,144 @@
+/*
+ * A card with a tab: the icon rides on a coloured tab that rises above the top edge, like an index
+ * tab in a folder. The tab's colour is the widget's accent and finds it again on counter and frame;
+ * the card itself stays flat so the colour has one place to speak.
+ */
 .widget {
+  --widget-accent: var(--color-cta);
+  --widget-canvas: var(--color-surface-1);
+  --widget-tab-size: 2.6rem;
+  --widget-tab-rise: 1.05rem;
+  --widget-radius: 18px;
+
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
+  gap: 1rem;
   width: 100%;
   height: 100%;
   min-width: 0;
-  padding: clamp(1rem, 1.8vw, 1.4rem);
-  border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
-  border-radius: 18px;
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--color-surface-1) 92%, transparent) 0%,
-    color-mix(in srgb, var(--color-surface-1) 76%, transparent) 100%
+  padding: 1.15rem clamp(1rem, 1.6vw, 1.35rem) 1.05rem;
+  border: 1px solid
+    color-mix(in srgb, var(--widget-accent) 16%, var(--color-border));
+  border-top-color: color-mix(
+    in srgb,
+    var(--widget-accent) 48%,
+    var(--color-border)
   );
-  transition: border-color 160ms ease;
+  border-radius: var(--widget-radius);
+  background: color-mix(
+    in srgb,
+    var(--color-surface-2) 42%,
+    var(--color-surface-1)
+  );
+  box-shadow: 0 14px 28px -24px var(--color-shadow);
+  transition: border-color 180ms ease-out;
 }
 
-.widget[data-whole-card="true"]:hover {
-  border-color: color-mix(in srgb, var(--color-cta) 38%, var(--color-border));
+/* The tab rises out of the card; the card gives up that height so a row still ends level. */
+.widget[data-tab="true"] {
+  height: calc(100% - var(--widget-tab-rise));
+  margin-top: var(--widget-tab-rise);
+}
+
+.widget[data-accent="blue"] {
+  --widget-accent: var(--widget-accent-blue);
+}
+
+.widget[data-accent="sky"] {
+  --widget-accent: var(--widget-accent-sky);
+}
+
+.widget[data-accent="teal"] {
+  --widget-accent: var(--widget-accent-teal);
+}
+
+.widget[data-accent="green"] {
+  --widget-accent: var(--widget-accent-green);
+}
+
+.widget[data-accent="lime"] {
+  --widget-accent: var(--widget-accent-lime);
+}
+
+.widget[data-accent="gold"] {
+  --widget-accent: var(--widget-accent-gold);
+}
+
+.widget[data-accent="orange"] {
+  --widget-accent: var(--widget-accent-orange);
+}
+
+.widget[data-accent="coral"] {
+  --widget-accent: var(--widget-accent-coral);
+}
+
+.widget[data-accent="rose"] {
+  --widget-accent: var(--widget-accent-rose);
+}
+
+.widget[data-accent="violet"] {
+  --widget-accent: var(--widget-accent-violet);
+}
+
+.widget[data-accent="indigo"] {
+  --widget-accent: var(--widget-accent-indigo);
 }
 
 .widget[data-mock="true"] {
+  --widget-accent: var(--color-text-muted);
+
   border-style: dashed;
   border-color: var(--color-border-strong);
   background: color-mix(in srgb, var(--color-surface-1) 55%, transparent);
+  box-shadow: none;
 }
 
+/* A ring in the page colour cuts the tab out of the card's border instead of laying it on top. */
+.tab {
+  position: absolute;
+  top: calc(-1 * var(--widget-tab-rise));
+  left: clamp(1rem, 1.6vw, 1.35rem);
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: var(--widget-tab-size);
+  height: var(--widget-tab-size);
+  border-radius: 13px;
+  background: var(--widget-accent);
+  color: var(--widget-on-accent);
+  box-shadow:
+    0 0 0 4px var(--widget-canvas),
+    0 8px 16px -8px color-mix(in srgb, var(--widget-accent) 70%, transparent);
+}
+
+/* Consuming apps do not load the Font Awesome stylesheet, so every icon is sized here. */
+.tab svg {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.widget[data-mock="true"] .tab {
+  background: color-mix(in srgb, var(--color-text-muted) 22%, transparent);
+  color: var(--color-text-muted);
+}
+
+/* The title sits beside the tab, on the band the tab leaves inside the card. */
 .header {
   display: flex;
   align-items: flex-start;
   gap: 0.75rem;
-  flex-wrap: wrap;
+  min-height: calc(var(--widget-tab-size) - var(--widget-tab-rise) - 0.5rem);
 }
 
-.heading {
-  display: flex;
-  flex: 1 1 12rem;
-  align-items: flex-start;
-  gap: 0.7rem;
-  min-width: 0;
-}
-
-.icon {
-  display: inline-grid;
-  flex: 0 0 auto;
-  place-items: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 12px;
-  color: var(--color-cta);
-  background: color-mix(in srgb, var(--color-cta) 12%, transparent);
-}
-
-/* Consuming apps do not load the Font Awesome stylesheet, so every icon is sized here. */
-.icon svg {
-  width: 1rem;
-  height: 1rem;
-}
-
-.widget[data-mock="true"] .icon {
-  color: var(--color-text-muted);
-  background: color-mix(in srgb, var(--color-text-muted) 10%, transparent);
+.widget[data-tab="true"] .header {
+  margin-top: -0.55rem;
+  padding-left: calc(var(--widget-tab-size) + 0.8rem);
 }
 
 .titleBlock {
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
   gap: 0.2rem;
   min-width: 0;
@@ -73,89 +146,43 @@
 
 .title {
   display: flex;
-  align-items: baseline;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.55rem;
   margin: 0;
   color: var(--color-text);
   font-size: var(--font-size-heading-sm);
-  font-weight: 650;
+  font-weight: 700;
   line-height: 1.3;
   overflow-wrap: anywhere;
 }
 
 .count {
-  padding: 0.05rem 0.5rem;
+  min-width: 1.6rem;
+  padding: 0.1rem 0.5rem;
   border-radius: 999px;
-  color: var(--color-text-muted);
-  background: color-mix(in srgb, var(--color-text-muted) 12%, transparent);
+  background: color-mix(in srgb, var(--widget-accent) 18%, transparent);
+  color: color-mix(in srgb, var(--widget-accent) 45%, var(--color-text));
   font-size: var(--font-size-badge);
   font-variant-numeric: tabular-nums;
-  font-weight: 600;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
 }
 
 .meta {
   color: var(--color-text-muted);
   font-size: var(--font-size-ui-sm);
+  overflow-wrap: anywhere;
 }
 
 .mockBadge {
-  align-self: center;
+  flex: 0 0 auto;
   padding: 0.12rem 0.55rem;
   border: 1px dashed var(--color-border-strong);
   border-radius: 999px;
   color: var(--color-text-muted);
   font-size: var(--font-size-badge);
   white-space: nowrap;
-}
-
-/* Compact pill on top of ButtonControl's ghost look; doubled class wins over the base button rules. */
-.openButton.openButton,
-.toggleButton.toggleButton {
-  gap: 0.45rem;
-  min-height: 2.75rem;
-  padding: 0.35rem 0.85rem;
-  border-radius: 999px;
-  font-size: var(--font-size-ui-xs);
-  font-weight: 600;
-}
-
-.openButton.openButton {
-  align-self: center;
-  margin-left: auto;
-}
-
-.openButton svg,
-.toggleButton svg {
-  flex: 0 0 auto;
-  width: 0.8rem;
-  height: 0.8rem;
-}
-
-.openButton.openButton:focus-visible,
-.toggleButton.toggleButton:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
-}
-
-/* Stretched button: the whole card becomes the click target without nesting controls. */
-.widget[data-whole-card="true"] .openButton.openButton {
-  transform: none; /* a transform would become the containing block of the stretched ::after */
-}
-
-.widget[data-whole-card="true"] .openButton::after {
-  position: absolute;
-  inset: 0;
-  border-radius: 18px;
-  content: "";
-}
-
-.widget[data-whole-card="true"]:has(.openButton:focus-visible) {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
-}
-
-.widget[data-whole-card="true"] .openButton.openButton:focus-visible {
-  outline: none;
 }
 
 .body {
@@ -175,31 +202,85 @@
   display: none;
 }
 
+/*
+ * Every card ends in the same row: its buttons stand together at the end, further actions first and
+ * the open action always last. Notes in the row take a line of their own above the buttons.
+ */
 .footer {
+  container-type: inline-size;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
-  gap: 0.75rem;
-  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+}
+
+.footer :where(button, a) > svg {
+  flex: 0 0 auto;
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
+.footer > :not(a, button) {
+  flex: 1 1 100%;
+  min-width: 0;
+}
+
+/*
+ * Where the buttons no longer fit side by side, each labelled one fills its line instead of the row
+ * breaking into one left and one right. Icon buttons carry no text span and keep their square.
+ */
+@container (max-width: 28rem) {
+  .footer:has(> :is(a, button) ~ :is(a, button)) > :is(a, button):has(> span) {
+    flex: 1 1 auto;
+  }
+}
+
+.openAction:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
 }
 
 .chevron {
-  transition: transform 180ms ease;
+  transition: transform 180ms ease-out;
 }
 
 .widget[data-expanded="true"] .chevron {
   transform: rotate(180deg);
 }
 
+/* Stretched trigger: the whole card becomes the click target without nesting controls. */
+.widget[data-whole-card="true"] .openAction {
+  transform: none; /* a transform would become the containing block of the stretched ::after */
+}
+
+.widget[data-whole-card="true"] .openAction::after {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--widget-radius);
+  content: "";
+}
+
+.widget[data-whole-card="true"]:has(.openAction:focus-visible) {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.widget[data-whole-card="true"] .openAction:focus-visible {
+  outline: none;
+}
+
+@media (hover: hover) {
+  .widget[data-whole-card="true"]:hover {
+    border-color: color-mix(in srgb, var(--widget-accent) 55%, transparent);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .widget,
   .chevron {
     transition: none;
-  }
-
-  .openButton.openButton,
-  .toggleButton.toggleButton {
-    transition: none;
-    transform: none;
   }
 }

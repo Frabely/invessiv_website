@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
 import { FileApiErrorCode } from "@invessiv/common/constants/files/file-api-error-code";
 import { PortalFileOrigin } from "@invessiv/common/constants/portal/portal-file-origin";
+import { PortalFileOriginFilter } from "@/common/constants/portal/portal-file-origin-filter";
 import type { PortalFilesViewProps } from "@/components/portal/files/portal-files-view/portal-files-view";
 import PortalFilesPage, { generateMetadata } from "./page";
 
@@ -70,7 +71,7 @@ const READER = {
 const PAGE = { files: [], total: 0, page: 1, pageSize: 25 };
 
 async function renderPage(
-  tab?: string,
+  origin?: string,
   customerId = "customer-1",
   project?: string,
   scope?: string,
@@ -79,7 +80,7 @@ async function renderPage(
     await PortalFilesPage({
       params: Promise.resolve({ locale: "de", customerId }),
       searchParams: Promise.resolve({
-        ...(tab ? { tab } : {}),
+        ...(origin ? { origin } : {}),
         ...(project ? { project } : {}),
         ...(scope ? { scope } : {}),
       }),
@@ -102,7 +103,7 @@ describe("PortalFilesPage", () => {
 
   afterEach(cleanup);
 
-  it("loads the tab from the URL for the resolved reader only", async () => {
+  it("loads the origin filter from the URL for the resolved reader only", async () => {
     const props = await renderPage("fromYou", "CUSTOMER-1");
 
     expect(mocks.requirePortalReader).toHaveBeenCalledWith("de", "customer-1");
@@ -110,17 +111,22 @@ describe("PortalFilesPage", () => {
       origin: PortalFileOrigin.FromYou,
       projectId: undefined,
     });
-    expect(props.initialTab).toBe(PortalFileOrigin.FromYou);
+    expect(props.initialOriginFilter).toBe(PortalFileOriginFilter.FromYou);
     expect(props.initialPage).toBe(PAGE);
     expect(props.projects).toEqual([{ id: "project-1", title: "Relaunch" }]);
     expect(props.canUpload).toBe(true);
     expect(props.cockpitHref).toBeNull();
   });
 
-  it("falls back to the released files for an unknown tab", async () => {
+  it("lists both origins for an unknown or missing filter", async () => {
     const props = await renderPage("internal");
 
-    expect(props.initialTab).toBe(PortalFileOrigin.FromUs);
+    expect(props.initialOriginFilter).toBe(PortalFileOriginFilter.All);
+    expect(mocks.listPortalFiles).toHaveBeenCalledWith(READER, {
+      origin: undefined,
+      projectId: undefined,
+    });
+    expect(props.dashboardPath).toBe("/de/portal/customer-1");
   });
 
   it("scopes files to the selected project including the default", async () => {
@@ -134,7 +140,7 @@ describe("PortalFilesPage", () => {
     ]);
     const props = await renderPage(undefined, "customer-1", "project-2");
     expect(mocks.listPortalFiles).toHaveBeenCalledWith(READER, {
-      origin: PortalFileOrigin.FromUs,
+      origin: undefined,
       projectId: "project-2",
     });
     expect(props.selectedProjectId).toBe("project-2");
@@ -163,7 +169,7 @@ describe("PortalFilesPage", () => {
 
     expect(props.selectedProjectId).toBe("project-completed");
     expect(mocks.listPortalFiles).toHaveBeenCalledWith(READER, {
-      origin: PortalFileOrigin.FromUs,
+      origin: undefined,
       projectId: "project-completed",
     });
   });
@@ -178,7 +184,7 @@ describe("PortalFilesPage", () => {
 
     expect(props.selectedProjectId).toBeNull();
     expect(mocks.listPortalFiles).toHaveBeenCalledWith(READER, {
-      origin: PortalFileOrigin.FromUs,
+      origin: undefined,
       projectId: undefined,
     });
   });
@@ -189,7 +195,7 @@ describe("PortalFilesPage", () => {
     ]);
     const props = await renderPage(undefined, "customer-1", "project-1", "all");
     expect(mocks.listPortalFiles).toHaveBeenCalledWith(READER, {
-      origin: PortalFileOrigin.FromUs,
+      origin: undefined,
       projectId: undefined,
     });
     expect(props.allProjects).toBe(true);

@@ -12,6 +12,7 @@ import {
   ConfirmDialog,
   Dialog,
   DialogSize,
+  FormHint,
   TabList,
 } from "@invessiv/ui";
 import { portalServiceRequestsApiService } from "@/client/portal/portal-service-requests-api-service";
@@ -42,6 +43,8 @@ export type PortalServiceRequestDialogProps = {
   onSelectionChangeAction: (selection: string | null) => void;
   /** The project the dashboard shows; the form preselects it where the service allows. */
   selectedProjectId: string | null;
+  /** The dashboard is loading the changed requests; do not start another form in that transition. */
+  refreshing?: boolean;
   /** Catalog, projects and own requests as the dashboard loaded them. */
   services: PortalServicesDto;
 };
@@ -65,6 +68,7 @@ export function PortalServiceRequestDialog({
   onCloseAction,
   onSelectionChangeAction,
   selectedProjectId,
+  refreshing = false,
   services,
 }: PortalServiceRequestDialogProps) {
   const baseId = useId();
@@ -76,7 +80,7 @@ export function PortalServiceRequestDialog({
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
   const [uncertain, setUncertain] = useState(false);
-  const navigationLocked = sending || uncertain;
+  const navigationLocked = sending || uncertain || refreshing;
   const [withdrawTarget, setWithdrawTarget] =
     useState<PortalServiceRequestDto | null>(null);
   const [withdrawing, setWithdrawing] = useState(false);
@@ -92,6 +96,8 @@ export function PortalServiceRequestDialog({
     services.services.find((candidate) => candidate.id === selection) ?? null;
   const isCustom = selection === PORTAL_SERVICE_REQUEST_CUSTOM;
   const showsForm = !sent && (isCustom || service !== null);
+  const formId = `${baseId}-form`;
+  const formOpen = showsForm && tab === Tab.Request;
   const unavailable = selection !== null && !isCustom && service === null;
 
   function select(next: string | null) {
@@ -163,6 +169,24 @@ export function PortalServiceRequestDialog({
       busy={navigationLocked}
       closeLabel={content.dialog.close}
       description={content.dialog.intro}
+      footer={
+        formOpen ? (
+          <>
+            <div className={styles.footerHint}>
+              <FormHint>{content.form.nonBinding}</FormHint>
+            </div>
+            <ButtonControl
+              aria-busy={sending}
+              disabled={sending || refreshing || !services.canRequest}
+              form={formId}
+              type="submit"
+              variant="primary"
+            >
+              {sending ? content.form.submitting : content.form.submit}
+            </ButtonControl>
+          </>
+        ) : undefined
+      }
       onCloseAction={onCloseAction}
       size={DialogSize.Wide}
       title={content.dialog.title}
@@ -223,6 +247,7 @@ export function PortalServiceRequestDialog({
               <p className={styles.sentText}>{content.sent.description}</p>
               <div className={styles.sentActions}>
                 <ButtonControl
+                  disabled={navigationLocked}
                   onClick={() => showTab(Tab.Mine)}
                   type="button"
                   variant="primary"
@@ -230,6 +255,7 @@ export function PortalServiceRequestDialog({
                   {content.sent.mine}
                 </ButtonControl>
                 <ButtonControl
+                  disabled={navigationLocked}
                   onClick={() => select(null)}
                   type="button"
                   variant="ghost"
@@ -245,6 +271,7 @@ export function PortalServiceRequestDialog({
               content={content.form}
               customerId={customerId}
               errorTexts={content.errors}
+              formId={formId}
               headingId={headingId}
               key={selection}
               onBackAction={() => select(null)}

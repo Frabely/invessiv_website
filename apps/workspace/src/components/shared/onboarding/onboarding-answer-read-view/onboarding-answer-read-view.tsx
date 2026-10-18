@@ -1,8 +1,6 @@
 import type { ReactNode } from "react";
 import { QuestionnaireFieldRequirement } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-requirements";
 import { QuestionnaireFieldType } from "@invessiv/common/constants/crm/questionnaire/questionnaire-field-types";
-import type { FilePreviewKind } from "@invessiv/common/constants/files/file-preview-kind";
-import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
 import type { QuestionnaireAnswerFileRefDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-answer-file-ref.dto";
 import type { QuestionnaireAnswerFileDto } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-answer-file.dto";
 import type { QuestionnaireCompletenessInput } from "@invessiv/common/contracts/crm/questionnaire/questionnaire-completeness-input";
@@ -16,7 +14,7 @@ import {
 import { questionnaireSlotKey } from "@invessiv/common/patterns/crm/questionnaire/questionnaire-answer-slot";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { LinkedText } from "@invessiv/ui";
-import type { FileAttachmentTexts } from "@/common/contracts/files/file-attachment-texts";
+import type { OnboardingReadFiles } from "@/common/contracts/shared/onboarding-read-files";
 import type { OnboardingReadTexts } from "@/common/contracts/shared/onboarding-read-texts";
 import { FileAttachmentList } from "@/components/shared/files/file-attachment-list/file-attachment-list";
 import { OnboardingReadValue } from "../onboarding-read-value/onboarding-read-value";
@@ -42,15 +40,7 @@ export type OnboardingAnswerReadViewProps = Omit<
    * How attached files open on the viewer's side: its file texts, download and preview. Without
    * it a files field lists the names only.
    */
-  files?: {
-    loadPreviewAction: (
-      file: FileAttachmentDto,
-      kind: FilePreviewKind,
-    ) => Promise<string | null>;
-    locale: string;
-    onDownloadAction: (file: FileAttachmentDto) => void;
-    texts: FileAttachmentTexts;
-  };
+  files?: OnboardingReadFiles;
   /** Where files hang that the viewer may not open; they count, and their field says so. */
   hiddenAnswerFiles?: readonly QuestionnaireAnswerFileRefDto[];
   /** The booked services a `project_services` field shows, never with a price. */

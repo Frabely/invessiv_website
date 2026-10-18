@@ -1,4 +1,7 @@
 import type { CustomerHoursBalanceDto } from "@invessiv/common/contracts/crm/hours/customer-hours-balance.dto";
+import type { CustomerHoursProjectDto } from "@invessiv/common/contracts/crm/hours/customer-hours-project.dto";
+import { hoursDistribution } from "@invessiv/common/patterns/time/hours-distribution";
+import { HoursMeter } from "@invessiv/ui";
 import {
   faClock,
   faHourglassHalf,
@@ -10,12 +13,14 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import { HoursBalanceFigureKind } from "@/common/constants/crm/hours-balance-figure-kinds";
-import type { CrmHoursDictionary } from "@/i18n/dictionaries/workspace/crm";
+import type { CrmHoursBalanceDictionary } from "@/common/contracts/crm/hours/crm-hours-balance-dictionary";
 import styles from "./hours-balance-summary.module.css";
 
 export type HoursBalanceSummaryProps = {
   balance: CustomerHoursBalanceDto;
-  content: CrmHoursDictionary["balance"];
+  content: CrmHoursBalanceDictionary;
+  /** All customer projects, including closed projects; supplied only with customer-wide read access. */
+  projects: readonly CustomerHoursProjectDto[];
 };
 
 /**
@@ -24,7 +29,16 @@ export type HoursBalanceSummaryProps = {
 export function HoursBalanceSummary({
   balance,
   content,
+  projects,
 }: HoursBalanceSummaryProps) {
+  const distribution = hoursDistribution.companyFromProjects(
+    {
+      purchasedMinutes: balance.purchasedMinutes,
+      usedMinutes: balance.usedMinutes,
+      freeMinutes: balance.freeMinutes,
+    },
+    projects,
+  );
   const figures = [
     {
       key: HoursBalanceFigureKind.Purchased,
@@ -40,9 +54,24 @@ export function HoursBalanceSummary({
     {
       key: HoursBalanceFigureKind.Allocated,
       value: balance.allocatedMinutes,
-      swatch: HoursBalanceFigureKind.Allocated,
       icon: faFolderOpen,
     },
+    {
+      key: HoursBalanceFigureKind.Open,
+      value: distribution.openMinutes,
+      swatch: HoursBalanceFigureKind.Open,
+      icon: faFolderOpen,
+    },
+    ...(distribution.overMinutes > 0
+      ? [
+          {
+            key: HoursBalanceFigureKind.Over,
+            value: distribution.overMinutes,
+            swatch: HoursBalanceFigureKind.Over,
+            icon: faHourglassHalf,
+          } as const,
+        ]
+      : []),
     {
       key: HoursBalanceFigureKind.Free,
       value: balance.freeMinutes,
@@ -87,6 +116,7 @@ export function HoursBalanceSummary({
           </div>
         ))}
       </dl>
+      <HoursMeter segments={hoursDistribution.companySegments(distribution)} />
     </div>
   );
 }

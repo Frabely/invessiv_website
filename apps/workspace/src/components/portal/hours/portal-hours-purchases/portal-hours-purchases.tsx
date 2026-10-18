@@ -1,33 +1,27 @@
-import { useId } from "react";
 import { HoursLimits } from "@invessiv/common/constants/crm/hours-limits";
 import type { PortalHourPurchaseDto } from "@invessiv/common/contracts/portal/portal-hour-purchase.dto";
 import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
+import type { PortalHoursPurchasesDictionary } from "@/common/contracts/portal/portal-hours-purchases-dictionary";
 import type { Locale } from "@/config/i18n";
-import type { PortalHoursDictionary } from "@/i18n/dictionaries/portal";
 import { formatCalendarDay } from "@/lib/i18n/format-calendar-day";
 import styles from "./portal-hours-purchases.module.css";
 
 export type PortalHoursPurchasesProps = {
-  content: PortalHoursDictionary["purchases"];
+  content: PortalHoursPurchasesDictionary;
   locale: Locale;
   /** Newest first, already capped by the server. */
   purchases: readonly PortalHourPurchaseDto[];
 };
 
-/** When the company got how many hours. Notes are plain text written by the team. */
+/** When the company got how many hours. Notes are plain text written by the team; the tab names the panel. */
 export function PortalHoursPurchases({
   content,
   locale,
   purchases,
 }: PortalHoursPurchasesProps) {
-  const headingId = useId();
-
   return (
-    <section aria-labelledby={headingId} className={styles.purchases}>
-      <h3 className={styles.heading} id={headingId}>
-        {content.title}
-      </h3>
+    <div className={styles.purchases}>
       {purchases.length === 0 ? (
         <p className={styles.empty}>{content.empty}</p>
       ) : (
@@ -62,6 +56,6 @@ export function PortalHoursPurchases({
           })}
         </p>
       ) : null}
-    </section>
+    </div>
   );
 }

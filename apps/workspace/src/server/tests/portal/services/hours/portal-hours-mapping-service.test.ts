@@ -6,6 +6,7 @@ import type { PortalTimeEntryRow } from "@invessiv/common/contracts/portal/rows/
 import { computeCustomerHoursBalance } from "@invessiv/common/patterns/crm/hours/hours-balance";
 import { portalHoursMappingService } from "@/server/portal/services/hours/portal-hours-mapping-service";
 import type { ProjectHoursSums } from "@invessiv/common/contracts/crm/hours/project-hours-sums";
+import { portalHoursBreakdown } from "@/common/patterns/portal/portal-hours-breakdown";
 
 function sums(overrides: Partial<ProjectHoursSums>): ProjectHoursSums {
   return {
@@ -65,7 +66,7 @@ describe("portalHoursMappingService.toHoursDto", () => {
     expect(dto.canReadEntries).toBe(true);
   });
 
-  it("lists visible projects with hours newest first and drops untouched ones", () => {
+  it("lists every visible project newest first, including untouched ones", () => {
     const dto = portalHoursMappingService.toHoursDto({
       balance,
       projectSums: [
@@ -105,11 +106,55 @@ describe("portalHoursMappingService.toHoursDto", () => {
         remainingMinutes: -60,
       },
       {
+        projectId: "idle",
+        title: "Leer",
+        allocatedMinutes: 0,
+        usedMinutes: 0,
+        remainingMinutes: 0,
+      },
+      {
         projectId: "old",
         title: "Alt",
         allocatedMinutes: 300,
         usedMinutes: 150,
         remainingMinutes: 150,
+      },
+    ]);
+    expect(dto.earlierProjects).toBeNull();
+  });
+
+  it("keeps projects without bookings selectable, whether assigned hours or not", () => {
+    const dto = portalHoursMappingService.toHoursDto({
+      balance: computeCustomerHoursBalance({
+        purchasedMinutes: 300,
+        allocatedMinutes: 180,
+        usedMinutes: 0,
+        goodwillMinutes: 0,
+      }),
+      projectSums: [
+        sums({ projectId: "assigned", allocatedMinutes: 180 }),
+        sums({ projectId: "empty", title: "Empty" }),
+        sums({ projectId: "hidden-empty", status: ProjectStatus.Archived }),
+      ],
+      visibleProjectIds: new Set(["assigned", "empty"]),
+      purchaseRows: [],
+      canReadEntries: true,
+    });
+
+    expect(dto.projects).toEqual([
+      {
+        projectId: "empty",
+        title: "Empty",
+        allocatedMinutes: 0,
+        usedMinutes: 0,
+        remainingMinutes: 0,
+      },
+      {
+        projectId: "assigned",
+        title: "Website",
+        allocatedMinutes: 180,
+        usedMinutes: 0,
+        remainingMinutes: 180,
       },
     ]);
     expect(dto.earlierProjects).toBeNull();
@@ -198,8 +243,44 @@ describe("portalHoursMappingService.toHoursDto", () => {
       allocatedMinutes: 180,
       usedMinutes: 165,
       remainingMinutes: 15,
+      openMinutes: 45,
+      overMinutes: 30,
     });
   });
+
+  it.each([[], ["project-a"], ["project-a", "project-b"]])(
+    "preserves the company split for visible projects %j",
+    (...visibleIds) => {
+      const projectSums = [
+        sums({ allocatedMinutes: 300, usedMinutes: 360 }),
+        sums({
+          projectId: "project-b",
+          allocatedMinutes: 300,
+          usedMinutes: 240,
+        }),
+      ];
+      const dto = portalHoursMappingService.toHoursDto({
+        balance: computeCustomerHoursBalance({
+          purchasedMinutes: 600,
+          allocatedMinutes: 600,
+          usedMinutes: 600,
+          goodwillMinutes: 0,
+        }),
+        projectSums,
+        visibleProjectIds: new Set(visibleIds),
+        purchaseRows: [],
+        canReadEntries: true,
+      });
+
+      expect(portalHoursBreakdown.of(dto)).toEqual({
+        purchasedMinutes: 600,
+        usedMinutes: 600,
+        freeMinutes: 0,
+        openMinutes: 60,
+        overMinutes: 60,
+      });
+    },
+  );
 
   it("marks corrections and keeps the purchase order", () => {
     const dto = portalHoursMappingService.toHoursDto({

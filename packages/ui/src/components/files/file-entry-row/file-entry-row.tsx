@@ -8,24 +8,16 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import type { AssetKind } from "@invessiv/common/constants/files/asset-kind";
 import { FileSource } from "@invessiv/common/constants/files/file-source";
-import type { FilePreviewItem } from "@invessiv/common/contracts/files/file-preview-item";
-import { filePresentation } from "@invessiv/common/patterns/files/file-presentation";
+import type { FileEntryItem } from "@invessiv/common/contracts/files/file-entry-item";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl } from "../../button/button";
 import { CheckboxControl } from "../../checkbox-control/checkbox-control";
+import { FileEntryMeta } from "../file-entry-meta/file-entry-meta";
 import { FileKindIcon } from "../file-kind-icon/file-kind-icon";
 import styles from "./file-entry-row.module.css";
 
-type FileEntry = FilePreviewItem & {
-  assetKind: AssetKind;
-  note: string | null;
-  url: string | null;
-  createdAt: string;
-};
-
-export type FileEntryRowProps<TFile extends FileEntry> = {
+export type FileEntryRowProps<TFile extends FileEntryItem> = {
   file: TFile;
   locale: string;
   kindLabel: string;
@@ -58,7 +50,7 @@ export type FileEntryRowProps<TFile extends FileEntry> = {
 };
 
 /** Shared file identity and actions; callers supply only their extra metadata and rights. */
-export function FileEntryRow<TFile extends FileEntry>({
+export function FileEntryRow<TFile extends FileEntryItem>({
   file,
   locale,
   kindLabel,
@@ -75,7 +67,6 @@ export function FileEntryRow<TFile extends FileEntry>({
 }: FileEntryRowProps<TFile>) {
   const name = { name: file.displayName };
   const linkUrl = file.source === FileSource.Link ? file.url : null;
-  const host = linkUrl ? filePresentation.linkHost(linkUrl) : null;
 
   return (
     <li
@@ -120,21 +111,12 @@ export function FileEntryRow<TFile extends FileEntry>({
           <span className={styles.name}>{file.displayName}</span>
         )}
         {file.note ? <p className={styles.note}>{file.note}</p> : null}
-        <p className={styles.meta}>
-          <span>
-            {host ??
-              (file.extension ? file.extension.toUpperCase() : kindLabel)}
-          </span>
-          {metadata}
-          {file.sizeBytes !== null ? (
-            <span className={styles.numeric}>
-              {filePresentation.formatSize(file.sizeBytes, locale)}
-            </span>
-          ) : null}
-          <time className={styles.numeric} dateTime={file.createdAt}>
-            {filePresentation.formatDate(file.createdAt, locale)}
-          </time>
-        </p>
+        <FileEntryMeta
+          file={file}
+          kindLabel={kindLabel}
+          locale={locale}
+          metadata={metadata}
+        />
       </div>
       {status ? <div className={styles.status}>{status}</div> : null}
       <div

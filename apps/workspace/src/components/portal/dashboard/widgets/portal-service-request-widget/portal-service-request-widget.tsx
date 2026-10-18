@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
+import { faWandMagicSparkles } from "@fortawesome/free-solid-svg-icons";
 import { OPEN_SERVICE_REQUEST_STATUS_VALUES } from "@invessiv/common/constants/crm/service-request-statuses";
 import type { ServiceRequestStatus } from "@invessiv/common/constants/crm/service-request-statuses";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
@@ -7,6 +7,8 @@ import type { PortalServicesDto } from "@invessiv/common/contracts/portal/portal
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { Widget } from "@invessiv/ui";
 import type { PortalServiceRequestWidgetDictionary } from "@/common/contracts/portal/portal-service-request-widget-dictionary";
+import { PORTAL_WIDGET_ACCENTS } from "@/common/constants/portal/portal-widget-accents";
+import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import styles from "./portal-service-request-widget.module.css";
 
 export type PortalServiceRequestWidgetProps = {
@@ -40,8 +42,9 @@ export function PortalServiceRequestWidget({
 
   return (
     <Widget
+      accent={PORTAL_WIDGET_ACCENTS[PortalWidgetKey.ServiceRequest]}
       footer={ownerNotice ?? undefined}
-      icon={faCirclePlus}
+      icon={faWandMagicSparkles}
       onOpenAction={onOpenAction}
       openDisabled={ownerNotice !== null}
       openLabel={content.open}

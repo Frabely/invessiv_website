@@ -77,7 +77,7 @@ const FEEDBACK: PortalProjectFeedbackDto = {
   history: [],
   canSubmit: true,
   canAttach: true,
-  booking: null,
+  contact: null,
 };
 
 async function renderPage(customerId = "customer-1", projectId = "project-1") {

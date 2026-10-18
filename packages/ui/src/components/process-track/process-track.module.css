@@ -375,6 +375,30 @@
   color: var(--color-text);
 }
 
+/*
+ * A step that cannot be opened stays in the track for orientation, but without a button: an
+ * empty, dashed segment and a quiet label say "not yet" without reading as an error.
+ */
+.step[data-disabled] {
+  color: var(--color-text-muted);
+}
+
+.step[data-disabled] .stepBody {
+  padding: 0.4rem 0.5rem 0.35rem;
+}
+
+.step[data-disabled][data-state] .segment {
+  background: transparent;
+  box-shadow: none;
+  outline: 1px dashed var(--color-border-strong);
+  outline-offset: -1px;
+}
+
+.progress[data-density="compact"] .step[data-disabled] .stepBody {
+  min-height: 44px;
+  align-content: center;
+}
+
 /* Compact: no frame of its own and one line per label, for a track inside a sticky header. */
 .progress[data-density="compact"] {
   gap: 0.4rem;

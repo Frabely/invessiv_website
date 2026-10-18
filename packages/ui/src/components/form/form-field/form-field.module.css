@@ -19,14 +19,33 @@
   display: block;
 }
 
+.inputRow {
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+
+.inputRow > .inputShell {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.startAdornment,
 .endAdornment {
   position: absolute;
   top: 50%;
-  right: 0.8rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   transform: translateY(-50%);
+}
+
+.startAdornment {
+  left: 0.45rem;
+}
+
+.endAdornment {
+  right: 0.8rem;
 }
 
 .error {
@@ -41,7 +60,19 @@
   visibility: hidden;
 }
 
-.control :global(input),
+/*
+ * A suffix brings its own control, e.g. a show-password toggle; Edge must not add a second one.
+ * Two rules on purpose: merged, the build wraps them in :is(), which drops pseudo-elements.
+ */
+.inputShell[data-suffixed="true"] input::-ms-reveal {
+  display: none;
+}
+
+.inputShell[data-suffixed="true"] input::-ms-clear {
+  display: none;
+}
+
+.control :global(input:where(:not([type="color"]))),
 .control :global(textarea) {
   /* Block level: as an inline box the control would sit on a text line and make its row taller. */
   display: block;
@@ -60,7 +91,11 @@
   padding: 0.45rem 0.5rem;
 }
 
-.inputShell :global(input) {
+.inputShell[data-prefixed="true"] :global(input:where(:not([type="color"]))) {
+  padding-left: 2.95rem;
+}
+
+.inputShell :global(input:where(:not([type="color"]))) {
   padding-right: 3rem;
 }
 
@@ -82,7 +117,7 @@
   color: color-mix(in srgb, var(--color-text) 48%, var(--color-text-muted) 52%);
 }
 
-.control :global(input:focus-visible),
+.control :global(input:where(:not([type="color"])):focus-visible),
 .control :global(textarea:focus-visible) {
   outline: 2px solid color-mix(in srgb, var(--color-cta) 60%, #ffffff 18%);
   outline-offset: 2px;
@@ -94,7 +129,7 @@
     font-size: var(--form-label-size, 0.95rem);
   }
 
-  .control :global(input),
+  .control :global(input:where(:not([type="color"]))),
   .control :global(textarea) {
     padding: 0.48rem 0.53rem;
   }

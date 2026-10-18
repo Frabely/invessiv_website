@@ -74,6 +74,11 @@ describe("PortalDashboard chat", () => {
     mocks.getConversation.mockResolvedValue({ ok: true, value: CONVERSATION });
     mocks.markRead.mockResolvedValue({ ok: true, value: true });
     mocks.search.value = "project=project-1&chat=open";
+    window.history.replaceState(
+      null,
+      "",
+      "/en/portal/customer-1?project=project-1&chat=open",
+    );
     const replaceState = vi.spyOn(window.history, "replaceState");
     renderDashboard();
 
@@ -86,13 +91,15 @@ describe("PortalDashboard chat", () => {
     ).toBeVisible();
 
     fireEvent.click(trigger);
-    expect(replaceState).toHaveBeenCalledWith(
-      null,
-      "",
+    // A history write without a server round trip; Next's router state is left to its wrapper.
+    const [state, , url] = replaceState.mock.calls.at(-1) ?? [];
+    expect(state).not.toHaveProperty("__NA");
+    expect(new URL(String(url)).pathname + new URL(String(url)).search).toBe(
       "/en/portal/customer-1?project=project-1",
     );
     expect(mocks.replace).not.toHaveBeenCalled();
     replaceState.mockRestore();
+    window.history.replaceState(null, "", "/");
   });
   it("ignores ?chat=open without message read permission", () => {
     mocks.search.value = "chat=open";

@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { faListCheck } from "@fortawesome/free-solid-svg-icons";
+import { faClipboardCheck } from "@fortawesome/free-solid-svg-icons";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
 import type { PortalCustomerTaskDto } from "@invessiv/common/contracts/portal/portal-customer-task.dto";
 import { Widget } from "@invessiv/ui";
@@ -11,6 +11,8 @@ import {
   PortalTaskList,
   type PortalTaskListBaseProps,
 } from "../../portal-task-list/portal-task-list";
+import { PORTAL_WIDGET_ACCENTS } from "@/common/constants/portal/portal-widget-accents";
+import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import styles from "./portal-customer-tasks-widget.module.css";
 
 const SUMMARY_LIMIT = 3;
@@ -46,8 +48,9 @@ export function PortalCustomerTasksWidget({
 
   return (
     <Widget
+      accent={PORTAL_WIDGET_ACCENTS[PortalWidgetKey.CustomerTasks]}
       count={openCount}
-      icon={faListCheck}
+      icon={faClipboardCheck}
       onOpenAction={onOpenAction}
       openLabel={content.open}
       openMode={WidgetOpenMode.Dialog}

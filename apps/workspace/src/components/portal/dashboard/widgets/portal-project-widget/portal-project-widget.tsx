@@ -1,18 +1,20 @@
 "use client";
 
-import Link from "next/link";
 import {
   faArrowUpRightFromSquare,
-  faDiagramProject,
-  faHandHoldingHeart,
+  faRoute,
   faUserTie,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
+import { ButtonSize } from "@invessiv/common/constants/ui/button-sizes";
+import { ButtonVariant } from "@invessiv/common/constants/ui/button-variants";
 import { ProcessTrackDensity } from "@invessiv/common/constants/ui/process-track-densities";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
 import type { PortalProjectDto } from "@invessiv/common/contracts/portal/portal-project.dto";
-import { ProcessTrack, Widget } from "@invessiv/ui";
+import { ButtonLink, ProcessTrack, Widget } from "@invessiv/ui";
+import { PORTAL_WIDGET_ACCENTS } from "@/common/constants/portal/portal-widget-accents";
+import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import type { Locale } from "@/config/i18n";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
 import { formatCalendarDay } from "@/lib/i18n/format-calendar-day";
@@ -25,17 +27,12 @@ import styles from "./portal-project-widget.module.css";
 
 export type PortalProjectWidgetProps = {
   content: PortalDashboardDictionary["widgets"]["project"];
-  /** Feedback page of the project; null while it has no round or without the right. */
-  feedbackHref: string | null;
-  feedbackLinkLabel: string;
   locale: Locale;
   selectedProject: PortalProjectDto;
 };
 
 export function PortalProjectWidget({
   content,
-  feedbackHref,
-  feedbackLinkLabel,
   locale,
   selectedProject: project,
 }: PortalProjectWidgetProps) {
@@ -57,8 +54,28 @@ export function PortalProjectWidget({
 
   return (
     <Widget
-      className={styles.widget}
-      icon={faDiagramProject}
+      accent={PORTAL_WIDGET_ACCENTS[PortalWidgetKey.Project]}
+      footer={
+        project.previewUrl ? (
+          <ButtonLink
+            href={project.previewUrl}
+            rel="noopener noreferrer"
+            size={ButtonSize.Control}
+            target="_blank"
+            variant={ButtonVariant.Primary}
+          >
+            <span>
+              {content.preview}
+              <span className="sr-only"> ({content.previewNewTab})</span>
+            </span>
+            <FontAwesomeIcon
+              aria-hidden="true"
+              icon={faArrowUpRightFromSquare}
+            />
+          </ButtonLink>
+        ) : undefined
+      }
+      icon={faRoute}
       meta={project.title}
       openMode={WidgetOpenMode.None}
       title={content.title}
@@ -90,10 +107,7 @@ export function PortalProjectWidget({
             }
           />
         ) : null}
-        {nextStep ||
-        project.previewUrl ||
-        project.projectLead ||
-        feedbackHref ? (
+        {nextStep || project.projectLead ? (
           <div className={styles.details}>
             {nextStep ? (
               <div className={styles.nextStep}>
@@ -120,27 +134,6 @@ export function PortalProjectWidget({
                   <strong>{project.projectLead.displayName}</strong>
                 </span>
               </p>
-            ) : null}
-            {feedbackHref ? (
-              <Link className={styles.preview} href={feedbackHref}>
-                <FontAwesomeIcon aria-hidden="true" icon={faHandHoldingHeart} />
-                {feedbackLinkLabel}
-              </Link>
-            ) : null}
-            {project.previewUrl ? (
-              <a
-                className={styles.preview}
-                href={project.previewUrl}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                {content.preview}
-                <span className="sr-only"> ({content.previewNewTab})</span>
-                <FontAwesomeIcon
-                  aria-hidden="true"
-                  icon={faArrowUpRightFromSquare}
-                />
-              </a>
             ) : null}
           </div>
         ) : null}

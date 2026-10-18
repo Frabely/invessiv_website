@@ -1,0 +1,18 @@
+.next {
+  min-width: 0;
+  max-width: 22rem;
+}
+
+.nextLabel {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .next {
+    max-width: none;
+  }
+}

@@ -145,6 +145,7 @@ export function ProcessTrack({
               className={styles.step}
               data-progress={measured ? undefined : step.progress}
               data-flagged={step.flagged ? "true" : undefined}
+              data-disabled={step.disabled ? "true" : undefined}
               data-state={state}
               data-tone={tone}
               data-variant={step.variant ?? ProcessStepVariant.Default}
@@ -153,7 +154,7 @@ export function ProcessTrack({
                 state === ProcessStepState.Current ? currentStepRef : undefined
               }
             >
-              {onStepAction ? (
+              {onStepAction && !step.disabled ? (
                 <ButtonControl
                   className={styles.stepButton}
                   onClick={() => onStepAction(step.label, index)}

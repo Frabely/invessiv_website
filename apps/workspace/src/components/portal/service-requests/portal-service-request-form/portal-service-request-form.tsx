@@ -50,6 +50,8 @@ export type PortalServiceRequestFormProps = {
   /** False for the owner view and for a reader without the request right: the form then only shows. */
   canRequest: boolean;
   content: PortalServiceRequestFormDictionary;
+  /** Id of the form; the dialog's footer holds the submit button and points here. */
+  formId: string;
   /** Wording for every rejection the server can answer. */
   errorTexts: PortalServiceRequestErrorsDictionary;
   customerId: string;
@@ -88,6 +90,7 @@ export function PortalServiceRequestForm({
   canRequest,
   content,
   customerId,
+  formId,
   errorTexts,
   headingId,
   onBackAction,
@@ -215,6 +218,7 @@ export function PortalServiceRequestForm({
       </header>
       <form
         className={styles.form}
+        id={formId}
         noValidate
         onSubmit={handleSubmit}
         ref={formRef}
@@ -367,17 +371,6 @@ export function PortalServiceRequestForm({
         ) : null}
         {attemptLocked ? <FormHint>{content.retryNotice}</FormHint> : null}
         {readOnlyNotice}
-        <div className={styles.footer}>
-          <FormHint>{content.nonBinding}</FormHint>
-          <ButtonControl
-            aria-busy={busy}
-            disabled={busy || !canRequest}
-            type="submit"
-            variant="primary"
-          >
-            {busy ? content.submitting : content.submit}
-          </ButtonControl>
-        </div>
       </form>
     </section>
   );

@@ -95,7 +95,9 @@ describe("PortalCredentialsDialog", () => {
     expect(
       screen.getByRole("dialog", { name: content.dialog.title }),
     ).toBeInTheDocument();
-    expect(screen.getByText(content.dialog.trust)).toBeInTheDocument();
+    expect(
+      screen.getByRole("table", { name: content.table.label }),
+    ).toBeInTheDocument();
     expect(screen.getByText(content.secretField.masked)).toBeInTheDocument();
     expect(container.innerHTML).not.toContain(SECRET);
     expect(api.reveal).not.toHaveBeenCalled();
@@ -164,6 +166,163 @@ describe("PortalCredentialsDialog", () => {
     );
   });
 
+  it("uncovers password and note together and copies only the password", async () => {
+    api.reveal.mockImplementation(
+      async (_customer: string, _id: string, field: CredentialSecretField) => ({
+        ok: true,
+        value: field === CredentialSecretField.Note ? "note-marker" : SECRET,
+      }),
+    );
+    const entry = portalCredentialFixture({ hasNote: true });
+    await renderDialog(portalCredentialListFixture({ credentials: [entry] }));
+
+    await act(async () =>
+      fireEvent.click(
+        screen.getByRole("button", {
+          name: named(
+            content.secretField.showNamed,
+            named(content.row.secretAndNoteNamed, entry.title),
+          ),
+        }),
+      ),
+    );
+
+    expect(api.reveal).toHaveBeenCalledTimes(2);
+    for (const field of [
+      CredentialSecretField.Secret,
+      CredentialSecretField.Note,
+    ])
+      expect(api.reveal).toHaveBeenCalledWith(
+        CUSTOMER_ID,
+        entry.id,
+        field,
+        CredentialRevealIntent.Show,
+      );
+    expect(screen.getByText(SECRET)).toBeInTheDocument();
+    expect(screen.getByText("note-marker")).toBeInTheDocument();
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: named(
+          content.secretField.hideNamed,
+          named(content.row.secretAndNoteNamed, entry.title),
+        ),
+      }),
+    );
+    expect(screen.queryByText(SECRET)).toBeNull();
+    expect(screen.queryByText("note-marker")).toBeNull();
+
+    api.reveal.mockClear();
+    const writeText = vi.fn().mockResolvedValue(undefined);
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: { writeText },
+    });
+    await act(async () =>
+      fireEvent.click(
+        screen.getByRole("button", {
+          name: named(
+            content.secretField.copyNamed,
+            named(content.row.secretNamed, entry.title),
+          ),
+        }),
+      ),
+    );
+    expect(api.reveal).toHaveBeenCalledExactlyOnceWith(
+      CUSTOMER_ID,
+      entry.id,
+      CredentialSecretField.Secret,
+      CredentialRevealIntent.Copy,
+    );
+    expect(writeText).toHaveBeenCalledExactlyOnceWith(SECRET);
+  });
+
+  it.each([CredentialSecretField.Secret, CredentialSecretField.Note])(
+    "can hide the visible %s while the other field is pending and drops its late response",
+    async (firstField) => {
+      let finishPending!: (value: { ok: true; value: string }) => void;
+      api.reveal.mockImplementation(
+        (_customer: string, _id: string, field: CredentialSecretField) =>
+          field === firstField
+            ? Promise.resolve({ ok: true, value: "first-visible-marker" })
+            : new Promise((resolve) => {
+                finishPending = resolve;
+              }),
+      );
+      const entry = portalCredentialFixture({ hasNote: true });
+      await renderDialog(portalCredentialListFixture({ credentials: [entry] }));
+      const both = named(content.row.secretAndNoteNamed, entry.title);
+
+      await act(async () =>
+        fireEvent.click(
+          screen.getByRole("button", {
+            name: named(content.secretField.showNamed, both),
+          }),
+        ),
+      );
+      expect(screen.getByText("first-visible-marker")).toBeInTheDocument();
+      const hide = screen.getByRole("button", {
+        name: named(content.secretField.hideNamed, both),
+      });
+      expect(hide).toBeEnabled();
+      fireEvent.click(hide);
+      expect(screen.queryByText("first-visible-marker")).toBeNull();
+
+      await act(async () => finishPending({ ok: true, value: "late-marker" }));
+      expect(screen.queryByText("late-marker")).toBeNull();
+      expect(
+        screen.getByRole("button", {
+          name: named(content.secretField.showNamed, both),
+        }),
+      ).toBeEnabled();
+    },
+  );
+
+  it.each([false, true])(
+    "returns focus to the direct edit action after editing (save=%s)",
+    async (save) => {
+      const entry = portalCredentialFixture();
+      const changed = { ...entry, title: "Renamed", version: 2 };
+      api.update.mockResolvedValue({ ok: true, value: changed });
+      await renderDialog(portalCredentialListFixture({ credentials: [entry] }));
+      expect(
+        screen.queryByRole("button", {
+          name: named(content.row.actionsNamed, entry.title),
+        }),
+      ).toBeNull();
+      fireEvent.click(
+        screen.getByRole("button", {
+          name: named(content.row.editNamed, entry.title),
+        }),
+      );
+      const form = screen.getByRole("dialog", { name: content.form.titleEdit });
+      if (save) {
+        api.list.mockResolvedValueOnce({
+          ok: true,
+          value: portalCredentialListFixture({ credentials: [changed] }),
+        });
+        fireEvent.change(
+          within(form).getByLabelText(
+            new RegExp(`^${content.form.fields.title}`),
+          ),
+          { target: { value: changed.title } },
+        );
+      }
+      await act(async () =>
+        fireEvent.click(
+          within(form).getByRole("button", {
+            name: save ? content.form.submitEdit : content.form.cancel,
+          }),
+        ),
+      );
+
+      const trigger = await screen.findByRole("button", {
+        name: named(content.row.editNamed, save ? changed.title : entry.title),
+      });
+      await waitFor(() => expect(trigger).toHaveFocus());
+    },
+  );
+
   it("offers reveal and copy only with canReveal, add and change only with canWrite", async () => {
     await renderDialog(
       portalCredentialListFixture({
@@ -172,14 +331,18 @@ describe("PortalCredentialsDialog", () => {
     );
 
     for (const label of [
-      content.secretField.show,
-      content.secretField.copy,
-      content.row.edit,
+      named(
+        content.secretField.showNamed,
+        named(content.row.secretNamed, "Domain bei IONOS"),
+      ),
+      named(
+        content.secretField.copyNamed,
+        named(content.row.secretNamed, "Domain bei IONOS"),
+      ),
+      named(content.row.editNamed, "Domain bei IONOS"),
       content.actions.add,
     ])
-      expect(
-        screen.queryByRole("button", { name: new RegExp(label) }),
-      ).toBeNull();
+      expect(screen.queryByRole("button", { name: label })).toBeNull();
     // The login name is plaintext and stays copyable.
     expect(
       screen.getByRole("button", {
@@ -199,11 +362,18 @@ describe("PortalCredentialsDialog", () => {
     ).toBeEnabled();
   });
 
-  it("groups general entries first and then by project, and marks own entries", async () => {
+  it("lists entries for all projects first, adds the project column only when needed, and marks own entries", async () => {
+    await renderDialog();
+    expect(
+      screen.queryByRole("columnheader", {
+        name: content.table.columns.project,
+      }),
+    ).toBeNull();
+    cleanup();
+
     await renderDialog(
       portalCredentialListFixture({
         credentials: [
-          portalCredentialFixture({ id: "a", title: "Mailkonto" }),
           portalCredentialFixture({
             id: "b",
             title: "Vercel",
@@ -211,24 +381,26 @@ describe("PortalCredentialsDialog", () => {
             credentialType: CredentialType.Hosting,
             createdByCustomer: true,
           }),
+          portalCredentialFixture({ id: "a", title: "Mailkonto" }),
         ],
         projects: [{ id: "project-1", title: "Relaunch" }],
       }),
     );
 
-    const groups = screen.getAllByRole("region");
     expect(
-      within(groups[0]).getByRole("heading", { name: content.groups.general }),
+      screen.getByRole("columnheader", { name: content.table.columns.project }),
     ).toBeInTheDocument();
-    expect(within(groups[0]).getByText("Mailkonto")).toBeInTheDocument();
+    const [, general, project] = screen.getAllByRole("row");
+    expect(within(general).getByText("Mailkonto")).toBeInTheDocument();
     expect(
-      within(groups[1]).getByRole("heading", { name: "Relaunch" }),
+      within(general).getByText(content.table.allProjects),
     ).toBeInTheDocument();
-    expect(within(groups[1]).getByText("Vercel")).toBeInTheDocument();
-    expect(
-      within(groups[1]).getByText(content.row.fromYou),
-    ).toBeInTheDocument();
-    expect(within(groups[0]).queryByText(content.row.fromYou)).toBeNull();
+    // Once in the origin column, once beside the date for the card layout.
+    expect(within(general).getAllByText(content.row.fromUs)).toHaveLength(2);
+    expect(within(general).queryByText(content.row.fromYou)).toBeNull();
+    expect(within(project).getByText("Vercel")).toBeInTheDocument();
+    expect(within(project).getByText("Relaunch")).toBeInTheDocument();
+    expect(within(project).getAllByText(content.row.fromYou)).toHaveLength(2);
   });
 
   it("explains in the empty state which logins are needed and that they are encrypted", async () => {

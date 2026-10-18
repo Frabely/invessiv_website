@@ -1,104 +1,38 @@
-/*
- * One column. The intake is the page's one loud element: a wide, thumb-sized target that opens
- * the gallery or the camera on phones. The library below stays quiet and list-like.
- */
+/* Fills the portal main area like the onboarding form and the feedback page, so the bar stays down. */
 .page {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* The floating ZIP bar rests above the page bar instead of covering "Add file". */
+.page[data-page-bar="true"] {
+  --selection-action-bar-offset: calc(4.5rem + var(--mobile-safe-bottom, 0px));
+}
+
+/*
+ * Exactly as tall as the visible scroll area of the step frame (`cqh` of its body), so the page
+ * itself never scrolls: only the table does, with its head and footer standing still.
+ */
+.content {
   display: grid;
+  grid-template-rows: minmax(0, 1fr);
   gap: 1.5rem;
   width: 100%;
-  max-width: 52rem;
-  margin-inline: auto;
-}
-
-.header {
-  display: grid;
-  gap: 0.35rem;
-}
-
-.header h1 {
-  margin: 0;
-  color: var(--color-text);
-  font-size: var(--font-size-heading-md);
-}
-
-.header p {
-  max-width: 60ch;
-  margin: 0;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-ui-sm);
-  line-height: 1.5;
-}
-.scope {
-  display: inline-flex;
-  width: fit-content;
-  gap: 0.25rem;
-  padding: 0.2rem;
-  border: 1px solid var(--color-border);
-  border-radius: 0.75rem;
-  background: var(--color-surface-2);
-}
-.scope a {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding: 0.4rem 0.8rem;
-  border-radius: 0.55rem;
-  color: var(--color-text-muted);
-  text-decoration: none;
-}
-.scope a[aria-current="page"] {
-  background: var(--color-surface-1);
-  color: var(--color-text);
-  font-weight: 600;
-}
-.scope a:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
-}
-
-.intake {
-  display: grid;
-  gap: 0.75rem;
-}
-
-.dropZone {
-  border-radius: 1.1rem;
-}
-
-.dropZone label {
-  min-height: 11rem;
-  justify-content: center;
-}
-
-.linkRow {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem 1rem;
-}
-
-.linkRow p {
-  margin: 0;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-ui-xs);
-  line-height: 1.45;
+  max-width: 96rem;
+  height: 100cqh;
+  min-width: 0;
 }
 
 .library {
-  display: grid;
-  gap: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   min-width: 0;
-}
-
-.panel {
-  display: grid;
-  gap: 0.5rem;
-  min-width: 0;
-  padding: 0.5rem 0.75rem 0.75rem;
-  border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
-  border-radius: 18px;
-  background: var(--color-surface-2);
+  min-height: 0;
 }
 
 .actionError {
@@ -111,12 +45,25 @@
   font-size: var(--font-size-body-sm);
 }
 
-@media (min-width: 768px) {
-  .dropZone label {
-    min-height: 9rem;
+/*
+ * The table takes at most two thirds, the chosen file the rest. A tall picture gives way before the
+ * panel outgrows its column; the room for name, note and buttons below it is an estimate, a long
+ * note scrolls inside the panel. Same breakpoint as PORTAL_FILES_PANEL_MEDIA_QUERY.
+ */
+@media (min-width: 1100px) {
+  .content {
+    grid-template-columns: minmax(0, 2fr) minmax(20rem, 1fr);
   }
 
-  .panel {
-    padding: 0.75rem 1.1rem 1rem;
+  .aside {
+    --file-preview-panel-media-height: min(
+      65dvh,
+      max(12rem, calc(100cqh - 12rem))
+    );
+
+    align-self: start;
+    min-width: 0;
+    max-height: 100%;
+    overflow-y: auto;
   }
 }

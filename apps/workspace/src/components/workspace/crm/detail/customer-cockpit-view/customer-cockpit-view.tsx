@@ -448,30 +448,31 @@ export function CustomerCockpitView({
         </div>
       </div>
       {conversation !== undefined && messagesContent && filesContent ? (
-        <ChatDock
-          badgeLabel={describeUnreadBadge(
-            conversation?.unreadCount ?? 0,
-            messagesContent.dock.unread,
-          )}
-          className={styles.chat}
-          content={content.chat}
-          expanded={chatOpen}
-          onExpandedChangeAction={setChatOpen}
-          unreadCount={conversation?.unreadCount ?? 0}
-        >
-          <CustomerConversation
-            active={chatOpen}
-            canRedact={canRedactConversation}
-            canWrite={canWriteConversation}
-            content={messagesContent}
-            customerId={customer.id}
-            filesContent={filesContent}
-            initialConversation={conversation}
-            key={`${viewerMemberId}:${customer.id}`}
-            locale={locale}
-            viewerMemberId={viewerMemberId}
-          />
-        </ChatDock>
+        <div className={styles.chatSlot}>
+          <ChatDock
+            badgeLabel={describeUnreadBadge(
+              conversation?.unreadCount ?? 0,
+              messagesContent.dock.unread,
+            )}
+            content={content.chat}
+            expanded={chatOpen}
+            onExpandedChangeAction={setChatOpen}
+            unreadCount={conversation?.unreadCount ?? 0}
+          >
+            <CustomerConversation
+              active={chatOpen}
+              canRedact={canRedactConversation}
+              canWrite={canWriteConversation}
+              content={messagesContent}
+              customerId={customer.id}
+              filesContent={filesContent}
+              initialConversation={conversation}
+              key={`${viewerMemberId}:${customer.id}`}
+              locale={locale}
+              viewerMemberId={viewerMemberId}
+            />
+          </ChatDock>
+        </div>
       ) : null}
     </div>
   );

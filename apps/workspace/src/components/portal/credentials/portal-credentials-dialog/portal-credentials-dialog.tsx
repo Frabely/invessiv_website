@@ -1,11 +1,7 @@
 "use client";
 
 import { type ReactNode, useId, useState } from "react";
-import {
-  faKey,
-  faPlus,
-  faShieldHalved,
-} from "@fortawesome/free-solid-svg-icons";
+import { faKey, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { CredentialRevealIntent } from "@invessiv/common/constants/credentials/credential-reveal-intents";
 import type { CredentialSecretField } from "@invessiv/common/constants/credentials/credential-secret-fields";
@@ -21,7 +17,6 @@ import {
 import { portalCredentialsApiService } from "@/client/portal/portal-credentials-api-service";
 import { CredentialListLoadStatus } from "@/common/constants/credentials/credential-list-load-status";
 import type { CredentialRevealOutcome } from "@/common/contracts/credentials/credential-reveal-outcome";
-import { groupCredentials } from "@/common/patterns/crm/credentials/credential-groups";
 import { portalCredentialErrorText } from "@/common/patterns/portal/portal-credential-error-text";
 import { PortalOwnerNotice } from "@/components/portal/portal-owner-notice/portal-owner-notice";
 import type { Locale } from "@/config/i18n";
@@ -29,7 +24,7 @@ import { usePortalCredentials } from "@/hooks/portal/use-portal-credentials";
 import { useDialogReturnFocus } from "@/hooks/shared/use-dialog-return-focus";
 import type { PortalCredentialsDictionary } from "@/i18n/dictionaries/portal";
 import { PortalCredentialFormDialog } from "../portal-credential-form-dialog/portal-credential-form-dialog";
-import { PortalCredentialRow } from "../portal-credential-row/portal-credential-row";
+import { PortalCredentialTable } from "../portal-credential-table/portal-credential-table";
 import styles from "./portal-credentials-dialog.module.css";
 
 export type PortalCredentialsDialogProps = {
@@ -153,6 +148,7 @@ export function PortalCredentialsDialog({
   }
 
   let body: ReactNode;
+  let footer: ReactNode = null;
   if (!list) {
     body =
       status === CredentialListLoadStatus.Error ? (
@@ -168,14 +164,22 @@ export function PortalCredentialsDialog({
         </p>
       );
   } else {
-    const { canReveal, canWrite } = list.capabilities;
-    const { configured, credentials, projects } = list;
+    const { canWrite } = list.capabilities;
+    const { configured, credentials } = list;
+    if (canWrite)
+      footer = (
+        <PrimaryCtaButton
+          ref={focus.targetRef(OverlayKind.Create)}
+          disabled={!configured}
+          onClick={() => openForm({ kind: OverlayKind.Create })}
+          type="button"
+        >
+          <FontAwesomeIcon aria-hidden="true" icon={faPlus} />
+          {content.actions.add}
+        </PrimaryCtaButton>
+      );
     body = (
       <>
-        <p className={styles.trust}>
-          <FontAwesomeIcon aria-hidden="true" icon={faShieldHalved} />
-          <span>{content.dialog.trust}</span>
-        </p>
         {configured ? null : (
           <div className={styles.notice} role="note">
             <p className={styles.noticeTitle}>{content.notConfigured.title}</p>
@@ -184,19 +188,7 @@ export function PortalCredentialsDialog({
             </p>
           </div>
         )}
-        {canWrite ? (
-          <div className={styles.actions}>
-            <PrimaryCtaButton
-              ref={focus.targetRef(OverlayKind.Create)}
-              disabled={!configured}
-              onClick={() => openForm({ kind: OverlayKind.Create })}
-              type="button"
-            >
-              <FontAwesomeIcon aria-hidden="true" icon={faPlus} />
-              {content.actions.add}
-            </PrimaryCtaButton>
-          </div>
-        ) : cockpitHref ? (
+        {!canWrite && cockpitHref ? (
           <PortalOwnerNotice
             cockpitHref={cockpitHref}
             hint={content.owner.hint}
@@ -216,42 +208,16 @@ export function PortalCredentialsDialog({
             title={content.empty.title}
           />
         ) : (
-          <div className={styles.groups}>
-            {groupCredentials(credentials, projects, undefined).map((group) => (
-              <CredentialGroupSection
-                hint={
-                  group.projectId === null
-                    ? content.groups.generalHint
-                    : undefined
-                }
-                key={group.projectId ?? "general"}
-                title={
-                  group.projectId === null
-                    ? content.groups.general
-                    : (projects.find(
-                        (project) => project.id === group.projectId,
-                      )?.title ?? "")
-                }
-              >
-                {group.credentials.map((credential) => (
-                  <PortalCredentialRow
-                    canReveal={canReveal}
-                    canWrite={canWrite}
-                    configured={configured}
-                    content={content}
-                    credential={credential}
-                    editButtonRef={focus.targetRef(credential.id)}
-                    key={credential.id}
-                    locale={locale}
-                    onEditAction={(entry) =>
-                      openForm({ kind: OverlayKind.Edit, credential: entry })
-                    }
-                    onRevealAction={reveal}
-                  />
-                ))}
-              </CredentialGroupSection>
-            ))}
-          </div>
+          <PortalCredentialTable
+            content={content}
+            editButtonRefFor={focus.targetRef}
+            list={list}
+            locale={locale}
+            onEditAction={(entry) =>
+              openForm({ kind: OverlayKind.Edit, credential: entry })
+            }
+            onRevealAction={reveal}
+          />
         )}
       </>
     );
@@ -262,36 +228,12 @@ export function PortalCredentialsDialog({
       closeButtonRef={focus.fallbackRef}
       closeLabel={content.dialog.close}
       description={content.dialog.intro}
+      footer={footer}
       onCloseAction={onCloseAction}
-      size={DialogSize.Wide}
+      size={DialogSize.Large}
       title={content.dialog.title}
     >
       <div className={styles.body}>{body}</div>
     </Dialog>
-  );
-}
-
-type CredentialGroupSectionProps = {
-  children: ReactNode;
-  hint?: string;
-  title: string;
-};
-
-function CredentialGroupSection({
-  children,
-  hint,
-  title,
-}: CredentialGroupSectionProps) {
-  const headingId = useId();
-  return (
-    <section aria-labelledby={headingId} className={styles.group}>
-      <div className={styles.groupHead}>
-        <h3 className={styles.groupTitle} id={headingId}>
-          {title}
-        </h3>
-        {hint ? <p className={styles.groupHint}>{hint}</p> : null}
-      </div>
-      <ul className={styles.list}>{children}</ul>
-    </section>
   );
 }

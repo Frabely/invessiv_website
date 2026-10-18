@@ -273,6 +273,8 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
         allocatedMinutes: 180,
         usedMinutes: 120,
         remainingMinutes: 60,
+        openMinutes: 60,
+        overMinutes: 0,
       });
       expect(hours?.balance).toMatchObject({
         usedMinutes: 180,

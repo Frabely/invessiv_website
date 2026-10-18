@@ -1,10 +1,13 @@
-import { faClock } from "@fortawesome/free-solid-svg-icons";
+import { faHourglassHalf } from "@fortawesome/free-solid-svg-icons";
 import { WidgetOpenMode } from "@invessiv/common/constants/ui/widget-open-modes";
 import type { PortalHoursDto } from "@invessiv/common/contracts/portal/portal-hours.dto";
 import { formatDuration } from "@invessiv/common/patterns/time/format-duration";
+import { hoursMeter } from "@invessiv/common/patterns/time/hours-meter";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { Widget } from "@invessiv/ui";
 import type { PortalDashboardDictionary } from "@/i18n/dictionaries/portal";
+import { PORTAL_WIDGET_ACCENTS } from "@/common/constants/portal/portal-widget-accents";
+import { PortalWidgetKey } from "@/common/constants/portal/portal-widget-keys";
 import styles from "./portal-hours-widget.module.css";
 
 export type PortalHoursWidgetProps = {
@@ -27,13 +30,15 @@ export function PortalHoursWidget({
 }: PortalHoursWidgetProps) {
   const { purchasedMinutes, remainingMinutes, usedMinutes } = hours.balance;
   const over = remainingMinutes < 0;
+  const meter = hoursMeter(usedMinutes, purchasedMinutes);
   const project = hours.projects.find(
     (candidate) => candidate.projectId === selectedProjectId,
   );
 
   return (
     <Widget
-      icon={faClock}
+      accent={PORTAL_WIDGET_ACCENTS[PortalWidgetKey.Hours]}
+      icon={faHourglassHalf}
       onOpenAction={onOpenAction}
       openLabel={content.open}
       openMode={WidgetOpenMode.Dialog}
@@ -55,11 +60,8 @@ export function PortalHoursWidget({
         aria-hidden="true"
         className={styles.meter}
         data-over={over ? "true" : undefined}
-        max={Math.max(purchasedMinutes, 1)}
-        value={Math.min(
-          Math.max(usedMinutes, 0),
-          Math.max(purchasedMinutes, 1),
-        )}
+        max={meter.max}
+        value={meter.value}
       />
       {project ? (
         <p className={styles.project}>

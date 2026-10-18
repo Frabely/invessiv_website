@@ -27,11 +27,15 @@ export type OnboardingStepTrackProps = {
   current: string;
   /** Blocks holding a visible input that cannot be saved as it is. */
   invalidBlockIds: ReadonlySet<string>;
+  /** A step before the blocks, such as the status of a form that is only read. */
+  leadingStep?: ProcessTrackStep;
   /** Sections visited and left in the current editor session. */
   leftSections: ReadonlySet<string>;
   onSelectAction: (section: string) => void;
   /** Blocks the team sent back with a question; empty outside a change request. */
   requestedBlockIds: ReadonlySet<string>;
+  /** False where nothing can be submitted: the track then ends with the last block. */
+  withReview?: boolean;
 };
 
 /**
@@ -44,62 +48,67 @@ export function OnboardingStepTrack({
   content,
   current,
   invalidBlockIds,
+  leadingStep,
   leftSections,
   onSelectAction,
   requestedBlockIds,
+  withReview = true,
 }: OnboardingStepTrackProps) {
   const texts = content.steps;
   const invalid = invalidBlockIds.size > 0;
   const ready = completeness.missing.length === 0 && !invalid;
+  const blockSteps = blocks.map((block): ProcessTrackStep => {
+    const progress = completeness.blocks.find(
+      (entry) => entry.blockId === block.id,
+    ) ?? { answeredRequired: 0, totalRequired: 0, answered: 0, total: 0 };
+    const status = onboardingStepProgress(progress, {
+      current: block.id === current,
+      invalid: invalidBlockIds.has(block.id),
+      left: leftSections.has(block.id),
+    });
+    const statusText = texts.status[status.kind];
+    const statusLabel =
+      status.valid && status.kind !== OnboardingStepStatusKind.Complete
+        ? formatMessage(texts.statusValid, { status: statusText })
+        : statusText;
+    const requested = requestedBlockIds.has(block.id);
+    return {
+      key: block.id,
+      label: block.title,
+      ratio: status.ratio,
+      tone: TONES[status.kind],
+      valid: status.valid,
+      flagged: requested,
+      detail:
+        progress.total > 0
+          ? `${progress.answered}/${progress.total}`
+          : undefined,
+      statusLabel: requested
+        ? formatMessage(texts.statusRequested, { status: statusLabel })
+        : statusLabel,
+    };
+  });
+  // Optional invalid input also prevents submission, even when nothing required is missing.
+  const reviewStep: ProcessTrackStep = {
+    key: PORTAL_ONBOARDING_REVIEW_SECTION,
+    label: texts.review,
+    ratio: ready ? 1 : 0,
+    tone: invalid
+      ? ProcessStepTone.Danger
+      : ready
+        ? ProcessStepTone.Success
+        : ProcessStepTone.Neutral,
+    valid: ready,
+    statusLabel: invalid
+      ? texts.status.attention
+      : ready
+        ? texts.status.complete
+        : texts.status.incomplete,
+  };
   const steps: ProcessTrackStep[] = [
-    ...blocks.map((block) => {
-      const progress = completeness.blocks.find(
-        (entry) => entry.blockId === block.id,
-      ) ?? { answeredRequired: 0, totalRequired: 0, answered: 0, total: 0 };
-      const status = onboardingStepProgress(progress, {
-        current: block.id === current,
-        invalid: invalidBlockIds.has(block.id),
-        left: leftSections.has(block.id),
-      });
-      const statusText = texts.status[status.kind];
-      const statusLabel =
-        status.valid && status.kind !== OnboardingStepStatusKind.Complete
-          ? formatMessage(texts.statusValid, { status: statusText })
-          : statusText;
-      const requested = requestedBlockIds.has(block.id);
-      return {
-        key: block.id,
-        label: block.title,
-        ratio: status.ratio,
-        tone: TONES[status.kind],
-        valid: status.valid,
-        flagged: requested,
-        detail:
-          progress.total > 0
-            ? `${progress.answered}/${progress.total}`
-            : undefined,
-        statusLabel: requested
-          ? formatMessage(texts.statusRequested, { status: statusLabel })
-          : statusLabel,
-      };
-    }),
-    // Optional invalid input also prevents submission, even when nothing required is missing.
-    {
-      key: PORTAL_ONBOARDING_REVIEW_SECTION,
-      label: texts.review,
-      ratio: ready ? 1 : 0,
-      tone: invalid
-        ? ProcessStepTone.Danger
-        : ready
-          ? ProcessStepTone.Success
-          : ProcessStepTone.Neutral,
-      valid: ready,
-      statusLabel: invalid
-        ? texts.status.attention
-        : ready
-          ? texts.status.complete
-          : texts.status.incomplete,
-    },
+    ...(leadingStep ? [leadingStep] : []),
+    ...blockSteps,
+    ...(withReview ? [reviewStep] : []),
   ];
 
   return (

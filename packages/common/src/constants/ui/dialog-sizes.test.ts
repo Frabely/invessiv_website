@@ -6,8 +6,9 @@ describe("DialogSize", () => {
     expect(DialogSize).toEqual({
       Narrow: "narrow",
       Wide: "wide",
+      Large: "large",
       Full: "full",
     });
-    expect(new Set(Object.values(DialogSize)).size).toBe(3);
+    expect(new Set(Object.values(DialogSize)).size).toBe(4);
   });
 });

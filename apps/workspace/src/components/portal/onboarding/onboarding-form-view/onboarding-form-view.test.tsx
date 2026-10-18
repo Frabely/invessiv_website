@@ -552,15 +552,22 @@ describe("OnboardingFormView", () => {
     );
 
     expect(
-      screen.getByRole("heading", {
-        name: /Submitted on .*2026.*Ada Lovelace/,
-      }),
+      screen.getByRole("heading", { level: 2, name: /Submitted on .*2026/ }),
     ).toBeInTheDocument();
+    expect(screen.getByText("by Ada Lovelace")).toBeInTheDocument();
     expect(
       screen.getByText(content.states.submitted.description),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", {
+        name: (label) => label.startsWith(content.steps.review),
+      }),
+    ).toBeNull();
+
+    fireEvent.click(stepButton("Company"));
     expect(screen.queryByRole("textbox")).toBeNull();
     expect(screen.getByText("Acme")).toBeInTheDocument();
+    fireEvent.click(stepButton("Brand"));
     expect(screen.getByText(content.read.unanswered)).toBeInTheDocument();
   });
 

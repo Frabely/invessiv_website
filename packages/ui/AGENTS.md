@@ -16,6 +16,14 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   mit app-neutralem Namen (z. B. `size`, `variant`, `autoGrow`), die dann überall dasselbe bedeutet.
 - **Eine Ausnahme braucht einen wirklich sinnvollen Grund** und einen Kommentar an der Regel, der ihn nennt. „Sieht
   hier besser aus“ ist kein Grund, sondern ein Hinweis, dass die Komponente die Variante braucht.
+  - **Begrenzte Ausnahme: Portal-Zugangsdaten** (Nutzerentscheidung 18.10.2026). Ausschließlich
+    `apps/workspace/src/components/portal/credentials/portal-credential-table-row/portal-credential-table-row.module.css`
+    darf Innenabstände und untere Trennlinien der direkten Tabellenzellen dieser Credentials-Zeile anpassen.
+    Die dichte Übersicht kombiniert Metadaten mit mehrzeiligen Geheimnissen, Countdown und eigenen Feldaktionen;
+    die Trennlinien halten diese variabel hohen Einträge auseinander. Dafür wird keine bislang nur hier benötigte
+    Variante im gemeinsamen UI-Paket eingeführt. Die Ausnahme gilt nur unter der lokalen `.row`-Klasse, nicht für
+    andere Tabellen oder für Buttons, Fokus-, Hover- und Disabled-Zustände. Bei Wiederverwendung in einem weiteren
+    Bereich erneut prüfen, ob eine app-neutrale Tabellenoption sinnvoll ist.
 - **Layout bleibt beim Aufrufer und ist kein Override:** Raster, Abstände zwischen Komponenten, Breite, Ausrichtung,
   Ein- und Ausblenden je Breakpoint. Der Aufrufer bestimmt, wo eine Komponente steht, nicht wie sie aussieht.
 - Bestehende Overrides werden beim Anfassen benannt und abgebaut, statt neue danebenzulegen.
@@ -34,6 +42,12 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   das Token in seinem Scope (z. B. der Portal-Bogen ab 1024 px), statt Label-Klassen zu überschreiben.
 - **Radio und Checkbox** kommen aus `RadioControl` bzw. `CheckboxControl`; als Option einer Frage über `OptionTile`.
   Kein natives `<input type="radio|checkbox">` mit eigenem Stil in den Apps.
+- **Farbe** kommt aus `ColorField`: Hex-Text mit Farb-Chip am Anfang (der native Farbwähler selbst, daher kein
+  Inline-Style) und „Farbe wählen“ daneben. Ohne gültigen Wert ist der Chip schraffiert. `FormField` nimmt
+  `type="color"` von seinen Texteingabe-Stilen aus; Start-Slot (`inputPrefix`) und Aktion neben dem Feld
+  (`inputAction`) sind allgemeine `FormField`-Props.
+- **Icon und Text im Button:** `.button` setzt selbst `gap: 0.5rem`. Aufrufer geben Icons keinen eigenen Abstand
+  (`margin-right` o. Ä.).
 - **Buttons:** `variant` wählt das Aussehen (`primary`, `ghost`, `quiet`), `size` die Größe (`default`, `control` in
   Formularen, `icon` für reine Icon-Buttons). Hover-Effekte gelten nur auf Geräten, die hovern können.
   `PrimaryCtaButton` ist die Hauptaktion, `SecondaryCtaButton` die zweite Aktion daneben oder eine einzelne Aktion,
@@ -44,6 +58,46 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   **Kompatibilitätsausnahme:** `CustomSelect` bewahrt ohne diese Tokens seine bisherigen Werte (44 px Mindesthöhe,
   10 px Radius und bisherige Rahmenfarbe), damit die Web-App unverändert bleibt. Die vereinheitlichten Tokens
   werden aktuell nur im Workspace gesetzt; dafür keine Änderungen an `apps/web/src/app/globals.css` vornehmen.
+
+## Widgets (verbindlich)
+
+- **Reiter statt Kopf-Icon:** Das Icon eines `Widget` sitzt auf einem farbigen Reiter, der über die obere Kartenkante
+  ragt. Die Karte ist flach (kein Verlauf); Farbe tragen nur Reiter, Zähler und Rahmen. Die Farbe kommt über
+  `accent` (`WidgetAccent`); die App definiert je Wert ein Token `--widget-accent-<wert>` pro Theme sowie
+  `--widget-on-accent`.
+- **Eine Aktionsleiste:** Jede Karte endet in derselben Zeile. Weitere Aktionen (`footer`) stehen vorn als
+  `ButtonControl` mit `variant="quiet"`, `size="control"` und Icon **vor** dem Text. Die Öffnen-Aktion steht immer
+  zuletzt, rechts, und ihr Icon **hinter** dem Text sagt, was passiert: `→` Seite (`openMode="page"`), `⤢` Dialog,
+  Spalten für ein Seitenpanel, `⌄` aufklappen; externe Links tragen `↗`.
+- **Buttons stehen beieinander:** Die Aktionsleiste richtet alle Buttons rechts als Gruppe aus. Reicht der Platz
+  einer schmalen Karte nicht für zwei beschriftete Buttons, wird die Nebenaktion ein Icon-Button
+  (`size="icon"`, `aria-label` und `title`) mit sprechendem Icon. Bricht die Zeile doch um (Aktionsleiste unter
+  28 rem), füllt jeder beschriftete Button seine Zeile; Icon-Buttons bleiben quadratisch.
+- **Viertel-Karten** (`desktop: 3`) laufen zwischen 1100 und 1439 px als Drittel, darunter ist ihre Aktionsleiste
+  zu schmal.
+- `openProminent` macht die Öffnen-Aktion zum Primary-Button, wenn der Leser dran ist; die Karte trägt dann
+  `data-open-prominent`. Keine eigenen Link- oder Pill-Buttons in Widgets, immer `ButtonControl`/`ButtonLink`.
+
+## Datei-Vorschau (verbindlich)
+
+- Wie eine Datei gezeigt wird (Bild, PDF, Video, Text, Laden, Fehler), steht nur in `files/file-preview-stage`; das
+  Laden und rechtzeitige Erneuern der signierten URL nur in `hooks/use-file-preview-source`. `FileLightbox`
+  (Vollbild, Variante `dialog`) und `FilePreviewPanel` (neben einer Liste, Variante `panel`) bauen darauf auf und
+  rendern keine eigene Vorschau. Steht das Panel `sticky` in einem Scrollbereich, begrenzt die Seite es auf dessen
+  Höhe und setzt `--file-preview-panel-media-height` (Layout-Hook, Standard 65dvh), damit das Bild zuerst schrumpft.
+- Die Metazeile unter einem Dateinamen (Typ oder Link-Host, eigene Angaben, Größe, Datum) kommt nur aus
+  `files/file-entry-meta`; Zeile und Panel nutzen sie gemeinsam. Das Typwort selbst (Link-Host, Endung, sonst
+  Typname) liefert `filePresentation.typeLabel` aus `@invessiv/common`, auch für Tabellen mit eigener Typ-Spalte.
+  Der gemeinsame Eintragstyp ist `FileEntryItem` (`@invessiv/common/contracts/files/file-entry-item`).
+
+## Tabellen und Mehrfachauswahl (verbindlich)
+
+- `DataTableLayout` trägt Seitenwechsel über `pagination` (Links) oder eigenes Nachladen über `footer` (z. B.
+  „Weitere laden“); beides steht unter dem Scrollbereich im Rahmen. Die Tabelle scrollt in ihrem Rahmen; Kopf (sticky)
+  und `pagination`/`footer` bleiben dabei stehen. Mobile-Cards über `mobileCard`/`mobileCardSlot`.
+- Eine Aktionsleiste für gewählte Einträge ist immer `SelectionActionBar`: Pille unten mittig mit Anzahl (fertiger
+  Text), optionalem Hinweis und den Aktionen des Aufrufers. Seiten mit eigener Leiste am unteren Rand heben sie über
+  `--selection-action-bar-offset` an (Layout, kein Override). Keine zweite Bulk-Leiste in einer App.
 
 ## Bekannte Altlasten
 
