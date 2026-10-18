@@ -188,6 +188,7 @@ function renderInput(
     <span
       className={styles.inputShell}
       data-prefixed={adornments.prefix ? "true" : undefined}
+      data-suffixed={adornments.suffix ? "true" : undefined}
     >
       {adornments.prefix ? (
         <span className={styles.startAdornment}>{adornments.prefix}</span>

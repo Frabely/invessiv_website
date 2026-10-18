@@ -3,21 +3,17 @@
 import type { MouseEvent } from "react";
 import {
   faArrowUpRightFromSquare,
-  faCircleArrowDown,
-  faCircleArrowUp,
   faDownload,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { FileSource } from "@invessiv/common/constants/files/file-source";
 import { PortalFileOrigin } from "@invessiv/common/constants/portal/portal-file-origin";
-import { BadgeTone } from "@invessiv/common/constants/ui/badge-tones";
 import { ButtonSize } from "@invessiv/common/constants/ui/button-sizes";
 import { ButtonVariant } from "@invessiv/common/constants/ui/button-variants";
 import type { PortalFileDto } from "@invessiv/common/contracts/portal/portal-file.dto";
 import { filePresentation } from "@invessiv/common/patterns/files/file-presentation";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import {
-  Badge,
   ButtonControl,
   ButtonLink,
   CheckboxControl,
@@ -28,6 +24,7 @@ import {
 } from "@invessiv/ui";
 import type { Locale } from "@/config/i18n";
 import type { PortalFilesDictionary } from "@/i18n/dictionaries/portal";
+import { PortalOriginBadge } from "@/components/portal/shared/portal-origin-badge/portal-origin-badge";
 import { PortalFileProjectLabel } from "../portal-file-project-label/portal-file-project-label";
 import styles from "./portal-file-table-row.module.css";
 
@@ -142,10 +139,9 @@ export function PortalFileTableRow({
         </span>
       </DataTableHeaderCell>
       <DataTableCell mobileCardSlot="secondary">
-        <Badge
-          icon={fromUs ? faCircleArrowDown : faCircleArrowUp}
+        <PortalOriginBadge
+          fromCustomer={!fromUs}
           label={content.origin[file.origin]}
-          tone={fromUs ? BadgeTone.Primary : BadgeTone.Teal}
         />
       </DataTableCell>
       {showProject ? (

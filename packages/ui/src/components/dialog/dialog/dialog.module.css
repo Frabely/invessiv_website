@@ -45,6 +45,10 @@
   width: min(840px, 100%);
 }
 
+.surface[data-size="large"] {
+  width: min(1080px, 100%);
+}
+
 /* Non-modal: it covers only the content area, so the app header and sidebar stay visible and usable. */
 .dialog[data-size="full"] {
   inset: var(--workspace-header-height, 68px) 0 0

@@ -60,6 +60,18 @@
   visibility: hidden;
 }
 
+/*
+ * A suffix brings its own control, e.g. a show-password toggle; Edge must not add a second one.
+ * Two rules on purpose: merged, the build wraps them in :is(), which drops pseudo-elements.
+ */
+.inputShell[data-suffixed="true"] input::-ms-reveal {
+  display: none;
+}
+
+.inputShell[data-suffixed="true"] input::-ms-clear {
+  display: none;
+}
+
 .control :global(input:where(:not([type="color"]))),
 .control :global(textarea) {
   /* Block level: as an inline box the control would sit on a text line and make its row taller. */

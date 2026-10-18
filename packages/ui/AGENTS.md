@@ -16,6 +16,14 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
   mit app-neutralem Namen (z. B. `size`, `variant`, `autoGrow`), die dann überall dasselbe bedeutet.
 - **Eine Ausnahme braucht einen wirklich sinnvollen Grund** und einen Kommentar an der Regel, der ihn nennt. „Sieht
   hier besser aus“ ist kein Grund, sondern ein Hinweis, dass die Komponente die Variante braucht.
+  - **Begrenzte Ausnahme: Portal-Zugangsdaten** (Nutzerentscheidung 18.10.2026). Ausschließlich
+    `apps/workspace/src/components/portal/credentials/portal-credential-table-row/portal-credential-table-row.module.css`
+    darf Innenabstände und untere Trennlinien der direkten Tabellenzellen dieser Credentials-Zeile anpassen.
+    Die dichte Übersicht kombiniert Metadaten mit mehrzeiligen Geheimnissen, Countdown und eigenen Feldaktionen;
+    die Trennlinien halten diese variabel hohen Einträge auseinander. Dafür wird keine bislang nur hier benötigte
+    Variante im gemeinsamen UI-Paket eingeführt. Die Ausnahme gilt nur unter der lokalen `.row`-Klasse, nicht für
+    andere Tabellen oder für Buttons, Fokus-, Hover- und Disabled-Zustände. Bei Wiederverwendung in einem weiteren
+    Bereich erneut prüfen, ob eine app-neutrale Tabellenoption sinnvoll ist.
 - **Layout bleibt beim Aufrufer und ist kein Override:** Raster, Abstände zwischen Komponenten, Breite, Ausrichtung,
   Ein- und Ausblenden je Breakpoint. Der Aufrufer bestimmt, wo eine Komponente steht, nicht wie sie aussieht.
 - Bestehende Overrides werden beim Anfassen benannt und abgebaut, statt neue danebenzulegen.

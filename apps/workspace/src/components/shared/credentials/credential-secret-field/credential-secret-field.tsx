@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   faCheck,
   faCopy,
@@ -10,10 +9,10 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { CredentialRevealIntent } from "@invessiv/common/constants/credentials/credential-reveal-intents";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
-import { RevealedSecretStatus } from "@/common/constants/credentials/revealed-secret-status";
 import type { CredentialRevealOutcome } from "@/common/contracts/credentials/credential-reveal-outcome";
 import type { CredentialSecretFieldLabels } from "@/common/contracts/credentials/credential-secret-field-labels";
-import { useRevealedSecret } from "@/hooks/shared/use-revealed-secret";
+import { CredentialSecretValue } from "@/components/shared/credentials/credential-secret-value/credential-secret-value";
+import { useCredentialSecret } from "@/hooks/shared/use-credential-secret";
 import styles from "./credential-secret-field.module.css";
 
 export type CredentialSecretFieldProps = {
@@ -32,9 +31,6 @@ export type CredentialSecretFieldProps = {
   ) => Promise<CredentialRevealOutcome>;
 };
 
-// A fixed length: the mask must not hint at how long the value is.
-const MASK = "••••••••••••";
-
 /**
  * One secret value that is requested only when asked for. It knows no endpoint and no dictionary;
  * the owner passes texts and the reveal function, so CRM and portal share it.
@@ -48,91 +44,51 @@ export function CredentialSecretField({
   name,
   onRevealAction,
 }: CredentialSecretFieldProps) {
-  const secret = useRevealedSecret({
+  const secret = useCredentialSecret({
     autoHideSeconds,
-    clipboardFailedMessage: labels.clipboardFailed,
+    labels,
+    name,
     reveal: onRevealAction,
   });
-  const [wasShown, setWasShown] = useState(false);
-  const isVisible = secret.status === RevealedSecretStatus.Visible;
-  const isLoading = secret.status === RevealedSecretStatus.Loading;
   const named = { name };
-
-  // Announces the state, never the value. The seconds are the full span, so the text does not
-  // change every second and is read exactly once.
-  const announcement = secret.copied
-    ? formatMessage(labels.copiedAnnouncement, named)
-    : isVisible
-      ? formatMessage(labels.visibleAnnouncement, {
-          name,
-          seconds: autoHideSeconds,
-        })
-      : wasShown && secret.status === RevealedSecretStatus.Hidden
-        ? formatMessage(labels.hiddenAnnouncement, named)
-        : "";
-
-  function toggle() {
-    if (isVisible) {
-      secret.hide();
-      return;
-    }
-    setWasShown(true);
-    void secret.show();
-  }
-
-  function copy() {
-    if (!isVisible) setWasShown(false);
-    void secret.copy();
-  }
+  const toggleLabel = secret.isVisible ? labels.hide : labels.show;
 
   return (
     <div className={styles.field}>
-      <div
-        className={styles.value}
-        data-multiline={multiline ? "true" : "false"}
-        data-visible={isVisible ? "true" : "false"}
-      >
-        {isVisible ? (
-          <span className={styles.plain}>{secret.value}</span>
-        ) : (
-          <>
-            <span aria-hidden="true" className={styles.mask}>
-              {MASK}
-            </span>
-            <span className="sr-only">{labels.masked}</span>
-          </>
-        )}
-      </div>
+      <CredentialSecretValue
+        announcement={secret.announcement}
+        autoHideSeconds={autoHideSeconds}
+        labels={labels}
+        message={secret.message}
+        multiline={multiline}
+        secondsLeft={secret.secondsLeft}
+        value={secret.value}
+        visible={secret.isVisible}
+      />
       {canReveal ? (
         <div className={styles.actions}>
           <button
             aria-label={formatMessage(
-              isVisible ? labels.hideNamed : labels.showNamed,
+              secret.isVisible ? labels.hideNamed : labels.showNamed,
               named,
             )}
             className={styles.action}
-            disabled={disabled || isLoading}
-            onClick={toggle}
+            disabled={disabled || secret.isLoading}
+            onClick={secret.toggle}
             type="button"
           >
             <FontAwesomeIcon
               aria-hidden="true"
-              icon={isVisible ? faEyeSlash : faEye}
+              icon={secret.isVisible ? faEyeSlash : faEye}
             />
-            <span>
-              {isLoading
-                ? labels.loading
-                : isVisible
-                  ? labels.hide
-                  : labels.show}
-            </span>
+            <span>{secret.isLoading ? labels.loading : toggleLabel}</span>
           </button>
           <button
             aria-label={formatMessage(labels.copyNamed, named)}
             className={styles.action}
             data-copied={secret.copied ? "true" : "false"}
             disabled={disabled}
-            onClick={copy}
+            onClick={secret.copy}
             type="button"
           >
             <FontAwesomeIcon
@@ -143,26 +99,6 @@ export function CredentialSecretField({
           </button>
         </div>
       ) : null}
-      {isVisible ? (
-        <div aria-hidden="true" className={styles.timer}>
-          <progress
-            className={styles.progress}
-            max={autoHideSeconds}
-            value={secret.secondsLeft}
-          />
-          <span className={styles.countdown}>
-            {formatMessage(labels.countdown, { seconds: secret.secondsLeft })}
-          </span>
-        </div>
-      ) : null}
-      {secret.message ? (
-        <p className={styles.error} role="alert">
-          {secret.message}
-        </p>
-      ) : null}
-      <p aria-live="polite" className="sr-only" role="status">
-        {announcement}
-      </p>
     </div>
   );
 }

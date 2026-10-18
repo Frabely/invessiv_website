@@ -232,13 +232,23 @@ test("protects, releases, reveals, edits and revokes credentials with real Clerk
     await expect(list.getByText(title, { exact: true })).toBeVisible();
     await expect(list.getByText(secret, { exact: true })).toHaveCount(0);
 
+    // One "show" uncovers password and note together; "copy" takes only the password.
+    const both = formatMessage(content.row.secretAndNoteNamed, { name: title });
     await list
-      .getByRole("button", { name: `Notiz zu ${title} anzeigen`, exact: true })
+      .getByRole("button", {
+        name: formatMessage(content.secretField.showNamed, { name: both }),
+        exact: true,
+      })
       .click();
+    await expect(list.getByText(secret, { exact: true })).toBeVisible();
     await expect(list.getByText(note, { exact: true })).toBeVisible();
     await list
-      .getByRole("button", { name: `Notiz zu ${title} verbergen`, exact: true })
+      .getByRole("button", {
+        name: formatMessage(content.secretField.hideNamed, { name: both }),
+        exact: true,
+      })
       .click();
+    await expect(list.getByText(secret, { exact: true })).toHaveCount(0);
     await expect(list.getByText(note, { exact: true })).toHaveCount(0);
     await list
       .getByRole("button", {
@@ -250,21 +260,8 @@ test("protects, releases, reveals, edits and revokes credentials with real Clerk
       .poll(() => page.evaluate(() => navigator.clipboard.readText()))
       .toBe(secret);
     await expect(list.getByText(secret, { exact: true })).toHaveCount(0);
-    await list
-      .getByRole("button", {
-        name: `Passwort von ${title} anzeigen`,
-        exact: true,
-      })
-      .click();
-    await expect(list.getByText(secret, { exact: true })).toBeVisible();
-    await list
-      .getByRole("button", {
-        name: `Passwort von ${title} verbergen`,
-        exact: true,
-      })
-      .click();
-    await expect(list.getByText(secret, { exact: true })).toHaveCount(0);
 
+    await page.setViewportSize({ width: 360, height: 900 });
     await list
       .getByRole("button", { name: `${title} ändern`, exact: true })
       .click();
@@ -285,6 +282,20 @@ test("protects, releases, reveals, edits and revokes credentials with real Clerk
       .click();
     await expect(form).toBeHidden();
     await expect(list.getByText(renamed, { exact: true })).toBeVisible();
+    const mobileEdit = list.getByRole("button", {
+      name: formatMessage(content.row.editNamed, { name: renamed }),
+      exact: true,
+    });
+    await expect(mobileEdit).toBeFocused();
+    await mobileEdit.click();
+    await form
+      .getByRole("button", {
+        name: content.form.cancel,
+        exact: true,
+      })
+      .click();
+    await expect(mobileEdit).toBeFocused();
+    await page.setViewportSize({ width: 1280, height: 900 });
     const rotated = await contact.request.post(revealEndpoint, {
       data: reveal,
     });

@@ -371,10 +371,34 @@ Plan: `apps/workspace/plans/crm/19-credentials/71-credentials-portal.md`.
 - **Aktionen nur aus `capabilities` der Liste:** Anzeigen und Kopieren mit `canReveal`, „Zugang hinterlegen“ und
   „Ändern“ mit `canWrite`. Es gibt keinen Lösch-, Projekt- oder Freigabeweg. Die Owner-Sicht bekommt den
   Owner-Hinweis mit CRM-Link.
-- **Geteilte Bausteine statt Kopien:** Geheimnisfeld, Typ-Symbol, Faktenliste (`credential-facts`) und der
+- **Geteilte Bausteine statt Kopien:** Geheimnis-Anzeige (`credential-secret-value`), Typ-Symbol (im Kasten über
+  `framed`, wie im Cockpit), Benutzername kopieren (`credential-username-copy`, im Portal `compact`) und der
   Formular-Dialog (`credential-form-dialog`) kommen aus `components/shared/credentials/` — dieselben wie im
-  Cockpit. Das Portal bindet nur Endpunkte, Texte und Projekte an (`portal-credential-form-dialog`). Feldregeln und
-  Request-Bau laufen über `credentialFormRequest`.
+  Cockpit. Aufdecken, Kopieren und Ansagen laufen über `useCredentialSecret`, das Kopieren des Benutzernamens über
+  `useCopyFeedback` (`src/hooks/shared/`). Das Portal bindet nur Endpunkte, Texte und Projekte an
+  (`portal-credential-form-dialog`). Feldregeln und Request-Bau laufen über `credentialFormRequest`.
+- **Tabelle statt Liste (Paket O, Entscheidung 17.10.2026,
+  Plan `apps/workspace/plans/crm/30-portal-zugangsdaten-tabelle/O-portal-credentials-table.md`).**
+  Der Dialog ist `DialogSize.Large` (1080 px), damit die Spalten nicht gequetscht werden.
+  `credentials/portal-credential-table` rendert `DataTableLayout` mit `fillAvailableHeight` in einem Rahmen fester
+  Höhe (mobil füllt die Tabelle stattdessen den Dialog): Nur die Zeilen scrollen, nie zusätzlich der Dialog; je Eintrag `credentials/portal-credential-table-row`. Spalten: Zugang (Typ-Icon,
+  Bezeichnung, darunter Adresse als Link bzw. Art; höchstens zwei Zeilen), Von (`shared/portal-origin-badge`,
+  „Von uns“/„Von dir“, derselbe Baustein wie in der Dateitabelle), Benutzername, Passwort, Projekt (nur wenn ein
+  Eintrag projektgebunden ist; allgemeine heißen „Alle Projekte“), Geändert, Aktionen. Allgemeine Zugänge stehen
+  zuerst, keine Gruppenüberschriften.
+- **Feld-Aktionen gehören zum Feld:** Kopieren beim Benutzernamen, Anzeigen und Kopieren beim Passwort stehen als
+  Icon-Buttons (`ButtonControl` `size=Icon`, quiet, benanntes `aria-label` und `title`) direkt in der Zelle und
+  sind auch mobil immer sichtbar. „Anzeigen“ deckt Passwort und, wenn vorhanden, Notiz gemeinsam auf (zwei
+  protokollierte Abrufe, ein Countdown); „Kopieren“ kopiert nur das Passwort.
+- **Zeilen-Aktion ist nur „Ändern“** (mit `canWrite`), als direkt sichtbarer `ButtonControl` aus `@invessiv/ui`
+  mit `size=Icon`, `variant=Quiet` (44 px) in einer `DataTableCell`. Auch mobil kein Menü für die einzelne Aktion;
+  der Stift ist zugleich das Fokus-Rückkehrziel nach dem Formular. Keine Credentials-spezifische Erweiterung von
+  `TableRowActions`.
+- **Mobil (unter 720 px)** ist jede Zeile eine Karte: Kopf mit Zugang und Stift, darunter Benutzername, Passwort,
+  Projekt und Geändert (rechts neben dem Datum das Herkunfts-Badge, die Spalte „Von“ entfällt), jeweils mit
+  Beschriftung links und Wert rechts (eigene `fieldLabel`, nicht `mobileLabel`).
+- **„Zugang hinterlegen“ steht im Dialog-Footer** (`footer` am `Dialog`), nicht über der Liste. Laden, Fehler und
+  leere Liste stehen ohne Tabelle da.
 - Der Formular-Dialog nennt über den Feldern, wer die Werte lesen kann (`form.notice`). Beim Ändern gibt es keine
   Projektwahl.
 - Fehlertexte nur über `portalCredentialErrorText` (`common/patterns/portal/`).
