@@ -63,7 +63,7 @@ test.describe.serial("portal files", () => {
     await expect(page.getByRole("heading", { name: "Dateien" })).toBeVisible();
     const list = page.getByRole("table", { name: "Dateien und Links" });
     await expect(
-      list.getByRole("link", { name: new RegExp(released) }).first(),
+      list.getByRole("row", { name: new RegExp(released) }),
     ).toBeVisible();
     await expect(list.getByText(internal)).toHaveCount(0);
     // The owner view reads but never uploads.
@@ -87,7 +87,9 @@ test.describe.serial("portal files", () => {
       const contact = await contactContext.newPage();
       await contact.goto(`/de/portal/${fixture.filesCustomer}/files`);
       await expect(
-        contact.getByRole("link", { name: new RegExp(released) }).first(),
+        contact
+          .getByRole("table", { name: "Dateien und Links" })
+          .getByRole("row", { name: new RegExp(released) }),
       ).toBeVisible();
       await expect(contact.getByText(internal)).toHaveCount(0);
       const hiddenContact = await contact.request.get(

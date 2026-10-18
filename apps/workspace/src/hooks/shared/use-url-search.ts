@@ -4,6 +4,7 @@ import { useCallback, useEffect, useSyncExternalStore } from "react";
 import { useSearchParams } from "next/navigation";
 import { UrlSearchEvent } from "@/common/constants/shared/url-search-events";
 import type { UrlHistoryChange } from "@/common/contracts/hooks/url-history-change";
+import { subscribeUrlHistory } from "@/lib/navigation/url-history-dispatcher";
 
 type SearchSubscription = {
   onChange: () => void;
@@ -24,6 +25,7 @@ const subscriptions = new Set<SearchSubscription>();
 const guards = new Set<HistoryGuard>();
 let previous: HistorySnapshot | null = null;
 let returning = false;
+let unsubscribeHistory: (() => void) | null = null;
 
 function historyIndex(state: unknown): number | null {
   if (!state || typeof state !== "object" || !(HISTORY_INDEX in state))
@@ -132,13 +134,14 @@ function connect() {
   if (historyIndex(window.history.state) === null)
     window.history.replaceState(withIndex(window.history.state, 0), "");
   previous = snapshot();
-  window.addEventListener("popstate", onHistoryChange, true);
+  unsubscribeHistory = subscribeUrlHistory(onHistoryChange);
   window.addEventListener(UrlSearchEvent.Changed, notify);
 }
 
 function disconnect() {
   if (subscriptions.size || guards.size) return;
-  window.removeEventListener("popstate", onHistoryChange, true);
+  unsubscribeHistory?.();
+  unsubscribeHistory = null;
   window.removeEventListener(UrlSearchEvent.Changed, notify);
   previous = null;
   returning = false;

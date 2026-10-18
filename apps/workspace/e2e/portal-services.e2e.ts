@@ -14,6 +14,7 @@ import { portalServiceRequestsEndpoint } from "@/common/patterns/portal/portal-a
 import dashboard from "@/i18n/dictionaries/portal/dashboard/de.json";
 import content from "@/i18n/dictionaries/portal/service-requests/de.json";
 import { portalPathFor } from "@/lib/auth/routes";
+import { PORTAL_E2E_PREFIX } from "@/test/constants/portal-e2e-prefix";
 import {
   type PortalE2eFixture,
   portalE2ePaths,
@@ -74,9 +75,9 @@ test("lets a contact request services, follow and withdraw them, isolated by com
       },
     );
     expect(foreignProject.status()).toBe(HttpResponseCode.UnprocessableContent);
-    expect(foreignProject.headers()[HttpHeaderName.CacheControl]).toContain(
-      "no-store",
-    );
+    expect(
+      foreignProject.headers()[HttpHeaderName.CacheControl.toLowerCase()],
+    ).toContain("no-store");
 
     const page = await contact.newPage();
     await page.goto(portalPathFor("de", fixture.hoursCustomer));
@@ -103,7 +104,9 @@ test("lets a contact request services, follow and withdraw them, isolated by com
       "Landingpage",
     ])
       await expect(
-        dialog.getByRole("button", { name: new RegExp(title) }),
+        dialog.getByRole("button", {
+          name: new RegExp(`^${PORTAL_E2E_PREFIX} ${title}\\b`),
+        }),
       ).toBeVisible();
     await expect(
       dialog.getByRole("button", {
@@ -117,7 +120,11 @@ test("lets a contact request services, follow and withdraw them, isolated by com
     await expect(dialog).not.toContainText("E2E internal scope");
 
     // A catalog entry for one of two projects.
-    await dialog.getByRole("button", { name: /Unterseite/ }).click();
+    await dialog
+      .getByRole("button", {
+        name: new RegExp(`^${PORTAL_E2E_PREFIX} Unterseite\\b`),
+      })
+      .click();
     await expect
       .poll(() => new URL(page.url()).searchParams.get("service"))
       .toBe(fixture.serviceStandard);
@@ -155,7 +162,11 @@ test("lets a contact request services, follow and withdraw them, isolated by com
 
     // Hours by quick choice.
     await dialog.getByRole("button", { name: content.sent.another }).click();
-    await dialog.getByRole("button", { name: /Stundenpaket/ }).click();
+    await dialog
+      .getByRole("button", {
+        name: new RegExp(`^${PORTAL_E2E_PREFIX} Stundenpaket\\b`),
+      })
+      .click();
     await dialog.getByRole("button", { name: "5 Stunden" }).click();
     // Hours belong to the company: they can be requested without naming a project.
     await dialog

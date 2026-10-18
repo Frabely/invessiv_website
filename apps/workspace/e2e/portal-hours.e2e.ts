@@ -12,6 +12,7 @@ import { portalHoursEntriesEndpoint } from "@/common/patterns/portal/portal-api-
 import dashboard from "@/i18n/dictionaries/portal/dashboard/de.json";
 import content from "@/i18n/dictionaries/portal/hours/de.json";
 import { portalPathFor } from "@/lib/auth/routes";
+import { PORTAL_E2E_PREFIX } from "@/test/constants/portal-e2e-prefix";
 import {
   type PortalE2eFixture,
   portalE2ePaths,
@@ -128,10 +129,14 @@ test("shows hours to contacts by right and company, read-only, with real Clerk s
     );
 
     await expect(
-      dialog.getByRole("button", { name: /^Hours Website/ }),
+      dialog.getByRole("button", {
+        name: new RegExp(`^${PORTAL_E2E_PREFIX} Hours Website`),
+      }),
     ).toContainText("2:30");
     await expect(
-      dialog.getByRole("button", { name: /^Hours Shop/ }),
+      dialog.getByRole("button", {
+        name: new RegExp(`^${PORTAL_E2E_PREFIX} Hours Shop`),
+      }),
     ).toContainText("Dieses Projekt hat 1:00 mehr verbraucht als zugewiesen.");
 
     await dialog.getByRole("tab", { name: content.tabs.purchases }).click();
@@ -140,10 +145,14 @@ test("shows hours to contacts by right and company, read-only, with real Clerk s
     ).toBeVisible();
     await expect(dialog.getByText("+10:00", { exact: true })).toBeVisible();
 
-    await dialog.getByRole("button", { name: /^Hours Shop/ }).click();
+    await dialog
+      .getByRole("button", {
+        name: new RegExp(`^${PORTAL_E2E_PREFIX} Hours Shop`),
+      })
+      .click();
     const shopTotals = dialog.getByRole("group", {
       name: formatMessage(content.figures.projectLabel, {
-        project: "Hours Shop",
+        project: `${PORTAL_E2E_PREFIX} Hours Shop`,
       }),
     });
     await expect(shopTotals).toBeVisible();

@@ -387,7 +387,9 @@ test.describe.serial("portal onboarding", () => {
         .getByRole("dialog", { name: "Onboarding absenden?" })
         .getByRole("button", { name: "Jetzt absenden" })
         .click();
-      await expect(contact.getByText(/Abgesendet am/)).toBeVisible();
+      await expect(
+        contact.getByRole("heading", { name: /Abgesendet am/ }),
+      ).toBeVisible();
       await expect(contact.getByRole("textbox")).toHaveCount(0);
     } finally {
       await returningContext.close();

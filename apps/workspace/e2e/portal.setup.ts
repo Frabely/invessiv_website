@@ -39,11 +39,15 @@ const TEST_USERS = [
   },
 ] as const;
 
-async function ensureTestUsers() {
+function developmentClerkClient() {
   const secretKey = process.env.CLERK_SECRET_KEY;
   if (!secretKey?.startsWith("sk_test_"))
     throw new Error("Clerk development secret key is required.");
-  const client = createClerkClient({ secretKey });
+  return createClerkClient({ secretKey });
+}
+
+async function ensureTestUsers() {
+  const client = developmentClerkClient();
   const ids = new Map<string, string>();
   for (const user of TEST_USERS) {
     const existing = await client.users.getUserList({
@@ -74,6 +78,23 @@ async function saveAuthenticatedState(
     const page = await context.newPage();
     await page.goto("http://localhost:4174/de/sign-in");
     await clerk.signIn({ page, emailAddress: email });
+    const sessionId = await page.evaluate(() => window.Clerk.session?.id);
+    if (!sessionId) throw new Error("Expected an active Clerk test session.");
+    // API-only contexts cannot refresh Clerk's default 60-second token. Keep this development
+    // fixture valid for the whole suite without changing the application's authentication rules.
+    const token = await developmentClerkClient().sessions.getToken(
+      sessionId,
+      undefined,
+      30 * 60,
+    );
+    const sessionCookies = (await context.cookies("http://localhost:4174"))
+      .filter(
+        (cookie) =>
+          cookie.name === "__session" || cookie.name.startsWith("__session_"),
+      )
+      .map((cookie) => ({ ...cookie, value: token.jwt }));
+    expect(sessionCookies.length).toBeGreaterThan(0);
+    await context.addCookies(sessionCookies);
     await context.storageState({ path });
   } finally {
     await context.close();

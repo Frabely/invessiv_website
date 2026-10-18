@@ -479,7 +479,7 @@ describe.skipIf(!RUN_INTEGRATION)(
       expect(blocked).toEqual({
         ok: false,
         code: WorkspaceMemberErrorCode.MemberHasOpenResponsibilities,
-        responsibilityCounts: { customer: 2 },
+        responsibilityCounts: { customer: 2, task: 0, conversation: 0 },
       });
 
       await db
