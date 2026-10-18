@@ -1,5 +1,32 @@
 import { describe, expect, it } from "vitest";
-import { formatCustomerNumber } from "@invessiv/common/patterns/crm/format-customer-number";
+import {
+  formatCustomerNumber,
+  parseCustomerNumberInput,
+} from "@invessiv/common/patterns/crm/format-customer-number";
+
+describe("parseCustomerNumberInput", () => {
+  it.each([
+    ["2", 2],
+    ["0002", 2],
+    ["K0002", 2],
+    ["k2", 2],
+    [" K0042 ", 42],
+    ["999999", 999_999],
+  ])("reads %j as %i", (input, expected) => {
+    expect(parseCustomerNumberInput(input, 999_999)).toBe(expected);
+  });
+
+  it.each(["", "K", "0", "K0000", "-1", "1.5", "12a", "KK2", "1000000"])(
+    "rejects %j",
+    (input) => {
+      expect(parseCustomerNumberInput(input, 999_999)).toBeNull();
+    },
+  );
+
+  it("round-trips the display format", () => {
+    expect(parseCustomerNumberInput(formatCustomerNumber(9), 999_999)).toBe(9);
+  });
+});
 
 describe("formatCustomerNumber", () => {
   it.each([

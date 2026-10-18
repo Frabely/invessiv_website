@@ -4,6 +4,35 @@ import { CustomersConstraintName } from "@invessiv/db/constraint-names/crm/custo
 import { PostgresErrorCode } from "@invessiv/db/core";
 import { customerConstraintViolationService } from "@/server/workspace/crm/services/customer-constraint-violation-service";
 
+describe("customerConstraintViolationService.isCustomerNumberTaken", () => {
+  it("recognizes the customer number index behind a wrapped driver error", () => {
+    const error = new Error("insert failed", {
+      cause: {
+        code: PostgresErrorCode.UniqueViolation,
+        constraint: CustomersConstraintName.CustomerNumberUnique,
+      },
+    });
+
+    expect(
+      customerConstraintViolationService.isCustomerNumberTaken(error),
+    ).toBe(true);
+  });
+
+  it("ignores the display name index and other failures", () => {
+    expect(
+      customerConstraintViolationService.isCustomerNumberTaken({
+        code: PostgresErrorCode.UniqueViolation,
+        constraint: CustomersConstraintName.DisplayNameLowerUnique,
+      }),
+    ).toBe(false);
+    expect(
+      customerConstraintViolationService.isCustomerNumberTaken(
+        new Error("boom"),
+      ),
+    ).toBe(false);
+  });
+});
+
 describe("customerConstraintViolationService.isDisplayNameTaken", () => {
   it("recognizes the display name index behind a wrapped driver error", () => {
     const error = new Error("insert failed", {

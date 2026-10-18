@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ActivityType } from "@invessiv/common/constants/activity/activity-types";
 import { ActorType } from "@invessiv/common/constants/activity/actor-types";
 import { LeadConversionErrorCode } from "@invessiv/common/constants/crm/errors/lead-conversion-error-codes";
+import { CustomersConstraintName } from "@invessiv/db/constraint-names/crm/customers-constraint-names";
+import { PostgresErrorCode } from "@invessiv/db/core";
 import {
   activities,
   customerContactAssignments,
@@ -147,6 +149,32 @@ describe("convertLeadToCustomer", () => {
       code: LeadConversionErrorCode.LeadNotFound,
     });
     expect(mocks.insertValues).not.toHaveBeenCalled();
+  });
+
+  it("answers a taken customer number without linking the lead", async () => {
+    mocks.insertValues.mockImplementation(async (table: unknown) => {
+      if (table === customers) {
+        throw new Error("duplicate", {
+          cause: {
+            code: PostgresErrorCode.UniqueViolation,
+            constraint: CustomersConstraintName.CustomerNumberUnique,
+          },
+        });
+      }
+    });
+
+    const result = await convertLeadToCustomer(
+      "lead-1",
+      createCustomerRequestFixture(),
+      actor,
+    );
+
+    expect(result).toEqual({
+      ok: false,
+      code: LeadConversionErrorCode.CustomerNumberTaken,
+    });
+    expect(mocks.updateSet).not.toHaveBeenCalled();
+    expect(mocks.createActivity).not.toHaveBeenCalled();
   });
 
   it("does not write history when the primary contact insert fails", async () => {

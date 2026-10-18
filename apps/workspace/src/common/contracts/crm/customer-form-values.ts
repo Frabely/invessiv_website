@@ -8,6 +8,8 @@ import type { CustomerFormValidationCode } from "@/common/constants/crm/forms/cu
  */
 export type CustomerFormValues = {
   displayName: string;
+  /** As typed, prefix allowed ("K0002"); only read when creating. Prefilled with the suggestion. */
+  customerNumber: string;
   companyName: string;
   /** Empty string selects "no category". */
   categoryId: string;

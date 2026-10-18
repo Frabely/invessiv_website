@@ -69,6 +69,16 @@ describe("createCustomerFormValues", () => {
     expect(values.displayName).toBe("");
     expect(values.contactPreferredLocale).toBe("en");
     expect(values.status).toBe("active");
+    expect(values.customerNumber).toBe("");
+  });
+
+  it("prefills the suggested customer number only when creating", () => {
+    expect(
+      createCustomerFormValues(null, "de", undefined, 2).customerNumber,
+    ).toBe("K0002");
+    expect(
+      createCustomerFormValues(CUSTOMER, "de", undefined, 2).customerNumber,
+    ).toBe("");
   });
 
   it("prefills an existing customer including the euro amount", () => {
@@ -113,13 +123,41 @@ describe("validateCustomerForm", () => {
 
     expect(errors).toEqual({
       displayName: "displayNameRequired",
+      customerNumber: "customerNumberInvalid",
       contactLastName: "contactLastNameRequired",
     });
   });
 
-  it("requires a last name even when an email is set", () => {
+  it.each(["K0002", "0002", "2"])("accepts %j as customer number", (input) => {
     const values = {
       ...createCustomerFormValues(null, "de"),
+      displayName: "Kluge Bau",
+      contactLastName: "Kluge",
+      customerNumber: input,
+    };
+
+    expect(validateCustomerForm(values, "create")).toEqual({});
+  });
+
+  it.each(["0", "K", "12a", "1000000"])(
+    "rejects %j as customer number",
+    (input) => {
+      const values = {
+        ...createCustomerFormValues(null, "de"),
+        displayName: "Kluge Bau",
+        contactLastName: "Kluge",
+        customerNumber: input,
+      };
+
+      expect(validateCustomerForm(values, "create")).toEqual({
+        customerNumber: "customerNumberInvalid",
+      });
+    },
+  );
+
+  it("requires a last name even when an email is set", () => {
+    const values = {
+      ...createCustomerFormValues(null, "de", undefined, 2),
       displayName: "Kluge Bau",
       contactEmail: "office@kluge.example",
     };
@@ -131,7 +169,7 @@ describe("validateCustomerForm", () => {
 
   it("reports invalid formats", () => {
     const values = {
-      ...createCustomerFormValues(null, "de"),
+      ...createCustomerFormValues(null, "de", undefined, 2),
       displayName: "Kluge Bau",
       contactLastName: "Kluge",
       contactEmail: "kluge@",
@@ -159,6 +197,7 @@ describe("request mapping", () => {
   it("trims, nulls empty fields and converts the hourly rate", () => {
     const request = toCreateCustomerRequest({
       ...createCustomerFormValues(null, "de"),
+      customerNumber: " K0042 ",
       displayName: "  Kluge Bau ",
       companyName: " ",
       hourlyRate: "80",
@@ -167,6 +206,7 @@ describe("request mapping", () => {
     });
 
     expect(request).toMatchObject({
+      customerNumber: 42,
       displayName: "Kluge Bau",
       companyName: null,
       city: null,
@@ -190,5 +230,6 @@ describe("request mapping", () => {
     expect(request.status).toBe("active");
     expect(request.version).toBe(3);
     expect(request).not.toHaveProperty("primaryContact");
+    expect(request).not.toHaveProperty("customerNumber");
   });
 });

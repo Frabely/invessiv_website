@@ -1,4 +1,5 @@
 export const LeadConversionErrorCode = {
+  CustomerNumberTaken: "LEAD_CONVERSION_CUSTOMER_NUMBER_TAKEN",
   DisplayNameTaken: "LEAD_CONVERSION_DISPLAY_NAME_TAKEN",
   Internal: "LEAD_CONVERSION_INTERNAL",
   LeadNotFound: "LEAD_CONVERSION_LEAD_NOT_FOUND",

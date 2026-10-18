@@ -100,6 +100,12 @@ export async function convertLeadToCustomer(
         code: LeadConversionErrorCode.DisplayNameTaken,
       };
     }
+    if (customerConstraintViolationService.isCustomerNumberTaken(error)) {
+      return {
+        ok: false,
+        code: LeadConversionErrorCode.CustomerNumberTaken,
+      };
+    }
     throw error;
   }
 }

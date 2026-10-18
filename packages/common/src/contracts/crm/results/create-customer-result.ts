@@ -17,5 +17,6 @@ export type CreateCustomerResult =
       ok: false;
       code:
         | typeof CustomerErrorCode.DisplayNameTaken
+        | typeof CustomerErrorCode.CustomerNumberTaken
         | typeof CustomerErrorCode.OwnerInactive;
     };

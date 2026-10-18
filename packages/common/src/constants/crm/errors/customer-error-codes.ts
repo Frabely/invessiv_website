@@ -1,11 +1,13 @@
 /**
  * Deliberately without `CompanyNameExists`: duplicate company names are a valid state.
- * The normalized display name is unique instead (`DisplayNameTaken`).
+ * The normalized display name is unique instead (`DisplayNameTaken`), and so is the
+ * customer number across all statuses (`CustomerNumberTaken`).
  */
 export const CustomerErrorCode = {
   CustomerNotFound: "CUSTOMER_NOT_FOUND",
   ContactNotFound: "CONTACT_NOT_FOUND",
   DisplayNameTaken: "CUSTOMER_DISPLAY_NAME_TAKEN",
+  CustomerNumberTaken: "CUSTOMER_NUMBER_TAKEN",
   OwnerInactive: "CUSTOMER_OWNER_INACTIVE",
   ValidationError: "VALIDATION_ERROR",
   Internal: "INTERNAL",
