@@ -397,6 +397,12 @@ Neuzuschnitt 29.09.2026 (mit dem Owner abgestimmt); vollständige Spezifikation 
   Das Portal nennt keinen Betrag.
 - Übergabe, Abschluss und Abnahme verändern die Projektphase niemals.
 - Benachrichtigung bis Ordner 20c ausschließlich über Chat-Systemnachrichten.
+- **Ergebnishistorie (Task 78, Ordner 28):** Ergebnisse lassen sich in `submitted`, `in_discussion` und
+  `in_progress` auf „Noch offen“ zurücksetzen. Jede tatsächliche Ergebnisänderung wird intern in derselben
+  Transaktion historisiert, auch die automatische Rücknahme beim Bearbeiten zurückgegebener Entwürfe. Bestehende
+  Ergebnisse erhalten ihren Ausgangseintrag erst bei der ersten Änderung; unveränderte Aktionen schreiben nichts,
+  Command-Kennungen erkennen Wiederholungen. Portal-Antworten enthalten keine Historie. Kein Backfill und kein
+  Feature-Schalter. Rückfragen pro Punkt folgen in Task 79/80; die globale Rückgabe bleibt bis dahin bestehen.
 
 ### Dateien
 
@@ -785,6 +791,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12b erreicht:
 | 22a | offen        | `22a-kundenorganisation-und-uebergabe`   | Suche, Filter, Tags und globale Zuständigkeitsübergabe vollständig nutzbar                                                                                                                                                   |  70–110 |   4–6 T. |
 | 23  | offen        | `23-web-ui-abschluss`                    | Website nutzt geteilte Buttons/Formulare in bewusster Web-Ausprägung                                                                                                                                                         |   35–55 |   3–4 T. |
 | 24  | offen        | `24-zustaendigkeitszugriff-absicherung`  | Owner-Wechsel und Übergaben verhindern Zuständigkeiten ohne wirksamen Zugriff                                                                                                                                                |   40–70 |   2–3 T. |
+| 28  | läuft        | `28-feedback-rueckfragen`                | Rückfragen je Feedbackpunkt, „Noch offen“ und interne Ergebnishistorie; 28.1 (Task 78) läuft, 28.2/28.3 offen                                                                                                                | 150–190 |   6–9 T. |
 
 Statuswerte: `offen` → `läuft` → `im Review` → `gemerged`. Beim Merge werden die Tabelle und der
 Status in der Ordner-README gemeinsam aktualisiert.

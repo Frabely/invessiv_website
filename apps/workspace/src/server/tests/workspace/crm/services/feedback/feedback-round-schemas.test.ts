@@ -122,6 +122,32 @@ describe("feedbackRoundSchemas.setItemResult", () => {
   const parse = (input: object) =>
     feedbackRoundSchemas.setItemResult.safeParse(input);
 
+  it("accepts reset only without a note and normalizes optional command ids", () => {
+    const commandId = "AAAAAAAA-AAAA-4AAA-8AAA-AAAAAAAAAAAA";
+    expect(
+      feedbackRoundSchemas.setItemResult.parse({
+        version: 1,
+        result: null,
+        resultNote: "  ",
+        commandId,
+      }),
+    ).toEqual({
+      version: 1,
+      result: null,
+      resultNote: null,
+      commandId: commandId.toLowerCase(),
+    });
+    expect(parse({ version: 1, result: null }).success).toBe(true);
+    for (const extra of [
+      { resultNote: "Reason" },
+      { commandId: "invalid" },
+      { commandId: null },
+      { extra: true },
+    ]) {
+      expect(parse({ version: 1, result: null, ...extra }).success).toBe(false);
+    }
+  });
+
   it("demands a reply for results the customer is owed an explanation for", () => {
     for (const result of [
       FeedbackItemResult.NotImplemented,

@@ -1,10 +1,10 @@
 # Rückfragen pro Feedbackpunkt und reversible Ergebnisse
 
-Stand: 18.10.2026. Status: **offen – nur geplant, nicht umgesetzt**.
+Stand: 18.10.2026. Status: **28.1 läuft; 28.2 und 28.3 offen**.
 
 Dieser Plan ist die eigenständige fachliche Umsetzungsspezifikation; der zugehörige Chat ist nicht erforderlich.
-Seine Ablage und Ergänzung beauftragen noch keine Implementierung. Bestehender Feature-Code, Datenbank und
-laufende Feedbackrunden bleiben unverändert. Alle Pfade in diesem Dokument beziehen sich auf die Repository-Wurzel,
+Task 78 ist zur Umsetzung beauftragt; Task 79 und 80 bleiben geplant. Die Beschreibungen der Rückfragen und der
+Ablösung der globalen Rückgabe sind bis dahin Zielverhalten. Alle Pfade in diesem Dokument beziehen sich auf die Repository-Wurzel,
 sofern sie nicht ausdrücklich als relative Dokumentverweise geschrieben sind.
 
 ### Teilschritte
@@ -16,7 +16,7 @@ Dateien, Abläufe und Tests konkret; die fachlichen Regeln stehen weiterhin in d
 
 | Teil | Task | Plan                                                                           | Inhalt                                                            | Sichtbar nach Merge     | Status |
 | ---- | ---- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------- | ----------------------- | ------ |
-| 28.1 | 78   | [78-ergebnishistorie-und-noch-offen.md](78-ergebnishistorie-und-noch-offen.md) | Ergebnishistorie, „Noch offen“ zurücksetzbar, Historie im Cockpit | ja, Cockpit             | offen  |
+| 28.1 | 78   | [78-ergebnishistorie-und-noch-offen.md](78-ergebnishistorie-und-noch-offen.md) | Ergebnishistorie, „Noch offen“ zurücksetzbar, Historie im Cockpit | ja, Cockpit             | läuft  |
 | 28.2 | 79   | [79-rueckfragen-server.md](79-rueckfragen-server.md)                           | Rückfragen-Tabelle, Commands, Routen, Sperren, Chat-Ereignisse    | nein (kein UI-Einstieg) | offen  |
 | 28.3 | 80   | [80-rueckfragen-ui-und-abloesung.md](80-rueckfragen-ui-und-abloesung.md)       | Cockpit- und Portal-UI, globale Rückgabe entfernt, E2E, Doku      | ja, Cockpit und Portal  | offen  |
 
@@ -548,4 +548,4 @@ Zusätzlich zu Abschnitt 5 müssen folgende Abnahmen explizit erfüllt sein:
 
 Prüfstand dieses Dokuments: Die eigenständige Umsetzbarkeit wurde anhand der genannten bestehenden Handler,
 Punkt-/Runden-Modelle, Portal-Mapping-/Autorisierungswege, UI-Reader, API-Clients und Testorte nachgeschärft.
-Es wurden dabei keine Feature-Implementierung, Migration oder Feature-Tests ausgeführt bzw. angelegt.
+Der aktuelle Umsetzungs- und Prüfstand für Teil 28.1 steht im Task-78-Dokument. Teile 28.2 und 28.3 bleiben offen.

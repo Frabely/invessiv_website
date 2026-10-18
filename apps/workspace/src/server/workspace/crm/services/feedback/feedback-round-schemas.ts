@@ -67,17 +67,25 @@ const changeStatus = z.discriminatedUnion("to", [
 const setItemResult = z
   .strictObject({
     version,
-    result: z.enum(FEEDBACK_ITEM_RESULT_VALUES),
+    commandId: z
+      .uuid()
+      .transform((value) => value.toLowerCase())
+      .optional(),
+    result: z.enum(FEEDBACK_ITEM_RESULT_VALUES).nullable(),
     resultNote: optionalText(FEEDBACK_LIMITS.noteMaxLength),
   })
   .refine(
     ({ result, resultNote }) =>
       resultNote !== null ||
+      result === null ||
       !(FEEDBACK_ITEM_RESULTS_REQUIRING_NOTE as readonly string[]).includes(
         result,
       ),
     { path: ["resultNote"] },
-  );
+  )
+  .refine(({ result, resultNote }) => result !== null || resultNote === null, {
+    path: ["resultNote"],
+  });
 
 export const feedbackRoundSchemas = {
   entityId: z.uuid(),

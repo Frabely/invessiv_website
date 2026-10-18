@@ -103,7 +103,13 @@ Plan: `apps/workspace/plans/crm/16-feedbackrunden/60-ui-uebergabe-und-kundenboge
   übergeben“ nur unterhalb des Kontingents, sonst Abnahme-Hinweis).
 - Ergebnisse je Punkt über `feedback-item-result-select` in der Zeile (`StatusRow`, `alignStart`): „Umgesetzt“
   speichert sofort, die beiden anderen öffnen die Antwort mit Vorschau in Kundensicht (`FeedbackItemResult` aus
-  `components/shared/feedback/`). „Noch offen“ erscheint nur, solange kein Ergebnis gesetzt ist.
+  `components/shared/feedback/`). Ab Task 78 ist „Noch offen“ immer auswählbar und setzt vorhandene Ergebnisse
+  ohne Dialog zurück. Jede explizite Aktion trägt eine neue `commandId`; ein späterer automatischer Retry müsste
+  dieselbe Kennung weiterreichen.
+- `feedback-result-history` zeigt den internen Verlauf unter dem Ergebnis als zunächst eingeklappte Liste.
+  Reihenfolge ist die Punktversion. Ein Mitglied ohne Namen erscheint als „Team“, ein Kontakt mit entfernter
+  Portalmitgliedschaft als „Entfernter Kontakt“. Begründungen bleiben
+  reiner Text; ohne Einträge fehlt der Bereich. Das Portal bekommt keine Historie.
 - Fehlercodes beider Befehle werden nur über `feedbackProcessingError` (`common/patterns/crm/`) in Texte übersetzt.
 - **Eingang (ab Task 62):** `feedback-inbox` (Kopf, Filter, Liste, zwei unterscheidbare Empty-States),
   `feedback-inbox-card` und `feedback-inbox-toolbar`. Filter sind URL-State über

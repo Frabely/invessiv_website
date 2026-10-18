@@ -29,6 +29,7 @@ import {
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 import { activityService } from "@/server/shared/services/activity-service";
 import { updateLockedVersioned } from "@/server/workspace/shared/update-versioned";
+import { feedbackResultHistoryService } from "@/server/shared/services/feedback/feedback-result-history-service";
 import { feedbackRoundItemService } from "@/server/shared/services/feedback/feedback-round-item-service";
 import type { FeedbackRoundRow } from "@/server/shared/services/feedback/feedback-service-types";
 import { loadPortalContactNames } from "@/server/shared/services/load-portal-contact-names";
@@ -128,10 +129,15 @@ async function toRoundDto(
       round.submitted_by_portal_membership_id,
     ]),
   ]);
+  const history = await feedbackResultHistoryService.loadByItems(
+    executor,
+    (items.get(round.id) ?? []).map(({ item }) => item.id),
+  );
   return feedbackRoundMappingService.toDto(
     round,
     items.get(round.id) ?? [],
     contactNames,
+    history,
   );
 }
 

@@ -1,5 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
+import { FeedbackResultActorSide as A } from "@invessiv/common/constants/crm/feedback-result-actor-sides";
+import { FeedbackResultHistoryEventKind as K } from "@invessiv/common/constants/crm/feedback-result-history-event-kinds";
+import type { FeedbackItemResultHistoryEntryDto } from "@invessiv/common/contracts/crm/feedback-item-result-history-entry.dto";
 import { feedbackRoundMappingService } from "@/server/workspace/crm/services/feedback/feedback-round-mapping-service";
 import {
   ITEM_ID,
@@ -11,6 +14,32 @@ import {
 vi.mock("server-only", () => ({}));
 
 describe("feedbackRoundMappingService.toDto", () => {
+  it("attaches each item's result history and defaults to none", () => {
+    const item = loadedItem();
+    const entry: FeedbackItemResultHistoryEntryDto = {
+      id: "entry",
+      kind: K.Baseline,
+      itemVersion: item.item.version,
+      result: item.item.result,
+      resultNote: item.item.result_note,
+      actorSide: A.Member,
+      actorName: "Anna",
+      occurredAt: item.item.result_set_at!.toISOString(),
+    };
+    expect(
+      feedbackRoundMappingService.toDto(
+        roundRow(),
+        [item],
+        new Map(),
+        new Map([[item.item.id, [entry]]]),
+      ).items[0].resultHistory,
+    ).toEqual([entry]);
+    expect(
+      feedbackRoundMappingService.toDto(roundRow(), [item], new Map()).items[0]
+        .resultHistory,
+    ).toEqual([]);
+  });
+
   it("maps every round column and keeps nullable ones null", () => {
     expect(
       feedbackRoundMappingService.toDto(roundRow(), [], new Map()),
@@ -79,6 +108,7 @@ describe("feedbackRoundMappingService.toDto", () => {
       result: "not_implemented",
       resultNote: "Kommt in Phase 2",
       resultSetByMemberId: "66666666-6666-4666-8666-666666666666",
+      resultHistory: [],
       resultSetAt: "2026-09-05T10:00:00.000Z",
       attachments: loadedItem().attachments,
       version: 2,

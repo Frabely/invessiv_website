@@ -14,12 +14,15 @@ import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl } from "@invessiv/ui";
 import { feedbackRoundsApiService } from "@/client/crm/feedback-rounds-api-service";
 import { FeedbackProcessingError } from "@/common/constants/feedback/feedback-processing-errors";
+import { FeedbackResultChoice } from "@/common/constants/feedback/feedback-result-choices";
 import { feedbackProcessingError } from "@/common/patterns/crm/feedback-processing-error";
 import { FeedbackItemResult } from "@/components/shared/feedback/feedback-item-result/feedback-item-result";
 import { FeedbackReadOnlyItemContent } from "@/components/shared/feedback/feedback-read-only-item-content/feedback-read-only-item-content";
 import { StatusRow } from "@/components/workspace/shared/status-row/status-row";
+import type { Locale } from "@/config/i18n";
 import type { CrmFeedbackRoundsDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { FeedbackItemResultSelect } from "../feedback-item-result-select/feedback-item-result-select";
+import { FeedbackResultHistory } from "../feedback-result-history/feedback-result-history";
 import { FeedbackTextDialog } from "../feedback-text-dialog/feedback-text-dialog";
 import styles from "./feedback-item-row.module.css";
 
@@ -27,6 +30,7 @@ type FeedbackItemRowProps = {
   content: CrmFeedbackRoundsDictionary;
   item: FeedbackRoundItemDto;
   number: number;
+  locale: Locale;
   /** The round is submitted and not finished yet, and the member may write the project. */
   editable: boolean;
   /** Results exist from the submission on; a draft item has none to show. */
@@ -51,6 +55,7 @@ export function FeedbackItemRow({
   content,
   item,
   number,
+  locale,
   editable,
   showResult,
   onAnnounceAction,
@@ -59,7 +64,7 @@ export function FeedbackItemRow({
   const router = useRouter();
   const texts = content.result;
   const [pending, setPending] = useState<{
-    result: FeedbackItemResultValue;
+    result: FeedbackItemResultValue | null;
     baseVersion: number;
   } | null>(null);
   const [noteFor, setNoteFor] = useState<FeedbackItemResultValue | null>(null);
@@ -69,19 +74,25 @@ export function FeedbackItemRow({
       ? pending.result
       : item.result;
 
-  function announceSaved(result: FeedbackItemResultValue) {
+  function announceSaved(result: FeedbackItemResultValue | null) {
     onAnnounceAction(
-      formatMessage(content.announcements.resultSaved, {
-        number,
-        result: texts.choices[result],
-      }),
+      formatMessage(
+        result === null
+          ? content.announcements.resultReset
+          : content.announcements.resultSaved,
+        {
+          number,
+          result: texts.choices[result ?? FeedbackResultChoice.Pending],
+        },
+      ),
     );
   }
 
-  async function saveImplemented(result: FeedbackItemResultValue) {
+  async function saveImmediateResult(result: FeedbackItemResultValue | null) {
     setError(null);
     setPending({ result, baseVersion: item.version });
     const saved = await feedbackRoundsApiService.setItemResult(item.id, {
+      commandId: crypto.randomUUID(),
       version: item.version,
       result,
       resultNote: null,
@@ -102,9 +113,9 @@ export function FeedbackItemRow({
     router.refresh();
   }
 
-  function choose(result: FeedbackItemResultValue) {
-    if (requiresNote(result)) setNoteFor(result);
-    else void saveImplemented(result);
+  function choose(result: FeedbackItemResultValue | null) {
+    if (result !== null && requiresNote(result)) setNoteFor(result);
+    else void saveImmediateResult(result);
   }
 
   const itemContent = (
@@ -125,7 +136,24 @@ export function FeedbackItemRow({
     />
   );
 
-  if (!showResult) return <li className={styles.item}>{itemContent}</li>;
+  const resultHistory = (
+    <FeedbackResultHistory
+      entries={item.resultHistory}
+      content={texts}
+      locale={locale}
+      textLabels={{
+        showMore: content.detail.showMore,
+        showLess: content.detail.showLess,
+      }}
+    />
+  );
+  if (!showResult)
+    return (
+      <li className={styles.item}>
+        {itemContent}
+        {resultHistory}
+      </li>
+    );
 
   return (
     <StatusRow
@@ -175,6 +203,7 @@ export function FeedbackItemRow({
           ) : null}
         </div>
       ) : null}
+      {resultHistory}
       {error ? (
         <p className={styles.error} role="alert">
           {error}
@@ -201,6 +230,7 @@ export function FeedbackItemRow({
           required
           send={(current, note) =>
             feedbackRoundsApiService.setItemResult(current.id, {
+              commandId: crypto.randomUUID(),
               version: current.version,
               result: noteFor,
               resultNote: note,

@@ -11,6 +11,8 @@ import {
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { FeedbackItemResult } from "@invessiv/common/constants/crm/feedback-item-results";
+import { FeedbackResultActorSide } from "@invessiv/common/constants/crm/feedback-result-actor-sides";
+import { FeedbackResultHistoryEventKind } from "@invessiv/common/constants/crm/feedback-result-history-event-kinds";
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import type { FeedbackRoundItemDto } from "@invessiv/common/contracts/crm/feedback-round-item.dto";
 import type { FeedbackRoundDto } from "@invessiv/common/contracts/crm/feedback-round.dto";
@@ -59,6 +61,7 @@ function item(
     resultSetByMemberId: null,
     resultSetAt: null,
     attachments: [],
+    resultHistory: [],
     version: 1,
     ...overrides,
   };
@@ -102,6 +105,7 @@ function renderDetail(
   options: { canWrite?: boolean; included?: number } = {},
 ) {
   const onHandOverNextAction = vi.fn();
+  const onAnnounceAction = vi.fn();
   render(
     <FeedbackRoundDetail
       backHref="/en/crm"
@@ -113,18 +117,71 @@ function renderDetail(
       feedbackRoundPositions={[1, 1]}
       included={options.included ?? 2}
       locale="en"
-      onAnnounceAction={vi.fn()}
+      onAnnounceAction={onAnnounceAction}
       onHandOverNextAction={onHandOverNextAction}
       processSteps={["Design", "Development"]}
       round={detail}
     />,
   );
-  return { onHandOverNextAction };
+  return { onHandOverNextAction, onAnnounceAction };
 }
 
 beforeEach(() => {
   vi.resetAllMocks();
   mocks.markRead.mockResolvedValue(false);
+});
+
+it("resets a rated item without a dialog and announces pending", async () => {
+  mocks.setItemResult.mockResolvedValue({
+    ok: true,
+    value: item("a", { version: 2 }),
+  });
+  const { onAnnounceAction } = renderDetail(
+    round({ items: [item("a", { result: FeedbackItemResult.Implemented })] }),
+  );
+  fireEvent.click(screen.getByRole("button", { name: /Result for item 1:/ }));
+  fireEvent.click(
+    screen.getByRole("option", { name: content.result.choices.pending }),
+  );
+  await waitFor(() =>
+    expect(mocks.setItemResult).toHaveBeenCalledWith("a", {
+      version: 1,
+      commandId: expect.any(String),
+      result: null,
+      resultNote: null,
+    }),
+  );
+  expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  expect(onAnnounceAction).toHaveBeenCalledWith("Item 1 is pending again.");
+});
+
+it("keeps the internal history readable after a round was returned to the customer", () => {
+  renderDetail(
+    round({
+      status: FeedbackRoundStatus.Open,
+      items: [
+        item("a", {
+          resultHistory: [
+            {
+              id: "event",
+              kind: FeedbackResultHistoryEventKind.Reset,
+              itemVersion: 2,
+              result: null,
+              resultNote: null,
+              actorSide: FeedbackResultActorSide.Member,
+              actorName: null,
+              occurredAt: "2026-10-01T10:00:00.000Z",
+            },
+          ],
+        }),
+      ],
+    }),
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Result history (1)" }));
+  expect(screen.getByText(content.result.history.reset)).toBeVisible();
+  expect(
+    screen.queryByRole("button", { name: /Result for item/ }),
+  ).not.toBeInTheDocument();
 });
 
 describe("FeedbackRoundDetail read stamp", () => {
@@ -263,6 +320,7 @@ describe("FeedbackRoundDetail processing", () => {
     );
     await waitFor(() =>
       expect(mocks.setItemResult).toHaveBeenCalledWith("a", {
+        commandId: expect.any(String),
         version: 1,
         result: FeedbackItemResult.Implemented,
         resultNote: null,

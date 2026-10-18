@@ -196,7 +196,7 @@ test.describe.serial("portal feedback", () => {
   test("processes round 1, hands over round 2, takes it back and approves after it", async ({
     page,
     browser,
-  }) => {
+  }, testInfo) => {
     const suffix = Date.now().toString(36);
     const cockpit = `/de/crm?cockpit=${fixture.feedbackCustomer}&project=${fixture.feedbackProject}`;
     const url = feedbackPath(fixture.feedbackCustomer, fixture.feedbackProject);
@@ -252,6 +252,63 @@ test.describe.serial("portal feedback", () => {
         .fill(`Gern als Zusatzleistung ${suffix}`);
       await reply.getByRole("button", { name: "Ergebnis speichern" }).click();
       await expect(reply).toBeHidden();
+      await expect(page.getByText("2 von 2 Punkten bewertet")).toBeVisible();
+
+      // Reset by keyboard, inspect the retained history, then rate again before completing.
+      const firstResult = page.getByRole("button", {
+        name: "Ergebnis für Punkt 1: Umgesetzt",
+      });
+      await firstResult.focus();
+      await firstResult.press("Enter");
+      const pending = page.getByRole("option", {
+        name: "Noch offen",
+        exact: true,
+      });
+      await pending.focus();
+      await pending.press("Enter");
+      await expect(page.getByText("1 von 2 Punkten bewertet")).toBeVisible();
+      const history = page.getByRole("button", {
+        name: "Ergebnisverlauf (2)",
+        exact: true,
+      });
+      await expect(history).toHaveAttribute("aria-expanded", "false");
+      await history.focus();
+      await history.press("Enter");
+      await expect(history).toHaveAttribute("aria-expanded", "true");
+      await expect(
+        page.getByText("Zurückgesetzt auf Noch offen", { exact: true }),
+      ).toBeVisible();
+      for (const theme of ["dark", "light"]) {
+        await page.evaluate((value) => {
+          document.documentElement.dataset.theme = value;
+        }, theme);
+        for (const viewport of [
+          { width: 1440, height: 1000 },
+          { width: 390, height: 844 },
+        ]) {
+          await page.setViewportSize(viewport);
+          await history.scrollIntoViewIfNeeded();
+          await expect(history).toBeVisible();
+          expect(
+            await page.evaluate(
+              () => document.documentElement.scrollWidth <= window.innerWidth,
+            ),
+          ).toBe(true);
+          // Kept as artifacts for the manual visual review; only the overflow check above asserts.
+          await page.screenshot({
+            path: testInfo.outputPath(
+              `feedback-result-history-${theme}-${viewport.width}.png`,
+            ),
+          });
+        }
+      }
+      await page.setViewportSize({ width: 1440, height: 1000 });
+      await page
+        .getByRole("button", { name: "Ergebnis für Punkt 1: Noch offen" })
+        .click();
+      await page
+        .getByRole("option", { name: "Umgesetzt", exact: true })
+        .click();
       await expect(page.getByText("2 von 2 Punkten bewertet")).toBeVisible();
 
       await page.getByRole("button", { name: "Runde abschließen" }).click();

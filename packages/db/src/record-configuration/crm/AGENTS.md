@@ -54,6 +54,15 @@ questionnaire_field_choices (id, field_id)`: Er bindet die Option an das Auslös
 - Übersetzungstabellen (`*_translations`) haben einen Primärschlüssel `(element_id, locale)`; mindestens eine Zeile je
   Element prüft der Schreibpfad.
 
+## Ergebnishistorie (Ordner 28)
+
+- `feedback_round_item_result_history` hält unveränderliche Folgezustände je Punktversion. `baseline` dokumentiert
+  den vorhandenen Stand vor der ersten Änderung, `set` ein Ergebnis und `reset` den geleerten Zustand.
+- Keine eigene bearbeitbare Version, kein `updated_at`, kein Update-Pfad. Nur die Löschung des Punkts kaskadiert
+  seine Historie. Entfernte Portalmitgliedschaften leeren den Autorbezug; interne Mitgliedsreferenzen bleiben geschützt.
+- `(item_id, item_version)` ist eindeutig, `(item_id, command_id)` bei gesetzter Kennung ebenfalls.
+  Alle Fachwerte kommen vom Schreibpfad; nur `created_at` hat einen DB-Default.
+
 ## Bewusst nicht vorhanden
 
 - Kein Unique-Index auf `customers.company_name`: zwei echte „Müller GmbH" in verschiedenen Städten

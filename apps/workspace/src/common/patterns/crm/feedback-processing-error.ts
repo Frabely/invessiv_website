@@ -13,6 +13,7 @@ export function feedbackProcessingError(
     case FeedbackRoundErrorCode.ItemNotFound:
       return FeedbackProcessingError.NotFound;
     case FeedbackRoundErrorCode.InvalidTransition:
+    case FeedbackRoundErrorCode.CommandIdReused:
       return FeedbackProcessingError.Changed;
     case FeedbackRoundErrorCode.RoundLocked:
       return FeedbackProcessingError.Locked;

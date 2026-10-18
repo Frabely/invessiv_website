@@ -157,7 +157,8 @@
     "handedOver": "Feedbackrunde {number} ist übergeben.",
     "alreadyActive": "Feedbackrunde {number} läuft bereits und ist geöffnet.",
     "statusChanged": "Feedbackrunde {number}: {status}.",
-    "resultSaved": "Punkt {number}: {result} gespeichert."
+    "resultSaved": "Punkt {number}: {result} gespeichert.",
+    "resultReset": "Punkt {number} ist wieder offen."
   },
   "actions": {
     "groupLabel": "Nächster Schritt für diese Runde",
@@ -227,6 +228,14 @@
       "submitting": "Wird gespeichert …",
       "required": "Schreib dem Kunden eine kurze Antwort.",
       "conflict": "Jemand hat den Punkt gerade bewertet. Du siehst den aktuellen Stand; deine Antwort ist noch da."
+    },
+    "history": {
+      "toggle": "Ergebnisverlauf ({count})",
+      "baseline": "Ausgangsstand: {result}",
+      "set": "Ergebnis: {result}",
+      "reset": "Zurückgesetzt auf Noch offen",
+      "actorTeam": "Team",
+      "actorRemoved": "Entfernter Kontakt"
     }
   },
   "progress": {

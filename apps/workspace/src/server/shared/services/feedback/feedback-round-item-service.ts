@@ -2,6 +2,7 @@ import "server-only";
 
 import { and, asc, eq, inArray, ne, type SQL, sql } from "drizzle-orm";
 
+import { FeedbackResultActorSide } from "@invessiv/common/constants/crm/feedback-result-actor-sides";
 import type {
   ContactDatabaseTransaction,
   ContactDatabaseReader,
@@ -12,6 +13,7 @@ import { updateLockedVersioned } from "@/server/workspace/shared/update-versione
 import { feedbackAttachmentService } from "./feedback-attachment-service";
 import { FeedbackItemIdTakenError } from "./feedback-item-id-taken-error.class";
 import { feedbackMappingService } from "./feedback-mapping-service";
+import { feedbackResultHistoryService } from "./feedback-result-history-service";
 import type {
   FeedbackDraftItemInput,
   FeedbackRoundItemRow,
@@ -137,13 +139,14 @@ async function updateItem(
   stored: FeedbackRoundItemRow,
   item: FeedbackDraftItemInput,
   position: number,
+  portalMembershipId: string,
 ): Promise<void> {
   const contentChanged =
     stored.area_label !== item.areaLabel ||
     stored.kind !== item.kind ||
     stored.body !== item.body;
   if (stored.position === position && !contentChanged) return;
-  await updateLockedVersioned(
+  const next = await updateLockedVersioned(
     {
       tx,
       table: feedbackRoundItems,
@@ -166,6 +169,17 @@ async function updateItem(
     },
     "Locked feedback item changed",
   );
+  if (contentChanged && stored.result !== null) {
+    await feedbackResultHistoryService.recordChange(tx, {
+      stored,
+      next,
+      actor: {
+        side: FeedbackResultActorSide.PortalContact,
+        portalMembershipId,
+      },
+      command: null,
+    });
+  }
 }
 
 /**
@@ -193,7 +207,8 @@ async function replaceDraftItems(
   await tx.execute(sql`set constraints ${positionConstraint} deferred`);
   for (const [position, item] of items.entries()) {
     const existing = storedById.get(item.id);
-    if (existing) await updateItem(tx, existing, item, position);
+    if (existing)
+      await updateItem(tx, existing, item, position, portalMembershipId);
     else await insertItem(tx, round, item, position, portalMembershipId);
   }
   await tx.execute(sql`set constraints ${positionConstraint} immediate`);

@@ -107,6 +107,23 @@ describe("feedback round processing routes", () => {
     );
   });
 
+  it("passes a result body without command id through unchanged for older tabs", async () => {
+    mocks.setFeedbackItemResult.mockResolvedValue({
+      ok: true,
+      item: { id: ITEM_ID },
+    });
+    const result = await setResult(
+      request(HttpMethod.Patch, resultBody),
+      itemContext,
+    );
+    expect(result.status).toBe(HttpResponseCode.Ok);
+    expect(mocks.setFeedbackItemResult).toHaveBeenCalledWith(
+      ITEM_ID,
+      { version: 1, result: "implemented" },
+      expect.anything(),
+    );
+  });
+
   it("returns the version conflict body with the current state", async () => {
     const conflict = {
       code: ConcurrencyErrorCode.VersionConflict,
@@ -149,6 +166,7 @@ describe("feedback round processing routes", () => {
   });
 
   it.each([
+    [FeedbackRoundErrorCode.CommandIdReused, HttpResponseCode.Conflict],
     [FeedbackRoundErrorCode.RoundLocked, HttpResponseCode.Conflict],
     [FeedbackRoundErrorCode.ItemNotFound, HttpResponseCode.NotFound],
   ])("maps the result error %s to %i", async (code, status) => {

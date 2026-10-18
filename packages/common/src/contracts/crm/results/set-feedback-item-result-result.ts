@@ -20,5 +20,6 @@ export type SetFeedbackItemResultResult =
       ok: false;
       code:
         | typeof FeedbackRoundErrorCode.ItemNotFound
+        | typeof FeedbackRoundErrorCode.CommandIdReused
         | typeof FeedbackRoundErrorCode.RoundLocked;
     };

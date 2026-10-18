@@ -2,6 +2,10 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 
+import {
+  FEEDBACK_ITEM_RESULT_VALUES,
+  FEEDBACK_ITEM_RESULTS_REQUIRING_NOTE,
+} from "@invessiv/common/constants/crm/feedback-item-results";
 import { FEEDBACK_LIMITS } from "@invessiv/common/constants/crm/feedback-limits";
 
 const migration = readFileSync(
@@ -48,6 +52,35 @@ describe("migration 0045 limits", () => {
     "repeats the %s limit of FEEDBACK_LIMITS",
     (_name, fragment) => {
       expect(migration).toContain(fragment);
+    },
+  );
+});
+
+const historyMigration = readFileSync(
+  path.resolve(
+    __dirname,
+    "../../../migrations/0059_create_feedback_round_item_result_history.sql",
+  ),
+  "utf8",
+);
+
+const sqlList = (values: readonly string[]) =>
+  values.map((value) => `'${value}'`).join(", ");
+
+const EXPECTED_HISTORY_CHECKS: readonly [string, string][] = [
+  ["result note", `length(result_note) <= ${FEEDBACK_LIMITS.noteMaxLength}`],
+  ["result values", `result IN (${sqlList(FEEDBACK_ITEM_RESULT_VALUES)})`],
+  [
+    "results requiring a reply",
+    `result NOT IN (${sqlList(FEEDBACK_ITEM_RESULTS_REQUIRING_NOTE)})`,
+  ],
+];
+
+describe("migration 0059 limits", () => {
+  it.each(EXPECTED_HISTORY_CHECKS)(
+    "repeats the %s of the shared feedback constants",
+    (_name, fragment) => {
+      expect(historyMigration).toContain(fragment);
     },
   );
 });

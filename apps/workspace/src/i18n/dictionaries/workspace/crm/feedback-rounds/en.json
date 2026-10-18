@@ -157,7 +157,8 @@
     "handedOver": "Feedback round {number} is handed over.",
     "alreadyActive": "Feedback round {number} is already running and is open.",
     "statusChanged": "Feedback round {number}: {status}.",
-    "resultSaved": "Item {number}: {result} saved."
+    "resultSaved": "Item {number}: {result} saved.",
+    "resultReset": "Item {number} is pending again."
   },
   "actions": {
     "groupLabel": "Next step for this round",
@@ -227,6 +228,14 @@
       "submitting": "Saving …",
       "required": "Write the customer a short reply.",
       "conflict": "Someone just rated this item. You now see the current state; your reply is still here."
+    },
+    "history": {
+      "toggle": "Result history ({count})",
+      "baseline": "Baseline: {result}",
+      "set": "Result: {result}",
+      "reset": "Reset to Pending",
+      "actorTeam": "Team",
+      "actorRemoved": "Removed contact"
     }
   },
   "progress": {

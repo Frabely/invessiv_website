@@ -1,6 +1,7 @@
 import type { FeedbackItemKind } from "../../constants/crm/feedback-item-kinds";
 import type { FeedbackItemResult } from "../../constants/crm/feedback-item-results";
 import type { FileAttachmentDto } from "../files/file-attachment.dto";
+import type { FeedbackItemResultHistoryEntryDto } from "./feedback-item-result-history-entry.dto";
 
 /** One feedback item as the team sees it, including the internal result. */
 export interface FeedbackRoundItemDto {
@@ -26,6 +27,8 @@ export interface FeedbackRoundItemDto {
   resultSetAt: string | null;
   /** Customer uploads on this item in upload order. */
   attachments: FileAttachmentDto[];
+  /** Internal changes in ascending item-version order; never part of portal responses. */
+  resultHistory: FeedbackItemResultHistoryEntryDto[];
   /** Optimistic-concurrency counter of the item row, used when the team sets a result. */
   version: number;
 }

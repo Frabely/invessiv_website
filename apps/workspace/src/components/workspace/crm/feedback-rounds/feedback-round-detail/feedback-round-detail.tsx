@@ -217,6 +217,7 @@ export function FeedbackRoundDetail({
           <ol className={styles.list}>
             {round.items.map((item, index) => (
               <FeedbackItemRow
+                locale={locale}
                 attachments={
                   canReadFiles && item.attachments.length > 0 ? (
                     <FileAttachmentList

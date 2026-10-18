@@ -56,6 +56,14 @@ der eigene Upload“ bleiben in den getrennten Handlern (`portalFileService` bzw
 
 ## Feedbackrunden (ab Task 58)
 
+- Ab Task 78 ist `services/feedback/feedback-result-history-service.ts` der einzige produktive Schreibweg
+  der Ergebnishistorie. Jeder Ergebnis-Schreibpfad ruft `recordChange` unter Punktsperre und in derselben
+  Transaktion auf, einschließlich der automatischen Rücknahme beim Bearbeiten eines zurückgegebenen Entwurfs.
+  Ausgangsstände entstehen erst bei der ersten tatsächlichen Änderung; No-ops schreiben nichts.
+  Nur interne Leser laden den Verlauf über `loadByItems`; Portal-DTOs und Portal-Konflikte enthalten ihn nie.
+  Zeile → DTO übernimmt `feedback-result-history-mapping-service.ts` hier im Ordner; der Service importiert nichts
+  aus `server/workspace/**`.
+
 `services/feedback/` hält die Bausteine, die Portal- und Workspace-Handler der Feedbackrunden (Task 59–61) teilen.
 Übergänge, Sperren, Rechte und Fehlercodes entscheidet der Handler seiner Welt anhand von `canTransition`
 (`@invessiv/common/patterns/crm/feedback-round-state`); die Services setzen nur die Nebenwirkungen in derselben

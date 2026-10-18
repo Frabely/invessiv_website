@@ -277,11 +277,53 @@ Dictionary-Tests).
 
 ## Abnahme
 
-- [ ] Migration idempotent (zweiter Lauf folgenlos), Modell deckungsgleich, Smoke grün (`pnpm db:smoke:crm`).
-- [ ] Alle Ergebnis-Schreibwege (`setFeedbackItemResult`, Legacy-Reset in `updateItem`) schreiben Historie in
+- [ ] Migration idempotent (zweiter Lauf folgenlos) – nicht eigens geprüft; die Datei nutzt nur `IF NOT EXISTS`.
+- [x] Modell deckungsgleich, Smoke grün (`pnpm db:smoke:crm`).
+- [x] Alle Ergebnis-Schreibwege (`setFeedbackItemResult`, Legacy-Reset in `updateItem`) schreiben Historie in
       derselben Transaktion; kein anderer Code schreibt die Tabelle.
-- [ ] Portal-Read, Portal-Schreibantworten und Portal-Konfliktkörper enthalten keine Historie.
-- [ ] „Noch offen“ im Cockpit bedienbar (Maus/Tastatur), Fokus bleibt am Punkt, Ansage in der Live-Region.
+- [x] Portal-Read, Portal-Schreibantworten und Portal-Konfliktkörper enthalten keine Historie.
+- [ ] „Noch offen“ im Cockpit bedienbar (Maus/Tastatur), Fokus bleibt am Punkt, Ansage in der Live-Region –
+      im E2E-Ablauf abgedeckt, der Lauf steht aus.
 - [ ] Beide Themes, mobile und Desktop geprüft.
-- [ ] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm db:smoke:crm`, `pnpm --filter @invessiv/workspace build` grün.
-- [ ] README-Tabelle „Teilschritte“: Status 28.1 gepflegt.
+- [x] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm db:smoke:crm`, `pnpm --filter @invessiv/workspace build` grün.
+- [x] README-Tabelle „Teilschritte“: Status 28.1 gepflegt.
+
+## Umsetzungsstand (18.10.2026)
+
+Status: **läuft**, ungecommittet auf `feat/crm-feedback-rueckfragen`. Alle Teilaufgaben T1–T4 und die
+Testliste sind umgesetzt.
+
+**Abweichungen vom Plan (bewusst):**
+
+- Der Ausgangsstand entsteht in `feedbackResultHistoryService.recordChange` nach dem Punkt-Write, im selben
+  Savepoint. Er trägt die beobachtete Punktversion vor der Änderung, das Ereignis die neue Version; die Reihenfolge
+  der Inserts hat dadurch keine fachliche Wirkung.
+- Die Oberfläche erzeugt die `commandId` pro Aufruf. Der Client hat keine automatischen Retries; käme einer dazu,
+  müsste er dieselbe Kennung weiterreichen.
+- Das Mapping Zeile → DTO liegt in `server/shared/services/feedback/feedback-result-history-mapping-service.ts`,
+  damit der geteilte Service nichts aus `server/workspace/**` importiert.
+- Ein Kontakt mit entfernter Portalmitgliedschaft erscheint als „Entfernter Kontakt“, ein Mitglied ohne Namen als
+  „Team“; der Schlüssel `actorCustomer` ist entfallen.
+- Zusätzlich sichert `feedback-limits-migration.test.ts` die Literale aus Migration 0059 ab.
+- Der Replay läuft vor der Statusprüfung (`RoundLocked`), nicht danach wie in T3 beschrieben. So bleibt eine
+  Wiederholung auch nach dem Rundenabschluss idempotent und liefert den aktuellen Punkt. Den Vergleich der Nutzlast
+  übernimmt `feedbackResultHistoryService.matchesCommand`.
+- Testablage: Der Legacy-Entwurfsreset und die Kaskade sind in `feedback-result-history.integration.test.ts`
+  geprüft statt in `feedback-services.integration.test.ts`. Der gemeinsame Helfer für eine eingereichte Runde liegt in
+  `src/server/tests/support/feedback/submitted-feedback-round.ts`.
+
+**Ausgeführte Prüfungen:**
+
+| Prüfung                                     | Ergebnis                                                             |
+| ------------------------------------------- | -------------------------------------------------------------------- |
+| `pnpm -r typecheck`                         | grün                                                                 |
+| `pnpm -r lint`                              | grün (zwei ältere Warnungen in `apps/web` und `update-project`-Test) |
+| `pnpm -r test`                              | grün                                                                 |
+| `pnpm db:smoke:crm` (Dev-DB, 0059 migriert) | grün: 341 Constraint-Checks, 42 Integrationsdateien mit 484 Tests    |
+| `pnpm --filter @invessiv/workspace build`   | grün (bestehende Turbopack-Warnung zu `packages/db/src/core/env.ts`) |
+
+**Offen:**
+
+- E2E-Lauf `pnpm --filter @invessiv/workspace test:e2e:portal` (der Ablauf ist in `portal-feedback.e2e.ts` ergänzt).
+- Sichtprüfung beider Themes, mobil und Desktop.
+- Prüfung, dass ein zweiter Migrationslauf folgenlos bleibt.

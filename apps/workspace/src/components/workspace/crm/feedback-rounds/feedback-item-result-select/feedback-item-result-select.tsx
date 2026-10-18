@@ -11,18 +11,18 @@ import {
   FEEDBACK_RESULT_CHOICE_VALUES,
   FeedbackResultChoice,
 } from "@/common/constants/feedback/feedback-result-choices";
-import type { CrmFeedbackRoundsDictionary } from "@/i18n/dictionaries/workspace/crm";
+import type { FeedbackResultDictionary } from "@/common/contracts/crm/feedback-result-dictionary";
 import styles from "./feedback-item-result-select.module.css";
 
 type FeedbackItemResultSelectProps = {
-  content: CrmFeedbackRoundsDictionary["result"];
+  content: FeedbackResultDictionary;
   disabled?: boolean;
   number: number;
-  onChangeAction: (result: FeedbackItemResult) => void;
+  onChangeAction: (result: FeedbackItemResult | null) => void;
   result: FeedbackItemResult | null;
 };
 
-/** The team's result per item; "open" is only offered while no result is set. */
+/** The team's result per item, including resetting an existing result to pending. */
 export function FeedbackItemResultSelect({
   content,
   disabled,
@@ -32,9 +32,6 @@ export function FeedbackItemResultSelect({
 }: FeedbackItemResultSelectProps) {
   const id = useId();
   const value = result ?? FeedbackResultChoice.Pending;
-  const choices = FEEDBACK_RESULT_CHOICE_VALUES.filter(
-    (choice) => choice !== FeedbackResultChoice.Pending || result === null,
-  );
 
   return (
     <CustomSelect
@@ -45,10 +42,10 @@ export function FeedbackItemResultSelect({
       disabled={disabled}
       id={id}
       onChange={(next) => {
-        if (next !== FeedbackResultChoice.Pending && next !== result)
-          onChangeAction(next);
+        const chosen = next === FeedbackResultChoice.Pending ? null : next;
+        if (chosen !== result) onChangeAction(chosen);
       }}
-      options={choices.map((choice) => ({
+      options={FEEDBACK_RESULT_CHOICE_VALUES.map((choice) => ({
         label: content.choices[choice],
         leading: (
           <span className={styles.icon} data-result={choice}>

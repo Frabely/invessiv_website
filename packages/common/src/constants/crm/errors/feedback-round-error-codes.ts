@@ -11,6 +11,7 @@ export const FeedbackRoundErrorCode = {
   ProjectAlreadyApproved: "PROJECT_ALREADY_APPROVED",
   InvalidTransition: "INVALID_TRANSITION",
   RoundLocked: "ROUND_LOCKED",
+  CommandIdReused: "COMMAND_ID_REUSED",
   ItemsRequired: "ITEMS_REQUIRED",
   ItemTextRequired: "ITEM_TEXT_REQUIRED",
   ItemsPresent: "ITEMS_PRESENT",

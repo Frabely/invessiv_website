@@ -88,6 +88,7 @@ describe("portalFeedbackMappingService.toRoundDto", () => {
       ).items;
       expect(item.result).toBe("not_implemented");
       expect(item.resultNote).toBe("Kommt in Phase 2");
+      expect(item).not.toHaveProperty("resultHistory");
     },
   );
 });
