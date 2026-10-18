@@ -157,13 +157,9 @@ function write(update: (params: URLSearchParams) => void, push: boolean) {
   update(params);
   url.search = params.toString();
   const index = historyIndex(window.history.state) ?? 0;
+  // Pass only our metadata; Next's History wrapper supplies its own router state.
   if (push) window.history.pushState(withIndex(null, index + 1), "", url);
-  else
-    window.history.replaceState(
-      withIndex(window.history.state, index),
-      "",
-      url,
-    );
+  else window.history.replaceState(withIndex(null, index), "", url);
   window.dispatchEvent(new Event(UrlSearchEvent.Changed));
 }
 

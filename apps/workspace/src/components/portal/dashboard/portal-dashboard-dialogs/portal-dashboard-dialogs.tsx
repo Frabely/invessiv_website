@@ -120,6 +120,7 @@ export function PortalDashboardDialogs({
             }}
             onCloseAction={navigation.closeDialog}
             onSelectionChangeAction={navigation.selectService}
+            refreshing={navigation.servicesRefreshing}
             selectedProjectId={dashboard.selectedProjectId}
             services={services}
           />

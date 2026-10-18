@@ -16,7 +16,7 @@ import type { OnboardingMissingAnswer } from "@/common/contracts/portal/onboardi
 import type { PortalOnboardingStepTarget } from "@/common/contracts/portal/portal-onboarding-step-target";
 import { onboardingAnswerDrafts } from "@/common/patterns/portal/onboarding-answer-drafts";
 import { DraftSaveStatus } from "@/components/shared/draft-save-status/draft-save-status";
-import type { OnboardingAnswerReadViewProps } from "@/components/shared/onboarding/onboarding-answer-read-view/onboarding-answer-read-view";
+import type { OnboardingReadFiles } from "@/common/contracts/shared/onboarding-read-files";
 import type { Locale } from "@/config/i18n";
 import { useOnboardingAutosave } from "@/hooks/portal/use-onboarding-autosave";
 import { useOnboardingFormState } from "@/hooks/portal/use-onboarding-form-state";
@@ -49,7 +49,7 @@ export type OnboardingFormEditorProps = {
   content: PortalOnboardingDictionary;
   customerId: string;
   /** How attached files open in blocks the contact may only read right now. */
-  files: OnboardingAnswerReadViewProps["files"];
+  files: OnboardingReadFiles | undefined;
   filesContent: PortalFilesDictionary;
   /** A form this contact may write into. */
   form: PortalOnboardingFormDto;

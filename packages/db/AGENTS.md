@@ -151,8 +151,9 @@ importieren, und App-Services importieren `server-only`, was außerhalb von Next
   lehnen `production` ab. **Ausnahme:** `db:smoke:rbac:prod` ist als expliziter Produktions-Smoke zulässig,
   verwendet ausschließlich das Fixture-Präfix `smoke:rbac:` und räumt es in `finally` wieder auf.
   Er verbraucht keine Sequenzwerte: Fixture-Kunden erhalten eine feste `customer_number` (INTEGER-Maximum), damit
-  der Spalten-Default `nextval` nicht greift, und ein Check vergleicht `customers_customer_number_seq` vor und nach
-  dem Lauf. Ein `ROLLBACK` würde einen verbrauchten Wert nicht zurückgeben.
+  der Spalten-Default `nextval` nicht greift. Der Check prüft die vom eigenen Insert zurückgegebene Fixture-Nummer.
+  Der globale Sequenzstand wird nicht verglichen: Parallele reguläre Kundenerstellung darf den Smoke nicht
+  fehlschlagen lassen. Ein `ROLLBACK` würde einen verbrauchten Wert nicht zurückgeben.
 - `db:smoke` vergleicht zusätzlich lesend Permission-Katalog und Systemrollen mit dem Code
   (`scripts/rbac-catalog-check.ts`) und ist damit auch für `production` das Katalog-Gate.
 - Schreibende Skripte kennzeichnen ihre Zeilen mit einem Fixture-Präfix und räumen sie wieder ab —

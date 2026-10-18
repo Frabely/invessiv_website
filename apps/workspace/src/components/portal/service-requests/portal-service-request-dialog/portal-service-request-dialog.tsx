@@ -43,6 +43,8 @@ export type PortalServiceRequestDialogProps = {
   onSelectionChangeAction: (selection: string | null) => void;
   /** The project the dashboard shows; the form preselects it where the service allows. */
   selectedProjectId: string | null;
+  /** The dashboard is loading the changed requests; do not start another form in that transition. */
+  refreshing?: boolean;
   /** Catalog, projects and own requests as the dashboard loaded them. */
   services: PortalServicesDto;
 };
@@ -66,6 +68,7 @@ export function PortalServiceRequestDialog({
   onCloseAction,
   onSelectionChangeAction,
   selectedProjectId,
+  refreshing = false,
   services,
 }: PortalServiceRequestDialogProps) {
   const baseId = useId();
@@ -77,7 +80,7 @@ export function PortalServiceRequestDialog({
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
   const [uncertain, setUncertain] = useState(false);
-  const navigationLocked = sending || uncertain;
+  const navigationLocked = sending || uncertain || refreshing;
   const [withdrawTarget, setWithdrawTarget] =
     useState<PortalServiceRequestDto | null>(null);
   const [withdrawing, setWithdrawing] = useState(false);
@@ -174,7 +177,7 @@ export function PortalServiceRequestDialog({
             </div>
             <ButtonControl
               aria-busy={sending}
-              disabled={sending || !services.canRequest}
+              disabled={sending || refreshing || !services.canRequest}
               form={formId}
               type="submit"
               variant="primary"
@@ -244,6 +247,7 @@ export function PortalServiceRequestDialog({
               <p className={styles.sentText}>{content.sent.description}</p>
               <div className={styles.sentActions}>
                 <ButtonControl
+                  disabled={navigationLocked}
                   onClick={() => showTab(Tab.Mine)}
                   type="button"
                   variant="primary"
@@ -251,6 +255,7 @@ export function PortalServiceRequestDialog({
                   {content.sent.mine}
                 </ButtonControl>
                 <ButtonControl
+                  disabled={navigationLocked}
                   onClick={() => select(null)}
                   type="button"
                   variant="ghost"

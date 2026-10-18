@@ -84,14 +84,6 @@ async function expectAccepted(name: string, run: () => Promise<unknown>) {
 
 const fixture = (suffix: string) => `${FIXTURE_PREFIX}${suffix}`;
 
-// Reads the sequence relation directly; unlike nextval or currval this never advances it.
-async function readCustomerNumberSequence(sql: Sql): Promise<string> {
-  const rows = (await sql`
-    SELECT last_value, is_called FROM customers_customer_number_seq
-  `) as { last_value: string | number; is_called: boolean }[];
-  return `${rows[0].last_value}/${rows[0].is_called}`;
-}
-
 async function insertUser(sql: Sql, id = randomUUID()) {
   await sql`
     INSERT INTO users (id, clerk_user_id, primary_email, display_name, active, version)
@@ -525,10 +517,17 @@ async function runPortalRealmChecks(sql: Sql) {
   const portalUserId = await insertUser(sql);
 
   const customerId = randomUUID();
-  await sql`
+  const fixtureCustomers = (await sql`
     INSERT INTO customers (id, customer_number, display_name, status, owner_member_id, version)
     VALUES (${customerId}, ${FIXTURE_CUSTOMER_NUMBER}, ${fixture(customerId)}, 'active', ${memberId}, 1)
-  `;
+    RETURNING customer_number
+  `) as { customer_number: number }[];
+  // Other sessions may legitimately advance the global sequence while this smoke runs.
+  record(
+    "the smoke customer uses an explicit fixture number",
+    fixtureCustomers.length === 1 &&
+      fixtureCustomers[0]?.customer_number === FIXTURE_CUSTOMER_NUMBER,
+  );
   const personId = randomUUID();
   await sql`
     INSERT INTO people (id, display_name, preferred_locale, version)
@@ -683,7 +682,6 @@ async function run() {
   const sql = getDatabaseClient();
   const db = getDrizzleDatabaseClient();
 
-  const sequenceBefore = await readCustomerNumberSequence(sql);
   try {
     await runCatalogChecks(db);
     await runUserAndMemberChecks(sql);
@@ -696,13 +694,6 @@ async function run() {
   } finally {
     await cleanup(sql);
   }
-
-  const sequenceAfter = await readCustomerNumberSequence(sql);
-  record(
-    "the smoke consumes no customer number",
-    sequenceAfter === sequenceBefore,
-    `sequence ${sequenceBefore} → ${sequenceAfter}`,
-  );
 
   for (const check of checks) {
     const mark = check.ok ? "ok  " : "FAIL";

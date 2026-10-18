@@ -16,6 +16,41 @@ afterEach(() => {
 });
 
 describe("useUrlSearch", () => {
+  it.each(["__NA", "_N"])(
+    "synchronizes Next's URL on replace despite its existing %s marker",
+    (marker) => {
+      window.history.replaceState(
+        { [marker]: true, opaque: "caller-metadata", __invessivUrlIndex: 7 },
+        "",
+        "/files?project=one#files",
+      );
+      const nativeReplace = window.history.replaceState.bind(window.history);
+      let routerSearch = window.location.search;
+      // Next's wrapper ignores writes carrying its internal markers, then copies them back.
+      vi.spyOn(window.history, "replaceState").mockImplementation(
+        (state, unused, url) => {
+          if (!state?.__NA && !state?._N && url)
+            routerSearch = new URL(url, window.location.href).search;
+          nativeReplace({ ...state, [marker]: true }, unused, url);
+        },
+      );
+      const { result } = renderHook(() => useUrlSearch());
+      const historyLength = window.history.length;
+      act(() =>
+        result.current.replace((params) => params.set("project", "two")),
+      );
+      expect(routerSearch).toBe("?project=two");
+      expect(result.current.search).toBe("project=two");
+      expect(window.location.hash).toBe("#files");
+      expect(window.history.length).toBe(historyLength);
+      expect(window.history.state).toMatchObject({
+        __invessivUrlIndex: 7,
+        [marker]: true,
+      });
+      expect(window.history.state).not.toHaveProperty("opaque");
+    },
+  );
+
   it("shares query writes with file selection without losing unrelated params or the hash", () => {
     window.history.replaceState(
       { opaque: "router-state" },
@@ -43,7 +78,7 @@ describe("useUrlSearch", () => {
       "project-1",
     );
     expect(window.location.hash).toBe("#files");
-    expect(window.history.state).toMatchObject({ opaque: "router-state" });
+    expect(window.history.state).toEqual({ __invessivUrlIndex: 0 });
     expect(window.history.length).toBe(length);
   });
 

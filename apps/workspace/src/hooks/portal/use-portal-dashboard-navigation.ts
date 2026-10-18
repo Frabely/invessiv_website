@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { PortalDashboardNavigationMode } from "@/common/constants/portal/portal-dashboard-navigation-modes";
 import type { PortalDashboardNavigationMode as NavigationMode } from "@/common/constants/portal/portal-dashboard-navigation-modes";
@@ -23,6 +23,7 @@ export function usePortalDashboardNavigation(
   const searchParams = useSearchParams();
   const [dockOpen, setDockOpen] = useState(false);
   const [credentialsCreate, setCredentialsCreate] = useState(false);
+  const [servicesRefreshing, startServicesRefresh] = useTransition();
   const requestedWidget = readPortalDashboardWidget(searchParams);
   const visibleKeys = new Set(widgets.map((entry) => entry.key));
   const openWidget =
@@ -67,9 +68,12 @@ export function usePortalDashboardNavigation(
     );
   }
   function refreshServices() {
-    // The tree can still belong to the URL before a history-only selection. Navigate before refreshing it.
-    navigate({ service: null }, PortalDashboardNavigationMode.Replace);
-    router.refresh();
+    // Wait for both router actions before allowing the next history-only selection. Otherwise
+    // an unfinished refresh can reload the next form and abort its submission.
+    startServicesRefresh(() => {
+      navigate({ service: null }, PortalDashboardNavigationMode.Replace);
+      router.refresh();
+    });
   }
   function finishTaskRequest() {
     closeDialog();
@@ -79,6 +83,7 @@ export function usePortalDashboardNavigation(
     openWidget,
     dockExpanded,
     credentialsCreate,
+    servicesRefreshing,
     initialService: readPortalDashboardService(searchParams),
     openDialog,
     closeDialog,

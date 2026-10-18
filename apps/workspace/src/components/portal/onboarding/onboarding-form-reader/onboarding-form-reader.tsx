@@ -31,10 +31,8 @@ import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonLink } from "@invessiv/ui";
 import { PORTAL_ONBOARDING_STATUS_SECTION } from "@/common/constants/portal/portal-onboarding-query-params";
 import { PortalOwnerNotice } from "@/components/portal/portal-owner-notice/portal-owner-notice";
-import {
-  OnboardingAnswerReadView,
-  type OnboardingAnswerReadViewProps,
-} from "@/components/shared/onboarding/onboarding-answer-read-view/onboarding-answer-read-view";
+import { OnboardingAnswerReadView } from "@/components/shared/onboarding/onboarding-answer-read-view/onboarding-answer-read-view";
+import type { OnboardingReadFiles } from "@/common/contracts/shared/onboarding-read-files";
 import type { Locale } from "@/config/i18n";
 import { usePortalOnboardingStep } from "@/hooks/portal/use-portal-onboarding-step";
 import type { PortalOnboardingDictionary } from "@/i18n/dictionaries/portal";
@@ -121,7 +119,7 @@ export type OnboardingFormReaderProps = {
   cockpitHref: string | null;
   content: PortalOnboardingDictionary;
   /** How attached files open: file texts, download and preview. */
-  files: OnboardingAnswerReadViewProps["files"];
+  files: OnboardingReadFiles | undefined;
   /** The company's files page, where files go once the form is completed; null without `portal.files.read`. */
   filesHref: string | null;
   form: PortalOnboardingFormDto;

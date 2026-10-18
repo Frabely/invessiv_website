@@ -1,16 +1,3 @@
-.row td,
-.row th {
-  padding: 0.7rem 0.75rem;
-  border-bottom: 1px solid
-    color-mix(in srgb, var(--color-border) 38%, transparent);
-  vertical-align: middle;
-}
-
-.row:last-child td,
-.row:last-child th {
-  border-bottom: none;
-}
-
 .row[data-opens="true"] {
   cursor: pointer;
 }
@@ -33,7 +20,6 @@
 
 .selectCell {
   width: 2.75rem;
-  padding-inline: 0.5rem 0;
 }
 
 .nameCell {

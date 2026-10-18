@@ -161,6 +161,11 @@ test("lets a contact request services, follow and withdraw them, isolated by com
     await expect(dialog.getByText(content.sent.title)).toBeVisible();
 
     // Hours by quick choice.
+    const documentRequests: string[] = [];
+    page.on("request", (request) => {
+      if (request.isNavigationRequest() && request.frame() === page.mainFrame())
+        documentRequests.push(request.url());
+    });
     await dialog.getByRole("button", { name: content.sent.another }).click();
     await dialog
       .getByRole("button", {
@@ -177,6 +182,8 @@ test("lets a contact request services, follow and withdraw them, isolated by com
     await dialog.getByRole("button", { name: content.sent.mine }).click();
     await expect(requests).toHaveCount(3);
     await expect(requests.first()).toContainText("5:00");
+    // Refreshing the previous request must never reload the next form or abort its submission.
+    expect(documentRequests).toHaveLength(0);
 
     for (const theme of ["dark", "light"] as const) {
       await page.emulateMedia({ colorScheme: theme });

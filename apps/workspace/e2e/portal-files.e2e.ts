@@ -1,6 +1,10 @@
 import { expect, test } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import { unzipSync } from "fflate";
+import { PortalDashboardQueryParam } from "@/common/constants/portal/portal-dashboard-query-params";
+import { PortalSection } from "@/common/constants/portal/portal-sections";
+import { buildPortalHref } from "@/common/patterns/portal/build-portal-href";
+import { portalPathFor } from "@/lib/auth/routes";
 import {
   type PortalE2eFixture,
   portalE2ePaths,
@@ -16,6 +20,47 @@ test.describe.serial("portal files", () => {
     fixture = JSON.parse(
       await readFile(portalE2ePaths.fixture, "utf8"),
     ) as PortalE2eFixture;
+  });
+
+  test("keeps the file project filter and the header project switcher synchronized", async ({
+    browser,
+  }) => {
+    const context = await browser.newContext({
+      storageState: portalE2ePaths.filesContactState,
+    });
+    try {
+      const page = await context.newPage();
+      await page.goto(
+        buildPortalHref(
+          portalPathFor("de", fixture.hoursCustomer, PortalSection.Files),
+          "",
+          { project: fixture.hoursProjectA },
+        ),
+      );
+      const header = page.getByRole("button", { name: "Projekt wechseln" });
+      const filter = page.getByRole("button", { name: "Dateien nach Projekt" });
+      await expect(header).toContainText("Hours Website");
+      for (const [projectId, title] of [
+        [fixture.hoursProjectB, "Hours Shop"],
+        [fixture.hoursProjectA, "Hours Website"],
+      ]) {
+        await filter.click();
+        await page
+          .getByRole("option", { name: new RegExp(`${title}$`) })
+          .click();
+        await expect(filter).toContainText(title);
+        await expect(header).toContainText(title);
+        await expect
+          .poll(() =>
+            new URL(page.url()).searchParams.get(
+              PortalDashboardQueryParam.Project,
+            ),
+          )
+          .toBe(projectId);
+      }
+    } finally {
+      await context.close();
+    }
   });
 
   test("shares released links, hides the actual internal id, and receives a customer link", async ({
