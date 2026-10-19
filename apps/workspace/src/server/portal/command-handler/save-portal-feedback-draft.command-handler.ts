@@ -50,7 +50,7 @@ async function writeDraft(
     );
     return {
       ok: true,
-      value: await portalFeedbackService.toRoundDto(tx, actor, saved),
+      value: await portalFeedbackService.loadRoundDto(tx, actor, saved),
     };
   } catch (error) {
     if (error instanceof FeedbackItemIdTakenError) return VALIDATION;
