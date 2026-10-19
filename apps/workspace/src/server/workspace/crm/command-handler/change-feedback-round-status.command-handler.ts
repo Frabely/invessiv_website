@@ -1,4 +1,5 @@
 import "server-only";
+import { feedbackClarificationService } from "@/server/shared/services/feedback/feedback-clarification-service";
 
 import { and, eq, isNull } from "drizzle-orm";
 import type { z } from "zod";
@@ -162,6 +163,11 @@ export async function changeFeedbackRoundStatus(
         )
       )
         return { ok: false, code: FeedbackRoundErrorCode.InvalidTransition };
+      if (
+        parsed.data.to === FeedbackRoundStatus.Completed &&
+        (await feedbackClarificationService.hasOpen(tx, round.id))
+      )
+        return { ok: false, code: FeedbackRoundErrorCode.ClarificationsOpen };
       if (
         parsed.data.to === FeedbackRoundStatus.Completed &&
         (await hasItemWithoutResult(tx, round.id))

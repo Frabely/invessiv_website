@@ -9,6 +9,37 @@ const item = (index: number, body = "Text") => ({
   body,
 });
 
+describe("portalFeedbackSchemas.answerClarification", () => {
+  it("normalizes identifiers and text and rejects incomplete or oversized requests", () => {
+    const input = {
+      commandId: "AAAAAAAA-AAAA-4AAA-8AAA-AAAAAAAAAAAA",
+      version: 2,
+      answer: "  Home  ",
+    };
+    expect(portalFeedbackSchemas.answerClarification.parse(input)).toEqual({
+      ...input,
+      commandId: input.commandId.toLowerCase(),
+      answer: "Home",
+    });
+    for (const patch of [
+      { commandId: undefined },
+      { commandId: "bad" },
+      { version: 0 },
+      { version: 1.5 },
+      { answer: " " },
+      { answer: "a".repeat(FEEDBACK_LIMITS.noteMaxLength + 1) },
+      { extra: true },
+    ]) {
+      expect(
+        portalFeedbackSchemas.answerClarification.safeParse({
+          ...input,
+          ...patch,
+        }).success,
+      ).toBe(false);
+    }
+  });
+});
+
 describe("portalFeedbackSchemas.draft", () => {
   it("accepts the item limit and rejects one more", () => {
     const items = Array.from(

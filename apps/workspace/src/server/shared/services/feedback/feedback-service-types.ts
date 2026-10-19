@@ -3,11 +3,15 @@ import type { FeedbackResultActorSide } from "@invessiv/common/constants/crm/fee
 import type { ActivityActor } from "@invessiv/common/contracts/activity/activity-actor";
 import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
 import type {
+  feedbackRoundItemClarifications,
   feedbackRoundItems,
   feedbackRoundItemResultHistory,
   feedbackRounds,
 } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
+
+export type FeedbackClarificationRow =
+  typeof feedbackRoundItemClarifications.$inferSelect;
 
 export type FeedbackRoundRow = typeof feedbackRounds.$inferSelect;
 export type FeedbackRoundItemRow = typeof feedbackRoundItems.$inferSelect;

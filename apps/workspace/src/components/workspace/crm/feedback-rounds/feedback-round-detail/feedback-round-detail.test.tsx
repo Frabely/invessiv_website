@@ -62,6 +62,7 @@ function item(
     resultSetAt: null,
     attachments: [],
     resultHistory: [],
+    clarifications: [],
     version: 1,
     ...overrides,
   };

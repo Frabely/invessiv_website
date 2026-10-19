@@ -93,6 +93,16 @@ const setItemResult = z
   });
 
 export const feedbackRoundSchemas = {
+  closeClarification: z.strictObject({
+    commandId: z.uuid().transform((value) => value.toLowerCase()),
+    version,
+    note: z.string().trim().min(1).max(FEEDBACK_LIMITS.noteMaxLength),
+  }),
+  askClarification: z.strictObject({
+    commandId: z.uuid().transform((value) => value.toLowerCase()),
+    version,
+    question: z.string().trim().min(1).max(FEEDBACK_LIMITS.noteMaxLength),
+  }),
   entityId: z.uuid(),
   markRead: z.strictObject({ version }),
   handOver: z.strictObject({

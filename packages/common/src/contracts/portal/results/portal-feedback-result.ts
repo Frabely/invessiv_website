@@ -3,9 +3,14 @@ import type { PortalFeedbackErrorCode } from "@invessiv/common/constants/portal/
 import type { VersionConflictDto } from "@invessiv/common/contracts/concurrency/version-conflict.dto";
 import type { PortalFeedbackRoundDto } from "@invessiv/common/contracts/portal/portal-feedback-round.dto";
 
-/** Result of every portal feedback command; a stale version carries the current round. */
-export type PortalFeedbackResult<T> =
+/** Portal command result; conflicts carry the round by default or the explicitly named entity. */
+export type PortalFeedbackResult<T, TConflict = PortalFeedbackRoundDto> =
   | { ok: true; value: T }
+  | {
+      ok: false;
+      code: typeof PortalFeedbackErrorCode.ClarificationNotOpen;
+      current: TConflict;
+    }
   | {
       ok: false;
       code: typeof PortalFeedbackErrorCode.ItemTextRequired;
@@ -15,11 +20,12 @@ export type PortalFeedbackResult<T> =
       ok: false;
       code: Exclude<
         PortalFeedbackErrorCode,
-        typeof PortalFeedbackErrorCode.ItemTextRequired
+        | typeof PortalFeedbackErrorCode.ItemTextRequired
+        | typeof PortalFeedbackErrorCode.ClarificationNotOpen
       >;
     }
   | {
       ok: false;
       code: typeof ConcurrencyErrorCode.VersionConflict;
-      conflict: VersionConflictDto<PortalFeedbackRoundDto>;
+      conflict: VersionConflictDto<TConflict>;
     };

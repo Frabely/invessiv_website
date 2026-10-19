@@ -312,6 +312,11 @@ liefert zuerst die Projekt-UI. Nach Ordner 07a–07c folgen Katalog, Zuweisung u
 - Gebuchte Projektleistungen sind nicht portalsichtbar; Leistungsanfragen (Ordner 13c) zeigen nie Preise.
 - Kein Neuigkeiten-Feed im Dashboard; er folgt mit den Benachrichtigungen (Ordner 20c). Das Verschieben von Widgets
   ist ein eigener späterer Ordner.
+- **Portal-Hinweise (Entscheidung des Nutzers, 19.10.2026; Details in `31-portal-hinweise/README.md`):** Das Team
+  veröffentlicht Störungs-, Wartungs- und Infohinweise für alle Kunden oder für einen Kunden, optional mit einem
+  Screenshot. Im Portal erscheinen sie als Dashboard-Widget, das nur bei einem sichtbaren Hinweis existiert. Kunden
+  können es nicht ausblenden, und „Behoben“ blendet sofort aus. Verwaltet wird nur auf der CRM-Seite
+  `crm/portal-notices` mit den workspace-weiten Rechten `portal_notices.read/write`.
 
 ### Onboarding und Medien (Entscheidung des Nutzers, 16.09.2026)
 
@@ -402,7 +407,14 @@ Neuzuschnitt 29.09.2026 (mit dem Owner abgestimmt); vollständige Spezifikation 
   Transaktion historisiert, auch die automatische Rücknahme beim Bearbeiten zurückgegebener Entwürfe. Bestehende
   Ergebnisse erhalten ihren Ausgangseintrag erst bei der ersten Änderung; unveränderte Aktionen schreiben nichts,
   Command-Kennungen erkennen Wiederholungen. Portal-Antworten enthalten keine Historie. Kein Backfill und kein
-  Feature-Schalter. Rückfragen pro Punkt folgen in Task 79/80; die globale Rückgabe bleibt bis dahin bestehen.
+  Feature-Schalter.
+- **Rückfragen-Server (Task 79, Ordner 28):** Stellen, Schließen und Portal-Antwort sind als APIs verfügbar,
+  mit höchstens einer offenen Rückfrage pro Punkt. Stellen nimmt ein vorhandenes Ergebnis atomar samt Historie
+  zurück; offene Rückfragen sperren jede Ergebniswahl und den Rundenabschluss. Wiederholungen werden
+  aktionsübergreifend am Punkt erkannt, jede neue Aktion erhöht dessen Version genau einmal. Nur neue Fragen
+  und Antworten erzeugen eine Chat-Systemmeldung ohne Frage-/Antworttext. Öffentliche DTOs enthalten keine
+  Autoren- oder Command-Kennungen und keine internen Ergebnisse vor Abschluss. Die UI folgt in Task 80;
+  bis dahin bleibt die globale Rückgabe bestehen. Kein Feature-Schalter und kein Client-Einstieg in Task 79.
 
 ### Dateien
 
@@ -791,7 +803,8 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12b erreicht:
 | 22a | offen        | `22a-kundenorganisation-und-uebergabe`   | Suche, Filter, Tags und globale Zuständigkeitsübergabe vollständig nutzbar                                                                                                                                                   |  70–110 |   4–6 T. |
 | 23  | offen        | `23-web-ui-abschluss`                    | Website nutzt geteilte Buttons/Formulare in bewusster Web-Ausprägung                                                                                                                                                         |   35–55 |   3–4 T. |
 | 24  | offen        | `24-zustaendigkeitszugriff-absicherung`  | Owner-Wechsel und Übergaben verhindern Zuständigkeiten ohne wirksamen Zugriff                                                                                                                                                |   40–70 |   2–3 T. |
-| 28  | läuft        | `28-feedback-rueckfragen`                | Rückfragen je Feedbackpunkt, „Noch offen“ und interne Ergebnishistorie; 28.1 (Task 78) läuft, 28.2/28.3 offen                                                                                                                | 150–190 |   6–9 T. |
+| 28  | läuft        | `28-feedback-rueckfragen`                | Rückfragen je Feedbackpunkt, „Noch offen“ und interne Ergebnishistorie; 28.1 (Task 78) umgesetzt, 28.2 (Task 79) im Review, 28.3 offen                                                                                       | 150–190 |   6–9 T. |
+| 31  | offen        | `31-portal-hinweise`                     | Portal-Hinweise für alle Kunden oder einen Kunden als Dashboard-Widget, nur bei aktivem Hinweis sichtbar; zwei Teil-PRs (31.1 Text mit Task 81, 31.2 Screenshot mit Task 82)                                                 | 110–140 |   3–4 T. |
 
 Statuswerte: `offen` → `läuft` → `im Review` → `gemerged`. Beim Merge werden die Tabelle und der
 Status in der Ordner-README gemeinsam aktualisiert.

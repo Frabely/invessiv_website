@@ -1,3 +1,4 @@
+import type { FeedbackItemInternalClarificationDto } from "@invessiv/common/contracts/crm/feedback-item-internal-clarification.dto";
 import type { FeedbackItemKind } from "../../constants/crm/feedback-item-kinds";
 import type { FeedbackItemResult } from "../../constants/crm/feedback-item-results";
 import type { FileAttachmentDto } from "../files/file-attachment.dto";
@@ -7,6 +8,8 @@ import type { FeedbackItemResultHistoryEntryDto } from "./feedback-item-result-h
 export interface FeedbackRoundItemDto {
   /** Client-generated id; stays stable across autosaves, so the draft editor keys on it. */
   id: string;
+  /** Chronological questions and responses for this item. */
+  clarifications: FeedbackItemInternalClarificationDto[];
   /** Display order within the round, starting at 0. */
   position: number;
   /** Snapshot out of the round's `areaOptions`; null means "general". */

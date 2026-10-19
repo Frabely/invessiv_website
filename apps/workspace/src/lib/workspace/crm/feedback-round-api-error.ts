@@ -5,6 +5,9 @@ import { HttpResponseCode as H } from "@invessiv/common/constants/http/http-resp
 import type { CrmOperation } from "@/common/constants/crm/crm-operations";
 import { privateResponse } from "@/lib/http/private-no-store";
 import { logCrmFailure } from "@/lib/workspace/crm/log-crm-failure";
+import type { SetFeedbackItemResultResult } from "@invessiv/common/contracts/crm/results/set-feedback-item-result-result";
+import type { AskFeedbackItemClarificationResult } from "@invessiv/common/contracts/crm/results/ask-feedback-item-clarification-result";
+import type { CloseFeedbackItemClarificationResult } from "@invessiv/common/contracts/crm/results/close-feedback-item-clarification-result";
 
 const STATUS: Record<E, H> = {
   [E.RoundNotFound]: H.NotFound,
@@ -28,6 +31,10 @@ const STATUS: Record<E, H> = {
   [E.ConfirmationRequired]: H.UnprocessableContent,
   [E.AttachmentLimitReached]: H.UnprocessableContent,
   [E.FileNotAttachable]: H.UnprocessableContent,
+  [E.ClarificationNotFound]: H.NotFound,
+  [E.ClarificationOpen]: H.Conflict,
+  [E.ClarificationNotOpen]: H.Conflict,
+  [E.ClarificationsOpen]: H.UnprocessableContent,
   [E.Internal]: H.InternalServerError,
 };
 
@@ -54,6 +61,11 @@ const MESSAGES: Record<E, string> = {
   [E.ConfirmationRequired]: "The approval has to be confirmed",
   [E.AttachmentLimitReached]: "Attachment limit reached",
   [E.FileNotAttachable]: "This file cannot be attached",
+  [E.ClarificationNotFound]: "Clarification not found",
+  [E.ClarificationOpen]: "This item has an open clarification",
+  [E.ClarificationNotOpen]: "This clarification is no longer open",
+  [E.ClarificationsOpen]:
+    "Answer or close all clarifications before completing the round",
   [E.Internal]: "Unexpected server error",
 };
 
@@ -64,6 +76,24 @@ export function feedbackRoundApiError(
   return Response.json(
     { error: code, message: MESSAGES[code], ...details },
     { status: STATUS[code] },
+  );
+}
+
+/** Result, question and closure actions share the same private item response contract. */
+export function feedbackItemApiResponse(
+  result:
+    | SetFeedbackItemResultResult
+    | AskFeedbackItemClarificationResult
+    | CloseFeedbackItemClarificationResult,
+): Response {
+  if (result.ok) return Response.json(result.item, { status: H.Ok });
+  if ("conflict" in result)
+    return Response.json(result.conflict, { status: H.Conflict });
+  if (result.code === E.ValidationError)
+    return feedbackRoundApiError(result.code, { details: result.errors });
+  return feedbackRoundApiError(
+    result.code,
+    "item" in result ? { current: result.item } : {},
   );
 }
 

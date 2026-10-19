@@ -20,6 +20,11 @@ const draftItem = z.strictObject({
 });
 
 export const portalFeedbackSchemas = {
+  answerClarification: z.strictObject({
+    commandId: z.uuid().transform((value) => value.toLowerCase()),
+    version,
+    answer: z.string().trim().min(1).max(FEEDBACK_LIMITS.noteMaxLength),
+  }),
   id,
   draft: z.strictObject({
     version,

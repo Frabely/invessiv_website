@@ -63,6 +63,20 @@ questionnaire_field_choices (id, field_id)`: Er bindet die Option an das Auslös
 - `(item_id, item_version)` ist eindeutig, `(item_id, command_id)` bei gesetzter Kennung ebenfalls.
   Alle Fachwerte kommen vom Schreibpfad; nur `created_at` hat einen DB-Default.
 
+## Rückfragen (Ordner 28, Task 79)
+
+- `feedback_round_item_clarifications` hält je Punkt unveränderlichen Fragetext und genau eine Antwort
+  oder interne Schließung. `state_check` erzwingt die Feldkombinationen für `open`, `answered` und `closed`.
+- Ein partieller Unique-Index erlaubt höchstens eine offene Rückfrage pro Punkt. Antwort- und
+  Schließkennungen sind je Punkt eindeutig; Kennungen verschiedener Aktionen und der Ergebnishistorie
+  prüft zusätzlich die Schreiblogik unter Punktsperre.
+- `request_version` und die Antwort-/Schließ-Requestversion bezeichnen die ursprüngliche Punktversion.
+  Die eigene Zeilenversion steigt bei Antwort oder Schließung über `updateLockedVersioned`.
+- Das Löschen eines Punkts kaskadiert Rückfragen; das Löschen einer antwortenden Portalmitgliedschaft
+  leert nur deren Referenz und erhält die Antwort. Interne Mitgliedsreferenzen bleiben geschützt.
+- Nur `created_at` und `updated_at` haben technische Defaults. Fehlende Fachwerte, Zustände, Eindeutigkeit,
+  Autorenentfernung und Kaskade prüft `scripts/crm-smoke/feedback-clarification-checks.ts`.
+
 ## Bewusst nicht vorhanden
 
 - Kein Unique-Index auf `customers.company_name`: zwei echte „Müller GmbH" in verschiedenen Städten

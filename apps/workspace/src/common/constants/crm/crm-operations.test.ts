@@ -53,6 +53,8 @@ describe("CrmOperation", () => {
       "feedback-rounds.hand-over",
       "feedback-rounds.get",
       "feedback-rounds.change-status",
+      "feedback-items.ask-clarification",
+      "feedback-items.close-clarification",
       "feedback-items.set-result",
       "feedback-rounds.list-inbox",
       "feedback-rounds.count-unread",

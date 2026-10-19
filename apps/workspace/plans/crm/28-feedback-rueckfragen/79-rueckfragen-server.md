@@ -327,9 +327,54 @@ Integration (`CRM_DB_INTEGRATION=true`):
 
 ## Abnahme
 
-- [ ] Migration idempotent, Modell deckungsgleich, Smoke grün; doppelte offene Rückfrage auf DB-Ebene verhindert.
-- [ ] Keine UI und kein Client-Code zeigt auf die neuen Routen; das Cockpit und Portal sehen unverändert aus.
-- [ ] Alle neuen Endpunkte in `CRM_ENDPOINT_ACCESS_RULES` bzw. über `withPortalActor`; Cross-Customer-Negativtests grün.
-- [ ] Keine Frage-, Antwort- oder Begründungstexte in Logs, Activities oder Chat-Metadaten.
-- [ ] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm db:smoke:crm`, `pnpm --filter @invessiv/workspace build` grün.
-- [ ] README-Tabelle „Teilschritte“: Status 28.2 gepflegt.
+- [x] Migration idempotent, Modell deckungsgleich, Smoke grün; doppelte offene Rückfrage auf DB-Ebene verhindert.
+- [x] Keine UI und kein Client-Code zeigt auf die neuen Routen; das Cockpit und Portal sehen unverändert aus.
+- [x] Alle neuen Endpunkte in `CRM_ENDPOINT_ACCESS_RULES` bzw. über `withPortalActor`; Cross-Customer-Negativtests grün.
+- [x] Keine Frage-, Antwort- oder Begründungstexte in Logs, Activities oder Chat-Metadaten.
+- [x] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm db:smoke:crm`, `pnpm --filter @invessiv/workspace build` grün.
+- [x] README-Tabelle „Teilschritte“: Status 28.2 gepflegt.
+
+## Umsetzungsstand (19.10.2026)
+
+Status: **im Review**, ungecommittet auf `feat/crm-feedback-rueckfragen`. T1–T4 sind umgesetzt.
+Task 80 (UI, Client-Aufrufer und Entfernung der globalen Rückgabe) bleibt offen.
+
+- Migration `0060_create_feedback_round_item_clarifications.sql` ist auf der Entwicklungsdatenbank angewendet.
+  Zwei direkte SQL-Wiederholungen waren folgenlos erfolgreich. Modell-/Migrationstest und DB-Smoke sichern
+  Zustände, Pflichtfelder ohne Defaults, Fremdschlüssel, Eindeutigkeit, Autorenentfernung und Kaskade ab.
+- Stellen, Schließen und Portal-Antwort sperren Runde → Punkt → Rückfrage. Neue Aktionen erhöhen die
+  Punktversion genau einmal; Wiederholungen prüfen Kennung, Akteur, ursprüngliche Version und normalisierten Text
+  vor Zustand und Version. Die Kennung der Frage korreliert mit ihrer atomaren Ergebnisrücknahme.
+- `feedbackItemProcessingService` bündelt die interne Zugriffssperre und das vollständige Punkt-DTO für alle
+  drei internen Commands. Die HTTP-Abbildung liegt gemeinsam in `feedbackItemApiResponse`; die Result-Contracts
+  teilen den generischen `FeedbackItemCommandResult` und behalten ihre jeweiligen fachlichen Fehlerzweige.
+- `feedbackClarificationService` lädt und schreibt Rückfragen; sein getrennter Mapper erlaubt ausschließlich
+  die öffentlichen Felder im Portal und aufgelöste Namen intern. Ergebnis-Sichtbarkeit bleibt an den Rundenabschluss
+  gebunden, auch bei Erfolgs- und Konfliktantworten. Portal-Schreibrollen ohne Leserecht bekommen nur eine Bestätigung
+  bzw. Fehlercode und ggf. aktuelle Version.
+- Die drei neuen Routen sind autorisiert, privat und nicht cachebar. Es gibt keine neuen Client-Methoden,
+  Endpoint-Builder oder UI-Einstiege. Alle sprachabhängigen Ergänzungen liegen in DE und EN vor.
+- Der optionale Feedback-Seed enthält in Runde 2 offene, beantwortete und geschlossene Beispiele in `in_progress`
+  mit passender Sammelaufgabe. Der Seed wurde nicht automatisch ausgeführt. Keine neuen Dependencies oder Env-Variablen.
+
+**Testablage gegenüber der Planung:** Die neuen DB-Abläufe sind gebündelt in
+`portal-feedback-clarifications.integration.test.ts` und `portal-feedback-clarification-access.integration.test.ts`
+im bereits vom CRM-Gate erfassten Portal-Feedback-Testordner. Sie prüfen interne und Portal-Commands gemeinsam,
+echte Kontaktsessions, projekt-/kundenbezogene Zugriffsbereiche, alle drei erlaubten Rundenstatus, parallele Aktionen,
+alte Replays nach weiteren Aktionen/Abschluss sowie vollständige Savepoint-Rollbacks. Ein erzwungener Chatfehler
+nach dem Nachrichten-Insert rollt die Meldung zurück und lässt die Frage bzw. Antwort bestehen.
+
+**Rollback:** Vor Auslieferung von Task 80 kann Teil 28.2 per Code-Revert zurückgenommen werden; die additive
+Tabelle bleibt bestehen. Nach Task 80 bleiben die Server-Sperren aktiv; dann Fehler vorwärts beheben.
+Produktion wurde weder migriert noch mit Seeds oder schreibenden Tests angesprochen.
+
+**Ausgeführte Qualitäts-Gates:**
+
+| Prüfung                                   | Ergebnis                                                                                             |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `pnpm -r lint`                            | grün; bestehende Warnungen in `apps/web` und im `update-project`-Test                                |
+| `pnpm -r typecheck`                       | grün                                                                                                 |
+| `pnpm -r test`                            | grün; Workspace: 631 Dateien / 3.982 Tests bestanden, DB-Tests im Standardmodus separat übersprungen |
+| `pnpm db:smoke:crm`                       | grün; 378 Constraint-Prüfungen sowie 45 Integrationsdateien / 504 Tests gegen Development            |
+| `pnpm --filter @invessiv/workspace build` | grün; bestehende Turbopack-Warnung zu `packages/db/src/core/env.ts`                                  |
+| Migration 0060 direkt wiederholt          | zweimal erfolgreich, anschließend weiterhin regulär registriert                                      |

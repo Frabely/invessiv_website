@@ -1,4 +1,8 @@
 import "server-only";
+import type { PortalFeedbackItemDto } from "@invessiv/common/contracts/portal/portal-feedback-item.dto";
+import { RESULT_VISIBLE_FEEDBACK_ROUND_STATUS_VALUES } from "@invessiv/common/constants/crm/feedback-round-statuses";
+import type { FeedbackRoundItemRow } from "@/server/shared/services/feedback/feedback-service-types";
+import { feedbackClarificationService } from "@/server/shared/services/feedback/feedback-clarification-service";
 
 import { and, asc, eq } from "drizzle-orm";
 
@@ -57,7 +61,10 @@ function canAttach(reader: PortalReader): boolean {
   );
 }
 
-function notFound(): PortalFeedbackResult<never> {
+function notFound(): {
+  ok: false;
+  code: typeof PortalFeedbackErrorCode.NotFound;
+} {
   return { ok: false, code: PortalFeedbackErrorCode.NotFound };
 }
 
@@ -92,14 +99,14 @@ async function lockRound(
  * The frame of every portal feedback command: one transaction, the round locked first, a miss as
  * `not_found`. Parallel saves, submissions and attachments of one round serialize on this lock.
  */
-function withLockedRound<T>(
+function withLockedRound<T, TConflict = PortalFeedbackRoundDto>(
   actor: PortalActor,
   roundId: string,
   run: (
     tx: ContactDatabaseTransaction,
     locked: LockedRound,
-  ) => Promise<PortalFeedbackResult<T>>,
-): Promise<PortalFeedbackResult<T>> {
+  ) => Promise<PortalFeedbackResult<T, TConflict>>,
+): Promise<PortalFeedbackResult<T, TConflict>> {
   return getDrizzleDatabaseClient().transaction(async (tx) => {
     const locked = await lockRound(tx, actor, roundId);
     if (!locked) return notFound();
@@ -108,7 +115,7 @@ function withLockedRound<T>(
 }
 
 /** Rounds with their items; attachments follow the portal's own file visibility. */
-async function toRoundDtos(
+async function loadRoundDtos(
   executor: ContactDatabaseReader,
   reader: PortalReader,
   rounds: readonly FeedbackRoundRow[],
@@ -124,21 +131,28 @@ async function toRoundDtos(
       rounds.map((round) => round.draft_updated_by_portal_membership_id),
     ),
   ]);
+  const clarifications = await feedbackClarificationService.loadByItems(
+    executor,
+    [...items.values()].flatMap((entries) =>
+      entries.map(({ item }) => item.id),
+    ),
+  );
   return rounds.map((round) =>
     portalFeedbackMappingService.toRoundDto(
       round,
       items.get(round.id) ?? [],
       contactNames,
+      clarifications,
     ),
   );
 }
 
-async function toRoundDto(
+async function loadRoundDto(
   executor: ContactDatabaseReader,
   reader: PortalReader,
   round: FeedbackRoundRow,
 ): Promise<PortalFeedbackRoundDto> {
-  const [dto] = await toRoundDtos(executor, reader, [round]);
+  const [dto] = await loadRoundDtos(executor, reader, [round]);
   return dto;
 }
 
@@ -164,7 +178,7 @@ async function rejectUnlessAllowed(
     conflict: {
       code: ConcurrencyErrorCode.VersionConflict,
       currentVersion: round.version,
-      current: await toRoundDto(tx, actor, round),
+      current: await loadRoundDto(tx, actor, round),
     },
   };
 }
@@ -200,7 +214,35 @@ function listItemHeads(
     .orderBy(asc(feedbackRoundItems.position));
 }
 
+/** Loads visible attachments and clarifications before delegating to the pure item mapper. */
+async function loadItemDto(
+  reader: ContactDatabaseReader,
+  actor: PortalReader,
+  round: FeedbackRoundRow,
+  item: FeedbackRoundItemRow,
+): Promise<PortalFeedbackItemDto> {
+  const [items, questions] = await Promise.all([
+    feedbackRoundItemService.loadByRound(
+      reader,
+      [round.id],
+      portalFileService.visibleCondition(actor),
+    ),
+    feedbackClarificationService.loadByItems(reader, [item.id]),
+  ]);
+  const attachments =
+    items.get(round.id)?.find((entry) => entry.item.id === item.id)
+      ?.attachments ?? [];
+  return portalFeedbackMappingService.toItemDto(
+    { item, attachments },
+    (RESULT_VISIBLE_FEEDBACK_ROUND_STATUS_VALUES as readonly string[]).includes(
+      round.status,
+    ),
+    questions.get(item.id) ?? [],
+  );
+}
+
 export const portalFeedbackService = {
+  loadItemDto,
   canRead,
   canSubmit,
   canAttach,
@@ -209,6 +251,6 @@ export const portalFeedbackService = {
   rejectUnlessAllowed,
   listItemHeads,
   hasItem,
-  toRoundDtos,
-  toRoundDto,
+  loadRoundDtos,
+  loadRoundDto,
 } as const;

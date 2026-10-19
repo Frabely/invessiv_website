@@ -7,6 +7,38 @@ import { feedbackRoundSchemas } from "@/server/workspace/crm/services/feedback/f
 
 const parse = (input: object) => feedbackRoundSchemas.handOver.safeParse(input);
 
+describe("clarification request schemas", () => {
+  it.each([
+    [feedbackRoundSchemas.askClarification, "question"],
+    [feedbackRoundSchemas.closeClarification, "note"],
+  ] as const)(
+    "requires an explicit id, item version and nonempty text",
+    (schema, field) => {
+      const input = {
+        commandId: "AAAAAAAA-AAAA-4AAA-8AAA-AAAAAAAAAAAA",
+        version: 1,
+        [field]: "  Text  ",
+      };
+      expect(schema.parse(input)).toEqual({
+        ...input,
+        commandId: input.commandId.toLowerCase(),
+        [field]: "Text",
+      });
+      for (const patch of [
+        { commandId: undefined },
+        { commandId: "invalid" },
+        { version: 0 },
+        { version: 1.5 },
+        { [field]: " " },
+        { [field]: "a".repeat(FEEDBACK_LIMITS.noteMaxLength + 1) },
+        { extra: true },
+      ]) {
+        expect(schema.safeParse({ ...input, ...patch }).success).toBe(false);
+      }
+    },
+  );
+});
+
 describe("feedbackRoundSchemas.handOver", () => {
   it("trims and nulls empty optional texts", () => {
     const parsed = feedbackRoundSchemas.handOver.parse({

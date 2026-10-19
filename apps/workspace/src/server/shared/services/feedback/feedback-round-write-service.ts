@@ -52,8 +52,10 @@ function announce(
   round: FeedbackRoundRef,
   projectTitle: string,
   key: SystemMessageKey,
+  extra: Partial<Record<SystemMessageParam, string>> = {},
 ): Promise<void> {
   return announceSystemMessage(tx, round.customer_id, key, {
+    ...extra,
     [SystemMessageParam.ProjectTitle]: projectTitle,
     [SystemMessageParam.RoundNumber]: String(round.round_number),
   });
@@ -268,7 +270,22 @@ async function complete(
   return changed;
 }
 
+function announceItemEvent(
+  tx: ContactDatabaseTransaction,
+  round: FeedbackRoundRef,
+  projectTitle: string,
+  key:
+    | typeof SystemMessageKey.FeedbackClarificationRequested
+    | typeof SystemMessageKey.FeedbackClarificationAnswered,
+  position: number,
+): Promise<void> {
+  return announce(tx, round, projectTitle, key, {
+    [SystemMessageParam.ItemNumber]: String(position + 1),
+  });
+}
+
 export const feedbackRoundWriteService = {
+  announceItemEvent,
   recordHandOver,
   saveDraft,
   submit,

@@ -1,4 +1,5 @@
 import "server-only";
+import { feedbackClarificationService } from "@/server/shared/services/feedback/feedback-clarification-service";
 
 import { and, desc, eq, type SQL, sql } from "drizzle-orm";
 
@@ -133,11 +134,16 @@ async function toRoundDto(
     executor,
     (items.get(round.id) ?? []).map(({ item }) => item.id),
   );
+  const clarifications = await feedbackClarificationService.loadInternalByItems(
+    executor,
+    (items.get(round.id) ?? []).map(({ item }) => item.id),
+  );
   return feedbackRoundMappingService.toDto(
     round,
     items.get(round.id) ?? [],
     contactNames,
     history,
+    clarifications,
   );
 }
 

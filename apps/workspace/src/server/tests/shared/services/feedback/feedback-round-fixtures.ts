@@ -4,9 +4,38 @@ import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-rou
 import { AssetKind } from "@invessiv/common/constants/files/asset-kind";
 import { FileSource } from "@invessiv/common/constants/files/file-source";
 import type {
+  FeedbackClarificationRow,
   FeedbackRoundRow,
   LoadedFeedbackItem,
 } from "@/server/shared/services/feedback/feedback-service-types";
+
+export function clarificationRow(
+  overrides: Partial<FeedbackClarificationRow> = {},
+): FeedbackClarificationRow {
+  return {
+    id: "99999999-9999-4999-8999-999999999999",
+    item_id: ITEM_ID,
+    status: "open",
+    question: "Which page?",
+    requested_by_member_id: "66666666-6666-4666-8666-666666666666",
+    requested_at: new Date("2026-09-06T10:00:00.000Z"),
+    request_version: 2,
+    answer: null,
+    answered_by_portal_membership_id: null,
+    answered_at: null,
+    answer_command_id: null,
+    answer_request_version: null,
+    close_note: null,
+    closed_by_member_id: null,
+    closed_at: null,
+    close_command_id: null,
+    close_request_version: null,
+    version: 1,
+    created_at: new Date("2026-09-06T10:00:00.000Z"),
+    updated_at: new Date("2026-09-06T10:00:00.000Z"),
+    ...overrides,
+  };
+}
 
 export const ROUND_ID = "44444444-4444-4444-8444-444444444444";
 export const ITEM_ID = "55555555-5555-4555-8555-555555555555";

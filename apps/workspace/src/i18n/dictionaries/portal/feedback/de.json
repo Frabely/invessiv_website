@@ -219,7 +219,9 @@
     "confirmation_required": "Bitte setz den Haken, um freizugeben.",
     "attachment_limit": "An diesen Punkt passen keine weiteren Dateien.",
     "not_attachable": "Diese Datei lässt sich hier nicht anhängen.",
-    "unavailable": "Das hat gerade nicht geklappt. Versuch es gleich noch einmal."
+    "unavailable": "Das hat gerade nicht geklappt. Versuch es gleich noch einmal.",
+    "clarification_not_open": "Diese Rückfrage ist inzwischen beantwortet oder geschlossen. Lade den aktuellen Stand.",
+    "command_id_reused": "Die Aktion hat sich geändert. Lade die Seite neu und versuch es noch einmal."
   },
   "result": {
     "choices": {

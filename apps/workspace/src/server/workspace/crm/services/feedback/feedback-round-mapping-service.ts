@@ -1,4 +1,5 @@
 import "server-only";
+import type { FeedbackItemInternalClarificationDto } from "@invessiv/common/contracts/crm/feedback-item-internal-clarification.dto";
 
 import { INTERNAL_QUEUE_FEEDBACK_ROUND_STATUS_VALUES } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import type { FeedbackInboxItemDto } from "@invessiv/common/contracts/crm/feedback-inbox-item.dto";
@@ -15,6 +16,7 @@ import type { FeedbackInboxRow } from "./feedback-round-types";
 function toItemDto(
   { item, attachments }: LoadedFeedbackItem,
   resultHistory: FeedbackItemResultHistoryEntryDto[] = [],
+  clarifications: FeedbackItemInternalClarificationDto[] = [],
 ): FeedbackRoundItemDto {
   return {
     id: item.id,
@@ -29,6 +31,7 @@ function toItemDto(
     resultSetAt: item.result_set_at?.toISOString() ?? null,
     attachments,
     resultHistory,
+    clarifications,
     version: item.version,
   };
 }
@@ -94,6 +97,10 @@ function toDto(
     string,
     FeedbackItemResultHistoryEntryDto[]
   > = new Map(),
+  clarificationsByItem: ReadonlyMap<
+    string,
+    FeedbackItemInternalClarificationDto[]
+  > = new Map(),
 ): FeedbackRoundDto {
   const nameOf = (id: string | null) =>
     id === null ? null : (contactNames.get(id) ?? null);
@@ -122,7 +129,11 @@ function toDto(
     approvedByPortalMembershipId: row.approved_by_portal_membership_id,
     readAt: row.read_at?.toISOString() ?? null,
     items: items.map((loaded) =>
-      toItemDto(loaded, historyByItem.get(loaded.item.id) ?? []),
+      toItemDto(
+        loaded,
+        historyByItem.get(loaded.item.id) ?? [],
+        clarificationsByItem.get(loaded.item.id) ?? [],
+      ),
     ),
     version: row.version,
     createdAt: row.created_at.toISOString(),

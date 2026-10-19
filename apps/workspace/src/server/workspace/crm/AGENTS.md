@@ -108,6 +108,12 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 
 ## Feedbackrunden (ab Task 59)
 
+- Ab Task 79 verwenden Stellen, Schließen und Ergebniswahl `feedbackItemProcessingService` für den
+  berechtigten Rundenzugriff (`FOR SHARE`), das frische Sperren des Punkts und das interne Punkt-DTO.
+  Rückfragen schreiben ausschließlich über den geteilten `feedbackClarificationService`.
+  Eine offene Rückfrage sperrt jede Ergebniswahl einschließlich „Noch offen“; der Rundenabschluss
+  prüft unter `FOR UPDATE` zuerst offene Rückfragen, danach fehlende Ergebnisse.
+
 - **Übergabe nur unter Projektsperre.** `handOverFeedbackRound` sperrt das Projekt (`FOR UPDATE`, dieselbe Sperre wie
   der Projekt-Editor) und prüft dann `findFeedbackHandOverBlocker`
   (`@invessiv/common/patterns/crm/feedback-hand-over-blocker`). Dieselbe Funktion liefert der Rundenliste den Grund

@@ -3,6 +3,7 @@ import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-rou
 import { FeedbackResultActorSide as A } from "@invessiv/common/constants/crm/feedback-result-actor-sides";
 import { FeedbackResultHistoryEventKind as K } from "@invessiv/common/constants/crm/feedback-result-history-event-kinds";
 import type { FeedbackItemResultHistoryEntryDto } from "@invessiv/common/contracts/crm/feedback-item-result-history-entry.dto";
+import type { FeedbackItemInternalClarificationDto } from "@invessiv/common/contracts/crm/feedback-item-internal-clarification.dto";
 import { feedbackRoundMappingService } from "@/server/workspace/crm/services/feedback/feedback-round-mapping-service";
 import {
   ITEM_ID,
@@ -14,6 +15,34 @@ import {
 vi.mock("server-only", () => ({}));
 
 describe("feedbackRoundMappingService.toDto", () => {
+  it("attaches only the clarification history belonging to each item", () => {
+    const question: FeedbackItemInternalClarificationDto = {
+      id: "question",
+      status: "open",
+      question: "Which page?",
+      requestedAt: "2026-09-06T10:00:00.000Z",
+      answer: null,
+      answeredAt: null,
+      closeNote: null,
+      closedAt: null,
+      requestedByName: "Team member",
+      answeredByName: null,
+      closedByName: null,
+    };
+    expect(
+      feedbackRoundMappingService.toDto(
+        roundRow(),
+        [loadedItem()],
+        new Map(),
+        new Map(),
+        new Map([[ITEM_ID, [question]]]),
+      ).items[0].clarifications,
+    ).toEqual([question]);
+    expect(
+      feedbackRoundMappingService.toDto(roundRow(), [loadedItem()], new Map())
+        .items[0].clarifications,
+    ).toEqual([]);
+  });
   it("attaches each item's result history and defaults to none", () => {
     const item = loadedItem();
     const entry: FeedbackItemResultHistoryEntryDto = {
@@ -109,6 +138,7 @@ describe("feedbackRoundMappingService.toDto", () => {
       resultNote: "Kommt in Phase 2",
       resultSetByMemberId: "66666666-6666-4666-8666-666666666666",
       resultHistory: [],
+      clarifications: [],
       resultSetAt: "2026-09-05T10:00:00.000Z",
       attachments: loadedItem().attachments,
       version: 2,

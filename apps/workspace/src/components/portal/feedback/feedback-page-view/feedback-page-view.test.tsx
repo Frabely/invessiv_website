@@ -150,6 +150,8 @@ function secondRoundFeedback(canAttach = false) {
       items: [
         {
           id: "item-2",
+          version: 1,
+          clarifications: [],
           position: 0,
           areaLabel: null,
           kind: null,
@@ -260,6 +262,8 @@ describe("FeedbackPageView", () => {
             items: [
               {
                 id: "old-item",
+                version: 1,
+                clarifications: [],
                 position: 0,
                 areaLabel: null,
                 kind: null,
@@ -439,6 +443,8 @@ describe("FeedbackPageView", () => {
       items: [
         {
           id: "item-2",
+          version: 1,
+          clarifications: [],
           position: 0,
           areaLabel: null,
           kind: null,
@@ -492,6 +498,8 @@ describe("FeedbackPageView", () => {
       items: [
         {
           id: "their-item",
+          version: 1,
+          clarifications: [],
           position: 0,
           areaLabel: "Home",
           kind: FeedbackItemKind.Bug,
@@ -579,6 +587,8 @@ describe("FeedbackPageView", () => {
           items: [
             {
               id: "item-1",
+              version: 1,
+              clarifications: [],
               position: 0,
               areaLabel: null,
               kind: null,
@@ -717,6 +727,8 @@ describe("FeedbackPageView", () => {
           items: [
             {
               id: "item-1",
+              version: 1,
+              clarifications: [],
               position: 0,
               areaLabel: null,
               kind: null,
@@ -795,6 +807,8 @@ describe("FeedbackPageView", () => {
           items: [
             {
               id: "item-1",
+              version: 1,
+              clarifications: [],
               position: 0,
               areaLabel: null,
               kind: null,
@@ -841,6 +855,8 @@ describe("FeedbackPageView", () => {
       items: [
         {
           id: "item-1",
+          version: 1,
+          clarifications: [],
           position: 0,
           areaLabel: null,
           kind: null,

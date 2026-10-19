@@ -104,6 +104,7 @@ const DETAIL: FeedbackRoundDto = {
       createdByPortalMembershipId: "membership-1",
       attachments: [],
       resultHistory: [],
+      clarifications: [],
       version: 1,
     },
   ],

@@ -10,6 +10,8 @@ import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
 import { HttpResponseCode } from "@invessiv/common/constants/http/http-response-codes";
 import { MediaType } from "@invessiv/common/constants/http/media-types";
 import { PATCH as setResult } from "@/app/api/workspace/crm/feedback-round-items/[itemId]/result/route";
+import { POST as askQuestion } from "@/app/api/workspace/crm/feedback-round-items/[itemId]/clarifications/route";
+import { POST as closeQuestion } from "@/app/api/workspace/crm/feedback-round-items/[itemId]/clarifications/[clarificationId]/close/route";
 import { POST as changeStatus } from "@/app/api/workspace/crm/feedback-rounds/[roundId]/status/route";
 import { authorizedWorkspaceRequest } from "@/server/tests/support/workspace-auth-fixtures";
 
@@ -22,6 +24,8 @@ const mocks = vi.hoisted(() => ({
   authenticate: vi.fn(),
   changeFeedbackRoundStatus: vi.fn(),
   setFeedbackItemResult: vi.fn(),
+  askFeedbackItemClarification: vi.fn(),
+  closeFeedbackItemClarification: vi.fn(),
 }));
 
 vi.mock("@/lib/auth/workspace-authentication", () => ({
@@ -35,9 +39,22 @@ vi.mock(
   "@/server/workspace/crm/command-handler/set-feedback-item-result.command-handler",
   () => ({ setFeedbackItemResult: mocks.setFeedbackItemResult }),
 );
+vi.mock(
+  "@/server/workspace/crm/command-handler/ask-feedback-item-clarification.command-handler",
+  () => ({ askFeedbackItemClarification: mocks.askFeedbackItemClarification }),
+);
+vi.mock(
+  "@/server/workspace/crm/command-handler/close-feedback-item-clarification.command-handler",
+  () => ({
+    closeFeedbackItemClarification: mocks.closeFeedbackItemClarification,
+  }),
+);
 
 const roundContext = { params: Promise.resolve({ roundId: ROUND_ID }) };
 const itemContext = { params: Promise.resolve({ itemId: ITEM_ID }) };
+const clarificationContext = {
+  params: Promise.resolve({ itemId: ITEM_ID, clarificationId: ROUND_ID }),
+};
 
 function request(method: HttpMethod, body: string): NextRequest {
   return new Request("http://localhost/api/workspace/crm/feedback", {
@@ -59,6 +76,100 @@ beforeEach(() => {
 });
 
 describe("feedback round processing routes", () => {
+  it.each([
+    [askQuestion, mocks.askFeedbackItemClarification, "question"],
+    [closeQuestion, mocks.closeFeedbackItemClarification, "note"],
+  ] as const)(
+    "protects clarification routes and returns point success, conflicts and current-state errors",
+    async (route, handler, field) => {
+      const body = { version: 1, commandId: ROUND_ID, [field]: "Text" };
+      mocks.authenticate.mockResolvedValue(
+        authorizedWorkspaceRequest([Permission.ProjectsRead]),
+      );
+      expect(
+        (
+          await route(
+            request(HttpMethod.Post, JSON.stringify(body)),
+            clarificationContext,
+          )
+        ).status,
+      ).toBe(HttpResponseCode.Forbidden);
+      expect(handler).not.toHaveBeenCalled();
+      mocks.authenticate.mockResolvedValue(authorizedWorkspaceRequest());
+      expect(
+        (await route(request(HttpMethod.Post, "{"), clarificationContext))
+          .status,
+      ).toBe(HttpResponseCode.BadRequest);
+      handler.mockResolvedValue({
+        ok: true,
+        item: { id: ITEM_ID, version: 2, clarifications: [] },
+      });
+      const saved = await route(
+        request(HttpMethod.Post, JSON.stringify(body)),
+        clarificationContext,
+      );
+      expect(saved.status).toBe(HttpResponseCode.Ok);
+      expect(saved.headers.get(HttpHeaderName.CacheControl)).toBe(
+        "private, no-store",
+      );
+      expect(await saved.json()).toEqual({
+        id: ITEM_ID,
+        version: 2,
+        clarifications: [],
+      });
+      expect(handler).toHaveBeenCalledWith(
+        ...(field === "note"
+          ? [ITEM_ID, ROUND_ID, body, expect.anything()]
+          : [ITEM_ID, body, expect.anything()]),
+      );
+      const current = {
+        id: ITEM_ID,
+        version: 3,
+        clarifications: [{ status: "open" }],
+      };
+      for (const code of [
+        FeedbackRoundErrorCode.ClarificationOpen,
+        FeedbackRoundErrorCode.ClarificationNotOpen,
+      ]) {
+        handler.mockResolvedValue({ ok: false, code, item: current });
+        const conflict = await route(
+          request(HttpMethod.Post, JSON.stringify(body)),
+          clarificationContext,
+        );
+        expect(conflict.status).toBe(HttpResponseCode.Conflict);
+        expect(await conflict.json()).toMatchObject({ error: code, current });
+      }
+      handler.mockResolvedValue({
+        ok: false,
+        code: ConcurrencyErrorCode.VersionConflict,
+        conflict: {
+          code: ConcurrencyErrorCode.VersionConflict,
+          currentVersion: 3,
+          current,
+        },
+      });
+      expect(
+        await (
+          await route(
+            request(HttpMethod.Post, JSON.stringify(body)),
+            clarificationContext,
+          )
+        ).json(),
+      ).toMatchObject({ currentVersion: 3, current });
+      handler.mockResolvedValue({
+        ok: false,
+        code: FeedbackRoundErrorCode.CommandIdReused,
+      });
+      expect(
+        (
+          await route(
+            request(HttpMethod.Post, JSON.stringify(body)),
+            clarificationContext,
+          )
+        ).status,
+      ).toBe(HttpResponseCode.Conflict);
+    },
+  );
   it("forbids both writes without projects.write anywhere", async () => {
     mocks.authenticate.mockResolvedValue(
       authorizedWorkspaceRequest([Permission.ProjectsRead]),

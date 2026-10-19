@@ -1,3 +1,4 @@
+import type { FeedbackItemClarificationDto } from "@invessiv/common/contracts/crm/feedback-item-clarification.dto";
 import type { FeedbackItemKind } from "../../constants/crm/feedback-item-kinds";
 import type { FeedbackItemResult } from "../../constants/crm/feedback-item-results";
 import type { FileAttachmentDto } from "../files/file-attachment.dto";
@@ -6,6 +7,10 @@ import type { FileAttachmentDto } from "../files/file-attachment.dto";
 export interface PortalFeedbackItemDto {
   /** Client-generated id; the draft editor keys on it and sends it back on save. */
   id: string;
+  /** Item version used by clarification actions. */
+  version: number;
+  /** Chronological questions and responses for this item. */
+  clarifications: FeedbackItemClarificationDto[];
   /** Display order within the round, starting at 0. */
   position: number;
   /** One of the round's areas; null means "general". */

@@ -219,7 +219,9 @@
     "confirmation_required": "Please tick the box to approve.",
     "attachment_limit": "No more files fit on this point.",
     "not_attachable": "This file can't be attached here.",
-    "unavailable": "That didn't work just now. Try again in a moment."
+    "unavailable": "That didn't work just now. Try again in a moment.",
+    "clarification_not_open": "This question has already been answered or closed. Load the current state.",
+    "command_id_reused": "This action has changed. Reload the page and try again."
   },
   "result": {
     "choices": {

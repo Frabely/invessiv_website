@@ -56,6 +56,17 @@ der eigene Upload“ bleiben in den getrennten Handlern (`portalFileService` bzw
 
 ## Feedbackrunden (ab Task 58)
 
+- Ab Task 79 ist `services/feedback/feedback-clarification-service.ts` der einzige produktive Schreibweg
+  für Rückfragen. Autorisierung bleibt in den getrennten Handlern; die Sperrreihenfolge ist Runde → Punkt →
+  Rückfrage (intern Runde `FOR SHARE`, Portal `FOR UPDATE`). Jede neue Aktion erhöht die Punktversion genau
+  einmal; Antwort und Schließung erhöhen zusätzlich die Rückfragenversion. Ergebnisrücknahme und Historie
+  entstehen im selben Savepoint. Command-Kennungen werden am Punkt aktionsübergreifend vor Zustand und Version
+  geprüft; korrelierte Rücknahme und Frage dürfen dieselbe Kennung tragen.
+  `feedback-clarification-mapping-service.ts` trennt öffentliche Felder von intern aufgelösten Namen.
+  Fragen, Antworten und Hinweise bleiben aus Logs, Activities und Chat-Metadaten ausgeschlossen.
+  Chatmeldungen entstehen nur bei erstmaligem Stellen/Beantworten, über `announceItemEvent` mit Punktnummer,
+  Rundennummer und Projekttitel; ein Chatfehler rollt ausschließlich die Meldung zurück.
+
 - Ab Task 78 ist `services/feedback/feedback-result-history-service.ts` der einzige produktive Schreibweg
   der Ergebnishistorie. Jeder Ergebnis-Schreibpfad ruft `recordChange` unter Punktsperre und in derselben
   Transaktion auf, einschließlich der automatischen Rücknahme beim Bearbeiten eines zurückgegebenen Entwurfs.

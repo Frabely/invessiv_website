@@ -20,6 +20,10 @@ export const FeedbackRoundErrorCode = {
   ConfirmationRequired: "CONFIRMATION_REQUIRED",
   AttachmentLimitReached: "ATTACHMENT_LIMIT_REACHED",
   FileNotAttachable: "FILE_NOT_ATTACHABLE",
+  ClarificationOpen: "CLARIFICATION_OPEN",
+  ClarificationNotOpen: "CLARIFICATION_NOT_OPEN",
+  ClarificationNotFound: "CLARIFICATION_NOT_FOUND",
+  ClarificationsOpen: "CLARIFICATIONS_OPEN",
   Internal: "INTERNAL",
 } as const;
 

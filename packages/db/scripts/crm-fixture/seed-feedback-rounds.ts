@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { eq } from "drizzle-orm";
 import { FeedbackItemKind } from "@invessiv/common/constants/crm/feedback-item-kinds";
+import { FeedbackClarificationStatus } from "@invessiv/common/constants/crm/feedback-clarification-statuses";
 import { FeedbackItemResult } from "@invessiv/common/constants/crm/feedback-item-results";
 import { FeedbackResultActorSide } from "@invessiv/common/constants/crm/feedback-result-actor-sides";
 import { FeedbackResultHistoryEventKind } from "@invessiv/common/constants/crm/feedback-result-history-event-kinds";
@@ -10,6 +11,7 @@ import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
 import type { ContactDatabaseTransaction } from "@invessiv/db/core";
 import {
   feedbackRoundItems,
+  feedbackRoundItemClarifications,
   feedbackRoundItemResultHistory,
   feedbackRounds,
   projects,
@@ -24,7 +26,7 @@ type FeedbackProjectFixture = {
 
 type FeedbackFixtureInput = {
   memberId: string;
-  /** Gets a completed round 1 and an open draft in round 2. */
+  /** Gets a completed round 1 and round 2 in progress with clarification examples. */
   running: FeedbackProjectFixture;
   /** Gets round 1 approved without feedback. */
   approved: FeedbackProjectFixture;
@@ -220,11 +222,12 @@ async function seedRunningProject(
   });
 
   const openRoundId = randomUUID();
+  const clarificationItemIds = [randomUUID(), randomUUID(), randomUUID()];
   await tx.insert(feedbackRounds).values({
     ...roundBase(project, memberId),
     id: openRoundId,
     round_number: 2,
-    status: FeedbackRoundStatus.Open,
+    status: FeedbackRoundStatus.InProgress,
     handover_note: "Kontaktformular überarbeitet, Teamfoto eingebaut.",
     due_on: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000)
       .toISOString()
@@ -232,32 +235,108 @@ async function seedRunningProject(
     handed_over_at: daysAgo(1),
     draft_updated_at: new Date(),
     draft_updated_by_portal_membership_id: project.membershipId,
+    submitted_at: daysAgo(1),
+    submitted_by_portal_membership_id: project.membershipId,
+    started_at: daysAgo(1),
   });
   await tx.insert(feedbackRoundItems).values([
     {
       ...noResult(),
-      id: randomUUID(),
+      id: clarificationItemIds[0],
       round_id: openRoundId,
       position: 0,
       area_label: FEEDBACK_AREAS[1],
       kind: FeedbackItemKind.ChangeRequest,
       body: "Im Teamtext fehlt noch unsere neue Kollegin.",
       created_by_portal_membership_id: project.membershipId,
-      version: 1,
+      version: 2,
     },
     {
       ...noResult(),
-      id: randomUUID(),
+      id: clarificationItemIds[1],
       round_id: openRoundId,
       position: 1,
       area_label: null,
       kind: null,
-      // A draft item may stay empty until the customer submits.
-      body: "",
+      body: "Das Kontaktformular soll weniger Felder haben.",
       created_by_portal_membership_id: project.membershipId,
-      version: 1,
+      version: 3,
+    },
+    {
+      ...noResult(),
+      id: clarificationItemIds[2],
+      round_id: openRoundId,
+      position: 2,
+      area_label: FEEDBACK_AREAS[0],
+      kind: FeedbackItemKind.ChangeRequest,
+      body: "Die Überschrift auf der Startseite bitte kürzen.",
+      created_by_portal_membership_id: project.membershipId,
+      version: 3,
     },
   ]);
+  for (const [index, status] of [
+    FeedbackClarificationStatus.Open,
+    FeedbackClarificationStatus.Answered,
+    FeedbackClarificationStatus.Closed,
+  ].entries()) {
+    await tx.insert(feedbackRoundItemClarifications).values({
+      id: randomUUID(),
+      item_id: clarificationItemIds[index],
+      status,
+      question: [
+        "Wie heißt die neue Kollegin und welche Rolle hat sie?",
+        "Welche Felder braucht ihr im Formular?",
+        "Welche Aussage soll die Überschrift vermitteln?",
+      ][index],
+      requested_by_member_id: memberId,
+      requested_at: daysAgo(1),
+      request_version: 1,
+      answer:
+        status === FeedbackClarificationStatus.Answered
+          ? "Name, E-Mail und Nachricht reichen uns."
+          : null,
+      answered_by_portal_membership_id:
+        status === FeedbackClarificationStatus.Answered
+          ? project.membershipId
+          : null,
+      answered_at:
+        status === FeedbackClarificationStatus.Answered ? new Date() : null,
+      answer_command_id:
+        status === FeedbackClarificationStatus.Answered ? randomUUID() : null,
+      answer_request_version:
+        status === FeedbackClarificationStatus.Answered ? 2 : null,
+      close_note:
+        status === FeedbackClarificationStatus.Closed
+          ? "Im Gespräch geklärt: Der Nutzen für Kunden steht im Vordergrund."
+          : null,
+      closed_by_member_id:
+        status === FeedbackClarificationStatus.Closed ? memberId : null,
+      closed_at:
+        status === FeedbackClarificationStatus.Closed ? new Date() : null,
+      close_command_id:
+        status === FeedbackClarificationStatus.Closed ? randomUUID() : null,
+      close_request_version:
+        status === FeedbackClarificationStatus.Closed ? 2 : null,
+      version: status === FeedbackClarificationStatus.Open ? 1 : 2,
+    });
+  }
+  await tx.insert(tasks).values({
+    id: randomUUID(),
+    project_id: project.projectId,
+    feedback_round_id: openRoundId,
+    title: "Feedbackrunde 2 umsetzen",
+    description: "",
+    status: TaskStatus.InProgress,
+    action_side: TaskActionSide.Internal,
+    visible_to_customer: false,
+    assignee_member_id: memberId,
+    due_on: null,
+    completed_at: null,
+    completed_by_member_id: null,
+    completed_by_portal_membership_id: null,
+    created_by_portal_membership_id: null,
+    version: 1,
+  });
 }
 
 /** The customer approved in round 1 without any feedback, so the round has no items. */
