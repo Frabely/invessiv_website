@@ -1,7 +1,13 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { Permission } from "@invessiv/common/constants/auth/permissions";
+import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import { ProjectStatus } from "@invessiv/common/constants/crm/project-statuses";
-import { feedbackRounds, projects } from "@invessiv/db/record-configuration";
+import { TaskStatus } from "@invessiv/common/constants/crm/task-statuses";
+import {
+  feedbackRounds,
+  projects,
+  tasks,
+} from "@invessiv/db/record-configuration";
 import { createPortalActor } from "@/server/portal/auth/portal-actor";
 import { createFileTestFixture } from "../../files/file-test-fixture";
 
@@ -71,6 +77,34 @@ export function createFeedbackIntegrationFixture() {
     return row;
   }
 
+  /**
+   * Writes the state the removed handback left behind (before Task 80), so legacy rounds stay
+   * covered: open again with the team's notice, submission and read stamp cleared, task cancelled.
+   */
+  async function returnRoundAsLegacy(id: string, customerNotice: string) {
+    const current = await readRound(id);
+    await f
+      .database()
+      .update(feedbackRounds)
+      .set({
+        status: FeedbackRoundStatus.Open,
+        customer_notice: customerNotice,
+        submitted_at: null,
+        submitted_by_portal_membership_id: null,
+        read_at: null,
+        version: current.version + 1,
+      })
+      .where(eq(feedbackRounds.id, id));
+    await f
+      .database()
+      .update(tasks)
+      .set({ status: TaskStatus.Cancelled })
+      .where(
+        and(eq(tasks.feedback_round_id, id), eq(tasks.status, TaskStatus.Open)),
+      );
+    return readRound(id);
+  }
+
   const member = (
     permissions: Permission[] = [
       Permission.ProjectsRead,
@@ -100,5 +134,13 @@ export function createFeedbackIntegrationFixture() {
       projectPermissions: new Map(),
     });
 
-  return { ...f, project, readProject, readRound, member, contact };
+  return {
+    ...f,
+    project,
+    readProject,
+    readRound,
+    returnRoundAsLegacy,
+    member,
+    contact,
+  };
 }

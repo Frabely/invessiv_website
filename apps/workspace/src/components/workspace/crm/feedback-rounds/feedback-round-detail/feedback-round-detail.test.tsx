@@ -10,10 +10,14 @@ import {
   within,
 } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { FeedbackRoundErrorCode } from "@invessiv/common/constants/crm/errors/feedback-round-error-codes";
+import { FeedbackClarificationStatus } from "@invessiv/common/constants/crm/feedback-clarification-statuses";
 import { FeedbackItemResult } from "@invessiv/common/constants/crm/feedback-item-results";
 import { FeedbackResultActorSide } from "@invessiv/common/constants/crm/feedback-result-actor-sides";
 import { FeedbackResultHistoryEventKind } from "@invessiv/common/constants/crm/feedback-result-history-event-kinds";
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
+import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
+import type { FeedbackItemInternalClarificationDto } from "@invessiv/common/contracts/crm/feedback-item-internal-clarification.dto";
 import type { FeedbackRoundItemDto } from "@invessiv/common/contracts/crm/feedback-round-item.dto";
 import type { FeedbackRoundDto } from "@invessiv/common/contracts/crm/feedback-round.dto";
 import {
@@ -26,6 +30,8 @@ const mocks = vi.hoisted(() => ({
   router: { refresh: vi.fn(), replace: vi.fn() },
   changeStatus: vi.fn(),
   setItemResult: vi.fn(),
+  askClarification: vi.fn(),
+  closeClarification: vi.fn(),
   markRead: vi.fn(),
 }));
 
@@ -38,6 +44,8 @@ vi.mock("@/client/crm/feedback-rounds-api-service", () => ({
   feedbackRoundsApiService: {
     changeStatus: mocks.changeStatus,
     setItemResult: mocks.setItemResult,
+    askClarification: mocks.askClarification,
+    closeClarification: mocks.closeClarification,
     markRead: mocks.markRead,
   },
 }));
@@ -64,6 +72,26 @@ function item(
     resultHistory: [],
     clarifications: [],
     version: 1,
+    ...overrides,
+  };
+}
+
+function clarification(
+  id: string,
+  overrides: Partial<FeedbackItemInternalClarificationDto> = {},
+): FeedbackItemInternalClarificationDto {
+  return {
+    id,
+    status: FeedbackClarificationStatus.Open,
+    question: `Question ${id}`,
+    requestedAt: "2026-10-01T10:00:00.000Z",
+    answer: null,
+    answeredAt: null,
+    closeNote: null,
+    closedAt: null,
+    requestedByName: "Anna",
+    answeredByName: null,
+    closedByName: null,
     ...overrides,
   };
 }
@@ -227,11 +255,10 @@ describe("FeedbackRoundDetail processing", () => {
       within(group)
         .getAllByRole("button")
         .map((button) => button.textContent),
-    ).toEqual([
-      content.actions.in_discussion,
-      content.actions.in_progress,
-      content.actions.open,
-    ]);
+    ).toEqual([content.actions.in_discussion, content.actions.in_progress]);
+    expect(
+      screen.queryByRole("button", { name: /hand back/i }),
+    ).not.toBeInTheDocument();
   });
 
   it("offers only the completion while the team implements", () => {
@@ -268,39 +295,6 @@ describe("FeedbackRoundDetail processing", () => {
       version: 3,
       to: FeedbackRoundStatus.InProgress,
     });
-  });
-
-  it("requires a notice before handing the round back", async () => {
-    renderDetail(round());
-    fireEvent.click(screen.getByRole("button", { name: content.actions.open }));
-    fireEvent.click(
-      screen.getByRole("button", { name: content.notice.return.submit }),
-    );
-    expect(
-      await screen.findByText(content.notice.return.required),
-    ).toBeInTheDocument();
-    expect(mocks.changeStatus).not.toHaveBeenCalled();
-
-    mocks.changeStatus.mockResolvedValue({
-      ok: true,
-      value: round({ status: FeedbackRoundStatus.Open, version: 4 }),
-    });
-    fireEvent.change(
-      screen.getByRole("textbox", {
-        name: new RegExp(content.notice.return.label.replace("?", "\?")),
-      }),
-      { target: { value: "  Please add the screenshot  " } },
-    );
-    fireEvent.click(
-      screen.getByRole("button", { name: content.notice.return.submit }),
-    );
-    await waitFor(() =>
-      expect(mocks.changeStatus).toHaveBeenCalledWith("round-1", {
-        version: 3,
-        to: FeedbackRoundStatus.Open,
-        customerNotice: "Please add the screenshot",
-      }),
-    );
   });
 
   it("saves implemented at once and asks for a reply for the other results", async () => {
@@ -351,7 +345,7 @@ describe("FeedbackRoundDetail processing", () => {
         ],
       }),
     );
-    expect(screen.getByText("1 of 2 items rated")).toBeInTheDocument();
+    expect(screen.getByText("1 of 2 items done")).toBeInTheDocument();
     expect(screen.getByText("Thursday?")).toBeInTheDocument();
   });
 
@@ -425,6 +419,214 @@ describe("FeedbackRoundDetail processing", () => {
     ).toBeInTheDocument();
     expect(
       screen.queryByRole("button", { name: /Hand over round/ }),
+    ).not.toBeInTheDocument();
+  });
+});
+
+describe("FeedbackRoundDetail clarifications", () => {
+  it("asks a question on a rated item and names the withdrawn result", async () => {
+    mocks.askClarification.mockResolvedValue({
+      ok: true,
+      value: item("a", { version: 2, clarifications: [clarification("q")] }),
+    });
+    const { onAnnounceAction } = renderDetail(
+      round({
+        status: FeedbackRoundStatus.InProgress,
+        items: [item("a", { result: FeedbackItemResult.Implemented })],
+      }),
+    );
+    fireEvent.click(
+      screen.getByRole("button", { name: "Ask a question (item 1)" }),
+    );
+    const dialog = screen.getByRole("dialog", {
+      name: "Question about item 1",
+    });
+    expect(
+      within(dialog).getByText(
+        "The result “Implemented” is withdrawn and stays in the result history.",
+      ),
+    ).toBeInTheDocument();
+    fireEvent.click(
+      within(dialog).getByRole("button", {
+        name: content.clarification.askDialog.submit,
+      }),
+    );
+    expect(
+      await within(dialog).findByText(content.clarification.askDialog.required),
+    ).toBeInTheDocument();
+    expect(mocks.askClarification).not.toHaveBeenCalled();
+
+    fireEvent.change(within(dialog).getByRole("textbox"), {
+      target: { value: "  Which blue?  " },
+    });
+    fireEvent.click(
+      within(dialog).getByRole("button", {
+        name: content.clarification.askDialog.submit,
+      }),
+    );
+    await waitFor(() =>
+      expect(mocks.askClarification).toHaveBeenCalledWith("a", {
+        commandId: expect.any(String),
+        version: 1,
+        question: "Which blue?",
+      }),
+    );
+    expect(onAnnounceAction).toHaveBeenCalledWith("Item 1: question asked.");
+  });
+
+  it("keeps the command id for a retry and renews it after a conflict", async () => {
+    mocks.askClarification
+      .mockResolvedValueOnce({
+        ok: false,
+        code: FeedbackRoundErrorCode.Internal,
+      })
+      .mockResolvedValueOnce({
+        ok: false,
+        code: FeedbackRoundErrorCode.Internal,
+      })
+      .mockResolvedValueOnce({
+        ok: false,
+        code: ConcurrencyErrorCode.VersionConflict,
+        current: item("a", { version: 2 }),
+      })
+      .mockResolvedValueOnce({
+        ok: false,
+        code: FeedbackRoundErrorCode.Internal,
+      });
+    renderDetail(round({ items: [item("a")] }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Ask a question (item 1)" }),
+    );
+    const dialog = screen.getByRole("dialog");
+    fireEvent.change(within(dialog).getByRole("textbox"), {
+      target: { value: "Which blue?" },
+    });
+    const submit = within(dialog).getByRole("button", {
+      name: content.clarification.askDialog.submit,
+    });
+    for (let call = 1; call <= 4; call += 1) {
+      fireEvent.click(submit);
+      await waitFor(() =>
+        expect(mocks.askClarification).toHaveBeenCalledTimes(call),
+      );
+      await waitFor(() => expect(submit).not.toBeDisabled());
+    }
+    const ids = mocks.askClarification.mock.calls.map(
+      ([, request]) => request.commandId,
+    );
+    expect(ids[1]).toBe(ids[0]);
+    expect(ids[2]).toBe(ids[1]);
+    expect(ids[3]).not.toBe(ids[2]);
+    expect(mocks.askClarification.mock.calls[3][1].version).toBe(2);
+  });
+
+  it("locks the result while a question is open and closes it only with a note", async () => {
+    mocks.closeClarification.mockResolvedValue({
+      ok: true,
+      value: item("a", { version: 3 }),
+    });
+    const { onAnnounceAction } = renderDetail(
+      round({
+        status: FeedbackRoundStatus.InProgress,
+        items: [
+          item("a", {
+            version: 2,
+            clarifications: [
+              clarification("old", {
+                status: FeedbackClarificationStatus.Answered,
+                answer: "The dark one",
+                answeredAt: "2026-09-30T10:00:00.000Z",
+                answeredByName: "Kim",
+                requestedAt: "2026-09-29T10:00:00.000Z",
+              }),
+              clarification("q"),
+            ],
+          }),
+        ],
+      }),
+    );
+    const select = screen.getByRole("button", { name: /Result for item 1:/ });
+    expect(select).toBeDisabled();
+    expect(select).toHaveTextContent(content.result.choices.clarification);
+    const thread = screen.getByRole("region", {
+      name: "Questions about item 1",
+    });
+    expect(within(thread).getByText("Question q")).toBeInTheDocument();
+    expect(within(thread).getByText("The dark one")).toBeInTheDocument();
+    expect(within(thread).getAllByText(/^Anna on/)).toHaveLength(2);
+    expect(within(thread).getByText(/^Kim on/)).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /Ask a question/ }),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(
+      within(thread).getByRole("button", {
+        name: "Close question (item 1)",
+      }),
+    );
+    const dialog = screen.getByRole("dialog");
+    fireEvent.click(
+      within(dialog).getByRole("button", {
+        name: content.clarification.closeDialog.submit,
+      }),
+    );
+    expect(
+      await within(dialog).findByText(
+        content.clarification.closeDialog.required,
+      ),
+    ).toBeInTheDocument();
+    fireEvent.change(within(dialog).getByRole("textbox"), {
+      target: { value: "Settled on the phone" },
+    });
+    fireEvent.click(
+      within(dialog).getByRole("button", {
+        name: content.clarification.closeDialog.submit,
+      }),
+    );
+    await waitFor(() =>
+      expect(mocks.closeClarification).toHaveBeenCalledWith("a", "q", {
+        commandId: expect.any(String),
+        version: 2,
+        note: "Settled on the phone",
+      }),
+    );
+    expect(onAnnounceAction).toHaveBeenCalledWith("Item 1: question closed.");
+  });
+
+  it("counts open questions and keeps the completion closed while one is open", () => {
+    renderDetail(
+      round({
+        status: FeedbackRoundStatus.InProgress,
+        items: [
+          item("a", { result: FeedbackItemResult.Implemented }),
+          item("b", { clarifications: [clarification("q")] }),
+        ],
+      }),
+    );
+    expect(screen.getByText("1 of 2 items done")).toBeInTheDocument();
+    expect(screen.getByText("1 question open")).toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole("button", { name: content.actions.completed }),
+    );
+    const dialog = screen.getByRole("dialog");
+    expect(
+      within(dialog).getByRole("button", { name: content.complete.submit }),
+    ).toBeDisabled();
+    expect(
+      within(dialog).getByText(content.complete.clarificationsOpenOne),
+    ).toBeInTheDocument();
+  });
+
+  it("shows the question as status text without projects.write", () => {
+    renderDetail(
+      round({ items: [item("a", { clarifications: [clarification("q")] })] }),
+      { canWrite: false },
+    );
+    expect(
+      screen.getByText(content.result.choices.clarification),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: /Close question/ }),
     ).not.toBeInTheDocument();
   });
 });

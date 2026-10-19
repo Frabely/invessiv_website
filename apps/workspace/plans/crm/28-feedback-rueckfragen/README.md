@@ -1,11 +1,11 @@
 # Rückfragen pro Feedbackpunkt und reversible Ergebnisse
 
-Stand: 19.10.2026. Status: **28.1 umgesetzt (Abnahmereste siehe Task 78); 28.2 im Review; 28.3 offen**.
+Stand: 19.10.2026. Status: **28.1 umgesetzt (Abnahmereste siehe Task 78); 28.2 und 28.3 im Review**.
 
 Dieser Plan ist die eigenständige fachliche Umsetzungsspezifikation; der zugehörige Chat ist nicht erforderlich.
-Task 78 und der Serverteil aus Task 79 sind umgesetzt; Task 80 bleibt geplant. Die Beschreibungen der Rückfragen-UI und der
-Ablösung der globalen Rückgabe sind bis dahin Zielverhalten. Alle Pfade in diesem Dokument beziehen sich auf die Repository-Wurzel,
-sofern sie nicht ausdrücklich als relative Dokumentverweise geschrieben sind.
+Task 78, der Serverteil aus Task 79 sowie UI und Ablösung der globalen Rückgabe aus Task 80 sind umgesetzt. Alle Pfade
+in diesem Dokument beziehen sich auf die Repository-Wurzel, sofern sie nicht ausdrücklich als relative
+Dokumentverweise geschrieben sind.
 
 ### Teilschritte
 
@@ -18,7 +18,7 @@ Dateien, Abläufe und Tests konkret; die fachlichen Regeln stehen weiterhin in d
 | ---- | ---- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------- | ----------------------- | --------- |
 | 28.1 | 78   | [78-ergebnishistorie-und-noch-offen.md](78-ergebnishistorie-und-noch-offen.md) | Ergebnishistorie, „Noch offen“ zurücksetzbar, Historie im Cockpit | ja, Cockpit             | läuft     |
 | 28.2 | 79   | [79-rueckfragen-server.md](79-rueckfragen-server.md)                           | Rückfragen-Tabelle, Commands, Routen, Sperren, Chat-Ereignisse    | nein (kein UI-Einstieg) | im Review |
-| 28.3 | 80   | [80-rueckfragen-ui-und-abloesung.md](80-rueckfragen-ui-und-abloesung.md)       | Cockpit- und Portal-UI, globale Rückgabe entfernt, E2E, Doku      | ja, Cockpit und Portal  | offen     |
+| 28.3 | 80   | [80-rueckfragen-ui-und-abloesung.md](80-rueckfragen-ui-und-abloesung.md)       | Cockpit- und Portal-UI, globale Rückgabe entfernt, E2E, Doku      | ja, Cockpit und Portal  | im Review |
 
 **Abweichungen von der ursprünglichen Fassung (18.10.2026, verbindlich):**
 
@@ -532,21 +532,22 @@ lokalen Env-Dateien gelangen weder in Plan noch Logs.
 
 Zusätzlich zu Abschnitt 5 müssen folgende Abnahmen explizit erfüllt sein:
 
-- [ ] Replays einer alten Frage nach deren Beantwortung und einer inzwischen neuen Frage erzeugen keine neue Frage
+- [x] Replays einer alten Frage nach deren Beantwortung und einer inzwischen neuen Frage erzeugen keine neue Frage
       und nehmen kein zwischenzeitlich gesetztes Ergebnis erneut zurück.
-- [ ] Geänderte Nutzlast mit gleicher Command-Kennung scheitert; eine neue explizite Aktion kann mit neuer Kennung
+- [x] Geänderte Nutzlast mit gleicher Command-Kennung scheitert; eine neue explizite Aktion kann mit neuer Kennung
       nach einem Versionskonflikt gesendet werden.
-- [ ] Fehler nach Historien-Insert, vor finalem Update oder beim Antwort-Update hinterlassen keine teilweise Mutation.
-- [ ] Erste Ergebnisänderung eines bewerteten Punkts, weitere Änderungen und automatischer Legacy-Entwurfsreset
+- [x] Fehler nach Historien-Insert, vor finalem Update oder beim Antwort-Update hinterlassen keine teilweise Mutation.
+- [x] Erste Ergebnisänderung eines bewerteten Punkts, weitere Änderungen und automatischer Legacy-Entwurfsreset
       erzeugen einen konsistenten Verlauf mit genau einem Ausgangseintrag. Bestehende Entwurfs-Löschungen folgen der
       dokumentierten Kaskade.
-- [ ] Anzahl erledigter/offener Punkte und Rückfragen ist nach Antwort/Schließung/Zurücksetzen korrekt; die
+- [x] Anzahl erledigter/offener Punkte und Rückfragen ist nach Antwort/Schließung/Zurücksetzen korrekt; die
       Sammelaufgabe sowie die bestehende Ungelesen-Zählung ändern sich dadurch nicht.
 - [ ] Jeder der drei Teile ist für sich deploybar; Rollback-Regeln aus 8.2 stehen im PR.
-- [ ] Zentrale Entscheidungen, relevante Scope-Dokumentation und diese Plan-Checkliste sind mit dem tatsächlichen
+- [x] Zentrale Entscheidungen, relevante Scope-Dokumentation und diese Plan-Checkliste sind mit dem tatsächlichen
       Ergebnis synchronisiert. Fachlich benötigte neue Dateien sind eingebunden; kein ungenutzter Ersatzcode bleibt.
 
 Prüfstand dieses Dokuments: Die eigenständige Umsetzbarkeit wurde anhand der genannten bestehenden Handler,
 Punkt-/Runden-Modelle, Portal-Mapping-/Autorisierungswege, UI-Reader, API-Clients und Testorte nachgeschärft.
 Der aktuelle Umsetzungs- und Prüfstand für Teil 28.1 steht im Task-78-Dokument. Teil 28.2 ist umgesetzt und im Review;
-Details zu Migration, Prüfungen und Umsetzung stehen im Task-79-Dokument. Teil 28.3 bleibt offen.
+Details zu Migration, Prüfungen und Umsetzung stehen im Task-79-Dokument. Teil 28.3 ist umgesetzt und im Review; den
+Stand nennt das Task-80-Dokument.

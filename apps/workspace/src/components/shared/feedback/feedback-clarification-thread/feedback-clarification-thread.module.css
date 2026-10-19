@@ -1,0 +1,99 @@
+.thread {
+  display: grid;
+  justify-items: start;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.list {
+  display: grid;
+  gap: 0.6rem;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.list[hidden] {
+  display: none;
+}
+
+.entry {
+  display: grid;
+  justify-items: start;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+}
+
+/* The open question is the one thing that waits on someone, so it alone gets a tinted surface. */
+.entry[data-status="open"] {
+  border-color: color-mix(
+    in srgb,
+    var(--color-accent-warm) 45%,
+    var(--color-border)
+  );
+  background: color-mix(in srgb, var(--color-accent-warm) 7%, transparent);
+}
+
+/* Same edges as the team's reply on a result: warm for us, the action colour for the customer. */
+.message {
+  display: grid;
+  justify-self: stretch;
+  gap: 0.2rem;
+  max-width: 68ch;
+  min-width: 0;
+  padding: 0.05rem 0 0.05rem 0.75rem;
+  border-left: 2px solid var(--color-accent-gold);
+}
+
+.message[data-side="customer"] {
+  margin-left: 0.75rem;
+  border-left-color: var(--color-cta);
+}
+
+.message[data-part="close"] {
+  border-left-color: var(--color-border-strong);
+}
+
+.byline,
+.noteLabel {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-ui-xs);
+}
+
+.noteLabel {
+  font-weight: 600;
+}
+
+.slot {
+  display: grid;
+  justify-self: stretch;
+  min-width: 0;
+}
+
+.toggle .chevron {
+  transition: transform 160ms ease;
+}
+
+.toggle[aria-expanded="true"] .chevron {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 30rem) {
+  .entry {
+    padding: 0.6rem 0.65rem;
+  }
+
+  .message[data-side="customer"] {
+    margin-left: 0.4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toggle .chevron {
+    transition: none;
+  }
+}

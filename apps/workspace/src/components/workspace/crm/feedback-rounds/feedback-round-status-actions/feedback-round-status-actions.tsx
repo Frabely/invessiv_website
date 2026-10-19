@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import {
-  faArrowRotateLeft,
   faCircleCheck,
   faComments,
   faScrewdriverWrench,
@@ -43,11 +42,10 @@ const ACTION_ICONS: Record<InternalFeedbackRoundTargetStatus, IconDefinition> =
   {
     in_discussion: faComments,
     in_progress: faScrewdriverWrench,
-    open: faArrowRotateLeft,
     completed: faCircleCheck,
   };
 
-// Moving the work forward is the main path; a call or a handback are the detours.
+// Moving the work forward is the main path; a call is the detour.
 const PRIMARY_TARGETS: readonly InternalFeedbackRoundTargetStatus[] = [
   FeedbackRoundStatus.InProgress,
   FeedbackRoundStatus.Completed,
@@ -163,8 +161,7 @@ export function FeedbackRoundStatusActions({
           {error}
         </p>
       ) : null}
-      {dialog === FeedbackRoundStatus.InDiscussion ||
-      dialog === FeedbackRoundStatus.Open ? (
+      {dialog === FeedbackRoundStatus.InDiscussion ? (
         <FeedbackTextDialog<FeedbackRoundDto>
           common={content.textDialog}
           errorMessage={(code) =>
@@ -173,25 +170,15 @@ export function FeedbackRoundStatusActions({
           initial={round}
           onCloseAction={() => setDialog(null)}
           onSavedAction={(changed) => announce(changed.status)}
-          required={dialog === FeedbackRoundStatus.Open}
+          required={false}
           send={(current, notice) =>
-            dialog === FeedbackRoundStatus.Open
-              ? feedbackRoundsApiService.changeStatus(current.id, {
-                  version: current.version,
-                  to: FeedbackRoundStatus.Open,
-                  customerNotice: notice,
-                })
-              : feedbackRoundsApiService.changeStatus(current.id, {
-                  version: current.version,
-                  to: FeedbackRoundStatus.InDiscussion,
-                  customerNotice: notice || null,
-                })
+            feedbackRoundsApiService.changeStatus(current.id, {
+              version: current.version,
+              to: FeedbackRoundStatus.InDiscussion,
+              customerNotice: notice || null,
+            })
           }
-          texts={
-            dialog === FeedbackRoundStatus.Open
-              ? content.notice.return
-              : content.notice.discussion
-          }
+          texts={content.notice.discussion}
         />
       ) : null}
       {dialog === FeedbackRoundStatus.Completed ? (

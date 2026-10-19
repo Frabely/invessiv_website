@@ -289,11 +289,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
           result_set_by_member_id: f.member().workspaceMemberId,
         })
         .where(eq(feedbackRoundItems.id, itemIds[0]));
-      await change(roundId, {
-        version: 3,
-        to: FeedbackRoundStatus.Open,
-        customerNotice: "Please clarify",
-      });
+      await f.returnRoundAsLegacy(roundId, "Please clarify");
       const saved = await savePortalFeedbackDraft(f.contact(), roundId, {
         version: 4,
         items: [

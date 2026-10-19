@@ -191,7 +191,7 @@ export function FeedbackRoundDetail({
           {showResults && round.items.length > 0 ? (
             <FeedbackResultProgress
               items={round.items}
-              label={content.progress.label}
+              content={content.progress}
             />
           ) : null}
           {canReadFiles && attachmentIds.length > 0 ? (

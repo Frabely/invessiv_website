@@ -158,13 +158,14 @@
     "alreadyActive": "Feedbackrunde {number} läuft bereits und ist geöffnet.",
     "statusChanged": "Feedbackrunde {number}: {status}.",
     "resultSaved": "Punkt {number}: {result} gespeichert.",
-    "resultReset": "Punkt {number} ist wieder offen."
+    "resultReset": "Punkt {number} ist wieder offen.",
+    "clarificationAsked": "Punkt {number}: Rückfrage gestellt.",
+    "clarificationClosed": "Punkt {number}: Rückfrage geschlossen."
   },
   "actions": {
     "groupLabel": "Nächster Schritt für diese Runde",
     "in_discussion": "Gespräch anfordern",
     "in_progress": "Umsetzung starten",
-    "open": "Zurück an den Kunden",
     "completed": "Runde abschließen",
     "starting": "Wird gestartet …"
   },
@@ -179,17 +180,6 @@
       "submitting": "Wird angefordert …",
       "required": "Schreib dem Kunden kurz, worum es geht.",
       "conflict": "Die Runde hat sich gerade geändert. Du siehst den aktuellen Stand; dein Text ist noch da."
-    },
-    "return": {
-      "title": "Runde zurück an den Kunden",
-      "description": "Der Kunde kann die Runde wieder bearbeiten und erneut einreichen. Seine Punkte bleiben erhalten, die Sammelaufgabe wird abgebrochen.",
-      "label": "Was soll der Kunde ergänzen?",
-      "hint": "Der Kunde sieht den Hinweis oben in seinem Feedbackbogen.",
-      "placeholder": "Zum Beispiel: Bei Punkt 2 fehlt uns ein Screenshot der Seite, auf der der Fehler auftritt.",
-      "submit": "Zurückgeben",
-      "submitting": "Wird zurückgegeben …",
-      "required": "Schreib dem Kunden, was noch fehlt.",
-      "conflict": "Die Runde hat sich gerade geändert. Du siehst den aktuellen Stand; dein Text ist noch da."
     }
   },
   "textDialog": {
@@ -203,11 +193,13 @@
   "result": {
     "choices": {
       "pending": "Noch offen",
+      "clarification": "Rückfrage",
       "implemented": "Umgesetzt",
       "not_implemented": "Nicht umgesetzt",
       "additional_service": "Zusatzleistung"
     },
     "selectLabel": "Ergebnis für Punkt {number}: {result}",
+    "lockedHint": "Ein Ergebnis wählst du, sobald der Kunde geantwortet hat oder du die Rückfrage schließt.",
     "reply": "Antwort an den Kunden",
     "editReply": "Antwort zu Punkt {number} bearbeiten",
     "note": {
@@ -238,8 +230,50 @@
       "actorRemoved": "Entfernter Kontakt"
     }
   },
+  "clarification": {
+    "ask": "Rückfrage stellen",
+    "askNamed": "Rückfrage stellen (Punkt {number})",
+    "close": "Rückfrage schließen",
+    "closeNamed": "Rückfrage schließen (Punkt {number})",
+    "threadLabel": "Rückfragen zu Punkt {number}",
+    "thread": {
+      "team": "Team",
+      "customer": "Kunde",
+      "byline": "{name} am {date}",
+      "statusOpen": "Rückfrage offen",
+      "statusAnswered": "Beantwortet",
+      "statusClosed": "Geschlossen",
+      "closeNote": "Ohne Antwort geschlossen",
+      "earlier": "Frühere Rückfragen ({count})"
+    },
+    "askDialog": {
+      "title": "Rückfrage zu Punkt {number}",
+      "description": "Der Kunde sieht die Frage sofort am Punkt und bekommt eine Nachricht im Chat. Bis er antwortet oder du die Rückfrage schließt, bekommt der Punkt kein Ergebnis.",
+      "resultNotice": "Das Ergebnis „{result}“ wird zurückgenommen und bleibt im Ergebnisverlauf.",
+      "label": "Deine Frage an den Kunden",
+      "hint": "Der Kunde liest die Frage im Portal.",
+      "placeholder": "Zum Beispiel: Meinst du das Blau im Kopfbereich oder das der Buttons?",
+      "submit": "Rückfrage stellen",
+      "submitting": "Wird gestellt …",
+      "required": "Schreib die Frage an den Kunden.",
+      "conflict": "Der Punkt hat sich gerade geändert. Du siehst den aktuellen Stand; deine Frage ist noch da."
+    },
+    "closeDialog": {
+      "title": "Rückfrage zu Punkt {number} schließen",
+      "description": "Schließ die Rückfrage, wenn sie sich ohne Antwort erledigt hat. Der Kunde sieht deinen Hinweis am Punkt und kann nicht mehr antworten.",
+      "label": "Hinweis an den Kunden",
+      "hint": "Pflicht: kurz, warum die Frage erledigt ist.",
+      "placeholder": "Zum Beispiel: Haben wir im Telefonat geklärt, wir nehmen das Blau der Buttons.",
+      "submit": "Rückfrage schließen",
+      "submitting": "Wird geschlossen …",
+      "required": "Schreib kurz, warum die Rückfrage erledigt ist.",
+      "conflict": "Der Punkt hat sich gerade geändert. Du siehst den aktuellen Stand; dein Hinweis ist noch da."
+    }
+  },
   "progress": {
-    "label": "{rated} von {total} Punkten bewertet"
+    "label": "{done} von {total} Punkten erledigt",
+    "clarifications": "{count} Rückfragen offen",
+    "clarificationsOne": "1 Rückfrage offen"
   },
   "complete": {
     "title": "Feedbackrunde {number} abschließen",
@@ -247,6 +281,8 @@
     "countsLabel": "Ergebnisse dieser Runde",
     "allRated": "Alle {total} Punkte haben ein Ergebnis.",
     "missing": "{count} von {total} Punkten haben noch kein Ergebnis. Bewerte sie, bevor du abschließt.",
+    "clarificationsOpen": "{count} Rückfragen sind noch offen. Warte auf die Antworten des Kunden oder schließ die Rückfragen, bevor du abschließt.",
+    "clarificationsOpenOne": "1 Rückfrage ist noch offen. Warte auf die Antwort des Kunden oder schließ die Rückfrage, bevor du abschließt.",
     "submit": "Runde abschließen",
     "submitting": "Wird abgeschlossen …",
     "cancel": "Abbrechen",
@@ -263,6 +299,7 @@
     "changed": "Die Runde hat sich inzwischen geändert. Du siehst jetzt den aktuellen Stand.",
     "locked": "Die Runde ist abgeschlossen. Ergebnisse lassen sich nicht mehr ändern.",
     "resultsIncomplete": "Bewerte zuerst alle Punkte, dann kannst du abschließen.",
+    "clarificationsOpen": "Es sind noch Rückfragen offen. Warte auf die Antwort oder schließ sie, dann kannst du abschließen.",
     "validation": "Einige Angaben passen nicht. Prüf den Text und versuch es erneut.",
     "internal": "Das hat nicht geklappt. Versuch es noch einmal."
   }

@@ -382,7 +382,11 @@ Neuzuschnitt 29.09.2026 (mit dem Owner abgestimmt); vollständige Spezifikation 
   aktivem Projekt mit Rundenschritt n, das am Feedbackschritt steht, ohne aktive Runde, ohne Abnahme und im Kontingent.
 - Rundennummer fortlaufend je Projekt ab 1. Höchstens eine aktive Runde je Projekt.
 - Status: `open` → `submitted` → (`in_discussion`, überspringbar) → `in_progress` → `completed`; dazu `approved`
-  (Abnahme). Das Team kann eine Runde aus `submitted`/`in_discussion` mit Hinweis an den Kunden zurückgeben.
+  (Abnahme). Seit Task 80 gibt es keine globale Rückgabe an den Kunden mehr; stattdessen **Rückfragen pro Punkt**
+  (Ordner `28-feedback-rueckfragen`): sofort im Portal sichtbar, Antwort direkt am Punkt ohne erneutes Einreichen,
+  höchstens eine offene Rückfrage je Punkt, Abschluss erst ohne offene Rückfragen, „Noch offen“ jederzeit wählbar und
+  eine interne Ergebnishistorie. „Gespräch anfordern“ bleibt. Bereits zurückgegebene Runden bleiben bearbeitbar und
+  lassen sich normal erneut einreichen.
 - Der Kunde sammelt **Feedback-Punkte** (Bereich aus der Seitenliste des Projekts oder „Allgemein“, optional Art
   Änderungswunsch/Fehler, Text, Dateien) in einem **serverseitigen, versionierten Entwurf** und reicht ein; danach ist
   die Runde unveränderlich.
@@ -413,8 +417,13 @@ Neuzuschnitt 29.09.2026 (mit dem Owner abgestimmt); vollständige Spezifikation 
   zurück; offene Rückfragen sperren jede Ergebniswahl und den Rundenabschluss. Wiederholungen werden
   aktionsübergreifend am Punkt erkannt, jede neue Aktion erhöht dessen Version genau einmal. Nur neue Fragen
   und Antworten erzeugen eine Chat-Systemmeldung ohne Frage-/Antworttext. Öffentliche DTOs enthalten keine
-  Autoren- oder Command-Kennungen und keine internen Ergebnisse vor Abschluss. Die UI folgt in Task 80;
-  bis dahin bleibt die globale Rückgabe bestehen. Kein Feature-Schalter und kein Client-Einstieg in Task 79.
+  Autoren- oder Command-Kennungen und keine internen Ergebnisse vor Abschluss. Kein Feature-Schalter.
+- **Rückfragen-UI und Ablösung (Task 80, Ordner 28):** Das Team stellt Rückfragen am Punkt im Cockpit und schließt
+  sie bei Bedarf mit Pflichthinweis; die Ergebniswahl ist dann gesperrt. Der Kunde sieht offene Rückfragen über einen
+  Hinweis mit Sprunglinks und antwortet am Punkt. Fortschritt und Abschlussdialog zählen erledigte Punkte (Ergebnis
+  und keine offene Rückfrage) und offene Rückfragen über dieselbe Ableitung. Die Übergänge
+  `submitted`/`in_discussion` → `open` sind entfernt; ein alter Tab bekommt `INVALID_TRANSITION` mit
+  Neuladehinweis. Status `open`, `customer_notice` und `FeedbackRoundReturned` bleiben für den Bestand.
 
 ### Dateien
 
@@ -803,7 +812,7 @@ Kein Code, aber blockierend, sobald ein Kunde Ordner 12b erreicht:
 | 22a | offen        | `22a-kundenorganisation-und-uebergabe`   | Suche, Filter, Tags und globale Zuständigkeitsübergabe vollständig nutzbar                                                                                                                                                   |  70–110 |   4–6 T. |
 | 23  | offen        | `23-web-ui-abschluss`                    | Website nutzt geteilte Buttons/Formulare in bewusster Web-Ausprägung                                                                                                                                                         |   35–55 |   3–4 T. |
 | 24  | offen        | `24-zustaendigkeitszugriff-absicherung`  | Owner-Wechsel und Übergaben verhindern Zuständigkeiten ohne wirksamen Zugriff                                                                                                                                                |   40–70 |   2–3 T. |
-| 28  | läuft        | `28-feedback-rueckfragen`                | Rückfragen je Feedbackpunkt, „Noch offen“ und interne Ergebnishistorie; 28.1 (Task 78) umgesetzt, 28.2 (Task 79) im Review, 28.3 offen                                                                                       | 150–190 |   6–9 T. |
+| 28  | läuft        | `28-feedback-rueckfragen`                | Rückfragen je Feedbackpunkt, „Noch offen“ und interne Ergebnishistorie; 28.1 (Task 78) umgesetzt, 28.2 (Task 79) und 28.3 (Task 80) im Review                                                                                | 150–190 |   6–9 T. |
 | 31  | offen        | `31-portal-hinweise`                     | Portal-Hinweise für alle Kunden oder einen Kunden als Dashboard-Widget, nur bei aktivem Hinweis sichtbar; zwei Teil-PRs (31.1 Text mit Task 81, 31.2 Screenshot mit Task 82)                                                 | 110–140 |   3–4 T. |
 
 Statuswerte: `offen` → `läuft` → `im Review` → `gemerged`. Beim Merge werden die Tabelle und der

@@ -3,6 +3,8 @@ import {
   FeedbackRoundErrorCode,
 } from "@invessiv/common/constants/crm/errors/feedback-round-error-codes";
 import { HttpMethod } from "@invessiv/common/constants/http/http-methods";
+import type { AskFeedbackItemClarificationRequestDto } from "@invessiv/common/contracts/crm/ask-feedback-item-clarification-request.dto";
+import type { CloseFeedbackItemClarificationRequestDto } from "@invessiv/common/contracts/crm/close-feedback-item-clarification-request.dto";
 import type { ChangeFeedbackRoundStatusRequestDto } from "@invessiv/common/contracts/crm/change-feedback-round-status-request.dto";
 import type { FeedbackRoundItemDto } from "@invessiv/common/contracts/crm/feedback-round-item.dto";
 import type { FeedbackRoundDto } from "@invessiv/common/contracts/crm/feedback-round.dto";
@@ -13,6 +15,8 @@ import { versionedJsonMutationService } from "@/client/shared/versioned-json-mut
 import type { VersionedJsonMutationResult } from "@/common/contracts/client/versioned-json-mutation-result";
 import type { HandOverFeedbackRoundClientResult } from "@/common/contracts/crm/feedback-round-client-result";
 import {
+  crmFeedbackItemClarificationCloseEndpoint,
+  crmFeedbackItemClarificationsEndpoint,
   crmFeedbackItemResultEndpoint,
   crmFeedbackRoundReadEndpoint,
   crmFeedbackRoundStatusEndpoint,
@@ -62,20 +66,62 @@ function changeStatus(
   );
 }
 
+/** Result, question and closure all answer with the whole item, a 409 with the current one. */
+function mutateItem(
+  url: string,
+  method: HttpMethod,
+  request: unknown,
+): Promise<
+  VersionedJsonMutationResult<FeedbackRoundItemDto, FeedbackRoundErrorCode>
+> {
+  return mutate(
+    url,
+    method,
+    request,
+    (payload) => (isItem(payload) ? payload : null),
+    isItem,
+    FEEDBACK_ROUND_ERROR_CODE_VALUES,
+    FeedbackRoundErrorCode.Internal,
+  );
+}
+
 function setItemResult(
   itemId: string,
   request: SetFeedbackItemResultRequestDto,
 ): Promise<
   VersionedJsonMutationResult<FeedbackRoundItemDto, FeedbackRoundErrorCode>
 > {
-  return mutate(
+  return mutateItem(
     crmFeedbackItemResultEndpoint(itemId),
     HttpMethod.Patch,
     request,
-    (payload) => (isItem(payload) ? payload : null),
-    isItem,
-    FEEDBACK_ROUND_ERROR_CODE_VALUES,
-    FeedbackRoundErrorCode.Internal,
+  );
+}
+
+function askClarification(
+  itemId: string,
+  request: AskFeedbackItemClarificationRequestDto,
+): Promise<
+  VersionedJsonMutationResult<FeedbackRoundItemDto, FeedbackRoundErrorCode>
+> {
+  return mutateItem(
+    crmFeedbackItemClarificationsEndpoint(itemId),
+    HttpMethod.Post,
+    request,
+  );
+}
+
+function closeClarification(
+  itemId: string,
+  clarificationId: string,
+  request: CloseFeedbackItemClarificationRequestDto,
+): Promise<
+  VersionedJsonMutationResult<FeedbackRoundItemDto, FeedbackRoundErrorCode>
+> {
+  return mutateItem(
+    crmFeedbackItemClarificationCloseEndpoint(itemId, clarificationId),
+    HttpMethod.Post,
+    request,
   );
 }
 
@@ -131,5 +177,7 @@ export const feedbackRoundsApiService = {
   handOver,
   changeStatus,
   setItemResult,
+  askClarification,
+  closeClarification,
   markRead,
 } as const;

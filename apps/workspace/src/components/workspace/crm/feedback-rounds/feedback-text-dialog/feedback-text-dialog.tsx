@@ -28,12 +28,19 @@ export type FeedbackTextDialogProps<TEntity> = {
   initial: TEntity;
   initialText?: string;
   required: boolean;
+  /** A consequence the team should know before sending, shown above the field. */
+  notice?: string;
   /** Shows the text the way the customer will read it. */
   preview?: (text: string) => ReactNode;
   errorMessage: (code: FeedbackRoundErrorCode) => string;
+  /**
+   * `commandId` names this explicit action: it stays for a retry of the same text and changes
+   * with the text or after a conflict. Writes without command ids ignore it.
+   */
   send: (
     current: TEntity,
     text: string,
+    commandId: string,
   ) => Promise<VersionedJsonMutationResult<TEntity, FeedbackRoundErrorCode>>;
   onCloseAction: () => void;
   onSavedAction: (saved: TEntity) => void;
@@ -49,6 +56,7 @@ export function FeedbackTextDialog<TEntity>({
   initial,
   initialText = "",
   required,
+  notice,
   preview,
   errorMessage,
   send,
@@ -57,10 +65,12 @@ export function FeedbackTextDialog<TEntity>({
 }: FeedbackTextDialogProps<TEntity>) {
   const formId = useId();
   const [text, setText] = useState(initialText);
+  const [commandId, setCommandId] = useState(() => crypto.randomUUID());
   const [missing, setMissing] = useState(false);
   const mutation = useVersionedMutation<TEntity, FeedbackRoundErrorCode>(
     initial,
     onCloseAction,
+    { onConflictAction: () => setCommandId(crypto.randomUUID()) },
   );
 
   async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
@@ -70,7 +80,7 @@ export function FeedbackTextDialog<TEntity>({
     setMissing(required && trimmed === "");
     if (required && trimmed === "") return;
     await mutation.submit(async (current) => {
-      const result = await send(current, trimmed);
+      const result = await send(current, trimmed, commandId);
       if (!result.ok) return result;
       onSavedAction(result.value);
       return { ok: true, current: result.value };
@@ -95,6 +105,11 @@ export function FeedbackTextDialog<TEntity>({
         noValidate
         onSubmit={handleSubmit}
       >
+        {notice ? (
+          <p className={styles.message} data-tone={DialogMessageTone.Info}>
+            {notice}
+          </p>
+        ) : null}
         <FormField
           errorMessage={missing ? texts.required : undefined}
           hint={
@@ -114,6 +129,8 @@ export function FeedbackTextDialog<TEntity>({
             name: "feedback-customer-text",
             onChange: (event) => {
               setText(event.target.value);
+              // A changed text is a new action; only an unchanged retry may reuse the id.
+              setCommandId(crypto.randomUUID());
               if (missing && event.target.value.trim()) setMissing(false);
             },
             placeholder: texts.placeholder,

@@ -4,7 +4,8 @@ import { FeedbackTransitionSide } from "./feedback-transition-sides";
 /**
  * The only source for allowed status changes, read by the server and by the UI. `from: null` is the
  * handover, which creates the round. Conditions and side effects per entry are documented in
- * `plans/crm/16-feedbackrunden/58-datenmodell-und-fundament.md`.
+ * `plans/crm/16-feedbackrunden/58-datenmodell-und-fundament.md`. Since Task 80 the team no longer
+ * hands a round back; questions per item replace it (`plans/crm/28-feedback-rueckfragen/`).
  */
 export const FEEDBACK_ROUND_TRANSITIONS = [
   {
@@ -35,16 +36,6 @@ export const FEEDBACK_ROUND_TRANSITIONS = [
   {
     from: FeedbackRoundStatus.InDiscussion,
     to: FeedbackRoundStatus.InProgress,
-    side: FeedbackTransitionSide.Internal,
-  },
-  {
-    from: FeedbackRoundStatus.Submitted,
-    to: FeedbackRoundStatus.Open,
-    side: FeedbackTransitionSide.Internal,
-  },
-  {
-    from: FeedbackRoundStatus.InDiscussion,
-    to: FeedbackRoundStatus.Open,
     side: FeedbackTransitionSide.Internal,
   },
   {

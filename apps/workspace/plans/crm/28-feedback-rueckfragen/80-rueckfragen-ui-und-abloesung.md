@@ -222,16 +222,62 @@ apps/workspace/plans/crm/28-feedback-rueckfragen/README.md   Status, Teilschritt
 
 ## Abnahme
 
-- [ ] Kernablauf aus README §5 per E2E grün. Wird der Lauf blockiert (z. B. Blob-OIDC), steht das im PR, und der
+- [x] Kernablauf aus README §5 per E2E grün. Wird der Lauf blockiert (z. B. Blob-OIDC), steht das im PR, und der
       Ablauf wird manuell geprüft.
-- [ ] Keine vorzeitige Veröffentlichung interner Ergebnisse oder der Historie (Portal-Read, Portal-Antwort,
+- [x] Keine vorzeitige Veröffentlichung interner Ergebnisse oder der Historie (Portal-Read, Portal-Antwort,
       Portal-Konflikt).
-- [ ] Abschluss bei offenen Punkten oder Rückfragen gesperrt; andere Punkte bleiben bearbeitbar.
+- [x] Abschluss bei offenen Punkten oder Rückfragen gesperrt; andere Punkte bleiben bearbeitbar.
 - [ ] A11y-Smoke: Tastaturbedienung von Dialogen, Disclosure, Sprunglinks und Antwortformular. Fokus bleibt am
       betroffenen Punkt. Status steht als Text. Sichtbarer Fokus überall.
 - [ ] Beide Themes, mobile und Desktop, im Cockpit und im Portal geprüft.
-- [ ] Keine toten Buttons, keine verwaisten Rückgabe-Bausteine. Historische Leser und Übersetzungen bleiben erhalten.
-- [ ] `00-entscheidungen.md`, `core-features.md`, die Scope-`AGENTS.md` und die README sind synchron.
-- [ ] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm db:smoke:crm`, `pnpm --filter @invessiv/workspace build` grün.
+- [x] Keine toten Buttons, keine verwaisten Rückgabe-Bausteine. Historische Leser und Übersetzungen bleiben erhalten.
+- [x] `00-entscheidungen.md`, `core-features.md`, die Scope-`AGENTS.md` und die README sind synchron.
+- [x] `pnpm -r lint`, `pnpm -r typecheck`, `pnpm -r test`, `pnpm db:smoke:crm`, `pnpm --filter @invessiv/workspace build` grün.
 - [ ] Der PR dokumentiert Migrationen (aus 78/79), Security/Privacy, Monitoring, Rollback (README §8.2) und
       Screenshots.
+
+## Umsetzungsstand (19.10.2026)
+
+Status: **im Review**, ungecommittet auf `feat/crm-feedback-rueckfragen`. T1–T6 sind umgesetzt; keine Migration,
+keine neuen Dependencies oder Env-Variablen.
+
+- **Client und Pfade (T1):** `FeedbackApiPath` um `clarifications`, `close`, `answer`; Builder
+  `crmFeedbackItemClarificationsEndpoint`, `crmFeedbackItemClarificationCloseEndpoint`,
+  `portalFeedbackClarificationAnswerEndpoint`. `feedbackRoundsApiService.askClarification/closeClarification` teilen
+  sich mit `setItemResult` den Helfer `mutateItem`; `portalFeedbackApiService.answerClarification` liest einen Punkt
+  (`PortalFeedbackItemClientResult`, Konflikt und `clarification_not_open` mit `current`).
+- **Gemeinsamer Verlauf (T2):** `components/shared/feedback/feedback-clarification-thread` mit benanntem
+  Labels-Contract (`common/contracts/feedback/`), Status-Badges und `FeedbackClarificationPart`. Die offene und die
+  jüngste abgeschlossene Rückfrage stehen offen, ältere liegen hinter „Frühere Rückfragen (n)“.
+- **Cockpit (T3):** `feedback-clarification-actions` (Stellen/Schließen), gesperrtes Ergebnis-Select mit Grund,
+  Fortschritt und Abschluss über den neuen Helfer `summarizeFeedbackProcessing`, Fehler `clarificationsOpen`.
+  `FeedbackTextDialog` erzeugt die `commandId` jetzt selbst (Retry behält sie, Textänderung und Konflikt erneuern sie)
+  und kann einen Hinweis zeigen (Rücknahme eines Ergebnisses).
+- **Portal (T4):** Hinweis mit Sprunglinks (`feedback-clarification-notice`, nutzt `FeedbackStateNotice`),
+  Antwortformular (`feedback-clarification-answer`), Hook `useFeedbackClarificationAnswers`,
+  `canAnswerFeedbackClarification` und `feedbackItemDomId`. **Abweichung:** Entwürfe liegen je Rückfragen-ID statt
+  je Punkt-ID, damit eine Antwort nie einer neueren Frage zugeordnet wird; eine nicht mehr offene Antwort bleibt
+  lesbar stehen. Jedes Antwortfeld bekommt eine eigene Control-ID, weil `FormField` sonst die ID aus `name` ableitet
+  und Labels mehrerer Felder auf dasselbe Feld zeigten.
+- **Ablösung (T5):** Übergänge `submitted`/`in_discussion` → `open`, `returnToCustomer`, `cancelForReturn`,
+  `actions.open` und `notice.return` entfernt. Das Schema nimmt `to: open` als dokumentierten Kompatibilitätszweig
+  weiter an; der Command antwortet `INVALID_TRANSITION`. Integrationstests stellen Altrunden über
+  `returnRoundAsLegacy` (Fixture) her und prüfen erneutes Einreichen samt wiedergeöffneter Sammelaufgabe.
+- **E2E und Doku (T6):** Der frühere Rückgabe-Test ist in „processes round 1 and the customer submits round 2“ und den
+  Kernablauf „clarifies a point of round 2, rates it, resets and completes, then approves“ geteilt (Frage → Sprung
+  mit Fokus → Antwort im Portal → Ergebnis → „Noch offen“ → erneut → Abschluss → Abnahme; vor dem Abschluss kein
+  Ergebnis im Portal). Screenshots beider Themes und Breiten liegen als Testartefakte vor.
+
+**Ausgeführte Qualitäts-Gates:**
+
+| Prüfung                                             | Ergebnis                                                                          |
+| --------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `pnpm -r lint`                                      | grün; nur die bestehenden Warnungen in `apps/web` und im `update-project`-Test    |
+| `pnpm -r typecheck`                                 | grün                                                                              |
+| `pnpm -r test`                                      | grün; Workspace 641 Dateien / 4.030 Tests, DB-Tests im Standardmodus übersprungen |
+| `pnpm db:smoke:crm`                                 | grün; 378 Constraint-Prüfungen, 45 Integrationsdateien / 505 Tests (Development)  |
+| `pnpm --filter @invessiv/workspace build`           | grün; bestehende Turbopack-Warnung                                                |
+| `pnpm --filter @invessiv/workspace test:e2e:portal` | grün; 22 Tests inklusive Kernablauf                                               |
+
+**Offen:** manuelle Sichtprüfung (beide Themes, mobil/Desktop) und Tastatur-Smoke von Hand; der PR mit
+Security/Privacy, Monitoring, Rollback (README §8.2) und Screenshots.

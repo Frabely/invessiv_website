@@ -25,6 +25,11 @@
   font-size: var(--font-size-ui-sm);
 }
 
+.open[data-state="clarification"] {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
 .reply {
   display: grid;
   justify-items: start;

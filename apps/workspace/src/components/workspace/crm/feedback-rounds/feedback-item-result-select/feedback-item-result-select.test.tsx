@@ -44,3 +44,21 @@ it("does not send an action when pending is already selected", () => {
   );
   expect(change).not.toHaveBeenCalled();
 });
+
+it("is locked with the question status and the reason while a clarification is open", () => {
+  const change = vi.fn();
+  render(
+    <FeedbackItemResultSelect
+      content={content.result}
+      locked
+      number={2}
+      result={null}
+      onChangeAction={change}
+    />,
+  );
+  const select = screen.getByRole("button");
+  expect(select).toBeDisabled();
+  expect(select).toHaveTextContent(content.result.choices.clarification);
+  expect(select).toHaveAccessibleDescription(content.result.lockedHint);
+  expect(change).not.toHaveBeenCalled();
+});

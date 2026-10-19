@@ -9,6 +9,7 @@ import {
 
 let fixture: PortalE2eFixture;
 let roundOneId: string;
+let roundTwoId: string;
 
 function feedbackPath(customerId: string, projectId: string) {
   return `/de/portal/${customerId}/projects/${projectId}/feedback`;
@@ -31,7 +32,8 @@ async function handOver(page: Page, projectId: string) {
 
 /**
  * Handover, two contacts on one draft, submission, the internal processing with results, the next
- * round, a handback, the approval after the last round, and the approval without changes.
+ * round, a question on a point answered in the portal, reset and completion, the approval after the
+ * last round, and the approval without changes.
  */
 test.describe.serial("portal feedback", () => {
   test.use({ storageState: portalE2ePaths.managerState });
@@ -193,7 +195,7 @@ test.describe.serial("portal feedback", () => {
     await expect(page.getByText(/Eingereicht von/)).toBeVisible();
   });
 
-  test("processes round 1, hands over round 2, takes it back and approves after it", async ({
+  test("processes round 1 and the customer submits round 2", async ({
     page,
     browser,
   }, testInfo) => {
@@ -241,7 +243,7 @@ test.describe.serial("portal feedback", () => {
       await page
         .getByRole("option", { name: "Umgesetzt", exact: true })
         .click();
-      await expect(page.getByText("1 von 2 Punkten bewertet")).toBeVisible();
+      await expect(page.getByText("1 von 2 Punkten erledigt")).toBeVisible();
       await page
         .getByRole("button", { name: "Ergebnis für Punkt 2: Noch offen" })
         .click();
@@ -252,7 +254,7 @@ test.describe.serial("portal feedback", () => {
         .fill(`Gern als Zusatzleistung ${suffix}`);
       await reply.getByRole("button", { name: "Ergebnis speichern" }).click();
       await expect(reply).toBeHidden();
-      await expect(page.getByText("2 von 2 Punkten bewertet")).toBeVisible();
+      await expect(page.getByText("2 von 2 Punkten erledigt")).toBeVisible();
 
       // Reset by keyboard, inspect the retained history, then rate again before completing.
       const firstResult = page.getByRole("button", {
@@ -266,7 +268,7 @@ test.describe.serial("portal feedback", () => {
       });
       await pending.focus();
       await pending.press("Enter");
-      await expect(page.getByText("1 von 2 Punkten bewertet")).toBeVisible();
+      await expect(page.getByText("1 von 2 Punkten erledigt")).toBeVisible();
       const history = page.getByRole("button", {
         name: "Ergebnisverlauf (2)",
         exact: true,
@@ -309,7 +311,7 @@ test.describe.serial("portal feedback", () => {
       await page
         .getByRole("option", { name: "Umgesetzt", exact: true })
         .click();
-      await expect(page.getByText("2 von 2 Punkten bewertet")).toBeVisible();
+      await expect(page.getByText("2 von 2 Punkten erledigt")).toBeVisible();
 
       await page.getByRole("button", { name: "Runde abschließen" }).click();
       const complete = page.getByRole("dialog", {
@@ -333,7 +335,7 @@ test.describe.serial("portal feedback", () => {
       await handover.getByRole("button", { name: "Runde übergeben" }).click();
       const secondResponse = await handedOver;
       expect(secondResponse.ok()).toBe(true);
-      const roundTwoId = ((await secondResponse.json()) as { id: string }).id;
+      roundTwoId = ((await secondResponse.json()) as { id: string }).id;
 
       const first = (await (
         await page.request.get(
@@ -383,84 +385,168 @@ test.describe.serial("portal feedback", () => {
           .getByRole("main")
           .getByText("Eingereicht – wir sichten dein Feedback"),
       ).toBeVisible();
+    } finally {
+      await contact.close();
+    }
+  });
 
-      // Hand round 2 back: the note shows up, the points stay editable.
-      await page.goto(`${cockpit}&feedbackRound=${roundTwoId}`);
-      await page.getByRole("button", { name: "Zurück an den Kunden" }).click();
-      const back = page.getByRole("dialog", {
-        name: "Runde zurück an den Kunden",
-      });
-      await back
-        .getByLabel(/Was soll der Kunde ergänzen/)
-        .fill(`Welche Adresse soll rein? ${suffix}`);
-      await back.getByRole("button", { name: "Zurückgeben" }).click();
-      await expect(back).toBeHidden();
-      await b.reload();
-      await expect(
-        b.getByRole("heading", {
-          name: "Wir haben dir die Runde zurückgegeben",
-        }),
-      ).toBeVisible();
-      await expect(
-        b.getByRole("main").getByText(`Welche Adresse soll rein? ${suffix}`),
-      ).toBeVisible();
-      await expect(b.getByRole("textbox").first()).toHaveValue(
-        `Impressum ergänzen ${suffix}`,
-      );
-      await b.getByRole("button", { name: "Feedback einreichen" }).click();
-      await b
-        .getByRole("dialog", { name: "Feedback einreichen?" })
-        .getByRole("button", { name: "Jetzt einreichen" })
-        .click();
-      await expect(
-        b
-          .getByRole("main")
-          .getByText("Eingereicht – wir sichten dein Feedback"),
-      ).toBeVisible();
-
-      // The team finishes round 2 through the API.
+  test("clarifies a point of round 2, rates it, resets and completes, then approves", async ({
+    page,
+    browser,
+  }, testInfo) => {
+    const suffix = Date.now().toString(36);
+    const cockpit = `/de/crm?cockpit=${fixture.feedbackCustomer}&project=${fixture.feedbackProject}`;
+    const url = feedbackPath(fixture.feedbackCustomer, fixture.feedbackProject);
+    const contact = await browser.newContext({
+      storageState: portalE2ePaths.feedbackContactState,
+    });
+    try {
+      const b = await contact.newPage();
       const readRound = async () =>
         (await (
           await page.request.get(
             `/api/workspace/crm/feedback-rounds/${roundTwoId}`,
           )
         ).json()) as {
+          status: string;
           version: number;
-          items: { id: string; version: number }[];
+          items: { id: string; version: number; result: string | null }[];
         };
-      let second = await readRound();
-      expect(
-        (
-          await page.request.post(
-            `/api/workspace/crm/feedback-rounds/${roundTwoId}/status`,
-            { data: { version: second.version, to: "in_progress" } },
-          )
-        ).ok(),
-      ).toBe(true);
-      second = await readRound();
-      expect(
-        (
-          await page.request.patch(
-            `/api/workspace/crm/feedback-round-items/${second.items[0].id}/result`,
-            {
-              data: { version: second.items[0].version, result: "implemented" },
-            },
-          )
-        ).ok(),
-      ).toBe(true);
-      expect(
-        (
-          await page.request.post(
-            `/api/workspace/crm/feedback-rounds/${roundTwoId}/status`,
-            { data: { version: second.version, to: "completed" } },
-          )
-        ).ok(),
-      ).toBe(true);
+      const itemId = (await readRound()).items[0].id;
+
+      // The team asks a question on the point; the result stays locked until it is answered.
+      await page.goto(`${cockpit}&feedbackRound=${roundTwoId}`);
+      await expect(
+        page.getByRole("button", { name: /Zurück an den Kunden/ }),
+      ).toHaveCount(0);
+      await page
+        .getByRole("button", { name: "Rückfrage stellen (Punkt 1)" })
+        .click();
+      const ask = page.getByRole("dialog", { name: "Rückfrage zu Punkt 1" });
+      await ask
+        .getByLabel(/Deine Frage an den Kunden/)
+        .fill(`Welche Adresse soll rein? ${suffix}`);
+      await ask.getByRole("button", { name: "Rückfrage stellen" }).click();
+      await expect(ask).toBeHidden();
+      await expect(
+        page.getByRole("button", { name: "Rückfrage schließen (Punkt 1)" }),
+      ).toBeFocused();
+      await expect(
+        page.getByRole("button", { name: /Ergebnis für Punkt 1: Rückfrage/ }),
+      ).toBeDisabled();
+      await expect(page.getByText("1 Rückfrage offen")).toBeVisible();
+
+      // The customer sees the question during the running round, jumps to it and answers.
+      await b.goto(url);
+      await expect(
+        b.getByRole("heading", { name: "Wir haben eine Rückfrage an dich" }),
+      ).toBeVisible();
+      await expect(
+        b.getByRole("main").getByText(`Welche Adresse soll rein? ${suffix}`),
+      ).toBeVisible();
+      await b
+        .getByRole("navigation", { name: "Punkte mit Rückfrage" })
+        .getByRole("link", { name: "Punkt 1" })
+        .click();
+      await expect(b.locator(`#feedback-item-${itemId}:focus`)).toHaveCount(1);
+      for (const theme of ["dark", "light"]) {
+        await b.evaluate((value) => {
+          document.documentElement.dataset.theme = value;
+        }, theme);
+        for (const viewport of [
+          { width: 1440, height: 1000 },
+          { width: 390, height: 844 },
+        ]) {
+          await b.setViewportSize(viewport);
+          expect(
+            await b.evaluate(
+              () => document.documentElement.scrollWidth <= window.innerWidth,
+            ),
+          ).toBe(true);
+          // Kept as artifacts for the manual visual review; only the overflow check above asserts.
+          await b.screenshot({
+            path: testInfo.outputPath(
+              `portal-clarification-${theme}-${viewport.width}.png`,
+            ),
+          });
+        }
+      }
+      await b.setViewportSize({ width: 1440, height: 1000 });
+      const answered = b.waitForResponse(
+        (response) =>
+          response.url().includes(`/items/${itemId}/clarifications/`) &&
+          response.request().method() === "POST",
+      );
+      await b
+        .getByLabel(/Deine Antwort auf Punkt 1/)
+        .fill(`Musterstraße 1 ${suffix}`);
+      await b.getByRole("button", { name: "Antwort senden" }).click();
+      expect((await answered).ok()).toBe(true);
+      await expect(b.locator(`#feedback-item-${itemId}:focus`)).toHaveCount(1);
+      await expect(
+        b.getByRole("main").getByText("Beantwortet", { exact: true }),
+      ).toBeVisible();
+      await expect(b.getByRole("textbox")).toHaveCount(0);
+      // Answering never resubmits: the round stays where it was.
+      await expect(
+        b
+          .getByRole("main")
+          .getByText("Eingereicht – wir sichten dein Feedback"),
+      ).toBeVisible();
+
+      // The team rates, resets to pending, rates again and completes the round.
+      await page.reload();
+      await expect(page.getByText(`Musterstraße 1 ${suffix}`)).toBeVisible();
+      await page.getByRole("button", { name: "Umsetzung starten" }).click();
+      await page
+        .getByRole("button", { name: "Ergebnis für Punkt 1: Noch offen" })
+        .click();
+      await page
+        .getByRole("option", { name: "Umgesetzt", exact: true })
+        .click();
+      await expect(page.getByText("1 von 1 Punkten erledigt")).toBeVisible();
+
+      // Before the completion the customer still sees no result.
+      await b.reload();
+      await expect(
+        b
+          .getByRole("list", { name: "Deine Feedbackpunkte" })
+          .getByText("Umgesetzt", { exact: true }),
+      ).toHaveCount(0);
+
+      await page
+        .getByRole("button", { name: "Ergebnis für Punkt 1: Umgesetzt" })
+        .click();
+      await page
+        .getByRole("option", { name: "Noch offen", exact: true })
+        .click();
+      await expect(page.getByText("0 von 1 Punkten erledigt")).toBeVisible();
+      await page
+        .getByRole("button", { name: "Ergebnis für Punkt 1: Noch offen" })
+        .click();
+      await page
+        .getByRole("option", { name: "Umgesetzt", exact: true })
+        .click();
+      await expect(page.getByText("1 von 1 Punkten erledigt")).toBeVisible();
+      await page.getByRole("button", { name: "Runde abschließen" }).click();
+      const complete = page.getByRole("dialog", {
+        name: "Feedbackrunde 2 abschließen",
+      });
+      await complete.getByRole("button", { name: "Runde abschließen" }).click();
+      await expect(
+        page.getByRole("dialog", { name: "Feedbackrunde 2 ist abgeschlossen" }),
+      ).toBeVisible();
+      expect((await readRound()).status).toBe("completed");
 
       // After the last round the customer approves, only with the confirmation.
       await b.goto(url);
       await expect(
         b.getByRole("heading", { name: "Die letzte Runde ist umgesetzt" }),
+      ).toBeVisible();
+      await expect(
+        b
+          .getByRole("list", { name: "Deine Feedbackpunkte" })
+          .getByText("Umgesetzt", { exact: true }),
       ).toBeVisible();
       await b.getByRole("button", { name: "Projekt abnehmen" }).click();
       const approval = b.getByRole("dialog", { name: "Projekt abnehmen?" });

@@ -32,6 +32,11 @@
   line-height: 1.5;
 }
 
+.message[data-tone="info"] {
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-surface-2);
+}
+
 .message[data-tone="conflict"] {
   border: 1px solid
     color-mix(in srgb, var(--color-accent-warm) 40%, transparent);

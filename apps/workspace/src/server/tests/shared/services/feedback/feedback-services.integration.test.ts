@@ -158,7 +158,7 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       await f.cleanup();
     }, 60_000);
 
-    it("creates the collecting task once and reopens it on the next submission", async () => {
+    it("creates the collecting task once and reopens a cancelled one on the next submission", async () => {
       const target = await round(
         await project(),
         FeedbackRoundStatus.Submitted,
@@ -181,14 +181,12 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       });
       expect(created.title).toContain("1");
 
+      // A round handed back before Task 80 left its task cancelled.
       await f
         .database()
-        .transaction((tx) =>
-          feedbackRoundTaskService.cancelForReturn(tx, target, f.actor()),
-        );
-      expect((await roundTasks(target.id))[0].status).toBe(
-        TaskStatus.Cancelled,
-      );
+        .update(tasks)
+        .set({ status: TaskStatus.Cancelled })
+        .where(eq(tasks.id, created.id));
 
       await f
         .database()

@@ -8,8 +8,7 @@
 
 /* The same card as in the sheet, without controls: reading needs no inputs. */
 .item {
-  display: grid;
-  gap: 0.85rem;
+  container-type: inline-size;
   min-width: 0;
   padding: 1rem 1.15rem;
   border: 1px solid var(--color-border);
@@ -17,13 +16,35 @@
   background: var(--color-surface-1);
 }
 
+.body {
+  display: grid;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.point {
+  min-width: 0;
+}
+
 .number {
   color: var(--color-text);
   font-weight: 700;
+  scroll-margin-top: 1rem;
 }
 
-/* Our answer to the point closes the card, set apart like a reply below a message. */
+/* Jump links and a sent answer move the focus here, so it has to be visible. */
+.number:focus {
+  border-radius: 4px;
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+/* On a narrow card the questions and our answer follow the point, set apart like a reply. */
+.clarifications,
 .result {
+  display: grid;
+  gap: 0.75rem;
+  min-width: 0;
   padding-top: 0.85rem;
   border-top: 1px solid var(--color-border);
 }
@@ -32,6 +53,29 @@
   margin: 0;
   color: var(--color-danger);
   font-size: var(--font-size-ui-xs);
+}
+
+/*
+ * A wide card puts the questions beside the point, so what was asked stands next to what the
+ * customer wrote. Our answer on a finished round still closes the whole card.
+ */
+@container (min-width: 44rem) {
+  .body[data-layout="split"] {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    column-gap: 1.25rem;
+  }
+
+  .body[data-layout="split"] .clarifications {
+    padding-top: 0;
+    padding-left: 1.25rem;
+    border-top: 0;
+    border-left: 1px solid var(--color-border);
+  }
+
+  .body[data-layout="split"] .result {
+    grid-column: 1 / -1;
+  }
 }
 
 @media (max-width: 30rem) {

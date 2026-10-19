@@ -22,7 +22,8 @@ const S = FeedbackRoundStatus;
 const { Internal, Customer } = FeedbackTransitionSide;
 
 // Written out from the table in plans/crm/16-feedbackrunden/58-datenmodell-und-fundament.md,
-// independently of FEEDBACK_ROUND_TRANSITIONS, so a changed constant fails here.
+// independently of FEEDBACK_ROUND_TRANSITIONS, so a changed constant fails here. Task 80 removed the
+// internal handback from submitted and in_discussion back to open.
 const ALLOWED = new Set([
   `null>${S.Open}>${Internal}`,
   `${S.Open}>${S.Submitted}>${Customer}`,
@@ -30,8 +31,6 @@ const ALLOWED = new Set([
   `${S.Submitted}>${S.InDiscussion}>${Internal}`,
   `${S.Submitted}>${S.InProgress}>${Internal}`,
   `${S.InDiscussion}>${S.InProgress}>${Internal}`,
-  `${S.Submitted}>${S.Open}>${Internal}`,
-  `${S.InDiscussion}>${S.Open}>${Internal}`,
   `${S.InProgress}>${S.Completed}>${Internal}`,
   `${S.Completed}>${S.Approved}>${Customer}`,
 ]);
@@ -51,6 +50,11 @@ describe("canTransition", () => {
     expect(canTransition(from, to, side)).toBe(
       ALLOWED.has(`${from}>${to}>${side}`),
     );
+  });
+
+  it("no longer lets the team hand a submitted round back to the customer", () => {
+    expect(canTransition(S.Submitted, S.Open, Internal)).toBe(false);
+    expect(canTransition(S.InDiscussion, S.Open, Internal)).toBe(false);
   });
 
   it("never leaves an approved round", () => {

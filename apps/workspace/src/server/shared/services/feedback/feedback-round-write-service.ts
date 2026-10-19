@@ -204,39 +204,6 @@ async function startImplementation(
   return changed;
 }
 
-/**
- * Hands the round back to the customer: items stay, the submission stamp goes, the collecting task
- * is cancelled until the next submission reopens it. `read_at` resets, so a resubmission shows up
- * as new again.
- */
-async function returnToCustomer(
-  tx: ContactDatabaseTransaction,
-  round: FeedbackRoundRow,
-  context: FeedbackMemberWrite & { customerNotice: string },
-): Promise<FeedbackRoundRow> {
-  const changed = await writeRound(tx, round, {
-    status: FeedbackRoundStatus.Open,
-    customer_notice: context.customerNotice,
-    submitted_at: null,
-    submitted_by_portal_membership_id: null,
-    read_at: null,
-  });
-  await feedbackRoundTaskService.cancelForReturn(tx, changed, context.actor);
-  await feedbackRoundActivityService.recordStatusChange(
-    tx,
-    changed,
-    { type: ActorType.User, userId: context.actor.userId },
-    { previous: round.status, next: changed.status },
-  );
-  await announce(
-    tx,
-    changed,
-    context.projectTitle,
-    SystemMessageKey.FeedbackRoundReturned,
-  );
-  return changed;
-}
-
 /** The handler has checked that every item has a result; the task is done in the same transaction. */
 async function complete(
   tx: ContactDatabaseTransaction,
@@ -292,6 +259,5 @@ export const feedbackRoundWriteService = {
   approve,
   requestDiscussion,
   startImplementation,
-  returnToCustomer,
   complete,
 } as const;

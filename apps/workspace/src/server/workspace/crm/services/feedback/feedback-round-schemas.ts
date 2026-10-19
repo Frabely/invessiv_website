@@ -40,17 +40,19 @@ const areaOptions = z
   .max(FEEDBACK_LIMITS.areasPerProject)
   .refine((areas) => new Set(areas).size === areas.length);
 
-// A handback without a reason leaves the customer guessing; start and completion have nothing to say.
+// A call may come with a note for the customer; start and completion have nothing to say.
 const changeStatus = z.discriminatedUnion("to", [
   z.strictObject({
     version,
     to: z.literal(FeedbackRoundStatus.InDiscussion),
     customerNotice: optionalText(FEEDBACK_LIMITS.noteMaxLength),
   }),
+  // Legacy handback from a tab opened before Task 80: still parsed, so the command answers with
+  // INVALID_TRANSITION and a reload hint instead of a bare validation error. Remove in a cleanup.
   z.strictObject({
     version,
     to: z.literal(FeedbackRoundStatus.Open),
-    customerNotice: z.string().trim().min(1).max(FEEDBACK_LIMITS.noteMaxLength),
+    customerNotice: optionalText(FEEDBACK_LIMITS.noteMaxLength),
   }),
   z.strictObject({
     version,

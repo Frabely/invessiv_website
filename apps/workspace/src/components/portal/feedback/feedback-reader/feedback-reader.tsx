@@ -134,12 +134,14 @@ export function FeedbackReader({
     >
       {shown ? (
         <FeedbackRoundStep
+          canSubmit={feedback.canSubmit}
           content={content}
           customerId={customerId}
           filesContent={filesContent}
           headingRef={navigation.headingRef}
           key={shown.id}
           locale={locale}
+          onAnnounceAction={onAnnounceAction}
           notice={
             <FeedbackRoundNotice
               contact={feedback.contact}

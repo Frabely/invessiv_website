@@ -4,6 +4,7 @@ export const FeedbackProcessingError = {
   Changed: "changed",
   Locked: "locked",
   ResultsIncomplete: "resultsIncomplete",
+  ClarificationsOpen: "clarificationsOpen",
   Validation: "validation",
   Internal: "internal",
 } as const;
@@ -16,6 +17,7 @@ export const FEEDBACK_PROCESSING_ERROR_VALUES = [
   FeedbackProcessingError.Changed,
   FeedbackProcessingError.Locked,
   FeedbackProcessingError.ResultsIncomplete,
+  FeedbackProcessingError.ClarificationsOpen,
   FeedbackProcessingError.Validation,
   FeedbackProcessingError.Internal,
 ] as const;

@@ -116,10 +116,12 @@ describe("feedbackRoundSchemas.changeStatus", () => {
     ).toMatchObject({ customerNotice: null });
   });
 
-  it("requires a notice for the handback and refuses one elsewhere", () => {
+  it("still parses the legacy handback of old tabs so the command can refuse it", () => {
     const open = { version: 3, to: FeedbackRoundStatus.Open };
-    expect(parse(open).success).toBe(false);
-    expect(parse({ ...open, customerNotice: "  " }).success).toBe(false);
+    expect(parse(open).success).toBe(true);
+    expect(parse({ ...open, customerNotice: "  " }).data).toMatchObject({
+      customerNotice: null,
+    });
     expect(parse({ ...open, customerNotice: "Bitte ergänzen" }).success).toBe(
       true,
     );

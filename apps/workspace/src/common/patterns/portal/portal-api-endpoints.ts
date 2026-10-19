@@ -139,6 +139,13 @@ export function portalFeedbackItemFileEndpoint(
   return `${portalFeedbackItemFilesEndpoint(customerId, roundId, itemId)}/${encodeURIComponent(fileId)}`;
 }
 
+export function portalFeedbackClarificationAnswerEndpoint(
+  customerId: string,
+  target: { roundId: string; itemId: string; clarificationId: string },
+): string {
+  return `${portalFeedbackRoundEndpoint(customerId, target.roundId)}/${FeedbackApiPath.Items}/${encodeURIComponent(target.itemId)}/${FeedbackApiPath.Clarifications}/${encodeURIComponent(target.clarificationId)}/${FeedbackApiPath.Answer}`;
+}
+
 function portalOnboardingFormEndpoint(customerId: string, formId: string) {
   return `${WorkspaceApiEndpoint.Portal}/${encodeURIComponent(customerId)}/${PortalOnboardingApiPath.Onboarding}/${encodeURIComponent(formId)}`;
 }

@@ -5,15 +5,19 @@ import {
   PortalFeedbackErrorCode,
 } from "@invessiv/common/constants/portal/portal-feedback-error-codes";
 import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
+import type { AnswerPortalFeedbackClarificationRequestDto } from "@invessiv/common/contracts/portal/answer-portal-feedback-clarification-request.dto";
+import type { PortalFeedbackItemDto } from "@invessiv/common/contracts/portal/portal-feedback-item.dto";
 import type { PortalFeedbackRoundDto } from "@invessiv/common/contracts/portal/portal-feedback-round.dto";
 import type { SavePortalFeedbackDraftRequestDto } from "@invessiv/common/contracts/portal/save-portal-feedback-draft-request.dto";
 import { versionedJsonMutationService } from "@/client/shared/versioned-json-mutation-service";
 import type { PortalFeedbackAttachmentClientResult } from "@/common/contracts/portal/portal-feedback-attachment-client-result";
 import type { PortalFeedbackClientFailure } from "@/common/contracts/portal/portal-feedback-client-failure";
 import type { PortalFeedbackRoundClientResult } from "@/common/contracts/portal/portal-feedback-client-result";
+import type { PortalFeedbackItemClientResult } from "@/common/contracts/portal/portal-feedback-item-client-result";
 import { readApiErrorCode } from "@/common/patterns/client/read-api-error-code";
 import {
   portalFeedbackApproveEndpoint,
+  portalFeedbackClarificationAnswerEndpoint,
   portalFeedbackDraftEndpoint,
   portalFeedbackItemFileEndpoint,
   portalFeedbackItemFilesEndpoint,
@@ -30,6 +34,15 @@ function isRound(value: unknown): value is PortalFeedbackRoundDto {
     typeof value.id === "string" &&
     typeof value.version === "number" &&
     Array.isArray(value.items)
+  );
+}
+
+function isItem(value: unknown): value is PortalFeedbackItemDto {
+  return (
+    isRecord(value) &&
+    typeof value.id === "string" &&
+    typeof value.version === "number" &&
+    Array.isArray(value.clarifications)
   );
 }
 
@@ -162,10 +175,54 @@ async function detachFile(
   );
 }
 
+function toItemResult(
+  response: Response | null,
+): PortalFeedbackItemClientResult {
+  if (response?.ok)
+    return {
+      ok: true,
+      item: isItem(response.payload) ? response.payload : null,
+    };
+  const conflict = response
+    ? versionedJsonMutationService.readVersionConflict(response, isItem)
+    : null;
+  if (conflict)
+    return {
+      ok: false,
+      code: ConcurrencyErrorCode.VersionConflict,
+      current: conflict,
+    };
+  const failure = readFailure(response);
+  const current =
+    response && isRecord(response.payload) ? response.payload.current : null;
+  if (
+    failure.code === PortalFeedbackErrorCode.ClarificationNotOpen &&
+    isItem(current)
+  )
+    return { ok: false, code: failure.code, current };
+  return failure;
+}
+
+/** Answers exactly this question; a newer question on the same point never gets the text. */
+async function answerClarification(
+  customerId: string,
+  target: { roundId: string; itemId: string; clarificationId: string },
+  request: AnswerPortalFeedbackClarificationRequestDto,
+): Promise<PortalFeedbackItemClientResult> {
+  return toItemResult(
+    await send(
+      portalFeedbackClarificationAnswerEndpoint(customerId, target),
+      HttpMethod.Post,
+      request,
+    ),
+  );
+}
+
 export const portalFeedbackApiService = {
   saveDraft,
   submit,
   approve,
   attachFile,
   detachFile,
+  answerClarification,
 } as const;

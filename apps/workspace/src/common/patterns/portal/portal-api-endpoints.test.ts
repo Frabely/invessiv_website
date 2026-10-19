@@ -23,6 +23,7 @@ import {
   portalServiceRequestWithdrawEndpoint,
   portalFileUploadsEndpoint,
   portalFeedbackApproveEndpoint,
+  portalFeedbackClarificationAnswerEndpoint,
   portalFeedbackDraftEndpoint,
   portalFeedbackItemFileEndpoint,
   portalFeedbackItemFilesEndpoint,
@@ -56,6 +57,27 @@ describe("portal feedback endpoints", () => {
     );
     expect(portalFeedbackItemFileEndpoint("c-1", "r-1", "i-1", "f-1")).toBe(
       "/api/portal/c-1/feedback-rounds/r-1/items/i-1/files/f-1",
+    );
+  });
+
+  it("builds the clarification answer path below the item", () => {
+    expect(
+      portalFeedbackClarificationAnswerEndpoint("c-1", {
+        roundId: "r-1",
+        itemId: "i-1",
+        clarificationId: "q-1",
+      }),
+    ).toBe(
+      "/api/portal/c-1/feedback-rounds/r-1/items/i-1/clarifications/q-1/answer",
+    );
+    expect(
+      portalFeedbackClarificationAnswerEndpoint("a/b", {
+        roundId: "r/1",
+        itemId: "i 1",
+        clarificationId: "q?1",
+      }),
+    ).toBe(
+      "/api/portal/a%2Fb/feedback-rounds/r%2F1/items/i%201/clarifications/q%3F1/answer",
     );
   });
 

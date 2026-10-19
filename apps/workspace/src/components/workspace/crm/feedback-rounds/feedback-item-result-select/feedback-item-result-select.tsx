@@ -1,9 +1,13 @@
 "use client";
 
 import { useId } from "react";
-import { faHourglassHalf } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircleQuestion,
+  faHourglassHalf,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import type { FeedbackItemResult } from "@invessiv/common/constants/crm/feedback-item-results";
+import { FeedbackItemProcessingState } from "@invessiv/common/constants/crm/feedback-item-processing-states";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { CustomSelect } from "@invessiv/ui";
 import { FEEDBACK_ITEM_RESULT_BADGES } from "@/common/constants/feedback/feedback-item-result-badges";
@@ -17,6 +21,8 @@ import styles from "./feedback-item-result-select.module.css";
 type FeedbackItemResultSelectProps = {
   content: FeedbackResultDictionary;
   disabled?: boolean;
+  /** An open clarification: the select reads "Question" and explains when a result is possible. */
+  locked?: boolean;
   number: number;
   onChangeAction: (result: FeedbackItemResult | null) => void;
   result: FeedbackItemResult | null;
@@ -26,13 +32,48 @@ type FeedbackItemResultSelectProps = {
 export function FeedbackItemResultSelect({
   content,
   disabled,
+  locked = false,
   number,
   onChangeAction,
   result,
 }: FeedbackItemResultSelectProps) {
   const id = useId();
-  const value = result ?? FeedbackResultChoice.Pending;
+  const hintId = useId();
 
+  if (locked) {
+    const value = FeedbackItemProcessingState.Clarification;
+    return (
+      <div className={styles.locked}>
+        <CustomSelect
+          ariaLabel={formatMessage(content.selectLabel, {
+            number,
+            result: content.choices[value],
+          })}
+          describedBy={hintId}
+          disabled
+          id={id}
+          onChange={() => undefined}
+          options={[
+            {
+              label: content.choices[value],
+              leading: (
+                <span className={styles.icon} data-result={value}>
+                  <FontAwesomeIcon aria-hidden="true" icon={faCircleQuestion} />
+                </span>
+              ),
+              value,
+            },
+          ]}
+          value={value}
+        />
+        <p className={styles.hint} id={hintId}>
+          {content.lockedHint}
+        </p>
+      </div>
+    );
+  }
+
+  const value = result ?? FeedbackResultChoice.Pending;
   return (
     <CustomSelect
       ariaLabel={formatMessage(content.selectLabel, {

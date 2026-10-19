@@ -10,6 +10,9 @@ export const FeedbackApiPath = {
   Status: "status",
   Result: "result",
   Read: "read",
+  Clarifications: "clarifications",
+  Close: "close",
+  Answer: "answer",
 } as const;
 
 export type FeedbackApiPath =

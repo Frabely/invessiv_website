@@ -31,7 +31,7 @@ Details und Abnahmekriterien stehen in den aktiven geordneten Merge-Einheiten.
   Fälligkeitsdatum, Wiederholung, globaler Übersicht und Dashboard-Block.
 - Prozessleiste je Projekt aus Freitext-Schritten plus einzelnen Feedbackrunden-Schritten, die an beliebiger Stelle
   eingefügt werden und die Feedbackrunden automatisch abbilden; Feedbackrunden übergeben, Punkte bewerten und abschließen, Sammelaufgabe je Runde,
-  Feedback-Eingang mit Zähler.
+  Feedback-Eingang mit Zähler. Rückfragen an einzelnen Punkten mit Verlauf, interne Ergebnishistorie und „Noch offen“.
 - Workspace-Glocke für Zuweisungen, Fälligkeiten, Portalereignisse, Renewals und Jobfehler.
 - Explizite atomare Gesamtübergabe aller offenen Zuständigkeiten eines Mitglieds nach dem vollständigen CRM-Ausbau.
 - Renewals für Domain, Hosting, SSL, Lizenz und sonstige Laufzeiten.
@@ -56,8 +56,9 @@ Details und Abnahmekriterien stehen in den aktiven geordneten Merge-Einheiten.
 - Onboarding-Termin beim zuständigen Mitarbeiter über dessen Buchungslink, erst nach aktivem Klick geladen.
 - Gemeinsamer Kundenchat mit Lesestand je Kontakt und gebündelten E-Mail-Hinweisen.
 - Feedbackrunden im Kontingent des Projekts (Standard zwei): Wir übergeben einen Stand mit Vorschau, der Kunde
-  sammelt Feedback-Punkte mit Bereich und Dateien, speichert zwischen und reicht ein; danach Ergebnisse je Punkt und
-  am Ende die Freigabe (Abnahme) im Portal. Zusatzrunden über die Leistungsanfragen.
+  sammelt Feedback-Punkte mit Bereich und Dateien, speichert zwischen und reicht ein; Rückfragen des Teams beantwortet
+  er direkt am Punkt, ohne die Runde neu einzureichen. Danach Ergebnisse je Punkt und am Ende die Freigabe (Abnahme)
+  im Portal. Zusatzrunden über die Leistungsanfragen.
 - Upload erlaubter Dokumente und Download nur explizit freigegebener Dateien.
 - Zugangsdaten: freigegebene Zugänge einsehen, eigene hinterlegen und nach einem Passwortwechsel ändern — nur für
   Kontakte mit der gezielt zugewiesenen Zugangsdaten-Rolle.

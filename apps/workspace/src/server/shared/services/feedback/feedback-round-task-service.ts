@@ -97,19 +97,6 @@ async function markInProgress(
   );
 }
 
-async function cancelForReturn(
-  tx: ContactDatabaseTransaction,
-  round: FeedbackRoundRef,
-  actor: WorkspaceActor,
-): Promise<void> {
-  await moveTask(
-    tx,
-    round,
-    { from: TaskStatus.Open, to: TaskStatus.Cancelled },
-    memberActor(actor),
-  );
-}
-
 async function completeForRound(
   tx: ContactDatabaseTransaction,
   round: FeedbackRoundRef,
@@ -127,6 +114,5 @@ async function completeForRound(
 export const feedbackRoundTaskService = {
   ensureOpenForSubmission,
   markInProgress,
-  cancelForReturn,
   completeForRound,
 } as const;

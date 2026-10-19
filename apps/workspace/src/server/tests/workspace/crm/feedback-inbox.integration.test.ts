@@ -6,7 +6,6 @@ import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-rou
 import { feedbackRounds } from "@invessiv/db/record-configuration";
 import { savePortalFeedbackDraft } from "@/server/portal/command-handler/save-portal-feedback-draft.command-handler";
 import { submitPortalFeedbackRound } from "@/server/portal/command-handler/submit-portal-feedback-round.command-handler";
-import { changeFeedbackRoundStatus } from "@/server/workspace/crm/command-handler/change-feedback-round-status.command-handler";
 import { handOverFeedbackRound } from "@/server/workspace/crm/command-handler/hand-over-feedback-round.command-handler";
 import { markFeedbackRoundRead } from "@/server/workspace/crm/command-handler/mark-feedback-round-read.command-handler";
 import { countUnreadFeedbackRounds } from "@/server/workspace/crm/query-handler/count-unread-feedback-rounds.query-handler";
@@ -127,18 +126,10 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       const { projectId, roundId } = await submittedRound();
       const actor = boundTo(projectId);
       const firstSubmission = await f.readRound(roundId);
-      const returned = await changeFeedbackRoundStatus(
+      const openRound = await f.returnRoundAsLegacy(
         roundId,
-        {
-          version: firstSubmission.version,
-          to: FeedbackRoundStatus.Open,
-          customerNotice: "Please revise the draft.",
-        },
-        f.member(),
+        "Please revise the draft.",
       );
-      if (!returned.ok) throw new Error("Expected the round to be returned");
-
-      const openRound = await f.readRound(roundId);
       const resubmitted = await submitPortalFeedbackRound(
         f.contact(),
         roundId,

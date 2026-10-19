@@ -4,23 +4,29 @@ import { type ReactNode, useState } from "react";
 import { useRouter } from "next/navigation";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FeedbackItemProcessingState } from "@invessiv/common/constants/crm/feedback-item-processing-states";
 import {
   FEEDBACK_ITEM_RESULTS_REQUIRING_NOTE,
   type FeedbackItemResult as FeedbackItemResultValue,
 } from "@invessiv/common/constants/crm/feedback-item-results";
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import type { FeedbackRoundItemDto } from "@invessiv/common/contracts/crm/feedback-round-item.dto";
+import { getFeedbackItemProcessingState } from "@invessiv/common/patterns/crm/feedback-item-processing-state";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import { ButtonControl } from "@invessiv/ui";
 import { feedbackRoundsApiService } from "@/client/crm/feedback-rounds-api-service";
+import { FeedbackClarificationPart } from "@/common/constants/feedback/feedback-clarification-parts";
 import { FeedbackProcessingError } from "@/common/constants/feedback/feedback-processing-errors";
 import { FeedbackResultChoice } from "@/common/constants/feedback/feedback-result-choices";
 import { feedbackProcessingError } from "@/common/patterns/crm/feedback-processing-error";
+import { FeedbackClarificationThread } from "@/components/shared/feedback/feedback-clarification-thread/feedback-clarification-thread";
 import { FeedbackItemResult } from "@/components/shared/feedback/feedback-item-result/feedback-item-result";
 import { FeedbackReadOnlyItemContent } from "@/components/shared/feedback/feedback-read-only-item-content/feedback-read-only-item-content";
 import { StatusRow } from "@/components/workspace/shared/status-row/status-row";
 import type { Locale } from "@/config/i18n";
+import { useFocusAfterVersion } from "@/hooks/shared/use-focus-after-version";
 import type { CrmFeedbackRoundsDictionary } from "@/i18n/dictionaries/workspace/crm";
+import { FeedbackClarificationActions } from "../feedback-clarification-actions/feedback-clarification-actions";
 import { FeedbackItemResultSelect } from "../feedback-item-result-select/feedback-item-result-select";
 import { FeedbackResultHistory } from "../feedback-result-history/feedback-result-history";
 import { FeedbackTextDialog } from "../feedback-text-dialog/feedback-text-dialog";
@@ -49,7 +55,8 @@ function requiresNote(result: FeedbackItemResultValue): boolean {
 /**
  * One customer item as the team reads and rates it. "Implemented" saves at once; the other two
  * results ask for a reply first. The chosen result shows right away and gives way to the server's
- * state as soon as the refreshed item arrives with a newer version.
+ * state as soon as the refreshed item arrives with a newer version. While a question is open, the
+ * result stays locked until the customer answers or the team closes the question.
  */
 export function FeedbackItemRow({
   content,
@@ -69,6 +76,11 @@ export function FeedbackItemRow({
   } | null>(null);
   const [noteFor, setNoteFor] = useState<FeedbackItemResultValue | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // Asking or closing moves the action between the thread and the row; the focus follows it.
+  const actionFocus = useFocusAfterVersion<HTMLButtonElement>(item.version);
+  const awaitingClarification =
+    getFeedbackItemProcessingState(item) ===
+    FeedbackItemProcessingState.Clarification;
   const shown =
     pending && pending.baseVersion === item.version
       ? pending.result
@@ -118,6 +130,17 @@ export function FeedbackItemRow({
     else void saveImmediateResult(result);
   }
 
+  const clarificationActions = editable ? (
+    <FeedbackClarificationActions
+      buttonRef={actionFocus.ref}
+      content={content}
+      item={item}
+      number={number}
+      onAnnounceAction={onAnnounceAction}
+      onSavedAction={(saved) => actionFocus.focusAfter(saved.version)}
+    />
+  ) : null;
+
   const itemContent = (
     <FeedbackReadOnlyItemContent
       attachments={attachments}
@@ -136,6 +159,28 @@ export function FeedbackItemRow({
     />
   );
 
+  const clarificationThread = (
+    <FeedbackClarificationThread
+      authorName={(clarification, part) =>
+        part === FeedbackClarificationPart.Question
+          ? clarification.requestedByName
+          : part === FeedbackClarificationPart.Answer
+            ? clarification.answeredByName
+            : clarification.closedByName
+      }
+      clarifications={item.clarifications}
+      label={formatMessage(content.clarification.threadLabel, { number })}
+      labels={{
+        ...content.clarification.thread,
+        showMore: content.detail.showMore,
+        showLess: content.detail.showLess,
+      }}
+      locale={locale}
+    >
+      {awaitingClarification ? clarificationActions : null}
+    </FeedbackClarificationThread>
+  );
+
   const resultHistory = (
     <FeedbackResultHistory
       entries={item.resultHistory}
@@ -151,6 +196,7 @@ export function FeedbackItemRow({
     return (
       <li className={styles.item}>
         {itemContent}
+        {clarificationThread}
         {resultHistory}
       </li>
     );
@@ -165,10 +211,18 @@ export function FeedbackItemRow({
           <FeedbackItemResultSelect
             content={texts}
             disabled={pending !== null && pending.baseVersion === item.version}
+            locked={awaitingClarification}
             number={number}
             onChangeAction={choose}
             result={shown}
           />
+        ) : awaitingClarification ? (
+          <span
+            className={styles.open}
+            data-state={FeedbackItemProcessingState.Clarification}
+          >
+            {texts.choices.clarification}
+          </span>
         ) : shown ? (
           <FeedbackItemResult
             label={texts.choices[shown]}
@@ -182,6 +236,7 @@ export function FeedbackItemRow({
       }
     >
       {itemContent}
+      {clarificationThread}
       {item.result && item.resultNote ? (
         <div className={styles.reply}>
           <FeedbackItemResult
@@ -203,6 +258,7 @@ export function FeedbackItemRow({
           ) : null}
         </div>
       ) : null}
+      {awaitingClarification ? null : clarificationActions}
       {resultHistory}
       {error ? (
         <p className={styles.error} role="alert">
@@ -228,9 +284,9 @@ export function FeedbackItemRow({
             />
           )}
           required
-          send={(current, note) =>
+          send={(current, note, commandId) =>
             feedbackRoundsApiService.setItemResult(current.id, {
-              commandId: crypto.randomUUID(),
+              commandId,
               version: current.version,
               result: noteFor,
               resultNote: note,
