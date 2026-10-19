@@ -183,3 +183,8 @@ Auf Nutzerauftrag umgesetzt, dazu eine Layoutänderung im Portal:
 - **Layout:** Punkte mit Rückfragen stellen Verlauf und Antwortformular ab 44rem Kartenbreite (Container Query)
   rechts neben den Punkt; schmaler darunter. Unser Ergebnis schließt die Karte über die volle Breite.
 - Scope-`AGENTS.md` (Portal, CRM-UI) nachgezogen. Skill-Regel nach Zustimmung ergänzt.
+- **E2E ergänzt:** Der Kernablauf schließt jetzt eine zweite Rückfrage mit Pflichthinweis (leerer Hinweis abgelehnt,
+  Fokus auf „Rückfrage stellen“, Ergebnis wieder wählbar) und prüft im Portal Status „Geschlossen“, den Hinweis,
+  „Frühere Rückfragen (1)“ und kein Antwortfeld. Lauf grün (5/5). Beobachtung: Der Test „processes round 1 …“ schlug
+  in zwei von fünf Läufen bei „1 von 2 Punkten erledigt“ fehl (PATCH 200, Refresh kam an, Zeile blieb im
+  Pending-Zustand); der Schritt ist unverändert seit Task 78, Ursache nicht geklärt.

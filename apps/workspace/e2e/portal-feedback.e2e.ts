@@ -390,7 +390,7 @@ test.describe.serial("portal feedback", () => {
     }
   });
 
-  test("clarifies a point of round 2, rates it, resets and completes, then approves", async ({
+  test("clarifies a point of round 2, closes a second question, rates, resets and completes, then approves", async ({
     page,
     browser,
   }, testInfo) => {
@@ -497,6 +497,60 @@ test.describe.serial("portal feedback", () => {
       // The team rates, resets to pending, rates again and completes the round.
       await page.reload();
       await expect(page.getByText(`Musterstraße 1 ${suffix}`)).toBeVisible();
+
+      // A second question settles without an answer: the team closes it with a note.
+      await page
+        .getByRole("button", { name: "Rückfrage stellen (Punkt 1)" })
+        .click();
+      const second = page.getByRole("dialog", { name: "Rückfrage zu Punkt 1" });
+      await second
+        .getByLabel(/Deine Frage an den Kunden/)
+        .fill(`Mit oder ohne Hausnummer? ${suffix}`);
+      await second.getByRole("button", { name: "Rückfrage stellen" }).click();
+      await expect(second).toBeHidden();
+      await expect(page.getByText("1 Rückfrage offen")).toBeVisible();
+      await page
+        .getByRole("button", { name: "Rückfrage schließen (Punkt 1)" })
+        .click();
+      const close = page.getByRole("dialog", {
+        name: "Rückfrage zu Punkt 1 schließen",
+      });
+      // The note is required; an empty close is refused in the dialog.
+      await close.getByRole("button", { name: "Rückfrage schließen" }).click();
+      await expect(
+        close.getByText("Schreib kurz, warum die Rückfrage erledigt ist."),
+      ).toBeVisible();
+      await close
+        .getByLabel(/Hinweis an den Kunden/)
+        .fill(`Im Telefonat geklärt ${suffix}`);
+      await close.getByRole("button", { name: "Rückfrage schließen" }).click();
+      await expect(close).toBeHidden();
+      await expect(
+        page.getByRole("button", { name: "Rückfrage stellen (Punkt 1)" }),
+      ).toBeFocused();
+      await expect(page.getByText("1 Rückfrage offen")).toHaveCount(0);
+      await expect(
+        page.getByRole("button", { name: "Ergebnis für Punkt 1: Noch offen" }),
+      ).toBeEnabled();
+
+      // The customer reads the closure with its note and can no longer answer it.
+      await b.reload();
+      await expect(
+        b.getByRole("heading", { name: "Wir haben eine Rückfrage an dich" }),
+      ).toHaveCount(0);
+      const thread = b.getByRole("region", { name: "Rückfragen zu Punkt 1" });
+      await expect(
+        thread.getByText("Geschlossen", { exact: true }),
+      ).toBeVisible();
+      await expect(thread.getByText("Ohne Antwort geschlossen")).toBeVisible();
+      await expect(
+        thread.getByText(`Im Telefonat geklärt ${suffix}`),
+      ).toBeVisible();
+      await expect(
+        thread.getByRole("button", { name: "Frühere Rückfragen (1)" }),
+      ).toBeVisible();
+      await expect(b.getByRole("textbox")).toHaveCount(0);
+
       await page.getByRole("button", { name: "Umsetzung starten" }).click();
       await page
         .getByRole("button", { name: "Ergebnis für Punkt 1: Noch offen" })
