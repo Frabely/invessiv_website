@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import "@testing-library/jest-dom/vitest";
+import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import {
   cleanup,
   fireEvent,
@@ -299,7 +300,7 @@ describe("AccessScopeTree", () => {
   it("adopts a version conflict and keeps the remaining rows", async () => {
     mocks.replace.mockResolvedValue({
       ok: false,
-      code: "VERSION_CONFLICT",
+      code: ConcurrencyErrorCode.VersionConflict,
       current: { ...MEMBER, version: 4 },
     });
     renderTree();
@@ -321,7 +322,7 @@ describe("AccessScopeTree", () => {
     mocks.replace
       .mockResolvedValueOnce({
         ok: false,
-        code: "VERSION_CONFLICT",
+        code: ConcurrencyErrorCode.VersionConflict,
         current: { ...MEMBER, version: 4 },
       })
       .mockResolvedValueOnce({ ok: true, current: { ...MEMBER, version: 5 } });

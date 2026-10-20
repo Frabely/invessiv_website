@@ -36,6 +36,8 @@ const ROUND: PortalFeedbackRoundDto = {
   items: [
     {
       id: "item-1",
+      version: 1,
+      clarifications: [],
       position: 0,
       areaLabel: "Home",
       kind: FeedbackItemKind.Bug,

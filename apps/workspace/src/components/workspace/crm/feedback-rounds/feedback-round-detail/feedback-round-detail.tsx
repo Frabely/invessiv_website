@@ -191,7 +191,7 @@ export function FeedbackRoundDetail({
           {showResults && round.items.length > 0 ? (
             <FeedbackResultProgress
               items={round.items}
-              label={content.progress.label}
+              content={content.progress}
             />
           ) : null}
           {canReadFiles && attachmentIds.length > 0 ? (
@@ -217,6 +217,7 @@ export function FeedbackRoundDetail({
           <ol className={styles.list}>
             {round.items.map((item, index) => (
               <FeedbackItemRow
+                locale={locale}
                 attachments={
                   canReadFiles && item.attachments.length > 0 ? (
                     <FileAttachmentList

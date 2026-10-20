@@ -49,7 +49,7 @@ async function answerRepeatedSubmission(
     ok: true,
     value: {
       alreadySubmitted: true,
-      round: await portalFeedbackService.toRoundDto(tx, actor, round),
+      round: await portalFeedbackService.loadRoundDto(tx, actor, round),
     },
   };
 }
@@ -92,7 +92,7 @@ export async function submitPortalFeedbackRound(
         ok: true,
         value: {
           alreadySubmitted: false,
-          round: await portalFeedbackService.toRoundDto(tx, actor, submitted),
+          round: await portalFeedbackService.loadRoundDto(tx, actor, submitted),
         },
       };
     },

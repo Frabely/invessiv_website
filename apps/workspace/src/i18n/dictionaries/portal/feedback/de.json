@@ -123,6 +123,39 @@
     "showMore": "Mehr anzeigen",
     "showLess": "Weniger anzeigen"
   },
+  "clarifications": {
+    "notice": "Wir haben {count} Rückfragen an dich",
+    "noticeOne": "Wir haben eine Rückfrage an dich",
+    "noticeHint": "Antworte direkt am Punkt. Die Runde musst du dafür nicht neu einreichen.",
+    "noticeHintReadOnly": "Die Fragen stehen an den Punkten. Antworten kann, wer in diesem Projekt Feedback einreichen darf.",
+    "jumpLabel": "Punkte mit Rückfrage",
+    "jumpTo": "Punkt {number}",
+    "threadLabel": "Rückfragen zu Punkt {number}",
+    "statusWaiting": "Wartet auf deine Antwort",
+    "thread": {
+      "team": "Unser Team",
+      "customer": "Euer Team",
+      "byline": "{name} am {date}",
+      "statusOpen": "Rückfrage offen",
+      "statusAnswered": "Beantwortet",
+      "statusClosed": "Geschlossen",
+      "closeNote": "Ohne Antwort geschlossen",
+      "earlier": "Frühere Rückfragen ({count})"
+    },
+    "answer": {
+      "label": "Deine Antwort auf Punkt {number}",
+      "staleLabel": "Nicht gesendete Antwort auf eine frühere Rückfrage zu Punkt {number}",
+      "hint": "Wir sehen deine Antwort sofort.",
+      "counter": "{count} von {max} Zeichen",
+      "submit": "Antwort senden",
+      "submitting": "Wird gesendet …",
+      "discard": "Entwurf verwerfen",
+      "required": "Schreib kurz deine Antwort.",
+      "tooLong": "Deine Antwort ist zu lang. Höchstens {max} Zeichen.",
+      "conflict": "Am Punkt hat sich gerade etwas geändert. Du siehst jetzt den aktuellen Stand; deine Antwort ist noch da.",
+      "notOpen": "Diese Rückfrage ist inzwischen beantwortet oder geschlossen. Deine Antwort ist noch da, senden kannst du sie hier nicht mehr."
+    }
+  },
   "editor": {
     "listLabel": "Deine Feedbackpunkte",
     "itemLabel": "Punkt {number}",
@@ -206,7 +239,8 @@
     "restored": "Deine Fassung ist wiederhergestellt und wird gespeichert.",
     "attached": "{name} an Punkt {number} angehängt",
     "detached": "{name} vom Punkt gelöst",
-    "accepted": "Das Projekt ist abgenommen."
+    "accepted": "Das Projekt ist abgenommen.",
+    "clarificationAnswered": "Deine Antwort zu Punkt {number} ist gesendet."
   },
   "errors": {
     "not_found": "Diese Feedbackrunde gibt es nicht mehr. Lade die Seite neu.",
@@ -219,7 +253,9 @@
     "confirmation_required": "Bitte setz den Haken, um freizugeben.",
     "attachment_limit": "An diesen Punkt passen keine weiteren Dateien.",
     "not_attachable": "Diese Datei lässt sich hier nicht anhängen.",
-    "unavailable": "Das hat gerade nicht geklappt. Versuch es gleich noch einmal."
+    "unavailable": "Das hat gerade nicht geklappt. Versuch es gleich noch einmal.",
+    "clarification_not_open": "Diese Rückfrage ist inzwischen beantwortet oder geschlossen. Lade den aktuellen Stand.",
+    "command_id_reused": "Die Aktion hat sich geändert. Lade die Seite neu und versuch es noch einmal."
   },
   "result": {
     "choices": {

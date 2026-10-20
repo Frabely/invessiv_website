@@ -51,8 +51,23 @@ export function crmFeedbackRoundReadEndpoint(roundId: string): string {
   return `${crmFeedbackRoundEndpoint(roundId)}/${FeedbackApiPath.Read}`;
 }
 
+function crmFeedbackItemEndpoint(itemId: string): string {
+  return `${WorkspaceApiEndpoint.CrmFeedbackRoundItems}/${encodeURIComponent(itemId)}`;
+}
+
 export function crmFeedbackItemResultEndpoint(itemId: string): string {
-  return `${WorkspaceApiEndpoint.CrmFeedbackRoundItems}/${encodeURIComponent(itemId)}/${FeedbackApiPath.Result}`;
+  return `${crmFeedbackItemEndpoint(itemId)}/${FeedbackApiPath.Result}`;
+}
+
+export function crmFeedbackItemClarificationsEndpoint(itemId: string): string {
+  return `${crmFeedbackItemEndpoint(itemId)}/${FeedbackApiPath.Clarifications}`;
+}
+
+export function crmFeedbackItemClarificationCloseEndpoint(
+  itemId: string,
+  clarificationId: string,
+): string {
+  return `${crmFeedbackItemClarificationsEndpoint(itemId)}/${encodeURIComponent(clarificationId)}/${FeedbackApiPath.Close}`;
 }
 
 export function crmLeadConversionEndpoint(leadId: string): string {

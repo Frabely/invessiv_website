@@ -23,6 +23,8 @@ import {
   cleanupCredentialFixtures,
   runCredentialChecks,
 } from "./crm-smoke/credential-checks";
+import { runFeedbackClarificationChecks } from "./crm-smoke/feedback-clarification-checks";
+import { runFeedbackResultHistoryChecks } from "./crm-smoke/feedback-result-history-checks";
 import { runHoursChecks } from "./crm-smoke/hours-checks";
 import { runLineItemChecks } from "./crm-smoke/line-item-checks";
 import { runServiceRequestChecks } from "./crm-smoke/service-request-checks";
@@ -367,6 +369,24 @@ async function runChecks(sql: Sql) {
     expectAccepted,
   });
   await runCredentialChecks({
+    sql,
+    memberId,
+    name,
+    insertCustomer: (displayName) =>
+      insertCustomer(sql, { ownerMemberId: memberId, displayName }),
+    expectRejected,
+    expectAccepted,
+  });
+  await runFeedbackClarificationChecks({
+    sql,
+    memberId,
+    name,
+    insertCustomer: (displayName) =>
+      insertCustomer(sql, { ownerMemberId: memberId, displayName }),
+    expectRejected,
+    expectAccepted,
+  });
+  await runFeedbackResultHistoryChecks({
     sql,
     memberId,
     name,

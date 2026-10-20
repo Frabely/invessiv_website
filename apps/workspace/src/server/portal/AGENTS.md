@@ -99,6 +99,16 @@ Plan: `apps/workspace/plans/crm/18-portal-prozess-nacharbeiten/G-portal-aufgaben
 
 ## Feedbackrunden (ab Task 59)
 
+- Ab Task 79 beantwortet `answer-portal-feedback-clarification.command-handler.ts` Rückfragen in
+  `submitted`, `in_discussion` und `in_progress` innerhalb von `withLockedRound` (ausdrückliche Ausnahme
+  von der Rundenübergangsprüfung `rejectUnlessAllowed`). Nach Rundensperre werden Punkt und Rückfrage
+  frisch gesperrt; geprüft werden Entitätskette, aktionsübergreifende Wiederholungen, Rundenstatus,
+  Punktversion und offener Rückfragenzustand. Jeder berechtigte Kundenkontakt darf antworten, niemals die
+  Owner-Lesesicht. Punktaktionen ändern weder Rundenversion, Einreich-/Lesestempel noch Sammelaufgabe.
+  Erfolg und Konflikt verwenden das öffentliche Punkt-DTO mit Version und Rückfragen, ohne Autorbezüge,
+  Ergebnishistorie oder unveröffentlichte Ergebnisse. Ohne `portal.feedback.read` liefert der HTTP-Wrapper
+  ausschließlich eine Bestätigung bzw. Fehlercode und ggf. aktuelle Version.
+
 - Lesen verlangt `portal.feedback.read`, Schreiben `portal.feedback.submit` ohne zusätzliches Leserecht;
   das Projekt muss in `PORTAL_VISIBLE_PROJECT_STATUS_VALUES` liegen. Jeder Fehlgriff (fremde Firma, geratene ID,
   fehlendes Recht, archiviertes Projekt) ist `not_found`.

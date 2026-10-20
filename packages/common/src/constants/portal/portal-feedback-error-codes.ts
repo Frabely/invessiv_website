@@ -9,6 +9,8 @@ export const PortalFeedbackErrorCode = {
   ConfirmationRequired: "confirmation_required",
   AttachmentLimit: "attachment_limit",
   NotAttachable: "not_attachable",
+  ClarificationNotOpen: "clarification_not_open",
+  CommandIdReused: "command_id_reused",
   Unavailable: "unavailable",
 } as const;
 
@@ -26,5 +28,7 @@ export const PORTAL_FEEDBACK_ERROR_CODE_VALUES = [
   PortalFeedbackErrorCode.ConfirmationRequired,
   PortalFeedbackErrorCode.AttachmentLimit,
   PortalFeedbackErrorCode.NotAttachable,
+  PortalFeedbackErrorCode.ClarificationNotOpen,
+  PortalFeedbackErrorCode.CommandIdReused,
   PortalFeedbackErrorCode.Unavailable,
 ] as const;

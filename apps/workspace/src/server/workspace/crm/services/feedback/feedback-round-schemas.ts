@@ -6,6 +6,7 @@ import {
 } from "@invessiv/common/constants/crm/feedback-item-results";
 import { FEEDBACK_LIMITS } from "@invessiv/common/constants/crm/feedback-limits";
 import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-round-statuses";
+import type { SetFeedbackItemResultRequestDto } from "@invessiv/common/contracts/crm/set-feedback-item-result-request.dto";
 import { validateFileLink } from "@invessiv/common/patterns/files/validate-file-link";
 import { businessToday } from "@/common/patterns/time/business-today";
 
@@ -39,17 +40,19 @@ const areaOptions = z
   .max(FEEDBACK_LIMITS.areasPerProject)
   .refine((areas) => new Set(areas).size === areas.length);
 
-// A handback without a reason leaves the customer guessing; start and completion have nothing to say.
+// A call may come with a note for the customer; start and completion have nothing to say.
 const changeStatus = z.discriminatedUnion("to", [
   z.strictObject({
     version,
     to: z.literal(FeedbackRoundStatus.InDiscussion),
     customerNotice: optionalText(FEEDBACK_LIMITS.noteMaxLength),
   }),
+  // Legacy handback from a tab opened before Task 80: still parsed, so the command answers with
+  // INVALID_TRANSITION and a reload hint instead of a bare validation error. Remove in a cleanup.
   z.strictObject({
     version,
     to: z.literal(FeedbackRoundStatus.Open),
-    customerNotice: z.string().trim().min(1).max(FEEDBACK_LIMITS.noteMaxLength),
+    customerNotice: optionalText(FEEDBACK_LIMITS.noteMaxLength),
   }),
   z.strictObject({
     version,
@@ -63,23 +66,45 @@ const changeStatus = z.discriminatedUnion("to", [
   }),
 ]);
 
+const RESULT_NOTE_PATH = [
+  "resultNote",
+] as const satisfies readonly (keyof SetFeedbackItemResultRequestDto)[];
+
 // Mirrors the reply CHECK on the item row, so the database never has to refuse it.
 const setItemResult = z
   .strictObject({
     version,
-    result: z.enum(FEEDBACK_ITEM_RESULT_VALUES),
+    commandId: z
+      .uuid()
+      .transform((value) => value.toLowerCase())
+      .optional(),
+    result: z.enum(FEEDBACK_ITEM_RESULT_VALUES).nullable(),
     resultNote: optionalText(FEEDBACK_LIMITS.noteMaxLength),
   })
   .refine(
     ({ result, resultNote }) =>
       resultNote !== null ||
+      result === null ||
       !(FEEDBACK_ITEM_RESULTS_REQUIRING_NOTE as readonly string[]).includes(
         result,
       ),
-    { path: ["resultNote"] },
-  );
+    { path: [...RESULT_NOTE_PATH] },
+  )
+  .refine(({ result, resultNote }) => result !== null || resultNote === null, {
+    path: [...RESULT_NOTE_PATH],
+  });
 
 export const feedbackRoundSchemas = {
+  closeClarification: z.strictObject({
+    commandId: z.uuid().transform((value) => value.toLowerCase()),
+    version,
+    note: z.string().trim().min(1).max(FEEDBACK_LIMITS.noteMaxLength),
+  }),
+  askClarification: z.strictObject({
+    commandId: z.uuid().transform((value) => value.toLowerCase()),
+    version,
+    question: z.string().trim().min(1).max(FEEDBACK_LIMITS.noteMaxLength),
+  }),
   entityId: z.uuid(),
   markRead: z.strictObject({ version }),
   handOver: z.strictObject({

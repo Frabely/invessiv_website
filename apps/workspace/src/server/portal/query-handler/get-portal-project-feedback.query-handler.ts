@@ -50,7 +50,7 @@ export async function getPortalProjectFeedback(
     .from(feedbackRounds)
     .where(eq(feedbackRounds.project_id, project.id))
     .orderBy(desc(feedbackRounds.round_number));
-  const rounds = await portalFeedbackService.toRoundDtos(db, reader, rows);
+  const rounds = await portalFeedbackService.loadRoundDtos(db, reader, rows);
   const activeRound =
     rounds.find((round) => isActiveFeedbackRound(round.status)) ?? null;
   const { contact, bookingContact } =

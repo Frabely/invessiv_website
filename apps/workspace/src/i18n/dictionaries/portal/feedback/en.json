@@ -123,6 +123,39 @@
     "showMore": "Show more",
     "showLess": "Show less"
   },
+  "clarifications": {
+    "notice": "We have {count} questions for you",
+    "noticeOne": "We have a question for you",
+    "noticeHint": "Answer right on the point. You don't need to submit the round again.",
+    "noticeHintReadOnly": "The questions are shown on the points. Anyone allowed to submit feedback for this project can answer.",
+    "jumpLabel": "Points with a question",
+    "jumpTo": "Point {number}",
+    "threadLabel": "Questions about point {number}",
+    "statusWaiting": "Waiting for your answer",
+    "thread": {
+      "team": "Our team",
+      "customer": "Your team",
+      "byline": "{name} on {date}",
+      "statusOpen": "Question open",
+      "statusAnswered": "Answered",
+      "statusClosed": "Closed",
+      "closeNote": "Closed without an answer",
+      "earlier": "Earlier questions ({count})"
+    },
+    "answer": {
+      "label": "Your answer to point {number}",
+      "staleLabel": "Unsent answer to an earlier question on point {number}",
+      "hint": "We see your answer right away.",
+      "counter": "{count} of {max} characters",
+      "submit": "Send answer",
+      "submitting": "Sending …",
+      "discard": "Discard draft",
+      "required": "Write a short answer.",
+      "tooLong": "Your answer is too long. At most {max} characters.",
+      "conflict": "Something on this point just changed. You now see the current state; your answer is still here.",
+      "notOpen": "This question has been answered or closed in the meantime. Your answer is still here, but you can no longer send it."
+    }
+  },
   "editor": {
     "listLabel": "Your feedback points",
     "itemLabel": "Point {number}",
@@ -206,7 +239,8 @@
     "restored": "Your version is restored and being saved.",
     "attached": "{name} attached to point {number}",
     "detached": "{name} detached from the point",
-    "accepted": "The project is approved."
+    "accepted": "The project is approved.",
+    "clarificationAnswered": "Your answer to point {number} is sent."
   },
   "errors": {
     "not_found": "This feedback round no longer exists. Reload the page.",
@@ -219,7 +253,9 @@
     "confirmation_required": "Please tick the box to approve.",
     "attachment_limit": "No more files fit on this point.",
     "not_attachable": "This file can't be attached here.",
-    "unavailable": "That didn't work just now. Try again in a moment."
+    "unavailable": "That didn't work just now. Try again in a moment.",
+    "clarification_not_open": "This question has already been answered or closed. Load the current state.",
+    "command_id_reused": "This action has changed. Reload the page and try again."
   },
   "result": {
     "choices": {

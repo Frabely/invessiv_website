@@ -1,4 +1,5 @@
 import "server-only";
+import { feedbackClarificationService } from "@/server/shared/services/feedback/feedback-clarification-service";
 
 import { and, eq, isNull } from "drizzle-orm";
 import type { z } from "zod";
@@ -32,7 +33,11 @@ import { feedbackRoundSchemas } from "@/server/workspace/crm/services/feedback/f
 import { feedbackRoundService } from "@/server/workspace/crm/services/feedback/feedback-round-service";
 import { crmAccessCondition } from "@/server/workspace/shared/services/crm-access-condition";
 
-type ChangeStatusInput = z.output<typeof feedbackRoundSchemas.changeStatus>;
+// The legacy handback target is parsed for old tabs but never reaches a step.
+type ChangeStatusInput = Exclude<
+  z.output<typeof feedbackRoundSchemas.changeStatus>,
+  { to: typeof FeedbackRoundStatus.Open }
+>;
 
 const ROUND_NOT_FOUND = {
   ok: false,
@@ -108,21 +113,17 @@ function takeStep(
       });
     case FeedbackRoundStatus.InProgress:
       return feedbackRoundWriteService.startImplementation(tx, round, context);
-    case FeedbackRoundStatus.Open:
-      return feedbackRoundWriteService.returnToCustomer(tx, round, {
-        ...context,
-        customerNotice: input.customerNotice,
-      });
     case FeedbackRoundStatus.Completed:
       return feedbackRoundWriteService.complete(tx, round, context);
   }
 }
 
 /**
- * The team's steps on a running round: ask for a call, start the work, hand the round back or
- * complete it. Only steps of `FEEDBACK_ROUND_TRANSITIONS` pass; the version is compared under the
- * round lock, so a stale tab gets the current round with its 409. The project phase stays untouched;
- * completion advances the process step unless another round follows directly.
+ * The team's steps on a running round: ask for a call, start the work or complete it. Only steps of
+ * `FEEDBACK_ROUND_TRANSITIONS` pass, so a handback from an old tab ends as INVALID_TRANSITION; the
+ * version is compared under the round lock, so a stale tab gets the current round with its 409. The
+ * project phase stays untouched; completion advances the process step unless another round follows
+ * directly.
  */
 export async function changeFeedbackRoundStatus(
   roundId: string,
@@ -154,21 +155,24 @@ export async function changeFeedbackRoundStatus(
             current: await feedbackRoundService.toRoundDto(tx, round, actor),
           },
         };
+      const step = parsed.data;
       if (
-        !canTransition(
-          round.status,
-          parsed.data.to,
-          FeedbackTransitionSide.Internal,
-        )
+        step.to === FeedbackRoundStatus.Open ||
+        !canTransition(round.status, step.to, FeedbackTransitionSide.Internal)
       )
         return { ok: false, code: FeedbackRoundErrorCode.InvalidTransition };
       if (
-        parsed.data.to === FeedbackRoundStatus.Completed &&
+        step.to === FeedbackRoundStatus.Completed &&
+        (await feedbackClarificationService.hasOpen(tx, round.id))
+      )
+        return { ok: false, code: FeedbackRoundErrorCode.ClarificationsOpen };
+      if (
+        step.to === FeedbackRoundStatus.Completed &&
         (await hasItemWithoutResult(tx, round.id))
       )
         return { ok: false, code: FeedbackRoundErrorCode.ResultsIncomplete };
 
-      const changed = await takeStep(tx, round, parsed.data, {
+      const changed = await takeStep(tx, round, step, {
         actor,
         projectTitle,
       });

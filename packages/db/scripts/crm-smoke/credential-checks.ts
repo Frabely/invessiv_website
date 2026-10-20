@@ -4,24 +4,12 @@
  * the format is the cipher's concern and covered by its unit tests.
  */
 import { randomUUID } from "node:crypto";
-
 import type { getDatabaseClient } from "@invessiv/db/core";
+
+import type { CrmSmokeContext } from "./contracts/crm-smoke-context";
 import { CustomerCredentialsConstraintName as C } from "@invessiv/db/constraint-names/crm/customer-credentials-constraint-names";
 
 type Sql = ReturnType<typeof getDatabaseClient>;
-
-export type CredentialSmokeContext = {
-  sql: Sql;
-  memberId: string;
-  name: (suffix: string) => string;
-  insertCustomer: (displayName: string) => Promise<string>;
-  expectRejected: (
-    name: string,
-    run: () => Promise<unknown>,
-    constraint?: string,
-  ) => Promise<void>;
-  expectAccepted: (name: string, run: () => Promise<unknown>) => Promise<void>;
-};
 
 const PLACEHOLDER_CIPHERTEXT = "v1.1.smoke.smoke";
 
@@ -37,7 +25,7 @@ type CredentialArgs = {
   version?: number;
 };
 
-export async function runCredentialChecks(context: CredentialSmokeContext) {
+export async function runCredentialChecks(context: CrmSmokeContext) {
   const { sql, memberId, name, expectRejected, expectAccepted } = context;
   const customerId = await context.insertCustomer(name("Credential customer"));
   const otherCustomerId = await context.insertCustomer(

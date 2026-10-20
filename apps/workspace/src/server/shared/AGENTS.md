@@ -56,7 +56,31 @@ der eigene Upload“ bleiben in den getrennten Handlern (`portalFileService` bzw
 
 ## Feedbackrunden (ab Task 58)
 
+- Ab Task 79 ist `services/feedback/feedback-clarification-service.ts` der einzige produktive Schreibweg
+  für Rückfragen. Autorisierung bleibt in den getrennten Handlern; die Sperrreihenfolge ist Runde → Punkt →
+  Rückfrage (intern Runde `FOR SHARE`, Portal `FOR UPDATE`). Jede neue Aktion erhöht die Punktversion genau
+  einmal; Antwort und Schließung erhöhen zusätzlich die Rückfragenversion. Ergebnisrücknahme und Historie
+  entstehen im selben Savepoint. Command-Kennungen werden am Punkt aktionsübergreifend vor Zustand und Version
+  geprüft; korrelierte Rücknahme und Frage dürfen dieselbe Kennung tragen.
+  `feedback-clarification-mapping-service.ts` trennt öffentliche Felder von intern aufgelösten Namen.
+  Fragen, Antworten und Hinweise bleiben aus Logs, Activities und Chat-Metadaten ausgeschlossen.
+  Chatmeldungen entstehen nur bei erstmaligem Stellen/Beantworten, über `announceItemEvent` mit Punktnummer,
+  Rundennummer und Projekttitel; ein Chatfehler rollt ausschließlich die Meldung zurück.
+
+- Ab Task 78 ist `services/feedback/feedback-result-history-service.ts` der einzige produktive Schreibweg
+  der Ergebnishistorie. Jeder Ergebnis-Schreibpfad ruft `recordChange` unter Punktsperre und in derselben
+  Transaktion auf, einschließlich der automatischen Rücknahme beim Bearbeiten eines zurückgegebenen Entwurfs.
+  Ausgangsstände entstehen erst bei der ersten tatsächlichen Änderung; No-ops schreiben nichts.
+  Nach einer Historisierungslücke (Rollback auf einen alten Ergebnisschreiber) wird der aktuelle Ergebnis-Snapshot
+  mit dem letzten Historieneintrag verglichen: Ergebnis, Begründung, Bearbeiter und Ergebniszeitpunkt. Weicht er ab,
+  wird vor der nächsten Änderung ein weiterer Ausgangsstand gesichert. Eine reine Versionslücke reicht dafür nicht.
+  Nur interne Leser laden den Verlauf über `loadByItems`; Portal-DTOs und Portal-Konflikte enthalten ihn nie.
+  Zeile → DTO übernimmt `feedback-result-history-mapping-service.ts` hier im Ordner; der Service importiert nichts
+  aus `server/workspace/**`.
+
 `services/feedback/` hält die Bausteine, die Portal- und Workspace-Handler der Feedbackrunden (Task 59–61) teilen.
+Punkt-Schreibantworten laden sichtbare Anhänge gezielt über `feedbackRoundItemService.loadAttachments`;
+die Sichtbarkeitsbedingung bleibt beim jeweiligen Aufrufer. Sie laden dafür nicht sämtliche Punkte der Runde.
 Übergänge, Sperren, Rechte und Fehlercodes entscheidet der Handler seiner Welt anhand von `canTransition`
 (`@invessiv/common/patterns/crm/feedback-round-state`); die Services setzen nur die Nebenwirkungen in derselben
 Transaktion um.
@@ -65,7 +89,7 @@ Transaktion um.
   Titel erkannt). `ensureOpenForSubmission` legt sie an (Titel aus dem Workspace-Dictionary in `DEFAULT_LOCALE`,
   Bearbeiter Projekt-Owner, sonst Kunden-Owner, Mitgliedszeile `FOR SHARE`) oder öffnet eine `cancelled` Aufgabe wieder.
   Ohne aktiven Owner entsteht keine Aufgabe und kein Fehler — Einreichen scheitert nie an interner Besetzung.
-  `markInProgress`, `cancelForReturn` und `completeForRound` ändern nur aus dem erwarteten Ausgangsstatus; eine von Hand
+  `markInProgress` und `completeForRound` ändern nur aus dem erwarteten Ausgangsstatus; eine von Hand
   geänderte Aufgabe bleibt unberührt.
 - `feedback-round-item-service.ts` — `loadByRound` lädt Punkte und Anhänge mehrerer Runden mit **einer** Abfrage; die
   Sichtbarkeitsbedingung für Dateien übergibt der Handler (wie bei Chat-Anhängen). `replaceDraftItems` gleicht den
@@ -91,10 +115,11 @@ Transaktion um.
     Activity, Chat). Welcher Schritt erlaubt ist, entscheidet der Handler über `canTransition`; kein Handler schreibt
     Rundenstatus, Activity oder Rundennachricht an diesem Service vorbei. Ab Task 61 zusätzlich die internen
     Schritte (`FeedbackMemberWrite`): `requestDiscussion` (Hinweis optional, Chat), `startImplementation`
-    (`started_at`, Aufgabe `in_progress`, kein Chat), `returnToCustomer` (Hinweis Pflicht, `submitted_*` und `read_at`
-    geleert, Aufgabe `cancelled`, Chat) und `complete` (`completed_*`, Aufgabe `done`, Chat). Jeder Schritt schreibt
-    genau eine Activity.
-  - `customer_notice` gehört immer zum aktuellen Schritt: Gespräch und Zurückgeben setzen ihn, Umsetzung starten und
+    (`started_at`, Aufgabe `in_progress`, kein Chat) und `complete` (`completed_*`, Aufgabe `done`, Chat). Jeder
+    Schritt schreibt genau eine Activity. Die frühere Rückgabe (`returnToCustomer`, `cancelForReturn`) ist seit
+    Task 80 entfernt; vor Task 80 zurückgegebene Runden stehen als `open` mit `customer_notice` und abgebrochener
+    Aufgabe da, `ensureOpenForSubmission` öffnet diese Aufgabe beim erneuten Einreichen wieder.
+  - `customer_notice` gehört immer zum aktuellen Schritt: das Gespräch (früher auch die Rückgabe) setzt ihn, Umsetzung starten und
     erneutes Einreichen leeren ihn. So zeigt keine Oberfläche einen veralteten Hinweis.
   - `feedback-attachment-service.ts` schreibt als einzige Stelle die Spalten `feedback_round_id`/`feedback_item_id`
     einer Datei (`attachFile`, `detachFile`, `detachItemFiles`). Anhängen liegt bewusst neben Lösen, obwohl nur das

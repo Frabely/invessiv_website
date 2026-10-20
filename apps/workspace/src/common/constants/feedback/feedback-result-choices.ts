@@ -1,8 +1,8 @@
 import { FeedbackItemResult } from "@invessiv/common/constants/crm/feedback-item-results";
 
 /**
- * What the result select offers. `Pending` only stands for "no result yet" while an item is
- * unrated; a result can be replaced but never taken back, so it is not offered once one is set.
+ * What the result select offers. `Pending` maps to null and can reset an existing result
+ * while the round is editable.
  */
 export const FeedbackResultChoice = {
   Pending: "pending",

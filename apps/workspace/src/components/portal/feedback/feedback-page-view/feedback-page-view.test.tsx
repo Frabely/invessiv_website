@@ -5,7 +5,6 @@ import {
   act,
   cleanup,
   fireEvent,
-  render,
   screen,
   waitFor,
   within,
@@ -16,13 +15,7 @@ import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-rou
 import { ConcurrencyErrorCode } from "@invessiv/common/constants/errors/concurrency-error-codes";
 import { PortalFeedbackErrorCode } from "@invessiv/common/constants/portal/portal-feedback-error-codes";
 import { UploadQueueItemStatus } from "@invessiv/common/constants/files/upload-queue-item-status";
-import type { PortalFeedbackRoundDto } from "@invessiv/common/contracts/portal/portal-feedback-round.dto";
-import type { PortalProjectFeedbackDto } from "@invessiv/common/contracts/portal/portal-project-feedback.dto";
-import {
-  getPortalFeedbackDictionary,
-  getPortalFilesDictionary,
-} from "@/i18n/dictionaries/portal";
-import { FeedbackPageView } from "./feedback-page-view";
+import { getPortalFeedbackDictionary } from "@/i18n/dictionaries/portal";
 
 const mocks = vi.hoisted(() => ({
   refresh: vi.fn(),
@@ -73,69 +66,12 @@ vi.mock("@/hooks/shared/use-upload-queue", () => ({
 }));
 
 const content = getPortalFeedbackDictionary("en");
-const filesContent = getPortalFilesDictionary("en");
 
-function round(overrides: Partial<PortalFeedbackRoundDto> = {}) {
-  return {
-    id: "round-1",
-    roundNumber: 1,
-    status: FeedbackRoundStatus.Open,
-    previewUrl: "https://preview.example.test",
-    handoverNote: "First complete version",
-    dueOn: "2026-10-14",
-    areaOptions: ["Home", "Contact"],
-    draftUpdatedAt: null,
-    draftUpdatedByName: null,
-    submittedAt: null,
-    customerNotice: null,
-    completedAt: null,
-    approvedAt: null,
-    items: [],
-    version: 1,
-    ...overrides,
-  } satisfies PortalFeedbackRoundDto;
-}
-
-function feedback(
-  overrides: Partial<PortalProjectFeedbackDto> = {},
-): PortalProjectFeedbackDto {
-  return {
-    projectId: "project-1",
-    projectTitle: "Relaunch",
-    quota: {
-      included: 2,
-      used: 1,
-      remaining: 1,
-      activeRoundNumber: 1,
-      approvedRoundNumber: null,
-    },
-    activeRound: round(),
-    history: [],
-    canSubmit: true,
-    canAttach: false,
-    contact: null,
-    ...overrides,
-  };
-}
-
-function renderView(
-  dto: PortalProjectFeedbackDto = feedback(),
-  canUpload = false,
-) {
-  return render(
-    <FeedbackPageView
-      canUpload={canUpload}
-      cockpitHref={null}
-      content={content}
-      customerId="customer-1"
-      dashboardHref="/en/portal/customer-1"
-      feedback={dto}
-      filesContent={filesContent}
-      locale="en"
-      messagesHref="/en/portal/customer-1?chat=open"
-    />,
-  );
-}
+import {
+  portalFeedbackRound as round,
+  portalProjectFeedback as feedback,
+} from "@/test/fixtures/portal-feedback";
+import { renderPortalFeedbackView as renderView } from "@/test/portal/render-portal-feedback-view";
 
 function textareas() {
   return screen.getAllByRole("textbox");
@@ -150,6 +86,8 @@ function secondRoundFeedback(canAttach = false) {
       items: [
         {
           id: "item-2",
+          version: 1,
+          clarifications: [],
           position: 0,
           areaLabel: null,
           kind: null,
@@ -260,6 +198,8 @@ describe("FeedbackPageView", () => {
             items: [
               {
                 id: "old-item",
+                version: 1,
+                clarifications: [],
                 position: 0,
                 areaLabel: null,
                 kind: null,
@@ -439,6 +379,8 @@ describe("FeedbackPageView", () => {
       items: [
         {
           id: "item-2",
+          version: 1,
+          clarifications: [],
           position: 0,
           areaLabel: null,
           kind: null,
@@ -492,6 +434,8 @@ describe("FeedbackPageView", () => {
       items: [
         {
           id: "their-item",
+          version: 1,
+          clarifications: [],
           position: 0,
           areaLabel: "Home",
           kind: FeedbackItemKind.Bug,
@@ -579,6 +523,8 @@ describe("FeedbackPageView", () => {
           items: [
             {
               id: "item-1",
+              version: 1,
+              clarifications: [],
               position: 0,
               areaLabel: null,
               kind: null,
@@ -717,6 +663,8 @@ describe("FeedbackPageView", () => {
           items: [
             {
               id: "item-1",
+              version: 1,
+              clarifications: [],
               position: 0,
               areaLabel: null,
               kind: null,
@@ -795,6 +743,8 @@ describe("FeedbackPageView", () => {
           items: [
             {
               id: "item-1",
+              version: 1,
+              clarifications: [],
               position: 0,
               areaLabel: null,
               kind: null,
@@ -841,6 +791,8 @@ describe("FeedbackPageView", () => {
       items: [
         {
           id: "item-1",
+          version: 1,
+          clarifications: [],
           position: 0,
           areaLabel: null,
           kind: null,

@@ -1,4 +1,6 @@
 import "server-only";
+import { feedbackClarificationMappingService } from "@/server/shared/services/feedback/feedback-clarification-mapping-service";
+import type { FeedbackClarificationRow } from "@/server/shared/services/feedback/feedback-service-types";
 
 import { RESULT_VISIBLE_FEEDBACK_ROUND_STATUS_VALUES } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import type { PortalFeedbackItemDto } from "@invessiv/common/contracts/portal/portal-feedback-item.dto";
@@ -11,9 +13,14 @@ import type {
 function toItemDto(
   { item, attachments }: LoadedFeedbackItem,
   resultsVisible: boolean,
+  clarifications: readonly FeedbackClarificationRow[] = [],
 ): PortalFeedbackItemDto {
   return {
     id: item.id,
+    version: item.version,
+    clarifications: clarifications.map(
+      feedbackClarificationMappingService.toPublicDto,
+    ),
     position: item.position,
     areaLabel: item.area_label,
     kind: item.kind,
@@ -29,6 +36,7 @@ function toRoundDto(
   row: FeedbackRoundRow,
   items: readonly LoadedFeedbackItem[],
   contactNames: ReadonlyMap<string, string>,
+  clarifications: ReadonlyMap<string, FeedbackClarificationRow[]> = new Map(),
 ): PortalFeedbackRoundDto {
   const resultsVisible = (
     RESULT_VISIBLE_FEEDBACK_ROUND_STATUS_VALUES as readonly string[]
@@ -49,11 +57,14 @@ function toRoundDto(
     customerNotice: row.customer_notice,
     completedAt: row.completed_at?.toISOString() ?? null,
     approvedAt: row.approved_at?.toISOString() ?? null,
-    items: items.map((item) => toItemDto(item, resultsVisible)),
+    items: items.map((item) =>
+      toItemDto(item, resultsVisible, clarifications.get(item.item.id) ?? []),
+    ),
     version: row.version,
   };
 }
 
 export const portalFeedbackMappingService = {
+  toItemDto,
   toRoundDto,
 } as const;

@@ -97,14 +97,37 @@ Plan: `apps/workspace/plans/crm/16-feedbackrunden/60-ui-uebergabe-und-kundenboge
   `rel="noopener noreferrer"`. Portal und CRM teilen `components/shared/feedback/**`.
 - Solange eine Runde läuft, ist „Aktueller Prozessschritt“ im Projekt-Editor gesperrt und nennt die Runde.
 - **Bearbeitung (ab Task 61):** `feedback-round-status-actions` zeigt genau die internen Ziele, die `canTransition`
-  vom aktuellen Status erlaubt; ohne `projects.write` fehlt die Gruppe. Gespräch und Zurückgeben laufen über den
+  vom aktuellen Status erlaubt; ohne `projects.write` fehlt die Gruppe. Das Gespräch läuft über den
   generischen `feedback-text-dialog` (eine versionierte Schreibaktion mit Text, Konflikt behält den Text),
   „Umsetzung starten“ direkt, der Abschluss über `feedback-complete-dialog` (Prüfliste, danach Angebot „Runde n+1
   übergeben“ nur unterhalb des Kontingents, sonst Abnahme-Hinweis).
 - Ergebnisse je Punkt über `feedback-item-result-select` in der Zeile (`StatusRow`, `alignStart`): „Umgesetzt“
   speichert sofort, die beiden anderen öffnen die Antwort mit Vorschau in Kundensicht (`FeedbackItemResult` aus
-  `components/shared/feedback/`). „Noch offen“ erscheint nur, solange kein Ergebnis gesetzt ist.
+  `components/shared/feedback/`). Ab Task 78 ist „Noch offen“ immer auswählbar und setzt vorhandene Ergebnisse
+  ohne Dialog zurück. Jede explizite Aktion trägt eine neue `commandId`; ein späterer automatischer Retry müsste
+  dieselbe Kennung weiterreichen.
+- `feedback-result-history` zeigt den internen Verlauf unter dem Ergebnis als zunächst eingeklappte Liste.
+  Reihenfolge ist die Punktversion. Ein Mitglied ohne Namen erscheint als „Team“, ein Kontakt mit entfernter
+  Portalmitgliedschaft als „Entfernter Kontakt“. Begründungen bleiben
+  reiner Text; ohne Einträge fehlt der Bereich. Das Portal bekommt keine Historie.
 - Fehlercodes beider Befehle werden nur über `feedbackProcessingError` (`common/patterns/crm/`) in Texte übersetzt.
+- **Rückfragen (ab Task 80):** `feedback-clarification-actions` bietet an jedem bearbeitbaren Punkt ohne offene
+  Rückfrage „Rückfrage stellen“ und an der offenen „Rückfrage schließen“ (Pflichthinweis), beide über den
+  `feedback-text-dialog`. Der Dialog erzeugt die `commandId` selbst: Sie bleibt für einen Retry desselben Texts und
+  wechselt mit jeder Textänderung und nach einem Konflikt. Bei vorhandenem Ergebnis nennt der Fragedialog dessen
+  Rücknahme. Den Verlauf zeigt der geteilte `FeedbackClarificationThread` (`components/shared/feedback/`) mit
+  aufgelösten Namen. Bei offener Rückfrage ist das Ergebnis-Select gesperrt, zeigt „Rückfrage“ und nennt den Grund.
+  Aktionskomponente und Dialoge bleiben an einer festen Stelle der Punktzeile gemountet, auch wenn eine Frage
+  beantwortet wird oder die Runde während eines offenen Dialogs abgeschlossen wird. Nach Stellen oder Schließen
+  liegt der Fokus auf der Aktion am Punkt (`useFocusAfterVersion`, `src/hooks/shared/`: wartet auf die gespeicherte
+  Version). Fachliche Konflikte mit aktuellem Punkt werden wie Versionskonflikte in die sichtbare Zeile übernommen;
+  der Rücknahmehinweis verwendet denselben Stand wie der nächste Request. Während des Requests ist das Textfeld
+  schreibgeschützt; eine gesperrte Runde erhält den Entwurf und sperrt das Absenden. Der Dialog hält die Frage fest, für die er geöffnet wurde; ein Refresh dahinter
+  macht aus „Schließen“ nie „Stellen“, und zeigt der Konflikt die Frage erledigt, geht kein zweiter Request raus.
+  Die offene Rückfrage eines Punkts liefert überall `findOpenFeedbackClarification` (`@invessiv/common`).
+- **Zählen nur über `summarizeFeedbackProcessing`** (`common/patterns/crm/`, auf `getFeedbackItemProcessingState`):
+  Fortschritt („{done} von {total} erledigt“ plus offene Rückfragen) und Abschlussdialog. Offene Rückfragen sperren den
+  Abschluss mit eigenem Text (`clarificationsOpen`). „Zurück an den Kunden“ gibt es nicht mehr.
 - **Eingang (ab Task 62):** `feedback-inbox` (Kopf, Filter, Liste, zwei unterscheidbare Empty-States),
   `feedback-inbox-card` und `feedback-inbox-toolbar`. Filter sind URL-State über
   `feedback-inbox-query` (`common/patterns/crm/`); Karten verlinken nur über `buildCustomerCockpitHref` mit

@@ -10,7 +10,7 @@ import { randomUUID } from "node:crypto";
 import { CustomerHourPurchasesConstraintName as P } from "@invessiv/db/constraint-names/crm/customer-hour-purchases-constraint-names";
 import { LineItemTemplatesConstraintName as T } from "@invessiv/db/constraint-names/crm/line-item-templates-constraint-names";
 import { ProjectLineItemsConstraintName as I } from "@invessiv/db/constraint-names/crm/project-line-items-constraint-names";
-import type { CredentialSmokeContext as SmokeContext } from "./credential-checks";
+import type { CrmSmokeContext as SmokeContext } from "./contracts/crm-smoke-context";
 
 type TemplateArgs = {
   kind?: string | null;

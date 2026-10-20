@@ -203,6 +203,24 @@ Plan: `apps/workspace/plans/crm/16-feedbackrunden/60-ui-uebergabe-und-kundenboge
   letzten Runde „abnehmen“; der Endzustand heißt überall „Abgenommen am …“.
 - Links auf die Seite entstehen nur über `buildPortalFeedbackPath`. Das Dashboard-Widget `feedback` erscheint nur
   mit `portal.feedback.read` (Widget-Registry); `dashboard.feedback` ist der Stand des gewählten Projekts oder `null`.
+- **Rückfragen (ab Task 80):** Rückfragen sind schon während der laufenden Runde sichtbar. Über der Punktliste nennt
+  `feedback-clarification-notice` die Anzahl offener Rückfragen und verlinkt je Punkt auf dessen Überschrift
+  (`feedbackItemDomId`, stabile Punkt-ID, `tabIndex={-1}`); ein Klick setzt den Fokus dorthin, nichts wird
+  umsortiert. Am Punkt steht der geteilte `FeedbackClarificationThread` mit Rollen („Unser Team“, „Euer Team“)
+  statt Namen. **Layout:** Hat ein Punkt Rückfragen, steht der Verlauf samt Antwortformular ab 44rem Kartenbreite
+  (Container Query in `feedback-item-list`) rechts neben dem Punkt, schmaler darunter; unser Ergebnis einer
+  abgeschlossenen Runde schließt die Karte über die volle Breite. Das Antwortformular
+  (`feedback-clarification-answer`) erscheint nur, wenn `canAnswerFeedbackClarification` (`common/patterns/portal/`)
+  zustimmt: `canSubmit`, laufender Rundenstatus und offene Rückfrage. Der Round-Step berechnet das einmal je Runde
+  (`canAnswer`) und gibt es an Hinweis und Liste. Owner-Sicht und Kontakte ohne Schreibrecht sehen nur den Verlauf;
+  Hinweis und Status sind für sie neutral formuliert (`noticeHintReadOnly`, `thread.statusOpen`), nur wer antworten
+  kann, liest „Wartet auf deine Antwort“ (`statusWaiting`). Entwürfe, Senden, Konflikt und „nicht mehr offen“ laufen
+  ausschließlich über `useFeedbackClarificationAnswers` (`src/hooks/portal/`), je Rückfrage getrennt; eine Antwort
+  wird nie einer neueren Frage zugeordnet. Ein Entwurf zu einer erledigten Frage bleibt gesperrt (`locked`) unter
+  eigenem Label stehen und lässt sich verwerfen; leere Entwürfe verschwinden. Nach jeder Antwort mit aktuellem
+  Punkt (Erfolg, Konflikt, nicht mehr offen) lädt die Seite neu, damit Hinweis und Liste denselben Stand zeigen.
+  Nach dem Senden meldet die Live-Region der Seite den Erfolg, und der Fokus liegt auf der Punktüberschrift. Die
+  zurückgegebene Runde (`states.returned`) bleibt nur als Bestandsfall.
 
 ## Onboarding-Bogen (ab Task 66)
 

@@ -46,6 +46,14 @@ const ERRORS: Record<E, { status: H; message: string }> = {
     status: H.UnprocessableContent,
     message: "This file cannot be attached.",
   },
+  [E.ClarificationNotOpen]: {
+    status: H.Conflict,
+    message: "This clarification is no longer open.",
+  },
+  [E.CommandIdReused]: {
+    status: H.Conflict,
+    message: "Command id already used for a different action.",
+  },
   [E.Unavailable]: {
     status: H.ServiceUnavailable,
     message: "Feedback is temporarily unavailable.",
@@ -60,8 +68,8 @@ function errorResponse(
   return Response.json({ code, message, ...details }, { status });
 }
 
-export function portalFeedbackApiResponse<T>(
-  result: PortalFeedbackResult<T>,
+export function portalFeedbackApiResponse<T, TConflict>(
+  result: PortalFeedbackResult<T, TConflict>,
   successStatus: H = H.Ok,
   canReadResponse = true,
 ): Response {
@@ -84,13 +92,18 @@ export function portalFeedbackApiResponse<T>(
       result.code,
       canReadResponse ? { itemIds: result.itemIds } : {},
     );
+  if (result.code === E.ClarificationNotOpen)
+    return errorResponse(
+      result.code,
+      canReadResponse ? { current: result.current } : {},
+    );
   return errorResponse(result.code);
 }
 
 /** A write grant never implies that its full feedback response may be read. */
-export function portalFeedbackWriteResponse<T>(
+export function portalFeedbackWriteResponse<T, TConflict>(
   actor: PortalActor,
-  result: PortalFeedbackResult<T>,
+  result: PortalFeedbackResult<T, TConflict>,
   successStatus: H = H.Ok,
 ): Response {
   return portalFeedbackApiResponse(

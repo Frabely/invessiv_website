@@ -7,6 +7,11 @@
   min-width: 0;
 }
 
+/* Points with questions read in two columns; each column keeps about the reading width. */
+.round:has([data-layout="split"]) {
+  max-width: 76rem;
+}
+
 .round[hidden] {
   display: none;
 }

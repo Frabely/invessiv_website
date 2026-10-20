@@ -15,7 +15,9 @@ import { submitPortalFeedbackRound } from "@/server/portal/command-handler/submi
 import { changeFeedbackRoundStatus } from "@/server/workspace/crm/command-handler/change-feedback-round-status.command-handler";
 import { handOverFeedbackRound } from "@/server/workspace/crm/command-handler/hand-over-feedback-round.command-handler";
 import { setFeedbackItemResult } from "@/server/workspace/crm/command-handler/set-feedback-item-result.command-handler";
+import { getFeedbackRound } from "@/server/workspace/crm/query-handler/get-feedback-round.query-handler";
 import { createFeedbackIntegrationFixture } from "../../shared/services/feedback/feedback-integration-fixture";
+import { submittedFeedbackRound } from "../../support/feedback/submitted-feedback-round";
 
 vi.mock("server-only", () => ({}));
 
@@ -24,32 +26,8 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
   () => {
     const f = createFeedbackIntegrationFixture();
 
-    /** Hands a round over and lets the customer submit `bodies` as items. */
-    async function submittedRound(bodies = ["Logo größer", "Farbe dunkler"]) {
-      const projectId = await f.project();
-      const handed = await handOverFeedbackRound(
-        projectId,
-        { areaOptions: [] },
-        f.member(),
-      );
-      if (!handed.ok) throw new Error("Expected a handed-over round");
-      const roundId = handed.round.id;
-      const itemIds = bodies.map(() => crypto.randomUUID());
-      await savePortalFeedbackDraft(f.contact(), roundId, {
-        version: 1,
-        items: bodies.map((body, index) => ({
-          id: itemIds[index],
-          areaLabel: null,
-          kind: null,
-          body,
-        })),
-      });
-      const submitted = await submitPortalFeedbackRound(f.contact(), roundId, {
-        version: 2,
-      });
-      if (!submitted.ok) throw new Error("Expected a submitted round");
-      return { projectId, roundId, itemIds, version: 3 };
-    }
+    const submittedRound = (bodies?: string[]) =>
+      submittedFeedbackRound(f, bodies);
 
     async function change(
       roundId: string,
@@ -58,6 +36,14 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
     ) {
       return changeFeedbackRoundStatus(roundId, input, actor);
     }
+
+    // What a tab opened before Task 80 still sends; the request type no longer allows it.
+    const legacyHandback = (version: number) =>
+      ({
+        version,
+        to: FeedbackRoundStatus.Open,
+        customerNotice: "Zurück",
+      }) as unknown as ChangeFeedbackRoundStatusRequestDto;
 
     async function roundTask(roundId: string) {
       const [task] = await f
@@ -253,13 +239,10 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
           to: FeedbackRoundStatus.Completed,
         }),
       ).toEqual({ ok: false, code: E.ResultsIncomplete });
-      expect(
-        await change(roundId, {
-          version: 4,
-          to: FeedbackRoundStatus.Open,
-          customerNotice: "Zurück",
-        }),
-      ).toEqual({ ok: false, code: E.InvalidTransition });
+      expect(await change(roundId, legacyHandback(4))).toEqual({
+        ok: false,
+        code: E.InvalidTransition,
+      });
     });
 
     it("answers a stale version with the current round", async () => {
@@ -280,28 +263,40 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
       });
     });
 
-    it("hands a round back with a notice and reopens the same task on resubmission", async () => {
+    it("refuses the removed handback from submitted and in discussion without writing", async () => {
+      const { roundId } = await submittedRound();
+      expect(await change(roundId, legacyHandback(3))).toEqual({
+        ok: false,
+        code: E.InvalidTransition,
+      });
+      await change(roundId, {
+        version: 3,
+        to: FeedbackRoundStatus.InDiscussion,
+      });
+      expect(await change(roundId, legacyHandback(4))).toEqual({
+        ok: false,
+        code: E.InvalidTransition,
+      });
+      expect(await f.readRound(roundId)).toMatchObject({
+        status: FeedbackRoundStatus.InDiscussion,
+        version: 4,
+      });
+    });
+
+    it("keeps a round handed back before Task 80 resubmittable with the same task", async () => {
       const { roundId, itemIds } = await submittedRound();
       const taskId = (await roundTask(roundId)).id;
-      expect(
-        await change(roundId, { version: 3, to: FeedbackRoundStatus.Open }),
-      ).toMatchObject({ ok: false, code: E.ValidationError });
-
-      const returned = await change(roundId, {
-        version: 3,
-        to: FeedbackRoundStatus.Open,
-        customerNotice: "Bitte noch die Texte für „Über uns“",
-      });
-      expect(returned).toMatchObject({
-        ok: true,
-        round: {
-          status: FeedbackRoundStatus.Open,
-          submittedAt: null,
-          customerNotice: "Bitte noch die Texte für „Über uns“",
-          items: itemIds.map((id) => ({ id })),
-        },
-      });
+      await f.returnRoundAsLegacy(
+        roundId,
+        "Bitte noch die Texte für „Über uns“",
+      );
       expect((await roundTask(roundId)).status).toBe(TaskStatus.Cancelled);
+      const detail = await getFeedbackRound(roundId, f.member());
+      expect(detail).toMatchObject({
+        status: FeedbackRoundStatus.Open,
+        customerNotice: "Bitte noch die Texte für „Über uns“",
+        items: itemIds.map((id) => ({ id })),
+      });
 
       const resubmitted = await submitPortalFeedbackRound(
         f.contact(),
@@ -467,13 +462,15 @@ describe.skipIf(process.env.CRM_DB_INTEGRATION !== "true")(
             actor,
           ),
         ).toEqual({ ok: false, code: E.RoundNotFound });
-        expect(
-          await setFeedbackItemResult(
-            itemIds[0],
-            { version: 1, result: FeedbackItemResult.Implemented },
-            actor,
-          ),
-        ).toEqual({ ok: false, code: E.ItemNotFound });
+        for (const result of [FeedbackItemResult.Implemented, null]) {
+          expect(
+            await setFeedbackItemResult(
+              itemIds[0],
+              { version: 1, result },
+              actor,
+            ),
+          ).toEqual({ ok: false, code: E.ItemNotFound });
+        }
       }
       expect(
         await change(crypto.randomUUID(), {

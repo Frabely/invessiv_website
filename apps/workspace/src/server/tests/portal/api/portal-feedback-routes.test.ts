@@ -13,6 +13,7 @@ import { POST as submit } from "@/app/api/portal/[customerId]/feedback-rounds/[r
 import { POST as approve } from "@/app/api/portal/[customerId]/feedback-rounds/[roundId]/approve/route";
 import { POST as attach } from "@/app/api/portal/[customerId]/feedback-rounds/[roundId]/items/[itemId]/files/route";
 import { DELETE as detach } from "@/app/api/portal/[customerId]/feedback-rounds/[roundId]/items/[itemId]/files/[fileId]/route";
+import { POST as answer } from "@/app/api/portal/[customerId]/feedback-rounds/[roundId]/items/[itemId]/clarifications/[clarificationId]/answer/route";
 import { PortalAuthStatus } from "@/common/constants/auth/portal-auth-statuses";
 import { createPortalActor } from "@/server/portal/auth/portal-actor";
 
@@ -27,6 +28,7 @@ const mocks = vi.hoisted(() => ({
   approvePortalFeedback: vi.fn(),
   attachPortalFeedbackFile: vi.fn(),
   detachPortalFeedbackFile: vi.fn(),
+  answerPortalFeedbackClarification: vi.fn(),
 }));
 
 vi.mock("@/server/portal/auth/portal-authentication-service", () => ({
@@ -59,6 +61,12 @@ vi.mock(
   "@/server/portal/command-handler/detach-portal-feedback-file.command-handler",
   () => ({ detachPortalFeedbackFile: mocks.detachPortalFeedbackFile }),
 );
+vi.mock(
+  "@/server/portal/command-handler/answer-portal-feedback-clarification.command-handler",
+  () => ({
+    answerPortalFeedbackClarification: mocks.answerPortalFeedbackClarification,
+  }),
+);
 
 const CUSTOMER_ID = "11111111-1111-4111-8111-111111111111";
 const PROJECT_ID = "22222222-2222-4222-8222-222222222222";
@@ -72,6 +80,7 @@ const context = {
     roundId: ROUND_ID,
     itemId: ITEM_ID,
     fileId: FILE_ID,
+    clarificationId: FILE_ID,
   }),
 };
 const ACTOR = createPortalActor({
@@ -93,6 +102,7 @@ const writeRoutes = [
   [approve, HttpMethod.Post],
   [attach, HttpMethod.Post],
   [detach, HttpMethod.Delete],
+  [answer, HttpMethod.Post],
 ] as const;
 const writeHandlers = [
   mocks.savePortalFeedbackDraft,
@@ -100,6 +110,7 @@ const writeHandlers = [
   mocks.approvePortalFeedback,
   mocks.attachPortalFeedbackFile,
   mocks.detachPortalFeedbackFile,
+  mocks.answerPortalFeedbackClarification,
 ];
 
 function request(method: HttpMethod, body?: object | string) {
@@ -133,6 +144,72 @@ beforeEach(() => {
 });
 
 describe("portal feedback routes", () => {
+  it("answers with a public item and strips success and conflict data without a read grant", async () => {
+    const body = { version: 1, commandId: ROUND_ID, answer: "Home page" };
+    const current = {
+      id: ITEM_ID,
+      version: 2,
+      clarifications: [{ question: "Which page?" }],
+    };
+    mocks.answerPortalFeedbackClarification.mockResolvedValue({
+      ok: true,
+      value: current,
+    });
+    const saved = await answer(request(HttpMethod.Post, body), context);
+    expect(saved.status).toBe(H.Ok);
+    expectPrivate(saved);
+    expect(await saved.json()).toEqual(current);
+    expect(mocks.answerPortalFeedbackClarification).toHaveBeenCalledWith(
+      ACTOR,
+      ROUND_ID,
+      ITEM_ID,
+      FILE_ID,
+      body,
+    );
+    mocks.answerPortalFeedbackClarification.mockResolvedValue({
+      ok: false,
+      code: PortalFeedbackErrorCode.ClarificationNotOpen,
+      current,
+    });
+    const ended = await answer(request(HttpMethod.Post, body), context);
+    expect(ended.status).toBe(H.Conflict);
+    expect(await ended.json()).toMatchObject({
+      code: PortalFeedbackErrorCode.ClarificationNotOpen,
+      current,
+    });
+    const writeOnly = createPortalActor({
+      ...ACTOR,
+      permissions: new Set([Permission.PortalFeedbackSubmit]),
+    });
+    mocks.authenticateRequest.mockResolvedValue({
+      status: PortalAuthStatus.Authorized,
+      actor: writeOnly,
+    });
+    const hiddenError = await answer(request(HttpMethod.Post, body), context);
+    expect(await hiddenError.json()).not.toHaveProperty("current");
+    mocks.answerPortalFeedbackClarification.mockResolvedValue({
+      ok: true,
+      value: current,
+    });
+    expect(
+      await (await answer(request(HttpMethod.Post, body), context)).json(),
+    ).toEqual({ accepted: true });
+    mocks.answerPortalFeedbackClarification.mockResolvedValue({
+      ok: false,
+      code: ConcurrencyErrorCode.VersionConflict,
+      conflict: {
+        code: ConcurrencyErrorCode.VersionConflict,
+        currentVersion: 2,
+        current,
+      },
+    });
+    expect(
+      await (await answer(request(HttpMethod.Post, body), context)).json(),
+    ).toEqual({
+      code: ConcurrencyErrorCode.VersionConflict,
+      currentVersion: 2,
+    });
+  });
   it.each([[page, HttpMethod.Get] as const, ...writeRoutes])(
     "answers a foreign customer like a missing one, privately",
     async (route, method) => {

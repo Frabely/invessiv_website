@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  crmFeedbackItemClarificationCloseEndpoint,
+  crmFeedbackItemClarificationsEndpoint,
   crmFeedbackItemResultEndpoint,
   crmFeedbackRoundEndpoint,
   crmFeedbackRoundReadEndpoint,
@@ -59,6 +61,15 @@ describe("crm feedback round endpoints", () => {
   it("puts the read stamp below the round", () => {
     expect(crmFeedbackRoundReadEndpoint("r/1")).toBe(
       "/api/workspace/crm/feedback-rounds/r%2F1/read",
+    );
+  });
+
+  it("puts clarifications below the item and their closure below the clarification", () => {
+    expect(crmFeedbackItemClarificationsEndpoint("i/1")).toBe(
+      "/api/workspace/crm/feedback-round-items/i%2F1/clarifications",
+    );
+    expect(crmFeedbackItemClarificationCloseEndpoint("i-1", "c 1")).toBe(
+      "/api/workspace/crm/feedback-round-items/i-1/clarifications/c%201/close",
     );
   });
 });

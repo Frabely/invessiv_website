@@ -108,6 +108,12 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 
 ## Feedbackrunden (ab Task 59)
 
+- Ab Task 79 verwenden Stellen, Schließen und Ergebniswahl `feedbackItemProcessingService` für den
+  berechtigten Rundenzugriff (`FOR SHARE`), das frische Sperren des Punkts und das interne Punkt-DTO.
+  Rückfragen schreiben ausschließlich über den geteilten `feedbackClarificationService`.
+  Eine offene Rückfrage sperrt jede Ergebniswahl einschließlich „Noch offen“; der Rundenabschluss
+  prüft unter `FOR UPDATE` zuerst offene Rückfragen, danach fehlende Ergebnisse.
+
 - **Übergabe nur unter Projektsperre.** `handOverFeedbackRound` sperrt das Projekt (`FOR UPDATE`, dieselbe Sperre wie
   der Projekt-Editor) und prüft dann `findFeedbackHandOverBlocker`
   (`@invessiv/common/patterns/crm/feedback-hand-over-blocker`). Dieselbe Funktion liefert der Rundenliste den Grund
@@ -123,7 +129,8 @@ Inhalte von `AGENTS.md`-Dateien werden auf Deutsch gepflegt.
 - **Bearbeitung (ab Task 61):** `changeFeedbackRoundStatus` sperrt die Runde (`FOR UPDATE`), vergleicht die Version
   unter der Sperre (409 mit `VersionConflictDto` und aktueller Runde), prüft `canTransition(…, internal)` und für den
   Abschluss, dass jeder Punkt ein Ergebnis hat (`RESULTS_INCOMPLETE`). Der Request ist eine nach `to` diskriminierte
-  Union: Zurückgeben verlangt einen Hinweis, Gespräch erlaubt einen, Start und Abschluss verbieten ihn.
+  Union: Gespräch erlaubt einen Hinweis, Start und Abschluss verbieten ihn. Der Zweig `to: open` bleibt nur als
+  Kompatibilität für alte Tabs und endet immer in `INVALID_TRANSITION` (Task 80); Entfernen in einem späteren Cleanup.
 - `setFeedbackItemResult` hält die Runde nur `FOR SHARE`: Ergebnisse mehrerer Punkte laufen parallel, der Abschluss
   wartet auf sie. Ergebnisse gehen nur in `RESULT_EDITABLE_FEEDBACK_ROUND_STATUS_VALUES`, sonst `ROUND_LOCKED`; der
   Punkt wird über `updateVersioned` geschrieben. Ergebnisse schreiben keine Activity (sonst Log-Flut je Punkt).

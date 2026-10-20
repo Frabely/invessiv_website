@@ -15,6 +15,7 @@ export * from "./files";
 export * from "./message-files";
 export * from "./feedback-rounds";
 export * from "./feedback-round-items";
+export * from "./feedback-round-item-result-history";
 export * from "./questionnaire-templates";
 export * from "./onboarding-forms";
 export * from "./questionnaire-blocks";
@@ -34,3 +35,5 @@ export * from "./customer-hour-purchases";
 export * from "./project-hour-allocations";
 export * from "./project-time-entries";
 export { serviceRequests } from "./service-requests";
+
+export * from "./feedback-round-item-clarifications";

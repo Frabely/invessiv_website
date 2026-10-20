@@ -15,6 +15,9 @@ describe("FeedbackApiPath", () => {
       Status: "status",
       Result: "result",
       Read: "read",
+      Clarifications: "clarifications",
+      Close: "close",
+      Answer: "answer",
     });
     const values = Object.values(FeedbackApiPath);
     expect(new Set(values).size).toBe(values.length);

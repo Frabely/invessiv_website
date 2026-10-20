@@ -1,7 +1,9 @@
 import "server-only";
+import type { FeedbackItemInternalClarificationDto } from "@invessiv/common/contracts/crm/feedback-item-internal-clarification.dto";
 
 import { INTERNAL_QUEUE_FEEDBACK_ROUND_STATUS_VALUES } from "@invessiv/common/constants/crm/feedback-round-statuses";
 import type { FeedbackInboxItemDto } from "@invessiv/common/contracts/crm/feedback-inbox-item.dto";
+import type { FeedbackItemResultHistoryEntryDto } from "@invessiv/common/contracts/crm/feedback-item-result-history-entry.dto";
 import type { FeedbackRoundItemDto } from "@invessiv/common/contracts/crm/feedback-round-item.dto";
 import type { FeedbackRoundSummaryDto } from "@invessiv/common/contracts/crm/feedback-round-summary.dto";
 import type { FeedbackRoundDto } from "@invessiv/common/contracts/crm/feedback-round.dto";
@@ -11,10 +13,11 @@ import type {
 } from "@/server/shared/services/feedback/feedback-service-types";
 import type { FeedbackInboxRow } from "./feedback-round-types";
 
-function toItemDto({
-  item,
-  attachments,
-}: LoadedFeedbackItem): FeedbackRoundItemDto {
+function toItemDto(
+  { item, attachments }: LoadedFeedbackItem,
+  resultHistory: FeedbackItemResultHistoryEntryDto[] = [],
+  clarifications: FeedbackItemInternalClarificationDto[] = [],
+): FeedbackRoundItemDto {
   return {
     id: item.id,
     position: item.position,
@@ -27,6 +30,8 @@ function toItemDto({
     resultSetByMemberId: item.result_set_by_member_id,
     resultSetAt: item.result_set_at?.toISOString() ?? null,
     attachments,
+    resultHistory,
+    clarifications,
     version: item.version,
   };
 }
@@ -88,6 +93,14 @@ function toDto(
   row: FeedbackRoundRow,
   items: readonly LoadedFeedbackItem[],
   contactNames: ReadonlyMap<string, string>,
+  historyByItem: ReadonlyMap<
+    string,
+    FeedbackItemResultHistoryEntryDto[]
+  > = new Map(),
+  clarificationsByItem: ReadonlyMap<
+    string,
+    FeedbackItemInternalClarificationDto[]
+  > = new Map(),
 ): FeedbackRoundDto {
   const nameOf = (id: string | null) =>
     id === null ? null : (contactNames.get(id) ?? null);
@@ -115,7 +128,13 @@ function toDto(
     approvedAt: row.approved_at?.toISOString() ?? null,
     approvedByPortalMembershipId: row.approved_by_portal_membership_id,
     readAt: row.read_at?.toISOString() ?? null,
-    items: items.map(toItemDto),
+    items: items.map((loaded) =>
+      toItemDto(
+        loaded,
+        historyByItem.get(loaded.item.id) ?? [],
+        clarificationsByItem.get(loaded.item.id) ?? [],
+      ),
+    ),
     version: row.version,
     createdAt: row.created_at.toISOString(),
     updatedAt: row.updated_at.toISOString(),

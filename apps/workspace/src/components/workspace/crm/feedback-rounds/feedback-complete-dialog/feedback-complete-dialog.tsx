@@ -11,6 +11,7 @@ import {
   feedbackRoundStepPosition,
   isNextFeedbackRoundAdjacent,
 } from "@invessiv/common/patterns/crm/feedback-round-state";
+import { formatCountMessage } from "@invessiv/common/patterns/i18n/format-count-message";
 import { formatMessage } from "@invessiv/common/patterns/i18n/format-message";
 import {
   ButtonControl,
@@ -22,6 +23,7 @@ import { feedbackRoundsApiService } from "@/client/crm/feedback-rounds-api-servi
 import { FEEDBACK_ITEM_RESULT_BADGES } from "@/common/constants/feedback/feedback-item-result-badges";
 import { FeedbackProcessingError } from "@/common/constants/feedback/feedback-processing-errors";
 import { feedbackProcessingError } from "@/common/patterns/crm/feedback-processing-error";
+import { summarizeFeedbackProcessing } from "@/common/patterns/crm/feedback-processing-summary";
 import type { CrmFeedbackRoundsDictionary } from "@/i18n/dictionaries/workspace/crm";
 import { FeedbackResultProgress } from "../feedback-result-progress/feedback-result-progress";
 import styles from "./feedback-complete-dialog.module.css";
@@ -58,8 +60,13 @@ export function FeedbackCompleteDialog({
   const [done, setDone] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const missing = round.items.filter((item) => item.result === null).length;
-  const total = round.items.length;
+  const {
+    clarifications: openClarifications,
+    pending: missing,
+    total,
+  } = summarizeFeedbackProcessing(round.items);
+  // Open questions block on their own; the server refuses them with CLARIFICATIONS_OPEN as well.
+  const ready = total > 0 && missing === 0 && openClarifications === 0;
   const nextNumber = round.roundNumber + 1;
   const hasNextRound = nextNumber <= included;
   const nextRoundAdjacent =
@@ -166,7 +173,7 @@ export function FeedbackCompleteDialog({
             {texts.cancel}
           </ButtonControl>
           <PrimaryCtaButton
-            disabled={busy || missing > 0 || total === 0}
+            disabled={busy || !ready}
             onClick={() => void complete()}
             type="button"
           >
@@ -181,7 +188,7 @@ export function FeedbackCompleteDialog({
       <div className={styles.body}>
         <FeedbackResultProgress
           items={round.items}
-          label={content.progress.label}
+          content={content.progress}
         />
         <ul aria-label={texts.countsLabel} className={styles.counts}>
           {FEEDBACK_ITEM_RESULT_VALUES.map((result) => (
@@ -197,13 +204,15 @@ export function FeedbackCompleteDialog({
             </li>
           ))}
         </ul>
-        <p
-          className={styles.check}
-          data-ready={missing === 0 ? "true" : "false"}
-        >
-          {missing === 0
-            ? formatMessage(texts.allRated, { total })
-            : formatMessage(texts.missing, { count: missing, total })}
+        <p className={styles.check} data-ready={ready ? "true" : "false"}>
+          {openClarifications > 0
+            ? formatCountMessage(openClarifications, {
+                one: texts.clarificationsOpenOne,
+                many: texts.clarificationsOpen,
+              })
+            : missing === 0
+              ? formatMessage(texts.allRated, { total })
+              : formatMessage(texts.missing, { count: missing, total })}
         </p>
         {error ? (
           <p className={styles.error} role="alert">

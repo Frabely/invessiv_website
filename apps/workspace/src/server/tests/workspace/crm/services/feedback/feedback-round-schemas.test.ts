@@ -7,6 +7,38 @@ import { feedbackRoundSchemas } from "@/server/workspace/crm/services/feedback/f
 
 const parse = (input: object) => feedbackRoundSchemas.handOver.safeParse(input);
 
+describe("clarification request schemas", () => {
+  it.each([
+    [feedbackRoundSchemas.askClarification, "question"],
+    [feedbackRoundSchemas.closeClarification, "note"],
+  ] as const)(
+    "requires an explicit id, item version and nonempty text",
+    (schema, field) => {
+      const input = {
+        commandId: "AAAAAAAA-AAAA-4AAA-8AAA-AAAAAAAAAAAA",
+        version: 1,
+        [field]: "  Text  ",
+      };
+      expect(schema.parse(input)).toEqual({
+        ...input,
+        commandId: input.commandId.toLowerCase(),
+        [field]: "Text",
+      });
+      for (const patch of [
+        { commandId: undefined },
+        { commandId: "invalid" },
+        { version: 0 },
+        { version: 1.5 },
+        { [field]: " " },
+        { [field]: "a".repeat(FEEDBACK_LIMITS.noteMaxLength + 1) },
+        { extra: true },
+      ]) {
+        expect(schema.safeParse({ ...input, ...patch }).success).toBe(false);
+      }
+    },
+  );
+});
+
 describe("feedbackRoundSchemas.handOver", () => {
   it("trims and nulls empty optional texts", () => {
     const parsed = feedbackRoundSchemas.handOver.parse({
@@ -84,10 +116,12 @@ describe("feedbackRoundSchemas.changeStatus", () => {
     ).toMatchObject({ customerNotice: null });
   });
 
-  it("requires a notice for the handback and refuses one elsewhere", () => {
+  it("still parses the legacy handback of old tabs so the command can refuse it", () => {
     const open = { version: 3, to: FeedbackRoundStatus.Open };
-    expect(parse(open).success).toBe(false);
-    expect(parse({ ...open, customerNotice: "  " }).success).toBe(false);
+    expect(parse(open).success).toBe(true);
+    expect(parse({ ...open, customerNotice: "  " }).data).toMatchObject({
+      customerNotice: null,
+    });
     expect(parse({ ...open, customerNotice: "Bitte ergänzen" }).success).toBe(
       true,
     );
@@ -121,6 +155,32 @@ describe("feedbackRoundSchemas.changeStatus", () => {
 describe("feedbackRoundSchemas.setItemResult", () => {
   const parse = (input: object) =>
     feedbackRoundSchemas.setItemResult.safeParse(input);
+
+  it("accepts reset only without a note and normalizes optional command ids", () => {
+    const commandId = "AAAAAAAA-AAAA-4AAA-8AAA-AAAAAAAAAAAA";
+    expect(
+      feedbackRoundSchemas.setItemResult.parse({
+        version: 1,
+        result: null,
+        resultNote: "  ",
+        commandId,
+      }),
+    ).toEqual({
+      version: 1,
+      result: null,
+      resultNote: null,
+      commandId: commandId.toLowerCase(),
+    });
+    expect(parse({ version: 1, result: null }).success).toBe(true);
+    for (const extra of [
+      { resultNote: "Reason" },
+      { commandId: "invalid" },
+      { commandId: null },
+      { extra: true },
+    ]) {
+      expect(parse({ version: 1, result: null, ...extra }).success).toBe(false);
+    }
+  });
 
   it("demands a reply for results the customer is owed an explanation for", () => {
     for (const result of [

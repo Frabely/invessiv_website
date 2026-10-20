@@ -1,12 +1,12 @@
 import { randomUUID } from "node:crypto";
-import type { CredentialSmokeContext } from "./credential-checks";
+import type { CrmSmokeContext } from "./contracts/crm-smoke-context";
 import { ServiceRequestsConstraintName as C } from "@invessiv/db/constraint-names/crm/service-requests-constraint-names";
 import { ServiceRequestFieldLimits } from "@invessiv/common/constants/crm/forms/service-request-field-limits";
 import { ServicePricingMode } from "@invessiv/common/constants/crm/service-pricing-modes";
 import { BillingInterval } from "@invessiv/common/constants/crm/billing-intervals";
 
 /** Dedicated invalid-write smoke; all SQL below belongs to disposable fixture setup/checks. */
-export async function runServiceRequestChecks(context: CredentialSmokeContext) {
+export async function runServiceRequestChecks(context: CrmSmokeContext) {
   const { sql, memberId, name, expectAccepted, expectRejected } = context;
   const customerId = await context.insertCustomer(name("Service requests"));
   const otherCustomer = await context.insertCustomer(
@@ -227,7 +227,7 @@ export async function runServiceRequestChecks(context: CredentialSmokeContext) {
 }
 
 async function runMissingDefaultChecks(
-  context: CredentialSmokeContext,
+  context: CrmSmokeContext,
   insert: (field: string) => Promise<unknown>,
 ) {
   for (const field of [

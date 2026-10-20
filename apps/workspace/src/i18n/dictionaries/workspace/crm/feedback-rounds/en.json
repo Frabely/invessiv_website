@@ -157,13 +157,15 @@
     "handedOver": "Feedback round {number} is handed over.",
     "alreadyActive": "Feedback round {number} is already running and is open.",
     "statusChanged": "Feedback round {number}: {status}.",
-    "resultSaved": "Item {number}: {result} saved."
+    "resultSaved": "Item {number}: {result} saved.",
+    "resultReset": "Item {number} is pending again.",
+    "clarificationAsked": "Item {number}: question asked.",
+    "clarificationClosed": "Item {number}: question closed."
   },
   "actions": {
     "groupLabel": "Next step for this round",
     "in_discussion": "Request a call",
     "in_progress": "Start implementation",
-    "open": "Hand back to the customer",
     "completed": "Complete round",
     "starting": "Starting …"
   },
@@ -178,17 +180,6 @@
       "submitting": "Requesting …",
       "required": "Tell the customer briefly what it is about.",
       "conflict": "The round just changed. You now see the current state; your text is still here."
-    },
-    "return": {
-      "title": "Hand the round back to the customer",
-      "description": "The customer can edit the round again and resubmit it. Their items stay, the collecting task is cancelled.",
-      "label": "What should the customer add?",
-      "hint": "The customer sees this note at the top of their feedback sheet.",
-      "placeholder": "For example: For item 2 we need a screenshot of the page where the error happens.",
-      "submit": "Hand back",
-      "submitting": "Handing back …",
-      "required": "Tell the customer what is missing.",
-      "conflict": "The round just changed. You now see the current state; your text is still here."
     }
   },
   "textDialog": {
@@ -202,11 +193,13 @@
   "result": {
     "choices": {
       "pending": "Not rated",
+      "clarification": "Question",
       "implemented": "Implemented",
       "not_implemented": "Not implemented",
       "additional_service": "Additional service"
     },
     "selectLabel": "Result for item {number}: {result}",
+    "lockedHint": "You can choose a result once the customer has answered or you close the question.",
     "reply": "Reply to the customer",
     "editReply": "Edit reply to item {number}",
     "note": {
@@ -227,10 +220,60 @@
       "submitting": "Saving …",
       "required": "Write the customer a short reply.",
       "conflict": "Someone just rated this item. You now see the current state; your reply is still here."
+    },
+    "history": {
+      "toggle": "Result history ({count})",
+      "baseline": "Baseline: {result}",
+      "set": "Result: {result}",
+      "reset": "Reset to Pending",
+      "actorTeam": "Team",
+      "actorRemoved": "Removed contact"
+    }
+  },
+  "clarification": {
+    "ask": "Ask a question",
+    "askNamed": "Ask a question (item {number})",
+    "close": "Close question",
+    "closeNamed": "Close question (item {number})",
+    "threadLabel": "Questions about item {number}",
+    "thread": {
+      "team": "Team",
+      "customer": "Customer",
+      "byline": "{name} on {date}",
+      "statusOpen": "Question open",
+      "statusAnswered": "Answered",
+      "statusClosed": "Closed",
+      "closeNote": "Closed without an answer",
+      "earlier": "Earlier questions ({count})"
+    },
+    "askDialog": {
+      "title": "Question about item {number}",
+      "description": "The customer sees the question on the item right away and gets a chat message. Until they answer or you close the question, the item gets no result.",
+      "resultNotice": "The result “{result}” is withdrawn and stays in the result history.",
+      "label": "Your question to the customer",
+      "hint": "The customer reads the question in the portal.",
+      "placeholder": "For example: Do you mean the blue in the header or the blue of the buttons?",
+      "submit": "Ask question",
+      "submitting": "Asking …",
+      "required": "Write your question to the customer.",
+      "conflict": "The item just changed. You now see the current state; your question is still here."
+    },
+    "closeDialog": {
+      "title": "Close the question about item {number}",
+      "description": "Close the question when it was settled without an answer. The customer sees your note on the item and can no longer answer.",
+      "label": "Note to the customer",
+      "hint": "Required: briefly why the question is settled.",
+      "placeholder": "For example: We settled this on the phone, we use the blue of the buttons.",
+      "submit": "Close question",
+      "submitting": "Closing …",
+      "required": "Briefly write why the question is settled.",
+      "conflict": "The item just changed. You now see the current state; your note is still here."
     }
   },
   "progress": {
-    "label": "{rated} of {total} items rated"
+    "label": "{done} of {total} items done",
+    "clarifications": "{count} questions open",
+    "clarificationsOne": "1 question open"
   },
   "complete": {
     "title": "Complete feedback round {number}",
@@ -238,6 +281,8 @@
     "countsLabel": "Results of this round",
     "allRated": "All {total} items have a result.",
     "missing": "{count} of {total} items have no result yet. Rate them before you complete the round.",
+    "clarificationsOpen": "{count} questions are still open. Wait for the customer's answers or close the questions before you complete the round.",
+    "clarificationsOpenOne": "1 question is still open. Wait for the customer's answer or close the question before you complete the round.",
     "submit": "Complete round",
     "submitting": "Completing …",
     "cancel": "Cancel",
@@ -254,6 +299,7 @@
     "changed": "The round has changed in the meantime. You now see the current state.",
     "locked": "The round is completed. Results can no longer be changed.",
     "resultsIncomplete": "Rate every item first, then you can complete the round.",
+    "clarificationsOpen": "Some questions are still open. Wait for the answer or close them, then you can complete the round.",
     "validation": "Some details do not fit. Check the text and try again.",
     "internal": "That did not work. Please try again."
   }

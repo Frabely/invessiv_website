@@ -5,6 +5,9 @@
 }
 
 .label {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.75rem;
   margin: 0;
   color: var(--color-text-muted);
   font-size: var(--font-size-ui-sm);
@@ -25,15 +28,24 @@
   transition: background-color 180ms ease;
 }
 
-.segment[data-result="implemented"] {
+.clarifications {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.segment[data-state="clarification"] {
+  background: var(--color-accent-warm);
+}
+
+.segment[data-state="implemented"] {
   background: var(--color-success);
 }
 
-.segment[data-result="not_implemented"] {
+.segment[data-state="not_implemented"] {
   background: var(--color-text-muted);
 }
 
-.segment[data-result="additional_service"] {
+.segment[data-state="additional_service"] {
   background: var(--color-accent-gold);
 }
 

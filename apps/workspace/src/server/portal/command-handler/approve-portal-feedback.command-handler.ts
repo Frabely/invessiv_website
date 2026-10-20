@@ -111,7 +111,7 @@ export async function approvePortalFeedback(
       });
       return {
         ok: true,
-        value: await portalFeedbackService.toRoundDto(tx, actor, approved),
+        value: await portalFeedbackService.loadRoundDto(tx, actor, approved),
       };
     },
   );

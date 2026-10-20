@@ -47,7 +47,6 @@ export const RESULT_VISIBLE_FEEDBACK_ROUND_STATUS_VALUES = [
 export const INTERNAL_FEEDBACK_ROUND_TARGET_STATUS_VALUES = [
   FeedbackRoundStatus.InDiscussion,
   FeedbackRoundStatus.InProgress,
-  FeedbackRoundStatus.Open,
   FeedbackRoundStatus.Completed,
 ] as const;
 

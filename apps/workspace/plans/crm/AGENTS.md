@@ -15,7 +15,7 @@ Altentscheidung darf übernommen werden, wenn sie nicht in den aktuellen Dateien
 
 **Ordnernummer ≠ Task-Nummer.** Die Ordnernummer (01–03, 03b–03d, 04–06, 06b, 07, 07a–07c, 08, 12a–12b, 13, 13a, 13c, 13d,
 14, 15, 16, 19–20,
-20a–20e, 21–22, 22a, 23–24) ist die
+20a–20e, 21–22, 22a, 23–24, 31) ist die
 Merge-Reihenfolge und kann sich beim
 Neuschnitt verschieben. Die Task-Nummer ist die Identität und bleibt: Task 08 heißt überall Task 08
 und liegt in Ordner 06. Querverweise im Plan nennen deshalb immer die **Task**-Nummer, Reihenfolge-
@@ -26,8 +26,8 @@ und Abhängigkeitsaussagen die **Ordner**-Nummer.
 - Ein Ordner entspricht einem Branch `feat/crm-<ordner-slug>`, einem PR und einem Merge.
   **Ausnahme:** Die Ordner `13c-portal-leistungsanfragen` (13c.1–13c.3), `13d-leistungen-am-kunden` (13d.1–13d.2),
   `14-dateien` (14.1–14.6),
-  `15-onboarding` (15.1–15.8), `16-feedbackrunden` (16.1–16.6), `19-credentials` (19.1–19.2) und
-  `20-stunden-und-history` (20.1–20.3) werden bewusst in mehreren Teil-PRs mit eigenen Branches geliefert; Regeln und Status stehen in der jeweiligen README.
+  `15-onboarding` (15.1–15.8), `16-feedbackrunden` (16.1–16.6), `19-credentials` (19.1–19.2),
+  `20-stunden-und-history` (20.1–20.3) und `31-portal-hinweise` (31.1–31.2) werden bewusst in mehreren Teil-PRs mit eigenen Branches geliefert; Regeln und Status stehen in der jeweiligen README.
 - Nach jedem Ordner sind Migration, Tests und App-Build grün; `master` ist produktiv deploybar.
 - Kein Ordner darf eine UI auf unvollständige Handler, fehlende Tabellen oder spätere Ordner zeigen.
 - Reine Fundamente bleiben unsichtbar. Sichtbare Funktionen werden vertikal vollständig geliefert.

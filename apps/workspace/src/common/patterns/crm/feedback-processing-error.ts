@@ -10,14 +10,20 @@ export function feedbackProcessingError(
 ): FeedbackProcessingErrorValue {
   switch (code) {
     case FeedbackRoundErrorCode.RoundNotFound:
+    case FeedbackRoundErrorCode.ClarificationNotFound:
     case FeedbackRoundErrorCode.ItemNotFound:
       return FeedbackProcessingError.NotFound;
+    case FeedbackRoundErrorCode.ClarificationOpen:
+    case FeedbackRoundErrorCode.ClarificationNotOpen:
     case FeedbackRoundErrorCode.InvalidTransition:
+    case FeedbackRoundErrorCode.CommandIdReused:
       return FeedbackProcessingError.Changed;
     case FeedbackRoundErrorCode.RoundLocked:
       return FeedbackProcessingError.Locked;
     case FeedbackRoundErrorCode.ResultsIncomplete:
       return FeedbackProcessingError.ResultsIncomplete;
+    case FeedbackRoundErrorCode.ClarificationsOpen:
+      return FeedbackProcessingError.ClarificationsOpen;
     case FeedbackRoundErrorCode.ValidationError:
       return FeedbackProcessingError.Validation;
     default:

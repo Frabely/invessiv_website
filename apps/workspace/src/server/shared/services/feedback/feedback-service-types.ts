@@ -1,14 +1,28 @@
 import type { FeedbackItemKind } from "@invessiv/common/constants/crm/feedback-item-kinds";
+import type { FeedbackResultActorSide } from "@invessiv/common/constants/crm/feedback-result-actor-sides";
 import type { ActivityActor } from "@invessiv/common/contracts/activity/activity-actor";
 import type { FileAttachmentDto } from "@invessiv/common/contracts/files/file-attachment.dto";
 import type {
+  feedbackRoundItemClarifications,
   feedbackRoundItems,
+  feedbackRoundItemResultHistory,
   feedbackRounds,
 } from "@invessiv/db/record-configuration";
 import type { WorkspaceActor } from "@/common/contracts/auth/workspace-actor";
 
+export type FeedbackClarificationRow =
+  typeof feedbackRoundItemClarifications.$inferSelect;
+
 export type FeedbackRoundRow = typeof feedbackRounds.$inferSelect;
 export type FeedbackRoundItemRow = typeof feedbackRoundItems.$inferSelect;
+export type FeedbackResultHistoryRow =
+  typeof feedbackRoundItemResultHistory.$inferSelect;
+export type FeedbackResultHistoryActor =
+  | { side: typeof FeedbackResultActorSide.Member; memberId: string }
+  | {
+      side: typeof FeedbackResultActorSide.PortalContact;
+      portalMembershipId: string;
+    };
 
 /** What every feedback service needs to address a round and to log on its customer and project. */
 export type FeedbackRoundRef = Pick<

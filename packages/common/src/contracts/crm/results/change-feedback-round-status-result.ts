@@ -21,5 +21,6 @@ export type ChangeFeedbackRoundStatusResult =
       code:
         | typeof FeedbackRoundErrorCode.RoundNotFound
         | typeof FeedbackRoundErrorCode.InvalidTransition
+        | typeof FeedbackRoundErrorCode.ClarificationsOpen
         | typeof FeedbackRoundErrorCode.ResultsIncomplete;
     };

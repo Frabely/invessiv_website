@@ -3,6 +3,7 @@ import { FeedbackRoundStatus } from "@invessiv/common/constants/crm/feedback-rou
 import { portalFeedbackMappingService } from "@/server/portal/services/feedback/portal-feedback-mapping-service";
 import {
   ITEM_ID,
+  clarificationRow,
   loadedItem,
   ROUND_ID,
   roundRow,
@@ -11,6 +12,36 @@ import {
 vi.mock("server-only", () => ({}));
 
 describe("portalFeedbackMappingService.toRoundDto", () => {
+  it("shows public clarification history immediately while keeping unpublished results and actor ids hidden", () => {
+    const row = clarificationRow();
+    const dto = portalFeedbackMappingService.toRoundDto(
+      roundRow({ status: FeedbackRoundStatus.InProgress }),
+      [loadedItem()],
+      new Map(),
+      new Map([[ITEM_ID, [row]]]),
+    );
+    const point = dto.items[0];
+    expect(point).toMatchObject({
+      version: 2,
+      result: null,
+      resultNote: null,
+      clarifications: [{ id: row.id, question: row.question, status: "open" }],
+    });
+    expect(Object.keys(point.clarifications[0]).sort()).toEqual(
+      [
+        "id",
+        "status",
+        "question",
+        "requestedAt",
+        "answer",
+        "answeredAt",
+        "closeNote",
+        "closedAt",
+      ].sort(),
+    );
+    expect(point).not.toHaveProperty("resultHistory");
+    expect(point).not.toHaveProperty("resultSetByMemberId");
+  });
   it("maps the customer fields and leaves internal actors out", () => {
     const dto = portalFeedbackMappingService.toRoundDto(
       roundRow({
@@ -68,6 +99,8 @@ describe("portalFeedbackMappingService.toRoundDto", () => {
     ).items;
     expect(item).toEqual({
       id: ITEM_ID,
+      version: 2,
+      clarifications: [],
       position: 0,
       areaLabel: "Startseite",
       kind: "bug",
@@ -88,6 +121,7 @@ describe("portalFeedbackMappingService.toRoundDto", () => {
       ).items;
       expect(item.result).toBe("not_implemented");
       expect(item.resultNote).toBe("Kommt in Phase 2");
+      expect(item).not.toHaveProperty("resultHistory");
     },
   );
 });

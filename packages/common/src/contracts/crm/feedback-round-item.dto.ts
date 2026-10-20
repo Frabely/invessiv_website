@@ -1,11 +1,15 @@
+import type { FeedbackItemInternalClarificationDto } from "@invessiv/common/contracts/crm/feedback-item-internal-clarification.dto";
 import type { FeedbackItemKind } from "../../constants/crm/feedback-item-kinds";
 import type { FeedbackItemResult } from "../../constants/crm/feedback-item-results";
 import type { FileAttachmentDto } from "../files/file-attachment.dto";
+import type { FeedbackItemResultHistoryEntryDto } from "./feedback-item-result-history-entry.dto";
 
 /** One feedback item as the team sees it, including the internal result. */
 export interface FeedbackRoundItemDto {
   /** Client-generated id; stays stable across autosaves, so the draft editor keys on it. */
   id: string;
+  /** Chronological questions and responses for this item. */
+  clarifications: FeedbackItemInternalClarificationDto[];
   /** Display order within the round, starting at 0. */
   position: number;
   /** Snapshot out of the round's `areaOptions`; null means "general". */
@@ -26,6 +30,8 @@ export interface FeedbackRoundItemDto {
   resultSetAt: string | null;
   /** Customer uploads on this item in upload order. */
   attachments: FileAttachmentDto[];
+  /** Internal changes in ascending item-version order; never part of portal responses. */
+  resultHistory: FeedbackItemResultHistoryEntryDto[];
   /** Optimistic-concurrency counter of the item row, used when the team sets a result. */
   version: number;
 }
